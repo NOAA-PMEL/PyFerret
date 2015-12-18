@@ -192,6 +192,7 @@
 *                   on SHOW DATA when datset not open
 * V697  12/15 *acm* Changes to add details on SHOW GRID uvar to indicate 
 *                   compressed or subset of axes
+* V697  12/15 *acm* Fix call to routine SHOW_GRID
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -1389,8 +1390,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 		    uvgrid = (i1 .EQ. unspecified_int4 )
 
 	            risc_buff = ' '
-		    cx = is_cx (1)
-	            CALL SHOW_GRID( grid, mods_cx, cx, uvgrid, status )
+	            CALL SHOW_GRID( grid, mods_cx, uvgrid, status )
 		    IF (status .NE. ferr_ok) GOTO 5000
 	         ENDIF
 	      ENDIF

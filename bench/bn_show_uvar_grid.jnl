@@ -4,10 +4,22 @@
 ! For grid changing functions just mark axis as such
 !
 ! 12/17/2015 *acm*
-
+! 12/18 2015 *acm* Add constant and constant-array variables, 
+!                  and modulo axis request on more than full range
 
 use coads_climatology
 show grid sst[x=240:320,y=0,t=@ave]
+
+! Modulo axes ask for superset
+show grid sst[x=0:540,L=1:15]
+
+! Constant: full abstract grid
+show grid 1
+
+! Constant-array
+show grid {1}
+let var = {1,2,4,8}  ! Note that show grid {1,2,4,8} fails: bug
+show grid var
 
 ! but don't show any user-var grid info if they just ask for the grid by name
 show grid `sst,return=grid`

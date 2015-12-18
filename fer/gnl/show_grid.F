@@ -70,6 +70,7 @@
 * V691+ 8/14 *acm* Fix ticket 2194: SHOW with /OUTFILE and not /XML. 
 * V697  12/15 *acm* Changes to add details on SHOW GRID uvar to indicate 
 *                   compressed or subset of axes
+* V697  12/15 *acm* Changes to formatting the output that shows subsets
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -107,7 +108,12 @@
 
 * list and describe the axes of the grid
 	risc_buff = ' '
-	WRITE ( risc_buff, 3000 )
+	IF (uvgrid) THEN
+	   WRITE ( risc_buff, 3100 )
+	ELSE
+	   WRITE ( risc_buff, 3000 )
+	ENDIF
+
 	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	DO 110 idim = 1, listdims
 	   CALL LINE_FACTS( show_lun, idim, grid, idim, uvar )
@@ -127,6 +133,9 @@
 
  3000	FORMAT (T2,'name',T13,'axis',T31,'# pts',T39,'start',T60,
      .          'end' )
+
+ 3100	FORMAT (T2,'name',T13,'axis',T31,'# pts',T39,'start',T60,
+     .          'end',T80,'subset' )
 
 5000    RETURN
 5100	CALL ERRMSG( ferr_invalid_command, status,

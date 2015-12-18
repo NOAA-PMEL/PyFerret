@@ -62,6 +62,7 @@
 * V68  *acm 12/11 - if npts > 1.e7 the format overflowed. Up the size.
 * V697  12/15 *acm* Changes to add details on SHOW GRID uvar to indicate 
 *                   compressed or subset of axes
+* V697  12/15 *acm* Changes to formatting the output that shows subsets
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -76,8 +77,7 @@
 	INTEGER	  lun, idim, grid, orient, uvar
 
 * local variable declarations:
-	LOGICAL	BKWD_AXIS, GEOG_LABEL, calendar, is_uvar_2lim,
-     .          is_uvar_1lim, is_uvar_nolim
+	LOGICAL	BKWD_AXIS, GEOG_LABEL, calendar
 	INTEGER TM_LENSTR1, TM_SUBSC, lo, hi, i, line, dlen, ndec, status,
      .          nlen, naxlen, int1, slen, i1ss, inss
 	CHARACTER AX_TITLE*32, TM_FMT*20, lo_str*20, hi_str*20, direction*1,
@@ -186,40 +186,29 @@
 *     7   uvlim_need_xact - no lims but transf. needs xact: NEW=U[K@AVE]
 *   100   uvlim_unknown
 
-* these are more elaborate than necessary - would allow for reporting the subset range
-	   is_uvar_2lim = .FALSE.
-	   is_uvar_1lim = .FALSE.
-	   is_uvar_nolim = .FALSE.
-
-	   uvar_desc = ' '
+* Subsets on axis, compressing transform, ... All this is
+* skipped if it's a SHOW AXIS or SHOW GRID gridname
 
 	   IF (uvar .GT. 0) THEN 
-
-* Subsets on axis, compressing transform, ...
-
+	      uvar_desc = 'full'
 
 * Subsets orange in transform or expression
 	   IF ( uvar_given(idim,uvar) .EQ. uvlim_gvn_gnl  .OR. 
      .          uvar_given(idim,uvar) .EQ. uvlim_gvn_lo   .OR. 
      .          uvar_given(idim,uvar) .EQ. uvlim_gvn_lohi )  THEN
-	      uvar_desc = ' (subset)'
-	      is_uvar_2lim = .TRUE.
 	      IF (uvar_lo_ss(uvar, idim) .NE. unspecified_int4) THEN
 	         i1ss = uvar_lo_ss(uvar, idim)
 	         inss = uvar_hi_ss(uvar, idim)
-	         is_uvar_1lim = ( i1ss .EQ. inss )
 	      ELSE
 	         i1ss =  TM_SUBSC ( uvar_lo_ww(idim, uvar), grid, idim, -1 )
 	         inss =  TM_SUBSC ( uvar_hi_ww(idim, uvar), grid, idim, -1 )
-	         is_uvar_1lim = ( i1ss .EQ. inss )
 	      ENDIF
 
-	      IF (is_uvar_1lim) THEN
-	         is_uvar_2lim = .FALSE.
-	         uvar_desc = ' (subset 1 pt)'
+	      IF (i1ss .EQ. inss) THEN
+	         uvar_desc = '1 pt'
 	      ELSE
 	         countstr = TM_FMT(FLOAT(inss-i1ss), 15, 20, slen)
-	         uvar_desc = ' (subset '//countstr(:slen)//' pts)'
+	         uvar_desc = countstr(:slen)//' pts'
 	      ENDIF
 	   ENDIF
 
@@ -230,39 +219,33 @@
 *   This means that var[x=5@max] is also reported as point subset. 
 
 	   IF ( uvar_given(idim,uvar) .EQ. uvlim_gvn_xact)  THEN
-	      uvar_desc = ' (compressed)'
-	      is_uvar_2lim = .TRUE.
 	      IF (uvar_lo_ss(uvar, idim) .NE. unspecified_int4) THEN
-	         is_uvar_1lim = ( uvar_lo_ss(uvar, idim) .EQ. uvar_hi_ss(uvar, idim) )
+	         i1ss = uvar_lo_ss(uvar, idim)
+	         inss = uvar_hi_ss(uvar, idim)
 	      ELSE
-	         is_uvar_1lim = ( uvar_lo_ww(idim, uvar) .EQ. uvar_hi_ww(idim, uvar) )
+	         i1ss =  TM_SUBSC ( uvar_lo_ww(idim, uvar), grid, idim, -1 )
+	         inss =  TM_SUBSC ( uvar_hi_ww(idim, uvar), grid, idim, -1 )
 	      ENDIF
-	      IF (is_uvar_1lim) THEN
-	         uvar_desc = ' (subset 1 pt)'
-		 is_uvar_2lim = .FALSE.
+
+	      IF (i1ss .EQ. inss) THEN
+	         uvar_desc = '1 pt'
+	      ELSE
+	         uvar_desc = 'compressed'
 	      ENDIF
+
 	   ENDIF
 
 c Compressing transfm, w/o limits
 
 	   IF ( uvar_given(idim,uvar) .EQ. uvlim_need_xact) THEN
-	      is_uvar_nolim = .TRUE.
-	      uvar_desc = ' (compressed)'
+	      uvar_desc = 'compressed'
 	   ENDIF
 
 * Grid-changing function: uvar_given = uvar_hidden for idim
 
 	   IF (uvar_given(idim,uvar) .EQ. uvlim_hidden )  THEN
-	      is_uvar_2lim = .TRUE.
-	      uvar_desc = ' (axis from grid-changing function)'
+	      uvar_desc = '(axis from grid-changing func)'
 	   ENDIF
-
-c	   IF (uvar_given(idim,uvar) .EQ. uvlim_need_lo  .OR. 
-c     .         uvar_given(idim,uvar) .EQ. uvlim_need_lohi )  THEN 
-c	      is_uvar_nolim = .TRUE.
-c	      uvar_desc = ' (expression, limits not set)'
-c	   ENDIF
-
 
 	   ENDIF !  uvar, reporting subset, compression
 
@@ -284,9 +267,10 @@ c	   ENDIF
      .				lo_str,
      .				hi_str
 
-* If there is a subset or compression, add that information
+* If there is a subset or compression, add that information. This is
+* skipped if it's a SHOW AXIS or SHOW GRID gridname
 
-	   IF (is_uvar_2lim .OR. is_uvar_1lim .OR. is_uvar_nolim) THEN
+	   IF (uvar .GT. 0) THEN
 
 	      WRITE ( risc_buff, frmt )	line_name ( line )(:nlen),
      .				title (:41-nlen),

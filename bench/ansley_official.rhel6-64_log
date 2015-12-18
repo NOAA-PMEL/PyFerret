@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 81371762 Dec 17 13:12 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 81372467 Dec 18 12:38 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Add to output of SHOW GRID for user-vars and expressions
+Note: changes to the output of SHOW GRID that describes subsets
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Thu Dec 17 14:23:35 PST 2015
+Beginning at Fri Dec 18 13:39:15 PST 2015
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -639,8 +639,8 @@ SHOW GRID
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid XABSTRACT
     GRID XABSTRACT
- name       axis              # pts   start                end
- ABSTRACT  X             99999999 r   1                    1.E+08
+ name       axis              # pts   start                end                 subset
+ ABSTRACT  X             99999999 r   1                    1.E+08              full
  normal    Y
  normal    Z
  normal    T
@@ -664,11 +664,11 @@ SHOW GRID
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid PS3DT2
     GRID PS3DT2
- name       axis              # pts   start                end
- PSXT      LONGITUDE          160mr   130.5E               70.5W
- PSYT      LATITUDE           100 i   28.836S              48.568N
- PSZT      DEPTH (m)           27 i-  5                    3824
- TIME1     TIME                25 r   17-AUG-1982 12:00    10-JAN-1983 12:00
+ name       axis              # pts   start                end                 subset
+ PSXT      LONGITUDE          160mr   130.5E               70.5W               full
+ PSYT      LATITUDE           100 i   28.836S              48.568N             full
+ PSZT      DEPTH (m)           27 i-  5                    3824                full
+ TIME1     TIME                25 r   17-AUG-1982 12:00    10-JAN-1983 12:00   full
  normal    E
  normal    F
 SET GRID/SAVE
@@ -677,20 +677,20 @@ SHOW GRID
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid PS3DT2
     GRID PS3DT2
- name       axis              # pts   start                end
- PSXT      LONGITUDE          160mr   130.5E               70.5W
- PSYT      LATITUDE           100 i   28.836S              48.568N
- PSZT      DEPTH (m)           27 i-  5                    3824
- TIME1     TIME                25 r   17-AUG-1982 12:00    10-JAN-1983 12:00
+ name       axis              # pts   start                end                 subset
+ PSXT      LONGITUDE          160mr   130.5E               70.5W               full
+ PSYT      LATITUDE           100 i   28.836S              48.568N             full
+ PSZT      DEPTH (m)           27 i-  5                    3824                full
+ TIME1     TIME                25 r   17-AUG-1982 12:00    10-JAN-1983 12:00   full
  normal    E
  normal    F
 SHOW GRID/X=180:165W SALT
     GRID PS3DT2
- name       axis              # pts   start                end
- PSXT      LONGITUDE          160mr   130.5E               70.5W
- PSYT      LATITUDE           100 i   28.836S              48.568N
- PSZT      DEPTH (m)           27 i-  5                    3824
- TIME1     TIME                25 r   17-AUG-1982 12:00    10-JAN-1983 12:00
+ name       axis              # pts   start                end                 subset
+ PSXT      LONGITUDE          160mr   130.5E               70.5W               full
+ PSYT      LATITUDE           100 i   28.836S              48.568N             full
+ PSZT      DEPTH (m)           27 i-  5                    3824                full
+ TIME1     TIME                25 r   17-AUG-1982 12:00    10-JAN-1983 12:00   full
  normal    E
  normal    F
  
@@ -10486,13 +10486,13 @@ FERRET_PLATFORM = "Linux 2.6.32-573.8.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.3.1 of Nov 17 2015 14:50:39 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "17-Dec-15"
-SESSION_TIME = "14:23"
-SESSION_PID = "7389"
-DELTA_CPU = "6.93194"
-CLOCK_SECS = "12.896"
-CURRENT_DATE = "17-Dec-15"
-CURRENT_TIME = "14:23:48"
+SESSION_DATE = "18-Dec-15"
+SESSION_TIME = "13:39"
+SESSION_PID = "25106"
+DELTA_CPU = "6.91395"
+CLOCK_SECS = "8.942"
+CURRENT_DATE = "18-Dec-15"
+CURRENT_TIME = "13:39:24"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10515,13 +10515,13 @@ FERRET_PLATFORM = "Linux 2.6.32-573.8.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.3.1 of Nov 17 2015 14:50:39 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "17-Dec-15"
-SESSION_TIME = "14:23"
-SESSION_PID = "7389"
-DELTA_CPU = "0.002"
-CLOCK_SECS = "12.897"
-CURRENT_DATE = "17-Dec-15"
-CURRENT_TIME = "14:23:48"
+SESSION_DATE = "18-Dec-15"
+SESSION_TIME = "13:39"
+SESSION_PID = "25106"
+DELTA_CPU = "9.99E-04"
+CLOCK_SECS = "8.944"
+CURRENT_DATE = "18-Dec-15"
+CURRENT_TIME = "13:39:24"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10531,9 +10531,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "17-Dec-15"
-SESSION_TIME = "14:23"
-SESSION_PID = "7389"
+SESSION_DATE = "18-Dec-15"
+SESSION_TIME = "13:39"
+SESSION_PID = "25106"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10543,15 +10543,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "17-Dec-15"
-SESSION_TIME = "14:23"
-SESSION_PID = "7389"
+SESSION_DATE = "18-Dec-15"
+SESSION_TIME = "13:39"
+SESSION_PID = "25106"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "17-Dec-15"
-SESSION_TIME = "14:23"
-SESSION_PID = "7389"
+SESSION_DATE = "18-Dec-15"
+SESSION_TIME = "13:39"
+SESSION_PID = "25106"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10587,7 +10587,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET (beta) Ver.6.97"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "17-DEC-2015 14:23:48"
+LAB3 = "18-DEC-2015 13:39:24"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10687,13 +10687,13 @@ FERRET_PLATFORM = "Linux 2.6.32-573.8.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.3.1 of Nov 17 2015 14:50:39 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "17-Dec-15"
-SESSION_TIME = "14:23"
-SESSION_PID = "7389"
-DELTA_CPU = "0.015997"
-CLOCK_SECS = "12.914"
-CURRENT_DATE = "17-Dec-15"
-CURRENT_TIME = "14:23:48"
+SESSION_DATE = "18-Dec-15"
+SESSION_TIME = "13:39"
+SESSION_PID = "25106"
+DELTA_CPU = "0.016998"
+CLOCK_SECS = "8.96"
+CURRENT_DATE = "18-Dec-15"
+CURRENT_TIME = "13:39:24"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -12756,11 +12756,11 @@ Dynamic axes:
     no implicit axes
 show grid tu
     GRID (G004)
- name       axis              # pts   start                end
- PSXU      LONGITUDE          160mr   131E                 70W
- PSYT      LATITUDE           100 i   28.836S              48.568N
- PSZT      DEPTH (m)           27 i-  5                    3824
- TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
+ name       axis              # pts   start                end                 subset
+ PSXU      LONGITUDE          160mr   131E                 70W                 full
+ PSYT      LATITUDE           100 i   28.836S              48.568N             full
+ PSZT      DEPTH (m)           27 i-  5                    3824                full
+ TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00   full
  normal    E
  normal    F
  
@@ -13141,8 +13141,8 @@ show grid/x
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid (G004)
     GRID (G004)
- name       axis              # pts   start                end
- (AX004)   X                    5 i   1                    6561                 (subset 4 pts)
+ name       axis              # pts   start                end                 subset
+ (AX004)   X                    5 i   1                    6561                4 pts
  normal    Y
  normal    Z
  normal    T
@@ -14479,11 +14479,11 @@ show data/full
 cancel variable ijkl
 show grid ijkl
     GRID GEU14
- name       axis              # pts   start                end
- XAX1_10   X                   10 r   1                    10
- YAX1_20   Y                   20 r   1                    20
- ZAX1_100  Z                  100 r   1                    100
- TCENTURY1 TIME                12 r   01-JAN-1902 00:00    12-JAN-1902 00:00
+ name       axis              # pts   start                end                 subset
+ XAX1_10   X                   10 r   1                    10                  full
+ YAX1_20   Y                   20 r   1                    20                  full
+ ZAX1_100  Z                  100 r   1                    100                 full
+ TCENTURY1 TIME                12 r   01-JAN-1902 00:00    12-JAN-1902 00:00   full
  normal    E
  normal    F
 cancel data test_abs
@@ -14575,11 +14575,11 @@ show data/full
  
 show grid ijkl
     GRID GEU14
- name       axis              # pts   start                end
- XAX1_10   X                   10 r   1                    10
- YAX1_20   Y                   20 r   1                    20
- ZAX1_100  Z                  100 r   1                    100
- TCENTURY1 TIME                15 i   01-JAN-1902 00:00    16-JAN-1902 00:00
+ name       axis              # pts   start                end                 subset
+ XAX1_10   X                   10 r   1                    10                  full
+ YAX1_20   Y                   20 r   1                    20                  full
+ ZAX1_100  Z                  100 r   1                    100                 full
+ TCENTURY1 TIME                15 i   01-JAN-1902 00:00    16-JAN-1902 00:00   full
  normal    E
  normal    F
  
@@ -14610,43 +14610,43 @@ cancel variables/all
 set data/format=cdf test_abs
 show grid j1 jkl jkl2 iavejkl ijkl
     GRID GEU2
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
- YAX1_20   Y                   20 r   1                    20
+ YAX1_20   Y                   20 r   1                    20                  full
  normal    Z
  normal    T
  normal    E
  normal    F
     GRID GEU13
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
- YAX1_20   Y                   20 r   1                    20
- ZAX1_100  Z                  100 r   1                    100
- TCENTURY1 TIME                15 i   01-JAN-1902 00:00    16-JAN-1902 00:00
+ YAX1_20   Y                   20 r   1                    20                  full
+ ZAX1_100  Z                  100 r   1                    100                 full
+ TCENTURY1 TIME                15 i   01-JAN-1902 00:00    16-JAN-1902 00:00   full
  normal    E
  normal    F
     GRID GEU2
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
- YAX1_20   Y                   20 r   1                    20
+ YAX1_20   Y                   20 r   1                    20                  full
  normal    Z
  normal    T
  normal    E
  normal    F
     GRID GEU13
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
- YAX1_20   Y                   20 r   1                    20
- ZAX1_100  Z                  100 r   1                    100
- TCENTURY1 TIME                15 i   01-JAN-1902 00:00    16-JAN-1902 00:00
+ YAX1_20   Y                   20 r   1                    20                  full
+ ZAX1_100  Z                  100 r   1                    100                 full
+ TCENTURY1 TIME                15 i   01-JAN-1902 00:00    16-JAN-1902 00:00   full
  normal    E
  normal    F
     GRID GEU14
- name       axis              # pts   start                end
- XAX1_10   X                   10 r   1                    10
- YAX1_20   Y                   20 r   1                    20
- ZAX1_100  Z                  100 r   1                    100
- TCENTURY1 TIME                15 i   01-JAN-1902 00:00    16-JAN-1902 00:00
+ name       axis              # pts   start                end                 subset
+ XAX1_10   X                   10 r   1                    10                  full
+ YAX1_20   Y                   20 r   1                    20                  full
+ ZAX1_100  Z                  100 r   1                    100                 full
+ TCENTURY1 TIME                15 i   01-JAN-1902 00:00    16-JAN-1902 00:00   full
  normal    E
  normal    F
 cancel data test_abs
@@ -14832,11 +14832,11 @@ show data/full
 cancel variable ijkl
 show grid ijkl
     GRID PS3DU1
- name       axis              # pts   start                end
- PSXU      LONGITUDE          160mr   131E                 70W
- PSYU      LATITUDE           100 i   27.672S              50N
- PSZT      DEPTH (m)           27 i-  5                    3824
- TIME      TIME                 3 r   15-MAR-1983 10:00    15-MAR-1983 12:00
+ name       axis              # pts   start                end                 subset
+ PSXU      LONGITUDE          160mr   131E                 70W                 full
+ PSYU      LATITUDE           100 i   27.672S              50N                 full
+ PSZT      DEPTH (m)           27 i-  5                    3824                full
+ TIME      TIME                 3 r   15-MAR-1983 10:00    15-MAR-1983 12:00   full
  normal    E
  normal    F
 cancel data test_fil0
@@ -15022,11 +15022,11 @@ show data/full
 cancel variable ijkl
 show grid ijkl
     GRID GLZ14
- name       axis              # pts   start                end
- PSXU69_72 LONGITUDE            4mr   161W                 158W
- PSYU      LATITUDE           100 i   27.672S              50N
- PSZT      DEPTH (m)           27 i-  5                    3824
- TIME      TIME                 3 r   15-MAR-1983 10:00    15-MAR-1983 12:00
+ name       axis              # pts   start                end                 subset
+ PSXU69_72 LONGITUDE            4mr   161W                 158W                full
+ PSYU      LATITUDE           100 i   27.672S              50N                 full
+ PSZT      DEPTH (m)           27 i-  5                    3824                full
+ TIME      TIME                 3 r   15-MAR-1983 10:00    15-MAR-1983 12:00   full
  normal    E
  normal    F
 cancel data test_fil
@@ -18267,11 +18267,11 @@ show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid (G011)
     GRID (G011)
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TDAY      TIME                 5 r   01-JAN-1990 00:00    05-JAN-1990 00:00
+ TDAY      TIME                 5 r   01-JAN-1990 00:00    05-JAN-1990 00:00   full
  normal    E
  normal    F
 list atime[gt=thour@max]
@@ -18302,11 +18302,11 @@ show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid (G006)
     GRID (G006)
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- THOUR     TIME                 5 r   01-JAN-1990 00:00    05-JAN-1990 00:00
+ THOUR     TIME                 5 r   01-JAN-1990 00:00    05-JAN-1990 00:00   full
  normal    E
  normal    F
  
@@ -19639,11 +19639,11 @@ CAN MODE VERIFY
   time range: 366 to 4018.4
  
     GRID GHB1
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- COADSY    LATITUDE            90 r   89S                  89N
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ COADSY    LATITUDE            90 r   89S                  89N                 full
  normal    Z
- TIME1     T (hour)             6 r   366                  4018.4
+ TIME1     T (hour)             6 r   366                  4018.4              full
  normal    E
  normal    F
  
@@ -19717,11 +19717,11 @@ CAN MODE VERIFY
   time range: 366 to 3287.9
  
     GRID GJR1
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- COADSY    LATITUDE            90 r   89S                  89N
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ COADSY    LATITUDE            90 r   89S                  89N                 full
  normal    Z
- TIME2     T (hour)             3 i   366                  3287.9
+ TIME2     T (hour)             3 i   366                  3287.9              full
  normal    E
  normal    F
  
@@ -23474,11 +23474,11 @@ GO err490_neg_time_show_grid.jnl
 set data gtsa056_2
 show grid/t=15-JAN-1982:15-JAN-1983 temp
     GRID PS3DT1
- name       axis              # pts   start                end
- PSXT1     LONGITUDE          160mr   130.5E               70.5W
- PSYT      LATITUDE           100 i   28.836S              48.568N
- PSZT      DEPTH (m)           27 i-  5                    3824
- TIME4     TIME               168mr   15-JAN-1982 14:00    07-JUN-1983 13:00
+ name       axis              # pts   start                end                 subset
+ PSXT1     LONGITUDE          160mr   130.5E               70.5W               full
+ PSYT      LATITUDE           100 i   28.836S              48.568N             full
+ PSZT      DEPTH (m)           27 i-  5                    3824                full
+ TIME4     TIME               168mr   15-JAN-1982 14:00    07-JUN-1983 13:00   full
  normal    E
  normal    F
  
@@ -25609,10 +25609,10 @@ show grid
  Default grid for DEFINE VARIABLE is (G012)
  Last successful data access was on grid (G012)
     GRID (G012)
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
- Z10       Z                   10 r   1                    10
+ Z10       Z                   10 r   1                    10                  full
  normal    T
  normal    E
  normal    F
@@ -25689,7 +25689,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Thu Dec 17 14:23:56 PST 2015
+Fri Dec 18 13:39:32 PST 2015
  
 GO bn_reset
 cancel mode verify
@@ -26952,11 +26952,11 @@ set region/i=1:4/j=1:3/l=1:2
 use bn_strides
 show grid xytvar
     GRID GPC5
- name       axis              # pts   start                end
- XLON      LONGITUDE           40mr   141E                 180E
- YLAT      LATITUDE            30 r   1N                   30N
+ name       axis              # pts   start                end                 subset
+ XLON      LONGITUDE           40mr   141E                 180E                full
+ YLAT      LATITUDE            30 r   1N                   30N                 full
  normal    Z
- TTIME     TIME                20 r   01-JAN-1995 00:00    20-JAN-1995 00:00
+ TTIME     TIME                20 r   01-JAN-1995 00:00    20-JAN-1995 00:00   full
  normal    E
  normal    F
 list xytvar
@@ -26978,11 +26978,11 @@ canc data/all
 use/order=yx bn_strides
 show grid xytvar
     GRID GPC5
- name       axis              # pts   start                end
- YLAT      X (degrees_north)   30 r   1                    30
- XLON      Y (degrees_east)    40mr   141                  180
+ name       axis              # pts   start                end                 subset
+ YLAT      X (degrees_north)   30 r   1                    30                  full
+ XLON      Y (degrees_east)    40mr   141                  180                 full
  normal    Z
- TTIME     TIME                20 r   01-JAN-1995 00:00    20-JAN-1995 00:00
+ TTIME     TIME                20 r   01-JAN-1995 00:00    20-JAN-1995 00:00   full
  normal    E
  normal    F
 list xytvar
@@ -27004,11 +27004,11 @@ canc data/all
 use/order=tyx bn_strides
 show grid xytvar
     GRID GPC5
- name       axis              # pts   start                end
- TTIME     X (DAYS)            20 r   34319                34338
- YLAT      LATITUDE            30 r   1N                   30N
+ name       axis              # pts   start                end                 subset
+ TTIME     X (DAYS)            20 r   34319                34338               full
+ YLAT      LATITUDE            30 r   1N                   30N                 full
  normal    Z
- XLON      T (degrees_east)    40mr   141                  180
+ XLON      T (degrees_east)    40mr   141                  180                 full
  normal    E
  normal    F
 list xytvar
@@ -27030,11 +27030,11 @@ canc data/all
 use/order=txy bn_strides
 show grid xytvar
     GRID GPC5
- name       axis              # pts   start                end
- TTIME     X (DAYS)            20 r   34319                34338
- XLON      Y (degrees_east)    40mr   141                  180
+ name       axis              # pts   start                end                 subset
+ TTIME     X (DAYS)            20 r   34319                34338               full
+ XLON      Y (degrees_east)    40mr   141                  180                 full
  normal    Z
- YLAT      T (degrees_north)   30 r   1                    30
+ YLAT      T (degrees_north)   30 r   1                    30                  full
  normal    E
  normal    F
 list xytvar
@@ -27057,10 +27057,10 @@ canc data/all
 use/order=zxy bn_strides
 show grid xytvar
     GRID GPC5
- name       axis              # pts   start                end
- TTIME     X (DAYS)            20 r   34319                34338
- XLON      Y (degrees_east)    40mr   141                  180
- YLAT      Z (degrees_north)   30 r   1                    30
+ name       axis              # pts   start                end                 subset
+ TTIME     X (DAYS)            20 r   34319                34338               full
+ XLON      Y (degrees_east)    40mr   141                  180                 full
+ YLAT      Z (degrees_north)   30 r   1                    30                  full
  normal    T
  normal    E
  normal    F
@@ -27084,11 +27084,11 @@ canc data/all
 use/order=tx bn_strides
 show grid xytvar
     GRID GPC5
- name       axis              # pts   start                end
- TTIME     X (DAYS)            20 r   34319                34338
- XLON      Y (degrees_east)    40mr   141                  180
+ name       axis              # pts   start                end                 subset
+ TTIME     X (DAYS)            20 r   34319                34338               full
+ XLON      Y (degrees_east)    40mr   141                  180                 full
  normal    Z
- YLAT      T (degrees_north)   30 r   1                    30
+ YLAT      T (degrees_north)   30 r   1                    30                  full
  normal    E
  normal    F
 list xytvar
@@ -27111,20 +27111,20 @@ canc data/all
 use/order=txyz bn_strides
 show grid xytvar
     GRID GPC5
- name       axis              # pts   start                end
- TTIME     X (DAYS)            20 r   34319                34338
- XLON      Y (degrees_east)    40mr   141                  180
+ name       axis              # pts   start                end                 subset
+ TTIME     X (DAYS)            20 r   34319                34338               full
+ XLON      Y (degrees_east)    40mr   141                  180                 full
  normal    Z
- YLAT      T (degrees_north)   30 r   1                    30
+ YLAT      T (degrees_north)   30 r   1                    30                  full
  normal    E
  normal    F
 show grid var
     GRID GPC1
- name       axis              # pts   start                end
- TAX1_1    X                    1 r   1                    1
- XAX1_4    Y                    4 r   1                    4
- YAX1_3    Z                    3 r   1                    3
- ZAX1_2    T                    2 r   1                    2
+ name       axis              # pts   start                end                 subset
+ TAX1_1    X                    1 r   1                    1                   full
+ XAX1_4    Y                    4 r   1                    4                   full
+ YAX1_3    Z                    3 r   1                    3                   full
+ ZAX1_2    T                    2 r   1                    2                   full
  normal    E
  normal    F
 canc data/all
@@ -28172,11 +28172,11 @@ show grid xytvar
  getgrid EX#1     C:  6 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid GPC5            XLON      YLAT      NORMAL    TTIME     NORMAL    NORMAL
     GRID GPC5
- name       axis              # pts   start                end
- XLON      LONGITUDE           40mr   141E                 180E
- YLAT      LATITUDE            30 r   1N                   30N
+ name       axis              # pts   start                end                 subset
+ XLON      LONGITUDE           40mr   141E                 180E                full
+ YLAT      LATITUDE            30 r   1N                   30N                 full
  normal    Z
- TTIME     TIME                20 r   01-JAN-1995 00:00    20-JAN-1995 00:00
+ TTIME     TIME                20 r   01-JAN-1995 00:00    20-JAN-1995 00:00   full
  normal    E
  normal    F
 list xytvar[i=1:7:2]
@@ -28271,11 +28271,11 @@ show grid xytvar
  getgrid EX#1     C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid GPC5            YLAT      XLON      NORMAL    TTIME     NORMAL    NORMAL
     GRID GPC5
- name       axis              # pts   start                end
- YLAT      X (degrees_north)   30 r   1                    30
- XLON      Y (degrees_east)    40mr   141                  180
+ name       axis              # pts   start                end                 subset
+ YLAT      X (degrees_north)   30 r   1                    30                  full
+ XLON      Y (degrees_east)    40mr   141                  180                 full
  normal    Z
- TTIME     TIME                20 r   01-JAN-1995 00:00    20-JAN-1995 00:00
+ TTIME     TIME                20 r   01-JAN-1995 00:00    20-JAN-1995 00:00   full
  normal    E
  normal    F
 list xytvar[i=1:7:2]
@@ -28370,11 +28370,11 @@ show grid xytvar
  getgrid EX#1     C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid GPC5            TTIME     YLAT      NORMAL    XLON      NORMAL    NORMAL
     GRID GPC5
- name       axis              # pts   start                end
- TTIME     X (DAYS)            20 r   34319                34338
- YLAT      LATITUDE            30 r   1N                   30N
+ name       axis              # pts   start                end                 subset
+ TTIME     X (DAYS)            20 r   34319                34338               full
+ YLAT      LATITUDE            30 r   1N                   30N                 full
  normal    Z
- XLON      T (degrees_east)    40mr   141                  180
+ XLON      T (degrees_east)    40mr   141                  180                 full
  normal    E
  normal    F
 list xytvar[i=1:7:2]
@@ -28469,11 +28469,11 @@ show grid xytvar
  getgrid EX#1     C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid GPC5            TTIME     XLON      NORMAL    YLAT      NORMAL    NORMAL
     GRID GPC5
- name       axis              # pts   start                end
- TTIME     X (DAYS)            20 r   34319                34338
- XLON      Y (degrees_east)    40mr   141                  180
+ name       axis              # pts   start                end                 subset
+ TTIME     X (DAYS)            20 r   34319                34338               full
+ XLON      Y (degrees_east)    40mr   141                  180                 full
  normal    Z
- YLAT      T (degrees_north)   30 r   1                    30
+ YLAT      T (degrees_north)   30 r   1                    30                  full
  normal    E
  normal    F
 list xytvar[i=1:7:2]
@@ -28569,10 +28569,10 @@ show grid xytvar
  getgrid EX#1     C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid GPC5            TTIME     XLON      YLAT      NORMAL    NORMAL    NORMAL
     GRID GPC5
- name       axis              # pts   start                end
- TTIME     X (DAYS)            20 r   34319                34338
- XLON      Y (degrees_east)    40mr   141                  180
- YLAT      Z (degrees_north)   30 r   1                    30
+ name       axis              # pts   start                end                 subset
+ TTIME     X (DAYS)            20 r   34319                34338               full
+ XLON      Y (degrees_east)    40mr   141                  180                 full
+ YLAT      Z (degrees_north)   30 r   1                    30                  full
  normal    T
  normal    E
  normal    F
@@ -28950,8 +28950,8 @@ show data
  
 show grid/x HAS_NO_AXIS
     GRID GAB7
- name       axis              # pts   start                end
- NO_AXIS   X                    5 r   1                    5
+ name       axis              # pts   start                end                 subset
+ NO_AXIS   X                    5 r   1                    5                   full
  normal    Y
  normal    Z
  normal    T
@@ -28966,8 +28966,8 @@ show grid/x HAS_NO_AXIS
        5>  5                     1          4.5
 show grid/x HAS_UNORDERED_AXIS
     GRID GAB1
- name       axis              # pts   start                end
- UNORDERED_AXIS X               5 r   1                    5
+ name       axis              # pts   start                end                 subset
+ UNORDERED_AXIS X               5 r   1                    5                   full
  normal    Y
  normal    Z
  normal    T
@@ -28982,8 +28982,8 @@ show grid/x HAS_UNORDERED_AXIS
        5>  5                     1          4.5
 show grid/x HAS_GAPPY_AXIS
     GRID GAB2
- name       axis              # pts   start                end
- GAPPY_AXIS X                   5 r   1                    5
+ name       axis              # pts   start                end                 subset
+ GAPPY_AXIS X                   5 r   1                    5                   full
  normal    Y
  normal    Z
  normal    T
@@ -28998,8 +28998,8 @@ show grid/x HAS_GAPPY_AXIS
        5>  5                     1          4.5
 show grid/x HAS_BACKWARDS_AXIS
     GRID GAB8
- name       axis              # pts   start                end
- BACKWARDS_AXIS X               5 r   1                    5
+ name       axis              # pts   start                end                 subset
+ BACKWARDS_AXIS X               5 r   1                    5                   full
  normal    Y
  normal    Z
  normal    T
@@ -29014,8 +29014,8 @@ show grid/x HAS_BACKWARDS_AXIS
        5>  5                     1          4.5
 show grid/x SCALAR_VAR
     GRID GAB3
- name       axis              # pts   start                end
- SCALAR    X                    1 r   1                    1
+ name       axis              # pts   start                end                 subset
+ SCALAR    X                    1 r   1                    1                   full
  normal    Y
  normal    Z
  normal    T
@@ -29027,37 +29027,37 @@ show grid/x SCALAR_VAR
  
 show grid/i=1:5 USES_BIG_IRREG
     GRID GAB9
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- BIG_IRREG T (hours)       200000 i   1                    200000
+ BIG_IRREG T (hours)       200000 i   1                    200000              full
  normal    E
  normal    F
  
 show grid MASKED_SST
     GRID GAB5
- name       axis              # pts   start                end
- COADSX1   LONGITUDE          180 r   1E                   180E
- COADSY1   LATITUDE            90 r   1N                   90N
+ name       axis              # pts   start                end                 subset
+ COADSX1   LONGITUDE          180 r   1E                   180E                full
+ COADSY1   LATITUDE            90 r   1N                   90N                 full
  normal    Z
- TIME4     TIME                 1mr   16-JAN 06:00         16-JAN 06:00
+ TIME4     TIME                 1mr   16-JAN 06:00         16-JAN 06:00        full
  normal    E
  normal    F
 show grid COADSX
     GRID GAB6
- name       axis              # pts   start                end
- COADSX1   LONGITUDE          180 r   1E                   180E
- COADSY1   LATITUDE            90 r   1N                   90N
+ name       axis              # pts   start                end                 subset
+ COADSX1   LONGITUDE          180 r   1E                   180E                full
+ COADSY1   LATITUDE            90 r   1N                   90N                 full
  normal    Z
  normal    T
  normal    E
  normal    F
 show grid COADSY
     GRID GAB6
- name       axis              # pts   start                end
- COADSX1   LONGITUDE          180 r   1E                   180E
- COADSY1   LATITUDE            90 r   1N                   90N
+ name       axis              # pts   start                end                 subset
+ COADSX1   LONGITUDE          180 r   1E                   180E                full
+ COADSY1   LATITUDE            90 r   1N                   90N                 full
  normal    Z
  normal    T
  normal    E
@@ -31284,10 +31284,10 @@ show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid (G006)
     GRID (G006)
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- COADSY    LATITUDE            90 r   89S                  89N
- ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                    (subset 1 pt)
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ COADSY    LATITUDE            90 r   89S                  89N                 full
+ ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   1 pt
  normal    T
  normal    E
  normal    F
@@ -31315,10 +31315,10 @@ show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid (G006)
     GRID (G006)
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- YAX       LATITUDE            81 r   20S                  20N
- ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                    (subset 1 pt)
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ YAX       LATITUDE            81 r   20S                  20N                 full
+ ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   1 pt
  normal    T
  normal    E
  normal    F
@@ -31344,10 +31344,10 @@ show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid (G006)
     GRID (G006)
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- YAX       LATITUDE            81 r   20S                  20N
- ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                    (subset 1 pt)
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ YAX       LATITUDE            81 r   20S                  20N                 full
+ ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   1 pt
  normal    T
  normal    E
  normal    F
@@ -31440,11 +31440,11 @@ show grid
  Default grid for DEFINE VARIABLE is (G006)
  Last successful data access was on grid (G006)
     GRID (G006)
- name       axis              # pts   start                end
- (AX012)   LONGITUDE          301 r   0E                   30E
- COADSY    LATITUDE            90 r   89S                  89N
+ name       axis              # pts   start                end                 subset
+ (AX012)   LONGITUDE          301 r   0E                   30E                 full
+ COADSY    LATITUDE            90 r   89S                  89N                 full
  normal    Z
- TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58
+ TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58        full
  normal    E
  normal    F
  
@@ -31454,11 +31454,11 @@ show grid
  Default grid for DEFINE VARIABLE is (G006)
  Last successful data access was on grid (G012)
     GRID (G012)
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)             (subset 1 pt)
- (AX001)   LATITUDE           201 r   10S                  10N                  (subset 200 pts)
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            1 pt
+ (AX001)   LATITUDE           201 r   10S                  10N                 200 pts
  normal    Z
- TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58         (subset 1 pt)
+ TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58        1 pt
  normal    E
  normal    F
 show grid/dynamic
@@ -31598,62 +31598,62 @@ list a1[gxz=a2]
 ! test use of expressions in dynamic grid commands
 SHOW GRID temp[d=2,gx=sst[d=1],y=10s:2s:.2]             ! implicit Y axis
     GRID (G018)
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX004)   LATITUDE            41 r   10S                  2S                   (subset 40 pts)
- ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ (AX004)   LATITUDE            41 r   10S                  2S                  40 pts
+ ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   full
  normal    T
  normal    E
  normal    F
 SHOW GRID "temp[d=2,gx=sst[d=1],y=10s:2s:.2] + 5"
     GRID (G018)
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX001)   LATITUDE            41 r   10S                  2S                   (subset 40 pts)
- ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ (AX001)   LATITUDE            41 r   10S                  2S                  40 pts
+ ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   full
  normal    T
  normal    E
  normal    F
 SHOW GRID FFTA(sst[d=1,gx=temp[d=2],y=10s:2s:.2,l=1:5]) ! imposed T axis
     GRID (G011)
- name       axis              # pts   start                end
- XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
- (AX004)   LATITUDE            41 r   10S                  2S                   (subset 40 pts)
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E              full
+ (AX004)   LATITUDE            41 r   10S                  2S                  40 pts
  normal    Z
- (AX011)   T (CYC/hour)         2 r   0.00034224           0.00068448           (axis from grid-changing function)
+ (AX011)   T (CYC/hour)         2 r   0.00034224           0.00068448          (axis from grid-changing func)
  normal    E
  normal    F
 SHOW GRID SORTI(temp[d=2,gx=sst[d=1],y=10s:2s:.2])      ! abstract X axis
     GRID (G018)
- name       axis              # pts   start                end
- ABSTRACT  X             99999999 r   1                    1.E+08               (axis from grid-changing function)
- (AX004)   LATITUDE            41 r   10S                  2S                   (subset 40 pts)
- ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
+ name       axis              # pts   start                end                 subset
+ ABSTRACT  X             99999999 r   1                    1.E+08              (axis from grid-changing func)
+ (AX004)   LATITUDE            41 r   10S                  2S                  40 pts
+ ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   full
  normal    T
  normal    E
  normal    F
 SHOW GRID "temp[d=2,gx=sst[d=1],y=10s:2s:.2] + 5",FFTA(sst[d=1,gx=temp[d=2],y=10s:2s:.2,l=1:5]),SORTI(temp[d=2,gx=sst[d=1],y=10s:2s:.2])
     GRID (G018)
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX011)   LATITUDE            41 r   10S                  2S                   (subset 40 pts)
- ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ (AX011)   LATITUDE            41 r   10S                  2S                  40 pts
+ ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   full
  normal    T
  normal    E
  normal    F
     GRID (G011)
- name       axis              # pts   start                end
- XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
- (AX004)   LATITUDE            41 r   10S                  2S                   (subset 40 pts)
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E              full
+ (AX004)   LATITUDE            41 r   10S                  2S                  40 pts
  normal    Z
- (AX001)   T (CYC/hour)         2 r   0.00034224           0.00068448           (axis from grid-changing function)
+ (AX001)   T (CYC/hour)         2 r   0.00034224           0.00068448          (axis from grid-changing func)
  normal    E
  normal    F
     GRID (G018)
- name       axis              # pts   start                end
- ABSTRACT  X             99999999 r   1                    1.E+08               (axis from grid-changing function)
- (AX004)   LATITUDE            41 r   10S                  2S                   (subset 40 pts)
- ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
+ name       axis              # pts   start                end                 subset
+ ABSTRACT  X             99999999 r   1                    1.E+08              (axis from grid-changing func)
+ (AX004)   LATITUDE            41 r   10S                  2S                  40 pts
+ ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   full
  normal    T
  normal    E
  normal    F
@@ -31663,10 +31663,10 @@ SHOW GRID
  Default grid for DEFINE VARIABLE is (G006)
  Last successful data access was on grid (G018)
     GRID (G018)
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX001)   LATITUDE            41 r   10S                  2S                   (subset 40 pts)
- ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ (AX001)   LATITUDE            41 r   10S                  2S                  40 pts
+ ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   full
  normal    T
  normal    E
  normal    F
@@ -31675,11 +31675,11 @@ SHOW GRID
  Default grid for DEFINE VARIABLE is (G011)
  Last successful data access was on grid (G011)
     GRID (G011)
- name       axis              # pts   start                end
- XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
- (AX004)   LATITUDE            41 r   10S                  2S
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E              full
+ (AX004)   LATITUDE            41 r   10S                  2S                  full
  normal    Z
- (AX011)   T (CYC/hour)         2 r   0.00034224           0.00068448
+ (AX011)   T (CYC/hour)         2 r   0.00034224           0.00068448          full
  normal    E
  normal    F
 list/j=1:5 j
@@ -31867,11 +31867,11 @@ sh data
  
 sh grid ndata
     GRID GSH1
- name       axis              # pts   start                end
- PSXT191_100 LONGITUDE         10mr   139.5W               130.5W
- PSYT39_51 LATITUDE            13 i   2.167S               1.833N
- PSZT1_1   DEPTH (m)            1 r-  5                    5
- TWEEKS1   TIME                21 r   20-AUG-1982 00:00    07-JAN-1983 00:00
+ name       axis              # pts   start                end                 subset
+ PSXT191_100 LONGITUDE         10mr   139.5W               130.5W              full
+ PSYT39_51 LATITUDE            13 i   2.167S               1.833N              full
+ PSZT1_1   DEPTH (m)            1 r-  5                    5                   full
+ TWEEKS1   TIME                21 r   20-AUG-1982 00:00    07-JAN-1983 00:00   full
  normal    E
  normal    F
 sh axis tweeks
@@ -32546,9 +32546,9 @@ can mem/all
 let xy_laplace_gridded = scat2gridlaplace_xy(xax,yax,O2_umol_kg,x[gx=x_20],y[gy=y_20],2,2)
 show grid xy_laplace_gridded
     GRID (G010)
- name       axis              # pts   start                end
- X_20      LONGITUDE           20mr   50E                  70E
- Y_20      LATITUDE            20 r   10N                  20N
+ name       axis              # pts   start                end                 subset
+ X_20      LONGITUDE           20mr   50E                  70E                 full
+ Y_20      LATITUDE            20 r   10N                  20N                 full
  normal    Z
  normal    T
  normal    E
@@ -33177,9 +33177,9 @@ let wgtl = scat2gridlaplace_xy(xln,ylt, wgt, x[gx=xlonef], y[gy=ylatef], 2., 1)
  
 show grid wgtl
     GRID (G017)
- name       axis              # pts   start                end
- XLONEF    LONGITUDE          133mr   12.5W                119.5E(479.5)
- YLATEF    LATITUDE            73 r   47.25N               83.25N
+ name       axis              # pts   start                end                 subset
+ XLONEF    LONGITUDE          133mr   12.5W                119.5E(479.5)       full
+ YLATEF    LATITUDE            73 r   47.25N               83.25N              full
  normal    Z
  normal    T
  normal    E
@@ -36530,8 +36530,8 @@ sh grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid XABSTRACT
     GRID XABSTRACT
- name       axis              # pts   start                end
- ABSTRACT  X             99999999 r   1                    1.E+08
+ name       axis              # pts   start                end                 subset
+ ABSTRACT  X             99999999 r   1                    1.E+08              full
  normal    Y
  normal    Z
  normal    T
@@ -36547,9 +36547,9 @@ sh grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid YABSTRACT
     GRID YABSTRACT
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
- ABSTRACT  Y             99999999 r   1                    1.E+08
+ ABSTRACT  Y             99999999 r   1                    1.E+08              full
  normal    Z
  normal    T
  normal    E
@@ -36564,10 +36564,10 @@ sh grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid ZABSTRACT
     GRID ZABSTRACT
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
- ABSTRACT  Z             99999999 r   1                    1.E+08
+ ABSTRACT  Z             99999999 r   1                    1.E+08              full
  normal    T
  normal    E
  normal    F
@@ -36581,11 +36581,11 @@ sh grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid TABSTRACT
     GRID TABSTRACT
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- ABSTRACT  T             99999999 r   1                    1.E+08
+ ABSTRACT  T             99999999 r   1                    1.E+08              full
  normal    E
  normal    F
 let a = TSEQUENCE({"a","b","c","d","e"})
@@ -38562,9 +38562,9 @@ show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid (G005)
     GRID (G005)
- name       axis              # pts   start                end
- (AX017)   X                   10 r   1                    91                   (subset 9 pts)
- YAX1_100  Y                  100 r   1                    100
+ name       axis              # pts   start                end                 subset
+ (AX017)   X                   10 r   1                    91                  9 pts
+ YAX1_100  Y                  100 r   1                    100                 full
  normal    Z
  normal    T
  normal    E
@@ -41601,10 +41601,10 @@ show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid (G005)
     GRID (G005)
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- COADSY    LATITUDE            90 r   89S                  89N
- ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                    (subset 1 pt)
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ COADSY    LATITUDE            90 r   89S                  89N                 full
+ ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   1 pt
  normal    T
  normal    E
  normal    F
@@ -41907,8 +41907,8 @@ SHOW GRID
  Default grid for DEFINE VARIABLE is XABSTRACT
  Last successful data access was on grid XABSTRACT
     GRID XABSTRACT
- name       axis              # pts   start                end
- ABSTRACT  X             99999999 r   1                    1.E+08
+ name       axis              # pts   start                end                 subset
+ ABSTRACT  X             99999999 r   1                    1.E+08              full
  normal    Y
  normal    Z
  normal    T
@@ -42371,10 +42371,10 @@ cancel axis long
 use confuse_xz.nc
 sh grid r
     GRID GAP1
- name       axis              # pts   start                end
- HORIZ     X                   10 r   1                    10
+ name       axis              # pts   start                end                 subset
+ HORIZ     X                   10 r   1                    10                  full
  normal    Y
- XXX       Z                    6 r   -4                   1
+ XXX       Z                    6 r   -4                   1                   full
  normal    T
  normal    E
  normal    F
@@ -42383,10 +42383,10 @@ can data 1
 use confuse_yz.nc
 sh grid s
     GRID GBA1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
- THE       Y                    8 r   10                   80
- XXX       Z                    6 r   -4                   1
+ THE       Y                    8 r   10                   80                  full
+ XXX       Z                    6 r   -4                   1                   full
  normal    T
  normal    E
  normal    F
@@ -42395,11 +42395,11 @@ can data 1
 use confuse_yt.nc
 sh grid u
     GRID GGY1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
- THE       Y                    8 r   10                   80
+ THE       Y                    8 r   10                   80                  full
  normal    Z
- LONG      T                    7 r   1                    13
+ LONG      T                    7 r   1                    13                  full
  normal    E
  normal    F
 can data 1
@@ -42407,11 +42407,11 @@ can data 1
 use confuse_yzt.nc
 sh grid v
     GRID GFA1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
- THE       Y                    8 r   10                   80
- XXX       Z                    6 r   -4                   1
- LONG      T                    7 r   1                    13
+ THE       Y                    8 r   10                   80                  full
+ XXX       Z                    6 r   -4                   1                   full
+ LONG      T                    7 r   1                    13                  full
  normal    E
  normal    F
 can data 1
@@ -42467,10 +42467,10 @@ cancel axis ddd
 use confuse_xz.nc
 sh grid r
     GRID GAP1
- name       axis              # pts   start                end
- AAA       X                   10 r   1                    10
+ name       axis              # pts   start                end                 subset
+ AAA       X                   10 r   1                    10                  full
  normal    Y
- CCC       Z                    6 r   -4                   1
+ CCC       Z                    6 r   -4                   1                   full
  normal    T
  normal    E
  normal    F
@@ -42479,10 +42479,10 @@ can data 1
 use confuse_yz.nc
 sh grid s
     GRID GBA1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
- BBB       Y                    8 r   10                   80
- CCC       Z                    6 r   -4                   1
+ BBB       Y                    8 r   10                   80                  full
+ CCC       Z                    6 r   -4                   1                   full
  normal    T
  normal    E
  normal    F
@@ -42491,11 +42491,11 @@ can data 1
 use confuse_yt.nc
 sh grid u
     GRID GGY1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
- BBB       Y                    8 r   10                   80
+ BBB       Y                    8 r   10                   80                  full
  normal    Z
- DDD       T                    7 r   1                    13
+ DDD       T                    7 r   1                    13                  full
  normal    E
  normal    F
 can data 1
@@ -42503,11 +42503,11 @@ can data 1
 use confuse_yzt.nc
 sh grid v
     GRID GFA1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
- BBB       Y                    8 r   10                   80
- CCC       Z                    6 r   -4                   1
- DDD       T                    7 r   1                    13
+ BBB       Y                    8 r   10                   80                  full
+ CCC       Z                    6 r   -4                   1                   full
+ DDD       T                    7 r   1                    13                  full
  normal    E
  normal    F
 can data 1
@@ -45355,11 +45355,11 @@ show grid xytvar
  -DELETE XYTVAR   M:151 dset:   1 I:    1    4  J:    1    3  K: -999 -999  L:    1    2  M: -999 -999  N: -999 -999
  getgrid EX#1     C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
     GRID EGRID
- name       axis              # pts   start                end
- XLON      LONGITUDE           40mr   141E                 180E
- YLAT      LATITUDE            30 r   1N                   30N
+ name       axis              # pts   start                end                 subset
+ XLON      LONGITUDE           40mr   141E                 180E                full
+ YLAT      LATITUDE            30 r   1N                   30N                 full
  normal    Z
- TTIME     TIME                20 r   01-JAN-1995 00:00    20-JAN-1995 00:00
+ TTIME     TIME                20 r   01-JAN-1995 00:00    20-JAN-1995 00:00   full
  normal    E
  normal    F
  
@@ -45400,10 +45400,10 @@ show grid xytvar
  getgrid EX#1     C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid GPC5            TTIME     XLON      YLAT      NORMAL    NORMAL    NORMAL
     GRID GPC5
- name       axis              # pts   start                end
- TTIME     X (DAYS)            20 r   34319                34338
- XLON      Y (degrees_east)    40mr   141                  180
- YLAT      Z (degrees_north)   30 r   1                    30
+ name       axis              # pts   start                end                 subset
+ TTIME     X (DAYS)            20 r   34319                34338               full
+ XLON      Y (degrees_east)    40mr   141                  180                 full
+ YLAT      Z (degrees_north)   30 r   1                    30                  full
  normal    T
  normal    E
  normal    F
@@ -46731,11 +46731,11 @@ set axis/units=seconds  `temp,r=yaxis`
  !-> set axis/units=seconds  PSYT
 show grid temp
     GRID PS3DT2
- name       axis              # pts   start                end
- PSXT1     LONGITUDE          160mr   130.5E               70.5W
- PSYT      Y (seconds)        100 i   -28.836              48.568
- PSZT      Z (zorro)           27 i-  5                    3824
- TIME11    T (meters)          25 r   22702                26206
+ name       axis              # pts   start                end                 subset
+ PSXT1     LONGITUDE          160mr   130.5E               70.5W               full
+ PSYT      Y (seconds)        100 i   -28.836              48.568              full
+ PSZT      Z (zorro)           27 i-  5                    3824                full
+ TIME11    T (meters)          25 r   22702                26206               full
  normal    E
  normal    F
  
@@ -48388,7 +48388,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS17-DEC-2015 14:24:32
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS18-DEC-2015 13:40:03
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -48754,9 +48754,9 @@ list/i=1:5 x[gx=sst]
 set view lower; shade sst
 sh grid sst
     GRID GEX1
- name       axis              # pts   start                end
- 'COADSX.ILLEGAL' LONGITUDE    21mr   21E                  61E
- 'COADSY.ILLEGAL' LATITUDE     16 r   35N                  65N
+ name       axis              # pts   start                end                 subset
+ 'COADSX.ILLEGAL' LONGITUDE    21mr   21E                  61E                 full
+ 'COADSY.ILLEGAL' LATITUDE     16 r   35N                  65N                 full
  normal    Z
  normal    T
  normal    E
@@ -49021,11 +49021,11 @@ def ax/t/edge time = {0,1,3}
 let a = t[gt=time]
 show grid/t a
     GRID (G011)
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TIME      T                    2 i   0.5                  2
+ TIME      T                    2 i   0.5                  2                   full
  normal    E
  normal    F
  
@@ -49045,11 +49045,11 @@ can mem
 use a.nc
 show grid/t a
     GRID GSI1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TIME7     T                    2 i   0.5                  2
+ TIME7     T                    2 i   0.5                  2                   full
  normal    E
  normal    F
  
@@ -49070,11 +49070,11 @@ GO err580_cartesian_depth.jnl
 use a_cartesian_bug1179.nc
 sh grid temp
     GRID GHU1
- name       axis              # pts   start                end
- GRID_X_T  LONGITUDE            1 r   79E                  79E
- GRID_Y_T  LATITUDE             1 r   0.25S                0.25S
- ZT        DEPTH (m)           10 i-  22.5                 158
- TIME7     TIME                 1mr   15-FEB-1900 03:00    15-FEB-1900 03:00
+ name       axis              # pts   start                end                 subset
+ GRID_X_T  LONGITUDE            1 r   79E                  79E                 full
+ GRID_Y_T  LATITUDE             1 r   0.25S                0.25S               full
+ ZT        DEPTH (m)           10 i-  22.5                 158                 full
+ TIME7     TIME                 1mr   15-FEB-1900 03:00    15-FEB-1900 03:00   full
  normal    E
  normal    F
  
@@ -49821,7 +49821,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "17-Dec-15:14:23"
+WIN_TITLE = "18-Dec-15:13:39"
  
 set win/title="set the title"
 sho sym win_title
@@ -49839,7 +49839,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="17-Dec-15:14:23"
+ !-> set win/title="18-Dec-15:13:39"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -49848,16 +49848,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 17-Dec-15
+ !-> DEFINE SYMBOL the_date = 18-Dec-15
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 14:23
+ !-> DEFINE SYMBOL the_time = 13:39
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="17-Dec-15:14:23"
+ !-> SET WIN/TITLE="18-Dec-15:13:39"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "17-Dec-15:14:23"
+WIN_TITLE = "18-Dec-15:13:39"
  
 GO bn_reset
 cancel mode verify
@@ -53325,11 +53325,11 @@ can axis t360
 set data t3file
 sho grid t3
     GRID GCG1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- T360      TIME                61 r   01-JAN-2000 00:00    01-JAN-2005 00:00
+ T360      TIME                61 r   01-JAN-2000 00:00    01-JAN-2005 00:00   full
  normal    E
  normal    F
  
@@ -54212,7 +54212,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT191_108)          DOUBLE    units           CHAR        12   T       degrees_east
@@ -54257,7 +54257,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT191_108)          DOUBLE    units           CHAR        12   T       degrees_east
@@ -54960,11 +54960,11 @@ GO bn_return_xmod_tmod.jnl
 use ocean_atlas_temp
 sh grid temp
     GRID GBS1
- name       axis              # pts   start                end
- XAX_LEV9421_380 LONGITUDE    360mr   20.5E                19.5E(379.5)
- YAX_LEV94 LATITUDE           180 r   89.5S                89.5N
- ZAXLEVIT191_1 DEPTH (m)        1 r-  0                    0
- TIME3     TIME                 2mr   16-JAN 06:00         15-FEB 16:29
+ name       axis              # pts   start                end                 subset
+ XAX_LEV9421_380 LONGITUDE    360mr   20.5E                19.5E(379.5)        full
+ YAX_LEV94 LATITUDE           180 r   89.5S                89.5N               full
+ ZAXLEVIT191_1 DEPTH (m)        1 r-  0                    0                   full
+ TIME3     TIME                 2mr   16-JAN 06:00         15-FEB 16:29        full
  normal    E
  normal    F
 sh axis XAX_LEV9421_380
@@ -55011,11 +55011,11 @@ say `a,return=xmod`
 use string4d
 sh grid axy
     GRID GMS2
- name       axis              # pts   start                end
- X2AX1     X                    2mr   1                    2
- Y3AX      Y                    3 r   1                    3
- Z4AX      Z                    4 r   1                    4
- T2AX1     T                    2 r   1                    2
+ name       axis              # pts   start                end                 subset
+ X2AX1     X                    2mr   1                    2                   full
+ Y3AX      Y                    3 r   1                    3                   full
+ Z4AX      Z                    4 r   1                    4                   full
+ T2AX1     T                    2 r   1                    2                   full
  normal    E
  normal    F
 show axis x2ax
@@ -55126,11 +55126,11 @@ GO err601_irregular_axis.jnl
 USE z_wide_variation.nc
 SHOW GRID/Z atmos
     GRID GOR1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
- ALTITUDE  Z (Pa)              50 i   6.791595619E-10      1400
- TIME11    TIME                 1mr   01-JAN 04:00         01-JAN 04:00
+ ALTITUDE  Z (Pa)              50 i   6.791595619E-10      1400                full
+ TIME11    TIME                 1mr   01-JAN 04:00         01-JAN 04:00        full
  normal    E
  normal    F
  
@@ -57281,11 +57281,11 @@ GO err611_wrong_fineaxis_range
 use fine_x_axis
 sh grid sst
     GRID GPY1
- name       axis              # pts   start                end
- LON       LONGITUDE         7200mr   179.97W(-179.97)     179.97E
- LAT1800_1800 LATITUDE          1 r   0.025S               0.025S
- ENS       Z (count)            1 r   1                    1
- TIME11    TIME                 1 r   01-APR-2006 00:00    01-APR-2006 00:00
+ name       axis              # pts   start                end                 subset
+ LON       LONGITUDE         7200mr   179.97W(-179.97)     179.97E             full
+ LAT1800_1800 LATITUDE          1 r   0.025S               0.025S              full
+ ENS       Z (count)            1 r   1                    1                   full
+ TIME11    TIME                 1 r   01-APR-2006 00:00    01-APR-2006 00:00   full
  normal    E
  normal    F
  
@@ -57897,11 +57897,11 @@ GO err611_irregular_axis
 use cc_irreg.nc
 sh grid cc
     GRID GCZ1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TAX3      TIME               142 i   30-DEC-2007 00:00    30-DEC-2007 00:02
+ TAX3      TIME               142 i   30-DEC-2007 00:00    30-DEC-2007 00:02   full
  normal    E
  normal    F
  
@@ -59051,11 +59051,11 @@ show data/full
 cancel variable ijkl
 show grid ijkl
     GRID GEU14
- name       axis              # pts   start                end
- XAX1      X                   10 r   1                    10
- YAX1      Y                   20 r   1                    20
- ZAX1      Z                  100 r   1                    100
- TCENTURY1 TIME                12 r   01-JAN-1902 00:00    12-JAN-1902 00:00
+ name       axis              # pts   start                end                 subset
+ XAX1      X                   10 r   1                    10                  full
+ YAX1      Y                   20 r   1                    20                  full
+ ZAX1      Z                  100 r   1                    100                 full
+ TCENTURY1 TIME                12 r   01-JAN-1902 00:00    12-JAN-1902 00:00   full
  normal    E
  normal    F
 cancel data test_abs
@@ -59147,11 +59147,11 @@ show data/full
  
 show grid ijkl
     GRID GEU14
- name       axis              # pts   start                end
- XAX1      X                   10 r   1                    10
- YAX1      Y                   20 r   1                    20
- ZAX1      Z                  100 r   1                    100
- TCENTURY1 TIME                15 i   01-JAN-1902 00:00    16-JAN-1902 00:00
+ name       axis              # pts   start                end                 subset
+ XAX1      X                   10 r   1                    10                  full
+ YAX1      Y                   20 r   1                    20                  full
+ ZAX1      Z                  100 r   1                    100                 full
+ TCENTURY1 TIME                15 i   01-JAN-1902 00:00    16-JAN-1902 00:00   full
  normal    E
  normal    F
  
@@ -59181,43 +59181,43 @@ cancel variables/all
 set data/format=cdf test_abs
 show grid j1 jkl jkl2 iavejkl ijkl
     GRID GEU2
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
- YAX1      Y                   20 r   1                    20
+ YAX1      Y                   20 r   1                    20                  full
  normal    Z
  normal    T
  normal    E
  normal    F
     GRID GEU13
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
- YAX1      Y                   20 r   1                    20
- ZAX1      Z                  100 r   1                    100
- TCENTURY1 TIME                15 i   01-JAN-1902 00:00    16-JAN-1902 00:00
+ YAX1      Y                   20 r   1                    20                  full
+ ZAX1      Z                  100 r   1                    100                 full
+ TCENTURY1 TIME                15 i   01-JAN-1902 00:00    16-JAN-1902 00:00   full
  normal    E
  normal    F
     GRID GEU2
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
- YAX1      Y                   20 r   1                    20
+ YAX1      Y                   20 r   1                    20                  full
  normal    Z
  normal    T
  normal    E
  normal    F
     GRID GEU13
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
- YAX1      Y                   20 r   1                    20
- ZAX1      Z                  100 r   1                    100
- TCENTURY1 TIME                15 i   01-JAN-1902 00:00    16-JAN-1902 00:00
+ YAX1      Y                   20 r   1                    20                  full
+ ZAX1      Z                  100 r   1                    100                 full
+ TCENTURY1 TIME                15 i   01-JAN-1902 00:00    16-JAN-1902 00:00   full
  normal    E
  normal    F
     GRID GEU14
- name       axis              # pts   start                end
- XAX1      X                   10 r   1                    10
- YAX1      Y                   20 r   1                    20
- ZAX1      Z                  100 r   1                    100
- TCENTURY1 TIME                15 i   01-JAN-1902 00:00    16-JAN-1902 00:00
+ name       axis              # pts   start                end                 subset
+ XAX1      X                   10 r   1                    10                  full
+ YAX1      Y                   20 r   1                    20                  full
+ ZAX1      Z                  100 r   1                    100                 full
+ TCENTURY1 TIME                15 i   01-JAN-1902 00:00    16-JAN-1902 00:00   full
  normal    E
  normal    F
 cancel data test_abs
@@ -59403,11 +59403,11 @@ show data/full
 cancel variable ijkl
 show grid ijkl
     GRID PS3DU1
- name       axis              # pts   start                end
- PSXU      LONGITUDE          160mr   131E                 70W
- PSYU      LATITUDE           100 i   27.672S              50N
- PSZT1     DEPTH (m)           27 i-  5                    3824
- TIME12    TIME                 3 r   15-MAR-1983 10:00    15-MAR-1983 12:00
+ name       axis              # pts   start                end                 subset
+ PSXU      LONGITUDE          160mr   131E                 70W                 full
+ PSYU      LATITUDE           100 i   27.672S              50N                 full
+ PSZT1     DEPTH (m)           27 i-  5                    3824                full
+ TIME12    TIME                 3 r   15-MAR-1983 10:00    15-MAR-1983 12:00   full
  normal    E
  normal    F
 cancel data test_fil0
@@ -60109,10 +60109,10 @@ SHOW DATA
 ! Ferret uses it as Z only because of the order in which it comes in
 SH GRID am
     GRID GMY1
- name       axis              # pts   start                end
- AAXIS     X (METERS)          10 r   1                    10
- BAXIS     Y (METERS)           5 r   1                    9
- CAXIS     Z (METERS)           5 r   2                    10
+ name       axis              # pts   start                end                 subset
+ AAXIS     X (METERS)          10 r   1                    10                  full
+ BAXIS     Y (METERS)           5 r   1                    9                   full
+ CAXIS     Z (METERS)           5 r   2                    10                  full
  normal    T
  normal    E
  normal    F
@@ -60121,10 +60121,10 @@ SH GRID am
 ! Previously it was not.
 SH GRID ar
     GRID GMY2
- name       axis              # pts   start                end
- AAXIS     X (METERS)          10 r   1                    10
- BAXIS     Y (METERS)           5 r   1                    9
- DAXIS     DEPTH (m)            6 i-  0                    8
+ name       axis              # pts   start                end                 subset
+ AAXIS     X (METERS)          10 r   1                    10                  full
+ BAXIS     Y (METERS)           5 r   1                    9                   full
+ DAXIS     DEPTH (m)            6 i-  0                    8                   full
  normal    T
  normal    E
  normal    F
@@ -60137,20 +60137,20 @@ DEFINE AXIS/Z/UNITS="`am,RETURN=zunits`"/DEPTH ($zname) = Z[GZ=am]
  !-> DEFINE AXIS/Z/UNITS="METERS"/DEPTH CAXIS = Z[GZ=am]
 SH GRID am
     GRID GMY1
- name       axis              # pts   start                end
- AAXIS     X (METERS)          10 r   1                    10
- BAXIS     Y (METERS)           5 r   1                    9
- CAXIS     DEPTH (m)            5 r-  2                    10
+ name       axis              # pts   start                end                 subset
+ AAXIS     X (METERS)          10 r   1                    10                  full
+ BAXIS     Y (METERS)           5 r   1                    9                   full
+ CAXIS     DEPTH (m)            5 r-  2                    10                  full
  normal    T
  normal    E
  normal    F
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "40.4708"
-CLOCK_SECS = "85.881"
-CURRENT_DATE = "17-Dec-15"
-CURRENT_TIME = "14:25:01"
+DELTA_CPU = "40.3319"
+CLOCK_SECS = "72.651"
+CURRENT_DATE = "18-Dec-15"
+CURRENT_TIME = "13:40:27"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -60159,8 +60159,8 @@ CURRENT_TIME = "14:25:01"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.036994"
-CLOCK_SECS = "86.029"
+DELTA_CPU = "0.032995"
+CLOCK_SECS = "72.797"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -60174,60 +60174,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.246962
+ !-> DEFINE VARIABLE ten_plots = 0.25696
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "87.34"
+CLOCK_SECS = "74.084"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "87.341"
+CLOCK_SECS = "74.085"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.040995
- !-> DEFINE VARIABLE sumcpu =0.040995
-!-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.034994
- !-> DEFINE VARIABLE sumcpu =0.075989
-!-> REPEAT: K=3
  !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.108984
-!-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.140979
-!-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.034995
- !-> DEFINE VARIABLE sumcpu =0.175974
-!-> REPEAT: K=6
+ !-> DEFINE VARIABLE sumcpu =0.032995
+!-> REPEAT: K=2
+ !-> DEFINE VARIABLE dt = 0.029996
+ !-> DEFINE VARIABLE sumcpu =0.062991
+!-> REPEAT: K=3
  !-> DEFINE VARIABLE dt = 0.030995
- !-> DEFINE VARIABLE sumcpu =0.206969
+ !-> DEFINE VARIABLE sumcpu =0.093986
+!-> REPEAT: K=4
+ !-> DEFINE VARIABLE dt = 0.029996
+ !-> DEFINE VARIABLE sumcpu =0.123982
+!-> REPEAT: K=5
+ !-> DEFINE VARIABLE dt = 0.035994
+ !-> DEFINE VARIABLE sumcpu =0.159976
+!-> REPEAT: K=6
+ !-> DEFINE VARIABLE dt = 0.034995
+ !-> DEFINE VARIABLE sumcpu =0.194971
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.026996
- !-> DEFINE VARIABLE sumcpu =0.233965
+ !-> DEFINE VARIABLE dt = 0.042993
+ !-> DEFINE VARIABLE sumcpu =0.237964
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.26596
+ !-> DEFINE VARIABLE dt = 0.034995
+ !-> DEFINE VARIABLE sumcpu =0.272959
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.297955
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.305954
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.022997
- !-> DEFINE VARIABLE sumcpu =0.320952
+ !-> DEFINE VARIABLE dt = 0.034994
+ !-> DEFINE VARIABLE sumcpu =0.340948
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.320952
-0.320952
+ !-> MESSAGE/CONTINUE 0.340948
+0.340948
 sh sym CLOCK_SECS
-CLOCK_SECS = "89.702"
+CLOCK_SECS = "76.336"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "17-Dec-15"
-SESSION_TIME = "14:23"
-CURRENT_DATE = "17-Dec-15"
-CURRENT_TIME = "14:25:04"
+SESSION_DATE = "18-Dec-15"
+SESSION_TIME = "13:39"
+CURRENT_DATE = "18-Dec-15"
+CURRENT_TIME = "13:40:31"
  
  
 ! ******** V6.3 Additions below ***********
@@ -61780,10 +61780,10 @@ show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid (G106)
     GRID (G106)
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- COADSY    LATITUDE            90 r   89S                  89N
- ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                    (subset 1 pt)
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ COADSY    LATITUDE            90 r   89S                  89N                 full
+ ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   1 pt
  normal    T
  normal    E
  normal    F
@@ -61811,10 +61811,10 @@ show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid (G106)
     GRID (G106)
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- YAX       LATITUDE            81 r   20S                  20N
- ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                    (subset 1 pt)
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ YAX       LATITUDE            81 r   20S                  20N                 full
+ ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   1 pt
  normal    T
  normal    E
  normal    F
@@ -61840,10 +61840,10 @@ show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid (G106)
     GRID (G106)
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- YAX       LATITUDE            81 r   20S                  20N
- ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                    (subset 1 pt)
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ YAX       LATITUDE            81 r   20S                  20N                 full
+ ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   1 pt
  normal    T
  normal    E
  normal    F
@@ -61942,10 +61942,10 @@ show grid
  Default grid for DEFINE VARIABLE is G
  Last successful data access was on grid GG2
     GRID GG2
- name       axis              # pts   start                end
- XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
- YAXLEVITR1_90 LATITUDE        90 r   89.5S                0.5S
- ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E              full
+ YAXLEVITR1_90 LATITUDE        90 r   89.5S                0.5S                full
+ ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   full
  normal    T
  normal    E
  normal    F
@@ -61956,11 +61956,11 @@ show grid
  Default grid for DEFINE VARIABLE is G
  Last successful data access was on grid (G106)
     GRID (G106)
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)             (subset 1 pt)
- (AX116)   LATITUDE           201 r   10S                  10N                  (subset 200 pts)
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            1 pt
+ (AX116)   LATITUDE           201 r   10S                  10N                 200 pts
  normal    Z
- TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58         (subset 1 pt)
+ TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        1 pt
  normal    E
  normal    F
 show grid/dynamic
@@ -61998,7 +61998,7 @@ SHOW GRID mygrid_123456789012345678901234567890
     GRID MYGRID_123456789012345678901234567890
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX127)   LATITUDE            41 r   10S                  2S                   (subset 40 pts)
+ (AX127)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
  normal    E
@@ -63079,11 +63079,11 @@ define axis/t=1-jan-2010:30-mar-2010:10/units=days tout
 let tt = t[gt=tout,L=1:10]
 sh grid tt
     GRID (G091)
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TOUT      TIME                10 r   01-JAN-2010 00:00    01-APR-2010 00:00    (subset 9 pts)
+ TOUT      TIME                10 r   01-JAN-2010 00:00    01-APR-2010 00:00   9 pts
  normal    E
  normal    F
  
@@ -63286,11 +63286,11 @@ list/x=2:3 sgrid
 let tpts = 39798 + 87*RANDU(I)
 show grid tt
     GRID (G089)
- name       axis              # pts   start                end
- x10       X                  201 r   0                    10
- Y10       Y                  201 r   0                    10
+ name       axis              # pts   start                end                 subset
+ x10       X                  201 r   0                    10                  full
+ Y10       Y                  201 r   0                    10                  full
  normal    Z
- TOUT      TIME                10 r   01-JAN-2010 00:00    01-APR-2010 00:00    (subset 9 pts)
+ TOUT      TIME                10 r   01-JAN-2010 00:00    01-APR-2010 00:00   9 pts
  normal    E
  normal    F
  
@@ -63551,9 +63551,9 @@ show grid
  Default grid for DEFINE VARIABLE is MYGRID
  Last successful data access was on grid MYGRID
     GRID MYGRID
- name       axis              # pts   start                end
- MYX       X                   10 i   1                    10
- MYY       Y                   10 i   1                    10
+ name       axis              # pts   start                end                 subset
+ MYX       X                   10 i   1                    10                  full
+ MYY       Y                   10 i   1                    10                  full
  normal    Z
  normal    T
  normal    E
@@ -63612,9 +63612,9 @@ show grid
  Default grid for DEFINE VARIABLE is MYGRID
  Last successful data access was on grid MYGRID
     GRID MYGRID
- name       axis              # pts   start                end
- MYX       X                   10 r   1                    10
- MYY       Y                   10 i   1                    10
+ name       axis              # pts   start                end                 subset
+ MYX       X                   10 r   1                    10                  full
+ MYY       Y                   10 i   1                    10                  full
  normal    Z
  normal    T
  normal    E
@@ -63673,9 +63673,9 @@ show grid
  Default grid for DEFINE VARIABLE is MYGRID
  Last successful data access was on grid MYGRID
     GRID MYGRID
- name       axis              # pts   start                end
- MYX       X                   10 r   1                    10
- MYY       Y                   10 i   1                    10
+ name       axis              # pts   start                end                 subset
+ MYX       X                   10 r   1                    10                  full
+ MYY       Y                   10 i   1                    10                  full
  normal    Z
  normal    T
  normal    E
@@ -63714,9 +63714,9 @@ show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid GOZ1
     GRID GOZ1
- name       axis              # pts   start                end
- MYX1      X                   10 i   1                    10
- MYY       Y                   10 i   1                    10
+ name       axis              # pts   start                end                 subset
+ MYX1      X                   10 i   1                    10                  full
+ MYY       Y                   10 i   1                    10                  full
  normal    Z
  normal    T
  normal    E
@@ -63745,9 +63745,9 @@ show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid GOZ1
     GRID GOZ1
- name       axis              # pts   start                end
- MYX1      X                   10 r   1                    10
- MYY       Y                   10 i   1                    10
+ name       axis              # pts   start                end                 subset
+ MYX1      X                   10 r   1                    10                  full
+ MYY       Y                   10 i   1                    10                  full
  normal    Z
  normal    T
  normal    E
@@ -64206,8 +64206,8 @@ list contents
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.97 (beta)"                                                     
- 3    /  3:" ! Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/17/15"                       
- 4    /  4:" ! 17-Dec-15 14:23     "                                                    
+ 3    /  3:" ! Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/18/15"                       
+ 4    /  4:" ! 18-Dec-15 13:39     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -66426,8 +66426,8 @@ GO err672_dset_cx
 let a = x[gx=0:2:1]; save/clob/file=a1.nc a
 sho grid/x a
     GRID (G101)
- name       axis              # pts   start                end
- (AX129)   X                    3 r   0                    2                    (subset 2 pts)
+ name       axis              # pts   start                end                 subset
+ (AX129)   X                    3 r   0                    2                   2 pts
  normal    Y
  normal    Z
  normal    T
@@ -66442,8 +66442,8 @@ sho grid/x a
 let a = x[gx=1:3:1]; save/clob/file=a2.nc a
 sho grid/x a
     GRID (G101)
- name       axis              # pts   start                end
- (AX116)   X                    3 r   1                    3                    (subset 2 pts)
+ name       axis              # pts   start                end                 subset
+ (AX116)   X                    3 r   1                    3                   2 pts
  normal    Y
  normal    Z
  normal    T
@@ -66674,40 +66674,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.157
-randu2_randn2       0.710
 randu2_randn2       0.739
-randu2_randn2       0.475
-randu2_randn2       0.730
+randu2_randn2       0.147
+randu2_randn2       0.532
+randu2_randn2       0.918
+randu2_randn2       0.377
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.067
+randu2_randn2       0.098
+randu2_randn2       0.886
+randu2_randn2       0.087
+randu2_randn2       0.013
+randu2_randn2       0.805
+             VARIABLE : RANDU2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.416
+randu2_randn2       0.541
+randu2_randn2       0.710
+randu2_randn2       0.308
+randu2_randn2       0.912
+randu2_randn2       0.594
+             VARIABLE : RANDU2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.802
+randu2_randn2       0.896
 randu2_randn2       0.963
-randu2_randn2       0.292
-randu2_randn2       0.146
-randu2_randn2       0.861
-             VARIABLE : RANDU2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.023
-randu2_randn2       0.121
-randu2_randn2       0.926
-randu2_randn2       0.813
-randu2_randn2       0.501
-randu2_randn2       0.203
-             VARIABLE : RANDU2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.092
-randu2_randn2       0.902
-randu2_randn2       0.314
-randu2_randn2       0.210
-randu2_randn2       0.846
-randu2_randn2       0.059
+randu2_randn2       0.077
+randu2_randn2       0.329
+randu2_randn2       0.154
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -66732,40 +66732,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.860
-randu2_randn2       0.477
-randu2_randn2       0.908
-randu2_randn2      -0.719
-randu2_randn2      -0.765
+randu2_randn2       0.424
+randu2_randn2       1.664
+randu2_randn2      -0.381
+randu2_randn2      -0.812
+randu2_randn2       0.393
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       2.966
-randu2_randn2       1.333
-randu2_randn2      -1.534
-randu2_randn2      -0.631
-randu2_randn2       0.476
+randu2_randn2       0.158
+randu2_randn2      -0.321
+randu2_randn2       0.773
+randu2_randn2       0.589
+randu2_randn2       0.844
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       1.934
-randu2_randn2      -1.432
-randu2_randn2      -0.416
-randu2_randn2       0.776
-randu2_randn2       0.392
-randu2_randn2       1.597
+randu2_randn2      -0.856
+randu2_randn2       0.333
+randu2_randn2       0.895
+randu2_randn2      -0.882
+randu2_randn2      -0.647
+randu2_randn2       0.180
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.746
-randu2_randn2      -1.576
-randu2_randn2      -0.546
-randu2_randn2      -0.007
-randu2_randn2      -0.070
-randu2_randn2      -0.127
+randu2_randn2      -0.342
+randu2_randn2       0.154
+randu2_randn2       1.258
+randu2_randn2       0.075
+randu2_randn2      -0.417
+randu2_randn2      -0.698
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -66790,14 +66790,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.240       1.546       0.661
-randu2_randn2       1.546       1.240       0.661
-randu2_randn2       0.661       0.661       0.254
-randu2_randn2       0.254       0.254       0.661
-randu2_randn2       0.010       0.010       0.661
-randu2_randn2      -0.198      -0.080       0.661
-randu2_randn2      -0.080      -0.080       0.661
-randu2_randn2       0.805       0.805       0.805
+randu2_randn2       1.244       1.471       0.291
+randu2_randn2       1.471       1.244       0.291
+randu2_randn2       0.291       0.291      -0.135
+randu2_randn2      -0.135      -0.135       0.291
+randu2_randn2      -0.331      -0.331       0.291
+randu2_randn2      -0.880      -0.566       0.291
+randu2_randn2      -0.566      -0.566       0.291
+randu2_randn2       0.839       0.839       0.839
  
 GO bn_reset
 cancel mode verify
@@ -66880,11 +66880,11 @@ GO bn_repeated_coords
 use repeat_t_coord.nc
 show grid a
     GRID GKT1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TMIN      TIME                71 i   01-JAN-2001 00:00    01-JAN-2001 01:10
+ TMIN      TIME                71 i   01-JAN-2001 00:00    01-JAN-2001 01:10   full
  normal    E
  normal    F
 show axis tmin
@@ -66913,11 +66913,11 @@ can dat/all
 use/strict repeat_t_coord.nc
 show grid a
     GRID GKT1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TMIN      T                   71 r   1                    71
+ TMIN      T                   71 r   1                    71                  full
  normal    E
  normal    F
 show axis tmin
@@ -67190,11 +67190,11 @@ let sinT = sin(T * 3.141592653589793 / 6.0)
 let spacetime = if (i eq 1) then cosT else sinT + 1
 show grid spacetime
     GRID XYTGRID
- name       axis              # pts   start                end
- XAXIS     X                    2 r   1                    2
- YAXIS     Y                    1 r   1                    1
+ name       axis              # pts   start                end                 subset
+ XAXIS     X                    2 r   1                    2                   full
+ YAXIS     Y                    1 r   1                    1                   full
  normal    Z
- TAXIS     T                  240 r   0                    59.75
+ TAXIS     T                  240 r   0                    59.75               full
  normal    E
  normal    F
  
@@ -67815,11 +67815,11 @@ let spacetime123 = if (i eq 2) and (j eq 1) then cost * sint + 2 else spacetime1
 let spacetime = if (i eq 2) and (j eq 2) then sint * sint + 3 else spacetime123
 show grid spacetime
     GRID XYTGRID
- name       axis              # pts   start                end
- XAXIS     X                    2 r   1                    2
- YAXIS     Y                    2 r   1                    2
+ name       axis              # pts   start                end                 subset
+ XAXIS     X                    2 r   1                    2                   full
+ YAXIS     Y                    2 r   1                    2                   full
  normal    Z
- TAXIS     T                  240 r   0                    23.9
+ TAXIS     T                  240 r   0                    23.9                full
  normal    E
  normal    F
  
@@ -69943,13 +69943,13 @@ SHOW GRID
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid G48
     GRID G48
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
  normal    T
  normal    E
- FAX48     FORECAST           367 r   01-JAN-1980 00:00    02-JAN-1982 00:00
+ FAX48     FORECAST           367 r   01-JAN-1980 00:00    02-JAN-1982 00:00   full
 LIST/I=1:2/J=50/K=1/L=2/M=3/N=4 SALT
              VARIABLE : (SALINITY(ppt) - 35) /1000 (frac. by wt. less .035)
              FILENAME : 6dfile.nc
@@ -69967,35 +69967,35 @@ SHOW GRID
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid GNJ2
     GRID GNJ2
- name       axis              # pts   start                end
- PSXT70_71 LONGITUDE            2mr   160.5W               159.5W
- PSYT15_75 LATITUDE            61 i   10.169S              9.833N
- PSZT2     DEPTH (m)           27 i-  5                    3824
- TIME13    TIME                 3 r   15-MAR-1983 10:00    15-MAR-1983 12:00
- EAXIS     E                    5 r   1                    5
- FAXIS     F                    4 r   1                    7
+ name       axis              # pts   start                end                 subset
+ PSXT70_71 LONGITUDE            2mr   160.5W               159.5W              full
+ PSYT15_75 LATITUDE            61 i   10.169S              9.833N              full
+ PSZT2     DEPTH (m)           27 i-  5                    3824                full
+ TIME13    TIME                 3 r   15-MAR-1983 10:00    15-MAR-1983 12:00   full
+ EAXIS     E                    5 r   1                    5                   full
+ FAXIS     F                    4 r   1                    7                   full
 SET GRID/SAVE
 SET GRID ABSTRACT
 SHOW GRID
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid GNJ2
     GRID GNJ2
- name       axis              # pts   start                end
- PSXT70_71 LONGITUDE            2mr   160.5W               159.5W
- PSYT15_75 LATITUDE            61 i   10.169S              9.833N
- PSZT2     DEPTH (m)           27 i-  5                    3824
- TIME13    TIME                 3 r   15-MAR-1983 10:00    15-MAR-1983 12:00
- EAXIS     E                    5 r   1                    5
- FAXIS     F                    4 r   1                    7
+ name       axis              # pts   start                end                 subset
+ PSXT70_71 LONGITUDE            2mr   160.5W               159.5W              full
+ PSYT15_75 LATITUDE            61 i   10.169S              9.833N              full
+ PSZT2     DEPTH (m)           27 i-  5                    3824                full
+ TIME13    TIME                 3 r   15-MAR-1983 10:00    15-MAR-1983 12:00   full
+ EAXIS     E                    5 r   1                    5                   full
+ FAXIS     F                    4 r   1                    7                   full
 SHOW GRID/X=180:165W SALT
     GRID GNJ2
- name       axis              # pts   start                end
- PSXT70_71 LONGITUDE            2mr   160.5W               159.5W
- PSYT15_75 LATITUDE            61 i   10.169S              9.833N
- PSZT2     DEPTH (m)           27 i-  5                    3824
- TIME13    TIME                 3 r   15-MAR-1983 10:00    15-MAR-1983 12:00
- EAXIS     E                    5 r   1                    5
- FAXIS     F                    4 r   1                    7
+ name       axis              # pts   start                end                 subset
+ PSXT70_71 LONGITUDE            2mr   160.5W               159.5W              full
+ PSYT15_75 LATITUDE            61 i   10.169S              9.833N              full
+ PSZT2     DEPTH (m)           27 i-  5                    3824                full
+ TIME13    TIME                 3 r   15-MAR-1983 10:00    15-MAR-1983 12:00   full
+ EAXIS     E                    5 r   1                    5                   full
+ FAXIS     F                    4 r   1                    7                   full
  
        I     X                   XBOX      XBOXLO
        0>  20E                   358        159W(-159)
@@ -71538,13 +71538,13 @@ show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid (G096)
     GRID (G096)
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
  normal    T
  normal    E
- EDAY      FORECAST             5 r   01-JAN-1990 00:00    05-JAN-1990 00:00
+ EDAY      FORECAST             5 r   01-JAN-1990 00:00    05-JAN-1990 00:00   full
 list afcst[gf=ehour@max]
  -DELETE _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    5
  dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
@@ -71573,13 +71573,13 @@ show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid (G103)
     GRID (G103)
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
  normal    T
  normal    E
- EHOUR     FORECAST             5 r   01-JAN-1990 00:00    05-JAN-1990 00:00
+ EHOUR     FORECAST             5 r   01-JAN-1990 00:00    05-JAN-1990 00:00   full
  
 set mode/last diag
  
@@ -72096,21 +72096,21 @@ show data
 set mode 6d_lab
 show grid temp
     GRID PS3DT21
- name       axis              # pts   start                end
- PSXT1     LONGITUDE          160mr   130.5E               70.5W
- PSYT1     LATITUDE           100 i   28.836S              48.568N
- PSZT2     DEPTH (m)           27 i-  5                    3824
- TIME13    TIME                25 r   17-AUG-1982 12:00    10-JAN-1983 12:00
+ name       axis              # pts   start                end                 subset
+ PSXT1     LONGITUDE          160mr   130.5E               70.5W               full
+ PSYT1     LATITUDE           100 i   28.836S              48.568N             full
+ PSZT2     DEPTH (m)           27 i-  5                    3824                full
+ TIME13    TIME                25 r   17-AUG-1982 12:00    10-JAN-1983 12:00   full
  normal    E
  normal    F
 cancel mode 6d_lab
 show grid temp
     GRID PS3DT21
- name       axis              # pts   start                end
- PSXT1     LONGITUDE          160mr   130.5E               70.5W
- PSYT1     LATITUDE           100 i   28.836S              48.568N
- PSZT2     DEPTH (m)           27 i-  5                    3824
- TIME13    TIME                25 r   17-AUG-1982 12:00    10-JAN-1983 12:00
+ name       axis              # pts   start                end                 subset
+ PSXT1     LONGITUDE          160mr   130.5E               70.5W               full
+ PSYT1     LATITUDE           100 i   28.836S              48.568N             full
+ PSZT2     DEPTH (m)           27 i-  5                    3824                full
+ TIME13    TIME                25 r   17-AUG-1982 12:00    10-JAN-1983 12:00   full
  
 ! Mode affects output of STAT
  
@@ -72248,9 +72248,9 @@ sh dat
  
 sho grid lon_c
     GRID GOS2
- name       axis              # pts   start                end
- ETA       X                    4 r   1                    4
- TAU1      Y                    7 r   1                    7
+ name       axis              # pts   start                end                 subset
+ ETA       X                    4 r   1                    4                   full
+ TAU1      Y                    7 r   1                    7                   full
  normal    Z
  normal    T
  normal    E
@@ -72583,7 +72583,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72634,7 +72634,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72673,7 +72673,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72712,7 +72712,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72743,7 +72743,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72775,7 +72775,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72836,7 +72836,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72881,7 +72881,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72936,7 +72936,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72972,7 +72972,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -73008,7 +73008,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -73044,7 +73044,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -73076,7 +73076,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -73306,7 +73306,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          FLOAT     units           CHAR        13   T       degrees_north
@@ -73338,7 +73338,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          FLOAT     units           CHAR        13   T       degrees_north
@@ -73379,7 +73379,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -73417,7 +73417,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -73442,7 +73442,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -73467,7 +73467,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -73907,7 +73907,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73936,7 +73936,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73987,7 +73987,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74440,17 +74440,17 @@ sh att profile
  profile.history = From FINAL_verification_data_all_PacOOS_NHL_OCNMS_CCCC_03072013.txt 
 sh grid rowsize
     GRID GEN1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
  normal    T
- PROF      E                    3 r   1                    3
+ PROF      E                    3 r   1                    3                   full
  normal    F
 sh grid sal
     GRID GEN2
- name       axis              # pts   start                end
- OBS       X                   34 r   1                    34
+ name       axis              # pts   start                end                 subset
+ OBS       X                   34 r   1                    34                  full
  normal    Y
  normal    Z
  normal    T
@@ -74488,17 +74488,17 @@ sh att (profile)
  (profile).orig_file_axname = profile 
 sh grid rowsize
     GRID GSS1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
  normal    T
- PROFILE   E                   21 r   70                   90
+ PROFILE   E                   21 r   70                   90                  full
  normal    F
 sh grid pco2
     GRID GSS2
- name       axis              # pts   start                end
- OBS1      X                  373 r   1                    373
+ name       axis              # pts   start                end                 subset
+ OBS1      X                  373 r   1                    373                 full
  normal    Y
  normal    Z
  normal    T
@@ -74556,8 +74556,8 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Thu Dec 17 14:25:26 2015: ncks -h -A -h z1.nc append_to_this.nc\n",
-			"FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "Fri Dec 18 13:40:50 2015: ncks -h -A -h z1.nc append_to_this.nc\n",
+			"FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
 }
@@ -74591,7 +74591,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74622,7 +74622,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -74684,7 +74684,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74712,7 +74712,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76171,22 +76171,22 @@ T0 = 1-JAN-2001
    Axis span (to cell edges) = 8
 show grid bb
     GRID GHC2
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- UPPERCASETIME TIME             8 r   02-JAN-2001 00:00    09-JAN-2001 00:00
+ UPPERCASETIME TIME             8 r   02-JAN-2001 00:00    09-JAN-2001 00:00   full
  normal    E
  normal    F
  
 ! This variable has axis time, lowercase in the file
 sh grid aa
     GRID GHC1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TIME16    T                   15 r   1                    15
+ TIME16    T                   15 r   1                    15                  full
  normal    E
  normal    F
 set axis/t0=1-jan-2001/units=days time
@@ -76428,7 +76428,7 @@ variables:
 		LABELS:history = "From http://dunkel.pmel.noaa.gov:8930/thredds/dodsC/data/atmos3.ncml" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76451,7 +76451,7 @@ variables:
 		STRVAR:long_name = "mystrings" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76636,8 +76636,8 @@ sh dat
  
 sh grid a[d=1]
     GRID GSI1
- name       axis              # pts   start                end
- XAXIS_TEST1 X                  4 r   1                    4
+ name       axis              # pts   start                end                 subset
+ XAXIS_TEST1 X                  4 r   1                    4                   full
  normal    Y
  normal    Z
  normal    T
@@ -76645,8 +76645,8 @@ sh grid a[d=1]
  normal    F
 sh grid b[d=2]
     GRID GRR1
- name       axis              # pts   start                end
- XAXIS_TEST X                   4 r   11                   14
+ name       axis              # pts   start                end                 subset
+ XAXIS_TEST X                   4 r   11                   14                  full
  normal    Y
  normal    Z
  normal    T
@@ -76679,7 +76679,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76709,7 +76709,7 @@ variables:
 		A:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76730,7 +76730,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76751,7 +76751,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76773,7 +76773,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -77136,11 +77136,11 @@ set axis/name=daysaxis `a,return=taxis`
  !-> set axis/name=daysaxis DAYSAXIS1
 sh grid a
     GRID GSI1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- daysaxis  TIME                 5 r   01-MAY-2010 00:00    05-MAY-2010 00:00
+ daysaxis  TIME                 5 r   01-MAY-2010 00:00    05-MAY-2010 00:00   full
  normal    E
  normal    F
  
@@ -77194,7 +77194,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -77210,7 +77210,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -77226,7 +77226,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        29   T       FERRET V6.97 (beta) 17-Dec-15
+ .                               history         CHAR        29   T       FERRET V6.97 (beta) 18-Dec-15
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -77948,11 +77948,11 @@ define axis/t=1-jan-2000:1-jan-2005:1/units=days  longtime
 let bigvar = x[gx=xaxis]+y[gy=yaxis] + z[gz=zaxis] + t[gt=longtime]
 sh grid bigvar
     GRID (G103)
- name       axis              # pts   start                end
- XAXIS     X                  360 r   1                    360
- YAXIS     Y                  180 r   1                    180
- ZAXIS     Z                   20 r   1                    20
- LONGTIME  TIME              1828 r   01-JAN-2000 00:00    01-JAN-2005 00:00
+ name       axis              # pts   start                end                 subset
+ XAXIS     X                  360 r   1                    360                 full
+ YAXIS     Y                  180 r   1                    180                 full
+ ZAXIS     Z                   20 r   1                    20                  full
+ LONGTIME  TIME              1828 r   01-JAN-2000 00:00    01-JAN-2005 00:00   full
  normal    E
  normal    F
 load bigvar
@@ -77961,11 +77961,11 @@ load bigvar
 define axis/t=1-jan-2000:1-jan-2010:1/units=days  longtime
 sh grid bigvar
     GRID (G103)
- name       axis              # pts   start                end
- XAXIS     X                  360 r   1                    360
- YAXIS     Y                  180 r   1                    180
- ZAXIS     Z                   20 r   1                    20
- LONGTIME  TIME              3654 r   01-JAN-2000 00:00    01-JAN-2010 00:00
+ name       axis              # pts   start                end                 subset
+ XAXIS     X                  360 r   1                    360                 full
+ YAXIS     Y                  180 r   1                    180                 full
+ ZAXIS     Z                   20 r   1                    20                  full
+ LONGTIME  TIME              3654 r   01-JAN-2000 00:00    01-JAN-2010 00:00   full
  normal    E
  normal    F
 load bigvar
@@ -77981,11 +77981,11 @@ GO err69_write_attribute
 use gt4d011.cdf
 sh grid temp
     GRID PS3DT21
- name       axis              # pts   start                end
- PSXT1     LONGITUDE          160mr   130.5E               70.5W
- PSYT1     LATITUDE           100 i   28.836S              48.568N
- PSZT2     DEPTH (m)           27 i-  5                    3824
- TIME16    TIME                25 r   17-AUG-1982 12:00    10-JAN-1983 12:00
+ name       axis              # pts   start                end                 subset
+ PSXT1     LONGITUDE          160mr   130.5E               70.5W               full
+ PSYT1     LATITUDE           100 i   28.836S              48.568N             full
+ PSZT2     DEPTH (m)           27 i-  5                    3824                full
+ TIME16    TIME                25 r   17-AUG-1982 12:00    10-JAN-1983 12:00   full
  normal    E
  normal    F
 let a = temp[x=@ave,y=@ave,L=1]
@@ -78434,7 +78434,7 @@ variables:
 		:geospatial_lat_max = 29.07 ;
 		:time_coverage_start = "2006-06-10T23:48:00Z" ;
 		:time_converage_end = "2006-06-11T00:12:00Z" ;
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 }
  
 GO bn_reset
@@ -78527,7 +78527,7 @@ variables:
 		LON360:history = "added to test_save_dsg.nc" ;
 
 // global attributes:
-		:history = "CruiseDsgNcFile 1.0FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "CruiseDsgNcFile 1.0FERRET V6.97 (beta) 18-Dec-15" ;
 		:featureType = "Trajectory" ;
 		:Conventions = "Some other conventionsCF-1.6" ;
 		:geospatial_lon_min = -92.77 ;
@@ -78554,7 +78554,7 @@ can dat/all; use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
  ..history = Subset of etopo20,
- FERRET V6.97 (beta) 17-Dec-15 
+ FERRET V6.97 (beta) 18-Dec-15 
  ..Conventions = Existing conventions note, , CF-1.6 
  
  
@@ -78586,7 +78586,7 @@ can dat/all; use conventions_history
 ! The new attibutes
 sh att .
      attributes for dataset: ./conventions_history.nc
- ..history = The history of the fileFERRET V6.97 (beta) 17-Dec-15 
+ ..history = The history of the fileFERRET V6.97 (beta) 18-Dec-15 
  ..Conventions = Conventions for variables named V2CF-1.6 
  
 GO bn_reset
@@ -78815,11 +78815,11 @@ SAY ---------------- Just the grid of sst
 ---------------- Just the grid of sst
 sp cat a.txt
     GRID GSQ1
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- COADSY    LATITUDE            90 r   89S                  89N
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ COADSY    LATITUDE            90 r   89S                  89N                 full
  normal    Z
- TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58
+ TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        full
  normal    E
  normal    F
  
@@ -78872,11 +78872,11 @@ SAY ---------------- Just grid of sst
 ---------------- Just grid of sst
 sp cat a.txt
     GRID GSQ1
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- COADSY    LATITUDE            90 r   89S                  89N
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ COADSY    LATITUDE            90 r   89S                  89N                 full
  normal    Z
- TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58
+ TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        full
  normal    E
  normal    F
  
@@ -80374,8 +80374,8 @@ GO err693_isize_and_gcfcn
 can mode verify
 8
     GRID XABSTRACT
- name       axis              # pts   start                end
- ABSTRACT  X             99999999 r   1                    1.E+08               (subset 7 pts)
+ name       axis              # pts   start                end                 subset
+ ABSTRACT  X             99999999 r   1                    1.E+08              7 pts
  normal    Y
  normal    Z
  normal    T
@@ -80399,8 +80399,8 @@ can mode verify
 8 h
 8
     GRID XABSTRACT
- name       axis              # pts   start                end
- ABSTRACT  X             99999999 r   1                    1.E+08
+ name       axis              # pts   start                end                 subset
+ ABSTRACT  X             99999999 r   1                    1.E+08              full
  normal    Y
  normal    Z
  normal    T
@@ -82112,13 +82112,13 @@ define data/hide/F/agg fourfiles = 1,2,3,4
  
 sh grid sst
     GRID (G087)
- name       axis              # pts   start                end
- LON1      LONGITUDE           10mr   109W                 91W
- LAT       LATITUDE             9 r   13N                  29N
+ name       axis              # pts   start                end                 subset
+ LON1      LONGITUDE           10mr   109W                 91W                 full
+ LAT       LATITUDE             9 r   13N                  29N                 full
  normal    Z
- TF_LAG_T  MODEL ELAPSED TIME (12 r   0                    11
+ TF_LAG_T  MODEL ELAPSED TIME (12 r   0                    11                  full
  normal    E
- TF_CAL_F  FORECAST             4 r   02-JAN-2010 00:00    08-JAN-2010 00:00
+ TF_CAL_F  FORECAST             4 r   02-JAN-2010 00:00    08-JAN-2010 00:00   full
 list/i=1/j=1/L=1:6/n=1:4 sst
              VARIABLE : SST_IN (Deg C)
              DATA SET : 1,2,3,4
@@ -82673,10 +82673,10 @@ SHOW GRID
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid GAO1
     GRID GAO1
- name       axis              # pts   start                end
- XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E
- YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S
- ZAXLEVITR DEPTH (m)           20 i-  0                    5000                 (subset 10 pts)
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
+ YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
+ ZAXLEVITR DEPTH (m)           20 i-  0                    5000                10 pts
  normal    T
  normal    E
  normal    F
@@ -82741,10 +82741,10 @@ SHOW GRID tempz
  getgrid EX#1     C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid (G086)          XAXLEVITR1YAXLEVITR4(AX123)   NORMAL    NORMAL    NORMAL
     GRID (G086)
- name       axis              # pts   start                end
- XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E
- YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S
- (AX123)   Z                    5 r   100                  500
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
+ YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
+ (AX123)   Z                    5 r   100                  500                 full
  normal    T
  normal    E
  normal    F
@@ -82791,10 +82791,10 @@ LIST tempzax
  49.5S / 1:  4.879000  5.102500
 SHOW GRID tempzax
     GRID (G108)
- name       axis              # pts   start                end
- XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E
- YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S
- ZAX       Z (METERS)           5 r   100                  500
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
+ YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
+ ZAX       Z (METERS)           5 r   100                  500                 full
  normal    T
  normal    E
  normal    F
@@ -82827,10 +82827,10 @@ LIST/PREC=7 tempz_alt
  49.5S / 1:  6.843000  7.021999
 SHOW GRID tempz_alt
     GRID (G103)
- name       axis              # pts   start                end
- XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E
- YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S
- (AX121)   Z                    5 r   2                    10                   (subset 4 pts)
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
+ YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
+ (AX121)   Z                    5 r   2                    10                  4 pts
  normal    T
  normal    E
  normal    F
@@ -82854,10 +82854,10 @@ LIST/PREC=7 tempz_1pt
  49.5S / 1:  6.836600  7.016000
 SHOW GRID/z tempz_1pt
     GRID (G087)
- name       axis              # pts   start                end
- XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E
- YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S
- (AX114)   Z                    1 r   6                    6                    (subset 1 pt)
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
+ YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
+ (AX114)   Z                    1 r   6                    6                   1 pt
  normal    T
  normal    E
  normal    F
@@ -82879,10 +82879,10 @@ SHOW GRID
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid GAO1
     GRID GAO1
- name       axis              # pts   start                end
- XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E
- YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S
- ZAXLEVITR DEPTH (m)           20 i-  0                    5000                 (subset 1 pt)
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
+ YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
+ ZAXLEVITR DEPTH (m)           20 i-  0                    5000                1 pt
  normal    T
  normal    E
  normal    F
@@ -82921,10 +82921,10 @@ LIST/PREC=7 rvtempzax - tempz
  49.5S / 1:  0.0000000  0.0000000
 SHOW GRID rvtempzax
     GRID (G108)
- name       axis              # pts   start                end
- XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E
- YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S
- ZAX       Z (METERS)           5 r   100                  500                  (axis from grid-changing function)
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
+ YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
+ ZAX       Z (METERS)           5 r   100                  500                 (axis from grid-changing func)
  normal    T
  normal    E
  normal    F
@@ -84116,10 +84116,10 @@ LIST/PREC=7 rvtempzaxave - tempz
  49.5S / 1:  0.00000000  0.00000000
 SHOW GRID/z rvtempzaxave
     GRID (G108)
- name       axis              # pts   start                end
- XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E
- YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S
- ZAX       Z (METERS)           5 r   100                  500                  (axis from grid-changing function)
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
+ YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
+ ZAX       Z (METERS)           5 r   100                  500                 (axis from grid-changing func)
  normal    T
  normal    E
  normal    F
@@ -86631,11 +86631,11 @@ use shorttemp.nc
 ! Previously showed tbox=0 for every second pt.
 sh grid/l=1:4444 temp
     GRID GSL1
- name       axis              # pts   start                end
- LON1      LONGITUDE            1 r   97.45W               97.45W
- LAT       LATITUDE             1 r   36.65N               36.65N
- PFULL1_1  Z (hpa)              1 r-  3.3236               3.3236
- TIME16    TIME                 4 i   19-JUN-1997 00:00    19-JUN-1997 01:30
+ name       axis              # pts   start                end                 subset
+ LON1      LONGITUDE            1 r   97.45W               97.45W              full
+ LAT       LATITUDE             1 r   36.65N               36.65N              full
+ PFULL1_1  Z (hpa)              1 r-  3.3236               3.3236              full
+ TIME16    TIME                 4 i   19-JUN-1997 00:00    19-JUN-1997 01:30   full
  normal    E
  normal    F
  
@@ -87310,20 +87310,20 @@ GO err696_time_overlay
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
 sp date
-Thu Dec 17 14:25:49 PST 2015
+Fri Dec 18 13:41:11 PST 2015
 set view upper
 plot t[gt=tax_nlp]
 plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
 sp date
-Thu Dec 17 14:25:49 PST 2015
+Fri Dec 18 13:41:11 PST 2015
  
 sp date
-Thu Dec 17 14:25:49 PST 2015
+Fri Dec 18 13:41:11 PST 2015
 set view lower
 plot t[gt=tax_jul]
 plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
 sp date
-Thu Dec 17 14:25:49 PST 2015
+Fri Dec 18 13:41:11 PST 2015
  
 GO bn_reset
 cancel mode verify
@@ -87379,7 +87379,7 @@ variables:
 		var:long_name = "0*TT + X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -87604,11 +87604,11 @@ show data myagg1
  
 show grid myvar
     GRID GQC1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TDAY2     TIME                10 r   01-JAN-1980 00:00    10-JAN-1980 00:00
+ TDAY2     TIME                10 r   01-JAN-1980 00:00    10-JAN-1980 00:00   full
  normal    E
  normal    F
  
@@ -87616,11 +87616,11 @@ show grid myvar
 define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc
 show grid myvar
     GRID GQC3
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TDAY3     TIME                20 r   01-JAN-1980 00:00    20-JAN-1980 00:00
+ TDAY3     TIME                20 r   01-JAN-1980 00:00    20-JAN-1980 00:00   full
  normal    E
  normal    F
 stat myvar
@@ -87738,11 +87738,11 @@ show data/full  ! all 4 datasets
 11-MAR-1980 00:00 -> 20-MAR-1980 00:00    tmp/tagg_reg_8.nc
 show grid myvar
     GRID GQC7
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TDAY5     TIME                80 r   01-JAN-1980 00:00    20-MAR-1980 00:00
+ TDAY5     TIME                80 r   01-JAN-1980 00:00    20-MAR-1980 00:00   full
  normal    E
  normal    F
 plot/line/sym myvar
@@ -87835,11 +87835,11 @@ define data/agg/t myagg8 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_2.nc,tmp/tagg_irr
  
   show grid/t myvar[d=1]
     GRID GCV1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TDAY_IR1  TIME                20 i   02-JAN-1980 00:00    21-JAN-1980 14:35
+ TDAY_IR1  TIME                20 i   02-JAN-1980 00:00    21-JAN-1980 14:35   full
  normal    E
  normal    F
  
@@ -87866,11 +87866,11 @@ define data/agg/t myagg8 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_2.nc,tmp/tagg_irr
       20>  21-JAN-1980 14:35:49  1.04071    21-JAN-1980 02:06:42    20.60821
   show grid myvar[d=2]
     GRID GCV2
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TDAY_IR2  TIME                80 i   02-JAN-1980 00:00    24-MAR-1980 14:00
+ TDAY_IR2  TIME                80 i   02-JAN-1980 00:00    24-MAR-1980 14:00   full
  normal    E
  normal    F
   plot/line/sym myvar[d=2],myvar[d=1]
@@ -87879,11 +87879,11 @@ define data/agg/t myagg8 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_2.nc,tmp/tagg_irr
 define data/agg/t myagg4 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_2_reg.nc,tmp/tagg_irreg_3.nc, tmp/tagg_irreg_4.nc
   show grid/t myvar[d=myagg4]
     GRID GCV3
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TDAY_IR3  TIME                40 i   02-JAN-1980 00:00    11-FEB-1980 12:04
+ TDAY_IR3  TIME                40 i   02-JAN-1980 00:00    11-FEB-1980 12:04   full
  normal    E
  normal    F
  
@@ -87980,11 +87980,11 @@ define data/agg/t myagg8 = tmp/tagg_T0varying_1.nc, tmp/tagg_T0varying_2.nc,tmp/
  
   show grid/t myvar[d=1]
     GRID GBN1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TDAY_TVAR TIME                 8 r   02-JAN-1980 00:00    09-JAN-1980 00:00
+ TDAY_TVAR TIME                 8 r   02-JAN-1980 00:00    09-JAN-1980 00:00   full
  normal    E
  normal    F
  
@@ -87999,11 +87999,11 @@ define data/agg/t myagg8 = tmp/tagg_T0varying_1.nc, tmp/tagg_T0varying_2.nc,tmp/
        8>  09-JAN-1980 00:00:00  1          08-JAN-1980 12:00:00    8
   show grid myvar[d=2]
     GRID GBN2
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TDAY_TVAR1 TIME               20 r   02-JAN-1980 00:00    21-JAN-1980 00:00
+ TDAY_TVAR1 TIME               20 r   02-JAN-1980 00:00    21-JAN-1980 00:00   full
  normal    E
  normal    F
   plot/line/sym myvar[d=2],myvar[d=1]
@@ -88059,11 +88059,11 @@ define data/agg/t myagg8 = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T
  
   show grid/t myvar[d=1]
     GRID GKQ1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TDAY_TVAR TIME                11 i   02-JAN-1981 00:00    11-JAN-1982 00:00
+ TDAY_TVAR TIME                11 i   02-JAN-1981 00:00    11-JAN-1982 00:00   full
  normal    E
  normal    F
  
@@ -88081,11 +88081,11 @@ define data/agg/t myagg8 = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T
       11>  11-JAN-1982 00:00:00  1          10-JAN-1982 12:00:00    375
   show grid myvar[d=2]
     GRID GKQ2
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TDAY_TVAR1 TIME               62 i   02-JAN-1981 00:00    11-JAN-1988 00:00
+ TDAY_TVAR1 TIME               62 i   02-JAN-1981 00:00    11-JAN-1988 00:00   full
  normal    E
  normal    F
   plot/line/sym/vlim=0:11 myvar[d=2],myvar[d=1]
@@ -88164,11 +88164,11 @@ show data/full  MYsing_reg_agg6
 06-JAN-1980 00:00 -> 06-JAN-1980 00:00    tmp/tagg_single_6.nc
 show grid/t myvar
     GRID GMI1
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TDAY1     TIME                 6 r   01-JAN-1980 00:00    06-JAN-1980 00:00
+ TDAY1     TIME                 6 r   01-JAN-1980 00:00    06-JAN-1980 00:00   full
  normal    E
  normal    F
  
@@ -88223,11 +88223,11 @@ show data/full MYsing_irreg_agg4
 05-JAN-1980 00:00 -> 05-JAN-1980 00:00    tmp/tagg_single_5.nc
 show grid/t myvar
     GRID GMI3
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- TDAY2     TIME                 4 i   01-JAN-1980 00:00    05-JAN-1980 00:00
+ TDAY2     TIME                 4 i   01-JAN-1980 00:00    05-JAN-1980 00:00   full
  normal    E
  normal    F
  
@@ -88251,11 +88251,11 @@ show data COADS
  
 show grid/T air
     GRID GMW1
- name       axis              # pts   start                end
- LON1      LONGITUDE          180mr   1E                   1W
- LAT       LATITUDE            90 r   89S                  89N
+ name       axis              # pts   start                end                 subset
+ LON1      LONGITUDE          180mr   1E                   1W                  full
+ LAT       LATITUDE            90 r   89S                  89N                 full
  normal    Z
- TIME16    TIME                36 i   16-JAN-2012 12:00    16-DEC-2014 12:00
+ TIME16    TIME                36 i   16-JAN-2012 12:00    16-DEC-2014 12:00   full
  normal    E
  normal    F
  
@@ -88903,16 +88903,60 @@ GO bn_show_uvar_grid
 ! For grid changing functions just mark axis as such
 !
 ! 12/17/2015 *acm*
- 
+! 12/18 2015 *acm* Add constant and constant-array variables,
+!                  and modulo axis request on more than full range
  
 use coads_climatology
 show grid sst[x=240:320,y=0,t=@ave]
     GRID GSQ1
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)             (subset 39 pts)
- COADSY    LATITUDE            90 r   89S                  89N                  (subset 1 pt)
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            39 pts
+ COADSY    LATITUDE            90 r   89S                  89N                 1 pt
  normal    Z
- TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58         (compressed)
+ TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        compressed
+ normal    E
+ normal    F
+ 
+! Modulo axes ask for superset
+show grid sst[x=0:540,L=1:15]
+    GRID GSQ1
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            269 pts
+ COADSY    LATITUDE            90 r   89S                  89N                 full
+ normal    Z
+ TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        14 pts
+ normal    E
+ normal    F
+ 
+! Constant: full abstract grid
+show grid 1
+    GRID ABSTRACT
+ name       axis              # pts   start                end                 subset
+ ABSTRACT  X             99999999 r   1                    1.E+08              full
+ ABSTRACT  Y             99999999 r   1                    1.E+08              full
+ ABSTRACT  Z             99999999 r   1                    1.E+08              full
+ ABSTRACT  T             99999999 r   1                    1.E+08              full
+ ABSTRACT  E             99999999 r   1                    1.E+08              full
+ ABSTRACT  F             99999999 r   1                    1.E+08              full
+ 
+! Constant-array
+show grid {1}
+    GRID XABSTRACT
+ name       axis              # pts   start                end                 subset
+ ABSTRACT  X             99999999 r   1                    1.E+08              1 pt
+ normal    Y
+ normal    Z
+ normal    T
+ normal    E
+ normal    F
+let var = {1,2,4,8}  ! Note that show grid {1,2,4,8} fails: bug
+show grid var
+    GRID XABSTRACT
+ name       axis              # pts   start                end                 subset
+ ABSTRACT  X             99999999 r   1                    1.E+08              3 pts
+ normal    Y
+ normal    Z
+ normal    T
  normal    E
  normal    F
  
@@ -88934,11 +88978,11 @@ show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid GSQ1
     GRID GSQ1
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)             (subset 1 pt)
- COADSY    LATITUDE            90 r   89S                  89N
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            1 pt
+ COADSY    LATITUDE            90 r   89S                  89N                 full
  normal    Z
- TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58         (compressed)
+ TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        compressed
  normal    E
  normal    F
  
@@ -88946,11 +88990,11 @@ show grid
 let var = sst[L=@ave] - sst[x=@max] - sst[y=0]
 show grid var
     GRID GSQ1
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- COADSY    LATITUDE            90 r   89S                  89N
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ COADSY    LATITUDE            90 r   89S                  89N                 full
  normal    Z
- TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58
+ TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        full
  normal    E
  normal    F
  
@@ -88960,22 +89004,22 @@ cancel mode interpolate  ! otherwise single-pt range fails
 let var = sst[X=30@max]
 show grid var
     GRID GSQ1
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)             (subset 1 pt)
- COADSY    LATITUDE            90 r   89S                  89N
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            1 pt
+ COADSY    LATITUDE            90 r   89S                  89N                 full
  normal    Z
- TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58
+ TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        full
  normal    E
  normal    F
 set mode/last interpolate
 let var = sst[X=30:30.1@max]
 show grid var
     GRID GSQ1
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)             (compressed)
- COADSY    LATITUDE            90 r   89S                  89N
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            1 pt
+ COADSY    LATITUDE            90 r   89S                  89N                 full
  normal    Z
- TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58
+ TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        full
  normal    E
  normal    F
  
@@ -88983,22 +89027,22 @@ show grid var
 let var = sst[y=-10:10:.1,l=1,x=160e]
 show grid var
     GRID (G107)
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)             (subset 1 pt)
- (AX129)   LATITUDE           201 r   10S                  10N                  (subset 200 pts)
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            1 pt
+ (AX129)   LATITUDE           201 r   10S                  10N                 200 pts
  normal    Z
- TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58         (subset 1 pt)
+ TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        1 pt
  normal    E
  normal    F
  
 ! striding
 show grid sst[i=1:180:3,j=1:90:2]
     GRID (G091)
- name       axis              # pts   start                end
- (AX122)   LONGITUDE           60 r   21E                  15E(375)             (subset 59 pts)
- (AX114)   LATITUDE            45 r   89S                  87N                  (subset 44 pts)
+ name       axis              # pts   start                end                 subset
+ (AX122)   LONGITUDE           60 r   21E                  15E(375)            59 pts
+ (AX114)   LATITUDE            45 r   89S                  87N                 44 pts
  normal    Z
- TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58
+ TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        full
  normal    E
  normal    F
  
@@ -89009,22 +89053,22 @@ define axis/t=1-jan-1980:31-dec-1982:1/units=days dax
 let vwnd_days = vwnd[gt=dax,t=1-jun-1982:15-jul-1982]
 sh grid vwnd_days
     GRID (G091)
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- COADSY    LATITUDE            90 r   89S                  89N
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ COADSY    LATITUDE            90 r   89S                  89N                 full
  normal    Z
- DAX       TIME              1096 r   01-JAN-1980 00:00    31-DEC-1982 00:00    (subset 44 pts)
+ DAX       TIME              1096 r   01-JAN-1980 00:00    31-DEC-1982 00:00   44 pts
  normal    E
  normal    F
  
 let vwnd_clim = vwnd[gt=month_irreg@mod]
 sh grid vwnd_clim[L=4:9]
     GRID (G102)
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- COADSY    LATITUDE            90 r   89S                  89N
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ COADSY    LATITUDE            90 r   89S                  89N                 full
  normal    Z
- MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49         (subset 5 pts)
+ MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49        5 pts
  normal    E
  normal    F
  
@@ -89036,22 +89080,22 @@ use coads_climatology
 let var = sst[y=@iin]
 show grid var
     GRID GSQ1
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- COADSY    LATITUDE            90 r   89S                  89N
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ COADSY    LATITUDE            90 r   89S                  89N                 full
  normal    Z
- TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58
+ TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        full
  normal    E
  normal    F
  
 let var = sst[y=-30:30@iin]
 show grid var
     GRID GSQ1
- name       axis              # pts   start                end
- COADSX    LONGITUDE          180mr   21E                  19E(379)
- COADSY    LATITUDE            90 r   89S                  89N                  (subset 29 pts)
+ name       axis              # pts   start                end                 subset
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            full
+ COADSY    LATITUDE            90 r   89S                  89N                 29 pts
  normal    Z
- TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58
+ TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        full
  normal    E
  normal    F
  
@@ -89059,10 +89103,10 @@ use levitus_3d_subset
 let var = temp[z=@weq:20]
 show grid var
     GRID GAO1
- name       axis              # pts   start                end
- XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E
- YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S
- ZAXLEVITR DEPTH (m)           20 i-  0                    5000
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
+ YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
+ ZAXLEVITR DEPTH (m)           20 i-  0                    5000                full
  normal    T
  normal    E
  normal    F
@@ -89070,10 +89114,10 @@ show grid var
 let var = temp[z=1:120@weq:20]
 show grid var
     GRID GAO1
- name       axis              # pts   start                end
- XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E
- YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S
- ZAXLEVITR DEPTH (m)           20 i-  0                    5000                 (subset 6 pts)
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
+ YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
+ ZAXLEVITR DEPTH (m)           20 i-  0                    5000                6 pts
  normal    T
  normal    E
  normal    F
@@ -89086,10 +89130,10 @@ let depth =  Z[G=TEMP]+ 0*TEMP[K=1]
 let depth_rev = zreverse(depth)
 show grid depth_rev
     GRID (G086)
- name       axis              # pts   start                end
- XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E
- YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S
- ABSTRACT  Z             99999999 r   1                    1.E+08               (axis from grid-changing function)
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
+ YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
+ ABSTRACT  Z             99999999 r   1                    1.E+08              (axis from grid-changing func)
  normal    T
  normal    E
  normal    F
@@ -89100,31 +89144,31 @@ LET sample_function = sin(0.5*tpts - 6.)/2. - cos(0.3*tpts)
  
 show grid ffta(sample_function)
     GRID (G091)
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- (AX121)   T (CYC/HOURS)      182 r   0.00011447           0.020833             (axis from grid-changing function)
+ (AX121)   T (CYC/HOURS)      182 r   0.00011447           0.020833            (axis from grid-changing func)
  normal    E
  normal    F
  
 show grid ffta(sample_function[t=15-jan-1990:15-jun-1990])
     GRID (G091)
- name       axis              # pts   start                end
+ name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
  normal    Z
- (AX114)   T (CYC/HOURS)       76 r   0.00027412           0.020833             (axis from grid-changing function)
+ (AX114)   T (CYC/HOURS)       76 r   0.00027412           0.020833            (axis from grid-changing func)
  normal    E
  normal    F
  
 show grid ffta(sample_function + temp[d=levitus_3d_subset,z=0:40])
     GRID (G102)
- name       axis              # pts   start                end
- XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E
- YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S
- ZAXLEVITR DEPTH (m)           20 i-  0                    5000                 (subset 3 pts)
- (AX121)   T (CYC/HOURS)      182 r   0.00011447           0.020833             (axis from grid-changing function)
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
+ YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
+ ZAXLEVITR DEPTH (m)           20 i-  0                    5000                3 pts
+ (AX121)   T (CYC/HOURS)      182 r   0.00011447           0.020833            (axis from grid-changing func)
  normal    E
  normal    F
  
@@ -89140,19 +89184,19 @@ let  TEMPZ = TEMP[GZ(DEPTH)=ZPTS]
  
 sh grid tempz
     GRID (G107)
- name       axis              # pts   start                end
- XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E
- YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S
- (AX129)   Z                    5 r   100                  500
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
+ YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
+ (AX129)   Z                    5 r   100                  500                 full
  normal    T
  normal    E
  normal    F
 sh grid tempz[z=100:400]
     GRID (G107)
- name       axis              # pts   start                end
- XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E
- YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S
- (AX129)   Z                    5 r   100                  500                  (subset 3 pts)
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
+ YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
+ (AX129)   Z                    5 r   100                  500                 3 pts
  normal    T
  normal    E
  normal    F
@@ -89170,10 +89214,10 @@ LET rvdepth0 = ZREVERSE(depth)
 LET rvtempzax = rvtemp[gz(rvdepth)=zax,z=100:500]
 show grid rvtempzax
     GRID (G108)
- name       axis              # pts   start                end
- XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E
- YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S
- ZAX       Z (METERS)           5 r   100                  500                  (axis from grid-changing function)
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
+ YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
+ ZAX       Z (METERS)           5 r   100                  500                 (axis from grid-changing func)
  normal    T
  normal    E
  normal    F
@@ -89183,10 +89227,10 @@ show grid rvtempzax
 LET rvtempzax = rvtemp[gz(rvdepth)=zax]
 show grid rvtempzax[z=100:300]
     GRID (G108)
- name       axis              # pts   start                end
- XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E
- YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S
- ZAX       Z (METERS)           5 r   100                  500                  (axis from grid-changing function)
+ name       axis              # pts   start                end                 subset
+ XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
+ YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
+ ZAX       Z (METERS)           5 r   100                  500                 (axis from grid-changing func)
  normal    T
  normal    E
  normal    F
@@ -89205,8 +89249,8 @@ yes?
 yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v6.97 (beta)
- 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/17/15
- 	17-Dec-15 14:25     
+ 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/18/15
+ 	18-Dec-15 13:41     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -90060,7 +90104,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90085,7 +90129,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90109,7 +90153,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90148,7 +90192,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90183,7 +90227,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90224,7 +90268,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90281,7 +90325,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90338,7 +90382,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90393,7 +90437,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90441,7 +90485,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90535,7 +90579,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90605,7 +90649,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90656,7 +90700,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90731,7 +90775,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90758,7 +90802,7 @@ variables:
 		X_:long_name_mod = "axis ABSTRACT" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -90782,7 +90826,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -90809,11 +90853,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -90844,7 +90888,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90916,7 +90960,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90960,7 +91004,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91002,7 +91046,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91110,7 +91154,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -91151,7 +91195,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -91174,7 +91218,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91200,7 +91244,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91220,7 +91264,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91241,7 +91285,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91284,7 +91328,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -91324,7 +91368,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -91362,7 +91406,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -91391,7 +91435,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91424,7 +91468,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91450,7 +91494,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91496,7 +91540,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -91603,7 +91647,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 		:dt_internal = 15. ;
 }
@@ -91645,7 +91689,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91728,7 +91772,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91765,7 +91809,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91805,7 +91849,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91856,7 +91900,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -91915,7 +91959,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -91960,7 +92004,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -92003,7 +92047,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -92038,7 +92082,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -92072,7 +92116,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -92102,7 +92146,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -92131,7 +92175,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -92192,7 +92236,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -92237,7 +92281,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -92256,37 +92300,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
-		:Conventions = "CF-1.6" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	double A(XAX) ;
-		A:missing_value = -1.e+34 ;
-		A:_FillValue = -1.e+34 ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -92316,7 +92330,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
+		:Conventions = "CF-1.6" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	double A(XAX) ;
+		A:missing_value = -1.e+34 ;
+		A:_FillValue = -1.e+34 ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -92369,7 +92413,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -92411,7 +92455,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -92429,7 +92473,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 err611_set_var_ez.jnl --- 
@@ -92448,7 +92492,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -92466,7 +92510,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -92483,7 +92527,7 @@ variables:
 		A:long_name = "{1.1,2.2,3.3}" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -92504,7 +92548,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -92567,7 +92611,7 @@ variables:
 		newvar:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_keep_axisnames.jnl --- test SAVE/KEEP_AXISNAMES
@@ -92594,7 +92638,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -92621,7 +92665,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, degrees_east, degrees_north, std names on axes:
@@ -92687,7 +92731,7 @@ variables:
 		ZUP:long_name = "Z[GZ=ZAXUP]" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, Convert forms of DEG, degrees to degrees_east:
@@ -92719,7 +92763,7 @@ variables:
 		Y_:long_name_mod = "axis YFIFTEEN" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, Downcase units, e.g. in time axis DAYS since
@@ -92752,7 +92796,7 @@ variables:
 		XYTVAR:history = "From bn_strides" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -92777,7 +92821,7 @@ variables:
 		time:history = "From http://tds.climatedatacloud.com/thredds/dodsC/ensembles/nmme_gfdl/TwoD" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -92815,7 +92859,7 @@ variables:
 		time:history = "From http://tds.climatedatacloud.com/thredds/dodsC/ensembles/nmme_gfdl/TwoD" ;
 
 // global attributes:
-		:history = "FERRET V6.97 (beta) 17-Dec-15" ;
+		:history = "FERRET V6.97 (beta) 18-Dec-15" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -92843,8 +92887,8 @@ yes?
 yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v6.97 (beta)
- 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/17/15
- 	17-Dec-15 14:25     
+ 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/18/15
+ 	18-Dec-15 13:41     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 8 bytes)
@@ -92856,13 +92900,13 @@ FERRET_PLATFORM = "Linux 2.6.32-573.8.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.3.3.1 of Nov 17 2015 14:50:39 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "17-Dec-15"
-SESSION_TIME = "14:25"
-SESSION_PID = "7988"
-DELTA_CPU = "0.073987"
-CLOCK_SECS = "0.302"
-CURRENT_DATE = "17-Dec-15"
-CURRENT_TIME = "14:25:52"
+SESSION_DATE = "18-Dec-15"
+SESSION_TIME = "13:41"
+SESSION_PID = "25689"
+DELTA_CPU = "0.070988"
+CLOCK_SECS = "0.258"
+CURRENT_DATE = "18-Dec-15"
+CURRENT_TIME = "13:41:13"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -92884,7 +92928,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "17-Dec-15:14:25"
+WIN_TITLE = "18-Dec-15:13:41"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -92949,8 +92993,8 @@ yes?
 yes? GO bn_gif
  	NOAA/PMEL TMAP
  	FERRET v6.97 (beta)
- 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/17/15
- 	17-Dec-15 14:25     
+ 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/18/15
+ 	18-Dec-15 13:41     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -93168,8 +93212,8 @@ yes?
 yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v6.97 (beta)
- 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/17/15
- 	17-Dec-15 14:25     
+ 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/18/15
+ 	18-Dec-15 13:41     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -93282,8 +93326,8 @@ yes?
 yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v6.97 (beta)
- 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/17/15
- 	17-Dec-15 14:25     
+ 	Linux 2.6.32-573.8.1.el6.x86_64 64-bit - 12/18/15
+ 	18-Dec-15 13:41     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -93367,4 +93411,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Thu Dec 17 14:25:55 PST 2015
+Ended at Fri Dec 18 13:41:16 PST 2015

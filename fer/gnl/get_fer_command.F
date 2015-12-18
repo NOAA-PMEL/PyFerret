@@ -103,6 +103,7 @@
 *		    4) Process continuation lines
 *                 Issue warning if GO file EOF found while in the midst of IF
 * V697 12/15 *acm* Ticket 2337 Increase length of cmnd buffer to 20480
+* V697 12/15 *acm* Ticket 2341 Check that cmnd_len hasn't been set to 0.
 
 #ifdef MIXING_NAG_F90_AND_C
 	USE F90_UNIX
@@ -286,6 +287,7 @@ c        IF(has_more.NE.1) goto 210
 * find length of command line ("!" is a valid terminator to permit comments)
 	cmnd_len = cmnd_len_w_cmnt   ! dflt len if no comment found
 	pure_comment = .FALSE.
+	IF (cmnd_len .LE. 0) pure_comment = .TRUE.
 	IF (cmnd_buff(1:1) .EQ. '!'
      . .OR. cmnd_buff(1:1) .EQ. '*'
      . .OR. cmnd_buff(1:1) .EQ. ' ' .AND. cmnd_len .EQ. 1) THEN

@@ -1,4 +1,4 @@
-	SUBROUTINE SHOW_GRID( grid, cx, status )
+	SUBROUTINE SHOW_GRID( grid, cx, uvgrid, status )
 
 *
 *
@@ -68,6 +68,9 @@
 * V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
 *                 various SHOW commnands will not list info for E,F dimensions.
 * V691+ 8/14 *acm* Fix ticket 2194: SHOW with /OUTFILE and not /XML. 
+* V697  12/15 *acm* Changes to add details on SHOW GRID uvar to indicate 
+*                   compressed or subset of axes
+* V697  12/15 *acm* Changes to formatting the output that shows subsets
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -77,12 +80,14 @@
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
 	include 'xrisc.cmn'
+	include 'xvariables.cmn'
 
 * calling argument declarations
+	LOGICAL uvgrid 
 	INTEGER grid, cx, status
 
 * local variable declarations:
-	INTEGER i, idim, listdims
+	INTEGER i, idim, listdims, uvar
 
 * If mode 6d_lab has been cancelled, we will list only the first 4 dimensions.
 * But if the grid has E or F axes, thats an error.
@@ -97,12 +102,21 @@
   90	   CONTINUE
 	ENDIF
 
+* Getting details about the grid of a user-variable
+        uvar = -1
+	IF (uvgrid) uvar = is_uvar(isp)
+
 * list and describe the axes of the grid
 	risc_buff = ' '
-	WRITE ( risc_buff, 3000 )
+	IF (uvgrid) THEN
+	   WRITE ( risc_buff, 3100 )
+	ELSE
+	   WRITE ( risc_buff, 3000 )
+	ENDIF
+
 	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	DO 110 idim = 1, listdims
-	   CALL LINE_FACTS( show_lun, idim, grid, idim )
+	   CALL LINE_FACTS( show_lun, idim, grid, idim, uvar )
  110	CONTINUE
 
 * list the data on any axis that has been especially requested
@@ -119,6 +133,9 @@
 
  3000	FORMAT (T2,'name',T13,'axis',T31,'# pts',T39,'start',T60,
      .          'end' )
+
+ 3100	FORMAT (T2,'name',T13,'axis',T31,'# pts',T39,'start',T60,
+     .          'end',T80,'subset' )
 
 5000    RETURN
 5100	CALL ERRMSG( ferr_invalid_command, status,

@@ -1,0 +1,126 @@
+! bn_show_uvar_grid.jnl
+! Add notes to the output of SHOW GRID for variables and expressions 
+! indicate compressed axes, point subsets and subset ranges.
+! For grid changing functions just mark axis as such
+!
+! 12/17/2015 *acm*
+! 12/18 2015 *acm* Add constant and constant-array variables, 
+!                  and modulo axis request on more than full range
+
+use coads_climatology
+show grid sst[x=240:320,y=0,t=@ave]
+
+! Modulo axes ask for superset
+show grid sst[x=0:540,L=1:15]
+
+! Constant: full abstract grid
+show grid 1
+
+! Constant-array
+show grid {1}
+let var = {1,2,4,8}  ! Note that show grid {1,2,4,8} fails: bug
+show grid var
+
+! but don't show any user-var grid info if they just ask for the grid by name
+show grid `sst,return=grid`
+
+! grid of last variable loaded
+load sst[x=240,y=@iin,t=@ave]
+show grid 
+
+! Result grid is full grid
+let var = sst[L=@ave] - sst[x=@max] - sst[y=0]
+show grid var
+
+! transform on single-point range is equiv. to single-point subset
+
+cancel mode interpolate  ! otherwise single-pt range fails
+let var = sst[X=30@max]
+show grid var
+set mode/last interpolate
+let var = sst[X=30:30.1@max]
+show grid var
+
+! dynamic grid
+let var = sst[y=-10:10:.1,l=1,x=160e]
+show grid var
+
+! striding
+show grid sst[i=1:180:3,j=1:90:2]
+
+! regridding
+
+use coads_vwnd
+define axis/t=1-jan-1980:31-dec-1982:1/units=days dax
+let vwnd_days = vwnd[gt=dax,t=1-jun-1982:15-jul-1982]
+sh grid vwnd_days
+
+let vwnd_clim = vwnd[gt=month_irreg@mod]
+sh grid vwnd_clim[L=4:9]
+
+can dat/all
+use coads_climatology
+
+! non-compressing transforms
+
+let var = sst[y=@iin]
+show grid var
+
+let var = sst[y=-30:30@iin]
+show grid var
+
+use levitus_3d_subset
+let var = temp[z=@weq:20]
+show grid var
+
+let var = temp[z=1:120@weq:20]
+show grid var
+
+
+! grid-changing functions
+can dat/all
+use levitus_3d_subset
+let depth =  Z[G=TEMP]+ 0*TEMP[K=1]
+let depth_rev = zreverse(depth)
+show grid depth_rev
+
+DEFINE AXIS/t=1-Jan-1990:31-Dec-1990:24/t0=1-jan-1980 dayt
+let tpts = t[gt=dayt]
+LET sample_function = sin(0.5*tpts - 6.)/2. - cos(0.3*tpts)
+ 
+show grid ffta(sample_function)
+
+show grid ffta(sample_function[t=15-jan-1990:15-jun-1990])
+
+show grid ffta(sample_function + temp[d=levitus_3d_subset,z=0:40])
+
+can dat/all
+
+! auxiliary regridding
+
+use levitus_3d_subset.nc
+LET Zpts = Z[Z=100:500:100]
+DEFINE AXIS/z/units=meters zax = zpts
+LET/D=levitus_3d_subset depth = z[g=temp]+ 0*temp[k=1]
+let  TEMPZ = TEMP[GZ(DEPTH)=ZPTS]
+
+sh grid tempz
+sh grid tempz[z=100:400]
+
+! and with a grid-changing function thrown in
+
+use levitus_3d_subset.nc
+LET Zpts = Z[Z=100:500:100]
+DEFINE AXIS/z/units=meters zax = zpts
+LET/D=levitus_3d_subset rvdepth  = rvdepth0[gz=temp@asn]
+LET/D=levitus_3d_subset depth = z[g=temp]+ 0*temp[k=1]
+LET rvtemp0 = ZREVERSE(temp)
+LET rvtemp  = rvtemp0[gz=temp@asn]
+LET rvdepth0 = ZREVERSE(depth)
+LET rvtempzax = rvtemp[gz(rvdepth)=zax,z=100:500]
+show grid rvtempzax
+
+! gc func: limits are hidden so a subset not seen
+
+LET rvtempzax = rvtemp[gz(rvdepth)=zax]
+show grid rvtempzax[z=100:300]

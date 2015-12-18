@@ -227,6 +227,8 @@
 * v696 *acm*  6/15 PLOT/VS/GAPLOC to define seperate line segments on
 *                  PLOT/VS plots (LAS ticket 1597 and others)
 * v696 *acm* 11/15 SET VAR/UNITS instead of /UNIT, just for consistency
+* V697 *acm* 12/15 Correct typo: LIST/SINGLY was shown as /SINGLE
+
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -952,7 +954,7 @@
 		DATA qualifiers  (nqual_at5a+12)/ 'D'	/
 		DATA qualifiers  (nqual_at5a+13)/ 'HEADING'/
 		DATA qualifiers  (nqual_at5a+14)/ 'NOHEAD'/
-		DATA qualifiers  (nqual_at5a+15)/ 'SINGLE'/
+		DATA qualifiers  (nqual_at5a+15)/ 'SINGLY'/
 		DATA qualifiers  (nqual_at5a+16)/ 'FILE'/
 		DATA qualifiers  (nqual_at5a+17)/ 'APPEND'/
 		DATA qualifiers  (nqual_at5a+18)/ 'ORDER'/

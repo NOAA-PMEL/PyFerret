@@ -317,7 +317,7 @@ class CmndHelperPQ(object):
         # new symbol - create a SymbolPath for it
         if symbol == '.':
             path = QPainterPath()
-            path.addEllipse(-20.0, -20.0, 40.0, 40.0)
+            path.addEllipse(-10.0, -10.0, 20.0, 20.0)
             sympath = SymbolPath(path, True)
         elif symbol == 'o':
             path = QPainterPath()

@@ -84,7 +84,7 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
             cairo_arc(instdata->context,
                       ptsx[k] * unitfactor,
                       ptsy[k] * unitfactor,
-                      20.0 * scalefactor,
+                      10.0 * scalefactor,
                       0.0, 2.0 * M_PI);
             cairo_close_path(instdata->context);
         }

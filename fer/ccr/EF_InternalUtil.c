@@ -615,6 +615,10 @@ void FORTRAN(eofsvd_tfunc_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *,
                            DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
                            DFTYPE *);
  
+void FORTRAN(bcompressi_init)(int *);
+void FORTRAN(bcompressi_result_limits)(int *);
+void FORTRAN(bcompressi_compute)(int *, DFTYPE *, DFTYPE *);
+ 
 void FORTRAN(compressi_init)(int *);
 void FORTRAN(compressi_result_limits)(int *);
 void FORTRAN(compressi_compute)(int *, DFTYPE *, DFTYPE *);
@@ -880,6 +884,11 @@ void FORTRAN(xcat_str_init)(int *);
 void FORTRAN(xcat_str_result_limits)(int *);
 void FORTRAN(xcat_str_compute)(int *, char *, char *, char *);
 
+void FORTRAN(bxcat_init)(int *);
+void FORTRAN(bxcat_result_limits)(int *);
+void FORTRAN(bxcat_custom_axes)(int *);
+void FORTRAN(bxcat_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
+
 void FORTRAN(ycat_init)(int *);
 void FORTRAN(ycat_result_limits)(int *);
 void FORTRAN(ycat_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
@@ -1108,6 +1117,15 @@ void FORTRAN(write_webrow_gwt_init)(int *);
 void FORTRAN(write_webrow_gwt_result_limits)(int *);
 void FORTRAN(write_webrow_gwt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
+void FORTRAN(bxsequence_init)(int *);
+void FORTRAN(bxsequence_result_limits)(int *);
+void FORTRAN(bxsequence_custom_axes)(int *);
+void FORTRAN(bxsequence_compute)(int *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(bxsequence_str_init)(int *);
+void FORTRAN(bxsequence_str_result_limits)(int *);
+void FORTRAN(bxsequence_str_custom_axes)(int *);
+void FORTRAN(bxsequence_str_compute)(int *, char *, char *);
 
 /*
  *  End of declarations for internally linked external functions
@@ -1151,7 +1169,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-#define N_INTEF 174
+#define N_INTEF 178
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -1331,6 +1349,10 @@ struct {
    strcpy(I_EFnames[171].funcname, "sample_fast_i_str");
    strcpy(I_EFnames[172].funcname, "separate_str");
    strcpy(I_EFnames[173].funcname, "write_webrow_gwt");
+   strcpy(I_EFnames[174].funcname, "bxcat");
+   strcpy(I_EFnames[175].funcname, "bxsequence");
+   strcpy(I_EFnames[176].funcname, "bxsequence_str");
+   strcpy(I_EFnames[177].funcname, "bcompressi");
 
 /*    
  *  ------------------------------------ 
@@ -4140,6 +4162,12 @@ else if ( !strcmp(name,"xcat_str_init_") ) return (void *)FORTRAN(xcat_str_init)
 else if ( !strcmp(name,"xcat_str_result_limits_") ) return (void *)FORTRAN(xcat_str_result_limits);
 else if ( !strcmp(name,"xcat_str_compute_") ) return (void *)FORTRAN(xcat_str_compute);
 
+/* bxcat.F */
+else if ( !strcmp(name,"bxcat_init_") ) return (void *)FORTRAN(bxcat_init);
+else if ( !strcmp(name,"bxcat_result_limits_") ) return (void *)FORTRAN(bxcat_result_limits);
+else if ( !strcmp(name,"bxcat_custom_axes_") ) return (void *)FORTRAN(bxcat_custom_axes);
+else if ( !strcmp(name,"bxcat_compute_") ) return (void *)FORTRAN(bxcat_compute);
+
 /* ycat.F */
 else if ( !strcmp(name,"ycat_init_") ) return (void *)FORTRAN(ycat_init);
 else if ( !strcmp(name,"ycat_result_limits_") ) return (void *)FORTRAN(ycat_result_limits);
@@ -4352,6 +4380,21 @@ else if ( !strcmp(name,"sample_fast_i_str_compute_") ) return (void *)FORTRAN(sa
 else if ( !strcmp(name,"write_webrow_gwt_init_") ) return (void *)FORTRAN(write_webrow_gwt_init);
 else if ( !strcmp(name,"write_webrow_gwt_result_limits_") ) return (void *)FORTRAN(write_webrow_gwt_result_limits);
 else if ( !strcmp(name,"write_webrow_gwt_compute_") ) return (void *)FORTRAN(write_webrow_gwt_compute);
+
+else if ( !strcmp(name,"bxsequence_init_") ) return (void *)FORTRAN(bxsequence_init);
+else if ( !strcmp(name,"bxsequence_result_limits_") ) return (void *)FORTRAN(bxsequence_result_limits);
+else if ( !strcmp(name,"bxsequence_custom_axes_") ) return (void *)FORTRAN(bxsequence_custom_axes);
+else if ( !strcmp(name,"bxsequence_compute_") ) return (void *)FORTRAN(bxsequence_compute);
+
+else if ( !strcmp(name,"bxsequence_str_init_") ) return (void *)FORTRAN(bxsequence_str_init);
+else if ( !strcmp(name,"bxsequence_str_result_limits_") ) return (void *)FORTRAN(bxsequence_str_result_limits);
+else if ( !strcmp(name,"bxsequence_str_custom_axes_") ) return (void *)FORTRAN(bxsequence_str_custom_axes);
+else if ( !strcmp(name,"bxsequence_str_compute_") ) return (void *)FORTRAN(bxsequence_str_compute);
+
+/* bcompressi.F */
+else if ( !strcmp(name,"bcompressi_init_") ) return (void *)FORTRAN(bcompressi_init);
+else if ( !strcmp(name,"bcompressi_result_limits_") ) return (void *)FORTRAN(bcompressi_result_limits);
+else if ( !strcmp(name,"bcompressi_compute_") ) return (void *)FORTRAN(bcompressi_compute);
 
 return NULL;
  }

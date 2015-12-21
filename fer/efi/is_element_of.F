@@ -94,6 +94,9 @@
    10 FORMAT ('Returns 1 if first argument contains any of the ',
      .        'values in argument 2, else 0')
       CALL ef_set_desc(id, fcn_desc)
+      
+* Tell Ferret to run the following instead, if the arguments are strings.
+      CALL ef_set_alt_fcn_name(id, 'IS_ELEMENT_OF_STR')
 
       CALL ef_set_num_args(id, 2)
       CALL ef_set_has_vari_args(id, NO)

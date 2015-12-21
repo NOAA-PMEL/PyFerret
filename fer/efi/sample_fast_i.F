@@ -84,6 +84,9 @@
 *                                                                      V
 
       CALL ef_set_desc(id, 'Fast 1D sample variable using set of indices' )
+      
+* Tell Ferret to run the following instead, if the arguments are strings.
+      CALL ef_set_alt_fcn_name(id, 'SAMPLE_FAST_I_STR')
 
       CALL ef_set_num_args(id, 2)
       CALL ef_set_has_vari_args(id, NO)

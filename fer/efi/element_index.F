@@ -98,6 +98,9 @@
    10 FORMAT ('Return index value in ARG2 for each point in ARG1')
       CALL ef_set_desc(id, fcn_desc)
 
+* Tell Ferret to run the following instead, if the arguments are strings.
+      CALL ef_set_alt_fcn_name(id, 'ELEMENT_INDEX_STR')
+
       CALL ef_set_num_args(id, 2)
       CALL ef_set_has_vari_args(id, NO)
       CALL ef_set_axis_inheritance_6d(id,

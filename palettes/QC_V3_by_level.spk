@@ -6,8 +6,8 @@ RGB_Mapping By_Level
    2     0   60   30  ! green		B
    3   100   90    0  ! yellow		C
    4   100    0    0  ! bright red	D
-   5    77   68   52  ! tan             E  Experimental
-   6    70    0  100  ! purple		F
+   5    70    0  100  ! purple		E  Experimental
+   6    77   68   52  ! tan             F
    7    80   90   10  ! light green     N New 
    8    100  70  100  ! pink		Q Conflicting
    9     0  100  100  ! cyan		U Updated

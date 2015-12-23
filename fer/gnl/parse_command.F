@@ -192,7 +192,7 @@
      .		isubcmnd_ptr, iword, last_qual, iqual_word, iterm,
      .		iqual, iqual_ptr, iarg, i, ii, nparen, nsubst_passes,
      .		grave_start, grave_end, in, out, nest,
-     .		paren_level,len_test,len_mchars, m,
+     .		paren_level,len_test,len_mchars, current_words,
      .		last_recognized_word, white_aftr_cmnd, white_aftr_subcmnd,
      .		ngone
 	CHARACTER c1*1
@@ -786,32 +786,57 @@ cc  Allow zero-length null string in quotes
 * 12/2015 note: this hack is required because the code above does not identify
 * the command and subcommand at the very start and use the word count at that
 * point to guide the identification of qualifier slashes.
-	DO 702 iword = MAX( isub_word+1, 2 ), word_num
-	   IF ( .NOT.itsa_qualifier(iword) )	  THEN
-	      last_qual = iword - 1
-* ... any itsa_qualifier words beyond this need to be erased
-	      ngone = 0
-	      iarg = iword+1
-	      DO i = 0, word_num-iword-1
-	         IF (itsa_qualifier(iarg)) THEN
-	            arg_end(iarg-1) = arg_end(iarg)
-	            DO ii = iarg+1, word_num
-	               arg_start(ii-1) = arg_start(ii)
-	               arg_end  (ii-1) = arg_end  (ii)
-	               itsa_qualifier(ii-1) = itsa_qualifier(ii)
-	            ENDDO
-	            ngone = ngone + 1
-	         ELSE
-	            iarg = iarg + 1
-	         ENDIF
-	      ENDDO
-	      word_num = word_num - ngone
-	      GOTO 704
-	   ENDIF
- 702	CONTINUE
+* locate the final qualifier
 	last_qual = word_num
+	DO iword = MAX( isub_word+1, 2 ), word_num
+	   IF ( .NOT.itsa_qualifier(iword) ) THEN
+	      last_qual = iword - 1
+	      EXIT
+	   ENDIF
+	ENDDO
+* any so-called qualifiers beyond last_qual are red herrings
+* they should own their slash chars, and may not be separate words at all
+* note that if there is white space between a slash and the start of text
+* it may not get fixed correctly ... lazy cuz that shouldn't ever happen
+	DO iword = last_qual+1, word_num
+	   IF (itsa_qualifier(iword)) THEN
+	      arg_start(iword) = arg_start(iword) - 1  ! own the  "/"
+	   ENDIF
+	ENDDO
+* group contiguous blocks of slash-connected chars into single args
+*     e.g. set data /home/users/tmap/ferret/linux/dsets/coads.nc
+* ... work from right to left, consolidate qualifier groups
+	ngone = 0
+	DO iword = word_num, last_qual+1, -1
+	   IF (itsa_qualifier(iword) )THEN
+	      itsa_qualifier(iword) = .FALSE.
+	      IF (arg_start(iword).EQ.(arg_end(iword-1)+1)) THEN
+	         arg_end(iword-1) = arg_end(iword)
+	         arg_start(iword) = 0
+	         arg_end(iword)   = 0
+	         ngone = ngone + 1
+	      ENDIF
+	   ENDIF
+	ENDDO
+* ... remove the voids left behind
+	iword = last_qual+1
+	current_words = word_num
+	DO WHILE (iword .LT. current_words)
+	   IF (arg_start(iword) .EQ. 0) THEN
+	      DO ii = iword+1, current_words
+	         arg_start(ii-1) = arg_start(ii)
+	         arg_end  (ii-1) = arg_end  (ii)
+	      ENDDO
+	      arg_start(current_words) = 0
+	      arg_end  (current_words) = 0
+	      current_words = current_words - 1
+	   ENDIF
+	   IF (arg_start(iword).NE.0) iword = iword + 1
+	ENDDO
+	word_num = word_num - ngone
+!	last_qual = word_num
 
-* loop through qualifiers
+* finally ... loop through qualifiers to identify them
  704	DO 740 iqual_word = 2, last_qual
 	   IF ( .NOT.itsa_qualifier(iqual_word) )	  GOTO 740
 	   IF ( num_qualifs(isubcmnd_ptr) .EQ. 0 )        GOTO 5030	! error

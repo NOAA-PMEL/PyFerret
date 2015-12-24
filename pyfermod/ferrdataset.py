@@ -5,7 +5,7 @@ Represents a data file and the data variables it contains.
 '''
 
 import pyferret
-from ferrdatavar import FerrDataVar
+from ferrvar import FerrVar
 
 class FerrDataSet(object):
     '''
@@ -15,7 +15,7 @@ class FerrDataSet(object):
     def __init__(self, filename):
         '''
         Opens the given netCDF file in Ferret using the Ferret "USE" command.
-        Creates a FerDataVar for each data variable in this data file and 
+        Creates a FerrVar for each data variable in this data file and 
         assigns it as an attribute of this class whose name is the variable name.
         Assigns the list of all variables to the __datavars attribute.
         '''

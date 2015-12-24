@@ -1,5 +1,5 @@
 *
-* element_index.F
+* bcompressi.F
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -32,17 +32,12 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-*
+* 
 * Ansley Manke
-* July 2005
+* Dec 2015
 *
-*  Return index value in LIST for each grids point in V, or a
-*  missing value wherever there is no match)
-*
-*   3/12 *kms* Give index into unraveled arg_2
-*              instead of just I index of arg_2
-*              (and add E and F dimensions)
-
+* This function compresses data on X axis, ending with missing data. 
+* The result is on the same X axis as the input.
 *
 *
 * In this subroutine we provide information about
@@ -80,7 +75,7 @@
 *
 
 
-      SUBROUTINE element_index_init(id)
+      SUBROUTINE bcompressi_init(id)
 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
@@ -95,32 +90,24 @@
       CHARACTER*100 fcn_desc
 
       WRITE (fcn_desc, 10)
-   10 FORMAT ('Return index value in ARG2 for each point in ARG1')
+   10 FORMAT ('Returns data, compressed along the original X axis: Missing ',
+     .        'points moved to the end.')
       CALL ef_set_desc(id, fcn_desc)
 
-* Tell Ferret to run the following instead, if the arguments are strings.
-      CALL ef_set_alt_fcn_name(id, 'ELEMENT_INDEX_STR')
-
-      CALL ef_set_num_args(id, 2)
+      CALL ef_set_num_args(id, 1)
       CALL ef_set_has_vari_args(id, NO)
       CALL ef_set_axis_inheritance_6d(id,
      .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
      .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
      .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+
       CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
 
-
       arg = 1
-      CALL ef_set_arg_name(id, arg, 'VAR')
-      CALL ef_set_arg_desc(id, arg, 'Variable')
+      CALL ef_set_arg_name(id, arg, 'DAT')
+      CALL ef_set_arg_desc(id, arg, 'variable to compress in I')
       CALL ef_set_axis_influence_6d(id, arg,
-     .                              YES, YES, YES, YES, YES, YES)
-
-      arg = 2
-      CALL ef_set_arg_name(id, arg, 'VALUES')
-      CALL ef_set_arg_desc(id, arg, 'list of indices')
-      CALL ef_set_axis_influence_6d(id, arg,
-     .                              NO, NO, NO, NO, NO, NO)
+     .                              NO, YES, YES, YES, YES, YES)
 
 *                                                                     ^
 *                                                                     |
@@ -130,10 +117,63 @@
       RETURN 
       END
 
+
+*
+* In this subroutine we provide information about the lo and hi
+* limits associated with each abstract or custom axis.   The user 
+* configurable information consists of the following:
+*
+* lo_ss               lo subscript for an axis
+*
+* hi_ss               hi subscript for an axis
+*
+
+      SUBROUTINE bcompressi_result_limits(id)
+
+      IMPLICIT NONE
+      INCLUDE 'EF_Util.cmn'
+
+      INTEGER id
+
+* **********************************************************************
+*                                           USER CONFIGURABLE PORTION |
+*                                                                     |
+*                                                                     V
+
+      INTEGER my_lo_l, my_hi_l
+
+      INTEGER arg
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+
+*
+*     Use utility functions to get context information about the arguments.
+*
+
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
+
+      my_lo_l = 1
+      my_hi_l = 1
+
+      arg = 1
+
+      my_hi_l = arg_hi_ss(X_AXIS,arg) - arg_lo_ss(X_AXIS,arg) + 1
+
+
+      CALL ef_set_axis_limits(id, X_AXIS, my_lo_l, my_hi_l)
+*                                                                     ^
+*                                                                     |
+*                                           USER CONFIGURABLE PORTION |
+* **********************************************************************
+
+      RETURN 
+      END
+
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE element_index_compute(id, arg_1, arg_2, result)
+      SUBROUTINE bcompressi_compute(id, arg_1, result)
 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
@@ -143,8 +183,6 @@
 
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
      .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
-      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
-     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
      .            memresloz:memreshiz, memreslot:memreshit,
@@ -152,7 +190,7 @@
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable''s axes. 
+* information for each variable's axes. 
 
       INTEGER res_lo_ss(6),
      .        res_hi_ss(6),
@@ -163,56 +201,83 @@
 
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
+
 ***********************************************************************
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
 
-      INTEGER ndx
+      INTEGER ndx, nsrt, nbad
       INTEGER i, j, k, l, m, n
-      INTEGER i2, j2, k2, l2, m2, n2
+      INTEGER i1, j1, k1, l1, m1, n1
+
+*  Get subscript ranges
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-C  Check for values matching arg2
-C  Assumes result and arg_1 have same array dimension limits
 
-      DO 300 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-      DO 300 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-      DO 300 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-      DO 300 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-      DO 300 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-      DO 300 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+      n1 = arg_lo_ss(F_AXIS, ARG1)
+      DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
 
-         ndx = 1
-         DO 100 n2=arg_lo_ss(F_AXIS,ARG2), arg_hi_ss(F_AXIS,ARG2)
-         DO 100 m2=arg_lo_ss(E_AXIS,ARG2), arg_hi_ss(E_AXIS,ARG2)
-         DO 100 l2=arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS,ARG2)
-         DO 100 k2=arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS,ARG2)
-         DO 100 j2=arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
-         DO 100 i2=arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
-            IF ( arg_1(i,j,k,l,m,n) .NE. bad_flag(1) .AND.
-     .           arg_2(i2,j2,k2,l2,m2,n2) .NE. bad_flag(2) .AND.
-     .           arg_1(i,j,k,l,m,n) .EQ. arg_2(i2,j2,k2,l2,m2,n2) ) THEN
-               result(i,j,k,l,m,n) = ndx
-               GOTO 200
-            ENDIF
-            ndx = ndx + 1
- 100     CONTINUE
+         m1 = arg_lo_ss(E_AXIS, ARG1)
+         DO 500 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
 
-C        If we got here it was not found
-         result(i,j,k,l,m,n) = bad_flag_result
+            l1 = arg_lo_ss(T_AXIS, ARG1)
+            DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
- 200     CONTINUE
+               k1 = arg_lo_ss(Z_AXIS, ARG1)
+               DO 300 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
- 300  CONTINUE
+                  j1 = arg_lo_ss(Y_AXIS, ARG1)
+                  DO 200 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+
+                     nsrt = 0
+                     nbad = 0
+
+                     i1 = arg_lo_ss(X_AXIS,ARG1)
+                     DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+
+                        IF ( arg_1(i1,j1,k1,l1,m1,n1)
+     .                               .NE. bad_flag(1) ) THEN
+                           nsrt = nsrt + 1
+                           result(nsrt,j,k,l,m,n) =
+     .                               arg_1(i1,j1,k1,l1,m1,n1)
+                        ELSE
+                           nbad = nbad + 1
+                        ENDIF
+
+                        i1 = i1 + arg_incr(X_AXIS,ARG1)
+ 100                 CONTINUE
+
+*
+* bcompress argument, putting bad data at the end.
+*
+                     DO 150 ndx = 1, nbad
+                        nsrt = nsrt + 1
+                        result(nsrt,j,k,l,m,n) = bad_flag_result
+ 150                 CONTINUE
+
+                     j1 = j1 + arg_incr(Y_AXIS, ARG1)
+ 200              CONTINUE
+
+                  k1 = k1 + arg_incr(Z_AXIS, ARG1)
+ 300           CONTINUE
+
+               l1 = l1 + arg_incr(T_AXIS, ARG1)
+ 400        CONTINUE
+
+            m1 = m1 + arg_incr(E_AXIS, ARG1)
+ 500     CONTINUE
+
+         n1 = n1 + arg_incr(F_AXIS, ARG1)
+ 600  CONTINUE
 
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
 ***********************************************************************
 
-      RETURN
+      RETURN 
       END

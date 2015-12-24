@@ -79,6 +79,11 @@ void get_data_array_params_(char dataname[], int *lendataname, double *memory, i
                             int incr[MAX_FERRET_NDIM], char dataunit[], int *lendataunit,
                             AXISTYPE axtypes[MAX_FERRET_NDIM], double *badval, char errmsg[],
                             int *lenerrmsg, int maxlen_dataname, int maxlen_dataunit, int maxlen_errmsg);
+void get_str_data_array_params_(char dataname[], int *lendataname, double *memory, int *arraystart,
+                            int memlo[MAX_FERRET_NDIM], int memhi[MAX_FERRET_NDIM],
+                            int steplo[MAX_FERRET_NDIM], int stephi[MAX_FERRET_NDIM],
+                            int incr[MAX_FERRET_NDIM], AXISTYPE axtypes[MAX_FERRET_NDIM], char errmsg[],
+                            int *lenerrmsg, int maxlen_dataname, int maxlen_dataunit, int maxlen_errmsg);
 void get_data_array_coords_(double axiscoords[], char axisunit[], char axisname[],
                             int *axisnum, int *numcoords, char errmsg[], int *lenerrmsg,
                             int maxlen_axisunit, int maxlen_axisname, int maxlen_errmsg);

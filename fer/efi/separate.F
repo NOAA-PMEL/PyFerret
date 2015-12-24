@@ -86,6 +86,9 @@
 
       CALL ef_set_desc(id,
      . 'Insert a bad-value between features (Discrete Sampling Geometries datasets)' )
+      
+* Tell Ferret to run the following instead, if the arguments are strings.
+      CALL ef_set_alt_fcn_name(id, 'SEPARATE_STR')
 
       CALL ef_set_num_args(id, 3)
       CALL ef_set_has_vari_args(id, NO)

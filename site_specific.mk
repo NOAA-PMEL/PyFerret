@@ -3,8 +3,8 @@
 
 ## Full path name of the directory containing this file (the ferret root directory).
 ## Do not use $(shell pwd) since this is included in Makefiles in other directories.
-DIR_PREFIX = $(HOME)/build/pyferret_dev
-# DIR_PREFIX = $(HOME)/pyferret_dev
+# DIR_PREFIX = $(HOME)/build/pyferret_dev
+DIR_PREFIX = $(HOME)/pyferret_dev
 
 ## Machine type for which to build Ferret/PyFerret
 ##   x86_64-linux      for 64-bit RHEL
@@ -29,8 +29,8 @@ PYTHONINCDIR := $(shell $(PYTHON_EXE) -c "import distutils.sysconfig; print dist
 ## Installation directory for built Ferret.  Using the "install"
 ## Makefile target circumvents the need to create the fer_*.tar.gz
 ## files just for creating a Ferret installation.
-INSTALL_FER_DIR = $(HOME)/ferret_distributions/rhel6_64
-# INSTALL_FER_DIR = $(FER_DIR)
+# INSTALL_FER_DIR = $(HOME)/ferret_distributions/rhel6_64
+INSTALL_FER_DIR = $(FER_DIR)
 
 ## Installation directory for cairo v1.12 or later static library 
 ## (contains include and lib or lib64 subdirectories).  If blank,

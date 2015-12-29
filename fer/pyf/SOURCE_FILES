@@ -13,4 +13,5 @@ get_data_array_params.F \
 get_data_array_time_coords.F \
 get_fer_last_error_info.F \
 get_ferret_params.F \
+get_str_data_array_params.F \
 get_time_axis_num.F

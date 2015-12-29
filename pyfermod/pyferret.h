@@ -48,6 +48,13 @@ typedef enum CALTYPE_ {
     CALTYPE_ALLLEAP = 60000,
 } CALTYPE;
 
+#define CALTYPE_360DAY_STR "CALTYPE_360DAY"
+#define CALTYPE_NOLEAP_STR "CALTYPE_NOLEAP"
+#define CALTYPE_GREGORIAN_STR "CALTYPE_GREGORIAN"
+#define CALTYPE_JULIAN_STR "CALTYPE_JULIAN"
+#define CALTYPE_ALLLEAP_STR "CALTYPE_ALLLEAP"
+#define CALTYPE_NONE_STR "CALTYPE_NONE"
+
 /* Prototypes for library C functions */
 void set_fer_memory(double *mem, size_t mem_size);
 void set_ppl_memory(float *mem, int mem_size);
@@ -101,6 +108,9 @@ void no_journal_(void);
 void proclaim_c_(int *ttoutLun, char *leader, int *quiet);
 void set_one_cmnd_mode_(int *one_cmnd_mode_int);
 void turnoff_verify_(int *status);
+
+/* Missing value for string arrays in Python - must be null-terminated string */
+#define STRING_MISSING_VALUE "\004\000"
 
 /* Functions for Python-backed external functions */
 

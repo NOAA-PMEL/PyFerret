@@ -51,14 +51,6 @@ import StringIO
 # in that module are seen as part of this module
 from libpyferret import *
 
-# also define some calendar type string constants
-CALTYPE_360DAY = 'CALTYPE_360DAY'
-CALTYPE_NOLEAP = 'CALTYPE_NOLEAP'
-CALTYPE_GREGORIAN = 'CALTYPE_GREGORIAN'
-CALTYPE_JULIAN = 'CALTYPE_JULIAN'
-CALTYPE_ALLLEAP = 'CALTYPE_ALLLEAP'
-CALTYPE_NONE = 'CALTYPE_NONE'
-
 # register the libpyferret._quit function with atexit to ensure
 # open viewer windows do not hang a Python shutdown
 atexit.register(libpyferret._quit)
@@ -72,7 +64,6 @@ import graphbind
 import regrid
 
 from ferrvar import FerrVar
-from ferrdatavar import FerrDataVar
 from ferrdataset import FerrDataSet
 
 
@@ -754,6 +745,112 @@ def metastr(datadict):
     strval = strbuf.getvalue()
     strbuf.close()
     return strval
+
+
+def getstrdata(name, create_mask=True):
+    """
+    Returns the string array and axes information for the data variable
+    described in name as a dictionary.
+
+    Arguments:
+        name: the name of the numeric data to retrieve
+        create_mask: return the numeric data array as a MaskedArray object?
+    Returns:
+        A dictionary contains the numeric data array and axes information.
+        The dictionary contains the following key/value pairs:
+            'title' : the string passed in the name argument
+            'data': the string data array.  If create_mask is True, this
+                    will be a NumPy String MaskedArray object with the
+                    masked array properly assigned.  If create_mask is False,
+                    this will just be a NumPy String ndarray.
+            'missing_value': the missing data value.  This will be a NumPy
+                    String ndarray containing a single value.
+            'axis_types': a list of integer values describing the type of
+                    each axis.  Possible values are the following constants
+                    defined by the pyferret module:
+                        AXISTYPE_LONGITUDE
+                        AXISTYPE_LATITUDE
+                        AXISTYPE_LEVEL
+                        AXISTYPE_TIME
+                        AXISTYPE_CUSTOM   (axis units not recognized by Ferret)
+                        AXISTYPE_ABSTRACT (axis is unit-less integer values)
+                        AXISTYPE_NORMAL   (axis is normal to the data)
+            'axis_names': a list of strings giving the name of each axis
+            'axis_units': a list of strings giving the unit of each axis.
+                    If the axis type is AXISTYPE_TIME, this names the calendar
+                    used for the timestamps, as one of the following strings
+                    defined by the pyferret module:
+                        CALTYPE_360DAY
+                        CALTYPE_NOLEAP
+                        CALTYPE_GREGORIAN
+                        CALTYPE_JULIAN
+                        CALTYPE_ALLLEAP
+                        CALTYPE_NONE    (calendar not specified)
+            'axis_coords': a list of NumPy ndarrays giving the coordinate values
+                    for each axis.  If the axis type is neither AXISTYPE_TIME
+                    nor AXISTYPE_NORMAL, a NumPy float64 ndarray is given.  If
+                    the axis is type AXISTYPE_TIME, a NumPy integer ndarray of
+                    shape (N,6) where N is the number of time points.  The six
+                    integer values per time point are the day, month, year, hour,
+                    minute, and second of the associate calendar for this time
+                    axis.  The following constants defined by the pyferret module
+                    give the values of these six indices:
+                        TIMEARRAY_DAYINDEX
+                        TIMEARRAY_MONTHINDEX
+                        TIMEARRAY_YEARINDEX
+                        TIMEARRAY_HOURINDEX
+                        TIMEARRAY_MINUTEINDEX
+                        TIMEARRAY_SECONDINDEX
+                    (Thus, axis_coords[t, pyferret.TIMEARRAY_YEARINDEX]
+                     gives the year of time point t.)
+        Note: a relative time axis will be of type AXISTYPE_CUSTOM, with a unit
+              indicating the starting point, such as 'days since 01-JAN-2000'
+    Raises:
+        ValueError if the data name is invalid
+        MemoryError if Ferret has not been started or has been stopped
+    See also:
+        get
+    """
+    # lists of units (in uppercase) for checking if a custom axis is actual a longitude axis
+    UC_LONGITUDE_UNITS = [ "DEG E", "DEG_E", "DEG EAST", "DEG_EAST",
+                           "DEGREES E", "DEGREES_E", "DEGREES EAST", "DEGREES_EAST",
+                           "DEG W", "DEG_W", "DEG WEST", "DEG_WEST",
+                           "DEGREES W", "DEGREES_W", "DEGREES WEST", "DEGREES_WEST" ]
+    # lists of units (in uppercase) for checking if a custom axis is actual a latitude axis
+    UC_LATITUDE_UNITS  = [ "DEG N", "DEG_N", "DEG NORTH", "DEG_NORTH",
+                           "DEGREES N", "DEGREES_N", "DEGREES NORTH", "DEGREES_NORTH",
+                           "DEG S", "DEG_S", "DEG SOUTH", "DEG_SOUTH",
+                           "DEGREES S", "DEGREES_S", "DEGREES SOUTH", "DEGREES_SOUTH" ]
+    # check name
+    if not isinstance(name, str):
+        raise ValueError("name must be a string")
+    elif name.isspace():
+        raise ValueError("name cannot be an empty string")
+    # get the data and related information from Ferret
+    vals = libpyferret._getstrdata(name)
+    # break apart the tuple to simplify (returning a dictionary would have been better)
+    data = vals[0]
+    bdfs = vals[1]
+    axis_types = vals[2]
+    axis_names = vals[3]
+    axis_units = vals[4]
+    axis_coords = vals[5]
+    # A custom axis could be standard axis that is not in Ferret's expected order,
+    # so check the units
+    for k in xrange(libpyferret.MAX_FERRET_NDIM):
+        if axis_types[k] == libpyferret.AXISTYPE_CUSTOM:
+            uc_units = axis_units[k].upper()
+            if uc_units in UC_LONGITUDE_UNITS:
+                axis_types[k] = libpyferret.AXISTYPE_LONGITUDE
+            elif uc_units in UC_LATITUDE_UNITS:
+                axis_types[k] = libpyferret.AXISTYPE_LATITUDE
+    # libpyferret._get returns a copy of the data, so no need to force a copy
+    if create_mask:
+        datavar = numpy.ma.array(data, fill_value=bdfs[0], mask=( data == bdfs[0] ))
+    else:
+        datavar = data
+    return { "title": name, "data":datavar, "missing_value":bdfs, "axis_types":axis_types, 
+             "axis_names":axis_names, "axis_units":axis_units, "axis_coords":axis_coords }
 
 
 def getdata(name, create_mask=True):

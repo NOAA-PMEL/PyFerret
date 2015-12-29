@@ -538,7 +538,7 @@ static char pyferretGetDataDocstring[] =
     "Returns: \n"
     "    A tuple containing: \n"
     "        a NumPy float64 ndarray containing a copy of the numeric data requested, \n"
-    "        a NumPy float64 ndarray containing the bad-data-flag value(s) for the data, \n"
+    "        a NumPy float64 ndarray containing the bad-data-flag value for the data, \n"
     "        a string giving the units for the data \n"
     "        a tuple of six integers giving the AXISTYPE codes of the axes, \n"
     "        a tuple of six strings giving the names of the axes, \n"
@@ -643,7 +643,7 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
      * Note: if MAX_FERRET_NDIM changes, this needs editing.
      */
     ferdata = ferMemory + arraystart;
-    npydata = PyArray_DATA(data_ndarray);
+    npydata = (double *)PyArray_DATA(data_ndarray);
     q = 0;
     for (n = 0; n < (int)(shape[5]); n++) {
       for (m = 0; m < (int)(shape[4]); m++) {
@@ -672,7 +672,7 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
        Py_DECREF(data_ndarray);
        return NULL;
     }
-    npydata = PyArray_DATA(badval_ndarray);
+    npydata = (double *)PyArray_DATA(badval_ndarray);
     npydata[0] = badval;
 
     /* Create the axis coordinates array objects */
@@ -746,22 +746,22 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
             /* set the axis units to the name of the calendar */
             switch( calendar_type ) {
             case CALTYPE_NONE:
-                strcpy(axis_units[k], "CALTYPE_NONE");
+                strcpy(axis_units[k], CALTYPE_NONE_STR);
                 break;
             case CALTYPE_360DAY:
-                strcpy(axis_units[k], "CALTYPE_360DAY");
+                strcpy(axis_units[k], CALTYPE_360DAY_STR);
                 break;
             case CALTYPE_NOLEAP:
-                strcpy(axis_units[k], "CALTYPE_NOLEAP");
+                strcpy(axis_units[k], CALTYPE_NOLEAP_STR);
                 break;
             case CALTYPE_GREGORIAN:
-                strcpy(axis_units[k], "CALTYPE_GREGORIAN");
+                strcpy(axis_units[k], CALTYPE_GREGORIAN_STR);
                 break;
             case CALTYPE_JULIAN:
-                strcpy(axis_units[k], "CALTYPE_JULIAN");
+                strcpy(axis_units[k], CALTYPE_JULIAN_STR);
                 break;
             case CALTYPE_ALLLEAP:
-                strcpy(axis_units[k], "CALTYPE_ALLLEAP");
+                strcpy(axis_units[k], CALTYPE_ALLLEAP_STR);
                 break;
             default:
                 sprintf(errmsg, "Unexpected calendar type of %d", calendar_type);
@@ -902,7 +902,7 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
         return NULL;
     }
     /* Just get bdfval from the data in bdfval_ndarray */
-    bdfval = ((double *) PyArray_DATA(bdfval_ndarray))[0];
+    bdfval = ((double *)PyArray_DATA(bdfval_ndarray))[0];
 
     /* Get the axis types out of the tuple */
     axis_types_tuple = PySequence_Fast(axis_types_tuple, "axis_types is not a tuple or list");
@@ -1016,7 +1016,7 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
                 Py_DECREF(axis_coords_tuple);
                 return NULL;
             }
-            axis_coords[k] = PyArray_DATA(seqitem);
+            axis_coords[k] = (int *)PyArray_DATA(seqitem);
             get_axis_num_(&(axis_nums[k]), &(axis_starts[k]), &(axis_ends[k]), axis_names[k],
                           axis_units[k], axis_coords[k], &(num_coords[k]), &(axis_types[k]),
                           errmsg, &len_errmsg, strlen(axis_names[k]), strlen(axis_units[k]), 2048);
@@ -1049,22 +1049,22 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
                 return NULL;
             }
             num_coords[k] /= 6;
-            if ( strcmp(axis_units[k], "CALTYPE_NONE") == 0 ) {
+            if ( strcmp(axis_units[k], CALTYPE_NONE_STR) == 0 ) {
                 calendar_type = CALTYPE_NONE;
             }
-            else if ( strcmp(axis_units[k], "CALTYPE_360DAY") == 0 ) {
+            else if ( strcmp(axis_units[k], CALTYPE_360DAY_STR) == 0 ) {
                 calendar_type = CALTYPE_360DAY;
             }
-            else if ( strcmp(axis_units[k], "CALTYPE_NOLEAP") == 0 ) {
+            else if ( strcmp(axis_units[k], CALTYPE_NOLEAP_STR) == 0 ) {
                 calendar_type = CALTYPE_NOLEAP;
             }
-            else if ( strcmp(axis_units[k], "CALTYPE_GREGORIAN") == 0 ) {
+            else if ( strcmp(axis_units[k], CALTYPE_GREGORIAN_STR) == 0 ) {
                 calendar_type = CALTYPE_GREGORIAN;
             }
-            else if ( strcmp(axis_units[k], "CALTYPE_JULIAN") == 0 ) {
+            else if ( strcmp(axis_units[k], CALTYPE_JULIAN_STR) == 0 ) {
                 calendar_type = CALTYPE_JULIAN;
             }
-            else if ( strcmp(axis_units[k], "CALTYPE_ALLLEAP") == 0 ) {
+            else if ( strcmp(axis_units[k], CALTYPE_ALLLEAP_STR) == 0 ) {
                 calendar_type = CALTYPE_ALLLEAP;
             }
             else {
@@ -1072,7 +1072,7 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
                 Py_DECREF(axis_coords_tuple);
                 return NULL;
             }
-            axis_coords[k] = PyArray_DATA(seqitem);
+            axis_coords[k] = (int *)PyArray_DATA(seqitem);
             get_time_axis_num_(&(axis_nums[k]), &(axis_starts[k]), &(axis_ends[k]),
                                axis_names[k], &calendar_type, axis_coords[k], &(num_coords[k]),
                                errmsg, &len_errmsg, strlen(axis_names[k]), 2048);
@@ -1136,6 +1136,7 @@ static char pyferretGetStrDataDocstring[] =
     "Returns: \n"
     "    A tuple containing: \n"
     "        a NumPy String ndarray containing a copy of the numeric data requested, \n"
+    "        a NumPy String ndarray containing the bad-data-flag value for the data, \n"
     "        a tuple of six integers giving the AXISTYPE codes of the axes, \n"
     "        a tuple of six strings giving the names of the axes, \n"
     "        a tuple of six strings giving the units of a non-calendar-time data axis, or \n"
@@ -1151,27 +1152,32 @@ static char pyferretGetStrDataDocstring[] =
 
 static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kwds)
 {
-    static char *argNames[] = {"name", NULL};
-    char        *name;
-    int          lendataname;
-    char         dataname[1024];
-    int          arraystart;
-    int          memlo[MAX_FERRET_NDIM], memhi[MAX_FERRET_NDIM];
-    int          steplo[MAX_FERRET_NDIM], stephi[MAX_FERRET_NDIM], incr[MAX_FERRET_NDIM];
-    AXISTYPE     axis_types[MAX_FERRET_NDIM];
-    char         errmsg[2112];
-    int          lenerrmsg;
-    int          i, j, k, l, m, n, q;
-    npy_intp     shape[MAX_FERRET_NDIM];
-    npy_intp     new_shape[2];
-    int          strides[MAX_FERRET_NDIM];
-    PyObject    *data_ndarray;
-    double      *ferdata;
-    double      *npydata;
-    PyObject    *axis_coords[MAX_FERRET_NDIM];
-    char         axis_units[MAX_FERRET_NDIM][64];
-    char         axis_names[MAX_FERRET_NDIM][64];
-    CALTYPE      calendar_type;
+    static char   *argNames[] = {"name", NULL};
+    char          *name;
+    int            lendataname;
+    char           dataname[1024];
+    int            arraystart;
+    int            memlo[MAX_FERRET_NDIM], memhi[MAX_FERRET_NDIM];
+    int            steplo[MAX_FERRET_NDIM], stephi[MAX_FERRET_NDIM], incr[MAX_FERRET_NDIM];
+    AXISTYPE       axis_types[MAX_FERRET_NDIM];
+    char           errmsg[2112];
+    int            lenerrmsg;
+    int            i, j, k, l, m, n, q;
+    npy_intp       shape[MAX_FERRET_NDIM];
+    npy_intp       new_shape[2];
+    int            strides[MAX_FERRET_NDIM];
+    PyObject      *data_ndarray;
+    void         **ferdata;
+    char          *strptr;
+    int            maxstrlen;
+    int            thisstrlen;
+    PyArray_Descr *strarraydescript;
+    char          *npydata;
+    PyObject      *badval_ndarray;
+    PyObject      *axis_coords[MAX_FERRET_NDIM];
+    char           axis_units[MAX_FERRET_NDIM][64];
+    char           axis_names[MAX_FERRET_NDIM][64];
+    CALTYPE        calendar_type;
 
     /* If not initialized, raise a MemoryError */
     if ( ! ferretInitialized ) {
@@ -1221,15 +1227,47 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
     for (k = 0; k < MAX_FERRET_NDIM; k++)
         strides[k] *= incr[k];
 
-/***********
- * TODO:
- * ferdata contains pointers to individually allocated strings
- * get the maximum string length and create a NumPy String array
- * in which each string has the same number of available characters
- ***********/
+    /* 
+     * Note: for string arrays, each "double" is a pointer 
+     * to allocated memory containing a null-terminated string;
+     * or null for missing strings.
+     */
+
+    /* Get the maximum string length of all the strings in this array */
+    ferdata = (void **) (ferMemory + arraystart);
+    /* Use STRING_MISSING_VALUE for missing strings */
+    maxstrlen = (int)(strlen(STRING_MISSING_VALUE) + 1);
+    for (n = 0; n < (int)(shape[5]); n++) {
+      for (m = 0; m < (int)(shape[4]); m++) {
+        for (l = 0; l < (int)(shape[3]); l++) {
+          for (k = 0; k < (int)(shape[2]); k++) {
+            for (j = 0; j < (int)(shape[1]); j++) {
+              for (i = 0; i < (int)(shape[0]); i++) {
+                strptr = (char *) ferdata[ i * strides[0] + 
+                                           j * strides[1] + 
+                                           k * strides[2] + 
+                                           l * strides[3] +
+                                           m * strides[4] +
+                                           n * strides[5] ];
+                if ( strptr != NULL ) {
+                  /* add one so always null-terminated */
+                  thisstrlen = (int)(strlen(strptr) + 1);
+                  if ( maxstrlen < thisstrlen ) {
+                    maxstrlen = thisstrlen;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    strarraydescript = PyArray_DescrNewFromType(NPY_STRING);
+    strarraydescript->elsize = maxstrlen;
 
     /* Create a new NumPy String ndarray (Fortran ordering) with the same shape */
-    data_ndarray = PyArray_EMPTY(MAX_FERRET_NDIM, shape, NPY_DOUBLE, 1);
+    data_ndarray = PyArray_Empty(MAX_FERRET_NDIM, shape, strarraydescript, 1);
     if ( data_ndarray == NULL ) {
         return NULL;
     }
@@ -1238,8 +1276,7 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
      * Assign the data in the new ndarray.
      * Note: if MAX_FERRET_NDIM changes, this needs editing.
      */
-    ferdata = ferMemory + arraystart;
-    npydata = PyArray_DATA(data_ndarray);
+    npydata = (char *)PyArray_DATA(data_ndarray);
     q = 0;
     for (n = 0; n < (int)(shape[5]); n++) {
       for (m = 0; m < (int)(shape[4]); m++) {
@@ -1247,19 +1284,34 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
           for (k = 0; k < (int)(shape[2]); k++) {
             for (j = 0; j < (int)(shape[1]); j++) {
               for (i = 0; i < (int)(shape[0]); i++) {
-                npydata[q] = ferdata[ i * strides[0] + 
-                                      j * strides[1] + 
-                                      k * strides[2] + 
-                                      l * strides[3] +
-                                      m * strides[4] +
-                                      n * strides[5] ];
-                q++;
+                strptr = (char *) ferdata[ i * strides[0] + 
+                                           j * strides[1] + 
+                                           k * strides[2] + 
+                                           l * strides[3] +
+                                           m * strides[4] +
+                                           n * strides[5] ];
+                if ( strptr == NULL ) {
+                   strptr = STRING_MISSING_VALUE;
+                }
+                /* because of +1 to strlen, these will always be null-terminated */
+                strncpy(&(npydata[q]), strptr, maxstrlen);
+                q += maxstrlen;
               }
             }
           }
         }
       }
     }
+
+    /* Create a new NumPy String ndarray with the bad-data-flag value */
+    new_shape[0] = 1;
+    badval_ndarray = PyArray_Empty(1, new_shape, strarraydescript, 0);
+    if ( badval_ndarray == NULL ) {
+       Py_DECREF(data_ndarray);
+       return NULL;
+    }
+    npydata = (char *)PyArray_DATA(badval_ndarray);
+    strncpy(npydata, STRING_MISSING_VALUE, maxstrlen);
 
     /* Create the axis coordinates array objects */
     for (k = 0; k < MAX_FERRET_NDIM; k++) {
@@ -1277,7 +1329,7 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
                     Py_DECREF(axis_coords[k]);
                 }
                 Py_DECREF(badval_ndarray);
-                Py_DECREF(data_ndarray);
+		Py_DECREF(data_ndarray);
                 return NULL;
             }
             /* get the coordinates and the units string */
@@ -1332,22 +1384,22 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
             /* set the axis units to the name of the calendar */
             switch( calendar_type ) {
             case CALTYPE_NONE:
-                strcpy(axis_units[k], "CALTYPE_NONE");
+                strcpy(axis_units[k], CALTYPE_NONE_STR);
                 break;
             case CALTYPE_360DAY:
-                strcpy(axis_units[k], "CALTYPE_360DAY");
+                strcpy(axis_units[k], CALTYPE_360DAY_STR);
                 break;
             case CALTYPE_NOLEAP:
-                strcpy(axis_units[k], "CALTYPE_NOLEAP");
+                strcpy(axis_units[k], CALTYPE_NOLEAP_STR);
                 break;
             case CALTYPE_GREGORIAN:
-                strcpy(axis_units[k], "CALTYPE_GREGORIAN");
+                strcpy(axis_units[k], CALTYPE_GREGORIAN_STR);
                 break;
             case CALTYPE_JULIAN:
-                strcpy(axis_units[k], "CALTYPE_JULIAN");
+                strcpy(axis_units[k], CALTYPE_JULIAN_STR);
                 break;
             case CALTYPE_ALLLEAP:
-                strcpy(axis_units[k], "CALTYPE_ALLLEAP");
+                strcpy(axis_units[k], CALTYPE_ALLLEAP_STR);
                 break;
             default:
                 sprintf(errmsg, "Unexpected calendar type of %d", calendar_type);
@@ -1387,7 +1439,7 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
      * axis_types, axis_names, axis_units, and axis_coords.
      * Note: if MAX_FERRET_NDIM changes, this needs editing.
      */
-    return Py_BuildValue("N(iiiiii)(ssssss)(ssssss)(NNNNNN)", data_ndarray, 
+    return Py_BuildValue("NN(iiiiii)(ssssss)(ssssss)(NNNNNN)", data_ndarray, badval_ndarray,
               axis_types[0], axis_types[1], axis_types[2], axis_types[3], axis_types[4], axis_types[5],
               axis_names[0], axis_names[1], axis_names[2], axis_names[3], axis_names[4], axis_names[5],
               axis_units[0], axis_units[1], axis_units[2], axis_units[3], axis_units[4], axis_units[5],
@@ -2047,7 +2099,7 @@ static struct PyMethodDef pyferretMethods[] = {
     {"_start", (PyCFunction) pyferretStart, METH_VARARGS | METH_KEYWORDS, pyferretStartDocstring},
     {"_run", (PyCFunction) pyferretRunCommand, METH_VARARGS | METH_KEYWORDS, pyferretRunCommandDocstring},
     {"_get", (PyCFunction) pyferretGetData, METH_VARARGS | METH_KEYWORDS, pyferretGetDataDocstring},
-    {"_getstr", (PyCFunction) pyferretGetStrData, METH_VARARGS | METH_KEYWORDS, pyferretGetStrDataDocstring},
+    {"_getstrdata", (PyCFunction) pyferretGetStrData, METH_VARARGS | METH_KEYWORDS, pyferretGetStrDataDocstring},
     {"_put", (PyCFunction) pyferretPutData, METH_VARARGS | METH_KEYWORDS, pyferretPutDataDocstring},
     {"_resize", (PyCFunction) pyferretResizeMemory, METH_VARARGS | METH_KEYWORDS, pyferretResizeMemoryDocstring},
     {"_stop", (PyCFunction) pyferretStop, METH_NOARGS, pyferretStopDocstring},
@@ -2118,8 +2170,19 @@ PyMODINIT_FUNC initlibpyferret(void)
     PyModule_AddIntConstant(mod, "TIMEARRAY_MINUTEINDEX", TIMEARRAY_MINUTEINDEX);
     PyModule_AddIntConstant(mod, "TIMEARRAY_SECONDINDEX", TIMEARRAY_SECONDINDEX);
 
+    /* Parameters for the calendar types */
+    PyModule_AddStringConstant(mod, "CALTYPE_360DAY", CALTYPE_360DAY_STR);
+    PyModule_AddStringConstant(mod, "CALTYPE_NOLEAP", CALTYPE_NOLEAP_STR);
+    PyModule_AddStringConstant(mod, "CALTYPE_GREGORIAN", CALTYPE_GREGORIAN_STR);
+    PyModule_AddStringConstant(mod, "CALTYPE_JULIAN", CALTYPE_JULIAN_STR);
+    PyModule_AddStringConstant(mod, "CALTYPE_ALLLEAP", CALTYPE_ALLLEAP_STR);
+    PyModule_AddStringConstant(mod, "CALTYPE_NONE", CALTYPE_NONE_STR);
+
     /* Parameter giving the maximum number of axis allowed in Ferret */
     PyModule_AddIntConstant(mod, "MAX_FERRET_NDIM", MAX_FERRET_NDIM);
+
+    /* Parameter giving the String used as the missing value for String arrays */
+    PyModule_AddStringConstant(mod, "STRING_MISSING_VALUE", STRING_MISSING_VALUE);
 
     /* Private parameter return value from libpyferret._run indicating the program should shut down */
     PyModule_AddIntConstant(mod, "_FERR_EXIT_PROGRAM", FERR_EXIT_PROGRAM);

@@ -21,4 +21,20 @@ class FerrDataSet(object):
         '''
         self.filename = filename
         (errval, errmsg) = pyferret.run('USE "' + self.filename + '"')
-        
+        namesdict = pyferret.getstrdata('..varnames')
+        varnamesarray = namesdict['data'].squeeze()
+        self.varnames = [ name for name in varnamesarray ]
+
+    def __repr__(self):
+        '''
+        Representation to recreate this FerrDataSet
+        '''
+        repstr = "FerrDataSet('%s')" % self.filename
+        return repstr
+
+    def __str__(self):
+        '''
+        Friendly string representation of this FerrDataSet
+        '''
+        infostr = "FerrDataSet(filename='%s',varnames=%s)" % (self.filename, str(self.varnames))
+        return infostr

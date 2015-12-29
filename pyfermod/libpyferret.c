@@ -1263,14 +1263,14 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
       }
     }
 
+    /* Create a new NumPy String ndarray (Fortran ordering) with the same shape */
     strarraydescript = PyArray_DescrNewFromType(NPY_STRING);
     strarraydescript->elsize = maxstrlen;
-
-    /* Create a new NumPy String ndarray (Fortran ordering) with the same shape */
     data_ndarray = PyArray_Empty(MAX_FERRET_NDIM, shape, strarraydescript, 1);
     if ( data_ndarray == NULL ) {
         return NULL;
     }
+    /* PyArray_Empty steals the reference to strarraydescript so do not free or reuse */
 
     /*
      * Assign the data in the new ndarray.
@@ -1305,11 +1305,14 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
 
     /* Create a new NumPy String ndarray with the bad-data-flag value */
     new_shape[0] = 1;
+    strarraydescript = PyArray_DescrNewFromType(NPY_STRING);
+    strarraydescript->elsize = maxstrlen;
     badval_ndarray = PyArray_Empty(1, new_shape, strarraydescript, 0);
     if ( badval_ndarray == NULL ) {
        Py_DECREF(data_ndarray);
        return NULL;
     }
+    /* PyArray_Empty steals the reference to strarraydescript so do not free or reuse */
     npydata = (char *)PyArray_DATA(badval_ndarray);
     strncpy(npydata, STRING_MISSING_VALUE, maxstrlen);
 

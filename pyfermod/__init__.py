@@ -747,24 +747,23 @@ def metastr(datadict):
     return strval
 
 
-def getstrdata(name, create_mask=True):
+def getstrdata(name):
     """
     Returns the string array and axes information for the data variable
     described in name as a dictionary.
 
     Arguments:
-        name: the name of the numeric data to retrieve
-        create_mask: return the numeric data array as a MaskedArray object?
+        name: the name of the string data array to retrieve
     Returns:
-        A dictionary contains the numeric data array and axes information.
+        A dictionary contains the string data array and axes information.
         The dictionary contains the following key/value pairs:
             'title' : the string passed in the name argument
-            'data': the string data array.  If create_mask is True, this
-                    will be a NumPy String MaskedArray object with the
-                    masked array properly assigned.  If create_mask is False,
-                    this will just be a NumPy String ndarray.
+            'data': the string data array.  This will be a NumPy String 
+                    ndarray with a string length one more than the longest
+                    string in the array.
             'missing_value': the missing data value.  This will be a NumPy
-                    String ndarray containing a single value.
+                    String ndarray (with the same string length as for data)
+                    containing a single String value.
             'axis_types': a list of integer values describing the type of
                     each axis.  Possible values are the following constants
                     defined by the pyferret module:
@@ -845,11 +844,7 @@ def getstrdata(name, create_mask=True):
             elif uc_units in UC_LATITUDE_UNITS:
                 axis_types[k] = libpyferret.AXISTYPE_LATITUDE
     # libpyferret._get returns a copy of the data, so no need to force a copy
-    if create_mask:
-        datavar = numpy.ma.array(data, fill_value=bdfs[0], mask=( data == bdfs[0] ))
-    else:
-        datavar = data
-    return { "title": name, "data":datavar, "missing_value":bdfs, "axis_types":axis_types, 
+    return { "title": name, "data":data, "missing_value":bdfs, "axis_types":axis_types, 
              "axis_names":axis_names, "axis_units":axis_units, "axis_coords":axis_coords }
 
 

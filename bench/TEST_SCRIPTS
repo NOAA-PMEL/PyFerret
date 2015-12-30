@@ -1,3 +1,4 @@
+! Ferret scripts must have the .jnl extension
 bn_syntax.jnl
 bn_dollar.jnl
 bn_grave.jnl
@@ -248,5 +249,8 @@ bn_long_lists.jnl
 bn_show_uvar_grid.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl
-! PyFerret-only tests
+! PyFerret-only Ferret scripts
 bn_outline_poly.jnl
+! PyFerret-only Python scripts
+getstrdatatest.py
+ferrdatasettest.py

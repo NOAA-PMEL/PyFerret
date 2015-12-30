@@ -30,6 +30,8 @@ if [ "$efdir" = "." ]; then
 else
    test_scripts=`grep -v '^!' TEST_SCRIPTS`
 fi
+jnl_scripts=`echo $test_scripts | grep '.jnl'`
+py_scripts=`echo $test_scripts | grep '.py'`
 
 umask 002
 
@@ -90,10 +92,22 @@ ls -l $fver >> $log_file
 echo "Using external functions from $efdir" >> $log_file
 echo "Benchmark run by $bmarker" >> $log_file
 echo "Note: $bcomment" >> $log_file
-echo "Benchmark scripts that will be run:" >> $log_file
-for jnl in $test_scripts; do
-   echo "   $jnl" >> $log_file
-done
+
+if ! echo "$fver" | grep -q "pyferret"; then
+   ispyferret=0
+#  command-line options for ferret
+   feropts="-noverify"
+#  external functions search path
+   FER_EXTERNAL_FUNCTIONS="$efdir"
+   export FER_EXTERNAL_FUNCTIONS
+else
+   ispyferret=1
+#  command-line options for pyferret
+   feropts="-quiet -nodisplay -noverify"
+#  external functions search path
+   PYFER_EXTERNAL_FUNCTIONS="$efdir"
+   export PYFER_EXTERNAL_FUNCTIONS
+fi
 
 #set up a generic data environment
 echo "****** Restricting Ferret paths to bench directory ******" >> $log_file
@@ -111,61 +125,57 @@ FER_DIR="."
 export FER_DIR
 Fenv >> $log_file
 
+# always replace $HOME/.ferret with default.ferret so results are consistent
+rm -f keep.ferret
+if [ -f $HOME/.ferret ]; then 
+   echo "****** Temporarily moving $HOME/.ferret to ./keep.ferret ******"
+   mv -f $HOME/.ferret ./keep.ferret
+fi
+cp ./default.ferret $HOME/.ferret
+
+echo "Benchmark scripts that will be run:" >> $log_file
+for script in $jnl_scripts; do
+   echo "   $script" >> $log_file
+done
+if [ "$ispyferret" -ne 0 ]; then
+   for script in $py_scripts; do
+      echo "   $script" >> $log_file
+   done
+fi
+
 now=`date`
 echo "Beginning at $now" >> $log_file
 cp $log_file $err_file
 echo "Beginning at $now"
 
-# always replace $HOME/.ferret with default.ferret so results are consistent
-rm -f keep.ferret
-if [ -f $HOME/.ferret ]; then 
-   echo "****** Temporarily moving $HOME/.ferret to keep.ferret ******"
-   mv -f $HOME/.ferret keep.ferret
-fi
-cp ./default.ferret $HOME/.ferret
-
-if ! echo "$fver" | grep -q "pyferret"; then
-#  command-line options for ferret
-   feropts="-noverify"
-#  external functions search path
-   FER_EXTERNAL_FUNCTIONS="$efdir"
-   export FER_EXTERNAL_FUNCTIONS
-else
-#  command-line options for pyferret
-   feropts="-quiet -nodisplay -noverify"
-#  external functions search path
-   PYFER_EXTERNAL_FUNCTIONS="$efdir"
-   export PYFER_EXTERNAL_FUNCTIONS
-fi
-
 # run each of the scripts in the list
 rm -f all_ncdump.out
-for jnl in $test_scripts; do
+for script in $jnl_scripts; do
 
-   echo "*** Running test: $jnl" >> $log_file
-   echo "*** Running test: $jnl" >> $err_file
-   echo "*** Running test: $jnl" > all_ncdump.out
-   echo "Running test: $jnl"
+   echo "*** Running ferret script: $script" >> $log_file
+   echo "*** Running ferret script: $script" >> $err_file
+   echo "*** Running ferret script: $script" > all_ncdump.out
+   echo "Running ferret script: $script"
 
-   if [ $jnl = "bn_startupfile.jnl" ]; then
+   if [ $script -eq "bn_startupfile.jnl" ]; then
 #     bn_startupfile.jnl needs ferret_startup as $HOME/.ferret
       rm -f $HOME/.ferret
       cp -f ferret_startup $HOME/.ferret
    fi
 
-   if [ $jnl = "bn_dollar.jnl" ]; then
-      $fver $feropts -script $jnl hello 1>> $log_file 2>> $err_file
+   if [ $script -eq "bn_dollar.jnl" ]; then
+      $fver $feropts -script $script hello 1>> $log_file 2>> $err_file
    else
-      $fver $feropts -script $jnl 1>> $log_file 2>> $err_file
+      $fver $feropts -script $script 1>> $log_file 2>> $err_file
    fi
    if [ $? -ne 0 ]; then
-      echo "****** FERRET error: $jnl failed ******" >> $log_file
-      echo "****** FERRET error: $jnl failed ******" >> $err_file
-      echo "****** FERRET error: $jnl failed ******" >> all_ncdump.out
-      echo "****** FERRET error: $jnl failed ******"
+      echo "****** FERRET error: $script failed ******" >> $log_file
+      echo "****** FERRET error: $script failed ******" >> $err_file
+      echo "****** FERRET error: $script failed ******" >> all_ncdump.out
+      echo "****** FERRET error: $script failed ******"
    fi
 
-   if [ $jnl = "bn_startupfile.jnl" ]; then
+   if [ $script -eq "bn_startupfile.jnl" ]; then
 #     remove the $HOME/.ferret created for bn_startupfile.jnl
       rm -f $HOME/.ferret
       cp -f default.ferret $HOME/.ferret
@@ -176,6 +186,24 @@ for jnl in $test_scripts; do
    rm -f all_ncdump.out
 
 done
+
+if [ "$ispyferret" -ne 0 ]; then
+   for script in $py_scripts; do
+      echo "*** Running python script: $script" >> $log_file
+      echo "*** Running python script: $script" >> $err_file
+      echo "*** Running python script: $script" > all_ncdump.out
+      echo "Running python script : $script"
+      $fver $feropts -nojnl -python < $script 1>> $log_file 2>> $err_file
+      if [ $? -ne 0 ]; then
+         echo "****** PYFERRET error: $script failed ******" >> $log_file
+         echo "****** PYFERRET error: $script failed ******" >> $err_file
+         echo "****** PYFERRET error: $script failed ******" >> all_ncdump.out
+         echo "****** PYFERRET error: $script failed ******"
+      fi
+      cat all_ncdump.out >> $ncdump_file
+      rm -f all_ncdump.out
+   done
+fi
 
 # Replace $HOME/.ferret if it was removed
 rm -f $HOME/.ferret

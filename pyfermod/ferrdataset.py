@@ -24,9 +24,8 @@ class FerrDataSet(object):
         slashidx = filename.rfind('/') + 1
         self._datasetname = filename[slashidx:]
         namesdict = pyferret.getstrdata('..varnames')
-        self._varnames = set( namesdict['data'].squeeze().tolist() )
         self._ferrvars = { }
-        for myname in self._varnames:
+        for myname in namesdict['data'].squeeze().tolist():
            # uppercase the variable name keys to make case-insensitive
            self._ferrvars[myname.upper()] = pyferret.FerrVar(varname=myname, datasetname=self._datasetname)
 
@@ -35,36 +34,137 @@ class FerrDataSet(object):
         Representation to recreate this FerrDataSet.
         Also includes the variable names as variables can be added after creation.
         '''
-        infostr = "FerrDataSet('%s') with varnames %s" % (self._filename, str(list(self._varnames)))
+        infostr = "FerrDataSet('%s') with varnames %s" % (self._filename, str(self.varnames()))
         return infostr
+
+    def __eq__(self, other):
+        '''
+        Returns if this FerrDataSet is equal to the other FerrDataSet.
+        All strings are compared case-insensitive.
+        '''
+        if not isinstance(other, FerrDataSet):
+            return NotImplemented
+        if self._filename.upper() != other._filename.upper():
+            return False
+        if self._datasetname.upper() != other._datasetname.upper():
+            return False
+        if self._ferrvars != other._ferrvars:
+            return False
+        return True
+
+    def __ne__(self, other):
+        '''
+        Returns if this FerrDataSet is not equal to the other FerrDataSet.
+        All strings are compared case-insensitive.
+        '''
+        if not isinstance(other, FerrDataSet):
+            return NotImplemented
+        if self._filename.upper() != other._filename.upper():
+            return True
+        if self._datasetname.upper() != other._datasetname.upper():
+            return True
+        if self._ferrvars != other._ferrvars:
+            return True
+        return False
+
+    def __len__(self):
+        '''
+        Returns the number of Ferret variables associated with this dataset
+        '''
+        return len(self._ferrvars)
+
+    def __getitem__(self, name):
+        '''
+        Return the Ferret variable (FerrVar) with the given name.
+        '''
+        if not isinstance(name, str):
+            raise TypeError('name key is not a string')
+        return self._ferrvars[name.upper()]
+
+    def __setitem__(self, name, value):
+        '''
+        Assigns the value (FerrVar) to Ferret identified by name (string),
+        and adds value to this dataset identified by name.
+        '''
+        if not isinstance(name, str):
+            raise TypeError('name key is not a string')
+        if not isinstance(value, pyferret.FerrVar):
+            raise TypeError('value to be assigned is not a FerrVar')
+        try:
+            value._defineInFerret(name, self._datasetname)
+        except ValueError as ex:
+            raise TypeError('unable to assign variable %s in Ferret: %s' % (name, str(ex)))
+        self._ferrvars[name.upper()] = value
+
+    def __delitem__(self, name):
+        '''
+        Cancels (deletes) the Ferret variable identified by name (string)
+        and removes the FerrVar from this dataset.
+        '''
+        if not isinstance(name, str):
+            raise TypeError('name key is not a string')
+        value = self._ferrvars[name.upper()]
+        try:
+            value._cancelInFerret()
+        except ValueError as ex:
+            raise TypeError('unable to cancel variable %s in Ferret: %s' % (name, str(ex)))
+        del self._ferrvars[name.upper()]
+
+    def __contains__(self, name):
+        '''
+        Returns whether the Ferret variable name is in this dataset
+        '''
+        if not isinstance(name, str):
+            return False
+        return ( name.upper() in self._ferrvars )
+
+    def __iter__(self):
+        '''
+        Returns an iterator over the Ferret variable names.
+        '''
+        return iter(self._ferrvars)
 
     def __getattr__(self, name):
         '''
-        Return the FerrVar with the given name.
+        Returns the Ferret variable (FerrVar) with the given name.
         '''
-        uppername = name.upper()
-        if uppername not in self._ferrvars:
-            raise AttributeError('No attribute or FerrVar with name %s' % name)
-        return self._ferrvars[uppername]
+        try:
+            return self.__getitem__(name)
+        except KeyError:
+            raise AttributeError('no attribute or FerrVar with name %s' % name)
 
     def __setattr__(self, name, value):
         '''
-        If value is a FerrVar, then add this FerrVar to this dataset with the given name.
-        If value is not a FerrVar, pass this call onto the parent object.
+        If value is a FerrVar, then assigns the Ferret variable value (FerrVar) 
+        to Ferret identified by name (string), and adds value to this dataset identified by name.
+        If value is not a FerrVar, passes this call onto the parent object.
         '''
         if isinstance(value, pyferret.FerrVar):
             try:
-                value.assignInFerret(name, self._datasetname)
-            except ValueError as ex:
-                try:
-                   # Python3.x
-                   msg = ex.strerror
-                except AttributeError:
-                   # Python2.x
-                   msg = ex.message
-                raise AttributeError('Problems assigning %s in Ferret: %s' % (name, msg))
-            self._varnames.add(name)
-            self._ferrvars[name.upper()] = value
+                self.__setitem__(name, value)
+            except TypeError as ex:
+                raise AttributeError(str(ex))
         else:
             object.__setattr__(self, name, value)
  
+    def __delattr__(self, name):
+        '''
+        If name is associated with a FerrVar, cancels (deletes) the Ferret variable 
+        identified by name (string) and removes the FerrVar from this dataset.
+        If name is not associated with FerrVar, passes this call onto the parent object.
+        '''
+        try:
+            self.__delitem__(name)
+        except TypeError as ex:
+            raise AttributeError(str(ex))
+        except KeyError:
+            object.__delattr__(self, name, value)
+
+    def varnames(self):
+        '''
+        Returns a list of the names of the current Ferret variables associated with this dataset
+        '''
+        namelist = list(self._ferrvars.keys())
+        namelist.sort()
+        return namelist
+

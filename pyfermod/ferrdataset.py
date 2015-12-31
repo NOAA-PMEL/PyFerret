@@ -5,7 +5,6 @@ Represents a data file and the data variables it contains.
 '''
 
 import pyferret
-from ferrvar import FerrVar
 
 class FerrDataSet(object):
     '''
@@ -21,41 +20,51 @@ class FerrDataSet(object):
         (errval, errmsg) = pyferret.run('USE "' + filename + '"')
         if errval != pyferret.FERR_OK:
            raise ValueError(errmsg)
-        namesdict = pyferret.getstrdata('..varnames')
         self._filename = filename
-        self._varnames = set(namesdict['data'].squeeze().tolist())
+        slashidx = filename.rfind('/') + 1
+        self._datasetname = filename[slashidx:]
+        namesdict = pyferret.getstrdata('..varnames')
+        self._varnames = set( namesdict['data'].squeeze().tolist() )
         self._ferrvars = { }
         for myname in self._varnames:
-           self._ferrvars[myname] = FerrVar(varname=myname, datasetname=self._filename)
+           # uppercase the variable name keys to make case-insensitive
+           self._ferrvars[myname.upper()] = pyferret.FerrVar(varname=myname, datasetname=self._datasetname)
 
     def __repr__(self):
         '''
         Representation to recreate this FerrDataSet.
         Also includes the variable names as variables can be added after creation.
         '''
-        infostr = "FerrDataSet('%s') with varnames %s" % (self._filename, str(self._varnames))
+        infostr = "FerrDataSet('%s') with varnames %s" % (self._filename, str(list(self._varnames)))
         return infostr
 
     def __getattr__(self, name):
         '''
         Return the FerrVar with the given name.
         '''
-        if name not in self._ferrvars:
+        uppername = name.upper()
+        if uppername not in self._ferrvars:
             raise AttributeError('No attribute or FerrVar with name %s' % name)
-        return self._ferrvars[name]
+        return self._ferrvars[uppername]
 
     def __setattr__(self, name, value):
         '''
         If value is a FerrVar, then add this FerrVar to this dataset with the given name.
         If value is not a FerrVar, pass this call onto the parent object.
         '''
-        if isinstance(value, FerrVar):
+        if isinstance(value, pyferret.FerrVar):
             try:
-                value.assignInFerret(name, self._filename)
+                value.assignInFerret(name, self._datasetname)
             except ValueError as ex:
-                raise AttributeError('Problems assigning %s in Ferret: %s' % (name, ex.strerror))
+                try:
+                   # Python3.x
+                   msg = ex.strerror
+                except AttributeError:
+                   # Python2.x
+                   msg = ex.message
+                raise AttributeError('Problems assigning %s in Ferret: %s' % (name, msg))
             self._varnames.add(name)
-            self._ferrvars[name] = value
+            self._ferrvars[name.upper()] = value
         else:
             object.__setattr__(self, name, value)
-
+ 

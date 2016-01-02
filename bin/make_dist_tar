@@ -37,7 +37,7 @@ if [ ! -d "$1" ]; then
    print_usage_and_exit
 fi
 ferret_dir=`cd "$1" ; pwd`
-pyferret_dir="${ferret_dir}/pyferret_install"
+pyferret_dir="${ferret_dir}/install"
 if [ ! -d "${pyferret_dir}" ]; then
    echo ""
    echo "${pyferret_dir} does not exist or is not a directory"

@@ -44,7 +44,7 @@ if [ ! -d "$2" ]; then
 fi
 target_dir=`cd "$2" ; pwd`
 
-pyferret_dir="${ferret_dir}/pyferret_install"
+pyferret_dir="${ferret_dir}/install"
 if [ ! -d "${pyferret_dir}" ]; then
    echo "${pyferret_dir} does not exist or is not a directory"
    echo "    pyferret module not created"

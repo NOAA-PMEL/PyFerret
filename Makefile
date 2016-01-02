@@ -20,7 +20,7 @@ optimized :
 	$(MAKE) "CFLAGS = $(CFLAGS) -O" pymod_optimized
 	if [ "$(BUILDTYPE)" != "intel-mac" ] ; then \
             $(MAKE) "FFLAGS = $(FFLAGS) -O" -C $(DIR_PREFIX)/efmem ; \
-            $(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/pyferret_install" -C $(DIR_PREFIX)/external_functions optimized ; \
+            $(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/install" -C $(DIR_PREFIX)/external_functions optimized ; \
         fi
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
@@ -32,17 +32,17 @@ debug :
 	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" pymod_debug
 	if [ "$(BUILDTYPE)" != "intel-mac" ] ; then \
             $(MAKE) "FFLAGS = $(FFLAGS) -O0 -g" -C $(DIR_PREFIX)/efmem ; \
-            $(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/pyferret_install" -C $(DIR_PREFIX)/external_functions debug ; \
+            $(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/install" -C $(DIR_PREFIX)/external_functions debug ; \
         fi
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
 ## The following builds libpyferret.so, then installs that shared-object
-## library and all the python scripts into $(DIR_PREFIX)/pyferret_install.
+## library and all the python scripts into $(DIR_PREFIX)/install.
 ## This install directory can then be used for the <pyferret_install_dir>
 ## argument to make_executables_tar.
 .PHONY : pymod_optimized
 pymod_optimized :
-	rm -fr $(DIR_PREFIX)/build $(DIR_PREFIX)/pyferret_install
+	rm -fr $(DIR_PREFIX)/build $(DIR_PREFIX)/install
 	( cd $(DIR_PREFIX) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
@@ -56,11 +56,11 @@ pymod_optimized :
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
-	  $(PYTHON_EXE) setup.py --quiet install -O2 --prefix=$(DIR_PREFIX)/pyferret_install )
+	  $(PYTHON_EXE) setup.py --quiet install -O2 --prefix=$(DIR_PREFIX)/install )
 
 .PHONY : pymod_debug
 pymod_debug :
-	rm -fr $(DIR_PREFIX)/build $(DIR_PREFIX)/pyferret_install
+	rm -fr $(DIR_PREFIX)/build $(DIR_PREFIX)/install
 	( cd $(DIR_PREFIX) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
@@ -74,7 +74,7 @@ pymod_debug :
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
-	  $(PYTHON_EXE) setup.py --quiet install -O0 --prefix=$(DIR_PREFIX)/pyferret_install )
+	  $(PYTHON_EXE) setup.py --quiet install -O0 --prefix=$(DIR_PREFIX)/install )
 
 ## Remove everything that was built
 .PHONY : clean
@@ -82,7 +82,7 @@ clean :
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix clean
 	$(MAKE) -C $(DIR_PREFIX)/external_functions clean
 	$(MAKE) -C $(DIR_PREFIX)/efmem clean
-	rm -fr $(DIR_PREFIX)/pyferret_install $(DIR_PREFIX)/build ferret.jnl*
+	rm -fr $(DIR_PREFIX)/install $(DIR_PREFIX)/build ferret.jnl*
 	find $(DIR_PREFIX)/pviewmod -name '*.py[co]' -exec rm -f {} ';'
 	find $(DIR_PREFIX)/pyfermod -name '*.py[co]' -exec rm -f {} ';'
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser clean

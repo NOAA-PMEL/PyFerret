@@ -19,7 +19,7 @@ optimized :
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) "CFLAGS = $(CFLAGS) -O" pymod_optimized
 	if [ "$(BUILDTYPE)" != "intel-mac" ] ; then \
-            $(MAKE) "FFLAGS = $(FFLAGS) -O" -C $(DIR_PREFIX)/efmem ; \
+            if ! $(MAKE) "FFLAGS = $(FFLAGS) -O" -C $(DIR_PREFIX)/efmem ; then exit 1 ; fi ; \
             $(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/install" -C $(DIR_PREFIX)/external_functions optimized ; \
         fi
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
@@ -31,15 +31,13 @@ debug :
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" pymod_debug
 	if [ "$(BUILDTYPE)" != "intel-mac" ] ; then \
-            $(MAKE) "FFLAGS = $(FFLAGS) -O0 -g" -C $(DIR_PREFIX)/efmem ; \
+            if ! $(MAKE) "FFLAGS = $(FFLAGS) -O0 -g" -C $(DIR_PREFIX)/efmem ; then exit 1 ; fi ; \
             $(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/install" -C $(DIR_PREFIX)/external_functions debug ; \
         fi
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
 ## The following builds libpyferret.so, then installs that shared-object
 ## library and all the python scripts into $(DIR_PREFIX)/install.
-## This install directory can then be used for the <pyferret_install_dir>
-## argument to make_dist_tar
 .PHONY : pymod_optimized
 pymod_optimized :
 	rm -fr $(DIR_PREFIX)/build $(DIR_PREFIX)/install

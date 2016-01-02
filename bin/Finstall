@@ -1,12 +1,9 @@
 #! /bin/sh
 ## NOAA PMEL TMAP
 ## Finstall
-## Does two things:
-## Option 1) extracts the contents of fer_executables.tar.gz into $FER_DIR
-##           after renaming any existing files that would have been overwritten
-## Option 2) modifies ferret_paths_template and pyferret_template files to 
-##           specify locations of ferret software and demo data sets to create 
-##           the ferret_paths and pyferret files.
+## modifies ferret_paths_template and pyferret_template files to 
+## specify locations of ferret software and demo data sets to create 
+## the ferret_paths and pyferret files.  Create the pyferret script.
 ## All changes are recorded, with a timestamp, in the log file
 ## $FER_DIR/bin/Finstall.log
 
@@ -367,155 +364,40 @@ python_subdir=\"${python_subdirectory}\"" \
 }
 
 
-### Assign $ferexec_dir, the directory containing the fer_executables.tar.gz file
-get_ferexec_dir() {
-    until [ 0 = 1 ]; do
-        echo " "
-        echo " Enter the name of the directory containing the "
-        echo " 'fer_executables.tar.gz file. "
-        read -p " 'fer_executables.tar.gz' location --> " ferexec_dir
-        if [ ! -d "${ferexec_dir}" ]; then
-            echo " '${ferexec_dir}' is not a directory"
-        else
-#           resolve relative pathnames
-            ferexec_dir=`cd "${ferexec_dir}" ; pwd`
-            if [ ! -f "${ferexec_dir}/fer_executables.tar.gz" ]; then
-                echo " 'fer_executables.tar.gz' is not in ${ferexec_dir}"
-            else
-                return 0
-            fi
-        fi
-    done
-#   should not get here - return error
-    return 1
-}
-
-
-### Install the contents of $ferexec_dir/fer_executables.tar.gz into $fer_dir
-install_execs() {
-    write_log_message "Installing/updating from ${ferexec_dir}/fer_executables.tar.gz"
-
-#   Get the list of files in the tar file
-    exetar_files=`tar tzf ${ferexec_dir}/fer_executables.tar.gz`
-    if [ -z "${exetar_files}" ]; then
-#        tar should have already printed a more appropriate error message
-         write_log_message "No files found in ${ferexec_dir}/fer_executables.tar.gz"
-         echo " "
-         echo " No files found in ${ferexec_dir}/fer_executables.tar.gz "
-         return 1
-    fi
-
-#   Make sure the tar file is the right format
-    lib_files=`tar tzf ${ferexec_dir}/fer_executables.tar.gz lib`
-    if [ -z "${lib_files}" ]; then
-         write_log_message "Aborting - old style fer_executables.tar.gz"
-         echo " "
-         echo " Aborting - old style fer_executables.tar.gz "
-         return 1
-    fi
-
-#   Rename old files if they exist
-    echo " Renaming (by appending '.old') any existing files in ${fer_dir} "
-    echo "     that will be replaced by files in ${ferexec_dir}/fer_executables.tar.gz "
-    for exefile in ${exetar_files} ; do
-        if [ -f "${fer_dir}/${exefile}" ]; then
-            if mv -f "${fer_dir}/${exefile}" "${fer_dir}/${exefile}.old" ; then
-                write_log_message "Renamed existing ${exefile} to ${exefile}.old"
-            else
-                write_log_message "Aborting - unable to rename ${exefile}"
-                echo " "
-                echo " Aborting - unable to rename ${fer_dir}/${exefile} "
-                return 1
-            fi
-        fi
-    done
-
-#   Extract the files into $fer_dir
-    echo " Extracting files from ${ferexec_dir}/fer_executables.tar.gz "
-    echo "                    to ${fer_dir} "
-    if ( cd "${fer_dir}" ; tar xzf "${ferexec_dir}/fer_executables.tar.gz" ) ; then
-        for exefile in ${exetar_files} ; do
-            write_log_message "Extracted ${exefile}"
-        done
-    else
-        return 1
-    fi
-}
-
 
 ### Main script
-### Info message printed only once
 echo " "
-echo " This script can do two things for you to help install Ferret: "
+echo " This script creates the  'ferret_paths.csh' and 'ferret_paths.sh' in a directory "
+echo " you choose using values of FER_DIR (Ferret software directory at your site) and "
+echo " FER_DSETS (Ferret demonstration data at your site).  Furthermore, the link "
+echo " (shortcut) 'ferret_paths' can be created which refers to either 'ferret_paths.csh' "
+echo " or 'ferret_paths.sh'.  Finally, the executable shell script 'pyferret' is created. "
 echo " "
-echo " (1) Install the Ferret executables into FER_DIR/bin from the "
-echo "     fer_executables.tar.gz file."
+echo " Sourcing one of these 'ferret_paths' files ('source ferret_paths.csh' for csh or "
+echo " tcsh, '. ferret_paths.sh' for bash, sh ksh, or dash) will set up a user's "
+echo " environment for running ferret. "
 echo " "
-echo "     You will want to run this option if you are installing "
-echo "     Ferret for the first time or if you are updating Ferret "
-echo "     with new executables."
+echo " You will want to run this script if you are installing Ferret for the first time "
+echo " or if you relocated where Ferret is installed. "
 echo " "
-echo " (2) Modify the shell scripts 'ferret_paths_template.csh' and "
-echo "     'ferret_paths_template.sh' to set environment variables "
-echo "     FER_DIR and FER_DSETS to the directories at your site "
-echo "     containing the Ferret software and demonstration data. "
-echo " "
-echo "     The files 'ferret_paths.csh' and 'ferret_paths.sh' are "
-echo "     created in a directory you choose.  Furthermore, the link "
-echo "     (shortcut) 'ferret_paths' can be created which refers to "
-echo "     either 'ferret_paths.csh' or 'ferret_paths.sh'. "
-echo " "
-echo "     Sourcing one of these files ('source ferret_paths.csh' "
-echo "     for csh or tcsh, '. ferret_paths.sh' for bash, sh ksh, "
-echo "     or dash) will set up a user's environment for running "
-echo "     ferret. "
-echo " "
-echo "     This also creates the executable shell scripts "
-echo "     'pyferret.csh' and 'pyferret.sh'. "
-echo " "
-echo "     You will want to run this option if you are installing "
-echo "     Ferret for the first time or if you relocated where "
-echo "     Ferret is installed. "
-echo " "
-
-### Print menu and act on choice
-until [ 0 = 1 ]; do
+read -p " Proceed? (y/n) [y] " ans
+if [ -n "${ans}" ] && [ "${ans}" != "Y" ] && [ "${ans}" != "y" ]; then
     echo " "
-    echo " Enter your choice:"
-    echo " (1) Install executables, (2) Customize ferret_paths files, (3,q,x) Exit"
-    read -p " (1, 2, 3, q, x) --> " choice
-    case "$choice" in
-        1)
-            echo " "
-            echo " Install executables..."
-            if get_fer_dir && get_ferexec_dir; then
-                if ! install_execs; then
-                    echo " "
-                    echo " There is a problem manipulating files in "
-                    echo " "$fer_dir" "
-                    echo " Check your privileges to change files in that directory "
-                    echo " and try again. "
-                fi
-            fi
-            ;;
-        2)
-            echo " "
-            echo " Customize ferret_paths files..."
-            if get_fer_dir && get_fer_dsets && get_ferpaths_dir && \
-               get_ferpaths_link && get_python_vars; then
-                create_ferret_paths_and_pyferret
-            else
-                echo " "
-                echo " ferret_paths files NOT created "
-            fi
-            ;;
-        3 | 'q' | 'Q' | 'x' | 'X')
-            exit 0
-            ;;
-        *)
-            ;;
-    esac
-done
-# should not get here - return error
-exit 1
+    exit 1
+fi
+
+## Inquire about values and create scripts
+echo " "
+echo " Customize ferret_paths files..."
+if get_fer_dir && get_fer_dsets && get_ferpaths_dir && get_ferpaths_link && get_python_vars; then
+    create_ferret_paths_and_pyferret
+    echo " "
+    exit 0
+else
+    echo " "
+    echo " ferret_paths files NOT created "
+    echo " "
+    exit 1
+fi
+
 

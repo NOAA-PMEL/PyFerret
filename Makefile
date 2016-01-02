@@ -39,7 +39,7 @@ debug :
 ## The following builds libpyferret.so, then installs that shared-object
 ## library and all the python scripts into $(DIR_PREFIX)/install.
 ## This install directory can then be used for the <pyferret_install_dir>
-## argument to make_executables_tar.
+## argument to make_dist_tar
 .PHONY : pymod_optimized
 pymod_optimized :
 	rm -fr $(DIR_PREFIX)/build $(DIR_PREFIX)/install
@@ -91,31 +91,17 @@ clean :
 
 ## Install Ferret binaries, scripts, and other files into $(INSTALL_FER_DIR)
 .PHONY : install
-install : install_env install_exes
-
-## Create the fer_environment.tar.gz files and then extract it into $(INSTALL_FER_DIR)
-.PHONY :  install_env
-install_env :
-	rm -f fer_environment.tar.gz
-	bin/make_environment_tar . . -y
+install :
+	rm -f pyferret-latest-local.tar.gz
+	bin/make_dist_tar . latest local . -y
 	mkdir -p $(INSTALL_FER_DIR)
-	mv -f fer_environment.tar.gz $(INSTALL_FER_DIR)
-	( cd $(INSTALL_FER_DIR) ; tar xzf fer_environment.tar.gz )
-
-## Create the fer_executables.tar.gz files and then extract it into $(INSTALL_FER_DIR)
-.PHONY : install_exes
-install_exes :
-	rm -f fer_executables.tar.gz
-	bin/make_executable_tar . . -y
-	mkdir -p $(INSTALL_FER_DIR)
-	mv -f fer_executables.tar.gz $(INSTALL_FER_DIR)
-	( cd $(INSTALL_FER_DIR) ; tar xzf fer_executables.tar.gz )
-	cp -f threddsBrowser/toolsUI/toolsUI-4.1.jar $(INSTALL_FER_DIR)/lib/
+	mv -f pyferret-latest-local.tar.gz $(INSTALL_FER_DIR)
+	( cd $(INSTALL_FER_DIR) ; tar xz --strip-components=1 -f pyferret-latest-local.tar.gz )
 
 ## The following is for installing the updated threddsBrowser.jar, ferret_ef_meme_subsc.so,
 ## libpyferret.so, and PyFerret python scripts into $(INSTALL_FER_DIR)/lib without having 
-## to go through the make_executables_tar script.  Also copies all the PyFerret Fortran 
-## external function to the $(INSTALL_FER_DIR)/ext_func/pylibs directory.
+## to use the distribution tar file.  Also copies all the PyFerret Fortran external function 
+## to the $(INSTALL_FER_DIR)/ext_func/pylibs directory.
 .PHONY : update
 update :
 	mkdir -p $(INSTALL_FER_DIR)/lib
@@ -129,6 +115,5 @@ update :
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
 	  $(PYTHON_EXE) setup.py --quiet install -O2 --prefix=$(INSTALL_FER_DIR) )
-#	$(MAKE) "FER_LOCAL_EXTFCNS = $(INSTALL_FER_DIR)/ext_func/libs" -C $(DIR_PREFIX)/external_functions install
 
 ##

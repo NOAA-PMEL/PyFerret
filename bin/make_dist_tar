@@ -56,7 +56,7 @@ fi
 target_dir=`cd "$4" ; pwd`
 
 if [ $# -eq 5 ]; then
-   if [ "$5" -ne "-y" ]; then
+   if [ "$5" != "-y" ]; then
       echo ""
       echo "fifth optional argument can only be -y"
       print_usage_and_exit
@@ -168,7 +168,7 @@ fi
 ${mycp} ${ferret_dir}/efmem/ferret_ef_mem_subsc.so ${temp_dir}/lib/
 
 echo "Copying pyferret python modules"
-python_dirs=${pyferret_dir}/lib/python*
+python_dirs=${pyferret_dir}/lib*/python*
 if [ $? -ne 0 -o "${python_dirs}" = "" ]; then
    echo "No python* directories found in ${pyferret_dir}/lib"
    echo "Cleaning up - removing ${parent_temp_dir}"

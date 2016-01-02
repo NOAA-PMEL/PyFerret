@@ -91,7 +91,7 @@ class FerrDataSet(object):
         if not isinstance(value, pyferret.FerrVar):
             raise TypeError('value to be assigned is not a FerrVar')
         try:
-            value._defineInFerret(name, self._datasetname)
+            value._defineinferret(name, self._datasetname)
         except ValueError as ex:
             raise TypeError('unable to assign variable %s in Ferret: %s' % (name, str(ex)))
         self._ferrvars[name.upper()] = value
@@ -105,7 +105,7 @@ class FerrDataSet(object):
             raise TypeError('name key is not a string')
         value = self._ferrvars[name.upper()]
         try:
-            value._cancelInFerret()
+            value._cancelinferret()
         except ValueError as ex:
             raise TypeError('unable to cancel variable %s in Ferret: %s' % (name, str(ex)))
         del self._ferrvars[name.upper()]

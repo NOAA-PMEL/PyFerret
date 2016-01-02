@@ -47,8 +47,9 @@ import numpy
 import numpy.ma
 import StringIO
 
-# import everything from libpyferret so constants
-# in that module are seen as part of this module
+import libpyferret
+# import everything (not starting with an underscore) from libpyferret 
+# so constants in that module are seen as part of this module
 from libpyferret import *
 
 # register the libpyferret._quit function with atexit to ensure
@@ -63,9 +64,44 @@ import filenamecompleter
 import graphbind
 import regrid
 
+from ferrgrid import FerrGrid
 from ferrvar import FerrVar
 from ferrdataset import FerrDataSet
 
+# set of valid axis types; might be useful so no starting underscore
+VALID_AXIS_TYPES = frozenset( (libpyferret.AXISTYPE_LONGITUDE, 
+                               libpyferret.AXISTYPE_LATITUDE, 
+                               libpyferret.AXISTYPE_LEVEL, 
+                               libpyferret.AXISTYPE_TIME, 
+                               libpyferret.AXISTYPE_CUSTOM, 
+                               libpyferret.AXISTYPE_ABSTRACT, 
+                               libpyferret.AXISTYPE_NORMAL) )
+
+# set of units (in uppercase) for checking if a custom axis is actual a longitude axis
+_UC_LONGITUDE_UNITS = frozenset( ("DEG E", "DEG_E", "DEG EAST", "DEG_EAST",
+                                 "DEGREES E", "DEGREES_E", "DEGREES EAST", "DEGREES_EAST",
+                                 "DEG W", "DEG_W", "DEG WEST", "DEG_WEST",
+                                 "DEGREES W", "DEGREES_W", "DEGREES WEST", "DEGREES_WEST") )
+# set of units (in uppercase) for checking if a custom axis is actual a latitude axis
+_UC_LATITUDE_UNITS  = frozenset( ("DEG N", "DEG_N", "DEG NORTH", "DEG_NORTH",
+                                  "DEGREES N", "DEGREES_N", "DEGREES NORTH", "DEGREES_NORTH",
+                                  "DEG S", "DEG_S", "DEG SOUTH", "DEG_SOUTH",
+                                  "DEGREES S", "DEGREES_S", "DEGREES SOUTH", "DEGREES_SOUTH") )
+
+# set of units (in lowercase) for checking if a custom axis can be represented by a cdtime.reltime
+# the unit must be followed by "since" and something else
+_LC_TIME_UNITS = frozenset( ("s", "sec", "secs", "second", "seconds",
+                             "mn", "min", "mins", "minute", "minutes",
+                             "hr", "hour", "hours",
+                             "dy", "day", "days",
+                             "mo", "month", "months",
+                             "season", "seasons",
+                             "yr", "year", "years") )
+
+_LC_MONTH_NUMS = { "jan":1, "feb":2, "mar":3, "apr":4, "may":5, "jun":6,
+                   "jul":7, "aug":8, "sep":9, "oct":10, "nov":11, "dec":12 }
+_UC_MONTH_NAMES = { 1: "JAN", 2:"FEB", 3:"MAR", 4:"APR", 5:"MAY", 6:"JUN",
+                    7:"JUL", 8:"AUG", 9:"SEP", 10:"OCT", 11:"NOV", 12:"DEC" }
 
 def init(arglist=None, enterferret=True):
     """
@@ -653,8 +689,6 @@ def metastr(datadict):
     Raises:
         TypeError if datadict is not a dictionary
     """
-    uc_month = { 1: "JAN", 2:"FEB", 3:"MAR", 4:"APR", 5:"MAY", 6:"JUN",
-                 7:"JUL", 8:"AUG", 9:"SEP", 10:"OCT", 11:"NOV", 12:"DEC" }
     if not isinstance(datadict, dict):
         raise TypeError("datadict is not a dictionary")
     # specify an order of output for standard keys, leaving out "data"
@@ -685,7 +719,7 @@ def metastr(datadict):
                             strlist.append(" %s = %02d-%3s-%04d %02d:%02d:%02d" % \
                                            (str(subitem),
                                                 subitem[libpyferret.TIMEARRAY_DAYINDEX],
-                                       uc_month[subitem[libpyferret.TIMEARRAY_MONTHINDEX]],
+                                _UC_MONTH_NAMES[subitem[libpyferret.TIMEARRAY_MONTHINDEX]],
                                                 subitem[libpyferret.TIMEARRAY_YEARINDEX],
                                                 subitem[libpyferret.TIMEARRAY_HOURINDEX],
                                                 subitem[libpyferret.TIMEARRAY_MINUTEINDEX],
@@ -810,16 +844,6 @@ def getstrdata(name):
     See also:
         get
     """
-    # lists of units (in uppercase) for checking if a custom axis is actual a longitude axis
-    UC_LONGITUDE_UNITS = [ "DEG E", "DEG_E", "DEG EAST", "DEG_EAST",
-                           "DEGREES E", "DEGREES_E", "DEGREES EAST", "DEGREES_EAST",
-                           "DEG W", "DEG_W", "DEG WEST", "DEG_WEST",
-                           "DEGREES W", "DEGREES_W", "DEGREES WEST", "DEGREES_WEST" ]
-    # lists of units (in uppercase) for checking if a custom axis is actual a latitude axis
-    UC_LATITUDE_UNITS  = [ "DEG N", "DEG_N", "DEG NORTH", "DEG_NORTH",
-                           "DEGREES N", "DEGREES_N", "DEGREES NORTH", "DEGREES_NORTH",
-                           "DEG S", "DEG_S", "DEG SOUTH", "DEG_SOUTH",
-                           "DEGREES S", "DEGREES_S", "DEGREES SOUTH", "DEGREES_SOUTH" ]
     # check name
     if not isinstance(name, str):
         raise ValueError("name must be a string")
@@ -839,9 +863,9 @@ def getstrdata(name):
     for k in xrange(libpyferret.MAX_FERRET_NDIM):
         if axis_types[k] == libpyferret.AXISTYPE_CUSTOM:
             uc_units = axis_units[k].upper()
-            if uc_units in UC_LONGITUDE_UNITS:
+            if uc_units in _UC_LONGITUDE_UNITS:
                 axis_types[k] = libpyferret.AXISTYPE_LONGITUDE
-            elif uc_units in UC_LATITUDE_UNITS:
+            elif uc_units in _UC_LATITUDE_UNITS:
                 axis_types[k] = libpyferret.AXISTYPE_LATITUDE
     # libpyferret._get returns a copy of the data, so no need to force a copy
     return { "title": name, "data":data, "missing_value":bdfs, "axis_types":axis_types, 
@@ -914,16 +938,6 @@ def getdata(name, create_mask=True):
     See also:
         get
     """
-    # lists of units (in uppercase) for checking if a custom axis is actual a longitude axis
-    UC_LONGITUDE_UNITS = [ "DEG E", "DEG_E", "DEG EAST", "DEG_EAST",
-                           "DEGREES E", "DEGREES_E", "DEGREES EAST", "DEGREES_EAST",
-                           "DEG W", "DEG_W", "DEG WEST", "DEG_WEST",
-                           "DEGREES W", "DEGREES_W", "DEGREES WEST", "DEGREES_WEST" ]
-    # lists of units (in uppercase) for checking if a custom axis is actual a latitude axis
-    UC_LATITUDE_UNITS  = [ "DEG N", "DEG_N", "DEG NORTH", "DEG_NORTH",
-                           "DEGREES N", "DEGREES_N", "DEGREES NORTH", "DEGREES_NORTH",
-                           "DEG S", "DEG_S", "DEG SOUTH", "DEG_SOUTH",
-                           "DEGREES S", "DEGREES_S", "DEGREES SOUTH", "DEGREES_SOUTH" ]
     # check name
     if not isinstance(name, str):
         raise ValueError("name must be a string")
@@ -944,9 +958,9 @@ def getdata(name, create_mask=True):
     for k in xrange(libpyferret.MAX_FERRET_NDIM):
         if axis_types[k] == libpyferret.AXISTYPE_CUSTOM:
             uc_units = axis_units[k].upper()
-            if uc_units in UC_LONGITUDE_UNITS:
+            if uc_units in _UC_LONGITUDE_UNITS:
                 axis_types[k] = libpyferret.AXISTYPE_LONGITUDE
-            elif uc_units in UC_LATITUDE_UNITS:
+            elif uc_units in _UC_LATITUDE_UNITS:
                 axis_types[k] = libpyferret.AXISTYPE_LATITUDE
     # libpyferret._get returns a copy of the data, so no need to force a copy
     if create_mask:
@@ -992,17 +1006,6 @@ def get(name, create_mask=True):
         raise ImportError("cdms2 or cdtime not found; pyferret.get not available.\n" \
                           "             Use pyferret.getdata instead.")
 
-    # lists of units (in lowercase) for checking if a custom axis can be represented by a cdtime.reltime
-    # the unit must be followed by "since" and something else
-    LC_TIME_UNITS = [ "s", "sec", "secs", "second", "seconds",
-                      "mn", "min", "mins", "minute", "minutes",
-                      "hr", "hour", "hours",
-                      "dy", "day", "days",
-                      "mo", "month", "months",
-                      "season", "seasons",
-                      "yr", "year", "years" ]
-    lc_month_nums = { "jan":1, "feb":2, "mar":3, "apr":4, "may":5, "jun":6,
-                      "jul":7, "aug":8, "sep":9, "oct":10, "nov":11, "dec":12 }
     # get the data and related information from Ferret,
     # building on what was done in getdata
     data_dict = getdata(name, create_mask)
@@ -1066,13 +1069,13 @@ def get(name, create_mask=True):
             # Check a custom axis for relative time units.  Note that getdata has
             # already dealt with longitude or latitude not in Ferret's standard position.
             lc_vals = axis_units[k].lower().split()
-            if (len(lc_vals) > 2) and (lc_vals[1] == "since") and (lc_vals[0] in LC_TIME_UNITS):
+            if (len(lc_vals) > 2) and (lc_vals[1] == "since") and (lc_vals[0] in _LC_TIME_UNITS):
                 # (unit) since (start_date)
                 datevals = lc_vals[2].split("-")
                 try:
                     # try to convert dd-mon-yyyy Ferret-style start_date to yyyy-mm-dd
                     day_num = int(datevals[0])
-                    mon_num = lc_month_nums[datevals[1]]
+                    mon_num = _LC_MONTH_NUMS[datevals[1]]
                     year_num = int(datevals[2])
                     lc_vals[2] = "%04d-%02d-%02d" % (year_num, mon_num, day_num)
                     relunit = " ".join(lc_vals)

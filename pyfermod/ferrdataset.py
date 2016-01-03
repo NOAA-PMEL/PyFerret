@@ -38,7 +38,7 @@ class FerrDataSet(object):
         # create a FerrVar for each variable in this dataset
         namesdict = pyferret.getstrdata('..varnames')
         self._ferrvars = { }
-        for name in namesdict['data'].squeeze().tolist():
+        for name in namesdict['data'].flatten():
             # uppercase the variable name keys to make case-insensitive
             self._ferrvars[name.upper()] = pyferret.FerrVar(varname=name, 
                            datasetname=self._datasetname, isfilevar=True)

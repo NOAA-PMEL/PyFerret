@@ -7,6 +7,16 @@ Represents Ferret variables in Python.
 import numbers
 import pyferret
 
+# common regridding methods
+REGRID_LINEAR = "@LIN"
+REGRID_AVERAGE = "@AVE"
+REGRID_ASSOCIATE = "@ASN"
+REGRID_MEAN = "@BIN"
+REGRID_NEAREST = "@NRST"
+REGRID_MIN = "@MIN"
+REGRID_MAX = "@MAX"
+REGRID_EXACT = "@XACT"
+
 class FerrVar(object):
     '''
     Ferret variable object
@@ -469,7 +479,7 @@ class FerrVar(object):
         Returns an anonymous FerrVar whose definition is 
         the same as this FerrVar definition
         '''
-        newvar = FerrVar(definition=newdef)
+        newvar = FerrVar(definition=self._definition)
         newvar._requires.update(self._requires)
         return newvar
 
@@ -584,4 +594,51 @@ class FerrVar(object):
         self._dataarray = datadict["data"]
         self._dataunit = datadict["data_unit"]
         self._missingvalue = datadict["missing_value"]
+
+    def regrid(self, newgrid, method=REGRID_LINEAR):
+        '''
+        Returns an anonymous FerrVar that is this variable regridded to the grid
+        implied by newgrid using the given method.
+            newgrid (FerrVar |  string | FerrGrid): regrid to this implied grid;
+                if a FerrVar, the implied grid is the grid used by the Ferret variable,
+                if a string, the implied grid is the grid known to Ferret by this name
+                if a FerrGrid, the implied grid is this grid
+            method (string): method to perform the regridding; typically one of
+                pyferret.REGRID_LINEAR (default)
+                    (multi-axis) linear interpolation of nearest source points around destination point
+                pyferret.REGRID_AVERAGE
+                    length-weighted averaging of source point cells overlapping destination point cell
+                pyferret.REGRID_ASSOCIATE
+                    blind association of source points to destination points by indices
+                pyferret.REGRID_MEAN
+                    unweighted mean of source points in destination point cell
+                pyferret.REGRID_NEAREST
+                    value of source point nearest the destination point
+                pyferret.REGRID_MIN
+                    minimum value of source points in destination point cell 
+                pyferret.REGRID_MAX
+                    maximum value of source points in destination point cell 
+                pyferret.REGRID_EXACT
+                    copy values where source and destination points coincide; 
+                    other destination points assigned missing value
+        '''
+        if not (isinstance(method, str) and (method[0] == '@')):
+            raise ValueError('invalid regridding method %s' % str(method))
+        if not self._varname:
+            raise ValueError('regridding can only performed on variables defined in Ferret')
+        if isinstance(newgrid, FerrVar):
+            if not newgrid._varname:
+                raise ValueError('FerrVar used for the new grid is not defined in Ferret')
+            gridname = newgrid._ferrname()
+        elif isinstance(newgrid, str):
+            gridname = newgrid
+        elif isinstance(newgrid, FerrGrid):
+            raise NotImplementedError('regrid using FerrGrid not implemented at this time')
+        if self._datasetname:
+            newdef = '%s[d=%s,g=%s%s]' % (self._varname, self._datasetname, gridname, method)
+        else:
+            newdef = '%s[g=%s%s]' % (self._varname, gridname, method)
+        newvar = FerrVar(definition=newdef)
+        newvar._requires.update(self._requires)
+        return newvar
 

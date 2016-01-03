@@ -64,9 +64,9 @@ import filenamecompleter
 import graphbind
 import regrid
 
-from ferrgrid import FerrGrid
-from ferrvar import FerrVar
-from ferrdataset import FerrDataSet
+from ferrgrid import *
+from ferrvar import *
+from ferrdataset import *
 
 # set of valid axis types; might be useful so no starting underscore
 VALID_AXIS_TYPES = frozenset( (libpyferret.AXISTYPE_LONGITUDE, 

@@ -66,7 +66,7 @@ print ">>> coads.sstregrid._dataarray.shape"
 coads.sstregrid._dataarray.shape
 print ">>> print repr(coads.sstregrid._dataarray[2:5,2:5,0,0,0,0])"
 print repr(coads.sstregrid._dataarray[2:5,2:5,0,0,0,0])
-print "pyferret.run('LIST SST[d=coads_climatology.cdf, X=55W:51W, Y=5N:9N, L=1]')"
+print "pyferret.run('LIST /X=55W:51W /Y=5N:9N /L=1 SST[d=coads_climatology]')"
 pyferret.run('LIST /X=55W:51W /Y=5N:9N /L=1 SST[d=coads_climatology]')
 
 print ">>> coads_uw.showdataset()"

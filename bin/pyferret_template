@@ -27,5 +27,12 @@ fi
 ## Finally, execute an in-line Python script to run Ferret using the pyferret 
 ## module.  The init method explicity processes the $PYTHONSTARTUP file, if it
 ## exists and if '-secure' was not given as a command-line argument.
-${python_exe} -i -c "import sys; import pyferret; (errval, errmsg) = pyferret.init(sys.argv[1:], True)" $*
+if echo "$@" | grep -q -- "-linebuffer"; then
+    GFORTRAN_UNBUFFERED_PRECONNECTED=1
+    export GFORTRAN_UNBUFFERED_PRECONNECTED
+    python_flags="-u -i"
+else
+    python_flags="-i"
+fi
+${python_exe} ${python_flags} -c "import sys; import pyferret; (errval, errmsg) = pyferret.init(sys.argv[1:], True)" "$@"
 

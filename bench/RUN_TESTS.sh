@@ -26,12 +26,11 @@ export PS1
 # allow tests to be commented out by beginning with the line with a '!'
 # remove bn_all_ef.jnl from the list if $efdir is "."
 if [ "$efdir" = "." ]; then
-   test_scripts=`grep -v '^!' TEST_SCRIPTS | grep -v "bn_all_ef\.jnl"`
+   jnl_scripts=`grep -v '^!' TEST_SCRIPTS | grep '\.jnl$' | grep -v "bn_all_ef\.jnl"`
 else
-   test_scripts=`grep -v '^!' TEST_SCRIPTS`
+   jnl_scripts=`grep -v '^!' TEST_SCRIPTS | grep '\.jnl$'`
 fi
-jnl_scripts=`echo $test_scripts | grep '.jnl'`
-py_scripts=`echo $test_scripts | grep '.py'`
+py_scripts=`grep -v '^!' TEST_SCRIPTS | grep '\.py$'`
 
 umask 002
 
@@ -103,7 +102,7 @@ if ! echo "$fver" | grep -q "pyferret"; then
 else
    ispyferret=1
 #  command-line options for pyferret
-   feropts="-quiet -nodisplay -noverify"
+   feropts="-quiet -nodisplay -noverify -linebuffer"
 #  external functions search path
    PYFER_EXTERNAL_FUNCTIONS="$efdir"
    export PYFER_EXTERNAL_FUNCTIONS
@@ -157,13 +156,13 @@ for script in $jnl_scripts; do
    echo "*** Running ferret script: $script" > all_ncdump.out
    echo "Running ferret script: $script"
 
-   if [ $script -eq "bn_startupfile.jnl" ]; then
+   if [ $script = "bn_startupfile.jnl" ]; then
 #     bn_startupfile.jnl needs ferret_startup as $HOME/.ferret
       rm -f $HOME/.ferret
       cp -f ferret_startup $HOME/.ferret
    fi
 
-   if [ $script -eq "bn_dollar.jnl" ]; then
+   if [ $script = "bn_dollar.jnl" ]; then
       $fver $feropts -script $script hello 1>> $log_file 2>> $err_file
    else
       $fver $feropts -script $script 1>> $log_file 2>> $err_file
@@ -175,7 +174,7 @@ for script in $jnl_scripts; do
       echo "****** FERRET error: $script failed ******"
    fi
 
-   if [ $script -eq "bn_startupfile.jnl" ]; then
+   if [ $script = "bn_startupfile.jnl" ]; then
 #     remove the $HOME/.ferret created for bn_startupfile.jnl
       rm -f $HOME/.ferret
       cp -f default.ferret $HOME/.ferret

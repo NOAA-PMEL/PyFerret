@@ -123,6 +123,11 @@ static char pyferretStartDocstring[] =
     "    metaname = <string>: filename for Ferret graphics (default empty) \n"
     "    unmapped = <bool>: hide the graphics viewer? (default False) \n"
     "    quiet = <bool>: do not print the ferret header? (default False) \n"
+    "    linebuffer = <bool>: use line buffering for stdout and stderr? (default False) \n"
+    "            Note: \n"
+    "                the enviroment variable GFORTRAN_UNBUFFERED_PRECONNECTED \n"
+    "                needs to be set to 1 in order to unbuffer the Fortran \n"
+    "                units for output and error messages\n"
     "\n"
     "Returns: \n"
     "    True is successful \n"
@@ -135,7 +140,8 @@ static char pyferretStartDocstring[] =
 static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
 {
     static char *argNames[] = {"memsize", "journal", "verify", "restrict", "server",
-                               "metaname", "transparent", "unmapped", "quiet", NULL};
+                               "metaname", "transparent", "unmapped", "quiet", 
+                               "linebuffer", NULL};
     double mwMemSize = 25.6;
     PyObject *pyoJournal = NULL;
     PyObject *pyoVerify = NULL;
@@ -144,6 +150,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     PyObject *pyoTransparent = NULL;
     PyObject *pyoUnmapped = NULL;
     PyObject *pyoQuiet = NULL;
+    PyObject *pyoLineBuffer = NULL;
     char *metaname = NULL;
     int journalFlag = 1;
     int verifyFlag = 1;
@@ -152,6 +159,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     int transparentFlag = 0;
     int unmappedFlag = 0;
     int quietFlag = 0;
+    int lineBufferFlag = 0;
     int pplMemSize;
     size_t blksiz;
     int status;
@@ -169,12 +177,12 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     import_array1(NULL);
 
     /* Parse the arguments, checking if an Exception was raised */
-    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|dO!O!O!O!sO!O!O!",
+    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|dO!O!O!O!sO!O!O!O!",
                  argNames, &mwMemSize, &PyBool_Type, &pyoJournal,
                  &PyBool_Type, &pyoVerify, &PyBool_Type, &pyoRestrict,
                  &PyBool_Type, &pyoServer, &metaname,
                  &PyBool_Type, &pyoTransparent, &PyBool_Type, &pyoUnmapped,
-                 &PyBool_Type, &pyoQuiet) )
+                 &PyBool_Type, &pyoQuiet, &PyBool_Type, &pyoLineBuffer) )
         return NULL;
 
     /* Interpret the booleans - Py_False and Py_True are singleton non-NULL objects, so just use == */
@@ -192,10 +200,18 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
         unmappedFlag = 1;
     if ( pyoQuiet == Py_True )
         quietFlag = 1;
+    if ( pyoLineBuffer == Py_True )
+        lineBufferFlag = 1;
 
     if ( metaname[0] == '\0' )
         metaname = NULL;
 
+    /* Deal with line buffering */
+    if ( lineBufferFlag != 0 ) {
+        /* Set line buffering on stdout and stderr; ignore failures */
+        setvbuf(stdout, NULL, _IOLBF, BUFSIZ);
+        setvbuf(stderr, NULL, _IOLBF, BUFSIZ);
+    }
     /* Deal with the restrict and server flags right away */
     if ( restrictFlag != 0 )
         set_secure();

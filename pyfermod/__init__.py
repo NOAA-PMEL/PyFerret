@@ -127,9 +127,9 @@ def init(arglist=None, enterferret=True):
     """
 
     Usage:  pyferret  [-memsize <N>]  [-nodisplay]  [-nojnl]  [-noverify]
-                      [-secure]  [-server]  [-python]  [-version]  [-help]
-                      [-quiet]  [-batch [<filename>]]  [-transparent]
-                      [-script <scriptname> [ <scriptarg> ... ]]
+                      [-secure]  [-server]  [-python]  [-version]  [-help] 
+                      [-quiet]  [-linebuffer]  [-batch [<filename>]]  
+                      [-transparent]  [-script <scriptname> [ <scriptarg> ... ]]
 
        -memsize:     initialize the memory cache size to <N> (default 25.6)
                      mega (10^6) floats (where 1 float = 8 bytes)
@@ -161,6 +161,14 @@ def init(arglist=None, enterferret=True):
 
        -quiet        do not display the startup header
 
+       -linebuffer   print each line of output or error messages as soon as 
+                     a full line is written.  Useful when redirecting these
+                     messages to a file.
+                     Note: 
+                       the enviroment variable GFORTRAN_UNBUFFERED_PRECONNECTED 
+                       needs to be set to 1 in order to unbuffer the Fortran 
+                       units for output and error messages
+
        -batch:       draw to <filename> (default "ferret.png") instead of
                      displaying to the console.  The file format will be
                      guessed from the filename extension.  When using this
@@ -190,6 +198,7 @@ def init(arglist=None, enterferret=True):
     my_restrict = False
     my_server = False
     my_quiet = False
+    my_linebuffer = False
     my_enterferret = enterferret
     script = None
     # To be compatible with traditional Ferret command-line options
@@ -239,6 +248,8 @@ def init(arglist=None, enterferret=True):
                     my_server = True
                 elif opt == "-quiet":
                     my_quiet = True
+                elif opt == "-linebuffer":
+                    my_linebuffer = True
                 elif opt == "-python":
                     my_enterferret = False
                 elif opt == "-version":
@@ -493,7 +504,8 @@ def init(arglist=None, enterferret=True):
     # start ferret without journaling
     start(memsize=my_memsize, journal=False, verify=my_verify,
           restrict=my_restrict, server=my_server, metaname=my_metaname,
-          transparent=my_transparent, unmapped=my_unmapped, quiet=my_quiet)
+          transparent=my_transparent, unmapped=my_unmapped, 
+          quiet=my_quiet, linebuffer=my_linebuffer)
 
     # define all the Ferret standard Python external functions
     for fname in std_pyefs:
@@ -541,7 +553,7 @@ def init(arglist=None, enterferret=True):
 
 def start(memsize=25.6, journal=True, verify=True, restrict=False,
           server=False, metaname=None, transparent=False,
-          unmapped=False, quiet=False):
+          unmapped=False, quiet=False, linebuffer=False):
     """
     Initializes Ferret.  This allocates the initial amount of memory
     for Ferret (from Python-managed memory), opens the journal file,
@@ -553,6 +565,8 @@ def start(memsize=25.6, journal=True, verify=True, restrict=False,
     output of graphics, and the graphics viewer will not be displayed.
     If unmapped is True, the graphics viewer will not be displayed.
     If quiet is True, the Ferret start-up header is not displayed.
+    If linebuffer is True, stdout and stderr are set user line 
+    buffering.  This cannot be reset once set.
     This routine does NOT run any user initialization scripts.
 
     Arguments:
@@ -567,6 +581,13 @@ def start(memsize=25.6, journal=True, verify=True, restrict=False,
                      transparent background?
         unmapped:    hide the graphics viewer?
         quiet:       do not display the Ferret start-up header?
+        linebuffer:  print each line of output or error messages as soon as 
+                     a full line is written?  Useful when redirecting these
+                     messages to a file.
+                     Note: 
+                       the enviroment variable GFORTRAN_UNBUFFERED_PRECONNECTED 
+                       needs to be set to 1 in order to unbuffer the Fortran 
+                       units for output and error messages
     Returns:
         True is successful
         False if Ferret has already been started
@@ -604,7 +625,8 @@ def start(memsize=25.6, journal=True, verify=True, restrict=False,
     # the actual call to ferret's start
     return libpyferret._start(flt_memsize, bool(journal), bool(verify),
                               bool(restrict), bool(server), str_metaname,
-                              bool(transparent), bool(unmapped), bool(quiet))
+                              bool(transparent), bool(unmapped), 
+                              bool(quiet), bool(linebuffer))
 
 
 def resize(memsize):

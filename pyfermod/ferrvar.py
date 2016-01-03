@@ -53,7 +53,7 @@ class FerrVar(object):
                 raise ValueError("definition is not a string")
             self._definition = definition
         elif varname:
-            self._definition = self._ferrname()
+            self._definition = self.ferretname()
         else:
             self._definition = ''
         # Record whether this is a file variable (and thus should not be cancelled)
@@ -77,7 +77,7 @@ class FerrVar(object):
 
     def __del__(self):
         '''
-        Calls _removefromferret to remove this variable, if possible, from Ferret.
+        Calls remove to remove this variable, if possible, from Ferret.
         Any error are ignored.
         '''
         # Ignore for obvious fail cases
@@ -85,15 +85,16 @@ class FerrVar(object):
             return
         # Try to remove from Ferret but ignore errors
         try:
-            self._removefromferret()
+            self.remove()
         except Exception:
             pass
 
-    def _ferrname(self):
+    def ferretname(self):
         ''' 
-        Returns the Ferret name for this variable, namely 
+        Returns the Ferret name for this variable, namely
             <_varname>[d=<_datasetname>]
-        if _datasetname is given, or just the value of _varname if not.
+        if _datasetname is given; otherwise just
+            <_varname>
         Raises ValueError if _varname is not defined
         '''
         if not self._varname:
@@ -493,7 +494,7 @@ class FerrVar(object):
         newvar._requires.update(self._requires)
         return newvar
 
-    def defineinferret(self, varname, datasetname):
+    def assign(self, varname, datasetname):
         '''
         Defines this FerrVar in Ferret using the given variable name 
         associated with the given dataset name.
@@ -521,16 +522,16 @@ class FerrVar(object):
             self._datasetname = datasetname
         else:
             self._datasetname = ''
-        self._definition = self._ferrname()
+        self._definition = self.ferretname()
         self._requires.add(varname.upper())
         self.clean()
 
-    def removefromferret(self):
+    def remove(self):
         '''
         Removes (cancels) this variable in Ferret, then cleans this FerrVar and erases _varname.
         Raises a ValueError if there is a problem, such as if this is a file variable.
         '''
-        ferrname = self._ferrname()
+        ferrname = self.ferretname()
         if self._isfilevar:
             raise ValueError('cannot remove file variable %s from Ferret' % ferrname)
         cmdstr = 'CANCEL VAR %s' % ferrname
@@ -539,27 +540,6 @@ class FerrVar(object):
             raise ValueError('cannot remove variable %s from Ferret: %s' % (ferrname, errmsg))
         self._varname = ''
         self.clean()
-
-    def varname(self):
-        '''
-        Returns (string) the Ferret name of this Ferret variable.
-        An empty string is returned if there is no variable name.
-        '''
-        return self._varname
-
-    def datasetname(self):
-        '''
-        Returns (string) the dataset name of this Ferret variable 
-        An empty string is returned if there is no dataset name.
-        '''
-        return self._datasetname
-
-    def definition(self):
-        '''
-        Returns (string) the Ferret definition of this Ferret variable 
-        An empty string is returned if there is no definition.
-        '''
-        return self._definition
 
     def clean(self):
         '''
@@ -584,7 +564,7 @@ class FerrVar(object):
         or data is requested.
         Raises a ValueEror if problems occur.
         '''
-        ferrname = self._ferrname()
+        ferrname = self.ferretname()
         datadict = pyferret.getdata(ferrname, False)
         self._datagrid = pyferret.FerrGrid(gridname=ferrname,
                                            axistypes=datadict["axis_types"], 
@@ -594,6 +574,23 @@ class FerrVar(object):
         self._dataarray = datadict["data"]
         self._dataunit = datadict["data_unit"]
         self._missingvalue = datadict["missing_value"]
+
+    def showgrid(self, qual=''):
+        '''
+        Show the Ferret grid information about this variable.  This uses 
+        the Ferret SHOW GRID command to create and display the information.
+            qual (string): Ferret qualifiers to add to the SHOW GRID command
+        '''
+        if not isinstance(qual, str):
+            raise ValueError('qual (Ferret qualifiers) must be a string')
+        cmdstr = 'SHOW GRID'
+        if qual:
+            cmdstr += qual
+        cmdstr += ' '
+        cmdstr += self.ferretname()
+        (errval, errmsg) = pyferret.run(cmdstr)
+        if errval != pyferret.FERR_OK:
+            raise ValueError('Ferret command "%s" failed: %s' % (cmdstr, errmsg))
 
     def regrid(self, newgrid, method=REGRID_LINEAR):
         '''
@@ -629,7 +626,7 @@ class FerrVar(object):
         if isinstance(newgrid, FerrVar):
             if not newgrid._varname:
                 raise ValueError('FerrVar used for the new grid is not defined in Ferret')
-            gridname = newgrid._ferrname()
+            gridname = newgrid.ferretname()
         elif isinstance(newgrid, str):
             gridname = newgrid
         elif isinstance(newgrid, FerrGrid):

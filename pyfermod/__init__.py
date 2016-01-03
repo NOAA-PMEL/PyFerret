@@ -1625,10 +1625,30 @@ def putdata(datavar_dict, axis_pos=None):
     # now make a copy of the data as (contiguous) 64-bit floats in Fortran order
     fdata = numpy.array(data, dtype=numpy.float64, order='F', copy=1)
     #
-    # libpyferret._put will throw an Exception if there is a problem
+    # libpyferret._put will raise an Exception if there is a problem
     libpyferret._put(codename, titlename, fdata, bdfval, data_unit, dset_str,
                   axis_types, axis_names, axis_units, axis_coords)
     return None
+
+
+def showdatasets(brief=True, qual=''):
+    '''
+    Show the Ferret information about all dataset currently open in Ferret.  
+    This uses the Ferret SHOW DATA command to create and display the information.
+        brief (boolean): if True (default), a brief report is shown;
+            otherwise a full report is shown.
+        qual (string): Ferret qualifiers to add to the SHOW DATA command
+    '''
+    if not isinstance(qual, str):
+        raise ValueError('qual (Ferret qualifiers) must be a string')
+    cmdstr = 'SHOW DATA'
+    if not brief:
+        cmdstr += '/FULL'
+    if qual:
+        cmdstr += qual
+    (errval, errmsg) = pyferret.run(cmdstr)
+    if errval != pyferret.FERR_OK:
+        raise ValueError('Ferret command "%s" failed: %s' % (cmdstr, errmsg))
 
 
 def stop():

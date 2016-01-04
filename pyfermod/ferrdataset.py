@@ -64,12 +64,13 @@ class FerrDataSet(object):
 
     def __eq__(self, other):
         '''
-        Returns if this FerrDataSet is equal to the other FerrDataSet.
-        All strings are compared case-insensitive.
+        Two FerrDatSets are equal if their filenames, datasetnames, and 
+        dictionary of FerrVar variables are all equal.
+        All string values, except for the filename, are compared case-insensitive.
         '''
         if not isinstance(other, FerrDataSet):
             return NotImplemented
-        if self._filename.upper() != other._filename.upper():
+        if self._filename != other._filename:
             return False
         if self._datasetname.upper() != other._datasetname.upper():
             return False
@@ -79,18 +80,13 @@ class FerrDataSet(object):
 
     def __ne__(self, other):
         '''
-        Returns if this FerrDataSet is not equal to the other FerrDataSet.
-        All strings are compared case-insensitive.
+        Two FerrDatSets are not equal if their filenames, datasetnames, or
+        dictionary of FerrVar variables are not equal.
+        All string values, except for the filename, are compared case-insensitive.
         '''
         if not isinstance(other, FerrDataSet):
             return NotImplemented
-        if self._filename.upper() != other._filename.upper():
-            return True
-        if self._datasetname.upper() != other._datasetname.upper():
-            return True
-        if self._ferrvars != other._ferrvars:
-            return True
-        return False
+        return not self.__eq__(other)
 
     def __len__(self):
         '''

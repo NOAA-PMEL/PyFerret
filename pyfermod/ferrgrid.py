@@ -122,4 +122,55 @@ class FerrGrid(object):
             except IndexError:
                 raise ValueError('more than %d axis coordinate arrays specified' % pyferret.MAX_FERRET_NDIM)
 
+    def __repr__(self):
+        '''
+        Representation to recreate this FerrGrid
+        '''
+        # Not elegant, but will do
+        infostr = "FerrGrid(gridname=" + self._gridname + \
+                "\n         axistype=" + repr(self._axistypes) +  \
+                "\n         axiscoords=" + repr(self._axiscoords) +  \
+                "\n         axisunits=" + repr(self._axisunits) + \
+                "\n         axisnames=" + repr(self._axisnames) + ")" 
+        return infostr
+
+    def __eq__(self, other):
+        '''
+        Two FerrGrids are equal is all their contents are the same.  
+        All string values are compared case-insensitive.
+        '''
+        if not isinstance(other, FerrGrid):
+            return NotImplemented
+        if self._gridname.upper() != other._gridname.upper():
+            return False
+        # _axistypes is a list of integers
+        if self._axistypes != other._axistypes:
+            return False
+        # _axisnames is a list of strings
+        for k in xrange(pyferret.MAX_FERRET_NDIM):
+            if self._axisnames[k].upper() != other._axisnames[k].upper():
+               return False
+        # _axisunits is a list of strings
+        for k in xrange(pyferret.MAX_FERRET_NDIM):
+            if self._axisunits[k].upper() != other._axisunits[k].upper():
+               return False
+        # _axiscoords is a list of ndarray or None
+        for k in xrange(pyferret.MAX_FERRET_NDIM):
+            scoords = self._axiscoords[k]
+            ocoords = other._axiscoords[k]
+            if (scoords == None) and (ocoords == None):
+                continue
+            if (scoords == None) or (ocoords == None):
+                return False
+            if not numpy.allclose(scoords, ocoords):
+                return False
+
+    def __ne__(self, other):
+        '''
+        Two FerrGrids are not equal is any of their contents are not the same.  
+        All string values are compared case-insensitive.
+        '''
+        if not isinstance(other, FerrGrid):
+            return NotImplemented
+        return not self.__eq__(other)
 

@@ -4,15 +4,28 @@ Represents Ferret grids in Python.
 @author: Karl Smith
 '''
 
+import numbers
+import time
 import numpy
 import pyferret
+
+_DATETIME_PARSE_FORMATS = ( 
+    '%d-%b-%Y %H:%M:%S',
+    '%d-%b-%Y %H:%M',
+    '%d-%b-%Y',
+    '%Y-%m-%dT%H:%M:%S',
+    '%Y-%m-%dT%H:%M',
+    '%Y-%m-%d %H:%M:%S',
+    '%Y-%m-%d %H:%M',
+    '%Y-%m-%d', 
+)
 
 class FerrGrid(object):
     '''
     Ferret grid object
     '''
 
-    def __init__(self, gridname=None, axistypes=None, axiscoords=None, axisunits=None, axisnames=None):
+    def __init__(self, gridname='', axistypes=None, axiscoords=None, axisunits=None, axisnames=None):
         '''
         Describe a Ferret grid using the given information about the axes.
             gridname (string): Ferret name for the grid (or the variable using this grid)
@@ -50,7 +63,12 @@ class FerrGrid(object):
                 For axes normal to the data, the value is ignored.
             axisnames (sequence of string): Ferret name for each axis
         '''
-        self._gridname = gridname
+        if gridname:
+            if not isinstance(gridname, str): 
+                raise TypeError('gridname is not a string')
+            self._gridname = gridname
+        else:
+            self._gridname = ''
         # axis types
         self._axistypes = [ pyferret.AXISTYPE_NORMAL ] * pyferret.MAX_FERRET_NDIM
         if axistypes:
@@ -61,11 +79,11 @@ class FerrGrid(object):
                         raise ValueError('axis type %s is not valid' % str(axtype))
                     self._axistypes[k] = axtype
             except TypeError:
-                raise ValueError('axistypes is not a sequence type')
+                raise TypeError('axistypes is not a sequence type')
             except IndexError:
                 raise ValueError('more than %d axis types specified' % pyferret.MAX_FERRET_NDIM)
         # axis names
-        self._axisnames = [ "" ] * pyferret.MAX_FERRET_NDIM
+        self._axisnames = [ '' ] * pyferret.MAX_FERRET_NDIM
         if axisnames:
             try:
                 for k in xrange(len(axisnames)):
@@ -76,11 +94,11 @@ class FerrGrid(object):
                                 raise ValueError('axis name %s is not valid' % str(axname))
                             self._axisnames[k] = axname
             except TypeError:
-                raise ValueError('axisnames is not a sequence type')
+                raise TypeError('axisnames is not a sequence type')
             except IndexError:
                 raise ValueError('more than %d axis names specified' % pyferret.MAX_FERRET_NDIM)
         # axis units
-        self._axisunits = [ "" ] * pyferret.MAX_FERRET_NDIM
+        self._axisunits = [ '' ] * pyferret.MAX_FERRET_NDIM
         if axisunits:
             try:
                 for k in xrange(len(axisunits)):
@@ -91,7 +109,7 @@ class FerrGrid(object):
                                 raise ValueError('axis unit %s is not valid' % str(axtype))
                             self._axisunits[k] = axunit
             except TypeError:
-                raise ValueError('axisunits is not a sequence type')
+                raise TypeError('axisunits is not a sequence type')
             except IndexError:
                 raise ValueError('more than %d axis units specified' % pyferret.MAX_FERRET_NDIM)
         # axis coordinates
@@ -118,7 +136,7 @@ class FerrGrid(object):
                             if self._axiscoords[k].ndim != 1:
                                 raise ValueError('axiscoords[%d] is not a 1-D array' % k)
             except TypeError:
-                raise ValueError('axiscoords is not a sequence type')
+                raise TypeError('axiscoords is not a sequence type')
             except IndexError:
                 raise ValueError('more than %d axis coordinate arrays specified' % pyferret.MAX_FERRET_NDIM)
 
@@ -127,11 +145,12 @@ class FerrGrid(object):
         Representation to recreate this FerrGrid
         '''
         # Not elegant, but will do
-        infostr = "FerrGrid(gridname=" + self._gridname + \
-                "\n         axistype=" + repr(self._axistypes) +  \
-                "\n         axiscoords=" + repr(self._axiscoords) +  \
-                "\n         axisunits=" + repr(self._axisunits) + \
-                "\n         axisnames=" + repr(self._axisnames) + ")" 
+        spacer = ',\n         '
+        infostr = "FerrGrid(gridname='" + self._gridname + "'" + \
+                  spacer + 'axistype=' + repr(self._axistypes) + \
+                  spacer + 'axiscoords=' + repr(self._axiscoords) + \
+                  spacer + 'axisunits=' + repr(self._axisunits) + \
+                  spacer + 'axisnames=' + repr(self._axisnames) + ')'
         return infostr
 
     def __eq__(self, other):
@@ -173,4 +192,168 @@ class FerrGrid(object):
         if not isinstance(other, FerrGrid):
             return NotImplemented
         return not self.__eq__(other)
+
+    @staticmethod
+    def _parsegeoslice(geoslice):
+        '''
+        Parses the contents of the slice attributes, interpreting any geo- or time-references
+        and returns a tuple with the resulting interpreted axis type, start, stop, and step values.
+           geoslice (slice): slice that can contain georeferences or time references
+           returns (axistype, start, stop, step) where:
+              axistype is one of:
+                  pyferret.AXISTYPE_LONGITUDE  (longitude units detected)
+                  pyferret.AXISTYPE_LATITUDE   (latitude units detected)
+                  pyferret.AXISTYPE_LEVEL      (level units detected)
+                  pyferret.AXISTYPE_TIME       (time units detected)
+                  pyferret.AXISTYPE_ABSTRACT   (no units)
+              start, stop, and step are:
+                  None if the correspond geoslice attribute is not given; otherwise,
+                  a list of six numbers if axistype is pyferret.AXISTYPE_TIME, or
+                  a number if axistype is not pyferret.AXISTYPE_TIME
+        The list of six numbers for time values are ordered according to the indices:
+            pyferret.TIMEARRAY_DAYINDEX
+            pyferret.TIMEARRAY_MONTHINDEX
+            pyferret.TIMEARRAY_YEARINDEX
+            pyferret.TIMEARRAY_HOURINDEX
+            pyferret.TIMEARRAY_MINUTEINDEX
+            pyferret.TIMEARRAY_SECONDINDEX
+        For non-time values, the start, stop, and step values are int objects 
+            if only if corresponding slice objects were int objects.  Thus, int 
+            objects should be interpreted as axis indices and float objects 
+            should be interpreted as axis values.
+        Raises a ValueError if start and stop indicate different axes; i.e., 
+            "10E":"20N" or 10:"20N" or 10:"20-JAN-2000", or if the value contain 
+            unrecognized units.  If not a time slice, it is acceptable for step to 
+            have no units even when start and stop do.  If a time slice, the step 
+            must have a unit of y, d, h, m, or s, which corresponds to year, day, 
+            hour, minute, or second; there is no month time step unit.
+        Raises a TypeError if geoslice is not a slice or None, or if the values 
+            in the slice are not None and cannot be interpreted.
+        '''
+        if geoslice == None:
+            return (pyferret.AXISTYPE_ABSTRACT, None, None, None)
+        if not isinstance(geoslice, slice):
+            raise TypeError('not a slice object: %s' % repr(geoslice))
+        (starttype, start) = FerrGrid._parsegeoval(geoslice.start)
+        (stoptype, stop) = FerrGrid._parsegeoval(geoslice.stop)
+        # start and stop types must match (so 10:"25E" also fails)
+        if starttype != stoptype:
+            raise ValueError('mismatch of units: %s and %s' % (geoslice.start, geoslice.stop))
+        axtype = starttype
+        if axtype == pyferret.AXISTYPE_TIME:
+            (steptype, step) = FerrGrid._parsegeoval(geoslice.step, istimestep=True)
+            if (step != None) and (steptype != pyferret.AXISTYPE_TIME):
+               raise ValueError('a time unit y, d, h, m, or s must be given with time slice steps')
+        else:
+            (steptype, step) = FerrGrid._parsegeoval(geoslice.step)
+            if (steptype != pyferret.AXISTYPE_ABSTRACT) and (steptype != axtype):
+               raise ValueError('mismatch of units: %s, %s' % (geoslice.start, geoslice.step))
+            
+        return (axtype, start, stop, step)
+
+    @staticmethod
+    def _parsegeoval(val, istimestep=False):
+        '''
+        Parses the value as either a longitude, latitude, level, time, or abstract number.
+        If val is a numeric value, the tuple (pyferret.AXISTYPE_ABSTRACT, val) is returned.
+        If val is None, the tuple (pyferret.AXISTYPE_ABSTRACT, None) is returned.
+        If val is a longitude string (unit E or W when istimestep is false), 
+            (pyferret.AXISTYPE_LONGITUDE, fval) is returned where fval 
+            is the floating point longitude value.
+        If val is a latitude string (unit N or S when istimestep is false), 
+            (pyferret.AXISTYPE_LATITUDE, fval) is returned where fval 
+            is the floating point latitude value.
+        If val is a level string (unit m when istimestep is False), 
+            (pyferret.AXISTYPE_LEVEL, fval) is returned where fval 
+            is the floating point level value.
+        If val is a date and, optionally, time string matching one of the formats given
+            in _DATETIME_PARSE_FORMATS, (pyferret.AXISTYPE_TIME, tval) is returned where
+            tval is a list of six numbers ordered by the indices:
+                pyferret.TIMEARRAY_DAYINDEX
+                pyferret.TIMEARRAY_MONTHINDEX
+                pyferret.TIMEARRAY_YEARINDEX
+                pyferret.TIMEARRAY_HOURINDEX
+                pyferret.TIMEARRAY_MINUTEINDEX
+                pyferret.TIMEARRAY_SECONDINDEX
+        If istimestep is true and val is a time step string (unit y, d, h, m, or s),
+            (pyferret.AXISTYPE_TIME, tval) is returned where tval is a list of six values 
+            ordered by the above TIMEARRAY indices.  
+            Note that m is minutes; there is no month timestep.
+        If val is a string of a unitless number, (pyferret.AXISTYPE_ABSTACT, fval) is 
+            returned where fval is the floating point value specified by val.
+        If val is not numeric or a string, a TypeError is raised.
+        If val is a string that cannot be parsed, a ValueError is raised.
+        '''
+        # if just a number, return it with abstract axis type
+        if isinstance(val, numbers.Real):
+            return (pyferret.AXISTYPE_ABSTRACT, val)
+        # if None or empty, return None with abstract axis type
+        if not val:
+            return (pyferret.AXISTYPE_ABSTRACT, None)
+        if not isinstance(val, str):
+            raise TypeError('not a string: %s' % repr(val))
+        if not istimestep:
+            # first try parsing as a date/time string using the accepted formats
+            for fmt in _DATETIME_PARSE_FORMATS:
+                try:
+                    tval = time.strptime(val, fmt)
+                    tlist = [ 0, 0, 0, 0, 0, 0 ]
+                    tlist[pyferret.TIMEARRAY_DAYINDEX] = tval.tm_mday
+                    tlist[pyferret.TIMEARRAY_MONTHINDEX] = tval.tm_mon
+                    tlist[pyferret.TIMEARRAY_YEARINDEX] = tval.tm_year
+                    tlist[pyferret.TIMEARRAY_HOURINDEX] = tval.tm_hour
+                    tlist[pyferret.TIMEARRAY_MINUTEINDEX] = tval.tm_min
+                    tlist[pyferret.TIMEARRAY_SECONDINDEX] = tval.tm_sec
+                    return (pyferret.AXISTYPE_TIME, tlist)
+                except ValueError:
+                    pass
+        # not a date/time, so parse as a number with possibly a final letter for the unit
+        try:
+            lastchar = val[-1].upper()
+            if (not istimestep) and (lastchar == 'E'): # degrees E
+                fval = float(val[:-1])
+                return(pyferret.AXISTYPE_LONGITUDE, fval)
+            elif (not istimestep) and (lastchar == 'W'): # degrees W
+                fval = -1.0 * float(val[:-1])
+                return(pyferret.AXISTYPE_LONGITUDE, fval)
+            elif (not istimestep) and (lastchar == 'N'): # degrees N
+                fval = float(val[:-1])
+                return(pyferret.AXISTYPE_LATITUDE, fval)
+            elif (not istimestep) and (lastchar == 'S'): # degrees S
+                fval = -1.0 * float(val[:-1])
+                return(pyferret.AXISTYPE_LATITUDE, fval)
+            elif (not istimestep) and (lastchar == 'M'): # meters
+                fval = float(val[:-1])
+                return(pyferret.AXISTYPE_LEVEL, fval)
+            elif istimestep and (lastchar == 'Y'): # years
+                fval = float(val[:-1])
+                tlist = [ 0, 0, 0, 0, 0, 0 ]
+                tlist[pyferret.TIMEARRAY_YEARINDEX] = fval
+                return (pyferret.AXISTYPE_TIME, tlist)
+            elif istimestep and (lastchar == 'D'): # days
+                fval = float(val[:-1])
+                tlist = [ 0, 0, 0, 0, 0, 0 ]
+                tlist[pyferret.TIMEARRAY_DAYINDEX] = fval
+                return (pyferret.AXISTYPE_TIME, tlist)
+            elif istimestep and (lastchar == 'H'): # hours
+                fval = float(val[:-1])
+                tlist = [ 0, 0, 0, 0, 0, 0 ]
+                tlist[pyferret.TIMEARRAY_HOURINDEX] = fval
+                return (pyferret.AXISTYPE_TIME, tlist)
+            elif istimestep and (lastchar == 'M'): # minutes
+                fval = float(val[:-1])
+                tlist = [ 0, 0, 0, 0, 0, 0 ]
+                tlist[pyferret.TIMEARRAY_MINUTEINDEX] = fval
+                return (pyferret.AXISTYPE_TIME, tlist)
+            elif istimestep and (lastchar == 'S'): # seconds
+                fval = float(val[:-1])
+                tlist = [ 0, 0, 0, 0, 0, 0 ]
+                tlist[pyferret.TIMEARRAY_SECONDINDEX] = fval
+                return (pyferret.AXISTYPE_TIME, tlist)
+            else:
+                # maybe just numeric string; if not, will raise an exception
+                fval = float(val)
+                return(pyferret.AXISTYPE_ABSTRACT, fval)
+        except Exception:
+            raise ValueError('unable to parse: %s' % val)
 

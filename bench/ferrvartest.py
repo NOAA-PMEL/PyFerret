@@ -49,8 +49,8 @@ print ">>> coads_uw.mywnd._dataarray.shape"
 coads_uw.mywnd._dataarray.shape
 print ">>> print repr(coads_uw.mywnd._dataarray[2:5,2:5,0,0,0,0])"
 print repr(coads_uw.mywnd._dataarray[2:5,2:5,0,0,0,0])
-print ">>> coads_uw.mywnd._datagrid._axiscoords"
-coads_uw.mywnd._datagrid._axiscoords
+print ">>> print repr(coads_uw.mywnd._datagrid)"
+print repr(coads_uw.mywnd._datagrid)
 print ">>> coads_uw.mywnd.clean()"
 coads_uw.mywnd.clean()
 

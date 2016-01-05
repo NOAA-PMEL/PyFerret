@@ -18,3 +18,6 @@ GO err696_time_overlay
 
 GO bn_reset
 GO err696_save_noupcase
+
+GO bn_reset
+GO err696_argument_blanks

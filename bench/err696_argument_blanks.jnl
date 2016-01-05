@@ -1,0 +1,17 @@
+! err696_argument_blanks.jnl
+! Ticket 2343: quoted argument with a blank at the end.
+
+
+! argument with a blank at the end
+go err696_argument_blanks_sub "hello "
+
+! Preserve multiple blanks at the end
+go err696_argument_blanks_sub "hello     "
+
+! 2 arguments; one with a blank at the end, next with a blank at the start.
+! Note the blanks at the start of Arg 1 are not preserved.  The command is 
+! translated to  MESSAGE/CONTINUE   Hi Hi there my friend 
+! and the blanks after MESSAGE/CONTINUE are just treated as a delimiter.
+
+go err696_argument_blanks_sub "  Hi Hi "  " my friend"
+

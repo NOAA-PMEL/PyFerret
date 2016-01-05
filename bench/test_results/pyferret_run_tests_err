@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1384 Jan  3 14:48 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1384 Jan  5 14:45 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results with debug PyFerret on RHEL6-64
@@ -269,9 +269,11 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    bn_outline_poly.jnl
-   getstrdatatest.py
-   ferrvartest.py
-Beginning at Sun Jan  3 14:52:17 PST 2016
+   testgetstrdata.py
+   testferrdataset.py
+   testferrvar.py
+   testferrgrid.py
+Beginning at Tue Jan  5 14:54:00 PST 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -1823,13 +1825,10 @@ list/l=1/j=40/i=0:300:0 sst
  LISTing to file 10a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 404; message = "data/PMEL/coads_climatology.nc"^;};
- **Internet Data error
-             NetCDF: file not found (OPeNDAP/netCDF Error code -90)
-             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/coads_climatology.nc
-SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/coads_climatology.nc"
-Command file, command group, or REPEAT execution aborted
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running ferret script: bn_inf_levels.jnl
  Cached data cleared from memory
 *** Running ferret script: bn_regulart.jnl
@@ -2135,12 +2134,6 @@ Replacing definition of axis TIME
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 404; message = "data/PMEL/COADS/coads_air.cdf"^;};
- **Internet Data error
-             NetCDF: file not found (OPeNDAP/netCDF Error code -90)
-             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_air.cdf
-SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_air.cdf"
-syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
  **Internet Data error
              NetCDF: file not found (OPeNDAP/netCDF Error code -90)
@@ -2386,8 +2379,6 @@ SHADE/LEV=300/I=1:100/J=1:100 i+j
  TEMPORARY data cleared from memory
 *** Running ferret script: bn_test_opendap.jnl
  Cached data cleared from memory
-syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 404; message = "data/PMEL/WOA05nc/monthly/s0112an1.nc"^;};
 CURL Error: Couldn't resolve host name
 curl error details: 
 *** Running ferret script: bn611_bug_fixes.jnl
@@ -3602,13 +3593,25 @@ set axis/name=45 x_in_meters
 set axis/name=.fr x_in_meters
 *** Running ferret script: bn_let_remote.jnl
  Cached data cleared from memory
+ **ERROR: command syntax: /REMOTE variable expression may not contain [d=
+DEFINE VARIABLE/D=1/remote rvar = t0112mn1[d=1,z=1:100@ave]
+ **ERROR: command syntax: /REMOTE variable definition must also specify /D=
+DEFINE VARIABLE/remote rvar = t0112mn1[d=1,z=1:100@ave]
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 404; message = "data/PMEL/WOA05nc/monthly/t0112mn1.nc"^;};
- **Internet Data error
-             NetCDF: file not found (OPeNDAP/netCDF Error code -90)
+context: Error { code = 500; message = "Error processing XML header file /usr/local/src/apache-tomcat-7.0.34/content/NVODS/conf/server/temp/AD882140E58648ADA4107B4E90A732E2/header.xml (No such file or directory)"^;};
+ **netCDF error
+             Unable to open URL with REMOTE variable definitions:
              Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc
-SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc"
-Command file, command group, or REPEAT execution aborted
+ **TMAP ERR: attribute reading error
+             Unable to get varid for LET/REMOTE variable: NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
+             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc
+ **TMAP ERR: attribute reading error
+             Unable to get bad-value for LET/REMOTE variable: NetCDF: Attribute not found (OPeNDAP/netCDF Error code -43)
+             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc
+ **netCDF error
+             NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
+             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc
+list/x=300/y=15 avar
 *** Running ferret script: bn691_bug_fixes.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -3993,6 +3996,8 @@ SET DAT/FORM=CDF ft_cal_mixed.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file myfile.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running ferret script: bn_aggregate_t.jnl
  Cached data cleared from memory
  LISTing to file tmp/tagg_reg_1.nc
@@ -4143,15 +4148,25 @@ LOAD/TEMPORARY vflag
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
 *** Running ferret script: bn_outline_poly.jnl
  Cached data cleared from memory
-*** Running python script: getstrdatatest.py
+*** Running python script: testgetstrdata.py
  Cached data cleared from memory
 >>> ... ... >>> 
-*** Running python script: ferrvartest.py
+*** Running python script: testferrdataset.py
+ Cached data cleared from memory
+>>> ... ... >>> 
+*** Running python script: testferrvar.py
  Cached data cleared from memory
 >>> ... ... >>> Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
-  File "/home/flat/ksmith/PyFerret/lib/python2.6/site-packages/pyferret/ferrvar.py", line 536, in remove
-    raise ValueError('cannot remove file variable %s from Ferret' % ferrname)
-ValueError: cannot remove file variable SST[d=coads_climatology.cdf] from Ferret
+  File "/home/flat/ksmith/PyFerret/lib/python2.6/site-packages/pyferret/ferrdataset.py", line 192, in __delattr__
+    self.__delitem__(name)
+  File "/home/flat/ksmith/PyFerret/lib/python2.6/site-packages/pyferret/ferrdataset.py", line 141, in __delitem__
+    value._removefromferret()
+  File "/home/flat/ksmith/PyFerret/lib/python2.6/site-packages/pyferret/ferrvar.py", line 772, in _removefromferret
+    raise NotImplementedError('%s is a file variable; close the dataset to remove' % ferrname)
+NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the dataset to remove
 
-Ended at Sun Jan  3 14:54:04 PST 2016
+*** Running python script: testferrgrid.py
+ Cached data cleared from memory
+>>> ... ... >>> 
+Ended at Tue Jan  5 14:55:50 PST 2016

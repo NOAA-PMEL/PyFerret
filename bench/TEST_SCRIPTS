@@ -253,5 +253,6 @@ bn_startupfile.jnl
 bn_outline_poly.jnl
 ! PyFerret-only Python scripts
 testgetstrdata.py
+testferrdataset.py
 testferrvar.py
 testferrgrid.py

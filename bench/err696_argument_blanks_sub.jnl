@@ -1,0 +1,3 @@
+! for bug2343 
+
+say ($1)there($2%.%)

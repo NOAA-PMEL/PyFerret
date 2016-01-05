@@ -16,6 +16,8 @@ print ">>> coads.sst.fetch()"
 coads.sst.fetch()
 print ">>> coadsgrid = coads.sst._datagrid"
 coadsgrid = coads.sst._datagrid
+print ">>> print repr(coadsgrid)"
+print repr(coadsgrid)
 print ">>> nogrid == coadsgrid"
 nogrid == coadsgrid
 print ">>> nogrid != coadsgrid"

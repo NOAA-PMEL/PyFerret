@@ -110,8 +110,9 @@ class FerrDataSet(object):
 
     def __setitem__(self, name, value):
         '''
-        Assigns the value (FerrVar) to Ferret identified by name (string),
-        and adds value to this dataset identified by name.
+        Creates a copy of value (FerrVar), assigns it to Ferret identified by 
+        name (string), and adds this FerrVar copy to this dataset, identified 
+        by name.
         '''
         if not isinstance(name, str):
             raise TypeError('name key is not a string')
@@ -119,11 +120,13 @@ class FerrDataSet(object):
             raise TypeError('value to be assigned is not a FerrVar')
         if self._filename and not self._datasetname:
             raise TypeError('this dataset has been closed')
+        # make an anonymous copy of the FerrVar by calling its __pos__ method 
+        newvar = value.__pos__()
         try:
-            value.assign(name, self._datasetname)
+            newvar._assigninferret(name, self._datasetname)
         except ValueError as ex:
-            raise TypeError('unable to assign variable %s in Ferret: %s' % (name, str(ex)))
-        self._ferrvars[name.upper()] = value
+            raise TypeError(str(ex))
+        self._ferrvars[name.upper()] = newvar
 
     def __delitem__(self, name):
         '''
@@ -135,9 +138,9 @@ class FerrDataSet(object):
         uppername = name.upper()
         value = self._ferrvars[uppername]
         try:
-            value.remove()
+            value._removefromferret()
         except ValueError as ex:
-            raise TypeError('unable to remove variable %s in Ferret: %s' % (name, str(ex)))
+            raise TypeError(str(ex))
         del self._ferrvars[uppername]
 
     def __contains__(self, name):
@@ -167,9 +170,9 @@ class FerrDataSet(object):
 
     def __setattr__(self, name, value):
         '''
-        If value is a FerrVar, then assigns the Ferret variable value (FerrVar) 
-        to Ferret identified by name (string), and adds value to this dataset identified by name.
-        If value is not a FerrVar, passes this call onto the parent object.
+        If value is a FerrVar, then creates a copy of this Ferret variable, assigns it 
+        to Ferret identified by name (string), and adds it to this dataset identified 
+        by name.  If value is not a FerrVar, passes this call onto the parent object.
         '''
         if isinstance(value, pyferret.FerrVar):
             try:
@@ -217,17 +220,18 @@ class FerrDataSet(object):
         '''
         Removes (cancels) all the (non-file) variables in Ferret associated with this dataset,
         then closes (cancels) this dataset in Ferret (which removes the file variables as well).
+        Raises a ValueError if there is a problem.
         '''
         # if the dataset is already closed, ignore this command
         if self._filename and not self._datasetname:
             return
         # remove all the Ferret variables associated with this dataset, 
-        # ignoring errors (file variables will fail)
+        # ignoring errors from trying to remove file variables.
         for name in self._ferrvars:
             try:
                 # remove this variable from Ferret 
-                self._ferrvars[name].remove()
-            except Exception:
+                self._ferrvars[name]._removefromferret()
+            except NotImplementedError:
                 pass
         # remove all the FerrVar's from _ferrvars
         self._ferrvars.clear()
@@ -238,7 +242,7 @@ class FerrDataSet(object):
         cmdstr = 'CANCEL DATA %s' % self._datasetname
         (errval, errmsg) = pyferret.run(cmdstr)
         if errval != pyferret.FERR_OK:
-            raise ValueError('cannot remove dataset %s in Ferret: %s' % self._datasetname)
+            raise ValueError('unable to remove dataset %s in Ferret: %s' % self._datasetname)
         # mark this dataset as closed
         self._datasetname = ''
 

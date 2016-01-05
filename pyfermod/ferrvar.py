@@ -85,7 +85,7 @@ class FerrVar(object):
             return
         # Try to remove from Ferret but ignore errors
         try:
-            self.remove()
+            self.removefromferret()
         except Exception:
             pass
 
@@ -725,7 +725,7 @@ class FerrVar(object):
         newvar._requires.update(self._requires)
         return newvar
 
-    def assign(self, varname, datasetname):
+    def _assigninferret(self, varname, datasetname):
         '''
         Defines this FerrVar in Ferret using the given variable name 
         associated with the given dataset name.
@@ -757,18 +757,23 @@ class FerrVar(object):
         self._requires.add(varname.upper())
         self.clean()
 
-    def remove(self):
+    def _removefromferret(self):
         '''
         Removes (cancels) this variable in Ferret, then cleans this FerrVar and erases _varname.
-        Raises a ValueError if there is a problem, such as if this is a file variable.
+        Raises a NotImplementedError is this is a file variable.
+        Raises a ValueError if there is a Ferret problem.
+        This normally is not called by the user; instead delete the FerrVar in the dataset.
         '''
+        # ignore if this Ferrer variable has already been removed from Ferret
+        if not self._varname:
+            return
         ferrname = self.ferretname()
         if self._isfilevar:
-            raise ValueError('cannot remove file variable %s from Ferret' % ferrname)
+            raise NotImplementedError('%s is a file variable; close the dataset to remove' % ferrname)
         cmdstr = 'CANCEL VAR %s' % ferrname
         (errval, errmsg) = pyferret.run(cmdstr)
         if errval != pyferret.FERR_OK:
-            raise ValueError('cannot remove variable %s from Ferret: %s' % (ferrname, errmsg))
+            raise ValueError('unable to remove variable %s from Ferret: %s' % (ferrname, errmsg))
         self._varname = ''
         self.clean()
 

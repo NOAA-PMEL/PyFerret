@@ -48,6 +48,7 @@
 * 11/04*acm* - fix bug 485: $0 should return the name of the script -
 *              IF (karg.LE.0 .OR. karg.GE.100) should be IF(karg.LT.0 ...
 * V693+ *sh 2/15 - added support for _DQ_-enclosedquotations
+* V697 *acm 1/16 - Fix ticket 2343: preserve blanks at the end of quoted args
 
 * calling argument declarations:
 	INTEGER	  lenarg, status
@@ -56,7 +57,7 @@
 * internal variable declarations:
 	LOGICAL quote, DQ_quote, found_comma, bslash, its_quote, its_DQ
 	INTEGER	TM_LENSTR1,lengo, iarg, goptr, start, iend, karg,
-     .		open_paren, open_brkt
+     .		open_paren, open_brkt, i, la
 	CHARACTER c1*1
 
 * internal parameter declarations
@@ -189,6 +190,15 @@
 !	   lenarg = iend - start + 1
 * ... remove one level of backslash escapes from the arg
 	   CALL DE_ESCAPE_STRING(arg, lenarg)
+
+* ... if the command had quotes, preserve blanks at the end of the string
+	   IF (goline(iend:iend) .EQ. ' ') THEN
+	      la = lenarg
+	      DO i = iend-start+1, la+1, -1
+	         lenarg = lenarg + 1
+		 arg = arg//' '
+	      ENDDO
+	   ENDIF
 	ENDIF
 
 * a set of empty quotes is regarded as a place-holder for the default

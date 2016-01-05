@@ -18,9 +18,15 @@ class FerrDataSet(object):
         assigns it as an attribute of this class whose name is the variable name.
             filename (string): name of the dataset filename or http address
             qual (string): Ferret qualifiers to be used with the "USE" command
+        If both filename is None or empty, an anonymous dataset is returned.
         '''
         if not filename:
-            raise ValueError('no filename given')
+            # return an anonymous dataset
+            self._filename = ''
+            self._datasetname = ''
+            self._ferrvars = { }
+            return
+        # tell Ferret to use this dataset
         if qual:
             cmdstr = 'USE %s "%s"' % (qual, filename)
         else:
@@ -58,7 +64,7 @@ class FerrDataSet(object):
         Representation to recreate this FerrDataSet.
         Also includes the variable names as variables can be added after creation.
         '''
-        infostr = "FerrDataSet('%s') with Ferret name %s and variables %s" % \
+        infostr = "FerrDataSet('%s') using dataset name '%s' and variables %s" % \
                   (self._filename, self._datasetname, str(self.varnames()))
         return infostr
 
@@ -111,8 +117,8 @@ class FerrDataSet(object):
             raise TypeError('name key is not a string')
         if not isinstance(value, pyferret.FerrVar):
             raise TypeError('value to be assigned is not a FerrVar')
-        if not self._datasetname:
-            raise TypeError('this dataset has been removed from Ferret')
+        if self._filename and not self._datasetname:
+            raise TypeError('this dataset has been closed')
         try:
             value.assign(name, self._datasetname)
         except ValueError as ex:
@@ -212,8 +218,8 @@ class FerrDataSet(object):
         Removes (cancels) all the (non-file) variables in Ferret associated with this dataset,
         then closes (cancels) this dataset in Ferret (which removes the file variables as well).
         '''
-        # ignore the call if already removed
-        if not self._datasetname:
+        # if the dataset is already closed, ignore this command
+        if self._filename and not self._datasetname:
             return
         # remove all the Ferret variables associated with this dataset, 
         # ignoring errors (file variables will fail)
@@ -225,12 +231,15 @@ class FerrDataSet(object):
                 pass
         # remove all the FerrVar's from _ferrvars
         self._ferrvars.clear()
+        # nothing else to do if an anonymous dataset
+        if not self._datasetname:
+            return
         # now remove the dataset
         cmdstr = 'CANCEL DATA %s' % self._datasetname
         (errval, errmsg) = pyferret.run(cmdstr)
         if errval != pyferret.FERR_OK:
             raise ValueError('cannot remove dataset %s in Ferret: %s' % self._datasetname)
-        # mark this dataset as invalid
+        # mark this dataset as closed
         self._datasetname = ''
 
     def showdataset(self, brief=True, qual=''):
@@ -240,16 +249,27 @@ class FerrDataSet(object):
             brief (boolean): if True (default), a brief report is shown;
                 otherwise a full report is shown.
             qual (string): Ferret qualifiers to add to the SHOW DATA command
+        If this is an anonymous dataset (no dataset name), the Ferret 
+        SHOW VAR/USER command is used instead to show all variables
+        created by anonymous datasets.
         '''
+        # if the dataset is closed, ignore this command
+        if self._filename and not self._datasetname:
+            return
         if not isinstance(qual, str):
             raise ValueError('qual (Ferret qualifiers) must be a string')
-        cmdstr = 'SHOW DATA'
-        if not brief:
-            cmdstr += '/FULL'
-        if qual:
-            cmdstr += qual
-        cmdstr += ' '
-        cmdstr += self._datasetname
+        if not self._datasetname:
+            cmdstr = 'SHOW VAR/USER'
+            if qual:
+                cmdstr += qual
+        else:
+            cmdstr = 'SHOW DATA'
+            if not brief:
+                cmdstr += '/FULL'
+            if qual:
+                cmdstr += qual
+            cmdstr += ' '
+            cmdstr += self._datasetname
         (errval, errmsg) = pyferret.run(cmdstr)
         if errval != pyferret.FERR_OK:
             raise ValueError('Ferret command "%s" failed: %s' % (cmdstr, errmsg))

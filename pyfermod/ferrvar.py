@@ -478,7 +478,7 @@ class FerrVar(object):
     def __pos__(self):
         '''
         Returns an anonymous FerrVar whose definition is 
-        the same as this FerrVar definition
+        the same as this FerrVar definition.
         '''
         newvar = FerrVar(definition=self._definition)
         newvar._requires.update(self._requires)
@@ -490,6 +490,237 @@ class FerrVar(object):
         the absolute value of this FerrVar definition.
         '''
         newdef = 'abs(%s)' % self._definition
+        newvar = FerrVar(definition=newdef)
+        newvar._requires.update(self._requires)
+        return newvar
+
+    def __getitem__(self, key):
+        '''
+        Returns an anonymous FerrVar whose definition is a subset 
+        of this FerrVar.  This FerrVar must be assigned in Ferret.
+            key is an int, float, string, int slice, float slice, 
+                string slice, or a tuple of these values.
+                 - int are interpreted as index/indices
+                 - floats are interpreted as axis values
+                 - strings are interpreted as axis values possibly with units
+        Units in a string designate an axis; otherwise the index
+        within the given tuple (or zero if not a tuple) specifies the axis.
+        For example ['20N':'50N'] will always be a latitude subset.
+        TODO: handle step values
+        '''
+        if not self._varname:
+            raise NotImplementedError('slicing can only be performed on variables assigned in Ferret')
+        if key == None:
+            raise KeyError('None is not a valid key')
+        coordlimits = [ None ] * pyferret.MAX_FERRET_NDIM
+        indexlimits = [ None ] * pyferret.MAX_FERRET_NDIM
+        changed = False
+        # TODO: clean-up; lots of repeated code
+        if isinstance(key, tuple):
+            for k in xrange(len(key)):
+                piece = key[k]
+                if piece == None:
+                    continue
+                if isinstance(piece, slice):
+                    try:
+                        (axtype, start, stop, step) = pyferret.FerrGrid._parsegeoslice(piece)
+                    except Exception as ex:
+                        raise KeyError('%s is not valid: %s' % (str(piece), str(ex)))
+                    if axtype == pyferret.AXISTYPE_LONGITUDE:
+                        if coordlimits[pyferret.X_AXIS] or indexlimits[pyferret.X_AXIS]:
+                            raise KeyError('two longitude slices given')
+                        coordlimits[pyferret.X_AXIS] = '%s:%s' % (str(start), str(stop))
+                        changed = True
+                    elif axtype == pyferret.AXISTYPE_LATITUDE:
+                        if coordlimits[pyferret.Y_AXIS] or indexlimits[pyferret.Y_AXIS]:
+                            raise KeyError('two latitude slices given')
+                        coordlimits[pyferret.Y_AXIS] = '%s:%s' % (str(start), str(stop))
+                        changed = True
+                    elif axtype == pyferret.AXISTYPE_LEVEL:
+                        if coordlimits[pyferret.Z_AXIS] or indexlimits[pyferret.Z_AXIS]:
+                            raise KeyError('two level slices given')
+                        coordlimits[pyferret.Z_AXIS] = '%s:%s' % (str(start), str(stop))
+                        changed = True
+                    elif axtype == pyferret.AXISTYPE_TIME:
+                        if coordlimits[pyferret.T_AXIS] or indexlimits[pyferret.T_AXIS]:
+                            raise KeyError('two time slices given')
+                        starttime = '"%02d-%3s-%04d %02d:%02d:%02d"' % \
+                            ( start[pyferret.TIMEARRAY_DAYINDEX],
+                              pyferret._UC_MONTH_NAMES[start[pyferret.TIMEARRAY_MONTHINDEX]],
+                              start[pyferret.TIMEARRAY_YEARINDEX],
+                              start[pyferret.TIMEARRAY_HOURINDEX],
+                              start[pyferret.TIMEARRAY_MINUTEINDEX],
+                              start[pyferret.TIMEARRAY_SECONDINDEX] )
+                        stoptime = '"%02d-%3s-%04d %02d:%02d:%02d"' % \
+                            ( stop[pyferret.TIMEARRAY_DAYINDEX],
+                              pyferret._UC_MONTH_NAMES[stop[pyferret.TIMEARRAY_MONTHINDEX]],
+                              stop[pyferret.TIMEARRAY_YEARINDEX],
+                              stop[pyferret.TIMEARRAY_HOURINDEX],
+                              stop[pyferret.TIMEARRAY_MINUTEINDEX],
+                              stop[pyferret.TIMEARRAY_SECONDINDEX] )
+                        coordlimits[pyferret.T_AXIS] = '%s:%s' % (starttime, stoptime)
+                        changed = True
+                    elif isinstance(start,int) and isinstance(stop,int):
+                        if coordlimits[k] or indexlimits[k]:
+                            raise KeyError('two slices for axis index %d given' % k)
+                        indexlimits[k] = '%d:%d' % (start, stop)
+                        changed = True
+                    elif isinstance(start,numbers.Real) and isinstance(stop,numbers.Real):
+                        if coordlimits[k] or indexlimits[k]:
+                            raise KeyError('two slices for axis index %d given' % k)
+                        coordlimits[k] = '%s:%s' % (str(start), str(stop))
+                        changed = True
+                    else:
+                        raise KeyError('%s in not valid' % str(piece))
+                else:
+                    try:
+                        (axtype, val) = pyferret.FerrGrid._parsegeoval(piece)
+                    except Exception as ex:
+                        raise KeyError('%s is not valid: %s' % (str(piece), str(ex)))
+                    if axtype == pyferret.AXISTYPE_LONGITUDE:
+                        if coordlimits[pyferret.X_AXIS] or indexlimits[pyferret.X_AXIS]:
+                            raise KeyError('two longitude slices given')
+                        coordlimits[pyferret.X_AXIS] = '%s' % str(val)
+                        changed = True
+                    elif axtype == pyferret.AXISTYPE_LATITUDE:
+                        if coordlimits[pyferret.Y_AXIS] or indexlimits[pyferret.Y_AXIS]:
+                            raise KeyError('two latitude slices given')
+                        coordlimits[pyferret.Y_AXIS] = '%s' % str(val)
+                        changed = True
+                    elif axtype == pyferret.AXISTYPE_LEVEL:
+                        if coordlimits[pyferret.Z_AXIS] or indexlimits[pyferret.Z_AXIS]:
+                            raise KeyError('two level slices given')
+                        coordlimits[pyferret.Z_AXIS] = '%s' % str(val)
+                        changed = True
+                    elif axtype == pyferret.AXISTYPE_TIME:
+                        if coordlimits[pyferret.T_AXIS] or indexlimits[pyferret.T_AXIS]:
+                            raise KeyError('two time slices given')
+                        coordlimits[pyferret.T_AXIS] = '"%02d-%3s-%04d %02d:%02d:%02d"' % \
+                            ( val[pyferret.TIMEARRAY_DAYINDEX],
+                              pyferret._UC_MONTH_NAMES[val[pyferret.TIMEARRAY_MONTHINDEX]],
+                              val[pyferret.TIMEARRAY_YEARINDEX],
+                              val[pyferret.TIMEARRAY_HOURINDEX],
+                              val[pyferret.TIMEARRAY_MINUTEINDEX],
+                              val[pyferret.TIMEARRAY_SECONDINDEX] )
+                        changed = True
+                    elif isinstance(val,int):
+                        if coordlimits[k] or indexlimits[k]:
+                            raise KeyError('two slices for axis index %d given' % k)
+                        indexlimits[k] = '%d' % val
+                        changed = True
+                    elif isinstance(start,float):
+                        if coordlimits[k] or indexlimits[k]:
+                            raise KeyError('two slices for axis index %d given' % k)
+                        coordlimits[k] = '%s' % str(val)
+                        changed = True
+                    else:
+                        raise KeyError('%s in not valid' % str(piece))
+        elif isinstance(key, slice):
+            try:
+                (axtype, start, stop, step) = pyferret.FerrGrid._parsegeoslice(key)
+            except Exception as ex:
+                raise KeyError('%s is not valid: %s' % (str(key), str(ex)))
+            if axtype == pyferret.AXISTYPE_LONGITUDE:
+                coordlimits[pyferret.X_AXIS] = '%s:%s' % (str(start), str(stop))
+                changed = True
+            elif axtype == pyferret.AXISTYPE_LATITUDE:
+                coordlimits[pyferret.Y_AXIS] = '%s:%s' % (str(start), str(stop))
+                changed = True
+            elif axtype == pyferret.AXISTYPE_LEVEL:
+                coordlimits[pyferret.Z_AXIS] = '%s:%s' % (str(start), str(stop))
+                changed = True
+            elif axtype == pyferret.AXISTYPE_TIME:
+                starttime = '"%02d-%3s-%04d %02d:%02d:%02d"' % \
+                    ( start[pyferret.TIMEARRAY_DAYINDEX],
+                      pyferret._UC_MONTH_NAMES[start[pyferret.TIMEARRAY_MONTHINDEX]],
+                      start[pyferret.TIMEARRAY_YEARINDEX],
+                      start[pyferret.TIMEARRAY_HOURINDEX],
+                      start[pyferret.TIMEARRAY_MINUTEINDEX],
+                      start[pyferret.TIMEARRAY_SECONDINDEX] )
+                stoptime = '"%02d-%3s-%04d %02d:%02d:%02d"' % \
+                    ( stop[pyferret.TIMEARRAY_DAYINDEX],
+                      pyferret._UC_MONTH_NAMES[stop[pyferret.TIMEARRAY_MONTHINDEX]],
+                      stop[pyferret.TIMEARRAY_YEARINDEX],
+                      stop[pyferret.TIMEARRAY_HOURINDEX],
+                      stop[pyferret.TIMEARRAY_MINUTEINDEX],
+                      stop[pyferret.TIMEARRAY_SECONDINDEX] )
+                coordlimits[pyferret.T_AXIS] = '%s:%s' % (starttime, stoptime)
+                changed = True
+            elif isinstance(start,int) and isinstance(stop,int):
+                indexlimits[0] = '%d:%d' % (start, stop)
+                changed = True
+            elif isinstance(start,numbers.Real) and isinstance(stop,numbers.Real):
+                coordlimits[0] = '%s:%s' % (str(start), str(stop))
+                changed = True
+            else:
+                raise KeyError('%s in not valid' % str(key))
+        else:
+            try:
+                (axtype, val) = pyferret.FerrGrid._parsegeoval(key)
+            except Exception as ex:
+                raise KeyError('%s is not valid: %s' % (str(key), str(ex)))
+            if axtype == pyferret.AXISTYPE_LONGITUDE:
+                coordlimits[pyferret.X_AXIS] = '%s' % str(val)
+                changed = True
+            elif axtype == pyferret.AXISTYPE_LATITUDE:
+                coordlimits[pyferret.Y_AXIS] = '%s' % str(val)
+                changed = True
+            elif axtype == pyferret.AXISTYPE_LEVEL:
+                coordlimits[pyferret.Z_AXIS] = '%s' % str(val)
+                changed = True
+            elif axtype == pyferret.AXISTYPE_TIME:
+                coordlimits[pyferret.T_AXIS] = '"%02d-%3s-%04d %02d:%02d:%02d"' % \
+                    ( val[pyferret.TIMEARRAY_DAYINDEX],
+                      pyferret._UC_MONTH_NAMES[val[pyferret.TIMEARRAY_MONTHINDEX]],
+                      val[pyferret.TIMEARRAY_YEARINDEX],
+                      val[pyferret.TIMEARRAY_HOURINDEX],
+                      val[pyferret.TIMEARRAY_MINUTEINDEX],
+                      val[pyferret.TIMEARRAY_SECONDINDEX] )
+                changed = True
+            elif isinstance(val,int):
+                indexlimits[k] = '%d' % val
+                changed = True
+            elif isinstance(start,float):
+                coordlimits[k] = '%s' % str(val)
+                changed = True
+            else:
+                raise KeyError('%s in not valid' % str(key))
+        if not changed:
+            # the whole thing - definition is just this variable
+            newvar = FerrVar(definition=self.ferretname())
+            newvar._requires.update(self._requires)
+            return newvar
+        # create the subset definition in Ferret
+        if self._datasetname:
+            newdef = '%s[d=%s,' % (self._varname, self._datasetname)
+        else:
+            newdef = '%s[' % self._varname
+        if coordlimits[pyferret.X_AXIS]:
+            newdef += 'X=%s,' % coordlimits[pyferret.X_AXIS]
+        if indexlimits[pyferret.X_AXIS]:
+            newdef += 'I=%s,' % indexlimits[pyferret.X_AXIS]
+        if coordlimits[pyferret.Y_AXIS]:
+            newdef += 'Y=%s,' % coordlimits[pyferret.Y_AXIS]
+        if indexlimits[pyferret.Y_AXIS]:
+            newdef += 'J=%s,' % indexlimits[pyferret.Y_AXIS]
+        if coordlimits[pyferret.Z_AXIS]:
+            newdef += 'Z=%s,' % coordlimits[pyferret.Z_AXIS]
+        if indexlimits[pyferret.Z_AXIS]:
+            newdef += 'K=%s,' % indexlimits[pyferret.Z_AXIS]
+        if coordlimits[pyferret.T_AXIS]:
+            newdef += 'T=%s,' % coordlimits[pyferret.T_AXIS]
+        if indexlimits[pyferret.T_AXIS]:
+            newdef += 'L=%s,' % indexlimits[pyferret.T_AXIS]
+        if coordlimits[pyferret.E_AXIS]:
+            newdef += 'E=%s,' % coordlimits[pyferret.E_AXIS]
+        if indexlimits[pyferret.E_AXIS]:
+            newdef += 'M=%s,' % indexlimits[pyferret.E_AXIS]
+        if coordlimits[pyferret.F_AXIS]:
+            newdef += 'F=%s,' % coordlimits[pyferret.F_AXIS]
+        if indexlimits[pyferret.F_AXIS]:
+            newdef += 'N=%s,' % indexlimits[pyferret.F_AXIS]
+        # replace the final , with ]
+        newdef = newdef[:-1] + ']'
         newvar = FerrVar(definition=newdef)
         newvar._requires.update(self._requires)
         return newvar
@@ -599,7 +830,7 @@ class FerrVar(object):
             newgrid (FerrVar |  string | FerrGrid): regrid to this implied grid;
                 if a FerrVar, the implied grid is the grid used by the Ferret variable,
                 if a string, the implied grid is the grid known to Ferret by this name
-                if a FerrGrid, the implied grid is this grid
+                if a FerrGrid, the implied grid is this grid (TODO: implement)
             method (string): method to perform the regridding; typically one of
                 pyferret.REGRID_LINEAR (default)
                     (multi-axis) linear interpolation of nearest source points around destination point
@@ -619,13 +850,13 @@ class FerrVar(object):
                     copy values where source and destination points coincide; 
                     other destination points assigned missing value
         '''
-        if not (isinstance(method, str) and (method[0] == '@')):
-            raise ValueError('invalid regridding method %s' % str(method))
         if not self._varname:
-            raise ValueError('regridding can only performed on variables defined in Ferret')
+            raise NotImplementedError('regridding can only be performed on variables assigned in Ferret')
+        if not ( isinstance(method, str) and (method[0] == '@') ):
+            raise ValueError('invalid regridding method %s' % str(method))
         if isinstance(newgrid, FerrVar):
             if not newgrid._varname:
-                raise ValueError('FerrVar used for the new grid is not defined in Ferret')
+                raise ValueError('FerrVar used for the new grid is not assigned in Ferret')
             gridname = newgrid.ferretname()
         elif isinstance(newgrid, str):
             gridname = newgrid

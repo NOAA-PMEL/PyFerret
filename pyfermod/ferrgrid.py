@@ -1,7 +1,5 @@
 '''
 Represents Ferret grids in Python.
-
-@author: Karl Smith
 '''
 
 import numbers
@@ -9,6 +7,16 @@ import time
 import numpy
 import pyferret
 
+# set of valid axis types
+_VALID_AXIS_TYPES = frozenset( (pyferret.AXISTYPE_LONGITUDE, 
+                                pyferret.AXISTYPE_LATITUDE, 
+                                pyferret.AXISTYPE_LEVEL, 
+                                pyferret.AXISTYPE_TIME, 
+                                pyferret.AXISTYPE_CUSTOM, 
+                                pyferret.AXISTYPE_ABSTRACT, 
+                                pyferret.AXISTYPE_NORMAL) )
+
+# Supported formats for time.strptime
 _TIME_PARSE_FORMATS = ( 
     '%d-%b-%Y %H:%M:%S',
     '%d-%b-%Y %H:%M',
@@ -79,7 +87,7 @@ class FerrGrid(object):
             try:
                 for k in xrange(len(axistypes)):
                     axtype = axistypes[k]
-                    if not axtype in pyferret.VALID_AXIS_TYPES:
+                    if not axtype in _VALID_AXIS_TYPES:
                         raise ValueError('axis type %s is not valid' % str(axtype))
                     self._axistypes[k] = axtype
             except TypeError:
@@ -391,7 +399,7 @@ class FerrGrid(object):
                 pyferret.TIMEARRAY_SECONDINDEX
         '''
         day = timearray[pyferret.TIMEARRAY_DAYINDEX]
-        monthstr = pyferret._UC_MONTH_NAMES[timearray[pyferret.TIMEARRAY_MONTHINDEX]]
+        monthstr = pyferret.datamethods._UC_MONTH_NAMES[timearray[pyferret.TIMEARRAY_MONTHINDEX]]
         year = timearray[pyferret.TIMEARRAY_YEARINDEX]
         hour = timearray[pyferret.TIMEARRAY_HOURINDEX]
         minute = timearray[pyferret.TIMEARRAY_MINUTEINDEX]

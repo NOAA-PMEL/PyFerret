@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1384 Jan  6 11:06 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Jan  6 13:45 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results with debug PyFerret on RHEL6-64
@@ -273,7 +273,7 @@ Benchmark scripts that will be run:
    testferrdataset.py
    testferrvar.py
    testferrgrid.py
-Beginning at Wed Jan  6 11:09:58 PST 2016
+Beginning at Wed Jan  6 13:46:04 PST 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -4158,15 +4158,15 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
 >>> ... ... >>> Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
-  File "/home/flat/ksmith/PyFerret/lib/python2.6/site-packages/pyferret/ferrdataset.py", line 193, in __delattr__
+  File "/home/flat/ksmith/PyFerret/lib/python2.6/site-packages/pyferret/ferrdataset.py", line 191, in __delattr__
     self.__delitem__(name)
-  File "/home/flat/ksmith/PyFerret/lib/python2.6/site-packages/pyferret/ferrdataset.py", line 142, in __delitem__
+  File "/home/flat/ksmith/PyFerret/lib/python2.6/site-packages/pyferret/ferrdataset.py", line 140, in __delitem__
     value._removefromferret()
-  File "/home/flat/ksmith/PyFerret/lib/python2.6/site-packages/pyferret/ferrvar.py", line 770, in _removefromferret
+  File "/home/flat/ksmith/PyFerret/lib/python2.6/site-packages/pyferret/ferrvar.py", line 768, in _removefromferret
     raise NotImplementedError('%s is a file variable; close the dataset to remove' % ferrname)
 NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the dataset to remove
 
 *** Running python script: testferrgrid.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Wed Jan  6 11:11:50 PST 2016
+Ended at Wed Jan  6 13:47:54 PST 2016

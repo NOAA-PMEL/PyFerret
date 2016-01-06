@@ -1,7 +1,5 @@
 '''
 Represents Ferret variables in Python.
-
-@author: Karl Smith
 '''
 
 import numbers

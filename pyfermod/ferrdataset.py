@@ -1,7 +1,5 @@
 '''
 Represents a data file and the data variables it contains.
-
-@author: Karl Smith
 '''
 
 import pyferret

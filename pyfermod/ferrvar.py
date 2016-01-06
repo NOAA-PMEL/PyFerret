@@ -526,6 +526,8 @@ class FerrVar(object):
                         (axtype, start, stop, step) = pyferret.FerrGrid._parsegeoslice(piece)
                     except Exception as ex:
                         raise KeyError('%s is not valid: %s' % (str(piece), str(ex)))
+                    if step != None:
+                        raise KeyError('step values in slices are not supported at this time')
                     if axtype == pyferret.AXISTYPE_LONGITUDE:
                         if coordlimits[pyferret.X_AXIS] or indexlimits[pyferret.X_AXIS]:
                             raise KeyError('two longitude slices given')
@@ -551,6 +553,12 @@ class FerrVar(object):
                     elif isinstance(start,int) and isinstance(stop,int):
                         if coordlimits[k] or indexlimits[k]:
                             raise KeyError('two slices for axis index %d given' % k)
+                        # do not know the axis length at this time
+                        if (start < 0) or (stop < 0):
+                            raise KeyError('negative indices not supported at this time')
+                        # Ferret indices start at 1
+                        start += 1
+                        stop += 1
                         indexlimits[k] = '%d:%d' % (start, stop)
                         changed = True
                     elif isinstance(start,numbers.Real) and isinstance(stop,numbers.Real):
@@ -593,6 +601,11 @@ class FerrVar(object):
                     elif isinstance(val,int):
                         if coordlimits[k] or indexlimits[k]:
                             raise KeyError('two slices for axis index %d given' % k)
+                        # do not know the axis length at this time
+                        if val < 0: 
+                            raise KeyError('negative indices not supported at this time')
+                        # Ferret indices start at 1
+                        val += 1
                         indexlimits[k] = '%d' % val
                         changed = True
                     elif isinstance(start,float):
@@ -607,6 +620,8 @@ class FerrVar(object):
                 (axtype, start, stop, step) = pyferret.FerrGrid._parsegeoslice(key)
             except Exception as ex:
                 raise KeyError('%s is not valid: %s' % (str(key), str(ex)))
+            if step != None:
+                raise KeyError('step values in slices are not supported at this time')
             if axtype == pyferret.AXISTYPE_LONGITUDE:
                 coordlimits[pyferret.X_AXIS] = '%s:%s' % (str(start), str(stop))
                 changed = True
@@ -622,6 +637,12 @@ class FerrVar(object):
                 coordlimits[pyferret.T_AXIS] = '%s:%s' % (starttime, stoptime)
                 changed = True
             elif isinstance(start,int) and isinstance(stop,int):
+                # do not know the axis length at this time
+                if (start < 0) or (stop < 0):
+                    raise KeyError('negative indices not supported at this time')
+                # Ferret indices start at 1
+                start += 1
+                stop += 1
                 indexlimits[0] = '%d:%d' % (start, stop)
                 changed = True
             elif isinstance(start,numbers.Real) and isinstance(stop,numbers.Real):
@@ -650,6 +671,11 @@ class FerrVar(object):
                 coordlimits[pyferret.T_AXIS] = pyferret.FerrGrid._makedatestring(val)
                 changed = True
             elif isinstance(val,int):
+                # do not know the axis length at this time
+                if val < 0: 
+                    raise KeyError('negative indices not supported at this time')
+                # Ferret indices start at 1
+                val += 1
                 indexlimits[k] = '%d' % val
                 changed = True
             elif isinstance(start,float):

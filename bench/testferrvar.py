@@ -95,10 +95,21 @@ print ">>> coads.sst2.showgrid()"
 coads.sst2.showgrid()
 print ">>> coads.sst2.fetch()"
 coads.sst2.fetch()
+print ">>> coads.sst2._dataarray.shape"
+coads.sst2._dataarray.shape
 print ">>> print repr(coads.sst2._dataarray[2:5,23:26,0,0,0,0])"
 print repr(coads.sst2._dataarray[2:5,23:26,0,0,0,0])
 print "pyferret.run('LIST /X=25E:29E /Y=43S:39S /L=2 SST[d=coads_climatology]')"
 pyferret.run('LIST /X=25E:29E /Y=43S:39S /L=2 SST[d=coads_climatology]')
+print ">>> coads.sst2 = coads.sst['43S':'39S','25E':'29E',:,1]"
+coads.sst2 = coads.sst['43S':'39S','25E':'29E',:,1]
+print ">>> coads.sst2.fetch()"
+coads.sst2.fetch()
+print ">>> coads.sst2._dataarray.shape"
+coads.sst2._dataarray.shape
+print ">>> print repr(coads.sst2._dataarray[:,:,0,0,0,0])"
+print repr(coads.sst2._dataarray[:,:,0,0,0,0])
+
 
 print ">>> pyferret.showdatasets(brief=False)"
 pyferret.showdatasets(brief=False)

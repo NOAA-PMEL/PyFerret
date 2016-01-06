@@ -89,6 +89,17 @@ anond.showdataset()
 print ">>> del anond"
 del anond
 
+print ">>> coads.sst2 = coads.sst['15-FEB']"
+coads.sst2 = coads.sst['15-FEB']
+print ">>> coads.sst2.showgrid()"
+coads.sst2.showgrid()
+print ">>> coads.sst2.fetch()"
+coads.sst2.fetch()
+print ">>> print repr(coads.sst2._dataarray[2:5,23:26,0,0,0,0])"
+print repr(coads.sst2._dataarray[2:5,23:26,0,0,0,0])
+print "pyferret.run('LIST /X=25E:29E /Y=43S:39S /L=2 SST[d=coads_climatology]')"
+pyferret.run('LIST /X=25E:29E /Y=43S:39S /L=2 SST[d=coads_climatology]')
+
 print ">>> pyferret.showdatasets(brief=False)"
 pyferret.showdatasets(brief=False)
 print ">>> coads_uw.close()"

@@ -121,6 +121,7 @@ class FerrDataSet(object):
         if self._filename and not self._datasetname:
             raise TypeError('this dataset has been closed')
         # make an anonymous copy of the FerrVar by calling its __pos__ method 
+        # cleaner/faster than using the empty slice notation
         newvar = value.__pos__()
         try:
             newvar._assigninferret(name, self._datasetname)

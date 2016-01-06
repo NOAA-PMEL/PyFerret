@@ -9,7 +9,7 @@ import time
 import numpy
 import pyferret
 
-_DATETIME_PARSE_FORMATS = ( 
+_TIME_PARSE_FORMATS = ( 
     '%d-%b-%Y %H:%M:%S',
     '%d-%b-%Y %H:%M',
     '%d-%b-%Y',
@@ -18,6 +18,10 @@ _DATETIME_PARSE_FORMATS = (
     '%Y-%m-%d %H:%M:%S',
     '%Y-%m-%d %H:%M',
     '%Y-%m-%d', 
+)
+_TIME_NOYEAR_PARSE_FORMATS = (
+    '%d-%b %H:%M:%S',
+    '%d-%b',
 )
 
 class FerrGrid(object):
@@ -267,7 +271,8 @@ class FerrGrid(object):
             (pyferret.AXISTYPE_LEVEL, fval) is returned where fval 
             is the floating point level value.
         If val is a date and, optionally, time string matching one of the formats given
-            in _DATETIME_PARSE_FORMATS, (pyferret.AXISTYPE_TIME, tval) is returned where
+            in _TIME_PARSE_FORMATS or _TIME_NOYEAR_PARSE_FORMATS, 
+            (pyferret.AXISTYPE_TIME, tval) is returned where
             tval is a list of six numbers ordered by the indices:
                 pyferret.TIMEARRAY_DAYINDEX
                 pyferret.TIMEARRAY_MONTHINDEX
@@ -294,13 +299,26 @@ class FerrGrid(object):
             raise TypeError('not a string: %s' % repr(val))
         if not istimestep:
             # first try parsing as a date/time string using the accepted formats
-            for fmt in _DATETIME_PARSE_FORMATS:
+            for fmt in _TIME_PARSE_FORMATS:
                 try:
                     tval = time.strptime(val, fmt)
                     tlist = [ 0, 0, 0, 0, 0, 0 ]
                     tlist[pyferret.TIMEARRAY_DAYINDEX] = tval.tm_mday
                     tlist[pyferret.TIMEARRAY_MONTHINDEX] = tval.tm_mon
                     tlist[pyferret.TIMEARRAY_YEARINDEX] = tval.tm_year
+                    tlist[pyferret.TIMEARRAY_HOURINDEX] = tval.tm_hour
+                    tlist[pyferret.TIMEARRAY_MINUTEINDEX] = tval.tm_min
+                    tlist[pyferret.TIMEARRAY_SECONDINDEX] = tval.tm_sec
+                    return (pyferret.AXISTYPE_TIME, tlist)
+                except ValueError:
+                    pass
+            for fmt in _TIME_NOYEAR_PARSE_FORMATS:
+                try:
+                    tval = time.strptime(val, fmt)
+                    tlist = [ 0, 0, 0, 0, 0, 0 ]
+                    tlist[pyferret.TIMEARRAY_DAYINDEX] = tval.tm_mday
+                    tlist[pyferret.TIMEARRAY_MONTHINDEX] = tval.tm_mon
+                    # leave the year as zero - time assigns 1900
                     tlist[pyferret.TIMEARRAY_HOURINDEX] = tval.tm_hour
                     tlist[pyferret.TIMEARRAY_MINUTEINDEX] = tval.tm_min
                     tlist[pyferret.TIMEARRAY_SECONDINDEX] = tval.tm_sec
@@ -357,3 +375,36 @@ class FerrGrid(object):
         except Exception:
             raise ValueError('unable to parse: %s' % val)
 
+    @staticmethod
+    def _makedatestring(timearray):
+        '''
+        Creates a date and time string for the format DD-MON-YYYY HH:MM:SS 
+        corresponding the values in the given time array.  If the year is 
+        zero, -YYYY is omitted.  If the seconds is zero, :SS is omitted; 
+        if hours, minutes, and seconds are all zero, HH:MM:SS is omitted.
+            timearray: tuple of six int with time values given by the indices
+                pyferret.TIMEARRAY_DAYINDEX
+                pyferret.TIMEARRAY_MONTHINDEX
+                pyferret.TIMEARRAY_YEARINDEX
+                pyferret.TIMEARRAY_HOURINDEX
+                pyferret.TIMEARRAY_MINUTEINDEX
+                pyferret.TIMEARRAY_SECONDINDEX
+        '''
+        day = timearray[pyferret.TIMEARRAY_DAYINDEX]
+        monthstr = pyferret._UC_MONTH_NAMES[timearray[pyferret.TIMEARRAY_MONTHINDEX]]
+        year = timearray[pyferret.TIMEARRAY_YEARINDEX]
+        hour = timearray[pyferret.TIMEARRAY_HOURINDEX]
+        minute = timearray[pyferret.TIMEARRAY_MINUTEINDEX]
+        second = timearray[pyferret.TIMEARRAY_SECONDINDEX]
+        if year > 0:
+            datestr = '%02d-%3s-%04d' % (day, monthstr, year)
+        else:
+            datestr = '%02d-%3s' % (day, monthstr)
+        if second > 0:
+            timestr = ' %02d:%02d:%02d' % (hour, minute, second)
+        elif (minute > 0) or (hour > 0):
+            timestr = ' %02d:%02d' % (hour, minute)
+        else:
+            timestr = ''
+        return datestr + timestr
+ 

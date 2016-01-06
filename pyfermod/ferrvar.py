@@ -515,7 +515,7 @@ class FerrVar(object):
         coordlimits = [ None ] * pyferret.MAX_FERRET_NDIM
         indexlimits = [ None ] * pyferret.MAX_FERRET_NDIM
         changed = False
-        # TODO: clean-up; lots of repeated code
+        # TODO: handle step values, try to condense code
         if isinstance(key, tuple):
             for k in xrange(len(key)):
                 piece = key[k]
@@ -544,20 +544,8 @@ class FerrVar(object):
                     elif axtype == pyferret.AXISTYPE_TIME:
                         if coordlimits[pyferret.T_AXIS] or indexlimits[pyferret.T_AXIS]:
                             raise KeyError('two time slices given')
-                        starttime = '"%02d-%3s-%04d %02d:%02d:%02d"' % \
-                            ( start[pyferret.TIMEARRAY_DAYINDEX],
-                              pyferret._UC_MONTH_NAMES[start[pyferret.TIMEARRAY_MONTHINDEX]],
-                              start[pyferret.TIMEARRAY_YEARINDEX],
-                              start[pyferret.TIMEARRAY_HOURINDEX],
-                              start[pyferret.TIMEARRAY_MINUTEINDEX],
-                              start[pyferret.TIMEARRAY_SECONDINDEX] )
-                        stoptime = '"%02d-%3s-%04d %02d:%02d:%02d"' % \
-                            ( stop[pyferret.TIMEARRAY_DAYINDEX],
-                              pyferret._UC_MONTH_NAMES[stop[pyferret.TIMEARRAY_MONTHINDEX]],
-                              stop[pyferret.TIMEARRAY_YEARINDEX],
-                              stop[pyferret.TIMEARRAY_HOURINDEX],
-                              stop[pyferret.TIMEARRAY_MINUTEINDEX],
-                              stop[pyferret.TIMEARRAY_SECONDINDEX] )
+                        starttime = pyferret.FerrGrid._makedatestring(start)
+                        stoptime = pyferret.FerrGrid._makedatestring(stop)
                         coordlimits[pyferret.T_AXIS] = '%s:%s' % (starttime, stoptime)
                         changed = True
                     elif isinstance(start,int) and isinstance(stop,int):
@@ -570,6 +558,11 @@ class FerrVar(object):
                             raise KeyError('two slices for axis index %d given' % k)
                         coordlimits[k] = '%s:%s' % (str(start), str(stop))
                         changed = True
+                    elif (start == None) and (stop == None):
+                        # full range on this axis 
+                        if coordlimits[k] or indexlimits[k]:
+                            raise KeyError('two slices for axis index %d given' % k)
+                        continue
                     else:
                         raise KeyError('%s in not valid' % str(piece))
                 else:
@@ -595,13 +588,7 @@ class FerrVar(object):
                     elif axtype == pyferret.AXISTYPE_TIME:
                         if coordlimits[pyferret.T_AXIS] or indexlimits[pyferret.T_AXIS]:
                             raise KeyError('two time slices given')
-                        coordlimits[pyferret.T_AXIS] = '"%02d-%3s-%04d %02d:%02d:%02d"' % \
-                            ( val[pyferret.TIMEARRAY_DAYINDEX],
-                              pyferret._UC_MONTH_NAMES[val[pyferret.TIMEARRAY_MONTHINDEX]],
-                              val[pyferret.TIMEARRAY_YEARINDEX],
-                              val[pyferret.TIMEARRAY_HOURINDEX],
-                              val[pyferret.TIMEARRAY_MINUTEINDEX],
-                              val[pyferret.TIMEARRAY_SECONDINDEX] )
+                        coordlimits[pyferret.T_AXIS] = pyferret.FerrGrid._makedatestring(val)
                         changed = True
                     elif isinstance(val,int):
                         if coordlimits[k] or indexlimits[k]:
@@ -630,20 +617,8 @@ class FerrVar(object):
                 coordlimits[pyferret.Z_AXIS] = '%s:%s' % (str(start), str(stop))
                 changed = True
             elif axtype == pyferret.AXISTYPE_TIME:
-                starttime = '"%02d-%3s-%04d %02d:%02d:%02d"' % \
-                    ( start[pyferret.TIMEARRAY_DAYINDEX],
-                      pyferret._UC_MONTH_NAMES[start[pyferret.TIMEARRAY_MONTHINDEX]],
-                      start[pyferret.TIMEARRAY_YEARINDEX],
-                      start[pyferret.TIMEARRAY_HOURINDEX],
-                      start[pyferret.TIMEARRAY_MINUTEINDEX],
-                      start[pyferret.TIMEARRAY_SECONDINDEX] )
-                stoptime = '"%02d-%3s-%04d %02d:%02d:%02d"' % \
-                    ( stop[pyferret.TIMEARRAY_DAYINDEX],
-                      pyferret._UC_MONTH_NAMES[stop[pyferret.TIMEARRAY_MONTHINDEX]],
-                      stop[pyferret.TIMEARRAY_YEARINDEX],
-                      stop[pyferret.TIMEARRAY_HOURINDEX],
-                      stop[pyferret.TIMEARRAY_MINUTEINDEX],
-                      stop[pyferret.TIMEARRAY_SECONDINDEX] )
+                starttime = pyferret.FerrGrid._makedatestring(start)
+                stoptime = pyferret.FerrGrid._makedatestring(stop)
                 coordlimits[pyferret.T_AXIS] = '%s:%s' % (starttime, stoptime)
                 changed = True
             elif isinstance(start,int) and isinstance(stop,int):
@@ -652,6 +627,9 @@ class FerrVar(object):
             elif isinstance(start,numbers.Real) and isinstance(stop,numbers.Real):
                 coordlimits[0] = '%s:%s' % (str(start), str(stop))
                 changed = True
+            elif (start == None) and (stop == None):
+                # full range - standard way of generating a duplicate
+                pass
             else:
                 raise KeyError('%s in not valid' % str(key))
         else:
@@ -669,13 +647,7 @@ class FerrVar(object):
                 coordlimits[pyferret.Z_AXIS] = '%s' % str(val)
                 changed = True
             elif axtype == pyferret.AXISTYPE_TIME:
-                coordlimits[pyferret.T_AXIS] = '"%02d-%3s-%04d %02d:%02d:%02d"' % \
-                    ( val[pyferret.TIMEARRAY_DAYINDEX],
-                      pyferret._UC_MONTH_NAMES[val[pyferret.TIMEARRAY_MONTHINDEX]],
-                      val[pyferret.TIMEARRAY_YEARINDEX],
-                      val[pyferret.TIMEARRAY_HOURINDEX],
-                      val[pyferret.TIMEARRAY_MINUTEINDEX],
-                      val[pyferret.TIMEARRAY_SECONDINDEX] )
+                coordlimits[pyferret.T_AXIS] = pyferret.FerrGrid._makedatestring(val)
                 changed = True
             elif isinstance(val,int):
                 indexlimits[k] = '%d' % val

@@ -1,4 +1,9 @@
 * COMMON XBOX_BOUNDS - axis pointers used by SHADE within PLOT+
+* V697 *acm* Ticket 2344: Allow time series overlay on any Hovmuller plot
+*            factor for converting the time axis to units of hours was set 
+*            in AXIS_FORMAT
 
 	INTEGER bb_xaxis, bb_yaxis, bb_grid, bb_grid_inccount
-	COMMON/ XBOX_BOUNDS / bb_xaxis, bb_yaxis, bb_grid, bb_grid_inccount
+	REAL*8	fac_hr_x, fac_hr_y
+	COMMON/ XBOX_BOUNDS / bb_xaxis, bb_yaxis, bb_grid, bb_grid_inccount, 
+     .		fac_hr_x, fac_hr_y

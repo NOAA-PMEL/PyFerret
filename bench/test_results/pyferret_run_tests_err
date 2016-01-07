@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1384 Jan  6 17:04 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1384 Jan  6 17:19 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results with debug PyFerret on RHEL6-64
@@ -266,6 +266,7 @@ Benchmark scripts that will be run:
    bn_unquoted_args.jnl
    bn_long_lists.jnl
    bn_show_uvar_grid.jnl
+   bn_time_over_Hov.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
    bn_outline_poly.jnl
@@ -273,7 +274,7 @@ Benchmark scripts that will be run:
    testferrdataset.py
    testferrvar.py
    testferrgrid.py
-Beginning at Wed Jan  6 17:06:01 PST 2016
+Beginning at Wed Jan  6 17:19:54 PST 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -4125,6 +4126,12 @@ go/garbage "/home/flat/ksmith/pyferret_dev/bench/tmp/testMe.jnl"
 "/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0001.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0002.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0003.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0004.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0006.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0007.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0008.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0009.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0010.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0011.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0012.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc"}
 *** Running ferret script: bn_show_uvar_grid.jnl
  Cached data cleared from memory
+*** Running ferret script: bn_time_over_Hov.jnl
+ Cached data cleared from memory
+Replacing definition of axis TDAYS
+Replacing definition of axis TDAYS
+ Using every   4th vector in the X direction
+ Using every   5th vector in the Y direction
 *** Running ferret script: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -4169,4 +4176,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testferrgrid.py
  Cached data cleared from memory
 >>> ... ... >>> >>> 
-Ended at Wed Jan  6 17:07:52 PST 2016
+Ended at Wed Jan  6 17:21:46 PST 2016

@@ -3034,6 +3034,7 @@ data:
 *** Running ferret script: bn_unquoted_args.jnl
 *** Running ferret script: bn_long_lists.jnl
 *** Running ferret script: bn_show_uvar_grid.jnl
+*** Running ferret script: bn_time_over_Hov.jnl
 *** Running ferret script: bn_all_ef.jnl
 *** Running ferret script: bn_startupfile.jnl
 *** Running ferret script: bn_outline_poly.jnl

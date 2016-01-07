@@ -15,6 +15,12 @@ _VALID_AXIS_TYPES = frozenset( (pyferret.AXISTYPE_LONGITUDE,
                                 pyferret.AXISTYPE_CUSTOM, 
                                 pyferret.AXISTYPE_ABSTRACT, 
                                 pyferret.AXISTYPE_NORMAL) )
+_VALID_AXIS_NUMS = frozenset( (pyferret.X_AXIS,
+                               pyferret.Y_AXIS,
+                               pyferret.Z_AXIS,
+                               pyferret.T_AXIS,
+                               pyferret.E_AXIS,
+                               pyferret.F_AXIS) )
 
 # Supported formats for time.strptime
 _TIME_PARSE_FORMATS = ( 
@@ -32,12 +38,13 @@ _TIME_NOYEAR_PARSE_FORMATS = (
     '%d-%b',
 )
 
+
 class FerrGrid(object):
     '''
     Ferret grid object
     '''
 
-    def __init__(self, gridname='', axistypes=None, axiscoords=None, axisunits=None, axisnames=None):
+    def __init__(self, gridname=None, axistypes=None, axiscoords=None, axisunits=None, axisnames=None):
         '''
         Describe a Ferret grid using the given information about the axes.
             gridname (string): Ferret name for the grid (or the variable using this grid)
@@ -50,7 +57,7 @@ class FerrGrid(object):
                     pyferret.AXISTYPE_ABSTRACT (axis is unit-less integer values)
                     pyferret.AXISTYPE_NORMAL   (axis is normal to the data)
             axiscoords (sequence of sequence of numeric): coordinate values of each axis; 
-                for axes that are neither a time axis nor normal to the data, an 1-D array
+                for axes that are neither a time axis nor normal to the data, a 1-D array
                 of numeric values; for time axes, an (n,6) 2D array of integers where 
                 each time step is formed from the six integers for the day, month, year, 
                 hour, minute, and second in the index given by
@@ -60,7 +67,7 @@ class FerrGrid(object):
                     pyferret.TIMEARRAY_HOURINDEX
                     pyferret.TIMEARRAY_MINUTEINDEX
                     pyferret.TIMEARRAY_SECONDINDEX
-                (Thus, axis_coords[t, pyferret.TIMEARRAY_YEARINDEX] gives the year of time point t.)
+                (Thus, axiscoords[t, pyferret.TIMEARRAY_YEARINDEX] gives the year of time point t.)
                 Note: a relative time axis will be of type AXISTYPE_CUSTOM, with a unit
                       indicating the starting point, such as 'days since 01-JAN-2000'
                 For axes normal to the data, the value is ignored.
@@ -118,7 +125,7 @@ class FerrGrid(object):
                         axunit = axisunits[k]
                         if axunit:
                             if not isinstance(axunit, str): 
-                                raise ValueError('axis unit %s is not valid' % str(axtype))
+                                raise ValueError('axis unit %s is not valid' % str(axunit))
                             self._axisunits[k] = axunit
             except TypeError:
                 raise TypeError('axisunits is not a sequence type')
@@ -126,7 +133,7 @@ class FerrGrid(object):
                 raise ValueError('more than %d axis units specified' % pyferret.MAX_FERRET_NDIM)
         # axis coordinates
 	self._axiscoords = [ None ] * pyferret.MAX_FERRET_NDIM
-        if axiscoords:
+        if axiscoords != None:
             try:
                 for k in xrange(len(axiscoords)):
                     if self._axistypes[k] != pyferret.AXISTYPE_NORMAL:
@@ -152,6 +159,7 @@ class FerrGrid(object):
             except IndexError:
                 raise ValueError('more than %d axis coordinate arrays specified' % pyferret.MAX_FERRET_NDIM)
 
+
     def __repr__(self):
         '''
         Representation to recreate this FerrGrid
@@ -164,6 +172,7 @@ class FerrGrid(object):
                   spacer + 'axisunits=' + repr(self._axisunits) + \
                   spacer + 'axisnames=' + repr(self._axisnames) + ')'
         return infostr
+
 
     def __eq__(self, other):
         '''
@@ -195,6 +204,8 @@ class FerrGrid(object):
                 return False
             if not numpy.allclose(scoords, ocoords):
                 return False
+        return True
+
 
     def __ne__(self, other):
         '''
@@ -204,6 +215,111 @@ class FerrGrid(object):
         if not isinstance(other, FerrGrid):
             return NotImplemented
         return not self.__eq__(other)
+
+
+    def copy(self, gridname=None, axis=None, axtype=None, axcoords=None, axunit=None, axname=None):
+        '''
+        Make a copy of this grid, giving it the given name.  If axis is given, 
+        then the information in the new grid for this axis is replaced by the 
+        information in the remaining arguments.
+            gridname (string): Ferret name for the new grid; if None:
+                if axis is None, the Ferret name of this grid is copied
+                if axis in not None, no Ferret name is given (empty string)
+            axis (int): if not None, index of the axis to modify; one of:
+                    pyferret.X_AXIS (0)
+                    pyferret.Y_AXIS (1)
+                    pyferret.Z_AXIS (2)
+                    pyferret.T_AXIS (3)
+                    pyferret.E_AXIS (4)
+                    pyferret.F_AXIS (5)
+        If axis is None, the remaining arguments are ignored.
+            axtype (int): type of the new axis; one of:
+                    pyferret.AXISTYPE_LONGITUDE
+                    pyferret.AXISTYPE_LATITUDE
+                    pyferret.AXISTYPE_LEVEL
+                    pyferret.AXISTYPE_TIME
+                    pyferret.AXISTYPE_CUSTOM   (axis units not recognized by Ferret)
+                    pyferret.AXISTYPE_ABSTRACT (axis is unit-less integer values)
+                    pyferret.AXISTYPE_NORMAL   (axis is normal to the data)
+        If axtype is pyferret.AXISTYPE_NORMAL, the remaining arguments are ignored.
+            axcoords (sequence of numeric): coordinate values of the new axis;
+                for an axis that is neither a time axis nor normal to the data, 
+                    this is a 1-D array of numeric values; 
+                for time axes, an (n,6) 2D array of integers where each time step 
+                    is formed from the six integers for the day, month, year, hour, 
+                    minute, and second in the index given by
+                        pyferret.TIMEARRAY_DAYINDEX
+                        pyferret.TIMEARRAY_MONTHINDEX
+                        pyferret.TIMEARRAY_YEARINDEX
+                        pyferret.TIMEARRAY_HOURINDEX
+                        pyferret.TIMEARRAY_MINUTEINDEX
+                        pyferret.TIMEARRAY_SECONDINDEX
+                (Thus, axcoords[t, pyferret.TIMEARRAY_YEARINDEX] gives the year 
+                of time point t.)
+                Note: a relative time axis will be of type AXISTYPE_CUSTOM, with a unit
+                      indicating the starting point, such as 'days since 01-JAN-2000'
+            axisunit (string): unit of the new axis; 
+                for a time axis, this gives the calendar as one of
+                    pyferret.CALTYPE_360DAY
+                    pyferret.CALTYPE_NOLEAP
+                    pyferret.CALTYPE_GREGORIAN
+                    pyferret.CALTYPE_JULIAN
+                    pyferret.CALTYPE_ALLLEAP
+                    pyferret.CALTYPE_NONE    (calendar not specified)
+            axisnames (sequence of string): Ferret name for this axis
+        '''
+        if (gridname == None) and (axis == None):
+            newgridname = self._gridname
+        else:
+            newgridname = gridname
+        newgrid = FerrGrid(newgridname, 
+                           axistypes=self._axistypes, 
+                           axiscoords=self._axiscoords, 
+                           axisunits=self._axisunits, 
+                           axisnames=self._axisnames)
+        if axis == None:
+            # ignore the remaining arguments
+            return newgrid
+        if not axis in _VALID_AXIS_NUMS:
+            raise ValueError('axis must one of the pyferret constants ' + \
+                             'X_AXIS, Y_AXIS, Z_AXIS, T_AXIS, E_AXIS, or F_AXIS')
+        if not axtype in _VALID_AXIS_TYPES:
+            raise ValueError('axis type %s is not valid' % str(axtype))
+        newgrid._axistypes[axis] = axtype
+        # set default values for the new axis
+        newgrid._axisnames[axis] = ''
+        newgrid._axisunits[axis] = ''
+        newgrid._axiscoords[axis] = None
+        if axtype == pyferret.AXISTYPE_NORMAL:
+            # ignore the remaining arguments
+            return newgrid
+        if axname:
+            if not isinstance(axname, str):
+                raise ValueError('axis name %s is not valid' % str(axname))
+            newgrid._axisnames[axis] = axname
+        if axunit:
+            if not isinstance(axunit, str):
+                raise ValueError('axis unit %s is not valid' % str(axunit))
+            newgrid._axisunits[axis] = axunit
+        if axcoords != None:
+            if axtype == pyferret.AXISTYPE_TIME:
+                try:
+                    newgrid._axiscoords[axis] = numpy.array(axcoords, dtype=numpy.int32, copy=True)
+                except ValueError:
+                    raise ValueError('(time) axcoords is not an integer array')
+                if newgrid._axiscoords[axis].ndim != 2:
+                    raise ValueError('(time) axcoords is not a 2-D array')
+                if newgrid._axiscoords[axis].shape[1] != 6:
+                    raise ValueError('(time) axcoords second dimension is not 6')
+            else:
+                try:
+                    newgrid._axiscoords[axis] = numpy.array(axcoords, dtype=numpy.float64, copy=True)
+                except ValueError:
+                    raise ValueError('axcoords is not a numeric array')
+                if newgrid._axiscoords[axis].ndim != 1:
+                    raise ValueError('axcoords is not a 1-D array')
+        return newgrid
+
 
     @staticmethod
     def _parsegeoslice(geoslice):

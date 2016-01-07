@@ -1,6 +1,7 @@
 # To be run in python after importing and starting pyferret
 # such as from running "pyferret -python"
 
+import numpy
 import sys ; sys.ps1 = '' ; sys.ps2 = ''
 print
 
@@ -22,6 +23,62 @@ print ">>> nogrid == coadsgrid"
 nogrid == coadsgrid
 print ">>> nogrid != coadsgrid"
 nogrid != coadsgrid
+
+print ">>> dupgrid = coadsgrid.copy()"
+dupgrid = coadsgrid.copy()
+print ">>> dupgrid is coadsgrid"
+dupgrid is coadsgrid
+print ">>> dupgrid == coadsgrid"
+dupgrid == coadsgrid
+print ">>> dupgrid._axiscoords[0] is coadsgrid._axiscoords[0]"
+dupgrid._axiscoords[0] is coadsgrid._axiscoords[0]
+print ">>> numpy.allclose(dupgrid._axiscoords[0], coadsgrid._axiscoords[0])"
+numpy.allclose(dupgrid._axiscoords[0], coadsgrid._axiscoords[0])
+print ">>> dupgrid._axiscoords[1] is coadsgrid._axiscoords[1]"
+dupgrid._axiscoords[1] is coadsgrid._axiscoords[1]
+print ">>> numpy.allclose(dupgrid._axiscoords[1], coadsgrid._axiscoords[1])"
+numpy.allclose(dupgrid._axiscoords[1], coadsgrid._axiscoords[1])
+print ">>> print repr(dupgrid._axiscoords[2])"
+print repr(dupgrid._axiscoords[2])
+print ">>> dupgrid._axiscoords[3] is coadsgrid._axiscoords[3]"
+dupgrid._axiscoords[3] is coadsgrid._axiscoords[3]
+print ">>> numpy.allclose(dupgrid._axiscoords[3], coadsgrid._axiscoords[3])"
+numpy.allclose(dupgrid._axiscoords[3], coadsgrid._axiscoords[3])
+print ">>> print repr(dupgrid._axiscoords[4])"
+print repr(dupgrid._axiscoords[4])
+print ">>> print repr(dupgrid._axiscoords[5])"
+print repr(dupgrid._axiscoords[5])
+
+print ">>> freqvals = numpy.arange(1,13,0.5)"
+freqvals = numpy.arange(1,13,0.5)
+print ">>> print repr(freqvals)"
+print repr(freqvals)
+print ">>> freqgrid = coadsgrid.copy(axis=pyferret.T_AXIS, axtype=pyferret.AXISTYPE_NORMAL).copy("
+print "...     gridname='freqgrid', axis=pyferret.E_AXIS, axtype=pyferret.AXISTYPE_CUSTOM,"
+print "...     axcoords=freqvals, axunit='freqnum', axname='frequencies')"
+freqgrid = coadsgrid.copy(axis=pyferret.T_AXIS, axtype=pyferret.AXISTYPE_NORMAL).copy(
+    gridname='freqgrid', axis=pyferret.E_AXIS, axtype=pyferret.AXISTYPE_CUSTOM, 
+    axcoords=freqvals, axunit='freqnum', axname='frequencies')
+print ">>> print freqgrid._gridname"
+print freqgrid._gridname
+print ">>> print freqgrid._axistypes"
+print freqgrid._axistypes
+print ">>> print freqgrid._axisnames"
+print freqgrid._axisnames
+print ">>> print freqgrid._axisunits"
+print freqgrid._axisunits
+print ">>> numpy.allclose(freqgrid._axiscoords[0], coadsgrid._axiscoords[0])"
+numpy.allclose(freqgrid._axiscoords[0], coadsgrid._axiscoords[0])
+print ">>> numpy.allclose(freqgrid._axiscoords[1], coadsgrid._axiscoords[1])"
+numpy.allclose(freqgrid._axiscoords[1], coadsgrid._axiscoords[1])
+print ">>> print repr(freqgrid._axiscoords[2])"
+print repr(freqgrid._axiscoords[2])
+print ">>> print repr(freqgrid._axiscoords[3])"
+print repr(freqgrid._axiscoords[3])
+print ">>> print repr(freqgrid._axiscoords[4])"
+print repr(freqgrid._axiscoords[4])
+print ">>> print repr(freqgrid._axiscoords[5])"
+print repr(freqgrid._axiscoords[5])
 
 print ">>> print repr(pyferret.FerrGrid._parsegeoval(None))"
 print repr(pyferret.FerrGrid._parsegeoval(None))

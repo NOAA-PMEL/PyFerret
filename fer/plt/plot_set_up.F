@@ -223,7 +223,8 @@
 	REAL		val1, dt_min, lo, hi, dep_len, 
      .			ind_len, first, last, hlen, hrs
 	REAL*8		TSTEP_TO_SECS, SECS_TO_TSTEP,
-     .			ind_min, ind_max, dep_min, dep_max, delta, tmp
+     .			ind_min, ind_max, dep_min, dep_max, delta, tmp,
+     .			factr
 	REAL*4 rbad
 
 * local parameter declarations:
@@ -888,8 +889,9 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                  ENDIF
 	
 	         timeax_both = .FALSE.
+		 factr = 1.
 	         CALL AXIS_FORMAT( indep_ax, indep_dim, grid1,
-     .				   ind_min, ind_max, delta,
+     .				   ind_min, ind_max, factr, delta,
      .				   pnot_curv, 0,
      .				   time_axis, timeax_both, tstyle,
      .                             no_labels, xtra_lab )

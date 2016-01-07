@@ -1,0 +1,66 @@
+! Time_over_Hov.jnl
+! Previously a time series plot overlaid on a Hovmuller plot did not 
+! work unlessthe time axis of the original data had units of hours.
+! This now works (ticket 2344)
+!
+! 1/6/2016 ACM
+
+! The example from the FAQ, "Overlaying a time series on a 2D plot"
+
+! Define a 2D field in YT with a time axis in units of DAYS
+DEFINE AXIS/T="1-JAN-1980":"1-JAN-1990":30/UNITS=DAYS tdays
+DEFINE AXIS/Y=0:40N:2/UNITS=DEGREES yax
+
+LET my_var = 10*cos(T[gt=tdays]/2000)*EXP((-1)*y[gy=yax]/20)
+
+! make a Hovmoller plot
+SHADE my_var
+
+! This did not work previously.  Needed to re-define the axis in units of hours
+PLOT/OVER my_var[Y=@loc:-4]
+
+FILL my_var
+PLOT/OVER my_var[Y=@loc:-4]
+
+! Irregular time axis
+
+DEFINE AXIS/T0=1-jan-2001/UNITS=DAYS tdays = {1,2,4,5,6,8,9,10,12,30,35,41,42,44,45,46,48,49,50,62}
+DEFINE AXIS/Y=0:40N:2/UNITS=DEGREES yax
+LET my_var = 10*cos(T[gt=tdays])*EXP((-1)*y[gy=yax]/8)
+
+
+! make a Hovmoller plot
+SHADE/title="irregular t" my_var
+PLOT/OVER/y=8 my_var+10
+
+FILL/title="irregular t" my_var
+PLOT/OVER/y=8 my_var+10
+
+! define a 2D field in XT with a time axis in units of DAYS
+DEFINE AXIS/T="1-JAN-1980":"1-JAN-1990":30/UNITS=DAYS tdays
+DEFINE AXIS/X=0:40E:2/UNITS=DEGREES xax
+LET my_var = 10*cos(T[gt=tdays]/2000)*EXP((-1)*x[gx=xax]/20)
+
+SHADE my_var
+PLOT/OVER/TRANS my_var[x=@loc:-4]
+
+FILL my_var
+PLOT/OVER/TRANS my_var[X=@loc:-4]
+
+! And vectors
+
+can data/all
+can region
+
+IF `TEST_OPENDAP("http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_uwnd.cdf") NE 0` THEN EXIT/SCRIPT
+IF `TEST_OPENDAP("http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_vwnd.cdf") NE 0` THEN EXIT/SCRIPT
+
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_uwnd.cdf"
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_vwnd.cdf"
+
+vec/x=0/y=-10:10/t=1-jan-1980:1-jan-1990 uwnd[d=1], vwnd[d=2]
+plot/over/color=red/thick/x=0/y=0/t=1-jan-1980:1-jan-1990  vwnd
+
+vec/y=0/x=-10:10/t=1-jan-1980:1-jan-1990 uwnd[d=1], vwnd[d=2]
+plot/trans/over/color=red/thick/x=0/y=0/t=1-jan-1980:1-jan-1990  vwnd
+

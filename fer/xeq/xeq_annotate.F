@@ -41,6 +41,8 @@
 * NOAA/PMEL, Seattle, WA - TMAP/SDIG 
 *
 * revision 0.0 - 4/6/2015
+* V697 12/15 *acm* Fix ticket 2350: handling annotation label text 
+*                  that's numeric
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -56,7 +58,7 @@
 * local variable declarations:
 	LOGICAL user, norm, nouser
 	INTEGER	TM_LENSTR1,
-     .		rlen, item, nchar, status
+     .		rlen, nchar, status
 	REAL	xloc, yloc, halign, angle, size
 
 	CHARACTER TM_FMT*16, buff*20, labtxt*2048
@@ -65,10 +67,14 @@
 
 	size = 0.2
 
-* Get the text
-	IF (num_items .NE. 1) GOTO 5500
-	item = 1
-	labtxt = cmnd_buff(item_start(item):item_end(item))
+* Get the text, treating the text as the label string (even if say, 
+* it's a comma-separated list).
+
+	IF (num_items .LT. 1) THEN
+	   GOTO 5500
+	ELSE 
+	   labtxt = cmnd_buff(item_start(1):item_end(num_items))
+	ENDIF
 
 * Get settings
 
@@ -102,7 +108,7 @@
 	ppl_buff = ppl_buff(:rlen)//','//TM_FMT(size, 12, 16, nchar)
 	rlen = TM_LENSTR1(ppl_buff)
 
-	ppl_buff = ppl_buff(:rlen)//', '//labtxt
+	ppl_buff = ppl_buff(:rlen)//', "'//labtxt//'"'
 	rlen = TM_LENSTR1(ppl_buff)
 
 * ... pass a the command to PPLUS

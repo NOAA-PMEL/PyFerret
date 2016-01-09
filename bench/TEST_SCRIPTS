@@ -257,3 +257,4 @@ testgetstrdata.py
 testferrdataset.py
 testferrvar.py
 testferrgrid.py
+testferrpyvar.py

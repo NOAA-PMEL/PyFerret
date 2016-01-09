@@ -21,3 +21,6 @@ GO err696_save_noupcase
 
 GO bn_reset
 GO err696_argument_blanks
+
+GO bn_reset
+GO err696_annotate_numeric

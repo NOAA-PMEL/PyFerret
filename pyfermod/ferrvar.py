@@ -73,17 +73,32 @@ class FerrVar(object):
         #     _missingvalue is the missing value used for the data
         self.clean()
 
+    def copy(self):
+        '''
+        Return an anonymous copy (_varname and _datasetname are not assigned) 
+        of this FerrVar.  Any data that might be present with this FerrVar is 
+        not copied.
+        '''
+        newvar = FerrVar(definition=self._definition)
+        newvar._requires.update(self._requires)
+        return newvar
+
+    def __repr__(self):
+        '''
+        Representation of this FerrVar
+        '''
+        infostr = "FerrVar(varname='%s', datasetname='%s', definition='%s')" \
+                  % (self._varname, self._datasetname, self._definition)
+        return infostr
+
     def __del__(self):
         '''
-        Calls remove to remove this variable, if possible, from Ferret.
+        Removes this variable, if possible, from Ferret.
         Any error are ignored.
         '''
-        # Ignore for obvious fail cases
-        if self._isfilevar or not self._varname:
-            return
         # Try to remove from Ferret but ignore errors
         try:
-            self.removefromferret()
+            self._removefromferret()
         except Exception:
             pass
 
@@ -102,14 +117,6 @@ class FerrVar(object):
         else:
             ferrname = '%s' % self._varname
         return ferrname
-
-    def __repr__(self):
-        '''
-        Representation to recreate this FerrVar
-        '''
-        infostr = "FerrVar(varname='%s', datasetname='%s', definition='%s')" \
-                  % (self._varname, self._datasetname, self._definition)
-        return infostr
 
     def __cmp__(self, other):
         '''
@@ -755,10 +762,11 @@ class FerrVar(object):
 
     def _removefromferret(self):
         '''
-        Removes (cancels) this variable in Ferret, then cleans this FerrVar and erases _varname.
-        Raises a NotImplementedError is this is a file variable.
-        Raises a ValueError if there is a Ferret problem.
-        This normally is not called by the user; instead delete the FerrVar in the dataset.
+        Removes (cancels) this variable in Ferret, then cleans this FerrVar 
+        and erases _varname.  Raises a NotImplementedError is this is a file 
+        variable.  Raises a ValueError if there is a Ferret problem.  This 
+        normally is not called by the user; instead delete the FerrVar from 
+        the dataset.
         '''
         # ignore if this Ferrer variable has already been removed from Ferret
         if not self._varname:

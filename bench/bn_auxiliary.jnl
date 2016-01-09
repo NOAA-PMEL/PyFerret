@@ -157,11 +157,6 @@ VTREE
 
 ! 6d temperature and 3d depth field (depth unchanging in time, ensemble and forecast) 
 LET temp6d = temp/100 + 1*L[L=1:2] + 10*_M[M=1:2] + 100*_N[N=1:2] 
-
-sh dat
-sh var temp
-pause
-
 !list/k=7:12/PREC=7 temp6d
 LET tempz6d = temp6d[gz(depth)=zpts]
 !LIST/PREC=7 tempz6d

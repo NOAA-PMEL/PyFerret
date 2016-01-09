@@ -20,9 +20,9 @@ For writing Ferret external functions in Python, see the help message
 for pyferret.pyefmethods, whose methods are imported into the pyferret
 module.
 
-The FerrDataSet, FerrGrid, and FerrVar objects assist in working with 
-the Ferret engine in a Python environment, reducing the need to know 
-the Ferret language and syntax.
+The FerrDataSet, FerrGrid, FerrVar, and FerrPyVar objects assist in 
+working with the Ferret engine in a Python environment, reducing the 
+need to know the Ferret language and syntax.
 
 The convenience methods for executing common Ferret commands are found
 under pyferret.ferrmethods and are imported into the pyferret module.
@@ -61,9 +61,11 @@ from pyefmethods import *
 import ferrmethods
 from ferrmethods import *
 
-# the FerrGrid, FerrVar, and FerrDataset objects for working with Ferret from Python
+# the FerrGrid, FerrVar, FerrPyVar, and FerrDataset objects 
+# for working with Ferret from Python
 from ferrgrid import *
 from ferrvar import *
+from ferrpyvar import *
 from ferrdataset import *
 
 # bindings for the PyQt-based graphics engines

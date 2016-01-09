@@ -53,10 +53,10 @@ print ">>> freqvals = numpy.arange(1,13,0.5)"
 freqvals = numpy.arange(1,13,0.5)
 print ">>> print repr(freqvals)"
 print repr(freqvals)
-print ">>> freqgrid = coadsgrid.copy(axis=pyferret.T_AXIS, axtype=pyferret.AXISTYPE_NORMAL).copy("
+print ">>> freqgrid = coadsgrid.modifiedcopy(axis=pyferret.T_AXIS, axtype=pyferret.AXISTYPE_NORMAL).modifiedcopy("
 print "...     gridname='freqgrid', axis=pyferret.E_AXIS, axtype=pyferret.AXISTYPE_CUSTOM,"
 print "...     axcoords=freqvals, axunit='freqnum', axname='frequencies')"
-freqgrid = coadsgrid.copy(axis=pyferret.T_AXIS, axtype=pyferret.AXISTYPE_NORMAL).copy(
+freqgrid = coadsgrid.modifiedcopy(axis=pyferret.T_AXIS, axtype=pyferret.AXISTYPE_NORMAL).modifiedcopy(
     gridname='freqgrid', axis=pyferret.E_AXIS, axtype=pyferret.AXISTYPE_CUSTOM, 
     axcoords=freqvals, axunit='freqnum', axname='frequencies')
 print ">>> print freqgrid._gridname"

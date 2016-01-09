@@ -19,7 +19,7 @@ def settextstyle(font='', color='', bold = False, italic=False):
         italic (bool): use italic font?
     """
     # First run CANCEL TEXT to clear any /BOLD and /ITALIC
-    (errval, errmsg) = pyferret.run('CANCEL TEXT')
+    (errval, errmsg) = pyferret.run('CANCEL TEXT/ALL')
     if errval != pyferret.FERR_OK:
         raise ValueError('problems resetting text style to default: %s' % errmsg)
     # Now run SET TEXT with the appropriate qualifiers
@@ -35,8 +35,9 @@ def settextstyle(font='', color='', bold = False, italic=False):
         cmdstr += '/BOLD'
     if italic:
         cmdstr += '/ITALIC'
-    (errval, errmsg) = pyferret.run('CANCEL TEXT')
-    raise ValueError('problems setting text style (%s): %s' % (cmdstr, errmsg))
+    (errval, errmsg) = pyferret.run(cmdstr)
+    if errval != pyferret.FERR_OK:
+        raise ValueError('problems setting text style (%s): %s' % (cmdstr, errmsg))
 
 
 def showdatasets(brief=True, qual=''):
@@ -72,7 +73,7 @@ def contour(fvar, over=False, qual=''):
         raise ValueError('qual (Ferret qualifiers) must be a string')
     if isinstance(fvar, str):
         plotvar = fvar
-    elif isinstance(fvar, FerrVar):
+    elif isinstance(fvar, pyferret.FerrVar):
         plotvar = fvar._definition
     else:
         raise ValueError('fvar (Ferret variable to plot) must be a string or FerrVar')
@@ -102,7 +103,7 @@ def fill(fvar, line=False, over=False, qual=''):
         raise ValueError('qual (Ferret qualifiers) must be a string')
     if isinstance(fvar, str):
         plotvar = fvar
-    elif isinstance(fvar, FerrVar):
+    elif isinstance(fvar, pyferret.FerrVar):
         plotvar = fvar._definition
     else:
         raise ValueError('fvar (Ferret variable to plot) must be a string or FerrVar')
@@ -133,7 +134,7 @@ def shade(fvar, over=False, qual=''):
         raise ValueError('qual (Ferret qualifiers) must be a string')
     if isinstance(fvar, str):
         plotvar = fvar
-    elif isinstance(fvar, FerrVar):
+    elif isinstance(fvar, pyferret.FerrVar):
         plotvar = fvar._definition
     else:
         raise ValueError('fvar (Ferret variable to plot) must be a string or FerrVar')
@@ -147,4 +148,27 @@ def shade(fvar, over=False, qual=''):
     (errval, errmsg) = pyferret.run(cmdstr)
     if errval != pyferret.FERR_OK:
         raise ValueError('Ferret shade command (%s) failed: %s' % (cmdstr, errmsg))
+
+def saveplot(name, frmt='', qual=''):
+    """
+    Save the current plot.  If format is not given,
+    the format is guessed from the filename extension.
+        name (string): name of the file to contain the plot
+        frmt (string): format of the plot file
+        qual (string): qualifiers to add to the Ferret FRAME command
+    """
+    if not isinstance(name, str):
+        raise ValueError('name (plot file name) must be a string')
+    if not isinstance(frmt, str):
+        raise ValueError('frmt (plot file format) must be a string')
+    if not isinstance(qual, str):
+        raise ValueError('qual (Ferret qualifiers) must be a string')
+    cmdstr = 'FRAME/FILE="%s"' % name
+    if frmt:
+        cmdstr += '/FORMAT=%s' % frmt
+    if qual:
+        cmdstr += qual
+    (errval, errmsg) = pyferret.run(cmdstr)
+    if errval != pyferret.FERR_OK:
+        raise ValueError('Ferret frame command (%s) failed: %s' % (cmdstr, errmsg))
 

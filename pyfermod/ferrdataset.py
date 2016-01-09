@@ -109,8 +109,7 @@ class FerrDataSet(object):
     def __setitem__(self, name, value):
         '''
         Creates a copy of value (FerrVar), assigns it to Ferret identified by 
-        name (string), and adds this FerrVar copy to this dataset, identified 
-        by name.
+        name (string), and adds this copy to this dataset, identified by name.
         '''
         if not isinstance(name, str):
             raise TypeError('name key is not a string')
@@ -118,9 +117,16 @@ class FerrDataSet(object):
             raise TypeError('value to be assigned is not a FerrVar')
         if self._filename and not self._datasetname:
             raise TypeError('this dataset has been closed')
-        # make an anonymous copy of the FerrVar by calling its __pos__ method 
-        # cleaner/faster than using the empty slice notation
-        newvar = value.__pos__()
+        # if this name is already assigned to a FerrVar, first remove the 
+        # Ferret definition that is going to be overwritten; otherwise, 
+        # Python's delete of the item in garbage collection will wipe out 
+        # the (possibly new) definition as some unknown time.
+        try:
+            self.__delitem__(name)
+        except Exception:
+            pass
+        # make an anonymous copy of the FerrVar (or subclass) by calling its copy method 
+        newvar = value.copy()
         try:
             newvar._assigninferret(name, self._datasetname)
         except ValueError as ex:

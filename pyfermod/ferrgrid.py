@@ -217,9 +217,16 @@ class FerrGrid(object):
         return not self.__eq__(other)
 
 
-    def copy(self, gridname=None, axis=None, axtype=None, axcoords=None, axunit=None, axname=None):
+    def copy(self):
         '''
-        Make a copy of this grid, giving it the given name.  If axis is given, 
+        Make a copy of this grid
+        '''
+        return self.modifiedcopy()
+
+
+    def modifiedcopy(self, gridname=None, axis=None, axtype=None, axcoords=None, axunit=None, axname=None):
+        '''
+        Returns a copy of this grid with the given name.  If axis is given, 
         then the information in the new grid for this axis is replaced by the 
         information in the remaining arguments.
             gridname (string): Ferret name for the new grid; if None:

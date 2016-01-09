@@ -1,0 +1,27 @@
+! err696_annotate_numeric
+! 1/7/2016
+! ticket 2350: a purely numeric string
+! didn't appear on the plot.
+
+use coads_climatology
+shade/l=1/nokey/pal=white sst
+
+! text including non-numeric has worked fine
+annotate/user/xpos=180/ypos=30 "30 with text"
+
+! numeric only, with and witbhout quotes
+
+annotate/user/xpos=180/ypos=20/halign=-1 "20"
+annotate/user/xpos=180/ypos=10/halign=-1 10
+
+! tests with /NOUSER
+annotate/nouser/xpos=1/ypos=2.5 40
+
+! strings or purely numeric, without quotes works ok
+annotate/nouser/xpos=1/ypos=2.0 1.3+7.89
+annotate/nouser/xpos=1/ypos=1.5 `1.3+7.89-154,prec=6`
+
+! commas, just write the whole thing
+annotate/nouser/xpos=1/ypos=1.0 "40,30,20"
+
+annotate/nouser/xpos=1/ypos=0.5 1,2,3,4,5

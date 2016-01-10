@@ -70,7 +70,7 @@ class FerrGrid(object):
                 (Thus, axiscoords[t, pyferret.TIMEARRAY_YEARINDEX] gives the year of time point t.)
                 Note: a relative time axis will be of type AXISTYPE_CUSTOM, with a unit
                       indicating the starting point, such as 'days since 01-JAN-2000'
-                For axes normal to the data, the value is ignored.
+                For abstact axes, or axes normal to the data, the value is ignored.
             axisunits (sequence of string): units of each axis; for a time axis, this gives
                 the calendar as one of 
                     pyferret.CALTYPE_360DAY
@@ -79,8 +79,9 @@ class FerrGrid(object):
                     pyferret.CALTYPE_JULIAN
                     pyferret.CALTYPE_ALLLEAP
                     pyferret.CALTYPE_NONE    (calendar not specified)
-                For axes normal to the data, the value is ignored.
+                For abstact axes, or axes normal to the data, the value is ignored.
             axisnames (sequence of string): Ferret name for each axis
+                For axes normal to the data, the value is ignored.
         '''
         if gridname:
             if not isinstance(gridname, str): 
@@ -121,7 +122,7 @@ class FerrGrid(object):
         if axisunits:
             try:
                 for k in xrange(len(axisunits)):
-                    if self._axistypes[k] != pyferret.AXISTYPE_NORMAL:
+                    if not self._axistypes[k] in (pyferret.AXISTYPE_ABSTRACT, pyferret.AXISTYPE_NORMAL):
                         axunit = axisunits[k]
                         if axunit:
                             if not isinstance(axunit, str): 
@@ -136,7 +137,7 @@ class FerrGrid(object):
         if axiscoords != None:
             try:
                 for k in xrange(len(axiscoords)):
-                    if self._axistypes[k] != pyferret.AXISTYPE_NORMAL:
+                    if not self._axistypes[k] in (pyferret.AXISTYPE_ABSTRACT, pyferret.AXISTYPE_NORMAL):
                         axcoords = axiscoords[k]
                         if self._axistypes[k] == pyferret.AXISTYPE_TIME:
                             try:
@@ -248,9 +249,9 @@ class FerrGrid(object):
                     pyferret.AXISTYPE_CUSTOM   (axis units not recognized by Ferret)
                     pyferret.AXISTYPE_ABSTRACT (axis is unit-less integer values)
                     pyferret.AXISTYPE_NORMAL   (axis is normal to the data)
-        If axtype is pyferret.AXISTYPE_NORMAL, the remaining arguments are ignored.
             axcoords (sequence of numeric): coordinate values of the new axis;
-                for an axis that is neither a time axis nor normal to the data, 
+                ignored for abstact axes or axes normal to the data;
+                for an axis that is not a time axis,
                     this is a 1-D array of numeric values; 
                 for time axes, an (n,6) 2D array of integers where each time step 
                     is formed from the six integers for the day, month, year, hour, 
@@ -266,6 +267,7 @@ class FerrGrid(object):
                 Note: a relative time axis will be of type AXISTYPE_CUSTOM, with a unit
                       indicating the starting point, such as 'days since 01-JAN-2000'
             axisunit (string): unit of the new axis; 
+                ignored for abstact axes or axes normal to the data;
                 for a time axis, this gives the calendar as one of
                     pyferret.CALTYPE_360DAY
                     pyferret.CALTYPE_NOLEAP
@@ -274,6 +276,7 @@ class FerrGrid(object):
                     pyferret.CALTYPE_ALLLEAP
                     pyferret.CALTYPE_NONE    (calendar not specified)
             axisnames (sequence of string): Ferret name for this axis
+                ignored for axes normal to the data;
         '''
         if (gridname == None) and (axis == None):
             newgridname = self._gridname
@@ -304,6 +307,9 @@ class FerrGrid(object):
             if not isinstance(axname, str):
                 raise ValueError('axis name %s is not valid' % str(axname))
             newgrid._axisnames[axis] = axname
+        if axtype == pyferret.AXISTYPE_ABSTRACT:
+            # ignore the remaining arguments
+            return newgrid
         if axunit:
             if not isinstance(axunit, str):
                 raise ValueError('axis unit %s is not valid' % str(axunit))

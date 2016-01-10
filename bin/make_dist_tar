@@ -108,11 +108,7 @@ rm -f ${temp_dir}/bin/build_fonts/unix/binary 1>>/dev/null 2>&1
 
 # Now set up the proper symbolic links
 echo "Setting up symbolic links"
-pushd ${temp_dir}/bin 1>>/dev/null 2>&1
-ln -s Fdescr Fdesc
-ln -s Fgrids Fgrid
-ln -s Fprint_template Fprint
-popd 1>>/dev/null 2>&1
+( cd ${temp_dir}/bin ; ln -s Fdescr Fdesc ; ln -s Fgrids Fgrid ; ln -s Fprint_template Fprint )
 
 echo "Copying external function shared-object libraries"
 mkdir -p ${temp_dir}/ext_func/pylibs
@@ -153,9 +149,7 @@ fi
 ${mycp} ${toolsui_jar} ${temp_dir}/lib/
 
 # Create a symbolic link to the toolsUI-4.1.jar file
-pushd ${temp_dir}/lib 1>>/dev/null 2>&1
-ln -s toolsUI-4.1.jar toolsUI.jar
-popd 1>>/dev/null 2>&1
+( cd ${temp_dir}/lib ; ln -s toolsUI-4.1.jar toolsUI.jar )
 
 echo "Copying ferret_ef_mem_subsc.so"
 if [ ! -r ${ferret_dir}/efmem/ferret_ef_mem_subsc.so ]; then
@@ -197,9 +191,7 @@ while [ "${ans}" != "y" -a "${ans}" != "n" ]; do
 done
 if [ "${ans}" = "y" ]; then
    rm -f "${ctar_file}"
-   pushd ${parent_temp_dir} 1>>/dev/null 2>&1
-   tar czf "${ctar_file}" "${ctar_name}"
-   popd 1>>/dev/null 2>&1
+   ( cd ${parent_temp_dir} ; tar czf "${ctar_file}" "${ctar_name}" )
    echo ""
    ls -l "${ctar_file}"
 else

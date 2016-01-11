@@ -45,9 +45,6 @@
 *
 * for FERRET V62.00: 5/2009
 * V62  Fixing bug 1659, plotting with subspan modulo axis.
-* V697 *acm* Ticket 2344: Allow time series overlay on any Hovmuller plot
-*            factor for converting the time axis to units of hours was set 
-*            in AXIS_FORMAT
 
 	include 'ferret.parm'
 	include 'xbox_bounds.cmn'
@@ -55,30 +52,27 @@
 * calling argument declarations:
 	LOGICAL		valid
 	INTEGER		n
-	REAL*4		val1, centers(n)
+	REAL		val1, centers(n)
 	CHARACTER	x_or_y*1
 
 * internal variable declarations:
 	INTEGER	ISUBSCRIPT, i, idim, isub1, isub0
 	DOUBLE PRECISION TM_WORLD
-	REAL*4	factr
 
 * initialize
 	IF ( x_or_y .EQ. 'X' ) THEN
 	   idim = bb_xaxis
-	   factr = SNGL(fac_hr_x)
 	ELSEIF ( x_or_y .EQ. 'Y' ) THEN
 	   idim = bb_yaxis
-	   factr = SNGL(fac_hr_y)
 	ENDIF
 
 * determine starting subscript
-	isub1 = ISUBSCRIPT ( DBLE(val1/factr), bb_grid, idim, round_dn )
+	isub1 = ISUBSCRIPT ( DBLE(val1), bb_grid, idim, round_dn )
 	isub0 = isub1 - 1
 
 * pass back box centers
 	DO 100 i = 1, n
- 100	centers(i) = factr* SNGL( TM_WORLD (isub0+i,bb_grid,idim,box_middle) )
+ 100	centers(i) = SNGL( TM_WORLD (isub0+i,bb_grid,idim,box_middle) )
 
 * always (the appearance of) success
 	valid = .TRUE.

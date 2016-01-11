@@ -1,5 +1,5 @@
 	SUBROUTINE AXIS_FORMAT( x_or_y, idim, grid, lo_val, hi_val,
-     .				fac_hr, del_val, curvilinear, cx_curv,
+     .				del_val, curvilinear, cx_curv,
      .				its_calendar, calendar_both, 
      .				tstyle, no_labels, imposed_lab )
 
@@ -84,8 +84,6 @@
 * V695+ *sh*  3/15 Added argument "imposed_lab" to disambiguate F and T axes
 * V695  *acm* 9/15 Do not plot the labell TIME - on vertical axes with HH:MM
 *		   labeling; it interferes with the time/date labels
-* V697 *acm* Ticket 2344: Allow time series overlay on any Hovmuller plot
-*            Send time axis info to PPLUS as if in units of hours
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -109,7 +107,7 @@
 	INTEGER		idim, grid, cx_curv
 	CHARACTER	x_or_y*1, tstyle*3
 	CHARACTER*(*)	imposed_lab
-	REAL*8		lo_val, hi_val, del_val, fac_hr
+	REAL*8		lo_val, hi_val, del_val
 
 * parameter definitions:
 	INTEGER		pyear_only
@@ -122,7 +120,6 @@
      .			INTERNAL_WHOI_DATE*14,
      .			fmt*4, buff*200, tsetting*2
 	REAL		res_del, dt_min, time_unit
-
 	REAL*8		TSTEP_TO_SECS
 	INTEGER		n_res
 
@@ -181,9 +178,6 @@
 * .. convert units of time axis from seconds to minutes
 	      time_unit = line_tunit( grid_line(idim,grid) )
 	      dt_min = time_unit / 60.
-
-	      fac_hr = dt_min/60.
-	      dt_min = 60.
 
 * ... TAXIS command
 	      tsetting = 'ON'

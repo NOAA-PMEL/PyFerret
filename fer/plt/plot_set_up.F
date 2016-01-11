@@ -162,6 +162,8 @@
 * V695  *acm* 9/15 Changes for HH:MM labeling when plotting short time range.
 *                  For these axes reset the start time by only a day.
 * V695  *acm* 9/15 Tweak to above - dont reset tref for overlay plots.
+* V697  *acm* 1/16 Further fix ticket Fix 2122. Make sure the dependent axis
+*                  data min and max are set.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -223,8 +225,7 @@
 	REAL		val1, dt_min, lo, hi, dep_len, 
      .			ind_len, first, last, hlen, hrs
 	REAL*8		TSTEP_TO_SECS, SECS_TO_TSTEP,
-     .			ind_min, ind_max, dep_min, dep_max, delta, tmp,
-     .			factr
+     .			ind_min, ind_max, dep_min, dep_max, delta, tmp
 	REAL*4 rbad
 
 * local parameter declarations:
@@ -889,9 +890,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                  ENDIF
 	
 	         timeax_both = .FALSE.
-		 factr = 1.
 	         CALL AXIS_FORMAT( indep_ax, indep_dim, grid1,
-     .				   ind_min, ind_max, factr, delta,
+     .				   ind_min, ind_max, delta,
      .				   pnot_curv, 0,
      .				   time_axis, timeax_both, tstyle,
      .                             no_labels, xtra_lab )
@@ -909,7 +909,13 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	         denig_xylim_msg_done = .TRUE.
 	      ENDIF
 *  Check for valid log axis before proceeding
+*  First make sure the min and max are set.
 	      IF (dep_is_log) THEN
+	      
+	         CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi )
+	         dep_min = DBLE( lo )
+	         dep_max = DBLE( hi )
+	         
 	         CALL AXIS_ENDS( dep_ax, the_taxis, grid, dep_min, dep_max, 
      .                        delta, dep_is_log, dep_axtyp, status )
 	         IF ( status .NE. ferr_OK ) THEN

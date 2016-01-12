@@ -52,6 +52,8 @@
 * V694  *acm*  5/15 Ticket 2283. Handling axis scaling for ribbon plots. Do auto-scale 
 *                   using just the first line. The second is the color-by variable
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
+* V697  *acm*  1/16 Ticket 2344: if there was a time-plot underlay, will use the underlay's 
+*                   time scaling for time overlay plots.
 
 	REAL*8		DIFF, dtd
         real            x,rxax,rxmon,rxchr,thi,xti,xtl
@@ -111,6 +113,7 @@ C	KTYPE = 0 -XY  1 -Z  2-VECTOR
 	CHARACTER IT1TMP*14,IT2TMP*14
 
 	dtd = dt
+	dt_save = dt
 
 C	SETUP AXIS FOR ALL PLOT TYPES.
 c	CONTR=MAKEP.EQ.'CONTOUR'.OR.MAKEP.EQ.'VIEW'.or.makep.eq.'SHADE'

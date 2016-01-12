@@ -120,6 +120,7 @@ c
 *      *kms* 5/12 Always use generic REAL instead of specific SNGL 
 *                 (SNGL must have a double-precision or complex argument)
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
+* V697  *acm*  1/16 Ticket 2344: if there was a time-plot underlay, use its time scaling
 
 * FERRET 9-21-88: replaced include files to make all declarations explicit
 ! original:
@@ -207,6 +208,12 @@ c
 c	time axis is on.
 c ** acm mod 9/01  Compare tref(1:1) rather than just tref. After
 c **               passing thru c routine, a blank tref is somehow different??
+
+c    ticket 2344: if there was a time-plot underlay, use its delta-t
+	    IF (dt_save .NE. 0) THEN
+	       dtd = dt_save
+	       dt = dt_save
+	    ENDIF
 
 	    if(linen.eq.1)then
 		iform='LDX'

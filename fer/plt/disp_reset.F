@@ -53,7 +53,8 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * v696  *acm* 6/15 PLOT/VS/GAPLOC to define seperate line segments on
 *                  PLOT/VS plots (LAS ticket 1597 and others)
-
+* V697  *acm*  1/16 Ticket 2344: if there was a time-plot underlay, use the underlay's 
+*                   time scaling for time overlay plots. TAXUND restores the default.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -100,6 +101,7 @@
 	CALL PPLCMD ( from, line, 0, 'AXNMTC 0,0', 1, 1 )
 c	CALL PPLCMD ( from, line, 0, 'TXNMTC 0', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'TXNMTC -1', 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'TAXUND 0', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'TITLE', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'LABSET,0.16,0.12,0.12,0.12', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'WINDOW ON', 1, 1 )

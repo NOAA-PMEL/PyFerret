@@ -1,0 +1,114 @@
+! bn_labels_on_taxis.jnl
+! tests of labels and overlays on time axes
+
+
+set v ul
+DEFINE AXIS/T=1-JAN-1980:31-JAN-1985:30/T0=1-jan-1980/UNIT=days tax
+LET tt = t[gt=tax]
+LET tvar = cos(tt/200)
+plot tvar
+
+LET xsqr = {-1,1,1,-1}                ! coordinates of a unit square
+LET ysqr = {-1,-1,1,1}
+LET xcircle = COS(6.3*i[i=1:42]/40)    ! coordinates of unit circle
+LET ycircle = SIN(6.3*i[i=1:42]/40)
+
+!   place an "X" at the value exactly at 7-aug-1982
+!   "@ITP" causes interpolation to exact location
+
+let t0   = tt[t="7-aug-1982"@itp]
+let val0 = tvar[t="7-aug-1982"@itp]
+plot/vs/over/nolab/sym=2/thick/color=red t0,val0
+
+!   put a box around the "X"
+polygon/over/thick/color=red/nolab t0+30*xsqr, 0.05*ysqr+val0
+
+!   place an "X" on the data point nearest to 15-may-1984
+!   Note that @ITP is absent, so behavior is set by MODE INTERPOLATE
+let t1   = tt[t="15-may-1984"]
+let val1 = tvar[t="15-may-1984"]
+plot/vs/over/nolab/sym=2/color=blue/thick t1,val1
+
+!     put a circle around the "X"
+plot/vs/over/color=blue/thick/nolab t1+30*xcircle,0.05*ycircle+val1
+
+set v ur
+! Latitude/time plot
+let ytvar = cos(tt/200) + sin(j/3)
+shade/y=1:50/t=1-jan-1982:31-dec-1982 ytvar
+                     
+let tlo = tt[t="1-jul-1982"@itp]
+let thi = tt[t="1-aug-1982"@itp]
+polygon/over/nolab/thick/pal=gray {`tlo`, `thi`,` thi`, `tlo`},  {20, 20, 25, 25}
+
+set v ll
+! Plot the time series.
+!----------------------------------
+
+LET tvar = cos(tt/200)* tt/100
+PLOT/vlim=-20:20 tvar
+
+!----------------------------------
+! Locate label position on time variable axis: the coordinate at the start of 1985.
+LET datelabelpos=TT[T="01-JAN-1981"@ITP]
+
+! Do nothing but set $PPL$XFIRST1 symbol at the time axis plot units
+PLOT/LINE/VS/OVER/NOLAB datelabelpos,-9
+
+! Make the label; left-justified
+! LABEL xpos, ypos, justify, rotate, height "text"
+LABEL ($PPL$XFIRST1),-8,-1,0,0.12,@AC Year 81 starts
+
+! Draw a vertical red line at the year boundary
+PLOT/VS/NOLAB/LINE/COLOR=RED/OVER {`datelabelpos`,`datelabelpos`},{-20,20}
+
+! Do the same for the start of 1984
+!----------------------------------
+! Locate label position on time var axis
+LET datelabelpos=TT[T="01-JAN-1984"@ITP]
+
+! Do nothing but set $PPL$XFIRST1 symbol at the time axis plot units
+plot/line/vs/over/nolab datelabelpos,-9
+
+! LABEL xpos, ypos, justify, rotate, height "text"
+LABEL ($PPL$XFIRST1),-8,-1,0,0.12,@AC Year 84 starts
+
+! Draw a vertical red line at the year boundary
+PLOT/VS/NOLAB/LINE/COLOR=RED/OVER {`datelabelpos`,`datelabelpos`},{-20,20}
+
+!----------------------------------
+! Now lets locate and label the maximum of the variable
+LET vmax = `tvar[T=@MAX]`
+LET t_at_max = tvar[T=01-JAN-1980:31-DEC-1985@LOC:`vmax`]
+
+! This will define $PPL$XFIRST1 and also make a mark at the maximum location
+PLOT/VS/OVER/NOLAB/SYM=17/COLOR=red t_at_max, vmax
+
+! Use a centered label this time
+! 1.02*vmax moves the label up a bit.
+! LABEL xpos, ypos, justify, rotate, height "text"
+LABEL ($PPL$XFIRST1),`1.02*vmax`,0,0,0.12,@AC MAX = `vmax,prec=3`
+
+set v lr
+
+! Define a dummy track line, position as a function of time.
+DEFINE AXIS/T=1-JAN-1980:31-JAN-1985:30/UNIT=days tax
+LET ypos = 40 *COS(L[GT=tax]/32)
+LET xpos = 220 - 50 *SIN(L[GT=tax]/22)
+! Make the basic track plot
+use ocean_atlas_temp
+shade/pal=blue_light/X=110E:40W/Y=20S:50N/L=1 temp
+
+PLOT/VS/NOLAB/OVER XPOS,YPOS
+! Label every 5th date. The labels could be positioned differently, using
+! the 3rd argument of the LABEL command to control centering. Or, to put the
+! labels a bit above the corresponding point location, add a small amount to
+! the y positions, for instance `ypos + 0.04` in the second argument to LABEL.
+LET tt = t[gt=tax]
+! Loop over L; at each L we evaluate TAX_DATESTRING for the time step,
+! and compute the location for the label
+REPEAT/L=5:60:10 (DEFINE SYMBOL tlab = "`TAX_DATESTRING(tt,tt,"day")`"; \
+ LABEL `xpos` `ypos` 1 0 0.09 ($tlab) )
+
+FRAME/FILE=bn_labels_on_taxis.gif
+

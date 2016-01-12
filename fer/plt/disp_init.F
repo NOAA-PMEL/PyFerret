@@ -88,6 +88,10 @@
 * V686 *acm* 12/13 set up the label symbols LABNUM_E and LABNUM_F
 * V695+ *sh*  3/15 remove movable label rotations (left behind by FMRC annotations)
 * V697 *acm* 12/15 Fixes for bug 2327 move call of PPL_AXES_RESTORE back to end of plot routines
+* V697  *acm*  1/16 Ticket 2344: if there was a time-plot underlay, use its
+*                   delta-t for time overlay plots. TAXUND restores the default.
+* V697  *acm*  1/16 Ticket 2344: if there was a time-plot underlay, use the underlay's 
+*                   time scaling for time overlay plots. TAXUND restores the default.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -121,6 +125,7 @@
 * 1/99 *kob* comment out call for aline as this was moved to disp_prep instead
 *	CALL PPLCMD ( from, line, 0, 'ALINE ', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'TAXIS OFF', 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'TAXUND 0', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'TITLE', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'TICS .125', 1, 1 )    ! chg 12/93
 	CALL PPLCMD ( from, line, 0, 'WINDOW ON', 1, 1 )

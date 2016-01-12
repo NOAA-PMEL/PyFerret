@@ -159,6 +159,14 @@ set v ll; plot/dash x[gx=0:20:.05]
 set v lr; plot/dash x[gx=0:20:.01]
 frame/file=gif_dashbug.gif
 
+! New benchmark gif outputs in v6.97
+go bn_reset
+GO bn_hovmuller_overlays
+
+Go bn_reset
+GO bn_labels_on_taxis
+
+
 exit/command
 
 

@@ -62,12 +62,15 @@
 * local declarations
 	REAL		dz, fm, znp, zmp, dzmax, del
 	INTEGER		m, jj
-        LOGICAL		TM_FPEQ_SNGL, isinf
+        LOGICAL		TM_FPEQ_SNGL, isinf, redo
 
         EXTERNAL range
 
 	status = ferr_ok
 	lev_str = 'none'
+
+	znp = 0.
+	zmp = 0.
 C       
 C       IAUTOC = 1 means: compute levels from input data and number
 C                         of levels
@@ -259,6 +262,9 @@ C	FIND MIN AND MAX as in lev.F from the Z levels.
               IF (DZ .GT. DZMAX) DZMAX = DZ
 110        CONTINUE
 
+	   znp = dmin
+	   zmp = dmax
+
 	   isinf = (neginf .OR. posinf)
 	   IF (.NOT.isinf .AND. (DMIN.EQ.DMAX)) THEN
 c	      NLEV2=0
@@ -335,6 +341,24 @@ C      has set levels, this is already done (and the values are different).
 
         ENDIF  ! openlev
 	END IF
+
+! Set ldig: If this is a contour plot, there may have been a 
+! PPL CONSET which needs to be applied.
+
+	If (NEWSIG.GT.0) then
+	IF (ZMP-ZNP .EQ. 0) THEN
+	   JJ=NSIGC
+	ELSE
+	   JJ=NSIGC-IFIX(ALOG10(ABS(ZMP-ZNP))+.5)
+	ENDIF
+	IF (JJ.LE.0) JJ=-1
+
+	DO 107 I=1,NLEV2
+	   LDIG(I)=-1
+	   IF ( TM_FPEQ_SNGL( ABS(ZLEV(I)) ,0.) ) GOTO 107
+	   LDIG(I)=JJ
+ 107	CONTINUE
+	endif
 
 * Now that the levels are set, create the LEVELS symbols
 

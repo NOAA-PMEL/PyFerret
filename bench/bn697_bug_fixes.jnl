@@ -24,3 +24,6 @@ GO err696_argument_blanks
 
 GO bn_reset
 GO err696_annotate_numeric
+
+GO bn_reset
+GO err696_contour_conset

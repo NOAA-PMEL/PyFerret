@@ -64,6 +64,7 @@ C     for compatibility with Ferret use of symbols.
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * v696 *acm*	gap_var to define seperate line segments on PLOT/VS plots
 *                  (LAS ticket 1597 and others)
+* V697 *acm*   Fix CONSET for setting # of digits on contour plots. When did this ever work?
 
 	INCLUDE 'PARAMPL5.DAT'
 	include 'axis_inc.decl'
@@ -135,7 +136,7 @@ C
 c*	DATA ZLEV,LDIG,LWGT,LCLR,NLEV,HGT/500*0.0,1500*0,40,.08/
 c*	DATA ZLEV,LDIG,LWGT,LCLR,NLEV,HGT/500*0.0,1500*0,10,.08/
 	DATA ZLEV,LDIG,LWGT,LCLR,NLEV,HGT/500*0.0,1500*0,30,.08/
-	DATA NARC,IAUTOC,NLEV2,NSIGC,CANGLE,IVCOMP/1,1,0,2,0.0,1/
+	DATA NARC,IAUTOC,NLEV2,NSIGC,INISIG,NEWSIG,CANGLE,IVCOMP/1,1,0,2,2,0,0.0,1/
 C
 	DATA DASHLN,SPACLN,DSLAB/.04,.04,5.0/
 C

@@ -37,6 +37,11 @@
 * Ansley Manke
 * October 2010 from tracks2grid_ave_xyt.F
 *
+* 9/ 3/2015 Fix LAS/SOCAT ticket 1720, missingness patterns in cruise-weighted 
+*           vs unweighted gridded fields.
+* 1/14/2016 Fix LAS/SOCAT ticket 1721, missing/zero where there should be data in 
+
+*
 * This is the description of the averaging function.
 * The input data points are not a simple scatter.  They are cruise tracks 
 * strung one after another.  (Each track will be a contiguous block of points 
@@ -556,7 +561,7 @@ C  Get coordinates of output axes.
             DO j = indx(2,1), indx(2,2)
             DO i = indx(1,1), indx(1,2)
 
-	       IF (obs_cruise(i,j,2,L).GT.0. .AND. obs_cruise(i,j,3,L).GT.0.) THEN
+	       IF (obs_cruise(i,j,2,L).GT.0. .AND. obs_cruise(i,j,3,L).NE.0.) THEN
 
                   wt_cruise_mean = obs_cruise(i,j,1,L)/obs_cruise(i,j,3,L)
 
@@ -568,7 +573,7 @@ C  Get coordinates of output axes.
 		  wi_sums(i,j,1,l) = wi_sums(i,j,1,l) + 1./obs_cruise(i,j,3,L)
 
 		  nc_cell = cell_avg(i,j,2,L)
-		  IF (nc_cell .GT. wrk7hiz) THEN
+		  IF (nc_cell.GT.wrk7hiz) THEN
                      print *, 'Num_obs in cell at I,J,L = ', i,j,L, 
      .               ' is', nc_cell
 		     CALL ef_bail_out (id,
@@ -623,7 +628,7 @@ C  Get coordinates of output axes.
          DO j = indx(2,1), indx(2,2)
             DO i = indx(1,1), indx(1,2)
 
-	       IF (obs_cruise(i,j,2,L).GT.0. .AND. obs_cruise(i,j,3,L).GT.0.) THEN
+	       IF (obs_cruise(i,j,2,L).GT.0. .AND. obs_cruise(i,j,3,L).NE.0.) THEN
 
                   wt_cruise_mean = obs_cruise(i,j,1,L)/obs_cruise(i,j,3,L)
 
@@ -635,7 +640,7 @@ C  Get coordinates of output axes.
 		  wi_sums(i,j,1,l) = wi_sums(i,j,1,l) + 1./obs_cruise(i,j,3,L)
 
 		  nc_cell = cell_avg(i,j,2,L)
-		  IF (nc_cell .GT. wrk7hiz) THEN
+		  IF (nc_cell.GT.wrk7hiz) THEN
                      print *, 'Num_obs in cell at I,J,L = ', i,j,L, 
      .               ' is', nc_cell
 		     CALL ef_bail_out (id,
@@ -669,12 +674,12 @@ C  Get coordinates of output axes.
                    result(i,j,k,l) = bad_flag_result
                ELSE IF (nc_cell .EQ. 1) THEN
                    result(i,j,k,l) = 0.
-               ELSE IF (wi_sums(i,j,1,l).LE.1.e-6) THEN
-                   result(i,j,k,l) = bad_flag_result
+c               ELSE IF (wi_sums(i,j,1,l).LE.1.e-6) THEN
+c                   result(i,j,k,l) = bad_flag_result
 
 * Compute sum of (cruise-cell-averages - weighted cell mean) squared\
 
-               ELSE IF (nc_cell .GT. 1) THEN
+               ELSE IF (nc_cell.GT.1 .AND. wi_sums(i,j,1,l).NE.0.) THEN
 
                   cellmean = cell_avg(i,j,1,L)/wi_sums(i,j,1,l)
 
@@ -699,7 +704,8 @@ C  Get coordinates of output axes.
                   V2 = wsumsq
                   denom = V1*V1 - V2
 		  
-                  IF (ABS(denom) .GT. 1.e-6) THEN
+c                  IF (ABS(denom).GT.1.e-6) THEN
+                  IF (ABS(denom).NE.0.) THEN
                      result(i,j,k,l) = SQRT(wsumsq_ijl* V1/denom)
                   ELSE
                      result(i,j,k,l) = bad_flag_result

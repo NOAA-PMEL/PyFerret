@@ -57,6 +57,8 @@
 * written for VAX computer under VMS operating system
 *
 * V200:  7/5/89  
+* V698 *sh* 1/16 - altered method of obtaining grids of LET/D uvars used in
+*                  E and F aggregations
 
 * calling argument declarations:
 	INTEGER		uvar, dset, status
@@ -92,17 +94,22 @@
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	is_cx   ( isp ) = cx
 	is_uvar ( isp ) = uvar
-	is_act  ( isp ) = isact_get_grid	! temp diagnostic
+	is_act  ( isp ) = isact_get_grid	! vs isact_get_agg_grid
 
 * initialize the stacks - (repeated for each component)
 
  100	CALL IS_GRID_MODE( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
-	IF (is_act( isp ) .EQ. isact_get_agg_grid) THEN
-	   CALL IS_AGGREGATE_GRID (uvar, dset, is_cx(isp), status)
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-	ENDIF
+!* digress to get all of the LET/D grids used in aggregation members
+!* these grids do not get merged into any others, since the grids of the
+!* aggregated (parent) variables are fixed at the time of DEFINE DATA/AGG
+!	IF (is_act( isp ) .EQ. isact_get_agg_grid) THEN
+!	   CALL IS_AGGREGATE_GRID (uvar, dset, is_cx(isp), status)
+!	   IF ( status .NE. ferr_ok ) GOTO 5000
+!* ... now go back and re-try the parent variable.  is_phase was decremented
+!*     before we came here.
+!	ENDIF
 
 * evaluate the grid by merging component grids
 *  ... exit 100 is to evaluate the grid for a component uvar

@@ -51,6 +51,7 @@
 * revision 0.0 - 9/2013 based upon IS_REGRID
 * for Ferret v685+
 * v695+ *sh* 3/15 - support for TF (FMRC) regridding added
+* V698 *sh* 1/16 - bug fix: cx_regrid_trans were getting clobbered in dst_cx
 
 	IMPLICIT NONE
 
@@ -299,8 +300,8 @@
 
 * Make the destination context like the source data context on all except
 * the regrid axis.  That one keeps the user-requested size.
-* (Other axes may have been modified by information embedded within a
-* user-variable definition. 
+* (other axes may have been modified by information embedded within a
+* user-variable definition.) 
 
 * (*sh* untested, simpler(?) alternative is to create the mr from dst_cx just
 * as it is, pre-fill with missing, and create cx_valid based on available
@@ -332,21 +333,23 @@
 	   ENDDO
 
 	   CALL TRANSFER_CONTEXT( src_cx, cx_buff )
-	   DO 300 i = 1, naxis 
-	      idim = axis_list(i)
-	      CALL TRANSFER_AXIS( idim, dst_cx, cx_buff )
-	      cx_regrid_trans( idim, cx_buff ) = cx_regrid_trans( idim, dst_cx )
-	      cx_delta(idim,cx_buff) = unspecified_val8
- 300	   CONTINUE
 	   cx_unstand_grid( cx_buff ) = cx_unstand_grid( dst_cx )
 	   cx_grid        ( cx_buff ) = cx_grid        ( dst_cx )
 	   cx_impl_grid   ( cx_buff ) = cx_impl_grid   ( dst_cx )
 	   cx_naux        ( cx_buff ) = cx_naux        ( dst_cx )
-           DO 310 idim = 1, nferdims
+           DO idim = 1, nferdims
               cx_aux_var (idim, cx_buff) = cx_aux_var (idim, dst_cx)
               cx_aux_cat (idim, cx_buff) = cx_aux_cat (idim, dst_cx)
               cx_aux_stat(idim, cx_buff) = cx_aux_stat(idim, dst_cx)
- 310       CONTINUE
+	      cx_regrid_trans(idim,cx_buff ) = cx_regrid_trans(idim, dst_cx)
+	      cx_delta(idim,cx_buff) = unspecified_val8
+	   ENDDO
+	   DO i = 1, naxis 
+	      idim = axis_list(i)
+	      CALL TRANSFER_AXIS( idim, dst_cx, cx_buff )
+	      cx_regrid_trans(idim, cx_buff) = cx_regrid_trans(idim, dst_cx)
+	      cx_delta(idim,cx_buff) = unspecified_val8
+	   ENDDO
 	   CALL TRANSFER_CONTEXT( cx_buff, dst_cx )  ! (nervous. is it ok to clobber this?)
 
 * create a space for the new result possibly with the edges flagged as bad

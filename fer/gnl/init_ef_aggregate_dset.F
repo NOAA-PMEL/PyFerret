@@ -1,4 +1,5 @@
-	SUBROUTINE INIT_EF_AGGREGATE_DSET (dname, dtitle, agg_dset, 
+	SUBROUTINE INIT_EF_AGGREGATE_DSET (memb_dsetname_var,
+     .	   nsets, have_expr, dname, dtitle, agg_dset, 
      .     agg_quiet, agg_hide, agg_dim, status )
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,6 +35,24 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 
 * initialize a new ensemble (E) or forecast (F) aggregated dataset
+* Aggregation member variables may be a blend of file variables and LET/D vars
+* Since the user may alter LET/D definitions after the aggregation has been
+* defined, the following approach is taken to processing:
+*  1) during DEFINE DATA/AGG the grids of all member variables are determined
+*     This means that IS_UVAR_GRID is called for LET/D vars.
+*     These grid numbers are stored in the aggregation LIST structures
+*     The grids of the variables in the aggregated (parent) dataset are also
+*     determined and stored in ds_grid_number as if they are file variables.
+*     These grids are "static" as with file variables -- always valid. 
+*  2) (TBD as of this writing!!!)==> the use counts of *all* member grids are
+*     bumped, so that they cannot be deleted, even if LET/D definitions change
+*  3) (TBD as of this writing!!!)==> at get_grid time all of the components
+*     of the aggregation are checked to
+*     ensure they have a grid (IS_UVAR_GRID) -- allowing for last-minute
+*     LET/D var changes
+*  4) during evaluation (in IS_STRIP and IS_AGGREGATE_GATHER) the variable
+*     name and member dataset number are used to make a fresh determination of
+*     the variable category and grid.  Error out if grid number has changed
 
 * Programmer Ansley Manke
 * NOAA/PMEL, Seattle, WA - TMAP 
@@ -45,6 +64,24 @@
 * V695 2/15 *acm* Aggregation in either E or F direction, as defined by agg_dim
 * V695+ 5/15 *sh* Call GET_AXIS_SPEEDS (pulled out of CHECK_MEMBER_DSETS)
 * V695+ 10/15 *sh* rename this routine to INIT_EF_AGGREGATE_DSET
+* V698 12/15 *sh* reorganization of code in order to accommodate:
+*		  checks of uvar grids delayed until eval
+*	          allow for LET/D def changes after DEFINE/AGG (hopefully)
+*		  allow dataset list passed as a Ferret string variable
+*                 allow forecast datasets out of order (sort em)
+*		  allow gaps in the forecast series (insert dummy datasets)
+
+* arguments:
+*	memb_dsetname_var - if have_expr, the variable of names (input)
+*	nsets		- number of datasets in the aggregation (input)
+*       have_expr	- flag if filenames were listed or in an expr (input)
+*	dset_name	- dataset name to assign to the aggregation (input)
+*	dset_title	- dataset title (input)
+*	dset_num	- number assigned to this data set (output)
+*       agg_quiet       - flag whether to report certain conditions (input)
+*	agg_hide        - flag whether to hide the component datasets (input)
+*	agg_dim		- axis of the aggregation (E or F) (input)
+*	status		- return status (output)
 
       IMPLICIT NONE
 	include 'netcdf.inc'
@@ -65,88 +102,111 @@
 
 * calling argument declarations:
 	CHARACTER*(*)	dname, dtitle
-	INTEGER		agg_dset, agg_dim, status
-	LOGICAL		agg_quiet, agg_hide
+	INTEGER		nsets, agg_dset, agg_dim, status
+	LOGICAL		have_expr, agg_quiet, agg_hide
+	REAL		memb_dsetname_var(*)
+
+* parameter definitions
+	INTEGER	pmaxgaps, pmaxvarsperset
+	PARAMETER (pmaxgaps = 10,
+     .		   pmaxvarsperset = 400)
 
 * local variable declarations:
-	LOGICAL	match, has_uvars, need_tf_lag_t
+	LOGICAL	OK_AS_AGG_VAR, match, has_uvars
 	INTEGER	TM_LENSTR, TM_LENSTR1, STR_SAME, NCF_DELETE_DSET,
      .		NCF_ADD_AGG_MEMBER, NCF_GET_AGG_MEMBER_INFO, 
      .          KNOWN_GRID,
-     .		iset, dset, item, ii, nT,
-     .		perm(nferdims), nsets, member_sets(maxdsets), 
-     .		imatch, nv, grid, igrid, idim, ivar, nvars, iline, 
-     .		slen, memb_var, memb_dset, memb_grid, ugrid, 
+     .		iset, dset1, item, ii, nT, max_str_len,
+     .		perm(nferdims), member_sets(nsets+pmaxgaps),
+     .		imatch, nv, grid, igrid, idim, ivar, nvars, nuvars, iline, 
+     .		slen, memb_var, memb_dset, memb_grid, ugrid, nsets_wgaps,
      .		type, fvar, ndims, ngatts, recdim, varid, attoutflag,
-     .          tax_match, tf_lag_t, memb_tax, prev_line_start
-	CHARACTER vname*128, buff*64, tcoordname*16
+     .          tf_lag_t, memb_tax,
+     .		ref_grid, ref_fvar, ref_fvars(pmaxvarsperset),
+     .		num_indices, j, jj
+	CHARACTER buff*64, tcoordname*16
 	CHARACTER TM_STRING*13
+	CHARACTER*512 GET_STRING_ELEMENT_1D_X, memb_dsetname(nsets)
+	CHARACTER*128 vname
 	REAL*8  TM_WORLD, avg_lag
 
 * initialize
-	need_tf_lag_t = .TRUE.
 	tf_lag_t = unspecified_int4  ! lag time axis if FMRC
+	max_str_len = 512
+	nsets_wgaps = nsets
 
-* check to see if this name matches an already-open dataset name.
+* check to see if this new dataset name matches an already-open dataset name.
 * if so, thats an error
-
-	DO 100 iset = 1, maxdsets
+	DO iset = 1, maxdsets
            match = ds_name(iset) .EQ. dname
            IF ( match ) GOTO 5100
-  100	CONTINUE
+	ENDDO
+
+* set up array of dataset identifier strings
+*   these may be string dataset numers or names,  pre-init'ed or not
+	IF (have_expr) THEN
+*  ... dataset list passed through a string variable
+	  DO iset = 1, nsets
+	    memb_dsetname(iset) = GET_STRING_ELEMENT_1D_X(
+     .			nsets,
+     .                  memb_dsetname_var,iset,
+     .			max_str_len,slen )
+	  ENDDO
+	ELSE
+*  ... dataset names given by user on command line
+	  DO iset = 1, nsets
+	    memb_dsetname(iset) = cmnd_buff(item_start(iset):item_end(iset))
+	  ENDDO
+	ENDIF
 
 * See if requested datasets are open and if not, try to open them.
+	CALL CHECK_MEMBER_SETS (nsets, memb_dsetname,
+     .				member_sets, status)
+	IF (status .NE. ferr_ok) GOTO 9950
 
-	CALL CHECK_MEMBER_SETS (nsets, member_sets, status)
-	IF (status .NE. ferr_ok .OR. nsets .EQ. 0) GOTO 9950
-
-* Ok, all the member datasets are open and available
+* forecast aggregation datasets may need to be sorted and gaps detected
+	IF (agg_dim .EQ. f_dim) THEN
+	   CALL SORT_FMRC_DSETS (nsets, member_sets, nsets+pmaxgaps,
+     .				 nsets_wgaps, nT, status)
+	   IF (status .NE. ferr_ok) GOTO 5000
+	ENDIF
 
 * Assign aggregate data set number, exiting if maximum number 
 * of data sets are open
-
-	DO 200 iset = 1,maxdsets
+	DO iset = 1,maxdsets
 	  IF (ds_name(iset) .EQ. char_init1024) THEN
 	    agg_dset = iset
 	    GOTO 220
 	  ENDIF
-  200	CONTINUE
-
-* Too many data sets are open
+	ENDDO
+* ... too many data sets are open
 	CALL TM_ERRMSG ( merr_dsetlim, status, 'INIT_EF_AGGREGATE_DSET',
      .			 no_descfile, no_stepfile,
      .			 'MAX='//TM_STRING(DBLE(maxdsets)),
      .			 no_errstring, *9950)
  220	CONTINUE
 
-* Create datset. Will delete it later if there are no aggregate variables found.
+* Create datset. Will delete it later if there are no aggregate variables found
+* Note: the pattern will the first dataset given.  They may get reordered.
 	CALL CREATE_AGG_DSET (agg_dset, dname, dtitle,
-     .			 nsets, agg_dim, iline, status)  
+     .			 nsets_wgaps, member_sets(1), agg_dim, iline, status)  
 	IF (status .NE. ferr_ok) GOTO 5300
 
 * perform initializations needed on a new dataset
-!* interpret special parameters in the descriptor
-!	CALL GET_DSET_PARMS( agg_dset, status )
-!	IF ( status .NE. ferr_ok ) GOTO 5300XX
-
 * determine relative access speeds along each axis
 	CALL GET_AXIS_SPEED( agg_dset )
 
-!* build completed ( with time axis ) grids for computable variables
-!	CALL MAKE_CVAR_GRIDS( dset, status )
-!	IF ( status .NE. ferr_ok ) GOTO 5300XX
-
 * 1st member dset sets pattern for all to follow
-	dset = member_sets(1)
+	dset1 = member_sets(1)
 
 * If this is a Forecast aggregation create name for the 2D time array
-* Make it unique as necessary by adding "_" chars
+* Make it unique as necessary by adding trailing "_" chars
 	IF (agg_dim.EQ.f_dim) THEN
 	   tcoordname = 'TF_TIMES'
 	   slen = 8
  250	   CONTINUE
 	   DO ivar = 1, maxvars
-	      IF (ds_var_setnum(ivar) .EQ. dset) THEN
+	      IF (ds_var_setnum(ivar) .EQ. dset1) THEN
 	         IF ( STR_SAME(tcoordname,ds_var_code(ivar)) .EQ. 0 ) THEN
 	            tcoordname = tcoordname(:slen)//'_'
 	            slen = slen + 1
@@ -158,241 +218,103 @@
 	   tcoordname = ' '
 	ENDIF
 
-*********  top of variable loop ***************
-* See what variables are shared by all the datsets
-	nvars = 0
-	DO 800 ivar = 1, maxvars
-           IF ( ds_var_setnum(ivar) .NE. dset ) GOTO 800
-	   vname = ds_var_code(ivar)
-	   imatch = 1
-	   DO 400 ii = 2, nsets
-	      iset = member_sets(ii)
-              DO 300 nv = 1, maxvars
-	         IF ( (ds_var_setnum(nv) .EQ. iset) .AND.
-     .                (STR_SAME(ds_var_code(nv), vname) .EQ. 0) ) THEN
-                    imatch = imatch + 1
-		 ENDIF
-  300	      CONTINUE
-
-* See if a user-defined LET/D variable name matches
-              DO 350 nv = 1, maxvars
-	         IF ( (uvar_dset(nv) .EQ. iset) .AND.
-     .                (STR_SAME(uvar_name_code(nv), vname) .EQ. 0) ) THEN
-                    imatch = imatch + 1
+*****
+* find variables that are acceptable for aggregation using dset1 as the basis
+* an aggregatable var must have at least member dset that is an fvar - ref_fvar
+* note LET/D names that duplicate file variable names take precedence, so
+*     check them first
+	nuvars = 0
+!	DO nv = 1, max_uvar      ! brute-force equivalent loop
+	CALL deleted_list_get_undel(uvar_num_items_head,
+     .                              deleted_list_result(1),
+     .                              max_uvar, num_indices )
+	DO j = 1, num_indices
+	   nv = deleted_list_result(j)
+	   IF (uvar_dset(nv) .EQ. dset1) THEN
+	      IF (OK_AS_AGG_VAR(nv, cat_user_var, dset1, member_sets,
+     .		  nsets_wgaps, agg_dim, agg_quiet, ref_fvar, status)  ) THEN
+	         nuvars = nuvars + 1
+	         ref_fvars(nuvars) = ref_fvar
+	      ELSE
+	         IF (status .NE. ferr_ok) GOTO 5000
 	      ENDIF
-  350	      CONTINUE
-
-  400	   CONTINUE
-
-           IF (imatch .NE. nsets) THEN
-	      IF ( .NOT.agg_quiet ) 
-     .	         CALL WARN('Exclude variable from aggregate. '//
-     .	         'Does not appear in all member datasets: '//
-     .	         vname)
-	      GOTO 800 ! Variable not in all datasets
 	   ENDIF
+	ENDDO
+	nvars = nuvars
 
-           grid = ds_grid_number(ivar)
-	   IF (grid_line(agg_dim, grid) .NE. 0) GOTO 5400
-
-* Check that grids match for file variables. 
-* NOTE if the variables in the member datasets share the same grid, and
-*      there is a record axis, then they may have different timesteps but 
-*      grid_line and ds_grid_start, ds_grid_end will have the same contents.
-*      How to find that case? (check line_mem) Or just allow it?
-
-* For a FMRC aggregation, the time axes must be the same units and origin 
-* and length but will in general NOT share time steps.  The first time step 
-* should increase from one set to the other. Not checking for this at the 
-* moment.
-
-           imatch = 1
-	   prev_line_start = 0
-	   IF (grid_line(t_dim, grid) .NE. 0) prev_line_start = 
-     .          line_start(grid_line(t_dim, grid))
-	   has_uvars = .FALSE.
-
-           DO 600 ii = 2, nsets
-	      iset = member_sets(ii)
-	      tax_match = 0
-              DO 500 nv = 1, maxvars
-	         IF ( (ds_var_setnum(nv) .EQ. iset) .AND. 
-     .                (STR_SAME(ds_var_code(nv), vname) .EQ. 0) ) THEN
-                    igrid = ds_grid_number(nv)
-		    DO 550 idim = 1, nferdims
-		       IF (agg_dim.EQ.f_dim .AND. idim.EQ.t_dim) GOTO 550
-		       IF ( grid_line(idim, grid) .NE.  
-     .                      grid_line(idim, igrid) ) GOTO 500
-  550	            CONTINUE
-                    imatch = imatch + 1
-		 ENDIF
-
-	         IF ( (uvar_dset(nv) .EQ. iset)   .AND. 
-     .                (STR_SAME(uvar_name_code(nv), vname) .EQ. 0) ) THEN
-
-	            CALL GET_UVAR_GRID( nv, iset, status )
-	            IF ( status .NE. ferr_ok ) GOTO 5600
-	            igrid = KNOWN_GRID(iset,cat_user_var,nv)
-
-	            IF (igrid .NE. grid) THEN
-		    DO 555 idim = 1, nferdims
-		       IF (agg_dim.EQ.f_dim .AND. idim.EQ.t_dim) GOTO 555
-		       IF ( grid_line(idim, grid) .NE.  
-     .                      grid_line(idim, igrid) ) GOTO 500
-  555	            CONTINUE
-                    ENDIF
-
-		    imatch = imatch + 1 
-
-		    has_uvars = .TRUE.
-	         ENDIF
-		 
-* For forecast-direction aggregations, the time axis of the aggregation 
-* is not taken directly from the ensemble members.  Instead it
-* is merely a lag axis -- number of time steps and lag per step
-		 IF (agg_dim .EQ. f_dim .AND. need_tf_lag_t) THEN
-	            memb_tax = grid_line(t_dim, grid)
-	            nT = line_dim(memb_tax)
-	            avg_lag = ( TM_WORLD(nT, grid, t_dim, box_middle )
-     .	                      - TM_WORLD(1,  grid, t_dim, box_middle ) )
-     .			      /(nT-1)
-	            CALL TM_NEW_LINE_NAME ( 'TF_LAG_T', buff )
-	            CALL TM_MAKE_BASIC_AXIS( buff, 0.0D0, avg_lag, nT,
-     .					     tf_lag_t, status )
-	            line_unit_code(tf_lag_t) = line_unit_code(memb_tax)
-	            line_units(tf_lag_t) =
-     .					un_name(line_unit_code(tf_lag_t))
-!	            line_tunit(tf_lag_t) =
-!     .					un_convert(line_unit_code(tf_lag_t))
-	            line_direction(tf_lag_t) = 'TT'
-	            line_dattype  (tf_lag_t) = nf_double
-	            line_dim_only (tf_lag_t) = .FALSE.  ! ?? why?
-	            need_tf_lag_t = .FALSE.
-		 ENDIF
-		       
-  500	      CONTINUE
-  600	   CONTINUE
-  
-
-*  variable in all datsets but they dont have the same grid.
-	   IF (imatch .NE. nsets) THEN
-	      IF ( .NOT.agg_quiet ) 
-     .	         CALL WARN('Exclude variable from aggregate. '//
-     .	         'Grid differs in member datasets: '//
-     .	         vname)
-              IF (agg_dim.EQ.f_dim .AND. tax_match.NE.0) THEN
-	      IF ( .NOT.agg_quiet ) 
-     .	         CALL WARN('FMRC Time axes do not share units or size;'//
-     .	         ' or starting times not increasing '//
-     .	         vname)
-              ENDIF
-	      GOTO 800 
+* now find the file variables
+	ref_grid = unspecified_int4
+        DO nv = 1, maxvars
+	   IF (ds_var_setnum(nv) .EQ. dset1) THEN
+* ... skip it if it duplicates a name already found as a LET/D variable
+	      DO ii = 1, nuvars
+	         IF (STR_SAME(ds_var_code(ref_fvars(ii)),
+     .			      ds_var_code(nv)           ) .EQ. 0) GOTO 300
+	      ENDDO
+	      IF (OK_AS_AGG_VAR(nv, cat_file_var, dset1, member_sets,
+     .		  nsets_wgaps, agg_dim, agg_quiet, ref_fvar, status)  ) THEN
+	         nvars = nvars + 1
+	         ref_fvars(nvars) = ref_fvar
+	      ELSE
+	         IF (status .NE. ferr_ok) GOTO 5000
+	      ENDIF
 	   ENDIF
-	      
-* same grid for this variable in all datasets 
-	   
-           nvars = nvars + 1
-
-	   CALL DEFINE_EF_AGGREGATE_GRID (agg_dset, tcoordname, nvars, vname,
-     .           ivar, iline, tf_lag_t, grid, agg_dim, member_sets, nsets)
-	   IF (status .NE. ferr_ok) GOTO 5000
-
-  800   CONTINUE
-
-* See if user-defined (LET/D=) variables from the first dataset are 
-* shared by all the datsets
-
-	dset = member_sets(1)
-	DO 1800 ivar = 1, maxvars
-           IF ( uvar_dset(ivar) .NE. dset ) GOTO 1800
-	   vname = uvar_name_code(ivar)
-	   imatch = 1
-
-	   grid = unspecified_int4
-	   DO 1400 ii = 2, nsets
-	      iset = member_sets(ii)
-              DO 1300 nv = 1, maxvars
-	         IF ( (ds_var_setnum(nv) .EQ. iset) .AND.
-     .                (STR_SAME(ds_var_code(nv), vname) .EQ. 0) ) THEN
-                    imatch = imatch + 1
-		    grid = ds_grid_number(nv)
-		    fvar = nv
-
-		 ENDIF
- 1300	      CONTINUE
-
-* See if a user-defined LET/D variable name matches
-              DO 1350 nv = 1, maxvars
-	         IF ( (uvar_dset(nv) .EQ. iset) .AND.
-     .                (STR_SAME(uvar_name_code(nv), vname) .EQ. 0) ) THEN
-
-                    imatch = imatch + 1
-		 ENDIF
- 1350	      CONTINUE
-
- 1400	   CONTINUE
-
-	   IF (imatch .NE. nsets) THEN
-	      
-	      IF ( .NOT.agg_quiet ) 
-     .	         CALL WARN('Exclude variable from aggregate. '//
-     .	         'Does not appear in all member datasets: '//
-     .	         vname)
-               GOTO 1800 ! Variable not in all datasets
-	   ENDIF
-
-* If one dataset contains the variable then we will be able to define the grid.
-	   
-	   IF (grid .NE. unspecified_int4) THEN
-
-              nvars = nvars + 1
-
-	      CALL DEFINE_EF_AGGREGATE_GRID
-     .		(agg_dset, tcoordname, nvars, vname,
-     .           fvar, iline, tf_lag_t, grid, agg_dim, member_sets, nsets)
-	      IF (status .NE. ferr_ok) GOTO 5000
-
-* Do not include variables that are entirely user-defined.
-	   ELSE
-	      IF ( .NOT.agg_quiet ) 
-     .	         CALL WARN('Exclude variable from aggregate. '//
-     .	         'Must be a file variable in at least '//
-     .		 'one member dataset: '// vname)
-
-	   ENDIF
-
- 1800	CONTINUE
+ 300	   CONTINUE
+	ENDDO
+*****
 
 * If no variables from the datasets match, delete this dataset. 
+	IF (nvars .EQ. 0) GOTO 5500
 
-	if (nvars .EQ. 0) goto 5500
+* For forecast aggregations, the time axis of the aggregation 
+* is not taken directly from the ensemble members.  Instead it
+* is merely a lag axis -- number of time steps and lag per step
+	IF (agg_dim .EQ. f_dim) THEN
+	   ref_grid = ds_grid_number(ref_fvars(1))
+	   IF (ref_grid .EQ. unspecified_int4) GOTO 5400
+	   memb_tax = grid_line(t_dim, ref_grid)
+	   avg_lag = ( TM_WORLD(nT, ref_grid, t_dim, box_middle )
+     .	             - TM_WORLD(1,  ref_grid, t_dim, box_middle ) )
+     .			/(nT-1)
+	   CALL TM_NEW_LINE_NAME ( 'TF_LAG_T', buff )
+	   CALL TM_MAKE_BASIC_AXIS( buff, 0.0D0, avg_lag, nT,
+     .				    tf_lag_t, status )
+	   line_unit_code(tf_lag_t) = line_unit_code(memb_tax)
+	   line_units(tf_lag_t) = un_name(line_unit_code(tf_lag_t))
+	   line_direction(tf_lag_t) = 'TT'
+	   line_dattype  (tf_lag_t) = nf_double
+	   line_dim_only (tf_lag_t) = .FALSE.  ! ?? why?
+	ENDIF
 
-* Add aggregate members to aggregate dataset
 
-	DO 2000 iset = 1, nsets
-	   status = NCF_ADD_AGG_MEMBER (agg_dset, member_sets(iset)) 
- 2000	CONTINUE
+* register the list of variables found suitable for this aggregation
+	ii = 0
+	nv = 0
+	DO WHILE (ii .LT. nvars)
+	   ii = ii + 1
+	   nv = nv + 1! kludgy: incremented just below when TF_TIMES is added
+	   ref_fvar = ref_fvars(ii)
+	   vname = ds_var_code(ref_fvar)
+	   grid = ds_grid_number(ref_fvar)
+	   CALL DEFINE_EF_AGGREGATE_GRID (agg_dset, tcoordname, nv, vname,
+     .					  ref_fvar, iline, tf_lag_t, grid,
+     .					  agg_dim, member_sets, nsets_wgaps)
+	   IF (status .NE. ferr_ok) GOTO 5000
+	ENDDO
 
-! removed 11/15 *sh* -- title is reduntantly set in CREATE_AGG_DSET
-!	IF (dtitle(1:2) .NE. char_init) THEN
-!	   ds_title(agg_dset) = dtitle
-!	ELSE
-!	   ds_title(agg_dset) = 'Ensemble'
-!	ENDIF
-!	ds_mod_title(agg_dset) = ' '
-	ds_time_axis(agg_dset) = ds_time_axis(member_sets(1))
-	ds_format(agg_dset) = ds_format(member_sets(1))
+* register member datasets to aggregate dataset
+	DO iset = 1, nsets_wgaps
+	   status = NCF_ADD_AGG_MEMBER (agg_dset, iset, member_sets(iset)) 
+	ENDDO
  
 * set use counts and clean up temporary grids and axes for agg. dset
 	CALL TM_GARB_COL_GRIDS(agg_dset)
 
-* If user requested /HIDE, then mark the member datasets for
-* hidden status on SHOW DATA commands
-	
+* If user requested /HIDE, then mark the member datasets for hidden status
 	IF (agg_hide) THEN
- 	   DO 2100 iset = 1, nsets
-	      ds_hide (iset) = .TRUE. 
- 2100	   CONTINUE
+ 	   DO iset = 1, nsets_wgaps
+	      ds_hide (member_sets(iset)) = .TRUE. 
+	   ENDDO
 	ENDIF
 
  5000   RETURN	
@@ -415,17 +337,13 @@
      
  5300	CALL ERRMSG( ferr_aggregate_error, status, ' ', *9950 )
 
- 5400	CALL ERRMSG( ferr_TMAP_error, status,
-     .		' Variables in member datasets already '
-     .		//'have axis in the E direction', *9950 )
+
+ 5400	CALL ERRMSG( ferr_aggregate_error, status,
+     .		'No time axis for aggregation',          *9960 )
 
  5500	CALL ERRMSG( ferr_aggregate_error, status,
      .		'No valid datasets or datasets share no variables. ', 
      .		*9960 )
 
- 5600	CALL ERRMSG( ferr_aggregate_error, status,
-     .		'Could not get grid for user-defined variables '
-     .		//uvar_name_code(nv)(:TM_LENSTR1(uvar_name_code(nv))), 
-     .		*9960 )
 	END
 

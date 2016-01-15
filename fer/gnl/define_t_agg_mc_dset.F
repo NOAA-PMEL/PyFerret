@@ -69,7 +69,7 @@
 	INTEGER		memb_nstep(nagfiles)
 	REAL*8		memb_tstep_start(nagfiles), memb_tstep_end(nagfiles)
 	CHARACTER*(*)	dset_name, dset_title
-	CHARACTER*128	memb_filename(nagfiles)
+	CHARACTER*512	memb_filename(nagfiles)
 
 * Parameter and common files
         include 'ferret.parm'

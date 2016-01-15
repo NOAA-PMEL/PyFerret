@@ -49,7 +49,7 @@
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V690 *sh* 1/14 document sigma and curvilinear aux var regridding
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
-* V695+  3/15 *sh* special formatting of T-F plane FMRC regridding comments
+* V698  1/16 *sh* special formatting of T-F plane FMRC regridding comments
 
         IMPLICIT NONE
 	include	'tmap_dims.parm'
@@ -147,14 +147,15 @@
 
 	      IF (cx_regrid_trans(idim,cx) .EQ. pauxrgrd_fmrc ) THEN
 * ... comment about T-F axis reorganization for FMRC data sets:
-*          "reorganized on T using 2d TIME2D field"
+*          "time series view using 2d TIME2D field"
 	         IF (idim .EQ. t_dim) THEN
      	            REGRID_COMMENTS = REGRID_COMMENTS(:mlen) //
-     .                  'reorganized on T'
+     .                  'time series view'
 	            mlen = mlen + 16
 	         ELSEIF (idim.EQ. f_dim) THEN
-     	            REGRID_COMMENTS = REGRID_COMMENTS(:mlen-1) //
-     .                  'F'
+     	            REGRID_COMMENTS = REGRID_COMMENTS(:mlen) //
+     .                  'forecast visualization view'
+	            mlen = mlen + 27
 	         ENDIF
 	      ELSE
 

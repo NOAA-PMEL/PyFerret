@@ -63,7 +63,7 @@
 	INTEGER		nagfiles, dset_num, status
 	INTEGER		memb_nstep(nagfiles)
 	REAL		memb_tstep_start(nagfiles), memb_tstep_end(nagfiles)
-	CHARACTER*128	memb_filename(nagfiles)
+	CHARACTER*512	memb_filename(nagfiles)
 
 * Parameter and common files
 

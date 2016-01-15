@@ -1,4 +1,5 @@
-	SUBROUTINE CHECK_MEMBER_SETS (nsets, member_sets, status)
+	SUBROUTINE CHECK_MEMBER_SETS (nsets, memb_dsetnames,
+     .				      member_sets, status)
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -41,6 +42,14 @@
 * V695+ *sh*  5/15 removed block of code from here to INIT_AGGREGATE_DSET
 *                  notably, the call to GET_AXIS_SPEED
 * V698+ *sh* 11/15 add ok_re_use_existing to TM_INIT_DSET call
+*            12/15 pass dataset names and nsets *into* this routine
+*	           if dataset not already open, then open it hidden
+
+* calling arguments
+*   nsets		- number of datasets to be aggregated (input)
+*   memb_dsetnames	- array of names of the datasets (input)
+*   member_sets		- array of open dataset numbers (output)
+*   status		- return status
 
         include 'tmap_errors.parm'
 #include "tmap_dset.parm"
@@ -58,23 +67,24 @@
 	include 'xdiag_ctrl.cmn_text'
 
 * calling argument declarations:
-	INTEGER nsets, member_sets(*), status
+	INTEGER nsets, member_sets(nsets), status
+	CHARACTER*(*), memb_dsetnames(nsets)
 
 * local variable declarations:
 	LOGICAL TM_DIGIT, tregular, use_strict
-	INTEGER TM_LENSTR, item, ich, buff_len, dset, iset, perm(nferdims)
+	INTEGER TM_LENSTR, i, ich, buff_len, dset, iset, perm(nferdims)
 	CHARACTER buff1*512
 
 * local parameter definitions
 	LOGICAL ok_re_use_existing
 	PARAMETER ( ok_re_use_existing = .TRUE.)
 
-	DO 100 iset = 1, maxdsets
+	DO 100 iset = 1, nsets
 	   member_sets(iset) = unspecified_int4
   100	CONTINUE
 
-	DO 110 item = 1, nferdims
-	   perm(item) = unspecified_int4
+	DO 110 i = 1, nferdims
+	   perm(i) = unspecified_int4
   110	CONTINUE
 
 * Check on the aggregate-member datasets. (code taken from xeq_set)
@@ -83,25 +93,18 @@
 	tregular = .FALSE.
 	use_strict = .FALSE.
 
-	nsets = 0
-	DO 760 item = 1, num_items
+	DO iset = 1, nsets
 
-           CALL EQUAL_STR_LC(
-     .                   cmnd_buff(item_start(item):item_end(item)),
-     .                   buff1, status ) 
-	   IF (status .NE. ferr_ok)
-     .        buff1 = cmnd_buff(item_start(item):item_end(item))
-	   IF (TM_LENSTR(buff1) .EQ. 0)
-     .        buff1 = cmnd_buff(item_start(item):item_end(item))
+	   buff1 = memb_dsetnames(iset)
+	   buff_len = TM_LENSTR(buff1)
 
 * check to see if data set was referred to by number
 * 9/95 - replaced "*" with "(I)" read from separate buffer
 	   IF ( TM_DIGIT(buff1) ) THEN
 
-	      buff_len = TM_LENSTR(buff1)
-              DO 730 ich = 1, buff_len
+              DO ich = 1, buff_len
 		IF ( .NOT. TM_DIGIT(buff1(ich:ich))) GOTO 740
- 730	      CONTINUE
+	      ENDDO
 	      READ (buff1,*) dset
 #ifdef MANDATORY_FORMAT_WIDTHS
 	      READ (buff1,*,ERR=740) dset
@@ -111,7 +114,7 @@
 * ... check for valid number given
 	      IF   ( dset .LT. 1
      .	      .OR.   dset .GT. maxdsets )		GOTO 5200
-	      IF ( ds_name( dset ) .EQ. char_init1024) GOTO 5200
+	      IF (ds_name(dset).EQ.char_init1024) GOTO 5200
 	      IF (ds_type(dset).EQ.'ENS' .OR. ds_type(dset).EQ.'FCT') GOTO 5200
 	      GOTO 750
 	   ENDIF
@@ -125,14 +128,13 @@
 	   
            IF ( status .NE. merr_no_action ) THEN  ! merr_no_action = already init'ed
 	      IF ( status .NE. ferr_ok ) GOTO 5300 ! error in file or url
-
+	      ds_hide(dset) = .TRUE.   ! hide unless previously opened
 	   ENDIF
 
  750	   CONTINUE
-	   nsets = nsets + 1
-	   member_sets(nsets) = dset
+	   member_sets(iset) = dset
 
- 760	CONTINUE
+	ENDDO
 
 	status = ferr_ok
 
@@ -148,7 +150,7 @@
 	GOTO 5000
 
  5200	CALL ERRMSG( ferr_unknown_data_set, status,
-     .		'dset '//cmnd_buff( item_start(item):item_end(item) )
+     .		'dset '//buff1(:buff_len)
      .		//' unknown or is already an aggregate dataset', *9950 )
  5300	CALL ERRMSG( ferr_TMAP_error, status, ' ', *9950 )
 

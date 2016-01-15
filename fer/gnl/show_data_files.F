@@ -54,6 +54,7 @@
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
+* V695 *sh*  12/15 For FMRCs and Ensembles show aggregation members
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -72,8 +73,9 @@
 	
 * local variable declarations:
 	INTEGER		KNOWN_GRID, TM_LENSTR1,
-     .			ivar, grid, istep, ndec, status, lskip, slen
-	CHARACTER	LEFINT*8, lo_date*20, hi_date*20, skip*8
+     .			ivar, grid, istep, ndec, status, lskip, slen,
+     .			nmemb, memb_set, nfig
+	CHARACTER	LEFINT*8, lo_date*20, hi_date*20, buff*8
 
 * special processing of EZ data sets
 	IF ( ds_type(dset) .EQ. pds_type_ez ) THEN
@@ -88,10 +90,29 @@
      .		' /COLUMNS = '//LEFINT( ds_ntuple(dset), lskip ), 0)
  5000	   RETURN
 
+* show aggregation members
+        ELSEIF (ds_type(dset) .EQ. 'ENS'
+     .    .OR.  ds_type(dset) .EQ. 'FCT') THEN
+
+* ... get number of aggregation members
+	   CALL CD_GET_AGG_DSET_INFO (dset, nmemb, status)
+	   IF (status .NE. ferr_ok) RETURN   ! should never happen
+	   CALL SPLIT_LIST(pttmode_explct, lun,
+     .		'          Aggregated datasets:', 0 )
+
+* ... loop through the aggregation members.
+	   nfig = LOG10(REAL(nmemb)) + 1
+	   DO istep = 1, nmemb
+	      CALL CD_GET_AGG_DSET_MEMBER (dset, istep, memb_set, status)
+	      IF (status .NE. ferr_ok) RETURN   ! should never happen
+	      buff = LEFINT(istep, slen )
+	      CALL SPLIT_LIST(pttmode_explct, lun,
+     .		'      '//buff(:nfig)//': '//ds_des_name(memb_set), 0 )
+	   ENDDO
+	   RETURN
+
 * nothing to show for netCDF files (4/94)
         ELSEIF (ds_type(dset) .EQ. 'CDF'
-     .    .OR.  ds_type(dset) .EQ. 'ENS'
-     .    .OR.  ds_type(dset) .EQ. 'FCT'
      .    .OR.  ds_type(dset) .EQ. 'ECDF') THEN
 	   RETURN
 	ENDIF

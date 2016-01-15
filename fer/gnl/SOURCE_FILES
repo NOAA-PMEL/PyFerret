@@ -37,6 +37,7 @@ equal_val.F\
 equal_val_int.F\
 errmsg.F\
 escape_for_xml.F\
+fill_fmrc_time_gaps.F\
 finalize.F\
 float2string_for_xml.F\
 get_dataset_name.F\
@@ -70,6 +71,7 @@ netcdf4_list_settings.F\
 netcdf4_set_list_settings.F\
 netcdf4_show_list_settings.F\
 no_journal.F\
+ok_as_agg_var.F\
 parse_comma_list.F\
 parse_command.F\
 pop_cs.F\
@@ -109,6 +111,7 @@ show_mem_vars.F\
 show_region.F\
 show_regrid_transforms.F\
 show_transforms.F\
+sort_fmrc_dsets.F\
 special_symbol.F\
 symbol_command.F\
 translate_lat_long.F\

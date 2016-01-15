@@ -50,6 +50,7 @@
 *                   in line_name_orig for CANCEL MODE UPCASE
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V685 *acm*  6/13 Increase nominal length of abstract axis
+* V698 *sh* 12/15 set up dummy (missing placeholder) dataset 
 
 	include	'tmap_dims.parm'
 	include	'tmap_errors.parm'
@@ -57,6 +58,7 @@
 	external xunits_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
+	include 'xdset_info.cmn_text'
 	include	'ferret.parm'
 	include	'xfr_grid.cmn'
 
@@ -247,7 +249,9 @@
 * save pointer to grid
 	mgrid_fabstract = igrid
 
-
+* dummy dataset
+	ds_name(pdset_dummy) = "(dummy)"
+	ds_des_name(pdset_dummy) = "(dummy)"
 
 	RETURN
 

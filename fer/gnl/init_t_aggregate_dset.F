@@ -92,25 +92,20 @@
 	INTEGER	iset, slen, max_str_len
 	INTEGER	memb_nstep(nagfiles)
 	REAL*8	memb_tstep_start(nagfiles), memb_tstep_end(nagfiles)
-	CHARACTER*128	GET_STRING_ELEMENT, memb_filename(nagfiles)
+	CHARACTER*512 GET_STRING_ELEMENT_1D_X, memb_filename(nagfiles)
 
 * initialize
 	status = ferr_ok
-	max_str_len = 128
+	max_str_len = 512
 
 * set up array of filenames
 	IF (have_expr) THEN
 *  ... filenames passed through a string variable
 	  DO iset = 1, nagfiles
-	    memb_filename(iset) = GET_STRING_ELEMENT(
-     .			1,nagfiles,
-     .                  1,1, 1,1, 1,1, 1,1, 1,1,
-     .                  mem_filename_list,iset,1,1,1,1,1,
+	    memb_filename(iset) = GET_STRING_ELEMENT_1D_X(
+     .			nagfiles,
+     .                  mem_filename_list,iset,
      .			max_str_len,slen )
-!	    memb_filename(iset) = GET_STRING_ELEMENT(
-!     .			m1lox,m1hix,m1loy,m1hiy,m1loz,m1hiz,m1lot,m1hit,
-!     .			m1loe,m1hie,m1lof,m1hif,grid_data,i,j,k,l,m,n,
-!     .			max_str_len,slen )
 	  ENDDO
 	ELSE
 *  ... filenames given by user on command line

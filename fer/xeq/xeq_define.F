@@ -2265,15 +2265,9 @@ C /units=months  is 1/12 of the length of the year
         IF ( TM_LENSTR1(buff1) .GT. 128 ) GOTO 5410
 
 ! *sh* 11/15 - As-is the parsing of the "name=item1, item2, ..."
-* syntax has no routine to support it.  Instead it is a process of trial and
-* error -- checking parsing failures to see if alternative parsing is needed
-* (see CHECK_MEMBER_LIST).  The routine NAME_EQUAL_STRING does all of the
-* work needed, but it merely returns the start position of the item list,
-* rather than modifying item_start(1).  I am reluctant to fix this cuz
-* there is so much code (?true?) that is built around the current logic
-* Note that this line alters the internal behavior of CHECK_MEMBER_LIST, but 
-* does not alter the outcome 
-        item_start(1) = pos   ! first item starts *after* the equal sign
+* The routine NAME_EQUAL_STRING parses out the "name" as the first item of
+* a list and returns the start position of the next item in the list
+        item_start(1) = pos
 
 * which syntax has been used?
 *      DEFINE DATA/AGG agname = data1, data2, data3, ...
@@ -2321,7 +2315,8 @@ C /units=months  is 1/12 of the length of the year
      .                          nagfiles, have_expr, buff1, buff2, 
      .                          t_regular, use_strict, dset, status)
         ELSE
-	   CALL INIT_EF_AGGREGATE_DSET (buff1, buff2, dset,
+	   CALL INIT_EF_AGGREGATE_DSET (memory(1, mr_blk1(mr)),
+     .                          nagfiles, have_expr, buff1, buff2, dset,
      .                          agg_quiet, agg_hide, agg_dim, status)
 
         ENDIF

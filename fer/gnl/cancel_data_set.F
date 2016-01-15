@@ -50,6 +50,7 @@
 * V685 *acm* 4/13 - If its a member of an aggregation, also close the aggregation.
 *                   Pass in whether this was "all", if so dont issue the
 *                   note for canceling a member dataset
+* V695 *sh* 12/15 - bug fix in closing parent agg when member is closed
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -75,10 +76,11 @@
      .          mlen, slen1, slen2, cset, close_it, nv, igrid, 
      .          ens_line, agg_dim, iens
 	CHARACTER*20 agg_msg
-	CHARACTER*8 TM_FMT, set1, set2
+	CHARACTER*8 TM_FMT, set1
+	CHARACTER*2048  set2
 
 
-* Recursive loop. If canceling a dset that is a member of an ensemble 
+* Nested loop. If canceling a dset that is a member of an ensemble 
 * or ensembles, we will come back here and cancel the ensemble set too.
 
 	iens = 1
@@ -163,7 +165,10 @@
 * Was the original dataset to be closed a member of an aggregation?  If so cancel 
 * the aggregation set. If we implement other aggregations, set agg_msg depending 
 * on the ds_type direction.
-
+* *** hankin 12/15: the following block of code handles the case that a given
+*      dataset may be a member of multiple aggregations, but not the case of
+*      nested aggregations, e.g. an ensemble of FMRCs.
+*      Based only upon reading through it, it appears to have bugs
 	cset = iset
 	close_it = 0
 	DO 50 i = iens, maxdsets
@@ -182,10 +187,15 @@
 		 IF (status .NE. ferr_ok) GOTO 40
 
 * Was cset a member of this aggregation? If so close the aggregation
-
-		 IF (imemb .EQ. cset) THEN 
+* *** hankin 12/15: shouldt this use membset instead of iset?:  
+		 IF (membset .EQ. cset) THEN  ! *sh* bug fix 12/15: imemb=>membset
 		    set1 = TM_FMT (float(cset), 8, 8, slen1)
-		    set2 = TM_FMT (float(i), 8, 8, slen2)
+!		    set2 = TM_FMT (float(i), 8, 8, slen2)
+! *sh* 12/15 - changed from reporting dataset numbers to dataset names
+!        admittedly imperfect change, in cases where path names are long
+!        but the dataset numbers quickly become obscure when using aggregations 
+	            set2 = ds_name(i)
+	            slen2 = TM_LENSTR1(set2)
 
 		    IF (.NOT. is_all) THEN
 		       WRITE (risc_buff, 1000) set1(:slen1), agg_msg(:mlen), 

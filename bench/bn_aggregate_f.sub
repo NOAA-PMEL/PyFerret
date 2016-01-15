@@ -1,0 +1,34 @@
+! bn_aggregate_f.sub
+
+! get names of regridding axes
+DEFINE SYMBOL tf_cal_t = `fcst._cal_t_ax`
+DEFINE SYMBOL tf_lag_f = `fcst._lag_f_ax`
+
+! native compact form
+shade/i=10/j=10 fcst
+list/i=10/j=10/order=ft/l=1:20/width=200 fcst
+
+! diagonal form
+shade/i=10/j=10 fcst[gt(tf_times)=($TF_CAL_T)@FMRC]
+list/i=10/j=10/order=ft/width=200 fcst[gt(tf_times)=($TF_CAL_T)@FMRC]
+
+! forecast evaluation form
+!shade/i=10/j=10 fcst[gt(tf_times)=($TF_CAL_T)@FMRC,gf(tf_times)=($TF_LAG_F)]
+
+
+! forecast error visualizatio
+let eval_form = fcst[gt(tf_times)=($TF_CAL_T)@FMRC,gf(tf_times)=($TF_LAG_F)]
+let err_viz_form = eval_form - eval_form[n=1]
+shade/i=10/j=10 err_viz_form
+list/i=10/j=10/order=ft/l=1:20/width=200 err_viz_form
+
+! confirm the second variable works, too
+let eval_form_2 = fcst_2[gt(tf_times)=($TF_CAL_T)@FMRC,gf(tf_times)=($TF_LAG_F)]
+let err_viz_form_2 = eval_form_2 - eval_form_2[n=1]
+list/i=10/j=10/order=ft/l=1:20/width=200 err_viz_form_2
+
+! since the N=1 values are subtracted off, the +2 offset is removed from fcst_2
+! so this should give identically zero ... except that all of the subtractions
+! lead to errors Order(e-16).  To avoid benchmark results that differ from
+! one machine to another, this is commented out
+!stat/i=10/j=10/l=1:20/brief err_viz_form_2 - err_viz_form

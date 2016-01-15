@@ -42,6 +42,7 @@
  * This is the header file to be included by routines which
  * are part of the Ferret NetCDF attribute handling library.
  * V683 10/10*acm* New NC_INTERRUPT for user-interrupt reading netCDF/OPeNDAP data
+ * V698 12/15 *sh* added aggSeqNo, the sequence number (FORTRAN index) of each dset w/in the agg 
  *
  */
 
@@ -141,6 +142,7 @@ typedef struct {			/* attribute */
 
 typedef struct {			/* aggregate member-dataset */
 	int dsetnum;			/* Ferret dataset number */
+	int aggSeqNo;			/* sequence number of dset within agg */
 } ncagg;
 
 typedef struct {			/* for var in aggregate member-dataset: */

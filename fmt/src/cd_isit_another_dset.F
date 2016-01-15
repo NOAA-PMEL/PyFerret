@@ -53,6 +53,21 @@
 
       IF ( INDEX(expression,'[') .GT. 0 ) THEN
 
+! *sh* 1/16 added warning call !!!
+!      The routine PARSE_NAM_DSET is not a simple parsing routine
+!      It builds dynamic grids if a regridding is detected.
+!      It can lead to corruption of the grid stack if called atthe wrong place
+!      The situation arises because complex strings such as
+!      "vname.attname[x=,g=,d=]" are being passed to low level routines
+! imho parsing of such strings should occur only once
+! (presumably GET_CONTEXT_MODS and GET_VAR_CONTEXT) and the results decoded
+! a "context".  e.g. add LOGICAL itsa_attribute to xcontext so that a context
+! can represent attribute values in the same way it represents other variables
+
+******
+        CALL WARN
+     .  ('Illegal call to PARSE_NAM_DSET from CD_ISIT_ANOTHER_DSET')
+******
          CALL PARSE_NAM_DSET(expression, cx_last, dset, category, 
      .                       ivar, mods_cx, status)
          IF (status .NE. ferr_ok) THEN

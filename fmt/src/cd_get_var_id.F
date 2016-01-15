@@ -47,6 +47,7 @@
 * V611  5/08 *acm* Fix bug 1578, dataset specifier on the variable var[d=1].attr
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 * V6.94 3/15 *acm* Fix ticket 2249: attribute handling for user-defined variables
+* V698 *sh* 1/16 -- added status check/warning, since not checked by callers
 
 * include files
 #include "gt_lib.parm"
@@ -149,6 +150,10 @@
          varid = 0
 	 status = merr_ok
       ENDIF
+      RETURN
 
- 5000 RETURN
+* error exit
+ 5000 IF (status .NE. atom_not_found)
+     .           CALL WARN('Error status from CD_GET_VAR_ID')
+      RETURN
       END

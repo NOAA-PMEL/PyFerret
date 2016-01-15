@@ -26,28 +26,29 @@
 *                 need tmap_dims.param with the definition of nferdims.
 * V695+ 4/15 *sh* added ds_its_aux_coord for auxiliary coordinate support
 * V695+ 5/15 *sh* added ds_var_c_cache_ptr - ptr to cached var (typ aux var)
+* V698+ 12/15 *sh* declare larger dset arrays: maxdsets ==> pdsetalloc
 
 	COMMON/XDSET_INFO/
-     .		ds_1step(maxdsets),ds_lastep(maxdsets),
-     .		ds_delstep(maxdsets),
-     .		ds_file_info_ptr(maxdsets),
+     .		ds_1step(pdsetalloc),ds_lastep(pdsetalloc),
+     .		ds_delstep(pdsetalloc),
+     .		ds_file_info_ptr(pdsetalloc),
      .		ds_var_c_cache_ptr(maxvars),
-     .		ds_type(maxdsets),ds_format(maxdsets),
-     .		ds_source_class(maxdsets),ds_source(maxdsets),
-     .		ds_subsource(maxdsets),ds_prog_rev(maxdsets),
+     .		ds_type(pdsetalloc),ds_format(pdsetalloc),
+     .		ds_source_class(pdsetalloc),ds_source(pdsetalloc),
+     .		ds_subsource(pdsetalloc),ds_prog_rev(pdsetalloc),
 **************************************************************************
-     .		ds_expnum(maxdsets),ds_modnum(maxdsets),
-     .		ds_title(maxdsets),ds_mod_title(maxdsets),
-     .		ds_forcing_set(maxdsets),ds_t0time(maxdsets),
-     .		ds_time_unit(maxdsets),ds_time_modulo(maxdsets),
-     .		ds_ntegrate_tstep(maxdsets),ds_ntuple(maxdsets),
-     .		ds_time_run(maxdsets),ds_aux_modnum(num_aux,maxdsets),
-     .		ds_parm_name(num_parm,maxdsets),
-     .		ds_parm_text(num_parm,maxdsets),
-     .		ds_cal_name(maxdsets),
+     .		ds_expnum(pdsetalloc),ds_modnum(pdsetalloc),
+     .		ds_title(pdsetalloc),ds_mod_title(pdsetalloc),
+     .		ds_forcing_set(pdsetalloc),ds_t0time(pdsetalloc),
+     .		ds_time_unit(pdsetalloc),ds_time_modulo(pdsetalloc),
+     .		ds_ntegrate_tstep(pdsetalloc),ds_ntuple(pdsetalloc),
+     .		ds_time_run(pdsetalloc),ds_aux_modnum(num_aux,pdsetalloc),
+     .		ds_parm_name(num_parm,pdsetalloc),
+     .		ds_parm_text(num_parm,pdsetalloc),
+     .		ds_cal_name(pdsetalloc),
 **************************************************************************
-     .		ds_alert_on_open(maxdsets),ds_alert_on_output(maxdsets),
-     .		ds_message(maxdsets),
+     .		ds_alert_on_open(pdsetalloc),ds_alert_on_output(pdsetalloc),
+     .		ds_message(pdsetalloc),
 **************************************************************************
      .
      .          ds_var_code_head,
@@ -68,12 +69,12 @@
 **************************************************************************
      .		min_ds_tstart,max_ds_tend,ds_tdelta,
 **************************************************************************
-     .		ds_des_name(maxdsets),ds_name(maxdsets),
-     .		ds_open(maxdsets),
-     .		ds_accepts_remote(maxdsets), 
-     .		ds_hide(maxdsets), 
-     .		ds_regsteps(maxdsets), ds_basic_axes(6,maxdsets),
-     .		ds_time_axis(maxdsets),
+     .		ds_des_name(pdsetalloc),ds_name(pdsetalloc),
+     .		ds_open(pdsetalloc),
+     .		ds_accepts_remote(pdsetalloc), 
+     .		ds_hide(pdsetalloc), 
+     .		ds_regsteps(pdsetalloc), ds_basic_axes(6,pdsetalloc),
+     .		ds_time_axis(pdsetalloc),
 **************************************************************************
      .		ds_ndataperrec(maxvars),ds_nrecpervar(maxvar2),
      .		ds_nrecb4var(maxvar2),ds_var_setnum(maxvars),

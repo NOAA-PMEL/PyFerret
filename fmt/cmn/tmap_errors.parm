@@ -21,6 +21,8 @@
 * V692 10/14*acm* New merr_time_string for errors in tm_secs_to_date
 * V697 12/15*acm* New merr_axis_att reporting errors in axis attributes, 
 *                 e.g. calendars (For ticket 2332)
+* V698 1/16 *sh* added pcd_ferr_ok in order to put status warnings into cd_*
+*                LIST processing routines that are not status checked
 
 * internally used PARAMETERS:
 	INTEGER		num_special,num_regular,pspecial,pregular,
@@ -41,11 +43,13 @@
      .			nf_interrupt	= 900)  ! match this with NC_INTERRUPT in NCF_Util.h
 
 * special errors
-	INTEGER		 merr_ok,  merr_erreq,  merr_interrupt, merr_no_action
+	INTEGER		 merr_ok,  merr_erreq,  merr_interrupt,
+     .			merr_no_action, pcd_ferr_ok
 	PARAMETER      (merr_ok		= 1 + pspecial,
      .			merr_erreq	= 1 + merr_ok,
      .			merr_interrupt	= 1 + merr_erreq,
-     .			merr_no_action	= 1 + merr_interrupt )
+     .			merr_no_action	= 1 + merr_interrupt,
+     .			pcd_ferr_ok     = 3  		) ! match ferr_ok
 
 * regular errors
 	INTEGER		merr_notsupport, merr_filpos, merr_tstep,

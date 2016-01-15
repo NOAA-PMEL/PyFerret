@@ -37,6 +37,7 @@
 * NOAA/PMEL, Seattle, WA - TMAP 
 *
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V698 *sh* 1/16 -- added status check/warning, since not checked by callers
 *
 * Given aggregate datset, variable name in the set, aggregate sequence number,
 * return the Ferret datset id, grid number and variable type for the variable 
@@ -50,6 +51,9 @@
 *   mdset    Ferret dataset number
 *   nv       sequence number in ds_var_code or uvar_name_code
 
+      INCLUDE 'tmap_errors.parm'
+
+
 * Argument declarations
 
 	CHARACTER*(*) vname
@@ -62,5 +66,6 @@
 	status = NCF_GET_AGG_VAR_INFO( agg_dset, varid, imemb, vtype, 
      .		mdset, igrid, iline, nv)
 
+	IF (status .NE. pcd_ferr_ok) CALL WARN('ERROR in CD_GET_AGG_VAR_INFO')
 	RETURN
 	END

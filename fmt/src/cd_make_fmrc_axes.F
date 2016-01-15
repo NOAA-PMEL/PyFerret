@@ -338,7 +338,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * time cell on the F axis
         nleadtimes = (nT-1)/nlag + 1
 
-	CALL TM_NEW_LINE_NAME ( 'tf_lag_f', buff )
+	CALL TM_NEW_LINE_NAME ( 'TF_LAG_F', buff )
 	CALL TM_MAKE_BASIC_AXIS( buff, 0.0D0, avg_lag,
      .			nleadtimes, axlagf, status )
 

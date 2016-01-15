@@ -42,11 +42,13 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 *
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V698 *sh* 1/16 -- added status check/warning, since not checked by callers
 *
 * include files
 
       INCLUDE "tmap_dtypes.parm"
       INCLUDE "netcdf.inc"
+      INCLUDE 'tmap_errors.parm'
 
 * Argument declarations
       LOGICAL coordvar
@@ -93,6 +95,8 @@
       dset_num = dset
       status = NCF_ADD_VAR( dset_num, varid, type, coordvar,
      .                      vhol, thol, uhol, badd)
+
+      IF (status .NE. pcd_ferr_ok) CALL WARN('ERROR in CD_ADD_VAR')
 
       RETURN
       END

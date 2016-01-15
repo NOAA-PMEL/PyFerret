@@ -24,6 +24,7 @@
 * v5.50 *acm*9/02 - up maxdsets from 30 to 100 
 *       *acm*12/02  up maxstepfiles from 500 to 1000
 * v552  *acm* 3/03  increase maxstepfiles to 5000)
+* v698  *sh* 17/12  creating hidden dataset space above maxdsets
 
 * for TMAP formatted files:
 	INTEGER	nrec_codes,ngrid_prenamed,nvari_prenamed,maxdsets,
@@ -32,13 +33,18 @@
      .		num_aux, num_parm, num_gridfiles, maxvarfiles,
      .		num_dyn_grids, max_dyn_grids, num_dyn_lines,
      .		max_dyn_lines, line_ceiling, grid_ceiling,
-     .		tmp_line_hook, tmp_grid_hook, nferdims, maxvar2
+     .		tmp_line_hook, tmp_grid_hook, nferdims, maxvar2,
+     .		pdsetalloc, pdsets_addl, pdset_dummy, pdset_global
 
 * parameters used for dimensioning arrays
 	PARAMETER (nrec_codes = 11)	! # of different record codes
 	PARAMETER (ngrid_prenamed=11)	! # of pre-defined grids
 	PARAMETER (nvari_prenamed=7)	! # of pre-named variables
 	PARAMETER (maxdsets = 100)	! maximum # of data sets simultaneously
+	PARAMETER (pdsets_addl = 2)	! addl dsets hidden above maxdsets
+	PARAMETER (pdsetalloc = maxdsets + pdsets_addl)
+	PARAMETER (pdset_dummy  = maxdsets + 1)	! dummy  (missing) dataset
+	PARAMETER (pdset_global = maxdsets + 2)	! global (phantom) dataset
 	PARAMETER (maxstepfiles = 5000)	! # of files with time step data (up from 500 12/02)
 	PARAMETER (maxvars = 2000)	! max # of ALL vars *parmchg: now
 	PARAMETER (maxvar2 = 2*maxvars)	! max # *2, for dimension equivalenced to real*8 arrays

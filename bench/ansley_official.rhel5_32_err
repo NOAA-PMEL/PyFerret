@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 86567404 Jan 11 16:54 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 86632745 Jan 20 11:15 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Fixes for time axis overlays: Hovmuller/timeseries, labels, polygons over time
+Note: recent updates: aggregations, new tests, attrib. handling fixes, gif output update
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/linux/ext_func/pylibs
-Beginning at Mon Jan 11 17:01:45 PST 2016
+Beginning at Wed Jan 20 11:20:07 PST 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3309,6 +3309,8 @@ Replacing definition of axis FAX4DAY
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
  **ERROR: unknown data set: dset 3 unknown or is already an aggregate dataset
 DEFINE DATA/AGGREGAT/E windy = 1,2,3
            *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: UWND
@@ -3322,18 +3324,16 @@ DEFINE DATA/AGGREGAT/E windy = 1,2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
            *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 5
+           *** NOTE: Dataset 3 was a member of an ensemble. Canceling ensemble, dataset my_ens
            *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
            *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets:
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets:
-           *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 5
+           *** NOTE: Dataset 3 was a member of an ensemble. Canceling ensemble, dataset fourfiles
            *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
-           *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 6
-           *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 7
+           *** NOTE: Dataset 3 was a member of an ensemble. Canceling ensemble, dataset some
+           *** NOTE: Dataset 3 was a member of an ensemble. Canceling ensemble, dataset more
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4088,6 +4088,7 @@ Replacing definition of axis XAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TDAY
@@ -4220,6 +4221,51 @@ Replacing definition of axis DAYT
 Replacing definition of axis ZAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis yax
+ LISTing to file tmp/fcst_1.nc
+ LISTing to file tmp/fcst_2.nc
+ LISTing to file tmp/fcst_3.nc
+ LISTing to file tmp/fcst_4.nc
+ LISTing to file tmp/fcst_5.nc
+ LISTing to file tmp/fcst_6.nc
+ LISTing to file tmp/fcst_7.nc
+ LISTing to file tmp/fcst_8.nc
+ LISTing to file tmp/fcst_9.nc
+ LISTing to file tmp/fcst_10.nc
+ LISTing to file tmp/fcst_11.nc
+ LISTing to file tmp/long_fcst_1.nc
+ LISTing to file tmp/long_fcst_6.nc
+ LISTing to file tmp/one_var_fcst_1.nc
+ LISTing to file tmp/one_var_fcst_6.nc
+ LISTing to file tmp/consecutive_month_fcst.nc
+Replacing definition of axis TRUEMONTH
+ LISTing to file tmp/irregular_start_time_fcst.nc
+           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
+           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+           *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC]
+           *** NOTE: Ambiguous coordinates on F axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC]
+           *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
+           *** NOTE: Ambiguous coordinates on F axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
+           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+ **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
+DEFINE DATA/AGGREGAT/F my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc,tmp/fcst_2.nc,tmp/fcst_3.nc
+ **TMAP ERR: non-existent or not on line
+             tmp/no_exist.nc
+DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/no_exist.nc")
+ **ERROR: error defining aggregate dataset: forecast start times are irregular or too gappy
+DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/consecutive_month_fcst.nc")
+ **ERROR: error defining aggregate dataset: forecast start times are irregular or too gappy
+DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/irregular_start_time_fcst.nc")
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4294,6 +4340,8 @@ Replacing definition of axis TDAYS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -4325,4 +4373,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Jan 11 17:04:50 PST 2016
+Ended at Wed Jan 20 11:23:14 PST 2016

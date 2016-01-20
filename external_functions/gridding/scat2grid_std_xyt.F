@@ -36,6 +36,7 @@
 *
 * Ansley Manke
 * April 2011
+* 1/16/2016 Correctly work with irregular grids
 
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -170,7 +171,7 @@
 *
 * ef_set_work_array_dims(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
 *
-      INTEGER nxout, nyout, ntout, nx2, ny2, nt2, i, k
+      INTEGER nxout, nyout, ntout, i, k
       INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
      .     arg_incr(4,1:EF_MAX_ARGS)
 
@@ -180,24 +181,20 @@
       nyout = 1 + arg_hi_ss(Y_AXIS,ARG6) - arg_lo_ss(Y_AXIS,ARG6)
       ntout = 1 + arg_hi_ss(T_AXIS,ARG7) - arg_lo_ss(T_AXIS,ARG7)
 
-      nx2 = nxout* 2
-      ny2 = nyout* 2
-      nt2 = ntout* 2
-
 * xaxlo  output x axis
-      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, nx2, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, nxout, 1, 1, 1)
 * xaxhi  output x axis
-      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, nx2, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, nxout, 1, 1, 1)
 
 * yaxlo  output y axis
-      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, ny2, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, nyout, 1, 1, 1)
 * yaxhi  output y axis
-      CALL ef_set_work_array_dims (id, 4, 1, 1, 1, 1, ny2, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 4, 1, 1, 1, 1, nyout, 1, 1, 1)
 
 * taxlo  output t axis
-      CALL ef_set_work_array_dims (id, 5, 1, 1, 1, 1, nt2, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 5, 1, 1, 1, 1, ntout, 1, 1, 1)
 * taxhi  output t axis
-      CALL ef_set_work_array_dims (id, 6, 1, 1, 1, 1, nt2, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 6, 1, 1, 1, 1, ntout, 1, 1, 1)
 
 * counts
       k = 2
@@ -261,18 +258,12 @@
 
 *  Dimension the work arrays
 
-      REAL*8 xaxlo(wrk1lox:wrk1hix/2, wrk1loy:wrk1hiy,
-     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-      REAL*8 xaxhi(wrk2lox:wrk2hix/2, wrk2loy:wrk2hiy,
-     .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
-      REAL*8 yaxlo(wrk3lox:wrk3hix/2, wrk3loy:wrk3hiy,
-     .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
-      REAL*8 yaxhi(wrk4lox:wrk4hix/2, wrk4loy:wrk4hiy, 
-     .               wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
-      REAL*8 taxlo(wrk5lox:wrk5hix/2, wrk5loy:wrk5hiy,
-     .               wrk5loz:wrk5hiz, wrk5lot:wrk5hit)
-      REAL*8 taxhi(wrk6lox:wrk6hix/2, wrk6loy:wrk6hiy,
-     .               wrk6loz:wrk6hiz, wrk6lot:wrk6hit)
+      REAL*8 xaxlo(wrk1lox:wrk1hix)
+      REAL*8 xaxhi(wrk2lox:wrk2hix)
+      REAL*8 yaxlo(wrk3lox:wrk3hix)
+      REAL*8 yaxhi(wrk4lox:wrk4hix)
+      REAL*8 taxlo(wrk5lox:wrk5hix)
+      REAL*8 taxhi(wrk6lox:wrk6hix)
       REAL counts(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
      .              wrk7loz:wrk7hiz, wrk7lot:wrk7hit) 
 
@@ -285,7 +276,6 @@
 
       REAL x1, y1, xf, yf, tol, diff
       REAL xx, yy, tt, ff, c, fac
-      REAL xmin, xdel, ymin, ydel, tmin, tdel
 
       CHARACTER*250 errtxt
 
@@ -310,29 +300,29 @@
       nypts = 0
       ntpts = 0
 
-      DO 100 m = X_AXIS, T_AXIS
+      DO 110 m = X_AXIS, T_AXIS
          IF (arg_lo_ss(m,ARG1) .GE. 1) THEN
             i1 = arg_lo_ss(m,ARG1)
             i1n = arg_hi_ss(m,ARG1)
             if (i1n-i1 .NE. 0) nxpts = 1 + (i1n - i1)
          ENDIF
- 100  CONTINUE
+ 110  CONTINUE
 
-      DO 110 m = X_AXIS, T_AXIS
+      DO 120 m = X_AXIS, T_AXIS
          IF (arg_lo_ss(m,ARG2) .GE. 1) THEN
             i2 = arg_lo_ss(m,ARG2)
             i2n = arg_hi_ss(m,ARG2)
             if (i2n-i2 .NE. 0) nypts = 1 + (i2n - i2)
          ENDIF
- 110  CONTINUE
+ 120  CONTINUE
 
-      DO 120 m = X_AXIS, T_AXIS
+      DO 130 m = X_AXIS, T_AXIS
          IF (arg_lo_ss(m,ARG3) .GE. 1) THEN
             i2 = arg_lo_ss(m,ARG3)
             i2n = arg_hi_ss(m,ARG3)
             if (i2n-i2 .NE. 0) ntpts = 1 + (i2n - i2)
          ENDIF
-120   CONTINUE
+130   CONTINUE
 
       IF (nxpts .NE. nypts .OR. nxpts .EQ. 0) GOTO 900
       IF (nxpts .NE. ntpts) GOTO 900
@@ -378,15 +368,7 @@ C  Get coordinates of output axes.
 
       CALL EF_GET_BOX_LIMITS(id, ARG7, T_AXIS,
      .   arg_lo_ss(T_AXIS, ARG7), arg_hi_ss(T_AXIS, ARG7), taxlo, taxhi)
-
-      xmin = xaxlo(1,1,1,1)
-      xdel = xaxhi(1,1,1,1) - xmin
-      ymin = yaxlo(1,1,1,1)
-      ydel = yaxhi(1,1,1,1) - ymin
-      tmin = taxlo(1,1,1,1)
-      tdel = taxhi(1,1,1,1) - tmin
  
-
 *  Compute result
 
 *  Initialize result.
@@ -425,21 +407,40 @@ C  Get coordinates of output axes.
 *  of the scattered point.
 
            IF  (modulox(1) .AND. xx.NE.bad_flag(ARG1))
-     .         CALL modscatminmax (xaxlo(1,1,1,1), xaxhi(nx,1,1,1), 1, xx)
+     .         CALL modscatminmax (xaxlo(1), xaxhi(nx), 1, xx)
 
 *  Put fcn into result variable.
 
            k = res_lo_ss(Z_AXIS)
+
            IF (ff .NE. bad_flag(ARG4)) THEN
 
-              i = INT(0.5+(xx - xmin)/xdel)
-              j = INT(0.5+(yy - ymin)/ydel)
-              l = INT(0.5+(tt - tmin)/tdel)
+           l1 = 1
+           DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+              IF ( tt .GE. taxlo(l1) .AND. tt .LT. taxhi(l1) ) THEN
 
-              IF ( L.GE.res_lo_ss(T_AXIS) .AND. L.LE.res_hi_ss(T_AXIS) ) THEN
+           j1 = 1
+           DO 200 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+              IF ( yy .GE. yaxlo(j1) .AND. yy .LT. yaxhi(j1) ) THEN
+
+           i1 = 1
+           DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+              IF ( xx .GE. xaxlo(i1) .AND. xx .LT. xaxhi(i1) ) THEN
+
                  result(i,j,k,L) = result(i,j,k,L) + ff
                  counts(i,j,1,L) = counts(i,j,1,L) + 1.0 
               ENDIF
+
+           i1 = i1 + 1
+ 100       CONTINUE
+
+           ENDIF
+           j1 = j1 + 1
+ 200       CONTINUE
+
+           ENDIF
+           l1 = l1 + 1
+ 400       CONTINUE
 
            ENDIF  ! ff not bad
 
@@ -454,7 +455,7 @@ C  Get coordinates of output axes.
             l1 = 1
             DO 600 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
-               IF( counts(i,j,1,L) .GT. 1. ) THEN
+               IF( counts(i,j,1,L) .GT. 0. ) THEN
                   result(i,j,k,l) = result(i,j,k,l)/counts(i,j,1,L)
                ELSE
                   result(i,j,k,l) = bad_flag_result
@@ -482,29 +483,45 @@ C  Get coordinates of output axes.
 *  of the scattered point.
 
             IF  (modulox(1) .AND. xx.NE.bad_flag(ARG1))
-     .         CALL modscatminmax (xaxlo(1,1,1,1), xaxhi(nx,1,1,1), 1, xx)
+     .         CALL modscatminmax (xaxlo(1), xaxhi(nx), 1, xx)
 
 *  Accumulate obs-mean in cells; using counts[k=2]
 
-         IF (ff .NE. bad_flag(ARG4)) THEN
-            
+	 
+*  Put fcn into result variable.
 
-           i = INT(0.5+(xx - xmin)/xdel)
-           j = INT(0.5+(yy - ymin)/ydel)
-           l = INT(0.5+(tt - tmin)/tdel)
-           IF ( L.GE.res_lo_ss(T_AXIS) .AND. L.LE.res_hi_ss(T_AXIS) ) THEN
+            k = res_lo_ss(Z_AXIS)
 
-	      IF (result(i,j,k,l) .NE. bad_flag_result) THEN
-                 IF (tt.GE.taxlo(l1,1,1,1) .AND.
-     .               tt.LT.taxhi(l1,1,1,1) .AND.
-     .               result(i,j,k,l) .NE. bad_flag_result) THEN
-                    diff = ff - result(i,j,k,l)
-                    counts(i,j,2,L) = counts(i,j,2,L) + diff*diff
-                 ENDIF
-	      ENDIF
-           ENDIF
+            IF (ff .NE. bad_flag(ARG4)) THEN
 
-         ENDIF  ! ff not bad
+            l1 = 1
+            DO 1400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+               IF ( tt .GE. taxlo(l1) .AND. tt .LT. taxhi(l1) ) THEN
+
+            j1 = 1
+            DO 1200 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+               IF ( yy .GE. yaxlo(j1) .AND. yy .LT. yaxhi(j1) ) THEN
+
+            i1 = 1
+            DO 1100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+               IF ( xx .GE. xaxlo(i1) .AND. xx .LT. xaxhi(i1)  .AND.
+     .              result(i,j,k,l) .NE. bad_flag_result) THEN
+                  diff = ff - result(i,j,k,l)
+                  counts(i,j,2,L) = counts(i,j,2,L) + diff*diff
+               ENDIF
+
+            i1 = i1 + 1
+ 1100       CONTINUE
+
+            ENDIF
+            j1 = j1 + 1
+ 1200       CONTINUE
+
+            ENDIF
+            l1 = l1 + 1
+ 1400       CONTINUE
+
+            ENDIF  ! ff not bad
 
 800   CONTINUE
 

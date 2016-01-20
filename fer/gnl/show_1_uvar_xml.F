@@ -47,12 +47,14 @@
 *                  with &lt; etc.
 * V650  Write to lun which may be set to a file unit number rather than std out
 * V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
+* V67  *acm* 2/16 Fixes for getting extra attributes that may have been assigned
 
         include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include	'ferret.parm'
 	include	'xvariables.cmn'
+	include	'xcontext.cmn'
 	include	'xrisc.cmn'
 	include 'xprog_state.cmn'
         include 'errmsg.parm'
@@ -171,7 +173,14 @@
 
 * All attributes not already listed.
  
-	dset = 0
+	dset = pdset_uvars
+	CALL CD_GET_VAR_ID (dset, vname, varid, status)
+	IF (status .NE. ferr_ok) THEN
+	    dset = cx_data_set(cx_last) 
+	    CALL CD_GET_VAR_ID (dset, vname, varid, status)
+        ENDIF
+	IF (status .NE. ferr_ok) GOTO 1000
+
 	CALL CD_GET_VAR_INFO (dset, varid, vname, vtype, nvdims, 
      .            vdims, nvatts, coordvar, all_outflag, status)
 	IF (status .NE. ferr_ok) GOTO 1000

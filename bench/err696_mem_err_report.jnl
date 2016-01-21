@@ -1,0 +1,39 @@
+! err696_mem_err_report.jnl
+! 1/21/2016 *acm*
+! Ticket 2354: The error message shows the wrong number for memory needed.
+!
+! Try to load some data larger than the default amount of memory
+
+let memsize = ($ferret_memory)
+set mem/siz=2
+
+
+def axis/x=1:360:1 xaxis
+def axis/y=1:180:1 yaxis
+def axis/z=1:20:1 zaxis
+define axis/t=1-jan-2000:1-jan-2005:1/units=days  longtime
+
+let bigvar = x[gx=xaxis]+y[gy=yaxis] + z[gz=zaxis] + t[gt=longtime]
+sh grid bigvar
+
+
+set mode ignore
+load/l=1:5 bigvar
+
+! Previously the number Mwords shown was too low
+show sym fer_last_error
+cancel mode ignore
+
+! Get the number Ferret says it needs
+let ms1 = `strrindex("($fer_last_error)", ":")`
+let ms2 = `strindex("($fer_last_error)", "Mword")`
+let siz = substring("($fer_last_error)", `ms1+1`, `ms2-ms1-1`)
+
+! Increase memory accordingly
+
+set mem/siz=`siz`
+load/l=1:5 bigvar
+
+! restore default
+set mem/siz=`memsize`
+

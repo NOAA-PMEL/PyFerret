@@ -61,6 +61,8 @@
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V685 *acm*  6/13 Increase nominal length of abstract axis
 * V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
+* V697 *acm*  1/16 Ticket 2354. Never adjusted for double-precision Ferret. Also
+*                  round up the integer value of needed Mwords shown.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -143,7 +145,7 @@
 	RETURN
  5200	CONTINUE
         rgrid_blocks = FLOAT(mem_blk_size)* FLOAT(grid_blocks)/ 1.e6
-	num_str = LEFINT(INT(rgrid_blocks),num_slen)
+	num_str = LEFINT(CEILING(2.*rgrid_blocks),num_slen)
 
 	CALL ERRMSG( ferr_insuff_memory,status,
      .	  num_str(:num_slen)//' Mwords were requested. ', *5130)

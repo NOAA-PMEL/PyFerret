@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 86632745 Jan 20 11:15 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 86632745 Jan 21 11:35 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: recent updates: aggregations, new tests, attrib. handling fixes, gif output update
+Note: fix ticket 2354: error message about inadequate memory
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/linux/ext_func/pylibs
-Beginning at Wed Jan 20 11:20:07 PST 2016
+Beginning at Thu Jan 21 11:47:40 PST 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -338,7 +338,7 @@ list tu
  **ERROR: regridding: Axis orientation not matching request:GX=PSYU
 list tu
  Cached data cleared from memory
- **ERROR: request exceeds memory setting: 25 Mwords were requested.
+ **ERROR: request exceeds memory setting: 50 Mwords were requested.
 list temp[gz=z999999,z=5:15]
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
@@ -587,14 +587,14 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
- **ERROR: request exceeds memory setting: 24000 Mwords were requested.
+ **ERROR: request exceeds memory setting: 48000 Mwords were requested.
 load num
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
- **ERROR: request exceeds memory setting: 1000 Mwords were requested.
+ **ERROR: request exceeds memory setting: 2000 Mwords were requested.
 load num
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
@@ -3729,12 +3729,12 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XAXIS
- **ERROR: request exceeds memory setting: 2369 Mwords were requested.
+ **ERROR: request exceeds memory setting: 4739 Mwords were requested.
 load bigvar
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis LONGTIME
- **ERROR: request exceeds memory setting: 4735 Mwords were requested.
+ **ERROR: request exceeds memory setting: 9472 Mwords were requested.
 load bigvar
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
@@ -4091,6 +4091,16 @@ Replacing definition of axis XAX
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ Cached data cleared from memory
+Replacing definition of axis LONGTIME
+ **ERROR: request exceeds memory setting: 13 Mwords were requested.
+load/l=1:5 bigvar
+           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
+           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
+ Cached data cleared from memory
+ Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_1.nc
  LISTing to file tmp/tagg_reg_2.nc
@@ -4373,4 +4383,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jan 20 11:23:14 PST 2016
+Ended at Thu Jan 21 11:51:07 PST 2016

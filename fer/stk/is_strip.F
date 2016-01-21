@@ -92,7 +92,7 @@
 
 * internal variable declarations:
 	LOGICAL	ITSA_MODULO_REGRID, TM_ITS_SUBSPAN_MODULO, NC_GET_ATTRIB,
-     .		NC_GET_ATTRIB_STRING, ITSA_MODULO_AXIS,
+     .		NC_GET_ATTRIB_STRING, ITSA_MODULO_AXIS, TM_SAME_GRID_DEF,
      .		itsa_uvar, modulo_dest_regrid, allatonce, attoutflag, 
      .		got_it
 	INTEGER	CGRID_SIZE_MAX, CAXIS_LEN, CAXIS_MODLEN, CX_DIM_LEN, 
@@ -170,7 +170,7 @@
 
 * confirm grid has not changed since stored during DEFINE DATA/AGG
 	   hi_grid = KNOWN_GRID(memb_dset, hi_cat, hi_var)
-	   IF (hi_grid .NE. orig_grid) CALL ERRMSG(
+	   IF (.NOT.TM_SAME_GRID_DEF(hi_grid,orig_grid)) CALL ERRMSG(
      .		ferr_aggregate_error, status,
      .		'coordinate grid of '// vname(:vlen)//
      .		' has changed in agg member '//LEFINT(imemb,slen), *5000)

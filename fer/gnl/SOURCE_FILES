@@ -8,6 +8,7 @@ atom_pos.F\
 auto_filename.F\
 build_t_agg_axis.F\
 cancel_data_set.F\
+cancel_one_data_set.F\
 cdf_list.F\
 cdf_list_global_atts.F\
 check_format.F\
@@ -55,6 +56,7 @@ init_memory.F\
 init_t_aggregate_dset.F\
 init_t_agg_mc_dset.F\
 initialize.F\
+is_agg_member.F\
 isit_const_arr_var.F\
 isit_coord_var.F\
 line_facts.F\

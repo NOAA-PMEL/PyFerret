@@ -1,4 +1,4 @@
-	RECURSIVE SUBROUTINE CANCEL_DATA_SET( dset, status )
+	LOGICAL FUNCTION IS_AGG_MEMBER( dset, parent, nparent )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -33,20 +33,17 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* close a dataset
-* remove from memory any cached data that may depend upon this dataset
-* if the dataset is a part of an E or F aggregations refuse to close
-* unless all datasets are being closed (slash/all)
-
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* V695 *sh* 1/16 - bulk of logic moved to CANCEL_ONE_DATA_SET 
+* is the indicated dataset part of some other aggregated dataset
+!**** NOTE:  THIS ROUTINE (and many others) SHOULD USE THE dset
+!****      LIST STRUCTURE RATHER THAN BRUTE-FORCE LOOPS THROUGH ALL DATASETS
 
 * calling arguments
-*  dset      -  (input) dataset number to be closed
-*  status    - (output) return status
+*   dset    - the dataset to be checked to see if it is used in an agg (input)
+*   parent  - the last agg that owns it (or unspecified_int4 if none) (output)
+*   nparent - the number of aggs for which this dataset is a member
+
+* programmer - steve hankin
+* V695 *sh* 1/16
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -62,60 +59,40 @@
 	external xgt_grid_data
 
 * calling argument declarations:
-	INTEGER	dset, status
+	INTEGER	dset, parent, nparent
 
 * local variable declarations:
-	LOGICAL	IS_AGG_MEMBER, is_member
-	INTEGER	one_set_status, parent, nparent, imemb, nmemb, membset
- 
+	INTEGER	nmemb, imemb, membset, iset, status
+
+
 * initialize
-	status = ferr_ok
-	IF (ds_name(dset) .EQ. char_init1024) RETURN  ! already deleted
+	nparent = 0
 
-* is the requested dataset part of an aggregation?
-* If so, this is an implicit request to (recursively) cancel the parent, too
-* Remember that E aggs can be members of F aggs and visa versa
- 100	IF ( IS_AGG_MEMBER(dset, parent, nparent) ) THEN
-	   CALL WARN('Dataset used in aggregation.  '//
-     .		     'Canceling aggregation, '//ds_name(parent))
-	   CALL CANCEL_DATA_SET(parent, status)
-	   IF (status .NE. ferr_ok) GOTO 5000
-	   IF (nparent .GT. 1) GOTO 100
-	ENDIF
+* check all of the aggregations currently open
+	DO iset = 1, maxdsets
+	   IF ( ds_name(iset) .EQ. char_init1024) CYCLE
+	   IF (iset .EQ. dset) CYCLE
+	   IF ( ds_type(iset).NE.'ENS' .AND. ds_type(iset).NE.'FCT') CYCLE 
 
-* delete all user defined data from memory for similar reasons
-* (note: this is unnecessarily strict - could be refined in the future)
-	CALL PURGE_ALL_UVARS
-
-* if this dataset is an aggregation, cancel hidden member datasets, too
-* unless they are also members in some other aggregation
-	IF (ds_type(dset).EQ.'ENS' .OR. ds_type(dset).EQ.'FCT') THEN
-
-* ... loop over aggregation members
-	   CALL CD_GET_AGG_DSET_INFO (dset, nmemb, status)
+* Get number of aggregation members
+	   CALL CD_GET_AGG_DSET_INFO (iset, nmemb, status)
 	   IF (status .NE. ferr_ok) CALL WARN('crptn: isit_agg_member')
-	   DO imemb = 1, nmemb
-	      CALL CD_GET_AGG_DSET_MEMBER (dset, imemb, membset, status)
-	      IF (status .NE. ferr_ok)  CALL WARN('crptn: cancel_data_set')
-	      IF (ds_name(membset) .EQ. char_init1024) CYCLE ! already deleted?
 
-* ... if not a member of some other aggregation: cancel the hidden member
-	      is_member = IS_AGG_MEMBER(membset, parent, nparent)
-	      IF ( nparent .LE. 1 ) THEN
-	         IF (ds_hide(membset)) CALL CANCEL_ONE_DATA_SET
-     .							(membset, status)
-	         IF (status .NE. ferr_ok) GOTO 5000
+* Look through the aggregation members to see if we are one of them
+	   DO imemb = 1, nmemb
+	      CALL CD_GET_AGG_DSET_MEMBER (iset, imemb, membset, status)
+	      IF (status .NE. ferr_ok)  CALL WARN('crptn: isit_agg_member')
+	      IF (membset .EQ. dset) THEN
+	         nparent = nparent + 1
+	         parent = iset   ! the last one found will be returned
+	         IS_AGG_MEMBER = .TRUE.
 	      ENDIF
 	   ENDDO
-	ENDIF
+	ENDDO
+	IF (nparent .GT. 0) RETURN
 
-* finally cancel the requested dataset
-	CALL CANCEL_ONE_DATA_SET(dset, status)
-	IF (status .NE. ferr_ok) GOTO 5000
-
-* success
-        RETURN
-
-* error exits
- 5000	RETURN
+* not a member of any aggregation
+	parent = unspecified_int4
+	IS_AGG_MEMBER = .FALSE.
+	RETURN
 	END

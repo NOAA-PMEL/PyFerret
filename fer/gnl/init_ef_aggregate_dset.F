@@ -113,7 +113,7 @@
 
 * local variable declarations:
 	LOGICAL	OK_AS_AGG_VAR, match, has_uvars
-	INTEGER	TM_LENSTR, TM_LENSTR1, STR_SAME, NCF_DELETE_DSET,
+	INTEGER	TM_LENSTR, TM_LENSTR1, STR_SAME,
      .		NCF_ADD_AGG_MEMBER, NCF_GET_AGG_MEMBER_INFO, 
      .          KNOWN_GRID,
      .		iset, dset1, item, ii, nT, max_str_len,
@@ -123,7 +123,7 @@
      .		type, fvar, ndims, ngatts, recdim, varid, attoutflag,
      .          tf_lag_t, memb_tax,
      .		ref_grid, ref_fvar, ref_fvars(pmaxvarsperset),
-     .		num_indices, j, jj
+     .		num_indices, j, jj, ignore_status
 	CHARACTER buff*64, tcoordname*16
 	CHARACTER TM_STRING*13
 	CHARACTER*512 GET_STRING_ELEMENT_1D_X, memb_dsetname(nsets)
@@ -134,6 +134,9 @@
 	tf_lag_t = unspecified_int4  ! lag time axis if FMRC
 	max_str_len = 512
 	nsets_wgaps = nsets
+	DO iset = 1, nsets+pmaxgaps
+	   member_sets(iset) = pdset_dummy
+	ENDDO
 
 * check to see if this new dataset name matches an already-open dataset name.
 * if so, thats an error
@@ -317,7 +320,21 @@
 	   ENDDO
 	ENDIF
 
- 5000   RETURN	
+* successful completion
+	RETURN
+
+* error bail out
+* remove all hidden member datasets of the failed aggregation
+* ... this is a little brute force in that it may cancel a previously opened
+* ... dataset included using DEFINE DATA/AGG/HIDE (havnt checked carefully)
+ 5000	DO ii = 1, nsets_wgaps
+	   iset = member_sets(ii)
+	   IF (iset .EQ. pdset_dummy
+     .    .OR. iset .EQ. unspecified_int4) CYCLE
+	   IF (ds_name(iset) .EQ. char_init1024) CYCLE ! already deleted
+	   IF (ds_hide (iset)) CALL CANCEL_ONE_DATA_SET( iset, ignore_status )
+	ENDDO
+	RETURN	
 
 * Errors: too-many datasets open so aggregate dataset can't be opened,
 * or error on a member dataset. 
@@ -327,7 +344,7 @@
  9950	agg_dset = unspecified_int4
 	status = ferr_TMAP_error
 	GOTO 5000
- 9960	CALL CANCEL_DATA_SET( agg_dset, .FALSE., status )
+ 9960	CALL CANCEL_DATA_SET( agg_dset, ignore_status )
 	agg_dset = unspecified_int4
 	GOTO 5000
 

@@ -79,7 +79,7 @@
 
 * Getting info back from the attribute-handling structure
 	CHARACTER dimname*128, buff*128, name1*128
-	INTEGER varid, t2did, tline, g2d
+	INTEGER varid, t2did, tline, g2d, globalid
 
 * initialize
       tline = unspecified_int4
@@ -90,7 +90,7 @@
       igrid = unspecified_int4
       IF (grid .NE. unspecified_int4) THEN
          igrid = 0
-         CALL TM_NEXT_TMP_GRID (igrid, 710)
+         CALL TM_NEXT_TMP_GRID (igrid, 710)   ! this line is unnecessary
   710    CALL TM_ALLO_TMP_GRID (igrid, status)
          IF (status .NE. ferr_ok) GOTO 5000
 
@@ -165,7 +165,7 @@
 * If this is a forecast aggregation, then the 2D time var has been defined (or 
 * will be, just below). Add a coordinates attribute to variables in the FMRC 
 * dataset which now have a 2D forecast-time coordinate variable. 
-* Also add an attribute (name to be finalized), _ftime2dRef pointing to TIME2D
+* Also add an attribute (name to be finalized), _ftime2d pointing to TIME2D
 	      
 	IF (agg_dim.EQ.f_dim .AND. grid_line(t_dim, gnum).NE.int4_init) THEN
 	   buff = " "
@@ -192,7 +192,7 @@
 	   slen = TM_LENSTR1(tcoordname)
 	   attoutflag = 1
 	   attype = NCCHAR
-	   CALL CD_PUT_NEW_ATTR (agg_dset, varid, '_ftime2dRef', attype, 
+	   CALL CD_PUT_NEW_ATTR (agg_dset, varid, '_ftime2d', attype, 
      .             slen, attoutflag, tcoordname, 0., status )
 
 	ENDIF
@@ -236,6 +236,11 @@
 	               igrid = uvar_grid(nv,iset)
 	               CALL CD_ADD_AGG_VAR_INFO (agg_dset, vname, ii, vtype, 
      .                   iset, igrid, iline, nv, status)
+* ... bump the use count for this grid to protect it from being deleted if
+*     the user changes the LET/D definition -- grid is needed during the
+*     gather process (IS_STRIP & IS_AGGREGATE_GATHER).
+*  ==> be sure to un-use it when the aggregation gets canceled
+	               CALL TM_USE_DYN_GRID(igrid)
 	               EXIT
 	            ENDIF
 	         ENDDO
@@ -504,6 +509,23 @@
      .					nF, axcalt, status)
 	   IF (status .NE. merr_ok) GOTO 5000
 
+* ... assign global attributes pointing to the special F-aggregatoinaxes
+*    (CF requires variable attributes, but they are helpful as globals, too)
+	   CALL CD_GET_VAR_ID (agg_dset, '.', globalid, status)
+	   slen = TM_LENSTR1(line_name(axcalt))
+	   attoutflag = 1
+	   attype = NCCHAR
+	   CALL CD_PUT_NEW_ATTR (agg_dset, globalid, '_cal_t_ax', attype, 
+     .             slen, attoutflag, line_name(axcalt), 0., status )
+	   CALL CD_PUT_NEW_ATTR (agg_dset, globalid, '_lag_f_ax', attype, 
+     .             slen, attoutflag, line_name(axlagf), 0., status )
+
+* make the 2 special Forecast axes non-temporary and set use counts to 1
+	   CALL TM_RE_ALLO_TMP_LINE(axcalt)
+	   CALL TM_USE_LINE(axcalt)
+	   CALL TM_RE_ALLO_TMP_LINE(axlagf)
+	   CALL TM_USE_LINE(axlagf)
+
 	ENDIF  ! end of forecast aggregation special coordinate creation
 
 
@@ -514,13 +536,10 @@
 	   attype = NCCHAR
 	   CALL CD_PUT_NEW_ATTR (agg_dset, varid, '_cal_t_ax', attype, 
      .             slen, attoutflag, line_name(axcalt), 0., status )
-
-	   slen = TM_LENSTR1(line_name(axlagf))
-	   attoutflag = 1
-	   attype = NCCHAR
 	   CALL CD_PUT_NEW_ATTR (agg_dset, varid, '_lag_f_ax', attype, 
      .             slen, attoutflag, line_name(axlagf), 0., status )
 	ENDIF
+
 
  5000	RETURN
  5100	CALL ERRMSG(ferr_insuff_memory,status,

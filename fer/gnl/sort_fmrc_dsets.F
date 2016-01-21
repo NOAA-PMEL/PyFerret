@@ -157,7 +157,10 @@
 	      IF (ABS((gap-ngap)/ngap) .GT. epsilon) GOTO 5200
 	      ngap = ngap - 1		 ! now  ngap=0 means nothing missing
 	      nsets_out = nsets_out + ngap
-	      IF (nsets_out .GT. maxmembers)	      GOTO 5200
+	      IF (nsets_out .GT. maxmembers) THEN
+	         nsets_out = maxmembers   ! needed to clean up files after err
+	         GOTO 5200
+	      ENDIF
 *     ... open the gap
 	      DO i = nsets_out, iset+ngap, -1
 	         member_sets(i) = member_sets(i-ngap)

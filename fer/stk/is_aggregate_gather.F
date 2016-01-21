@@ -68,7 +68,7 @@
 *	 isp	<--	current stack level (for gathering )
 
 * internal variable declarations:
-	LOGICAL	NC_GET_ATTRIB, NC_GET_ATTRIB_STRING,
+	LOGICAL	NC_GET_ATTRIB, NC_GET_ATTRIB_STRING, TM_SAME_GRID_DEF,
      .		attoutflag, got_it, itsa_dummy
 	INTEGER NCF_GET_ATTR_FROM_ID, TM_LENSTR1, STR_SAME, KNOWN_GRID,
      .		com_mr, res_mr, com_cx, res_cx,	com_isp, res_isp,
@@ -169,7 +169,7 @@
 
 * grid must not have changed since DEFINE DATA/AGG
 	com_grid = KNOWN_GRID(memb_dset, com_cat, com_var)
-	IF (com_grid .NE. orig_grid) CALL ERRMSG(
+	IF (.NOT.TM_SAME_GRID_DEF(com_grid,orig_grid)) CALL ERRMSG(
      .		ferr_aggregate_error, status,
      .		'coordinate grid of '// vname(:vlen)//
      .		' has changed in agg member '//LEFINT(imemb,slen), *5000)

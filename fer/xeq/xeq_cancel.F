@@ -144,6 +144,7 @@
 * V690 *sh* 1/14 add CAN VAR/LAYERZ
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * V695 *acm*  9/15 Fix #2317: length of name sent to FIND_DSET_NUMBER
+* V698 *sh*  1/16 aggregation logic moved inside of CANCEL_DATA_SET
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -373,7 +374,10 @@
 	         ENDIF
 	      ENDIF
 
- 705	      CALL CANCEL_DATA_SET( iset, slash_all, status )
+*  ... this may also cancel parent aggregations that use this dataset
+*      and if an aggregation, hidden agg members 
+ 705	      CALL CANCEL_DATA_SET( iset, status )  
+
  710	   CONTINUE
 * ... if only one set remains then point to it
 	   iset = unspecified_int4
@@ -388,17 +392,14 @@
 	   cx_data_set( cx_last ) = iset
 
 	ELSEIF ( slash_all ) THEN
-* First cancel any ensemble sets
-	   DO 718 iset = 1, maxdsets
-	      IF ( ds_name(iset) .EQ. char_init1024) GOTO 718
-	      IF ( ds_type(iset) .EQ. 'ENS' .OR. ds_type(iset) .EQ. 'FCT') 
-     .		CALL CANCEL_DATA_SET( iset, slash_all, status )
- 718	   CONTINUE
-* Now any others. 
-	   DO 720 iset = 1, maxdsets
-	      IF ( ds_name(iset) .EQ. char_init1024) GOTO 720
-	      CALL CANCEL_DATA_SET( iset, slash_all, status )
- 720	   CONTINUE
+* all user variables are invalidated by closing the datasets
+	   CALL PURGE_ALL_UVARS
+! an earlier version of this code prioritized the canceling of aggregations
+! before other datasets.  Might be learning the hard way why this was so ...
+	   DO iset = 1, maxdsets
+	      IF ( ds_name(iset) .EQ. char_init1024) CYCLE
+	      CALL CANCEL_ONE_DATA_SET( iset, status )
+	   ENDDO
 
 	ELSE
 	   GOTO 5010

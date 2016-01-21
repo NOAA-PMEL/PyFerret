@@ -399,7 +399,7 @@
               alen = TM_LENSTR1(typnam(outtype))
               CALL CD_PUT_NEW_ATTR (dset, varid, 
      .              attname, 2, 61, 1, 
-     .              'This variable written using Ferret was converted from '//
+     .         'This variable written using Ferret was converted from '//
      .              typnam(vartype)(4:slen)//' to '//
      .              typnam(outtype)(4:alen), 1., status )
               IF (status .NE. ferr_ok) GOTO 5990

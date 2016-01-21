@@ -193,6 +193,7 @@
 * V697  12/15 *acm* Changes to add details on SHOW GRID uvar to indicate 
 *                   compressed or subset of axes
 * V697  12/15 *acm* Fix call to routine SHOW_GRID
+* V698 *sh* 1/16 Removed "Ferret-defined" annotation
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -1396,8 +1397,8 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 	      ENDIF
  1350	   CONTINUE
  4210	   FORMAT ( 4X,'GRID ',A)
- 4211	   FORMAT ( 4X,'GRID ',A, '  Ferret-defined Ensemble Grid')
- 4212	   FORMAT ( 4X,'GRID ',A, '  Ferret-defined FMRC Grid')
+ 4211	   FORMAT ( 4X,'GRID ',A, '  Ensemble Aggregetion Grid')
+ 4212	   FORMAT ( 4X,'GRID ',A, '  Forecast Aggregation Grid')
 
 	ELSEIF( qual_given(slash_grid_dyn) .GT. 0 ) THEN
 	   CALL SHOW_DYN_GRIDS(mods_cx)

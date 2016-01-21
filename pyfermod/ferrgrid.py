@@ -466,20 +466,23 @@ class FerrGrid(object):
         try:
             lastchar = val[-1].upper()
             if (not istimestep) and (lastchar == 'E'): # degrees E
+                # make sure the rest is just numeric
                 fval = float(val[:-1])
-                return(pyferret.AXISTYPE_LONGITUDE, fval)
+                return(pyferret.AXISTYPE_LONGITUDE, val.upper())
             elif (not istimestep) and (lastchar == 'W'): # degrees W
-                fval = -1.0 * float(val[:-1])
-                return(pyferret.AXISTYPE_LONGITUDE, fval)
+                # make sure the rest is just numeric
+                fval = float(val[:-1])
+                return(pyferret.AXISTYPE_LONGITUDE, val.upper())
             elif (not istimestep) and (lastchar == 'N'): # degrees N
+                # make sure the rest is just numeric
                 fval = float(val[:-1])
-                return(pyferret.AXISTYPE_LATITUDE, fval)
+                return(pyferret.AXISTYPE_LATITUDE, val.upper())
             elif (not istimestep) and (lastchar == 'S'): # degrees S
-                fval = -1.0 * float(val[:-1])
-                return(pyferret.AXISTYPE_LATITUDE, fval)
-            elif (not istimestep) and (lastchar == 'M'): # meters
+                # make sure the rest is just numeric
                 fval = float(val[:-1])
-                return(pyferret.AXISTYPE_LEVEL, fval)
+                return(pyferret.AXISTYPE_LATITUDE, val.upper())
+            elif (not istimestep) and (lastchar == 'M'): # meters (or kilometers, etc.)
+                return(pyferret.AXISTYPE_LEVEL, val.upper())
             elif istimestep and (lastchar == 'Y'): # years
                 fval = float(val[:-1])
                 tlist = [ 0, 0, 0, 0, 0, 0 ]

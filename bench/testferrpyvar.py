@@ -19,10 +19,12 @@ print ">>> coads.sstcopy = pyferret.FerrPyVar(coads.sst._datagrid, datacopy, coa
 coads.sstcopy = pyferret.FerrPyVar(coads.sst._datagrid, datacopy, coads.sst._missingvalue, coads.sst._dataunit, 'modified copy of SST')
 print ">>> pyferret.showdatasets(brief=False)"
 pyferret.showdatasets(brief=False)
+print ">>> pyferret.setwindow(1, axisasp=0.5, logo=False)"
+pyferret.setwindow(1,axisasp=0.5,logo=False)
 print ">>> pyferret.setdefaulttext(font='Arial')"
 pyferret.settextstyle(font='Arial')
-print ">>> pyferret.shade(coads.sstcopy['16-FEB'])"
-pyferret.shade(coads.sstcopy['16-FEB'])
+print ">>> pyferret.shade(coads.sstcopy['40S':'40N','100E':'100W','16-FEB'])"
+pyferret.shade(coads.sstcopy['40S':'40N','100E':'100W','16-FEB'])
 print ">>> pyferret.saveplot('testferrpyvar.pdf')"
 pyferret.saveplot('testferrpyvar.pdf')
 

@@ -4,7 +4,59 @@ These method generate appropriate Ferret command strings and then
 execute them using the pyferret.run method.
 """
 
+import numbers
 import pyferret
+
+
+def setwindow(num, plotasp=None, axisasp=None, color=None, logo=None):
+    """
+    Assigns the plot window to use for subsequent plotting commands.
+    Also provides assignment of common window plots.  
+    Note that plotasp and axisasp cannot both be given.
+        num (int): window number 1-8 to use for plots
+        plotasp (float): aspect ratio (Y/X) for the plot window;
+            if not given, the current ratio is unchanged; 
+            the default ratio on start-up is 0.86
+        axisasp (float): aspect ratio (Y/X) for the plot axes;
+            if not given, the current ratio is unchanged; 
+            the default ratio on start-up is 0.75
+        color (string, tuple of int): background color for the plot;
+            can be one of the color names 'black', 'blue', 'green', 
+            'lightblue', 'purple', or 'red', or 
+            a tuple of [0-100] int values giving RGB or RGBA values
+        logo (boolean): include the Ferret logo in the plot?
+            if not given, the current value is unchanged.
+    Raises a ValueError if a problem occurs.
+    """
+    # create and execute the SET WINDOW command
+    cmdstr = 'SET WINDOW'
+    if plotasp and axisasp:
+        raise ValueError('only one of plotasp and axisasp can be given')
+    if plotasp:
+        if (not isinstance(plotasp, numbers.Real)) or (plotasp <= 0):
+            raise ValueError('given plotasp %s is not a positive floating-point value' % str(plotasp))
+        cmdstr += '/ASPECT=' + str(plotasp)
+    if axisasp:
+        if (not isinstance(axisasp, numbers.Real)) or (axisasp <= 0):
+            raise ValueError('given axisasp %s is not a positive floating-point value' % str(axisasp))
+        cmdstr += '/ASPECT=' + str(axisasp) + ':AXIS'
+    if color:
+        cmdstr += '/COLOR=' + str(color)
+    if (not isinstance(num, numbers.Integral)) or (num <= 0) or (num > 8):
+        raise ValueError('window number %s is not a integer in [1,8]' % str(num))
+    cmdstr += ' ' + str(num)
+    (errval, errmsg) = pyferret.run(cmdstr)
+    if errval != pyferret.FERR_OK:
+        raise ValueError('Problems executing Ferret command %s: %s' % (cmdstr, errmsg))
+    # create and execute the mode logo command if logo is given
+    if logo != None:
+        if logo:
+            cmdstr = 'SET MODE LOGO'
+        else:
+            cmdstr = 'CANCEL MODE LOGO'
+        (errval, errmsg) = pyferret.run(cmdstr)
+        if errval != pyferret.FERR_OK:
+            raise ValueError('Problems executing Ferret command %s: %s' % (cmdstr, errmsg))
 
 
 def settextstyle(font='', color='', bold = False, italic=False):

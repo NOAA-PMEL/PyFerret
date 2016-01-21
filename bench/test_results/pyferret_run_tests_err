@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1384 Jan  8 17:40 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1384 Jan 21 14:11 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results with debug PyFerret on RHEL6-64
@@ -275,7 +275,7 @@ Benchmark scripts that will be run:
    testferrvar.py
    testferrgrid.py
    testferrpyvar.py
-Beginning at Fri Jan  8 17:47:05 PST 2016
+Beginning at Thu Jan 21 14:27:44 PST 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -1827,6 +1827,7 @@ list/l=1/j=40/i=0:300:0 sst
  LISTing to file 10a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Cannot create cookie file
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2135,12 +2136,15 @@ Replacing definition of axis TIME
  **TMAP ERR: non-existent or not on line
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
+Cannot create cookie file
+Cannot create cookie file
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
  **Internet Data error
              NetCDF: file not found (OPeNDAP/netCDF Error code -90)
              Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf
 SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf"
+Cannot create cookie file
 CURL Error: Couldn't resolve host name
 curl error details: 
  **Internet Data error
@@ -2381,6 +2385,8 @@ SHADE/LEV=300/I=1:100/J=1:100 i+j
  TEMPORARY data cleared from memory
 *** Running ferret script: bn_test_opendap.jnl
  Cached data cleared from memory
+Cannot create cookie file
+Cannot create cookie file
 CURL Error: Couldn't resolve host name
 curl error details: 
 *** Running ferret script: bn611_bug_fixes.jnl
@@ -3595,15 +3601,33 @@ set axis/name=45 x_in_meters
 set axis/name=.fr x_in_meters
 *** Running ferret script: bn_let_remote.jnl
  Cached data cleared from memory
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
  **ERROR: command syntax: /REMOTE variable expression may not contain [d=
 DEFINE VARIABLE/D=1/remote rvar = t0112mn1[d=1,z=1:100@ave]
  **ERROR: command syntax: /REMOTE variable definition must also specify /D=
 DEFINE VARIABLE/remote rvar = t0112mn1[d=1,z=1:100@ave]
+Cannot create cookie file
+Cannot create cookie file
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 500; message = "Error processing XML header file /usr/local/src/apache-tomcat-7.0.34/content/NVODS/conf/server/temp/AD882140E58648ADA4107B4E90A732E2/header.xml (No such file or directory)"^;};
  **netCDF error
              Unable to open URL with REMOTE variable definitions:
              Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc
+Cannot create cookie file
  **TMAP ERR: attribute reading error
              Unable to get varid for LET/REMOTE variable: NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
              Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc
@@ -3614,6 +3638,7 @@ context: Error { code = 500; message = "Error processing XML header file /usr/lo
              NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
              Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc
 list/x=300/y=15 avar
+Cannot create cookie file
 *** Running ferret script: bn691_bug_fixes.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -4094,6 +4119,10 @@ define data/agg/t myagg3 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_3.nc,tmp/tagg_irr
  **TMAP ERR: Unknown variable code
              in file tmp/tagg_disjoint_T0varying_4_wrong.nc time axis variable is missing: TDAY_TVAR
 define data/agg/t myagg5_bad = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc,tmp/tagg_disjoint_T0varying_3.nc, tmp/tagg_disjoint_T0varying_4_wrong.nc,tmp/tagg_disjoint_T0varying_5.nc
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
  **ERROR: unknown command: garbage
 garbage command syntax
 *** Running ferret script: bn_unquoted_args.jnl
@@ -4101,6 +4130,10 @@ garbage command syntax
  LISTing to file tmp/test1.nc
  LISTing to file tmp/test2.nc
  LISTing to file tmp/test3.nc
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
  **ERROR: unknown command qualifier: erroneous
 set data/erroneous tmp/test1.nc
  **ERROR: unknown command qualifier: erroneous
@@ -4133,6 +4166,10 @@ go/garbage "/home/flat/ksmith/pyferret_dev/bench/tmp/testMe.jnl"
  Cached data cleared from memory
 Replacing definition of axis TDAYS
 Replacing definition of axis TDAYS
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
  Using every   4th vector in the X direction
  Using every   5th vector in the Y direction
 *** Running ferret script: bn_all_ef.jnl
@@ -4182,4 +4219,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testferrpyvar.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Fri Jan  8 17:48:57 PST 2016
+Ended at Thu Jan 21 14:29:35 PST 2016

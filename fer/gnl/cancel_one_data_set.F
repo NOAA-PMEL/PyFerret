@@ -1,4 +1,4 @@
-	RECURSIVE SUBROUTINE CANCEL_ONE_DATA_SET( dset, status )
+	SUBROUTINE CANCEL_ONE_DATA_SET( dset, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric

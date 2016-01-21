@@ -72,7 +72,6 @@ cancel data my_fmrc
 show data/hidden   ! note that all member files were canceled, too
 
 ! agg with 2nd, 3rd, 9th and 10th forecasts missing 
-SAY *** THIS CANCEL MAY BE REMOVED WHEN /HIDDEN BEHAVIOR IS FIXED; cancel data/all
 use tmp/fcst_1.nc, tmp/fcst_2.nc, tmp/fcst_3.nc, tmp/fcst_9.nc, tmp/fcst_10.nc, tmp/fcst_11.nc
 let files = SPAWN("ls -1 tmp/fcst_*.nc")
 fmrc/hide my_fmrc = XCAT(files[I=6:10],{"6","1"})           ! double-wide gaps
@@ -92,21 +91,18 @@ fmrc/hide my_fmrc = XCAT(files[I=4:11],{"tmp/long_fcst_1.nc"}) ! first member is
 show data/files my_fmrc
 GO bn_aggregate_f.sub
 cancel data my_fmrc
-SAY *** THIS CANCEL MAY BE REMOVED WHEN /HIDDEN BEHAVIOR IS FIXED; cancel data/all
 
 ! agg with the sixth forecast of longer time range than the others
 fmrc/hide my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc, tmp/fcst_3.nc, tmp/fcst_4.nc, tmp/fcst_5.nc, tmp/long_fcst_6.nc, tmp/fcst_7.nc, tmp/fcst_8.nc
 show data/files my_fmrc
 GO bn_aggregate_f.sub
 cancel data my_fmrc
-SAY *** THIS CANCEL MAY BE REMOVED WHEN /HIDDEN BEHAVIOR IS FIXED; cancel data/all
 
 ! agg where one dataset lacks one of the variables
 fmrc/hide my_fmrc = tmp/fcst_7.nc, tmp/fcst_4.nc, tmp/fcst_5.nc, tmp/one_var_fcst_6.nc, tmp/fcst_3.nc
 show data/files
-list/i=10/j=10/order=ft/l=1:20/width=200 fcst
+stat/l=1:20 fcst
 cancel data my_fmrc
-SAY *** THIS CANCEL MAY BE REMOVED WHEN /HIDDEN BEHAVIOR IS FIXED; cancel data/all
 
 ! agg where a LET/D variable is used to fill in a missing variable
 use tmp/one_var_fcst_1.nc, tmp/one_var_fcst_6.nc
@@ -119,40 +115,36 @@ show data/files
 show data
 ! should be all 0's:
 list/i=10/j=10/order=ft/l=1:20/width=200 fcst_2[d=my_fmrc_letd_6] - fcst_2[d=my_fmrc]
+! should be all 0's:
 list/i=10/j=10/order=ft/l=1:20/width=200 fcst_2[d=my_fmrc_letd_6] - fcst_2[d=my_fmrc_letd_1]
 cancel data my_fmrc
 cancel data my_fmrc_letd_1, my_fmrc_letd_6
-SAY *** THIS CANCEL MAY BE REMOVED WHEN /HIDDEN BEHAVIOR IS FIXED; cancel data/all
 
 ! files already opened and not hidden remain open after aggregation
 use tmp/fcst_1.nc, tmp/fcst_2.nc, tmp/fcst_3.nc, tmp/fcst_9.nc, tmp/fcst_10.nc, tmp/fcst_11.nc
 fmrc my_fmrc = XCAT(files[I=6:10],{"6","1"})           ! without /HIDE
 cancel data my_fmrc
-show data/brief/hidden
+show data/brief
 cancel data/all
 
-
+! *************************************
 ! deliberate errors
 set mode ignore
 
 ! error - duplicate file
 fmrc my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc,tmp/fcst_2.nc,tmp/fcst_3.nc
 SH DATA/BR/HIDDEN
-SAY *** THIS CANCEL MAY BE REMOVED WHEN /HIDDEN BEHAVIOR IS FIXED; cancel data/all
 
 ! error - unknown dataset
 fmrc my_fmrc = XCAT(files,"tmp/no_exist.nc")
 SH DATA/BR/HIDDEN
-SAY *** THIS CANCEL MAY BE REMOVED WHEN /HIDDEN BEHAVIOR IS FIXED; cancel data/all
 
 ! error - inserting forecasts at two consecutive steps implies too many gaps
 fmrc my_fmrc = XCAT(files,"tmp/consecutive_month_fcst.nc")
 SH DATA/BR/HIDDEN
-SAY *** THIS CANCEL MAY BE REMOVED WHEN /HIDDEN BEHAVIOR IS FIXED; cancel data/all
 
 ! error - inserting out of sequence forecast 
 fmrc my_fmrc = XCAT(files,"tmp/irregular_start_time_fcst.nc")
 SH DATA/BR/HIDDEN
-SAY *** THIS CANCEL MAY BE REMOVED WHEN /HIDDEN BEHAVIOR IS FIXED; cancel data/all
 
 set mode/last ignore

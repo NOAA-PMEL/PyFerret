@@ -29,8 +29,10 @@ define data/agg/E/hide fourfiles = ens1, ens3, ens2, ens4
 ! confirm that it isn't COADS that got hidden
 show data
 cancel data fourfiles
+show data/brief/all/hidden
 
 ! Create airt in the other datasets by LET/D definitions.
+use ens1, ens2, ens3, ens4
 let/d=ens2 airt = sst + 1
 let/d=ens3 airt = sst + 1
 let/d=ens4 airt = sst + 1
@@ -89,8 +91,9 @@ show data windy
 list/l=3/y=30/x=-59:-51 uwnd[d=1], uwnd[d=2], uwnd[d=3,e=1], uwnd[d=3,e=2], uwnd[d=3,e=@ave]
 
 ! Use the other order. As long as we have a file variable, we're ok
-
+show data/brief    ! see what is *not* hidden
 cancel data 3
+show data/brief    ! see what is *not* hidden
 
 ! Define the ensemble dataset
 ensemble windy = 2,1
@@ -120,7 +123,7 @@ use coads_climatology ! to offset indices so they arent equal to Ferret dset #s
 use ens1, ens2, ens3, ens4
 ensemble/HIDE/title="ensemble with hidden members" fourfiles = ens1, ens2, ens3, ens4
 
-! should just show the ensemble set
+! should just show the ensemble set.  Members are hidden.
 show data/brief
 
 ! If ask for a member set by name or number, do show it
@@ -130,13 +133,13 @@ show data/brief ens3
 ! should show all members plus ensemble
 show data/brief/hidden
 
-! Should show original member datasets
+! Since the members were hidden, they get deleted with the aggregation
 cancel data fourfiles
 show data/brief
 cancel data/all
 
 ! Cancel a member, then the ensemble gets canceled.
-! The hidden members should show up.
+! The hidden members get canceled along with the parent (1/16)
 use coads_climatology ! to offset indices so they arent equal to Ferret dset #s
 use ens1, ens2, ens3, ens4
 ensemble/HIDE/title="uvars in dset 2"  my_ens = 2,3
@@ -144,7 +147,7 @@ show data/brief
 cancel data  ens2
 show data/brief
 
-! Cancel the ensemble, then hidden members get un-hidden.
+! Cancel the ensemble, then hidden members get canceled too
 
 use ens1, ens2, ens3, ens4
 ensemble/HIDE/title="uvars in dset 2"  my_ens = 2,3,4,5
@@ -153,7 +156,7 @@ ensemble/HIDE/title="uvars in dset 2"  my_ens = 2,3,4,5
 show data/brief
 cancel data my_ens
 
-! Cancel ensemble dataset: members un-hidden
+! Cancel ensemble dataset: hidden members deleted
 show data/brief
 
 ! Define several ensembles with /HIDE
@@ -162,10 +165,9 @@ ensemble/HIDE/title="ensemble with hidden members" some = ens1, ens2
 ensemble/HIDE/title="ensemble with hidden members" more = ens2, ens3, ens4
 
 ! Shows all the ensembles
-show data/brief
+show data/brief/files
 
-! Cancel a member of all the ensembles. 
-! Cancels dataset 2 and also the ensemble sets.
+! Cancel a member of all the ensembles.  All the ensembles get deleted.
 cancel data ens2
 show data/brief
 

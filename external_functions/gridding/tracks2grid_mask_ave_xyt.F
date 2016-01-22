@@ -37,6 +37,9 @@
 * Ansley Manke
 * June 2009  from scatgrid_nobs_xyt
 *
+* 9/ 3/2015 Fix LAS/SOCAT ticket 1720, missingness patterns in cruise-weighted 
+*           vs unweighted gridded fields.
+*
 * The input data points are not a simple scatter.  They are cruise tracks 
 * strung one after another .  (Each track will be a contiguous block of points 
 * in the input data arrays. )  And the subtlety is that each cruise needs to 

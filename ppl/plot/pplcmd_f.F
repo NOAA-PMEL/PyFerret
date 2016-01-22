@@ -134,6 +134,8 @@ C              do not make small tics by default.
 *                  (LAS ticket 1597 and others)
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
 * v695 9/15 *acm* write values to PPL* symbols using 6 digits not 4
+* V697  *acm*  1/16 Ticket 2344: if there was a time-plot underlay, use its
+*                   delta-t for time overlay plots. TAXUND restores the default.
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -271,7 +273,9 @@ CCCCCCC data	        tmapdebug/.false./
 	LOGICAL IFLG1,IFLG2,LABON,VALOFF,TBOTH
 	DIMENSION X1(5),Y1(5),Y2(4),X3(2),IX3(5)
 	DIMENSION X4(4)
-	CHARACTER COMM(124)*7
+	INTEGER	  num_comm
+	PARAMETER(num_comm = 125)
+	CHARACTER COMM(num_comm)*7
 	EQUIVALENCE (DT,X3(1)),(ITYPET,IX3(1)),(TSMX,X4(1))
 	EQUIVALENCE (XLO,X1(1)),(YLO,Y1(1)),
      *		(HLAB1,Y2(1))
@@ -291,7 +295,7 @@ CCCCCCC data	        tmapdebug/.false./
      *  'C','BOX','RLABS','AXSET',' ','LLABS','LEV','DATPT','PLTNME',
      *  'HLABS','CONPRE','CONPST','TRANSXY','MARKH','LINFIT','DFLTFNT',
      *  'GRID','TEKNME','ECHO','VELVCT','TIME','TXTYPE','TXLSZE',
-     *  'TXLINT','TXNMTC','TXLABP','AUTOLAB','EVAR','DEBUG','RESET',
+     *  'TXLINT','TXNMTC','TXLABP','TAXUND','AUTOLAB','EVAR','DEBUG','RESET',
      *  'TITLE','VPOINT','CLSPLT','VECTOR','VECSET','VECKEY','USR',
      *  'SHADE','SHAKEY','SHASET','PIXMAP','ALINE','TMDEBUG','COLOR',
      *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL', 'PATSET','CALENDA',
@@ -407,7 +411,7 @@ C
 
 C       Changed ICOM to CHAR*7 comparison for CALENDAR command. *jd* 10.99
 	ICOM7(1:7)=ICOM(1:7)
-	DO 20 I=1,124
+	DO 20 I=1,num_comm
 	    IF(ICOM7.EQ.COMM(I))GOTO 21
 20	CONTINUE
 	IF(ICOM(1:1).EQ.'%')THEN
@@ -438,7 +442,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	5300,5400,5500,5700,5800,5900,6000,6100,6200,6300,6400,
      *	6500,6600,6700,6800,6900,7000,7100,7200,7300,7400,7500,
      *	7600,7700,7800,7900,8000,8100,8200,8300,8400,8500,8600,
-     *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
+     *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,9750,
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
      *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
      *  9174,9175,9390,9165,9166,9183,4401,4501,9192,9960,9970,
@@ -451,7 +455,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	5300,5400,5500,5700,5800,5900,6000,6100,6200,6300,6400,
      *	6500,6600,6700,6800,6900,7000,7100,7200,7300,7400,7500,
      *	7600,7700,7800,7900,8000,8100,8200,8300,8400,8500,8600,
-     *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
+     *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,9750,
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
      *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
      *  9174,9175,9390,9165,9166,9183,4401,4501,9192,9960,9970,
@@ -637,7 +641,11 @@ C     CLINE
 	GOTO 10
 C     CONSET
 2800	IF(IFLG1)HGT=P(1)
-	IF(IFLG2)NSIGC=IFIX(P(2))
+	NEWSIG = 0  ! set this flag only if a PPL CONSET is changing the nsig value
+	IF(IFLG2)THEN
+	   IF (IFIX(P(2)) .NE. INISIG) NEWSIG = 1
+	   NSIGC=IFIX(P(2))
+	ENDIF
 	IF(M.GE.3.AND.IFLG(3).NE.0)NARC=IFIX(P(3))
 	IF(M.GE.4.AND.IFLG(4).NE.0)DASHLN=P(4)
 	IF(M.GE.5.AND.IFLG(5).NE.0)SPACLN=P(5)
@@ -1516,6 +1524,11 @@ C	TXLABP
 		  ENDIF
 	       ENDIF
 	    ENDIF
+	    GOTO 10
+C restore delta-T for underlay plots
+C	TAXUND
+9750	    CONTINUE
+	    DT_SAVE = P(1)
 	    GOTO 10
 C	AUTOLAB
 9800	    IGTLAB=0

@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1384 Jan 21 14:11 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1384 Jan 21 15:56 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results with debug PyFerret on RHEL6-64
@@ -266,7 +266,9 @@ Benchmark scripts that will be run:
    bn_unquoted_args.jnl
    bn_long_lists.jnl
    bn_show_uvar_grid.jnl
-   bn_time_over_Hov.jnl
+   bn_aggregate_f.jnl
+   bn_hovmuller_overlays.jnl
+   bn_labels_on_taxis.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
    bn_outline_poly.jnl
@@ -275,7 +277,7 @@ Benchmark scripts that will be run:
    testferrvar.py
    testferrgrid.py
    testferrpyvar.py
-Beginning at Thu Jan 21 14:27:44 PST 2016
+Beginning at Thu Jan 21 16:03:52 PST 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -629,7 +631,7 @@ list tu
  **ERROR: regridding: Axis orientation not matching request:GX=PSYU
 list tu
  Cached data cleared from memory
- **ERROR: request exceeds memory setting: 25 Mwords were requested.
+ **ERROR: request exceeds memory setting: 50 Mwords were requested.
 list temp[gz=z999999,z=5:15]
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
@@ -876,14 +878,14 @@ list v2-and-minus[i=5:15@ddc]
  Cached data cleared from memory
  LISTing to file permutedBinaryTest.dat
  LISTing to file junk.dat
- **ERROR: request exceeds memory setting: 24000 Mwords were requested.
+ **ERROR: request exceeds memory setting: 48000 Mwords were requested.
 load num
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
- **ERROR: request exceeds memory setting: 1000 Mwords were requested.
+ **ERROR: request exceeds memory setting: 2000 Mwords were requested.
 load num
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
@@ -3250,6 +3252,7 @@ Replacing definition of axis FAX4DAY
 *** Running ferret script: bn_aggregate_e.jnl
  Cached data cleared from memory
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
  **ERROR: unknown data set: dset 3 unknown or is already an aggregate dataset
 DEFINE DATA/AGGREGAT/E windy = 1,2,3
            *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: UWND
@@ -3261,20 +3264,14 @@ DEFINE DATA/AGGREGAT/E windy = 1,2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: UIN
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: VIN
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 5
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, my_ens
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets:
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets:
-           *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 5
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
-           *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 6
-           *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 7
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, more
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, some
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, fourfiles
 *** Running ferret script: bn_6d_lab_mode.jnl
  Cached data cleared from memory
 *** Running ferret script: bn682_bug_fixes.jnl
@@ -3692,12 +3689,12 @@ list {5*3+1, 2+3}
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XAXIS
- **ERROR: request exceeds memory setting: 2369 Mwords were requested.
+ **ERROR: request exceeds memory setting: 4739 Mwords were requested.
 load bigvar
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis LONGTIME
- **ERROR: request exceeds memory setting: 4735 Mwords were requested.
+ **ERROR: request exceeds memory setting: 9472 Mwords were requested.
 load bigvar
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
@@ -4027,6 +4024,18 @@ SET DAT/FORM=CDF ft_cal_mixed.nc
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ Cached data cleared from memory
+ **ERROR: request exceeds memory setting: 13 Mwords were requested.
+load/l=1:5 bigvar
+           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
+           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
+ Cached data cleared from memory
+ Cached data cleared from memory
 *** Running ferret script: bn_aggregate_t.jnl
  Cached data cleared from memory
  LISTing to file tmp/tagg_reg_1.nc
@@ -4162,16 +4171,50 @@ go/garbage "/home/flat/ksmith/pyferret_dev/bench/tmp/testMe.jnl"
 "/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0001.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0002.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0003.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0004.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0006.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0007.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0008.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0009.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0010.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0011.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0012.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc"}
 *** Running ferret script: bn_show_uvar_grid.jnl
  Cached data cleared from memory
-*** Running ferret script: bn_time_over_Hov.jnl
+*** Running ferret script: bn_aggregate_f.jnl
+ Cached data cleared from memory
+ LISTing to file tmp/fcst_1.nc
+ LISTing to file tmp/fcst_2.nc
+ LISTing to file tmp/fcst_3.nc
+ LISTing to file tmp/fcst_4.nc
+ LISTing to file tmp/fcst_5.nc
+ LISTing to file tmp/fcst_6.nc
+ LISTing to file tmp/fcst_7.nc
+ LISTing to file tmp/fcst_8.nc
+ LISTing to file tmp/fcst_9.nc
+ LISTing to file tmp/fcst_10.nc
+ LISTing to file tmp/fcst_11.nc
+ LISTing to file tmp/long_fcst_1.nc
+ LISTing to file tmp/long_fcst_6.nc
+ LISTing to file tmp/one_var_fcst_1.nc
+ LISTing to file tmp/one_var_fcst_6.nc
+ LISTing to file tmp/consecutive_month_fcst.nc
+Replacing definition of axis TRUEMONTH
+ LISTing to file tmp/irregular_start_time_fcst.nc
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
+           *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC]
+           *** NOTE: Ambiguous coordinates on F axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC]
+           *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
+           *** NOTE: Ambiguous coordinates on F axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
+ **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
+DEFINE DATA/AGGREGAT/F my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc,tmp/fcst_2.nc,tmp/fcst_3.nc
+ **TMAP ERR: non-existent or not on line
+             tmp/no_exist.nc
+DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/no_exist.nc")
+ **ERROR: error defining aggregate dataset: forecast start times are irregular or too gappy
+DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/consecutive_month_fcst.nc")
+ **ERROR: error defining aggregate dataset: forecast start times are irregular or too gappy
+DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/irregular_start_time_fcst.nc")
+*** Running ferret script: bn_hovmuller_overlays.jnl
  Cached data cleared from memory
 Replacing definition of axis TDAYS
-Replacing definition of axis TDAYS
-Cannot create cookie file
 Cannot create cookie file
 Cannot create cookie file
 Cannot create cookie file
  Using every   4th vector in the X direction
- Using every   5th vector in the Y direction
+*** Running ferret script: bn_labels_on_taxis.jnl
+ Cached data cleared from memory
+Replacing definition of axis TAX
 *** Running ferret script: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -4219,4 +4262,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testferrpyvar.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Thu Jan 21 14:29:35 PST 2016
+Ended at Thu Jan 21 16:05:44 PST 2016

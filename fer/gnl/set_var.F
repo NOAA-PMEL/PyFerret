@@ -319,13 +319,13 @@
 
            IF (typflag(1:5) .EQ. 'INPUT'  ) THEN   ! input type
               outtype_flag = 99  ! do not change from incoming type
-           ELSE IF (typflag(1:3) .EQ. 'BYT' .OR. typflag(1:4) .EQ. 'INT1') THEN
+           ELSE IF (typflag(1:3) .EQ. 'BYT' .OR. typflag(1:4).EQ.'INT1') THEN
               outtype_flag = 1   ! NC_BYTE
-           ELSE IF (typflag(1:3) .EQ. 'SHO' .OR. typflag(1:4) .EQ. 'INT2') THEN
+           ELSE IF (typflag(1:3) .EQ. 'SHO' .OR. typflag(1:4).EQ.'INT2') THEN
               outtype_flag = 3   ! NC_SHORT
-           ELSE IF (typflag(1:3) .EQ. 'INT' .OR. typflag(1:4) .EQ. 'INT4') THEN
+           ELSE IF (typflag(1:3) .EQ. 'INT' .OR. typflag(1:4).EQ.'INT4') THEN
               outtype_flag = 4   ! NC_INT (4-byte integer)
-           ELSE IF (typflag(1:3) .EQ. 'FLO' .OR. typflag(1:3) .EQ. 'REA') THEN
+           ELSE IF (typflag(1:3) .EQ. 'FLO' .OR. typflag(1:3).EQ.'REA') THEN
               outtype_flag = 5   ! NC_FLOAT
            ELSE IF (typflag(1:3) .EQ. 'DOU') THEN
               outtype_flag = 6   ! NC_DOUBLE
@@ -406,7 +406,7 @@
 	      IF ( layerz_ref .NE. char_init128 ) THEN
                  attlen = TM_LENSTR1(layerz_ref)
                  attname = patnam_layerz
-                 CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+                 CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status) 
                  IF (attid .GT. 0) THEN
                     CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
      .                attname, attype, attlen, attoutflag, status )

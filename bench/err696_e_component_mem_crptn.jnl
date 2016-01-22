@@ -1,0 +1,33 @@
+! canceling of an E aggregation dataset is leaving
+! corrupted variables in memory as seen by the variable names "%%"
+
+use ens1, ens2, ens3, ens4
+define data/agg/E fourfiles = ens1, ens3, ens2, ens4
+
+show data/brief
+
+list/i=3 sst[T=@ave]
+
+show mem/all
+cancel data fourfiles
+show mem/all
+
+exit
+=====================================
+ Current size of FERRET memory cache: 25.6 MegaWords  (1 word = 8 bytes)
+all data in memory:
+ %%[D=ens4]                        YT    mr:5  blk1:5  nblk:1
+    3  /106W           1  /12N          ...  / ...           1  /01-JAN 00:45 ...  / ...         ...  / ...
+    3  /104W           9  /30N          ...  / ...          12  /31-DEC 06:34 ...  / ...         ...  / ...
+ 
+ %%[D=ens2]                        YT    mr:4  blk1:4  nblk:1
+    3  /106W           1  /12N          ...  / ...           1  /01-JAN 00:45 ...  / ...         ...  / ...
+    3  /104W           9  /30N          ...  / ...          12  /31-DEC 06:34 ...  / ...         ...  / ...
+ 
+ %%[D=ens3]                        YT    mr:3  blk1:3  nblk:1
+    3  /106W           1  /12N          ...  / ...           1  /01-JAN 00:45 ...  / ...         ...  / ...
+    3  /104W           9  /30N          ...  / ...          12  /31-DEC 06:34 ...  / ...         ...  / ...
+ 
+ %%[D=ens1]                        YT    mr:1  blk1:1  nblk:1
+    3  /106W           1  /12N          ...  / ...           1  /01-JAN 00:45 ...  /0.5          ...  / ...
+    3  /104W           9  /30N          ...  / ...          12  /31-DEC 06:34 ...  /4.5          ...  / ...

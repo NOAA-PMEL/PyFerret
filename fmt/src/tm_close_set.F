@@ -82,6 +82,7 @@
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
 * V608 *acm* 10/07 Fixes for memory leak; call NCF_DELETE_DSET as a function
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* V698 1/16 *sh* treat F aggregations ('FCT') like E-aggs
 
 * arguments:
 *	ds_num	- data set number (see COMMON /XSTEP_FILES/)
@@ -100,14 +101,15 @@
 * internal variable declarations
         LOGICAL   its_cdf
 	INTEGER   NCF_DELETE_DSET, 
-     .            f_num,ivar, iparm, iaux, idim
+     .            f_num, ivar, iparm, iaux, idim
 
 * initialize: do we have an open set?
 	IF (ds_name(ds_num) .EQ. char_init1024) GOTO 9000
 
 * save the data format
-        its_cdf = ds_type(ds_num) .EQ. 'CDF'
-     .     .OR.   ds_type(ds_num) .EQ. 'ENS'
+	its_cdf = ds_type(ds_num) .EQ. 'ENS'
+     .     .OR.   ds_type(ds_num) .EQ. 'FCT'
+     .     .OR.   ds_type(ds_num) .EQ. 'CDF'
      .     .OR.   ds_type(ds_num) .EQ. 'ECDF' 
 
 * First clear variables associated only with data set number
@@ -156,10 +158,12 @@
 	ds_basic_axes(6,ds_num)		=	int4_init
 	ds_time_axis(ds_num)		=	int4_init
 	ds_accepts_remote(ds_num)	= 	.FALSE.
+	ds_hide(ds_num)			=	.FALSE.
 
 * Next clear variables associated with variable in that data set.
 	DO 130 ivar = 1,maxvars
 	  IF (ds_var_setnum(ivar) .NE. ds_num) GOTO 130
+
 * ... deallocate grids and axes used by the dat aset
 	  CALL TM_DEALLO_DYN_GRID( ds_grid_number(ivar))
 *	  ds_var_code(ivar)		=	char_init128

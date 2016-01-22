@@ -45,6 +45,7 @@
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V698 *sh* 1/16 -- added status check/warning, since not checked by callers
 
 * Argument declarations
 
@@ -57,6 +58,7 @@
 
 #include "gt_lib.parm"
       INCLUDE 'netcdf.inc'
+      INCLUDE 'tmap_errors.parm'
 
       INTEGER TM_LENSTR1, NCF_INQ_VAR, slen, flen, rev(8), i, ndx, istat
       PARAMETER (flen=512)      ! size of variable name string
@@ -78,6 +80,7 @@
       dset_num = dset
       cdfstat = NCF_INQ_VAR(dset_num, ivar, fhol, slen, vartype, 
      .            nvdims, nvatts, coordvar, outflag, rev)
+        IF (cdfstat .NE. pcd_ferr_ok) CALL WARN('ERROR in CD_GET_VAR_INFO')
       slen = MIN(slen, flen)
 
 * Return vname in original upper/lower case

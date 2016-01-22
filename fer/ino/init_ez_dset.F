@@ -189,7 +189,7 @@
 	   CALL PURGE_ALL_UVARS		! delete (possibly dependent) uvars
 * (note: this purge is unnecessarily strict - could be refined in the future)
 
-	   CALL CANCEL_DATA_SET( dset, .FALSE., status )
+	   CALL CANCEL_DATA_SET( dset, status )
 	
 	   IF ( status .NE. ferr_ok ) RETURN
 	   already_init = .FALSE.

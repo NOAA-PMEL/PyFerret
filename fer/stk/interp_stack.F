@@ -103,6 +103,7 @@
 * V695+ 5/15 *sh* FIND_MEM_VAR ==> FIND_MEM_VAR_INCL_C_CACHE
 *	          delay stripping gather until after stripping regrids
 * V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
+* V698 *sh* 12/15 implement dummy data sets in forecast aggregations
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -126,7 +127,7 @@
 	INTEGER		UVAR_NUMBER, KNOWN_GRID, CGRID_AXIS, 
      .			CAXIS_MODLEN, TM_AXES_REVERSED, rev_axes(nferdims),
      .			cx, mr, idim, cat, act, uvar_pointer,
-     .			com_mr, var
+     .			com_mr, var, dset
 
 * external routines passed
 	EXTERNAL	DO_SHIFT, DO_SMTH_BOX, DO_FILL_AVE, DO_AVERAGE,
@@ -282,12 +283,16 @@
 ******************************************************************************
  10	is_act(isp)   = isact_request
 	cx = is_cx( isp )
-	cat = cx_category( cx )
-	var = cx_variable( cx )
+	cat  = cx_category( cx )
+	var  = cx_variable( cx )
+	dset = cx_data_set( cx )
 
 * constants and pseudo-variables and counter variables may be handled immediately
 * ... get user variable grids if unknown
-	IF     ( cat .EQ. cat_pseudo_var ) THEN
+	IF     ( dset .EQ. pdset_dummy ) THEN
+	   CALL IS_DUMMY ( memory, *2000, status )
+	   GOTO 5000
+	ELSEIF ( cat .EQ. cat_pseudo_var ) THEN
 	   CALL IS_PSEUDO ( memory, *2000, status )
 	   GOTO 5000
 	ELSEIF ( cat .EQ. cat_constant ) THEN

@@ -1,0 +1,150 @@
+! bn_aggregate_f.F
+! 12/2015 *sh*
+
+! exercise FMRC aggregations
+
+spawn "mkdir -p tmp"     ! tmp directory t store files
+
+! *** create an artificial forecast model run collection ***
+
+! a 20x20 lat-long region
+define axis/x=140e:160e:1 xax
+define axis/y=20n:40n:1 yax
+
+! a 20 year monthly axis starting in Jan 1950
+LET start_year = 1950
+LET nyears = 20
+LET indices = L[L=1:`nyears*12`]
+LET month = MOD(indices-1,12)+1
+LET year = start_year + INT((indices-1)/12)
+DEFINE AXIS/UNITS=days/T0=1-jan-1900/EDGES truemonth = DAYS1900(year,month,1)
+
+! define a moving field with errors increasing from a given forecast date
+let vy = 1/500      ! speed that forecast structure deviates from truth
+!let vx = 1/300
+let vx = (1+(T[gt=truemonth]-tstart)/2000)* 1/300
+let xt = x[gx=xax]-vx*T[gt=truemonth]
+let yt = y[gy=yax]-vy*T[gt=truemonth]
+let field = COS((xt-150)/5)*COS((yt-30)/5)
+let fcst = field + fcst_error
+let static_error = SIN((x[gx=xax]-140)/5)*SIN((y[gy=yax]-20)/5) + RANDU(x[gx=xax]+y[gy=yax])
+let structure_drift = (t[gt=truemonth]-tstart)/5000 * static_error
+let random_error = (t[gt=truemonth]-tstart)/2000 * RANDU(t[gt=truemonth]+x[gx=xax]+y[gy=yax])
+let fcst_error = structure_drift + random_error
+let/title="another variable" fcst_2 = fcst + 2
+
+! every 3 months another 2-year forecast
+repeat/name=fdate/range=1:31:3 (let tstart = t[gt=truemonth,l=`fdate`];save/clobber/file="tmp/fcst_`(fdate-1)/3+1`.nc"/l=`fdate`:`fdate+23` fcst,  fcst_2)
+
+! a couple of long (3-year) forecasts
+let tstart = t[gt=truemonth,l=1]
+save/clobber/file="tmp/long_fcst_1.nc"/l=1:36 fcst,fcst_2   ! replaces file 1
+let tstart = t[gt=truemonth,l=16]
+save/clobber/file="tmp/long_fcst_6.nc"/l=16:52 fcst,fcst_2  ! replaces file 6 
+
+! files lacking the second variable
+let tstart = t[gt=truemonth,l=1]
+save/clobber/file="tmp/one_var_fcst_1.nc"/l=1:24 fcst   ! alternative of file 1
+let tstart = t[gt=truemonth,l=16]
+save/clobber/file="tmp/one_var_fcst_6.nc"/l=16:39 fcst  ! alternative of file 6
+
+! files that violate the sequence
+save/clobber/file="tmp/consecutive_month_fcst.nc"/l=5:28 fcst, fcst_2
+! shift the time interpretation by 3 days through altered T0
+DEFINE AXIS/UNITS=days/T0=4-jan-1900/EDGES truemonth = DAYS1900(year,month,1)
+save/clobber/file="tmp/irregular_start_time_fcst.nc"/l=6:29 fcst, fcst_2
+
+cancel variables/all
+
+! ***** end of FMRC file creation ****************
+
+! define a complete FMRC aggregation
+let files = SPAWN("ls -1 tmp/fcst_*.nc")
+list files  ! notice that they are not properly ordered
+fmrc my_fmrc = files
+show data/brief    ! note that member files are hidden
+show data/files my_fmrc
+
+! plot and list the aggregation
+GO bn_aggregate_f.sub
+
+cancel data my_fmrc
+show data/hidden   ! note that all member files were canceled, too
+
+! agg with 2nd, 3rd, 9th and 10th forecasts missing 
+use tmp/fcst_1.nc, tmp/fcst_2.nc, tmp/fcst_3.nc, tmp/fcst_9.nc, tmp/fcst_10.nc, tmp/fcst_11.nc
+let files = SPAWN("ls -1 tmp/fcst_*.nc")
+fmrc/hide my_fmrc = XCAT(files[I=6:10],{"6","1"})           ! double-wide gaps
+!fmrc my_fmrc = XCAT(files[I=6:10],{"6","1","2","5"})  ! single-wide gaps
+show data/files my_fmrc
+show data/brief
+LIST tf_times
+GO bn_aggregate_f.sub
+
+cancel data my_fmrc
+show data/brief/hidden
+cancel data/all
+
+! agg with the first forecast of longer time range than the others
+let files = SPAWN("ls -1 tmp/fcst_*.nc")
+fmrc/hide my_fmrc = XCAT(files[I=4:11],{"tmp/long_fcst_1.nc"}) ! first member is long
+show data/files my_fmrc
+GO bn_aggregate_f.sub
+cancel data my_fmrc
+
+! agg with the sixth forecast of longer time range than the others
+fmrc/hide my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc, tmp/fcst_3.nc, tmp/fcst_4.nc, tmp/fcst_5.nc, tmp/long_fcst_6.nc, tmp/fcst_7.nc, tmp/fcst_8.nc
+show data/files my_fmrc
+GO bn_aggregate_f.sub
+cancel data my_fmrc
+
+! agg where one dataset lacks one of the variables
+fmrc/hide my_fmrc = tmp/fcst_7.nc, tmp/fcst_4.nc, tmp/fcst_5.nc, tmp/one_var_fcst_6.nc, tmp/fcst_3.nc
+show data/files
+stat/l=1:20 fcst
+cancel data my_fmrc
+
+! agg where a LET/D variable is used to fill in a missing variable
+use tmp/one_var_fcst_1.nc, tmp/one_var_fcst_6.nc
+let/d=one_var_fcst_1.nc fcst_2 = fcst + 2  ! compute same value as file vars
+let/d=one_var_fcst_6.nc fcst_2 = fcst + 2  ! compute same value as file vars
+FMRC/hide my_fmrc_letd_6 = tmp/fcst_1.nc, tmp/fcst_2.nc, tmp/fcst_3.nc, tmp/fcst_4.nc, tmp/fcst_5.nc, tmp/one_var_fcst_6.nc, tmp/fcst_7.nc
+FMRC/hide my_fmrc_letd_1 = tmp/one_var_fcst_1.nc, tmp/fcst_2.nc, tmp/fcst_3.nc, tmp/fcst_4.nc, tmp/fcst_5.nc, tmp/fcst_6.nc, tmp/fcst_7.nc
+FMRC/hide my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc, tmp/fcst_3.nc, tmp/fcst_4.nc, tmp/fcst_5.nc, tmp/fcst_6.nc, tmp/fcst_7.nc
+show data/files
+show data
+! should be all 0's:
+list/i=10/j=10/order=ft/l=1:20/width=200 fcst_2[d=my_fmrc_letd_6] - fcst_2[d=my_fmrc]
+! should be all 0's:
+list/i=10/j=10/order=ft/l=1:20/width=200 fcst_2[d=my_fmrc_letd_6] - fcst_2[d=my_fmrc_letd_1]
+cancel data my_fmrc
+cancel data my_fmrc_letd_1, my_fmrc_letd_6
+
+! files already opened and not hidden remain open after aggregation
+use tmp/fcst_1.nc, tmp/fcst_2.nc, tmp/fcst_3.nc, tmp/fcst_9.nc, tmp/fcst_10.nc, tmp/fcst_11.nc
+fmrc my_fmrc = XCAT(files[I=6:10],{"6","1"})           ! without /HIDE
+cancel data my_fmrc
+show data/brief
+cancel data/all
+
+! *************************************
+! deliberate errors
+set mode ignore
+
+! error - duplicate file
+fmrc my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc,tmp/fcst_2.nc,tmp/fcst_3.nc
+SH DATA/BR/HIDDEN
+
+! error - unknown dataset
+fmrc my_fmrc = XCAT(files,"tmp/no_exist.nc")
+SH DATA/BR/HIDDEN
+
+! error - inserting forecasts at two consecutive steps implies too many gaps
+fmrc my_fmrc = XCAT(files,"tmp/consecutive_month_fcst.nc")
+SH DATA/BR/HIDDEN
+
+! error - inserting out of sequence forecast 
+fmrc my_fmrc = XCAT(files,"tmp/irregular_start_time_fcst.nc")
+SH DATA/BR/HIDDEN
+
+set mode/last ignore

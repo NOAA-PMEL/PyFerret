@@ -160,8 +160,6 @@
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V695+ *sh*  3/15 if an FMRC dataset disambiguate T and F axes with labels
 * V695  *acm*  5/15 Ticket 2279: PyFerret don't redraw labels on an overlay
-* V697 *acm* Ticket 2344: Allow time series overlay on any Hovmuller plot
-*            Send time axis info to PPLUS as if in units of hours
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -236,7 +234,7 @@ C plus those starting w/ xbox_bounds:
      .			phlim, pvlim, slen2, cal_id, tax,
      .			x_axtyp, y_axtyp, iscl, siz, nsiz, 
      .			TM_GET_CALENDAR_ID, mode_num, axis1, axis2,
-     .                  hblk1, mvh_temp, i
+     .                  hblk1, mvh_temp
 	REAL		s, w1_lo, w1_hi, w2_lo, w2_hi, valy1,
      .			d1_regrid, d2_regrid, bad_x, bad_y, rlo, rhi,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
@@ -260,8 +258,6 @@ C plus those starting w/ xbox_bounds:
 	y_axtyp   = 1
         plot_mem_used = 0
 	mvx_temp  = 0
-	fac_hr_x  = 1.
-	fac_hr_y  = 1.
 
 	IF ( vector ) THEN
 	   mvy	  = mr_list( 2 )
@@ -583,6 +579,9 @@ C   set up memory for the flag grid
 	      delta = unspecified_val8
 	   ENDIF
 
+	   haxlo = xaxlo	! save limits so overlays
+	   haxhi = xaxhi	! will know them
+
 	   time_axis = GEOG_LABEL( dim1, grid )  .AND. 
      .                  (dim1.EQ.t_dim .OR. dim1.EQ.f_dim) 
 
@@ -605,27 +604,11 @@ C   set up memory for the flag grid
               GOTO 5700
            ENDIF
 
-* Set up for axis tics and labeling. If its a time axis, 2D time plots will 
-* be set up as if the axis is in units of hours, for correct time series overlays
-
 	   timeax_both = .FALSE.
-	   CALL AXIS_FORMAT( 'X', dim1, grid, xaxlo, xaxhi, fac_hr_x,
-     .                       delta, curvilinear, cx_xpos,
-     .                       time_axis, timeax_both, xstyle,
+	   CALL AXIS_FORMAT( 'X', dim1, grid, xaxlo, xaxhi, delta,
+     .                       curvilinear, cx_xpos,
+     .                       time_axis,timeax_both,xstyle,
      .			     no_labels, xtra_xlab)
-
-* Multiply coordinates, max and min by factor for hours axis. Reset endpts in pplus.
-
-           IF (fac_hr_x.NE.1.  .AND. fac_hr_x.NE.0) THEN
-	      DO i = 1, size1
-	         s1_axis(i) = fac_hr_x* s1_axis(i)
-	      ENDDO
-	      xaxlo = xaxlo* fac_hr_x
-	      xaxhi = xaxhi* fac_hr_x
-
-	      CALL AXIS_ENDS  ( 'X', dim1, grid, xaxlo, xaxhi, delta, is_logx,
-     .			      x_axtyp, status )
-	   ENDIF
 
            time_axis_dim1 = time_axis
 
@@ -679,7 +662,10 @@ C ACM added 8/2001 save cal id if vertical time axis
               IF (yaxlo .GE. yaxhi) GOTO 5160
 	      delta = unspecified_val8
 	   ENDIF
-	   
+
+	   vaxlo = yaxlo	! save limits so overlays
+	   vaxhi = yaxhi	! will know them
+
 	   CALL AXIS_ENDS  ( 'Y', dim2, grid, yaxlo, yaxhi, delta, is_logy,
      .			      y_axtyp, status )
 	   IF ( status .NE. ferr_ok ) THEN
@@ -687,27 +673,11 @@ C ACM added 8/2001 save cal id if vertical time axis
               last  = xaxhi
               GOTO 5700
            ENDIF 
-
-* Set up for axis tics and labeling. If its a time axis, 2D time plots will 
-* be set up as if the axis is in units of hours, for correct time series overlays
-
 	   timeax_both = (time_axis .AND. time_axis_dim1) 
-	   CALL AXIS_FORMAT( 'Y', dim2, grid, yaxlo, yaxhi, fac_hr_y,
-     .                       delta, curvilinear, cx_ypos,
+	   CALL AXIS_FORMAT( 'Y', dim2, grid, yaxlo, yaxhi, delta,
+     .                       curvilinear, cx_ypos,
      .                       time_axis,timeax_both,ystyle,
      .			     no_labels, xtra_ylab)
-
-* Multiply coordinates, max and min by factor for hours axis. Reset endpts in pplus.
-
-           IF (fac_hr_y.NE.1.  .AND. fac_hr_y.NE.0) THEN
-	      DO i = 1, size2
-	         s2_axis(i) = fac_hr_y* s2_axis(i)
-	      ENDDO
-	      yaxlo = yaxlo* fac_hr_y
-	      yaxhi = yaxhi* fac_hr_y
-	      CALL AXIS_ENDS  ( 'Y', dim2, grid, yaxlo, yaxhi, delta, is_logy,
-     .			      y_axtyp, status )
-	   ENDIF
 
 *   When not an overlay, set the axis type to log or reverse log
 	   IF (is_logx .OR. is_logy) THEN
@@ -720,7 +690,7 @@ C ACM added 8/2001 save cal id if vertical time axis
 
 * rotate vectors to make axis scale ratio correction ?
 	IF ( vector .AND. aspect.GT.0. ) CALL RE_ORIENT(
-     .			xaxlo, xaxhi, yaxlo, yaxhi, dim1, dim2,
+     .			haxlo, haxhi, vaxlo, vaxhi, dim1, dim2,
      .			size1, size2, transpz, aspect,
      .			memory(1, xblk1), mvx_temp,
      .			memory(1, yblk1), mvy_temp, s )
@@ -740,20 +710,6 @@ C ACM added 8/2001 save cal id if vertical time axis
      .		      1, size1, 1, size2, s1_axis, s2_axis, 
      .		      n1_regrid, n2_regrid, rw1lo, rw2lo,
      .		      d1_regrid, d2_regrid, plot_mem_used)
-
-* Restore coordinates (is this necessary?)
-
-	IF (fac_hr_x.NE.1. .AND. fac_hr_x.NE.0) THEN
-	   DO i = 1, size1
-	      s1_axis(i) = s1_axis(i)/ fac_hr_x
-	   ENDDO
-	ENDIF
-
-	IF (fac_hr_y.NE.1.  .AND. fac_hr_y.NE.0) THEN
-	   DO i = 1, size2
-	      s2_axis(i) = s2_axis(i)/ fac_hr_y
-	   ENDDO
-	ENDIF
 
 * load curvilinear pointers and sizes for later access from PLOT+
 	IF ( curvilinear ) THEN
@@ -839,9 +795,9 @@ C ACM added 8/2001 save cal id if vertical time axis
 * do not re-draw the main label, logo, other labels from the underlay plot
 	   nlabs_on = 0  
 	   CALL PPLCMD ( from, line, 0, 'LABS ', 1, 1 )	
-	   DO i = 1, 3
-	      logolab(i) = 0
-	   ENDDO
+	   logolab(1) = 0
+	   logolab(2) = 0
+	   logolab(3) = 0
 
 	   use_keys = .TRUE.
 	   IF ( .NOT.user_title ) THEN

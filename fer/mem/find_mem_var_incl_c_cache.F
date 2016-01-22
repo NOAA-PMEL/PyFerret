@@ -42,6 +42,7 @@
 * written for VAX computer under VMS operating system
 *
 * V695+ 5/15 *sh*
+* V698  1/16 *sh* -- continue on to check cache whenever mr=0 from FIND_MEM_VAR
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -66,7 +67,7 @@
 
 * first try a normal cache search
 	CALL FIND_MEM_VAR( cx, mr, search_by_value, valid_search )
-	IF (.NOT.valid_search .OR. mr.NE.mr_nonexist) RETURN
+	IF (mr.NE.mr_nonexist) RETURN   ! 1/16 ignore valid_search
 
 * initialize
 	var = cx_variable(cx)

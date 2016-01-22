@@ -108,6 +108,7 @@
 * V690 9/13-2/14 *sh*   support for auxiliary var regridding: temp[gz(depth)=zax]
 * V694  *acm* 1214 Fixing ticket 2220
 * V694 *acm*  5/15 Fix ticket 2213 
+* V698 *sh* 1/16 - tweaks to aggregates to ensure all LET/D grids found
 
 * calling argument declarations:
 	INTEGER	status
@@ -116,8 +117,9 @@
 * exit #2 is to signal that the grid has been obtained and stored in uvar_grid
 
 * internal variable declarations:
-	LOGICAL	ITSA_GCVAR, ITSA_CONST_VAR, its_dynamic, its_gc, need_another_pass,
-     .		saved_ifthen_type, do_err, agg_has_uvar, ok_remote,
+	LOGICAL	ITSA_GCVAR, ITSA_CONST_VAR,
+     .		its_dynamic, its_gc, need_another_pass,
+     .		saved_ifthen_type, do_err, ok_remote,
      .		getting_aux_var, its_const_var
 	INTEGER KNOWN_GRID, STR_SAME,
      .		TM_LENSTR1, GCF_PARENT_UVAR, GCF_PARENT_CHAR, 
@@ -128,9 +130,11 @@
      .		ifthen_data_type, varid, alen, attype, attlen,
      .          attoutflag, attid, bracket, dot, dsloc, endbracket,
      .          status_deallo, agg_grid, agg_line, agg_len, agg_dset,
-     .		imemb, fer_uvar, memb_dset, memb_grid, iline, nv
+     .		imemb, memb_cat, memb_dset, memb_grid, iline, nv,
+     .		hi_cat, hi_var, vlen, slen
 
-	CHARACTER VAR_CODE*4, name*512, buff*2048, varname*512, 
+	CHARACTER VAR_CODE*128, LEFINT*6,
+     .		  name*512, buff*2048, varname*512, 
      .            attname*128, aname*128, newname*512
 
 #include "netcdf.inc"
@@ -265,10 +269,60 @@
 	   CALL DEALLO_UNFORMED_GRID (status_deallo)
 	   GOTO 5000
 	ENDIF
+
 ***
 * A digression from the usual grid-getting:
+* if this variable belongs to an aggregated dataset there may be LET/D uvars
+* included in the definition of that dataset. The user may have changed
+* those LET/D defnitions since defining the aggregation.  We need to ensure
+* that the grids of any new LET/D uvars are known.
+	IF ( cx_category(hi_cx).EQ.cat_agg_e_var .OR. 
+     .       cx_category(hi_cx).EQ.cat_agg_f_var ) THEN
+	   agg_dset = dset
+	   status = NCF_GET_AGG_COUNT (agg_dset, agg_len)
+* loop over the member vars of the aggregation
+	   DO imemb = 1, agg_len
+* ... first get the information that was true at the time of DEFINE DATA/AGG
+	      varname = VAR_CODE(cx_category(hi_cx), cx_variable(hi_cx))
+	      CALL CD_GET_AGG_VAR_INFO (agg_dset, varname, imemb, 
+     .            memb_cat, memb_dset, memb_grid, iline, nv, status)
+* ... ignore dummy datasets and synthetic 2D coordinate variable, tf_times
+	      IF (memb_dset .EQ. pagg_promotion_indicator_dset
+     .	      .OR.memb_dset .EQ. pdset_dummy                   ) CYCLE
+* ... now get info of the variable currently associated with this name
+	      varname = VAR_CODE( memb_cat, nv )
+	      vlen = TM_LENSTR1(varname)
+	      CALL FIND_VAR_NAME (memb_dset,varname, hi_cat, hi_var )
+	      IF (hi_var .EQ. munknown_var_name) CALL ERRMSG
+     .			(ferr_aggregate_error, status,"variable "//
+     .			 varname(:vlen)//" not found in member "//
+     .			 LEFINT(imemb, slen), *5000)
+	      uv_grd = KNOWN_GRID(memb_dset, hi_cat, hi_var)
+	      IF (uv_grd .EQ. unspecified_int4) THEN
+	         IF (hi_cat .NE. cat_user_var) GOTO 9000  ! internal error
+* ... we have found a LET/D valiable with unknown grid
+* ... set up the context to describe that variable
+*     (the current hi_cx may include regridding and all sorts of stuff)
+	         CALL INIT_EMPTY_CONTEXT(hi_cx)
+	         cx_data_set(hi_cx) = memb_dset
+	         cx_variable(hi_cx) = hi_var
+	         cx_category(hi_cx) = cat_user_var
+!	         CALL GET_AGG_MEMB_UVAR_CONTEXT(memb_dset, hi_var, hi_cx)
+* ... when the grid has been determined we want to come back to this aggregated
+*     variable and check for other new LET/D vars that may lack grids
+*     so we set the "phase" back to where it was when we started this pass
+	         is_phase(isp) = is_phase(isp) - 1
+* ... create a new ISP stack level to get the grid of that user variable
+	         GOTO 900
+	      ENDIF
+	   ENDDO
+	ENDIF
+***
+
+***
+* Another digression from the usual grid-getting:
 * When regridding using auxiliary variable(s) has been requested, we have to
-* ensure that the grids of the aux variables are known as a part of the get-grid phase.
+* ensure that the grids of the aux variables are known
 * (Note that aux var grids do not get merged into the parent grid)
 	IF  ( cx_unstand_grid(hi_cx)
      .	.AND. cx_naux(hi_cx) .GT. 0 ) THEN
@@ -292,6 +346,7 @@
 * handle variable regridded to a uvar which has unknown grid (8/99) 
 	IF ( cx_unstand_grid(hi_cx)
      . .AND. cx_grid(hi_cx) .LT. unspecified_int4 ) GOTO 800
+
 * do we know the defining grid for the component ?
 * (not necessarily the same as the returned grid --> there may be a regrid )
 	IF ( cx_category(hi_cx) .EQ. cat_user_var ) THEN
@@ -306,37 +361,6 @@
 	      GOTO 900	! uvar grid not known --> get it
 	   ELSE
 	      GOTO 500	! uvar grid known --> merge it
-	   ENDIF
-
-C What other cx info do we have here? Is the dataset the agg_dataset? Should be able to get the
-C lo and hi of the ensemble axis if so, and get all the grids.
-
-	ELSEIF ( cx_category(hi_cx).EQ.cat_agg_e_var .OR. 
-     .           cx_category(hi_cx).EQ.cat_agg_e_var ) THEN
-
-	   agg_dset = dset
-	   status = NCF_GET_AGG_COUNT (agg_dset, agg_len)
-
-	   var = cx_variable(hi_cx)
-
-	   uv_grd = KNOWN_GRID( agg_dset, cx_category(hi_cx), var )
-	   IF ( uv_grd .NE. unspecified_int4 ) THEN
-	      uvar_dset(uvar) = 0  ! now its a datset variable not user var
-	      GOTO 500	! uvar grid known --> merge it
-	   ENDIF
-
-	   DO 355 imemb = 1, agg_len
-	      CALL CD_GET_AGG_VAR_INFO (agg_dset, name, imemb, 
-     .            fer_uvar, memb_dset, memb_grid, iline, nv, status)
-	      IF (fer_uvar .EQ. cat_user_var) agg_has_uvar = .TRUE.
- 355	   CONTINUE
-
-	   IF (agg_has_uvar) GOTO 990
-
-	   IF ( cx_grid(hi_cx) .NE. unspecified_int4 ) THEN
-	      GOTO 500	! know grid --> merge it
-	   ELSE
-	      GOTO 9000	! err: grid for non-user agg vars should always be known
 	   ENDIF
 
 	ELSEIF ( cx_grid(hi_cx) .NE. unspecified_int4 ) THEN
@@ -627,20 +651,19 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 	is_act  ( isp ) = isact_get_grid	! temp diagnostic
 	RETURN 1
 
-* grid for this aggregate dataset is not known.  Back to get_uvar_grid and call
-* is_aggregate_grid to get it
-* ... repeat this phase again when we get back
- 990	is_phase(isp) = is_phase(isp) - 1
-* load the new variable info onto the IS stack
-	CALL PUSH_INTERP_STACK( isp, status )
-	IF ( status .NE. ferr_ok ) RETURN
-c	is_sum( isp ) = isalg_merge_n
-
-	is_cx   ( isp ) = hi_cx
-	is_uvar ( isp ) = cx_variable( hi_cx )
-	is_act  ( isp ) = isact_get_agg_grid	! get aggregate grid on return.
-
-	RETURN 1
+!* grid for at least 1 member variable of this aggregated dataset is not known.
+!* Go back to get_uvar_grid and call is_aggregate_grid to get it
+!* ... repeat this phase again when we get back
+! 990	is_phase(isp) = is_phase(isp) - 1
+!* load the new variable info onto the IS stack
+!	CALL PUSH_INTERP_STACK( isp, status )
+!	IF ( status .NE. ferr_ok ) RETURN
+!
+!	is_cx   ( isp ) = hi_cx
+!	is_uvar ( isp ) = cx_variable( hi_cx )
+!	is_act  ( isp ) = isact_get_agg_grid	! get aggregate grid on return.
+!
+!	RETURN 1
 	
 ***  DONE - clean up
  1000	CONTINUE

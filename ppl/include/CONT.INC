@@ -21,7 +21,7 @@ C**
 
 	COMMON/CONT/ZLEV(ICNLEV),LDIG(ICNLEV),LWGT(ICNLEV),LCLR(ICNLEV),
      *	NLEV,NLEV_DFLT,HGT,LEV_STD,LEV_MEAN,LEV_MIN,LEV_MAX,LEV_HIST,
-     *  NARC,IAUTOC,NLEV2,NSIGC,CANGLE,IVCOMP,
+     *  NARC,IAUTOC,NLEV2,NSIGC,INISIG,NEWSIG,CANGLE,IVCOMP,
      *  CONTOUR_FEWER,CENTERED,SET_DELTA,DELTA,NEGINF,POSINF,CONT_KEY,
      *  OPENLEV,SET_STD,SET_MEAN,SET_MIN,SET_MAX,NEED_DATA_SCAN,USE_HIST,
      *  LEV_STR,INTLEV
@@ -43,6 +43,8 @@ c	iautoc	=0  use supplied levels
 c		=1  compute levels from input data and nlev
 c	nlev2	actual number of levels to use 
 c	nsigc	number of significant digits for labels if iautoc=1
+c	inisig	default number of significant digits for contour labels
+c	newsig	flag that the number of sig digs is changed with CONSET
 c	cangle	angle to rotate the contour plot about its center.
 c	ivcomp	vector component to contour or surf
 c

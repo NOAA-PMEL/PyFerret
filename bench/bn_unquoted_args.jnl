@@ -111,6 +111,13 @@ go/help "tmp/testMe"
 go/help ($abs_path)
 go/help "($abs_path)"
 
+! a few tests the slipped through the first time
+GO tmp/testMe POLYGON/KEY/lev=20 xpts,ypts,sst,star
+go "tmp/testMe.jnl" /home/users/tmap/ferret/linux/fer_dsets/data/coads_climatology.cdf
+if 1 then let/quiet mytestvar = whatever
+sh var mytestvar
+
+
 set mode ignore
 go/garbage tmp/testMe
 go/garbage "tmp/testMe"

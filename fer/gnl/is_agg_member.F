@@ -1,4 +1,4 @@
-      SUBROUTINE ISIT_ANOTHER_DSET (expression, dset, varname, status)
+	LOGICAL FUNCTION IS_AGG_MEMBER( dset, parent, nparent )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -32,43 +32,67 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-* Look for [d=n] within an expression, and reset dset to match the dataset number
-* or name. varname is returned without the [d=] expression.
+*
+* is the indicated dataset part of some other aggregated dataset
+!**** NOTE:  THIS ROUTINE (and many others) SHOULD USE THE dset
+!****      LIST STRUCTURE RATHER THAN BRUTE-FORCE LOOPS THROUGH ALL DATASETS
 
-* V600 6/05 *acm* Attribute control.
+* calling arguments
+*   dset    - the dataset to be checked to see if it is used in an agg (input)
+*   parent  - the last agg that owns it (or unspecified_int4 if none) (output)
+*   nparent - the number of aggs for which this dataset is a member
 
-	INCLUDE	'ferret.parm'
-	INCLUDE 'errmsg.parm'
+* programmer - steve hankin
+* V695 *sh* 1/16
 
-* calling argument declarations
+	include 'tmap_dims.parm'
+#	include "tmap_dset.parm"
+	include 'tmap_errors.parm'
+	include	'ferret.parm'
+	include 'errmsg.parm'
+	include 'xdset_parms.cmn'
+	include 'xprog_state.cmn'
+	include 'xdset_info.cmn_text'
+	external xdset_info_data
+	include 'xrisc.cmn'
+	include	'xtm_grid.cmn_text'
+	external xgt_grid_data
 
-      INTEGER dset, status
-      CHARACTER*(*) expression, varname
+* calling argument declarations:
+	INTEGER	dset, parent, nparent
 
-* local variable declarations
-      INTEGER TM_LENSTR1, slen, elen, llen, ivar, mods_cx, category
+* local variable declarations:
+	INTEGER	nmemb, imemb, membset, iset, status
 
-      llen = TM_LENSTR1(expression)
-      varname = expression
 
-      IF ( INDEX(expression,'[') .GT. 0 ) THEN
+* initialize
+	nparent = 0
 
-         dset = pdset_irrelevant	! default (not used ...)
-         CALL PARSE_NAM_DSET(expression, cx_last, dset, category, 
-     .                       ivar, mods_cx, status)
-         IF (status .NE. ferr_ok) GOTO 5010
-         slen = INDEX(expression,'[') 
-         elen = INDEX(expression,']')
-         varname = expression(1:slen-1)
-         IF (llen .GT. elen) 
-     .      varname = expression(1:slen-1)//expression(elen+1:llen)
- 
-      ENDIF
+* check all of the aggregations currently open
+	DO iset = 1, maxdsets
+	   IF ( ds_name(iset) .EQ. char_init1024) CYCLE
+	   IF (iset .EQ. dset) CYCLE
+	   IF ( ds_type(iset).NE.'ENS' .AND. ds_type(iset).NE.'FCT') CYCLE 
 
-5000  RETURN
+* Get number of aggregation members
+	   CALL CD_GET_AGG_DSET_INFO (iset, nmemb, status)
+	   IF (status .NE. ferr_ok) CALL WARN('crptn: isit_agg_member')
 
-5010  IF (dset .EQ. pdset_irrelevant .OR. 
-     .       dset .EQ. unspecified_int4) status = ferr_syntax
+* Look through the aggregation members to see if we are one of them
+	   DO imemb = 1, nmemb
+	      CALL CD_GET_AGG_DSET_MEMBER (iset, imemb, membset, status)
+	      IF (status .NE. ferr_ok)  CALL WARN('crptn: isit_agg_member')
+	      IF (membset .EQ. dset) THEN
+	         nparent = nparent + 1
+	         parent = iset   ! the last one found will be returned
+	         IS_AGG_MEMBER = .TRUE.
+	      ENDIF
+	   ENDDO
+	ENDDO
+	IF (nparent .GT. 0) RETURN
 
-      RETURN
-      END
+* not a member of any aggregation
+	parent = unspecified_int4
+	IS_AGG_MEMBER = .FALSE.
+	RETURN
+	END

@@ -1,5 +1,5 @@
 	SUBROUTINE CREATE_AGG_DSET (agg_dset, dname, dtitle,
-     .               nsets, agg_dim, iline, status)
+     .               nsets, dset1, agg_dim, iline, status)
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -41,6 +41,16 @@
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 * V695+ *sh*  11/15 Correct bugs in setting of aggregate dset title
 
+* calling argument
+*   agg_dset	- dataset number of the aggregation (input)
+*   dname	- name of the aggregated dataset (input)
+*   dtitle	- optional title string (input)
+*   nsets	- number of datasets in the aggregation (input)
+*   dset1	- dataset number of first (pattern) dataset in agg (input)
+*   agg_dim	- idim number (5 or 6) of aggregation dimension (input)
+*   iline	- ??
+*   status	- return status (output)
+
       IMPLICIT NONE
         include 'tmap_errors.parm'
 #include "tmap_dset.parm"
@@ -58,11 +68,12 @@
 
 * calling argument declarations:
 	CHARACTER*(*)	dname, dtitle
-	INTEGER		agg_dset, nsets, agg_dim, iline, status
+	INTEGER		agg_dset, nsets, dset1, agg_dim, iline, status
 
 * local variable declarations:
 	INTEGER TM_LENSTR, TM_LENSTR1, ALLO_MANAGED_AXIS,
-     .		type, coordvar, varid, big_cx
+     .		type, coordvar, varid, big_cx, nlen
+	CHARACTER LEFINT*20, ntext*20
 	REAL	bad_flag
 
 	CALL CD_INIT_AGG_DSET (agg_dset, dname, status)
@@ -77,11 +88,19 @@
 	ds_des_name(agg_dset) = dname
 
 	IF (dtitle(1:2).EQ.char_init .OR. TM_LENSTR(dtitle).EQ.0) THEN
-	   ds_title(agg_dset) = cmnd_buff(item_start(1):item_end(num_items))
+	   ntext = LEFINT(nsets, nlen)
+	   IF (agg_dim.EQ.e_dim) THEN
+	      ds_title(agg_dset) = "Ensemble"
+	   ELSE
+	      ds_title(agg_dset) = "Forecast"
+	   ENDIF
+	   ds_title(agg_dset) = ds_title(agg_dset)(:8)//' series of '
+     .		//ntext(:nlen)//' datasets patterned on '//
+     .		ds_name(dset1)
 	ELSE
 	   ds_title(agg_dset) = dtitle
 	ENDIF
-	ds_mod_title(agg_dset) = ww_dim_name(agg_dim)//'-aggregation'
+	ds_mod_title(agg_dset) = ' '
  
 * create the aggregate axis
 

@@ -37,6 +37,8 @@
 
 * original: *acm*
 * V695+ *sh* 5/15 - set up calendar axis attributes from 1st member dset
+* V698 *sh* 1/16 - use TM_ALLO_TMP_LINE to create axis, so its use counts get 
+*			set and it gets deallocated automatically
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -54,12 +56,10 @@
 	INTEGER	len, line_dir, iline, status
 
 * local variable declarations:
-	INTEGER ALLO_MANAGED_AXIS
 	CHARACTER*64 newname
 
 * create the ensemble or forecast axis
-
-	status = ALLO_MANAGED_AXIS (iline )
+	CALL TM_ALLO_TMP_LINE (iline, status)
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * save the line in memory - but don't catalog its name

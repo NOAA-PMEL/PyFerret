@@ -43,6 +43,7 @@
 *        3/15 *sh* pauxrgrd_fmrc for forecast-time index orthoganalizing
 * V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
 * V696 *acm* 11/15 Added @BIN and @NBIN regridding transforms
+* V698 *sh* 1/16 added pagg_promotion_indicator_dset
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -733,4 +734,8 @@
 	CHARACTER*4	p_DQ_quote, p_SQ_quote
 	PARAMETER     ( p_DQ_quote = '_DQ_',
      .		        p_SQ_quote = '_SQ_'  )
+
+* flag to indicate this variable is the special 2D tf_times forecast field
+	INTEGER		pagg_promotion_indicator_dset
+	PARAMETER     ( pagg_promotion_indicator_dset = -6767)
 

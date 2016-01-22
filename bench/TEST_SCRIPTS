@@ -247,7 +247,9 @@ bn_aggregate_t.jnl
 bn_unquoted_args.jnl
 bn_long_lists.jnl
 bn_show_uvar_grid.jnl
-bn_time_over_Hov.jnl
+bn_aggregate_f.jnl
+bn_hovmuller_overlays.jnl
+bn_labels_on_taxis.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl
 ! PyFerret-only Ferret scripts

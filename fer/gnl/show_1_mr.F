@@ -55,6 +55,9 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
 *                 various SHOW commnands will not list info for E,F dimensions.
+* V698  1/16 *sh* bug fix: the initial 6D trap was removing all possibility of
+*		  showing 5D or 6D variables
+
 
 	include	'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -97,7 +100,7 @@
 
 * If mode 6d_lab has been canceled, but the variable has dimension 5 or 6,
 * that is an error
-	DO 150 idim = listdims, nferdims
+	DO 150 idim = listdims+1, nferdims
 	   IF ( MR_DIM_LEN( idim, mr ) .GT. 1 ) GOTO 5100
  150	CONTINUE
 

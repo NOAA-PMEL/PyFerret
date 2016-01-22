@@ -40,6 +40,7 @@ is_counter_var.F\
 is_dependencies.F\
 is_do_gc_fcn.F\
 is_do_op.F\
+is_dummy.F\
 is_gather.F\
 is_grid_mode.F\
 is_modulo.F\

@@ -43,6 +43,7 @@
 *
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V695+ 4/15 *acm* and *sh* -- added support for forecast aggregations
+* V698 1/16 *sh* - support gappy and inconsistent length forecast members
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -67,27 +68,29 @@
 	CHARACTER*(*) vname, tcoordname
 
 * local variable declarations:
-	LOGICAL	its_dynamic, itsa_uvar, has_edges
+	LOGICAL	its_dynamic, itsa_uvar, has_edges, has_gaps, found_fvar
 	INTEGER STR_SAME, TM_LENSTR1,
      .		big_cx, igrid, idim, gnum, nv, type, ii, iset, slen, 
-     .		ndim, vtype, attype, attoutflag, i2, status,
-     .		npts, nT, nF, ipt, iline2, gnum2, it2d,
-     .		axcalt, axlagf, gg, ipt1, ipte, fax
+     .		ndim, vtype, attype, attoutflag, i2, i, status,
+     .		npts, nT, nF, ipt, iline2, gnum2, it2d, gap_size, max_gap_size,
+     .		axcalt, axlagf, gg, ipt1, ipte, fax, memb_dset,
+     .		nv_dummy, igrid_dummy, vtype_dummy, num_indices
 	REAL*8  TDEST_WORLD
 
 * Getting info back from the attribute-handling structure
 	CHARACTER dimname*128, buff*128, name1*128
-	INTEGER varid, tline, g2d
+	INTEGER varid, t2did, tline, g2d, globalid
 
 * initialize
       tline = unspecified_int4
+      has_gaps = .FALSE.
 
 * Define aggregate grid
 
       igrid = unspecified_int4
       IF (grid .NE. unspecified_int4) THEN
          igrid = 0
-         CALL TM_NEXT_TMP_GRID (igrid, 710)
+         CALL TM_NEXT_TMP_GRID (igrid, 710)   ! this line is unnecessary
   710    CALL TM_ALLO_TMP_GRID (igrid, status)
          IF (status .NE. ferr_ok) GOTO 5000
 
@@ -98,7 +101,7 @@
          grid_line(agg_dim, igrid) = iline
 * for FMRC agg the shared T axis is a time lag 
 	 IF (tf_lag_t .NE. unspecified_int4)
-     .			grid_line(t_dim, igrid) = tf_lag_t 
+     .				grid_line(t_dim, igrid) = tf_lag_t 
 
 * Make up a unique grid name for aggregate grid
          IF (agg_dim .EQ. t_dim) grid_name(igrid) = 'GEN'
@@ -140,7 +143,10 @@
 	   ds_grid_start(agg_dim,nv)= 1
 	   ds_grid_end(agg_dim,nv)  = nsets
 	   ds_ordering(ndim,nv)     = agg_dim
-           
+* ... limit T axis length to the T length of the F aggregation
+           IF (agg_dim.EQ.f_dim .AND. tf_lag_t.NE.unspecified_int4)
+     .		ds_grid_end(t_dim,nv) = line_dim(tf_lag_t)
+
 	   ds_grid_number(nv) = gnum
 	ENDIF
 
@@ -159,7 +165,7 @@
 * If this is a forecast aggregation, then the 2D time var has been defined (or 
 * will be, just below). Add a coordinates attribute to variables in the FMRC 
 * dataset which now have a 2D forecast-time coordinate variable. 
-* Also add an attribute (name to be finalized), _ftime2dRef pointing to TIME2D
+* Also add an attribute (name to be finalized), _ftime2d pointing to TIME2D
 	      
 	IF (agg_dim.EQ.f_dim .AND. grid_line(t_dim, gnum).NE.int4_init) THEN
 	   buff = " "
@@ -186,32 +192,73 @@
 	   slen = TM_LENSTR1(tcoordname)
 	   attoutflag = 1
 	   attype = NCCHAR
-	   CALL CD_PUT_NEW_ATTR (agg_dset, varid, '_ftime2dRef', attype, 
+	   CALL CD_PUT_NEW_ATTR (agg_dset, varid, '_ftime2d', attype, 
      .             slen, attoutflag, tcoordname, 0., status )
 
 	ENDIF
 
 * Add aggregate-grid info to the lists in aggregate datset and
 * aggregate-grid list.   Mark user-variables with a grid number of -999
-
+* Note if there is a LET/D variable that duplicates the name of a file var
+* it is the file var that gets registered, even though the LET/D var has
+* precedence during evaluation.  This allows for the possibility thatthe LET/D
+* var may be cancelled. BUT it also allows the possibility that the grid
+* of the fvar is unacceptable -- a chance of a crash for a pathological dataset
 	DO 750 ii = 1, nsets
 	   iset = member_sets(ii)
-	   DO 740 nv = 1, maxvars
-	      IF ( (ds_var_setnum(nv) .EQ. iset) .AND. 
-     .             (STR_SAME(ds_var_code(nv), vname) .EQ. 0) ) THEN
-	         igrid = ds_grid_number(nv)
-		 vtype = cat_file_var ! file var
-	         CALL CD_ADD_AGG_VAR_INFO (agg_dset, vname, ii, vtype, 
-     .             iset, igrid, iline, nv, status)
+	   found_fvar = .FALSE.
+	   IF (iset .NE. pdset_dummy) THEN
+* ... add this member data set as an fvar as part of this aggregated variable
+	      DO nv = 1, maxvars
+	         IF ( (ds_var_setnum(nv) .EQ. iset) .AND. 
+     .                (STR_SAME(ds_var_code(nv), vname) .EQ. 0) ) THEN
+	            igrid = ds_grid_number(nv)
+		    vtype = cat_file_var
+	            CALL CD_ADD_AGG_VAR_INFO (agg_dset, vname, ii, vtype, 
+     .                iset, igrid, iline, nv, status)
+	            found_fvar = .TRUE.
+	            EXIT
+	         ENDIF
+	      ENDDO
+	      IF (.NOT.found_fvar) THEN
+* ... add this member data set as a LET/D as part of this aggregated variable
+* ... optimize search using deleted_list_get_undel
+!	         DO nv = 1, max_uvar      ! brute-force equivalent loop
+		 CALL deleted_list_get_undel(uvar_num_items_head,
+     .                              deleted_list_result(1),
+     .                              max_uvar, num_indices )
+	         DO i = 1, num_indices
+	            nv = deleted_list_result(i)
+	            IF ( uvar_num_items(nv) .EQ. uvar_deleted) CYCLE
+	            IF ( (uvar_dset(nv) .EQ. iset) .AND. 
+     .                   (STR_SAME(uvar_name_code(nv), vname) .EQ. 0) ) THEN
+		       vtype = cat_user_var
+	               igrid = uvar_grid(nv,iset)
+	               CALL CD_ADD_AGG_VAR_INFO (agg_dset, vname, ii, vtype, 
+     .                   iset, igrid, iline, nv, status)
+* ... bump the use count for this grid to protect it from being deleted if
+*     the user changes the LET/D definition -- grid is needed during the
+*     gather process (IS_STRIP & IS_AGGREGATE_GATHER).
+*  ==> be sure to un-use it when the aggregation gets canceled
+	               CALL TM_USE_DYN_GRID(igrid)
+	               EXIT
+	            ENDIF
+	         ENDDO
 	      ENDIF
-	      IF ( (uvar_dset(nv) .EQ. iset) .AND. 
-     .             (STR_SAME(uvar_name_code(nv), vname) .EQ. 0) ) THEN
-	         igrid = unspecified_int4
-		 vtype = cat_user_var! user var
-	         CALL CD_ADD_AGG_VAR_INFO (agg_dset, vname, ii, vtype, 
-     .             iset, igrid, iline, nv, status)
-	      ENDIF
- 740	   CONTINUE
+	   ELSE
+* ... add the dummy data set as a part of this variable 
+*     Note that the first member of the agg by common sense cannot be a dummy
+	      CALL CD_ADD_AGG_VAR_INFO (agg_dset, vname, ii, vtype_dummy, 
+     .             pdset_dummy, igrid_dummy, iline, nv_dummy, status)
+	   ENDIF
+* ... grab information from the first dataset to reuse with dummy datasets 
+	   IF (ii .EQ. 1) THEN
+*    ... OK_AS_AGG_VAR guarantees grid is always valid -- even for LET/D vars
+	      IF (igrid .EQ. unspecified_int4) STOP 'DEFINE_EF_AGG grid err'
+	      nv_dummy = nv
+	      igrid_dummy = igrid
+	      vtype_dummy = cat_file_var
+	   ENDIF
  750	CONTINUE
 
  
@@ -225,8 +272,8 @@
 * of the aggregations)
 	IF (agg_dim.EQ.f_dim .AND. tline.NE.unspecified_int4) THEN
 
-	   CALL CD_GET_VAR_ID (agg_dset, tcoordname, varid, status)
-	   IF (status .EQ. ferr_ok) GOTO 5000  ! BAIL OUT -- already defined
+	   CALL CD_GET_VAR_ID (agg_dset, tcoordname, t2did, status)
+	   IF (status .EQ. ferr_ok) GOTO 4000  ! BAIL OUT -- already defined
 
 	   igrid = 0
 	   CALL TM_NEXT_TMP_GRID (igrid, 760)
@@ -269,7 +316,7 @@
 	      grid_line(f_dim, g2d) = iline
 
 	      ds_grid_start(t_dim,nv) = 1
-	      ds_grid_end(t_dim,nv) = line_dim(tline)
+	      ds_grid_end(t_dim,nv) = line_dim(tf_lag_t)  ! limit to agg dim
 	      ds_ordering(1,nv) = t_dim
 
 	      ds_grid_start(f_dim,nv) = 1
@@ -302,7 +349,7 @@
      .            igrid = ds_grid_number(i2)
  795	      CONTINUE
 
-	      iset = 0
+	      iset = pagg_promotion_indicator_dset
 	      vtype = cat_agg_f_var
 	      CALL CD_ADD_AGG_VAR_INFO (agg_dset, tcoordname, ii, vtype, 
      .             iset, igrid, iline, nv, status)
@@ -310,14 +357,14 @@
 
 * Give the time2D variable _CoordinateAxisType and calendar attributes
 
-	   CALL CD_GET_VAR_ID (agg_dset, tcoordname, varid, status)
+	   CALL CD_GET_VAR_ID (agg_dset, tcoordname, t2did, status)
 	   attype = NCCHAR
-	   CALL CD_PUT_NEW_ATTR (agg_dset, varid, '_CoordinateAxisType', 
+	   CALL CD_PUT_NEW_ATTR (agg_dset, t2did, '_CoordinateAxisType', 
      .       attype, 4, attoutflag, 'Time', 0., status )
 	   slen = TM_LENSTR1(line_cal_name(tline))
 	   attoutflag = 1
 	   attype = NCCHAR
-	   CALL CD_PUT_NEW_ATTR (agg_dset, varid, 'calendar', attype, 
+	   CALL CD_PUT_NEW_ATTR (agg_dset, t2did, 'calendar', attype, 
      .       slen, attoutflag, line_cal_name(tline), 0., status )
 
 * define two special axes needed for FMRC regridding:
@@ -336,22 +383,42 @@
 
 * ... loop over the member data sets, copying their time steps
 	   DO ii = 1, nsets
-	      CALL CD_GET_AGG_VAR_INFO (agg_dset, vname, ii, 
+	      IF (member_sets(ii) .EQ. pdset_dummy) THEN
+* ... insert a series of missing time values in the 2d time array
+	         has_gaps = .TRUE.
+	         DO i2 = 1, nT
+	            line_mem(ipt)      = unspecified_val8
+	            line_mem(ipt+npts) = unspecified_val8
+	            ipt = ipt + 1
+	         ENDDO
+	      ELSE
+* ... insert the series of time step values from this forecast
+	         CALL CD_GET_AGG_VAR_INFO (agg_dset, vname, ii, 
      .                vtype, iset, gnum2, iline2, nv, status)
-	      IF (status .NE. ferr_ok) GOTO 5200
-* ...  iline2 should be equal to iline -- no importance
+	         IF (status .NE. ferr_ok) GOTO 5200
+* ... iline2 should be equal to iline -- no importance; not used
+* ... if the first member has a LET/D var, use time axis info from another var
+	         IF (gnum2 .EQ. unspecified_int4) gnum2 = igrid_dummy
 * set up to translate all times to the T0 of the first member
-	      CALL TDEST_WORLD_INIT (gnum2, grid, t_dim, status)
-	      IF (status .NE. ferr_ok) RETURN 
-	      DO i2 = 1, nT
-	         line_mem(ipt) = TDEST_WORLD(i2, gnum2, t_dim, box_middle)
-	         line_mem(ipt+npts) =
+	         CALL TDEST_WORLD_INIT (gnum2, grid, t_dim, status)
+	         IF (status .NE. ferr_ok) GOTO 5000 
+	         DO i2 = 1, nT
+	            line_mem(ipt) = TDEST_WORLD(i2, gnum2, t_dim, box_middle)
+	            line_mem(ipt+npts) =
      .				 TDEST_WORLD(i2, gnum2, t_dim, box_lo_lim)
-	         ipt = ipt + 1
-	      ENDDO
+	            ipt = ipt + 1
+	         ENDDO
+	      ENDIF
 	   ENDDO
 	   line_mem(ipt1+2*npts) =
      .				 TDEST_WORLD(nT, gnum2, t_dim, box_hi_lim)
+
+* ... if there were gaps in the forecast time array, fill 'em
+	   IF (has_gaps) THEN
+	      CALL FILL_FMRC_TIME_GAPS(line_mem(ipt1),
+     .				       line_mem(ipt1+npts), nT,nF, status)
+	      IF (status .NE. ferr_ok) GOTO 5000
+	   ENDIF
 
 * save the 2D time step array in c memory cache
 * to be recovered as needed by FIND_MEM_VAR
@@ -360,13 +427,13 @@
 
 !***** TEST ****
 !	   CALL RECOVER_CACHED_ARRAY(line_mem(ipt1+72), npts,
-!     .						ds_var_c_cache_ptr(varid))
+!     .						ds_var_c_cache_ptr(it2d))
 
 
 * make the two special axes 
-* (varid still holds the id of the tccordname 2d time array)
+* (t2did still holds the id of the tccordname 2d time array)
 	   has_edges = .TRUE.
-	   CALL CD_MAKE_FMRC_AXES (agg_dset, has_edges, varid, tcoordname,
+	   CALL CD_MAKE_FMRC_AXES (agg_dset, has_edges, t2did, tcoordname,
      .			ds_var_type(nv), npts, nT, nF,
      .			axcalt, axlagf, status)
 	   IF (status .NE. merr_ok) GOTO 5000
@@ -376,44 +443,102 @@
 	   IF ((ipt1+2*nF+1).GT.maxlinestore) GOTO 5100
 	   ipt  = ipt1
 
-* ... loop over the member data sets, copying the 1st time step of each
+* ... loop over the member data sets, inserting the 1st time step of each
+*     Both the time point and one of the cell bounds needs to be inserted
+	   max_gap_size = 0
 	   DO ii = 1, nsets
-	      CALL CD_GET_AGG_VAR_INFO (agg_dset, vname, ii, 
+	      IF (member_sets(ii) .NE. pdset_dummy) THEN
+	         CALL CD_GET_AGG_VAR_INFO (agg_dset, vname, ii, 
      .                vtype, iset, gnum2, iline2, nv, status)
-	      IF (status .NE. ferr_ok) GOTO 5200
-	      CALL TDEST_WORLD_INIT (gnum2, grid, t_dim, status)
-	      IF (status .NE. ferr_ok) RETURN 
-	      line_mem(ipt) = TDEST_WORLD(1, gnum2, t_dim, box_middle )
-	      line_mem(ipt+nF) = TDEST_WORLD(1, gnum2, t_dim, box_lo_lim )
+	         IF (status .NE. ferr_ok) GOTO 5200
+	         CALL TDEST_WORLD_INIT (gnum2, grid, t_dim, status)
+	         IF (status .NE. ferr_ok) GOTO 5000 
+	         line_mem(ipt) = TDEST_WORLD(1, gnum2, t_dim, box_middle )
+	         line_mem(ipt+nF) = TDEST_WORLD(1, gnum2, t_dim, box_lo_lim )
+	         gap_size = 0
+	      ELSE
+	         gap_size = gap_size + 1
+	         IF (gap_size .GT. max_gap_size) max_gap_size = gap_size
+	         CALL RECOVER_CACHED_2D_ARRAY_POINT(line_mem(ipt), 
+     .			nT, nF, 1, ii, ds_var_c_cache_ptr(it2d))
+	         IF (gap_size .EQ. 1) THEN
+*      ... the previous forecast is still active in the loop
+	            line_mem(ipt+nF) = TDEST_WORLD(1, gnum2, t_dim,
+     .								 box_hi_lim )
+	         ELSE
+*      ... leave a gap in the time cell bounds -- fill in right after this
+	            line_mem(ipt+nF) = unspecified_val8
+	         ENDIF
+	      ENDIF
 	      ipt = ipt + 1
 	   ENDDO
 	   line_mem(ipt+nF) = TDEST_WORLD(1, gnum2, t_dim, box_hi_lim )
+
+* ... if there were gaps wider than 1 missing forecast, we need to fill in
+*     some missing time cell bounds
+	   IF (max_gap_size .GT. 1) THEN
+	      ii = 1
+	      ipt  = ipt1 + nF
+	      DO WHILE (ii .LT. nsets)
+	         ii  = ii  + 1
+	         ipt = ipt + 1
+	         IF (line_mem(ipt) .EQ. unspecified_val8) THEN
+*       ... fill in a gap by linear interpolation
+*           note that this is exactly right for equally spaced coordinates
+*           but only approximate for monthly.  After improved support for 
+*           monthly calendars has been added to Ferret tweak this block
+	            gap_size = 0
+	            i2 = ii+1
+	            DO WHILE (i2 .LE. nsets+1)
+	               gap_size = gap_size + 1
+	               IF (line_mem(ipt+gap_size) .NE. unspecified_val8) EXIT
+	            ENDDO
+*       ... fill the gap
+	            DO i = ipt, ipt+gap_size-1
+	               line_mem(ipt) = line_mem(ipt-1)
+     .				+ (i-ipt+1)
+     .				* (line_mem(ipt+gap_size)-line_mem(ipt-1))
+     .				/ (gap_size+1)
+	            ENDDO
+	         ENDIF
+	      ENDDO
+	   ENDIF
 
 * ... make the forecast calendar axis
 	   CALL CD_MAKE_FMRC_FCAL_AXIS (agg_dset, iline, 
      .					nF, axcalt, status)
 	   IF (status .NE. merr_ok) GOTO 5000
 
-! *sh* code in SHOW_DATA_SET_VARS indicates that I do not understand how the
-! current code handles grids of aggregated datasets.  This block of code
-! seems to be causing troubles ... causing SHOW DATA to display limits of
-! 0:-7777 for the F axis ... so I removed the block below
+* ... assign global attributes pointing to the special F-aggregatoinaxes
+*    (CF requires variable attributes, but they are helpful as globals, too)
+	   CALL CD_GET_VAR_ID (agg_dset, '.', globalid, status)
+	   slen = TM_LENSTR1(line_name(axcalt))
+	   attoutflag = 1
+	   attype = NCCHAR
+	   CALL CD_PUT_NEW_ATTR (agg_dset, globalid, '_cal_t_ax', attype, 
+     .             slen, attoutflag, line_name(axcalt), 0., status )
+	   CALL CD_PUT_NEW_ATTR (agg_dset, globalid, '_lag_f_ax', attype, 
+     .             slen, attoutflag, line_name(axlagf), 0., status )
 
-!* as a precaution, a hack to correct any ds_start and ds_end
-!* values that may have been made using the old iline definition 
-!	   DO nv = 1, maxvars
-!	      IF ( ds_var_setnum(nv) .EQ. agg_dset ) THEN
-!	         gg  = ds_grid_number(nv)
-!	         fax = grid_line(f_dim,gg)
-!	         IF (fax .EQ. iline) THEN
-!	            ds_grid_start(f_dim,nv) = line_mem(ipt1)
-!	            ds_grid_end  (f_dim,nv) = line_dim(ipte)
-!	         ENDIF
-!	      ENDIF
-!	   ENDDO
+* make the 2 special Forecast axes non-temporary and set use counts to 1
+	   CALL TM_RE_ALLO_TMP_LINE(axcalt)
+	   CALL TM_USE_LINE(axcalt)
+	   CALL TM_RE_ALLO_TMP_LINE(axlagf)
+	   CALL TM_USE_LINE(axlagf)
 
-	ENDIF  ! Forecast aggregations speacial needs
+	ENDIF  ! end of forecast aggregation special coordinate creation
 
+
+* F-agg atts _cal_t_ax and _lag_f_a_x point to the special regridding axes
+ 4000	IF (agg_dim.EQ.f_dim) THEN
+	   slen = TM_LENSTR1(line_name(axcalt))
+	   attoutflag = 1
+	   attype = NCCHAR
+	   CALL CD_PUT_NEW_ATTR (agg_dset, varid, '_cal_t_ax', attype, 
+     .             slen, attoutflag, line_name(axcalt), 0., status )
+	   CALL CD_PUT_NEW_ATTR (agg_dset, varid, '_lag_f_ax', attype, 
+     .             slen, attoutflag, line_name(axlagf), 0., status )
+	ENDIF
 
 
  5000	RETURN
@@ -421,4 +546,6 @@
      .	        'unable to define forecast aggregation', *5000)
  5200	CALL ERRMSG(ferr_internal, status, 'define_ef_aggregate_grid!',
      .		 *5000)
+ 5300	CALL ERRMSG(ferr_aggregate_error, status,
+     .		'no suitable file vars in 1st aggregation member', *5000)
 	END

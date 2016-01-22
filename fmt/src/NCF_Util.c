@@ -36,6 +36,7 @@
 */
 
 /* NCF_Util.c
+<<<<<<< .working
 *
 * Ansley Manke
 * Ferret V600 April 26, 2005
@@ -88,6 +89,8 @@
 *                    1-D coordinate var, don't write the axis Ferret creates. Do report
 *                    in dimnames outputs the dimension names as used by Ferret e.g. a
 *                    renamed axis TIME -> TIME1
+* *sh*  12/15        Bug fix: ncf_get_agg_member is called with the sequence number of the
+*                    desired dataset. So store that in order to locate the right member 
 */
 
 #include <Python.h> /* make sure Python.h is first */
@@ -177,7 +180,7 @@ int  FORTRAN(ncf_set_axdir)(int *, int *, int *);
 int  FORTRAN(ncf_transfer_att)(int *, int *, int *, int *, int *);
  
 int  FORTRAN(ncf_init_agg_dset)( int *, char *);
-int  FORTRAN(ncf_add_agg_member)( int *, int *);
+int  FORTRAN(ncf_add_agg_member)( int *, int *, int *);
 int  FORTRAN(ncf_get_agg_count)( int *, int *);
 int  FORTRAN(ncf_get_agg_member)( int *, int *, int *);
 int  FORTRAN(ncf_get_agg_var_info)( int *, int *, int *, int *, int *, int *, int *, int *);
@@ -3294,7 +3297,7 @@ int FORTRAN(ncf_init_agg_dset)(int *setnum, char name[])
 /* ----
  * Add a new aggregate member to an aggregate dataset.
  */
-int  FORTRAN(ncf_add_agg_member)( int *dset, int *member_dset)
+int  FORTRAN(ncf_add_agg_member)( int *dset, int *sequence_number, int *member_dset)
 
 {
   ncdset *nc_ptr=NULL;
@@ -3317,6 +3320,7 @@ int  FORTRAN(ncf_add_agg_member)( int *dset, int *member_dset)
    */
   elist = ncf_get_ds_agglist(dset);
   agg_ptr.dsetnum = *member_dset;
+  agg_ptr.aggSeqNo = *sequence_number;  // added 12/15 //
 
   list_insert_after(nc_ptr->agg_dsetlist, (char *) &agg_ptr, sizeof(agg_ptr));
 
@@ -3721,7 +3725,7 @@ int NCF_ListTraverse_FoundVariMemb( char *data, char *curr )
 
 
 /* ---- 
- * See if there is an ID in data matches the dset-member id.
+ * See if there is a matche on the dset sequence number.
  */
 int NCF_ListTraverse_FoundDsMemb( char *data, char *curr )
 {
@@ -3729,7 +3733,8 @@ int NCF_ListTraverse_FoundDsMemb( char *data, char *curr )
   ncagg *agg_ptr=(ncagg *)curr;
   int ID=*((int *)data);
 
-  if ( ID== agg_ptr->dsetnum)  {
+  /* 12/15 -- search is successful if sequence number (FORTRAN index) matches */
+  if ( ID== agg_ptr->aggSeqNo)  {
     return FALSE; /* found match */
   } else
     return TRUE;

@@ -66,6 +66,7 @@
 * v552 *acm*  5/03 change ds_var_code length to 128
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
 * v695+ *sh* 5/15 initialize new ds_var_c_cache_ptr
+* v698 *sh* 12/15 declare larger dset arrays: maxdsets ==> pdsetalloc
 
 #include "tmap_dset.parm"		
 	include 'tmap_dims.parm'		! parameter definitions
@@ -73,49 +74,49 @@
 
 * local parameters
 	INTEGER		max6axes, maxnvars, maxdsets_aux, maxdsets_parm
-	PARAMETER	(max6axes = 6*maxdsets)
+	PARAMETER	(max6axes = 6*pdsetalloc)
 	PARAMETER	(maxnvars = nferdims*maxvars)
-	PARAMETER	(maxdsets_aux = maxdsets*num_aux)
-	PARAMETER	(maxdsets_parm = maxdsets*num_parm)
+	PARAMETER	(maxdsets_aux = pdsetalloc*num_aux)
+	PARAMETER	(maxdsets_parm = pdsetalloc*num_parm)
 
 * Initialize variables associated with data set
-	DATA	ds_type			/maxdsets*char_init04/
-	DATA	ds_format		/maxdsets*char_init04/
-	DATA	ds_source_class		/maxdsets*char_init16/
-	DATA	ds_source		/maxdsets*char_init16/
-	DATA	ds_subsource		/maxdsets*char_init16/
-	DATA	ds_prog_rev		/maxdsets*char_init04/
+	DATA	ds_type			/pdsetalloc*char_init04/
+	DATA	ds_format		/pdsetalloc*char_init04/
+	DATA	ds_source_class		/pdsetalloc*char_init16/
+	DATA	ds_source		/pdsetalloc*char_init16/
+	DATA	ds_subsource		/pdsetalloc*char_init16/
+	DATA	ds_prog_rev		/pdsetalloc*char_init04/
 ********************************************************************************
-	DATA	ds_expnum		/maxdsets*char_init04/
-	DATA	ds_modnum		/maxdsets*char_init04/
-	DATA	ds_title		/maxdsets*char_init80/
-	DATA	ds_mod_title		/maxdsets*char_init80/
-	DATA	ds_forcing_set		/maxdsets*char_init16/
-	DATA	ds_t0time		/maxdsets*char_init20/
-	DATA	ds_time_unit		/maxdsets*real4_init/
-	DATA	ds_time_modulo		/maxdsets*.FALSE./
-	DATA	ds_ntegrate_tstep	/maxdsets*real4_init/
-	DATA	ds_ntuple		/maxdsets*int4_init/
-	DATA	ds_time_run		/maxdsets*char_init20/
+	DATA	ds_expnum		/pdsetalloc*char_init04/
+	DATA	ds_modnum		/pdsetalloc*char_init04/
+	DATA	ds_title		/pdsetalloc*char_init80/
+	DATA	ds_mod_title		/pdsetalloc*char_init80/
+	DATA	ds_forcing_set		/pdsetalloc*char_init16/
+	DATA	ds_t0time		/pdsetalloc*char_init20/
+	DATA	ds_time_unit		/pdsetalloc*real4_init/
+	DATA	ds_time_modulo		/pdsetalloc*.FALSE./
+	DATA	ds_ntegrate_tstep	/pdsetalloc*real4_init/
+	DATA	ds_ntuple		/pdsetalloc*int4_init/
+	DATA	ds_time_run		/pdsetalloc*char_init20/
 	DATA	ds_aux_modnum		/maxdsets_aux*char_init04/
 	DATA	ds_parm_name		/maxdsets_parm*char_init20/
 	DATA	ds_parm_text		/maxdsets_parm*char_init80/
-	DATA	ds_cal_name		/maxdsets*'GREGORIAN'/
+	DATA	ds_cal_name		/pdsetalloc*'GREGORIAN'/
 ********************************************************************************
-	DATA	ds_alert_on_open	/maxdsets*.FALSE./
-	DATA	ds_alert_on_output	/maxdsets*.FALSE./
-	DATA	ds_message		/maxdsets*char_init80/
+	DATA	ds_alert_on_open	/pdsetalloc*.FALSE./
+	DATA	ds_alert_on_output	/pdsetalloc*.FALSE./
+	DATA	ds_message		/pdsetalloc*char_init80/
 ********************************************************************************
-	DATA	ds_des_name		/maxdsets*char_init1024/
-	DATA	ds_name			/maxdsets*char_init1024/
-	DATA	ds_1step		/maxdsets*real8_init/
-	DATA	ds_lastep		/maxdsets*real8_init/
-	DATA	ds_delstep		/maxdsets*real8_init/
-	DATA	ds_regsteps		/maxdsets*.TRUE./
-	DATA	ds_accepts_remote	/maxdsets*.FALSE./
-	DATA	ds_hide			/maxdsets*.FALSE./
+	DATA	ds_des_name		/pdsetalloc*char_init1024/
+	DATA	ds_name			/pdsetalloc*char_init1024/
+	DATA	ds_1step		/pdsetalloc*real8_init/
+	DATA	ds_lastep		/pdsetalloc*real8_init/
+	DATA	ds_delstep		/pdsetalloc*real8_init/
+	DATA	ds_regsteps		/pdsetalloc*.TRUE./
+	DATA	ds_accepts_remote	/pdsetalloc*.FALSE./
+	DATA	ds_hide			/pdsetalloc*.FALSE./
 	DATA	ds_basic_axes		/max6axes*int4_init/
-	DATA	ds_time_axis		/maxdsets*int4_init/
+	DATA	ds_time_axis		/pdsetalloc*int4_init/
 
 * Next clear variables associated with variable in that data set.
         DATA    ds_var_code_head        / 0 /

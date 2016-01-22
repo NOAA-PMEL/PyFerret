@@ -16,5 +16,5 @@ list/i=1/j=1/L=1:6/n=1:4 sst
 show att sst
 
 ! Attribute _ftime2dRef pointe to the 2D time variable 
-list/L=1:6/n=1:4 `sst._ftime2dRef`
+list/L=1:6/n=1:4 `sst._ftime2d`
 

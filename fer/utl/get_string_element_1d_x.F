@@ -1,8 +1,11 @@
-      SUBROUTINE CD_ISIT_ANOTHER_DSET (expression, dset, varname,status)
+	CHARACTER*(*) FUNCTION GET_STRING_ELEMENT_1D_X(
+     .			hix,
+     .			ptr_array, i, 
+     .			maxlen, slen)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -32,47 +35,32 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-* Look for [d=n] within an expression, and reset dset to match the dataset number
-* or name. varname is returned without the [d=] expression.
+* This routine is a shorthand for calling GET_STRING_ELEMENT for the special
+* case of a 1D array of strings on the X axis
 
-* V600 6/05 *acm* Attribute control.
+* V698:12/15 *sh*
 
-	INCLUDE	'ferret.parm'
-	INCLUDE 'errmsg.parm'
+        IMPLICIT NONE
+	include	'tmap_dims.parm'
+	include 'ferret.parm'
+	include 'EF_Util.parm'
 
 * calling argument declarations
+	INTEGER  hix, i, maxlen, slen
+	REAL*8	 ptr_array(*)
 
-      INTEGER dset, status
-      CHARACTER*(*) expression, varname
+* internal declarations
+	CHARACTER GET_STRING_ELEMENT*512
 
-* local variable declarations
-      INTEGER TM_LENSTR1, slen, elen, llen, ivar, mods_cx, category
+* note: the "512" is an arbitrary assignment ... presumably tells the compiler
+* the length of intermediate buffer to provide (??)
 
-      llen = TM_LENSTR1(expression)
-      varname = expression
+	GET_STRING_ELEMENT_1D_X = GET_STRING_ELEMENT(
+     .			1,hix,
+     .                  1,1, 1,1, 1,1, 1,1, 1,1,
+     .                  ptr_array,i,1,1,1,1,1,
+     .			maxlen,slen )
 
-      IF ( INDEX(expression,'[') .GT. 0 ) THEN
-
-         CALL PARSE_NAM_DSET(expression, cx_last, dset, category, 
-     .                       ivar, mods_cx, status)
-         IF (status .NE. ferr_ok) THEN
-            dset = pdset_irrelevant	! default (not used ...)
-            CALL PARSE_NAM_DSET(expression, cx_last, dset, category, 
-     .                       ivar, mods_cx, status)
-         ENDIF
-         IF (status .NE. ferr_ok) GOTO 5010
-         slen = INDEX(expression,'[') 
-         elen = INDEX(expression,']')
-         varname = expression(1:slen-1)
-         IF (llen .GT. elen) 
-     .      varname = expression(1:slen-1)//expression(elen+1:llen)
+	RETURN
+	END
  
-      ENDIF
-
-5000  RETURN
-
-5010  IF (dset .EQ. pdset_irrelevant .OR. 
-     .       dset .EQ. unspecified_int4) status = ferr_syntax
-
-      RETURN
-      END

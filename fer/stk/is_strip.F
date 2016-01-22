@@ -72,6 +72,8 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V690+ 11/13 *sh* support for auxiliary var regridding: temp[gz(depth)=zax]
+* V698 1/16 *sh* fix to bug #2347 (agg res var no instead of com var on stack)
+*		 alter agg setup to detect LET/D vars at eval time
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -90,25 +92,26 @@
 
 * internal variable declarations:
 	LOGICAL	ITSA_MODULO_REGRID, TM_ITS_SUBSPAN_MODULO, NC_GET_ATTRIB,
-     .		NC_GET_ATTRIB_STRING, ITSA_MODULO_AXIS,
+     .		NC_GET_ATTRIB_STRING, ITSA_MODULO_AXIS, TM_SAME_GRID_DEF,
      .		itsa_uvar, modulo_dest_regrid, allatonce, attoutflag, 
      .		got_it
 	INTEGER	CGRID_SIZE_MAX, CAXIS_LEN, CAXIS_MODLEN, CX_DIM_LEN, 
      .		AUX_AXIS_FROM_ARG, CGRID_AXIS, POTENT_SIZE, 
      .		ISUBSCR_CX, TM_AXES_REVERSED, CGRID_SIZE, MODULO_PARITY,
-     .		STR_SAME, TM_LENSTR1,
+     .		STR_SAME, TM_LENSTR1, KNOWN_GRID,
      .		nrev, reversed(nferdims), idel,
      .		trans, grid, dset, lo_off, hi_off, aclass,
      .		lo_cx, hi_cx, big_cx, lo_isp, i, axis,
      .		cxsize, split_ax, split_ax_len, frag, var, ss, lo_ss,
      .		hi_ss, nmod, nmodhi, npts, xlate, dup_cx, i4d,
-     .          line, imemb, imemb_dset, grids_dset, len, 
-     .		igrid, iline, varid, attlen, maxlen, fer_uvar, nv, memb_dset
-	REAL	ax_frac, vbad
+     .          line, imemb, imemb_dset, grids_dset, len,
+     .		orig_grid, iline, attlen, maxlen, orig_cat, orig_var,
+     .		memb_dset, hi_cat, hi_var, hi_grid, vlen, slen
+	REAL	ax_frac
 	REAL*8	TM_WORLD, ww_given, ww_nrst
 	CHARACTER*128 VAR_CODE, vname
 	CHARACTER*128 buff
-
+	CHARACTER LEFINT*6
 
 * --- end of introductory code ---
 * initiailize - ! temp:always called at bottom of stack frame for transform
@@ -132,111 +135,69 @@
 
  100	IF (aclass .EQ. isact_class_aggregate_gather) THEN
 
-* Set up to gather the components of an aggregate variable
+* SET UP TO GATHER THE COMPONENTS OF AN AGGREGATE VARIABLE
+* ***==> SEE DOCUMENTATION of agg handling in header of INIT_EF_AGGREGATE_DSET
 	   is_act( lo_isp ) = isact_aggregate_gather
 
-* Save the default context so it can be re-used for each aggregate member.
-	   CALL CREATE_NEW_CONTEXT(lo_cx, big_cx, status )  ! pushes stack
- 	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   is_big_cx( lo_isp ) = big_cx
-
-* cancel result pointer to indicate no result yet
+* set result pointer to indicate no memory result has been created yet
 	   is_mr( lo_isp ) = unspecified_int4
 
 * Set up context (hi_cx) to get the first requested aggregate member
-
+* Start with bookkeeping to prepare to request component
 	   is_sum( lo_isp ) = cx_hi_ss(lo_cx, idim)
 	   is_phase( lo_isp ) = cx_lo_ss(lo_cx, idim)
+	   CALL TRANSFER_CONTEXT( lo_cx, hi_cx )
 
-	   CALL TRANSFER_CONTEXT( big_cx, hi_cx )
-
-* Set the grid to the grid of the first aggregate component...
 	   imemb = is_phase( lo_isp )
-
 	   vname = VAR_CODE (cat_file_var, cx_variable(hi_cx))
-	   CALL CD_GET_AGG_VAR_INFO (dset, vname, imemb, fer_uvar, 
-     .                memb_dset, igrid, iline, nv, status)
-
-	   IF (status .NE. ferr_ok) THEN
-	      CALL CD_GET_VAR_ID (dset, vname, varid, status)
-	      IF (status .NE. ferr_ok) 
-     .		CALL ERRMSG(ferr_aggregate_error, status, 'variable '//
-     .		  vname(:TM_LENSTR1(vname))//' not found in aggregate dataset', *5000)
-	   ENDIF
+	   vlen = TM_LENSTR1(vname)
+	   CALL CD_GET_AGG_VAR_INFO (dset, vname, imemb, orig_cat, 
+     .                memb_dset, orig_grid, iline, orig_var, status)
 
 * Is it the 2D Time variable for a Forecast-aggregation?  If so then
-* the information is contained only in the grids not variables of member sets.
+* the field was cached and retrieved by FIND_MEM_VAR_INCL_C_CACHE
+	   IF (memb_dset .EQ. pagg_promotion_indicator_dset)
+     .		CALL ERRMSG(ferr_internal, status,
+     .		'aggregation cache failure in is_strip', *5000)
 
-	   IF (memb_dset .EQ. 0) THEN
-	      CALL CD_GET_VAR_ID (dset, vname, varid, status)
+* do a fresh "find" for the variable name, to allow for the possibility that
+* LET/D variables have been defined, canceled or changed since DEFINE DATA/AGG
+	   CALL FIND_VAR_NAME (memb_dset,vname, hi_cat, hi_var )
+	   IF (hi_var .EQ. munknown_var_name) CALL ERRMSG(
+     .		ferr_aggregate_error, status, 'variable '//
+     .		vname(:vlen)//' no longer found in agg member '//
+     .		LEFINT(imemb,slen), *5000)
 
-	      maxlen = 128
-	      got_it = NC_GET_ATTRIB_STRING ( dset, varid, '_CoordinateAxisType',
-     .                                   .FALSE., vname, maxlen,
-     .                                   attlen, attoutflag, buff)
-	      IF (got_it .AND. STR_SAME(buff, 'Time') .EQ. 0) THEN
-
-	         cx_category(hi_cx) = cat_pseudo_var 
-		 cx_variable(hi_cx) = 10  ! (hack) will load t[gt=var] coordinates
-
-	         cx_grid( hi_cx ) = igrid
-	         cx_data_set(hi_cx) = dset
-
-* since it is a pseudo-variable, all dimensions are normal except its axis
-	         DO i = 1, nferdims
-	            IF (i .EQ. t_dim) CYCLE
-	            cx_lo_ss( hi_cx,i ) = unspecified_int4
-	            cx_hi_ss( hi_cx,i ) = unspecified_int4
-	            cx_by_ss( i,hi_cx ) = .TRUE.
-	            cx_lo_ww( i,hi_cx ) = unspecified_val8
-	            cx_hi_ww( i,hi_cx ) = unspecified_val8
-	         ENDDO
-
-	         maxlen = 1
-	         got_it = NC_GET_ATTRIB( dset, varid, 'missing_value',
-     .                .FALSE., vname, maxlen, attlen,
-     .                attoutflag, buff, vbad )
-
-	         cx_bad_data(hi_cx) = vbad
-	      ENDIF
-	   ELSE
+* confirm grid has not changed since stored during DEFINE DATA/AGG
+	   hi_grid = KNOWN_GRID(memb_dset, hi_cat, hi_var)
+	   IF (.NOT.TM_SAME_GRID_DEF(hi_grid,orig_grid)) CALL ERRMSG(
+     .		ferr_aggregate_error, status,
+     .		'coordinate grid of '// vname(:vlen)//
+     .		' has changed in agg member '//LEFINT(imemb,slen), *5000)
 
 * Set limits on agg-direction to be unspecified
- 
-	      cx_lo_ss( hi_cx,idim ) = unspecified_int4
-	      cx_hi_ss( hi_cx,idim ) = unspecified_int4
-	      cx_by_ss( idim,hi_cx) = .TRUE.
+	   CALL DEL_CX_DIM(idim, hi_cx)
+	   cx_by_ss(idim,hi_cx) = .TRUE.
 
-* Grid wasnt stored for this variable if its a LET/D variable in member dset
-* Let it be the agg grid ?? (or could set the grid to a number less than 
-* unspecified_int4 to call get_uvar_grid for this LET/D member var)
+* the T axis of an F-aggregation has a single set of indices but the time
+* values differ for each axis.  Indices are inherited from the lo_cx
+	   IF (idim .EQ. f_dim) THEN
+	      cx_by_ss(t_dim, hi_cx) = .TRUE.
+	      CALL FLESH_OUT_AXIS(t_dim, hi_cx, status )
+	      IF (status .NE. ferr_ok) GOTO 5000
+	   ENDIF
 
-	      IF (igrid .EQ. unspecified_int4) THEN 
-	         cx_data_set(hi_cx) = memb_dset
-	         cx_category(hi_cx) = cat_user_var
-	         cx_variable(hi_cx) = nv
-	     ELSE
+* set up the member variable
+	   cx_data_set(hi_cx) = memb_dset
+	   cx_category(hi_cx) = hi_cat
+	   cx_variable(hi_cx) = hi_var
+	   cx_grid    (hi_cx) = hi_grid
+	   CALL GET_CONTEXT_BAD_FLAG(hi_cx)
 
-	         CALL CD_GET_VAR_ID (memb_dset, vname, varid, status)
-	         maxlen = 1
-	         got_it = NC_GET_ATTRIB( memb_dset, varid, 'missing_value',
-     .                .FALSE., vname, maxlen, attlen,
-     .                attoutflag, buff, vbad )
-     
-	         cx_grid( hi_cx ) = igrid
-	         cx_data_set(hi_cx) = memb_dset
+	   is_uvar(lo_isp) = hi_var ! relevant if component 1 is LET/D
 
-	         IF (fer_uvar .EQ. 3) THEN
-	            cx_category(hi_cx) = cat_user_var 
-	         ELSE
-	            cx_category(hi_cx) = cat_file_var 
-	            cx_bad_data(hi_cx) = vbad
-	         ENDIF
-	      ENDIF
-	      is_uvar(lo_isp) = cx_variable(hi_cx)
 
-	   ENDIF  ! member datset
-
+**************
 	ELSEIF ( aclass .EQ. isact_class_trans) THEN
 
 * SET UP FOR A TRANSFORMATION

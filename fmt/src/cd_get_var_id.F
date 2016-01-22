@@ -47,6 +47,7 @@
 * V611  5/08 *acm* Fix bug 1578, dataset specifier on the variable var[d=1].attr
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 * V6.94 3/15 *acm* Fix ticket 2249: attribute handling for user-defined variables
+* V698 *sh* 1/16 -- added status check/warning, since not checked by callers
 
 * include files
 #include "gt_lib.parm"
@@ -64,7 +65,8 @@
       CHARACTER*512 buff
       LOGICAL coordvar
       INTEGER TM_LENSTR1, NCF_GET_VAR_ID, NCF_GET_VAR_ID_CASE,
-     .        NCF_GET_VAR_AXFLAG, slen, flen, dir, dset_num, bkt1, bkt2
+     .        NCF_GET_VAR_AXFLAG, FIND_DSET_NUMBER, STR_UPCASE,
+     .        slen, flen, dir, dset_num, bkt1, bkt2, istrt, iend, iset
       PARAMETER (flen=512)      ! size of variable name string
 
 #ifdef sun
@@ -79,7 +81,7 @@
       dset_num = dset
       IF (dset_num .LT. -2) dset_num = -2
 
-      buff = vname
+      istrt = STR_UPCASE(buff,vname)
 
 * Deal with coordinate variable names inside parenthese
 
@@ -95,7 +97,10 @@
          IF (status.NE.merr_ok .AND.
      .       INDEX(vname,'[') .GT. 0) GOTO 4000
          status = NCF_GET_VAR_AXFLAG (dset, varid, coordvar, dir)
-         IF (.NOT. coordvar) GOTO 5000
+         IF (.NOT. coordvar) THEN
+	    status = atom_not_found 
+	    GOTO 5000
+	 ENDIF
 
 * If theres also a dataset spec (xax)[d=1] on the orig variable name, 
 * add that
@@ -108,24 +113,34 @@
          ENDIF
 
       ENDIF 
-       
-* If there is a dataset spec, see if the variable is in that dataset.
 
-      IF ( INDEX(buff,'[') .GT. 0 ) THEN
-         CALL CD_ISIT_ANOTHER_DSET (buff, dset_num, buff, status)
-         IF (status .NE. merr_ok) THEN 
-      
-            IF ( INDEX(vname,'[') .GT. 0 ) THEN
-               bkt1 = INDEX(vname, '[')
-               bkt2 = INDEX(vname, ']')
-               buff = buff//vname(bkt1:bkt2)
-               CALL CD_ISIT_ANOTHER_DSET (buff, dset_num, buff, status)
-            ENDIF
-         ENDIF
-         IF (status .NE. merr_ok) GOTO 5000
+* If there is a dataset spec, see if the variable is in that dataset.
+* Look only at the d=n or d=dset_name. 
+* Otherwise ignore what is in the brackets; this allows us to get
+* attributes for LAS variables with region info.
+
+      IF ( INDEX(buff,'[').GT.0) THEN
+         
+         istrt = STR_UPCASE(buff,buff)
+	 istrt = INDEX(buff,'D=')
+	 IF (istrt .GT. 0) THEN
+	    istrt = INDEX(buff,'D=') + 2
+	    iend = INDEX(buff(istrt:),',') - 1
+	    IF (iend .LE. 0) THEN
+	       iend = INDEX(buff,']') - 1
+	    ELSE
+	       iend = istrt+iend-1
+	    ENDIF
+	    iset = FIND_DSET_NUMBER(buff(istrt:iend))
+	    IF (iset .NE. unspecified_int4) dset_num = iset
+	 ENDIF
+	 
+	 istrt = INDEX(buff,'[') - 1
+	 buff = buff(:istrt)
+	 slen = TM_LENSTR1(buff)
       ENDIF
 
-* If the name is in quotes, remove them and do a case-sensive search
+* If the name is in quotes, remove them and do a case-sensitive search
 * for the name.
 
       slen = TM_LENSTR1( buff )
@@ -149,6 +164,12 @@
          varid = 0
 	 status = merr_ok
       ENDIF
+      RETURN
 
- 5000 RETURN
+* error exit
+ 5000 IF (status .NE. atom_not_found) THEN
+	slen = TM_LENSTR1(buff)
+	CALL WARN('Error status from CD_GET_VAR_ID: '//buff(1:slen))
+      ENDIF
+      RETURN
       END

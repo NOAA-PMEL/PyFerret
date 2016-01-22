@@ -123,7 +123,7 @@
      .		type, fvar, ndims, ngatts, recdim, varid, attoutflag,
      .          tf_lag_t, memb_tax,
      .		ref_grid, ref_fvar, ref_fvars(pmaxvarsperset),
-     .		num_indices, j, jj, ignore_status
+     .		num_indices, j, jj, ignored_status
 	CHARACTER buff*64, tcoordname*16
 	CHARACTER TM_STRING*13
 	CHARACTER*512 GET_STRING_ELEMENT_1D_X, memb_dsetname(nsets)
@@ -310,8 +310,16 @@
 	   status = NCF_ADD_AGG_MEMBER (agg_dset, iset, member_sets(iset)) 
 	ENDDO
  
-* set use counts and clean up temporary grids and axes for agg. dset
+* remove duplicate temp grid definitions amd makegrid names unique
+	CALL EF_CLEAN_GRIDS(AGG_DSET)
+
+* set use counts and remove temp status of agg grids and axes
 	CALL TM_GARB_COL_GRIDS(agg_dset)
+
+* set the official time axis of the dataset
+	CALL CD_GET_TIME_AXIS( agg_dset, t_dim, ignored_status )
+	IF (ignored_status .NE. merr_ok) CALL WARN
+     .					  ('INIT_EF_GET_TIME_AX crptn')
 
 * If user requested /HIDE, then mark the member datasets for hidden status
 	IF (agg_hide) THEN
@@ -332,7 +340,7 @@
 	   IF (iset .EQ. pdset_dummy
      .    .OR. iset .EQ. unspecified_int4) CYCLE
 	   IF (ds_name(iset) .EQ. char_init1024) CYCLE ! already deleted
-	   IF (ds_hide (iset)) CALL CANCEL_ONE_DATA_SET( iset, ignore_status )
+	   IF (ds_hide (iset)) CALL CANCEL_ONE_DATA_SET( iset, ignored_status )
 	ENDDO
 	RETURN	
 
@@ -344,7 +352,9 @@
  9950	agg_dset = unspecified_int4
 	status = ferr_TMAP_error
 	GOTO 5000
- 9960	CALL CANCEL_DATA_SET( agg_dset, ignore_status )
+* wipe out the partially-created aggregated dataset
+ 9960	CALL TM_PURGE_TMP_GRIDS(ignored_status)
+	CALL CANCEL_DATA_SET( agg_dset, ignored_status )
 	agg_dset = unspecified_int4
 	GOTO 5000
 

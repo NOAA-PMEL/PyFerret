@@ -29,6 +29,7 @@ do_query.F\
 dollar_arg.F\
 dollar_command.F\
 edit_attribute.F\
+ef_clean_grids.F\
 equal_format.F\
 equal_permute.F\
 equal_str_lc.F\

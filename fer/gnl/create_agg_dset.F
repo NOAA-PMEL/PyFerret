@@ -55,6 +55,7 @@
         include 'tmap_errors.parm'
 #include "tmap_dset.parm"
         include 'tmap_dims.parm'
+	include 'xstep_files.cmn_text'
 	include	'ferret.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
@@ -72,7 +73,7 @@
 
 * local variable declarations:
 	INTEGER TM_LENSTR, TM_LENSTR1, ALLO_MANAGED_AXIS,
-     .		type, coordvar, varid, big_cx, nlen
+     .		type, coordvar, varid, big_cx, nlen, istep
 	CHARACTER LEFINT*20, ntext*20
 	REAL	bad_flag
 
@@ -102,15 +103,25 @@
 	ENDIF
 	ds_mod_title(agg_dset) = ' '
  
+* assign a stepfile to this dataset (needed for consistency with other dsets)
+        DO istep = 1,maxstepfiles
+          IF (sf_setnum(istep) .EQ. set_not_open) THEN
+	     sf_name  (istep) = dname
+	     sf_setnum(istep) = agg_dset
+             GOTO 100
+          ENDIF
+	ENDDO
+* No room left for new stepfiles
+       GOTO 5400
+ 
 * create the aggregate axis
-
-	CALL CREATE_AGG_AXIS (nsets, agg_dim, iline, status)
+ 100	CALL CREATE_AGG_AXIS (nsets, agg_dim, iline, status)
 	IF (status .NE. ferr_ok) GOTO 5300 
 
 	RETURN
 	
  5000   RETURN	
  5300   status = ferr_TMAP_error
-	RETURN
-
+	GOTO 5000
+ 5400	CALL ERRMSG(ferr_internal, status, 'create_agg_dset', *5000)
 	END

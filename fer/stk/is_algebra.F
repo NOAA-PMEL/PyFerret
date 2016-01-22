@@ -115,7 +115,8 @@
 
 * calling argument declarations:
 	INTEGER	isp_base, status
-	REAL	memory( mem_blk_size, max_mem_blks )
+!	REAL	memory( mem_blk_size, max_mem_blks )  ! old
+	REAL	memory( mem_blk_size, * )             ! experimental change
 * normal return is for error conditions
 * exit #1 is to request another grid ( stack has been pushed )
 * exit #2 is to signal completion of the activity at this stack level

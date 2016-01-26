@@ -31,3 +31,6 @@ GO err696_e_component_mem_crptn
 GO bn_reset
 GO err696_mem_err_report
 
+GO bn_reset
+GO err696_multiple_slashes.jnl
+

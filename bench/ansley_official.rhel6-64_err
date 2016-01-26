@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 82411891 Jan 20 10:52 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 82460222 Jan 26 09:47 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Additions to aggregation tests. fixes to CD_GET_VAR_ID, CD_GET_VAR_INFO. Cleanup in gif tests.
+Note: ticket 2356: allow repeated slashes in parsing command qualifiers
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Wed Jan 20 10:57:47 PST 2016
+Beginning at Tue Jan 26 09:53:49 PST 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -338,7 +338,7 @@ list tu
  **ERROR: regridding: Axis orientation not matching request:GX=PSYU
 list tu
  Cached data cleared from memory
- **ERROR: request exceeds memory setting: 25 Mwords were requested.
+ **ERROR: request exceeds memory setting: 50 Mwords were requested.
 list temp[gz=z999999,z=5:15]
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
@@ -587,14 +587,14 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
- **ERROR: request exceeds memory setting: 24000 Mwords were requested.
+ **ERROR: request exceeds memory setting: 48000 Mwords were requested.
 load num
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
- **ERROR: request exceeds memory setting: 1000 Mwords were requested.
+ **ERROR: request exceeds memory setting: 2000 Mwords were requested.
 load num
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
@@ -3312,7 +3312,6 @@ Replacing definition of axis FAX4DAY
  TEMPORARY data cleared from memory
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
  **ERROR: unknown data set: dset 3 unknown or is already an aggregate dataset
 DEFINE DATA/AGGREGAT/E windy = 1,2,3
            *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: UWND
@@ -3324,18 +3323,14 @@ DEFINE DATA/AGGREGAT/E windy = 1,2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: UIN
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: VIN
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Dataset 3 was a member of an ensemble. Canceling ensemble, dataset my_ens
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, my_ens
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Dataset 3 was a member of an ensemble. Canceling ensemble, dataset fourfiles
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
-           *** NOTE: Dataset 3 was a member of an ensemble. Canceling ensemble, dataset some
-           *** NOTE: Dataset 3 was a member of an ensemble. Canceling ensemble, dataset more
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, more
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, some
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, fourfiles
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3734,12 +3729,12 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XAXIS
- **ERROR: request exceeds memory setting: 2369 Mwords were requested.
+ **ERROR: request exceeds memory setting: 4739 Mwords were requested.
 load bigvar
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis LONGTIME
- **ERROR: request exceeds memory setting: 4735 Mwords were requested.
+ **ERROR: request exceeds memory setting: 9472 Mwords were requested.
 load bigvar
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
@@ -3974,7 +3969,6 @@ Replacing definition of axis FSEC
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4096,6 +4090,21 @@ Replacing definition of axis XAX
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ Cached data cleared from memory
+Replacing definition of axis LONGTIME
+ **ERROR: request exceeds memory setting: 13 Mwords were requested.
+load/l=1:5 bigvar
+           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
+           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
+ Cached data cleared from memory
+ Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+           *** NOTE: Not deleted: XAX
+           *** NOTE: Axis is in use by grid GFORMAT
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_1.nc
  LISTing to file tmp/tagg_reg_2.nc
@@ -4111,7 +4120,7 @@ Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_no_T.nc
  LISTing to file tmp/tagg_reg_2_overlarge.nc
            *** NOTE: Not deleted: TDAY
-           *** NOTE: Axis is in use by grid (G106)
+           *** NOTE: Axis is in use by grid (G092)
  LISTing to file tmp/tagg_irreg_1.nc
  LISTing to file tmp/tagg_irreg_2.nc
  LISTing to file tmp/tagg_irreg_3.nc
@@ -4125,7 +4134,7 @@ Replacing definition of axis TDAY
 Replacing definition of axis TDAY_IR
  LISTing to file tmp/tagg_irreg_2_reg.nc
            *** NOTE: Not deleted: TDAY_IR
-           *** NOTE: Axis is in use by grid (G106)
+           *** NOTE: Axis is in use by grid (G092)
  LISTing to file tmp/tagg_T0varying_1.nc
 Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_T0varying_2.nc
@@ -4161,7 +4170,7 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_disjoint_T0varying_3.nc
  LISTing to file tmp/tagg_disjoint_T0varying_4_wrong.nc
            *** NOTE: Not deleted: TDAY_WRONG
-           *** NOTE: Axis is in use by grid (G106)
+           *** NOTE: Axis is in use by grid (G092)
  LISTing to file tmp/tagg_single_1.nc
  LISTing to file tmp/tagg_single_2.nc
  LISTing to file tmp/tagg_single_3.nc
@@ -4169,7 +4178,7 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_single_5.nc
  LISTing to file tmp/tagg_single_6.nc
            *** NOTE: Not deleted: tday
-           *** NOTE: Axis is in use by grid (G106)
+           *** NOTE: Axis is in use by grid (G092)
  **ERROR: invalid command: given aggregation dataset name already in use: myagg2
 define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc
  **TMAP ERR: non-existent or not on line
@@ -4226,7 +4235,7 @@ Replacing definition of axis DAYT
 Replacing definition of axis ZAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Replacing definition of axis XAX
+Replacing definition of axis xax
 Replacing definition of axis yax
  LISTing to file tmp/fcst_1.nc
  LISTing to file tmp/fcst_2.nc
@@ -4246,20 +4255,11 @@ Replacing definition of axis yax
  LISTing to file tmp/consecutive_month_fcst.nc
 Replacing definition of axis TRUEMONTH
  LISTing to file tmp/irregular_start_time_fcst.nc
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
            *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC]
            *** NOTE: Ambiguous coordinates on F axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC]
            *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
            *** NOTE: Ambiguous coordinates on F axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
  **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
 DEFINE DATA/AGGREGAT/F my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc,tmp/fcst_2.nc,tmp/fcst_3.nc
  **TMAP ERR: non-existent or not on line
@@ -4378,4 +4378,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jan 20 10:59:53 PST 2016
+Ended at Tue Jan 26 09:56:17 PST 2016

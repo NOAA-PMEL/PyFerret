@@ -39,8 +39,9 @@
 *
 * 9/ 3/2015 Fix LAS/SOCAT ticket 1720, missingness patterns in cruise-weighted 
 *           vs unweighted gridded fields.
-* 1/14/2016 Fix LAS/SOCAT ticket 1721, missing/zero where there should be data in 
-
+* 1/14/2016 Fix LAS/SOCAT ticket 1721, missing/zero where there should be data in cell
+* 1/27/2016 Apply modulo operation to scattered longitudes or time if the output
+*           axis is a modulo axis.
 *
 * This is the description of the averaging function.
 * The input data points are not a simple scatter.  They are cruise tracks 
@@ -323,6 +324,11 @@
       REAL x1, y1, t1, xf, yf, tf
       REAL xx, yy, tt, vv
 
+*  variables for checking axis characteristics (modulo axes)
+      CHARACTER ax_name(6)*16, ax_units(6)*16
+      LOGICAL backward(6), mdulo(6), regular(6)
+      LOGICAL modulox, modulot
+      REAL*8 modxlen, modtlen
 
       REAL dx, dy, xxbeg, xxend, yybeg, yyend
       REAL cellmean, wt_cruise_mean, unwtd_mean,
@@ -355,6 +361,22 @@
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
+
+*  Check to see if the output X-axis is modulo (does not need to be regular)
+      CALL ef_get_axis_info_6d(id, ARG6, ax_name, ax_units,
+     .                         backward, mdulo, regular)
+      modulox = mdulo(X_AXIS)
+      IF ( modulox ) THEN
+         CALL ef_get_axis_modulo_len(id, ARG6, X_AXIS, modxlen)
+      ENDIF
+
+*  Check to see if the output T-axis is modulo (does not need to be regular)
+      CALL ef_get_axis_info_6d(id, ARG6, ax_name, ax_units,
+     .                         backward, mdulo, regular)
+      modulot = mdulo(T_AXIS)
+      IF ( modulot ) THEN
+         CALL ef_get_axis_modulo_len(id, ARG8, T_AXIS, modtlen)
+      ENDIF
 
       obs_only = 0	! Compute the std for average of variable (e.g. fco2)
 
@@ -527,6 +549,16 @@ C  Get coordinates of output axes.
       n = 1
       CALL pickoutxytcv (obs_only, arg_1, arg_2, arg_3, arg_4, arg_5,
      .           n, vv, xx, yy, tt, ncc)
+
+*  If output axis is modulo, apply modulo adjustment to that coordinate
+*  of the scattered point.
+      IF ( modulox ) THEN
+         CALL modscat(xax(1,1,1,1), xax(nx,2,1,1), modxlen, 1, xx)
+      ENDIF
+      IF ( modulot ) THEN
+         CALL modscat(taxlo(1,1,1,1), tax(nt,2,1,1), modtlen, 1, tt)
+      ENDIF
+
       icruise = ncc
 
 * For each cruise keep track of the index range it spans in the result grid
@@ -545,6 +577,15 @@ C  Get coordinates of output axes.
      .           n, vv, xx, yy, tt, ncc)
          IF (vv .EQ. bad_flag(ARG1) .OR. xx .EQ. bad_flag(ARG2) .OR. 
      .          yy .EQ. bad_flag(ARG3) .OR. tt .EQ. bad_flag(ARG4) ) GOTO 300
+
+*  If output axis is modulo, apply modulo adjustment to that coordinate
+*  of the scattered point.
+         IF ( modulox ) THEN
+            CALL modscat(xax(1,1,1,1), xax(nx,2,1,1), modxlen, 1, xx)
+         ENDIF
+         IF ( modulot ) THEN
+            CALL modscat(taxlo(1,1,1,1), tax(nt,2,1,1), modtlen, 1, tt)
+         ENDIF
 
 * We have come to the end of a cruise loop over cells represented by the last cruise,
 * summing and counting the observations in the cruise, computing cruiseweight. 

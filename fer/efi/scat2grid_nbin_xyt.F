@@ -233,7 +233,6 @@
       RETURN
       END
 
-
 *
 * In this subroutine we compute the result
 *
@@ -313,8 +312,8 @@
 *  variables for checking axis characteristics (modulo axes)
       CHARACTER ax_name(6)*16, ax_units(6)*16
       LOGICAL backward(6), mdulo(6), regular(6)
-      LOGICAL modulox, moduloy, modulot
-      REAL*8 modxlen, modylen, modtlen
+      LOGICAL modulox, modulot
+      REAL*8 modxlen, modtlen
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -326,14 +325,6 @@
       modulox = mdulo(X_AXIS)
       IF ( modulox ) THEN
          CALL ef_get_axis_modulo_len(id, ARG5, X_AXIS, modxlen)
-      ENDIF
-
-*  Check to see if the output Y-axis is modulo (does not need to be regular)
-      CALL ef_get_axis_info_6d(id, ARG6, ax_name, ax_units,
-     .                         backward, mdulo, regular)
-      moduloy = mdulo(Y_AXIS)
-      IF ( moduloy ) THEN
-         CALL ef_get_axis_modulo_len(id, ARG6, Y_AXIS, modylen)
       ENDIF
 
 *  Check to see if the output T-axis is modulo (does not need to be regular)
@@ -493,9 +484,6 @@ C  Get coordinates of output axes.
 *  of the scattered point.
          IF ( modulox ) THEN
             CALL modscat(xaxlo(1), xaxhi(nx), modxlen, 1, xx)
-         ENDIF
-         IF ( moduloy ) THEN
-            CALL modscat(yaxlo(1), yaxhi(ny), modylen, 1, yy)
          ENDIF
          IF ( modulot ) THEN
             CALL modscat(taxlo(1), taxhi(nt), modtlen, 1, tt)

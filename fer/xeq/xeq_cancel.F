@@ -145,6 +145,7 @@
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * V695 *acm*  9/15 Fix #2317: length of name sent to FIND_DSET_NUMBER
 * V698 *sh*  1/16 aggregation logic moved inside of CANCEL_DATA_SET
+* V698 *acm* 1/16 change remaining dset=-1 to the parameter dset=pdset_uvars
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -586,7 +587,7 @@
 	      IF ( status .NE. ferr_ok ) RETURN
 	      IF ( variable .EQ. munknown_var_name ) GOTO 5110
 * ... not sure ... how are LET/D vars found?
-	      IF (category .EQ. cat_user_var) dset = -1  ! signals a uvar ??
+	      IF (category .EQ. cat_user_var) dset = pdset_uvars
 	      CALL CD_GET_VAR_ID (dset, buff, varid, status)
               CALL CD_DELETE_ATTRIBUTE (dset, varid, patnam_layerz, status )
 	      CALL PURGE_ALL_UVARS
@@ -932,7 +933,7 @@ c	ENDIF
 
         IF (dset .EQ. pdset_irrelevant .OR. dset .EQ. unspecified_int4)
      .        dset = cx_data_set(cx_cmnd) 
-        IF (dset .EQ. unspecified_int4) dset = -1
+        IF (dset .EQ. unspecified_int4) dset = pdset_uvars
 
 * Check that the variable exists in the dataset
 

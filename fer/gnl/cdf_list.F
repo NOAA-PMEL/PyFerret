@@ -126,7 +126,8 @@
 *                 the user has said /KEEP_AXISNAMES
 * V694 *acm* 3/15 Ticket 2240. Dont send scale, attribute, and bad-val to CD_WRITE_VAR. That
 *                 routine gets those attributes per variable from the dataset being written.
-* V695 *acm* 7/16 If they said LIST/QUIET, don't do all the warnings and NOTEs
+* V695 *acm* 7/15 If they said LIST/QUIET, don't do all the warnings and NOTEs
+* V698 *acm* 1/16 Allow for Epic CDF files, ds_type = 'ECDF'
 
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -267,6 +268,7 @@
         CALL CD_CONVENTIONS_OUT( append, cdfid, buff1, status )
         IF ( status .NE. merr_ok ) GOTO 5800
 
+
 * optional title for data set
 	IF ( title .NE. ' ' ) THEN
 	   CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'title',
@@ -290,9 +292,11 @@
         varid = 0      
 	cx  = cx_list(1)
         dset = cx_data_set( cx )
-        IF (dset .GE. 1) THEN
-          IF (ds_type(dset).EQ.'CDF' .OR. ds_type(dset).EQ.' MC' 
-     .        .OR. ds_type(dset).EQ.'ENS' .OR. ds_type(dset).EQ.'FCT')
+
+        IF (dset .GT. pdset_irrelevant) THEN
+          IF (ds_type(dset).EQ.'CDF' .OR. ds_type(dset).EQ.'ECDF' 
+     .        .OR. ds_type(dset).EQ.' MC' .OR. ds_type(dset).EQ.'ENS' 
+     .        .OR. ds_type(dset).EQ.'FCT')
      .       CALL CDF_LIST_GLOBAL_ATTS (dset, cdfid, status)
         ENDIF
         dset_last = dset

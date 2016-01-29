@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 86683339 Jan 27 10:36 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 86683343 Jan 28 14:07 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: change remaining references to dset=-1, to use pdset_uvars, parameter for virtual user-variable dset
+Note: Allow ECDF (epic cdf) in tests for ds_type: can write global attributes"
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/linux/ext_func/pylibs
-Beginning at Wed Jan 27 10:40:03 PST 2016
+Beginning at Thu Jan 28 14:33:52 PST 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3061,6 +3061,8 @@ show grid garbage
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TAX
@@ -3113,10 +3115,10 @@ Replacing definition of axis YAX_DUP_AXNAMES
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: broiled
 
 Bailing out of external function "tax_year":
 	 Function not valid for modulo time axis
+           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: broiled
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4373,4 +4375,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jan 27 10:43:08 PST 2016
+Ended at Thu Jan 28 14:37:16 PST 2016

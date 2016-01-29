@@ -6,3 +6,16 @@ set mode calendar:minutes ! this was set to months, back in bn_pattern.jnl
 use epic_formatted_file.nc
 list/prec=7 t[gt=t_28]
 
+! 1/2016 additional tests, reading and saving data,
+! getting attribute information. 
+
+set att/output=all .
+save/file=a.nc/clobber/k=1:5 t_28
+sp ncdump -h a.nc | grep INST_TYPE
+
+let evar = T_28.generic_name
+save/append/file=a.nc evar
+
+list ..dimnames
+
+

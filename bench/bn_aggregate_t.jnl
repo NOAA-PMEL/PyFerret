@@ -1,5 +1,6 @@
 ! bn_aggregate_t.jnl
-! Dec. 9 tweak to put all test files into "tmp" subdirectory
+! 9/12/2015 *sh* tweak to put all test files into "tmp" subdirectory
+! 1/2016 *sh* added implicit naming of aggregation from script filename
 
 spawn "mkdir -p tmp"     ! tmp directory t store files
 
@@ -139,6 +140,11 @@ stat myvar
 ! show that aggregate name is case-sensitive
 define data/agg/t myAgg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc
 show data myAgg2
+
+! *sh* 1/28/2016 addition
+! same aggregation inheriting its name from the parent script
+define data/agg/t tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc
+show data/brief
 
 ! define a long aggregation
 define data/agg/t myagg8 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc,tmp/tagg_reg_3.nc, tmp/tagg_reg_4.nc,tmp/tagg_reg_5.nc, tmp/tagg_reg_6.nc,tmp/tagg_reg_7.nc, tmp/tagg_reg_8.nc

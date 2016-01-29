@@ -1,4 +1,4 @@
-	SUBROUTINE CREATE_AGG_DSET (agg_dset, dname, dtitle,
+	SUBROUTINE CREATE_AGG_DSET (agg_dset, dname, dpath, dtitle,
      .               nsets, dset1, agg_dim, iline, status)
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -40,10 +40,12 @@
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 * V695+ *sh*  11/15 Correct bugs in setting of aggregate dset title
+* V698  *sh*  1/16 pass explicit path name (for "USE file.agg" compatibility)
 
 * calling argument
 *   agg_dset	- dataset number of the aggregation (input)
 *   dname	- name of the aggregated dataset (input)
+*   dpath	- pathname of the aggregated dataset (input)
 *   dtitle	- optional title string (input)
 *   nsets	- number of datasets in the aggregation (input)
 *   dset1	- dataset number of first (pattern) dataset in agg (input)
@@ -68,7 +70,7 @@
 	include 'xtext_info.cmn'
 
 * calling argument declarations:
-	CHARACTER*(*)	dname, dtitle
+	CHARACTER*(*)	dname, dpath, dtitle
 	INTEGER		agg_dset, nsets, dset1, agg_dim, iline, status
 
 * local variable declarations:
@@ -86,7 +88,7 @@
 	IF (agg_dim .EQ. f_dim ) ds_type(agg_dset) = 'FCT'
 
 	ds_name(agg_dset) = dname
-	ds_des_name(agg_dset) = dname
+	ds_des_name(agg_dset) = dpath
 
 	IF (dtitle(1:2).EQ.char_init .OR. TM_LENSTR(dtitle).EQ.0) THEN
 	   ntext = LEFINT(nsets, nlen)

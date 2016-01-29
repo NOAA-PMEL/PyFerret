@@ -1,5 +1,5 @@
 	SUBROUTINE INIT_EF_AGGREGATE_DSET (memb_dsetname_var,
-     .	   nsets, have_expr, dname, dtitle, agg_dset, 
+     .	   nsets, have_expr, dname, dpath, dtitle, agg_dset, 
      .     agg_quiet, agg_hide, agg_dim, status )
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -70,13 +70,15 @@
 *		  allow dataset list passed as a Ferret string variable
 *                 allow forecast datasets out of order (sort em)
 *		  allow gaps in the forecast series (insert dummy datasets)
+* V698 1/16  *sh* pass explicit path name (for "USE file.agg" compatibility)
 
 * arguments:
 *	memb_dsetname_var - if have_expr, the variable of names (input)
 *	nsets		- number of datasets in the aggregation (input)
 *       have_expr	- flag if filenames were listed or in an expr (input)
-*	dset_name	- dataset name to assign to the aggregation (input)
-*	dset_title	- dataset title (input)
+*	dname		- dataset name to assign to the aggregation (input)
+*	dpath		- dataset path name to assign to aggregation (input)
+*	dtitle		- dataset title (input)
 *	dset_num	- number assigned to this data set (output)
 *       agg_quiet       - flag whether to report certain conditions (input)
 *	agg_hide        - flag whether to hide the component datasets (input)
@@ -101,7 +103,7 @@
 	include 'xfr_grid.cmn'
 
 * calling argument declarations:
-	CHARACTER*(*)	dname, dtitle
+	CHARACTER*(*)	dname, dpath, dtitle
 	INTEGER		nsets, agg_dset, agg_dim, status
 	LOGICAL		have_expr, agg_quiet, agg_hide
 	REAL		memb_dsetname_var(*)
@@ -191,7 +193,7 @@
 
 * Create datset. Will delete it later if there are no aggregate variables found
 * Note: the pattern will the first dataset given.  They may get reordered.
-	CALL CREATE_AGG_DSET (agg_dset, dname, dtitle,
+	CALL CREATE_AGG_DSET (agg_dset, dname, dpath, dtitle,
      .			 nsets_wgaps, member_sets(1), agg_dim, iline, status)  
 	IF (status .NE. ferr_ok) GOTO 5300
 

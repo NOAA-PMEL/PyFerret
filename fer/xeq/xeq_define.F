@@ -235,6 +235,7 @@
 * V695 *sh*  10/15 add DEFINE DATA/AGG/T
 *                  rename routine INIT_AGGREGATE_DSET to INIT_EF_AGGREGATE_DSET
 * V697 12/15 *acm* Fix ticket 2336: consistent application of CAN MODE UPCASE
+* V698 1/16 *sh*   Allow DEFINE DATA/AGG w/out a name -- auto-name from script
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -354,7 +355,7 @@
 	LOGICAL	  TM_DIGIT, TM_LEGAL_NAME, TM_LINE_MATCH, TM_GRID_MATCH,
      .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, MATCH_NAME,
      .            NC_GET_ATTRIB, TM_LENSTR, TM_LEGAL_NAME_OP, TM_HAS_STRING,
-     .            ITSA_1LINEIF, MATCH4,
+     .            ITSA_1LINEIF, MATCH4, GO_FILE_INPUT,
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
      .            new_att, new_att_modulo, got_it, orient_t, agg_quiet,
@@ -378,7 +379,7 @@
      .            prev_cal_id, j, num_indices, varid, attype_spec,
      .            attoutflag, attlen, coordvar, 
      .            dset_to_add, dir, type, attype, attid, ibuff, i0,  
-     .            agg_dim, nagfiles, ivar, item, nlab
+     .            agg_dim, nagfiles, ivar, item, nlab, ierr
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            val, dummy, val_buf, xloc, yloc, halign, angle, size
@@ -389,7 +390,7 @@
      .		  bc_to_t0, start, new_ww, delta, end, secs2start,
      .            micro_adj, axwwlen, rmod_len, secsperyear, small, 
      .            new_att_modulo_len, madj
-	CHARACTER TM_FMT*16, 
+	CHARACTER TM_FMT*16, TM_CLEAN_FILENAME*512,
      .            reg_name*24, buff1*128, buff2*512, buff3*512, 
      .            buffsym*120, cal_name*32, buff*512,
      .            basic_orients(nferdims)*2, err_string*2048, replmsg*24,
@@ -2257,17 +2258,41 @@ C /units=months  is 1/12 of the length of the year
 * Get the name of the dataset we are creating
 * get it case-sensitive, cuz other dataset names are (they are filenames)
 	CALL NAME_EQUAL_STRING_LC( buff1, pos, status )
-
 	IF ( status .NE. ferr_ok )  GOTO 5000
-	IF ( pos .EQ. 0 ) GOTO 5400
-	IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 5410
-	IF ( .NOT.TM_LEGAL_NAME_OP(buff1) ) GOTO 5430
-        IF ( TM_LENSTR1(buff1) .GT. 128 ) GOTO 5410
 
+* was a name given?  Or implied through its absence?
+	IF ( pos .EQ. 0 ) THEN
+* ... "name =" was not supplied
+           pos = arg_start(1)    ! point to start of argument list
+           IF ( GO_FILE_INPUT() ) THEN
+*     ... take name of the GO file exectuting this command
+              buffsym = 'LAST_GO_FILE'
+              CALL GETSYM( buffsym, buff3, slen, ierr )  ! get .agg file path
+	         IF (slen.EQ.0 .OR. ierr.EQ.1) CALL ERRMSG
+     .                  ( ferr_internal, status, 'xeq_define_go_file', *5000)
+              buff1 = TM_CLEAN_FILENAME(buff3 )     ! get dname from dpath
+           ELSE
+*     ... assign a default name
+              IF (agg_dim.EQ.t_dim) THEN
+                 buff1 = 'TSERIES'
+              ELSEIF (agg_dim.EQ.e_dim) THEN
+                 buff1 = 'ENSEMBLE'
+              ELSE                   
+                 buff1 = 'FMRC'
+              ENDIF
+              buff3 = buff1    ! use dname as dpath, too
+           ENDIF
+        ELSE
+* ... "name =" was supplied
+	   IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 5410
+	   IF ( .NOT.TM_LEGAL_NAME_OP(buff1) ) GOTO 5430
+           IF ( TM_LENSTR1(buff1) .GT. 128 ) GOTO 5410
 ! *sh* 11/15 - As-is the parsing of the "name=item1, item2, ..."
 * The routine NAME_EQUAL_STRING parses out the "name" as the first item of
 * a list and returns the start position of the next item in the list
-        item_start(1) = pos
+           item_start(1) = pos
+           buff3 = buff1    ! use dname as dpath, too
+        ENDIF
 
 * which syntax has been used?
 *      DEFINE DATA/AGG agname = data1, data2, data3, ...
@@ -2308,16 +2333,17 @@ C /units=months  is 1/12 of the length of the year
            mr = dummy_mr
         ENDIF
 
+*   buff1=dname, buff2=dtitle, buff3=dpath
         IF (agg_dim .EQ. t_dim) THEN
            t_regular  = .FALSE.   ! ToDo /REGULART -- not yet implemented
            use_strict = .FALSE.   ! ToDo ?? T coordinate micro-adjustment ??
            CALL INIT_T_AGGREGATE_DSET(memory(1, mr_blk1(mr)),
-     .                          nagfiles, have_expr, buff1, buff2, 
-     .                          t_regular, use_strict, dset, status)
+     .                  nagfiles, have_expr, buff1, buff3, buff2, 
+     .                  t_regular, use_strict, dset, status)
         ELSE
 	   CALL INIT_EF_AGGREGATE_DSET (memory(1, mr_blk1(mr)),
-     .                          nagfiles, have_expr, buff1, buff2, dset,
-     .                          agg_quiet, agg_hide, agg_dim, status)
+     .                  nagfiles, have_expr, buff1, buff3, buff2, dset,
+     .                  agg_quiet, agg_hide, agg_dim, status)
 
         ENDIF
 	IF (status .NE. ferr_ok) GOTO 5000

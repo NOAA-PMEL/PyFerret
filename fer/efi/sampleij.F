@@ -42,6 +42,7 @@
 *         Result is abstract on the x axis, normal on the y axis,
 *         and keeps the z and t axes of the input 4-d data.
 * 4/9/09  The function never tested for the bad-flag of the input variable.
+* 1/29/16 Clarify the function description and argument descriptions
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -94,7 +95,7 @@
 
       WRITE (fcn_desc, 10)
    10 FORMAT 
-     .  ('Returns data sampled at a subset of its ',
+     .  ('Returns data sampled by matching coordinates at a subset of ',
      .   'grid points, defined by (XPTS, YPTS)')
       CALL ef_set_desc(id, fcn_desc)
 
@@ -115,13 +116,13 @@
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'XPTS')
-      CALL ef_set_arg_desc(id, arg, 'X indices of grid points')
+      CALL ef_set_arg_desc(id, arg, 'X coordinates of grid points')
       CALL ef_set_axis_influence_6d(id, arg,
      .                              NO, NO, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'YPTS')
-      CALL ef_set_arg_desc(id, arg, 'Y indices of grid points')
+      CALL ef_set_arg_desc(id, arg, 'Y coordinates of grid points')
       CALL ef_set_axis_influence_6d(id, arg,
      .                              NO, NO, NO, NO, NO, NO)
 

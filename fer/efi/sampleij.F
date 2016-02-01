@@ -42,7 +42,7 @@
 *         Result is abstract on the x axis, normal on the y axis,
 *         and keeps the z and t axes of the input 4-d data.
 * 4/9/09  The function never tested for the bad-flag of the input variable.
-* 1/29/16 Clarify the function description and argument descriptions
+* 1/29/16 Ticketn2358: Clarify the function description and argument descriptions
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -352,14 +352,16 @@
 
             DO 110 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1) 
                xgrid = xaxdat(i1,1,1,1,1,1)
-               IF ( TM_FPEQ(xgrid, arg_2(i2,j2,k2,l2,m2,n2)) )
-     .            imatch = i1
+               IF ( TM_FPEQ(xgrid, arg_2(i2,j2,k2,l2,m2,n2)) ) THEN
+                   imatch = i1
+               ENDIF
   110       CONTINUE
 
             DO 120 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1) 
                ygrid = yaxdat(j1,1,1,1,1,1)
-               IF ( TM_FPEQ(ygrid, arg_3(i3,j3,k3,l3,m3,n3)) )
-     .            jmatch = j1
+               IF ( TM_FPEQ(ygrid, arg_3(i3,j3,k3,l3,m3,n3)) ) THEN
+                  jmatch = j1
+               ENDIF
   120       CONTINUE
 
          ENDIF

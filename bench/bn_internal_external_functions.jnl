@@ -86,3 +86,8 @@ let mask = 0*x[gx=sst] + y[gy=sst]  + 1
 shade fill_xy(sst[l=1], mask[l=1], 1)
 shade fill_xy(sst[l=1], mask[l=1], 4)
 
+! Compare SAMPLEXY and SAMPLEIJ 
+GO bn_reset
+GO bn_samplexy_sampleij
+
+

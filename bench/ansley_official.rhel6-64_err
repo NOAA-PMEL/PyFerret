@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 82460222 Jan 26 09:47 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 82493731 Feb  1 13:02 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2356: allow repeated slashes in parsing command qualifiers
+Note: new tests of SAMPLEXY and SAMPLEIJ
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Tue Jan 26 09:53:49 PST 2016
+Beginning at Mon Feb 1 13:47:30 PST 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -917,6 +917,8 @@ list substring("Have you fed your ferret today")
  **ERROR: command syntax: strcat ("All work and no play")
           The strcat function has an incorrect number of arguments
 list strcat ("All work and no play")
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3063,6 +3065,11 @@ show grid garbage
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+
+Bailing out of external function "tax_year":
+	 Function not valid for modulo time axis
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TAX
@@ -3118,9 +3125,6 @@ Replacing definition of axis YAX_DUP_AXNAMES
            *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: broiled
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
-
-Bailing out of external function "tax_year":
-	 Function not valid for modulo time axis
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4078,8 +4082,8 @@ SET DAT/FORM=CDF ft_cal_mixed.nc
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Replacing definition of axis TDAY
-Replacing definition of axis XAX
+Replacing definition of axis tday
+Replacing definition of axis xax
  LISTing to file myfile.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4194,7 +4198,7 @@ define data/agg/t myagg3 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2_overlarge.nc,tmp/ta
  **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_irreg_2.nc
 define data/agg/t myagg3 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_3.nc,tmp/tagg_irreg_2.nc
  **TMAP ERR: Unknown variable code
-             in file tmp/tagg_disjoint_T0varying_4_wrong.nc time axis variable is missing: tday_Tvar
+             in file tmp/tagg_disjoint_T0varying_4_wrong.nc time axis variable is missing: TDAY_TVAR
 define data/agg/t myagg5_bad = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc,tmp/tagg_disjoint_T0varying_3.nc, tmp/tagg_disjoint_T0varying_4_wrong.nc,tmp/tagg_disjoint_T0varying_5.nc
  **ERROR: unknown command: garbage
 garbage command syntax
@@ -4255,6 +4259,12 @@ Replacing definition of axis yax
  LISTing to file tmp/consecutive_month_fcst.nc
 Replacing definition of axis TRUEMONTH
  LISTing to file tmp/irregular_start_time_fcst.nc
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, my_fmrc
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, bn_aggregate_f.sub
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
            *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC]
            *** NOTE: Ambiguous coordinates on F axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC]
@@ -4378,4 +4388,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Jan 26 09:56:17 PST 2016
+Ended at Mon Feb 1 13:49:37 PST 2016

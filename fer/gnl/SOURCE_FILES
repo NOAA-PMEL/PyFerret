@@ -115,6 +115,7 @@ show_region.F\
 show_regrid_transforms.F\
 show_transforms.F\
 sort_fmrc_dsets.F\
+sort_tseries_dsets.F\
 special_symbol.F\
 symbol_command.F\
 translate_lat_long.F\

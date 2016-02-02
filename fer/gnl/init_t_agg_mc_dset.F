@@ -1,4 +1,5 @@
-	SUBROUTINE INIT_T_AGG_MC_DSET(dset_num, nagfiles, memb_filename,
+	SUBROUTINE INIT_T_AGG_MC_DSET
+     .		(dset_num, nagfiles, memb_order, memb_filename,
      .		 memb_tstep_start, memb_tstep_end, memb_nstep,
      .		 use_strict, status)
 
@@ -47,10 +48,12 @@
 *      time axis with the parent grids
 *
 * V695+ *sh* 10/15 - new, hack-built from MC_INIT_DSET
+* V698 *sh*   2/16 - member files may be disordered
 
 * arguments:
 *	dset_num	- number assigned to this data set (input)
 *	nagfiles	- number of files in the aggregation (input)
+*	memb_order	- sequence ordering of member (input)
 *	memb_filename	- array of filenames (input)
 *	memb_tstep_start- array of first timestep in each file (input)
 *	memb_tstep_end	- array of last  timestep in each file (input)
@@ -61,7 +64,7 @@
 * Argument definitions
 	LOGICAL		use_strict
 	INTEGER		nagfiles, dset_num, status
-	INTEGER		memb_nstep(nagfiles)
+	INTEGER		memb_nstep(nagfiles), memb_order(nagfiles)
 	REAL		memb_tstep_start(nagfiles), memb_tstep_end(nagfiles)
 	CHARACTER*512	memb_filename(nagfiles)
 
@@ -92,7 +95,7 @@
 
 	CHARACTER*13	TM_STRING
 	INTEGER		ivar, stp_pos,
-     .			istep, nrecperstep, epos, first_file,
+     .			istep, i, nrecperstep, epos, first_file,
      .			stp_cnt, min_pos, max_pos,istat,
      .			lline, file_reclen, preceding_steps
 	REAL*8		file_trange, steps_in_file
@@ -109,8 +112,8 @@
         preceding_steps = 0
 
 * * * * * * top of stepfile loop * * * * *
-* stepfile of the first file in the agg was taken care of by cd_int_dset
-	DO istep = 1, nagfiles
+	DO i = 1, nagfiles
+	  istep = memb_order(i)
 
 * calculate time range per file and check for even number per file
 	  file_trange = memb_tstep_end(istep)-memb_tstep_start(istep)
@@ -118,8 +121,8 @@
 	  s_delta = file_trange / steps_in_file
 
 * Find the next storage position for stepfiles in common
-	  IF (istep .EQ. 1) THEN
-* ... stepfile of first file in T agg assigned during netCDF initialization
+	  IF (i .EQ. 1) THEN
+* ... stepfile of first file in member list was assigned during netCDF init
 	     DO stp_cnt = 1,maxstepfiles
 	       IF (sf_setnum(stp_cnt) .EQ. dset_num) GOTO 100
 	     ENDDO
@@ -157,8 +160,8 @@
 	    sf_regtimes(stp_cnt) = .FALSE.
 	  ENDIF
 
-* time-independent fields are read from the first file in the aggregation
-	  IF (istep .EQ. 1) mc_init_stepfile(dset_num) = stp_cnt
+* time-independent fields are read from the first file in the member list
+	  IF (i .EQ. 1) mc_init_stepfile(dset_num) = stp_cnt
 
 * prepare for next file
 	  stp_pos = stp_cnt+1
@@ -168,8 +171,8 @@
 
 
 * summarize certain stepfile info at the dataset level
-	ds_1step(dset_num)  = memb_tstep_start(1)
-	ds_lastep(dset_num) = memb_tstep_end(nagfiles)
+	ds_1step(dset_num)  = memb_tstep_start(memb_order(1))
+	ds_lastep(dset_num) = memb_tstep_end(memb_order(nagfiles))
 	IF (ds_regsteps(dset_num)) THEN
 	  ds_delstep(dset_num)  = line_delta(ds_time_axis(dset_num))
 	ELSE

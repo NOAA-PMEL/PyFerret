@@ -158,6 +158,7 @@
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V695+ *sh*  3/15 if an FMRC dataset disambiguate T and F axes with labels
 * V695  *acm* 9/15 send REAL*4 rbad to compare with lev_max, lev_min inside compute_mnstd
+* V697  *acm* 2/16 Fix ticket 2360: overlays on time plots
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -540,6 +541,7 @@ C   set up memory for the flag grid
  3105	FORMAT('PEN 1,',I3)
 
 * set up the axis formats (use exact limits, if given by /HLIMITS or /VLIMITS)
+
 	time_axis = GEOG_LABEL( dim1, grid )  .AND. 
      .                 (dim1.EQ.t_dim .OR. dim1.EQ.f_dim) 
 
@@ -557,6 +559,7 @@ C   set up memory for the flag grid
  3004         FORMAT ('CALENDAR ', A7)
 	   ENDIF
 
+* Send the start time and time units for overlay to PPLUS
 	   IF (overlay) THEN
 	      t1_date =  INTERNAL_WHOI_DATE(grid, dim1, 1.0D0 )
 	      dt_min = line_tunit( grid_line(dim1,grid) ) / 60.
@@ -568,6 +571,7 @@ C   set up memory for the flag grid
 	   IF (GEOG_LABEL( dim2, grid )  .AND. 
      .                  (dim2.EQ.t_dim .OR. dim2.EQ.f_dim)) THEN
 
+* Send the start time and time units for overlay to PPLUS
 	      IF (overlay) THEN
 	         t1_date =  INTERNAL_WHOI_DATE(grid, dim2, 1.0D0 )
 	         dt_min = line_tunit( grid_line(dim2,grid) ) / 60.

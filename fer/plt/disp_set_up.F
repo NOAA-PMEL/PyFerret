@@ -202,12 +202,13 @@ C plus those starting w/ xbox_bounds:
 
 * internal variable declarations:
 	CHARACTER*1020	COMPOUND_TITLE, COMPOUND_KEY, plot_title
-	CHARACTER	TM_FMT*16, LEFINT*8, LEFT_REAL*16,
+	CHARACTER	TM_FMT*16, LEFINT*8, LEFT_REAL*16, INTERNAL_WHOI_DATE*14, 
      .                  xstyle*3, ystyle*3, cmnd_name*8, year*4, buff*8,
      .			letter*1, buff1*16, buff2*16, buff30*30,
      .                  TM_GET_CALENDAR_NAME*32, cal_name_1*32, 
      .                  cal_name_2*32, err_string*128,
-     .			xtra_xlab*24, xtra_ylab*24
+     .			xtra_xlab*24, xtra_ylab*24, t1_date*14
+
         CHARACTER*1     axdir(6)
 
 	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, TM_FPEQ, ITS_FMRC,
@@ -233,7 +234,7 @@ C plus those starting w/ xbox_bounds:
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
      .                  first, last
 	REAL*8		xaxlo, xaxhi, yaxlo, yaxhi, delta
-	REAL*4		rw1lo, rw2lo, rbad
+	REAL*4		rw1lo, rw2lo, rbad, dt_min
 
         DATA axdir / 'X', 'Y', 'Z', 'T', 'E', 'F' /
 
@@ -539,21 +540,45 @@ C   set up memory for the flag grid
  3105	FORMAT('PEN 1,',I3)
 
 * set up the axis formats (use exact limits, if given by /HLIMITS or /VLIMITS)
-	IF ( .NOT.overlay ) THEN
-           time_axis = GEOG_LABEL( dim1, grid )  .AND. 
+	time_axis = GEOG_LABEL( dim1, grid )  .AND. 
      .                 (dim1.EQ.t_dim .OR. dim1.EQ.f_dim) 
 
-	   has_time_axis = time_axis	! save for PLOT/VS/OVERLAY (6/99)
-           IF (time_axis) THEN
-              tax = grid_line(dim1, grid)
-              cal_id = TM_GET_CALENDAR_ID ( line_cal_name(tax) )
-	      IF(overlay .AND. cal_id .NE. saved_calendar_id) GO TO 5660
+	IF ( .NOT.overlay ) has_time_axis = time_axis	! save for PLOT/VS/OVERLAY (6/99)
+	IF (time_axis) THEN
+           tax = grid_line(dim1, grid)
+           cal_id = TM_GET_CALENDAR_ID ( line_cal_name(tax) )
+           IF(overlay .AND. cal_id .NE. saved_calendar_id) GO TO 5660
+           
+	   IF ( .NOT.overlay ) THEN
+	      saved_calendar_id = cal_id
 	      ppl_buff = ' '
-	      WRITE ( ppl_buff, 3004 ) line_cal_name(tax)
+              WRITE ( ppl_buff, 3004 ) line_cal_name(tax)
               CALL PPLCMD (from, line, 0, ppl_buff, 1, 1)
  3004         FORMAT ('CALENDAR ', A7)
-	      saved_calendar_id = cal_id
-           ENDIF
+	   ENDIF
+
+	   IF (overlay) THEN
+	      t1_date =  INTERNAL_WHOI_DATE(grid, dim1, 1.0D0 )
+	      dt_min = line_tunit( grid_line(dim1,grid) ) / 60.
+	      CALL SET_T1_DATE (t1_date, dt_min)
+	   ENDIF
+        ELSE
+	
+* Time on the vertical axis?
+	   IF (GEOG_LABEL( dim2, grid )  .AND. 
+     .                  (dim2.EQ.t_dim .OR. dim2.EQ.f_dim)) THEN
+
+	      IF (overlay) THEN
+	         t1_date =  INTERNAL_WHOI_DATE(grid, dim2, 1.0D0 )
+	         dt_min = line_tunit( grid_line(dim2,grid) ) / 60.
+	         CALL SET_T1_DATE (t1_date, dt_min)
+	      ENDIF
+	   ENDIF
+
+	ENDIF
+
+
+	IF ( .NOT.overlay ) THEN
 
 	   IF ( pxlim .GT. 0 ) THEN
 	      IF (.NOT.denig_xylim_msg_done) THEN
@@ -593,20 +618,6 @@ C   set up memory for the flag grid
 
 	   haxlo = xaxlo	! save limits so overlays
 	   haxhi = xaxhi	! will know them
-
-	   time_axis = GEOG_LABEL( dim1, grid )  .AND. 
-     .                  (dim1.EQ.t_dim .OR. dim1.EQ.f_dim) 
-
-	   has_time_axis = time_axis	! save for PLOT/VS/OVERLAY (6/99)
-           IF (time_axis) THEN
-              tax = grid_line(dim1, grid)
-              cal_id = TM_GET_CALENDAR_ID ( line_cal_name(tax) )
-	      IF(overlay .AND. cal_id .NE. saved_calendar_id) GO TO 5660
-	      ppl_buff = ' '
-	      WRITE ( ppl_buff, 3004 ) line_cal_name(tax)
-              CALL PPLCMD (from, line, 0, ppl_buff, 1, 1)
-	      saved_calendar_id = cal_id
-           ENDIF
 
 	   CALL AXIS_ENDS  ( 'X', dim1, grid, xaxlo, xaxhi, delta, is_logx,
      .			      x_axtyp, status )
@@ -698,7 +709,8 @@ C ACM added 8/2001 save cal id if vertical time axis
  3006         FORMAT ('axtype,', I2, ',', I2)
 	      CALL PPLCMD ( from, line, 0, buff2, 1, 1)
 	   ENDIF
-        ENDIF
+
+        ENDIF   ! .NOT.overlay
 
 * rotate vectors to make axis scale ratio correction ?
 	IF ( vector .AND. aspect.GT.0. ) CALL RE_ORIENT(

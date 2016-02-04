@@ -1,0 +1,45 @@
+! err696_2d_time_overlay.jnl
+! ticket 2360: 2-D time overlay plots have never worked.
+
+! two different time axes
+
+def ax/edge/t=1-jan-1979:1-jan-2016:1/unit=year/t0=1-jan-1979 tax1
+def ax/edge/t=1-jan-1988:1-jan-2010:1/unit=year/t0=1-jan-1988 tax2
+let t1 = t[gt=tax1]
+let t2 = t[gt=tax2]
+let yr1 = tax_year(t1,t1)
+let yr2 = tax_year(t2,t2)
+let f1 = yr1 + 0*z[gz=1:5:1]
+let f2 = yr2 + 0*z[gz=2:3:1]
+
+can view
+
+! a 1-D overlay works correctly
+set view ul
+plot/step=con yr1
+plot/step=con/ov yr2
+
+set view ll
+
+! 2-D overlay was mis-located
+shade/lev=12 f1
+shade/ov/pal=grayscale/lev f2
+
+ppl shaset reset
+set view ur
+
+! Check a vertical time axis 
+let fx1 = yr1 + 0*x[gx=1:5:1]
+let fx2 = yr2 + 0*x[gx=2:3:1]
+shade/lev=12/title="X-T plot, vertical time axis" fx1
+shade/ov/pal=grayscale/lev fx2
+
+
+! Different time units
+set view lr
+def ax/edge/t=1-jan-1988:04-feb-2010:60/unit=day/t0=1-jan-1988 tax2
+
+shade/lev=12/title="Underlay units year, Overlay units days" f1
+shade/ov/pal=grayscale/lev f2
+
+

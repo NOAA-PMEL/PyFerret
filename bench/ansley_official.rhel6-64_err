@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 82493731 Feb  1 13:02 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 81846409 Feb  3 16:41 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: new tests of SAMPLEXY and SAMPLEIJ
+Note: ticket 2360: 2D time overlay
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Mon Feb 1 13:47:30 PST 2016
+Beginning at Thu Feb 4 09:54:26 PST 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -4109,6 +4109,11 @@ Replacing definition of axis XAX
            *** NOTE: Axis is in use by grid GFORMAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis TAX1
+Replacing definition of axis TAX2
+Replacing definition of axis TAX2
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_1.nc
  LISTing to file tmp/tagg_reg_2.nc
@@ -4183,8 +4188,11 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_single_6.nc
            *** NOTE: Not deleted: tday
            *** NOTE: Axis is in use by grid (G092)
+           *** NOTE: Ambiguous coordinates on T axis: T[G=MYVAR[D=MYAGG8]] - T[G=MYVAR[D=MYAGG8_DISORDERED1]]
+           *** NOTE: Ambiguous coordinates on T axis: TBOXLO[G=MYVAR[D=MYAGG8]] - TBOXLO[G=MYVAR[D=MYAGG8_DISORDERED1]]
+           *** NOTE: Ambiguous coordinates on T axis: TBOXHI[G=MYVAR[D=MYAGG8]] - TBOXHI[G=MYVAR[D=MYAGG8_DISORDERED1]]
  **ERROR: invalid command: given aggregation dataset name already in use: myagg2
-define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc
+define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc, tmp/tagg_reg_2.nc
  **TMAP ERR: non-existent or not on line
              tmp/tagg_no_exist.nc
 define data/agg/t myaggbad = tmp/tagg_no_exist.nc, tmp/tagg_reg_2.nc
@@ -4195,13 +4203,18 @@ define data/agg/t myaggbad = tmp/tagg_reg_1.nc, tmp/tagg_no_exist.nc
 DEFINE DATA/AGGREGAT/T myTindepagg = tmp/tagg_reg_no_T.nc
  **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_reg_3.nc
 define data/agg/t myagg3 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2_overlarge.nc,tmp/tagg_reg_3.nc
- **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_irreg_2.nc
-define data/agg/t myagg3 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_3.nc,tmp/tagg_irreg_2.nc
  **TMAP ERR: Unknown variable code
              in file tmp/tagg_disjoint_T0varying_4_wrong.nc time axis variable is missing: TDAY_TVAR
 define data/agg/t myagg5_bad = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc,tmp/tagg_disjoint_T0varying_3.nc, tmp/tagg_disjoint_T0varying_4_wrong.nc,tmp/tagg_disjoint_T0varying_5.nc
+           *** NOTE: Ambiguous coordinates on T axis: T[G=MYVAR[D=MYSING_IRREG_AGG4]] - T[G=MYVAR[D=MYSING_IRREG_AGG4_DISORDERED1]]
+           *** NOTE: Ambiguous coordinates on T axis: TBOXLO[G=MYVAR[D=MYSING_IRREG_AGG4]] - TBOXLO[G=MYVAR[D=MYSING_IRREG_AGG4_DISORDERED1]]
+           *** NOTE: Ambiguous coordinates on T axis: TBOXHI[G=MYVAR[D=MYSING_IRREG_AGG4]] - TBOXHI[G=MYVAR[D=MYSING_IRREG_AGG4_DISORDERED1]]
  **ERROR: unknown command: garbage
 garbage command syntax
+ **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_single_1.nc
+define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc
+ **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_single_5.nc
+define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc, tmp/tagg_single_5.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file tmp/test1.nc
@@ -4214,11 +4227,6 @@ set data /erroneous tmp/test1.nc
  **TMAP ERR: non-existent or not on line
              /erroneous(.nc ,.cdf,.nc)
 set data /erroneous, tmp/test1.nc
- Full path name: tmp/testMe.jnl
- Full path name: tmp/testMe.jnl
- Full path name: tmp/testMe.jnl
- Full path name: /home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl
- Full path name: /home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl
  **ERROR: unknown command qualifier: garbage
 go/garbage tmp/testMe
  **ERROR: unknown command qualifier: garbage
@@ -4388,4 +4396,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Feb 1 13:49:37 PST 2016
+Ended at Thu Feb 4 09:56:55 PST 2016

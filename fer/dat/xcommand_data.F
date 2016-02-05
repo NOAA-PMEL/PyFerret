@@ -214,6 +214,7 @@
 *                  PLOT/VS plots (LAS ticket 1597 and others)
 * v696 *acm* 11/15 SET VAR/UNITS instead of /UNIT, just for consistency
 * V697 *acm* 12/15 Correct typo: LIST/SINGLY was shown as /SINGLE
+* V698+ *acm* 2/16 Ticket 2362: Change /D= qualifier to /DATASET=
 
 
         IMPLICIT NONE
@@ -590,7 +591,7 @@
 	   DATA subcommands      (nsub_at2 +12)	/ 'GRID'	/
 	   DATA num_qualifs      (nsub_at2 +12)	/ nqual2m	/
 	   DATA qualifier_pointer(nsub_at2 +12)	/ nqual_at2m	/
-* SHOW GRID /ALL/I/J/K/L/M/N/X/Y/Z/T/E/F/D/XML/OUTFILE/APPEND/CLOBBER 
+* SHOW GRID /ALL/I/J/K/L/M/N/X/Y/Z/T/E/F/DATASET/XML/OUTFILE/APPEND/CLOBBER 
 		DATA qualifiers  (nqual_at2m+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at2m+1)	/ 'I   '	/
 		DATA qualifiers  (nqual_at2m+2)	/ 'J   '	/
@@ -787,12 +788,12 @@
 	   DATA num_qualifs      (nsub_at3 +12)	/ nqual3m	/
 	   DATA qualifier_pointer(nsub_at3 +12)	/ nqual_at3m	/
 		DATA qualifiers  (nqual_at3m+0)	/ '****'	/
-* CANCEL ATTRIBUTE /OUTPUT /DATA
+* CANCEL ATTRIBUTE /OUTPUT /DATASET
 	   DATA subcommands      (nsub_at3 +13)	/ 'ATTRIBUT'	/
 	   DATA num_qualifs      (nsub_at3 +13)	/ nqual3n	/
 	   DATA qualifier_pointer(nsub_at3 +13)	/ nqual_at3n	/
 		DATA qualifiers  (nqual_at3n+0)	/ 'OUTPUT'	/
-		DATA qualifiers  (nqual_at3n+1)	/ 'DATA'	/
+		DATA qualifiers  (nqual_at3n+1)	/ 'DATASET'	/
 * CANCEL REDIRECT
 	   DATA subcommands      (nsub_at3 +14)	/ 'REDIRECT'	/
 	   DATA num_qualifs      (nsub_at3 +14)	/ nqual3o	/
@@ -837,7 +838,7 @@
 	   DATA subcommands      (nsub_at4 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at4 + 0)	/ nqual4a	/
 	   DATA qualifier_pointer(nsub_at4 + 0)	/ nqual_at4a	/
-* CONTOUR/I/J/K/L/M/N/X/Y/Z/T/E/F/D/OVERLAY/SET_UP/FRAME/TRANSPOSE
+* CONTOUR/I/J/K/L/M/N/X/Y/Z/T/E/F/DATASET/OVERLAY/SET_UP/FRAME/TRANSPOSE
 		DATA qualifiers  (nqual_at4a+0)	/ 'I'	/
 		DATA qualifiers  (nqual_at4a+1)	/ 'J'	/
 		DATA qualifiers  (nqual_at4a+2)	/ 'K'	/
@@ -853,7 +854,7 @@
 		DATA qualifiers  (nqual_at4a+12)/ 'OVERLAY'/	!/overlays
 		DATA qualifiers  (nqual_at4a+13)/ 'SET_UP'/	!/set_up
 		DATA qualifiers  (nqual_at4a+14)/ 'FRAME'/	!/frame
-		DATA qualifiers  (nqual_at4a+15)/ 'D'   /	!/data_set
+		DATA qualifiers  (nqual_at4a+15)/ 'DATASET'   /	!/data_set
 		DATA qualifiers  (nqual_at4a+16)/ 'TRANPOSE'/	!/transpose
 		DATA qualifiers  (nqual_at4a+17)/ 'FILL'/	!
 		DATA qualifiers  (nqual_at4a+18)/ 'LINE'/	!
@@ -906,7 +907,7 @@
 		DATA qualifiers  (nqual_at5a+9)	/ 'T'	/
 		DATA qualifiers  (nqual_at5a+10)/ 'E'	/
 		DATA qualifiers  (nqual_at5a+11)/ 'F'	/
-		DATA qualifiers  (nqual_at5a+12)/ 'D'	/
+		DATA qualifiers  (nqual_at5a+12)/ 'DATASET'	/
 		DATA qualifiers  (nqual_at5a+13)/ 'HEADING'/
 		DATA qualifiers  (nqual_at5a+14)/ 'NOHEAD'/
 		DATA qualifiers  (nqual_at5a+15)/ 'SINGLY'/
@@ -964,7 +965,7 @@
 	   DATA subcommands      (nsub_at6 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at6 + 0)	/ nqual6a	/
 	   DATA qualifier_pointer(nsub_at6 + 0)	/ nqual_at6a	/
-* PLOT/I/J/K/L/M/N/X/Y/Z/T/E/F/D/OVERLAY/SET_UP/FRAME/TRANSPOSE/VS
+* PLOT/I/J/K/L/M/N/X/Y/Z/T/E/F/DATASET/OVERLAY/SET_UP/FRAME/TRANSPOSE/VS
 		DATA qualifiers  (nqual_at6a+0)	/ 'I'	/
 		DATA qualifiers  (nqual_at6a+1)	/ 'J'	/
 		DATA qualifiers  (nqual_at6a+2)	/ 'K'	/
@@ -981,7 +982,7 @@
 		DATA qualifiers  (nqual_at6a+13)/ 'OVERLAY'/	!/overlays
 		DATA qualifiers  (nqual_at6a+14)/ 'SET_UP'/	!/set_up
 		DATA qualifiers  (nqual_at6a+15)/ 'FRAME'/	!/frame
-		DATA qualifiers  (nqual_at6a+16)/ 'D'   /	!/data_set
+		DATA qualifiers  (nqual_at6a+16)/ 'DATASET'   /	!/data_set
 		DATA qualifiers  (nqual_at6a+17)/ 'TRANPOSE'/	!/transpose
 		DATA qualifiers  (nqual_at6a+18)/ 'VS  '/	!/versus
 		DATA qualifiers  (nqual_at6a+19)/ 'SYMBOL'/	!/symbol
@@ -1068,7 +1069,7 @@
 		DATA qualifiers  (nqual_at9a+11)/ 'T'	/
 		DATA qualifiers  (nqual_at9a+12)/ 'E'	/
 		DATA qualifiers  (nqual_at9a+13)/ 'F'	/
-		DATA qualifiers  (nqual_at9a+14)/ 'D'	/
+		DATA qualifiers  (nqual_at9a+14)/ 'DATASET'	/
 		DATA qualifiers  (nqual_at9a+15)/ 'NAME'/
 
 * DEFINE - command # 10
@@ -1194,8 +1195,8 @@
 	   DATA subcommands      (nsub_at10 + 8)/ 'ATTRIBUT'	/
 	   DATA num_qualifs      (nsub_at10 + 8)/ nqual10i	/
 	   DATA qualifier_pointer(nsub_at10 + 8)/ nqual_at10i	/
-* DEFINE ATTRIBUTE /D /TYPE /OUTPUT /QUIET 
-		DATA qualifiers  (nqual_at10i+ 0)/ 'D' /
+* DEFINE ATTRIBUTE /DATASET /TYPE /OUTPUT /QUIET 
+		DATA qualifiers  (nqual_at10i+ 0)/ 'DATASET' /
 		DATA qualifiers  (nqual_at10i+ 1)/ 'TYPE' /
 		DATA qualifiers  (nqual_at10i+ 2)/ 'OUTPUT' /
 		DATA qualifiers  (nqual_at10i+ 3)/ 'QUIET' /
@@ -1283,7 +1284,7 @@
 	   DATA subcommands      (nsub_at13 + 0)/ '    '	/
 	   DATA num_qualifs      (nsub_at13 + 0)/ nqual13a	/
 	   DATA qualifier_pointer(nsub_at13 + 0)/ nqual_at13a	/
-* VECTOR/I/J/K/L/M/N/X/Y/Z/T/E/F/D/OVERLAY/SET_UP/FRAME/TRANSPOSE
+* VECTOR/I/J/K/L/M/N/X/Y/Z/T/E/F/DATASET/OVERLAY/SET_UP/FRAME/TRANSPOSE
 		DATA qualifiers  (nqual_at13a+0)/ 'I'	/
 		DATA qualifiers  (nqual_at13a+1)/ 'J'	/
 		DATA qualifiers  (nqual_at13a+2)/ 'K'	/
@@ -1299,7 +1300,7 @@
 		DATA qualifiers  (nqual_at13a+12)/ 'OVERLAY'/	!/overlays
 		DATA qualifiers  (nqual_at13a+13)/ 'SET_UP'/	!/set_up
 		DATA qualifiers  (nqual_at13a+14)/ 'FRAME'/	!/frame
-		DATA qualifiers  (nqual_at13a+15)/ 'D'   /	!/data_set
+		DATA qualifiers  (nqual_at13a+15)/ 'DATASET' /	!/data_set
 		DATA qualifiers  (nqual_at13a+16)/ 'TRANPOSE'/	!/transpose
 		DATA qualifiers  (nqual_at13a+17)/ '****'/	!
 		DATA qualifiers  (nqual_at13a+18)/ 'ASPECT'/	!/aspect
@@ -1395,7 +1396,7 @@
 	   DATA subcommands      (nsub_at17 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at17 + 0)	/ nqual17a	/
 	   DATA qualifier_pointer(nsub_at17 + 0)	/ nqual_at17a	/
-* STAT /I/J/K/L/M/N/X/Y/Z/T/E/F/D/G
+* STAT /I/J/K/L/M/N/X/Y/Z/T/E/F/DATASET/G
 		DATA qualifiers  (nqual_at17a+0)	/ 'BRIEF'/
 		DATA qualifiers  (nqual_at17a+1)	/ '****'/
 		DATA qualifiers  (nqual_at17a+2)	/ 'I'	/
@@ -1410,7 +1411,7 @@
 		DATA qualifiers  (nqual_at17a+11)	/ 'T'	/
 		DATA qualifiers  (nqual_at17a+12)	/ 'E'	/
 		DATA qualifiers  (nqual_at17a+13)	/ 'F'	/
-		DATA qualifiers  (nqual_at17a+14)	/ 'D'	/
+		DATA qualifiers  (nqual_at17a+14)	/ 'DATASET'	/
 		DATA qualifiers  (nqual_at17a+15)	/ '****'/
 
 * SHADE - command # 18
@@ -1422,7 +1423,7 @@
 	   DATA subcommands      (nsub_at18 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at18 + 0)	/ nqual18a	/
 	   DATA qualifier_pointer(nsub_at18 + 0)	/ nqual_at18a	/
-* SHADE/I/J/K/L/M/N/X/Y/Z/T/E/F/D/OVERLAY/SET_UP/FRAME/TRANSPOSE/TRIM
+* SHADE/I/J/K/L/M/N/X/Y/Z/T/E/F/DATASET/OVERLAY/SET_UP/FRAME/TRANSPOSE/TRIM
 		DATA qualifiers  (nqual_at18a+0)/ 'I'	/
 		DATA qualifiers  (nqual_at18a+1)/ 'J'	/
 		DATA qualifiers  (nqual_at18a+2)/ 'K'	/
@@ -1438,7 +1439,7 @@
 		DATA qualifiers  (nqual_at18a+12)/ 'OVERLAY'/	!/overlays
 		DATA qualifiers  (nqual_at18a+13)/ 'SET_UP'/	!/set_up
 		DATA qualifiers  (nqual_at18a+14)/ 'FRAME'/	!/frame
-		DATA qualifiers  (nqual_at18a+15)/ 'D'   /	!/data_set
+		DATA qualifiers  (nqual_at18a+15)/ 'DATASET'   /	!/data_set
 		DATA qualifiers  (nqual_at18a+16)/ 'TRANPOSE'/	!/transpose
 		DATA qualifiers  (nqual_at18a+17)/ 'TRIM'/	!/trim
 		DATA qualifiers  (nqual_at18a+18)/ 'LINE'/	!/lines
@@ -1493,7 +1494,7 @@
 		DATA qualifiers  (nqual_at20a+8)/ 'Y'		/
 		DATA qualifiers  (nqual_at20a+9)/ 'Z'		/
 		DATA qualifiers  (nqual_at20a+10)/ 'T'		/
-		DATA qualifiers  (nqual_at20a+11)/ 'D'		/
+		DATA qualifiers  (nqual_at20a+11)/ 'DATASET'		/
 		DATA qualifiers  (nqual_at20a+12)/ 'FILE'	/
 		DATA qualifiers  (nqual_at20a+13)/ 'FORMAT'	/
 
@@ -1506,7 +1507,7 @@
 	   DATA subcommands      (nsub_at21 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at21 + 0)	/ nqual21a	/
 	   DATA qualifier_pointer(nsub_at21 + 0)	/ nqual_at21a	/
-* WIRE/I/J/K/L/M/N/X/Y/Z/T/E/F/D/OVERLAY/SET_UP/FRAME/TRANSPOSE
+* WIRE/I/J/K/L/M/N/X/Y/Z/T/E/F/DATASET/OVERLAY/SET_UP/FRAME/TRANSPOSE
 		DATA qualifiers  (nqual_at21a+0) / 'I'	/
 		DATA qualifiers  (nqual_at21a+1) / 'J'	/
 		DATA qualifiers  (nqual_at21a+2) / 'K'	/
@@ -1522,7 +1523,7 @@
 		DATA qualifiers  (nqual_at21a+12) / 'OVERLAY'/ 
 		DATA qualifiers  (nqual_at21a+13) / 'SET_UP'/  
 		DATA qualifiers  (nqual_at21a+14)/ 'FRAME'/
-		DATA qualifiers  (nqual_at21a+15)/ 'D'   /
+		DATA qualifiers  (nqual_at21a+15)/ 'DATASET'   /
 		DATA qualifiers  (nqual_at21a+16)/ 'VIEWPOIN'/
 		DATA qualifiers  (nqual_at21a+17)/ 'ZLIMITS'/
 		DATA qualifiers  (nqual_at21a+18)/ 'TRANPOSE'/  
@@ -1610,7 +1611,7 @@
 	   DATA subcommands      (nsub_at27 + 0)/ '    '	/
 	   DATA num_qualifs      (nsub_at27 + 0)/ nqual27a	/
 	   DATA qualifier_pointer(nsub_at27 + 0)/ nqual_at27a	/
-* POLYGON/I/J/K/L/M/N/X/Y/Z/T/E/F/D/OVERLAY/SET_UP/FRAME/TRANSPOSE/COORD_AX
+* POLYGON/I/J/K/L/M/N/X/Y/Z/T/E/F/DATASET/OVERLAY/SET_UP/FRAME/TRANSPOSE/COORD_AX
 		DATA qualifiers  (nqual_at27a+0)/ 'I'	/
 		DATA qualifiers  (nqual_at27a+1)/ 'J'	/
 		DATA qualifiers  (nqual_at27a+2)/ 'K'	/
@@ -1626,7 +1627,7 @@
 		DATA qualifiers  (nqual_at27a+12)/ 'OVERLAY'/	!/overlays
 		DATA qualifiers  (nqual_at27a+13)/ 'SET_UP'/	!/set_up
 		DATA qualifiers  (nqual_at27a+14)/ 'FRAME'/	!/frame
-		DATA qualifiers  (nqual_at27a+15)/ 'D'   /	!/data_set
+		DATA qualifiers  (nqual_at27a+15)/ 'DATASET' /	!/data_set
 		DATA qualifiers  (nqual_at27a+16)/ 'TRANPOSE'/	!/transpose
 		DATA qualifiers  (nqual_at27a+17)/ 'COORD_AX'/	!/coord_ax
 		DATA qualifiers  (nqual_at27a+18)/ '****'/	!/unused

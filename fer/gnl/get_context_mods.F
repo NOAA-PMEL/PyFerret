@@ -158,6 +158,7 @@
 * V695+ *sh* 2/15 add support for _DQ_ 
 * V698+ *sh* 5/15 bug fix: allow blanks before aux varname e.g. "gz( depth)"
 * V698+ *sh* 6/15 bug fix: all axes to allow [g*(aux)=pt], not just z_dim
+* V698+ *acm* 2/16 Ticket 2362: Change /D= qualifier to /DATASET=
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -298,21 +299,25 @@
  30	      CONTINUE
 	   ELSEIF (letter.EQ.'d' .OR. letter.EQ.'D' ) THEN
 	      IF ( iend .EQ. istart ) GOTO 5015
-* make sure it isn't some other qualifier that begins with "d"
-!	      IF ( iend .GT. istart ) THEN
-	         IF (  text_buff( istart+1:istart+1 ) .NE. ' '
-     .	         .AND. text_buff( istart+1:istart+1 ) .NE. '='
-     .	         .AND. text_buff( istart+1:istart+1 ) .NE. tab ) GOTO 50
-* We just want to go on if there is a grave-accent expression, e.g. 
-*  `var,r=dsetnum` inside the "d="
-                 do ii = istart+2,iend
-	            IF (  text_buff(ii:ii) .EQ. '`') GOTO 50
-		 enddo
-!	      ENDIF
-* ... D=data_set given
+* Match any portion of DATASET=
+               
 	      equal_pos = ATOM_POS( text_buff(istart:iend), '=' )
 	      IF ( equal_pos .EQ. atom_not_found
-     .	      .OR. equal_pos .EQ. atom_illegal_pos ) GOTO 5110
+     .	         .OR. equal_pos .EQ. atom_illegal_pos ) GOTO 50
+              namlen = equal_pos-1
+	      IF (namlen.GT.1) THEN
+	         name = text_buff(istart:istart+namlen-1)
+		 IF (.NOT. MATCH4(name, namlen, 'DATA', 4) ) GOTO 50
+	      ENDIF
+	      
+* We just want to go on if there is a grave-accent expression, e.g. 
+*  `var,r=dsetnum` inside the "d="
+	      do ii = istart+2,iend
+	         IF (  text_buff(ii:ii) .EQ. '`') GOTO 50
+	      enddo
+
+* ... D=data_set given
+
 	      equal_pos = equal_pos + istart - 1
 	      name = text_buff(equal_pos+1:iend)
 	      namlen = iend-equal_pos

@@ -1029,6 +1029,8 @@ GO bn_reset
 ! Add this to the gif benchmark tests
 ! GO bn_labels_on_taxis
 
+GO bn_reset
+GO bn_dataset_qualifier
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

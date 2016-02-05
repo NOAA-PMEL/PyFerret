@@ -1,4 +1,5 @@
-	SUBROUTINE BUILD_T_AGG_AXIS (dset_num, nagfiles, memb_filename,
+	SUBROUTINE BUILD_T_AGG_AXIS (dset_num, nagfiles,
+     .			memb_order, memb_filename,
      .			memb_tstep_start, memb_tstep_end,
      .			memb_nsteps, t_regular, use_strict, status)
 
@@ -43,6 +44,7 @@
 *  If the file time metadata information was not provided (i.e. in the
 *  argument arrays memb_*), then fill in that metadata here, while creating the
 *  aggregated time axis
+*  If the files as-provided were out of order, then sort them
 
 
 * Programmer Steve Hankin
@@ -72,6 +74,7 @@
 
 *	dset_num	- dataset number 1st file -- to become the T agg
 *	nagfiles	- number of files in the aggregation (input)
+*	memb_order	- ordering index of files (input empty/output filled)
 *	memb_filename	- array of filenames (input)
 *	memb_tstep_start- array of first timestep in each file (input)
 *	memb_tstep_end	- array of last  timestep in each file (input)
@@ -89,7 +92,7 @@
 * Argument definitions
 	LOGICAL		t_regular, use_strict
 	INTEGER		nagfiles, dset_num, status
-	INTEGER		memb_nsteps(nagfiles)
+	INTEGER		memb_nsteps(nagfiles), memb_order(nagfiles)
 	REAL*8		memb_tstep_start(nagfiles), memb_tstep_end(nagfiles)
 	CHARACTER*512	memb_filename(nagfiles)
 
@@ -98,8 +101,8 @@
 	LOGICAL TM_DFPEQ_TOL, need_midpoints, need_T0_adjust
 	INTEGER TM_LENSTR1, TM_GET_CALENDAR_ID,
      .		taxis, nsteps, max_line_available, dtype, vlen, blen,
-     .		ifile, istep, ivar, TMAP_status, isubsc1,
-     .		cdfid, vid, bounds_id, gg, i, ilo, ihi, l,
+     .		i, ifile, istep, ivar, TMAP_status, isubsc1,
+     .		cdfid, vid, bounds_id, gg, ilo, ihi, l, imemb,
      .		startpts(2), numpts(2), d1s, d1e, d2s, d2e,
      .		agg_unit_code, file_unit_code, agg_cal_id
 	REAL	TM_WORLD_AX, T0_ADJUST,
@@ -121,7 +124,7 @@
 	vlen           = TM_LENSTR1(vname)
 	max_line_available = maxlinestore
 	dtype          = unspecified_int4  ! irrelevant from older netCD
-	need_midpoints = .FALSE.
+	need_midpoints = .FALSE.           ! assume cell edges are provided
 	agg_unit_code  = line_unit_code(taxis)
 	agg_T0_str     = line_T0(taxis)
 	agg_cal_id     = TM_GET_CALENDAR_ID (line_cal_name(taxis))
@@ -135,17 +138,19 @@
 
 * set up for a regular or irregular T-agg axis as requested by t_regular
 	IF (t_regular .AND. .NOT.line_regular(taxis)) THEN
-* ... convert the irregular t axis of 1st file into a forced-regular axis
-	   line_start(taxis) = line_mem(line_subsc1(taxis))
-	   line_regular(taxis) = .TRUE.
-* !! TODO: WE SHOULD REALLY GARBAGE COLLECT THE ABANDONED SPACE OCCUPIED BY
-*          THE IRREGULAR COORDINATES OF THE FIRST FILE IN THE T-AGG
-*          SEE PACK_LINE_STORAGE
-* quik garb collect if T-axis happens to be the last one in memory
-	   IF (next_line_mem_pos .EQ. line_subsc1(taxis) + nsteps) THEN
-	      next_line_mem_pos = line_subsc1(taxis) ! ouch! orphan some coords
-	      line_subsc1(taxis) =  unspecified_int4
-	   ENDIF
+	   CALL WARN('/T_REGULAR NOT YET IMPLEMENTED')
+! T_REGULAR HAS NEVER BEEN TESTED
+!* ... convert the irregular t axis of 1st file into a forced-regular axis
+!	   line_start(taxis) = line_mem(line_subsc1(taxis))
+!	   line_regular(taxis) = .TRUE.
+!* !! TODO: WE SHOULD REALLY GARBAGE COLLECT THE ABANDONED SPACE OCCUPIED BY
+!*          THE IRREGULAR COORDINATES OF THE FIRST FILE IN THE T-AGG
+!*          SEE PACK_LINE_STORAGE
+!* quik garb collect if T-axis happens to be the last one in memory
+!	   IF (next_line_mem_pos .EQ. line_subsc1(taxis) + nsteps) THEN
+!	      next_line_mem_pos = line_subsc1(taxis) ! ouch! orphan some coords
+!	      line_subsc1(taxis) =  unspecified_int4
+!	   ENDIF
 	ELSEIF (.NOT.t_regular .AND. line_regular(taxis)) THEN
 * ... convert the so-far regular 1st file axis into a forced-irregular axis
 	   IF (next_line_mem_pos+2*line_dim(taxis)+1
@@ -196,17 +201,20 @@
 
 	IF (memb_nsteps(1) .NE. unspecified_int4) THEN
 
+!!!!! THIS LOGIC HAS NOT BEEN TESTED -- INTENDED FOR PYTHON INTERFACE
+
 ***
 * time metadata has been provided by caller (i.e. python program)
 * note that the metadata of the first file is ignored since already read
 * directly from the file, itself
 	   IF (t_regular) THEN
-	      highest_tstep = line_start(taxis)
-     .			    + line_dim(taxis)*line_delta(taxis)
-	      DO ifile = 2, nagfiles
-	         highest_tstep = memb_tstep_end(ifile)
-	         line_dim(taxis) = line_dim(taxis) + memb_nsteps(ifile)
-	      ENDDO
+	      CONTINUE
+!	      highest_tstep = line_start(taxis)
+!     .			    + line_dim(taxis)*line_delta(taxis)
+!	      DO ifile = 2, nagfiles
+!	         highest_tstep = memb_tstep_end(ifile)
+!	         line_dim(taxis) = line_dim(taxis) + memb_nsteps(ifile)
+!	      ENDDO
 	   ELSE
 	      DO ifile = 2, nagfiles
 	         line_dim(taxis) = line_dim(taxis) + memb_nsteps(ifile)
@@ -237,38 +245,39 @@
 	   memb_tstep_end  (1) = TM_WORLD_AX(nsteps,taxis,box_middle) 
 
 	   IF (t_regular) THEN
-	      highest_tstep = line_start(taxis)
-     .			    + line_dim(taxis)*line_delta(taxis)
-	      DO ifile = 2, nagfiles
-* ... read the length of the time axis from the file to be aggregated
-	         CALL CD_QUIK_NCOPEN (dset_num, memb_filename(ifile),
-     .				      vname(:vlen),
-     .				      cdfid, vid, bounds_id,
-     .				      units_str, calendar_str,
-     .				      nsteps, TMAP_status)
-	         IF (TMAP_status .NE. merr_ok) GOTO 5010
-* user gives /T_REGULAR as a promise of file compatibility, so no checking
-* of units and calendar attributes
-	         memb_nsteps(ifile) = nsteps
-* ... read the first and last time step values from the axis
-! it's faster to compute the first and last than to read them
-! reading last, anyway, so that if the promise of regular points is a lie
-! at least the range of the time axis will be correct
-!	         CALL CD_RD_R8_1(cdfid, vid,     1,dtype,vname(:vlen),
-!     .                           memb_tstep_start(ifile), status )
+	      CALL WARN('/T_REGULAR NOT YET IMPLEMENTED')
+!	      highest_tstep = line_start(taxis)
+!     .			    + line_dim(taxis)*line_delta(taxis)
+!	      DO ifile = 2, nagfiles
+!* ... read the length of the time axis from the file to be aggregated
+!	         CALL CD_QUIK_NCOPEN (dset_num, memb_filename(ifile),
+!     .				      vname(:vlen),
+!     .				      cdfid, vid, bounds_id,
+!     .				      units_str, calendar_str,
+!     .				      nsteps, TMAP_status)
+!	         IF (TMAP_status .NE. merr_ok) GOTO 5010
+!* user gives /T_REGULAR as a promise of file compatibility, so no checking
+!* of units and calendar attributes
+!	         memb_nsteps(ifile) = nsteps
+!* ... read the first and last time step values from the axis
+!! it's faster to compute the first and last than to read them
+!! reading last, anyway, so that if the promise of regular points is a lie
+!! at least the range of the time axis will be correct
+!!	         CALL CD_RD_R8_1(cdfid, vid,     1,dtype,vname(:vlen),
+!!     .                           memb_tstep_start(ifile), status )
+!!	         IF ( status .NE. merr_ok ) GOTO 5010
+!	         CALL CD_RD_R8_1(cdfid, vid,nsteps,dtype,vname(:vlen),
+!     .                           memb_tstep_end(ifile),   status )
+!	         IF ( status .NE. merr_ok ) GOTO 5010	         
+!	         line_dim(taxis) = line_dim(taxis) + nsteps
+!	         highest_tstep = memb_tstep_end(ifile)
+!	         line_delta(taxis) = (highest_tstep - line_start(taxis))
+!     .				   /(line_dim(taxis) - 1)
+!	         memb_tstep_start(ifile) = highest_tstep
+!     .				       - (nsteps-1)*line_delta(taxis)
+!	         CALL CD_CLOSE_SET ( cdfid, status)
 !	         IF ( status .NE. merr_ok ) GOTO 5010
-	         CALL CD_RD_R8_1(cdfid, vid,nsteps,dtype,vname(:vlen),
-     .                           memb_tstep_end(ifile),   status )
-	         IF ( status .NE. merr_ok ) GOTO 5010	         
-	         line_dim(taxis) = line_dim(taxis) + nsteps
-	         highest_tstep = memb_tstep_end(ifile)
-	         line_delta(taxis) = (highest_tstep - line_start(taxis))
-     .				   /(line_dim(taxis) - 1)
-	         memb_tstep_start(ifile) = highest_tstep
-     .				       - (nsteps-1)*line_delta(taxis)
-	         CALL CD_CLOSE_SET ( cdfid, status)
-	         IF ( status .NE. merr_ok ) GOTO 5010
-	      ENDDO
+!	      ENDDO
 	   ELSE
 	      DO ifile = 2, nagfiles
 * ... first read the length of the time axis from the file to be aggregated
@@ -287,7 +296,7 @@
      .				          file_unit_code, file_t0_str,
      .					  agg_unit_code,  agg_t0_str, status )
 	         memb_nsteps(ifile) = nsteps
-	         max_line_available = max_line_available-nsteps  ! keep n of em
+	         max_line_available = max_line_available-(nsteps+1) ! n+1 edges
 	         IF (next_line_mem_pos+line_dim(taxis)+nsteps
      .			.GT.max_line_available)			GOTO 5100
 * ... read the array of time steps from the file
@@ -296,7 +305,7 @@
      .				   line_mem(isubsc1), status)
 	         IF ( status .NE. merr_ok ) GOTO 5010
 
-* ... adjust the time step values to the agg-wide "<units> since <T0>"
+* ... adjust the time step values to the agg-chosen "<units> since <T0>"
 	         IF (need_T0_adjust) THEN
 	            DO istep = isubsc1, isubsc1+nsteps-1
 	               line_mem(istep) = T0_ADJUST(line_mem(istep))
@@ -340,11 +349,7 @@
      .                    d1s, d1e, d2s, d2e, status )
                     IF ( status .NE. merr_ok ) GOTO 5010
 
-*     #2) read the highest upper box bound value (1 value)
-*         Note that the upper bound of file K and the lower bound of
-*         file K+1 are presumed the same value.  If not we will clobber the 
-*	  upper bound og file K in this step **without detecting the problem**
-*         We could add code to issue a warning if it seemed worth the trouble.
+*     #2) read the highest upper box bound value (a single value)
                     startpts(1) = 2
                     startpts(2) = nsteps
                     numpts(1) = 1
@@ -379,45 +384,26 @@
 	         ENDIF
 	         CALL CD_CLOSE_SET ( cdfid, status)
 	         IF ( status .NE. merr_ok ) GOTO 5010
-	      ENDDO
+	      ENDDO    ! end of member file loop
 	   ENDIF
 	ENDIF
-
-* ToDo - here we could re-order the files and times, if they were out of order
-* use values of memb_tstep_start to determine ordering
-* Note that the handling of bounds values would need to be changed slightly
-* The top bound of file K is the bottom bound of file K+1 if correctly ordered
-* by default. Currently we over-write the redundant value. We would need to
-* postpone removal of this redundancy (store N+1 bounds for each file) until
-* after the sorting of files has been completed.
-	CONTINUE
-
-
-*************  clean up the axis ***************
-* either flesh out the forced-regular axis
 	nsteps = line_dim(taxis)   ! length of aggregated axis
-	IF (t_regular) THEN
-	   CONTINUE   ! line_delta kept up to date in loop above
-	
-	ELSE
-* or deal with cell boundaries
-	   next_line_mem_pos =  next_line_mem_pos + 2*nsteps + 1
 
-* ... compute time midpoints if not supplied
-	   IF (need_midpoints) THEN
-	      IF (line_subsc1(taxis)+2*nsteps+1.GT.maxlinestore) GOTO 5100
-	      CALL TM_IRREGAX_MID(line_subsc1(taxis), nsteps)
+****** START: check over and finalize the aggregation time axis
+	IF (.NOT.t_regular) THEN
 
-	   ELSE
-
-* ... explicit cell boundaries have been stored in high line_mem indices
+	   IF (.NOT.need_midpoints) THEN
+* explicit cell boundaries have been stored in high line_mem indices
+* note that instead of nsteps+1 edges, at this point we have nsteps+nagfiles
+* because each member file has contributed both a low and a hgh edge
+* we have held onto the extra points because the member order may be re-sorted
 *   1. reorder the cell bounds back to forwards order
-*   2. move the cell bounds from thei temporary storage
+*   2. move the cell bounds from temporary storage to their normal position
 
 * ... 1. reorder the bounds to forward order
 	      ilo = max_line_available
-	      ihi = ilo + nsteps
-	      DO istep = 0, nsteps/2
+	      ihi = ilo + nsteps + nagfiles - 1
+	      DO istep = 0, (nsteps+nagfiles)/2
 	         tt = line_mem(ilo)
 	         line_mem(ilo) = line_mem(ihi)
 	         line_mem(ihi) = tt
@@ -427,12 +413,56 @@
 * ... 2. shift the bounds down to sit just after the coordinates
 	      ilo = line_subsc1(taxis) + nsteps
 	      ihi = max_line_available
-	      DO istep = 0, nsteps
+	      DO istep = 0, nsteps+nagfiles-1
 	         line_mem(ilo) = line_mem(ihi)
 	         line_mem(ihi) = bad_val4        ! for good house-keeping
 	         ilo = ilo + 1
 	         ihi = ihi + 1
 	      ENDDO
+	   ENDIF
+
+* if the fileas as provided were out of order, then sort them here
+* sort the time coordinates and bounds in line_mem to match the sort order
+	   CALL SORT_TSERIES_DSETS(nagfiles, nsteps, need_midpoints, 
+     .				   memb_nsteps, memb_order,
+     .				   line_mem(line_subsc1(taxis)),
+     .				   line_mem(line_subsc1(taxis)+nsteps) )
+
+* deal with cell boundaries
+	   next_line_mem_pos =  next_line_mem_pos + 2*nsteps + 1
+
+* ... compute time midpoints if not supplied
+	   IF (need_midpoints) THEN
+	      IF (line_subsc1(taxis)+2*nsteps+1.GT.maxlinestore) GOTO 5100
+	      CALL TM_IRREGAX_MID(line_subsc1(taxis), nsteps)
+
+	   ELSE
+
+* remove the duplicated cell edges: top of file k duplicates bottom of file k+1
+*    istep counts time steps in the aggregated time axis 
+*    ifile counts the member files
+*    imemb counts the time step in the member current file
+
+	      ilo = line_subsc1(taxis) + nsteps
+	      i = 1
+	      ifile = memb_order(i)
+	      imemb = memb_nsteps(ifile) ! start at top of first file
+	      istep = imemb
+	      DO WHILE (istep .LE. nsteps)
+	         istep = istep + 1
+	         imemb = imemb + 1
+	         IF (imemb .GT. memb_nsteps(ifile)) THEN
+*     ... start of next member file
+*     ... skipping the top cell edge of each file
+	            i = i + 1
+	            IF (i .LE. nagfiles) ifile = memb_order(i)
+	            imemb = 1
+	         ENDIF
+	         l = ilo + istep
+	         line_mem(l) = line_mem(l+i-1)
+	      ENDDO
+* ... copy (dont skip) the upper edge of the aggregate axis
+	      line_mem(l+1) = line_mem(l+i)
 	   ENDIF
 
 * if the coordinates have been saved as irregular we must now
@@ -444,19 +474,21 @@
            dfirst_delta = line_mem(ilo+1) - line_mem(ilo)
            depsilon = depsilon_46 * 2.*(ABS(line_mem(ilo))
      .		    / dfirst_delta )
-	   DO ifile = 1, nagfiles
-	      DO l = 1, memb_nsteps(ifile)  ! timestep within individual file
-	         IF (ifile.EQ.1 .AND. l.EQ.1) THEN 
+	   DO i = 1, nagfiles
+	      ifile = memb_order(i)
+	      DO l = 1, memb_nsteps(ifile)  ! timestep within memer files
+	         IF (i.EQ.1 .AND. l.EQ.1) THEN 
 	            CYCLE       ! 1st point on axis		
 	         ELSE
 	            ilo = ilo + 1
 	            tt  = line_mem(ilo)
-	            IF (tt .LE. line_mem(ilo-1))	GOTO 5300
-	            IF (tt .LT. line_mem(ilo+nsteps))	GOTO 5400 ! lo bnd chk 
+	            IF (tt .LE. line_mem(ilo-1))	 GOTO 5300
+	            IF (tt .LT. line_mem(ilo+nsteps)) GOTO 5400 ! lo bnd chk
 	         ENDIF
 	      ENDDO
 	   ENDDO
-	   IF (tt .GT. line_mem(ilo+nsteps+1))		GOTO 5400 ! hi bnd chk
+	   ifile = memb_order(nagfiles)  ! for error message
+	   IF (tt .GT. line_mem(ilo+nsteps+1))	 GOTO 5400 ! hi bnd chk
 
 *   check regularity of cell positions 
 	   ilo = line_subsc1(taxis)
@@ -464,15 +496,15 @@
 	      ilo = ilo + 1
 	      delta = line_mem(ilo) - line_mem(ilo-1)
 	      IF (.NOT.TM_DFPEQ_TOL(dfirst_delta, delta, depsilon) )
-     .								GOTO 100
+     .								GOTO 200
 	   ENDDO
 
 *   check regularity of cell bounds
-	   ilo = line_subsc1(taxis) + nsteps   ! lower cell bound of 1st point
-	   DO i = ilo, ilo+nsteps-1	
-	      delta = line_mem(i+1) - line_mem(i)
+	   ilo = line_subsc1(taxis) + nsteps   ! lower cell bound of 1st pt
+	   DO istep = ilo, ilo+nsteps-1	
+	      delta = line_mem(istep+1) - line_mem(istep)
 	      IF (.NOT. TM_DFPEQ_TOL(dfirst_delta, delta, depsilon) )
-     .								GOTO 100
+     .								GOTO 200
 	   ENDDO
 
 * It's regular after all!  - change from irregular designation
@@ -488,11 +520,12 @@
 	   line_subsc1 (taxis) = unspecified_int4
 	   next_line_mem_pos =  next_line_mem_pos - (2*nsteps + 1) ! restore
 	ENDIF
+****** END: check over and finalize the time axis
  
 
 * correct the upper L limit for all time-dependent variables in this dataset
 * as the current L limit was set based upon the first file, alone
- 100	DO ivar = 1, maxvars
+ 200	DO ivar = 1, maxvars
 	   IF ( ds_var_setnum(ivar) .EQ. dset_num ) THEN
 	      gg  = ds_grid_number(ivar)
 	      IF (grid_line(t_dim,gg) .EQ. taxis) THEN

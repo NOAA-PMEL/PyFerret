@@ -54,6 +54,7 @@
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
+* V698 *acm* 1/16 Allow for Epic CDF files, ds_type = 'ECDF'
 
 * calling argument declarations:
 	INTEGER	dset
@@ -74,6 +75,7 @@
 
 * netCDF
 	IF( ds_type(dset) .EQ. 'CDF' .OR. 
+     .      ds_type(dset) .EQ. 'ECDF' .OR. 
      .      ds_type(dset) .EQ. 'ENS'.OR. 
      .      ds_type(dset) .EQ. 'FCT') THEN
 * ... "record" axis is slowest (stored in ds_time_axis)

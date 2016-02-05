@@ -128,6 +128,7 @@
 * v6.951   New development
 * v6.96    little release with @BIN @NBIN regrid; high-res time plots
 * v6.961   To GFDL for fix to #2334
+* v6.963   To GFDL in a PyFerret update, install on our servers
 * v6.97 (working version)
 
         IMPLICIT NONE

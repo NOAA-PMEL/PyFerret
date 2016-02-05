@@ -1,0 +1,13 @@
+! bn_samplexy_sampleij
+
+! Simple tests of SAMPLEXY and SAMPLEIJ 
+
+sh func samplexy, sampleij
+use coads_climatology
+
+! Both functions take world coordinate values
+! as arguements for the points at which to sample.
+!
+! SAMPLEXY will interpolate to geth the result, 
+! SAMPLEIJ requires an exact match.
+list/l=1 samplexy(sst,{321,323.5,325}, {1,1,1}), sampleij(sst,{321,323,324.5}, {1,1,1})

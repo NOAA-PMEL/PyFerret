@@ -104,10 +104,11 @@
      .				grid_line(t_dim, igrid) = tf_lag_t 
 
 * Make up a unique grid name for aggregate grid
-         IF (agg_dim .EQ. t_dim) grid_name(igrid) = 'GEN'
+         IF (agg_dim .EQ. e_dim) grid_name(igrid) = 'GEN'
          IF (agg_dim .EQ. f_dim) grid_name(igrid) = 'GFN'
-         CALL TM_NEW_GRID_NAME( grid_name(igrid), buff )
-         grid_name(igrid) = buff
+! as temps all have same name -- duplicates are resolved in EF_CLEAN_GRIDS
+!         CALL TM_NEW_GRID_NAME( grid_name(igrid), buff )
+!         grid_name(igrid) = buff
 
 	 gnum = igrid
       ENDIF

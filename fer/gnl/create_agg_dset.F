@@ -1,4 +1,4 @@
-	SUBROUTINE CREATE_AGG_DSET (agg_dset, dname, dtitle,
+	SUBROUTINE CREATE_AGG_DSET (agg_dset, dname, dpath, dtitle,
      .               nsets, dset1, agg_dim, iline, status)
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -40,10 +40,12 @@
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 * V695+ *sh*  11/15 Correct bugs in setting of aggregate dset title
+* V698  *sh*  1/16 pass explicit path name (for "USE file.agg" compatibility)
 
 * calling argument
 *   agg_dset	- dataset number of the aggregation (input)
 *   dname	- name of the aggregated dataset (input)
+*   dpath	- pathname of the aggregated dataset (input)
 *   dtitle	- optional title string (input)
 *   nsets	- number of datasets in the aggregation (input)
 *   dset1	- dataset number of first (pattern) dataset in agg (input)
@@ -55,6 +57,7 @@
         include 'tmap_errors.parm'
 #include "tmap_dset.parm"
         include 'tmap_dims.parm'
+	include 'xstep_files.cmn_text'
 	include	'ferret.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
@@ -67,12 +70,12 @@
 	include 'xtext_info.cmn'
 
 * calling argument declarations:
-	CHARACTER*(*)	dname, dtitle
+	CHARACTER*(*)	dname, dpath, dtitle
 	INTEGER		agg_dset, nsets, dset1, agg_dim, iline, status
 
 * local variable declarations:
 	INTEGER TM_LENSTR, TM_LENSTR1, ALLO_MANAGED_AXIS,
-     .		type, coordvar, varid, big_cx, nlen
+     .		type, coordvar, varid, big_cx, nlen, istep
 	CHARACTER LEFINT*20, ntext*20
 	REAL	bad_flag
 
@@ -85,7 +88,7 @@
 	IF (agg_dim .EQ. f_dim ) ds_type(agg_dset) = 'FCT'
 
 	ds_name(agg_dset) = dname
-	ds_des_name(agg_dset) = dname
+	ds_des_name(agg_dset) = dpath
 
 	IF (dtitle(1:2).EQ.char_init .OR. TM_LENSTR(dtitle).EQ.0) THEN
 	   ntext = LEFINT(nsets, nlen)
@@ -102,15 +105,25 @@
 	ENDIF
 	ds_mod_title(agg_dset) = ' '
  
+* assign a stepfile to this dataset (needed for consistency with other dsets)
+        DO istep = 1,maxstepfiles
+          IF (sf_setnum(istep) .EQ. set_not_open) THEN
+	     sf_name  (istep) = dname
+	     sf_setnum(istep) = agg_dset
+             GOTO 100
+          ENDIF
+	ENDDO
+* No room left for new stepfiles
+       GOTO 5400
+ 
 * create the aggregate axis
-
-	CALL CREATE_AGG_AXIS (nsets, agg_dim, iline, status)
+ 100	CALL CREATE_AGG_AXIS (nsets, agg_dim, iline, status)
 	IF (status .NE. ferr_ok) GOTO 5300 
 
 	RETURN
 	
  5000   RETURN	
  5300   status = ferr_TMAP_error
-	RETURN
-
+	GOTO 5000
+ 5400	CALL ERRMSG(ferr_internal, status, 'create_agg_dset', *5000)
 	END

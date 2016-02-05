@@ -49,6 +49,7 @@
 * V694  1/15 *acm* as part of changes for ticket 2227 (handling of dimensions
 *                  that are not also 1-D coordinate variables), when returning 
 *                  ..dimnames, now list of all dimensions in the dataset.
+* V698 *acm* 1/16 Allow for Epic CDF files, ds_type = 'ECDF'
  
         include 'tmap_dims.parm'
 #       include "tmap_dset.parm"
@@ -166,7 +167,7 @@
 	      CALL INIT_C_STRING_ARRAY( n,
      .				     memory(1,mr_blk1(mr)),
      .				     mr_c_pointer(mr)    )
-                IF (ds_type(dset) .NE. 'CDF') GOTO 5200
+                IF (ds_type(dset).NE.'CDF' .AND. ds_type(dset).NE.'ECDF') GOTO 5200
 
 * All the dimensions from the dataset
 
@@ -205,7 +206,7 @@
               got_it = .TRUE.
 
            ELSE IF (STR_SAME(attname, 'ndims') .EQ. 0 ) THEN
-              IF (ds_type(dset) .NE. 'CDF') GOTO 5200
+              IF (ds_type(dset).NE.'CDF' .AND. ds_type(dset).NE.'ECDF') GOTO 5200
 
               memory( 1, mr_blk1(mr)) = ndims
               got_it = .TRUE.
@@ -319,7 +320,7 @@
 	           CALL INIT_C_STRING_ARRAY( nvdims,
      .				     memory(1,mr_blk1(mr)),
      .				     mr_c_pointer(mr)    )
-                IF (ds_type(dset) .NE. 'CDF') GOTO 5200
+                IF (ds_type(dset).NE.'CDF' .AND. ds_type(dset).NE.'ECDF') GOTO 5200
 
                    n = 0
                    DO 700 idim = i1, i2
@@ -333,7 +334,7 @@
                 got_it = .TRUE.
 
              ELSE IF (STR_SAME(attname, 'ndims') .EQ. 0 ) THEN
-                IF (ds_type(dset) .NE. 'CDF') GOTO 5200
+                IF (ds_type(dset).NE.'CDF' .AND. ds_type(dset).NE.'ECDF') GOTO 5200
 
                 memory( 1, mr_blk1(mr)) = nvdims
                 got_it = .TRUE.

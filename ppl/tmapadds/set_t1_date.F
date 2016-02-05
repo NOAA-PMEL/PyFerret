@@ -1,10 +1,12 @@
-	SUBROUTINE CD_GET_CALENDAR_NAME (calname, ok_cal)
+	SUBROUTINE SET_T1_DATE (t1_date, dt_min)
 
+*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
-*.
+*
 *  Access and use of this software shall impose the following
 *  obligations and understandings on the user. The user is granted the
 *  right, without any fee or cost, to use, copy, modify, alter, enhance
@@ -33,54 +35,20 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* Given a string with a calendar name, match the first 3 characters 
-* with the list of allowed names or with the words STANDARD or 
-* PROLEPTIC_GREGORIAN and return the standard name.
+*  Pass the start time and delta-t to pplus for an overlay on 
+*  a 2-D time plot
 
-* Include files
-        include 'calendar.decl'
-        include 'calendar.cmn'
-        include 'errmsg.parm'
-        include 'xio.cmn_text'
+*****************************************************
+	include 'axisl_inc.decl'
+	include 'AXISL.INC'
+	include 'taxis_inc.decl'
+	include 'TAXIS.INC'
 
-* Argument declarations
-	LOGICAL ok_cal
-	CHARACTER*(*) calname
+	CHARACTER*(*) t1_date
+	REAL*4 dt_min
 
-* Internal variables
-	INTEGER STR_UPCASE, TM_LENSTR1, i, istat, ncal, slen
-	CHARACTER*50 allcals
+	itstrt = t1_date
+	dt = dt_min
 
-	INTEGER tt  ! nice short name
-	EQUIVALENCE (tt,lunit_errors)
-
-	istat = STR_UPCASE (calname, calname)
-
-	IF (calname(1:3) .EQ. '360') calname = '360_DAY' 
-	IF (calname .EQ. 'STANDARD') calname = 'GREGORIAN' 
-	IF (calname .EQ. 'PROLEPTIC_GREGORIAN') calname = 'GREGORIAN' 
-	IF (calname(1:6) .EQ. 'COMMON') calname = 'NOLEAP' 
-	IF (calname(1:3) .EQ. '365') calname = 'NOLEAP' 
-	IF (calname(1:3) .EQ. '366') calname = 'ALL_LEAP' 
-
-	ok_cal = .FALSE.
-	ncal = 1
-	allcals = ' '
-
-	DO 100 i = 1, mxcals
-  111	   FORMAT (A9,' ')
-	   slen = TM_LENSTR1( allowed_calendars(i)(1:9) )
-	   write (allcals(ncal:ncal+9), 111) allowed_calendars(i)
-	   ncal = ncal + 10
-
-	   IF (calname(1:3) .EQ. allowed_calendars(i)(1:3) ) THEN
-              ok_cal = .TRUE.
-              calname = allowed_calendars(i)
-	      GOTO 120
-	   ENDIF
-  100	CONTINUE
-	CALL TM_NOTE('Valid calendars are '//allcals, tt)
-
-  120	CONTINUE
 	RETURN
 	END

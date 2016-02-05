@@ -39,6 +39,8 @@
 *
 * 9/ 3/2015 Fix LAS/SOCAT ticket 1720, missingness patterns in cruise-weighted 
 *           vs unweighted gridded fields.
+* 1/27/2016 Apply modulo operation to scattered longitudes or time if the output
+*           axis is a modulo axis.
 *
 * The input data points are not a simple scatter.  They are cruise tracks 
 * strung one after another .  (Each track will be a contiguous block of points 
@@ -309,20 +311,20 @@
       REAL x1, y1, t1, icruise, ncruise, xf, yf, tf
       REAL xx, yy, tt, vv
 
+*  variables for checking axis characteristics (modulo axes)
+      CHARACTER ax_name(6)*16, ax_units(6)*16
+      LOGICAL backward(6), mdulo(6), regular(6)
+      LOGICAL modulox, modulot
+      REAL*8 modxlen, modtlen
+
 *  Dimension the work arrays
 
-      REAL*8 xaxlo(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
-     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-      REAL*8 xaxhi(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
-     .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
-      REAL*8 yaxlo(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
-     .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
-      REAL*8 yaxhi(wrk4lox:wrk4hix, wrk4loy:wrk4hiy, 
-     .               wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
-      REAL*8 taxlo(wrk5lox:wrk5hix, wrk5loy:wrk5hiy,
-     .               wrk5loz:wrk5hiz, wrk5lot:wrk5hit)
-      REAL*8 taxhi(wrk6lox:wrk6hix, wrk6loy:wrk6hiy,
-     .               wrk6loz:wrk6hiz, wrk6lot:wrk6hit)
+      REAL*8 xaxlo(wrk1lox:wrk1hix)
+      REAL*8 xaxhi(wrk2lox:wrk2hix)
+      REAL*8 yaxlo(wrk3lox:wrk3hix)
+      REAL*8 yaxhi(wrk4lox:wrk4hix)
+      REAL*8 taxlo(wrk5lox:wrk5hix)
+      REAL*8 taxhi(wrk6lox:wrk6hix)
 
       REAL obs_cruise(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
      .               wrk7loz:wrk7hiz, wrk7lot:wrk7hit)
@@ -338,6 +340,23 @@
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
+
+
+*  Check to see if the output X-axis is modulo (does not need to be regular)
+      CALL ef_get_axis_info_6d(id, ARG6, ax_name, ax_units,
+     .                         backward, mdulo, regular)
+      modulox = mdulo(X_AXIS)
+      IF ( modulox ) THEN
+         CALL ef_get_axis_modulo_len(id, ARG6, X_AXIS, modxlen)
+      ENDIF
+
+*  Check to see if the output T-axis is modulo (does not need to be regular)
+      CALL ef_get_axis_info_6d(id, ARG6, ax_name, ax_units,
+     .                         backward, mdulo, regular)
+      modulot = mdulo(T_AXIS)
+      IF ( modulot ) THEN
+         CALL ef_get_axis_modulo_len(id, ARG8, T_AXIS, modtlen)
+      ENDIF
 
       obs_only = 0	! 0 = var 1 is a variable to average.
                         ! 1 = Compute a count of cruises with an obs in the grid cells
@@ -487,6 +506,16 @@ C  Get coordinates of output axes.
      .           n, vv, xx, yy, tt, ncc)
       icruise = ncc
 
+*  If output axis is modulo, apply modulo adjustment to that coordinate
+*  of the scattered point.
+         IF ( modulox ) THEN
+            CALL modscat(xaxlo(1), xaxhi(nx), modxlen, 1, xx)
+         ENDIF
+         IF ( modulot ) THEN
+            CALL modscat(taxlo(1), taxhi(nt), modtlen, 1, tt)
+         ENDIF
+
+
 * For each cruise keep track of the index range it spans in the result grid
 * Then at the end of the cruise need only to process that subset of the grid.
       indx(1,1) = nx
@@ -503,9 +532,21 @@ C  Get coordinates of output axes.
          IF (vv .EQ. bad_flag(ARG1) .OR. xx .EQ. bad_flag(ARG2) .OR. 
      .          yy .EQ. bad_flag(ARG3) .OR. tt .EQ. bad_flag(ARG4) ) GOTO 300
      
-	 if (xx.LT.xaxlo(1,1,1,1) .OR. xx.GT.xaxhi(nx,1,1,1)) GOTO 300
-	 if (yy.LT.yaxlo(1,1,1,1) .OR. yy.GT.yaxhi(ny,1,1,1)) GOTO 300
-	 if (tt.LT.taxlo(1,1,1,1) .OR. tt.GT.taxhi(nt,1,1,1)) GOTO 300
+
+
+*  If output axis is modulo, apply modulo adjustment to that coordinate
+*  of the scattered point.
+         IF ( modulox ) THEN
+            CALL modscat(xaxlo(1), xaxhi(nx), modxlen, 1, xx)
+         ENDIF
+         IF ( modulot ) THEN
+            CALL modscat(taxlo(1), taxhi(nt), modtlen, 1, tt)
+         ENDIF
+
+
+	 if (xx.LT.xaxlo(1) .OR. xx.GT.xaxhi(nx)) GOTO 300
+	 if (yy.LT.yaxlo(1) .OR. yy.GT.yaxhi(ny)) GOTO 300
+	 if (tt.LT.taxlo(1) .OR. tt.GT.taxhi(nt)) GOTO 300
 
          IF (ncc .NE. icruise) THEN
 	    

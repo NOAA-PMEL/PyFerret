@@ -1,5 +1,5 @@
 	SUBROUTINE INIT_EF_AGGREGATE_DSET (memb_dsetname_var,
-     .	   nsets, have_expr, dname, dtitle, agg_dset, 
+     .	   nsets, have_expr, dname, dpath, dtitle, agg_dset, 
      .     agg_quiet, agg_hide, agg_dim, status )
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -70,13 +70,15 @@
 *		  allow dataset list passed as a Ferret string variable
 *                 allow forecast datasets out of order (sort em)
 *		  allow gaps in the forecast series (insert dummy datasets)
+* V698 1/16  *sh* pass explicit path name (for "USE file.agg" compatibility)
 
 * arguments:
 *	memb_dsetname_var - if have_expr, the variable of names (input)
 *	nsets		- number of datasets in the aggregation (input)
 *       have_expr	- flag if filenames were listed or in an expr (input)
-*	dset_name	- dataset name to assign to the aggregation (input)
-*	dset_title	- dataset title (input)
+*	dname		- dataset name to assign to the aggregation (input)
+*	dpath		- dataset path name to assign to aggregation (input)
+*	dtitle		- dataset title (input)
 *	dset_num	- number assigned to this data set (output)
 *       agg_quiet       - flag whether to report certain conditions (input)
 *	agg_hide        - flag whether to hide the component datasets (input)
@@ -101,7 +103,7 @@
 	include 'xfr_grid.cmn'
 
 * calling argument declarations:
-	CHARACTER*(*)	dname, dtitle
+	CHARACTER*(*)	dname, dpath, dtitle
 	INTEGER		nsets, agg_dset, agg_dim, status
 	LOGICAL		have_expr, agg_quiet, agg_hide
 	REAL		memb_dsetname_var(*)
@@ -123,7 +125,7 @@
      .		type, fvar, ndims, ngatts, recdim, varid, attoutflag,
      .          tf_lag_t, memb_tax,
      .		ref_grid, ref_fvar, ref_fvars(pmaxvarsperset),
-     .		num_indices, j, jj, ignore_status
+     .		num_indices, j, jj, ignored_status
 	CHARACTER buff*64, tcoordname*16
 	CHARACTER TM_STRING*13
 	CHARACTER*512 GET_STRING_ELEMENT_1D_X, memb_dsetname(nsets)
@@ -191,7 +193,7 @@
 
 * Create datset. Will delete it later if there are no aggregate variables found
 * Note: the pattern will the first dataset given.  They may get reordered.
-	CALL CREATE_AGG_DSET (agg_dset, dname, dtitle,
+	CALL CREATE_AGG_DSET (agg_dset, dname, dpath, dtitle,
      .			 nsets_wgaps, member_sets(1), agg_dim, iline, status)  
 	IF (status .NE. ferr_ok) GOTO 5300
 
@@ -310,8 +312,16 @@
 	   status = NCF_ADD_AGG_MEMBER (agg_dset, iset, member_sets(iset)) 
 	ENDDO
  
-* set use counts and clean up temporary grids and axes for agg. dset
+* remove duplicate temp grid definitions amd makegrid names unique
+	CALL EF_CLEAN_GRIDS(AGG_DSET)
+
+* set use counts and remove temp status of agg grids and axes
 	CALL TM_GARB_COL_GRIDS(agg_dset)
+
+* set the official time axis of the dataset
+	CALL CD_GET_TIME_AXIS( agg_dset, t_dim, ignored_status )
+	IF (ignored_status .NE. merr_ok) CALL WARN
+     .					  ('INIT_EF_GET_TIME_AX crptn')
 
 * If user requested /HIDE, then mark the member datasets for hidden status
 	IF (agg_hide) THEN
@@ -332,7 +342,7 @@
 	   IF (iset .EQ. pdset_dummy
      .    .OR. iset .EQ. unspecified_int4) CYCLE
 	   IF (ds_name(iset) .EQ. char_init1024) CYCLE ! already deleted
-	   IF (ds_hide (iset)) CALL CANCEL_ONE_DATA_SET( iset, ignore_status )
+	   IF (ds_hide (iset)) CALL CANCEL_ONE_DATA_SET( iset, ignored_status )
 	ENDDO
 	RETURN	
 
@@ -344,7 +354,9 @@
  9950	agg_dset = unspecified_int4
 	status = ferr_TMAP_error
 	GOTO 5000
- 9960	CALL CANCEL_DATA_SET( agg_dset, ignore_status )
+* wipe out the partially-created aggregated dataset
+ 9960	CALL TM_PURGE_TMP_GRIDS(ignored_status)
+	CALL CANCEL_DATA_SET( agg_dset, ignored_status )
 	agg_dset = unspecified_int4
 	GOTO 5000
 

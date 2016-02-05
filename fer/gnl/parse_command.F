@@ -131,6 +131,7 @@
 *                  Specific hacks for SET DATA (& DEFINE SYM) and GO
 * V697 12/15 *acm* Ticket 2337 Increase length of cmnd buffer to 20480.
 *                  change to echo back only the first part of the command on error.
+* V697  1/16 *acm* tiket 2356: Allow multiple slashes in command-line between qualifiers.
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -234,104 +235,11 @@
 * full length of text
 	cmnd_len = TM_LENSTR (cmnd_buff)
 
-! 12/14 handled in GET_FER_COMMAND
-!* ignore "yes?" at start of command
-! 2	IF (cmnd_buff(1:5) .EQ. 'yes? '
-!     . .OR. cmnd_buff(1:5) .EQ. '...? ' ) THEN
-!	   IF ( cmnd_len .LT. 6 ) THEN
-!	     cmnd_buff = ' '
-!	     cmnd_len = 0
-!	   ELSE
-!	     cmnd_buff = cmnd_buff(6:cmnd_len)
-!	     cmnd_len = cmnd_len - 5
-!	     GOTO 2		! in case there are multiple "yes?"'s
-!	   ENDIF
-!	ENDIF
-
-! 12/14 handled in GET_FER_COMMAND
-!* comment line ?
-!	IF ( (cmnd_len .LE. 0
-!     .   .OR. cmnd_buff(1:1) .EQ. '*'
-!     .   .OR. cmnd_buff(1:1) .EQ. '!' ) 
-!     . .AND. .NOT.has_continuation_cmnd ) THEN
-!	   RETURN
-!	ENDIF
-!	IF ( cmnd_buff(1:1) .EQ. '/'
-!     .	.AND. .NOT.has_continuation_cmnd ) GOTO 5050
-
-!* find length of command line ("!" is a valid terminator to permit comments)
-!* 2/14 WILL NEVER GET HERE
-!*       no comments should ever be sent into this routine.
-!*       REMOVE THIS BLOCK
-!	bang_position = INDEX ( cmnd_buff, '!' )
-!* ... 11/95 allow "!" to be be "escaped"
-!	IF ( bang_position .GT. 1 ) THEN
-!#ifdef NO_DOUBLE_ESCAPE_SLASH
-!	   IF ( cmnd_buff(bang_position-1:bang_position) .EQ. '\!' ) THEN
-!#else
-!	   IF ( cmnd_buff(bang_position-1:bang_position) .EQ. '\\!' ) THEN
-!#endif
-!	      CALL WARN("PARSE_COMMAND SHOULD NEVER BE HERE - I")
-!* ... ... this block of code could replace INDEX() but doesn't for performance
-!	      DO 6 bang_position = bang_position+1, cmnd_len
-!#ifdef NO_DOUBLE_ESCAPE_SLASH
-!	         IF (cmnd_buff(bang_position:bang_position).EQ.'!'
-!     .         .AND. cmnd_buff(bang_position-1:bang_position-1).NE.'\')
-!     .				GOTO 8
-!#else
-!	         IF (cmnd_buff(bang_position:bang_position).EQ.'!'
-!     .         .AND. cmnd_buff(bang_position-1:bang_position-1).NE.'\\')
-!     .				GOTO 8
-!#endif
-! 6	      CONTINUE
-!	      bang_position = 0
-!	   ENDIF
-!	ENDIF
-! 8	IF ( bang_position .GT. 0 ) THEN
-!	   DO 10 cmnd_len = bang_position-1, 1, -1
-!	      IF (  cmnd_buff(cmnd_len:cmnd_len) .NE. ' '
-!     .	      .AND. cmnd_buff(cmnd_len:cmnd_len) .NE. tab ) GOTO 15
-! 10	   CONTINUE
-!	   IF (.NOT.has_continuation_cmnd) RETURN	! no text before !
-!	ENDIF
-!
-!* prepend continuation from a previous line if any
-!* 12/14 -- WILL NEVER GET HERE
-!*          continuations handled in get_fer_command
-!*          REMOVE THIS BLOCK
-! 15	IF ( has_continuation_cmnd ) THEN
-!	   CALL WARN("PARSE_COMMAND SHOULD NEVER BE HERE - II")
-!	   len_cmnd_copy = len_cmnd_copy - 1  ! final char is continuation
-!	   IF (len_cmnd_copy .GT. 0) THEN
-!	     IF ( cmnd_len .GT. 0) THEN
-!	        cmnd_buff = cmnd_copy(:len_cmnd_copy) // cmnd_buff(:cmnd_len)
-!	     ELSE
-!	        cmnd_buff = cmnd_copy(:len_cmnd_copy)
-!	     ENDIF
-!	   ENDIF
-!	   cmnd_len = len_cmnd_copy + cmnd_len
-!!	   IF ( cmnd_len .GE. 2048 ) GOTO 5005 ! must match cmnd_buff_len
-!	ENDIF
-
 * save a copy of the command with untranslated symbols for use by REPEAT
-!* and for building the complete command when continuation lines are used.
+* and for building the complete command when continuation lines are used.
 
 	cmnd_copy = cmnd_buff
 	len_cmnd_copy = cmnd_len
-
-! 12/14 handled in GET_FER_COMMAND
-!* is this an incomplete line requiring continuation (terminated w/ backslash)?
-!	has_continuation_cmnd =
-!#ifdef NO_DOUBLE_ESCAPE_SLASH
-!     .				cmnd_buff(cmnd_len:cmnd_len) .EQ. '\' 
-!#else
-!     .				cmnd_buff(cmnd_len:cmnd_len) .EQ. '\\'
-!#endif
-!	IF ( has_continuation_cmnd
-!     . .OR. cmnd_len .EQ. 0        ) THEN
-!	   cmnd_num = 0
-!	   RETURN
-!	ENDIF
 
 * * * * * * * * *
 * remove parens enclosing entire command or command group
@@ -403,10 +311,6 @@
  60        CONTINUE
         ENDIF
 
-!* check for buffer overflow (too-long command line)
-! 90     IF ( cmnd_len .EQ. buff_len ) GOTO  5005
-!	cmnd_buff (buff_len:buff_len) = ' '	! always end with blank
-
 * * * * * * * * *
 * substitute GO command arguments, if any
 * and return to re-process command if substitution occurs (4/93)
@@ -475,6 +379,14 @@
 	   itsa_qualifier(word_num) = .TRUE.
 	   a_qual_found = .TRUE.
 	   ptr = ptr + 1		! jump over "/"
+
+* Skip over multiple / in a row. (ticket 2356)
+* (Not allowing for all possible combinations of spaces and slashes)
+
+	   DO WHILE (cmnd_buff(ptr:ptr) .EQ. '/' .AND. ptr.LT.cmnd_len)
+	      ptr = ptr+1
+	   ENDDO
+
 *	skip blanks between "/" and text of word
 	   DO 210 ptr = ptr, cmnd_len
 		IF (      cmnd_buff(ptr:ptr) .EQ. '/' ) GOTO 5050
@@ -502,7 +414,7 @@
 	   IF (ptr .GT. 1) THEN
 #ifdef NO_DOUBLE_ESCAPE_SLASH
 	      IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\' ) ptrslash = .TRUE.
-!                            '  closing single quote to make emacs happy
+*                            '  closing single quote to make emacs happy
 #else
 	      IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) ptrslash = .TRUE.
 #endif
@@ -571,7 +483,7 @@
 	      DO 402 ptr = ptr+1, cmnd_len
 #ifdef NO_DOUBLE_ESCAPE_SLASH
 	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\'  ) GOTO 402
-!                            '  closing single quote to make emacs happy
+*                            '  closing single quote to make emacs happy
 #else
 	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) GOTO 402
 #endif
@@ -584,7 +496,7 @@
 	      DO 403 ptr = ptr+1, cmnd_len
 #ifdef NO_DOUBLE_ESCAPE_SLASH
 	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\'  ) GOTO 403
-!                            '  closing single quote to make emacs happy
+*                            '  closing single quote to make emacs happy
 #else
 	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) GOTO 403
 #endif
@@ -602,7 +514,7 @@
 	      DO 404 ptr = ptr+1, cmnd_len
 #ifdef NO_DOUBLE_ESCAPE_SLASH
 	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\'  ) GOTO 404
-!                            '  closing single quote to make emacs happy
+*                            '  closing single quote to make emacs happy
 #else
 	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) GOTO 404
 #endif
@@ -833,7 +745,7 @@ cc  Allow zero-length null string in quotes
 	   IF (arg_start(iword).NE.0) iword = iword + 1
 	ENDDO
 	word_num = word_num - ngone
-!	last_qual = word_num
+*	last_qual = word_num
 
 * finally ... loop through qualifiers to identify them
  704	DO 740 iqual_word = 2, last_qual
@@ -1059,7 +971,7 @@ cc  Allow zero-length null string in quotes
      .                       grave_digits, subst, status  )
 	   IF ( status .NE. ferr_ok ) GOTO 5000	
 	   IF ( subst ) THEN
-! ... num_uvars_in_cmnd flags expression results from previous cmnds as invalid
+* ... num_uvars_in_cmnd flags expression results from previous cmnds as invalid
 	      num_uvars_in_cmnd = cmnd_uvars_not_given
 	      reverify = .TRUE.      ! informational echo needed
 	      GOTO 5   ! back to parse again with the expresns replaced

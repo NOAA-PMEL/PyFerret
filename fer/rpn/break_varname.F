@@ -49,6 +49,7 @@
 *                 occurred, but make the same change here.)
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V6.94 3/15 *acm* Fix ticket 2249: attribute handling for user-defined variables
+* V698 *acm* 1/16 change remaining dset=-1 to the parameter dset=pdset_uvars
 
         include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -72,7 +73,7 @@
 * Break text at dot: varname.attname
 
         dset = dset_in
-        IF (dset .EQ. unspecified_int4) dset = -1   ! try user variables.
+        IF (dset .EQ. unspecified_int4) dset = pdset_uvars   ! try user variables.
 
         risc_buff = text
         tlen = MIN( size_rbuff, TM_LENSTR(text) )
@@ -137,10 +138,10 @@
 * which just depends on that data set
 
         IF (status  .NE. ferr_ok) THEN
-           dset_try = -1
+           dset_try = pdset_uvars
            CALL CD_GET_VAR_ID (dset_try, varname, varid, status)
-           IF (status .EQ. ferr_ok) dset_in = -1
-           IF (status .EQ. ferr_ok) dset = -1
+           IF (status .EQ. ferr_ok) dset_in = pdset_uvars
+           IF (status .EQ. ferr_ok) dset = pdset_uvars
         ENDIF
 
 

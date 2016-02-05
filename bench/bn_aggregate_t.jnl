@@ -1,5 +1,7 @@
 ! bn_aggregate_t.jnl
-! Dec. 9 tweak to put all test files into "tmp" subdirectory
+! 9/12/2015 *sh* tweak to put all test files into "tmp" subdirectory
+! 1/2016 *sh* added implicit naming of aggregation from script filename
+! 2/2016      and auto-sorting of member files
 
 spawn "mkdir -p tmp"     ! tmp directory t store files
 
@@ -140,6 +142,11 @@ stat myvar
 define data/agg/t myAgg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc
 show data myAgg2
 
+! *sh* 1/28/2016 addition
+! same aggregation inheriting its name from the parent script
+define data/agg/t tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc
+show data/brief
+
 ! define a long aggregation
 define data/agg/t myagg8 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc,tmp/tagg_reg_3.nc, tmp/tagg_reg_4.nc,tmp/tagg_reg_5.nc, tmp/tagg_reg_6.nc,tmp/tagg_reg_7.nc, tmp/tagg_reg_8.nc
 show data/full  ! all 4 datasets
@@ -149,10 +156,23 @@ plot/line/sym myvar
 ! read a time-independent field from the first file of the aggregation
 stat mymap
 
+! 2/2016 -- reorder deliberately out of order regular files
+define data/agg/t myagg8_disordered1 = tmp/tagg_reg_2.nc, tmp/tagg_reg_1.nc,tmp/tagg_reg_3.nc, tmp/tagg_reg_4.nc,tmp/tagg_reg_5.nc, tmp/tagg_reg_6.nc,tmp/tagg_reg_7.nc, tmp/tagg_reg_8.nc
+define data/agg/t myagg8_disordered2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc,tmp/tagg_reg_3.nc, tmp/tagg_reg_4.nc,tmp/tagg_reg_5.nc, tmp/tagg_reg_6.nc,tmp/tagg_reg_8.nc, tmp/tagg_reg_7.nc
+show data/files/brief myagg8_disordered1
+show data/files/brief myagg8_disordered2
+stat/brief T[g=myvar[d=myagg8]] - T[g=myvar[d=myagg8_disordered1]]
+stat/brief TBOXLO[g=myvar[d=myagg8]] - TBOXLO[g=myvar[d=myagg8_disordered1]]
+stat/brief TBOXHI[g=myvar[d=myagg8]] - TBOXHI[g=myvar[d=myagg8_disordered1]]
+cancel data/all
+
 ! deliberate errors
 set mode ignore
 ! try to define the same aggregation again
 define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc
+
+! try to aggregate with the same file duplicated
+define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc, tmp/tagg_reg_2.nc
 
 ! try to aggregate a missing file as first file
 define data/agg/t myaggbad = tmp/tagg_no_exist.nc, tmp/tagg_reg_2.nc
@@ -228,6 +248,13 @@ let file_list = SPAWN("ls -1 tmp/tagg_reg_?.nc")
 define data/agg/t listAgg2 = file_list
 show data/files listAgg2
 
+! reorder deliberately out of order file of differing lengths
+define data/agg/t myagg8_disordered3 = tmp/tagg_disjoint_T0varying_2.nc, tmp/tagg_disjoint_T0varying_1.nc,tmp/tagg_disjoint_T0varying_5.nc, tmp/tagg_disjoint_T0varying_4.nc,tmp/tagg_disjoint_T0varying_3.nc, tmp/tagg_disjoint_T0varying_8.nc,tmp/tagg_disjoint_T0varying_7.nc, tmp/tagg_disjoint_T0varying_6.nc
+show data/files/brief myagg8_disordered3
+! ... the same calendar axis, but encoded with the T0 of the first file
+show grid/l=1:8 myvar[d=myagg8]
+show grid/l=1:8 myvar[d=myagg8_disordered3]
+
 cancel data/all
 
 ! deliberate errors
@@ -254,8 +281,15 @@ stat mymap
 define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc
 show data/full MYsing_irreg_agg4
 show grid/t myvar
-canc data/all
 
+! 2/2016 - reorder deliberately out of order aggregation of irregular times
+define data/agg/t MYsing_irreg_agg4_disordered1 = tmp/tagg_single_2.nc, tmp/tagg_single_1.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc
+define data/agg/t MYsing_irreg_agg4_disordered2 = tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_5.nc, tmp/tagg_single_4.nc
+show data/files/brief
+stat/brief T[g=myvar[d=MYsing_irreg_agg4]] - T[g=myvar[d=MYsing_irreg_agg4_disordered1]]
+stat/brief TBOXLO[g=myvar[d=MYsing_irreg_agg4]] - TBOXLO[g=myvar[d=MYsing_irreg_agg4_disordered1]]
+stat/brief TBOXHI[g=myvar[d=MYsing_irreg_agg4]] - TBOXHI[g=myvar[d=MYsing_irreg_agg4_disordered1]]
+canc data/all
 
 ! OPeNDAP test
 IF `test_opendap("http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2012.nc") EQ 0` THEN
@@ -273,15 +307,20 @@ ENDIF
 spawn echo "define data/agg/t myagg3 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc,tmp/tagg_reg_3.nc" > tmp/good_agg.agg
 spawn echo "garbage command syntax" > tmp/bad_agg.agg
 
-! deliberate error
+! deliberate errorrs
+! bad .agg aggregation file
 set mode ignore
 USE "tmp/bad_agg.agg"
+
+! irregular aggregation with first file duplicated
+define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc
+
+! irregular aggregation with last file duplicated
+define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc, tmp/tagg_single_5.nc
+
 set/last mode ignore
 
 ! valid syntax to initialize an aggregation
 USE "tmp/good_agg.agg"
 show data/br
 cancel data/all
-
-
-

@@ -1,0 +1,96 @@
+! bn_dataset_qualifier
+! see ticket 2632
+! Test change from /D= to /DATASET= qualifier for LIST, PLOT, LOAD, etc
+! Various commands taken from other scripts.
+
+! LIST/DAT=
+use gt4d011
+use coads_climatology
+
+let nv = ..nvars
+let nd = ..ndims
+let vnames = ..varnames
+list/DAT=1 nv, nd 
+list/DAT=1 vnames
+
+list/DAT=coads_climatology nv,nd
+list/DAT=gt4d011 nv,nd
+
+! SET ATT/OUTPUT/DAT=
+! DEFINE ATT/OUTPUT/DAT=
+! CANCEL ATT/OUTPUT/DAT=
+can data/all
+use err491_attval
+use gt4d011
+set att/output/DATA=1 ..dt_internal
+define attribute/output/DATA=1 elev.newatt = 7
+save/clobber/file=a.nc/outtype=float elev[d=1]
+use a.nc
+sh att .
+sh att elev
+can data a
+cancel attribute/output/DATASET=1  ..dt_internal
+cancel attribute/output/DATASET=1  elev.newatt
+save/clobber/file=a.nc/outtype=float elev[d=1]
+use a.nc
+sh att .
+sh att elev
+
+! LOAD/DAT=
+use coads_climatology
+use levitus_climatology
+
+load/DAT=coads_climatology sst[y=-10:10:.1,l=1,x=160e]
+show grid
+
+! LIST/DAT=, LET/DAT=, 
+can dat/all
+use err491_attval
+use coads_climatology
+use levitus_climatology
+use ocean_atlas_temp
+use gt4d011
+
+let a = temp.units
+list/DAT=3 a
+list/DAT=3 temp.history
+
+! PLOT, SHADE, FILL, CONTOUR, VECTOR, STAT
+! various plot and other action commands with /DATA
+
+let/DAT=2 temp = sst + 0*z[z=1:5:1]
+sh dat 2
+plot/DATASET=2 sst[L=1,y=0,x=300:360]
+fill/DAT=2 sst[L=1,x=30:150,y=-60:0]
+contour/over/DATA=3 temp[Z=0]
+shade/DATA=2 sst[x=180,y=-10:10]
+vec/DAT=gt4d011/l=3 taux,tauy
+
+! STAT, LIST
+stat/DATASET=1 elev
+shade/DAT=1 elev
+list/DAT=1/x=-135.3/y=58.8 elev
+
+! POLYGON/DAT
+define axis/x=330:350:1/units=degrees_east xax10
+define axis/y=-10:10:1/units=degrees_north yax10
+
+let fsst = sst[l=3,gx=xax10,gy=yax10]
+let lon = xsequence(x[gx=xax10] + 0*y[gy=yax10])
+let lat = xsequence(0*x[gx=xax10] + y[gy=yax10])
+shade/pal=white/nokey/nolab/DATA=2 sst[l=1,x=300:310,y=-10:10]   ! Set up plot params for polymark.jnl
+go polymark poly/DATA=2/key/title="Polygon test", lon, lat, xsequence(fsst), square, 1.2
+
+! Commands that have another qualifier also starting with /D
+! LIST/DATASET= with /DEFLATE 
+cancel data/all
+use levitus_climatology
+use gt4d011
+use coads_climatology
+list/form=cdf/ncformat=4/DEFLATE/file=a.nc/clobber/DATA=1 temp
+ 
+! PLOT/DASH with /DATA=
+plot/dash/x=180/z=0/DATASET=1 temp
+
+! VECTOR/FLOW/DATA=/DENSITY 
+flow/DAT=2/den=3/L=3 taux,tauy

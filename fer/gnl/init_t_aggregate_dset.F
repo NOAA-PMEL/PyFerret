@@ -1,6 +1,6 @@
 	SUBROUTINE INIT_T_AGGREGATE_DSET(mem_filename_list,
      .			nagfiles, have_expr,
-     .			dset_name, dset_title,
+     .			dset_name, dset_path, dset_title,
      .			t_regular, use_strict, dset_num, status)
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -56,12 +56,14 @@
 *       ==> INIT_T_AGG_MC_DSET
 
 * V695+ *sh* 11/15 new routine 
+* V698 *sh* 1/16  pass explicit path name (for "USE file.agg" compatibility)
 
 * arguments:
 *	mem_filename_list - if have_expr, the variable of names (input)
 *	nagfiles	- number of files in the aggregation (input)
 *       have_expr	- flag if filenames were listed or in an expr (input)
 *	dset_name	- dataset name to assign to the aggregation (input)
+*	dset_path	- path name to assign to the aggregation (input)
 *	dset_title	- dataset title (input)
 *  t_regular (not implemented)	- flag to promise regular timesteps (input)
 *	use_strict	- flag to allow micro-adjustments of T axis (input)
@@ -85,7 +87,7 @@
 * Argument definitions
 	LOGICAL		have_expr, t_regular, use_strict
 	INTEGER		nagfiles, dset_num, status
-	CHARACTER*(*)	dset_name, dset_title
+	CHARACTER*(*)	dset_name, dset_path, dset_title
 	REAL		mem_filename_list(*)
 
 * Internal declarations
@@ -123,7 +125,7 @@
 
 * now call the "real" routine
 	CALL DEFINE_T_AGG_MC_DSET
-     .		(dset_name, dset_title, nagfiles,
+     .		(dset_name, dset_path, dset_title, nagfiles,
      .		 memb_filename,
      .		 memb_tstep_start, memb_tstep_end, memb_nstep,
      .		 t_regular, use_strict, dset_num, status)

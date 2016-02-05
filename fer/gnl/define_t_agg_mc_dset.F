@@ -1,5 +1,5 @@
 	SUBROUTINE DEFINE_T_AGG_MC_DSET
-     .		(dset_name, dset_title, nagfiles,
+     .		(dset_name, dset_path, dset_title, nagfiles,
      .		 memb_filename,
      .		 memb_tstep_start, memb_tstep_end, memb_nstep,
      .		 t_regular, use_strict, dset_num, status)
@@ -46,10 +46,13 @@
 * in the process of creating the aggregation.
 
 * V695+ *sh* 10/15 new routine -- built as hack on tm_init_dset.F
+* V698 *sh* 1/16  pass explicit path name (for "USE file.agg" compatibility)
+*                 date-sort the file list in BUILD_T_AGG_AXIS
 
 * arguments:
 
 *	dset_name	- dataset name to assign to the aggregation (input)
+*	dset_path	- dataset path to assign to the aggregation (input)
 *	dset_title	- dataset title (input)
 *	nagfiles	- number of files in the aggregation (input)
 *	memb_filename	- array of filenames (input)
@@ -66,9 +69,9 @@
 * Argument definitions
 	LOGICAL		t_regular, use_strict
 	INTEGER		nagfiles, dset_num, status
-	INTEGER		memb_nstep(nagfiles)
+	INTEGER		memb_nstep(nagfiles), member_order(nagfiles)
 	REAL*8		memb_tstep_start(nagfiles), memb_tstep_end(nagfiles)
-	CHARACTER*(*)	dset_name, dset_title
+	CHARACTER*(*)	dset_name, dset_path, dset_title
 	CHARACTER*512	memb_filename(nagfiles)
 
 * Parameter and common files
@@ -92,7 +95,7 @@
 	LOGICAL	match
 	INTEGER	TM_LENSTR1, tmap_status
 	INTEGER	dlen, slen, iset, idim
-	INTEGER	perm(nferdims)
+	INTEGER	perm(nferdims), memb_order(nagfiles)
 	CHARACTER LEFINT*16, buff*16
 
 * local parameter definitions
@@ -126,13 +129,13 @@
 
 * build the aggregated time axis -- either from matedata the caller provided
 * (from python) or by reading the coord from the netCDF files
-	CALL BUILD_T_AGG_AXIS (dset_num, nagfiles, memb_filename,
+	CALL BUILD_T_AGG_AXIS (dset_num, nagfiles, memb_order, memb_filename,
      .			memb_tstep_start, memb_tstep_end,
      .			memb_nstep, t_regular, use_strict, status)
 	IF (status .NE. ferr_ok) GOTO 9900
 
 * use individual file metadata to simulate an MC descriptor ("Multifile Cdf")
-	CALL INIT_T_AGG_MC_DSET(dset_num, nagfiles, memb_filename,
+	CALL INIT_T_AGG_MC_DSET(dset_num, nagfiles, memb_order, memb_filename,
      .		 memb_tstep_start, memb_tstep_end, memb_nstep,
      .		 use_strict, status)
 	IF (status .NE. merr_ok) GOTO 9900
@@ -140,7 +143,7 @@
 * change the dataset metadata to make this into an aggregation
 	ds_type(dset_num) = '  MC'
 	ds_name(dset_num) = dset_name
-	ds_des_name(dset_num) = dset_name 
+	ds_des_name(dset_num) = dset_path 
 	IF (dset_title .NE. char_init) ds_title(dset_num) = dset_title
 	buff = LEFINT(nagfiles, slen)
 	ds_mod_title(dset_num)      = 'T-aggregation of '

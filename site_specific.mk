@@ -61,7 +61,7 @@ HDF5_DIR = /usr/local/hdf5-1.8.16
 ## used;  otherwise the netcdf static (.a) libraries will be used.
 # NETCDF4_DIR = /usr
 # NETCDF4_DIR = /usr/local
-NETCDF4_DIR = /usr/local/netcdf-4.3.3.1
+NETCDF4_DIR = /usr/local/netcdf-4.4.0
 
 ## Java home directory - this may be predefined
 ## from your shell environment.  If JAVA_HOME is defined,

@@ -2,6 +2,8 @@
 ! 12/2015 -- a hack change to PPARSE_COMMAND to allow users to omit
 ! the quotation marks in the argument(s) of SET DATA, GO and DEFINE SYMBOL
 
+! 2/2016 *sh* removed the GO/HELP tests
+
 spawn "mkdir -p tmp"
 
 ! ****** SET DATA TESTS *****
@@ -105,11 +107,15 @@ go ($abs_path) 5 hello "bye" "/quoted_path" /unquoted_path
 go "($abs_path)" 5 hello "bye" "/quoted_path" /unquoted_path
 
 ! test GO/HELP
-go/help tmp/testMe
-go /help tmp/testMe
-go/help "tmp/testMe"
-go/help ($abs_path)
-go/help "($abs_path)"
+! 2/2016 - commented these tests out, tho they work fine.   GO/HELP
+!          apparently runs asynchronously with the bench logging (why?)
+!          This results in the placement of the GO/HELP output shifting in
+!          the benchmark output log -- a hassle when comparing benchmarks
+!go/help tmp/testMe
+!go /help tmp/testMe
+!go/help "tmp/testMe"
+!go/help ($abs_path)
+!go/help "($abs_path)"
 
 ! a few tests the slipped through the first time
 GO tmp/testMe POLYGON/KEY/lev=20 xpts,ypts,sst,star

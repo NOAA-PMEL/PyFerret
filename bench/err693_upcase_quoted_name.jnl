@@ -14,3 +14,4 @@ use aa.nc
 ! previously this failed to find the name.
 list 'abc'
 
+set mode/last upcase

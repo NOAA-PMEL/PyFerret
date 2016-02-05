@@ -1,10 +1,11 @@
-	SUBROUTINE CD_GET_CALENDAR_NAME (calname, ok_cal)
+	SUBROUTINE EF_CLEAN_GRIDS( dset )
+
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
-*.
+*
 *  Access and use of this software shall impose the following
 *  obligations and understandings on the user. The user is granted the
 *  right, without any fee or cost, to use, copy, modify, alter, enhance
@@ -33,54 +34,64 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* Given a string with a calendar name, match the first 3 characters 
-* with the list of allowed names or with the words STANDARD or 
-* PROLEPTIC_GREGORIAN and return the standard name.
+* check among the temporary grids for duplicates. Remove duplication.
+* Ensure that distinct grids have distinct names.
 
-* Include files
-        include 'calendar.decl'
-        include 'calendar.cmn'
-        include 'errmsg.parm'
-        include 'xio.cmn_text'
+* Programmer Steve Hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
-* Argument declarations
-	LOGICAL ok_cal
-	CHARACTER*(*) calname
+* V698 1/16 *sh* based upon code from CD_CLEAN_GRIDS
 
-* Internal variables
-	INTEGER STR_UPCASE, TM_LENSTR1, i, istat, ncal, slen
-	CHARACTER*50 allcals
+* argument definitions:
+*       dset    - pointer to aggregated data set
 
-	INTEGER tt  ! nice short name
-	EQUIVALENCE (tt,lunit_errors)
+* include files
+	include 'tmap_errors.parm'
+	include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+#include "gt_lib.parm"
+        include 'xbuild_grids.cmn'
+	include 'xtm_grid.cmn_text'
+	include 'xdset_info.cmn_text'
+        include 'netcdf.inc'
 
-	istat = STR_UPCASE (calname, calname)
+* argument declarations
+	INTEGER	 dset, status
 
-	IF (calname(1:3) .EQ. '360') calname = '360_DAY' 
-	IF (calname .EQ. 'STANDARD') calname = 'GREGORIAN' 
-	IF (calname .EQ. 'PROLEPTIC_GREGORIAN') calname = 'GREGORIAN' 
-	IF (calname(1:6) .EQ. 'COMMON') calname = 'NOLEAP' 
-	IF (calname(1:3) .EQ. '365') calname = 'NOLEAP' 
-	IF (calname(1:3) .EQ. '366') calname = 'ALL_LEAP' 
+* local variable declarations:
+	LOGICAL TM_SAME_GRID_DEF
+	INTEGER accepted_grid, test_grid, ivar
+	CHARACTER buff*8	
+                 
+* check for duplicate grid guts
+	accepted_grid = 0		! to get start of linked list
+ 10	CALL TM_NEXT_TMP_GRID( accepted_grid, *500)
+	IF (grid_name(accepted_grid) .EQ. char_init) GOTO 10 ! already removed
 
-	ok_cal = .FALSE.
-	ncal = 1
-	allcals = ' '
+	test_grid = accepted_grid
+ 20	CALL TM_NEXT_TMP_GRID( test_grid, *200)
+	IF (grid_name(test_grid) .EQ. char_init) GOTO 100 ! already removed
 
-	DO 100 i = 1, mxcals
-  111	   FORMAT (A9,' ')
-	   slen = TM_LENSTR1( allowed_calendars(i)(1:9) )
-	   write (allcals(ncal:ncal+9), 111) allowed_calendars(i)
-	   ncal = ncal + 10
+* is the test grid a duplicate of the accepted grid?
+	IF ( TM_SAME_GRID_DEF( accepted_grid, test_grid ) ) THEN
+*  ... yes -- point its variables to the accepted grid
+	   DO ivar = 1, maxvars
+	      IF ( ds_var_setnum(ivar) .NE. dset ) CYCLE
+	      IF ( ds_grid_number(ivar) .EQ. test_grid ) 
+     .		   ds_grid_number(ivar) = accepted_grid
+	   ENDDO
+	   grid_name(test_grid) = char_init   ! throw it away
+	ELSE
+*  ... no -- make sure it has a unique name
+	   CALL TM_NEW_GRID_NAME( grid_name(test_grid), buff )
+	   grid_name(test_grid) = buff
+	ENDIF
+* inner loop -- Go back for another test_grid
+ 100	GOTO 20
 
-	   IF (calname(1:3) .EQ. allowed_calendars(i)(1:3) ) THEN
-              ok_cal = .TRUE.
-              calname = allowed_calendars(i)
-	      GOTO 120
-	   ENDIF
-  100	CONTINUE
-	CALL TM_NOTE('Valid calendars are '//allcals, tt)
+* outer loop -- Go back for another accepted_grid
+ 200	GOTO 10
 
-  120	CONTINUE
-	RETURN
+* we've tested the uniqueness of all temporary grids.  We're done.
+ 500	RETURN
 	END

@@ -50,6 +50,34 @@
 * V697  12/15 *acm* Changes to add details on SHOW GRID uvar to indicate 
 *                   compressed or subsetted axes
 
+* FERRET DOCUMENATION:  dynamic grids and axes
+* (entered 1/2016 *sh*)
+* There are three types of grids in Ferret:  legacy, dynamic, and temporary
+* 1. Legacy grids occupy grid storage belowup to index max_grids
+*    They are brute-force allocated using TM_GET_GRIDNUM.
+* 2. Dynamic grids occupy grid storage above max_grids.
+*    They are managed using routines with "_dyn_" in their names.
+*    They appear as a simple table, like the legacy grids, but they are
+*    managed through a doubly-linked list into lists of "free" and "used" grids
+*    A use count (grid_use_cnt) keeps track of when they are no longer needed.
+*    When a use count falls to zer (through de-allocation) a grid is
+*    automatically returned to the free list.
+*    Each variable in a dataset that depends upon a grid constitutes a "use"
+*    as does each memory-resident user variable instance defined on that grid.
+*    This routine checks that these counts have not been corrupted.
+* 3. Temporary grids are a linked lists of grids that have been temporarily
+*    removed from the free and used lists.  They are managed by routines that
+*    have "_tmp_" in their names.
+*    Grids are put onto the temporary list during the process of initializing
+*    a dataset, so that if an error condition occurs during initialization
+*    it is simple to clean up the partially created grids.  At successful
+*    completion of initializing a dataset all temporary grid should be moved
+*    back to the free or used lists. Some go back to the free list because
+*    duplicate grid definitions occur temporarily during dataset initialization
+* 
+* Dynamic management of axes ("lines") is very similar.  Each grid that uses a
+*    line bumps the use count for that line.  
+
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'

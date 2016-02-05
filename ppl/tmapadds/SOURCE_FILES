@@ -60,6 +60,7 @@ set_override_opacity.F\
 set_pat_size.F\
 set_regular_plot.F\
 set_ribbon_ndx.F\
+set_t1_date.F\
 set_window_size.F\
 setax_syms.F\
 setfont.F\

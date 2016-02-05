@@ -109,6 +109,7 @@
 * V694  *acm* 1214 Fixing ticket 2220
 * V694 *acm*  5/15 Fix ticket 2213 
 * V698 *sh* 1/16 - tweaks to aggregates to ensure all LET/D grids found
+* V698 *acm* 1/16 change remaining dset=-1 to the parameter dset=pdset_uvars
 
 * calling argument declarations:
 	INTEGER	status
@@ -415,7 +416,7 @@
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
         dset = cx_data_set(hi_cx)
-        IF (dset .EQ. pdset_irrelevant) dset = -1
+        IF (dset .EQ. pdset_irrelevant) dset = pdset_uvars
         do_err = .TRUE.
         varname = ' '
         attname = ' '
@@ -466,11 +467,11 @@
 	ENDIF
 
 * The attribute handling needed to know if this was a dataset variable (dset > 0) 
-* or a user-defined variable that depends on a dataset (dset=-1). Now reset the
+* or a user-defined variable that depends on a dataset (dset=pdset_uvars). Now reset the
 * dataset to the value from cx_data_set
 
         dset = cx_data_set(hi_cx)
-        IF (dset .EQ. pdset_irrelevant) dset = -1
+        IF (dset .EQ. pdset_irrelevant) dset = pdset_uvars
         
 * set the X axis limits equal to the length of the array
 c	cx_lo_ss(hi_cx, x_dim) = 1

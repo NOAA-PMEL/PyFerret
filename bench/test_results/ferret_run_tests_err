@@ -1,8 +1,8 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Dec 15 13:30 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Feb  5 16:31 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug Ferret on RHEL6-64
+Note: RUN_TESTS.sh test results for debug ferret on RHEL6-64
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -246,10 +246,15 @@ Benchmark scripts that will be run:
    bn_floatstr_extended.jnl
    bn696_bug_fixes.jnl
    bn_bin_regrid.jnl
+   bn697_bug_fixes.jnl
    bn_aggregate_t.jnl
    bn_unquoted_args.jnl
-   bn697_bug_fixes.jnl
    bn_long_lists.jnl
+   bn_show_uvar_grid.jnl
+   bn_aggregate_f.jnl
+   bn_hovmuller_overlays.jnl
+   bn_labels_on_taxis.jnl
+   bn_dataset_qualifier.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -266,7 +271,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Tue Dec 15 13:39:44 PST 2015
+Beginning at Fri Feb  5 16:36:56 PST 2016
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -584,7 +589,7 @@ list tu
  **ERROR: regridding: Axis orientation not matching request:GX=PSYU
 list tu
  Cached data cleared from memory
- **ERROR: request exceeds memory setting: 25 Mwords were requested.
+ **ERROR: request exceeds memory setting: 50 Mwords were requested.
 list temp[gz=z999999,z=5:15]
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
@@ -831,14 +836,14 @@ list v2-and-minus[i=5:15@ddc]
  Cached data cleared from memory
  LISTing to file permutedBinaryTest.dat
  LISTing to file junk.dat
- **ERROR: request exceeds memory setting: 24000 Mwords were requested.
+ **ERROR: request exceeds memory setting: 48000 Mwords were requested.
 load num
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
- **ERROR: request exceeds memory setting: 1000 Mwords were requested.
+ **ERROR: request exceeds memory setting: 2000 Mwords were requested.
 load num
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
@@ -1145,6 +1150,8 @@ list substring("Have you fed your ferret today")
  **ERROR: command syntax: strcat ("All work and no play")
           The strcat function has an incorrect number of arguments
 list strcat ("All work and no play")
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1711,7 +1718,6 @@ Replacing definition of axis XAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file fine.dat
-Cannot create cookie file
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: illegal limits: One-point independent axis: Requires a /HLIMIT or /VLIMIT specification
@@ -2063,11 +2069,8 @@ Replacing definition of axis TIME
  Using every   4th vector in the Y direction
            *** NOTE: New number of line colors will take effect on next new window: SET WIN/NEW or SET WIN/CLEAR
 *** Running test: bn_cdf_errmsg.jnl
-Cannot create cookie file
-Cannot create cookie file
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
-Cannot create cookie file
 CURL Error: Couldn't resolve host name
 curl error details: 
  Cached data cleared from memory
@@ -2315,8 +2318,6 @@ SHADE/LEV=300/I=1:100/J=1:100 i+j
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_test_opendap.jnl
-Cannot create cookie file
-Cannot create cookie file
 CURL Error: Couldn't resolve host name
 curl error details: 
  Cached data cleared from memory
@@ -2957,6 +2958,8 @@ show grid garbage
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running test: bn_floatstr.jnl
@@ -3173,6 +3176,7 @@ Replacing definition of axis FAX4DAY
 *** Running test: bn_aggregate_e.jnl
  Cached data cleared from memory
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
  **ERROR: unknown data set: dset 3 unknown or is already an aggregate dataset
 DEFINE DATA/AGGREGAT/E windy = 1,2,3
            *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: UWND
@@ -3184,20 +3188,14 @@ DEFINE DATA/AGGREGAT/E windy = 1,2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: UIN
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: VIN
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 5
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, my_ens
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets:
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets:
-           *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 5
-           *** NOTE: Cancel aggregate dataset. Un-hiding hidden member datasets
-           *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 6
-           *** NOTE: Dataset 2 was a member of an ensemble. Canceling ensemble, dataset 7
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, more
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, some
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, fourfiles
 *** Running test: bn_6d_lab_mode.jnl
  Cached data cleared from memory
 *** Running test: bn682_bug_fixes.jnl
@@ -3515,27 +3513,8 @@ set axis/name=45 x_in_meters
  **ERROR: invalid command: illegal new name given for axis .fr
 set axis/name=.fr x_in_meters
 *** Running test: bn_let_remote.jnl
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 500; message = "Error processing XML header file /usr/local/src/apache-tomcat-7.0.34/content/NVODS/conf/server/temp/AD882140E58648ADA4107B4E90A732E2/header.xml (No such file or directory)"^;};
-Cannot create cookie file
-Cannot create cookie file
  Cached data cleared from memory
  **ERROR: command syntax: /REMOTE variable expression may not contain [d=
 DEFINE VARIABLE/D=1/remote rvar = t0112mn1[d=1,z=1:100@ave]
@@ -3607,12 +3586,12 @@ list {5*3+1, 2+3}
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XAXIS
- **ERROR: request exceeds memory setting: 2369 Mwords were requested.
+ **ERROR: request exceeds memory setting: 4739 Mwords were requested.
 load bigvar
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis LONGTIME
- **ERROR: request exceeds memory setting: 4735 Mwords were requested.
+ **ERROR: request exceeds memory setting: 9472 Mwords were requested.
 load bigvar
            *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
            *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
@@ -3923,12 +3902,49 @@ Replacing definition of axis DCOARSE
 Replacing definition of axis IRR
 Replacing definition of axis DCOARSE
 Replacing definition of axis IRR
+*** Running test: bn697_bug_fixes.jnl
+ Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **TMAP ERR: error in axis attributes
+             Calendar definitions on T and F axes must match
+             Data file: ./ft_cal_one.nc
+SET DAT/FORM=CDF ft_cal_mixed.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file myfile.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ Cached data cleared from memory
+ **ERROR: request exceeds memory setting: 13 Mwords were requested.
+load/l=1:5 bigvar
+           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
+           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
+ Cached data cleared from memory
+ Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX2
 *** Running test: bn_aggregate_t.jnl
  Cached data cleared from memory
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
  LISTing to file tmp/tagg_reg_1.nc
  LISTing to file tmp/tagg_reg_2.nc
  LISTing to file tmp/tagg_reg_3.nc
@@ -4002,8 +4018,11 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_single_6.nc
            *** NOTE: Not deleted: tday
            *** NOTE: Axis is in use by grid (G001)
+           *** NOTE: Ambiguous coordinates on T axis: T[G=MYVAR[D=MYAGG8]] - T[G=MYVAR[D=MYAGG8_DISORDERED1]]
+           *** NOTE: Ambiguous coordinates on T axis: TBOXLO[G=MYVAR[D=MYAGG8]] - TBOXLO[G=MYVAR[D=MYAGG8_DISORDERED1]]
+           *** NOTE: Ambiguous coordinates on T axis: TBOXHI[G=MYVAR[D=MYAGG8]] - TBOXHI[G=MYVAR[D=MYAGG8_DISORDERED1]]
  **ERROR: invalid command: given aggregation dataset name already in use: myagg2
-define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc
+define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc, tmp/tagg_reg_2.nc
  **TMAP ERR: non-existent or not on line
              tmp/tagg_no_exist.nc
 define data/agg/t myaggbad = tmp/tagg_no_exist.nc, tmp/tagg_reg_2.nc
@@ -4014,19 +4033,20 @@ define data/agg/t myaggbad = tmp/tagg_reg_1.nc, tmp/tagg_no_exist.nc
 DEFINE DATA/AGGREGAT/T myTindepagg = tmp/tagg_reg_no_T.nc
  **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_reg_3.nc
 define data/agg/t myagg3 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2_overlarge.nc,tmp/tagg_reg_3.nc
- **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_irreg_2.nc
-define data/agg/t myagg3 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_3.nc,tmp/tagg_irreg_2.nc
  **TMAP ERR: Unknown variable code
              in file tmp/tagg_disjoint_T0varying_4_wrong.nc time axis variable is missing: TDAY_TVAR
 define data/agg/t myagg5_bad = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc,tmp/tagg_disjoint_T0varying_3.nc, tmp/tagg_disjoint_T0varying_4_wrong.nc,tmp/tagg_disjoint_T0varying_5.nc
+           *** NOTE: Ambiguous coordinates on T axis: T[G=MYVAR[D=MYSING_IRREG_AGG4]] - T[G=MYVAR[D=MYSING_IRREG_AGG4_DISORDERED1]]
+           *** NOTE: Ambiguous coordinates on T axis: TBOXLO[G=MYVAR[D=MYSING_IRREG_AGG4]] - TBOXLO[G=MYVAR[D=MYSING_IRREG_AGG4_DISORDERED1]]
+           *** NOTE: Ambiguous coordinates on T axis: TBOXHI[G=MYVAR[D=MYSING_IRREG_AGG4]] - TBOXHI[G=MYVAR[D=MYSING_IRREG_AGG4_DISORDERED1]]
  **ERROR: unknown command: garbage
 garbage command syntax
+ **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_single_1.nc
+define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc
+ **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_single_5.nc
+define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc, tmp/tagg_single_5.nc
 *** Running test: bn_unquoted_args.jnl
  Cached data cleared from memory
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
  LISTing to file tmp/test1.nc
  LISTing to file tmp/test2.nc
  LISTing to file tmp/test3.nc
@@ -4037,11 +4057,6 @@ set data /erroneous tmp/test1.nc
  **TMAP ERR: non-existent or not on line
              /erroneous(.nc ,.cdf,.nc)
 set data /erroneous, tmp/test1.nc
- Full path name: tmp/testMe.jnl
- Full path name: tmp/testMe.jnl
- Full path name: tmp/testMe.jnl
- Full path name: /home/flat/ksmith/ferret_dev/bench/tmp/testMe.jnl
- Full path name: /home/flat/ksmith/ferret_dev/bench/tmp/testMe.jnl
  **ERROR: unknown command qualifier: garbage
 go/garbage tmp/testMe
  **ERROR: unknown command qualifier: garbage
@@ -4050,31 +4065,66 @@ go/garbage "tmp/testMe"
 go/garbage /home/flat/ksmith/ferret_dev/bench/tmp/testMe.jnl
  **ERROR: unknown command qualifier: garbage
 go/garbage "/home/flat/ksmith/ferret_dev/bench/tmp/testMe.jnl"
-*** Running test: bn697_bug_fixes.jnl
- Cached data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- **TMAP ERR: error in axis attributes
-             Calendar definitions on T and F axes must match
-             Data file: ./ft_cal_one.nc
-SET DAT/FORM=CDF ft_cal_mixed.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- LISTing to file myfile.nc
 *** Running test: bn_long_lists.jnl
  Cached data cleared from memory
  **ERROR: command syntax: command line too long -- exceeds 20480
 "/archive/ccsp/
  **ERROR: command syntax: "/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf...
 "/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0001.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0002.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0003.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0004.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0006.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0007.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0008.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0009.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0010.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0011.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0012.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc"}
+*** Running test: bn_show_uvar_grid.jnl
+ Cached data cleared from memory
+*** Running test: bn_aggregate_f.jnl
+ Cached data cleared from memory
+ LISTing to file tmp/fcst_1.nc
+ LISTing to file tmp/fcst_2.nc
+ LISTing to file tmp/fcst_3.nc
+ LISTing to file tmp/fcst_4.nc
+ LISTing to file tmp/fcst_5.nc
+ LISTing to file tmp/fcst_6.nc
+ LISTing to file tmp/fcst_7.nc
+ LISTing to file tmp/fcst_8.nc
+ LISTing to file tmp/fcst_9.nc
+ LISTing to file tmp/fcst_10.nc
+ LISTing to file tmp/fcst_11.nc
+ LISTing to file tmp/long_fcst_1.nc
+ LISTing to file tmp/long_fcst_6.nc
+ LISTing to file tmp/one_var_fcst_1.nc
+ LISTing to file tmp/one_var_fcst_6.nc
+ LISTing to file tmp/consecutive_month_fcst.nc
+Replacing definition of axis TRUEMONTH
+ LISTing to file tmp/irregular_start_time_fcst.nc
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, my_fmrc
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, bn_aggregate_f.sub
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
+           *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC]
+           *** NOTE: Ambiguous coordinates on F axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC]
+           *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
+           *** NOTE: Ambiguous coordinates on F axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
+ **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
+DEFINE DATA/AGGREGAT/F my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc,tmp/fcst_2.nc,tmp/fcst_3.nc
+ **TMAP ERR: non-existent or not on line
+             tmp/no_exist.nc
+DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/no_exist.nc")
+ **ERROR: error defining aggregate dataset: forecast start times are irregular or too gappy
+DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/consecutive_month_fcst.nc")
+ **ERROR: error defining aggregate dataset: forecast start times are irregular or too gappy
+DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/irregular_start_time_fcst.nc")
+*** Running test: bn_hovmuller_overlays.jnl
+ Cached data cleared from memory
+Replacing definition of axis TDAYS
+ Using every   4th vector in the X direction
+*** Running test: bn_labels_on_taxis.jnl
+ Cached data cleared from memory
+Replacing definition of axis TAX
+*** Running test: bn_dataset_qualifier.jnl
+ Cached data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -4094,4 +4144,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Tue Dec 15 13:41:39 PST 2015
+Ended at Fri Feb  5 16:39:08 PST 2016

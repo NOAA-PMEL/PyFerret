@@ -50,6 +50,10 @@
     static char rcsid[]	= "$Id$";
 #endif
 
+#ifdef EVENTDEBUG
+    static int print_event(XEvent *evnt);
+#endif
+
 /*
  * SIGIO response status: 
  *     0 => handling
@@ -162,19 +166,20 @@ ProcessEvents()
 		 * (Ultrix 4.2) do not send expose-events while other servers
 		 * (AIX, MIT X11R4 under SunOS) do.  The result is unnecessary
 		 * redraws on the latter servers.
+		 *
+		 * XWindows on RHEL Linux 6.7 no longer generates Expose events.
+		 * ConfigureNotify events are generated on move and resize.
 		 */
 		case Expose:
+		case ConfigureNotify:
 		    need_redraw[i]	= 1;
 		    break;
 
-		case KeyPress:
-		case MotionNotify:
-		case ButtonPress:
-		case ButtonRelease:
-		    XgksIProcessXEvent(&xev, ws);
-		    break;
-
+		/*
+		 * Let Xgks process all other events.
+		 */
 		default:
+		    XgksIProcessXEvent(&xev, ws);
 		    break;
 		}
 	    }					/* event loop */
@@ -332,8 +337,7 @@ XgksSIGIO_ON(dpy)
 
 #ifdef EVENTDEBUG
     static int
-print_event(evnt)
-    XEvent         *evnt;
+print_event(XEvent *evnt)
 {
     switch (evnt->type) {
     case 0:

@@ -103,13 +103,12 @@ ncdf4:
 		"GUI_FAKES=special/gui_fakes.o" \
 		build
 
-# Dont seem to have all the static libraries we need for this.
-.PHONY: ncdf4_static
-ncdf4_static:
+.PHONY: beta
+beta:
 	mkdir -p ../lib
 	$(MAKE) "CFLAGS=$(CFLAGS) -O -DNDEBUG" \
 		"FFLAGS=$(FFLAGS) -O -DNDEBUG" \
-		"LDFLAGS=$(LDFLAGS) -static" \
+		"DEBUG_TITLE = beta" \
 		"GUI_FAKES=special/gui_fakes.o" build
 
 .PHONY: debug

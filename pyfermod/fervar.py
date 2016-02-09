@@ -15,80 +15,96 @@ REGRID_MIN = "@MIN"
 REGRID_MAX = "@MAX"
 REGRID_EXACT = "@XACT"
 
-class FerrVar(object):
+class FerVar(object):
     '''
     Ferret variable object
     '''
 
-    def __init__(self, varname='', datasetname='', definition='', isfilevar=False):
+    def __init__(self, defn=None, title=None):
         '''
-        Creates a Ferret variable without reading or computing any data values.
-            varname (string): name of the Ferret variable
-            datasetname (string): name of the dataset containing the variable
-            definition (string): Ferret-syntax definition of the variable;
-                if varname is given and definition is not,
-                definition is assigned that of a known variable: 
-                    <varname>[d=<datasetname>]   if datasetname is given, or
-                    <varname>                    if datasetname is not given
+        Creates a Ferret variable with (optionally) a title and a Ferret-syntax definition 
+            defn (string): Ferret-syntax definition of the variable
+            title (string): title (descriptive long name) for this variable
         '''
-        # Record the Ferret variable name, or an empty string if not given
-        if varname:
-            if not isinstance(varname, str):
-                raise ValueError("varname is not a string")
-            self._varname = varname
-        else:
-            self._varname = ''
-        # Record the dataset name, or an empty string if not given
-        if datasetname:
-            if not isinstance(datasetname, str):
-                raise ValueError("datasetname is not a string")
-            self._datasetname = datasetname
-        else:
-            self._datasetname = ''
         # Record or generate the definition, or set to an empty string
-        if definition:
-            if not isinstance(definition, str):
-                raise ValueError("definition is not a string")
-            self._definition = definition
-        elif varname:
-            self._definition = self.ferretname()
+        if defn:
+            if not isinstance(defn, str):
+                raise ValueError("defn is not a string")
+            self._definition = defn
         else:
             self._definition = ''
-        # Record whether this is a file variable (and thus should not be cancelled)
-        if isfilevar:
-            self._isfilevar = True
-        else:
-            self._isfilevar = False
-        # The _requires list contains FerrVar Ferret names that are know to be used
-        # in the definition.  This list is not guarenteed to be complete and is not
-        # used in comparisons.
+        # Name of the variable in the dataset
+        self._varname = ''
+        # Name of the dataset
+        self._dsetname = ''
+        # Record the title for this variable, or am empty string if not given
+        self.settitle(title)
+        # Is this a file variable?
+        self._isfilevar = False
+        # The list of uppercase _varname's that are know to be used
+        # in the definition.  This list is not guaranteed to be complete 
+        # and is not used in comparisons.
         self._requires = set()
-        if varname:
-            self._requires.add(varname.upper())
-        # Call the clean method to create and set the defaults for 
+        # Call the unload method to create and set the defaults for 
         # _datagrid, _dataarray, _dataunit, and _missingvalue.
-        #     _datagrid is a FerrGrid describing the Ferret grid for the variable.
+        #     _datagrid is a FerGrid describing the Ferret grid for the variable.
         #     _dataarray and a NumPy ndarray contains the Ferret data for the variable.
         #     _dataunit is a string given the unit of the data
         #     _missingvalue is the missing value used for the data
-        self.clean()
+        self.unload()
 
     def copy(self):
         '''
-        Return an anonymous copy (_varname and _datasetname are not assigned) 
-        of this FerrVar.  Any data that might be present with this FerrVar is 
-        not copied.
+        Return an anonymous copy (only the definition is copied) of this FerVar.
         '''
-        newvar = FerrVar(definition=self._definition)
+        newvar = FerVar(defn=self._definition)
         newvar._requires.update(self._requires)
         return newvar
 
+    def settitle(self, title):
+        '''
+        Assigns the title (long descriptive name) for this FerVar.  If this
+        variable is defined in Ferret, the title for the Ferret variable is
+        also updated.
+            title (string): title to assign
+        Raises ValueError if title is not a string or if there is a problem 
+            updating the title in Ferret
+        '''
+        if title:
+            if not isinstance(title, str):
+                raise ValueError("title is not a string")
+            self._title = title
+        else:
+            self._title = ''
+        if self._varname:
+            cmdstr = 'SET VAR/TITLE="%s" %s' % (self._title, self.fername())
+            (errval, errmsg) = pyferret.run(cmdstr)
+            if errval != pyferret.FERR_OK:
+                raise ValueError('problems updating the variable title in Ferret for ' + \
+                                 '%s to "%s": %s' % (self.fername(), self._title, errmsg))
+ 
+    def fername(self):
+        ''' 
+        Returns the Ferret name for this variable; namely,
+            <_varname>[d=<_dsetname>]
+        if _dsetname is given; otherwise, just
+            <_varname>
+        Raises ValueError if _varname is not defined
+        '''
+        if not self._varname:
+            raise ValueError('this FerVar does not contain a Ferret variable name')
+        if self._dsetname:
+            fername = '%s[d=%s]' % (self._varname, self._dsetname)
+        else:
+            fername = '%s' % self._varname
+        return fername
+
     def __repr__(self):
         '''
-        Representation of this FerrVar
+        Representation of this FerVar
         '''
-        infostr = "FerrVar(varname='%s', datasetname='%s', definition='%s')" \
-                  % (self._varname, self._datasetname, self._definition)
+        infostr = "FerVar(varname='%s', dsetname='%s', title = '%s', defn='%s')" \
+                  % (self._varname, self._dsetname, self._title, self._definition)
         return infostr
 
     def __del__(self):
@@ -102,38 +118,28 @@ class FerrVar(object):
         except Exception:
             pass
 
-    def ferretname(self):
-        ''' 
-        Returns the Ferret name for this variable, namely
-            <_varname>[d=<_datasetname>]
-        if _datasetname is given; otherwise just
-            <_varname>
-        Raises ValueError if _varname is not defined
-        '''
-        if not self._varname:
-            raise ValueError('this FerrVar does not contain a Ferret variable name')
-        if self._datasetname:
-            ferrname = '%s[d=%s]' % (self._varname, self._datasetname)
-        else:
-            ferrname = '%s' % self._varname
-        return ferrname
-
     def __cmp__(self, other):
         '''
-        FerrVars are ordered alphabetically, case-insensitive, first by 
-        the Ferret variable name, then by the dataset name, and finally
-        by the definition.  (Used by the "rich comparison" methods.)
+        FerVars are ordered alphabetically, case-insensitive, first by 
+        the Ferret variable name, then by the dataset name, title, and 
+        finally by the definition.  (Used by the "rich comparison" methods.)
         '''
-        if not isinstance(other, FerrVar):
-            raise NotImplementedError('other is not a FerrVar')
+        if not isinstance(other, FerVar):
+            raise NotImplementedError('other is not a FerVar')
         supper = self._varname.upper()
         oupper = other._varname.upper()
         if supper < oupper:
             return -1
         if supper > oupper:
             return 1
-        supper = self._datasetname.upper()
-        oupper = other._datasetname.upper()
+        supper = self._dsetname.upper()
+        oupper = other._dsetname.upper()
+        if supper < oupper:
+            return -1
+        if supper > oupper:
+            return 1
+        supper = self._title.upper()
+        oupper = other._title.upper()
         if supper < oupper:
             return -1
         if supper > oupper:
@@ -148,9 +154,10 @@ class FerrVar(object):
 
     def __eq__(self, other):
         '''
-        Two FerrVars are equal if all of the following are True:
+        Two FerVars are equal if all of the following are True:
             they have the same Ferret variable name,
-            they have the same dataset name, and
+            they have the same dataset name, 
+            they have the same title, and
             they have the same defintion.
         All these comparisons are case-insensitive.
         '''
@@ -161,9 +168,10 @@ class FerrVar(object):
 
     def __ne__(self, other):
         '''
-        Two FerrVars are not equal if any of the following are True:
+        Two FerVars are not equal if any of the following are True:
             they have different Ferret variable name,
-            they have different dataset name, or
+            they have different dataset name,
+            they have different title, or
             they have different defintion.
         All these comparisons are case-insensitive.
         '''
@@ -174,9 +182,9 @@ class FerrVar(object):
 
     def __lt__(self, other):
         '''
-        FerrVars are ordered alphabetically, case-insensitive, first by 
-        the Ferret variable name, then by the dataset name, and finally
-        by the definition.
+        FerVars are ordered alphabetically, case-insensitive, first by 
+        the Ferret variable name, then by the dataset name, title, and 
+        finally by the definition.
         '''
         try:
             return ( self.__cmp__(other) < 0 )
@@ -185,9 +193,9 @@ class FerrVar(object):
 
     def __le__(self, other):
         '''
-        FerrVars are ordered alphabetically, case-insensitive, first by 
-        the Ferret variable name, then by the dataset name, and finally
-        by the definition.
+        FerVars are ordered alphabetically, case-insensitive, first by 
+        the Ferret variable name, then by the dataset name, title, and 
+        finally by the definition.
         '''
         try:
             return ( self.__cmp__(other) <= 0 )
@@ -196,9 +204,9 @@ class FerrVar(object):
 
     def __gt__(self, other):
         '''
-        FerrVars are ordered alphabetically, case-insensitive, first by 
-        the Ferret variable name, then by the dataset name, and finally
-        by the definition.
+        FerVars are ordered alphabetically, case-insensitive, first by 
+        the Ferret variable name, then by the dataset name, title, and 
+        finally by the definition.
         '''
         try:
             return ( self.__cmp__(other) > 0 )
@@ -207,9 +215,9 @@ class FerrVar(object):
 
     def __ge__(self, other):
         '''
-        FerrVars are ordered alphabetically, case-insensitive, first by 
-        the Ferret variable name, then by the dataset name, and finally
-        by the definition.
+        FerVars are ordered alphabetically, case-insensitive, first by 
+        the Ferret variable name, then by the dataset name, title, and 
+        finally by the definition.
         '''
         try:
             return ( self.__cmp__(other) >= 0 )
@@ -218,12 +226,14 @@ class FerrVar(object):
 
     def __nonzero__(self):
         '''
-        Returns False if the Ferret variable name, dataset name, and
-        definition are all empty.  (For Python2.x)
+        Returns False if the Ferret variable name, dataset name, title, 
+        and definition are all empty.  (For Python2.x)
         '''
         if self._varname:
             return True
-        if self._datasetname:
+        if self._dsetname:
+            return True
+        if self._title:
             return True
         if self._definition:
             return True
@@ -231,278 +241,278 @@ class FerrVar(object):
 
     def __bool__(self):
         '''
-        Returns False if the Ferret variable name, dataset name, and
-        definition are all empty.  (For Python3.x)
+        Returns False if the Ferret variable name, dataset name, title 
+        and definition are all empty.  (For Python3.x)
         '''
         return self.__nonzero__()
 
     def __add__(self, other):
         '''
-        If other is a FerrVar, returns an anonymous FerrVar whose definition 
-        is the sum of the FerrVar definitions.
-        If other is Real, returns an anonymous FerrVar whose definition 
-        is the sum of the FerrVar definition with the number.
-        If other is not a FerrVar or Real, returns NotImplemented
+        If other is a FerVar, returns an anonymous FerVar whose definition 
+        is the sum of the FerVar definitions.
+        If other is Real, returns an anonymous FerVar whose definition 
+        is the sum of the FerVar definition with the number.
+        If other is not a FerVar or Real, returns NotImplemented
         '''
-        if isinstance(other, FerrVar):
+        if isinstance(other, FerVar):
             newdef = '(%s) + (%s)' % (self._definition, other._definition)
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             newvar._requires.update(other._requires)
             return newvar
         if isinstance(other, numbers.Real):
             newdef = '(%s) + %s' % (self._definition, str(other))
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             return newvar
         return NotImplemented
 
     def __radd__(self, other):
         '''
-        If other is a FerrVar, returns an anonymous FerrVar whose definition 
-        is the sum of the FerrVar definitions.
-        If other is Real, returns an anonymous FerrVar whose definition 
-        is the sum of the FerrVar definition with the number.
-        If other is not a FerrVar or Real, returns NotImplemented
+        If other is a FerVar, returns an anonymous FerVar whose definition 
+        is the sum of the FerVar definitions.
+        If other is Real, returns an anonymous FerVar whose definition 
+        is the sum of the FerVar definition with the number.
+        If other is not a FerVar or Real, returns NotImplemented
         '''
-        if isinstance(other, FerrVar):
+        if isinstance(other, FerVar):
             newdef = '(%s) + (%s)' % (other._definition, self._definition)
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             newvar._requires.update(other._requires)
             return newvar
         if isinstance(other, numbers.Real):
             newdef = '%s + (%s)' % (str(other), self._definition)
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             return newvar
         return NotImplemented
 
     def __sub__(self, other):
         '''
-        If other is a FerrVar, returns an anonymous FerrVar whose definition 
-        is the difference (self - other) of the FerrVar definitions.
-        If other is Real, returns an anonymous FerrVar whose definition 
-        is the difference (self - other) of the FerrVar definition with the number.
-        If other is not a FerrVar or Real, returns NotImplemented
+        If other is a FerVar, returns an anonymous FerVar whose definition 
+        is the difference (self - other) of the FerVar definitions.
+        If other is Real, returns an anonymous FerVar whose definition 
+        is the difference (self - other) of the FerVar definition with the number.
+        If other is not a FerVar or Real, returns NotImplemented
         '''
-        if isinstance(other, FerrVar):
+        if isinstance(other, FerVar):
             newdef = '(%s) - (%s)' % (self._definition, other._definition)
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             newvar._requires.update(other._requires)
             return newvar
         if isinstance(other, numbers.Real):
             newdef = '(%s) - %s' % (self._definition, str(other))
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             return newvar
         return NotImplemented
 
     def __rsub__(self, other):
         '''
-        If other is a FerrVar, returns an anonymous FerrVar whose definition 
-        is the difference (other - self) of the FerrVar definitions.
-        If other is Real, returns an anonymous FerrVar whose definition 
-        is the difference (other - self) of the FerrVar definition with the number.
-        If other is not a FerrVar or Real, returns NotImplemented
+        If other is a FerVar, returns an anonymous FerVar whose definition 
+        is the difference (other - self) of the FerVar definitions.
+        If other is Real, returns an anonymous FerVar whose definition 
+        is the difference (other - self) of the FerVar definition with the number.
+        If other is not a FerVar or Real, returns NotImplemented
         '''
-        if isinstance(other, FerrVar):
+        if isinstance(other, FerVar):
             newdef = '(%s) - (%s)' % (other._definition, self._definition)
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             newvar._requires.update(other._requires)
             return newvar
         if isinstance(other, numbers.Real):
             newdef = '%s - (%s)' % (str(other), self._definition)
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             return newvar
         return NotImplemented
 
     def __mul__(self, other):
         '''
-        If other is a FerrVar, returns an anonymous FerrVar whose definition 
-        is the product of the FerrVar definitions.
-        If other is Real, returns an anonymous FerrVar whose definition 
-        is the product of the FerrVar definition with the number.
-        If other is not a FerrVar or Real, returns NotImplemented
+        If other is a FerVar, returns an anonymous FerVar whose definition 
+        is the product of the FerVar definitions.
+        If other is Real, returns an anonymous FerVar whose definition 
+        is the product of the FerVar definition with the number.
+        If other is not a FerVar or Real, returns NotImplemented
         '''
-        if isinstance(other, FerrVar):
+        if isinstance(other, FerVar):
             newdef = '(%s) * (%s)' % (self._definition, other._definition)
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             newvar._requires.update(other._requires)
             return newvar
         if isinstance(other, numbers.Real):
             newdef = '(%s) * %s' % (self._definition, str(other))
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             return newvar
         return NotImplemented
 
     def __rmul__(self, other):
         '''
-        If other is a FerrVar, returns an anonymous FerrVar whose definition 
-        is the product of the FerrVar definitions.
-        If other is Real, returns an anonymous FerrVar whose definition 
-        is the product of the FerrVar definition with the number.
-        If other is not a FerrVar or Real, returns NotImplemented
+        If other is a FerVar, returns an anonymous FerVar whose definition 
+        is the product of the FerVar definitions.
+        If other is Real, returns an anonymous FerVar whose definition 
+        is the product of the FerVar definition with the number.
+        If other is not a FerVar or Real, returns NotImplemented
         '''
-        if isinstance(other, FerrVar):
+        if isinstance(other, FerVar):
             newdef = '(%s) * (%s)' % (other._definition, self._definition)
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             newvar._requires.update(other._requires)
             return newvar
         if isinstance(other, numbers.Real):
             newdef = '%s * (%s)' % (str(other), self._definition)
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             return newvar
         return NotImplemented
 
     def __truediv__(self, other):
         '''
-        If other is a FerrVar, returns an anonymous FerrVar whose definition 
-        is the quotient (self / other) of the FerrVar definitions.
-        If other is Real, returns an anonymous FerrVar whose definition 
-        is the quotient (self / other) of the FerrVar definition with the number.
-        If other is not a FerrVar or Real, returns NotImplemented
+        If other is a FerVar, returns an anonymous FerVar whose definition 
+        is the quotient (self / other) of the FerVar definitions.
+        If other is Real, returns an anonymous FerVar whose definition 
+        is the quotient (self / other) of the FerVar definition with the number.
+        If other is not a FerVar or Real, returns NotImplemented
         (For Python3.x)
         '''
-        if isinstance(other, FerrVar):
+        if isinstance(other, FerVar):
             newdef = '(%s) / (%s)' % (self._definition, other._definition)
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             newvar._requires.update(other._requires)
             return newvar
         if isinstance(other, numbers.Real):
             newdef = '(%s) / %s' % (self._definition, str(other))
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             return newvar
         return NotImplemented
 
     def __rtruediv__(self, other):
         '''
-        If other is a FerrVar, returns an anonymous FerrVar whose definition 
-        is the quotient (other / self) of the FerrVar definitions.
-        If other is Real, returns an anonymous FerrVar whose definition 
-        is the quotient (other / self) of the FerrVar definition with the number.
-        If other is not a FerrVar or Real, returns NotImplemented
+        If other is a FerVar, returns an anonymous FerVar whose definition 
+        is the quotient (other / self) of the FerVar definitions.
+        If other is Real, returns an anonymous FerVar whose definition 
+        is the quotient (other / self) of the FerVar definition with the number.
+        If other is not a FerVar or Real, returns NotImplemented
         (For Python3.x)
         '''
-        if isinstance(other, FerrVar):
+        if isinstance(other, FerVar):
             newdef = '(%s) / (%s)' % (other._definition, self._definition)
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             newvar._requires.update(other._requires)
             return newvar
         if isinstance(other, numbers.Real):
             newdef = '%s / (%s)' % (str(other), self._definition)
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             return newvar
         return NotImplemented
 
     def __div__(self, other):
         '''
-        If other is a FerrVar, returns an anonymous FerrVar whose definition 
-        is the quotient (self / other) of the FerrVar definitions.
-        If other is Real, returns an anonymous FerrVar whose definition 
-        is the quotient (self / other) of the FerrVar definition with the number.
-        If other is not a FerrVar or Real, returns NotImplemented
+        If other is a FerVar, returns an anonymous FerVar whose definition 
+        is the quotient (self / other) of the FerVar definitions.
+        If other is Real, returns an anonymous FerVar whose definition 
+        is the quotient (self / other) of the FerVar definition with the number.
+        If other is not a FerVar or Real, returns NotImplemented
         (For Python2.x)
         '''
         return self.__truediv__(other)
 
     def __rdiv__(self, other):
         '''
-        If other is a FerrVar, returns an anonymous FerrVar whose definition 
-        is the quotient (other / self) of the FerrVar definitions.
-        If other is Real, returns an anonymous FerrVar whose definition 
-        is the quotient (other / self) of the FerrVar definition with the number.
-        If other is not a FerrVar or Real, returns NotImplemented
+        If other is a FerVar, returns an anonymous FerVar whose definition 
+        is the quotient (other / self) of the FerVar definitions.
+        If other is Real, returns an anonymous FerVar whose definition 
+        is the quotient (other / self) of the FerVar definition with the number.
+        If other is not a FerVar or Real, returns NotImplemented
         (For Python2.x)
         '''
         return self.__rtruediv__(other)
 
     def __pow__(self, other):
         '''
-        If other is a FerrVar, returns an anonymous FerrVar whose definition 
-        is the exponentiation (self ^ other) of the FerrVar definitions.
-        If other is Real, returns an anonymous FerrVar whose definition 
-        is the exponentiation (self ^ other) of the FerrVar definition with the number.
-        If other is not a FerrVar or Real, returns NotImplemented
+        If other is a FerVar, returns an anonymous FerVar whose definition 
+        is the exponentiation (self ^ other) of the FerVar definitions.
+        If other is Real, returns an anonymous FerVar whose definition 
+        is the exponentiation (self ^ other) of the FerVar definition with the number.
+        If other is not a FerVar or Real, returns NotImplemented
         '''
-        if isinstance(other, FerrVar):
+        if isinstance(other, FerVar):
             newdef = '(%s) ^ (%s)' % (self._definition, other._definition)
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             newvar._requires.update(other._requires)
             return newvar
         if isinstance(other, numbers.Real):
             newdef = '(%s) ^ %s' % (self._definition, str(other))
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             return newvar
         return NotImplemented
 
     def __rpow__(self, other):
         '''
-        If other is a FerrVar, returns an anonymous FerrVar whose definition 
-        is the exponentiation (other ^ self) of the FerrVar definitions.
-        If other is Real, returns an anonymous FerrVar whose definition 
-        is the exponentiation (other ^ self) of the FerrVar definition with the number.
-        If other is not a FerrVar or Real, returns NotImplemented
+        If other is a FerVar, returns an anonymous FerVar whose definition 
+        is the exponentiation (other ^ self) of the FerVar definitions.
+        If other is Real, returns an anonymous FerVar whose definition 
+        is the exponentiation (other ^ self) of the FerVar definition with the number.
+        If other is not a FerVar or Real, returns NotImplemented
         '''
-        if isinstance(other, FerrVar):
+        if isinstance(other, FerVar):
             newdef = '(%s) ^ (%s)' % (other._definition, self._definition)
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             newvar._requires.update(other._requires)
             return newvar
         if isinstance(other, numbers.Real):
             newdef = '%s ^ (%s)' % (str(other), self._definition)
-            newvar = FerrVar(definition=newdef)
+            newvar = FerVar(defn=newdef)
             newvar._requires.update(self._requires)
             return newvar
         return NotImplemented
 
     def __neg__(self):
         '''
-        Returns an anonymous FerrVar whose definition is 
-        the product of -1.0 and this FerrVar definition.
+        Returns an anonymous FerVar whose definition is 
+        the product of -1.0 and this FerVar definition.
         '''
         newdef = '-1.0 * (%s)' % self._definition
-        newvar = FerrVar(definition=newdef)
+        newvar = FerVar(defn=newdef)
         newvar._requires.update(self._requires)
         return newvar
 
     def __pos__(self):
         '''
-        Returns an anonymous FerrVar whose definition is 
-        the same as this FerrVar definition.
+        Returns an anonymous FerVar whose definition is 
+        the same as this FerVar definition.
         '''
-        newvar = FerrVar(definition=self._definition)
+        newvar = FerVar(defn=self._definition)
         newvar._requires.update(self._requires)
         return newvar
 
     def __abs__(self):
         '''
-        Returns an anonymous FerrVar whose definition is 
-        the absolute value of this FerrVar definition.
+        Returns an anonymous FerVar whose definition is 
+        the absolute value of this FerVar definition.
         '''
         newdef = 'abs(%s)' % self._definition
-        newvar = FerrVar(definition=newdef)
+        newvar = FerVar(defn=newdef)
         newvar._requires.update(self._requires)
         return newvar
 
     def __getitem__(self, key):
         '''
-        Returns an anonymous FerrVar whose definition is a subset 
-        of this FerrVar.  This FerrVar must be assigned in Ferret.
+        Returns an anonymous FerVar whose definition is a subset 
+        of this FerVar.  This FerVar must be assigned in Ferret.
             key is an int, float, string, int slice, float slice, 
                 string slice, or a tuple of these values.
                  - int are interpreted as index/indices
@@ -528,7 +538,7 @@ class FerrVar(object):
                     continue
                 if isinstance(piece, slice):
                     try:
-                        (axtype, start, stop, step) = pyferret.FerrGrid._parsegeoslice(piece)
+                        (axtype, start, stop, step) = pyferret.FerGrid._parsegeoslice(piece)
                     except Exception as ex:
                         raise KeyError('%s is not valid: %s' % (str(piece), str(ex)))
                     if step != None:
@@ -551,8 +561,8 @@ class FerrVar(object):
                     elif axtype == pyferret.AXISTYPE_TIME:
                         if coordlimits[pyferret.T_AXIS] or indexlimits[pyferret.T_AXIS]:
                             raise KeyError('two time slices given')
-                        starttime = pyferret.FerrGrid._makedatestring(start)
-                        stoptime = pyferret.FerrGrid._makedatestring(stop)
+                        starttime = pyferret.FerGrid._makedatestring(start)
+                        stoptime = pyferret.FerGrid._makedatestring(stop)
                         coordlimits[pyferret.T_AXIS] = '%s:%s' % (starttime, stoptime)
                         changed = True
                     elif isinstance(start,int) and isinstance(stop,int):
@@ -580,7 +590,7 @@ class FerrVar(object):
                         raise KeyError('%s in not valid' % str(piece))
                 else:
                     try:
-                        (axtype, val) = pyferret.FerrGrid._parsegeoval(piece)
+                        (axtype, val) = pyferret.FerGrid._parsegeoval(piece)
                     except Exception as ex:
                         raise KeyError('%s is not valid: %s' % (str(piece), str(ex)))
                     if axtype == pyferret.AXISTYPE_LONGITUDE:
@@ -601,7 +611,7 @@ class FerrVar(object):
                     elif axtype == pyferret.AXISTYPE_TIME:
                         if coordlimits[pyferret.T_AXIS] or indexlimits[pyferret.T_AXIS]:
                             raise KeyError('two time slices given')
-                        coordlimits[pyferret.T_AXIS] = pyferret.FerrGrid._makedatestring(val)
+                        coordlimits[pyferret.T_AXIS] = pyferret.FerGrid._makedatestring(val)
                         changed = True
                     elif isinstance(val,int):
                         if coordlimits[k] or indexlimits[k]:
@@ -622,7 +632,7 @@ class FerrVar(object):
                         raise KeyError('%s in not valid' % str(piece))
         elif isinstance(key, slice):
             try:
-                (axtype, start, stop, step) = pyferret.FerrGrid._parsegeoslice(key)
+                (axtype, start, stop, step) = pyferret.FerGrid._parsegeoslice(key)
             except Exception as ex:
                 raise KeyError('%s is not valid: %s' % (str(key), str(ex)))
             if step != None:
@@ -637,8 +647,8 @@ class FerrVar(object):
                 coordlimits[pyferret.Z_AXIS] = '%s:%s' % (str(start), str(stop))
                 changed = True
             elif axtype == pyferret.AXISTYPE_TIME:
-                starttime = pyferret.FerrGrid._makedatestring(start)
-                stoptime = pyferret.FerrGrid._makedatestring(stop)
+                starttime = pyferret.FerGrid._makedatestring(start)
+                stoptime = pyferret.FerGrid._makedatestring(stop)
                 coordlimits[pyferret.T_AXIS] = '%s:%s' % (starttime, stoptime)
                 changed = True
             elif isinstance(start,int) and isinstance(stop,int):
@@ -660,7 +670,7 @@ class FerrVar(object):
                 raise KeyError('%s in not valid' % str(key))
         else:
             try:
-                (axtype, val) = pyferret.FerrGrid._parsegeoval(key)
+                (axtype, val) = pyferret.FerGrid._parsegeoval(key)
             except Exception as ex:
                 raise KeyError('%s is not valid: %s' % (str(key), str(ex)))
             if axtype == pyferret.AXISTYPE_LONGITUDE:
@@ -673,7 +683,7 @@ class FerrVar(object):
                 coordlimits[pyferret.Z_AXIS] = '%s' % str(val)
                 changed = True
             elif axtype == pyferret.AXISTYPE_TIME:
-                coordlimits[pyferret.T_AXIS] = pyferret.FerrGrid._makedatestring(val)
+                coordlimits[pyferret.T_AXIS] = pyferret.FerGrid._makedatestring(val)
                 changed = True
             elif isinstance(val,int):
                 # do not know the axis length at this time
@@ -690,12 +700,12 @@ class FerrVar(object):
                 raise KeyError('%s in not valid' % str(key))
         if not changed:
             # the whole thing - definition is just this variable
-            newvar = FerrVar(definition=self.ferretname())
+            newvar = FerVar(defn=self.fername())
             newvar._requires.update(self._requires)
             return newvar
         # create the subset definition in Ferret
-        if self._datasetname:
-            newdef = '%s[d=%s,' % (self._varname, self._datasetname)
+        if self._dsetname:
+            newdef = '%s[d=%s,' % (self._varname, self._dsetname)
         else:
             newdef = '%s[' % self._varname
         if coordlimits[pyferret.X_AXIS]:
@@ -724,67 +734,82 @@ class FerrVar(object):
             newdef += 'N=%s,' % indexlimits[pyferret.F_AXIS]
         # replace the final , with ]
         newdef = newdef[:-1] + ']'
-        newvar = FerrVar(definition=newdef)
+        newvar = FerVar(defn=newdef)
         newvar._requires.update(self._requires)
         return newvar
 
-    def _assigninferret(self, varname, datasetname):
+    def _markasknownvar(self, varname, dsetname, isfilevar):
         '''
-        Defines this FerrVar in Ferret using the given variable name 
+        Marks this variable as a variable already defined in Ferret.
+        '''
+        if not varname:
+            raise ValueError('varname is not given')
+        if not isinstance(varname, str):
+            raise ValueError('varname is not a string')
+        if dsetname and not isinstance(varname, str):
+            raise ValueError('dsetname name is not a string')
+        self._varname = varname
+        if dsetname:
+            self._dsetname = dsetname
+        else:
+            self._dsetname = ''
+        self._isfilevar = bool(isfilevar)
+        self._definition = self.fername()
+        self._requires.add(varname.upper())
+        self.unload()
+
+    def _assigninferret(self, varname, dsetname):
+        '''
+        Defines this FerVar in Ferret using the given variable name 
         associated with the given dataset name.
             varname (string): name for the variable in Ferret
-            datasetname (string): name of the dataset to contain the variable
+            dsetname (string): name of the dataset to contain the variable
         Raises a ValueError if there is a problem.
         '''
         if not self._definition:
-            raise ValueError('this FerrVar does not contain a definition')
+            raise ValueError('this FerVar does not contain a definition')
         if not varname:
             raise ValueError('variable name to be assigned is not given')
         if varname.upper() in self._requires:
             raise ValueError('recursive definitions cannot be implemented in Ferret')
         # Assign the variable in Ferret
-        if datasetname:
-            cmdstr = 'DEFINE VAR /d=%s %s = %s' % (datasetname, varname, self._definition)
-        else:
-            cmdstr = 'DEFINE VAR %s = %s' % (varname, self._definition)
+        cmdstr = 'DEFINE VAR'
+        if dsetname:
+            cmdstr += '/D=%s' % dsetname
+        if self._title:
+            cmdstr += '/TITLE="%s"' % self._title
+        cmdstr += ' %s = %s' % (varname, self._definition)
         (errval, errmsg) = pyferret.run(cmdstr)
         if errval != pyferret.FERR_OK:
             raise ValueError('problems defining %s (%s) in Ferret: %s' % (varname, cmdstr, errmsg))
-        # Revise the fields in this FerrVar to reflect this assignment
-        self._varname = varname
-        if datasetname:
-            self._datasetname = datasetname
-        else:
-            self._datasetname = ''
-        self._definition = self.ferretname()
-        self._requires.add(varname.upper())
-        self.clean()
+        # Revise the fields in this FerVar to reflect this assignment
+        self._markasknownvar(varname, dsetname, False)
 
     def _removefromferret(self):
         '''
-        Removes (cancels) this variable in Ferret, then cleans this FerrVar 
+        Removes (cancels) this variable in Ferret, then unloads this FerVar 
         and erases _varname.  Raises a NotImplementedError is this is a file 
         variable.  Raises a ValueError if there is a Ferret problem.  This 
-        normally is not called by the user; instead delete the FerrVar from 
+        normally is not called by the user; instead delete the FerVar from 
         the dataset.
         '''
         # ignore if this Ferrer variable has already been removed from Ferret
         if not self._varname:
             return
-        ferrname = self.ferretname()
+        fername = self.fername()
         if self._isfilevar:
-            raise NotImplementedError('%s is a file variable; close the dataset to remove' % ferrname)
-        cmdstr = 'CANCEL VAR %s' % ferrname
+            raise NotImplementedError('%s is a file variable; close the dataset to remove' % fername)
+        cmdstr = 'CANCEL VAR %s' % fername
         (errval, errmsg) = pyferret.run(cmdstr)
         if errval != pyferret.FERR_OK:
-            raise ValueError('unable to remove variable %s from Ferret: %s' % (ferrname, errmsg))
+            raise ValueError('unable to remove variable %s from Ferret: %s' % (fername, errmsg))
         self._varname = ''
-        self.clean()
+        self.unload()
 
-    def clean(self):
+    def unload(self):
         '''
-        Clears the grid and data stored in this FerrVar.  After this call, any 
-        request for the grid or data will automatically fetch the latest values 
+        Clears the grid and data stored in this FerVar.  After this call, any 
+        request for the grid or data will automatically load the latest values 
         from Ferret.  This method should be called anytime there is a change 
         in the definition of this variable, or a variable this variable uses.
         '''
@@ -793,20 +818,20 @@ class FerrVar(object):
         self._dataunit = ''
         self._missingvalue = None
 
-    def fetch(self):
+    def load(self):
         '''
         Retrieves the grid and data for this Ferret variable from Ferret.
         This method is automatically called before returning the grid or data 
         for the first time for this variable.  This can be called to update
-        the grid or data in this FerrVar after any change in the definition 
+        the grid or data in this FerVar after any change in the definition 
         of the variable.  Alternatively, cleardata can be called to clear any
         stored grid and data, delaying the update from Ferret until the grid
         or data is requested.
         Raises a ValueEror if problems occur.
         '''
-        ferrname = self.ferretname()
-        datadict = pyferret.getdata(ferrname, False)
-        self._datagrid = pyferret.FerrGrid(gridname=ferrname,
+        fername = self.fername()
+        datadict = pyferret.getdata(fername, False)
+        self._datagrid = pyferret.FerGrid(gridname=fername,
                                            axistypes=datadict["axis_types"], 
                                            axiscoords=datadict["axis_coords"], 
                                            axisunits=datadict["axis_units"], 
@@ -827,19 +852,19 @@ class FerrVar(object):
         if qual:
             cmdstr += qual
         cmdstr += ' '
-        cmdstr += self.ferretname()
+        cmdstr += self.fername()
         (errval, errmsg) = pyferret.run(cmdstr)
         if errval != pyferret.FERR_OK:
             raise ValueError('Ferret command "%s" failed: %s' % (cmdstr, errmsg))
 
     def regrid(self, newgrid, method=REGRID_LINEAR):
         '''
-        Returns an anonymous FerrVar that is this variable regridded to the grid
+        Returns an anonymous FerVar that is this variable regridded to the grid
         implied by newgrid using the given method.
-            newgrid (FerrVar |  string | FerrGrid): regrid to this implied grid;
-                if a FerrVar, the implied grid is the grid used by the Ferret variable,
+            newgrid (FerVar |  string | FerGrid): regrid to this implied grid;
+                if a FerVar, the implied grid is the grid used by the Ferret variable,
                 if a string, the implied grid is the grid known to Ferret by this name
-                if a FerrGrid, the implied grid is this grid (TODO: implement)
+                if a FerGrid, the implied grid is this grid (TODO: implement)
             method (string): method to perform the regridding; typically one of
                 pyferret.REGRID_LINEAR (default)
                     (multi-axis) linear interpolation of nearest source points around destination point
@@ -863,19 +888,19 @@ class FerrVar(object):
             raise NotImplementedError('regridding can only be performed on variables assigned in Ferret')
         if not ( isinstance(method, str) and (method[0] == '@') ):
             raise ValueError('invalid regridding method %s' % str(method))
-        if isinstance(newgrid, FerrVar):
+        if isinstance(newgrid, FerVar):
             if not newgrid._varname:
-                raise ValueError('FerrVar used for the new grid is not assigned in Ferret')
-            gridname = newgrid.ferretname()
+                raise ValueError('FerVar used for the new grid is not assigned in Ferret')
+            gridname = newgrid.fername()
         elif isinstance(newgrid, str):
             gridname = newgrid
-        elif isinstance(newgrid, FerrGrid):
-            raise NotImplementedError('regrid using FerrGrid not implemented at this time')
-        if self._datasetname:
-            newdef = '%s[d=%s,g=%s%s]' % (self._varname, self._datasetname, gridname, method)
+        elif isinstance(newgrid, FerGrid):
+            raise NotImplementedError('regrid using FerGrid not implemented at this time')
+        if self._dsetname:
+            newdef = '%s[d=%s,g=%s%s]' % (self._varname, self._dsetname, gridname, method)
         else:
             newdef = '%s[g=%s%s]' % (self._varname, gridname, method)
-        newvar = FerrVar(definition=newdef)
+        newvar = FerVar(defn=newdef)
         newvar._requires.update(self._requires)
         return newvar
 

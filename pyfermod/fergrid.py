@@ -39,7 +39,7 @@ _TIME_NOYEAR_PARSE_FORMATS = (
 )
 
 
-class FerrGrid(object):
+class FerGrid(object):
     '''
     Ferret grid object
     '''
@@ -163,11 +163,11 @@ class FerrGrid(object):
 
     def __repr__(self):
         '''
-        Representation to recreate this FerrGrid
+        Representation to recreate this FerGrid
         '''
         # Not elegant, but will do
         spacer = ',\n         '
-        infostr = "FerrGrid(gridname='" + self._gridname + "'" + \
+        infostr = "FerGrid(gridname='" + self._gridname + "'" + \
                   spacer + 'axistype=' + repr(self._axistypes) + \
                   spacer + 'axiscoords=' + repr(self._axiscoords) + \
                   spacer + 'axisunits=' + repr(self._axisunits) + \
@@ -177,10 +177,10 @@ class FerrGrid(object):
 
     def __eq__(self, other):
         '''
-        Two FerrGrids are equal is all their contents are the same.  
+        Two FerGrids are equal is all their contents are the same.  
         All string values are compared case-insensitive.
         '''
-        if not isinstance(other, FerrGrid):
+        if not isinstance(other, FerGrid):
             return NotImplemented
         if self._gridname.upper() != other._gridname.upper():
             return False
@@ -210,37 +210,30 @@ class FerrGrid(object):
 
     def __ne__(self, other):
         '''
-        Two FerrGrids are not equal is any of their contents are not the same.  
+        Two FerGrids are not equal is any of their contents are not the same.  
         All string values are compared case-insensitive.
         '''
-        if not isinstance(other, FerrGrid):
+        if not isinstance(other, FerGrid):
             return NotImplemented
         return not self.__eq__(other)
 
 
-    def copy(self):
+    def copy(self, name=None, ax=None, axtype=None, axcoords=None, axunit=None, axname=None):
         '''
-        Make a copy of this grid
-        '''
-        return self.modifiedcopy()
-
-
-    def modifiedcopy(self, gridname=None, axis=None, axtype=None, axcoords=None, axunit=None, axname=None):
-        '''
-        Returns a copy of this grid with the given name.  If axis is given, 
-        then the information in the new grid for this axis is replaced by the 
+        Returns a copy of this grid with the given name.  If ax is given, 
+        then the information in the new grid for this ax is replaced by the 
         information in the remaining arguments.
             gridname (string): Ferret name for the new grid; if None:
-                if axis is None, the Ferret name of this grid is copied
-                if axis in not None, no Ferret name is given (empty string)
-            axis (int): if not None, index of the axis to modify; one of:
+                if ax is None, the Ferret name of this grid is copied
+                if ax in not None, no Ferret name is given (empty string)
+            ax (int): if not None, index of the axis to modify; one of:
                     pyferret.X_AXIS (0)
                     pyferret.Y_AXIS (1)
                     pyferret.Z_AXIS (2)
                     pyferret.T_AXIS (3)
                     pyferret.E_AXIS (4)
                     pyferret.F_AXIS (5)
-        If axis is None, the remaining arguments are ignored.
+        If ax is None, the remaining arguments are ignored.
             axtype (int): type of the new axis; one of:
                     pyferret.AXISTYPE_LONGITUDE
                     pyferret.AXISTYPE_LATITUDE
@@ -266,7 +259,7 @@ class FerrGrid(object):
                 of time point t.)
                 Note: a relative time axis will be of type AXISTYPE_CUSTOM, with a unit
                       indicating the starting point, such as 'days since 01-JAN-2000'
-            axisunit (string): unit of the new axis; 
+            axunit (string): unit of the new axis; 
                 ignored for abstact axes or axes normal to the data;
                 for a time axis, this gives the calendar as one of
                     pyferret.CALTYPE_360DAY
@@ -275,61 +268,61 @@ class FerrGrid(object):
                     pyferret.CALTYPE_JULIAN
                     pyferret.CALTYPE_ALLLEAP
                     pyferret.CALTYPE_NONE    (calendar not specified)
-            axisnames (sequence of string): Ferret name for this axis
+            axname (string): Ferret name for this axis
                 ignored for axes normal to the data;
         '''
-        if (gridname == None) and (axis == None):
+        if (name == None) and (ax == None):
             newgridname = self._gridname
         else:
-            newgridname = gridname
-        newgrid = FerrGrid(newgridname, 
-                           axistypes=self._axistypes, 
-                           axiscoords=self._axiscoords, 
-                           axisunits=self._axisunits, 
-                           axisnames=self._axisnames)
-        if axis == None:
+            newgridname = name
+        newgrid = FerGrid(newgridname, 
+                          axistypes=self._axistypes, 
+                          axiscoords=self._axiscoords, 
+                          axisunits=self._axisunits, 
+                          axisnames=self._axisnames)
+        if ax == None:
             # ignore the remaining arguments
             return newgrid
-        if not axis in _VALID_AXIS_NUMS:
-            raise ValueError('axis must one of the pyferret constants ' + \
+        if not ax in _VALID_AXIS_NUMS:
+            raise ValueError('ax must one of the pyferret constants ' + \
                              'X_AXIS, Y_AXIS, Z_AXIS, T_AXIS, E_AXIS, or F_AXIS')
         if not axtype in _VALID_AXIS_TYPES:
             raise ValueError('axis type %s is not valid' % str(axtype))
-        newgrid._axistypes[axis] = axtype
+        newgrid._axistypes[ax] = axtype
         # set default values for the new axis
-        newgrid._axisnames[axis] = ''
-        newgrid._axisunits[axis] = ''
-        newgrid._axiscoords[axis] = None
+        newgrid._axisnames[ax] = ''
+        newgrid._axisunits[ax] = ''
+        newgrid._axiscoords[ax] = None
         if axtype == pyferret.AXISTYPE_NORMAL:
             # ignore the remaining arguments
             return newgrid
         if axname:
             if not isinstance(axname, str):
                 raise ValueError('axis name %s is not valid' % str(axname))
-            newgrid._axisnames[axis] = axname
+            newgrid._axisnames[ax] = axname
         if axtype == pyferret.AXISTYPE_ABSTRACT:
             # ignore the remaining arguments
             return newgrid
         if axunit:
             if not isinstance(axunit, str):
                 raise ValueError('axis unit %s is not valid' % str(axunit))
-            newgrid._axisunits[axis] = axunit
+            newgrid._axisunits[ax] = axunit
         if axcoords != None:
             if axtype == pyferret.AXISTYPE_TIME:
                 try:
-                    newgrid._axiscoords[axis] = numpy.array(axcoords, dtype=numpy.int32, copy=True)
+                    newgrid._axiscoords[ax] = numpy.array(axcoords, dtype=numpy.int32, copy=True)
                 except ValueError:
                     raise ValueError('(time) axcoords is not an integer array')
-                if newgrid._axiscoords[axis].ndim != 2:
+                if newgrid._axiscoords[ax].ndim != 2:
                     raise ValueError('(time) axcoords is not a 2-D array')
-                if newgrid._axiscoords[axis].shape[1] != 6:
+                if newgrid._axiscoords[ax].shape[1] != 6:
                     raise ValueError('(time) axcoords second dimension is not 6')
             else:
                 try:
-                    newgrid._axiscoords[axis] = numpy.array(axcoords, dtype=numpy.float64, copy=True)
+                    newgrid._axiscoords[ax] = numpy.array(axcoords, dtype=numpy.float64, copy=True)
                 except ValueError:
                     raise ValueError('axcoords is not a numeric array')
-                if newgrid._axiscoords[axis].ndim != 1:
+                if newgrid._axiscoords[ax].ndim != 1:
                     raise ValueError('axcoords is not a 1-D array')
         return newgrid
 
@@ -340,8 +333,8 @@ class FerrGrid(object):
         Parses the contents of the slice attributes, interpreting any geo- or time-references
         and returns a tuple with the resulting interpreted axis type, start, stop, and step values.
            geoslice (slice): slice that can contain georeferences or time references
-           returns (axistype, start, stop, step) where:
-              axistype is one of:
+           returns (axtype, start, stop, step) where:
+              axtype is one of:
                   pyferret.AXISTYPE_LONGITUDE  (longitude units detected)
                   pyferret.AXISTYPE_LATITUDE   (latitude units detected)
                   pyferret.AXISTYPE_LEVEL      (level units detected)
@@ -349,8 +342,8 @@ class FerrGrid(object):
                   pyferret.AXISTYPE_ABSTRACT   (no units)
               start, stop, and step are:
                   None if the correspond geoslice attribute is not given; otherwise,
-                  a list of six numbers if axistype is pyferret.AXISTYPE_TIME, or
-                  a number if axistype is not pyferret.AXISTYPE_TIME
+                  a list of six numbers if axtype is pyferret.AXISTYPE_TIME, or
+                  a number if axtype is not pyferret.AXISTYPE_TIME
         The list of six numbers for time values are ordered according to the indices:
             pyferret.TIMEARRAY_DAYINDEX
             pyferret.TIMEARRAY_MONTHINDEX
@@ -375,18 +368,18 @@ class FerrGrid(object):
             return (pyferret.AXISTYPE_ABSTRACT, None, None, None)
         if not isinstance(geoslice, slice):
             raise TypeError('not a slice object: %s' % repr(geoslice))
-        (starttype, start) = FerrGrid._parsegeoval(geoslice.start)
-        (stoptype, stop) = FerrGrid._parsegeoval(geoslice.stop)
+        (starttype, start) = FerGrid._parsegeoval(geoslice.start)
+        (stoptype, stop) = FerGrid._parsegeoval(geoslice.stop)
         # start and stop types must match (so 10:"25E" also fails)
         if starttype != stoptype:
             raise ValueError('mismatch of units: %s and %s' % (geoslice.start, geoslice.stop))
         axtype = starttype
         if axtype == pyferret.AXISTYPE_TIME:
-            (steptype, step) = FerrGrid._parsegeoval(geoslice.step, istimestep=True)
+            (steptype, step) = FerGrid._parsegeoval(geoslice.step, istimestep=True)
             if (step != None) and (steptype != pyferret.AXISTYPE_TIME):
                raise ValueError('a time unit y, d, h, m, or s must be given with time slice steps')
         else:
-            (steptype, step) = FerrGrid._parsegeoval(geoslice.step)
+            (steptype, step) = FerGrid._parsegeoval(geoslice.step)
             if (steptype != pyferret.AXISTYPE_ABSTRACT) and (steptype != axtype):
                raise ValueError('mismatch of units: %s, %s' % (geoslice.start, geoslice.step))
             

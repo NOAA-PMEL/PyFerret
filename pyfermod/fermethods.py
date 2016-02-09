@@ -92,7 +92,7 @@ def settextstyle(font='', color='', bold = False, italic=False):
         raise ValueError('problems setting text style (%s): %s' % (cmdstr, errmsg))
 
 
-def showdatasets(brief=True, qual=''):
+def showdata(brief=True, qual=''):
     """
     Show the Ferret information about all dataset currently open in Ferret.  
     This uses the Ferret SHOW DATA command to create and display the information.
@@ -117,7 +117,7 @@ def contour(fvar, over=False, qual=''):
     Create a contour plot of the specified Ferret variable using the Ferret CONTOUR command.
     Using the fill method to generated a color-filled contour plot.
     The variable needs to be 2D (or qualifiers need to be added to specify a 2D slice).
-        fvar (string or FerrVar): Ferret variable to plot
+        fvar (string or FerVar): Ferret variable to plot
         over (bool): overlay on an existing plot?
         qual (string): qualifiers to add to the Ferret SHADE command
     """
@@ -125,10 +125,10 @@ def contour(fvar, over=False, qual=''):
         raise ValueError('qual (Ferret qualifiers) must be a string')
     if isinstance(fvar, str):
         plotvar = fvar
-    elif isinstance(fvar, pyferret.FerrVar):
+    elif isinstance(fvar, pyferret.FerVar):
         plotvar = fvar._definition
     else:
-        raise ValueError('fvar (Ferret variable to plot) must be a string or FerrVar')
+        raise ValueError('fvar (Ferret variable to plot) must be a string or FerVar')
     cmdstr = 'CONTOUR'
     if over:
         cmdstr += '/OVER'
@@ -146,7 +146,7 @@ def fill(fvar, line=False, over=False, qual=''):
     Create a color-filled contour plot of the specified Ferret variable using the Ferret 
     FILL command.  Drawing of the contour lines themselves is optional.
     The variable needs to be 2D (or qualifiers need to be added to specify a 2D slice).
-        fvar (string or FerrVar): Ferret variable to plot
+        fvar (string or FerVar): Ferret variable to plot
         line (bool): draw the contour lines?
         over (bool): overlay on an existing plot?
         qual (string): qualifiers to add to the Ferret SHADE command
@@ -155,10 +155,10 @@ def fill(fvar, line=False, over=False, qual=''):
         raise ValueError('qual (Ferret qualifiers) must be a string')
     if isinstance(fvar, str):
         plotvar = fvar
-    elif isinstance(fvar, pyferret.FerrVar):
+    elif isinstance(fvar, pyferret.FerVar):
         plotvar = fvar._definition
     else:
-        raise ValueError('fvar (Ferret variable to plot) must be a string or FerrVar')
+        raise ValueError('fvar (Ferret variable to plot) must be a string or FerVar')
     cmdstr = 'FILL'
     if line:
         cmdstr += '/LINE'
@@ -178,7 +178,7 @@ def shade(fvar, over=False, qual=''):
     Create a colored plot of the specified Ferret variable using the Ferret SHADE command.
     (Plot coloring grid cells based on the variable value in that cell.)
     The variable needs to be 2D (or qualifiers need to be added to specify a 2D slice).
-        fvar (string or FerrVar): Ferret variable to plot
+        fvar (string or FerVar): Ferret variable to plot
         over (bool): overlay on an existing plot?
         qual (string): qualifiers to add to the Ferret SHADE command
     """
@@ -186,10 +186,10 @@ def shade(fvar, over=False, qual=''):
         raise ValueError('qual (Ferret qualifiers) must be a string')
     if isinstance(fvar, str):
         plotvar = fvar
-    elif isinstance(fvar, pyferret.FerrVar):
+    elif isinstance(fvar, pyferret.FerVar):
         plotvar = fvar._definition
     else:
-        raise ValueError('fvar (Ferret variable to plot) must be a string or FerrVar')
+        raise ValueError('fvar (Ferret variable to plot) must be a string or FerVar')
     cmdstr = 'SHADE'
     if over:
         cmdstr += '/OVER'

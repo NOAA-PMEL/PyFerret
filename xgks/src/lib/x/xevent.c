@@ -176,10 +176,19 @@ ProcessEvents()
 		    break;
 
 		/*
-		 * Let Xgks process all other events.
+		 * Let Xgks process those event it can handle.
+		 */
+		case KeyPress:
+		case MotionNotify:
+		case ButtonPress:
+		case ButtonRelease:
+		    XgksIProcessXEvent(&xev, ws);
+		    break;
+
+		/*
+		 * Throw away all other events.
 		 */
 		default:
-		    XgksIProcessXEvent(&xev, ws);
 		    break;
 		}
 	    }					/* event loop */

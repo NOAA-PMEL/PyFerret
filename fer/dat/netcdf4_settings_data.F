@@ -32,6 +32,8 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+*       *acm* 2/16 add echunk and fchunk
+
 *
 * Initialize the settings for netcdf4 datasets and store them in common.
 
@@ -44,6 +46,8 @@
 *	ychunk_size     - chunk size in Y direction
 *	zchunk_size     - chunk size in Z direction
 *	tchunk_size     - chunk size in T direction
+*	echunk_size     - chunk size in E direction
+*	fchunk_size     - chunk size in F direction
 *	deflate_lev	- deflate level (0 for no deflate)
 *	shuffle_flag    - shuffle - 0 or 1
 *	endian_code     - native=0, little=1, big=0 match nf_endian_* params
@@ -54,6 +58,8 @@
 	DATA ychunk_size  /0/
 	DATA zchunk_size  /0/
 	DATA tchunk_size  /0/
+	DATA echunk_size  /0/
+	DATA fchunk_size  /0/
 	DATA deflate_lev  /0/
 	DATA shuffle_flag /0/
 	DATA endian_code  /0/
@@ -62,6 +68,8 @@
 	DATA ychunk_size_set  /0/
 	DATA zchunk_size_set  /0/
 	DATA tchunk_size_set  /0/
+	DATA echunk_size_set  /0/
+	DATA fchunk_size_set  /0/
 	DATA deflate_lev_set  /0/
 	DATA shuffle_flag_set /0/
 	DATA endian_code_set  /0/

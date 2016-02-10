@@ -14,7 +14,6 @@ include ../site_specific.mk
 include ../platform_specific.mk.$(BUILDTYPE)
 
 PLATFORM := $(shell uname -rs)
-VERSION_INFO := (PyFerret $(PYFERRET_VERSION))
 DATE := $(shell /bin/date +%D)
 
 #
@@ -39,6 +38,15 @@ all: optimized
 optimized:
 	$(MAKE) "CFLAGS = $(CFLAGS) -O -DNDEBUG" \
 		"FFLAGS = $(FFLAGS) -O -DNDEBUG" \
+		"VERSION_INFO = (PyFerret $(PYFERRET_VERSION))" \
+		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O -DNDEBUG" \
+		build
+
+.PHONY : beta
+beta:
+	$(MAKE) "CFLAGS = $(CFLAGS) -O -DNDEBUG" \
+		"FFLAGS = $(FFLAGS) -O -DNDEBUG" \
+		"VERSION_INFO = (PyFerret $(PYFERRET_VERSION) beta/opt)" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O -DNDEBUG" \
 		build
 
@@ -46,6 +54,7 @@ optimized:
 debug:
 	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" \
 		"FFLAGS = $(FFLAGS) -O0 -g -fbounds-check" \
+		"VERSION_INFO = (PyFerret $(PYFERRET_VERSION) beta/dbg)" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O0 -g" \
 		build
 

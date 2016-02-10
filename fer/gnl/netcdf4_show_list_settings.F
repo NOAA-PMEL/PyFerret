@@ -41,6 +41,7 @@
 *
 * revision 0.0 - 1/13/2010
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*       *acm* 2/16 add echunk and fchunk
 
 * Qualilifiers for SET LIST: NCFORMAT,
 * XCHUNK,YCHUNK,ZCHUNK,TCHUNK,DEFLATE,SHUFFLE,ENDIAN
@@ -124,6 +125,22 @@
 	   val = tchunk_size
            show_str = TM_FMT(val, 5, 12, slen)
 	   WRITE (risc_buff, 1200) 'T', show_str(1:slen)
+	   CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
+	   nchunk = nchunk + 1
+	ENDIF
+
+        IF (echunk_size_set .GT. 0) THEN
+	   val = echunk_size
+           show_str = TM_FMT(val, 5, 12, slen)
+	   WRITE (risc_buff, 1200) 'E', show_str(1:slen)
+	   CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
+	   nchunk = nchunk + 1
+	ENDIF
+
+        IF (fchunk_size_set .GT. 0) THEN
+	   val = fchunk_size
+           show_str = TM_FMT(val, 5, 12, slen)
+	   WRITE (risc_buff, 1200) 'F', show_str(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	   nchunk = nchunk + 1
 	ENDIF

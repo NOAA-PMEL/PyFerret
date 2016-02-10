@@ -1,5 +1,5 @@
-      SUBROUTINE CD_SET_COMPRESS (cdfid, varid, vname, dimid, deflate,
-     .                            chunks, shuffle, endian_code, status)
+      SUBROUTINE CD_SET_COMPRESS (cdfid, varid, deflate,chunks, shuffle,
+     .                            endian_code, status)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -42,21 +42,20 @@
 * Netcdf-4 with HDF chunking and compression
 * revision 0.0 - 12/09
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* V698 2/16 *acm* for ticket 2363, don't call NF_DEF_VAR_FLETCHER32.
 
 * argument definitions:
 *   cdfid   - returned pointer to open CDF file
 *   varid   - variable id
-*   dimid   - id of dimensions
 *   deflate - deflate level (level 1 is recommended)
-*   chunks  - chunking corrresponding to dimid (if all 0 then no set chunking)
+*   chunks  - chunking corrresponding to each dimension (if all 0 then no set chunking)
 *   shuffle - 0 or 1 to turn on shuffle in NF_DEF_VAR_DEFLATE
 *   endian_code - native=0, little=1, big=0 Values match nf_endian_*
 *   status  - return status
 
 * argument declarations:
-	INTEGER cdfid, varid, dimid(*), deflate, chunks(*), 
+	INTEGER cdfid, varid, deflate, chunks(*), 
      .          shuffle, endian_code, status
-	CHARACTER*(*) vname
 
 * include files
         include 'netcdf.inc'
@@ -72,7 +71,7 @@
 * local variable declarations:
 
       INTEGER cdfstat, idim, vlen
-      INTEGER do_deflate, do_chunk, cdfformat
+      INTEGER do_deflate, do_chunk, cdfformat, contiguous
 
       CHARACTER*1     ww_dim_nam(nferdims)
       DATA ww_dim_nam/'X', 'Y', 'Z', 'T', 'E', 'F'/
@@ -100,8 +99,9 @@
          do_chunk = MAX(do_chunk, chunks(idim) ) 
   100 CONTINUE
 
+      contiguous = NF_CHUNKED
       IF (do_chunk .GT. 0) THEN
-         cdfstat = NF_DEF_VAR_CHUNKING(cdfid, varid, NF_CHUNKED, chunks)
+         cdfstat = NF_DEF_VAR_CHUNKING(cdfid, varid, contiguous, chunks)
          IF (cdfstat .NE. NF_NOERR) GOTO 5100
       ENDIF
 
@@ -113,11 +113,6 @@
       cdfstat = NF_DEF_VAR_DEFLATE(cdfid, varid, shuffle, 
      .          deflate, do_deflate)
       IF (cdfstat .NE. NF_NOERR) GOTO 5100
-
-* Turn on fletcher32 checksum for the var
-      cdfstat = NF_DEF_VAR_FLETCHER32(cdfid, varid, NF_FLETCHER32)
-      IF (cdfstat .NE. NF_NOERR) GOTO 5100
-
 
 * successful completion
       status = merr_ok

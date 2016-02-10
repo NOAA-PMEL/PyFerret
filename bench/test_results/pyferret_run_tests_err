@@ -1,8 +1,8 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Feb  9 13:10 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Feb  9 17:52 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh tests results for debug PyFerret on RHEL6-64
+Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
 ****** Restricting Ferret paths to bench directory ******
 FER_DAT=.
 FER_DATA=.
@@ -278,7 +278,7 @@ Benchmark scripts that will be run:
    testfervar.py
    testfergrid.py
    testferpyvar.py
-Beginning at Tue Feb  9 13:11:25 PST 2016
+Beginning at Tue Feb  9 17:53:08 PST 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -2933,10 +2933,10 @@ Re-defining viewport V8
  **TMAP ERR: syntax error in string
              If ChunkSize is set for any dimension of var, must set for all its dimensions
 LIST/FORMAT=CDF/file=nc4_deflate4_t1.nc/clobber/ncformat=4/deflate/shuffle/tchunk=1  sst
- LISTing to file nc4_deflate4bigchunk.nc
+ LISTing to file nc4_deflate4chunktoobig.nc
  **TMAP ERR: error specifying chunk sizes
              TChunkSize 0 is larger than dimension length 3
-LIST/FORMAT=CDF/file=nc4_deflate4bigchunk.nc/clobber/ncformat=4/deflate=1/xchunk=6/ychunk=18/tchunk=15 sst
+LIST/FORMAT=CDF/file=nc4_deflate4chunktoobig.nc/clobber/ncformat=4/deflate=1/xchunk=6/ychunk=18/tchunk=15 sst
 *** Running ferret script: bn_scat2grid_bin.jnl
  Cached data cleared from memory
  LISTing to file a.nc
@@ -4251,4 +4251,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testferpyvar.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Tue Feb  9 13:13:22 PST 2016
+Ended at Tue Feb  9 17:55:04 PST 2016

@@ -24,6 +24,17 @@ optimized :
         fi
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
+.PHONY : beta
+beta :
+	mkdir -p lib
+	$(MAKE) xgks/Makefile
+	$(MAKE) -C xgks
+	$(MAKE) -C fer beta
+	$(MAKE) -C threddsBrowser
+	$(MAKE) -C external_functions
+	$(MAKE) -C gksm2ps
+	$(MAKE) -C bin/build_fonts/unix
+
 .PHONY : debug
 debug :
 	mkdir -p $(DIR_PREFIX)/lib

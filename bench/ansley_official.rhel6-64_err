@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 81846425 Feb  4 16:41 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 81846405 Feb  9 12:09 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Ticket 2362: change qualifiers /D= to /DATASET=
+Note:  ticket 2363, netcdf4 and java netcdf
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Thu Feb 4 17:07:24 PST 2016
+Beginning at Tue Feb 9 14:49:56 PST 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2964,10 +2964,10 @@ Re-defining viewport V8
  **TMAP ERR: syntax error in string
              If ChunkSize is set for any dimension of var, must set for all its dimensions
 LIST/FORMAT=CDF/file=nc4_deflate4_t1.nc/clobber/ncformat=4/deflate/shuffle/tchunk=1  sst
- LISTing to file nc4_deflate4bigchunk.nc
+ LISTing to file nc4_deflate4chunktoobig.nc
  **TMAP ERR: error specifying chunk sizes
              TChunkSize 0 is larger than dimension length 3
-LIST/FORMAT=CDF/file=nc4_deflate4bigchunk.nc/clobber/ncformat=4/deflate=1/xchunk=6/ychunk=18/tchunk=15 sst
+LIST/FORMAT=CDF/file=nc4_deflate4chunktoobig.nc/clobber/ncformat=4/deflate=1/xchunk=6/ychunk=18/tchunk=15 sst
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
@@ -4402,4 +4402,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Feb 4 17:09:44 PST 2016
+Ended at Tue Feb 9 14:52:06 PST 2016

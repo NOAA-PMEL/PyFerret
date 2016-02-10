@@ -2,5 +2,5 @@
 
 	COMMON/ XREVISION_TYPE / revision_type
 
-	CHARACTER*20 revision_type
+	CHARACTER*32 revision_type
 

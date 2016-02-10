@@ -89,6 +89,7 @@
 *                 the user has said /KEEP_AXISNAMES
 * V69+ 4/14 *acm* After the above fix, need a tweak to be able to append to files having 
 *                 dimensions that are not coordinate variables
+* V697 2/16 *acm* Remove unused variables from the call to CD_SET_COMPRESS
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -424,8 +425,8 @@
 C     Turn on deflate_lev and chunking
 
       IF (netcdf4_type .EQ. 4) THEN
-         IF (deflate_lev .GT. 0) CALL CD_SET_COMPRESS (cdfid, varid, vname,
-     .         dimid, deflate_lev, chunks, shuffle_flag, endian_code, status)
+         IF (deflate_lev .GT. 0) CALL CD_SET_COMPRESS (cdfid, varid,
+     .         deflate_lev, chunks, shuffle_flag, endian_code, status)
       ENDIF ! netcdf4
 
 * if the "unlimited" record dimension is in use place no limits on that axis

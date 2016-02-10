@@ -130,6 +130,7 @@ mytype.nc
 names
 nc
 nc4_deflate4bigchunk.nc
+nc4_deflate4chunktoobig.nc
 nc4_deflate4_defaultchunk.nc
 nc4_deflate4.nc
 nc4_deflate4_t1.nc

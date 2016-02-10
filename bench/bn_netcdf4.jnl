@@ -1,6 +1,7 @@
 ! bn_netcdf4.jnl
 ! test syntax for controling NetCDF-4 intput and output.
-
+! 2/2016 Change file name in second intentinal-error case
+!        Also list the file sizes for compressed data
 
 
 show nccache
@@ -26,7 +27,7 @@ set var/title=deflate_x30_y30 sst
 save/file=nc4_deflate4.nc/clobber/ncformat=4/deflate=1/xchunk=30/ychunk=30/tchunk=1 sst
 
 ! With /NCFORMAT=3 the other stuff is meaningless.  Will see NOTEs
-yes? save/file=nc4_nodeflate3.nc/clobber/ncformat=3/deflate=1/xchunk=30/ychunk=30/tchunk=1 sst
+save/file=nc4_nodeflate3.nc/clobber/ncformat=3/deflate=1/xchunk=30/ychunk=30/tchunk=1 sst
 
 ! --------------------------
 ! Compare choices of chunking.
@@ -43,6 +44,11 @@ save/file=nc4_nodeflate3.nc/clobber/ncformat=3 sst
 save/file=nc4_deflate4_xyt.nc/clobber/ncformat=4/deflate/shuffle/tchunk=2/xchunk=30/ychunk=20  sst
 save/file=nc4_deflate4_defaultchunk.nc/clobber/ncformat=4/deflate/shuffle sst
 
+! get the file sizes
+sp ls -l nc4_nodeflate3.nc| cut -b 30-36
+sp ls -l nc4_deflate4bigchunk.nc| cut -b 30-36
+sp ls -l nc4_deflate4_xyt.nc| cut -b 30-36
+sp ls -l nc4_deflate4_defaultchunk.nc| cut -b 30-36
 
 ! Write variable as INT
 CAN DAT/all; can var/all; can mem/all
@@ -54,6 +60,11 @@ set list/ncformat=4/deflate=1/xchunk=10/ychunk=10/zchunk=1
 save/clobber/file=nc4_inttemp_set_list_deflate_chunk.nc temp
 
 save/clobber/shuffle=1/file=nc4_inttemp_shuffle_set_list_deflate_chunk.nc temp
+
+! get the file sizes
+sp ls -l nc4_inttemp_classic.nc| cut -b 30-36
+sp ls -l nc4_inttemp_set_list_deflate_chunk.nc| cut -b 30-36
+sp ls -l nc4_inttemp_shuffle_set_list_deflate_chunk.nc| cut -b 30-36
 
 cancel list/all
 set list/ncformat=classic
@@ -77,6 +88,6 @@ set mode ignore
 save/file=nc4_deflate4_t1.nc/clobber/ncformat=4/deflate/shuffle/tchunk=1  sst
 
 ! Chunk sizes bigger than dim sizes
-save/file=nc4_deflate4bigchunk.nc/clobber/ncformat=4/deflate=1/xchunk=6/ychunk=18/tchunk=15 sst
+save/file=nc4_deflate4chunktoobig.nc/clobber/ncformat=4/deflate=1/xchunk=6/ychunk=18/tchunk=15 sst
 can mode ignore
 

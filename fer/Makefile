@@ -108,7 +108,7 @@ beta:
 	mkdir -p ../lib
 	$(MAKE) "CFLAGS=$(CFLAGS) -O -DNDEBUG" \
 		"FFLAGS=$(FFLAGS) -O -DNDEBUG" \
-		"DEBUG_TITLE = beta" \
+		"DEBUG_TITLE = beta/opt" \
 		"GUI_FAKES=special/gui_fakes.o" build
 
 .PHONY: debug
@@ -117,7 +117,7 @@ debug:
 	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g"  \
 		"FFLAGS = $(FFLAGS) -O0 -g -fbounds-check" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O0 -g" \
-		"DEBUG_TITLE = beta" \
+		"DEBUG_TITLE = beta/dbg" \
 		"GUI_FAKES=special/gui_fakes.o" build
 
 .PHONY: ferret

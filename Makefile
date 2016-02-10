@@ -26,14 +26,15 @@ optimized :
 
 .PHONY : beta
 beta :
-	mkdir -p lib
-	$(MAKE) xgks/Makefile
-	$(MAKE) -C xgks
-	$(MAKE) -C fer beta
-	$(MAKE) -C threddsBrowser
-	$(MAKE) -C external_functions
-	$(MAKE) -C gksm2ps
-	$(MAKE) -C bin/build_fonts/unix
+	mkdir -p $(DIR_PREFIX)/lib
+	$(MAKE) -C $(DIR_PREFIX)/fer beta
+	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
+	$(MAKE) "CFLAGS = $(CFLAGS) -O" pymod_optimized
+	if [ "$(BUILDTYPE)" != "intel-mac" ] ; then \
+            if ! $(MAKE) "FFLAGS = $(FFLAGS) -O" -C $(DIR_PREFIX)/efmem ; then exit 1 ; fi ; \
+            $(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/install" -C $(DIR_PREFIX)/external_functions optimized ; \
+        fi
+	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
 .PHONY : debug
 debug :

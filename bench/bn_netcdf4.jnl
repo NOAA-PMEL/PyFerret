@@ -1,8 +1,7 @@
 ! bn_netcdf4.jnl
 ! test syntax for controling NetCDF-4 intput and output.
-! 2/2016 Change file name in second intentinal-error case
+! 2/2016 change file name in second intentinal-error case
 !        Also list the file sizes for compressed data
-
 
 show nccache
 
@@ -45,10 +44,10 @@ save/file=nc4_deflate4_xyt.nc/clobber/ncformat=4/deflate/shuffle/tchunk=2/xchunk
 save/file=nc4_deflate4_defaultchunk.nc/clobber/ncformat=4/deflate/shuffle sst
 
 ! get the file sizes
-sp ls -l nc4_nodeflate3.nc| cut -b 30-36
-sp ls -l nc4_deflate4bigchunk.nc| cut -b 30-36
-sp ls -l nc4_deflate4_xyt.nc| cut -b 30-36
-sp ls -l nc4_deflate4_defaultchunk.nc| cut -b 30-36
+sp stat nc4_nodeflate3.nc --printf="Bytes: %s\n"
+sp stat nc4_deflate4bigchunk.nc --printf="Bytes: %s\n"
+sp stat nc4_deflate4_xyt.nc --printf="Bytes: %s\n"
+sp stat nc4_deflate4_defaultchunk.nc --printf="Bytes: %s\n"
 
 ! Write variable as INT
 CAN DAT/all; can var/all; can mem/all
@@ -62,9 +61,9 @@ save/clobber/file=nc4_inttemp_set_list_deflate_chunk.nc temp
 save/clobber/shuffle=1/file=nc4_inttemp_shuffle_set_list_deflate_chunk.nc temp
 
 ! get the file sizes
-sp ls -l nc4_inttemp_classic.nc| cut -b 30-36
-sp ls -l nc4_inttemp_set_list_deflate_chunk.nc| cut -b 30-36
-sp ls -l nc4_inttemp_shuffle_set_list_deflate_chunk.nc| cut -b 30-36
+sp stat nc4_inttemp_classic.nc --printf="Bytes: %s\n"
+sp stat nc4_inttemp_set_list_deflate_chunk.nc --printf="Bytes: %s\n"
+sp stat nc4_inttemp_shuffle_set_list_deflate_chunk.nc --printf="Bytes: %s\n"
 
 cancel list/all
 set list/ncformat=classic

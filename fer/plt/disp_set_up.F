@@ -159,6 +159,9 @@
 * V695+ *sh*  3/15 if an FMRC dataset disambiguate T and F axes with labels
 * V695  *acm* 9/15 send REAL*4 rbad to compare with lev_max, lev_min inside compute_mnstd
 * V697  *acm* 2/16 Fix ticket 2360: overlays on time plots
+* V697  *acm* 2/16 Fix ticket 2365: overlays with a single vector (or single-valued variable)
+*                  returned a status flag of 0 from COMPUTE_MNSTD. Set status to ferr_ok
+*                  after handling the condition.
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -759,12 +762,13 @@ C ACM added 8/2001 save cal id if vertical time axis
 
        nsiz = size1* size2
        rbad = bad_val4
-       CALL compute_mnstd (memory(1, xblk1), bad_x, need_std, 
+       CALL COMPUTE_MNSTD (memory(1, xblk1), bad_x, need_std, 
      .    nsiz, rbad, status)
        IF (status .NE. ferr_ok) THEN
 * ... set up for automatic levels
-	   CALL PPLCMD ( from, line, 0, 'LEV,()', 1, 1 )
+	  CALL PPLCMD ( from, line, 0, 'LEV,()', 1, 1 )
           CALL USE_LINEAR_LEVELS
+c	  status = ferr_ok
        ENDIF
 
 * If histogram-based levels are requested, compute the 

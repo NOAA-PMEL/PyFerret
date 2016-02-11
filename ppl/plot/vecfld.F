@@ -76,6 +76,7 @@ C**
 * V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
 *                 and 4-arg plot commands. 
 * Patrick's example with vector drawn across branch cut.
+* V697 *acm* 2/16 Set the symbol PPL_VECLEN even if the plot is not labeled.  
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -437,6 +438,16 @@ c           IF (.NOT. units_degrees) xrange = wwxmax - wwxmin
 
 
         IPT = 0
+
+C put the vector-length scale into a PPL symbol
+	
+C   Save the value in a symbol PPL_VECLEN
+	WRITE (VECLAB,VFRMT) VLEN/VFACT
+	symbuff = 'PPL_VECLEN'
+	CALL GETSYM( symbuff, buff, i2, i1 )
+	IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
+	slen = TM_LENSTR1(veclab)
+	CALL PUTSYM( symbuff, veclab, slen, i2)
 C
 C	DRAW SCALE  MAKE SCALE .5 INCH LONG AT XT,YT
 C
@@ -476,7 +487,6 @@ C
 	CALL PLOT(XX2,YY2,1,0)
 C
 	CALL PLOT(XX1,YY1,1,0)
-       
 C
 C	DRAW LABEL
 C
@@ -487,13 +497,6 @@ C
 	YL = YY2 - HLABS*0.5/YF
 	CALL SYMBEL(XL,YL,0.,HLABS,ILN,VECLAB)
 3333	IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
-
-C   Save the value in a symbol PPL_VECLEN
-	symbuff = 'PPL_VECLEN'
-	CALL GETSYM( symbuff, buff, i2, i1 )
-	IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
-	slen = TM_LENSTR1(veclab)
-	CALL PUTSYM( symbuff, veclab, slen, i2)
 
 	RETURN
 	END

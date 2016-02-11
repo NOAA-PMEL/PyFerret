@@ -768,7 +768,7 @@ C ACM added 8/2001 save cal id if vertical time axis
 * ... set up for automatic levels
 	  CALL PPLCMD ( from, line, 0, 'LEV,()', 1, 1 )
           CALL USE_LINEAR_LEVELS
-c	  status = ferr_ok
+	  status = ferr_ok
        ENDIF
 
 * If histogram-based levels are requested, compute the 

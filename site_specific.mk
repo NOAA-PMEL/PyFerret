@@ -10,8 +10,8 @@ BUILDTYPE	= $(HOSTTYPE)
 ## Installation directory for built Ferret.  Using the "install"
 ## Makefile target circumvents the need to create the fer_*.tar.gz
 ## files just for creating a Ferret installation.
-# INSTALL_FER_DIR = $(HOME)/ferret_distributions/rhel6_64
-INSTALL_FER_DIR = $(FER_DIR)
+INSTALL_FER_DIR = $(HOME)/ferret_distributions/rhel6_64
+# INSTALL_FER_DIR = $(FER_DIR)
 
 ## Installation directory for HDF5 static libraries
 ## (contains include and lib or lib64 subdirectories)

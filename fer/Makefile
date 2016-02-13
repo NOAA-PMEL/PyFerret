@@ -100,6 +100,8 @@ ncdf4:
 	mkdir -p ../lib
 	$(MAKE) "CFLAGS=$(CFLAGS) -O -DNDEBUG" \
 		"FFLAGS=$(FFLAGS) -O -DNDEBUG" \
+		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O" \
+		"DEBUG_TITLE = opt" \
 		"GUI_FAKES=special/gui_fakes.o" \
 		build
 
@@ -108,8 +110,10 @@ beta:
 	mkdir -p ../lib
 	$(MAKE) "CFLAGS=$(CFLAGS) -O -DNDEBUG" \
 		"FFLAGS=$(FFLAGS) -O -DNDEBUG" \
+		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O" \
 		"DEBUG_TITLE = beta/opt" \
-		"GUI_FAKES=special/gui_fakes.o" build
+		"GUI_FAKES=special/gui_fakes.o" \
+		build
 
 .PHONY: debug
 debug:
@@ -118,7 +122,8 @@ debug:
 		"FFLAGS = $(FFLAGS) -O0 -g -fbounds-check" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O0 -g" \
 		"DEBUG_TITLE = beta/dbg" \
-		"GUI_FAKES=special/gui_fakes.o" build
+		"GUI_FAKES=special/gui_fakes.o" \
+		build
 
 .PHONY: ferret
 ferret:	

@@ -250,5 +250,6 @@ bn_aggregate_f.jnl
 bn_hovmuller_overlays.jnl
 bn_labels_on_taxis.jnl
 bn_dataset_qualifier.jnl
+bn_speedtest.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

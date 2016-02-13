@@ -1,0 +1,34 @@
+! err696_singlevec_over.jnl
+! Ticket 2365: overlay a single vector. If 
+! /nolab is added it disappears.
+
+use gtbc011
+vector/k=1/l=1   u,v
+let xa = 200
+let ya = 10
+let ya=10
+define axis/unit=degrees_east/x/from_data xax=xa
+define axis/unit=degrees_north/y/from_data yax=ya
+define grid/x=xax/y=yax xyg
+let u1 = 10 + 0*(x[gx=xyg]+y[gy=xyg] )
+let v1 = 10 + 0*(x[gx=xyg]+y[gy=xyg] )
+! Now I can plot the vector
+vec/over/len=10 u1,v1
+
+! PPL_XSKIP is 1, the single vector
+show sym ppl_vec*skip
+
+! Try it with /nolab added
+vector/k=1/l=1   u,v
+ vec/over/len=10/nolab u1,v1
+
+! PPL_XSKIP should still be 1
+! (with the bug, it was 4 from the vector underlay plot)
+show sym ppl_vec*skip
+
+! As an aside, now return PPL_VECLEN for VECTOR/NOLABEL plots.
+! previously this wasnt done.
+
+use gtbc011
+vector/k=3/l=1/nolab  u,v
+show symbol ppl_veclen

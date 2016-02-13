@@ -92,6 +92,8 @@
 * *sh* 11/13 V685    -- if allowed_err, then quickly exit
 * V697 12/15 *acm* Ticket 2337 Increase length of cmnd buffer to 20480
 *                  Handle longer error strings when defining the buffer symbuf
+* V697 2/16 *acm* DO NOT Increase length of cmnd buffer to 20480 but keep related
+*                   changes here
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -276,8 +278,14 @@
 * indicates that control is to be returned to the operator
 	IF ( cs_in_control ) THEN
 * ... display the offending command
-	   IF (status.NE.ferr_silent) CALL TM_SPLIT_MESSAGE( err_lun,
-     .					cmnd_buff(1:len_cmnd) )
+           IF (len_cmnd .GT. max_len_symbuf) THEN
+              len_cmnd = MIN(len_cmnd, max_len_symbuf)
+	      IF (status.NE.ferr_silent) CALL TM_SPLIT_MESSAGE( err_lun,
+     .					cmnd_buff(1:len_cmnd)//'...')
+           ELSE
+	      IF (status.NE.ferr_silent) CALL TM_SPLIT_MESSAGE( err_lun,
+     .					cmnd_buff(1:len_cmnd))
+           ENDIF
            IF ( status.EQ.ferr_interrupt
      .    .OR. .NOT.mode_ignore_err    ) THEN
 * ... collapse the control stack back to simple operator control

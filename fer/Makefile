@@ -38,7 +38,7 @@ all: optimized
 optimized:
 	$(MAKE) "CFLAGS = $(CFLAGS) -O -DNDEBUG" \
 		"FFLAGS = $(FFLAGS) -O -DNDEBUG" \
-		"VERSION_INFO = (PyFerret $(PYFERRET_VERSION))" \
+		"VERSION_INFO = (PyFerret $(PYFERRET_VERSION) opt)" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O -DNDEBUG" \
 		build
 

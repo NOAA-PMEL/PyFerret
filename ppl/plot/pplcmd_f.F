@@ -1402,7 +1402,9 @@ C
 	    ENDIF
 	    MONYRLAB = .FALSE.  ! Option for MON and DAY types. 
 	    IF (INDEX(LABEL,'DMY').NE.0) MONYRLAB = .TRUE.
-            IF (LABEL.EQ.'HR' .OR. LABEL.EQ.'PDAY') MONYRLAB = .TRUE.
+
+c Do not automatically turn on Day-Month-Year lables for shorter time axes
+c            IF (LABEL.EQ.'HR' .OR. LABEL.EQ.'DAY') MONYRLAB = .TRUE.
 	    LABELT=ITXTPE*ITXLBP
 	    GOTO 10
 

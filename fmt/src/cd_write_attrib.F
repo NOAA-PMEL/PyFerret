@@ -54,6 +54,7 @@
 *                  linked with OPeNDAP library.
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 * V697 12/15 *acm* Increased length of command-line string and risc_buff buffer
+* V697  2/16 *acm* DO NOT increase length of command-line string and risc_buff buffer
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -89,12 +90,12 @@
      .        vlen, alen, slen, tlen, cdfstat, varid, attype, attlen, 
      .        len_app, bufflen
      
-      CHARACTER buff*25000
+      CHARACTER buff*10240
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
 
-      bufflen = 25000
+      bufflen = 10240
 
 * initialize
       vlen = TM_LENSTR1( vname )
@@ -168,7 +169,7 @@
 #ifdef usingDODSf2cUnderscore
          IF (len_app .GT. 0) THEN
             cdfstat = NF_PUT_ATT_TEXT_(cdfid, varid, att(:alen),
-     .             attlen+slen, buff(:attlen)//risc_buff(1:len_app))
+     .             attlen+slen, buff(:attlen)//risc_buff(1:slen))
          ELSE
             cdfstat = NF_PUT_ATT_TEXT_(cdfid, varid, att(:alen),
      .             attlen+slen, buff(:attlen))
@@ -176,7 +177,7 @@
 #else
          IF (len_app .GT. 0) THEN
             cdfstat = NF_PUT_ATT_TEXT (cdfid, varid, att(:alen),
-     .             attlen+slen, buff(:attlen)//risc_buff(1:len_app))
+     .             attlen+slen, buff(:attlen)//risc_buff(1:slen))
          ELSE
             cdfstat = NF_PUT_ATT_TEXT (cdfid, varid, att(:alen),
      .             attlen+slen, buff(:attlen))

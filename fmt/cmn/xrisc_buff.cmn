@@ -5,11 +5,12 @@
 * the CHAR*(*) string
 * 1/2015 Increase size of rbuff
 * V697 12/15 - increase to 25000 for ticket 2337: Longer Ferret cmnd-line buffer.
+* V697  2/16 *acm* DO NOT Increase length of cmnd buffer to 20480
 
 * ***  Note that there is also a risc_buff defined in fer/common/xrisc.cmn ***
 
 	INTEGER     size_rbuff
-	PARAMETER ( size_rbuff = 25000)
+	PARAMETER ( size_rbuff = 10240)
 
 	COMMON/ XRISC_BUFF / len_rbuff, risc_buff
 	CHARACTER  risc_buff*(size_rbuff)

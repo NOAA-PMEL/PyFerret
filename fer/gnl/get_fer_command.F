@@ -104,6 +104,9 @@
 *                 Issue warning if GO file EOF found while in the midst of IF
 * V697 12/15 *acm* Ticket 2337 Increase length of cmnd buffer to 20480
 * V697 12/15 *acm* Ticket 2341 Check that cmnd_len hasn't been set to 0.
+* V697 2/16 *acm* DO NOT Increase length of cmnd buffer to 20480 but keep 
+*                 other related changes when reporting errors in long command lines
+
 
 #ifdef MIXING_NAG_F90_AND_C
 	USE F90_UNIX
@@ -120,7 +123,7 @@
 	INTEGER	TM_LENSTR, TM_LENSTR1,
      .		iqual, ilist, cmnd_len, double_eof,
      .          has_more, i, cmnd_len_w_cmnt
-	CHARACTER prefix*5, raw_cmnd_buff*20480
+	CHARACTER prefix*5, raw_cmnd_buff*2048
 
 * local parameter declarations
         CHARACTER*1 backslash, tab
@@ -429,8 +432,8 @@ c        IF(has_more.NE.1) goto 210
 
 * error exits
  5005	CALL ERRMSG( ferr_syntax, status,
-     .			'command line too long -- exceeds 20480', *9000 )
-! 20480 must match cmnd_buff_len
+     .			'command line too long -- exceeds 2048', *9000 )
+! 2048 must match cmnd_buff_len
  9000	RETURN 1
 
 

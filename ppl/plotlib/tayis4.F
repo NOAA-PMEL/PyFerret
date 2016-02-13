@@ -90,7 +90,7 @@ C
 	REAL*8  DIFF, difft
 	REAL*8  td, xtemp1, tfact_d, xfact_d
 	REAL    delt, rem
-	INTEGER is_hours_axis, labint, ticint
+	INTEGER is_hours_axis, labint, ticint, hrint
 	LOGICAL hvytic
 
 * Parameters for drawing tics across plot
@@ -134,12 +134,24 @@ C     SET PARAMETERS.
         delt = 60.
         labint = 120
 	ticint = labint
+	hrint = 1
       
 ! On short-time interval axes, tic and label interval
+! for hours axis (is_hours_axis eq 1) if difft > 60,
+! then labint, ticint should be on the hour or half hour, so
+! multiples of 30.
+! for more than 12 hours, label on a multiple of even hours, 
+! up to a max of 36 hours labeled hh:mm
+      
 	IF (is_hours_axis.EQ.1) THEN
            labint = 30
            delt = 1.
 	   ticint = 5
+           IF (difft .GE.  300) labint = 60
+           IF (difft .GE.  600) labint = 120
+	   IF (difft .GE.  300) ticint = 30
+           IF (difft .GE. 1200) hrint = 2
+           IF (difft .GE. 1800) hrint = 4
         ENDIF
         IF (is_hours_axis.EQ.2) THEN
            labint = 10
@@ -374,13 +386,14 @@ C      LOOP:
 	ENDIF
 C         THE LABELS
 
+
 	  IF (IABS(LABEL).EQ.1) THEN
              IF (is_hours_axis .GT. 0) THEN
-	        IF (imin .EQ. 0) THEN
+	        IF (imin.EQ.0 .AND. MOD(ihr,hrint).EQ.0) THEN
 	           WRITE(SYM,82) IHR
 	           CALL scinot_d(XTEMP1,Td+TICd,0.,CSIZE,5,SYM,0,wid,xfact_d, tfact_d)
 		ELSE
-                   IF (MOD(imin,labint) .EQ. 0) THEN
+                   IF (MOD(imin,labint) .EQ. 0 .AND. hrint.LE.1) THEN
 		      WRITE(SYM,84) ihr, imin
 	              CALL scinot_d(XTEMP1,Td+TICd,0.,CSIZE,5,SYM,0,wid,xfact_d, tfact_d)
 		   ENDIF

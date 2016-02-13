@@ -185,7 +185,7 @@
 
 * TXTYPE and TXLINT commands (time axis style)
  510	tstyle_long = tax_style( itax )
-	IF (hrs .LE. 12) tstyle_long = 'HR'
+	IF (hrs .LE. 36) tstyle_long = 'HR'
 	IF (hrs .LE.  2) tstyle_long = 'MIN'
 	tstyle = tstyle_long	! 3 character, only
 	CALL PPLCMD ( from, line, 0, 'TXTYPE '//tstyle_long, 1, 1 )
@@ -211,15 +211,6 @@
 	WRITE ( ppl_cmnd, 3030 ) tax_loint(itax), hi_int
  3030	FORMAT ('TXLINT',2I6)
 	CALL PPLCMD ( from, line, 0, ppl_cmnd, 1, 1 )
-
-* eliminate small tics if they would be too dense (default is .125)
-!	IF ( itax .GE. 8 ) THEN
-!	   IF ( its_x ) THEN
-!	      CALL PPLCMD ( from, line, 0, 'TICS 0', 1, 1 )  	! 12/93
-!	   ELSE
-!	      CALL PPLCMD ( from, line, 0, 'TICS,,,0', 1, 1 )	! 11/95
-!	   ENDIF
-!	ENDIF
 
 * special "imposed" labels (used to disambiguate T and F axes)
 	IF (imposed_lab .NE. ' ') THEN

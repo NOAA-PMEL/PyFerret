@@ -78,6 +78,9 @@
 *      *acm*  2/15 Prevent run-time errors in string length for _DQ_ handling
 * V697 12/15 *acm* Ticket 2337 Increase length of cmnd buffer to 20480. If long
 *                  var definition, just truncate it in uvar_text(uvar)
+* V697  2/16 *acm* DO NOT Increase length of cmnd buffer to 20480
+*                  but keep the other changes at that time, handling long 
+*                  defintions
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'	
@@ -133,6 +136,8 @@
 
 * copy name code and text into slot and change as needed to upper case
 *	vax_code = STR_UPCASE( uvar_name_code( uvar ), name )
+cc        CALL string_array_modify_upcase(uvar_name_code_head, uvar, 
+cc     .                                  name, LEN(name))
         CALL string_array_modify_upcase(uvar_name_code_head, uvar, 
      .                                  name, LEN(name))
 

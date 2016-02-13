@@ -37,5 +37,8 @@ GO err696_multiple_slashes
 GO bn_reset
 GO err696_2d_time_overlay
 
+GO bn_reset
+GO err696_singlevec_over
+
 !GO bn_reset!
-!GO err696_return_noupcase
+!GO err696_axname_noupcase

@@ -1032,6 +1032,9 @@ GO bn_reset
 GO bn_reset
 GO bn_dataset_qualifier
 
+GO bn_reset
+GO bn_speedtest
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

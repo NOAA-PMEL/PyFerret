@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 81846785 Feb 10 15:45 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 81804610 Feb 12 17:14 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2365: vector/over/nolab. Also new return from bn_netcdf4 for file sizes
+Note: back off change to extra-long command line. (see ticket 2337)
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Wed Feb 10 15:58:23 PST 2016
+Beginning at Fri Feb 12 17:15:22 PST 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3250,6 +3250,234 @@ Bailing out of external function "eofsvd_space":
 
 Bailing out of external function "eofsvd_tfunc":
 	There are no spatial locations having complete time series.
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis YAXIS
@@ -3381,6 +3609,10 @@ DEFINE DATA/AGGREGAT/E windy = 1,2
  LISTing to file mytype.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: Graphics limits settings to 250 line/thickness combinations plus existing spectrum colors
+           *** NOTE: Cannot draw /THICK=3 lines with current number of color levels = 65; THICK=1 or 2 will be ok
+           *** NOTE: Graphics limits settings to 250 line/thickness combinations plus existing spectrum colors
+           *** NOTE: Cannot draw /THICK=2 lines with current number of color levels = 65; THICK=1 will be ok
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4244,10 +4476,14 @@ go/garbage /home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl
 go/garbage "/home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: command syntax: command line too long -- exceeds 20480
-"/archive/ccsp/
- **ERROR: command syntax: "/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf...
-"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0001.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0002.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0003.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0004.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0006.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0007.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0008.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0009.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0010.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0011.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0012.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc"}
+ **ERROR: command syntax: command line too long -- exceeds 2048
+DEFINE VARIABLE a={1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5...
+ **ERROR: variable unknown or not in data set: A
+load a
+ **ERROR: command syntax: command line too long -- exceeds 2048
+"/arch
+ **ERROR: command syntax: "/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf...
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc",\}
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis DAYT
@@ -4304,6 +4540,8 @@ DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/irregular_start_time_fcst.nc")
  LISTing to file a.nc
 Replacing definition of axis XAX10
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4409,4 +4647,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Feb 10 16:00:34 PST 2016
+Ended at Fri Feb 12 17:17:28 PST 2016

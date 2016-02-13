@@ -132,7 +132,10 @@
 *                  Specific hacks for SET DATA (& DEFINE SYM) and GO
 * V697 12/15 *acm* Ticket 2337 Increase length of cmnd buffer to 20480.
 *                  change to echo back only the first part of the command on error.
-* V697  1/16 *acm* tiket 2356: Allow multiple slashes in command-line between qualifiers.
+* V697  1/16 *acm* ticket 2356: Allow multiple slashes in command-line between qualifiers.
+* V697  2/16 *acm* DO NOT Increase length of cmnd buffer to 20480
+*                  but keep the other changes at that time, echo back only the 
+*                  start of command on an error
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -246,6 +249,8 @@
 * remove parens enclosing entire command or command group
 * modified 10/95 to protect "($name) at line start
  20     IF (cmnd_len .GT. 1) THEN
+ 	IF (cmnd_len .GT. cmnd_copy_len) GOTO 5005
+
 	   IF( cmnd_buff(1:1) .EQ. '(' 
      .	 .AND. cmnd_buff(2:2) .NE. '$'
      .   .AND. cmnd_buff(cmnd_len:cmnd_len) .EQ. ')' ) THEN
@@ -339,6 +344,7 @@
 * substitute symbols (PLOT+ symbols expressed as "($symname)" ), if any (6/95)
 * and return to re-process command if substitution occurs
         CALL SYMBOL_COMMAND( cmnd_buff, cmnd_len, subst, status )
+	IF (cmnd_len .GT. cmnd_copy_len) GOTO 5005
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	IF ( subst ) THEN
 	   reverify = .TRUE.      ! informational echo needed
@@ -1033,6 +1039,9 @@ cc  Allow zero-length null string in quotes
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 * error exits
  5000	RETURN
+* error exits
+ 5005	CALL ERRMSG( ferr_syntax, status,
+     .			'command line too long -- exceeds 2048', *5000 )
 
  5010	CALL ERRMSG( ferr_syntax, status,
      .			'unpaired quotation marks, grave accent or brackets',

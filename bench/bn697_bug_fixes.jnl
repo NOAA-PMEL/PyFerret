@@ -41,4 +41,4 @@ GO bn_reset
 GO err696_singlevec_over
 
 !GO bn_reset!
-!GO err696_return_noupcase
+!GO err696_axname_noupcase

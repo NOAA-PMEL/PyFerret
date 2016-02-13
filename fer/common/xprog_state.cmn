@@ -52,11 +52,12 @@
 *                  added ifstk_skipping
 * V697 12/15 *acm* Ticket 2337 Increase length of cmnd buffer to 20480
 *		  - increased max_item_list 250 -> 1000
+* V697  2/16 *acm* DO NOT Increase length of cmnd buffer from 2048
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
      .			max_ifstk
-	PARAMETER     ( cmnd_buff_len = 20480,
+	PARAMETER     ( cmnd_buff_len = 2048,
      .			max_qual_list = 60 ,	! increased from 50 3/12
      .			max_arg_list  = 128 ,	! was 20 pre-4/96
      .			max_item_list = 1000 ,
@@ -197,11 +198,11 @@
 
 ! Note: available_char_var is unused
 	CHARACTER
-     .		cmnd_buff*20480,
-     .		last_cmnd_buff*20480,
+     .		cmnd_buff*2048,
+     .		last_cmnd_buff*2048,
      .		prompt*8,
-     .		list_format*2048, list_file*2048, list_outtype*6,
-     .          show_file*2048,
+     .		list_format*512, list_file*512, list_outtype*6,
+     .          show_file*512,
      .		mode_name( max_modes )*12,
      .		frame_file*200,
      .		ppl_wait*6,

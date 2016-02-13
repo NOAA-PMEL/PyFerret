@@ -16,6 +16,7 @@
 *              loop with semicolon-separated commands. New flag: bumped.
 * V694   2/15 *acm* cs_is_calendar for each of T and F dimensions.
 * V697 12/15 *acm* Ticket 2337 Increase length of cmnd buffer to 20480
+* V697  2/16 *acm* DO NOT Increase length of cmnd buffer from 2048
 
 	INTEGER		cs_max
 	PARAMETER     (	cs_max = 200 )
@@ -44,9 +45,13 @@
      .		cs_start   ( cs_max )
 	CHARACTER*2048
      .		cs_repeatname ( cs_max )
-	CHARACTER*20480
+	CHARACTER*2048
      .		cs_text    ( cs_max )
-	CHARACTER*20480 cmnd_copy
+
+     	INTEGER	cmnd_copy_len
+C Matches cmnd_buff_len        
+	PARAMETER     ( cmnd_copy_len = 2048)
+	CHARACTER*2048 cmnd_copy
 
         CHARACTER*256 my_cbuff
 

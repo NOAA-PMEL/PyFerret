@@ -71,7 +71,7 @@
 			  -fimplicit-none \
 			  -fdefault-real-8 -fdefault-double-8 $(FINCLUDES)
 
-        # PROF_FLAGS	= -pg
+	PROF_FLAGS	= -pg
 
 	# Below this line are macro definitions used only for the final linking of the executable
 	#

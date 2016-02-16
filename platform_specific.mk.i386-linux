@@ -104,6 +104,7 @@
 		-fimplicit-none \
 		$(FINCLUDES)
 
+	PROF_FLAGS	= -pg
 
 	# Below this line are macro definitions used only for the final linking of the executable
 	#

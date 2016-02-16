@@ -31,7 +31,7 @@
 #                   target go to the desired default target ncdf4;
 #                   cleaned-up tags
 #  v6.8  7/13 *kms* - removed threddsBrowser (moved to top level since it is a separate app)
-
+#  v6.97 2/16 *acm* - restore "profiling" target
 # 
 # include platform specific macro definitions
 #
@@ -124,6 +124,15 @@ debug:
 		"DEBUG_TITLE = beta/dbg" \
 		"GUI_FAKES=special/gui_fakes.o" \
 		build
+.PHONY: profiling
+profiling:
+	mkdir -p ../lib
+	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g $(PROF_FLAGS) "  \
+		"FFLAGS = $(FFLAGS) -O0 -g $(PROF_FLAGS) -fbounds-check" \
+		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O0 -g $(PROF_FLAGS)" \
+		"LDFLAGS = $(PPLUS_FFLAGS) $(PROF_FLAGS)" \
+		"DEBUG_TITLE = beta/dbg" \
+		"GUI_FAKES=special/gui_fakes.o" build
 
 .PHONY: ferret
 ferret:	

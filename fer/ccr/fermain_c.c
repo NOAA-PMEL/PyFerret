@@ -176,10 +176,12 @@ void help_text()
   exit(0);
 }
 
+#ifdef NDEBUG
 /*
  * Signal handler for SIGILL, SIGFPE, and SIGSEGV 
  * (ie, just program-crashing signals, not user-generated signals)
  * for generating a stderr message for LAS and exiting gracefully.
+ * Only for production (not debug); for debug allow the crash to happen.
  */
 static void fer_signal_handler(int signal_num)
 {
@@ -187,6 +189,7 @@ static void fer_signal_handler(int signal_num)
   fflush(stderr);
   exit(-1);
 }
+#endif
 
 /*
  * Eliminated _NO_PROTO ifdef (are there still non-ANSI C compilers around?)
@@ -235,13 +238,15 @@ main (int oargc, char *oargv[])
   for_rtl_init_(&argc, argv);
 #endif
 
-  /* Catch SIGILL, SIGFPE, and SIGSEGV */
+#ifdef NDEBUG
+  /* Catch SIGILL, SIGFPE, and SIGSEGV - if not compiled debug */
   if ( (signal(SIGILL, fer_signal_handler) == SIG_ERR) ||
        (signal(SIGFPE, fer_signal_handler) == SIG_ERR) ||
        (signal(SIGSEGV, fer_signal_handler) == SIG_ERR) ) {
      perror("**ERROR Unable to catch SIGILL, SIGFPE, or SIGSEGV");
      exit(1);
   }
+#endif
 
   /* decode the command line options: "-memsize", and "-unmapped" */
   rmem_size = (double)mem_size/1.E6;

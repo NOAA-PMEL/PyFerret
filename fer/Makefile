@@ -124,6 +124,7 @@ debug:
 		"DEBUG_TITLE = beta/dbg" \
 		"GUI_FAKES=special/gui_fakes.o" \
 		build
+
 .PHONY: profiling
 profiling:
 	mkdir -p ../lib
@@ -131,7 +132,7 @@ profiling:
 		"FFLAGS = $(FFLAGS) -O0 -g $(PROF_FLAGS) -fbounds-check" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O0 -g $(PROF_FLAGS)" \
 		"LDFLAGS = $(PPLUS_FFLAGS) $(PROF_FLAGS)" \
-		"DEBUG_TITLE = beta/dbg" \
+		"DEBUG_TITLE = profiling" \
 		"GUI_FAKES=special/gui_fakes.o" build
 
 .PHONY: ferret

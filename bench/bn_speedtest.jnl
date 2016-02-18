@@ -6,6 +6,9 @@ can mode verify
 def sym clock1 ($clock_secs)
 rep/i=1:10 rep/j=1:5000 let a=0
 say 50K LET commands LET a = 0 takes  `($clock_secs) - ($clock1)`  seconds
+plot/i=1:5 i
+rep/i=1:10 rep/j=1:5000 let a=0
+say Second 50K LET commands LET a = 0 takes  `($clock_secs) - ($clock1)`  seconds
 
 let b = {1,2,3}
 def sym clock1 ($clock_secs)

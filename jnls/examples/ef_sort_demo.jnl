@@ -57,8 +57,8 @@ SET DATA coads_climatology
 !         Sort the westerly winds, lowest to highest. "sorted_indices3" 
 !         is the indices 3 months after.
 
-LET westerly_wind = uwnd[x=160e:180@ave,y=5s:5n@ave]
-LET sst_e = sst[x=180:80w@ave,y=5s:5n@ave]
+LET westerly_wind = uwnd[x=160e:180@ave,y=35n:45n@ave]
+LET sst_e = sst[x=180:80w@ave,y=35n:45n@ave]
 
 LET sorted_indices = sortl(westerly_wind)
 LET sorted_indices3 = MOD((sorted_indices + 2), 12) + 1
@@ -78,16 +78,14 @@ LET leng = wwe_by_wwe[l=@NGD]
 ! ******************************************************************** 
 MESSAGE
 
-!          Make scatter plots: sampled winds vs SST, and mark the
-!          highest winds with a symbol.  The computation takes a moment.
+! Make a scatter plots: sampled winds vs SST, using the 
+! PLOT/VS/RIBBON style to color the symbols by the magnitude of the winds
 
-PLOT/VS/TITLE="SST 3 months after High Westerly Winds"/SET_UP/l=1:`leng` wwe_by_wwe, sst_by_wwe
-ppl xaxis -3.3, -1.9, 0.1
-ppl yaxis, 25.4, 27.4, 0.2
-ppl xlab "Sorted Westerly Winds from 160E to 180"
-ppl ylab "SST from 180 to 80W 3 months after Westerly winds"
-ppl plot
+SET VAR/TITLE="Sorted Westerly Winds from 160E to 180" wwe_by_wwe
+SET VAR/TITLE="SST from 180 to 80W 3 months after Westerly winds" sst_by_wwe
 
-PLOT/VS/OVER/SYMBOL=18/NOLABELS/l=`leng-3`:`leng` wwe_by_wwe, sst_by_wwe
+PLOT/VS/RIBBON/THICK/SYM=18/TITLE="SST 3 months after High Westerly Winds, colored by Wind"\
+/pal=blue_purple_orange/hlim=0:5.5/l=1:`leng` wwe_by_wwe, sst_by_wwe, wwe_by_wwe
+
 
 !         done  

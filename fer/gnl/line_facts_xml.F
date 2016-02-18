@@ -54,6 +54,8 @@
 * V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *      *acm* 3/13 Dont show axes with names in parentheses e.g. (AX004)
+* V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
+*                  using original upper/lowercase spelling
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -71,7 +73,7 @@
 
 * local variable declarations:
 	LOGICAL	BKWD_AXIS, GEOG_LABEL,
-     .          calendar, new, got_it, coordvar
+     .          calendar, new, got_it, coordvar, original
 	INTEGER TM_LENSTR, TM_LENSTR1, TM_GET_CALENDAR_ID, 
      .          STR_SAME, line, slen, llen, ndec, cal_id, status,
      .            varid, vtype, nvdims, vdims(8), nvatts, blen, i, 
@@ -80,7 +82,7 @@
 	CHARACTER TM_FMT*16, show_str*16, lo_str*20, hi_str*20, 
      .            title*32, outbuff*20, aname*128,
      .            attname*128, attbuff*2048, buff*20, outstring*2048,
-     .            atype*10, axis_name*128
+     .            atype*10, axname*64
 
 	REAL*8	TM_WORLD, lo_val8, hi_val8
 	REAL      vals(100), fval
@@ -117,12 +119,13 @@
            status = 0
 	ELSE
 
-	   axis_name = line_name(line)
+	   original = .TRUE.
+	   CALL CHOOSE_LINE_NAME(line, original, axname)
 
 * header
-	   IF (axis_name(1:1) .EQ. '(') GOTO 5000
+	   IF (axname(1:1) .EQ. '(') GOTO 5000
 
-           CALL ESCAPE_FOR_XML (axis_name, outstring, slen)
+           CALL ESCAPE_FOR_XML (axname, outstring, slen)
 	   WRITE ( risc_buff, 2020 ) outstring(1:slen)
 
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)

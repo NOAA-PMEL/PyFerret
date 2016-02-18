@@ -77,6 +77,8 @@
 * v6.85  *acm* 10/13 See ticket 1098, extraneous lines when error getting grid.
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 * v695 *acm*  4/15 Bug fix: output written in loop 300 was cut off
+* V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
+*                  using original upper/lowercase spelling
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -101,12 +103,13 @@
 	INTEGER	lun, dset, status
 	
 * local variable declarations:
-	LOGICAL		first_time, its_delimited, is_undetermined
+	LOGICAL		first_time, its_delimited, is_undetermined, coordvar
 	INTEGER 	TM_LENSTR1, TM_LENSTR, TM_GET_CALENDAR_ID, GRID_FROM_NAME,
      .			ivar, i, dlen, len, grid, taxis, slen(nferdims), tlen, 
      .			nfields, kvar, field_types(maxezvars), 
      .			cal_id, len_cal, j, num_indices, rlen(nferdims), iok,
-     .			listdims, idim, igrid, nv
+     .			listdims, idim, igrid, nv, varid, vtype, nvdims, outflag,
+     .                  vdims(8),  nvatts
 	CHARACTER	LEFINT*16, LOHI_STRING*48, TM_FMT*14, 
      .			TM_GET_CAL*32, 
      .			line*255, cal_name*32
@@ -207,10 +210,16 @@
            ENDIF
 
 	   line = ds_var_code(ivar)
+	   IF (.NOT.mode_upcase_output) THEN  ! get original variable name
+	      CALL CD_GET_VAR_ID (dset, ds_var_code(ivar), varid, status)
+	      CALL CD_GET_VAR_INFO (dset, varid, line, vtype, 
+     .            nvdims, vdims, nvatts, coordvar, outflag, status)
+	   ENDIF
+
 * ... separate into two lines if variable code is too long (11/92)
            IF ( TM_LENSTR1( line ) .GT. 8 ) THEN
 	      risc_buff = ' '
-              WRITE ( risc_buff, '(1X,A)' ) ds_var_code(ivar)
+              WRITE ( risc_buff, '(1X,A)' ) line
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
               line = ' '
            ENDIF
@@ -246,11 +255,17 @@
 
 	   IF (iok .EQ. 0) THEN  ! re-format the line for this variable
 	   
-           line = ds_var_code(ivar)
+
+	   line = ds_var_code(ivar)
+	   IF (.NOT.mode_upcase_output) THEN  ! get original variable name
+	      CALL CD_GET_VAR_ID (dset, ds_var_code(ivar), varid, status)
+	      CALL CD_GET_VAR_INFO (dset, varid, line, vtype, 
+     .            nvdims, vdims, nvatts, coordvar, outflag, status)
+	   ENDIF
 * ... separate into two lines if variable code is too long (11/92)
            IF ( TM_LENSTR1( line ) .GT. 8 ) THEN
 	      risc_buff = ' '
-              WRITE ( risc_buff, '(1X,A)' ) ds_var_code(ivar)
+              WRITE ( risc_buff, '(1X,A)' ) line
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
               line = ' '
            ENDIF

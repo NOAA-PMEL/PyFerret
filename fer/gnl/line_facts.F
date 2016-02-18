@@ -63,6 +63,8 @@
 * V697  12/15 *acm* Changes to add details on SHOW GRID uvar to indicate 
 *                   compressed or subset of axes
 * V697  12/15 *acm* Changes to formatting the output that shows subsets
+* V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
+*                  using original upper/lowercase spelling
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -72,17 +74,19 @@
 	include 'xtext_info.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
 	include 'xvariables.cmn'
+	include 'xprog_state.cmn'
 
 * calling argument declarations
 	INTEGER	  lun, idim, grid, orient, uvar
 
 * local variable declarations:
-	LOGICAL	BKWD_AXIS, GEOG_LABEL, calendar
+	LOGICAL	BKWD_AXIS, GEOG_LABEL, calendar, original
 	INTEGER TM_LENSTR1, TM_SUBSC, lo, hi, i, line, dlen, ndec, status,
      .          nlen, naxlen, int1, slen, i1ss, inss
 	CHARACTER AX_TITLE*32, TM_FMT*20, lo_str*20, hi_str*20, direction*1,
      .		  title*32, reg*1, modflag*1, truncated*1, frmt*80,
-     .		  lo_uvar*20, hi_uvar*20, uvar_desc*40, cstr*3, countstr*20
+     .		  lo_uvar*20, hi_uvar*20, uvar_desc*40, cstr*3, countstr*20,
+     .		  axname*64
 	REAL*8	TM_WORLD, lo_val8, hi_val8, pts
 
 * local parameter declarations:
@@ -162,7 +166,9 @@
 	   ENDIF
 
 * allow for long axis names (6/92)
-           nlen = MAX( TM_LENSTR1(line_name(line)), 9 )
+	   original = .FALSE.
+	   CALL CHOOSE_LINE_NAME(line, original, axname)
+           nlen = MAX( TM_LENSTR1(axname), 9 )
 
 	   naxlen = INT(0.5+DLOG10(DFLOAT(line_dim(line))) ) 
 
@@ -258,7 +264,7 @@ c Compressing transfm, w/o limits
 	      WRITE (frmt, 3030) int1, naxlen
 	   ENDIF
 
-           WRITE ( risc_buff, frmt )	line_name ( line )(:nlen),
+	   WRITE ( risc_buff, frmt )	axname(:nlen),
      .				title (:41-nlen),
      .				line_dim  ( line ),
      .				modflag,
@@ -272,7 +278,7 @@ c Compressing transfm, w/o limits
 
 	   IF (uvar .GT. 0) THEN
 
-	      WRITE ( risc_buff, frmt )	line_name ( line )(:nlen),
+	      WRITE ( risc_buff, frmt ) axname (:nlen),
      .				title (:41-nlen),
      .				line_dim  ( line ),
      .				modflag,

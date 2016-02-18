@@ -1,0 +1,98 @@
+! bn_show_noupcase.jnl
+! 1/2016 ticket 1796
+
+cancel mode upcase
+
+
+! Previously this mode acted only when saving to netCDf.
+! Now applies to SHOW commands of all sorts, as well as `return=*axis`
+
+
+
+! User variable with lowercase letters in the name
+
+DEFINE AXIS/t=1-jan-1999:31-jan-1999:1/units=days/t0=31-dec-1998 tday
+LET MyUpperLowerCaseVar = x[x=1:10] + t[gt=tday]
+show var
+show grid MyUpperLowerCaseVar
+
+
+! Files have variable and axis names in mixed case.
+
+USE a1478.nc
+USE a_cartesian_bug1179.nc
+show data
+
+! Previously the RETURN= gave the capitalized axis names
+say `temp,return=zaxis`
+say `temp,return=xaxis`
+
+sh axis `temp,return=xaxis`
+sh axis/x `temp,return=xaxis`
+
+! Define an output variable with some axes from each dataset.
+! (the variable definitions have been upcased. Beyond the scope of this fix...)
+
+LET/D=1 zvar = 2*temp[d=2]
+LET/D=2 newvar =  0*zvar[d=2] + olr[d=1]
+
+show data
+go bn_reset
+
+
+! xml output
+
+USE a_cartesian_bug1179.nc
+
+say/quiet <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+say/quiet <data>
+
+show var/xml
+show data/var/xml
+say/quiet </data>
+
+USE a_cartesian_bug1179.nc
+
+SHO DATA/XML
+
+SHO DATA/VAR/XML
+
+SHO GRID/XML temp
+
+SHO AXIS/XML `temp,return=xaxis`
+SHO AXIS/XML `temp,return=yaxis`
+SHO AXIS/XML `temp,return=zaxis`
+SHO AXIS/XML `temp,return=taxis`
+
+! Define a dataset variable
+! SHOW/XML commands list it w/ its dataset (even if dataset is not default)
+LET/D=a_cartesian_bug1179 temp_180 = temp[X=79E:79E@AVE]
+
+SHOW DATA/XML
+
+USE a1478.nc
+SHOW DATA/XML
+SHO DATA/VAR/XML
+
+! tests of SHOW VAR/XML for global variables.
+CAN DATA/ALL
+CAN VAR/ALL
+
+USE a1478
+USE a_cartesian_bug1179
+
+! Define a dataset variable
+LET/D=a1478 temp_20 temp[Z=0:20@SUM]
+
+! Define a global variable
+LET t30 = temp[Z=0:30@SUM]
+
+! Another variable, setting title, units, bad flag.
+LET/UNITS="Deg C"/BAD=100/TITLE="Indefinite integral of SALT" salty = salt[Z=@IIN]
+
+
+! list tha variables
+SHO VAR/XML
+
+set mode/last upcase
+

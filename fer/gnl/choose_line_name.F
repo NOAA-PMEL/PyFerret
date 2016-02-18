@@ -1,6 +1,4 @@
-	CHARACTER*(*) FUNCTION FULL_UVAR_NAME(uvar, len)
-
-*
+	SUBROUTINE CHOOSE_LINE_NAME (axis, original, axname)
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -34,66 +32,53 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-* append to the given user variable name the data set information
-*	var[D=dset_name]
+* For the given axis number, return either line_name(axis) or
+* line_name_orig(axis).  When mode_upcase is set, return the line_name
+* version which has been upper-cased. 
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-
-* V402:
-* V420:  4/96 - document "(/D default)" on pdset_irrelevant variables
-*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* If mode_upcase is false, atempt to return line_name_orig.
+* -- First check whether line_name_orig is defined. 
+* -- If the lengths of line_name and line_name_orig differ, the line name was changed 
+*    by Ferret for uniqueness. In these cases, check the value of the flag "original". 
+* -- If mode_upcase is false, and original is true, then we want the original form 
+*    no matter what. E.g. for xml output, we want the original axis name from the file.
+*    For other cases, such as a generic SHOW GRID, we want the name in use for the 
+*    Ferret session.
 * V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
 *                  using original upper/lowercase spelling
 
-* calling argument declarations:
-	INTEGER	uvar
-
-* local variable declarations:
-	
-	LOGICAL coordvar
-	INTEGER TM_LENSTR1, len, len2
-	INTEGER dset, varid, vtype, nvdims, outflag, vdims(8), 
-     .		nvatts, status
 
 	include 'tmap_dims.parm'
-	include 'xdset_info.cmn_text'
-	external xdset_info_data
-	include 'ferret.parm'
-	include	'xvariables.cmn'
-	include	'xprog_state.cmn'
-	include 'errmsg.parm'
+	include 'xtm_grid.cmn_text'
+#	include "tmap_dset.parm"
+	include 'xprog_state.cmn'
 
-* variable name and definition
-*	len = TM_LENSTR1(uvar_name_code(uvar))
-        CALL string_array_get_strlen1(uvar_name_code_head,uvar,len)
-	FULL_UVAR_NAME = uvar_name_code(uvar)(:len)
+	LOGICAL original 
+	INTEGER TM_LENSTR, axis
+	CHARACTER*(*) axname
 
-* Get the original upper/lowercase spelling if mode upcase is canceled.
-	IF (.NOT.mode_upcase_output) THEN  ! get original variable name
-	   dset = pdset_uvars
-	   CALL CD_GET_VAR_ID (dset, uvar_name_code(uvar), varid, status)
-	   IF (status .EQ. ferr_ok) 
-     .      CALL CD_GET_VAR_INFO (dset, varid, FULL_UVAR_NAME, vtype, 
-     .            nvdims, vdims, nvatts, coordvar, outflag, status)
+	axname = line_name(axis)
+
+	IF (.NOT. mode_upcase_output) THEN
+
+* If there is no good line_name_orig defined, keep line_name
+	   IF (TM_LENSTR(line_name_orig(axis)).EQ.0  .OR.
+     .         line_name_orig(axis)(1:2) .EQ. char_init) THEN
+             axname = line_name(axis)
+
+* If the axis has been renamed for uniqueness, return line_name
+* unless original has been set.
+
+	   ELSE IF (TM_LENSTR(line_name_orig(axis)) .NE. 
+     .              TM_LENSTR(line_name(axis)     ) .AND. .NOT.original) THEN
+             axname = line_name(axis)
+
+* Otherwise if upcase is turned off, return line_name_orig
+           ELSE
+	      axname = line_name_orig(axis)
+           ENDIF
 	ENDIF
 
-	IF (uvar_dset(uvar) .GT. pdset_irrelevant) THEN
-	   len2 = TM_LENSTR1(ds_name(uvar_dset(uvar)))
-	   FULL_UVAR_NAME = FULL_UVAR_NAME(:len)//'[D='//
-     .			ds_name(uvar_dset(uvar))(:len2)//']'
-	   len = len + len2 + 4
-	ELSEIF (uvar_dset(uvar) .EQ. pdset_irrelevant) THEN
-	   FULL_UVAR_NAME = FULL_UVAR_NAME(:len)//' (/D default)'
-	   len = len + 13
-	ENDIF
-	IF (uvar_remote(uvar)) THEN
-	   FULL_UVAR_NAME = FULL_UVAR_NAME(:len)//' (/REMOTE)'
-	   len = len + 10
-	ENDIF
-
+	
 	RETURN
 	END
-
-

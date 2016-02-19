@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Feb 12 19:07 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Feb 19 12:05 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug Ferret on RHEL6-64
@@ -256,6 +256,7 @@ Benchmark scripts that will be run:
    bn_labels_on_taxis.jnl
    bn_dataset_qualifier.jnl
    bn_speedtest.jnl
+   bn_show_noupcase.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -272,7 +273,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Feb 12 19:13:46 PST 2016
+Beginning at Fri Feb 19 12:06:39 PST 2016
 *** Running test: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -10569,13 +10570,13 @@ FERRET_PLATFORM = "Linux 2.6.32-573.12.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "12-Feb-16"
-SESSION_TIME = "19:13"
-SESSION_PID = "16086"
-DELTA_CPU = "0.006998"
-CLOCK_SECS = "0.005"
-CURRENT_DATE = "12-Feb-16"
-CURRENT_TIME = "19:13:53"
+SESSION_DATE = "19-Feb-16"
+SESSION_TIME = "12:06"
+SESSION_PID = "2870"
+DELTA_CPU = "0.005998"
+CLOCK_SECS = "0.019"
+CURRENT_DATE = "19-Feb-16"
+CURRENT_TIME = "12:06:46"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10598,13 +10599,13 @@ FERRET_PLATFORM = "Linux 2.6.32-573.12.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "12-Feb-16"
-SESSION_TIME = "19:13"
-SESSION_PID = "16086"
-DELTA_CPU = "0.001"
-CLOCK_SECS = "0.006"
-CURRENT_DATE = "12-Feb-16"
-CURRENT_TIME = "19:13:53"
+SESSION_DATE = "19-Feb-16"
+SESSION_TIME = "12:06"
+SESSION_PID = "2870"
+DELTA_CPU = "0"
+CLOCK_SECS = "0.02"
+CURRENT_DATE = "19-Feb-16"
+CURRENT_TIME = "12:06:46"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10614,9 +10615,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "12-Feb-16"
-SESSION_TIME = "19:13"
-SESSION_PID = "16086"
+SESSION_DATE = "19-Feb-16"
+SESSION_TIME = "12:06"
+SESSION_PID = "2870"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10626,15 +10627,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "12-Feb-16"
-SESSION_TIME = "19:13"
-SESSION_PID = "16086"
+SESSION_DATE = "19-Feb-16"
+SESSION_TIME = "12:06"
+SESSION_PID = "2870"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "12-Feb-16"
-SESSION_TIME = "19:13"
-SESSION_PID = "16086"
+SESSION_DATE = "19-Feb-16"
+SESSION_TIME = "12:06"
+SESSION_PID = "2870"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10767,13 +10768,13 @@ FERRET_PLATFORM = "Linux 2.6.32-573.12.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "12-Feb-16"
-SESSION_TIME = "19:13"
-SESSION_PID = "16086"
-DELTA_CPU = "0.016997"
-CLOCK_SECS = "0.069"
-CURRENT_DATE = "12-Feb-16"
-CURRENT_TIME = "19:13:53"
+SESSION_DATE = "19-Feb-16"
+SESSION_TIME = "12:06"
+SESSION_PID = "2870"
+DELTA_CPU = "0.014997"
+CLOCK_SECS = "0.055"
+CURRENT_DATE = "19-Feb-16"
+CURRENT_TIME = "12:06:46"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -25335,7 +25336,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Fri Feb 12 19:14:00 PST 2016
+Fri Feb 19 12:06:53 PST 2016
  
 GO bn_reset
 cancel mode verify
@@ -48603,7 +48604,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "12-Feb-16:19:14"
+WIN_TITLE = "19-Feb-16:12:07"
  
 set win/title="set the title"
 sho sym win_title
@@ -48621,7 +48622,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="12-Feb-16:19:14"
+ !-> set win/title="19-Feb-16:12:07"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48630,16 +48631,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 12-Feb-16
+ !-> DEFINE SYMBOL the_date = 19-Feb-16
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 19:14
+ !-> DEFINE SYMBOL the_time = 12:07
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="12-Feb-16:19:14"
+ !-> SET WIN/TITLE="19-Feb-16:12:07"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "12-Feb-16:19:14"
+WIN_TITLE = "19-Feb-16:12:07"
 *** Running test: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -52951,7 +52952,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -52996,7 +52997,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -58733,10 +58734,10 @@ SH GRID am
  normal    F
 *** Running test: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.008997"
-CLOCK_SECS = "0.005"
-CURRENT_DATE = "12-Feb-16"
-CURRENT_TIME = "19:14:51"
+DELTA_CPU = "0.006998"
+CLOCK_SECS = "0.003"
+CURRENT_DATE = "19-Feb-16"
+CURRENT_TIME = "12:07:46"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -58745,8 +58746,8 @@ CURRENT_TIME = "19:14:51"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.030996"
-CLOCK_SECS = "0.227"
+DELTA_CPU = "0.032995"
+CLOCK_SECS = "0.245"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -58760,60 +58761,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.092986
+ !-> DEFINE VARIABLE ten_plots = 0.094986
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "1.082"
+CLOCK_SECS = "1.093"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "1.083"
+CLOCK_SECS = "1.093"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.010999
- !-> DEFINE VARIABLE sumcpu =0.010999
+ !-> DEFINE VARIABLE dt = 0.010998
+ !-> DEFINE VARIABLE sumcpu =0.010998
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.010997
- !-> DEFINE VARIABLE sumcpu =0.021996
+ !-> DEFINE VARIABLE dt = 0.012997
+ !-> DEFINE VARIABLE sumcpu =0.023995
 !-> REPEAT: K=3
  !-> DEFINE VARIABLE dt = 0.011999
- !-> DEFINE VARIABLE sumcpu =0.033995
+ !-> DEFINE VARIABLE sumcpu =0.035994
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.009998
- !-> DEFINE VARIABLE sumcpu =0.043993
+ !-> DEFINE VARIABLE dt = 0.010998
+ !-> DEFINE VARIABLE sumcpu =0.046992
 !-> REPEAT: K=5
  !-> DEFINE VARIABLE dt = 0.011998
- !-> DEFINE VARIABLE sumcpu =0.055991
+ !-> DEFINE VARIABLE sumcpu =0.05899
 !-> REPEAT: K=6
  !-> DEFINE VARIABLE dt = 0.010999
- !-> DEFINE VARIABLE sumcpu =0.06699
+ !-> DEFINE VARIABLE sumcpu =0.069989
 !-> REPEAT: K=7
  !-> DEFINE VARIABLE dt = 0.010998
- !-> DEFINE VARIABLE sumcpu =0.077988
+ !-> DEFINE VARIABLE sumcpu =0.080987
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.009998
- !-> DEFINE VARIABLE sumcpu =0.087986
+ !-> DEFINE VARIABLE dt = 0.011998
+ !-> DEFINE VARIABLE sumcpu =0.092985
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.010999
- !-> DEFINE VARIABLE sumcpu =0.098985
+ !-> DEFINE VARIABLE dt = 0.009999
+ !-> DEFINE VARIABLE sumcpu =0.102984
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.010998
- !-> DEFINE VARIABLE sumcpu =0.109983
+ !-> DEFINE VARIABLE dt = 0.011998
+ !-> DEFINE VARIABLE sumcpu =0.114982
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.109983
-0.109983
+ !-> MESSAGE/CONTINUE 0.114982
+0.114982
 sh sym CLOCK_SECS
-CLOCK_SECS = "1.92"
+CLOCK_SECS = "1.951"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "12-Feb-16"
-SESSION_TIME = "19:14"
-CURRENT_DATE = "12-Feb-16"
-CURRENT_TIME = "19:14:53"
+SESSION_DATE = "19-Feb-16"
+SESSION_TIME = "12:07"
+CURRENT_DATE = "19-Feb-16"
+CURRENT_TIME = "12:07:48"
 *** Running test: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -62744,8 +62745,8 @@ list contents
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.97 (beta/dbg)"                                                 
- 3    /  3:" ! Linux 2.6.32-573.12.1.el6.x86_64 64-bit - 02/12/16"                      
- 4    /  4:" ! 12-Feb-16 19:15     "                                                    
+ 3    /  3:" ! Linux 2.6.32-573.12.1.el6.x86_64 64-bit - 02/19/16"                      
+ 4    /  4:" ! 19-Feb-16 12:08     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -65198,40 +65199,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.878
-randu2_randn2       0.123
-randu2_randn2       0.577
-randu2_randn2       0.316
-randu2_randn2       0.223
+randu2_randn2       0.978
+randu2_randn2       0.796
+randu2_randn2       0.953
+randu2_randn2       0.417
+randu2_randn2       0.400
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.991
-randu2_randn2       0.984
-randu2_randn2       0.301
-randu2_randn2       0.318
-randu2_randn2       0.756
+randu2_randn2       0.884
+randu2_randn2       0.986
+randu2_randn2       0.087
+randu2_randn2       0.108
+randu2_randn2       0.438
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.347
-randu2_randn2       0.302
+randu2_randn2       0.435
+randu2_randn2       0.342
+randu2_randn2       0.339
+randu2_randn2       0.059
+randu2_randn2       0.561
 randu2_randn2       0.878
-randu2_randn2       0.678
-randu2_randn2       0.008
-randu2_randn2       0.601
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.182
-randu2_randn2       0.099
-randu2_randn2       0.660
-randu2_randn2       0.980
-randu2_randn2       0.982
-randu2_randn2       0.337
+randu2_randn2       0.470
+randu2_randn2       0.738
+randu2_randn2       0.885
+randu2_randn2       0.325
+randu2_randn2       0.789
+randu2_randn2       0.436
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -65256,40 +65257,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.905
-randu2_randn2       0.677
-randu2_randn2       1.062
-randu2_randn2      -0.142
-randu2_randn2      -0.256
+randu2_randn2       0.298
+randu2_randn2      -1.390
+randu2_randn2       1.191
+randu2_randn2       0.918
+randu2_randn2       0.671
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -1.329
-randu2_randn2      -1.498
-randu2_randn2       0.522
-randu2_randn2       0.271
-randu2_randn2      -1.224
+randu2_randn2      -0.059
+randu2_randn2      -1.283
+randu2_randn2       0.045
+randu2_randn2       0.752
+randu2_randn2      -1.747
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.490
-randu2_randn2       0.255
-randu2_randn2      -1.213
-randu2_randn2      -1.061
-randu2_randn2      -1.081
-randu2_randn2       1.261
+randu2_randn2       0.486
+randu2_randn2      -0.437
+randu2_randn2       0.604
+randu2_randn2      -1.349
+randu2_randn2       0.295
+randu2_randn2      -1.246
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       1.025
-randu2_randn2       0.565
-randu2_randn2      -1.403
-randu2_randn2       0.660
-randu2_randn2      -1.527
-randu2_randn2       0.545
+randu2_randn2       0.933
+randu2_randn2      -2.107
+randu2_randn2       0.098
+randu2_randn2      -0.410
+randu2_randn2       1.724
+randu2_randn2       1.199
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -65314,14 +65315,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.980       1.980       0.383
-randu2_randn2       1.662       1.662       0.383
-randu2_randn2       0.383       0.383       0.332
-randu2_randn2       0.332       0.332       0.332
-randu2_randn2      -0.395      -0.213       0.332
-randu2_randn2      -0.213      -0.213       0.332
-randu2_randn2      -0.020      -0.020       0.332
-randu2_randn2       0.106       0.106       0.332
+randu2_randn2       1.192       1.192       0.942
+randu2_randn2       0.942       1.074       0.942
+randu2_randn2       1.074       0.942       0.154
+randu2_randn2       0.154       0.154       0.804
+randu2_randn2      -0.041      -0.041       0.781
+randu2_randn2      -0.253      -0.253       0.781
+randu2_randn2      -0.629      -0.253       0.781
+randu2_randn2       0.804       0.781       0.781
 *** Running test: bn_axis_cf.jnl
 ! Ticket 1792: Write axes with CF-compliant units
 ! and with standard name attributes for geophysical attrs.
@@ -70995,7 +70996,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71050,7 +71051,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71094,7 +71095,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71138,7 +71139,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71175,7 +71176,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71213,7 +71214,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71280,7 +71281,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71329,7 +71330,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71390,7 +71391,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71431,7 +71432,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71472,7 +71473,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71513,7 +71514,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71551,7 +71552,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71779,7 +71780,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71817,7 +71818,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71864,7 +71865,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71908,7 +71909,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71933,7 +71934,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71958,7 +71959,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -72387,7 +72388,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.97  12-Feb-16" ;
+		:history = "FERRET V6.97  19-Feb-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72416,7 +72417,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.97  12-Feb-16" ;
+		:history = "FERRET V6.97  19-Feb-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72467,7 +72468,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.97  12-Feb-16" ;
+		:history = "FERRET V6.97  19-Feb-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73039,8 +73040,8 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Fri Feb 12 19:15:21 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
-			"FERRET V6.97  12-Feb-16" ;
+		:history = "Fri Feb 19 12:08:16 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
+			"FERRET V6.97  19-Feb-16" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
 }
@@ -73071,7 +73072,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.97  12-Feb-16" ;
+		:history = "FERRET V6.97  19-Feb-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73102,7 +73103,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.97  12-Feb-16" ;
+		:history = "FERRET V6.97  19-Feb-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73164,7 +73165,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.97  12-Feb-16" ;
+		:history = "FERRET V6.97  19-Feb-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73192,7 +73193,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.97  12-Feb-16" ;
+		:history = "FERRET V6.97  19-Feb-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74889,7 +74890,7 @@ variables:
 		LABELS:history = "From http://dunkel.pmel.noaa.gov:8930/thredds/dodsC/data/atmos3.ncml" ;
 
 // global attributes:
-		:history = "FERRET V6.97  12-Feb-16" ;
+		:history = "FERRET V6.97  19-Feb-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74912,7 +74913,7 @@ variables:
 		STRVAR:long_name = "mystrings" ;
 
 // global attributes:
-		:history = "FERRET V6.97  12-Feb-16" ;
+		:history = "FERRET V6.97  19-Feb-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75132,7 +75133,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.97  12-Feb-16" ;
+		:history = "FERRET V6.97  19-Feb-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75162,7 +75163,7 @@ variables:
 		A:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.97  12-Feb-16" ;
+		:history = "FERRET V6.97  19-Feb-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75183,7 +75184,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.97  12-Feb-16" ;
+		:history = "FERRET V6.97  19-Feb-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75204,7 +75205,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.97  12-Feb-16" ;
+		:history = "FERRET V6.97  19-Feb-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75226,7 +75227,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.97  12-Feb-16" ;
+		:history = "FERRET V6.97  19-Feb-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75635,7 +75636,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75651,7 +75652,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75667,7 +75668,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97  12-Feb-16
+ .                               history         CHAR        23   T       FERRET V6.97  19-Feb-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -76864,7 +76865,7 @@ variables:
 		:geospatial_lat_max = 29.07 ;
 		:time_coverage_start = "2006-06-10T23:48:00Z" ;
 		:time_converage_end = "2006-06-11T00:12:00Z" ;
-		:history = "FERRET V6.97  12-Feb-16" ;
+		:history = "FERRET V6.97  19-Feb-16" ;
 }
 *** Running test: bn_global_atts.jnl
  ! NOAA/PMEL TMAP
@@ -76954,7 +76955,7 @@ variables:
 		LON360:history = "added to test_save_dsg.nc" ;
 
 // global attributes:
-		:history = "CruiseDsgNcFile 1.0FERRET V6.97  12-Feb-16" ;
+		:history = "CruiseDsgNcFile 1.0FERRET V6.97  19-Feb-16" ;
 		:featureType = "Trajectory" ;
 		:Conventions = "Some other conventionsCF-1.6" ;
 		:geospatial_lon_min = -92.77 ;
@@ -76981,7 +76982,7 @@ can dat/all; use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
  ..history = Subset of etopo20,
- FERRET V6.97  12-Feb-16 
+ FERRET V6.97  19-Feb-16 
  ..Conventions = Existing conventions note, , CF-1.6 
  
  
@@ -77010,7 +77011,7 @@ can dat/all; use conventions_history
 ! The new attibutes
 sh att .
      attributes for dataset: ./conventions_history.nc
- ..history = The history of the fileFERRET V6.97  12-Feb-16 
+ ..history = The history of the fileFERRET V6.97  19-Feb-16 
  ..Conventions = Conventions for variables named V2CF-1.6 
 *** Running test: bn_center_key_labels.jnl
 ! bn_center_key_labels
@@ -77922,8 +77923,8 @@ list {spawn:"ls xml*.jnl"}
  
 LET filesets = xcat({spawn:"ls *.nc"}, {spawn:"ls *.jnl"})
 say `filesets, return=isize`
- !-> MESSAGE/CONTINUE 937
-937
+ !-> MESSAGE/CONTINUE 938
+938
  
 let files = {spawn:"ls *cdf*.jnl"}
 let name_len = strindex(files, ".sub")
@@ -85638,20 +85639,20 @@ GO err696_time_overlay
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
 sp date
-Fri Feb 12 19:15:41 PST 2016
+Fri Feb 19 12:08:36 PST 2016
 set view upper
 plot t[gt=tax_nlp]
 plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
 sp date
-Fri Feb 12 19:15:41 PST 2016
+Fri Feb 19 12:08:36 PST 2016
  
 sp date
-Fri Feb 12 19:15:41 PST 2016
+Fri Feb 19 12:08:36 PST 2016
 set view lower
 plot t[gt=tax_jul]
 plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
 sp date
-Fri Feb 12 19:15:41 PST 2016
+Fri Feb 19 12:08:36 PST 2016
  
 GO bn_reset
 cancel mode verify
@@ -85708,7 +85709,7 @@ variables:
 		var:long_name = "0*TT + X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.97  12-Feb-16" ;
+		:history = "FERRET V6.97  19-Feb-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -89528,7 +89529,7 @@ save/clobber/file=a.nc/outtype=float elev[d=1]
 use a.nc
 sh att .
      attributes for dataset: ./a.nc
- ..history = FERRET V6.97  12-Feb-16 
+ ..history = FERRET V6.97  19-Feb-16 
  ..Conventions = CF-1.6 
  ..dt_internal = 15
 sh att elev
@@ -89549,7 +89550,7 @@ save/clobber/file=a.nc/outtype=float elev[d=1]
 use a.nc
 sh att .
      attributes for dataset: ./a.nc
- ..history = FERRET V6.97  12-Feb-16 
+ ..history = FERRET V6.97  19-Feb-16 
  ..Conventions = CF-1.6 
 sh att elev
      attributes for dataset: ./a.nc
@@ -89673,8 +89674,1081 @@ flow/DAT=2/den=3/L=3 taux,tauy
 ! bn_speedtest.jnl
 ! issue large numbers of commands, timing with clock time
 can mode verify
-50K LET commands LET a = 0 takes  4.971  seconds
-10K LOAD with transform takes  6.58  seconds
+50K LET commands LET a = 0 takes  5  seconds
+Second 50K LET commands LET a = 0 takes  11.533  seconds
+10K LOAD with transform takes  6.683  seconds
+*** Running test: bn_show_noupcase.jnl
+! bn_show_noupcase.jnl
+! 1/2016 ticket 1796
+ 
+cancel mode upcase
+ 
+ 
+! Previously this mode acted only when saving to netCDf.
+! Now applies to SHOW commands of all sorts, as well as `return=*axis`
+ 
+ 
+ 
+! User variable with lowercase letters in the name
+ 
+DEFINE AXIS/t=1-jan-1999:31-jan-1999:1/units=days/t0=31-dec-1998 tday
+LET MyUpperLowerCaseVar = x[x=1:10] + t[gt=tday]
+show var
+ Created by DEFINE VARIABLE:
+ >>> Definitions that replace any file variable of same name:
+     MyUpperLowerCaseVar = X[X=1:10] + T[GT=TDAY]
+show grid MyUpperLowerCaseVar
+    GRID (G001)
+ name       axis              # pts   start                end                 subset
+ ABSTRACT  X             99999999 r   1                    1.E+08              9 pts
+ normal    Y
+ normal    Z
+ tday      TIME                31 r   01-JAN-1999 00:00    31-JAN-1999 00:00   full
+ normal    E
+ normal    F
+ 
+ 
+! Files have variable and axis names in mixed case.
+ 
+USE a1478.nc
+USE a_cartesian_bug1179.nc
+show data
+     currently SET data sets:
+    1> ./a1478.nc
+ name     title                             I         J         K         L         M         N
+ lat1_5_bnds
+                                           1:2       1:5       ...       ...       ...       ...
+ olr      outgoing longwave radiation      1:5       1:5       ...       1:3       ...       ...
+ 
+    2> ./a_cartesian_bug1179.nc  (default)
+ name     title                             I         J         K         L         M         N
+ temp     THETA_FO(SALT_EXTRAP,TEMP_EXTRA  1:1       1:1       1:10      1:1       ...       ...
+ 
+ 
+! Previously the RETURN= gave the capitalized axis names
+say `temp,return=zaxis`
+ !-> MESSAGE/CONTINUE zt
+zt
+say `temp,return=xaxis`
+ !-> MESSAGE/CONTINUE grid_x_T
+grid_x_T
+ 
+sh axis `temp,return=xaxis`
+ !-> sh axis grid_x_T
+ name       axis              # pts   start                end
+ grid_x_T  LONGITUDE            1 r   79E                  79E
+   Axis span (to cell edges) = 1
+sh axis/x `temp,return=xaxis`
+ !-> sh axis/x grid_x_T
+ name       axis              # pts   start                end
+ grid_x_T  LONGITUDE            1 r   79E                  79E
+   Axis span (to cell edges) = 1
+ 
+       I     X                   XBOX      XBOXLO
+       1>  79E                   1          78.5E
+ 
+! Define an output variable with some axes from each dataset.
+! (the variable definitions have been upcased. Beyond the scope of this fix...)
+ 
+LET/D=1 zvar = 2*temp[d=2]
+LET/D=2 newvar =  0*zvar[d=2] + olr[d=1]
+ 
+show data
+     currently SET data sets:
+    1> ./a1478.nc
+ name     title                             I         J         K         L         M         N
+ lat1_5_bnds
+                                           1:2       1:5       ...       ...       ...       ...
+ olr      outgoing longwave radiation      1:5       1:5       ...       1:3       ...       ...
+ ------------------------------
+ zvar[D=a1478] = 2*TEMP[D=2]
+ 
+    2> ./a_cartesian_bug1179.nc  (default)
+ name     title                             I         J         K         L         M         N
+ temp     THETA_FO(SALT_EXTRAP,TEMP_EXTRA  1:1       1:1       1:10      1:1       ...       ...
+ ------------------------------
+ newvar[D=a_cartesian_bug1179] = 0*ZVAR[D=2] + OLR[D=1]
+ 
+go bn_reset
+cancel mode verify
+ 
+ 
+! xml output
+ 
+USE a_cartesian_bug1179.nc
+ 
+say/quiet <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+say/quiet <data>
+<data>
+ 
+show var/xml
+show data/var/xml
+<datasets>
+<dataset name="./a_cartesian_bug1179.nc" default="true">
+<title> </title>
+<var name="temp">
+<attribute name="units" type="char">
+   <value><![CDATA[nounits]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[THETA_FO(SALT_EXTRAP,TEMP_EXTRAP,Z[G=TEMP_EXTRAP],0)]]></value>
+</attribute>
+<attribute name="missing_value" type="float">
+   <value>-1.E+34</value>
+</attribute>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<grid name="GHU1">
+<axes>
+<xaxis>grid_x_T</xaxis>
+<yaxis>grid_y_T</yaxis>
+<zaxis>zt</zaxis>
+<taxis>TIME</taxis>
+</axes>
+</grid>
+</var>
+</dataset>
+</datasets>
+<axes>
+<axis name="TIME">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[days since 1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1900-02-15 03:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1900-02-15 03:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[JULIAN]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[TIME]]></value>
+</attribute>
+</axis>
+<axis name="zt">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[meters]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>22.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>157.9952</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[zt]]></value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value><![CDATA[z]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[zt]]></value>
+</attribute>
+<attribute name="bounds" type="char">
+   <value>zt_bnds</value>
+</attribute>
+</axis>
+<axis name="grid_y_T">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-0.25</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>-0.25</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[Nominal Latitude of T-cell center]]></value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value><![CDATA[Y]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[grid_y_T]]></value>
+</attribute>
+</axis>
+<axis name="grid_x_T">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>79</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>79</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[Nominal Longitude of T-cell center]]></value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value><![CDATA[X]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[grid_x_T]]></value>
+</attribute>
+</axis>
+</axes>
+say/quiet </data>
+</data>
+ 
+USE a_cartesian_bug1179.nc
+ 
+SHO DATA/XML
+<datasets>
+<dataset name="./a_cartesian_bug1179.nc" default="true">
+<title> </title>
+<var name="temp" />
+</dataset>
+</datasets>
+ 
+SHO DATA/VAR/XML
+<datasets>
+<dataset name="./a_cartesian_bug1179.nc" default="true">
+<title> </title>
+<var name="temp">
+<attribute name="units" type="char">
+   <value><![CDATA[nounits]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[THETA_FO(SALT_EXTRAP,TEMP_EXTRAP,Z[G=TEMP_EXTRAP],0)]]></value>
+</attribute>
+<attribute name="missing_value" type="float">
+   <value>-1.E+34</value>
+</attribute>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<grid name="GHU1">
+<axes>
+<xaxis>grid_x_T</xaxis>
+<yaxis>grid_y_T</yaxis>
+<zaxis>zt</zaxis>
+<taxis>TIME</taxis>
+</axes>
+</grid>
+</var>
+</dataset>
+</datasets>
+<axes>
+<axis name="TIME">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[days since 1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1900-02-15 03:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1900-02-15 03:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[JULIAN]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[TIME]]></value>
+</attribute>
+</axis>
+<axis name="zt">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[meters]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>22.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>157.9952</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[zt]]></value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value><![CDATA[z]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[zt]]></value>
+</attribute>
+<attribute name="bounds" type="char">
+   <value>zt_bnds</value>
+</attribute>
+</axis>
+<axis name="grid_y_T">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-0.25</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>-0.25</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[Nominal Latitude of T-cell center]]></value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value><![CDATA[Y]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[grid_y_T]]></value>
+</attribute>
+</axis>
+<axis name="grid_x_T">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>79</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>79</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[Nominal Longitude of T-cell center]]></value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value><![CDATA[X]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[grid_x_T]]></value>
+</attribute>
+</axis>
+</axes>
+ 
+SHO GRID/XML temp
+<grid name="GHU1">
+<axes>
+<xaxis>grid_x_T</xaxis>
+<yaxis>grid_y_T</yaxis>
+<zaxis>zt</zaxis>
+<taxis>TIME</taxis>
+</axes>
+</grid>
+ 
+SHO AXIS/XML `temp,return=xaxis`
+ !-> SHO AXIS/XML grid_x_T
+<axes>
+<axis name="grid_x_T">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>79</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>79</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[Nominal Longitude of T-cell center]]></value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value><![CDATA[X]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[grid_x_T]]></value>
+</attribute>
+</axis>
+</axes>
+SHO AXIS/XML `temp,return=yaxis`
+ !-> SHO AXIS/XML grid_y_T
+<axes>
+<axis name="grid_y_T">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-0.25</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>-0.25</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[Nominal Latitude of T-cell center]]></value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value><![CDATA[Y]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[grid_y_T]]></value>
+</attribute>
+</axis>
+</axes>
+SHO AXIS/XML `temp,return=zaxis`
+ !-> SHO AXIS/XML zt
+<axes>
+<axis name="zt">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[meters]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>22.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>157.9952</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[zt]]></value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value><![CDATA[z]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[zt]]></value>
+</attribute>
+<attribute name="bounds" type="char">
+   <value>zt_bnds</value>
+</attribute>
+</axis>
+</axes>
+SHO AXIS/XML `temp,return=taxis`
+ !-> SHO AXIS/XML TIME
+<axes>
+<axis name="TIME">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[days since 1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1900-02-15 03:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1900-02-15 03:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[JULIAN]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[TIME]]></value>
+</attribute>
+</axis>
+</axes>
+ 
+! Define a dataset variable
+! SHOW/XML commands list it w/ its dataset (even if dataset is not default)
+LET/D=a_cartesian_bug1179 temp_180 = temp[X=79E:79E@AVE]
+ 
+SHOW DATA/XML
+<datasets>
+<dataset name="./a_cartesian_bug1179.nc" default="true">
+<title> </title>
+<var name="temp" />
+<var name="TEMP_180" />
+</dataset>
+</datasets>
+ 
+USE a1478.nc
+SHOW DATA/XML
+<datasets>
+<dataset name="./a_cartesian_bug1179.nc" default="false">
+<title> </title>
+<var name="temp" />
+<var name="TEMP_180" />
+</dataset>
+<dataset name="./a1478.nc" default="true">
+<title> </title>
+<var name="lat1_5_bnds" />
+<var name="olr" />
+</dataset>
+</datasets>
+SHO DATA/VAR/XML
+<datasets>
+<dataset name="./a_cartesian_bug1179.nc" default="false">
+<title> </title>
+<var name="temp">
+<attribute name="units" type="char">
+   <value><![CDATA[nounits]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[THETA_FO(SALT_EXTRAP,TEMP_EXTRAP,Z[G=TEMP_EXTRAP],0)]]></value>
+</attribute>
+<attribute name="missing_value" type="float">
+   <value>-1.E+34</value>
+</attribute>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<grid name="GHU1">
+<axes>
+<xaxis>grid_x_T</xaxis>
+<yaxis>grid_y_T</yaxis>
+<zaxis>zt</zaxis>
+<taxis>TIME</taxis>
+</axes>
+</grid>
+</var>
+<var name="temp_180">
+<attribute name="definition" type="char">
+   <value><![CDATA[TEMP[X=79E:79E@AVE]]]></value>
+</attribute>
+<attribute name="_FillValue" type="float">
+   <value>-1.E+34</value>
+</attribute>
+<attribute name="missing_value" type="float">
+   <value>-1.E+34</value>
+</attribute>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[TEMP[X=79E:79E@AVE]]]></value>
+</attribute>
+<grid name="GHU1">
+<axes>
+<yaxis>grid_y_T</yaxis>
+<zaxis>zt</zaxis>
+<taxis>TIME</taxis>
+</axes>
+</grid>
+</var>
+</dataset>
+</datasets>
+<axes>
+<axis name="TIME">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[days since 1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1900-02-15 03:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1900-02-15 03:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[JULIAN]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[TIME]]></value>
+</attribute>
+</axis>
+<axis name="zt">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[meters]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>22.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>157.9952</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[zt]]></value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value><![CDATA[z]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[zt]]></value>
+</attribute>
+<attribute name="bounds" type="char">
+   <value>zt_bnds</value>
+</attribute>
+</axis>
+<axis name="grid_y_T">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-0.25</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>-0.25</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[Nominal Latitude of T-cell center]]></value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value><![CDATA[Y]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[grid_y_T]]></value>
+</attribute>
+</axis>
+<axis name="grid_x_T">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>79</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>79</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[Nominal Longitude of T-cell center]]></value>
+</attribute>
+<attribute name="cartesian_axis" type="char">
+   <value><![CDATA[X]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[grid_x_T]]></value>
+</attribute>
+</axis>
+</axes>
+<dataset name="./a1478.nc" default="true">
+<title> </title>
+<var name="lat1_5_bnds">
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<grid name="GPY1">
+<axes>
+<xaxis>bnds</xaxis>
+<yaxis>lat1_5</yaxis>
+</axes>
+</grid>
+</var>
+<var name="olr">
+<attribute name="units" type="char">
+   <value><![CDATA[watts/m2]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[outgoing longwave radiation]]></value>
+</attribute>
+<attribute name="_FillValue" type="float">
+   <value>-999</value>
+</attribute>
+<attribute name="missing_value" type="float">
+   <value>-999</value>
+</attribute>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<grid name="GPY2">
+<axes>
+<xaxis>lon1_5</xaxis>
+<yaxis>lat1_5</yaxis>
+<taxis>time1478</taxis>
+</axes>
+</grid>
+</var>
+</dataset>
+</datasets>
+<axes>
+<axis name="time1478">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>14782.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>15512.5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="axis" type="char">
+   <value><![CDATA[T]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[time1478]]></value>
+</attribute>
+</axis>
+<axis name="lat1_5">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-89.49438</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>-81.91011</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[lat1_5]]></value>
+</attribute>
+<attribute name="bounds" type="char">
+   <value>lat1_5_bnds</value>
+</attribute>
+</axis>
+<axis name="lon1_5">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1.25</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>11.25</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[lon1_5]]></value>
+</attribute>
+</axis>
+<axis name="bnds">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>2</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+</axes>
+ 
+! tests of SHOW VAR/XML for global variables.
+CAN DATA/ALL
+CAN VAR/ALL
+ 
+USE a1478
+USE a_cartesian_bug1179
+ 
+! Define a dataset variable
+LET/D=a1478 temp_20 temp[Z=0:20@SUM]
+ 
+! Define a global variable
+LET t30 = temp[Z=0:30@SUM]
+ 
+! Another variable, setting title, units, bad flag.
+LET/UNITS="Deg C"/BAD=100/TITLE="Indefinite integral of SALT" salty = salt[Z=@IIN]
+ 
+ 
+! list tha variables
+SHO VAR/XML
+<global>
+<var name="t30">
+<attribute name="definition" type="char">
+   <value><![CDATA[TEMP[Z=0:30@SUM]]]></value>
+</attribute>
+<attribute name="missing_value" type="float">
+   <value>-1.E+34</value>
+</attribute>
+<grid name="GHU1">
+<axes>
+<xaxis>grid_x_T</xaxis>
+<yaxis>grid_y_T</yaxis>
+<taxis>TIME</taxis>
+</axes>
+</grid>
+</var>
+</global>
+ 
+set mode/last upcase
+ 
 *** Running test: bn_all_ef.jnl
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -90517,13 +91591,13 @@ FERRET_PLATFORM = "Linux 2.6.32-573.12.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "12-Feb-16"
-SESSION_TIME = "19:15"
-SESSION_PID = "17749"
-DELTA_CPU = "0.013997"
-CLOCK_SECS = "0.065"
-CURRENT_DATE = "12-Feb-16"
-CURRENT_TIME = "19:15:59"
+SESSION_DATE = "19-Feb-16"
+SESSION_TIME = "12:09"
+SESSION_PID = "4585"
+DELTA_CPU = "0.014997"
+CLOCK_SECS = "0.047"
+CURRENT_DATE = "19-Feb-16"
+CURRENT_TIME = "12:09:03"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -90545,7 +91619,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "12-Feb-16:19:15"
+WIN_TITLE = "19-Feb-16:12:09"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -90600,4 +91674,4 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3       ...       ...
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3       ...       ...
  
-Ended at Fri Feb 12 19:16:00 PST 2016
+Ended at Fri Feb 19 12:09:03 PST 2016

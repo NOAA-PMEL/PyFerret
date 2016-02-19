@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Feb 12 19:07 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Feb 19 12:05 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug Ferret on RHEL6-64
@@ -256,6 +256,7 @@ Benchmark scripts that will be run:
    bn_labels_on_taxis.jnl
    bn_dataset_qualifier.jnl
    bn_speedtest.jnl
+   bn_show_noupcase.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -272,7 +273,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Feb 12 19:13:46 PST 2016
+Beginning at Fri Feb 19 12:06:39 PST 2016
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -4137,6 +4138,12 @@ Replacing definition of axis TAX
  LISTing to file a.nc
 *** Running test: bn_speedtest.jnl
  Cached data cleared from memory
+*** Running test: bn_show_noupcase.jnl
+ Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+SHO VAR/XML
+SHO VAR/XML
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -4156,4 +4163,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Fri Feb 12 19:16:00 PST 2016
+Ended at Fri Feb 19 12:09:03 PST 2016

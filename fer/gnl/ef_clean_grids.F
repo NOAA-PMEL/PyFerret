@@ -1,5 +1,4 @@
-	SUBROUTINE EF_CLEAN_GRIDS( dset )
-
+	SUBROUTINE EF_CLEAN_GRIDS( dset, agg_dim, ens_ax, tlag_ax  )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -41,9 +40,13 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V698 1/16 *sh* based upon code from CD_CLEAN_GRIDS
+*      2/16 *sh* if identical pre-existing agg axes exists, re-use them
 
 * argument definitions:
-*       dset    - pointer to aggregated data set
+*       dset    - pointer to aggregated data set (input)
+*	agg_dim	- axis of aggregation (E_dim or F_dim)  (input)
+*	ens_ax	- aggregation axis of the ensemble (input)
+*	tlag_ax	- time axis (F aggregation, only) (input)
 
 * include files
 	include 'tmap_errors.parm'
@@ -56,13 +59,61 @@
         include 'netcdf.inc'
 
 * argument declarations
-	INTEGER	 dset, status
+	INTEGER	 dset, agg_dim, ens_ax, tlag_ax
 
 * local variable declarations:
-	LOGICAL TM_SAME_GRID_DEF
-	INTEGER accepted_grid, test_grid, ivar
-	CHARACTER buff*8	
-                 
+	LOGICAL TM_SAME_GRID_DEF, have_prev_ens, have_prev_tlag
+	INTEGER TM_FIND_LIKE_DYN_LINE, ivar, gg,
+     .		prev_tlag_ax, prev_ens_ax, accepted_grid, test_grid
+	CHARACTER buff*8	 
+
+* initialize
+	have_prev_tlag = .FALSE.
+
+********************
+* avoid creating duplicate axes
+
+* If the ensemble axis or the lag-time axis of an FMRC is an exact duplicate
+* of a pre-existing axis use the previous one, instead
+	prev_ens_ax = TM_FIND_LIKE_DYN_LINE( ens_ax )
+	have_prev_ens = prev_ens_ax  .NE. unspecified_int4
+	IF (agg_dim .EQ. F_dim) THEN
+	   prev_tlag_ax = TM_FIND_LIKE_DYN_LINE( tlag_ax )
+	   have_prev_tlag = prev_tlag_ax .NE. unspecified_int4
+	ENDIF
+	IF ( have_prev_ens .OR. have_prev_tlag ) THEN
+* find the places that the new axes are in use. Replace them with pre_exist 
+!     note: We should use the dset var LIST!   Super-inefficient loop here
+	   varloop: DO ivar = 1, maxvars
+	      IF ( ds_var_setnum(ivar) .NE. dset ) CYCLE varloop
+	      gg = ds_grid_number(ivar)
+* ... replace the duplicated axes with the previous identical ones
+	      IF (have_prev_ens) THEN
+	         IF (grid_line(agg_dim,gg) .EQ. ens_ax)
+     .				grid_line(agg_dim,gg) = prev_ens_ax
+	      ENDIF
+	      IF (have_prev_tlag) THEN
+	         IF (grid_line(t_dim,gg) .EQ. tlag_ax)
+     .				grid_line(t_dim,gg) = prev_tlag_ax
+	      ENDIF
+	   ENDDO varloop
+
+* delete the redundant axes
+	   IF ( have_prev_ens ) THEN 
+	      line_name(ens_ax) = char_init16 ! deallo'd in tm_garb_col
+!	      CALL TM_DEALLO_DYN_LINE(ens_ax)
+	      ens_ax = prev_ens_ax
+	   ENDIF
+	   IF ( have_prev_tlag ) THEN
+	      line_name(tlag_ax) = char_init16 ! deallo'd in tm_garb_col
+!	      CALL TM_DEALLO_DYN_LINE(tlag_ax)
+	      tlag_ax = prev_tlag_ax
+	   ENDIF
+	ENDIF
+
+* ****************
+* grids
+
 * check for duplicate grid guts
 	accepted_grid = 0		! to get start of linked list
  10	CALL TM_NEXT_TMP_GRID( accepted_grid, *500)

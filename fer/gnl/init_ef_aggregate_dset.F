@@ -71,6 +71,7 @@
 *                 allow forecast datasets out of order (sort em)
 *		  allow gaps in the forecast series (insert dummy datasets)
 * V698 1/16  *sh* pass explicit path name (for "USE file.agg" compatibility)
+*      2/16  *sh* automatically xfer attributes from member vars to agg vars
 
 * arguments:
 *	memb_dsetname_var - if have_expr, the variable of names (input)
@@ -288,7 +289,7 @@
 	   line_units(tf_lag_t) = un_name(line_unit_code(tf_lag_t))
 	   line_direction(tf_lag_t) = 'TT'
 	   line_dattype  (tf_lag_t) = nf_double
-	   line_dim_only (tf_lag_t) = .FALSE.  ! ?? why?
+	   line_dim_only (tf_lag_t) = .FALSE.  ! indicates netCDF dim w/out var
 	ENDIF
 
 
@@ -305,6 +306,11 @@
      .					  ref_fvar, iline, tf_lag_t, grid,
      .					  agg_dim, member_sets, nsets_wgaps)
 	   IF (status .NE. ferr_ok) GOTO 5000
+
+* transfer to the aggregated variable whatever special attributes it inherits
+	   CALL SET_AGG_VAR_ATTS(agg_dset, vname, nv, nsets_wgaps, 
+     .			         ref_fvar, member_sets, status)
+	   IF (status .NE. ferr_ok) GOTO 9960
 	ENDDO
 
 * register member datasets to aggregate dataset
@@ -313,7 +319,7 @@
 	ENDDO
  
 * remove duplicate temp grid definitions amd makegrid names unique
-	CALL EF_CLEAN_GRIDS(AGG_DSET)
+	CALL EF_CLEAN_GRIDS(agg_dset, agg_dim, iline, tf_lag_t)
 
 * set use counts and remove temp status of agg grids and axes
 	CALL TM_GARB_COL_GRIDS(agg_dset)
@@ -355,8 +361,9 @@
 	status = ferr_TMAP_error
 	GOTO 5000
 * wipe out the partially-created aggregated dataset
- 9960	CALL TM_PURGE_TMP_GRIDS(ignored_status)
-	CALL CANCEL_DATA_SET( agg_dset, ignored_status )
+ 9960	CALL FREE_AGG_UVAR_GRIDS( agg_dset, ignored_status)
+	CALL TM_PURGE_TMP_GRIDS(ignored_status)
+	CALL TM_CLOSE_SET_COND_DEALLO( agg_dset, .FALSE., ignored_status )
 	agg_dset = unspecified_int4
 	GOTO 5000
 

@@ -43,6 +43,7 @@ escape_for_xml.F\
 fill_fmrc_time_gaps.F\
 finalize.F\
 float2string_for_xml.F\
+free_agg_uvar_grids.F\
 get_dataset_name.F\
 get_fer_command.F\
 get_fvars_list_by_attname_and_val.F\
@@ -89,6 +90,7 @@ reset_axis.F\
 reset_ax_att.F\
 save_ppl_memory_size.F\
 save_scriptfile_name.F\
+set_agg_var_atts.F\
 set_var.F\
 show_1_dsvar.F\
 show_1_function.F\

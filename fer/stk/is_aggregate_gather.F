@@ -145,6 +145,14 @@
 	CALL CD_GET_AGG_VAR_INFO (agg_dset, vname, imemb, 
      .      orig_cat, memb_dset, orig_grid, iline, orig_var, status)
 
+* for special case (hack) of an E-aggregation of FMRCs, the 2dtime array comes
+* from one particular member.  We have just completed that, so we're done
+	IF (orig_cat .EQ. cat_ef_time2d) THEN
+* ... pop com_cx from context stack
+	   cx_stack_ptr = cx_stack_ptr - 1
+	   RETURN 2
+	ENDIF
+
 * Is it the 2D Time variable for a Forecast-aggregation?  If so then
 * there has been a cache hit failure (FIND_MEM_VAR_INCL_C_CACHE)
 * ... should never happen

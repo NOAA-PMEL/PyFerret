@@ -43,6 +43,7 @@
 * V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
 * V696 *acm* 11/15 Added @BIN and @NBIN regridding transforms
 * V698 *sh* 1/16 added pagg_promotion_indicator_dset
+*           2/16 added cat_ef_time2d
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -145,7 +146,7 @@
      .			cat_constant, cat_file_rev,
      .			cat_const_var,   cat_string,
      .                  cat_counter_var, cat_attrib_val,
-     .                  cat_agg_e_var, cat_agg_f_var
+     .                  cat_agg_e_var, cat_agg_f_var, cat_ef_time2d
 	PARAMETER     ( cat_work_mr  = -9,
      .			cat_file_var = 1,
      .			cat_calc_var = 2,
@@ -160,9 +161,10 @@
      .			cat_const_var  = 11,
      .			cat_string     = 12,
      .			cat_counter_var= 13,
-     .			cat_attrib_val = 14 ,
-     .			cat_agg_e_var  = 15 ,
-     .			cat_agg_f_var  = 16 )
+     .			cat_attrib_val = 14,
+     .			cat_agg_e_var  = 15,
+     .			cat_agg_f_var  = 16,
+     .			cat_ef_time2d  = 17 )
 
 * codes referring to the user-defined variables
 	INTEGER		uvar_deleted,

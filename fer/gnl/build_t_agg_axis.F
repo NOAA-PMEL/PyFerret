@@ -98,13 +98,14 @@
 
 
 * local variable declarations:
-	LOGICAL TM_DFPEQ_TOL, need_midpoints, need_T0_adjust
-	INTEGER TM_LENSTR1, TM_GET_CALENDAR_ID,
+	LOGICAL TM_DFPEQ_TOL, need_midpoints, need_T0_adjust,
+     .		swap_axes
+	INTEGER TM_LENSTR1, TM_GET_CALENDAR_ID, TM_FIND_LIKE_DYN_LINE,
      .		taxis, nsteps, max_line_available, dtype, vlen, blen,
      .		i, ifile, istep, ivar, TMAP_status, isubsc1,
      .		cdfid, vid, bounds_id, gg, ilo, ihi, l, imemb,
      .		startpts(2), numpts(2), d1s, d1e, d2s, d2e,
-     .		agg_unit_code, file_unit_code, agg_cal_id
+     .		agg_unit_code, file_unit_code, agg_cal_id, pre_exist
 	REAL	TM_WORLD_AX, T0_ADJUST,
      .		tt, delta, highest_tstep, dfirst_delta, 
      .		depsilon
@@ -521,17 +522,36 @@
 	   next_line_mem_pos =  next_line_mem_pos - (2*nsteps + 1) ! restore
 	ENDIF
 ****** END: check over and finalize the time axis
- 
 
-* correct the upper L limit for all time-dependent variables in this dataset
-* as the current L limit was set based upon the first file, alone
- 200	DO ivar = 1, maxvars
+* does this new time axis match an existing one?
+ 200	pre_exist = TM_FIND_LIKE_DYN_LINE( taxis )
+	swap_axes = pre_exist .NE. unspecified_int4
+	IF (swap_axes) ds_time_axis(dset_num) = pre_exist
+
+* correct all time-dependent variables in this dataset
+*  ... the upper L limit was set based upon the first file, alone
+*  ... and the time axis might just have been swapped for a pre-existing one
+	DO ivar = 1, maxvars
 	   IF ( ds_var_setnum(ivar) .EQ. dset_num ) THEN
 	      gg  = ds_grid_number(ivar)
 	      IF (grid_line(t_dim,gg) .EQ. taxis) THEN
 	         ds_grid_end(t_dim,ivar) = nsteps
+	         IF (swap_axes) THEN
+* ... was this grid modified in this loop an instant ago?
+*     note: Shoud use the dset var LIST!   Super-inefficient nested loop
+	            DO i = 1, ivar-1
+	               IF ( ds_var_setnum(i) .EQ. dset_num ) THEN
+	                  IF (ds_grid_number(i) .EQ. gg) GOTO 500 !already done
+	               ENDIF
+	            ENDDO
+	            grid_line(t_dim,gg) = pre_exist
+* ... "use" the pre-existing on; "un-use" the new one
+	            CALL TM_USE_LINE(pre_exist)
+	            CALL TM_DEALLO_DYN_LINE(taxis)
+	         ENDIF
 	      ENDIF
 	   ENDIF
+ 500	   CONTINUE
 	ENDDO
 
  5000	RETURN

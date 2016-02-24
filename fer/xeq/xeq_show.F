@@ -194,6 +194,8 @@
 *                   compressed or subset of axes
 * V697  12/15 *acm* Fix call to routine SHOW_GRID
 * V698 *sh* 1/16 Removed "Ferret-defined" annotation
+*           2/16 replaced char_init with char_init16 (untested) 
+*                (this is the *only* place in all the code using char_init)
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -1446,7 +1448,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 	   CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	   risc_buff = ' '
  4200	   FORMAT (' Last successful data access was on grid ',A)
-	   uvgrid = (grid_name(grid) .NE. char_init) ! show context for last command
+	   uvgrid = (grid_name(grid) .NE. char_init16) ! show context for last command
 	   CALL SHOW_GRID( grid, mods_cx, uvgrid, status )
 	   IF (status .NE. ferr_ok) GOTO 5000
 	ENDIF

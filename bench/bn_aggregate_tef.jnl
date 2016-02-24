@@ -1,0 +1,177 @@
+! bn_aggregate_tef.F
+! 2/2016 *sh*
+! to avoid re-creating the test files include argument "0" as in
+!  yes?  GO bn_aggregate_tef 0
+
+
+! exercise 6D aggregations: T, E, and F simultaneously
+
+! do not bother to echo the creation of files and the definitions of the
+! many time aggregations
+CANCEL MODE VERIFY
+
+if ($1"1") then
+
+! *** create an artificial file collection ***
+spawn "mkdir -p tmp"     ! tmp directory to store files
+
+! a 20x20 lat-long region
+define axis/x=140e:160e:1 xax
+define axis/y=10n:20n:1 yax
+define axis/Z=0:500:500/units=m zax
+
+! a 20 year monthly axis starting in Jan 1950
+LET start_year = 1950
+LET nyears = 20
+LET indices = L[L=1:`nyears*12`]
+LET month = MOD(indices-1,12)+1
+LET year = start_year + INT((indices-1)/12)
+DEFINE AXIS/UNITS=days/T0=1-jan-1900/EDGES truemonth = DAYS1900(year,month,1)
+
+! define a moving field with errors increasing from a given forecast date
+let vy = 1/500      ! speed that forecast structure deviates from truth
+!let vx = 1/300
+let vx = (1+(T[gt=truemonth]-tstart)/2000)* 1/300
+let xt = x[gx=xax]-vx*T[gt=truemonth]
+let yt = y[gy=yax]-vy*T[gt=truemonth]
+let field = COS((xt-150)/5)*COS((yt-30)/5) + Z[gz=zax]
+let fcst = ensemble_variation * (field + fcst_error)
+set variable/title="some variable" fcst
+let static_error = SIN((x[gx=xax]-140)/5)*SIN((y[gy=yax]-20)/5) + RANDU(x[gx=xax]+y[gy=yax])
+let structure_drift = (t[gt=truemonth]-tstart)/5000 * static_error
+let random_error = (t[gt=truemonth]-tstart)/2000 * RANDU(t[gt=truemonth]+x[gx=xax]+y[gy=yax])
+let fcst_error = structure_drift + random_error
+let/title="another variable" fcst_2 = fcst + 2
+
+! every 3 months another 3-year 5-ensemble forecast, saved as 3 1-year files
+! the average of the ensembles is equal to the middel ensemble member (3)
+repeat/name=fdate/range=1:31:3 (\
+  let tstart = t[gt=truemonth,l=`fdate`];\
+  repeat/name=ens/range=1:5:1 (\
+    let ensemble_variation = 1 + (ens-3)/20;\  
+    let realization = `ens`;\
+    save/clobber/file="tmp/f`(fdate-1)/3+1,zw=2`_e`ens`_t1.nc"/l=`fdate`:`fdate+11` fcst,  fcst_2, realization;\
+    save/clobber/file="tmp/f`(fdate-1)/3+1,zw=2`_e`ens`_t2.nc"/l=`fdate+12`:`fdate+23` fcst,  fcst_2, realization;\
+    save/clobber/file="tmp/f`(fdate-1)/3+1,zw=2`_e`ens`_t3.nc"/l=`fdate+24`:`fdate+35` fcst,  fcst_2, realization))
+
+! the middle ensemble time series of the 4th forecast, but lacking fcst_2
+repeat/name=fdate/range=10:10:3 (\
+  let tstart = t[gt=truemonth,l=`fdate`];\
+  repeat/name=ens/range=3:3:1 (\
+    let ensemble_variation = 1 + (ens-3)/20;\  
+    let realization = `ens`;\
+    save/clobber/file="tmp/f`(fdate-1)/3+1,zw=2`_e`ens`_t1_1v.nc"/l=`fdate`:`fdate+11` fcst, realization;\
+    save/clobber/file="tmp/f`(fdate-1)/3+1,zw=2`_e`ens`_t2_1v.nc"/l=`fdate+12`:`fdate+23` fcst, realization;\
+    save/clobber/file="tmp/f`(fdate-1)/3+1,zw=2`_e`ens`_t3_1v.nc"/l=`fdate+24`:`fdate+35` fcst, realization))
+
+
+cancel variables/all
+
+endif
+
+! ***** end of TEF file creation ****************
+
+! define T aggregations -- lots of em
+repeat/name=fdate/range=1:31:3 (\
+  let tstart = t[gt=truemonth,l=`fdate`];\
+  repeat/name=ens/range=1:5:1 (\
+    let realization = `ens`;\
+    TSERIES  t_f`(fdate-1)/3+1,zw=2`_e`ens` = SPAWN("ls -1 tmp/f`(fdate-1)/3+1,zw=2`_e`ens`_t?.nc")  ))
+
+! plus 1 T-aggregation lacking fcst_2
+repeat/name=fdate/range=10:10:3 (\
+  let tstart = t[gt=truemonth,l=`fdate`];\
+  repeat/name=ens/range=3:3:1 (\
+    let realization = `ens`;\
+    TSERIES  t_f`(fdate-1)/3+1,zw=2`_e`ens`_1v = SPAWN("ls -1 tmp/f`(fdate-1)/3+1,zw=2`_e`ens`_t*_1v.nc")  ))
+cancel variable realization
+
+SET MODE VERIFY
+
+show data/files/br
+
+! should share the same time axis
+show grid fcst[d=t_f01_e1]
+show grid fcst[d=t_f01_e2]
+
+! ======== TEST SET 1:  aggregate E first, then F
+
+! define te aggregations -- only the first 5 remain unhidden
+ensemble      te_f01 = t_f01_e1, t_f01_e2, t_f01_e3, t_f01_e4, t_f01_e5
+ensemble/hide te_f02 = t_f02_e1, t_f02_e2, t_f02_e3, t_f02_e4, t_f02_e5
+ensemble/hide te_f03 = t_f03_e1, t_f03_e2, t_f03_e3, t_f03_e4, t_f03_e5
+ensemble/hide te_f04 = t_f04_e1, t_f04_e2, t_f04_e3, t_f04_e4, t_f04_e5
+ensemble/hide te_f05 = t_f05_e1, t_f05_e2, t_f05_e3, t_f05_e4, t_f05_e5
+ensemble/hide te_f06 = t_f06_e1, t_f06_e2, t_f06_e3, t_f06_e4, t_f06_e5
+ensemble/hide te_f07 = t_f07_e1, t_f07_e2, t_f07_e3, t_f07_e4, t_f07_e5
+ensemble/hide te_f08 = t_f08_e1, t_f08_e2, t_f08_e3, t_f08_e4, t_f08_e5
+ensemble/hide te_f09 = t_f09_e1, t_f09_e2, t_f09_e3, t_f09_e4, t_f09_e5
+ensemble/hide te_f10 = t_f10_e1, t_f10_e2, t_f10_e3, t_f10_e4, t_f10_e5
+ensemble/hide te_f11 = t_f11_e1, t_f11_e2, t_f11_e3, t_f11_e4, t_f11_e5
+SHOW DATA/brief
+SHOW DATA/FULL te_f11
+
+! define tef aggregation
+FMRC/HIDE tef = te_f01, te_f02, te_f03, te_f04, te_f05, te_f06, te_f07, te_f08, te_f09, te_f10, te_f11
+SHOW DATA/brief/files
+show data/full tef
+
+! diagonal forecast view of ensemble mean
+let diag_fcst = fcst[gt(tf_times)=TF_CAL_T,gf(tf_times)=TF_LAG_F]
+shade/x=150E/y=15n/Z=0 diag_fcst[m=1:5@ave]
+
+! difference between the mean and the middle is zero within computational error
+let epsilon = 1 / 2^50   ! 52 mantissa bits in a double
+say using epsilon = `epsilon`
+let rel_err = (diag_fcst[m=1:5@ave]-diag_fcst[m=3])/diag_fcst[m=3]
+stat/brief/x=150E/y=15n/Z=0 IF ABS(rel_err) LT epsilon THEN 0.0 ELSE rel_err
+
+! quick test of another axis (z) -- again should be zero
+let rel_err = (diag_fcst[Z=0] - (diag_fcst[Z=500]-500))/500
+stat/brief/x=150E/y=15n/M=3 IF ABS(rel_err) LT epsilon THEN 0.0 ELSE rel_err
+
+! warning message indicates fcst_2 is missing from a file
+ENSEMBLE te_f04_1v = t_f04_e1, t_f04_e2, t_f04_e3_1v, t_f04_e4, t_f04_e5
+
+! define fcst_2 as a LET/D variable and then do same calc
+let/d=t_f04_e3_1v fcst_2 = fcst + 2
+show data/br t_f04_e3_1v
+ensemble te_f04_letd = t_f04_e1, t_f04_e2, t_f04_e3_1v, t_f04_e4, t_f04_e5
+fmrc/hide tef_letd = te_f01, te_f02, te_f03, te_f04_letd, te_f05, te_f06, te_f07, te_f08, te_f09, te_f10, te_f11
+let diag_fcst_2 = fcst_2[gt(tf_times)=TF_CAL_T,gf(tf_times)=TF_LAG_F]
+let rel_err_2 = (diag_fcst_2[m=1:5@ave]-diag_fcst_2[m=3])/diag_fcst_2[m=3]
+
+!run in diagnostic mode look for "eval FCST_2" to confirm LET/D eval
+set data tef_letd
+stat/brief/x=150E/y=15n/Z=0 diag_fcst_2
+stat/brief/x=150E/y=15n/Z=0 IF ABS(rel_err_2) LT epsilon THEN 0.0 ELSE rel_err_2
+! ======== TEST SET 2:  aggregate F first, then E
+fmrc      tf_e1 = t_f01_e1, t_f02_e1, t_f03_e1, t_f04_e1, t_f05_e1, t_f06_e1, t_f07_e1, t_f08_e1, t_f09_e1, t_f10_e1, t_f11_e1
+fmrc/hide tf_e2 = t_f01_e2, t_f02_e2, t_f03_e2, t_f04_e2, t_f05_e2, t_f06_e2, t_f07_e2, t_f08_e2, t_f09_e2, t_f10_e2, t_f11_e2
+fmrc/hide tf_e3 = t_f01_e3, t_f02_e3, t_f03_e3, t_f04_e3, t_f05_e3, t_f06_e3, t_f07_e3, t_f08_e3, t_f09_e3, t_f10_e3, t_f11_e3
+fmrc/hide tf_e4 = t_f01_e4, t_f02_e4, t_f03_e4, t_f04_e4, t_f05_e4, t_f06_e4, t_f07_e4, t_f08_e4, t_f09_e4, t_f10_e4, t_f11_e4
+fmrc/hide tf_e5 = t_f01_e5, t_f02_e5, t_f03_e5, t_f04_e5, t_f05_e5, t_f06_e5, t_f07_e5, t_f08_e5, t_f09_e5, t_f10_e5, t_f11_e5
+
+! aggregate these F-aggs onto an E axis
+ENSEMBLE/HIDE tfe = tf_e1, tf_e2, tf_e3, tf_e4, tf_e5
+
+! F-aggregate inherits the TF-auxiliary variable pointers from the members
+SHOW DATA/ATTRIB tfe
+
+! the 2-D coordinate variable (TF_TIMES) should be 2D, only, in T and F 
+SHOW DATA tfe 
+
+! confirm that the T-F-E agg and the T-E-F agg get the same results
+! exactlyidentically zero STAT output means correct functioning
+let tfe_tef_ave_diff = (diag_fcst[d=tfe,m=1:5@ave]-diag_fcst[d=tef,m=1:5@ave])
+stat/brief/x=150E/y=15n/Z=0 tfe_tef_ave_diff
+let tfe_tef_diff = (diag_fcst[d=tfe]-diag_fcst[d=tef])
+stat/brief/x=150E/y=15n/Z=0 tfe_tef_diff[m=1:5@ave]
+
+CANCEL DATA/ALL
+! TBD:
+! deliberate errors
+! filesmember variables with unmatched attributes ... 
+! test E-agg of TDS FMRCs
+
+! debug err_double_bench crash

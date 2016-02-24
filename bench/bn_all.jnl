@@ -106,6 +106,7 @@ SET MODE VERIFY
 ! V698+ *sh* 06/15 - added bn_auxiliary
 ! V698+ *sh* 11/15 - added bn_aggregate_t and bn_unquoted_args.jnl
 ! V698+ *sh* 1/16 - added bn_aggregate_f
+!            2/16 - added bn_aggregate_tef
 
 ! Include this statement to compare the outupt of 6D Ferret with 
 ! previous 4D benchmark logs.
@@ -1020,6 +1021,9 @@ GO bn_show_uvar_grid
 
 GO bn_reset
 GO bn_aggregate_f
+
+GO bn_reset
+GO bn_aggregate_tef
 
 GO bn_reset
 ! Add this to the gif benchmark tests

@@ -158,12 +158,12 @@
 
 * summarize the special axes in the data set
       CALL CD_GET_TIME_AXIS( dset, t_dim, status )
-      IF ( status .NE. merr_ok ) GOTO 5900
+      IF ( status .NE. merr_ok ) GOTO 5900  ! *sh* ok after TM_GARB_COL_GRIDS?
 
 * if using a DODS cache then create the illusion of remote access
       IF (remote_dods_id .NE. -1) THEN
          CALL CD_DODS_CONTROL( dset, cdfid, remote_dods_id, status )
-         IF ( status .NE. merr_ok ) GOTO 5900
+         IF ( status .NE. merr_ok ) GOTO 5900! *sh* ok after TM_GARB_COL_GRIDS?
       ENDIF
 
 ! for multiple files ... maybe

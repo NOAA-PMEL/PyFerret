@@ -1,4 +1,5 @@
-	SUBROUTINE TM_CLOSE_SET ( ds_num, status )
+	SUBROUTINE TM_RM_TMP_GRID( grid )
+
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,16 +35,40 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Remove a grid from the tmp area (from the linked list of tmp_grid_hook)
 
-* 2/2016 *sh*
-* all of the guts of this routine were moved to TM_CLOSE_SET_COND_DEALLO
-* allowing the de-allocation of grids to become a conditional matter
+* *sh* 2/2106 -- using code from tm_deallo_dyn_line_sub
 
-* calling argument declarations
-	INTEGER ds_num, status
-	
+* Include files
+	include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+#include "gt_lib.parm"
+	include 'tmap_errors.parm'
+	include 'xtm_grid.cmn_text'
+	external xgt_grid_data
+	include 'xio.cmn_text'
 
-	CALL TM_CLOSE_SET_COND_DEALLO( ds_num, .TRUE., status)
+* Argument definitions
+	INTEGER grid
 
+* internal declarations
+	INTEGER next_used_grid
+
+* clear COMMON info
+	grid_use_cnt(grid) = 0
+	grid_name(grid)    = char_init16
+
+* take this grid from the "tmp" list and put it on the "free" list
+* ... hook onto free list
+	next_used_grid   = grid_flink(grid)
+	grid_flink(grid) = grid_free_ptr  
+	grid_free_ptr    = grid
+	   
+* ... unhook from tmp list
+	grid_flink(grid_blink(grid)) = next_used_grid
+	grid_blink(next_used_grid)   = grid_blink(grid)
+
+* successful completion
 	RETURN
+
 	END

@@ -1,4 +1,5 @@
-	SUBROUTINE TM_CLOSE_SET ( ds_num, status )
+	INTEGER FUNCTION TM_RM_TMP_LINE( line )
+
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,16 +35,42 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Remove a line from the tmp area (from the linked list of tmp_line_hook)
 
-* 2/2016 *sh*
-* all of the guts of this routine were moved to TM_CLOSE_SET_COND_DEALLO
-* allowing the de-allocation of grids to become a conditional matter
+* *sh* 2/2106 -- using code from tm_deallo_dyn_line_sub
 
-* calling argument declarations
-	INTEGER ds_num, status
-	
 
-	CALL TM_CLOSE_SET_COND_DEALLO( ds_num, .TRUE., status)
+* Include files
 
+	include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+#include "gt_lib.parm"
+	include 'tmap_errors.parm'
+	include 'xtm_grid.cmn_text'
+	external xgt_grid_data
+	include 'xio.cmn_text'
+
+* Argument definitions
+	INTEGER line
+
+* Internal variable declarations
+	INTEGER	next_used_line
+
+* clear COMMON
+	line_use_cnt(line) = 0
+	line_name(line)    = char_init16
+
+* take this line from the "tmp" list and put it on the "free" list
+* ... hook onto free list
+	next_used_line   = line_flink(line)
+	line_flink(line) = line_free_ptr  
+	line_free_ptr    = line
+	   
+* ... unhook from tmp list
+	line_flink(line_blink(line)) = next_used_line
+	line_blink(next_used_line)   = line_blink(line)
+
+* successful completion
 	RETURN
+
 	END

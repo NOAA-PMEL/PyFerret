@@ -104,11 +104,11 @@ c If so take those into account
 	zmax_test = .FALSE.
 	zmin_test = .FALSE.
 
-	IF (lev_max .NE. rbad) THEN
+	IF (.NOT. TM_FPEQ_SNGL(lev_max, rbad)) THEN
 	   zmax_test = .TRUE.
 	   z_max_tol = DBLE(lev_max)
 	ENDIF
-	IF (lev_min .NE. rbad) THEN
+	IF (.NOT. TM_FPEQ_SNGL(lev_min, rbad)) THEN
 	   zmin_test = .TRUE.
 	   z_min_tol = DBLE(lev_min)
 	ENDIF

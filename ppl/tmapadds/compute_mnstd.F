@@ -47,6 +47,8 @@ C**
 * v695 *acm* 9/15 ticket 2311: variance-based levels for constant variable. Also
 *                 improve accuracy of computation using real*4 bad-value sent in from
 *                 the Ferret side.
+* V698 *acm* 2/16 Re-fix 2186. The fix for 2311 broke the fix for 2186, so the test 
+*                 for data outside 3*std correction wasn't made.
 	
 	include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
@@ -122,7 +124,7 @@ c Compute data mean.
 	      IF (zmax_test .AND. x.GE.z_max_tol) ok = .FALSE.
 	      IF (zmin_test .AND. x.LE.z_min_tol) ok = .FALSE.
 	      IF (ok) THEN
-  	         sum = sum + z(i)
+  	         sum = sum + x
                  n = n + 1
 	      ENDIF
 	   ENDIF
@@ -167,7 +169,9 @@ c Compute data mean.
            
 	   tol_lo = zmean - 3.*zstd
 	   tol_hi = zmean + 3.*zstd
-	   
+	   IF (zmin_test) tol_hi = MIN(tol_hi, z_max_tol)
+	   IF (zmax_test) tol_lo = MAX(tol_lo, z_min_tol)
+
 c Recompute data mean.
  
 	   sum = 0.0
@@ -176,11 +180,13 @@ c Recompute data mean.
               x = z(i)
 	      IF ( x .NE. badz) THEN
 	         ok = .TRUE.
-	         IF (zmax_test .AND. x.GE.z_max_tol) ok = .FALSE.
-	         IF (zmin_test .AND. x.LE.z_min_tol) ok = .FALSE.
+	         IF ( x .GE. tol_hi) ok = .FALSE.
+	         IF ( x. LE. tol_lo) ok = .FALSE.
 	         IF (ok) THEN
-                    sum = sum + z(i)
+                    sum = sum + x
                     n2 = n2 + 1
+                 ELSE
+		    nothing = 0
                  ENDIF
               ENDIF
   200      CONTINUE
@@ -201,8 +207,8 @@ c Recompute data mean.
 	      x = z(i)
 	      IF ( x .NE. badz) THEN
 	         ok = .TRUE.
-	         IF (zmax_test .AND. x.GE.z_max_tol) ok = .FALSE.
-	         IF (zmin_test .AND. x.LE.z_min_tol) ok = .FALSE.
+	         IF ( x .GE. tol_hi) ok = .FALSE.
+	         IF ( x. LE. tol_lo) ok = .FALSE.
 	         IF (ok) THEN
                     n2 = n2 + 1
 		    x = x - zmean2
@@ -222,6 +228,8 @@ c Recompute data mean.
 c Once more.
            tol_lo = zmean - 3.*zstd
            tol_hi = zmean + 3.*zstd
+	   IF (zmin_test) tol_hi = MIN(tol_hi, z_max_tol)
+	   IF (zmax_test) tol_lo = MAX(tol_lo, z_min_tol)
  
            sum = 0.0
            n2 = 0
@@ -229,10 +237,10 @@ c Once more.
               x = z(i)
 	      IF ( x .NE. badz) THEN
 	         ok = .TRUE.
-	         IF (zmax_test .AND. x.GE.z_max_tol) ok = .FALSE.
-	         IF (zmin_test .AND. x.LE.z_min_tol) ok = .FALSE.
+	         IF ( x .GE. tol_hi) ok = .FALSE.
+	         IF ( x. LE. tol_lo) ok = .FALSE.
 	         IF (ok) THEN
-                    sum = sum + z(i)
+                    sum = sum + x
                     n2 = n2 + 1
                  ENDIF
 	      ENDIF
@@ -251,8 +259,8 @@ c Once more.
 	      x = z(i)
 	      IF ( x .NE. badz) THEN
 	         ok = .TRUE.
-	         IF (zmax_test .AND. x.GE.z_max_tol) ok = .FALSE.
-	         IF (zmin_test .AND. x.LE.z_min_tol) ok = .FALSE.
+	         IF ( x .GE. tol_hi) ok = .FALSE.
+	         IF ( x. LE. tol_lo) ok = .FALSE.
 	         IF (ok) THEN
 		    n2 = n2 + 1
 		    x = x - zmean2

@@ -361,8 +361,7 @@
 	status = ferr_TMAP_error
 	GOTO 5000
 * wipe out the partially-created aggregated dataset
- 9960	CALL FREE_AGG_UVAR_GRIDS( agg_dset, ignored_status)
-	CALL TM_PURGE_TMP_GRIDS(ignored_status)
+ 9960	CALL TM_PURGE_TMP_GRIDS(ignored_status)
 	CALL TM_CLOSE_SET_COND_DEALLO( agg_dset, .FALSE., ignored_status )
 	agg_dset = unspecified_int4
 	GOTO 5000

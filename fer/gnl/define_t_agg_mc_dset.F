@@ -170,7 +170,8 @@
 !     .		//memb_filename(1), *5000 )
 
 * get out from error
- 9900	CALL TM_CLOSE_SET ( dset_num, TMAP_status )
+ 9900	CALL TM_PURGE_TMP_GRIDS(TMAP_status)
+	CALL TM_CLOSE_SET ( dset_num, TMAP_status )
  9950	dset_num = unspecified_int4
  5000	RETURN
 	END

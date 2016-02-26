@@ -97,14 +97,6 @@
 *   information and possibly misleading output )
 	CALL ERASE_DSET( dset )
 
-* If canceling an E or F aggregation then ...
-* reduce the use-count on uvar grids associated with LET/D defs in agg
-* member datasets. These were bumped up to ensure they stayed undeleted.
-	IF (ds_type(dset).EQ.'ENS' .OR. ds_type(dset).EQ.'FCT') THEN
-	   CALL FREE_AGG_UVAR_GRIDS(dset, status)
-	   IF (status .NE. ferr_ok) GOTO 5000
-	ENDIF
-
 * If canceling an F aggregation then ...
 * de-allocate special axes TF_LAG_F and TF_CAL_T
 * get the names of these special axes from the attribute pointers

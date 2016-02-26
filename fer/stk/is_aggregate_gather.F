@@ -177,6 +177,14 @@
 
 * grid must not have changed since DEFINE DATA/AGG
 	com_grid = KNOWN_GRID(memb_dset, com_cat, com_var)
+	IF (com_grid .EQ. unspecified_int4) THEN
+* ... GET_UVAR_GRID uses the interp_stack, so bump isp
+	   isp = com_isp
+	   CALL GET_UVAR_GRID( com_var, memb_dset, status )
+	   isp = res_isp  ! restore to value at start of routine
+           IF ( status .NE. ferr_ok ) GOTO 5000
+	   com_grid = KNOWN_GRID(memb_dset, com_cat, com_var)
+	ENDIF
 	IF (.NOT.TM_SAME_GRID_DEF(com_grid,orig_grid)) CALL ERRMSG(
      .		ferr_aggregate_error, status,
      .		'coordinate grid of '// vname(:vlen)//

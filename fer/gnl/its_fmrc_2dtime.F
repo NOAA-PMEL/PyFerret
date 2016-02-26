@@ -1,4 +1,4 @@
-	SUBROUTINE FREE_AGG_UVAR_GRIDS( dset, status )
+	LOGICAL FUNCTION ITS_FMRC_2DTIME (dset, fvar)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -32,59 +32,71 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-* if LET/D definitions (uvars) are among the variables in an E or F aggregation
-* then the use counts of the grids of those uvars were bumped in during the 
-* initialization of the agg (in DEFINE_EF_AGGREGARTION_GRID).
-* Here we undo that -- reducing the use count of those grids
+* Return boolean indicating whether the passed variable is in fact
+* the 2D FMRC time matrix of the dataset
 
-* V698 *sh* 2/16 
+* V698 2/16 *sh*
 
-* calling arguments
-*  dset      -  (input) dataset number to be closed
-*  status    - (output) return status
-
-	include 'tmap_dims.parm'
-#	include "tmap_dset.parm"
-	include 'tmap_errors.parm'
+      IMPLICIT NONE
+#include "tmap_dset.parm"
+!#include "gt_lib.parm"     ! str_match
+        include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
-	include 'xdset_parms.cmn'
-	include 'xprog_state.cmn'
 	include 'xdset_info.cmn_text'
-	external xdset_info_data
-	include 'xrisc.cmn'
-	include	'xtm_grid.cmn_text'
-	external xgt_grid_data
+	include 'xdset_info.cd_equiv'
+	include 'xtm_grid.cmn_text'
 
 * calling argument declarations:
-	INTEGER	dset, status
+	INTEGER dset, fvar
 
 * local variable declarations:
-	INTEGER nmemb, imemb, ivar,
-     .          memb_cat, memb_dset, memb_grid, iline, memb_var
+	LOGICAL NC_GET_ATTRIB, got_it
+	INTEGER STR_CASE_BLIND_COMPARE, grid, vid, istat, status
 
-	IF (ds_type(dset).EQ.'ENS' .OR. ds_type(dset).EQ.'FCT') THEN
-	   CALL CD_GET_AGG_DSET_INFO (dset, nmemb, status)
-	   IF (status .NE. ferr_ok) GOTO 5100
-!   ... note:  this is a very inefficient loop. Better to use the LISTs
-!              that knows which variables belong to each dataset 
-	   DO ivar = 1,maxvars
-	      IF (ds_var_setnum(ivar) .NE. dset) CYCLE
-	      DO imemb = 1, nmemb
-	         CALL CD_GET_AGG_VAR_INFO (dset, ds_var_code(ivar), imemb, 
-     .           memb_cat, memb_dset, memb_grid, iline, memb_var, status)
-	         IF (status .NE. ferr_ok) GOTO 5100
-	         IF (memb_cat .EQ. cat_user_var) CALL TM_DEALLO_DYN_GRID
-     .								(memb_grid)
-	      ENDDO
-	   ENDDO
-	ENDIF
+	INTEGER str_match
+        PARAMETER (str_match = 0)
 
-        RETURN
+* Getting info back from the attribute-handling structure
+        INTEGER maxlen
+        PARAMETER (maxlen = 128)
+	CHARACTER*(maxlen) buff
+	INTEGER varid, t2did, tline, g2d, globalid, ref_id, attlen,
+     .		attype, attoutflag
+        REAL    attvals(10)
 
-* error exits
+* initialize
+	grid = ds_grid_number(fvar)
+
+* it must be 2D in the TF plane
+	IF (grid_line(x_dim,grid) .NE. mnormal
+     . .OR. grid_line(y_dim,grid) .NE. mnormal
+     . .OR. grid_line(z_dim,grid) .NE. mnormal
+     . .OR. grid_line(e_dim,grid) .NE. mnormal ) GOTO 2000
+	IF (grid_line(t_dim,grid) .EQ. mnormal
+     . .OR. grid_line(f_dim,grid) .EQ. mnormal ) GOTO 2000
+
+* it must have a _CoordinateAxisType='Time' attribute
+* ... get the List id of the variable
+        CALL CD_GET_VAR_ID (dset, ds_var_code(fvar), vid, status)
+        IF (status .NE. ferr_ok) GOTO 5100
+* ... get the attribute val
+        got_it = NC_GET_ATTRIB ( dset, vid, '_CoordinateAxisType',
+     .                              .TRUE., ds_var_code(fvar), maxlen,
+     .                              attlen, attoutflag, buff, attvals )
+	IF (.NOT.got_it) GOTO 2000
+	istat = STR_CASE_BLIND_COMPARE(buff, 'time')
+
+* final test
+        ITS_FMRC_2DTIME = istat .EQ. str_match
+	RETURN
+
+* nope - this aint it
+ 2000	ITS_FMRC_2DTIME = .FALSE.
+	RETURN
+
+* error bail out
  5000	RETURN
- 5100	CALL ERRMSG( ferr_internal, status, 'free_uvar_agg_grids', *5000 )
-
+ 5100	CALL ERRMSG(ferr_internal, status, 'its_fmrc_2dtime!',
+     .		 *5000)     ! error not trapped
 	END

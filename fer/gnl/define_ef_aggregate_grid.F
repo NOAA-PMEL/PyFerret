@@ -68,7 +68,7 @@
 	CHARACTER*(*) vname, tcoordname
 
 * local variable declarations:
-	LOGICAL	NC_GET_ATTRIB, got_it, its_dynamic, itsa_uvar,
+	LOGICAL	NC_GET_ATTRIB, ITS_FMRC_2DTIME, its_dynamic, itsa_uvar,
      .		has_edges, has_gaps, found_fvar, ef_ordered_time2d
 	INTEGER STR_SAME, TM_LENSTR1,
      .		big_cx, igrid, idim, agg_grid, nv, type, ii, iset, slen, 
@@ -91,20 +91,12 @@
 	tline = unspecified_int4
 	has_gaps = .FALSE.
 	ef_ordered_time2d = .FALSE.
+	ef_time2d_dset = ds_var_setnum(fvar)
 
 * the 2D time variable in an E-aggregation of F-aggregations has special needs
 * its grid should not have the agg axis 
 	IF (agg_dim .EQ. E_dim) THEN
-* ... check for the 2d time variable's indicator attribute  _ftime2d='self'
-	   buff = ' '
-	   ef_time2d_dset = ds_var_setnum(fvar)
-           CALL CD_GET_VAR_ID (ef_time2d_dset, vname, ref_id, status)
-           IF (status .NE. ferr_ok) GOTO 5200
-           got_it = NC_GET_ATTRIB ( ef_time2d_dset, ref_id, '_ftime2d',
-     .                              .TRUE., vname, maxlen,
-     .                              attlen, attoutflag,
-     .                              buff, attvals )
-           IF (got_it) ef_ordered_time2d = buff .EQ. 'self'
+	   ef_ordered_time2d = ITS_FMRC_2DTIME(ef_time2d_dset, fvar)
 	ENDIF
 
 * Define aggregate grid
@@ -193,7 +185,7 @@
 * will be, just below). Add a coordinates attribute to variables in the FMRC 
 * dataset which now have a 2D forecast-time coordinate variable. 
 * Also add an attribute (name to be finalized), _ftime2d pointing to TIME2D
-	      
+	     
 	IF (agg_dim.EQ.f_dim .AND. grid_line(t_dim, agg_grid).NE.int4_init) THEN
 	   buff = " "
 	   slen = 0
@@ -396,17 +388,23 @@
 	   attype = NCCHAR
 	   CALL CD_PUT_NEW_ATTR (agg_dset, t2did, '_CoordinateAxisType', 
      .       attype, 4, attoutflag, 'Time', 0., status )
-	   CALL CD_PUT_NEW_ATTR (agg_dset, t2did, '_ftime2d', 
-     .       attype, 4, attoutflag, 'self', 0., status )
+!	   CALL CD_PUT_NEW_ATTR (agg_dset, t2did, '_ftime2d', 
+!     .       attype, 4, attoutflag, 'self', 0., status )
 	   slen = TM_LENSTR1(line_cal_name(tline))
 	   attoutflag = 1
 	   attype = NCCHAR
 	   CALL CD_PUT_NEW_ATTR (agg_dset, t2did, 'calendar', attype, 
      .       slen, attoutflag, line_cal_name(tline), 0., status )
 
-* define two special axes needed for FMRC regridding:
-* the 1D verification time axis and the 1D forecast
-* lead time axis
+* an FMRC needs 4 axes:
+* 2 are the native axes of the data grids in compressed block FMRC form
+*   - native T: a lag axis of time steps between each successive forecast
+*   - native F: a calendar axis of times at which each run was initiated
+* 2 are target regridding axes:
+*   - target T: a calendar axis of the target times being forecast
+*   - target F: a lag (lead) axis of time steps prior to the target time
+
+* first define the two target axes
 * Assemble the 2D time array in line_mem and call CD_MAKE_FMRC_AXES
 * Save it at the start of available line storage memory
 * Also save the time box edge positions in line_mem above the 2d array
@@ -467,7 +465,7 @@
 !     .						ds_var_c_cache_ptr(it2d))
 
 
-* make the two special axes 
+* make the FMRC regrid target axes: T-calendar and F-lag 
 * (t2did still holds the id of the tccordname 2d time array)
 	   has_edges = .TRUE.
 	   CALL CD_MAKE_FMRC_AXES (agg_dset, has_edges, t2did, tcoordname,
@@ -475,7 +473,10 @@
      .			axcalt, axlagf, status)
 	   IF (status .NE. merr_ok) GOTO 5000
 
-* define the F calendar axis -- similar drill to above
+*****
+* define the F calendar axis
+* ... similar drill to above but need to do again, because cell bounds
+*     are needed in axis definition
 	   ipt1 = next_line_mem_pos
 	   IF ((ipt1+2*nF+1).GT.maxlinestore) GOTO 5100
 	   ipt  = ipt1
@@ -543,12 +544,12 @@
 	      ENDDO
 	   ENDIF
 
-* ... make the forecast calendar axis
+* ... make the native F-calendar axis from the pointstime steps  in line_mem
 	   CALL CD_MAKE_FMRC_FCAL_AXIS (agg_dset, iline, 
      .					nF, axcalt, status)
 	   IF (status .NE. merr_ok) GOTO 5000
 
-* ... assign global attributes pointing to the special F-aggregatoinaxes
+* ... assign global attributes pointing to the target regrid axes
 *    (CF requires variable attributes, but they are helpful as globals, too)
 	   CALL CD_GET_VAR_ID (agg_dset, '.', globalid, status)
 	   slen = TM_LENSTR1(line_name(axcalt))
@@ -559,7 +560,7 @@
 	   CALL CD_PUT_NEW_ATTR (agg_dset, globalid, '_lag_f_ax', attype, 
      .             slen, attoutflag, line_name(axlagf), 0., status )
 
-* make the 2 special Forecast axes non-temporary and set use counts to 1
+* make the regrid target axes non-temporary and set use counts to 1
 	   CALL TM_RE_ALLO_TMP_LINE(axcalt)
 	   CALL TM_USE_LINE(axcalt)
 	   CALL TM_RE_ALLO_TMP_LINE(axlagf)

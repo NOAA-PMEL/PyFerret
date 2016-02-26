@@ -52,8 +52,8 @@
 #include "ferret.h"
  
 void FORTRAN(recover_cached_2d_array_point)(
-					 double *array, int *dim2, int *dim1, 
-                                         int *j, int *i,
+					 double *array, int *dim1, int *dim2, 
+                                         int *i, int *j,
 					 double **pointer_val )
 
 /*
@@ -67,7 +67,7 @@ void FORTRAN(recover_cached_2d_array_point)(
 
   ptr = *pointer_val;
 
-  index = (*j-1) * *dim2 + (*i-1);
+  index = (*j-1) * *dim1 + (*i-1);
   array[0] = ptr[index];
 
   return;

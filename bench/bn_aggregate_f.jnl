@@ -65,6 +65,7 @@ list files  ! notice that they are not properly ordered
 fmrc my_fmrc = files
 show data/brief    ! note that member files are hidden
 show data/files my_fmrc
+show data/attr my_fmrc
 
 ! plot and list the aggregation
 GO bn_aggregate_f.sub

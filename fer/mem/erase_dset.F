@@ -50,6 +50,9 @@
 *               list attribute structure.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V695+ *sh* 5/15 - free any c-cached arrays owned by the dataset
+* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
+*                  added to that dataset in the attribute structure. Extra
+*                  argument to DELETE_USER_VAR
 
         include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -86,7 +89,7 @@
 *	   IF (uvar_dset(ii) .EQ. dset) uvar_num_items(ii) =
 *     .					uvar_deleted
 	   IF (uvar_dset(ii) .EQ. dset) THEN
-	      CALL DELETE_USER_VAR(ii)
+	      CALL DELETE_USER_VAR(ii, dset)
               CALL deleted_list_modify(uvar_num_items_head, ii,
      .	            uvar_deleted)
 

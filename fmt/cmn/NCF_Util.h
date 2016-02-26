@@ -43,7 +43,9 @@
  * are part of the Ferret NetCDF attribute handling library.
  * V683 10/10*acm* New NC_INTERRUPT for user-interrupt reading netCDF/OPeNDAP data
  * V698 12/15 *sh* added aggSeqNo, the sequence number (FORTRAN index) of each dset w/in the agg 
- *
+ * V698  2/16 *acm Additions for ticket 2352: LET/D variables and attributes. User-variables
+ *                 defined with LET/D=n are stored with dataset n. A flag in the ncvar 
+ *                 structure tells that the variable is a user-var. 
  */
 
 /* .................... Defines ..................... */
@@ -58,7 +60,8 @@
 
 #define ATOM_NOT_FOUND 0  /* This should match the atom_not_found parameter in ferret.parm. */
 #define FERR_OK 3  /* This should match the ferr_ok parameter in errmsg.parm. */
-#define NC_GLOBAL -1  /* This should match the NC_GLOBAL parameter in netcdf.h */
+#define NC_GLOBAL -1    /* This should match the NC_GLOBAL parameter in netcdf.h */
+#define PDSET_UVARS -1  /* This should match pdset_uvars ferret.parm */
 
 /* Ferret-defined "netcdf error status" when a read was interrupted by Crtl-C */
 /* match nc_interrupt with nf_interrupt in tmap_errors.parm */
@@ -126,6 +129,7 @@ typedef struct  {          /* variable */
 	                          list the members of the aggregate components. */
 	int agg_list_initialized;
 	int nmemb;
+	int uvflag;			   /* flag for LET/D var added to this set (0=file var, 1-uvar) */
 } ncvar;
 
 typedef struct {			/* attribute */

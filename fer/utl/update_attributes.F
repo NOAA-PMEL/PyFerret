@@ -1,4 +1,4 @@
-      SUBROUTINE UPDATE_ATTRIBUTES (dset, uvar)
+      SUBROUTINE UPDATE_ATTRIBUTES (dset, vname, uvar)
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -38,6 +38,8 @@
 
 * V600 6/05 *acm* Attribute control.
 * V670  2/11 *acm*   Fixes for inheriting attributes.
+* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
+*                  added to that dataset in the attribute structure.
 
 * Get the attribute information from the linked-list structure that is needed 
 * to do a plot.
@@ -60,6 +62,7 @@
 * Argument declarations
 
       INTEGER uvar, dset
+      CHARACTER*(*) vname
 
 * Local variable declarations
       LOGICAL NC_GET_ATTRIB, coordvar, got_it, do_warn
@@ -67,10 +70,9 @@
      .        nvatts, attlen, attoutflag, status, vlen, maxlen, 
      .        all_outflag
       REAL tmp
-      CHARACTER*128 vname, buff
+      CHARACTER*128 buff
 
-      varid = cd_varid(uvar)
-      IF (dset .EQ. pdset_uvars) varid = uvar
+       CALL CD_GET_VAR_ID (dset, vname, varid, status)
 
 * get the vital statistics for this variable
 

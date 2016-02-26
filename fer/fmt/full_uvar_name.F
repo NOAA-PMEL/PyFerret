@@ -46,6 +46,8 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
 *                  using original upper/lowercase spelling
+* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
+*                  added to that dataset in the attribute structure
 
 * calling argument declarations:
 	INTEGER	uvar
@@ -74,6 +76,10 @@
 	IF (.NOT.mode_upcase_output) THEN  ! get original variable name
 	   dset = pdset_uvars
 	   CALL CD_GET_VAR_ID (dset, uvar_name_code(uvar), varid, status)
+	   IF (status .NE. ferr_ok) THEN
+              dset = uvar_dset(uvar)
+	      CALL CD_GET_VAR_ID (dset, uvar_name_code(uvar), varid, status)
+	   ENDIF
 	   IF (status .EQ. ferr_ok) 
      .      CALL CD_GET_VAR_INFO (dset, varid, FULL_UVAR_NAME, vtype, 
      .            nvdims, vdims, nvatts, coordvar, outflag, status)

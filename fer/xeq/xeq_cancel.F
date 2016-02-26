@@ -146,6 +146,8 @@
 * V695 *acm*  9/15 Fix #2317: length of name sent to FIND_DSET_NUMBER
 * V698 *sh*  1/16 aggregation logic moved inside of CANCEL_DATA_SET
 * V698 *acm* 1/16 change remaining dset=-1 to the parameter dset=pdset_uvars
+* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
+*                  added to that dataset in the attribute structure.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -604,7 +606,7 @@
 	   CALL PURGE_ALL_UVARS
 	   DO 1110 ivar = 1, max_uvar
 	   IF (iset.EQ.unspecified_int4 .OR. iset.EQ.uvar_dset(ivar))
-     .				CALL DELETE_USER_VAR(ivar)     ! 7/97
+     .				CALL DELETE_USER_VAR(ivar, iset)     ! 7/97
  1110	   CONTINUE
 	   num_uvars_in_cmnd = cmnd_uvars_not_given  ! renders EX#n deleted 
 	ELSE
@@ -627,11 +629,21 @@
 * ... note: calling PURGE_ALL_UVARS for each individual deleted uvar is
 *		inefficient ... but cautious. (minimum labor implementation)
 	                  CALL PURGE_ALL_UVARS
-			  CALL DELETE_USER_VAR(ivar)         ! 7/97
+			  CALL DELETE_USER_VAR(ivar, iset)         ! 7/97
 	               ENDIF
 	            ENDIF
 1115	         CONTINUE
 	      ELSE
+* If /D was not given, look first in the global user-vars, then at LET/D vars
+* in the default datset.
+	         IF (iset .EQ. unspecified_int4) THEN  
+		    iset = pdset_uvars
+		    CALL PARSE_NAM_DSET( buff, cx_last, iset,
+     .			     category, variable, mod_cx, status )
+		    IF ( status.NE.ferr_ok .OR. variable.EQ.munknown_var_name) 
+     .			     iset = unspecified_int4
+		 ENDIF
+
 	         CALL PARSE_NAM_DSET( buff, cx_last, iset,
      .			     category, variable, mod_cx, status )
 	         IF ( status .NE. ferr_ok ) RETURN
@@ -643,7 +655,7 @@
      .			 category .NE. cat_user_var ) GOTO 1120
 		 ENDIF
 	         CALL PURGE_ALL_UVARS
-		 CALL DELETE_USER_VAR(variable)         ! 7/97
+		 CALL DELETE_USER_VAR(variable, iset)         ! 7/97
 	      ENDIF
  1120	   CONTINUE
 	ENDIF

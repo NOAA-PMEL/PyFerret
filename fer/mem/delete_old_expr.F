@@ -51,6 +51,9 @@
 * V540:  11/01 - initialize last_cmnd_buff
 *	         (formerly local array in get_prot_cmnd_data)
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
+*                  added to that dataset in the attribute structure. Extra
+*                  argument to DELETE_USER_VAR
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -60,7 +63,7 @@
 	include 'xprog_state.cmn'
 
 * internal variable declarations:
-	INTEGER	uvar, j, num_indices, result_array(max_uvar)
+	INTEGER	uvar, j, num_indices, result_array(max_uvar), dset
 
 * eliminate all user variables created by the last expression given
 *	DO 100 uvar = 1, max_uvar
@@ -68,10 +71,11 @@
         CALL deleted_list_get_undel(uvar_num_items_head,
      .                              result_array(1),
      .                              max_uvar, num_indices )
+        dset = pdset_uvars
         DO 100 j = 1, num_indices
            uvar = result_array(j)        
 	   IF ( uvar_name_code(uvar)(:3) .EQ. 'EX#' )
-     .					CALL DELETE_USER_VAR( uvar )
+     .					CALL DELETE_USER_VAR( uvar, dset )
  100	CONTINUE
 
 * remove memory of previous expressions

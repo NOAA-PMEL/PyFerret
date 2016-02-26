@@ -186,6 +186,8 @@
 * V698+ *sh*  11/15 to support TSERIES
 *	      ok_re_use_existing into TM_INIT_DSET call
 *	      SET DATA tseries_cmnds.agg gets passed to the GO command (a hack)
+* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
+*                  added to that dataset in the attribute structure.
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -1753,7 +1755,7 @@ c *kob* 4/97
 * Update attribute information used by plotting etc (ds_units, ...)
             CALL FIND_VAR_NAME (dset_num, varname, cat, uvar)
             IF (cat .EQ. cat_user_var .OR. cat .EQ. cat_file_var)
-     .           CALL UPDATE_ATTRIBUTES (dset_num, uvar)
+     .           CALL UPDATE_ATTRIBUTES (dset_num, varname, uvar)
 
         ENDIF
 	RETURN

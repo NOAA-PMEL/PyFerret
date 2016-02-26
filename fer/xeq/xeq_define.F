@@ -238,6 +238,8 @@
 * V698 1/16 *sh*   Allow DEFINE DATA/AGG w/out a name -- auto-name from script
 * V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
 *                  using original upper/lowercase spelling
+* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
+*                  added to that dataset in the attribute structure.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -738,7 +740,7 @@
               IF ( uvar_num_items(i1) .EQ. uvar_deleted ) GOTO 410
 * ... delete only if same name in same data set
 	      IF ( uvar_dset(i1) .EQ. dset ) THEN
-	         CALL DELETE_USER_VAR(i1)
+	         CALL DELETE_USER_VAR(i1, dset)
 	      ENDIF
 * ... reuse of name  makes all stored uvars possibly invalid
 *     Also invalidates any memory-cached results that used aux of this name
@@ -2162,7 +2164,7 @@ C /units=months  is 1/12 of the length of the year
 * Update attribute information used by plotting etc (ds_units, ...)
             CALL FIND_VAR_NAME (dset, varname, cat, uvar)
             IF (cat .EQ. cat_user_var .OR. cat .EQ. cat_file_var)
-     .           CALL UPDATE_ATTRIBUTES (dset, uvar)
+     .           CALL UPDATE_ATTRIBUTES (dset, varname, uvar)
 
 
 	RETURN

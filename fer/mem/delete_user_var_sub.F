@@ -1,4 +1,4 @@
-	SUBROUTINE DELETE_USER_VAR_SUB ( uvar )
+	SUBROUTINE DELETE_USER_VAR_SUB ( uvar, dset )
 
 *
 *
@@ -67,6 +67,8 @@
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V695+ 5/15 *sh* - free cached c array, if any
 * V695  7/15 *acm - reinitialize value of uvar_aux_stat to zero
+* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
+*                  added to that dataset in the attribute structure.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -79,12 +81,12 @@
 	include 'xrisc.cmn'
 
 * calling argument declarations:
-	INTEGER	uvar
+	INTEGER	uvar, dset
 
 * internal variable declarations:
-	INTEGER		STR_UPCASE, TM_LENSTR, TM_LENSTR1,
-     .			du_list( max_uvar ), ndu, kdu, uv, vax_code,
-     .			ind, i, j, num_indices, dset_uvars, slen, flen
+	INTEGER		STR_UPCASE, TM_LENSTR, TM_LENSTR1,du_list(max_uvar), 
+     .			ndu, kdu, uv, vax_code,ind, i, j, num_indices, iset, 
+     .			varid, slen, flen, status
 	CHARACTER*24	check_name
 
       PARAMETER (flen=128)      ! size of variable name string
@@ -163,12 +165,18 @@
 
         slen = TM_LENSTR( uvar_name_code(uvar)  )
         IF (slen .GT. 0 .AND. uvar_name_code(uvar)(1:3) .NE. 'EX#') THEN
-           slen = TM_LENSTR1( uvar_name_code(uvar)  )
-           CALL TM_FTOC_STRNG( uvar_name_code(uvar)(1:slen), fhol, flen )
-
-           dset_uvars = pdset_uvars
-           CALL NCF_DELETE_VAR (dset_uvars, fhol )
-        ENDIF
+	   iset = dset
+	   CALL CD_GET_VAR_ID (iset, uvar_name_code(uvar), varid, status)
+	   IF (status .NE. ferr_ok) THEN
+	      iset = uvar_dset(uvar)
+	      CALL CD_GET_VAR_ID (iset, uvar_name_code(uvar), varid, status)
+	   ENDIF
+	   IF (status .EQ. ferr_ok) THEN
+              slen = TM_LENSTR1( uvar_name_code(uvar)  )
+              CALL TM_FTOC_STRNG( uvar_name_code(uvar)(1:slen), fhol, flen )
+              CALL NCF_DELETE_VAR (iset, fhol )
+           ENDIF
+	ENDIF
 
 *	uvar_name_code( uvar ) = " "
         CALL string_array_modify(uvar_name_code_head, uvar, " ", 1 )

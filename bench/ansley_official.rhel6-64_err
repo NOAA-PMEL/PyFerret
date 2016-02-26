@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 81804383 Feb 18 12:10 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 81911985 Feb 25 16:50 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 1786; cancel mode upcase applies to SHOW commands
+Note: LET/D  variables and attributes (ticket 2352) 
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Thu Feb 18 12:11:11 PST 2016
+Beginning at Thu Feb 25 16:52:01 PST 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3250,234 +3250,6 @@ Bailing out of external function "eofsvd_space":
 
 Bailing out of external function "eofsvd_tfunc":
 	There are no spatial locations having complete time series.
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis YAXIS
@@ -3546,8 +3318,8 @@ Replacing definition of axis FAX4DAY
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
  **ERROR: unknown data set: dset 3 unknown or is already an aggregate dataset
 DEFINE DATA/AGGREGAT/E windy = 1,2,3
-           *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: UWND
-           *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: VWND
+           *** NOTE: Exclude variable from aggregate. T axis of grid differs in member datasets: UWND
+           *** NOTE: Exclude variable from aggregate. T axis of grid differs in member datasets: VWND
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
 DEFINE DATA/AGGREGAT/E windy = 1,2
@@ -3609,10 +3381,6 @@ DEFINE DATA/AGGREGAT/E windy = 1,2
  LISTing to file mytype.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Graphics limits settings to 250 line/thickness combinations plus existing spectrum colors
-           *** NOTE: Cannot draw /THICK=3 lines with current number of color levels = 65; THICK=1 or 2 will be ok
-           *** NOTE: Graphics limits settings to 250 line/thickness combinations plus existing spectrum colors
-           *** NOTE: Cannot draw /THICK=2 lines with current number of color levels = 65; THICK=1 will be ok
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4146,8 +3914,6 @@ Replacing definition of axis EAXIS
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Could not compute Std Dev. Data too large or or not within 3 std of computed mean.
-           *** NOTE: Using linear levels instead.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4427,9 +4193,6 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_single_6.nc
            *** NOTE: Not deleted: tday
            *** NOTE: Axis is in use by grid (G089)
-           *** NOTE: Ambiguous coordinates on T axis: T[G=MYVAR[D=MYAGG8]] - T[G=MYVAR[D=MYAGG8_DISORDERED1]]
-           *** NOTE: Ambiguous coordinates on T axis: TBOXLO[G=MYVAR[D=MYAGG8]] - TBOXLO[G=MYVAR[D=MYAGG8_DISORDERED1]]
-           *** NOTE: Ambiguous coordinates on T axis: TBOXHI[G=MYVAR[D=MYAGG8]] - TBOXHI[G=MYVAR[D=MYAGG8_DISORDERED1]]
  **ERROR: invalid command: given aggregation dataset name already in use: myagg2
 define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc, tmp/tagg_reg_2.nc
  **TMAP ERR: non-existent or not on line
@@ -4445,9 +4208,6 @@ define data/agg/t myagg3 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2_overlarge.nc,tmp/ta
  **TMAP ERR: Unknown variable code
              in file tmp/tagg_disjoint_T0varying_4_wrong.nc time axis variable is missing: TDAY_TVAR
 define data/agg/t myagg5_bad = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc,tmp/tagg_disjoint_T0varying_3.nc, tmp/tagg_disjoint_T0varying_4_wrong.nc,tmp/tagg_disjoint_T0varying_5.nc
-           *** NOTE: Ambiguous coordinates on T axis: T[G=MYVAR[D=MYSING_IRREG_AGG4]] - T[G=MYVAR[D=MYSING_IRREG_AGG4_DISORDERED1]]
-           *** NOTE: Ambiguous coordinates on T axis: TBOXLO[G=MYVAR[D=MYSING_IRREG_AGG4]] - TBOXLO[G=MYVAR[D=MYSING_IRREG_AGG4_DISORDERED1]]
-           *** NOTE: Ambiguous coordinates on T axis: TBOXHI[G=MYVAR[D=MYSING_IRREG_AGG4]] - TBOXHI[G=MYVAR[D=MYSING_IRREG_AGG4_DISORDERED1]]
  **ERROR: unknown command: garbage
 garbage command syntax
  **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_single_1.nc
@@ -4517,10 +4277,7 @@ Replacing definition of axis TRUEMONTH
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, bn_aggregate_f.sub
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
-           *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC]
-           *** NOTE: Ambiguous coordinates on F axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC]
            *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
-           *** NOTE: Ambiguous coordinates on F axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
  **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
 DEFINE DATA/AGGREGAT/F my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc,tmp/fcst_2.nc,tmp/fcst_3.nc
  **TMAP ERR: non-existent or not on line
@@ -4530,6 +4287,180 @@ DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/no_exist.nc")
 DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/consecutive_month_fcst.nc")
  **ERROR: error defining aggregate dataset: forecast start times are irregular or too gappy
 DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/irregular_start_time_fcst.nc")
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis YAX
+Replacing definition of axis ZAX
+Replacing definition of axis TRUEMONTH
+ LISTing to file tmp/f01_e1_t1.nc
+ LISTing to file tmp/f01_e1_t2.nc
+ LISTing to file tmp/f01_e1_t3.nc
+ LISTing to file tmp/f01_e2_t1.nc
+ LISTing to file tmp/f01_e2_t2.nc
+ LISTing to file tmp/f01_e2_t3.nc
+ LISTing to file tmp/f01_e3_t1.nc
+ LISTing to file tmp/f01_e3_t2.nc
+ LISTing to file tmp/f01_e3_t3.nc
+ LISTing to file tmp/f01_e4_t1.nc
+ LISTing to file tmp/f01_e4_t2.nc
+ LISTing to file tmp/f01_e4_t3.nc
+ LISTing to file tmp/f01_e5_t1.nc
+ LISTing to file tmp/f01_e5_t2.nc
+ LISTing to file tmp/f01_e5_t3.nc
+ LISTing to file tmp/f02_e1_t1.nc
+ LISTing to file tmp/f02_e1_t2.nc
+ LISTing to file tmp/f02_e1_t3.nc
+ LISTing to file tmp/f02_e2_t1.nc
+ LISTing to file tmp/f02_e2_t2.nc
+ LISTing to file tmp/f02_e2_t3.nc
+ LISTing to file tmp/f02_e3_t1.nc
+ LISTing to file tmp/f02_e3_t2.nc
+ LISTing to file tmp/f02_e3_t3.nc
+ LISTing to file tmp/f02_e4_t1.nc
+ LISTing to file tmp/f02_e4_t2.nc
+ LISTing to file tmp/f02_e4_t3.nc
+ LISTing to file tmp/f02_e5_t1.nc
+ LISTing to file tmp/f02_e5_t2.nc
+ LISTing to file tmp/f02_e5_t3.nc
+ LISTing to file tmp/f03_e1_t1.nc
+ LISTing to file tmp/f03_e1_t2.nc
+ LISTing to file tmp/f03_e1_t3.nc
+ LISTing to file tmp/f03_e2_t1.nc
+ LISTing to file tmp/f03_e2_t2.nc
+ LISTing to file tmp/f03_e2_t3.nc
+ LISTing to file tmp/f03_e3_t1.nc
+ LISTing to file tmp/f03_e3_t2.nc
+ LISTing to file tmp/f03_e3_t3.nc
+ LISTing to file tmp/f03_e4_t1.nc
+ LISTing to file tmp/f03_e4_t2.nc
+ LISTing to file tmp/f03_e4_t3.nc
+ LISTing to file tmp/f03_e5_t1.nc
+ LISTing to file tmp/f03_e5_t2.nc
+ LISTing to file tmp/f03_e5_t3.nc
+ LISTing to file tmp/f04_e1_t1.nc
+ LISTing to file tmp/f04_e1_t2.nc
+ LISTing to file tmp/f04_e1_t3.nc
+ LISTing to file tmp/f04_e2_t1.nc
+ LISTing to file tmp/f04_e2_t2.nc
+ LISTing to file tmp/f04_e2_t3.nc
+ LISTing to file tmp/f04_e3_t1.nc
+ LISTing to file tmp/f04_e3_t2.nc
+ LISTing to file tmp/f04_e3_t3.nc
+ LISTing to file tmp/f04_e4_t1.nc
+ LISTing to file tmp/f04_e4_t2.nc
+ LISTing to file tmp/f04_e4_t3.nc
+ LISTing to file tmp/f04_e5_t1.nc
+ LISTing to file tmp/f04_e5_t2.nc
+ LISTing to file tmp/f04_e5_t3.nc
+ LISTing to file tmp/f05_e1_t1.nc
+ LISTing to file tmp/f05_e1_t2.nc
+ LISTing to file tmp/f05_e1_t3.nc
+ LISTing to file tmp/f05_e2_t1.nc
+ LISTing to file tmp/f05_e2_t2.nc
+ LISTing to file tmp/f05_e2_t3.nc
+ LISTing to file tmp/f05_e3_t1.nc
+ LISTing to file tmp/f05_e3_t2.nc
+ LISTing to file tmp/f05_e3_t3.nc
+ LISTing to file tmp/f05_e4_t1.nc
+ LISTing to file tmp/f05_e4_t2.nc
+ LISTing to file tmp/f05_e4_t3.nc
+ LISTing to file tmp/f05_e5_t1.nc
+ LISTing to file tmp/f05_e5_t2.nc
+ LISTing to file tmp/f05_e5_t3.nc
+ LISTing to file tmp/f06_e1_t1.nc
+ LISTing to file tmp/f06_e1_t2.nc
+ LISTing to file tmp/f06_e1_t3.nc
+ LISTing to file tmp/f06_e2_t1.nc
+ LISTing to file tmp/f06_e2_t2.nc
+ LISTing to file tmp/f06_e2_t3.nc
+ LISTing to file tmp/f06_e3_t1.nc
+ LISTing to file tmp/f06_e3_t2.nc
+ LISTing to file tmp/f06_e3_t3.nc
+ LISTing to file tmp/f06_e4_t1.nc
+ LISTing to file tmp/f06_e4_t2.nc
+ LISTing to file tmp/f06_e4_t3.nc
+ LISTing to file tmp/f06_e5_t1.nc
+ LISTing to file tmp/f06_e5_t2.nc
+ LISTing to file tmp/f06_e5_t3.nc
+ LISTing to file tmp/f07_e1_t1.nc
+ LISTing to file tmp/f07_e1_t2.nc
+ LISTing to file tmp/f07_e1_t3.nc
+ LISTing to file tmp/f07_e2_t1.nc
+ LISTing to file tmp/f07_e2_t2.nc
+ LISTing to file tmp/f07_e2_t3.nc
+ LISTing to file tmp/f07_e3_t1.nc
+ LISTing to file tmp/f07_e3_t2.nc
+ LISTing to file tmp/f07_e3_t3.nc
+ LISTing to file tmp/f07_e4_t1.nc
+ LISTing to file tmp/f07_e4_t2.nc
+ LISTing to file tmp/f07_e4_t3.nc
+ LISTing to file tmp/f07_e5_t1.nc
+ LISTing to file tmp/f07_e5_t2.nc
+ LISTing to file tmp/f07_e5_t3.nc
+ LISTing to file tmp/f08_e1_t1.nc
+ LISTing to file tmp/f08_e1_t2.nc
+ LISTing to file tmp/f08_e1_t3.nc
+ LISTing to file tmp/f08_e2_t1.nc
+ LISTing to file tmp/f08_e2_t2.nc
+ LISTing to file tmp/f08_e2_t3.nc
+ LISTing to file tmp/f08_e3_t1.nc
+ LISTing to file tmp/f08_e3_t2.nc
+ LISTing to file tmp/f08_e3_t3.nc
+ LISTing to file tmp/f08_e4_t1.nc
+ LISTing to file tmp/f08_e4_t2.nc
+ LISTing to file tmp/f08_e4_t3.nc
+ LISTing to file tmp/f08_e5_t1.nc
+ LISTing to file tmp/f08_e5_t2.nc
+ LISTing to file tmp/f08_e5_t3.nc
+ LISTing to file tmp/f09_e1_t1.nc
+ LISTing to file tmp/f09_e1_t2.nc
+ LISTing to file tmp/f09_e1_t3.nc
+ LISTing to file tmp/f09_e2_t1.nc
+ LISTing to file tmp/f09_e2_t2.nc
+ LISTing to file tmp/f09_e2_t3.nc
+ LISTing to file tmp/f09_e3_t1.nc
+ LISTing to file tmp/f09_e3_t2.nc
+ LISTing to file tmp/f09_e3_t3.nc
+ LISTing to file tmp/f09_e4_t1.nc
+ LISTing to file tmp/f09_e4_t2.nc
+ LISTing to file tmp/f09_e4_t3.nc
+ LISTing to file tmp/f09_e5_t1.nc
+ LISTing to file tmp/f09_e5_t2.nc
+ LISTing to file tmp/f09_e5_t3.nc
+ LISTing to file tmp/f10_e1_t1.nc
+ LISTing to file tmp/f10_e1_t2.nc
+ LISTing to file tmp/f10_e1_t3.nc
+ LISTing to file tmp/f10_e2_t1.nc
+ LISTing to file tmp/f10_e2_t2.nc
+ LISTing to file tmp/f10_e2_t3.nc
+ LISTing to file tmp/f10_e3_t1.nc
+ LISTing to file tmp/f10_e3_t2.nc
+ LISTing to file tmp/f10_e3_t3.nc
+ LISTing to file tmp/f10_e4_t1.nc
+ LISTing to file tmp/f10_e4_t2.nc
+ LISTing to file tmp/f10_e4_t3.nc
+ LISTing to file tmp/f10_e5_t1.nc
+ LISTing to file tmp/f10_e5_t2.nc
+ LISTing to file tmp/f10_e5_t3.nc
+ LISTing to file tmp/f11_e1_t1.nc
+ LISTing to file tmp/f11_e1_t2.nc
+ LISTing to file tmp/f11_e1_t3.nc
+ LISTing to file tmp/f11_e2_t1.nc
+ LISTing to file tmp/f11_e2_t2.nc
+ LISTing to file tmp/f11_e2_t3.nc
+ LISTing to file tmp/f11_e3_t1.nc
+ LISTing to file tmp/f11_e3_t2.nc
+ LISTing to file tmp/f11_e3_t3.nc
+ LISTing to file tmp/f11_e4_t1.nc
+ LISTing to file tmp/f11_e4_t2.nc
+ LISTing to file tmp/f11_e4_t3.nc
+ LISTing to file tmp/f11_e5_t1.nc
+ LISTing to file tmp/f11_e5_t2.nc
+ LISTing to file tmp/f11_e5_t3.nc
+ LISTing to file tmp/f04_e3_t1_1v.nc
+ LISTing to file tmp/f04_e3_t2_1v.nc
+ LISTing to file tmp/f04_e3_t3_1v.nc
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4549,6 +4480,10 @@ Replacing definition of axis tday
  TEMPORARY data cleared from memory
 SHO VAR/XML
 SHO VAR/XML
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4654,4 +4589,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Feb 18 12:13:46 PST 2016
+Ended at Thu Feb 25 16:54:30 PST 2016

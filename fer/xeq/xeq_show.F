@@ -194,6 +194,8 @@
 *                   compressed or subset of axes
 * V697  12/15 *acm* Fix call to routine SHOW_GRID
 * V698 *sh* 1/16 Removed "Ferret-defined" annotation
+* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
+*                  added to that dataset in the attribute structure.
 *           2/16 replaced char_init with char_init16 (untested) 
 *                (this is the *only* place in all the code using char_init)
 
@@ -1750,7 +1752,15 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
               IF (dset .EQ. pdset_irrelevant .OR. 
      .            dset .EQ. unspecified_int4) GO TO 5072
 
+* Check for the attribute info in "dset" found above, 
+* or in the default datset indicated by cx_data_set(cx_last)
+
               CALL CD_GET_VAR_ID (dset, varname, varid, status)
+              IF (status .NE. ferr_ok) THEN
+	         iset = cx_data_set(cx_last)
+		 CALL CD_GET_VAR_ID (iset, varname, varid, status)
+		 IF (status .EQ. ferr_ok) dset = iset
+	      ENDIF
               IF (status .NE. ferr_ok .OR. dset .EQ. unspecified_int4 .OR.
      .           (varid .EQ. 0 .AND.
      .           .NOT.TM_HAS_STRING(varname, '.')) ) GOTO 5200

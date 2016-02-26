@@ -1,10 +1,8 @@
-	SUBROUTINE DELETE_USER_VAR ( uvar, iset )
+      SUBROUTINE CD_GET_VAR_UVFLAG (dset, varid, uvflag, status)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -35,52 +33,32 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* delete a user-defined variable 
-* First locate each of its children and delete them
+* Read the linked list structure for netcdf variable information: 
+* given dset and variable id return the flag indicating file 
+* variable vs user-variable
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* Programmer Ansley Manke
+* NOAA/PMEL, Seattle, WA - TMAP
 
-* V450 7/97 - guts of routine moved to DELETE_USER_VAR_SUB
-* V510 *sh* 1/00 - bug fixes to support nested GC variables
-*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
-* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
-*                  added to that dataset in the attribute structure. Extra
-*                  argument to DELETE_USER_VAR
+* V698 2/16 *acm* 
 
-        IMPLICIT NONE
-        include 'tmap_dims.parm'
-	include 'ferret.parm'
-	include 'xvariables.cmn'
+* include files
+#include "gt_lib.parm"
+      INCLUDE "tmap_errors.parm"
 
-* calling argument declarations:
-	INTEGER	uvar, iset
+* Argument declarations
 
-* internal variable declarations:
-	INTEGER	i, uv, uvar_ancestor, num_indices, 
-     .          result_array(max_uvar), dset
+      INTEGER dset, varid, uvflag
 
-* delete child vars
-*	DO 200 uv = 1, max_uvar
-*	   IF ( uvar_num_items( uv ) .EQ. uvar_deleted ) GOTO 200
-        CALL deleted_list_get_undel(uvar_num_items_head, 
-     .                          result_array(1),
-     .                          max_uvar, num_indices )
-         DO 200 i =1, num_indices
-           uv = result_array(i)
-* ... delete if this variable is a child of uvar 
-*	uvar_name_code for child vars is "(Cnnn,Vmmm)" -- the "mmm" is the ancestor
-	   IF (uvar_name_code(uv)(1:2) .NE. '(C' ) GOTO 200
-	   READ (uvar_name_code(uv)(8:10),'(I3)',ERR=200) uvar_ancestor
-	   dset = pdset_uvars
-	   IF (uvar_ancestor.EQ.uvar) CALL DELETE_USER_VAR_SUB(uv, dset)
- 200	CONTINUE
+* Internal declarations
 
-* now delete the variable itself
-	dset = iset
-	IF (dset.EQ.unspecified_int4 .OR. 
-     .      dset.EQ.pdset_irrelevant) dset = pdset_uvars
-        CALL DELETE_USER_VAR_SUB(uvar, dset)
-	      
-	RETURN
-	END
+      INCLUDE 'netcdf.inc'
+
+      INTEGER NCF_GET_VAR_UVFLAG, dset_num, status
+
+      dset_num = dset
+      IF (dset_num .LT. -2) dset_num = -2
+      status = NCF_GET_VAR_UVFLAG(dset_num, varid, uvflag)
+
+ 5000 RETURN
+      END

@@ -128,6 +128,8 @@
 *                 routine gets those attributes per variable from the dataset being written.
 * V695 *acm* 7/15 If they said LIST/QUIET, don't do all the warnings and NOTEs
 * V698 *acm* 1/16 Allow for Epic CDF files, ds_type = 'ECDF'
+* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
+*                  added to that dataset in the attribute structure
 
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -336,13 +338,22 @@
 * is it in the linked-list for dset. If so get attr info, including original 
 * upper/lowercase form of the name. If mode upcase_output is set, then upcase 
 * the variable name.
+* If it is a LET/D= user-var its linked list info is with that datset.
  
 * For user-defined variables, with double-precision Ferret, write as double-precision
 * unless the user has requested otherwise.
 
            itsa_uvar = cat .EQ. cat_user_var
-           IF (itsa_uvar .OR. dset .EQ. pdset_irrelevant) dset = pdset_uvars
+	   IF (dset .EQ. pdset_irrelevant) dset = pdset_uvars
+	   IF (itsa_uvar .AND. dset .LE. pdset_irrelevant)  dset = pdset_uvars
            CALL CD_GET_VAR_ID (dset, varcode, varid, status)
+	   IF (status .NE. ferr_ok) THEN
+	      IF (itsa_uvar .AND. dset.GE.pdset_irrelevant) THEN
+	         dset = pdset_uvars
+		 CALL CD_GET_VAR_ID (dset, varcode, varid, status)
+		 IF (status .NE. ferr_ok) dset = dset_last
+	      ENDIF
+	   ENDIF
 
            vartype = 0
            outtype = 0
@@ -352,8 +363,8 @@
      .            vdims, nvatts, coordvar, all_outflag, status)
               varcode = varname
               IF (mode_upcase_output) CALL STR_UPCASE( varcode, varname)
-              IF (dset .EQ. pdset_uvars) THEN  !for user vars type not known in attrib structure
-                 vartype = 6  ! netcdf nf_double
+              IF (itsa_uvar) THEN  ! for user vars type not known in attrib structure
+                 vartype = 6       ! netcdf nf_double
                  IF (itsa_string) vartype = 2
               ENDIF
               outtype = vartype
@@ -537,6 +548,7 @@
 	   ENDIF
            IF (type .NE. 0 .AND. varid .GT. 0) type = outtype
            IF (dset .EQ. pdset_uvars) type = outtype
+           IF (itsa_uvar) type = outtype 
            IF (type .EQ. 0) outtype = vartype
 
 * create the variable and its grid (coordinate output gets deferred)
@@ -699,7 +711,8 @@
                        IF (attype .NE. outtype .AND. istat .EQ. ferr_ok)  THEN
                           alen = TM_LENSTR1(typnam(attype))
                           slen = TM_LENSTR1(typnam(outtype))
-                          IF (dset .GT. 0 .AND. do_warn) CALL WARN (
+                          IF ((.NOT.itsa_uvar) .AND. (dset .GT. 0 .AND. do_warn)) 
+     .                      CALL WARN (
      .                      'Converting data type of missing_value '//
      .                       typnam(attype)(1:alen)//
      .                      ' to match output type of variable '//
@@ -1208,6 +1221,9 @@
          CALL TM_NOTE( 'Use the LET command to define a legal name',
      .                 err_lun )
          GOTO 5800
+ 5220    CALL ERRMSG ( ferr_syntax, status,
+     .                 'error writing variable: '//varcode,
+     .                 *5800 )
 
  5300    CALL ERRMSG ( ferr_invalid_command, status,
      .                 'Exceeds grid limits: '//

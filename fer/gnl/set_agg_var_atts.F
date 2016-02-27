@@ -43,6 +43,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V698 *sh* 2/16 
+* V698 *acm* 2/16 LET/D variables are now stored with their associated datset
+*                 in the List structure so can get their attribute info
 
         INCLUDE 'tmap_dims.parm'
         INCLUDE 'ferret.parm'
@@ -64,7 +66,7 @@
 
 * calling argument declarations
     	INTEGER agg_dset, aggv_slot, nsets, 
-     .          ref_fvar, memb_set(nsets), status
+     .          ref_fvar, memb_set(*), status
         CHARACTER*128 vname
 
 * Local variable declarations
@@ -96,6 +98,7 @@
         IF (status .NE. ferr_ok) GOTO 5200
 
 * Get var ids for member variables
+        imemb = 1
         DO imemb = 1, nsets
 
 * skip dummy datasets
@@ -103,20 +106,16 @@
               memb_id(imemb) = unspecified_int4
               CYCLE
            ENDIF
-! ---
-! as of 2/2016 LET/D vars are not represented in the List structure of a
-! dataset.  We will skip over inheritance of their attributes for now
+
+* LET/D vars are represented in the List structure of their assigned
+* dataset. Treat as for any file variable
 	   CALL CD_GET_AGG_VAR_INFO (agg_dset, vname(:vlen), imemb, 
      .         m_cat, m_dset, m_grid, m_ens_ax, m_var, status)
            IF (status .NE. ferr_ok) GOTO 5200
-           IF (m_cat .EQ. cat_user_var) THEN
-              memb_id(imemb) = unspecified_int4
-! ---
-           ELSE
-              CALL CD_GET_VAR_ID (memb_set(imemb), vname(:vlen),
+           CALL CD_GET_VAR_ID (memb_set(imemb), vname(:vlen),
      .                         memb_id(imemb), status)
-              IF (status .NE. ferr_ok) GOTO 5200
-           ENDIF
+           IF (status .NE. ferr_ok) GOTO 5200
+
         ENDDO
 
 * Get number of attributes from the reference variable
@@ -130,8 +129,8 @@
         attloop: DO iatt = 1, nvatts
            CALL CD_GET_VAR_ATT_NAME (ref_dset, ref_id, iatt, attname, status)
 
-! ?? better: use UPDATE_ATTRIBUTES to set these after normal inheritance
-* ignore special attributes
+* Ignore basic attributes. These are already defined.
+*?? Check the attribute values from each member?
            IF (attname .EQ. 'units'
      .    .OR. attname .EQ. 'long_name'
      .    .OR. attname .EQ. '_FillValue'
@@ -148,8 +147,9 @@
      .                              attlen, attoutflag,
      .                              attstr, attvals )
            IF (.NOT.got_it) GOTO 5200
-
+	   
 * ensure that the attribute is identical in all member variables
+
            DO imemb = 1, nsets
 
 * ... skip over dummy members
@@ -198,11 +198,16 @@
 
         ENDDO attloop
 
-!* transfer the List attributes to ds_var_units, ds_var_title, etc.
-!        CALL UPDATE_ATTRIBUTES (agg_dset, aggv_slot)
-
+* Do not call UPDATE_ATTRIBUTES. The title, units, missing etc were
+* already set in defining the variable in the aggregation.
+cc        CALL UPDATE_ATTRIBUTES (agg_dset, vname, aggv_slot, status)
+cc        IF (status .NE. ferr_ok) GOTO 5200
 
 * success
+* (status may have been set to atom_not_found on a missing attribute.
+*  Set to ferr_ok.)
+
+	status = ferr_ok
         RETURN
 
 * error exits

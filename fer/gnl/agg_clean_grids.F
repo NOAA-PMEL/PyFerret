@@ -1,4 +1,4 @@
-	SUBROUTINE EF_CLEAN_GRIDS( dset, agg_dim, ens_ax, tlag_ax  )
+	SUBROUTINE AGG_CLEAN_GRIDS( dset, agg_dim, ens_ax, tlag_ax  )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric

@@ -548,6 +548,9 @@
 * ... "use" the pre-existing on; "un-use" the new one
 	            CALL TM_USE_LINE(pre_exist)
 	            CALL TM_DEALLO_DYN_LINE(taxis)
+	            taxis = pre_exist
+	            ds_time_axis(dset_num) = taxis
+	            swap_axes = .FALSE. ! done swapping
 	         ENDIF
 	      ENDIF
 	   ENDIF

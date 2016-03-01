@@ -1,5 +1,3 @@
-
-
 	SUBROUTINE LINE_FACTS( lun, idim, grid, orient, uvar )
 
 *
@@ -174,6 +172,7 @@
 
 * report information about the subsetting or compressing of the grid.
 
+* FERRET DOCUMENTATION: implicit grid modifications of LET vars (e.g. @AVE)
 * From merge_grid:
 * There are subtlities associated with limits that are given in the UVAR
 * definition.  These are classified in uvar_given under these codings:

@@ -46,6 +46,7 @@ purge_dset.F\
 purge_file_var.F\
 purge_mr_axis.F\
 purge_mr_grid.F\
+purge_one_dset.F\
 purge_user_var.F\
 purge_all_memory.F\
 r_cgrid_size_delta.F\

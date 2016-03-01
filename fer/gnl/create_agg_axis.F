@@ -108,7 +108,7 @@
 !	ENDIF
 	line_name_orig( iline ) = line_name ( iline )
 
-! this code not needed.  EF_CLEAN_GRIDS takes care of removing dups
+! this code not needed.  AGG_CLEAN_GRIDS takes care of removing dups
 !* now check to see if an identical axis already exists.  If so, then
 !* use the pre-existing one, instead
 !	pre_exist = TM_FIND_LIKE_DYN_LINE( iline )

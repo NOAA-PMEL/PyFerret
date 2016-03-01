@@ -54,6 +54,7 @@
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
+	include 'xtm_grid.cmn_text'   ! for grid_line
 
 * calling argument declarations:
 	INTEGER	status
@@ -72,7 +73,7 @@
      .		attoutflag, got_it, itsa_dummy
 	INTEGER NCF_GET_ATTR_FROM_ID, TM_LENSTR1, STR_SAME, KNOWN_GRID,
      .		com_mr, res_mr, com_cx, res_cx,	com_isp, res_isp,
-     .		agg_dim, top, imemb, memb_dset, iline,
+     .		agg_dim, top, imemb, memb_dset, iline, idim,
      .		varid, attlen, maxlen, agg_dset, slen, vlen,
      .		orig_cat, orig_var, orig_grid,
      .		 com_cat,  com_var,  com_grid
@@ -177,7 +178,7 @@
 
 * grid must not have changed since DEFINE DATA/AGG
 	com_grid = KNOWN_GRID(memb_dset, com_cat, com_var)
-	IF (com_grid .EQ. unspecified_int4) THEN
+	IF (com_grid .EQ. unspecified_int4) THEN   ! can only be a uvar
 * ... GET_UVAR_GRID uses the interp_stack, so bump isp
 	   isp = com_isp
 	   CALL GET_UVAR_GRID( com_var, memb_dset, status )
@@ -185,12 +186,19 @@
            IF ( status .NE. ferr_ok ) GOTO 5000
 	   com_grid = KNOWN_GRID(memb_dset, com_cat, com_var)
 	ENDIF
-	IF (.NOT.TM_SAME_GRID_DEF(com_grid,orig_grid)) CALL ERRMSG(
-     .		ferr_aggregate_error, status,
-     .		'coordinate grid of '// vname(:vlen)//
-     .		' has changed in agg member '//LEFINT(imemb,slen), *5000)
+	IF (.NOT.TM_SAME_GRID_DEF(com_grid,orig_grid)) GOTO 5100
+
+* illegal for a LET/D def'n to compress an axis out of the grid
+	IF (com_cat .EQ. cat_user_var) THEN
+	   DO idim = 1, nferdims
+	      IF (grid_line(idim,com_grid) .NE. mnormal) THEN
+	         IF (uvar_given(idim,com_var).EQ.uvlim_gvn_xact) GOTO 5100
+	      ENDIF
+	   ENDDO
+	ENDIF
 
 * Unspecified limits on agg-direction are retained from previous component
+* so need not be re-set -- hence comment out
 !	CALL DEL_CX_DIM(agg_dim, com_cx)   ! in IS_STRIP
 !	cx_by_ss(agg_dim,com_cx) = .TRUE.  ! in IS_STRIP
 
@@ -224,4 +232,8 @@
 
 * error exit
  5000	RETURN
+ 5100	CALL ERRMSG(
+     .		ferr_aggregate_error, status,
+     .		'grid definition of '// vname(:vlen)//
+     .		' has changed in agg member '//LEFINT(imemb,slen), *5000)
 	END	

@@ -319,7 +319,7 @@
 	ENDDO
  
 * remove duplicate temp grid definitions amd makegrid names unique
-	CALL EF_CLEAN_GRIDS(agg_dset, agg_dim, iline, tf_lag_t)
+	CALL AGG_CLEAN_GRIDS(agg_dset, agg_dim, iline, tf_lag_t)
 
 * set use counts and remove temp status of agg grids and axes
 	CALL TM_GARB_COL_GRIDS(agg_dset)

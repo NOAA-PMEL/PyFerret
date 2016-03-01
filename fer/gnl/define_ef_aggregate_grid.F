@@ -122,7 +122,7 @@
 * Make up a unique grid name for aggregate grid
          IF (agg_dim .EQ. e_dim) grid_name(igrid) = 'GEN'
          IF (agg_dim .EQ. f_dim) grid_name(igrid) = 'GFN'
-! as temps all have same name -- duplicates are resolved in EF_CLEAN_GRIDS
+! as temps all have same name -- duplicates are resolved in AGG_CLEAN_GRIDS
 !         CALL TM_NEW_GRID_NAME( grid_name(igrid), buff )
 !         grid_name(igrid) = buff
 

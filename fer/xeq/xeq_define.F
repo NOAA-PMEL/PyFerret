@@ -359,7 +359,7 @@
 	LOGICAL	  TM_DIGIT, TM_LEGAL_NAME, TM_LINE_MATCH, TM_GRID_MATCH,
      .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, MATCH_NAME,
      .            NC_GET_ATTRIB, TM_LENSTR, TM_LEGAL_NAME_OP, TM_HAS_STRING,
-     .            ITSA_1LINEIF, MATCH4, GO_FILE_INPUT,
+     .            ITSA_1LINEIF, MATCH4, GO_FILE_INPUT, IS_AGG_MEMBER,
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
      .            new_att, new_att_modulo, got_it, orient_t, agg_quiet,
@@ -701,21 +701,28 @@
 
 * cannot use [d= in the remote var-- the expression is evaluated on the
 * remote server; same dsets not open there.
-	IF (its_remote.AND. TM_HAS_STRING(cmnd_buff(pos:len_cmnd), 'd=') ) GOTO 5490
+	IF (its_remote.AND. TM_HAS_STRING(cmnd_buff(pos:len_cmnd), 'd=') )
+     .                                                         GOTO 5490
 
 	CALL ALG_ID( cmnd_buff(pos:len_cmnd), natom, at_start, at_end,
      .		     at_type, at_id, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * if this definition replaces a variable of the same name in this data set
-* then purge cached calculations (8/95)
 	IF ( dset .GT. pdset_irrelevant ) THEN
 	   CALL FIND_VAR_NAME ( dset, buff1, cat, var )
+* ... purge cached calculations (8/95)
 	   IF ( cat .EQ. cat_file_var
      .	  .AND. var .NE. munknown_var_name ) CALL PURGE_ALL_UVARS
+* ... purge any aggregations that utilize this dataset as a member
+*     Note: this is a little stricter than need be, as there is a
+*     chance that the specific variable may not be a member of the agg, even
+*     though the dataset is.  But this will be a rare situation ...
+*     ... arguments i and got_it are ignored
+           IF (IS_AGG_MEMBER(dset, 1, i, got_it)) CALL PURGE_DSET(dset)
 	ENDIF
 
-* if this is a global forground definition that replaces any variable
+* if this is a global foreground definition that replaces any variable
 * then purge cached calculations (8/95)
 	IF ( dset .EQ. unspecified_int4 ) THEN
 	   CALL FIND_VAR_NAME ( dset, buff1, cat, var )
@@ -762,7 +769,8 @@
         ENDIF
 
 * purge user variables and aux var dependencies if needed
-        IF (purge_all) CALL PURGE_ALL_UVARS !not done above for pdset_irrelevant
+        IF (purge_all) CALL PURGE_ALL_UVARS !not done above for pdset_irrelevan
+
 
 * now file the expression in the user-defined variable area
 	CALL INIT_UVAR ( buff1, cmnd_buff(pos:len_cmnd), buff3, buff2, dset,

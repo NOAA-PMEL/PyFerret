@@ -146,10 +146,31 @@ fmrc/hide tef_letd = te_f01, te_f02, te_f03, te_f04_letd, te_f05, te_f06, te_f07
 let diag_fcst_2 = fcst_2[gt(tf_times)=TF_CAL_T,gf(tf_times)=TF_LAG_F]
 let rel_err_2 = (diag_fcst_2[m=1:5@ave]-diag_fcst_2[m=3])/diag_fcst_2[m=3]
 
-!run in diagnostic mode look for "eval FCST_2" to confirm LET/D eval
+! can run in diagnostic mode and look for "eval FCST_2" to confirm LET/D eval
 set data tef_letd
 stat/brief/x=150E/y=15n/Z=0 diag_fcst_2
 stat/brief/x=150E/y=15n/Z=0 IF ABS(rel_err_2) LT epsilon THEN 0.0 ELSE rel_err_2
+! demonstrate redefining the LET/D variable without re-defining the agg
+! Look at the column 3 ("e3"), row 4 ("f04") to see  2.110 => 4.110
+list/x=150E/y=15n/Z=0/L=10 fcst_2
+let/d=t_f04_e3_1v fcst_2 = fcst + 2 + 2   ! add 2 
+list/x=150E/y=15n/Z=0/L=10 fcst_2
+
+! deliberate errors:
+SET MODE IGNORE
+! a new LET definition that alters the grid of the result is not acceptable
+let/d=t_f04_e3_1v fcst_2 = X[x=1:5]+Y[gy=fcst]+Z[gy=fcst]+T[gy=fcst] ! X ax chg
+list/x=150E/y=15n/Z=0/L=10 fcst_2
+
+! any LET definition that compresses an axis from the grid is not acceptable
+let/d=t_f04_e3_1v fcst_2 = fcst[l=1:5@ave]
+list/x=150E/y=15n/Z=0/L=10 fcst_2
+SET MODE/LAST IGNORE
+
+! now restore the original definition and verify it again works
+let/d=t_f04_e3_1v fcst_2 = fcst + 2
+list/x=150E/y=15n/Z=0/L=10 fcst_2
+
 ! ======== TEST SET 2:  aggregate F first, then E
 fmrc      tf_e1 = t_f01_e1, t_f02_e1, t_f03_e1, t_f04_e1, t_f05_e1, t_f06_e1, t_f07_e1, t_f08_e1, t_f09_e1, t_f10_e1, t_f11_e1
 fmrc/hide tf_e2 = t_f01_e2, t_f02_e2, t_f03_e2, t_f04_e2, t_f05_e2, t_f06_e2, t_f07_e2, t_f08_e2, t_f09_e2, t_f10_e2, t_f11_e2
@@ -195,6 +216,3 @@ ENSEMBLE tfe_short = tf_e1, tf_e2_short, tf_e3, tf_e4, tf_e5
 set mode/last ignore
 
 CANCEL DATA/ALL
-! TBD:
-! more deliberate errors
-! test E-agg of TDS FMRCs

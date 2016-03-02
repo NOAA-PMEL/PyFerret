@@ -185,8 +185,6 @@ c Recompute data mean.
 	         IF (ok) THEN
                     sum = sum + x
                     n2 = n2 + 1
-                 ELSE
-		    nothing = 0
                  ENDIF
               ENDIF
   200      CONTINUE

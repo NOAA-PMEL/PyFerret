@@ -24,7 +24,7 @@ SHOW DATA
 ! Plot the amplitude spectrum vs frequency.
 
 LET FFT_uwndtim = uwnd[x=150e:130w@ave,y=20n:40n@ave]
-LET FFT_uwndfft = FFTA(FFT_uwndtim[l=1:132])
+LET FFT_uwndfft = FFTA(FFT_uwndtim)
 SET VARIABLE/TITLE="Amplitude Spectrum" FFT_uwndfft
 
 SET WINDOW/SIZ=0.4

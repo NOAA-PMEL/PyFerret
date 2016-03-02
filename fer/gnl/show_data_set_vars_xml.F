@@ -59,6 +59,9 @@
 * V685 *acm* 2/13  Always list the default Ferret bad-flag in the xml header. The script 
 *                  get_datavar.jnl under LAS iosp/scripts makes sure that is the value written 
 *                  to the netcdf data files.
+* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
+*                  added to that dataset in the attribute structure, 
+*                  and are shown with their dataset on SHOW DATA commands
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -87,7 +90,8 @@
      .            ivar, slen, llen, grid, cx_expr, dset_save,
      .            varid, vtype, nvdims, vdims(8), nvatts, blen, i, 
      .            len_attbuff, attoutflag, all_outflag, attid, 
-     .            attlen, attype, iatt, iset, alen, npts, status
+     .            attlen, attype, iatt, iset, alen, npts, 
+     .            num_indices, status
 	REAL      vals(100)
 
         LOGICAL   NC_GET_ATTRIB, got_it, coordvar, newatt, have_units,
@@ -374,19 +378,23 @@ C Write statement that uses number 2075 when we change to using these.)
 
 * show the data-set-specific user-defined variables
 
-	DO 600 ivar = 1, max_uvar
-	   IF (uvar_num_items(ivar) .EQ. uvar_deleted  ) GOTO 600
-	   IF (uvar_dset(ivar) .EQ. dset) THEN
+        CALL deleted_list_get_undel(uvar_num_items_head,
+     .                              deleted_list_result(1),
+     .                              max_uvar, num_indices )
+        DO 600 ivar = 1, num_indices
+           i = deleted_list_result(ivar)
+	   IF (uvar_dset(i) .EQ. dset .AND.
+     .         uvar_parent(i) .EQ. 0   ) THEN
 
 * ... output variable code, units, grid, and type
 *     Skip intermediate variables by checking uvar_parent
 
-             uvarname = uvar_name_code(ivar)
-             IF (uvar_parent(ivar) .NE. 0) GOTO 600
+             uvarname = uvar_name_code(i)
+             IF (uvar_parent(i) .NE. 0) GOTO 600
+	     IF (uvarname(1:3) .EQ. 'EX#') GOTO 600
 
-	     iset = -1
-	     CALL CD_GET_VAR_ID (iset, uvarname, varid, status)
-             CALL CD_GET_VAR_INFO (iset, varid, uvarname, vtype, nvdims, 
+	     CALL CD_GET_VAR_ID (dset, uvarname, varid, status)
+             CALL CD_GET_VAR_INFO (dset, varid, uvarname, vtype, nvdims, 
      .          vdims, nvatts, coordvar, all_outflag, status)
 
              CALL ESCAPE_FOR_XML (uvarname, outstring, slen)
@@ -394,8 +402,8 @@ C Write statement that uses number 2075 when we change to using these.)
 
 
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-             slen = TM_LENSTR1(uvar_text(ivar))
-             CALL ESCAPE_FOR_XML (uvar_text(ivar), outstring, slen)
+             slen = TM_LENSTR1(uvar_text(i))
+             CALL ESCAPE_FOR_XML (uvar_text(i), outstring, slen)
              WRITE ( risc_buff, 2020 ) 'definition'
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
              WRITE (risc_buff, 2055) outstring(1:slen)
@@ -405,11 +413,11 @@ C Write statement that uses number 2075 when we change to using these.)
 
 
 * Write the units and title
-             slen = TM_LENSTR(uvar_units(ivar))
-             IF (uvar_units(ivar)(1:2) .NE. char_init 
+             slen = TM_LENSTR(uvar_units(i))
+             IF (uvar_units(i)(1:2) .NE. char_init 
      .             .AND. slen.GT.0) THEN
-                slen = TM_LENSTR1(uvar_units(ivar))
-                CALL ESCAPE_FOR_XML (uvar_units(ivar), outstring, slen)
+                slen = TM_LENSTR1(uvar_units(i))
+                CALL ESCAPE_FOR_XML (uvar_units(i), outstring, slen)
                 WRITE ( risc_buff, 2020 ) 'units'
                 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
                 WRITE (risc_buff, 2055) outstring(1:slen)
@@ -419,10 +427,10 @@ C Write statement that uses number 2075 when we change to using these.)
 		have_units = .TRUE.
              ENDIF
 
-             slen = TM_LENSTR(uvar_title(ivar))
-             IF (uvar_title(ivar)(1:2) .NE. char_init 
+             slen = TM_LENSTR(uvar_title(i))
+             IF (uvar_title(i)(1:2) .NE. char_init 
      .             .AND. slen.GT.0) THEN
-                CALL ESCAPE_FOR_XML (uvar_title(ivar), outstring, slen)
+                CALL ESCAPE_FOR_XML (uvar_title(i), outstring, slen)
                 WRITE ( risc_buff, 2020 ) 'long_name'
                 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
                 WRITE (risc_buff, 2055) outstring(1:slen)
@@ -434,7 +442,7 @@ C Write statement that uses number 2075 when we change to using these.)
 
 ! missing_flag and _FillValue same for user-variable 
 
-             CALL FLOAT2STRING_FOR_XML (uvar_bad_data(ivar), attype, show_str, slen)
+             CALL FLOAT2STRING_FOR_XML (uvar_bad_data(i), attype, show_str, slen)
              CALL ESCAPE_FOR_XML (show_str, outstring, slen)
              WRITE ( risc_buff, 2030 ) '_FillValue' 
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -450,7 +458,7 @@ C Write statement that uses number 2075 when we change to using these.)
              WRITE ( risc_buff, 2060 ) 
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-             IF (uvar_data_type(ivar,dset) .EQ. ptype_string ) THEN
+             IF (uvar_data_type(i,dset) .EQ. ptype_string ) THEN
                 show_str = 'STRING'
              ELSE
                 show_str = 'FLOAT'
@@ -466,14 +474,14 @@ C Write statement that uses number 2075 when we change to using these.)
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * Now get other attributes that may have been assigned.
-             iset = -1
-	     CALL CD_GET_VAR_ID (iset, uvarname, varid, status)
-             CALL CD_GET_VAR_INFO (iset, varid, uvarname, vtype, nvdims, 
+
+	     CALL CD_GET_VAR_ID (dset, uvarname, varid, status)
+             CALL CD_GET_VAR_INFO (dset, varid, uvarname, vtype, nvdims, 
      .          vdims, nvatts, coordvar, all_outflag, status)
              IF (status .NE. ferr_ok) GOTO 600  ! or where?
              DO 700 iatt = 1, nvatts
 
-                CALL CD_GET_VAR_ATT_INFO (iset, varid, iatt, attname, 
+                CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, attname, 
      .              attype, attlen, attoutflag, status )
 
 * All attributes not already listed.
@@ -506,7 +514,7 @@ C Write statement that uses number 2075 when we change to using these.)
 
                 IF (newatt) THEN
                    blen = 2048  ! len of attbuff
-                   got_it = NC_GET_ATTRIB (iset, varid, attname, 
+                   got_it = NC_GET_ATTRIB (dset, varid, attname, 
      .                                .TRUE., uvarname, blen, attlen, 
      .                                attoutflag, attbuff, vals)
                    IF (attlen .GT. 0) THEN
@@ -547,19 +555,11 @@ C Write statement that uses number 2075 when we change to using these.)
  
  700         CONTINUE
 
-* The grid
+* The grid, if available.
              grid = GRID_FROM_NAME_XML( uvarname, cx_last, cx_expr, status )
 	     
-* If its a string get the name and length of the string dimension.
-* (but how to do this for a user-defined variable?)
-c             IF (vtype .EQ. NCCHAR ) THEN
-c                CALL CD_GET_DS_DIMS (iset, vdims(1), buff, npts, status)
-c                CALL SHOW_GRID_STRING_XML (lun, grid, cx_expr,
-c     .                  buff, npts)
-c             ELSE
-                CALL SHOW_GRID_XML (lun, grid, cx_expr)
-c             ENDIF
-c             IF ( status .NE. ferr_ok ) GOTO 5100
+             IF (status .EQ. ferr_ok .AND. grid.NE.unspecified_int4) 
+     .         CALL SHOW_GRID_XML (lun, grid, cx_expr)
 
              WRITE ( risc_buff, 2070 )
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -587,10 +587,10 @@ c             IF ( status .NE. ferr_ok ) GOTO 5100
 * were there string variables?  If so write basic info about their string dimensions.
 
       have_dims = .FALSE.
-      DO 900 ivar = 1, maxvars
-         IF ( ds_var_setnum(ivar) .NE. dset ) GOTO 900
-         IF ( ds_var_code(ivar) .EQ. '-' ) GOTO 900  
-         uvarname = ds_var_code(ivar)
+      DO 900 i = 1, maxvars
+         IF ( ds_var_setnum(i) .NE. dset ) GOTO 900
+         IF ( ds_var_code(i) .EQ. '-' ) GOTO 900  
+         uvarname = ds_var_code(i)
 
          CALL CD_GET_VAR_ID (dset, uvarname, varid, status)
          CALL CD_GET_VAR_INFO (dset, varid, uvarname, vtype, nvdims,

@@ -146,9 +146,9 @@
 * internal variable declarations:
 	LOGICAL   need_formatting, zero_fill, coordvar,
      .            do_err, do_eval, get_ready, was_dep, const_arr_var,
-     .		  dqote, DQ
+     .		  dqote, DQ, orig_name
 	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
-     .		  FIND_DSET_NUMBER, GET_ABSTRACT_LINE, 
+     .		  FIND_DSET_NUMBER, GET_ABSTRACT_LINE, TM_LENSTR,
      .		  str_len, lenbuff, iend, itmp, axis,
      .		  mr, cx, mr_temp, i, i2, use_digits, true_end,
      .		  qual_end, brkt, idim, use_width, dset, varid, 
@@ -1047,7 +1047,9 @@ c	CHARACTER TM_FMT*18, LEFINT*16, VAR_TITLE*(max_len),
 	         IF (axis.EQ.mnormal .OR. axis.EQ.munknown) THEN
 	           repl = 'NORMAL'
 	         ELSE
-	            repl = line_name( axis )
+* Get axis name. If mode upcase is canceled, use original spelling if defined
+		    orig_name = .FALSE.
+		    CALL CHOOSE_LINE_NAME(axis, orig_name, repl)
 	         ENDIF
 	         need_formatting = .FALSE.
 	      ELSEIF ( repl(2:5) .EQ. "UNIT" ) THEN

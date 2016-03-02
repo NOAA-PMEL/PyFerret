@@ -189,7 +189,7 @@
 
            vlen = TM_LENSTR1(vname)
 
-           got_scale = CD_GET_ATTVAL( cdfid, cd_varid(ivar), 'scale_factor',
+           got_scale = CD_GET_ATTVAL(cdfid,cd_varid(ivar),'scale_factor',
      .             do_warn,vname(:vlen),cd_scale_factor(ivar),1,status )
            got_off = CD_GET_ATTVAL( cdfid, cd_varid(ivar), 'add_offset',
      .             do_warn,vname(:vlen),cd_add_offset(ivar),1,status )
@@ -217,6 +217,7 @@
 	ELSE
 * find correct file
            prev_steps = 0
+! extremely inefficient loop: should use List structure to link stepfiles
  20	   DO 30 sfcnt = 1,maxstepfiles
 	      IF (sf_setnum(sfcnt) .NE. dset) GOTO 30 ! right dataset?
 

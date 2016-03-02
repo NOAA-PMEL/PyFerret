@@ -1,4 +1,4 @@
-	LOGICAL FUNCTION IS_AGG_MEMBER( dset, parent, nparent )
+	LOGICAL FUNCTION IS_AGG_MEMBER( dset, kth, parent, more )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -33,14 +33,15 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* is the indicated dataset part of some other aggregated dataset
+* is the indicated dataset part of kth or more aggregated datasets
 !**** NOTE:  THIS ROUTINE (and many others) SHOULD USE THE dset
 !****      LIST STRUCTURE RATHER THAN BRUTE-FORCE LOOPS THROUGH ALL DATASETS
 
 * calling arguments
 *   dset    - the dataset to be checked to see if it is used in an agg (input)
-*   parent  - the last agg that owns it (or unspecified_int4 if none) (output)
-*   nparent - the number of aggs for which this dataset is a member
+*   kth     - if more than one parent this specifies whichone to return (input)
+*   parent  - the kth agg that owns it (or unspecified_int4 if none) (output)
+*   more    - logical to indicate if there are other parents beyond kth 
 
 * programmer - steve hankin
 * V695 *sh* 1/16
@@ -59,40 +60,48 @@
 	external xgt_grid_data
 
 * calling argument declarations:
-	INTEGER	dset, parent, nparent
+	LOGICAL more
+	INTEGER	dset, kth, parent
 
 * local variable declarations:
-	INTEGER	nmemb, imemb, membset, iset, status
+	INTEGER	nmemb, imemb, membset, iset, kparent, status
 
 
-* initialize
-	nparent = 0
+* initialize -- default is "no parent found"
+	kparent = 0
+	IS_AGG_MEMBER = .FALSE.
+	parent = unspecified_int4
+	more = .FALSE.
 
 * check all of the aggregations currently open
+! note: extremely inefficient loop.  Should use List of aggs
 	DO iset = 1, maxdsets
 	   IF ( ds_name(iset) .EQ. char_init1024) CYCLE
 	   IF (iset .EQ. dset) CYCLE
 	   IF ( ds_type(iset).NE.'ENS' .AND. ds_type(iset).NE.'FCT') CYCLE 
 
-* Get number of aggregation members
+* Get number of agg members in this one
 	   CALL CD_GET_AGG_DSET_INFO (iset, nmemb, status)
 	   IF (status .NE. ferr_ok) CALL WARN('crptn: isit_agg_member')
 
-* Look through the aggregation members to see if we are one of them
-	   DO imemb = 1, nmemb
+* Look through the agg members to see if we are one of them
+	   members: DO imemb = 1, nmemb
 	      CALL CD_GET_AGG_DSET_MEMBER (iset, imemb, membset, status)
 	      IF (status .NE. ferr_ok)  CALL WARN('crptn: isit_agg_member')
 	      IF (membset .EQ. dset) THEN
-	         nparent = nparent + 1
-	         parent = iset   ! the last one found will be returned
-	         IS_AGG_MEMBER = .TRUE.
+	         kparent = kparent + 1
+	         IF (kparent .EQ. kth) THEN
+	            parent = iset ! return the kth one found
+	            IS_AGG_MEMBER = .TRUE.
+	         ELSEIF (kparent .GT. kth) THEN
+	            more = .TRUE.
+	            RETURN    ! nothing more worth learning
+	         ENDIF
+	         EXIT members
 	      ENDIF
-	   ENDDO
-	ENDDO
-	IF (nparent .GT. 0) RETURN
+	   ENDDO members
 
-* not a member of any aggregation
-	parent = unspecified_int4
-	IS_AGG_MEMBER = .FALSE.
+	ENDDO
+
 	RETURN
 	END

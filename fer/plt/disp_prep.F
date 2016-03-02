@@ -74,6 +74,8 @@
 * V695  *acm* 9/15 (not fully implemented) INT option for levels
 * v697 *acm* 12/15 Ticket 2331, add flag changed_key to common, and restore the color key
 *                  style after a SHADE/SET; SHADE.
+* v698 *acm*  2/16 Initialize the use_hist flag to false
+* v698 *acm*  2/16 Allow for /LEV=h, histogram levels without specifying a number.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -122,7 +124,8 @@
 
 * initialize
 	centered  = .FALSE.
-	openlev = .FALSE.	
+	openlev = .FALSE.
+	use_hist = .FALSE.	
 	set_std = .FALSE.
 	set_mean = .FALSE.
 	set_min = .FALSE.
@@ -316,7 +319,7 @@
                     IF (str_buff(str_len:str_len) .EQ. 'H') THEN  ! histogram
                        is_hist = .TRUE.
                        str_len = str_len - 1
-                       qual_end(lev_loc) = qual_end(lev_loc) - 1
+		       IF (str_len .NE. 0) qual_end(lev_loc) = qual_end(lev_loc) - 1
                     ENDIF 
 
                     str_1 = qual_start(lev_loc)
@@ -381,6 +384,11 @@
 		       IF (val .NE. bad_val4) THEN
 		          nlev = val
 		          IF (val.LE.0. .OR. val.GT.250.) GOTO 5160
+		       ENDIF
+		       IF (str_len .EQ. 0) THEN
+		          lev_hist = nlev
+		          get_more = .FALSE.
+			  str_1 = 1
 		       ENDIF
 	            ELSEIF ( is_cv) THEN
 		       IF (val .NE. bad_val4) THEN

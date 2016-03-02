@@ -69,6 +69,7 @@
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
 	include 'xfr_grid.cmn'
+	include 'xtext_info.cmn'
 
 * calling argument declarations:
 	LOGICAL quiet
@@ -147,10 +148,10 @@
 	   IF (ref_fvar .EQ. unspecified_int4) THEN
 	      GOTO 5000
 	   ELSE
-	      IF (cat .EQ. cat_file_var) THEN
-	         grid = ds_grid_number(var)
-	      ELSE
+	      IF (cat .EQ. cat_user_var) THEN
 	         grid = uvar_grid(var, member)
+	      ELSE			! cat_file, cat_agg_e, or cat_agg_f
+	         grid = ds_grid_number(var)
 	      ENDIF
 * ... check that the grid of this variable conforms with the reference grid
 	      IF (grid_line(agg_dim, grid) .NE. mnormal) GOTO 5400
@@ -177,7 +178,8 @@
 
  5200	IF ( .NOT.quiet ) 
      .	         CALL WARN('Exclude variable from aggregate. '//
-     .	         'Grid differs in member datasets: '//
+     .	         ww_dim_name(idim)//
+     .			' axis of grid differs in member datasets: '//
      .	         vname(:vlen) )
 	GOTO 5000
 

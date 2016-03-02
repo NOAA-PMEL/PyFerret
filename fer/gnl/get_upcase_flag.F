@@ -1,5 +1,4 @@
-	CHARACTER*(*) FUNCTION FULL_UVAR_NAME(uvar, len)
-
+	SUBROUTINE get_upcase_flag( upcase )
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,72 +33,20 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-* append to the given user variable name the data set information
-*	var[D=dset_name]
-
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-
-* V402:
-* V420:  4/96 - document "(/D default)" on pdset_irrelevant variables
-*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* return the value of the flag mode_upcase_output.  The common blocks
+* and/or declarations used in the include files here conflict with 
+* declarations in repl_exprns
 * V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
 *                  using original upper/lowercase spelling
-* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
-*                  added to that dataset in the attribute structure
-
-* calling argument declarations:
-	INTEGER	uvar
-
-* local variable declarations:
-	
-	LOGICAL coordvar
-	INTEGER TM_LENSTR1, len, len2
-	INTEGER dset, varid, vtype, nvdims, outflag, vdims(8), 
-     .		nvatts, status
 
 	include 'tmap_dims.parm'
-	include 'xdset_info.cmn_text'
-	external xdset_info_data
-	include 'ferret.parm'
-	include	'xvariables.cmn'
-	include	'xprog_state.cmn'
-	include 'errmsg.parm'
+	include 'xprog_state.cmn'
 
-* variable name and definition
-*	len = TM_LENSTR1(uvar_name_code(uvar))
-        CALL string_array_get_strlen1(uvar_name_code_head,uvar,len)
-	FULL_UVAR_NAME = uvar_name_code(uvar)(:len)
+* calling argument declarations
+	LOGICAL	upcase
 
-* Get the original upper/lowercase spelling if mode upcase is canceled.
-	IF (.NOT.mode_upcase_output) THEN  ! get original variable name
-	   dset = pdset_uvars
-	   CALL CD_GET_VAR_ID (dset, uvar_name_code(uvar), varid, status)
-	   IF (status .NE. ferr_ok) THEN
-              dset = uvar_dset(uvar)
-	      CALL CD_GET_VAR_ID (dset, uvar_name_code(uvar), varid, status)
-	   ENDIF
-	   IF (status .EQ. ferr_ok) 
-     .      CALL CD_GET_VAR_INFO (dset, varid, FULL_UVAR_NAME, vtype, 
-     .            nvdims, vdims, nvatts, coordvar, outflag, status)
-	ENDIF
-
-	IF (uvar_dset(uvar) .GT. pdset_irrelevant) THEN
-	   len2 = TM_LENSTR1(ds_name(uvar_dset(uvar)))
-	   FULL_UVAR_NAME = FULL_UVAR_NAME(:len)//'[D='//
-     .			ds_name(uvar_dset(uvar))(:len2)//']'
-	   len = len + len2 + 4
-	ELSEIF (uvar_dset(uvar) .EQ. pdset_irrelevant) THEN
-	   FULL_UVAR_NAME = FULL_UVAR_NAME(:len)//' (/D default)'
-	   len = len + 13
-	ENDIF
-	IF (uvar_remote(uvar)) THEN
-	   FULL_UVAR_NAME = FULL_UVAR_NAME(:len)//' (/REMOTE)'
-	   len = len + 10
-	ENDIF
+	upcase = mode_upcase_output
 
 	RETURN
+
 	END
-
-

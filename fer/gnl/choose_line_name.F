@@ -1,6 +1,5 @@
-	SUBROUTINE EF_CLEAN_GRIDS( dset )
-
-
+	SUBROUTINE CHOOSE_LINE_NAME (axis, original, axname)
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -33,65 +32,53 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-* check among the temporary grids for duplicates. Remove duplication.
-* Ensure that distinct grids have distinct names.
+* For the given axis number, return either line_name(axis) or
+* line_name_orig(axis).  When mode_upcase is set, return the line_name
+* version which has been upper-cased. 
 
-* Programmer Steve Hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* If mode_upcase is false, atempt to return line_name_orig.
+* -- First check whether line_name_orig is defined. 
+* -- If the lengths of line_name and line_name_orig differ, the line name was changed 
+*    by Ferret for uniqueness. In these cases, check the value of the flag "original". 
+* -- If mode_upcase is false, and original is true, then we want the original form 
+*    no matter what. E.g. for xml output, we want the original axis name from the file.
+*    For other cases, such as a generic SHOW GRID, we want the name in use for the 
+*    Ferret session.
+* V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
+*                  using original upper/lowercase spelling
 
-* V698 1/16 *sh* based upon code from CD_CLEAN_GRIDS
 
-* argument definitions:
-*       dset    - pointer to aggregated data set
-
-* include files
-	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
-#include "tmap_dset.parm"
-#include "gt_lib.parm"
-        include 'xbuild_grids.cmn'
 	include 'xtm_grid.cmn_text'
-	include 'xdset_info.cmn_text'
-        include 'netcdf.inc'
+#	include "tmap_dset.parm"
+	include 'xprog_state.cmn'
 
-* argument declarations
-	INTEGER	 dset, status
+	LOGICAL original 
+	INTEGER TM_LENSTR, axis
+	CHARACTER*(*) axname
 
-* local variable declarations:
-	LOGICAL TM_SAME_GRID_DEF
-	INTEGER accepted_grid, test_grid, ivar
-	CHARACTER buff*8	
-                 
-* check for duplicate grid guts
-	accepted_grid = 0		! to get start of linked list
- 10	CALL TM_NEXT_TMP_GRID( accepted_grid, *500)
-	IF (grid_name(accepted_grid) .EQ. char_init) GOTO 10 ! already removed
+	axname = line_name(axis)
 
-	test_grid = accepted_grid
- 20	CALL TM_NEXT_TMP_GRID( test_grid, *200)
-	IF (grid_name(test_grid) .EQ. char_init) GOTO 100 ! already removed
+	IF (.NOT. mode_upcase_output) THEN
 
-* is the test grid a duplicate of the accepted grid?
-	IF ( TM_SAME_GRID_DEF( accepted_grid, test_grid ) ) THEN
-*  ... yes -- point its variables to the accepted grid
-	   DO ivar = 1, maxvars
-	      IF ( ds_var_setnum(ivar) .NE. dset ) CYCLE
-	      IF ( ds_grid_number(ivar) .EQ. test_grid ) 
-     .		   ds_grid_number(ivar) = accepted_grid
-	   ENDDO
-	   grid_name(test_grid) = char_init   ! throw it away
-	ELSE
-*  ... no -- make sure it has a unique name
-	   CALL TM_NEW_GRID_NAME( grid_name(test_grid), buff )
-	   grid_name(test_grid) = buff
+* If there is no good line_name_orig defined, keep line_name
+	   IF (TM_LENSTR(line_name_orig(axis)).EQ.0  .OR.
+     .         line_name_orig(axis)(1:2) .EQ. char_init) THEN
+             axname = line_name(axis)
+
+* If the axis has been renamed for uniqueness, return line_name
+* unless original has been set.
+
+	   ELSE IF (TM_LENSTR(line_name_orig(axis)) .NE. 
+     .              TM_LENSTR(line_name(axis)     ) .AND. .NOT.original) THEN
+             axname = line_name(axis)
+
+* Otherwise if upcase is turned off, return line_name_orig
+           ELSE
+	      axname = line_name_orig(axis)
+           ENDIF
 	ENDIF
-* inner loop -- Go back for another test_grid
- 100	GOTO 20
 
-* outer loop -- Go back for another accepted_grid
- 200	GOTO 10
-
-* we've tested the uniqueness of all temporary grids.  We're done.
- 500	RETURN
+	
+	RETURN
 	END

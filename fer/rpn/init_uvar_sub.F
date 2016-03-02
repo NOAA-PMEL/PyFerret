@@ -81,6 +81,8 @@
 * V697  2/16 *acm* DO NOT Increase length of cmnd buffer to 20480
 *                  but keep the other changes at that time, handling long 
 *                  defintions
+* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
+*                  added to that dataset in the attribute structure.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'	
@@ -234,11 +236,16 @@ c* copy title, units, dset, and missing flag into buffers
        coordvar = 0
        IF (name(1:3) .NE. 'EX#' .AND. .NOT.child) THEN
           dset_to_add = pdset_uvars  ! user-variable dataset.
+	  varid = uvar
+          IF (dset .GT. pdset_irrelevant) THEN
+	     dset_to_add = dset
+	     varid = 0
+	  ENDIF
 
           err_string = title  ! save the value and restore below
           IF (TM_LENSTR(title) .LT. 1) title = uvar_text(uvar)
 
-          CALL CD_ADD_VAR( dset_to_add, varname, uvar, title, units, 
+          CALL CD_ADD_VAR( dset_to_add, varname, varid, title, units, 
      .         type, coordvar, bad, status)
 
           title = err_string

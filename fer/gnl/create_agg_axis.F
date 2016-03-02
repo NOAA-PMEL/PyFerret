@@ -39,6 +39,8 @@
 * V695+ *sh* 5/15 - set up calendar axis attributes from 1st member dset
 * V698 *sh* 1/16 - use TM_ALLO_TMP_LINE to create axis, so its use counts get 
 *			set and it gets deallocated automatically
+*      *sh* 2/16 - if a pre-existing identical axis exists, re-use it
+*                  else we cannot aggregate the aggs (for EF and FE aggs)
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -56,6 +58,7 @@
 	INTEGER	len, line_dir, iline, status
 
 * local variable declarations:
+	INTEGER TM_FIND_LIKE_DYN_LINE, pre_exist
 	CHARACTER*64 newname
 
 * create the ensemble or forecast axis
@@ -83,27 +86,37 @@
 	line_unit_code( iline ) = 0			! unknown units
 	line_shift_origin( iline ) = .FALSE.
 
-	line_direction( iline ) = 'NA'
-	IF (line_dir .EQ. x_dim) THEN
-	   line_direction( iline ) = 'WE'
-	   line_name     ( iline ) = 'LONGUITUDE'
-	ELSEIF (line_dir .EQ. y_dim) THEN
-	   line_direction( iline ) = 'SN'
-	   line_name     ( iline ) = 'LATITUDE'
-	ELSEIF (line_dir .EQ. z_dim) THEN
-	   line_direction( iline ) = 'UD'
-	   line_name     ( iline ) = 'DEPTH'
-	ELSEIF (line_dir .EQ. t_dim) THEN
-	   line_direction( iline ) = 'TI'
-	   line_name     ( iline ) = 'TIME'
-	ELSEIF (line_dir .EQ. e_dim) THEN
-	   line_direction( iline ) = 'EE'
-	   line_name     ( iline ) = 'ENSEMBLE'
-	ELSEIF (line_dir .EQ. f_dim) THEN
-	   line_direction( iline ) = 'FI'
-	   line_name     ( iline ) = 'FORECAST'
-	ENDIF
+!	line_direction( iline ) = 'NA'
+!	IF (line_dir .EQ. x_dim) THEN
+!	   line_direction( iline ) = 'WE'
+!	   line_name     ( iline ) = 'LONGUITUDE'
+!	ELSEIF (line_dir .EQ. y_dim) THEN
+!	   line_direction( iline ) = 'SN'
+!	   line_name     ( iline ) = 'LATITUDE'
+!	ELSEIF (line_dir .EQ. z_dim) THEN
+!	   line_direction( iline ) = 'UD'
+!	   line_name     ( iline ) = 'DEPTH'
+!	ELSEIF (line_dir .EQ. t_dim) THEN
+!	   line_direction( iline ) = 'TI'
+!	   line_name     ( iline ) = 'TIME'
+!	ELSEIF (line_dir .EQ. e_dim) THEN
+!	   line_direction( iline ) = 'EE'
+!	   line_name     ( iline ) = 'ENSEMBLE'
+!	ELSEIF (line_dir .EQ. f_dim) THEN
+!	   line_direction( iline ) = 'FI'
+!	   line_name     ( iline ) = 'FORECAST'
+!	ENDIF
 	line_name_orig( iline ) = line_name ( iline )
+
+! this code not needed.  AGG_CLEAN_GRIDS takes care of removing dups
+!* now check to see if an identical axis already exists.  If so, then
+!* use the pre-existing one, instead
+!	pre_exist = TM_FIND_LIKE_DYN_LINE( iline )
+!	IF (pre_exist .NE. unspecified_int4) THEN
+!	   line_name (iline) = char_init16   ! deallo'd in tm_garb_collect
+!!	   CALL TM_DEALLO_DYN_LINE(iline)
+!	   iline = pre_exist
+!	ENDIF
 
  5000   RETURN	
  5300   status = ferr_TMAP_error

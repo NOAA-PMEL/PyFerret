@@ -65,23 +65,25 @@
 	INTEGER	dset, status
 
 * local variable declarations:
-	LOGICAL	IS_AGG_MEMBER, is_member
-	INTEGER	one_set_status, parent, nparent, imemb, nmemb, membset
+	LOGICAL	IS_AGG_MEMBER, is_member, more
+	INTEGER	one_set_status, parent, imemb, nmemb, membset
  
 * initialize
 	status = ferr_ok
 	IF (ds_name(dset) .EQ. char_init1024) RETURN  ! already deleted
+	more = .TRUE.
 
 * is the requested dataset part of an aggregation?
 * If so, this is an implicit request to (recursively) cancel the parent, too
 * Remember that E aggs can be members of F aggs and visa versa
- 100	IF ( IS_AGG_MEMBER(dset, parent, nparent) ) THEN
-	   CALL WARN('Dataset used in aggregation.  '//
-     .		     'Canceling aggregation, '//ds_name(parent))
-	   CALL CANCEL_DATA_SET(parent, status)
-	   IF (status .NE. ferr_ok) GOTO 5000
-	   IF (nparent .GT. 1) GOTO 100
-	ENDIF
+	DO WHILE (more)
+	   IF ( IS_AGG_MEMBER(dset, 1, parent, more) ) THEN
+	      CALL WARN('Dataset used in aggregation.  '//
+     .		        'Canceling aggregation, '//ds_name(parent))
+	      CALL CANCEL_DATA_SET(parent, status)
+	      IF (status .NE. ferr_ok) GOTO 5000
+	   ENDIF
+	ENDDO
 
 * delete all user defined data from memory for similar reasons
 * (note: this is unnecessarily strict - could be refined in the future)
@@ -100,8 +102,8 @@
 	      IF (ds_name(membset) .EQ. char_init1024) CYCLE ! already deleted?
 
 * ... if not a member of some other aggregation: cancel the hidden member
-	      is_member = IS_AGG_MEMBER(membset, parent, nparent)
-	      IF ( nparent .LE. 1 ) THEN
+	      is_member = IS_AGG_MEMBER(membset, 1, parent, more)
+	      IF ( is_member .AND. .NOT.more ) THEN
 	         IF (ds_hide(membset)) CALL CANCEL_ONE_DATA_SET
      .							(membset, status)
 	         IF (status .NE. ferr_ok) GOTO 5000

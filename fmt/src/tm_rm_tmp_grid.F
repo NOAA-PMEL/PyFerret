@@ -1,4 +1,6 @@
-/*
+	SUBROUTINE TM_RM_TMP_GRID( grid )
+
+*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -30,45 +32,43 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*/
+*
+* Remove a grid from the tmp area (from the linked list of tmp_grid_hook)
 
+* *sh* 2/2106 -- using code from tm_deallo_dyn_line_sub
 
+* Include files
+	include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+#include "gt_lib.parm"
+	include 'tmap_errors.parm'
+	include 'xtm_grid.cmn_text'
+	external xgt_grid_data
+	include 'xio.cmn_text'
 
-/*
- * recover_cached_2d_array_point.c
- *
- * Copy the requested single point of a cached full array from c heap storage
- * into Ferret array memory
- *
- * programmer - steve hankin
- * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
- *
- * revision 0.0 - 5/5/15
- */
+* Argument definitions
+	INTEGER grid
 
-#include <stdlib.h>
-#include "ferret.h"
- 
-void FORTRAN(recover_cached_2d_array_point)(
-					 double *array, int *dim1, int *dim2, 
-                                         int *i, int *j,
-					 double **pointer_val )
+* internal declarations
+	INTEGER next_used_grid
 
-/*
-  see related routine recover_cached_full_array.c
-  FORTRAN subscripting reversed from C, and indexed to 1 instead of 0
-*/
+* clear COMMON info
+	grid_use_cnt(grid) = 0
+	grid_name(grid)    = char_init16
 
-{
-  double *ptr;
-  int index;
+* take this grid from the "tmp" list and put it on the "free" list
+* ... hook onto free list
+	next_used_grid   = grid_flink(grid)
+	grid_flink(grid) = grid_free_ptr  
+	grid_free_ptr    = grid
+	   
+* ... unhook from tmp list
+	grid_flink(grid_blink(grid)) = next_used_grid
+	grid_blink(next_used_grid)   = grid_blink(grid)
 
-  ptr = *pointer_val;
+* successful completion
+	RETURN
 
-  index = (*j-1) * *dim1 + (*i-1);
-  array[0] = ptr[index];
-
-  return;
-}
+	END

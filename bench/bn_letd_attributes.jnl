@@ -1,0 +1,82 @@
+! bn_letd_attributes.jnl
+! Allow for the same variable name defined with LET/D in multiple datasets.
+! See ticket 2352.  Previously for all user variables the 
+! attribute information stored was in fake uvar-dataset = -1.
+! Now if the variable is a LET/D variable, it is stored with
+! the attribute information of the dataset. 
+
+
+! See the variable defined with LET/D in SHOW DAT, SHOW DAT/ATT
+! and with SHOW ATT
+
+use coads_climatology
+let/d=1/title="coads myvar" myvar = 1
+
+! Now SHOW DATA/ATT lists the LET/D variables, as SHOW DATA does
+show dat 1
+
+show dat/att 1
+
+show att myvar
+
+! If there is also a global variable of the same name, SHOW VAR
+! and SHOW ATT list results for both variables
+
+let/title="Global myvar" myvar = 0  ! global
+show att myvar
+
+! Now a LET/D variable with the same name on a second datset.
+! SHOW ATT lists results for the current datset and any global variables
+
+use levitus_climatology
+let/d=2/title="Levitus myvar" myvar = 2
+show dat 2
+show dat/att 2
+show att myvar
+
+show att/d=1 myvar
+
+! ..varnames is the list of file variables. Now to include LET/D variables
+
+let vnames = ..varnames
+list vnames
+
+
+set data 1
+list vnames
+
+
+! CANCEL VAR deletes the variables from the linked-list attribute structure.
+cancel var/all
+show dat
+
+show dat/att 2
+
+! Redefine our LET/D variables
+
+use coads_climatology
+let/d=1/title="coads myvar" myvar = 1
+
+use levitus_climatology
+let/d=2/title="Levitus myvar" myvar = 2
+
+! Define new attributes on the file variable and LET/D variable 
+! in the default dataset
+
+define att/output temp.my_new_att="temperature attrib"
+define att/output myvar.units="meters"
+show att temp
+show att myvar
+
+! use /D= to define an attribute for a file-specific var
+define att/output/d=2 myvar.standard_name = "None"
+
+define att/output/d=1 myvar.units="feet"
+show att/d=1 myvar
+save/clobber/file=a.nc myvar[d=1]
+sp ncdump -h a.nc >> all_ncdump.out
+
+show att/d=2 myvar
+save/clobber/file=a.nc myvar[d=2]
+sp ncdump -h a.nc >> all_ncdump.out
+

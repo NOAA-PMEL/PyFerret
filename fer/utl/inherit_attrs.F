@@ -39,6 +39,8 @@
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * V670  2/11 *acm*   Fixes for inheriting attributes.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
+*                  added to that dataset in the attribute structure.
 
       INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
@@ -154,7 +156,7 @@
 
 * Update attribute information used by plotting etc (ds_units, ...)
 
-        CALL UPDATE_ATTRIBUTES (dset2, varid2)
+        CALL UPDATE_ATTRIBUTES (dset2, varname2, varid2)
 
  5000 RETURN
 

@@ -5,6 +5,7 @@
 ! based levels returned useless levels. Changes 
 ! made to throw out data outside 3 std when 
 ! computing the mean and std dev for color levels.
+! Note: fixes to LEV=V 2/2016 
 
 use "lev_v_bug.nc"
 shade/lev=v var2d

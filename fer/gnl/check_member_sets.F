@@ -44,6 +44,7 @@
 * V698+ *sh* 11/15 add ok_re_use_existing to TM_INIT_DSET call
 *            12/15 pass dataset names and nsets *into* this routine
 *	           if dataset not already open, then open it hidden
+*	      2/16 allow "-" as an indicator of a dummy dataset
 
 * calling arguments
 *   nsets		- number of datasets to be aggregated (input)
@@ -98,9 +99,20 @@
 	   buff1 = memb_dsetnames(iset)
 	   buff_len = TM_LENSTR(buff1)
 
+	   IF (buff1 .EQ. "-") THEN
+* dummy dataset indicator
+	      IF (iset .EQ. 1) GOTO 5100
+	      member_sets(iset) = pdset_dummy
+	      CYCLE
+	   ENDIF
+
 * check to see if data set was referred to by number
 * 9/95 - replaced "*" with "(I)" read from separate buffer
 	   IF ( TM_DIGIT(buff1) ) THEN
+
+* avoid crash due to single character "+" or "."
+	      IF (buff_len.EQ.1
+     .      .AND.(buff1(1:1).LT.'0' .OR. buff1(1:1).GT.'9')) GOTO 740
 
               DO ich = 1, buff_len
 		IF ( .NOT. TM_DIGIT(buff1(ich:ich))) GOTO 740
@@ -113,7 +125,7 @@
 #endif
 * ... check for valid number given
 	      IF   ( dset .LT. 1
-     .	      .OR.   dset .GT. maxdsets )		GOTO 5200
+     .	      .OR.   dset .GT. maxdsets )	  GOTO 5200
 	      IF (ds_name(dset).EQ.char_init1024) GOTO 5200
 	      IF (ds_type(dset).EQ.'ENS' .OR. ds_type(dset).EQ.'FCT') GOTO 5200
 	      GOTO 750
@@ -140,18 +152,12 @@
 
  5000   RETURN	
 
-* Errors: too-many datasets open so aggregate dataset can't be opened,
-* or error on a member dataset. 
-* ?? If some member datasets were opened, close them??)
-* Return no-dataset-number.
-
- 9950	dset = unspecified_int4
-	status = ferr_TMAP_error
-	GOTO 5000
-
+* Error exits: 
+ 5100	CALL ERRMSG( ferr_invalid_command, status,
+     .		'1st aggregate member may not be missing', *5000)
  5200	CALL ERRMSG( ferr_unknown_data_set, status,
      .		'dset '//buff1(:buff_len)
-     .		//' unknown or is already an aggregate dataset', *9950 )
- 5300	CALL ERRMSG( ferr_TMAP_error, status, ' ', *9950 )
+     .		//' unknown or is already an aggregate dataset', *5000 )
+ 5300	CALL ERRMSG( ferr_TMAP_error, status, ' ', *5000 )
 
 	END

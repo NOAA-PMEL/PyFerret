@@ -1,7 +1,5 @@
-	CHARACTER*(*) FUNCTION FULL_UVAR_NAME_XML(uvar, len)
+	LOGICAL FUNCTION ITS_FMRC_2DTIME (dset, fvar)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -34,62 +32,71 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-* append to the given user variable name the data set information
-*	var[D=dset_name]  
-* For xml output give the full URL.
+* Return boolean indicating whether the passed variable is in fact
+* the 2D FMRC time matrix of the dataset
 
-* programmer - Ansley Manke
-*             from FULL_UVAR_NAME
+* V698 2/16 *sh*
 
-* V 6.66
-* V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
-*                  using original upper/lowercase spelling
-
+      IMPLICIT NONE
+#include "tmap_dset.parm"
+!#include "gt_lib.parm"     ! str_match
+        include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include 'errmsg.parm'
+	include 'xdset_info.cmn_text'
+	include 'xdset_info.cd_equiv'
+	include 'xtm_grid.cmn_text'
 
 * calling argument declarations:
-	INTEGER	uvar
+	INTEGER dset, fvar
 
 * local variable declarations:
-	LOGICAL coordvar
-	INTEGER TM_LENSTR1, len, len2
-	INTEGER dset, varid, vtype, nvdims, outflag, vdims(8), 
-     .		nvatts, status
+	LOGICAL NC_GET_ATTRIB, got_it
+	INTEGER STR_CASE_BLIND_COMPARE, grid, vid, istat, status
 
-	include 'tmap_dims.parm'
-	include 'xdset_info.cmn_text'
-	external xdset_info_data
-	include 'ferret.parm'
-	include	'xvariables.cmn'
-	include	'xprog_state.cmn'
-	include 'errmsg.parm'
+	INTEGER str_match
+        PARAMETER (str_match = 0)
 
-* variable name and definition
-*	len = TM_LENSTR1(uvar_name_code(uvar))
-        CALL string_array_get_strlen1(uvar_name_code_head,uvar,len)
-	FULL_UVAR_NAME_XML = uvar_name_code(uvar)(:len)
+* Getting info back from the attribute-handling structure
+        INTEGER maxlen
+        PARAMETER (maxlen = 128)
+	CHARACTER*(maxlen) buff
+	INTEGER varid, t2did, tline, g2d, globalid, ref_id, attlen,
+     .		attype, attoutflag
+        REAL    attvals(10)
 
-* Get the original upper/lowercase spelling if mode upcase is canceled.
-	IF (.NOT.mode_upcase_output) THEN  ! get original variable name
-	   dset = pdset_uvars
-	   CALL CD_GET_VAR_ID (dset, uvar_name_code(uvar), varid, status)
-	   IF (status .EQ. ferr_ok) 
-     .      CALL CD_GET_VAR_INFO (dset, varid, FULL_UVAR_NAME_XML, vtype, 
-     .            nvdims, vdims, nvatts, coordvar, outflag, status)
-	ENDIF
+* initialize
+	grid = ds_grid_number(fvar)
 
-	IF (uvar_dset(uvar) .GT. pdset_irrelevant) THEN
-	   len2 = TM_LENSTR1(ds_des_name(uvar_dset(uvar)))
-	   FULL_UVAR_NAME_XML = FULL_UVAR_NAME_XML(:len)//'[D='//
-     .			ds_des_name(uvar_dset(uvar))(:len2)//']'
-	   len = len + len2 + 4
-	ELSEIF (uvar_dset(uvar) .EQ. pdset_irrelevant) THEN
-	   FULL_UVAR_NAME_XML = FULL_UVAR_NAME_XML(:len)//
-     .			' (/D default)'
-	   len = len + 13
-	ENDIF
+* it must be 2D in the TF plane
+	IF (grid_line(x_dim,grid) .NE. mnormal
+     . .OR. grid_line(y_dim,grid) .NE. mnormal
+     . .OR. grid_line(z_dim,grid) .NE. mnormal
+     . .OR. grid_line(e_dim,grid) .NE. mnormal ) GOTO 2000
+	IF (grid_line(t_dim,grid) .EQ. mnormal
+     . .OR. grid_line(f_dim,grid) .EQ. mnormal ) GOTO 2000
 
+* it must have a _CoordinateAxisType='Time' attribute
+* ... get the List id of the variable
+        CALL CD_GET_VAR_ID (dset, ds_var_code(fvar), vid, status)
+        IF (status .NE. ferr_ok) GOTO 5100
+* ... get the attribute val
+        got_it = NC_GET_ATTRIB ( dset, vid, '_CoordinateAxisType',
+     .                              .TRUE., ds_var_code(fvar), maxlen,
+     .                              attlen, attoutflag, buff, attvals )
+	IF (.NOT.got_it) GOTO 2000
+	istat = STR_CASE_BLIND_COMPARE(buff, 'time')
+
+* final test
+        ITS_FMRC_2DTIME = istat .EQ. str_match
 	RETURN
+
+* nope - this aint it
+ 2000	ITS_FMRC_2DTIME = .FALSE.
+	RETURN
+
+* error bail out
+ 5000	RETURN
+ 5100	CALL ERRMSG(ferr_internal, status, 'its_fmrc_2dtime!',
+     .		 *5000)     ! error not trapped
 	END
-
-

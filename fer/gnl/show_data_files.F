@@ -55,6 +55,7 @@
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 * V695 *sh*  12/15 For FMRCs and Ensembles show aggregation members
+* V698 *sh*   2/16 insert blank line at conclusion of list
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -157,6 +158,9 @@
      .		//sf_name(istep), 0 )
 	   ENDIF
  300	CONTINUE
+
+* insert blank line for nicer formatting
+	CALL SPLIT_LIST(pttmode_explct, lun, ' ', 1)
 
 	RETURN
 	END

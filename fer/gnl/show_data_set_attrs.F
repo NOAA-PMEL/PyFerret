@@ -47,6 +47,10 @@
 * V62  4/09 List the data type of variables as they are in the input
 *           dataset.
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
+*                  added to that dataset in the attribute structure, 
+*                  and are shown with their dataset on SHOW DAT/ATT
+* 
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -71,15 +75,15 @@
 	INTEGER	lun, dset
 	
 * local variable declarations:
-        LOGICAL         NC_GET_ATTRIB, coordvar, got_it
+        LOGICAL         NC_GET_ATTRIB, coordvar, got_it, first_time
 	INTEGER 	TM_LENSTR1, STR_SAME, NCF_INQ_DS, varid, ndims,
      .                  nvars, ngatts, recdim, iatt, attype, attlen,
      .                  slen,  llen, vlen, vtype, nvdims,
      .                  vdims(8),  nvatts, status, blen, i, len_attbuff,
-     .                  max_vals, attoutflag, all_outflag, attid
+     .                  max_vals, attoutflag, all_outflag, attid, uvflag
         REAL            vals(1000)
-	CHARACTER	TM_FMT*14, varname*512, attname*128, 
-     .                  buff*14, attbuff*10240, oflag*1
+	CHARACTER	TM_FMT*14, GET_UNIQUE_DSET_NAME*1024, varname*512, 
+     .                  attname*128, buff*14, dsname*1024, attbuff*10240, oflag*1
         CHARACTER*6     typ(0:7)
         PARAMETER       (len_attbuff = 10240, max_vals=1000)
         
@@ -108,6 +112,7 @@
  3300	FORMAT(' ',A,T24,A,T34,A,T50,A,T62,A,T67,A,T75,A)
  3301	FORMAT(' ',A,T24,A,T34,A,T50,A,T62,A,T67,A,T75)
  3302	FORMAT(' ',A)
+ 3304	FORMAT(' ',A,T34,A,T50,A,T62,A,T67,A,T75,A)
  3400	FORMAT('(',A,')',T24,A,T34,A,T50,A,T62,A,T67,A,T75,A)
  3500	FORMAT(T34,A,T50,A,T62,A,T67,A,T75,A)
 
@@ -181,11 +186,26 @@
 * Write attributes for all variables
         IF (nvars .GE. 1) THEN
 
+	   first_time = .TRUE.
            DO 300 varid = 1, nvars
               CALL CD_GET_VAR_INFO (dset, varid, varname, vtype, nvdims,
      .           vdims, nvatts, coordvar, all_outflag, status)
               IF (varid .EQ. 0) vtype = 7  ! 
               vlen = TM_LENSTR1(varname)
+
+* Special listing for user-defined variables added to this dataset
+	      CALL CD_GET_VAR_UVFLAG (dset, varid, uvflag, status)
+	      
+	      IF ( uvflag .EQ. 1) THEN
+	         IF (first_time ) CALL SPLIT_LIST(pttmode_explct, lun,
+     .			' ------------------------------', 31) 
+	         first_time = .FALSE.
+		 IF (vtype .EQ. 0) vtype = 7             ! user-var data type not set
+		 dsname = GET_UNIQUE_DSET_NAME( dset )
+		 llen = TM_LENSTR1(dsname)
+		 varname = varname(1:vlen)//'[D='//dsname(:llen)//']' 
+		 vlen = TM_LENSTR1(varname)
+	      ENDIF
 
               IF (nvatts .EQ. 0) THEN
                  IF (coordvar) THEN
@@ -246,6 +266,13 @@
                     WRITE (risc_buff, 3302) attbuff(1:len_attbuff-2)
                     ENDIF
                     ENDIF
+
+                    IF (uvflag .EQ. 1) THEN
+                       WRITE (risc_buff, 3304) varname(1:vlen), 
+     .                 attname(1:slen), typ(attype), buff(1:llen), oflag,
+     .                 attbuff(1:blen)
+                    ENDIF
+
                  ELSE 
                     WRITE (risc_buff, 3500) 
      .                  attname(1:slen), typ(attype), buff(1:llen),

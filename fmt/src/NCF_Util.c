@@ -36,7 +36,6 @@
 */
 
 /* NCF_Util.c
-<<<<<<< .working
 *
 * Ansley Manke
 * Ferret V600 April 26, 2005
@@ -81,7 +80,7 @@
 * *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
 *                    definition of macro DFTYPE in ferretmacros.h.
 * *acm*  5/12 V6.8 - Additions for creating aggregate datasets
-* *acm*  8/13	      Fix bug 2089. Mark the scale_factor and add_offset attributes  
+* *acm*  8/13        Fix bug 2089. Mark the scale_factor and add_offset attributes  
 *                    to-be-output when writing variables.
 * *acm*  8/13        Fix bug 2091. If a string variable has the same name as a dimension,
 *                    DO NOT mark it as an axis.
@@ -91,6 +90,12 @@
 *                    renamed axis TIME -> TIME1
 * *sh*  12/15        Bug fix: ncf_get_agg_member is called with the sequence number of the
 *                    desired dataset. So store that in order to locate the right member 
+* *acm*  2/16        Additions for ticket 2352: LET/D variables and attributes. User-variables
+*                    defined with LET/D=n are stored with dataset n. A flag in the ncvar 
+*                    structure tells that the variable is a user-var. A new subroutine call,
+*                    ncf_get_var_uvflag returns this flag, so that SHOW DATA/ATTRIBUTES can 
+*                    list these variables. When user variables are canceled, the varids for 
+*                    user-variables remaining in the dataset are adjusted.
 */
 
 #include <Python.h> /* make sure Python.h is first */
@@ -152,6 +157,7 @@ int  FORTRAN(ncf_get_attr_from_id) (int *, int *, int * , int *, double* );
 
 int  FORTRAN(ncf_get_var_outflag) (int *, int *, int *);
 int  FORTRAN(ncf_get_var_outtype) (int *, int *,  int *);
+int  FORTRAN(ncf_get_var_uvflag) (int *, int *, int *);
 
 int  FORTRAN(ncf_init_uvar_dset)( int *);
 int  FORTRAN(ncf_init_uax_dset)( int *);
@@ -640,6 +646,41 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
 
   return FERR_OK;
 }
+
+/* ----
+ * Find a variable in a dataset based on the dataset integer ID and 
+ * variable ID. Return the return the flag indicating file 
+*  variable vs user-variable
+ */
+ int FORTRAN(ncf_get_var_uvflag) (int *dset, int *varid, int *uvflag)
+
+{
+  ncdset *nc_ptr=NULL;
+  ncvar *var_ptr=NULL;
+  int i;
+  int status=LIST_OK;
+  int return_val;
+  LIST *varlist;
+
+  return_val = 0;  
+  if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL )return return_val;
+
+   /*
+   * Get the list of variables and the variable based on its id
+   */
+  varlist = ncf_get_ds_varlist(dset);
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) {
+    return_val = ATOM_NOT_FOUND;
+    return return_val;
+  }
+  
+  var_ptr=(ncvar *)list_curr(varlist); 
+  *uvflag = var_ptr->uvflag;
+
+  return FERR_OK;
+}
+
 
 /* ----
  * Find a variable attribute based on the dataset ID and variable ID and attribute name
@@ -1189,6 +1230,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 			var.all_outflag = 1;
 			var.is_axis = FALSE;
 			var.axis_dir = 0;
+			var.uvflag = 0;
 			
 			var.attrs_list_initialized = FALSE;
 			for (i = 0; i < nc.ngatts; i++)
@@ -1283,6 +1325,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 				var.outtype = NC_FLOAT;
 				if (var.type == NC_CHAR) var.outtype = NC_CHAR;
 				var.outtype = var.type;  /* ?? */
+				var.uvflag = 0;
 				
 				/* Is this a coordinate variable? If not a string, set the flag.
 				/* A multi-dimensional variable that shares a dimension name is not a coord. var.
@@ -1840,7 +1883,8 @@ int FORTRAN(ncf_delete_dset)(int *dset)
   }
 
 /* ----
- * Add a new variable to the pseudo (user-variable) dataset.
+ * Add a new variable to a dataset.
+ * If varid is 0, set it to nvars+1 for this dataset, and return varid.
  */
 int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char *varname, char title[], char units[], double *bad)
 
@@ -1893,7 +1937,12 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char
   var.type = *type;
   var.outtype = *type;
   var.ndims = 6;
-  var.natts = 0;  
+  var.natts = 0;
+  var.uvflag = 0;
+  if (*varid == 0) {
+	  *varid = nc_ptr->nvars;
+	  var.uvflag = 1;
+  }
   var.varid = *varid;
   var.is_axis = *coordvar;
   var.axis_dir = 0;
@@ -3138,8 +3187,11 @@ int  FORTRAN(ncf_delete_var)( int *dset, char *varname)
   ncatt *att_ptr=NULL;
   int status=LIST_OK;
   int return_val;
+  int ivar;
+  int i;
   LIST *varlist;
-	LIST_ELEMENT *lp;
+  LIST *dummy;
+  LIST_ELEMENT *lp;
 
  /* Find the dataset based on its integer ID 
  */
@@ -3160,16 +3212,31 @@ int  FORTRAN(ncf_delete_var)( int *dset, char *varname)
    * variable from the dataset list */
 	lp = varlist->curr;
 	var_ptr = (ncvar*)lp->data;
+	ivar = var_ptr->varid;
 	/* Free the attributes for this var (list data). */
 	ncf_free_attlist(var_ptr);
-	/* Free the list. */
+	/* Free the attributes list. */
 	list_free(var_ptr->varattlist, LIST_DEALLOC);
 
 	list_remove_curr(varlist);
   free(var_ptr);
-   /* Decrement number of variables in the dataset.  
+
+   /* Reset the varids for variables added to external datasets with LET/D
+    * For the virtual user-variable datset, leave varids alone.
     */
 
+   if (*dset > PDSET_UVARS)
+   {
+	   for (i=ivar; i <nc_ptr->nvars ;i++ )
+	   {
+		   var_ptr=(ncvar *)list_curr(varlist);  /* Point to next variable */
+		   var_ptr->varid = var_ptr->varid - 1;
+		   dummy = list_mvnext(varlist);
+	   }
+   }
+
+   /* Decrement number of variables in the dataset. 
+    */
   nc_ptr->nvars = nc_ptr->nvars - 1;
 
   return_val = FERR_OK;

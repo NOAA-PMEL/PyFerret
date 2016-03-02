@@ -40,6 +40,7 @@
 * V663  *acm* 5/10 Fix bug 1744: hang if /LEVELS=v and all missing data.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V697 *acm* 12/15 Fix ticket 2326: single level plus (inf) and/or (-inf)
+* V698 *acm*  2/16 Send info that the levels are from a histogram to setlab_syms
 
         IMPLICIT NONE
 	include		'parampl5_dat.decl'
@@ -69,6 +70,7 @@
 
 	status = ferr_ok
 	lev_str = 'none'
+	IF (USE_HIST) lev_str = 'histogram'
 
 	znp = 0.
 	zmp = 0.

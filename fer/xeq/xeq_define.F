@@ -236,6 +236,10 @@
 *                  rename routine INIT_AGGREGATE_DSET to INIT_EF_AGGREGATE_DSET
 * V697 12/15 *acm* Fix ticket 2336: consistent application of CAN MODE UPCASE
 * V698 1/16 *sh*   Allow DEFINE DATA/AGG w/out a name -- auto-name from script
+* V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
+*                  using original upper/lowercase spelling
+* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
+*                  added to that dataset in the attribute structure.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -357,12 +361,12 @@
 	LOGICAL	  TM_DIGIT, TM_LEGAL_NAME, TM_LINE_MATCH, TM_GRID_MATCH,
      .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, MATCH_NAME,
      .            NC_GET_ATTRIB, TM_LENSTR, TM_LEGAL_NAME_OP, TM_HAS_STRING,
-     .            ITSA_1LINEIF, MATCH4, GO_FILE_INPUT,
+     .            ITSA_1LINEIF, MATCH4, GO_FILE_INPUT, IS_AGG_MEMBER,
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
      .            new_att, new_att_modulo, got_it, orient_t, agg_quiet,
      .            letdset, its_remote, agg_hide, def_att_quiet, purge_all,
-     .            user, norm, nouser, t_regular, use_strict, have_expr
+     .            user, norm, nouser, t_regular, use_strict, have_expr, original
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID, EFCN_SCAN,
      .		  TM_GET_LINENUM, TM_LENSTR1,
@@ -699,22 +703,29 @@
 
 * cannot use [d= in the remote var-- the expression is evaluated on the
 * remote server; same dsets not open there.
-	IF (its_remote.AND. TM_HAS_STRING(cmnd_buff(pos:len_cmnd), 'd=') ) GOTO 5490
+	IF (its_remote.AND. TM_HAS_STRING(cmnd_buff(pos:len_cmnd), 'd=') )
+     .                                                         GOTO 5490
 
 	CALL ALG_ID( cmnd_buff(pos:len_cmnd), natom, at_start, at_end,
      .		     at_type, at_id, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * if this definition replaces a variable of the same name in this data set
-* then purge cached calculations (8/95)
 	IF ( dset .GT. pdset_irrelevant ) THEN
 	   CALL FIND_VAR_NAME ( dset, buff1, cat, var )
+* ... purge cached calculations (8/95)
 	   IF ( ( (cat .EQ. cat_file_var) .OR.
      .            (cat .EQ. cat_pystat_var) ) .AND.
      .          (var .NE. munknown_var_name) ) CALL PURGE_ALL_UVARS
+* ... purge any aggregations that utilize this dataset as a member
+*     Note: this is a little stricter than need be, as there is a
+*     chance that the specific variable may not be a member of the agg, even
+*     though the dataset is.  But this will be a rare situation ...
+*     ... arguments i and got_it are ignored
+           IF (IS_AGG_MEMBER(dset, 1, i, got_it)) CALL PURGE_DSET(dset)
 	ENDIF
 
-* if this is a global forground definition that replaces any variable
+* if this is a global foreground definition that replaces any variable
 * then purge cached calculations (8/95)
 	IF ( dset .EQ. unspecified_int4 ) THEN
 	   CALL FIND_VAR_NAME ( dset, buff1, cat, var )
@@ -739,7 +750,7 @@
               IF ( uvar_num_items(i1) .EQ. uvar_deleted ) GOTO 410
 * ... delete only if same name in same data set
 	      IF ( uvar_dset(i1) .EQ. dset ) THEN
-	         CALL DELETE_USER_VAR(i1)
+	         CALL DELETE_USER_VAR(i1, dset)
 	      ENDIF
 * ... reuse of name  makes all stored uvars possibly invalid
 *     Also invalidates any memory-cached results that used aux of this name
@@ -761,7 +772,8 @@
         ENDIF
 
 * purge user variables and aux var dependencies if needed
-        IF (purge_all) CALL PURGE_ALL_UVARS !not done above for pdset_irrelevant
+        IF (purge_all) CALL PURGE_ALL_UVARS !not done above for pdset_irrelevan
+
 
 * now file the expression in the user-defined variable area
 	CALL INIT_UVAR ( buff1, cmnd_buff(pos:len_cmnd), buff3, buff2, dset,
@@ -1555,9 +1567,12 @@ C /units=months  is 1/12 of the length of the year
 * ... redefinition makes all past assumptions incorrect
 
 * Dont write message if DEF AX/QUIET
-            IF (qual_given( slash_def_ax_quiet ) .EQ. 0 )
-     .	      CALL SPLIT_LIST(pttmode_ops, err_lun,
-     .			replmsg//'axis '//line_name( old_line ), 0)
+	      IF (qual_given( slash_def_ax_quiet ) .EQ. 0 ) THEN
+	         original = .TRUE.
+	         CALL CHOOSE_LINE_NAME(old_line, original, buff)
+	         CALL SPLIT_LIST(pttmode_ops, err_lun,
+     .			replmsg//'axis '//buff, 0)
+	      ENDIF
 
 * ... Check the attribute structure for this axis name and change 
 *     attribute values as needed.  
@@ -2168,7 +2183,7 @@ C /units=months  is 1/12 of the length of the year
             IF ( (cat .EQ. cat_user_var) .OR.
      .           (cat .EQ. cat_file_var) .OR.
      .           (cat .EQ. cat_pystat_var) )
-     .           CALL UPDATE_ATTRIBUTES (dset, uvar)
+     .           CALL UPDATE_ATTRIBUTES (dset, varname, uvar)
 
 
 	RETURN

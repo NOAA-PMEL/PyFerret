@@ -132,7 +132,7 @@
 
 * Save the axis name (upper case) and memory storage.  For all irregular axes, 
 * we have saved N+1 edges for the axis cells. Increment the pointer.   
-	CALL TM_NEW_LINE_NAME ( 'tf_cal_f', buff )
+	CALL TM_NEW_LINE_NAME ( 'TF_CAL_F', buff )
 	line_dattype(ens_ax) = nf_double
 	line_name_orig(ens_ax) = buff
 	i = STR_UPCASE( line_name(ens_ax), line_name_orig(ens_ax))

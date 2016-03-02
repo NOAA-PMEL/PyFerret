@@ -1,5 +1,6 @@
 SRCS_F = \
 add_attribute.F\
+agg_clean_grids.F\
 alias_command.F\
 alias_id.F\
 all_1_arg.F\
@@ -14,6 +15,7 @@ cdf_list_global_atts.F\
 check_format.F\
 check_memory.F\
 check_member_sets.F\
+choose_line_name.F\
 cleanup_last_cmnd.F\
 coached_str_sub.F\
 create_agg_axis.F\
@@ -29,7 +31,6 @@ do_query.F\
 dollar_arg.F\
 dollar_command.F\
 edit_attribute.F\
-ef_clean_grids.F\
 equal_format.F\
 equal_permute.F\
 equal_str_lc.F\
@@ -50,6 +51,7 @@ get_input_varname.F\
 get_mode_arg.F\
 get_ppl_memory_size.F\
 get_scriptfile_name.F\
+get_upcase_flag.F\
 get_uvars_list_by_attname_and_val.F\
 init_ef_aggregate_dset.F\
 init_journal.F\
@@ -60,6 +62,7 @@ initialize.F\
 is_agg_member.F\
 isit_const_arr_var.F\
 isit_coord_var.F\
+its_fmrc_2dtime.F\
 line_facts.F\
 line_facts_xml.F\
 list_cmnd_data.F\
@@ -87,6 +90,7 @@ reset_axis.F\
 reset_ax_att.F\
 save_ppl_memory_size.F\
 save_scriptfile_name.F\
+set_agg_var_atts.F\
 set_var.F\
 show_1_dsvar.F\
 show_1_function.F\

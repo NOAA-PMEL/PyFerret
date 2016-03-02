@@ -42,6 +42,9 @@
 * the /LEV command needed to duplicate the levels
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+* V698 *acm*  2/16 Fix the LEV_DEL computation which was wrong for irregular levels.
+*                  Clear out-of-date symbols, for variance-based or histogram
+*                  levels on previous plots
 
 *    LEV_MIN  - lowest level used on last CONTOUR, SHADE, or FILL call.
 *    LEV_MAX -  highest level used last
@@ -64,7 +67,7 @@
 
 * Internal arguments
 
-      REAL zmax, zmin, dz, diff, diff_dz
+      REAL zmax, zmin, dz, diff
 
       CHARACTER ppl_buff*2048, TM_FMT_SNGL*10, buff*10, symbuff*120
       INTEGER TM_LENSTR1, STR_SAME, i, ier, ilen, slen, ist
@@ -121,10 +124,10 @@
             reglevs = .TRUE.
             DO 100 i=3,nlevels
                diff = ABS( zlevels(i)-zlevels(i-1) )
-               diff_dz = ABS(diff - dz)
-               IF(TM_FPEQ_SNGL(diff_dz, dz)) reglevs=.FALSE.
+               reglevs = TM_FPEQ_SNGL(diff, dz)
+	       IF (.NOT.reglevs) GOTO 110
   100       CONTINUE
-            IF (reglevs) THEN
+  110       IF (reglevs) THEN
                buff = TM_FMT_SNGL(dz, -2, 10, slen)
             ELSE
                buff = 'irregular'
@@ -145,14 +148,14 @@
       symbuff = 'LEV_OPNLEVS'
       CALL GETSYM( symbuff, ppl_buff, ist, ier )
       IF ( ier .EQ. 0 ) THEN
-         IF (STR_SAME(lev_str, 'none') .EQ. 0 ) THEN 
-	    lev_str = ppl_buff
-	 ELSE
+         IF (STR_SAME(lev_str, 'none').EQ.0 .OR. 
+     .       STR_SAME(lev_str, 'histogram').EQ.0) THEN 
             CALL DELSYM(symbuff,ier)
 	 ENDIF
       ENDIF
 
-      IF (STR_SAME(lev_str, 'none') .NE. 0 ) THEN
+      IF (STR_SAME(lev_str, 'none').NE.0 .AND. 
+     .    STR_SAME(lev_str, 'histogram').NE.0) THEN
          ilen = TM_LENSTR1(lev_str)
          ppl_buff = 'LEV_OPNLEVS '//lev_str
          ilen = TM_LENSTR1(ppl_buff)
@@ -161,6 +164,13 @@
          CALL SETSYM (ppl_buff, ilen, ier, ist)
       ENDIF
 
+* Delete any LEV_HISTO_LEVELS symbol that may be left over from a previous plot
+
+      IF (.NOT. USE_HIST) THEN
+         symbuff = 'LEV_HISTO_LEVELS'
+         CALL GETSYM( symbuff, ppl_buff, ist, ier )
+         IF (ier .EQ. 0) CALL DELSYM(symbuff,ier)
+      ENDIF
 
       RETURN
       END

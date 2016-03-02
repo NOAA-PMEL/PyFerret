@@ -1,5 +1,7 @@
-	SUBROUTINE DELETE_OLD_EXPR
+	SUBROUTINE PURGE_ONE_DSET ( dset )
 
+*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -33,55 +35,33 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* delete from memory all "expression" variables - internally defined user-vars
-* that were created by expressions given with the commmand line
+* delete all memory variables with data from a particular data set
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
 *
-* revision 0.0 - 10/31/86
-* revision 0.1 - 1/30/87 - modified for mr_protected declared as INTEGER
-* revision 1.0 - 2/23/87 - changes for conversion to INTERPRETATION STACK using
-*			   the idea that all expressions are special cases of
-*			   user-defined variables
-* revision 1.1 - 5/6/87  - corrected bug in UVAR_NUMBER (status) call
-* V200:   7/7/89 - expression may have been deleted outside this routine
-* 	 2/19/90 - major rewrite: loop through ALL user vars deleting "EX#"
-* V540:  11/01 - initialize last_cmnd_buff
-*	         (formerly local array in get_prot_cmnd_data)
+* V200: 10/25/89 - extracted from ERASE_DSET
+*	12/18/89 - eliminated the possibility of multiple data set variables
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
-* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
-*                  added to that dataset in the attribute structure. Extra
-*                  argument to DELETE_USER_VAR
+* V698: *sh* 2/2016 - renamed from PURGE_DSET
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
-	include 'ferret.parm'
-	include 'errmsg.parm'
+	include	'ferret.parm'
 	include 'xvariables.cmn'
-	include 'xprog_state.cmn'
 
-* internal variable declarations:
-	INTEGER	uvar, j, num_indices, result_array(max_uvar), dset
+* calling argument declarations:
+	INTEGER	dset
 
-* eliminate all user variables created by the last expression given
-*	DO 100 uvar = 1, max_uvar
-*	   IF ( uvar_num_items( uvar ) .EQ. uvar_deleted ) GOTO 100
-        CALL deleted_list_get_undel(uvar_num_items_head,
-     .                              result_array(1),
-     .                              max_uvar, num_indices )
-        dset = pdset_uvars
-        DO 100 j = 1, num_indices
-           uvar = result_array(j)        
-	   IF ( uvar_name_code(uvar)(:3) .EQ. 'EX#' )
-     .					CALL DELETE_USER_VAR( uvar, dset )
+* local variable declarations:
+	INTEGER mr
+
+* eliminate memory variables depending on this data set
+	DO 100 mr = 1,max_mrs
+	   IF ( mr_protected( mr ) .EQ. mr_deleted ) GOTO 100
+	   IF ( dset .EQ. mr_data_set(mr) ) CALL DELETE_VARIABLE( mr )
  100	CONTINUE
-
-* remove memory of previous expressions
-	last_cmnd_buff = ' '
-	len_last_cmnd = 1
 
 	RETURN
 	END
-

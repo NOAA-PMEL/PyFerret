@@ -86,30 +86,16 @@
 	PARAMETER (do_warn = .TRUE.,
      .		   max_slen = 12)
 
+
+* since ensembles create so much dataset proliferation, need a diagnostic
+* message to see what is being canceled
+	IF (mode_diagnostic) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
+     .		' canceling dset '//ds_des_name(dset), 0 )
+
 * delete any memory variables from this data set
 * ( necessary because their pointers will lead to incorrect data set 
 *   information and possibly misleading output )
 	CALL ERASE_DSET( dset )
-
-* If canceling an E or F aggregation then ...
-* reduce the use-count on uvar grids associated with LET/D defs in agg
-* member datasets. These were bumped up to ensure they stayed undeleted.
-	IF (ds_type(dset).EQ.'ENS' .OR. ds_type(dset).EQ.'FCT') THEN
-	   CALL CD_GET_AGG_DSET_INFO (dset, nmemb, status)
-	   IF (status .NE. ferr_ok) CALL WARN('crptn: cancel_one_data_set')
-!   ... note:  this is a very inefficient loop. Better to use the LISTs
-!              that knows which variables belong to each dataset 
-	   DO ivar = 1,maxvars
-	      IF (ds_var_setnum(ivar) .NE. dset) CYCLE
-	      DO imemb = 1, nmemb
-	         CALL CD_GET_AGG_VAR_INFO (dset, ds_var_code(ivar), imemb, 
-     .           memb_cat, memb_dset, memb_grid, iline, memb_var, status)
-	         IF (status .NE. ferr_ok) GOTO 5000
-	         IF (memb_cat .EQ. cat_user_var) CALL TM_DEALLO_DYN_GRID
-     .								(memb_grid)
-	      ENDDO
-	   ENDDO
-	ENDIF
 
 * If canceling an F aggregation then ...
 * de-allocate special axes TF_LAG_F and TF_CAL_T

@@ -46,6 +46,8 @@
 *                         tag <var name> rather than <vname>
 *       13-Oct-2004 *acm* for consistent XML, write <var name="VNAME" />
 * V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
+* V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
+*                  using original upper/lowercase spelling
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -61,13 +63,16 @@
 	include	'xtext_info.cmn'
 	include	'xprog_state.cmn'
 	include	'xrisc.cmn'
+	include 'errmsg.parm'
 
 * calling argument declarations:
 	INTEGER	lun, dset
 	
 * local variable declarations:
-	INTEGER TM_LENSTR, TM_LENSTR1, ivar, slen
-        CHARACTER uvarname*150
+	LOGICAL coordvar
+	INTEGER TM_LENSTR, TM_LENSTR1, ivar, iset, slen, varid, 
+     .		vtype, nvdims, outflag, vdims(8), nvatts, status
+        CHARACTER varname*150
 
  2040   FORMAT ('<var name="', A, '" />' )
 
@@ -79,11 +84,18 @@
 	   IF ( ds_var_setnum(ivar) .NE. dset ) GOTO 400
            IF ( ds_var_code(ivar) .EQ. '-' ) GOTO 400
   
-* ... output variable code
+* ... output variable code. Get the original upper- or lower-case spelling
 
 *           slen = TM_LENSTR1(ds_var_code(ivar))
            CALL string_array_get_strlen1(ds_var_code_head, ivar, slen)
-           WRITE ( risc_buff, 2040 ) ds_var_code(ivar)(1:slen)
+
+           varname = ds_var_code(ivar)
+           CALL CD_GET_VAR_ID (dset, varname, varid, status)
+           IF (status .EQ. ferr_ok) 
+     .        CALL CD_GET_VAR_INFO (dset, varid, varname, vtype, nvdims,
+     .           vdims, nvatts, coordvar, outflag, status)
+           slen = TM_LENSTR1(varname)
+           WRITE ( risc_buff, 2040 ) varname(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
  400	CONTINUE
@@ -97,13 +109,19 @@
 
 * ... output variable name
 
-             uvarname = uvar_name_code(ivar)
-             slen = TM_LENSTR1(uvarname)
-             WRITE ( risc_buff, 2040 ) uvarname(1:slen)
-             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	      varname = uvar_name_code(ivar)
+	      iset = pdset_uvars
+	      CALL CD_GET_VAR_ID (dset, varname, varid, status)
+	      IF (status .EQ. ferr_ok) 
+     .          CALL CD_GET_VAR_INFO (dset, varid, varname, vtype, nvdims,
+     .           vdims, nvatts, coordvar, outflag, status)
 
-         ENDIF
- 600  CONTINUE
+	      slen = TM_LENSTR1(varname)
+	      WRITE ( risc_buff, 2040 ) varname(1:slen)
+	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+           ENDIF
+ 600	CONTINUE
 
       RETURN
       END

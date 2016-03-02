@@ -48,6 +48,7 @@ purge_dset.F\
 purge_file_var.F\
 purge_mr_axis.F\
 purge_mr_grid.F\
+purge_one_dset.F\
 purge_pystat_var.F\
 purge_pystat_dset_vars.F\
 purge_user_var.F\

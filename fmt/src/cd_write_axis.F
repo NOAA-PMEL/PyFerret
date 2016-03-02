@@ -110,6 +110,7 @@
 * v694 1/15 *acm* for ticket 2227: if a dimension from a nc file is not also a 
 *                 1-D coordinate var, don't write the axis Ferret creates
 * V697 12/15 *acm* Fix ticket 2336: consistent application of CAN MODE UPCASE
+* V698  2/16 *acm* Check status of queries before continuing
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -342,7 +343,7 @@
       outtype = line_dattype(iaxis)
 
       CALL CD_GET_VAR_ID (dset_num, line_name(iaxis), varid, status)
-      CALL CD_GET_VAR_INFO (dset_num, varid, buff, vartype, 
+      IF (varid .GT. 0) CALL CD_GET_VAR_INFO (dset_num, varid, buff, vartype, 
      .            nvdims, vdims, nvatts, coordvar, all_outflag, status)
 
       IF (outtype.LT.NF_BYTE .OR.  outtype.GT.NF_DOUBLE) THEN
@@ -358,15 +359,17 @@
 * write it as double and add a note.
 
       axis_packed = 0
-      attname = 'add_offset'
-      CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, status)
-      IF (attid .GT. 0) axis_packed = 1
-      attname = 'scale_factor'
-      CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
-      IF (attid .GT. 0) axis_packed = 1
+      IF (varid .GT. 0) THEN
+         attname = 'add_offset'
+         CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, status)
+         IF (attid .GT. 0) axis_packed = 1
+         attname = 'scale_factor'
+         CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+         IF (attid .GT. 0) axis_packed = 1
 
-      IF (axis_packed .EQ. 1) THEN	    
-         outtype = NF_DOUBLE
+         IF (axis_packed .EQ. 1) THEN	    
+            outtype = NF_DOUBLE
+         ENDIF
       ENDIF
 
       npts = line_dim(iaxis)

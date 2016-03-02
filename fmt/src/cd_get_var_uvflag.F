@@ -1,5 +1,5 @@
-/*
-*
+      SUBROUTINE CD_GET_VAR_UVFLAG (dset, varid, uvflag, status)
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -30,45 +30,35 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*/
+*
+* Read the linked list structure for netcdf variable information: 
+* given dset and variable id return the flag indicating file 
+* variable vs user-variable
 
+* Programmer Ansley Manke
+* NOAA/PMEL, Seattle, WA - TMAP
 
+* V698 2/16 *acm* 
 
-/*
- * recover_cached_2d_array_point.c
- *
- * Copy the requested single point of a cached full array from c heap storage
- * into Ferret array memory
- *
- * programmer - steve hankin
- * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
- *
- * revision 0.0 - 5/5/15
- */
+* include files
+#include "gt_lib.parm"
+      INCLUDE "tmap_errors.parm"
 
-#include <stdlib.h>
-#include "ferret.h"
- 
-void FORTRAN(recover_cached_2d_array_point)(
-					 double *array, int *dim1, int *dim2, 
-                                         int *i, int *j,
-					 double **pointer_val )
+* Argument declarations
 
-/*
-  see related routine recover_cached_full_array.c
-  FORTRAN subscripting reversed from C, and indexed to 1 instead of 0
-*/
+      INTEGER dset, varid, uvflag
 
-{
-  double *ptr;
-  int index;
+* Internal declarations
 
-  ptr = *pointer_val;
+      INCLUDE 'netcdf.inc'
 
-  index = (*j-1) * *dim1 + (*i-1);
-  array[0] = ptr[index];
+      INTEGER NCF_GET_VAR_UVFLAG, dset_num, status
 
-  return;
-}
+      dset_num = dset
+      IF (dset_num .LT. -2) dset_num = -2
+      status = NCF_GET_VAR_UVFLAG(dset_num, varid, uvflag)
+
+ 5000 RETURN
+      END

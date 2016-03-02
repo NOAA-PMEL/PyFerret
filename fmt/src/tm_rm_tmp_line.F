@@ -1,4 +1,6 @@
-/*
+	INTEGER FUNCTION TM_RM_TMP_LINE( line )
+
+*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -30,45 +32,45 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*/
+*
+* Remove a line from the tmp area (from the linked list of tmp_line_hook)
+
+* *sh* 2/2106 -- using code from tm_deallo_dyn_line_sub
 
 
+* Include files
 
-/*
- * recover_cached_2d_array_point.c
- *
- * Copy the requested single point of a cached full array from c heap storage
- * into Ferret array memory
- *
- * programmer - steve hankin
- * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
- *
- * revision 0.0 - 5/5/15
- */
+	include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+#include "gt_lib.parm"
+	include 'tmap_errors.parm'
+	include 'xtm_grid.cmn_text'
+	external xgt_grid_data
+	include 'xio.cmn_text'
 
-#include <stdlib.h>
-#include "ferret.h"
- 
-void FORTRAN(recover_cached_2d_array_point)(
-					 double *array, int *dim1, int *dim2, 
-                                         int *i, int *j,
-					 double **pointer_val )
+* Argument definitions
+	INTEGER line
 
-/*
-  see related routine recover_cached_full_array.c
-  FORTRAN subscripting reversed from C, and indexed to 1 instead of 0
-*/
+* Internal variable declarations
+	INTEGER	next_used_line
 
-{
-  double *ptr;
-  int index;
+* clear COMMON
+	line_use_cnt(line) = 0
+	line_name(line)    = char_init16
 
-  ptr = *pointer_val;
+* take this line from the "tmp" list and put it on the "free" list
+* ... hook onto free list
+	next_used_line   = line_flink(line)
+	line_flink(line) = line_free_ptr  
+	line_free_ptr    = line
+	   
+* ... unhook from tmp list
+	line_flink(line_blink(line)) = next_used_line
+	line_blink(next_used_line)   = line_blink(line)
 
-  index = (*j-1) * *dim1 + (*i-1);
-  array[0] = ptr[index];
+* successful completion
+	RETURN
 
-  return;
-}
+	END

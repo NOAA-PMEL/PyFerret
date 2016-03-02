@@ -42,6 +42,11 @@ show data fourfiles
 
 list/i=3 airt[T=@ave]
 
+! create an ensemble where one member is missing
+ENSEMBLE fourfiles_gap = ens1, -, ens3, ens4
+show data/files fourfiles_gap
+list/i=3 airt[T=@ave]
+
 cancel mode diag
 cancel data/all
 cancel var/all

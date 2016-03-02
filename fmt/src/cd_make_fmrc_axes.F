@@ -40,6 +40,7 @@
 * time edge positions stored just behind it
 
 * V695+ *acm* and *sh*
+* V698 *sh* - if identical pre-existing axes exist, re-use them
 
 * include files
         include 'netcdf.inc'
@@ -348,6 +349,21 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 	line_direction(axlagf) = 'FF'
 	line_dattype(axlagf)   = nf_double
 	line_dim_only(axlagf)  = .FALSE.    ! ?? why ??
+
+********************
+* We've gone to a lot of trouble creating this axis.  But if it is an exact
+* duplicate of a pre-existing axis, then we should use that instead.
+* (Shared axes are needed in order to E-aggregate multiple FMRCs)
+ 	pre_exist = TM_FIND_LIKE_DYN_LINE( axcalt )
+ 	IF (pre_exist .NE. unspecified_int4) THEN
+ 	   CALL TM_DEALLO_DYN_LINE(axcalt)
+ 	   axcalt = pre_exist
+ 	ENDIF
+	pre_exist = TM_FIND_LIKE_DYN_LINE( axlagf )
+	IF (pre_exist .NE. unspecified_int4) THEN
+	   CALL TM_DEALLO_DYN_LINE(axlagf)
+	   axlagf = pre_exist
+	ENDIF
 
 * successful completion
         status = merr_ok

@@ -45,6 +45,8 @@
 * v6.5 *acm* 3/10 Cleanup - remove commented-out includes
 * V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
+*                  using original upper/lowercase spelling
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -65,10 +67,11 @@
 	CHARACTER*(*) stringdimname
 
 * local variable declarations:
+	LOGICAL original 
 	INTEGER TM_LENSTR1, TM_LENSTR, STR_DNCASE, idim, slen, line, status
         CHARACTER*1 axdir
 	CHARACTER*2048 outstring
-	CHARACTER TM_FMT*16, show_str*16
+	CHARACTER TM_FMT*16, show_str*16, axname*64
 
  2020   FORMAT ('<grid name="',A,'">' )
  2030   FORMAT ('<axes>' )
@@ -94,6 +97,7 @@
 	WRITE (risc_buff, 2070 ) outstring(1:slen) 
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
+	original = .TRUE.
 	DO 110 idim = 1, nferdims
            line = grid_line(idim, grid)
            IF (line .GT. 0) THEN
@@ -103,7 +107,10 @@
 
            IF (line .GT. 0  .AND.  slen .GT. 0 .AND.
      .         cx_expr .EQ. unspecified_int4) THEN
-              CALL ESCAPE_FOR_XML (line_name(line), outstring, slen)
+	      CALL CHOOSE_LINE_NAME(line, original, axname)
+	      slen = TM_LENSTR(axname)
+
+              CALL ESCAPE_FOR_XML (axname, outstring, slen)
               WRITE (risc_buff, 2040 ) axdir, outstring(1:slen), axdir
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ENDIF
@@ -113,9 +120,9 @@
 
               IF ( cx_hi_ss(cx_expr,idim).NE.unspecified_int4 .AND. 
      .	           cx_lo_ss(cx_expr,idim).NE.unspecified_int4 ) THEN
-                 slen = TM_LENSTR1(line_name(line))
+                 slen = TM_LENSTR1(axname)
                  WRITE (risc_buff, 2040 ) axdir,
-     .              line_name(line)(1:slen), axdir
+     .              axname(1:slen), axdir
 	         CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
               ENDIF
            ENDIF

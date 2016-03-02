@@ -149,6 +149,8 @@
 	   CALL TRANSFER_CONTEXT( lo_cx, hi_cx )
 
 	   imemb = is_phase( lo_isp )
+* ... there is no E-axis in an E-agg of FMRCs on the 2dtime var TF_TIMES 
+	   IF (imemb .EQ. unspecified_int4) imemb = 1  ! presume TF_TIMES E-agg
 	   vname = VAR_CODE (cat_file_var, cx_variable(hi_cx))
 	   vlen = TM_LENSTR1(vname)
 	   CALL CD_GET_AGG_VAR_INFO (dset, vname, imemb, orig_cat, 
@@ -160,32 +162,41 @@
      .		CALL ERRMSG(ferr_internal, status,
      .		'aggregation cache failure in is_strip', *5000)
 
+* for special case (hack) of an E-aggregation of FMRCs, the 2dtime array comes
+* from one particular member
+	   IF (orig_cat .EQ. cat_ef_time2d) THEN
+	      hi_cat = cat_file_var
+	      hi_var = orig_var
+	      hi_grid = orig_grid
+	   ELSE
+
 * do a fresh "find" for the variable name, to allow for the possibility that
 * LET/D variables have been defined, canceled or changed since DEFINE DATA/AGG
-	   CALL FIND_VAR_NAME (memb_dset,vname, hi_cat, hi_var )
-	   IF (hi_var .EQ. munknown_var_name) CALL ERRMSG(
-     .		ferr_aggregate_error, status, 'variable '//
-     .		vname(:vlen)//' no longer found in agg member '//
-     .		LEFINT(imemb,slen), *5000)
+	      CALL FIND_VAR_NAME (memb_dset,vname, hi_cat, hi_var )
+	      IF (hi_var .EQ. munknown_var_name) CALL ERRMSG(
+     .		  ferr_aggregate_error, status, 'variable '//
+     .		  vname(:vlen)//' no longer found in agg member '//
+     .		  LEFINT(imemb,slen), *5000)
 
 * confirm grid has not changed since stored during DEFINE DATA/AGG
-	   hi_grid = KNOWN_GRID(memb_dset, hi_cat, hi_var)
-	   IF (.NOT.TM_SAME_GRID_DEF(hi_grid,orig_grid)) CALL ERRMSG(
-     .		ferr_aggregate_error, status,
-     .		'coordinate grid of '// vname(:vlen)//
-     .		' has changed in agg member '//LEFINT(imemb,slen), *5000)
+	      hi_grid = KNOWN_GRID(memb_dset, hi_cat, hi_var)
+	      IF (.NOT.TM_SAME_GRID_DEF(hi_grid,orig_grid)) CALL ERRMSG(
+     .		  ferr_aggregate_error, status,
+     .		  'coordinate grid of '// vname(:vlen)//
+     .		  ' has changed in agg member '//LEFINT(imemb,slen), *5000)
+
+* the T axis of an F-aggregation has a single set of indices but the time
+* values differ for each axis.  Indices are inherited from the lo_cx
+	      IF (idim .EQ. f_dim) THEN
+	         cx_by_ss(t_dim, hi_cx) = .TRUE.
+	         CALL FLESH_OUT_AXIS(t_dim, hi_cx, status )
+	         IF (status .NE. ferr_ok) GOTO 5000
+	      ENDIF
+	   ENDIF
 
 * Set limits on agg-direction to be unspecified
 	   CALL DEL_CX_DIM(idim, hi_cx)
 	   cx_by_ss(idim,hi_cx) = .TRUE.
-
-* the T axis of an F-aggregation has a single set of indices but the time
-* values differ for each axis.  Indices are inherited from the lo_cx
-	   IF (idim .EQ. f_dim) THEN
-	      cx_by_ss(t_dim, hi_cx) = .TRUE.
-	      CALL FLESH_OUT_AXIS(t_dim, hi_cx, status )
-	      IF (status .NE. ferr_ok) GOTO 5000
-	   ENDIF
 
 * set up the member variable
 	   cx_data_set(hi_cx) = memb_dset

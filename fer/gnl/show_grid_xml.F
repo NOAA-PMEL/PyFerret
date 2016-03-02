@@ -46,6 +46,8 @@
 * V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
 *      *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * v685 *acm* 4/12 The flag line_write tells us whether to write the axis name to the xml
+* V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
+*                  using original upper/lowercase spelling
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -65,10 +67,11 @@
 	INTEGER lun, grid, cx_expr
 
 * local variable declarations:
+	LOGICAL original 
 	INTEGER TM_LENSTR1, TM_LENSTR, STR_DNCASE, STR_SAME,
      .		idim, slen, line, iwrite, status
         CHARACTER*1 axdir
-	CHARACTER*512 outstring
+	CHARACTER outstring*512, axname*64
 
  2020   FORMAT ('<grid name="',A,'">' )
  2030   FORMAT ('<axes>' )
@@ -85,16 +88,17 @@
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 	iwrite = 0
+	original = .TRUE.
 	DO 110 idim = 1, nferdims
 	   slen = 0
            line = grid_line(idim, grid)
+	   CALL CHOOSE_LINE_NAME(line, original, axname)
            IF (line .GT. 0 .AND. 
-     .	          STR_SAME(line_name(line), 'ABSTRACT') .NE. 0) THEN
-	      slen = TM_LENSTR(line_name(line))
+     .	          STR_SAME(axname, 'ABSTRACT') .NE. 0) THEN
+	      slen = TM_LENSTR(axname)
 	      status = STR_DNCASE(axdir, ww_dim_name(idim))
 	      IF (slen .EQ. 0) GOTO 110
-	      CALL ESCAPE_FOR_XML (line_name(line), outstring, slen)
-
+	      CALL ESCAPE_FOR_XML (axname, outstring, slen)
 
               IF (cx_expr .EQ. unspecified_int4) THEN
                  WRITE (risc_buff, 2040 ) axdir, outstring(1:slen), axdir
@@ -122,11 +126,11 @@
 	      slen = 0
               line = grid_line(idim, grid)
               IF (line .GT. 0 .AND. 
-     .	          STR_SAME(line_name(line), 'ABSTRACT') .NE. 0) THEN
-	         slen = TM_LENSTR(line_name(line))
+     .	          STR_SAME(axname, 'ABSTRACT') .NE. 0) THEN
+	         slen = TM_LENSTR(axname)
 	         status = STR_DNCASE(axdir, ww_dim_name(idim))
 	         IF (slen .EQ. 0) GOTO 120
-	         CALL ESCAPE_FOR_XML (line_name(line), outstring, slen)
+	         CALL ESCAPE_FOR_XML (axname, outstring, slen)
 
                  WRITE (risc_buff, 2040 ) axdir, outstring(1:slen), axdir
                  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)

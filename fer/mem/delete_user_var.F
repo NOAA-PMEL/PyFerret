@@ -1,4 +1,4 @@
-	SUBROUTINE DELETE_USER_VAR ( uvar )
+	SUBROUTINE DELETE_USER_VAR ( uvar, iset )
 
 *
 *
@@ -44,6 +44,9 @@
 * V450 7/97 - guts of routine moved to DELETE_USER_VAR_SUB
 * V510 *sh* 1/00 - bug fixes to support nested GC variables
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
+*                  added to that dataset in the attribute structure. Extra
+*                  argument to DELETE_USER_VAR
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -51,10 +54,11 @@
 	include 'xvariables.cmn'
 
 * calling argument declarations:
-	INTEGER	uvar
+	INTEGER	uvar, iset
 
 * internal variable declarations:
-	INTEGER	i, uv, uvar_ancestor, num_indices, result_array(max_uvar)
+	INTEGER	i, uv, uvar_ancestor, num_indices, 
+     .          result_array(max_uvar), dset
 
 * delete child vars
 *	DO 200 uv = 1, max_uvar
@@ -68,11 +72,15 @@
 *	uvar_name_code for child vars is "(Cnnn,Vmmm)" -- the "mmm" is the ancestor
 	   IF (uvar_name_code(uv)(1:2) .NE. '(C' ) GOTO 200
 	   READ (uvar_name_code(uv)(8:10),'(I3)',ERR=200) uvar_ancestor
-	   IF (uvar_ancestor.EQ.uvar) CALL DELETE_USER_VAR_SUB(uv)
+	   dset = pdset_uvars
+	   IF (uvar_ancestor.EQ.uvar) CALL DELETE_USER_VAR_SUB(uv, dset)
  200	CONTINUE
 
 * now delete the variable itself
-        CALL DELETE_USER_VAR_SUB(uvar)
+	dset = iset
+	IF (dset.EQ.unspecified_int4 .OR. 
+     .      dset.EQ.pdset_irrelevant) dset = pdset_uvars
+        CALL DELETE_USER_VAR_SUB(uvar, dset)
 	      
 	RETURN
 	END

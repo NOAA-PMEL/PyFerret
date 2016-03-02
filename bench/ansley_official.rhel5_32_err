@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 86725500 Feb 10 16:48 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 86699430 Feb 18 12:40 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixes to 10-Feb-16
+Note: after checkin for fixes to 1786, MODE UPCASE and SHOW output
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/linux/ext_func/pylibs
-Beginning at Wed Feb 10 16:50:22 PST 2016
+Beginning at Thu Feb 18 12:41:56 PST 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -4077,8 +4077,8 @@ SET DAT/FORM=CDF ft_cal_mixed.nc
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Replacing definition of axis TDAY
-Replacing definition of axis XAX
+Replacing definition of axis tday
+Replacing definition of axis xax
  LISTing to file myfile.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4239,10 +4239,14 @@ go/garbage /home/users/ansley/build/linux/FERRET/bench/tmp/testMe.jnl
 go/garbage "/home/users/ansley/build/linux/FERRET/bench/tmp/testMe.jnl"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: command syntax: command line too long -- exceeds 20480
-"/archive/ccsp/
- **ERROR: command syntax: "/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf...
-"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0001.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0002.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0003.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0004.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0005.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0006.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0007.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0008.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0009.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0010.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0011.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0012.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0013.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0014.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0015.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0016.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0017.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0018.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0019.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0026.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0027.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0028.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0029.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0030.t_surf.nc"}
+ **ERROR: command syntax: command line too long -- exceeds 2048
+DEFINE VARIABLE a={1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5...
+ **ERROR: variable unknown or not in data set: A
+load a
+ **ERROR: command syntax: command line too long -- exceeds 2048
+"/arch
+ **ERROR: command syntax: "/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf...
+"/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc",\}
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis DAYT
@@ -4299,6 +4303,15 @@ DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/irregular_start_time_fcst.nc")
  LISTing to file a.nc
 Replacing definition of axis XAX10
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis tday
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+SHO VAR/XML
+SHO VAR/XML
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4404,4 +4417,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Feb 10 16:53:29 PST 2016
+Ended at Thu Feb 18 12:45:29 PST 2016

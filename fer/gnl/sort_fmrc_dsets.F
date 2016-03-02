@@ -39,6 +39,7 @@
 * and insert dummy dataset where the forecast sequence has gaps
 *
 * V698 *sh* 11/15 
+*            2/16 -- allow missing datasets among nsets_in
 
 * calling arguments
 *   nsets_in		- number of datasets given to be aggregated (input)
@@ -69,18 +70,34 @@
 
 * local variable declarations:
 	INTEGER	ivar, grid, grid1, iset, dset, dset1, taxis, taxis1,
-     .		status, nadded, ngap, i, itmp_memb(maxmembers)
+     .		status, nadded, ngap, i, nsets, itmp_memb(maxmembers)
 	REAL TDEST_WORLD, TM_WORLD, d, epsilon, gap, deltaT,
      .		start_time(maxmembers), rindices(maxmembers)
 	CHARACTER LEFINT*8
 
 * initialize
-	nsets_out = nsets_in
 	dset1  = member_sets(1)
 	taxis1 = ds_time_axis(dset1)
 	nt_out = line_dim(taxis1)
 	status = ferr_ok
 	IF (nsets_in .LE. 1) RETURN
+
+* since forecast series must be regular, and the code below
+* is able to detect gaps in the list of forecasts given,we
+* will simply remove the user-specified gaps, knowing they
+* will be re-inserted automatically
+	ngap = 0
+	iset = 1
+	DO WHILE (iset+ngap .LT. nsets_in)
+	   IF (member_sets(iset) .EQ. pdset_dummy) THEN
+	      ngap = ngap + 1
+	   ELSE
+	      iset = iset + 1
+	   ENDIF
+	   member_sets(iset) = member_sets(iset+ngap)
+	ENDDO
+	nsets = nsets_in - ngap
+	nsets_out = nsets
 
 * locate a variable in the first dataset that uses this time axis
 	DO ivar = 1, maxvars
@@ -93,7 +110,7 @@
 * loop through the datasets extracting the start time from each one
 * Apply the T0 encoding of the first dataset to all
  100	start_time(1) = TM_WORLD( 1, grid1, t_dim, box_middle )
-	DO iset = 2, nsets_in
+	DO iset = 2, nsets
 	   dset  = member_sets(iset)
 	   taxis = ds_time_axis(dset)
            IF (line_name_orig(taxis) .NE. line_name_orig(taxis1)) GOTO 5100
@@ -117,23 +134,23 @@
 
 * sort the dates and the dataset list
 * ... put indices into REAL array
-	DO iset = 1, nsets_in
+	DO iset = 1, nsets
 	   rindices(iset) = iset
 	ENDDO
-	CALL HEAP2(start_time, rindices, unspecified_val8, nsets_in)
+	CALL HEAP2(start_time, rindices, unspecified_val8, nsets)
 * ... reorder the dataset numbers to match the sort
-	DO iset = 1, nsets_in
+	DO iset = 1, nsets
 	   itmp_memb(iset) = member_sets(INT(rindices(iset)))
 	ENDDO
 * ... copy the sorted list back into the input array
-	DO iset = 1, nsets_in
+	DO iset = 1, nsets
 	   member_sets(iset) = itmp_memb(iset)
 	ENDDO
 
 * determine the intended delta-T between the (ordered) forecasts
 * ... first get the minimum delta-T
 	deltaT = start_time(2) - start_time(1)
-	DO iset = 2, nsets_in
+	DO iset = 2, nsets
 	   d = start_time(iset)-start_time(iset-1)
 	   IF ( d .LT. deltaT) deltaT = d
 	ENDDO
@@ -144,6 +161,7 @@
 	epsilon = (1.00001*31)/28
 
 * loop through the data set list inserting dummys where there are gaps
+	ngap = 0
 	nadded = 0
 	iset = 1
 	DO WHILE (iset .LT. nsets_out)

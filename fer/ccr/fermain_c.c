@@ -133,7 +133,8 @@
 *                    mem_size (a size_t) in sBuffer->flags[FRTN_IDATA1]
 * *acm*  1/12      - Ferret 6.8 ifdef for double-precision ferret, see the
 *                    definition of macro DFTYPE in ferret.h. ppl_memory remains float.
-* *ks*  2/16       - use default signal handlers if NDEBUG
+* *kms*  2/16      - only catch/handle crash signals and exit gracefully if NDEBUG is defined;
+*                    if debug build, let it crash
 */
 
 #ifdef MAC_SSIZE

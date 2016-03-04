@@ -198,6 +198,8 @@
 *                  added to that dataset in the attribute structure.
 *           2/16 replaced char_init with char_init16 (untested) 
 *                (this is the *only* place in all the code using char_init)
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -902,7 +904,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 
 	   CALL GET_MEMORY( INT(rsize), grid_blocks, v1_blk1, v1_nblks, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   CALL SHOW_DIAG_VARS( arg, memory(1,v1_blk1) )
+c	   CALL SHOW_DIAG_VARS( arg, memory(1,v1_blk1) )
 	   CALL FREE_MEMORY( v1_blk1, v1_nblks )
 	ENDIF
 

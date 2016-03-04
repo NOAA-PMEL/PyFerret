@@ -45,6 +45,8 @@
 
 * V510 *sh* 4/00
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic variables, 
+* pre-defined axes and grids.
 
 * Include files
 #include "tmap_dset.parm"	
@@ -64,10 +66,11 @@
 	CHARACTER	lname*128, c*1
 
 * initiaslize
-	gvn_len  = TM_LENSTR1(lname)
+	gvn_len  = TM_LENSTR1(lname)  ! ? why is this here? length of prev. value...
 	dup_name = .FALSE.
 	dup_guts = .FALSE.
 	lname    = line_name(gvn)
+	gvn_len  = TM_LENSTR1(lname)
 
 * screen out obvious rejection criteria
 	IF ( tst .EQ. gvn ) GOTO 1000	! don't compare to self

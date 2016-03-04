@@ -55,6 +55,8 @@
 *                  onto CHAR function variable 
 * v554 *acm* 1/04 - add variable category cat_counter_var
 * V600 *acm* 3/06 - add variable category cat_attrib_val
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
 
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -64,7 +66,6 @@
 	include	'ferret.parm'
 	include	'xtext_info.cmn'
 	include	'xcontext.cmn'
-	include	'xcalc_vars.cmn'
 	include	'xvariables.cmn'
 
 * calling argument declarations
@@ -85,10 +86,6 @@
      .		 category .EQ. cat_agg_f_var) THEN
 
 	   VAR_UNITS = ds_var_units( variable )
-
-	ELSEIF ( category .EQ. cat_calc_var ) THEN
-
-	   VAR_UNITS = unit_text( cvar_unit_code(variable) )
 
 	ELSEIF ( category .EQ. cat_user_var ) THEN
 

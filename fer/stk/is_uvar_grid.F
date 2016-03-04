@@ -110,6 +110,9 @@
 * V694 *acm*  5/15 Fix ticket 2213 
 * V698 *sh* 1/16 - tweaks to aggregates to ensure all LET/D grids found
 * V698 *acm* 1/16 change remaining dset=-1 to the parameter dset=pdset_uvars
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
+* V698  3/16 *acm* Remove unneeded xdset_parms.cmn
 
 * calling argument declarations:
 	INTEGER	status
@@ -150,7 +153,6 @@
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
 	include	'xfr_grid.cmn'
-	include	'xdset_parms.cmn'
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents
@@ -366,8 +368,6 @@
 
 	ELSEIF ( cx_grid(hi_cx) .NE. unspecified_int4 ) THEN
 	   GOTO 500	! know grid --> merge it
-	ELSEIF ( cx_category(hi_cx) .EQ. cat_calc_var ) THEN
-	   GOTO 9100	! err: grid for cvar may not be knowable
 	ELSE
 	   GOTO 9000	! err: grid for non-user vars should always be known
 	ENDIF
@@ -815,16 +815,5 @@ c	      rvar_on_server(uvar) = .FALSE.
  5000	CALL DEALLO_ALL_GRIDS
 	RETURN
  9000	CALL ERRMSG( ferr_internal, status, 'is_uvar_grid', *5000 )
- 9100   IF ( dset .LE. 0 ) GOTO 9000
-        CALL GET_SHORT_DSET_NAME( dset, name, i )
-        IF ( .NOT. (dp_phil_sieg(dset).OR.dp_cox(dset)) ) THEN
-           CALL WARN( name(:i)//' is not a GFDL model data set' ) 
-        ELSE
-           GOTO 9000
-        ENDIF
- 	CALL ERRMSG( ferr_invalid_command, status,
-     .               'no grid for GFDL diagnostic variable '
-     .               //VAR_CODE(cat_calc_var, cx_variable(hi_cx)),
-     .               *5000 )
 
 	END	

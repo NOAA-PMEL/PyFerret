@@ -42,6 +42,7 @@
 * 11/2006 
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 *                  Use pseudo-dataset of user-defined axes to keep track of attributes.
+* V698  3/16 *acm* Remove unneeded xdset_parms.cmn
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -54,7 +55,6 @@
 	include 'xprog_state.cmn'
 	include 'xvariables.cmn'
 	include 'xrisc.cmn'
-        include 'xdset_parms.cmn'
         include 'netcdf.inc'
 
 * calling argument declarations:

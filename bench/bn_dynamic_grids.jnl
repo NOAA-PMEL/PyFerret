@@ -11,6 +11,8 @@
 !			      numericals results found here are verified to be correct
 ! V550 11/02 *sh* - documentation change only reflecting new modulo behavior
 ! V603  5/07 *acm*  documentation changew - some of the context errors have gone away.
+! V698  3/16 *acm* Removed Philander-Seigel code including diagnostic variables, 
+! pre-defined axes and grids.
 
 ! deliberate dynamic grid errors
 
@@ -140,8 +142,8 @@ show grid/dynamic
 
 ! regridding between grids with mutually exclusive axes
 cancel region
-define grid/y=ps3dt gy
-define grid/x=ps3dt gx
+define grid/y=`temp,return=grid` gy
+define grid/x=`temp,return=grid` gx
 LET/QUIET a = x[g=gx]
 list/i=1:4 a,a[g=gy]   ! nothing to regrid - both are same
 

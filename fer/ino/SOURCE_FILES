@@ -3,9 +3,7 @@ cdf_prep_cache.F\
 dset_type.F\
 equal_delimit.F\
 find_dset_number.F\
-get_dset_parms.F\
 init_ez_dset.F\
-make_cvar_grids.F\
 read_ez.F\
 read_binary.F\
 read_delimited.F\

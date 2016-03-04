@@ -215,7 +215,8 @@
 * v696 *acm* 11/15 SET VAR/UNITS instead of /UNIT, just for consistency
 * V697 *acm* 12/15 Correct typo: LIST/SINGLY was shown as /SINGLE
 * V698+ *acm* 2/16 Ticket 2362: Change /D= qualifier to /DATASET=
-
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -557,10 +558,11 @@
 	   DATA subcommands      (nsub_at2 + 9)	/ 'VARIABLE'	/
 	   DATA num_qualifs      (nsub_at2 + 9)	/ nqual2j	/
 	   DATA qualifier_pointer(nsub_at2 + 9)	/ nqual_at2j	/
-* SHOW VARIABLES /ALL /DATASET /DIAGNOSTIC /USER /OUTFILE/APPEND/CLOBBER
+* SHOW VARIABLES /ALL /DATASET  /USER /OUTFILE/APPEND/CLOBBER
+* /DIAGNOSTI removed 3/20163/1/20163/1/2016
 		DATA qualifiers  (nqual_at2j+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at2j+1)	/ 'DATASET'	/
-		DATA qualifiers  (nqual_at2j+2)	/ 'DIAG'	/
+		DATA qualifiers  (nqual_at2j+2)	/ '****'	/
 		DATA qualifiers  (nqual_at2j+3)	/ 'USER'	/
 		DATA qualifiers  (nqual_at2j+4)	/ 'XML'		/
 		DATA qualifiers  (nqual_at2j+5)	/ 'OUTFILE'	/

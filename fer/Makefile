@@ -32,6 +32,7 @@
 #                   cleaned-up tags
 #  v6.8  7/13 *kms* - removed threddsBrowser (moved to top level since it is a separate app)
 #  v6.97 2/16 *acm* - restore "profiling" target
+#  V698  3/16 *acm* Removed Philander-Seigel code including ocn/ directory
 # 
 # include platform specific macro definitions
 #
@@ -50,16 +51,16 @@ include ../platform_specific.mk.$(BUILDTYPE)
 GUI_FAKES = special/gui_fakes.o
 
 DIRS	= ccr ctx dat doo efi efn ef_utility fmt gnl ino mem  \
-	ocn plt rpn special stk utl xeq
+	 plt rpn special stk utl xeq
 
 LIBS	= ccr ctx dat doo efi efn ef_utility fmt gnl ino mem \
-	ocn plt rpn stk utl xeq
+	 plt rpn stk utl xeq
 
 CLEANDIRS = $(DIRS)
 
 DEPDIRS = ccr
 
-FERLIBS = -lxeq -lgnl  -lccr -lferplt -lrpn -lstk -ldoo -locn \
+FERLIBS = -lxeq -lgnl  -lccr -lferplt -lrpn -lstk -ldoo  \
 	-lctx -lfmt -lino -lmem -lutl -ldat -lccr -lefi -lefn
 
 PPLLIBS = -lplt -lpll -lsym -lcmp -lour -lepi -lusr -ltmap

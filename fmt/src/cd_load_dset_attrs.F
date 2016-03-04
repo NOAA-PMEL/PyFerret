@@ -45,6 +45,8 @@
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 * V6.83 11/12 *acm* If there are multiple global atts including a 
 *                   message attribute, issue the message just once.
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic variables, 
+* pre-defined axes and grids.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -104,14 +106,6 @@
 	ds_alert_on_open(dset) 	= .FALSE.
 	ds_alert_on_output(dset)= .FALSE.
 	ds_message(dset)	= ' '
-
-* initialize incidental variables
-        ds_basic_axes(1,dset) = mpsxt
-        ds_basic_axes(2,dset) = mpsxu
-        ds_basic_axes(3,dset) = mpsyt
-        ds_basic_axes(4,dset) = mpsyu
-        ds_basic_axes(5,dset) = mpszt
-        ds_basic_axes(6,dset) = mpszw
 
 * save the "record" axis
 

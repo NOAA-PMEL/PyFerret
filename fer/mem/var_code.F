@@ -55,6 +55,8 @@
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V694 5/15 *acm* when evaluating attributes, show the code attr
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -62,7 +64,6 @@
 	include	'xdset_info.cmn_text'
 	external xdset_info_data
 	include	'xvariables.cmn'
-	include	'xcalc_vars.cmn'
 	include	'xalgebra.cmn'
 
 * calling argument declarations:
@@ -77,10 +78,6 @@
      . .OR.	 category .EQ. cat_agg_f_var ) THEN
 
 	   VAR_CODE = ds_var_code( variable )
-
-	ELSEIF ( category .EQ. cat_calc_var ) THEN
-
-	   VAR_CODE = cvar_name_code( variable )
 
 	ELSEIF ( category .EQ. cat_user_var ) THEN
 

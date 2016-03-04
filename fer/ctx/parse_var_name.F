@@ -72,6 +72,8 @@
 * V690 12/13 *sh* set auto-curvilinear actions that are needed
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 *       12/14 *sh* save bracket character positions for VTREE report
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -248,9 +250,7 @@
 	ELSEIF ( cx_category(var_cx) .EQ. cat_agg_e_var ) THEN
 	   cx_type(var_cx) = ptype_float   
 	ELSEIF ( cx_category(var_cx) .EQ. cat_agg_f_var ) THEN
-	   cx_type(var_cx) = ptype_float   
-	ELSEIF (cx_category(var_cx) .EQ. cat_calc_var ) THEN
-	   cx_type(var_cx) = ptype_float
+	   cx_type(var_cx) = ptype_float  
 	ELSEIF (cx_category(var_cx) .EQ. cat_counter_var ) THEN
 	   cx_type(var_cx) = ptype_float
         ELSEIF (cx_category(var_cx) .EQ. cat_attrib_val) THEN

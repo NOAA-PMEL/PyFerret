@@ -53,7 +53,6 @@
 	external xdset_info_data
 	include	'ferret.parm'
 	include	'xvariables.cmn'
-	include	'xcalc_vars.cmn'
         include 'xfr_grid.cmn'
 
 * calling argument declarations:
@@ -72,15 +71,6 @@
 	   KNOWN_GRID = ds_grid_number( variable )
 	   IF (ds_grid_number( variable ) .EQ. int4_init) 
      .	      KNOWN_GRID = unspecified_int4
-
-	ELSEIF ( category .EQ. cat_calc_var ) THEN
-
-           IF ( data_set .EQ. unspecified_int4 ) THEN
-              KNOWN_GRID = unspecified_int4
-           ELSE
-	      KNOWN_GRID = cvar_grid( variable, data_set )
-           ENDIF
-
 
 	ELSEIF ( category .EQ. cat_user_var ) THEN
 

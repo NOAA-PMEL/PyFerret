@@ -188,6 +188,8 @@
 *	      SET DATA tseries_cmnds.agg gets passed to the GO command (a hack)
 * V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
 *                  added to that dataset in the attribute structure.
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -475,9 +477,7 @@ c *kob* 4/97
      .				 dset_num, status )
 	      IF ( status .NE. ferr_ok ) RETURN
 * ... dummy calls to make EZ sets act like other sets
-	      CALL GET_DSET_PARMS( dset_num, status )
 	      CALL GET_AXIS_SPEED( dset_num )
-	      CALL MAKE_CVAR_GRIDS( dset_num, status )
  710	     CONTINUE
 	   ENDIF
 * ... make this data set current
@@ -572,19 +572,11 @@ c *kob* 4/97
 	      GOTO 5090					! error in .DES file
 	   ENDIF
 
-* interpret special parameters in the descriptor
-	   CALL GET_DSET_PARMS( dset_num, status )
-	   IF ( status .NE. ferr_ok ) GOTO 790
-
 * determine relative access speeds along each axis
 	   CALL GET_AXIS_SPEED( dset_num )
 
 * check for negative time step values (warning, only)
 ! 3/00	   CALL CHECK_NEG_TAXIS( dset_num )
-
-* build completed ( with time axis ) grids for computable variables
-	   CALL MAKE_CVAR_GRIDS( dset_num, status )
-	   IF ( status .NE. ferr_ok ) GOTO 790
 
 * make this data set current
  745	   cx_data_set( cx_last )	=  dset_num
@@ -1748,6 +1740,7 @@ c *kob* 4/97
    
                     CALL CD_REPLACE_ATTR (dset_num, varid, attname, 
      .                  NCCHAR, attlen, buff3, val_buf, status)
+                    IF (status .NE. ferr_ok) GOTO 5000
                   ENDIF
                ENDIF
             ENDIF ! (axis .NE. unspecified_int4)

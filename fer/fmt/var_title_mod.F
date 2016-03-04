@@ -69,6 +69,8 @@
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 * V690 *sh* suppress comment about regridding for 1pt 'false regridding'
 *       used on  curvilinear variables.  It will be documented in ASCII_LIMITS.
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
 
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -80,7 +82,6 @@
 	include	'xcontext.cmn'
 	include	'xalgebra.cmn'
 	include	'xtext_info.cmn'
-	include	'xdset_parms.cmn'
 
 * calling argument declarations
 	INTEGER cx
@@ -112,128 +113,6 @@
 	mlen = TM_LENSTR( var_title_mod )
 	add_on = mlen .GT. 0
 	mlen = MAX( 1, mlen )		! avoid zero len string errors
-
-* add remark about accuracy of d/dT derivative
-	trans = cx_trans( t_dim, cx )
-	IF ( trans .EQ. trans_no_transform 
-     . .AND. cx_trans_arg(t_dim,cx) .NE. bad_val4
-     . .AND. categ .EQ. cat_calc_var
-     . .AND. ( var .EQ. pubps  .OR.  var .EQ. pvbps
-     .		.OR.  (pdudt.LE. var .AND. var.LE.pdtdt) ) ) THEN
-	   IF ( add_on ) THEN
-	      var_title_mod = var_title_mod(:mlen) //' - '
-	      mlen = MIN( maxlen, mlen + 3 )
-	   ELSE
-	      add_on = .TRUE.
-	   ENDIF
-	   IF ( cx_trans_arg(t_dim,cx) .EQ. bad_val4 ) THEN
-	      var_title_mod = var_title_mod(:mlen) //'irregular dt'
-	      mlen = MIN( maxlen, mlen+12 )
-	   ELSE
-	      var_title_mod = var_title_mod(:mlen) //
-     .			     'dt='//TM_FMT( cx_trans_arg(t_dim,cx), 4, 8, slen )
-	      mlen = MIN( maxlen, mlen+3+slen )
-	   ENDIF
-	ENDIF
-
-	trans = cx_trans( f_dim, cx )
-	IF ( trans .EQ. trans_no_transform 
-     . .AND. cx_trans_arg(f_dim,cx) .NE. bad_val4
-     . .AND. categ .EQ. cat_calc_var
-     . .AND. ( var .EQ. pubps  .OR.  var .EQ. pvbps
-     .		.OR.  (pdudt.LE. var .AND. var.LE.pdtdt) ) ) THEN
-	   IF ( add_on ) THEN
-	      var_title_mod = var_title_mod(:mlen) //' - '
-	      mlen = MIN( maxlen, mlen + 3 )
-	   ELSE
-	      add_on = .TRUE.
-	   ENDIF
-	   IF ( cx_trans_arg(f_dim,cx) .EQ. bad_val4 ) THEN
-	      var_title_mod = var_title_mod(:mlen) //'irregular dt'
-	      mlen = MIN( maxlen, mlen+12 )
-	   ELSE
-	      var_title_mod = var_title_mod(:mlen) //
-     .			     'dt='//TM_FMT( cx_trans_arg(f_dim,cx), 4, 8, slen )
-	      mlen = MIN( maxlen, mlen+3+slen )
-	   ENDIF
-	ENDIF
-
-* some variables need all the comments about surface heat flux
-* namely: QFLX and (QDF or QDFZ) at the surface
-	k_lo     = cx_lo_ss( cx, z_dim ) 
-	vcalc = categ .EQ. cat_calc_var
-	all_q = vcalc .AND. ( var.EQ.pqflx	.OR.
-     .		  ( (var.EQ.pqdfz .OR. var.EQ.pqdf) .AND. k_lo.EQ.1 ) )
-
-* add remark about clim. air T vs. const. air/sea temperature difference
-	IF ( all_q .OR. 
-     .	     ( vcalc .AND.  ( var.EQ.pqsen .OR. var.EQ.pqeva
-     .			.OR.  var.EQ.pair  .OR. var.EQ.pcair ) ) ) THEN
-	   IF ( add_on ) THEN
-	      var_title_mod = var_title_mod(:mlen) //' - '
-	      mlen = MIN( maxlen, mlen + 3 )
-	   ELSE
-	      add_on = .TRUE.
-	   ENDIF
-	   IF ( .NOT.dp_const_air_sst(dset) .OR. var .EQ. pcair ) THEN
-	      cairt = dp_clim_air_sst( dset )		! cairt used in calcs
-	      cairt_dset = dp_airt_dset( cairt )	! dset containing cairt
-* ... base remark on experiment number to ensure that neither file names,
-*     logicals, nor descriptors can point to wrong climatological data
-	      var_title_mod = var_title_mod(:mlen) // ds_expnum( cairt_dset )
-     .			      // ' air T'	
-	      mlen = MIN( maxlen, mlen+10 )
-	   ELSE
-* ... constant air sst difference
-	      var_title_mod = var_title_mod(:mlen) // 'air/sst dT=' //
-     .		TM_FMT( dp_delta_air_sst(dset), 4, 8, slen )
-	      mlen = MIN( maxlen, mlen+11+slen )
-	   ENDIF
-	ENDIF
-
-* add remark about minimum wind used
-	IF ( all_q .OR. 
-     .	     ( vcalc .AND. (var.EQ.pqsen .OR. var.EQ.pqeva) ) ) THEN
-	   var_title_mod = var_title_mod(:mlen) // ';min. wind=' //
-     .		TM_FMT( dp_min_wind(dset), 4, 8, slen )
-	   mlen = MIN( maxlen, mlen+11+slen )
-	ENDIF
-
-* add remark about the surface radiation calculation
-	IF ( all_q .OR. ( vcalc .AND. var.EQ.pqrad ) ) THEN
-	   IF ( add_on ) THEN
-	      var_title_mod = var_title_mod(:mlen) //' - '
-	      mlen = MIN( maxlen, mlen + 3 )
-	   ELSE
-	      add_on = .TRUE.
-	   ENDIF
-	   IF ( dp_phil_qflux(dset) ) THEN
-	      var_title_mod = var_title_mod(:mlen) // 'Phil/Sieg Q flux'
-	      mlen = MIN( maxlen, mlen+14 )
-	   ELSEIF ( dp_ramp1_qflux(dset) ) THEN
-	      var_title_mod = var_title_mod(:mlen) // 'single heat ramp'
-	      mlen = MIN( maxlen, mlen+16 )
-	   ELSEIF ( dp_ramp2_qflux(dset) ) THEN
-	      var_title_mod = var_title_mod(:mlen) // 'double heat ramp'
-	      mlen = MIN( maxlen, mlen+16 )
-	   ENDIF
-	ENDIF
-
-* add remark about momentum diffusion coefficient
-* add second pair of parens around second conditional statement below 
-*     *kob* 4/14/98
-	IF ( vcalc .AND. ((var.EQ.pudfh) .OR. (var.EQ.pvdfh)) ) THEN
-	   IF ( add_on ) THEN
-	      var_title_mod = var_title_mod(:mlen) //' - '
-	      mlen = MIN( maxlen, mlen + 3 )
-	   ELSE
-	      add_on = .TRUE.
-	   ENDIF
-	      buffer = 	      TM_FMT( dp_Am_factor(dset), 3, 5, slen )
-	      var_title_mod = var_title_mod(:mlen)//
-     .			      'Am=' // buffer(:slen)
-	      mlen = MIN( maxlen, mlen+3+slen )
-	ENDIF
 
 * add axis name to pseudo variables
 	IF ( categ .EQ. cat_pseudo_var ) THEN

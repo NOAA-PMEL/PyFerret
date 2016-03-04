@@ -10,6 +10,8 @@
 !	and tests of "escapes" using back slashes
 ! for V531 test continuation lines and long input lines
 ! for v698 interpretation of unknown qualifiers changed -- e.g. say /notaqual
+! V698  3/16 *acm* Removed Philander-Seigel code including diagnostic variables, 
+! pre-defined axes and grids.
 
 ! SET - SHOW - CANCEL DATA
 USE gtbc011
@@ -139,8 +141,6 @@ SET GRID/RESTORE
 SHOW GRID
 
 ! SHOW VARIABLES
-SHOW VARIABLES/DIAGNOSTIC	! alphabetical list
-SHOW VARIABLES/DIAGNOSTIC  Q
 LET A=i
 SHOW VARIABLES
 CANC VARIABLES/ALL

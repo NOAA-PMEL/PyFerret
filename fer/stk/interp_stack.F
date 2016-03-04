@@ -104,6 +104,8 @@
 *	          delay stripping gather until after stripping regrids
 * V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
 * V698 *sh* 12/15 implement dummy data sets in forecast aggregations
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -489,11 +491,6 @@
 	   CALL IS_READ( memory, *10, *2000, status )
 	   GOTO 5000
 
-* ... calculate from internal model-diagnostic code ?
-	ELSEIF ( cat .EQ. cat_calc_var	) THEN
-	   CALL IS_CALC   ( memory, *10, *2000, status )
-	   GOTO 5000
-
 * ... get a "constant variable" (say, "{1,3,5}")
 	ELSEIF ( cat .EQ. cat_const_var	) THEN
 	   CALL IS_CONST_VAR   ( memory, *10, *2000, status )
@@ -567,8 +564,6 @@ c	   GOTO 5000
 	      GOTO 10					! grid just obtained
 	   ELSEIF ( act .EQ. isact_reconcile		) THEN
 	      CALL IS_RECONCILE( memory, *10, *2500, status ) ! 11/95
-	   ELSEIF ( act .EQ. isact_calculate		) THEN
-	      CALL IS_CALC   ( memory, *10, *2500, status ) ! temp ?? needed ?
 	   ELSEIF ( act .EQ. isact_algebra		) THEN
 	      CALL IS_ALGEBRA( memory, *10, *2500, isp_base, status )
 	   ELSEIF ( act .EQ. isact_modulo		) THEN

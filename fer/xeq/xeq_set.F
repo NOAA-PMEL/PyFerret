@@ -188,8 +188,6 @@
 *	      SET DATA tseries_cmnds.agg gets passed to the GO command (a hack)
 * V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
 *                  added to that dataset in the attribute structure.
-* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
-*                  variables, pre-defined axes and grids, cat_calc_var.
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -1708,6 +1706,7 @@ c *kob* 4/97
                   ustring = 'units'
                   CALL CD_REPLACE_ATTR (dset_num, varid, ustring, 
      .               NCCHAR, attlen, buff3, val_buf, status)
+                  IF (status .NE. ferr_ok) GOTO 5000
                ENDIF
 
 * If the units were changed on a time axis, add "since time origin"
@@ -1748,7 +1747,8 @@ c *kob* 4/97
 * Update attribute information used by plotting etc (ds_units, ...)
             CALL FIND_VAR_NAME (dset_num, varname, cat, uvar)
             IF (cat .EQ. cat_user_var .OR. cat .EQ. cat_file_var)
-     .           CALL UPDATE_ATTRIBUTES (dset_num, varname, uvar)
+     .           CALL UPDATE_ATTRIBUTES (dset_num, varname, uvar, status)
+            IF (status .NE. ferr_ok) GOTO 5940
 
         ENDIF
 	RETURN
@@ -2127,10 +2127,10 @@ c *kob* 4/97
      .   'SET ATT/OUT=[all or none] varname should NOT '//
      .   'include attribute. '//
      .    buff1(:slen), *5000 )
- 5940 slen = TM_LENSTR(buff1)
+ 5940 slen = TM_LENSTR(varname)
       CALL ERRMSG( ferr_invalid_command, status,
-     .   'error editing attribute'//
-     .    buff1(:slen), *5000 )
+     .   'error editing attribute for'//
+     .    varname(:slen), *5000 )
  5950 slen = TM_LENSTR(buff1)
       CALL ERRMSG( ferr_invalid_command, status,
      .   'cannot set T0 unless Units are also set'//

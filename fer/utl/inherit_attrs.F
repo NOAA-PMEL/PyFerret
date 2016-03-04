@@ -115,13 +115,16 @@
       IF (dset2 .EQ. pdset_irrelevant) dset2 = cx_data_set(cx_last) 
 
       cat = cx_category(cx)
-      IF (cat .EQ. cat_user_var) dset2 = pdset_uvars
 
 * Get varid for each variable.
       CALL CD_GET_VAR_ID (dset1, varname1, varid1, status)
       IF (status .NE. ferr_ok) GOTO 5050
       CALL CD_GET_VAR_ID (dset2, varname2, varid2, status)
-      IF (status .NE. ferr_ok) GOTO 5060
+      IF (status .NE. ferr_ok) THEN
+         IF (cat .EQ. cat_user_var) dset2 = pdset_uvars 
+	 CALL CD_GET_VAR_ID (dset2, varname2, varid2, status)
+      ENDIF
+      IF (status .NE. ferr_ok) GOTO 5050
 
 * Get number of attributes for variables
 
@@ -152,11 +155,13 @@
          IF (status .NE. ferr_ok) GOTO 5040
          CALL CD_GET_VAR_ATT_NAME (dset1, varid1, iatt, attname, status)
 	 CALL CD_SET_ATT_FLAG (dset2, varid2, attname, iflag, status)
+         IF (status .NE. ferr_ok) GOTO 5040
  200  CONTINUE
 
 * Update attribute information used by plotting etc (ds_units, ...)
 
-        CALL UPDATE_ATTRIBUTES (dset2, varname2, varid2)
+        CALL UPDATE_ATTRIBUTES (dset2, varname2, varid2, status)
+        IF (status .NE. ferr_ok) GOTO 5040
 
  5000 RETURN
 

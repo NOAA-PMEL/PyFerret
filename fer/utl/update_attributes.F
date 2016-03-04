@@ -1,4 +1,4 @@
-      SUBROUTINE UPDATE_ATTRIBUTES (dset, vname, uvar)
+      SUBROUTINE UPDATE_ATTRIBUTES (dset, vname, uvar, status)
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -65,27 +65,32 @@
       CHARACTER*(*) vname
 
 * Local variable declarations
-      LOGICAL NC_GET_ATTRIB, coordvar, got_it, do_warn
+      LOGICAL NC_GET_ATTRIB, coordvar, got_it, do_warn, uvflag
       INTEGER TM_LENSTR1, varid, vartyp, nvdim, vdims(8),
      .        nvatts, attlen, attoutflag, status, vlen, maxlen, 
      .        all_outflag
       REAL tmp
       CHARACTER*128 buff
 
+      vlen = TM_LENSTR1(vname)
        CALL CD_GET_VAR_ID (dset, vname, varid, status)
+       IF (status .NE. ferr_ok) GOTO 1100
 
 * get the vital statistics for this variable
 
       CALL CD_GET_VAR_INFO(dset, varid, vname, vartyp, 
      .      nvdim, vdims, nvatts, coordvar, all_outflag, status)
-      vlen = TM_LENSTR1(vname)
+      IF (status .NE. ferr_ok) GOTO 1200
+      CALL CD_GET_VAR_UVFLAG (dset, varid, uvflag, status)
+      IF (status .NE. ferr_ok) GOTO 1200
 
       do_warn = .TRUE.
 
 * Get long_name, units, missing_value
 
       IF (dset .EQ. unspecified_int4) RETURN
-      IF (dset .GE. 1) THEN
+      IF (dset .GT. pdset_irrelevant) THEN
+
          maxlen = 128
          got_it = NC_GET_ATTRIB( dset, varid, 'long_name',
      .                     .NOT.do_warn, vname(:vlen), maxlen, attlen, 
@@ -106,9 +111,10 @@
      .                do_warn, vname(:vlen), maxlen, attlen,
      .                attoutflag, buff, ds_bad_flag(uvar) )
 
+       ENDIF
 * For user variable update these in uvar_title, etc.
 
-       ELSE IF (dset .EQ. pdset_uvars) THEN
+       IF (dset.EQ.pdset_uvars .OR. uvflag) THEN
          maxlen = 128
          got_it = NC_GET_ATTRIB( dset, varid, 'long_name',
      .                     .NOT.do_warn, vname(:vlen), maxlen, attlen, 
@@ -128,5 +134,9 @@
 
 * successful completion - variable attributes updated
  1000 status = ferr_ok
-      RETURN
+ 5000 RETURN
+ 1100 CALL ERRMSG
+     .       ( ferr_unknown_variable, status, vname, *5000 )
+ 1200 CALL ERRMSG
+     .       ( ferr_internal, status, 'varinfo: '//vname(:vlen), *5000 )
       END

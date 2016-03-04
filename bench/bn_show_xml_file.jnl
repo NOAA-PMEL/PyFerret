@@ -11,7 +11,12 @@
 ! Dont do show axis/all. Just the axes for one variable is a lot of output.
 ! Ferret v685, show/data/var/xml includes the output of show axis, so remove that.
 
-USE ocean_atlas_temp.cdf
+! create a short file
+LET sst = x[x=1:15] + y[y=1:5] + t[gt=month_irreg] 
+save/clobber/file=b.nc sst
+can var/all
+
+use b
 
 DEFINE SYMBOL output_xml_file = the_xml_file.xml
 

@@ -1,9 +1,13 @@
 ! bn_xml_repl.jnl
 ! replace > and < and & with their html equivalents.
 
-use coads_climatology
-set var/title="a title with & and > and < characters" sst
-set var/units="<<" sst
-set att sst.history = "Adding some ampersands.& & to the history"
+! make a short file
+let/units="meters" myvar = 7
+save/clobber/file=a.nc myvar
+can var/all
+use a.nc
+
+set var/title="a title with & and > and < characters" myvar
+set var/units="<<" myvar
+define att myvar.history = "Adding some ampersands.& & to the history"
 sh dat/xml/var
-shade/l=1 sst

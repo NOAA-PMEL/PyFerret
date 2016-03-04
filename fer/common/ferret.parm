@@ -45,6 +45,11 @@
 * V696 *acm* 11/15 Added @BIN and @NBIN regridding transforms
 * V698 *sh* 1/16 added pagg_promotion_indicator_dset
 *           2/16 added cat_ef_time2d
+* V698 *acm* 2/16 Ticket 2372: Make the earth radius consistent with value in 
+*		  fmt/cmn/gt_lib.parm. This is very nearly the authalic radius 
+*                 of th earth, which is 6,371.0072 km:
+*                 https://en.wikipedia.org/wiki/Earth_radius#Authalic_radius 
+*                 and is also consistent with Matlab
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -53,7 +58,7 @@
 * numerical constants
 	REAL		deg2rad, radius, deg2km, deg2m, m_radius
 	PARAMETER     ( deg2rad = 3.141592 / 180,
-     .			radius = 6370.E5,		! cm
+     .			radius = 6371.E5,		! cm
      .			m_radius = radius / 100.,	! meters
      .			deg2km = deg2rad * radius * 1.E-5,
      .			deg2m  = deg2km * 1000.  )

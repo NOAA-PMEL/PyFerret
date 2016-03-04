@@ -48,6 +48,7 @@
 
 * V685  4/13 *acm* Better grid handling.
 * V685 10/13 *acm* Fix ticket 1098, error defining ensemble when LET/D variables are present.
+* V698  3/16 *acm* Remove unneeded xdset_parms.cmn
 
 * calling argument declarations:
 * uvar and dset point to the variable in the aggregate dataset
@@ -77,7 +78,6 @@
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
 	include	'xfr_grid.cmn'
-	include	'xdset_parms.cmn'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xdset_info.cd_equiv'

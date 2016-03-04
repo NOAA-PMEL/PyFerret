@@ -7,6 +7,8 @@
 * V690 12/13 *sh* for auto-curvilinear Ferret
 * V692  7/14 *acm* added isact_avg_wgt
 * V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
 
 * minimum working space provided to transformations
 	INTEGER		iswksiz
@@ -47,7 +49,6 @@
      .			isact_subset,
      .			isact_xy2other,
      .			isact_read,
-     .			isact_calculate,
      .			isact_regrid,
      .			isact_autogrid,
      .			isact_gather,
@@ -71,7 +72,6 @@
      .			isact_subset		= 4,
      .			isact_xy2other		= 5,
      .			isact_read		= 6,
-     .			isact_calculate		= 7,
      .			isact_regrid		= 8,
      .			isact_autogrid		= 9,
      .			isact_gather		= 10,

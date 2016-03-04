@@ -145,8 +145,6 @@
      .		XPROG_STATE_DATA,
      .		XTEXT_INFO_DATA,
      .		XVARIABLES_DATA,
-     .		XCALC_VARS_DATA,
-     .		XDSET_PARMS_DATA,
      .		XFR_GRID_DATA,
      .		XGKS_DEVICES_DATA,
      .		XGUI_DATA,

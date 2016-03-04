@@ -51,6 +51,8 @@
 * V510:  8/99 *sh* - bug uncovered allowing DEFINE GRID/LIKE=user_var
 *		     if GET_UVAR_GRID is called the dset returned may be 0
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -79,11 +81,7 @@
 	IF ( IGRID .NE. unspecified_int4 ) RETURN
 
 * grid unknown
-	IF ( category .EQ. cat_calc_var ) THEN
-	   CALL ERRMSG( ferr_invalid_command, status,
-     .		'unknown data set for GFDL diagnostic variable',
-     .          *5000 )
-	ELSEIF ( category .NE. cat_user_var ) THEN
+	IF ( category .NE. cat_user_var ) THEN
 	   CALL ERRMSG( ferr_internal, status, 'IGRID', *5000 )
 	ENDIF
 

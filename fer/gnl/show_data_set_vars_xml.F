@@ -491,7 +491,8 @@ C Write statement that uses number 2075 when we change to using these.)
 * do not apply.
 * Attributes are inherited from the defining variable. That variable got 
 * attributes direction, infile_datatype when writing from the header file
-* based on the original dataset.  Skip those two here.
+* based on the original dataset. ferret_datatype is defined just above. 
+* Skip those here.
 
                 newatt = .TRUE.
                 newatt = 
@@ -504,6 +505,7 @@ C Write statement that uses number 2075 when we change to using these.)
      .              (STR_SAME(attname, 'valid_min') .NE. 0) .AND. 
      .              (STR_SAME(attname, 'valid_max') .NE. 0) .AND. 
      .              (STR_SAME(attname, 'direction') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'ferret_datatype') .NE. 0) .AND. 
      .              (STR_SAME(attname, 'infile_datatype') .NE. 0)
 
                 IF (STR_SAME(attname, 'units').EQ.0 .AND.have_units) 

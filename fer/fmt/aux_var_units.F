@@ -42,6 +42,8 @@
 * written for VAX computer under VMS operating system
 *
 * V698+ *sh* 5/15 - derived from var_units.F
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
 
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -52,7 +54,6 @@
 	include	'errmsg.parm'
 	include	'xtext_info.cmn'
 	include	'xcontext.cmn'
-	include	'xcalc_vars.cmn'
 	include	'xvariables.cmn'
 
 * calling argument declarations
@@ -77,10 +78,6 @@
      .		 category .EQ. cat_agg_f_var) THEN
 
 	   AUX_VAR_UNITS = ds_var_units( variable )
-
-	ELSEIF ( category .EQ. cat_calc_var ) THEN
-
-	   AUX_VAR_UNITS = unit_text( cvar_unit_code(variable) )
 
 	ELSEIF ( category .EQ. cat_user_var ) THEN
 

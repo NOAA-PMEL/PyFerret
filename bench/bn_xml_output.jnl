@@ -3,68 +3,77 @@
 ! Illustrate the SHOW commands with /XML xml-style output
 ! V5.80 11/04 new tests for SHOW VAR/XML; global variables.
 
-! 22-Feb-2005 use SHO AXIS/XML `temp,return=taxis` instead
+! 22-Feb-2005 USE SHO AXIS/XML `temp,return=taxis` instead
 ! of naming the axes; other axes of the same name (e.g. TIME) 
 ! may have been defined in other benchmark scrips.
 
-USE gtsa056_2.cdf
+USE levitus_climatology.cdf
 
 SHO DATA/XML
 
-SHO DATA/VAR/XML
+SHO GRID/XML `temp,return=grid`
 
-SHO GRID/XML ps3du1
-
-SHO AXIS/XML `temp,return=xaxis`
-SHO AXIS/XML `temp,return=yaxis`
 SHO AXIS/XML `temp,return=zaxis`
 SHO AXIS/XML `temp,return=taxis`
 
+can dat/all
+
+! make some short files
+let/units="meters" myvar = 7
+save/clobber/file=a.nc myvar
+
+LET ddat = ZSEQUENCE({1126,1136,1146,1156,1166})
+save/clobber/file=b.nc ddat
+can var/all
+go bn_reset
+
+USE a.nc
+USE b.nc
+
 ! Define a dataset variable
 ! SHOW/XML commands list it w/ its dataset (even if dataset is not default)
-LET/D=gtsa056_2 temp_180 = temp[X=160E:160W@AVE]
-
-USE coads_climatology
+LET/D=a temp_av = ddat[d=2,X=@AVE]
 
 SHOW DATA/XML
-SHO DATA/VAR/XML
+SHO DATA/VAR/XML 1
 
+CAN DAT/ALL
 
 ! tests of SHOW VAR/XML for global variables.
 CAN DATA/ALL
 CAN VAR/ALL
 
-USE coads_climatology
-USE gtsa056_2
+USE a
+USE b
 
 ! Define a dataset variable
-LET/D=gtsa056_2 temp_20 temp[Z=0:20@SUM]
+LET/D=b temp_20 ddat[x=1:2@SUM]
 
 ! Define a global variable
-LET t30 = temp[Z=0:30@SUM]
+LET t30 = ddat[x=1:3@SUM]
 
 ! Another variable, setting title, units, bad flag.
-LET/UNITS="Deg C"/BAD=100/TITLE="Indefinite integral of SALT" salty = salt[Z=@IIN]
+LET/UNITS="Deg C"/BAD=100/TITLE="Indefinite integral" salty = temp[x=@iin]
 
 ! Define a constant
 LET pi = 3.14
 
 ! Another variable, irrelevant in the current context
-LET my_sst = sst*12
+LET my_a = a*12
 
-! This lists all the variables except my_sst
+! This lists all the variables except my_a
 
 SHO VAR/XML
 
-! Now change datasets, so my_sst has a context, but t30 
-! does not temp_20 is listed because it is defined on a dataset
+! Now change datasets, so my_a has a context, but t30 
+! does not. temp_20 is listed becaUSE it is defined on a dataset
 
-SET DATA coads_climatology
+SET DATA a
 SHO VAR/XML
 
-! Change default dataset. Now we should just see pi and my_sst 
+! Change default dataset. Now we should just see pi and my_a 
 
-CAN DATA gtsa056_2
+CAN DATA b
 SHOW VAR/XML
 
 ! 8/7/2007
@@ -72,7 +81,10 @@ SHOW VAR/XML
 CANCEL DATA/ALL
 CANCEL VAR/ALL
 
-USE coads_climatology 
-LET t3 = sst[x=180,y=1,t="15-jan-0000:00:00":"15-feb-0000:00:00"@AVE]
+let tvar = t[gt=month_reg]
+save/clobber/file=a.nc tvar
+
+USE a
+LET t3 = tvar[t="15-jan-0000:00:00":"15-feb-0000:00:00"@AVE]
 SHOW VAR/XML
 

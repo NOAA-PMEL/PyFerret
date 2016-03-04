@@ -2101,11 +2101,13 @@ C /units=months  is 1/12 of the length of the year
 
         CALL ADD_ATTRIBUTE(  memory(1, mr_blk1(mr)), mr, 
      .         buff1, dset, attype_spec, attoutflag, new_att, status )
+        IF (status .NE. ferr_ok) GOTO 6500
 
 * Change attribute value
         IF (.NOT. new_att) THEN
            CALL EDIT_ATTRIBUTE(  memory(1, mr_blk1(mr)), mr, 
      .               buff1, dset, attype_spec, def_att_quiet, status )
+           IF (status .NE. ferr_ok) GOTO 6500
         ENDIF
 
 
@@ -2142,6 +2144,7 @@ C /units=months  is 1/12 of the length of the year
               ustring = 'units'
               CALL CD_REPLACE_ATTR (dset, varid, ustring, NCCHAR, 
      .            attlen, buff3, val_buf, status)
+              IF (status .NE. ferr_ok) GOTO 6500
            ENDIF
 
 * If the units were changed on a time axis, add "since time origin"
@@ -2174,6 +2177,7 @@ C /units=months  is 1/12 of the length of the year
    
                  CALL CD_REPLACE_ATTR (dset, varid, attname, NCCHAR, 
      .               attlen, buff3, val_buf, status)
+                 IF (status .NE. ferr_ok) GOTO 6500
            ENDIF
         ENDIF
         ENDIF ! (axis .NE. unspecified_int4)
@@ -2183,9 +2187,8 @@ C /units=months  is 1/12 of the length of the year
             IF ( (cat .EQ. cat_user_var) .OR.
      .           (cat .EQ. cat_file_var) .OR.
      .           (cat .EQ. cat_pystat_var) )
-     .           CALL UPDATE_ATTRIBUTES (dset, varname, uvar)
-
-
+     .           CALL UPDATE_ATTRIBUTES (dset, varname, uvar, status)
+            IF (status .NE. ferr_ok) GOTO 6500
 	RETURN
 
 **************************************************************************
@@ -2589,5 +2592,9 @@ c ?? if nlab=0, use next avail slot?
  6400   CALL ERRMSG( ferr_grid_definition, status,
      .	    '"DEFINE DATA/AGGREGATE agname =" requires a list of names',
      .          *5000 )
+
+ 6500  slen = TM_LENSTR(varname)
+       CALL ERRMSG (ferr_internal, status,
+     . 'Error defining attribute on variable '//varname(:slen), *5000)
 
 	END

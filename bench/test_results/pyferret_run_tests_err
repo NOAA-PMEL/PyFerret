@@ -1,8 +1,8 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Mar  2 12:08 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Mar  4 12:43 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test result for debug PyFerret on RHEL6-64
+Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
 ****** Restricting Ferret paths to bench directory ******
 FER_DAT=.
 FER_DATA=.
@@ -282,7 +282,7 @@ Benchmark scripts that will be run:
    testfervar.py
    testfergrid.py
    testferpyvar.py
-Beginning at Wed Mar  2 12:09:56 PST 2016
+Beginning at Fri Mar  4 12:43:52 PST 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -1548,12 +1548,19 @@ Replacing definition of axis YQ
  Cached data cleared from memory
 *** Running ferret script: bn_xml_output.jnl
  Cached data cleared from memory
+ LISTing to file a.nc
+ LISTing to file b.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+SHO VAR/XML
 SHO VAR/XML
 SHO VAR/XML
 SHO VAR/XML
 SHO VAR/XML
 SHOW VAR/XML
 SHOW VAR/XML
+SHOW VAR/XML
+ LISTing to file a.nc
 *** Running ferret script: bn_test_nan.jnl
  Cached data cleared from memory
 *** Running ferret script: bn553_bug_fixes.jnl
@@ -2368,6 +2375,8 @@ set axis/stride=2 NORMAL
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file b.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
@@ -2856,7 +2865,7 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  TEMPORARY data cleared from memory
 *** Running ferret script: bn_xml_repl.jnl
  Cached data cleared from memory
-           *** NOTE: Changing the value of attribute sst.history
+ LISTing to file a.nc
 *** Running ferret script: bn65_bug_fixes.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -2902,6 +2911,7 @@ Re-defining viewport V7
 Re-defining viewport V8
 *** Running ferret script: bn_show_xml_file.jnl
  Cached data cleared from memory
+ LISTing to file b.nc
  LISTing to file dummy.dat
 *** Running ferret script: bn66_bug_fixes.jnl
  Cached data cleared from memory
@@ -4449,4 +4459,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testferpyvar.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Wed Mar  2 12:11:50 PST 2016
+Ended at Fri Mar  4 12:45:43 PST 2016

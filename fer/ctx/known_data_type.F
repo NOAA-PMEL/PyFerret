@@ -43,6 +43,8 @@
 *      *kms* 11/10 added cat_pystat_var
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
 
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -50,7 +52,6 @@
 	include	'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
-	include	'xcalc_vars.cmn'
         include 'xpyvar_info.cmn'
 
 * calling argument declarations:
@@ -80,10 +81,6 @@
 	ELSEIF ( category .EQ. cat_pystat_var ) THEN
 
            cx_type(cx) =  pyvar_type(variable)
-
-	ELSEIF ( category .EQ. cat_calc_var ) THEN
-
-           cx_type(cx) = ptype_float
 
 	ELSEIF ( category .EQ. cat_user_var ) THEN
 

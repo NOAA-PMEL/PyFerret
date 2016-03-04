@@ -148,6 +148,8 @@
 * V695+  *sh* 3/15 assign regrid transform for T-F plane FMRC regridding
 * V698+  *sh* 5/15 ax units for gz(density)=lo:hi:del should come from aux var
 *		   only partially fixed here: T0 not parsed from auxvar units
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
 
 	include 'errmsg.parm'
 	include 'ferret.parm'
@@ -192,7 +194,7 @@
 	IF ( var .EQ. unspecified_int4 )	CALL ERRMSG
      .			( ferr_syntax,status,'no variable specified',*5000 )
 	IF ( ( cat.EQ.cat_file_var .OR. cat.EQ.cat_agg_e_var .OR. 
-     .         cat.EQ.cat_agg_f_var .OR. cat.EQ.cat_calc_var )
+     .         cat.EQ.cat_agg_f_var )
      .	.AND. dset.EQ.unspecified_int4 )	CALL ERRMSG
      .			( ferr_state_not_set,status,'SET DATA_SET',*5000 )
 

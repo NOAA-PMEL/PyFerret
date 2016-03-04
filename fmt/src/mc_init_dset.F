@@ -72,6 +72,8 @@
 * V682 *acm* 9/12  Fix ticket 1969: stepfiles may have 3- or 4-digit extensions 
 *                  when listed under S_NUM_OF_FILES
 * V698+ *sh* 11/15 new arg in call to CD_INIT_DSET ... not relevant here
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic variables, 
+* pre-defined axes and grids.
 
 * arguments:
 *	dset_num	- number assigned to this data set (output)
@@ -170,17 +172,7 @@
 	READ (lunit, NML=EXTRA_RECORD, END=5000, ERR=5100)
 *	ds_extra_des_info(dset_num) = d_extra_des_info
 
-* initialize incidental variables
-	ds_basic_axes(1,dset_num) = mpsxt
-	ds_basic_axes(2,dset_num) = mpsxu
-	ds_basic_axes(3,dset_num) = mpsyt
-	ds_basic_axes(4,dset_num) = mpsyu
-	ds_basic_axes(5,dset_num) = mpszt
-	ds_basic_axes(6,dset_num) = mpszw
-
-
 * step records - one for each step file stored
- 
 
 	stp_pos = 1
 	min_file = maxstepfiles

@@ -68,6 +68,8 @@
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * V601 10/06 *acm* fix bug 1442. plot and listing titles should show the 
 *                  variable title, or if no title, the variable name.
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
 
         include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -76,7 +78,6 @@
 	external xgt_grid_data
 	include	'ferret.parm'
 	include	'xvariables.cmn'
-	include	'xcalc_vars.cmn'
 	include	'xcontext.cmn'
 	include	'xalgebra.cmn'
         include 'xpyvar_info.cmn'
@@ -131,10 +132,6 @@
            ELSE
               var_title = pyvar_title( var )
            ENDIF
-
-	ELSEIF ( cat .EQ. cat_calc_var ) THEN
-
-	   var_title = cvar_primary_name( var )
 
 	ELSEIF ( cat .EQ. cat_user_var  ) THEN
 

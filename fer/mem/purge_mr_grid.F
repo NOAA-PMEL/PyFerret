@@ -53,6 +53,8 @@
 * v604 *acm* 7/07 increase length of ds_name
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V695+ *sh 3/15 - bug fix.  Grid name was not displayed with warnings
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -66,7 +68,6 @@
 	external xgt_grid_data
 	include	'xfr_grid.cmn'
 	include 'xvariables.cmn'
-	include 'xcalc_vars.cmn'
         include 'xpyvar_info.cmn'
 
 * calling argument declaration:
@@ -99,14 +100,6 @@
 	   ENDIF
  10	CONTINUE
 
-* make sure it is not implicitly used by a cvar that depends on file variables
-* NOTE: cvars are irrelevant as of V500 ...
-!	DO 25 dset = 1, maxdsets
-!	   IF ( ds_name(dset) .EQ. char_init1024) GOTO 25
-!	   DO 20 cvar = 1, num_calc_vars
-! 20	   IF ( cvar_grid(cvar,dset) .EQ. grid ) GOTO 5100
-! 25	CONTINUE
-
 * make sure grid is not used by any pystat variables
         DO 30 ivar = 1, maxpyvars
            IF ( pyvar_ndarray_obj(ivar) .EQ. 0 ) GOTO 30
@@ -136,10 +129,6 @@
 
 * error exit
  5000	RETURN
-! 5100	glen = TM_LENSTR1( grid_name( grid ) )
-!	CALL ERRMSG( ferr_grid_definition, status,
-!     .		'grid '//grid_name(grid)(:glen)//' used by data set '
-!     .		//ds_name(dset), *5000 )
  5200	CALL ERRMSG( ferr_grid_definition, status,
      .		'protected grid: '//grid_name(grid), *5000 )
 	END

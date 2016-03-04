@@ -50,6 +50,8 @@
 * V533: *sh* 6/01 - close set after deletions to avoid "%%" diagnostics
 * V685 *acm* 4/13 - If its a member of an aggregation, also close the agg
 * V698 *sh* 1/16 - complexity removed to the parent routine, CANCEL_DATA_SET
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
 
 * calling arguments
 *  dset      -  (input) dataset number to be closed
@@ -60,7 +62,6 @@
 	include 'tmap_errors.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
-	include 'xdset_parms.cmn'
 	include 'xprog_state.cmn'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
@@ -128,23 +129,6 @@
 * really close and cancel the data set
 	CALL TM_CLOSE_SET( dset, status )
 	IF ( status .NE. merr_ok ) RETURN
-
-* ancient legacy stuff: was this a climatological air temp field ?
-	DO 400 iclim = 1, max_airt_clim
- 	   IF ( dp_airt_dset(iclim) .EQ. dset ) THEN
-	      dp_airt_dset(iclim) = unspecified_int4
-	      GOTO 500
-	   ENDIF
- 400	CONTINUE
-* ... no - we're done
-	RETURN
-
-* ... yes - delete any variables that may have used it
-*     ( a precaution against mixed up clim. data sets )
- 500	DO 600 iclim_user = 1, maxdsets
-	   IF ( dp_clim_air_sst(iclim_user) .EQ. iclim )
-     .                                   CALL ERASE_DSET( dset )
- 600	CONTINUE
 
         RETURN
 

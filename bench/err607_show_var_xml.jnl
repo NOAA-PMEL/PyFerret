@@ -1,8 +1,17 @@
 ! Bug 1539 SHOW VAR/XML didnt show all vars.
 
 
-use gt4d011.cdf
-use coads_climatology
+
+! make some short files
+let/units="meters" temp = z[z=1:100:5]
+save/clobber/file=a.nc temp
+
+LET sst = x[x=1:15] + y[y=1:5] + t[gt=month_irreg] 
+save/clobber/file=b.nc sst
+can var/all
+
+use a
+use b
 
 let temp_1_regrid=temp[d=1,z=5.00:75.00@ave]
 let sst_2_regrid=sst[d=2,t="15-Feb":"15-Mar"@ave]

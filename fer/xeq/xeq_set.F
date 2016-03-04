@@ -481,9 +481,7 @@ c *kob* 4/97
      .				 dset_num, status )
 	      IF ( status .NE. ferr_ok ) RETURN
 * ... dummy calls to make EZ sets act like other sets
-	      CALL GET_DSET_PARMS( dset_num, status )
 	      CALL GET_AXIS_SPEED( dset_num )
-	      CALL MAKE_CVAR_GRIDS( dset_num, status )
  710	     CONTINUE
 	   ENDIF
 * ... make this data set current
@@ -578,19 +576,11 @@ c *kob* 4/97
 	      GOTO 5090					! error in .DES file
 	   ENDIF
 
-* interpret special parameters in the descriptor
-	   CALL GET_DSET_PARMS( dset_num, status )
-	   IF ( status .NE. ferr_ok ) GOTO 790
-
 * determine relative access speeds along each axis
 	   CALL GET_AXIS_SPEED( dset_num )
 
 * check for negative time step values (warning, only)
 ! 3/00	   CALL CHECK_NEG_TAXIS( dset_num )
-
-* build completed ( with time axis ) grids for computable variables
-	   CALL MAKE_CVAR_GRIDS( dset_num, status )
-	   IF ( status .NE. ferr_ok ) GOTO 790
 
 * make this data set current
  745	   cx_data_set( cx_last )	=  dset_num
@@ -1696,6 +1686,7 @@ c *kob* 4/97
                   ustring = 'units'
                   CALL CD_REPLACE_ATTR (dset_num, varid, ustring, 
      .               NCCHAR, attlen, buff3, val_buf, status)
+                  IF (status .NE. ferr_ok) GOTO 5000
                ENDIF
 
 * If the units were changed on a time axis, add "since time origin"
@@ -1728,6 +1719,7 @@ c *kob* 4/97
    
                     CALL CD_REPLACE_ATTR (dset_num, varid, attname, 
      .                  NCCHAR, attlen, buff3, val_buf, status)
+                    IF (status .NE. ferr_ok) GOTO 5000
                   ENDIF
                ENDIF
             ENDIF ! (axis .NE. unspecified_int4)
@@ -1737,7 +1729,8 @@ c *kob* 4/97
             IF ( (cat .EQ. cat_user_var) .OR.
      .           (cat .EQ. cat_file_var) .OR.
      .           (cat .EQ. cat_pystat_var) )
-     .           CALL UPDATE_ATTRIBUTES (dset_num, varname, uvar)
+     .           CALL UPDATE_ATTRIBUTES (dset_num, varname, uvar, status)
+            IF (status .NE. ferr_ok) GOTO 5940
 
         ENDIF
 	RETURN
@@ -2152,10 +2145,10 @@ c *kob* 4/97
      .   'SET ATT/OUT=[all or none] varname should NOT '//
      .   'include attribute. '//
      .    buff1(:slen), *5000 )
- 5940 slen = TM_LENSTR(buff1)
+ 5940 slen = TM_LENSTR(varname)
       CALL ERRMSG( ferr_invalid_command, status,
-     .   'error editing attribute'//
-     .    buff1(:slen), *5000 )
+     .   'error editing attribute for'//
+     .    varname(:slen), *5000 )
  5950 slen = TM_LENSTR(buff1)
       CALL ERRMSG( ferr_invalid_command, status,
      .   'cannot set T0 unless Units are also set'//

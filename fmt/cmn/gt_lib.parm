@@ -16,6 +16,8 @@
 * V602 *acm* 11/06 - Change unspecified_int4 to -999. Fixes bug 1463 where
 *                    where an index value of -111 was confused with this flag
 * V685 *acm* 3/13 - add climatological axes to the pre-defined axes.
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic variables, 
+* pre-defined axes and grids.
 
 * Function return codes
 	INTEGER*4	str_match, atom_not_found
@@ -42,38 +44,19 @@
 * pre-defined grids:.....
 * define "lines" (1 dimensional components of which grids are assembled)
 * parameter definitions are pointers to the lines
-*			("m" indicates parameter, "ps"=Philander/Seigal)
+*			("m" indicates parameter)
 
-	INTEGER		mpsunkn, mpsnorm, mpsxt, mpsxu, mpsyt, mpsyu,
-     .			mpszt, mpszw, clmirr, clmreg, clseas, clmgrg,
+	INTEGER		mpsunkn, mpsnorm, clmirr, clmreg, clseas, clmgrg,
      .			clmnol, clm360, clmall
 	PARAMETER (	mpsunkn	= -1,		! must match FERRET munknown
      .			mpsnorm	=  0,		! must match FERRET mnormal
-     .			mpsxt	=  1,
-     .			mpsxu	=  2,
-     .			mpsyt	=  3,
-     .			mpsyu	=  4,
-     .			mpszt	=  5,
-     .			mpszw	=  6,
-     .			clmirr	=  7,	! month irregular
-     .			clmreg	=  8,	! month regular
-     .			clseas	=  9,	! seasonal
-     .			clmgrg	= 10,	! month Gregorian
-     .			clmnol	= 11,	! month noleap
-     .			clm360	= 12,	! month 360-day
-     .			clmall	= 13)	! month all-leap
-
-* define grids, themselves...
-* grids are formed of "outer products" (rectangular arrays) or "inner products"
-*	(ordered tuples) of lines.  (To use inner products the lines must be of
-*	the same length.)
-
-	INTEGER		mps2dt, mps2du, mps3dt, mps3du, mps3dw
-	PARAMETER (	mps2dt	= 1,	! 2D temp(erature) grid
-     .			mps2du	= 2,	! 2D taux,tauy grid
-     .			mps3dt	= 3,	! 3D temp/salt grid
-     .			mps3du	= 4,	! 3d u/v grid
-     .			mps3dw	= 5 )	! 3D w grid
+     .			clmirr	=  1,	! month irregular
+     .			clmreg	=  2,	! month regular
+     .			clseas	=  3,	! seasonal
+     .			clmgrg	=  4,	! month Gregorian
+     .			clmnol	=  5,	! month noleap
+     .			clm360	=  6,	! month 360-day
+     .			clmall	=  7)	! month all-leap
 
 * codes for special grid features...
 * flag values stored in parameters

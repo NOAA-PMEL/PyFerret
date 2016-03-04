@@ -45,6 +45,8 @@
 
 * V510 *sh* 4/00
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic variables, 
+* pre-defined axes and grids.
 
 * Include files
 #include "tmap_dset.parm"	

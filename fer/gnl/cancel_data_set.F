@@ -43,6 +43,7 @@
 * written for VAX computer under VMS operating system
 *
 * V695 *sh* 1/16 - bulk of logic moved to CANCEL_ONE_DATA_SET 
+* V698  3/16 *acm* Remove unneeded xdset_parms.cmn
 
 * calling arguments
 *  dset      -  (input) dataset number to be closed
@@ -53,7 +54,6 @@
 	include 'tmap_errors.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
-	include 'xdset_parms.cmn'
 	include 'xprog_state.cmn'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data

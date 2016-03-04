@@ -82,6 +82,8 @@
 *     *kms* 11/10 - added cat_pystat_var string_array_init
 * V68   1/12 *acm* declarations changes for double-precision ferret.
 *       3/12 *acm* cleanup ifdefs and unnecessary include files
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
 
         include 'tmap_errors.parm'  ! error codes
 	include 'tmap_dims.parm'
@@ -177,74 +179,10 @@
 * see BLOCK DATA initialization of COMMON/ XPROG_STATE /
 
 *********************** GRIDS **************************************************
-	CALL GFDL_TERMS
+c	CALL GFDL_TERMS
 
 	RADIAN=57.29578							! 1027
 	cm2deg = radian / radius
-	
-!	ito = line_subsc1(mpsxt)
-!	DO 210 ifrom = 1, line_dim(mpsxt)
-!	   line_mem ( ito ) = xt ( ifrom )		! point location
-!	   ito = ito + 1
-! 210	CONTINUE
-!	DO 212 ifrom = 1, line_dim(mpsxt)
-!	   line_mem ( ito ) = dxt( ifrom ) * cm2deg	! grid box size
-!	   ito = ito + 1
-! 212	CONTINUE
-!
-!	ito = line_subsc1(mpsxu)
-!	DO 220 ifrom = 1, line_dim(mpsxu)
-!	   line_mem ( ito ) = xv ( ifrom )
-!	   ito = ito + 1
-! 220	CONTINUE
-!	DO 222 ifrom = 1, line_dim(mpsxu)
-!	   line_mem ( ito ) = dxu( ifrom ) * cm2deg
-!	   ito = ito + 1
-! 222	CONTINUE
-!
-!	ito = line_subsc1(mpsyt)
-!	line_start(mpsyt) = yt( 1 )
-!	DO 230 ifrom = 1, line_dim(mpsyt)
-!	   line_mem ( ito ) = yt ( ifrom )
-!	   ito = ito + 1
-! 230	CONTINUE
-!	DO 232 ifrom = 1, line_dim(mpsyt)
-!	   line_mem ( ito ) = dyt( ifrom ) * cm2deg
-!	   ito = ito + 1
-! 232	CONTINUE
-!
-!	ito = line_subsc1(mpsyu)
-!	line_start(mpsyu) = yv( 1 )
-!	DO 240 ifrom = 1, line_dim(mpsyu)
-!	   line_mem ( ito ) = yv ( ifrom )
-!	   ito = ito + 1
-! 240	CONTINUE
-!	DO 242 ifrom = 1, line_dim(mpsyu)
-!	   line_mem ( ito ) = dyu( ifrom ) * cm2deg
-!	   ito = ito + 1
-! 242	CONTINUE
-!
-!	ito = line_subsc1(mpszt)
-!	line_start(mpszt) = zdzz( 1 ) * .01
-!	DO 250 ifrom = 1, line_dim(mpszt)
-!	   line_mem ( ito ) = zdzz( ifrom ) * .01
-!	   ito = ito + 1
-! 250	CONTINUE
-!	DO 252 ifrom = 1, line_dim(mpszt)
-!	   line_mem ( ito ) = dz  ( ifrom ) * .01
-!	   ito = ito + 1
-! 252	CONTINUE
-!
-!	ito = line_subsc1(mpszw)
-!	line_start(mpszw) = zdz( 1 ) * .01
-!	DO 260 ifrom = 1, line_dim(mpszw)
-!	   line_mem ( ito ) = zdz( ifrom     ) * .01
-!	   ito = ito + 1
-! 260	CONTINUE
-!	DO 262 ifrom = 1, line_dim(mpszw)
-!	   line_mem ( ito ) = dzz( ifrom + 1 ) * .01 ! Phil/Sieg start at 0
-!	   ito = ito + 1
-! 262	CONTINUE
 
 *************** MISCELLANEOUS **************************************************
 * TMAP librabry routine errors to same output unit as other errors

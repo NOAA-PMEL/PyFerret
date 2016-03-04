@@ -75,7 +75,9 @@
 *      *sh*  12/14 Allow _SQ_ as an acceptable equivalent to single quotes
 *      *acm*  2/15 Prevent run-time errors in string length for _SQ_ handling
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
-*   
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+*                  variables, pre-defined axes and grids, cat_calc_var.
+
         IMPLICIT NONE
         include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -84,9 +86,7 @@
 	external xdset_info_data
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
-	include 'xcalc_vars.cmn'
 	include	'xalgebra.cmn'
-	include	'xdset_parms.cmn'
         include 'xcontrol.cmn'
         include 'xpyvar_info.cmn'
 
@@ -400,24 +400,6 @@
               test_name = buff
 	      RETURN
  250	      CONTINUE
-
-* check table of calculatable variables (padded to 8 characters)
-*   but only if this is a Philander-Seigle model output
-	IF ( dset.GE.1 .AND. dset.LE.maxdsets ) THEN
-	   IF (dp_phil_sieg(dset).OR.dp_cox(dset)) THEN
-	      DO 300 ivar = 1, num_calc_vars
-                 len_mchars = TM_LENSTR(cvar_name_code(ivar))
-	         IF (MATCH_QUOTED_NAME(test_name,len_test,
-     .               cvar_name_code(ivar)//'    ',len_mchars))
-     .        	   THEN
-	            category = cat_calc_var
-	            variable = ivar
-                    test_name = buff
-	            RETURN
-	         ENDIF
- 300	      CONTINUE
-	   ENDIF
-	ENDIF
 
 * not found
 	variable = munknown_var_name

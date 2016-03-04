@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Mar  2 11:47 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Mar  4 12:53 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug Ferret on RHEL6-64
@@ -275,7 +275,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Wed Mar  2 11:48:23 PST 2016
+Beginning at Fri Mar  4 12:54:01 PST 2016
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1491,12 +1491,19 @@ Replacing definition of axis YQ
  Cached data cleared from memory
 *** Running test: bn_xml_output.jnl
  Cached data cleared from memory
+ LISTing to file a.nc
+ LISTing to file b.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+SHO VAR/XML
 SHO VAR/XML
 SHO VAR/XML
 SHO VAR/XML
 SHO VAR/XML
 SHOW VAR/XML
 SHOW VAR/XML
+SHOW VAR/XML
+ LISTing to file a.nc
 *** Running test: bn_test_nan.jnl
  Cached data cleared from memory
 *** Running test: bn553_bug_fixes.jnl
@@ -2301,6 +2308,8 @@ set axis/stride=2 NORMAL
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file b.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
@@ -2783,7 +2792,7 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  TEMPORARY data cleared from memory
 *** Running test: bn_xml_repl.jnl
  Cached data cleared from memory
-           *** NOTE: Changing the value of attribute sst.history
+ LISTing to file a.nc
 *** Running test: bn65_bug_fixes.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -2829,6 +2838,7 @@ Re-defining viewport V7
 Re-defining viewport V8
 *** Running test: bn_show_xml_file.jnl
  Cached data cleared from memory
+ LISTing to file b.nc
  LISTing to file dummy.dat
 *** Running test: bn66_bug_fixes.jnl
  Cached data cleared from memory
@@ -4342,4 +4352,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Wed Mar  2 11:50:36 PST 2016
+Ended at Fri Mar  4 12:56:15 PST 2016

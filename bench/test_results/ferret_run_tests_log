@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Mar  2 11:47 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Mar  4 12:53 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug Ferret on RHEL6-64
@@ -275,7 +275,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Wed Mar  2 11:48:23 PST 2016
+Beginning at Fri Mar  4 12:54:01 PST 2016
 *** Running test: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -289,6 +289,8 @@ Beginning at Wed Mar  2 11:48:23 PST 2016
 !	and tests of "escapes" using back slashes
 ! for V531 test continuation lines and long input lines
 ! for v698 interpretation of unknown qualifiers changed -- e.g. say /notaqual
+! V698  3/16 *acm* Removed Philander-Seigel code including diagnostic variables,
+! pre-defined axes and grids.
  
 ! SET - SHOW - CANCEL DATA
 USE gtbc011
@@ -873,83 +875,6 @@ SHOW GRID
  Default grid for DEFINE VARIABLE is ABSTRACT
  
 ! SHOW VARIABLES
-SHOW VARIABLES/DIAGNOSTIC	! alphabetical list
-Diagnostic variables:
-name         title
-AIR       AIR TEMPERATURE
-CAIR      CLIMATOLOGICAL AIR TEMPERATURE
-CMSK      CONVECTIVE ADJUSTMENT MASK
-DENS      (DENSITY-1)*1000
-DPDX      d/dX( BAROCLINIC PRESSURE )
-DPDY      d/dY( BAROCLINIC PRESSURE )
-DTDT      d/dt(TEMPERATURE)
-DUDT      d/dt(U)
-DVDT      d/dt(V)
-DWDT      d/dt(W)
-FUW       ZONAL ADVECTIVE COEFFICIENT, FUW
-FVN       MERIDIONAL ADVECTIVE COEFFICIENT, FVN
-PCDZ      VERTICAL MOMENTUM DIFFUSION COEFFICIENT
-QAD       TOTAL HEAT ADVECTION
-QADX      ZONAL HEAT ADVECTION
-QADY      MERIDIONAL HEAT ADVECTION
-QADZ      VERTICAL HEAT ADVECTION
-QCDZ      VERTICAL HEAT DIFFUSION COEFFICIENT
-QDF       TOTAL HEAT DIFFUSION
-QDFH      HORIZONTAL HEAT DIFFUSION
-QDFZ      VERTICAL HEAT DIFFUSION
-QEVA      EVAPORATIVE HEAT
-QFLX      SURFACE HEAT FLUX
-QRAD      RADIATIVE HEAT
-QSEN      SENSIBLE HEAT
-RHO       NORMALIZED DENSITY
-RHO0      DENSITY REFERENCED TO SURFACE
-SALI      SALINITY
-TAU       MAGNITUDE OF WIND STRESS
-UAD       TOTAL ADVECTION OF U
-UADX      ZONAL ADVECTION OF U
-UADY      MERIDIONAL ADVECTION OF U
-UADZ      VERTICAL ADVECTION OF U
-UAVZ      VERTICALLY AVERAGED ZONAL VELOCITY
-UBP       U DUE TO TOTAL PRESSURE
-UBPI      U DUE TO BAROCLINIC PRESSURE EFFECTS
-UBPS      U DUE TO SURFACE PRESSURE EFFECTS
-UBWI      U DUE TO WIND STRESS EFFECTS
-UCOE      U DUE TO EXPLICIT CORIOLIS CALCULATION
-UCOI      U DUE TO IMPLICIT CORIOLIS CORRECTION
-UDF       TOTAL DIFFUSION OF U
-UDFH      HORIZONTAL DIFFUSION OF U
-UDFZ      VERTICAL DIFFUSION OF U
-VAD       TOTAL ADVECTION OF V
-VADX      ZONAL ADVECTION OF V
-VADY      MERIDIONAL ADVECTION OF V
-VADZ      VERTICAL ADVECTION OF V
-VAVZ      VERTICALLY AVERAGED MERIDIONAL VELOCITY
-VBP       V DUE TO TOTAL PRESSURE
-VBPI      V DUE TO BAROCLINIC PRESSURE EFFECTS
-VBPS      V DUE TO SURFACE PRESSURE EFFECTS
-VBWI      V DUE TO WIND STRESS EFFECTS
-VCOE      V DUE TO EXPLICIT CORIOLIS CALCULATION
-VCOI      V DUE TO IMPLICIT CORIOLIS CORRECTION
-VDF       TOTAL DIFFUSION OF V
-VDFH      HORIZONTAL DIFFUSION OF V
-VDFZ      VERTICAL DIFFUSION OF V
-W_T       VERTICAL VELOCITY COMPUTED ON TS GRID
-W_U       VERTICAL VELOCITY COMPUTED ON UV GRID
-SHOW VARIABLES/DIAGNOSTIC  Q
-Diagnostic variables:
-name         title
-QAD       TOTAL HEAT ADVECTION
-QADX      ZONAL HEAT ADVECTION
-QADY      MERIDIONAL HEAT ADVECTION
-QADZ      VERTICAL HEAT ADVECTION
-QCDZ      VERTICAL HEAT DIFFUSION COEFFICIENT
-QDF       TOTAL HEAT DIFFUSION
-QDFH      HORIZONTAL HEAT DIFFUSION
-QDFZ      VERTICAL HEAT DIFFUSION
-QEVA      EVAPORATIVE HEAT
-QFLX      SURFACE HEAT FLUX
-QRAD      RADIATIVE HEAT
-QSEN      SENSIBLE HEAT
 LET A=i
 SHOW VARIABLES
  Created by DEFINE VARIABLE:
@@ -10568,17 +10493,17 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.97"
-FERRET_PLATFORM = "Linux 2.6.32-573.12.1.el6.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 2.6.32-573.18.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 2-Mar-16"
-SESSION_TIME = "11:48"
-SESSION_PID = "25832"
-DELTA_CPU = "0.005999"
+SESSION_DATE = " 4-Mar-16"
+SESSION_TIME = "12:54"
+SESSION_PID = "22999"
+DELTA_CPU = "0.004998"
 CLOCK_SECS = "0.003"
-CURRENT_DATE = " 2-Mar-16"
-CURRENT_TIME = "11:48:29"
+CURRENT_DATE = " 4-Mar-16"
+CURRENT_TIME = "12:54:07"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10597,17 +10522,17 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.97"
-FERRET_PLATFORM = "Linux 2.6.32-573.12.1.el6.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 2.6.32-573.18.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 2-Mar-16"
-SESSION_TIME = "11:48"
-SESSION_PID = "25832"
+SESSION_DATE = " 4-Mar-16"
+SESSION_TIME = "12:54"
+SESSION_PID = "22999"
 DELTA_CPU = "0"
-CLOCK_SECS = "0.004"
-CURRENT_DATE = " 2-Mar-16"
-CURRENT_TIME = "11:48:29"
+CLOCK_SECS = "0.003"
+CURRENT_DATE = " 4-Mar-16"
+CURRENT_TIME = "12:54:07"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10617,9 +10542,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 2-Mar-16"
-SESSION_TIME = "11:48"
-SESSION_PID = "25832"
+SESSION_DATE = " 4-Mar-16"
+SESSION_TIME = "12:54"
+SESSION_PID = "22999"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10629,15 +10554,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 2-Mar-16"
-SESSION_TIME = "11:48"
-SESSION_PID = "25832"
+SESSION_DATE = " 4-Mar-16"
+SESSION_TIME = "12:54"
+SESSION_PID = "22999"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 2-Mar-16"
-SESSION_TIME = "11:48"
-SESSION_PID = "25832"
+SESSION_DATE = " 4-Mar-16"
+SESSION_TIME = "12:54"
+SESSION_PID = "22999"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10766,17 +10691,17 @@ PPL$XPIXEL = "656"
 PPL$YPIXEL = "492"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.97"
-FERRET_PLATFORM = "Linux 2.6.32-573.12.1.el6.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 2.6.32-573.18.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 2-Mar-16"
-SESSION_TIME = "11:48"
-SESSION_PID = "25832"
-DELTA_CPU = "0.015996"
-CLOCK_SECS = "0.061"
-CURRENT_DATE = " 2-Mar-16"
-CURRENT_TIME = "11:48:29"
+SESSION_DATE = " 4-Mar-16"
+SESSION_TIME = "12:54"
+SESSION_PID = "22999"
+DELTA_CPU = "0.014998"
+CLOCK_SECS = "0.07"
+CURRENT_DATE = " 4-Mar-16"
+CURRENT_TIME = "12:54:07"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -12452,6 +12377,8 @@ LIST/FORMAT=comma/precision=5 10*j+i
 !			      numericals results found here are verified to be correct
 ! V550 11/02 *sh* - documentation change only reflecting new modulo behavior
 ! V603  5/07 *acm*  documentation changew - some of the context errors have gone away.
+! V698  3/16 *acm* Removed Philander-Seigel code including diagnostic variables,
+! pre-defined axes and grids.
  
 ! deliberate dynamic grid errors
  
@@ -12950,8 +12877,10 @@ Dynamic axes:
  
 ! regridding between grids with mutually exclusive axes
 cancel region
-define grid/y=ps3dt gy
-define grid/x=ps3dt gx
+define grid/y=`temp,return=grid` gy
+ !-> define grid/y=PS3DT2 gy
+define grid/x=`temp,return=grid` gx
+ !-> define grid/x=PS3DT2 gx
 LET/QUIET a = x[g=gx]
 list/i=1:4 a,a[g=gy]   ! nothing to regrid - both are same
              LONGITUDE: 130E to 134E
@@ -13048,7 +12977,7 @@ Dynamic axes:
 ! * * * dynamic generation of pseudo-variables * * *
 list x[x=.1:1:.1]			! dynamic abstract
              VARIABLE : X
-                        axis (AX002)
+                        axis (AX010)
              SUBSET   : 10 points (X)
  0.1  /  1:  0.100
  0.2  /  2:  0.200
@@ -13062,7 +12991,7 @@ list x[x=.1:1:.1]			! dynamic abstract
  1    / 10:  1.000
 list x[gx=psxu,x=130:150:2.5]		! dynamic based on named axis
              VARIABLE : X
-                        axis (AX001)
+                        axis (AX009)
              SUBSET   : 9 points (LONGITUDE)
  130E   / 1:  130.0
  132.5E / 2:  132.5
@@ -13149,24 +13078,24 @@ show grid/dyn
 Dynamic grids:
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    7 r   0.1                  9.1
- (AX001)   Y                    3 r   95                   109
+ (AX011)   X                    7 r   0.1                  9.1
+ (AX009)   Y                    3 r   95                   109
  normal    Z
  normal    T
  normal    E
  normal    F
     GRID (G005)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    7 r   0.1                  9.1
- (AX002)   Y                   10 r   101                  110
+ (AX011)   X                    7 r   0.1                  9.1
+ (AX010)   Y                   10 r   101                  110
  normal    Z
  normal    T
  normal    E
  normal    F
 Dynamic axes:
-    AXIS (AX001)                         use count:   1
-    AXIS (AX003)                         use count:   2
-    AXIS (AX002)                         use count:   1
+    AXIS (AX009)                         use count:   1
+    AXIS (AX011)                         use count:   2
+    AXIS (AX010)                         use count:   1
  
 ! ambiguous coordinate tests
 list/order=x  x[x=0.1:10:1.5] +  x[x=1.1:11:1.5]
@@ -13186,14 +13115,14 @@ show grid/dyn
 Dynamic grids:
     GRID (G005)                          use count:   2
  name       axis              # pts   start                end
- (AX001)   X                    7 r   0.1                  9.1
+ (AX009)   X                    7 r   0.1                  9.1
  normal    Y
  normal    Z
  normal    T
  normal    E
  normal    F
 Dynamic axes:
-    AXIS (AX001)                         use count:   1
+    AXIS (AX009)                         use count:   1
  
 ! box size on dynamic axes
 cancel region
@@ -13220,7 +13149,7 @@ show grid/x
  Last successful data access was on grid (G005)
     GRID (G005)
  name       axis              # pts   start                end                 subset
- (AX003)   X                    5 i   1                    6561                4 pts
+ (AX011)   X                    5 i   1                    6561                4 pts
  normal    Y
  normal    Z
  normal    T
@@ -13252,7 +13181,7 @@ list/i=1:10 x[gx=temp]			! from named variable
  139.5E / 10:  139.5
 list x[g=temp,x=150w:130w:2.5]		! dynamic based on named variable
              VARIABLE : X
-                        axis (AX005)
+                        axis (AX012)
              FILENAME : gtsa056_1.cdf
              SUBSET   : 9 points (LONGITUDE)
  150W   / 1:  210.0
@@ -13266,7 +13195,7 @@ list x[g=temp,x=150w:130w:2.5]		! dynamic based on named variable
  130W   / 9:  230.0
 list x[gx=temp,x=150w:130w:2.5]		! dynamic based on named variable
              VARIABLE : X
-                        axis (AX002)
+                        axis (AX010)
              FILENAME : gtsa056_1.cdf
              SUBSET   : 9 points (LONGITUDE)
  150W   / 1:  210.0
@@ -13296,14 +13225,14 @@ show grid/dyn
 Dynamic grids:
     GRID (G005)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    5 i   1                    6561
+ (AX011)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
  normal    E
  normal    F
 Dynamic axes:
-    AXIS (AX003)                         use count:   1
+    AXIS (AX011)                         use count:   1
  
 ! this expression does NOT inherit the X axis -- the result is
 !	i) ambiguous X axis coordinates
@@ -13325,7 +13254,7 @@ show grid/dynamic
 Dynamic grids:
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
- (AX001)   LONGITUDE            5 r   129.5W               113.5W
+ (AX009)   LONGITUDE            5 r   129.5W               113.5W
  PSYT      LATITUDE           100 i   28.836S              48.568N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
@@ -13333,15 +13262,15 @@ Dynamic grids:
  normal    F
     GRID (G005)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    5 i   1                    6561
+ (AX011)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
  normal    E
  normal    F
 Dynamic axes:
-    AXIS (AX001)                         use count:   1
-    AXIS (AX003)                         use count:   1
+    AXIS (AX009)                         use count:   1
+    AXIS (AX011)                         use count:   1
  
 list/j=46:50/l=1/k=1 temp[i=101:120:4]+x[g=temp,i=101:120:4]
              VARIABLE : TEMP[I=101:120:4]+X[G=TEMP,I=101:120:4]
@@ -13364,7 +13293,7 @@ SET REGION/I=101:105/J=46:50/l=1/k=1
 ! deliberate errors:  ****
 list x[i=5:1:1]		! not an error: inverted order
              VARIABLE : X
-                        axis (AX001)
+                        axis (AX009)
              SUBSET   : 5 points (X)
  1   / 1:  1.000
  2   / 2:  2.000
@@ -13409,7 +13338,7 @@ show grid/dyn
 Dynamic grids:
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
- (AX001)   LONGITUDE            6 i   108.5W(-468.5)       98.5W(-458.5)
+ (AX009)   LONGITUDE            6 i   108.5W(-468.5)       98.5W(-458.5)
  PSYT      LATITUDE           100 i   28.836S              48.568N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
@@ -13417,15 +13346,15 @@ Dynamic grids:
  normal    F
     GRID (G005)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    5 i   1                    6561
+ (AX011)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
  normal    E
  normal    F
 Dynamic axes:
-    AXIS (AX001)                         use count:   1
-    AXIS (AX003)                         use count:   1
+    AXIS (AX009)                         use count:   1
+    AXIS (AX011)                         use count:   1
  
 ! regular dynamic axis
 ! ... by subscript
@@ -13493,22 +13422,22 @@ Dynamic grids:
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
  PSXT      LONGITUDE          160mr   130.5E               70.5W
- (AX001)   LATITUDE             4 r   0.5S                 4N
+ (AX009)   LATITUDE             4 r   0.5S                 4N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
  normal    E
  normal    F
     GRID (G005)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    5 i   1                    6561
+ (AX011)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
  normal    E
  normal    F
 Dynamic axes:
-    AXIS (AX001)                         use count:   1
-    AXIS (AX003)                         use count:   1
+    AXIS (AX009)                         use count:   1
+    AXIS (AX011)                         use count:   1
  
 ! ========
 ! 2/96: repeat the very same commands using GX=lo:hi:delta notation
@@ -13670,24 +13599,24 @@ show grid/dyn
 Dynamic grids:
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
- (AX005)   LONGITUDE            4 r   130W                 121W
- (AX002)   LATITUDE             4 r   0.5S                 4N
+ (AX012)   LONGITUDE            4 r   130W                 121W
+ (AX010)   LATITUDE             4 r   0.5S                 4N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
  normal    E
  normal    F
     GRID (G005)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    5 i   1                    6561
+ (AX011)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
  normal    E
  normal    F
 Dynamic axes:
-    AXIS (AX002)                         use count:   1
-    AXIS (AX005)                         use count:   1
-    AXIS (AX003)                         use count:   1
+    AXIS (AX010)                         use count:   1
+    AXIS (AX012)                         use count:   1
+    AXIS (AX011)                         use count:   1
  
 ! the same tests but now on a nested definition
 ! regular dynamic axis
@@ -13855,7 +13784,7 @@ show grid/dyn
 Dynamic grids:
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
- (AX002)   LONGITUDE            6 r   138W                 113W
+ (AX010)   LONGITUDE            6 r   138W                 113W
  PSYT      LATITUDE           100 i   28.836S              48.568N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
@@ -13863,15 +13792,15 @@ Dynamic grids:
  normal    F
     GRID (G005)                          use count:   1
  name       axis              # pts   start                end
- (AX005)   LONGITUDE            4 r   130W                 121W
+ (AX012)   LONGITUDE            4 r   130W                 121W
  PSYT      LATITUDE           100 i   28.836S              48.568N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
  normal    E
  normal    F
 Dynamic axes:
-    AXIS (AX002)                         use count:   1
-    AXIS (AX005)                         use count:   1
+    AXIS (AX010)                         use count:   1
+    AXIS (AX012)                         use count:   1
  
 ! irregular dynamic axis
 ! ... by subscript
@@ -14009,7 +13938,7 @@ show grid/dyn
 Dynamic grids:
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
- (AX005)   LONGITUDE            8 r   90W                  62W
+ (AX012)   LONGITUDE            8 r   90W                  62W
  PSYT      LATITUDE           100 i   28.836S              48.568N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
@@ -14018,14 +13947,14 @@ Dynamic grids:
     GRID (G005)                          use count:   1
  name       axis              # pts   start                end
  PSXT      LONGITUDE          160mr   130.5E               70.5W
- (AX003)   LATITUDE             6 r   3.5S                 4N
+ (AX011)   LATITUDE             6 r   3.5S                 4N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
  normal    E
  normal    F
 Dynamic axes:
-    AXIS (AX005)                         use count:   1
-    AXIS (AX003)                         use count:   1
+    AXIS (AX012)                         use count:   1
+    AXIS (AX011)                         use count:   1
  
 ! nested modulo (the dynamic axis is **NOT** modulo)
 ! ... by subscript
@@ -14207,7 +14136,7 @@ show grid/dyn
 Dynamic grids:
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   LONGITUDE            9 r   101W                 53W
+ (AX011)   LONGITUDE            9 r   101W                 53W
  PSYT      LATITUDE           100 i   28.836S              48.568N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
@@ -14215,15 +14144,15 @@ Dynamic grids:
  normal    F
     GRID (G005)                          use count:   1
  name       axis              # pts   start                end
- (AX002)   LONGITUDE            8 r   90W                  62W
+ (AX010)   LONGITUDE            8 r   90W                  62W
  PSYT      LATITUDE           100 i   28.836S              48.568N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
  normal    E
  normal    F
 Dynamic axes:
-    AXIS (AX003)                         use count:   1
-    AXIS (AX002)                         use count:   1
+    AXIS (AX011)                         use count:   1
+    AXIS (AX010)                         use count:   1
  
 ! calendar axes
 list/k=1/y=0/x=180 temp[t=15-JAN-1982:11-FEB-1982:`24*6`@ave]   ! 6-day ave
@@ -14257,7 +14186,7 @@ list/k=1/y=0/x=180/l=1 temp[t=15-JAN-1982:11-FEB-1982:`24*6`@ave]
 list/l=1:3 T[t=15-JAN-1982:11-FEB-1982:`24*2`]			! pseudo-var
  !-> list/l=1:3 T[t=15-JAN-1982:11-FEB-1982:48]
              VARIABLE : T
-                        axis (AX001)
+                        axis (AX009)
              SUBSET   : 3 points (TIME)
  15-JAN-1982 00 / 1:  723925.
  17-JAN-1982 00 / 2:  723927.
@@ -25338,7 +25267,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Wed Mar  2 11:48:36 PST 2016
+Fri Mar  4 12:54:14 PST 2016
  
 GO bn_reset
 cancel mode verify
@@ -41782,462 +41711,34 @@ fill/x=180 sst
 ! Illustrate the SHOW commands with /XML xml-style output
 ! V5.80 11/04 new tests for SHOW VAR/XML; global variables.
  
-! 22-Feb-2005 use SHO AXIS/XML `temp,return=taxis` instead
+! 22-Feb-2005 USE SHO AXIS/XML `temp,return=taxis` instead
 ! of naming the axes; other axes of the same name (e.g. TIME)
 ! may have been defined in other benchmark scrips.
  
-USE gtsa056_2.cdf
+USE levitus_climatology.cdf
  
 SHO DATA/XML
 <datasets>
-<dataset name="./gtsa056_2.cdf" default="true">
+<dataset name="./levitus_climatology.cdf" default="true">
 <title> </title>
 <var name="TEMP" />
-<var name="U" />
-<var name="W" />
-<var name="TAUX" />
 </dataset>
 </datasets>
  
-SHO DATA/VAR/XML
-<datasets>
-<dataset name="./gtsa056_2.cdf" default="true">
-<title> </title>
-<var name="TEMP">
-<attribute name="units" type="char">
-   <value><![CDATA[deg. C]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[TEMPERATURE]]></value>
-</attribute>
-<attribute name="_FillValue" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="missing_value" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="ferret_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<grid name="PS3DT1">
+SHO GRID/XML `temp,return=grid`
+ !-> SHO GRID/XML GMS1
+<grid name="GMS1">
 <axes>
-<xaxis>PSXT</xaxis>
-<yaxis>PSYT</yaxis>
-<zaxis>PSZT</zaxis>
-<taxis>TIME</taxis>
-</axes>
-</grid>
-</var>
-<var name="U">
-<attribute name="units" type="char">
-   <value><![CDATA[cm/sec]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[ZONAL VELOCITY]]></value>
-</attribute>
-<attribute name="_FillValue" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="missing_value" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="ferret_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<grid name="PS3DU1">
-<axes>
-<xaxis>PSXU</xaxis>
-<yaxis>PSYU</yaxis>
-<zaxis>PSZT</zaxis>
-<taxis>TIME</taxis>
-</axes>
-</grid>
-</var>
-<var name="W">
-<attribute name="units" type="char">
-   <value><![CDATA[cm/sec]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[VERTICAL VELOCITY]]></value>
-</attribute>
-<attribute name="_FillValue" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="missing_value" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="ferret_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<grid name="PS3DW1">
-<axes>
-<xaxis>PSXT</xaxis>
-<yaxis>PSYT</yaxis>
-<zaxis>PSZW</zaxis>
-<taxis>TIME</taxis>
-</axes>
-</grid>
-</var>
-<var name="TAUX">
-<attribute name="units" type="char">
-   <value><![CDATA[dynes/cm**2]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[ZONAL WIND STRESS]]></value>
-</attribute>
-<attribute name="_FillValue" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="missing_value" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="ferret_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<grid name="PS2DU1">
-<axes>
-<xaxis>PSXU</xaxis>
-<yaxis>PSYU</yaxis>
-<taxis>TIME</taxis>
-</axes>
-</grid>
-</var>
-</dataset>
-</datasets>
-<axes>
-<axis name="PSXT">
-<attribute name="direction" type="char">
-   <value><![CDATA[I]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[LONGITUDE]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>160</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>130.5</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>289.5</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value><![CDATA[yes]]></value>
-</attribute>
-<attribute name="modulo_length" type="short">
-   <value>360</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[PSXT]]></value>
-</attribute>
-</axis>
-<axis name="PSXU">
-<attribute name="direction" type="char">
-   <value><![CDATA[I]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[LONGITUDE]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>160</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>131</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>290</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value><![CDATA[yes]]></value>
-</attribute>
-<attribute name="modulo_length" type="short">
-   <value>360</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[PSXU]]></value>
-</attribute>
-</axis>
-<axis name="PSYT">
-<attribute name="direction" type="char">
-   <value><![CDATA[J]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[LATITUDE]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>100</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>-28.83607</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>48.56797</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value>uneven</value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="bounds" type="char">
-   <value><![CDATA[PSYT_bnds]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[PSYT]]></value>
-</attribute>
-</axis>
-<axis name="PSYU">
-<attribute name="direction" type="char">
-   <value><![CDATA[J]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[LATITUDE]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>100</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>-27.67214</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>50.00005</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value>uneven</value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="bounds" type="char">
-   <value><![CDATA[PSYU_bnds]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[PSYU]]></value>
-</attribute>
-</axis>
-<axis name="PSZT">
-<attribute name="direction" type="char">
-   <value><![CDATA[K]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[METERS]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>27</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>5</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>3824</value>
-</attribute>
-<attribute name="positive" type="char">
-   <value><![CDATA[down]]></value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value>uneven</value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="bounds" type="char">
-   <value><![CDATA[PSZT_bnds]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[PSZT]]></value>
-</attribute>
-</axis>
-<axis name="PSZW">
-<attribute name="direction" type="char">
-   <value><![CDATA[K]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[METERS]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>27</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>10</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>4149</value>
-</attribute>
-<attribute name="positive" type="char">
-   <value><![CDATA[down]]></value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value>uneven</value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="bounds" type="char">
-   <value><![CDATA[PSZW_bnds]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[PSZW]]></value>
-</attribute>
-</axis>
-<axis name="TIME">
-<attribute name="direction" type="char">
-   <value><![CDATA[L]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[hour since 1976-01-14 14:00:00]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>168</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>1982-01-15 14:00:00</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>1983-06-07 13:00:00</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value><![CDATA[yes]]></value>
-</attribute>
-<attribute name="time_origin" type="char">
-   <value><![CDATA[1976-01-14 14:00:00]]></value>
-</attribute>
-<attribute name="calendar" type="char">
-   <value><![CDATA[GREGORIAN]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[TIME]]></value>
-</attribute>
-</axis>
-</axes>
- 
-SHO GRID/XML ps3du1
-<grid name="PS3DU1">
-<axes>
-<xaxis>PSXU</xaxis>
-<yaxis>PSYU</yaxis>
-<zaxis>PSZT</zaxis>
-<taxis>TIME</taxis>
+<xaxis>XAXLEVITR1_160</xaxis>
+<yaxis>YAXLEVITR1_90</yaxis>
+<zaxis>ZAXLEVITR1_1</zaxis>
 </axes>
 </grid>
  
-SHO AXIS/XML `temp,return=xaxis`
- !-> SHO AXIS/XML PSXT
-<axes>
-<axis name="PSXT">
-<attribute name="direction" type="char">
-   <value><![CDATA[I]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[LONGITUDE]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>160</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>130.5</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>289.5</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value><![CDATA[yes]]></value>
-</attribute>
-<attribute name="modulo_length" type="short">
-   <value>360</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[PSXT]]></value>
-</attribute>
-</axis>
-</axes>
-SHO AXIS/XML `temp,return=yaxis`
- !-> SHO AXIS/XML PSYT
-<axes>
-<axis name="PSYT">
-<attribute name="direction" type="char">
-   <value><![CDATA[J]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[LATITUDE]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>100</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>-28.83607</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>48.56797</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value>uneven</value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="bounds" type="char">
-   <value><![CDATA[PSYT_bnds]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[PSYT]]></value>
-</attribute>
-</axis>
-</axes>
 SHO AXIS/XML `temp,return=zaxis`
- !-> SHO AXIS/XML PSZT
+ !-> SHO AXIS/XML ZAXLEVITR1_1
 <axes>
-<axis name="PSZT">
+<axis name="ZAXLEVITR1_1">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -42245,19 +41746,19 @@ SHO AXIS/XML `temp,return=zaxis`
    <value><![CDATA[METERS]]></value>
 </attribute>
 <attribute name="length" type="short">
-   <value>27</value>
+   <value>1</value>
 </attribute>
 <attribute name="start" type="double">
-   <value>5</value>
+   <value>0</value>
 </attribute>
 <attribute name="end" type="double">
-   <value>3824</value>
+   <value>0</value>
 </attribute>
 <attribute name="positive" type="char">
    <value><![CDATA[down]]></value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>uneven</value>
+   <value><![CDATA[even]]></value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -42265,85 +41766,55 @@ SHO AXIS/XML `temp,return=zaxis`
 <attribute name="infile_datatype" type="char">
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
-<attribute name="bounds" type="char">
-   <value><![CDATA[PSZT_bnds]]></value>
-</attribute>
 <attribute name="orig_file_axname" type="char">
-   <value><![CDATA[PSZT]]></value>
+   <value><![CDATA[ZAXLEVITR1_1]]></value>
 </attribute>
 </axis>
 </axes>
 SHO AXIS/XML `temp,return=taxis`
- !-> SHO AXIS/XML TIME
-<axes>
-<axis name="TIME">
-<attribute name="direction" type="char">
-   <value><![CDATA[L]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[hour since 1976-01-14 14:00:00]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>168</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>1982-01-15 14:00:00</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>1983-06-07 13:00:00</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value><![CDATA[yes]]></value>
-</attribute>
-<attribute name="time_origin" type="char">
-   <value><![CDATA[1976-01-14 14:00:00]]></value>
-</attribute>
-<attribute name="calendar" type="char">
-   <value><![CDATA[GREGORIAN]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[TIME]]></value>
-</attribute>
-</axis>
-</axes>
+ !-> SHO AXIS/XML NORMAL
+ 
+can dat/all
+ 
+! make some short files
+let/units="meters" myvar = 7
+save/clobber/file=a.nc myvar
+ 
+LET ddat = ZSEQUENCE({1126,1136,1146,1156,1166})
+save/clobber/file=b.nc ddat
+can var/all
+go bn_reset
+cancel mode verify
+ 
+USE a.nc
+USE b.nc
  
 ! Define a dataset variable
 ! SHOW/XML commands list it w/ its dataset (even if dataset is not default)
-LET/D=gtsa056_2 temp_180 = temp[X=160E:160W@AVE]
- 
-USE coads_climatology
+LET/D=a temp_av = ddat[d=2,X=@AVE]
  
 SHOW DATA/XML
 <datasets>
-<dataset name="./gtsa056_2.cdf" default="false">
+<dataset name="./a.nc" default="false">
 <title> </title>
-<var name="TEMP" />
-<var name="U" />
-<var name="W" />
-<var name="TAUX" />
-<var name="temp_180" />
+<var name="MYVAR" />
+<var name="temp_av" />
 </dataset>
-<dataset name="./coads_climatology.cdf" default="true">
+<dataset name="./b.nc" default="true">
 <title> </title>
-<var name="SST" />
+<var name="DDAT" />
 </dataset>
 </datasets>
-SHO DATA/VAR/XML
+SHO DATA/VAR/XML 1
 <datasets>
-<dataset name="./gtsa056_2.cdf" default="false">
+<dataset name="./a.nc" default="false">
 <title> </title>
-<var name="TEMP">
+<var name="MYVAR">
 <attribute name="units" type="char">
-   <value><![CDATA[deg. C]]></value>
+   <value><![CDATA[meters]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value><![CDATA[TEMPERATURE]]></value>
+   <value><![CDATA[7]]></value>
 </attribute>
 <attribute name="_FillValue" type="float">
    <value>-1.E+34</value>
@@ -42355,103 +41826,16 @@ SHO DATA/VAR/XML
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
+   <value><![CDATA[DOUBLE]]></value>
 </attribute>
-<grid name="PS3DT1">
+<grid name="GSI1">
 <axes>
-<xaxis>PSXT</xaxis>
-<yaxis>PSYT</yaxis>
-<zaxis>PSZT</zaxis>
-<taxis>TIME</taxis>
 </axes>
 </grid>
 </var>
-<var name="U">
-<attribute name="units" type="char">
-   <value><![CDATA[cm/sec]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[ZONAL VELOCITY]]></value>
-</attribute>
-<attribute name="_FillValue" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="missing_value" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="ferret_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<grid name="PS3DU1">
-<axes>
-<xaxis>PSXU</xaxis>
-<yaxis>PSYU</yaxis>
-<zaxis>PSZT</zaxis>
-<taxis>TIME</taxis>
-</axes>
-</grid>
-</var>
-<var name="W">
-<attribute name="units" type="char">
-   <value><![CDATA[cm/sec]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[VERTICAL VELOCITY]]></value>
-</attribute>
-<attribute name="_FillValue" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="missing_value" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="ferret_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<grid name="PS3DW1">
-<axes>
-<xaxis>PSXT</xaxis>
-<yaxis>PSYT</yaxis>
-<zaxis>PSZW</zaxis>
-<taxis>TIME</taxis>
-</axes>
-</grid>
-</var>
-<var name="TAUX">
-<attribute name="units" type="char">
-   <value><![CDATA[dynes/cm**2]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[ZONAL WIND STRESS]]></value>
-</attribute>
-<attribute name="_FillValue" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="missing_value" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="ferret_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<grid name="PS2DU1">
-<axes>
-<xaxis>PSXU</xaxis>
-<yaxis>PSYU</yaxis>
-<taxis>TIME</taxis>
-</axes>
-</grid>
-</var>
-<var name="temp_180">
+<var name="temp_av">
 <attribute name="definition" type="char">
-   <value><![CDATA[TEMP[X=160E:160W@AVE]]]></value>
+   <value><![CDATA[DDAT[D=2,X=@AVE]]]></value>
 </attribute>
 <attribute name="_FillValue" type="float">
    <value>-1.E+34</value>
@@ -42463,329 +41847,29 @@ SHO DATA/VAR/XML
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="long_name" type="char">
-   <value><![CDATA[TEMP[X=160E:160W@AVE]]]></value>
+   <value><![CDATA[DDAT[D=2,X=@AVE]]]></value>
 </attribute>
-<grid name="PS3DT1">
+<grid name="GRR1">
 <axes>
-<yaxis>PSYT</yaxis>
-<zaxis>PSZT</zaxis>
-<taxis>TIME</taxis>
+<zaxis>ZAX1_5</zaxis>
 </axes>
 </grid>
 </var>
 </dataset>
 </datasets>
 <axes>
-<axis name="PSXT">
-<attribute name="direction" type="char">
-   <value><![CDATA[I]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[LONGITUDE]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>160</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>130.5</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>289.5</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value><![CDATA[yes]]></value>
-</attribute>
-<attribute name="modulo_length" type="short">
-   <value>360</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[PSXT]]></value>
-</attribute>
-</axis>
-<axis name="PSXU">
-<attribute name="direction" type="char">
-   <value><![CDATA[I]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[LONGITUDE]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>160</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>131</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>290</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value><![CDATA[yes]]></value>
-</attribute>
-<attribute name="modulo_length" type="short">
-   <value>360</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[PSXU]]></value>
-</attribute>
-</axis>
-<axis name="PSYT">
-<attribute name="direction" type="char">
-   <value><![CDATA[J]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[LATITUDE]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>100</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>-28.83607</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>48.56797</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value>uneven</value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="bounds" type="char">
-   <value><![CDATA[PSYT_bnds]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[PSYT]]></value>
-</attribute>
-</axis>
-<axis name="PSYU">
-<attribute name="direction" type="char">
-   <value><![CDATA[J]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[LATITUDE]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>100</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>-27.67214</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>50.00005</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value>uneven</value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="bounds" type="char">
-   <value><![CDATA[PSYU_bnds]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[PSYU]]></value>
-</attribute>
-</axis>
-<axis name="PSZT">
+<axis name="ZAX1_5">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[METERS]]></value>
-</attribute>
 <attribute name="length" type="short">
-   <value>27</value>
-</attribute>
-<attribute name="start" type="double">
    <value>5</value>
 </attribute>
-<attribute name="end" type="double">
-   <value>3824</value>
-</attribute>
-<attribute name="positive" type="char">
-   <value><![CDATA[down]]></value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value>uneven</value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="bounds" type="char">
-   <value><![CDATA[PSZT_bnds]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[PSZT]]></value>
-</attribute>
-</axis>
-<axis name="PSZW">
-<attribute name="direction" type="char">
-   <value><![CDATA[K]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[METERS]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>27</value>
-</attribute>
 <attribute name="start" type="double">
-   <value>10</value>
+   <value>1</value>
 </attribute>
 <attribute name="end" type="double">
-   <value>4149</value>
-</attribute>
-<attribute name="positive" type="char">
-   <value><![CDATA[down]]></value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value>uneven</value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="bounds" type="char">
-   <value><![CDATA[PSZW_bnds]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[PSZW]]></value>
-</attribute>
-</axis>
-<axis name="TIME">
-<attribute name="direction" type="char">
-   <value><![CDATA[L]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[hour since 1976-01-14 14:00:00]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>168</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>1982-01-15 14:00:00</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>1983-06-07 13:00:00</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value><![CDATA[yes]]></value>
-</attribute>
-<attribute name="time_origin" type="char">
-   <value><![CDATA[1976-01-14 14:00:00]]></value>
-</attribute>
-<attribute name="calendar" type="char">
-   <value><![CDATA[GREGORIAN]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[TIME]]></value>
-</attribute>
-</axis>
-</axes>
-<dataset name="./coads_climatology.cdf" default="true">
-<title> </title>
-<var name="SST">
-<attribute name="units" type="char">
-   <value><![CDATA[Deg C]]></value>
-</attribute>
-<attribute name="long_name" type="char">
-   <value><![CDATA[SEA SURFACE TEMPERATURE]]></value>
-</attribute>
-<attribute name="_FillValue" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="missing_value" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<attribute name="ferret_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
-</attribute>
-<grid name="GSQ1">
-<axes>
-<xaxis>COADSX</xaxis>
-<yaxis>COADSY</yaxis>
-<taxis>TIME1</taxis>
-</axes>
-</grid>
-</var>
-</dataset>
-</datasets>
-<axes>
-<axis name="COADSX">
-<attribute name="direction" type="char">
-   <value><![CDATA[I]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[degrees_east]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>180</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>21</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>379</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value><![CDATA[yes]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[COADSX]]></value>
-</attribute>
-</axis>
-<axis name="COADSY">
-<attribute name="direction" type="char">
-   <value><![CDATA[J]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[degrees_north]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>90</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>-89</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>89</value>
+   <value>5</value>
 </attribute>
 <attribute name="point_spacing" type="char">
    <value><![CDATA[even]]></value>
@@ -42796,89 +41880,53 @@ SHO DATA/VAR/XML
 <attribute name="infile_datatype" type="char">
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[COADSY]]></value>
-</attribute>
-</axis>
-<axis name="TIME1">
-<attribute name="direction" type="char">
-   <value><![CDATA[L]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[hour since 0000-01-01 00:00:00]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>3</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>0000-01-16 06:00:00</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>0000-03-17 02:58:00</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value><![CDATA[yes]]></value>
-</attribute>
-<attribute name="time_origin" type="char">
-   <value><![CDATA[0000-01-01 00:00:00]]></value>
-</attribute>
-<attribute name="calendar" type="char">
-   <value><![CDATA[GREGORIAN]]></value>
-</attribute>
-<attribute name="modulo_length" type="short">
-   <value>8765.82</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
+<attribute name="axis" type="char">
+   <value><![CDATA[Z]]></value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
-   <value><![CDATA[TIME]]></value>
+   <value><![CDATA[ZAX1_5]]></value>
 </attribute>
 </axis>
 </axes>
  
+CAN DAT/ALL
  
 ! tests of SHOW VAR/XML for global variables.
 CAN DATA/ALL
 CAN VAR/ALL
  
-USE coads_climatology
-USE gtsa056_2
+USE a
+USE b
  
 ! Define a dataset variable
-LET/D=gtsa056_2 temp_20 temp[Z=0:20@SUM]
+LET/D=b temp_20 ddat[x=1:2@SUM]
  
 ! Define a global variable
-LET t30 = temp[Z=0:30@SUM]
+LET t30 = ddat[x=1:3@SUM]
  
 ! Another variable, setting title, units, bad flag.
-LET/UNITS="Deg C"/BAD=100/TITLE="Indefinite integral of SALT" salty = salt[Z=@IIN]
+LET/UNITS="Deg C"/BAD=100/TITLE="Indefinite integral" salty = temp[x=@iin]
  
 ! Define a constant
 LET pi = 3.14
  
 ! Another variable, irrelevant in the current context
-LET my_sst = sst*12
+LET my_a = a*12
  
-! This lists all the variables except my_sst
+! This lists all the variables except my_a
  
 SHO VAR/XML
 <global>
-<var name="TEMP_20[D=./gtsa056_2.cdf]">
+<var name="TEMP_20[D=./b.nc]">
 <attribute name="definition" type="char">
-   <value><![CDATA[TEMP[Z=0:20@SUM]]]></value>
+   <value><![CDATA[DDAT[X=1:2@SUM]]]></value>
 </attribute>
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<grid name="PS3DT1">
+<grid name="GRR1">
 <axes>
-<xaxis>PSXT</xaxis>
-<yaxis>PSYT</yaxis>
-<taxis>TIME1</taxis>
+<zaxis>ZAX1_5</zaxis>
 </axes>
 </grid>
 </var>
@@ -42896,54 +41944,35 @@ SHO VAR/XML
 </var>
 <var name="T30">
 <attribute name="definition" type="char">
-   <value><![CDATA[TEMP[Z=0:30@SUM]]]></value>
+   <value><![CDATA[DDAT[X=1:3@SUM]]]></value>
 </attribute>
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<grid name="PS3DT1">
+<grid name="GRR1">
 <axes>
-<xaxis>PSXT</xaxis>
-<yaxis>PSYT</yaxis>
-<taxis>TIME1</taxis>
+<zaxis>ZAX1_5</zaxis>
 </axes>
 </grid>
 </var>
 </global>
  
-! Now change datasets, so my_sst has a context, but t30
-! does not temp_20 is listed because it is defined on a dataset
+! Now change datasets, so my_a has a context, but t30
+! does not. temp_20 is listed becaUSE it is defined on a dataset
  
-SET DATA coads_climatology
+SET DATA a
 SHO VAR/XML
 <global>
-<var name="TEMP_20[D=./gtsa056_2.cdf]">
+<var name="TEMP_20[D=./b.nc]">
 <attribute name="definition" type="char">
-   <value><![CDATA[TEMP[Z=0:20@SUM]]]></value>
+   <value><![CDATA[DDAT[X=1:2@SUM]]]></value>
 </attribute>
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<grid name="PS3DT1">
+<grid name="GRR1">
 <axes>
-<xaxis>PSXT</xaxis>
-<yaxis>PSYT</yaxis>
-<taxis>TIME1</taxis>
-</axes>
-</grid>
-</var>
-<var name="MY_SST">
-<attribute name="definition" type="char">
-   <value><![CDATA[SST*12]]></value>
-</attribute>
-<attribute name="missing_value" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<grid name="GSQ1">
-<axes>
-<xaxis>COADSX</xaxis>
-<yaxis>COADSY</yaxis>
-<taxis>TIME</taxis>
+<zaxis>ZAX1_5</zaxis>
 </axes>
 </grid>
 </var>
@@ -42961,26 +41990,11 @@ SHO VAR/XML
 </var>
 </global>
  
-! Change default dataset. Now we should just see pi and my_sst
+! Change default dataset. Now we should just see pi and my_a
  
-CAN DATA gtsa056_2
+CAN DATA b
 SHOW VAR/XML
 <global>
-<var name="MY_SST">
-<attribute name="definition" type="char">
-   <value><![CDATA[SST*12]]></value>
-</attribute>
-<attribute name="missing_value" type="float">
-   <value>-1.E+34</value>
-</attribute>
-<grid name="GSQ1">
-<axes>
-<xaxis>COADSX</xaxis>
-<yaxis>COADSY</yaxis>
-<taxis>TIME</taxis>
-</axes>
-</grid>
-</var>
 <var name="PI">
 <attribute name="definition" type="char">
    <value><![CDATA[3.14]]></value>
@@ -43000,21 +42014,35 @@ SHOW VAR/XML
 CANCEL DATA/ALL
 CANCEL VAR/ALL
  
-USE coads_climatology
-LET t3 = sst[x=180,y=1,t="15-jan-0000:00:00":"15-feb-0000:00:00"@AVE]
+let tvar = t[gt=month_reg]
+save/clobber/file=a.nc tvar
+ 
+USE a
+LET t3 = tvar[t="15-jan-0000:00:00":"15-feb-0000:00:00"@AVE]
 SHOW VAR/XML
 <global>
 <var name="T3">
 <attribute name="definition" type="char">
-   <value><![CDATA[SST[X=180,Y=1,T="15-jan-0000:00:00":"15-feb-0000:00:00"@AVE]]]></value>
+   <value><![CDATA[TVAR[T="15-jan-0000:00:00":"15-feb-0000:00:00"@AVE]]]></value>
 </attribute>
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<grid name="GSQ1">
+<grid name="GSI1">
 <axes>
-<xaxis>COADSX</xaxis>
-<yaxis>COADSY</yaxis>
+</axes>
+</grid>
+</var>
+<var name="TVAR">
+<attribute name="definition" type="char">
+   <value><![CDATA[T[GT=MONTH_REG]]]></value>
+</attribute>
+<attribute name="missing_value" type="float">
+   <value>-1.E+34</value>
+</attribute>
+<grid name="GSI1">
+<axes>
+<taxis>MONTH_REG</taxis>
 </axes>
 </grid>
 </var>
@@ -44144,52 +43172,52 @@ let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
 load a
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A        C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G005)          (AX004)   (AX002)   NORMAL    (AX005)   NORMAL    NORMAL
- dealloc  dynamic grid (G005)          (AX004)   (AX002)   NORMAL    (AX005)   NORMAL    NORMAL
- allocate dynamic grid (G005)          (AX004)   (AX002)   NORMAL    (AX005)   NORMAL    NORMAL
- allocate dynamic grid (G005)          (AX004)   (AX002)   NORMAL    (AX005)   NORMAL    NORMAL
+ allocate dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)   NORMAL    NORMAL
+ dealloc  dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)   NORMAL    NORMAL
+ allocate dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)   NORMAL    NORMAL
+ allocate dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)   NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
  eval    A        C:  6 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
- allocate dynamic grid (G005)          (AX004)   (AX002)   NORMAL    (AX005)   NORMAL    NORMAL
+ allocate dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)   NORMAL    NORMAL
  strip regrid on X: TAUX --> (G005)           @XACT
  rdstride TAUX     C:  9 dset:   1 I:   50   54  J:   44   50  K: -999 -999  L:    1  161  M: -999 -999  N: -999 -999
  nulrgd  TAUX     M: 23 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
  -DELETE TAUX     M: 24 dset:   1 I:   50   54  J:   44   50  K: -999 -999  L:    1  161  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G005)          (AX004)   (AX002)   NORMAL    (AX005)   NORMAL    NORMAL
+ dealloc  dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)   NORMAL    NORMAL
 can mem/all
  -DELETE TAUX     M: 23 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
  -DELETE A        M: 24 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
  
 def grid/like=taux agrid
- dealloc  dynamic grid (G005)          (AX004)   (AX002)   NORMAL    (AX005)   NORMAL    NORMAL
+ dealloc  dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)   NORMAL    NORMAL
  getgrid EX#1     C:  6 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME      NORMAL    NORMAL
 set mode diag
 let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
  dealloc  dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME      NORMAL    NORMAL
- dealloc  dynamic grid (G005)          (AX004)   (AX002)   NORMAL    (AX005)   NORMAL    NORMAL
+ dealloc  dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)   NORMAL    NORMAL
 load a
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A        C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G005)          (AX002)   (AX004)   NORMAL    (AX001)   NORMAL    NORMAL
- dealloc  dynamic grid (G005)          (AX002)   (AX004)   NORMAL    (AX001)   NORMAL    NORMAL
- allocate dynamic grid (G005)          (AX002)   (AX004)   NORMAL    (AX001)   NORMAL    NORMAL
- allocate dynamic grid (G005)          (AX002)   (AX004)   NORMAL    (AX001)   NORMAL    NORMAL
+ allocate dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)   NORMAL    NORMAL
+ dealloc  dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)   NORMAL    NORMAL
+ allocate dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)   NORMAL    NORMAL
+ allocate dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)   NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
  eval    A        C:  6 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
- allocate dynamic grid (G005)          (AX002)   (AX004)   NORMAL    (AX001)   NORMAL    NORMAL
+ allocate dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)   NORMAL    NORMAL
  strip regrid on X: TAUX --> (G005)           @XACT
  rdstride TAUX     C:  9 dset:   1 I:   50   54  J:   44   50  K: -999 -999  L:    1  161  M: -999 -999  N: -999 -999
  nulrgd  TAUX     M: 23 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
  -DELETE TAUX     M: 24 dset:   1 I:   50   54  J:   44   50  K: -999 -999  L:    1  161  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G005)          (AX002)   (AX004)   NORMAL    (AX001)   NORMAL    NORMAL
+ dealloc  dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)   NORMAL    NORMAL
  
 can mem/all
  -DELETE TAUX     M: 23 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
  -DELETE A        M: 24 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
 can data/all
- dealloc  dynamic grid (G005)          (AX002)   (AX004)   NORMAL    (AX001)   NORMAL    NORMAL
- dealloc  dynamic grid (G005)          (AX002)   (AX004)   NORMAL    (AX001)   NORMAL    NORMAL
+ dealloc  dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)   NORMAL    NORMAL
+ dealloc  dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)   NORMAL    NORMAL
  canceling dset ./gtsa056_2.cdf
  
 ! Some tests taken from  bn_strides_revs_perms.jnl but with
@@ -44232,16 +43260,16 @@ load var
 LIST VAR[i=2:4:2]
  dealloc  dynamic grid AGRID           XAX1_4    YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
- dealloc  dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
- allocate dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX001)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX001)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX001)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    3    6  J:    2    3  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX001)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
  strip regrid on X: VAR --> (G006)           @XACT
  rdstride VAR      C:  7 dset:   1 I:    2    4  J:    2    3  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  nulrgd  VAR      M: 22 dset:   1 I:    1    2  J:    2    3  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE VAR      M: 23 dset:   1 I:    2    4  J:    2    3  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX001)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X
              FILENAME : bn_strides.cdf
@@ -44256,19 +43284,19 @@ LIST VAR[i=2:4:2]
  2   / 2:  1222.  1224.
  3   / 3:  1232.  1234.
 LIST VAR[i=2:4:2,j=1:3:2]
- dealloc  dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX001)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
  -DELETE VAR      M: 22 dset:   1 I:    1    2  J:    2    3  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX003)   (AX022)   ZAX1_2    TAX1_1    NORMAL    NORMAL
- dealloc  dynamic grid (G006)          (AX003)   (AX022)   ZAX1_2    TAX1_1    NORMAL    NORMAL
- allocate dynamic grid (G006)          (AX003)   (AX022)   ZAX1_2    TAX1_1    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX007)   (AX002)   ZAX1_2    TAX1_1    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX007)   (AX002)   ZAX1_2    TAX1_1    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX007)   (AX002)   ZAX1_2    TAX1_1    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    3    6  J:    2    4  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G006)          (AX003)   (AX022)   ZAX1_2    TAX1_1    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX007)   (AX002)   ZAX1_2    TAX1_1    NORMAL    NORMAL
  strip regrid on X: VAR --> (G006)           @XACT
  rdstride VAR      C:  7 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  nulrgd  VAR      M: 23 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE VAR      M: 22 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G006)          (AX003)   (AX022)   ZAX1_2    TAX1_1    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX007)   (AX002)   ZAX1_2    TAX1_1    NORMAL    NORMAL
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -44289,19 +43317,19 @@ CANC MEM/ALL
 ! modulo requests cannot use strides (as this example shows)
 set axis/modulo XAX1_4
 LIST VAR[I=1:10:3,j=1,k=1,l=1]    ! 1, 4, 7(3), 10(2)
- dealloc  dynamic grid (G006)          (AX003)   (AX022)   ZAX1_2    TAX1_1    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX007)   (AX002)   ZAX1_2    TAX1_1    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX003)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
- dealloc  dynamic grid (G006)          (AX003)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
- allocate dynamic grid (G006)          (AX003)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX007)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX007)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX007)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    3    6  J:    2    4  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G006)          (AX003)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX007)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
  strip regrid on X: VAR --> (G006)           @XACT
  strip moduloing VAR on X axis:     1    10 dset:   1
  reading VAR      M: 24 dset:   1 I:    1    4  J:    1    1  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
  doing moduloing VAR on X axis:     1     4 dset:   1
  regrid  VAR      M: 22 dset:   1 I:    1    4  J:    1    1  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G006)          (AX003)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX007)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 3 delta on X
              FILENAME : bn_strides.cdf
@@ -44322,18 +43350,18 @@ cancel axis/modulo XAX1_4
  
 ! strides applied to more than one axis need special attention in IS_REGRID
 LIST VAR[i=2:4:2,j=1:3:2]
- dealloc  dynamic grid (G006)          (AX003)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX007)   YAX1_3    ZAX1_2    TAX1_1    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX022)   (AX021)   ZAX1_2    TAX1_1    NORMAL    NORMAL
- dealloc  dynamic grid (G006)          (AX022)   (AX021)   ZAX1_2    TAX1_1    NORMAL    NORMAL
- allocate dynamic grid (G006)          (AX022)   (AX021)   ZAX1_2    TAX1_1    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX002)   (AX001)   ZAX1_2    TAX1_1    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX002)   (AX001)   ZAX1_2    TAX1_1    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX002)   (AX001)   ZAX1_2    TAX1_1    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    3    6  J:    2    4  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G006)          (AX022)   (AX021)   ZAX1_2    TAX1_1    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX002)   (AX001)   ZAX1_2    TAX1_1    NORMAL    NORMAL
  strip regrid on X: VAR --> (G006)           @XACT
  rdstride VAR      C:  7 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  nulrgd  VAR      M: 23 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE VAR      M: 24 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G006)          (AX022)   (AX021)   ZAX1_2    TAX1_1    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX002)   (AX001)   ZAX1_2    TAX1_1    NORMAL    NORMAL
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -44348,19 +43376,19 @@ LIST VAR[i=2:4:2,j=1:3:2]
  1   / 1:  1212.  1214.
  3   / 2:  1232.  1234.
 LIST VAR[i=2:6:2,j=1:5:2]
- dealloc  dynamic grid (G006)          (AX022)   (AX021)   ZAX1_2    TAX1_1    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX002)   (AX001)   ZAX1_2    TAX1_1    NORMAL    NORMAL
  -DELETE VAR      M: 23 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX022)   (AX003)   ZAX1_2    TAX1_1    NORMAL    NORMAL
- dealloc  dynamic grid (G006)          (AX022)   (AX003)   ZAX1_2    TAX1_1    NORMAL    NORMAL
- allocate dynamic grid (G006)          (AX022)   (AX003)   ZAX1_2    TAX1_1    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX002)   (AX007)   ZAX1_2    TAX1_1    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX002)   (AX007)   ZAX1_2    TAX1_1    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX002)   (AX007)   ZAX1_2    TAX1_1    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    3    6  J:    2    4  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G006)          (AX022)   (AX003)   ZAX1_2    TAX1_1    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX002)   (AX007)   ZAX1_2    TAX1_1    NORMAL    NORMAL
  strip regrid on X: VAR --> (G006)           @XACT
  rdstride VAR      C:  7 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  nulrgd  VAR      M: 24 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE VAR      M: 23 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G006)          (AX022)   (AX003)   ZAX1_2    TAX1_1    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX002)   (AX007)   ZAX1_2    TAX1_1    NORMAL    NORMAL
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -44377,24 +43405,24 @@ LIST VAR[i=2:6:2,j=1:5:2]
  
 ! test sub-region selection on strides axis
 let a = bigvar[i=1:40:5]
- dealloc  dynamic grid (G006)          (AX022)   (AX003)   ZAX1_2    TAX1_1    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX002)   (AX007)   ZAX1_2    TAX1_1    NORMAL    NORMAL
  -DELETE VAR      M: 24 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
 list/j=1/k=1/l=1 a[i=3:5]
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A        C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX022)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
- dealloc  dynamic grid (G006)          (AX022)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
- allocate dynamic grid (G006)          (AX022)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
- allocate dynamic grid (G006)          (AX022)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX002)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX002)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX002)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX002)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I:    3    6  J:    1    1  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
  eval    A        C:  7 dset:   1 I:    3    5  J:    1    1  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G006)          (AX022)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX002)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
  strip regrid on X: BIGVAR --> (G006)           @XACT
  rdstride BIGVAR   C: 10 dset:   1 I:    1   36  J:    1    1  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
  nulrgd  BIGVAR   M: 23 dset:   1 I:    1    8  J:    1    1  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE BIGVAR   M: 24 dset:   1 I:    1   36  J:    1    1  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G006)          (AX022)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX002)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
              VARIABLE : BIGVAR[I=1:40:5]
              FILENAME : bn_strides.cdf
              SUBSET   : 3 points (X)
@@ -44408,24 +43436,24 @@ list/j=1/k=1/l=1 a[i=3:5]
  21   / 5:  1131.
  -DELETE A        M: 22 dset:   1 I:    1    1  J:    3    5  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
 list/k=1/l=1 a[i=3:5,j=1:8:2]
- dealloc  dynamic grid (G006)          (AX022)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX002)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          (AX022)   (AX021)   ZAX1_20   TAX1_10   NORMAL    NORMAL
- dealloc  dynamic grid (G007)          (AX022)   (AX021)   ZAX1_20   TAX1_10   NORMAL    NORMAL
- allocate dynamic grid (G007)          (AX022)   (AX021)   ZAX1_20   TAX1_10   NORMAL    NORMAL
+ allocate dynamic grid (G007)          (AX002)   (AX001)   ZAX1_20   TAX1_10   NORMAL    NORMAL
+ dealloc  dynamic grid (G007)          (AX002)   (AX001)   ZAX1_20   TAX1_10   NORMAL    NORMAL
+ allocate dynamic grid (G007)          (AX002)   (AX001)   ZAX1_20   TAX1_10   NORMAL    NORMAL
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I:    3    6  J:    2    4  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          (AX022)   (AX021)   ZAX1_20   TAX1_10   NORMAL    NORMAL
+ allocate dynamic grid (G007)          (AX002)   (AX001)   ZAX1_20   TAX1_10   NORMAL    NORMAL
  strip regrid on Y: A --> (G007)           @XACT
  eval    A        C:  8 dset:   1 I:    3    5  J:    1    7  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G006)          (AX022)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX002)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
  strip regrid on X: BIGVAR --> (G006)           @XACT
  rdstride BIGVAR   C: 11 dset:   1 I:    1   36  J:    1    7  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
  nulrgd  BIGVAR   M: 20 dset:   1 I:    1    8  J:    1    7  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE BIGVAR   M: 22 dset:   1 I:    1   36  J:    1    7  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G006)          (AX022)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX002)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
  regrid  A        M:  8 dset:   1 I:    3    5  J:    1    4  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          (AX022)   (AX021)   ZAX1_20   TAX1_10   NORMAL    NORMAL
+ dealloc  dynamic grid (G007)          (AX002)   (AX001)   ZAX1_20   TAX1_10   NORMAL    NORMAL
              VARIABLE : BIGVAR[I=1:40:5]
                         regrid: 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -44450,19 +43478,19 @@ cancel mem/all
  
 ! basic strides
 LIST/order=x/j=1/k=1/l=1 UNEVENVAR[i=2:4:2]
- dealloc  dynamic grid (G007)          (AX022)   (AX021)   ZAX1_20   TAX1_10   NORMAL    NORMAL
+ dealloc  dynamic grid (G007)          (AX002)   (AX001)   ZAX1_20   TAX1_10   NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          (AX003)   YUNEVEN   ZAX1_6    TAX1_4    NORMAL    NORMAL
- dealloc  dynamic grid (G007)          (AX003)   YUNEVEN   ZAX1_6    TAX1_4    NORMAL    NORMAL
- allocate dynamic grid (G007)          (AX003)   YUNEVEN   ZAX1_6    TAX1_4    NORMAL    NORMAL
+ allocate dynamic grid (G007)          (AX007)   YUNEVEN   ZAX1_6    TAX1_4    NORMAL    NORMAL
+ dealloc  dynamic grid (G007)          (AX007)   YUNEVEN   ZAX1_6    TAX1_4    NORMAL    NORMAL
+ allocate dynamic grid (G007)          (AX007)   YUNEVEN   ZAX1_6    TAX1_4    NORMAL    NORMAL
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I:    3    6  J:    1    1  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          (AX003)   YUNEVEN   ZAX1_6    TAX1_4    NORMAL    NORMAL
+ allocate dynamic grid (G007)          (AX007)   YUNEVEN   ZAX1_6    TAX1_4    NORMAL    NORMAL
  strip regrid on X: UNEVENVAR --> (G007)           @XACT
  rdstride UNE-NVAR C:  8 dset:   1 I:    2    4  J:    1    1  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
  nulrgd  UNE-NVAR M: 23 dset:   1 I:    1    2  J:    1    1  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE UNE-NVAR M: 24 dset:   1 I:    2    4  J:    1    1  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          (AX003)   YUNEVEN   ZAX1_6    TAX1_4    NORMAL    NORMAL
+ dealloc  dynamic grid (G007)          (AX007)   YUNEVEN   ZAX1_6    TAX1_4    NORMAL    NORMAL
              VARIABLE : L*1000 + K*100 + J[GY=YUNEVEN]*10 + I[GX=XUNEVEN]
                         regrid: on X
              FILENAME : bn_strides.cdf
@@ -44480,19 +43508,19 @@ set region/i=3:6/j=2:4/k=1:2/l=1
  
 use/order=yx bn_strides
 list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
- dealloc  dynamic grid (G007)          (AX003)   YUNEVEN   ZAX1_6    TAX1_4    NORMAL    NORMAL
+ dealloc  dynamic grid (G007)          (AX007)   YUNEVEN   ZAX1_6    TAX1_4    NORMAL    NORMAL
  -DELETE UNE-NVAR M: 23 dset:   1 I:    1    2  J:    1    1  K:    1    1  L:    1    1  M: -999 -999  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          (AX021)   (AX023)   (AX024)   TAX1_10   NORMAL    NORMAL
- dealloc  dynamic grid (G007)          (AX021)   (AX023)   (AX024)   TAX1_10   NORMAL    NORMAL
- allocate dynamic grid (G007)          (AX021)   (AX023)   (AX024)   TAX1_10   NORMAL    NORMAL
+ allocate dynamic grid (G007)          (AX001)   (AX023)   (AX024)   TAX1_10   NORMAL    NORMAL
+ dealloc  dynamic grid (G007)          (AX001)   (AX023)   (AX024)   TAX1_10   NORMAL    NORMAL
+ allocate dynamic grid (G007)          (AX001)   (AX023)   (AX024)   TAX1_10   NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    3    6  J:    2    4  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G007)          (AX021)   (AX023)   (AX024)   TAX1_10   NORMAL    NORMAL
+ allocate dynamic grid (G007)          (AX001)   (AX023)   (AX024)   TAX1_10   NORMAL    NORMAL
  strip regrid on X: BIGVAR --> (G007)           @XACT
  rdstride BIGVAR   C:  7 dset:   1 I:    3    9  J:    2    6  K:    1    3  L:    1    1  M: -999 -999  N: -999 -999
  nulrgd  BIGVAR   M: 24 dset:   1 I:    1    4  J:    1    3  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE BIGVAR   M: 23 dset:   1 I:    3    9  J:    2    6  K:    1    3  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G007)          (AX021)   (AX023)   (AX024)   TAX1_10   NORMAL    NORMAL
+ dealloc  dynamic grid (G007)          (AX001)   (AX023)   (AX024)   TAX1_10   NORMAL    NORMAL
              VARIABLE : VAR
                         regrid: 2 delta on X, 2 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -44509,24 +43537,24 @@ list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
  4   / 2:  1343.  1345.  1347.  1349.
  6   / 3:  1363.  1365.  1367.  1369.
 canc data/all
- dealloc  dynamic grid (G007)          (AX021)   (AX023)   (AX024)   TAX1_10   NORMAL    NORMAL
+ dealloc  dynamic grid (G007)          (AX001)   (AX023)   (AX024)   TAX1_10   NORMAL    NORMAL
  -DELETE BIGVAR   M: 24 dset:   1 I:    1    4  J:    1    3  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G006)          (AX022)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX002)   YAX1_30   ZAX1_20   TAX1_10   NORMAL    NORMAL
  canceling dset ./bn_strides.cdf
  
 use/order=zyx bn_strides
 list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX024)   (AX023)   (AX021)   TAX1_10   NORMAL    NORMAL
- dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX021)   TAX1_10   NORMAL    NORMAL
- allocate dynamic grid (G006)          (AX024)   (AX023)   (AX021)   TAX1_10   NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX024)   (AX023)   (AX001)   TAX1_10   NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX001)   TAX1_10   NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX024)   (AX023)   (AX001)   TAX1_10   NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    3    6  J:    2    4  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G006)          (AX024)   (AX023)   (AX021)   TAX1_10   NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX024)   (AX023)   (AX001)   TAX1_10   NORMAL    NORMAL
  strip regrid on X: BIGVAR --> (G006)           @XACT
  rdstride BIGVAR   C:  7 dset:   1 I:    3    9  J:    2    6  K:    1    3  L:    1    1  M: -999 -999  N: -999 -999
  nulrgd  BIGVAR   M: 23 dset:   1 I:    1    4  J:    1    3  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE BIGVAR   M: 24 dset:   1 I:    3    9  J:    2    6  K:    1    3  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX021)   TAX1_10   NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX001)   TAX1_10   NORMAL    NORMAL
              VARIABLE : VAR
                         regrid: 2 delta on X, 2 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -44543,7 +43571,7 @@ list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
  4   / 2:  1343.  1543.  1743.  1943.
  6   / 3:  1363.  1563.  1763.  1963.
 canc data/all
- dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX021)   TAX1_10   NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX001)   TAX1_10   NORMAL    NORMAL
  -DELETE BIGVAR   M: 23 dset:   1 I:    1    4  J:    1    3  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  canceling dset ./bn_strides.cdf
  
@@ -44554,16 +43582,16 @@ use bn_strides
  
 list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX023)   (AX024)   NORMAL    (AX022)   NORMAL    NORMAL
- dealloc  dynamic grid (G006)          (AX023)   (AX024)   NORMAL    (AX022)   NORMAL    NORMAL
- allocate dynamic grid (G006)          (AX023)   (AX024)   NORMAL    (AX022)   NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX023)   (AX024)   NORMAL    (AX002)   NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX023)   (AX024)   NORMAL    (AX002)   NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX023)   (AX024)   NORMAL    (AX002)   NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    4  J:    1    3  K: -999 -999  L:    1    2  M: -999 -999  N: -999 -999
- allocate dynamic grid (G006)          (AX023)   (AX024)   NORMAL    (AX022)   NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX023)   (AX024)   NORMAL    (AX002)   NORMAL    NORMAL
  strip regrid on X: XYTVAR --> (G006)           @XACT
  rdstride XYTVAR   C:  7 dset:   1 I:    1    7  J:    2    6  K: -999 -999  L:    3    5  M: -999 -999  N: -999 -999
  nulrgd  XYTVAR   M: 24 dset:   1 I:    1    4  J:    1    3  K: -999 -999  L:    1    2  M: -999 -999  N: -999 -999
  -DELETE XYTVAR   M: 23 dset:   1 I:    1    7  J:    2    6  K: -999 -999  L:    3    5  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G006)          (AX023)   (AX024)   NORMAL    (AX022)   NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX023)   (AX024)   NORMAL    (AX002)   NORMAL    NORMAL
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X, 2 deg on Y, 2 day on T
              FILENAME : bn_strides.cdf
@@ -44581,7 +43609,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  
 use/order=tyx bn_strides
 show grid xytvar
- dealloc  dynamic grid (G006)          (AX023)   (AX024)   NORMAL    (AX022)   NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX023)   (AX024)   NORMAL    (AX002)   NORMAL    NORMAL
  -DELETE XYTVAR   M: 24 dset:   1 I:    1    4  J:    1    3  K: -999 -999  L:    1    2  M: -999 -999  N: -999 -999
  getgrid EX#1     C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
     GRID EGRID
@@ -44596,16 +43624,16 @@ show grid xytvar
 list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  dealloc  dynamic grid EGRID           XLON      YLAT      NORMAL    TTIME     NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX024)   (AX023)   NORMAL    (AX021)   NORMAL    NORMAL
- dealloc  dynamic grid (G006)          (AX024)   (AX023)   NORMAL    (AX021)   NORMAL    NORMAL
- allocate dynamic grid (G006)          (AX024)   (AX023)   NORMAL    (AX021)   NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX024)   (AX023)   NORMAL    (AX001)   NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX024)   (AX023)   NORMAL    (AX001)   NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX024)   (AX023)   NORMAL    (AX001)   NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    4  J:    1    3  K: -999 -999  L:    1    2  M: -999 -999  N: -999 -999
- allocate dynamic grid (G006)          (AX024)   (AX023)   NORMAL    (AX021)   NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX024)   (AX023)   NORMAL    (AX001)   NORMAL    NORMAL
  strip regrid on X: XYTVAR --> (G006)           @XACT
  rdstride XYTVAR   C:  7 dset:   1 I:    1    7  J:    2    6  K: -999 -999  L:    3    5  M: -999 -999  N: -999 -999
  nulrgd  XYTVAR   M: 23 dset:   1 I:    1    4  J:    1    3  K: -999 -999  L:    1    2  M: -999 -999  N: -999 -999
  -DELETE XYTVAR   M: 24 dset:   1 I:    1    7  J:    2    6  K: -999 -999  L:    3    5  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G006)          (AX024)   (AX023)   NORMAL    (AX021)   NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX024)   (AX023)   NORMAL    (AX001)   NORMAL    NORMAL
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X, 2 deg on Y, 2 day on T
              FILENAME : bn_strides.cdf
@@ -44621,7 +43649,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  4N   / 2:  5041.  5043.  5045.  5047.
  2N   / 1:  5021.  5023.  5025.  5027.
 canc data/all
- dealloc  dynamic grid (G006)          (AX024)   (AX023)   NORMAL    (AX021)   NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX024)   (AX023)   NORMAL    (AX001)   NORMAL    NORMAL
  -DELETE XYTVAR   M: 23 dset:   1 I:    1    4  J:    1    3  K: -999 -999  L:    1    2  M: -999 -999  N: -999 -999
  canceling dset ./bn_strides.cdf
  
@@ -44642,16 +43670,16 @@ show grid xytvar
 list xytvar[i=1:7:2,j=2:6:2,k=3:5:2]
  dealloc  dynamic grid GPC5            TTIME     XLON      YLAT      NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX023)   (AX024)   (AX022)   NORMAL    NORMAL    NORMAL
- dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX022)   NORMAL    NORMAL    NORMAL
- allocate dynamic grid (G006)          (AX023)   (AX024)   (AX022)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX023)   (AX024)   (AX002)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX002)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX023)   (AX024)   (AX002)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    4  J:    1    3  K:    1    2  L:    1    2  M: -999 -999  N: -999 -999
- allocate dynamic grid (G006)          (AX023)   (AX024)   (AX022)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX023)   (AX024)   (AX002)   NORMAL    NORMAL    NORMAL
  strip regrid on X: XYTVAR --> (G006)           @XACT
  rdstride XYTVAR   C:  7 dset:   1 I:    1    7  J:    2    6  K:    3    5  L: -999 -999  M: -999 -999  N: -999 -999
  nulrgd  XYTVAR   M: 24 dset:   1 I:    1    4  J:    1    3  K:    1    2  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE XYTVAR   M: 23 dset:   1 I:    1    7  J:    2    6  K:    3    5  L: -999 -999  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX022)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX002)   NORMAL    NORMAL    NORMAL
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 day on X, 2 deg on Y, 2 deg on Z
              FILENAME : bn_strides.cdf
@@ -44667,7 +43695,7 @@ list xytvar[i=1:7:2,j=2:6:2,k=3:5:2]
  144   / 2:  1054.  3054.  5054.  7054.
  146   / 3:  1056.  3056.  5056.  7056.
 canc data/all
- dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX022)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX002)   NORMAL    NORMAL    NORMAL
  -DELETE XYTVAR   M: 24 dset:   1 I:    1    4  J:    1    3  K:    1    2  L: -999 -999  M: -999 -999  N: -999 -999
  canceling dset ./bn_strides.cdf
  
@@ -44678,16 +43706,16 @@ cancel region; set region/l=1
 use/order=yx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX024)   (AX023)   (AX021)   TAX1_6    NORMAL    NORMAL
- dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX021)   TAX1_6    NORMAL    NORMAL
- allocate dynamic grid (G006)          (AX024)   (AX023)   (AX021)   TAX1_6    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX024)   (AX023)   (AX001)   TAX1_6    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX001)   TAX1_6    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX024)   (AX023)   (AX001)   TAX1_6    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G006)          (AX024)   (AX023)   (AX021)   TAX1_6    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX024)   (AX023)   (AX001)   TAX1_6    NORMAL    NORMAL
  strip regrid on X: MIDVAR --> (G006)           @XACT
  rdstride MIDVAR   C:  7 dset:   1 I:    1    5  J:    2    5  K:    3    5  L:    1    1  M: -999 -999  N: -999 -999
  nulrgd  MIDVAR   M: 23 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE MIDVAR   M: 24 dset:   1 I:    1    5  J:    2    5  K:    3    5  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX021)   TAX1_6    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX001)   TAX1_6    NORMAL    NORMAL
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -44702,18 +43730,18 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  2   / 1:  1512.  1552.
  5   / 2:  1515.  1555.
 canc data/all
- dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX021)   TAX1_6    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX001)   TAX1_6    NORMAL    NORMAL
  -DELETE MIDVAR   M: 23 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  canceling dset ./bn_strides.cdf
  
 use/order=-yx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX023)   (AX024)   (AX022)   TAX1_6    NORMAL    NORMAL
- dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX022)   TAX1_6    NORMAL    NORMAL
- allocate dynamic grid (G006)          (AX023)   (AX024)   (AX022)   TAX1_6    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX023)   (AX024)   (AX002)   TAX1_6    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX002)   TAX1_6    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX023)   (AX024)   (AX002)   TAX1_6    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G006)          (AX023)   (AX024)   (AX022)   TAX1_6    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX023)   (AX024)   (AX002)   TAX1_6    NORMAL    NORMAL
  strip regrid on X: MIDVAR --> (G006)           @XACT
  strip reversing MIDVAR on Y axis:     2     5 dset:   1
  rdstride MIDVAR   C:  8 dset:   1 I:    1    5  J:    5    8  K:    3    5  L:    1    1  M: -999 -999  N: -999 -999
@@ -44721,7 +43749,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  -DELETE MIDVAR   M: 23 dset:   1 I:    1    5  J:    2    5  K:    3    5  L:    1    1  M: -999 -999  N: -999 -999
  nulrgd  MIDVAR   M: 23 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE MIDVAR   M: 24 dset:   1 I:    1    5  J:    2    5  K:    3    5  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX022)   TAX1_6    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX002)   TAX1_6    NORMAL    NORMAL
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -44736,7 +43764,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  2   / 1:  1518.  1558.
  5   / 2:  1515.  1555.
 canc data/all
- dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX022)   TAX1_6    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX002)   TAX1_6    NORMAL    NORMAL
  -DELETE MIDVAR   M: 23 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  canceling dset ./bn_strides.cdf
  
@@ -44744,16 +43772,16 @@ canc data/all
 use/order=tyx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX024)   (AX023)   (AX021)   ZAX1_7    NORMAL    NORMAL
- dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX021)   ZAX1_7    NORMAL    NORMAL
- allocate dynamic grid (G006)          (AX024)   (AX023)   (AX021)   ZAX1_7    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX024)   (AX023)   (AX001)   ZAX1_7    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX001)   ZAX1_7    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX024)   (AX023)   (AX001)   ZAX1_7    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G006)          (AX024)   (AX023)   (AX021)   ZAX1_7    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX024)   (AX023)   (AX001)   ZAX1_7    NORMAL    NORMAL
  strip regrid on X: MIDVAR --> (G006)           @XACT
  rdstride MIDVAR   C:  7 dset:   1 I:    1    5  J:    2    5  K:    3    5  L:    1    1  M: -999 -999  N: -999 -999
  nulrgd  MIDVAR   M: 24 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE MIDVAR   M: 23 dset:   1 I:    1    5  J:    2    5  K:    3    5  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX021)   ZAX1_7    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX001)   ZAX1_7    NORMAL    NORMAL
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -44768,7 +43796,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  2   / 1:  1125.  5125.
  5   / 2:  1155.  5155.
 canc data/all
- dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX021)   ZAX1_7    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX001)   ZAX1_7    NORMAL    NORMAL
  -DELETE MIDVAR   M: 24 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  canceling dset ./bn_strides.cdf
  
@@ -44776,11 +43804,11 @@ canc data/all
 use/order=-t-y-x bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX023)   (AX024)   (AX022)   ZAX1_7    NORMAL    NORMAL
- dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX022)   ZAX1_7    NORMAL    NORMAL
- allocate dynamic grid (G006)          (AX023)   (AX024)   (AX022)   ZAX1_7    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX023)   (AX024)   (AX002)   ZAX1_7    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX002)   ZAX1_7    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX023)   (AX024)   (AX002)   ZAX1_7    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G006)          (AX023)   (AX024)   (AX022)   ZAX1_7    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX023)   (AX024)   (AX002)   ZAX1_7    NORMAL    NORMAL
  strip regrid on X: MIDVAR --> (G006)           @XACT
  strip reversing MIDVAR on X axis:     1     5 dset:   1
  rdstride MIDVAR   C:  8 dset:   1 I:    2    6  J:    4    7  K:    3    5  L:    7    7  M: -999 -999  N: -999 -999
@@ -44788,7 +43816,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  -DELETE MIDVAR   M: 24 dset:   1 I:    1    5  J:    2    5  K:    3    5  L:    1    1  M: -999 -999  N: -999 -999
  nulrgd  MIDVAR   M: 24 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE MIDVAR   M: 23 dset:   1 I:    1    5  J:    2    5  K:    3    5  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX022)   ZAX1_7    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX002)   ZAX1_7    NORMAL    NORMAL
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -44803,7 +43831,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  2   / 1:  6775.  2775.
  5   / 2:  6745.  2745.
 canc data/all
- dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX022)   ZAX1_7    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX002)   ZAX1_7    NORMAL    NORMAL
  -DELETE MIDVAR   M: 24 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  canceling dset ./bn_strides.cdf
  
@@ -44811,16 +43839,16 @@ canc data/all
 use/order=txy bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX024)   (AX023)   (AX021)   ZAX1_7    NORMAL    NORMAL
- dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX021)   ZAX1_7    NORMAL    NORMAL
- allocate dynamic grid (G006)          (AX024)   (AX023)   (AX021)   ZAX1_7    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX024)   (AX023)   (AX001)   ZAX1_7    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX001)   ZAX1_7    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX024)   (AX023)   (AX001)   ZAX1_7    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G006)          (AX024)   (AX023)   (AX021)   ZAX1_7    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX024)   (AX023)   (AX001)   ZAX1_7    NORMAL    NORMAL
  strip regrid on X: MIDVAR --> (G006)           @XACT
  rdstride MIDVAR   C:  7 dset:   1 I:    1    5  J:    2    5  K:    3    5  L:    1    1  M: -999 -999  N: -999 -999
  nulrgd  MIDVAR   M: 23 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE MIDVAR   M: 24 dset:   1 I:    1    5  J:    2    5  K:    3    5  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX021)   ZAX1_7    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX001)   ZAX1_7    NORMAL    NORMAL
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -44835,18 +43863,18 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  2   / 1:  1152.  5152.
  5   / 2:  1155.  5155.
 canc data/all
- dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX021)   ZAX1_7    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX024)   (AX023)   (AX001)   ZAX1_7    NORMAL    NORMAL
  -DELETE MIDVAR   M: 23 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  canceling dset ./bn_strides.cdf
  
 use/order=-t-x-y bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX023)   (AX024)   (AX022)   ZAX1_7    NORMAL    NORMAL
- dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX022)   ZAX1_7    NORMAL    NORMAL
- allocate dynamic grid (G006)          (AX023)   (AX024)   (AX022)   ZAX1_7    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX023)   (AX024)   (AX002)   ZAX1_7    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX002)   ZAX1_7    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX023)   (AX024)   (AX002)   ZAX1_7    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
- allocate dynamic grid (G006)          (AX023)   (AX024)   (AX022)   ZAX1_7    NORMAL    NORMAL
+ allocate dynamic grid (G006)          (AX023)   (AX024)   (AX002)   ZAX1_7    NORMAL    NORMAL
  strip regrid on X: MIDVAR --> (G006)           @XACT
  strip reversing MIDVAR on Y axis:     2     5 dset:   1
  rdstride MIDVAR   C:  8 dset:   1 I:    2    6  J:    5    8  K:    3    5  L:    7    7  M: -999 -999  N: -999 -999
@@ -44854,7 +43882,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  -DELETE MIDVAR   M: 23 dset:   1 I:    1    5  J:    2    5  K:    3    5  L:    1    1  M: -999 -999  N: -999 -999
  nulrgd  MIDVAR   M: 23 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  -DELETE MIDVAR   M: 24 dset:   1 I:    1    5  J:    2    5  K:    3    5  L:    1    1  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX022)   ZAX1_7    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX002)   ZAX1_7    NORMAL    NORMAL
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -44869,7 +43897,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  2   / 1:  6758.  2758.
  5   / 2:  6755.  2755.
 canc data/all
- dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX022)   ZAX1_7    NORMAL    NORMAL
+ dealloc  dynamic grid (G006)          (AX023)   (AX024)   (AX002)   ZAX1_7    NORMAL    NORMAL
  -DELETE MIDVAR   M: 23 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1  M: -999 -999  N: -999 -999
  canceling dset ./bn_strides.cdf
  
@@ -48529,8 +47557,7 @@ sho command
        /HIDDEN
  SHOW MODE/ALL
  SHOW MOVIE/ALL
- SHOW VARIABLE/ALL/DATASET/DIAG/USER/XML/OUTFILE/APPEND/CLOBBER/TREE/LAYERZ
-       /CURVILIN
+ SHOW VARIABLE/ALL/DATASET/USER/XML/OUTFILE/APPEND/CLOBBER/TREE/LAYERZ/CURVILIN
  SHOW COMMANDS/ALL
  SHOW MEMORY/ALL/TEMPORY/PERMANT/FREE
  SHOW GRID/ALL/I/J/K/L/M/N/X/Y/Z/T/E/F/DYNAMIC/XML/OUTFILE/APPEND/CLOBBER
@@ -48633,7 +47660,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "2-Mar-16:11:49"
+WIN_TITLE = "4-Mar-16:12:54"
  
 set win/title="set the title"
 sho sym win_title
@@ -48651,7 +47678,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 2-Mar-16:11:49"
+ !-> set win/title=" 4-Mar-16:12:54"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48660,16 +47687,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date =  2-Mar-16
+ !-> DEFINE SYMBOL the_date =  4-Mar-16
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 11:49
+ !-> DEFINE SYMBOL the_time = 12:54
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="2-Mar-16:11:49"
+ !-> SET WIN/TITLE="4-Mar-16:12:54"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "2-Mar-16:11:49"
+WIN_TITLE = "4-Mar-16:12:54"
 *** Running test: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -51283,7 +50310,7 @@ list/L=1/prec=7 sst[x=100:120@din,y=10:30@din]
              LONGITUDE: 100E to 120E (XY integ.)
              LATITUDE : 10N to 30N (XY integ.)
              TIME     : 16-JAN 06:00
-          6.008341E+13
+          6.009285E+13
  
 list/L=1/y=0/x=83w:49w sst,sst[x=@cda], sst[x=@cdb], sst[x=@cia], sst[x=@cib]
              DATA SET: ./coads_climatology.cdf
@@ -52982,7 +52009,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -53001,15 +52028,15 @@ sho dat/att
   
  PSYT35_56_bnds        DOUBLE
   
-(PSZT11_10)            DOUBLE    units           CHAR        6    T       meters
+(PSZT1_10)             DOUBLE    units           CHAR        6    T       meters
                                  positive        CHAR        4    T       down
                                  point_spacing   CHAR        6    T       uneven
                                  axis            CHAR        1    T       Z
                                  standard_name   CHAR        5    F       depth
-                                 bounds          CHAR        14   T       PSZT11_10_bnds
-                                 orig_file_axnameCHAR        9    F       PSZT11_10
+                                 bounds          CHAR        13   T       PSZT1_10_bnds
+                                 orig_file_axnameCHAR        8    F       PSZT1_10
   
- PSZT11_10_bnds        DOUBLE
+ PSZT1_10_bnds         DOUBLE
   
 (TIME11)               DOUBLE    units           CHAR        30   T       hour since 1980-01-14 14:00:00
                                  time_origin     CHAR        20   T       14-JAN-1980 14:00:00
@@ -53027,7 +52054,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -53046,15 +52073,15 @@ sho dat/att
   
  PSYT35_56_bnds        DOUBLE
   
-(PSZT11_10)            DOUBLE    units           CHAR        6    T       meters
+(PSZT1_10)             DOUBLE    units           CHAR        6    T       meters
                                  positive        CHAR        4    T       down
                                  point_spacing   CHAR        6    T       uneven
                                  axis            CHAR        1    T       Z
                                  standard_name   CHAR        5    F       depth
-                                 bounds          CHAR        14   T       PSZT11_10_bnds
-                                 orig_file_axnameCHAR        9    F       PSZT11_10
+                                 bounds          CHAR        13   T       PSZT1_10_bnds
+                                 orig_file_axnameCHAR        8    F       PSZT1_10
   
- PSZT11_10_bnds        DOUBLE
+ PSZT1_10_bnds         DOUBLE
   
 (TIME111)              DOUBLE    units           CHAR        30   T       hour since 1980-01-14 14:00:00
                                  time_origin     CHAR        20   T       14-JAN-1980 14:00:00
@@ -54666,8 +53693,17 @@ GO err607_show_var_xml
 ! Bug 1539 SHOW VAR/XML didnt show all vars.
  
  
-use gt4d011.cdf
-use coads_climatology
+ 
+! make some short files
+let/units="meters" temp = z[z=1:100:5]
+save/clobber/file=a.nc temp
+ 
+LET sst = x[x=1:15] + y[y=1:5] + t[gt=month_irreg]
+save/clobber/file=b.nc sst
+can var/all
+ 
+use a
+use b
  
 let temp_1_regrid=temp[d=1,z=5.00:75.00@ave]
 let sst_2_regrid=sst[d=2,t="15-Feb":"15-Mar"@ave]
@@ -54691,10 +53727,10 @@ show var/xml
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<grid name="(G006)">
+<grid name="GRR1">
 <axes>
-<xaxis>PSXT</xaxis>
-<yaxis>PSYT</yaxis>
+<xaxis>XAX1_15</xaxis>
+<yaxis>YAX1_5</yaxis>
 </axes>
 </grid>
 </var>
@@ -54705,10 +53741,10 @@ show var/xml
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<grid name="GSQ1">
+<grid name="GRR1">
 <axes>
-<xaxis>COADSX</xaxis>
-<yaxis>COADSY</yaxis>
+<xaxis>XAX1_15</xaxis>
+<yaxis>YAX1_5</yaxis>
 </axes>
 </grid>
 </var>
@@ -54719,11 +53755,8 @@ show var/xml
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<grid name="PS3DT2">
+<grid name="GSI1">
 <axes>
-<xaxis>PSXT</xaxis>
-<yaxis>PSYT</yaxis>
-<taxis>TIME1</taxis>
 </axes>
 </grid>
 </var>
@@ -58764,10 +57797,10 @@ SH GRID am
  normal    F
 *** Running test: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.009997"
-CLOCK_SECS = "0.004"
-CURRENT_DATE = " 2-Mar-16"
-CURRENT_TIME = "11:49:28"
+DELTA_CPU = "0.005998"
+CLOCK_SECS = "0.002"
+CURRENT_DATE = " 4-Mar-16"
+CURRENT_TIME = "12:55:06"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -58776,8 +57809,8 @@ CURRENT_TIME = "11:49:28"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.030996"
-CLOCK_SECS = "0.229"
+DELTA_CPU = "0.044993"
+CLOCK_SECS = "0.249"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -58791,60 +57824,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.109983
+ !-> DEFINE VARIABLE ten_plots = 0.098985
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "1.1"
+CLOCK_SECS = "1.097"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "1.101"
+CLOCK_SECS = "1.098"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.009998
- !-> DEFINE VARIABLE sumcpu =0.009998
+ !-> DEFINE VARIABLE dt = 0.010999
+ !-> DEFINE VARIABLE sumcpu =0.010999
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.011999
- !-> DEFINE VARIABLE sumcpu =0.021997
+ !-> DEFINE VARIABLE dt = 0.011997
+ !-> DEFINE VARIABLE sumcpu =0.022996
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.011998
- !-> DEFINE VARIABLE sumcpu =0.033995
+ !-> DEFINE VARIABLE dt = 0.011999
+ !-> DEFINE VARIABLE sumcpu =0.034995
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.011998
- !-> DEFINE VARIABLE sumcpu =0.045993
+ !-> DEFINE VARIABLE dt = 0.010999
+ !-> DEFINE VARIABLE sumcpu =0.045994
 !-> REPEAT: K=5
  !-> DEFINE VARIABLE dt = 0.010998
- !-> DEFINE VARIABLE sumcpu =0.056991
+ !-> DEFINE VARIABLE sumcpu =0.056992
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.010998
- !-> DEFINE VARIABLE sumcpu =0.067989
+ !-> DEFINE VARIABLE dt = 0.011997
+ !-> DEFINE VARIABLE sumcpu =0.068989
 !-> REPEAT: K=7
  !-> DEFINE VARIABLE dt = 0.010999
- !-> DEFINE VARIABLE sumcpu =0.078988
+ !-> DEFINE VARIABLE sumcpu =0.079988
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.010999
- !-> DEFINE VARIABLE sumcpu =0.089987
+ !-> DEFINE VARIABLE dt = 0.010998
+ !-> DEFINE VARIABLE sumcpu =0.090986
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.010997
- !-> DEFINE VARIABLE sumcpu =0.100984
+ !-> DEFINE VARIABLE dt = 0.009999
+ !-> DEFINE VARIABLE sumcpu =0.100985
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.011999
+ !-> DEFINE VARIABLE dt = 0.011998
  !-> DEFINE VARIABLE sumcpu =0.112983
  
 say `sumcpu`
  !-> MESSAGE/CONTINUE 0.112983
 0.112983
 sh sym CLOCK_SECS
-CLOCK_SECS = "1.945"
+CLOCK_SECS = "1.954"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = " 2-Mar-16"
-SESSION_TIME = "11:49"
-CURRENT_DATE = " 2-Mar-16"
-CURRENT_TIME = "11:49:30"
+SESSION_DATE = " 4-Mar-16"
+SESSION_TIME = "12:55"
+CURRENT_DATE = " 4-Mar-16"
+CURRENT_TIME = "12:55:08"
 *** Running test: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -60486,7 +59519,7 @@ show grid gg123456789012345678902
     GRID GG123456789012345678902
  name       axis              # pts   start                end
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
- (AX007)   LATITUDE           401 r   20S                  20N
+ (AX011)   LATITUDE           401 r   20S                  20N
  normal    Z
  TIME      TIME                 3mr   16-JAN 06:00         17-MAR 02:58
  normal    E
@@ -60495,7 +59528,7 @@ show grid/dynamic
 Dynamic grids:
     no implicit grids
 Dynamic axes:
-    AXIS (AX007)                         use count:   1
+    AXIS (AX011)                         use count:   1
  
 ! demonstrate proper management of dynamic axes
 DEFINE GRID/LIKE=gg123456789012345678902 gg123456789012345678903
@@ -60503,7 +59536,7 @@ show grid/dynamic
 Dynamic grids:
     no implicit grids
 Dynamic axes:
-    AXIS (AX007)                         use count:   2
+    AXIS (AX011)                         use count:   2
 DEFINE GRID/like=temp[d=levitus_climatology] gg123456789012345678902
 show grid gg123456789012345678902
     GRID GG123456789012345678902
@@ -60518,7 +59551,7 @@ show grid/dynamic
 Dynamic grids:
     no implicit grids
 Dynamic axes:
-    AXIS (AX007)                         use count:   1
+    AXIS (AX011)                         use count:   1
  
 ! SET GRID using a user-defined variable
 let g = sst[x=0:30:.1,d=coads_climatology]
@@ -60528,7 +59561,7 @@ show grid
  Last successful data access was on grid (G006)
     GRID (G006)
  name       axis              # pts   start                end                 subset
- (AX009)   LONGITUDE          301 r   0E                   30E                 full
+ (AX013)   LONGITUDE          301 r   0E                   30E                 full
  COADSY    LATITUDE            90 r   89S                  89N                 full
  normal    Z
  TIME      TIME                 3mr   16-JAN 06:00         17-MAR 02:58        full
@@ -60543,7 +59576,7 @@ show grid
     GRID (G005)
  name       axis              # pts   start                end                 subset
  COADSX    LONGITUDE          180mr   21E                  19E(379)            1 pt
- (AX010)   LATITUDE           201 r   10S                  10N                 200 pts
+ (AX014)   LATITUDE           201 r   10S                  10N                 200 pts
  normal    Z
  TIME      TIME                 3mr   16-JAN 06:00         17-MAR 02:58        1 pt
  normal    E
@@ -60553,23 +59586,23 @@ Dynamic grids:
     GRID (G005)                          use count:   1
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX010)   LATITUDE           201 r   10S                  10N
+ (AX014)   LATITUDE           201 r   10S                  10N
  normal    Z
  TIME      TIME                 3mr   16-JAN 06:00         17-MAR 02:58
  normal    E
  normal    F
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
- (AX009)   LONGITUDE          301 r   0E                   30E
+ (AX013)   LONGITUDE          301 r   0E                   30E
  COADSY    LATITUDE            90 r   89S                  89N
  normal    Z
  TIME      TIME                 3mr   16-JAN 06:00         17-MAR 02:58
  normal    E
  normal    F
 Dynamic axes:
-    AXIS (AX010)                         use count:   1
-    AXIS (AX009)                         use count:   1
-    AXIS (AX007)                         use count:   1
+    AXIS (AX014)                         use count:   1
+    AXIS (AX013)                         use count:   1
+    AXIS (AX011)                         use count:   1
  
 ! deliberate errors
 set mode ignore
@@ -60590,7 +59623,7 @@ SHOW GRID mygrid_123456789012345678901234567890
     GRID MYGRID_123456789012345678901234567890
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX010)   LATITUDE            41 r   10S                  2S
+ (AX014)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
  normal    E
@@ -60599,15 +59632,20 @@ SHOW GRID mygrid_123456789012345678901234567890
 ! bn_xml_repl.jnl
 ! replace > and < and & with their html equivalents.
  
-use coads_climatology
-set var/title="a title with & and > and < characters" sst
-set var/units="<<" sst
-set att sst.history = "Adding some ampersands.& & to the history"
+! make a short file
+let/units="meters" myvar = 7
+save/clobber/file=a.nc myvar
+can var/all
+use a.nc
+ 
+set var/title="a title with & and > and < characters" myvar
+set var/units="<<" myvar
+define att myvar.history = "Adding some ampersands.& & to the history"
 sh dat/xml/var
 <datasets>
-<dataset name="./coads_climatology.cdf" default="true">
+<dataset name="./a.nc" default="true">
 <title> </title>
-<var name="SST">
+<var name="MYVAR">
 <attribute name="units" type="char">
    <value><![CDATA[&lt;&lt;]]></value>
 </attribute>
@@ -60624,117 +59662,17 @@ sh dat/xml/var
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
+   <value><![CDATA[DOUBLE]]></value>
 </attribute>
-<grid name="GSQ1">
+<grid name="GSI1">
 <axes>
-<xaxis>COADSX</xaxis>
-<yaxis>COADSY</yaxis>
-<taxis>TIME</taxis>
 </axes>
 </grid>
 </var>
 </dataset>
 </datasets>
 <axes>
-<axis name="COADSX">
-<attribute name="direction" type="char">
-   <value><![CDATA[I]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[degrees_east]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>180</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>21</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>379</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value><![CDATA[yes]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[COADSX]]></value>
-</attribute>
-</axis>
-<axis name="COADSY">
-<attribute name="direction" type="char">
-   <value><![CDATA[J]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[degrees_north]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>90</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>-89</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>89</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[COADSY]]></value>
-</attribute>
-</axis>
-<axis name="TIME">
-<attribute name="direction" type="char">
-   <value><![CDATA[L]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[hour since 0000-01-01 00:00:00]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>3</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>0000-01-16 06:00:00</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>0000-03-17 02:58:00</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value><![CDATA[yes]]></value>
-</attribute>
-<attribute name="time_origin" type="char">
-   <value><![CDATA[0000-01-01 00:00:00]]></value>
-</attribute>
-<attribute name="calendar" type="char">
-   <value><![CDATA[GREGORIAN]]></value>
-</attribute>
-<attribute name="modulo_length" type="short">
-   <value>8765.82</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[TIME]]></value>
-</attribute>
-</axis>
 </axes>
-shade/l=1 sst
 *** Running test: bn65_bug_fixes.jnl
 ! bn65_bug_fixes.jnl
 ! Fixes that go into v6.5 release
@@ -61235,7 +60173,12 @@ set view v8; plot/trans/nolab/ax=0,0,1,0/hlim=0:1/set tvar
 ! Dont do show axis/all. Just the axes for one variable is a lot of output.
 ! Ferret v685, show/data/var/xml includes the output of show axis, so remove that.
  
-USE ocean_atlas_temp.cdf
+! create a short file
+LET sst = x[x=1:15] + y[y=1:5] + t[gt=month_irreg]
+save/clobber/file=b.nc sst
+can var/all
+ 
+use b
  
 DEFINE SYMBOL output_xml_file = the_xml_file.xml
  
@@ -61262,14 +60205,11 @@ sp cat the_xml_file.xml
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <data>
 <datasets>
-<dataset name="./ocean_atlas_temp.cdf" default="true">
+<dataset name="./b.nc" default="true">
 <title> </title>
-<var name="TEMP">
-<attribute name="units" type="char">
-   <value><![CDATA[Deg C]]></value>
-</attribute>
+<var name="SST">
 <attribute name="long_name" type="char">
-   <value><![CDATA[Temperature]]></value>
+   <value><![CDATA[X[X=1:15] + Y[Y=1:5] + T[GT=MONTH_IRREG]]]></value>
 </attribute>
 <attribute name="_FillValue" type="float">
    <value>-1.E+34</value>
@@ -61281,128 +60221,37 @@ sp cat the_xml_file.xml
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <attribute name="infile_datatype" type="char">
-   <value><![CDATA[FLOAT]]></value>
+   <value><![CDATA[DOUBLE]]></value>
 </attribute>
-<grid name="GBS1">
+<grid name="GRR1">
 <axes>
-<xaxis>XAX_LEV9421_380</xaxis>
-<yaxis>YAX_LEV94</yaxis>
-<zaxis>ZAXLEVIT191_1</zaxis>
-<taxis>TIME</taxis>
+<xaxis>XAX1_15</xaxis>
+<yaxis>YAX1_5</yaxis>
+<taxis>MONTH_IRREG</taxis>
 </axes>
 </grid>
 </var>
 </dataset>
 </datasets>
 <axes>
-<axis name="XAX_LEV9421_380">
-<attribute name="direction" type="char">
-   <value><![CDATA[I]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[degrees_east]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>360</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>20.5</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>379.5</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value><![CDATA[yes]]></value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[XAX_LEV9421_380]]></value>
-</attribute>
-</axis>
-<axis name="YAX_LEV94">
-<attribute name="direction" type="char">
-   <value><![CDATA[J]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[degrees_north]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>180</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>-89.5</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>89.5</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[YAX_LEV94]]></value>
-</attribute>
-</axis>
-<axis name="ZAXLEVIT191_1">
-<attribute name="direction" type="char">
-   <value><![CDATA[K]]></value>
-</attribute>
-<attribute name="units" type="char">
-   <value><![CDATA[METERS]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>1</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>0</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>0</value>
-</attribute>
-<attribute name="positive" type="char">
-   <value><![CDATA[down]]></value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-<attribute name="infile_datatype" type="char">
-   <value><![CDATA[DOUBLE]]></value>
-</attribute>
-<attribute name="orig_file_axname" type="char">
-   <value><![CDATA[ZAXLEVIT191_1]]></value>
-</attribute>
-</axis>
-<axis name="TIME">
+<axis name="MONTH_IRREG">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
 <attribute name="units" type="char">
-   <value><![CDATA[hour since 0000-01-01 00:00:00]]></value>
+   <value><![CDATA[DAYS since 0000-01-01 00:00:00]]></value>
 </attribute>
 <attribute name="length" type="short">
-   <value>2</value>
+   <value>12</value>
 </attribute>
 <attribute name="start" type="double">
-   <value>0000-01-16 06:00:00</value>
+   <value>0000-01-16 12:00:00</value>
 </attribute>
 <attribute name="end" type="double">
-   <value>0000-02-15 16:29:00</value>
+   <value>0000-12-15 17:49:00</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value><![CDATA[yes]]></value>
@@ -61413,14 +60262,78 @@ sp cat the_xml_file.xml
 <attribute name="calendar" type="char">
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
-<attribute name="modulo_length" type="short">
-   <value>8765.82</value>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="axis" type="char">
+   <value><![CDATA[T]]></value>
+</attribute>
+<attribute name="standard_name" type="char">
+   <value><![CDATA[time]]></value>
+</attribute>
+<attribute name="bounds" type="char">
+   <value><![CDATA[MONTH_IRREG_bnds]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[MONTH_IRREG]]></value>
+</attribute>
+</axis>
+<axis name="XAX1_15">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>15</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>15</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
 </attribute>
 <attribute name="infile_datatype" type="char">
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
+<attribute name="axis" type="char">
+   <value><![CDATA[X]]></value>
+</attribute>
 <attribute name="orig_file_axname" type="char">
-   <value><![CDATA[TIME]]></value>
+   <value><![CDATA[XAX1_15]]></value>
+</attribute>
+</axis>
+<axis name="YAX1_5">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="axis" type="char">
+   <value><![CDATA[Y]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value><![CDATA[YAX1_5]]></value>
 </attribute>
 </axis>
 </axes>
@@ -62775,8 +61688,8 @@ list contents
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.97 (beta/dbg)"                                                 
- 3    /  3:" ! Linux 2.6.32-573.12.1.el6.x86_64 64-bit - 03/02/16"                      
- 4    /  4:" !  2-Mar-16 11:49     "                                                    
+ 3    /  3:" ! Linux 2.6.32-573.18.1.el6.x86_64 64-bit - 03/04/16"                      
+ 4    /  4:" !  4-Mar-16 12:55     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -64988,7 +63901,7 @@ let a = x[gx=0:2:1]; save/clob/file=a1.nc a
 sho grid/x a
     GRID (G008)
  name       axis              # pts   start                end                 subset
- (AX001)   X                    3 r   0                    2                   2 pts
+ (AX007)   X                    3 r   0                    2                   2 pts
  normal    Y
  normal    Z
  normal    T
@@ -65004,7 +63917,7 @@ let a = x[gx=1:3:1]; save/clob/file=a2.nc a
 sho grid/x a
     GRID (G008)
  name       axis              # pts   start                end                 subset
- (AX005)   X                    3 r   1                    3                   2 pts
+ (AX002)   X                    3 r   1                    3                   2 pts
  normal    Y
  normal    Z
  normal    T
@@ -65025,14 +63938,14 @@ can var/all; can dat/all
 use a1
 list x[gx=a[d=1]]
              VARIABLE : X
-                        axis AX001
+                        axis AX007
              SUBSET   : 3 points (X)
  0   / 1:  0.000
  1   / 2:  1.000
  2   / 3:  2.000
 list x[gx=a[d=1,i=1:3]]
              VARIABLE : X
-                        axis AX001
+                        axis AX007
              SUBSET   : 3 points (X)
  0   / 1:  0.000
  1   / 2:  1.000
@@ -65047,7 +63960,7 @@ use a2
  
 list x[gx=a[d=1]]
              VARIABLE : X
-                        axis AX001
+                        axis AX007
              SUBSET   : 3 points (X)
  0   / 1:  0.000
  1   / 2:  1.000
@@ -65056,7 +63969,7 @@ list x[gx=a[d=1]]
 ! The bug was that this listed 1,2,3 rather than 0,1,2
 list x[gx=a[d=1,i=1:3]]
              VARIABLE : X
-                        axis AX001
+                        axis AX007
              SUBSET   : 3 points (X)
  0   / 1:  0.000
  1   / 2:  1.000
@@ -65072,7 +63985,7 @@ list x[gx=a[d=1,i=1:3]]
 ! Why is the following different?
 list x[gx=a[d=1],i=1:3]
              VARIABLE : X
-                        axis AX001
+                        axis AX007
              SUBSET   : 3 points (X)
  0   / 1:  0.000
  1   / 2:  1.000
@@ -65229,98 +64142,98 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.666
-randu2_randn2       0.452
-randu2_randn2       0.947
-randu2_randn2       0.340
-randu2_randn2       0.738
+randu2_randn2       0.973
+randu2_randn2       0.400
+randu2_randn2       0.433
+randu2_randn2       0.985
+randu2_randn2       0.981
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.074
-randu2_randn2       0.893
+randu2_randn2       0.884
+randu2_randn2       0.833
+randu2_randn2       0.845
+randu2_randn2       0.071
+randu2_randn2       0.726
+             VARIABLE : RANDU2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.479
+randu2_randn2       0.458
+randu2_randn2       0.136
+randu2_randn2       0.101
+randu2_randn2       0.802
+randu2_randn2       0.664
+             VARIABLE : RANDU2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.282
+randu2_randn2       0.408
+randu2_randn2       0.466
+randu2_randn2       0.090
+randu2_randn2       0.054
+randu2_randn2       0.475
+             VARIABLE : RANDU2(XX,12436)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.302
+randu2_randn2       0.380
+randu2_randn2       0.926
+randu2_randn2       0.672
+randu2_randn2       0.238
+randu2_randn2       0.638
+             VARIABLE : RANDU2(XX,12436)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.302
+randu2_randn2       0.380
+randu2_randn2       0.926
+randu2_randn2       0.672
+randu2_randn2       0.238
+randu2_randn2       0.638
+             VARIABLE : RANDN2(XBIG,-1)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 5 points (X)
+             X        : 0.5 to 5.5
+randu2_randn2      -0.805
+randu2_randn2       0.213
 randu2_randn2       0.404
-randu2_randn2       0.765
-randu2_randn2       0.120
-             VARIABLE : RANDU2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.978
-randu2_randn2       0.951
-randu2_randn2       0.536
-randu2_randn2       0.465
-randu2_randn2       0.431
-randu2_randn2       0.238
-             VARIABLE : RANDU2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.397
-randu2_randn2       0.289
-randu2_randn2       0.354
-randu2_randn2       0.819
-randu2_randn2       0.595
-randu2_randn2       0.341
-             VARIABLE : RANDU2(XX,12436)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.302
-randu2_randn2       0.380
-randu2_randn2       0.926
-randu2_randn2       0.672
-randu2_randn2       0.238
-randu2_randn2       0.638
-             VARIABLE : RANDU2(XX,12436)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.302
-randu2_randn2       0.380
-randu2_randn2       0.926
-randu2_randn2       0.672
-randu2_randn2       0.238
-randu2_randn2       0.638
+randu2_randn2       1.154
+randu2_randn2       0.376
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.803
-randu2_randn2      -0.718
-randu2_randn2      -0.285
-randu2_randn2      -0.290
-randu2_randn2       1.077
-             VARIABLE : RANDN2(XBIG,-1)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 5 points (X)
-             X        : 0.5 to 5.5
-randu2_randn2      -1.003
-randu2_randn2       2.134
-randu2_randn2       0.735
-randu2_randn2       0.828
-randu2_randn2      -0.753
+randu2_randn2       0.170
+randu2_randn2      -1.626
+randu2_randn2      -0.572
+randu2_randn2       1.228
+randu2_randn2       1.444
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2      -0.585
-randu2_randn2      -0.121
-randu2_randn2       0.488
-randu2_randn2       0.831
-randu2_randn2       0.212
-randu2_randn2       0.278
+randu2_randn2       0.351
+randu2_randn2      -1.323
+randu2_randn2      -1.270
+randu2_randn2       0.711
+randu2_randn2       0.141
+randu2_randn2       1.322
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       1.532
-randu2_randn2      -0.422
-randu2_randn2       0.451
-randu2_randn2       0.072
-randu2_randn2       0.969
-randu2_randn2       2.360
+randu2_randn2       0.930
+randu2_randn2      -0.466
+randu2_randn2      -1.699
+randu2_randn2       0.441
+randu2_randn2      -0.115
+randu2_randn2       1.614
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -65345,14 +64258,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.545       1.545       0.335
-randu2_randn2       0.858       0.858       0.335
-randu2_randn2       0.335       0.335       0.146
-randu2_randn2       0.146       0.146       0.146
-randu2_randn2      -0.082      -0.082       0.146
-randu2_randn2      -0.434      -0.082       0.146
-randu2_randn2      -0.014      -0.014       0.146
-randu2_randn2       0.135       0.135       0.146
+randu2_randn2       1.385       1.385       0.888
+randu2_randn2       0.979       0.979       0.888
+randu2_randn2       0.888       0.888       0.319
+randu2_randn2      -0.267      -0.267       0.319
+randu2_randn2      -0.291      -0.267       0.319
+randu2_randn2      -0.128      -0.128       0.319
+randu2_randn2       0.319       0.298       0.319
+randu2_randn2       0.298       0.319       0.319
 *** Running test: bn_axis_cf.jnl
 ! Ticket 1792: Write axes with CF-compliant units
 ! and with standard name attributes for geophysical attrs.
@@ -70451,8 +69364,7 @@ show command show
        /HIDDEN
  SHOW MODE/ALL
  SHOW MOVIE/ALL
- SHOW VARIABLE/ALL/DATASET/DIAG/USER/XML/OUTFILE/APPEND/CLOBBER/TREE/LAYERZ
-       /CURVILIN
+ SHOW VARIABLE/ALL/DATASET/USER/XML/OUTFILE/APPEND/CLOBBER/TREE/LAYERZ/CURVILIN
  SHOW COMMANDS/ALL
  SHOW MEMORY/ALL/TEMPORY/PERMANT/FREE
  SHOW GRID/ALL/I/J/K/L/M/N/X/Y/Z/T/E/F/DYNAMIC/XML/OUTFILE/APPEND/CLOBBER
@@ -71084,7 +69996,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71139,7 +70051,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71183,7 +70095,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71227,7 +70139,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71264,7 +70176,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71302,7 +70214,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71369,7 +70281,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71418,7 +70330,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71479,7 +70391,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71520,7 +70432,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71561,7 +70473,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71602,7 +70514,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71640,7 +70552,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71868,7 +70780,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71906,7 +70818,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -71953,7 +70865,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71997,7 +70909,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -72022,7 +70934,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -72047,7 +70959,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -72476,7 +71388,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.97   2-Mar-16" ;
+		:history = "FERRET V6.97   4-Mar-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72505,7 +71417,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.97   2-Mar-16" ;
+		:history = "FERRET V6.97   4-Mar-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72556,7 +71468,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.97   2-Mar-16" ;
+		:history = "FERRET V6.97   4-Mar-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73128,8 +72040,8 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Wed Mar  2 11:49:59 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
-			"FERRET V6.97   2-Mar-16" ;
+		:history = "Fri Mar  4 12:55:38 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
+			"FERRET V6.97   4-Mar-16" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
 }
@@ -73160,7 +72072,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.97   2-Mar-16" ;
+		:history = "FERRET V6.97   4-Mar-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73191,7 +72103,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.97   2-Mar-16" ;
+		:history = "FERRET V6.97   4-Mar-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73253,7 +72165,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.97   2-Mar-16" ;
+		:history = "FERRET V6.97   4-Mar-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73281,7 +72193,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.97   2-Mar-16" ;
+		:history = "FERRET V6.97   4-Mar-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74978,7 +73890,7 @@ variables:
 		LABELS:history = "From http://dunkel.pmel.noaa.gov:8930/thredds/dodsC/data/atmos3.ncml" ;
 
 // global attributes:
-		:history = "FERRET V6.97   2-Mar-16" ;
+		:history = "FERRET V6.97   4-Mar-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75001,7 +73913,7 @@ variables:
 		STRVAR:long_name = "mystrings" ;
 
 // global attributes:
-		:history = "FERRET V6.97   2-Mar-16" ;
+		:history = "FERRET V6.97   4-Mar-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75221,7 +74133,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.97   2-Mar-16" ;
+		:history = "FERRET V6.97   4-Mar-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75251,7 +74163,7 @@ variables:
 		A:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.97   2-Mar-16" ;
+		:history = "FERRET V6.97   4-Mar-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75272,7 +74184,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.97   2-Mar-16" ;
+		:history = "FERRET V6.97   4-Mar-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75293,7 +74205,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.97   2-Mar-16" ;
+		:history = "FERRET V6.97   4-Mar-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75315,7 +74227,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.97   2-Mar-16" ;
+		:history = "FERRET V6.97   4-Mar-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75724,7 +74636,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75740,7 +74652,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75756,7 +74668,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -76954,7 +75866,7 @@ variables:
 		:geospatial_lat_max = 29.07 ;
 		:time_coverage_start = "2006-06-10T23:48:00Z" ;
 		:time_converage_end = "2006-06-11T00:12:00Z" ;
-		:history = "FERRET V6.97   2-Mar-16" ;
+		:history = "FERRET V6.97   4-Mar-16" ;
 }
 *** Running test: bn_global_atts.jnl
  ! NOAA/PMEL TMAP
@@ -77044,7 +75956,7 @@ variables:
 		LON360:history = "added to test_save_dsg.nc" ;
 
 // global attributes:
-		:history = "CruiseDsgNcFile 1.0FERRET V6.97   2-Mar-16" ;
+		:history = "CruiseDsgNcFile 1.0FERRET V6.97   4-Mar-16" ;
 		:featureType = "Trajectory" ;
 		:Conventions = "Some other conventionsCF-1.6" ;
 		:geospatial_lon_min = -92.77 ;
@@ -77071,7 +75983,7 @@ can dat/all; use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
  ..history = Subset of etopo20,
- FERRET V6.97   2-Mar-16 
+ FERRET V6.97   4-Mar-16 
  ..Conventions = Existing conventions note, , CF-1.6 
  
  
@@ -77100,7 +76012,7 @@ can dat/all; use conventions_history
 ! The new attibutes
 sh att .
      attributes for dataset: ./conventions_history.nc
- ..history = The history of the fileFERRET V6.97   2-Mar-16 
+ ..history = The history of the fileFERRET V6.97   4-Mar-16 
  ..Conventions = Conventions for variables named V2CF-1.6 
 *** Running test: bn_center_key_labels.jnl
 ! bn_center_key_labels
@@ -77292,18 +76204,6 @@ sp cat a.txt
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 365.2425 (modulo length = axis span)
  name       axis              # pts   start                end
- PSXT      LONGITUDE          160mr   130.5E               70.5W
-   Axis span (to cell edges) = 160 (modulo length = 360)
- PSXU      LONGITUDE          160mr   131E                 70W
-   Axis span (to cell edges) = 160 (modulo length = 360)
- PSYT      LATITUDE           100 i   28.836S              48.568N
-   Axis span (to cell edges) = 80.00004
- PSYU      LATITUDE           100 i   27.672S              50N
-   Axis span (to cell edges) = 80.2682
- PSZT      DEPTH (m)           27 i-  5                    3824
-   Axis span (to cell edges) = 4149
- PSZW      DEPTH (m)           27 i-  10                   4149
-   Axis span (to cell edges) = 4144
  
 ! show grid/outfile
  
@@ -77413,9 +76313,6 @@ show grid/clobber/outfile=a.txt PS3*
 SAY ---------------- only showing all grids starting with PS3
 ---------------- only showing all grids starting with PS3
 sp cat a.txt
-      PS3DT
-      PS3DU
-      PS3DW
  
 SAY ---------------- tests sending output of vtree to a file
 ---------------- tests sending output of vtree to a file
@@ -85728,20 +84625,20 @@ GO err696_time_overlay
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
 sp date
-Wed Mar  2 11:50:19 PST 2016
+Fri Mar  4 12:55:58 PST 2016
 set view upper
 plot t[gt=tax_nlp]
 plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
 sp date
-Wed Mar  2 11:50:19 PST 2016
+Fri Mar  4 12:55:58 PST 2016
  
 sp date
-Wed Mar  2 11:50:19 PST 2016
+Fri Mar  4 12:55:58 PST 2016
 set view lower
 plot t[gt=tax_jul]
 plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
 sp date
-Wed Mar  2 11:50:19 PST 2016
+Fri Mar  4 12:55:58 PST 2016
  
 GO bn_reset
 cancel mode verify
@@ -85798,7 +84695,7 @@ variables:
 		var:long_name = "0*TT + X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.97   2-Mar-16" ;
+		:history = "FERRET V6.97   4-Mar-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -89966,7 +88863,7 @@ SHOW DATA/ATT t_f04_e3_1v ! note atts im_everwhere vs im_not_everwhere
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   2-Mar-16
+ .                               history         CHAR        23   T       FERRET V6.97   4-Mar-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (XAX)                  DOUBLE    units           CHAR        12   T       degrees_east
@@ -90553,7 +89450,7 @@ save/clobber/file=a.nc/outtype=float elev[d=1]
 use a.nc
 sh att .
      attributes for dataset: ./a.nc
- ..history = FERRET V6.97   2-Mar-16 
+ ..history = FERRET V6.97   4-Mar-16 
  ..Conventions = CF-1.6 
  ..dt_internal = 15
 sh att elev
@@ -90574,7 +89471,7 @@ save/clobber/file=a.nc/outtype=float elev[d=1]
 use a.nc
 sh att .
      attributes for dataset: ./a.nc
- ..history = FERRET V6.97   2-Mar-16 
+ ..history = FERRET V6.97   4-Mar-16 
  ..Conventions = CF-1.6 
 sh att elev
      attributes for dataset: ./a.nc
@@ -90598,7 +89495,7 @@ show grid
     GRID (G009)
  name       axis              # pts   start                end                 subset
  COADSX    LONGITUDE          180mr   21E                  19E(379)            1 pt
- (AX012)   LATITUDE           201 r   10S                  10N                 200 pts
+ (AX018)   LATITUDE           201 r   10S                  10N                 200 pts
  normal    Z
  TIME      TIME                 3mr   16-JAN 06:00         17-MAR 02:58        1 pt
  normal    E
@@ -90698,9 +89595,9 @@ flow/DAT=2/den=3/L=3 taux,tauy
 ! bn_speedtest.jnl
 ! issue large numbers of commands, timing with clock time
 can mode verify
-10K LET commands LET a = 0 takes  1.051  seconds
-Second 10K LET commands LET a = 0 takes  2.44  seconds
-5K LOAD with transform takes  3.336  seconds
+10K LET commands LET a = 0 takes  1.071  seconds
+Second 10K LET commands LET a = 0 takes  2.511  seconds
+5K LOAD with transform takes  3.364  seconds
 *** Running test: bn_show_noupcase.jnl
 ! bn_show_noupcase.jnl
 ! 1/2016 ticket 1796
@@ -92846,17 +91743,17 @@ PPL$XPIXEL = "656"
 PPL$YPIXEL = "492"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.97"
-FERRET_PLATFORM = "Linux 2.6.32-573.12.1.el6.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 2.6.32-573.18.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = " 2-Mar-16"
-SESSION_TIME = "11:50"
-SESSION_PID = "27408"
-DELTA_CPU = "0.014997"
-CLOCK_SECS = "0.044"
-CURRENT_DATE = " 2-Mar-16"
-CURRENT_TIME = "11:50:36"
+SESSION_DATE = " 4-Mar-16"
+SESSION_TIME = "12:56"
+SESSION_PID = "24566"
+DELTA_CPU = "0.013997"
+CLOCK_SECS = "0.056"
+CURRENT_DATE = " 4-Mar-16"
+CURRENT_TIME = "12:56:15"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 LAST_GO_FILE = "./bn_startupfile.jnl"
@@ -92878,7 +91775,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "2-Mar-16:11:50"
+WIN_TITLE = "4-Mar-16:12:56"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -92933,4 +91830,4 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3       ...       ...
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3       ...       ...
  
-Ended at Wed Mar  2 11:50:36 PST 2016
+Ended at Fri Mar  4 12:56:15 PST 2016

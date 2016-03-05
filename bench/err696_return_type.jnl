@@ -1,0 +1,27 @@
+! err696_return_type
+! See ticket #2367
+! incorrect return type when a user var 
+! uses an expression involving alternative string versions of
+! a numeric exernal function
+
+! this works, explicitly calling xcat_str
+let c = xcat_str({"e","f"},{"g","h"})
+let d = c
+list d
+
+! returned pointers not strings
+let a = xcat({"a","b"},{"c","d"})
+let b = a
+list b
+
+! Make more levels of variables, mixing xcat_str and xcat.
+
+let p = xcat_str({"1","2"},{"3","4"})
+let q = p
+
+let r = xcat({"5","6"},{"7","8"})
+let s = r
+
+! previously returned a string/numeric data type mix-up err.
+let allcat = xcat(q,s)
+list allcat

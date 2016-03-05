@@ -100,6 +100,9 @@
 *                  ..dimnames, now list of all dimensions in the dataset.
 * V694  5/15 *acm* Fix ticket 2291. When merging, handle variables from attribute
 *                  as temp variables.
+* V694 5/14  *acm* Ticket 2234. return-type error on string operations
+* V697  3/16 *acm* Ticket 2367. Return-type error for user variable when expr
+*                  uses a function having numeric and string versions.
 
 	include 'tmap_dims.parm'
 #include "netcdf.inc"
@@ -881,6 +884,10 @@ c Tentative fix for ticket 2234
 	ELSEIF ( EXPLICIT_UVAR(uvar) ) THEN
 * ... result of a simple definition like DEFINE VARIABLE UAVE=U[K=@AVE]
 *	or DEFINE VARIABLE NEW=X
+*       as above get the return type
+
+	   cx_type(big_cx) = cx_type(hi_cx)  ! for 2367
+
 	   CALL CREATE_MEM_VAR( big_cx, new_mr, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   is_mr( lo_isp ) = new_mr

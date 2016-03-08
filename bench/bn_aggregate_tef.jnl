@@ -1,5 +1,7 @@
 ! bn_aggregate_tef.F
 ! 2/2016 *sh*
+! 3/2016 - modified to test single point axis aggregations on Z axis
+
 ! to avoid re-creating the test files include argument "0" as in
 !  yes?  GO bn_aggregate_tef 0
 
@@ -18,7 +20,7 @@ spawn "mkdir -p tmp"     ! tmp directory to store files
 ! a 20x20 lat-long region
 define axis/x=140e:160e:1 xax
 define axis/y=10n:20n:1 yax
-define axis/Z=0:500:500/units=m zax
+define axis/Z=0:500:500/EDGES/units=m zax   ! a single point axis
 
 ! a 20 year monthly axis starting in Jan 1950
 LET start_year = 1950
@@ -99,17 +101,17 @@ show grid fcst[d=t_f01_e2]
 ! ======== TEST SET 1:  aggregate E first, then F
 
 ! define te aggregations -- only the first 5 remain unhidden
-ensemble      te_f01 = t_f01_e1, t_f01_e2, t_f01_e3, t_f01_e4, t_f01_e5
-ensemble/hide te_f02 = t_f02_e1, t_f02_e2, t_f02_e3, t_f02_e4, t_f02_e5
-ensemble/hide te_f03 = t_f03_e1, t_f03_e2, t_f03_e3, t_f03_e4, t_f03_e5
-ensemble/hide te_f04 = t_f04_e1, t_f04_e2, t_f04_e3, t_f04_e4, t_f04_e5
-ensemble/hide te_f05 = t_f05_e1, t_f05_e2, t_f05_e3, t_f05_e4, t_f05_e5
-ensemble/hide te_f06 = t_f06_e1, t_f06_e2, t_f06_e3, t_f06_e4, t_f06_e5
-ensemble/hide te_f07 = t_f07_e1, t_f07_e2, t_f07_e3, t_f07_e4, t_f07_e5
-ensemble/hide te_f08 = t_f08_e1, t_f08_e2, t_f08_e3, t_f08_e4, t_f08_e5
-ensemble/hide te_f09 = t_f09_e1, t_f09_e2, t_f09_e3, t_f09_e4, t_f09_e5
-ensemble/hide te_f10 = t_f10_e1, t_f10_e2, t_f10_e3, t_f10_e4, t_f10_e5
-ensemble/hide te_f11 = t_f11_e1, t_f11_e2, t_f11_e3, t_f11_e4, t_f11_e5
+ENSEMBLE      te_f01 = t_f01_e1, t_f01_e2, t_f01_e3, t_f01_e4, t_f01_e5
+ENSEMBLE/hide te_f02 = t_f02_e1, t_f02_e2, t_f02_e3, t_f02_e4, t_f02_e5
+ENSEMBLE/hide te_f03 = t_f03_e1, t_f03_e2, t_f03_e3, t_f03_e4, t_f03_e5
+ENSEMBLE/hide te_f04 = t_f04_e1, t_f04_e2, t_f04_e3, t_f04_e4, t_f04_e5
+ENSEMBLE/hide te_f05 = t_f05_e1, t_f05_e2, t_f05_e3, t_f05_e4, t_f05_e5
+ENSEMBLE/hide te_f06 = t_f06_e1, t_f06_e2, t_f06_e3, t_f06_e4, t_f06_e5
+ENSEMBLE/hide te_f07 = t_f07_e1, t_f07_e2, t_f07_e3, t_f07_e4, t_f07_e5
+ENSEMBLE/hide te_f08 = t_f08_e1, t_f08_e2, t_f08_e3, t_f08_e4, t_f08_e5
+ENSEMBLE/hide te_f09 = t_f09_e1, t_f09_e2, t_f09_e3, t_f09_e4, t_f09_e5
+ENSEMBLE/hide te_f10 = t_f10_e1, t_f10_e2, t_f10_e3, t_f10_e4, t_f10_e5
+ENSEMBLE/hide te_f11 = t_f11_e1, t_f11_e2, t_f11_e3, t_f11_e4, t_f11_e5
 SHOW DATA/brief
 SHOW DATA/FULL te_f11
 SHOW DATA/ATT te_f11   ! notice the promotion of fcst.im_everywhere
@@ -119,19 +121,18 @@ FMRC/HIDE tef = te_f01, te_f02, te_f03, te_f04, te_f05, te_f06, te_f07, te_f08, 
 SHOW DATA/brief/files
 show data/full tef
 
+! simplest acess -- compact form -- just demonstrate it doesn't fail
+stat/brief fcst[i=11:12, j=5:6, l=31:32, m=1:2, n=5:6]
+
 ! diagonal forecast view of ensemble mean
 let diag_fcst = fcst[gt(tf_times)=TF_CAL_T,gf(tf_times)=TF_LAG_F]
-shade/x=150E/y=15n/Z=0 diag_fcst[m=1:5@ave]
+shade/x=150E/y=15n diag_fcst[m=1:5@ave]
 
 ! difference between the mean and the middle is zero within computational error
 let epsilon = 1 / 2^50   ! 52 mantissa bits in a double
 say using epsilon = `epsilon`
 let rel_err = (diag_fcst[m=1:5@ave]-diag_fcst[m=3])/diag_fcst[m=3]
-stat/brief/x=150E/y=15n/Z=0 IF ABS(rel_err) LT epsilon THEN 0.0 ELSE rel_err
-
-! quick test of another axis (z) -- again should be zero
-let rel_err = (diag_fcst[Z=0] - (diag_fcst[Z=500]-500))/500
-stat/brief/x=150E/y=15n/M=3 IF ABS(rel_err) LT epsilon THEN 0.0 ELSE rel_err
+stat/brief/x=150E/y=15n IF ABS(rel_err) LT epsilon THEN 0.0 ELSE rel_err
 
 ! warning message indicates fcst_2 is missing from a file
 ENSEMBLE te_f04_1v = t_f04_e1, t_f04_e2, t_f04_e3_1v, t_f04_e4, t_f04_e5
@@ -141,42 +142,62 @@ SHOW DATA/ATT te_f04_1v  ! note atts im_everwhere vs im_not_everwhere
 ! define fcst_2 as a LET/D variable and then do same calc
 let/d=t_f04_e3_1v fcst_2 = fcst + 2
 show data/br t_f04_e3_1v
-ensemble te_f04_letd = t_f04_e1, t_f04_e2, t_f04_e3_1v, t_f04_e4, t_f04_e5
-fmrc/hide tef_letd = te_f01, te_f02, te_f03, te_f04_letd, te_f05, te_f06, te_f07, te_f08, te_f09, te_f10, te_f11
+ENSEMBLE te_f04_letd = t_f04_e1, t_f04_e2, t_f04_e3_1v, t_f04_e4, t_f04_e5
+FMRC/hide tef_letd = te_f01, te_f02, te_f03, te_f04_letd, te_f05, te_f06, te_f07, te_f08, te_f09, te_f10, te_f11
 let diag_fcst_2 = fcst_2[gt(tf_times)=TF_CAL_T,gf(tf_times)=TF_LAG_F]
 let rel_err_2 = (diag_fcst_2[m=1:5@ave]-diag_fcst_2[m=3])/diag_fcst_2[m=3]
 
 ! can run in diagnostic mode and look for "eval FCST_2" to confirm LET/D eval
 set data tef_letd
-stat/brief/x=150E/y=15n/Z=0 diag_fcst_2
-stat/brief/x=150E/y=15n/Z=0 IF ABS(rel_err_2) LT epsilon THEN 0.0 ELSE rel_err_2
+stat/brief/x=150E/y=15n diag_fcst_2
+stat/brief/x=150E/y=15n IF ABS(rel_err_2) LT epsilon THEN 0.0 ELSE rel_err_2
+
 ! demonstrate redefining the LET/D variable without re-defining the agg
 ! Look at the column 3 ("e3"), row 4 ("f04") to see  2.110 => 4.110
-list/x=150E/y=15n/Z=0/L=10 fcst_2
+list/x=150E/y=15n/L=10 fcst_2
 let/d=t_f04_e3_1v fcst_2 = fcst + 2 + 2   ! add 2 
-list/x=150E/y=15n/Z=0/L=10 fcst_2
+list/x=150E/y=15n/L=10 fcst_2
+
+! agg members may have unique contexts on scalar axes of the aggregation
+! ... here the LET/D var is normal to Z
+let/d=t_f04_e3_1v fcst_2 = X[gx=fcst]+Y[gy=fcst]+T[gt=fcst] + 1000
+list/x=150E/y=15n/L=10 fcst_2
+
+! ... here the LET/D var is averaged to a point in a pre-existing agg
+LET some_Z_function = Z[Z=0:100:10] + 1000
+let/d=t_f04_e3_1v fcst_2 = X[gx=fcst]+Y[gy=fcst]+T[gt=fcst]+some_Z_function[Z=10:60@ave]
+list/x=150E/y=15n/L=10 fcst_2
+
+! same as preceding, but the LET/D is included in the agg as defined
+ENSEMBLE te_f04_letd_new = t_f04_e1, t_f04_e2, t_f04_e3_1v, t_f04_e4, t_f04_e5
+FMRC/hide tef_letd_new = te_f01, te_f02, te_f03, te_f04_letd, te_f05, te_f06, te_f07, te_f08, te_f09, te_f10, te_f11
+list/x=150E/y=15n/L=10 fcst_2
 
 ! deliberate errors:
 SET MODE IGNORE
-! a new LET definition that alters the grid of the result is not acceptable
-let/d=t_f04_e3_1v fcst_2 = X[x=1:5]+Y[gy=fcst]+Z[gy=fcst]+T[gy=fcst] ! X ax chg
-list/x=150E/y=15n/Z=0/L=10 fcst_2
+set data tef_letd
+! a new LET/D definition that alters the grid of the result is not acceptable
+let/d=t_f04_e3_1v fcst_2 = X[x=1:5]+Y[gy=fcst]+Z[gz=fcst]+T[gt=fcst] ! X ax chg
+list/x=150E/y=15n/L=10 fcst_2
 
-! any LET definition that compresses an axis from the grid is not acceptable
-let/d=t_f04_e3_1v fcst_2 = fcst[l=1:5@ave]
-list/x=150E/y=15n/Z=0/L=10 fcst_2
+let/d=t_f04_e3_1v fcst_2 = X[gx=fcst]+Y[gy=fcst]+Z[gz=fcst]+T[T=1:36:1] ! T chg
+list/x=150E/y=15n/L=10 fcst_2
+
+! LET definition may not compress an axis of N>1
+let/d=t_f04_e3_1v fcst_2 = fcst[i=1:5@ave]
+list/x=150E/y=15n/L=10 fcst_2
 SET MODE/LAST IGNORE
 
 ! now restore the original definition and verify it again works
 let/d=t_f04_e3_1v fcst_2 = fcst + 2
-list/x=150E/y=15n/Z=0/L=10 fcst_2
+list/x=150E/y=15n/L=10 fcst_2
 
 ! ======== TEST SET 2:  aggregate F first, then E
-fmrc      tf_e1 = t_f01_e1, t_f02_e1, t_f03_e1, t_f04_e1, t_f05_e1, t_f06_e1, t_f07_e1, t_f08_e1, t_f09_e1, t_f10_e1, t_f11_e1
-fmrc/hide tf_e2 = t_f01_e2, t_f02_e2, t_f03_e2, t_f04_e2, t_f05_e2, t_f06_e2, t_f07_e2, t_f08_e2, t_f09_e2, t_f10_e2, t_f11_e2
-fmrc/hide tf_e3 = t_f01_e3, t_f02_e3, t_f03_e3, t_f04_e3, t_f05_e3, t_f06_e3, t_f07_e3, t_f08_e3, t_f09_e3, t_f10_e3, t_f11_e3
-fmrc/hide tf_e4 = t_f01_e4, t_f02_e4, t_f03_e4, t_f04_e4, t_f05_e4, t_f06_e4, t_f07_e4, t_f08_e4, t_f09_e4, t_f10_e4, t_f11_e4
-fmrc/hide tf_e5 = t_f01_e5, t_f02_e5, t_f03_e5, t_f04_e5, t_f05_e5, t_f06_e5, t_f07_e5, t_f08_e5, t_f09_e5, t_f10_e5, t_f11_e5
+FMRC      tf_e1 = t_f01_e1, t_f02_e1, t_f03_e1, t_f04_e1, t_f05_e1, t_f06_e1, t_f07_e1, t_f08_e1, t_f09_e1, t_f10_e1, t_f11_e1
+FMRC/hide tf_e2 = t_f01_e2, t_f02_e2, t_f03_e2, t_f04_e2, t_f05_e2, t_f06_e2, t_f07_e2, t_f08_e2, t_f09_e2, t_f10_e2, t_f11_e2
+FMRC/hide tf_e3 = t_f01_e3, t_f02_e3, t_f03_e3, t_f04_e3, t_f05_e3, t_f06_e3, t_f07_e3, t_f08_e3, t_f09_e3, t_f10_e3, t_f11_e3
+FMRC/hide tf_e4 = t_f01_e4, t_f02_e4, t_f03_e4, t_f04_e4, t_f05_e4, t_f06_e4, t_f07_e4, t_f08_e4, t_f09_e4, t_f10_e4, t_f11_e4
+FMRC/hide tf_e5 = t_f01_e5, t_f02_e5, t_f03_e5, t_f04_e5, t_f05_e5, t_f06_e5, t_f07_e5, t_f08_e5, t_f09_e5, t_f10_e5, t_f11_e5
 
 ! aggregate these F-aggs onto an E axis
 ENSEMBLE/HIDE tfe = tf_e1, tf_e2, tf_e3, tf_e4, tf_e5
@@ -190,28 +211,28 @@ SHOW DATA tfe
 ! confirm that the T-F-E agg and the T-E-F agg get the same results
 ! exactlyidentically zero STAT output means correct functioning
 let tfe_tef_ave_diff = (diag_fcst[d=tfe,m=1:5@ave]-diag_fcst[d=tef,m=1:5@ave])
-stat/brief/x=150E/y=15n/Z=0 tfe_tef_ave_diff
+stat/brief/x=150E/y=15n tfe_tef_ave_diff
 let tfe_tef_diff = (diag_fcst[d=tfe]-diag_fcst[d=tef])
-stat/brief/x=150E/y=15n/Z=0 tfe_tef_diff[m=1:5@ave]
+stat/brief/x=150E/y=15n tfe_tef_diff[m=1:5@ave]
 
 ! missing forecast (t_f02_e2) in a T-F-E aggregation
-fmrc tf_e2_gap = t_f01_e2, -, t_f03_e2, t_f04_e2, t_f05_e2, t_f06_e2, t_f07_e2, t_f08_e2, t_f09_e2, t_f10_e2, t_f11_e2
+FMRC tf_e2_gap = t_f01_e2, -, t_f03_e2, t_f04_e2, t_f05_e2, t_f06_e2, t_f07_e2, t_f08_e2, t_f09_e2, t_f10_e2, t_f11_e2
 ENSEMBLE tfe_gap = tf_e1, tf_e2_gap, tf_e3, tf_e4, tf_e5
 LIST/l=10/i=10/j=10/k=1 fcst[d=tfe_gap]
 
 ! missing ensemble member (t_f02_e2)in a T-E-F agregation
-ensemble te_f02_gap = t_f02_e1, -, t_f02_e3, t_f02_e4, t_f02_e5
+ENSEMBLE te_f02_gap = t_f02_e1, -, t_f02_e3, t_f02_e4, t_f02_e5
 FMRC tef_gap = te_f01, te_f02_gap, te_f03, te_f04
 LIST/l=10/i=10/j=10/k=1 fcst[d=tef_gap]
 
 ! deliberate errors
 set mode ignore
 ! unequal ensemble axis lengths
-ensemble te_f02_short = t_f02_e1, t_f02_e2, t_f02_e3, t_f02_e4   ! shorter than others
+ENSEMBLE te_f02_short = t_f02_e1, t_f02_e2, t_f02_e3, t_f02_e4   ! shorter than others
 FMRC tef_short = te_f01, te_f02_short, te_f03, te_f04, te_f05, te_f06, te_f07, te_f08, te_f09, te_f10, te_f11
 
 ! unequal forecast axis lengths
-fmrc tf_e2_short = t_f01_e2, t_f02_e2, t_f03_e2, t_f04_e2  ! shorter than others
+FMRC tf_e2_short = t_f01_e2, t_f02_e2, t_f03_e2, t_f04_e2  ! shorter than others
 ENSEMBLE tfe_short = tf_e1, tf_e2_short, tf_e3, tf_e4, tf_e5
 set mode/last ignore
 

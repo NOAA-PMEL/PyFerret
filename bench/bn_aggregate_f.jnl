@@ -125,7 +125,7 @@ fmrc/hide tmp/fcst_7.nc, tmp/fcst_4.nc, tmp/fcst_5.nc, tmp/one_var_fcst_6.nc, tm
 fmrc/hide my_fmrc = tmp/fcst_7.nc, tmp/fcst_4.nc, tmp/fcst_5.nc, tmp/one_var_fcst_6.nc, tmp/fcst_3.nc
 cancel data my_fmrc
 show data/br/hidden
-cancel data bn_aggregate_f.sub
+cancel data bn_aggregate_f.jnl   ! 3/16 bug fix (was "...sub")
 show data
 
 ! agg where a LET/D variable is used to fill in a missing variable

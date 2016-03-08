@@ -1,0 +1,14 @@
+! err696_repeat_escapes.jnl
+! Ticket 2376 - parsing error with escaped grave-accent syntax
+
+let a = "seq 1 3"
+sp echo \``a`\`
+
+! the escapes were removed on parsing the initial
+! command rather than keeping them until individual
+! commands parsed within the loop
+repeat/i=1:2 (sp echo \``a`\`)
+
+! nested repeats
+repeat/k=1:3 (rep/i=1:2 (sp echo \``a`\`))
+

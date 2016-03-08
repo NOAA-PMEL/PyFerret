@@ -47,4 +47,10 @@ xax\          ! comment on the argument
               ! this line is significant -- completes the command
 show axis xax; cancel axis xax  ! clean up
 
+! Allow extra slashes at the end of the command line
+set reg/x=1:2/; sho reg
+set reg/x=1:4//; sho reg
+
+can reg
+repeat/l=1:2 (set reg/x=1:4//)
 

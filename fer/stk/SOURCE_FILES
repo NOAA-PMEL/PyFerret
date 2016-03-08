@@ -7,6 +7,7 @@ bad_edges.F\
 bad_edges_sub.F\
 bad_ptr_edges_sub.F\
 clean_stack.F\
+conformable_agg_grid.F\
 constant_context.F\
 const_var_context.F\
 crawl_dependencies.F\

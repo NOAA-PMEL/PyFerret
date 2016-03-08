@@ -2116,11 +2116,11 @@ c *kob* 4/97
      .		'SET what name.attribute?', *5000 )
  5910 slen = TM_LENSTR(buff1)
       CALL ERRMSG( ferr_invalid_command, status,
-     .   'variable, axis, or attribute does not exist'//
+     .   'variable, axis, or attribute does not exist '//
      .    buff1(:slen), *5000 )
  5920 slen = TM_LENSTR(buff1)
       CALL ERRMSG( ferr_invalid_command, status,
-     .   'attribute name missing. SET ATT varname.attname'//
+     .   'attribute name missing. SET ATT varname.attname '//
      .    buff1(:slen), *5000 )
  5930 slen = TM_LENSTR(buff1)
       CALL ERRMSG( ferr_invalid_command, status,

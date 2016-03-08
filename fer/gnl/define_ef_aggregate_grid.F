@@ -549,12 +549,25 @@
      .					nF, axcalt, status)
 	   IF (status .NE. merr_ok) GOTO 5000
 
+* ... put attribute _CoordinateAxistype = 'RunTime' onto the F-calendar axis
+! cannot put attribute onto axis, because axis isn't in dataset List structure
+! this is part of a larger problem that the newly created axes of aggregations
+! have not yet been inserted into any List structures ... so their attributes
+! cannot be manipulated
+!          CALL CD_ADD_COORD_VAR( pdset_coord_vars, stuff (add new axis) ...
+!          IF ( status .NE. ferr_ok ) GOTO 5600
+!	   slen = TM_LENSTR1(line_name(iline))
+!	   CALL CD_GET_VAR_ID (pdset_coord_vars,
+!     .		'('//line_name(iline)(:slen)//')', varid, status)
+!	   attoutflag = 1
+!	   attype = NCCHAR
+!	   CALL CD_PUT_NEW_ATTR (pdset_coord_vars, varid, '_CoordinateAxistype',
+!     .		   attype, 7, attoutflag, 'RunTime', 0., status )
+
 * ... assign global attributes pointing to the target regrid axes
 *    (CF requires variable attributes, but they are helpful as globals, too)
 	   CALL CD_GET_VAR_ID (agg_dset, '.', globalid, status)
 	   slen = TM_LENSTR1(line_name(axcalt))
-	   attoutflag = 1
-	   attype = NCCHAR
 	   CALL CD_PUT_NEW_ATTR (agg_dset, globalid, '_cal_t_ax', attype, 
      .             slen, attoutflag, line_name(axcalt), 0., status )
 	   CALL CD_PUT_NEW_ATTR (agg_dset, globalid, '_lag_f_ax', attype, 

@@ -2064,8 +2064,8 @@ c     .                               sbrief, sdetail, i2)
      .          varname(:TM_LENSTR1(varname)), *5000 )
  5100   CALL ERRMSG( ferr_unknown_variable, status, arg, *5000)
  5150   CALL ERRMSG( ferr_unknown_qualifier, status,
-     .          'SHOW VAR/TREE= may take arguments ALL, FILE, and USER (default)',
-     .          *5000)
+     .          'SHOW VAR/TREE= may take arguments ALL, FILE, '//
+     .          'and USER (default)', *5000)
  5200	CALL ERRMSG( ferr_unknown_variable, status, varname, *5000 )
  5300   CALL ERRMSG( ferr_invalid_command, status, 'grid for '//
      .              cmnd_buff(item_start(ivar):item_end(ivar))
@@ -2085,7 +2085,7 @@ c     .                               sbrief, sdetail, i2)
      .			, *5000 )
  5920	llen = TM_LENSTR(show_str)
 	CALL ERRMSG( ferr_invalid_command, status,
-     .   'variable, axis, or attribute does not exist'//
+     .   'variable, axis, or attribute does not exist '//
      .    show_str(:llen), *5000 )
 
 

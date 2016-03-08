@@ -182,7 +182,11 @@
 	ITYPEY = 1	
 
 * pyferret font settings
-	IF (pyfont .AND. pyf_set(icbar)) igroup = icbar
+
+	IF (pyfont) THEN
+	   igroup = fnt_all
+	   IF (pyf_set(icbar)) igroup = icbar
+	ENDIF
 
 	cont_key_keep = cont_key
 	center_add = 0.

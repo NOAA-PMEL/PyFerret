@@ -43,6 +43,8 @@ GO err696_singlevec_over
 GO bn_reset
 GO err696_return_type
 
+GO bn_reset
+GO err696_hovmuller_mod_fill
 
 !GO bn_reset!
 !GO err696_axname_noupcase

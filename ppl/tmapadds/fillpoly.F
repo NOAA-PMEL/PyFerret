@@ -81,13 +81,15 @@ C
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
 *                 and 4-arg plot commands. 
+* V698 *acm* 3/16 Ticket 2374: missing color when FILL extends over entire 
+*                 modulo region
 
 #ifdef double_p
       real*8 x(128),y(128), xplus
 #else
       real x(128),y(128), xplus
 #endif
-      real xt(128),yt(128),xc(128),yc(128),xtrns,ytrns
+      real xt(128),yt(128),xc(128),yc(128),xtrns,ytrns, temp_hi
       integer i,nout,fill_ndx
       real xadd, lmin, lmax
 
@@ -173,8 +175,6 @@ C
 c
 c scale and transform the vertices
 
-*jd* begin -- temporary -- no projections permitted
-
       do 5 i=1,npts
 
 	    if (itypex .gt. 1) then
@@ -217,70 +217,50 @@ c clip polygon
 c
       call clippoly(xt,yt,npts,xc,yc,nout)
 c
+c ticket 2374
+c If the rectangle extends beyond the acmin,acmax,bcmin,bcmax rectangle on 
+c both ends, it may be because of moduloing, where the rectangle we are
+c coloring extends the entire length or height of the plot. Split the
+c rectangle into two, to fill it in.
+
+      if(nout.eq.0) THEN
+
+c This will happen only in the horizontal direction; rectangles are gathered up 
+c only in the horiz.
+         if (xt(1).LT.acmin .AND. xt(2).GT.acmax) THEN
+	    temp_hi = xt(2)
+	    xt(2) = (acmin+acmax)/2.
+	    xt(3) =  xt(2)
+	    call clippoly(xt,yt,npts,xc,yc,nout)
+	    if (nout .ne. 0) then
+	       fill_ndx = index + 2
+	       call set_fill_ndx (fill_ndx) 
+	       call gfa (nout,xc,yc)
+
+	       xt(1) = xt(2)
+	       xt(4) = xt(2)
+	       xt(2) = temp_hi
+	       xt(3) = temp_hi
+	    
+	       call clippoly(xt,yt,npts,xc,yc,nout)
+	       if (nout .ne. 0) then
+	          fill_ndx = index + 2
+	          call set_fill_ndx (fill_ndx) 
+	          call gfa (nout,xc,yc)
+	       endif
+	    endif
+	    nout = 0  ! all done
+
+         endif
+
+      endif
       if(nout.eq.0) return
 c
 
-*jd begin
 	fill_ndx = index + 2
 
 	call set_fill_ndx (fill_ndx) 
 	call gfa (nout,xc,yc)
-
-*	TO RETAIN ABILITY FOR COLOR OR HATCHING IN METAFILE, WRITE 
-*	NDX TO PRIVATE ITEM - forget it 10.22
-*	if (meta_actv .and. .not. area_bundles) call meta_fill_ndx (fill_ndx)
-
-*      goto (10,50,30,10,10,20,20),ptype+3
-*c
-*c tekterminal
-*c
-* 10   goto 100
-*c
-*c window device X11
-*c
-*#ifdef X11
-* 20   if(havex)then
-*         if(.not.gksopn)then
-*            call xwinit
-*         endif
-*         call fillpolyx(xc,yc,nout,index)
-*      endif
-*#else
-* 20   continue
-*#endif
-*c
-*c check for other devices
-*c
-*100   goto (50,50,50,50,30,50,30),ptype+3
-*c
-*c meta file
-*c
-* 30   if(wrtclr)then
-*c
-*c write color map
-*c
-*         wrtclr=.false.
-*         call binbuf(float(numclr),-2.)
-*         do 31 i=1,numclr,2
-*            call binbuf(float(rdclr(i)),float(rdclr(i+1)))
-* 31      continue
-*         do 32 i=1,numclr,2
-*            call binbuf(float(grnclr(i)),float(grnclr(i+1)))
-* 32      continue
-*         do 33 i=1,numclr,2
-*            call binbuf(float(blclr(i)),float(blclr(i+1)))
-* 33      continue
-*      endif
-*c
-*c write poly
-*c
-*      call binbuf(float(index),-3.)
-*      call binbuf(float(nout),-3.)
-*      do 34 i=1,nout
-*         call binbuf(xc(i),yc(i))
-* 34   continue
-*c
-*jd end
 
  50   return
 *     FATAL ERROR

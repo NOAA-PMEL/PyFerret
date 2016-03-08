@@ -1,0 +1,8 @@
+! err696_hovmuller_mod_fill.jnl
+! 3/7/2016 ACM
+! Ticket 2374
+! A single color extending across the plot was missing
+
+use coads_slice.nc
+fill/lin/t=1-jan-0000:31-dec-0001/hlim=1-jan-0000:1-jan-0001/x=180/lev=8 sst
+

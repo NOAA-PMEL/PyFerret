@@ -1,0 +1,10 @@
+! err696_red_keylab.jnl
+! Ticket 2375: outline and labels of color key were
+! drawn in red on an overlay.
+
+use levitus_climatology
+contour/lev=(0) temp
+
+! Always label the color key in pen0
+fill/over/nolab/key/lev=v,2min temp
+

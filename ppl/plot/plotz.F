@@ -94,7 +94,8 @@ C
 * v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
-* V6.95 *acm* 3/15 Changes for PyFerret fonts - text group settings for labels along contour lines
+* V695 *acm* 3/15 Changes for PyFerret fonts - text group settings for labels along contour lines
+* V698 *acm* 3/16  Ticket 2375: outline color key in black even on an overlay.
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -355,7 +356,11 @@ c       this bombed aix compiler, though it seems to work on others
      2	 NARC,CANGLE,status)
              IF (status .NE. ferr_ok) GOTO 5002
 
+* Ticket 2375: A color fill plot needs IPEN(0), so that if there is a
+* color key it is labeled and outlined in black even on an overlay.
 	 else if (makep.eq.'FILL') then
+	    
+	    CALL COLOR(IPEN(0))
             nlev1 = nlev
             nlev = nlev2
 	    call arfill(z,xx(izlen+1),yy(izlen+1),nx,ny)

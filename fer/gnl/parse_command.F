@@ -135,6 +135,7 @@
 * V697  2/16 *acm* DO NOT Increase length of cmnd buffer to 20480
 *                  but keep the other changes at that time, echo back only the 
 *                  start of command on an error
+* V697  3/16 Ticket 2376: parsing backslash escapes within repeat loops.
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -238,6 +239,12 @@
 * full length of text
 	cmnd_len = TM_LENSTR (cmnd_buff)
 
+* ignore trailing slashes in parsing (further fix for ticket 2356)
+
+	DO WHILE (cmnd_buff(cmnd_len:cmnd_len) .EQ. '/' .AND. cmnd_len.GT.1)
+	   cmnd_len = cmnd_len-1
+	ENDDO
+
 * save a copy of the command with untranslated symbols for use by REPEAT
 * and for building the complete command when continuation lines are used.
 
@@ -258,6 +265,9 @@
               CALL LEFT_JUST( cmnd_buff(1:cmnd_len),
      .                        cmnd_buff(1:cmnd_len), cmnd_len )
            ENDIF
+           DO WHILE (cmnd_buff(cmnd_len:cmnd_len) .EQ. '/' .AND. cmnd_len.GT.1)
+	      cmnd_len = cmnd_len-1
+	   ENDDO
         ENDIF
 
 * Again save a copy of the command with untranslated symbols for use by REPEAT
@@ -272,6 +282,10 @@
               CALL LEFT_JUST( cmnd_copy(1:len_cmnd_copy),
      .                        cmnd_copy(1:len_cmnd_copy), len_cmnd_copy)
            ENDIF
+           DO WHILE (cmnd_copy(len_cmnd_copy:len_cmnd_copy) .EQ. '/' 
+     .               .AND. len_cmnd_copy.GT.1)
+	      len_cmnd_copy = len_cmnd_copy-1
+	   ENDDO
         ENDIF
 
 
@@ -985,8 +999,12 @@ cc  Allow zero-length null string in quotes
 	ENDIF
 
 * replace backslashes that were escapes
+* Ticket 2376: If the command is a REPEAT, this needs to wait until
+* the command is parsed within the execution of the loop.
+
 #ifdef NO_DOUBLE_ESCAPE_SLASH
-	IF ( INDEX(cmnd_buff(:cmnd_len),'\') .GT. 0 ) THEN
+	IF (  ( cmnd_num .NE. cmnd_repeat ) .AND. 
+     .		INDEX(cmnd_buff(:cmnd_len),'\') .GT. 0 ) THEN
 	   in  = 1
 	   out = 1
  900	   IF (cmnd_buff(in:in+1) .EQ. '\!') THEN
@@ -1002,7 +1020,8 @@ cc  Allow zero-length null string in quotes
 	      cmnd_buff(out:out) = '/'
 	      in = in + 2
 #else
-	IF ( INDEX(cmnd_buff(:cmnd_len),'\\') .GT. 0 ) THEN
+	IF ( ( cmnd_num .NE. cmnd_repeat ) .AND. 
+     .		INDEX(cmnd_buff(:cmnd_len),'\\') .GT. 0 ) THEN
 	   in  = 1
 	   out = 1
  900	   IF (cmnd_buff(in:in+1) .EQ. '\\!') THEN

@@ -176,8 +176,6 @@ C
 c
 c scale and transform the vertices
 
-*jd* begin -- temporary -- no projections permitted
-
       do 5 i=1,npts
 
 	    if (itypex .gt. 1) then

@@ -66,6 +66,7 @@
 * V66   *kms* 5/10 LIB_GET_LUN is a subroutine, not a function
 * V687  *ACM* 3/14 for ticket 2044 write note !Enter_GO with script and arguments, only 
 *                  if SET REDIRECT is turned on.
+* V698 *sh* 3/16 - define GO_FILE always
 
 ! Note: A known "bug" of the 12/94 GO_FILE symbol is that the PLOT+ symbol
 !	GO_FILE gets defined only **after** PLOT+ has already placed a window
@@ -83,6 +84,7 @@
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'		! 12/94
 	include 'xcontrol.cmn'
+	include 'xcontrol.equiv'
 	include 'xrisc.cmn'
 
 * internal variable declarations:
@@ -173,18 +175,20 @@
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, slen)
 	ENDIF
 
-* define the PLOT+ symbol 'GO_FILE' if PLOT+ is running and the GO command
-* was given at the keyboard
-* (Note: we check for csp.eq.1 instead of 0 because csp was just pushed)
-	IF ( pplus_started .AND. csp.EQ.1 ) CALL PPLCMD
-     .		( from, line, 0, 'SET GO_FILE '//cbuff, 1, 1 )
-
-* define the symbol 'LAST_GO_FILE' no matter what...
-
 	ier = 0
 	ist = 0
 	len_string = TM_LENSTR1( cbuff )
 
+* define the symbol 'GO_FILE' -- it will always refer to the GO file currently
+* in control.  Resets when the current script ends.
+	cs_go_filename( csp) = cbuff   ! save the name to pop back later
+	CALL SETSYM ('GO_FILE '//cbuff, 8+len_string, 
+     .                 ier, ist)
+
+* define the symbol 'LAST_GO_FILE' no matter what... -- it will refer to the
+* last GO file that has been initiated.  When a GO file is initiated from
+* within another and then comes to an end, LAST_GO_FILE will no longer be the
+* one that is currently in control
 	CALL SETSYM ('LAST_GO_FILE '//cbuff, 13+len_string, 
      .                 ier, ist)
 

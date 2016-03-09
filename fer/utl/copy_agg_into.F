@@ -44,6 +44,7 @@
 *
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V695 2/15 *acm* 6D add aggregation in forecast direction
+* V698 3/16 *sh* make any scalar axis of member conformable with result
 *
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -55,16 +56,33 @@
 	REAL    src( * ), dst( * )
 
 * internal variable declarations
+	LOGICAL SCALAR_GRID_LINE
 	INTEGER idim, soffset, doffset, mdel,
+     .		dgrid, dcat, dvar,
      .		smlo(nferdims), smhi(nferdims),
      .		dmlo(nferdims), dmhi(nferdims),
      .		cxlo(nferdims), cxhi(nferdims)
 
+* initialize
+	dgrid = mr_grid(mdst)
+	dcat  = mr_category(mdst)
+	dvar  = mr_variable(mdst)
+ 
 * set-up modified limits wherever delta is significant
 * cuz the FORTRAN dimensioned size can only have delta of 1 
 
 	DO idim = 1,nferdims
-	  IF (mr_delta(idim,msrc) .NE. unspecified_val8) THEN
+	  IF (idim.NE.agg_dim
+     .  .AND. SCALAR_GRID_LINE(idim,dgrid,dcat,dvar)) THEN
+* ... any scalar-length axis of source is conformable with dest
+*     (if dst is scalar, then we know src will be too)
+	     cxlo(idim) = 1
+	     cxhi(idim) = 1
+	     dmlo(idim) = 1
+	     dmhi(idim) = 1
+	     smlo(idim) = 1
+	     smhi(idim) = 1
+	  ELSEIF (mr_delta(idim,msrc) .NE. unspecified_val8) THEN
             mdel = NINT(mr_delta(idim,msrc))
 
 	    IF (mr_delta(idim,msrc).NE.mr_delta(idim,mdst)

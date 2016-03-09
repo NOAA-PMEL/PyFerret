@@ -1,0 +1,10 @@
+* XCONTROL.EQUIV
+* equivalence names for vars in COMMON / XCONTROL /
+*
+*  3/16 *sh* 
+
+        CHARACTER*2048
+     .          cs_go_filename ( cs_max )
+
+	EQUIVALENCE
+     .		( cs_repeatname, cs_go_filename )

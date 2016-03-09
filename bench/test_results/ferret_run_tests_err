@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Mar  8 10:56 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Mar  9 10:53 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug Ferret on RHEL6-64
@@ -275,7 +275,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Tue Mar  8 10:57:00 PST 2016
+Beginning at Wed Mar  9 10:54:51 PST 2016
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3966,6 +3966,8 @@ Replacing definition of axis TAX2
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_aggregate_t.jnl
  Cached data cleared from memory
  LISTing to file tmp/tagg_reg_1.nc
@@ -4117,7 +4119,7 @@ Replacing definition of axis TRUEMONTH
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
-           *** NOTE: Dataset used in aggregation.  Canceling aggregation, bn_aggregate_f.sub
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, bn_aggregate_f.jnl
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, my_fmrc
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
@@ -4302,10 +4304,12 @@ DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/irregular_start_time_fcst.nc")
  LISTing to file tmp/f04_e3_t2_1v.nc
  LISTing to file tmp/f04_e3_t3_1v.nc
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
- **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed in agg member 3
-list/x=150E/y=15n/Z=0/L=10 fcst_2
- **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed in agg member 3
-list/x=150E/y=15n/Z=0/L=10 fcst_2
+ **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis X of agg member 3
+list/x=150E/y=15n/L=10 fcst_2
+ **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis T of agg member 3
+list/x=150E/y=15n/L=10 fcst_2
+ **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis X of agg member 3
+list/x=150E/y=15n/L=10 fcst_2
            *** NOTE: Exclude variable from aggregate. E axis of grid differs in member datasets: FCST
            *** NOTE: Exclude variable from aggregate. E axis of grid differs in member datasets: FCST_2
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
@@ -4358,4 +4362,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Tue Mar  8 10:59:13 PST 2016
+Ended at Wed Mar  9 10:57:13 PST 2016

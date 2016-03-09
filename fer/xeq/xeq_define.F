@@ -240,6 +240,7 @@
 *                  using original upper/lowercase spelling
 * V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
 *                  added to that dataset in the attribute structure.
+*       3/16 *sh*  bug fix use GO_FILE rather than LAST_GO_FILE as AGG name
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -2295,7 +2296,7 @@ C /units=months  is 1/12 of the length of the year
            pos = arg_start(1)    ! point to start of argument list
            IF ( GO_FILE_INPUT() ) THEN
 *     ... take name of the GO file exectuting this command
-              buffsym = 'LAST_GO_FILE'
+              buffsym = 'GO_FILE'
               CALL GETSYM( buffsym, buff3, slen, ierr )  ! get .agg file path
 	         IF (slen.EQ.0 .OR. ierr.EQ.1) CALL ERRMSG
      .                  ( ferr_internal, status, 'xeq_define_go_file', *5000)

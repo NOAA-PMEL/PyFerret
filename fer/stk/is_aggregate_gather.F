@@ -46,6 +46,9 @@
 * V695 2/15 *acm* 6D add aggregation in forecast direction
 * V698 1/16 *sh* fix to bug #2347 (res var no instead of com var on stack)
 *		altered logic as described in header of INIT_EF_AGGREGATE_DSET
+*      3/16 *sh* always delete aggregation components after using them
+*      3/16 *acm*always mark aggregation components unused after using them,
+*                delete variable if needed
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -70,9 +73,11 @@
 
 * internal variable declarations:
 	LOGICAL	NC_GET_ATTRIB, NC_GET_ATTRIB_STRING, TM_SAME_GRID_DEF,
+     .		SCALAR_GRID_LINE,
      .		attoutflag, got_it, itsa_dummy
 	INTEGER NCF_GET_ATTR_FROM_ID, TM_LENSTR1, STR_SAME, KNOWN_GRID,
-     .		com_mr, res_mr, com_cx, res_cx,	com_isp, res_isp,
+     .		com_mr, res_mr, com_cx, res_cx, com_isp, res_isp,
+     .		res_grid, res_cat, res_var,
      .		agg_dim, top, imemb, memb_dset, iline, idim,
      .		varid, attlen, maxlen, agg_dset, slen, vlen,
      .		orig_cat, orig_var, orig_grid,
@@ -92,6 +97,9 @@
 	com_cx     = is_cx( com_isp )
 	agg_dim    = is_axis( res_isp )
         agg_dset   = cx_data_set(res_cx)
+	res_grid   = cx_grid(res_cx)
+	res_cat    = cx_category(res_cx)
+	res_var    = cx_variable(res_cx)
 
 * diagnostic mode output: " doing aggregate gather VAR_NAME[x=lo:hi@TRN:n,D=#]"
 * Put in the agg- index value just for this output
@@ -118,11 +126,10 @@
      .			memory(1,mr_blk1(res_mr)), res_mr, is_phase(isp) )
 
 * ... remove the component protection that signaled we needed it here
-	IF (cx_data_set(com_cx) .NE. pdset_dummy) THEN
-	   CALL MR_NOT_IN_USE( com_mr )
-	ELSE
-	   CALL DELETE_VARIABLE( com_mr )   ! delete array of missing vals
-	ENDIF
+	CALL MR_NOT_IN_USE( com_mr )
+
+* ... delete array of missing vals
+	IF (cx_data_set(com_cx) .EQ. pdset_dummy) CALL DELETE_VARIABLE( com_mr )  
 
 * are we done ?
 	IF ( is_phase(isp) .EQ. is_sum(isp) ) THEN
@@ -141,7 +148,7 @@
 
 	imemb = is_phase(res_isp)
 
-	vname = VAR_CODE (cat_file_var, cx_variable(res_cx))   ! *sh* 1/16
+	vname = VAR_CODE (res_cat, res_var)   ! *sh* 1/16
 	vlen = TM_LENSTR1(vname)
 	CALL CD_GET_AGG_VAR_INFO (agg_dset, vname, imemb, 
      .      orig_cat, memb_dset, orig_grid, iline, orig_var, status)
@@ -186,21 +193,22 @@
            IF ( status .NE. ferr_ok ) GOTO 5000
 	   com_grid = KNOWN_GRID(memb_dset, com_cat, com_var)
 	ENDIF
-	IF (.NOT.TM_SAME_GRID_DEF(com_grid,orig_grid)) GOTO 5100
 
-* illegal for a LET/D def'n to compress an axis out of the grid
-	IF (com_cat .EQ. cat_user_var) THEN
-	   DO idim = 1, nferdims
-	      IF (grid_line(idim,com_grid) .NE. mnormal) THEN
-	         IF (uvar_given(idim,com_var).EQ.uvlim_gvn_xact) GOTO 5100
-	      ENDIF
-	   ENDDO
-	ENDIF
+* check that component grid is conformable with aggregation
+* (grid may have changed due to new LET/D definition)
+	CALL CONFORMABLE_AGG_GRID(agg_dim, vname, imemb,
+     .                            res_grid, res_cat, res_var,
+     .                            com_grid, com_cat, com_var,
+     .                            orig_grid, status )
+	IF (status .NE. ferr_ok) GOTO 5000
 
-* Unspecified limits on agg-direction are retained from previous component
-* so need not be re-set -- hence comment out
-!	CALL DEL_CX_DIM(agg_dim, com_cx)   ! in IS_STRIP
-!	cx_by_ss(agg_dim,com_cx) = .TRUE.  ! in IS_STRIP
+* scalar axes of components need not match the agg result
+	DO idim = 1, nferdims
+	   IF ( idim .NE. agg_dim
+     .	  .AND. SCALAR_GRID_LINE(idim, com_grid, com_cat, com_var) ) THEN
+	      CALL DEL_CX_DIM(idim, com_cx) 
+	   ENDIF
+	ENDDO
 
 * the T axis of an F-aggregation has a single set of indices but the time
 * values differ for each axis.  So re-interpret the time range from the indices
@@ -232,8 +240,4 @@
 
 * error exit
  5000	RETURN
- 5100	CALL ERRMSG(
-     .		ferr_aggregate_error, status,
-     .		'grid definition of '// vname(:vlen)//
-     .		' has changed in agg member '//LEFINT(imemb,slen), *5000)
 	END	

@@ -93,6 +93,7 @@
 * internal variable declarations:
 	LOGICAL	ITSA_MODULO_REGRID, TM_ITS_SUBSPAN_MODULO, NC_GET_ATTRIB,
      .		NC_GET_ATTRIB_STRING, ITSA_MODULO_AXIS, TM_SAME_GRID_DEF,
+     .		SCALAR_GRID_LINE, 
      .		itsa_uvar, modulo_dest_regrid, allatonce, attoutflag, 
      .		got_it
 	INTEGER	CGRID_SIZE_MAX, CAXIS_LEN, CAXIS_MODLEN, CX_DIM_LEN, 
@@ -180,10 +181,29 @@
 
 * confirm grid has not changed since stored during DEFINE DATA/AGG
 	      hi_grid = KNOWN_GRID(memb_dset, hi_cat, hi_var)
-	      IF (.NOT.TM_SAME_GRID_DEF(hi_grid,orig_grid)) CALL ERRMSG(
-     .		  ferr_aggregate_error, status,
-     .		  'coordinate grid of '// vname(:vlen)//
-     .		  ' has changed in agg member '//LEFINT(imemb,slen), *5000)
+	      IF (hi_grid .EQ. unspecified_int4) THEN   ! can only be a uvar
+* ... GET_UVAR_GRID uses the interp_stack, so bump isp
+	         isp = lo_isp + 1
+	         CALL GET_UVAR_GRID( hi_var, memb_dset, status )
+	         isp = lo_isp  ! restore to value at start of routine
+                 IF ( status .NE. ferr_ok ) GOTO 5000
+	         hi_grid = KNOWN_GRID(memb_dset, hi_cat, hi_var)
+	      ENDIF
+
+* check that component grid is conformable with aggregation
+* (grid may have changed due to new LET/D definition)
+	      CALL CONFORMABLE_AGG_GRID(idim, vname, imemb,
+     .                                  grid, cat_file_var, var,
+     .                                  hi_grid, hi_cat, hi_var,
+     .                                  orig_grid, status )
+	      IF (status .NE. ferr_ok) GOTO 5000
+
+* scalar axes of components need not match the agg result
+	      DO i = 1, nferdims
+	         IF ( i .NE. idim
+     .	        .AND. SCALAR_GRID_LINE(i, hi_grid, hi_cat, hi_var))
+     .						CALL DEL_CX_DIM(idim, hi_cx) 
+	      ENDDO
 
 * the T axis of an F-aggregation has a single set of indices but the time
 * values differ for each axis.  Indices are inherited from the lo_cx

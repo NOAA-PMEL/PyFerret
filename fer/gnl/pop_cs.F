@@ -66,11 +66,12 @@
 *                  and handle nested unclosed IFs 
 * v6932 12/14 *sh* unclosed IF warning moved to GET_FER_COMMAND
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
+* V698  *sh* 3/16 maintain GO_FILE as the currently active GO file
 
 * internal variable declarations:
 	INTEGER	LIB_FREE_LUN,TM_LENSTR1,stat,axis,ivar,cvar,csp_to,ll,
      .          slen, plen
-        INTEGER i, j, num_indices
+        INTEGER i, j, ier, num_indices
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -78,11 +79,11 @@
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
 	include 'xcontrol.cmn'
+	include 'xcontrol.equiv'
         include 'xcontext.cmn'
         include 'xalgebra.cmn'
         include 'xvariables.cmn'
 	include	'xrisc.cmn'
-
 
 * internal error ?
 	IF ( csp .LT. 1 ) STOP 'csp_undflw'
@@ -116,6 +117,19 @@
 * ... close input GO file
 	   CLOSE( UNIT = cmnd_lun, ERR = 10 )
  10	   stat = LIB_FREE_LUN( cmnd_lun )
+
+* reset the GO_FILE symbol to the parent GO file, if any
+	   ier = 0
+	   j = 0
+           CALL SETSYM ('GO_FILE n/a', 11, ier, j)
+	   DO i = csp-1,1,-1
+              IF ( cs_cmnd_num(i) .EQ. cmnd_go) THEN
+	        ll = TM_LENSTR1(cs_go_filename(i))
+              	CALL SETSYM ('GO_FILE '//cs_go_filename(i), 8+ll, ier, j)
+                EXIT
+              ENDIF
+           ENDDO
+
 
 	ELSEIF ( cs_cmnd_num( csp ) .EQ. cmnd_repeat ) THEN
 * ... restore context prior to REPEAT loop (along repeat axis only)

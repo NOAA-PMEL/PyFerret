@@ -90,6 +90,7 @@ reset_axis.F\
 reset_ax_att.F\
 save_ppl_memory_size.F\
 save_scriptfile_name.F\
+scalar_grid_line.F\
 set_agg_var_atts.F\
 set_var.F\
 show_1_dsvar.F\

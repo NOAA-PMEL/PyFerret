@@ -24,7 +24,8 @@
 * v5.50 *acm*9/02 - up maxdsets from 30 to 100 
 *       *acm*12/02  up maxstepfiles from 500 to 1000
 * v552  *acm* 3/03  increase maxstepfiles to 5000)
-* v698  *sh* 17/12  creating hidden dataset space above maxdsets
+* v698  *sh* 12/15  creating hidden dataset space above maxdsets
+*             3/16  increase maxdsets to accommodate EF aggs
 
 * for TMAP formatted files:
 	INTEGER	nrec_codes,ngrid_prenamed,nvari_prenamed,maxdsets,
@@ -40,7 +41,7 @@
 	PARAMETER (nrec_codes = 11)	! # of different record codes
 	PARAMETER (ngrid_prenamed=11)	! # of pre-defined grids
 	PARAMETER (nvari_prenamed=7)	! # of pre-named variables
-	PARAMETER (maxdsets = 100)	! maximum # of data sets simultaneously
+	PARAMETER (maxdsets = 400)	! maximum # of data sets simultaneously
 	PARAMETER (pdsets_addl = 2)	! addl dsets hidden above maxdsets
 	PARAMETER (pdsetalloc = maxdsets + pdsets_addl)
 	PARAMETER (pdset_dummy  = maxdsets + 1)	! dummy  (missing) dataset

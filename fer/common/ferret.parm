@@ -52,10 +52,11 @@
 *                 and is also consistent with Matlab
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
+* V698  3/16 *sh* expanded max_gfdl_dsets for EF agg needs
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
-	PARAMETER     (	max_gfdl_dsets	  = 100 )! = maxdsets in XDSET_INFO
+	PARAMETER     (	max_gfdl_dsets	  = 400 ) ! =maxdsets in tmap_dims.parm
 
 * numerical constants
 	REAL		deg2rad, radius, deg2km, deg2m, m_radius

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 80227312 Mar  7 17:41 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 116565580 Mar  8 17:25 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2356 slashes at the end of the command line
+Note: fix crash in bn691_bug_fixes running  err69_load_big_grid after err69_ens_badvalue
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,13 +14,15 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
-FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
+FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
+FER_GO=. /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib
 FER_GRIDS=.
-FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
-FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
+FER_LIBS=/home/users/ansley/ferret_distributions/rhel6_64/lib
+FER_PALETTE=. /home/users/ansley/ferret_distributions/rhel6_64/ppl
+FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Tue Mar 8 09:14:13 PST 2016
+Beginning at Tue Mar 8 17:27:08 PST 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -4155,6 +4157,8 @@ Replacing definition of axis yax
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_1.nc
  LISTing to file tmp/tagg_reg_2.nc
@@ -4309,7 +4313,7 @@ Replacing definition of axis TRUEMONTH
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
-           *** NOTE: Dataset used in aggregation.  Canceling aggregation, bn_aggregate_f.sub
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, bn_aggregate_f.jnl
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, my_fmrc
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
@@ -4497,10 +4501,12 @@ Replacing definition of axis TRUEMONTH
  LISTing to file tmp/f04_e3_t2_1v.nc
  LISTing to file tmp/f04_e3_t3_1v.nc
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
- **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed in agg member 3
-list/x=150E/y=15n/Z=0/L=10 fcst_2
- **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed in agg member 3
-list/x=150E/y=15n/Z=0/L=10 fcst_2
+ **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis X of agg member 3
+list/x=150E/y=15n/L=10 fcst_2
+ **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis T of agg member 3
+list/x=150E/y=15n/L=10 fcst_2
+ **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis X of agg member 3
+list/x=150E/y=15n/L=10 fcst_2
            *** NOTE: Exclude variable from aggregate. E axis of grid differs in member datasets: FCST
            *** NOTE: Exclude variable from aggregate. E axis of grid differs in member datasets: FCST_2
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
@@ -4638,4 +4644,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Mar 8 09:16:37 PST 2016
+Ended at Tue Mar 8 17:29:36 PST 2016

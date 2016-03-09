@@ -77,7 +77,7 @@
      .		ref_fvar,status
 
 * local variable declarations:
-	LOGICAL found_name
+	LOGICAL SCALAR_GRID_LINE, found_name
 	INTEGER iset, member, j, iv, var, cat, grid, ref_grid, idim, 
      .		vlen, nuvars
 	CHARACTER vname*128
@@ -157,8 +157,15 @@
 	      IF (grid_line(agg_dim, grid) .NE. mnormal) GOTO 5400
 	      DO idim = 1, nferdims
 	         IF (agg_dim.EQ.f_dim .AND. idim.EQ.t_dim) CYCLE
-		 IF ( grid_line(idim, ref_grid) .NE.  
-     .                grid_line(idim, grid)         ) GOTO 5200
+* ... conformable for axes with more than 1 point means identical
+*     but all single point axes, including normal axes are conformable
+	         IF (SCALAR_GRID_LINE(idim,ref_grid,cat_file_var,ref_fvar))
+     .									THEN
+	            IF (.NOT.SCALAR_GRID_LINE(idim,grid,cat,var)) GOTO 5200
+	         ELSE
+		    IF ( grid_line(idim, ref_grid) .NE.  
+     .                   grid_line(idim, grid)         ) GOTO 5200
+	         ENDIF
 	      ENDDO
 	   ENDIF
 	ENDDO

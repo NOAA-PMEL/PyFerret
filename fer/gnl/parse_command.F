@@ -137,6 +137,7 @@
 *                  but keep the other changes at that time, echo back only the 
 *                  start of command on an error
 * V697  3/16 Ticket 2376: parsing backslash escapes within repeat loops.
+* V697  3/16  *acm* ticket 2356 scale back change for multiple slash at end of command
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -242,9 +243,13 @@
 
 * ignore trailing slashes in parsing (further fix for ticket 2356)
 
-	DO WHILE (cmnd_buff(cmnd_len:cmnd_len) .EQ. '/' .AND. cmnd_len.GT.1)
-	   cmnd_len = cmnd_len-1
+	IF (cmnd_len .GE. 2) THEN
+	DO WHILE (cmnd_buff(cmnd_len-1:cmnd_len) .EQ. '//' .AND. cmnd_len.GT.2)
+	   cmnd_len = cmnd_len-2
+	   IF (cmnd_len .LE. 1) GOTO 6
 	ENDDO
+	ENDIF
+ 6	CONTINUE
 
 * save a copy of the command with untranslated symbols for use by REPEAT
 * and for building the complete command when continuation lines are used.

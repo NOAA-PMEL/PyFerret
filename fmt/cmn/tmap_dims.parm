@@ -26,6 +26,7 @@
 * v552  *acm* 3/03  increase maxstepfiles to 5000)
 * v698  *sh* 12/15  creating hidden dataset space above maxdsets
 *             3/16  increase maxdsets to accommodate EF aggs
+*             3/16  increase num_dyn_grids to accommodate EF aggs
 
 * for TMAP formatted files:
 	INTEGER	nrec_codes,ngrid_prenamed,nvari_prenamed,maxdsets,
@@ -56,8 +57,9 @@
 !	PARAMETER (max_grids = 500)	! max # of **static** grids: pre 7/99
 !	PARAMETER (max_grids = 1000)	! max # of **static** grids: pre 3/00
 	PARAMETER (max_grids = 500)	! max # of **static** grids
-!	PARAMETER (num_dyn_grids = 100)! max # of "implicit" grids: pre 5/00
-	PARAMETER (num_dyn_grids = 500)! max # of "implicit" grids
+!	PARAMETER (num_dyn_grids = 100) ! max # of "implicit" grids: pre 5/00
+!	PARAMETER (num_dyn_grids = 500) ! max # of "implicit" grids: pre 3/2016
+	PARAMETER (num_dyn_grids = 5000)! max # of "implicit" grids
 	PARAMETER (max_dyn_grids = max_grids + num_dyn_grids)
 	PARAMETER (tmp_grid_hook = max_dyn_grids + 1)
 	PARAMETER (grid_ceiling  = tmp_grid_hook )

@@ -74,6 +74,7 @@
 *       12/14 *sh* save bracket character positions for VTREE report
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
+* V698  3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -88,6 +89,7 @@
 	INTEGER		var_cx, mods_cx, status
 
 * internal variable declarations:
+	LOGICAL         ACTS_LIKE_FVAR
 	INTEGER		STR_SAME, TM_LENSTR1, 
      .                  full_name_len, left_bracket, right_bracket, 
      .			name_len, atsign, idim,  brac_nest, i,
@@ -245,12 +247,8 @@
 	ENDIF
 
 * set the data type of the variable
-	IF ( cx_category(var_cx) .EQ. cat_file_var ) THEN
+	IF ( ACTS_LIKE_FVAR(cx_category(var_cx)) ) THEN
 	   cx_type(var_cx) = ptype_float   ! TO BE GENERALIZED LATER (8/00)
-	ELSEIF ( cx_category(var_cx) .EQ. cat_agg_e_var ) THEN
-	   cx_type(var_cx) = ptype_float   
-	ELSEIF ( cx_category(var_cx) .EQ. cat_agg_f_var ) THEN
-	   cx_type(var_cx) = ptype_float  
 	ELSEIF (cx_category(var_cx) .EQ. cat_counter_var ) THEN
 	   cx_type(var_cx) = ptype_float
         ELSEIF (cx_category(var_cx) .EQ. cat_attrib_val) THEN

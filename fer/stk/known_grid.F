@@ -46,6 +46,7 @@
 * V230:  7/21/92 - check for unspecified data set on calc_var
 * v554: 1/04 *acm* Counter variables for REPEAT/RANGE=/NAME=
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V698  3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
 
 	include	'tmap_dims.parm'
 #       include "tmap_dset.parm"
@@ -59,14 +60,11 @@
 	INTEGER	data_set, category, variable
 
 * internal variable declarations:
+	LOGICAL ACTS_LIKE_FVAR
 	INTEGER	dset
 
 * different procedure for determining grid from each category
-	IF     ( category .EQ. cat_file_var ) THEN
-
-	   KNOWN_GRID = ds_grid_number( variable )
-
-	ELSEIF ( category.EQ.cat_agg_e_var .OR. category.EQ.cat_agg_f_var ) THEN
+	IF     ( ACTS_LIKE_FVAR(category) ) THEN
 
 	   KNOWN_GRID = ds_grid_number( variable )
 	   IF (ds_grid_number( variable ) .EQ. int4_init) 

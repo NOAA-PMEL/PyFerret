@@ -42,7 +42,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
 
-* V685+  *sh* 9/13 
+* V685+  *sh* 9/13
+* V698  3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -58,7 +59,7 @@
 	INTEGER	work(dependency_max_recs, dependency_nfields)
 
 * internal variable declarations:
-	LOGICAL initialize, tell_dset, its_aux
+	LOGICAL ACTS_LIKE_FVAR, initialize, tell_dset, its_aux
 	INTEGER TM_LENSTR1, llen, cat, var, dset, blanks, 
      .		istart, iend, len2, dnamlen
 	CHARACTER*1024 GET_UNIQUE_DSET_NAME, VAR_CODE, VAR_TITLE, line_buff,
@@ -139,9 +140,7 @@
 	      llen = llen + dnamlen
 	   ENDIF
 	   line_buff(llen+1:) = ' = ' //uvar_text(var)
-	ELSEIF (cat .EQ. cat_file_var
-     .	   .OR. cat .EQ. cat_agg_e_var 
-     .	   .OR. cat .EQ. cat_agg_f_var ) THEN
+	ELSEIF ( ACTS_LIKE_FVAR(cat) ) THEN
 	   line_buff(blanks+1:) = VAR_CODE(cat, var)
 	   llen = TM_LENSTR1(line_buff)
 	   IF (tell_dset) THEN

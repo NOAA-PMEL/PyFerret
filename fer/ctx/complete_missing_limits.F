@@ -74,6 +74,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V690 1/14 *sh* removed special behavior for mode_stupid
+* V698 3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -89,7 +90,7 @@
 	INTEGER	cx
 
 * internal variable declarations:
-	LOGICAL needs_limits, its_unspec
+	LOGICAL ACTS_LIKE_FVAR, needs_limits, its_unspec
 	INTEGER TM_GET_GRIDNUM,
      .          idim, cat, var, grid, mabstract, line, status, grr
 
@@ -147,8 +148,7 @@
 	      IF ( needs_limits ) THEN
 
 	         cx_by_ss(idim, cx) = .TRUE.
-	         IF ( cat.EQ.cat_file_var .OR. cat.EQ.cat_agg_e_var .OR. 
-     .                cat.EQ.cat_agg_f_var ) THEN
+	         IF ( ACTS_LIKE_FVAR(cat) ) THEN
 	            CALL VAR_SS_LIMS( idim, cx,
      .				      cx_lo_ss(cx,idim),
      .				      cx_hi_ss(cx,idim)  )

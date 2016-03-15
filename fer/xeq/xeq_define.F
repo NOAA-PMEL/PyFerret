@@ -2225,7 +2225,7 @@ C /units=months  is 1/12 of the length of the year
 * where D1,D2 can be already-open Ferret dataset numbers, or dataset specs
 * that would allow Ferret to open the datset.
 
-1100	IF ( num_args .LT. 1 ) GOTO 5300
+1100	IF ( num_args .NE. 1 ) GOTO 5350
 
 
 * define data valid only with /AGGREGATE
@@ -2276,8 +2276,22 @@ C /units=months  is 1/12 of the length of the year
 
 * Get the name of the dataset we are creating
 * get it case-sensitive, cuz other dataset names are (they are filenames)
+!!!! ******** *sh* NOTE:  CODE SHOULD BE IMPROVED HERE *******
+! The DEFINE DATA command has introduced a new and ambiguous set of parsing
+! rules, because the argument to the right of the equals may be either a list
+! of names (optionally quoted) intermixed with numbers **OR** an expression
+! that evaluates to a 1D array of text strings.  A crude heuristic is used a
+! few lines below (see have_expr) to determine which of these.  We should
+! instead write a new parser to do this task reliebly
+! ************************************************************
 	CALL NAME_EQUAL_STRING_LC( buff1, pos, status )
 	IF ( status .NE. ferr_ok )  GOTO 5000
+! hack: do not accept name unless it was followed by an equals sign
+! to do so results in a corrupted item list ... could be fixed if important
+        IF (pos .GT. 0) THEN
+           i = INDEX(cmnd_buff(:pos), "=")
+           IF (i.eq.0) pos = 0
+        ENDIF
 
 * was a name given?  Or implied through its absence?
 	IF ( pos .EQ. 0 ) THEN
@@ -2422,6 +2436,8 @@ c ?? if nlab=0, use next avail slot?
      .          'cannot alias IF, ELIF, ELSE and ENDIF',*5000 )
  5300	CALL ERRMSG( ferr_invalid_command, status,
      .		'DEFINE what name?', *5000 )
+ 5350	CALL ERRMSG( ferr_syntax, status,
+     .		'Should be "NAME = dset1, dset2, dset3, ..."', *5000 )
  5305	CALL ERRMSG( ferr_TMAP_error, status, ' ', *5000 )
  5310	CALL ERRMSG( ferr_grid_definition, status,
      .		'name already in use:'//buff3(:TM_LENSTR1(buff3)), *5000 )

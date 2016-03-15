@@ -42,7 +42,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
 *
-* V695+ 5/15 *sh* 
+* V695+ 5/15 *sh*
+* V698  3/16 *sh* - bug #2382: use CAXIS_LEN to get length of full axis
 
 	IMPLICIT NONE
 
@@ -55,7 +56,7 @@
 	INTEGER	source, dest, status
 
 * internal variable declarations
-	INTEGER CX_DIM_LEN_ZERO, idim, n
+	INTEGER CAXIS_LEN, idim, n
 
 * initialize
 	status = ferr_ok
@@ -65,7 +66,7 @@
 * expand context to full grid range
 	DO idim = 1, nferdims
 	   cx_trans(idim,dest) = trans_no_transform
-	   n = CX_DIM_LEN_ZERO(idim, dest)
+	   n = CAXIS_LEN(idim, dest)
 	   IF ( n .GT. 0 ) THEN
 	      cx_lo_ss(dest, idim) = 1
 	      cx_hi_ss(dest, idim) = n

@@ -57,6 +57,7 @@
 * V694 5/15 *acm* when evaluating attributes, show the code attr
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
+* V698  3/16 *sh* bug fix #2382 - logic for cat_ef_time2d (ACTS_LIKE_FVAR)
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -70,12 +71,10 @@
 	INTEGER category, variable
 
 * internal variable declarations
-	INTEGER 	uvar, item, start, end
+	LOGICAL ACTS_LIKE_FVAR
+	INTEGER uvar, item, start, end
 
-	IF     ( category .EQ. cat_file_var 
-     . .OR.	 category .EQ. cat_file_rev 
-     . .OR.	 category .EQ. cat_agg_e_var
-     . .OR.	 category .EQ. cat_agg_f_var ) THEN
+	IF     ( ACTS_LIKE_FVAR(category) ) THEN
 
 	   VAR_CODE = ds_var_code( variable )
 

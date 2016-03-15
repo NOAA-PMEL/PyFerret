@@ -44,6 +44,7 @@
 * V698+ *sh* 5/15 - derived from var_units.F
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
+* V698  3/16 *sh* added logic for cat_ef_time2d  (ACTS_LIKE_FVAR)
 
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -60,7 +61,7 @@
 	INTEGER	cx, idim
 
 * internal variable declarations
-	LOGICAL UNIT_CHG_AX
+	LOGICAL UNIT_CHG_AX, ACTS_LIKE_FVAR
 	INTEGER	category, variable, status
 
 * initialize
@@ -73,9 +74,7 @@
 	ENDIF
 
 * select units by category of variable
-	IF     ( category .EQ. cat_file_var .OR. 
-     .		 category .EQ. cat_agg_e_var .OR. 
-     .		 category .EQ. cat_agg_f_var) THEN
+	IF     ( ACTS_LIKE_FVAR(category) ) THEN
 
 	   AUX_VAR_UNITS = ds_var_units( variable )
 

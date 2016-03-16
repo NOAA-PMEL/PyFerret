@@ -45,6 +45,7 @@
 *            12/15 pass dataset names and nsets *into* this routine
 *	           if dataset not already open, then open it hidden
 *	      2/16 allow "-" as an indicator of a dummy dataset
+*	      3/16 check for illegal Unix filenames
 
 * calling arguments
 *   nsets		- number of datasets to be aggregated (input)
@@ -98,6 +99,13 @@
 
 	   buff1 = memb_dsetnames(iset)
 	   buff_len = TM_LENSTR(buff1)
+
+* check for legal Unix filename
+* could use tm_legal_unix_name.F, but it is old and overly strict
+* the netCDF library will refuse an illegal name, but it will not give a nice
+* message
+* can easily add more to this test as needed
+	   IF (INDEX(buff1(:buff_len)," ") .GT. 0) GOTO 5050
 
 	   IF (buff1 .EQ. "-") THEN
 * dummy dataset indicator
@@ -153,6 +161,8 @@
  5000   RETURN	
 
 * Error exits: 
+ 5050	CALL ERRMSG( ferr_invalid_command, status,
+     .		'corrupted filename: '//buff1(:buff_len), *5000 )
  5100	CALL ERRMSG( ferr_invalid_command, status,
      .		'1st aggregate member may not be missing', *5000)
  5200	CALL ERRMSG( ferr_unknown_data_set, status,

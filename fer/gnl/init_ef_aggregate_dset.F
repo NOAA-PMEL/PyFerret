@@ -72,6 +72,7 @@
 *		  allow gaps in the forecast series (insert dummy datasets)
 * V698 1/16  *sh* pass explicit path name (for "USE file.agg" compatibility)
 *      2/16  *sh* automatically xfer attributes from member vars to agg vars
+*      3/16  *sh* trap simple invalid commands
 
 * arguments:
 *	memb_dsetname_var - if have_expr, the variable of names (input)
@@ -140,6 +141,9 @@
 	DO iset = 1, nsets+pmaxgaps
 	   member_sets(iset) = pdset_dummy
 	ENDDO
+
+* must have at least two datasets for an F aggregation
+	IF (agg_dim.EQ.F_dim .AND. nsets.LT.2) GOTO 5050
 
 * check to see if this new dataset name matches an already-open dataset name.
 * if so, thats an error
@@ -350,7 +354,7 @@
 	   IF (ds_name(iset) .EQ. char_init1024) CYCLE ! already deleted
 	   IF (ds_hide (iset)) CALL CANCEL_ONE_DATA_SET( iset, ignored_status )
 	ENDDO
-	RETURN	
+ 6000	RETURN	
 
 * Errors: too-many datasets open so aggregate dataset can't be opened,
 * or error on a member dataset. 
@@ -365,6 +369,9 @@
 	CALL TM_CLOSE_SET_COND_DEALLO( agg_dset, .FALSE., ignored_status )
 	agg_dset = unspecified_int4
 	GOTO 5000
+
+ 5050	CALL ERRMSG( ferr_invalid_command,status,
+     .		'cannot F-aggregate a single member dataset', *6000 )
 
  5100   CALL ERRMSG( ferr_invalid_command,status,
      .		'dataset name already in use: '

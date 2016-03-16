@@ -44,6 +44,7 @@
 * V690  *sh* 11/13 - minor adjustments to support aux regridding variables 
 * V693+ *sh* 12/14 - display regridding dependency on a separate line
 *            01/15 - each regrid target gets separate line
+* V698  3/16 *sh* added logic for cat_ef_time2d
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -247,7 +248,8 @@
 	            llen = llen + dnamlen
 	         ENDIF
 	         line_buff(llen+1:) = '   (aggregate variable)'
-	      ELSEIF (cat .EQ. cat_file_var ) THEN
+	      ELSEIF (cat .EQ. cat_file_var 
+     .           .OR. cat .EQ. cat_ef_time2d ) THEN
 	         IF (.NOT.dependency_tree_show_fvars) GOTO 500
 	         line_buff(blanks+1:) = VAR_CODE(cat, var)
 	         llen = TM_LENSTR1(line_buff)

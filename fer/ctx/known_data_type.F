@@ -45,6 +45,7 @@
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
+* V698 3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
 
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -58,6 +59,7 @@
 	INTEGER	cx
 
 * internal variable declarations:
+	LOGICAL ACTS_LIKE_FVAR
 	INTEGER	dset, data_set, category, variable, idim, trans
 
 * initialize
@@ -66,17 +68,9 @@
 	data_set = cx_data_set(cx)
 
 * different procedure for determining grid from each category
-	IF     ( category .EQ. cat_file_var ) THEN
+	IF     ( ACTS_LIKE_FVAR(category) ) THEN
 
 	   cx_type(cx) =  ds_var_type(variable)
-
-	ELSEIF ( category .EQ. cat_agg_e_var ) THEN
-
-           cx_type(cx) = ds_var_type(variable)
-
-	ELSEIF ( category .EQ. cat_agg_f_var ) THEN
-
-           cx_type(cx) = ds_var_type(variable)
 
 	ELSEIF ( category .EQ. cat_pystat_var ) THEN
 

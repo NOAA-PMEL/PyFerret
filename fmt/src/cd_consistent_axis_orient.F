@@ -35,6 +35,7 @@
 *
 *
 * Checks that axis orientation is the same for all grids in the dataset
+! it looks like the routine does more than this ...
 
 * Programmer Ansley Manke
 * NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
@@ -44,6 +45,7 @@
 *                 in all  grids of a dataset.
 * V672 8/11 *acm* When reordering axes, dont wipe out an existing axis that is not being moved.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* V698 3/16 *sh*  changed an array declaration to match grid_ceiling change
 
 * argument definitions:
 *      dset        - TMAP data set pointer
@@ -68,7 +70,8 @@
       include 'xdset_info.cd_equiv'
 
 * argument declarations
-      LOGICAL  reversed(max_lines:line_ceiling), already_noted(max_lines:line_ceiling)
+      LOGICAL  reversed(max_lines:line_ceiling),
+     .         already_noted(max_lines:line_ceiling)
       INTEGER dset, perm(*), status
 
 * local variable declarations:
@@ -86,11 +89,22 @@
       INTEGER grid_ndims (max_grids:grid_ceiling), 
      .        line_use_dir(0:3000)
 
-      INTEGER copy_of_grids (nferdims, 1001)
+
+! *sh* 3/2016 It looks as if experimental changes were made
+!    in this routine that became permanent parts of it:
+! 1. it contains explicit integer values 100, 1001, 3000, 500, 501
+!    that do not automatically adjust when the corresponding parameter values
+!    are adjusted
+! 2. it makes a copy of every grid -- the majority of which have nothing to do
+!    with this dataset ==> significant scalablity issue
+
+!      INTEGER copy_of_grids (nferdims, 1001)
+      INTEGER copy_of_grids (nferdims,grid_ceiling)   !!!! TEMPORARY  !!!! 
 
       iter = 0
       reordered = 0
 
+! why are we copying grids that are not used by this dataset?
       DO igrid = 501, grid_ceiling
       DO idim = 1, nferdims
          copy_of_grids(idim, igrid-500) = grid_line(idim, igrid)

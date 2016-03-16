@@ -70,6 +70,7 @@
 *                  variable title, or if no title, the variable name.
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
+* V698 3/16  *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
 
         include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -87,7 +88,7 @@
 	INTEGER	cx
 
 * internal variable declarations
-	LOGICAL 	UNIT_CHG_AX, NC_GET_ATTRIB, got_it
+	LOGICAL 	UNIT_CHG_AX, NC_GET_ATTRIB, ACTS_LIKE_FVAR, got_it
 	INTEGER 	TM_LENSTR1, cat, var, idim, tlen, llen, trans,
      .			uvar, item, start, end, slen, dset, varid,
      .                  attlen, attoutflag, status
@@ -100,10 +101,7 @@
 	var = cx_variable( cx )
 	cat = cx_category( cx )
 
-	IF     ( cat .EQ. cat_file_var .OR. 
-     .		 cat .EQ. cat_agg_e_var .OR. 
-     .		 cat .EQ. cat_agg_f_var) THEN
-
+	IF     ( ACTS_LIKE_FVAR(cat) ) THEN
 	   IF ( ds_var_title( var )(1:1) .NE. ' ' ) THEN
 	      var_title = ds_var_title( var )
 	   ELSE

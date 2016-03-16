@@ -57,6 +57,7 @@
 * V600 *acm* 3/06 - add variable category cat_attrib_val
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
+* V698  3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
 
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -73,7 +74,7 @@
 	INTEGER	cx
 
 * internal variable declarations
-	LOGICAL UNIT_CHG_AX
+	LOGICAL UNIT_CHG_AX, ACTS_LIKE_FVAR
 	INTEGER	TM_LENSTR1, slen, category, variable, idim, axis, trans
 	CHARACTER*2048 buff
 
@@ -82,9 +83,7 @@
 	variable = cx_variable( cx )
 
 * select units by category of variable
-	IF     ( category .EQ. cat_file_var .OR. 
-     .		 category .EQ. cat_agg_e_var .OR. 
-     .		 category .EQ. cat_agg_f_var) THEN
+	IF     ( ACTS_LIKE_FVAR(category) ) THEN
 
 	   VAR_UNITS = ds_var_units( variable )
 

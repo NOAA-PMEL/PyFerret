@@ -150,6 +150,7 @@
 *		   only partially fixed here: T0 not parsed from auxvar units
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
+* V698  3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
 
 	include 'errmsg.parm'
 	include 'ferret.parm'
@@ -172,7 +173,7 @@
 	INTEGER	cx, status
 
 * internal variable declarations:
-        LOGICAL   GEOG_COS_FACTOR, GEOG_LABEL,
+        LOGICAL   GEOG_COS_FACTOR, GEOG_LABEL, ACTS_LIKE_FVAR,
      .		  its_dyn, has_impl_axis, explicit_unstd, use_std_grid,
      .		  made_aux_line_dummy
 	INTEGER	  KNOWN_GRID, TM_UNIT_ID,
@@ -193,10 +194,8 @@
 * by this point the variable and data set must be known
 	IF ( var .EQ. unspecified_int4 )	CALL ERRMSG
      .			( ferr_syntax,status,'no variable specified',*5000 )
-	IF ( ( cat.EQ.cat_file_var .OR. cat.EQ.cat_agg_e_var .OR. 
-     .         cat.EQ.cat_agg_f_var )
-     .	.AND. dset.EQ.unspecified_int4 )	CALL ERRMSG
-     .			( ferr_state_not_set,status,'SET DATA_SET',*5000 )
+	IF (  ACTS_LIKE_FVAR(cat) .AND. dset.EQ.unspecified_int4 )
+     .	  CALL ERRMSG( ferr_state_not_set,status,'SET DATA_SET',*5000 )
 
 * determine the standard grid for this variable
 	std_grid = KNOWN_GRID( dset, cat, var )

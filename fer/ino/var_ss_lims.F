@@ -48,6 +48,7 @@
 *	      there are uncertainties whether special circumstances in FERRET
 *	      may lead to problem behavior
 *       *acm* 3/12 cleanup old VMS ifdef
+* V698  3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -64,7 +65,7 @@
 	INTEGER idim, cx, lo_ss, hi_ss
 
 * internal variable declarations
-	LOGICAL is_file_var
+	LOGICAL ACTS_LIKE_FVAR
 	INTEGER dset, cat, var, grid, line, status
 	INTEGER TM_GET_GRIDNUM		! 10/93
 
@@ -87,12 +88,21 @@
 	ENDIF
 * ... end of 10/93 additions
 
+        IF ( cat .EQ. cat_pystat_var ) THEN
+           IF ( (dset .EQ. unspecified_int4) .OR.
+     .          (line .EQ. mnormal) .OR.
+     .          cx_unstand_grid(cx) ) THEN
+              lo_ss = unspecified_int4
+              hi_ss = unspecified_int4
+           ELSE
+              lo_ss = pyvar_grid_start(idim, var)
+              hi_ss = pyvar_grid_end  (idim, var)
+           ENDIF
+           RETURN
+        ENDIF
+
 * cannot return answer under several conditions
-	is_file_var = cat .EQ. cat_file_var  .OR. 
-     .            cat .EQ. cat_agg_e_var .OR.
-     .            cat .EQ. cat_agg_f_var .OR.
-     .            cat .EQ. cat_pystat_var
-	IF ( (.NOT.is_file_var)
+	IF ( (.NOT.ACTS_LIKE_FVAR(cat) )
      .  .OR. dset .EQ. unspecified_int4
      .  .OR. line .EQ. mnormal
      .  .OR. cx_unstand_grid(cx)	 ) THEN
@@ -102,13 +112,8 @@
 	ENDIF
 
 * return subscript limits
-        IF ( cat .EQ. cat_pystat_var ) THEN
-           lo_ss = pyvar_grid_start(idim, var)
-           hi_ss = pyvar_grid_end  (idim, var)
-        ELSE
-           lo_ss = ds_grid_start(idim, var)
-           hi_ss = ds_grid_end  (idim, var)
-        ENDIF
+        lo_ss = ds_grid_start(idim, var)
+        hi_ss = ds_grid_end  (idim, var)
         RETURN
 
 	END

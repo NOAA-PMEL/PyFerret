@@ -208,6 +208,10 @@ SHOW DATA/ATTRIB tfe   ! also notice the promotion of fcst.im_everywhere
 ! the 2-D coordinate variable (TF_TIMES) should be 2D, only, in T and F 
 SHOW DATA tfe 
 
+! confirm that the TF_TIMES variable is accessible in a T-F-E aggregation
+LIST/NOHEAD/L=18:19/N=5:6 tf_times   ! subset access
+STAT/BRIEF tf_times
+
 ! confirm that the T-F-E agg and the T-E-F agg get the same results
 ! exactlyidentically zero STAT output means correct functioning
 let tfe_tef_ave_diff = (diag_fcst[d=tfe,m=1:5@ave]-diag_fcst[d=tef,m=1:5@ave])

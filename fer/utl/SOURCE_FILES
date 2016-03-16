@@ -1,4 +1,5 @@
 SRCS_F = \
+acts_like_fvar.F\
 add_2_grids.F\
 add_2_grids_sub.F\
 add_c_2_grid.F\

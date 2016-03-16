@@ -46,6 +46,7 @@
 * V510 5/00 *sh* - user variables with settable bad flags
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+* V698 3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
 
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -55,12 +56,11 @@
 	include	'xpyvar_info.cmn'
 	include	'xvariables.cmn'
 
+	LOGICAL ACTS_LIKE_FVAR
 	INTEGER cx
 
 
-	IF     ( cx_category( cx ) .EQ. cat_file_var .OR.
-     .           cx_category( cx ) .EQ. cat_agg_e_var .OR.
-     .           cx_category( cx ) .EQ. cat_agg_f_var ) THEN
+	IF     ( ACTS_LIKE_FVAR(cx_category(cx)) ) THEN
 
 	   cx_bad_data( cx ) = ds_bad_flag( cx_variable( cx ) )
 

@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Mar 18 10:33 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Mar 18 14:56 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
@@ -282,7 +282,7 @@ Benchmark scripts that will be run:
    testfervar.py
    testfergrid.py
    testferpyvar.py
-Beginning at Fri Mar 18 10:34:22 PDT 2016
+Beginning at Fri Mar 18 14:57:17 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -2151,15 +2151,12 @@ Replacing definition of axis TIME
  **TMAP ERR: non-existent or not on line
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
-Cannot create cookie file
-Cannot create cookie file
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
  **Internet Data error
              NetCDF: file not found (OPeNDAP/netCDF Error code -90)
              Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf
 SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf"
-Cannot create cookie file
 CURL Error: Couldn't resolve host name
 curl error details: 
  **Internet Data error
@@ -4472,4 +4469,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testferpyvar.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Fri Mar 18 10:36:28 PDT 2016
+Ended at Fri Mar 18 14:59:28 PDT 2016

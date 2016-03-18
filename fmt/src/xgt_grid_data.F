@@ -70,6 +70,7 @@
 * v697 *acm* 12/115 -Missed some initializations, 4D-->6D grids
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic variables, 
 * pre-defined axes and grids.
+* V698  3/16 *acm* Fix the line_subsc1 values for irregular axes
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -150,7 +151,7 @@
 	DATA
      .		line_name	(clmgrg)	/ 'MONTH_GREGORIAN' /,
      .		line_name_orig	(clmgrg)	/ 'MONTH_GREGORIAN' /,
-     .		line_subsc1	(clmgrg)	/ 26		/,
+     .		line_subsc1	(clmgrg)	/ 27		/,
      .		line_dim	(clmgrg)	/ 12		/,
      .		line_units	(clmgrg)	/ 'days'	/,
      .		line_unit_code  (clmgrg)	/ -4   /,
@@ -166,7 +167,7 @@
 	DATA
      .		line_name	(clmnol)	/ 'MONTH_NOLEAP' /,
      .		line_name_orig	(clmnol)	/ 'MONTH_NOLEAP' /,
-     .		line_subsc1	(clmnol)	/ 50		/,
+     .		line_subsc1	(clmnol)	/ 52		/,
      .		line_dim	(clmnol)	/ 12		/,
      .		line_units	(clmnol)	/ 'days'	/,
      .		line_unit_code  (clmnol)	/ -4   /,
@@ -198,7 +199,7 @@
 	DATA
      .		line_name	(clmall)	/ 'MONTH_ALL_LEAP' /,
      .		line_name_orig	(clmall)	/ 'MONTH_ALL_LEAP' /,
-     .		line_subsc1	(clmall)	/ 74	/,
+     .		line_subsc1	(clmall)	/ 77	/,
      .		line_dim	(clmall)	/ 12		/,
      .		line_units	(clmall)	/ 'days'	/,
      .		line_unit_code  (clmall)	/ -4   /,

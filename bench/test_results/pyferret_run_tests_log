@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Mar 18 10:33 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Mar 18 14:56 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
@@ -282,7 +282,7 @@ Benchmark scripts that will be run:
    testfervar.py
    testfergrid.py
    testferpyvar.py
-Beginning at Fri Mar 18 10:34:22 PDT 2016
+Beginning at Fri Mar 18 14:57:17 PDT 2016
 *** Running ferret script: bn_syntax.jnl
 [?1034h! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -10497,12 +10497,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "18-Mar-16"
-SESSION_TIME = "10:34"
-SESSION_PID = "24903"
-DELTA_CPU = "0.205967"
-CLOCK_SECS = "0.123"
+SESSION_TIME = "14:57"
+SESSION_PID = "16120"
+DELTA_CPU = "0.218965"
+CLOCK_SECS = "0.108"
 CURRENT_DATE = "18-Mar-16"
-CURRENT_TIME = "10:34:32"
+CURRENT_TIME = "14:57:27"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -10526,12 +10526,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "18-Mar-16"
-SESSION_TIME = "10:34"
-SESSION_PID = "24903"
-DELTA_CPU = "0.003"
-CLOCK_SECS = "0.126"
+SESSION_TIME = "14:57"
+SESSION_PID = "16120"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "0.11"
 CURRENT_DATE = "18-Mar-16"
-CURRENT_TIME = "10:34:32"
+CURRENT_TIME = "14:57:27"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 S1 = "hello"
@@ -10542,8 +10542,8 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "18-Mar-16"
-SESSION_TIME = "10:34"
-SESSION_PID = "24903"
+SESSION_TIME = "14:57"
+SESSION_PID = "16120"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10554,14 +10554,14 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "18-Mar-16"
-SESSION_TIME = "10:34"
-SESSION_PID = "24903"
+SESSION_TIME = "14:57"
+SESSION_PID = "16120"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "18-Mar-16"
-SESSION_TIME = "10:34"
-SESSION_PID = "24903"
+SESSION_TIME = "14:57"
+SESSION_PID = "16120"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10695,12 +10695,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "18-Mar-16"
-SESSION_TIME = "10:34"
-SESSION_PID = "24903"
-DELTA_CPU = "0.019997"
-CLOCK_SECS = "0.146"
+SESSION_TIME = "14:57"
+SESSION_PID = "16120"
+DELTA_CPU = "0.014998"
+CLOCK_SECS = "0.126"
 CURRENT_DATE = "18-Mar-16"
-CURRENT_TIME = "10:34:32"
+CURRENT_TIME = "14:57:27"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -25268,7 +25268,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Fri Mar 18 10:34:39 PDT 2016
+Fri Mar 18 14:57:35 PDT 2016
  
 GO bn_reset
 cancel mode verify
@@ -47670,7 +47670,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "18-Mar-16_10:35"
+WIN_TITLE = "18-Mar-16_14:58"
  
 set win/title="set the title"
 sho sym win_title
@@ -47688,7 +47688,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="18-Mar-16:10:35"
+ !-> set win/title="18-Mar-16:14:58"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47699,14 +47699,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 18-Mar-16
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 10:35
+ !-> DEFINE SYMBOL the_time = 14:58
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="18-Mar-16:10:35"
+ !-> SET WIN/TITLE="18-Mar-16:14:58"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "18-Mar-16:10:35"
+WIN_TITLE = "18-Mar-16:14:58"
 *** Running ferret script: bn_last_error.jnl
 [?1034h! bn_last_error.jnl
 ! acm Nov 2005
@@ -57963,10 +57963,10 @@ SH GRID am
  normal    F
 *** Running ferret script: bn_clock_syms.jnl
 [?1034hSH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.205968"
-CLOCK_SECS = "0.105"
+DELTA_CPU = "0.218966"
+CLOCK_SECS = "0.109"
 CURRENT_DATE = "18-Mar-16"
-CURRENT_TIME = "10:35:27"
+CURRENT_TIME = "14:58:24"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57975,8 +57975,8 @@ CURRENT_TIME = "10:35:27"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.024996"
-CLOCK_SECS = "0.131"
+DELTA_CPU = "0.026995"
+CLOCK_SECS = "0.137"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57990,60 +57990,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.054991
+ !-> DEFINE VARIABLE ten_plots = 0.056992
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0"
-CLOCK_SECS = "0.186"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "0.194"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.186"
+CLOCK_SECS = "0.195"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.005999
- !-> DEFINE VARIABLE sumcpu =0.005999
+ !-> DEFINE VARIABLE dt = 0.006999
+ !-> DEFINE VARIABLE sumcpu =0.006999
 !-> REPEAT: K=2
  !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.012998
+ !-> DEFINE VARIABLE sumcpu =0.013998
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.019997
+ !-> DEFINE VARIABLE dt = 0.007999
+ !-> DEFINE VARIABLE sumcpu =0.021997
 !-> REPEAT: K=4
  !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.026996
+ !-> DEFINE VARIABLE sumcpu =0.028996
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.033995
+ !-> DEFINE VARIABLE dt = 0.007998
+ !-> DEFINE VARIABLE sumcpu =0.036994
 !-> REPEAT: K=6
  !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.040994
+ !-> DEFINE VARIABLE sumcpu =0.043993
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.005999
- !-> DEFINE VARIABLE sumcpu =0.046993
+ !-> DEFINE VARIABLE dt = 0.006999
+ !-> DEFINE VARIABLE sumcpu =0.050992
 !-> REPEAT: K=8
  !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.053992
+ !-> DEFINE VARIABLE sumcpu =0.057991
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.060991
+ !-> DEFINE VARIABLE dt = 0.007999
+ !-> DEFINE VARIABLE sumcpu =0.06599
 !-> REPEAT: K=10
  !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.06799
+ !-> DEFINE VARIABLE sumcpu =0.072989
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.06799
-0.06799
+ !-> MESSAGE/CONTINUE 0.072989
+0.072989
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.256"
+CLOCK_SECS = "0.269"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "18-Mar-16"
-SESSION_TIME = "10:35"
+SESSION_TIME = "14:58"
 CURRENT_DATE = "18-Mar-16"
-CURRENT_TIME = "10:35:27"
+CURRENT_TIME = "14:58:24"
 *** Running ferret script: bn63_bug_fixes.jnl
 [?1034h! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -61855,7 +61855,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.97 (PyFerret 1.3 beta/dbg)"                                    
  3    /  3:" ! Linux 2.6.32-573.18.1.el6.x86_64 - 03/18/16"                             
- 4    /  4:" ! 18-Mar-16 10:35     "                                                    
+ 4    /  4:" ! 18-Mar-16 14:58     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -64308,40 +64308,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.631
-randu2_randn2       0.933
-randu2_randn2       0.238
-randu2_randn2       0.394
-randu2_randn2       0.002
+randu2_randn2       0.791
+randu2_randn2       0.202
+randu2_randn2       0.973
+randu2_randn2       0.004
+randu2_randn2       0.793
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.037
-randu2_randn2       0.897
-randu2_randn2       0.324
-randu2_randn2       0.387
-randu2_randn2       0.323
+randu2_randn2       0.204
+randu2_randn2       0.996
+randu2_randn2       0.748
+randu2_randn2       0.722
+randu2_randn2       0.839
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.529
-randu2_randn2       0.615
-randu2_randn2       0.607
-randu2_randn2       0.643
-randu2_randn2       0.711
-randu2_randn2       0.989
+randu2_randn2       0.313
+randu2_randn2       0.313
+randu2_randn2       0.276
+randu2_randn2       0.322
+randu2_randn2       0.214
+randu2_randn2       0.112
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.919
-randu2_randn2       0.359
-randu2_randn2       0.631
-randu2_randn2       0.409
-randu2_randn2       0.683
-randu2_randn2       0.965
+randu2_randn2       0.316
+randu2_randn2       0.734
+randu2_randn2       0.645
+randu2_randn2       0.961
+randu2_randn2       0.486
+randu2_randn2       0.924
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -64366,40 +64366,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.811
-randu2_randn2      -0.723
-randu2_randn2      -1.436
-randu2_randn2       0.849
-randu2_randn2      -0.237
+randu2_randn2       1.428
+randu2_randn2      -1.850
+randu2_randn2      -0.430
+randu2_randn2       1.354
+randu2_randn2       1.456
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.205
-randu2_randn2       1.665
-randu2_randn2       0.085
-randu2_randn2       0.705
-randu2_randn2      -0.131
+randu2_randn2       0.277
+randu2_randn2      -0.972
+randu2_randn2      -0.453
+randu2_randn2       0.463
+randu2_randn2       0.624
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2      -0.589
-randu2_randn2       0.155
-randu2_randn2       0.469
-randu2_randn2       0.390
-randu2_randn2      -0.139
-randu2_randn2       1.713
+randu2_randn2       0.835
+randu2_randn2       1.025
+randu2_randn2       0.562
+randu2_randn2       1.438
+randu2_randn2       0.368
+randu2_randn2       0.538
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2      -0.598
-randu2_randn2      -0.230
-randu2_randn2      -0.394
-randu2_randn2      -1.308
-randu2_randn2      -0.089
-randu2_randn2       0.373
+randu2_randn2       0.082
+randu2_randn2      -0.597
+randu2_randn2      -1.472
+randu2_randn2      -0.450
+randu2_randn2       1.153
+randu2_randn2       0.877
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -64424,14 +64424,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.888       1.888       0.893
-randu2_randn2       1.578       1.578       0.893
-randu2_randn2       0.893       0.893      -0.144
-randu2_randn2      -0.144      -0.144       0.598
-randu2_randn2      -0.795      -0.795       0.598
-randu2_randn2      -0.858      -0.795       0.598
-randu2_randn2      -0.581      -0.581       0.598
-randu2_randn2       0.598       0.598       0.598
+randu2_randn2       1.984       1.984       0.621
+randu2_randn2       1.395       1.395       0.621
+randu2_randn2       0.621       0.621       0.288
+randu2_randn2      -0.412      -0.086       0.288
+randu2_randn2      -0.086      -0.412       0.288
+randu2_randn2      -0.594      -0.086       0.288
+randu2_randn2       0.288       0.043       0.288
+randu2_randn2       0.043       0.288       0.288
 *** Running ferret script: bn_axis_cf.jnl
 [?1034h! Ticket 1792: Write axes with CF-compliant units
 ! and with standard name attributes for geophysical attrs.
@@ -72206,7 +72206,7 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Fri Mar 18 10:35:49 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
+		:history = "Fri Mar 18 14:58:47 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
 			"FERRET V6.97 (PyFerret 1.3 beta/dbg) 18-Mar-16" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
@@ -84795,20 +84795,20 @@ GO err696_time_overlay
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
 sp date
-Fri Mar 18 10:36:08 PDT 2016
+Fri Mar 18 14:59:07 PDT 2016
 set view upper
 plot t[gt=tax_nlp]
 plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
 sp date
-Fri Mar 18 10:36:08 PDT 2016
+Fri Mar 18 14:59:07 PDT 2016
  
 sp date
-Fri Mar 18 10:36:08 PDT 2016
+Fri Mar 18 14:59:07 PDT 2016
 set view lower
 plot t[gt=tax_jul]
 plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
 sp date
-Fri Mar 18 10:36:08 PDT 2016
+Fri Mar 18 14:59:07 PDT 2016
  
 GO bn_reset
 cancel mode verify
@@ -90012,9 +90012,9 @@ flow/DAT=2/den=3/L=3 taux,tauy
 [?1034h! bn_speedtest.jnl
 ! issue large numbers of commands, timing with clock time
 can mode verify
-10K LET commands LET a = 0 takes  1.222  seconds
-Second 10K LET commands LET a = 0 takes  2.771  seconds
-5K LOAD with transform takes  3.641  seconds
+10K LET commands LET a = 0 takes  1.267  seconds
+Second 10K LET commands LET a = 0 takes  2.876  seconds
+5K LOAD with transform takes  3.717  seconds
 *** Running ferret script: bn_show_noupcase.jnl
 [?1034h! bn_show_noupcase.jnl
 ! 1/2016 ticket 1796
@@ -92165,12 +92165,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "18-Mar-16"
-SESSION_TIME = "10:36"
-SESSION_PID = "27224"
-DELTA_CPU = "0.213967"
-CLOCK_SECS = "0.111"
+SESSION_TIME = "14:59"
+SESSION_PID = "18732"
+DELTA_CPU = "0.226964"
+CLOCK_SECS = "0.113"
 CURRENT_DATE = "18-Mar-16"
-CURRENT_TIME = "10:36:26"
+CURRENT_TIME = "14:59:26"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 GO_FILE = "./bn_startupfile.jnl"
@@ -92196,7 +92196,7 @@ PPL$COMMAND_FILE = "$$MEMBUF$$"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 PPL$SCALE = "1.0000"
-WIN_TITLE = "18-Mar-16_10:36"
+WIN_TITLE = "18-Mar-16_14:59"
 VP_SCALE = "1"
 VP_RT_MARGIN = "1"
 VP_TOP_MARGIN = "1.4"
@@ -92874,4 +92874,4 @@ None
 >>> del coads
 >>> pyferret.showdata()
      currently SET data sets:
-Ended at Fri Mar 18 10:36:28 PDT 2016
+Ended at Fri Mar 18 14:59:28 PDT 2016

@@ -41,6 +41,8 @@
 *			set and it gets deallocated automatically
 *      *sh* 2/16 - if a pre-existing identical axis exists, re-use it
 *                  else we cannot aggregate the aggs (for EF and FE aggs)
+! considered but rejected this change:
+!*      *sh* 3/16 - shift E coords down so that EBOXLO[m=1] is at zero
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -69,20 +71,22 @@
 	IF (line_dir .EQ. e_dim) THEN
 	   CALL TM_NEW_LINE_NAME ( 'ENSEMBLE', newname )
 	   line_direction( iline ) = 'EE'
+	   line_units( iline ) = plag_ax_units_e
 	ENDIF
 	IF (line_dir .EQ. f_dim) THEN
 	   CALL TM_NEW_LINE_NAME ( 'RUN', newname )
 	   line_direction( iline ) = 'FI'
+	   line_units( iline ) = plag_ax_units_f
 	ENDIF
 
 	line_name     ( iline ) = newname
 	line_name_orig( iline ) = newname
 	line_start    ( iline ) = 1.0D0
+!	line_start    ( iline ) = 0.5D0     ! something to consider ...3/16
 	line_delta    ( iline ) = 1.0D0
 	line_dim      ( iline ) = len
 	line_regular  ( iline ) = .TRUE.
 	line_modulo   ( iline ) = .FALSE.
-	line_units    ( iline ) = ' '
 	line_unit_code( iline ) = 0			! unknown units
 	line_shift_origin( iline ) = .FALSE.
 

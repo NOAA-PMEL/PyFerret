@@ -77,7 +77,7 @@
 
 * internal variable declarations:
 	LOGICAL	aux_span_compress
-	INTEGER	sub_len, ndec, grid, status, cx_try
+	INTEGER	sub_len, ndec, grid, line, status, cx_try
 	REAL*8	TM_WORLD, bc_to_t0, lo, hi, temp
 	CHARACTER*40	LOHI_STRING
 
@@ -114,11 +114,11 @@
         ENDIF
 	IF ( grid .EQ. unspecified_int4 ) grid = mgrid_abstract
 
-* is this just a single grid box with the world coord bod edges given ?
+* is this just a single grid box with the world coord box edges given ?
 * 1/14: for gz(depth)=0:100@ave we have a valid single point target axis
 * on which we want to document the axis limits (in cx_lo/hi_ww), rather
 * than the point coordinate.  Look at cx_regrid_trans to decide.
- 200    IF ( cx_lo_ss(cx,idim) .NE. unspecified_int4
+ 200	   IF ( cx_lo_ss(cx,idim) .NE. unspecified_int4
      .	.AND.cx_lo_ss(cx,idim) .EQ. cx_hi_ss(cx,idim) 
      .	.AND. .NOT.aux_span_compress				) THEN
 	   lo = TM_WORLD( cx_lo_ss(cx,idim),grid, idim, box_middle )
@@ -126,6 +126,16 @@
 	ELSE
 	   lo = cx_lo_ww( idim, cx )
 	   hi = cx_hi_ww( idim, cx )
+	ENDIF
+
+* special hack for E axis index positions, so @AVE gets labeled with ints
+	IF   ( idim .EQ. E_dim ) THEN
+	   line = grid_line(idim,grid)
+	   IF (line_units(line) .EQ. plag_ax_units_e
+     .	 .AND. cx_trans(idim,cx) .GT. trans_compress_code ) THEN
+	   lo = lo + 0.5
+	   hi = hi - 0.5
+	   ENDIF
 	ENDIF
 
 * determine precision level for output string

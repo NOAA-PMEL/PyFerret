@@ -44,6 +44,7 @@
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V695+ 4/15 *acm* and *sh* -- added support for forecast aggregations
 * V698 1/16 *sh* - support gappy and inconsistent length forecast members
+* V698 3/16 *sh* - shift both lag axes and F-calendar to pts at low cell edge
 
       IMPLICIT NONE
         include 'tmap_errors.parm'

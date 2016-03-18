@@ -40,7 +40,8 @@
 * time edge positions stored just behind it
 
 * V695+ *acm* and *sh*
-* V698 *sh* - if identical pre-existing axes exist, re-use them
+* V698 2/16 *sh* - if identical pre-existing axes exist, re-use them
+* V698 3/16 *sh* - F-lag axis starts at 1/2 avg_lag (low cell bound at zero) 
 
 * include files
         include 'netcdf.inc'
@@ -340,7 +341,8 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
         nleadtimes = (nT-1)/nlag + 1
 
 	CALL TM_NEW_LINE_NAME ( 'TF_LAG_F', buff )
-	CALL TM_MAKE_BASIC_AXIS( buff, 0.0D0, avg_lag,
+! pre 3/16	CALL TM_MAKE_BASIC_AXIS( buff, 0.0D0, avg_lag,
+	CALL TM_MAKE_BASIC_AXIS( buff, avg_lag/2., avg_lag,
      .			nleadtimes, axlagf, status )
 
 * inherit time units from the calendar time axis just created

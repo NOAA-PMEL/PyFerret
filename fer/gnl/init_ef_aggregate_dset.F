@@ -73,6 +73,7 @@
 * V698 1/16  *sh* pass explicit path name (for "USE file.agg" compatibility)
 *      2/16  *sh* automatically xfer attributes from member vars to agg vars
 *      3/16  *sh* trap simple invalid commands
+*                 start TBOXLO[L=1], not TBOX[L=1], of tf_lag_t axis at 0.0 
 
 * arguments:
 *	memb_dsetname_var - if have_expr, the variable of names (input)
@@ -287,7 +288,8 @@
      .	             - TM_WORLD(1,  ref_grid, t_dim, box_middle ) )
      .			/(nT-1)
 	   CALL TM_NEW_LINE_NAME ( 'TF_LAG_T', buff )
-	   CALL TM_MAKE_BASIC_AXIS( buff, 0.0D0, avg_lag, nT,
+! pre 3/16	   CALL TM_MAKE_BASIC_AXIS( buff, 0.0D0, avg_lag, nT,
+	   CALL TM_MAKE_BASIC_AXIS( buff, avg_lag/2., avg_lag, nT,
      .				    tf_lag_t, status )
 	   line_unit_code(tf_lag_t) = line_unit_code(memb_tax)
 	   line_units(tf_lag_t) = un_name(line_unit_code(tf_lag_t))

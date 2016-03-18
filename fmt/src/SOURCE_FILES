@@ -230,6 +230,7 @@ tm_int2_swap.F\
 tm_int4_swap.F\
 tm_irregax_mid.F\
 tm_its_cdf.F\
+tm_its_index_axis.F\
 tm_its_subspan_modulo.F\
 tm_itsa_model_run.F\
 tm_lefint.F\

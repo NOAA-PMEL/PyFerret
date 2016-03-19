@@ -20,3 +20,5 @@ show mode desperate
 set mode desperate `96 * 1024 * 1024`
 show mode desperate
 can mode ignore
+
+cancel mode desperate

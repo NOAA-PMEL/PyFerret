@@ -1,0 +1,12 @@
+! bn_list_clim_axes.jnl
+! *acm* 3/16
+! Show and list coordinates for climatological axes 
+! that are pre-defined in Ferret
+
+show axis seasonal_reg
+show axis month*
+show axis/t month_irreg
+show axis/t month_gregorian
+show axis/t month_noleap
+show axis/t month_360_day
+show axis/t month_all_leap

@@ -1,0 +1,13 @@
+* XTRA_COMPUTE_ATTR.CMN
+* 
+* *acm* v698  3/16 store extra attributes to be saved with a 
+*             computed variable. Cleared in get_prot_cmnd_data.
+
+
+	COMMON/ XTRA_COMPUTE_ATTR /
+     .		natt_computed_var,
+     .		attname_computed_var,
+     .		attstr_computed_var
+
+	INTEGER natt_computed_var
+	CHARACTER*128 attname_computed_var, attstr_computed_var

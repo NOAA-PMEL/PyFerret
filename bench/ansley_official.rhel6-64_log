@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 117207182 Mar 18 16:05 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 116611999 Mar 18 17:07 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: current trunk; recent Hankin checkins for aggregations
+Note: tickets 2278: climatology range attrib; and 2371: wrap long names in SHOW DAT/ATT
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,14 +13,14 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
-PWD=/home/users/ansley/build/trunk/FERRET/bench
+PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Fri Mar 18 16:09:08 PDT 2016
+Beginning at Fri Mar 18 17:08:39 PDT 2016
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10418,12 +10418,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "18-Mar-16"
-SESSION_TIME = "16:09"
-SESSION_PID = "2714"
-DELTA_CPU = "5.58215"
-CLOCK_SECS = "8.532"
+SESSION_TIME = "17:08"
+SESSION_PID = "27301"
+DELTA_CPU = "5.45217"
+CLOCK_SECS = "7.781"
 CURRENT_DATE = "18-Mar-16"
-CURRENT_TIME = "16:09:16"
+CURRENT_TIME = "17:08:47"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10447,12 +10447,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "18-Mar-16"
-SESSION_TIME = "16:09"
-SESSION_PID = "2714"
-DELTA_CPU = "0"
-CLOCK_SECS = "8.533"
+SESSION_TIME = "17:08"
+SESSION_PID = "27301"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "7.782"
 CURRENT_DATE = "18-Mar-16"
-CURRENT_TIME = "16:09:16"
+CURRENT_TIME = "17:08:47"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10463,8 +10463,8 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "18-Mar-16"
-SESSION_TIME = "16:09"
-SESSION_PID = "2714"
+SESSION_TIME = "17:08"
+SESSION_PID = "27301"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10475,14 +10475,14 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "18-Mar-16"
-SESSION_TIME = "16:09"
-SESSION_PID = "2714"
+SESSION_TIME = "17:08"
+SESSION_PID = "27301"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "18-Mar-16"
-SESSION_TIME = "16:09"
-SESSION_PID = "2714"
+SESSION_TIME = "17:08"
+SESSION_PID = "27301"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10518,7 +10518,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET (beta/dbg) Ver.6.97"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "18-MAR-2016 16:09:16"
+LAB3 = "18-MAR-2016 17:08:47"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10619,12 +10619,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "18-Mar-16"
-SESSION_TIME = "16:09"
-SESSION_PID = "2714"
+SESSION_TIME = "17:08"
+SESSION_PID = "27301"
 DELTA_CPU = "0.007999"
-CLOCK_SECS = "8.541"
+CLOCK_SECS = "7.789"
 CURRENT_DATE = "18-Mar-16"
-CURRENT_TIME = "16:09:16"
+CURRENT_TIME = "17:08:47"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -25624,7 +25624,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Fri Mar 18 16:09:32 PDT 2016
+Fri Mar 18 17:08:55 PDT 2016
  
 GO bn_reset
 cancel mode verify
@@ -47531,7 +47531,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS18-MAR-2016 16:10:16
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS18-MAR-2016 17:09:26
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -48963,7 +48963,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "18-Mar-16:16:09"
+WIN_TITLE = "18-Mar-16:17:08"
  
 set win/title="set the title"
 sho sym win_title
@@ -48981,7 +48981,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="18-Mar-16:16:09"
+ !-> set win/title="18-Mar-16:17:08"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48992,14 +48992,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 18-Mar-16
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 16:09
+ !-> DEFINE SYMBOL the_time = 17:08
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="18-Mar-16:16:09"
+ !-> SET WIN/TITLE="18-Mar-16:17:08"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "18-Mar-16:16:09"
+WIN_TITLE = "18-Mar-16:17:08"
  
 GO bn_reset
 cancel mode verify
@@ -49492,20 +49492,24 @@ sho data/att
 (XAX_LEV9421_380)      DOUBLE    units           CHAR        12   T       degrees_east
                                  modulo          CHAR        1    T
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        15   F       XAX_LEV9421_380
+                                 orig_file_axname
+                                                 CHAR        15   F       XAX_LEV9421_380
   
 (YAX_LEV94)            DOUBLE    units           CHAR        13   T       degrees_north
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        9    F       YAX_LEV94
+                                 orig_file_axname
+                                                 CHAR        9    F       YAX_LEV94
   
 (ZAXLEVIT191_1)        DOUBLE    units           CHAR        6    T       METERS
                                  positive        CHAR        4    T       down
-                                 orig_file_axnameCHAR        13   F       ZAXLEVIT191_1
+                                 orig_file_axname
+                                                 CHAR        13   F       ZAXLEVIT191_1
   
 (TIME3)                DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          CHAR        1    T
-                                 orig_file_axnameCHAR        4    F       TIME
+                                 orig_file_axname
+                                                 CHAR        4    F       TIME
   
  TEMP                  FLOAT     missing_value   FLOAT       1    T       -1.E+34
                                  _FillValue      FLOAT       1    T       -1.E+34
@@ -49529,42 +49533,51 @@ sh data/att gt4d011
   
 (PSXT)                 DOUBLE    units           CHAR        12   T       degrees_east
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        4    F       PSXT
+                                 orig_file_axname
+                                                 CHAR        4    F       PSXT
   
 (PSYT1)                DOUBLE    units           CHAR        13   T       degrees_north
                                  point_spacing   CHAR        6    T       uneven
                                  edges           CHAR        9    F       PSYTedges
-                                 orig_file_axnameCHAR        4    F       PSYT
+                                 orig_file_axname
+                                                 CHAR        4    F       PSYT
   
 (PSYTedges)            DOUBLE    edges           CHAR        1    F
-                                 orig_file_axnameCHAR        9    F       PSYTedges
+                                 orig_file_axname
+                                                 CHAR        9    F       PSYTedges
   
 (PSZT1)                DOUBLE    units           CHAR        6    T       METERS
                                  positive        CHAR        4    T       down
                                  point_spacing   CHAR        6    T       uneven
                                  edges           CHAR        9    F       PSZTedges
-                                 orig_file_axnameCHAR        4    F       PSZT
+                                 orig_file_axname
+                                                 CHAR        4    F       PSZT
   
 (PSZTedges)            DOUBLE    edges           CHAR        1    F
-                                 orig_file_axnameCHAR        9    F       PSZTedges
+                                 orig_file_axname
+                                                 CHAR        9    F       PSZTedges
   
 (TIME11)               DOUBLE    units           CHAR        30   T       hour since 1980-01-14 14:00:00
                                  time_origin     CHAR        20   T       14-JAN-1980 14:00:00
-                                 orig_file_axnameCHAR        5    F       TIME1
+                                 orig_file_axname
+                                                 CHAR        5    F       TIME1
   
 (PSXT91_108)           DOUBLE    child_axis      CHAR        1    F
                                  units           CHAR        12   T       degrees_east
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        10   F       PSXT91_108
+                                 orig_file_axname
+                                                 CHAR        10   F       PSXT91_108
   
 (PSYT35_56)            DOUBLE    child_axis      CHAR        1    F
                                  units           CHAR        13   T       degrees_north
-                                 orig_file_axnameCHAR        9    F       PSYT35_56
+                                 orig_file_axname
+                                                 CHAR        9    F       PSYT35_56
   
 (PSZT1_10)             DOUBLE    child_axis      CHAR        1    F
                                  units           CHAR        6    T       METERS
                                  positive        CHAR        4    T       down
-                                 orig_file_axnameCHAR        8    F       PSZT1_10
+                                 orig_file_axname
+                                                 CHAR        8    F       PSZT1_10
   
  TEMP                  FLOAT     parent_grid     CHAR        6    F       PS3DT2
                                  slab_min_index  INT         4    F       91 35 1 0
@@ -49577,7 +49590,8 @@ sh data/att gt4d011
   
 (PSYT35_55)            DOUBLE    child_axis      CHAR        1    F
                                  units           CHAR        13   T       degrees_north
-                                 orig_file_axnameCHAR        9    F       PSYT35_55
+                                 orig_file_axname
+                                                 CHAR        9    F       PSYT35_55
   
  SALT                  FLOAT     parent_grid     CHAR        6    F       PS3DT2
                                  slab_min_index  INT         4    F       91 35 1 0
@@ -49592,24 +49606,29 @@ sh data/att gt4d011
   
 (PSXU)                 DOUBLE    units           CHAR        12   T       degrees_east
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        4    F       PSXU
+                                 orig_file_axname
+                                                 CHAR        4    F       PSXU
   
 (PSYU)                 DOUBLE    units           CHAR        13   T       degrees_north
                                  point_spacing   CHAR        6    T       uneven
                                  edges           CHAR        9    F       PSYUedges
-                                 orig_file_axnameCHAR        4    F       PSYU
+                                 orig_file_axname
+                                                 CHAR        4    F       PSYU
   
 (PSYUedges)            DOUBLE    edges           CHAR        1    F
-                                 orig_file_axnameCHAR        9    F       PSYUedges
+                                 orig_file_axname
+                                                 CHAR        9    F       PSYUedges
   
 (PSXU91_108)           DOUBLE    child_axis      CHAR        1    F
                                  units           CHAR        12   T       degrees_east
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        10   F       PSXU91_108
+                                 orig_file_axname
+                                                 CHAR        10   F       PSXU91_108
   
 (PSYU35_55)            DOUBLE    child_axis      CHAR        1    F
                                  units           CHAR        13   T       degrees_north
-                                 orig_file_axnameCHAR        9    F       PSYU35_55
+                                 orig_file_axname
+                                                 CHAR        9    F       PSYU35_55
   
  U                     FLOAT     parent_grid     CHAR        6    F       PS3DU2
                                  slab_min_index  INT         4    F       91 35 1 0
@@ -49635,19 +49654,23 @@ sh data/att gt4d011
                                  positive        CHAR        4    T       down
                                  point_spacing   CHAR        6    T       uneven
                                  edges           CHAR        9    F       PSZWedges
-                                 orig_file_axnameCHAR        4    F       PSZW
+                                 orig_file_axname
+                                                 CHAR        4    F       PSZW
   
 (PSZWedges)            DOUBLE    edges           CHAR        1    F
-                                 orig_file_axnameCHAR        9    F       PSZWedges
+                                 orig_file_axname
+                                                 CHAR        9    F       PSZWedges
   
 (PSYT36_55)            DOUBLE    child_axis      CHAR        1    F
                                  units           CHAR        13   T       degrees_north
-                                 orig_file_axnameCHAR        9    F       PSYT36_55
+                                 orig_file_axname
+                                                 CHAR        9    F       PSYT36_55
   
 (PSZW1_10)             DOUBLE    child_axis      CHAR        1    F
                                  units           CHAR        6    T       METERS
                                  positive        CHAR        4    T       down
-                                 orig_file_axnameCHAR        8    F       PSZW1_10
+                                 orig_file_axname
+                                                 CHAR        8    F       PSZW1_10
   
  W                     FLOAT     parent_grid     CHAR        6    F       PS3DW2
                                  slab_min_index  INT         4    F       91 36 1 0
@@ -49680,7 +49703,8 @@ sh data/att gt4d011
   
 (PSYU35_56)            DOUBLE    child_axis      CHAR        1    F
                                  units           CHAR        13   T       degrees_north
-                                 orig_file_axnameCHAR        9    F       PSYU35_56
+                                 orig_file_axname
+                                                 CHAR        9    F       PSYU35_56
   
  PSI                   FLOAT     parent_grid     CHAR        6    F       PS2DU2
                                  slab_min_index  INT         4    F       91 35 1 0
@@ -50135,11 +50159,14 @@ sh data/att
   
  dnodata               DOUBLE
   
-(i)                    INT       orig_file_axnameCHAR        1    F       i
+(i)                    INT       orig_file_axname
+                                                 CHAR        1    F       i
   
-(j)                    FLOAT     orig_file_axnameCHAR        1    F       j
+(j)                    FLOAT     orig_file_axname
+                                                 CHAR        1    F       j
   
-(l)                    BYTE      orig_file_axnameCHAR        1    F       l
+(l)                    BYTE      orig_file_axname
+                                                 CHAR        1    F       l
   
  
 let a= broiled.acl
@@ -51272,16 +51299,19 @@ sh dat/att
 (XAXLEVITR1_160)       DOUBLE    units           CHAR        12   T       degrees_east
                                  modulo          CHAR        1    T
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        14   F       XAXLEVITR1_160
+                                 orig_file_axname
+                                                 CHAR        14   F       XAXLEVITR1_160
                                  new_att         CHAR        9    T       something
   
 (YAXLEVITR1_90)        DOUBLE    units           CHAR        13   T       degrees_north
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        13   F       YAXLEVITR1_90
+                                 orig_file_axname
+                                                 CHAR        13   F       YAXLEVITR1_90
   
 (ZAXLEVITR1_1)         DOUBLE    units           CHAR        6    T       METERS
                                  positive        CHAR        4    T       down
-                                 orig_file_axnameCHAR        12   F       ZAXLEVITR1_1
+                                 orig_file_axname
+                                                 CHAR        12   F       ZAXLEVITR1_1
   
  TEMP                  FLOAT     missing_value   FLOAT       1    T       -1.E+10
                                  _FillValue      FLOAT       1    T       -1.E+10
@@ -51496,20 +51526,24 @@ sho att ocean_atlas_temp
 (XAX_LEV9421_380)      DOUBLE    units           CHAR        12   T       degrees_east
                                  modulo          CHAR        1    T
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        15   F       XAX_LEV9421_380
+                                 orig_file_axname
+                                                 CHAR        15   F       XAX_LEV9421_380
   
 (YAX_LEV94)            DOUBLE    units           CHAR        13   T       degrees_north
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        9    F       YAX_LEV94
+                                 orig_file_axname
+                                                 CHAR        9    F       YAX_LEV94
   
 (ZAXLEVIT191_1)        DOUBLE    units           CHAR        6    T       METERS
                                  positive        CHAR        4    T       down
-                                 orig_file_axnameCHAR        13   F       ZAXLEVIT191_1
+                                 orig_file_axname
+                                                 CHAR        13   F       ZAXLEVIT191_1
   
 (TIME3)                DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          CHAR        1    T
-                                 orig_file_axnameCHAR        4    F       TIME
+                                 orig_file_axname
+                                                 CHAR        4    F       TIME
   
  TEMP                  FLOAT     missing_value   FLOAT       1    T       -1.E+34
                                  _FillValue      FLOAT       1    T       -1.E+34
@@ -51537,20 +51571,24 @@ sho att 1
 (XAX_LEV9421_380)      DOUBLE    units           CHAR        12   T       degrees_east
                                  modulo          CHAR        1    T
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        15   F       XAX_LEV9421_380
+                                 orig_file_axname
+                                                 CHAR        15   F       XAX_LEV9421_380
   
 (YAX_LEV94)            DOUBLE    units           CHAR        13   T       degrees_north
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        9    F       YAX_LEV94
+                                 orig_file_axname
+                                                 CHAR        9    F       YAX_LEV94
   
 (ZAXLEVIT191_1)        DOUBLE    units           CHAR        6    T       METERS
                                  positive        CHAR        4    T       down
-                                 orig_file_axnameCHAR        13   F       ZAXLEVIT191_1
+                                 orig_file_axname
+                                                 CHAR        13   F       ZAXLEVIT191_1
   
 (TIME3)                DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          CHAR        1    T
-                                 orig_file_axnameCHAR        4    F       TIME
+                                 orig_file_axname
+                                                 CHAR        4    F       TIME
   
  TEMP                  FLOAT     missing_value   FLOAT       1    T       -1.E+34
                                  _FillValue      FLOAT       1    T       -1.E+34
@@ -51569,15 +51607,18 @@ sho att 2
 (XAXLEVITR1_160)       DOUBLE    units           CHAR        12   T       degrees_east
                                  modulo          CHAR        1    T
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        14   F       XAXLEVITR1_160
+                                 orig_file_axname
+                                                 CHAR        14   F       XAXLEVITR1_160
   
 (YAXLEVITR1_90)        DOUBLE    units           CHAR        13   T       degrees_north
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        13   F       YAXLEVITR1_90
+                                 orig_file_axname
+                                                 CHAR        13   F       YAXLEVITR1_90
   
 (ZAXLEVITR1_1)         DOUBLE    units           CHAR        6    T       METERS
                                  positive        CHAR        4    T       down
-                                 orig_file_axnameCHAR        12   F       ZAXLEVITR1_1
+                                 orig_file_axname
+                                                 CHAR        12   F       ZAXLEVITR1_1
   
  TEMP                  FLOAT     missing_value   FLOAT       1    T       -1.E+10
                                  _FillValue      FLOAT       1    T       -1.E+10
@@ -53322,16 +53363,19 @@ sh dat/att
 (COADSX)               DOUBLE    units           CHAR        12   T       degrees_east
                                  modulo          CHAR        1    T
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        6    F       COADSX
+                                 orig_file_axname
+                                                 CHAR        6    F       COADSX
   
 (COADSY)               DOUBLE    units           CHAR        13   T       degrees_north
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        6    F       COADSY
+                                 orig_file_axname
+                                                 CHAR        6    F       COADSY
   
 (TIME10)               DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        19   T       1-JAN-0000 00:00:00
                                  modulo          CHAR        1    T
-                                 orig_file_axnameCHAR        4    F       TIME
+                                 orig_file_axname
+                                                 CHAR        4    F       TIME
   
  SST                   FLOAT     missing_value   FLOAT       1    T       -1.E+34
                                  _FillValue      FLOAT       1    T       -1.E+34
@@ -53363,14 +53407,16 @@ sho dat/att
                                  modulo          DOUBLE      1    T       360
                                  axis            CHAR        1    T       X
                                  standard_name   CHAR        9    F       longitude
-                                 orig_file_axnameCHAR        10   F       PSXT91_108
+                                 orig_file_axname
+                                                 CHAR        10   F       PSXT91_108
   
 (PSYT135_56)           DOUBLE    units           CHAR        13   T       degrees_north
                                  point_spacing   CHAR        6    T       uneven
                                  axis            CHAR        1    T       Y
                                  standard_name   CHAR        8    F       latitude
                                  bounds          CHAR        15   T       PSYT135_56_bnds
-                                 orig_file_axnameCHAR        10   F       PSYT135_56
+                                 orig_file_axname
+                                                 CHAR        10   F       PSYT135_56
   
  PSYT135_56_bnds       DOUBLE
   
@@ -53380,7 +53426,8 @@ sho dat/att
                                  axis            CHAR        1    T       Z
                                  standard_name   CHAR        5    F       depth
                                  bounds          CHAR        14   T       PSZT11_10_bnds
-                                 orig_file_axnameCHAR        9    F       PSZT11_10
+                                 orig_file_axname
+                                                 CHAR        9    F       PSZT11_10
   
  PSZT11_10_bnds        DOUBLE
   
@@ -53388,7 +53435,8 @@ sho dat/att
                                  time_origin     CHAR        20   T       14-JAN-1980 14:00:00
                                  axis            CHAR        1    T       T
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        6    F       TIME11
+                                 orig_file_axname
+                                                 CHAR        6    F       TIME11
   
  TEMP                  FLOAT     missing_value   FLOAT       1    T       -1.E+34
                                  _FillValue      FLOAT       1    T       -1.E+34
@@ -53408,14 +53456,16 @@ sho dat/att
                                  modulo          DOUBLE      1    T       360
                                  axis            CHAR        1    T       X
                                  standard_name   CHAR        9    F       longitude
-                                 orig_file_axnameCHAR        10   F       PSXT91_108
+                                 orig_file_axname
+                                                 CHAR        10   F       PSXT91_108
   
 (PSYT135_56)           DOUBLE    units           CHAR        13   T       degrees_north
                                  point_spacing   CHAR        6    T       uneven
                                  axis            CHAR        1    T       Y
                                  standard_name   CHAR        8    F       latitude
                                  bounds          CHAR        15   T       PSYT135_56_bnds
-                                 orig_file_axnameCHAR        10   F       PSYT135_56
+                                 orig_file_axname
+                                                 CHAR        10   F       PSYT135_56
   
  PSYT135_56_bnds       DOUBLE
   
@@ -53425,7 +53475,8 @@ sho dat/att
                                  axis            CHAR        1    T       Z
                                  standard_name   CHAR        5    F       depth
                                  bounds          CHAR        14   T       PSZT11_10_bnds
-                                 orig_file_axnameCHAR        9    F       PSZT11_10
+                                 orig_file_axname
+                                                 CHAR        9    F       PSZT11_10
   
  PSZT11_10_bnds        DOUBLE
   
@@ -53433,7 +53484,8 @@ sho dat/att
                                  time_origin     CHAR        20   T       14-JAN-1980 14:00:00
                                  axis            CHAR        1    T       T
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        6    F       TIME11
+                                 orig_file_axname
+                                                 CHAR        6    F       TIME11
   
  TEMP                  FLOAT     missing_value   FLOAT       1    T       -1.E+34
                                  _FillValue      FLOAT       1    T       -1.E+34
@@ -59297,10 +59349,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "45.791"
-CLOCK_SECS = "108.996"
+DELTA_CPU = "42.0196"
+CLOCK_SECS = "73.774"
 CURRENT_DATE = "18-Mar-16"
-CURRENT_TIME = "16:10:57"
+CURRENT_TIME = "17:09:53"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -59309,8 +59361,8 @@ CURRENT_TIME = "16:10:57"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.047993"
-CLOCK_SECS = "109.201"
+DELTA_CPU = "0.034994"
+CLOCK_SECS = "73.88"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -59324,60 +59376,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.239963
+ !-> DEFINE VARIABLE ten_plots = 0.227966
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "110.459"
+CLOCK_SECS = "75.105"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "110.46"
+CLOCK_SECS = "75.105"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.024996
- !-> DEFINE VARIABLE sumcpu =0.024996
+ !-> DEFINE VARIABLE dt = 0.026996
+ !-> DEFINE VARIABLE sumcpu =0.026996
 !-> REPEAT: K=2
  !-> DEFINE VARIABLE dt = 0.022996
- !-> DEFINE VARIABLE sumcpu =0.047992
+ !-> DEFINE VARIABLE sumcpu =0.049992
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.029996
- !-> DEFINE VARIABLE sumcpu =0.077988
+ !-> DEFINE VARIABLE dt = 0.034995
+ !-> DEFINE VARIABLE sumcpu =0.084987
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.023996
- !-> DEFINE VARIABLE sumcpu =0.101984
+ !-> DEFINE VARIABLE dt = 0.028996
+ !-> DEFINE VARIABLE sumcpu =0.113983
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.031996
- !-> DEFINE VARIABLE sumcpu =0.13398
-!-> REPEAT: K=6
  !-> DEFINE VARIABLE dt = 0.028995
- !-> DEFINE VARIABLE sumcpu =0.162975
+ !-> DEFINE VARIABLE sumcpu =0.142978
+!-> REPEAT: K=6
+ !-> DEFINE VARIABLE dt = 0.027996
+ !-> DEFINE VARIABLE sumcpu =0.170974
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.19497
+ !-> DEFINE VARIABLE dt = 0.022996
+ !-> DEFINE VARIABLE sumcpu =0.19397
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.029996
- !-> DEFINE VARIABLE sumcpu =0.224966
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.230965
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.258961
+ !-> DEFINE VARIABLE dt = 0.037994
+ !-> DEFINE VARIABLE sumcpu =0.268959
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.026995
- !-> DEFINE VARIABLE sumcpu =0.285956
+ !-> DEFINE VARIABLE dt = 0.038994
+ !-> DEFINE VARIABLE sumcpu =0.307953
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.285956
-0.285956
+ !-> MESSAGE/CONTINUE 0.307953
+0.307953
 sh sym CLOCK_SECS
-CLOCK_SECS = "112.948"
+CLOCK_SECS = "77.35"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "18-Mar-16"
-SESSION_TIME = "16:09"
+SESSION_TIME = "17:08"
 CURRENT_DATE = "18-Mar-16"
-CURRENT_TIME = "16:11:01"
+CURRENT_TIME = "17:09:56"
  
  
 ! ******** V6.3 Additions below ***********
@@ -63266,7 +63318,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.97 (beta/dbg)"                                                 
  3    /  3:" ! Linux 2.6.32-573.18.1.el6.x86_64 64-bit - 03/18/16"                      
- 4    /  4:" ! 18-Mar-16 16:09     "                                                    
+ 4    /  4:" ! 18-Mar-16 17:08     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -64392,27 +64444,32 @@ sh dat/att
   
  .                               history         CHAR        28   T       FERRET V6.7 (beta) 25-Mar-11
                                  Conventions     CHAR        6    F       CF-1.0
-                                 nco_input_file_nINT         1    F       1000
-                                 nco_input_file_lCHAR        2760 F       b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0002.SURF.nc b40.coup_carb.004.cam2.h0.0003.SURF.nc b40.coup_carb.004.cam2.h0.0004.SURF.nc b40.coup_carb.004.cam2.h0.0005.SURF.nc b40.coup_carb.004.cam2.h0.0006.SURF.nc b40.coup_carb.004.cam2.h0.0007.SURF.nc b40.coup_carb.004.cam2.h0.0008.SURF.nc b40.coup_carb.004.cam2.h0.0009.SURF.nc b40.coup_carb.004.cam2.h0.0010.SURF.nc b40.coup_carb.004.cam2.h0.0011.SURF.nc b40.coup_carb.004.cam2.h0.0012.SURF.nc b40.coup_carb.004.cam2.h0.0013.SURF.nc b40.coup_carb.004.cam2.h0.0014.SURF.nc b40.coup_carb.004.cam2.h0.0015.SURF.nc b40.coup_carb.004.cam2.h0.0016.SURF.nc b40.coup_carb.004.cam2.h0.0017.SURF.nc b40.coup_carb.004.cam2.h0.0018.SURF.nc b40.coup_carb.004.cam2.h0.0019.SURF.nc b40.coup_carb.004.cam2.h0.0020.SURF.nc b40.coup_carb.004.cam2.h0.0021.SURF.nc b40.coup_carb.004.cam2.h0.0022.SURF.nc b40.coup_carb.004.cam2.h0.0023.SURF.nc b40.coup_carb.004.cam2.h0.0024.SURF.nc b40.coup_carb.004.cam2.h0.0025.SURF.nc b40.coup_carb.004.cam2.h0.0026.SURF.nc b40.coup_carb.004.cam2.h0.0027.SURF.nc b40.coup_carb.004.cam2.h0.0028.SURF.nc b40.coup_carb.004.cam2.h0.0029.SURF.nc b40.coup_carb.004.cam2.h0.0030.SURF.nc b40.coup_carb.004.cam2.h0.0031.SURF.nc b40.coup_carb.004.cam2.h0.0032.SURF.nc b40.coup_carb.004.cam2.h0.0033.SURF.nc b40.coup_carb.004.cam2.h0.0034.SURF.nc b40.coup_carb.004.cam2.h0.0035.SURF.nc b40.coup_carb.004.cam2.h0.0036.SURF.nc b40.coup_carb.004.cam2.h0.0037.SURF.nc b40.coup_carb.004.cam2.h0.0038.SURF.nc b40.coup_carb.004.cam2.h0.0039.SURF.nc b40.coup_carb.004.cam2.h0.0040.SURF.nc b40.coup_carb.004.cam2.h0.0041.SURF.nc b40.coup_carb.004.cam2.h0.0042.SURF.nc b40.coup_carb.004.cam2.h0.0043.SURF.nc b40.coup_carb.004.cam2.h0.0044.SURF.nc b40.coup_carb.004.cam2.h0.0045.SURF.nc b40.coup_carb.004.cam2.h0.0046.SURF.nc b40.coup_carb.004.cam2.h0.0047.SURF.nc b40.coup_carb.004.cam2.h0.0048.SURF.nc b40.coup_carb.004.cam2.h0.0049.SURF.nc b40.coup_carb.004.cam2.h0.0050.SURF.nc b40.coup_carb.004.cam2.h0.0051.SURF.nc b40.coup_carb.004.cam2.h0.0052
+                                 nco_input_file_number
+                                                 INT         1    F       1000
+                                 nco_input_file_list
+                                                 CHAR        2760 F       b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0002.SURF.nc b40.coup_carb.004.cam2.h0.0003.SURF.nc b40.coup_carb.004.cam2.h0.0004.SURF.nc b40.coup_carb.004.cam2.h0.0005.SURF.nc b40.coup_carb.004.cam2.h0.0006.SURF.nc b40.coup_carb.004.cam2.h0.0007.SURF.nc b40.coup_carb.004.cam2.h0.0008.SURF.nc b40.coup_carb.004.cam2.h0.0009.SURF.nc b40.coup_carb.004.cam2.h0.0010.SURF.nc b40.coup_carb.004.cam2.h0.0011.SURF.nc b40.coup_carb.004.cam2.h0.0012.SURF.nc b40.coup_carb.004.cam2.h0.0013.SURF.nc b40.coup_carb.004.cam2.h0.0014.SURF.nc b40.coup_carb.004.cam2.h0.0015.SURF.nc b40.coup_carb.004.cam2.h0.0016.SURF.nc b40.coup_carb.004.cam2.h0.0017.SURF.nc b40.coup_carb.004.cam2.h0.0018.SURF.nc b40.coup_carb.004.cam2.h0.0019.SURF.nc b40.coup_carb.004.cam2.h0.0020.SURF.nc b40.coup_carb.004.cam2.h0.0021.SURF.nc b40.coup_carb.004.cam2.h0.0022.SURF.nc b40.coup_carb.004.cam2.h0.0023.SURF.nc b40.coup_carb.004.cam2.h0.0024.SURF.nc b40.coup_carb.004.cam2.h0.0025.SURF.nc b40.coup_carb.004.cam2.h0.0026.SURF.nc b40.coup_carb.004.cam2.h0.0027.SURF.nc b40.coup_carb.004.cam2.h0.0028.SURF.nc b40.coup_carb.004.cam2.h0.0029.SURF.nc b40.coup_carb.004.cam2.h0.0030.SURF.nc b40.coup_carb.004.cam2.h0.0031.SURF.nc b40.coup_carb.004.cam2.h0.0032.SURF.nc b40.coup_carb.004.cam2.h0.0033.SURF.nc b40.coup_carb.004.cam2.h0.0034.SURF.nc b40.coup_carb.004.cam2.h0.0035.SURF.nc b40.coup_carb.004.cam2.h0.0036.SURF.nc b40.coup_carb.004.cam2.h0.0037.SURF.nc b40.coup_carb.004.cam2.h0.0038.SURF.nc b40.coup_carb.004.cam2.h0.0039.SURF.nc b40.coup_carb.004.cam2.h0.0040.SURF.nc b40.coup_carb.004.cam2.h0.0041.SURF.nc b40.coup_carb.004.cam2.h0.0042.SURF.nc b40.coup_carb.004.cam2.h0.0043.SURF.nc b40.coup_carb.004.cam2.h0.0044.SURF.nc b40.coup_carb.004.cam2.h0.0045.SURF.nc b40.coup_carb.004.cam2.h0.0046.SURF.nc b40.coup_carb.004.cam2.h0.0047.SURF.nc b40.coup_carb.004.cam2.h0.0048.SURF.nc b40.coup_carb.004.cam2.h0.0049.SURF.nc b40.coup_carb.004.cam2.h0.0050.SURF.nc b40.coup_carb.004.cam2.h0.0051.SURF.nc b40.coup_carb.004.cam2.h0.0052
   
 (LON273_289)           DOUBLE    long_name       CHAR        9    T       longitude
                                  units           CHAR        12   T       degrees_east
                                  modulo          DOUBLE      1    T       360
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       X
-                                 orig_file_axnameCHAR        10   F       LON273_289
+                                 orig_file_axname
+                                                 CHAR        10   F       LON273_289
   
 (LAT54_54)             DOUBLE    long_name       CHAR        8    T       latitude
                                  units           CHAR        13   T       degrees_north
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Y
-                                 orig_file_axnameCHAR        8    F       LAT54_54
+                                 orig_file_axname
+                                                 CHAR        8    F       LAT54_54
   
 (TIME13)               DOUBLE    long_name       CHAR        23   T       time interval endpoints
                                  units           CHAR        30   T       days since 0001-01-01 00:00:00
                                  calendar        CHAR        6    T       noleap
                                  axis            CHAR        1    T       T
-                                 orig_file_axnameCHAR        4    F       TIME
+                                 orig_file_axname
+                                                 CHAR        4    F       TIME
   
  SFCO2                 FLOAT     units           CHAR        7    T       kg/m2/s
                                  long_name       CHAR        16   T       CO2 surface flux
@@ -64454,6 +64511,8 @@ show mode desperate
       MODE            STATE        ARGUMENT
       DESPERATE        SET           100663296
 can mode ignore
+ 
+cancel mode desperate
  
 GO bn_reset
 cancel mode verify
@@ -65754,40 +65813,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.050
-randu2_randn2       0.422
-randu2_randn2       0.222
-randu2_randn2       0.287
-randu2_randn2       0.985
+randu2_randn2       0.696
+randu2_randn2       0.526
+randu2_randn2       0.536
+randu2_randn2       0.872
+randu2_randn2       0.936
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.656
-randu2_randn2       0.354
-randu2_randn2       0.477
-randu2_randn2       0.188
-randu2_randn2       0.960
+randu2_randn2       0.104
+randu2_randn2       0.873
+randu2_randn2       0.836
+randu2_randn2       0.777
+randu2_randn2       0.162
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.049
-randu2_randn2       0.417
-randu2_randn2       0.753
-randu2_randn2       0.653
-randu2_randn2       0.285
-randu2_randn2       0.672
+randu2_randn2       0.988
+randu2_randn2       0.787
+randu2_randn2       0.233
+randu2_randn2       0.047
+randu2_randn2       0.395
+randu2_randn2       0.885
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.714
-randu2_randn2       0.651
-randu2_randn2       0.693
-randu2_randn2       0.049
-randu2_randn2       0.353
-randu2_randn2       0.636
+randu2_randn2       0.811
+randu2_randn2       0.968
+randu2_randn2       0.081
+randu2_randn2       0.171
+randu2_randn2       0.321
+randu2_randn2       0.481
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -65812,40 +65871,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.215
-randu2_randn2       0.987
-randu2_randn2      -1.190
-randu2_randn2      -0.537
-randu2_randn2       0.814
+randu2_randn2       0.768
+randu2_randn2      -0.590
+randu2_randn2       0.632
+randu2_randn2      -2.108
+randu2_randn2      -1.127
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       1.002
-randu2_randn2       1.473
-randu2_randn2       1.237
-randu2_randn2       0.259
-randu2_randn2      -0.956
+randu2_randn2      -0.349
+randu2_randn2      -0.546
+randu2_randn2       1.252
+randu2_randn2       1.254
+randu2_randn2      -0.268
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       2.345
-randu2_randn2      -1.512
-randu2_randn2       0.215
-randu2_randn2      -1.366
-randu2_randn2       0.702
-randu2_randn2      -1.647
+randu2_randn2       1.125
+randu2_randn2       0.445
+randu2_randn2       0.664
+randu2_randn2       0.764
+randu2_randn2       0.593
+randu2_randn2      -0.975
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.518
-randu2_randn2       0.290
-randu2_randn2       0.221
-randu2_randn2      -0.085
-randu2_randn2       0.185
-randu2_randn2       0.514
+randu2_randn2      -0.748
+randu2_randn2      -1.180
+randu2_randn2      -1.107
+randu2_randn2       1.930
+randu2_randn2       0.127
+randu2_randn2      -1.541
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -65870,14 +65929,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.104       1.364       1.056
-randu2_randn2       1.364       1.104       1.056
-randu2_randn2       1.056       1.056       0.093
-randu2_randn2       0.093       0.093       0.269
-randu2_randn2      -0.506      -0.506       0.269
-randu2_randn2      -0.775      -0.506       0.269
-randu2_randn2      -0.234      -0.234       0.269
-randu2_randn2       0.269       0.269       0.269
+randu2_randn2       1.337       1.337       0.345
+randu2_randn2       0.936       0.936       0.345
+randu2_randn2       0.345       0.345      -0.080
+randu2_randn2      -0.080      -0.080       0.345
+randu2_randn2      -0.418      -0.418       0.345
+randu2_randn2      -0.782      -0.418       0.345
+randu2_randn2      -0.269      -0.269       0.345
+randu2_randn2       0.813       0.813       0.691
  
 GO bn_reset
 cancel mode verify
@@ -71735,14 +71794,16 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Y
                                  standard_name   CHAR        8    F       latitude
-                                 orig_file_axnameCHAR        11   F       COADSY46_48
+                                 orig_file_axname
+                                                 CHAR        11   F       COADSY46_48
   
 (TIME10)               DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          CHAR        1    T
                                  axis            CHAR        1    T       T
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        6    F       TIME10
+                                 orig_file_axname
+                                                 CHAR        6    F       TIME10
   
  SST                   FLOAT     missing_value   FLOAT       1    T       -1.E+34
                                  _FillValue      FLOAT       1    T       -1.E+34
@@ -71786,21 +71847,24 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Y
                                  standard_name   CHAR        8    F       latitude
-                                 orig_file_axnameCHAR        11   F       COADSY46_48
+                                 orig_file_axname
+                                                 CHAR        11   F       COADSY46_48
   
 (TIME10)               DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          CHAR        1    T
                                  axis            CHAR        1    T       T
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        6    F       TIME10
+                                 orig_file_axname
+                                                 CHAR        6    F       TIME10
   
  SST                   DOUBLE    missing_value   DOUBLE      1    T       -1.E+34
                                  _FillValue      DOUBLE      1    T       -1.E+34
                                  long_name       CHAR        23   T       SEA SURFACE TEMPERATURE
                                  history         CHAR        22   T       From coads_climatology
                                  units           CHAR        5    T       Deg C
-                                 Ferret_PrecisionCHAR        69   F       This variable written using Ferret was converted from FLOAT to DOUBLE
+                                 Ferret_Precision_Note
+                                                 CHAR        69   F       This variable written using Ferret was converted from FLOAT to DOUBLE
                                  long_name_mod   CHAR        9    F       X=60W@ITP
   
  SST2                  DOUBLE    missing_value   DOUBLE      1    T       -1.E+34
@@ -71825,21 +71889,24 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Y
                                  standard_name   CHAR        8    F       latitude
-                                 orig_file_axnameCHAR        11   F       COADSY46_48
+                                 orig_file_axname
+                                                 CHAR        11   F       COADSY46_48
   
 (TIME10)               DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          CHAR        1    T
                                  axis            CHAR        1    T       T
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        6    F       TIME10
+                                 orig_file_axname
+                                                 CHAR        6    F       TIME10
   
  SST                   FLOAT     missing_value   FLOAT       1    T       -1.E+34
                                  _FillValue      FLOAT       1    T       -1.E+34
                                  long_name       CHAR        23   T       SEA SURFACE TEMPERATURE
                                  history         CHAR        22   T       From coads_climatology
                                  units           CHAR        5    T       Deg C
-                                 Ferret_PrecisionCHAR        69   F       This variable written using Ferret was converted from FLOAT to DOUBLE
+                                 Ferret_Precision_Note
+                                                 CHAR        69   F       This variable written using Ferret was converted from FLOAT to DOUBLE
                                  long_name_mod   CHAR        9    F       X=60W@ITP
   
  SST2                  FLOAT     missing_value   FLOAT       1    T       -1.E+34
@@ -71864,14 +71931,16 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Y
                                  standard_name   CHAR        8    F       latitude
-                                 orig_file_axnameCHAR        11   F       COADSY46_48
+                                 orig_file_axname
+                                                 CHAR        11   F       COADSY46_48
   
 (TIME10)               DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          CHAR        1    T
                                  axis            CHAR        1    T       T
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        6    F       TIME10
+                                 orig_file_axname
+                                                 CHAR        6    F       TIME10
   
  SST3                  INT       missing_value   INT         1    T       -999
                                  _FillValue      INT         1    T       -999
@@ -71895,14 +71964,16 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Y
                                  standard_name   CHAR        8    F       latitude
-                                 orig_file_axnameCHAR        11   F       COADSY46_48
+                                 orig_file_axname
+                                                 CHAR        11   F       COADSY46_48
   
 (TIME10)               DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          CHAR        1    T
                                  axis            CHAR        1    T       T
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        6    F       TIME10
+                                 orig_file_axname
+                                                 CHAR        6    F       TIME10
   
  SST3                  SHORT     missing_value   SHORT       1    T       -999
                                  _FillValue      SHORT       1    T       -999
@@ -71927,14 +71998,16 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Y
                                  standard_name   CHAR        8    F       latitude
-                                 orig_file_axnameCHAR        11   F       COADSY46_48
+                                 orig_file_axname
+                                                 CHAR        11   F       COADSY46_48
   
 (TIME10)               DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          CHAR        1    T
                                  axis            CHAR        1    T       T
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        6    F       TIME10
+                                 orig_file_axname
+                                                 CHAR        6    F       TIME10
   
  SST4                  BYTE      missing_value   BYTE        1    T       -99
                                  _FillValue      BYTE        1    T       -99
@@ -71988,21 +72061,24 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Y
                                  standard_name   CHAR        8    F       latitude
-                                 orig_file_axnameCHAR        11   F       COADSY46_48
+                                 orig_file_axname
+                                                 CHAR        11   F       COADSY46_48
   
 (TIME10)               DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          CHAR        1    T
                                  axis            CHAR        1    T       T
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        6    F       TIME10
+                                 orig_file_axname
+                                                 CHAR        6    F       TIME10
   
  SST                   FLOAT     missing_value   FLOAT       1    T       -1.E+34
                                  _FillValue      FLOAT       1    T       -1.E+34
                                  long_name       CHAR        23   T       SEA SURFACE TEMPERATURE
                                  history         CHAR        22   T       From coads_climatology
                                  units           CHAR        5    T       Deg C
-                                 Ferret_PrecisionCHAR        69   F       This variable written using Ferret was converted from FLOAT to DOUBLE
+                                 Ferret_Precision_Note
+                                                 CHAR        69   F       This variable written using Ferret was converted from FLOAT to DOUBLE
                                  long_name_mod   CHAR        9    F       X=60W@ITP
   
  SST2                  DOUBLE    missing_value   DOUBLE      1    T       -1.E+34
@@ -72033,14 +72109,16 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Y
                                  standard_name   CHAR        8    F       latitude
-                                 orig_file_axnameCHAR        11   F       COADSY46_48
+                                 orig_file_axname
+                                                 CHAR        11   F       COADSY46_48
   
 (TIME10)               DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          CHAR        1    T
                                  axis            CHAR        1    T       T
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        6    F       TIME10
+                                 orig_file_axname
+                                                 CHAR        6    F       TIME10
   
  SST3                  INT       missing_value   INT         1    T       -999
                                  _FillValue      INT         1    T       -999
@@ -72088,14 +72166,16 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Y
                                  standard_name   CHAR        8    F       latitude
-                                 orig_file_axnameCHAR        11   F       COADSY46_48
+                                 orig_file_axname
+                                                 CHAR        11   F       COADSY46_48
   
 (TIME10)               DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          CHAR        1    T
                                  axis            CHAR        1    T       T
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        6    F       TIME10
+                                 orig_file_axname
+                                                 CHAR        6    F       TIME10
   
  SST2                  DOUBLE    missing_value   DOUBLE      1    T       -1.E+34
                                  _FillValue      DOUBLE      1    T       -1.E+34
@@ -72124,14 +72204,16 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Y
                                  standard_name   CHAR        8    F       latitude
-                                 orig_file_axnameCHAR        11   F       COADSY46_48
+                                 orig_file_axname
+                                                 CHAR        11   F       COADSY46_48
   
 (TIME10)               DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          CHAR        1    T
                                  axis            CHAR        1    T       T
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        6    F       TIME10
+                                 orig_file_axname
+                                                 CHAR        6    F       TIME10
   
  SST2                  FLOAT     missing_value   FLOAT       1    T       -1.E+34
                                  _FillValue      FLOAT       1    T       -1.E+34
@@ -72160,14 +72242,16 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Y
                                  standard_name   CHAR        8    F       latitude
-                                 orig_file_axnameCHAR        11   F       COADSY46_48
+                                 orig_file_axname
+                                                 CHAR        11   F       COADSY46_48
   
 (TIME10)               DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          CHAR        1    T
                                  axis            CHAR        1    T       T
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        6    F       TIME10
+                                 orig_file_axname
+                                                 CHAR        6    F       TIME10
   
  SST4                  INT       missing_value   INT         1    T       -99
                                  _FillValue      INT         1    T       -99
@@ -72196,14 +72280,16 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Y
                                  standard_name   CHAR        8    F       latitude
-                                 orig_file_axnameCHAR        11   F       COADSY46_48
+                                 orig_file_axname
+                                                 CHAR        11   F       COADSY46_48
   
 (TIME10)               DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          CHAR        1    T
                                  axis            CHAR        1    T       T
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        6    F       TIME10
+                                 orig_file_axname
+                                                 CHAR        6    F       TIME10
   
  SST4                  BYTE      missing_value   BYTE        1    T       -99
                                  _FillValue      BYTE        1    T       -99
@@ -72228,14 +72314,16 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Y
                                  standard_name   CHAR        8    F       latitude
-                                 orig_file_axnameCHAR        11   F       COADSY46_48
+                                 orig_file_axname
+                                                 CHAR        11   F       COADSY46_48
   
 (TIME10)               DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          CHAR        1    T
                                  axis            CHAR        1    T       T
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        6    F       TIME10
+                                 orig_file_axname
+                                                 CHAR        6    F       TIME10
   
  SST4                  INT       missing_value   INT         1    T       -99
                                  _FillValue      INT         1    T       -99
@@ -72458,14 +72546,16 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Y
                                  standard_name   CHAR        8    F       latitude
-                                 orig_file_axnameCHAR        11   F       COADSY46_48
+                                 orig_file_axname
+                                                 CHAR        11   F       COADSY46_48
   
 (TIME101)              FLOAT     units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          FLOAT       1    T       8765.82
                                  axis            CHAR        1    T       T
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        6    F       TIME10
+                                 orig_file_axname
+                                                 CHAR        6    F       TIME10
   
  SST                   FLOAT     missing_value   FLOAT       1    T       -1.E+34
                                  _FillValue      FLOAT       1    T       -1.E+34
@@ -72490,21 +72580,24 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Y
                                  standard_name   CHAR        8    F       latitude
-                                 orig_file_axnameCHAR        11   F       COADSY46_48
+                                 orig_file_axname
+                                                 CHAR        11   F       COADSY46_48
   
 (TIME101)              FLOAT     units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          FLOAT       1    T       8765.82
                                  axis            CHAR        1    T       T
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        6    F       TIME10
+                                 orig_file_axname
+                                                 CHAR        6    F       TIME10
   
  SST                   DOUBLE    missing_value   DOUBLE      1    T       -1.E+34
                                  _FillValue      DOUBLE      1    T       -1.E+34
                                  long_name       CHAR        23   T       SEA SURFACE TEMPERATURE
                                  history         CHAR        22   T       From coads_climatology
                                  units           CHAR        5    T       Deg C
-                                 Ferret_PrecisionCHAR        69   F       This variable written using Ferret was converted from FLOAT to DOUBLE
+                                 Ferret_Precision_Note
+                                                 CHAR        69   F       This variable written using Ferret was converted from FLOAT to DOUBLE
                                  long_name_mod   CHAR        9    F       X=60W@ITP
   
  
@@ -72531,21 +72624,24 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Y
                                  standard_name   CHAR        8    F       latitude
-                                 orig_file_axnameCHAR        11   F       COADSY46_48
+                                 orig_file_axname
+                                                 CHAR        11   F       COADSY46_48
   
 (TIME10)               DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        20   T       01-JAN-0000 00:00:00
                                  modulo          DOUBLE      1    T       8765.82
                                  axis            CHAR        1    T       T
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        6    F       TIME10
+                                 orig_file_axname
+                                                 CHAR        6    F       TIME10
   
  SST                   FLOAT     missing_value   FLOAT       1    T       -1.E+34
                                  _FillValue      FLOAT       1    T       -1.E+34
                                  long_name       CHAR        23   T       SEA SURFACE TEMPERATURE
                                  history         CHAR        22   T       From coads_climatology
                                  units           CHAR        5    T       Deg C
-                                 Ferret_PrecisionCHAR        69   F       This variable written using Ferret was converted from FLOAT to DOUBLE
+                                 Ferret_Precision_Note
+                                                 CHAR        69   F       This variable written using Ferret was converted from FLOAT to DOUBLE
                                  long_name_mod   CHAR        9    F       X=60W@ITP
   
  
@@ -72570,7 +72666,8 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  calendar        CHAR        9    T       GREGORIAN
                                  time_origin     CHAR        11   T       15-JAN-1901
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        7    F       MYHOURS
+                                 orig_file_axname
+                                                 CHAR        7    F       MYHOURS
   
  TT                    DOUBLE    missing_value   DOUBLE      1    T       -1.E+34
                                  _FillValue      DOUBLE      1    T       -1.E+34
@@ -72595,7 +72692,8 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  calendar        CHAR        9    T       GREGORIAN
                                  time_origin     CHAR        11   T       15-JAN-1901
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        7    F       MYHOURS
+                                 orig_file_axname
+                                                 CHAR        7    F       MYHOURS
   
  TT                    INT       missing_value   INT         1    T       -9999
                                  _FillValue      INT         1    T       -9999
@@ -72620,7 +72718,8 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
                                  calendar        CHAR        9    T       GREGORIAN
                                  time_origin     CHAR        11   T       15-JAN-1901
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        7    F       MYHOURS
+                                 orig_file_axname
+                                                 CHAR        7    F       MYHOURS
   
  TT                    DOUBLE    missing_value   DOUBLE      1    T       -9999
                                  _FillValue      DOUBLE      1    T       -9999
@@ -73701,7 +73800,7 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Fri Mar 18 16:11:30 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
+		:history = "Fri Mar 18 17:10:16 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
 			"FERRET V6.97 (beta/dbg) 18-Mar-16" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
@@ -73799,7 +73898,8 @@ sh dat/att
                                  time_origin     CHAR        20   T       01-JAN-1990 00:00:00
                                  axis            CHAR        1    T       T
                                  bounds          CHAR        9    T       TGAP_bnds
-                                 orig_file_axnameCHAR        4    F       TGAP
+                                 orig_file_axname
+                                                 CHAR        4    F       TGAP
   
  TGAP_bnds             DOUBLE
   
@@ -76345,7 +76445,8 @@ sh dat/att
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       X
-                                 orig_file_axnameCHAR        7    F       X13AXIS
+                                 orig_file_axname
+                                                 CHAR        7    F       X13AXIS
   
  A                     DOUBLE    missing_value   DOUBLE      1    T       -1.E+34
                                  _FillValue      DOUBLE      1    T       -1.E+34
@@ -76361,7 +76462,8 @@ sh dat/att
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       X
-                                 orig_file_axnameCHAR        7    F       X13AXIS
+                                 orig_file_axname
+                                                 CHAR        7    F       X13AXIS
   
  B                     DOUBLE    missing_value   DOUBLE      1    T       -1.E+34
                                  _FillValue      DOUBLE      1    T       -1.E+34
@@ -76377,7 +76479,8 @@ sh dat/att
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
                                  point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       X
-                                 orig_file_axnameCHAR        7    F       X13AXIS
+                                 orig_file_axname
+                                                 CHAR        7    F       X13AXIS
   
  C                     DOUBLE    missing_value   DOUBLE      1    T       -1.E+34
                                  _FillValue      DOUBLE      1    T       -1.E+34
@@ -78624,18 +78727,19 @@ GO bn_spawn_size
 let files = {spawn:"ls *cdf*.jnl"}
 list files
              VARIABLE : {SPAWN:"ls *cdf*.jnl"}
-             SUBSET   : 8 points (X)
+             SUBSET   : 9 points (X)
  1   / 1:"bn_cdf_errmsg.jnl"      
  2   / 2:"bn_cdf.jnl"             
  3   / 3:"bn_cdf_keepax.jnl"      
  4   / 4:"bn_netcdf4.jnl"         
- 5   / 5:"err490_cdf_childax.jnl" 
- 6   / 6:"err491_cdf_childax.jnl" 
- 7   / 7:"err65_read_epic_cdf.jnl"
- 8   / 8:"err667_5d_netcdf.jnl"   
+ 5   / 5:"cdf.jnl"                
+ 6   / 6:"err490_cdf_childax.jnl" 
+ 7   / 7:"err491_cdf_childax.jnl" 
+ 8   / 8:"err65_read_epic_cdf.jnl"
+ 9   / 9:"err667_5d_netcdf.jnl"   
 say `files,return=isize`
- !-> MESSAGE/CONTINUE 8
-8
+ !-> MESSAGE/CONTINUE 9
+9
  
 ! Evaluate size without loading the variable first
 let datfiles = {spawn:"ls *.dat"}
@@ -78659,14 +78763,14 @@ list {spawn:"ls xml*.jnl"}
  
 LET filesets = xcat({spawn:"ls *.nc"}, {spawn:"ls *.jnl"})
 say `filesets, return=isize`
- !-> MESSAGE/CONTINUE 947
-947
+ !-> MESSAGE/CONTINUE 1054
+1054
  
 let files = {spawn:"ls *cdf*.jnl"}
 let name_len = strindex(files, ".sub")
 say `name_len, return=isize`
- !-> MESSAGE/CONTINUE 8
-8
+ !-> MESSAGE/CONTINUE 9
+9
  
 GO bn_reset
 cancel mode verify
@@ -86444,20 +86548,20 @@ GO err696_time_overlay
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
 sp date
-Fri Mar 18 16:12:03 PDT 2016
+Fri Mar 18 17:10:37 PDT 2016
 set view upper
 plot t[gt=tax_nlp]
 plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
 sp date
-Fri Mar 18 16:12:03 PDT 2016
+Fri Mar 18 17:10:37 PDT 2016
  
 sp date
-Fri Mar 18 16:12:03 PDT 2016
+Fri Mar 18 17:10:37 PDT 2016
 set view lower
 plot t[gt=tax_jul]
 plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
 sp date
-Fri Mar 18 16:12:03 PDT 2016
+Fri Mar 18 17:10:37 PDT 2016
  
 GO bn_reset
 cancel mode verify
@@ -88257,10 +88361,10 @@ save/clobber/file="tmp/test3.nc" i[i=1:3] + 3
 ! generate absolute path
 let dir = SPAWN("pwd")
 define sym use_abs_path = `DIR+"/tmp/test1.nc"`
- !-> define sym use_abs_path = /home/users/ansley/build/trunk/FERRET/bench/tmp/test1.nc
+ !-> define sym use_abs_path = /home/users/ansley/build/current_trunk/FERRET/bench/tmp/test1.nc
 say ($use_abs_path)
- !-> MESSAGE/CONTINUE /home/users/ansley/build/trunk/FERRET/bench/tmp/test1.nc
-/home/users/ansley/build/trunk/FERRET/bench/tmp/test1.nc
+ !-> MESSAGE/CONTINUE /home/users/ansley/build/current_trunk/FERRET/bench/tmp/test1.nc
+/home/users/ansley/build/current_trunk/FERRET/bench/tmp/test1.nc
  
 use tmp/test1.nc
 show data/brief
@@ -88287,17 +88391,17 @@ show data/brief
 canc data/all
  
 use "($use_abs_path)"
- !-> SET DAT/FORM=CDF "/home/users/ansley/build/trunk/FERRET/bench/tmp/test1.nc"
+ !-> SET DAT/FORM=CDF "/home/users/ansley/build/current_trunk/FERRET/bench/tmp/test1.nc"
 show data/brief
      currently SET data sets:
-    1> /home/users/ansley/build/trunk/FERRET/bench/tmp/test1.nc  (default)
+    1> /home/users/ansley/build/current_trunk/FERRET/bench/tmp/test1.nc  (default)
 canc data/all
  
 use ($use_abs_path)
- !-> SET DAT/FORM=CDF /home/users/ansley/build/trunk/FERRET/bench/tmp/test1.nc
+ !-> SET DAT/FORM=CDF /home/users/ansley/build/current_trunk/FERRET/bench/tmp/test1.nc
 show data/brief
      currently SET data sets:
-    1> /home/users/ansley/build/trunk/FERRET/bench/tmp/test1.nc  (default)
+    1> /home/users/ansley/build/current_trunk/FERRET/bench/tmp/test1.nc  (default)
 canc data/all
  
 use tmp/test1.nc,tmp/test2.nc,tmp/test3.nc
@@ -88363,10 +88467,10 @@ spawn echo 'say $1"1-n/a"  $2"2-n/a"  $3"3-n/a"  $4"4-n/a" $5"5-n/a" $6"6-n/a" $
 ! generate absolute path
 let dir = SPAWN("pwd")
 define sym abs_path = `DIR+"/tmp/testMe.jnl"`
- !-> define sym abs_path = /home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl
+ !-> define sym abs_path = /home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl
 say ($abs_path)
- !-> MESSAGE/CONTINUE /home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl
-/home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl
+ !-> MESSAGE/CONTINUE /home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl
+/home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl
  
 go tmp/testMe.jnl
 say $1"1-n/a"  $2"2-n/a"  $3"3-n/a"  $4"4-n/a" $5"5-n/a" $6"6-n/a" $7"7-n/a" $8"8-n/a"
@@ -88379,13 +88483,13 @@ say $1"1-n/a"  $2"2-n/a"  $3"3-n/a"  $4"4-n/a" $5"5-n/a" $6"6-n/a" $7"7-n/a" $8"
 1-n/a  2-n/a  3-n/a  4-n/a 5-n/a 6-n/a 7-n/a 8-n/a
  
 go ($abs_path)
- !-> go /home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl
+ !-> go /home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl
 say $1"1-n/a"  $2"2-n/a"  $3"3-n/a"  $4"4-n/a" $5"5-n/a" $6"6-n/a" $7"7-n/a" $8"8-n/a"
  !-> MESSAGE/CONTINUE 1-n/a  2-n/a  3-n/a  4-n/a 5-n/a 6-n/a 7-n/a 8-n/a
 1-n/a  2-n/a  3-n/a  4-n/a 5-n/a 6-n/a 7-n/a 8-n/a
  
 go "($abs_path)"
- !-> go "/home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl"
+ !-> go "/home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl"
 say $1"1-n/a"  $2"2-n/a"  $3"3-n/a"  $4"4-n/a" $5"5-n/a" $6"6-n/a" $7"7-n/a" $8"8-n/a"
  !-> MESSAGE/CONTINUE 1-n/a  2-n/a  3-n/a  4-n/a 5-n/a 6-n/a 7-n/a 8-n/a
 1-n/a  2-n/a  3-n/a  4-n/a 5-n/a 6-n/a 7-n/a 8-n/a
@@ -88401,13 +88505,13 @@ say $1"1-n/a"  $2"2-n/a"  $3"3-n/a"  $4"4-n/a" $5"5-n/a" $6"6-n/a" $7"7-n/a" $8"
 5  hello  bye  /quoted_path /unquoted_path 6-n/a 7-n/a 8-n/a
  
 go ($abs_path) 5 hello "bye" "/quoted_path" /unquoted_path
- !-> go /home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl 5 hello "bye" "/quoted_path" /unquoted_path
+ !-> go /home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl 5 hello "bye" "/quoted_path" /unquoted_path
 say $1"1-n/a"  $2"2-n/a"  $3"3-n/a"  $4"4-n/a" $5"5-n/a" $6"6-n/a" $7"7-n/a" $8"8-n/a"
  !-> MESSAGE/CONTINUE 5  hello  bye  /quoted_path /unquoted_path 6-n/a 7-n/a 8-n/a
 5  hello  bye  /quoted_path /unquoted_path 6-n/a 7-n/a 8-n/a
  
 go "($abs_path)" 5 hello "bye" "/quoted_path" /unquoted_path
- !-> go "/home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl" 5 hello "bye" "/quoted_path" /unquoted_path
+ !-> go "/home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl" 5 hello "bye" "/quoted_path" /unquoted_path
 say $1"1-n/a"  $2"2-n/a"  $3"3-n/a"  $4"4-n/a" $5"5-n/a" $6"6-n/a" $7"7-n/a" $8"8-n/a"
  !-> MESSAGE/CONTINUE 5  hello  bye  /quoted_path /unquoted_path 6-n/a 7-n/a 8-n/a
 5  hello  bye  /quoted_path /unquoted_path 6-n/a 7-n/a 8-n/a
@@ -89092,7 +89196,8 @@ show data/attr my_fmrc
  TF_TIMES              FLOAT     long_name       CHAR        25   T       Forecast time step matrix
                                  units           CHAR        31   T       days since 01-JAN-1900 00:00:00
                                  missing_value   FLOAT       1    T       -1.E+34
-                                 _CoordinateAxisTCHAR        4    T       Time
+                                 _CoordinateAxisType
+                                                 CHAR        4    T       Time
                                  calendar        CHAR        9    T       GREGORIAN
   
  FCST_2                FLOAT     long_name       CHAR        16   T       another variable
@@ -89233,7 +89338,7 @@ list/i=10/j=10/order=ft/l=1:20/width=200 err_viz_form
              LONGITUDE: 149E
              LATITUDE : 29N
              Initialization time increases across row.  Verification time increases down page. 
-                          45.6       136.8      228        319.2      410.4      501.6      592.8      684     
+                           0         91.2       182.4      273.6      364.8      456        547.2      638.4   
                            1          2          3          4          5          6          7          8
  16-JAN-1950 12 /  1:  0.0000000       ....       ....       ....       ....       ....       ....       ....
  15-FEB-1950 00 /  2:  0.0000000       ....       ....       ....       ....       ....       ....       ....
@@ -89268,7 +89373,7 @@ list/i=10/j=10/order=ft/l=1:20/width=200 err_viz_form_2
              LONGITUDE: 149E
              LATITUDE : 29N
              Initialization time increases across row.  Verification time increases down page. 
-                          45.6       136.8      228        319.2      410.4      501.6      592.8      684     
+                           0         91.2       182.4      273.6      364.8      456        547.2      638.4   
                            1          2          3          4          5          6          7          8
  16-JAN-1950 12 /  1:  0.0000000       ....       ....       ....       ....       ....       ....       ....
  15-FEB-1950 00 /  2:  0.0000000       ....       ....       ....       ....       ....       ....       ....
@@ -89484,7 +89589,7 @@ list/i=10/j=10/order=ft/l=1:20/width=200 err_viz_form
              LONGITUDE: 149E
              LATITUDE : 29N
              Initialization time increases across row.  Verification time increases down page. 
-                          45.6       136.8      228        319.2      410.4      501.6      592.8      684     
+                           0         91.2       182.4      273.6      364.8      456        547.2      638.4   
                            1          2          3          4          5          6          7          8
  16-JAN-1950 12 /  1:  0.0000000       ....       ....       ....       ....       ....       ....       ....
  15-FEB-1950 00 /  2:  0.0000000       ....       ....       ....       ....       ....       ....       ....
@@ -89519,7 +89624,7 @@ list/i=10/j=10/order=ft/l=1:20/width=200 err_viz_form_2
              LONGITUDE: 149E
              LATITUDE : 29N
              Initialization time increases across row.  Verification time increases down page. 
-                          45.6       136.8      228        319.2      410.4      501.6      592.8      684     
+                           0         91.2       182.4      273.6      364.8      456        547.2      638.4   
                            1          2          3          4          5          6          7          8
  16-JAN-1950 12 /  1:  0.0000000       ....       ....       ....       ....       ....       ....       ....
  15-FEB-1950 00 /  2:  0.0000000       ....       ....       ....       ....       ....       ....       ....
@@ -89710,7 +89815,7 @@ list/i=10/j=10/order=ft/l=1:20/width=200 err_viz_form
              LONGITUDE: 149E
              LATITUDE : 29N
              Initialization time increases across row.  Verification time increases down page. 
-                          45.6       136.9      228.1      319.4      410.6      501.9      593.1      684.4   
+                           0         91.3       182.5      273.8      365        456.3      547.5      638.8   
                            1          2          3          4          5          6          7          8
  16-JAN-1950 12 /  1:  0.0000000       ....       ....       ....       ....       ....       ....       ....
  15-FEB-1950 00 /  2:  0.0000000       ....       ....       ....       ....       ....       ....       ....
@@ -89745,7 +89850,7 @@ list/i=10/j=10/order=ft/l=1:20/width=200 err_viz_form_2
              LONGITUDE: 149E
              LATITUDE : 29N
              Initialization time increases across row.  Verification time increases down page. 
-                          45.6       136.9      228.1      319.4      410.6      501.9      593.1      684.4   
+                           0         91.3       182.5      273.8      365        456.3      547.5      638.8   
                            1          2          3          4          5          6          7          8
  16-JAN-1950 12 /  1:  0.0000000       ....       ....       ....       ....       ....       ....       ....
  15-FEB-1950 00 /  2:  0.0000000       ....       ....       ....       ....       ....       ....       ....
@@ -89916,7 +90021,7 @@ list/i=10/j=10/order=ft/l=1:20/width=200 err_viz_form
              LONGITUDE: 149E
              LATITUDE : 29N
              Initialization time increases across row.  Verification time increases down page. 
-                          45.6       136.7      227.9      319        410.1      501.3      592.4      683.6   
+                           0         91.1       182.3      273.4      364.6      455.7      546.9      638     
                            1          2          3          4          5          6          7          8
  16-JAN-1950 12 /  1:  0.0000000       ....       ....       ....       ....       ....       ....       ....
  15-FEB-1950 00 /  2:  0.0000000       ....       ....       ....       ....       ....       ....       ....
@@ -89951,7 +90056,7 @@ list/i=10/j=10/order=ft/l=1:20/width=200 err_viz_form_2
              LONGITUDE: 149E
              LATITUDE : 29N
              Initialization time increases across row.  Verification time increases down page. 
-                          45.6       136.7      227.9      319        410.1      501.3      592.4      683.6   
+                           0         91.1       182.3      273.4      364.6      455.7      546.9      638     
                            1          2          3          4          5          6          7          8
  16-JAN-1950 12 /  1:  0.0000000       ....       ....       ....       ....       ....       ....       ....
  15-FEB-1950 00 /  2:  0.0000000       ....       ....       ....       ....       ....       ....       ....
@@ -90856,27 +90961,31 @@ SHOW DATA/ATT t_f04_e3_1v ! note atts im_everwhere vs im_not_everwhere
                                  modulo          DOUBLE      1    T       360
                                  units           CHAR        12   T       degrees_east
                                  standard_name   CHAR        9    F       longitude
-                                 orig_file_axnameCHAR        3    F       XAX
+                                 orig_file_axname
+                                                 CHAR        3    F       XAX
   
 (YAX)                  DOUBLE    point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Y
                                  units           CHAR        13   T       degrees_north
                                  standard_name   CHAR        8    F       latitude
-                                 orig_file_axnameCHAR        3    F       YAX
+                                 orig_file_axname
+                                                 CHAR        3    F       YAX
   
 (ZAX1)                 DOUBLE    point_spacing   CHAR        4    T       even
                                  axis            CHAR        1    T       Z
                                  positive        CHAR        2    T       up
                                  units           CHAR        1    T       m
                                  standard_name   CHAR        8    F       altitude
-                                 orig_file_axnameCHAR        3    F       ZAX
+                                 orig_file_axname
+                                                 CHAR        3    F       ZAX
   
 (TRUEMONTH14)          DOUBLE    units           CHAR        30   T       days since 1900-01-01 00:00:00
                                  axis            CHAR        1    T       T
                                  bounds          CHAR        14   T       TRUEMONTH_bnds
                                  time_origin     CHAR        10   T       1-JAN-1900
                                  standard_name   CHAR        4    F       time
-                                 orig_file_axnameCHAR        9    F       TRUEMONTH
+                                 orig_file_axname
+                                                 CHAR        9    F       TRUEMONTH
   
  TRUEMONTH_bnds        DOUBLE
   
@@ -90884,7 +90993,8 @@ SHOW DATA/ATT t_f04_e3_1v ! note atts im_everwhere vs im_not_everwhere
                                  _FillValue      DOUBLE      1    T       -1.E+34
                                  long_name       CHAR        13   T       some variable
                                  im_everywhere   CHAR        13   F       so promote me
-                                 im_not_everywherCHAR        19   F       so don't promote me
+                                 im_not_everywhere
+                                                 CHAR        19   F       so don't promote me
                                  long_name_mod   CHAR        7    F       L=10:21
   
  REALIZATION           DOUBLE    missing_value   DOUBLE      1    T       -1.E+34
@@ -91137,7 +91247,8 @@ SHOW DATA/ATTRIB tfe   ! also notice the promotion of fcst.im_everywhere
  TF_TIMES              FLOAT     long_name       CHAR        25   T       Forecast time step matrix
                                  units           CHAR        31   T       days since 01-JAN-1900 00:00:00
                                  missing_value   FLOAT       1    T       -1.E+34
-                                 _CoordinateAxisTCHAR        4    T       Time
+                                 _CoordinateAxisType
+                                                 CHAR        4    T       Time
                                  calendar        CHAR        9    T       GREGORIAN
   
  FCST_2                FLOAT     long_name       CHAR        16   T       another variable
@@ -91475,9 +91586,9 @@ GO bn_speedtest
 ! bn_speedtest.jnl
 ! issue large numbers of commands, timing with clock time
 can mode verify
-10K LET commands LET a = 0 takes  1.282  seconds
-Second 10K LET commands LET a = 0 takes  2.926  seconds
-5K LOAD with transform takes  3.85  seconds
+10K LET commands LET a = 0 takes  1.271  seconds
+Second 10K LET commands LET a = 0 takes  2.897  seconds
+5K LOAD with transform takes  3.817  seconds
  
 GO bn_reset
 cancel mode verify
@@ -92568,16 +92679,19 @@ show dat/att 1
 (COADSX)               DOUBLE    units           CHAR        12   T       degrees_east
                                  modulo          CHAR        1    T
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        6    F       COADSX
+                                 orig_file_axname
+                                                 CHAR        6    F       COADSX
   
 (COADSY)               DOUBLE    units           CHAR        13   T       degrees_north
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        6    F       COADSY
+                                 orig_file_axname
+                                                 CHAR        6    F       COADSY
   
 (TIME10)               DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
                                  time_origin     CHAR        19   T       1-JAN-0000 00:00:00
                                  modulo          CHAR        1    T
-                                 orig_file_axnameCHAR        4    F       TIME
+                                 orig_file_axname
+                                                 CHAR        4    F       TIME
   
  SST                   FLOAT     missing_value   FLOAT       1    T       -1.E+34
                                  _FillValue      FLOAT       1    T       -1.E+34
@@ -92628,15 +92742,18 @@ show dat/att 2
 (XAXLEVITR1_160)       DOUBLE    units           CHAR        12   T       degrees_east
                                  modulo          CHAR        1    T
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        14   F       XAXLEVITR1_160
+                                 orig_file_axname
+                                                 CHAR        14   F       XAXLEVITR1_160
   
 (YAXLEVITR1_90)        DOUBLE    units           CHAR        13   T       degrees_north
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        13   F       YAXLEVITR1_90
+                                 orig_file_axname
+                                                 CHAR        13   F       YAXLEVITR1_90
   
 (ZAXLEVITR1_1)         DOUBLE    units           CHAR        6    T       METERS
                                  positive        CHAR        4    T       down
-                                 orig_file_axnameCHAR        12   F       ZAXLEVITR1_1
+                                 orig_file_axname
+                                                 CHAR        12   F       ZAXLEVITR1_1
   
  TEMP                  FLOAT     missing_value   FLOAT       1    T       -1.E+10
                                  _FillValue      FLOAT       1    T       -1.E+10
@@ -92702,15 +92819,18 @@ show dat/att 2
 (XAXLEVITR1_160)       DOUBLE    units           CHAR        12   T       degrees_east
                                  modulo          CHAR        1    T
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        14   F       XAXLEVITR1_160
+                                 orig_file_axname
+                                                 CHAR        14   F       XAXLEVITR1_160
   
 (YAXLEVITR1_90)        DOUBLE    units           CHAR        13   T       degrees_north
                                  point_spacing   CHAR        4    T       even
-                                 orig_file_axnameCHAR        13   F       YAXLEVITR1_90
+                                 orig_file_axname
+                                                 CHAR        13   F       YAXLEVITR1_90
   
 (ZAXLEVITR1_1)         DOUBLE    units           CHAR        6    T       METERS
                                  positive        CHAR        4    T       down
-                                 orig_file_axnameCHAR        12   F       ZAXLEVITR1_1
+                                 orig_file_axname
+                                                 CHAR        12   F       ZAXLEVITR1_1
   
  TEMP                  FLOAT     missing_value   FLOAT       1    T       -1.E+10
                                  _FillValue      FLOAT       1    T       -1.E+10
@@ -92768,6 +92888,209 @@ save/clobber/file=a.nc myvar[d=2]
 sp ncdump -h a.nc >> all_ncdump.out
  
  
+GO bn_reset
+cancel mode verify
+GO bn_list_clim_axes
+! bn_list_clim_axes.jnl
+! *acm* 3/16
+! Show and list coordinates for climatological axes
+! that are pre-defined in Ferret
+ 
+show axis seasonal_reg
+ name       axis              # pts   start                end
+ SEASONAL_REG TIME              4mr   15-FEB 15:43         15-NOV 14:05
+T0 = 01-JAN-0000 00:00:00
+   Axis span (to cell edges) = 8765.82 (modulo length = axis span)
+show axis month*
+ name       axis              # pts   start                end
+ MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
+T0 = 01-JAN-0000 00:00:00
+   Axis span (to cell edges) = 365.2425 (modulo length = axis span)
+ MONTH_REG TIME                12mr   16-JAN 06:00         16-DEC 01:20
+T0 = 01-JAN-0000 00:00:00
+   Axis span (to cell edges) = 8765.82 (modulo length = axis span)
+ MONTH_GREGORIAN TIME          12mi   16-JAN 12:00         15-DEC 17:49
+T0 = 01-JAN-0000 00:00:00
+   Axis span (to cell edges) = 365.2425 (modulo length = axis span)
+ MONTH_NOLEAP TIME             12mi   16-JAN 12:00         16-DEC 12:00
+T0 = 01-JAN-0000 00:00:00
+CALENDAR = NOLEAP
+   Axis span (to cell edges) = 365 (modulo length = axis span)
+ MONTH_360_DAY TIME            12mr   16-JAN 00:00         16-DEC 00:00
+T0 = 01-JAN-0000 00:00:00
+CALENDAR = 360_DAY
+   Axis span (to cell edges) = 360 (modulo length = axis span)
+ MONTH_ALL_LEAP TIME           12mi   16-JAN 12:00         16-DEC 12:00
+T0 = 01-JAN-0000 00:00:00
+CALENDAR = ALL_LEAP
+   Axis span (to cell edges) = 366 (modulo length = axis span)
+ MONTHT    TIME                24 r   16-JAN-1949 00:00    17-DEC-1950 01:30
+T0 = 15-JAN-1901
+   Axis span (to cell edges) = 17532
+show axis/t month_irreg
+ name       axis              # pts   start                end
+ MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
+T0 = 01-JAN-0000 00:00:00
+   Axis span (to cell edges) = 365.2425 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (DAYS)
+       1>  16-JAN 12:00:00       31         01-JAN 00:00:00         15.5
+       2>  15-FEB 02:54:36       28.2425    01-FEB 00:00:00         45.12125
+       3>  15-MAR 17:49:12       31         29-FEB 05:49:12         74.7425
+       4>  15-APR 05:49:12       30         31-MAR 05:49:12         105.2425
+       5>  15-MAY 17:49:12       31         30-APR 05:49:12         135.7425
+       6>  15-JUN 05:49:12       30         31-MAY 05:49:12         166.2425
+       7>  15-JUL 17:49:12       31         30-JUN 05:49:12         196.7425
+       8>  15-AUG 17:49:12       31         31-JUL 05:49:12         227.7425
+       9>  15-SEP 05:49:12       30         31-AUG 05:49:12         258.2425
+      10>  15-OCT 17:49:12       31         30-SEP 05:49:12         288.7425
+      11>  15-NOV 05:49:12       30         31-OCT 05:49:12         319.2425
+      12>  15-DEC 17:49:12       31         30-NOV 05:49:12         349.7425
+show axis/t month_gregorian
+ name       axis              # pts   start                end
+ MONTH_GREGORIAN TIME          12mi   16-JAN 12:00         15-DEC 17:49
+T0 = 01-JAN-0000 00:00:00
+   Axis span (to cell edges) = 365.2425 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  16-JAN 12:00:00       31         01-JAN 00:00:00         15.5
+       2>  15-FEB 02:54:36       28.2425    01-FEB 00:00:00         45.12125
+       3>  15-MAR 17:49:12       31         29-FEB 05:49:12         74.7425
+       4>  15-APR 05:49:12       30         31-MAR 05:49:12         105.2425
+       5>  15-MAY 17:49:12       31         30-APR 05:49:12         135.7425
+       6>  15-JUN 05:49:12       30         31-MAY 05:49:12         166.2425
+       7>  15-JUL 17:49:12       31         30-JUN 05:49:12         196.7425
+       8>  15-AUG 17:49:12       31         31-JUL 05:49:12         227.7425
+       9>  15-SEP 05:49:12       30         31-AUG 05:49:12         258.2425
+      10>  15-OCT 17:49:12       31         30-SEP 05:49:12         288.7425
+      11>  15-NOV 05:49:12       30         31-OCT 05:49:12         319.2425
+      12>  15-DEC 17:49:12       31         30-NOV 05:49:12         349.7425
+show axis/t month_noleap
+ name       axis              # pts   start                end
+ MONTH_NOLEAP TIME             12mi   16-JAN 12:00         16-DEC 12:00
+T0 = 01-JAN-0000 00:00:00
+CALENDAR = NOLEAP
+   Axis span (to cell edges) = 365 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  16-JAN 12:00:00       31         01-JAN 00:00:00         15.5
+       2>  15-FEB 00:00:00       28         01-FEB 00:00:00         45
+       3>  16-MAR 12:00:00       31         01-MAR 00:00:00         74.5
+       4>  16-APR 00:00:00       30         01-APR 00:00:00         105
+       5>  16-MAY 12:00:00       31         01-MAY 00:00:00         135.5
+       6>  16-JUN 00:00:00       30         01-JUN 00:00:00         166
+       7>  16-JUL 12:00:00       31         01-JUL 00:00:00         196.5
+       8>  16-AUG 12:00:00       31         01-AUG 00:00:00         227.5
+       9>  16-SEP 00:00:00       30         01-SEP 00:00:00         258
+      10>  16-OCT 12:00:00       31         01-OCT 00:00:00         288.5
+      11>  16-NOV 00:00:00       30         01-NOV 00:00:00         319
+      12>  16-DEC 12:00:00       31         01-DEC 00:00:00         349.5
+show axis/t month_360_day
+ name       axis              # pts   start                end
+ MONTH_360_DAY TIME            12mr   16-JAN 00:00         16-DEC 00:00
+T0 = 01-JAN-0000 00:00:00
+CALENDAR = 360_DAY
+   Axis span (to cell edges) = 360 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  16-JAN 00:00:00       30         01-JAN 00:00:00         15
+       2>  16-FEB 00:00:00       30         01-FEB 00:00:00         45
+       3>  16-MAR 00:00:00       30         01-MAR 00:00:00         75
+       4>  16-APR 00:00:00       30         01-APR 00:00:00         105
+       5>  16-MAY 00:00:00       30         01-MAY 00:00:00         135
+       6>  16-JUN 00:00:00       30         01-JUN 00:00:00         165
+       7>  16-JUL 00:00:00       30         01-JUL 00:00:00         195
+       8>  16-AUG 00:00:00       30         01-AUG 00:00:00         225
+       9>  16-SEP 00:00:00       30         01-SEP 00:00:00         255
+      10>  16-OCT 00:00:00       30         01-OCT 00:00:00         285
+      11>  16-NOV 00:00:00       30         01-NOV 00:00:00         315
+      12>  16-DEC 00:00:00       30         01-DEC 00:00:00         345
+show axis/t month_all_leap
+ name       axis              # pts   start                end
+ MONTH_ALL_LEAP TIME           12mi   16-JAN 12:00         16-DEC 12:00
+T0 = 01-JAN-0000 00:00:00
+CALENDAR = ALL_LEAP
+   Axis span (to cell edges) = 366 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  16-JAN 12:00:00       31         01-JAN 00:00:00         15.5
+       2>  15-FEB 12:00:00       29         01-FEB 00:00:00         45.5
+       3>  16-MAR 12:00:00       31         01-MAR 00:00:00         75.5
+       4>  16-APR 00:00:00       30         01-APR 00:00:00         106
+       5>  16-MAY 12:00:00       31         01-MAY 00:00:00         136.5
+       6>  16-JUN 00:00:00       30         01-JUN 00:00:00         167
+       7>  16-JUL 12:00:00       31         01-JUL 00:00:00         197.5
+       8>  16-AUG 12:00:00       31         01-AUG 00:00:00         228.5
+       9>  16-SEP 00:00:00       30         01-SEP 00:00:00         259
+      10>  16-OCT 12:00:00       31         01-OCT 00:00:00         289.5
+      11>  16-NOV 00:00:00       30         01-NOV 00:00:00         320
+      12>  16-DEC 12:00:00       31         01-DEC 00:00:00         350.5
+ 
+GO bn_reset
+cancel mode verify
+GO bn_climatology_attr
+! bn_climatology_attr.jnl
+! *acm* 3/16  See ticket 2278
+!
+! Add an attribute climatology_time_range when writing a computed
+! climatology, listing the month/year of the start and end of the
+! data used in computing it.
+ 
+! Define a monthly axis
+def ax/t=1-feb-1980:1-feb-2003/np=276/unit="day"/t0=1-jan-1900 tax
+let tvar = t[gt=tax]
+ 
+! entire input time range used
+let clim1 = tvar[gt=month_irreg@mod]
+save/file=a.nc/clobber clim1
+ 
+! a subset of the time range used
+let t_subset = tvar[t=1-feb-1990:31-dec-1999]
+let clim2 = t_subset[gt=month_reg@mod]
+save/append/file=a.nc clim2
+ 
+! show the attributes
+can dat/all; use a.nc
+list/nohead/norow clim1.climatology_time_range, clim2.climatology_time_range
+ "FEB-1980:FEB-2003" "FEB-1990:DEC-1999"
+ 
+ 
+! noleap axis
+def ax/edge/t=1-feb-1980:1-feb-2003/np=276/cal=noleap/unit="hour"/t0=1-jan-1900 tax
+let tvar = t[gt=tax]
+let clim1 = tvar[gt=month_noleap@mod]
+save/file=a.nc/clobber clim1
+ 
+let t_subset = tvar[t=1-feb-1990:31-dec-1999]
+let clim2 = t_subset[gt=month_noleap@mod]
+save/append/file=a.nc clim2
+ 
+! show the attributes
+can dat/all; use a.nc
+list/nohead/norow clim1.climatology_time_range, clim2.climatology_time_range
+ "FEB-1980:JAN-2003" "FEB-1990:DEC-1999"
+ 
+ 
+ 
+! If the expression compbines data from multiple ranges, indicate that
+ 
+def ax/t=1-feb-1980:1-feb-2003/np=276/unit="day"/t0=1-jan-1900 tax
+let tvar = t[gt=tax]
+let a = tvar[gt=month_reg@mod]
+ 
+let t_subset = tvar[t=1-feb-1990:31-dec-1999]
+let b = t_subset[gt=month_reg@mod]
+let c = a+b
+ 
+save/append/file=a.nc c
+ 
+can dat/all; use a.nc
+! show the attributes
+can dat/all; use a.nc
+list/nohead/norow c.climatology_time_range
+ "Multiple time ranges used"
+ 
+ 
 !  *********** Always do a bn_reset  ***********
 !  *********** make sure things clean up well **
 GO bn_reset
@@ -92783,7 +93106,7 @@ yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v6.97 (beta/dbg)
  	Linux 2.6.32-573.18.1.el6.x86_64 64-bit - 03/18/16
- 	18-Mar-16 16:12     
+ 	18-Mar-16 17:11     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -96448,7 +96771,7 @@ yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v6.97 (beta/dbg)
  	Linux 2.6.32-573.18.1.el6.x86_64 64-bit - 03/18/16
- 	18-Mar-16 16:12     
+ 	18-Mar-16 17:11     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 8 bytes)
@@ -96461,12 +96784,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "18-Mar-16"
-SESSION_TIME = "16:12"
-SESSION_PID = "3692"
-DELTA_CPU = "0.044992"
-CLOCK_SECS = "0.634"
+SESSION_TIME = "17:11"
+SESSION_PID = "28756"
+DELTA_CPU = "0.055991"
+CLOCK_SECS = "0.391"
 CURRENT_DATE = "18-Mar-16"
-CURRENT_TIME = "16:12:51"
+CURRENT_TIME = "17:11:03"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 GO_FILE = "./bn_startupfile.jnl"
@@ -96489,7 +96812,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "18-Mar-16:16:12"
+WIN_TITLE = "18-Mar-16:17:11"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -96554,7 +96877,7 @@ yes? GO bn_gif
  	NOAA/PMEL TMAP
  	FERRET v6.97 (beta/dbg)
  	Linux 2.6.32-573.18.1.el6.x86_64 64-bit - 03/18/16
- 	18-Mar-16 16:12     
+ 	18-Mar-16 17:11     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -97066,7 +97389,7 @@ yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v6.97 (beta/dbg)
  	Linux 2.6.32-573.18.1.el6.x86_64 64-bit - 03/18/16
- 	18-Mar-16 16:12     
+ 	18-Mar-16 17:11     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -97180,7 +97503,7 @@ yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v6.97 (beta/dbg)
  	Linux 2.6.32-573.18.1.el6.x86_64 64-bit - 03/18/16
- 	18-Mar-16 16:12     
+ 	18-Mar-16 17:11     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -97264,4 +97587,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Fri Mar 18 16:12:59 PDT 2016
+Ended at Fri Mar 18 17:11:06 PDT 2016

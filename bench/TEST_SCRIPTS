@@ -254,5 +254,7 @@ bn_dataset_qualifier.jnl
 bn_speedtest.jnl
 bn_show_noupcase.jnl
 bn_letd_attributes.jnl
+bn_list_clim_axes.jnl
+bn_climatology_attr.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

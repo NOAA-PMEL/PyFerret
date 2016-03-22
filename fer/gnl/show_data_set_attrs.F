@@ -50,6 +50,9 @@
 * V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
 *                  added to that dataset in the attribute structure, 
 *                  and are shown with their dataset on SHOW DAT/ATT
+* V698  3/16 *acm* Ticket 2371: Wrap the output of SHOW DAT/ATT to 
+*                  the next line when the variable name or attribute 
+*                  name is long
 * 
 
 	include 'tmap_dims.parm'
@@ -109,12 +112,22 @@
      .         T50,'AttType',T62,'Size',T67,'OutFlag',T75,'AttValue')
  3201	FORMAT('---------------------------------------------',
      .         '---------------------------------------------')
+
  3300	FORMAT(' ',A,T24,A,T34,A,T50,A,T62,A,T67,A,T75,A)
+ 4300	FORMAT(' ',T50,A,T62,A,T67,A,T75,A)
+ 5300	FORMAT(' ',T24,A,T34,A,T50,A,T62,A,T67,A,T75,A)
  3301	FORMAT(' ',A,T24,A,T34,A,T50,A,T62,A,T67,A,T75)
+ 5301	FORMAT(' ',T24,A,T34,A,T50,A,T62,A,T67,A,T75)
  3302	FORMAT(' ',A)
  3304	FORMAT(' ',A,T34,A,T50,A,T62,A,T67,A,T75,A)
+ 4304	FORMAT(' ',T50,A,T62,A,T67,A,T75,A)
+ 5304	FORMAT(' ',T34,A,T50,A,T62,A,T67,A,T75,A)
  3400	FORMAT('(',A,')',T24,A,T34,A,T50,A,T62,A,T67,A,T75,A)
+ 4400	FORMAT(T50,A,T62,A,T67,A,T75,A)
+ 5400	FORMAT(T24,A,T34,A,T50,A,T62,A,T67,A,T75,A)
  3500	FORMAT(T34,A,T50,A,T62,A,T67,A,T75,A)
+ 4500	FORMAT(T50,A,T62,A,T67,A,T75,A)
+
 
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
         WRITE (lun, 3201) 
@@ -165,15 +178,28 @@
 
                  slen = TM_LENSTR1(attname)
                  buff = TM_FMT (FLOAT(attlen),7,14,llen)
-		 IF (vlen+slen+llen+blen+20 .LE. len_attbuff) THEN
+		 IF (slen .GT. 15) THEN
+
                     WRITE (risc_buff, 3300) varname(1:vlen), typ(vtype),
-     .                 attname(1:slen), typ(attype), buff(1:llen), oflag,
-     .                 attbuff(1:blen)
-                 ELSE
-                    WRITE (risc_buff, 3301) varname(1:vlen), typ(vtype),
-     .                 attname(1:slen), typ(attype), buff(1:llen), oflag
+     .                 attname(1:slen)
+
                     CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
-                    WRITE (risc_buff, 3302) attbuff(1:len_attbuff-2)
+                    WRITE (risc_buff, 4300) typ(attype), buff(1:llen), oflag,
+     .                 attbuff(1:blen)
+
+		 ELSE
+		    IF (vlen+slen+llen+blen+20 .LE. len_attbuff) THEN
+                       WRITE (risc_buff, 3300) varname(1:vlen), typ(vtype),
+     .                    attname(1:slen), typ(attype), buff(1:llen), oflag,
+     .                    attbuff(1:blen)
+
+                    ELSE
+                       WRITE (risc_buff, 3301) varname(1:vlen), typ(vtype),
+     .                    attname(1:slen), typ(attype), buff(1:llen), oflag
+     
+                       CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+                       WRITE (risc_buff, 3302) attbuff(1:len_attbuff-2)
+                    ENDIF
                  ENDIF
                  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
                  risc_buff = ' '
@@ -210,8 +236,18 @@
               IF (nvatts .EQ. 0) THEN
                  IF (coordvar) THEN
                     WRITE (risc_buff, 3400) varname(1:vlen), typ(vtype)
+                    IF (vlen .GT. 21) THEN
+		       WRITE (risc_buff, 3400) varname(1:vlen)
+		       CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+		       WRITE (risc_buff, 5400) typ(vtype)
+                    ENDIF
                  ELSE
                     WRITE (risc_buff, 3300) varname(1:vlen), typ(vtype)
+                    IF (vlen .GT. 21) THEN
+                       WRITE (risc_buff, 3300) varname(1:vlen)
+		       CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+		       WRITE (risc_buff, 5300) typ(vtype)
+		    ENDIF
                  ENDIF
 		 
 		 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
@@ -250,33 +286,125 @@
                  buff = TM_FMT (FLOAT(attlen),7,14,llen) 
                 
                  IF (iatt .EQ. 1) THEN
+                    IF (uvflag.EQ.0) THEN
                     IF (coordvar) THEN
-                       WRITE (risc_buff, 3400) varname(1:vlen), 
-     .                    typ(vtype), attname(1:slen), typ(attype), 
-     .                    buff(1:llen), oflag, attbuff(1:blen)
-                    ELSE
-		    IF (vlen+slen+llen+blen+20 .LE. len_attbuff) THEN
-                       WRITE (risc_buff, 3300) varname(1:vlen), typ(vtype),
-     .                 attname(1:slen), typ(attype), buff(1:llen), oflag,
-     .                 attbuff(1:blen)
+		       IF (slen .GT. 15) THEN
+                          WRITE (risc_buff, 3400) varname(1:vlen), 
+     .                       typ(vtype), attname(1:slen)
+     
+                          IF (vlen .GT. 21) THEN
+                             WRITE (risc_buff, 3400) varname(1:vlen)
+                             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+                             WRITE (risc_buff, 5400) typ(vtype), attname(1:slen)
+                          ENDIF
+                          CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+
+                          WRITE (risc_buff, 4400) typ(attype), 
+     .                       buff(1:llen), oflag, attbuff(1:blen)
+
+		       ELSE
+                          WRITE (risc_buff, 3400) varname(1:vlen), 
+     .                       typ(vtype), attname(1:slen), typ(attype), 
+     .                       buff(1:llen), oflag, attbuff(1:blen)
+                          IF (vlen .GT. 21) THEN
+                             WRITE (risc_buff, 3400) varname(1:vlen)
+                             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+                             WRITE (risc_buff, 5400) typ(vtype), attname(1:slen), 
+     .                          typ(attype), buff(1:llen), oflag, attbuff(1:blen)
+                          ENDIF
+		       ENDIF
+
 		    ELSE
-                       WRITE (risc_buff, 3301) varname(1:vlen), typ(vtype),
-     .                 attname(1:slen), typ(attype), buff(1:llen), oflag
-                       CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
-                    WRITE (risc_buff, 3302) attbuff(1:len_attbuff-2)
-                    ENDIF
-                    ENDIF
+		       IF (slen .GT. 15) THEN
+                          WRITE (risc_buff, 3300) varname(1:vlen), typ(vtype),
+     .                    attname(1:slen)
+
+                          IF (vlen .GT. 21) THEN
+                             WRITE (risc_buff, 3300) varname(1:vlen)
+                             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+                             WRITE (risc_buff, 5300) typ(vtype), attname(1:slen)
+                          ENDIF
+                          CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+
+                          WRITE (risc_buff, 4300) typ(attype), buff(1:llen), oflag,
+     .                    attbuff(1:blen)
+
+		       ELSE
+
+                          IF (vlen+slen+llen+blen+20 .LE. len_attbuff) THEN
+                             WRITE (risc_buff, 3300) varname(1:vlen), typ(vtype),
+     .                         attname(1:slen), typ(attype), buff(1:llen), oflag,
+     .                         attbuff(1:blen)
+     
+                             IF (vlen .GT. 21) THEN
+                                WRITE (risc_buff, 3300) varname(1:vlen)
+                                CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+                                WRITE (risc_buff, 5300) typ(vtype),
+     .                            attname(1:slen), typ(attype), buff(1:llen), oflag,
+     .                            attbuff(1:blen)
+                             ENDIF
+
+                          ELSE
+                             WRITE (risc_buff, 3301) varname(1:vlen), typ(vtype),
+     .                         attname(1:slen), typ(attype), buff(1:llen), oflag
+
+                             IF (vlen .GT. 21) THEN
+                                WRITE (risc_buff, 3301) varname(1:vlen)
+                                CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+                                WRITE (risc_buff, 5301) typ(vtype),
+     .                             attname(1:slen), typ(attype), buff(1:llen), oflag
+                             ENDIF
+
+                             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+                             WRITE (risc_buff, 3302) attbuff(1:len_attbuff-2)
+                          ENDIF
+
+		       ENDIF
+                    ENDIF  ! coordvar or not
+                    ENDIF  ! not uvflag
 
                     IF (uvflag .EQ. 1) THEN
-                       WRITE (risc_buff, 3304) varname(1:vlen), 
-     .                 attname(1:slen), typ(attype), buff(1:llen), oflag,
-     .                 attbuff(1:blen)
+		       IF (slen .GT. 15) THEN
+                          WRITE (risc_buff, 3304) varname(1:vlen), 
+     .                       attname(1:slen)
+                          IF (vlen .GT. 32) THEN
+                             WRITE (risc_buff, 3304) varname(1:vlen)
+			     CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+                             WRITE (risc_buff, 5304) attname(1:slen)
+			  ENDIF
+
+			  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+ 
+                          WRITE (risc_buff, 4304) typ(attype), buff(1:llen), oflag,
+     .                       attbuff(1:blen)
+     
+		       ELSE
+                          WRITE (risc_buff, 3304) varname(1:vlen), 
+     .                       attname(1:slen), typ(attype), buff(1:llen), oflag,
+     .                       attbuff(1:blen)
+                          IF (vlen .GT. 32) THEN
+                             WRITE (risc_buff, 3304) varname(1:vlen)
+			     CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+			     WRITE (risc_buff, 5304) 
+     .                       attname(1:slen), typ(attype), buff(1:llen), oflag,
+     .                       attbuff(1:blen)
+                          ENDIF
+
+		       ENDIF
+
                     ENDIF
 
                  ELSE 
-                    WRITE (risc_buff, 3500) 
-     .                  attname(1:slen), typ(attype), buff(1:llen),
-     .                  oflag, attbuff(1:blen)
+                    IF (slen .GT. 15) THEN
+                       WRITE (risc_buff, 3500) attname(1:slen)
+                       CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+                       WRITE (risc_buff, 4500) typ(attype), buff(1:llen),
+     .                   oflag, attbuff(1:blen)
+                    ELSE
+                       WRITE (risc_buff, 3500) 
+     .                     attname(1:slen), typ(attype), buff(1:llen),
+     .                     oflag, attbuff(1:blen)
+                    ENDIF
                  ENDIF
 
                  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 

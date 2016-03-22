@@ -39,6 +39,8 @@ if [ `uname -s` = "Linux" -a `uname -m` = "x86_64" ]; then
     machine="x86_64-linux"
 elif [ `uname -s` = "Linux" -a `uname -m` = "i686" ]; then
     machine="linux"
+elif [ `uname -s` = "Darwin" -a `uname -m` = "x86_64" ]; then
+    machine="x86_64-darwin"
 else
     echo "Unknown machine type"
     exit 1
@@ -66,6 +68,7 @@ else
    echo "File $machine_stream does not exist." >> $log_file
    echo "Benchmark bn420_stream will fail." >> $log_file
    echo "To create $machine_stream compile make_stream_file.F and run the executable" >> $log_file
+   echo "(You may need to use the compile flag -Dreclen_in_bytes)" >> $log_file
    echo "Then rename stream10by5.unf to $machine_stream" >> $log_file
    echo "File $machine_stream does not exist."
    echo "Benchmark bn420_stream will fail."
@@ -73,14 +76,11 @@ else
    echo "Then rename stream10by5.unf to $machine_stream"
 fi
 
-#set up proper stream testing jnl file - depends on endianness
+# set up proper stream testing jnl file - depends on endianness
+# pretty much everything is little endian now
 rm -f bn_test_stream.jnl
-if [ $machine = "linux" -o $machine = "alp" -o \
-     $machine = "x86_64-linux" -o $machine = "ia64-linux" ]; then
-    ln -s bn_test_stream_little.jnl bn_test_stream.jnl
-else
-    ln -s bn_test_stream_big.jnl bn_test_stream.jnl
-fi
+ln -s bn_test_stream_little.jnl bn_test_stream.jnl
+# ln -s bn_test_stream_big.jnl bn_test_stream.jnl
 
 echo "Testing log output in $log_file"
 echo "Testing errors in $err_file" 

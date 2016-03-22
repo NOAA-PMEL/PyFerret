@@ -10,9 +10,33 @@
 # which should have been included prior to this include.
 #
 
-	CAIRO_LIBDIR =
-	PIXMAN_LIBDIR =
+#
+# Directories for the libraries.  
+#
+ifeq ($(strip $(CAIRO_DIR)),)
+	CAIRO_LIBDIR	=
+#	This include is only for code in Pango that did use the proper cairo include
+	CAIRO_INCLUDE	= -I/usr/include/cairo
+else
+	CAIRO_LIBDIR	= $(CAIRO_DIR)/lib
+#	The second include is only for code in Pango that did use the proper cairo include
+	CAIRO_INCLUDE	= -I$(CAIRO_DIR)/include -I$(CAIRO_DIR)/include/cairo
+endif
+
+ifeq ($(strip $(PIXMAN_DIR)),)
+	PIXMAN_LIBDIR	=
+	PIXMAN_INCLUDE	= 
+else
+	PIXMAN_LIBDIR	= $(PIXMAN_DIR)/lib
+	PIXMAN_INCLUDE	= -I$(PIXMAN_DIR)/include
+endif
+
+ifeq ($(strip $(HDF5_DIR)),)
 	HDF5_LIBDIR	=
+else
+	HDF5_LIBDIR	= $(HDF5_DIR)/lib
+endif
+
 	NETCDF4_LIBDIR	= $(NETCDF4_DIR)/lib
 
 #
@@ -22,12 +46,14 @@
 			  -I$(DIR_PREFIX)/fer/common \
 			  -I$(DIR_PREFIX)/fer/grdel \
 			  -I$(DIR_PREFIX)/fer/cferbind \
+			  -I$(DIR_PREFIX)/fer/ccr \
 			  -I$(DIR_PREFIX)/fmt/cmn \
 			  -I$(DIR_PREFIX)/ppl/include \
 			  -I$(DIR_PREFIX)/ppl/tmap_inc \
 			  -I$(DIR_PREFIX)/pyfermod \
 			  -I$(DIR_PREFIX)/external_functions/ef_utility \
-			  -I/usr/local/include/cairo \
+			  $(CAIRO_INCLUDE) \
+			  $(PIXMAN_INCLUDE) \
 			  -I/usr/local/include/pango-1.0 \
 			  -I/usr/local/include/glib-2.0 \
 			  -I/usr/local/lib/glib-2.0/include \
@@ -57,33 +83,26 @@
 			  -DX_REFRESH \
 			  -DXT_CODE
 
-	CPP		= $(shell which cpp)
-	CC		= $(shell which gcc)
-	FC		= $(shell which gfortran)
-	F77		= $(shell which gfortran)
+	CC		= $(shell which gcc-5)
+	FC		= $(shell which gfortran-5)
+	F77		= $(shell which gfortran-5)
+	AR		= $(shell which ar)
+	ARFLAGS		= -cr
 	RANLIB		= $(shell which ranlib)
 
-	CPP_FLAGS	= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC
-	CFLAGS		= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC
-	FFLAGS		= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC -fno-automatic -fdollar-ok \
+	CFLAGS		= $(MYINCLUDES) $(MYDEFINES) -fPIC
+	FFLAGS		= $(MYINCLUDES) $(MYDEFINES) -fPIC -fno-automatic -fdollar-ok \
 			  -ffixed-line-length-132 -fno-second-underscore -fno-backslash \
 			  -fimplicit-none -fdefault-real-8 -fdefault-double-8
-	PPLUS_FFLAGS	= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC -fno-automatic -fdollar-ok \
+	PPLUS_FFLAGS	= $(MYINCLUDES) $(MYDEFINES) -fPIC -fno-automatic -fdollar-ok \
 			  -ffixed-line-length-132 -fno-second-underscore -fno-backslash
 
-# LD and LD_DYN_FLAGS only used for generating ferret_ef_mem_subsc.so
-	LD		= echo
-	LD_DYN_FLAGS	= 
-
-## cancel the default rule for .f -> .o to prevent objects from being built
-## from .f files that are out-of-date with respect to their corresponding .F file
-#%.o : %.f
-#
-## use cpp to preprocess the .F files to .f files and then compile the .f files
-#%.o : %.F
-#	rm -f $*.f
-#	$(CPP) -P -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
-#	$(F77) $(FFLAGS) -c $*.f
+# LD and LD_DYN_FLAGS used for generating ferret_ef_mem_subsc.so
+# The Python module and anything else loaded with dlopen needs to be a .so (MH_BUNDLE)
+# But the linker only links against .dylib (MH_DYLIB), so still a problem here
+	LD		= $(shell which gfortran-5)
+	LD_DYN_FLAGS	= -fPIC -bundle -undefined dynamic_lookup \
+			  -L$(DIR_PREFIX)/install/lib/$(PYTHON_EXE)/site-packages/pyferret
 
 # Directly compile the .F source files to the .o object files
 # since gfortran can handle the C compiler directives in Fortran code

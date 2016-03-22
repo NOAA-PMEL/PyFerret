@@ -151,15 +151,12 @@ ${mycp} ${toolsui_jar} ${temp_dir}/lib/
 # Create a symbolic link to the toolsUI-4.1.jar file
 ( cd ${temp_dir}/lib ; ln -s toolsUI-4.1.jar toolsUI.jar )
 
-echo "Copying ferret_ef_mem_subsc.so"
-if [ ! -r ${ferret_dir}/efmem/ferret_ef_mem_subsc.so ]; then
-   echo "No ferret_ef_mem_subsc.so file found ${ferret_dir}/efmem"
-   echo "Cleaning up - removing ${parent_temp_dir}"
-   rm -fr "${parent_temp_dir}"
-   echo ""
-   exit 1
+if [ -r ${ferret_dir}/efmem/ferret_ef_mem_subsc.so ]; then
+   echo "Copying ferret_ef_mem_subsc.so"
+   ${mycp} ${ferret_dir}/efmem/ferret_ef_mem_subsc.so ${temp_dir}/lib/
+else
+   echo "WARNING: ferret_ef_mem_subsc.so not found in ${ferret_dir}/efmem"
 fi
-${mycp} ${ferret_dir}/efmem/ferret_ef_mem_subsc.so ${temp_dir}/lib/
 
 echo "Copying pyferret python modules"
 python_dirs=${pyferret_dir}/lib*/python*

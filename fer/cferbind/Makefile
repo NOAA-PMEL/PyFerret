@@ -6,7 +6,7 @@ include ../../site_specific.mk
 include ../../platform_specific.mk.$(BUILDTYPE)
 
 LIBNAME = ../../lib/libcferbind.a
-CHDRS = $(wildcard *.h) ../grdel/grdel.h
+CHDRS = $(wildcard *.h) ../grdel/grdel.h ../ccr/utf8str.h
 CSRCS = $(wildcard *.c)
 COBJS = $(CSRCS:.c=.o)
 

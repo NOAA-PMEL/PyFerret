@@ -1,0 +1,58 @@
+! bn_climatology_attr.jnl
+! *acm* 3/16  See ticket 2278
+!
+! Add an attribute climatology_time_range when writing a computed
+! climatology, listing the month/year of the start and end of the 
+! data used in computing it.
+
+! Define a monthly axis
+def ax/t=1-feb-1980:1-feb-2003/np=276/unit="day"/t0=1-jan-1900 tax
+let tvar = t[gt=tax]
+
+! entire input time range used
+let clim1 = tvar[gt=month_irreg@mod]
+save/file=a.nc/clobber clim1
+
+! a subset of the time range used
+let t_subset = tvar[t=1-feb-1990:31-dec-1999]
+let clim2 = t_subset[gt=month_reg@mod]
+save/append/file=a.nc clim2
+
+! show the attributes
+can dat/all; use a.nc
+list/nohead/norow clim1.climatology_time_range, clim2.climatology_time_range
+
+
+! noleap axis
+def ax/edge/t=1-feb-1980:1-feb-2003/np=276/cal=noleap/unit="hour"/t0=1-jan-1900 tax
+let tvar = t[gt=tax]
+let clim1 = tvar[gt=month_noleap@mod]
+save/file=a.nc/clobber clim1
+
+let t_subset = tvar[t=1-feb-1990:31-dec-1999]
+let clim2 = t_subset[gt=month_noleap@mod]
+save/append/file=a.nc clim2
+
+! show the attributes
+can dat/all; use a.nc
+list/nohead/norow clim1.climatology_time_range, clim2.climatology_time_range
+
+
+
+! If the expression compbines data from multiple ranges, indicate that
+
+def ax/t=1-feb-1980:1-feb-2003/np=276/unit="day"/t0=1-jan-1900 tax
+let tvar = t[gt=tax]
+let a = tvar[gt=month_reg@mod]
+
+let t_subset = tvar[t=1-feb-1990:31-dec-1999]
+let b = t_subset[gt=month_reg@mod]
+let c = a+b
+
+save/append/file=a.nc c
+
+can dat/all; use a.nc
+! show the attributes
+can dat/all; use a.nc
+list/nohead/norow c.climatology_time_range
+

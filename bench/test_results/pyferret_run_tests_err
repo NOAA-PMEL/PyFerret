@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Mar 18 14:56 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Mar 22 13:50 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
@@ -274,6 +274,8 @@ Benchmark scripts that will be run:
    bn_speedtest.jnl
    bn_show_noupcase.jnl
    bn_letd_attributes.jnl
+   bn_list_clim_axes.jnl
+   bn_climatology_attr.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
    bn_outline_poly.jnl
@@ -282,7 +284,7 @@ Benchmark scripts that will be run:
    testfervar.py
    testfergrid.py
    testferpyvar.py
-Beginning at Fri Mar 18 14:57:17 PDT 2016
+Beginning at Tue Mar 22 13:51:14 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -4422,6 +4424,17 @@ SHO VAR/XML
  Cached data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
+*** Running ferret script: bn_list_clim_axes.jnl
+ Cached data cleared from memory
+*** Running ferret script: bn_climatology_attr.jnl
+ Cached data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+Replacing definition of axis TAX
+ LISTing to file a.nc
+ LISTing to file a.nc
+Replacing definition of axis TAX
+ LISTing to file a.nc
 *** Running ferret script: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -4469,4 +4482,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testferpyvar.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Fri Mar 18 14:59:28 PDT 2016
+Ended at Tue Mar 22 13:53:18 PDT 2016

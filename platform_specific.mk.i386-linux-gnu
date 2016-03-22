@@ -1,5 +1,5 @@
 #
-# platform_specific.mk.i386-linux
+# platform_specific.mk.i386-linux-gnu
 #
 # This file is included in Makefiles under the
 # fer, fmt, and ppl directories and defines platform specific macros
@@ -15,7 +15,7 @@
 #
 ifeq ($(strip $(CAIRO_DIR)),)
 	CAIRO_LIBDIR	=
-#	This is only for code in Pango that did use the proper cairo extension
+#	This include is only for code in Pango that did use the proper cairo include
 	CAIRO_INCLUDE	= -I/usr/include/cairo
 else
 	CAIRO_LIBDIR	= $(CAIRO_DIR)/lib
@@ -83,34 +83,24 @@ endif
 			  -DX_REFRESH \
 			  -DXT_CODE
 
-	CPP		= $(shell which cpp)
 	CC		= $(shell which gcc)
 	FC		= $(shell which gfortran)
 	F77		= $(shell which gfortran)
+	AR		= $(shell which ar)
+	ARFLAGS		= -cr
 	RANLIB		= $(shell which ranlib)
 
-	CPP_FLAGS	= $(MYINCLUDES) $(MYDEFINES) -m32 -fPIC -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4
-	CFLAGS		= $(MYINCLUDES) $(MYDEFINES) -m32 -fPIC -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4
+	CFLAGS		= $(MYINCLUDES) $(MYDEFINES) -m32 -fPIC
 	FFLAGS		= $(MYINCLUDES) $(MYDEFINES) -m32 -fPIC -fno-automatic -fdollar-ok \
 			  -ffixed-line-length-132 -fno-second-underscore -fno-backslash \
 			  -fimplicit-none -fdefault-real-8 -fdefault-double-8
 	PPLUS_FFLAGS	= $(MYINCLUDES) $(MYDEFINES) -m32 -fPIC -fno-automatic -fdollar-ok \
 			  -ffixed-line-length-132 -fno-second-underscore -fno-backslash
 
-# LD and LD_DYN_FLAGS only used for generating ferret_ef_mem_subsc.so
+# LD and LD_DYN_FLAGS used for generating ferret_ef_mem_subsc.so
 	LD		= $(shell which gfortran)
 	LD_DYN_FLAGS	= -m32 -fPIC -shared -rdynamic -Xlinker --no-undefined \
 			  -L$(DIR_PREFIX)/install/lib/$(PYTHON_EXE)/site-packages/pyferret
-
-## cancel the default rule for .f -> .o to prevent objects from being built
-## from .f files that are out-of-date with respect to their corresponding .F file
-#%.o : %.f
-#
-## use cpp to preprocess the .F files to .f files and then compile the .f files
-#%.o : %.F
-#	rm -f $*.f
-#	$(CPP) -P -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
-#	$(F77) $(FFLAGS) -c $*.f
 
 # Directly compile the .F source files to the .o object files
 # since gfortran can handle the C compiler directives in Fortran code

@@ -17,11 +17,9 @@ optimized :
 	mkdir -p $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
-	$(MAKE) "CFLAGS = $(CFLAGS) -O" pymod_optimized
-	if [ "$(BUILDTYPE)" != "intel-mac" ] ; then \
-            if ! $(MAKE) "FFLAGS = $(FFLAGS) -O" -C $(DIR_PREFIX)/efmem ; then exit 1 ; fi ; \
-            $(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/install" -C $(DIR_PREFIX)/external_functions optimized ; \
-        fi
+	$(MAKE) pymod_optimized_build
+	$(MAKE) pymod_optimized_install
+	$(MAKE) externals_optimized
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
 .PHONY : beta
@@ -29,11 +27,9 @@ beta :
 	mkdir -p $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer beta
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
-	$(MAKE) "CFLAGS = $(CFLAGS) -O" pymod_optimized
-	if [ "$(BUILDTYPE)" != "intel-mac" ] ; then \
-            if ! $(MAKE) "FFLAGS = $(FFLAGS) -O" -C $(DIR_PREFIX)/efmem ; then exit 1 ; fi ; \
-            $(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/install" -C $(DIR_PREFIX)/external_functions optimized ; \
-        fi
+	$(MAKE) pymod_optimized_build
+	$(MAKE) pymod_optimized_install
+	$(MAKE) externals_optimized
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
 .PHONY : debug
@@ -41,50 +37,86 @@ debug :
 	mkdir -p $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer debug
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
-	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" pymod_debug
-	if [ "$(BUILDTYPE)" != "intel-mac" ] ; then \
-            if ! $(MAKE) "FFLAGS = $(FFLAGS) -O0 -g" -C $(DIR_PREFIX)/efmem ; then exit 1 ; fi ; \
-            $(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/install" -C $(DIR_PREFIX)/external_functions debug ; \
-        fi
+	$(MAKE) pymod_debug_build
+	$(MAKE) pymod_debug_install
+	$(MAKE) externals_debug
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
-## The following builds libpyferret.so, then installs that shared-object
-## library and all the python scripts into $(DIR_PREFIX)/install.
-.PHONY : pymod_optimized
-pymod_optimized :
+## The following does an optimized build of libpyferret.so
+.PHONY : pymod_optimized_build
+pymod_optimized_build :
 	rm -fr $(DIR_PREFIX)/build $(DIR_PREFIX)/install
 	( cd $(DIR_PREFIX) ; \
+	  export CC=$(CC) ; \
+	  export CFLAGS="$(CFLAGS) -O" ; \
+	  export BUILDTYPE=$(BUILDTYPE) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
+	  export PNG1X_VERSION=$(PNG1X_VERSION) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
 	  $(PYTHON_EXE) setup.py --quiet build )
+
+## The following installs libpyferret.so and optimized 
+## versions of all the python scripts into $(DIR_PREFIX)/install.
+.PHONY : pymod_optimized_install
+pymod_optimized_install :
+	rm -fr $(DIR_PREFIX)/install
 	( cd $(DIR_PREFIX) ; \
+	  export CC=$(CC) ; \
+	  export CFLAGS="$(CFLAGS) -O" ; \
+	  export BUILDTYPE=$(BUILDTYPE) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
+	  export PNG1X_VERSION=$(PNG1X_VERSION) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
 	  $(PYTHON_EXE) setup.py --quiet install -O2 --prefix=$(DIR_PREFIX)/install )
 
-.PHONY : pymod_debug
-pymod_debug :
+.PHONY : externals_optimized
+externals_optimized :
+	if ! $(MAKE) "FFLAGS = $(FFLAGS) -O" -C $(DIR_PREFIX)/efmem ; then exit 1 ; fi
+	$(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/install" -C $(DIR_PREFIX)/external_functions optimized
+
+## The following does a debug build of libpyferret.so
+.PHONY : pymod_debug_build
+pymod_debug_build :
 	rm -fr $(DIR_PREFIX)/build $(DIR_PREFIX)/install
 	( cd $(DIR_PREFIX) ; \
+	  export CC=$(CC) ; \
+	  export CFLAGS="$(CFLAGS) -O0 -g" ; \
+	  export BUILDTYPE=$(BUILDTYPE) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
+	  export PNG1X_VERSION=$(PNG1X_VERSION) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
-	  $(PYTHON_EXE) setup.py --quiet build -g )
+	  $(PYTHON_EXE) setup.py build -g )
+
+## The following installs libpyferret.so and unoptimized
+## versions of all the python scripts into $(DIR_PREFIX)/install.
+.PHONY : pymod_debug_install
+pymod_debug_install :
+	rm -fr $(DIR_PREFIX)/install
 	( cd $(DIR_PREFIX) ; \
+	  export CC=$(CC) ; \
+	  export CFLAGS="$(CFLAGS) -O0 -g" ; \
+	  export BUILDTYPE=$(BUILDTYPE) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
+	  export PNG1X_VERSION=$(PNG1X_VERSION) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
-	  $(PYTHON_EXE) setup.py --quiet install -O0 --prefix=$(DIR_PREFIX)/install )
+	  $(PYTHON_EXE) setup.py install -O0 --prefix=$(DIR_PREFIX)/install )
+
+.PHONY : externals_debug
+externals_debug :
+	if ! $(MAKE) "FFLAGS = $(FFLAGS) -O0 -g" -C $(DIR_PREFIX)/efmem ; then exit 1 ; fi
+	$(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/install" -C $(DIR_PREFIX)/external_functions debug
 
 ## Remove everything that was built
 .PHONY : clean
@@ -119,10 +151,14 @@ update :
 	cp -f $(DIR_PREFIX)/efmem/ferret_ef_mem_subsc.so $(INSTALL_FER_DIR)/lib
 	find $(DIR_PREFIX)/external_functions -type f -perm -100 -name \*.so -exec cp {} $(INSTALL_FER_DIR)/ext_func/pylibs \;
 	( cd $(DIR_PREFIX) ; \
+	  export CC=$(CC) ; \
+	  export CFLAGS="$(CFLAGS) -O" ; \
+	  export BUILDTYPE=$(BUILDTYPE) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
+	  export PNG1X_VERSION=$(PNG1X_VERSION) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
 	  $(PYTHON_EXE) setup.py --quiet install -O2 --prefix=$(INSTALL_FER_DIR) )
 

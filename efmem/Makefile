@@ -33,8 +33,13 @@ EFMEMLIB = ferret_ef_mem_subsc.so
 
 all: $(EFMEMLIB)
 
+
 $(EFMEMLIB): copy_ferret_ef_mem_subsc.o
+ifeq ("$(BUILDTYPE)","intel-mac")
+	$(LD) $(LD_DYN_FLAGS) copy_ferret_ef_mem_subsc.o -o $(EFMEMLIB)
+else
 	$(LD) $(LD_DYN_FLAGS) copy_ferret_ef_mem_subsc.o -lpyferret -o $(EFMEMLIB)
+endif
 
 clean:
 	rm -f *.o $(EFMEMLIB)

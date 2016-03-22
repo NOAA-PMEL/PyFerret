@@ -359,7 +359,7 @@
 * local variable declarations:
 	LOGICAL	  TM_DIGIT, TM_LEGAL_NAME, TM_LINE_MATCH, TM_GRID_MATCH,
      .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, MATCH_NAME,
-     .            NC_GET_ATTRIB, TM_LENSTR, TM_LEGAL_NAME_OP, TM_HAS_STRING,
+     .            NC_GET_ATTRIB, TM_LEGAL_NAME_OP, TM_HAS_STRING,
      .            ITSA_1LINEIF, MATCH4, GO_FILE_INPUT, IS_AGG_MEMBER,
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
@@ -368,7 +368,7 @@
      .            user, norm, nouser, t_regular, use_strict, have_expr, original
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID,
-     .		  TM_GET_LINENUM, TM_LENSTR1,
+     .		  TM_GET_LINENUM, TM_LENSTR1, 
      .		  TM_GET_GRIDNUM, TM_UNIT_ID,
      .		  ALLO_MANAGED_AXIS, ALLO_MANAGED_GRID, FIND_DSET_NUMBER,
      .            TM_GET_CALENDAR_ID, STR_SAME,
@@ -2597,7 +2597,7 @@ c ?? if nlab=0, use next avail slot?
      .	    '"DEFINE DATA/AGGREGATE agname =" requires a list of names',
      .          *5000 )
 
- 6500  slen = TM_LENSTR(varname)
+ 6500  slen = TM_LENSTR1(varname)
        CALL ERRMSG (ferr_internal, status,
      . 'Error defining attribute on variable '//varname(:slen), *5000)
 

@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Mar 18 14:43 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Mar 22 12:56 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug Ferret on RHEL6-64
@@ -259,6 +259,8 @@ Benchmark scripts that will be run:
    bn_speedtest.jnl
    bn_show_noupcase.jnl
    bn_letd_attributes.jnl
+   bn_list_clim_axes.jnl
+   bn_climatology_attr.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -275,7 +277,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Fri Mar 18 14:44:50 PDT 2016
+Beginning at Tue Mar 22 13:32:47 PDT 2016
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -4343,6 +4345,17 @@ SHO VAR/XML
  Cached data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
+*** Running test: bn_list_clim_axes.jnl
+ Cached data cleared from memory
+*** Running test: bn_climatology_attr.jnl
+ Cached data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+Replacing definition of axis TAX
+ LISTing to file a.nc
+ LISTing to file a.nc
+Replacing definition of axis TAX
+ LISTing to file a.nc
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -4362,4 +4375,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Fri Mar 18 14:47:17 PDT 2016
+Ended at Tue Mar 22 13:35:11 PDT 2016

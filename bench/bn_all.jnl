@@ -1049,6 +1049,12 @@ GO bn_show_noupcase
 GO bn_reset
 GO bn_letd_attributes
 
+GO bn_reset
+GO bn_list_clim_axes
+
+GO bn_reset
+GO bn_climatology_attr
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

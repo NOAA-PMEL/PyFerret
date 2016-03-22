@@ -1,0 +1,29 @@
+! bn_sho_att_longnames
+! ticket 2371
+! SHOW DATA/ATTRIBUTES chopped of long variable name and attribute names
+! Now the output wraps tothe next line, keeping column alignment.
+
+! *acm* 3/2016
+
+let Ocean_Chlorophyll_A_Concentration_factoryCalib = 7
+define att/output Ocean_Chlorophyll_A_Concentration_factoryCalib.long_attribute_name_that_will_wrap = "text"
+can mode upcase
+save/clobber/file=a.nc Ocean_Chlorophyll_A_Concentration_factoryCalib
+
+use a
+let/d=1/title="example user var"  my_extra_long_varname_as_UserVar_12345 = 9
+define att/output my_extra_long_varname_as_UserVar_12345.qwertyuiopasdfghjklzxcvbnm = "QWERTY"
+sh dat/att
+
+! This example is taken from bn_aggregate_f.jnl
+
+let files = SPAWN("ls -1 tmp/fcst_*.nc")
+
+! check that the files are there. 
+let nf = `files,return=isize`
+if `nf le 0` then exit/script
+if `nf eq 1 and strlen(files[i=1]) eq 0` then exit/script
+
+fmrc my_fmrc = files
+sh dat
+sh dat/att

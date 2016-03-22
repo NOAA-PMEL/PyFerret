@@ -43,6 +43,7 @@
 ! 2/20/2003
 !  
 ! 11/19/2007 fix bug 1553 looping over k,l
+! 03/22/2016 fix error message, source longigude within 2*pi
 ! 
 ! In this subroutine we provide information about
 ! the function.  The user configurable information 
@@ -651,7 +652,7 @@ C  Other declarations
 
       if(lon_in(nlon_in) - lon_in(1) .gt. tpi + epsln) 
      . call ef_bail_out (id, 
-     . 'The range of source grid longitude may be no larger than tpi')
+     . 'The range of source grid longitude may be no larger than 2*pi')
 
       if(lon_in(1) .lt. 0.0) then
         min_lon = lon_in(1)

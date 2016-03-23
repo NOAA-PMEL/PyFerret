@@ -39,7 +39,6 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V510 *sh*
-* $Id$ 
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 	include 'tmap_dims.parm'

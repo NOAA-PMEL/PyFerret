@@ -117,8 +117,6 @@
 *	10/95	- support for implicit axes: create axes here and insert
 *		  into implicit grid
 *	 1/96	- idim subscripting bug fixed 1/96 ... how did it escape?
-
-* $Id$ 
 *       - add check on cx_calendar rather than cx_lo/hi_ww to indicate whether time
 *         is date or timesteps
 * V500 *kob* 3/99- up VAR_CODE decl from 8 to 64 chars

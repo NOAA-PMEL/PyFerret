@@ -2,9 +2,6 @@
  *
  * Utility functions for reading binary data
  *
- * $Id$
- *
- *
  * *kob*  4/06 v600 - changes for 64-bit build 
  *
  * * 1/12 *acm* - Ferret 6.8 Changes for double-precision ferret,

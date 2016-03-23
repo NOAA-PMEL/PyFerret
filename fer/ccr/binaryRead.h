@@ -3,8 +3,6 @@
 /*
  * Utility functions for reading binary data
  *
- * $Id$
- *
  * *acm*  5/07 v603 - fix prototype of createBinaryRead to use MAXDIMS rather 
  *                    than hardwired to 4; to match what is in .c file.
  *			  (Found by Andy Jacobson doing the MAC build.)

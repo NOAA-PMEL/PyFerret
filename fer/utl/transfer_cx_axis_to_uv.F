@@ -39,7 +39,6 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V510 *sh*
-* $Id$ 
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 	include 'tmap_dims.parm'

@@ -7,7 +7,6 @@ C  From the NCAR graphics library at http://ngwww.ucar.edu version 4.2
 C  Modified by Ansley Manke to regurn only the maxima for subroutine findhi.F
 C
 C-------------------------------------------------------------
-C	$Id$
 C                                                                      
 C                Copyright (C)  2000
 C        University Corporation for Atmospheric Research

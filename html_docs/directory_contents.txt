@@ -1,6 +1,0 @@
-The files in html_files_downloads/ are the static html used for the Ferret 
-downloads pages
-
-The files in old_html_docs/ are other surviving html pages from previous 
-versions of the Ferret documentation.
-

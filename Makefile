@@ -83,7 +83,7 @@ ifeq ("$(BUILDTYPE)","intel-mac")
 	echo "         were not built for this distribution target as they are not working properly"
 	echo ""
 else
-	$(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/install" -C $(DIR_PREFIX)/external_functions optimized
+	$(MAKE) "FER_DIR = $(DIR_PREFIX)/install" -C $(DIR_PREFIX)/external_functions optimized
 endif
 
 ## The following does a debug build of libpyferret.so
@@ -127,7 +127,7 @@ ifeq ("$(BUILDTYPE)","intel-mac")
 	echo "         were built for this debug target, but they may not work properly"
 	echo ""
 endif
-	$(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/install" -C $(DIR_PREFIX)/external_functions debug
+	$(MAKE) "FER_DIR = $(DIR_PREFIX)/install" -C $(DIR_PREFIX)/external_functions debug
 
 ## Remove everything that was built
 .PHONY : clean

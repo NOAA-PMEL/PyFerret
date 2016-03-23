@@ -97,13 +97,6 @@ endif
 	PPLUS_FFLAGS	= $(MYINCLUDES) $(MYDEFINES) -fPIC -fno-automatic -fdollar-ok \
 			  -ffixed-line-length-132 -fno-second-underscore -fno-backslash
 
-# LD and LD_DYN_FLAGS used for generating ferret_ef_mem_subsc.so
-# The Python module and anything else loaded with dlopen needs to be a .so (MH_BUNDLE)
-# But the linker only links against .dylib (MH_DYLIB), so still a problem here
-	LD		= $(shell which gfortran-5)
-	LD_DYN_FLAGS	= -fPIC -bundle -undefined dynamic_lookup \
-			  -L$(DIR_PREFIX)/install/lib/$(PYTHON_EXE)/site-packages/pyferret
-
 # Directly compile the .F source files to the .o object files
 # since gfortran can handle the C compiler directives in Fortran code
 %.o : %.F

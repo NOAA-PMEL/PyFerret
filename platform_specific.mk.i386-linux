@@ -97,11 +97,6 @@ endif
 	PPLUS_FFLAGS	= $(MYINCLUDES) $(MYDEFINES) -m32 -fPIC -fno-automatic -fdollar-ok \
 			  -ffixed-line-length-132 -fno-second-underscore -fno-backslash
 
-# LD and LD_DYN_FLAGS used for generating ferret_ef_mem_subsc.so
-	LD		= $(shell which gfortran)
-	LD_DYN_FLAGS	= -m32 -fPIC -shared -rdynamic -Xlinker --no-undefined \
-			  -L$(DIR_PREFIX)/install/lib/$(PYTHON_EXE)/site-packages/pyferret
-
 # Directly compile the .F source files to the .o object files
 # since gfortran can handle the C compiler directives in Fortran code
 %.o : %.F

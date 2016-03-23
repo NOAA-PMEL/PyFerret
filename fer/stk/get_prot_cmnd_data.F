@@ -93,6 +93,8 @@
 *	           aux vars returned on the ISP stack in frame above is_aux_ptr
 * V693+ *sh* 2/15  eliminate inconsistent treatment of surrounding quotes
 *                  as seen in err694_inconsistent_quotes.jnl
+* V698 *acm*  3/16 Ticket 2278: add an attribute with time range when
+*                  saving a modulo-regridded variable to netCDF
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -102,6 +104,8 @@
 	include 'xvariables.cmn'
 	include 'xprog_state.cmn'
 	include 'xfr_grid.cmn'
+        include 'xtra_compute_attr.cmn'
+        include 'netcdf.inc'
 
 * calling argument declarations
 	INTEGER	dflt_cx, dtype, status
@@ -109,8 +113,12 @@
 
 * local variable declarations
 	LOGICAL		auto_auxvar_changed
-	INTEGER		TM_LENSTR1, nu, cx_expr, idim
+	INTEGER		TM_LENSTR1, STR_SAME, nu, cx_expr, idim
 	CHARACTER	EXPR_NAME*8, VAR_CODE*128, buff*128
+
+	INTEGER		cat, var, dset, varid, attid, attype, attlen, attoutflag
+	REAL		dummy
+	CHARACTER SANITARY_VAR_CODE*128, varcode*128
 
 * initialize grid stack pointer (pushes down from top)
 	grd_stk_ptr = max_grids
@@ -162,9 +170,12 @@
 
 	DO 300 nu = 1, num_uvars_in_cmnd
 
+	   CALL RESET_CLIMAT_ATT
+
 * ... a context slot to hold a fresh command context for each sub-expression
 	   cx_stack_ptr = cx_stack_ptr + 1
 	   cx_expr = cx_stack_ptr
+
 
 * ... a frame of size nferdims to hold aux vars needed for plotting and listing
 	   max_usable_intrp = max_usable_intrp - nferdims
@@ -189,8 +200,59 @@
 * note that since aux vars may now be returned on the ISP stack, isp may be GT nu
 	   is_act(isp) = isact_var_ready
 
+* Ticket 2278
+* When defining an extra attribute based on the computation, e.g. dates that 
+* went intothe modulo calculation. Has an attribute name and value have been 
+* stored. natt_computed_var and the attribute name and string have been set 
+* e.g. in the modulo regridding routine. 
+
+	   IF (natt_computed_var .GT. 0) THEN
+
+	      IF (STR_SAME (attstr_computed_var(1:10), 'do not set') .NE. 0)  THEN
+     
+* get the variable - will put an attrib onto it
+	      cat = cx_category(cx_expr)
+	      var = cx_variable(cx_expr)
+	      dset = cx_data_set( cx_expr )
+	      varcode = SANITARY_VAR_CODE( cat, var )
+
+	      IF (dset .EQ. pdset_irrelevant) dset = pdset_uvars
+	      IF (cat .EQ. cat_user_var .AND. dset .LE. pdset_irrelevant)  dset = pdset_uvars
+	      CALL CD_GET_VAR_ID (dset, varcode, varid, status)
+	      IF (status .NE. ferr_ok) THEN
+	         IF (cat .EQ. cat_user_var .AND. dset.GE.pdset_irrelevant) THEN
+	            dset = pdset_uvars
+		    CALL CD_GET_VAR_ID (dset, varcode, varid, status)
+	         ENDIF
+	      ENDIF
+
+	      IF (status .EQ. ferr_ok) THEN
+                 CALL CD_GET_VAR_ATT_ID (dset, varid, attname_computed_var, 
+     .                attid, status) 
+                 IF (attid .GT. 0) THEN
+                    CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .                attname_computed_var, attype, attlen, attoutflag, status )
+                    attlen = TM_LENSTR1(attstr_computed_var)
+                    CALL CD_REPLACE_ATTR (dset, varid, attname_computed_var, 
+     .                attype, attlen, attstr_computed_var, dummy, status)
+                 ELSE
+                    attype = NCCHAR
+                    attoutflag = 1
+	            attlen = TM_LENSTR1(attstr_computed_var)
+                    CALL CD_PUT_NEW_ATTR (dset, varid, attname_computed_var, 
+     .                 attype, attlen, attoutflag, 
+     .                 attstr_computed_var, 1., status) 
+                    IF (status .NE. ferr_ok) status = ferr_ok  ! ignore
+	         ENDIF
+	      ENDIF
+
+	      CALL RESET_CLIMAT_ATT
+
+	   ENDIF
+	   ENDIF
+
 ! temp diagnostic
-	   IF ( cx_stack_ptr .NE. cx_cmnd+nu ) WRITE (6,*) 'get_cmnd_???'
+	   IF ( cx_stack_ptr .NE. cx_cmnd+nu ) CALL WARN( 'get_cmnd_???')
  300	CONTINUE
 
 * turn off oversizing flag for next command

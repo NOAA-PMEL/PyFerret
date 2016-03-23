@@ -86,6 +86,8 @@
 * V68+ 4/12  *acm*   Fix ticket 1931: the work space for XY linear regridding
 *                    was computed incorrectly.
 * V696 *acm* 11/15 Added @BIN and @NBIN regridding transforms
+* V698 *acm*  3/16 Ticket 2278: add an attribute with time range when
+*                  saving a modulo-regridded variable to netCDF
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -96,7 +98,6 @@
 	include	'xvariables.cmn'
 	include	'xalgebra.cmn'   ! with alg_regrid_code
 
-
 * calling argument declarations:
 	INTEGER	status
 	REAL	memory( mem_blk_size, max_mem_blks )
@@ -104,7 +105,7 @@
 * exit #1 is to signal completion of the activity at this stack level
 
 * internal variable declarations:
-	LOGICAL	TM_ITS_CDF,
+	LOGICAL	TM_ITS_CDF, 
      .		xy_regrid, valid, valid_y, has_impl_save, done_by_strides,
      .		itsa_string
 	INTEGER hi_isp, lo_isp, axis, cx_valid, idim,
@@ -360,6 +361,10 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
      .			memory(1,mr_blk1(ngd_mr)), ngd_mr,
      .			memory(1,mr_blk1(nbd_mr)), nbd_mr,
      .			memory(1,mr_blk1(ave_mr)), ave_mr )
+
+* ... For modulo regrid in time, add an attribute listing the source dates
+
+	   IF (axis .EQ. t_dim) CALL DEFINE_CLIMAT_ATT (src_cx)
 
 * ... delete temporary variables
 	   CALL DELETE_VARIABLE( ngd_mr )

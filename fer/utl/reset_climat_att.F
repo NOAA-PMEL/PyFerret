@@ -1,5 +1,6 @@
-	SUBROUTINE TRANSFER_CX_AXIS_TO_UV ( idim, source, uvar )
-
+	SUBROUTINE RESET_CLIMAT_ATT 
+*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -31,28 +32,22 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-**
-* transfer region information about one axis from a
-* context to a uver variable
+*
+*
+* Reset the count, attribute name and attribute value for an extra attribute
+* to be written for a computed variable. Could be extended for more such
+* attributes but should perhaps be done more directly.
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* programmer - Ansley Manke
+* NOAA/PMEL, Seattle, WA - TMAP
+*
+* V698: 3/16 *acm* 
 
-* V510 *sh*
-*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+        include 'xtra_compute_attr.cmn'
 
-	include 'tmap_dims.parm'
-	include 'ferret.parm'
-	include 'xcontext.cmn'
-	include 'xvariables.cmn'
-
-	INTEGER	source, uvar, idim
-
-	uvar_lo_ss ( uvar, idim )   = cx_lo_ss ( source, idim )
-	uvar_hi_ss ( uvar, idim )   = cx_hi_ss ( source, idim )
-	uvar_lo_ww ( idim, uvar )   = cx_lo_ww ( idim, source )
-	uvar_hi_ww ( idim, uvar )   = cx_hi_ww ( idim, source )
-	uvar_by_ss ( idim, uvar )   = cx_by_ss ( idim, source )
+	natt_computed_var = 0
+	attname_computed_var = ' '
+	attstr_computed_var = ' '
 
 	RETURN
 	END

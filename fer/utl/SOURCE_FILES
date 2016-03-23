@@ -47,6 +47,7 @@ deallo_all_grids.F\
 deallo_grid.F\
 deallo_unformed_grid.F\
 decrement_plot_grid.F\
+define_climat_att.F\
 dense_contig_region.F\
 depend_stat_var.F\
 depend_stat_var_sub.F\
@@ -139,6 +140,7 @@ region_number.F\
 regularly_spaced.F\
 report_aux_dependency.F\
 report_dependency.F\
+reset_climat_att.F\
 reset_secs_from_bc.F\
 reverse_grid_axis.F\
 reverse_grid_axis_sub.F\

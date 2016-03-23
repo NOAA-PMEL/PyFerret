@@ -31,24 +31,20 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-* The shared-object library libferret_ef_mem_subsc.so created from this
-* source file contains an external copy of the common block FERRET_EF_MEM_SUBSC
-* in a function which copies the values from Ferret's internal copy of
-* the common block.  These values are obtained by calling the functions
-* ef_get_arg_mem_subscripts and ef_get_res_mem_subscripts given in Ferret.
 *
-* This shared-object library is loaded using dlopen with the RTLD_GLOBAL
-* flag so this external copy of the common block can be seen by all Ferret
-* Fortran external functions.  Python import uses the RTLD_LOCAL flag with
-* dlopen (for encapsulation), thus the reason Ferret's internal copy of the
-* common block is not seen by the Fortran external functions.
+* This subroutine needs to be called at the start of the compute method
+* of any PyFerret external function written in Fortran in order to make
+* an external copy of the (Py)Ferret internal common block FERRET_EF_MEM_SUBSC.
+* Because the PyFerret module is shared-object library loaded privately
+* by Python, the Ferret common blocks are not visible to these external
+* functions.
 *
 
       SUBROUTINE COPY_FERRET_EF_MEM_SUBSC
 
       IMPLICIT NONE
-      INCLUDE 'EF_Util.cmn'
-      INCLUDE 'EF_mem_subsc.cmn'
+      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
 * local variables
       INTEGER res_memlo(6), res_memhi(6)

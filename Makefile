@@ -83,7 +83,6 @@ ifeq ("$(BUILDTYPE)","intel-mac")
 	echo "         were not built for this distribution target as they are not working properly"
 	echo ""
 else
-	if ! $(MAKE) "FFLAGS = $(FFLAGS) -O" -C $(DIR_PREFIX)/efmem ; then exit 1 ; fi
 	$(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/install" -C $(DIR_PREFIX)/external_functions optimized
 endif
 
@@ -128,7 +127,6 @@ ifeq ("$(BUILDTYPE)","intel-mac")
 	echo "         were built for this debug target, but they may not work properly"
 	echo ""
 endif
-	if ! $(MAKE) "FFLAGS = $(FFLAGS) -O0 -g" -C $(DIR_PREFIX)/efmem ; then exit 1 ; fi
 	$(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/install" -C $(DIR_PREFIX)/external_functions debug
 
 ## Remove everything that was built
@@ -136,7 +134,6 @@ endif
 clean :
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix clean
 	$(MAKE) -C $(DIR_PREFIX)/external_functions clean
-	$(MAKE) -C $(DIR_PREFIX)/efmem clean
 	rm -fr $(DIR_PREFIX)/install $(DIR_PREFIX)/build ferret.jnl*
 	find $(DIR_PREFIX)/pviewmod -name '*.py[co]' -exec rm -f {} ';'
 	find $(DIR_PREFIX)/pyfermod -name '*.py[co]' -exec rm -f {} ';'
@@ -161,7 +158,6 @@ install :
 update :
 	mkdir -p $(INSTALL_FER_DIR)/lib
 	cp -f $(DIR_PREFIX)/threddsBrowser/threddsBrowser.jar $(INSTALL_FER_DIR)/lib
-	cp -f $(DIR_PREFIX)/efmem/ferret_ef_mem_subsc.so $(INSTALL_FER_DIR)/lib
 	find $(DIR_PREFIX)/external_functions -type f -perm -100 -name \*.so -exec cp {} $(INSTALL_FER_DIR)/ext_func/pylibs \;
 	( cd $(DIR_PREFIX) ; \
 	  export CC=$(CC) ; \

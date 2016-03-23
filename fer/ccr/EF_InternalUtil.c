@@ -150,8 +150,6 @@ static int I_have_scanned_already = FALSE;
 static int I_have_warned_already = TRUE; /* Warning turned off Jan '98 */
 
 static void *internal_dlsym(char *name);
-static void *ferret_ef_mem_subsc_so_ptr;
-static void (*copy_ferret_ef_mem_subsc_ptr)(void);
 
 /* ............. Function Declarations .............. */
 /*
@@ -1324,40 +1322,6 @@ struct {
   }
 
   /*
-   * Open $FER_LIBS/ferret_ef_mem_subsc.so with RTLD_GLOBAL flag to create
-   * the external copy of the FERRET_EF_MEM_SUBSC common block.
-   */
-  path_ptr = getenv("FER_LIBS");
-  if ( path_ptr == NULL ) {
-     fputs("**ERROR: efcn_scan: FER_LIBS is not defined\n", stderr);
-     return_val = -1;
-     return return_val;
-  }
-  sprintf(path, "%s/ferret_ef_mem_subsc.so", path_ptr);
-  ferret_ef_mem_subsc_so_ptr = dlopen(path, RTLD_LAZY | RTLD_GLOBAL);
-  if ( ferret_ef_mem_subsc_so_ptr == NULL ) {
-     /*
-      * fprintf(stderr, "**ERROR: efcn_scan: dlopen of %s\n"
-      *                 "  failed -- %s\n", path, dlerror());
-      * return_val = -1;
-      * return return_val;
-      */
-     copy_ferret_ef_mem_subsc_ptr = NULL;
-  }
-  else {
-     copy_ferret_ef_mem_subsc_ptr = 
-             (void (*)(void)) dlsym(ferret_ef_mem_subsc_so_ptr,
-                                    "copy_ferret_ef_mem_subsc_");
-     if ( copy_ferret_ef_mem_subsc_ptr == NULL ) {
-        fprintf(stderr, "**ERROR: efcn_scan: copy_ferret_ef_mem_subsc_\n"
-                        "  not found in $FER_LIBS/ferret_ef_mem_subsc.so\n"
-                        "  -- %s\n", dlerror());
-        return_val = -1;
-        return return_val;
-     }
-  }
-
-  /*
    * Get internally linked external functions;  and add all 
    * the names and associated directory information to the 
    * STATIC_ExternalFunctionList.
@@ -2000,10 +1964,11 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
   int internally_linked = FALSE;
 
   /*
-   * Prototype all the functions needed for varying numbers of
-   * arguments and work arrays.
+   * Pointers to all the functions (with protoypes) needed 
+   * for varying numbers of arguments and work arrays.
    */
 
+  void (*copy_ferret_ef_mem_subsc_ptr)(void);
   void (*fptr)(int *);
   void (*f1arg)(int *, DFTYPE *, DFTYPE *);
   void (*f2arg)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
@@ -2163,15 +2128,24 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
 
     }
 
-    /*
-     * Copy the contents of Ferret's internal copy of the common block
-     * FERRET_EF_MEM_SUBSC to the external copy of this same common
-     * block using load_ferret_ef_mem_subsc_ in libferret_ef_mem_subsc.so
-     * Because libferret_ef_mem_subsc.so was loaded with RTLD_GLOBAL,
-     * this external copy of the common block will be seen by other
-     * Ferret Fotran external functions in shared-object libraries.
-     */
-    (*copy_ferret_ef_mem_subsc_ptr)();
+    if ( ! internally_linked ) {
+        /*
+         * Copy the memory subscripts to the copy of the EF_MEM_SUBSC 
+         * common block found in the external function.  The EF_MEM_SUBSC
+         * common block in Ferret is not visible to the external function
+         * because the pyferret module is a shared object library that
+         * Python has loaded privately.
+         */
+        copy_ferret_ef_mem_subsc_ptr = (void (*)(void)) 
+                dlsym(ef_ptr->handle, "copy_ferret_ef_mem_subsc_");
+        if ( copy_ferret_ef_mem_subsc_ptr == NULL ) {
+            fprintf(stderr, "**ERROR: efcn_scan: copy_ferret_ef_mem_subsc_\n"
+                            "  not found -- %s\n", dlerror());
+            *status = FERR_EF_ERROR;
+            return;
+        }
+        (*copy_ferret_ef_mem_subsc_ptr)();
+    }
 
     /*
      * Prepare for bailout possibilities by setting a signal handler for
@@ -2202,7 +2176,6 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
     }
 
     canjump = 1;
-
 
     /*
      * Now go ahead and call the external function's "_compute_" function,

@@ -24,9 +24,8 @@ include ../platform_specific.mk.$(BUILDTYPE)
 # Macro Definitions
 #
 
-DIRS = contributed decimate examples fft las statistics stringfcns
-MOREDIRS = contributed cmprsi_by decimate examples extrema featurecollections gridding fft las statistics stringfcns tax_times
-# DIRS = contributed examples fft sort cflib closest_in_list hinterp featurecollections romea odd_formats cat statistics tax_times gridding zaxr 
+DIRS = ef_utility contributed decimate examples fft las statistics stringfcns
+MOREDIRS = cmprsi_by extrema featurecollections gridding tax_times
 
 #
 # Targets
@@ -53,7 +52,7 @@ build:
 
 .PHONY: buildmore
 buildmore:
-	for i in $(MOREDIRS) ; do \
+	for i in $(DIRS) $(MOREDIRS) ; do \
             if ! $(MAKE) -C $$i ; then \
                 exit 1 ; \
             fi ; \
@@ -69,7 +68,7 @@ install:
 
 .PHONY: installmore
 installmore:
-	for i in $(MOREDIRS) ; do \
+	for i in $(DIRS) $(MOREDIRS) ; do \
             if ! $(MAKE) -C $$i install ; then \
                 exit 1 ; \
             fi ; \

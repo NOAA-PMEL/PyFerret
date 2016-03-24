@@ -22,7 +22,9 @@ FFLAGS_DEBUG	= -O0 -g -fbounds-check
 
 LD		= gfortran
 LD_DYN_FLAGS	= -fPIC -m32 -shared -Wl,--no-undefined
-SYSLIBS		= -L$(INSTALL_FER_DIR)/lib/$(PYTHON_EXE)/site-packages/pyferret -lpyferret
+SYSLIBS		= ../ef_utility/copy_ferret_ef_mem_subsc.o \
+		  -L$(INSTALL_FER_DIR)/lib/$(PYTHON_EXE)/site-packages/pyferret \
+		  -lpyferret
 
 # Directly compile the .F source files to the .o object files
 # since gfortran can handle the C compiler directives in Fortran code

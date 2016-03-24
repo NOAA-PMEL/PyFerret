@@ -21,8 +21,8 @@ FFLAGS		= -fPIC -Ddouble_p -fno-second-underscore \
 FFLAGS_DEBUG	= -O0 -g -fbounds-check
 
 LD		= gfortran-5
-LD_DYN_FLAGS	= -fPIC -m64 -bundle -undefined dynamic_lookup
-SYSLIBS		=
+LD_DYN_FLAGS	= -fPIC -bundle -undefined dynamic_lookup
+SYSLIBS		= ../ef_utility/copy_ferret_ef_mem_subsc.o 
 
 # Directly compile the .F source files to the .o object files
 # since gfortran can handle the C compiler directives in Fortran code

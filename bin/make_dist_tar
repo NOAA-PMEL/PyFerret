@@ -88,6 +88,8 @@ ${mycp} ${ferret_dir}/external_functions ${temp_dir}/ext_func/src
 find ${temp_dir}/ext_func/src -name \*.so -delete
 find ${temp_dir}/ext_func/src -name \*.a -delete
 find ${temp_dir}/ext_func/src -name \*.o -delete
+# Except put back ef_utility/copy_ferret_ef_mem_subsc.o
+${mycp} ${ferret_dir}/external_functions/ef_utility/copy_ferret_ef_mem_subsc.o ${temp_dir}/ext_func/src/ef_utility/
 
 echo "Copying palettes"
 ${mycp} ${ferret_dir}/palettes ${temp_dir}/ppl
@@ -150,13 +152,6 @@ ${mycp} ${toolsui_jar} ${temp_dir}/lib/
 
 # Create a symbolic link to the toolsUI-4.1.jar file
 ( cd ${temp_dir}/lib ; ln -s toolsUI-4.1.jar toolsUI.jar )
-
-if [ -r ${ferret_dir}/efmem/ferret_ef_mem_subsc.so ]; then
-   echo "Copying ferret_ef_mem_subsc.so"
-   ${mycp} ${ferret_dir}/efmem/ferret_ef_mem_subsc.so ${temp_dir}/lib/
-else
-   echo "WARNING: ferret_ef_mem_subsc.so not found in ${ferret_dir}/efmem"
-fi
 
 echo "Copying pyferret python modules"
 python_dirs=${pyferret_dir}/lib*/python*

@@ -77,14 +77,7 @@ pymod_optimized_install :
 
 .PHONY : externals_optimized
 externals_optimized :
-ifeq ("$(BUILDTYPE)","intel-mac")
-	echo ""
-	echo "WARNING: PyFerret external functions written in Fortran, and ferret_ef_mem_subsc.so,"
-	echo "         were not built for this distribution target as they are not working properly"
-	echo ""
-else
 	$(MAKE) "FER_DIR = $(DIR_PREFIX)/install" -C $(DIR_PREFIX)/external_functions optimized
-endif
 
 ## The following does a debug build of libpyferret.so
 .PHONY : pymod_debug_build
@@ -121,12 +114,6 @@ pymod_debug_install :
 
 .PHONY : externals_debug
 externals_debug :
-ifeq ("$(BUILDTYPE)","intel-mac")
-	echo ""
-	echo "WARNING: PyFerret external functions written in Fortran, and ferret_ef_mem_subsc.so,"
-	echo "         were built for this debug target, but they may not work properly"
-	echo ""
-endif
 	$(MAKE) "FER_DIR = $(DIR_PREFIX)/install" -C $(DIR_PREFIX)/external_functions debug
 
 ## Remove everything that was built

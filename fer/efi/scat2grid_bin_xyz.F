@@ -293,9 +293,9 @@
       INTEGER res_lo_ss(6),
      .        res_hi_ss(6),
      .        res_incr (6)
-      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
-     .        arg_hi_ss(6,EF_MAX_ARGS),
-     .        arg_incr (6,EF_MAX_ARGS)
+      INTEGER arg_lo_ss(7,EF_MAX_ARGS),
+     .        arg_hi_ss(7,EF_MAX_ARGS),
+     .        arg_incr (7,EF_MAX_ARGS)
 
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 

@@ -1030,13 +1030,19 @@ void FORTRAN(scat2grid_bin_xyt_init)(int *);
 void FORTRAN(scat2grid_bin_xyt_work_size)(int *);
 void FORTRAN(scat2grid_bin_xyt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
   DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
-  DFTYPE *, DFTYPE *);
+  DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2grid_bin_xyz_init)(int *);
 void FORTRAN(scat2grid_bin_xyz_work_size)(int *);
 void FORTRAN(scat2grid_bin_xyz_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
   DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
-  DFTYPE *, DFTYPE *);
+  DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(scat2grid_bin_xyzt_init)(int *);
+void FORTRAN(scat2grid_bin_xyzt_work_size)(int *);
+void FORTRAN(scat2grid_bin_xyzt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+  DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+  DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2grid_nbin_xy_init)(int *);
 void FORTRAN(scat2grid_nbin_xy_work_size)(int *);
@@ -1175,7 +1181,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-#define N_INTEF 179
+#define N_INTEF 180
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -1360,6 +1366,7 @@ struct {
    strcpy(I_EFnames[176].funcname, "bxsequence");
    strcpy(I_EFnames[177].funcname, "bxsequence_str");
    strcpy(I_EFnames[178].funcname, "bcompressi");
+   strcpy(I_EFnames[179].funcname, "scat2grid_bin_xyzt");
 
 /*    
  *  ------------------------------------ 
@@ -3666,6 +3673,11 @@ else if ( !strcmp(name,"scat2grid_bin_xyt_compute_") ) return (void *)FORTRAN(sc
 else if ( !strcmp(name,"scat2grid_bin_xyz_init_") ) return (void *)FORTRAN(scat2grid_bin_xyz_init);
 else if ( !strcmp(name,"scat2grid_bin_xyz_work_size_") ) return (void *)FORTRAN(scat2grid_bin_xyz_work_size);
 else if ( !strcmp(name,"scat2grid_bin_xyz_compute_") ) return (void *)FORTRAN(scat2grid_bin_xyz_compute);
+
+/* scat2grid_bin_xyzt.F */
+else if ( !strcmp(name,"scat2grid_bin_xyzt_init_") ) return (void *)FORTRAN(scat2grid_bin_xyzt_init);
+else if ( !strcmp(name,"scat2grid_bin_xyzt_work_size_") ) return (void *)FORTRAN(scat2grid_bin_xyzt_work_size);
+else if ( !strcmp(name,"scat2grid_bin_xyzt_compute_") ) return (void *)FORTRAN(scat2grid_bin_xyzt_compute);
 
 /* scat2grid_nbin_xy.F */
 else if ( !strcmp(name,"scat2grid_nbin_xy_init_") ) return (void *)FORTRAN(scat2grid_nbin_xy_init);

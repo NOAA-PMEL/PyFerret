@@ -1032,6 +1032,12 @@ void FORTRAN(scat2grid_bin_xyt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *,
   DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
   DFTYPE *, DFTYPE *);
 
+void FORTRAN(scat2grid_bin_xyz_init)(int *);
+void FORTRAN(scat2grid_bin_xyz_work_size)(int *);
+void FORTRAN(scat2grid_bin_xyz_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+  DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+  DFTYPE *, DFTYPE *);
+
 void FORTRAN(scat2grid_nbin_xy_init)(int *);
 void FORTRAN(scat2grid_nbin_xy_work_size)(int *);
 void FORTRAN(scat2grid_nbin_xy_compute)(int *, DFTYPE *, DFTYPE *);
@@ -1169,7 +1175,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-#define N_INTEF 178
+#define N_INTEF 179
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -1256,103 +1262,104 @@ struct {
    strcpy(I_EFnames[78].funcname, "scat2ddups");
    strcpy(I_EFnames[79].funcname, "scat2grid_bin_xy");
    strcpy(I_EFnames[80].funcname, "scat2grid_bin_xyt");
-   strcpy(I_EFnames[81].funcname, "scat2gridgauss_xt");
-   strcpy(I_EFnames[82].funcname, "scat2gridgauss_xt_v0");
-   strcpy(I_EFnames[83].funcname, "scat2gridgauss_xy");
-   strcpy(I_EFnames[84].funcname, "scat2gridgauss_xy_v0");
-   strcpy(I_EFnames[85].funcname, "scat2gridgauss_xz");
-   strcpy(I_EFnames[86].funcname, "scat2gridgauss_xz_v0");
-   strcpy(I_EFnames[87].funcname, "scat2gridgauss_yt");
-   strcpy(I_EFnames[88].funcname, "scat2gridgauss_yt_v0");
-   strcpy(I_EFnames[89].funcname, "scat2gridgauss_yz");
-   strcpy(I_EFnames[90].funcname, "scat2gridgauss_yz_v0");
-   strcpy(I_EFnames[91].funcname, "scat2gridgauss_zt");
-   strcpy(I_EFnames[92].funcname, "scat2gridgauss_zt_v0");
-   strcpy(I_EFnames[93].funcname, "scat2gridlaplace_xt");
-   strcpy(I_EFnames[94].funcname, "scat2gridlaplace_xy");
-   strcpy(I_EFnames[95].funcname, "scat2gridlaplace_xz");
-   strcpy(I_EFnames[96].funcname, "scat2gridlaplace_yt");
-   strcpy(I_EFnames[97].funcname, "scat2gridlaplace_yz");
-   strcpy(I_EFnames[98].funcname, "scat2gridlaplace_zt");
-   strcpy(I_EFnames[99].funcname, "scat2grid_nbin_xy");
-   strcpy(I_EFnames[100].funcname, "scat2grid_nbin_xyt");
-   strcpy(I_EFnames[101].funcname, "scat2grid_nobs_xy");
-   strcpy(I_EFnames[102].funcname, "scat2grid_nobs_xyt");
-   strcpy(I_EFnames[103].funcname, "scat2grid_t");
-   strcpy(I_EFnames[104].funcname, "sorti");
-   strcpy(I_EFnames[105].funcname, "sorti_str");
-   strcpy(I_EFnames[106].funcname, "sortj");
-   strcpy(I_EFnames[107].funcname, "sortj_str");
-   strcpy(I_EFnames[108].funcname, "sortk");
-   strcpy(I_EFnames[109].funcname, "sortk_str");
-   strcpy(I_EFnames[110].funcname, "sortl");
-   strcpy(I_EFnames[111].funcname, "sortl_str");
-   strcpy(I_EFnames[112].funcname, "sortm");
-   strcpy(I_EFnames[113].funcname, "sortm_str");
-   strcpy(I_EFnames[114].funcname, "sortn");
-   strcpy(I_EFnames[115].funcname, "sortn_str");
-   strcpy(I_EFnames[116].funcname, "tauto_cor");
-   strcpy(I_EFnames[117].funcname, "tax_datestring");
-   strcpy(I_EFnames[118].funcname, "tax_day");
-   strcpy(I_EFnames[119].funcname, "tax_dayfrac");
-   strcpy(I_EFnames[120].funcname, "tax_jday");
-   strcpy(I_EFnames[121].funcname, "tax_jday1900");
-   strcpy(I_EFnames[122].funcname, "tax_month");
-   strcpy(I_EFnames[123].funcname, "tax_times");
-   strcpy(I_EFnames[124].funcname, "tax_tstep");
-   strcpy(I_EFnames[125].funcname, "tax_units");
-   strcpy(I_EFnames[126].funcname, "tax_year");
-   strcpy(I_EFnames[127].funcname, "tax_yearfrac");
-   strcpy(I_EFnames[128].funcname, "tcat");
-   strcpy(I_EFnames[129].funcname, "tcat_str");
-   strcpy(I_EFnames[130].funcname, "test_opendap");
-   strcpy(I_EFnames[131].funcname, "transpose_xt");
-   strcpy(I_EFnames[132].funcname, "transpose_xy");
-   strcpy(I_EFnames[133].funcname, "transpose_xz");
-   strcpy(I_EFnames[134].funcname, "transpose_yt");
-   strcpy(I_EFnames[135].funcname, "transpose_yz");
-   strcpy(I_EFnames[136].funcname, "transpose_zt");
-   strcpy(I_EFnames[137].funcname, "treverse");
-   strcpy(I_EFnames[138].funcname, "unique_str2int");
-   strcpy(I_EFnames[139].funcname, "write_webrow");
-   strcpy(I_EFnames[140].funcname, "xauto_cor");
-   strcpy(I_EFnames[141].funcname, "xcat");
-   strcpy(I_EFnames[142].funcname, "xcat_str");
-   strcpy(I_EFnames[143].funcname, "xreverse");
-   strcpy(I_EFnames[144].funcname, "ycat");
-   strcpy(I_EFnames[145].funcname, "ycat_str");
-   strcpy(I_EFnames[146].funcname, "yreverse");
-   strcpy(I_EFnames[147].funcname, "zaxreplace_avg");
-   strcpy(I_EFnames[148].funcname, "zaxreplace_bin");
-   strcpy(I_EFnames[149].funcname, "zaxreplace_rev");
-   strcpy(I_EFnames[150].funcname, "zaxreplace_zlev");
-   strcpy(I_EFnames[151].funcname, "zcat");
-   strcpy(I_EFnames[152].funcname, "zcat_str");
-   strcpy(I_EFnames[153].funcname, "zreverse");
-   strcpy(I_EFnames[154].funcname, "eofsvd_space");
-   strcpy(I_EFnames[155].funcname, "eofsvd_stat");
-   strcpy(I_EFnames[156].funcname, "eofsvd_tfunc");
-   strcpy(I_EFnames[157].funcname, "expnd_by_len");
-   strcpy(I_EFnames[158].funcname, "expnd_by_len_str");
-   strcpy(I_EFnames[159].funcname, "fc_isubset");
-   strcpy(I_EFnames[160].funcname, "expndi_by_z_counts");
-   strcpy(I_EFnames[161].funcname, "expndi_id_by_z_counts");
-   strcpy(I_EFnames[162].funcname, "expndi_by_m_counts");
-   strcpy(I_EFnames[163].funcname, "str_mask");
-   strcpy(I_EFnames[164].funcname, "samplexyt_nrst");
-   strcpy(I_EFnames[165].funcname, "separate");
-   strcpy(I_EFnames[166].funcname, "time_reformat");
-   strcpy(I_EFnames[167].funcname, "ft_to_orthogonal");
-   strcpy(I_EFnames[168].funcname, "curv_to_rect_fsu");
-   strcpy(I_EFnames[169].funcname, "piecewise3");
-   strcpy(I_EFnames[170].funcname, "sample_fast_i");
-   strcpy(I_EFnames[171].funcname, "sample_fast_i_str");
-   strcpy(I_EFnames[172].funcname, "separate_str");
-   strcpy(I_EFnames[173].funcname, "write_webrow_gwt");
-   strcpy(I_EFnames[174].funcname, "bxcat");
-   strcpy(I_EFnames[175].funcname, "bxsequence");
-   strcpy(I_EFnames[176].funcname, "bxsequence_str");
-   strcpy(I_EFnames[177].funcname, "bcompressi");
+   strcpy(I_EFnames[81].funcname, "scat2grid_bin_xyz");
+   strcpy(I_EFnames[82].funcname, "scat2gridgauss_xt");
+   strcpy(I_EFnames[83].funcname, "scat2gridgauss_xt_v0");
+   strcpy(I_EFnames[84].funcname, "scat2gridgauss_xy");
+   strcpy(I_EFnames[85].funcname, "scat2gridgauss_xy_v0");
+   strcpy(I_EFnames[86].funcname, "scat2gridgauss_xz");
+   strcpy(I_EFnames[87].funcname, "scat2gridgauss_xz_v0");
+   strcpy(I_EFnames[88].funcname, "scat2gridgauss_yt");
+   strcpy(I_EFnames[89].funcname, "scat2gridgauss_yt_v0");
+   strcpy(I_EFnames[90].funcname, "scat2gridgauss_yz");
+   strcpy(I_EFnames[91].funcname, "scat2gridgauss_yz_v0");
+   strcpy(I_EFnames[92].funcname, "scat2gridgauss_zt");
+   strcpy(I_EFnames[93].funcname, "scat2gridgauss_zt_v0");
+   strcpy(I_EFnames[94].funcname, "scat2gridlaplace_xt");
+   strcpy(I_EFnames[95].funcname, "scat2gridlaplace_xy");
+   strcpy(I_EFnames[96].funcname, "scat2gridlaplace_xz");
+   strcpy(I_EFnames[97].funcname, "scat2gridlaplace_yt");
+   strcpy(I_EFnames[98].funcname, "scat2gridlaplace_yz");
+   strcpy(I_EFnames[99].funcname, "scat2gridlaplace_zt");
+   strcpy(I_EFnames[100].funcname, "scat2grid_nbin_xy");
+   strcpy(I_EFnames[101].funcname, "scat2grid_nbin_xyt");
+   strcpy(I_EFnames[102].funcname, "scat2grid_nobs_xy");
+   strcpy(I_EFnames[103].funcname, "scat2grid_nobs_xyt");
+   strcpy(I_EFnames[104].funcname, "scat2grid_t");
+   strcpy(I_EFnames[105].funcname, "sorti");
+   strcpy(I_EFnames[106].funcname, "sorti_str");
+   strcpy(I_EFnames[107].funcname, "sortj");
+   strcpy(I_EFnames[108].funcname, "sortj_str");
+   strcpy(I_EFnames[109].funcname, "sortk");
+   strcpy(I_EFnames[110].funcname, "sortk_str");
+   strcpy(I_EFnames[111].funcname, "sortl");
+   strcpy(I_EFnames[112].funcname, "sortl_str");
+   strcpy(I_EFnames[113].funcname, "sortm");
+   strcpy(I_EFnames[114].funcname, "sortm_str");
+   strcpy(I_EFnames[115].funcname, "sortn");
+   strcpy(I_EFnames[116].funcname, "sortn_str");
+   strcpy(I_EFnames[117].funcname, "tauto_cor");
+   strcpy(I_EFnames[118].funcname, "tax_datestring");
+   strcpy(I_EFnames[119].funcname, "tax_day");
+   strcpy(I_EFnames[120].funcname, "tax_dayfrac");
+   strcpy(I_EFnames[121].funcname, "tax_jday");
+   strcpy(I_EFnames[122].funcname, "tax_jday1900");
+   strcpy(I_EFnames[123].funcname, "tax_month");
+   strcpy(I_EFnames[124].funcname, "tax_times");
+   strcpy(I_EFnames[125].funcname, "tax_tstep");
+   strcpy(I_EFnames[126].funcname, "tax_units");
+   strcpy(I_EFnames[127].funcname, "tax_year");
+   strcpy(I_EFnames[128].funcname, "tax_yearfrac");
+   strcpy(I_EFnames[129].funcname, "tcat");
+   strcpy(I_EFnames[130].funcname, "tcat_str");
+   strcpy(I_EFnames[131].funcname, "test_opendap");
+   strcpy(I_EFnames[132].funcname, "transpose_xt");
+   strcpy(I_EFnames[133].funcname, "transpose_xy");
+   strcpy(I_EFnames[134].funcname, "transpose_xz");
+   strcpy(I_EFnames[135].funcname, "transpose_yt");
+   strcpy(I_EFnames[136].funcname, "transpose_yz");
+   strcpy(I_EFnames[137].funcname, "transpose_zt");
+   strcpy(I_EFnames[138].funcname, "treverse");
+   strcpy(I_EFnames[139].funcname, "unique_str2int");
+   strcpy(I_EFnames[140].funcname, "write_webrow");
+   strcpy(I_EFnames[141].funcname, "xauto_cor");
+   strcpy(I_EFnames[142].funcname, "xcat");
+   strcpy(I_EFnames[143].funcname, "xcat_str");
+   strcpy(I_EFnames[144].funcname, "xreverse");
+   strcpy(I_EFnames[145].funcname, "ycat");
+   strcpy(I_EFnames[146].funcname, "ycat_str");
+   strcpy(I_EFnames[147].funcname, "yreverse");
+   strcpy(I_EFnames[148].funcname, "zaxreplace_avg");
+   strcpy(I_EFnames[149].funcname, "zaxreplace_bin");
+   strcpy(I_EFnames[150].funcname, "zaxreplace_rev");
+   strcpy(I_EFnames[151].funcname, "zaxreplace_zlev");
+   strcpy(I_EFnames[152].funcname, "zcat");
+   strcpy(I_EFnames[153].funcname, "zcat_str");
+   strcpy(I_EFnames[154].funcname, "zreverse");
+   strcpy(I_EFnames[155].funcname, "eofsvd_space");
+   strcpy(I_EFnames[156].funcname, "eofsvd_stat");
+   strcpy(I_EFnames[157].funcname, "eofsvd_tfunc");
+   strcpy(I_EFnames[158].funcname, "expnd_by_len");
+   strcpy(I_EFnames[159].funcname, "expnd_by_len_str");
+   strcpy(I_EFnames[160].funcname, "fc_isubset");
+   strcpy(I_EFnames[161].funcname, "expndi_by_z_counts");
+   strcpy(I_EFnames[162].funcname, "expndi_id_by_z_counts");
+   strcpy(I_EFnames[163].funcname, "expndi_by_m_counts");
+   strcpy(I_EFnames[164].funcname, "str_mask");
+   strcpy(I_EFnames[165].funcname, "samplexyt_nrst");
+   strcpy(I_EFnames[166].funcname, "separate");
+   strcpy(I_EFnames[167].funcname, "time_reformat");
+   strcpy(I_EFnames[168].funcname, "ft_to_orthogonal");
+   strcpy(I_EFnames[169].funcname, "curv_to_rect_fsu");
+   strcpy(I_EFnames[170].funcname, "piecewise3");
+   strcpy(I_EFnames[171].funcname, "sample_fast_i");
+   strcpy(I_EFnames[172].funcname, "sample_fast_i_str");
+   strcpy(I_EFnames[173].funcname, "separate_str");
+   strcpy(I_EFnames[174].funcname, "write_webrow_gwt");
+   strcpy(I_EFnames[175].funcname, "bxcat");
+   strcpy(I_EFnames[176].funcname, "bxsequence");
+   strcpy(I_EFnames[177].funcname, "bxsequence_str");
+   strcpy(I_EFnames[178].funcname, "bcompressi");
 
 /*    
  *  ------------------------------------ 
@@ -3654,6 +3661,11 @@ else if ( !strcmp(name,"scat2grid_bin_xy_compute_") ) return (void *)FORTRAN(sca
 else if ( !strcmp(name,"scat2grid_bin_xyt_init_") ) return (void *)FORTRAN(scat2grid_bin_xyt_init);
 else if ( !strcmp(name,"scat2grid_bin_xyt_work_size_") ) return (void *)FORTRAN(scat2grid_bin_xyt_work_size);
 else if ( !strcmp(name,"scat2grid_bin_xyt_compute_") ) return (void *)FORTRAN(scat2grid_bin_xyt_compute);
+
+/* scat2grid_bin_xyz.F */
+else if ( !strcmp(name,"scat2grid_bin_xyz_init_") ) return (void *)FORTRAN(scat2grid_bin_xyz_init);
+else if ( !strcmp(name,"scat2grid_bin_xyz_work_size_") ) return (void *)FORTRAN(scat2grid_bin_xyz_work_size);
+else if ( !strcmp(name,"scat2grid_bin_xyz_compute_") ) return (void *)FORTRAN(scat2grid_bin_xyz_compute);
 
 /* scat2grid_nbin_xy.F */
 else if ( !strcmp(name,"scat2grid_nbin_xy_init_") ) return (void *)FORTRAN(scat2grid_nbin_xy_init);

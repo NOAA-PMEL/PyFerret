@@ -117,6 +117,7 @@ scat2ddups.F\
 scat2grid_bin_xy.F\
 scat2grid_bin_xyt.F\
 scat2grid_bin_xyz.F\
+scat2grid_bin_xyzt.F\
 scat2grid_nbin_xy.F\
 scat2grid_nbin_xyt.F\
 scat2gridgauss_xt.F\

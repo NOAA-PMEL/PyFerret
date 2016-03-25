@@ -91,7 +91,7 @@
       SUBROUTINE pickout4 (alon, alat, atimes, vals, n, xx, yy, tt, vv)
 
 *  Called from the scatter*  gridding functins.
-*  Pick out nth item from alon and alat, which are really 4-dimensioned arrays
+*  Pick out nth item from alon, alat, atimes, which are really 4-dimensioned arrays
 *  with normal axes on three of the four axes.
 *  (can be any variables, typically lon,lat,time,value or lon,lat,depth,time, etc)
 
@@ -106,6 +106,27 @@
 
       RETURN
       END
+
+      SUBROUTINE pickout5 (alon, alat, adepths, atimes, vals, n, xx, yy, zz, tt, vv)
+
+*  Called from the scatter*  gridding functins.
+*  Pick out nth item from alon, alat, azdep, atimes, which are really 4-dimensioned arrays
+*  with normal axes on three of the four axes.
+*  (can be any variables, typically lon,lat,time,depth,value etc)
+
+      REAL alon(*), alat(*), adepths(*), atimes(*), vals(*)
+      REAL xx, yy, zz, tt, vv
+      INTEGER n
+
+      xx = alon(n)
+      yy = alat(n)
+      tt = atimes(n)
+      zz = adepths(n)
+      vv = vals(n)
+
+      RETURN
+      END
+
 
 c************************************************************************
 c...NOBS.....Based on gausswt, return only the # of obs in (x,y) gridbox

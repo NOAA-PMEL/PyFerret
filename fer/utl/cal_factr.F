@@ -62,7 +62,8 @@
 	cal_id_greg = 1		! Default gregorian calendar
 	CAL_FACTR = sec_per_year(cal_id_greg) / sec_per_year(cal_id)
 
-
+c CAL_ID
+c
 c     1	'GREGORIAN',
 c     2  'NOLEAP',
 c     3  'JULIAN',
@@ -71,27 +72,13 @@ c     5  'ALL_LEAP'
 
 c from xunits_data.F:
 c
-c	DATA	un_convert( -1)	/ 1.0		/,
-c     .		un_convert( -2)	/ 60.		/,
-c     .		un_convert( -3)	/ 3600.		/, ! sec per hour
-c     .		un_convert( -4)	/ 86400.	/, ! sec per day
-c     .		un_convert( -5)	/ 2629746.	/, ! 1/12 of 365.2425 year
+c	DATA	...
 c
-cc     .		un_convert( -6)	/ 31536000.	/, ! sec per 365 day year (OLD default)
-c     .		un_convert( -6)	/ 31556952.	/  ! sec per 365.2425 year
-c
-c     .		un_convert( -7)	/ 44712.	/, ! sec per M2 cycle
 c     .		un_convert( -8)	/ 31622400.	/, ! sec per 366 day year
 c     .		un_convert( -9)	/ 31104000.	/, ! sec per 360 day year
-c     .		un_convert(-10)	/ 31556952.	/  ! sec per 365.2425 year
-c
-c     .		un_convert(-11)	/ 31536000.	/ ! sec per 365.0 day year
-c     .		un_convert(-12)	/ 31557600.	/ ! sec per 365.25 day year
-c
-c     .		un_convert(-13)	/ 2628000.	/ ! 1/12 of sec per 365 day year
-c     .		un_convert(-14)	/ 2592000.	/ ! 1/12 of sec per 360 day year
-c     .		un_convert(-15)	/ 2629800.	/ ! 1/12 of sec per 365.25 day year
-c     .		un_convert(-16)	/ 2635200.	/ ! 1/12 of sec per 366 day year
+c     .		un_convert(-10)	/ 31556952.	/, ! sec per 365.2425 year
+c     .		un_convert(-11)	/ 31536000.	/, ! sec per 365.0 day year
+c     .		un_convert(-12)	/ 31557600.	/, ! sec per 365.25 day year
 
 	RETURN
 	END

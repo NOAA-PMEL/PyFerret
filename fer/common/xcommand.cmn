@@ -76,6 +76,18 @@
 * qualifiers  -	To add new qualifiers simply update nqualNx and make the
 *		corresponding changes in BLOCK DATA XCOMMAND_DATA.
 
+*
+* !!!!!!!!!!
+* Use caution when defining new commands, qualifiers, or changing these data structures:
+* 1- Ferret commands are matched to the first 4 characters only. Make sure
+*    new commands are unique to the first 4 characters.
+* 2- If you are tempted to reorder the lists of commands or subcommands, know 
+*    that users often use even more abbreviation. E.g. "can v" is used for 
+*    "cancel viewport" in many scripts, and that works ONLY because "VIEWPORT" 
+*    comes before "VARIABLE" in the subcommands for CANCEL.
+* !!!!!!!!!!
+ 
+
 
 * pointers to first elements of arrays
 	INTEGER		 nsub_at1  , nqual_at1a

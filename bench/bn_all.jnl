@@ -1055,6 +1055,10 @@ GO bn_list_clim_axes
 GO bn_reset
 GO bn_climatology_attr
 
+GO bn_reset
+GO bn_show_commands
+
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

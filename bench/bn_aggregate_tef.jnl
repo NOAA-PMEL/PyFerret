@@ -238,6 +238,19 @@ FMRC tef_short = te_f01, te_f02_short, te_f03, te_f04, te_f05, te_f06, te_f07, t
 ! unequal forecast axis lengths
 FMRC tf_e2_short = t_f01_e2, t_f02_e2, t_f03_e2, t_f04_e2  ! shorter than others
 ENSEMBLE tfe_short = tf_e1, tf_e2_short, tf_e3, tf_e4, tf_e5
+
+! ensemble created with already-ensemble components
+ENSEMBLE te_f01 = t_f01_e1, t_f01_e2, t_f01_e3, t_f01_e4, t_f01_e5
+ENSEMBLE te_f03 = t_f03_e1, t_f03_e2, t_f03_e3, t_f03_e4, t_f03_e5
+ENSEMBLE te_f04 = t_f04_e1, t_f04_e2, t_f04_e3, t_f04_e4, t_f04_e5
+ENSEMBLE bad_ens = te_f01, te_f03, te_f04
+
+! fmrc created with already-fmrc components
+FMRC tf_e1 = t_f01_e1, t_f02_e1, t_f03_e1, t_f04_e1
+FMRC tf_e3 = t_f01_e3, t_f02_e3, t_f03_e3, t_f04_e3
+FMRC tf_e4 = t_f01_e4, t_f02_e4, t_f03_e4, t_f04_e4
+FMRC bad_fmrc = tf_e1, tf_e3, tf_e4
+
 set mode/last ignore
 
 CANCEL DATA/ALL

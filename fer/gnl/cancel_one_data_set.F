@@ -52,6 +52,7 @@
 * V698 *sh* 1/16 - complexity removed to the parent routine, CANCEL_DATA_SET
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
+*            *sh*  deallo special E and F axes even if user has re-defined them
 
 * calling arguments
 *  dset      -  (input) dataset number to be closed
@@ -112,7 +113,7 @@
      .                                do_warn, 'global', max_slen,  
      .                                attlen, attoutflag, axname)
 	   axis = TM_GET_LINENUM(axname)
-	   IF (axis .GT. max_lines) CALL TM_DEALLO_DYN_LINE(axis)
+	   CALL TM_DEALLO_DYN_LINE(axis)
 
 	   CALL CD_GET_VAR_ATT_ID (dset, varid, '_lag_f_ax', attid, status)
 	   IF (status.EQ.atom_not_found) GOTO 5100
@@ -123,7 +124,7 @@
      .                                do_warn, 'global', max_slen, 
      .                                attlen, attoutflag, axname)
 	   axis = TM_GET_LINENUM(axname)
-	   IF (axis .GT. max_lines) CALL TM_DEALLO_DYN_LINE(axis)
+	   CALL TM_DEALLO_DYN_LINE(axis)
 	ENDIF
 
 * really close and cancel the data set

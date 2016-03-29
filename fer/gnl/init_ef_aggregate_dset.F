@@ -171,7 +171,7 @@
 	ENDIF
 
 * See if requested datasets are open and if not, try to open them.
-	CALL CHECK_MEMBER_SETS (nsets, memb_dsetname,
+	CALL CHECK_MEMBER_SETS (agg_dim, nsets, memb_dsetname,
      .				member_sets, status)
 	IF (status .NE. ferr_ok) GOTO 9950
 
@@ -289,6 +289,8 @@
      .			/(nT-1)
 	   CALL TM_NEW_LINE_NAME ( 'TF_LAG_T', buff )
 ! pre 3/16	   CALL TM_MAKE_BASIC_AXIS( buff, 0.0D0, avg_lag, nT,
+* note that if the FMRC gets aggregated by the THREDDS Data Server this
+* code never gets called.  See CD_SCAN_AUX_COORDS for that case.
 	   CALL TM_MAKE_BASIC_AXIS( buff, avg_lag/2., avg_lag, nT,
      .				    tf_lag_t, status )
 	   line_unit_code(tf_lag_t) = line_unit_code(memb_tax)

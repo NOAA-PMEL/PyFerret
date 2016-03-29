@@ -40,6 +40,7 @@
 *
 * V698 *sh* 11/15 
 *            2/16 -- allow missing datasets among nsets_in
+*            3/16 -- bug fix in epsilon used to screen bad gaps
 
 * calling arguments
 *   nsets_in		- number of datasets given to be aggregated (input)
@@ -69,10 +70,13 @@
      .		maxmembers, member_sets(maxmembers)
 
 * local variable declarations:
+	LOGICAL alteredDelta
 	INTEGER	ivar, grid, grid1, iset, dset, dset1, taxis, taxis1,
-     .		status, nadded, ngap, i, nsets, itmp_memb(maxmembers)
-	REAL TDEST_WORLD, TM_WORLD, d, epsilon, gap, deltaT,
-     .		start_time(maxmembers), rindices(maxmembers)
+     .		status, nadded, ngap, i, nsets, itmp_memb(maxmembers),
+     .		deltaFactor
+	REAL TDEST_WORLD, TM_WORLD, d, epsilon, gap, deltaT, deltaT_0,
+     .		start_time(maxmembers), rindices(maxmembers),
+     .		d_ratio, d_ratio_int
 	CHARACTER LEFINT*8
 
 * initialize
@@ -149,30 +153,52 @@
 
 * determine the intended delta-T between the (ordered) forecasts
 * ... first get the minimum delta-T
-	deltaT = start_time(2) - start_time(1)
+	deltaT_0 = start_time(2) - start_time(1)
 	DO iset = 2, nsets
 	   d = start_time(iset)-start_time(iset-1)
-	   IF ( d .LT. deltaT) deltaT = d
+	   IF ( d .LT. deltaT_0) deltaT_0 = d
 	ENDDO
-	IF (deltaT .EQ. 0.0) GOTO 5250
-
+	IF (deltaT_0 .EQ. 0.0) GOTO 5250
 
 * for monthly data delta-T may vary from 28 to 31, so allow a margin of error
-	epsilon = (1.00001*31)/28
+	epsilon = 1.0001 * (31.-28.)/28.
+
+* now re-evaluate the deltas to find the lowest common denominator
+* i.e. if we discover there is a gap of size 1.5*deltaT, that means that
+* the correct delta is new_delta= 0.5*deltaT.  This re-interprets our two
+* gaps as 2*new_delta and 3*new_delta
+	deltaFactor = 1
+	deltaT = deltaT_0
+	alteredDelta = .TRUE.
+	DO WHILE (alteredDelta)
+	   alteredDelta = .FALSE.
+	   DO iset = 2, nsets
+	      d = start_time(iset)-start_time(iset-1)
+	      d_ratio = d/deltaT
+* delta ratio must be an integer within epsilon threshold
+	      d_ratio_int = FLOAT(INT(d_ratio + 0.49))
+	      IF (ABS(d_ratio-d_ratio_int)/d_ratio .GT. epsilon) THEN
+* ... we have the wrong deltaT -- try an integer fraction of it
+	         deltaFactor = deltaFactor + 1
+	         IF (deltaFactor .GT. 4) GOTO 5200
+	         deltaT = deltaT_0 / deltaFactor
+	         alteredDelta = .TRUE.
+	         EXIT    ! try again with smaller delta
+	      ENDIF
+	   ENDDO	
+	ENDDO
 
 * loop through the data set list inserting dummys where there are gaps
-	ngap = 0
+	ngap = 0    ! not needed?
 	nadded = 0
 	iset = 1
 	DO WHILE (iset .LT. nsets_out)
 	   iset = iset + 1
 	   d = start_time(iset)-start_time(iset-1)
-	   IF (d .GT. epsilon*deltaT) THEN
+	   IF (ABS(d-deltaT)/deltaT .GT. epsilon) THEN
 * ... we have a gap (or at least an irregularity)
 	      gap = d/deltaT
 	      ngap = INT(gap + 0.5)      ! here ngap=1 means nothing missing
-!	      IF (ngap .EQ. 0) GOTO 5200 ! can never happen
-	      IF (ABS((gap-ngap)/ngap) .GT. epsilon) GOTO 5200
 	      ngap = ngap - 1		 ! now  ngap=0 means nothing missing
 	      nsets_out = nsets_out + ngap
 	      IF (nsets_out .GT. maxmembers) THEN

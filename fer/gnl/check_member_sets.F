@@ -1,4 +1,4 @@
-	SUBROUTINE CHECK_MEMBER_SETS (nsets, memb_dsetnames,
+	SUBROUTINE CHECK_MEMBER_SETS (agg_dim, nsets, memb_dsetnames,
      .				      member_sets, status)
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -48,6 +48,7 @@
 *	      3/16 check for illegal Unix filenames
 
 * calling arguments
+*   agg_dim             - axis of the aggregation being created
 *   nsets		- number of datasets to be aggregated (input)
 *   memb_dsetnames	- array of names of the datasets (input)
 *   member_sets		- array of open dataset numbers (output)
@@ -69,7 +70,7 @@
 	include 'xdiag_ctrl.cmn_text'
 
 * calling argument declarations:
-	INTEGER nsets, member_sets(nsets), status
+	INTEGER agg_dim, nsets, member_sets(nsets), status
 	CHARACTER*(*), memb_dsetnames(nsets)
 
 * local variable declarations:
@@ -135,7 +136,6 @@
 	      IF   ( dset .LT. 1
      .	      .OR.   dset .GT. maxdsets )	  GOTO 5200
 	      IF (ds_name(dset).EQ.char_init1024) GOTO 5200
-	      IF (ds_type(dset).EQ.'ENS' .OR. ds_type(dset).EQ.'FCT') GOTO 5200
 	      GOTO 750
 	   ENDIF
 
@@ -151,7 +151,8 @@
 	      ds_hide(dset) = .TRUE.   ! hide unless previously opened
 	   ENDIF
 
- 750	   CONTINUE
+ 750	   IF (agg_dim .EQ. e_dim .AND. ds_type(dset).EQ.'ENS') GOTO 5200
+	   IF (agg_dim .EQ. f_dim .AND. ds_type(dset).EQ.'FCT') GOTO 5200
 	   member_sets(iset) = dset
 
 	ENDDO

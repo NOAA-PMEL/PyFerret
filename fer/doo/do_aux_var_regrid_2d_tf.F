@@ -48,6 +48,8 @@
 * This code copied/modified from do_aux_var_regrid_1d_z.F
 
 * V695+ 3/15 *sh*
+* V698  3/16 *sh* - compute f_delta from the time2d field rather than F axis
+*                   allowing the F axis to be redefined
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -121,8 +123,12 @@
 
 * f_delta is the time lag between forecasts.
 * It should be consistent in tsrc and should match the delta of the F lag axis
-	f_axis = CGRID_AXIS(f_dim, dst_cx)
-	f_delta = line_delta(f_axis)
+! 3/16 -- do not get it from the F axis, since the user may alter that
+!	f_axis = CGRID_AXIS(f_dim, dst_cx)
+!	f_delta = line_delta(f_axis)
+	f_delta = (tsrc(ip,jp,kp,m1lot,mp,m1hif)
+     .	         - tsrc(ip,jp,kp,m1lot,mp,m1lof))
+     .		                   / (m1hif-m1lof+1)
 
 * extract the time step values of the destination
 	DO l = ldst_min, ldst_max
@@ -134,16 +140,11 @@
      . .OR. tdst(ldst_max) .LT. tsrc(ip,jp,kp,lsrc_min,mp,nsrc_min) )
      .								RETURN
 * number of time steps before the start of the next forecast
-	IF (m1hit .GT. m1lot ) THEN
+	t_delta = (tsrc(ip,jp,kp,m1hit,mp,m1lof)
+     .	         - tsrc(ip,jp,kp,m1lot,mp,m1lof))
+     .		                   / (m1hit-m1lot+1)
 * ... for irregular monthly time steps, t_delta is approximate
-	   t_delta = (tsrc(ip,jp,kp,lsrc_max,mp,nsrc_min)
-     .	            - tsrc(ip,jp,kp,lsrc_min,mp,nsrc_min))
-     .		                   / (lsrc_max-lsrc_min+1)
-	   l_per_n = INT(f_delta/t_delta + 0.5)
-	ELSE
-	   t_delta = 1.0   ! irrelevant
-	   l_per_n = 1
-	ENDIF
+	l_per_n = INT(f_delta/t_delta + 0.5)
 
 * compute the delta increment for each axis
 * this allows "promotion" of degenerate axes

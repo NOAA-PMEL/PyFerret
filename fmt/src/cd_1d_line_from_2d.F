@@ -1,5 +1,5 @@
 	SUBROUTINE CD_1D_LINE_FROM_2D (dset, cdfid, varid, vname,
-     .			axcalt, axlagf, status)
+     .			axcalt, axlagf, axlagt, status)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -37,8 +37,11 @@
 * this routine gets the 2D FMRC time array into memory and calls
 * CD_MAKE_FMRC_AXES to synthesize the T calendar time and F lead time
 * axes that are needed to support FMRC visualization and analysis
+* it also modifies the time axis (native_tax) of the dataset -- which TDS
+* provides only as a undocumented dimension, making a lag time axis (axlagt)
 
 * V695+ *acm* and *sh*
+* V698  *sh* 3/16 -- modify the native taxis (axlagt) to become a lag time
 
 * include files
         include 'netcdf.inc'
@@ -48,11 +51,12 @@
 #include "tmap_dset.parm"
 
 	include 'xtm_grid.cmn_text'
+	include 'xunits.cmn_text'
 	external xgt_grid_data
 
 
 * calling argument declarations
-	INTEGER dset, cdfid, varid, axcalt, axlagf, status
+	INTEGER dset, cdfid, varid, axcalt, axlagf, axlagt, status
 	CHARACTER*(*) vname
 
 * internal variable declarations
@@ -60,6 +64,7 @@
 	INTEGER cdfstat, i, outflag, nvatts, vartype,
      .		start(nferdims),count(nferdims), zero(nferdims),
      .		npts, nT, nF, npts_cdf, vdims(8), nvdim
+	REAL*8  TM_WORLD_AX, avg_lag
 	CHARACTER  TM_STRING*13, buff*256
 
 
@@ -91,6 +96,19 @@
 	CALL CD_MAKE_FMRC_AXES (dset, has_edges, varid, vname, vartype,
      .			    npts, nT, nF, axcalt, axlagf, status)
 	IF (status .NE. merr_ok) GOTO 5000
+
+* 3/16 - correct the lag-time axis of the FMRC (created by Unidata TDS)
+*    from a simplistic 1, ..Nt axis to a true delta (lag) time
+	line_unit_code(axlagt) = line_unit_code(axcalt)
+	line_units(axlagt) = un_name(line_unit_code(axlagt))
+	line_direction(axlagt) = 'TT'
+	line_dattype  (axlagt) = nf_double
+	line_dim_only (axlagt) = .FALSE.  ! no longer netCDF dim w/o coord var
+
+	avg_lag = ( TM_WORLD_AX(nT, axcalt, box_middle )
+     .	          - TM_WORLD_AX(1,  axcalt, box_middle ) ) / (nT-1)
+	line_start(axlagt)     = avg_lag/2.  ! box 1 starts at 0.0
+	line_delta(axlagt)     = avg_lag
 
 * successful completion
         status = merr_ok

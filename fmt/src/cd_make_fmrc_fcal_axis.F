@@ -143,7 +143,7 @@
  5000	RETURN
 
 
- 5300	CALL TM_ERRMSG (merr_linstorlim, status, 'CD_1D_LINE_FROM_2D',
+ 5300	CALL TM_ERRMSG (merr_linstorlim, status, 'CD_MAKE_FMRC_FCAL_AXIS',
      .                  no_descfile, no_stepfile,
      .                  'MAX='//TM_STRING(DBLE(maxlinestore)),
      .                  no_errstring, *5000)

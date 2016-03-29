@@ -373,12 +373,12 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
  5000	RETURN
 
 
- 5300	CALL TM_ERRMSG (merr_linstorlim, status, 'CD_1D_LINE_FROM_2D',
+ 5300	CALL TM_ERRMSG (merr_linstorlim, status, 'CD_MAKE_FMRC_AXES',
      .                  no_descfile, no_stepfile,
      .                  'MAX='//TM_STRING(DBLE(maxlinestore)),
      .                  no_errstring, *5000)
 
- 5400	CALL TM_ERRMSG (merr_notimeinfo, status, 'CD_1D_LINE_FROM_2D',
+ 5400	CALL TM_ERRMSG (merr_notimeinfo, status, 'CD_MAKE_FMRC_AXES',
      .                  no_descfile, no_stepfile,
      .                  'unrecognizable time encoding',
      .                  no_errstring, *5000)

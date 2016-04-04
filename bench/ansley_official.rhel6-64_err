@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 117372530 Mar 29 12:33 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 117333923 Apr  1 16:09 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  first changes for 2158, and 2078: SHOW COMMAND w/ command and [subcommand]
+Note: fix for ticket 2396: label in lower left for a POLY/OVER
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Tue Mar 29 12:36:35 PDT 2016
+Beginning at Fri Apr 1 16:18:09 PDT 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -4157,6 +4157,8 @@ Replacing definition of axis yax
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_1.nc
  LISTing to file tmp/tagg_reg_2.nc
@@ -4514,10 +4516,6 @@ DEFINE DATA/AGGREGAT/F tef_short = te_f01, te_f02_short, te_f03, te_f04, te_f05,
            *** NOTE: Exclude variable from aggregate. F axis of grid differs in member datasets: FCST_2
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
 DEFINE DATA/AGGREGAT/E tfe_short = tf_e1, tf_e2_short, tf_e3, tf_e4, tf_e5
- **ERROR: unknown data set: dset te_f01 unknown or is already an aggregate dataset
-DEFINE DATA/AGGREGAT/E bad_ens = te_f01, te_f03, te_f04
- **ERROR: unknown data set: dset tf_e1 unknown or is already an aggregate dataset
-DEFINE DATA/AGGREGAT/F bad_fmrc = tf_e1, tf_e3, tf_e4
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4553,8 +4551,6 @@ Replacing definition of axis TAX
  LISTing to file a.nc
 Replacing definition of axis TAX
  LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4660,4 +4656,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Mar 29 12:39:08 PDT 2016
+Ended at Fri Apr 1 16:22:23 PDT 2016

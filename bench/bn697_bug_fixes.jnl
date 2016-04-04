@@ -54,3 +54,6 @@ go err696_repeat_escapes.jnl
 
 go bn_reset
 go err696_red_keylab.jnl
+
+go bn_reset
+go err696_poly_over_label

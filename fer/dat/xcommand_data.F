@@ -227,7 +227,7 @@
 * V698+ *acm* 2/16 Ticket 2362: Change /D= qualifier to /DATASET=
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
-* V698 *acm*  3/16 Ticket 2158: Add DEFINE AXIS /MONTHLY /LIKE=
+*       3/16 *sh*  added PLOT/ALONG=axis
 
 *
 * !!!!!!!!!!
@@ -1005,7 +1005,7 @@
 		DATA qualifiers  (nqual_at6a+9) / 'T'	/
 		DATA qualifiers  (nqual_at6a+10)/ 'E'	/
 		DATA qualifiers  (nqual_at6a+11)/ 'F'	/
-		DATA qualifiers  (nqual_at6a+12)/ '****'/
+		DATA qualifiers  (nqual_at6a+12)/ 'ALONG'/	!/along
 		DATA qualifiers  (nqual_at6a+13)/ 'OVERLAY'/	!/overlays
 		DATA qualifiers  (nqual_at6a+14)/ 'SET_UP'/	!/set_up
 		DATA qualifiers  (nqual_at6a+15)/ 'FRAME'/	!/frame

@@ -20,6 +20,11 @@
 * *kms*      2/12 Add E and F dimensions to ul_dolab, plot_axis
 * *acm* v683 11/12 add sym_so_far - symbols on line plots. Used to be SAVEd in line_style.F
 * V685+ *acm* 12/13 For 6D Ferret, key_doc longer for extra dimensions
+* V698 *sh* 3/16 added parameter max_line_on_plot, max_key_entries
+
+	INTEGER max_line_on_plot, max_key_entries
+	PARAMETER (max_line_on_plot = 200)
+	PARAMETER (max_key_entries  = 40)
 
 	LOGICAL	key_doc(0:12),
      .		onedee_on,

@@ -1,8 +1,10 @@
-	BLOCK DATA XPLOT_SETUP_DATA
+	INTEGER FUNCTION ENSEMBLE_MEMBER_DSET ( agg_dset, imemb )
 
+*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -33,48 +35,56 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* initialization of COMMON / XPLOT_SETUP /
+* return the dset number of ensemble member imemb
+* note:  as currently implemented an aggregated dataset knows who its member
+*        variable are, and each member variable knows who its member datasets
+*        are.  So the only way to learn the dataset number of a member is to
+*        access it through a member variable.  This routine follows that path.
+
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+*
 
-* revision 0.1 - 9/12/88 - reduced number of defined colors to 10
-* V200: 12/21/89
-* V540: *sh* 9/01 - added xwhitelo, ywhitelo, ...
-* V63  *acm* 10/09 Changes for gfortran build
-*      *kms*  2/12 Include tmap_dims.parm for nferdims used by xplot_setup.cmn
-* V698 *sh* 3/16 - adjusted key_xorigin and key_ywhite_space
+* calling arguments
+*  agg_dset -- dataset number of the aggregation
+*  imemb    -- member number 1, 2, 3, ...
 
-        IMPLICIT NONE
-        include 'tmap_dims.parm'
-	include 'ferret.parm'
-	include 'xplot_setup.cmn'
 
-	DATA
-     .		saved_ppl_yax	/ .FALSE. /,
-     .		key_xspace0	/ 3.0 /,	! nominal X space for keys
-     .		key_yspace0	/ 0.25 /,	! nominal Y space for keys
-     .		key_labht0	/ 0.12 /,	! nominal label height for keys
-!     .		key_xorigin	/ 1.5  /,	! pre-3/16
-     .		key_xorigin	/ 0.75  /,	! leftmost x loc. of keys
-     .		key_yorigin	/ -0.85 /,	! y loc. of topmost keys
-     .		key_xwhite_space/ 0.3  /,	! x space between keys
-!     .		key_ywhite_space/ 0.02 /,	! y space between keys
-     .		key_ywhite_space/ 0.05 /,	! y space between keys
-!     .		key_line_frac   / 0.3 /,	! pre 3/16
-     .		key_line_frac   / 0.25 /,	! line specimen width
+* V690 *sh*
 
-     .		ovkey_xspace	/ 2.1 /,
-     .		ovkey_yspace	/ 0.18 /,
-     .		ovkey_labht	/ 0.08 /,
-     .		ovkey_xorigin	/-1.1 /,
-     .		ovkey_yorigin	/-0.6 /,
-     .		ul_labht0	/0.12 /,
-     .		ul_yspace0	/0.2  /,
-     .		ul_xorigin	/ 0.0 /,	! measured from Y axis
-     .		ul_yorigin	/ 0.6 /,	! measured from top x axis
-     .		xwhitelo	/ 1.2 /,	! PLOT+ xorigin
-     .		ywhitelo	/ 1.4 /,	! PLOT+ yorigin
-     .		xwhitehi	/ 1.0 /,
-     .		ywhitehi	/ 1.4 /
+	include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include 'xcontext.cmn'
+	include 'xtext_info.cmn'
+	include 'xdset_info.cmn_text'
+	include 'xtm_grid.cmn_text'
 
+* calling argument declarations
+	INTEGER agg_dset, imemb	
+
+* local variable declarations:
+	INTEGER TM_LENSTR1
+	INTEGER ivar, grid, vlen, memb_dset
+	INTEGER orig_cat, orig_grid, iline, orig_var, status
+
+
+* find a variable that belongs to this dataset and has an E axis
+! very inefficient loop:  needs to be fixed
+	DO ivar = 1, maxvars
+	   IF (ds_var_setnum(ivar).EQ.agg_dset) THEN
+	      grid = ds_grid_number(ivar)
+	      IF (grid_line(e_dim,grid) .NE. mnormal) GOTO 100
+	   ENDIF
+	ENDDO
+* ... no variable found (should never happen)
+	ENSEMBLE_MEMBER_DSET = pdset_irrelevant ! may avoid a crash sometime?
+	RETURN 
+
+* get the dataset number associated with this variable
+ 100	vlen = TM_LENSTR1( ds_var_code(ivar) )
+	CALL CD_GET_AGG_VAR_INFO (agg_dset, ds_var_code(ivar)(:vlen), imemb, 
+     .        orig_cat, memb_dset, orig_grid, iline, orig_var, status)
+	ENSEMBLE_MEMBER_DSET = memb_dset
+	RETURN
 	END
+

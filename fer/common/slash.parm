@@ -294,6 +294,7 @@
      .			slash_shad_mod,
      .			slash_shad_trim,
      .
+     .			slash_plot_along,
      .			slash_plot_over_plot,
      .			slash_plot_set_up,
      .			slash_plot_frame,
@@ -319,7 +320,8 @@
      .			slash_plot_spectrum,
      .			slash_plot_fast,
      .			slash_plot_missing,
-     .			slash_plot_gap
+     .			slash_plot_gap,
+     .			slash_along
 
 	INTEGER		slash_wire_over,
      .			slash_wire_set_up,
@@ -583,6 +585,7 @@
      .			slash_shad_grat 	= 1+32,
      .			slash_shad_mod   	= 1+33,
      .
+     .			slash_plot_along	= 1+12,
      .			slash_plot_over_plot	= 1+13,
      .			slash_plot_set_up	= 1+14,
      .			slash_plot_frame	= 1+15,

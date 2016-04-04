@@ -1,4 +1,4 @@
-      SUBROUTINE PLOT_SET_UP( memory,
+        SUBROUTINE PLOT_SET_UP( memory,
      .				overlay, transpz, versus, no_labels,
      .				symbol, sym_size, color, color1, use_line,
      .				step_inc, do_dash, dashstyle,
@@ -164,6 +164,7 @@
 * V695  *acm* 9/15 Tweak to above - dont reset tref for overlay plots.
 * V697  *acm* 1/16 Further fix ticket Fix 2122. Make sure the dependent axis
 *                  data min and max are set.
+* V698 *sh* 3/16 - limit max number of plot keys generated
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -199,7 +200,8 @@
      .                  flip, time_axis,
      .			all_1_ind, formatted,
      .			indep_is_log, dep_is_log, use_nice,
-     .                  this_no_range(50), set_axis, timeax_both
+     .                  this_no_range(max_line_on_plot), set_axis,
+     .                  timeax_both
 	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title
 	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
      .			SECS_TO_DATE*20, LEFINT*8, MERGED_WHOI_DATE*14, 
@@ -215,7 +217,7 @@
      .			slen2, slen3, tax, plot_mem_used, nload, i,
      .			pxlim, pylim, phlim, pvlim,pindeplim, pdeplim,
      .			dep_axtyp, indep_axtyp, the_taxis, ribbon_var, 
-     .			gap_var, junits, iaxis, hblk1, mvh_temp
+     .			gap_var, junits, iaxis, hblk1, mvh_temp, nkey_entries
 
 	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
      .			cal_id_old, cal_id_new
@@ -240,6 +242,9 @@
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
      .				'setting up plot', 15)
 
+* limits error check
+        IF (nmv .GT. max_line_on_plot) GOTO 5050
+
 * initialize
 !	dep_max = arbitrary_small_val8
 !	dep_min = arbitrary_large_val8
@@ -263,6 +268,15 @@
 	mod_vs_y = .FALSE.
         cx_x = cx_list(1)
 	xtra_lab = ' '
+        nkey_entries = nmv
+
+* set limit on the number of plot keys
+        IF (.NOT.nokey  .AND.  nmv.GT.max_key_entries) THEN
+           buff1 = LEFINT( max_key_entries,  slen  )
+           CALL WARN('Too many lines to label. Labeling initial '
+     .                          //buff1(:slen) )
+           nkey_entries = max_key_entries
+        ENDIF
 
 * determine PLOT+ memory required
         plot_mem_used = 0
@@ -992,7 +1006,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 *
 	hlen = xlen ! single-precision xlen from PPLUS common -> double prec. var
 	IF ( .NOT.no_labels ) 
-     .          CALL LINE_PLOT_LABELS (var1, nmv, ndv, cx_list, 
+     .          CALL LINE_PLOT_LABELS (var1, nkey_entries, ndv, cx_list, 
      .		this_no_range, overlay, versus, nokey, time_axis, 
      .		tstyle, cal_id_1, ribbon_var, indep_lab, dep_lab, 
      .		ind_min, dep_len, hlen)
@@ -1004,6 +1018,9 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * error exit
  5000	CALL PPLCMD ( from, line, 0, 'NLINES', 1, 1 )	! wipe buffers clean
 	RETURN
+ 5050	buff1 = LEFINT( max_line_on_plot,  slen  )
+	CALL ERRMSG( ferr_invalid_command, status, 'cannot plot more than '
+     .                  //buff1(:slen)//' lines with a single PLOT', *5000)
  5100	CALL ERRMSG( ferr_invalid_command, status, 
      .		     cmnd_buff(:len_cmnd)//' : vs what ?', *5000 )
  5110	dep_ax = LEFINT( ndim, slen )

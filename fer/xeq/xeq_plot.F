@@ -109,6 +109,7 @@
 *                  this later for other PLOT/VS plots.
 * v697 *acm* 12/15 Ticket 2331, add flag changed_key to common, to restore the color key
 *                  style after a color plot and also after SHADE/SET; SHADE.
+* v698 *sh* 3/16   added PLOT/ALONG=axis
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -141,7 +142,7 @@
      .			overlay, transpz, versus,
      .			no_labels, set_up, noaxes, axes, use_line,
      .			is_logh, is_logv, nokey, no_data, no_range,
-     .			do_key, spectrum, addgaps
+     .			do_key, spectrum, addgaps, along
 	INTEGER		TM_LENSTR1, TM_LENSTR, STR_UPCASE, STR_SAME,
      .                  symbol, color, color1, status,
      .			loc, limit, slen, thick, step_inc,
@@ -189,6 +190,12 @@ CC       => Set values here instead.
 	set_up	  = qual_given( slash_plot_set_up    ).GT.0
 	noaxes    = qual_given( slash_noaxes         ).GT.0
 	axes      = qual_given( slash_plot_axes      ).GT.0
+	along     = qual_given( slash_plot_along     ).GT.0
+
+	IF (along .AND. versus) THEN
+	   CALL WARN("/ALONG ignored.  Incompatible with PLOT/VS") 
+	   along = .FALSE.
+	ENDIF
 
         IF (overlay) THEN
 	   noaxes = .FALSE.
@@ -596,7 +603,7 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
            locv = qual_given(slash_plot_grat)
         ENDIF
 
-        CALL set_graticules(loch, locv, status)
+        CALL SET_GRATICULES(loch, locv, status)
 
 * ... PLOT/NOKEY  (default is key on)
 
@@ -668,7 +675,7 @@ c done in plot_set_up.
               ENDIF
 
               nparm = 4
-              CALL parse_comma_list ( buff, s1, s2, nparm, 
+              CALL PARSE_COMMA_LIST ( buff, s1, s2, nparm, 
      .             num_it, it_start, it_end, status)
               IF (status .EQ. ferr_ok .AND. it_start(1) .GT. it_end(1)) THEN	! /AXES=()
                  DO 500 i = 1, 4
@@ -749,7 +756,10 @@ c done in plot_set_up.
 
 
 * release the memory used for axis buffers
- 1000	CALL FREE_MEMORY( ax2_start, ax2_blks )
+! PLOT/ALONG does a hack to num_uvars_in_cmnd that can lead to a problem
+! in GET_PROT_CMND_DATA if the same argument string is re-used in the next cmnd
+ 1000	IF (along) num_uvars_in_cmnd = 1
+	CALL FREE_MEMORY( ax2_start, ax2_blks )
  	CALL FREE_MEMORY( ax1_start, ax2_blks )
 	CALL UNPROTECT_CMND_DATA			! 1/94
  5100	RETURN

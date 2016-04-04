@@ -48,6 +48,8 @@
 * V540: *sh* 9/01 - do not adjust Y axis origin of PLOT command if user
 *			specifies not to
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V698 *sh* 3/16 Limit the maximum number of keys.
+*                /NOKEY suppresses yadjust
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -65,17 +67,20 @@
 
 * local variable declarations:
 	LOGICAL	change_yorg, change_ysize, yadjust
-	INTEGER	nrow, idim
+	INTEGER	nrow, idim, nkey
 	REAL	ysqueeze, yspace_needed, yspace_avail
+
+* limit the number of labels
+	nkey = MIN(nvar, max_key_entries)
 
 * how many columns of keys can fit on the plot ?
 	key_ncolmn  = MAX( 1, INT((xlen - key_xorigin)/key_xspace0) )
-	IF (key_ncolmn .GT. nvar) key_ncolmn = nvar	! 4/96
+	IF (key_ncolmn .GT. nkey) key_ncolmn = nkey	! 4/96
 	key_xspace  = MAX( xlen/5., (xlen - key_xorigin) / key_ncolmn )
 	key_xsize   = MAX( xlen/6., key_xspace - key_xwhite_space )
 
 * and how many rows do we need ?
-	nrow = ((nvar-1) / key_ncolmn) + 1
+	nrow = ((nkey-1) / key_ncolmn) + 1
 	yspace_needed = nrow*key_yspace0
 
 * where was the y origin before we tampered with it ?
@@ -97,8 +102,9 @@
 *  1) the keys will fit using the default y origin and key label size
 *  2) the keys will fit but only by shrinking the label size
 *  3) the keys will fit only by shifting the y origin (y location of x axis)
-	yadjust = cmnd_num .EQ. cmnd_plot  ! added 9/01 *sh*
+	yadjust = cmnd_num .EQ. cmnd_plot
 	IF (yadjust) yadjust = qual_given(slash_plot_noyadjust).EQ.0
+	IF (yadjust) yadjust = qual_given(slash_plot_nokey).EQ.0
 	IF ( .NOT.yadjust ) THEN
 	   change_ysize = .FALSE.
 	   change_yorg  = .FALSE.

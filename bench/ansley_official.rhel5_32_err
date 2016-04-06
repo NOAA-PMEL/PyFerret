@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 86699430 Feb 18 12:40 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 121847009 Apr  5 15:56 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: after checkin for fixes to 1786, MODE UPCASE and SHOW output
+Note: PLOT/ALONG= changes, recent aggregations changes, SHOW COMMANDS updates and new script
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/linux/ext_func/pylibs
-Beginning at Thu Feb 18 12:41:56 PST 2016
+Beginning at Tue Apr 5 17:11:39 PDT 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1208,24 +1208,34 @@ Replacing definition of axis TAX2
            *** NOTE: Axis is in use by grid GFORMAT
            *** NOTE: Not deleted: XAX
            *** NOTE: Axis is in use by grid GFORMAT
-           *** NOTE: Not deleted: XAXLEVITR1_160
-           *** NOTE: Axis is in use by grid GG1
            *** NOTE: Not deleted: TIME5
            *** NOTE: Axis is in use by grid GLB1
-           *** NOTE: Not deleted: TIME4
-           *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: COADSX
            *** NOTE: Axis is in use by grid GG
-           *** NOTE: Not deleted: COADSY
-           *** NOTE: Axis is in use by grid GG1
-           *** NOTE: Not deleted: TEST_IRREG
-           *** NOTE: Axis is in use by grid (G023)
            *** NOTE: Not deleted: YAXLEVITR1_90
            *** NOTE: Axis is in use by grid GG2
+           *** NOTE: Not deleted: XAXLEVITR1_160
+           *** NOTE: Axis is in use by grid GG1
+           *** NOTE: Not deleted: PSYT
+           *** NOTE: Axis is in use by grid GY
+           *** NOTE: Not deleted: PSXU
+           *** NOTE: Axis is in use by grid G5DAY
+           *** NOTE: Not deleted: COADSY
+           *** NOTE: Axis is in use by grid GG1
+           *** NOTE: Not deleted: (AX009)
+           *** NOTE: Axis is in use by grid GG3
+           *** NOTE: Not deleted: PSZT
+           *** NOTE: Axis is in use by grid G5DAY
+           *** NOTE: Not deleted: PSYU
+           *** NOTE: Axis is in use by grid G5DAY
+           *** NOTE: Not deleted: TIME4
+           *** NOTE: Axis is in use by grid GXYT
+           *** NOTE: Not deleted: TEST_IRREG
+           *** NOTE: Axis is in use by grid (G023)
+           *** NOTE: Not deleted: PSZW
+           *** NOTE: Axis is in use by grid G5_10
            *** NOTE: Not deleted: ZAXLEVITR1_1
            *** NOTE: Axis is in use by grid GG2
-           *** NOTE: Not deleted: (AX020)
-           *** NOTE: Axis is in use by grid GG3
            *** NOTE: Not deleted: XEVEN
            *** NOTE: Axis is in use by grid EVEN
            *** NOTE: Not deleted: XODD
@@ -1328,22 +1338,32 @@ Replacing definition of axis TAX2
            *** NOTE: Axis is in use by grid GFORMAT
            *** NOTE: Not deleted: XAX
            *** NOTE: Axis is in use by grid GFORMAT
-           *** NOTE: Not deleted: XAXLEVITR1_160
-           *** NOTE: Axis is in use by grid GG1
            *** NOTE: Not deleted: TIME5
            *** NOTE: Axis is in use by grid GLB1
-           *** NOTE: Not deleted: TIME4
-           *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: COADSX
            *** NOTE: Axis is in use by grid GG
-           *** NOTE: Not deleted: COADSY
-           *** NOTE: Axis is in use by grid GG1
            *** NOTE: Not deleted: YAXLEVITR1_90
            *** NOTE: Axis is in use by grid GG2
+           *** NOTE: Not deleted: XAXLEVITR1_160
+           *** NOTE: Axis is in use by grid GG1
+           *** NOTE: Not deleted: PSYT
+           *** NOTE: Axis is in use by grid GY
+           *** NOTE: Not deleted: PSXU
+           *** NOTE: Axis is in use by grid G5DAY
+           *** NOTE: Not deleted: COADSY
+           *** NOTE: Axis is in use by grid GG1
+           *** NOTE: Not deleted: (AX009)
+           *** NOTE: Axis is in use by grid GG3
+           *** NOTE: Not deleted: PSZT
+           *** NOTE: Axis is in use by grid G5DAY
+           *** NOTE: Not deleted: PSYU
+           *** NOTE: Axis is in use by grid G5DAY
+           *** NOTE: Not deleted: TIME4
+           *** NOTE: Axis is in use by grid GXYT
+           *** NOTE: Not deleted: PSZW
+           *** NOTE: Axis is in use by grid G5_10
            *** NOTE: Not deleted: ZAXLEVITR1_1
            *** NOTE: Axis is in use by grid GG2
-           *** NOTE: Not deleted: (AX020)
-           *** NOTE: Axis is in use by grid GG3
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1516,12 +1536,19 @@ Replacing definition of axis TAX
 Replacing definition of axis XAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file b.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+SHO VAR/XML
 SHO VAR/XML
 SHO VAR/XML
 SHO VAR/XML
 SHO VAR/XML
 SHOW VAR/XML
 SHOW VAR/XML
+SHOW VAR/XML
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1936,9 +1963,6 @@ Replacing definition of axis TGREG
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file revision.nc
-
-Bailing out of external function "ffta":
-	 Time axis must be a regular axis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1946,6 +1970,9 @@ Bailing out of external function "ffta":
  **ERROR: command syntax: IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
           Cannot use multiple IFs in an expression
 LIST/ORDER=X  IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
  **ERROR: command syntax: IF I LT 5 THEN I ELSE -9
           ELSE before - is illegal
           negative constants need to be enclosed in parentheses
@@ -2104,10 +2131,10 @@ set var/outtype=char broiled
 set var/outtype=garbage broiled
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Changing the value of attribute (PSXT1).units
+           *** NOTE: Changing the value of attribute (PSXT).units
  LISTing to file a.nc
  LISTing to file a.nc
-           *** NOTE: Changing the value of attribute (PSXT1).units
+           *** NOTE: Changing the value of attribute (PSXT).units
            *** NOTE: Changing the value of attribute (PSYT1).units
  LISTing to file a.nc
  PERMANENT data cleared from memory
@@ -2133,10 +2160,10 @@ Replacing definition of axis TIME
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
+ PERMANENT data cleared from memory
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
 curl error details: 
- PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2291,7 +2318,7 @@ Replacing definition of axis TIME
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: invalid command: it is a child axis already
-set axis/stride=2/offset=1 (AX047)
+set axis/stride=2/offset=1 (AX052)
  **ERROR: invalid command: not a strided axis: COADSX
 cancel axis/stride COADSX
  **ERROR: invalid command: offset must be less than stride value
@@ -2333,6 +2360,7 @@ set axis/stride=2 NORMAL
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
            *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
            *** NOTE: Substituting coordinate midpoints
+curl error details: 
            *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
            *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
            *** NOTE: A dummy axis of subscripts will be used
@@ -2349,7 +2377,6 @@ set axis/stride=2 NORMAL
            *** NOTE: regarding ./climatological_axes.cdf ...
            *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
            *** NOTE: Coordinates out of order or missing on axis UNORDERED_AXIS at subscript 4
-curl error details: 
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
            *** NOTE: A dummy axis of subscripts will be used
@@ -2383,6 +2410,8 @@ curl error details:
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file b.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
@@ -2879,7 +2908,7 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Changing the value of attribute sst.history
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2927,6 +2956,7 @@ Re-defining viewport V7
 Re-defining viewport V8
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file b.nc
  LISTing to file dummy.dat
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3090,6 +3120,9 @@ Replacing definition of axis YAX
  LISTing to file aa.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+
+Bailing out of external function "tax_year":
+	 Function not valid for modulo time axis
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
 set mode desperate   9999999999.000000
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
@@ -3117,9 +3150,6 @@ Replacing definition of axis YAX_DUP_AXNAMES
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-
-Bailing out of external function "tax_year":
-	 Function not valid for modulo time axis
            *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: broiled
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
@@ -3316,8 +3346,8 @@ Replacing definition of axis FAX4DAY
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
  **ERROR: unknown data set: dset 3 unknown or is already an aggregate dataset
 DEFINE DATA/AGGREGAT/E windy = 1,2,3
-           *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: UWND
-           *** NOTE: Exclude variable from aggregate. Grid differs in member datasets: VWND
+           *** NOTE: Exclude variable from aggregate. T axis of grid differs in member datasets: UWND
+           *** NOTE: Exclude variable from aggregate. T axis of grid differs in member datasets: VWND
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
 DEFINE DATA/AGGREGAT/E windy = 1,2
@@ -3330,9 +3360,9 @@ DEFINE DATA/AGGREGAT/E windy = 1,2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Dataset used in aggregation.  Canceling aggregation, more
-           *** NOTE: Dataset used in aggregation.  Canceling aggregation, some
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, fourfiles
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, some
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, more
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3909,8 +3939,6 @@ Replacing definition of axis EAXIS
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Could not compute Std Dev. Data too large or or not within 3 std of computed mean.
-           *** NOTE: Using linear levels instead.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4116,6 +4144,16 @@ Replacing definition of axis yax
  Using every   4th vector in the Y direction
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_1.nc
  LISTing to file tmp/tagg_reg_2.nc
@@ -4131,7 +4169,7 @@ Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_no_T.nc
  LISTing to file tmp/tagg_reg_2_overlarge.nc
            *** NOTE: Not deleted: TDAY
-           *** NOTE: Axis is in use by grid (G089)
+           *** NOTE: Axis is in use by grid (G094)
  LISTing to file tmp/tagg_irreg_1.nc
  LISTing to file tmp/tagg_irreg_2.nc
  LISTing to file tmp/tagg_irreg_3.nc
@@ -4145,7 +4183,7 @@ Replacing definition of axis TDAY
 Replacing definition of axis TDAY_IR
  LISTing to file tmp/tagg_irreg_2_reg.nc
            *** NOTE: Not deleted: TDAY_IR
-           *** NOTE: Axis is in use by grid (G089)
+           *** NOTE: Axis is in use by grid (G094)
  LISTing to file tmp/tagg_T0varying_1.nc
 Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_T0varying_2.nc
@@ -4181,7 +4219,7 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_disjoint_T0varying_3.nc
  LISTing to file tmp/tagg_disjoint_T0varying_4_wrong.nc
            *** NOTE: Not deleted: TDAY_WRONG
-           *** NOTE: Axis is in use by grid (G089)
+           *** NOTE: Axis is in use by grid (G094)
  LISTing to file tmp/tagg_single_1.nc
  LISTing to file tmp/tagg_single_2.nc
  LISTing to file tmp/tagg_single_3.nc
@@ -4189,10 +4227,7 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_single_5.nc
  LISTing to file tmp/tagg_single_6.nc
            *** NOTE: Not deleted: tday
-           *** NOTE: Axis is in use by grid (G089)
-           *** NOTE: Ambiguous coordinates on T axis: T[G=MYVAR[D=MYAGG8]] - T[G=MYVAR[D=MYAGG8_DISORDERED1]]
-           *** NOTE: Ambiguous coordinates on T axis: TBOXLO[G=MYVAR[D=MYAGG8]] - TBOXLO[G=MYVAR[D=MYAGG8_DISORDERED1]]
-           *** NOTE: Ambiguous coordinates on T axis: TBOXHI[G=MYVAR[D=MYAGG8]] - TBOXHI[G=MYVAR[D=MYAGG8_DISORDERED1]]
+           *** NOTE: Axis is in use by grid (G094)
  **ERROR: invalid command: given aggregation dataset name already in use: myagg2
 define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc, tmp/tagg_reg_2.nc
  **TMAP ERR: non-existent or not on line
@@ -4208,9 +4243,6 @@ define data/agg/t myagg3 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2_overlarge.nc,tmp/ta
  **TMAP ERR: Unknown variable code
              in file tmp/tagg_disjoint_T0varying_4_wrong.nc time axis variable is missing: TDAY_TVAR
 define data/agg/t myagg5_bad = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc,tmp/tagg_disjoint_T0varying_3.nc, tmp/tagg_disjoint_T0varying_4_wrong.nc,tmp/tagg_disjoint_T0varying_5.nc
-           *** NOTE: Ambiguous coordinates on T axis: T[G=MYVAR[D=MYSING_IRREG_AGG4]] - T[G=MYVAR[D=MYSING_IRREG_AGG4_DISORDERED1]]
-           *** NOTE: Ambiguous coordinates on T axis: TBOXLO[G=MYVAR[D=MYSING_IRREG_AGG4]] - TBOXLO[G=MYVAR[D=MYSING_IRREG_AGG4_DISORDERED1]]
-           *** NOTE: Ambiguous coordinates on T axis: TBOXHI[G=MYVAR[D=MYSING_IRREG_AGG4]] - TBOXHI[G=MYVAR[D=MYSING_IRREG_AGG4_DISORDERED1]]
  **ERROR: unknown command: garbage
 garbage command syntax
  **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_single_1.nc
@@ -4276,14 +4308,11 @@ Replacing definition of axis TRUEMONTH
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
+           *** NOTE: Dataset used in aggregation.  Canceling aggregation, bn_aggregate_f.jnl
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, my_fmrc
-           *** NOTE: Dataset used in aggregation.  Canceling aggregation, bn_aggregate_f.sub
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
-           *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC]
-           *** NOTE: Ambiguous coordinates on F axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC]
            *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
-           *** NOTE: Ambiguous coordinates on F axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
  **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
 DEFINE DATA/AGGREGAT/F my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc,tmp/fcst_2.nc,tmp/fcst_3.nc
  **TMAP ERR: non-existent or not on line
@@ -4293,6 +4322,199 @@ DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/no_exist.nc")
 DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/consecutive_month_fcst.nc")
  **ERROR: error defining aggregate dataset: forecast start times are irregular or too gappy
 DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/irregular_start_time_fcst.nc")
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis YAX
+Replacing definition of axis ZAX
+Replacing definition of axis TRUEMONTH
+ LISTing to file tmp/f01_e1_t1.nc
+ LISTing to file tmp/f01_e1_t2.nc
+ LISTing to file tmp/f01_e1_t3.nc
+ LISTing to file tmp/f01_e2_t1.nc
+ LISTing to file tmp/f01_e2_t2.nc
+ LISTing to file tmp/f01_e2_t3.nc
+ LISTing to file tmp/f01_e3_t1.nc
+ LISTing to file tmp/f01_e3_t2.nc
+ LISTing to file tmp/f01_e3_t3.nc
+ LISTing to file tmp/f01_e4_t1.nc
+ LISTing to file tmp/f01_e4_t2.nc
+ LISTing to file tmp/f01_e4_t3.nc
+ LISTing to file tmp/f01_e5_t1.nc
+ LISTing to file tmp/f01_e5_t2.nc
+ LISTing to file tmp/f01_e5_t3.nc
+ LISTing to file tmp/f02_e1_t1.nc
+ LISTing to file tmp/f02_e1_t2.nc
+ LISTing to file tmp/f02_e1_t3.nc
+ LISTing to file tmp/f02_e2_t1.nc
+ LISTing to file tmp/f02_e2_t2.nc
+ LISTing to file tmp/f02_e2_t3.nc
+ LISTing to file tmp/f02_e3_t1.nc
+ LISTing to file tmp/f02_e3_t2.nc
+ LISTing to file tmp/f02_e3_t3.nc
+ LISTing to file tmp/f02_e4_t1.nc
+ LISTing to file tmp/f02_e4_t2.nc
+ LISTing to file tmp/f02_e4_t3.nc
+ LISTing to file tmp/f02_e5_t1.nc
+ LISTing to file tmp/f02_e5_t2.nc
+ LISTing to file tmp/f02_e5_t3.nc
+ LISTing to file tmp/f03_e1_t1.nc
+ LISTing to file tmp/f03_e1_t2.nc
+ LISTing to file tmp/f03_e1_t3.nc
+ LISTing to file tmp/f03_e2_t1.nc
+ LISTing to file tmp/f03_e2_t2.nc
+ LISTing to file tmp/f03_e2_t3.nc
+ LISTing to file tmp/f03_e3_t1.nc
+ LISTing to file tmp/f03_e3_t2.nc
+ LISTing to file tmp/f03_e3_t3.nc
+ LISTing to file tmp/f03_e4_t1.nc
+ LISTing to file tmp/f03_e4_t2.nc
+ LISTing to file tmp/f03_e4_t3.nc
+ LISTing to file tmp/f03_e5_t1.nc
+ LISTing to file tmp/f03_e5_t2.nc
+ LISTing to file tmp/f03_e5_t3.nc
+ LISTing to file tmp/f04_e1_t1.nc
+ LISTing to file tmp/f04_e1_t2.nc
+ LISTing to file tmp/f04_e1_t3.nc
+ LISTing to file tmp/f04_e2_t1.nc
+ LISTing to file tmp/f04_e2_t2.nc
+ LISTing to file tmp/f04_e2_t3.nc
+ LISTing to file tmp/f04_e3_t1.nc
+ LISTing to file tmp/f04_e3_t2.nc
+ LISTing to file tmp/f04_e3_t3.nc
+ LISTing to file tmp/f04_e4_t1.nc
+ LISTing to file tmp/f04_e4_t2.nc
+ LISTing to file tmp/f04_e4_t3.nc
+ LISTing to file tmp/f04_e5_t1.nc
+ LISTing to file tmp/f04_e5_t2.nc
+ LISTing to file tmp/f04_e5_t3.nc
+ LISTing to file tmp/f05_e1_t1.nc
+ LISTing to file tmp/f05_e1_t2.nc
+ LISTing to file tmp/f05_e1_t3.nc
+ LISTing to file tmp/f05_e2_t1.nc
+ LISTing to file tmp/f05_e2_t2.nc
+ LISTing to file tmp/f05_e2_t3.nc
+ LISTing to file tmp/f05_e3_t1.nc
+ LISTing to file tmp/f05_e3_t2.nc
+ LISTing to file tmp/f05_e3_t3.nc
+ LISTing to file tmp/f05_e4_t1.nc
+ LISTing to file tmp/f05_e4_t2.nc
+ LISTing to file tmp/f05_e4_t3.nc
+ LISTing to file tmp/f05_e5_t1.nc
+ LISTing to file tmp/f05_e5_t2.nc
+ LISTing to file tmp/f05_e5_t3.nc
+ LISTing to file tmp/f06_e1_t1.nc
+ LISTing to file tmp/f06_e1_t2.nc
+ LISTing to file tmp/f06_e1_t3.nc
+ LISTing to file tmp/f06_e2_t1.nc
+ LISTing to file tmp/f06_e2_t2.nc
+ LISTing to file tmp/f06_e2_t3.nc
+ LISTing to file tmp/f06_e3_t1.nc
+ LISTing to file tmp/f06_e3_t2.nc
+ LISTing to file tmp/f06_e3_t3.nc
+ LISTing to file tmp/f06_e4_t1.nc
+ LISTing to file tmp/f06_e4_t2.nc
+ LISTing to file tmp/f06_e4_t3.nc
+ LISTing to file tmp/f06_e5_t1.nc
+ LISTing to file tmp/f06_e5_t2.nc
+ LISTing to file tmp/f06_e5_t3.nc
+ LISTing to file tmp/f07_e1_t1.nc
+ LISTing to file tmp/f07_e1_t2.nc
+ LISTing to file tmp/f07_e1_t3.nc
+ LISTing to file tmp/f07_e2_t1.nc
+ LISTing to file tmp/f07_e2_t2.nc
+ LISTing to file tmp/f07_e2_t3.nc
+ LISTing to file tmp/f07_e3_t1.nc
+ LISTing to file tmp/f07_e3_t2.nc
+ LISTing to file tmp/f07_e3_t3.nc
+ LISTing to file tmp/f07_e4_t1.nc
+ LISTing to file tmp/f07_e4_t2.nc
+ LISTing to file tmp/f07_e4_t3.nc
+ LISTing to file tmp/f07_e5_t1.nc
+ LISTing to file tmp/f07_e5_t2.nc
+ LISTing to file tmp/f07_e5_t3.nc
+ LISTing to file tmp/f08_e1_t1.nc
+ LISTing to file tmp/f08_e1_t2.nc
+ LISTing to file tmp/f08_e1_t3.nc
+ LISTing to file tmp/f08_e2_t1.nc
+ LISTing to file tmp/f08_e2_t2.nc
+ LISTing to file tmp/f08_e2_t3.nc
+ LISTing to file tmp/f08_e3_t1.nc
+ LISTing to file tmp/f08_e3_t2.nc
+ LISTing to file tmp/f08_e3_t3.nc
+ LISTing to file tmp/f08_e4_t1.nc
+ LISTing to file tmp/f08_e4_t2.nc
+ LISTing to file tmp/f08_e4_t3.nc
+ LISTing to file tmp/f08_e5_t1.nc
+ LISTing to file tmp/f08_e5_t2.nc
+ LISTing to file tmp/f08_e5_t3.nc
+ LISTing to file tmp/f09_e1_t1.nc
+ LISTing to file tmp/f09_e1_t2.nc
+ LISTing to file tmp/f09_e1_t3.nc
+ LISTing to file tmp/f09_e2_t1.nc
+ LISTing to file tmp/f09_e2_t2.nc
+ LISTing to file tmp/f09_e2_t3.nc
+ LISTing to file tmp/f09_e3_t1.nc
+ LISTing to file tmp/f09_e3_t2.nc
+ LISTing to file tmp/f09_e3_t3.nc
+ LISTing to file tmp/f09_e4_t1.nc
+ LISTing to file tmp/f09_e4_t2.nc
+ LISTing to file tmp/f09_e4_t3.nc
+ LISTing to file tmp/f09_e5_t1.nc
+ LISTing to file tmp/f09_e5_t2.nc
+ LISTing to file tmp/f09_e5_t3.nc
+ LISTing to file tmp/f10_e1_t1.nc
+ LISTing to file tmp/f10_e1_t2.nc
+ LISTing to file tmp/f10_e1_t3.nc
+ LISTing to file tmp/f10_e2_t1.nc
+ LISTing to file tmp/f10_e2_t2.nc
+ LISTing to file tmp/f10_e2_t3.nc
+ LISTing to file tmp/f10_e3_t1.nc
+ LISTing to file tmp/f10_e3_t2.nc
+ LISTing to file tmp/f10_e3_t3.nc
+ LISTing to file tmp/f10_e4_t1.nc
+ LISTing to file tmp/f10_e4_t2.nc
+ LISTing to file tmp/f10_e4_t3.nc
+ LISTing to file tmp/f10_e5_t1.nc
+ LISTing to file tmp/f10_e5_t2.nc
+ LISTing to file tmp/f10_e5_t3.nc
+ LISTing to file tmp/f11_e1_t1.nc
+ LISTing to file tmp/f11_e1_t2.nc
+ LISTing to file tmp/f11_e1_t3.nc
+ LISTing to file tmp/f11_e2_t1.nc
+ LISTing to file tmp/f11_e2_t2.nc
+ LISTing to file tmp/f11_e2_t3.nc
+ LISTing to file tmp/f11_e3_t1.nc
+ LISTing to file tmp/f11_e3_t2.nc
+ LISTing to file tmp/f11_e3_t3.nc
+ LISTing to file tmp/f11_e4_t1.nc
+ LISTing to file tmp/f11_e4_t2.nc
+ LISTing to file tmp/f11_e4_t3.nc
+ LISTing to file tmp/f11_e5_t1.nc
+ LISTing to file tmp/f11_e5_t2.nc
+ LISTing to file tmp/f11_e5_t3.nc
+ LISTing to file tmp/f04_e3_t1_1v.nc
+ LISTing to file tmp/f04_e3_t2_1v.nc
+ LISTing to file tmp/f04_e3_t3_1v.nc
+           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
+ **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis X of agg member 3
+list/x=150E/y=15n/L=10 fcst_2
+ **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis T of agg member 3
+list/x=150E/y=15n/L=10 fcst_2
+ **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis X of agg member 3
+list/x=150E/y=15n/L=10 fcst_2
+           *** NOTE: Exclude variable from aggregate. E axis of grid differs in member datasets: FCST
+           *** NOTE: Exclude variable from aggregate. E axis of grid differs in member datasets: FCST_2
+ **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
+DEFINE DATA/AGGREGAT/F tef_short = te_f01, te_f02_short, te_f03, te_f04, te_f05, te_f06, te_f07, te_f08, te_f09, te_f10, te_f11
+           *** NOTE: Exclude variable from aggregate. F axis of grid differs in member datasets: FCST
+           *** NOTE: Exclude variable from aggregate. F axis of grid differs in member datasets: TF_TIMES
+           *** NOTE: Exclude variable from aggregate. F axis of grid differs in member datasets: FCST_2
+ **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
+DEFINE DATA/AGGREGAT/E tfe_short = tf_e1, tf_e2_short, tf_e3, tf_e4, tf_e5
+ **ERROR: unknown data set: dset te_f01 unknown or is already an aggregate dataset
+DEFINE DATA/AGGREGAT/E bad_ens = te_f01, te_f03, te_f04
+ **ERROR: unknown data set: dset tf_e1 unknown or is already an aggregate dataset
+DEFINE DATA/AGGREGAT/F bad_fmrc = tf_e1, tf_e3, tf_e4
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4312,6 +4534,28 @@ Replacing definition of axis tday
  TEMPORARY data cleared from memory
 SHO VAR/XML
 SHO VAR/XML
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ LISTing to file a.nc
+ LISTing to file a.nc
+Replacing definition of axis TAX
+ LISTing to file a.nc
+ LISTing to file a.nc
+Replacing definition of axis TAX
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
+           *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
+           *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
+           *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4417,4 +4661,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Feb 18 12:45:29 PST 2016
+Ended at Tue Apr 5 17:15:25 PDT 2016

@@ -1059,6 +1059,9 @@ GO bn_climatology_attr
 GO bn_reset
 GO bn_plot_along
 
+GO bn_reset
+GO bn_show_commands
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

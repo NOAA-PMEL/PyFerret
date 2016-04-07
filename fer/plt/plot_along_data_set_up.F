@@ -197,7 +197,8 @@
 	ENDDO
 
 * un-bump by one, for the original cx, which has been over-written
-	CALL MR_NOT_IN_USE(is_mr(1))
+! commented out along with CALL MR_IN_USE above
+!	CALL MR_NOT_IN_USE(is_mr(1))
 
 * make the rest of Ferret believe that all these lines were asked for
 	num_uvars_in_cmnd = nlines

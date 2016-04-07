@@ -46,9 +46,8 @@
 * V695 2/15 *acm* 6D add aggregation in forecast direction
 * V698 1/16 *sh* fix to bug #2347 (res var no instead of com var on stack)
 *		altered logic as described in header of INIT_EF_AGGREGATE_DSET
-*      3/16 *sh* always delete aggregation components after using them
 *      3/16 *acm*always mark aggregation components unused after using them,
-*                delete variable if needed
+*      3/16 *sh* delete agg component after using if nothig else has a claim
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -126,10 +125,14 @@
      .			memory(1,mr_blk1(res_mr)), res_mr, is_phase(isp) )
 
 * ... remove the component protection that signaled we needed it here
-	CALL MR_NOT_IN_USE( com_mr )
-
-* ... delete array of missing vals
-	IF (cx_data_set(com_cx) .EQ. pdset_dummy) CALL DELETE_VARIABLE( com_mr )  
+	IF (cx_data_set(com_cx) .NE. pdset_dummy) THEN
+	   CALL MR_NOT_IN_USE( com_mr )
+* ... delete it altogether (avoid memory clogging) unless its in use elsewhere
+	   IF (mr_protected(com_mr) .EQ. mr_not_protected) 
+     .					CALL DELETE_VARIABLE( com_mr )
+	ELSE
+	   CALL DELETE_VARIABLE( com_mr )   ! delete dummy (missing vals) 
+	ENDIF
 
 * are we done ?
 	IF ( is_phase(isp) .EQ. is_sum(isp) ) THEN

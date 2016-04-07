@@ -350,7 +350,8 @@
 
               IF (STR_SAME(line_cal_name(iaxis), line_cal_name(iaxis6)) .NE. 0) 		
      .		CALL TM_ERRMSG (merr_axis_att, status, 'CD_GET_GENERIC_GRIDS',
-     .            no_descfile, 1, 'Calendar definitions on T and F axes must match',
+     .            no_descfile, 1,
+     .		  'Calendar definitions on T and F axes must match',
      .            no_errstring, *5900 )
 	   ENDIF
 

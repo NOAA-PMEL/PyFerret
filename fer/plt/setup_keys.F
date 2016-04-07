@@ -55,6 +55,8 @@
 *                  ul_xorigin, and ul_yorigin to plot_setup.parm,
 *                  since they are used as parameters, and prefixed with 
 *                  dflt_ those that need to be scaled by pplscale or textscale.
+* V698 *sh* 3/16 Limit the maximum number of keys.
+*                /NOKEY suppresses yadjust
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -72,18 +74,21 @@
 
 * local variable declarations:
 	LOGICAL	change_yorg, change_ysize, yadjust
-	INTEGER	nrow, idim
+	INTEGER	nrow, idim, nkey
 	REAL	ysqueeze, yspace_needed, yspace_avail
+
+* limit the number of labels
+	nkey = MIN(nvar, max_key_entries)
 
 * how many columns of keys can fit on the plot ?
 	key_ncolmn  = MAX( 1, INT( (xlen - dflt_key_xorigin*pplscale)
      .                            /(dflt_key_xspace0*pplscale) ) )
-	IF (key_ncolmn .GT. nvar) key_ncolmn = nvar	! 4/96
+	IF (key_ncolmn .GT. nkey) key_ncolmn = nkey	! 4/96
 	key_xspace  = MAX( xlen/5., (xlen - dflt_key_xorigin*pplscale)/key_ncolmn )
 	key_xsize   = MAX( xlen/6., key_xspace - dflt_key_xwhite_space*pplscale )
 
 * and how many rows do we need ?
-	nrow = ((nvar-1) / key_ncolmn) + 1
+	nrow = ((nkey-1) / key_ncolmn) + 1
 	yspace_needed = nrow*dflt_key_yspace0*pplscale
 
 * where was the y origin before we tampered with it ?
@@ -105,8 +110,9 @@
 *  1) the keys will fit using the default y origin and key label size
 *  2) the keys will fit but only by shrinking the label size
 *  3) the keys will fit only by shifting the y origin (y location of x axis)
-	yadjust = cmnd_num .EQ. cmnd_plot  ! added 9/01 *sh*
+	yadjust = cmnd_num .EQ. cmnd_plot
 	IF (yadjust) yadjust = qual_given(slash_plot_noyadjust).EQ.0
+	IF (yadjust) yadjust = qual_given(slash_plot_nokey).EQ.0
 	IF ( .NOT.yadjust ) THEN
 	   change_ysize = .FALSE.
 	   change_yorg  = .FALSE.

@@ -149,6 +149,7 @@
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
 * V698  3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
+*                 more sophisticated logic to determine an implied "@FMRC"
 
 	include 'errmsg.parm'
 	include 'ferret.parm'
@@ -172,8 +173,9 @@
 
 * internal variable declarations:
         LOGICAL   GEOG_COS_FACTOR, GEOG_LABEL, ACTS_LIKE_FVAR,
+     .		  ITS_FMRC_2DTIME,
      .		  its_dyn, has_impl_axis, explicit_unstd, use_std_grid,
-     .		  made_aux_line_dummy
+     .		  made_aux_line_dummy, at_fmrc
 	INTEGER	  KNOWN_GRID, TM_UNIT_ID,
      .		  use_grid, ilo, ihi,
      .		  cat, var, dset, std_grid, std_axis, use_axis, idim,
@@ -427,17 +429,30 @@
 	   use_axis = grid_line( idim, use_grid )
 	   std_axis = grid_line( idim, std_grid )
 
+* ... this only means that it *may be* an implied "@FMRC"
+	   at_fmrc = (idim.EQ.t_dim .OR. idim.EQ.f_dim)
+     .             .AND. cx_aux_var(idim,cx) .NE. unspecified_int4
+
 	   IF ( use_axis .EQ. std_axis ) THEN
 	      cx_regrid_trans( idim, cx ) = prgrd_exact
 	   ELSEIF ( cx_regrid_trans(idim,cx) .EQ. unspecified_int4 ) THEN
 	      IF (cx_naux(cx) .EQ. 0) THEN
 	         cx_regrid_trans( idim, cx ) = prgrd_linear_interp
-	      ELSEIF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim)
-     .	        .AND. cx_aux_var( idim,cx) .NE. unspecified_int4
+	      ELSEIF ( at_fmrc 
      .		.AND. cx_aux_var(t_dim,cx) .EQ. cx_aux_var(f_dim,cx) ) THEN
 	         cx_regrid_trans( idim, cx ) = pauxrgrd_fmrc ! T-F plane 
 	      ELSE
-	         cx_regrid_trans( idim, cx ) = pauxrgrd_linear
+! 3/2016 - "@FMRC" is implied whenever aux T or F regrid with 2dtime as aux var
+	         IF (at_fmrc) THEN
+	            at_fmrc = (cx_aux_cat(idim,cx) .EQ. cat_file_var
+     .                    .OR. cx_aux_cat(idim,cx) .EQ. cat_agg_f_var)
+     .             .AND.      ITS_FMRC_2DTIME(dset, cx_aux_var(idim,cx))
+	         ENDIF
+	         IF (at_fmrc) THEN
+	            cx_regrid_trans( idim, cx ) = pauxrgrd_fmrc
+	         ELSE
+	            cx_regrid_trans( idim, cx ) = pauxrgrd_linear
+	         ENDIF
 	      ENDIF
 	   ENDIF
  100	CONTINUE

@@ -57,6 +57,10 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V6.95 *acm* 3/15 Changes for PyFerret fonts. 
+* v690 *sh* 3/16 - use a new list of potential break characters
+*                - lower the width threshold for decidint to break into 2
+*                - see "tuned up" comment.  Only search for "," if bad break
+*                - DP conversion bug fix:  "ht" was used instead of "rht" 
 
         include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -73,11 +77,11 @@
 * internal variable declarations
         INTEGER lnbeg(250), lnend(250)
 	INTEGER	TM_LENSTR1, TM_LENSTR, slen, nfont, brk_pt, nex_brk_pt, 
-     .          las_brk_pt, nlines
-	REAL	ymid, width, ht, frac, frac_width, las_frac, xend,
-     .          htsave
+     .          las_brk_pt, nlines, ibr
+	REAL	ymid, width, frac, frac_width, las_frac, xend,
+     .          htsave, ht
         REAL*4  SYMWID, rht
-	CHARACTER*1 break_char
+	CHARACTER*1 break_char, break_chars(6)
 
 * initialize
 	ymid = ypos + ysize*0.5
@@ -92,23 +96,23 @@
 
 * Choose the break character. If there are commas use them. If there
 * are any slashes, use that.  Else use underscore or dash.
-
-	break_char = ','
-	brk_pt = INDEX( string(:slen), break_char )
-	IF (brk_pt .EQ. 0) THEN
-	   IF (INDEX( string(:slen), '/' ) .NE. 0) break_char = '/'
+! 3/16 -- this logic could be tuned up.  Here we select the first occurrence 
+! of a particular break char, based priority ordering.  Below, if the
+! break is in the wrong place, we insist on keeping the same break char,
+! and we only look forward in the string.
+	break_chars(1) = ','
+	break_chars(2) = ' '
+	break_chars(3) = '['
+	break_chars(4) = ':'
+	break_chars(5) = '/'
+	break_chars(6) = '-'
+	DO ibr = 1, 5
+	   break_char = break_chars(ibr)
 	   brk_pt = INDEX( string(:slen), break_char )
-	ENDIF 
-	IF (brk_pt .EQ. 0) THEN
-	   IF (INDEX( string(:slen), '_' ) .NE. 0) break_char = '_'
-	   brk_pt = INDEX( string(:slen), break_char )
-	ENDIF 
-	IF (brk_pt .EQ. 0) THEN
-	   IF (INDEX( string(:slen), '-' ) .NE. 0) break_char = '-'
-	   brk_pt = INDEX( string(:slen), break_char )
-	ENDIF 
-
-	brk_pt = INDEX( string(:slen), break_char )
+	   IF (brk_pt .GT. 0) EXIT
+	ENDDO
+* ... brk_pt will = 0 here if nothing found
+	IF (break_char .EQ. '[') brk_pt = MAX(1,brk_pt-1) ! break before "[" 
 	risc_buff = string			! for RISC/FORTRAN
 
 * compute the width of the string in the font that it will be presented
@@ -172,8 +176,11 @@
 	ENDIF
 
 * should we write the label in a single line ?
+! 3/2016 *sh* -- there's a fudge factor here multiplying xsize
+! dunno what is wrong in the calcs that makes this the thing to do
+! Was 1.8.  Now 1.15
 	IF ( nlines .LT. 2
-     .	.OR. width .LE. xsize*1.8
+     .	.OR. width .LE. xsize*1.15
      .	.OR. brk_pt.EQ.0 .OR. brk_pt.EQ.slen ) GOTO 500
 
 * it's too big - we will try to write it as 2 lines
@@ -185,14 +192,16 @@
 	ELSEIF ( lab_type .EQ. ppl_title ) THEN
 	   rht = ht
 c	   frac_width = DBLE(SYMWID( ht, brk_pt+3, '@AC'//risc_buff(:brk_pt)  ))
-	   frac_width = DBLE(SYMWID( ht, brk_pt, risc_buff(:brk_pt)  ))
+	   frac_width = DBLE(SYMWID( rht, brk_pt, risc_buff(:brk_pt)  ))
 	ELSE
 	   rht = ht
 c	   frac_width = DBLE(SYMWID( ht, brk_pt+3, '@AS'//risc_buff(:brk_pt)  ))
-	   frac_width = DBLE(SYMWID( ht, brk_pt, risc_buff(:brk_pt)  ))
+	   frac_width = DBLE(SYMWID( rht, brk_pt, risc_buff(:brk_pt)  ))
 	ENDIF
 	frac = frac_width / width
-	IF ( ABS(0.5-frac) .LT. ABS(0.5-las_frac) ) THEN
+	IF ( frac.LT.0.2 .OR. frac .GT.0.8) THEN
+! insist on breaking off at least .2 of its length
+	   break_char = ','  ! 3/2016 -- only look for commas
 	   nex_brk_pt = INDEX( string(brk_pt+1:), break_char ) + brk_pt
 	   IF ( nex_brk_pt.EQ.brk_pt .OR. nex_brk_pt.EQ.slen ) GOTO 200
 	   las_frac   = frac
@@ -212,6 +221,9 @@ c	   frac_width = DBLE(SYMWID( ht, brk_pt+3, '@AS'//risc_buff(:brk_pt)  ))
 * WRITE STRING AS 2 LINES
  200	width = MAX(frac, 1.-frac) * width
 	ht = MIN( ysize*0.4, ht*MIN(1.,xsize/width) )
+
+! 3/16 -- the labels are just a tad too tall -- colliding together
+	ht = 0.95*ht  ! 3/16
 
 * ... line 1<NL>line 2
 	CALL PUT_LABEL( lab_type, xend, ymid, justify, ht,

@@ -202,6 +202,7 @@
 *                (this is the *only* place in all the code using char_init)
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
+* V698  3/16 *acm* Changes for ticket 2078: improved SHOW COMMANDS
 
         IMPLICIT NONE
 
@@ -288,7 +289,7 @@
      .		nothing, sdetail, only_1, done_1, sfull, svars, sfile, 
      .		sbrief, first, sxml, clobber, append, firstxml, got_it, 
      .		coordvar, sattr, do_err, sho_out, sh_att_dset,
-     .		lineok, sho_tree, uvgrid
+     .		lineok, sho_tree, uvgrid, showsub, sub_matched
 	INTEGER TM_LENSTR1, TM_LENSTR, UVAR_NUMBER, STR_UPCASE,
      .		REGION_NUMBER, GRID_FROM_NAME, FIND_DSET_NUMBER,
      .		EFCN_MATCH_TEMPLATE, TM_GET_LINENUM, STR_SAME, TM_GET_GRIDNUM,
@@ -304,7 +305,7 @@
      .          cache_size, cache_nelems, cache_preemption,
      .          sho_file, idim, ndims, nvars, ngatts, recdim, npts,
      .          vartype, outflag, num_clim_1, num_clim_n,
-     .          base_cx, base_isp, grid_blocks
+     .          base_cx, base_isp, grid_blocks, lensub, len_msubs
         INTEGER saved_num_indices, saved_index_list(max_uvar),
      .                             arr_buff(max_uvar)
 	REAL	xtemp, ytemp, attvals(100), cache_mb, cache_n, cache_p, rsize,
@@ -313,8 +314,8 @@
      .		default*10, show_str*2048, arg*128, name*128, argsym*120
 	CHARACTER	varatt*641, varname*512, attname*128,
      .			efname*40, upname*40, aname*128, outstring*2048,
-     .                  dname*128, actstr*1, aastr*3, qualstr*6, 
-     .                  dispstr*3
+     .                  actstr*1, aastr*3, qualstr*6, dispstr*3,
+     .                  dname*128, sub4*4
 
 * 10/01 *kob* had to change decl of axesOrCorner for picky f95
         CHARACTER*6 axesOrCorner(2)
@@ -1255,8 +1256,12 @@ c	   CALL SHOW_DIAG_VARS( arg, memory(1,v1_blk1) )
 
 	IF ( limited_show ) RETURN
 
-* SHOW COMMAND [name]
+* SHOW COMMAND/ALL /BRIEF [name] [subcommand]
  1100	only_1 = num_args .GT. 0
+ 
+* /BRIEF or full list of subcommands and qualifiers?
+ 	sbrief  = qual_given( slash_brief ) .GT. 0 
+
 	done_1 = .FALSE.
 	IF ( .NOT.only_1 ) THEN
            show_str = TM_FMT(revision_level, 5, 12, dlen)
@@ -1270,23 +1275,49 @@ c	   CALL SHOW_DIAG_VARS( arg, memory(1,v1_blk1) )
 	ENDIF
 * ... loop through commands
         len_test = TM_LENSTR(cmnd_buff(arg_start(1):arg_end(1)))
+
+* ... did they give a subcommand?
+	sub_matched = .FALSE.
+	showsub = (num_args .GE. 2)
+	IF (showsub) THEN
+	   sub4 = cmnd_buff(arg_start(2):arg_end(2))
+	   IF ( INDEX(sub4,'/') .GT. 0) sub4 = sub4(:INDEX(sub4,'/')-1) 
+           lensub = TM_LENSTR(sub4)
+	ENDIF
+
 	DO 1130 icmnd = 1, total_num_commands
 	   IF ( commands(icmnd)(:4) .EQ. '****' ) GOTO 1130
+	   IF (done_1) GOTO 1130
 	   IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
 * ... if  only 1 command is of interest is this it ?
            len_mchars = TM_LENSTR(commands(icmnd)(:4))
 	   IF ( only_1 .AND. .NOT.MATCH4(cmnd_buff(arg_start(1):arg_end(1)),
      .		len_test,commands(icmnd),len_mchars) ) GOTO 1130
-	   done_1 = .TRUE.
+	   IF (only_1) done_1 = .TRUE.
 	   len0 = TM_LENSTR1( commands(icmnd) )
+
 * ... and for each command, its subcommands
+
 	   DO 1120 isub = subcommand_pointer(icmnd),
      .			  subcommand_pointer(icmnd)+num_subcommands(icmnd)-1
+              
 	      IF ( subcommands(isub)(:4) .EQ. '****' ) GOTO 1120
+	      IF (showsub) THEN 
+	         len_msubs = TM_LENSTR(subcommands(isub)(:4)) 
+	         IF (MATCH4(sub4,lensub, subcommands(isub),len_msubs)) THEN
+                    IF (sub_matched) GOTO 1120  
+		    sub_matched = .TRUE. ! return the first match, which is what Ferret will use
+	         ELSE
+		    GOTO 1120
+	         ENDIF
+	      ENDIF
+
 	      show_str = commands(icmnd)(:len0) // ' ' // subcommands(isub)
 	      len = TM_LENSTR1( show_str )
-* ... and for each subcommand, its qualifiers
+
+* ... and for each subcommand, its qualifiers (except on /BRIEF listing)
+              IF (sbrief) GOTO 1115
 	      DO 1110 iqual =   qualifier_pointer(isub),
      .				qualifier_pointer(isub)+num_qualifs(isub)-1
 	         IF ( qualifiers(iqual)(:4) .EQ. '****' ) GOTO 1110
@@ -1301,6 +1332,9 @@ c	   CALL SHOW_DIAG_VARS( arg, memory(1,v1_blk1) )
  1110	      CONTINUE
  1115	      IF ( show_str .NE. ' ' ) CALL SPLIT_LIST
      .			(pttmode_explct, show_lun, ' '//show_str, len+1)
+
+*  ... brief listing, show only the command names (if all commands)
+	   IF (sbrief .AND. .NOT.only_1) GOTO 1130
  1120	   CONTINUE
  1130	CONTINUE
 	IF ( only_1 .AND. .NOT.done_1 ) THEN

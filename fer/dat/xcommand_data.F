@@ -40,6 +40,16 @@
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
+* !!!!!!!!!!
+* Use caution when defining new commands:
+* 1- Ferret commands are matched to the first 4 characters only. Make sure
+*    new commands are unique to the first 4 characters.
+* 2- If you are tempted to reorder the lists of commands or subcommands, know 
+*    that users areprone to even more abbreviation. E.g. "can v" is used for 
+*    "cancel viewport" all over the place, and that happens ONLY because "VIEWPORT" 
+*    comes before "VARIABLE" in the subcommands for CANCEL.
+* !!!!!!!!!!
+*
 * revision 0.0 - 3/20/86
 * V200:   7/5/89 - added CANCEL VARIABLE
 *	  9/1/89 - added CANC DATA/ALL,SET VAR and SET DATA/many_options
@@ -231,6 +241,20 @@
 * V698+ *acm* 2/16 Ticket 2362: Change /D= qualifier to /DATASET=
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
+*       3/16 *sh*  added PLOT/ALONG=axis
+
+*
+* !!!!!!!!!!
+* Use caution when defining new commands, qualifiers, or changing these data structures:
+* 1- Ferret commands are matched to the first 4 characters only. Make sure
+*    new commands are unique to the first 4 characters.
+* 2- If you are tempted to reorder the lists of commands or subcommands, know 
+*    that users often use even more abbreviation. E.g. "can v" is used for 
+*    "cancel viewport" in many scripts, and that works ONLY because "VIEWPORT" 
+*    comes before "VARIABLE" in the subcommands for CANCEL.
+* !!!!!!!!!!
+ 
+
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -591,7 +615,7 @@
 	   DATA num_qualifs      (nsub_at2 + 9)	/ nqual2j	/
 	   DATA qualifier_pointer(nsub_at2 + 9)	/ nqual_at2j	/
 * SHOW VARIABLES /ALL /DATASET  /USER /OUTFILE/APPEND/CLOBBER
-* /DIAGNOSTI removed 3/20163/1/20163/1/2016
+* /DIAGNOSTI removed 3/2016
 		DATA qualifiers  (nqual_at2j+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at2j+1)	/ 'DATASET'	/
 		DATA qualifiers  (nqual_at2j+2)	/ '****'	/
@@ -609,8 +633,9 @@
 	   DATA subcommands      (nsub_at2 +10)	/ 'COMMANDS'	/
 	   DATA num_qualifs      (nsub_at2 +10)	/ nqual2k	/
 	   DATA qualifier_pointer(nsub_at2 +10)	/ nqual_at2k	/
-* SHOW COMMANDS /ALL
+* SHOW COMMANDS /ALL /BRIEF
 		DATA qualifiers  (nqual_at2k+0)	/ 'ALL '	/
+		DATA qualifiers  (nqual_at2k+1)	/ 'BRIEF'	/
 * SHOW MEMORY
 	   DATA subcommands      (nsub_at2 +11)	/ 'MEMORY'	/
 	   DATA num_qualifs      (nsub_at2 +11)	/ nqual2l	/
@@ -1025,7 +1050,7 @@
 		DATA qualifiers  (nqual_at6a+9) / 'T'	/
 		DATA qualifiers  (nqual_at6a+10)/ 'E'	/
 		DATA qualifiers  (nqual_at6a+11)/ 'F'	/
-		DATA qualifiers  (nqual_at6a+12)/ '****'/
+		DATA qualifiers  (nqual_at6a+12)/ 'ALONG'/	!/along
 		DATA qualifiers  (nqual_at6a+13)/ 'OVERLAY'/	!/overlays
 		DATA qualifiers  (nqual_at6a+14)/ 'SET_UP'/	!/set_up
 		DATA qualifiers  (nqual_at6a+15)/ 'FRAME'/	!/frame
@@ -1191,7 +1216,7 @@
 	   DATA subcommands      (nsub_at10 + 4)/ 'AXIS'	/
 	   DATA num_qualifs      (nsub_at10 + 4)/ nqual10e	/
 	   DATA qualifier_pointer(nsub_at10 + 4)/ nqual_at10e	/
-* DEFINE AXIS /X/Y/Z/T/E/F /FILE /UNITS /QUIET ...
+* DEFINE AXIS /X/Y/Z/T/E/F /FILE /UNITS /QUIET /MONTHLY /LIKE ...
 		DATA qualifiers  (nqual_at10e+ 0)/ 'X'	  /
 		DATA qualifiers  (nqual_at10e+ 1)/ 'Y'	  /
 		DATA qualifiers  (nqual_at10e+ 2)/ 'Z'	  /
@@ -1210,8 +1235,8 @@
 		DATA qualifiers  (nqual_at10e+ 15)/ 'CALENDAR' /
 		DATA qualifiers  (nqual_at10e+ 16)/ 'BOUNDS' /
 		DATA qualifiers  (nqual_at10e+ 17)/ 'QUIET' /
-		DATA qualifiers  (nqual_at10e+ 18)/ '****' /
-		DATA qualifiers  (nqual_at10e+ 19)/ '****' /
+		DATA qualifiers  (nqual_at10e+ 18)/ 'MONTHLY' /
+		DATA qualifiers  (nqual_at10e+ 19)/ 'LIKE' /
 * DEFINE VIEW
 	   DATA subcommands      (nsub_at10 + 5)/ 'VIEWPORT'	/
 	   DATA num_qualifs      (nsub_at10 + 5)/ nqual10f	/

@@ -1,8 +1,8 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Mar 23 15:09 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Apr  7 10:37 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
+Note: RUN_TEST.sh test results for debug PyFerret on RHEL6-64
 ****** Restricting Ferret paths to bench directory ******
 FER_DAT=.
 FER_DATA=.
@@ -276,6 +276,8 @@ Benchmark scripts that will be run:
    bn_letd_attributes.jnl
    bn_list_clim_axes.jnl
    bn_climatology_attr.jnl
+   bn_plot_along.jnl
+   bn_show_commands.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
    bn_outline_poly.jnl
@@ -284,7 +286,7 @@ Benchmark scripts that will be run:
    testfervar.py
    testfergrid.py
    testferpyvar.py
-Beginning at Wed Mar 23 15:12:07 PDT 2016
+Beginning at Thu Apr  7 10:37:46 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -4049,6 +4051,8 @@ Replacing definition of axis TAX2
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running ferret script: bn_aggregate_t.jnl
  Cached data cleared from memory
  LISTing to file tmp/tagg_reg_1.nc
@@ -4204,7 +4208,9 @@ Replacing definition of axis TRUEMONTH
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, my_fmrc
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
+           *** NOTE: Ambiguous coordinates on F axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC]
            *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
+           *** NOTE: Ambiguous coordinates on F axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
  **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
 DEFINE DATA/AGGREGAT/F my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc,tmp/fcst_2.nc,tmp/fcst_3.nc
  **TMAP ERR: non-existent or not on line
@@ -4400,6 +4406,10 @@ DEFINE DATA/AGGREGAT/F tef_short = te_f01, te_f02_short, te_f03, te_f04, te_f05,
            *** NOTE: Exclude variable from aggregate. F axis of grid differs in member datasets: FCST_2
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
 DEFINE DATA/AGGREGAT/E tfe_short = tf_e1, tf_e2_short, tf_e3, tf_e4, tf_e5
+ **ERROR: unknown data set: dset te_f01 unknown or is already an aggregate dataset
+DEFINE DATA/AGGREGAT/E bad_ens = te_f01, te_f03, te_f04
+ **ERROR: unknown data set: dset tf_e1 unknown or is already an aggregate dataset
+DEFINE DATA/AGGREGAT/F bad_fmrc = tf_e1, tf_e3, tf_e4
 *** Running ferret script: bn_hovmuller_overlays.jnl
  Cached data cleared from memory
 Replacing definition of axis TDAYS
@@ -4435,6 +4445,14 @@ Replacing definition of axis TAX
  LISTing to file a.nc
 Replacing definition of axis TAX
  LISTing to file a.nc
+*** Running ferret script: bn_plot_along.jnl
+ Cached data cleared from memory
+           *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
+           *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
+           *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
+           *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
+*** Running ferret script: bn_show_commands.jnl
+ Cached data cleared from memory
 *** Running ferret script: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -4482,4 +4500,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testferpyvar.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Wed Mar 23 15:14:13 PDT 2016
+Ended at Thu Apr  7 10:39:55 PDT 2016

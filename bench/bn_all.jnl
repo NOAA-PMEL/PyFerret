@@ -111,6 +111,7 @@ SET MODE VERIFY
 !                   2/16/24 do fewer # repetitions.
 ! V698+ *acm*2/16 - add bn_show_noupcase: output of SHOW responds to MODE UPCASE
 ! V698+ *acm*2/16 - add bn_letd_attributes: attribute/list handling of LET/D variables
+!       *sh* 3/16 - added bn_plot_along.jnl
 
 ! Include this statement to compare the outupt of 6D Ferret with 
 ! previous 4D benchmark logs.
@@ -1054,6 +1055,12 @@ GO bn_list_clim_axes
 
 GO bn_reset
 GO bn_climatology_attr
+
+GO bn_reset
+GO bn_plot_along
+
+GO bn_reset
+GO bn_show_commands
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

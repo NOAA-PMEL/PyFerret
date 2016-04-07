@@ -88,6 +88,14 @@
 	CALL GET_PROT_CMND_DATA ( memory, cx_last, ptype_float, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
 
+* PLOT/ALONG -- reinterpret a multi-D data block as a collection of lines
+	IF (  cmnd_num .EQ. cmnd_plot
+     .	.AND. qual_given(slash_plot_along) .GT. 0
+     .	.AND. .NOT.plot_vs                       ) THEN
+	   CALL PLOT_ALONG_DATA_SET_UP(status)
+	   IF (status .NE. ferr_ok) GOTO 5010
+	ENDIF
+
 * PLOT/STEP needs double or triple the working storage
 *    double to make connected steps, triple for disconnected
 	factor = 1

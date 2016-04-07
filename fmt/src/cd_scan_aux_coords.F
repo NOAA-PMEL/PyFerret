@@ -1,4 +1,4 @@
-	SUBROUTINE CD_SCAN_AUX_COORDS (dset, cdfid, status)
+	SUBROUTINE CD_SCAN_AUX_COORDS (dset, cdfid, native_tax, status)
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -41,10 +41,12 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * revision 0.0 - 4/15
+* V698 *sh* 3/2016 - pass native_tax to CD_1D_LINE_FROM_2D
 
 * argument definitions:
 *       dset        - TMAP data set pointer
 *	cdfid       - netCDF open ID (should no longer be needed!!)
+*	native_tax  - the official time axis of the dataset
 *	status	    - return status
 
 * include files
@@ -61,7 +63,7 @@
 	        include 'xdset_info.cd_equiv'
 
 * argument declarations
-	INTEGER	 dset, cdfid, status
+	INTEGER	 dset, cdfid, native_tax, status
 
 
 * local parameter definitions:
@@ -154,8 +156,9 @@
               IF ( got_it
      .       .AND. STR_CASE_BLIND_COMPARE(name, 'Time').EQ.str_eq ) THEN
 * ... Synthesize a 1D time axis and forecast lead time for the colection
-	         CALL CD_1D_LINE_FROM_2D (dset, cdfid,
-     .					  ivar, vname, axcalt, axlagf, status)
+*     Also modify the native time axis to become a true delta (lag) time
+	         CALL CD_1D_LINE_FROM_2D (dset, cdfid, ivar, vname,
+     .					  axcalt, axlagf, native_tax, status)
 	      ENDIF
 	   ENDIF
 	ENDDO

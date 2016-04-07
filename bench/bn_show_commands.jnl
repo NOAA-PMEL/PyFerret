@@ -1,0 +1,130 @@
+! bn_show_commands.jnl
+! Testing results for ticket 2078: SHOW COMMAND cmnd subcmnd
+! Also new SHOW COMMAND/BRIEF
+! 3/2016 *acm*
+!
+! When commands are highly abbreviated, which command/subcommand is 
+! executed depends on the order in which they are listed in Ferret 
+! internal data structures. Keep this output consistent if new commands 
+! added or command list are reordered.
+
+! Commands with subcommands
+
+sho command set
+sho command set w  ! SET WINDOW
+sho command set r  ! SET REGION
+sho command set v  ! SET VIEWPORT
+sho command set e  ! SET EXPRSION
+sho command set l  ! SET LIST
+sho command set d  ! SET DATA
+sho command set m  ! SET MODE
+sho command set mov! SET MOVIE
+sho command set va ! SET VARIABLE
+sho command set g  ! SET GRID
+sho command set a  ! SET AXIS
+sho command set me ! SET MEMORY
+sho command set at ! SET ATTRIBUTE
+sho command set n  ! SET NCCACHE
+sho command set red! SET REDIRECT
+sho command set gi ! SET GIFFILE
+
+sho command sho
+sho command sho w  ! SHOW WINDOW
+sho command sho r  ! SHOW REGION
+sho command sho a  ! SHOW AXIS
+sho command sho e  ! SHOW EXPRSTION
+sho command sho l  ! SHOW LIST
+sho command sho d  ! SHOW DATA
+sho command sho m  ! SHOW MODE
+sho command sho mov! SHOW MOVIE
+sho command sho v  ! SHOW VARIABLE
+sho command sho c  ! SHOW COMMANDS
+sho command sho me ! SHOW MEMORY
+sho command sho g  ! SHOW GRID
+sho command sho vi ! SHOW VIEWPORT
+sho command sho t  ! SHOW TRANSFORM
+sho command sho al ! SHOW ALIAS
+sho command sho s  ! SHOW SYMBOL
+sho command sho at ! SHOW ATTRIBUTE
+sho command sho n  ! SHOW NCCACHE
+sho command sho gi ! SHOW GIFFILE
+sho command sho f  ! SHOW FUNCTION
+sho command sho q  ! SHOW QUERIES
+
+sho command can 
+sho command can w  ! CANCEL WINDOW
+sho command can r  ! CANCEL REGION
+sho command can m  ! CANCEL MEMORY
+sho command can e  ! CANCEL EXPRSION
+sho command can l  ! CANCEL LIST
+sho command can d  ! CANCEL DATA
+sho command can mo ! CANCEL MODE
+sho command can mov! CANCEL MOVIE
+sho command can v  ! CANCEL VIEWPORT
+sho command can va ! CANCEL VARIABLE
+sho command can a  ! CANCEL AXIS
+sho command can g  ! CANCEL GRID
+sho command can at ! CANCEL ATTRIBUTE
+sho command can red! CANCEL REDIRECT
+sho command can al ! CANCEL ALIAS
+sho command can s  ! CANCEL SYMBOL
+sho command can n  ! CANCEL NCCACHE
+
+sho command def
+sho command def r  ! DEFINE REGION
+sho command def g  ! DEFINE GRID
+sho command def v  ! DEFINE VARIABLE
+sho command def a  ! DEFINE AXIS
+sho command def vi ! DEFINE VIEWPORT
+sho command def al ! DEFINE ALIAS
+sho command def s  ! DEFINE SYMBOL
+sho command def at ! DEFINE ATTRIBUTE
+sho command def P  ! DEFINE PYFUNC
+sho command def d  ! DEFINE DATA
+sho command def an ! DEFINE ANNOTATE
+
+
+! Also new SHOW COMMAND/BRIEF
+! Single commands, abbreviated. 
+
+sho command/brief a
+sho command/brief c
+sho command/brief ca
+sho command/brief co
+sho command/brief d 
+sho command/brief e
+sho command/brief el
+sho command/brief en
+sho command/brief ex
+sho command/brief f
+sho command/brief h
+sho command/brief h
+sho command/brief i
+sho command/brief l
+sho command/brief li
+sho command/brief lo
+sho command/brief m
+sho command/brief p
+sho command/brief pl
+sho command/brief po
+sho command/brief pp
+sho command/brief q
+sho command/brief r
+sho command/brief s
+sho command/brief se
+sho command/brief sh
+sho command/brief sp
+sho command/brief st
+sho command/brief u
+sho command/brief v
+
+
+! All the commands, no subcommands, no qualifiers
+SHOW COMMAND/BRIEF
+
+! With a command, just show subcommands, no qualifiers
+SHOW COMMAND/BRIEF sho
+
+! With a command and subcommand, no qualifiers
+SHOW COMMAND/BRIEF sho da
+

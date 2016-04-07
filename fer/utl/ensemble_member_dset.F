@@ -1,8 +1,10 @@
-        BLOCK DATA XPLOT_SETUP_DATA
+	INTEGER FUNCTION ENSEMBLE_MEMBER_DSET ( agg_dset, imemb )
 
+*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -33,32 +35,56 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* initialization of COMMON / XPLOT_SETUP /
+* return the dset number of ensemble member imemb
+* note:  as currently implemented an aggregated dataset knows who its member
+*        variable are, and each member variable knows who its member datasets
+*        are.  So the only way to learn the dataset number of a member is to
+*        access it through a member variable.  This routine follows that path.
+
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+*
 
-* revision 0.1 - 9/12/88 - reduced number of defined colors to 10
-* V200: 12/21/89
-* V540: *sh* 9/01 - added xwhitelo, ywhitelo, ...
-* V63  *acm* 10/09 Changes for gfortran build
-*      *kms*  2/12 Include tmap_dims.parm for nferdims used by xplot_setup.cmn
-* V698 *sh* 3/16 - adjusted key_xorigin and key_ywhite_space
-* PyFr *kms*  7/13 Moved key_xspace0, key_yspace0, key_labht0, key_xorigin, 
-*                  key_yorigin, key_xwhite_space, key_ywhite_space, 
-*                  key_line_frac, ovkey_space, ovkey_yspace, ovkey_labht,
-*                  ovkey_xorigin, ovkey_yorigin, ul_labht0, ul_yspace0,
-*                  ul_xorigin, and ul_yorigin to plot_setup.parm,
-*                  since they are used as parameters, and prefixed with 
-*                  dflt_ those that need to be scaled by pplscale or testscale.
+* calling arguments
+*  agg_dset -- dataset number of the aggregation
+*  imemb    -- member number 1, 2, 3, ...
 
-        IMPLICIT NONE
-        include 'tmap_dims.parm'
-        include 'ferret.parm'
-        include 'xplot_setup.cmn'
 
-        DATA
-     .     saved_ppl_yax / .FALSE. /,
-     .     animate       / .FALSE. /,
-     .     first_frame   / .TRUE. /
+* V690 *sh*
 
-        END
+	include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include 'xcontext.cmn'
+	include 'xtext_info.cmn'
+	include 'xdset_info.cmn_text'
+	include 'xtm_grid.cmn_text'
+
+* calling argument declarations
+	INTEGER agg_dset, imemb	
+
+* local variable declarations:
+	INTEGER TM_LENSTR1
+	INTEGER ivar, grid, vlen, memb_dset
+	INTEGER orig_cat, orig_grid, iline, orig_var, status
+
+
+* find a variable that belongs to this dataset and has an E axis
+! very inefficient loop:  needs to be fixed
+	DO ivar = 1, maxvars
+	   IF (ds_var_setnum(ivar).EQ.agg_dset) THEN
+	      grid = ds_grid_number(ivar)
+	      IF (grid_line(e_dim,grid) .NE. mnormal) GOTO 100
+	   ENDIF
+	ENDDO
+* ... no variable found (should never happen)
+	ENSEMBLE_MEMBER_DSET = pdset_irrelevant ! may avoid a crash sometime?
+	RETURN 
+
+* get the dataset number associated with this variable
+ 100	vlen = TM_LENSTR1( ds_var_code(ivar) )
+	CALL CD_GET_AGG_VAR_INFO (agg_dset, ds_var_code(ivar)(:vlen), imemb, 
+     .        orig_cat, memb_dset, orig_grid, iline, orig_var, status)
+	ENSEMBLE_MEMBER_DSET = memb_dset
+	RETURN
+	END
+

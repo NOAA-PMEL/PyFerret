@@ -74,11 +74,12 @@
 	INTEGER STR_SAME, TM_LENSTR1,
      .		big_cx, igrid, idim, agg_grid, nv, type, ii, iset, slen, 
      .		ndim, vtype, i2, i, status,
-     .		npts, nT, nF, ipt, iline2, memb_grid, it2d, gap_size, max_gap_size,
+     .		npts, nT, nF, lagF, ipt, iline2, memb_grid, it2d,
+     .		gap_size, max_gap_size, l,
      .		axcalt, axlagf, gg, ipt1, ipte, fax,
      .		nv_dummy, igrid_dummy, vtype_dummy, num_indices,
      .		ef_time2d_dset, ef_time2d_grid
-	REAL*8  TDEST_WORLD
+	REAL*8  TDEST_WORLD, TM_WORLD_AX, fdelta
 
 * Getting info back from the attribute-handling structure
         INTEGER maxlen
@@ -450,11 +451,12 @@
      .				 TDEST_WORLD(nT, memb_grid, t_dim, box_hi_lim)
 
 * ... if there were gaps in the forecast time array, fill 'em
-	   IF (has_gaps) THEN
-	      CALL FILL_FMRC_TIME_GAPS(line_mem(ipt1),
-     .				       line_mem(ipt1+npts), nT,nF, status)
-	      IF (status .NE. ferr_ok) GOTO 5000
-	   ENDIF
+*     always compute lagF - the number of time steps between forecasts
+	   CALL FILL_FMRC_TIME_GAPS(has_gaps,
+     .				    line_mem(ipt1),
+     .				    line_mem(ipt1+npts),
+     .				    nT,nF, lagF, status)
+	   IF (status .NE. ferr_ok) GOTO 5000
 
 * save the 2D time step array in c memory cache
 * to be recovered as needed by FIND_MEM_VAR
@@ -476,74 +478,103 @@
 
 *****
 * define the F calendar axis
-* ... similar drill to above but need to do again, because cell bounds
-*     are needed in axis definition
 	   ipt1 = next_line_mem_pos
 	   IF ((ipt1+2*nF+1).GT.maxlinestore) GOTO 5100
-	   ipt  = ipt1
 
-* ... loop over the member data sets, inserting the 1st time step of each
-*     Both the time point and one of the cell bounds needs to be inserted
-	   max_gap_size = 0
-	   DO ii = 1, nsets
-	      IF (member_sets(ii) .NE. pdset_dummy) THEN
-	         CALL CD_GET_AGG_VAR_INFO (agg_dset, vname, ii, 
-     .                vtype, iset, memb_grid, iline2, nv, status)
-	         IF (status .NE. ferr_ok) GOTO 5200
-	         CALL TDEST_WORLD_INIT (memb_grid, ref_grid, t_dim, status)
-	         IF (status .NE. ferr_ok) GOTO 5000 
-	         line_mem(ipt)    = TDEST_WORLD(1, memb_grid, t_dim,
-     .								box_middle )
-	         line_mem(ipt+nF) = TDEST_WORLD(1, memb_grid, t_dim,
-     .								box_lo_lim )
-	         gap_size = 0
-	      ELSE
-	         gap_size = gap_size + 1
-	         IF (gap_size .GT. max_gap_size) max_gap_size = gap_size
-	         CALL RECOVER_CACHED_2D_ARRAY_POINT(line_mem(ipt), 
-     .			nT, nF, 1, ii, ds_var_c_cache_ptr(it2d))
-	         IF (gap_size .EQ. 1) THEN
-*      ... the previous forecast is still active in the loop
-	            line_mem(ipt+nF) = TDEST_WORLD(1, memb_grid, t_dim,
-     .								 box_hi_lim )
-	         ELSE
-*      ... leave a gap in the time cell bounds -- fill in right after this
-	            line_mem(ipt+nF) = unspecified_val8
-	         ENDIF
-	      ENDIF
-	      ipt = ipt + 1
+! per Andrew W., this axis has been shifted 1/2 cell to the left
+! so that the F coordinate lies on the low limit (initialization time) of
+! the 1st time coordinate from each forecast
+! Only the coordinates need be got from the FMRC members. The bounds are
+! simply midpoints between them.
+
+* Get the F-step values -- lower bounds of the L=1 cells
+*   ... copying them from the axcalt axis
+	   l = 1
+	   DO ipt = ipt1, ipt1+nsets-1
+	      line_mem(ipt) = TM_WORLD_AX(l, axcalt, box_lo_lim )
+	      l = l + lagF
 	   ENDDO
-	   line_mem(ipt+nF) = TDEST_WORLD(1, memb_grid, t_dim, box_hi_lim )
 
-* ... if there were gaps wider than 1 missing forecast, we need to fill in
-*     some missing time cell bounds
-	   IF (max_gap_size .GT. 1) THEN
-	      ii = 1
-	      ipt  = ipt1 + nF
-	      DO WHILE (ii .LT. nsets)
-	         ii  = ii  + 1
-	         ipt = ipt + 1
-	         IF (line_mem(ipt) .EQ. unspecified_val8) THEN
-*       ... fill in a gap by linear interpolation
-*           note that this is exactly right for equally spaced coordinates
-*           but only approximate for monthly.  After improved support for 
-*           monthly calendars has been added to Ferret tweak this block
-	            gap_size = 0
-	            i2 = ii+1
-	            DO WHILE (i2 .LE. nsets+1)
-	               gap_size = gap_size + 1
-	               IF (line_mem(ipt+gap_size) .NE. unspecified_val8) EXIT
-	            ENDDO
-*       ... fill the gap
-	            DO i = ipt, ipt+gap_size-1
-	               line_mem(ipt) = line_mem(ipt-1)
-     .				+ (i-ipt+1)
-     .				* (line_mem(ipt+gap_size)-line_mem(ipt-1))
-     .				/ (gap_size+1)
-	            ENDDO
-	         ENDIF
-	      ENDDO
-	   ENDIF
+* Fill in the F-cell bounds just after the F-step values
+	   Fdelta = ( line_mem(ipt1+nsets) - line_mem(ipt1)) / (nsets-1) 
+*   ... the lower limit of the first point
+	   line_mem(ipt1+nsets) = line_mem(ipt1) - Fdelta/2
+*   ... the midpoints between the F-steps
+	   DO ipt = ipt1+1, ipt1+nsets-1
+	      line_mem(ipt+nsets) = (line_mem(ipt) + line_mem(ipt-1))/2
+	   ENDDO
+*   ... the upper limit of the last point
+	   line_mem(ipt1+2*nsets) = line_mem(ipt1+nsets-1) + Fdelta/2
+
+! THIS GIANT BLOCK OF COMMENTED CODE used to populate the F axis coords
+! It would get the timestep values of the L=1
+! output of each model run, and the corresponding cell bounds
+! It has been replaced with the much simpler block of code above
+
+!* ... similar drill to above but need to do again, because cell bounds
+!*     are needed in axis definition
+!* ... loop over the member data sets, inserting the 1st time step of each
+!*     Both the time point and one of the cell bounds needs to be inserted
+!	   max_gap_size = 0
+!	   DO ii = 1, nsets
+!	      IF (member_sets(ii) .NE. pdset_dummy) THEN
+!	         CALL CD_GET_AGG_VAR_INFO (agg_dset, vname, ii, 
+!     .                vtype, iset, memb_grid, iline2, nv, status)
+!	         IF (status .NE. ferr_ok) GOTO 5200
+!	         CALL TDEST_WORLD_INIT (memb_grid, ref_grid, t_dim, status)
+!	         IF (status .NE. ferr_ok) GOTO 5000 
+!	         line_mem(ipt)    = TDEST_WORLD(1, memb_grid, t_dim,
+!     .								box_middle )
+!	         line_mem(ipt+nF) = TDEST_WORLD(1, memb_grid, t_dim,
+!     .								box_lo_lim )
+!	         gap_size = 0
+!	      ELSE
+!	         gap_size = gap_size + 1
+!	         IF (gap_size .GT. max_gap_size) max_gap_size = gap_size
+!	         CALL RECOVER_CACHED_2D_ARRAY_POINT(line_mem(ipt), 
+!     .			nT, nF, 1, ii, ds_var_c_cache_ptr(it2d))
+!	         IF (gap_size .EQ. 1) THEN
+!*      ... the previous forecast is still active in the loop
+!	            line_mem(ipt+nF) = TDEST_WORLD(1, memb_grid, t_dim,
+!     .								 box_hi_lim )
+!	         ELSE
+!*      ... leave a gap in the time cell bounds -- fill in right after this
+!	            line_mem(ipt+nF) = unspecified_val8
+!	         ENDIF
+!	      ENDIF
+!	      ipt = ipt + 1
+!	   ENDDO
+!	   line_mem(ipt+nF) = TDEST_WORLD(1, memb_grid, t_dim, box_hi_lim )
+!
+!* ... if there were gaps wider than 1 missing forecast, we need to fill in
+!*     some missing time cell bounds
+!	   IF (max_gap_size .GT. 1) THEN
+!	      ii = 1
+!	      ipt  = ipt1 + nF
+!	      DO WHILE (ii .LT. nsets)
+!	         ii  = ii  + 1
+!	         ipt = ipt + 1
+!	         IF (line_mem(ipt) .EQ. unspecified_val8) THEN
+!*       ... fill in a gap by linear interpolation
+!*           note that this is exactly right for equally spaced coordinates
+!*           but only approximate for monthly.  After improved support for 
+!*           monthly calendars has been added to Ferret tweak this block
+!	            gap_size = 0
+!	            i2 = ii+1
+!	            DO WHILE (i2 .LE. nsets+1)
+!	               gap_size = gap_size + 1
+!	               IF (line_mem(ipt+gap_size) .NE. unspecified_val8) EXIT
+!	            ENDDO
+!*       ... fill the gap
+!	            DO i = ipt, ipt+gap_size-1
+!	               line_mem(ipt) = line_mem(ipt-1)
+!     .				+ (i-ipt+1)
+!     .				* (line_mem(ipt+gap_size)-line_mem(ipt-1))
+!     .				/ (gap_size+1)
+!	            ENDDO
+!	         ENDIF
+!	      ENDDO
+!	   ENDIF
 
 * ... make the native F-calendar axis from the pointstime steps  in line_mem
 	   CALL CD_MAKE_FMRC_FCAL_AXIS (agg_dset, iline, 

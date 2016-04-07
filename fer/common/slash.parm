@@ -321,6 +321,7 @@
      .			slash_shad_trim,
      .			slash_shad_opacity,
      .
+     .			slash_plot_along,
      .			slash_plot_over_plot,
      .			slash_plot_set_up,
      .			slash_plot_frame,
@@ -634,6 +635,7 @@
      .			slash_shad_mod   	= 1+33,
      .                  slash_shad_opacity      = 1+36,
      .
+     .			slash_plot_along	= 1+12,
      .			slash_plot_over_plot	= 1+13,
      .			slash_plot_set_up	= 1+14,
      .			slash_plot_frame	= 1+15,

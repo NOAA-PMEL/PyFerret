@@ -54,6 +54,7 @@
 * V695 *acm*  6/16 New command ANNOTATE
 * V695 *acm*  6/16 New subcommand DEFINE ANNOTATION
 * V695 *sh*  10/15 New alias TSERIES (bump num_predefined_alias to 25)
+* V698 *ACM*  3/15 New SHOW COMMAND/BRIEF
 
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
@@ -83,6 +84,18 @@
 *		additions to BLOCK DATA XCOMMAND_DATA.
 * qualifiers  -	To add new qualifiers simply update nqualNx and make the
 *		corresponding changes in BLOCK DATA XCOMMAND_DATA.
+
+*
+* !!!!!!!!!!
+* Use caution when defining new commands, qualifiers, or changing these data structures:
+* 1- Ferret commands are matched to the first 4 characters only. Make sure
+*    new commands are unique to the first 4 characters.
+* 2- If you are tempted to reorder the lists of commands or subcommands, know 
+*    that users often use even more abbreviation. E.g. "can v" is used for 
+*    "cancel viewport" in many scripts, and that works ONLY because "VIEWPORT" 
+*    comes before "VARIABLE" in the subcommands for CANCEL.
+* !!!!!!!!!!
+ 
 
 
 * pointers to first elements of arrays
@@ -171,7 +184,7 @@
      .			nqual2h = 1, nqual_at2i = nqual_at2h + nqual2h,	!'MODE'
      .			nqual2i = 1, nqual_at2j = nqual_at2i + nqual2i,	!'MOVI'
      .			nqual2j =13, nqual_at2k = nqual_at2j + nqual2j,	!'VARI'
-     .			nqual2k = 1, nqual_at2l = nqual_at2k + nqual2k,	!'COMM'
+     .			nqual2k = 2, nqual_at2l = nqual_at2k + nqual2k,	!'COMM'
      .			nqual2l = 5, nqual_at2m = nqual_at2l + nqual2l,	!'MEMO'
      .			nqual2m =20, nqual_at2n = nqual_at2m + nqual2m,	!'GRID'
      .			nqual2n = 3, nqual_at2o = nqual_at2n + nqual2n,	!'VIEW'

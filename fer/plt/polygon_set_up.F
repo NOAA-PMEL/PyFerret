@@ -133,7 +133,10 @@
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V691  *acm*  5/14 Clean up temp memory used for computing histogram levels
 * V695  *acm*  5/15 Ticket 2279: PyFerret don't redraw labels on an overlay
-* V695  *acm* 9/15 send REAL*4 rbad to compare with lev_max, lev_min inside compute_mnstd
+* V695  *acm*  9/15 send REAL*4 rbad to compare with lev_max, lev_min inside compute_mnstd
+* V698  *acm*  3/16 #2396: On a POLYGON/OVERLAY with no /TITLE given, if there is 
+*                   no 3rd argument (colors), make nominal title
+
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -1128,17 +1131,10 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 * of its coordinate variable
 * The plot title is derived from the color value variable (unless over-ridden
 * by the /TITLE qualifier) and it is placed in a key for overlays or as a
-* title for a fresh plot.
+* title for a fresh plot.  If no 3rd argument, label with the word cnst as
+* we are using a nominal constant as the 3rd argument.
+
 	IF ( overlay ) THEN
-
-* do not re-draw the main label, logo, other labels from the underlay plot
-	   nlabs_on = 0  
-	   CALL PPLCMD ( from, line, 0, 'LABS ', 1, 1 )	
-	   DO i = 1, 3
-	      logolab(i) = 0
-	   ENDDO
-
-	   CALL OV_GRP_CX_DOC( cx_color, 1, cx_xtra_doc )
 	   IF ( user_title ) THEN
 	      CALL EQUAL_STR_LC(
      .			cmnd_buff(qual_start(ptitl):qual_end(ptitl)),
@@ -1146,7 +1142,14 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
               IF ( status .NE. ferr_ok ) GOTO 5000
 	      slen = TM_LENSTR1( plot_title )
 	   ELSE
-	      plot_title = KEY_STRING( cx_color, cx_xtra_doc, slen )
+	      IF (nmv .EQ. 3) THEN
+	         CALL OV_GRP_CX_DOC( cx_color, 1, cx_xtra_doc )
+	         plot_title = KEY_STRING( cx_color, cx_xtra_doc, slen )
+	      ENDIF
+	      IF (nmv .EQ. 2) THEN
+	         plot_title = 'cnst'
+	         slen = 4
+	      ENDIF
 	   ENDIF
            IF (no_range .AND. (only_val.EQ.mr_bad_data(mr_color)) ) THEN
               plot_title(slen+1:slen+14) = ' No Valid Data'

@@ -52,11 +52,13 @@
 * V533:  6/01 - allow for the possibility of negative subscripts
 * V600:  1/06 *acm*  prevent values of LOG10(0.0) 
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V690 *sh* 3/2016 document a true E ensemble axis with dataset identifier
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xtext_info.cmn'
+	include 'xdset_info.cmn_text'
 
 * calling argument declarations
 	LOGICAL	full_prec
@@ -64,13 +66,27 @@
 	CHARACTER*(*) to_word
 
 * local variable declarations:
+	LOGICAL TM_HAS_STRING, its_ensemble
 	CHARACTER LOHI_WORLD*44
-	INTEGER TM_LENSTR, llen, ndigits, cx_dim_str_len
 	CHARACTER ALG_TRANS_CODE*3, ARG_STRING*12, LEFINT*8, buff*8
+	INTEGER TM_LENSTR1, ENSEMBLE_MEMBER_DSET
+	INTEGER llen, ndigits, cx_dim_str_len, dset, slen2, memb_dset
 
 * initialize - put in "=" and blank out string
         cx_dim_str_len = LEN( CX_DIM_STR )
 	CX_DIM_STR = '*='
+
+* initialize special case of documenting an ensemble axis
+	its_ensemble = .FALSE.
+	IF (cx .GT. cx_buff) THEN
+	   dset = cx_data_set(cx)
+	   its_ensemble = idim .EQ. E_dim
+     .		    .AND. dset.GT.pdset_irrelevant
+     .	            .AND. dset.LE.max_gfdl_dsets
+ 	   IF (its_ensemble) THEN
+	      its_ensemble = TM_HAS_STRING(ds_type(dset), 'ENS')
+	   ENDIF
+	ENDIF
 
 * create "lo_limit" or "lo:hi" in subscript or world coords
 
@@ -127,7 +143,25 @@
 	   CX_DIM_STR = CX_DIM_STR(1:slen) // '@' //
      .				ALG_TRANS_CODE( cx_trans( idim, cx )) //
      .				ARG_STRING( cx_trans_arg( idim, cx ))
-	   slen = TM_LENSTR( CX_DIM_STR )
+	   slen = TM_LENSTR1( CX_DIM_STR )
+	ENDIF
+
+* a single ensemble member name
+	IF ( its_ensemble
+     .  .AND.cx_lo_ss(cx,idim).NE.unspecified_int4
+     .  .AND.cx_lo_ss(cx,idim).EQ.cx_lo_ss(cx,idim) ) THEN
+
+
+* ... get the special string that indicates the ensemble member
+	   memb_dset = ENSEMBLE_MEMBER_DSET(dset, cx_lo_ss(cx,idim))
+	   IF (  memb_dset.GT.pdset_irrelevant
+     .	    .AND.memb_dset.LE.max_gfdl_dsets) THEN
+	      slen2 = TM_LENSTR1( ds_name(memb_dset) )
+	      slen2 = MIN(slen2, 12)  ! no more than 12 chars
+	      CX_DIM_STR = CX_DIM_STR(1:slen) // ' ('
+     .			// ds_name(memb_dset)(:slen2) // ')'	
+	      slen = TM_LENSTR1( CX_DIM_STR )
+	   ENDIF
 	ENDIF
 	
 	RETURN

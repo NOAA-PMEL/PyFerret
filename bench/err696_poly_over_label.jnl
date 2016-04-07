@@ -1,0 +1,27 @@
+! err696_poly_over_label
+! Tiket 2396: incorrect label in the lower
+! left on a POLY/OVER with just 2 arguments.
+
+use levitus_3d_subset.nc
+let allmissing = 0/0 + temp
+shade/nolabel/j=1 allmissing
+
+! Previously this plot had an incorrect label of ALLMISSING
+polygon/palette=gray/ov {120.2,121,121,120.2},{4000,4000,1000,1000}
+ppl list labels  ! showed allmissing for lab2 now says cnst
+
+shade/nolabel/j=1 allmissing
+polygon/palette=gray/ov {120.2,121,121,120.2},{4000,4000,1000,1000}, 2
+
+ppl list labels  ! shows cnst for lab2
+
+shade/nolabel/j=1 allmissing
+let cvar = 2
+polygon/palette=gray/ov {120.2,121,121,120.2},{4000,4000,1000,1000}, cvar
+ppl list labels  ! shows cvar for lab2
+
+! color var for 2 rectangles with multiple values
+shade/nolabel/j=1 allmissing
+let cvar = {2,3}
+polygon/ov {120.2,121,121,120.2,,120.2,121,121,120.2},{4000,4000,1000,1000,,800,800,200,200}, cvar
+ppl list labels  ! shows cvar for lab2

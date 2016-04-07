@@ -1,4 +1,5 @@
-	SUBROUTINE FILL_FMRC_TIME_GAPS (time2d, edge2d, nt, nf, status)
+	SUBROUTINE FILL_FMRC_TIME_GAPS (has_gaps, time2d, edge2d,
+     .					nt, nf, lagF, status)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -41,17 +42,20 @@
 * V698 *sh* 12/15 
 
 * calling arguments
-*   time2d - 2d forecast time step array (with missing time series)
-*   edge2d - 2d forecast time lower bound array (also with missing points)
-*   nT	   - number of time pointss in each forecast
-*   nF	   - number of forecasts
+*   has_gaps - (in) flag if gap-filling is needed
+*   time2d - (in) 2d forecast time step array (with missing time series)
+*   edge2d - (in) 2d forecast time lower bound array (also with missing points)
+*   nT	   - (in) number of time pointss in each forecast
+*   nF	   - (in) number of forecasts
+*   lagF   - (in) number of model time steps of lag between forecasts (output)
 
 * calling argument declarations:
-	INTEGER nT, nF, status
+	LOGICAL has_gaps
+	INTEGER nT, nF, lagF, status
 	REAL time2d(nT, nF), edge2d(nT, nF)
 
 * internal variable declarations:
-	INTEGER ifcst, istep, lag, ifcst2, istep2
+	INTEGER ifcst, istep, ifcst2, istep2
 	REAL	tref
 	CHARACTER LEFINT*8
 
@@ -59,7 +63,7 @@
 	include 'errmsg.parm'
 	
 * initialize
-* ...
+	status = ferr_ok
 
 * determine the number of indices lagged between rows
 * the first and last time series are guaranteed to be present
@@ -71,7 +75,7 @@
 * ... find the time step of this forecast where tref gets repeated
 	   DO istep = nT, 1, -1
 	      IF (time2d(istep, ifcst) .EQ. tref) THEN
-	         lag = (nT-istep)/(ifcst-1)
+	         lagF = (nT-istep)/(ifcst-1)
 	         GOTO 100
 	      ENDIF
 	   ENDDO
@@ -79,14 +83,16 @@
 	ENDDO
 	GOTO 5100     ! should never get here
 
+ 100	IF (.NOT.has_gaps) RETURN    ! we computed lagF.  Thats enuf
+
 * fill in the missing time step values from adjoining rows
- 100	DO ifcst = 2, nF
+	DO ifcst = 2, nF
 * ... skip valid forecasts
 	   IF (time2d(1,ifcst) .NE. unspecified_val8) CYCLE
 * ... copy the upper times from the preceding forecast
-	   DO istep = lag+1, nT
-	      time2d(istep-lag, ifcst) = time2d(istep, ifcst-1)
-	      edge2d(istep-lag, ifcst) = edge2d(istep, ifcst-1)
+	   DO istep = lagF+1, nT
+	      time2d(istep-lagF, ifcst) = time2d(istep, ifcst-1)
+	      edge2d(istep-lagF, ifcst) = edge2d(istep, ifcst-1)
 	   ENDDO
 * ... look ahead to find the next valid forecast
 	   DO ifcst2 = ifcst+1, nF
@@ -94,9 +100,9 @@
 	   ENDDO
 	   GOTO 5100  ! can never get here cuz the final row always exists
 * ... copy the lower times from this future forecast
- 110	   istep2 = (ifcst2-ifcst)*lag
-	   IF (istep2 .GT. nT-lag) GOTO 5100  ! void too long
-	   DO istep = nT-lag+1, nT
+ 110	   istep2 = (ifcst2-ifcst)*lagF
+	   IF (istep2 .GT. nT-lagF) GOTO 5100  ! void too long
+	   DO istep = nT-lagF+1, nT
 	      time2d(istep,ifcst) = time2d(istep-istep2, ifcst2)
 	      edge2d(istep,ifcst) = edge2d(istep-istep2, ifcst2)
 	   ENDDO

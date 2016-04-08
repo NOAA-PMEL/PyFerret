@@ -1135,6 +1135,14 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 * we are using a nominal constant as the 3rd argument.
 
 	IF ( overlay ) THEN
+
+* do not re-draw the main label, logo, other labels from the underlay plot
+	   nlabs_on = 0 
+	   CALL PPLCMD ( from, line, 0, 'LABS ', 1, 1 )
+	   DO i = 1, 3
+	      logolab(i) = 0
+	   ENDDO
+
 	   IF ( user_title ) THEN
 	      CALL EQUAL_STR_LC(
      .			cmnd_buff(qual_start(ptitl):qual_end(ptitl)),

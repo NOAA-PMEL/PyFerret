@@ -496,7 +496,9 @@
 	   ENDDO
 
 * Fill in the F-cell bounds just after the F-step values
-	   Fdelta = ( line_mem(ipt1+nsets) - line_mem(ipt1)) / (nsets-1) 
+* ... we will base the axis extreme edges on the average cell width --
+*     only an approximate anwser for unequally spaced monthly time units
+	   Fdelta = ( line_mem(ipt1+nsets-1) - line_mem(ipt1)) / (nsets-1) 
 *   ... the lower limit of the first point
 	   line_mem(ipt1+nsets) = line_mem(ipt1) - Fdelta/2
 *   ... the midpoints between the F-steps
@@ -558,7 +560,7 @@
 !*       ... fill in a gap by linear interpolation
 !*           note that this is exactly right for equally spaced coordinates
 !*           but only approximate for monthly.  After improved support for 
-!*           monthly calendars has been added to Ferret tweak this block
+!*           monthly
 !	            gap_size = 0
 !	            i2 = ii+1
 !	            DO WHILE (i2 .LE. nsets+1)

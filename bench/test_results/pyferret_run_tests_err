@@ -1,8 +1,8 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Apr  7 10:37 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Apr 11 12:18 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
-Note: RUN_TEST.sh test results for debug PyFerret on RHEL6-64
+Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
 ****** Restricting Ferret paths to bench directory ******
 FER_DAT=.
 FER_DATA=.
@@ -286,7 +286,7 @@ Benchmark scripts that will be run:
    testfervar.py
    testfergrid.py
    testferpyvar.py
-Beginning at Thu Apr  7 10:37:46 PDT 2016
+Beginning at Mon Apr 11 12:19:24 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -4208,9 +4208,7 @@ Replacing definition of axis TRUEMONTH
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, my_fmrc
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
            *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
-           *** NOTE: Ambiguous coordinates on F axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC]
            *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
-           *** NOTE: Ambiguous coordinates on F axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
  **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
 DEFINE DATA/AGGREGAT/F my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc,tmp/fcst_2.nc,tmp/fcst_3.nc
  **TMAP ERR: non-existent or not on line
@@ -4500,4 +4498,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testferpyvar.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Thu Apr  7 10:39:55 PDT 2016
+Ended at Mon Apr 11 12:21:25 PDT 2016

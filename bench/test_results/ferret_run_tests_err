@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Mar 22 12:56 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Apr 11 12:02 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug Ferret on RHEL6-64
@@ -261,6 +261,8 @@ Benchmark scripts that will be run:
    bn_letd_attributes.jnl
    bn_list_clim_axes.jnl
    bn_climatology_attr.jnl
+   bn_plot_along.jnl
+   bn_show_commands.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -277,7 +279,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Tue Mar 22 13:32:47 PDT 2016
+Beginning at Mon Apr 11 12:05:40 PDT 2016
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3970,6 +3972,8 @@ Replacing definition of axis TAX2
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running test: bn_aggregate_t.jnl
  Cached data cleared from memory
  LISTing to file tmp/tagg_reg_1.nc
@@ -4321,6 +4325,10 @@ DEFINE DATA/AGGREGAT/F tef_short = te_f01, te_f02_short, te_f03, te_f04, te_f05,
            *** NOTE: Exclude variable from aggregate. F axis of grid differs in member datasets: FCST_2
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
 DEFINE DATA/AGGREGAT/E tfe_short = tf_e1, tf_e2_short, tf_e3, tf_e4, tf_e5
+ **ERROR: unknown data set: dset te_f01 unknown or is already an aggregate dataset
+DEFINE DATA/AGGREGAT/E bad_ens = te_f01, te_f03, te_f04
+ **ERROR: unknown data set: dset tf_e1 unknown or is already an aggregate dataset
+DEFINE DATA/AGGREGAT/F bad_fmrc = tf_e1, tf_e3, tf_e4
 *** Running test: bn_hovmuller_overlays.jnl
  Cached data cleared from memory
 Replacing definition of axis TDAYS
@@ -4356,6 +4364,14 @@ Replacing definition of axis TAX
  LISTing to file a.nc
 Replacing definition of axis TAX
  LISTing to file a.nc
+*** Running test: bn_plot_along.jnl
+ Cached data cleared from memory
+           *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
+           *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
+           *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
+           *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
+*** Running test: bn_show_commands.jnl
+ Cached data cleared from memory
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -4375,4 +4391,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Tue Mar 22 13:35:11 PDT 2016
+Ended at Mon Apr 11 12:08:07 PDT 2016

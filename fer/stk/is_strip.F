@@ -74,6 +74,7 @@
 * V690+ 11/13 *sh* support for auxiliary var regridding: temp[gz(depth)=zax]
 * V698 1/16 *sh* fix to bug #2347 (agg res var no instead of com var on stack)
 *		 alter agg setup to detect LET/D vars at eval time
+*      4/16 *sh* Allow that SET VAR/NAME= has altered the agg varname
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -107,10 +108,10 @@
      .		hi_ss, nmod, nmodhi, npts, xlate, dup_cx, i4d,
      .          line, imemb, imemb_dset, grids_dset, len,
      .		orig_grid, iline, attlen, maxlen, orig_cat, orig_var,
-     .		memb_dset, hi_cat, hi_var, hi_grid, vlen, slen
+     .		memb_dset, hi_cat, hi_var, hi_grid, agg_vlen, memb_vlen, slen
 	REAL	ax_frac
 	REAL*8	TM_WORLD, ww_given, ww_nrst
-	CHARACTER*128 VAR_CODE, vname
+	CHARACTER*128 VAR_CODE, agg_vname, memb_vname
 	CHARACTER*128 buff
 	CHARACTER LEFINT*6
 
@@ -152,9 +153,9 @@
 	   imemb = is_phase( lo_isp )
 * ... there is no E-axis in an E-agg of FMRCs on the 2dtime var TF_TIMES 
 	   IF (imemb .EQ. unspecified_int4) imemb = 1  ! presume TF_TIMES E-agg
-	   vname = VAR_CODE (cat_file_var, cx_variable(hi_cx))
-	   vlen = TM_LENSTR1(vname)
-	   CALL CD_GET_AGG_VAR_INFO (dset, vname, imemb, orig_cat, 
+	   agg_vname = VAR_CODE (cat_file_var, cx_variable(hi_cx))
+	   agg_vlen = TM_LENSTR1(agg_vname)
+	   CALL CD_GET_AGG_VAR_INFO (dset, agg_vname, imemb, orig_cat, 
      .                memb_dset, orig_grid, iline, orig_var, status)
 
 * Is it the 2D Time variable for a Forecast-aggregation?  If so then
@@ -171,12 +172,19 @@
 	      hi_grid = orig_grid
 	   ELSE
 
-* do a fresh "find" for the variable name, to allow for the possibility that
-* LET/D variables have been defined, canceled or changed since DEFINE DATA/AGG
-	      CALL FIND_VAR_NAME (memb_dset,vname, hi_cat, hi_var )
+* a couple of 'delayed mode' use cases to beware -- actions the user may have
+* taken **SINCE** the aggregation was defined:
+*  1) user may have issued a SET VAR/NAME= (rename) of the aggregated variable
+*  2) user may have issued a LET/D on a member variable
+* If 1, then agg_vname will differ from memb_vname 
+* If 2, then cat# and var# associated with member name may have changed
+* Do a fresh "find" for the original member variable name
+	      memb_vname = VAR_CODE(orig_cat, orig_var)
+	      memb_vlen = TM_LENSTR1(memb_vname)
+	      CALL FIND_VAR_NAME (memb_dset,memb_vname, hi_cat, hi_var )
 	      IF (hi_var .EQ. munknown_var_name) CALL ERRMSG(
      .		  ferr_aggregate_error, status, 'variable '//
-     .		  vname(:vlen)//' no longer found in agg member '//
+     .		  memb_vname(:memb_vlen)//' no longer found in agg member '//
      .		  LEFINT(imemb,slen), *5000)
 
 * confirm grid has not changed since stored during DEFINE DATA/AGG
@@ -192,7 +200,7 @@
 
 * check that component grid is conformable with aggregation
 * (grid may have changed due to new LET/D definition)
-	      CALL CONFORMABLE_AGG_GRID(idim, vname, imemb,
+	      CALL CONFORMABLE_AGG_GRID(idim, memb_vname, imemb,
      .                                  grid, cat_file_var, var,
      .                                  hi_grid, hi_cat, hi_var,
      .                                  orig_grid, status )

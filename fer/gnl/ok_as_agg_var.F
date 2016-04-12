@@ -42,6 +42,7 @@
 * NOAA/PMEL, Seattle, WA - TMAP 
 *
 * V698 12/15 *sh* extracted from init_ef_aggregate_dset.F
+* V698  4/16 *sh* already used agg axis ok as long as scalar span (typ "@ave")
 
 * arguments:
 * inputs:
@@ -98,7 +99,7 @@
 * is the candidate variable suitable as the reference fvar?
 	IF (cat1 .EQ. cat_file_var) THEN
 	   grid = ds_grid_number(var1)
-	   IF (grid_line(agg_dim, grid) .NE. mnormal) GOTO 5400
+	   IF (.NOT.SCALAR_GRID_LINE(agg_dim,grid,cat1,var1)) GOTO 5400
 	   IF ( (agg_dim.EQ.f_dim .AND. grid_line(t_dim,grid).NE.mnormal) 
      .	  .OR.  (agg_dim.EQ.e_dim) )          THEN
 	      ref_fvar = var1
@@ -136,9 +137,9 @@
 	   IF ( ref_fvar.EQ.unspecified_int4
      .	  .AND. cat .EQ. cat_file_var          ) THEN
 	      grid = ds_grid_number(var)
-	      IF (grid_line(agg_dim, grid) .NE. mnormal) GOTO 5400
-	      IF ( (agg_dim.EQ.f_dim .AND. grid_line(t_dim,grid).NE.mnormal) 
-     .	     .OR.  (agg_dim.EQ.e_dim) )          THEN
+	      IF (.NOT.SCALAR_GRID_LINE(agg_dim,grid,cat,var) ) GOTO 5400
+	      IF ( (agg_dim.EQ.f_dim.AND.grid_line(t_dim,grid).NE.mnormal) 
+     .	     .OR.  (agg_dim.EQ.e_dim) ) THEN
 	         ref_fvar = var
 	         ref_grid = ds_grid_number(ref_fvar)
 	      ENDIF
@@ -154,10 +155,12 @@
 	         grid = ds_grid_number(var)
 	      ENDIF
 * ... check that the grid of this variable conforms with the reference grid
-	      IF (grid_line(agg_dim, grid) .NE. mnormal) GOTO 5400
+! 4/16	      IF (grid_line(agg_dim, grid) .NE. mnormal) GOTO 5400
+	      IF (.NOT.SCALAR_GRID_LINE(agg_dim,grid,cat,var)) GOTO 5400
 	      DO idim = 1, nferdims
+	         IF (idim .EQ.agg_dim) CYCLE  ! already checked
 	         IF (agg_dim.EQ.f_dim .AND. idim.EQ.t_dim) CYCLE
-* ... conformable for axes with more than 1 point means identical
+* ... conformable for axes with more than 1 pt means same axis in both grids
 *     but all single point axes, including normal axes are conformable
 	         IF (SCALAR_GRID_LINE(idim,ref_grid,cat_file_var,ref_fvar))
      .									THEN
@@ -178,22 +181,22 @@
  5000	OK_AS_AGG_VAR = .FALSE.
 	RETURN
  5100	IF ( .NOT.quiet ) 
-     .	         CALL WARN('Exclude variable from aggregate. '//
-     .	         'Does not appear in all member datasets: '//
-     .	         vname(:vlen) )
+     .	         CALL WARN('Variable "'//vname(:vlen)//
+     .		 '" excluded from aggregate: '//
+     .	         'Not found in all member datasets')
 	GOTO 5000
 
  5200	IF ( .NOT.quiet ) 
-     .	         CALL WARN('Exclude variable from aggregate. '//
-     .	         ww_dim_name(idim)//
-     .			' axis of grid differs in member datasets: '//
-     .	         vname(:vlen) )
+     .	         CALL WARN('Variable "'//vname(:vlen)//
+     .		 '" excluded from aggregate: '//
+     .	         ww_dim_name(idim)//' axis differs among members')
 	GOTO 5000
 
- 5400	CALL ERRMSG( ferr_TMAP_error, status,
-     .		' Variable in member dataset already '
-     .		//'has axis in the aggregation direction: '//
-     .		vname(:vlen), *5000 )
+ 5400	IF ( .NOT.quiet ) 
+     .	         CALL WARN('Variable "'//vname(:vlen)//
+     .		 '" excluded from aggregate: '//
+     .		'Already has '//ww_dim_name(agg_dim)//' axis')
+	GOTO 5000
 
  5500   CALL ERRMSG( ferr_aggregate_error, status,
      .          'Could not get grid for user-defined variables '// 

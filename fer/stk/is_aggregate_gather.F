@@ -48,6 +48,7 @@
 *		altered logic as described in header of INIT_EF_AGGREGATE_DSET
 *      3/16 *acm*always mark aggregation components unused after using them,
 *      3/16 *sh* delete agg component after using if nothig else has a claim
+*      4/16 *sh* Allow that SET VAR/NAME= has altered the agg varname
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -78,11 +79,11 @@
      .		com_mr, res_mr, com_cx, res_cx, com_isp, res_isp,
      .		res_grid, res_cat, res_var,
      .		agg_dim, top, imemb, memb_dset, iline, idim,
-     .		varid, attlen, maxlen, agg_dset, slen, vlen,
+     .		varid, attlen, maxlen, agg_dset, slen, agg_vlen, memb_vlen,
      .		orig_cat, orig_var, orig_grid,
      .		 com_cat,  com_var,  com_grid
 
-	CHARACTER*128 VAR_CODE, vname, buff
+	CHARACTER*128 VAR_CODE, agg_vname, memb_vname, buff
 	CHARACTER LEFINT*6
 
 * --- end of introductory code ---
@@ -151,9 +152,9 @@
 
 	imemb = is_phase(res_isp)
 
-	vname = VAR_CODE (res_cat, res_var)   ! *sh* 1/16
-	vlen = TM_LENSTR1(vname)
-	CALL CD_GET_AGG_VAR_INFO (agg_dset, vname, imemb, 
+	agg_vname = VAR_CODE (res_cat, res_var)   ! *sh* 1/16
+	agg_vlen = TM_LENSTR1(agg_vname)
+	CALL CD_GET_AGG_VAR_INFO (agg_dset, agg_vname, imemb, 
      .      orig_cat, memb_dset, orig_grid, iline, orig_var, status)
 
 * for special case (hack) of an E-aggregation of FMRCs, the 2dtime array comes
@@ -174,16 +175,23 @@
 	itsa_dummy = memb_dset .EQ. pdset_dummy
 	IF (itsa_dummy) THEN
 * ... for a dummy (missing-filled) dset, borrow context info of the 1st member
-	   CALL CD_GET_AGG_VAR_INFO (agg_dset, vname, 1, 
+	   CALL CD_GET_AGG_VAR_INFO (agg_dset, agg_vname, 1, 
      .         orig_cat, memb_dset, orig_grid, iline, orig_var, status)
 	ENDIF
 
-* do a fresh "find" for the variable name, to allow for the possibility that
-* LET/D variables have been defined, canceled or changed since DEFINE DATA/AGG
-	CALL FIND_VAR_NAME (memb_dset,vname, com_cat, com_var )
+* a couple of 'delayed mode' use cases to beware -- actions the user may have
+* taken **SINCE** the aggregation was defined:
+*  1) user may have issued a SET VAR/NAME= (rename) of the aggregated variable
+*  2) user may have issued a LET/D on a member variable
+* If 1, then agg_vname will differ from memb_vname 
+* If 2, then cat# and var# associated with member name may have changed
+* Do a fresh "find" for the original member variable name
+	memb_vname = VAR_CODE(orig_cat, orig_var)
+	memb_vlen = TM_LENSTR1(memb_vname)
+	CALL FIND_VAR_NAME (memb_dset,memb_vname, com_cat, com_var )
 	IF (com_var .EQ. munknown_var_name) CALL ERRMSG(
      .		ferr_aggregate_error, status, 'variable '//
-     .		vname(:vlen)//' no longer found in agg member '//
+     .		memb_vname(:MEMB_vlen)//' no longer found in agg member '//
      .		LEFINT(imemb,slen), *5000)
 
 * grid must not have changed since DEFINE DATA/AGG
@@ -199,7 +207,7 @@
 
 * check that component grid is conformable with aggregation
 * (grid may have changed due to new LET/D definition)
-	CALL CONFORMABLE_AGG_GRID(agg_dim, vname, imemb,
+	CALL CONFORMABLE_AGG_GRID(agg_dim, memb_vname, imemb,
      .                            res_grid, res_cat, res_var,
      .                            com_grid, com_cat, com_var,
      .                            orig_grid, status )
@@ -207,8 +215,8 @@
 
 * scalar axes of components need not match the agg result
 	DO idim = 1, nferdims
-	   IF ( idim .NE. agg_dim
-     .	  .AND. SCALAR_GRID_LINE(idim, com_grid, com_cat, com_var) ) THEN
+! 4/16	   IF ( idim.NE.agg_dim  .AND.    ! would not allow E-agg of E-aggs
+	   IF (SCALAR_GRID_LINE(idim, com_grid, com_cat, com_var) ) THEN
 	      CALL DEL_CX_DIM(idim, com_cx) 
 	   ENDIF
 	ENDDO

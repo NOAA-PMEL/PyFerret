@@ -68,7 +68,7 @@
 
 	DO idim = 1, nferdims
 	   IF (idim .EQ. agg_dim) THEN
-	      IF (grid_line(idim,com_grid) .NE. mnormal) GOTO 5100
+	      IF (.NOT.SCALAR_GRID_LINE(idim, com_grid, com_cat, com_var)) GOTO 5100
 	   ELSEIF (agg_dim.EQ.F_dim .AND. idim.EQ.T_dim) THEN
 	      IF (grid_line(idim,com_grid) .NE. grid_line(idim,orig_grid))
      .						      GOTO 5100

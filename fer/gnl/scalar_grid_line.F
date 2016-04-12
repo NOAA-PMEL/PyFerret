@@ -70,7 +70,8 @@
 
 * is this a user variable compressed to a point
 	IF (cat .EQ. cat_user_var) THEN
-	   IF (uvar_given(idim,var).EQ.uvlim_gvn_xact) GOTO 1000
+	   IF (uvar_given(idim,var).EQ.uvlim_gvn_xact
+     .    .OR. uvar_given(idim,var).EQ.uvlim_need_xact  ) GOTO 1000
 	ENDIF
 
 * not a unity length axis

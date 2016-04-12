@@ -52,7 +52,7 @@
 * V533:  6/01 - allow for the possibility of negative subscripts
 * V600:  1/06 *acm*  prevent values of LOG10(0.0) 
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
-* V690 *sh* 3/2016 document a true E ensemble axis with dataset identifier
+* V698 *sh* 3/2016 document a true E ensemble axis with dataset identifier
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'

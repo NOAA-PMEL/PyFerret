@@ -58,6 +58,7 @@
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 * v687  *acm* 3/14 Fix ticket 2149: TM_GET_CAL gets the calendar label from the T axis.
 * v690 *sh* 4/14 show regridding by "false 1 pt" curvilinear regrid 
+* V698 *sh* 4/16 document a true E ensemble axis with dataset identifier
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -65,6 +66,7 @@
 	include 'xalgebra.cmn'
 	include 'calendar.decl'
 	include 'calendar.cmn'
+	include 'xdset_info.cmn_text'
 
 * calling argument declarations:
 	INTEGER		cx, idim, slen
@@ -75,9 +77,11 @@
 	PARAMETER     ( full_precision = .TRUE. )
 
 * internal variable declarations:
-	INTEGER		TM_LENSTR, TM_GET_CALENDAR_ID, 
+	LOGICAL		TM_HAS_STRING, its_ensemble
+	INTEGER		TM_LENSTR, TM_GET_CALENDAR_ID,
+     .			TM_LENSTR1, ENSEMBLE_MEMBER_DSET,
      .			max_len, len_trans, llen, trans, i,
-     .			grid, cal_id, len_cal
+     .			grid, cal_id, len_cal, dset, slen2, memb_dset
 	CHARACTER	ALG_TRANS_TITL*20, LOHI_WORLD*44, LEFINT*4, 
      .			TM_FMT*10, TM_GET_CAL*32, TM_GET_F_CAL*32,
      .			VAR_CODE*128,
@@ -88,6 +92,16 @@
 	max_len	= LEN(string)
 	trans     = cx_trans( idim, cx )
 	trans_arg = cx_trans_arg( idim, cx )
+	dset = cx_data_set(cx)
+
+* is this a label for an ensemble axis?
+	its_ensemble = .FALSE.
+	its_ensemble = idim .EQ. E_dim
+     .		    .AND. dset.GT.pdset_irrelevant
+     .	            .AND. dset.LE.max_gfdl_dsets
+ 	IF (its_ensemble) THEN
+	      its_ensemble = TM_HAS_STRING(ds_type(dset), 'ENS')
+	ENDIF
 
 * not an applicable dimension ?
 	IF ( cx_lo_ww( idim, cx ) .EQ. unspecified_val8 ) THEN
@@ -156,6 +170,25 @@
 	      slen = MIN( max_len, slen+len_cal+1 )
 	   ENDIF
 	ENDIF
+
+* a single ensemble member name
+	IF ( its_ensemble
+     .  .AND.cx_lo_ss(cx,idim).NE.unspecified_int4
+     .  .AND.cx_lo_ss(cx,idim).EQ.cx_lo_ss(cx,idim) ) THEN
+
+
+* ... get the special string that indicates the ensemble member
+	   memb_dset = ENSEMBLE_MEMBER_DSET(dset, cx_lo_ss(cx,idim))
+	   IF (  memb_dset.GT.pdset_irrelevant
+     .	    .AND.memb_dset.LE.max_gfdl_dsets) THEN
+	      slen2 = TM_LENSTR1( ds_name(memb_dset) )
+	      slen2 = MIN(slen2, 12)  ! no more than 12 chars
+	      string = string(1:slen)//' ('// 
+     .		       ds_name(memb_dset)(1:slen2) // ')'	
+	      slen = TM_LENSTR1( string )
+	   ENDIF
+	ENDIF
+
 
 	RETURN
 	END

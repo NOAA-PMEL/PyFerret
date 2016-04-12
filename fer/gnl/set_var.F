@@ -85,6 +85,7 @@
 * V690 *acm*  3/14 Fix ticket 2152, error messages on illegal SET VAR/NAME
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
+* V698 *sh*  4/16  allow SET VARIABLE on agg dsets
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -106,6 +107,7 @@
 
 * internal variable declarations:
 	LOGICAL		VALID_GRID, TM_LEGAL_NAME, TM_HAS_STRING,
+     .			ACTS_LIKE_FVAR,
      .                  have_mods, ez, gtts, ncfile, coordvar
 	INTEGER		GRID_FROM_NAME, TM_LENSTR1, STR_UPCASE, mod_cx,
      .			i, dset, grid, cat, var, loc, TMAP_status, 
@@ -147,7 +149,8 @@
 	IF ( var .EQ. munknown_var_name ) GOTO 5005
 
 * May be an EZ or user-defined variable
-	IF ( cat .EQ. cat_file_var ) THEN
+!	IF ( cat .EQ. cat_file_var ) THEN    ! pre 4/16
+	IF ( ACTS_LIKE_FVAR(cat) ) THEN
 	   ez = ds_type(dset) .EQ. pds_type_ez
 !	   IF ( .NOT. ez ) GOTO 5010		! removed restriction 10/95
 	ELSEIF ( cat .EQ. cat_user_var ) THEN   ! uvars bad, too, until 10/92
@@ -430,7 +433,8 @@
 	      ENDIF
 	   ENDIF
 
-	ELSEIF ( cat .EQ. cat_file_var ) THEN
+!	ELSEIF ( cat .EQ. cat_file_var ) THEN  ! pre 4/16
+	ELSEIF ( ACTS_LIKE_FVAR(cat) ) THEN
 * ... other file variables (10/95)
 	   IF ( grid .NE. int4_init   ) GOTO 5112
 	   IF ( bad  .NE. real4_init  ) THEN
@@ -674,7 +678,8 @@
      .               						*5000 )
  5400	CALL PARSE_NAM_DSET( newname, cx_last, dset,
      .			     cat, var, mod_cx, status )
-	IF (cat .EQ. cat_file_var) THEN
+!	IF (cat .EQ. cat_file_var) THEN   ! pre 4/16
+	IF (ACTS_LIKE_FVAR(cat)) THEN
            CALL ERRMSG( ferr_invalid_command, status,
      .               'illegal new name.  Variable '
      .			//newname_lc(:len_rbuff)//' exists in dataset ',

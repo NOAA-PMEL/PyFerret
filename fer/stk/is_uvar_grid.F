@@ -281,7 +281,7 @@
 * that the grids of any new LET/D uvars are known.
 	IF ( cx_category(hi_cx).EQ.cat_agg_e_var .OR. 
      .       cx_category(hi_cx).EQ.cat_agg_f_var ) THEN
-	   agg_dset = dset
+	   agg_dset = cx_data_set( hi_cx )
 	   status = NCF_GET_AGG_COUNT (agg_dset, agg_len)
 * loop over the member vars of the aggregation
 	   DO imemb = 1, agg_len

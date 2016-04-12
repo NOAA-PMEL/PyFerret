@@ -71,6 +71,7 @@
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic variables, 
 * pre-defined axes and grids.
 * V698  3/16 *acm* Fix the line_subsc1 values for irregular axes
+* V698  3/16 *acm* Define monthly climatology for Julian axis.
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -84,11 +85,11 @@
      .			pline_mem_next, pline_mem_left, outtype
 
 	PARAMETER	(ngrd_def	= 0,
-     .			 nlne_def	= 7,
+     .			 nlne_def	= 8,
      .			 grids_left	= grid_ceiling-ngrd_def,
      .			 lines_left	= line_ceiling-nlne_def,
      .			 grid_lines_left= nferdims*grids_left,
-     .                   pline_mem_next = 102,
+     .                   pline_mem_next = 127,
      .                   pline_mem_left = maxlinestore-pline_mem_next+1)
 
 	PARAMETER	(outtype	= 6)  ! netcdf type double, output axis type.
@@ -211,6 +212,22 @@
      .		line_tunit	(clmall)	/ 86400 /,
      .		line_t0		(clmall)	/'01-JAN-0000 00:00:00'/,
      .		line_cal_name	(clmall)	/'ALL_LEAP'/
+
+	DATA
+     .		line_name	(clmjul)	/ 'MONTH_JULIAN' /,
+     .		line_name_orig	(clmjul)	/ 'MONTH_JULIAN' /,
+     .		line_subsc1	(clmjul)	/ 102	/,
+     .		line_dim	(clmjul)	/ 12		/,
+     .		line_units	(clmjul)	/ 'days'	/,
+     .		line_unit_code  (clmjul)	/ -4   /,
+     .		line_direction	(clmjul)	/ 'TI'		/,
+     .		line_regular	(clmjul)	/ .FALSE.	/,
+     .		line_modulo	(clmjul)	/ .TRUE.       /,
+     .		line_start	(clmjul)	/ unspecified_val8 /,
+     .		line_delta	(clmjul)	/ unspecified_val8 /,
+     .		line_tunit	(clmjul)	/ 86400 /,
+     .		line_t0		(clmjul)	/'01-JAN-0000 00:00:00'/,
+     .		line_cal_name	(clmjul)	/'JULIAN'/
 
 
 * 7/99 *kob* add in initialization for line_name and mpsnorm.  
@@ -346,6 +363,20 @@ c     .			/pline_mem_left*real8_init/
 	DATA	(line_mem(i),i=89,101)
      .	/     0.0, 31.0, 60.0, 91.0, 121.0, 152.0, 182.0, 213.0, 
      .      244.0, 274.0, 305.0, 335.0, 366.0/
+
+
+* MONTH_JULIAN
+     
+*  COORDS FOR MONTH_JULIAN
+	DATA	(line_mem(i),i=102,113)
+     .	/         15.50,  45.25,  74.75, 105.25, 135.75, 166.25, 
+     .           196.75, 227.75, 258.25, 288.75, 319.25, 349.750/
+
+
+*  BOX BOUNDARIES FOR MONTH_JULIAN
+	DATA	(line_mem(i),i=114,126)
+     .	/     0.0, 31.0, 59.25, 90.25, 120.25, 151.25, 181.25, 
+     .      212.25, 243.25, 273.25, 304.25, 334.25, 365.25/
 
 * Miscellaneous (axis orientations)
 

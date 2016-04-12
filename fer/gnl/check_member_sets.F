@@ -46,6 +46,7 @@
 *	           if dataset not already open, then open it hidden
 *	      2/16 allow "-" as an indicator of a dummy dataset
 *	      3/16 check for illegal Unix filenames
+*	      4/16 defer checking aggs build of aggs to OK_AS_AGG_VAR
 
 * calling arguments
 *   agg_dim             - axis of the aggregation being created
@@ -151,9 +152,7 @@
 	      ds_hide(dset) = .TRUE.   ! hide unless previously opened
 	   ENDIF
 
- 750	   IF (agg_dim .EQ. e_dim .AND. ds_type(dset).EQ.'ENS') GOTO 5200
-	   IF (agg_dim .EQ. f_dim .AND. ds_type(dset).EQ.'FCT') GOTO 5200
-	   member_sets(iset) = dset
+ 750	   member_sets(iset) = dset
 
 	ENDDO
 
@@ -167,8 +166,7 @@
  5100	CALL ERRMSG( ferr_invalid_command, status,
      .		'1st aggregate member may not be missing', *5000)
  5200	CALL ERRMSG( ferr_unknown_data_set, status,
-     .		'dset '//buff1(:buff_len)
-     .		//' unknown or is already an aggregate dataset', *5000 )
+     .		'dset '//buff1(:buff_len),         *5000 )
  5300	CALL ERRMSG( ferr_TMAP_error, status, ' ', *5000 )
 
 	END

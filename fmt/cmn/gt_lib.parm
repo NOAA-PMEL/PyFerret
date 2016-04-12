@@ -18,6 +18,8 @@
 * V685 *acm* 3/13 - add climatological axes to the pre-defined axes.
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic variables, 
 * pre-defined axes and grids.
+* V698  3/16 *acm* Define monthly climatology for Julian axis.
+
 
 * Function return codes
 	INTEGER*4	str_match, atom_not_found
@@ -47,7 +49,7 @@
 *			("m" indicates parameter)
 
 	INTEGER		mpsunkn, mpsnorm, clmirr, clmreg, clseas, clmgrg,
-     .			clmnol, clm360, clmall
+     .			clmnol, clm360, clmall, clmjul
 	PARAMETER (	mpsunkn	= -1,		! must match FERRET munknown
      .			mpsnorm	=  0,		! must match FERRET mnormal
      .			clmirr	=  1,	! month irregular
@@ -56,7 +58,8 @@
      .			clmgrg	=  4,	! month Gregorian
      .			clmnol	=  5,	! month noleap
      .			clm360	=  6,	! month 360-day
-     .			clmall	=  7)	! month all-leap
+     .			clmall	=  7,	! month all-leap
+     .			clmjul	=  8)	! month Julian
 
 * codes for special grid features...
 * flag values stored in parameters

@@ -136,6 +136,7 @@ C              do not make small tics by default.
 * v695 9/15 *acm* write values to PPL* symbols using 6 digits not 4
 * V697  *acm*  1/16 Ticket 2344: if there was a time-plot underlay, use its
 *                   delta-t for time overlay plots. TAXUND restores the default.
+* V698  4/16 *acm* New PLOT/NTH=
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -1120,6 +1121,7 @@ C	MARKH
 8500	    I=IFIX(P(1))
 	    IF(IFLG2)HMARK(I)=P(2)
 	    IF(M.EQ.1)HMARK(I)=0.08
+	    IF(M.GE.3)ndsym(I) = p(3)
 	    GOTO 10
 C	LINFIT
 8600	    I=IFIX(P(1))

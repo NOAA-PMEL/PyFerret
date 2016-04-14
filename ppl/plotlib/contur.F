@@ -177,6 +177,7 @@ c
 12	pi=3.1415926
 
 
+	igroup = fnt_all
         IF (pyfont .AND. pyf_set(icont)) igroup = icont
 
 c

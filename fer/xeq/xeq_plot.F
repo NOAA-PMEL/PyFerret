@@ -113,6 +113,7 @@
 * v697 *acm* 12/15 Ticket 2331, add flag changed_key to common, to restore the color key
 *                  style after a color plot and also after SHADE/SET; SHADE.
 * v698 *sh* 3/16   added PLOT/ALONG=axis
+* V698  4/16 *acm* New PLOT/NTH=
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -154,7 +155,7 @@
      .			ax2_blks, ax2_start,
      .			do_dash, s1, s2, it_start(4), it_end(4),
      .			nparm, dot_sym, num_it, i, iax(4), i1,
-     .                  loch, locv, nvs
+     .                  loch, locv, nvs, nthsym
 	REAL		val, sym_size, dashstyle(4), only_val
         REAL*4          thickness, opacity
 	CHARACTER	LEFINT*4, buff*128
@@ -348,6 +349,17 @@ CC       => Set values here instead.
      .	   .OR. (versus.AND.qual_given(slash_plot_symb).EQ.0) ) 
      .							symbol = qual_off
 	ENDIF
+
+* ... PLOT/NTH=n
+
+	nthsym = 1
+	loc = qual_given( slash_plot_nth )
+	IF ( loc .GT. 0) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      val, status )	! syntax check
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF ( val .NE. unspecified_val4 ) nthsym = NINT( val )
+	ENDIF 
 
 * ... /KEY[=title]  for control over labeling the multi-line legend
 
@@ -631,6 +643,7 @@ CC       => Set values here instead.
      .				addgaps,
      .				no_range,
      .				only_val,
+     .				nthsym,
      .				is_mr,
      .				is_cx,
      .				num_uvars_in_cmnd,

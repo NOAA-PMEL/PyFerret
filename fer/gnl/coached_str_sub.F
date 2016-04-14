@@ -89,6 +89,7 @@
 * V580 *acm* 11/04 when command contains some error text, and an error condition
 *                  is found, issue an error rather than just a note. (bug 1077)
 * V500 *acm*  1/05 Fix the above within the ifdef NO_PASSED_CONCAT too
+* V698 *acm*  4/16 Fix ticket 2398: report the argument as given, along with the error
 
 * calling argument declarations:
 	LOGICAL   err_subst
@@ -285,8 +286,21 @@
      .       coaching(estart:eend), *5000)
 !	   CALL WARN( coaching(estart:eend) )
 	ELSEIF ( options ) THEN
+	   tmp_buff = sym_name
+	   IF (tmp_buff(1:1) .EQ. 'a') tmp_buff(1:1) = 'A'
+	   iptr = TM_LENSTR1(tmp_buff)
+	   IF (len_in .EQ. 0) THEN
+	      CALL WARN
+     . 	       (tmp_buff(:iptr)//' was missing or empty.')
+           ELSE
+	      CALL WARN
+     . 	       (tmp_buff(:iptr)//' received was: '
+     .					//in_str(:len_in))
+	   ENDIF
+	   tmp_buff = sym_name
 	   CALL WARN
-     .	('Valid '//tmp_buff(:TM_LENSTR1(tmp_buff))//' choices are: '//risc_buff)
+     .	    ('Valid '//tmp_buff(:TM_LENSTR1(tmp_buff))
+     .	         //' choices are: '//coaching(ostart:oend))
 	ENDIF
 	GOTO 5000
 #else
@@ -295,6 +309,12 @@
      .       coaching(estart:eend), *5000)
 !	   CALL WARN( coaching(estart:eend) )
 	ELSEIF ( options ) THEN
+	   CALL WARN
+     .	('Aggument  '//sym_name//' received was: '
+     .					//in_str(:len_out))
+	   CALL WARN
+     .	('Valid '//sym_name//' choices are: '
+     .					//coaching(ostart:oend))
 	   CALL WARN
      .	('Valid '//sym_name//' choices are: '
      .					//coaching(ostart:oend))

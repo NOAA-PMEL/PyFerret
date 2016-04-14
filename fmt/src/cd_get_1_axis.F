@@ -183,7 +183,8 @@
 * so it is treated as not modulo.
 * V694  5/15 *acm* Match precision for bounds checks (as is done for coords).
 * V695+  5/15 *sh* allow "units='none'" as ignorable units string (for Andrew)
-* V695+  10/15 *sh* pass axis length instead of iaxis to TM_CHECK_BNDS_ATTRIB
+* V695+ 10/15 *sh* pass axis length instead of iaxis to TM_CHECK_BNDS_ATTRIB
+* V698   4/16 *sh* recognize special E and F non-convertible axis units
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -561,7 +562,10 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
       ENDIF
 
       line_unit_code(iaxis) = units
-      IF  ( units.EQ.0 .AND. line_units(iaxis) .NE. ' ' ) THEN
+      IF  (   units.EQ.0
+     .  .AND. line_units(iaxis) .NE. ' '
+     .  .AND. line_units(iaxis) .NE. plag_ax_units_e
+     .  .AND. line_units(iaxis) .NE. plag_ax_units_f ) THEN
          CALL TM_NOTE('Units on axis "'//vname(:vlen)//
      .                '" are not recognized: '//line_units(iaxis), tt)
          CALL TM_NOTE('They will not be convertible:', tt)

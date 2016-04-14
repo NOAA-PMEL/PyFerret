@@ -258,5 +258,6 @@ bn_list_clim_axes.jnl
 bn_climatology_attr.jnl
 bn_plot_along.jnl
 bn_show_commands.jnl
+bn_plot_nth.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl

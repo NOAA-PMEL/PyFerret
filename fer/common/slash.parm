@@ -322,7 +322,6 @@
      .			slash_plot_fast,
      .			slash_plot_missing,
      .			slash_plot_gap,
-     .			slash_along,
      .			slash_plot_nth
 
 	INTEGER		slash_wire_over,

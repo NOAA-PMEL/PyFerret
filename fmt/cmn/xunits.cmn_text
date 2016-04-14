@@ -10,6 +10,7 @@
 * 3/5/01 acm  add  more units for alternative calendar types:
 *             secs per 365.25 days (change xunits_data.F too)
 *             also add all types of months: 1/12 of seconds/year 
+* 4/2016 *sh* added unit names for ensemble and forecast axes
 
 	INTEGER		pun_1st_time,
      .			pun_last_time,
@@ -46,3 +47,9 @@
      .			un_convert,		! conversion factors
      .			un_name,		! unit names
      .			un_alt_name		! alternative unit names
+
+* units for E and F axes
+	CHARACTER	plag_ax_units_e*12, plag_ax_units_f*10
+	PARAMETER     ( plag_ax_units_e = 'realization',
+     .			plag_ax_units_f = 'run no.'    )
+

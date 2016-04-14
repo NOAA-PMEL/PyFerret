@@ -15,6 +15,8 @@ REGRID_MIN = "@MIN"
 REGRID_MAX = "@MAX"
 REGRID_EXACT = "@XACT"
 
+_ADDED_ATTRIBUTES = ('data', 'grid', 'missval', 'unit')
+
 class FerVar(object):
     '''
     Ferret variable object
@@ -48,10 +50,11 @@ class FerVar(object):
         # Call the unload method to create and set the defaults for 
         # _datagrid, _dataarray, _dataunit, and _missingvalue.
         #     _datagrid is a FerGrid describing the Ferret grid for the variable.
-        #     _dataarray and a NumPy ndarray contains the Ferret data for the variable.
+        #     _dataarray is a NumPy ndarray contains the Ferret data for the variable.
         #     _dataunit is a string given the unit of the data
         #     _missingvalue is the missing value used for the data
         self.unload()
+
 
     def copy(self):
         '''
@@ -60,6 +63,7 @@ class FerVar(object):
         newvar = FerVar(defn=self._definition)
         newvar._requires.update(self._requires)
         return newvar
+
 
     def settitle(self, title):
         '''
@@ -83,6 +87,7 @@ class FerVar(object):
                 raise ValueError('problems updating the variable title in Ferret for ' + \
                                  '%s to "%s": %s' % (self.fername(), self._title, errmsg))
  
+
     def fername(self):
         ''' 
         Returns the Ferret name for this variable; namely,
@@ -99,6 +104,7 @@ class FerVar(object):
             fername = '%s' % self._varname
         return fername
 
+
     def __repr__(self):
         '''
         Representation of this FerVar
@@ -106,6 +112,7 @@ class FerVar(object):
         infostr = "FerVar(varname='%s', dsetname='%s', title = '%s', defn='%s')" \
                   % (self._varname, self._dsetname, self._title, self._definition)
         return infostr
+
 
     def __del__(self):
         '''
@@ -117,6 +124,7 @@ class FerVar(object):
             self._removefromferret()
         except Exception:
             pass
+
 
     def __cmp__(self, other):
         '''
@@ -152,6 +160,7 @@ class FerVar(object):
             return 1
         return 0
 
+
     def __eq__(self, other):
         '''
         Two FerVars are equal if all of the following are True:
@@ -165,6 +174,7 @@ class FerVar(object):
             return ( self.__cmp__(other) == 0 )
         except NotImplementedError:
             return NotImplemented
+
 
     def __ne__(self, other):
         '''
@@ -180,6 +190,7 @@ class FerVar(object):
         except NotImplementedError:
             return NotImplemented
 
+
     def __lt__(self, other):
         '''
         FerVars are ordered alphabetically, case-insensitive, first by 
@@ -190,6 +201,7 @@ class FerVar(object):
             return ( self.__cmp__(other) < 0 )
         except NotImplementedError:
             return NotImplemented
+
 
     def __le__(self, other):
         '''
@@ -202,6 +214,7 @@ class FerVar(object):
         except NotImplementedError:
             return NotImplemented
 
+
     def __gt__(self, other):
         '''
         FerVars are ordered alphabetically, case-insensitive, first by 
@@ -213,6 +226,7 @@ class FerVar(object):
         except NotImplementedError:
             return NotImplemented
 
+
     def __ge__(self, other):
         '''
         FerVars are ordered alphabetically, case-insensitive, first by 
@@ -223,6 +237,7 @@ class FerVar(object):
             return ( self.__cmp__(other) >= 0 )
         except NotImplementedError:
             return NotImplemented
+
 
     def __nonzero__(self):
         '''
@@ -239,12 +254,14 @@ class FerVar(object):
             return True
         return False
 
+
     def __bool__(self):
         '''
         Returns False if the Ferret variable name, dataset name, title 
         and definition are all empty.  (For Python3.x)
         '''
         return self.__nonzero__()
+
 
     def __add__(self, other):
         '''
@@ -267,6 +284,7 @@ class FerVar(object):
             return newvar
         return NotImplemented
 
+
     def __radd__(self, other):
         '''
         If other is a FerVar, returns an anonymous FerVar whose definition 
@@ -287,6 +305,7 @@ class FerVar(object):
             newvar._requires.update(self._requires)
             return newvar
         return NotImplemented
+
 
     def __sub__(self, other):
         '''
@@ -309,6 +328,7 @@ class FerVar(object):
             return newvar
         return NotImplemented
 
+
     def __rsub__(self, other):
         '''
         If other is a FerVar, returns an anonymous FerVar whose definition 
@@ -329,6 +349,7 @@ class FerVar(object):
             newvar._requires.update(self._requires)
             return newvar
         return NotImplemented
+
 
     def __mul__(self, other):
         '''
@@ -351,6 +372,7 @@ class FerVar(object):
             return newvar
         return NotImplemented
 
+
     def __rmul__(self, other):
         '''
         If other is a FerVar, returns an anonymous FerVar whose definition 
@@ -371,6 +393,7 @@ class FerVar(object):
             newvar._requires.update(self._requires)
             return newvar
         return NotImplemented
+
 
     def __truediv__(self, other):
         '''
@@ -394,6 +417,7 @@ class FerVar(object):
             return newvar
         return NotImplemented
 
+
     def __rtruediv__(self, other):
         '''
         If other is a FerVar, returns an anonymous FerVar whose definition 
@@ -416,6 +440,7 @@ class FerVar(object):
             return newvar
         return NotImplemented
 
+
     def __div__(self, other):
         '''
         If other is a FerVar, returns an anonymous FerVar whose definition 
@@ -427,6 +452,7 @@ class FerVar(object):
         '''
         return self.__truediv__(other)
 
+
     def __rdiv__(self, other):
         '''
         If other is a FerVar, returns an anonymous FerVar whose definition 
@@ -437,6 +463,7 @@ class FerVar(object):
         (For Python2.x)
         '''
         return self.__rtruediv__(other)
+
 
     def __pow__(self, other):
         '''
@@ -459,6 +486,7 @@ class FerVar(object):
             return newvar
         return NotImplemented
 
+
     def __rpow__(self, other):
         '''
         If other is a FerVar, returns an anonymous FerVar whose definition 
@@ -480,6 +508,7 @@ class FerVar(object):
             return newvar
         return NotImplemented
 
+
     def __neg__(self):
         '''
         Returns an anonymous FerVar whose definition is 
@@ -490,6 +519,7 @@ class FerVar(object):
         newvar._requires.update(self._requires)
         return newvar
 
+
     def __pos__(self):
         '''
         Returns an anonymous FerVar whose definition is 
@@ -498,6 +528,7 @@ class FerVar(object):
         newvar = FerVar(defn=self._definition)
         newvar._requires.update(self._requires)
         return newvar
+
 
     def __abs__(self):
         '''
@@ -509,10 +540,22 @@ class FerVar(object):
         newvar._requires.update(self._requires)
         return newvar
 
+
     def __getitem__(self, key):
         '''
-        Returns an anonymous FerVar whose definition is a subset 
-        of this FerVar.  This FerVar must be assigned in Ferret.
+        This FerVar must be assigned in Ferret.
+
+        If key is 'data', returns the data array for this FerVar,
+        loading it if necessary.
+        If key is 'grid', returns the data grid for this FerVar,
+        loading it if necessary.
+        If key is 'missval', returns the value for missing data 
+        for this FerVar.
+        If key is 'unit', returns the data unit for this FerVar.
+
+        Otherwise, assumes key is a slice or subset specification, 
+        and returns an anonymous FerVar whose definition is a 
+        subset of this FerVar.  
             key is an int, float, string, int slice, float slice, 
                 string slice, or a tuple of these values.
                  - int are interpreted as index/indices
@@ -521,12 +564,22 @@ class FerVar(object):
         Units in a string designate an axis; otherwise the index
         within the given tuple (or zero if not a tuple) specifies the axis.
         For example ['20N':'50N'] will always be a latitude subset.
+
         TODO: handle step values
         '''
-        if not self._varname:
-            raise NotImplementedError('slicing can only be performed on variables assigned in Ferret')
         if key == None:
             raise KeyError('None is not a valid key')
+        if not self._varname:
+            raise NotImplementedError('variable not assigned in Ferret')
+        if key == 'data':
+           return self.getdata()
+        if key == 'grid':
+           return self.getgrid()
+        if key == 'missval':
+           return self.getmissval()
+        if key == 'unit':
+           return self.getunit()
+
         coordlimits = [ None ] * pyferret.MAX_FERRET_NDIM
         indexlimits = [ None ] * pyferret.MAX_FERRET_NDIM
         changed = False
@@ -738,6 +791,32 @@ class FerVar(object):
         newvar._requires.update(self._requires)
         return newvar
 
+
+    def __getattr__(self, name):
+        '''
+        Return the data array (if name='data'), data grid (if name='grid'), 
+        name (if name='name'), or a copy of the coordinates (if name='coords')
+        Note that this method is only called when the parent object 
+        does not have an attribute with this name.
+        '''
+        try:
+            if name in _ADDED_ATTRIBUTES:
+                return self.__getitem__(name)
+        except KeyError:
+            pass
+        raise AttributeError("unknown attribute '%s'" % name)
+
+
+    def __dir__(self):
+        '''
+        Returns a list of known attributes, including those added 
+        by the __getattr__ method.
+        '''
+        mydir = list(_ADDED_ATTRIBUTES)
+        mydir.extend( dir(super(FerAxis, self)) )
+        return mydir
+
+
     def _markasknownvar(self, varname, dsetname, isfilevar):
         '''
         Marks this variable as a variable already defined in Ferret.
@@ -757,6 +836,7 @@ class FerVar(object):
         self._definition = self.fername()
         self._requires.add(varname.upper())
         self.unload()
+
 
     def _assigninferret(self, varname, dsetname):
         '''
@@ -785,6 +865,7 @@ class FerVar(object):
         # Revise the fields in this FerVar to reflect this assignment
         self._markasknownvar(varname, dsetname, False)
 
+
     def _removefromferret(self):
         '''
         Removes (cancels) this variable in Ferret, then unloads this FerVar 
@@ -806,6 +887,7 @@ class FerVar(object):
         self._varname = ''
         self.unload()
 
+
     def unload(self):
         '''
         Clears the grid and data stored in this FerVar.  After this call, any 
@@ -817,6 +899,7 @@ class FerVar(object):
         self._dataarray = None
         self._dataunit = ''
         self._missingvalue = None
+
 
     def load(self):
         '''
@@ -842,6 +925,52 @@ class FerVar(object):
         self._dataunit = datadict["data_unit"]
         self._missingvalue = datadict["missing_value"]
 
+
+    def getdata(self):
+        '''
+        Returns a copy of the data array for this Ferret variable,
+        first loading this variable if necessary.
+        Raises a ValueError is a problem occurs.
+        '''
+        if (self._datagrid == None) or (self._dataarray == None):
+            self.load()
+        return self._dataarray.copy('A')
+
+
+    def getgrid(self):
+        '''
+        Returns a copy of the data grid for this Ferret variable,
+        first loading this variable if necessary.
+        Raises a ValueError is a problem occurs.
+        '''
+        if (self._datagrid == None) or (self._dataarray == None):
+            self.load()
+        return self._datagrid.copy()
+
+
+    def getmissval(self):
+        '''
+        Returns the value used for missing data for this Ferret 
+        variable, first loading this variable if necessary.  
+        Raises a ValueError is a problem occurs.
+        '''
+        if (self._datagrid == None) or (self._dataarray == None):
+            self.load()
+        # The missing value is a single-element ndarray
+        return self._missingvalue[0]
+
+
+    def getunit(self):
+        '''
+        Returns the unit string of the data for this Ferret
+        variable, first loading this variable if necessary.
+        Raises a ValueError is a problem occurs.
+        '''
+        if (self._datagrid == None) or (self._dataarray == None):
+            self.load()
+        return self._dataunit
+
+
     def showgrid(self, qual=''):
         '''
         Show the Ferret grid information about this variable.  This uses 
@@ -858,6 +987,7 @@ class FerVar(object):
         (errval, errmsg) = pyferret.run(cmdstr)
         if errval != pyferret.FERR_OK:
             raise ValueError('Ferret command "%s" failed: %s' % (cmdstr, errmsg))
+
 
     def regrid(self, newgrid, method=REGRID_LINEAR):
         '''

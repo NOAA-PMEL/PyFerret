@@ -42,6 +42,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V698 *sh* 3/16
+*      *sh* 4/16 - tweak decimation behavior
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -98,6 +99,7 @@
 
 * have plot keys been requested?
 	has_keys = qual_given(slash_plot_nokey) .EQ. 0
+     .       .AND. qual_given(slash_plot_title) .EQ. 0
 
 * how many individual lines are allowed
 * (max_key_entries smaller than max_line_on_plot)

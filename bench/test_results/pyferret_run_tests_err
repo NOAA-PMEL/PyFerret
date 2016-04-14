@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Apr 14 12:09 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Apr 14 15:42 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
@@ -288,7 +288,7 @@ Benchmark scripts that will be run:
    testferaxis.py
    testfergrid.py
    testferpyvar.py
-Beginning at Thu Apr 14 12:10:38 PDT 2016
+Beginning at Thu Apr 14 15:45:42 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -4511,7 +4511,7 @@ LOAD/TEMPORARY vflag
     self.__delitem__(name)
   File "/home/flat/ksmith/PyFerret/lib/python2.6/site-packages/pyferret/ferdset.py", line 151, in __delitem__
     value._removefromferret()
-  File "/home/flat/ksmith/PyFerret/lib/python2.6/site-packages/pyferret/fervar.py", line 801, in _removefromferret
+  File "/home/flat/ksmith/PyFerret/lib/python2.6/site-packages/pyferret/fervar.py", line 882, in _removefromferret
     raise NotImplementedError('%s is a file variable; close the dataset to remove' % fername)
 NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the dataset to remove
 
@@ -4524,4 +4524,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testferpyvar.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Thu Apr 14 12:12:42 PDT 2016
+Ended at Thu Apr 14 15:47:44 PDT 2016

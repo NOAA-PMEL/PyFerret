@@ -113,7 +113,7 @@ class FerPyVar(pyferret.FerVar):
         axunits = []
         axnames = []
         for axis in self._datagrid.getaxes():
-            axtypes.append(axis.gettype())
+            axtypes.append(axis.getaxtype())
             axcoords.append(axis.getcoords())
             axunits.append(axis.getunit())
             axnames.append(axis.getname())

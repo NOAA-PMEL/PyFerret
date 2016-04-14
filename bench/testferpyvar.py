@@ -11,12 +11,12 @@ pyferret.showdata(brief=False)
 
 print ">>> coads.sst.load()"
 coads.sst.load()
-print ">>> datacopy = coads.sst._dataarray"
-datacopy = coads.sst._dataarray
+print ">>> datacopy = coads.sst.data"
+datacopy = coads.sst.data
 print ">>> datacopy[87:93,43:47,0,:,0,0] = -5.0"
 datacopy[87:93,43:47,0,:,0,0] = -5.0
-print ">>> coads.sstcopy = pyferret.FerPyVar(grid=coads.sst._datagrid, data=datacopy, missval=coads.sst._missingvalue, unit=coads.sst._dataunit, title='modified copy of SST')"
-coads.sstcopy = pyferret.FerPyVar(grid=coads.sst._datagrid, data=datacopy, missval=coads.sst._missingvalue, unit=coads.sst._dataunit, title='modified copy of SST')
+print ">>> coads.sstcopy = pyferret.FerPyVar(grid=coads.sst.grid, data=datacopy, missval=coads.sst.missval, unit=coads.sst.unit, title='modified copy of SST')"
+coads.sstcopy = pyferret.FerPyVar(grid=coads.sst.grid, data=datacopy, missval=coads.sst.missval, unit=coads.sst.unit, title='modified copy of SST')
 print ">>> pyferret.showdata(brief=False)"
 pyferret.showdata(brief=False)
 print ">>> pyferret.setwindow(1, axisasp=0.5, logo=False)"

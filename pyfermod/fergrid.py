@@ -82,6 +82,41 @@ class FerGrid(object):
         return not self.__eq__(other)
 
 
+    def __getitem__(self, name):
+        '''
+        Return the grid name (if name='name') or copy of 
+        the list of axes (if name='axes') for this grid.
+        '''
+        if name == 'name':
+            return self.getname()
+        if name == 'axes':
+            return self.getaxes()
+        raise KeyError("unknown key '%s'" % str(name))
+
+
+    def __getattr__(self, name):
+        '''
+        Return the grid name (if name='name') or copy of 
+        the list of axes (if name='axes') for this grid.
+        Note that this method is only called when the parent 
+        object does not have an attribute with this name.
+        '''
+        try:
+            return self.__getitem__(name)
+        except KeyError:
+            raise AttributeError("unknown attribute '%s'" % name)
+
+
+    def __dir__(self):
+        '''
+        Returns a list of known attributes, including those added 
+        by the __getattr__ method.
+        '''
+        mydir = [ 'axes', 'name' ]
+        mydir.extend( dir(super(FerGrid, self)) )
+        return mydir
+
+
     def copy(self, name=None, ax=None, newax=None):
         '''
         Returns a copy of this FerGrid object, possibly with one axis replaced.
@@ -124,9 +159,9 @@ class FerGrid(object):
         if newax:
             if not isinstance(newax, pyferret.FerAxis):
                 raise ValueError('newax is not valid (not a FerAxis)')
-            if (newaxidx == None) and (newax.gettype() != pyferret.AXISTYPE_NORMAL):
+            if (newaxidx == None) and (newax.getaxtype() != pyferret.AXISTYPE_NORMAL):
                 for k in xrange(len(self._axes)):
-                    if self._axes[k].gettype() == newax.gettype():
+                    if self._axes[k].getaxtype() == newax.getaxtype():
                         newaxidx = k
                         break
             if newaxidx == None:
@@ -141,9 +176,17 @@ class FerGrid(object):
         return newgrid
 
 
+    def getname(self):
+        '''
+        Returns a name of this grid.
+        '''
+        return self._gridname
+
+
     def getaxes(self):
         '''
-        Returns a copy of the list of axes for this grid
+        Returns a copy of the list of axes for this grid.
+        (The FerAxis objects in the list are those used by this grid.)
         '''
         return self._axes[:]
 

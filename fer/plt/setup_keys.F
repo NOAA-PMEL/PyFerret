@@ -56,7 +56,7 @@
 *                  since they are used as parameters, and prefixed with 
 *                  dflt_ those that need to be scaled by pplscale or textscale.
 * V698 *sh* 3/16 Limit the maximum number of keys.
-*                /NOKEY suppresses yadjust
+*                /NOKEY and /TITLE suppresses yadjust
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -113,6 +113,7 @@
 	yadjust = cmnd_num .EQ. cmnd_plot
 	IF (yadjust) yadjust = qual_given(slash_plot_noyadjust).EQ.0
 	IF (yadjust) yadjust = qual_given(slash_plot_nokey).EQ.0
+	IF (yadjust) yadjust = qual_given(slash_plot_title).EQ.0
 	IF ( .NOT.yadjust ) THEN
 	   change_ysize = .FALSE.
 	   change_yorg  = .FALSE.

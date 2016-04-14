@@ -171,7 +171,7 @@ class FerDSet(object):
         '''
         Returns the Ferret variable (FerVar) with the given name.
         Note that this method is only called when the parent object 
-        does not have an atrribute with this name.
+        does not have an attribute with this name.
         '''
         try:
             return self.__getitem__(name)

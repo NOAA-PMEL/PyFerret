@@ -53,7 +53,6 @@
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
 * V698  3/16 *sh* expanded max_gfdl_dsets for EF agg needs
-*       3/16 units definitions for E and F axes
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -749,9 +748,4 @@
 * flag to indicate this variable is the special 2D tf_times forecast field
 	INTEGER		pagg_promotion_indicator_dset
 	PARAMETER     ( pagg_promotion_indicator_dset = -6767)
-
-* units for E and F axes
-	CHARACTER	plag_ax_units_e*10, plag_ax_units_f*10
-	PARAMETER     ( plag_ax_units_e = 'member no.',
-     .			plag_ax_units_f = 'run no.'    )
 

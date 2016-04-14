@@ -27,18 +27,18 @@ print repr(coads_uw.mywnd)
 print ">>> coads_uw.mywnd.showgrid()"
 coads_uw.mywnd.showgrid()
 
-print ">>> print repr(coads_uw.mywnd._dataarray)"
-print repr(coads_uw.mywnd._dataarray)
-print ">>> print repr(coads_uw.mywnd._datagrid)"
-print repr(coads_uw.mywnd._datagrid)
+print ">>> print repr(coads_uw.mywnd.data)"
+print repr(coads_uw.mywnd.data)
+print ">>> print repr(coads_uw.mywnd.grid)"
+print repr(coads_uw.mywnd.grid)
 print ">>> coads_uw.mywnd.load()"
 coads_uw.mywnd.load()
-print ">>> coads_uw.mywnd._dataarray.shape"
-coads_uw.mywnd._dataarray.shape
-print ">>> print repr(coads_uw.mywnd._dataarray[2:5,2:5,0,0,0,0])"
-print repr(coads_uw.mywnd._dataarray[2:5,2:5,0,0,0,0])
-print ">>> print repr(coads_uw.mywnd._datagrid)"
-print repr(coads_uw.mywnd._datagrid)
+print ">>> coads_uw.mywnd.data.shape"
+coads_uw.mywnd.data.shape
+print ">>> print repr(coads_uw.mywnd.data[2:5,2:5,0,0,0,0])"
+print repr(coads_uw.mywnd.data[2:5,2:5,0,0,0,0])
+print ">>> print repr(coads_uw.mywnd.grid)"
+print repr(coads_uw.mywnd.grid)
 print ">>> coads_uw.mywnd.unload()"
 coads_uw.mywnd.unload()
 
@@ -50,10 +50,10 @@ print ">>> coads.sstregrid.showgrid()"
 coads.sstregrid.showgrid()
 print ">>> coads.sstregrid.load()"
 coads.sstregrid.load()
-print ">>> coads.sstregrid._dataarray.shape"
-coads.sstregrid._dataarray.shape
-print ">>> print repr(coads.sstregrid._dataarray[2:5,2:5,0,0,0,0])"
-print repr(coads.sstregrid._dataarray[2:5,2:5,0,0,0,0])
+print ">>> coads.sstregrid.data.shape"
+coads.sstregrid.data.shape
+print ">>> print repr(coads.sstregrid.data[2:5,2:5,0,0,0,0])"
+print repr(coads.sstregrid.data[2:5,2:5,0,0,0,0])
 print "pyferret.run('LIST /X=55W:51W /Y=5N:9N /L=1 SST[d=coads_climatology]')"
 pyferret.run('LIST /X=55W:51W /Y=5N:9N /L=1 SST[d=coads_climatology]')
 
@@ -95,10 +95,10 @@ print ">>> coads.sst2.showgrid()"
 coads.sst2.showgrid()
 print ">>> coads.sst2.load()"
 coads.sst2.load()
-print ">>> coads.sst2._dataarray.shape"
-coads.sst2._dataarray.shape
-print ">>> print repr(coads.sst2._dataarray[2:5,23:26,0,0,0,0])"
-print repr(coads.sst2._dataarray[2:5,23:26,0,0,0,0])
+print ">>> coads.sst2.data.shape"
+coads.sst2.data.shape
+print ">>> print repr(coads.sst2.data[2:5,23:26,0,0,0,0])"
+print repr(coads.sst2.data[2:5,23:26,0,0,0,0])
 print "pyferret.run('LIST /X=25E:29E /Y=43S:39S /L=2 SST[d=coads_climatology]')"
 pyferret.run('LIST /X=25E:29E /Y=43S:39S /L=2 SST[d=coads_climatology]')
 
@@ -110,10 +110,10 @@ print ">>> coads.show(brief=False)"
 coads.show(brief=False)
 print ">>> coads.sst2.load()"
 coads.sst2.load()
-print ">>> coads.sst2._dataarray.shape"
-coads.sst2._dataarray.shape
-print ">>> print repr(coads.sst2._dataarray[:,:,0,0,0,0])"
-print repr(coads.sst2._dataarray[:,:,0,0,0,0])
+print ">>> coads.sst2.data.shape"
+coads.sst2.data.shape
+print ">>> print repr(coads.sst2.data[:,:,0,0,0,0])"
+print repr(coads.sst2.data[:,:,0,0,0,0])
 
 
 print ">>> pyferret.showdata(brief=False)"

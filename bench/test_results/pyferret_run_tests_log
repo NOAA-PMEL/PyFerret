@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Apr 14 12:09 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Apr 14 15:42 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
@@ -288,7 +288,7 @@ Benchmark scripts that will be run:
    testferaxis.py
    testfergrid.py
    testferpyvar.py
-Beginning at Thu Apr 14 12:10:38 PDT 2016
+Beginning at Thu Apr 14 15:45:42 PDT 2016
 *** Running ferret script: bn_syntax.jnl
 [?1034h! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -10503,12 +10503,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "14-Apr-16"
-SESSION_TIME = "12:10"
-SESSION_PID = "10176"
-DELTA_CPU = "0.205968"
-CLOCK_SECS = "0.1"
+SESSION_TIME = "15:45"
+SESSION_PID = "20612"
+DELTA_CPU = "0.201969"
+CLOCK_SECS = "0.101"
 CURRENT_DATE = "14-Apr-16"
-CURRENT_TIME = "12:10:46"
+CURRENT_TIME = "15:45:51"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -10532,12 +10532,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "14-Apr-16"
-SESSION_TIME = "12:10"
-SESSION_PID = "10176"
-DELTA_CPU = "0.001"
-CLOCK_SECS = "0.101"
+SESSION_TIME = "15:45"
+SESSION_PID = "20612"
+DELTA_CPU = "0.001999"
+CLOCK_SECS = "0.102"
 CURRENT_DATE = "14-Apr-16"
-CURRENT_TIME = "12:10:46"
+CURRENT_TIME = "15:45:51"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 S1 = "hello"
@@ -10548,8 +10548,8 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "14-Apr-16"
-SESSION_TIME = "12:10"
-SESSION_PID = "10176"
+SESSION_TIME = "15:45"
+SESSION_PID = "20612"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10560,14 +10560,14 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "14-Apr-16"
-SESSION_TIME = "12:10"
-SESSION_PID = "10176"
+SESSION_TIME = "15:45"
+SESSION_PID = "20612"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "14-Apr-16"
-SESSION_TIME = "12:10"
-SESSION_PID = "10176"
+SESSION_TIME = "15:45"
+SESSION_PID = "20612"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10701,12 +10701,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "14-Apr-16"
-SESSION_TIME = "12:10"
-SESSION_PID = "10176"
-DELTA_CPU = "0.013997"
-CLOCK_SECS = "0.115"
+SESSION_TIME = "15:45"
+SESSION_PID = "20612"
+DELTA_CPU = "0.016998"
+CLOCK_SECS = "0.119"
 CURRENT_DATE = "14-Apr-16"
-CURRENT_TIME = "12:10:46"
+CURRENT_TIME = "15:45:51"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -25274,7 +25274,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Thu Apr 14 12:10:54 PDT 2016
+Thu Apr 14 15:45:57 PDT 2016
  
 GO bn_reset
 cancel mode verify
@@ -47677,7 +47677,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "14-Apr-16_12:11"
+WIN_TITLE = "14-Apr-16_15:46"
  
 set win/title="set the title"
 sho sym win_title
@@ -47695,7 +47695,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="14-Apr-16:12:11"
+ !-> set win/title="14-Apr-16:15:46"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47706,14 +47706,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 14-Apr-16
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 12:11
+ !-> DEFINE SYMBOL the_time = 15:46
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="14-Apr-16:12:11"
+ !-> SET WIN/TITLE="14-Apr-16:15:46"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "14-Apr-16:12:11"
+WIN_TITLE = "14-Apr-16:15:46"
 *** Running ferret script: bn_last_error.jnl
 [?1034h! bn_last_error.jnl
 ! acm Nov 2005
@@ -58024,10 +58024,10 @@ SH GRID am
  normal    F
 *** Running ferret script: bn_clock_syms.jnl
 [?1034hSH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.209967"
-CLOCK_SECS = "0.101"
+DELTA_CPU = "0.211967"
+CLOCK_SECS = "0.103"
 CURRENT_DATE = "14-Apr-16"
-CURRENT_TIME = "12:11:41"
+CURRENT_TIME = "15:46:43"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -58036,8 +58036,8 @@ CURRENT_TIME = "12:11:41"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.021997"
-CLOCK_SECS = "0.122"
+DELTA_CPU = "0.019996"
+CLOCK_SECS = "0.125"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -58051,23 +58051,23 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.056991
+ !-> DEFINE VARIABLE ten_plots = 0.057992
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "0.18"
+CLOCK_SECS = "0.183"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.18"
+CLOCK_SECS = "0.183"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.005999
- !-> DEFINE VARIABLE sumcpu =0.005999
+ !-> DEFINE VARIABLE dt = 0.006
+ !-> DEFINE VARIABLE sumcpu =0.006
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.007999
+ !-> DEFINE VARIABLE dt = 0.007998
  !-> DEFINE VARIABLE sumcpu =0.013998
 !-> REPEAT: K=3
  !-> DEFINE VARIABLE dt = 0.006999
@@ -58076,35 +58076,35 @@ let sumcpu =`sumcpu + dt`)
  !-> DEFINE VARIABLE dt = 0.006999
  !-> DEFINE VARIABLE sumcpu =0.027996
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.007998
- !-> DEFINE VARIABLE sumcpu =0.035994
+ !-> DEFINE VARIABLE dt = 0.007999
+ !-> DEFINE VARIABLE sumcpu =0.035995
 !-> REPEAT: K=6
  !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.042993
+ !-> DEFINE VARIABLE sumcpu =0.042994
 !-> REPEAT: K=7
  !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.049992
+ !-> DEFINE VARIABLE sumcpu =0.049993
 !-> REPEAT: K=8
  !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.056991
+ !-> DEFINE VARIABLE sumcpu =0.056992
 !-> REPEAT: K=9
  !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.06399
+ !-> DEFINE VARIABLE sumcpu =0.063991
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.070989
+ !-> DEFINE VARIABLE dt = 0.007999
+ !-> DEFINE VARIABLE sumcpu =0.07199
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.070989
-0.070989
+ !-> MESSAGE/CONTINUE 0.07199
+0.07199
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.254"
+CLOCK_SECS = "0.257"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "14-Apr-16"
-SESSION_TIME = "12:11"
+SESSION_TIME = "15:46"
 CURRENT_DATE = "14-Apr-16"
-CURRENT_TIME = "12:11:42"
+CURRENT_TIME = "15:46:44"
 *** Running ferret script: bn63_bug_fixes.jnl
 [?1034h! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -61916,7 +61916,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.97 (PyFerret 1.3 beta/dbg)"                                    
  3    /  3:" ! Linux 2.6.32-573.18.1.el6.x86_64 - 04/14/16"                             
- 4    /  4:" ! 14-Apr-16 12:11     "                                                    
+ 4    /  4:" ! 14-Apr-16 15:46     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -64376,40 +64376,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.486
-randu2_randn2       0.572
-randu2_randn2       0.910
-randu2_randn2       0.847
-randu2_randn2       0.965
+randu2_randn2       0.337
+randu2_randn2       0.921
+randu2_randn2       0.596
+randu2_randn2       0.975
+randu2_randn2       0.168
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.098
-randu2_randn2       0.221
-randu2_randn2       0.212
-randu2_randn2       0.422
-randu2_randn2       0.061
-             VARIABLE : RANDU2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.076
-randu2_randn2       0.898
-randu2_randn2       0.649
-randu2_randn2       0.208
-randu2_randn2       0.638
-randu2_randn2       0.753
-             VARIABLE : RANDU2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.142
-randu2_randn2       0.981
+randu2_randn2       0.245
 randu2_randn2       0.268
-randu2_randn2       0.856
-randu2_randn2       0.612
-randu2_randn2       0.416
+randu2_randn2       0.989
+randu2_randn2       0.860
+randu2_randn2       0.499
+             VARIABLE : RANDU2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.726
+randu2_randn2       0.219
+randu2_randn2       0.498
+randu2_randn2       0.042
+randu2_randn2       0.157
+randu2_randn2       0.035
+             VARIABLE : RANDU2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.440
+randu2_randn2       0.997
+randu2_randn2       0.831
+randu2_randn2       0.976
+randu2_randn2       0.175
+randu2_randn2       0.575
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -64434,40 +64434,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.033
-randu2_randn2      -0.996
-randu2_randn2      -0.351
-randu2_randn2       0.102
-randu2_randn2       0.413
+randu2_randn2      -1.171
+randu2_randn2      -0.894
+randu2_randn2       0.165
+randu2_randn2       0.551
+randu2_randn2      -1.458
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.199
-randu2_randn2       0.644
-randu2_randn2       0.655
-randu2_randn2      -1.381
-randu2_randn2       0.467
+randu2_randn2      -0.072
+randu2_randn2      -0.342
+randu2_randn2       0.470
+randu2_randn2      -0.257
+randu2_randn2      -1.917
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       1.303
-randu2_randn2      -0.795
-randu2_randn2       0.077
-randu2_randn2       1.331
-randu2_randn2       1.133
-randu2_randn2       1.545
+randu2_randn2      -0.889
+randu2_randn2       1.530
+randu2_randn2      -0.672
+randu2_randn2       0.350
+randu2_randn2      -0.939
+randu2_randn2      -1.034
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.112
-randu2_randn2      -0.540
-randu2_randn2       0.373
-randu2_randn2      -0.930
-randu2_randn2       1.258
-randu2_randn2      -2.971
+randu2_randn2       1.558
+randu2_randn2       0.503
+randu2_randn2       1.375
+randu2_randn2       1.112
+randu2_randn2       0.872
+randu2_randn2       1.101
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -64492,14 +64492,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.357       1.400       0.610
-randu2_randn2       1.400       1.357       0.610
-randu2_randn2       0.610       0.610      -0.269
-randu2_randn2      -0.269      -0.269       0.610
-randu2_randn2      -0.821      -0.457       0.610
-randu2_randn2      -0.457      -0.616       0.610
-randu2_randn2      -0.616      -0.457       0.610
-randu2_randn2       0.687       0.687       0.673
+randu2_randn2       1.652       1.652       0.375
+randu2_randn2       1.395       1.395       0.375
+randu2_randn2       0.375       0.375      -0.006
+randu2_randn2      -0.247      -0.006       0.375
+randu2_randn2      -0.006      -0.247       0.375
+randu2_randn2      -0.387      -0.260       0.375
+randu2_randn2      -0.260      -0.260       0.375
+randu2_randn2       0.758       0.758       0.558
 *** Running ferret script: bn_axis_cf.jnl
 [?1034h! Ticket 1792: Write axes with CF-compliant units
 ! and with standard name attributes for geophysical attrs.
@@ -69236,7 +69236,7 @@ list/i=3 sst[T=@ave]
              VARIABLE : SST_IN (Deg C)
              DATA SET : Ensemble series of 4 datasets patterned on ens1
              FILENAME : fourfiles
-             SUBSET   : 9 by 4 points (LATITUDE-E (member no.))
+             SUBSET   : 9 by 4 points (LATITUDE-E (realization))
              LONGITUDE: 105W
              TIME     : 01-JAN 00:45 to 31-DEC 06:34 (averaged)
             13N    15N    17N    19N    21N    23N    25N    27N    29N   
@@ -69349,7 +69349,7 @@ list/i=3 airt[T=@ave]
              VARIABLE : AIR TEMPERATURE (DEG C)
              DATA SET : Ensemble series of 4 datasets patterned on ens1
              FILENAME : fourfiles
-             SUBSET   : 9 by 4 points (LATITUDE-E (member no.))
+             SUBSET   : 9 by 4 points (LATITUDE-E (realization))
              LONGITUDE: 105W
              TIME     : 01-JAN 00:45 to 31-DEC 06:34 (averaged)
             13N    15N    17N    19N    21N    23N    25N    27N    29N   
@@ -69406,7 +69406,7 @@ list/i=3 airt[T=@ave]
              VARIABLE : AIR TEMPERATURE (DEG C)
              DATA SET : Ensemble series of 4 datasets patterned on ens1
              FILENAME : fourfiles_gap
-             SUBSET   : 9 by 4 points (LATITUDE-E (member no.))
+             SUBSET   : 9 by 4 points (LATITUDE-E (realization))
              LONGITUDE: 105W
              TIME     : 01-JAN 00:45 to 31-DEC 06:34 (averaged)
             13N    15N    17N    19N    21N    23N    25N    27N    29N   
@@ -72311,7 +72311,7 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Thu Apr 14 12:12:02 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
+		:history = "Thu Apr 14 15:47:04 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
 			"FERRET V6.97 (PyFerret 1.3 beta/dbg) 14-Apr-16" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
@@ -75394,7 +75394,7 @@ ensemble ens = 1,2,3
 list/y=29.25  MAIZE_YIELD[d=1], MAIZE_YIELD[d=2], MAIZE_YIELD[d=3],  MAIZE_YIELD[m=@ngd]
              LONGITUDE: 8W(-8) to 6W(-6)
              LATITUDE: 29.3N
-             E (member no.): 0.5 to 3.5 (number of valid)
+             E (realization): 0.5 to 3.5 (number of valid)
  Column  1: MAIZE_YIELD[D=maize_1] is  Maize harvest (kgC.m-2.yr-1)
  Column  2: MAIZE_YIELD[D=maize_2] is  Maize harvest (kgC.m-2.yr-1)
  Column  3: MAIZE_YIELD[D=maize_3] is  Maize harvest (kgC.m-2.yr-1)
@@ -84904,20 +84904,20 @@ GO err696_time_overlay
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
 sp date
-Thu Apr 14 12:12:21 PDT 2016
+Thu Apr 14 15:47:23 PDT 2016
 set view upper
 plot t[gt=tax_nlp]
 plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
 sp date
-Thu Apr 14 12:12:21 PDT 2016
+Thu Apr 14 15:47:23 PDT 2016
  
 sp date
-Thu Apr 14 12:12:21 PDT 2016
+Thu Apr 14 15:47:23 PDT 2016
 set view lower
 plot t[gt=tax_jul]
 plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
 sp date
-Thu Apr 14 12:12:21 PDT 2016
+Thu Apr 14 15:47:23 PDT 2016
  
 GO bn_reset
 cancel mode verify
@@ -85069,7 +85069,7 @@ list/i=3 sst[T=@ave]
              VARIABLE : SST_IN (Deg C)
              DATA SET : Ensemble series of 4 datasets patterned on ens1
              FILENAME : fourfiles
-             SUBSET   : 9 by 4 points (LATITUDE-E (member no.))
+             SUBSET   : 9 by 4 points (LATITUDE-E (realization))
              LONGITUDE: 105W
              TIME     : 01-JAN 00:45 to 31-DEC 06:34 (averaged)
             13N    15N    17N    19N    21N    23N    25N    27N    29N   
@@ -89416,7 +89416,7 @@ list/x=150E/y=15n/L=10 fcst_2
              VARIABLE : another variable
              DATA SET : Forecast series of 11 datasets patterned on te_f01
              FILENAME : tef_letd
-             SUBSET   : 5 by 11 points (E (member no.)-FORECAST)
+             SUBSET   : 5 by 11 points (E (realization)-FORECAST)
              LONGITUDE: 150E
              LATITUDE : 15N
              Z (m)    : 250
@@ -89440,7 +89440,7 @@ list/x=150E/y=15n/L=10 fcst_2
              VARIABLE : another variable
              DATA SET : Forecast series of 11 datasets patterned on te_f01
              FILENAME : tef_letd
-             SUBSET   : 5 by 11 points (E (member no.)-FORECAST)
+             SUBSET   : 5 by 11 points (E (realization)-FORECAST)
              LONGITUDE: 150E
              LATITUDE : 15N
              Z (m)    : 250
@@ -89467,7 +89467,7 @@ list/x=150E/y=15n/L=10 fcst_2
              VARIABLE : another variable
              DATA SET : Forecast series of 11 datasets patterned on te_f01
              FILENAME : tef_letd
-             SUBSET   : 5 by 11 points (E (member no.)-FORECAST)
+             SUBSET   : 5 by 11 points (E (realization)-FORECAST)
              LONGITUDE: 150E
              LATITUDE : 15N
              Z (m)    : 250
@@ -89494,7 +89494,7 @@ list/x=150E/y=15n/L=10 fcst_2
              VARIABLE : another variable
              DATA SET : Forecast series of 11 datasets patterned on te_f01
              FILENAME : tef_letd
-             SUBSET   : 5 by 11 points (E (member no.)-FORECAST)
+             SUBSET   : 5 by 11 points (E (realization)-FORECAST)
              LONGITUDE: 150E
              LATITUDE : 15N
              Z (m)    : 250
@@ -89521,7 +89521,7 @@ list/x=150E/y=15n/L=10 fcst_2
              VARIABLE : another variable
              DATA SET : Forecast series of 11 datasets patterned on te_f01
              FILENAME : tef_letd_new
-             SUBSET   : 5 by 11 points (E (member no.)-FORECAST)
+             SUBSET   : 5 by 11 points (E (realization)-FORECAST)
              LONGITUDE: 150E
              LATITUDE : 15N
              Z (m)    : 250
@@ -89562,7 +89562,7 @@ list/x=150E/y=15n/L=10 fcst_2
              VARIABLE : another variable
              DATA SET : Forecast series of 11 datasets patterned on te_f01
              FILENAME : tef_letd
-             SUBSET   : 5 by 11 points (E (member no.)-FORECAST)
+             SUBSET   : 5 by 11 points (E (realization)-FORECAST)
              LONGITUDE: 150E
              LATITUDE : 15N
              Z (m)    : 250
@@ -89674,7 +89674,7 @@ LIST/l=10/i=10/j=10/k=1 fcst[d=tfe_gap]
              VARIABLE : some variable
              DATA SET : Ensemble series of 5 datasets patterned on tf_e1
              FILENAME : tfe_gap
-             SUBSET   : 5 by 11 points (E (member no.)-FORECAST)
+             SUBSET   : 5 by 11 points (E (realization)-FORECAST)
              LONGITUDE: 149E
              LATITUDE : 19N
              Z (m)    : 250
@@ -89701,7 +89701,7 @@ LIST/l=10/i=10/j=10/k=1 fcst[d=tef_gap]
              VARIABLE : some variable
              DATA SET : Forecast series of 4 datasets patterned on te_f01
              FILENAME : tef_gap
-             SUBSET   : 5 by 4 points (E (member no.)-FORECAST)
+             SUBSET   : 5 by 4 points (E (realization)-FORECAST)
              LONGITUDE: 149E
              LATITUDE : 19N
              Z (m)    : 250
@@ -90168,9 +90168,9 @@ flow/DAT=2/den=3/L=3 taux,tauy
 [?1034h! bn_speedtest.jnl
 ! issue large numbers of commands, timing with clock time
 can mode verify
-10K LET commands LET a = 0 takes  1.234  seconds
-Second 10K LET commands LET a = 0 takes  2.785  seconds
-5K LOAD with transform takes  3.651  seconds
+10K LET commands LET a = 0 takes  1.222  seconds
+Second 10K LET commands LET a = 0 takes  2.763  seconds
+5K LOAD with transform takes  3.629  seconds
 *** Running ferret script: bn_show_noupcase.jnl
 [?1034h! bn_show_noupcase.jnl
 ! 1/2016 ticket 1796
@@ -93158,12 +93158,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "14-Apr-16"
-SESSION_TIME = "12:12"
-SESSION_PID = "12656"
-DELTA_CPU = "0.212967"
+SESSION_TIME = "15:47"
+SESSION_PID = "23099"
+DELTA_CPU = "0.210967"
 CLOCK_SECS = "0.108"
 CURRENT_DATE = "14-Apr-16"
-CURRENT_TIME = "12:12:40"
+CURRENT_TIME = "15:47:42"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 GO_FILE = "./bn_startupfile.jnl"
@@ -93189,7 +93189,7 @@ PPL$COMMAND_FILE = "$$MEMBUF$$"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 PPL$SCALE = "1.0000"
-WIN_TITLE = "14-Apr-16_12:12"
+WIN_TITLE = "14-Apr-16_15:47"
 VP_SCALE = "1"
 VP_RT_MARGIN = "1"
 VP_TOP_MARGIN = "1.4"
@@ -93438,18 +93438,589 @@ FerVar(varname='mywnd', dsetname='coads_uw.nc', title = '', defn='mywnd[d=coads_
  TIME1     TIME                12mr   16-JAN 06:00         16-DEC 01:20        full
  normal    E
  normal    F
->>> print repr(coads_uw.mywnd._dataarray)
-None
->>> print repr(coads_uw.mywnd._datagrid)
-None
+>>> print repr(coads_uw.mywnd.data)
+array([[[[[[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          ..., 
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]]]],
+
+
+
+        [[[[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          ..., 
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]]]],
+
+
+
+        [[[[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          ..., 
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]]]],
+
+
+
+        ..., 
+        [[[[  4.13026647e+00]],
+
+          [[  4.61800327e+00]],
+
+          [[  2.00531536e+00]],
+
+          ..., 
+          [[  3.28127117e+00]],
+
+          [[  3.54345972e+00]],
+
+          [[  4.85826365e+00]]]],
+
+
+
+        [[[[  5.94489154e+00]],
+
+          [[  6.91998591e+00]],
+
+          [[  1.70717891e+00]],
+
+          ..., 
+          [[  2.90376309e+00]],
+
+          [[  2.59074142e+00]],
+
+          [[  4.54684929e+00]]]],
+
+
+
+        [[[[  3.93235763e+00]],
+
+          [[  8.69959589e+00]],
+
+          [[  2.83880093e+00]],
+
+          ..., 
+          [[  3.49670625e+00]],
+
+          [[  2.41985592e+00]],
+
+          [[  4.63529717e+00]]]]],
+
+
+
+
+       [[[[[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          ..., 
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]]]],
+
+
+
+        [[[[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          ..., 
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]]]],
+
+
+
+        [[[[  4.87043201e+00]],
+
+          [[  4.21788103e+00]],
+
+          [[  6.85873284e+00]],
+
+          ..., 
+          [[  3.55844052e+00]],
+
+          [[  5.52641346e+00]],
+
+          [[  6.47475875e+00]]]],
+
+
+
+        ..., 
+        [[[[  2.54155244e+00]],
+
+          [[  1.70894914e+00]],
+
+          [[  5.18410115e-01]],
+
+          ..., 
+          [[  3.76883589e+00]],
+
+          [[  4.10102042e+00]],
+
+          [[  3.52972679e+00]]]],
+
+
+
+        [[[[  2.74125202e+00]],
+
+          [[  4.56212661e+00]],
+
+          [[  4.69396104e+00]],
+
+          ..., 
+          [[  2.95223556e+00]],
+
+          [[  1.88845314e+00]],
+
+          [[  2.84295116e+00]]]],
+
+
+
+        [[[[  3.96405406e+00]],
+
+          [[  6.32055777e+00]],
+
+          [[  3.04461882e+00]],
+
+          ..., 
+          [[  2.65243499e+00]],
+
+          [[  3.78547047e+00]],
+
+          [[  1.87433646e+00]]]]],
+
+
+
+
+       [[[[[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          ..., 
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]]]],
+
+
+
+        [[[[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          ..., 
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]],
+
+          [[ -1.00000000e+34]]]],
+
+
+
+        [[[[  4.20475898e+00]],
+
+          [[  3.21188590e+00]],
+
+          [[  5.92029119e+00]],
+
+          ..., 
+          [[  2.94170001e+00]],
+
+          [[  1.40319122e+00]],
+
+          [[  5.00759383e+00]]]],
+
+
+
+        ..., 
+        [[[[  3.79712737e+00]],
+
+          [[  2.55904499e+00]],
+
+          [[  2.09570016e+00]],
+
+          ..., 
+          [[  3.25677019e+00]],
+
+          [[  4.27273462e+00]],
+
+          [[  2.77179056e+00]]]],
+
+
+
+        [[[[  1.83517128e+00]],
+
+          [[  1.74350005e+00]],
+
+          [[  2.40281788e+00]],
+
+          ..., 
+          [[  3.67538335e+00]],
+
+          [[  4.44972861e+00]],
+
+          [[  2.92714139e+00]]]],
+
+
+
+        [[[[  3.15153113e+00]],
+
+          [[  9.73379647e-01]],
+
+          [[  1.69545403e+00]],
+
+          ..., 
+          [[  3.45693596e+00]],
+
+          [[  2.47156384e+00]],
+
+          [[  9.26224279e-01]]]]],
+
+
+
+
+       ..., 
+       [[[[[  3.75788823e+00]],
+
+          [[  3.36079903e+00]],
+
+          [[  3.19331459e+00]],
+
+          ..., 
+          [[  5.06446458e+00]],
+
+          [[  4.70920617e+00]],
+
+          [[  4.36559388e+00]]]],
+
+
+
+        [[[[  2.53196827e+00]],
+
+          [[  2.85088753e+00]],
+
+          [[  2.74242205e+00]],
+
+          ..., 
+          [[  4.40776234e+00]],
+
+          [[  3.67403697e+00]],
+
+          [[  2.78947846e+00]]]],
+
+
+
+        [[[[  1.87252534e+00]],
+
+          [[  2.19841757e+00]],
+
+          [[  2.50838808e+00]],
+
+          ..., 
+          [[  3.17518624e+00]],
+
+          [[  3.09071592e+00]],
+
+          [[  2.09130673e+00]]]],
+
+
+
+        ..., 
+        [[[[  2.80339674e+00]],
+
+          [[  2.08965940e+00]],
+
+          [[  1.36597714e+00]],
+
+          ..., 
+          [[  2.85257713e+00]],
+
+          [[  2.87742188e+00]],
+
+          [[  3.11378635e+00]]]],
+
+
+
+        [[[[  2.90532542e+00]],
+
+          [[  2.65742782e+00]],
+
+          [[  1.84599567e+00]],
+
+          ..., 
+          [[  3.13225778e+00]],
+
+          [[  2.35467883e+00]],
+
+          [[  2.52133872e+00]]]],
+
+
+
+        [[[[  3.39856233e+00]],
+
+          [[  2.52378011e+00]],
+
+          [[  2.32848947e+00]],
+
+          ..., 
+          [[  3.31451545e+00]],
+
+          [[  2.54581914e+00]],
+
+          [[  3.48173008e+00]]]]],
+
+
+
+
+       [[[[[  3.45173777e+00]],
+
+          [[  3.37527379e+00]],
+
+          [[  3.16941716e+00]],
+
+          ..., 
+          [[  4.97374429e+00]],
+
+          [[  4.39343034e+00]],
+
+          [[  4.31828042e+00]]]],
+
+
+
+        [[[[  2.42508255e+00]],
+
+          [[  3.04407496e+00]],
+
+          [[  2.80380352e+00]],
+
+          ..., 
+          [[  4.53645835e+00]],
+
+          [[  3.61382650e+00]],
+
+          [[  2.98252047e+00]]]],
+
+
+
+        [[[[  1.89510841e+00]],
+
+          [[  2.45184173e+00]],
+
+          [[  2.67046850e+00]],
+
+          ..., 
+          [[  3.28195671e+00]],
+
+          [[  2.75888881e+00]],
+
+          [[  2.14414391e+00]]]],
+
+
+
+        ..., 
+        [[[[  3.73354644e+00]],
+
+          [[  1.93112315e+00]],
+
+          [[  2.87452077e+00]],
+
+          ..., 
+          [[  2.13792947e+00]],
+
+          [[  1.85691679e+00]],
+
+          [[  2.42684616e+00]]]],
+
+
+
+        [[[[  3.44824073e+00]],
+
+          [[  2.14114462e+00]],
+
+          [[  2.60228166e+00]],
+
+          ..., 
+          [[  3.39527336e+00]],
+
+          [[  3.56939489e+00]],
+
+          [[  4.22187495e+00]]]],
+
+
+
+        [[[[  3.05977172e+00]],
+
+          [[  2.36333729e+00]],
+
+          [[  2.45851741e+00]],
+
+          ..., 
+          [[  3.05152926e+00]],
+
+          [[  2.60776123e+00]],
+
+          [[  3.41733943e+00]]]]],
+
+
+
+
+       [[[[[  3.64383697e+00]],
+
+          [[  3.33868108e+00]],
+
+          [[  3.14039924e+00]],
+
+          ..., 
+          [[  4.34920775e+00]],
+
+          [[  4.14105021e+00]],
+
+          [[  3.87513285e+00]]]],
+
+
+
+        [[[[  2.55849114e+00]],
+
+          [[  3.14467404e+00]],
+
+          [[  2.94028832e+00]],
+
+          ..., 
+          [[  4.08850910e+00]],
+
+          [[  3.28017770e+00]],
+
+          [[  2.73468516e+00]]]],
+
+
+
+        [[[[  1.90434463e+00]],
+
+          [[  2.58477244e+00]],
+
+          [[  2.79715740e+00]],
+
+          ..., 
+          [[  3.35978500e+00]],
+
+          [[  2.69049588e+00]],
+
+          [[  1.90782962e+00]]]],
+
+
+
+        ..., 
+        [[[[  3.15604609e+00]],
+
+          [[  1.29819913e+00]],
+
+          [[  1.71675056e+00]],
+
+          ..., 
+          [[  2.38711427e+00]],
+
+          [[  2.92097842e+00]],
+
+          [[  3.04655510e+00]]]],
+
+
+
+        [[[[  2.81207065e+00]],
+
+          [[  1.91643896e+00]],
+
+          [[  2.04769862e+00]],
+
+          ..., 
+          [[  2.98045587e+00]],
+
+          [[  2.73935389e+00]],
+
+          [[  3.20570629e+00]]]],
+
+
+
+        [[[[  2.80741556e+00]],
+
+          [[  2.30834585e+00]],
+
+          [[  2.53451086e+00]],
+
+          ..., 
+          [[  2.97803332e+00]],
+
+          [[  2.66982456e+00]],
+
+          [[  3.04928904e+00]]]]]])
+>>> print repr(coads_uw.mywnd.grid)
+FerGrid(name='mywnd[d=coads_uw.nc]', axes=[
+            FerAxis(axtype=1, coords=array([ 301.,  303.,  305.,  307.,  309.,  311.,  313.,  315.,  317.,
+        319.,  321.,  323.,  325.,  327.,  329.,  331.,  333.,  335.,
+        337.,  339.,  341.,  343.,  345.,  347.,  349.,  351.,  353.,
+        355.,  357.,  359.]), unit='degrees_east', name='COADSX141_170'),
+            FerAxis(axtype=2, coords=array([  1.,   3.,   5.,   7.,   9.,  11.,  13.,  15.,  17.,  19.,  21.,
+        23.,  25.,  27.,  29.,  31.,  33.,  35.,  37.,  39.,  41.,  43.,
+        45.,  47.,  49.,  51.,  53.,  55.,  57.,  59.]), unit='degrees_north', name='COADSY46_75'),
+            FerAxis(axtype=7, coords=None, unit='', name=''),
+            FerAxis(axtype=4, coords=array([[16,  1,  0,  6,  0,  0],
+       [15,  2,  0, 16, 29,  6],
+       [17,  3,  0,  2, 58, 12],
+       [16,  4,  0, 13, 27, 18],
+       [16,  5,  0, 23, 56, 24],
+       [16,  6,  0, 10, 25, 30],
+       [16,  7,  0, 20, 54, 36],
+       [16,  8,  0,  7, 23, 42],
+       [15,  9,  0, 17, 52, 47],
+       [16, 10,  0,  4, 21, 53],
+       [15, 11,  0, 14, 50, 59],
+       [16, 12,  0,  1, 20,  5]], dtype=int32), unit='CALTYPE_GREGORIAN', name='TIME1'),
+            FerAxis(axtype=7, coords=None, unit='', name=''),
+            FerAxis(axtype=7, coords=None, unit='', name=''),
+        ])
 >>> coads_uw.mywnd.load()
->>> coads_uw.mywnd._dataarray.shape
+>>> coads_uw.mywnd.data.shape
 (30, 30, 1, 12, 1, 1)
->>> print repr(coads_uw.mywnd._dataarray[2:5,2:5,0,0,0,0])
+>>> print repr(coads_uw.mywnd.data[2:5,2:5,0,0,0,0])
 array([[ 4.20475898,  6.56102578,  7.36204558],
        [ 6.55742125,  7.24086001,  7.65775136],
        [ 7.05031865,  7.76138943,  8.33904129]])
->>> print repr(coads_uw.mywnd._datagrid)
+>>> print repr(coads_uw.mywnd.grid)
 FerGrid(name='mywnd[d=coads_uw.nc]', axes=[
             FerAxis(axtype=1, coords=array([ 301.,  303.,  305.,  307.,  309.,  311.,  313.,  315.,  317.,
         319.,  321.,  323.,  325.,  327.,  329.,  331.,  333.,  335.,
@@ -93502,9 +94073,9 @@ FerGrid(name='mywnd[d=coads_uw.nc]', axes=[
  normal    E
  normal    F
 >>> coads.sstregrid.load()
->>> coads.sstregrid._dataarray.shape
+>>> coads.sstregrid.data.shape
 (30, 30, 1, 12, 1, 1)
->>> print repr(coads.sstregrid._dataarray[2:5,2:5,0,0,0,0])
+>>> print repr(coads.sstregrid.data[2:5,2:5,0,0,0,0])
 array([[ 28.        ,  26.83953476,  26.91409111],
        [ 27.23210526,  26.99204445,  26.88500023],
        [ 27.20340919,  27.09340858,  26.8843174 ]])
@@ -93573,9 +94144,9 @@ set(['SST'])
  normal    E
  normal    F
 >>> coads.sst2.load()
->>> coads.sst2._dataarray.shape
+>>> coads.sst2.data.shape
 (180, 90, 1, 1, 1, 1)
->>> print repr(coads.sst2._dataarray[2:5,23:26,0,0,0,0])
+>>> print repr(coads.sst2.data[2:5,23:26,0,0,0,0])
 array([[ 12.18707085,  18.32330322,  19.59271812],
        [ 13.91592407,  17.45085526,  20.04241753],
        [ 13.76200008,  17.38199997,  20.65003967]])
@@ -93608,9 +94179,9 @@ FerVar(varname='sst2', dsetname='coads_climatology.cdf', title = '', defn='sst2[
  SSTREGRID[D=coads_climatology] = SST[D=COADS_CLIMATOLOGY.CDF,G=MYWND[D=COADS_UW.NC]@AVE]
  
 >>> coads.sst2.load()
->>> coads.sst2._dataarray.shape
+>>> coads.sst2.data.shape
 (3, 3, 1, 1, 1, 1)
->>> print repr(coads.sst2._dataarray[:,:,0,0,0,0])
+>>> print repr(coads.sst2.data[:,:,0,0,0,0])
 array([[ 12.18707085,  18.32330322,  19.59271812],
        [ 13.91592407,  17.45085526,  20.04241753],
        [ 13.76200008,  17.38199997,  20.65003967]])
@@ -93663,9 +94234,11 @@ array([[ 12.18707085,  18.32330322,  19.59271812],
 >>> normax = pyferret.FerAxis()
 >>> print repr(normax)
 FerAxis(axtype=7, coords=None, unit='', name='')
+>>> dir(normax)
+['__class__', '__delattr__', '__doc__', '__format__', '__get__', '__getattribute__', '__hash__', '__init__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__self__', '__self_class__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__thisclass__', 'axtype', 'coords', 'name', 'unit']
 >>> coads = pyferret.FerDSet('coads_climatology')
 >>> coads.sst.load()
->>> sstaxes = coads.sst._datagrid.getaxes()
+>>> sstaxes = coads.sst.grid.axes
 >>> print repr(sstaxes)
 [FerAxis(axtype=1, coords=array([  21.,   23.,   25.,   27.,   29.,   31.,   33.,   35.,   37.,
          39.,   41.,   43.,   45.,   47.,   49.,   51.,   53.,   55.,
@@ -93705,23 +94278,84 @@ True
 True
 >>> normax != sstaxes[3]
 True
+>>> print repr(sstaxes[0].axtype)
+1
+>>> print repr(sstaxes[0].coords)
+array([  21.,   23.,   25.,   27.,   29.,   31.,   33.,   35.,   37.,
+         39.,   41.,   43.,   45.,   47.,   49.,   51.,   53.,   55.,
+         57.,   59.,   61.,   63.,   65.,   67.,   69.,   71.,   73.,
+         75.,   77.,   79.,   81.,   83.,   85.,   87.,   89.,   91.,
+         93.,   95.,   97.,   99.,  101.,  103.,  105.,  107.,  109.,
+        111.,  113.,  115.,  117.,  119.,  121.,  123.,  125.,  127.,
+        129.,  131.,  133.,  135.,  137.,  139.,  141.,  143.,  145.,
+        147.,  149.,  151.,  153.,  155.,  157.,  159.,  161.,  163.,
+        165.,  167.,  169.,  171.,  173.,  175.,  177.,  179.,  181.,
+        183.,  185.,  187.,  189.,  191.,  193.,  195.,  197.,  199.,
+        201.,  203.,  205.,  207.,  209.,  211.,  213.,  215.,  217.,
+        219.,  221.,  223.,  225.,  227.,  229.,  231.,  233.,  235.,
+        237.,  239.,  241.,  243.,  245.,  247.,  249.,  251.,  253.,
+        255.,  257.,  259.,  261.,  263.,  265.,  267.,  269.,  271.,
+        273.,  275.,  277.,  279.,  281.,  283.,  285.,  287.,  289.,
+        291.,  293.,  295.,  297.,  299.,  301.,  303.,  305.,  307.,
+        309.,  311.,  313.,  315.,  317.,  319.,  321.,  323.,  325.,
+        327.,  329.,  331.,  333.,  335.,  337.,  339.,  341.,  343.,
+        345.,  347.,  349.,  351.,  353.,  355.,  357.,  359.,  361.,
+        363.,  365.,  367.,  369.,  371.,  373.,  375.,  377.,  379.])
+>>> print repr(sstaxes[0].unit)
+'degrees_east'
+>>> print repr(sstaxes[0].name)
+'COADSX'
+>>> print repr(sstaxes[1].axtype)
+2
+>>> print repr(sstaxes[1].coords)
+array([-89., -87., -85., -83., -81., -79., -77., -75., -73., -71., -69.,
+       -67., -65., -63., -61., -59., -57., -55., -53., -51., -49., -47.,
+       -45., -43., -41., -39., -37., -35., -33., -31., -29., -27., -25.,
+       -23., -21., -19., -17., -15., -13., -11.,  -9.,  -7.,  -5.,  -3.,
+        -1.,   1.,   3.,   5.,   7.,   9.,  11.,  13.,  15.,  17.,  19.,
+        21.,  23.,  25.,  27.,  29.,  31.,  33.,  35.,  37.,  39.,  41.,
+        43.,  45.,  47.,  49.,  51.,  53.,  55.,  57.,  59.,  61.,  63.,
+        65.,  67.,  69.,  71.,  73.,  75.,  77.,  79.,  81.,  83.,  85.,
+        87.,  89.])
+>>> print repr(sstaxes[1].unit)
+'degrees_north'
+>>> print repr(sstaxes[1].name)
+'COADSY'
+>>> print repr(sstaxes[2].axtype)
+7
+>>> print repr(sstaxes[2].coords)
+None
+>>> print repr(sstaxes[2].unit)
+''
+>>> print repr(sstaxes[2].name)
+''
+>>> print repr(sstaxes[3].axtype)
+4
+>>> print repr(sstaxes[3].coords)
+array([[16,  1,  0,  6,  0,  0],
+       [15,  2,  0, 16, 29,  6],
+       [17,  3,  0,  2, 58, 12]], dtype=int32)
+>>> print repr(sstaxes[3].unit)
+'CALTYPE_GREGORIAN'
+>>> print repr(sstaxes[3].name)
+'TIME'
 >>> dupaxis = sstaxes[0].copy()
 >>> dupaxis is sstaxes[0]
 False
 >>> dupaxis == sstaxes[0]
 True
->>> dupaxis._coords is sstaxes[0]._coords
+>>> dupaxis.coords is sstaxes[0].coords
 False
->>> numpy.allclose(dupaxis._coords, sstaxes[0]._coords)
+>>> numpy.allclose(dupaxis.coords, sstaxes[0].coords)
 True
 >>> dupaxis = sstaxes[3].copy()
 >>> dupaxis is sstaxes[3]
 False
 >>> dupaxis == sstaxes[3]
 True
->>> dupaxis._coords is sstaxes[3]._coords
+>>> dupaxis.coords is sstaxes[3].coords
 False
->>> numpy.allclose(dupaxis._coords, sstaxes[3]._coords)
+>>> numpy.allclose(dupaxis.coords, sstaxes[3].coords)
 True
 >>> print repr(pyferret.FerAxis._parsegeoval(None))
 (6, None)
@@ -93795,9 +94429,11 @@ FerGrid(name='', axes=[
             None,
             None,
         ])
+>>> dir(nogrid)
+['__class__', '__delattr__', '__doc__', '__format__', '__get__', '__getattribute__', '__hash__', '__init__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__self__', '__self_class__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__thisclass__', 'axes', 'name']
 >>> coads = pyferret.FerDSet('coads_climatology')
 >>> coads.sst.load()
->>> coadsgrid = coads.sst._datagrid
+>>> coadsgrid = coads.sst.grid
 >>> print repr(coadsgrid)
 FerGrid(name='SST[d=coads_climatology]', axes=[
             FerAxis(axtype=1, coords=array([  21.,   23.,   25.,   27.,   29.,   31.,   33.,   35.,   37.,
@@ -93845,29 +94481,29 @@ True
 False
 >>> dupgrid == coadsgrid
 True
->>> dupgrid._axes[0] is coadsgrid._axes[0]
+>>> dupgrid.axes[0] is coadsgrid.axes[0]
 False
->>> dupgrid._axes[0] == coadsgrid._axes[0]
+>>> dupgrid.axes[0] == coadsgrid.axes[0]
 True
->>> dupgrid._axes[1] is coadsgrid._axes[1]
+>>> dupgrid.axes[1] is coadsgrid.axes[1]
 False
->>> dupgrid._axes[1] == coadsgrid._axes[1]
+>>> dupgrid.axes[1] == coadsgrid.axes[1]
 True
->>> dupgrid._axes[2] is coadsgrid._axes[2]
+>>> dupgrid.axes[2] is coadsgrid.axes[2]
 False
->>> dupgrid._axes[2] == coadsgrid._axes[2]
+>>> dupgrid.axes[2] == coadsgrid.axes[2]
 True
->>> dupgrid._axes[3] is coadsgrid._axes[3]
+>>> dupgrid.axes[3] is coadsgrid.axes[3]
 False
->>> dupgrid._axes[3] == coadsgrid._axes[3]
+>>> dupgrid.axes[3] == coadsgrid.axes[3]
 True
->>> dupgrid._axes[4] is coadsgrid._axes[4]
+>>> dupgrid.axes[4] is coadsgrid.axes[4]
 False
->>> dupgrid._axes[4] == coadsgrid._axes[4]
+>>> dupgrid.axes[4] == coadsgrid.axes[4]
 True
->>> dupgrid._axes[5] is coadsgrid._axes[5]
+>>> dupgrid.axes[5] is coadsgrid.axes[5]
 False
->>> dupgrid._axes[5] == coadsgrid._axes[5]
+>>> dupgrid.axes[5] == coadsgrid.axes[5]
 True
 >>> freqax = pyferret.FerAxis(axtype=pyferret.AXISTYPE_CUSTOM,coords=numpy.arange(1,13,0.5),unit='freqnum',name='frequencies')
 >>> print repr(freqax)
@@ -93913,17 +94549,17 @@ FerGrid(name='freqgrid', axes=[
         10. ,  10.5,  11. ,  11.5,  12. ,  12.5]), unit='freqnum', name='frequencies'),
             FerAxis(axtype=7, coords=None, unit='', name=''),
         ])
->>> freqgrid._axes[0] == coadsgrid._axes[0]
+>>> freqgrid.axes[0] == coadsgrid.axes[0]
 True
->>> freqgrid._axes[1] == coadsgrid._axes[1]
+>>> freqgrid.axes[1] == coadsgrid.axes[1]
 True
->>> freqgrid._axes[2] == coadsgrid._axes[2]
+>>> freqgrid.axes[2] == coadsgrid.axes[2]
 True
->>> freqgrid._axes[3] == coadsgrid._axes[3]
+>>> freqgrid.axes[3] == coadsgrid.axes[3]
 False
->>> freqgrid._axes[4] == coadsgrid._axes[4]
+>>> freqgrid.axes[4] == coadsgrid.axes[4]
 False
->>> freqgrid._axes[5] == coadsgrid._axes[5]
+>>> freqgrid.axes[5] == coadsgrid.axes[5]
 True
 *** Running python script: testferpyvar.py
 [?1034h
@@ -93940,9 +94576,9 @@ True
   time range: 16-JAN 06:00 to 17-MAR 02:58
  
 >>> coads.sst.load()
->>> datacopy = coads.sst._dataarray
+>>> datacopy = coads.sst.data
 >>> datacopy[87:93,43:47,0,:,0,0] = -5.0
->>> coads.sstcopy = pyferret.FerPyVar(grid=coads.sst._datagrid, data=datacopy, missval=coads.sst._missingvalue, unit=coads.sst._dataunit, title='modified copy of SST')
+>>> coads.sstcopy = pyferret.FerPyVar(grid=coads.sst.grid, data=datacopy, missval=coads.sst.missval, unit=coads.sst.unit, title='modified copy of SST')
 >>> pyferret.showdata(brief=False)
      currently SET data sets:
     1> ./coads_climatology.cdf  (default)
@@ -93973,4 +94609,4 @@ True
 >>> del coads
 >>> pyferret.showdata()
      currently SET data sets:
-Ended at Thu Apr 14 12:12:42 PDT 2016
+Ended at Thu Apr 14 15:47:44 PDT 2016

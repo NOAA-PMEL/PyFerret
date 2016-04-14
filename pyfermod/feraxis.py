@@ -171,6 +171,45 @@ class FerAxis(object):
         return not self.__eq__(other)
 
 
+    def __getitem__(self, name):
+        '''
+        Return the axis type (if name='axtype'), unit (if name='unit'), 
+        name (if name='name'), or a copy of the coordinates (if name='coords')
+        '''
+        if name == 'axtype':
+            return self.getaxtype()
+        if name == 'unit':
+            return self.getunit()
+        if name == 'name':
+            return self.getname()
+        if name == 'coords':
+            return self.getcoords()
+        raise KeyError("unknown key '%s'" % str(name))
+
+
+    def __getattr__(self, name):
+        '''
+        Return the axis type (if name='axtype'), unit (if name='unit'), 
+        name (if name='name'), or a copy of the coordinates (if name='coords')
+        Note that this method is only called when the parent object 
+        does not have an attribute with this name.
+        '''
+        try:
+            return self.__getitem__(name)
+        except KeyError:
+            raise AttributeError("unknown attribute '%s'" % name)
+
+
+    def __dir__(self):
+        '''
+        Returns a list of known attributes, including those added 
+        by the __getattr__ method.
+        '''
+        mydir = [ 'axtype', 'coords', 'name', 'unit' ]
+        mydir.extend( dir(super(FerAxis, self)) )
+        return mydir
+
+
     def copy(self):
         '''
         Returns a copy of this FerAxis object.  The FerAxis object returned
@@ -183,7 +222,7 @@ class FerAxis(object):
         return duplicate
 
 
-    def gettype(self):
+    def getaxtype(self):
         '''
         Returns the type of this axis as one of the integer constants
             pyferret.AXISTYPE_LONGITUDE

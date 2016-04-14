@@ -1086,11 +1086,12 @@
 		DATA qualifiers  (nqual_at6a+44)/ 'PALETTE'/	! 
 		DATA qualifiers  (nqual_at6a+45)/ 'FAST'/	! style for Ribbon plot
 		DATA qualifiers  (nqual_at6a+46)/ 'MISSING'/	! For missing-dat in ribbon plot
-		DATA qualifiers  (nqual_at6a+47)/ 'GAPLOC'/     ! A variable marking gaps to insert in PLOT/VS
-		DATA qualifiers  (nqual_at6a+48)/ 'OPACITY'/	! overriding opacity
+		DATA qualifiers  (nqual_at6a+47)/ 'OPACITY'/	! overriding opacity
+		DATA qualifiers  (nqual_at6a+48)/ 'GAPLOC'/     ! A variable marking gaps to insert in PLOT/VS
 		DATA qualifiers  (nqual_at6a+49)/ 'NTH'/	! Control for symbol decimation
 		DATA qualifiers  (nqual_at6a+50)/ '****'/	! 
 		DATA qualifiers  (nqual_at6a+51)/ '****'/	! 
+
 * GO	 - command # 7
 	DATA commands(7)			/ 'GO  '	/
         DATA its_action_command(7)              / .FALSE.       /

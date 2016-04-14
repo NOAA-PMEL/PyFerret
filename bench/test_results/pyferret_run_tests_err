@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Apr 13 17:36 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Apr 14 12:09 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
@@ -278,6 +278,7 @@ Benchmark scripts that will be run:
    bn_climatology_attr.jnl
    bn_plot_along.jnl
    bn_show_commands.jnl
+   bn_plot_nth.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
    bn_outline_poly.jnl
@@ -287,7 +288,7 @@ Benchmark scripts that will be run:
    testferaxis.py
    testfergrid.py
    testferpyvar.py
-Beginning at Wed Apr 13 17:36:57 PDT 2016
+Beginning at Thu Apr 14 12:10:38 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -330,11 +331,13 @@ message/cont $3"<my error message"
 message/cont $1"|xxxxx|goodbye<my error message"
  **ERROR: invalid command: Valid value needed for argument $1
 message/cont $1"greetings|xxxxx|goodbye"
+           *** NOTE: Argument $1 received was: hello
            *** NOTE: Valid argument $1 choices are: xxxxx|goodbye
  **ERROR: my error message
 message/cont $3"|hello|goodbye<my error message"
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3">greetings|hello|goodbye"
+           *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: hello|goodbye
  **ERROR: my error message
 message/cont $3">greetings|hello|goodbye<my error message"
@@ -346,9 +349,11 @@ message/cont $3""
 message/cont $3"<"
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3"||"
+           *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: |
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3"|>|"
+           *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: >|
  **ERROR: command syntax: empty text string provided with ">": >|
 message/cont $3">|"
@@ -356,6 +361,7 @@ message/cont $3">|"
 message/cont $3"|<"
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3"|>"
+           *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: >
  **ERROR: command syntax: arg number not in 1-99 range: $100
 say $100
@@ -588,11 +594,13 @@ define symbol t$5 = hi
 message/continue ($test2"<error message")
  **ERROR: invalid command: Valid value needed for symbol test2
 message/continue ($test2"|hello|bye|")
+           *** NOTE: symbol test2 was missing or empty.
            *** NOTE: Valid symbol test2 choices are: hello|bye|
  **ERROR: error message
 message/continue ($test2"|hello|bye|<error message")
  **ERROR: invalid command: Valid value needed for symbol t2
 message/continue ($t2"|solong>really hello|bye|")
+           *** NOTE: symbol t2 received was: hello
            *** NOTE: Valid symbol t2 choices are: solong>really hello|bye|
 *** Running ferret script: bn_comma_delimited.jnl
  Cached data cleared from memory
@@ -1814,26 +1822,31 @@ plot/sym/siz=0.3 0*t[gt=vwnd]
 query/ignore $1%q|a|b|c|d|<First argument is a letter of the alphabet%
  **ERROR: invalid command: Valid value needed for argument $2
 query/ignore $2%|a|b|c|d|%
+           *** NOTE: Argument $2 was missing or empty.
            *** NOTE: Valid argument $2 choices are: a|b|c|d|
  **ERROR: my error message
 message/cont $1"|xxxxx|goodbye<my error message"
  **ERROR: invalid command: Valid value needed for argument $1
 message/cont $1"greetings|xxxxx|goodbye"
+           *** NOTE: Argument $1 received was: hello
            *** NOTE: Valid argument $1 choices are: xxxxx|goodbye
  **ERROR: my error message
 message/cont $3"|hello|goodbye<my error message"
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3">greetings|hello|goodbye"
+           *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: hello|goodbye
  **ERROR: my error message
 message/continue ($test2"<my error message")
  **ERROR: invalid command: Valid value needed for symbol test2
 message/continue ($test2"|hello|bye|")
+           *** NOTE: symbol test2 was missing or empty.
            *** NOTE: Valid symbol test2 choices are: hello|bye|
  **ERROR: my error message
 message/continue ($test2"|hello|bye|<my error message")
  **ERROR: invalid command: Valid value needed for symbol t2
 message/continue ($t2"|solong>really hello|bye|")
+           *** NOTE: symbol t2 was missing or empty.
            *** NOTE: Valid symbol t2 choices are: solong>really hello|bye|
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4455,6 +4468,12 @@ Replacing definition of axis TAX
            *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
 *** Running ferret script: bn_show_commands.jnl
  Cached data cleared from memory
+*** Running ferret script: bn_plot_nth.jnl
+ Cached data cleared from memory
+           *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
+           *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
+           *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
+           *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
 *** Running ferret script: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -4505,4 +4524,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testferpyvar.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Wed Apr 13 17:39:02 PDT 2016
+Ended at Thu Apr 14 12:12:42 PDT 2016

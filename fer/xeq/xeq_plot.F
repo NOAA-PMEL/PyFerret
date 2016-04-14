@@ -621,7 +621,7 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 * Note: "/KEY" refers to the legend on PLOT and to the color bar on SHADE
 
 	nokey = qual_given(slash_plot_nokey) .GT. 0
-     .     .OR. qual_given(slash_plot_title) .GT. 0
+     .     .OR. (qual_given(slash_plot_title) .GT. 0 .AND. .NOT.overlay)
 
 * set up the axes and title and load the data into PPLUS
 

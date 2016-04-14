@@ -41,8 +41,7 @@
 *			set and it gets deallocated automatically
 *      *sh* 2/16 - if a pre-existing identical axis exists, re-use it
 *                  else we cannot aggregate the aggs (for EF and FE aggs)
-! considered but rejected this change:
-!*      *sh* 3/16 - shift E coords down so that EBOXLO[m=1] is at zero
+*      *sh* 4/16 - put special E and F units onto agg axes
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -55,6 +54,8 @@
         include 'xprog_state.cmn'
 	include 'xtm_grid.cmn_text'  
 	include 'errmsg.parm'
+	include 'xunits.cmn_text'
+
 	
 * calling argument declarations:
 	INTEGER	len, line_dir, iline, status

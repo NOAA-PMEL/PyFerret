@@ -66,9 +66,9 @@
 	include	'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xprog_state.cmn'
-	include 'xvariables.cmn'		! added 3/90
+	include 'xvariables.cmn'	! added 3/90
 	include 'xfr_grid.cmn'		! added 3/90
-
+	include 'xunits.cmn_text'
 
 * calling argument declarations
 	LOGICAL	full_prec
@@ -76,8 +76,8 @@
 	CHARACTER*(*) to_word
 
 * internal variable declarations:
-	LOGICAL	aux_span_compress
-	INTEGER	sub_len, ndec, grid, line, status, cx_try
+	LOGICAL	SCALAR_GRID_LINE, aux_span_compress, its_float
+	INTEGER	sub_len, ndec, grid, line, status, cx_try, cat, var
 	REAL*8	TM_WORLD, bc_to_t0, lo, hi, temp
 	CHARACTER*40	LOHI_STRING
 
@@ -128,13 +128,20 @@
 	   hi = cx_hi_ww( idim, cx )
 	ENDIF
 
-* special hack for E axis index positions, so @AVE gets labeled with ints
-	IF   ( idim .EQ. E_dim ) THEN
+* hack for E axis positions, so @AVE gets labeled with integer index nos
+	its_float = lo .NE. INT(lo)
+	IF (its_float .AND. idim.EQ.E_dim) THEN
 	   line = grid_line(idim,grid)
-	   IF (line_units(line) .EQ. plag_ax_units_e
-     .	 .AND. cx_trans(idim,cx) .GT. trans_compress_code ) THEN
-	   lo = lo + 0.5
-	   hi = hi - 0.5
+	   IF ( (cx .GT. cx_buff)
+     .    .AND. line_units(line).EQ.plag_ax_units_e ) THEN
+	      cat = cx_category(cx)
+	      var = cx_variable(cx) 
+	      IF (cx_trans(idim,cx) .GT. trans_compress_code
+     .	   .OR.   (cat.EQ.cat_user_var
+     .       .AND. SCALAR_GRID_LINE(idim, grid, cat, var)) ) THEN
+	         lo = lo + 0.5
+	         hi = hi - 0.5
+	      ENDIF
 	   ENDIF
 	ENDIF
 

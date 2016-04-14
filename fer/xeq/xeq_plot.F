@@ -488,12 +488,12 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
            ENDIF
 
 
-* default key
+* default color key
 	   do_key =  (qual_given(slash_plot_key)  .GT. 0)
      .		.OR. ( (qual_given(slash_plot_key) .EQ. 0)
      .           .AND. .NOT.overlay
      .           .AND. .NOT.no_data )
-	   IF (qual_given(slash_plot_nokey) .gt. 0) do_key = .FALSE.
+	   IF (qual_given(slash_plot_nokey) .gt. 0 ) do_key = .FALSE.
            IF ( do_key ) THEN
               CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
 
@@ -617,9 +617,11 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 
         CALL SET_GRATICULES(loch, locv, status)
 
-* ... PLOT/NOKEY  (default is key on)
+* ... PLOT/NOKEY (default is key on)
+* Note: "/KEY" refers to the legend on PLOT and to the color bar on SHADE
 
 	nokey = qual_given(slash_plot_nokey) .GT. 0
+     .     .OR. qual_given(slash_plot_title) .GT. 0
 
 * set up the axes and title and load the data into PPLUS
 

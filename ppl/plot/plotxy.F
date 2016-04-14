@@ -65,6 +65,7 @@ C
 * v696 *acm*   6/15 PLOT/VS/GAPLOC to define seperate line segments on	
 *                   PLOT/VS plots (LAS ticket 1597 and others)
 * v696 *acm*   6/15 Reverting. Implement /GAPLOC only for ribbon plots.	
+* V698  4/16 *acm* New PLOT/NTH=
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -100,8 +101,9 @@ C
 
         REAL	xadd, xaddlast, datx, daty
 
+	LOGICAL md
 	INTEGER xpolybase, ypolybase, zpolybase, polysizemax, nl,
-     .		nvertex, fill_ndx
+     .		nvertex, fill_ndx, nds, idec
 
 	INTEGER klast, mdot
 	REAL	xtlast, ytlast
@@ -169,6 +171,9 @@ C
 	DO 50 I=1,nl
 	  CALL MARKH(HMARK(I))
 	  CALL COLOR(IPEN(I))
+
+C set decimation for symbols
+	  nds = MAX(1,ndsym(i))
 
 C     SET PLOT MODE
 	  IF(IPV.EQ.1)THEN
@@ -265,14 +270,17 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 
 	        CALL TRANS(I,datx,daty,XT,YT)
 	        CALL PLOT(XT,YT,0,0)
-	        IF(ITYPE(I).NE.0.AND.ITYPE(I).NE.4)CALL MARK(IMARK(I))
- 	        IM=0
-	        IF(ITYPE(I).EQ.1.OR.ITYPE(I).EQ.3)IM=IMARK(I)
+	        IF(ITYPE(I).NE.0.AND.ITYPE(I).NE.4) CALL MARK(IMARK(I))
+		IM=0
+	        IF(ITYPE(I).EQ.1.OR.ITYPE(I).EQ.3) IM=IMARK(I)
 	        GOTO 71
 70	      CONTINUE
 71	      IDN=1
+	      idec = 0
 * ... plot remaining points
 	      DO 72 K=J+1,IBASE+LLENG(I)
+	        idec = idec + 1
+	        md = MOD(idec,nds) .EQ. 0
 		IF((XLE.AND.X(K).LE.CMXLE).OR.
      *		   (XEQ.AND.X(K).EQ.CMXEQ).OR.
      *		   (XGE.AND.X(K).GE.CMXGE).OR.
@@ -326,7 +334,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 		  CALL PLOT(XT,YT,IDN,0)
 
 		  if (interrupted) goto 51 ! *jd* 8.3.92
-	          CALL MARK(IM)
+	          IF (md) CALL MARK(IM)
 	          IF(IDN.EQ.0)THEN
 		    xtlast = xt
 		    ytlast = yt

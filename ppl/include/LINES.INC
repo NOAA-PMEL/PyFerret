@@ -17,13 +17,14 @@ c
 * V696 *acm*  6/15 Move ribbon_fast setting here.
 * v696 *acm*	gap_var to define seperate line segments on PLOT/VS plots
 *                  (LAS ticket 1597 and others)
+* V698  4/16 *acm* New PLOT/NTH=
 
 
 
 	COMMON/LINES/ IMARK(NLINES),HMARK(NLINES),ITYPE(NLINES),
      *	XOFF(0:NLINES),YOFF(0:NLINES),XFCT(0:NLINES),YFCT(0:NLINES),
      *	DN1(NLINES),UP1(NLINES),DN2(NLINES),UP2(NLINES),
-     *	LLENG(NPOLYGON),LNUM,IWIND,gap_var,ribbon_fast
+     *	LLENG(NPOLYGON),LNUM,IWIND,gap_var,ndsym(NLINES),ribbon_fast
 c
 c	xoff(0), yoff(0), etc are the offsets for the contour and view
 c	plots.

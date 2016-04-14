@@ -69,7 +69,7 @@ C
 * V6.94+ *acm* 3/15 Ticket 2247: singleton points in line plots marked with a dot
 * v696 *acm*   6/15 PLOT/VS/RIBBON/GAPLOC to define seperate line segments on
 *                   color PLOT/VS plots (LAS ticket 1597 and others)
-
+* V698  4/16 *acm* New PLOT/NTH=
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -109,10 +109,10 @@ C
 	REAL datum, xlast, ylast, frac, dx, dy, xi, yi, xhalf, yhalf
 	INTEGER xpolybase, ypolybase, zpolybase, polysizemax, nl,
      .		nvertex, low_index, colr_ndx, last_colr_ndx, ncolors, 
-     .		line_ndx, thick_offset, nseg, iseg, indx, inc
+     .		line_ndx, thick_offset, nseg, iseg, indx, inc, nds, idec
 	INTEGER GET_NDX, ibase, iline2, ilineg
 
-	logical	isbad, last_bad, bad_blank, new_branch
+	logical	isbad, last_bad, bad_blank, new_branch, md
 
         real            xadd, xaddlast, datx, daty, datxlast,datylast
         integer         ndx,type
@@ -177,6 +177,9 @@ C  Set the contour/color levels
         ILINE2=IBASE+LLENG(I)
         ILINEG=IBASE+2*LLENG(I)
         igap = 0
+
+C set decimation for symbols
+        nds = MAX(1,ndsym(i))
 
         CALL MARKH(HMARK(I))
 
@@ -267,9 +270,12 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	        GOTO 71
 70	      CONTINUE
 71	      IDN=1
+	      idec =  0
 	      IF (last_bad .AND. bad_blank) IDN = 0
 * ... plot remaining points
 	      DO 72 K=J+1,IBASE+LLENG(I)
+	        idec = idec + 1
+	        md = MOD(idec,nds) .EQ. 0
 		IF((XLE.AND.X(K).LE.CMXLE).OR.
      *		   (XEQ.AND.X(K).EQ.CMXEQ).OR.
      *		   (XGE.AND.X(K).GE.CMXGE).OR.
@@ -417,7 +423,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 		  IF (bad_blank .AND. colr_ndx.EQ.bad_ribbon_ndx) THEN
 		     nothing = 0
 		  ELSE
-	             CALL MARK(IM)
+	             IF (md) CALL MARK(IM)
 	          ENDIF
 		  CALL PLOT(XT,YT,IDN,0) 
 

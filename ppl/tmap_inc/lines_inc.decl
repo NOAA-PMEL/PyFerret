@@ -7,6 +7,7 @@
 * v695 *acm*	Move ribbon-fast control here
 * v696 *acm*	gap_var to define seperate line segments on PLOT/VS plots
 *                  (LAS ticket 1597 and others)
+* V698  4/16 *acm* New PLOT/NTH=
 
 	INTEGER	IMARK
 	REAL*4	HMARK
@@ -23,6 +24,7 @@
 	INTEGER	LNUM
 	INTEGER	IWIND
 	INTEGER gap_var
+	INTEGER ndsym
 * For ribbon-plots: line plots colored-by a variable
 	LOGICAL RIBBON_FAST
 * requires: INCLUDE 'PPLV11INC:LINES.INC'                                   

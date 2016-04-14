@@ -267,5 +267,6 @@ bn_outline_poly.jnl
 testgetstrdata.py
 testferdset.py
 testfervar.py
+testferaxis.py
 testfergrid.py
 testferpyvar.py

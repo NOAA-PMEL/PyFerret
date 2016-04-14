@@ -108,16 +108,25 @@ class FerPyVar(pyferret.FerVar):
         #       (uses Ferret's dataset '0')
         if not dsetname:
             raise ValueError('a FerPyVar cannot be associated with an anonymous dataset at this time')
+        axtypes = []
+        axcoords = []
+        axunits = []
+        axnames = []
+        for axis in self._datagrid.getaxes():
+            axtypes.append(axis.gettype())
+            axcoords.append(axis.getcoords())
+            axunits.append(axis.getunit())
+            axnames.append(axis.getname())
         datadict = { 
             'name': varname,
             'dset': dsetname,
             'data': self._dataarray,
             'missing_value': self._missingvalue,
             'data_unit': self._dataunit,
-            'axis_types': self._datagrid._axistypes,
-            'axis_coords': self._datagrid._axiscoords,
-            'axis_units': self._datagrid._axisunits,
-            'axis_names': self._datagrid._axisnames,
+            'axis_types': axtypes,
+            'axis_coords': axcoords,
+            'axis_units': axunits,
+            'axis_names': axnames,
         }
         if self._title:
             datadict['title'] = self._title

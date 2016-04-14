@@ -30,116 +30,49 @@ print ">>> dupgrid is coadsgrid"
 dupgrid is coadsgrid
 print ">>> dupgrid == coadsgrid"
 dupgrid == coadsgrid
-print ">>> dupgrid._axiscoords[0] is coadsgrid._axiscoords[0]"
-dupgrid._axiscoords[0] is coadsgrid._axiscoords[0]
-print ">>> numpy.allclose(dupgrid._axiscoords[0], coadsgrid._axiscoords[0])"
-numpy.allclose(dupgrid._axiscoords[0], coadsgrid._axiscoords[0])
-print ">>> dupgrid._axiscoords[1] is coadsgrid._axiscoords[1]"
-dupgrid._axiscoords[1] is coadsgrid._axiscoords[1]
-print ">>> numpy.allclose(dupgrid._axiscoords[1], coadsgrid._axiscoords[1])"
-numpy.allclose(dupgrid._axiscoords[1], coadsgrid._axiscoords[1])
-print ">>> print repr(dupgrid._axiscoords[2])"
-print repr(dupgrid._axiscoords[2])
-print ">>> dupgrid._axiscoords[3] is coadsgrid._axiscoords[3]"
-dupgrid._axiscoords[3] is coadsgrid._axiscoords[3]
-print ">>> numpy.allclose(dupgrid._axiscoords[3], coadsgrid._axiscoords[3])"
-numpy.allclose(dupgrid._axiscoords[3], coadsgrid._axiscoords[3])
-print ">>> print repr(dupgrid._axiscoords[4])"
-print repr(dupgrid._axiscoords[4])
-print ">>> print repr(dupgrid._axiscoords[5])"
-print repr(dupgrid._axiscoords[5])
+print ">>> dupgrid._axes[0] is coadsgrid._axes[0]"
+dupgrid._axes[0] is coadsgrid._axes[0]
+print ">>> dupgrid._axes[0] == coadsgrid._axes[0]"
+dupgrid._axes[0] == coadsgrid._axes[0]
+print ">>> dupgrid._axes[1] is coadsgrid._axes[1]"
+dupgrid._axes[1] is coadsgrid._axes[1]
+print ">>> dupgrid._axes[1] == coadsgrid._axes[1]"
+dupgrid._axes[1] == coadsgrid._axes[1]
+print ">>> dupgrid._axes[2] is coadsgrid._axes[2]"
+dupgrid._axes[2] is coadsgrid._axes[2]
+print ">>> dupgrid._axes[2] == coadsgrid._axes[2]"
+dupgrid._axes[2] == coadsgrid._axes[2]
+print ">>> dupgrid._axes[3] is coadsgrid._axes[3]"
+dupgrid._axes[3] is coadsgrid._axes[3]
+print ">>> dupgrid._axes[3] == coadsgrid._axes[3]"
+dupgrid._axes[3] == coadsgrid._axes[3]
+print ">>> dupgrid._axes[4] is coadsgrid._axes[4]"
+dupgrid._axes[4] is coadsgrid._axes[4]
+print ">>> dupgrid._axes[4] == coadsgrid._axes[4]"
+dupgrid._axes[4] == coadsgrid._axes[4]
+print ">>> dupgrid._axes[5] is coadsgrid._axes[5]"
+dupgrid._axes[5] is coadsgrid._axes[5]
+print ">>> dupgrid._axes[5] == coadsgrid._axes[5]"
+dupgrid._axes[5] == coadsgrid._axes[5]
 
-print ">>> freqvals = numpy.arange(1,13,0.5)"
-freqvals = numpy.arange(1,13,0.5)
-print ">>> print repr(freqvals)"
-print repr(freqvals)
-print ">>> freqgrid = coadsgrid.copy(ax=pyferret.T_AXIS, axtype=pyferret.AXISTYPE_NORMAL).copy("
-print "...     name='freqgrid', ax=pyferret.E_AXIS, axtype=pyferret.AXISTYPE_CUSTOM,"
-print "...     axcoords=freqvals, axunit='freqnum', axname='frequencies')"
-freqgrid = coadsgrid.copy(ax=pyferret.T_AXIS, axtype=pyferret.AXISTYPE_NORMAL).copy(
-    name='freqgrid', ax=pyferret.E_AXIS, axtype=pyferret.AXISTYPE_CUSTOM, 
-    axcoords=freqvals, axunit='freqnum', axname='frequencies')
-print ">>> print freqgrid._gridname"
-print freqgrid._gridname
-print ">>> print freqgrid._axistypes"
-print freqgrid._axistypes
-print ">>> print freqgrid._axisnames"
-print freqgrid._axisnames
-print ">>> print freqgrid._axisunits"
-print freqgrid._axisunits
-print ">>> numpy.allclose(freqgrid._axiscoords[0], coadsgrid._axiscoords[0])"
-numpy.allclose(freqgrid._axiscoords[0], coadsgrid._axiscoords[0])
-print ">>> numpy.allclose(freqgrid._axiscoords[1], coadsgrid._axiscoords[1])"
-numpy.allclose(freqgrid._axiscoords[1], coadsgrid._axiscoords[1])
-print ">>> print repr(freqgrid._axiscoords[2])"
-print repr(freqgrid._axiscoords[2])
-print ">>> print repr(freqgrid._axiscoords[3])"
-print repr(freqgrid._axiscoords[3])
-print ">>> print repr(freqgrid._axiscoords[4])"
-print repr(freqgrid._axiscoords[4])
-print ">>> print repr(freqgrid._axiscoords[5])"
-print repr(freqgrid._axiscoords[5])
-
-print ">>> print repr(pyferret.FerGrid._parsegeoval(None))"
-print repr(pyferret.FerGrid._parsegeoval(None))
-print ">>> print repr(pyferret.FerGrid._parsegeoval(0))"
-print repr(pyferret.FerGrid._parsegeoval(0))
-print ">>> print repr(pyferret.FerGrid._parsegeoval(0.0))"
-print repr(pyferret.FerGrid._parsegeoval(0.0))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('0'))"
-print repr(pyferret.FerGrid._parsegeoval('0'))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('5E'))"
-print repr(pyferret.FerGrid._parsegeoval('5E'))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('6W'))"
-print repr(pyferret.FerGrid._parsegeoval('6W'))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('7N'))"
-print repr(pyferret.FerGrid._parsegeoval('7N'))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('8S'))"
-print repr(pyferret.FerGrid._parsegeoval('8S'))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('9m'))"
-print repr(pyferret.FerGrid._parsegeoval('9m'))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('03-APR-2005 06:07:08'))"
-print repr(pyferret.FerGrid._parsegeoval('03-APR-2005 06:07:08'))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('03-APR-2005 06:07'))"
-print repr(pyferret.FerGrid._parsegeoval('03-APR-2005 06:07'))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('03-APR-2005'))"
-print repr(pyferret.FerGrid._parsegeoval('03-APR-2005'))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('2003-04-05T06:07:08'))"
-print repr(pyferret.FerGrid._parsegeoval('2003-04-05T06:07:08'))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('2003-04-05T06:07'))"
-print repr(pyferret.FerGrid._parsegeoval('2003-04-05T06:07'))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('2003-04-05 06:07:08'))"
-print repr(pyferret.FerGrid._parsegeoval('2003-04-05 06:07:08'))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('2003-04-05 06:07'))"
-print repr(pyferret.FerGrid._parsegeoval('2003-04-05 06:07'))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('2003-04-05'))"
-print repr(pyferret.FerGrid._parsegeoval('2003-04-05'))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('4y', istimestep=True))"
-print repr(pyferret.FerGrid._parsegeoval('4y', istimestep=True))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('6d', istimestep=True))"
-print repr(pyferret.FerGrid._parsegeoval('6d', istimestep=True))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('7h', istimestep=True))"
-print repr(pyferret.FerGrid._parsegeoval('7h', istimestep=True))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('8m', istimestep=True))"
-print repr(pyferret.FerGrid._parsegeoval('8m', istimestep=True))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('9s', istimestep=True))"
-print repr(pyferret.FerGrid._parsegeoval('9s', istimestep=True))
-print ">>> print repr(pyferret.FerGrid._parsegeoval('1', istimestep=True))"
-print repr(pyferret.FerGrid._parsegeoval('1', istimestep=True))
-
-
-print ">>> print repr(pyferret.FerGrid._parsegeoslice( slice(5,23,2) ))"
-print repr(pyferret.FerGrid._parsegeoslice( slice(5,23,2) ))
-print ">>> print repr(pyferret.FerGrid._parsegeoslice( slice(-5.0,15.0,4.0) ))"
-print repr(pyferret.FerGrid._parsegeoslice( slice(-5.0,15.0,4.0) ))
-print ">>> print repr(pyferret.FerGrid._parsegeoslice( slice('-6','11','5') ))"
-print repr(pyferret.FerGrid._parsegeoslice( slice('-6','11','5') ))
-print ">>> print repr(pyferret.FerGrid._parsegeoslice( slice('25W','35E',5) ))"
-print repr(pyferret.FerGrid._parsegeoslice( slice('25W','35E',5) ))
-print ">>> print repr(pyferret.FerGrid._parsegeoslice( slice('15S','30N',3) ))"
-print repr(pyferret.FerGrid._parsegeoslice( slice('15S','30N',3) ))
-print ">>> print repr(pyferret.FerGrid._parsegeoslice( slice('-900m','-100m','50m') ))"
-print repr(pyferret.FerGrid._parsegeoslice( slice('-900m','-100m','50m') ))
-print ">>> print repr(pyferret.FerGrid._parsegeoslice( slice('03-APR-2005 11:30','23-JUL-2006 23:30','12h') ))"
-print repr(pyferret.FerGrid._parsegeoslice( slice('03-APR-2005 11:30','23-JUL-2006 23:30','12h') ))
+print ">>> freqax = pyferret.FerAxis(axtype=pyferret.AXISTYPE_CUSTOM,coords=numpy.arange(1,13,0.5),unit='freqnum',name='frequencies')"
+freqax = pyferret.FerAxis(axtype=pyferret.AXISTYPE_CUSTOM,coords=numpy.arange(1,13,0.5),unit='freqnum',name='frequencies')
+print ">>> print repr(freqax)"
+print repr(freqax)
+print ">>> freqgrid = coadsgrid.copy(ax=pyferret.T_AXIS,newax=None).copy(name='freqgrid',ax=pyferret.E_AXIS,newax=freqax)"
+freqgrid = coadsgrid.copy(ax=pyferret.T_AXIS,newax=None).copy(name='freqgrid',ax=pyferret.E_AXIS,newax=freqax)
+print ">>> print repr(freqgrid)"
+print repr(freqgrid)
+print ">>> freqgrid._axes[0] == coadsgrid._axes[0]"
+freqgrid._axes[0] == coadsgrid._axes[0]
+print ">>> freqgrid._axes[1] == coadsgrid._axes[1]"
+freqgrid._axes[1] == coadsgrid._axes[1]
+print ">>> freqgrid._axes[2] == coadsgrid._axes[2]"
+freqgrid._axes[2] == coadsgrid._axes[2]
+print ">>> freqgrid._axes[3] == coadsgrid._axes[3]"
+freqgrid._axes[3] == coadsgrid._axes[3]
+print ">>> freqgrid._axes[4] == coadsgrid._axes[4]"
+freqgrid._axes[4] == coadsgrid._axes[4]
+print ">>> freqgrid._axes[5] == coadsgrid._axes[5]"
+freqgrid._axes[5] == coadsgrid._axes[5]
 

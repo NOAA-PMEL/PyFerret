@@ -538,7 +538,7 @@ class FerVar(object):
                     continue
                 if isinstance(piece, slice):
                     try:
-                        (axtype, start, stop, step) = pyferret.FerGrid._parsegeoslice(piece)
+                        (axtype, start, stop, step) = pyferret.FerAxis._parsegeoslice(piece)
                     except Exception as ex:
                         raise KeyError('%s is not valid: %s' % (str(piece), str(ex)))
                     if step != None:
@@ -561,8 +561,8 @@ class FerVar(object):
                     elif axtype == pyferret.AXISTYPE_TIME:
                         if coordlimits[pyferret.T_AXIS] or indexlimits[pyferret.T_AXIS]:
                             raise KeyError('two time slices given')
-                        starttime = pyferret.FerGrid._makedatestring(start)
-                        stoptime = pyferret.FerGrid._makedatestring(stop)
+                        starttime = pyferret.FerAxis._makedatestring(start)
+                        stoptime = pyferret.FerAxis._makedatestring(stop)
                         coordlimits[pyferret.T_AXIS] = '%s:%s' % (starttime, stoptime)
                         changed = True
                     elif isinstance(start,int) and isinstance(stop,int):
@@ -590,7 +590,7 @@ class FerVar(object):
                         raise KeyError('%s in not valid' % str(piece))
                 else:
                     try:
-                        (axtype, val) = pyferret.FerGrid._parsegeoval(piece)
+                        (axtype, val) = pyferret.FerAxis._parsegeoval(piece)
                     except Exception as ex:
                         raise KeyError('%s is not valid: %s' % (str(piece), str(ex)))
                     if axtype == pyferret.AXISTYPE_LONGITUDE:
@@ -611,7 +611,7 @@ class FerVar(object):
                     elif axtype == pyferret.AXISTYPE_TIME:
                         if coordlimits[pyferret.T_AXIS] or indexlimits[pyferret.T_AXIS]:
                             raise KeyError('two time slices given')
-                        coordlimits[pyferret.T_AXIS] = pyferret.FerGrid._makedatestring(val)
+                        coordlimits[pyferret.T_AXIS] = pyferret.FerAxis._makedatestring(val)
                         changed = True
                     elif isinstance(val,int):
                         if coordlimits[k] or indexlimits[k]:
@@ -632,7 +632,7 @@ class FerVar(object):
                         raise KeyError('%s in not valid' % str(piece))
         elif isinstance(key, slice):
             try:
-                (axtype, start, stop, step) = pyferret.FerGrid._parsegeoslice(key)
+                (axtype, start, stop, step) = pyferret.FerAxis._parsegeoslice(key)
             except Exception as ex:
                 raise KeyError('%s is not valid: %s' % (str(key), str(ex)))
             if step != None:
@@ -647,8 +647,8 @@ class FerVar(object):
                 coordlimits[pyferret.Z_AXIS] = '%s:%s' % (str(start), str(stop))
                 changed = True
             elif axtype == pyferret.AXISTYPE_TIME:
-                starttime = pyferret.FerGrid._makedatestring(start)
-                stoptime = pyferret.FerGrid._makedatestring(stop)
+                starttime = pyferret.FerAxis._makedatestring(start)
+                stoptime = pyferret.FerAxis._makedatestring(stop)
                 coordlimits[pyferret.T_AXIS] = '%s:%s' % (starttime, stoptime)
                 changed = True
             elif isinstance(start,int) and isinstance(stop,int):
@@ -670,7 +670,7 @@ class FerVar(object):
                 raise KeyError('%s in not valid' % str(key))
         else:
             try:
-                (axtype, val) = pyferret.FerGrid._parsegeoval(key)
+                (axtype, val) = pyferret.FerAxis._parsegeoval(key)
             except Exception as ex:
                 raise KeyError('%s is not valid: %s' % (str(key), str(ex)))
             if axtype == pyferret.AXISTYPE_LONGITUDE:
@@ -683,7 +683,7 @@ class FerVar(object):
                 coordlimits[pyferret.Z_AXIS] = '%s' % str(val)
                 changed = True
             elif axtype == pyferret.AXISTYPE_TIME:
-                coordlimits[pyferret.T_AXIS] = pyferret.FerGrid._makedatestring(val)
+                coordlimits[pyferret.T_AXIS] = pyferret.FerAxis._makedatestring(val)
                 changed = True
             elif isinstance(val,int):
                 # do not know the axis length at this time
@@ -831,11 +831,13 @@ class FerVar(object):
         '''
         fername = self.fername()
         datadict = pyferret.getdata(fername, False)
-        self._datagrid = pyferret.FerGrid(gridname=fername,
-                                           axistypes=datadict["axis_types"], 
-                                           axiscoords=datadict["axis_coords"], 
-                                           axisunits=datadict["axis_units"], 
-                                           axisnames=datadict["axis_names"])
+        feraxes = [ ]
+        for (axistype,axcoords,axunit,axname) in zip(
+                datadict["axis_types"], datadict["axis_coords"], 
+                datadict["axis_units"], datadict["axis_names"]):
+            feraxes.append( pyferret.FerAxis(axtype=axistype, coords=axcoords, 
+                                             unit=axunit, name=axname) )
+        self._datagrid = pyferret.FerGrid(name=fername, axes=feraxes)
         self._dataarray = datadict["data"]
         self._dataunit = datadict["data_unit"]
         self._missingvalue = datadict["missing_value"]
@@ -894,7 +896,7 @@ class FerVar(object):
             gridname = newgrid.fername()
         elif isinstance(newgrid, str):
             gridname = newgrid
-        elif isinstance(newgrid, FerGrid):
+        elif isinstance(newgrid, pyferret.FerGrid):
             raise NotImplementedError('regrid using FerGrid not implemented at this time')
         if self._dsetname:
             newdef = '%s[d=%s,g=%s%s]' % (self._varname, self._dsetname, gridname, method)

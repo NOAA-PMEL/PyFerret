@@ -48,7 +48,7 @@
 * V695 *acm*  6/15 New subcommand DEFINE ANNOTATION
 * V695 *sh*  10/15 New alias TSERIES (bump num_predefined_alias to 25)
 * V698 *ACM*  3/15 New SHOW COMMAND/BRIEF
-* V698 *ACM*  4/15 New PLOT/NTH=
+* V698 *ACM*  4/15 New PLOT/SKIP=
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into

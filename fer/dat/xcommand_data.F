@@ -228,7 +228,7 @@
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
 *       3/16 *sh*  added PLOT/ALONG=axis
-* V698  4/16 *acm* New PLOT/NTH=
+* V698  4/16 *acm* New PLOT/SKIP=
 
 *
 * !!!!!!!!!!
@@ -1042,7 +1042,7 @@
 		DATA qualifiers  (nqual_at6a+45)/ 'FAST'/	! style for Ribbon plot
 		DATA qualifiers  (nqual_at6a+46)/ 'MISSING'/	! For missing-dat in ribbon plot
 		DATA qualifiers  (nqual_at6a+47)/ 'GAPLOC'/     ! A variable marking gaps to insert in PLOT/VS
-		DATA qualifiers  (nqual_at6a+48)/ 'NTH'/	! Control for symbol decimation
+		DATA qualifiers  (nqual_at6a+48)/ 'SKIP'/	! Control for symbol decimation
 		DATA qualifiers  (nqual_at6a+49)/ '****'/	! 
 		DATA qualifiers  (nqual_at6a+50)/ '****'/	! 
 		DATA qualifiers  (nqual_at6a+51)/ '****'/	! 
@@ -1175,7 +1175,7 @@
 	   DATA subcommands      (nsub_at10 + 4)/ 'AXIS'	/
 	   DATA num_qualifs      (nsub_at10 + 4)/ nqual10e	/
 	   DATA qualifier_pointer(nsub_at10 + 4)/ nqual_at10e	/
-* DEFINE AXIS /X/Y/Z/T/E/F /FILE /UNITS /QUIET /MONTHLY /LIKE ...
+* DEFINE AXIS /X/Y/Z/T/E/F /FILE /UNITS /QUIET /MOSKIPLY /LIKE ...
 		DATA qualifiers  (nqual_at10e+ 0)/ 'X'	  /
 		DATA qualifiers  (nqual_at10e+ 1)/ 'Y'	  /
 		DATA qualifiers  (nqual_at10e+ 2)/ 'Z'	  /
@@ -1194,7 +1194,7 @@
 		DATA qualifiers  (nqual_at10e+ 15)/ 'CALENDAR' /
 		DATA qualifiers  (nqual_at10e+ 16)/ 'BOUNDS' /
 		DATA qualifiers  (nqual_at10e+ 17)/ 'QUIET' /
-		DATA qualifiers  (nqual_at10e+ 18)/ 'MONTHLY' /
+		DATA qualifiers  (nqual_at10e+ 18)/ 'MOSKIPLY' /
 		DATA qualifiers  (nqual_at10e+ 19)/ 'LIKE' /
 * DEFINE VIEW
 	   DATA subcommands      (nsub_at10 + 5)/ 'VIEWPORT'	/

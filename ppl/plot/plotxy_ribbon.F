@@ -109,7 +109,7 @@ C
 	REAL datum, xlast, ylast, frac, dx, dy, xi, yi, xhalf, yhalf
 	INTEGER xpolybase, ypolybase, zpolybase, polysizemax, nl,
      .		nvertex, low_index, colr_ndx, last_colr_ndx, ncolors, 
-     .		line_ndx, thick_offset, nseg, iseg, indx, inc, nds, idec
+     .		line_ndx, thick_offset, nseg, iseg, indx, inc, nskp, idec
 	INTEGER GET_NDX, ibase, iline2, ilineg
 
 	logical	isbad, last_bad, bad_blank, new_branch, md
@@ -179,7 +179,7 @@ C  Set the contour/color levels
         igap = 0
 
 C set decimation for symbols
-        nds = MAX(1,ndsym(i))
+        nskp = MAX(1,nskpsym(i))
 
         CALL MARKH(HMARK(I))
 
@@ -274,8 +274,6 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	      IF (last_bad .AND. bad_blank) IDN = 0
 * ... plot remaining points
 	      DO 72 K=J+1,IBASE+LLENG(I)
-	        idec = idec + 1
-	        md = MOD(idec,nds) .EQ. 0
 		IF((XLE.AND.X(K).LE.CMXLE).OR.
      *		   (XEQ.AND.X(K).EQ.CMXEQ).OR.
      *		   (XGE.AND.X(K).GE.CMXGE).OR.
@@ -420,6 +418,8 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 		  datylast = daty
 
 		  if (interrupted) goto 51 ! *jd* 8.3.92
+		  idec = idec + 1
+		  md = MOD(idec,nskp) .EQ. 0
 		  IF (bad_blank .AND. colr_ndx.EQ.bad_ribbon_ndx) THEN
 		     nothing = 0
 		  ELSE

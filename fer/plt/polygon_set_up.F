@@ -134,7 +134,7 @@
 * V695  *acm*  9/15 send REAL*4 rbad to compare with lev_max, lev_min inside compute_mnstd
 * V698  *acm*  3/16 #2396: On a POLYGON/OVERLAY with no /TITLE given, if there is 
 *                   no 3rd argument (colors), make nominal title
-* V698  4/16 *acm* New PLOT/NTH= means change in call sequence for LINE_STYLE
+* V698  4/16 *acm* New PLOT/SKIP= means change in call sequence for LINE_STYLE
 
 
 	include 'tmap_dims.parm'
@@ -196,7 +196,7 @@
      .			cx_buff_x, cx_buff_y,
      .			phlim, pvlim, pxdenig, pydenig,
      .                  cal_id, tax, x_axtyp, y_axtyp, n,
-     .                  ss_x_save, ss_y_save, hblk1, mvh_temp, ier, nc, nthsym
+     .                  ss_x_save, ss_y_save, hblk1, mvh_temp, ier, nc, skipsym
 
 	REAL		x_len, y_len, lo, hi, lox, hix, loy, hiy,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
@@ -719,10 +719,10 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 * ... restore normal PPLOT+ operations (else segments get prematurely created)
 	   makep = ' '
 
-* NOW set the line style (nthsym used only on line plots, dummy value here)
+* NOW set the line style (skipsym used only on line plots, dummy value here)
         do_dash = 0
-	nthsym = 1
-	CALL LINE_STYLE( symbol, 0.08, nthsym, line_type, line_type, use_line, 
+	skipsym = 1
+	CALL LINE_STYLE( symbol, 0.08, skipsym, line_type, line_type, use_line, 
      .                   do_dash, dashstyle, 1, 1 )
      
 * release context stack buffers

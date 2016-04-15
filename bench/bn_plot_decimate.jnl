@@ -1,11 +1,11 @@
-! BN_PLOT_NTH
+! BN_PLOT_SKIP
 
 ! *acm* 3/2016
 
-!  yes? GO bn_plot_nth [debug]
+!  yes? GO bn_plot_skip [debug]
 
 ! based on PLOT/ALONG tests.  
-! PLOT/NTH=n for /SYMBOL plots makes only every nth symbol.
+! PLOT/SKIP=n for /SYMBOL plots makes only every SKIP symbol.
 
 DEFINE SYMBOL debugme = ($1"SAY continuing|debug>PAUSE")
 
@@ -13,48 +13,48 @@ DEFINE SYMBOL deci = 2
 
 ! basic
 LET blocky10 = x[i=1:10]+y[j=1:10]
-PLOT/SYM/LINE/NTH=($deci)/ALONG=x blocky10
+PLOT/SYM/LINE/SKIP=($deci)/ALONG=x blocky10
 ($debugme)
 
 ! degenerate case -- only a single line
 LET blocky1 = x[i=1:10]+y[j=1:1]
-PLOT/SYM/LINE/NTH=($deci)/ALONG=x blocky1
+PLOT/SYM/LINE/SKIP=($deci)/ALONG=x blocky1
 ($debugme)
 
 ! number of lines exceeds key limit  (40 at time of this writing)
 ! automatic decimation to keep within key limit
 LET blocky200 = x[i=1:10]+y[j=1:200]
-PLOT/SYM/LINE/NTH=($deci)/ALONG=x blocky200
+PLOT/SYM/LINE/SKIP=($deci)/ALONG=x blocky200
 ($debugme)
 
 ! /nokey  - no longer limited to the number of keys that can be drawn
 LET blocky50 = x[i=1:10]+y[j=1:50]
-PLOT/SYM/LINE/NTH=($deci)/ALONG=x/nokey blocky50
+PLOT/SYM/LINE/SKIP=($deci)/ALONG=x/nokey blocky50
 ($debugme)
 
 ! /nokey -- number of lines exceeds line limit  (200 at time of this writing)
 ! automatic decimation to keep within line limit
 LET blocky201 = x[i=1:10]+y[j=1:201]
-PLOT/SYM/LINE/NTH=($deci)/ALONG=x/nokey blocky201
+PLOT/SYM/LINE/SKIP=($deci)/ALONG=x/nokey blocky201
 ($debugme)
 
 ! multi-dimensional
 LET blockxyz        = 0.1*T[l=1:10]+x[i=1:2]+10*y[j=1:5]+100*z[k=1:30]
 LET blockxyz_little = 0.1*T[l=1:10]+x[i=1:2]+10*y[j=1:3] +100*z[k=1:4]
-PLOT/SYM/LINE/NTH=($deci)/ALONG=t blockxyz_little
+PLOT/SYM/LINE/SKIP=($deci)/ALONG=t blockxyz_little
 ($debugme)
-PLOT/SYM/LINE/NTH=($deci)/ALONG=t blockxyz         ! decimate to key  limit
+PLOT/SYM/LINE/SKIP=($deci)/ALONG=t blockxyz         ! decimate to key  limit
 ($debugme)
 
 define symbol deci = 5
-PLOT/SYM/LINE/NTH=($deci)/ALONG=t/nokey blockxyz   ! decimate to line limit
+PLOT/SYM/LINE/SKIP=($deci)/ALONG=t/nokey blockxyz   ! decimate to line limit
 ($debugme)
 
 
 ! ensemble application
 ! Here the symbols appear on lines automatically for distinguishing 
-! large number of lines. /NTH works without explicitly saying /SYM
+! large number of lines. /SKIP works without explicitly saying /SYM
 LET block = x[i=1:2]+10*y[j=1:3]+100*z[k=1:4]
 LET sin_block = SIN(T[l=1:100]/10)*block
 LET ens_sin_block = sin_block*( (20+_E[m=1:20])/20 )
-PLOT/NTH=($deci)/ALONG=t ens_sin_block[i=1,j=2,k=3] 
+PLOT/SKIP=($deci)/ALONG=t ens_sin_block[i=1,j=2,k=3] 

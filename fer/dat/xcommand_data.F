@@ -242,7 +242,7 @@
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
 *       3/16 *sh*  added PLOT/ALONG=axis
-* V698  4/16 *acm* New PLOT/SKIP=
+* V698  4/16 *acm* New PLOT/SKIP= (and leave space for PyFerret PLOT/OPACITY=)
 
 *
 * !!!!!!!!!!

@@ -1,8 +1,8 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Apr 14 15:42 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Apr 18 13:32 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug PyFerret on RHEL6-64
+Note: RUN_TESTS.sh test results for PyFerret
 ****** Restricting Ferret paths to bench directory ******
 FER_DAT=.
 FER_DATA=.
@@ -278,7 +278,7 @@ Benchmark scripts that will be run:
    bn_climatology_attr.jnl
    bn_plot_along.jnl
    bn_show_commands.jnl
-   bn_plot_nth.jnl
+   bn_plot_decimate.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
    bn_outline_poly.jnl
@@ -288,7 +288,7 @@ Benchmark scripts that will be run:
    testferaxis.py
    testfergrid.py
    testferpyvar.py
-Beginning at Thu Apr 14 15:45:42 PDT 2016
+Beginning at Mon Apr 18 13:32:46 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -4468,7 +4468,7 @@ Replacing definition of axis TAX
            *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
 *** Running ferret script: bn_show_commands.jnl
  Cached data cleared from memory
-*** Running ferret script: bn_plot_nth.jnl
+*** Running ferret script: bn_plot_decimate.jnl
  Cached data cleared from memory
            *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
            *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
@@ -4524,4 +4524,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testferpyvar.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Thu Apr 14 15:47:44 PDT 2016
+Ended at Mon Apr 18 13:34:47 PDT 2016

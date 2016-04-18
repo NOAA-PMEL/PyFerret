@@ -119,6 +119,7 @@ externals_debug :
 ## Remove everything that was built
 .PHONY : clean
 clean :
+	$(MAKE) -C $(DIR_PREFIX)/bench clean
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix clean
 	$(MAKE) -C $(DIR_PREFIX)/external_functions clean
 	rm -fr $(DIR_PREFIX)/install $(DIR_PREFIX)/build ferret.jnl*
@@ -157,5 +158,10 @@ update :
 	  export PNG1X_VERSION=$(PNG1X_VERSION) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
 	  $(PYTHON_EXE) setup.py --quiet install -O2 --prefix=$(INSTALL_FER_DIR) )
+
+## Execute the RUN_TESTS.sh tests
+.PHONY : run_tests
+run_tests :
+	$(MAKE) -C $(DIR_PREFIX)/bench run_tests
 
 ##

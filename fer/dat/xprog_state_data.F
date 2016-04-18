@@ -119,6 +119,7 @@
 *                    precision of E and F labeling. The values are equivalenced to 
 *                    ax_dec_pt(MODE_6D_LAB still turns on and off the listing of all 
 *                    6 dimensions on SHOW commands.)
+* V698  4/16 *acm* For ticket 2399: Apply MODE CALENDAR settings to F axes too
 
 
         IMPLICIT NONE
@@ -291,7 +292,7 @@
      .		(mode_arg  ( pmode_e_lab     ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*1 / 
      .		(mode_arg  ( pmode_f_lab     ,i), i=1,mode_stack_size)
-     .				/ mode_stack_size*1 / 
+     .				/ mode_stack_size*-5 /  ! dd-mmm-yyyy:hh:mm
 	DATA	(mode_arg  ( pmode_font_ascii  ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /,
      .		(mode_arg  ( pmode_segment     ,i), i=1,mode_stack_size)

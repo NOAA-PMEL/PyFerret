@@ -1,0 +1,39 @@
+! err696_mode_cal_f.jnl
+! ticket 2399 MODE CALENDAR and F calendar axes
+! The calendar setting should apply to T and F axes
+
+show mode calendar
+
+def ax/edges/t=1-jan-2016:1-mar-2016:1/unit=day/t0=1-jan-2016 t_axis
+def ax/edges/f=1-jan-2016:1-mar-2016:1/unit=day/t0=1-jan-2016 f_axis
+let a = _t[gt=t_axis] * {1,2,3}
+let b = _f[gf=f_axis] * {1,2,3}
+can view
+set view upper; plot/l=1 a; sh sym lab($labnum_t)
+set view lower; plot/n=1 b; sh sym lab($labnum_f)
+
+set mode calendar:days
+can view
+set view upper; plot/l=1 a; sh sym lab($labnum_t)
+set view lower; plot/n=1 b; sh sym lab($labnum_f)
+
+set mode/last calendar
+cancel mode calendar
+can view
+set view upper; plot/l=1 a; sh sym lab($labnum_t)
+set view lower; plot/n=1 b; sh sym lab($labnum_f)
+
+set mode/last calendar
+show mode calendar
+
+! If they are not calendar axes, it's all fine, just not
+! labeled with dates
+
+def ax/edges/t=1:40:1/unit=day t_axis
+def ax/edges/f=1:40:1/unit=day f_axis
+
+let a = _t[gt=t_axis] * {1,2,3}
+let b = _f[gf=f_axis] * {1,2,3}
+can view
+set view upper; plot/l=1 a; sh sym lab($labnum_t)
+set view lower; plot/n=1 b; sh sym lab($labnum_f)

@@ -1,8 +1,10 @@
 ! bn_regrid_6d.jnl
 ! version of bn_regrid, using E and F directions.
+! note with fix to ticket 2399 mode calendar applies to F axis
 
 set mode latit_label -4
 set mode long_label -4
+set mode calendar:years
 
 define axis/x=2:20:2 xeven
 define axis/x=1:19:2 xodd
@@ -120,4 +122,10 @@ list a48
 
 list a24[g=g48]
 list a24[g=g48]-a48
+
+
+
+set mode/last latit_label
+set mode/last long_label
+set mode/last calendar
 

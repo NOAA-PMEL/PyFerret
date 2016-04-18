@@ -241,6 +241,8 @@
 * V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
 *                  added to that dataset in the attribute structure.
 *       3/16 *sh*  bug fix use GO_FILE rather than LAST_GO_FILE as AGG name
+* V698  4/16 *acm* Fix ticket 2380: use /T0 to indicate a T axis, only if 
+*                  direction is otherwise undefined.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -888,8 +890,10 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 	      orient = idim
 	   ENDIF
  510	CONTINUE
-	IF ( irreg ) THEN
+
+	IF ( irreg  .AND. orient.EQ.unspecified_int4) THEN
 * ... orientation may be inferred from clues if irregular coord syntax is used
+*     (Tkt 2380: only if direction undefined - may already know its a T or F axis)
 	    IF ( qual_given(slash_depth) .GT. 0 ) orient = z_dim
 	    IF ( qual_given(slash_T0)    .GT. 0 ) orient = t_dim
 	ENDIF

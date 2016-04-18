@@ -1,8 +1,8 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Apr 14 14:08 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Apr 18 11:26 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
-Note: RUN_TESTS.sh test results for debug Ferret on RHEL6-64
+Note: RUN_TESTS.sh test results for Ferret
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -263,7 +263,7 @@ Benchmark scripts that will be run:
    bn_climatology_attr.jnl
    bn_plot_along.jnl
    bn_show_commands.jnl
-   bn_plot_nth.jnl
+   bn_plot_decimate.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -280,7 +280,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Thu Apr 14 14:09:24 PDT 2016
+Beginning at Mon Apr 18 12:28:20 PDT 2016
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3893,12 +3893,9 @@ LIST/PREC=7 tempz6d_unmatch
 Replacing definition of axis ZAX
 *** Running test: bn_plot_ribbon_gaploc.jnl
  Cached data cleared from memory
- **ERROR: command syntax: PLOT/VS/RIBBON/GAPLOC plot needs 4 arguments
-plot/vs/thick/line/sym=21/siz=.3/ribbon/gap xpts, 10*ypts, color
- **ERROR: command syntax: PLOT/GAPLOC applies only to PLOT/VS/RIBBON
-plot/vs/thick/line/sym=21/siz=0.3/gap xpts, 10*ypts, 10.1*ypts, 9.93*ypts, gvar
- **ERROR: command syntax: PLOT/GAPLOC applies only to PLOT/VS/RIBBON
-plot/ov/nolab/vs/thick/line/sym=21/siz=.3/gapl xpts, color, gvar
+           *** NOTE: PLOT/RIBBON/VS uses just 3 variables. Ignoring extra variables.
+           *** NOTE: PLOT/RIBBON/VS uses just 3 variables. Ignoring extra variables.
+           *** NOTE: PLOT/RIBBON/VS uses just 3 variables. Ignoring extra variables.
 *** Running test: bn_time_short_axes.jnl
  Cached data cleared from memory
 *** Running test: bn_floatstr_extended.jnl
@@ -4388,7 +4385,7 @@ Replacing definition of axis TAX
            *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
 *** Running test: bn_show_commands.jnl
  Cached data cleared from memory
-*** Running test: bn_plot_nth.jnl
+*** Running test: bn_plot_decimate.jnl
  Cached data cleared from memory
            *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
            *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
@@ -4413,4 +4410,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Thu Apr 14 14:11:51 PDT 2016
+Ended at Mon Apr 18 12:30:47 PDT 2016

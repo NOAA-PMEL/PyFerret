@@ -54,6 +54,7 @@ xgks/Makefile :
 clean :
 	rm -fr fer_executables.tar.gz
 	rm -fr fer_environment.tar.gz
+	$(MAKE) -C bench clean
 	$(MAKE) -C bin/build_fonts/unix clean
 	$(MAKE) -C gksm2ps clean
 	$(MAKE) -C external_functions clean
@@ -94,5 +95,10 @@ install_exes :
 	mkdir -p $(INSTALL_FER_DIR)
 	mv -f fer_executables.tar.gz $(INSTALL_FER_DIR)
 	( cd $(INSTALL_FER_DIR) ; tar xzf fer_executables.tar.gz )
+
+## Execute the RUN_TESTS.sh tests
+.PHONY : run_tests
+run_tests :
+	$(MAKE) -C bench run_tests
 
 ##

@@ -3,7 +3,7 @@
      .				symbol, sym_size, color, color1, use_line,
      .				step_inc, do_dash, dashstyle,
      .                          is_logx, is_logy, nokey, addgaps,
-     .				all_1_dep, only_val, nthsym, mv_list, 
+     .				all_1_dep, only_val, skipsym, mv_list, 
      .				cx_list, nmv, indep_dat, dep_dat, status )
 
 *
@@ -167,7 +167,7 @@
 * V697  *acm* 1/16 Further fix ticket Fix 2122. Make sure the dependent axis
 *                  data min and max are set.
 * V698 *sh* 3/16 - limit max number of plot keys generated
-* V698  4/16 *acm* New PLOT/NTH=
+* V698  4/16 *acm* New PLOT/SKIP=
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -192,7 +192,7 @@
 * calling argument declarations:
 	LOGICAL		overlay, transpz, versus, no_labels, use_line,
      .			is_logx, is_logy, nokey, all_1_dep, addgaps
-	INTEGER		symbol, color, color1, step_inc, do_dash, nthsym,
+	INTEGER		symbol, color, color1, step_inc, do_dash, skipsym,
      .			nmv, mv_list( nmv ), cx_list( nmv ), status
 	REAL		memory( mem_blk_size, max_mem_blks ), sym_size,
      .                  dashstyle(*), only_val
@@ -849,7 +849,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   nline_on     = nline_on     + 1
 	   nline_in_mem = nline_in_mem + 1
 * ... assign line style for the data plotting:
-	   CALL LINE_STYLE(symbol, sym_size, nthsym, color, color1, use_line,
+	   CALL LINE_STYLE(symbol, sym_size, skipsym, color, color1, use_line,
      .			   do_dash, dashstyle, nline_in_mem, nline_on)
  200	CONTINUE
         nline_on = nline_on + color1 - 1

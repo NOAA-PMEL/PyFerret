@@ -113,7 +113,7 @@ SET MODE VERIFY
 ! V698+ *acm*2/16 - add bn_letd_attributes: attribute/list handling of LET/D variables
 !       *sh* 3/16 - added bn_plot_along.jnl
 !       *acm*4/16 - added bn_show_commands.jnl
-!       *acm*4/16 - added bn_plot_nth.jnl
+!       *acm*4/16 - added bn_plot_decimate.jnl
 
 ! Include this statement to compare the outupt of 6D Ferret with 
 ! previous 4D benchmark logs.
@@ -1065,7 +1065,7 @@ GO bn_reset
 GO bn_show_commands
 
 GO bn_reset
-GO bn_plot_nth
+GO bn_plot_decimate
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

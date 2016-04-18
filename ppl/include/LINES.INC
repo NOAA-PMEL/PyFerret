@@ -24,7 +24,7 @@ c
 	COMMON/LINES/ IMARK(NLINES),HMARK(NLINES),ITYPE(NLINES),
      *	XOFF(0:NLINES),YOFF(0:NLINES),XFCT(0:NLINES),YFCT(0:NLINES),
      *	DN1(NLINES),UP1(NLINES),DN2(NLINES),UP2(NLINES),
-     *	LLENG(NPOLYGON),LNUM,IWIND,gap_var,ndsym(NLINES),ribbon_fast
+     *	LLENG(NPOLYGON),LNUM,IWIND,gap_var,nskpsym(NLINES),ribbon_fast
 c
 c	xoff(0), yoff(0), etc are the offsets for the contour and view
 c	plots.

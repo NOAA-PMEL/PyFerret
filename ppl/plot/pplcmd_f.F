@@ -1121,7 +1121,7 @@ C	MARKH
 8500	    I=IFIX(P(1))
 	    IF(IFLG2)HMARK(I)=P(2)
 	    IF(M.EQ.1)HMARK(I)=0.08
-	    IF(M.GE.3)ndsym(I) = p(3)
+	    IF(M.GE.3)nskpsym(I) = p(3)
 	    GOTO 10
 C	LINFIT
 8600	    I=IFIX(P(1))

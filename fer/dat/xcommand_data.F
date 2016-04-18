@@ -228,7 +228,7 @@
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
 *       3/16 *sh*  added PLOT/ALONG=axis
-* V698  4/16 *acm* New PLOT/SKIP=
+* V698  4/16 *acm* New PLOT/SKIP= (and leave space for PyFerret PLOT/OPACITY=)
 
 *
 * !!!!!!!!!!
@@ -1041,7 +1041,7 @@
 		DATA qualifiers  (nqual_at6a+44)/ 'PALETTE'/	! 
 		DATA qualifiers  (nqual_at6a+45)/ 'FAST'/	! style for Ribbon plot
 		DATA qualifiers  (nqual_at6a+46)/ 'MISSING'/	! For missing-dat in ribbon plot
-		DATA qualifiers  (nqual_at6a+47)/ '****'/	! 
+		DATA qualifiers  (nqual_at6a+47)/ '****'/	! Reserve for PyFerret OPACITY
 		DATA qualifiers  (nqual_at6a+48)/ 'GAPLOC'/     ! A variable marking gaps to insert in PLOT/VS
 		DATA qualifiers  (nqual_at6a+49)/ 'SKIP'/	! Control for symbol decimation
 		DATA qualifiers  (nqual_at6a+50)/ '****'/	! 

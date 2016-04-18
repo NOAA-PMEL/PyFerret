@@ -63,7 +63,7 @@
 * v695  5/15 *acm* New command ANNOTATE
 * v696  6/15 *acm* PLOT/VS/RIBBON/GAPLOC to define seperate line segments on
 *                   color PLOT/VS plots (LAS ticket 1597 and others)
-* V698  4/16 *acm* New PLOT/SKIP=
+* V698  4/16 *acm* New PLOT/SKIP= (and leave space for PyFerret PLOT/OPACITY=)
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -614,8 +614,8 @@
      .			slash_plot_spectrum 	= 1+44,
      .			slash_plot_fast 	= 1+45,
      .			slash_plot_missing 	= 1+46,
-     .			slash_plot_gap	 	= 1+47,
-     .			slash_plot_skip	 	= 1+48)
+     .			slash_plot_gap	 	= 1+48,
+     .			slash_plot_skip	 	= 1+49)
 
 	PARAMETER     ( slash_wire_over		= 1+12,
      .			slash_wire_set_up	= 1+13,

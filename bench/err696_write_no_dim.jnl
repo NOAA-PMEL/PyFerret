@@ -1,0 +1,11 @@
+! err696_write_no_dim.jnl
+! ticket 2241: save a subset of a variable whose grid 
+! contains dimensions that are not coordinate variables
+
+use nodim
+sh dat
+save/clobber/file=a.nc/i=30:35  expocode, num_obs, temp
+
+! file has a coordinate variable with the subset in the OBS dimension
+sp ncdump -c a.nc
+ 

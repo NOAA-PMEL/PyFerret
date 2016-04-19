@@ -1,5 +1,5 @@
 ! bn_global_atts
-! With the fix for ticket 2241, we need to add CANCEL MODE UPCASE.
+! NOTE With the fix for ticket 2241, we need to add CANCEL MODE UPCASE.
 
 cancel mode upcase
 

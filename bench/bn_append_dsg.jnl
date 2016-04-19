@@ -9,9 +9,9 @@
 ! the values in the file are replaced. 
 !
 !  Argument is a file name; the single-cruise dsg file from the data entry
-!  
+! 
 ! We append more variables to the file, using the same obs dimension.
-! With the fix for ticket 2241, we need to add CANCEL MODE UPCASE.
+! NOTE With the fix for ticket 2241, we need to add CANCEL MODE UPCASE.
 
 sp rm test_save_dsg.nc 
 sp cp test_save_dsg_in.nc test_save_dsg.nc 

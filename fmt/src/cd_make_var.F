@@ -90,6 +90,9 @@
 * V69+ 4/14 *acm* After the above fix, need a tweak to be able to append to files having 
 *                 dimensions that are not coordinate variables
 * V697 2/16 *acm* Remove unused variables from the call to CD_SET_COMPRESS
+* V698  4/16 *acm* Fix ticket 2241: If file has dimension but not a coordinate 
+*                  variable, do not write the coordinate variable, ONLY IF writing 
+*                  the full-span in that direction.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -334,10 +337,10 @@
             ENDIF
          ENDIF
 	 
-	 IF (dim_only(idim)) THEN 
-	    buff = CD_AXIS_OUTNAME(dset, grid, idim, nlen)
-            lname = buff
-         ENDIF
+c	 IF (dim_only(idim)) THEN 
+c	    buff = CD_AXIS_OUTNAME(dset, grid, idim, nlen)
+c            lname = buff
+c         ENDIF
 
          IF ( iaxis .EQ. mpsnorm
      .   .OR. lo(idim) .EQ. unspecified_int4 ) GOTO 300

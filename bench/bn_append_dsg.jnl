@@ -11,11 +11,14 @@
 !  Argument is a file name; the single-cruise dsg file from the data entry
 !  
 ! We append more variables to the file, using the same obs dimension.
+! With the fix for ticket 2241, we need to add CANCEL MODE UPCASE.
 
 sp rm test_save_dsg.nc 
 sp cp test_save_dsg_in.nc test_save_dsg.nc 
 
 use test_save_dsg.nc
+
+cancel mode upcase
 
 ! Lon in 0-360
 let/title="longitude"/units="degrees_east" lon360 = IF longitude LT 0 THEN longitude+360 else longitude
@@ -28,3 +31,6 @@ save/quiet/append/file=test_save_dsg.nc lon360
 ! The longitude and lon360 variables should have the same lowercase (obs) dimension.
 
 sp ncdump -h test_save_dsg.nc
+
+set mode/last upcase
+

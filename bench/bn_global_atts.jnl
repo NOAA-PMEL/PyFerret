@@ -1,7 +1,7 @@
- ! NOAA/PMEL TMAP
- ! FERRET v6.91 (beta)
- ! Linux 2.6.32-431.5.1.el6.x86_64 64-bit - 04/07/14
- !  7-Apr-14 16:41     
+! bn_global_atts
+! With the fix for ticket 2241, we need to add CANCEL MODE UPCASE.
+
+cancel mode upcase
 
 sp cp global.nc  global_copy.nc
 use global_copy.nc
@@ -26,4 +26,5 @@ can dat/all; use anew_global.nc
 sh att .
 
 
+set mode/last upcase
 

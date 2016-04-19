@@ -1,0 +1,28 @@
+! err696_def_ax_edges
+! See ticket 2400
+! Incorrect coordinates when using /EDGES
+! Also incorrectly marked axes as irregular
+
+let edges = x[gx=0:360:20]
+
+! Previuosly these axes were marked as irregular, but with correct coordinates
+def ax/edge/x xax = edges[i=1:17]; sh axis xax
+def ax/edge/x xax = x[gx=0:360:20]; sh axis xax
+
+! This axis incorrectly showed coordinates starting at x=20.
+! It was found to be regular but start pt incorrect
+def ax/edge/x xax = x[gx=20:320:20]; sh axis xax; list x[gx=xax]
+
+! This was previously irregular, with correct coordinates
+def ax/edge/x xax = x[gx=20:320:20]; sh axis xax; list x[gx=xax]
+
+! Actually irregular edge locations
+let edges = {0,10,20,30,60,90,150,200,280,360}
+def ax/edge/x xax = edges; sh axis xax; list x[gx=xax]
+
+def ax/edge/x xax = edges[i=1:8]; sh axis xax; list x[gx=xax]
+
+! This one is regular
+def ax/edge/x xax = edges[i=1:4]; sh axis xax; list x[gx=xax]
+
+

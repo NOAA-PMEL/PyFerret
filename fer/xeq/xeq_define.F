@@ -243,6 +243,9 @@
 *       3/16 *sh*  bug fix use GO_FILE rather than LAST_GO_FILE as AGG name
 * V698  4/16 *acm* Fix ticket 2380: use /T0 to indicate a T axis, only if 
 *                  direction is otherwise undefined.
+* V698  4/16 *acm* Allow DEFINE VAR/BAD=nan
+* V698  4/16 *acm* Fix ticket 2400: DEFINE AXIS/EDGES had bugs in testing for
+*                  regular axis, and in setting the axis start when regular.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -404,7 +407,7 @@
      .		  mon_names(12)*3, varname*512, attname*128, t2*2,
      .            new_att_units*128, new_att_calendar*128,
      .            new_att_t0*128, dcode*2, axdir*1, t0string*128, 
-     .            ustring*128, reserved_flow_name(3)*4
+     .            ustring*128, reserved_flow_name(3)*4, is_nan*3
 
         CHARACTER*1 tab
 #ifdef NO_INTRINSIC_IN_PARAMETER
@@ -675,9 +678,22 @@
 
 * bad flag given ?
 	iqual = qual_given( slash_let_bad )
+
+* acm 4/16 - allow /bad=NaN
 	IF ( iqual .GT. 0 ) THEN
-	   CALL EQUAL_VAL( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+
+           CALL EQUAL_STRING (cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .                         is_nan, status)
+           IF ( status .NE. ferr_ok ) RETURN     ! *sh* 1/14 added status check
+           IF (is_nan .EQ. ' ') GOTO 5400
+           IF (TM_HAS_STRING(is_nan, 'NaN')) THEN
+              CALL SET_NAN(bad_flag)
+           ELSE
+              CALL EQUAL_VAL(  cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .                     bad_flag, status )
+              IF ( status .NE. ferr_ok ) RETURN
+           ENDIF
+
 	   IF ( status .NE. ferr_ok ) RETURN
 	ELSE
 	   bad_flag = bad_val4
@@ -1182,10 +1198,14 @@ C /units=months  is 1/12 of the length of the year
 	      DO 528 i1 = frst_pt+1, frst_pt+n
 	         line_mem(i1-1) = (line_mem(i1+n-1)+line_mem(i1+n)) * 0.5
  528	      CONTINUE
+
+* Fix ticket 2400: Def of start was pointing to the lower grid cell edge not the
+* lower coordinate. The loop start and stop were one off, so most axes detected
+* as irregular as the last comparison took us beyond the upper edge of the axis.
 	      its_reg = .TRUE.	! until proven otherwise
-	      start = line_mem(frst_pt+n)
-              delta = line_mem(frst_pt+n+1) - start
-              DO 530 i1 = frst_pt+n+2,frst_pt+n+n+1
+	      start = line_mem(frst_pt)
+              delta = line_mem(frst_pt+1) - start
+              DO 530 i1 = frst_pt+n+1,frst_pt+2*n
 #ifdef double_p
 		 IF (.NOT.TM_FPEQ( (delta),
      .               (line_mem(i1)-line_mem(i1-1))) )

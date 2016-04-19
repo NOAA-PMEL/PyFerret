@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 117405652 Apr 18 15:41 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 117405152 Apr 19 11:05 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix 2380, 2399, details with F axis
+Note: Ticket 2400: DEFINE AXIS with /EDGES bug
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_PALETTE=. /home/users/ansley/ferret_distributions/rhel6_64/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Mon Apr 18 15:52:36 PDT 2016
+Beginning at Tue Apr 19 11:17:56 PDT 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -4182,6 +4182,14 @@ Replacing definition of axis T_AXIS
 Replacing definition of axis F_AXIS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_1.nc
  LISTing to file tmp/tagg_reg_2.nc
@@ -4700,4 +4708,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Apr 18 15:55:21 PDT 2016
+Ended at Tue Apr 19 11:20:46 PDT 2016

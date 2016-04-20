@@ -150,6 +150,7 @@
 * V698 *acm* 1/16 change remaining dset=-1 to the parameter dset=pdset_uvars
 * V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
 *                  added to that dataset in the attribute structure.
+* V698  4/16 *acm* For ticket 2399: Apply MODE CALENDAR settings to F axes too
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -432,6 +433,8 @@
 	         DO 806 i = mode_stack_size, 2, -1
 	            mode_state(mode,i) = mode_state(mode,i-1) 
 		    mode_arg  (mode,i) = mode_arg  (mode,i-1)
+		    IF (mode .EQ. pmode_time_lab) 
+     .		      mode_state(pmode_f_lab,i-1) = mode_state(pmode_time_lab,i)
  806	         CONTINUE
 		 mode_state( mode,1 ) = .FALSE.
 * ... WAIT requires a string to communicate with PPLUS
@@ -498,6 +501,11 @@
 *     so it doesn't run off the page.
                  ELSEIF ( mode .EQ. pmode_shrink_ylab ) THEN
 	            CALL PPLCMD ( from, line, 0, 'SHRINKY 0', 1, 1 )
+
+* ... Changes to mode calendar apply to F-direction as well as T.
+                 ELSEIF ( mode .EQ. pmode_time_lab ) THEN
+	           ax_dec_pt(f_dim) = ax_dec_pt(t_dim) 
+	           ax_fmt(f_dim) = ax_fmt(t_dim) 
 
 * ... mode pplgui - close reply pipe
                  ELSEIF ( mode .EQ. pmode_gui ) THEN

@@ -1,9 +1,11 @@
 ! bn_regrid_transforms_6d.jnl
 ! benchmark to test regridding transformations and syntax
 ! version of bn_regrid_transforms, using E and F directions.
+! note with fix to ticket 2399 mode calendar applies to F axis
 
 use gtsa056_1_ef
 set mode diag
+set mode calendar:years
 
 define axis/f=23-jan-1982:30-jan-1982:20/unit=hour fax20
 define axis/x=120e:60w:10/unit=degrees xax10
@@ -97,3 +99,4 @@ list afcst[gf=ehour@max]
 show grid
 
 set mode/last diag
+set mode/last calendar

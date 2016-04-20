@@ -1,0 +1,19 @@
+! err696_def_ax_f.jnl
+! See ticket 2380
+! *acm* 4/2016
+
+! Defining F axis using /F=LO:HI are ok
+define axis/f=1-jan-1980:3-jan-1980:1/t0=1-jan-1980/unit=days f_ax
+list _f[gf=f_ax]
+define axis/f=1-jan-1980:3-jan-1980/np=3/t0=1-jan-1980/unit=days f_ax
+list _f[gf=f_ax]
+
+! But just /F  with a /T0 was putting the axis in the T direction 
+! Previously listing _F resulted in an error
+define axis/f/t0=1-jan-1980/unit=days f_ax = {1,2,3}
+list _f[gf=f_ax]
+
+! This came from code allowing the DEFINE to leave off the /F or /T
+! If there's a T0, its an F axis. Still allow this; it becomes a T axis.
+define axis/t0=1-jan-1980/unit=days aax = {1,2,3}
+list _t[gt=aax]

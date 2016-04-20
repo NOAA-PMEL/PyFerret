@@ -94,7 +94,7 @@ def settextstyle(font='', color='', bold = False, italic=False):
 
 def showdata(brief=True, qual=''):
     """
-    Show the Ferret information about all dataset currently open in Ferret.  
+    Show the Ferret information about all datasets currently open in Ferret.  
     This uses the Ferret SHOW DATA command to create and display the information.
         brief (boolean): if True (default), a brief report is shown;
             otherwise a full report is shown.
@@ -201,23 +201,23 @@ def shade(fvar, over=False, qual=''):
     if errval != pyferret.FERR_OK:
         raise ValueError('Ferret shade command (%s) failed: %s' % (cmdstr, errmsg))
 
-def saveplot(name, frmt='', qual=''):
+def saveplot(name, fmt='', qual=''):
     """
     Save the current plot.  If format is not given,
     the format is guessed from the filename extension.
         name (string): name of the file to contain the plot
-        frmt (string): format of the plot file
+        fmt (string): format of the plot file
         qual (string): qualifiers to add to the Ferret FRAME command
     """
     if not isinstance(name, str):
         raise ValueError('name (plot file name) must be a string')
-    if not isinstance(frmt, str):
-        raise ValueError('frmt (plot file format) must be a string')
+    if not isinstance(fmt, str):
+        raise ValueError('fmt (plot file format) must be a string')
     if not isinstance(qual, str):
         raise ValueError('qual (Ferret qualifiers) must be a string')
     cmdstr = 'FRAME/FILE="%s"' % name
-    if frmt:
-        cmdstr += '/FORMAT=%s' % frmt
+    if fmt:
+        cmdstr += '/FORMAT=%s' % fmt
     if qual:
         cmdstr += qual
     (errval, errmsg) = pyferret.run(cmdstr)

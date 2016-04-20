@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 117431372 Apr 14 09:24 /home/users/ansley/build/linux/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 117405152 Apr 19 11:05 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: PLOT/NTH for decimating symbol plots
+Note: Ticket 2400: DEFINE AXIS with /EDGES bug
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,14 +13,16 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/linux/FERRET/external_functions/ext_func
-FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
+FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
+FER_GO=. /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib
 FER_GRIDS=.
-FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
-FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
-PWD=/home/users/ansley/build/linux/FERRET/bench
+FER_LIBS=/home/users/ansley/ferret_distributions/rhel6_64/lib
+FER_PALETTE=. /home/users/ansley/ferret_distributions/rhel6_64/ppl
+FER_WEB_BROWSER=firefox
+PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Thu Apr 14 09:25:59 PDT 2016
+Beginning at Tue Apr 19 11:17:56 PDT 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -41,11 +43,13 @@ message/cont $3"<my error message"
 message/cont $1"|xxxxx|goodbye<my error message"
  **ERROR: invalid command: Valid value needed for argument $1
 message/cont $1"greetings|xxxxx|goodbye"
+           *** NOTE: Argument $1 received was: hello
            *** NOTE: Valid argument $1 choices are: xxxxx|goodbye
  **ERROR: my error message
 message/cont $3"|hello|goodbye<my error message"
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3">greetings|hello|goodbye"
+           *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: hello|goodbye
  **ERROR: my error message
 message/cont $3">greetings|hello|goodbye<my error message"
@@ -57,9 +61,11 @@ message/cont $3""
 message/cont $3"<"
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3"||"
+           *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: |
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3"|>|"
+           *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: >|
  **ERROR: command syntax: empty text string provided with ">": >|
 message/cont $3">|"
@@ -67,6 +73,7 @@ message/cont $3">|"
 message/cont $3"|<"
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3"|>"
+           *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: >
  **ERROR: command syntax: arg number not in 1-99 range: $100
 say $100
@@ -285,11 +292,13 @@ define symbol t$5 = hi
 message/continue ($test2"<error message")
  **ERROR: invalid command: Valid value needed for symbol test2
 message/continue ($test2"|hello|bye|")
+           *** NOTE: symbol test2 was missing or empty.
            *** NOTE: Valid symbol test2 choices are: hello|bye|
  **ERROR: error message
 message/continue ($test2"|hello|bye|<error message")
  **ERROR: invalid command: Valid value needed for symbol t2
 message/continue ($t2"|solong>really hello|bye|")
+           *** NOTE: symbol t2 received was: hello
            *** NOTE: Valid symbol t2 choices are: solong>really hello|bye|
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1829,26 +1838,31 @@ Replacing definition of axis TAX
 query/ignore $1%q|a|b|c|d|<First argument is a letter of the alphabet%
  **ERROR: invalid command: Valid value needed for argument $2
 query/ignore $2%|a|b|c|d|%
+           *** NOTE: Argument $2 was missing or empty.
            *** NOTE: Valid argument $2 choices are: a|b|c|d|
  **ERROR: my error message
 message/cont $1"|xxxxx|goodbye<my error message"
  **ERROR: invalid command: Valid value needed for argument $1
 message/cont $1"greetings|xxxxx|goodbye"
+           *** NOTE: Argument $1 received was: hello
            *** NOTE: Valid argument $1 choices are: xxxxx|goodbye
  **ERROR: my error message
 message/cont $3"|hello|goodbye<my error message"
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3">greetings|hello|goodbye"
+           *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: hello|goodbye
  **ERROR: my error message
 message/continue ($test2"<my error message")
  **ERROR: invalid command: Valid value needed for symbol test2
 message/continue ($test2"|hello|bye|")
+           *** NOTE: symbol test2 was missing or empty.
            *** NOTE: Valid symbol test2 choices are: hello|bye|
  **ERROR: my error message
 message/continue ($test2"|hello|bye|<my error message")
  **ERROR: invalid command: Valid value needed for symbol t2
 message/continue ($t2"|solong>really hello|bye|")
+           *** NOTE: symbol t2 was missing or empty.
            *** NOTE: Valid symbol t2 choices are: solong>really hello|bye|
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4159,6 +4173,23 @@ Replacing definition of axis yax
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis F_AX
+Replacing definition of axis AAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis T_AXIS
+Replacing definition of axis T_AXIS
+Replacing definition of axis F_AXIS
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_1.nc
  LISTing to file tmp/tagg_reg_2.nc
@@ -4271,9 +4302,9 @@ go/garbage tmp/testMe
  **ERROR: unknown command qualifier: garbage
 go/garbage "tmp/testMe"
  **ERROR: unknown command qualifier: garbage
-go/garbage /home/users/ansley/build/linux/FERRET/bench/tmp/testMe.jnl
+go/garbage /home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl
  **ERROR: unknown command qualifier: garbage
-go/garbage "/home/users/ansley/build/linux/FERRET/bench/tmp/testMe.jnl"
+go/garbage "/home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: command line too long -- exceeds 2048
@@ -4677,4 +4708,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Apr 14 09:28:47 PDT 2016
+Ended at Tue Apr 19 11:20:46 PDT 2016

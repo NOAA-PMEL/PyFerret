@@ -203,6 +203,7 @@
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
 * V698  3/16 *acm* Changes for ticket 2078: improved SHOW COMMANDS
+* V698  4/16 *acm* For ticket 2399: Apply MODE CALENDAR settings to F axes too
 
         IMPLICIT NONE
 
@@ -731,6 +732,8 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 	   ENDIF
 	   IF ( mode .EQ. pmode_time_lab ) THEN
 	      show_str(36:) = date_labels( ABS(ax_dec_pt(t_dim)) )
+	   ELSEIF ( mode .EQ. pmode_f_lab ) THEN
+	      show_str(36:) = date_labels( ABS(ax_dec_pt(f_dim)) )
 	   ELSEIF ( mode .EQ. pmode_verify ) THEN
 	      show_str(36:) = verify_modes(mode_arg(mode,1))
 	   ELSEIF ( mode .EQ. pmode_journal ) THEN

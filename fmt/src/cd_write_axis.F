@@ -111,6 +111,11 @@
 *                 1-D coordinate var, don't write the axis Ferret creates
 * V697 12/15 *acm* Fix ticket 2336: consistent application of CAN MODE UPCASE
 * V698  2/16 *acm* Check status of queries before continuing
+*                  variable, do notwrite the coordinate variable, ONLY IF writing 
+*                  the full-span in that direction.
+* V698  4/16 *acm* Fix ticket 2241: If file has dimension but not a coordinate 
+*                  variable, do not write the coordinate variable, ONLY IF writing 
+*                  the full-span in that direction.
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -265,6 +270,8 @@
          name = buff
          GOTO 1000  
       ENDIF
+      CALL CD_DIM_ONLY (cdfid, name, llen, dim_only)
+      IF (dim_only .AND. ax_type.EQ.pcdf_full_span) GOTO 1000
 
 #ifdef usingDODSf2cUnderscore
       cdfstat = NF_INQ_DIMID_( cdfid, name(:nlen), dimid)
@@ -402,7 +409,9 @@
 * source datset, just create the dimension in the output file. Don't write out
 * the basic axis that Ferret defined.
 
-      IF (line_dim_only(iaxis)) GOTO 1000
+** ticket 2241: if it's a subspan axis, write it out...
+
+      IF (line_dim_only(iaxis) .AND. ax_type.EQ.pcdf_full_span) GOTO 1000
 
 * create the coordinate variable (12/92 -> double precision)
 #ifdef usingDODSf2cUnderscore

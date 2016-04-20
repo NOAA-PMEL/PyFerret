@@ -60,6 +60,9 @@
 * V686 4/13 *acm* Fix ticket 2064: use single-precision comparisons
 * v694 1/15 *acm* for ticket 2227: if a dimension from a nc file is not also a 
 *                 1-D coordinate var, don't write the axis Ferret creates
+* V698  4/16 *acm* Fix ticket 2241: If file has dimension but not a coordinate 
+*                  variable, do not write the coordinate variable, ONLY IF writing 
+*                  the full-span in that direction.
 
 * argument definitions:
 *	cdfid   - id of currently open CDF file
@@ -146,9 +149,11 @@
 #endif
 	      alen = TM_LENSTR1( axnam )
 
-* If the dimension is not also a 1-D coord var, we are not writing coords, 
-* so dont check them.
-	      IF (line_dim_only(grid_line(idim,grid)) ) THEN
+* If the dimension is not also a 1-D coord var, and if we're writing the full 
+* span, then we are not writing coords, so dont check them.
+              
+	      IF (line_dim_only(grid_line(idim,grid)) .AND.
+     .            line_dim(grid_line(idim,grid)) .EQ. npts) THEN
 	          cdflo(idim) = 1
 	          cdfhi(idim) = npts
 	          GOTO 100

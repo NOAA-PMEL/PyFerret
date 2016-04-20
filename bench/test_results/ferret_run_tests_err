@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Apr 18 13:02 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Apr 20 11:23 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -280,7 +280,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Mon Apr 18 13:07:27 PDT 2016
+Beginning at Wed Apr 20 11:24:18 PDT 2016
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3987,6 +3987,24 @@ Replacing definition of axis TAX2
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis F_AX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis T_AXIS
+Replacing definition of axis F_AXIS
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
 *** Running test: bn_aggregate_t.jnl
  Cached data cleared from memory
  LISTing to file tmp/tagg_reg_1.nc
@@ -4413,4 +4431,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Mon Apr 18 13:09:54 PDT 2016
+Ended at Wed Apr 20 11:26:48 PDT 2016

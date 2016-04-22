@@ -1,5 +1,7 @@
+
+\cancel mode verify
 ! define_12_colors.jnl
-! Define more line colors
+! Define additional line colors
 
 say Defining 12 line colors: requries setting a new window
 
@@ -15,3 +17,4 @@ ppl color,11,80,70,60   ! tan
 ppl color,12,100,88,0   ! yellow
 sho mode linecolors
 
+set mode/last verify

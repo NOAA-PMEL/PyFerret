@@ -9,14 +9,14 @@ class FerDSet(object):
     A data file and the data variables it contains
     '''
 
-    def __init__(self, filename, qual=None):
+    def __init__(self, filename=None, qual=None):
         '''
         "Opens" the given NetCDF dataset file in Ferret using the Ferret "USE" command.
         Creates a FerVar for each data variable in this data file and 
         assigns it as an attribute of this class whose name is the variable name.
             filename (string): name of the dataset filename or http address
             qual (string): Ferret qualifiers to be used with the "USE" command
-        If both filename is None or empty, an anonymous dataset is returned.
+        If filename is None or empty, an anonymous dataset is returned.
         '''
         if not filename:
             # return an anonymous dataset

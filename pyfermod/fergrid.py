@@ -19,11 +19,11 @@ class FerGrid(object):
     Ferret grid object
     '''
 
-    def __init__(self, name=None, axes=None):
+    def __init__(self, axes=None, name=None):
         '''
         Describe a Ferret grid from the given axes
-            name (string): Ferret name for the grid or the variable using this grid
             axes (sequence of FerAxis): axes of this grid
+            name (string): Ferret name for the grid or the variable using this grid
         '''
         if name:
             if not isinstance(name, str): 
@@ -37,13 +37,17 @@ class FerGrid(object):
             try:
                 for k in xrange(len(axes)):
                     ax = axes[k]
-                    if not isinstance(ax, pyferret.FerAxis):
-                        raise ValueError('axes[%d] is not a FerAxis' % k)
-                    self._axes[k] = ax.copy()
+                    if ax:
+                        if not isinstance(ax, pyferret.FerAxis):
+                            raise ValueError('axes[%d] is not a FerAxis' % k)
+                        self._axes[k] = ax.copy()
             except TypeError:
                 raise TypeError('axes is not a sequence type')
             except IndexError:
                 raise ValueError('more than %d axes specified' % pyferret.MAX_FERRET_NDIM)
+        for k in xrange(len(self._axes)):
+            if self._axes[k] is None:
+                self._axes[k] = pyferret.FerAxis(axtype=pyferret.AXISTYPE_NORMAL)
 
 
     def __repr__(self):
@@ -51,10 +55,10 @@ class FerGrid(object):
         Representation to recreate this FerGrid
         '''
         # Not elegant, but will do
-        infostr = "FerGrid(name='" + self._gridname + "', axes=[\n"
+        infostr = "FerGrid(axes=[\n"
         for k in xrange(len(self._axes)):
-            infostr += '            ' + repr(self._axes[k]) + ',\n'
-        infostr += '        ])'
+            infostr += "    " + repr(self._axes[k]) + ",\n"
+        infostr += "    name='" + self._gridname + "'])"
         return infostr
 
 
@@ -146,27 +150,27 @@ class FerGrid(object):
         # figure out the new grid name
         if name:
             newgridname = name
-        elif newax or (ax != None):
+        elif (newax is not None) or (ax is not None):
             newgridname = None
         else:
             newgridname = self._gridname
         # check the index of the axis to replace: 0 - 6, or None
-        if ax != None:
+        if ax is not None:
             if not ax in _VALID_AXIS_NUMS:
                 raise ValueError('ax (%s) is not valid' % str(ax))
         newaxidx = ax
         # check the replacement axis
-        if newax:
+        if newax is not None:
             if not isinstance(newax, pyferret.FerAxis):
                 raise ValueError('newax is not valid (not a FerAxis)')
-            if (newaxidx == None) and (newax.getaxtype() != pyferret.AXISTYPE_NORMAL):
+            if (newaxidx is None) and (newax.getaxtype() != pyferret.AXISTYPE_NORMAL):
                 for k in xrange(len(self._axes)):
                     if self._axes[k].getaxtype() == newax.getaxtype():
                         newaxidx = k
                         break
-            if newaxidx == None:
+            if newaxidx is None:
                 raise ValueError('Unable to determine new axis index from axis type')
-        elif newaxidx != None:
+        elif newaxidx is not None:
             newax = pyferret.FerAxis(axtype=pyferret.AXISTYPE_NORMAL)
         # Create and return the new grid
         newaxes = self._axes[:]

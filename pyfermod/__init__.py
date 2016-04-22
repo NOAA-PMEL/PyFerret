@@ -43,9 +43,6 @@ import libpyferret
 # also import everything (not starting with an underscore) from libpyferret 
 # so constants in that module are seen as part of this module
 from libpyferret import *
-# register the libpyferret._quit function with atexit to ensure
-# open viewer windows do not hang a Python shutdown
-atexit.register(libpyferret._quit)
 
 # methods for transferring data between the Ferret engine and Python
 import datamethods
@@ -597,10 +594,15 @@ def start(memsize=25.6, journal=True, verify=True, restrict=False,
         graphbind.addPyFerretBindings("PipedImagerPQ",
                   pipedviewer.pyferretbindings.PImagerPQPyFerretBindings)
     # the actual call to ferret's start
-    return libpyferret._start(flt_memsize, bool(journal), bool(verify),
-                              bool(restrict), bool(server), str_metaname,
-                              bool(transparent), bool(unmapped), 
-                              bool(quiet), bool(linebuffer))
+    success = libpyferret._start(flt_memsize, bool(journal), bool(verify),
+                                 bool(restrict), bool(server), str_metaname,
+                                 bool(transparent), bool(unmapped), 
+                                 bool(quiet), bool(linebuffer))
+    if success:
+        # register the libpyferret._quit function with atexit to ensure
+        # open viewer windows do not hang a Python shutdown
+        atexit.register(libpyferret._quit)
+    return success
 
 
 def resize(memsize):

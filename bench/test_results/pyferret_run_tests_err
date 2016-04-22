@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Apr 20 11:34 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1384 Apr 21 17:10 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -288,7 +288,7 @@ Benchmark scripts that will be run:
    testferaxis.py
    testfergrid.py
    testferpyvar.py
-Beginning at Wed Apr 20 11:34:20 PDT 2016
+Beginning at Thu Apr 21 17:11:42 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -4542,4 +4542,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testferpyvar.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Wed Apr 20 11:36:25 PDT 2016
+Ended at Thu Apr 21 17:13:45 PDT 2016

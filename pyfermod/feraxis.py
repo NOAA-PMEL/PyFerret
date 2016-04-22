@@ -38,7 +38,7 @@ class FerAxis(object):
     Ferret axis object
     '''
 
-    def __init__(self, axtype=None, coords=None, unit=None, name=None):
+    def __init__(self, coords=None, axtype=None, unit=None, name=None):
         '''
         Describe a Ferret axis using the given information about the axis.
             axtype (int): type of the axis; valid values are
@@ -49,7 +49,8 @@ class FerAxis(object):
                     pyferret.AXISTYPE_CUSTOM   (axis unit not recognized by Ferret)
                     pyferret.AXISTYPE_ABSTRACT (axis is unit-less integer values)
                     pyferret.AXISTYPE_NORMAL   (axis is normal to the data)
-                if not given, AXISTYPE_NORMAL is used.
+                if not given but coords is given, AXISTYPE_CUSTOM is used,
+                if not given and coords is not given, AXISTYPE_NORMAL is used.
             coords (sequence of numeric): coordinate values of the axis; 
                 for an axis that is neither a time axis, an abstract axis, nor normal 
                 to the data, a 1-D array of numeric values; 
@@ -83,6 +84,8 @@ class FerAxis(object):
             if not axtype in _VALID_AXIS_TYPES:
                 raise ValueError('axis type %s is not valid' % str(axtype))
             self._axtype = axtype
+        elif coords is not None:
+            self._axtype = pyferret.AXISTYPE_CUSTOM
         else:
             self._axtype = pyferret.AXISTYPE_NORMAL
         # axis name
@@ -101,8 +104,8 @@ class FerAxis(object):
         else:
             self._unit = ''
         # axis coordinates
-        if (coords != None) and (self._axtype != pyferret.AXISTYPE_NORMAL) \
-                            and (self._axtype != pyferret.AXISTYPE_ABSTRACT):
+        if (coords is not None) and (self._axtype != pyferret.AXISTYPE_NORMAL) \
+                                and (self._axtype != pyferret.AXISTYPE_ABSTRACT):
             if self._axtype == pyferret.AXISTYPE_TIME:
                 try:
                     self._coords = numpy.array(coords, dtype=numpy.int32, copy=True)
@@ -128,8 +131,8 @@ class FerAxis(object):
         Representation to recreate this FerAxis
         '''
         # Not elegant, but will do
-        infostr = "FerAxis(axtype=" + repr(self._axtype) + \
-                  ", coords=" + repr(self._coords) + \
+        infostr = "FerAxis(coords=" + repr(self._coords) + \
+                  ", axtype=" + repr(self._axtype) + \
                   ", unit='" + self._unit + \
                   "', name='" + self._name + "')"
         return infostr
@@ -152,9 +155,9 @@ class FerAxis(object):
         if self._unit.upper() != other._unit.upper():
             return False
         # _coords is an ndarray or None
-        if (self._coords == None) and (other._coords == None):
+        if (self._coords is None) and (other._coords is None):
             return True
-        if (self._coords == None) or (other._coords == None):
+        if (self._coords is None) or (other._coords is None):
             return False
         if not numpy.allclose(self._coords, other._coords):
             return False
@@ -241,7 +244,7 @@ class FerAxis(object):
         Returns a copy of the coordinates ndarray for this axis, 
         or None if there is no coordinates array for this axis.
         '''
-        if self._coords != None:
+        if self._coords is not None:
             coords = self._coords.copy('A')
         else:
             coords = None
@@ -302,7 +305,7 @@ class FerAxis(object):
         Raises a TypeError if geoslice is not a slice or None, or if the values 
             in the slice are not None and cannot be interpreted.
         '''
-        if geoslice == None:
+        if geoslice is None:
             return (pyferret.AXISTYPE_ABSTRACT, None, None, None)
         if not isinstance(geoslice, slice):
             raise TypeError('not a slice object: %s' % repr(geoslice))
@@ -314,7 +317,7 @@ class FerAxis(object):
         axtype = starttype
         if axtype == pyferret.AXISTYPE_TIME:
             (steptype, step) = FerAxis._parsegeoval(geoslice.step, istimestep=True)
-            if (step != None) and (steptype != pyferret.AXISTYPE_TIME):
+            if (step is not None) and (steptype != pyferret.AXISTYPE_TIME):
                raise ValueError('a time unit y, d, h, m, or s must be given with time slice steps')
         else:
             (steptype, step) = FerAxis._parsegeoval(geoslice.step)

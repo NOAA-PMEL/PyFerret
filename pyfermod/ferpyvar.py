@@ -11,13 +11,13 @@ class FerPyVar(pyferret.FerVar):
     FerVar whose data is from an array in Python.
     '''
 
-    def __init__(self, grid, data, missval, unit=None, title=None):
+    def __init__(self, data, grid, missval=numpy.nan, unit=None, title=None):
         '''
         Create as an anonymous FerPyVar.  The PyVar representing this data
         will not be assigned in Ferret until this FerPyVar is assigned a
         name in a dataset.
-            grid (FerGrid): grid for the PyVar
             data (up to 6D array/array-like of float): data for the PyVar
+            grid (FerGrid): grid for the PyVar
             missval (float or single-element array of float): value used to indicate missing data
             unit (string): unit for the data
             title (string): title (descriptive long name) for the PyVar in Ferret
@@ -56,34 +56,47 @@ class FerPyVar(pyferret.FerVar):
         else:
             self._dataunit = ''
 
+
     def copy(self):
         '''
         (overrides FerVar.copy)
         Returns an anonymous copy (_varname and _dsetname are not copied) 
         of this FerPyVar.
         '''
-        return FerPyVar(grid=self._datagrid, 
-                        data=self._dataarray, 
+        return FerPyVar(data=self._dataarray, 
+                        grid=self._datagrid, 
                         missval=self._missingvalue, 
                         unit=self._dataunit,
                         title=self._title)
+
 
     def __repr__(self):
         '''
         (overrides FerVar.__repr__)
         Representation of this FerPyVar
         '''
-        infostr = "FerPyVar(title='%s', \n" + \
+        infostr = "FerPyVar(data=%s, \n" + \
                   "         grid=%s, \n" + \
-                  "         data=%s, \n" + \
                   "         missval=%s, \n" + \
-                  "         unit='%s')" \
-                  % (self._title, 
-                     repr(self._datagrid), 
-                     repr(self._dataarray),
-                     str(self._missingvalue),
-                     self._unit)
+                  "         unit='%s', \n" + \
+                  "         title='%s')" % (
+                  repr(self._dataarray),
+                  repr(self._datagrid), 
+                  str(self._missingvalue),
+                  self._dataunit,
+		  self._title )
         return infostr
+
+
+    def __dir__(self):
+        '''
+        Returns a list of known attributes, including those added 
+        by the __getattr__ method.
+        '''
+        mydir = list(_ADDED_ATTRIBUTES)
+        mydir.extend( dir(super(FerPyVar, self)) )
+        return mydir
+
 
     def _assigninferret(self, varname, dsetname):
         '''
@@ -139,6 +152,7 @@ class FerPyVar(pyferret.FerVar):
         self._definition = self.fername()
         # at this point, the data is copied into Ferret, 
         # so calling clean will not cause any problems
+
 
     def _removefromferret(self):
         '''

@@ -567,7 +567,7 @@ class FerVar(object):
 
         TODO: handle step values
         '''
-        if key == None:
+        if key is None:
             raise KeyError('None is not a valid key')
         if not self._varname:
             raise NotImplementedError('variable not assigned in Ferret')
@@ -587,14 +587,14 @@ class FerVar(object):
         if isinstance(key, tuple):
             for k in xrange(len(key)):
                 piece = key[k]
-                if piece == None:
+                if piece is None:
                     continue
                 if isinstance(piece, slice):
                     try:
                         (axtype, start, stop, step) = pyferret.FerAxis._parsegeoslice(piece)
                     except Exception as ex:
                         raise KeyError('%s is not valid: %s' % (str(piece), str(ex)))
-                    if step != None:
+                    if step is not None:
                         raise KeyError('step values in slices are not supported at this time')
                     if axtype == pyferret.AXISTYPE_LONGITUDE:
                         if coordlimits[pyferret.X_AXIS] or indexlimits[pyferret.X_AXIS]:
@@ -634,7 +634,7 @@ class FerVar(object):
                             raise KeyError('two slices for axis index %d given' % k)
                         coordlimits[k] = '%s:%s' % (str(start), str(stop))
                         changed = True
-                    elif (start == None) and (stop == None):
+                    elif (start is None) and (stop is None):
                         # full range on this axis 
                         if coordlimits[k] or indexlimits[k]:
                             raise KeyError('two slices for axis index %d given' % k)
@@ -688,7 +688,7 @@ class FerVar(object):
                 (axtype, start, stop, step) = pyferret.FerAxis._parsegeoslice(key)
             except Exception as ex:
                 raise KeyError('%s is not valid: %s' % (str(key), str(ex)))
-            if step != None:
+            if step is not None:
                 raise KeyError('step values in slices are not supported at this time')
             if axtype == pyferret.AXISTYPE_LONGITUDE:
                 coordlimits[pyferret.X_AXIS] = '%s:%s' % (str(start), str(stop))
@@ -716,7 +716,7 @@ class FerVar(object):
             elif isinstance(start,numbers.Real) and isinstance(stop,numbers.Real):
                 coordlimits[0] = '%s:%s' % (str(start), str(stop))
                 changed = True
-            elif (start == None) and (stop == None):
+            elif (start is None) and (stop is None):
                 # full range - standard way of generating a duplicate
                 pass
             else:
@@ -813,7 +813,7 @@ class FerVar(object):
         by the __getattr__ method.
         '''
         mydir = list(_ADDED_ATTRIBUTES)
-        mydir.extend( dir(super(FerAxis, self)) )
+        mydir.extend( dir(super(FerVar, self)) )
         return mydir
 
 
@@ -918,9 +918,9 @@ class FerVar(object):
         for (axistype,axcoords,axunit,axname) in zip(
                 datadict["axis_types"], datadict["axis_coords"], 
                 datadict["axis_units"], datadict["axis_names"]):
-            feraxes.append( pyferret.FerAxis(axtype=axistype, coords=axcoords, 
-                                             unit=axunit, name=axname) )
-        self._datagrid = pyferret.FerGrid(name=fername, axes=feraxes)
+            feraxes.append( pyferret.FerAxis(coords=axcoords, 
+                    axtype=axistype, unit=axunit, name=axname) )
+        self._datagrid = pyferret.FerGrid(axes=feraxes, name=fername)
         self._dataarray = datadict["data"]
         self._dataunit = datadict["data_unit"]
         self._missingvalue = datadict["missing_value"]
@@ -932,7 +932,7 @@ class FerVar(object):
         first loading this variable if necessary.
         Raises a ValueError is a problem occurs.
         '''
-        if (self._datagrid == None) or (self._dataarray == None):
+        if (self._datagrid is None) or (self._dataarray is None):
             self.load()
         return self._dataarray.copy('A')
 
@@ -943,7 +943,7 @@ class FerVar(object):
         first loading this variable if necessary.
         Raises a ValueError is a problem occurs.
         '''
-        if (self._datagrid == None) or (self._dataarray == None):
+        if (self._datagrid is None) or (self._dataarray is None):
             self.load()
         return self._datagrid.copy()
 
@@ -954,7 +954,7 @@ class FerVar(object):
         variable, first loading this variable if necessary.  
         Raises a ValueError is a problem occurs.
         '''
-        if (self._datagrid == None) or (self._dataarray == None):
+        if (self._datagrid is None) or (self._dataarray is None):
             self.load()
         # The missing value is a single-element ndarray
         return self._missingvalue[0]
@@ -966,7 +966,7 @@ class FerVar(object):
         variable, first loading this variable if necessary.
         Raises a ValueError is a problem occurs.
         '''
-        if (self._datagrid == None) or (self._dataarray == None):
+        if (self._datagrid is None) or (self._dataarray is None):
             self.load()
         return self._dataunit
 

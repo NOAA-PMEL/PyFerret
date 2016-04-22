@@ -49,7 +49,7 @@ def setwindow(num, plotasp=None, axisasp=None, color=None, logo=None):
     if errval != pyferret.FERR_OK:
         raise ValueError('Problems executing Ferret command %s: %s' % (cmdstr, errmsg))
     # create and execute the mode logo command if logo is given
-    if logo != None:
+    if logo is not None:
         if logo:
             cmdstr = 'SET MODE LOGO'
         else:

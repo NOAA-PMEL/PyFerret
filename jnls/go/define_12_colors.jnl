@@ -2,9 +2,11 @@
 ! Define more line colors
 
 say Defining 12 line colors: requries setting a new window
-set mode linec:12
 
+set mode linec:12
+cancel window/all
 set win/new
+
 ppl color,7,100,65,51   ! orange
 ppl color,8,0,55,0      ! dark green
 ppl color,9,60,0,100    ! purple

@@ -1,0 +1,15 @@
+! define_12_colors.jnl
+! Define more line colors
+
+say Defining 12 line colors: requries setting a new window
+set mode linec:12
+
+set win/new
+ppl color,7,100,65,51   ! orange
+ppl color,8,0,55,0      ! dark green
+ppl color,9,60,0,100    ! purple
+ppl color,10,100,70,100 ! magenta
+ppl color,11,80,70,60   ! tan
+ppl color,12,100,88,0   ! yellow
+sho mode linecolors
+

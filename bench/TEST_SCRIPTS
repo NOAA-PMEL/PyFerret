@@ -271,3 +271,4 @@ testfervar.py
 testferaxis.py
 testfergrid.py
 testferpyvar.py
+testfermethods.py

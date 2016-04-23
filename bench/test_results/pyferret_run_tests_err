@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1384 Apr 21 17:10 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1384 Apr 22 20:09 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -288,7 +288,8 @@ Benchmark scripts that will be run:
    testferaxis.py
    testfergrid.py
    testferpyvar.py
-Beginning at Thu Apr 21 17:11:42 PDT 2016
+   testfermethods.py
+Beginning at Fri Apr 22 20:16:37 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -3629,25 +3630,25 @@ set axis/name=45 x_in_meters
 set axis/name=.fr x_in_meters
 *** Running ferret script: bn_let_remote.jnl
  Cached data cleared from memory
- **ERROR: command syntax: /REMOTE variable expression may not contain [d=
-DEFINE VARIABLE/D=1/remote rvar = t0112mn1[d=1,z=1:100@ave]
- **ERROR: command syntax: /REMOTE variable definition must also specify /D=
-DEFINE VARIABLE/remote rvar = t0112mn1[d=1,z=1:100@ave]
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 500; message = "Error processing XML header file /usr/local/src/apache-tomcat-7.0.34/content/NVODS/conf/server/temp/AD882140E58648ADA4107B4E90A732E2/header.xml (No such file or directory)"^;};
- **netCDF error
-             Unable to open URL with REMOTE variable definitions:
-             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc
- **TMAP ERR: attribute reading error
-             Unable to get varid for LET/REMOTE variable: NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
-             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc
- **TMAP ERR: attribute reading error
-             Unable to get bad-value for LET/REMOTE variable: NetCDF: Attribute not found (OPeNDAP/netCDF Error code -43)
-             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc
- **netCDF error
-             NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
-             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc
-list/x=300/y=15 avar
+context: Error { code = 404; message = "/data_expr_02E4806F035B3A289A168CF3D84CF867.jnl (Permission denied)"^;};
+           *** NOTE: dataset does not accept REMOTE variable definitions
+syntax error, unexpected WORD_STRING, expecting WORD_WORD
+context: Error { code = 404; message = "/data_expr_02E4806F035B3A289A168CF3D84CF867.jnl (Permission denied)"^;};
+           *** NOTE: dataset does not accept REMOTE variable definitions
+syntax error, unexpected WORD_STRING, expecting WORD_WORD
+context: Error { code = 404; message = "/data_expr_02E4806F035B3A289A168CF3D84CF867.jnl (Permission denied)"^;};
+           *** NOTE: dataset does not accept REMOTE variable definitions
+syntax error, unexpected WORD_STRING, expecting WORD_WORD
+context: Error { code = 404; message = "/data_expr_02E4806F035B3A289A168CF3D84CF867.jnl (Permission denied)"^;};
+           *** NOTE: dataset does not accept REMOTE variable definitions
+syntax error, unexpected WORD_STRING, expecting WORD_WORD
+context: Error { code = 500; message = "java.io.IOException: java.lang.Exception: Could not parse Ferret config file: java.util.MissingResourceException: Could not load any resource bundle by com.sun.org.apache.xerces.internal.impl.msg.SAXMessages"^;};
+ **Internet Data error
+             NetCDF: DAP server error (OPeNDAP/netCDF Error code -70)
+             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl
+SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
+Command file, command group, or REPEAT execution aborted
 *** Running ferret script: bn691_bug_fixes.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -4542,4 +4543,7 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testferpyvar.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Thu Apr 21 17:13:45 PDT 2016
+*** Running python script: testfermethods.py
+ Cached data cleared from memory
+>>> ... ... >>> 
+Ended at Fri Apr 22 20:18:46 PDT 2016

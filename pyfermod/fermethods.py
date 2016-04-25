@@ -113,87 +113,148 @@ def showdata(brief=True, qual=''):
 
 
 def setregion(X=None, Y=None, Z=None, T=None, E=None, F=None, 
-              I=None, J=None, K=None, L=None, M=None, N=None, qual=None):
+              I=None, J=None, K=None, L=None, M=None, N=None, qual=''):
     """
-    Specifies the default space-time region for the evaluation of expressions in Ferret.
-    X (float or float slice): X (longitude) axis position or range (inclusive)
-    Y (float or float slice): Y (latitude) axis position or range (inclusive)
-    Z (float or float slice): Z (level) axis position or range (inclusive)
-    T (float or float slice): T (time) axis position or range (inclusive)
-    E (float or float slice): E (ensemble) axis position or range (inclusive)
-    F (float or float slice): F (forecast) axis position or range (inclusive)
-    I (int or int slice): X (longitude) axis index or range of indices (zero based)
-    J (int or int slice): Y (latitude) axis index or range of indices (zero based)
-    K (int or int slice): Z (level) axis index or range of indices (zero based)
-    L (int or int slice): T (time) axis index or range of indices (zero based)
-    M (int or int slice): E (ensemble) axis index or range of indices (zero based)
-    N (int or int slice): F (forecast) axis index or range of indices (zero based)
+    Specifies the default space-time region for the evaluation of expressions 
+    in Ferret.  If no contraint is specified for an axis, any previous axis 
+    contraint will be removed.  (Any current region is cancelled, then
+    any constraints given are applied.  So qual can contain Ferret syntax 
+    for more complicated region constraints.)
+
+    The X, Y, Z, T, E, and F arguments refer to coordinate values, and any 
+    (start,stop) slices specified will include both endpoints.
+        X (float or float slice): X (longitude) axis position or range
+        Y (float or float slice): Y (latitude) axis position or range
+        Z (float or float slice): Z (level) axis position or range
+        T (float or float slice): T (time) axis position or range
+        E (float or float slice): E (ensemble) axis position or range
+        F (float or float slice): F (forecast) axis position or range
+
+    The I, J, K, L, M, and N arguments refer to indices on the coordinate 
+    axes.  These indices and (start, stop) slices are treated as normal 
+    python indices or index slices (zero-based, includes first index and 
+    excludes last index of a slice).
+        I (int or int slice): X (longitude) axis index or range of indices
+        J (int or int slice): Y (latitude) axis index or range of indices
+        K (int or int slice): Z (level) axis index or range of indices
+        L (int or int slice): T (time) axis index or range of indices
+        M (int or int slice): E (ensemble) axis index or range of indices
+        N (int or int slice): F (forecast) axis index or range of indices
+
+    For any axis, either a coordinate or an index specification can be
+    given, but not both.
+
+        qual (string): Ferret qualifiers to add to the SET REGION command
+
+    If there is a problem, a ValueError is raised with an appropriate message.
     """
     cmdstr = 'SET REGION'
     if X is not None:
         if isinstance(X, numbers.Real):
             cmdstr += '/X=' + str(X)
         elif isinstance(X, str):
-            cmdstr += '/X=' + X
-        elif instance(X, slice) and isinstance(X.start, numbers.Real) and isinstance(X.stop, numbers.Real) and (X.step is None):
+            val = X.strip()
+            if not val:
+                raise ValueError('definition for X is invalid')
+            cmdstr += '/X=' + val
+        elif isinstance(X, slice) and isinstance(X.start, numbers.Real) and isinstance(X.stop, numbers.Real) and (X.step is None):
             cmdstr += '/X=' + str(X.start) + ':' + str(X.stop)
-        elif instance(X, slice) and isinstance(X.start, str) and isinstance(X.stop, str) and (X.step is None):
-            cmdstr += '/X=' + X.start + ':' + X.stop
+        elif isinstance(X, slice) and isinstance(X.start, str) and isinstance(X.stop, str) and (X.step is None):
+            start = X.start.strip()
+            stop = X.stop.strip()
+            if (not start) or (not stop):
+                raise ValueError('definition for X is invalid')
+            cmdstr += '/X=' + start + ':' + stop
         else:
             raise ValueError('definition for X is invalid')
     if Y is not None:
         if isinstance(Y, numbers.Real):
             cmdstr += '/Y=' + str(Y)
         elif isinstance(Y, str):
-            cmdstr += '/Y=' + Y
-        elif instance(Y, slice) and isinstance(Y.start, numbers.Real) and isinstance(Y.stop, numbers.Real) and (Y.step is None):
+            val = Y.strip()
+            if not val:
+                raise ValueError('definition for Y is invalid')
+            cmdstr += '/Y=' + val
+        elif isinstance(Y, slice) and isinstance(Y.start, numbers.Real) and isinstance(Y.stop, numbers.Real) and (Y.step is None):
             cmdstr += '/Y=' + str(Y.start) + ':' + str(Y.stop)
-        elif instance(Y, slice) and isinstance(Y.start, str) and isinstance(Y.stop, str) and (Y.step is None):
-            cmdstr += '/Y=' + Y.start + ':' + Y.stop
+        elif isinstance(Y, slice) and isinstance(Y.start, str) and isinstance(Y.stop, str) and (Y.step is None):
+            start = Y.start.strip()
+            stop = Y.stop.strip()
+            if (not start) or (not stop):
+                raise ValueError('definition for Y is invalid')
+            cmdstr += '/Y=' + start + ':' + stop
         else:
             raise ValueError('definition for Y is invalid')
     if Z is not None:
         if isinstance(Z, numbers.Real):
             cmdstr += '/Z=' + str(Z)
         elif isinstance(Z, str):
-            cmdstr += '/Z=' + Z
-        elif instance(Z, slice) and isinstance(Z.start, numbers.Real) and isinstance(Z.stop, numbers.Real) and (Z.step is None):
+            val = Z.strip()
+            if not val:
+                raise ValueError('definition for Z is invalid')
+            cmdstr += '/Z=' + val
+        elif isinstance(Z, slice) and isinstance(Z.start, numbers.Real) and isinstance(Z.stop, numbers.Real) and (Z.step is None):
             cmdstr += '/Z=' + str(Z.start) + ':' + str(Z.stop)
-        elif instance(Z, slice) and isinstance(Z.start, str) and isinstance(Z.stop, str) and (Z.step is None):
-            cmdstr += '/Z=' + Z.start + ':' + Z.stop
+        elif isinstance(Z, slice) and isinstance(Z.start, str) and isinstance(Z.stop, str) and (Z.step is None):
+            start = Z.start.strip()
+            stop = Z.stop.strip()
+            if (not start) or (not stop):
+                raise ValueError('definition for Z is invalid')
+            cmdstr += '/Z=' + start + ':' + stop
         else:
             raise ValueError('definition for Z is invalid')
     if T is not None:
         if isinstance(T, numbers.Real):
             cmdstr += '/T=' + str(T)
         elif isinstance(T, str):
-            cmdstr += '/T=' + T
-        elif instance(T, slice) and isinstance(T.start, numbers.Real) and isinstance(T.stop, numbers.Real) and (T.step is None):
+            val = T.strip()
+            if not val:
+                raise ValueError('definition for T is invalid')
+            cmdstr += '/T=' + val
+        elif isinstance(T, slice) and isinstance(T.start, numbers.Real) and isinstance(T.stop, numbers.Real) and (T.step is None):
             cmdstr += '/T=' + str(T.start) + ':' + str(T.stop)
-        elif instance(T, slice) and isinstance(T.start, str) and isinstance(T.stop, str) and (T.step is None):
-            cmdstr += '/T=' + T.start + ':' + T.stop
+        elif isinstance(T, slice) and isinstance(T.start, str) and isinstance(T.stop, str) and (T.step is None):
+            start = T.start.strip()
+            stop = T.stop.strip()
+            if (not start) or (not stop):
+                raise ValueError('definition for T is invalid')
+            cmdstr += '/T=' + start + ':' + stop
         else:
             raise ValueError('definition for T is invalid')
     if E is not None:
         if isinstance(E, numbers.Real):
             cmdstr += '/E=' + str(E)
         elif isinstance(E, str):
-            cmdstr += '/E=' + E
-        elif instance(E, slice) and isinstance(E.start, numbers.Real) and isinstance(E.stop, numbers.Real) and (E.step is None):
+            val = E.strip()
+            if not val:
+                raise ValueError('definition for E is invalid')
+            cmdstr += '/E=' + val
+        elif isinstance(E, slice) and isinstance(E.start, numbers.Real) and isinstance(E.stop, numbers.Real) and (E.step is None):
             cmdstr += '/E=' + str(E.start) + ':' + str(E.stop)
-        elif instance(E, slice) and isinstance(E.start, str) and isinstance(E.stop, str) and (E.step is None):
-            cmdstr += '/E=' + E.start + ':' + E.stop
+        elif isinstance(E, slice) and isinstance(E.start, str) and isinstance(E.stop, str) and (E.step is None):
+            start = E.start.strip()
+            stop = E.stop.strip()
+            if (not start) or (not stop):
+                raise ValueError('definition for E is invalid')
+            cmdstr += '/E=' + start + ':' + stop
         else:
             raise ValueError('definition for E is invalid')
     if F is not None:
         if isinstance(F, numbers.Real):
             cmdstr += '/F=' + str(F)
         elif isinstance(F, str):
-            cmdstr += '/F=' + F
-        elif instance(F, slice) and isinstance(F.start, numbers.Real) and isinstance(F.stop, numbers.Real) and (F.step is None):
+            val = F.strip()
+            if not val:
+                raise ValueError('definition for F is invalid')
+            cmdstr += '/F=' + val
+        elif isinstance(F, slice) and isinstance(F.start, numbers.Real) and isinstance(F.stop, numbers.Real) and (F.step is None):
             cmdstr += '/F=' + str(F.start) + ':' + str(F.stop)
-        elif instance(F, slice) and isinstance(F.start, str) and isinstance(F.stop, str) and (F.step is None):
-            cmdstr += '/F=' + F.start + ':' + F.stop
+        elif isinstance(F, slice) and isinstance(F.start, str) and isinstance(F.stop, str) and (F.step is None):
+            start = F.start.strip()
+            stop = F.stop.strip()
+            if (not start) or (not stop):
+                raise ValueError('definition for F is invalid')
+            cmdstr += '/F=' + start + ':' + stop
         else:
             raise ValueError('definition for F is invalid')
     if I is not None:
@@ -201,8 +262,8 @@ def setregion(X=None, Y=None, Z=None, T=None, E=None, F=None,
             raise ValueError('X and I cannot both be given')
         if isinstance(I, int):
             cmdstr += '/I=' + str(I + 1)
-        elif instance(I, slice) and isinstance(I.start, int) and isinstance(I.stop, int) and (I.step is None):
-            cmdstr += '/I=' + str(I.start + 1) + ':' + str(I.stop + 1)
+        elif isinstance(I, slice) and isinstance(I.start, int) and isinstance(I.stop, int) and (I.step is None):
+            cmdstr += '/I=' + str(I.start + 1) + ':' + str(I.stop)
         else:
             raise ValueError('definition for I is invalid')
     if J is not None:
@@ -210,8 +271,8 @@ def setregion(X=None, Y=None, Z=None, T=None, E=None, F=None,
             raise ValueError('Y and J cannot both be given')
         if isinstance(J, int):
             cmdstr += '/J=' + str(J + 1)
-        elif instance(J, slice) and isinstance(J.start, int) and isinstance(J.stop, int) and (J.step is None):
-            cmdstr += '/J=' + str(J.start + 1) + ':' + str(J.stop + 1)
+        elif isinstance(J, slice) and isinstance(J.start, int) and isinstance(J.stop, int) and (J.step is None):
+            cmdstr += '/J=' + str(J.start + 1) + ':' + str(J.stop)
         else:
             raise ValueError('definition for J is invalid')
     if K is not None:
@@ -219,8 +280,8 @@ def setregion(X=None, Y=None, Z=None, T=None, E=None, F=None,
             raise ValueError('Z and K cannot both be given')
         if isinstance(K, int):
             cmdstr += '/K=' + str(K + 1)
-        elif instance(K, slice) and isinstance(K.start, int) and isinstance(K.stop, int) and (K.step is None):
-            cmdstr += '/K=' + str(K.start + 1) + ':' + str(K.stop + 1)
+        elif isinstance(K, slice) and isinstance(K.start, int) and isinstance(K.stop, int) and (K.step is None):
+            cmdstr += '/K=' + str(K.start + 1) + ':' + str(K.stop)
         else:
             raise ValueError('definition for K is invalid')
     if L is not None:
@@ -228,8 +289,8 @@ def setregion(X=None, Y=None, Z=None, T=None, E=None, F=None,
             raise ValueError('T and L cannot both be given')
         if isinstance(L, int):
             cmdstr += '/L=' + str(L + 1)
-        elif instance(L, slice) and isinstance(L.start, int) and isinstance(L.stop, int) and (L.step is None):
-            cmdstr += '/L=' + str(L.start + 1) + ':' + str(L.stop + 1)
+        elif isinstance(L, slice) and isinstance(L.start, int) and isinstance(L.stop, int) and (L.step is None):
+            cmdstr += '/L=' + str(L.start + 1) + ':' + str(L.stop)
         else:
             raise ValueError('definition for L is invalid')
     if M is not None:
@@ -237,8 +298,8 @@ def setregion(X=None, Y=None, Z=None, T=None, E=None, F=None,
             raise ValueError('E and M cannot both be given')
         if isinstance(M, int):
             cmdstr += '/M=' + str(M + 1)
-        elif instance(M, slice) and isinstance(M.start, int) and isinstance(M.stop, int) and (M.step is None):
-            cmdstr += '/M=' + str(M.start + 1) + ':' + str(M.stop + 1)
+        elif isinstance(M, slice) and isinstance(M.start, int) and isinstance(M.stop, int) and (M.step is None):
+            cmdstr += '/M=' + str(M.start + 1) + ':' + str(M.stop)
         else:
             raise ValueError('definition for M is invalid')
     if N is not None:
@@ -246,10 +307,19 @@ def setregion(X=None, Y=None, Z=None, T=None, E=None, F=None,
             raise ValueError('F and N cannot both be given')
         if isinstance(N, int):
             cmdstr += '/N=' + str(N + 1)
-        elif instance(N, slice) and isinstance(N.start, int) and isinstance(N.stop, int) and (N.step is None):
-            cmdstr += '/N=' + str(N.start + 1) + ':' + str(N.stop + 1)
+        elif isinstance(N, slice) and isinstance(N.start, int) and isinstance(N.stop, int) and (N.step is None):
+            cmdstr += '/N=' + str(N.start + 1) + ':' + str(N.stop)
         else:
             raise ValueError('definition for N is invalid')
+    if not isinstance(qual, str):
+        raise ValueError('qual (Ferret qualifiers) must be a string')
+    if qual:
+        cmdstr += qual
+    # First clear all previous region specifications
+    (errval, errmsg) = pyferret.run('CANCEL REGION')
+    if errval != pyferret.FERR_OK:
+        raise ValueError('Ferret cancel region command failed: %s' % errmsg)
+    # Now set the region specifications in this command
     (errval, errmsg) = pyferret.run(cmdstr)
     if errval != pyferret.FERR_OK:
         raise ValueError('Ferret set region command (%s) failed: %s' % (cmdstr, errmsg))

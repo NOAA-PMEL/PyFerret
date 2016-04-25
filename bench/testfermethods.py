@@ -11,12 +11,18 @@ coads_uw.mywnd = (coads_uw.uwnd**2 + coads_uw.vwnd**2)**0.5
 print ">>> pyferret.showdata(brief=False)"
 pyferret.showdata(brief=False)
 
-print ">>> pyferret.setwindow(1, axisasp=0.75, color=(100,75,75), logo=False)"
-pyferret.setwindow(1, axisasp=0.75, color=(100,75,75), logo=False)
+print ">>> pyferret.setwindow(1, axisasp=0.75, color=(100,90,90), logo=False)"
+pyferret.setwindow(1, axisasp=0.75, color=(100,90,90), logo=False)
 print ">>> pyferret.settextstyle(font='sans', color='blue', bold=True, italic=True)"
 pyferret.settextstyle(font='sans', color='blue', bold=True, italic=True)
+print ">>> pyferret.setregion(I=slice(3,10))"
+pyferret.setregion(I=slice(3,10))
+print ">>> pyferret.run('show region')"
+pyferret.run('show region')
 print ">>> pyferret.setregion(T='15-FEB')"
 pyferret.setregion(T='15-FEB')
+print ">>> pyferret.run('show region')"
+pyferret.run('show region')
 print ">>> pyferret.contour(coads_uw.mywnd)"
 pyferret.contour(coads_uw.mywnd)
 print ">>> pyferret.saveplot('testfermethods_contour.pdf')"

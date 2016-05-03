@@ -292,6 +292,7 @@
               cx_type(var_cx) = ptype_float
               IF (STR_SAME (attname, 'varnames')  .EQ. 0 .OR.
      .            STR_SAME (attname, 'dimnames')  .EQ. 0 .OR.
+     .            STR_SAME (attname, 'coordnames')  .EQ. 0 .OR.
      .            STR_SAME (attname, 'attnames')  .EQ. 0 )
      .         cx_type(var_cx) = ptype_string
            ENDIF

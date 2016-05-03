@@ -223,9 +223,10 @@
      .                         / (hi_coord - lo_coord)
 * ... bad if this interp crosses or lands on the void of a subspan modulo axis 
 	      IF (has_mod_void) THEN
-	        IF ( (lo_index/axdim .NE. hi_index/axdim)
-     .	             .OR. (MOD(i,axdim) .EQ. 0) )
-     .            res(i,j,k,l,m,n) = bad_res
+	        IF ( (DBLE(lo_index)/DBLE(axdim) .NE. DBLE(hi_index)/DBLE(axdim))
+     .	             .OR. (MOD(i,axdim) .EQ. 0) ) THEN
+                    res(i,j,k,l,m,n) = bad_res
+	         ENDIF
 	      ENDIF
  110	   CONTINUE
 
@@ -305,7 +306,7 @@
      .                         / (hi_coord - lo_coord)
 * ... bad if this interp crosses or lands on the void of a subspan modulo axis 
 	      IF (has_mod_void) THEN
-	        IF ( (lo_index/axdim .NE. hi_index/axdim)
+	        IF ( (DBLE(lo_index)/DBLE(axdim) .NE. DBLE(hi_index)/DBLE(axdim))
      .	             .OR. (MOD(j,axdim) .EQ. 0) )
      .            res(i,j,k,l,m,n) = bad_res
 	      ENDIF
@@ -387,7 +388,7 @@
      .                         / (hi_coord - lo_coord)
 * ... bad if this interp crosses or lands on the void of a subspan modulo axis 
 	      IF (has_mod_void) THEN
-	        IF ( (lo_index/axdim .NE. hi_index/axdim)
+	        IF ( (DBLE(lo_index)/DBLE(axdim) .NE. DBLE(hi_index)/DBLE(axdim))
      .	             .OR. (MOD(k,axdim) .EQ. 0) )
      .            res(i,j,k,l,m,n) = bad_res
 	      ENDIF
@@ -469,7 +470,7 @@
      .                         / (hi_coord - lo_coord)
 * ... bad if this interp crosses or lands on the void of a subspan modulo axis 
 	      IF (has_mod_void) THEN
-	        IF ( (lo_index/axdim .NE. hi_index/axdim)
+	        IF ( (DBLE(lo_index)/DBLE(axdim) .NE. DBLE(hi_index)/DBLE(axdim))
      .	             .OR. (MOD(l,axdim) .EQ. 0) )
      .            res(i,j,k,l,m,n) = bad_res
 	      ENDIF
@@ -551,7 +552,7 @@
      .                         / (hi_coord - lo_coord)
 * ... bad if this interp crosses or lands on the void of a subspan modulo axis 
 	      IF (has_mod_void) THEN
-	        IF ( (lo_index/axdim .NE. hi_index/axdim)
+	        IF ( (DBLE(lo_index)/DBLE(axdim) .NE. DBLE(hi_index)/DBLE(axdim))
      .	             .OR. (MOD(m,axdim) .EQ. 0) )
      .            res(i,j,k,l,m,n) = bad_res
 	      ENDIF
@@ -633,7 +634,7 @@
      .                         / (hi_coord - lo_coord)
 * ... bad if this interp crosses or lands on the void of a subspan modulo axis 
 	      IF (has_mod_void) THEN
-	        IF ( (lo_index/axdim .NE. hi_index/axdim)
+	        IF ( (DBLE(lo_index)/DBLE(axdim) .NE. DBLE(hi_index)/DBLE(axdim))
      .	             .OR. (MOD(n,axdim) .EQ. 0) )
      .            res(i,j,k,l,m,n) = bad_res
 	      ENDIF

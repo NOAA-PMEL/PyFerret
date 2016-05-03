@@ -153,6 +153,8 @@
              attok = .TRUE.
           ELSE IF (STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
              attok = .TRUE.
+          ELSE IF (STR_SAME(attname, 'coordnames') .EQ. 0 ) THEN
+             attok = .TRUE.
           ELSE IF (STR_SAME(attname, 'attnames') .EQ. 0 ) THEN
              attok = .TRUE.
           ELSE IF (STR_SAME(attname, 'ndims') .EQ. 0 ) THEN
@@ -160,6 +162,8 @@
           ELSE IF (STR_SAME(attname, 'nattrs') .EQ. 0 ) THEN
              attok = .TRUE.
           ELSE IF (STR_SAME(attname, 'nvars') .EQ. 0 ) THEN
+             attok = .TRUE. 
+          ELSE IF (STR_SAME(attname, 'ncvars') .EQ. 0 ) THEN
              attok = .TRUE. 
 
 * Is the reference to a global attribute?

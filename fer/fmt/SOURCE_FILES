@@ -32,7 +32,6 @@ paren_surround.F\
 replace_deq.F\
 row_coord_fmt.F\
 sanitary_var_code.F\
-set_axis_prec.F\
 translate_to_world.F\
 var_data_fmt.F\
 var_title.F\

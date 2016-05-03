@@ -335,27 +335,18 @@
 * * * * * * * * STRIP AWAY TRANSFORMATIONS ONTO STACK * * * * * * * * * * * * 
 ******************************************************************************
 
-
-
-* ... strip off creation of virtual "void" point on subspan modulo axes
-	DO 255 idim = 1, nferdims
-	   IF ( modulo_axes(idim)
-     .	  .AND. cx_lo_ss(cx,idim) .NE. unspecified_int4 ) THEN
-
-	      IF ( cat .EQ. cat_user_var ) THEN
-*    ... cannot modulo an average (or other compressed result)
-	         IF ( uvar_given(idim,var) .EQ. uvlim_gvn_xact
-     .		 .OR. uvar_given(idim,var) .EQ. uvlim_need_xact ) GOTO 255
-	      ENDIF
-
-	     IF (TM_ITS_SUBSPAN_MODULO(CGRID_AXIS(idim, cx))) THEN
-	      IF (cx_hi_ss(cx,idim) .EQ. CAXIS_MODLEN(idim, cx)) THEN
-	        CALL IS_STRIP(isact_class_subspan_fill,idim,*10,status)
-	        GOTO 5000
-	      ENDIF
-	    ENDIF
-	  ENDIF
- 255	CONTINUE
+* ... strip off a transformation ?
+* ... reverse loop order ensures that X transformations are done BEFORE
+* ... the Y transformations. This is necessary for accuracy wrt. COS factors.
+* ... By stripping X last it will be done first.
+* 10/98 *jc* - need to ignore trans_reduce (see info in ctx/add_rdc_xform.F)
+	DO 200 idim = nferdims, 1, -1
+       IF ( cx_trans( idim, cx ) .NE. trans_no_transform
+     .          .AND. cx_trans( idim, cx ) .NE. trans_reduced ) THEN
+	      CALL IS_STRIP( isact_class_trans, idim, *10, status )
+	      GOTO 5000
+	   ENDIF
+ 200	CONTINUE
 
 * ... strip off "modulo" replications
 *   ... but do not strip modulo at the topmost level
@@ -396,19 +387,25 @@
 	   ENDIF
  250	CONTINUE
 
+* ... strip off creation of virtual "void" point on subspan modulo axes
+	DO 255 idim = 1, nferdims
+	   IF ( modulo_axes(idim)
+     .	  .AND. cx_lo_ss(cx,idim) .NE. unspecified_int4 ) THEN
 
-* ... strip off a transformation ?
-* ... reverse loop order ensures that X transformations are done BEFORE
-* ... the Y transformations. This is necessary for accuracy wrt. COS factors.
-* ... By stripping X last it will be done first.
-* 10/98 *jc* - need to ignore trans_reduce (see info in ctx/add_rdc_xform.F)
-	DO 200 idim = nferdims, 1, -1
-       IF ( cx_trans( idim, cx ) .NE. trans_no_transform
-     .          .AND. cx_trans( idim, cx ) .NE. trans_reduced ) THEN
-	      CALL IS_STRIP( isact_class_trans, idim, *10, status )
-	      GOTO 5000
-	   ENDIF
- 200	CONTINUE
+	      IF ( cat .EQ. cat_user_var ) THEN
+*    ... cannot modulo an average (or other compressed result)
+	         IF ( uvar_given(idim,var) .EQ. uvlim_gvn_xact
+     .		 .OR. uvar_given(idim,var) .EQ. uvlim_need_xact ) GOTO 255
+	      ENDIF
+
+	     IF (TM_ITS_SUBSPAN_MODULO(CGRID_AXIS(idim, cx))) THEN
+	      IF (cx_hi_ss(cx,idim) .EQ. CAXIS_MODLEN(idim, cx)) THEN
+	        CALL IS_STRIP(isact_class_subspan_fill,idim,*10,status)
+	        GOTO 5000
+	      ENDIF
+	    ENDIF
+	  ENDIF
+ 255	CONTINUE
 
 * ... strip off need for regridding data ?
  260	IF ( cx_unstand_grid( cx ) ) THEN

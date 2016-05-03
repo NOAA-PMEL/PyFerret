@@ -431,27 +431,23 @@
         attype = NCFLOAT
 
         IF (STR_SAME(attname, 'attnames') .EQ. 0  .OR. 
-     .       STR_SAME(attname, 'dimnames') .EQ. 0 .OR. 
-     .       STR_SAME(attname, 'coordnames') .EQ. 0 ) THEN
+     .       STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
            attype = NCCHAR
         ELSE IF (STR_SAME(attname, 'ndims') .EQ. 0  .OR.
      .      STR_SAME(attname, 'type') .EQ. 0  .OR.
      .      STR_SAME(attname, 'nvars') .EQ. 0  .OR.
-     .      STR_SAME(attname, 'ncvars') .EQ. 0  .OR.
      .      STR_SAME(attname, 'nattrs') .EQ. 0 ) THEN
            attype = NCFLOAT
 
         ELSE IF (STR_SAME (varname, '.') .EQ. 0) THEN
            IF (STR_SAME(attname, 'varnames') .EQ. 0   .OR.
-     .         STR_SAME(attname, 'dimnames') .EQ. 0 .OR.
-     .         STR_SAME(attname, 'coordnames') .EQ. 0 ) THEN
+     .         STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
               attype = NCCHAR
 
            ELSE IF (STR_SAME(attname, 'attnames') .EQ. 0   .OR.
-     .           STR_SAME(attname, 'ndims')  .EQ. 0  .OR.
+     .           STR_SAME(attname, 'ndims') .EQ. 0  .OR.
      .           STR_SAME(attname, 'nattrs') .EQ. 0  .OR.
-     .           STR_SAME(attname, 'nvars')  .EQ. 0  .OR.
-     .           STR_SAME(attname, 'ncvars') .EQ. 0 ) THEN
+     .           STR_SAME(attname, 'nvars') .EQ. 0 ) THEN
               attype = NCFLOAT
            ENDIF
 

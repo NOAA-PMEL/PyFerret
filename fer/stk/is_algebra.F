@@ -688,17 +688,7 @@
                  ELSE IF (STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
                     cx_type(hi_cx) = ptype_string
 
-                    IF (reset_ss) THEN
-                       cx_lo_ss(hi_cx, x_dim) = 1
-                       cx_hi_ss(hi_cx, x_dim) = ndims
-                    ELSE
-                       cx_lo_ss(hi_cx, x_dim) = MAX(1, cx_lo_ss(hi_cx, x_dim))
-                       cx_hi_ss(hi_cx, x_dim) = MIN(ndims, cx_hi_ss(hi_cx, x_dim))
-                    ENDIF
-   
-* dimension names
-                 ELSE IF (STR_SAME(attname, 'coordnames') .EQ. 0 ) THEN
-                    cx_type(hi_cx) = ptype_string
+		    nv = ndims
 
                     IF (reset_ss) THEN
                        cx_lo_ss(hi_cx, x_dim) = 1
@@ -710,13 +700,6 @@
 
 * # variables 
                  ELSE IF (STR_SAME(attname, 'nvars') .EQ. 0 ) THEN
-                    cx_type(hi_cx) = ptype_float
-                    cx_lo_ss(hi_cx, x_dim) = 1
-                    cx_hi_ss(hi_cx, x_dim) = 1
-
-* # coordinate variables (dimensions that ALSO have a coord. var)
-               
-                 ELSE IF (STR_SAME(attname, 'ncvars') .EQ. 0 ) THEN
                     cx_type(hi_cx) = ptype_float
                     cx_lo_ss(hi_cx, x_dim) = 1
                     cx_hi_ss(hi_cx, x_dim) = 1

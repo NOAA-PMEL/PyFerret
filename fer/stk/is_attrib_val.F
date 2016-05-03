@@ -157,32 +157,6 @@
                  ENDIF
  120          CONTINUE
               got_it = .TRUE.
-	      
-	     
-* dimension names that are also coordinate variables
-           ELSE IF (STR_SAME(attname, 'coordnames') .EQ. 0 ) THEN
-
-              n = i2 - i1 + 1
-              CALL INIT_C_STRING_ARRAY( n,
-     .				     memory(1,mr_blk1(mr)),
-     .				     mr_c_pointer(mr)    )
-              n = 0
-              nv = 0
-              DO 130 i = 1, nvars
-                 name = ' '
-                 CALL CD_GET_VAR_INFO (dset, i, name, vartype,
-     .                nvdims, vdims, nvatts, coordvar, all_outflag, 
-     .                status)
-                 IF (coordvar) THEN
-                    nv = nv + 1
-                    IF (nv .GE. i1 .AND. nv .LE. i2) THEN
-                       slen = TM_LENSTR1(name)
-                       CALL STORE_STRING(name(1:slen), mr, n, status)
-                       n = n + 1
-                    ENDIF
-                 ENDIF
- 130          CONTINUE
-              got_it = .TRUE.
  
            ELSE IF (STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
 	   
@@ -212,7 +186,7 @@
 		 ENDIF
  220          CONTINUE
               got_it = .TRUE.
- 
+
            ELSE IF (STR_SAME(attname, 'attnames') .EQ. 0 ) THEN
               IF (ngatts .GT. 0) THEN
                  CALL CD_GET_VAR_ID (dset, '.', varid, status)
@@ -241,8 +215,7 @@
               memory( 1, mr_blk1(mr)) = ngatts
               got_it = .TRUE.
 
-           ELSE IF (STR_SAME(attname, 'nvars') .EQ. 0 .OR.
-     .              STR_SAME(attname, 'ncvars') .EQ. 0) THEN
+           ELSE IF (STR_SAME(attname, 'nvars') .EQ. 0 ) THEN
 
 * Count number of non-coordinate variables.
               n = 0
@@ -252,8 +225,7 @@
      .                status)
                  IF (.NOT. coordvar) n = n + 1
  400          CONTINUE
-              IF (STR_SAME(attname, 'ncvars') .EQ. 0) n = nvars-n
-	      memory( 1, mr_blk1(mr)) = n
+              memory( 1, mr_blk1(mr)) = n
               got_it = .TRUE.
            ENDIF
 

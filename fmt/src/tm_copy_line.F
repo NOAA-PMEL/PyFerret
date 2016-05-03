@@ -44,6 +44,7 @@
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 * V62  *acm* 3/09 - copy line_name_orig, used to keep original axis names 
 *                   for use with attribute structure, e.g. save/keep_axisname
+* v694 1/15 *acm* (see ticket 2227) handle the line_dim_only flag
 
 * Arguments
 	INTEGER*4	source, dest
@@ -71,6 +72,7 @@
 	line_shift_origin(dest) = line_shift_origin(source) 
 	line_tunit(dest)     = line_tunit(source) 
 	line_cal_name(dest)  = line_cal_name(source) 
+	line_dim_only(dest)  = line_dim_only(source)
 
 	IF ( dest.LE.max_lines .AND. source.LE.max_lines) THEN
 * non-dynamic lines, only

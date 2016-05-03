@@ -1067,6 +1067,9 @@ GO bn_show_commands
 GO bn_reset
 GO bn_plot_decimate
 
+GO bn_reset
+GO bn_auto_tprec
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

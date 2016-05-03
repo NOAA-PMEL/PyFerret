@@ -53,6 +53,7 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *       *acm* 3/12 6D Ferret: Add E and F dimensions 
 *                  A time axis may be a T axis or F axis.
+* V698  *acm* 5/16 Ticket 2405: MODE CALENDAR:auto
 
 * Arguments:
 *	grid	 - grid containing a time axis
@@ -76,9 +77,9 @@
 * Local definitions
         LOGICAL         modulo
 	CHARACTER*20	SECS_TO_DATE_OUT, buff, dms
-	INTEGER		axis, status, prec,
-     .                  TM_GET_CALENDAR_ID, cal_id
-	REAL*8		start_secs, offset_secs, this_secs
+	INTEGER		TM_GET_CALENDAR_ID, DATE_PREC, axis, status, prec, 
+     .                  cal_id
+	REAL*8		start_secs, offset_secs, this_secs, delta
 	REAL*8		SECS_FROM_BC
 
 !	REAL*8		start_secs, offset_secs, this_secs, prec_fact(6)
@@ -110,7 +111,7 @@
 	   RETURN
 	ENDIF
 #endif
-        modulo = line_modulo(axis)
+
 
 * get the calendar type
 
@@ -128,6 +129,12 @@
 * round off date instead of truncating 
 * ( people don't normally view dates this way )
 !	this_secs = ( DNINT(this_secs/prec_fact(prec)) + 0.5 ) * prec_fact(prec)
+
+*** Do all this higher up for plots, as is done for listings, where date_prec is
+*** called in row_coord_fmt.
+
+* Will write only month-day in labels for monthly climatology
+        modulo = line_modulo(axis)
 
 * Convert to date
 	date = SECS_TO_DATE_OUT(this_secs, cal_id, modulo, prec)

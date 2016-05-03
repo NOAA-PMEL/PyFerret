@@ -58,7 +58,7 @@
 *                  formatted
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V690 *sh* 1/14 - added kludge to display limits from aux var regrid by avg
-*	e.g. gz(depth)=0:100@ave
+* V698  *acm* 5/16 Ticket 2405: MODE CALENDAR:auto
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -77,8 +77,9 @@
 
 * internal variable declarations:
 	LOGICAL	SCALAR_GRID_LINE, aux_span_compress, its_float
-	INTEGER	sub_len, ndec, grid, line, status, cx_try, cat, var
-	REAL*8	TM_WORLD, bc_to_t0, lo, hi, temp
+	INTEGER	DATE_PREC, sub_len, ndec, grid, line, status, 
+     .          cx_try, cat, var, loss, hiss, delss, j, decimal
+	REAL*8	TM_WORLD, BOX_SIZE, bc_to_t0, lo, hi, small
 	CHARACTER*40	LOHI_STRING
 
 * initialize
@@ -151,9 +152,34 @@
 	ELSE
 	   ndec = 0
 	ENDIF
+	
+* What precision is needed to represent this delta and world range ?
+* Will write time string according to the resolution of the time axis
+* Uses same method as for text listings
+
+	decimal = ndec
+	IF (idim.EQ.t_dim .AND. ABS(ndec).GT.6) THEN
+	   loss = cx_lo_ss(cx,idim)
+	   hiss = cx_hi_ss(cx,idim)
+	   delss = 1
+	   IF (loss .NE. unspecified_int4) delss = cx_delta (idim,cx)
+
+* how large is the smallest "delta" world coordinate to represent ?
+	   small = +1.E33
+	   IF (line_delta(grid_line( idim, grid )) .NE. unspecified_val8) THEN
+              small = line_delta( grid_line(idim, grid) )
+	   ELSE
+ 	      DO j = cx_lo_ss(cx,idim), cx_hi_ss(cx,idim), delss
+	         small = MIN( small, BOX_SIZE( j, grid, idim ) )
+ 	      ENDDO
+	   ENDIF
+
+	   decimal = DATE_PREC( grid, idim, small )
+	   decimal = decimal + 1
+	ENDIF
 
 * create the string
-	LOHI_WORLD = LOHI_STRING( lo,hi,idim,grid,to_word,ndec,slen )
+	LOHI_WORLD = LOHI_STRING( lo,hi,idim,grid,to_word,decimal,slen )
 	
 	RETURN
 	END

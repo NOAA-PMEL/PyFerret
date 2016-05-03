@@ -65,6 +65,7 @@
 * V67   *acm* 3/11 - Fix for ticket 1819, size of arg for MODE DESPERATE,
 *                    and allow for a floating-point input
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V698  *acm* 5/16 Ticket 2405: MODE CALENDAR:auto
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -107,7 +108,7 @@
 
 	ELSEIF ( mode .EQ. pmode_time_lab ) THEN
 	   tlen = MIN( 7, TM_LENSTR1(text) )
-	   DO 100 iarg = 1, 6
+	   DO 100 iarg = 1, 7
 	      vax_code = STR_CASE_BLIND_COMPARE
      .		( text(:tlen), date_labels(iarg)(:tlen) )
 	      IF ( vax_code .EQ. vms_str_success ) THEN

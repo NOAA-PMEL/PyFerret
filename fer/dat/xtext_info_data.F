@@ -54,6 +54,7 @@
 *			  because it needed a preprocessor.
 *            2/12 *kms* Add E, F, M, N, ENSEMBLE, and FORECAST;
 *                       include tmap_dims.parm for nferdims needed by xtext_info.cmn
+* V698  *acm* 5/16 Ticket 2405: MODE CALENDAR:auto
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -106,13 +107,15 @@
      .		date_labels ( 3 )	/ 'days'    /,
      .		date_labels ( 4 )	/ 'hours'   /,
      .		date_labels ( 5 )	/ 'minutes' /,
-     .		date_labels ( 6 )	/ 'seconds' /
+     .		date_labels ( 6 )	/ 'seconds' /,
+     .		date_labels ( 7 )	/ 'auto' /
 	DATA	date_str_len( 1 )	/  4 /,		! yyyy
      .		date_str_len( 2 )	/  8 /,		! mmm-yyyy
      .		date_str_len( 3 )	/ 11 /,		! dd-mmm-yyyy
      .		date_str_len( 4 )	/ 14 /,		! dd-mmm-yyyy:hh
      .		date_str_len( 5 )	/ 17 /,		! dd-mmm-yyyy:hh:mm
      .		date_str_len( 6 )	/ 20 /		! dd-mmm-yyyy:hh:mm:ss
+     .		date_str_len( 7 )	/ 20 /		! dd-mmm-yyyy:hh:mm:ss
 
 * computed variable units
 	DATA	unit_text( punot_app	)/ ' ' /,		! N/A

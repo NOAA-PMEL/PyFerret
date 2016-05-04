@@ -160,6 +160,7 @@ for srcname in os.listdir(dirname):
 dirname = os.path.join("fmt", "src")
 addnobjs_list.append(os.path.join(dirname, "tm_lenstr.o"));
 addnobjs_list.append(os.path.join(dirname, "tm_fmt.o"));
+addnobjs_list.append(os.path.join(dirname, "tm_lefint.o"));
 
 # Create the pyferret.libpyferret Extension
 ext_mods = [ Extension("pyferret.libpyferret", include_dirs = incdir_list,

@@ -102,7 +102,7 @@ def init(arglist=None, enterferret=True):
                       [-quiet]  [-linebuffer]  [-batch [<filename>]]  
                       [-transparent]  [-script <scriptname> [ <scriptarg> ... ]]
 
-       -memsize:     initialize the memory cache size to <N> (default 25.6)
+       -memsize:     initialize the memory cache size to <N> (default 25)
                      mega (10^6) floats (where 1 float = 8 bytes)
 
        -nodisplay    do not display to the console; a drawing can be saved
@@ -163,7 +163,7 @@ def init(arglist=None, enterferret=True):
     my_metaname = None
     my_transparent = False
     my_unmapped = False
-    my_memsize = 25.6
+    my_memsize = 25
     my_journal = True
     my_verify = True
     my_restrict = False
@@ -259,16 +259,6 @@ def init(arglist=None, enterferret=True):
             result = run("exit /program")
             # should not get here
             raise SystemExit
-
-    # Use tab completion for readline (for Ferret) by default
-    readline.parse_and_bind('tab: complete');
-
-    # Execute the $PYTHONSTARTUP file, if it exists and -secure not given
-    if not my_restrict:
-        try:
-            execfile(os.getenv('PYTHONSTARTUP', ''));
-        except IOError:
-            pass;
 
     # Create the list of standard ferret PyEFs to create
     std_pyefs = [ ]
@@ -522,7 +512,7 @@ def init(arglist=None, enterferret=True):
     return result
 
 
-def start(memsize=25.6, journal=True, verify=True, restrict=False,
+def start(memsize=25, journal=True, verify=False, restrict=False,
           server=False, metaname=None, transparent=False,
           unmapped=False, quiet=False, linebuffer=False):
     """
@@ -583,6 +573,7 @@ def start(memsize=25.6, journal=True, verify=True, restrict=False,
         str_metaname = ""
     else:
         str_metaname = metaname
+
     # Get the known viewer bindings
     knownengines = graphbind.knownPyFerretEngines()
     # Add PViewerPQPyFerretBindings, as "PipedViewerPQ" to the known bindings
@@ -593,6 +584,7 @@ def start(memsize=25.6, journal=True, verify=True, restrict=False,
     if not ("PipedImagerPQ" in knownengines):
         graphbind.addPyFerretBindings("PipedImagerPQ",
                   pipedviewer.pyferretbindings.PImagerPQPyFerretBindings)
+
     # the actual call to ferret's start
     success = libpyferret._start(flt_memsize, bool(journal), bool(verify),
                                  bool(restrict), bool(server), str_metaname,
@@ -602,6 +594,16 @@ def start(memsize=25.6, journal=True, verify=True, restrict=False,
         # register the libpyferret._quit function with atexit to ensure
         # open viewer windows do not hang a Python shutdown
         atexit.register(libpyferret._quit)
+
+        # Use tab completion for readline (for Ferret) by default
+        readline.parse_and_bind('tab: complete');
+
+        # Execute the $PYTHONSTARTUP file, if it exists and -secure not given
+        if not restrict:
+            try:
+                execfile(os.getenv('PYTHONSTARTUP', ''));
+            except IOError:
+                pass;
     return success
 
 

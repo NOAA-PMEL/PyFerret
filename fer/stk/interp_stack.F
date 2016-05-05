@@ -106,6 +106,8 @@
 * V698 *sh* 12/15 implement dummy data sets in forecast aggregations
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
+* V680 *acm* 5/16  Fix ticket 2366, putting the subspan void point and modulo
+*                  replications before transformations.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -335,18 +337,29 @@
 * * * * * * * * STRIP AWAY TRANSFORMATIONS ONTO STACK * * * * * * * * * * * * 
 ******************************************************************************
 
-* ... strip off a transformation ?
-* ... reverse loop order ensures that X transformations are done BEFORE
-* ... the Y transformations. This is necessary for accuracy wrt. COS factors.
-* ... By stripping X last it will be done first.
-* 10/98 *jc* - need to ignore trans_reduce (see info in ctx/add_rdc_xform.F)
-	DO 200 idim = nferdims, 1, -1
-       IF ( cx_trans( idim, cx ) .NE. trans_no_transform
-     .          .AND. cx_trans( idim, cx ) .NE. trans_reduced ) THEN
-	      CALL IS_STRIP( isact_class_trans, idim, *10, status )
-	      GOTO 5000
-	   ENDIF
- 200	CONTINUE
+
+
+* ... strip off creation of virtual "void" point on subspan modulo axes
+
+	CALL GET_CX_MODULO_AXES(cx,modulo_axes)
+	DO 255 idim = 1, nferdims
+	   IF ( modulo_axes(idim)
+     .	  .AND. cx_lo_ss(cx,idim) .NE. unspecified_int4 ) THEN
+
+	      IF ( cat .EQ. cat_user_var ) THEN
+*    ... cannot modulo an average (or other compressed result)
+	         IF ( uvar_given(idim,var) .EQ. uvlim_gvn_xact
+     .		 .OR. uvar_given(idim,var) .EQ. uvlim_need_xact ) GOTO 255
+	      ENDIF
+
+	     IF (TM_ITS_SUBSPAN_MODULO(CGRID_AXIS(idim, cx))) THEN
+	      IF (cx_hi_ss(cx,idim) .EQ. CAXIS_MODLEN(idim, cx)) THEN
+	        CALL IS_STRIP(isact_class_subspan_fill,idim,*10,status)
+	        GOTO 5000
+	      ENDIF
+	    ENDIF
+	  ENDIF
+ 255	CONTINUE
 
 * ... strip off "modulo" replications
 *   ... but do not strip modulo at the topmost level
@@ -354,7 +367,6 @@
 	IF ( cat .EQ. cat_user_var ) THEN
 	   IF (uvar_name_code(var)(1:3) .EQ. 'EX#'    ) GOTO 260
 	ENDIF	   
-	CALL GET_CX_MODULO_AXES(cx,modulo_axes)
 	DO 250 idim = 1, nferdims
 	   IF ( modulo_axes(idim)
      .	  .AND. cx_lo_ss(cx,idim) .NE. unspecified_int4 ) THEN
@@ -386,33 +398,26 @@
 	      ENDIF
 	   ENDIF
  250	CONTINUE
+ 260	CONTINUE
 
-* ... strip off creation of virtual "void" point on subspan modulo axes
-	DO 255 idim = 1, nferdims
-	   IF ( modulo_axes(idim)
-     .	  .AND. cx_lo_ss(cx,idim) .NE. unspecified_int4 ) THEN
-
-	      IF ( cat .EQ. cat_user_var ) THEN
-*    ... cannot modulo an average (or other compressed result)
-	         IF ( uvar_given(idim,var) .EQ. uvlim_gvn_xact
-     .		 .OR. uvar_given(idim,var) .EQ. uvlim_need_xact ) GOTO 255
-	      ENDIF
-
-	     IF (TM_ITS_SUBSPAN_MODULO(CGRID_AXIS(idim, cx))) THEN
-	      IF (cx_hi_ss(cx,idim) .EQ. CAXIS_MODLEN(idim, cx)) THEN
-	        CALL IS_STRIP(isact_class_subspan_fill,idim,*10,status)
-	        GOTO 5000
-	      ENDIF
-	    ENDIF
-	  ENDIF
- 255	CONTINUE
+* ... strip off a transformation ?
+* ... reverse loop order ensures that X transformations are done BEFORE
+* ... the Y transformations. This is necessary for accuracy wrt. COS factors.
+* ... By stripping X last it will be done first.
+* 10/98 *jc* - need to ignore trans_reduce (see info in ctx/add_rdc_xform.F)
+	DO 200 idim = nferdims, 1, -1
+       IF ( cx_trans( idim, cx ) .NE. trans_no_transform
+     .          .AND. cx_trans( idim, cx ) .NE. trans_reduced ) THEN
+	      CALL IS_STRIP( isact_class_trans, idim, *10, status )
+	      GOTO 5000
+	   ENDIF
+ 200	CONTINUE
 
 * ... strip off need for regridding data ?
- 260	IF ( cx_unstand_grid( cx ) ) THEN
+	IF ( cx_unstand_grid( cx ) ) THEN
 	   CALL IS_STRIP( isact_class_regrid, no_dim, *10, status )
 	   GOTO 5000
 	ENDIF
-
 
 * ... strip off getting aux variables?
 *     note that regridding already stripped, so this is always for 3-arg plots

@@ -54,6 +54,7 @@
 *                   than WE or SN
 * V600 *acm* 2/06 - Fix for bug 1394, send do_err flag to TM_DATE_REFORMAT
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* v694 1/15 *acm* (see ticket 2227) handle the line_dim_only flag
 
 * Arguments
 	LOGICAL		modulo
@@ -104,6 +105,7 @@
 	line_regular(inline)   = .TRUE.
 	line_class(inline)     =  pline_class_basic
 	line_direction(inline) = axis_orients(idim)
+	line_dim_only(inline)    = .FALSE.
 
 * set user-specified (boolean) modulo flag
 	line_modulo(inline)    = modulo		! "TRUE" untested 1/98 !!!

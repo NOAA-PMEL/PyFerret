@@ -53,6 +53,7 @@
 *		   else the stride and delta cannot be recovered 
 * V541 *sh* 2/02 - added support for parent modulo length less than axis length
 * V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
+* v694 1/15 *acm* (see ticket 2227) handle the line_dim_only flag
 
 * Arguments
 	INTEGER		idim, like, class, outline, status
@@ -110,6 +111,7 @@
 	line_class(inline) = class
 	line_modulo(inline)     = .FALSE.	! modulo subset doesn't cut it
 	line_modulo_len(inline) = 0.0D0
+	line_dim_only(inline)   = .FALSE.
 
 * set up the scratch line as per its class
 * Note: for computational efficiency axes with regularly-spaced points will

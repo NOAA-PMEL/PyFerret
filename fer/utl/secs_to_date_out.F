@@ -48,27 +48,30 @@
 * V530: *acm* 12/00 add calendar types; cal_id
 * V610: *acm*  2/08 Fix bug 762: if the axis is not modulo, always list the
 *                   year (previously never listed year 0 or year 1)
+* V698  *acm* 5/16 Ticket 2405: MODE CALENDAR:auto
 
 * Calling argument declarations:
 	REAL*8		num_secs
 	INTEGER		cal_id, prec
+        LOGICAL         modulo
 
 * internal variable declarations
-        LOGICAL         modulo
 	INTEGER		year, month, day, hour, minute, second, status
 	CHARACTER	TM_SECS_TO_DATE*20, temp_str*20
         CHARACTER*3     month_names(12)
         DATA month_names/
-     .	'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
-     .    'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'/
+     .		'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
+     .		'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'/
 
 * convert to date string always including year
 	temp_str = TM_SECS_TO_DATE( num_secs, cal_id )
         CALL TM_BREAK_DATE (temp_str, cal_id, year, month, day,
      .		             hour, minute, second, status)
 
-* Select the requested precision and form the string.  If year = 0000 
-* or 0001 and the axis is modulo, do not write the year
+* Select the requested precision and form the string. 
+* Auto-determine prec, unless the user set it explicitly. 
+* If year = 0000 or 0001 and the axis is modulo, do not write the year
+* If monthly time axis write only month-year-day
 
 	IF ( prec .GE. 6 ) THEN		! full precision
 
@@ -103,7 +106,6 @@
            ELSE
               WRITE (temp_str,1050,ERR=5000) day, month_names(month), 
      .               hour
-
            ENDIF
 1040       FORMAT(I2.2,'-',A3,'-',I4.4,' ',I2.2)
 1050	   FORMAT(I2.2,'-',A3,' ',I2.2)
@@ -146,4 +148,3 @@
 * internal error
  5000	STOP 'SECS_TO_DATE'
 	END
-

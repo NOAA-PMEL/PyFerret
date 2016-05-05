@@ -243,6 +243,7 @@
 *                  variables, pre-defined axes and grids, cat_calc_var.
 *       3/16 *sh*  added PLOT/ALONG=axis
 * V698  4/16 *acm* New PLOT/SKIP= (and leave space for PyFerret PLOT/OPACITY=)
+* V698  4/16 *acm* Change it to PLOT/SKIPSYM= 
 
 *
 * !!!!!!!!!!
@@ -1088,7 +1089,7 @@
 		DATA qualifiers  (nqual_at6a+46)/ 'MISSING'/	! For missing-dat in ribbon plot
 		DATA qualifiers  (nqual_at6a+47)/ 'OPACITY'/	! overriding opacity
 		DATA qualifiers  (nqual_at6a+48)/ 'GAPLOC'/     ! A variable marking gaps to insert in PLOT/VS
-		DATA qualifiers  (nqual_at6a+49)/ 'SKIP'/	! Control for symbol decimation
+		DATA qualifiers  (nqual_at6a+49)/ 'SKIPSYM'/	! Control for symbol decimation
 		DATA qualifiers  (nqual_at6a+50)/ '****'/	! 
 		DATA qualifiers  (nqual_at6a+51)/ '****'/	! 
 

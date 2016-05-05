@@ -4,6 +4,8 @@
 
 use nodim
 sh dat
+
+! previously this gave an error
 save/clobber/file=a.nc/i=30:35  expocode, num_obs, temp
 
 ! file has a coordinate variable with the subset in the OBS dimension

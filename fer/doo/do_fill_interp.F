@@ -48,6 +48,8 @@
 * V550 *sh* 8/2/02 - support for modulo lengths. ensure that filling 
 *		    does not operate acros the subspan modulo void point
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V698 *acm* 5/16 Fix ticket 2366, the logic that tests for crossing the 
+*                  modulo subspan void point was incorrect
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -110,6 +112,7 @@
 
 * is it a modulo axis with sufficient component span provided to wrap around
 	line = CGRID_AXIS(idim, com_cx)
+	axdim = 1
 	IF ( line .EQ. mnormal .OR. line .EQ. munknown ) THEN
 	   modulo_axis = .FALSE.
 	ELSE
@@ -119,7 +122,7 @@
 	ENDIF
 	IF ( modulo_axis ) axlen = TM_MODULO_AXLEN(line)
 
-* it his a subspan modulo axis?
+* it this a subspan modulo axis?
 	has_mod_void = TM_ITS_SUBSPAN_MODULO(line)
 	IF (has_mod_void) THEN
 	   has_mod_void = lo_com.LE.0 .OR. hi_com.GE.axdim
@@ -222,10 +225,13 @@
      .                         +   lo_val*(hi_coord-coord) )
      .                         / (hi_coord - lo_coord)
 * ... bad if this interp crosses or lands on the void of a subspan modulo axis 
+*     The multiply tests whether the low and high indices are on the same branch 
+
 	      IF (has_mod_void) THEN
-	        IF ( (lo_index/axdim .NE. hi_index/axdim)
-     .	             .OR. (MOD(i,axdim) .EQ. 0) )
-     .            res(i,j,k,l,m,n) = bad_res
+	        IF ( MOD(lo_index, axdim)*MOD(hi_index, axdim) .LT.0
+     .	             .OR. (MOD(i,axdim) .EQ. 0) ) THEN
+                    res(i,j,k,l,m,n) = bad_res
+	         ENDIF
 	      ENDIF
  110	   CONTINUE
 

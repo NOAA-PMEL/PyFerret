@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Apr 20 11:23 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
+lrwxrwxrwx. 1 ksmith oerdnewp 12 May  5 11:01 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -264,6 +264,7 @@ Benchmark scripts that will be run:
    bn_plot_along.jnl
    bn_show_commands.jnl
    bn_plot_decimate.jnl
+   bn_auto_tprec.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
 ****** Restricting Ferret paths to bench directory ******
@@ -280,7 +281,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-Beginning at Wed Apr 20 11:24:18 PDT 2016
+Beginning at Thu May  5 11:02:18 PDT 2016
 *** Running test: bn_syntax.jnl
  Cached data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3545,25 +3546,27 @@ set axis/name=45 x_in_meters
 set axis/name=.fr x_in_meters
 *** Running test: bn_let_remote.jnl
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 500; message = "Error processing XML header file /usr/local/src/apache-tomcat-7.0.34/content/NVODS/conf/server/temp/AD882140E58648ADA4107B4E90A732E2/header.xml (No such file or directory)"^;};
+context: Error { code = 404; message = "/data_expr_02E4806F035B3A289A168CF3D84CF867.jnl (Permission denied)"^;};
+syntax error, unexpected WORD_STRING, expecting WORD_WORD
+context: Error { code = 404; message = "/data_expr_02E4806F035B3A289A168CF3D84CF867.jnl (Permission denied)"^;};
+syntax error, unexpected WORD_STRING, expecting WORD_WORD
+context: Error { code = 404; message = "/data_expr_02E4806F035B3A289A168CF3D84CF867.jnl (Permission denied)"^;};
+syntax error, unexpected WORD_STRING, expecting WORD_WORD
+context: Error { code = 404; message = "/data_expr_02E4806F035B3A289A168CF3D84CF867.jnl (Permission denied)"^;};
+syntax error, unexpected WORD_STRING, expecting WORD_WORD
+context: Error { code = 500; message = "java.io.IOException: java.lang.Exception: Could not parse Ferret config file: java.util.MissingResourceException: Could not load any resource bundle by com.sun.org.apache.xerces.internal.impl.msg.SAXMessages"^;};
  Cached data cleared from memory
- **ERROR: command syntax: /REMOTE variable expression may not contain [d=
-DEFINE VARIABLE/D=1/remote rvar = t0112mn1[d=1,z=1:100@ave]
- **ERROR: command syntax: /REMOTE variable definition must also specify /D=
-DEFINE VARIABLE/remote rvar = t0112mn1[d=1,z=1:100@ave]
- **netCDF error
-             Unable to open URL with REMOTE variable definitions:
-             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc
- **TMAP ERR: attribute reading error
-             Unable to get varid for LET/REMOTE variable: NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
-             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc
- **TMAP ERR: attribute reading error
-             Unable to get bad-value for LET/REMOTE variable: NetCDF: Attribute not found (OPeNDAP/netCDF Error code -43)
-             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc
- **netCDF error
-             NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
-             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc
-list/x=300/y=15 avar
+           *** NOTE: dataset does not accept REMOTE variable definitions
+           *** NOTE: dataset does not accept REMOTE variable definitions
+           *** NOTE: dataset does not accept REMOTE variable definitions
+           *** NOTE: dataset does not accept REMOTE variable definitions
+ **Internet Data error
+             NetCDF: DAP server error (OPeNDAP/netCDF Error code -70)
+             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl
+SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
+Command file, command group, or REPEAT execution aborted
+ERROR RUNNING SCRIPT
+****** FERRET error: bn_let_remote.jnl failed ******
 *** Running test: bn691_bug_fixes.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -4005,6 +4008,15 @@ Replacing definition of axis XAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAXIS
+ LISTing to file a.nc
+ LISTing to file a.nc
 *** Running test: bn_aggregate_t.jnl
  Cached data cleared from memory
  LISTing to file tmp/tagg_reg_1.nc
@@ -4412,6 +4424,11 @@ Replacing definition of axis TAX
            *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
            *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
            *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
+*** Running test: bn_auto_tprec.jnl
+ Cached data cleared from memory
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+Replacing definition of axis TAX
 *** Running test: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -4431,4 +4448,4 @@ LOAD/TEMPORARY vflag
  TEMPORARY data cleared from memory
 *** Running test: bn_startupfile.jnl
  Cached data cleared from memory
-Ended at Wed Apr 20 11:26:48 PDT 2016
+Ended at Thu May  5 11:04:50 PDT 2016

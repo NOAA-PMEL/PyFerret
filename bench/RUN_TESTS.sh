@@ -130,7 +130,7 @@ cp ./default.ferret $HOME/.ferret
 
 if ! echo "$fver" | grep -q "pyferret"; then
 #  command-line options for ferret
-   feropts="-noverify"
+   feropts="-gif -noverify"
 else
 #  command-line options for pyferret
    feropts="-quiet -nodisplay -noverify"
@@ -172,7 +172,7 @@ for jnl in $test_scripts; do
 #  add the contents of all_ncdump.out to $ncdump_file
    cat all_ncdump.out >> $ncdump_file
    rm -f all_ncdump.out
-
+   rm -f ferret.gif
 done
 
 # Replace $HOME/.ferret if it was removed
@@ -183,7 +183,7 @@ if [ -f keep.ferret ]; then
 fi
 
 # Clean-up
-rm -f ferret.jnl* bat.plt* `cat TRASH_FILES`
+rm -f ferret.jnl* ferret.gif* bat.plt* `cat TRASH_FILES`
 rm -fr subdir tmp
 
 now=`date`

@@ -69,3 +69,9 @@ go err696_def_ax_edges
 
 go bn_reset
 go err696_write_no_dim
+
+go bn_reset
+go err696_mod_sub_fln
+
+go bn_reset
+go err696_subspan_transforms

@@ -1,0 +1,16 @@
+! err696_mod_sub_fln.jnl
+! Ticket 2366, @FLN on a modulo subspan axis 
+! smears results across what should not be filled in.
+
+def ax/x=0:180:10/unit=degree_e xax
+let xx = x[gx=xax]
+
+let b = IF xx GE 50 OR xx EQ 20 THEN xx
+save/clob/file=a.nc b
+can var/all
+
+use a
+
+! Do not get data from across the modulo void point at 90W
+list/x=-180:720 b, b[x=@fln]
+

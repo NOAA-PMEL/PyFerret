@@ -1,0 +1,43 @@
+! err696_subspan_transforms.jnl
+! See ticket 2364.  Results previously 
+! put results at the modulo void point.
+
+def ax/x=0:180:20/unit=degrees_e xaxis
+let a = x[gx=xaxis]
+save/clob/file=a.nc a
+can var a; can ax xaxis; use a.nc
+ list/x=0:720 a, a[x=@ddc]
+ list/x=0:720 a, a[x=@ddf]
+ list/x=0:720 a, a[x=@ddb]
+ list/x=0:720 a, a[x=@shf]
+ list/x=0:720 a, a[x=@sbx]
+ list/x=0:720 a, a[x=@sbn]
+ list/x=0:720 a, a[x=@swl]
+ list/x=0:720 a, a[x=@shn]
+ list/x=0:720 a, a[x=@spz]
+ list/x=0:720 a, a[x=@med]
+ list/x=0:720 a, a[x=@smx]
+ list/x=0:720 a, a[x=@smn]
+ list/x=0:720 a, a[x=@wgt]
+ list/x=0:720 a, a[x=@spx]
+
+! Note that Running Sum and Indefinite Integral, Event mask
+! now restart in each branch.
+ list/x=0:720 a, a[x=@rsu]
+ list/x=0:720 a, a[x=@iin]
+ list/x=0:720 a, a[x=@evnt:80]
+
+
+! Transforms that deal with gaps
+can dat/all
+def ax/x=0:180:10/unit=degrees_e xaxis
+let a = if x[gx=xaxis] gt 40 and x[gx=xaxis] le 150 then x[gx=xaxis]
+save/clob/file=a.nc a
+can var a; can ax xaxis; use a.nc
+ list/x=0:720 a, a[x=@fav]
+ list/x=0:720 a, a[x=@fnr]
+ list/x=0:720 a, a[x=@cia]
+ list/x=0:720 a, a[x=@cib]
+ list/x=0:720 a, a[x=@cda]
+ list/x=0:720 a, a[x=@cdb]
+

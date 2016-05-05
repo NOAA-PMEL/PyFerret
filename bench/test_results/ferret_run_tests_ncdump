@@ -1,38 +1,38 @@
-*** Running test: bn_syntax.jnl
-*** Running test: bn_dollar.jnl
-*** Running test: bn_grave.jnl
-*** Running test: bn_letd.jnl
-*** Running test: bn_if.jnl
-*** Running test: bn_expressions.jnl
-*** Running test: bn_geometry.jnl
-*** Running test: bn_output.jnl
-*** Running test: bn_in_plane.jnl
-*** Running test: bn_compress.jnl
-*** Running test: bn_interpolate.jnl
-*** Running test: bn_regrid.jnl
-*** Running test: bn_ez.jnl
-*** Running test: bn_plot.jnl
-*** Running test: bn_curv.jnl
-*** Running test: bn_symbols.jnl
-*** Running test: bn_comma_delimited.jnl
-*** Running test: bn_dynamic_grids.jnl
-*** Running test: bn_cdf.jnl
-*** Running test: bn_regrid_transforms.jnl
-*** Running test: bn_axis_limits.jnl
-*** Running test: bn_movie.jnl
-*** Running test: bn_ez_order.jnl
-*** Running test: bn_user.jnl
-*** Running test: bn_stream.jnl
-*** Running test: bn_mc.jnl
-*** Running test: bn_negative_t.jnl
-*** Running test: bn_xact_regrid.jnl
-*** Running test: bn_gc_functions.jnl
-*** Running test: bn491_bug_fixes.jnl
-*** Running test: bn_odd_variable_name.jnl
-*** Running test: bn_test_stream.jnl
-*** Running test: bn_define_axes.jnl
-*** Running test: bn_polygon.jnl
-*** Running test: bn500_bug_fixes.jnl
+*** Running ferret script: bn_syntax.jnl
+*** Running ferret script: bn_dollar.jnl
+*** Running ferret script: bn_grave.jnl
+*** Running ferret script: bn_letd.jnl
+*** Running ferret script: bn_if.jnl
+*** Running ferret script: bn_expressions.jnl
+*** Running ferret script: bn_geometry.jnl
+*** Running ferret script: bn_output.jnl
+*** Running ferret script: bn_in_plane.jnl
+*** Running ferret script: bn_compress.jnl
+*** Running ferret script: bn_interpolate.jnl
+*** Running ferret script: bn_regrid.jnl
+*** Running ferret script: bn_ez.jnl
+*** Running ferret script: bn_plot.jnl
+*** Running ferret script: bn_curv.jnl
+*** Running ferret script: bn_symbols.jnl
+*** Running ferret script: bn_comma_delimited.jnl
+*** Running ferret script: bn_dynamic_grids.jnl
+*** Running ferret script: bn_cdf.jnl
+*** Running ferret script: bn_regrid_transforms.jnl
+*** Running ferret script: bn_axis_limits.jnl
+*** Running ferret script: bn_movie.jnl
+*** Running ferret script: bn_ez_order.jnl
+*** Running ferret script: bn_user.jnl
+*** Running ferret script: bn_stream.jnl
+*** Running ferret script: bn_mc.jnl
+*** Running ferret script: bn_negative_t.jnl
+*** Running ferret script: bn_xact_regrid.jnl
+*** Running ferret script: bn_gc_functions.jnl
+*** Running ferret script: bn491_bug_fixes.jnl
+*** Running ferret script: bn_odd_variable_name.jnl
+*** Running ferret script: bn_test_stream.jnl
+*** Running ferret script: bn_define_axes.jnl
+*** Running ferret script: bn_polygon.jnl
+*** Running ferret script: bn500_bug_fixes.jnl
 err491_dp_time_write.jnl --- 1 original file
 netcdf out {
 dimensions:
@@ -83,19 +83,19 @@ data:
 
  MY_VAR = 50757969, 50757974 ;
 }
-*** Running test: bn_sample.jnl
-*** Running test: bn_strides_revs_perms.jnl
-*** Running test: bn_non_COARDS_netCDF.jnl
-*** Running test: bn_cache_hits.jnl
-*** Running test: bn_regrid_to_user.jnl
-*** Running test: bn_calendar.jnl
-*** Running test: bn_dash_dot.jnl
-*** Running test: bn_flowlines.jnl
-*** Running test: bn_logaxes.jnl
-*** Running test: bn_internal_external_functions.jnl
-*** Running test: bn_modulo_strides.jnl
-*** Running test: bn_axis_viewports.jnl
-*** Running test: bn_strings.jnl
+*** Running ferret script: bn_sample.jnl
+*** Running ferret script: bn_strides_revs_perms.jnl
+*** Running ferret script: bn_non_COARDS_netCDF.jnl
+*** Running ferret script: bn_cache_hits.jnl
+*** Running ferret script: bn_regrid_to_user.jnl
+*** Running ferret script: bn_calendar.jnl
+*** Running ferret script: bn_dash_dot.jnl
+*** Running ferret script: bn_flowlines.jnl
+*** Running ferret script: bn_logaxes.jnl
+*** Running ferret script: bn_internal_external_functions.jnl
+*** Running ferret script: bn_modulo_strides.jnl
+*** Running ferret script: bn_axis_viewports.jnl
+*** Running ferret script: bn_strings.jnl
 bn_strings.jnl --- 1 original file
 netcdf test_string {
 dimensions:
@@ -205,37 +205,37 @@ data:
   "",
   "a" ;
 }
-*** Running test: bn_axcontrol.jnl
-*** Running test: bn_vec_curv.jnl
-*** Running test: bn_delimited_read.jnl
-*** Running test: bn541_bug_fixes.jnl
-*** Running test: bn_cancel_axes.jnl
-*** Running test: bn542_bug_fixes.jnl
-*** Running test: bn_subspan_modulo.jnl
-*** Running test: bn_dots.jnl
-*** Running test: bn_lev_symbols.jnl
-*** Running test: bn_mode_logo_lab.jnl
-*** Running test: bn_modulo_attribute.jnl
-*** Running test: bn550_bug_fixes.jnl
-*** Running test: bn551_bug_fixes.jnl
+*** Running ferret script: bn_axcontrol.jnl
+*** Running ferret script: bn_vec_curv.jnl
+*** Running ferret script: bn_delimited_read.jnl
+*** Running ferret script: bn541_bug_fixes.jnl
+*** Running ferret script: bn_cancel_axes.jnl
+*** Running ferret script: bn542_bug_fixes.jnl
+*** Running ferret script: bn_subspan_modulo.jnl
+*** Running ferret script: bn_dots.jnl
+*** Running ferret script: bn_lev_symbols.jnl
+*** Running ferret script: bn_mode_logo_lab.jnl
+*** Running ferret script: bn_modulo_attribute.jnl
+*** Running ferret script: bn550_bug_fixes.jnl
+*** Running ferret script: bn551_bug_fixes.jnl
 err550_nc_seconds.jnl --- seconds of time axis
 		TIME:time_origin = "10-JUN-1996 04:03:36" ;
-*** Running test: bn_multi_line_labels.jnl
-*** Running test: bn552_bug_fixes.jnl
-*** Running test: bn_set_var_scale_off.jnl
-*** Running test: bn_longvarnames.jnl
-*** Running test: bn_shakey.jnl
-*** Running test: bn_eof_4d.jnl
-*** Running test: bn_abstract_axis_names.jnl
-*** Running test: bn_many_polygons.jnl
-*** Running test: bn_fill_irregular.jnl
-*** Running test: bn_xml_output.jnl
-*** Running test: bn_test_nan.jnl
-*** Running test: bn553_bug_fixes.jnl
-*** Running test: bn_graticules.jnl
-*** Running test: bn_repeat_range.jnl
-*** Running test: bn554_bug_fixes.jnl
-*** Running test: bn_bounds.jnl
+*** Running ferret script: bn_multi_line_labels.jnl
+*** Running ferret script: bn552_bug_fixes.jnl
+*** Running ferret script: bn_set_var_scale_off.jnl
+*** Running ferret script: bn_longvarnames.jnl
+*** Running ferret script: bn_shakey.jnl
+*** Running ferret script: bn_eof_4d.jnl
+*** Running ferret script: bn_abstract_axis_names.jnl
+*** Running ferret script: bn_many_polygons.jnl
+*** Running ferret script: bn_fill_irregular.jnl
+*** Running ferret script: bn_xml_output.jnl
+*** Running ferret script: bn_test_nan.jnl
+*** Running ferret script: bn553_bug_fixes.jnl
+*** Running ferret script: bn_graticules.jnl
+*** Running ferret script: bn_repeat_range.jnl
+*** Running ferret script: bn554_bug_fixes.jnl
+*** Running ferret script: bn_bounds.jnl
 bn_bounds.jnl --- 1 output of bounds on irreg axes.
 netcdf a {
 dimensions:
@@ -747,22 +747,22 @@ data:
   87, 88, 91, 92, 93, 94,
   132, 133, 136, 137, 138, 139 ;
 }
-*** Running test: bn_all_leap.jnl
-*** Running test: bn570_bug_fixes.jnl
-*** Running test: bn_modstats.jnl
-*** Running test: bn_mc_vary_scale.jnl
-*** Running test: bn_plot_nokey.jnl
-*** Running test: bn580_bug_fixes.jnl
-*** Running test: bn_inf_levels.jnl
-*** Running test: bn_regulart.jnl
-*** Running test: bn_labwid.jnl
-*** Running test: bn_redefine_taxis_mc.jnl
-*** Running test: bn_illegal_axisname.jnl
-*** Running test: bn_exit_script.jnl
-*** Running test: bn_exit_cycle.jnl
-*** Running test: bn_curv_mod.jnl
-*** Running test: bn_shade_keycont.jnl
-*** Running test: bn581_bug_fixes.jnl
+*** Running ferret script: bn_all_leap.jnl
+*** Running ferret script: bn570_bug_fixes.jnl
+*** Running ferret script: bn_modstats.jnl
+*** Running ferret script: bn_mc_vary_scale.jnl
+*** Running ferret script: bn_plot_nokey.jnl
+*** Running ferret script: bn580_bug_fixes.jnl
+*** Running ferret script: bn_inf_levels.jnl
+*** Running ferret script: bn_regulart.jnl
+*** Running ferret script: bn_labwid.jnl
+*** Running ferret script: bn_redefine_taxis_mc.jnl
+*** Running ferret script: bn_illegal_axisname.jnl
+*** Running ferret script: bn_exit_script.jnl
+*** Running ferret script: bn_exit_cycle.jnl
+*** Running ferret script: bn_curv_mod.jnl
+*** Running ferret script: bn_shade_keycont.jnl
+*** Running ferret script: bn581_bug_fixes.jnl
 err580_irreg_bounds.jnl --- 
 netcdf a {
 dimensions:
@@ -860,16 +860,16 @@ variables:
 		:history = "FERRET V6.97   5-May-16" ;
 		:Conventions = "CF-1.6" ;
 }
-*** Running test: bn_tab_comma_multivar.jnl
-*** Running test: bn_element_functions.jnl
-*** Running test: bn_long_revision_num.jnl
+*** Running ferret script: bn_tab_comma_multivar.jnl
+*** Running ferret script: bn_element_functions.jnl
+*** Running ferret script: bn_long_revision_num.jnl
 bn_long_revision_num.jnl --- history attribute
 		:history = "FERRET V6.97   5-May-16" ;
-*** Running test: bn_window_title.jnl
-*** Running test: bn_last_error.jnl
-*** Running test: bn_deg_min.jnl
-*** Running test: bn_dp_readscale.jnl
-*** Running test: bn_bounds_defineax.jnl
+*** Running ferret script: bn_window_title.jnl
+*** Running ferret script: bn_last_error.jnl
+*** Running ferret script: bn_deg_min.jnl
+*** Running ferret script: bn_dp_readscale.jnl
+*** Running ferret script: bn_bounds_defineax.jnl
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -959,7 +959,7 @@ data:
   87, 88, 91, 92, 93, 94,
   132, 133, 136, 137, 138, 139 ;
 }
-*** Running test: bn_attributes.jnl
+*** Running ferret script: bn_attributes.jnl
 bn_attributes.jnl --- 1 attributes of string variables
 netcdf a {
 dimensions:
@@ -2297,28 +2297,28 @@ variables:
 		:history = "FERRET V6.97   5-May-16" ;
 		:Conventions = "CF-1.6" ;
 }
-*** Running test: bn_transforms.jnl
-*** Running test: bn_variance.jnl
-*** Running test: bn_linecolors.jnl
-*** Running test: bn_cdf_errmsg.jnl
-*** Running test: bn600_bug_fixes.jnl
-*** Running test: bn601_bug_fixes.jnl
-*** Running test: bn_set_strides.jnl
-*** Running test: bn_lsl_lowpass.jnl
-*** Running test: bn_return_xmod_tmod.jnl
-*** Running test: bn602_bug_fixes.jnl
-*** Running test: bn_modnbd.jnl
-*** Running test: bn_fifty_files.jnl
-*** Running test: bn603_bug_fixes.jnl
-*** Running test: bn_set_var_name.jnl
-*** Running test: bn_memory_symbol.jnl
-*** Running test: bn605_bug_fixes.jnl
-*** Running test: bn608_bug_fixes.jnl
-*** Running test: bn_shade_trim.jnl
-*** Running test: bn_mode_nlevels.jnl
-*** Running test: bn61_bug_fixes.jnl
-*** Running test: bn_test_opendap.jnl
-*** Running test: bn611_bug_fixes.jnl
+*** Running ferret script: bn_transforms.jnl
+*** Running ferret script: bn_variance.jnl
+*** Running ferret script: bn_linecolors.jnl
+*** Running ferret script: bn_cdf_errmsg.jnl
+*** Running ferret script: bn600_bug_fixes.jnl
+*** Running ferret script: bn601_bug_fixes.jnl
+*** Running ferret script: bn_set_strides.jnl
+*** Running ferret script: bn_lsl_lowpass.jnl
+*** Running ferret script: bn_return_xmod_tmod.jnl
+*** Running ferret script: bn602_bug_fixes.jnl
+*** Running ferret script: bn_modnbd.jnl
+*** Running ferret script: bn_fifty_files.jnl
+*** Running ferret script: bn603_bug_fixes.jnl
+*** Running ferret script: bn_set_var_name.jnl
+*** Running ferret script: bn_memory_symbol.jnl
+*** Running ferret script: bn605_bug_fixes.jnl
+*** Running ferret script: bn608_bug_fixes.jnl
+*** Running ferret script: bn_shade_trim.jnl
+*** Running ferret script: bn_mode_nlevels.jnl
+*** Running ferret script: bn61_bug_fixes.jnl
+*** Running ferret script: bn_test_opendap.jnl
+*** Running ferret script: bn611_bug_fixes.jnl
 netcdf a {
 dimensions:
 	XAX = 4 ;
@@ -2511,9 +2511,9 @@ variables:
 		:history = "FERRET V6.97   5-May-16" ;
 		:Conventions = "CF-1.6" ;
 }
-*** Running test: bn_no_valid_on_plot.jnl
-*** Running test: bn_median.jnl
-*** Running test: bn614_bug_fixes.jnl
+*** Running ferret script: bn_no_valid_on_plot.jnl
+*** Running ferret script: bn_median.jnl
+*** Running ferret script: bn614_bug_fixes.jnl
 err611_set_var_ez.jnl --- 
 netcdf a {
 dimensions:
@@ -2594,14 +2594,14 @@ data:
 
  A = 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5 ;
 }
-*** Running test: bn_mode_nodata_lab.jnl
-*** Running test: bn_proleptic_gregorian_calendar.jnl
-*** Running test: bn_string_ngd_nbd.jnl
-*** Running test: bn_cat_string.jnl
-*** Running test: bn_sort_strings.jnl
-*** Running test: bn_samplexyt.jnl
-*** Running test: bn_last_go_file.jnl
-*** Running test: bn_cancel_upcase_uservar.jnl
+*** Running ferret script: bn_mode_nodata_lab.jnl
+*** Running ferret script: bn_proleptic_gregorian_calendar.jnl
+*** Running ferret script: bn_string_ngd_nbd.jnl
+*** Running ferret script: bn_cat_string.jnl
+*** Running ferret script: bn_sort_strings.jnl
+*** Running ferret script: bn_samplexyt.jnl
+*** Running ferret script: bn_last_go_file.jnl
+*** Running ferret script: bn_cancel_upcase_uservar.jnl
 netcdf a {
 dimensions:
 	XAX = 10 ;
@@ -2660,8 +2660,8 @@ variables:
 		:history = "FERRET V6.97   5-May-16" ;
 		:Conventions = "CF-1.6" ;
 }
-*** Running test: bn_cdf_keepax.jnl
-*** Running test: bn_keep_axisnames.jnl
+*** Running ferret script: bn_cdf_keepax.jnl
+*** Running ferret script: bn_keep_axisnames.jnl
 bn_keep_axisnames.jnl --- test SAVE/KEEP_AXISNAMES
 netcdf a {
 dimensions:
@@ -2716,44 +2716,44 @@ variables:
 		:history = "FERRET V6.97   5-May-16" ;
 		:Conventions = "CF-1.6" ;
 }
-*** Running test: bn_key_label_minmax.jnl
-*** Running test: bn62_bug_fixes.jnl
-*** Running test: bn_convolve.jnl
-*** Running test: bn_tax_tstep.jnl
-*** Running test: bn_grads_z.jnl
-*** Running test: bn_clock_syms.jnl
-*** Running test: bn63_bug_fixes.jnl
-*** Running test: bn_axis_reversed_syms.jnl
-*** Running test: bn_isdepth.jnl
-*** Running test: bn_var_hist_levels.jnl
-*** Running test: bn64_bug_fixes.jnl
-*** Running test: bn_long_grid_names.jnl
-*** Running test: bn_xml_repl.jnl
-*** Running test: bn65_bug_fixes.jnl
-*** Running test: bn_txtype_dmy.jnl
-*** Running test: bn_n_open_dsets_sym.jnl
-*** Running test: bn_multi_decade.jnl
-*** Running test: bn_show_xml_file.jnl
-*** Running test: bn66_bug_fixes.jnl
-*** Running test: bn_netcdf4.jnl
-*** Running test: bn_scat2grid_bin.jnl
-*** Running test: bn_axis_dir_symbols.jnl
-*** Running test: bn663_bug_fixes.jnl
-*** Running test: bn_set_axis_regular.jnl
-*** Running test: bn_set_cancel_redirect.jnl
-*** Running test: bn_min_max_smoothers.jnl
-*** Running test: bn_vector_symbols.jnl
-*** Running test: bn_variance_large.jnl
-*** Running test: bn_labnum_calendar.jnl
-*** Running test: bn665_bug_fixes.jnl
-*** Running test: bn_floatstr.jnl
-*** Running test: bn67_bug_fixes.jnl
-*** Running test: bn_NaN_note.jnl
-*** Running test: bn671_bug_fixes.jnl
-*** Running test: bn68_bug_fixes.jnl
-*** Running test: bn_ifv.jnl
-*** Running test: bn_randu2_randn2.jnl
-*** Running test: bn_axis_cf.jnl
+*** Running ferret script: bn_key_label_minmax.jnl
+*** Running ferret script: bn62_bug_fixes.jnl
+*** Running ferret script: bn_convolve.jnl
+*** Running ferret script: bn_tax_tstep.jnl
+*** Running ferret script: bn_grads_z.jnl
+*** Running ferret script: bn_clock_syms.jnl
+*** Running ferret script: bn63_bug_fixes.jnl
+*** Running ferret script: bn_axis_reversed_syms.jnl
+*** Running ferret script: bn_isdepth.jnl
+*** Running ferret script: bn_var_hist_levels.jnl
+*** Running ferret script: bn64_bug_fixes.jnl
+*** Running ferret script: bn_long_grid_names.jnl
+*** Running ferret script: bn_xml_repl.jnl
+*** Running ferret script: bn65_bug_fixes.jnl
+*** Running ferret script: bn_txtype_dmy.jnl
+*** Running ferret script: bn_n_open_dsets_sym.jnl
+*** Running ferret script: bn_multi_decade.jnl
+*** Running ferret script: bn_show_xml_file.jnl
+*** Running ferret script: bn66_bug_fixes.jnl
+*** Running ferret script: bn_netcdf4.jnl
+*** Running ferret script: bn_scat2grid_bin.jnl
+*** Running ferret script: bn_axis_dir_symbols.jnl
+*** Running ferret script: bn663_bug_fixes.jnl
+*** Running ferret script: bn_set_axis_regular.jnl
+*** Running ferret script: bn_set_cancel_redirect.jnl
+*** Running ferret script: bn_min_max_smoothers.jnl
+*** Running ferret script: bn_vector_symbols.jnl
+*** Running ferret script: bn_variance_large.jnl
+*** Running ferret script: bn_labnum_calendar.jnl
+*** Running ferret script: bn665_bug_fixes.jnl
+*** Running ferret script: bn_floatstr.jnl
+*** Running ferret script: bn67_bug_fixes.jnl
+*** Running ferret script: bn_NaN_note.jnl
+*** Running ferret script: bn671_bug_fixes.jnl
+*** Running ferret script: bn68_bug_fixes.jnl
+*** Running ferret script: bn_ifv.jnl
+*** Running ferret script: bn_randu2_randn2.jnl
+*** Running ferret script: bn_axis_cf.jnl
 bn_axis_cf.jnl, degrees_east, degrees_north, std names on axes:
 netcdf a {
 dimensions:
@@ -2886,59 +2886,59 @@ variables:
 		:history = "FERRET V6.97   5-May-16" ;
 		:Conventions = "CF-1.6" ;
 }
-*** Running test: bn_repeated_coords.jnl
-*** Running test: bn_xml_header.jnl
-*** Running test: bn_eof_simple.jnl
-*** Running test: bn_eof_simple2.jnl
-*** Running test: bn_interpolate_6d.jnl
-*** Running test: bn_regrid_6d.jnl
-*** Running test: bn_syntax_6d.jnl
-*** Running test: bn_expressions_6d.jnl
-*** Running test: bn_direction_fcns_6d.jnl
-*** Running test: bn_regrid_transforms_6d.jnl
-*** Running test: bn_aggregate_e.jnl
-*** Running test: bn_6d_lab_mode.jnl
-*** Running test: bn682_bug_fixes.jnl
-*** Running test: bn683_bug_fixes.jnl
-*** Running test: bn_outtype.jnl
-*** Running test: bn_ribbon_plot.jnl
-*** Running test: bn_descr_4digit.jnl
-*** Running test: bn_axis_outtype.jnl
-*** Running test: bn_axis_nonmonotonic.jnl
-*** Running test: bn_vec_mod.jnl
-*** Running test: bn685_bug_fixes.jnl
-*** Running test: bn_dsg_e_x.jnl
-*** Running test: bn_nco_append.jnl
-*** Running test: bn_nobounds.jnl
-*** Running test: bn_write_integer_att.jnl
-*** Running test: bn_descriptor_mc.jnl
-*** Running test: bn_plot_color_only.jnl
-*** Running test: bn_vtree.jnl
-*** Running test: bn686_bug_fixes.jnl
-*** Running test: bn_long_symnames.jnl
-*** Running test: bn_strdim.jnl
-*** Running test: bn_single_colorlev.jnl
-*** Running test: bn69_bug_fixes.jnl
-*** Running test: bn_bad_axis_bounds.jnl
-*** Running test: bn_enter_exit_GO.jnl
-*** Running test: bn_stddev.jnl
-*** Running test: bn_set_axis_name.jnl
-*** Running test: bn_let_remote.jnl
+*** Running ferret script: bn_repeated_coords.jnl
+*** Running ferret script: bn_xml_header.jnl
+*** Running ferret script: bn_eof_simple.jnl
+*** Running ferret script: bn_eof_simple2.jnl
+*** Running ferret script: bn_interpolate_6d.jnl
+*** Running ferret script: bn_regrid_6d.jnl
+*** Running ferret script: bn_syntax_6d.jnl
+*** Running ferret script: bn_expressions_6d.jnl
+*** Running ferret script: bn_direction_fcns_6d.jnl
+*** Running ferret script: bn_regrid_transforms_6d.jnl
+*** Running ferret script: bn_aggregate_e.jnl
+*** Running ferret script: bn_6d_lab_mode.jnl
+*** Running ferret script: bn682_bug_fixes.jnl
+*** Running ferret script: bn683_bug_fixes.jnl
+*** Running ferret script: bn_outtype.jnl
+*** Running ferret script: bn_ribbon_plot.jnl
+*** Running ferret script: bn_descr_4digit.jnl
+*** Running ferret script: bn_axis_outtype.jnl
+*** Running ferret script: bn_axis_nonmonotonic.jnl
+*** Running ferret script: bn_vec_mod.jnl
+*** Running ferret script: bn685_bug_fixes.jnl
+*** Running ferret script: bn_dsg_e_x.jnl
+*** Running ferret script: bn_nco_append.jnl
+*** Running ferret script: bn_nobounds.jnl
+*** Running ferret script: bn_write_integer_att.jnl
+*** Running ferret script: bn_descriptor_mc.jnl
+*** Running ferret script: bn_plot_color_only.jnl
+*** Running ferret script: bn_vtree.jnl
+*** Running ferret script: bn686_bug_fixes.jnl
+*** Running ferret script: bn_long_symnames.jnl
+*** Running ferret script: bn_strdim.jnl
+*** Running ferret script: bn_single_colorlev.jnl
+*** Running ferret script: bn69_bug_fixes.jnl
+*** Running ferret script: bn_bad_axis_bounds.jnl
+*** Running ferret script: bn_enter_exit_GO.jnl
+*** Running ferret script: bn_stddev.jnl
+*** Running ferret script: bn_set_axis_name.jnl
+*** Running ferret script: bn_let_remote.jnl
 ****** FERRET error: bn_let_remote.jnl failed ******
-*** Running test: bn691_bug_fixes.jnl
-*** Running test: bn_append_dsg.jnl
-*** Running test: bn_global_atts.jnl
-*** Running test: bn_conventions_history.jnl
-*** Running test: bn_center_key_labels.jnl
-*** Running test: bn_wgt_transform.jnl
-*** Running test: bn_show_outfile.jnl
-*** Running test: bn_date1900_array.jnl
-*** Running test: bn_spawn_size.jnl
-*** Running test: bn_polygon_log.jnl
-*** Running test: bn694_bug_fixes.jnl
-*** Running test: bn_permute_ascii.jnl
-*** Running test: bn_lon_lat_time_string.jnl
-*** Running test: bn_save_justdim.jnl
+*** Running ferret script: bn691_bug_fixes.jnl
+*** Running ferret script: bn_append_dsg.jnl
+*** Running ferret script: bn_global_atts.jnl
+*** Running ferret script: bn_conventions_history.jnl
+*** Running ferret script: bn_center_key_labels.jnl
+*** Running ferret script: bn_wgt_transform.jnl
+*** Running ferret script: bn_show_outfile.jnl
+*** Running ferret script: bn_date1900_array.jnl
+*** Running ferret script: bn_spawn_size.jnl
+*** Running ferret script: bn_polygon_log.jnl
+*** Running ferret script: bn694_bug_fixes.jnl
+*** Running ferret script: bn_permute_ascii.jnl
+*** Running ferret script: bn_lon_lat_time_string.jnl
+*** Running ferret script: bn_save_justdim.jnl
 netcdf a {
 dimensions:
 	TIME = 8 ;
@@ -3015,34 +3015,34 @@ data:
   2, 3, 4, 5, 6, 7, 8, 9,
   3, 4, 5, 6, 7, 8, 9, 10 ;
 }
-*** Running test: bn_time2d.jnl
-*** Running test: bn_legend_labels.jnl
-*** Running test: bn_DQ.jnl
-*** Running test: bn695_bug_fixes.jnl
-*** Running test: bn_f_tax_fcns.jnl
-*** Running test: bn_fmrc.jnl
-*** Running test: bn_return_defined.jnl
-*** Running test: bn_can_var_noerr.jnl
-*** Running test: bn_annotate.jnl
-*** Running test: bn_auxiliary.jnl
-*** Running test: bn_plot_ribbon_gaploc.jnl
-*** Running test: bn_time_short_axes.jnl
-*** Running test: bn_floatstr_extended.jnl
-*** Running test: bn696_bug_fixes.jnl
-*** Running test: bn_bin_regrid.jnl
-*** Running test: bn697_bug_fixes.jnl
-*** Running test: bn_aggregate_t.jnl
-*** Running test: bn_unquoted_args.jnl
-*** Running test: bn_long_lists.jnl
-*** Running test: bn_show_uvar_grid.jnl
-*** Running test: bn_aggregate_f.jnl
-*** Running test: bn_aggregate_tef.jnl
-*** Running test: bn_hovmuller_overlays.jnl
-*** Running test: bn_labels_on_taxis.jnl
-*** Running test: bn_dataset_qualifier.jnl
-*** Running test: bn_speedtest.jnl
-*** Running test: bn_show_noupcase.jnl
-*** Running test: bn_letd_attributes.jnl
+*** Running ferret script: bn_time2d.jnl
+*** Running ferret script: bn_legend_labels.jnl
+*** Running ferret script: bn_DQ.jnl
+*** Running ferret script: bn695_bug_fixes.jnl
+*** Running ferret script: bn_f_tax_fcns.jnl
+*** Running ferret script: bn_fmrc.jnl
+*** Running ferret script: bn_return_defined.jnl
+*** Running ferret script: bn_can_var_noerr.jnl
+*** Running ferret script: bn_annotate.jnl
+*** Running ferret script: bn_auxiliary.jnl
+*** Running ferret script: bn_plot_ribbon_gaploc.jnl
+*** Running ferret script: bn_time_short_axes.jnl
+*** Running ferret script: bn_floatstr_extended.jnl
+*** Running ferret script: bn696_bug_fixes.jnl
+*** Running ferret script: bn_bin_regrid.jnl
+*** Running ferret script: bn697_bug_fixes.jnl
+*** Running ferret script: bn_aggregate_t.jnl
+*** Running ferret script: bn_unquoted_args.jnl
+*** Running ferret script: bn_long_lists.jnl
+*** Running ferret script: bn_show_uvar_grid.jnl
+*** Running ferret script: bn_aggregate_f.jnl
+*** Running ferret script: bn_aggregate_tef.jnl
+*** Running ferret script: bn_hovmuller_overlays.jnl
+*** Running ferret script: bn_labels_on_taxis.jnl
+*** Running ferret script: bn_dataset_qualifier.jnl
+*** Running ferret script: bn_speedtest.jnl
+*** Running ferret script: bn_show_noupcase.jnl
+*** Running ferret script: bn_letd_attributes.jnl
 netcdf a {
 variables:
 	double MYVAR ;
@@ -3070,11 +3070,11 @@ variables:
 		:history = "FERRET V6.97   5-May-16" ;
 		:Conventions = "CF-1.6" ;
 }
-*** Running test: bn_list_clim_axes.jnl
-*** Running test: bn_climatology_attr.jnl
-*** Running test: bn_plot_along.jnl
-*** Running test: bn_show_commands.jnl
-*** Running test: bn_plot_decimate.jnl
-*** Running test: bn_auto_tprec.jnl
-*** Running test: bn_all_ef.jnl
-*** Running test: bn_startupfile.jnl
+*** Running ferret script: bn_list_clim_axes.jnl
+*** Running ferret script: bn_climatology_attr.jnl
+*** Running ferret script: bn_plot_along.jnl
+*** Running ferret script: bn_show_commands.jnl
+*** Running ferret script: bn_plot_decimate.jnl
+*** Running ferret script: bn_auto_tprec.jnl
+*** Running ferret script: bn_all_ef.jnl
+*** Running ferret script: bn_startupfile.jnl

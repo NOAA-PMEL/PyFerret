@@ -3079,6 +3079,7 @@ variables:
 *** Running ferret script: bn_startupfile.jnl
 *** Running ferret script: bn_outline_poly.jnl
 *** Running python script: testgetstrdata.py
+*** Running python script: testferregion.py
 *** Running python script: testferdset.py
 *** Running python script: testfervar.py
 *** Running python script: testferaxis.py

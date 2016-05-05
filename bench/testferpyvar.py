@@ -23,8 +23,8 @@ print ">>> pyferret.setwindow(1, axisasp=0.5, logo=False)"
 pyferret.setwindow(1,axisasp=0.5,logo=False)
 print ">>> pyferret.setdefaulttext(font='Arial')"
 pyferret.settextstyle(font='Arial')
-print ">>> pyferret.shade(coads.sstcopy['40S':'40N','100E':'100W','16-FEB'])"
-pyferret.shade(coads.sstcopy['40S':'40N','100E':'100W','16-FEB'])
+print ">>> pyferret.shadeplot(coads.sstcopy['40S':'40N','100E':'100W','16-FEB'])"
+pyferret.shadeplot(coads.sstcopy['40S':'40N','100E':'100W','16-FEB'])
 print ">>> pyferret.saveplot('testferpyvar.pdf')"
 pyferret.saveplot('testferpyvar.pdf')
 

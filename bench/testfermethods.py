@@ -13,30 +13,24 @@ pyferret.showdata(brief=False)
 
 print ">>> pyferret.setwindow(1, axisasp=0.75, color=(100,90,90), logo=False)"
 pyferret.setwindow(1, axisasp=0.75, color=(100,90,90), logo=False)
-print ">>> pyferret.settextstyle(font='sans', color='blue', bold=True, italic=True)"
-pyferret.settextstyle(font='sans', color='blue', bold=True, italic=True)
-print ">>> pyferret.setregion(I=slice(3,10))"
-pyferret.setregion(I=slice(3,10))
-print ">>> pyferret.run('show region')"
-pyferret.run('show region')
-print ">>> pyferret.setregion(T='15-FEB')"
-pyferret.setregion(T='15-FEB')
-print ">>> pyferret.run('show region')"
-pyferret.run('show region')
-print ">>> pyferret.contour(coads_uw.mywnd)"
-pyferret.contour(coads_uw.mywnd)
+print ">>> pyferret.settextstyle(font='arial', color='blue', bold=True, italic=True)"
+pyferret.settextstyle(font='arial', color='blue', bold=True, italic=True)
+print ">>> pyferret.run('SET REGION /T=15-FEB)"
+pyferret.run('SET REGION /T=15-FEB')
+print ">>> pyferret.contourplot(coads_uw.mywnd)"
+pyferret.contourplot(coads_uw.mywnd)
 print ">>> pyferret.saveplot('testfermethods_contour.pdf')"
 pyferret.saveplot('testfermethods_contour.pdf')
-print ">>> pyferret.fill(coads_uw.mywnd, line=True)"
-pyferret.fill(coads_uw.mywnd, line=True)
+print ">>> pyferret.fillplot(coads_uw.mywnd, line=True)"
+pyferret.fillplot(coads_uw.mywnd, line=True)
 print ">>> pyferret.saveplot('testfermethods_fill.pdf')"
 pyferret.saveplot('testfermethods_fill.pdf')
-print ">>> pyferret.shade(coads_uw.mywnd)"
-pyferret.shade(coads_uw.mywnd)
+print ">>> pyferret.shadeplot(coads_uw.mywnd)"
+pyferret.shadeplot(coads_uw.mywnd)
 print ">>> pyferret.saveplot('testfermethods_shade.pdf')"
 pyferret.saveplot('testfermethods_shade.pdf')
-print ">>> pyferret.setregion(Y=0,T='15-FEB')"
-pyferret.setregion(Y=0,T='15-FEB')
+print ">>> pyferret.run('SET REGION /Y=0 /T=15-FEB')"
+pyferret.run('SET REGION /Y=0 /T=15-FEB')
 print ">>> pyferret.lineplot(coads_uw.uwnd, vs=coads_uw.vwnd, color=coads_uw.mywnd)"
 pyferret.lineplot(coads_uw.uwnd, vs=coads_uw.vwnd, color=coads_uw.mywnd)
 print ">>> pyferret.saveplot('testfermethods_lineplot.pdf')"

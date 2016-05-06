@@ -8,40 +8,57 @@ import numbers
 import pyferret
 
 
-def setwindow(num=1, plotasp=None, axisasp=None, color=None, logo=None):
+def setwindow(num=1, plotasp=None, axisasp=None, color=None, thick=None, logo=None):
     """
     Assigns the plot window to use for subsequent plotting commands.
     Also provides assignment of common window plots.  
     Note that plotasp and axisasp cannot both be given.
-        num (int): window number 1-8 to use for plots
-        plotasp (float): aspect ratio (Y/X) for the plot window;
-            if not given, the current ratio is unchanged; 
-            the default ratio on start-up is 0.86
-        axisasp (float): aspect ratio (Y/X) for the plot axes;
-            if not given, the current ratio is unchanged; 
-            the default ratio on start-up is 0.75
+        num (int): window number 1-8 to use for plots.
+        plotasp (float): aspect ratio (Y/X) for the plot window.
+            If not given, the current ratio is unchanged.
+            The default ratio on start-up is 0.86
+        axisasp (float): aspect ratio (Y/X) for the plot axes.
+            If not given, the current ratio is unchanged.
+            The default ratio on start-up is 0.75
         color (string, tuple of int): background color for the plot;
             can be one of the color names 'black', 'blue', 'green', 
-            'lightblue', 'purple', or 'red', or 
-            a tuple of [0-100] int values giving RGB or RGBA values
+            'lightblue', 'purple', or 'red', or a tuple
+            of int values in [0,100] giving RGB or RGBA values.
+            If not given, the current value is unchanged.
+            The default background color on start-up is opaque white.
+        thick (float): line thickness scaling factor for the plot.
+            If not given, the current scaling factor is unchanged.
+            The default line thickness scaling factor on start-up is 1.0
         logo (boolean): include the Ferret logo in the plot?
-            if not given, the current value is unchanged.
+            If not given, the current value is unchanged.
+            The default on start-up is to include the logo.
     Raises a ValueError if a problem occurs.
     """
     # create and execute the SET WINDOW command
     cmdstr = 'SET WINDOW'
-    if plotasp and axisasp:
+    if (plotasp is not None) and (axisasp is not None):
         raise ValueError('only one of plotasp and axisasp can be given')
-    if plotasp:
+    if plotasp is not None:
         if (not isinstance(plotasp, numbers.Real)) or (plotasp <= 0):
-            raise ValueError('given plotasp %s is not a positive floating-point value' % str(plotasp))
+            raise ValueError('plotasp, if given, must be a positive number')
         cmdstr += '/ASPECT=' + str(plotasp)
-    if axisasp:
+    if axisasp is not None:
         if (not isinstance(axisasp, numbers.Real)) or (axisasp <= 0):
-            raise ValueError('given axisasp %s is not a positive floating-point value' % str(axisasp))
+            raise ValueError('axisasp, if given, must be a positive number')
         cmdstr += '/ASPECT=' + str(axisasp) + ':AXIS'
-    if color:
-        cmdstr += '/COLOR=' + str(color)
+    if thick is not None:
+        if (not isinstance(thick, numbers.Real)) or (thick <= 0):
+            raise ValueError('thick, if given, must be a positive number')
+        cmdstr += '/THICK=' + str(thick)
+    if color is not None:
+        if isinstance(color, str):
+            cmdstr += '/COLOR=' + color
+        elif isinstance(color, tuple):
+            if (len(color) < 3) or (len(color) > 4):
+                raise ValueError('a color tuple must have three or four integer values')
+            cmdstr += '/COLOR=' + str(color)
+        else:
+            raise ValueError('given color %s is not a string or tuple' % str(color))
     if (not isinstance(num, numbers.Integral)) or (num <= 0) or (num > 8):
         raise ValueError('window number %s is not a integer in [1,8]' % str(num))
     cmdstr += ' ' + str(num)
@@ -112,12 +129,14 @@ def showdata(brief=True, qual=''):
         raise ValueError('Ferret command "%s" failed: %s' % (cmdstr, errmsg))
 
 
-def contourplot(fvar, over=False, qual=''):
+def contourplot(fvar, region=None, over=False, qual=''):
     """
     Create a contour plot of the specified Ferret variable using the Ferret CONTOUR command.
     Using the fill method to generated a color-filled contour plot.
     The variable needs to be 2D (or qualifiers need to be added to specify a 2D slice).
         fvar (string or FerVar): Ferret variable to plot
+        region (FerRegion): space-time region to plot; 
+                if None, the full extents of the data will be used
         over (bool): overlay on an existing plot?
         qual (string): qualifiers to add to the Ferret SHADE command
     """
@@ -132,6 +151,10 @@ def contourplot(fvar, over=False, qual=''):
     cmdstr = 'CONTOUR'
     if over:
         cmdstr += '/OVER'
+    if region is not None:
+        if not isinstance(region, pyferret.FerRegion):
+            raise ValueError('region, if given, must be a FerRegion')
+        cmdstr += region._ferretqualifierstr();
     if qual:
         cmdstr += qual
     cmdstr += ' '
@@ -141,13 +164,15 @@ def contourplot(fvar, over=False, qual=''):
         raise ValueError('Ferret shade command (%s) failed: %s' % (cmdstr, errmsg))
 
 
-def fillplot(fvar, line=False, over=False, qual=''):
+def fillplot(fvar, line=False, region=None, over=False, qual=''):
     """
     Create a color-filled contour plot of the specified Ferret variable using the Ferret 
     FILL command.  Drawing of the contour lines themselves is optional.
     The variable needs to be 2D (or qualifiers need to be added to specify a 2D slice).
         fvar (string or FerVar): Ferret variable to plot
         line (bool): draw the contour lines?
+        region (FerRegion): space-time region to plot; 
+                if None, the full extents of the data will be used
         over (bool): overlay on an existing plot?
         qual (string): qualifiers to add to the Ferret SHADE command
     """
@@ -164,6 +189,10 @@ def fillplot(fvar, line=False, over=False, qual=''):
         cmdstr += '/LINE'
     if over:
         cmdstr += '/OVER'
+    if region is not None:
+        if not isinstance(region, pyferret.FerRegion):
+            raise ValueError('region, if given, must be a FerRegion')
+        cmdstr += region._ferretqualifierstr();
     if qual:
         cmdstr += qual
     cmdstr += ' '
@@ -173,12 +202,14 @@ def fillplot(fvar, line=False, over=False, qual=''):
         raise ValueError('Ferret shade command (%s) failed: %s' % (cmdstr, errmsg))
 
 
-def shadeplot(fvar, over=False, qual=''):
+def shadeplot(fvar, region=None, over=False, qual=''):
     """
     Create a colored plot of the specified Ferret variable using the Ferret SHADE command.
     (Plot coloring grid cells based on the variable value in that cell.)
     The variable needs to be 2D (or qualifiers need to be added to specify a 2D slice).
         fvar (string or FerVar): Ferret variable to plot
+        region (FerRegion): space-time region to plot; 
+                if None, the full extents of the data will be used
         over (bool): overlay on an existing plot?
         qual (string): qualifiers to add to the Ferret SHADE command
     """
@@ -193,6 +224,10 @@ def shadeplot(fvar, over=False, qual=''):
     cmdstr = 'SHADE'
     if over:
         cmdstr += '/OVER'
+    if region is not None:
+        if not isinstance(region, pyferret.FerRegion):
+            raise ValueError('region, if given, must be a FerRegion')
+        cmdstr += region._ferretqualifierstr();
     if qual:
         cmdstr += qual
     cmdstr += ' '
@@ -222,11 +257,113 @@ def shadewater():
         raise ValueError('Ferret script command (%s) failed: %s' % (cmdstr, errmsg))
 
 
-def lineplot(fvar, vs=None, color=None, thick=1.0, dash=None, title=None, over=False, nolab=False, qual=''):
+def pointplot(fvar, vs=None, color=None, sym=None, symsize=None, thick=None,
+             line=False, title=None, region=None, over=False, label=True, qual=''):
+    """
+    Create a point plot of the given value, or the given value versus another value (if vs is given),
+    possibly colored by another value (if color is a FerVar).
+    To create a line plot with symbols, use the pointplot command with the line option set to True.
+        fvar (string or FerVar): Ferret variable to plot
+        vs  (string or FerVar): if given, plot the above variable versus this variables
+        color: line color or variable used to determine line color; if
+            None: Ferret default color used,
+            color name (string): name of color to use,
+            color tuple (3 or 4-tupe of [0,100] int values): RGB or RGBA of color to use,
+            FerVar or variable name string: color according to the value of this variable
+                Note: color name strings are limited to (case insensitive) 
+                      'black', 'red', 'green', 'blue', 'lightblue', 'purple'
+                      other strings are assumed to be variable names
+        sym (int): Ferret symbol number of the symbol to draw for the points.
+                If not given, Ferret selects an appropriate symbol.
+        symsize (float): size of the symbol in inches.
+                If not given, Ferret select an appropriate size.
+        thick (float): line thickness scaling factor when drawing symbols and lines
+        line (bool): if True, draw a line between symbols/points
+        title (string): title for the plot; if not given,  Ferret's default title is used
+        region (FerRegion): space-time region to plot; 
+                if None, the full extents of the data will be used
+        over (bool): overlay onto an existing plot
+        label (bool): if False, suppress all plot labels
+        qual (string): qualifiers to add to the Ferret PLOT/LINE command
+    """
+    if not isinstance(qual, str):
+        raise ValueError('qual (Ferret qualifiers) must be a string')
+    if isinstance(fvar, str):
+        plotvar = fvar
+    elif isinstance(fvar, pyferret.FerVar):
+        plotvar = fvar._definition
+    else:
+        raise ValueError('fvar (Ferret variable to plot) must be a string or FerVar')
+    cmdstr = 'PLOT'
+    if vs is not None:
+        cmdstr += '/VS'
+        plotvar += ','
+        if isinstance(vs, str):
+            plotvar += vs
+        elif isinstance(vs, pyferret.FerVar):
+            plotvar += vs._definition
+        else:
+            raise ValueError('vs (second Ferret variable to plot) must be a string or FerVar')
+    if color is not None:
+        if isinstance(color, tuple):
+           cmdstr += '/COLOR=' + str(color)
+        elif isinstance(color, pyferret.FerVar):
+           cmdstr += '/RIBBON'
+           plotvar += ',' + color._definition
+        elif isinstance(color, str):
+            if color.upper() in ('BLACK','RED','GREEN','BLUE','LIGHTBLUE','PURPLE'):
+               cmdstr += '/COLOR=' + color
+            else:
+               cmdstr += '/RIBBON'
+               plotvar += ',' + color
+        else:
+            raise ValueError('color must be a tuple, string, or FerVar')
+    # always draw the symbols
+    cmdstr += '/SYMBOL'
+    if sym is not None:
+        if (not isinstance(sym, numbers.Integral)) or (sym < 0) or (sym > 88):
+            raise ValueError('sym is not a valid Ferret symbol number')
+        if sym == 0:
+            cmdstr += '=DOT'
+        else:
+            cmdstr += '=' + str(sym)
+    if symsize is not None:
+        if (not isinstance(symsize, numbers.Real)) or (symsize <= 0):
+            raise ValueError('symsize must be a positive number')
+        cmdstr += '/SIZE=' + str(symsize)
+    if thick is not None:
+        if (not isinstance(thick, numbers.Real)) or (thick <= 0):
+            raise ValueError('thick must be a positive number')
+        cmdstr += '/THICK=' + str(thick)
+    if line:
+        cmdstr += '/LINE'
+    if title is not None:
+       if not isinstance(title, str):
+           raise ValueError('title must be a string')
+       cmdstr += '/TITLE="' + title + '"'
+    if over:
+        cmdstr += '/OVER'
+    if region is not None:
+        if not isinstance(region, pyferret.FerRegion):
+            raise ValueError('region, if given, must be a FerRegion')
+        cmdstr += region._ferretqualifierstr();
+    if not label:
+        cmdstr += '/NOLABEL'
+    if qual:
+        cmdstr += qual
+    cmdstr += ' '
+    cmdstr += plotvar
+    (errval, errmsg) = pyferret.run(cmdstr)
+    if errval != pyferret.FERR_OK:
+        raise ValueError('Ferret plot command (%s) failed: %s' % (cmdstr, errmsg))
+
+
+def lineplot(fvar, vs=None, color=None, thick=None, dash=None, title=None, 
+             region=None, over=False, label=True, qual=''):
     """
     Create a line plot of the given value, or the given value versus another value (if vs is given),
     possibly colored by another value (if color is a FerVar).
-    To create a line plot with symbols, use the symbolplot command with the line option set to True.
+    To create a line plot with symbols, use the pointplot command with the line option set to True.
         fvar (string or FerVar): Ferret variable to plot
         vs  (string or FerVar): if given, plot the above variable versus this variables
         color: line color or variable used to determine line color; if
@@ -242,8 +379,10 @@ def lineplot(fvar, vs=None, color=None, thick=1.0, dash=None, title=None, over=F
              are the first drawn stroke length, first undrawn stroke length,
              second drawn stroke length, second undrawn stroke length of two dashes
         title (string): title for the plot; if not given,  Ferret's default title is used
+        region (FerRegion): space-time region to plot; 
+                if None, the full extents of the data will be used
         over (bool): overlay onto an existing plot
-        nolab (bool): if true, suppress all plot labels
+        label (bool): if False, suppress all plot labels
         qual (string): qualifiers to add to the Ferret PLOT/LINE command
     """
     if not isinstance(qual, str):
@@ -280,8 +419,8 @@ def lineplot(fvar, vs=None, color=None, thick=1.0, dash=None, title=None, over=F
             raise ValueError('color must be a tuple, string, or FerVar')
     if thick is not None:
         if (not isinstance(thick, numbers.Real)) or (thick <= 0):
-            raise ValueError('thick must be a positive floating-point value')
-        cmdstr += '/THICKNESS=' + str(thick)
+            raise ValueError('thick must be a positive number')
+        cmdstr += '/THICK=' + str(thick)
     if dash is not None:
         if (not isinstance(dash, tuple)) or (len(dash) != 4):
             raise ValueError('dash must be a tuple of four floats');
@@ -292,7 +431,11 @@ def lineplot(fvar, vs=None, color=None, thick=1.0, dash=None, title=None, over=F
        cmdstr += '/TITLE="' + title + '"'
     if over:
         cmdstr += '/OVER'
-    if nolab:
+    if region is not None:
+        if not isinstance(region, pyferret.FerRegion):
+            raise ValueError('region, if given, must be a FerRegion')
+        cmdstr += region._ferretqualifierstr();
+    if not label:
         cmdstr += '/NOLABEL'
     if qual:
         cmdstr += qual
@@ -301,7 +444,7 @@ def lineplot(fvar, vs=None, color=None, thick=1.0, dash=None, title=None, over=F
     (errval, errmsg) = pyferret.run(cmdstr)
     if errval != pyferret.FERR_OK:
         raise ValueError('Ferret plot command (%s) failed: %s' % (cmdstr, errmsg))
-    
+
 
 def saveplot(name, fmt='', xpix=None, ypix=None, xinch=None, yinch=None, qual=''):
     """

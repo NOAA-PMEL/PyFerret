@@ -22,8 +22,8 @@ run_tests:
 
 .PHONY: clean
 clean:
-	rm -f all_*_ncdump all_*_err all_*_log *.gif
-	rm -f ferret.jnl* bat.plt* `cat TRASH_FILES`
+	rm -f all_*_ncdump all_*_err all_*_log 
+	rm -f *.gif* ferret.jnl* bat.plt* `cat TRASH_FILES`
 	rm -fr subdir tmp
 
 #

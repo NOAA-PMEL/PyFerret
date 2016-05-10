@@ -212,7 +212,7 @@ if [ -f keep.ferret ]; then
 fi
 
 # Clean-up
-rm -f ferret.jnl* ferret.gif* bat.plt* `cat TRASH_FILES`
+rm -f ferret.jnl* ferret.gif* bnplot.gif* bat.plt* `cat TRASH_FILES`
 rm -fr subdir tmp
 
 now=`date`

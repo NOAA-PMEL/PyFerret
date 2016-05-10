@@ -43,18 +43,28 @@
 * programmer - steve hankin
 * V530 *sh* 1/01 
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V698  *acm* 5/16 Ticket 1845, 2404 fix; adjusting plot-axis ends for subspan 
+*		   modulo axes.
 
 	include 'ferret.parm'
+	include 'tmap_dims.parm'
+        include 'xtm_grid.cmn_text'
 
 * calling argument declarations:
 	INTEGER	grid, idim, inc, lo_ss, hi_ss
 	REAL    axis(*)
 
 * internal variable declarations:
-	INTEGER	ito, i
+	LOGICAL TM_ITS_SUBSPAN_MODULO, is_subspan, void_at_start, void_at_end
+	INTEGER	ito, i, iaxis
 	REAL*8	TM_WORLD
 
 	ito = 0
+	iaxis = grid_line(idim,grid) 
+	
+        is_subspan = TM_ITS_SUBSPAN_MODULO( iaxis  )
+        void_at_start = is_subspan .AND. (lo_ss.EQ.0)
+        void_at_end  = is_subspan .AND. (hi_ss.EQ.line_dim(iaxis)+1 )
 
 	IF (inc .EQ. 1) THEN
 * make a simple axis - 1 output point per axis point
@@ -62,6 +72,10 @@
 	      ito = ito + 1
 	      axis(ito) = TM_WORLD( i, grid, idim, box_middle )
 	   END DO
+	   IF (is_subspan) THEN
+	      IF (void_at_start) axis(1) = TM_WORLD( lo_ss, grid, idim, box_hi_lim )
+	      IF (void_at_end) axis(ito) = TM_WORLD( hi_ss, grid, idim, box_lo_lim )
+	   ENDIF
 
 	ELSEIF (inc .EQ. 2) THEN
 * make a 2-point "step" axis - output lo and hi points at each axis point
@@ -70,7 +84,10 @@
 	      axis(ito+2) = TM_WORLD( i, grid, idim, box_hi_lim )
 	      ito = ito + 2
 	   END DO
-
+	   IF (is_subspan) THEN
+	      IF (void_at_start) axis(1) = TM_WORLD( lo_ss, grid, idim, box_hi_lim )
+	      IF (void_at_end) axis(ito) = TM_WORLD( hi_ss, grid, idim, box_lo_lim )
+	   ENDIF
 	ELSE
 * make a 3-point "step" axis - lo then hi twice
 	   DO i = lo_ss, hi_ss
@@ -79,6 +96,11 @@
 	      axis(ito+3) = axis(ito+2)
 	      ito = ito + 3
 	   END DO
+	   IF (is_subspan) THEN
+	      IF (void_at_start) axis(1) = TM_WORLD( lo_ss, grid, idim, box_hi_lim )
+	      IF (void_at_end) axis(ito) = TM_WORLD( hi_ss, grid, idim, box_lo_lim )
+	      IF (void_at_end) axis(ito-1) = axis(ito+hi_ss*3)
+	   ENDIF
 	ENDIF
 
 	RETURN

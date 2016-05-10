@@ -1,0 +1,21 @@
+! err696_subspan_mod_strides 
+! See ticket 513. Axis is subspan modulo, and strides
+! on a plot with a larger region than the axis span caused the 
+! shade plot to smear out beyond the edges.
+
+define axis/x/units=degrees_e xax = {-82.96,-81.46,-79.96,-78.47,-76.97,-75.48,-73.98,-72.48,-70.99,-69.49}
+let xx = x[gx=xax]
+let yy = y[y=4:20:2]
+let d10 = randu(xx) - randu(yy)
+
+! previously smeared out to the plot edges.
+set view upper
+shade/hlim=-95:-60/vlim=0:25 d10[i=1:10:2,j=1:10]
+
+! similar behavior with overlays
+set view lower
+use coads_climatology
+shade/L=3/pal=white/nokey/x=-180:0/y=0:30/title="Overlay Test" sst
+shade/over d10[i=1:10:2,j=1:10]
+
+frame/file=bn_subspan_mod_strides.gif

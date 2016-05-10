@@ -56,6 +56,7 @@
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
 *                  dimension is now an arg to SECS_TO_TSTEP.
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
+* V698  *acm* 5/16 Ticket 1845 fix; adjusting plot-axis ends for subspan modulo axes.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -69,6 +70,8 @@
 	REAL*8	ww_lo, ww_hi
 
 * internal variable declarations:
+	LOGICAL TM_ITS_SUBSPAN_MODULO, is_subspan, void_at_start, void_at_end
+	INTEGER CGRID_AXIS, CAXIS_LEN, iaxis, lo_ss, hi_ss
 	INTEGER	imp_ndim, exp_ndim, imp_dim(4), exp_dim(4), grid,
      .		lo_edge, hi_edge
 	REAL*8	TM_WORLD, SECS_TO_TSTEP, ww_low, ww_hiw
@@ -83,18 +86,35 @@
 	   lo_edge =  box_lo_lim
 	   hi_edge =  box_hi_lim
 
+* Is the start or end in the subspan modulo void cell? If so bring in the region spec.
+	   iaxis = CGRID_AXIS(idim,imp_cx)
+	   lo_ss = cx_lo_ss(imp_cx,idim)
+	   hi_ss = cx_hi_ss(imp_cx,idim)
+	   is_subspan = TM_ITS_SUBSPAN_MODULO( iaxis  )
+	   void_at_start = is_subspan .AND. (lo_ss .EQ.0)
+	   void_at_end   = is_subspan .AND. (hi_ss .EQ. CAXIS_LEN(idim,imp_cx)+1 )
+
+	   IF (is_subspan) THEN
+              IF (void_at_start) THEN 
+	         lo_ss = lo_ss + 1
+	         ww_lo = TM_WORLD( lo_ss, grid, idim, box_lo_lim )
+              ENDIF
+              IF (void_at_end  )  THEN 
+	         hi_ss = hi_ss - 1
+	         ww_hi = TM_WORLD( hi_ss, grid, idim, box_hi_lim )
+              ENDIF
+	   ENDIF
+
 * 3/95 but for contour (and filled contour) plots we can only plot the edges
 * up to the actual location of the point
         IF ( cmnd_num .EQ. cmnd_contour ) THEN
            ww_lo = MAX( ww_lo,
-     .                  TM_WORLD(cx_lo_ss(imp_cx,idim),grid,idim,
-     .                           box_middle)                    )
+     .                  TM_WORLD(lo_ss,grid,idim,box_middle)                    )
            ww_hi = MIN( ww_hi,
-     .                  TM_WORLD(cx_hi_ss(imp_cx,idim),grid,idim,
-     .                           box_middle)                    )
+     .                  TM_WORLD(hi_ss,grid,idim,box_middle)                    )
         ENDIF
 
-* contour expression has its own limits imbedded ?
+* contour expression has its own limits embedded ?
 	IF ( uvar_given(idim,uvar) .LT. uvlim_needed ) RETURN
 
 * contour expression depends on command limits - use 'em
@@ -127,7 +147,7 @@
 	      ww_hi = MIN( ww_hiw, ww_hi )
 	   ENDIF
 	ENDIF
-	
+
 
 * For a one-point axis and contour plot, return the lo and hi ww requested
         IF (np .EQ. 1) THEN

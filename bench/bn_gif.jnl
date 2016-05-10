@@ -175,6 +175,9 @@ GO bn_labels_on_taxis
 GO bn_reset
 GO err696_contour_conset
 
+GO bn_reset
+GO err696_subspan_mod_strides
+
 exit/command
 
 

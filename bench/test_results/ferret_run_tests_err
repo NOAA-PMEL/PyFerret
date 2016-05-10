@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 May  9 17:29 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
+lrwxrwxrwx. 1 ksmith oerdnewp 12 May 10 15:21 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -279,9 +279,10 @@ Benchmark scripts that will be run:
    bn_plot_decimate.jnl
    bn_auto_tprec.jnl
    bn_gif.jnl
+   bn_ps.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
-Beginning at Mon May  9 18:22:16 PDT 2016
+Beginning at Tue May 10 15:39:18 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -4549,6 +4550,41 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XAX
+*** Running ferret script: bn_ps.jnl
+ Cached data cleared from memory
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
+plot/i=1:10/j=1:20/nolabel i+j
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i,i+j"
+plot/i=1:10/j=1:20/nolabel i,i+j
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j,i"
+plot/i=1:10/j=1:20/nolabel i+j,i
+ **ERROR: dimensions improperly specified: differing axes:
+          first line is on Y axis
+          line 2 is on X axis
+plot/i=1:10/j=1:20/nolabel j,i
+ **ERROR: dimensions improperly specified: unequal line lengths:
+          First expression has 20 points.
+          Expression 2 has 10 points:
+          "plot/i=1:10/j=1:20/vs/line/nolabel j,i"
+plot/i=1:10/j=1:20/vs/line/nolabel j,i
+ **ERROR: dimensions improperly specified: must be a 2D region
+          contour/i=1:10/j=1:20/nolabel i
+contour/i=1:10/j=1:20/nolabel i
+ **ERROR: invalid command: can only CONTOUR  single fields
+          Use /OVERLAY for multiple variables
+contour/i=1:10/j=1:20/nolabel i/j,j/i
+ **ERROR: invalid command: VECTOR requires paired components
+vector/i=1:10/j=1:20/nolabel i/j
+ **ERROR: invalid command: VECTOR requires paired components
+vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
+Re-defining viewport LM6
+Re-defining viewport UM6
+ **ERROR: invalid command: illegal format type - must be "GIF"
+          frame/file=bnplot.ps
+frame/file=bnplot.ps
 *** Running ferret script: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -4570,4 +4606,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
-Ended at Mon May  9 18:23:24 PDT 2016
+Ended at Tue May 10 15:40:25 PDT 2016

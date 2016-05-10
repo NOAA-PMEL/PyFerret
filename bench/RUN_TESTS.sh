@@ -95,14 +95,14 @@ echo "Note: $bcomment" >> $log_file
 if ! echo "$fver" | grep -q "pyferret"; then
    ispyferret=0
 #  command-line options for ferret
-   feropts="-gif -noverify"
+   feropts="-nojnl -gif -noverify"
 #  external functions search path
    FER_EXTERNAL_FUNCTIONS="$efdir"
    export FER_EXTERNAL_FUNCTIONS
 else
    ispyferret=1
 #  command-line options for pyferret
-   feropts="-quiet -nodisplay -noverify -linebuffer"
+   feropts="-nojnl -quiet -nodisplay -noverify -linebuffer"
 #  external functions search path
    PYFER_EXTERNAL_FUNCTIONS="$efdir"
    export PYFER_EXTERNAL_FUNCTIONS
@@ -184,6 +184,7 @@ for script in $jnl_scripts; do
    cat all_ncdump.out >> $ncdump_file
    rm -f all_ncdump.out
    rm -f ferret.gif
+   rm -f ferret.png
 done
 
 if [ "$ispyferret" -ne 0 ]; then
@@ -212,7 +213,7 @@ if [ -f keep.ferret ]; then
 fi
 
 # Clean-up
-rm -f ferret.jnl* ferret.gif* bnplot.gif* bat.plt* `cat TRASH_FILES`
+rm -f `cat TRASH_FILES`
 rm -fr subdir tmp
 
 now=`date`

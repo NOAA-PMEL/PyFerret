@@ -72,6 +72,8 @@
 * V68    4/11  Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V698  *acm* 5/16 Ticket 1845, 2404 fix; adjusting plot-axis ends for subspan 
+*		   modulo axes (as in axis_intervals.F for 2D plots).
 
         include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -143,33 +145,23 @@
 		   d_regrid = MIN( d_regrid, axis(i+1)-axis(i) )
 		   regrid = .TRUE.
 
-*     If irregularity is found only because of the void point on the axis,
-*     set regrid flag back to false
-
-                   IF (is_subspan .AND. void_at_start .AND. i.EQ.lo_cx+1)
-     .                regrid = .FALSE.
-                   IF (is_subspan .AND. void_at_end .AND. i.EQ.hi_cx-1)
-     .                regrid = .FALSE.
-                   IF (is_subspan .AND. (i.EQ.-1 .OR. i.EQ.0) )
-     .                regrid = .FALSE.
-
 	      ENDIF
  200	   CONTINUE
 	ENDIF
 
 * regridding parameters
-	lo_world = axis(lo_cx)
-	hi_world = axis(hi_cx)
+       lo_world = axis(lo_cx)
+       hi_world = axis(hi_cx)
 
 * If the start or end point is the modulo subspan void point, return
 * the actual first or last axis point instead.
-
-        IF (is_subspan) THEN
+ 
+         IF (is_subspan) THEN
            IF (void_at_start) lo_world = axis(lo_cx+1)
            IF (void_at_end  ) hi_world = axis(hi_cx-1)
-        ENDIF
-
-	n_regrid = INT( (hi_world - lo_world) / d_regrid ) + 1
+         ENDIF
+ 
+        n_regrid = INT( 0.5+((hi_world - lo_world) / d_regrid) ) + 1
 
 * plot vertical z axes upside down ?
 

@@ -1,0 +1,27 @@
+! err696_shade_subspan_clim
+! See ticket 2404
+
+def ax/edges/t/unit="day"/t0=1-jan-0001/cal=gregorian/modulo=365.25 \
+tax = {31, 59.2425, 90.2425, 120.2425, 151.2425, 181.2425, 212.2425}
+let a = t[gt=tax]
+save/clob/file=a.nc a
+can var a
+can axis tax
+use a.nc
+can view
+
+! The top-left SHADE plot looks fine.
+set view ul; shade a*x[gx=0:10:1]
+
+! But the top-right SHADE plot is all messed up; it shifts the data 
+! later by a full month, and stretches the last (shifted) cell all 
+! the way to the upper limit of the plot domain
+
+set view ur; shade/t=1-jan-0001:1-jan-0002 a*x[gx=0:10:1]
+sh sym ppl$ymin, ppl$ymax
+
+! In the bottom-right line plot, the actual plotted data look ok. 
+! But the plot limits extend all the way from 1-JUL-0000 to 1-MAR-0002, 
+! rather than being shrink-wrapped around the data.
+
+set view lr; plot/step=con/t=1-jan-0001:1-jan-0002 a

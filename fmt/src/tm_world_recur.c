@@ -58,6 +58,7 @@
                     - fixed bug in strides on modulo parent axis
 
     V542: 10/02 *sh* - serious bug fixes in non-modulo subspan modulo
+    V698:  5/16 *acm*  ticket 513 - subspan modulo and strides
 
    compile this with
    cc -c -g tm_world_recur.c
@@ -101,6 +102,7 @@ double FORTRAN(tm_world_recur)
   int isub, rmod;
   int axis = *iaxis;   /* these FORTRAN arrs start at 0 like C */
   int line_len = line_dim[axis];
+  int is_subspan;
 
 /*
    if this is a child (e.g. every Nth point) of an irregularly-spaced
@@ -146,6 +148,48 @@ double FORTRAN(tm_world_recur)
 	  }
 
 	  parent_len = line_dim[ line_parent[axis] ];
+
+/* Handle subspan modulo axes, checking that if we are getting worldcoordinate 
+   data from the cells at the defined axis edges the result doesn't stray into 
+   the modulo void cell. Adaphed from logic for is_subspan in axis_intervals.F*/
+
+	  is_subspan = ( FORTRAN(tm_its_subspan_modulo) (&line_parent[axis]) );
+	  if (line_modulo[ line_parent[axis] ] && is_subspan)
+	  {
+		  if (lo_ss == 0 || lo_ss == -1)
+		  { 
+			  new_where = BOX_LO_LIM;
+			  lo_ss = 1;
+			  tm_world = (
+			      FORTRAN(tm_world_recur)
+			      (&lo_ss,
+			       &(line_parent[axis]),
+			       &new_where,
+			       max_lines, line_mem, line_parent,
+			       line_class, line_dim,
+			       line_start, line_delta,
+			       line_subsc1, line_modulo, line_modulo_len,
+			       line_regular) );
+			  return(tm_world);
+		  }
+		  if (hi_ss == parent_len+1)
+		  {
+			  new_where = BOX_HI_LIM;
+			  hi_ss = parent_len;
+			  tm_world = (
+			      FORTRAN(tm_world_recur)
+			      (&lo_ss,
+			       &(line_parent[axis]),
+			       &new_where,
+			       max_lines, line_mem, line_parent,
+			       line_class, line_dim,
+			       line_start, line_delta,
+			       line_subsc1, line_modulo, line_modulo_len,
+			       line_regular) );
+			  return(tm_world);
+		  }
+	  } 
+
 	  if ( line_modulo[ line_parent[axis] ]   /* 2/02 bug fix */
 	       || (lo_ss>=1 && hi_ss<=parent_len) ) {  /* interpolate */
 	    new_where = BOX_MIDDLE;

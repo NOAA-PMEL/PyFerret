@@ -237,21 +237,95 @@ def shadeplot(fvar, region=None, over=False, qual=''):
         raise ValueError('Ferret shade command (%s) failed: %s' % (cmdstr, errmsg))
 
 
-def shadeland():
+def shadeland(res=20, color='gray', over=True, solid=True, X=None, Y=None):
     """
-    Shades land as gray figures to the current longitude-latitude plot.
+    Shades land masses for the current longitude-latitude plot or the specified X-Y region.
+        res (int): ETOPO dataset resolution (in minutes of a degree) to use; 
+            the corresponding ETOPO dataset (eg, etopo20.cdf for 20) must be available.
+            Typically 5, 10, 20, 40, 60, 120 are available from Ferret's standard datasets.
+        color (str): name of the color or color palette to used for land.
+        over (bool): if true, overlay onto the current longitude-latitude plot;
+            if False, create a new plot of the given region
+        solid (bool): if True, shade the land in a single solid color;
+            if False, shade different elevations using the given color palette
+        X (str): longitude limits for the region as low:high
+            If not given and over is False, '0E:360E' is used.
+            if not given and over is True, the full range of the given plot is used.
+        Y (str): latitude limits for the region as low:high
+            If not given and over is False, '90S:90N' is used.
+            If not given and over is True, the full range of the given plot is used.
     """
-    cmdstr = 'GO FLAND'
+    cmdstr = 'GO fland'
+    cmdstr += ' ' + str(res)
+    cmdstr += ' ' + str(color)
+    if over:
+        cmdstr += ' OVERLAY'
+    else:
+        cmdstr += ' BASEMAP'
+    if solid:
+        cmdstr += ' SOLID'
+    else:
+        cmdstr += ' DETAILED'
+    if X is not None:
+        cmdstr += ' X=' + str(X)
+    elif not over:
+        # assign the default here even though this matches the script
+        cmdstr += ' X=0E:360E'
+    elif Y is not None:
+        # if Y is given, then have to have an X argument;
+        # needs to be a double wrap for a complete overlay
+        cmdstr += ' X=0E:720E'
+    if Y is not None:
+        cmdstr += ' Y=' + str(Y)
+    elif not over:
+        # assign the default here even though this matches the script
+        cmdstr += ' Y=90S:90N'
     (errval, errmsg) = pyferret.run(cmdstr)
     if errval != pyferret.FERR_OK:
         raise ValueError('Ferret script command (%s) failed: %s' % (cmdstr, errmsg))
 
 
-def shadewater():
+def shadewater(res=20, color='gray', over=True, solid=True, X=None, Y=None):
     """
-    Shades oceans as gray figures to the current longitude-latitude plot.
+    Shades water masses for the current longitude-latitude plot or the specified region.
+        res (int): ETOPO dataset resolution (in minutes of a degree) to use; 
+            the corresponding ETOPO dataset (eg, etopo20.cdf for 20) must be available.
+            Typically 5, 10, 20, 40, 60, 120 are available from Ferret's standard datasets.
+        color (str): name of the color or color palette to used for water masses
+        over (bool): if true, overlay onto the current longitude-latitude plot;
+            if False, create a new plot of the given region
+        solid (bool): if True, shade the water masses in a single solid color;
+            if False, shade different depths using the given color palette
+        X (str): longitude limits for the region as low:high; 
+            if not given and over is False, '0E:360E' is used
+        Y (str): latitude limits for the region as low:high; 
+            if not given and over is False, '90S:90N'
     """
-    cmdstr = 'GO FOCEAN'
+    cmdstr = 'GO focean'
+    cmdstr += ' ' + str(res)
+    cmdstr += ' ' + str(color)
+    if over:
+        cmdstr += ' OVERLAY'
+    else:
+        cmdstr += ' BASEMAP'
+    if solid:
+        cmdstr += ' SOLID'
+    else:
+        cmdstr += ' DETAILED'
+    if X is not None:
+        cmdstr += ' X=' + str(X)
+    elif not over:
+        # assign the default here even though this matches the script
+        cmdstr += ' X=0E:360E'
+    elif Y is not None:
+        # if Y is given, then have to have an X argument;
+        # needs to be a double wrap for a complete overlay
+        cmdstr += ' X=0E:720E'
+    if Y is not None:
+        cmdstr += ' Y=' + str(Y)
+    elif not over:
+        # assign the default here even though this matches the script
+        cmdstr += ' Y=90S:90N'
     (errval, errmsg) = pyferret.run(cmdstr)
     if errval != pyferret.FERR_OK:
         raise ValueError('Ferret script command (%s) failed: %s' % (cmdstr, errmsg))

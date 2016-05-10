@@ -1,5 +1,8 @@
 ! err581_subspanx_fill_bug.jnl
 ! bug 900: subspan longitude axis and hlimits gets wrong data
+! 
+! Further fixes 5/2016, with other subspan modulo work.
+! Don't list ppl$xlow, ppl$xhigh.
 
 use coads_climatology
 save/clobber/y=0/x=130e:80w/file=err581_subspanx_fill_bug.nc sst
@@ -9,7 +12,7 @@ set view left; shade/x=120e:80w sst  ! works correctly
 
 set view right; fill/x=120e:80w sst
 
-sh sym ppl$xmin, ppl$xmax    ! should be 131, 279
-sh sym ppl$xlow, ppl$xhigh   ! should be 165, 259
+! look at axis coord. range 5/9/2016
+sh sym ppl$xmin, ppl$xmax    ! should be 131, 279 
 
 sp rm -f err581_subspanx_fill_bug.nc

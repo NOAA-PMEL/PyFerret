@@ -375,6 +375,13 @@
      .       ds_var_scale(ivar), ds_var_off(ivar), var, totsize,
      .       ds_bad_flag(ivar), ds_missing_flag(ivar) )
 
+* If its an Epic file, the missing-flag is not in the file, and
+* precision conversion means they won't match. Fill the missing data
+* with the right double precision values.
+        IF (ds_type(dset) .EQ. 'ECDF') THEN 
+           CALL TM_BAD_EPIC(var, totsize, ds_bad_flag(ivar) )
+        ENDIF
+
 * successful completion
 	status = merr_ok
 	RETURN

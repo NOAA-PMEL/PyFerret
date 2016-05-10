@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 May  5 11:01 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
+lrwxrwxrwx. 1 ksmith oerdnewp 12 May 10 15:21 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -17,7 +17,6 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-PYFER_EXTERNAL_FUNCTIONS=/home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -52,6 +51,7 @@ Benchmark scripts that will be run:
    bn_odd_variable_name.jnl
    bn_test_stream.jnl
    bn_define_axes.jnl
+   bn_pattern.jnl
    bn_polygon.jnl
    bn500_bug_fixes.jnl
    bn_sample.jnl
@@ -268,8 +268,6 @@ Benchmark scripts that will be run:
    bn_show_uvar_grid.jnl
    bn_aggregate_f.jnl
    bn_aggregate_tef.jnl
-   bn_hovmuller_overlays.jnl
-   bn_labels_on_taxis.jnl
    bn_dataset_qualifier.jnl
    bn_speedtest.jnl
    bn_show_noupcase.jnl
@@ -280,9 +278,11 @@ Benchmark scripts that will be run:
    bn_show_commands.jnl
    bn_plot_decimate.jnl
    bn_auto_tprec.jnl
+   bn_gif.jnl
+   bn_ps.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
-Beginning at Thu May  5 12:46:09 PDT 2016
+Beginning at Tue May 10 15:39:18 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -953,6 +953,12 @@ Replacing definition of axis XAX
 Replacing definition of axis XAX2
            *** NOTE: (fyi) units are not subject to auto-conversion: BLAHS
 Replacing definition of axis XAX2
+*** Running ferret script: bn_pattern.jnl
+ Cached data cleared from memory
+           *** NOTE: in GIF mode: ignoring SET MODE METAFILE
+           *** NOTE: Only one window can be open in batch mode
+           *** NOTE: in GIF mode: ignoring SET MODE METAFILE
+           *** NOTE: Cannot cancel window when in batch mode
 *** Running ferret script: bn_polygon.jnl
  Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -4071,6 +4077,13 @@ Replacing definition of axis XAX
 Replacing definition of axis XAXIS
  LISTing to file a.nc
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running ferret script: bn_aggregate_t.jnl
  Cached data cleared from memory
  LISTing to file tmp/tagg_reg_1.nc
@@ -4429,13 +4442,6 @@ DEFINE DATA/AGGREGAT/E tfe_short = tf_e1, tf_e2_short, tf_e3, tf_e4, tf_e5
 DEFINE DATA/AGGREGAT/E bad_ens = te_f01, te_f03, te_f04
  **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
 DEFINE DATA/AGGREGAT/F bad_fmrc = tf_e1, tf_e3, tf_e4
-*** Running ferret script: bn_hovmuller_overlays.jnl
- Cached data cleared from memory
-Replacing definition of axis TDAYS
- Using every   4th vector in the X direction
-*** Running ferret script: bn_labels_on_taxis.jnl
- Cached data cleared from memory
-Replacing definition of axis TAX
 *** Running ferret script: bn_dataset_qualifier.jnl
  Cached data cleared from memory
  LISTing to file a.nc
@@ -4483,6 +4489,102 @@ Replacing definition of axis TAX
 Replacing definition of axis TAX
 Replacing definition of axis TAX
 Replacing definition of axis TAX
+*** Running ferret script: bn_gif.jnl
+ Cached data cleared from memory
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
+plot/i=1:10/j=1:20/nolabel i+j
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i,i+j"
+plot/i=1:10/j=1:20/nolabel i,i+j
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j,i"
+plot/i=1:10/j=1:20/nolabel i+j,i
+ **ERROR: dimensions improperly specified: differing axes:
+          first line is on Y axis
+          line 2 is on X axis
+plot/i=1:10/j=1:20/nolabel j,i
+ **ERROR: dimensions improperly specified: unequal line lengths:
+          First expression has 20 points.
+          Expression 2 has 10 points:
+          "plot/i=1:10/j=1:20/vs/line/nolabel j,i"
+plot/i=1:10/j=1:20/vs/line/nolabel j,i
+ **ERROR: dimensions improperly specified: must be a 2D region
+          contour/i=1:10/j=1:20/nolabel i
+contour/i=1:10/j=1:20/nolabel i
+ **ERROR: invalid command: can only CONTOUR  single fields
+          Use /OVERLAY for multiple variables
+contour/i=1:10/j=1:20/nolabel i/j,j/i
+ **ERROR: invalid command: VECTOR requires paired components
+vector/i=1:10/j=1:20/nolabel i/j
+ **ERROR: invalid command: VECTOR requires paired components
+vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
+Re-defining viewport LM6
+Re-defining viewport UM6
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+Re-defining viewport LM6
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+Re-defining viewport UM6
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Re-defining viewport UL6
+Re-defining viewport UM6
+Re-defining viewport UR6
+Re-defining viewport LL6
+Re-defining viewport LR6
+Replacing definition of axis TDAYS
+ Using every   4th vector in the X direction
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+*** Running ferret script: bn_ps.jnl
+ Cached data cleared from memory
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
+plot/i=1:10/j=1:20/nolabel i+j
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i,i+j"
+plot/i=1:10/j=1:20/nolabel i,i+j
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j,i"
+plot/i=1:10/j=1:20/nolabel i+j,i
+ **ERROR: dimensions improperly specified: differing axes:
+          first line is on Y axis
+          line 2 is on X axis
+plot/i=1:10/j=1:20/nolabel j,i
+ **ERROR: dimensions improperly specified: unequal line lengths:
+          First expression has 20 points.
+          Expression 2 has 10 points:
+          "plot/i=1:10/j=1:20/vs/line/nolabel j,i"
+plot/i=1:10/j=1:20/vs/line/nolabel j,i
+ **ERROR: dimensions improperly specified: must be a 2D region
+          contour/i=1:10/j=1:20/nolabel i
+contour/i=1:10/j=1:20/nolabel i
+ **ERROR: invalid command: can only CONTOUR  single fields
+          Use /OVERLAY for multiple variables
+contour/i=1:10/j=1:20/nolabel i/j,j/i
+ **ERROR: invalid command: VECTOR requires paired components
+vector/i=1:10/j=1:20/nolabel i/j
+ **ERROR: invalid command: VECTOR requires paired components
+vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
+Re-defining viewport LM6
+Re-defining viewport UM6
+ **ERROR: invalid command: illegal format type - must be "GIF"
+          frame/file=bnplot.ps
+frame/file=bnplot.ps
 *** Running ferret script: bn_all_ef.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -4504,4 +4606,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
-Ended at Thu May  5 12:47:15 PDT 2016
+Ended at Tue May 10 15:40:25 PDT 2016

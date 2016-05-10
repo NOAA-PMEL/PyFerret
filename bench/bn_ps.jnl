@@ -40,7 +40,9 @@ set mode/last ignore
 ppl list plot
 
 ! enlarge it to accomodate an additional 50% width
-ppl size 15.3,8.8
+! ppl size 15.3,8.8
+! in PyFerret must use SET WINDOW
+set win /xinch=15.3 /yinch=8.8
 
 ! turn on metafile (enabled 10/29/91)
 ! commented out 9/97 - instead set in bn450_all.jnl
@@ -73,10 +75,8 @@ plot/l=1:99000/nolabel sin(200000/(l+10000))
 ! reset to normal axis lengths and prepare for a new piccie
 !ppl axlen 8
 
-set mode ignore
-frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
-can mode ignore
-exit/command
+frame/file=bnplot_4.pdf   ! Not an error in PyFerret
+frame/file=bnplot_4.ps    ! Not an error in PyFerret
 
 
 

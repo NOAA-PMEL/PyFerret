@@ -43,7 +43,9 @@ set mode/last ignore
 ppl list plot
 
 ! enlarge it to accomodate an additional 50% width
-ppl size 15.3,8.8
+! ppl size 15.3,8.8
+! in PyFerret must use SET WINDOW
+set win /xinch=15.3 /yinch=8.8
 
 ! turn on metafile (enabled 10/29/91)
 ! commented out 9/97 - instead set in bn450_all.jnl
@@ -75,7 +77,7 @@ plot/l=1:99000/nolabel sin(200000/(l+10000))
 
 ! reset to normal axis lengths and prepare for a new piccie
 !ppl axlen 8
-frame/file=bnplot.gif
+frame/file=bnplot_1.gif
 set wind/clear
 
 ! draw six frames
@@ -103,7 +105,7 @@ set view um6
 shade/i=1:50/j=1:50/nolabel i/(j+20)
 contour/i=1:50/j=1:50/over/nolabel (sin(i/20)+j-20)^2+(-1*cos(j/10)+i-20)^2
 vector/i=1:50/j=1:50/overlay/nolabel j-20+(i-i),i-20+(j-j)
-frame/file=bnplot.gif
+frame/file=bnplot_2.gif
 ! additions for version 3.01 "/TITLE=" controls
 cancel viewports
 set view ul6
@@ -129,7 +131,7 @@ wire/view=0,0,2/i=1:20/j=1:20/title="My Egg Carton"/nolabel sin(i/3)*cos(j/4)
 set view ll6
 plot/vs/title="My Custom Title"/i=1:100/nolabel sin(i/6),sin(i/9),sin(i/12)
 plot/vs/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)
-frame/file=bnplot.gif
+frame/file=bnplot_3.gif
 
 ! Prior to v5.8 could not get the window size in pixels when in gif mode
 show symbol ppl$xpixel
@@ -174,6 +176,9 @@ GO bn_labels_on_taxis
 
 GO bn_reset
 GO err696_contour_conset
+
+GO bn_reset
+GO err696_subspan_mod_strides
 
 exit/command
 

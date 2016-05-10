@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 117410957 May  5 10:18 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 117416685 May  9 16:44 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: tickets 2366 and 2364, subspan modulo and transformations
+Note:  tickets 513, 1845, 2404: subspan modulo fixes
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Thu May 5 10:32:44 PDT 2016
+Beginning at Mon May 9 16:45:57 PDT 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1814,6 +1814,7 @@ Replacing definition of axis XAX
 Replacing definition of axis XFINE
 Replacing definition of axis YFINE
  LISTing to file fine.dat
+Cannot create cookie file
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: illegal limits: One-point independent axis: Requires a /HLIMIT or /VLIMIT specification
@@ -2172,8 +2173,11 @@ Replacing definition of axis TIME
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
+Cannot create cookie file
+Cannot create cookie file
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
+Cannot create cookie file
 CURL Error: Couldn't resolve host name
 curl error details: 
  PERMANENT data cleared from memory
@@ -2363,6 +2367,8 @@ set axis/stride=2 NORMAL
  LISTing to file tripolar_missing_lon.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Cannot create cookie file
+Cannot create cookie file
 CURL Error: Couldn't resolve host name
 curl error details: 
  PERMANENT data cleared from memory
@@ -4106,6 +4112,8 @@ SET DAT/FORM=CDF ft_cal_mixed.nc
 Replacing definition of axis tday
 Replacing definition of axis xax
  LISTing to file myfile.nc
+Cannot create cookie file
+Cannot create cookie file
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4181,6 +4189,20 @@ Replacing definition of axis XAXIS
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ LISTing to file a.nc
+           *** NOTE: Not deleted: TAX
+           *** NOTE: Axis is in use by grid TGRID
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
 Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_1.nc
  LISTing to file tmp/tagg_reg_2.nc
@@ -4278,6 +4300,10 @@ define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_1.nc
 define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc, tmp/tagg_single_5.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
  LISTing to file tmp/test1.nc
  LISTing to file tmp/test2.nc
  LISTing to file tmp/test3.nc
@@ -4312,7 +4338,7 @@ Replacing definition of axis DAYT
 Replacing definition of axis ZAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Replacing definition of axis xax
+Replacing definition of axis XAX
 Replacing definition of axis YAX
  LISTing to file tmp/fcst_1.nc
  LISTing to file tmp/fcst_2.nc
@@ -4568,11 +4594,12 @@ SHO VAR/XML
  TEMPORARY data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
+Cannot create cookie file
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Replacing definition of axis TAX
+Replacing definition of axis tax
  LISTing to file a.nc
  LISTing to file a.nc
 Replacing definition of axis TAX
@@ -4674,6 +4701,9 @@ Replacing definition of axis TDAYS
 Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -4705,4 +4735,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu May 5 10:35:20 PDT 2016
+Ended at Mon May 9 16:48:25 PDT 2016

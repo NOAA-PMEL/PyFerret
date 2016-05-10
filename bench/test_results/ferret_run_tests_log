@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 May  5 11:01 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
+lrwxrwxrwx. 1 ksmith oerdnewp 12 May 10 15:21 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -17,7 +17,6 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-PYFER_EXTERNAL_FUNCTIONS=/home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -52,6 +51,7 @@ Benchmark scripts that will be run:
    bn_odd_variable_name.jnl
    bn_test_stream.jnl
    bn_define_axes.jnl
+   bn_pattern.jnl
    bn_polygon.jnl
    bn500_bug_fixes.jnl
    bn_sample.jnl
@@ -268,8 +268,6 @@ Benchmark scripts that will be run:
    bn_show_uvar_grid.jnl
    bn_aggregate_f.jnl
    bn_aggregate_tef.jnl
-   bn_hovmuller_overlays.jnl
-   bn_labels_on_taxis.jnl
    bn_dataset_qualifier.jnl
    bn_speedtest.jnl
    bn_show_noupcase.jnl
@@ -280,9 +278,11 @@ Benchmark scripts that will be run:
    bn_show_commands.jnl
    bn_plot_decimate.jnl
    bn_auto_tprec.jnl
+   bn_gif.jnl
+   bn_ps.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
-Beginning at Thu May  5 12:46:09 PDT 2016
+Beginning at Tue May 10 15:39:18 PDT 2016
 *** Running ferret script: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -10504,13 +10504,13 @@ FERRET_PLATFORM = "Linux 2.6.32-573.22.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 5-May-16"
-SESSION_TIME = "12:46"
-SESSION_PID = "5623"
-DELTA_CPU = "0.006998"
+SESSION_DATE = "10-May-16"
+SESSION_TIME = "15:39"
+SESSION_PID = "27386"
+DELTA_CPU = "0.004998"
 CLOCK_SECS = "0.003"
-CURRENT_DATE = " 5-May-16"
-CURRENT_TIME = "12:46:12"
+CURRENT_DATE = "10-May-16"
+CURRENT_TIME = "15:39:21"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10533,13 +10533,13 @@ FERRET_PLATFORM = "Linux 2.6.32-573.22.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 5-May-16"
-SESSION_TIME = "12:46"
-SESSION_PID = "5623"
+SESSION_DATE = "10-May-16"
+SESSION_TIME = "15:39"
+SESSION_PID = "27386"
 DELTA_CPU = "0.001"
 CLOCK_SECS = "0.004"
-CURRENT_DATE = " 5-May-16"
-CURRENT_TIME = "12:46:12"
+CURRENT_DATE = "10-May-16"
+CURRENT_TIME = "15:39:21"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10549,9 +10549,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 5-May-16"
-SESSION_TIME = "12:46"
-SESSION_PID = "5623"
+SESSION_DATE = "10-May-16"
+SESSION_TIME = "15:39"
+SESSION_PID = "27386"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10561,15 +10561,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 5-May-16"
-SESSION_TIME = "12:46"
-SESSION_PID = "5623"
+SESSION_DATE = "10-May-16"
+SESSION_TIME = "15:39"
+SESSION_PID = "27386"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 5-May-16"
-SESSION_TIME = "12:46"
-SESSION_PID = "5623"
+SESSION_DATE = "10-May-16"
+SESSION_TIME = "15:39"
+SESSION_PID = "27386"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10702,13 +10702,13 @@ FERRET_PLATFORM = "Linux 2.6.32-573.22.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 5-May-16"
-SESSION_TIME = "12:46"
-SESSION_PID = "5623"
-DELTA_CPU = "0.018996"
-CLOCK_SECS = "0.026"
-CURRENT_DATE = " 5-May-16"
-CURRENT_TIME = "12:46:12"
+SESSION_DATE = "10-May-16"
+SESSION_TIME = "15:39"
+SESSION_PID = "27386"
+DELTA_CPU = "0.016998"
+CLOCK_SECS = "0.023"
+CURRENT_DATE = "10-May-16"
+CURRENT_TIME = "15:39:21"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -24962,6 +24962,50 @@ show axis xax2
  
 ! cleanup
 set mode/last ignore
+*** Running ferret script: bn_pattern.jnl
+! pattern_bench.jnl
+! Quick demo of Ferret pattern feature *jd* 12.18.98
+ 
+set view full
+ 
+use coads_climatology
+set reg/l=3/y=50s:60n/x=100e:60w
+set mode cal months
+ 
+! The /pattern qualifier sets patterns to be used, like /palette sets colors.
+! Files in $FER_PALETTE with extension .pat are read in to set patterns.
+! Use "Fpattern '*'" to find available pattern files.
+ 
+! Note that colors are set in the usual way...
+ 
+set win 1
+ 
+set mode meta pattern_plot1.plt
+shade/pal=black/lev=(10,30,5,-3)/line/key/pattern=4patterns/nolabel sst
+ 
+go land thick
+ 
+! Colors and patterns can be overlaid; patterns are transparent
+ 
+set win 2
+ 
+set data coads_climatology
+set data clim_airt_lev.cdf
+set reg/l=1:3/y=50s:60n/x=100e:60w
+set mode cal months
+ 
+set mode meta pattern_plot2.plt
+fill/lev=(0,33,3)/nolabel sst[l=@ave,d=1]
+ 
+fill/lev=(25,27,1)/over/nolab/pal=black/pat=angled_grid/nolabel airt[l=@ave]
+label/user,200,-30,-1,0,.15,@trAIRT gt 25 and lt 27 deg. C
+ 
+go land thick
+ 
+!can data/all
+can win 2
+set win 1
+can mode meta
 *** Running ferret script: bn_polygon.jnl
 ! Demo of new POLYGON command
 ! *jd * 3.99
@@ -25274,7 +25318,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Thu May  5 12:46:15 PDT 2016
+Tue May 10 15:39:25 PDT 2016
  
 GO bn_reset
 cancel mode verify
@@ -47689,7 +47733,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 5-May-16:12:46"
+ !-> set win/title="10-May-16:15:39"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47698,16 +47742,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date =  5-May-16
+ !-> DEFINE SYMBOL the_date = 10-May-16
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 12:46
+ !-> DEFINE SYMBOL the_time = 15:39
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="5-May-16:12:46"
+ !-> SET WIN/TITLE="10-May-16:15:39"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "5-May-16:12:46"
+WIN_TITLE = "10-May-16:15:39"
 *** Running ferret script: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -50817,6 +50861,9 @@ cancel mode verify
 GO err581_subspanx_fill_bug.jnl
 ! err581_subspanx_fill_bug.jnl
 ! bug 900: subspan longitude axis and hlimits gets wrong data
+!
+! Further fixes 5/2016, with other subspan modulo work.
+! Don't list ppl$xlow, ppl$xhigh.
  
 use coads_climatology
 save/clobber/y=0/x=130e:80w/file=err581_subspanx_fill_bug.nc sst
@@ -50826,12 +50873,10 @@ set view left; shade/x=120e:80w sst  ! works correctly
  
 set view right; fill/x=120e:80w sst
  
+! look at axis coord. range 5/9/2016
 sh sym ppl$xmin, ppl$xmax    ! should be 131, 279
-PPL$XMIN = "131.0000"
-PPL$XMAX = "281.0000"
-sh sym ppl$xlow, ppl$xhigh   ! should be 165, 259
-PPL$XHIGH = "165.0000"
-PPL$XLOW = "259.0000"
+PPL$XMIN = "25.00000"
+PPL$XMAX = "279.0000"
  
 sp rm -f err581_subspanx_fill_bug.nc
  
@@ -52064,7 +52109,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -52113,7 +52158,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -57863,9 +57908,9 @@ SH GRID am
 *** Running ferret script: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
 DELTA_CPU = "0.006998"
-CLOCK_SECS = "0.002"
-CURRENT_DATE = " 5-May-16"
-CURRENT_TIME = "12:46:41"
+CLOCK_SECS = "0.003"
+CURRENT_DATE = "10-May-16"
+CURRENT_TIME = "15:39:50"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57874,8 +57919,8 @@ CURRENT_TIME = "12:46:41"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.042993"
-CLOCK_SECS = "0.051"
+DELTA_CPU = "0.035994"
+CLOCK_SECS = "0.042"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57891,13 +57936,13 @@ repeat/k=1:10 shade temp[L=@ave]
 let ten_plots = ($DELTA_CPU)
  !-> DEFINE VARIABLE ten_plots = 0.140979
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0"
-CLOCK_SECS = "0.192"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "0.183"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.193"
+CLOCK_SECS = "0.184"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
@@ -57908,41 +57953,41 @@ let sumcpu =`sumcpu + dt`)
  !-> DEFINE VARIABLE dt = 0.015997
  !-> DEFINE VARIABLE sumcpu =0.030995
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.015997
- !-> DEFINE VARIABLE sumcpu =0.046992
+ !-> DEFINE VARIABLE dt = 0.015998
+ !-> DEFINE VARIABLE sumcpu =0.046993
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.014998
- !-> DEFINE VARIABLE sumcpu =0.06199
+ !-> DEFINE VARIABLE dt = 0.015997
+ !-> DEFINE VARIABLE sumcpu =0.06299
 !-> REPEAT: K=5
  !-> DEFINE VARIABLE dt = 0.015998
- !-> DEFINE VARIABLE sumcpu =0.077988
+ !-> DEFINE VARIABLE sumcpu =0.078988
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.015997
- !-> DEFINE VARIABLE sumcpu =0.093985
+ !-> DEFINE VARIABLE dt = 0.015998
+ !-> DEFINE VARIABLE sumcpu =0.094986
 !-> REPEAT: K=7
  !-> DEFINE VARIABLE dt = 0.014998
- !-> DEFINE VARIABLE sumcpu =0.108983
+ !-> DEFINE VARIABLE sumcpu =0.109984
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.015998
- !-> DEFINE VARIABLE sumcpu =0.124981
+ !-> DEFINE VARIABLE dt = 0.014996
+ !-> DEFINE VARIABLE sumcpu =0.12498
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.014997
- !-> DEFINE VARIABLE sumcpu =0.139978
+ !-> DEFINE VARIABLE dt = 0.015998
+ !-> DEFINE VARIABLE sumcpu =0.140978
 !-> REPEAT: K=10
  !-> DEFINE VARIABLE dt = 0.014998
- !-> DEFINE VARIABLE sumcpu =0.154976
+ !-> DEFINE VARIABLE sumcpu =0.155976
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.154976
-0.154976
+ !-> MESSAGE/CONTINUE 0.155976
+0.155976
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.349"
+CLOCK_SECS = "0.341"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = " 5-May-16"
-SESSION_TIME = "12:46"
-CURRENT_DATE = " 5-May-16"
-CURRENT_TIME = "12:46:41"
+SESSION_DATE = "10-May-16"
+SESSION_TIME = "15:39"
+CURRENT_DATE = "10-May-16"
+CURRENT_TIME = "15:39:50"
 *** Running ferret script: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -61753,8 +61798,8 @@ list contents
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.97 (beta/dbg)"                                                 
- 3    /  3:" ! Linux 2.6.32-573.22.1.el6.x86_64 64-bit - 05/05/16"                      
- 4    /  4:" !  5-May-16 12:46     "                                                    
+ 3    /  3:" ! Linux 2.6.32-573.22.1.el6.x86_64 64-bit - 05/10/16"                      
+ 4    /  4:" ! 10-May-16 15:39     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -64214,40 +64259,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.780
-randu2_randn2       0.736
-randu2_randn2       0.732
-randu2_randn2       0.975
-randu2_randn2       0.160
+randu2_randn2       0.181
+randu2_randn2       0.262
+randu2_randn2       0.842
+randu2_randn2       0.262
+randu2_randn2       0.493
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.827
-randu2_randn2       0.471
-randu2_randn2       0.944
-randu2_randn2       0.216
-randu2_randn2       0.826
+randu2_randn2       0.804
+randu2_randn2       0.694
+randu2_randn2       0.775
+randu2_randn2       0.468
+randu2_randn2       0.877
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.759
-randu2_randn2       0.278
-randu2_randn2       0.616
-randu2_randn2       0.502
-randu2_randn2       0.811
-randu2_randn2       0.137
+randu2_randn2       0.300
+randu2_randn2       0.088
+randu2_randn2       0.388
+randu2_randn2       0.881
+randu2_randn2       0.060
+randu2_randn2       0.707
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.655
-randu2_randn2       0.171
-randu2_randn2       0.827
-randu2_randn2       0.740
-randu2_randn2       0.893
-randu2_randn2       0.214
+randu2_randn2       0.970
+randu2_randn2       0.448
+randu2_randn2       0.468
+randu2_randn2       0.370
+randu2_randn2       0.525
+randu2_randn2       0.018
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -64272,40 +64317,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -1.298
-randu2_randn2      -0.166
-randu2_randn2       0.045
-randu2_randn2      -1.216
-randu2_randn2       2.191
+randu2_randn2       0.693
+randu2_randn2      -1.131
+randu2_randn2       1.148
+randu2_randn2      -1.912
+randu2_randn2      -0.556
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.901
-randu2_randn2       1.329
-randu2_randn2       0.425
-randu2_randn2       0.121
-randu2_randn2       1.196
+randu2_randn2       0.467
+randu2_randn2       0.569
+randu2_randn2       2.242
+randu2_randn2       0.975
+randu2_randn2      -0.241
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2      -0.050
-randu2_randn2      -1.758
-randu2_randn2       0.112
-randu2_randn2      -0.132
-randu2_randn2      -0.768
-randu2_randn2      -1.019
+randu2_randn2      -1.348
+randu2_randn2       1.840
+randu2_randn2       0.173
+randu2_randn2      -0.070
+randu2_randn2       0.004
+randu2_randn2      -1.477
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.620
-randu2_randn2       0.268
-randu2_randn2       0.189
-randu2_randn2      -1.077
-randu2_randn2      -1.259
-randu2_randn2       0.263
+randu2_randn2       0.109
+randu2_randn2       0.576
+randu2_randn2       1.014
+randu2_randn2      -0.408
+randu2_randn2       0.563
+randu2_randn2      -0.426
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -64330,14 +64375,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.349       1.623       1.190
-randu2_randn2       1.623       1.349       1.190
-randu2_randn2       1.190       1.190       0.142
-randu2_randn2      -0.010      -0.010       0.527
-randu2_randn2      -0.137      -0.137       0.527
-randu2_randn2      -0.898      -0.137       0.527
-randu2_randn2       0.142       0.142       0.527
-randu2_randn2       0.527       0.527       0.511
+randu2_randn2       1.647       1.740       0.537
+randu2_randn2       1.740       1.647       0.537
+randu2_randn2       0.537       0.537      -0.060
+randu2_randn2      -0.131      -0.131       0.534
+randu2_randn2      -0.439      -0.316       0.534
+randu2_randn2      -0.316      -0.316       0.534
+randu2_randn2      -0.060      -0.060       0.534
+randu2_randn2       0.534       0.534       0.534
 *** Running ferret script: bn_axis_cf.jnl
 ! Ticket 1792: Write axes with CF-compliant units
 ! and with standard name attributes for geophysical attrs.
@@ -70064,7 +70109,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70122,7 +70167,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70170,7 +70215,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70218,7 +70263,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70258,7 +70303,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70299,7 +70344,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70369,7 +70414,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70422,7 +70467,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70486,7 +70531,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70530,7 +70575,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70574,7 +70619,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70618,7 +70663,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70659,7 +70704,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70890,7 +70935,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -70931,7 +70976,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -70982,7 +71027,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -71030,7 +71075,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71056,7 +71101,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71082,7 +71127,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71512,7 +71557,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.97   5-May-16" ;
+		:history = "FERRET V6.97  10-May-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71541,7 +71586,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.97   5-May-16" ;
+		:history = "FERRET V6.97  10-May-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71592,7 +71637,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.97   5-May-16" ;
+		:history = "FERRET V6.97  10-May-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72164,8 +72209,8 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Thu May  5 12:46:50 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
-			"FERRET V6.97   5-May-16" ;
+		:history = "Tue May 10 15:39:59 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
+			"FERRET V6.97  10-May-16" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
 }
@@ -72196,7 +72241,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.97   5-May-16" ;
+		:history = "FERRET V6.97  10-May-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72227,7 +72272,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.97   5-May-16" ;
+		:history = "FERRET V6.97  10-May-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72290,7 +72335,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.97   5-May-16" ;
+		:history = "FERRET V6.97  10-May-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -72318,7 +72363,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V6.97   5-May-16" ;
+		:history = "FERRET V6.97  10-May-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74015,7 +74060,7 @@ variables:
 		LABELS:history = "From http://dunkel.pmel.noaa.gov:8930/thredds/dodsC/data/atmos3.ncml" ;
 
 // global attributes:
-		:history = "FERRET V6.97   5-May-16" ;
+		:history = "FERRET V6.97  10-May-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74038,7 +74083,7 @@ variables:
 		STRVAR:long_name = "mystrings" ;
 
 // global attributes:
-		:history = "FERRET V6.97   5-May-16" ;
+		:history = "FERRET V6.97  10-May-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74258,7 +74303,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.97   5-May-16" ;
+		:history = "FERRET V6.97  10-May-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74288,7 +74333,7 @@ variables:
 		A:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.97   5-May-16" ;
+		:history = "FERRET V6.97  10-May-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74309,7 +74354,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.97   5-May-16" ;
+		:history = "FERRET V6.97  10-May-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74330,7 +74375,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.97   5-May-16" ;
+		:history = "FERRET V6.97  10-May-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74352,7 +74397,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V6.97   5-May-16" ;
+		:history = "FERRET V6.97  10-May-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74761,7 +74806,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -74778,7 +74823,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -74795,7 +74840,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75855,7 +75900,7 @@ variables:
 		:geospatial_lat_max = 29.07 ;
 		:time_coverage_start = "2006-06-10T23:48:00Z" ;
 		:time_converage_end = "2006-06-11T00:12:00Z" ;
-		:history = "FERRET V6.97   5-May-16" ;
+		:history = "FERRET V6.97  10-May-16" ;
 }
  
 set mode/last upcase
@@ -75948,7 +75993,7 @@ variables:
 		lon360:history = "added to test_save_dsg.nc" ;
 
 // global attributes:
-		:history = "CruiseDsgNcFile 1.0FERRET V6.97   5-May-16" ;
+		:history = "CruiseDsgNcFile 1.0FERRET V6.97  10-May-16" ;
 		:featureType = "Trajectory" ;
 		:Conventions = "Some other conventionsCF-1.6" ;
 		:geospatial_lon_min = -92.77 ;
@@ -75975,7 +76020,7 @@ can dat/all; use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
  ..history = Subset of etopo20,
- FERRET V6.97   5-May-16 
+ FERRET V6.97  10-May-16 
  ..Conventions = Existing conventions note, , CF-1.6 
  
  
@@ -76005,7 +76050,7 @@ can dat/all; use conventions_history
 ! The new attibutes
 sh att .
      attributes for dataset: ./conventions_history.nc
- ..history = The history of the fileFERRET V6.97   5-May-16 
+ ..history = The history of the fileFERRET V6.97  10-May-16 
  ..Conventions = Conventions for variables named V2CF-1.6 
 *** Running ferret script: bn_center_key_labels.jnl
 ! bn_center_key_labels
@@ -76902,8 +76947,8 @@ list {spawn:"ls xml*.jnl"}
  
 LET filesets = xcat({spawn:"ls *.nc"}, {spawn:"ls *.jnl"})
 say `filesets, return=isize`
- !-> MESSAGE/CONTINUE 959
-959
+ !-> MESSAGE/CONTINUE 963
+963
  
 let files = {spawn:"ls *cdf*.jnl"}
 let name_len = strindex(files, ".sub")
@@ -84620,20 +84665,20 @@ GO err696_time_overlay
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
 sp date
-Thu May  5 12:46:59 PDT 2016
+Tue May 10 15:40:08 PDT 2016
 set view upper
 plot t[gt=tax_nlp]
 plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
 sp date
-Thu May  5 12:46:59 PDT 2016
+Tue May 10 15:40:08 PDT 2016
  
 sp date
-Thu May  5 12:46:59 PDT 2016
+Tue May 10 15:40:08 PDT 2016
 set view lower
 plot t[gt=tax_jul]
 plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
 sp date
-Thu May  5 12:46:59 PDT 2016
+Tue May 10 15:40:08 PDT 2016
  
 GO bn_reset
 cancel mode verify
@@ -84690,7 +84735,7 @@ variables:
 		var:long_name = "0*TT + X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.97   5-May-16" ;
+		:history = "FERRET V6.97  10-May-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -85571,7 +85616,7 @@ variables:
 		TEMP:history = "From /home/data/socat/socatV3/11SS/11SS20140225.nc" ;
 
 // global attributes:
-		:history = "FERRET V6.97   5-May-16" ;
+		:history = "FERRET V6.97  10-May-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -86445,6 +86490,74 @@ can var a; can ax xaxis; use a.nc
 90W     / 40:   ....   ....
 0E(720) / 41:   ....   ....
  
+ 
+go bn_reset
+cancel mode verify
+go err696_subspan_mod_in_expr
+! err696_subspan_mod_in_expr.jnl
+! ticket 1845: a subspan modulo due to context info buried
+! in a multi-layer expression isn't applied when setting
+! the time axis limits for the plot.
+! *acm* 5/2016
+ 
+use bug1845.nc
+set v upper
+shade/x=137:146 salinity[l=1] -  salinity[l=2]
+sh sym xaxis_m*
+XAXIS_MIN = "137.000000"
+XAXIS_MAX = "145.345261"
+ 
+ 
+! When the region information is embedded a couple levels down inside
+! the expressions - in the square brackets, and then an expression involving
+! subtraction - the region isn't treated correctly, and the upper limit is
+! the modulo void point.
+ 
+! Previously XAXIS_MAX was 496.4, the x axis too long, and most of the plot was blank
+ 
+set v lower
+shade salinity[x=137:146,T="28-Mar-2011 00:00"] - salinity[x=137:146,T="28-Mar-2011 03:00"]
+sh sym xaxis_m*
+XAXIS_MIN = "136.443619"
+XAXIS_MAX = "145.345261"
+ 
+ 
+go bn_reset
+cancel mode verify
+go err696_shade_subspan_clim
+! err696_shade_subspan_clim
+! See ticket 2404
+ 
+def ax/edges/t/unit="day"/t0=1-jan-0001/cal=gregorian/modulo=365.25 \
+tax = {31, 59.2425, 90.2425, 120.2425, 151.2425, 181.2425, 212.2425}
+let a = t[gt=tax]
+save/clob/file=a.nc a
+can var a
+can axis tax
+use a.nc
+can view
+ 
+! The top-left SHADE plot looks fine.
+set view ul; shade a*x[gx=0:10:1]
+ 
+! But the top-right SHADE plot is all messed up; it shifts the data
+! later by a full month, and stretches the last (shifted) cell all
+! the way to the upper limit of the plot domain
+ 
+set view ur; shade/t=1-jan-0001:1-jan-0002 a*x[gx=0:10:1]
+sh sym ppl$ymin, ppl$ymax
+PPL$YMIN = "-61.00375"
+PPL$YMAX = "304.2462"
+ 
+! In the bottom-right line plot, the actual plotted data look ok.
+! But the plot limits extend all the way from 1-JUL-0000 to 1-MAR-0002,
+! rather than being shrink-wrapped around the data.
+ 
+set view lr; plot/step=con/t=1-jan-0001:1-jan-0002 a
+ 
+go bn_reset
+cancel mode verify
+! go err696_subspan_mod_strides  ! do this test in bn_gif
 *** Running ferret script: bn_aggregate_t.jnl
 ! bn_aggregate_t.jnl
 ! 9/12/2015 *sh* tweak to put all test files into "tmp" subdirectory
@@ -90192,7 +90305,7 @@ SHOW DATA/ATT t_f04_e3_1v ! note atts im_everwhere vs im_not_everwhere
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.97   5-May-16
+ .                               history         CHAR        23   T       FERRET V6.97  10-May-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (XAX)                  DOUBLE    units           CHAR        12   T       degrees_east
@@ -90612,226 +90725,6 @@ FMRC bad_fmrc = tf_e1, tf_e3, tf_e4
 set mode/last ignore
  
 CANCEL DATA/ALL
-*** Running ferret script: bn_hovmuller_overlays.jnl
-! bn_hovmuller_overlays.jnl
-! Previously a time series plot overlaid oon a Hovmuller plot did not
-! work unless the time axis of the original data had units of hours.
-! See ticket 2344
- 
-! 1/6/2016 ACM
- 
-! run this in the gif benchmarks.
- 
- 
-def view/xlim=0,.333/ylim=.5,1    ul6
-def view/xlim=.333,.666/ylim=.5,1 um6
-def view/xlim=.666,1/ylim=.5,1    ur6
-def view/xlim=0,.333/ylim=0,.5    ll6
-def view/xlim=.333,1/ylim=0,.5    lr6
- 
-! The example from the FAQ, "Overlaying a time series on a 2D plot"
-set view ul6
- 
-! Define a 2D field in YT with a time axis in units of DAYS
-DEFINE AXIS/T="1-JAN-1980":"1-JAN-1990":5/UNITS=DAYS tdays
-DEFINE AXIS/Y=0:40N:2/UNITS=DEGREES yax
- 
-LET/TITLE=XY my_var = 10*cos(T[gt=tdays]/2000)*EXP((-1)*y[gy=yax]/20)
- 
-! make a Hovmoller plot
- 
-SHADE my_var
- 
-! This did not work previously.  Needed to re-define the axis in units of hours
-PLOT/OVER my_var[Y=@loc:-4]
- 
- 
-! XT variable
-set view um6
- 
-DEFINE AXIS/X=0:40E:1/UNITS=DEGREES xax
-LET/TITLE="XT" my_var = 10*cos(T[gt=tdays]/20)*EXP((-1)*x[gx=xax]/20)
-SHADE/t=1-jan-1987:1-jan-1989 my_var
-PLOT/OVER/TRANS/THICK my_var[x=@loc:-4]
- 
- 
-! Irregular time axis
-set view ur6
- 
-DEFINE AXIS/T0=1-jan-2001/UNITS=DAYS tdays = {1,2,4,5,6,8,9,10,12,30,35,41,42,44,45,46,48,49,50,58}
-DEFINE AXIS/Y=0:40N:2/UNITS=DEGREES yax
-LET my_var = 10*cos(T[gt=tdays])*EXP((-1)*y[gy=yax]/8)
- 
-FILL/title="irregular t" my_var
-PLOT/OVER/thick/y=8 my_var+10
- 
- 
-! Like the dataset example from the FAQ
-set view ll6
- 
-use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf"
-set region/x=40w/y=10n:60n/t=15-jan-1982:15-dec-1983
-shade sst
-plot/over/thick/TITLE="at 20"  sst[y=@LOC:20]
- 
-can data/all
-can region
- 
-! vector plots with a time series
-set view lr6
- 
-use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_uwnd.cdf"
-use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_vwnd.cdf"
- 
-vec/x=0/y=-10:10/t=1-jan-1980:1-jan-1990 uwnd[d=1], vwnd[d=2]
- 
-let wspd = (uwnd[d=1]*uwnd[d=1] + vwnd[d=2]*vwnd[d=2])^0.5
-plot/over/color=red/thick/x=0/t=1-jan-1980:1-jan-1990 wspd[y=-10:10@ave]
- 
-FRAME/FILE=bn_hovmuller_overlays.gif
- 
-*** Running ferret script: bn_labels_on_taxis.jnl
-! bn_labels_on_taxis.jnl
-! tests of labels and overlays on time axes
- 
- 
-set v ul
-DEFINE AXIS/T=1-JAN-1980:31-JAN-1985:30/T0=1-jan-1980/UNIT=days tax
-LET tt = t[gt=tax]
-LET tvar = cos(tt/200)
-plot tvar
- 
-LET xsqr = {-1,1,1,-1}                ! coordinates of a unit square
-LET ysqr = {-1,-1,1,1}
-LET xcircle = COS(6.3*i[i=1:42]/40)    ! coordinates of unit circle
-LET ycircle = SIN(6.3*i[i=1:42]/40)
- 
-!   place an "X" at the value exactly at 7-aug-1982
-!   "@ITP" causes interpolation to exact location
- 
-let t0   = tt[t="7-aug-1982"@itp]
-let val0 = tvar[t="7-aug-1982"@itp]
-plot/vs/over/nolab/sym=2/thick/color=red t0,val0
- 
-!   put a box around the "X"
-polygon/over/thick/color=red/nolab t0+30*xsqr, 0.05*ysqr+val0
- 
-!   place an "X" on the data point nearest to 15-may-1984
-!   Note that @ITP is absent, so behavior is set by MODE INTERPOLATE
-let t1   = tt[t="15-may-1984"]
-let val1 = tvar[t="15-may-1984"]
-plot/vs/over/nolab/sym=2/color=blue/thick t1,val1
- 
-!     put a circle around the "X"
-plot/vs/over/color=blue/thick/nolab t1+30*xcircle,0.05*ycircle+val1
- 
-set v ur
-! Latitude/time plot
-let ytvar = cos(tt/200) + sin(j/3)
-shade/y=1:50/t=1-jan-1982:31-dec-1982 ytvar
- 
-let tlo = tt[t="1-jul-1982"@itp]
-let thi = tt[t="1-aug-1982"@itp]
-polygon/over/nolab/thick/pal=gray {`tlo`, `thi`,` thi`, `tlo`},  {20, 20, 25, 25}
- !-> polygon/over/nolab/thick/pal=gray {912, 943,943, 912},  {20, 20, 25, 25}
- 
-set v ll
-! Plot the time series.
-!----------------------------------
- 
-LET tvar = cos(tt/200)* tt/100
-PLOT/vlim=-20:20 tvar
- 
-!----------------------------------
-! Locate label position on time variable axis: the coordinate at the start of 1985.
-LET datelabelpos=TT[T="01-JAN-1981"@ITP]
- 
-! Do nothing but set $PPL$XFIRST1 symbol at the time axis plot units
-PLOT/LINE/VS/OVER/NOLAB datelabelpos,-9
- 
-! Make the label; left-justified
-! LABEL xpos, ypos, justify, rotate, height "text"
-LABEL ($PPL$XFIRST1),-8,-1,0,0.12,@AC Year 81 starts
- !-> PPL %LABEL 17905.00,-8,-1,0,0.12,@AC Year 81 starts
- 
-! Draw a vertical red line at the year boundary
-PLOT/VS/NOLAB/LINE/COLOR=RED/OVER {`datelabelpos`,`datelabelpos`},{-20,20}
- !-> PLOT/VS/NOLAB/LINE/COLOR=RED/OVER {366,366},{-20,20}
- 
-! Do the same for the start of 1984
-!----------------------------------
-! Locate label position on time var axis
-LET datelabelpos=TT[T="01-JAN-1984"@ITP]
- 
-! Do nothing but set $PPL$XFIRST1 symbol at the time axis plot units
-plot/line/vs/over/nolab datelabelpos,-9
- 
-! LABEL xpos, ypos, justify, rotate, height "text"
-LABEL ($PPL$XFIRST1),-8,-1,0,0.12,@AC Year 84 starts
- !-> PPL %LABEL 44185.00,-8,-1,0,0.12,@AC Year 84 starts
- 
-! Draw a vertical red line at the year boundary
-PLOT/VS/NOLAB/LINE/COLOR=RED/OVER {`datelabelpos`,`datelabelpos`},{-20,20}
- !-> PLOT/VS/NOLAB/LINE/COLOR=RED/OVER {1461,1461},{-20,20}
- 
-!----------------------------------
-! Now lets locate and label the maximum of the variable
-LET vmax = `tvar[T=@MAX]`
- !-> DEFINE VARIABLE vmax = 12.72093076292341
-LET t_at_max = tvar[T=01-JAN-1980:31-DEC-1985@LOC:`vmax`]
- !-> DEFINE VARIABLE t_at_max = tvar[T=01-JAN-1980:31-DEC-1985@LOC:12.72093076292341]
- 
-! This will define $PPL$XFIRST1 and also make a mark at the maximum location
-PLOT/VS/OVER/NOLAB/SYM=17/COLOR=red t_at_max, vmax
- 
-! Use a centered label this time
-! 1.02*vmax moves the label up a bit.
-! LABEL xpos, ypos, justify, rotate, height "text"
-LABEL ($PPL$XFIRST1),`1.02*vmax`,0,0,0.12,@AC MAX = `vmax,prec=3`
- !-> PPL %LABEL 40081.00,12.97534937818188,0,0,0.12,@AC MAX = 12.7
- 
-set v lr
- 
-! Define a dummy track line, position as a function of time.
-DEFINE AXIS/T=1-JAN-1980:31-JAN-1985:30/UNIT=days tax
-LET ypos = 40 *COS(L[GT=tax]/32)
-LET xpos = 220 - 50 *SIN(L[GT=tax]/22)
-! Make the basic track plot
-use ocean_atlas_temp
-shade/pal=blue_light/X=110E:40W/Y=20S:50N/L=1 temp
- 
-PLOT/VS/NOLAB/OVER XPOS,YPOS
-! Label every 5th date. The labels could be positioned differently, using
-! the 3rd argument of the LABEL command to control centering. Or, to put the
-! labels a bit above the corresponding point location, add a small amount to
-! the y positions, for instance `ypos + 0.04` in the second argument to LABEL.
-LET tt = t[gt=tax]
-! Loop over L; at each L we evaluate TAX_DATESTRING for the time step,
-! and compute the location for the label
-REPEAT/L=5:60:10 (DEFINE SYMBOL tlab = "`TAX_DATESTRING(tt,tt,"day")`"; \
- LABEL `xpos` `ypos` 1 0 0.09 ($tlab) )
- !-> REPEAT/L=5:60:10 (DEFINE SYMBOL tlab = "`TAX_DATESTRING(tt,tt,"day")`";  LABEL `xpos` `ypos` 1 0 0.09 ($tlab) )
-!-> REPEAT: L=5
- !-> DEFINE SYMBOL tlab = "30-APR-1980"
- !-> PPL %LABEL 208.7339387413628 39.51271135265888 1 0 0.09 "30-APR-1980"
-!-> REPEAT: L=15
- !-> DEFINE SYMBOL tlab = "24-FEB-1981"
- !-> PPL %LABEL 188.4897123753973 35.68534797467977 1 0 0.09 "24-FEB-1981"
-!-> REPEAT: L=25
- !-> DEFINE SYMBOL tlab = "21-DEC-1981"
- !-> PPL %LABEL 174.6445516747008 28.40135534264319 1 0 0.09 "21-DEC-1981"
-!-> REPEAT: L=35
- !-> DEFINE SYMBOL tlab = "17-OCT-1982"
- !-> PPL %LABEL 170.0101127410977 18.36629087569217 1 0 0.09 "17-OCT-1982"
-!-> REPEAT: L=45
- !-> DEFINE SYMBOL tlab = "13-AUG-1983"
- !-> PPL %LABEL 175.527551028677 6.552192101033334 1 0 0.09 "13-AUG-1983"
-!-> REPEAT: L=55
- !-> DEFINE SYMBOL tlab = "08-JUN-1984"
- !-> PPL %LABEL 190.0763927948022 -5.896578890096701 1 0 0.09 "08-JUN-1984"
- 
-FRAME/FILE=bn_labels_on_taxis.gif
- 
 *** Running ferret script: bn_dataset_qualifier.jnl
 ! bn_dataset_qualifier
 ! see ticket 2632
@@ -90896,7 +90789,7 @@ save/clobber/file=a.nc/outtype=float elev[d=1]
 use a.nc
 sh att .
      attributes for dataset: ./a.nc
- ..history = FERRET V6.97   5-May-16 
+ ..history = FERRET V6.97  10-May-16 
  ..Conventions = CF-1.6 
  ..dt_internal = 15
 sh att elev
@@ -90917,7 +90810,7 @@ save/clobber/file=a.nc/outtype=float elev[d=1]
 use a.nc
 sh att .
      attributes for dataset: ./a.nc
- ..history = FERRET V6.97   5-May-16 
+ ..history = FERRET V6.97  10-May-16 
  ..Conventions = CF-1.6 
 sh att elev
      attributes for dataset: ./a.nc
@@ -91041,9 +90934,9 @@ flow/DAT=2/den=3/L=3 taux,tauy
 ! bn_speedtest.jnl
 ! issue large numbers of commands, timing with clock time
 can mode verify
-10K LET commands LET a = 0 takes  1.231  seconds
-Second 10K LET commands LET a = 0 takes  2.752  seconds
-5K LOAD with transform takes  3.588  seconds
+10K LET commands LET a = 0 takes  1.225  seconds
+Second 10K LET commands LET a = 0 takes  2.739  seconds
+5K LOAD with transform takes  3.585  seconds
 *** Running ferret script: bn_show_noupcase.jnl
 ! bn_show_noupcase.jnl
 ! 1/2016 ticket 1796
@@ -93361,6 +93254,635 @@ let ttim = temp[d=levitus_climatology] + var
 shade/title="true-month axis"/L=32/x=60:70/y=-40:-30 ttim; sh sym  lab($labnum_t)
  !-> sh sym  lab2
 LAB2 = "TIME : 16-AUG-1952 12:00"
+*** Running ferret script: bn_gif.jnl
+! bn450_gif.JNL - copied from bn450_plot.jnl
+! this journal file only tests the writing of gif file in batch mode using
+! frame/file=bnplot.gif....will create three gif files
+! *kob*
+ 
+ 
+can mode logo
+ 
+! define a 6 viewport window (modified definitions 11/92)
+def view/text=.4/xlim=0,.333/ylim=0,.5    ll6
+def view/text=.2/xlim=0,.333/ylim=.5,1    ul6
+def view/text=.1/xlim=.333,.666/ylim=0,.5 lm6
+def view/text=.6/xlim=.333,.666/ylim=.5,1 um6
+def view/text=1.5/xlim=.666,1/ylim=0,.5   lr6
+def view/xlim=.666,1/ylim=.5,1            ur6     ! auto /TEXT
+show view
+ 
+ name             text    xlimits     ylimits    mode
+ 
+ UPPER            1.00   0.00,1.00   0.50,1.00   edges
+ LOWER            1.00   0.00,1.00   0.00,0.50   edges
+ RIGHT            1.00   0.50,1.00   0.00,1.00   edges
+ LEFT             1.00   0.00,0.50   0.00,1.00   edges
+ LL               0.50   0.00,0.50   0.00,0.50   edges
+ LR               0.50   0.50,1.00   0.00,0.50   edges
+ UL               0.50   0.00,0.50   0.50,1.00   edges
+ UR               0.50   0.50,1.00   0.50,1.00   edges
+ FULL             1.00   0.00,1.00   0.00,1.00   edges
+ LL6              0.40   0.00,0.33   0.00,0.50   edges
+ UL6              0.20   0.00,0.33   0.50,1.00   edges
+ LM6              0.10   0.33,0.67   0.00,0.50   edges
+ UM6              0.60   0.33,0.67   0.50,1.00   edges
+ LR6              1.50   0.67,1.00   0.00,0.50   edges
+ UR6              0.41   0.67,1.00   0.50,1.00   edges
+   current viewport is NONE
+ 
+! some variables for plotting
+let a = 0.8*sin(l/10)
+let b = 0.6*cos(l/10)
+let c = sin(100/(l+k))
+let d = l/50
+let e = k-(l/25)
+let f = -.5+(l/125)
+let g = (l-25)/(k*35)
+let h = 0.1
+let m = 0.2
+ 
+! illegal plot commands
+set mode ignore
+plot/i=1:10/j=1:20/nolabel i+j			! not a line
+plot/i=1:10/j=1:20/nolabel i,i+j		! not a line
+plot/i=1:10/j=1:20/nolabel i+j,i		! not a line
+plot/i=1:10/j=1:20/nolabel j,i			! differing axes
+plot/i=1:10/j=1:20/vs/line/nolabel j,i		! unequal lengths
+contour/i=1:10/j=1:20/nolabel i			! only 1 D
+contour/i=1:10/j=1:20/nolabel i/j,j/i		! multiple fields
+vector/i=1:10/j=1:20/nolabel i/j		! only 1 field
+vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j	! 3 fields
+set mode/last ignore
+ 
+! notice the default window size is 10.2,width x 8.8,height
+ppl list plot
+         WIDTH=   10.20  HEIGHT=    8.80  TKTYPE=    0  BAUD=  110
+         WINDOW= ON   BOX= OFF  CROSS= 0  PLTYPE=  3
+         PLOT MODE=   A
+         PLOT FILE= .gif                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+ 
+! enlarge it to accomodate an additional 50% width
+ppl size 15.3,8.8
+ 
+! turn on metafile (enabled 10/29/91)
+! commented out 9/97 - instead set in bn450_all.jnl
+! set mode metafile
+ 
+! draw a plot into a viewport - to be deleted (check hard copy)
+set view ll6
+contour/i=1:50/j=1:50/nolabel i/(j+20)
+ 
+! 4 frames testing PLOT output
+set view ul6
+plot/l=1:50/k=1/trans/nolabel a,b,c
+plot/l=1:50/k=1/trans/over/line=6/nolabel d
+plot/l=1:50/k=1/trans/over/symbol=88/nolabel e
+plot/l=1:50/k=1/trans/over/symbol=47/line/nolabel f
+def view/text=.1/xlim=.333,1/ylim=0,.5 lm6   ! redefine longer in x (11/92)
+set view lm6
+!ppl axlen 16
+set region/k=1
+plot/l=1:50/nolabel a,b,c,d,e,f,g[k=1],g[k=2],a+h,b+h,c+h,d+h,e+h,f+h,g[k=1]+h,g[k=2]+h,a+m,b+m,c+m
+def view/text=.6/xlim=.333,1/ylim=.5,1 um6    ! redefine it longer in x (11/92)
+set view um6
+!ppl axlen 17,5
+plot/l=1:50/nolabel sin(100/(l+5))
+plot/l=1:50/over/nolabel a,b,c,d,e,f,g[k=1],g[k=2],a+h,b+h,c+h,d+h,e+h,f+h,g[k=1]+h,g[k=2]+h,a+m,b+m,c+m
+set view ll6
+!ppl axlen 8,6
+plot/l=1:99000/nolabel sin(200000/(l+10000))
+ 
+! reset to normal axis lengths and prepare for a new piccie
+!ppl axlen 8
+frame/file=bnplot_1.gif
+set wind/clear
+ 
+! draw six frames
+set view ll6
+contour/i=1:50/j=1:50/levels=(0,2.5,.25)/nolabel i/(j+20)
+plot/over/nolab/vs/line/i=1:50/j=1:50/nolabel 6*i/j,5*j/i
+set view ul6
+vector/i=1:50/j=1:50/length=50/aspect/nolabel sin(i/20)*10+j-20,-1*cos(j/10)*10+i-20
+def view/text=.1/xlim=.333,.666/ylim=0,.5 lm6  ! redefine it (11/92)
+set view lm6
+shade/i=1:50/j=1:50/nolabel i/(j+20)
+set view lr6
+ppl lev () (0,2.5,.1)
+shade/i=1:50/j=1:50/line/level/nolabel i/(j+20)
+set view ur6
+let icomp = (sin(i/20)*10+j-20)
+let jcomp = (-1*cos(j/10)*10+i-20)
+contour/i=1:50/j=1:50/nolabel icomp^2+jcomp^2
+contour/i=1:50/j=1:50/over/level/nolabel icomp^2+(-1*cos(i/10)*80)^2
+! note: "i-i" and "j-j" are needed to create 2D structures
+vector/i=1:50/j=1:50/overlay/nolabel j-20+(i-i),i-20+(j-j)
+vector/i=1:50/j=1:50/overlay/length/nolabel i-20+(j-j),40-j+(i-i)
+def view/text=.6/xlim=.333,.666/ylim=.5,1 um6    ! redefine it (11/92)
+set view um6
+shade/i=1:50/j=1:50/nolabel i/(j+20)
+contour/i=1:50/j=1:50/over/nolabel (sin(i/20)+j-20)^2+(-1*cos(j/10)+i-20)^2
+vector/i=1:50/j=1:50/overlay/nolabel j-20+(i-i),i-20+(j-j)
+frame/file=bnplot_2.gif
+! additions for version 3.01 "/TITLE=" controls
+cancel viewports
+set view ul6
+plot/title="My Custom Title"/i=1:100/nolabel sin(i/6)
+plot/title="My Custom Key"/i=1:100/over/nolabel sin(i/5)
+set view um6
+plot/title="My Custom Title"/i=1:100/nolabel sin(i/6),sin(i/9)
+plot/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)
+set view ur6
+plot/vs/line/title="My Custom Title"/i=1:100/nolabel sin(i/6),sin(i/9)
+plot/vs/line/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)
+set view ll6
+plot/vs/line/title="My Custom Title"/i=1:100/nolabel sin(i/6),sin(i/9),sin(i/12)
+plot/vs/line/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)
+set view lm6
+contour/i=1:20/j=1:20/title="My Contour Title"/nolabel sin(i/3)*cos(j/4)
+contour/over/i=5:30/j=5:30/title="My Contour Overlay"/nolabel sin(i/2)*cos(j/3)
+set view lr6
+wire/view=0,0,2/i=1:20/j=1:20/title="My Egg Carton"/nolabel sin(i/3)*cos(j/4)
+ 
+! addition for 3.20 showing changed default behavior of plot/vs
+! return to window and redraw with symbols
+set view ll6
+plot/vs/title="My Custom Title"/i=1:100/nolabel sin(i/6),sin(i/9),sin(i/12)
+plot/vs/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)
+frame/file=bnplot_3.gif
+ 
+! Prior to v5.8 could not get the window size in pixels when in gif mode
+show symbol ppl$xpixel
+PPL$XPIXEL = "1152"
+show symbol ppl$ypixel
+PPL$YPIXEL = "662"
+ 
+! V6.13
+! transparency with FRAME/TRANS
+!!
+! These gif images have the background color white or black
+! replaced by transparent color. This can be tested by putting
+! them into an HTML document with a colored background.
+! e.g. a file called test_transparent.html containing only this line:
+! <html> <body bgcolor="orange"> <img src="testfile.gif"/> </body> </html>
+ 
+can view
+use coads_climatology
+shade/nokey/lev=50 sst[L=1]
+frame/trans/file=testbackground.gif
+ 
+! moved here from bn500_bug_fixes.jnl. The frame/  command it contains
+! has trouble when running the benchmarks from remote desktop
+go bn_reset
+cancel mode verify
+go err491_long_gif_name
+! err491_long_gif_name.jnl
+! *sh* 4/99 - test 175 character gif name
+ 
+! name length extended with changes to save_frame.F and xeq_frame.F
+ 
+set wind/siz=0.03
+go ptest
+! Description: create a simple test line plot
+ 
+! spirograph picture ...
+PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
+ 
+ 
+sp rm -f abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy*
+ 
+frame/file="abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif"
+ 
+spawn ls abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy*
+abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
+ 
+ 
+! The fix for bug 1396
+set v ul; plot/dash x[gx=0:20:.5]
+set v ur; plot/dash x[gx=0:20:.1]
+set v ll; plot/dash x[gx=0:20:.05]
+set v lr; plot/dash x[gx=0:20:.01]
+frame/file=gif_dashbug.gif
+ 
+! Restore size
+set win/siz=1/asp=1
+ 
+! New benchmark gif outputs in v6.97
+go bn_reset
+cancel mode verify
+GO bn_hovmuller_overlays
+! bn_hovmuller_overlays.jnl
+! Previously a time series plot overlaid oon a Hovmuller plot did not
+! work unless the time axis of the original data had units of hours.
+! See ticket 2344
+ 
+! 1/6/2016 ACM
+ 
+! run this in the gif benchmarks.
+ 
+ 
+def view/xlim=0,.333/ylim=.5,1    ul6
+def view/xlim=.333,.666/ylim=.5,1 um6
+def view/xlim=.666,1/ylim=.5,1    ur6
+def view/xlim=0,.333/ylim=0,.5    ll6
+def view/xlim=.333,1/ylim=0,.5    lr6
+ 
+! The example from the FAQ, "Overlaying a time series on a 2D plot"
+set view ul6
+ 
+! Define a 2D field in YT with a time axis in units of DAYS
+DEFINE AXIS/T="1-JAN-1980":"1-JAN-1990":5/UNITS=DAYS tdays
+DEFINE AXIS/Y=0:40N:2/UNITS=DEGREES yax
+ 
+LET/TITLE=XY my_var = 10*cos(T[gt=tdays]/2000)*EXP((-1)*y[gy=yax]/20)
+ 
+! make a Hovmoller plot
+ 
+SHADE my_var
+ 
+! This did not work previously.  Needed to re-define the axis in units of hours
+PLOT/OVER my_var[Y=@loc:-4]
+ 
+ 
+! XT variable
+set view um6
+ 
+DEFINE AXIS/X=0:40E:1/UNITS=DEGREES xax
+LET/TITLE="XT" my_var = 10*cos(T[gt=tdays]/20)*EXP((-1)*x[gx=xax]/20)
+SHADE/t=1-jan-1987:1-jan-1989 my_var
+PLOT/OVER/TRANS/THICK my_var[x=@loc:-4]
+ 
+ 
+! Irregular time axis
+set view ur6
+ 
+DEFINE AXIS/T0=1-jan-2001/UNITS=DAYS tdays = {1,2,4,5,6,8,9,10,12,30,35,41,42,44,45,46,48,49,50,58}
+DEFINE AXIS/Y=0:40N:2/UNITS=DEGREES yax
+LET my_var = 10*cos(T[gt=tdays])*EXP((-1)*y[gy=yax]/8)
+ 
+FILL/title="irregular t" my_var
+PLOT/OVER/thick/y=8 my_var+10
+ 
+ 
+! Like the dataset example from the FAQ
+set view ll6
+ 
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf"
+set region/x=40w/y=10n:60n/t=15-jan-1982:15-dec-1983
+shade sst
+plot/over/thick/TITLE="at 20"  sst[y=@LOC:20]
+ 
+can data/all
+can region
+ 
+! vector plots with a time series
+set view lr6
+ 
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_uwnd.cdf"
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_vwnd.cdf"
+ 
+vec/x=0/y=-10:10/t=1-jan-1980:1-jan-1990 uwnd[d=1], vwnd[d=2]
+ 
+let wspd = (uwnd[d=1]*uwnd[d=1] + vwnd[d=2]*vwnd[d=2])^0.5
+plot/over/color=red/thick/x=0/t=1-jan-1980:1-jan-1990 wspd[y=-10:10@ave]
+ 
+FRAME/FILE=bn_hovmuller_overlays.gif
+ 
+ 
+Go bn_reset
+cancel mode verify
+GO bn_labels_on_taxis
+! bn_labels_on_taxis.jnl
+! tests of labels and overlays on time axes
+ 
+ 
+set v ul
+DEFINE AXIS/T=1-JAN-1980:31-JAN-1985:30/T0=1-jan-1980/UNIT=days tax
+LET tt = t[gt=tax]
+LET tvar = cos(tt/200)
+plot tvar
+ 
+LET xsqr = {-1,1,1,-1}                ! coordinates of a unit square
+LET ysqr = {-1,-1,1,1}
+LET xcircle = COS(6.3*i[i=1:42]/40)    ! coordinates of unit circle
+LET ycircle = SIN(6.3*i[i=1:42]/40)
+ 
+!   place an "X" at the value exactly at 7-aug-1982
+!   "@ITP" causes interpolation to exact location
+ 
+let t0   = tt[t="7-aug-1982"@itp]
+let val0 = tvar[t="7-aug-1982"@itp]
+plot/vs/over/nolab/sym=2/thick/color=red t0,val0
+ 
+!   put a box around the "X"
+polygon/over/thick/color=red/nolab t0+30*xsqr, 0.05*ysqr+val0
+ 
+!   place an "X" on the data point nearest to 15-may-1984
+!   Note that @ITP is absent, so behavior is set by MODE INTERPOLATE
+let t1   = tt[t="15-may-1984"]
+let val1 = tvar[t="15-may-1984"]
+plot/vs/over/nolab/sym=2/color=blue/thick t1,val1
+ 
+!     put a circle around the "X"
+plot/vs/over/color=blue/thick/nolab t1+30*xcircle,0.05*ycircle+val1
+ 
+set v ur
+! Latitude/time plot
+let ytvar = cos(tt/200) + sin(j/3)
+shade/y=1:50/t=1-jan-1982:31-dec-1982 ytvar
+ 
+let tlo = tt[t="1-jul-1982"@itp]
+let thi = tt[t="1-aug-1982"@itp]
+polygon/over/nolab/thick/pal=gray {`tlo`, `thi`,` thi`, `tlo`},  {20, 20, 25, 25}
+ !-> polygon/over/nolab/thick/pal=gray {912, 943,943, 912},  {20, 20, 25, 25}
+ 
+set v ll
+! Plot the time series.
+!----------------------------------
+ 
+LET tvar = cos(tt/200)* tt/100
+PLOT/vlim=-20:20 tvar
+ 
+!----------------------------------
+! Locate label position on time variable axis: the coordinate at the start of 1985.
+LET datelabelpos=TT[T="01-JAN-1981"@ITP]
+ 
+! Do nothing but set $PPL$XFIRST1 symbol at the time axis plot units
+PLOT/LINE/VS/OVER/NOLAB datelabelpos,-9
+ 
+! Make the label; left-justified
+! LABEL xpos, ypos, justify, rotate, height "text"
+LABEL ($PPL$XFIRST1),-8,-1,0,0.12,@AC Year 81 starts
+ !-> PPL %LABEL 17905.00,-8,-1,0,0.12,@AC Year 81 starts
+ 
+! Draw a vertical red line at the year boundary
+PLOT/VS/NOLAB/LINE/COLOR=RED/OVER {`datelabelpos`,`datelabelpos`},{-20,20}
+ !-> PLOT/VS/NOLAB/LINE/COLOR=RED/OVER {366,366},{-20,20}
+ 
+! Do the same for the start of 1984
+!----------------------------------
+! Locate label position on time var axis
+LET datelabelpos=TT[T="01-JAN-1984"@ITP]
+ 
+! Do nothing but set $PPL$XFIRST1 symbol at the time axis plot units
+plot/line/vs/over/nolab datelabelpos,-9
+ 
+! LABEL xpos, ypos, justify, rotate, height "text"
+LABEL ($PPL$XFIRST1),-8,-1,0,0.12,@AC Year 84 starts
+ !-> PPL %LABEL 44185.00,-8,-1,0,0.12,@AC Year 84 starts
+ 
+! Draw a vertical red line at the year boundary
+PLOT/VS/NOLAB/LINE/COLOR=RED/OVER {`datelabelpos`,`datelabelpos`},{-20,20}
+ !-> PLOT/VS/NOLAB/LINE/COLOR=RED/OVER {1461,1461},{-20,20}
+ 
+!----------------------------------
+! Now lets locate and label the maximum of the variable
+LET vmax = `tvar[T=@MAX]`
+ !-> DEFINE VARIABLE vmax = 12.72093076292341
+LET t_at_max = tvar[T=01-JAN-1980:31-DEC-1985@LOC:`vmax`]
+ !-> DEFINE VARIABLE t_at_max = tvar[T=01-JAN-1980:31-DEC-1985@LOC:12.72093076292341]
+ 
+! This will define $PPL$XFIRST1 and also make a mark at the maximum location
+PLOT/VS/OVER/NOLAB/SYM=17/COLOR=red t_at_max, vmax
+ 
+! Use a centered label this time
+! 1.02*vmax moves the label up a bit.
+! LABEL xpos, ypos, justify, rotate, height "text"
+LABEL ($PPL$XFIRST1),`1.02*vmax`,0,0,0.12,@AC MAX = `vmax,prec=3`
+ !-> PPL %LABEL 40081.00,12.97534937818188,0,0,0.12,@AC MAX = 12.7
+ 
+set v lr
+ 
+! Define a dummy track line, position as a function of time.
+DEFINE AXIS/T=1-JAN-1980:31-JAN-1985:30/UNIT=days tax
+LET ypos = 40 *COS(L[GT=tax]/32)
+LET xpos = 220 - 50 *SIN(L[GT=tax]/22)
+! Make the basic track plot
+use ocean_atlas_temp
+shade/pal=blue_light/X=110E:40W/Y=20S:50N/L=1 temp
+ 
+PLOT/VS/NOLAB/OVER XPOS,YPOS
+! Label every 5th date. The labels could be positioned differently, using
+! the 3rd argument of the LABEL command to control centering. Or, to put the
+! labels a bit above the corresponding point location, add a small amount to
+! the y positions, for instance `ypos + 0.04` in the second argument to LABEL.
+LET tt = t[gt=tax]
+! Loop over L; at each L we evaluate TAX_DATESTRING for the time step,
+! and compute the location for the label
+REPEAT/L=5:60:10 (DEFINE SYMBOL tlab = "`TAX_DATESTRING(tt,tt,"day")`"; \
+ LABEL `xpos` `ypos` 1 0 0.09 ($tlab) )
+ !-> REPEAT/L=5:60:10 (DEFINE SYMBOL tlab = "`TAX_DATESTRING(tt,tt,"day")`";  LABEL `xpos` `ypos` 1 0 0.09 ($tlab) )
+!-> REPEAT: L=5
+ !-> DEFINE SYMBOL tlab = "30-APR-1980"
+ !-> PPL %LABEL 208.7339387413628 39.51271135265888 1 0 0.09 "30-APR-1980"
+!-> REPEAT: L=15
+ !-> DEFINE SYMBOL tlab = "24-FEB-1981"
+ !-> PPL %LABEL 188.4897123753973 35.68534797467977 1 0 0.09 "24-FEB-1981"
+!-> REPEAT: L=25
+ !-> DEFINE SYMBOL tlab = "21-DEC-1981"
+ !-> PPL %LABEL 174.6445516747008 28.40135534264319 1 0 0.09 "21-DEC-1981"
+!-> REPEAT: L=35
+ !-> DEFINE SYMBOL tlab = "17-OCT-1982"
+ !-> PPL %LABEL 170.0101127410977 18.36629087569217 1 0 0.09 "17-OCT-1982"
+!-> REPEAT: L=45
+ !-> DEFINE SYMBOL tlab = "13-AUG-1983"
+ !-> PPL %LABEL 175.527551028677 6.552192101033334 1 0 0.09 "13-AUG-1983"
+!-> REPEAT: L=55
+ !-> DEFINE SYMBOL tlab = "08-JUN-1984"
+ !-> PPL %LABEL 190.0763927948022 -5.896578890096701 1 0 0.09 "08-JUN-1984"
+ 
+FRAME/FILE=bn_labels_on_taxis.gif
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err696_contour_conset
+! err696_contour_conset.jnl
+! Ticket 2351. The PPL CONSET command had stopped working to set
+! the # of digits in contour labels.  See the setting in PPL LIST LEVELS
+ 
+contour/i=1:20/j=1:20/lev=(-10,10,2.125)/set/title="CONTOUR/SET with PPL CONSET,,4"  10*sin(i/3)*cos(j/4)
+ppl conset,,4
+ppl contour
+ 
+! This should show NDIG=3
+ppl list levels
+
+
+         LEVEL       TYPE       NDIG       PEN
+         -1.00E+01     DASH        3        0
+         -7.88E+00     DASH        3        0
+         -5.75E+00     DASH        3        0
+         -3.63E+00     DASH        3        0
+         -1.50E+00     DASH        3        0
+          6.25E-01     LINE        3        0
+          2.75E+00     LINE        3        0
+          4.88E+00     LINE        3        0
+          7.00E+00     LINE        3        0
+          9.13E+00     LINE        3        0
+          1.13E+01     LINE        3        0
+ 
+! Now make the same setting with CONTOUR/SIGDIG=
+contour/i=1:20/j=1:20/lev=(0)(-10,10,2.125)/sigdig=4/title="CONTOUR/SIGDIG=4"  10*sin(i/3)*cos(j/4)
+ 
+! This should show NDIG=3
+ppl list levels
+
+
+         LEVEL       TYPE       NDIG       PEN
+         -1.00E+01     DASH        3        0
+         -7.88E+00     DASH        3        0
+         -5.75E+00     DASH        3        0
+         -3.63E+00     DASH        3        0
+         -1.50E+00     DASH        3        0
+          0.00E+00     DARK       -1        0
+          6.25E-01     LINE        3        0
+          2.75E+00     LINE        3        0
+          4.88E+00     LINE        3        0
+          7.00E+00     LINE        3        0
+          9.13E+00     LINE        3        0
+          1.13E+01     LINE        3        0
+ 
+! test CONTOUR/SET; CONSET; PPL CONTOUR settings
+contour/i=1:20/j=1:20/lev=(-10,10,2.125)/set/title="CONTOUR/SET with PPL CONSET,,4"  10*sin(i/3)*cos(j/4)
+ppl conset,0.07,4,,,,,,1
+ppl contour
+ 
+! test CONTOUR qualifiers that make CONSET settings. Should exactly overlay the previous plot.
+contour/over/color=red/i=1:20/j=1:20/lev=(-10,10,2.125)\
+/sigdig=4/siz=0.07/spacing=1  10*sin(i/3)*cos(j/4)
+ 
+frame/file=bn_contour_conset.gif
+ 
+GO bn_reset
+cancel mode verify
+GO err696_subspan_mod_strides
+! err696_subspan_mod_strides
+! See ticket 513. Axis is subspan modulo, and strides
+! on a plot with a larger region than the axis span caused the
+! shade plot to smear out beyond the edges.
+ 
+define axis/x/units=degrees_e xax = {-82.96,-81.46,-79.96,-78.47,-76.97,-75.48,-73.98,-72.48,-70.99,-69.49}
+let xx = x[gx=xax]
+let yy = y[y=4:20:2]
+let d10 = randu(xx) - randu(yy)
+ 
+! previously smeared out to the plot edges.
+set view upper
+shade/hlim=-95:-60/vlim=0:25 d10[i=1:10:2,j=1:10]
+ 
+! similar behavior with overlays
+set view lower
+use coads_climatology
+shade/L=3/pal=white/nokey/x=-180:0/y=0:30/title="Overlay Test" sst
+shade/over d10[i=1:10:2,j=1:10]
+ 
+frame/file=bn_subspan_mod_strides.gif
+ 
+exit/command
+*** Running ferret script: bn_ps.jnl
+! bn450_ps.JNL - copied from bn450_plot.jnl
+! this journal file only tests the writing of ps files in batch mode using
+! "-batch bnplot.ps" command line option...will create on final ps file
+! *kob*
+ 
+! define a 6 viewport window (modified definitions 11/92)
+def view/text=.4/xlim=0,.333/ylim=0,.5    ll6
+def view/text=.2/xlim=0,.333/ylim=.5,1    ul6
+def view/text=.1/xlim=.333,.666/ylim=0,.5 lm6
+def view/text=.6/xlim=.333,.666/ylim=.5,1 um6
+def view/text=1.5/xlim=.666,1/ylim=0,.5   lr6
+def view/xlim=.666,1/ylim=.5,1            ur6     ! auto /TEXT
+show view
+ 
+ name             text    xlimits     ylimits    mode
+ 
+ UPPER            1.00   0.00,1.00   0.50,1.00   edges
+ LOWER            1.00   0.00,1.00   0.00,0.50   edges
+ RIGHT            1.00   0.50,1.00   0.00,1.00   edges
+ LEFT             1.00   0.00,0.50   0.00,1.00   edges
+ LL               0.50   0.00,0.50   0.00,0.50   edges
+ LR               0.50   0.50,1.00   0.00,0.50   edges
+ UL               0.50   0.00,0.50   0.50,1.00   edges
+ UR               0.50   0.50,1.00   0.50,1.00   edges
+ FULL             1.00   0.00,1.00   0.00,1.00   edges
+ LL6              0.40   0.00,0.33   0.00,0.50   edges
+ UL6              0.20   0.00,0.33   0.50,1.00   edges
+ LM6              0.10   0.33,0.67   0.00,0.50   edges
+ UM6              0.60   0.33,0.67   0.50,1.00   edges
+ LR6              1.50   0.67,1.00   0.00,0.50   edges
+ UR6              0.41   0.67,1.00   0.50,1.00   edges
+   current viewport is NONE
+ 
+! some variables for plotting
+let a = 0.8*sin(l/10)
+let b = 0.6*cos(l/10)
+let c = sin(100/(l+k))
+let d = l/50
+let e = k-(l/25)
+let f = -.5+(l/125)
+let g = (l-25)/(k*35)
+let h = 0.1
+let m = 0.2
+ 
+! illegal plot commands
+set mode ignore
+plot/i=1:10/j=1:20/nolabel i+j			! not a line
+plot/i=1:10/j=1:20/nolabel i,i+j		! not a line
+plot/i=1:10/j=1:20/nolabel i+j,i		! not a line
+plot/i=1:10/j=1:20/nolabel j,i			! differing axes
+plot/i=1:10/j=1:20/vs/line/nolabel j,i		! unequal lengths
+contour/i=1:10/j=1:20/nolabel i			! only 1 D
+contour/i=1:10/j=1:20/nolabel i/j,j/i		! multiple fields
+vector/i=1:10/j=1:20/nolabel i/j		! only 1 field
+vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j	! 3 fields
+set mode/last ignore
+ 
+! notice the default window size is 10.2,width x 8.8,height
+ppl list plot
+         WIDTH=   10.20  HEIGHT=    8.80  TKTYPE=    0  BAUD=  110
+         WINDOW= ON   BOX= OFF  CROSS= 0  PLTYPE=  3
+         PLOT MODE=   A
+         PLOT FILE= .gif                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+ 
+! enlarge it to accomodate an additional 50% width
+ppl size 15.3,8.8
+ 
+! turn on metafile (enabled 10/29/91)
+! commented out 9/97 - instead set in bn450_all.jnl
+! set mode metafile
+ 
+! draw a plot into a viewport - to be deleted (check hard copy)
+set view ll6
+contour/i=1:50/j=1:50/nolabel i/(j+20)
+ 
+! 4 frames testing PLOT output
+set view ul6
+plot/l=1:50/k=1/trans/nolabel a,b,c
+plot/l=1:50/k=1/trans/over/line=6/nolabel d
+plot/l=1:50/k=1/trans/over/symbol=88/nolabel e
+plot/l=1:50/k=1/trans/over/symbol=47/line/nolabel f
+def view/text=.1/xlim=.333,1/ylim=0,.5 lm6   ! redefine longer in x (11/92)
+set view lm6
+!ppl axlen 16
+set region/k=1
+plot/l=1:50/nolabel a,b,c,d,e,f,g[k=1],g[k=2],a+h,b+h,c+h,d+h,e+h,f+h,g[k=1]+h,g[k=2]+h,a+m,b+m,c+m
+def view/text=.6/xlim=.333,1/ylim=.5,1 um6    ! redefine it longer in x (11/92)
+set view um6
+!ppl axlen 17,5
+plot/l=1:50/nolabel sin(100/(l+5))
+plot/l=1:50/over/nolabel a,b,c,d,e,f,g[k=1],g[k=2],a+h,b+h,c+h,d+h,e+h,f+h,g[k=1]+h,g[k=2]+h,a+m,b+m,c+m
+set view ll6
+!ppl axlen 8,6
+plot/l=1:99000/nolabel sin(200000/(l+10000))
+ 
+! reset to normal axis lengths and prepare for a new piccie
+!ppl axlen 8
+ 
+set mode ignore
+frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
+can mode ignore
+exit/command
 *** Running ferret script: bn_all_ef.jnl
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -94203,13 +94725,13 @@ FERRET_PLATFORM = "Linux 2.6.32-573.22.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = " 5-May-16"
-SESSION_TIME = "12:47"
-SESSION_PID = "7547"
-DELTA_CPU = "0.015997"
-CLOCK_SECS = "0.012"
-CURRENT_DATE = " 5-May-16"
-CURRENT_TIME = "12:47:15"
+SESSION_DATE = "10-May-16"
+SESSION_TIME = "15:40"
+SESSION_PID = "29559"
+DELTA_CPU = "0.016997"
+CLOCK_SECS = "0.015"
+CURRENT_DATE = "10-May-16"
+CURRENT_TIME = "15:40:25"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 GO_FILE = "./bn_startupfile.jnl"
@@ -94286,4 +94808,4 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3       ...       ...
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3       ...       ...
  
-Ended at Thu May  5 12:47:15 PDT 2016
+Ended at Tue May 10 15:40:25 PDT 2016

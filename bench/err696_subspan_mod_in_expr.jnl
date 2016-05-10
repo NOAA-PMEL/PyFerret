@@ -1,0 +1,23 @@
+! err696_subspan_mod_in_expr.jnl
+! ticket 1845: a subspan modulo due to context info buried
+! in a multi-layer expression isn't applied when setting
+! the time axis limits for the plot.
+! *acm* 5/2016
+
+use bug1845.nc
+set v upper
+shade/x=137:146 salinity[l=1] -  salinity[l=2]
+sh sym xaxis_m*
+
+
+! When the region information is embedded a couple levels down inside 
+! the expressions - in the square brackets, and then an expression involving
+! subtraction - the region isn't treated correctly, and the upper limit is
+! the modulo void point. 
+
+! Previously XAXIS_MAX was 496.4, the x axis too long, and most of the plot was blank
+
+set v lower
+shade salinity[x=137:146,T="28-Mar-2011 00:00"] - salinity[x=137:146,T="28-Mar-2011 03:00"]
+sh sym xaxis_m*
+

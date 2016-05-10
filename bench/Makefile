@@ -10,8 +10,8 @@ run_tests:
 	    exit 1 ; \
 	fi
 	./RUN_TESTS.sh `which pyferret` "$(PYFER_EXTERNAL_FUNCTIONS)" "RUN_TESTS.sh test results for PyFerret"
-	@echo 'Differences in the generated bench/*.pdf files versus against those in bench/test_results'
-	@for img in *.pdf ; \
+	@echo 'Differences in the generated bench PDF, PNG, and PS files versus against those in test_results'
+	@for img in *.pdf *.png *.ps ; \
 	do \
 	    diff -q $$img test_results/$$img ; \
 	done
@@ -22,8 +22,9 @@ run_tests:
 
 .PHONY: clean
 clean:
-	rm -f all_*_ncdump all_*_err all_*_log *.pdf
-	rm -f ferret.jnl* bat.plt* `cat TRASH_FILES`
+	rm -f all_*_ncdump all_*_err all_*_log
+	rm -f *.plt* *.gif* *.ps* *.png* *.pdf* ferret.jnl*
+	rm -f `cat TRASH_FILES`
 	rm -fr subdir tmp
 
 #

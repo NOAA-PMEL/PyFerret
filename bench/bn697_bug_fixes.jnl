@@ -75,3 +75,12 @@ go err696_mod_sub_fln
 
 go bn_reset
 go err696_subspan_transforms
+
+go bn_reset
+go err696_subspan_mod_in_expr
+
+go bn_reset
+go err696_shade_subspan_clim
+
+go bn_reset
+! go err696_subspan_mod_strides  ! do this test in bn_gif

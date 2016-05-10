@@ -101,7 +101,7 @@
       LOGICAL NC_GET_ATTRIB_FLOAT, NC_GET_ATTRIB_STRING, 
      .        NC_GET_ATTRIB, CD_GET_BOUNDS,
      .        got_it, got_bad, got_missing, tf2,
-     .        do_warn, coordvar
+     .        do_warn, coordvar, its_epic
       PARAMETER (do_warn = .TRUE. )
       INTEGER TM_LENSTR1, TM_FERRET_VARTYPE, 
      .        cdfstat, idim,
@@ -130,6 +130,8 @@
 
 
       EQUIVALENCE ( ds_precision, cd_data_type )
+
+           its_epic = ds_type(dset) .EQ. 'ECDF'
 
 * get the vital statistics for this variable
 
@@ -315,7 +317,7 @@ c        ENDIF
      .           ds_bad_flag(ivtm) =  ds_missing_flag(ivtm)
 	        
 * if neither missing flag nor _FillValue was defined, use NaN.
-             IF ( .NOT.got_missing .AND. .NOT.got_bad) THEN
+             IF ( .NOT.got_missing .AND. .NOT.got_bad .AND. .NOT.its_epic) THEN
                 CALL SET_NAN (ds_missing_flag(ivtm))
 		CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm), bad_r4)
 		IF (do_warn .AND. tmap_diag_on) CALL WARN(

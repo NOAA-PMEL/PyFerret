@@ -12,16 +12,19 @@ can view
 
 ! The top-left SHADE plot looks fine.
 set view ul; shade a*x[gx=0:10:1]
+sh sym yaxis*
 
-! But the top-right SHADE plot is all messed up; it shifts the data 
+! But the top-right SHADE plot was all messed up; it shifts the data 
 ! later by a full month, and stretches the last (shifted) cell all 
 ! the way to the upper limit of the plot domain
 
 set view ur; shade/t=1-jan-0001:1-jan-0002 a*x[gx=0:10:1]
-sh sym ppl$ymin, ppl$ymax
+sh sym yaxis*
 
 ! In the bottom-right line plot, the actual plotted data look ok. 
 ! But the plot limits extend all the way from 1-JUL-0000 to 1-MAR-0002, 
 ! rather than being shrink-wrapped around the data.
 
 set view lr; plot/step=con/t=1-jan-0001:1-jan-0002 a
+
+sh sym xaxis*

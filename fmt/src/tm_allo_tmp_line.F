@@ -40,8 +40,7 @@
 
 * V510 *sh* 3/00 - guts of routine in  TM_ALLO_DYN_LINE_SUB
 * V581*acm*  6/05 For fix to bug 1271, add flag line_shift_origin
-* v694 1/15 *acm* for ticket 2227: if a dimension from a nc file is not also a 
-*                 1-D coordinate var, don't write the axis Ferret creates
+* v694 1/15 *acm* (see ticket 2227) handle the line_dim_only flag
 
 * Include files
 	include 'tmap_dims.parm'

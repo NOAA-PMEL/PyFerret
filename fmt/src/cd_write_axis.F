@@ -116,6 +116,7 @@
 * V698  4/16 *acm* Fix ticket 2241: If file has dimension but not a coordinate 
 *                  variable, do not write the coordinate variable, ONLY IF writing 
 *                  the full-span in that direction.
+*  V698  4/16 *acm* When checking for dimension-only, this applies to file axes only.
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -407,11 +408,13 @@
 
 * If the dimension was a dimension only (not a 1-D coordinate variable) in the 
 * source datset, just create the dimension in the output file. Don't write out
-* the basic axis that Ferret defined.
+* the basic axis that Ferret defined. (If Ferret synthesized the variable, do write
+* the axis.)
 
 ** ticket 2241: if it's a subspan axis, write it out...
 
-      IF (line_dim_only(iaxis) .AND. ax_type.EQ.pcdf_full_span) GOTO 1000
+      IF (line_dim_only(iaxis) .AND. dset.GT.0 .AND.
+     .    ax_type.EQ.pcdf_full_span) GOTO 1000
 
 * create the coordinate variable (12/92 -> double precision)
 #ifdef usingDODSf2cUnderscore

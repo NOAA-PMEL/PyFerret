@@ -185,6 +185,9 @@
 * V695+  5/15 *sh* allow "units='none'" as ignorable units string (for Andrew)
 * V695+ 10/15 *sh* pass axis length instead of iaxis to TM_CHECK_BNDS_ATTRIB
 * V698   4/16 *sh* recognize special E and F non-convertible axis units
+* V698  5/16 *acm* for ticket 1432, could write a note when encountering a 
+*                  supbspan modolo axis with length almost the modulo length.
+*                  (commented out for now.)
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -230,7 +233,7 @@
       LOGICAL NC_GET_ATTRIB, CD_GET_ATTVAL, TM_CHECK_BOX_LOC,
      .        TM_HAS_STRING, TM_FPEQ_EPS, TM_DFPEQ, CD_GET_ATTVALC, 
      .        CD_GET_ATTVAL_L, TM_CHECK_BNDS, TM_CHECK_BNDS_CENTERED, 
-     .        TM_FPEQ, TM_DFPEQ_TOL, NC_GET_ATTRIB_DP,
+     .        TM_FPEQ, TM_DFPEQ_TOL, NC_GET_ATTRIB_DP, TM_ITS_SUBSPAN_MODULO,
      .        got_it, got_torg, do_warn,
      .        epic_time, west_lon, yyyymmdd_time, 
      .        got_mod, mod_tf, setmodfalse, ok_cal, ok,
@@ -257,7 +260,7 @@
      .        dscale, doffset,  micro_adj, madj
       CHARACTER*12 TM_LEFINT
       CHARACTER vname*128, ename*128, vupcase*128, words(8)*24,
-     .        spacing_attr*14, bname*128
+     .        spacing_attr*14, bname*128, TM_FMT*32
       CHARACTER*13 TM_STRING
       CHARACTER*1 axis_dir
       CHARACTER*3 dbuf
@@ -1306,6 +1309,9 @@ c             line_modulo_len(iaxis) = 0.0D0
              ENDIF
            ENDIF
         ENDIF
+
+* Write a note when subspan modulo axis length within a grid cell of modulo length
+c	CALL TM_WARN_SUBSPAN (iaxis)
 
 * Save the line direction in the linked-list structure for the coordinate variable
 

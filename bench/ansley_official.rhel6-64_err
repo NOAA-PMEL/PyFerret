@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 117416685 May  9 16:44 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 117566272 May 11 15:15 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  tickets 513, 1845, 2404: subspan modulo fixes
+Note: final work for now on modulo subspan axes
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Mon May 9 16:45:57 PDT 2016
+Beginning at Wed May 11 15:17:01 PDT 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1814,7 +1814,6 @@ Replacing definition of axis XAX
 Replacing definition of axis XFINE
 Replacing definition of axis YFINE
  LISTing to file fine.dat
-Cannot create cookie file
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: illegal limits: One-point independent axis: Requires a /HLIMIT or /VLIMIT specification
@@ -2173,11 +2172,8 @@ Replacing definition of axis TIME
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
-Cannot create cookie file
-Cannot create cookie file
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
-Cannot create cookie file
 CURL Error: Couldn't resolve host name
 curl error details: 
  PERMANENT data cleared from memory
@@ -2367,8 +2363,6 @@ set axis/stride=2 NORMAL
  LISTing to file tripolar_missing_lon.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Cannot create cookie file
-Cannot create cookie file
 CURL Error: Couldn't resolve host name
 curl error details: 
  PERMANENT data cleared from memory
@@ -4112,8 +4106,6 @@ SET DAT/FORM=CDF ft_cal_mixed.nc
 Replacing definition of axis tday
 Replacing definition of axis xax
  LISTing to file myfile.nc
-Cannot create cookie file
-Cannot create cookie file
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4199,10 +4191,6 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
 Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_1.nc
  LISTing to file tmp/tagg_reg_2.nc
@@ -4300,10 +4288,6 @@ define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_1.nc
 define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc, tmp/tagg_single_5.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
  LISTing to file tmp/test1.nc
  LISTing to file tmp/test2.nc
  LISTing to file tmp/test3.nc
@@ -4594,7 +4578,6 @@ SHO VAR/XML
  TEMPORARY data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
-Cannot create cookie file
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4735,4 +4718,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon May 9 16:48:25 PDT 2016
+Ended at Wed May 11 15:20:49 PDT 2016

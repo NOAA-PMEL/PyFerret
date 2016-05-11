@@ -246,6 +246,9 @@
 * V698  4/16 *acm* Allow DEFINE VAR/BAD=nan
 * V698  4/16 *acm* Fix ticket 2400: DEFINE AXIS/EDGES had bugs in testing for
 *                  regular axis, and in setting the axis start when regular.
+* V698  5/16 *acm* for ticket 1432, could write a note when axis definition is a 
+*                  supbspan modolo axis with length almost the modulo length.
+*                  (commented out for now.)
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -362,10 +365,12 @@
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * local variable declarations:
+
 	LOGICAL	  TM_DIGIT, TM_LEGAL_NAME, TM_LINE_MATCH, TM_GRID_MATCH,
      .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, MATCH_NAME,
      .            NC_GET_ATTRIB, TM_LEGAL_NAME_OP, TM_HAS_STRING,
      .            ITSA_1LINEIF, MATCH4, GO_FILE_INPUT, IS_AGG_MEMBER,
+     .            TM_ITS_SUBSPAN_MODULO,
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
      .            new_att, new_att_modulo, got_it, orient_t, agg_quiet,
@@ -389,7 +394,7 @@
      .            prev_cal_id, j, num_indices, varid, attype_spec,
      .            attoutflag, attlen, coordvar, 
      .            dset_to_add, dir, type, attype, attid, ibuff, i0,  
-     .            agg_dim, nagfiles, ivar, item, nlab, ierr
+     .            agg_dim, nagfiles, ivar, item, nlab, ierr, nlen, llen
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            val, dummy, val_buf, xloc, yloc, halign, angle, size
@@ -407,7 +412,8 @@
      .		  mon_names(12)*3, varname*512, attname*128, t2*2,
      .            new_att_units*128, new_att_calendar*128,
      .            new_att_t0*128, dcode*2, axdir*1, t0string*128, 
-     .            ustring*128, reserved_flow_name(3)*4, is_nan*3
+     .            ustring*128, reserved_flow_name(3)*4, is_nan*3,
+     .            buff4*16, buff5*16
 
         CHARACTER*1 tab
 #ifdef NO_INTRINSIC_IN_PARAMETER
@@ -1580,6 +1586,9 @@ C /units=months  is 1/12 of the length of the year
 	     ENDIF
            ENDIF
 	ENDIF
+
+* Write a note when subspan modulo axis length within a grid cell of modulo length
+c	CALL TM_WARN_SUBSPAN (iline)
 
 * check for redefinitions
 	IF ( dup_name ) THEN

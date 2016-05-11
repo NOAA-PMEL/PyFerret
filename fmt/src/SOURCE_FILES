@@ -291,6 +291,7 @@ tm_translate_lat_long.F\
 tm_unit_id.F\
 tm_use_dyn_grid.F\
 tm_use_line.F\
+tm_warn_subspan.F\
 tm_world.F\
 tm_world_ax.F\
 tm_ww_ax_1_n.F\

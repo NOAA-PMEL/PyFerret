@@ -75,6 +75,8 @@
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
 * V698  3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
+* v698 5/16  *acm* ticket 2413: New attribute keywords ncoordvars, coordnames
+*                  return info about coordinate-variables in datasets
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -292,6 +294,7 @@
               cx_type(var_cx) = ptype_float
               IF (STR_SAME (attname, 'varnames')  .EQ. 0 .OR.
      .            STR_SAME (attname, 'dimnames')  .EQ. 0 .OR.
+     .            STR_SAME (attname, 'coordnames')  .EQ. 0 .OR.
      .            STR_SAME (attname, 'attnames')  .EQ. 0 )
      .         cx_type(var_cx) = ptype_string
            ENDIF

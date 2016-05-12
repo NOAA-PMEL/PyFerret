@@ -1,0 +1,31 @@
+! bn_coordvars_atts.jnl
+! 5/2016 *acm*  see ticket 2413
+! Additional attribute keywords for returning  coordinate variable 
+! names and number of coordinate vars, to distinguish coordinate
+! info from dimension info.
+
+! File has dimensions which are not coordinate variables, for
+! the dimensions of the 2D coordinate variables.
+use dims_not_coord.nc
+list/nohead ..ndims
+list/nohead ..dimnames
+list/nohead ..ncoordvars
+list/nohead ..coordnames
+let cname = ..coordnames
+sh axis `cname[i=1]`
+
+! The depth axis has coordinate bounds; the length-2 bnds 
+! dimension is not a coordinate variable
+use levitus_3d_subset.nc
+list/nohead ..ndims
+list/nohead ..dimnames
+list/nohead ..ncoordvars
+list/nohead ..coordnames
+
+! String variables in netcdf files have string-length 
+! dimensions which are not coordinate variables.
+use numstring.nc
+list/nohead ..ndims
+list/nohead ..dimnames
+list/nohead ..ncoordvars
+list/nohead ..coordnames

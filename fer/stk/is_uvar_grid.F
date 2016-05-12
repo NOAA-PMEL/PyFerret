@@ -113,6 +113,8 @@
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
 * V698  3/16 *acm* Remove unneeded xdset_parms.cmn
+* v698 5/16  *acm* ticket 2413: New attribute keywords ncoordvars, coordnames
+*                  return info about coordinate-variables in datasets
 
 * calling argument declarations:
 	INTEGER	status
@@ -431,23 +433,27 @@
         attype = NCFLOAT
 
         IF (STR_SAME(attname, 'attnames') .EQ. 0  .OR. 
-     .       STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
+     .       STR_SAME(attname, 'dimnames') .EQ. 0 .OR. 
+     .       STR_SAME(attname, 'coordnames') .EQ. 0 ) THEN
            attype = NCCHAR
         ELSE IF (STR_SAME(attname, 'ndims') .EQ. 0  .OR.
      .      STR_SAME(attname, 'type') .EQ. 0  .OR.
      .      STR_SAME(attname, 'nvars') .EQ. 0  .OR.
+     .      STR_SAME(attname, 'ncoordvars') .EQ. 0  .OR.
      .      STR_SAME(attname, 'nattrs') .EQ. 0 ) THEN
            attype = NCFLOAT
 
         ELSE IF (STR_SAME (varname, '.') .EQ. 0) THEN
            IF (STR_SAME(attname, 'varnames') .EQ. 0   .OR.
-     .         STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
+     .         STR_SAME(attname, 'dimnames') .EQ. 0 .OR.
+     .         STR_SAME(attname, 'coordnames') .EQ. 0 ) THEN
               attype = NCCHAR
 
            ELSE IF (STR_SAME(attname, 'attnames') .EQ. 0   .OR.
-     .           STR_SAME(attname, 'ndims') .EQ. 0  .OR.
+     .           STR_SAME(attname, 'ndims')  .EQ. 0  .OR.
      .           STR_SAME(attname, 'nattrs') .EQ. 0  .OR.
-     .           STR_SAME(attname, 'nvars') .EQ. 0 ) THEN
+     .           STR_SAME(attname, 'nvars')  .EQ. 0  .OR.
+     .           STR_SAME(attname, 'ncoordvars') .EQ. 0 ) THEN
               attype = NCFLOAT
            ENDIF
 

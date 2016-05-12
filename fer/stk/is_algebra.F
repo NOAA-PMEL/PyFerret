@@ -103,6 +103,8 @@
 * V694 5/14  *acm* Ticket 2234. return-type error on string operations
 * V697  3/16 *acm* Ticket 2367. Return-type error for user variable when expr
 *                  uses a function having numeric and string versions.
+* v698 5/16  *acm* ticket 2413: New attribute keywords ncoordvars, coordnames
+*                  return info about coordinate-variables in datasets
 
 	include 'tmap_dims.parm'
 #include "netcdf.inc"
@@ -661,7 +663,7 @@
                     cx_type(hi_cx) = ptype_string
                     IF (reset_ss) THEN
                        cx_lo_ss(hi_cx, x_dim) = 1
-                       cx_hi_ss(hi_cx, x_dim) = nv
+                       cx_hi_ss(hi_cx, x_dim) = MAX(1, nv)
                     ELSE
                        cx_lo_ss(hi_cx, x_dim) = MAX(1, cx_lo_ss(hi_cx, x_dim))
                        cx_hi_ss(hi_cx, x_dim) = MIN(nv, cx_hi_ss(hi_cx, x_dim))
@@ -672,7 +674,7 @@
                     cx_type(hi_cx) = ptype_string
                     IF (reset_ss) THEN
                        cx_lo_ss(hi_cx, x_dim) = 1
-                       cx_hi_ss(hi_cx, x_dim) = ngatts
+                       cx_hi_ss(hi_cx, x_dim) = MAX(1, ngatts)
                     ELSE
                        cx_lo_ss(hi_cx, x_dim) = MAX(1, cx_lo_ss(hi_cx, x_dim))
                        cx_hi_ss(hi_cx, x_dim) = MIN(ngatts, cx_hi_ss(hi_cx, x_dim))
@@ -688,11 +690,22 @@
                  ELSE IF (STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
                     cx_type(hi_cx) = ptype_string
 
-		    nv = ndims
+                    IF (reset_ss) THEN
+                       cx_lo_ss(hi_cx, x_dim) = 1
+                       cx_hi_ss(hi_cx, x_dim) = MAX(1, ndims)
+                    ELSE
+                       cx_lo_ss(hi_cx, x_dim) = MAX(1, cx_lo_ss(hi_cx, x_dim))
+                       cx_hi_ss(hi_cx, x_dim) = MIN(ndims, cx_hi_ss(hi_cx, x_dim))
+                    ENDIF
+   
+* coordinate-variable names
+ncoordvars coordnames
+                 ELSE IF (STR_SAME(attname, 'coordnames') .EQ. 0 ) THEN
+                    cx_type(hi_cx) = ptype_string
 
                     IF (reset_ss) THEN
                        cx_lo_ss(hi_cx, x_dim) = 1
-                       cx_hi_ss(hi_cx, x_dim) = nv
+                       cx_hi_ss(hi_cx, x_dim) = MAX(1, nvars-nv)
                     ELSE
                        cx_lo_ss(hi_cx, x_dim) = MAX(1, cx_lo_ss(hi_cx, x_dim))
                        cx_hi_ss(hi_cx, x_dim) = MIN(ndims, cx_hi_ss(hi_cx, x_dim))
@@ -700,6 +713,13 @@
 
 * # variables 
                  ELSE IF (STR_SAME(attname, 'nvars') .EQ. 0 ) THEN
+                    cx_type(hi_cx) = ptype_float
+                    cx_lo_ss(hi_cx, x_dim) = 1
+                    cx_hi_ss(hi_cx, x_dim) = 1
+
+* # coordinate variables (dimensions that ALSO have a coord. var)
+               
+                 ELSE IF (STR_SAME(attname, 'ncoordvars') .EQ. 0 ) THEN
                     cx_type(hi_cx) = ptype_float
                     cx_lo_ss(hi_cx, x_dim) = 1
                     cx_hi_ss(hi_cx, x_dim) = 1

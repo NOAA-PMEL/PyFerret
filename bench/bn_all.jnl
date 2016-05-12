@@ -1073,6 +1073,9 @@ GO bn_auto_tprec
 !GO bn_reset
 !GO bn_warn_subspan
 
+GO bn_reset
+GO bn_coordvars_atts
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

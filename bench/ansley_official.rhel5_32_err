@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 121847009 Apr  5 15:56 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 121894588 May 11 15:36 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: PLOT/ALONG= changes, recent aggregations changes, SHOW COMMANDS updates and new script
+Note: updates including subspan modulo fixes
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/linux/ext_func/pylibs
-Beginning at Tue Apr 5 17:11:39 PDT 2016
+Beginning at Wed May 11 16:10:59 PDT 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -41,11 +41,13 @@ message/cont $3"<my error message"
 message/cont $1"|xxxxx|goodbye<my error message"
  **ERROR: invalid command: Valid value needed for argument $1
 message/cont $1"greetings|xxxxx|goodbye"
+           *** NOTE: Argument $1 received was: hello
            *** NOTE: Valid argument $1 choices are: xxxxx|goodbye
  **ERROR: my error message
 message/cont $3"|hello|goodbye<my error message"
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3">greetings|hello|goodbye"
+           *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: hello|goodbye
  **ERROR: my error message
 message/cont $3">greetings|hello|goodbye<my error message"
@@ -57,9 +59,11 @@ message/cont $3""
 message/cont $3"<"
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3"||"
+           *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: |
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3"|>|"
+           *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: >|
  **ERROR: command syntax: empty text string provided with ">": >|
 message/cont $3">|"
@@ -67,6 +71,7 @@ message/cont $3">|"
 message/cont $3"|<"
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3"|>"
+           *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: >
  **ERROR: command syntax: arg number not in 1-99 range: $100
 say $100
@@ -285,11 +290,13 @@ define symbol t$5 = hi
 message/continue ($test2"<error message")
  **ERROR: invalid command: Valid value needed for symbol test2
 message/continue ($test2"|hello|bye|")
+           *** NOTE: symbol test2 was missing or empty.
            *** NOTE: Valid symbol test2 choices are: hello|bye|
  **ERROR: error message
 message/continue ($test2"|hello|bye|<error message")
  **ERROR: invalid command: Valid value needed for symbol t2
 message/continue ($t2"|solong>really hello|bye|")
+           *** NOTE: symbol t2 received was: hello
            *** NOTE: Valid symbol t2 choices are: solong>really hello|bye|
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -812,13 +819,6 @@ Replacing definition of grid TGRID
  **ERROR: command syntax: dash=(1., 2.)
           DASH[=(dn1,up1,dn2,up2)] takes 4 arguments or no argument
 plot/dash=(1., 2.)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
- **ERROR: value out of legal range: dash=(-1., 2., 3., 4.)
-          DASH arguments must be positive
-plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- Using every   2th vector in the Y direction
- Using every   2th vector in the Y direction
 
 Bailing out of external function "ffta":
 	 Time axis must be a regular axis
@@ -831,6 +831,13 @@ Bailing out of external function "eof_stat":
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+ **ERROR: value out of legal range: dash=(-1., 2., 3., 4.)
+          DASH arguments must be positive
+plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ Using every   2th vector in the Y direction
+ Using every   2th vector in the Y direction
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  Using every   2th vector in the X direction
@@ -1829,26 +1836,31 @@ Replacing definition of axis TAX
 query/ignore $1%q|a|b|c|d|<First argument is a letter of the alphabet%
  **ERROR: invalid command: Valid value needed for argument $2
 query/ignore $2%|a|b|c|d|%
+           *** NOTE: Argument $2 was missing or empty.
            *** NOTE: Valid argument $2 choices are: a|b|c|d|
  **ERROR: my error message
 message/cont $1"|xxxxx|goodbye<my error message"
  **ERROR: invalid command: Valid value needed for argument $1
 message/cont $1"greetings|xxxxx|goodbye"
+           *** NOTE: Argument $1 received was: hello
            *** NOTE: Valid argument $1 choices are: xxxxx|goodbye
  **ERROR: my error message
 message/cont $3"|hello|goodbye<my error message"
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3">greetings|hello|goodbye"
+           *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: hello|goodbye
  **ERROR: my error message
 message/continue ($test2"<my error message")
  **ERROR: invalid command: Valid value needed for symbol test2
 message/continue ($test2"|hello|bye|")
+           *** NOTE: symbol test2 was missing or empty.
            *** NOTE: Valid symbol test2 choices are: hello|bye|
  **ERROR: my error message
 message/continue ($test2"|hello|bye|<my error message")
  **ERROR: invalid command: Valid value needed for symbol t2
 message/continue ($t2"|solong>really hello|bye|")
+           *** NOTE: symbol t2 was missing or empty.
            *** NOTE: Valid symbol t2 choices are: solong>really hello|bye|
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1963,6 +1975,9 @@ Replacing definition of axis TGREG
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file revision.nc
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1970,9 +1985,6 @@ Replacing definition of axis TGREG
  **ERROR: command syntax: IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
           Cannot use multiple IFs in an expression
 LIST/ORDER=X  IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
-
-Bailing out of external function "ffta":
-	 Time axis must be a regular axis
  **ERROR: command syntax: IF I LT 5 THEN I ELSE -9
           ELSE before - is illegal
           negative constants need to be enclosed in parentheses
@@ -2160,10 +2172,10 @@ Replacing definition of axis TIME
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
- PERMANENT data cleared from memory
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
 curl error details: 
+ PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2350,6 +2362,7 @@ set axis/stride=2 NORMAL
  LISTing to file tripolar_missing_lon.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+curl error details: 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2360,7 +2373,6 @@ set axis/stride=2 NORMAL
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
            *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
            *** NOTE: Substituting coordinate midpoints
-curl error details: 
            *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
            *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
            *** NOTE: A dummy axis of subscripts will be used
@@ -3104,6 +3116,9 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+
+Bailing out of external function "tax_year":
+	 Function not valid for modulo time axis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XAX
@@ -3120,9 +3135,6 @@ Replacing definition of axis YAX
  LISTing to file aa.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-
-Bailing out of external function "tax_year":
-	 Function not valid for modulo time axis
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
 set mode desperate   9999999999.000000
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
@@ -3342,24 +3354,24 @@ Replacing definition of grid G5DAY
 Replacing definition of axis FAX4DAY
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
- **ERROR: unknown data set: dset 3 unknown or is already an aggregate dataset
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+ **ERROR: unknown data set: dset 3
 DEFINE DATA/AGGREGAT/E windy = 1,2,3
-           *** NOTE: Exclude variable from aggregate. T axis of grid differs in member datasets: UWND
-           *** NOTE: Exclude variable from aggregate. T axis of grid differs in member datasets: VWND
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
+           *** NOTE: Variable "UWND" excluded from aggregate: T axis differs among members
+           *** NOTE: Variable "VWND" excluded from aggregate: T axis differs among members
+           *** NOTE: Variable "SPEH" excluded from aggregate: Not found in all member datasets
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
 DEFINE DATA/AGGREGAT/E windy = 1,2
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: SPEH
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: UIN
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: VIN
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+           *** NOTE: Variable "SPEH" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "UIN" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "VIN" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, my_ens
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, fourfiles
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, some
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, more
@@ -3554,9 +3566,9 @@ plot/i=1:100/ribbon/COLOR sin(i/6),0.6*sin(i/7)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis ZAX
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVX
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+           *** NOTE: Variable "FVX" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "FVZ" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "FVZ" excluded from aggregate: Not found in all member datasets
  **ERROR: unknown defining grid: G=NOEXIST
 list b
  **ERROR: command syntax: 45S
@@ -3632,8 +3644,6 @@ Replacing definition of axis XAXIS_TEST
  LISTing to file c.nc
  LISTing to file c.nc
  LISTing to file c.nc
-syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 500; message = "Error processing XML header file /usr/local/src/apache-tomcat-7.0.34/content/NVODS/conf/server/temp/AD882140E58648ADA4107B4E90A732E2/header.xml (No such file or directory)"^;};
  LISTing to file nc
  **TMAP ERR: error in line definition
              file coords dont match variable coords on axis XAXIS_TEST
@@ -3690,20 +3700,6 @@ set axis/name=45 x_in_meters
 set axis/name=.fr x_in_meters
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: command syntax: /REMOTE variable expression may not contain [d=
-DEFINE VARIABLE/D=1/remote rvar = t0112mn1[d=1,z=1:100@ave]
- **ERROR: command syntax: /REMOTE variable definition must also specify /D=
-DEFINE VARIABLE/remote rvar = t0112mn1[d=1,z=1:100@ave]
- **netCDF error
-             Unable to open URL with REMOTE variable definitions:
-             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc
- **TMAP ERR: attribute reading error
-             Unable to get bad-value for LET/REMOTE variable: NetCDF: Attribute not found (OPeNDAP/netCDF Error code -43)
-             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc
- **netCDF error
-             NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
-             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc
-list/x=300/y=15 avar
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3832,9 +3828,9 @@ Replacing definition of axis Y2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis ZAX
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVX
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FVZ
+           *** NOTE: Variable "FVX" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "FVZ" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "FVZ" excluded from aggregate: Not found in all member datasets
  **ERROR: unknown defining grid: G=NOEXIST
 list b
  **ERROR: command syntax: 45S
@@ -4114,7 +4110,7 @@ Replacing definition of axis xax
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: AIRT
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  Cached data cleared from memory
@@ -4154,6 +4150,45 @@ Replacing definition of axis yax
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis F_AX
+Replacing definition of axis AAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis T_AXIS
+Replacing definition of axis T_AXIS
+Replacing definition of axis F_AXIS
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAXIS
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ LISTing to file a.nc
+           *** NOTE: Not deleted: TAX
+           *** NOTE: Axis is in use by grid TGRID
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_1.nc
  LISTing to file tmp/tagg_reg_2.nc
@@ -4169,7 +4204,7 @@ Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_no_T.nc
  LISTing to file tmp/tagg_reg_2_overlarge.nc
            *** NOTE: Not deleted: TDAY
-           *** NOTE: Axis is in use by grid (G094)
+           *** NOTE: Axis is in use by grid (G092)
  LISTing to file tmp/tagg_irreg_1.nc
  LISTing to file tmp/tagg_irreg_2.nc
  LISTing to file tmp/tagg_irreg_3.nc
@@ -4183,7 +4218,7 @@ Replacing definition of axis TDAY
 Replacing definition of axis TDAY_IR
  LISTing to file tmp/tagg_irreg_2_reg.nc
            *** NOTE: Not deleted: TDAY_IR
-           *** NOTE: Axis is in use by grid (G094)
+           *** NOTE: Axis is in use by grid (G092)
  LISTing to file tmp/tagg_T0varying_1.nc
 Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_T0varying_2.nc
@@ -4219,7 +4254,7 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_disjoint_T0varying_3.nc
  LISTing to file tmp/tagg_disjoint_T0varying_4_wrong.nc
            *** NOTE: Not deleted: TDAY_WRONG
-           *** NOTE: Axis is in use by grid (G094)
+           *** NOTE: Axis is in use by grid (G092)
  LISTing to file tmp/tagg_single_1.nc
  LISTing to file tmp/tagg_single_2.nc
  LISTing to file tmp/tagg_single_3.nc
@@ -4227,7 +4262,7 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_single_5.nc
  LISTing to file tmp/tagg_single_6.nc
            *** NOTE: Not deleted: tday
-           *** NOTE: Axis is in use by grid (G094)
+           *** NOTE: Axis is in use by grid (G092)
  **ERROR: invalid command: given aggregation dataset name already in use: myagg2
 define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc, tmp/tagg_reg_2.nc
  **TMAP ERR: non-existent or not on line
@@ -4305,13 +4340,13 @@ Replacing definition of axis YAX
  LISTing to file tmp/consecutive_month_fcst.nc
 Replacing definition of axis TRUEMONTH
  LISTing to file tmp/irregular_start_time_fcst.nc
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
+           *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, bn_aggregate_f.jnl
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, my_fmrc
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
+           *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
            *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
  **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
 DEFINE DATA/AGGREGAT/F my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc,tmp/fcst_2.nc,tmp/fcst_3.nc
@@ -4495,25 +4530,28 @@ Replacing definition of axis TRUEMONTH
  LISTing to file tmp/f04_e3_t1_1v.nc
  LISTing to file tmp/f04_e3_t2_1v.nc
  LISTing to file tmp/f04_e3_t3_1v.nc
-           *** NOTE: Exclude variable from aggregate. Does not appear in all member datasets: FCST_2
+           *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
  **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis X of agg member 3
 list/x=150E/y=15n/L=10 fcst_2
  **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis T of agg member 3
 list/x=150E/y=15n/L=10 fcst_2
  **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis X of agg member 3
 list/x=150E/y=15n/L=10 fcst_2
-           *** NOTE: Exclude variable from aggregate. E axis of grid differs in member datasets: FCST
-           *** NOTE: Exclude variable from aggregate. E axis of grid differs in member datasets: FCST_2
+           *** NOTE: Variable "FCST" excluded from aggregate: E axis differs among members
+           *** NOTE: Variable "FCST_2" excluded from aggregate: E axis differs among members
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
 DEFINE DATA/AGGREGAT/F tef_short = te_f01, te_f02_short, te_f03, te_f04, te_f05, te_f06, te_f07, te_f08, te_f09, te_f10, te_f11
-           *** NOTE: Exclude variable from aggregate. F axis of grid differs in member datasets: FCST
-           *** NOTE: Exclude variable from aggregate. F axis of grid differs in member datasets: TF_TIMES
-           *** NOTE: Exclude variable from aggregate. F axis of grid differs in member datasets: FCST_2
+           *** NOTE: Variable "FCST" excluded from aggregate: F axis differs among members
+           *** NOTE: Variable "TF_TIMES" excluded from aggregate: F axis differs among members
+           *** NOTE: Variable "FCST_2" excluded from aggregate: F axis differs among members
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
 DEFINE DATA/AGGREGAT/E tfe_short = tf_e1, tf_e2_short, tf_e3, tf_e4, tf_e5
- **ERROR: unknown data set: dset te_f01 unknown or is already an aggregate dataset
+           *** NOTE: Variable "FCST" excluded from aggregate: Already has E axis
+           *** NOTE: Variable "FCST_2" excluded from aggregate: Already has E axis
+           *** NOTE: Variable "REALIZATION" excluded from aggregate: Already has E axis
+ **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
 DEFINE DATA/AGGREGAT/E bad_ens = te_f01, te_f03, te_f04
- **ERROR: unknown data set: dset tf_e1 unknown or is already an aggregate dataset
+ **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
 DEFINE DATA/AGGREGAT/F bad_fmrc = tf_e1, tf_e3, tf_e4
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4542,7 +4580,7 @@ SHO VAR/XML
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Replacing definition of axis TAX
+Replacing definition of axis tax
  LISTing to file a.nc
  LISTing to file a.nc
 Replacing definition of axis TAX
@@ -4556,6 +4594,20 @@ Replacing definition of axis TAX
            *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
            *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
            *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
+           *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
+           *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
+           *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4630,6 +4682,9 @@ Replacing definition of axis TDAYS
 Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -4661,4 +4716,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Apr 5 17:15:25 PDT 2016
+Ended at Wed May 11 16:14:42 PDT 2016

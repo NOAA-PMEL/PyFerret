@@ -249,6 +249,8 @@
 * V698  5/16 *acm* for ticket 1432, could write a note when axis definition is a 
 *                  supbspan modolo axis with length almost the modulo length.
 *                  (commented out for now.)
+* V698  5/16 *acm* Ticket 2416 allow all output types for DEFINE ATT.
+
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -2030,17 +2032,25 @@ c	CALL TM_WARN_SUBSPAN (iline)
 	ENDIF
 
 *...DEF ATT/TYPE=string or float  get attribute type if present 
-*   (??? or other types on output?)
+*   5/16 allow other types on output.
 	iqual = qual_given( slash_def_att_type) 
         attype_spec = ptype_unknown
         IF ( iqual .GT. 0 ) THEN
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      buff2, status )  
 	   IF ( status .NE. ferr_ok ) RETURN
-	   IF ( STR_SAME (buff2, 'string') .EQ. 0) THEN
-	      attype_spec = ptype_string
-           ELSE IF (STR_SAME (buff2, 'float') .EQ. 0) THEN
-              attype_spec = ptype_float
+	   IF ( STR_SAME (buff2(1:3), 'str') .EQ. 0) THEN
+	      attype_spec =  2   ! NCCHAR
+           ELSE IF (STR_SAME (buff2(1:3), 'flo') .EQ. 0) THEN
+              attype_spec = 5   ! NCFLOAT
+           ELSE IF (STR_SAME (buff2(1:3), 'byt') .EQ. 0) THEN
+              attype_spec = 1   ! NCBYTE
+           ELSE IF (STR_SAME (buff2(1:3), 'sho') .EQ. 0) THEN
+              attype_spec = 3   ! NCSHORT
+           ELSE IF (STR_SAME (buff2(1:3), 'int') .EQ. 0) THEN
+              attype_spec = 4   ! NCLONG, or in c, NC_INT (4-byte integer)
+           ELSE IF (STR_SAME (buff2(1:3), 'dou') .EQ. 0) THEN
+              attype_spec = 6   ! NCDOUBLE
            ELSE 
               GO TO 5940
 	   ENDIF

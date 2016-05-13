@@ -84,3 +84,6 @@ go err696_shade_subspan_clim
 
 go bn_reset
 ! go err696_subspan_mod_strides  ! do this test in bn_gif
+
+go bn_reset
+go err696_def_att

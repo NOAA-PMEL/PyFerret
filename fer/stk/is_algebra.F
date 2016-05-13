@@ -699,7 +699,6 @@
                     ENDIF
    
 * coordinate-variable names
-ncoordvars coordnames
                  ELSE IF (STR_SAME(attname, 'coordnames') .EQ. 0 ) THEN
                     cx_type(hi_cx) = ptype_string
 

@@ -117,6 +117,8 @@
 *                  variable, do not write the coordinate variable, ONLY IF writing 
 *                  the full-span in that direction.
 *  V698  4/16 *acm* When checking for dimension-only, this applies to file axes only.
+*  V698  5/16 *acm* Fix ticket 2415: write attributes using the requested data type
+*                   Routine CD_WRITE_ATTVAL_DP converts to the specified type.
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -536,7 +538,7 @@
                   CALL CD_WRITE_ATTRIB (cdfid, name(:nlen), attname,
      .                               buff(:llen), .FALSE., status )
                ELSE IF (attoutflag .EQ. 1) THEN
-                  CALL CD_WRITE_ATTVAL(cdfid, name(:nlen), attname,
+                  CALL CD_WRITE_ATTVAL_DP(cdfid, name(:nlen), attname,
      .                                 vals, attlen, attype, status )
                ENDIF
             ENDIF
@@ -742,7 +744,7 @@
                CALL CD_WRITE_ATTRIB(cdfid, name(:nlen), attname,
      .                               'false', .FALSE., status )
             ELSE IF (attoutflag .EQ. 1) THEN
-               CALL CD_WRITE_ATTVAL(cdfid, name(:nlen), attname,
+               CALL CD_WRITE_ATTVAL_DP(cdfid, name(:nlen), attname,
      .                              vals, attlen, attype, status )
             ENDIF
 

@@ -259,6 +259,7 @@ bn_plot_along.jnl
 bn_show_commands.jnl
 bn_plot_decimate.jnl
 bn_auto_tprec.jnl
+bn_coordvars_atts.jnl
 ! bn_gif, bn_all_ef, and bn_startupfile at end
 bn_gif.jnl
 bn_ps.jnl

@@ -193,7 +193,7 @@ if [ "$ispyferret" -ne 0 ]; then
       echo "*** Running python script: $script" >> $err_file
       echo "*** Running python script: $script" > all_ncdump.out
       echo "Running python script : $script"
-      $fver $feropts -nojnl -python < $script 1>> $log_file 2>> $err_file
+      $fver $feropts -python < $script 1>> $log_file 2>> $err_file
       if [ $? -ne 0 ]; then
          echo "****** PYFERRET error: $script failed ******" >> $log_file
          echo "****** PYFERRET error: $script failed ******" >> $err_file

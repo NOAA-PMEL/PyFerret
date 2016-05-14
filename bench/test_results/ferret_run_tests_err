@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 May 10 15:21 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
+lrwxrwxrwx. 1 ksmith oerdnewp 12 May 13 15:49 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -278,11 +278,12 @@ Benchmark scripts that will be run:
    bn_show_commands.jnl
    bn_plot_decimate.jnl
    bn_auto_tprec.jnl
+   bn_coordvars_atts.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
-Beginning at Tue May 10 15:39:18 PDT 2016
+Beginning at Fri May 13 15:51:04 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -3502,6 +3503,7 @@ Replacing definition of axis ZAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: Changing the type of attribute a.ival
            *** NOTE: Changing the value of attribute a.ival
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4084,6 +4086,12 @@ Replacing definition of axis XAXIS
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+           *** NOTE: Changing the type of attribute sst.newch
+           *** NOTE: Changing the value of attribute sst.newch
+ LISTing to file a.nc
 *** Running ferret script: bn_aggregate_t.jnl
  Cached data cleared from memory
  LISTing to file tmp/tagg_reg_1.nc
@@ -4489,6 +4497,8 @@ Replacing definition of axis TAX
 Replacing definition of axis TAX
 Replacing definition of axis TAX
 Replacing definition of axis TAX
+*** Running ferret script: bn_coordvars_atts.jnl
+ Cached data cleared from memory
 *** Running ferret script: bn_gif.jnl
  Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
@@ -4606,4 +4616,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
-Ended at Tue May 10 15:40:25 PDT 2016
+Ended at Fri May 13 15:52:14 PDT 2016

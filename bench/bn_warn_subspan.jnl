@@ -1,0 +1,15 @@
+! bn_warn_subspan
+! See ticket 1432. Isssue a note if a subspan modulo axis is 
+! within a cell of being full modulo span
+
+! This has a regular and an irregular  time axis that are subspan
+use axes_subspan
+
+! likewise for user-defined axes
+define axis/x=0:350:5/units=degrees_east xax
+DEFINE AXIS/cal=NOLEAP/t0=1-jan-0000/UNIT=days TAX={15.5, 45, 74.5, 105, 135.5, 166, 196.5, 227.5, 258, 288.5, 319, 349.5}
+
+! These are truly subspan modulo
+
+define axis/x=150:270:5/units=degrees_east xax
+DEFINE AXIS/cal=NOLEAP/t0=1-jan-0000/UNIT=days TAX={15.5, 45, 74.5, 105, 135.5, 166}

@@ -1,12 +1,10 @@
-	SUBROUTINE TM_allo_tmp_line( line, status )
+	SUBROUTINE TM_WARN_SUBSPAN (iaxis)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
-*
+*.
 *  Access and use of this software shall impose the following
 *  obligations and understandings on the user. The user is granted the
 *  right, without any fee or cost, to use, copy, modify, alter, enhance
@@ -33,46 +31,53 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*
+* 5/2016 Ansley Manke
+* See ticket 1432.
+* Write a NOTE if an axis definition is a subspan modulo axis
+* but its length is within a grid cell of the full modulo length.
 
-* Allocate a temporary line from the dynamic line area (above max_lines)
-
-* Steve Hankin  NOAA/PMEL/TMAP
-
-* V510 *sh* 3/00 - guts of routine in  TM_ALLO_DYN_LINE_SUB
-* V581*acm*  6/05 For fix to bug 1271, add flag line_shift_origin
-* v694 1/15 *acm* (see ticket 2227) handle the line_dim_only flag
-
-* Include files
-	include 'tmap_dims.parm'
-	include 'implicit.parm'
-	include 'tmap_errors.parm'
+        include 'tmap_dims.parm'
 #include "tmap_dset.parm"
-	include 'xtm_grid.cmn_text'
+#include "gt_lib.parm"
+        include 'xio.cmn_text'
+        external xio_data
+        include 'xtm_grid.cmn_text'
+        external xgt_grid_data
 
-* Argument definitions
-	INTEGER line, status
+* argument declarations
+	INTEGER iaxis
 
-	CALL TM_ALLO_DYN_LINE_SUB( tmp_line_hook, line, status )
-	IF ( status .NE. merr_ok) RETURN
 
-* initialize the line to a null content
-	line_name(line)	     = char_init16
-        line_t0(line)        = char_init20
-        line_shift_origin(line) = .FALSE.
-        line_tunit(line)     = real4_init
-        line_parent(line)    = 0
-        line_regular(line)   = .TRUE.
-        line_class(line)     =  pline_class_basic
-        line_direction(line) = 'NA'
-        line_modulo(line)    = .FALSE.
-        line_units(line)     = char_init16
-	line_unit_code(line) = int4_init
-        line_start(line)     = real8_init
-        line_delta(line)     = real8_init
-        line_dim(line)       = int4_init
+* local variable declarations:
+	LOGICAL	TM_ITS_SUBSPAN_MODULO
+	INTEGER TM_LENSTR1, alen, blen, vlen
+	REAL	TM_WW_AXLEN, axwwlen, delta
+	CHARACTER*16 TM_FMT, buff1, buff2
 
-	line_subsc1(line)    = int4_init
-	line_dim_only(line)  = .FALSE.
+	INTEGER tt  ! nice short name
+	EQUIVALENCE (tt,lunit_errors)
 
+	vlen = TM_LENSTR1(line_name(iaxis))
+        axwwlen = TM_WW_AXLEN(iaxis)
+
+* get the nominal delta grid cell length for comparison
+
+	IF (line_delta(iaxis) .NE. unspecified_val8) THEN
+	   delta = line_delta(iaxis)
+	ELSE
+	   delta = line_mem(line_subsc1(iaxis)+1) - line_mem(line_subsc1(iaxis))
+	ENDIF
+
+        IF (line_modulo(iaxis) .AND. TM_ITS_SUBSPAN_MODULO(iaxis) .AND.
+     .	    (line_modulo_len(iaxis)-axwwlen) .LE. delta )  THEN
+           buff1 = TM_FMT( SNGL(axwwlen),7,32,alen )
+           buff2 = TM_FMT( SNGL(line_modulo_len(iaxis)),7,32,blen )
+           CALL TM_NOTE('Subspan modulo axis '//line_name(iaxis)(:vlen)//
+     .		'. Axis span = '//buff1(:alen)//
+     .		', modulo length = ' //buff2(:blen)//
+     .		'. Is this intended to be a full-span axis?', tt)
+        ENDIF
+	
 	RETURN
 	END

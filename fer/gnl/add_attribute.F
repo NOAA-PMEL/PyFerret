@@ -42,6 +42,7 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 * 9/2005
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V698  5/16 *acm* Ticket 2416 allow all output types for DEFINE ATT.
 
 
       include 'tmap_dims.parm'
@@ -102,12 +103,14 @@
 * but the expression is a string, it is an error.  If a string was requested,
 * we can convert a numeric value to string below.
 
-      IF (attype_spec .EQ. ptype_float  .AND. 
-     .    mr_type(mr) .NE. ptype_float) GOTO 5300
-
-      attype = NCFLOAT
-      IF (mr_type(mr) .EQ. ptype_string .OR.
-     .    attype_spec .EQ. ptype_string ) attype = NCCHAR
+      IF (attype_spec .EQ. ptype_unknown) THEN
+         attype = NCFLOAT
+         IF (mr_type(mr) .EQ. ptype_string) attype = NCCHAR 
+      ELSE
+         attype = attype_spec
+      ENDIF
+      IF (attype .NE. NCCHAR .AND. 
+     .    mr_type(mr) .EQ. ptype_string) GOTO 5300
 
 * See if the attribute already exists for the variable. (If it does
 * then one can use SET ATT). The flag do_err is false so no error message 
@@ -150,7 +153,6 @@
      .         attoutflag, attbuff, dummy, status)  
 
          ELSE 
-            attype = NCFLOAT
             CALL CD_PUT_NEW_ATTR (dset, varid, attname, attype, attlen, 
      .         attoutflag, attbuff, 
      .         grid_data(lo(1),lo(2),lo(3),lo(4),lo(5),lo(6)), status)      

@@ -44,6 +44,8 @@
 *      6/06 *acm* missing declarations of ncf functions
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* v698 5/16  *acm* ticket 2413: New attribute keywords ncoordvars, coordnames
+*                  return info about coordinate-variables in datasets
 
 * include files
 #include "gt_lib.parm"
@@ -85,16 +87,21 @@
 * If the name is a pseudo-name for describing attributes then return attid=0.
 * If a file contains one of these names as an attribute, it can be accessed
 * by putting it in quotes.
+* coordnames are coordinate variables (dimensions that are also coordinate variables).
 
       IF (STR_SAME(abuff(:slen), 'varnames') .EQ. 0 ) THEN
          RETURN
       ELSE IF (STR_SAME(abuff(:slen), 'nvars') .EQ. 0 ) THEN
+         RETURN
+      ELSE IF (STR_SAME(abuff(:slen), 'ncoordvars') .EQ. 0 ) THEN
          RETURN
       ELSE IF (STR_SAME(abuff(:slen), 'attnames') .EQ. 0 ) THEN 
          RETURN
       ELSE IF (STR_SAME(abuff(:slen), 'nattrs') .EQ. 0 ) THEN
          RETURN
       ELSE IF (STR_SAME(abuff(:slen), 'dimnames') .EQ. 0 ) THEN
+         RETURN
+      ELSE IF (STR_SAME(abuff(:slen), 'coordnames') .EQ. 0 ) THEN
          RETURN
       ELSE IF (STR_SAME(abuff(:slen), 'ndims') .EQ. 0 ) THEN
          RETURN

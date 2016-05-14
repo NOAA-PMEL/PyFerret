@@ -321,8 +321,6 @@ while ($count < 5)
     @ count++
 end
 
-mv bnplot.gif.~1~ bnplot-1.gif
-mv bnplot.gif.~2~ bnplot-2.gif
 
 mv new.plt bat.plt_9
 mv bat.plt bat.plt_8

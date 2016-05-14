@@ -10,8 +10,8 @@ run_tests:
 	    exit 1 ; \
 	fi
 	./RUN_TESTS.sh `which pyferret` "$(PYFER_EXTERNAL_FUNCTIONS)" "RUN_TESTS.sh test results for PyFerret"
-	@echo 'Differences in the generated bench PDF, PNG, and PS files versus against those in test_results'
-	@for img in *.pdf *.png *.ps ; \
+	@echo 'Differences in the generated bench PDF and PNG files versus against those in test_results'
+	@for img in *.pdf *.png ; \
 	do \
 	    diff -q $$img test_results/$$img ; \
 	done

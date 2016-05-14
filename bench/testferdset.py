@@ -22,23 +22,24 @@ dir(coads_uw)
 print ">>> coads_uw.show(brief=False)"
 coads_uw.show(brief=False)
 
-print ">>> anond = pyferret.FerDSet(None)"
-anond = pyferret.FerDSet(None)
-print ">>> print repr(anond)"
-print repr(anond)
-print ">>> dir(anond)"
-dir(anond)
-print ">>> anond.show()"
-anond.show()
-print ">>> anond.sstcopy = coads.sst"
-anond.sstcopy = coads.sst
-print ">>> anond.show()"
-anond.show()
+print ">>> try:"
+print "...     pyferret.FerDSet(None)"
+print "...     print 'No error found'"
+print "... except ValueError as ex:"
+print "...     print 'ValueError caught with message ' + str(ex)"
+try:
+    pyferret.FerDSet(None)
+    print 'No error found'
+except ValueError as ex:
+    print 'ValueError caught with message: ' + str(ex)
+
+print ">>> pyferret.anondset.sstcopy = coads.sst"
+pyferret.anondset.sstcopy = coads.sst
+print ">>> pyferret.anondset.show()"
+pyferret.anondset.show()
 
 print ">>> pyferret.showdata(brief=False)"
 pyferret.showdata(brief=False)
-print ">>> anond.show()"
-anond.show()
 print ">>> coads_uw.close()"
 coads_uw.close()
 print ">>> pyferret.showdata()"
@@ -60,18 +61,14 @@ del coads
 print ">>> pyferret.showdata()"
 pyferret.showdata()
 
-print ">>> dir(anond)"
-dir(anond)
-print ">>> anond.show()"
-anond.show()
-print ">>> anond.close()"
-anond.close()
-print ">>> dir(anond)"
-dir(anond)
-print ">>> anond.show()"
-anond.show()
-print ">>> anond.close()"
-anond.close()
-print ">>> del anond"
-del anond
+print ">>> dir(pyferret.anondset)"
+dir(pyferret.anondset)
+print ">>> pyferret.anondset.show()"
+pyferret.anondset.show()
+print ">>> pyferret.anondset.close()"
+pyferret.anondset.close()
+print ">>> dir(pyferret.anondset)"
+dir(pyferret.anondset)
+print ">>> pyferret.anondset.show()"
+pyferret.anondset.show()
 

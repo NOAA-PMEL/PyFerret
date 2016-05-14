@@ -53,6 +53,8 @@
 * v6.7 1/11 *acm* Fix ticket 1768; do not write nulls when writing err msgs 
 *                 with attname.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* v698 5/16  *acm* ticket 2413: New attribute keywords ncoordvars, coordnames
+*                  return info about coordinate-variables in datasets
 
         include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -153,6 +155,8 @@
              attok = .TRUE.
           ELSE IF (STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
              attok = .TRUE.
+          ELSE IF (STR_SAME(attname, 'coordnames') .EQ. 0 ) THEN
+             attok = .TRUE.
           ELSE IF (STR_SAME(attname, 'attnames') .EQ. 0 ) THEN
              attok = .TRUE.
           ELSE IF (STR_SAME(attname, 'ndims') .EQ. 0 ) THEN
@@ -160,6 +164,8 @@
           ELSE IF (STR_SAME(attname, 'nattrs') .EQ. 0 ) THEN
              attok = .TRUE.
           ELSE IF (STR_SAME(attname, 'nvars') .EQ. 0 ) THEN
+             attok = .TRUE. 
+          ELSE IF (STR_SAME(attname, 'ncoordvars') .EQ. 0 ) THEN
              attok = .TRUE. 
 
 * Is the reference to a global attribute?

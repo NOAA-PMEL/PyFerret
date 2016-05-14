@@ -1,0 +1,28 @@
+! err696_def_att.jnl
+! tickets 2415, 2416
+! data type for defined axes
+
+use coads_climatology
+
+! previously the values were corrupted when defining numeric
+! attributes on a coordinate variable
+define att/output (`sst,return=xaxis`).new2 = {1,3,6}
+save/clobber/file=a.nc sst
+sp ncdump a.nc | grep -i coadsx
+
+can dat/all
+use coads_climatology
+
+! previously could only specify /TYPE=float or /TYPE=string
+
+! default types from the expression
+define att/output sst.newch = "A string"
+define att/output sst.newch = 158.12
+
+define att/output/type=byt sst.abyte = 5
+define att/output/type=int sst.aint = {-5,-12,-1556,0,1}
+define att/output/type=string sst.str_from_num = 978.43
+define att/output/type=double sst.dbint = 123.45678901
+
+save/clobber/file=a.nc sst
+sp ncdump a.nc | grep -i sst

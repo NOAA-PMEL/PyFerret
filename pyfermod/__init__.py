@@ -56,12 +56,23 @@ from pyefmethods import *
 
 # the FerRegion, FerAxis, FerGrid, FerVar, FerPyVar, and FerDSet objects 
 # for working with Ferret from Python
+import ferregion
 from ferregion import *
+import feraxis
 from feraxis import *
+import fergrid
 from fergrid import *
+import fervar
 from fervar import *
+import ferpyvar
 from ferpyvar import *
+import ferdset
 from ferdset import *
+import feraggdset
+from feraggdset import *
+
+# Create "the" anonymous dataset
+anondset = FerDSet(qual=ferdset._anonymous_dataset_qualifier)
 
 # convenience methods for executing common Ferret commands
 import fermethods
@@ -605,6 +616,7 @@ def start(memsize=25, journal=True, verify=False, restrict=False,
                 execfile(os.getenv('PYTHONSTARTUP', ''));
             except IOError:
                 pass;
+
     return success
 
 
@@ -695,6 +707,10 @@ def stop():
         regrid.ESMPControl().stopESMP(True)
     except Exception:
         pass
+
+    # clear "the" anonymous dataset
+    pyferret.anondset.close()
+
     # Continue with Ferret shutdown
     return libpyferret._stop()
 

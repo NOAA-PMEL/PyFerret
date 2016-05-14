@@ -64,30 +64,26 @@ del coads_uw.mywnd
 print ">>> coads_uw.show()"
 coads_uw.show()
 
-print ">>> anond = pyferret.FerDSet('')"
-anond = pyferret.FerDSet('')
-print ">>> anond.sstcopy = coads.sst"
-anond.sstcopy = coads.sst
-print ">>> anond.show()"
-anond.show()
-print ">>> print repr(anond.sstcopy)"
-print repr(anond.sstcopy)
-print ">>> print repr(anond.sstcopy._isfilevar)"
-print repr(anond.sstcopy._isfilevar)
-print ">>> print repr(anond.sstcopy._requires)"
-print repr(anond.sstcopy._requires)
+print ">>> pyferret.anondset.sstcopy = coads.sst"
+pyferret.anondset.sstcopy = coads.sst
+print ">>> pyferret.anondset.show()"
+pyferret.anondset.show()
+print ">>> print repr(pyferret.anondset.sstcopy)"
+print repr(pyferret.anondset.sstcopy)
+print ">>> print repr(pyferret.anondset.sstcopy._isfilevar)"
+print repr(pyferret.anondset.sstcopy._isfilevar)
+print ">>> print repr(pyferret.anondset.sstcopy._requires)"
+print repr(pyferret.anondset.sstcopy._requires)
 print ">>> print repr(coads.sst)"
 print repr(coads.sst)
 print ">>> print repr(coads.sst._isfilevar)"
 print repr(coads.sst._isfilevar)
 print ">>> print repr(coads.sst._requires)"
 print repr(coads.sst._requires)
-print ">>> anond.close()"
-anond.close()
-print ">>> anond.show()"
-anond.show()
-print ">>> del anond"
-del anond
+print ">>> pyferret.anondset.close()"
+pyferret.anondset.close()
+print ">>> pyferret.anondset.show()"
+pyferret.anondset.show()
 
 print ">>> coads.sst2 = coads.sst['15-FEB']"
 coads.sst2 = coads.sst['15-FEB']

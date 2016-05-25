@@ -105,6 +105,8 @@
               IF (status .EQ. ferr_ok) dset = dataset
 	   ENDIF
 	   
+	ELSE
+	   CALL CD_GET_VAR_ID (dset, varname, varid, status) 
 	ENDIF
 
 * get the attribute value of '__LayerzRef_' (patnam_layerz)

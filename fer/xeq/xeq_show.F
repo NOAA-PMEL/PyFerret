@@ -819,6 +819,9 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
                        CALL CD_GET_VAR_ID (rqst_dset, varname, varid, status)
                     ENDIF
                     IF (status.NE.ferr_ok) GOTO 5100
+                 ELSE
+                    rqst_dset = dset
+		    CALL CD_GET_VAR_ID (rqst_dset, varname, varid, status)
                  ENDIF
 
                  arr_buff(i1) = varid

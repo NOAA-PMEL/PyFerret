@@ -189,6 +189,7 @@
 * V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
 *                  added to that dataset in the attribute structure.
 * V698  4/16 *acm* For ticket 2399: Apply MODE CALENDAR settings to F axes too
+* V7    5/16 *acm* See ticket 2352. For LET/D variables look for info under that dataset
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -1573,6 +1574,10 @@ c *kob* 4/97
            IF (  ivar .NE. munknown_var_name .AND.
      .           cat .EQ. cat_user_var) THEN
               dset_num = pdset_uvars
+
+* It may be a let/d variable
+              CALL CD_GET_VAR_ID (dset_num, varname, varid, status)
+              IF (status.NE.ferr_ok) dset_num = unspecified_int4
            ENDIF
     
            IF (dset_num .EQ. pdset_irrelevant .OR. 

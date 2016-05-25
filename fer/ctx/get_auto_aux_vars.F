@@ -48,6 +48,7 @@
 
 * *sh* 12/13
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+* V7    5/16 *acm* See ticket 2352. For LET/D variables look for info under that dataset
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -93,10 +94,18 @@
 	ENDIF
 
 * get the variable ID in the linked list  (user vars stored under dset=pdset_uvars)
-	IF (cat .EQ. cat_user_var) dset = pdset_uvars  ! signals a uvar
-* NOTE: if dset=-1 signals uvar, it would seem that we'll see a bug if
-*       the same varname is used for LET/D definitions in two datasets
-	CALL CD_GET_VAR_ID (dset, varname, varid, status)  ! status check??
+	IF (cat .EQ. cat_user_var) THEN
+	   dset = pdset_uvars  ! signals a uvar
+	   CALL CD_GET_VAR_ID (dset, varname, varid, status) 
+
+* Check whether its a LET/D variable, stored with its dataset.
+	   IF (dset.EQ.pdset_uvars .AND. status.NE.ferr_ok) THEN
+	      IF (dataset .GT. pdset_irrelevant) 
+     .      CALL CD_GET_VAR_ID (dataset, varname, varid, status)
+              IF (status .EQ. ferr_ok) dset = dataset
+	   ENDIF
+	   
+	ENDIF
 
 * get the attribute value of '__LayerzRef_' (patnam_layerz)
         maxlen = LEN(refvarname)

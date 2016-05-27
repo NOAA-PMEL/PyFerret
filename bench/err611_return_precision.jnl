@@ -3,6 +3,7 @@
 
 ! See bug 1611, where say "a`95,p=1`" yielded "a 95" but
 ! "a`94,p=1`" yielded "a94"
+! Note with ticket 2389 (5/2016), p=1 returns 1 digit, p=2 returns 2, etc.
 
 say "a`95,p=1`"
 say "a`94,p=1`"

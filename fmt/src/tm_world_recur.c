@@ -178,7 +178,7 @@ double FORTRAN(tm_world_recur)
 			  hi_ss = parent_len;
 			  tm_world = (
 			      FORTRAN(tm_world_recur)
-			      (&lo_ss,
+			      (&hi_ss,
 			       &(line_parent[axis]),
 			       &new_where,
 			       max_lines, line_mem, line_parent,

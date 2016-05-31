@@ -19,28 +19,38 @@ class FerRegion(object):
         eg; X="90W:20E",Y="20N:60N"
 
         The X, Y, Z, T, E, and F arguments refer to an axis coordinate value 
-        or range of axis coordinate values.
-        String values are used as-is and thus are interpreted according to 
-        Ferret syntax rules (e.g., ranges can include the endpoint).
-            X (float, str, or slice of float or str): X (longitude) axis coordinate position or range
-            Y (float, str, or slice of float or str): Y (latitude) axis coordinate position or range
-            Z (float, str, or slice of float or str): Z (level) axis coordinate position or range
-            T (float, str, or slice of float or str): T (time) axis coordinate position or range
-            E (float, str, or slice of float or str): E (ensemble) axis coordinate position or range
-            F (float, str, or slice of float or str): F (forecast) axis coordinate position or range
+        or range of axis coordinate values.  Coordinate values are interpreted 
+        according to Ferret syntax rules (ranges can include the endpoint).
+            X (float, str, or slice of float or str): 
+                X (longitude) axis coordinate position or range
+            Y (float, str, or slice of float or str): 
+                Y (latitude) axis coordinate position or range
+            Z (float, str, or slice of float or str): 
+                Z (level) axis coordinate position or range
+            T (float, str, or slice of float or str): 
+                T (time) axis coordinate position or range
+            E (float, str, or slice of float or str): 
+                E (ensemble) axis coordinate position or range
+            F (float, str, or slice of float or str): 
+                F (forecast) axis coordinate position or range
 
         The I, J, K, L, M, and N arguments refer to an axis coordinate index 
-        or range of indices.  
-        Integer values are interpreted as python indices 
-        (starts with zero, excludes endpoint in ranges).  
-        String values are used as-is and thus are interpreted according to 
-        Ferret syntax rules (e.g., starts at one, includes endpoint in ranges).
-            I (int, str, or slice of int or str): X (longitude) axis index or range of indices
-            J (int, str, or slice of int or str): Y (latitude) axis index or range of indices
-            K (int, str, or slice of int or str): Z (level) axis index or range of indices
-            L (int, str, or slice of int or str): T (time) axis index or range of indices
-            M (int, str, or slice of int or str): E (ensemble) axis index or range of indices
-            N (int, str, or slice of int or str): F (forecast) axis index or range of indices
+        or range of indices.  Integer values are interpreted as python indices 
+        (starts with zero, excludes endpoint in ranges).  String values are 
+        used as-is and thus are interpreted according to Ferret syntax rules 
+        (starts at one, includes endpoint in ranges).
+            I (int, str, or slice of int or str): 
+                X (longitude) axis index or range of indices
+            J (int, str, or slice of int or str): 
+                Y (latitude) axis index or range of indices
+            K (int, str, or slice of int or str): 
+                Z (level) axis index or range of indices
+            L (int, str, or slice of int or str): 
+                T (time) axis index or range of indices
+            M (int, str, or slice of int or str): 
+                E (ensemble) axis index or range of indices
+            N (int, str, or slice of int or str): 
+                F (forecast) axis index or range of indices
 
         For any axis, either a coordinate or an index specification can be
         given, but not both.

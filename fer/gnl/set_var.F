@@ -86,6 +86,8 @@
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 * V698 *sh*  4/16  allow SET VARIABLE on agg dsets
+* V7   *acm* 5/16  Fix ticket 2432, see alsoticket 2352. For LET/D variables 
+*                  look for info under that dataset
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -366,7 +368,7 @@
 
            CALL CD_GET_VAR_ID (dset, vname, varid, status)
 	   
-           IF  (cat .EQ. cat_user_var) THEN 
+           IF  (cat.EQ.cat_user_var .AND. status.NE.ferr_ok) THEN 
 	      dset = pdset_uvars
   	      CALL CD_GET_VAR_ID (dset, vname, varid, status)
            ENDIF

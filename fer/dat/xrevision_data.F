@@ -130,12 +130,13 @@
 * v6.961   To GFDL for fix to #2334
 * v6.963   To GFDL in a PyFerret update, install on our servers
 * v6.97 (working version)
+* v7.0     7/2016
 
         IMPLICIT NONE
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  6.97    /
+	DATA revision_level	/  7.0    /
 
 	END

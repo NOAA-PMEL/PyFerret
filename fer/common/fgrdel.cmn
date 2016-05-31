@@ -109,14 +109,14 @@
 * Whether clip the drawing to the current view
         LOGICAL cliptoview(maxwindowobjs)
 
-* Simplest approach for retrieving color RGBA values was 
+* Simplest approach for retrieving color RGBA values was
 * just to store them in the common block when they are set
         REAL*4 colorrgba(4, maxcolorobjs, maxwindowobjs)
 
 * Color ID number used in brushes (for color updates)
         INTEGER brushcolor(maxbrushobjs, maxwindowobjs)
 
-* Color ID number used in pens (for color updates)
+* Color ID number used in pens (for color inquiries and updates)
         INTEGER pencolor(maxpenobjs, maxwindowobjs)
 
 * Color ID number and sizes to use to draw the symbol object

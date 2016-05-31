@@ -1,0 +1,36 @@
+! err696_return_prec.jnl
+! ACM 5/16 See ticket 2389.  
+! For grave-accent returns, adjust the formatting so that `var,p=2` really 
+! means 2 digits, and returning an exponential rather than a long integer 
+! with lots of zero's. 
+
+! Both of these as exponentials. Prev. the second switched to an integer.
+say `1.55551e8,p=2`
+say `1.55551e7,p=2`
+
+! Return only as many digits as requested
+
+say `1.555555551e-9,p=1`
+say `1.555555551e-9,p=2`
+say `1.555555551e-9,p=3`
+
+say `1.555555551e-9,p=5`
+say `1.555555551e-9,p=7`
+say `1.555555551e-9,p=10`
+
+! For large numbers, return an fixed-point value only when the number 
+! of digits is at least the magnitude of the value
+
+say `1.55551e8,p=2`
+say `1.55551e8,p=3`
+say `1.55551e8,p=5`
+say `1.55551e8,p=9`
+say `1.55551e8,p=10`
+
+! Previously these returned fixed-point numbers with trailing zero's 
+! after the decimal point. These are removed.
+say `1.55555551e8,p=14`
+say `1.555555001e8,p=14`
+
+
+

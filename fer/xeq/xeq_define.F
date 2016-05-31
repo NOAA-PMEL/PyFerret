@@ -250,6 +250,7 @@
 *                  supbspan modolo axis with length almost the modulo length.
 *                  (commented out for now.)
 * V698  5/16 *acm* Ticket 2416 allow all output types for DEFINE ATT.
+* V7    5/16 *acm* See ticket 2352. For LET/D variables look for info under that dataset
 
 
 	include	'tmap_errors.parm'
@@ -2132,6 +2133,15 @@ c	CALL TM_WARN_SUBSPAN (iline)
            IF (  var .NE. munknown_var_name .AND.
      .           cat .EQ. cat_user_var) THEN
               dset = pdset_uvars
+
+* Check whether its a LET/D variable
+              CALL CD_GET_VAR_ID (dset, varname, varid, status)
+              IF (dset.EQ.pdset_uvars .AND. status.NE.ferr_ok) THEN
+                 dset = cx_data_set(cx_cmnd)
+                 CALL CD_GET_VAR_ID (dset, varname, varid, status)
+		 IF (status.NE.ferr_ok) dset = pdset_uvars
+              ENDIF
+              
            ELSE
               dset = cx_data_set(cx_cmnd) 
            ENDIF

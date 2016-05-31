@@ -127,8 +127,7 @@ C
         REAL      XFF, XOF, YFF, YOF, DMIN, DMAX, DZMAX
         LOGICAL   TM_FPEQ_SNGL
 
-	logical		valid
-	
+        LOGICAL valid, tmpsetcolor
 	INTEGER ier
 
 C*       *jd* Linux port 12.96 add EXTERNAL calls below
@@ -274,10 +273,15 @@ C
 
        IF (pyfont) THEN
           igroup = icont
-          IF (.NOT. pyf_set(icont)) 
-     .        CALL FGD_GQCR(IWIND, IPEN(1), ier, pyf_red(igroup), 
-     .        pyf_grn(igroup), pyf_blu(igroup), opaqfrac)
-	ENDIF
+          IF (.NOT. pyf_set(icont)) THEN
+             CALL FGD_GQPEN(IWIND, IPEN(1), ier, pyf_red(igroup), 
+     .                pyf_grn(igroup), pyf_blu(igroup), opaqfrac)
+             pyf_set(icont) = .TRUE.
+             tmpsetcolor = .TRUE.
+          ELSE
+             tmpsetcolor = .FALSE.
+          ENDIF
+       ENDIF
 
 C       Calculate the following quantities:
 C       ~FF - multiplication factors to go from axis to page coords?
@@ -378,12 +382,13 @@ C	END VAX/VMS
 C
 	CALL COLOR(IPEN(0))
 	
-	IF (pyfont) THEN 
-	   
-*  Restore settings in pyfont common
-
-	IF (pyfont) igroup = 0
-	ENDIF
+        IF (pyfont) THEN 
+*          Restore settings in pyfont common
+           igroup = 0
+           IF ( tmpsetcolor ) THEN
+              pyf_set(icont) = .FALSE.
+           ENDIF
+        ENDIF
 
 	CALL SCALE(XF,YF,XORG,YORG,XLO,YLO)
 
@@ -397,8 +402,16 @@ C  Arrays LWGT, LDIG, and ZLEV are length ICNLEV=500
         buff2 = TM_FMT_SNGL (REAL(NLEV2), 20, 20, slen2)
         err_msg = '# of contour levels > '// buff1(1:slen1) //
      .          '  (' // buff2(1:slen2) // ')'
-        CALL errmsg (ferr_out_of_range, status, err_msg, *5002)
+        CALL errmsg (ferr_out_of_range, status, err_msg, *5001)
+ 5001   RETURN
 
- 5002   return
+ 5002   IF (pyfont) THEN 
+*          Restore settings in pyfont common
+           igroup = 0
+           IF ( tmpsetcolor ) THEN
+              pyf_set(icont) = .FALSE.
+           ENDIF
+        ENDIF
+        RETURN
 
 	END

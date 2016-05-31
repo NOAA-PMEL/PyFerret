@@ -196,6 +196,7 @@ tm_firm_axis_orient.F\
 tm_fmt.F\
 tm_fmt_sngl_digits.F\
 tm_fmt_sngl.F\
+tm_fmt_user.F\
 tm_fp_convert.F\
 tm_fpeq_eps.F\
 tm_fpeq.F\

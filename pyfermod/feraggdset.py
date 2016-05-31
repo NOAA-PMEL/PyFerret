@@ -15,8 +15,7 @@ class FerAggDSet(pyferret.FerDSet):
         Aggregates the given list of datasets along the given axis using the 
         Ferret "DEFINE DATA /AGGREGATE" command.  Creates a FerVar for each data 
         variable in common among these datasets, and assigns it as an attribute 
-        of this class instance using the variable name.  The individual datasets 
-        are also assigned as attributes of this class using the dataset name.
+        of this class instance using the variable name.  
             name (string): Ferret name for this aggregated dataset
             dsets (sequence of strings and/or FerDSets): datasets to aggregate.
                 A string will be interpreted as a filename for creating a FerDSet.

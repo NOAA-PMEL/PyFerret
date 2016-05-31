@@ -116,6 +116,9 @@
 * v695 *acm* 9/15 Ticket 2313: For `return=`, if the return request is for an attribute 
 *                 not related to the grid or other characteristics that need evaluation, 
 *                 do not evaluate the expression.
+* v695 *acm* 5/16 Ticket 2389. When the user gives `var,prec=xx`, return the acutal number
+*                 of digits requested. Return exponential formats when that makes the
+*                 result shorter. Changes are only for positive values of ,prec=
 
 #include "netcdf.inc"
 	include 'tmap_dims.parm'
@@ -146,7 +149,7 @@
 * internal variable declarations:
 	LOGICAL   need_formatting, zero_fill, coordvar,
      .            do_err, do_eval, get_ready, was_dep, const_arr_var,
-     .		  dqote, DQ, orig_name
+     .		  dqote, DQ, orig_name, user_prec
 	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
      .		  FIND_DSET_NUMBER, GET_ABSTRACT_LINE, TM_LENSTR,
      .		  str_len, lenbuff, iend, itmp, axis,
@@ -157,8 +160,7 @@
      .            attid, ieq, base_isp, base_cx, cat, var
 	REAL	  result, val
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
-	CHARACTER TM_FMT*28, LEFINT*16, VAR_TITLE*(max_len),
-c	CHARACTER TM_FMT*18, LEFINT*16, VAR_TITLE*(max_len),
+	CHARACTER TM_FMT*28, TM_FMT_USER*28, LEFINT*16, VAR_TITLE*(max_len),
      .		  VAR_UNITS*(max_len), GET_STRING_ELEMENT*(max_len),
      .		  repl*(max_len), bad_str*(max_len), return_errmsg*256,
      .            buff*128, varname*512, attname*128, aname*128
@@ -179,6 +181,7 @@ c	CHARACTER TM_FMT*18, LEFINT*16, VAR_TITLE*(max_len),
 	did_sub = .FALSE.    	! any substitutions done?
 	lenbuff = LEN( cmnd )
 	use_digits = digits
+	user_prec = .FALSE.
 	bad_str = 'bad'
 !	fmt = ' '
 	use_width = 0
@@ -308,6 +311,7 @@ c	CHARACTER TM_FMT*18, LEFINT*16, VAR_TITLE*(max_len),
 	      IF ( status .NE. ferr_ok ) GOTO 5000
 	      IF (ABS(result) .GT. 16.) GOTO 5510 	         
 	      use_digits = NINT(result)
+	      user_prec = .TRUE.
 	      GOTO 131
 	   ELSEIF (cmnd(i:i).EQ.'b' .OR. cmnd(i:i).EQ.'B') THEN
 * ... decode BAD = string
@@ -1120,12 +1124,19 @@ c	CHARACTER TM_FMT*18, LEFINT*16, VAR_TITLE*(max_len),
 	   ELSE
 
 * .... convert to a formatted result with requested digits
+*      Ticket 2389: TM_FMT_USER applies use_digits more strictly 
+*      than TM_FMT, returns results of exponentials more consistently. 
+
 	     result =  memory(1, mr_blk1(mr_temp))
 	     IF ( result .EQ. mr_bad_data(mr) ) THEN
 	        repl = bad_str
 	        str_len = TM_LENSTR1(bad_str)
 	     ELSE
-	        repl = TM_FMT( result, use_digits, max_len, str_len )
+	        IF (user_prec .AND. use_digits.GT.0) THEN
+	           repl = TM_FMT_USER( result, use_digits, max_len, str_len )
+		ELSE
+	           repl = TM_FMT ( result, use_digits, max_len, str_len )
+		ENDIF
 	     ENDIF
 	   ENDIF
 * ... clean up temporary variable

@@ -204,6 +204,7 @@
 *                  variables, pre-defined axes and grids, cat_calc_var.
 * V698  3/16 *acm* Changes for ticket 2078: improved SHOW COMMANDS
 * V698  4/16 *acm* For ticket 2399: Apply MODE CALENDAR settings to F axes too
+* V7    5/16 *acm* See ticket 2352. For LET/D variables look for info under that dataset
 
         IMPLICIT NONE
 
@@ -841,14 +842,21 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
                     GOTO 5100    ! unknown variable
                  ENDIF
 * get the variable ID in the linked list  (user vars stored under dset=pdset_uvars?)
-	         IF (cat .EQ. cat_user_var) THEN
+                 IF (cat .EQ. cat_user_var) THEN 
                     rqst_dset = pdset_uvars  
+
+* See if it's a LET/D variable, info stored with its dataset not pdset_uvars
+                    CALL CD_GET_VAR_ID (rqst_dset, varname, varid, status)
+                    IF (rqst_dset.EQ.pdset_uvars .AND. status.NE.ferr_ok) THEN
+                       rqst_dset = dset
+                       CALL CD_GET_VAR_ID (rqst_dset, varname, varid, status)
+                    ENDIF
+                    IF (status.NE.ferr_ok) GOTO 5100
                  ELSE
                     rqst_dset = dset
+		    CALL CD_GET_VAR_ID (rqst_dset, varname, varid, status)
                  ENDIF
-* NOTE: if dset=pdset_uvars signals uvar, it would seem that we'll see a bug if
-*       the same varname is used for LET/D definitions in two datasets
-	         CALL CD_GET_VAR_ID (rqst_dset, varname, varid, status)!status?
+
                  arr_buff(i1) = varid
                  saved_index_list(i1) = rqst_dset
               ENDDO

@@ -51,6 +51,7 @@
 * NOAA/PMEL, Seattle, WA - TMAP 
 *
 * V695+ 10/15 *sh* -- based upon DEFINE_EF_AGGREGATE_GRID
+* V67    5/16 *acm*   Fixes for member sets with single-point time axes having bounds
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -367,8 +368,9 @@
      .                    d1s, d1e, d2s, d2e, status )
                     IF ( status .NE. merr_ok ) GOTO 5010
 
-* ... reorder the newest nstep+1 bounds values into backwards order
-	            DO istep = 0, nsteps/2-1
+* ... reorder the newest nstep+1 bounds values into backwards order,
+*     ensuring one pass through the loop for single-step axis
+	            DO istep = 0, MAX(0,nsteps/2-1)
 	               ilo = max_line_available+istep
 	               ihi = max_line_available+nsteps-istep
 	               tt = line_mem(ilo)
@@ -410,6 +412,7 @@
 	         line_mem(ihi) = tt
 	         ilo = ilo + 1
 	         ihi = ihi - 1
+	         IF (ihi .LT. ilo) EXIT  ! exit loop; 1-point axes casuses this
 	      ENDDO
 * ... 2. shift the bounds down to sit just after the coordinates
 	      ilo = line_subsc1(taxis) + nsteps
@@ -470,6 +473,7 @@
 *  check to see if the coords may be regular after all
 
 *  ... first sanity check monotonicity and bounds bracketing
+	   IF (nsteps.EQ.1) GOTO 100
 	   ilo = line_subsc1(taxis)    ! L step on agg taxis
 !	   ihi = ilo + nsteps - 1
            dfirst_delta = line_mem(ilo+1) - line_mem(ilo)
@@ -509,6 +513,7 @@
 	   ENDDO
 
 * It's regular after all!  - change from irregular designation
+ 100	   CONTINUE
 	   ilo = line_subsc1(taxis)
 	   ihi = ilo + nsteps - 1
 	   line_regular(taxis) = .TRUE.

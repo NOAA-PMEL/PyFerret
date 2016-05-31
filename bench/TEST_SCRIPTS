@@ -267,6 +267,7 @@ bn_all_ef.jnl
 bn_startupfile.jnl
 ! PyFerret-only Ferret scripts
 bn_outline_poly.jnl
+bn_contourcolor.jnl
 ! PyFerret-only Python scripts
 testgetstrdata.py
 testferregion.py

@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 May 13 17:14 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 May 31 15:55 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -284,6 +284,7 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    bn_outline_poly.jnl
+   bn_contourcolor.jnl
    testgetstrdata.py
    testferregion.py
    testferdset.py
@@ -293,7 +294,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Fri May 13 17:41:29 PDT 2016
+Beginning at Tue May 31 16:36:08 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -4113,6 +4114,8 @@ Replacing definition of axis XAXIS
            *** NOTE: Changing the type of attribute sst.newch
            *** NOTE: Changing the value of attribute sst.newch
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running ferret script: bn_aggregate_t.jnl
  Cached data cleared from memory
  LISTing to file tmp/tagg_reg_1.nc
@@ -4636,6 +4639,8 @@ LOAD/TEMPORARY vflag
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
 *** Running ferret script: bn_outline_poly.jnl
  Cached data cleared from memory
+*** Running ferret script: bn_contourcolor.jnl
+ Cached data cleared from memory
 *** Running python script: testgetstrdata.py
  Cached data cleared from memory
 >>> ... ... >>> 
@@ -4673,4 +4678,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testfermethods.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Fri May 13 17:43:34 PDT 2016
+Ended at Tue May 31 16:38:15 PDT 2016

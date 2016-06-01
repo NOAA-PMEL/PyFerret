@@ -135,8 +135,8 @@
         IMPLICIT NONE
 	include	'xrevision.cmn'
 
-	DATA program_name	/ 'FERRET' /
-	DATA len_program_name	/  6       /
+	DATA program_name	/ 'PyFERRET' /
+	DATA len_program_name	/  8       /
 	DATA revision_level	/  7.0    /
 
 	END

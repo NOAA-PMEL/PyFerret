@@ -79,7 +79,4 @@ NETCDF4_DIR = /usr/local/netcdf-4.4.0
 JAVA_HOME = /usr/lib/jvm/java
 # JAVA_HOME = /Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home
 
-# PyFerret version number - do not change this
-PYFERRET_VERSION = 7.0
-
 ##

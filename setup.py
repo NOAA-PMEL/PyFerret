@@ -3,6 +3,7 @@ import distutils.sysconfig
 import sys
 import os
 import os.path
+import re
 
 # Get BUILDTYPE for checking if this is intel-mac
 buildtype = os.getenv("BUILDTYPE")
@@ -170,9 +171,20 @@ ext_mods = [ Extension("pyferret.libpyferret", include_dirs = incdir_list,
                                                libraries = lib_list,
                                                extra_link_args = addn_link_args), ]
 
-pyferret_version = os.getenv("PYFERRET_VERSION")
-if pyferret_version == None:
-    raise ValueError("Environment variable PYFERRET_VERSION is not defined")
+pyferret_version = None
+xrev_name = os.path.join("fer", "dat", "xrevision_data.F")
+xrev_file = open(xrev_name)
+try:
+    pat = re.compile('\\s+DATA\\s+revision_level\\s*/\\s*(\\S+)\\s*/\\s*', flags=re.IGNORECASE)
+    for datlin in xrev_file:
+        mat = re.match(pat, datlin)
+        if mat:
+            pyferret_version = mat.group(1)
+            break
+finally:
+    xrev_file.close()
+if not pyferret_version:
+    raise ValueError('Unable to find the version number in ' + xrev_name)
 
 # Configure the setup
 setup(name = "pyferret",

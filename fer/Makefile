@@ -38,7 +38,7 @@ all: optimized
 optimized:
 	$(MAKE) "CFLAGS = $(CFLAGS) -O -DNDEBUG" \
 		"FFLAGS = $(FFLAGS) -O -DNDEBUG" \
-		"VERSION_INFO = (PyFerret $(PYFERRET_VERSION) opt)" \
+		"VERSION_INFO = (opt)" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O -DNDEBUG" \
 		build
 
@@ -46,7 +46,7 @@ optimized:
 beta:
 	$(MAKE) "CFLAGS = $(CFLAGS) -O -DNDEBUG" \
 		"FFLAGS = $(FFLAGS) -O -DNDEBUG" \
-		"VERSION_INFO = (PyFerret $(PYFERRET_VERSION) beta/opt)" \
+		"VERSION_INFO = (beta/opt)" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O -DNDEBUG" \
 		build
 
@@ -54,7 +54,7 @@ beta:
 debug:
 	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" \
 		"FFLAGS = $(FFLAGS) -O0 -g -fbounds-check" \
-		"VERSION_INFO = (PyFerret $(PYFERRET_VERSION) beta/dbg)" \
+		"VERSION_INFO = (beta/dbg)" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O0 -g" \
 		build
 

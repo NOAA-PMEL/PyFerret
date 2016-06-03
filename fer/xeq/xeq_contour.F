@@ -290,11 +290,10 @@
 * ... /HALFSPACE Request deg/min or deg/min/sec axis labels
 	loc = qual_given( slash_cont_halfsp )
 	IF ( loc .GT. 0) THEN
-	   lonlatspace = 0
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
      .			      vbuf, status )
            lonlatspace = 1
-           IF (vbuf .GT. 0) lonlatspace = vbuf
+           IF (vbuf .GE. 0) lonlatspace = vbuf
 	ENDIF
 
 * set contour label details (3/00)

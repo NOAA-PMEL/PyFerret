@@ -139,6 +139,9 @@ C              do not make small tics by default.
 * V697  *acm*  1/16 Ticket 2344: if there was a time-plot underlay, use its
 *                   delta-t for time overlay plots. TAXUND restores the default.
 * V698  4/16 *acm* New PLOT/NTH=
+* V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
+*                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+*                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -761,18 +764,25 @@ C     XFOR
       i = TM_LENSTR1(LABEL) - 1
       IF (TMPCHR(2:2) .EQ. 'D') THEN  ! degrees/mintues/seconds ?
            IF (TMPCHR(2:3) .EQ. 'DM') THEN
-              xdms = 1
+              xdms = 0
+              IF (TMPCHR(2:3) .EQ. 'DM') xdms = 1 
               IF (TMPCHR(2:4) .EQ. 'DMS') xdms = 2 
-              CALL RANGE_DM(XLO,XHI,XTIC,xmn,xmx,dd)
-c              xlo = xmn
-c              xhi = xmx
-              xtic = dd
+              IF (xdms .GT. 0) THEN
+	         CALL RANGE_DM(XLO,XHI,XTIC,xmn,xmx,dd)
+                 xtic = dd
+	      ENDIF
            ELSE ! 'DD' resets to decimal degrees
               xdms = 0
            ENDIF
            GOTO 10
         ENDIF
-        xdms = 0
+
+        IF (TMPCHR(2:4) .EQ. 'SPC') THEN  ! Space between degree-sign and EW or NS
+           xdspac = 0
+           IF (TMPCHR(5:5) .EQ. '1') xdspac = 1
+           GOTO 10
+        ENDIF
+
         IFRX=LABEL
         slen = TM_LENSTR(LABEL)
         IF (slen .GT. 1) THEN
@@ -781,6 +791,9 @@ c              xhi = xmx
            ELSE
               WRITE(err_msg,label,ERR=1999) 0.0
            ENDIF
+        ELSE
+	   xdspac = 0
+	   xdms = 0
         ENDIF
 	GOTO 10
 C     YFOR
@@ -789,18 +802,26 @@ C     YFOR
       i = TM_LENSTR1(LABEL) - 1
       IF (TMPCHR(2:2) .EQ. 'D') THEN  ! degrees/mintues/seconds ?
            IF (TMPCHR(2:3) .EQ. 'DM') THEN
-              ydms = 1
+              ydms = 0
+              IF (TMPCHR(2:3) .EQ. 'DM') ydms = 1 
               IF (TMPCHR(2:4) .EQ. 'DMS') ydms = 2 
-              CALL RANGE_DM(YLO,YHI,YTIC,ymn,ymx,dd)
-c              ylo = ymn
-c              yhi = ymx
-              ytic = dd
+              IF (ydms .GT. 0) THEN
+	         CALL RANGE_DM(YLO,YHI,YTIC,ymn,ymx,dd)
+                 ytic = dd
+	      ENDIF
+
            ELSE ! 'DD' resets to decimal degrees
               ydms = 0
            ENDIF
            GOTO 10
         ENDIF
-        ydms = 0
+
+        IF (TMPCHR(2:4) .EQ. 'SPC') THEN  ! Space between degree-sign and EW or NS
+           ydspac = 0
+           IF (TMPCHR(5:5) .EQ. '1') ydspac = 1
+           GOTO 10
+        ENDIF
+
         IFRY=LABEL
         slen = TM_LENSTR(LABEL)
         IF (slen .GT. 1) THEN
@@ -809,6 +830,9 @@ c              yhi = ymx
            ELSE
               WRITE(err_msg,label,ERR=1999) 0.0
            ENDIF
+        ELSE
+	   ydspac = 0
+	   ydms = 0
         ENDIF
 	GOTO 10
         

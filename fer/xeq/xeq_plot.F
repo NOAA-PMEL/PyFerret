@@ -111,6 +111,9 @@
 *                  style after a color plot and also after SHADE/SET; SHADE.
 * v698 *sh* 3/16   added PLOT/ALONG=axis
 * V698  4/16 *acm* New PLOT/SKIP=
+* V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
+*                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+*                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -368,6 +371,25 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 	   ENDIF
 	ENDIF
 	
+
+* ... /DEGMINSEC[=1 or 2] Request deg/min or deg/min/sec axis labels
+	loc = qual_given( slash_plot_dms )
+        dms = 0
+	IF ( loc .GT. 0) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      val, status )
+           dms = 1
+           IF (val .GT. 0) THEN
+	      dms = val
+	      IF (dms .GT. 2) GOTO 5530
+	   ENDIF
+	ENDIF
+
+* ... /SPACELAB Request deg/min or deg/min/sec axis labels
+	loc = qual_given( slash_plot_halfsp )
+        lonlatspace = 0
+	IF ( loc .GT. 0) lonlatspace = 1
+
 * PLOT/RIBBON for multi-colored "ribbon" line
 	ribbon_plot = qual_given(slash_plot_ribbon) .GT. 0
 
@@ -840,4 +862,9 @@ c done in plot_set_up.
  5520	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'Unrecognized argument to KEY command', *1000 )
+
+ 5530	CALL ERRMSG( ferr_syntax, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .		'Argument to DegMinSec qualifier must be 1 or 2', *1000 )
+
 	END

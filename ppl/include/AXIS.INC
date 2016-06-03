@@ -17,6 +17,9 @@ c V600 *acm* 2/06 add PPL XFOR('DMS') or 'DM' sets axis format deg/min/sec or de
 c                 add xvaloff, yvaloff (see comments below)
 C      *kms* 7/10 changed name of common block from AXIS to AXISCMN 
 C                 to remove clash with AXIS function
+* V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
+*                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+*                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 c
 	COMMON/AXISCMN/ XLO,XHI,XTIC,XLEN,XCSIZE, 
      *	IAUTOX,ITYPEX,NMTCX,LINTX,LABELX,NSIGX,NTICX,XORG,XVALOFF,
@@ -24,7 +27,7 @@ c
      *	IAUTOY,ITYPEY,NMTCY,LINTY,LABELY,NSIGY,NTICY,YORG,YVALOFF,
      *	IAXON(4),IAXSET, HGRAT(4,2), VGRAT(4,2), HLINE, VLINE, 
      *	SHRINKY, MOD_VS_X, MOD_VS_Y, HCOLOR(2), 
-     *  VCOLOR(2),XDMS,YDMS
+     *  VCOLOR(2),XDMS,YDMS,XDSPAC,YDSPAC
 c
 c**	x axis variables
 c
@@ -92,5 +95,7 @@ c       MOD_VS_Y        have units of longitude.
 c       XDMS           = 0 for degrees in decimal deg.frac
 c                      = 1 for Degrees and minutes 
 c       YDMS           same as xdms, for vertical axis
+c       XDSPAC	        if 1, add a space between
+c       YDSPAC           the degree sign and EW or NS on longitude/latitude axes
 c
 c*******************************************************************

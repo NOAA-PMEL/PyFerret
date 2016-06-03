@@ -166,6 +166,9 @@
 *                  data min and max are set.
 * V698 *sh* 3/16 - limit max number of plot keys generated
 * V698  4/16 *acm* New PLOT/SKIP=
+* V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
+*                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+*                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -482,11 +485,14 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                     IF (mod_vs_x) THEN
                        ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                  ',''''LONE'''')'
+                       CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+                       CALL LON_LAT_FMT (x_dim, 'X')
                     ELSE
                        ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                  ',''''LAT'''')'
+                       CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+                       CALL LON_LAT_FMT (y_dim, 'Y')
                     ENDIF
-                    CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
                  ENDIF
               ELSE	 
                  CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )	 
@@ -499,11 +505,14 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                     IF (mod_vs_y) THEN
                        ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                  ',''''LONE'''')'
+                       CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+                       CALL LON_LAT_FMT (x_dim, 'Y')
                     ELSE
                        ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                  ',''''LAT'''')'
+                       CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+                       CALL LON_LAT_FMT (y_dim, 'Y')
                     ENDIF
-                    CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
                  ENDIF
               ELSE	 
                  CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )	 

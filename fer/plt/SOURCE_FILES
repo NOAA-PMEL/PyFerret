@@ -42,6 +42,7 @@ key_string.F\
 line_plot_labels.F\
 line_style.F\
 load_curvilinear.F\
+lon_lat_fmt.F\
 merged_whoi_date.F\
 plot_along_data_set_up.F\
 plot_set_up.F\

@@ -230,6 +230,9 @@
 *       3/16 *sh*  added PLOT/ALONG=axis
 * V698  4/16 *acm* New PLOT/SKIP= (and leave space for PyFerret PLOT/OPACITY=)
 * V698  4/16 *acm* Change it to PLOT/SKIPSYM= 
+* V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
+*                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+*                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 
 *
 * !!!!!!!!!!
@@ -910,9 +913,10 @@
 		DATA qualifiers  (nqual_at4a+39)/ 'HGRATICU'/	! tic liness, dash or line
 		DATA qualifiers  (nqual_at4a+40)/ 'VGRATICU'/	! tic liness, color or pen#
 		DATA qualifiers  (nqual_at4a+41)/ 'GRATICUL'/	! 
-		DATA qualifiers  (nqual_at4a+42)/  'MODULO'/	! modulo for curvilinear plots
-		DATA qualifiers  (nqual_at4a+43)/ '****'/	! 
-		DATA qualifiers  (nqual_at4a+44)/ '****'/	! 
+		DATA qualifiers  (nqual_at4a+42)/ 'MODULO'/	! modulo for curvilinear plots
+		DATA qualifiers  (nqual_at4a+43)/ 'DEGMINSEC'/	! Request deg/min or deg/min/sec axis labels
+		DATA qualifiers  (nqual_at4a+44)/ 'HALFSPAC'/	! Request a space before the E/W or N/S on axis labels
+		DATA qualifiers  (nqual_at4a+45)/ '****'/	! 
 
 * LIST	 - command # 5
 	DATA commands(5)			/ 'LIST'	/
@@ -1045,8 +1049,8 @@
 		DATA qualifiers  (nqual_at6a+47)/ '****'/	! Reserve for PyFerret OPACITY
 		DATA qualifiers  (nqual_at6a+48)/ 'GAPLOC'/     ! A variable marking gaps to insert in PLOT/VS
 		DATA qualifiers  (nqual_at6a+49)/ 'SKIPSYM'/	! Control for symbol decimation
-		DATA qualifiers  (nqual_at6a+50)/ '****'/	! 
-		DATA qualifiers  (nqual_at6a+51)/ '****'/	! 
+		DATA qualifiers  (nqual_at6a+50)/ 'DEGMINSEC'/	! Request deg/min or deg/min/sec axis labels
+		DATA qualifiers  (nqual_at6a+51)/ 'HALFSPAC'/	! Request a space before the E/W or N/S on axis labels
 
 * GO	 - command # 7
 	DATA commands(7)			/ 'GO  '	/
@@ -1493,8 +1497,8 @@
 		DATA qualifiers  (nqual_at18a+33)/ 'MODULO'/	! modulo for curvilinear plots
 		DATA qualifiers  (nqual_at18a+34)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at18a+35)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at18a+36)/ '****'/	! 
-		DATA qualifiers  (nqual_at18a+37)/ '****'/	! 
+		DATA qualifiers  (nqual_at18a+36)/ 'DEGMINSEC'/	! Request deg/min or deg/min/sec axis labels
+		DATA qualifiers  (nqual_at18a+37)/ 'HALFSPAC'/	! Request a space before the E/W or N/S on axis
 
 * SPAWN - command # 19
 	DATA commands(19)			/ 'SPAWN'	/

@@ -1,5 +1,5 @@
       SUBROUTINE XAXIS1(XLO,XHI,XTIC,NSMTCX,LINTX,XUNIT,LABEL,
-     *    IFORMT,XFACT,Y,YFACT,CSIZE,yacross,xdms,vgrat,vcolor,
+     *    IFORMT,XFACT,Y,YFACT,CSIZE,yacross,xdms,xdspac,vgrat,vcolor,
      *    vline, xvaloff)
 
 *
@@ -52,6 +52,10 @@ C *acm* 11/05  new argument to scinot deg/min/sec labels
 C        1/06  xvaloff,yvaloff add this amount to each x or y axis label. 
 C              (axis data was read as double precision and converted to single 
 C              after applying an offset.)
+* V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
+*                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+*                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+
 
 C**
 C**    @(#)xaxis1.f	1.1    3/10/88
@@ -64,8 +68,11 @@ C**
 C***********************************************************************
 C**
 C**
+C**
 
-        INTEGER xdms
+        INTEGER xdms, xdspac
+	CHARACTER*1 LETTER
+	REAL SYMWID, spacwid
 * Parameters for drawing tics across plot
 
         REAL yacross, dash1, dash2,dash3,dash4, xvaloff
@@ -188,17 +195,35 @@ C
 		X=XT
 	ENDIF
 	ISTOP=INT((XHI-X)/(XTIC*LINTX)+0.000001)
+	LETTER = ' '
 
 	x0 = x
 	DO 200 I=0,ISTOP
 	IF ( interrupted ) RETURN		! TMAP interrupt
         TEMP=SIGSZ*X/XUNIT
         IF (xvaloff .EQ. 0) THEN
-          CALL NUMCDE(TEMP,XLAB,NC,IFORMT,xdms)
+          CALL NUMCDE(TEMP,XLAB,LETTER,NC,IFORMT,xdms)
         ELSE
-          CALL NUMCDE_OFF (TEMP,XLAB,NC,IFORMT,xdms,xvaloff)
+          CALL NUMCDE_OFF (TEMP,XLAB,LETTER,NC,IFORMT,xdms,xvaloff)
         ENDIF
-        CALL SCINOT(X,YTEMP,0.,ABSSZ,NC,XLAB,0,WID,XFACT,YFACT)
+
+* Drawing the label without E/W or N/S, which is done separately.
+* Adjust X location to allow for that.
+
+	spacwid = SYMWID(ABSSZ,1,LETTER)
+	IF (xdspac .GT. 0) THEN
+	   XTEMP = X - (0.5*spacwid + 0.5*xdspac*spacwid)/XFACT 
+	ELSE
+	   XTEMP = X - 0.5*spacwid/XFACT 
+	ENDIF
+
+	CALL SCINOT(XTEMP,YTEMP,0.,ABSSZ,NC,XLAB,0,WID,XFACT,YFACT)
+        IF (LETTER .NE. ' ') THEN
+	   NL = 1
+	   XL = XTEMP + 0.5*(WID + 0.5*xdspac*spacwid)/XFACT  ! 0.5* for horiz. centering
+	   YL = YTEMP - 0.5*ABSSZ/YFACT                       ! SCINOT centers vertically
+	   CALL SYMBEL(XL,YL,0.,ABSSZ,NL,LETTER)
+	ENDIF
 
 CC	Original code
 CC	X=X+XTIC*LINTX

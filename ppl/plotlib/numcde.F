@@ -1,4 +1,4 @@
-	SUBROUTINE NUMCDE(XZ,STR,NC,FRMTZ,DMS)
+	SUBROUTINE NUMCDE(XZ,STR,LETTER,NC,FRMTZ,DMS)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -47,6 +47,10 @@
 * V600: *acm* 11/05 add xdms,ydms for deg/min labels
 * V600: *acm* 5/06 Allow seconds in DMS axis labelling; had removed this.
 * V63  *acm* 10/09 Changes for gfortran build
+* V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
+*                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+*                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+
 
 C**
 C**    @(#)numcde.f	1.1    3/10/88
@@ -71,6 +75,7 @@ c  NNS, Jun 85.
 c
 	CHARACTER*(*) FRMTZ
 	CHARACTER*20 FRMT,STR,TEMP,STR_DMS
+	CHARACTER*1  LETTER
         INTEGER TM_LENSTR1, dms, imin, isec, dot, deg
         REAL val, frac, minutes, seconds
 C
@@ -80,28 +85,30 @@ C
 	X=XZ
 	ILAT = INDEX (TEMP, ',''LAT'')')
 	IF (ILAT .NE. 0) THEN
+	  FRMT (ILAT+1:) = '''#'')'
 	  IF (X .LT. 0) THEN
 	    X=-X
-	    FRMT (ILAT+1:) = '''#S'')'
+	    LETTER = 'S'
 	  ELSE IF (X .EQ. 0.) THEN
-	    FRMT (ILAT+1:) = '''#'')'
+	    LETTER = ' '
 	  ELSE
-	    FRMT (ILAT+1:) = '''#N'')'
+	    LETTER = 'N'
 	  ENDIF
 	ELSE
 	  ILON = INDEX (TEMP, ',''LON'')') + INDEX (TEMP, ',''LONW'')')
 	  ILONE = INDEX (TEMP, ',''LONE'')')
 	  IF (ILON .NE. 0) THEN
+	    FRMT (ILON+1:) = '''#'')'
 	    IF (X .GT. 180.) THEN
 	      X=360.-X
-	      FRMT (ILON+1:) = '''#E'')'
+	      LETTER = 'E'
 	    ELSE IF (X .EQ. 180.) THEN
-	      FRMT (ILON+1:) = '''#'')'
+	      LETTER = ' '
 	    ELSE IF (X .LT. 0.) THEN
-	      FRMT (ILON+1:) = '''#E'')'
+	      LETTER = 'E'
 	      X = -X
 	    ELSE
-	      FRMT (ILON+1:) = '''#W'')'
+	      LETTER = 'W'
 	    ENDIF
 	  ELSE IF (ILONE .NE. 0)THEN
 * TMAP insert 2/13/89
@@ -109,22 +116,23 @@ C
 
 	    X = MOD( X, 360. )
 * ... end of TMAP insert
+	    FRMT (ILONE+1:) = '''#'')'
 	    IF (X .GT.180.) THEN
 	      X=360.-X
-	      FRMT (ILONE+1:) = '''#W'')'
+	      LETTER = 'W'
 	    ELSE IF (ABS(X) .EQ. 180.) THEN
-	      FRMT (ILONE+1:) = '''#'')'
+	      LETTER = ' '
 	      X = ABS(X)
 	    ELSE IF (X .LT. -180.) THEN
-	      FRMT (ILONE+1:) = '''#E'')'
+	      LETTER = 'E'
 	      X = 360.+X
 	    ELSE IF (X .LT. 0.) THEN
-	      FRMT (ILONE+1:) = '''#W'')'
+	      LETTER = 'W'
 	      X = -X
 	    ELSE IF (X .NE. 0.) THEN
-	      FRMT (ILONE+1:) = '''#E'')'
+	      LETTER = 'E'
             ELSE
-	      FRMT (ILONE+1:) = '''#'')'
+	      LETTER = ' '
 	    ENDIF
 	  ENDIF
 	ENDIF
@@ -194,25 +202,21 @@ C     ADD LEADING ZERO
 
            IF (dms .EQ. 2) THEN  ! write as deg,min,sec
               IF (ideg .LT. 100) THEN
-                 WRITE (STR_DMS, 1100) ideg, imin, isec,
-     .               str(deg+1:deg+1)
+                 WRITE (STR_DMS, 1100) ideg, imin, isec
               ELSE
-                 WRITE (STR_DMS, 1101) ideg, imin, isec, 
-     .               str(deg+1:deg+1)
+                 WRITE (STR_DMS, 1101) ideg, imin, isec
               ENDIF
-1100          FORMAT (I2.2, '#', I2.2, '''', I2.2, '''', '''', A1)
-1101          FORMAT (I3.3, '#', I2.2, '''', I2.2, '''', '''', A1)
+1100          FORMAT (I2.2, '#', I2.2, '''', I2.2, '''', '''')
+1101          FORMAT (I3.3, '#', I2.2, '''', I2.2, '''', '''')
 
            ELSE IF (dms .EQ. 1) THEN  ! break into deg,min
               IF (ideg .LT. 100) THEN
-                 WRITE (STR_DMS, 1200) ideg, imin, 
-     .               str(deg+1:deg+1)
+                 WRITE (STR_DMS, 1200) ideg, imin
               ELSE
-                 WRITE (STR_DMS, 1201) ideg, imin, 
-     .               str(deg+1:deg+1)
+                 WRITE (STR_DMS, 1201) ideg, imin
               ENDIF
-1200          FORMAT (I2.2, '#', I2.2, '''', A1)
-1201          FORMAT (I3.3, '#', I2.2, '''', A1)
+1200          FORMAT (I2.2, '#', I2.2, '''')
+1201          FORMAT (I3.3, '#', I2.2, '''')
 
            ELSE IF (dms .EQ. 3) THEN  ! write as deg,min.frac
 
@@ -226,35 +230,29 @@ C     ADD LEADING ZERO
               IF (digits .EQ. 0) THEN   ! degrees, minutes only
                  imin = INT(minutes+0.5)
                  IF (ideg .LT. 100) THEN
-                    WRITE (STR_DMS, 1300) ideg, imin,
-     .               str(deg+1:deg+1)
+                    WRITE (STR_DMS, 1300) ideg, imin
                  ELSE
-                    WRITE (STR_DMS, 1301) ideg, imin, 
-     .               str(deg+1:deg+1)
+                    WRITE (STR_DMS, 1301) ideg, imin
                  ENDIF
-1300             FORMAT (I2.2, '#', I2.2, '''', A1)
-1301             FORMAT (I3.3, '#', I2.2, '''', A1)
+1300             FORMAT (I2.2, '#', I2.2, '''')
+1301             FORMAT (I3.3, '#', I2.2, '''')
               ELSE IF (digits .EQ. 1) THEN  ! degrees,min.f
 
                  IF (ideg .LT. 100) THEN
-                    WRITE (STR_DMS, 1400) ideg, minutes, 
-     .               str(deg+1:deg+1)
+                    WRITE (STR_DMS, 1400) ideg, minutes
                  ELSE
-                    WRITE (STR_DMS, 1401) ideg, minutes, 
-     .               str(deg+1:deg+1)
+                    WRITE (STR_DMS, 1401) ideg, minutes
                  ENDIF
-1400             FORMAT (I2.2, '#', F4.1, '''', A1)
-1401             FORMAT (I3.3, '#', F4.1, '''', A1)
+1400             FORMAT (I2.2, '#', F4.1, '''')
+1401             FORMAT (I3.3, '#', F4.1, '''')
               ELSE                          ! degrees,min.ff
                  IF (ideg .LT. 100) THEN
-                    WRITE (STR_DMS, 1500) ideg, minutes, 
-     .               str(deg+1:deg+1)
+                    WRITE (STR_DMS, 1500) ideg, minutes
                  ELSE
-                    WRITE (STR_DMS, 1501) ideg, minutes, 
-     .               str(deg+1:deg+1)
+                    WRITE (STR_DMS, 1501) ideg, minutes
                  ENDIF
-1500             FORMAT (I2.2, '#', F5.2, '''', A1)
-1501             FORMAT (I3.3, '#', F5.2, '''', A1)
+1500             FORMAT (I2.2, '#', F5.2, '''')
+1501             FORMAT (I3.3, '#', F5.2, '''')
               ENDIF
 
            ELSE 

@@ -1,5 +1,5 @@
       SUBROUTINE YAXIS1(X,XFACT,YLO,YHI,YTIC,NSMTCY,LINTY,YUNIT,LABEL,
-     *    IFORMT,YFACT,CSIZE,xacross,ydms,hgrat,hcolor,hline,
+     *    IFORMT,YFACT,CSIZE,xacross,ydms,ydspac,hgrat,hcolor,hline,
      *    yvaloff, noylab, SHRINKY)
 
 *
@@ -55,6 +55,10 @@ C              after applying an offset.)
 
 * 11/2011 ACM Fixing ticket 1896: When needed, reset the size of numerical axis
 *             labes, so the labels dont run off the edge of the plot.
+* V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
+*                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+*                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+
 
 C**
 C**    @(#)yaxis1.f	1.1    3/10/88
@@ -67,7 +71,10 @@ C**
 C***********************************************************************
 C**
 C**
-        INTEGER ydms
+        INTEGER ydms, ydspac
+	CHARACTER*1 letter
+	REAL SYMWID, spacwid
+
 * Parameters for drawing tics across plot
 
         REAL xacross, dash1, dash2, dash3, dash4
@@ -187,31 +194,32 @@ C
 		XTEMP=0.
 	ELSE
 		XTEMP=TLY*0.5
-	ENDIF
+	ENDIF	
+	
+	LETTER = ' '
 	IF(LABEL.EQ.1)THEN
            IF (yvaloff .EQ. 0.) THEN
-	      CALL NUMCDE(SIGSZ*YLO/YUNIT,YLAB,NC,IFORMT,ydms)
+	      CALL NUMCDE(SIGSZ*YLO/YUNIT,YLAB,LETTER,NC,IFORMT,ydms)
            ELSE
-	      CALL NUMCDE_OFF(SIGSZ*YLO/YUNIT,YLAB,NC,IFORMT,ydms,
+	      CALL NUMCDE_OFF(SIGSZ*YLO/YUNIT,YLAB,LETTER,NC,IFORMT,ydms,
      .              yvaloff)
            ENDIF
 	   CALL SCINOT(0.,0.,0.,ABSSZ,NC,YLAB,3,WID,
      .             XFACT,YFACT)
 
            IF (yvaloff .EQ. 0.) THEN
-	      CALL NUMCDE(SIGSZ*YHI/YUNIT,YLAB,NC,IFORMT,ydms)
+	      CALL NUMCDE(SIGSZ*YHI/YUNIT,YLAB,LETTER,NC,IFORMT,ydms)
            ELSE
-	      CALL NUMCDE_OFF(SIGSZ*YHI/YUNIT,YLAB,NC,IFORMT,ydms,
-     .              yvaloff)
+	      CALL NUMCDE_OFF(SIGSZ*YHI/YUNIT,YLAB,LETTER,NC,IFORMT,ydms,yvaloff)
            ENDIF
 	   CALL SCINOT(0.,0.,0.,ABSSZ,NC,YLAB,3,WID1,
      .             XFACT,YFACT)
 
 	   IF(YLO.LT.0..AND.YHI.GT.0.)THEN
               IF (yvaloff .EQ. 0.) THEN
-                 CALL NUMCDE(0.,YLAB,NC,IFORMT,ydms)
+                 CALL NUMCDE(0.,YLAB,LETTER,NC,IFORMT,ydms)
               ELSE
-                 CALL NUMCDE_OFF(0.,YLAB,NC,IFORMT,ydms,yvaloff)
+                 CALL NUMCDE_OFF(0.,YLAB,LETTER,NC,IFORMT,ydms,yvaloff)
               ENDIF
 	      CALL SCINOT(0.,0.,0.,ABSSZ,NC,YLAB,3,WID2,
      *			XFACT,YFACT)
@@ -220,8 +228,10 @@ C
 	   ENDIF
 	   XTEMP=XTEMP+AMAX1(WID,WID1,WID2)
 	ENDIF
+	
 	YWID=0.75*ABSSZ+XTEMP
-	XTEMP=X+LABEL*YWID/XFACT
+	XTEMP=X+LABEL*YWID/XFACT  
+
 	IF(DIR*YLO.LE.0.AND.DIR*YHI.GE.0)THEN
 		Y=INT(YLO/(YTIC*LINTY)-0.000001)*YTIC*LINTY
 	ELSE
@@ -241,12 +251,12 @@ C (ITYPE=3 arg to SCINOT)
 	IF ( interrupted ) RETURN		! TMAP interrupt
         TEMP=SIGSZ*Y/YUNIT
         IF (yvaloff .EQ. 0) THEN
-           CALL NUMCDE(TEMP,YLAB,NC,IFORMT,YDMS)
+           CALL NUMCDE(TEMP,YLAB,LETTER,NC,IFORMT,ydms)
         ELSE
-           CALL NUMCDE_OFF(TEMP,YLAB,NC,IFORMT,YDMS,yvaloff)
+           CALL NUMCDE_OFF(TEMP,YLAB,LETTER,NC,IFORMT,ydms,yvaloff)
         ENDIF
         CALL SCINOT(XTEMP,Y,0.,ABSSZ,NC,YLAB,3,WID,XFACT,YFACT)
-
+	
 	Y=y0+YTIC*LINTY*(i+1)
 	if (abs(y) .lt. epsilon*abs(y0)) y = 0.0
 
@@ -265,17 +275,37 @@ C (ITYPE=3 arg to SCINOT)
 	YWIDT=0.
 	Y = YSAVE
 
-* Now make the labels.
-
+* Now make the labels. 
 	DO 200 I=0,ISTOP
 	IF ( interrupted ) RETURN		! TMAP interrupt
         TEMP=SIGSZ*Y/YUNIT
         IF (yvaloff .EQ. 0) THEN
-           CALL NUMCDE(TEMP,YLAB,NC,IFORMT,YDMS)
+           CALL NUMCDE(TEMP,YLAB,LETTER,NC,IFORMT,ydms)
         ELSE
-           CALL NUMCDE_OFF(TEMP,YLAB,NC,IFORMT,YDMS,yvaloff)
+           CALL NUMCDE_OFF(TEMP,YLAB,LETTER,NC,IFORMT,ydms,yvaloff)
         ENDIF
-        CALL SCINOT(XTEMP,Y,0.,ABSSZ,NC,YLAB,1,WID,XFACT,YFACT)
+
+* Letter E/W or N/S is added separatly.  Need a space for that plus
+* any extra requested space.
+
+	spacwid = SYMWID(ABSSZ,1,LETTER)
+
+	XL = XTEMP
+	IF (label .EQ. -1) THEN
+	   IF (ydspac .GT. 0) THEN
+	      XL = XTEMP - (0.5*spacwid + 0.5*ydspac*spacwid)/XFACT 
+	   ELSE
+	      XL = XTEMP - spacwid/XFACT 
+	   ENDIF
+	ENDIF
+
+        CALL SCINOT(XL,Y,0.,ABSSZ,NC,YLAB,1,WID,XFACT,YFACT)
+        IF (letter .NE. ' ') THEN
+	   NL = 1
+	   XL = XL + 0.5*(0.5*xdspac*spacwid)/XFACT  ! SCINOT called with right-justify
+	   YL = Y - 0.5*ABSSZ/YFACT             ! SCINOT centers vertically
+	   CALL SYMBEL(XL,YL,0.,ABSSZ,NC,LETTER)
+	ENDIF
 
 CC	Original code
 CC	Y=Y+YTIC*LINTY
@@ -283,12 +313,14 @@ CC	Y=Y+YTIC*LINTY
 	Y=y0+YTIC*LINTY*(i+1)
 	if (abs(y) .lt. epsilon*abs(y0)) y = 0.0
 
-	IF(WID.GT.YWIDT)YWIDT=WID
+	IF(WID.GT.YWIDT) YWIDT=WID 
 200	CONTINUE
 	IF(LABEL.LT.0)THEN 
            IF (YDMS .GE. 2) ywidt = ywidt - symwid(abssz,1,'''')
            YWID=YWID+YWIDT
         ENDIF
+	spacwid = SYMWID(ABSSZ,1,'N')
+	YWID = YWID + spacwid + 0.5*xdspac*spacwid
 	RETURN
 	END
 

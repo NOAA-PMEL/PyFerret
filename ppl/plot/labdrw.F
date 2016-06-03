@@ -49,6 +49,10 @@ C                with "*(*)" for the linux port
 C *acm* v552 3/03 Longer strings and changes for multi-line labels.
 * V69+  5/14 *acm* Fix for ascii font in multi-line labels, ticket 2176
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
+* V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
+*                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+*                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'AXIS.INC'
@@ -85,9 +89,12 @@ C  Y label. center each line
 
         CALL tm_break_lines (ylab, lnbeg, lnend, numlines)
 
+* Adjust x position for multi-line label or when making
+* extra space between the degree-sign and N/S or E/W
         IF(LABELY.LT.0.)THEN 
-        XL=XLO-(YWID+HYLAB)/XF
+           XL=XLO-(YWID+HYLAB)/XF
            xl = xl - (numlines-1)*hylab/xf
+	   IF (ydspac .GT. 0) xl = xl - 0.5*ydspac*hylab/xf
         ELSE
            XL=XHI+(YWID+2.*HYLAB)/XF
         ENDIF

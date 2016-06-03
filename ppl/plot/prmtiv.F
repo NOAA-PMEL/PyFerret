@@ -56,6 +56,9 @@ C              after applying an offset.)
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V69+  5/14 *acm* Fix for ascii font in multi-line labels, ticket 2176
 * v695 9/15 *acm* write values to PPL* symbols using 6 digits not 4
+* V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
+*                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+*                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 
 C**
 C**
@@ -298,7 +301,7 @@ C
 	    CALL SCALE(XFF,YFF,XOR,YOR,XLOW,YLOW)
 	    call color(ipen(0))
 	    CALL XAXIS1(XLOW,XHIGH,XTICC,NSMTCS,LINTT,XUNIT,
-     *		IPOS,FRMTX,XFF,Y,YFF,CHSIZE,across,dms,vgrat,
+     *		IPOS,FRMTX,XFF,Y,YFF,CHSIZE,across,xdms,xdspac,vgrat,
      *		vcolor,vline,xvaloff)
 
             CALL tm_break_lines (xlab, lnbeg, lnend, numlines)
@@ -430,7 +433,7 @@ c	    ENDIF
 	    CALL SCALE(XFF,YFF,XOR,YOR,XLOW,YLOW)
 	    call color(ipen(0))
 	    CALL YAXIS1(XX,XFF,YLOW,YHIGH,YTICC,NSMTCS,LINTT,YUNIT,
-     *		IPOS,FRMTX,YFF,CHSIZE,across,dms,hgrat,hcolor,hline,
+     *		IPOS,FRMTX,YFF,CHSIZE,across,ydms,ydspac,hgrat,hcolor,hline,
      *          yvaloff,.FALSE.,SHRINKY)
 
             CALL tm_break_lines (ylab, lnbeg, lnend, numlines)

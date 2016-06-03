@@ -1,6 +1,8 @@
 ! bn_let_remote.jnl
 ! Tests of the F-TDS LET/REMOTE
 
+exit/script  ! ?? F-TDS broken on our thredds server?
+
 use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc"
 let/D=1/remote myvar = t0112mn1[k=1:5@sum]
 let/D=1/remote ave_z = t0112mn1[z=0:1000@ave]

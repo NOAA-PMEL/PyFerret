@@ -74,6 +74,7 @@ C**
         INTEGER ydms, ydspac
 	CHARACTER*1 letter
 	REAL SYMWID, spacwid
+	LOGICAL do_shift
 
 * Parameters for drawing tics across plot
 
@@ -274,6 +275,14 @@ C (ITYPE=3 arg to SCINOT)
 
 	YWIDT=0.
 	Y = YSAVE
+	LETTER = ' '
+
+        TEMP=SIGSZ*Y/YUNIT
+	CALL NUMCDE(TEMP,YLAB,LETTER,NC,IFORMT,ydms)
+	
+	spacwid = 0.
+	do_shift = INDEX(YLAB, '#')  ! longitude or latitude labels
+	IF (do_shift) spacwid = SYMWID(ABSSZ,1,'N')
 
 * Now make the labels. 
 	DO 200 I=0,ISTOP
@@ -288,7 +297,7 @@ C (ITYPE=3 arg to SCINOT)
 * Letter E/W or N/S is added separatly.  Need a space for that plus
 * any extra requested space.
 
-	spacwid = SYMWID(ABSSZ,1,LETTER)
+	IF (do_shift) spacwid = SYMWID(ABSSZ,1,LETTER)
 
 	XL = XTEMP
 	IF (label .EQ. -1) THEN
@@ -319,7 +328,7 @@ CC	Y=Y+YTIC*LINTY
            IF (YDMS .GE. 2) ywidt = ywidt - symwid(abssz,1,'''')
            YWID=YWID+YWIDT
         ENDIF
-	spacwid = SYMWID(ABSSZ,1,'N')
+	
 	YWID = YWID + spacwid + 0.5*ydspac*spacwid
 	RETURN
 	END

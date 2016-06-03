@@ -73,6 +73,8 @@ C**
         INTEGER xdms, xdspac
 	CHARACTER*1 LETTER
 	REAL SYMWID, spacwid
+	LOGICAL do_shift
+
 * Parameters for drawing tics across plot
 
         REAL yacross, dash1, dash2,dash3,dash4, xvaloff
@@ -197,6 +199,13 @@ C
 	ISTOP=INT((XHI-X)/(XTIC*LINTX)+0.000001)
 	LETTER = ' '
 
+	TEMP=SIGSZ*X/XUNIT
+	CALL NUMCDE(TEMP,XLAB,LETTER,NC,IFORMT,xdms)
+
+	spacwid = 0.
+	do_shift = INDEX(XLAB, '#')  ! longitude or latitude labels
+	IF (do_shift) spacwid = SYMWID(ABSSZ,1,'E')
+
 	x0 = x
 	DO 200 I=0,ISTOP
 	IF ( interrupted ) RETURN		! TMAP interrupt
@@ -210,7 +219,8 @@ C
 * Drawing the label without E/W or N/S, which is done separately.
 * Adjust X location to allow for that.
 
-	spacwid = SYMWID(ABSSZ,1,LETTER)
+	IF (do_shift) spacwid = SYMWID(ABSSZ,1,LETTER)
+
 	IF (xdspac .GT. 0) THEN
 	   XTEMP = X - (0.5*spacwid + 0.5*xdspac*spacwid)/XFACT 
 	ELSE

@@ -218,10 +218,15 @@
 	   ENDIF
 	ENDIF
 
-* ... /SPACELAB Request deg/min or deg/min/sec axis labels
+* ... /HALFSPACE Request deg/min or deg/min/sec axis labels
 	loc = qual_given( slash_shad_halfsp )
-        lonlatspace = 0
-	IF ( loc .GT. 0) lonlatspace = 1
+	IF ( loc .GT. 0) THEN
+	   lonlatspace = 0
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      val, status )
+           lonlatspace = 1
+           IF (val .GT. 0) lonlatspace = val
+	ENDIF
 
 * set up the axes and title and load the data into PPLUS
 	inc_grid = set_up

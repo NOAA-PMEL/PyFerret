@@ -387,8 +387,13 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 
 * ... /SPACELAB Request deg/min or deg/min/sec axis labels
 	loc = qual_given( slash_plot_halfsp )
-        lonlatspace = 0
-	IF ( loc .GT. 0) lonlatspace = 1
+	IF ( loc .GT. 0) THEN
+	   lonlatspace = 0
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      val, status )
+           lonlatspace = 1
+           IF (val .GT. 0) lonlatspace = val
+	ENDIF
 
 * PLOT/RIBBON for multi-colored "ribbon" line
 	ribbon_plot = qual_given(slash_plot_ribbon) .GT. 0

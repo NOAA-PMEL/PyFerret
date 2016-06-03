@@ -779,7 +779,7 @@ C     XFOR
 
         IF (TMPCHR(2:4) .EQ. 'SPC') THEN  ! Space between degree-sign and EW or NS
            xdspac = 0
-           IF (TMPCHR(5:5) .EQ. '1') xdspac = 1
+           IF (TMPCHR(5:5) .NE. ')') READ (TMPCHR(5:5), *) xdspac
            GOTO 10
         ENDIF
 
@@ -818,7 +818,7 @@ C     YFOR
 
         IF (TMPCHR(2:4) .EQ. 'SPC') THEN  ! Space between degree-sign and EW or NS
            ydspac = 0
-           IF (TMPCHR(5:5) .EQ. '1') ydspac = 1
+           IF (TMPCHR(5:5) .NE. ')') READ (TMPCHR(5:5), *) ydspac
            GOTO 10
         ENDIF
 

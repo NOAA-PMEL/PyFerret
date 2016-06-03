@@ -287,10 +287,15 @@
 	   ENDIF
 	ENDIF
 
-* ... /SPACELAB Request deg/min or deg/min/sec axis labels
+* ... /HALFSPACE Request deg/min or deg/min/sec axis labels
 	loc = qual_given( slash_cont_halfsp )
-        lonlatspace = 0
-	IF ( loc .GT. 0) lonlatspace = 1
+	IF ( loc .GT. 0) THEN
+	   lonlatspace = 0
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      vbuf, status )
+           lonlatspace = 1
+           IF (vbuf .GT. 0) lonlatspace = vbuf
+	ENDIF
 
 * set contour label details (3/00)
 * fix bug 

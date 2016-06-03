@@ -50,7 +50,12 @@
 	INTEGER idim
 	CHARACTER*(*) x_or_y
 
-	IF ( idim .EQ. x_dim) THEN
+	INTEGER slen
+	REAL	val
+	CHARACTER TM_FMT*10, str*10
+
+* longitude or latitude formatting
+	IF ( idim .EQ. x_dim .OR. idim .EQ. y_dim) THEN
 
 	   ppl_buff = x_or_y//'FOR (dd)'
 	   IF (dms .NE. 0) THEN
@@ -60,24 +65,13 @@
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 
 	   ppl_buff = x_or_y//'FOR (SPC0)'
-	   IF (lonlatspace .NE. 0) ppl_buff = x_or_y//'FOR (SPC1)' 
-	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-	ENDIF
-	
-	IF ( idim .EQ. y_dim) THEN
-* latitude format for axis tic labling
-
-	   ppl_buff = x_or_y//'FOR (dd)'
-	   IF (dms .NE. 0) THEN
-	      IF (dms .EQ. 1) ppl_buff = x_or_y//'FOR (dm)' 
-	      IF (dms .EQ. 2) ppl_buff = x_or_y//'FOR (dms)'
+	   IF (lonlatspace .NE. 0) THEN
+	     val = lonlatspace
+	     str = TM_FMT(val, 4, 10, slen)
+	     ppl_buff = x_or_y//'FOR (SPC'//str(:slen)//')'
 	   ENDIF
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-
-	   ppl_buff = x_or_y//'FOR (SPC0)'
-	   IF (lonlatspace .NE. 0) ppl_buff = x_or_y//'FOR (SPC1)' 
-	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 	ENDIF
-	
+
 	RETURN
 	END

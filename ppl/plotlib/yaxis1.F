@@ -302,7 +302,7 @@ C (ITYPE=3 arg to SCINOT)
         CALL SCINOT(XL,Y,0.,ABSSZ,NC,YLAB,1,WID,XFACT,YFACT)
         IF (letter .NE. ' ') THEN
 	   NL = 1
-	   XL = XL + 0.5*(0.5*xdspac*spacwid)/XFACT  ! SCINOT called with right-justify
+	   XL = XL + 0.5*(0.5*ydspac*spacwid)/XFACT  ! SCINOT called with right-justify
 	   YL = Y - 0.5*ABSSZ/YFACT             ! SCINOT centers vertically
 	   CALL SYMBEL(XL,YL,0.,ABSSZ,NC,LETTER)
 	ENDIF
@@ -320,7 +320,7 @@ CC	Y=Y+YTIC*LINTY
            YWID=YWID+YWIDT
         ENDIF
 	spacwid = SYMWID(ABSSZ,1,'N')
-	YWID = YWID + spacwid + 0.5*xdspac*spacwid
+	YWID = YWID + spacwid + 0.5*ydspac*spacwid
 	RETURN
 	END
 

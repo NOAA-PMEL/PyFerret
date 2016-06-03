@@ -36,7 +36,6 @@
 *                  /OUTFILE= /APPEND /CLOBBER
 * V6.6  *kms* 5/10 add SET REDIRECT and CANCEL REDIRECT for stdout/stderr redirection
 *       *kms* 7/10 add OPEN alias for SET DATA /BROWSE
-* V664  8/10 *kms* Add DEFINE PYFUNC /NAME=<alias> python.module.name
 * V6.8  *acm* 1/12 Add SET DATA/STRICT 
 * V68 *acm* 5/12   Add DEFINE DATA/AGGREGATE/TITLE/QUIET
 * V683  8/12 *acm*  New SET LIST/OUTTYPE CANCEL LIST/OUTTYPE, and SAVE/OUTTYPE 
@@ -51,7 +50,10 @@
 * V698 *ACM*  4/15 New PLOT/SKIP= (and leave space for PyFerret PLOT/OPACITY=)
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+* V7    6/16 *kms* Add reserved slots for PyFerret commands and qualifiers
+*                  to simplify future merges of Ferret into PyFerret
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -122,7 +124,7 @@
      .			nqual1t    , nqual_at2a
 	PARAMETER    (	nsub1   =20, nsub_at2   = nsub_at1   + nsub1,
      .			nqual1a = 0, nqual_at1b = nqual_at1a + nqual1a,	!'    '
-     .			nqual1b = 6, nqual_at1c = nqual_at1b + nqual1b,	!'WIND'
+     .			nqual1b =20, nqual_at1c = nqual_at1b + nqual1b,	!'WIND'
      .			nqual1c =27, nqual_at1d = nqual_at1c + nqual1c,	!'REGI'
      .			nqual1d = 1, nqual_at1e = nqual_at1d + nqual1d,	!'VIEW'
      .			nqual1e = 0, nqual_at1f = nqual_at1e + nqual1e,	!'EXPR'
@@ -138,7 +140,7 @@
      .			nqual1o = 3, nqual_at1p = nqual_at1o + nqual1o,	!'NCCACHE'
      .			nqual1p = 8, nqual_at1q = nqual_at1p + nqual1p,	!'REDIRECT'
      .			nqual1q = 0, nqual_at1r = nqual_at1q + nqual1q,	!'GIFFILE'
-     .			nqual1r = 2, nqual_at1s = nqual_at1r + nqual1r,	!'****'
+     .			nqual1r = 6, nqual_at1s = nqual_at1r + nqual1r,	!'TEXT' in PyFerret
      .			nqual1s = 4, nqual_at1t = nqual_at1s + nqual1s,	!'****'
      .			nqual1t = 4, nqual_at2a = nqual_at1t + nqual1t	!'****'
      .		      )
@@ -167,8 +169,9 @@
      .			nqual2s    , nqual_at2t,
      .			nqual2t    , nqual_at2u,
      .			nqual2u    , nqual_at2v,
-     .			nqual2v    , nqual_at3a
-	PARAMETER    (	nsub2   =22, nsub_at3   = nsub_at2   + nsub2,
+     .			nqual2v    , nqual_at2w,
+     .			nqual2w    , nqual_at3a
+	PARAMETER    (	nsub2   =23, nsub_at3   = nsub_at2   + nsub2,
      .			nqual2a = 1, nqual_at2b = nqual_at2a + nqual2a,	!'    '
      .			nqual2b = 1, nqual_at2c = nqual_at2b + nqual2b,	!'WIND'
      .			nqual2c = 1, nqual_at2d = nqual_at2c + nqual2c,	!'REGI'
@@ -189,9 +192,11 @@
      .			nqual2r = 3, nqual_at2s = nqual_at2r + nqual2r,	!'ATTR'
      .			nqual2s = 1, nqual_at2t = nqual_at2s + nqual2s,	!'NCCACHE'
      .			nqual2t = 1, nqual_at2u = nqual_at2t + nqual2t,	!'GIFFILE'
-     .			nqual2u = 7, nqual_at2v = nqual_at2u + nqual2u,	!'FUNC'
-     .			nqual2v = 3, nqual_at3a = nqual_at2v + nqual2v	!'QUER'
+     .			nqual2u = 7, nqual_at2v = nqual_at2u + nqual2u, !'FUNC'
+     .                  nqual2v = 2, nqual_at2w = nqual_at2v + nqual2v, !'TEXT' in PyFerret
+     .                  nqual2w = 3, nqual_at3a = nqual_at2w + nqual2w  !'QUER' 
      .		      )
+
 
 * CANCEL 	 - commmand # 3
 	INTEGER		nsub3      , nsub_at4  ,
@@ -234,15 +239,15 @@
      .			nqual3p = 1, nqual_at3q = nqual_at3p + nqual3p,	!'ALIAS'
      .			nqual3q = 1, nqual_at3r = nqual_at3q + nqual3q,	!'SYMBOL'
      .			nqual3r = 1, nqual_at3s = nqual_at3r + nqual3r,	!'NCCACHE'
-     .			nqual3s = 3, nqual_at3t = nqual_at3s + nqual3s,	!'****'
-     .			nqual3t = 3, nqual_at4a = nqual_at3t + nqual3t	!'****'
+     .			nqual3s = 3, nqual_at3t = nqual_at3s + nqual3s,	!'PYVAR' in PyFerret
+     .			nqual3t = 7, nqual_at4a = nqual_at3t + nqual3t	!'TEXT' in PyFerret
      .		      )
 
 * CONTOUR	 - commmand # 4
 	INTEGER		nsub4      , nsub_at5 ,
      .			nqual4a    ,nqual_at5a
 	PARAMETER    (	nsub4   = 1, nsub_at5   = nsub_at4   + nsub4,
-     .			nqual4a = 46,nqual_at5a = nqual_at4a + nqual4a  )
+     .			nqual4a = 48,nqual_at5a = nqual_at4a + nqual4a  )
 
 * LIST		 - commmand # 5
 	INTEGER		nsub5      , nsub_at6  ,
@@ -330,7 +335,7 @@
 	INTEGER		nsub15      , nsub_at16 ,
      .			nqual15a    , nqual_at16a
 	PARAMETER    (	nsub15   = 1, nsub_at16   = nsub_at15   + nsub15,
-     .			nqual15a = 4, nqual_at16a = nqual_at15a + nqual15a  )
+     .			nqual15a = 8, nqual_at16a = nqual_at15a + nqual15a  )
 
 * REPEAT		 - commmand # 16
 	INTEGER		nsub16       , nsub_at17 ,
@@ -348,7 +353,7 @@
 	INTEGER		nsub18       , nsub_at19 ,
      .			nqual18a     ,nqual_at19a
 	PARAMETER    (	nsub18   = 1, nsub_at19    = nsub_at18   + nsub18,
-     .			nqual18a = 38,nqual_at19a  = nqual_at18a + nqual18a  )
+     .			nqual18a = 39,nqual_at19a  = nqual_at18a + nqual18a  )
 
 * SPAWN			 - commmand # 19
 	INTEGER		nsub19       , nsub_at20 ,

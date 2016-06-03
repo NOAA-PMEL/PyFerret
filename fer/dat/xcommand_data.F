@@ -200,7 +200,7 @@
 * V6.63 *acm* 7/10 Add VECTOR/KEY to force key even if /NOLAB
 *       *kms* 7/10 add SET DATA /BROWSE to browse for the dataset
 * V664  8.10 *kms* Add EXIT/TOPYTHON to exit the ferret_dispatch loop 
-*                  but just re-enter the loop if not under pfyrret
+*                  but just re-enter the loop if not under pyferret
 *                  Add DEFINE PYFUNC /NAME=<alias> python.module.name
 * V68 *acm* 1/12   Add USE/STRICT; see ticket 1910.
 * V68 *acm* 5/12   Add DEFINE DATA /AGGREGATE /NAME= /QUIET
@@ -233,6 +233,8 @@
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* V7    6/16 *kms* Add reserved slots for PyFerret commands and qualifiers
+*                  to simplify future merges of Ferret into PyFerret
 
 *
 * !!!!!!!!!!
@@ -274,6 +276,20 @@
 		DATA qualifiers  (nqual_at1b+3)	/ 'ASPECT'	/
 		DATA qualifiers  (nqual_at1b+4)	/ 'CLEAR'	/
 		DATA qualifiers  (nqual_at1b+5)	/ 'TITLE'	/
+		DATA qualifiers  (nqual_at1b+6)	/ '****'	/	! QUALITY in PyFerret
+		DATA qualifiers  (nqual_at1b+7)	/ '****'	/	! ANTIALIAS for PyFerret
+		DATA qualifiers  (nqual_at1b+8)	/ '****'	/	! NOANTIALIAS in PyFerret
+		DATA qualifiers  (nqual_at1b+9)	/ '****'	/	! ENGINE in PyFerret
+		DATA qualifiers  (nqual_at1b+10)/ '****'	/	! COLOR in PyFerret
+		DATA qualifiers  (nqual_at1b+11)/ '****'	/	! OPACITY in PyFerret
+		DATA qualifiers  (nqual_at1b+12)/ '****'	/	! THICKEN in PyFerret
+		DATA qualifiers  (nqual_at1b+13)/ '****'	/	! XPIXELS in PyFerret
+		DATA qualifiers  (nqual_at1b+14)/ '****'	/	! YPIXELS in PyFerret
+		DATA qualifiers  (nqual_at1b+15)/ '****'	/	! XINCHES in PyFerret
+		DATA qualifiers  (nqual_at1b+16)/ '****'	/	! YINCHES in PyFerret
+		DATA qualifiers  (nqual_at1b+17)/ '****'	/	! TEXTPROM in PyFerret
+		DATA qualifiers  (nqual_at1b+18)/ '****'	/	! OUTLINE in PyFerret
+		DATA qualifiers  (nqual_at1b+19)/ '****'	/
 * SET REGION
 	   DATA subcommands      (nsub_at1 + 2)	/ 'REGION'	/
 	   DATA num_qualifs      (nsub_at1 + 2)	/ nqual1c	/
@@ -464,13 +480,17 @@
 	   DATA subcommands      (nsub_at1 +16)	/ 'GIFFILE'	/
 	   DATA num_qualifs      (nsub_at1 +16)	/ nqual1q	/
 	   DATA qualifier_pointer(nsub_at1 +16)	/ nqual_at1q	/
-* SET ****							  ! unused (r)
-	   DATA subcommands      (nsub_at1 +17)	/ '****'	/
-	   DATA num_qualifs      (nsub_at1 +17)	/ nqual1r	/
-	   DATA qualifier_pointer(nsub_at1 +17)	/ nqual_at1r	/
-* SET **** / ****
-		DATA qualifiers  (nqual_at1r+0)	/ '****'	/
-		DATA qualifiers  (nqual_at1r+1)	/ '****'	/
+* SET TEXT							  ! set text properties for PyFerret fonts
+           DATA subcommands      (nsub_at1 +17)	/ '****'	/	! TEXT in PyFerret
+           DATA num_qualifs      (nsub_at1 +17)	/ nqual1r	/
+           DATA qualifier_pointer(nsub_at1 +17)	/ nqual_at1r	/
+* SET TEXT /FONT /COLOR /ITALIC /BOLD ! in PyFerret
+                DATA qualifiers  (nqual_at1r+0)	/ '****'	/	! FONT in PyFerret
+                DATA qualifiers  (nqual_at1r+1)	/ '****'	/	! COLOR in PyFerret
+                DATA qualifiers  (nqual_at1r+2)	/ '****'	/	! ITALIC in PyFerret
+                DATA qualifiers  (nqual_at1r+3)	/ '****'	/	! BOLD in PyFerret
+                DATA qualifiers  (nqual_at1r+4)	/ '****'	/	! ISIZ in PyFerret
+                DATA qualifiers  (nqual_at1r+5)	/ '****'	/
 * SET ****							  ! unused (s)
 	   DATA subcommands      (nsub_at1 +18)	/ '****'	/
 	   DATA num_qualifs      (nsub_at1 +18)	/ nqual1s	/
@@ -703,14 +723,23 @@
 		DATA qualifiers  (nqual_at2u+4)	/ 'DETAILS'	/
 		DATA qualifiers  (nqual_at2u+5)	/ '****'	/
 		DATA qualifiers  (nqual_at2u+6)	/ '****'	/
-* SHOW QUERIES							 
-	   DATA subcommands      (nsub_at2 +21)	/ 'QUERIES'	/
-	   DATA num_qualifs      (nsub_at2 +21)	/ nqual2v	/
-	   DATA qualifier_pointer(nsub_at2 +21)	/ nqual_at2v	/
-* SHOW QUERIES / ****
-		DATA qualifiers  (nqual_at2v+0)	/ 'ALL'		/
-		DATA qualifiers  (nqual_at2v+1)	/ '****'	/
-		DATA qualifiers  (nqual_at2v+2)	/ '****'	/
+
+* SHOW TEXT         ! view text properties for PyFerret fonts
+           DATA subcommands      (nsub_at2 +21)/ '****'	/	! TEXT in PyFerret
+           DATA num_qualifs      (nsub_at2 +21)	/ nqual2v	/
+           DATA qualifier_pointer(nsub_at2 +21)	/ nqual_at2v	/
+* SHOW TEXT  / **** ! in PyFerret
+                DATA qualifiers  (nqual_at2v+0)	/ '****'	/
+                DATA qualifiers  (nqual_at2v+1)	/ '****'	/
+
+* SHOW QUERIES
+	   DATA subcommands      (nsub_at2 +22)	/ 'QUERIES'	/
+	   DATA num_qualifs      (nsub_at2 +22)	/ nqual2w	/
+	   DATA qualifier_pointer(nsub_at2 +22)	/ nqual_at2w	/
+* SHOW QUERIES / ALL
+		DATA qualifiers  (nqual_at2w+0)	/ 'ALL'		/
+		DATA qualifiers  (nqual_at2w+1)	/ '****'	/
+		DATA qualifiers  (nqual_at2w+2)	/ '****'	/
 
 * CANCEL	 - command # 3
 	DATA commands(3)			/ 'CANCEL'	/
@@ -846,20 +875,24 @@
 	   DATA num_qualifs      (nsub_at3 +17)	/ nqual3r	/
 	   DATA qualifier_pointer(nsub_at3 +17)	/ nqual_at3r	/
 		DATA qualifiers  (nqual_at3r+0)	/ '****'	/
-* CANCEL ****							  ! unused(s)
-	   DATA subcommands      (nsub_at3 +18)	/ '****'	/
+* CANCEL PYVAR                  ! in PyFerret
+	   DATA subcommands      (nsub_at3 +18)	/ '****'	/	! PYVAR in PyFerret
 	   DATA num_qualifs      (nsub_at3 +18)	/ nqual3s	/
 	   DATA qualifier_pointer(nsub_at3 +18)	/ nqual_at3s	/
-		DATA qualifiers  (nqual_at3s+0)	/ '****'	/
-		DATA qualifiers  (nqual_at3s+1)	/ '****'	/
+		DATA qualifiers  (nqual_at3s+0)	/ '****'	/	! ALL in PyFerret
+		DATA qualifiers  (nqual_at3s+1)	/ '****'	/	! DATASET in PyFerret
 		DATA qualifiers  (nqual_at3s+2)	/ '****'	/
-* CANCEL ****							  ! unused(t)
-	   DATA subcommands      (nsub_at3 +19)	/ '****'	/
+* CANCEL TEXT				    ! in PyFerret
+	   DATA subcommands      (nsub_at3 +19)	/ '****'	/	! TEXT in PyFeret
 	   DATA num_qualifs      (nsub_at3 +19)	/ nqual3t	/
 	   DATA qualifier_pointer(nsub_at3 +19)	/ nqual_at3t	/
-		DATA qualifiers  (nqual_at3t+0)	/ '****'	/
-		DATA qualifiers  (nqual_at3t+1)	/ '****'	/
-		DATA qualifiers  (nqual_at3t+2)	/ '****'	/
+		DATA qualifiers  (nqual_at3t+0)	/ '****'	/	! FONT in PyFerret
+		DATA qualifiers  (nqual_at3t+1)	/ '****'	/	! COLOR in PyFerret
+		DATA qualifiers  (nqual_at3t+2)	/ '****'	/	! ITALIC in PyFerret
+		DATA qualifiers  (nqual_at3t+3)	/ '****'	/	! BOLD in PyFerret
+		DATA qualifiers  (nqual_at3t+4)	/ '****'	/	! ISIZ in PyFerret
+		DATA qualifiers  (nqual_at3t+5)	/ '****'	/	! ALL in PyFerret
+		DATA qualifiers  (nqual_at3t+6)	/ '****'	/
 
 * CONTOUR - command # 4
 	DATA commands(4)			/ 'CONTOUR'	/
@@ -914,9 +947,11 @@
 		DATA qualifiers  (nqual_at4a+40)/ 'VGRATICU'/	! tic liness, color or pen#
 		DATA qualifiers  (nqual_at4a+41)/ 'GRATICUL'/	! 
 		DATA qualifiers  (nqual_at4a+42)/ 'MODULO'/	! modulo for curvilinear plots
-		DATA qualifiers  (nqual_at4a+43)/ 'DEGMINSEC'/	! Request deg/min or deg/min/sec axis labels
-		DATA qualifiers  (nqual_at4a+44)/ 'HALFSPAC'/	! Request a space before the E/W or N/S on axis labels
-		DATA qualifiers  (nqual_at4a+45)/ '****'/	! 
+		DATA qualifiers  (nqual_at4a+43)/ '****'/	! THICKNESS in PyFerret
+		DATA qualifiers  (nqual_at4a+44)/ '****'/	! OPACITY in PyFerret
+		DATA qualifiers  (nqual_at4a+45)/ 'DEGMINSEC'/	! Request deg/min or deg/min/sec axis labels
+		DATA qualifiers  (nqual_at4a+46)/ 'HALFSPAC'/	! Request a space before the E/W or N/S on axis labels
+		DATA qualifiers  (nqual_at4a+47)/ '****'/	! 
 
 * LIST	 - command # 5
 	DATA commands(5)			/ 'LIST'	/
@@ -1046,7 +1081,7 @@
 		DATA qualifiers  (nqual_at6a+44)/ 'PALETTE'/	! 
 		DATA qualifiers  (nqual_at6a+45)/ 'FAST'/	! style for Ribbon plot
 		DATA qualifiers  (nqual_at6a+46)/ 'MISSING'/	! For missing-dat in ribbon plot
-		DATA qualifiers  (nqual_at6a+47)/ '****'/	! Reserve for PyFerret OPACITY
+		DATA qualifiers  (nqual_at6a+47)/ '****'/	! OPACITY in PyFerret
 		DATA qualifiers  (nqual_at6a+48)/ 'GAPLOC'/     ! A variable marking gaps to insert in PLOT/VS
 		DATA qualifiers  (nqual_at6a+49)/ 'SKIPSYM'/	! Control for symbol decimation
 		DATA qualifiers  (nqual_at6a+50)/ 'DEGMINSEC'/	! Request deg/min or deg/min/sec axis labels
@@ -1363,7 +1398,7 @@
 		DATA qualifiers  (nqual_at13a+38)/ 'GRATICUL'/
 		DATA qualifiers  (nqual_at13a+39)/ 'KEY'/	!KEY 
 		DATA qualifiers  (nqual_at13a+40)/ 'MODULO'/
-		DATA qualifiers  (nqual_at13a+41)/ '****'/
+		DATA qualifiers  (nqual_at13a+41)/ '****'/	! OPACITY in PyFerret
 		DATA qualifiers  (nqual_at13a+42)/ '****'/
 		DATA qualifiers  (nqual_at13a+43)/ '****'/
 		DATA qualifiers  (nqual_at13a+44)/ '****'/
@@ -1394,7 +1429,11 @@
 		DATA qualifiers  (nqual_at15a+0)/ 'FORMAT'	/
 		DATA qualifiers  (nqual_at15a+1)/ 'FILE'	/
 		DATA qualifiers  (nqual_at15a+2)/ 'TRANSPAR'	/
-		DATA qualifiers  (nqual_at15a+3)/ '****'	/
+		DATA qualifiers  (nqual_at15a+3)/ '****'	/ ! XINCHES in PyFerret
+		DATA qualifiers  (nqual_at15a+4)/ '****'	/ ! YINCHES in PyFerret
+		DATA qualifiers  (nqual_at15a+5)/ '****'	/ ! XPIXELS in PyFerret
+		DATA qualifiers  (nqual_at15a+6)/ '****'	/ ! YPIXELS in PyFerret
+		DATA qualifiers  (nqual_at15a+7)/ '****'	/ ! ANNOTATE in PyFerret
 
 * REPEAT - command # 16
 	DATA commands(16)			/ 'REPEAT'	/
@@ -1497,8 +1536,9 @@
 		DATA qualifiers  (nqual_at18a+33)/ 'MODULO'/	! modulo for curvilinear plots
 		DATA qualifiers  (nqual_at18a+34)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at18a+35)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at18a+36)/ 'DEGMINSEC'/	! Request deg/min or deg/min/sec axis labels
-		DATA qualifiers  (nqual_at18a+37)/ 'HALFSPAC'/	! Request a space before the E/W or N/S on axis
+		DATA qualifiers  (nqual_at18a+36)/ '****'/		! OPACITY in PyFerret
+		DATA qualifiers  (nqual_at18a+37)/ 'DEGMINSEC'/	! Request deg/min or deg/min/sec axis labels
+		DATA qualifiers  (nqual_at18a+38)/ 'HALFSPAC'/	! Request a space before the E/W or N/S on axis
 
 * SPAWN - command # 19
 	DATA commands(19)			/ 'SPAWN'	/
@@ -1691,7 +1731,7 @@
 		DATA qualifiers  (nqual_at27a+39)/ 'VGRATICU'/	!vert tic lines
 		DATA qualifiers  (nqual_at27a+40)/ 'GRATICUL'/
 		DATA qualifiers  (nqual_at27a+41)/ 'MODULO'/
-		DATA qualifiers  (nqual_at27a+42)/ '****'/
+		DATA qualifiers  (nqual_at27a+42)/ '****'/	! OPACITY in PyFerret
 		DATA qualifiers  (nqual_at27a+43)/ '****'/
 
 * ANNOTATE - command # 28

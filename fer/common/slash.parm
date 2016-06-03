@@ -67,6 +67,8 @@
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* V7    6/16 *kms* Add reserved slots for PyFerret commands and qualifiers
+*                  to simplify future merges of Ferret into PyFerret
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -550,8 +552,8 @@
      .			slash_cont_vgrat	= 1+40,
      .			slash_cont_grat	        = 1+41,
      .			slash_cont_mod	        = 1+42,
-     .			slash_cont_dms	        = 1+43,
-     .			slash_cont_halfsp        = 1+44)
+     .			slash_cont_dms	        = 1+45,
+     .			slash_cont_halfsp       = 1+46)
 
 	PARAMETER     ( slash_vect_over_plot	= 1+12,
      .			slash_vect_set_up	= 1+13,
@@ -597,8 +599,8 @@
      .			slash_shad_vgrat	= 1+31,
      .			slash_shad_grat 	= 1+32,
      .			slash_shad_mod   	= 1+33,
-     .			slash_shad_dms   	= 1+36,
-     .			slash_shad_halfsp   	= 1+37)
+     .			slash_shad_dms   	= 1+37,
+     .			slash_shad_halfsp   	= 1+38)
 
 	PARAMETER     ( slash_plot_along	= 1+12,
      .			slash_plot_over_plot	= 1+13,

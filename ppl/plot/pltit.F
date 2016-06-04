@@ -103,6 +103,7 @@
 *	       as for pyFerret
 * V697 *acm*  12/15 Ticket 2334: For time roundoff on overlays, changing 
 *                  things only for the short-time-axis case.
+* V 7 *acm*   6/16 Ticket 2435: moveable labels in PyFerret when using PyFerret fonts
 
 *****************************************************
 
@@ -490,12 +491,14 @@ C
 C
 C Put movable labels on
 	IF ( .NOT.interrupted ) CALL DAXIS2(XF,YF,NMX,NMY) ! 1/89 - *sh*
-	IF(ITFLG.EQ.1 .OR. ITFLG.EQ.2)THEN
-	    XHI=XTI
-	    XLO=XTL
-	ELSE IF(ITFLG.EQ.-1 .OR. ITFLG.EQ.2)THEN
-	    YHI=XTI
-	    YLO=XTL
+	IF (SOVER) THEN
+	   IF(ITFLG.EQ.1 .OR. ITFLG.EQ.2)THEN
+	       XHI=XTI
+	       XLO=XTL
+	   ELSE IF(ITFLG.EQ.-1 .OR. ITFLG.EQ.2)THEN
+	       YHI=XTI
+	       YLO=XTL
+	   ENDIF
 	ENDIF
 *************************************
 * TMAP addition: close segment and possibly write "** INTERRUPTED **" on plot

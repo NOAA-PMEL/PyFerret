@@ -111,6 +111,9 @@
 * V697 *acm* 12/15 Fixes for bug 2327 move call of PPL_AXES_RESTORE back to end of plot routines
 * v697 *acm* 12/15 Ticket 2331, add flag changed_key to common, to restore the color key
 *                  style after a color plot and also after SHADE/SET; SHADE.
+* V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
+*                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+*                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -142,7 +145,7 @@
      .		  ax2_blks, ax2_start, i, nparm, num_it, 
      .		  loc, s1, s2, it_start(4), it_end(4), iax(4),
      .            density, i1, loch, locv, grid, mvx
-	REAL	  only_val, aspect, vbuf
+	REAL	  only_val, aspect, val, vbuf
         REAL*4    opacity
 	PARAMETER ( aspect = 0.0)			!kob 12/96
 
@@ -174,8 +177,8 @@
 	   axes = .FALSE.
 	ENDIF
 
-	is_logh   = .FALSE.
-	is_logv   = .FALSE.
+	is_logh   = .FALSE.	  ! Not valid quals
+	is_logv   = .FALSE.	  ! for shade
         spectrum  = sp .GT. 0 
         patt      = qual_given( slash_shad_pattern   )
         pattern   = patt .GT. 0
@@ -224,6 +227,27 @@
            CALL SET_OVERRIDE_OPACITY(opacity)
         ENDIF
 
+* ... /DEGMINSEC[=1 or 2] Request deg/min or deg/min/sec axis labels
+	loc = qual_given( slash_shad_dms )
+        dms = 0
+	IF ( loc .GT. 0) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      val, status )
+           dms = 1
+           IF (val .GT. 0) THEN
+	      dms = val
+	      IF (dms .GT. 2) GOTO 5470
+	   ENDIF
+	ENDIF
+
+* ... /HALFSPACE Request deg/min or deg/min/sec axis labels
+	loc = qual_given( slash_shad_halfsp )
+	IF ( loc .GT. 0) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      val, status )
+           lonlatspace = 1
+           IF (val .GE. 0) lonlatspace = val
+	ENDIF
 
 * set up the axes and title and load the data into PPLUS
 	inc_grid = set_up
@@ -512,6 +536,9 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
  5460	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'Unrecognized argument to KEY command', *1000 )
+ 5470	CALL ERRMSG( ferr_syntax, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .		'Argument to DegMinSec qualifier must be 1 or 2', *1000 )
  5500   CALL ERRMSG( ferr_out_of_range, status,
      .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .          'Value from 0 to 100 must be given', *1000 )

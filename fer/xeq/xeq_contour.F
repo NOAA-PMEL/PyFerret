@@ -126,6 +126,9 @@
 * V697 *acm* 12/15 Fixes for bug 2327 move call of PPL_AXES_RESTORE back to end of plot routines
 * v697 *acm* 12/15 Ticket 2331, add flag changed_key to common, to restore the color key
 *                  style after a color plot and also after SHADE/SET; SHADE.
+* V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
+*                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+*                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -200,6 +203,9 @@
         spectrum  = sp .GT. 0 .AND. fill
         is_shade  = .FALSE.
         use_cell  = .FALSE.
+	
+	is_logh   = .FALSE.	  ! Not valid quals
+	is_logv   = .FALSE.	  ! for contour
 
         patt     = qual_given( slash_cont_pattern  )
         pattern  = patt .GT. 0 .AND. fill
@@ -324,6 +330,28 @@
         ENDIF
 
         CALL set_graticules(loch, locv, status)
+
+* ... /DEGMINSEC[=1 or 2] Request deg/min or deg/min/sec axis labels
+	loc = qual_given( slash_cont_dms )
+        dms = 0
+	IF ( loc .GT. 0) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      vbuf, status )
+           dms = 1
+           IF (vbuf .GT. 0) THEN
+	      dms = vbuf
+	      IF (dms .GT. 2) GOTO 5470
+	   ENDIF
+	ENDIF
+
+* ... /HALFSPACE Request deg/min or deg/min/sec axis labels
+	loc = qual_given( slash_cont_halfsp )
+	IF ( loc .GT. 0) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      vbuf, status )
+           lonlatspace = 1
+           IF (vbuf .GE. 0) lonlatspace = vbuf
+	ENDIF
 
 * set contour label details (3/00)
 * fix bug 
@@ -642,6 +670,9 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
  5460	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'Unrecognized argument to KEY command', *1000 )
+ 5470	CALL ERRMSG( ferr_syntax, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .		'Argument to DegMinSec qualifier must be 1 or 2', *1000 )
  5500   CALL ERRMSG( ferr_out_of_range, status,
      .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .          'Value from 0 to 100 must be given', *1000 )

@@ -2,6 +2,8 @@
 ! label axes with degrees and minutes rather than degrees and decimal degrees.
 ! 19-May-06 add seconds as well...
 
+
+
 use ss_small.nc
 
 shade/set/x=222.9:223.1/y=58.22:59.1 rose
@@ -31,3 +33,17 @@ ppl plot
 
 ! Restore the default settings
 ppl axlint,2,2
+
+! Now do the same using command qualifiers /DEGMINSEC= /HALFSPAC  (ticket 2434)
+!  /DEGMINSEC=1 for Deg-Min, =2 for Deg-Min-Sec. Default = 1
+!  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+
+use ss_small
+shade/x=222.9:223.1/y=58.22:59.1/DEGMIN rose
+fill/x=222.9:223.1/y=58.22:59.1/DEGMIN=2 rose
+plot/vs/DEGMIN=2 xpts, ypts
+
+fill/x=222.9:223.1/y=58.22:59.1/HALFSP rose
+plot/x=223./DEGMIN/HALFSP rose
+plot/y=58.52/DEGMIN=2/HALFSP rose
+plot/vs/HALFSP  xpts, ypts

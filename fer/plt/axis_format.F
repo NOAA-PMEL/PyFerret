@@ -85,6 +85,10 @@
 * V695+ *sh*  3/15 Added argument "imposed_lab" to disambiguate F and T axes
 * V695  *acm* 9/15 Do not plot the labell TIME - on vertical axes with HH:MM
 *		   labeling; it interferes with the time/date labels
+* V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
+*                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+*                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -221,12 +225,19 @@
 	      ppl_buff = 
      .		x_or_y//'FOR,('//fmt(:TM_LENSTR1(fmt))//',''''LONE'''')' 
 	      CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+
+	      CALL LON_LAT_FMT (idim, x_or_y)
+
 	   ELSEIF ( idim .EQ. y_dim  .AND. use_nice) THEN
 * latitude format for axis tic labling
 	      ppl_buff = 
      .		x_or_y//'FOR,('//fmt(:TM_LENSTR1(fmt))//',''''LAT'''')' 
 	      CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+
+	      CALL LON_LAT_FMT (idim, x_or_y)
+
 	   ENDIF
+
 	ENDIF
 
 * lat/long or x/y axis label

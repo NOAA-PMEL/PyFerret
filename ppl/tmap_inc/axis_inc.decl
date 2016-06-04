@@ -10,6 +10,12 @@
 *               as single-precision
 * V683 *acm*  9/12 MOD_VS_X and MOD_VS_Y. For PLOT/VS plots, data are treated as 
 *               modulo, if they have units of longitude.
+* V7    *acm* 6/16 Ticket 2434: MODE LONG_LABEL and LATIT_LABEL w/ arguments 
+*                  for Deg-Min-Sec and for spacing between the number and 
+*                  the EW or NS label
+* V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
+*                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+*                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 
 	REAL*4	XLO
 	REAL*4	XHI
@@ -50,6 +56,8 @@
 	LOGICAL MOD_VS_Y
         INTEGER XDMS
         INTEGER YDMS
+        INTEGER XDSPAC
+        INTEGER YDSPAC
         REAL*4    XVALOFF
         REAL*4    YVALOFF
 c

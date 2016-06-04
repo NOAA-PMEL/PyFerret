@@ -71,6 +71,9 @@
 * v696  6/15 *acm* PLOT/VS/RIBBON/GAPLOC to define seperate line segments on
 *                   color PLOT/VS plots (LAS ticket 1597 and others)
 * V698  4/16 *acm* New PLOT/SKIP= (and leave space for PyFerret PLOT/OPACITY=)
+* V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
+*                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+*                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 
 
 * command qualifier states
@@ -274,8 +277,10 @@
      .                  slash_cont_mod,
      .                  slash_cont_thick,
      .                  slash_cont_opacity,
-     .
-     .			slash_vect_over_plot,
+     .                  slash_cont_dms,
+     .                  slash_cont_halfsp
+
+	INTEGER		slash_vect_over_plot,
      .			slash_vect_set_up,
      .			slash_vect_frame,
      .			slash_vect_transpz,
@@ -321,6 +326,8 @@
      .			slash_shad_mod,
      .			slash_shad_trim,
      .			slash_shad_opacity,
+     .			slash_shad_dms,
+     .			slash_shad_halfsp,
      .
      .			slash_plot_along,
      .			slash_plot_over_plot,
@@ -351,7 +358,9 @@
      .			slash_plot_missing,
      .                  slash_plot_opacity,
      .			slash_plot_gap,
-     .			slash_plot_skip
+     .			slash_plot_skip,
+     .			slash_plot_dms,
+     .			slash_plot_halfsp
 
 	INTEGER		slash_wire_over,
      .			slash_wire_set_up,
@@ -590,8 +599,10 @@
      .			slash_cont_mod	        = 1+42,
      .                  slash_cont_thick        = 1+43,
      .                  slash_cont_opacity      = 1+44,
-     .
-     .			slash_vect_over_plot	= 1+12,
+     .			slash_cont_dms	        = 1+45,
+     .			slash_cont_halfsp       = 1+46)
+
+	PARAMETER     ( slash_vect_over_plot	= 1+12,
      .			slash_vect_set_up	= 1+13,
      .			slash_vect_frame	= 1+14,
      .			slash_vect_transpz	= 1+16,
@@ -637,8 +648,10 @@
      .			slash_shad_grat 	= 1+32,
      .			slash_shad_mod   	= 1+33,
      .                  slash_shad_opacity      = 1+36,
-     .
-     .			slash_plot_along	= 1+12,
+     .			slash_shad_dms   	= 1+37,
+     .			slash_shad_halfsp   	= 1+38)
+
+	PARAMETER     ( slash_plot_along	= 1+12,
      .			slash_plot_over_plot	= 1+13,
      .			slash_plot_set_up	= 1+14,
      .			slash_plot_frame	= 1+15,
@@ -667,7 +680,9 @@
      .			slash_plot_missing 	= 1+46,
      .			slash_plot_opacity      = 1+47,
      .			slash_plot_gap	 	= 1+48,
-     .			slash_plot_skip	 	= 1+49)
+     .			slash_plot_skip	 	= 1+49,
+     .			slash_plot_dms	 	= 1+50,
+     .			slash_plot_halfsp	= 1+51)
 
 	PARAMETER     ( slash_wire_over		= 1+12,
      .			slash_wire_set_up	= 1+13,

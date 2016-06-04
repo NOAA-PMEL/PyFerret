@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 May 13 15:49 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v6.97
+lrwxrwxrwx. 1 ksmith oerdnewp 11 Jun  3 16:30 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.0
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -283,7 +283,7 @@ Benchmark scripts that will be run:
    bn_ps.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
-Beginning at Fri May 13 15:51:04 PDT 2016
+Beginning at Fri Jun  3 16:31:10 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -3607,28 +3607,7 @@ set axis/name=45 x_in_meters
  **ERROR: invalid command: illegal new name given for axis .fr
 set axis/name=.fr x_in_meters
 *** Running ferret script: bn_let_remote.jnl
-syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 404; message = "/data_expr_02E4806F035B3A289A168CF3D84CF867.jnl (Permission denied)"^;};
-syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 404; message = "/data_expr_02E4806F035B3A289A168CF3D84CF867.jnl (Permission denied)"^;};
-syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 404; message = "/data_expr_02E4806F035B3A289A168CF3D84CF867.jnl (Permission denied)"^;};
-syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 404; message = "/data_expr_02E4806F035B3A289A168CF3D84CF867.jnl (Permission denied)"^;};
-syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 500; message = "java.io.IOException: java.lang.Exception: Could not parse Ferret config file: java.util.MissingResourceException: Could not load any resource bundle by com.sun.org.apache.xerces.internal.impl.msg.SAXMessages"^;};
  Cached data cleared from memory
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
- **Internet Data error
-             NetCDF: DAP server error (OPeNDAP/netCDF Error code -70)
-             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl
-SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
-Command file, command group, or REPEAT execution aborted
-ERROR RUNNING SCRIPT
-****** FERRET error: bn_let_remote.jnl failed ******
 *** Running ferret script: bn691_bug_fixes.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -4092,6 +4071,8 @@ Replacing definition of axis XAXIS
            *** NOTE: Changing the type of attribute sst.newch
            *** NOTE: Changing the value of attribute sst.newch
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running ferret script: bn_aggregate_t.jnl
  Cached data cleared from memory
  LISTing to file tmp/tagg_reg_1.nc
@@ -4616,4 +4597,4 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
-Ended at Fri May 13 15:52:14 PDT 2016
+Ended at Fri Jun  3 16:32:18 PDT 2016

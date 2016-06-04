@@ -66,6 +66,9 @@ C              finished. For polygon plots only, draw the main label twice.
 * V695 *acm*   4/15 (PyFerret) labels along axes will be drawn with the 
 *              tic-mark text style
 * V695 *acm*   5/15 Ticket 2279: Draw axis lines, tics and labels only once.
+* V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
+*                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+*                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 
 
 C**
@@ -150,7 +153,7 @@ C
             hline = .FALSE.
 	  ELSE IF(ITYPEY.EQ.1)THEN
 	   CALL YAXIS1(XLO,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYL,IFY,YF,
-     *	    YCSIZE,XHI,YDMS,HGRAT, HCOLOR, HLINE, YVALOFF, NOYLAB, 
+     *	    YCSIZE,XHI,YDMS,YDSPAC,HGRAT, HCOLOR, HLINE, YVALOFF, NOYLAB, 
      *	    SHRINKY, IPEN(0))
             hline = .FALSE.
 	  ELSE
@@ -170,7 +173,7 @@ C
            hline = .FALSE.
 	ELSE IF(ITYPEY.EQ.1)THEN
 	    CALL YAXIS1(XHI,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYR,IFY,YF,
-     *     YCSIZE,XLO,YDMS,HGRAT, HCOLOR, HLINE, YVALOFF, NOYLAB,
+     *     YCSIZE,XLO,YDMS,YDSPAC,HGRAT, HCOLOR, HLINE, YVALOFF, NOYLAB,
      *	    SHRINKY, IPEN(0))
            hline = .FALSE.
 	ELSE
@@ -198,7 +201,7 @@ C
               vline = .FALSE.
           ELSE IF (ITYPEX.EQ.1)THEN
 	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXT,IFX,XF,YHI,YF,
-     *	       XCSIZE,YLO,XDMS,VGRAT, VCOLOR, VLINE, XVALOFF, IPEN(0))
+     *	       XCSIZE,YLO,XDMS,XDSPAC,VGRAT,VCOLOR,VLINE,XVALOFF,IPEN(0))
               vline = .FALSE.
           ELSE
 	      CALL XAXIS2(XLO,XHI,0.,LXT,IFX,1,XF,YHI,YF,XCSIZE,
@@ -215,7 +218,7 @@ C
               vline = .FALSE.
           ELSE IF (ITYPEX.EQ.1) THEN
 	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXB,IFX,XF,YLO,YF,
-     *	      XCSIZE,YHI,XDMS,VGRAT, VCOLOR, VLINE, XVALOFF, IPEN(0))
+     *	      XCSIZE,YHI,XDMS,XDSPAC,VGRAT, VCOLOR, VLINE, XVALOFF, IPEN(0))
               vline = .FALSE.
           ELSE
 	      CALL XAXIS2(XLO,XHI,0.,LXB,IFX,1,XF,YLO,YF,XCSIZE,

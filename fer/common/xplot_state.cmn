@@ -15,6 +15,9 @@
 * PyFr *kms*  7/13  add the wn_* arrays to hold ppl lengths for each window
 * v697 *acm* 12/15 Ticket 2331, add flag changed_key to common, to restore the color key
 *                  style after a color plot and also after SHADE/SET; SHADE.
+* V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
+*                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+*                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 
 	INTEGER		max_windows,
      .			max_viewport,
@@ -40,7 +43,9 @@
      .			vp_segn,
      .			curr_seg_name,
      .			saved_calendar_id,
-     .			transparent
+     .			transparent,
+     .			dms,
+     .			lonlatspace
 
         REAL*4          wn_xinches,
      .                  wn_yinches,
@@ -85,6 +90,8 @@
      .			curr_seg_name,
      .			saved_calendar_id,
      .			transparent,
+     .			dms,
+     .			lonlatspace,
      .
      .			wn_open	 ( max_windows ),
      .			wn_active( max_windows ),

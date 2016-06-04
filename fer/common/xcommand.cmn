@@ -34,9 +34,9 @@
 * v6.6  *acm* 1/10 - more qualifiers on LIST for netcdf4 control
 * V6.5  *acm* 3/10 new qualifiers on (some) SHOW commands and on MESSAGE: 
 *                  /OUTFILE= /APPEND /CLOBBER
-* V6.6 *kms*  5/10 add SET REDIRECT and CANCEL REDIRECT for stdout/stderr redirection
-*      *kms*  7/10 add OPEN alias for SET DATA /BROWSE
-* V664 *kms*  8/10 Add DEFINE PYFUNC /NAME=<alias> python.module.name
+* V6.6  *kms* 5/10 add SET REDIRECT and CANCEL REDIRECT for stdout/stderr redirection
+*       *kms* 7/10 add OPEN alias for SET DATA /BROWSE
+* PyFr *kms*  8/10 Add DEFINE PYFUNC /NAME=<alias> python.module.name
 * V6.8 *acm*  1/12 Add SET DATA/STRICT 
 * PyFr *kms*  3/11 Add CANCEL PYVAR /ALL /DATASET
 * PyFr *kms*  1/12 Add SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL
@@ -50,12 +50,15 @@
 * PyFr *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to SET WINDOW and FRAME
 * V685+ *sh*  9/13 Add SHOW VARIABLE/TREE and alias VTREE
 * V695 *acm*  2/15 Add DEFINE AGGREGATE/F alias, FMRC
-* V695 *acm* 3/15 Changes for PyFerret fonts. Add SET TEXT, SHOW TEXT, CANCEL TEXT
-* V695 *acm*  6/16 New command ANNOTATE
-* V695 *acm*  6/16 New subcommand DEFINE ANNOTATION
+* V695 *acm*  3/15 Changes for PyFerret fonts. Add SET TEXT, SHOW TEXT, CANCEL TEXT
+* V695 *acm*  6/15 New command ANNOTATE
+* V695 *acm*  6/15 New subcommand DEFINE ANNOTATION
 * V695 *sh*  10/15 New alias TSERIES (bump num_predefined_alias to 25)
 * V698 *ACM*  3/15 New SHOW COMMAND/BRIEF
 * V698 *ACM*  4/15 New PLOT/SKIP= (and leave space for PyFerret PLOT/OPACITY=)
+* V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
+*                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+*                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
@@ -174,7 +177,7 @@
      .			nqual2u    , nqual_at2v,
      .			nqual2v    , nqual_at2w,
      .			nqual2w    , nqual_at3a
-	PARAMETER    (	nsub2   =22, nsub_at3   = nsub_at2   + nsub2,
+	PARAMETER    (	nsub2   =23, nsub_at3   = nsub_at2   + nsub2,
      .			nqual2a = 1, nqual_at2b = nqual_at2a + nqual2a,	!'    '
      .			nqual2b = 1, nqual_at2c = nqual_at2b + nqual2b,	!'WIND'
      .			nqual2c = 1, nqual_at2d = nqual_at2c + nqual2c,	!'REGI'
@@ -196,7 +199,7 @@
      .			nqual2s = 1, nqual_at2t = nqual_at2s + nqual2s,	!'NCCACHE'
      .			nqual2t = 1, nqual_at2u = nqual_at2t + nqual2t,	!'GIFFILE'
      .			nqual2u = 7, nqual_at2v = nqual_at2u + nqual2u, !'FUNC'
-     .                  nqual2v = 1, nqual_at2w = nqual_at2v + nqual2v, !'TEXT' 
+     .                  nqual2v = 2, nqual_at2w = nqual_at2v + nqual2v, !'TEXT'
      .                  nqual2w = 3, nqual_at3a = nqual_at2w + nqual2w  !'QUER' 
      .		      )
 
@@ -250,7 +253,7 @@
 	INTEGER		nsub4      , nsub_at5 ,
      .			nqual4a    ,nqual_at5a
 	PARAMETER    (	nsub4   = 1, nsub_at5   = nsub_at4   + nsub4,
-     .			nqual4a = 45,nqual_at5a = nqual_at4a + nqual4a  )
+     .			nqual4a = 48,nqual_at5a = nqual_at4a + nqual4a  )
 
 * LIST		 - commmand # 5
 	INTEGER		nsub5      , nsub_at6  ,
@@ -356,7 +359,7 @@
 	INTEGER		nsub18       , nsub_at19 ,
      .			nqual18a     ,nqual_at19a
 	PARAMETER    (	nsub18   = 1, nsub_at19    = nsub_at18   + nsub18,
-     .			nqual18a = 38,nqual_at19a  = nqual_at18a + nqual18a  )
+     .			nqual18a = 39,nqual_at19a  = nqual_at18a + nqual18a  )
 
 * SPAWN			 - commmand # 19
 	INTEGER		nsub19       , nsub_at20 ,

@@ -69,6 +69,7 @@
 * V695  7/15 *acm - reinitialize value of uvar_aux_stat to zero
 * V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
 *                  added to that dataset in the attribute structure.
+* V699 6/16 *sh* treat EX# variables just like other variables
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -161,22 +162,22 @@
         CALL deleted_list_modify(uvar_num_items_head,uvar,uvar_deleted)
 
 * Remove from linked-list structure, the user-variables dataset
-* No need to check EX# expressions
-
-        slen = TM_LENSTR( uvar_name_code(uvar)  )
-        IF (slen .GT. 0 .AND. uvar_name_code(uvar)(1:3) .NE. 'EX#') THEN
+!        slen = TM_LENSTR( uvar_name_code(uvar)  )
+!        IF (slen .GT. 0 .AND. uvar_name_code(uvar)(1:3) .NE. 'EX#') THEN
+* 6/16 -- treat 'EX#' just like other variables
 	   iset = dset
 	   CALL CD_GET_VAR_ID (iset, uvar_name_code(uvar), varid, status)
 	   IF (status .NE. ferr_ok) THEN
 	      iset = uvar_dset(uvar)
 	      CALL CD_GET_VAR_ID (iset, uvar_name_code(uvar), varid, status)
 	   ENDIF
+! ?? *sh* what is the state of things here if status .NE. ferr_ok ??
 	   IF (status .EQ. ferr_ok) THEN
               slen = TM_LENSTR1( uvar_name_code(uvar)  )
               CALL TM_FTOC_STRNG( uvar_name_code(uvar)(1:slen), fhol, flen )
               CALL NCF_DELETE_VAR (iset, fhol )
            ENDIF
-	ENDIF
+!	ENDIF
 
 *	uvar_name_code( uvar ) = " "
         CALL string_array_modify(uvar_name_code_head, uvar, " ", 1 )

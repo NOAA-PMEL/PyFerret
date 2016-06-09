@@ -48,6 +48,12 @@
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 * V6.94 3/15 *acm* Fix ticket 2249: attribute handling for user-defined variables
 * V698 *sh* 1/16 -- added status check/warning, since not checked by callers
+* V699 *sh* 6/16 - bug fix:  this routine falsely identified Ferret child
+*                  variables, which have names of the form "(Cnnn,Vmmm)" as
+*                  coordinate variables.  It then returned a status indicating
+*                  failure that was regarded as acceptable, presumably because
+*                  a user may mis-type a coordinate variable name
+*                  The result is that child variables did not get deleted.
 
 * include files
 #include "gt_lib.parm"
@@ -82,6 +88,16 @@
       IF (dset_num .LT. -2) dset_num = -2
 
       istrt = STR_UPCASE(buff,vname)
+
+* 6/16 *sh* **HACK!!!**
+* ==> Detect Ferret child-variable name of the form "(C011,V007)"
+* so they are not mis-identified as coordinate variable names
+* (IMHO a low level routine such as this one should not be doing parsing)
+      IF  ( vname(1:1)   .EQ. '('
+     . .AND.vname(2:2)   .EQ. 'C'
+     . .AND.vname(6:6)   .EQ. ','
+     . .AND.vname(7:7)   .EQ. 'V'
+     . .AND.vname(11:11) .EQ. ')'  ) GOTO 500
 
 * Deal with coordinate variable names inside parenthese
 
@@ -143,7 +159,7 @@
 * If the name is in quotes, remove them and do a case-sensitive search
 * for the name.
 
-      slen = TM_LENSTR1( buff )
+ 500  slen = TM_LENSTR1( buff )
       IF (buff(1:1) .EQ. "'" .AND. buff(slen:slen) .EQ. "'" ) THEN
          buff = buff(2:slen-1)
          buff(slen-1:slen) = ""

@@ -36,9 +36,7 @@
 /*
  06/04 *ywei* Created to speed up str_upcase
  */
-#ifdef MAC_SSIZE
-typedef long ssize_t;
-#endif
+
 #include <stdio.h>
 
 #define uppercase(a) ((a>='a'&&a<='z')?((a)&0xDF):(a))

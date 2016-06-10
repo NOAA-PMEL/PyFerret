@@ -38,9 +38,7 @@
                  for better performance. This function is for cleaning up
                  the data structure.
  */
-#ifdef MAC_SSIZE
-typedef long ssize_t;
-#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "deleted_list.h"

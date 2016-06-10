@@ -56,7 +56,6 @@
 			  -DX_REFRESH \
 			  -DXT_CODE \
 			  -DDARWIN  \
-			  -DMAC_SSIZE \
 			  -DLINUX \
 			  -DNO_PASSED_CONCAT \
 			  -Dcrptd_cat_argument \
@@ -72,7 +71,6 @@
 	CFLAGS	= \
 			  $(CPP_FLAGS) \
 			  -Dlint \
-			  -D_SSIZE_T \
 			  -DVOID_SIGHANDLER \
 			  -D_POSIX_VERSION \
 			  -DLINUX \

@@ -1,6 +1,3 @@
-#ifdef MAC_SSIZE
-typedef long ssize_t;
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include "binaryRead.h"

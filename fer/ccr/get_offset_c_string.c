@@ -33,10 +33,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
 */
 
-#ifdef MAC_SSIZE
-typedef long ssize_t;
-#endif
-
 #include <stdlib.h>
 
 /* 

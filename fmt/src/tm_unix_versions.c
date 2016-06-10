@@ -60,10 +60,6 @@
 /* had to add ifdef check for trailing underscore in routine name
    for aix port *kob* 10/94 */
 
-
-#ifdef MAC_SSIZE
-typedef long ssize_t;
-#endif
 #include <sys/types.h>
 #include <dirent.h>
 #include <stdlib.h>

@@ -46,10 +46,6 @@
  *
  */
 
-#ifdef MAC_SSIZE
-typedef long ssize_t;
-#endif
-
 #include <stdlib.h>
 
 void c_substr_(in_ptr, offset, length, out_ptr)

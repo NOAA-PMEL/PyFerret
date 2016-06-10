@@ -38,10 +38,6 @@
  *
  */
 
-#ifdef MAC_SSIZE
-typedef long ssize_t;
-#endif
-
 #include <string.h>
 
 void c_strcmp_(in_ptr1, in_ptr2, out_ptr)

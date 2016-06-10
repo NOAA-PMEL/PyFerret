@@ -42,6 +42,9 @@
     4/06 *kob*  change type of 1st argument to double, for 64-bit build
    12/14 *sh*   added support for "_SD_" as a single quote indicator
  */
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
 #include <stdio.h>
 #include "string_array.h"
 

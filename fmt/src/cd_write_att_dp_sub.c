@@ -43,6 +43,9 @@
     cc -c -g -I/opt/local/netcdf-3.4/include cd_write_var_sub.c
 */ 
 
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <stdlib.h>
 #include <stdio.h>

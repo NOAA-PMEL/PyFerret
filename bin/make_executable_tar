@@ -1,7 +1,7 @@
 #! /bin/csh
 
 # mycp needs to recursively copy subdirectories for the lib/python* directories
-set mycp = "/bin/cp -r --preserve=timestamp"
+set mycp = "/bin/cp -r -p"
 set mylns = "/bin/ln -s"
 
 echo ""

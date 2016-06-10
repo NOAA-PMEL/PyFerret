@@ -43,6 +43,9 @@
  *  *kms*  3/12 Removed XWindow GUI code which is no longer used.
  */
 
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
 #include <stdlib.h>
 #include <stdio.h>
 #include "ferret.h"

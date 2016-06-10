@@ -34,6 +34,9 @@
 *
 *  ywei:05/04 created to speed up get fortran string length rountine 
 */
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
 #include <assert.h>
 #include <stdio.h>
 

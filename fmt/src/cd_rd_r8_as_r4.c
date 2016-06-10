@@ -52,6 +52,9 @@
 
 /*#include "tmap_format/netcdf.h"*/
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
 #include <stddef.h>  /* size_t, ptrdiff_t  gfortran on linux rh5*/
 #include <wchar.h>
 #include <netcdf.h>      /* usually in /usr/local/include */

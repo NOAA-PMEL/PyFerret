@@ -36,6 +36,9 @@
 /*
    06/04 *ywei* -Created to read command file faster
  */
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
 #include <stdio.h>
 
 void my_close_(void ** lun)

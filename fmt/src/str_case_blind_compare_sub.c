@@ -34,6 +34,9 @@
 *
 *  ywei: 05/04 created to speed up uppercase string matching
 */
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
 #include <stdio.h>
 
 void str_case_blind_compare_sub_(char* test_name,

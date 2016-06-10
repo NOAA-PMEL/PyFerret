@@ -38,6 +38,9 @@
                  for better performance. This function is to get the deleted
                  list
  */
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
 #include <stdio.h>
 #include "deleted_list.h"
 

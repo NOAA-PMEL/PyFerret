@@ -86,6 +86,7 @@ get_ave_lims.F\
 get_dependency_status.F\
 get_max_string_len.F\
 get_max_string_len_sub.F\
+get_saved_uvar_aux_info.F\
 get_saved_uvar_grid.F\
 get_saved_uvar_grid_list_len.F\
 get_string_element.F\
@@ -148,6 +149,7 @@ reset_climat_att.F\
 reset_secs_from_bc.F\
 reverse_grid_axis.F\
 reverse_grid_axis_sub.F\
+save_uvar_aux_info.F\
 save_uvar_grid.F\
 secs_from_bc.F\
 secs_to_date.F\

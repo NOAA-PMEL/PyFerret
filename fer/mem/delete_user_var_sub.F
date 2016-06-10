@@ -47,6 +47,15 @@
 * if DELETE_USER_VAR is called to delete TEST1 it must also eliminate all stored
 * grids of TEST2 and TEST3
 
+* ==> ***NOTE** The process of locating dependencies is a crude, inefficient
+* hunt based upon scanning the text of uvar definitions to locate dependent
+* variables.  Leveraging on the uvarGrid LIST structures that each ncvar has
+* (see NCF_Util.h), a "descendent" list could be managed for each variable
+* -- e.g. in IS_UVAR_GRID -- as the grid of a variable is being determined, it
+* can add itself to a list maintained by each of children (because the child's
+* grid must already exist fore the current (parent) grid to be determined
+
+
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *

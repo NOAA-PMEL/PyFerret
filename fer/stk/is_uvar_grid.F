@@ -123,6 +123,19 @@
 * exit #1 is to request grid for a component ( stack has been pushed )
 * exit #2 is to signal that the grid has been obtained and stored in uvar_grid
 
+#include "netcdf.inc"
+	include	'tmap_errors.parm'
+	include 'tmap_dims.parm'
+	include	'xtm_grid.cmn_text'
+	external xgt_grid_data
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'interp_stack.parm'
+	include	'xcontext.cmn'
+	include	'xvariables.cmn'
+	include	'xprog_state.cmn'
+	include	'xfr_grid.cmn'
+
 * internal variable declarations:
 	LOGICAL	ITSA_GCVAR, ITSA_CONST_VAR,
      .		its_dynamic, its_gc, need_another_pass,
@@ -138,24 +151,11 @@
      .          attoutflag, attid, bracket, dot, dsloc, endbracket,
      .          status_deallo, agg_grid, agg_line, agg_len, agg_dset,
      .		imemb, memb_cat, memb_dset, memb_grid, iline, nv,
-     .		hi_cat, hi_var, vlen, slen
+     .		hi_cat, hi_var, vlen, slen, dummy_aux(nferdims)
 
 	CHARACTER VAR_CODE*128, LEFINT*6,
      .		  name*512, buff*2048, varname*512, 
      .            attname*128, aname*128, newname*512
-
-#include "netcdf.inc"
-	include	'tmap_errors.parm'
-	include 'tmap_dims.parm'
-	include	'xtm_grid.cmn_text'
-	external xgt_grid_data
-	include	'ferret.parm'
-	include	'errmsg.parm'
-	include	'interp_stack.parm'
-	include	'xcontext.cmn'
-	include	'xvariables.cmn'
-	include	'xprog_state.cmn'
-	include	'xfr_grid.cmn'
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents
@@ -182,6 +182,10 @@
 	cx_save = cx_stack_ptr		! restored on pass #2 (2/99)
 	saved_ifthen_type = .FALSE.
 	getting_aux_var = .FALSE.
+* when auxiliary grid information is irrelevant ... 
+	DO idim = 1, nferdims
+	   dummy_aux(idim) = -12345   ! visible in debugging
+	ENDDO
 
 * process the next item in the expression from the uvar buffer (last to first)
  100	is_phase(isp) = is_phase(isp) + 1
@@ -693,6 +697,13 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 	      uvar_data_type(uvar, pdset_irrelevant) = ptype_float
 	      CALL SAVE_UVAR_GRID(uvar, mgrid_abstract, ptype_float,
      .				  pdset_irrelevant)
+* ... 6/26 init aux info just for house-keeping
+	      DO idim = 1, nferdims
+	         uvar_aux_cat(uvar,idim,pdset_irrelevant) = dummy_aux(idim)
+	         uvar_aux_var(uvar,idim,pdset_irrelevant) = dummy_aux(idim)
+	      ENDDO
+	      CALL SAVE_UVAR_AUX_INFO(uvar,
+     .                         dummy_aux, dummy_aux, pdset_irrelevant)
 	   ELSE		! defined with LET/D
 !	      uvar_need_dset(uvar) = .TRUE.	! always TRUE anyway
 * *kob* 4/99 bug fix - check to see if let/d is dataset independent
@@ -701,10 +712,23 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 	         uvar_data_type(uvar, pdset_irrelevant) = ptype_float
 	         CALL SAVE_UVAR_GRID(uvar, mgrid_abstract, ptype_float,
      .				     pdset_irrelevant)
+* ... 6/16 init aux info just for house-keeping
+	         DO idim = 1, nferdims
+	            uvar_aux_cat(uvar,idim,pdset_irrelevant) = dummy_aux(idim)
+	            uvar_aux_var(uvar,idim,pdset_irrelevant) = dummy_aux(idim)
+	         ENDDO
+	         CALL SAVE_UVAR_AUX_INFO(uvar,
+     .                         dummy_aux, dummy_aux, pdset_irrelevant)
               ELSE
                  uvar_grid(uvar, dset) = mgrid_abstract
 	         uvar_data_type(uvar, dset) = ptype_float
 	         CALL SAVE_UVAR_GRID(uvar, mgrid_abstract, ptype_float, dset)
+* ... 6/16 init aux info just for house-keeping
+	         DO idim = 1, nferdims
+	            uvar_aux_cat(uvar,idim,dset) = dummy_aux(idim)
+	            uvar_aux_var(uvar,idim,dset) = dummy_aux(idim)
+	         ENDDO
+	         CALL SAVE_UVAR_AUX_INFO(uvar, dummy_aux, dummy_aux, dset)
 	      ENDIF
 	   ENDIF
 	   gnum = mgrid_abstract
@@ -755,10 +779,12 @@ c        ENDIF
 	uvar_data_type(uvar, this_dset) = cx_type(big_cx)
 	CALL SAVE_UVAR_GRID(uvar, gnum, cx_type(big_cx), this_dset)
 	DO  i = 1, nferdims
-	   uvar_aux_var (uvar, i, this_dset) = cx_aux_var (i, big_cx)
-	   uvar_aux_cat (uvar, i, this_dset) = cx_aux_cat (i, big_cx)
+           uvar_aux_var (uvar, i, this_dset) = cx_aux_var (i, big_cx)
+           uvar_aux_cat (uvar, i, this_dset) = cx_aux_cat (i, big_cx)
 	   uvar_aux_stat(uvar, i           ) = cx_aux_stat(i, big_cx)
 	ENDDO
+	CALL SAVE_UVAR_AUX_INFO(uvar,
+     .       cx_aux_cat(1,big_cx), cx_aux_var(1,big_cx), this_dset)
 
 * * * SECOND PASS CHECK * * *
 * need a second pass to include pseudo_vars in calculation ?

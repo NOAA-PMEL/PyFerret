@@ -200,6 +200,8 @@ int  FORTRAN(ncf_put_agg_memb_grid)( int *, int *, int *, int *);
 int  FORTRAN(ncf_free_uvar_grid_list)( int *, int *);
 int  FORTRAN(ncf_set_uvar_grid)( int *, int *, int *, int *, int *);
 int  FORTRAN(ncf_get_uvar_grid)( int *, int *, int *, int *);
+int  FORTRAN(ncf_set_uvar_aux_info)( int *, int *, int *, int *, int *);
+int  FORTRAN(ncf_get_uvar_aux_info)( int *, int *, int *, int *, int *);
 int  FORTRAN(ncf_get_uvar_grid_list_len)( int *, int *, int *);
 int  FORTRAN(ncf_delete_uvar_grid)( int *, int *, int *);
 
@@ -3883,6 +3885,120 @@ int  FORTRAN(ncf_get_uvar_grid)( int *LIST_dset, int *uvarid, int *context_dset,
   return FERR_OK;
 }
 
+/* ---- 
+ * Find variable based on its variable ID and LIST_dset ID
+ * Store a grid/context_dset pair for the variable 
+
+ * The dual dataset arguments arise because Ferret's global uvars are managed
+ * in the c LIST structures as a special dataset -- PDSET_UVARS
+ * By contrast LET/D uvars are managed in the c LIST structure of the parent dataset
+ * So we refer to the dataset that owns (parents) the uvar as LIST_dset 
+ * and we refer to the dataset in which Ferret is evaluating the uvar is as context_dset
+ */
+int  FORTRAN(ncf_set_uvar_aux_info)( int *LIST_dset, int *varid, int aux_cat[], int aux_var[], int *context_dset)
+
+{
+  ncvar *var_ptr=NULL;
+  int status=LIST_OK;
+  int return_val;
+  LIST *varlist;
+  LIST *uvgridlist;
+  uvarGrid *uvgrid;
+  int i;
+
+   /*
+    * Get the list of variables, find pointer to variable varid.
+    */
+  varlist = ncf_get_ds_varlist(LIST_dset);
+
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundUvarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+
+   /*  
+    * a grid must already exists for this context dataset
+    */
+  uvgridlist = var_ptr->uvarGridList;
+  status = list_traverse(uvgridlist, (char *) context_dset, NCF_ListTraverse_FoundGridDset, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK)
+    {
+      return_val = ATOM_NOT_FOUND;
+      return return_val;
+    }
+
+  uvgrid=(uvarGrid *)list_curr(uvgridlist); 
+
+   /*
+    * Fill the uvar aux arrays
+    */
+  for (i=0; i<NFERDIMS ;i++ )
+    {
+      uvgrid->auxCat[i] = aux_cat[i];
+      uvgrid->auxVar[i] = aux_var[i];
+    }
+
+  return_val = FERR_OK;
+  return return_val;
+}
+
+/* ---- 
+ * Find variable based on its variable ID and LIST_dset ID
+ * Store a grid/context_dset pair for the variable 
+
+ * The dual dataset arguments arise because Ferret's global uvars are managed
+ * in the c LIST structures as a special dataset -- PDSET_UVARS
+ * By contrast LET/D uvars are managed in the c LIST structure of the parent dataset
+ * So we refer to the dataset that owns (parents) the uvar as LIST_dset 
+ * and we refer to the dataset in which Ferret is evaluating the uvar is as context_dset
+ */
+int  FORTRAN(ncf_get_uvar_aux_info)( int *LIST_dset, int *varid, int *context_dset,
+                                     int aux_cat[], int aux_var[])
+
+{
+  ncvar *var_ptr=NULL;
+  int status=LIST_OK;
+  int return_val;
+  LIST *varlist;
+  LIST *uvgridlist;
+  uvarGrid *uvgrid;
+  int i;
+
+   /*
+    * Get the list of variables, find pointer to variable varid.
+    */
+  varlist = ncf_get_ds_varlist(LIST_dset);
+
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundUvarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+
+   /*  
+    * a grid must already exists for this context dataset
+    */
+  uvgridlist = var_ptr->uvarGridList;
+  status = list_traverse(uvgridlist, (char *) context_dset, NCF_ListTraverse_FoundGridDset, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK)
+    {
+      return_val = ATOM_NOT_FOUND;
+      return return_val;
+    }
+
+  uvgrid=(uvarGrid *)list_curr(uvgridlist); 
+
+   /*
+    * Return the uvar aux arrays
+    */
+  for (i=0; i<NFERDIMS ;i++ )
+    {
+      aux_cat[i] = uvgrid->auxCat[i];
+      aux_var[i] = uvgrid->auxVar[i];
+    }
+
+  return_val = FERR_OK;
+  return return_val;
+}
 
 /* ---- 
  * Find variable based on its variable ID and LIST_dset ID

@@ -54,6 +54,7 @@
 *                  failure that was regarded as acceptable, presumably because
 *                  a user may mis-type a coordinate variable name
 *                  The result is that child variables did not get deleted.
+* V7   *acm* 6/16 -The above fix needs to first check for string length.
 
 * include files
 #include "gt_lib.parm"
@@ -93,11 +94,14 @@
 * ==> Detect Ferret child-variable name of the form "(C011,V007)"
 * so they are not mis-identified as coordinate variable names
 * (IMHO a low level routine such as this one should not be doing parsing)
-      IF  ( vname(1:1)   .EQ. '('
-     . .AND.vname(2:2)   .EQ. 'C'
-     . .AND.vname(6:6)   .EQ. ','
-     . .AND.vname(7:7)   .EQ. 'V'
-     . .AND.vname(11:11) .EQ. ')'  ) GOTO 500
+      slen = TM_LENSTR1(vname)
+      IF (slen .GE. 11) THEN
+         IF  ( vname(1:1)   .EQ. '('
+     .    .AND.vname(2:2)   .EQ. 'C'
+     .    .AND.vname(6:6)   .EQ. ','
+     .    .AND.vname(7:7)   .EQ. 'V'
+     .    .AND.vname(11:11) .EQ. ')'  ) GOTO 500
+      ENDIF
 
 * Deal with coordinate variable names inside parenthese
 

@@ -61,6 +61,7 @@
 *                - lower the width threshold for deciding to break into 2
 *                - see "tuned up" comment.  Only search for "," if bad break
 *                - DP conversion bug fix:  "ht" was used instead of "rht" 
+* V7   *acm* 6/16 see ticket 2435. Tweak to split dataset labels after DATA SET:
 
         include 'tmap_dims.parm'
 	include	'ferret.parm'

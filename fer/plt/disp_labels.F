@@ -74,6 +74,7 @@
 *                  since they are used as parameters, and prefixed with 
 *                  dflt_ those that need to be scaled by pplscale or textscale.
 * V6.95 *acm* 3/15 Changes for PyFerret fonts. 
+* V7   *acm* 6/16 see ticket 2435. Tweak to split dataset labels after DATA SET:
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'

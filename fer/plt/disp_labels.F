@@ -187,7 +187,7 @@
 	   CALL BOX_LABEL( ppl_movlab-ppl_dset, 
      .			   'DATA SET: '//line_buff(:lablen),
      .			   0.0, yoff,
-     .			   0.5*xlen, 1.5*dflt_letsize_label*textscale,
+     .			   0.45*xlen, 1.5*dflt_letsize_label*textscale,
      .			   ur_labht, ppl_right_just,
      .			   lab_loc_axlen_plus, lab_loc_axlen_plus )
 

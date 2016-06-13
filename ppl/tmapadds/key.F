@@ -116,6 +116,7 @@
 *                  the top color on thecolorbar, excluding any upper inf triangle.
 * V6.95 *acm* 3/15 Changes for PyFerret fonts. Scoot the vertical color key over to the left.
 * V697 *acm* 12/15 Fix ticket 2326: single level plus (inf) and/or (-inf)
+* V7.0 *acm*  6/17 Fix ticket 2440: alignment of colorbar labels, vertical colorbars.
 
         IMPLICIT NONE
 
@@ -143,13 +144,14 @@
 	include        'gkspar.inc'
 	include        'pyfonts.cmn'
 	
-	integer ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
+	integer TM_LENSTR1, ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
      .          lab_add, nlab, i, kount, lev1, levn, nspace, shd_lev_hi,
-     .		ITYPEX_save, ITYPEY_save
+     .		ITYPEX_save, ITYPEY_save, ic
 
+	real		SYMWID
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5),flaty(5),flatx(5)
 	real		xmaxx,ymaxx,vwidth,vheight,karht, ksiz_test
-	real		xx,yy,xxx,yyy, xx1, xxn, xxlen
+	real		xx,yy,xxx,yyy, xx1, xxn, xxlen, wid, xpos
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
      .                  val, del, x_inc_inf, y_inc_inf, frac, fixx, inc_min, 
      .                  center_add, ht_ann
@@ -720,8 +722,11 @@ c	IF ( no_lines ) cont_key = .TRUE.
            IF (ndx .GE. lev1 .AND. ndx .LE. levn) THEN
               val = zlev(ndx)
               IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	      text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
-	      if (max_len .lt. str_len) max_len = str_len
+              text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+              if (max_len .lt. str_len) THEN
+	         max_len = str_len
+	         buff = text
+              endif
            ENDIF
 1010	continue
 
@@ -731,39 +736,81 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	IF (center_key_labels) shd_lev_hi = shd_levels
 	IF (center_key_labels .AND. posinf) shd_lev_hi = shd_lev_hi-1
 
-        do 1020 ndx = lev1,shd_lev_hi,incr
-*	   WRITE OUT CORRESPONDING VALUE
-             val = zlev(ndx)
-             IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
-             IF (ndx .EQ. 1 .AND. neginf) text = " "
-             IF (ndx .EQ. levn+1 .AND. posinf) text = " "
+* Recompute max_len as formatted for these labels.
 
-	   xx = (kx_lo + 5.0*x_inc)/1000.0 - xorg 
-	   xx = (kx_lo + 4.5*x_inc)/1000.0 - xorg 
-	   xx = (kpx(2) + 500*karht)/1000.0 - xorg 
-	   IF (val .LT. 0. )xx = (kpx(2) + 100*karht)/1000.0 - xorg 
+	max_len = 0
+	DO ndx = lev1+1, shd_levels
+           val = zlev(ndx)
+           IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	   buff = 
+     .          TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+           IF (max_len .lt. str_len) THEN
+	      max_len = str_len
+	      txt_out = buff
+	   ENDIF
+	ENDDO
+	buff = txt_out
 
-           IF (kuser_loc(1) .OR. kuser_loc(2)) 
-     .              xx = (kx_hi+2.*x_inc)/1000 - xorg
+! Use SYMWID to right-justify
+! Set xpos = position of end of string, right-justify from there.
+! The hershey font needs some tweaking.
+
+        xpos = kpx(2)/ 1000.0 - xorg
+
+        IF ((kuser_loc(1) .OR. kuser_loc(2))) xpos = (kx_hi + x_inc)/ 1000. - xorg
+	   
+        max_len = TM_LENSTR1(buff)
+        txt_out = buff(:max_len)//'X'   ! extra space between key and label
+        max_len = TM_LENSTR1(txt_out)
+
+        wid = SYMWID(karht,max_len,txt_out(:max_len))
+        xpos = xpos + wid
 
 * If klab_size negative put the key labels on the left rather than 
 * the right of the key
 
-           IF (klab_size .LT. 0) THEN
-	      xx = (kx_lo)/1000.0 - xorg -(REAL(str_len)+1.)* karht
-              txt_out = text
+        IF (klab_size .LT. 0) THEN
+           wid = SYMWID(karht,1,'X')
+           xpos = kx_lo/1000.0 - xorg - wid
+        ENDIF
 
-* If the key labels are to the right, right-justify them.
+* If the user set the label size, leave it.  Otherwise make labels smaller
+* to try to fit them on the page.
 
-           ELSE
-              nspace = max_len - str_len
-              txt_out = text
-              IF (nspace .GT. 0 .AND. del.GT.1)THEN 
-                 txt_out = blanks(1:nspace)//text(1:str_len)
-                 str_len = max_len
+        IF (klab_size .NE. 0) THEN
+	      IF (xpos+xorg .GT. vwidth) xpos = vwidth - xorg - 0.1*karht
+        ELSE
+
+           ic = 0
+           DO WHILE (xpos+xorg .GT. vwidth .AND. ic.LT.5)
+
+              xpos = kpx(2)/ 1000.0 - xorg
+              IF ((kuser_loc(1) .OR. kuser_loc(2))) xpos = (kx_hi + x_inc)/ 1000. - xorg
+              karht = 0.9* karht
+	      
+              wid = SYMWID(karht,max_len,buff(:max_len))
+              xpos = xpos + wid
+              ic = ic + 1
+              IF (karht .LT. 0.06) THEN 
+		    xpos = vwidth - xorg - 0.1*karht
+		    EXIT ! from loop
               ENDIF
-           ENDIF
+           ENDDO
+        ENDIF
+
+        do 1020 ndx = lev1,shd_lev_hi,incr
+*	   WRITE OUT CORRESPONDING VALUE
+	   val = zlev(ndx)
+	   IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	   text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+	   IF (ndx .EQ. 1 .AND. neginf) text = " "
+	   IF (ndx .EQ. levn+1 .AND. posinf) text = " "
+
+* Right-justify them.
+
+	   txt_out = text
+	   wid = SYMWID(karht,str_len,txt_out)
+	   xx = xpos - WID
 
 	   yy = ( ky_lo + y_inc* (center_add+ real(ndx-1)) )/1000.0 - 
      .        yorg - 0.5*karht

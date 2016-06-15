@@ -1,7 +1,11 @@
 ! bn_let_remote.jnl
 ! Tests of the F-TDS LET/REMOTE
 
-exit/script  ! ?? F-TDS broken on our thredds server?
+! See if the F-TDS is working and bail if not.
+
+let status = TEST_OPENDAP("http://ferret.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl")
+load status
+if `status NE 0` then EXIT/SCRIPT
 
 use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc"
 let/D=1/remote myvar = t0112mn1[k=1:5@sum]

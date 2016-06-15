@@ -62,6 +62,9 @@
 * V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
 *                  added to that dataset in the attribute structure, 
 *                  and are shown with their dataset on SHOW DATA commands
+* V7    6/16 *acm* Fix ticket 2441. For LET/D variables need to store the 
+*                  uvar list in a local array. If using deleted_list_result,
+*                  it got changed by the call to get the grid of the variable            
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -91,7 +94,7 @@
      .            varid, vtype, nvdims, vdims(8), nvatts, blen, i, 
      .            len_attbuff, attoutflag, all_outflag, attid, 
      .            attlen, attype, iatt, iset, alen, npts, 
-     .            num_indices, status
+     .            num_indices, status, let_d_uvars_list(max_uvar)
 	REAL      vals(100)
 
         LOGICAL   NC_GET_ATTRIB, got_it, coordvar, newatt, have_units,
@@ -379,10 +382,10 @@ C Write statement that uses number 2075 when we change to using these.)
 * show the data-set-specific user-defined variables
 
         CALL deleted_list_get_undel(uvar_num_items_head,
-     .                              deleted_list_result(1),
+     .                              let_d_uvars_list(1),
      .                              max_uvar, num_indices )
         DO 600 ivar = 1, num_indices
-           i = deleted_list_result(ivar)
+           i = let_d_uvars_list(ivar)
 	   IF (uvar_dset(i) .EQ. dset .AND.
      .         uvar_parent(i) .EQ. 0   ) THEN
 

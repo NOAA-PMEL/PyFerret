@@ -83,6 +83,8 @@
 *                  defintions
 * V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
 *                  added to that dataset in the attribute structure.
+* V699  5/16 *sh* pass uvar to CD_ADD_VAR encoded as negative for a LET/D uvar
+*                 include EX# and child vars in the LIST structures
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'	
@@ -105,7 +107,8 @@
 	INTEGER	        TM_LENSTR1, TM_LENSTR, STR_SAME, i, idim,
      .                  natom_rpn, rpn_order(maxatoms), i2, quote_type,
      .                  dset_to_add, slen, iat, varid, type, coordvar
-	CHARACTER	err_string*255, c*1, attname*128
+	CHARACTER	buff*255, c*1
+! 6/16 -- declared but never used: CHARACTER attname*128
 
 * internal parameter declarations
 	INTEGER		p_single_quote, p_double_quote, p__DQ_, p__SQ_
@@ -131,7 +134,7 @@
 	CALL RPN( text,
      .		  at_type, at_id, at_start, at_end,
      .            natom, natom_rpn, rpn_order,
-     .            status, err_string)
+     .            status, buff)
 	IF ( status .NE. ferr_ok ) GOTO 5440
 * kob 12/97 - natom_rpn cannot be greater than max_uvar_items
 	IF (natom_rpn .GE. max_uvar_items) GOTO 5500
@@ -230,27 +233,29 @@ c* copy title, units, dset, and missing flag into buffers
 * The variable type is not known at this time - will set it later when the
 * variable gets loaded. 
 
-* Do not add EX# expressions or child variables
+* 6/16 *sh* include EX# expressions and child variables in the LIST structures
 
        type = 0
        coordvar = 0
-       IF (name(1:3) .NE. 'EX#' .AND. .NOT.child) THEN
-          dset_to_add = pdset_uvars  ! user-variable dataset.
-	  varid = uvar
-          IF (dset .GT. pdset_irrelevant) THEN
-	     dset_to_add = dset
-	     varid = 0
-	  ENDIF
+! 6/16       IF (name(1:3) .NE. 'EX#' .AND. .NOT.child) THEN
+       varid = -1 * uvar   ! signals uvar (vs fvar) inside NCF_UTIL.c
+       IF (dset .GT. pdset_irrelevant) THEN
+	  dset_to_add = dset
+       ELSE
+	  dset_to_add = pdset_uvars  ! special dset for global uvars
+       ENDIF
 
-          err_string = title  ! save the value and restore below
-          IF (TM_LENSTR(title) .LT. 1) title = uvar_text(uvar)
+* if no title was provided, then use the LET definition as the title
+       IF (title .EQ. " ") THEN
+          buff =  uvar_text(uvar)
+       ELSE
+          buff = title
+       ENDIF
 
-          CALL CD_ADD_VAR( dset_to_add, varname, varid, title, units, 
+       CALL CD_ADD_VAR( dset_to_add, varname, varid, buff, units, 
      .         type, coordvar, bad, status)
 
-          title = err_string
-          IF ( status .NE. ferr_ok ) GOTO 5600
-       ENDIF
+       IF ( status .NE. ferr_ok ) GOTO 5600
 
 * !!! All the rest of the uvar_*(uvar) properties could become attributes of this uvar !!!
 
@@ -320,7 +325,7 @@ c* copy title, units, dset, and missing flag into buffers
  5440	risc_buff = text(txstart:txend)
 	CALL ERRMSG( ferr_syntax, status,
      .                  risc_buff(:TM_LENSTR1(risc_buff))
-     .                  //pCR//err_string, *5000 )
+     .                  //pCR//buff, *5000 )
 * 12/97 *kob*
  5500   CALL ERRMSG( ferr_expr_too_complex, status,
      .                  text(txstart:txend), *5000 )

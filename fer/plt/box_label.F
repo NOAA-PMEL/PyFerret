@@ -60,6 +60,7 @@
 *                - lower the width threshold for decidint to break into 2
 *                - see "tuned up" comment.  Only search for "," if bad break
 *                - DP conversion bug fix:  "ht" was used instead of "rht" 
+* V7   *acm* 6/16 see ticket 2435. Tweak to split dataset labels after DATA SET:
 
         include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -74,8 +75,8 @@
 
 * internal variable declarations
         INTEGER lnbeg(250), lnend(250)
-	INTEGER	TM_LENSTR1, slen, nfont, brk_pt, nex_brk_pt, 
-     .          las_brk_pt, nlines, ibr
+	INTEGER	TM_LENSTR1, STR_SAME, i, slen, nfont, brk_pt, 
+     .          nex_brk_pt, las_brk_pt, nlines, ibr
 	REAL	ymid, width, frac, frac_width, las_frac, xend,
      .          htsave, ht
         REAL*4  SYMWID, rht
@@ -103,6 +104,19 @@
 	   brk_pt = INDEX( string(:slen), break_char )
 	   IF (brk_pt .GT. 0) EXIT
 	ENDDO
+
+* Hack: Break DATA SET string after DATA SET: not between DATA and SET.
+	IF (slen.GT.8) THEN
+	IF (STR_SAME(string(1:8), 'DATA SET').EQ.0) THEN
+	   DO ibr = 1, 5
+	      break_char = break_chars(ibr)
+	      brk_pt = INDEX( string(6:slen), break_char )
+	      IF (brk_pt .GT. 0) EXIT
+	   ENDDO
+	   brk_pt = brk_pt + 5
+	ENDIF
+	ENDIF
+
 * ... brk_pt will = 0 here if nothing found
 	IF (break_char .EQ. '[') brk_pt = MAX(1,brk_pt-1) ! break before "[" 
 	risc_buff = string			! for RISC/FORTRAN
@@ -207,6 +221,8 @@ c	   frac_width = DBLE(SYMWID( ht, brk_pt+3, '@AS'//risc_buff(:brk_pt)  ))
 	IF ( frac.LT.0.2 .OR. frac.GT.0.8 ) GOTO 500
 
 * WRITE STRING AS 2 LINES
+* Adjusting height so we don't take more vertical space than expected
+
  200	width = MAX(frac, 1.-frac) * width
 	ht = MIN( ysize*0.4, ht*MIN(1.,xsize/width) )
 

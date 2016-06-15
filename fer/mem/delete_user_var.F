@@ -47,6 +47,7 @@
 * V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
 *                  added to that dataset in the attribute structure. Extra
 *                  argument to DELETE_USER_VAR
+* V699 6/16 *sh* quick exit if already deleted
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -59,6 +60,11 @@
 * internal variable declarations:
 	INTEGER	i, uv, uvar_ancestor, num_indices, 
      .          result_array(max_uvar), dset
+
+* fall-back check to forgive sloppy bookkeeping elsewhere
+* as of 6/16 uvar grids are stored in LIST structures and a double deletion
+* can corrupt them
+	IF (uvar_num_items(uvar) .EQ. uvar_deleted) RETURN
 
 * delete child vars
 *	DO 200 uv = 1, max_uvar

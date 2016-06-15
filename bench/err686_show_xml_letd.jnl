@@ -1,0 +1,16 @@
+! ! bn_show_xml_letd
+! Testing SHOW DATA/VAR/XML with a let/D variable
+! Ticket 2441
+
+use coads_climatology.cdf
+use gtbc011.cdf
+let/d=1 u2 = u[d=2]
+let/d=1 v2 = v[d=2]
+let/d=1 w2 = w[d=2]
+let/d=1 salt2 = salt[d=2]
+sh dat 1
+
+sh dat/var/xml/outfile=out.xml/clobber 1
+
+! Showed w2 twice but missed u2.
+sp grep "var name" out.xml

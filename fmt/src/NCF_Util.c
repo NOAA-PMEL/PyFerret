@@ -1,5 +1,3 @@
-
-
 /*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -95,7 +93,10 @@
 *                     structure tells that the variable is a user-var. A new subroutine call,
 *                     ncf_get_var_uvflag returns this flag, so that SHOW DATA/ATTRIBUTES can 
 *                     list these variables. When user variables are canceled, the varids for 
-*                     user-variables remaining in the dataset are adjusted. */
+*                     user-variables remaining in the dataset are adjusted.
+/* *sh*  5/16         added grid management for uvars -- dset/grid paris stored in a LIST
+                      replaced uvflag with uvarid
+*/
 
 #include "ferretmacros.h"
 
@@ -191,6 +192,15 @@ int  FORTRAN(ncf_get_agg_member)( int *, int *, int *);
 int  FORTRAN(ncf_get_agg_var_info)( int *, int *, int *, int *, int *, int *, int *, int *);
 int  FORTRAN(ncf_put_agg_memb_grid)( int *, int *, int *, int *);
 
+/* uvar grid management functions */
+int  FORTRAN(ncf_free_uvar_grid_list)( int *, int *);
+int  FORTRAN(ncf_set_uvar_grid)( int *, int *, int *, int *, int *);
+int  FORTRAN(ncf_get_uvar_grid)( int *, int *, int *, int *);
+int  FORTRAN(ncf_set_uvar_aux_info)( int *, int *, int *, int *, int *);
+int  FORTRAN(ncf_get_uvar_aux_info)( int *, int *, int *, int *, int *);
+int  FORTRAN(ncf_get_uvar_grid_list_len)( int *, int *, int *);
+int  FORTRAN(ncf_delete_uvar_grid)( int *, int *, int *);
+
 /* .... Functions called internally .... */
 
 ncdset *ncf_ptr_from_dset(int *);
@@ -205,12 +215,14 @@ int NCF_ListTraverse_FoundDsetID( char *, char * );
 int NCF_ListTraverse_FoundVarName( char *, char * );
 int NCF_ListTraverse_FoundVarNameCase( char *, char * );
 int NCF_ListTraverse_FoundVarID( char *, char * );
+int NCF_ListTraverse_FoundUvarID( char *, char * );
 int NCF_ListTraverse_FoundVarAttName( char *, char * );
 int NCF_ListTraverse_FoundVarAttNameCase( char *, char * );
 int NCF_ListTraverse_FoundVarAttID( char *, char * );
 int NCF_ListTraverse_FoundVariMemb( char *, char * );
 int NCF_ListTraverse_FoundDsMemb( char *, char * );
 int NCF_ListTraverse_FoundDsMemb( char *, char * );
+int NCF_ListTraverse_FoundGridDset( char *, char * );
 
 /*
  * Find a dataset based on its integer ID and return the scalar information:
@@ -660,6 +672,7 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
   int status=LIST_OK;
   int return_val;
   LIST *varlist;
+  int flag;
 
   return_val = 0;  
   if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL )return return_val;
@@ -675,7 +688,12 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
   }
   
   var_ptr=(ncvar *)list_curr(varlist); 
-  *uvflag = var_ptr->uvflag;
+  if (var_ptr->uvarid == 0)
+    flag = 0;
+  else
+    flag = 1;
+
+  *uvflag = flag;
 
   return FERR_OK;
 }
@@ -1229,7 +1247,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 			var.all_outflag = 1;
 			var.is_axis = FALSE;
 			var.axis_dir = 0;
-			var.uvflag = 0;
+			var.uvarid = 0;
 			
 			var.attrs_list_initialized = FALSE;
 			for (i = 0; i < nc.ngatts; i++)
@@ -1317,14 +1335,14 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 		for (iv = 0; iv < nc.nvars; iv++)
 			{
 				nc_status = nc_inq_var(*ncid, iv, var.name, &var.type, &var.ndims,
-															 var.dims, &var.natts);
+									     var.dims, &var.natts);
 				if (nc_status != NC_NOERR) return nc_status;
 				
 				var.varid = iv+1;  
 				var.outtype = NC_FLOAT;
 				if (var.type == NC_CHAR) var.outtype = NC_CHAR;
 				var.outtype = var.type;  /* ?? */
-				var.uvflag = 0;
+				var.uvarid = 0;
 				
 				/* Is this a coordinate variable? If not a string, set the flag.
 				/* A multi-dimensional variable that shares a dimension name is not a coord. var.
@@ -1883,7 +1901,8 @@ int FORTRAN(ncf_delete_dset)(int *dset)
 
 /* ----
  * Add a new variable to a dataset.
- * If varid is 0, set it to nvars+1 for this dataset, and return varid.
+ * If varid is < 0, set it to nvars+1 for this dataset, return varid
+ * and store -1*varid as the user variable ID (uvarid)
  */
 int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char *varname, char title[], char units[], double *bad)
 
@@ -1937,12 +1956,27 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char
   var.outtype = *type;
   var.ndims = 6;
   var.natts = 0;
-  var.uvflag = 0;
-  if (*varid == 0) {
-	  *varid = nc_ptr->nvars;
-	  var.uvflag = 1;
-  }
-  var.varid = *varid;
+     
+  if (*varid < 0)
+    {
+      /* user variable (aka "LET") */
+      var.uvarid = -1* *varid;  /* value of uvar as found in Ferret */
+      if (*dset == PDSET_UVARS)
+        /* for global uvars,  varid always matches uvarid */
+        /* which means that gaps may occur in the varid sequence */
+         var.varid = var.uvarid;
+      else
+        /* for LET/D uvars, varid is the var count */
+        /* ==> gaps in varid must be compacted when LET/D vars are deleted */
+        var.varid = nc_ptr->nvars;
+    }
+  else
+    /* file variable */
+    {
+      var.varid = nc_ptr->nvars;
+      var.uvarid = 0;   /* 0 signals a file var */ 
+    }
+
   var.is_axis = *coordvar;
   var.axis_dir = 0;
   var.has_fillval = FALSE;
@@ -2010,7 +2044,7 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char
 /*    if (*type != NC_CHAR)
     { */
 		var.natts = var.natts+1;
-        var.fillval = *bad;
+                var.fillval = *bad;
 
 		att.attid = var.natts;
 		strcpy(att.name,"missing_value");
@@ -2052,6 +2086,17 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char
          vdescr.gnum = 0;
          list_insert_after(var.varagglist, (char *) &vdescr, sizeof(ncatt));
 
+/* if it's a uvar, then initialize a grid LIST for it */ 
+  if (var.uvarid == 0) 
+    var.uvarGridList = 0;
+  else
+    {
+      if ( (var.uvarGridList = list_init()) == NULL ) {
+	fprintf(stderr, "ERROR: ncf_add_var: Unable to initialize uvar grid list.\n");
+	return_val = -1;
+	return return_val; 
+      }
+    }
 /*Save variable in linked list of variables for this dataset */
 
   list_insert_after(nc_ptr->dsetvarlist, (char *) &var, sizeof(ncvar));
@@ -3035,6 +3080,7 @@ int  FORTRAN(ncf_set_var_outtype)( int *dset, int *varid, int *outtype)
   return return_val;
 }
 
+
 /* ---- 
  * Find variable based on its variable ID and dataset ID
  * Check that its a coordinate variable and set the axis direction.
@@ -3189,6 +3235,7 @@ int  FORTRAN(ncf_delete_var)( int *dset, char *varname)
   int ivar;
   int i;
   LIST *varlist;
+  LIST *uvgridList;
   LIST *dummy;
   LIST_ELEMENT *lp;
 
@@ -3207,8 +3254,7 @@ int  FORTRAN(ncf_delete_var)( int *dset, char *varname)
     return return_val;
   }
   
-  /* Deallocate the list of attributes, and remove the 
-   * variable from the dataset list */
+  /* Deallocate the list of attributes */
 	lp = varlist->curr;
 	var_ptr = (ncvar*)lp->data;
 	ivar = var_ptr->varid;
@@ -3217,8 +3263,19 @@ int  FORTRAN(ncf_delete_var)( int *dset, char *varname)
 	/* Free the attributes list. */
 	list_free(var_ptr->varattlist, LIST_DEALLOC);
 
+  /* Free the list of uvarGrids */
+	if (var_ptr->uvarid != 0) 
+	  {
+	    uvgridList = var_ptr->uvarGridList;
+	    while (!list_empty(uvgridList))
+	      {
+		list_remove_front(uvgridList);
+	      }
+	    list_free(uvgridList, LIST_DEALLOC);
+	  }
+  /* remove the variable from the dataset list */
 	list_remove_curr(varlist);
-  free(var_ptr);
+	free(var_ptr);
 
    /* Reset the varids for variables added to external datasets with LET/D
     * For the virtual user-variable datset, leave varids alone.
@@ -3664,6 +3721,367 @@ static int initialize_output_flag (char *attname, int is_axis)
 
 }
 
+
+/* *******************************
+ *  uvar grid management routines
+ * *******************************
+ */
+
+
+/* ---- 
+ * Find variable based on its variable ID and LIST_dset ID
+ * Free ("purge" in Ferret-speak) the entire list of uvar grids
+ */
+int  FORTRAN(ncf_free_uvar_grid_list)( int *LIST_dset, int *uvarid)
+
+{
+  ncvar *var_ptr=NULL;
+  int status=LIST_OK;
+  LIST *varlist;
+  LIST *uvgridList;
+
+   /*
+    * Get the list of variables, find pointer to variable varid.
+    */
+  varlist = ncf_get_ds_varlist(LIST_dset);
+
+    /* find the relevant LET var (i.e. uvar) */
+  status = list_traverse(varlist, (char *) uvarid, NCF_ListTraverse_FoundUvarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+
+  /* remove all elements from the uvar grid list */
+  uvgridList = var_ptr->uvarGridList;
+  while (!list_empty(uvgridList))
+    {
+      list_remove_front(uvgridList);
+    }
+
+  return FERR_OK;
+}
+
+
+/* ---- 
+ * Find variable based on its variable ID and LIST_dset ID
+ * Store a grid/context_dset pair for the variable 
+
+ * The dual dataset arguments arise because Ferret's global uvars are managed
+ * in the c LIST structures as a special dataset -- PDSET_UVARS
+ * By contrast LET/D uvars are managed in the c LIST structure of the parent dataset
+ * So we refer to the dataset that owns (parents) the uvar as LIST_dset 
+ * and we refer to the dataset in which Ferret is evaluating the uvar is as context_dset
+ */
+int  FORTRAN(ncf_set_uvar_grid)( int *LIST_dset, int *varid, int *grid, int *datatype, int *context_dset)
+
+{
+  ncvar *var_ptr=NULL;
+  int status=LIST_OK;
+  int return_val;
+  LIST *varlist;
+  LIST *uvgridlist;
+  uvarGrid uvgrid;
+  int i;
+
+   /*
+    * Get the list of variables, find pointer to variable varid.
+    */
+  varlist = ncf_get_ds_varlist(LIST_dset);
+
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundUvarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+
+   /*  
+    * if a grid already exists for this context dataset
+    * remove it before continuing
+    */
+   /* I dunno why other routines are calling internal routines such
+       as ncf_get_ds_var_attlist to get the LIST pointers they need.
+       am I missing something? *sh* */
+  uvgridlist = var_ptr->uvarGridList;
+  status = list_traverse(uvgridlist, (char *) context_dset, NCF_ListTraverse_FoundGridDset, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status == LIST_OK)
+    {
+      list_remove_curr(uvgridlist);
+    }
+
+   /*
+    * Fill the uvarGrid structure
+    */
+  /*  not needed: uvgrid = (uvarGrid *) malloc(sizeof(uvarGrid)); */
+  uvgrid.grid  = *grid;
+  uvgrid.dset  = *context_dset;
+  uvgrid.dtype = *datatype;
+
+   /*
+    * Set the auxiliary variables as unspecified at this point
+    */
+  for (i=0; i<NFERDIMS ;i++ )
+    {
+      uvgrid.auxCat[i] = 0;
+      uvgrid.auxVar[i] = 0;
+    }
+
+   /*
+    * Save it in the grid list of this uvar
+    */
+  list_insert_after(uvgridlist, (char *) &uvgrid, sizeof(uvarGrid));
+
+  return_val = FERR_OK;
+  return return_val;
+}
+
+/* ---- 
+ * Find variable based on its variable ID and LIST_dset ID
+ * Return the grid that corresponds to the context_dset pair 
+
+ * The dual dataset arguments arise because Ferret's global uvars are managed
+ * in the c LIST structures as a special dataset -- PDSET_UVARS
+ * By contrast LET/D uvars are managed in the c LIST structure of the parent dataset
+ * So we refer to the dataset that owns (parents) the uvar as LIST_dset 
+ * and we refer to the dataset in which Ferret is evaluating the uvar is as context_dset
+ */
+int  FORTRAN(ncf_get_uvar_grid)( int *LIST_dset, int *uvarid, int *context_dset, int *uvgrid)
+
+{
+  ncvar *var_ptr=NULL;
+  int status=LIST_OK;
+  LIST *varlist;
+  LIST *uvgridlist;
+  uvarGrid *uvgrid_ptr=NULL;
+
+   /*
+    * Get the list of variables, find pointer to variable varid.
+    */
+  varlist = ncf_get_ds_varlist(LIST_dset);
+
+    /* find the relevant LET var (i.e. uvar) */
+  status = list_traverse(varlist, (char *) uvarid, NCF_ListTraverse_FoundUvarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+
+    /* find the relevant grid/dataset pair owned by this uvar */
+    /* I dunno why other routines are calling internal routines such
+     * as ncf_get_ds_var_attlist to get the LIST pointers they need.
+     * am I missing something? *sh*
+     */
+  uvgridlist = var_ptr->uvarGridList;
+  if (list_empty(uvgridlist)) return ATOM_NOT_FOUND;
+
+  status = list_traverse(uvgridlist, (char *) context_dset, NCF_ListTraverse_FoundGridDset, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
+
+  uvgrid_ptr=(uvarGrid *)list_curr(uvgridlist); 
+
+  *uvgrid = uvgrid_ptr->grid;
+  
+  return FERR_OK;
+}
+
+/* ---- 
+ * Find variable based on its variable ID and LIST_dset ID
+ * Store a grid/context_dset pair for the variable 
+
+ * The dual dataset arguments arise because Ferret's global uvars are managed
+ * in the c LIST structures as a special dataset -- PDSET_UVARS
+ * By contrast LET/D uvars are managed in the c LIST structure of the parent dataset
+ * So we refer to the dataset that owns (parents) the uvar as LIST_dset 
+ * and we refer to the dataset in which Ferret is evaluating the uvar is as context_dset
+ */
+int  FORTRAN(ncf_set_uvar_aux_info)( int *LIST_dset, int *varid, int aux_cat[], int aux_var[], int *context_dset)
+
+{
+  ncvar *var_ptr=NULL;
+  int status=LIST_OK;
+  int return_val;
+  LIST *varlist;
+  LIST *uvgridlist;
+  uvarGrid *uvgrid;
+  int i;
+
+   /*
+    * Get the list of variables, find pointer to variable varid.
+    */
+  varlist = ncf_get_ds_varlist(LIST_dset);
+
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundUvarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+
+   /*  
+    * a grid must already exists for this context dataset
+    */
+  uvgridlist = var_ptr->uvarGridList;
+  status = list_traverse(uvgridlist, (char *) context_dset, NCF_ListTraverse_FoundGridDset, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK)
+    {
+      return_val = ATOM_NOT_FOUND;
+      return return_val;
+    }
+
+  uvgrid=(uvarGrid *)list_curr(uvgridlist); 
+
+   /*
+    * Fill the uvar aux arrays
+    */
+  for (i=0; i<NFERDIMS ;i++ )
+    {
+      uvgrid->auxCat[i] = aux_cat[i];
+      uvgrid->auxVar[i] = aux_var[i];
+    }
+
+  return_val = FERR_OK;
+  return return_val;
+}
+
+/* ---- 
+ * Find variable based on its variable ID and LIST_dset ID
+ * Store a grid/context_dset pair for the variable 
+
+ * The dual dataset arguments arise because Ferret's global uvars are managed
+ * in the c LIST structures as a special dataset -- PDSET_UVARS
+ * By contrast LET/D uvars are managed in the c LIST structure of the parent dataset
+ * So we refer to the dataset that owns (parents) the uvar as LIST_dset 
+ * and we refer to the dataset in which Ferret is evaluating the uvar is as context_dset
+ */
+int  FORTRAN(ncf_get_uvar_aux_info)( int *LIST_dset, int *varid, int *context_dset,
+                                     int aux_cat[], int aux_var[])
+
+{
+  ncvar *var_ptr=NULL;
+  int status=LIST_OK;
+  int return_val;
+  LIST *varlist;
+  LIST *uvgridlist;
+  uvarGrid *uvgrid;
+  int i;
+
+   /*
+    * Get the list of variables, find pointer to variable varid.
+    */
+  varlist = ncf_get_ds_varlist(LIST_dset);
+
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundUvarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+
+   /*  
+    * a grid must already exists for this context dataset
+    */
+  uvgridlist = var_ptr->uvarGridList;
+  status = list_traverse(uvgridlist, (char *) context_dset, NCF_ListTraverse_FoundGridDset, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK)
+    {
+      return_val = ATOM_NOT_FOUND;
+      return return_val;
+    }
+
+  uvgrid=(uvarGrid *)list_curr(uvgridlist); 
+
+   /*
+    * Return the uvar aux arrays
+    */
+  for (i=0; i<NFERDIMS ;i++ )
+    {
+      aux_cat[i] = uvgrid->auxCat[i];
+      aux_var[i] = uvgrid->auxVar[i];
+    }
+
+  return_val = FERR_OK;
+  return return_val;
+}
+
+/* ---- 
+ * Find variable based on its variable ID and LIST_dset ID
+ * Return the length of the LIST of saved grids
+
+ * The dual dataset arguments arise because Ferret's global uvars are managed
+ * in the c LIST structures as a special dataset -- PDSET_UVARS
+ * By contrast LET/D uvars are managed in the c LIST structure of the parent dataset
+ * So we refer to the dataset that owns (parents) the uvar as LIST_dset 
+ * and we refer to the dataset in which Ferret is evaluating the uvar is as context_dset
+ */
+int  FORTRAN(ncf_get_uvar_grid_list_len)( int *LIST_dset, int *uvarid, int *uvgrid_list_len)
+
+{
+  ncvar *var_ptr=NULL;
+  int status=LIST_OK;
+  LIST *varlist;
+  LIST *uvgridlist;
+  uvarGrid *uvgrid_ptr=NULL;
+
+   /*
+    * Get the list of variables, find pointer to variable varid.
+    */
+  varlist = ncf_get_ds_varlist(LIST_dset);
+
+    /* find the relevant LET var (i.e. uvar) */
+  status = list_traverse(varlist, (char *) uvarid, NCF_ListTraverse_FoundUvarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+
+  uvgridlist = var_ptr->uvarGridList;
+  *uvgrid_list_len = (int)list_size(uvgridlist);
+  
+  return FERR_OK;
+}
+
+
+/* ---- 
+ * Find variable based on its variable ID and LIST_dset ID
+ * Delete the grid that corresponds to the context_dset
+ * from the uvarGridList
+ */
+int  FORTRAN(ncf_delete_uvar_grid)( int *LIST_dset, int *uvarid, int *context_dset)
+
+{
+  ncvar *var_ptr=NULL;
+  int status=LIST_OK;
+  LIST *varlist;
+  LIST *uvgridlist;
+  int return_val;
+
+   /*
+    * Get the list of variables, find pointer to variable varid.
+    */
+  varlist = ncf_get_ds_varlist(LIST_dset);
+
+    /* find the relevant LET var (i.e. uvar) */
+  status = list_traverse(varlist, (char *) uvarid, NCF_ListTraverse_FoundUvarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+
+    /* find the relevant grid/dataset pair owned by this uvar */
+    /* I dunno why other routines are calling internal routines such
+     * as ncf_get_ds_var_attlist to get the LIST pointers they need.
+     * am I missing something? *sh*
+     */
+  uvgridlist = var_ptr->uvarGridList;
+  if (list_empty(uvgridlist)) return ATOM_NOT_FOUND;
+
+  status = list_traverse(uvgridlist, (char *) context_dset, NCF_ListTraverse_FoundGridDset, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
+
+	/* Remove this grid from uvaGridList list */
+  list_remove_curr(uvgridlist);
+
+  return_val = FERR_OK;
+  return return_val;
+}
+
+
+/* ***********************************
+ *  search routines for LIST traversal
+ * ***********************************
+ */
+
 /* ---- 
  * See if the name in data matches the ferret dset name in 
  * curr. Ferret always capitalizes everything so be case INsensitive.
@@ -3736,6 +4154,20 @@ int NCF_ListTraverse_FoundVarID( char *data, char *curr )
 }
 
 /* ---- 
+ * See if the ID in data matches the uvar ID in curr. 
+ */
+int NCF_ListTraverse_FoundUvarID( char *data, char *curr )
+{
+  ncvar *var_ptr=(ncvar*)curr; 
+  int ID=*((int *)data);
+
+   if ( ID == var_ptr->uvarid)  {
+    return FALSE; /* found match */
+  } else
+    return TRUE;
+}
+
+/* ---- 
  * See if the name in data matches the attribute name in curr.
  */
 int NCF_ListTraverse_FoundVarAttName( char *data, char *curr )
@@ -3791,7 +4223,7 @@ int NCF_ListTraverse_FoundVariMemb( char *data, char *curr )
 
 
 /* ---- 
- * See if there is a matche on the dset sequence number.
+ * See if there is a match on the dset sequence number.
  */
 int NCF_ListTraverse_FoundDsMemb( char *data, char *curr )
 {
@@ -3801,7 +4233,22 @@ int NCF_ListTraverse_FoundDsMemb( char *data, char *curr )
 
   /* 12/15 -- search is successful if sequence number (FORTRAN index) matches */
   if ( ID== agg_ptr->aggSeqNo)  {
-    return FALSE; /* found match */
+    return FALSE;
   } else
-    return TRUE;
+    return TRUE; /* found match */
+}
+
+/* ---- 
+ * See if there is a match on the context dset
+ */
+int NCF_ListTraverse_FoundGridDset( char *data, char *curr )
+{
+
+  uvarGrid *uvgrid_ptr=(uvarGrid *)curr;
+  int ID=*((int *)data);
+
+  if ( ID== uvgrid_ptr->dset)  {
+    return FALSE;
+  } else
+    return TRUE;  /* found match  (are the other comments like this wrong?)*/
 }

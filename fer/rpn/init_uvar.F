@@ -95,6 +95,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V694  *acm* 1214 Fixing ticket 2220: a variablename.attname argument to a function
 *                  needs to be added as a child variable
+* V699 *sh* 6/16 bail out code at 5900 needs to clean up child LIST structures
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'	
@@ -339,15 +340,16 @@
 	DO 5910 uvar_child = uvar, max_uvar
 	   IF ( uvar_name_code(uvar_child)(7:10)
      .     .EQ. child_name(7:10) ) THEN
-*	      uvar_num_items( uvar_child ) = uvar_deleted
-              CALL deleted_list_modify(uvar_num_items_head, 
-     .                         uvar_child, uvar_deleted )
-
-*	      uvar_name_code( uvar_child ) = " "
-              CALL string_array_modify(uvar_name_code_head, uvar_child,
-     .                                  " ", 1)
-
-	      uvar_text     ( uvar_child ) = " "
+	      CALL DELETE_USER_VAR(uvar_child, dset)
+!*	      uvar_num_items( uvar_child ) = uvar_deleted
+!              CALL deleted_list_modify(uvar_num_items_head, 
+!     .                         uvar_child, uvar_deleted )
+!
+!*	      uvar_name_code( uvar_child ) = " "
+!              CALL string_array_modify(uvar_name_code_head, uvar_child,
+!     .                                  " ", 1)!
+!
+!	      uvar_text     ( uvar_child ) = " "
 	   ENDIF
  5910	CONTINUE
 	GOTO 5000

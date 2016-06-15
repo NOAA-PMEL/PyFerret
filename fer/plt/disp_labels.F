@@ -66,6 +66,7 @@
 * V581: *acm*/3/05 - increase length of strings for dataset title to 1024
 * V68  *acm*  4/11 - more on bug 1098. Call the url the OPeNDAP label, break it up.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V7   *acm* 6/16 see ticket 2435. Tweak to split dataset labels after DATA SET:
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -175,7 +176,7 @@
 	   CALL BOX_LABEL( ppl_movlab-ppl_dset, 
      .			   'DATA SET: '//line_buff(:lablen),
      .			   0.0, yoff,
-     .			   0.5*xlen,  1.5*letsize_dset_title,
+     .			   0.45*xlen,  1.5*letsize_dset_title,
      .			   ur_labht, ppl_right_just,
      .			   lab_loc_axlen_plus, lab_loc_axlen_plus )
 

@@ -90,3 +90,6 @@ go err696_def_att
 
 go bn_reset
 go err696_return_prec
+
+go bn_reset
+go err686_show_xml_letd

@@ -1150,7 +1150,7 @@ GMmiClose(mf)
 
     if (mf != NULL && mf->gksm != NULL) {
 	if (mf->gksm->fp != NULL)
-	    if (!ferror(mf->gksm->fp) & fclose(mf->gksm->fp) != EOF)
+	    if (!ferror(mf->gksm->fp) && fclose(mf->gksm->fp) != EOF)
 		status	= OK;
 	ufree((voidp)mf->gksm);
 	mf->gksm	= NULL;
@@ -1217,7 +1217,7 @@ GMmoClose(mf)
 	if (mf->gksm->fp != NULL)
             /* mod jd to add last item to metafile */
 	    fprintf (mf->gksm->fp,"  0     0\n");
-	    if (!ferror(mf->gksm->fp) & fclose(mf->gksm->fp) != EOF)
+	    if (!ferror(mf->gksm->fp) && fclose(mf->gksm->fp) != EOF)
 		status	= OK;
 	ufree((voidp)mf->gksm);
 	mf->gksm	= NULL;

@@ -49,7 +49,6 @@
  *					 definition of macro DFTYPE in ferretmacros.h. */
 /*  V674 2/12 *acm* 6D Ferret: use NFERDIMS rather than 4 for dimension indexing */
 
-
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <wchar.h>
 #include <stdio.h>

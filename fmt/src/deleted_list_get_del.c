@@ -38,6 +38,7 @@
                  for better performance. This function is to get the deleted
                  list
  */
+
 #include <stdio.h>
 #include "deleted_list.h"
 

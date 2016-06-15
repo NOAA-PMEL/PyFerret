@@ -73,7 +73,6 @@
 	CFLAGS = \
 		$(CPP_FLAGS) \
 		-Dlint \
-		-D_SSIZE_T \
 		-DVOID_SIGHANDLER \
 		-D_POSIX_VERSION \
 		-DLINUX \

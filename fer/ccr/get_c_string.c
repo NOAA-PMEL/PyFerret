@@ -38,10 +38,6 @@
  *  Return (copy) the null-terminated string to the array provided
  */
 
-#ifdef MAC_SSIZE
-typedef long ssize_t;
-#endif
-
 #include <string.h>
 
 void get_c_string_(ptr_ptr, outstring, maxlen)

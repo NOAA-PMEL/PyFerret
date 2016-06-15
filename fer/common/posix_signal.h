@@ -9,16 +9,6 @@
 #include	<string.h>		/* for convenience */
 #include	<unistd.h>		/* for convenience */
 
-/* added typedef for ssize_t because sunOS doesn't include it in
-   sys/types.h file *kob* 6/96 */
-/*  added ifdef check for aix because it didn't like this typedef */
-#ifndef aix
-#ifndef _SSIZE_T
-#define _SSIZE_T
-typedef long                    ssize_t; /* Required for ISO/IEC 9945-1:1990 */
-#endif
-#endif
-
 #define	MAXLINE	4096			/* max line length */
 
 #define	FILE_MODE	(S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)

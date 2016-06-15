@@ -1,5 +1,5 @@
 #
-# platform_specific_includes.mk.x86_64-linux-gnu
+# platform_specific_includes.mk.intel-mac
 #
 # This file is included in other Makefiles and defines
 # platform specific macros
@@ -18,7 +18,8 @@
 			  -I../../ppl/include \
 			  -I../../fer/common \
 			  $(GKS_INCLUDES) \
-			  -I/usr/local/include
+			  -I/usr/local/include \
+			  -I/usr/X11R6/include
 
 	FINCLUDES	= -I../../ppl/tmap_inc \
 			  -I../include \
@@ -29,14 +30,12 @@
 
 	PLATFORM = $(shell uname -s -r) 64-bit
 
-	CC              = gcc
-	CXX		= c++
-	FC		= gfortran
-	F77		= gfortran
-
-	RANLIB          = /usr/bin/ranlib
-
-	CPP		= /lib/cpp
+	CC		= $(shell which gcc-5)
+	FC		= $(shell which gfortran-5)
+	F77		= $(shell which gfortran-5)
+	AR		= $(shell which ar)
+	ARFLAGS		= -cr
+	RANLIB		= $(shell which ranlib)
 
 	CPP_FLAGS       = $(INCLUDES) \
 			  -m64 \
@@ -47,79 +46,54 @@
 			  -DNO_OPEN_READONLY -DMANDATORY_FORMAT_WIDTHS\
 			  -DNO_OPEN_CARRIAGECONTROL -Dxgks -DSTAR_1_SUPPORTED \
 			  -DFULL_GUI_VERSION -DX_REFRESH \
-			  -DXT_CODE  -DLINUX -DNO_PASSED_CONCAT \
+			  -DXT_CODE -DDARWIN -DLINUX -DNO_PASSED_CONCAT \
 			  -Dcrptd_cat_argument \
 			  -DG77_SIGNAL -DG77 \
 			  -DNEED_IAND -DINTERNAL_READ_FORMAT_BUG \
 			  -DNO_PREPEND_STRING -DNO_DOUBLE_ESCAPE_SLASH \
-			  -Ddouble_p 
+			  -Ddouble_p
 
-# Flags for compiling all C code
-# -DusingDODSf2cUnderscore needed if using netcdf library...
-# also consider -ffloat-store.
 	CFLAGS		= $(CPP_FLAGS) \
 			  -Dlint -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX \
 			  -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 
-# Flags for compiling the PlotPlus FORTRAN code (ppl subdirectory)
+
 	PPLUS_FFLAGS	= $(CPP_FLAGS) \
 			  -fno-automatic -fno-second-underscore \
 			  -fdollar-ok -ffixed-line-length-132 $(FINCLUDES)
-# Flags for compiling non-PlotPlus FORTRAN code
+
 	FFLAGS		= $(CPP_FLAGS) \
 			  -fno-automatic -fno-second-underscore \
-			  -fdollar-ok -ffixed-line-length-132 -ffpe-trap=overflow \
-			  -fimplicit-none \
+			  -fdollar-ok -ffixed-line-length-132 \
+			  -ffpe-trap=overflow -fimplicit-none \
 			  -fdefault-real-8 -fdefault-double-8 $(FINCLUDES)
 
-        # PROF_FLAGS	= -pg
+#	PROF_FLAGS	= -pg
+	PROF_FLAGS	= 
 
-	# Below this line are macro definitions used only for the final linking of the executable
-	#
+	LD		= $(shell which gfortran-5)
+	LDFLAGS		= -fPIC -static-libgfortran
 
-	LD		= gcc
-	LDFLAGS		= -v --verbose -m64 -fPIC -export-dynamic
-
-	SYSLIB		= -lX11 \
+	SYSLIB		= -L/usr/X11R6/lib -lX11 \
 			  -lcurl \
 			  -ldl \
-			  -L$(LIBZ_DIR)/lib/x86_64-linux-gnu -lz \
-			  -lgfortran \
+			  -lz \
 			  -lm
 
-# -static-libgfortran can be used with gfortran 4.4 but not 4.1
-# /usr/lib/gcc/x86_64-redhat-linux/4.1.2/libgfortran.a
-
 	GKSLIB		= ../xgks/src/lib/libxgks.a
-
-# For netCDF4 using new hdf5 and new zlib
 
 	CDFLIB		= $(NETCDF4_DIR)/lib/libnetcdff.a \
 			  $(NETCDF4_DIR)/lib/libnetcdf.a \
 			  $(HDF5_DIR)/lib/libhdf5_hl.a \
-			  $(HDF5_DIR)/lib/libhdf5.a \
-			  -L$(LIBZ_DIR)/lib/x86_64-linux-gnu -lz
+			  $(HDF5_DIR)/lib/libhdf5.a 
 
 	LINUX_OBJS	= special/linux_routines.o \
 			  dat/*.o \
 			  ../fmt/src/x*.o \
 			  ../ppl/plot/ppldata.o
 
-	TERMCAPLIB	= -L/usr/lib/x86_64-linux-gnu -lncurses
+	TERMCAPLIB	= -lncurses
 
-# For statically linking in the readline and history libraries
-#	READLINELIB = -L$(READLINE_DIR)/lib64 -Wl,-Bstatic -lreadline -lhistory -Wl,-Bdynamic
-# For linking against the shared-object libraries (if they exist)
-	READLINELIB = -L$(READLINE_DIR)/lib/x86_64-linux-gnu -lreadline -lhistory
-
-## cancel the default rule for .f -> .o to prevent objects from being built
-## from .f files that are out-of-date with respect to their corresponding .F file
-#%.o : %.f
-#
-## use cpp to preprocess the .F files to .f files and then compile the .f files
-#%.o : %.F
-#	rm -f $*.f
-#	$(CPP) -P -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
-#	$(F77) $(FFLAGS) -c $*.f	 
+	READLINELIB = -L$(READLINE_DIR)/lib -lreadline 
 
 # Directly compile the .F source files to the .o object files
 # since gfortran can handle the C compiler directives in Fortran code

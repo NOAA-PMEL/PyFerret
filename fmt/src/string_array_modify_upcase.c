@@ -39,6 +39,7 @@
                  This functiion should be used to keep hashtable updated
     4/06 *kob*  change type of 1st argument to double, for 64-bit build
  */
+
 #include <stdio.h>
 #include "string_array.h"
 

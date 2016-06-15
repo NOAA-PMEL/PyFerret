@@ -36,6 +36,7 @@
 /*
  12/11 *acm* Created for str_dncase
  */
+
 #include <ctype.h>
 #include <stdio.h>
 

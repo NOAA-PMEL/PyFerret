@@ -41,9 +41,6 @@ NOTE: Needs error checking to see that the realloc actually worked.
 */
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#ifdef MAC_SSIZE
-typedef long ssize_t;
-#endif
 
 #include <wchar.h>
 #include <unistd.h>

@@ -34,6 +34,7 @@
 *
 *  ywei:05/04 created to speed up get fortran string length rountine 
 */
+
 #include <assert.h>
 #include <stdio.h>
 

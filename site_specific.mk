@@ -6,6 +6,7 @@ BUILDTYPE	= $(HOSTTYPE)
 # BUILDTYPE	= x86_64-linux
 # BUILDTYPE	= i386-linux
 # BUILDTYPE	= i386-apple-darwin
+# BUILDTYPE	= intel-mac
 
 ## Installation directory for built Ferret.  Using the "install"
 ## Makefile target circumvents the need to create the fer_*.tar.gz
@@ -47,5 +48,6 @@ LIBZ_DIR	= /usr/local
 # JAVA_HOME	= /usr/lib/jvm/java-oracle
 # JAVA_HOME	= /usr/lib/jvm/java-sun
 JAVA_HOME	= /usr/lib/jvm/java
+# JAVA_HOME	= /Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home
 
 ##

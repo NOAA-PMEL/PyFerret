@@ -38,6 +38,8 @@
                  for better performance. This function is for cleaning up
                  the data structure.
  */
+
+#include <stdlib.h>
 #include <stdio.h>
 #include "deleted_list.h"
 

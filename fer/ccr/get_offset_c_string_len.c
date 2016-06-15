@@ -38,10 +38,6 @@
  * Return the length of the null-terminated string as given by FORTRAN.
  */
 
-#ifdef MAC_SSIZE
-typedef long ssize_t;
-#endif
-
 #include <string.h>
 
 int get_offset_c_string_len_(fer_ptr, offset)

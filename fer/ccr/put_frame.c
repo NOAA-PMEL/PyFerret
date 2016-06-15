@@ -57,10 +57,6 @@
  * *acm* 12/13 - Removed unused routine put_temp_frame_batch
  */
 
-#ifdef MAC_SSIZE
-typedef long ssize_t;
-#endif
-
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <stdio.h>

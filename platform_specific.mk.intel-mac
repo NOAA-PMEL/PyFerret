@@ -1,0 +1,105 @@
+#
+# platform_specific_includes.mk.intel-mac
+#
+# This file is included in other Makefiles and defines
+# platform specific macros
+
+	GKS_INCLUDES	= -I../../ppl/include/xgks \
+			  -I../../xgks/src/lib \
+			  -Ipplinc/xgks \
+			  -I../../xgks/port 
+
+	INCLUDES        = -I. \
+			  -I../fmt/cmn/ \
+			  -I$(NETCDF4_DIR)/include \
+			  -I$(READLINE_DIR)/include \
+			  -I../common \
+			  -I../../fmt/cmn \
+			  -I../../ppl/include \
+			  -I../../fer/common \
+			  $(GKS_INCLUDES) \
+			  -I/usr/local/include \
+			  -I/usr/X11R6/include
+
+	FINCLUDES	= -I../../ppl/tmap_inc \
+			  -I../include \
+			  -I../../fmt/cmn \
+			  -I../common \
+			  -I../../ppl/include \
+			  -I../../fer/common
+
+	PLATFORM = $(shell uname -s -r) 64-bit
+
+	CC		= $(shell which gcc-5)
+	FC		= $(shell which gfortran-5)
+	F77		= $(shell which gfortran-5)
+	AR		= $(shell which ar)
+	ARFLAGS		= -cr
+	RANLIB		= $(shell which ranlib)
+
+	CPP_FLAGS       = $(INCLUDES) \
+			  -m64 \
+			  -fPIC -Dunix -Dgfortran   \
+			  -DNO_OPEN_SHARED \
+			  -DNO_OPEN_RECORDTYPE \
+			  -DX_REFRESH -Dreclen_in_bytes  \
+			  -DNO_OPEN_READONLY -DMANDATORY_FORMAT_WIDTHS\
+			  -DNO_OPEN_CARRIAGECONTROL -Dxgks -DSTAR_1_SUPPORTED \
+			  -DFULL_GUI_VERSION -DX_REFRESH \
+			  -DXT_CODE  -DLINUX -DNO_PASSED_CONCAT \
+			  -Dcrptd_cat_argument \
+			  -DG77_SIGNAL -DG77 \
+			  -DNEED_IAND -DINTERNAL_READ_FORMAT_BUG \
+			  -DNO_PREPEND_STRING -DNO_DOUBLE_ESCAPE_SLASH \
+			  -Ddouble_p -DMAC_SSIZE
+
+	CFLAGS		= $(CPP_FLAGS) \
+			  -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX \
+			  -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 
+
+	PPLUS_FFLAGS	= $(CPP_FLAGS) \
+			  -fno-automatic -fno-second-underscore \
+			  -fdollar-ok -ffixed-line-length-132 $(FINCLUDES)
+
+	FFLAGS		= $(CPP_FLAGS) \
+			  -fno-automatic -fno-second-underscore \
+			  -fdollar-ok -ffixed-line-length-132 \
+			  -ffpe-trap=overflow -fimplicit-none \
+			  -fdefault-real-8 -fdefault-double-8 $(FINCLUDES)
+
+#	PROF_FLAGS	= -pg
+	PROF_FLAGS	= 
+
+	LD		= $(shell which gfortran-5)
+	LDFLAGS		= -fPIC -static-libgfortran
+
+	SYSLIB		= -L/usr/X11R6/lib -lX11 \
+			  -lcurl \
+			  -ldl \
+			  -lz \
+			  -lm
+
+	GKSLIB		= ../xgks/src/lib/libxgks.a
+
+	CDFLIB		= $(NETCDF4_DIR)/lib/libnetcdff.a \
+			  $(NETCDF4_DIR)/lib/libnetcdf.a \
+			  $(HDF5_DIR)/lib/libhdf5_hl.a \
+			  $(HDF5_DIR)/lib/libhdf5.a 
+
+	LINUX_OBJS	= special/linux_routines.o \
+			  dat/*.o \
+			  ../fmt/src/x*.o \
+			  ../ppl/plot/ppldata.o
+
+	TERMCAPLIB	= -lncurses
+
+	READLINELIB = -L$(READLINE_DIR)/lib -lreadline 
+
+# Directly compile the .F source files to the .o object files
+# since gfortran can handle the C compiler directives in Fortran code
+%.o : %.F
+	$(FC) $(FFLAGS) -c $*.F -o $*.o
+
+#
+# End of platform_specific_includes.mk.x86_64-linux
+#

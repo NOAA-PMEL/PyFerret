@@ -36,6 +36,9 @@
 /*
   06/04 *ywei* -Created to calculate the hash value for a string.
  */
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
 #include <stdio.h>
 #include "string_array.h"
 

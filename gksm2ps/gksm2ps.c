@@ -503,7 +503,7 @@ find_BB( meta_id )	/* find the Bounding Box info */
          break;
       record = malloc (gksmit.length);
       if ( (error = greadgksm(meta_id, gksmit.length, record)) != 0 )
-	return; 
+	return 0; 
 
       switch (gksmit.type) {
 
@@ -651,7 +651,7 @@ ps_trans_meta( meta_id )        /* translate the metafile */
          break;
       record = malloc (gksmit.length);
       if ( (error = greadgksm(meta_id, gksmit.length, record)) != 0 )
-	return; 
+	return 0; 
 
       switch (gksmit.type) {
 	 case 1:			/* clear workstation */

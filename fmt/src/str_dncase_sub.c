@@ -36,6 +36,9 @@
 /*
  12/11 *acm* Created for str_dncase
  */
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
 #include <ctype.h>
 #include <stdio.h>
 

@@ -34,6 +34,9 @@
 *
 */
 
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
 #include <string.h>
 
 /* Code from http://geekhideout.com/urlcode.shtml

@@ -68,6 +68,9 @@
 /*  *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
 *                                        definition of macro DFTYPE in ferretmacros.h. */
 
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <stdlib.h>
 #include <stdio.h>

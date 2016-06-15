@@ -47,6 +47,10 @@
  *               see the definition of macro DFTYPE in ferret.h 
  */
 
+#ifdef MAC_SSIZE
+typedef long ssize_t;
+#endif
+
 #include <signal.h>
 #include <stdio.h>
 #include <math.h>

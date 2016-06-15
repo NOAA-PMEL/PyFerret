@@ -39,10 +39,6 @@
  * Allocate storage for null string and set into Ferret string array
  */
 
-#ifdef MAC_SSIZE
-typedef long ssize_t;
-#endif
-
 #include <stdlib.h>
 
 void set_null_c_string_(out_ptr)

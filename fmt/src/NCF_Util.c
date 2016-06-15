@@ -100,10 +100,6 @@
 
 #include "ferretmacros.h"
 
-#ifdef MAC_SSIZE
-typedef long ssize_t;
-#endif
-
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <wchar.h>
 #include <unistd.h>		/* for convenience */

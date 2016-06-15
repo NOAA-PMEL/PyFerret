@@ -38,10 +38,6 @@
  *   Allocate dynamic memory and save a string returning the pointer to it
  */
 
-#ifdef MAC_SSIZE
-typedef long ssize_t;
-#endif
-
 #include <stdlib.h>
 
 void save_c_string_(string, inlen, fer_ptr, offset, stat)

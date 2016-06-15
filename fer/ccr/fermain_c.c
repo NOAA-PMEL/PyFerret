@@ -137,10 +137,6 @@
 *                    if debug build, let it crash
 */
 
-#ifdef MAC_SSIZE
-typedef long ssize_t;
-#endif
-
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>

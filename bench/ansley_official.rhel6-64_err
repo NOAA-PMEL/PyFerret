@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 117460926 Jun  2 18:07 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 117720321 Jun 15 11:10 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: new /DEGMINSEC and /HALFSPACE for control of lon/lat axis labels (ticket 2434)
+Note: ticket 2441: LET/D variables in a show data/var/xml
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,15 +14,13 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
-FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
-FER_GO=. /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib
+FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go /home/users/ansley/las.v8.4.rc5/JavaSource/resources/iosp/scripts/
 FER_GRIDS=.
-FER_LIBS=/home/users/ansley/ferret_distributions/rhel6_64/lib
-FER_PALETTE=. /home/users/ansley/ferret_distributions/rhel6_64/ppl
-FER_WEB_BROWSER=firefox
+FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
+FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/current_trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Thu Jun 2 18:09:11 PDT 2016
+Beginning at Wed Jun 15 12:05:35 PDT 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3649,6 +3647,10 @@ Replacing definition of axis XAXIS_TEST
  LISTing to file c.nc
  LISTing to file c.nc
  LISTing to file c.nc
+syntax error, unexpected WORD_STRING, expecting WORD_WORD
+context: Error { code = 500; message = "java.io.IOException: java.lang.Exception: Could not parse Ferret config file: java.util.MissingResourceException: Could not load any resource bundle by com.sun.org.apache.xerces.internal.impl.msg.SAXMessages"^;};
+syntax error, unexpected WORD_STRING, expecting WORD_WORD
+context: Error { code = 500; message = "java.io.IOException: java.lang.Exception: Could not parse Ferret config file: java.util.MissingResourceException: Could not load any resource bundle by com.sun.org.apache.xerces.internal.impl.msg.SAXMessages"^;};
  LISTing to file nc
  **TMAP ERR: error in line definition
              file coords dont match variable coords on axis XAXIS_TEST
@@ -4202,6 +4204,8 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_1.nc
  LISTing to file tmp/tagg_reg_2.nc
@@ -4217,7 +4221,7 @@ Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_no_T.nc
  LISTing to file tmp/tagg_reg_2_overlarge.nc
            *** NOTE: Not deleted: TDAY
-           *** NOTE: Axis is in use by grid (G092)
+           *** NOTE: Axis is in use by grid (G086)
  LISTing to file tmp/tagg_irreg_1.nc
  LISTing to file tmp/tagg_irreg_2.nc
  LISTing to file tmp/tagg_irreg_3.nc
@@ -4231,7 +4235,7 @@ Replacing definition of axis TDAY
 Replacing definition of axis TDAY_IR
  LISTing to file tmp/tagg_irreg_2_reg.nc
            *** NOTE: Not deleted: TDAY_IR
-           *** NOTE: Axis is in use by grid (G092)
+           *** NOTE: Axis is in use by grid (G086)
  LISTing to file tmp/tagg_T0varying_1.nc
 Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_T0varying_2.nc
@@ -4267,7 +4271,7 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_disjoint_T0varying_3.nc
  LISTing to file tmp/tagg_disjoint_T0varying_4_wrong.nc
            *** NOTE: Not deleted: TDAY_WRONG
-           *** NOTE: Axis is in use by grid (G092)
+           *** NOTE: Axis is in use by grid (G086)
  LISTing to file tmp/tagg_single_1.nc
  LISTing to file tmp/tagg_single_2.nc
  LISTing to file tmp/tagg_single_3.nc
@@ -4275,7 +4279,7 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_single_5.nc
  LISTing to file tmp/tagg_single_6.nc
            *** NOTE: Not deleted: tday
-           *** NOTE: Axis is in use by grid (G092)
+           *** NOTE: Axis is in use by grid (G086)
  **ERROR: invalid command: given aggregation dataset name already in use: myagg2
 define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc, tmp/tagg_reg_2.nc
  **TMAP ERR: non-existent or not on line
@@ -4731,4 +4735,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Jun 2 18:11:40 PDT 2016
+Ended at Wed Jun 15 12:07:47 PDT 2016

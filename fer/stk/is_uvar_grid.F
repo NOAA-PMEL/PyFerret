@@ -108,19 +108,33 @@
 * V690 9/13-2/14 *sh*   support for auxiliary var regridding: temp[gz(depth)=zax]
 * V694  *acm* 1214 Fixing ticket 2220
 * V694 *acm*  5/15 Fix ticket 2213 
-* V698 *sh* 1/16 - tweaks to aggregates to ensure all LET/D grids found
-* V698 *acm* 1/16 change remaining dset=-1 to the parameter dset=pdset_uvars
+* V698 *sh* 1/16   tweaks to aggregates to ensure all LET/D grids found
+* V698 *acm* 1/16  change remaining dset=-1 to the parameter dset=pdset_uvars
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
 * V698  3/16 *acm* Remove unneeded xdset_parms.cmn
 * v698 5/16  *acm* ticket 2413: New attribute keywords ncoordvars, coordnames
 *                  return info about coordinate-variables in datasets
+* V699  5/16 *sh*  replace variable uvar_grid with calls to c LIST structures
 
 * calling argument declarations:
 	INTEGER	status
 * normal return is for error conditions
 * exit #1 is to request grid for a component ( stack has been pushed )
 * exit #2 is to signal that the grid has been obtained and stored in uvar_grid
+
+#include "netcdf.inc"
+	include	'tmap_errors.parm'
+	include 'tmap_dims.parm'
+	include	'xtm_grid.cmn_text'
+	external xgt_grid_data
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'interp_stack.parm'
+	include	'xcontext.cmn'
+	include	'xvariables.cmn'
+	include	'xprog_state.cmn'
+	include	'xfr_grid.cmn'
 
 * internal variable declarations:
 	LOGICAL	ITSA_GCVAR, ITSA_CONST_VAR,
@@ -137,24 +151,11 @@
      .          attoutflag, attid, bracket, dot, dsloc, endbracket,
      .          status_deallo, agg_grid, agg_line, agg_len, agg_dset,
      .		imemb, memb_cat, memb_dset, memb_grid, iline, nv,
-     .		hi_cat, hi_var, vlen, slen
+     .		hi_cat, hi_var, vlen, slen, dummy_aux(nferdims)
 
 	CHARACTER VAR_CODE*128, LEFINT*6,
      .		  name*512, buff*2048, varname*512, 
      .            attname*128, aname*128, newname*512
-
-#include "netcdf.inc"
-	include	'tmap_errors.parm'
-	include 'tmap_dims.parm'
-	include	'xtm_grid.cmn_text'
-	external xgt_grid_data
-	include	'ferret.parm'
-	include	'errmsg.parm'
-	include	'interp_stack.parm'
-	include	'xcontext.cmn'
-	include	'xvariables.cmn'
-	include	'xprog_state.cmn'
-	include	'xfr_grid.cmn'
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents
@@ -181,6 +182,10 @@
 	cx_save = cx_stack_ptr		! restored on pass #2 (2/99)
 	saved_ifthen_type = .FALSE.
 	getting_aux_var = .FALSE.
+* when auxiliary grid information is irrelevant ... 
+	DO idim = 1, nferdims
+	   dummy_aux(idim) = -12345   ! visible in debugging
+	ENDDO
 
 * process the next item in the expression from the uvar buffer (last to first)
  100	is_phase(isp) = is_phase(isp) + 1
@@ -690,15 +695,40 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 	      uvar_need_dset(uvar) = .FALSE.
 	      uvar_grid(uvar, pdset_irrelevant) = mgrid_abstract
 	      uvar_data_type(uvar, pdset_irrelevant) = ptype_float
+	      CALL SAVE_UVAR_GRID(uvar, mgrid_abstract, ptype_float,
+     .				  pdset_irrelevant)
+* ... 6/26 init aux info just for house-keeping
+	      DO idim = 1, nferdims
+	         uvar_aux_cat(uvar,idim,pdset_irrelevant) = dummy_aux(idim)
+	         uvar_aux_var(uvar,idim,pdset_irrelevant) = dummy_aux(idim)
+	      ENDDO
+	      CALL SAVE_UVAR_AUX_INFO(uvar,
+     .                         dummy_aux, dummy_aux, pdset_irrelevant)
 	   ELSE		! defined with LET/D
 !	      uvar_need_dset(uvar) = .TRUE.	! always TRUE anyway
 * *kob* 4/99 bug fix - check to see if let/d is dataset independent
 	      IF (dset .EQ. unspecified_int4) THEN
 		 uvar_grid(uvar, pdset_irrelevant) = mgrid_abstract
 	         uvar_data_type(uvar, pdset_irrelevant) = ptype_float
+	         CALL SAVE_UVAR_GRID(uvar, mgrid_abstract, ptype_float,
+     .				     pdset_irrelevant)
+* ... 6/16 init aux info just for house-keeping
+	         DO idim = 1, nferdims
+	            uvar_aux_cat(uvar,idim,pdset_irrelevant) = dummy_aux(idim)
+	            uvar_aux_var(uvar,idim,pdset_irrelevant) = dummy_aux(idim)
+	         ENDDO
+	         CALL SAVE_UVAR_AUX_INFO(uvar,
+     .                         dummy_aux, dummy_aux, pdset_irrelevant)
               ELSE
                  uvar_grid(uvar, dset) = mgrid_abstract
 	         uvar_data_type(uvar, dset) = ptype_float
+	         CALL SAVE_UVAR_GRID(uvar, mgrid_abstract, ptype_float, dset)
+* ... 6/16 init aux info just for house-keeping
+	         DO idim = 1, nferdims
+	            uvar_aux_cat(uvar,idim,dset) = dummy_aux(idim)
+	            uvar_aux_var(uvar,idim,dset) = dummy_aux(idim)
+	         ENDDO
+	         CALL SAVE_UVAR_AUX_INFO(uvar, dummy_aux, dummy_aux, dset)
 	      ENDIF
 	   ENDIF
 	   gnum = mgrid_abstract
@@ -744,14 +774,17 @@ c        ENDIF
 	   this_dset = pdset_irrelevant
 	ENDIF
 
-* store the importenat stuff!
+* store the important stuff!
 	uvar_grid( uvar, this_dset ) = gnum
 	uvar_data_type(uvar, this_dset) = cx_type(big_cx)
+	CALL SAVE_UVAR_GRID(uvar, gnum, cx_type(big_cx), this_dset)
 	DO  i = 1, nferdims
-	   uvar_aux_var (uvar, i, this_dset) = cx_aux_var (i, big_cx)
-	   uvar_aux_cat (uvar, i, this_dset) = cx_aux_cat (i, big_cx)
+           uvar_aux_var (uvar, i, this_dset) = cx_aux_var (i, big_cx)
+           uvar_aux_cat (uvar, i, this_dset) = cx_aux_cat (i, big_cx)
 	   uvar_aux_stat(uvar, i           ) = cx_aux_stat(i, big_cx)
 	ENDDO
+	CALL SAVE_UVAR_AUX_INFO(uvar,
+     .       cx_aux_cat(1,big_cx), cx_aux_var(1,big_cx), this_dset)
 
 * * * SECOND PASS CHECK * * *
 * need a second pass to include pseudo_vars in calculation ?
@@ -762,6 +795,21 @@ c        ENDIF
  1110	   uvar_given(i,uvar) = uvlim_irrelevant
 	   uvar_grid( uvar, this_dset ) = unspecified_int4 ! 10/00
 	   uvar_data_type(uvar, this_dset) =  unspecified_int4 ! housekeeping
+* 6/16 comment as we switch to LIST-based management of uvar grids:
+* ... the following commented-out SAVE_UVAR_GRID call was initially inserted
+*     for consistency with the pre-LIST code. Studying the comments we see
+*     that the storage of this unspecified_int grid value was introduced to
+*     fix a bug (10/00) and actually contradicts the explicit comment that 
+*     "are NOT initialized" just above. Because 'this_dset' reflects context
+*     left by previous commands, it is not reliably correct for the current
+*     grid determination.  The result is that on occasion an unspecified_int4
+*     value gets falsely stored under an irrelevant dataset, and not removed,
+*     thereby mildly corrupting the uvar grid LISTs.  I see no value in storing
+*     it so I've commented it out. But the possibility exists of an unforseen
+*     interaction.  There must be some reason that the previous code set
+*     these unspecified values, right?
+!	   CALL SAVE_UVAR_GRID(uvar, unspecified_int4, unspecified_int4,
+!     .			       this_dset)
 	   is_phase( isp ) = 0
 	   is_sum( isp ) = isalg_transfer
 	   cx_stack_ptr = cx_save

@@ -59,6 +59,8 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V690 *sh* 1/14 - added kludge to display limits from aux var regrid by avg
 * V698  *acm* 5/16 Ticket 2405: MODE CALENDAR:auto
+* V698 *sh* 4/16 hack to format E axis limits as integers
+*	         Note:  this is a poor fix.  See 4/16 note below
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -130,6 +132,14 @@
 	ENDIF
 
 * hack for E axis positions, so @AVE gets labeled with integer index nos
+* *sh* 4/16 - this is a poor place to have fixed this problem
+*     better would be to create the concept of an "enumerated axis", which
+*     should always be represented as an integer position.  A quick way to
+*     do this is to create ITSA_ENUMERATED_AXIS, which (for now) answers .TRUE.
+*     only for E axes with units of plag_ax_units_e = 'realization'
+*     (This can be expanded later as more enumerated cases arise.)
+*     Then in TM_WORLD when returning a coordinate on an enumerated axis ignore
+*     box_lo_lim and box_hi_lim, returning box_middle (the integer position)
 	its_float = lo .NE. INT(lo)
 	IF (its_float .AND. idim.EQ.E_dim) THEN
 	   line = grid_line(idim,grid)

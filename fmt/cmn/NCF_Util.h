@@ -46,6 +46,7 @@
  * V698  2/16 *acm Additions for ticket 2352: LET/D variables and attributes. User-variables
  *                 defined with LET/D=n are stored with dataset n. A flag in the ncvar 
  *                 structure tells that the variable is a user-var. 
+ * V699 5/16 *sh* added grid management for uvars: gridList and uvarGrid
  */
 
 /* .................... Defines ..................... */
@@ -116,6 +117,8 @@ typedef struct  {          /* variable */
 	int dims[MAX_VAR_DIMS];
 	int natts;
 	int varid;
+        int uvarid;            /* the value of uvar as Ferret knows it, 0 if fvar */
+                               /* note that uvflag no longer needed with this */
 	int is_axis;           /* coordinate variable */
 	int axis_dir;          /* coordinate direction 1,2,3,4, for X,Y,Z,T, etc*/
 	int has_fillval;
@@ -127,9 +130,9 @@ typedef struct  {          /* variable */
 	int attrs_list_initialized;
 	LIST *varagglist;      /* if an aggregate dataset, for each var,
 	                          list the members of the aggregate components. */
+        LIST *uvarGridList;    /* if a uvar, keep track of its grid(s) */
 	int agg_list_initialized;
 	int nmemb;
-	int uvflag;			   /* flag for LET/D var added to this set (0=file var, 1-uvar) */
 } ncvar;
 
 typedef struct {			/* attribute */
@@ -144,19 +147,27 @@ typedef struct {			/* attribute */
 	double *vals;       /* for numeric attributes of all types */
 } ncatt;
 
-typedef struct {			/* aggregate member-dataset */
-	int dsetnum;			/* Ferret dataset number */
-	int aggSeqNo;			/* sequence number of dset within agg */
+typedef struct {	    /* aggregate member-dataset */
+	int dsetnum;	    /* Ferret dataset number */
+	int aggSeqNo;	    /* sequence number of dset within agg */
 } ncagg;
 
-typedef struct {			/* for var in aggregate member-dataset: */
-	int imemb;		        /* for members of the aggregate, member sequence number */
-	int vtype;		        /* for members of the aggregate, type: user-var or file-var */
-	int datid;		        /* for members of the aggregate, Ferret dataset id */
-	int gnum;               /* Ferret grid numbers */
-	int iline;              /* Ferret line number for the aggregate dimension */
-	int nv;                 /* Ferret sequence # in ds_var_code or uvar_name_code */
+typedef struct {	    /* for var in aggregate member-dataset: */
+	int imemb;	    /* for members of the aggregate, member sequence number */
+	int vtype;	    /* for members of the aggregate, type: user-var or file-var */
+	int datid;	    /* for members of the aggregate, Ferret dataset id */
+	int gnum;           /* Ferret grid numbers */
+	int iline;          /* Ferret line number for the aggregate dimension */
+	int nv;             /* Ferret sequence # in ds_var_code or uvar_name_code */
 } ncagg_var_descr;
+
+typedef struct {     /* for uvars: grid/dataset pairs*/
+	int grid;
+	int dset;
+	int dtype;
+        int auxCat[NFERDIMS];
+        int auxVar[NFERDIMS];
+} uvarGrid;
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
 #define FORTRAN(a) a

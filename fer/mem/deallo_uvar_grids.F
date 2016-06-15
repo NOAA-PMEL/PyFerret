@@ -45,6 +45,7 @@
 * V510 *sh* 4/00 - deallocate any grid, not just dynamic ones
 * V533 *sh* 7/01 - set data type of grid/variable
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V699 *sh* 6/16 - variable uvar_grids replaced with LISTs in NCF_Util.c 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -57,29 +58,70 @@
 	INTEGER	uvar
 
 * local declarations
-	INTEGER i
+	INTEGER iset, idim, ngrids, nfound, 
+     .		saved_uvgrid, tmp_len
+	CHARACTER tmp_buff*256
+	INTEGER aux_cat(nferdims), aux_var(nferdims)  ! LIST diagnostics
 
+	nfound = 0
+	CALL GET_SAVED_UVAR_GRID_LIST_LEN(uvar, ngrids)
 
-* loop through all of the grids that may be associated with this
-* note: could be more efficient:  check to see if this is a data set
-*	dependent variable (or "EX#n") and delete only the single data set grid
+* OLD CODE - based upon XVARIABLES uvar_grid variable
+* The FUTURE CODE will replace all of the doubly-dimensioned
+* variables (max_uvar X max_gfdl_dsets) with calls to LISTs
 
-	DO 100 i = 0, max_gfdl_dsets
+* THIS LOOP WILL BE REPLACED WITH a loop over ngrids (see above)
+* using LIST controls that allow you to traverse the list from end-to-end:
+* list_front, list_mvnext
+	DO 100 iset = 0, max_gfdl_dsets
 
 * Remove the grid
 * (and possibly all memory resident variables that depend on it)
-	   IF ( uvar_grid(uvar,i) .GE. 1
-     .   .AND.  uvar_grid(uvar,i) .LE. max_dyn_grids ) THEN
-	      CALL DEALLO_DYN_GRID(uvar_grid(uvar,i))
+	   IF ( uvar_grid(uvar,iset) .GE. 1
+     .   .AND.  uvar_grid(uvar,iset) .LE. max_dyn_grids ) THEN
+
+* test the new LIST code
+	      nfound = nfound + 1
+	      CALL GET_SAVED_UVAR_GRID(uvar, iset, saved_uvgrid)
+	      IF (saved_uvgrid .NE. uvar_grid(uvar,iset)) THEN
+	         CALL GET_SHORT_DSET_NAME( iset, tmp_buff, tmp_len)
+	         CALL WARN("UVGRIDERR: deallo_uvar_grids")
+	         CALL WARN("dset="//tmp_buff(:tmp_len))
+	         WRITE(6,*) 'UVGRIDERR: deallo_uvar_grids'
+	         WRITE(6,*)'dset='//tmp_buff(:tmp_len)
+	      ENDIF
+
+	      CALL GET_SAVED_UVAR_AUX_INFO(uvar, iset,
+     .				           aux_cat, aux_var)
+	      DO idim = 1, nferdims
+	        IF (aux_cat(idim) .NE. uvar_aux_cat(uvar,idim,iset)
+     .         .OR. aux_var(idim) .NE. uvar_aux_var(uvar,idim,iset))
+     .							THEN
+	           WRITE(6,3000) aux_cat(idim), uvar_aux_cat(uvar,idim,iset),
+     .				 aux_var(idim), uvar_aux_var(uvar,idim,iset)
+ 3000		   FORMAT(' UVAUXERR: deallo_uvar_grids', 4I8)
+	        ENDIF
+	      ENDDO
+
+	      CALL DEALLO_DYN_GRID(uvar_grid(uvar,iset))
 	   ENDIF
 
 * set the grid pointer to its initialized state
-	uvar_grid( uvar, i ) = unspecified_int4
+	uvar_grid( uvar, iset ) = unspecified_int4
 
 * set the data type of the grid/variable
-	uvar_data_type( uvar, i ) = unspecified_int4
+	uvar_data_type( uvar, iset ) = unspecified_int4
 
  100	CONTINUE
+
+
+* free the LIST of grids associated with this uvar
+	IF (nfound .NE. ngrids) THEN
+	   CALL WARN("UVGRIDERR: deallo_uvar_grids nfound")
+	   WRITE(6,*) 'UVGRIDERR: deallo_uvar_grids nfound'
+	   WRITE(6,*)'uvar=', uvar
+	ENDIF
+	CALL FREE_UVAR_GRIDS(uvar)
 
 	RETURN
 	END

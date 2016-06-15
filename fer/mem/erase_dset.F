@@ -93,15 +93,16 @@
               CALL deleted_list_modify(uvar_num_items_head, ii,
      .	            uvar_deleted)
 
-* Remove variable from linked-list structure, the user-variables dataset
-
-              slen = TM_LENSTR( uvar_name_code(ii)  )
-              IF (slen .GT. 0 .AND. uvar_name_code(ii)(1:3) .NE. 'EX#') THEN
-                 CALL TM_FTOC_STRNG( uvar_name_code(ii)(1:slen), fhol, flen )
-
-                 dset_uvars = pdset_uvars
-                 CALL NCF_DELETE_VAR (dset_uvars, fhol )
-              ENDIF
+* 6/16: This logic is now handled inside of DELETE_USER_VAR
+!* Remove variable from linked-list structure, the user-variables dataset
+!
+!              slen = TM_LENSTR( uvar_name_code(ii)  )
+!              IF (slen .GT. 0 .AND. uvar_name_code(ii)(1:3) .NE. 'EX#') THEN
+!                 CALL TM_FTOC_STRNG( uvar_name_code(ii)(1:slen), fhol, flen )
+!
+!                 dset_uvars = pdset_uvars
+!                 CALL NCF_DELETE_VAR (dset_uvars, fhol )
+!              ENDIF
 
            ENDIF
 

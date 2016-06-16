@@ -41,6 +41,8 @@
  * GKS workstation is a GKSM metafile workstation
  */
 
+#include <Python.h> /* make sure Python.h is first */
+
 int its_gksm_(int *wkid)
 {
     return 0;

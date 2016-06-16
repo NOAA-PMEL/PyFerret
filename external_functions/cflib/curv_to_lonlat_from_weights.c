@@ -4,6 +4,7 @@
  * which regridded variable Lwave. 
  */
 
+#include <Python.h> /* make sure Python.h is first */
 #include "nccf_regrid.h"
 #include <stdio.h>
 #include <stdlib.h>

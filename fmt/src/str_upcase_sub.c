@@ -36,6 +36,7 @@
 /*
  06/04 *ywei* Created to speed up str_upcase
  */
+
 #include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
 

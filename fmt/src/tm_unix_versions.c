@@ -60,7 +60,6 @@
 /* had to add ifdef check for trailing underscore in routine name
    for aix port *kob* 10/94 */
 
-
 #include <Python.h> /* make sure Python.h is first */
 #include <sys/types.h>
 #include <dirent.h>

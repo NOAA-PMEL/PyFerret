@@ -48,6 +48,7 @@
  * 6/25/2015 *acm* set the pointer value to 0, fixing ticket 2305
  */
 
+#include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 #include <assert.h>
 #include "ferret.h"

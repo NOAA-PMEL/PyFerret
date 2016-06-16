@@ -33,6 +33,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
 */
 
+#include <Python.h> /* make sure Python.h is first */
 
 /* 
  *  return the size (in units of bytes) of a pointer to a character

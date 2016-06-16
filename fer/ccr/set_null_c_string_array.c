@@ -37,6 +37,7 @@
 /* 
  *   Fill the indicated region of memory with pointers to null strings
  */
+
 #include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 

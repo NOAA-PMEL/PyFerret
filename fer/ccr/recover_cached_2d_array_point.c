@@ -48,6 +48,7 @@
  * revision 0.0 - 5/5/15
  */
 
+#include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 #include "ferret.h"
  

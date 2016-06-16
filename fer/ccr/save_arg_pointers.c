@@ -53,6 +53,7 @@
  *              definition of macro DFTYPE in ferret.h
  */
 
+#include <Python.h> /* make sure Python.h is first */
 #include "ferret.h"
  
 /* global cache pointer */

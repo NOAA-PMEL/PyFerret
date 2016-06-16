@@ -65,6 +65,8 @@
    (and use -D_NO_PROTO for non-ANSI compilers)
 */ 
 
+#include <Python.h> /* make sure Python.h is first */
+
 /* local macro definitions */
 #define PLINE_CLASS_BASIC   0
 #define PLINE_CLASS_STRIDE  1

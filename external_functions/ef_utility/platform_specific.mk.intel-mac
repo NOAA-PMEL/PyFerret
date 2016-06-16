@@ -9,18 +9,18 @@
 
 INCLUDES	= -I. -I../ef_utility -I../ef_utility/ferret_cmn
 
-CC		= gcc-5
+CC		= $(shell which gcc-5)
 CFLAGS		= -fPIC -Ddouble_p -O $(INCLUDES)
 CFLAGS_DEBUG	= -O0 -g
 
-FC		= gfortran-5
-F77		= gfortran-5
+FC		= $(shell which gfortran-5)
+F77		= $(shell which gfortran-5)
 FFLAGS		= -fPIC -Ddouble_p -fno-second-underscore \
 		  -fno-backslash -fdollar-ok -ffixed-line-length-132 \
 		  -fdefault-real-8 -fdefault-double-8 -O $(INCLUDES)
 FFLAGS_DEBUG	= -O0 -g -fbounds-check
 
-LD		= gfortran-5
+LD		= $(shell which gfortran-5)
 LD_DYN_FLAGS	= -fPIC -bundle -undefined dynamic_lookup
 SYSLIBS		= ../ef_utility/copy_ferret_ef_mem_subsc.o 
 

@@ -97,9 +97,8 @@
 
 
 /* .................... Includes .................... */
- 
-#include <Python.h> /* make sure Python.h is first */
 
+#include <Python.h> /* make sure Python.h is first */
 #include <unistd.h>		/* for convenience */
 #include <stdlib.h>		/* for convenience */
 #include <stdio.h>		/* for convenience */

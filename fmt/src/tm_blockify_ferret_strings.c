@@ -45,6 +45,8 @@
     This function copies the strings from mr_blk1 to pblock.
 */
 
+#include <Python.h> /* make sure Python.h is first */
+
 void tm_blockify_ferret_strings(char **mr_blk1, char *pblock,
 				int bufsiz, int outstrlen)
 {

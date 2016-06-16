@@ -38,8 +38,9 @@
                  for better performance. This function is for cleaning up
                  the data structure.
  */
+
 #include <Python.h> /* make sure Python.h is first */
-#include <stdio.h>
+#include <stdlib.h>
 #include "deleted_list.h"
 
 void deleted_list_clear_(void * deleted_list_header)

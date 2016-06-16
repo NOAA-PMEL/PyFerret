@@ -35,6 +35,10 @@
 *
 */
 
+#include <Python.h> /* make sure Python.h is first */
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 /*
   Code to perform decoding of formatted dates and times
@@ -48,11 +52,6 @@
 
 float FORTRAN(days_from_day0) (double* days_1900, int* iyr, int* imon,
                                int* iday);
-
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
 
 float FORTRAN(date_decode) (char *strdate)
 {

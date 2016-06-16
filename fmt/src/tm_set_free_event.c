@@ -54,6 +54,8 @@
  *               now used to read user input with readline functionality
  */
 
+#include <Python.h> /* make sure Python.h is first */
+
 #ifdef NO_ENTRY_NAME_UNDERSCORES
 void tm_set_free_event(n)
 #else

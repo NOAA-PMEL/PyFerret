@@ -34,6 +34,7 @@ v5df_fer.h
 
  */
 
+#include <Python.h> /* make sure Python.h is first */
 #include "config.h"
 
 

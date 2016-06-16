@@ -1,3 +1,4 @@
+#include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

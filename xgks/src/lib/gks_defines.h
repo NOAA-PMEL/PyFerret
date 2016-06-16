@@ -84,15 +84,22 @@
  *	Changing all occurrences, however, would be painful -- especially for
  *	"just a patch".  Hopefully, we'll remember to do this before the next
  *	release.
+ *
+ * *KMS* - The prototypes for umalloc, urealloc, and ufree are always needed
+ *         for where umalloc, urealloc, and ufree are explicitly called,
+ *         regardless of whether lint is defined.
  */
 #ifndef lint
 #   define free(ptr)		ufree(ptr)
 #   define malloc(size)		umalloc(size)
 #   define realloc(ptr, size)	urealloc(ptr, size)
-    extern void		ufree		PROTO((voidp ptr));
-    extern voidp	umalloc		PROTO((size_t size));
-    extern voidp	urealloc	PROTO((voidp ptr, size_t size));
 #endif
+
+/* make sure voidp is defined by including udposix.h here */
+#include "udposix.h"
+extern void	ufree		PROTO((voidp ptr));
+extern voidp	umalloc		PROTO((size_t size));
+extern voidp	urealloc	PROTO((voidp ptr, size_t size));
 
 /*
  *	Free allocated memory.

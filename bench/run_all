@@ -59,35 +59,18 @@ umask 002     #  make all files group deletable  3/16
 
 set rhlev = "0"
 
-# Solaris may have HOSTTYPE=sun, or HOSTTYPE=solaris
-if ( $HOSTTYPE =~ *sun* ) then
-   if ( `uname -r` =~ *5*  ) then
-      set machine = "sol"
-   else
-      set machine = "sun"
-   endif
-else if ( $HOSTTYPE =~ *solaris* ) then
-   set machine = "sol" 
-else if ( $HOSTTYPE =~ *alpha* ) then
-   set machine = "alp" 
-else if ( $HOSTTYPE =~ *aix* ) then
-   set machine = "aix" 
-else if ( $HOSTTYPE =~ *iris* ) then
-   set machine = "sgi"
-else if ( $HOSTTYPE =~ *hp* ) then
-   set machine = "hp"
-else if ( $HOSTTYPE =~ *ia64*) then
-    set machine = "ia64-linux"
-else if ( $HOSTTYPE =~ *x86_64-linux*) then
-    set machine = "x86_64-linux"
-    if ( `uname -r` =~ *el6* ) then
-       set rhlev = "six"
-    endif
-else if ( $HOSTTYPE =~ *linux*) then
-    set machine = "linux"
-else
-   set machine = "unknown_host"
-endif
+if ( (`uname -s` == "Linux") && (`uname -m` == "x86_64") ) then
+     set machine = "x86_64-linux"
+     if ( `uname -r` =~ *el6* ) then
+        set rhlev = "six"
+     endif
+else if ( (`uname -s` == "Linux") && (`uname -m` == "i686") ) then
+     set machine = "linux"
+else if ( (`uname -s` == "Darwin") && (`uname -m` == "x86_64") ) then
+    set machine = "x86_64-darwin"
+ else
+    set machine = "unknown_host"
+ endif
 
 if ($rhlev == six) then 
   echo six
@@ -168,11 +151,12 @@ ln -s $machine_stream stream_data_link.unf
 
 #set up proper stream testing jnl file - depends on endianness
 rm -f bn_test_stream.jnl
-if ($machine == "linux" || $machine == "alp" || $machine == "x86_64-linux" || $machine == "ia64-linux") then
+# most everything little-endian now
+# if ($machine == "linux" || $machine == "alp" || $machine == "x86_64-linux" || $machine == "ia64-linux") then
     ln -s bn_test_stream_little.jnl bn_test_stream.jnl
-else
-    ln -s bn_test_stream_big.jnl bn_test_stream.jnl
-endif
+# else
+#     ln -s bn_test_stream_big.jnl bn_test_stream.jnl
+# endif
 
 #Set up for metafile/gif testing
 set check_met = check_metafiles

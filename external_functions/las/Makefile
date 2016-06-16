@@ -42,6 +42,7 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 #
 
 #all:	write_webrow.so write_webrow_gwt.so list_value_xml.so lon_lat_time_string.so
+all:
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

@@ -55,7 +55,6 @@
 			  -DFULL_GUI_VERSION \
 			  -DX_REFRESH \
 			  -DXT_CODE \
-			  -DDARWIN  \
 			  -DLINUX \
 			  -DNO_PASSED_CONCAT \
 			  -Dcrptd_cat_argument \

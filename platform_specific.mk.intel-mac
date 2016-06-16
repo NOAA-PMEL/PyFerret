@@ -30,9 +30,9 @@
 
 	PLATFORM = $(shell uname -s -r) 64-bit
 
-	CC		= $(shell which gcc-5)
-	FC		= $(shell which gfortran-5)
-	F77		= $(shell which gfortran-5)
+	CC		= $(shell which gcc-6)
+	FC		= $(shell which gfortran-6)
+	F77		= $(shell which gfortran-6)
 	AR		= $(shell which ar)
 	ARFLAGS		= -cr
 	RANLIB		= $(shell which ranlib)
@@ -46,7 +46,7 @@
 			  -DNO_OPEN_READONLY -DMANDATORY_FORMAT_WIDTHS\
 			  -DNO_OPEN_CARRIAGECONTROL -Dxgks -DSTAR_1_SUPPORTED \
 			  -DFULL_GUI_VERSION -DX_REFRESH \
-			  -DXT_CODE -DDARWIN -DLINUX -DNO_PASSED_CONCAT \
+			  -DXT_CODE -DLINUX -DNO_PASSED_CONCAT \
 			  -Dcrptd_cat_argument \
 			  -DG77_SIGNAL -DG77 \
 			  -DNEED_IAND -DINTERNAL_READ_FORMAT_BUG \
@@ -70,7 +70,7 @@
 #	PROF_FLAGS	= -pg
 	PROF_FLAGS	= 
 
-	LD		= $(shell which gfortran-5)
+	LD		= $(shell which gfortran-6)
 	LDFLAGS		= -fPIC -static-libgfortran
 
 	SYSLIB		= -L/usr/X11R6/lib -lX11 \

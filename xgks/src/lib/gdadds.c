@@ -47,6 +47,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "gks_implem.h"
 #include "gif/gd.h"
 #include "gif/gdadds.h"
 /* absolute value of a */

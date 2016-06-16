@@ -15,7 +15,6 @@ BUILDTYPE = $(HOSTTYPE)
 # BUILDTYPE = i386-linux
 # BUILDTYPE = i386-linux-gnu
 # BUILDTYPE = intel-mac
-# BUILDTYPE	= intel-mac
 
 ## INSTALL_FER_DIR and PYTHON_EXE are only used to construct
 ## the location of pyferret library.  The library should be

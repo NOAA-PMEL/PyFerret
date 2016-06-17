@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Jun 16 17:14 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Jun 17 15:17 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -294,7 +294,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Thu Jun 16 17:14:40 PDT 2016
+Beginning at Fri Jun 17 15:17:18 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -3636,8 +3636,61 @@ set axis/name=45 x_in_meters
 set axis/name=.fr x_in_meters
 *** Running ferret script: bn_let_remote.jnl
  Cached data cleared from memory
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "time_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "time_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "time_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+ **ERROR: command syntax: /REMOTE variable expression may not contain [d=
+DEFINE VARIABLE/D=1/remote rvar = t0112mn1[d=1,z=1:100@ave]
+ **ERROR: command syntax: /REMOTE variable definition must also specify /D=
+DEFINE VARIABLE/remote rvar = t0112mn1[d=1,z=1:100@ave]
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 500; message = "java.io.IOException: java.lang.Exception: Could not parse Ferret config file: java.util.MissingResourceException: Could not load any resource bundle by com.sun.org.apache.xerces.internal.impl.msg.SAXMessages"^;};
+context: Error { code = 500; message = "Error processing XML header file /usr/local/src/nvods/tomcat/content/las/conf/server/temp/6790FDCBF64A0E6EFAA6A20D854071E0/header.xml (No such file or directory)"^;};
+ **netCDF error
+             Unable to open URL with REMOTE variable definitions:
+             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
+ **TMAP ERR: attribute reading error
+             Unable to get varid for LET/REMOTE variable: NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
+             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
+ **TMAP ERR: attribute reading error
+             Unable to get bad-value for LET/REMOTE variable: NetCDF: Attribute not found (OPeNDAP/netCDF Error code -43)
+             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
+ **netCDF error
+             NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
+             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
+list/x=300/y=15 avar
 *** Running ferret script: bn691_bug_fixes.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -4663,4 +4716,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testfermethods.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Thu Jun 16 17:16:33 PDT 2016
+Ended at Fri Jun 17 15:19:14 PDT 2016

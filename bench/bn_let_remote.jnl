@@ -1,13 +1,14 @@
 ! bn_let_remote.jnl
 ! Tests of the F-TDS LET/REMOTE
+! 6/2016 installed NVODS on new-bock server 
 
 ! See if the F-TDS is working and bail if not.
 
-let status = TEST_OPENDAP("http://ferret.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl")
+let status = TEST_OPENDAP("http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl")
 load status
 if `status NE 0` then EXIT/SCRIPT
 
-use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc"
+use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl"
 let/D=1/remote myvar = t0112mn1[k=1:5@sum]
 let/D=1/remote ave_z = t0112mn1[z=0:1000@ave]
 sh var
@@ -27,8 +28,8 @@ can data/all; can var/all
 
 ! open another dataset, define more remote variables
 
-use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc"
-use "http://ferret.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
+use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl"
+use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
 let/D=2/remote sstsum = sst[L=1:5@sum]
 let/D=2/remote airtsum = airt[L=1:5@sum]
 sh dat
@@ -44,7 +45,7 @@ list/y=-10/x=50:59 sstsum, airtsum, both
 can dat/all; can var/all
 
 ! make several remote definitions. They can be used together in an expression. 
-use "http://ferret.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
+use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
 let/D=1/remote sstsum = sst[L=1:5@sum]
 let/D=1/remote airtsum = airt[L=1:5@sum]
 let/D=1/remote factor = 12
@@ -54,7 +55,7 @@ list/y=-5/x=130w:110w combo
 
 can dat/all; can var/all
 
-use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/t0112mn1.nc"
+use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl"
 
 ! This is ok let/remote/D=
 let/D=1/remote myvar = t0112mn1[z=1:100@ave]
@@ -85,6 +86,5 @@ let/D=1/remote a = 12
 sho dat
 list/x=300/y=15/z=0:100 avar
 
-set mode/last ignore
 can dat/all; can var/all
 

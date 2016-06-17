@@ -42,8 +42,9 @@ LIBZ_DIR	= /usr/local
 ## Java home directory - this may be predefined
 ## from your shell environment.  If JAVA_HOME is defined,
 ## $(JAVA_HOME)/bin/javac and $(JAVA_HOME)/bin/jar is
-## called to build threddsBrowser.jar; otherwise, it just
-## uses javac and jar (from the path).
+## called to build threddsBrowser.jar; otherwise, 
+## threddsBrowser.jar is not built and the Ferret command
+## SET DATA /BROWSE (or the alias OPEN) will not work.
 # JAVA_HOME	= /usr/java/latest
 # JAVA_HOME	= /usr/lib/jvm/java-oracle
 # JAVA_HOME	= /usr/lib/jvm/java-sun

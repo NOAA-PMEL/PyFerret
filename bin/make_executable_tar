@@ -112,30 +112,23 @@ ${mycp} ${fer_files} ${temp_dir}/ppl/fonts
 set tb_jar = ${ferret_dir}/threddsBrowser/threddsBrowser.jar
 if ( ! -r ${tb_jar} ) then
    echo "No threddsBrowser.jar file found ${ferret_dir}/threddsBrowser"
+   echo "Installation of threddsBrowser.jar skipped"
    echo ""
-   exit 1
+else
+   mkdir ${temp_dir}/lib
+   ${mycp} ${tb_jar} ${temp_dir}/lib
+#  Copy threddsBrowser/toolsUI/toolsUI-4.1.jar
+   set toolsui_jar = ${ferret_dir}/threddsBrowser/toolsUI/toolsUI-4.1.jar
+      if ( ! -r ${toolsui_jar} ) then
+      echo "No toolsUI-4.1.jar file found ${ferret_dir}/threddsBrowser/toolsUI"
+      echo ""
+      exit 1
+   endif
+   ${mycp} ${toolsui_jar} ${temp_dir}/lib
+#   Create a symbolic link to the toolsUI-4.1.jar file
+   cd ${temp_dir}/lib
+   ${mylns} toolsUI-4.1.jar toolsUI.jar
 endif
-mkdir ${temp_dir}/lib
-${mycp} ${tb_jar} ${temp_dir}/lib
-
-# Either copy threddsBrowser/toolsUI/toolsUI-4.1.jar ...
-set toolsui_jar = ${ferret_dir}/threddsBrowser/toolsUI/toolsUI-4.1.jar
-if ( ! -r ${toolsui_jar} ) then
-   echo "No toolsUI-4.1.jar file found ${ferret_dir}/threddsBrowser/toolsUI"
-   echo ""
-   exit 1
-endif
-${mycp} ${toolsui_jar} ${temp_dir}/lib
-# ... or print a message about how to get toolsUI-4.1.jar
-# echo "To minimize size, the toolsUI-4.1.jar file is not included."
-# echo "The user needs to download the jar file from:"
-# echo "  ftp://ftp.unidata.ucar.edu/pub/netcdf-java/v4.1/toolsUI-4.1.jar"
-# echo "(or we can just grab it from <ferret_dir>/threddsBrowser/toolsUI/)"
-# echo 'and put it under the $FER_LIBS ($FER_DIR/lib) subdirectory'
-
-# Create a symbolic link to a (possibly non-existant) toolsUI-4.1.jar file
-cd ${temp_dir}/lib
-${mylns} toolsUI-4.1.jar toolsUI.jar
 
 # Copy pyferret files
 if ( "${pyferret_dir}" != "" ) then
@@ -144,6 +137,9 @@ if ( "${pyferret_dir}" != "" ) then
       echo "No python* directories found in ${pyferret_dir}/lib"
       echo ""
       exit 1
+   endif
+   if ( ! -d ${temp_dir}/lib ) then
+      mkdir ${temp_dir}/lib
    endif
    ${mycp} ${python_dirs} ${temp_dir}/lib
 endif

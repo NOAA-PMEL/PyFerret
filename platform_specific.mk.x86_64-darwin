@@ -56,7 +56,7 @@ CPP_FLAGS       = $(INCLUDES) -P -Dunix -DFORTRAN_90 \
 		  -DX_REFRESH -DNO_DOUBLE_ESCAPE_SLASH \
 		  -Dxgks -DSTAR_1_SUPPORTED \
 		  -DFULL_GUI_VERSION \
-		  -DXT_CODE -DDARWIN
+		  -DXT_CODE
 
 # Below this line are macro definitions used only for the final linking of the executable
 #

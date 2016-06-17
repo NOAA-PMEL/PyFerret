@@ -48,11 +48,6 @@ PIXMAN_DIR = /usr/local/cairo-1.14.4
 # PIXMAN_DIR = /usr/local
 # PIXMAN_DIR =
 
-## Version number of the libpng1x.so or libpng1x.dylib library (the "x", such as 2 or 6)
-## found in a system libraries directory such as /usr/lib, /usr/lib64, or /usr/local/lib
-PNG1X_VERSION = 2
-# PNG1X_VERSION = 6
-
 ## Installation directory for HDF5 static libraries (contains 
 ## include and lib or lib64 subdirectories).  Do not give a location 
 ## to link to NetCDF shared-object libraries.

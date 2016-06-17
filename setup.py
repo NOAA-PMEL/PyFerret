@@ -41,13 +41,6 @@ pixman_libdir = os.getenv("PIXMAN_LIBDIR")
 if pixman_libdir:
     pixman_libdir = pixman_libdir.strip()
 
-# version number of the libpng1x library, e.g. 2 or 6
-png1x_version = os.getenv("PNG1X_VERSION")
-if png1x_version:
-    png1x_version = png1x_version.strip()
-if not png1x_version:
-    raise ValueError("Environment variable PNG1X_VERSION is not defined")
-
 # The location of libpython2.x.so, in case it is not in a standard location
 python_libdir = os.path.split( distutils.sysconfig.get_python_lib(standard_lib=True) )[0]
 
@@ -118,8 +111,7 @@ if cairo_libdir:
     else:
         pixman_lib = "-lpixman-1"
     addn_link_args.append(pixman_lib);
-    png1x_flag = "-lpng1" + png1x_version
-    addn_link_args.extend([ "-lfreetype", "-lfontconfig", png1x_flag, "-lXrender", "-lX11"])
+    addn_link_args.extend([ "-lfreetype", "-lfontconfig", "-lpng", "-lXrender", "-lX11"])
 else:
    addn_link_args.append("-lcairo")
 

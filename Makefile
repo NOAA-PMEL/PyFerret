@@ -54,7 +54,6 @@ pymod_optimized_build :
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
-	  export PNG1X_VERSION=$(PNG1X_VERSION) ; \
 	  $(PYTHON_EXE) setup.py --quiet build )
 
 ## The following installs libpyferret.so and optimized 
@@ -70,7 +69,6 @@ pymod_optimized_install :
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
-	  export PNG1X_VERSION=$(PNG1X_VERSION) ; \
 	  $(PYTHON_EXE) setup.py --quiet install -O2 --prefix=$(DIR_PREFIX)/install )
 
 .PHONY : externals_optimized
@@ -89,7 +87,6 @@ pymod_debug_build :
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
-	  export PNG1X_VERSION=$(PNG1X_VERSION) ; \
 	  $(PYTHON_EXE) setup.py build -g )
 
 ## The following installs libpyferret.so and unoptimized
@@ -105,7 +102,6 @@ pymod_debug_install :
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
-	  export PNG1X_VERSION=$(PNG1X_VERSION) ; \
 	  $(PYTHON_EXE) setup.py install -O0 --prefix=$(DIR_PREFIX)/install )
 
 .PHONY : externals_debug
@@ -151,7 +147,6 @@ update :
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
-	  export PNG1X_VERSION=$(PNG1X_VERSION) ; \
 	  $(PYTHON_EXE) setup.py --quiet install -O2 --prefix=$(INSTALL_FER_DIR) )
 
 ## Execute the RUN_TESTS.sh tests

@@ -118,7 +118,6 @@ PYTHON_EXE = python2.7
 INSTALL_FER_DIR = /your/path/to/where/to/install/PyFerret
 CAIRO_DIR = /usr/local
 PIXMAN_DIR = /usr/local
-PNG1X_VERSION = 6
 HDF5_DIR = /usr/local/hdf5-1.8.16
 NETCDF4_DIR = /usr/local/netcdf-4.4.0
 JAVA_HOME = /Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home

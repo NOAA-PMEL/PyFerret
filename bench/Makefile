@@ -2,6 +2,10 @@
 # Makefile for the PyFerret source bench subdirectory
 #
 
+# include platform specific macro definitions for make_stream_file
+include ../site_specific.mk
+include ../platform_specific.mk.$(BUILDTYPE)
+
 ## Execute the RUN_TESTS.sh test suite
 .PHONY: run_tests
 run_tests:
@@ -25,7 +29,11 @@ clean:
 	rm -f all_*_ncdump all_*_err all_*_log
 	rm -f *.plt* *.gif* *.ps* *.png* *.pdf* ferret.jnl*
 	rm -f `cat TRASH_FILES`
+	rm -f all_ncdump.out fort.41 make_stream_file
 	rm -fr subdir tmp
+
+make_stream_file: make_stream_file.F
+	$(FC) $(FFLAGS) make_stream_file.F -o make_stream_file
 
 #
 # End of Makefile

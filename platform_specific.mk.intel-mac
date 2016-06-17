@@ -83,9 +83,9 @@ endif
 			  -DX_REFRESH \
 			  -DXT_CODE
 
-	CC		= $(shell which gcc-5)
-	FC		= $(shell which gfortran-5)
-	F77		= $(shell which gfortran-5)
+	CC		= $(shell which gcc-6)
+	FC		= $(shell which gfortran-6)
+	F77		= $(shell which gfortran-6)
 	AR		= $(shell which ar)
 	ARFLAGS		= -cr
 	RANLIB		= $(shell which ranlib)

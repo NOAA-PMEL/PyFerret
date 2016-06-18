@@ -15,10 +15,10 @@ brew install gcc
 Assign some environment variables specifying the compilers from the gcc install :
 ( for C-shell users, use 'setenv SYM "VAL"' instead of 'export SYM="VAL"' )
 
-export CC="/usr/local/bin/gcc-5"
-export FC="/usr/local/bin/gfortran-5"
-export F77="/usr/local/bin/gfortran-5"
-export CXX="/usr/local/bin/g++-5"
+export CC="/usr/local/bin/gcc-6"
+export FC="/usr/local/bin/gfortran-6"
+export F77="/usr/local/bin/gfortran-6"
+export CXX="/usr/local/bin/g++-6"
 
 Install some more packages using homebrew :
 

@@ -128,30 +128,30 @@ fi
 mkdir ${temp_dir}/ppl/fonts
 ${mycp} ${fnt_files} ${temp_dir}/ppl/fonts/
 
-echo "Copying threddsBrowser"
+mkdir ${temp_dir}/lib
+
 tb_jar=${ferret_dir}/threddsBrowser/threddsBrowser.jar
 if [ ! -r ${tb_jar} ]; then
    echo "No threddsBrowser.jar file found ${ferret_dir}/threddsBrowser"
-   echo "Cleaning up - removing ${parent_temp_dir}"
-   rm -fr "${parent_temp_dir}"
+   echo "Installation of threddsBrowser.jar skipped"
    echo ""
-   exit 1
-fi
-mkdir ${temp_dir}/lib
-${mycp} ${tb_jar} ${temp_dir}/lib/
+else
+   echo "Copying threddsBrowser"
+   ${mycp} ${tb_jar} ${temp_dir}/lib/
 
-toolsui_jar=${ferret_dir}/threddsBrowser/toolsUI/toolsUI-4.1.jar
-if [ ! -r ${toolsui_jar} ]; then
-   echo "No toolsUI-4.1.jar file found ${ferret_dir}/threddsBrowser/toolsUI"
-   echo "Cleaning up - removing ${parent_temp_dir}"
-   rm -fr "${parent_temp_dir}"
-   echo ""
-   exit 1
-fi
-${mycp} ${toolsui_jar} ${temp_dir}/lib/
+   toolsui_jar=${ferret_dir}/threddsBrowser/toolsUI/toolsUI-4.1.jar
+   if [ ! -r ${toolsui_jar} ]; then
+      echo "No toolsUI-4.1.jar file found ${ferret_dir}/threddsBrowser/toolsUI"
+      echo "Cleaning up - removing ${parent_temp_dir}"
+      rm -fr "${parent_temp_dir}"
+      echo ""
+      exit 1
+   fi
+   ${mycp} ${toolsui_jar} ${temp_dir}/lib/
 
-# Create a symbolic link to the toolsUI-4.1.jar file
-( cd ${temp_dir}/lib ; ln -s toolsUI-4.1.jar toolsUI.jar )
+   # Create a symbolic link to the toolsUI-4.1.jar file
+   ( cd ${temp_dir}/lib ; ln -s toolsUI-4.1.jar toolsUI.jar )
+fi
 
 echo "Copying pyferret python modules"
 python_dirs=${pyferret_dir}/lib*/python*

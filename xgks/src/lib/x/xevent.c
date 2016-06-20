@@ -42,7 +42,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <assert.h>
+/* #include <assert.h> */
 #include "gks_implem.h"
 
 #ifndef lint
@@ -212,9 +212,7 @@ ProcessEvents()
     void
 xProcessEvents()
 {
-/*    acm acm 9/12/2007   */
 /*    assert(SigCount > 0);   */
-    assert(SigCount >= 0);
     ProcessEvents();
 }
 
@@ -225,7 +223,7 @@ xProcessEvents()
     static void
 xProcessAsyncEvents()
 {
-    assert(SigCount == 0);
+/*    assert(SigCount == 0); */
     ProcessEvents();
 }
 
@@ -270,7 +268,7 @@ XgksSIGIO_OFF(dpy)
 {
     SigCount++;
 
-    assert(SigCount > 0);
+/*    assert(SigCount > 0); */
 
 #ifdef SIGDEBUG
     (void) fprintf(stderr, "XgksSIGIO_OFF SigCount == %d\n", SigCount);
@@ -303,7 +301,7 @@ XgksSIGIO_ON(dpy)
 {
     pid_t           pid = getpid();
 
-    assert(SigCount > 0);
+/*    assert(SigCount > 0); */
 
     SigCount--;
 

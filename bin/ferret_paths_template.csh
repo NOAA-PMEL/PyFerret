@@ -74,7 +74,7 @@ setenv FER_GO ". ${FER_DIR}/go ${FER_DIR}/examples ${FER_DIR}/contrib"
 
 ## Space-separated list of directories containing traditional
 ## Ferret external function files (shared-object libraries)
-setenv FER_EXTERNAL_FUNCTIONS "${FER_DIR}/ext_func/libs"
+# setenv FER_EXTERNAL_FUNCTIONS "${FER_DIR}/ext_func/libs"
 ## PyFerret external function files (shared-object libraries)
 setenv PYFER_EXTERNAL_FUNCTIONS "${FER_DIR}/ext_func/pylibs"
 

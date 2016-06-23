@@ -30,7 +30,7 @@ SET VARIABLE/TITLE="Amplitude Spectrum" FFT_uwndfft
 SET WINDOW/SIZ=0.4
 
 SET VIEW ul
-PLOT FFT_uwndfft
+PLOT/THICK/COLOR=blue FFT_uwndfft
 
 !  For easier interpretation, invert the frequency axis and plot the 
 !  spectrum vs period: months/cycle
@@ -53,7 +53,7 @@ LET per = 1./a
 !  The PPL ccommands clean up the plot appearance.
 
 SET VIEW ur
-PLOT/VS/LINE/HLIMITS=0:24:2/TITLE="Amplitude Spectrum"/SET_UP per[l=1:`FFT_nf`], FFT_uwndfft
+PLOT/THICK/COLOR=blue/VS/LINE/HLIMITS=0:24:2/TITLE="Amplitude Spectrum"/SET_UP per[l=1:`FFT_nf`], FFT_uwndfft
 PPL XFOR (I2)
 PPL XLAB Period, months/cycle
 PPL YLAB 
@@ -67,13 +67,13 @@ LET FFT_uwndfftp = FFTP(FFT_uwndtim[l=1:132])
 SET VARIABLE/TITLE="FFT Phase"/UNITS="deg" FFT_uwndfftp
 
 SET VIEW ll
-PLOT FFT_uwndfftp
+PLOT/THICK/COLOR=blue FFT_uwndfftp
 
 !  And the phase in months/cycle
 PAUSE
 
 SET VIEW lr
-PLOT/VS/LINE/HLIMITS=0:24:2/TITLE="FFT Phase"/SET_UP per[l=1:`FFT_nf`],FFT_uwndfftp
+PLOT/THICK/COLOR=blue/VS/LINE/HLIMITS=0:24:2/TITLE="FFT Phase"/SET_UP per[l=1:`FFT_nf`],FFT_uwndfftp
 PPL XFOR (I2)
 PPL XLAB Period, months/cycle
 PPL YLAB Deg
@@ -102,7 +102,7 @@ LET tpts = t
 
 SET WINDOW/SIZ=0.4
 SET VIEW upper
-PLOT/TITLE="Original SAMPLE_FUNCTION" sample_function
+PLOT/THICK/COLOR=blue/TITLE="Original SAMPLE_FUNCTION" sample_function
 
 ! Compute the equivalent of FFTA(sample_function)
 pause
@@ -114,13 +114,13 @@ LET amp_fft = (sample_re* sample_re + sample_im* sample_im)^0.5
 ! Compare with the computation in fcn FFTA
 
 SET VIEW upper
-PLOT FFTA(sample_function)
+PLOT/THICK/COLOR=blue FFTA(sample_function)
 SET VIEW lower
-PLOT amp_fft
+PLOT/THICK/COLOR=blue amp_fft
 
 ! Now overlay amplitude spectrum computed by FFTA
 PAUSE
-PLOT/OVER FFTA(sample_function)
+PLOT/COLOR=red/OVER FFTA(sample_function)
 
 ! next compare the phase function
 PAUSE
@@ -136,27 +136,27 @@ LET phas =  rad* ATAN2(-1.*sample_im, sample_re)     ! the computation done in F
 
 SET WINDOW/SIZ=0.4
 SET VIEW upper
-PLOT FFTP(sample_function)
+PLOT/THICK/COLOR=blue FFTP(sample_function)
 SET VIEW lower
-PLOT phas
+PLOT/THICK/COLOR=blue phas
 
 ! Overlay FFT phase computed by fftp
 PAUSE
-PLOT/OVER FFTP(sample_function)
+PLOT/COLOR=red/OVER FFTP(sample_function)
 
 ! Next invert the FFT and compare with original time series
 PAUSE
 
 LET invert_ts = FFT_INVERSE(sample_re, sample_im)
 SET VIEW upper
-PLOT/TITLE="Original SAMPLE_FUNCTION" sample_function
+PLOT/THICK/COLOR=blue/TITLE="Original SAMPLE_FUNCTION" sample_function
 
 SET VIEW lower
-PLOT invert_ts
+PLOT/THICK/COLOR=blue invert_ts
  
 ! Overlay the original time series function
 PAUSE
-PLOT/OVER sample_function
+PLOT/COLOR=red/OVER sample_function
 
 ! clean up
 ! restore plot state 

@@ -1,0 +1,9 @@
+\cancel mode verify
+
+! opendap_demo.jnl * 6/2016
+
+! Description: Demo: how to use Ferret and OPeNDAP to access remote Datasets
+!              OPeNDAP was formerly known as DODS: (Distributed Oceanographic Data Systems)
+!
+
+Go dods_demo

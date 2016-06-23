@@ -3,20 +3,22 @@
 ! set initial demo state
 cancel data/all
 cancel region
+cancel mode logo
 
 ! dods_demo.jnl  *kob* 5/99
 ! customized for IPRC presentation 9/99 *sh*
 !
-! Description: Demo: how to use Ferret and DODS to access remote Datasets
+! Description: Demo: how to use Ferret and OPeNDAP to access remote Datasets
+!              OPeNDAP was formerly known as DODS: (Distributed Oceanographic Data Systems)
 !
 
 set mode verify
-
+IF ($program_name"0|PyFerret>1|*>0") THEN SET TEXT/Font=arial
 
 
 
 !      *********************************************************
-!        DEMO: Using Ferret and DODS to access remote data sets
+!        DEMO: Using Ferret and OPeNDAP to access remote data sets
 !      *********************************************************
 
 ! First we will examine the COADS climatology dataset from the Pacific
@@ -32,7 +34,7 @@ PAUSE
 
 
 
-set data "http://ferret.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
+set data "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
 show data
 
 
@@ -79,7 +81,7 @@ fill/x=140e:180e/l=1:24 sst[y=5s:5n@ave]
 PAUSE
 !      *********************************************************
 
-use "http://www.esrl.noaa.gov/psd/thredds/dodsC/Datasets/aggro/OISSThires.nc"
+use "http://www.esrl.noaa.gov/psd/thredds/dodsC/Aggregations/OISSThires/sst.mean.nc"
 show data 2
 
 ! This data set contains weekly mean global SST grids prepared by
@@ -93,7 +95,7 @@ PAUSE
 fill/t="15-JUN-1989" sst[d=2]
 go fland
 
-! Now, let's see where the June 15, 1998 Reynolds field (served from Boulder)
+! Now, let's see where the June 15, 1989 Reynolds field (served from Boulder)
 ! exceeds the June climatological data (served from Seattle)
 
 ! This requires regridding the 2x2 degree COADS data to the 0.25x0.25 degree
@@ -104,19 +106,33 @@ PAUSE
 
 let coads_on_reynolds = sst[d=1,g=sst[d=2]]
 let warmer = IF sst[d=2] GT coads_on_reynolds THEN 1
+
+IF ($program_name"0|Ferret>1|*>0") THEN \ 
 shade/x=80w:20e/y=0:80N/pal=black/levels/pattern=weave/t="15-jun-1989"/over warmer
 
+! PyFerret does not have pattern palettes.
+IF ($program_name"0|PyFerret>1|*>0") THEN \ 
+shade/x=80w:20e/y=0:80N/pal=black/levels/palette=cyan_light/t="15-jun-1989"/over warmer
+
+! Urls change, and some of these may no longer be available. Even if these
+! commands yield errors, read the comments for techniquesto handle large datasets, 
+! and ones that have grids with orientations different than what is expected. 
+! The commands are illustrated in the on-line version of this demo:
+! http://ferret.pmel.noaa.gov/documentation/how-to-use-ferret-and-opendap-to-access-and-analyze-remote-data-1
+
+SET MODE ignore
+PAUSE
 
 ! Next let's look at a dataset from NASA's Earth Observing system (EOS) HDF-EOS group. 
 ! This data set is in HDF format. It contains surface data - wind stress, heat flux,
 ! humidity, precipitable water.
 
-!   Note that DODS gives Ferret format-independence -- the ability to read
+!   Note that OPeNDAP gives Ferret format-independence -- the ability to read
 !        an HDF file
 
 PAUSE
 !      *********************************************************
-use "http://eosdap.hdfgroup.uiuc.edu:8080/opendap/data/NASAFILES/hdf5/GSSTF.2b.2008.01.01.he5"
+use "http://eosdap.hdfgroup.org:8080/opendap/data/NASAFILES/hdf5/GSSTF.2b.2008.01.01.he5"
 show data/att 3
 
 
@@ -133,11 +149,12 @@ go fland
 ! of Rhode Island, Graduate School of Oceanography (GSO). This
 ! data is in the form of 1024x1024 pixel images (1 megabyte per image)
 
-! We will use this to illustrate the ability of Ferret and DODS to
+! We will use this to illustrate the ability of Ferret and OPeNDAP to
 ! subsample -- making the data transfer much faster.
 
 PAUSE
 !      *********************************************************
+
 
 use "http://satdat1.gso.uri.edu/opendap/Pathfinder/Northwest_Atlantic/6km/raw/1995/1/f95018175608.hdf"
 
@@ -158,3 +175,4 @@ define axis/y=`..dsp_nav_earth_botlat`:`..dsp_nav_earth_toplat`/npoints=1024/uni
 shade/levels=v dsp_band_1[i=1:1024:4, j=1:1024:4]
 go fland 05
 
+set mode/last ignore

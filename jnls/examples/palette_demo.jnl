@@ -3,13 +3,14 @@
 
 ! Description: demonstration of V5.0 palette capabilities
 
+can mode logo
 ! set up for demo
 \set data levitus_climatology
 \set reg/@t
-\SET WINDOW/ASPECT=1.2:axis
-\DEFINE VIEWPORT/y=0:.33 low
-\DEFINE VIEWPORT/y=.33:.67 mid
-\DEFINE VIEWPORT/y=.67:1 up
+\SET WINDOW/ASPECT=1.2:axisi/siz=0.5
+\DEFINE VIEWPORT/x=0.02:0.98/y=0:.33 low
+\DEFINE VIEWPORT/x=0.02:0.98/y=.33:.67 mid
+\DEFINE VIEWPORT/x=0.02:0.98/y=.67:1 up
 
 ! * * * *  PALETTES  * * * *
 ! As of Ferret version 5 there are 3 types of palettes:

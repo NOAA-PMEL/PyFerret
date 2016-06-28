@@ -384,7 +384,7 @@ c ...
 
 * Remove 00000 from the end of the fractional part of a fixed-point string
 
-	IF (INDEX(outstring, '.') .GT. 0) THEN
+	IF (INDEX(outstring, '.') .GT. 0 .AND. INDEX(outstring, 'E').EQ.0) THEN
 	   ind = INDEX(outstring, '.')
 	   is = str_len
 	   DO is = str_len, ind+1, -1

@@ -6,7 +6,7 @@
 ! Good levels for US elevation (in meters):
 ! (-6000,-1000,1000)(-1000,-100,100)(-100,100,10)(100,1000,100)(1000,6000,1000)
 
-use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/smith_sandwell_topo_v8_2.nc"
+use "http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/smith_sandwell_topo_v8_2.nc"
 SET VAR/TITLE="Topography and Bathymetry" rose
 SET REGION/X=130E:160E/y=30S:0S
 shade/pal=topo/lev=(-9000,-1000,1000)(-1000,-100,100)(-100,100,10)(100,1000,100)(1000,4000,1000) rose

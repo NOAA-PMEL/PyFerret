@@ -10,12 +10,15 @@
 
 set grid/save
 
-! Set viewports
-DEFINE VIEW/ylim=.6,1/text=.5 vupper
-DEFINE VIEW/xlim=0.,.5/ylim=.3,.55/text=.2 vul
-DEFINE VIEW/xlim=.5,1./ylim=.3,.55/text=.2 vur
-DEFINE VIEW/xlim=0.,.5/ylim=0.05,.3/text=.2 vll
-DEFINE VIEW/xlim=.5,1./ylim=0.05,.3/text=.2 vlr
+if ($program_name"0|PyFerret>1|*>0") THEN set text/font=arial
+
+
+! Define viewports
+DEFINE VIEW/ylim=.5,1/text=.5 vupper
+DEFINE VIEW/xlim=0.,.5/ylim=.3,.63/text=.2 vul
+DEFINE VIEW/xlim=.5,1./ylim=.3,.63/text=.2 vur
+DEFINE VIEW/xlim=0.,.5/ylim=0.0,.33/text=.2 vll
+DEFINE VIEW/xlim=.5,1./ylim=0.0,.33/text=.2 vlr
 
 ! Define a 2-dimensional function and sample it
 DEFINE AXIS/x=0:10:0.05 x10
@@ -56,17 +59,24 @@ set mode verify
 ! To display "reality" we will first let our sample points (xpts,ypts) be
 ! simply the X and y points of a grid.  Then we will change (xpts,ypts) to
 ! be 200 sampling locations and mark them with symbols on the plot.
-! We will draw this output in the "upper" viewport.  The script draw_it
-! simplifies plotting the functions in a viewport and with a title.
+! We will draw this output in the "upper" viewport. 
 
 ! Shaded plot of the points on the (X,Y) grid
 LET/QUIET xpts = x; LET/QUIET ypts = y
-GO draw_it "fcn1+wave" "A field with 200 sample points marked" "SHADE" upper
+set view vupper
+fill/nolab/lev=20 fcn1+wave
+annotate/norm/xpos=0.5/ypos=1.2/halign=0  "A field with 200 sample points marked"
+
+
+! Store the color-levels used here; use the same levels in all the 
+! plots of gridded fields below.
+define symbol same_levels = /lev=(($lev_min),($lev_max),($lev_del))
 
 ! points randomly sampled in (X,Y)
 LET/QUIET xpts = 10*randu(i); LET/QUIET ypts = 10*randu(i+2)
 set region/i=1:200
 plot/vs/over/symbols xpts,ypts
+cancel region
 MESSAGE
 
 ! **********************************************************
@@ -80,8 +90,15 @@ MESSAGE
 DEFINE AXIS/x=1:10:.5 xax5
 DEFINE AXIS/y=1:10:.5 yax5
 LET/QUIET sgrid = scat2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 5., 5)
-GO draw_it sgrid "Laplace gridding to 20x20 grid" "SHADE" upper_left
-GO draw_it sgrid "20x20 grid, fill contoured" "FILL" lower_left
+
+set v vul
+shade($same_levels)/nolab sgrid
+annotate/norm/xpos=0.5/ypos=-0.3/halign=0 "Laplace gridding to 20x20 grid"
+
+set v vll
+fill($same_levels)/nolab sgrid
+annotate/norm/xpos=0.5/ypos=-0.3/halign=0 "20x20 grid, fill contoured"
+
 MESSAGE
 
 ! **********************************************************
@@ -93,40 +110,63 @@ MESSAGE
 DEFINE AXIS/x=1:10:.2 xax2
 DEFINE AXIS/y=1:10:.2 yax2
 LET/QUIET sgrid = scat2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax2], y[gy=yax2], 5., 5)
-GO draw_it sgrid "Laplace gridding to 50x50 grid" "SHADE" upper_right
-GO draw_it sgrid "50x50 grid, fill contoured" "fill" lower_right
+set v vur
+shade($same_levels)/nolab sgrid
+annotate/norm/xpos=0.5/ypos=-0.3/halign=0 "Laplace gridding to 50x50 grid"
+
+set v vlr
+fill($same_levels)/nolab sgrid
+annotate/norm/xpos=0.5/ypos=-0.3/halign=0 "50x50 grid, fill contoured"
+
 MESSAGE
 
 ! Now do the same plots with the Gaussian gridding function 
 ! scat2gridgauss_xy which uses a different technique to interpolate the 
-! scattered points to the grid.  This results in a somewhat smoother plot.  
+! scattered points to the grid. This results in a somewhat smoother plot. 
+! however with these parameters, the result does not capture the extreme 
+! values. Using the same color scale on all plots makes this clear. 
 ! The interpolation parameters are  XSCALE, YSCALE, XCUTOFF, YCUTOFF;
 ! where the algorithm uses scattered points which are within 
 !         cutoff* the scale width from the gridbox center.  We use 
 ! XSCALE = YSCALE = XCUTOFF = YCUTOFF = 2.
 
-
 set window/new
+! Shaded plot of the points on the (X,Y) grid
 LET/QUIET xpts = x; LET/QUIET ypts = y
-GO draw_it "fcn1+wave" "A field with 200 sample points marked" "SHADE" upper
+set view vupper
+fill/nolab/lev=20 fcn1+wave
+annotate/norm/xpos=0.5/ypos=1.2/halign=0  "A field with 200 sample points marked"
 
+! points randomly sampled in (X,Y)
 LET/QUIET xpts = 10*randu(i); LET/QUIET ypts = 10*randu(i+2)
 set region/i=1:200
 plot/vs/over/symbols xpts,ypts
-
+cancel region
 
 DEFINE AXIS/x=1:10:.5 xax5
 DEFINE AXIS/y=1:10:.5 yax5
 LET/QUIET sgrid = scat2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 2.,2.,2.,2)
-GO draw_it sgrid "Gauss gridding to 20x20 grid" "SHADE" upper_left
-GO draw_it sgrid "20x20 grid, fill contoured" "FILL" lower_left
 
+set v vul
+shade($same_levels)/nolab sgrid
+annotate/norm/xpos=0.5/ypos=-0.3/halign=0 "Gauss gridding to 20x20 grid"
 
+set v vll
+fill($same_levels)/nolab sgrid
+annotate/norm/xpos=0.5/ypos=-0.3/halign=0 "20x20 grid, fill contoured"
+
+! Finer grid
 DEFINE AXIS/x=1:10:.2 xax2
 DEFINE AXIS/y=1:10:.2 yax2
-LET/QUIET sgrid = scat2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax2], y[gy=yax2], 2.,2.,2.,2)
-GO draw_it sgrid "Gauss gridding to 50x50 grid" "SHADE" upper_right
-GO draw_it sgrid "50x50 grid, fill contoured" "fill" lower_right
+LET/QUIET sgrid = scat2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax2], y[gy=yax2], 1.,1.,2.,2)
+set view vur
+shade($same_levels)/nolab sgrid
+annotate/norm/xpos=0.5/ypos=-0.3/halign=0 "Gauss gridding to 50x50 grid"
+set view vlr
+fill($same_levels)/nolab sgrid
+annotate/norm/xpos=0.5/ypos=-0.3/halign=0 "50x50 grid, fill contoured"
+
+
 MESSAGE
 set grid/restore
 exit

@@ -29,10 +29,6 @@ pause
 pause
 
 ! EXAMPLES
-! Below are several examples illustrating uses of constant arrays
-! 1) plots a triangle
-! 2) plots a series of triangles at data points
-! 3) Samples a variable at a list of subscripts
 
 ! Ex 1) plot a triangle
 
@@ -49,14 +45,4 @@ pause
   LET ypts = 10*RANDU(j[j=1:20]+1)	! random Y coordinates
   LET values = 10* j[j=1:20]		! value at each (x,y) point
   POLYGON xpts+xtriangle, ypts+ytriangle, values
-
-pause
-
-! Ex 3) Sample Jan, June, and December from sst in coads_climatology
-
-  USE  coads_climatology
-  LET  my_sst_winter = SAMPLEL(sst[Y=0:90N], {1,2,12})
-  LET  my_sst_summer = SAMPLEL(sst[Y=0:90N], {6,7,8})
-  STAT/BRIEF my_sst_winter
-  STAT/BRIEF my_sst_summer
 

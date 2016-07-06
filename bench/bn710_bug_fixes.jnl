@@ -1,0 +1,8 @@
+! bn710_bug_fixes.jnl
+! test various fixes that went into version 7.1
+! 6/16 *acm*
+!
+
+! Bug 2445 missing or repeated coords when axis marked as regular
+go bn_reset
+go err700_reg_axis_check

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 117720321 Jun 15 11:10 /home/users/ansley/build/current_trunk/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 117550255 Jul  6 11:53 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2441: LET/D variables in a show data/var/xml
+Note: fix for ticket 2445
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,14 +13,14 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/current_trunk/FERRET/external_functions/ext_func
-FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go /home/users/ansley/las.v8.4.rc5/JavaSource/resources/iosp/scripts/
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/external_functions/ext_func
+FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
-PWD=/home/users/ansley/build/current_trunk/FERRET/bench
+PWD=/home/users/ansley/build/trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Wed Jun 15 12:05:35 PDT 2016
+Beginning at Wed Jul 6 11:55:45 PDT 2016
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10420,13 +10420,13 @@ FERRET_PLATFORM = "Linux 2.6.32-642.1.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "15-Jun-16"
-SESSION_TIME = "12:05"
-SESSION_PID = "2513"
-DELTA_CPU = "4.71228"
-CLOCK_SECS = "7.222"
-CURRENT_DATE = "15-Jun-16"
-CURRENT_TIME = "12:05:43"
+SESSION_DATE = " 6-Jul-16"
+SESSION_TIME = "11:55"
+SESSION_PID = "20322"
+DELTA_CPU = "5.2202"
+CLOCK_SECS = "7.862"
+CURRENT_DATE = " 6-Jul-16"
+CURRENT_TIME = "11:55:53"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10449,13 +10449,13 @@ FERRET_PLATFORM = "Linux 2.6.32-642.1.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "15-Jun-16"
-SESSION_TIME = "12:05"
-SESSION_PID = "2513"
+SESSION_DATE = " 6-Jul-16"
+SESSION_TIME = "11:55"
+SESSION_PID = "20322"
 DELTA_CPU = "0.001"
-CLOCK_SECS = "7.223"
-CURRENT_DATE = "15-Jun-16"
-CURRENT_TIME = "12:05:43"
+CLOCK_SECS = "7.863"
+CURRENT_DATE = " 6-Jul-16"
+CURRENT_TIME = "11:55:53"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10465,9 +10465,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "15-Jun-16"
-SESSION_TIME = "12:05"
-SESSION_PID = "2513"
+SESSION_DATE = " 6-Jul-16"
+SESSION_TIME = "11:55"
+SESSION_PID = "20322"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10477,15 +10477,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "15-Jun-16"
-SESSION_TIME = "12:05"
-SESSION_PID = "2513"
+SESSION_DATE = " 6-Jul-16"
+SESSION_TIME = "11:55"
+SESSION_PID = "20322"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "15-Jun-16"
-SESSION_TIME = "12:05"
-SESSION_PID = "2513"
+SESSION_DATE = " 6-Jul-16"
+SESSION_TIME = "11:55"
+SESSION_PID = "20322"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10521,7 +10521,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET (beta/dbg) Ver.7"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "15-JUN-2016 12:05:43"
+LAB3 = "06-JUL-2016 11:55:53"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10621,13 +10621,13 @@ FERRET_PLATFORM = "Linux 2.6.32-642.1.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "15-Jun-16"
-SESSION_TIME = "12:05"
-SESSION_PID = "2513"
+SESSION_DATE = " 6-Jul-16"
+SESSION_TIME = "11:55"
+SESSION_PID = "20322"
 DELTA_CPU = "0.006999"
-CLOCK_SECS = "7.231"
-CURRENT_DATE = "15-Jun-16"
-CURRENT_TIME = "12:05:43"
+CLOCK_SECS = "7.87"
+CURRENT_DATE = " 6-Jul-16"
+CURRENT_TIME = "11:55:53"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -25627,7 +25627,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Wed Jun 15 12:05:50 PDT 2016
+Wed Jul  6 11:56:01 PDT 2016
  
 GO bn_reset
 cancel mode verify
@@ -44056,52 +44056,52 @@ let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
 load a
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A        C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G023)          (AX024)   (AX013)   NORMAL    (AX033)   NORMAL    NORMAL
- dealloc  dynamic grid (G023)          (AX024)   (AX013)   NORMAL    (AX033)   NORMAL    NORMAL
- allocate dynamic grid (G023)          (AX024)   (AX013)   NORMAL    (AX033)   NORMAL    NORMAL
- allocate dynamic grid (G023)          (AX024)   (AX013)   NORMAL    (AX033)   NORMAL    NORMAL
+ allocate dynamic grid (G023)          (AX023)   (AX013)   NORMAL    (AX033)   NORMAL    NORMAL
+ dealloc  dynamic grid (G023)          (AX023)   (AX013)   NORMAL    (AX033)   NORMAL    NORMAL
+ allocate dynamic grid (G023)          (AX023)   (AX013)   NORMAL    (AX033)   NORMAL    NORMAL
+ allocate dynamic grid (G023)          (AX023)   (AX013)   NORMAL    (AX033)   NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
  eval    A        C:  6 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
- allocate dynamic grid (G023)          (AX024)   (AX013)   NORMAL    (AX033)   NORMAL    NORMAL
+ allocate dynamic grid (G023)          (AX023)   (AX013)   NORMAL    (AX033)   NORMAL    NORMAL
  strip regrid on X: TAUX --> (G023)           @XACT
  rdstride TAUX     C:  9 dset:   1 I:   50   54  J:   44   50  K: -999 -999  L:    1  161  M: -999 -999  N: -999 -999
  nulrgd  TAUX     M:153 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
  -DELETE TAUX     M:141 dset:   1 I:   50   54  J:   44   50  K: -999 -999  L:    1  161  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G023)          (AX024)   (AX013)   NORMAL    (AX033)   NORMAL    NORMAL
+ dealloc  dynamic grid (G023)          (AX023)   (AX013)   NORMAL    (AX033)   NORMAL    NORMAL
 can mem/all
  -DELETE A        M:141 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
  -DELETE TAUX     M:153 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
  
 def grid/like=taux agrid
- dealloc  dynamic grid (G023)          (AX024)   (AX013)   NORMAL    (AX033)   NORMAL    NORMAL
+ dealloc  dynamic grid (G023)          (AX023)   (AX013)   NORMAL    (AX033)   NORMAL    NORMAL
  getgrid EX#1     C:  6 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME6     NORMAL    NORMAL
 set mode diag
 let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
  dealloc  dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME6     NORMAL    NORMAL
- dealloc  dynamic grid (G023)          (AX024)   (AX013)   NORMAL    (AX033)   NORMAL    NORMAL
+ dealloc  dynamic grid (G023)          (AX023)   (AX013)   NORMAL    (AX033)   NORMAL    NORMAL
 load a
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A        C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G023)          (AX013)   (AX024)   NORMAL    (AX022)   NORMAL    NORMAL
- dealloc  dynamic grid (G023)          (AX013)   (AX024)   NORMAL    (AX022)   NORMAL    NORMAL
- allocate dynamic grid (G023)          (AX013)   (AX024)   NORMAL    (AX022)   NORMAL    NORMAL
- allocate dynamic grid (G023)          (AX013)   (AX024)   NORMAL    (AX022)   NORMAL    NORMAL
+ allocate dynamic grid (G023)          (AX013)   (AX023)   NORMAL    (AX024)   NORMAL    NORMAL
+ dealloc  dynamic grid (G023)          (AX013)   (AX023)   NORMAL    (AX024)   NORMAL    NORMAL
+ allocate dynamic grid (G023)          (AX013)   (AX023)   NORMAL    (AX024)   NORMAL    NORMAL
+ allocate dynamic grid (G023)          (AX013)   (AX023)   NORMAL    (AX024)   NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
  eval    A        C:  6 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
- allocate dynamic grid (G023)          (AX013)   (AX024)   NORMAL    (AX022)   NORMAL    NORMAL
+ allocate dynamic grid (G023)          (AX013)   (AX023)   NORMAL    (AX024)   NORMAL    NORMAL
  strip regrid on X: TAUX --> (G023)           @XACT
  rdstride TAUX     C:  9 dset:   1 I:   50   54  J:   44   50  K: -999 -999  L:    1  161  M: -999 -999  N: -999 -999
  nulrgd  TAUX     M:141 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
  -DELETE TAUX     M:153 dset:   1 I:   50   54  J:   44   50  K: -999 -999  L:    1  161  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G023)          (AX013)   (AX024)   NORMAL    (AX022)   NORMAL    NORMAL
+ dealloc  dynamic grid (G023)          (AX013)   (AX023)   NORMAL    (AX024)   NORMAL    NORMAL
  
 can mem/all
  -DELETE TAUX     M:141 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
  -DELETE A        M:153 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21  M: -999 -999  N: -999 -999
 can data/all
- dealloc  dynamic grid (G023)          (AX013)   (AX024)   NORMAL    (AX022)   NORMAL    NORMAL
- dealloc  dynamic grid (G023)          (AX013)   (AX024)   NORMAL    (AX022)   NORMAL    NORMAL
+ dealloc  dynamic grid (G023)          (AX013)   (AX023)   NORMAL    (AX024)   NORMAL    NORMAL
+ dealloc  dynamic grid (G023)          (AX013)   (AX023)   NORMAL    (AX024)   NORMAL    NORMAL
  canceling dset ./gtsa056_2.cdf
  
 ! Some tests taken from  bn_strides_revs_perms.jnl but with
@@ -47538,7 +47538,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS15-JUN-2016 12:06:19
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS06-JUL-2016 11:56:29
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -48925,7 +48925,7 @@ sho command
  DEFINE SYMBOL
  DEFINE ATTRIBUT/DATASET/TYPE/OUTPUT/QUIET
  DEFINE PYFUNC/NAME
- DEFINE DATA/AGGREGAT/T/E/F/TITLE/QUIET/HIDE/U
+ DEFINE DATA/AGGREGAT/T/E/F/TITLE/QUIET/HIDE
  DEFINE ANNOTATI/USER/NORM/NOUSER/XPOS/YPOS/HALIGN/VALIGN/ANGLE/SIZE/NLAB
  EXIT/COMMAND/LOOP/SCRIPT/PROMPT/PROGRAM/CYCLE/TOPYTHON
  MESSAGE/CONTINUE/QUIET/JOURNAL/ERROR/OUTFILE/APPEND/CLOBBER
@@ -48972,7 +48972,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "15-Jun-16:12:05"
+WIN_TITLE = "6-Jul-16:11:55"
  
 set win/title="set the title"
 sho sym win_title
@@ -48990,7 +48990,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="15-Jun-16:12:05"
+ !-> set win/title=" 6-Jul-16:11:55"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48999,16 +48999,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 15-Jun-16
+ !-> DEFINE SYMBOL the_date =  6-Jul-16
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 12:05
+ !-> DEFINE SYMBOL the_time = 11:55
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="15-Jun-16:12:05"
+ !-> SET WIN/TITLE="6-Jul-16:11:55"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "15-Jun-16:12:05"
+WIN_TITLE = "6-Jul-16:11:55"
  
 GO bn_reset
 cancel mode verify
@@ -53425,7 +53425,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -53474,7 +53474,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -55147,7 +55147,6 @@ STRING_ARG(Flags,NString)
 STRING_CAT3(A,B,C)
 STRING_LEN_SUM(S1,S2)
 STRINGS_AS_ARGS(S1,S2,NCHAR)
-STRING_TO_ID(STRINGS)
 STR_MISSING(MASK,STR,REPL)
 STUDENT_T_CUTOFF(P,nf)
 SUBTRACT(A,B)
@@ -56064,7 +56063,7 @@ SHOW DATA/VAR/XML 2
 <attribute name="long_name" type="char">
    <value><![CDATA[ZAXREPLACE(DDAT_ORIG[D=1], CYCLE_ORIG[D=2], DUMMY)]]></value>
 </attribute>
-<grid name="(G104)">
+<grid name="(G106)">
 <axes>
 <zaxis>ZAXIS_DES</zaxis>
 </axes>
@@ -58586,13 +58585,13 @@ show data/full
                on grid PS2DU1_NT with -1.E+34 for missing data
              X=161.5W:158.5W  Y=28.84S:51.43N  
  IK       I1+K1                            1:10      ...       5:15      ...       ...       ...
-               on grid G093_NYT with -1.E+34 for missing data
+               on grid G095_NYT with -1.E+34 for missing data
              X=130E:140E  Z=40:190  
  IL       I1+L1                            1:10      ...       ...       1:3       ...       ...
-               on grid G093_NYZ with -1.E+34 for missing data
+               on grid G095_NYZ with -1.E+34 for missing data
              X=130E:140E  
  JK       J1+K1                            ...       5:10      5:15      ...       ...       ...
-               on grid G104_NXT with -1.E+34 for missing data
+               on grid G106_NXT with -1.E+34 for missing data
              Y=21.11S:12.52S  Z=40:190  
  IJK      TEMP[L=@AVE]                    70:72      1:100     1:27      ...       ...       ...
        (T=MAR-1983:MAR-1983)
@@ -59379,10 +59378,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "34.0038"
-CLOCK_SECS = "66.314"
-CURRENT_DATE = "15-Jun-16"
-CURRENT_TIME = "12:06:42"
+DELTA_CPU = "34.0848"
+CLOCK_SECS = "66.936"
+CURRENT_DATE = " 6-Jul-16"
+CURRENT_TIME = "11:56:53"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -59391,8 +59390,8 @@ CURRENT_TIME = "12:06:42"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.041994"
-CLOCK_SECS = "66.467"
+DELTA_CPU = "0.038993"
+CLOCK_SECS = "67.046"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -59406,60 +59405,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.245962
+ !-> DEFINE VARIABLE ten_plots = 0.274959
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "67.697"
+CLOCK_SECS = "68.42"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "67.698"
+CLOCK_SECS = "68.421"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.025996
- !-> DEFINE VARIABLE sumcpu =0.025996
+ !-> DEFINE VARIABLE dt = 0.026995
+ !-> DEFINE VARIABLE sumcpu =0.026995
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.058991
+ !-> DEFINE VARIABLE dt = 0.033995
+ !-> DEFINE VARIABLE sumcpu =0.06099
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.025997
- !-> DEFINE VARIABLE sumcpu =0.084988
+ !-> DEFINE VARIABLE dt = 0.030996
+ !-> DEFINE VARIABLE sumcpu =0.091986
 !-> REPEAT: K=4
  !-> DEFINE VARIABLE dt = 0.029995
- !-> DEFINE VARIABLE sumcpu =0.114983
+ !-> DEFINE VARIABLE sumcpu =0.121981
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.146978
-!-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.029995
- !-> DEFINE VARIABLE sumcpu =0.176973
-!-> REPEAT: K=7
  !-> DEFINE VARIABLE dt = 0.028996
- !-> DEFINE VARIABLE sumcpu =0.205969
+ !-> DEFINE VARIABLE sumcpu =0.150977
+!-> REPEAT: K=6
+ !-> DEFINE VARIABLE dt = 0.036994
+ !-> DEFINE VARIABLE sumcpu =0.187971
+!-> REPEAT: K=7
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.224966
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.030995
- !-> DEFINE VARIABLE sumcpu =0.236964
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.257961
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.026996
- !-> DEFINE VARIABLE sumcpu =0.26396
+ !-> DEFINE VARIABLE dt = 0.034994
+ !-> DEFINE VARIABLE sumcpu =0.292955
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.027996
- !-> DEFINE VARIABLE sumcpu =0.291956
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.32495
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.291956
-0.291956
+ !-> MESSAGE/CONTINUE 0.32495
+0.32495
 sh sym CLOCK_SECS
-CLOCK_SECS = "69.893"
+CLOCK_SECS = "71.156"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "15-Jun-16"
-SESSION_TIME = "12:05"
-CURRENT_DATE = "15-Jun-16"
-CURRENT_TIME = "12:06:45"
+SESSION_DATE = " 6-Jul-16"
+SESSION_TIME = "11:55"
+CURRENT_DATE = " 6-Jul-16"
+CURRENT_TIME = "11:56:57"
  
  
 ! ******** V6.3 Additions below ***********
@@ -61010,8 +61009,8 @@ list/x=160e/y=5s temp[d=2,k=1,g=a[d=1]]
           29.51700
 show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
- Last successful data access was on grid (G106)
-    GRID (G106)
+ Last successful data access was on grid (G108)
+    GRID (G108)
  name       axis              # pts   start                end                 subset
  COADSX    LONGITUDE          180mr   21E                  19E(379)            full
  COADSY    LATITUDE            90 r   89S                  89N                 full
@@ -61041,8 +61040,8 @@ list/x=160e/y=5s temp[d=2,k=1,gy=yax,gx=a[d=1]]
           29.51700
 show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
- Last successful data access was on grid (G106)
-    GRID (G106)
+ Last successful data access was on grid (G108)
+    GRID (G108)
  name       axis              # pts   start                end                 subset
  COADSX    LONGITUDE          180mr   21E                  19E(379)            full
  YAX       LATITUDE            81 r   20S                  20N                 full
@@ -61070,8 +61069,8 @@ list/x=160e/y=5s temp[d=2,k=1,gx=a[d=1],g=gg12345678901234567890]
           29.51700
 show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
- Last successful data access was on grid (G106)
-    GRID (G106)
+ Last successful data access was on grid (G108)
+    GRID (G108)
  name       axis              # pts   start                end                 subset
  COADSX    LONGITUDE          180mr   21E                  19E(379)            full
  YAX       LATITUDE            81 r   20S                  20N                 full
@@ -61186,8 +61185,8 @@ show grid
 load/d=coads_climatology sst[y=-10:10:.1,l=1,x=160e]
 show grid
  Default grid for DEFINE VARIABLE is G
- Last successful data access was on grid (G106)
-    GRID (G106)
+ Last successful data access was on grid (G108)
+    GRID (G108)
  name       axis              # pts   start                end                 subset
  COADSX    LONGITUDE          180mr   21E                  19E(379)            1 pt
  (AX121)   LATITUDE           201 r   10S                  10N                 200 pts
@@ -61197,7 +61196,7 @@ show grid
  normal    F
 show grid/dynamic
 Dynamic grids:
-    GRID (G106)                          use count:   1
+    GRID (G108)                          use count:   1
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
  (AX121)   LATITUDE           201 r   10S                  10N
@@ -62222,7 +62221,7 @@ define axis/t=1-jan-2010:30-mar-2010:1/units=days tin
 define axis/t=1-jan-2010:30-mar-2010:10/units=days tout
 let tt = t[gt=tout,L=1:10]
 sh grid tt
-    GRID (G091)
+    GRID (G093)
  name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
@@ -62429,7 +62428,7 @@ list/x=2:3 sgrid
  
 let tpts = 39798 + 87*RANDU(I)
 show grid tt
-    GRID (G089)
+    GRID (G091)
  name       axis              # pts   start                end                 subset
  x10       X                  201 r   0                    10                  full
  Y10       Y                  201 r   0                    10                  full
@@ -63350,8 +63349,8 @@ list contents
              SUBSET   : 47 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v7 (beta/dbg)"                                                    
- 3    /  3:" ! Linux 2.6.32-642.1.1.el6.x86_64 64-bit - 06/15/16"                       
- 4    /  4:" ! 15-Jun-16 12:05     "                                                    
+ 3    /  3:" ! Linux 2.6.32-642.1.1.el6.x86_64 64-bit - 07/06/16"                       
+ 4    /  4:" !  6-Jul-16 11:55     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -65597,7 +65596,7 @@ GO err672_dset_cx
  
 let a = x[gx=0:2:1]; save/clob/file=a1.nc a
 sho grid/x a
-    GRID (G101)
+    GRID (G103)
  name       axis              # pts   start                end                 subset
  (AX137)   X                    3 r   0                    2                   2 pts
  normal    Y
@@ -65613,7 +65612,7 @@ sho grid/x a
  
 let a = x[gx=1:3:1]; save/clob/file=a2.nc a
 sho grid/x a
-    GRID (G101)
+    GRID (G103)
  name       axis              # pts   start                end                 subset
  (AX121)   X                    3 r   1                    3                   2 pts
  normal    Y
@@ -65846,40 +65845,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.529
-randu2_randn2       0.341
-randu2_randn2       0.230
-randu2_randn2       0.630
-randu2_randn2       0.124
+randu2_randn2       0.319
+randu2_randn2       0.595
+randu2_randn2       0.717
+randu2_randn2       0.182
+randu2_randn2       0.318
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.443
-randu2_randn2       0.524
-randu2_randn2       0.980
-randu2_randn2       0.163
-randu2_randn2       0.050
+randu2_randn2       0.682
+randu2_randn2       0.502
+randu2_randn2       0.551
+randu2_randn2       0.789
+randu2_randn2       0.854
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.521
-randu2_randn2       0.423
-randu2_randn2       0.214
-randu2_randn2       0.845
-randu2_randn2       0.964
-randu2_randn2       0.191
+randu2_randn2       0.447
+randu2_randn2       0.848
+randu2_randn2       0.485
+randu2_randn2       0.975
+randu2_randn2       0.456
+randu2_randn2       0.848
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.958
-randu2_randn2       0.815
-randu2_randn2       0.822
-randu2_randn2       0.733
-randu2_randn2       0.435
-randu2_randn2       0.205
+randu2_randn2       0.187
+randu2_randn2       0.914
+randu2_randn2       0.708
+randu2_randn2       0.779
+randu2_randn2       0.675
+randu2_randn2       0.612
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -65904,40 +65903,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.115
-randu2_randn2      -1.256
-randu2_randn2       0.121
-randu2_randn2       0.787
-randu2_randn2      -0.249
+randu2_randn2      -1.529
+randu2_randn2      -1.440
+randu2_randn2      -0.055
+randu2_randn2      -0.881
+randu2_randn2      -0.443
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.070
-randu2_randn2       0.494
-randu2_randn2      -0.838
-randu2_randn2      -0.672
-randu2_randn2       0.125
+randu2_randn2      -0.826
+randu2_randn2       0.795
+randu2_randn2      -0.573
+randu2_randn2      -1.104
+randu2_randn2      -1.608
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       1.413
-randu2_randn2      -0.974
-randu2_randn2      -2.053
-randu2_randn2       0.331
-randu2_randn2       0.613
-randu2_randn2       0.548
+randu2_randn2      -0.075
+randu2_randn2       1.120
+randu2_randn2      -0.494
+randu2_randn2      -0.649
+randu2_randn2      -0.312
+randu2_randn2      -0.099
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       1.353
-randu2_randn2       0.941
-randu2_randn2      -0.798
-randu2_randn2      -1.328
-randu2_randn2       1.195
-randu2_randn2      -0.131
+randu2_randn2       0.177
+randu2_randn2       0.573
+randu2_randn2       1.286
+randu2_randn2      -0.351
+randu2_randn2      -0.317
+randu2_randn2       0.758
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -65962,14 +65961,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.238       1.238       0.415
-randu2_randn2       0.847       0.847       0.415
-randu2_randn2       0.415       0.415       0.174
-randu2_randn2       0.174       0.174       0.415
-randu2_randn2      -0.205      -0.205       0.415
-randu2_randn2      -0.475      -0.288       0.415
-randu2_randn2      -0.288      -0.288       0.415
-randu2_randn2       0.689       0.689       0.689
+randu2_randn2       1.017       1.369       1.017
+randu2_randn2       1.369       1.186       1.017
+randu2_randn2       1.186       1.186       0.206
+randu2_randn2      -0.163      -0.063       0.206
+randu2_randn2      -0.063      -0.163       0.206
+randu2_randn2      -0.538      -0.063       0.206
+randu2_randn2       0.206       0.092       0.206
+randu2_randn2       0.092       0.206       0.206
  
 GO bn_reset
 cancel mode verify
@@ -70279,31 +70278,31 @@ list a1[ge=eoffset@ave, gf=fax4day@ave]
  -DELETE TEMP     M: 74 dset:   1 I:   50   51  J:    1   84  K:    1    1  L:    2    3  M:    2    2  N:    1    1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A1       C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G087)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F1PT
- dealloc  dynamic grid (G087)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F1PT
- allocate dynamic grid (G087)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
- dealloc  dynamic grid (G087)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
- allocate dynamic grid (G087)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      F1PT
- allocate dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
- dealloc  dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
- allocate dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ allocate dynamic grid (G089)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F1PT
+ dealloc  dynamic grid (G089)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F1PT
+ allocate dynamic grid (G089)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
+ dealloc  dynamic grid (G089)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
+ allocate dynamic grid (G089)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      F1PT
+ allocate dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ dealloc  dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ allocate dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- allocate dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
- strip regrid on E: A1 --> (G092)           @AVE
+ allocate dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ strip regrid on E: A1 --> (G094)           @AVE
  strip regrid on F: A1 --> ENTERMED         @AVE
  eval    A1       C:  8 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1    1
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
  pseudo  _E       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F1PT
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F1PT
  pseudo  _F       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    1
  -DELETE _F       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    1
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F1PT
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F1PT
  -DELETE _E       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
  regrid  A1       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1   16
  regrid  A1       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  -DELETE A1       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1   16
- dealloc  dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ dealloc  dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
              VARIABLE : _E[GE=E1PT]+_F[GF=F1PT]
                         regrid: 1 delta on E@AVE, 96 hour on F@AVE
              SUBSET   : 2 by 16 points (E-FORECAST)
@@ -70326,29 +70325,29 @@ list a1[ge=eoffset@ave, gf=fax4day@ave]
  12-MAR-1982 00 / 15:     ....     ....
  16-MAR-1982 00 / 16:     ....     ....
 list a1[ge=eoffset@sum, gf=fax4day@sum]
- dealloc  dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ dealloc  dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
  -DELETE A1       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
- dealloc  dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
- allocate dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ allocate dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ dealloc  dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ allocate dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- allocate dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
- strip regrid on E: A1 --> (G092)           @SUM
+ allocate dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ strip regrid on E: A1 --> (G094)           @SUM
  strip regrid on F: A1 --> ENTERMED         @SUM
  eval    A1       C:  8 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1    1
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
  pseudo  _E       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F1PT
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F1PT
  pseudo  _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    1
  -DELETE _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    1
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F1PT
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F1PT
  -DELETE _E       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
  regrid  A1       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1   16
  regrid  A1       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  -DELETE A1       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1   16
- dealloc  dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ dealloc  dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
              VARIABLE : _E[GE=E1PT]+_F[GF=F1PT]
                         regrid: 1 delta on E@SUM, 96 hour on F@SUM
              SUBSET   : 2 by 16 points (E-FORECAST)
@@ -70371,29 +70370,29 @@ list a1[ge=eoffset@sum, gf=fax4day@sum]
  12-MAR-1982 00 / 15:     ....     ....
  16-MAR-1982 00 / 16:     ....     ....
 list a1[ge=eoffset@var, gf=fax4day@var]
- dealloc  dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ dealloc  dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
  -DELETE A1       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
- dealloc  dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
- allocate dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ allocate dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ dealloc  dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ allocate dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- allocate dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
- strip regrid on E: A1 --> (G092)           @VAR
+ allocate dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ strip regrid on E: A1 --> (G094)           @VAR
  strip regrid on F: A1 --> ENTERMED         @VAR
  eval    A1       C:  8 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1    1
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
  pseudo  _E       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F1PT
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F1PT
  pseudo  _F       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    1
  -DELETE _F       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    1
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F1PT
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F1PT
  -DELETE _E       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
  regrid  A1       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1   16
  regrid  A1       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  -DELETE A1       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1   16
- dealloc  dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ dealloc  dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
              VARIABLE : Variance of _E[GE=E1PT]+_F[GF=F1PT]
                         regrid: 1 delta on E@VAR, 96 hour on F@VAR
              SUBSET   : 2 by 16 points (E-FORECAST)
@@ -70417,35 +70416,35 @@ list a1[ge=eoffset@var, gf=fax4day@var]
  16-MAR-1982 00 / 16:........
  
 list a2[ge=eoffset@ave, gf=fax4day@ave]
- dealloc  dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ dealloc  dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
  -DELETE A1       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A2       C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F2PT
- dealloc  dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F2PT
- allocate dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
- dealloc  dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
- allocate dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      F2PT
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ allocate dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F2PT
+ dealloc  dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F2PT
+ allocate dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
+ dealloc  dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
+ allocate dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      F2PT
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
- strip regrid on E: A2 --> (G101)           @AVE
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ strip regrid on E: A2 --> (G103)           @AVE
  strip regrid on F: A2 --> ENTERMED         @AVE
  eval    A2       C:  8 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   48
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
  pseudo  _E       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F2PT
+ allocate dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F2PT
  pseudo  _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1   48
  -DELETE _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1   48
- dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F2PT
+ dealloc  dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F2PT
  -DELETE _E       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
  regrid  A2       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  regrid  A2       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  -DELETE A2       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
              VARIABLE : _E[GE=E2PT]+_F[GF=F2PT]
                         regrid: 1 delta on E@AVE, 96 hour on F@AVE
              SUBSET   : 2 by 16 points (E-FORECAST)
@@ -70468,29 +70467,29 @@ list a2[ge=eoffset@ave, gf=fax4day@ave]
  12-MAR-1982 00 / 15:     ....     ....
  16-MAR-1982 00 / 16:     ....     ....
 list a2[ge=eoffset@sum, gf=fax4day@sum]
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
  -DELETE A2       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
- strip regrid on E: A2 --> (G101)           @SUM
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ strip regrid on E: A2 --> (G103)           @SUM
  strip regrid on F: A2 --> ENTERMED         @SUM
  eval    A2       C:  8 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   48
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
  pseudo  _E       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F2PT
+ allocate dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F2PT
  pseudo  _F       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1   48
  -DELETE _F       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1   48
- dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F2PT
+ dealloc  dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F2PT
  -DELETE _E       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
  regrid  A2       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  regrid  A2       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  -DELETE A2       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
              VARIABLE : _E[GE=E2PT]+_F[GF=F2PT]
                         regrid: 1 delta on E@SUM, 96 hour on F@SUM
              SUBSET   : 2 by 16 points (E-FORECAST)
@@ -70513,29 +70512,29 @@ list a2[ge=eoffset@sum, gf=fax4day@sum]
  12-MAR-1982 00 / 15:       ....       ....
  16-MAR-1982 00 / 16:       ....       ....
 list a2[ge=eoffset@var, gf=fax4day@var]
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
  -DELETE A2       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
- strip regrid on E: A2 --> (G101)           @VAR
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ strip regrid on E: A2 --> (G103)           @VAR
  strip regrid on F: A2 --> ENTERMED         @VAR
  eval    A2       C:  8 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   48
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
  pseudo  _E       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F2PT
+ allocate dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F2PT
  pseudo  _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1   48
  -DELETE _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1   48
- dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F2PT
+ dealloc  dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    F2PT
  -DELETE _E       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
  regrid  A2       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  regrid  A2       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  -DELETE A2       M: 70 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
              VARIABLE : Variance of _E[GE=E2PT]+_F[GF=F2PT]
                         regrid: 1 delta on E@VAR, 96 hour on F@VAR
              SUBSET   : 2 by 16 points (E-FORECAST)
@@ -70561,37 +70560,37 @@ list a2[ge=eoffset@var, gf=fax4day@var]
 ! 1/00 additions to check details of @MIN,@MAX bevavior
  
 let a1 = _e[ge=e1pt]
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   FAX4DAY
  -DELETE A2       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   16
  -DELETE A2       M: 50 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   48
  -DELETE A2       M: 56 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   48
  -DELETE A2       M: 62 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N:    1   48
- dealloc  dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      F2PT
+ dealloc  dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      F2PT
  -DELETE A1       M: 54 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1    1
  -DELETE A1       M: 64 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1    1
  -DELETE A1       M: 66 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N:    1    1
- dealloc  dynamic grid (G087)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      F1PT
+ dealloc  dynamic grid (G089)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      F1PT
 let a2 = _e[ge=e2pt]
 let a4 = _e[ge=e4pt]
  
 list a1[ge=eoffset@max]
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A1       C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G087)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
- dealloc  dynamic grid (G087)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
- allocate dynamic grid (G087)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
- allocate dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
- dealloc  dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
- allocate dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ allocate dynamic grid (G089)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
+ dealloc  dynamic grid (G089)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
+ allocate dynamic grid (G089)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
+ allocate dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ dealloc  dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ allocate dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- allocate dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
- strip regrid on E: A1 --> (G092)           @MAX
+ allocate dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ strip regrid on E: A1 --> (G094)           @MAX
  eval    A1       C:  7 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
- allocate dynamic grid (G087)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
+ allocate dynamic grid (G089)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
  pseudo  _E       M: 66 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
- dealloc  dynamic grid (G087)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
+ dealloc  dynamic grid (G089)          NORMAL    NORMAL    NORMAL    NORMAL    E1PT      NORMAL
  regrid  A1       M: 54 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- dealloc  dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ dealloc  dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
              VARIABLE : _E[GE=E1PT]
                         regrid: 1 delta on E@MAX
              SUBSET   : 2 points (E)
@@ -70599,25 +70598,25 @@ list a1[ge=eoffset@max]
  2.1 / 2:  2.50000
 list a2[ge=eoffset@max]
  -DELETE _E       M: 66 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    1  N: -999 -999
- dealloc  dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ dealloc  dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
  -DELETE A1       M: 54 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A2       C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
- dealloc  dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
- allocate dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ allocate dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
+ dealloc  dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
+ allocate dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
- strip regrid on E: A2 --> (G101)           @MAX
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ strip regrid on E: A2 --> (G103)           @MAX
  eval    A2       C:  7 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- allocate dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
+ allocate dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
  pseudo  _E       M: 54 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- dealloc  dynamic grid (G092)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
+ dealloc  dynamic grid (G094)          NORMAL    NORMAL    NORMAL    NORMAL    E2PT      NORMAL
  regrid  A2       M: 62 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
              VARIABLE : _E[GE=E2PT]
                         regrid: 1 delta on E@MAX
              SUBSET   : 2 points (E)
@@ -70625,25 +70624,25 @@ list a2[ge=eoffset@max]
  2.1 / 2:  2.50000
 list a4[ge=eoffset@max]
  -DELETE _E       M: 54 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
  -DELETE A2       M: 62 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A4       C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    E4PT      NORMAL
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    E4PT      NORMAL
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    E4PT      NORMAL
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    E4PT      NORMAL
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    E4PT      NORMAL
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    E4PT      NORMAL
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
- strip regrid on E: A4 --> (G096)           @MAX
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ strip regrid on E: A4 --> (G098)           @MAX
  eval    A4       C:  7 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    E4PT      NORMAL
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    E4PT      NORMAL
  pseudo  _E       M: 62 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    E4PT      NORMAL
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    E4PT      NORMAL
  regrid  A4       M: 56 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
              VARIABLE : _E[GE=E4PT]
                         regrid: 1 delta on E@MAX
              SUBSET   : 2 points (E)
@@ -70651,21 +70650,21 @@ list a4[ge=eoffset@max]
  2.1 / 2:  2.50000
 list a4[ge=eoffset@min]
  -DELETE _E       M: 62 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
  -DELETE A4       M: 56 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
- strip regrid on E: A4 --> (G096)           @MIN
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ strip regrid on E: A4 --> (G098)           @MIN
  eval    A4       C:  7 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    E4PT      NORMAL
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    E4PT      NORMAL
  pseudo  _E       M: 56 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    E4PT      NORMAL
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    E4PT      NORMAL
  regrid  A4       M: 50 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
              VARIABLE : _E[GE=E4PT]
                         regrid: 1 delta on E@MIN
              SUBSET   : 2 points (E)
@@ -70673,21 +70672,21 @@ list a4[ge=eoffset@min]
  2.1 / 2:  2.00000
 list a4[ge=eoffset@sum] ! 5+5.5+6+6.5=23
  -DELETE _E       M: 56 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
  -DELETE A4       M: 50 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
- strip regrid on E: A4 --> (G096)           @SUM
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ strip regrid on E: A4 --> (G098)           @SUM
  eval    A4       C:  7 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
- allocate dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    E4PT      NORMAL
+ allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    E4PT      NORMAL
  pseudo  _E       M: 50 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
- dealloc  dynamic grid (G101)          NORMAL    NORMAL    NORMAL    NORMAL    E4PT      NORMAL
+ dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    E4PT      NORMAL
  regrid  A4       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
              VARIABLE : _E[GE=E4PT]
                         regrid: 1 delta on E@SUM
              SUBSET   : 2 points (E)
@@ -70700,19 +70699,19 @@ define axis/f=1-jan-1990:5-jan-1990:24/units=hours ehour
 let afcst = _f[gf=eday]
 list afcst
  -DELETE _E       M: 50 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    3  N: -999 -999
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    EOFFSET   NORMAL
  -DELETE A4       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M:    1    2  N: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid AFCST    C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    5
  eval    AFCST    C:  6 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    5
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
  pseudo  _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    5
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
              VARIABLE : _F[GF=EDAY]
              SUBSET   : 5 points (FORECAST)
  01-JAN-1990 00 / 1:  32493.0
@@ -70722,8 +70721,8 @@ list afcst
  05-JAN-1990 00 / 5:  32497.0
 show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
- Last successful data access was on grid (G096)
-    GRID (G096)
+ Last successful data access was on grid (G098)
+    GRID (G098)
  name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
@@ -70733,20 +70732,20 @@ show grid
  EDAY      FORECAST             5 r   01-JAN-1990 00:00    05-JAN-1990 00:00   full
 list afcst[gf=ehour@max]
  -DELETE _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    5
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EHOUR
- dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EHOUR
- allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EHOUR
+ allocate dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EHOUR
+ dealloc  dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EHOUR
+ allocate dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EHOUR
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    5
- allocate dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EHOUR
- strip regrid on F: AFCST --> (G103)           @MAX
+ allocate dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EHOUR
+ strip regrid on F: AFCST --> (G105)           @MAX
  eval    AFCST    C:  7 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    5
- allocate dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
+ allocate dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
  pseudo  _F       M: 74 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    5
- dealloc  dynamic grid (G096)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
+ dealloc  dynamic grid (G098)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EDAY
  regrid  AFCST    M: 46 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N:    1    5
- dealloc  dynamic grid (G103)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EHOUR
+ dealloc  dynamic grid (G105)          NORMAL    NORMAL    NORMAL    NORMAL    NORMAL    EHOUR
              VARIABLE : _F[GF=EDAY]
                         regrid: 24 hour on F@MAX
              SUBSET   : 5 points (FORECAST)
@@ -70757,8 +70756,8 @@ list afcst[gf=ehour@max]
  05-JAN-1990 00 / 5:  32497.0
 show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
- Last successful data access was on grid (G103)
-    GRID (G103)
+ Last successful data access was on grid (G105)
+    GRID (G105)
  name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
@@ -70797,7 +70796,7 @@ show data fourfiles
  
 list/i=3 sst[T=@ave]
  getgrid EX#1     C:  5 dset:   5 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G103)          COADSX116_COADSY52_6NORMAL    TIME13    ENSEMBLE  NORMAL
+ allocate dynamic grid (G105)          COADSX116_COADSY52_6NORMAL    TIME13    ENSEMBLE  NORMAL
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   5 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M:    1    4  N: -999 -999
  strip --> SST[T=01-JAN00:45:31-DEC06:34@AVE,D=5]
@@ -70840,7 +70839,7 @@ all data in memory:
     3  /104W           9  /30N          ...  / ...          12  /31-DEC 06:34   4  /4.5          ...  / ...
  
 cancel data fourfiles
- dealloc  dynamic grid (G103)          COADSX116_COADSY52_6NORMAL    TIME13    ENSEMBLE  NORMAL
+ dealloc  dynamic grid (G105)          COADSX116_COADSY52_6NORMAL    TIME13    ENSEMBLE  NORMAL
  canceling dset fourfiles
  -DELETE SST      M:118 dset:   5 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M:    1    4  N: -999 -999
  -DELETE SST      M:120 dset:   5 I:    3    3  J:    1    9  K: -999 -999  L: -999 -999  M:    1    4  N: -999 -999
@@ -70901,7 +70900,7 @@ show data fourfiles
  
 list/i=3 airt[T=@ave]
  getgrid EX#1     C:  5 dset:   6 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G092)          COADSX116_COADSY52_6NORMAL    TIME13    ENSEMBLE  NORMAL
+ allocate dynamic grid (G094)          COADSX116_COADSY52_6NORMAL    TIME13    ENSEMBLE  NORMAL
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   6 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M:    1    4  N: -999 -999
  strip --> AIRT[T=01-JAN00:45:31-DEC06:34@AVE,D=6]
@@ -70961,7 +70960,7 @@ show data/files fourfiles_gap
       4: ./ens4.nc
 list/i=3 airt[T=@ave]
  getgrid EX#1     C:  5 dset:   7 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G092)          COADSX116_COADSY52_6NORMAL    TIME13    ENSEMBLE  NORMAL
+ allocate dynamic grid (G094)          COADSX116_COADSY52_6NORMAL    TIME13    ENSEMBLE  NORMAL
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   7 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M:    1    4  N: -999 -999
  strip --> AIRT[T=01-JAN00:45:31-DEC06:34@AVE,D=7]
@@ -71148,7 +71147,7 @@ show command define
  DEFINE SYMBOL
  DEFINE ATTRIBUT/DATASET/TYPE/OUTPUT/QUIET
  DEFINE PYFUNC/NAME
- DEFINE DATA/AGGREGAT/T/E/F/TITLE/QUIET/HIDE/U
+ DEFINE DATA/AGGREGAT/T/E/F/TITLE/QUIET/HIDE
  DEFINE ANNOTATI/USER/NORM/NOUSER/XPOS/YPOS/HALIGN/VALIGN/ANGLE/SIZE/NLAB
 show command show
  SHOW/ALL
@@ -71810,7 +71809,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -71863,7 +71862,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -71905,7 +71904,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -71947,7 +71946,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -71980,7 +71979,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72014,7 +72013,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72077,7 +72076,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72125,7 +72124,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72182,7 +72181,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72220,7 +72219,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72258,7 +72257,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72296,7 +72295,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72330,7 +72329,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72562,7 +72561,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          FLOAT     units           CHAR        13   T       degrees_north
@@ -72596,7 +72595,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          FLOAT     units           CHAR        13   T       degrees_north
@@ -72640,7 +72639,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72681,7 +72680,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -72707,7 +72706,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -72733,7 +72732,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -73174,7 +73173,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73203,7 +73202,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73254,7 +73253,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73823,8 +73822,8 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Wed Jun 15 12:07:03 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
-			"FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "Wed Jul  6 11:57:14 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
+			"FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
 }
@@ -73858,7 +73857,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73889,7 +73888,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73952,7 +73951,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73980,7 +73979,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75696,7 +75695,7 @@ variables:
 		LABELS:history = "From http://dunkel.pmel.noaa.gov:8930/thredds/dodsC/data/atmos3.ncml" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75719,7 +75718,7 @@ variables:
 		STRVAR:long_name = "mystrings" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75947,7 +75946,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75977,7 +75976,7 @@ variables:
 		A:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75998,7 +75997,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76019,7 +76018,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76041,7 +76040,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76462,7 +76461,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -76479,7 +76478,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -76496,7 +76495,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -76528,13 +76527,199 @@ cancel mode verify
 GO bn_let_remote
 ! bn_let_remote.jnl
 ! Tests of the F-TDS LET/REMOTE
+! 6/2016 installed NVODS on new-bock server
  
 ! See if the F-TDS is working and bail if not.
  
-let status = TEST_OPENDAP("http://ferret.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl")
+let status = TEST_OPENDAP("http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl")
 load status
 if `status NE 0` then EXIT/SCRIPT
- !-> if 1 then EXIT/SCRIPT
+ !-> if 0 then EXIT/SCRIPT
+ 
+use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl"
+let/D=1/remote myvar = t0112mn1[k=1:5@sum]
+let/D=1/remote ave_z = t0112mn1[z=0:1000@ave]
+sh var
+ Created by DEFINE VARIABLE:
+     AVE_Z[D=data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl] (/REMOTE) = T0112MN1[Z=0:1000@AVE]
+     MYVAR[D=data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl] (/REMOTE) = T0112MN1[K=1:5@SUM]
+ >>> Definitions that replace any file variable of same name:
+     STATUS = TEST_OPENDAP("http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl")
+set view ul; shade/l=7 myvar
+set view ur; shade/l=3 ave_z
+ 
+list/l=7/x=300:310/y=15 myvar, ave_z
+             DATA SET: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
+             LONGITUDE: 60W to 50W
+             LATITUDE: 15N (interpolated)
+             TIME: 14-JUL 12:00
+ Column  1: MYVAR is T0112MN1[K=1:5@SUM]
+ Column  2: AVE_Z is T0112MN1[Z=0:1000@AVE]
+             MYVAR   AVE_Z
+59.5W / 301:  138.8  12.81
+58.5W / 302:  139.2  12.82
+57.5W / 303:  139.4  13.26
+56.5W / 304:  140.4  12.66
+55.5W / 305:  137.4  16.44
+54.5W / 306:  135.3  12.27
+53.5W / 307:  134.0  12.24
+52.5W / 308:  136.4  12.59
+51.5W / 309:   ....   ....
+50.5W / 310:  135.1  12.94
+ 
+let/D=1/remote ave_t = t0112mn1[L=1:12@ave]
+set view ll; shade/z=0 ave_t
+ 
+let/D=1/remote/units="`t0112mn1,ret=units`"/title="Summer average Temperature" ave_summer = t0112mn1[t=15-jun:15-sep@ave]
+ !-> DEFINE VARIABLE/D=1/remote/units="deg C"/title="Summer average Temperature" ave_summer = t0112mn1[t=15-jun:15-sep@ave]
+set view lr; shade/z=0 ave_summer
+ 
+can view
+can data/all; can var/all
+ 
+! open another dataset, define more remote variables
+ 
+use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl"
+use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
+let/D=2/remote sstsum = sst[L=1:5@sum]
+let/D=2/remote airtsum = airt[L=1:5@sum]
+sh dat
+     currently SET data sets:
+    1> http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
+ name     title                             I         J         K         L         M         N
+ T0112MN1 Temperature                      1:360     1:180     1:24      1:12      ...       ...
+ 
+    2> http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl  (default)
+ name     title                             I         J         K         L         M         N
+ SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:12      ...       ...
+ AIRT     AIR TEMPERATURE                  1:180     1:90      ...       1:12      ...       ...
+ SPEH     SPECIFIC HUMIDITY                1:180     1:90      ...       1:12      ...       ...
+ WSPD     WIND SPEED                       1:180     1:90      ...       1:12      ...       ...
+ UWND     ZONAL WIND                       1:180     1:90      ...       1:12      ...       ...
+ VWND     MERIDIONAL WIND                  1:180     1:90      ...       1:12      ...       ...
+ SLP      SEA LEVEL PRESSURE               1:180     1:90      ...       1:12      ...       ...
+ ------------------------------
+ AIRTSUM[D=data_coads_climatology.jnl] (/REMOTE) = AIRT[L=1:5@SUM]
+ SSTSUM[D=data_coads_climatology.jnl] (/REMOTE) = SST[L=1:5@SUM]
+ 
+ 
+set view ul; plot/y=-10/x=50:150 sstsum
+set view ur; plot/y=-10/x=50:150 airtsum
+list/y=-10/x=50:59 sstsum,airtsum
+             DATA SET: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl
+             LONGITUDE: 50E to 59E
+             LATITUDE: 10S (interpolated)
+ Column  1: SSTSUM is SST[L=1:5@SUM]
+ Column  2: AIRTSUM is AIRT[L=1:5@SUM]
+           SSTSUM  AIRTSUM
+51E   / 16:  141.4   139.2
+53E   / 17:  140.8   138.9
+55E   / 18:  141.4   139.4
+57E   / 19:  141.2   138.7
+59E   / 20:  141.6   139.4
+ 
+let both = sstsum + airtsum
+set view lower; plot/y=-10/x=50:150 both
+list/y=-10/x=50:59 sstsum, airtsum, both
+             DATA SET: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl
+             LONGITUDE: 50E to 59E
+             LATITUDE: 10S (interpolated)
+ Column  1: SSTSUM is SST[L=1:5@SUM]
+ Column  2: AIRTSUM is AIRT[L=1:5@SUM]
+ Column  3: BOTH is SSTSUM + AIRTSUM
+           SSTSUM  AIRTSUM  BOTH
+51E   / 16:  141.4   139.2  280.5
+53E   / 17:  140.8   138.9  279.7
+55E   / 18:  141.4   139.4  280.7
+57E   / 19:  141.2   138.7  279.9
+59E   / 20:  141.6   139.4  281.0
+ 
+can dat/all; can var/all
+ 
+! make several remote definitions. They can be used together in an expression.
+use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
+let/D=1/remote sstsum = sst[L=1:5@sum]
+let/D=1/remote airtsum = airt[L=1:5@sum]
+let/D=1/remote factor = 12
+let/D=1/remote combo = factor*(airtsum - sstsum)
+list/y=-5/x=130w:110w combo
+             VARIABLE : FACTOR*(AIRTSUM - SSTSUM)
+             FILENAME : data_coads_climatology.jnl
+             FILEPATH : http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/
+             SUBSET   : 10 points (LONGITUDE)
+             LATITUDE : 5S
+                 5S    
+                 43
+ 129W   / 106:  -7.04
+ 127W   / 107:  -7.88
+ 125W   / 108:  -0.59
+ 123W   / 109: -10.31
+ 121W   / 110:  -1.90
+ 119W   / 111:  -4.39
+ 117W   / 112:  -6.35
+ 115W   / 113:  -9.40
+ 113W   / 114:  -9.81
+ 111W   / 115: -11.41
+ 
+ 
+can dat/all; can var/all
+ 
+use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl"
+ 
+! This is ok let/remote/D=
+let/D=1/remote myvar = t0112mn1[z=1:100@ave]
+ 
+! Intentional errors:
+ 
+! But cannot put d= within the expression: the expr is evaluated on
+! the remote server so the same datsets are not open there.
+ 
+set mode ignore
+let/D=1/remote rvar = t0112mn1[d=1,z=1:100@ave]
+ 
+ 
+! But, require LET/D= with /REMOTE
+let/remote rvar = t0112mn1[d=1,z=1:100@ave]
+ 
+! If expressions involve local variables not defined in the remote dset,
+! then the variable can be computed but not as a remote-var.
+ 
+let a = 12
+let/D=1/remote avar = a*t0112mn1[L=@ave]
+list/x=300/y=15 avar
+ 
+SET MODE/LAST ignore
+ 
+! The dataset remains open, we can fix the definition.
+let/D=1/remote a = 12
+sho dat
+     currently SET data sets:
+    1> http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl  (default)
+ name     title                             I         J         K         L         M         N
+ T0112MN1 Temperature                      1:360     1:180     1:24      1:12      ...       ...
+ ------------------------------
+ A[D=data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl] (/REMOTE) = 12
+ AVAR[D=data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl] (/REMOTE) = A*T0112MN1[L=@AVE]
+ MYVAR[D=data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl] (/REMOTE) = T0112MN1[Z=1:100@AVE]
+ 
+list/x=300/y=15/z=0:100 avar
+             VARIABLE : A*T0112MN1[L=@AVE]
+             FILENAME : data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
+             FILEPATH : http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/
+             SUBSET   : 7 points (DEPTH (m))
+             LONGITUDE: 60W (interpolated)
+             LATITUDE : 15N (interpolated)
+             TIME     : 01-JAN 12:00 to 30-DEC 06:00
+ 0      / 1:  329.8
+ 10     / 2:  329.4
+ 20     / 3:  329.2
+ 30     / 4:  328.7
+ 50     / 5:  325.1
+ 75     / 6:  315.3
+ 100    / 7:  302.9
+ 
+can dat/all; can var/all
+ 
  
 ! *********** v6.93 Additions ***********
 GO bn_reset
@@ -77040,7 +77225,7 @@ def axis/z=1:20:1 zaxis
 define axis/t=1-jan-2000:1-jan-2005:1/units=days  longtime
 let bigvar = x[gx=xaxis]+y[gy=yaxis] + z[gz=zaxis] + t[gt=longtime]
 sh grid bigvar
-    GRID (G089)
+    GRID (G091)
  name       axis              # pts   start                end                 subset
  XAXIS     X                  360 r   1                    360                 full
  YAXIS     Y                  180 r   1                    180                 full
@@ -77053,7 +77238,7 @@ load bigvar
 ! also was an incorrect size.
 define axis/t=1-jan-2000:1-jan-2010:1/units=days  longtime
 sh grid bigvar
-    GRID (G089)
+    GRID (G091)
  name       axis              # pts   start                end                 subset
  XAXIS     X                  360 r   1                    360                 full
  YAXIS     Y                  180 r   1                    180                 full
@@ -77530,7 +77715,7 @@ variables:
 		:geospatial_lat_max = 29.07 ;
 		:time_coverage_start = "2006-06-10T23:48:00Z" ;
 		:time_converage_end = "2006-06-11T00:12:00Z" ;
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 }
  
 set mode/last upcase
@@ -77626,7 +77811,7 @@ variables:
 		lon360:history = "added to test_save_dsg.nc" ;
 
 // global attributes:
-		:history = "CruiseDsgNcFile 1.0FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "CruiseDsgNcFile 1.0FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:featureType = "Trajectory" ;
 		:Conventions = "Some other conventionsCF-1.6" ;
 		:geospatial_lon_min = -92.77 ;
@@ -77653,7 +77838,7 @@ can dat/all; use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
  ..history = Subset of etopo20,
- FERRET V7 (beta/dbg) 15-Jun-16 
+ FERRET V7 (beta/dbg)  6-Jul-16 
  ..Conventions = Existing conventions note, , CF-1.6 
  
  
@@ -77686,7 +77871,7 @@ can dat/all; use conventions_history
 ! The new attibutes
 sh att .
      attributes for dataset: ./conventions_history.nc
- ..history = The history of the fileFERRET V7 (beta/dbg) 15-Jun-16 
+ ..history = The history of the fileFERRET V7 (beta/dbg)  6-Jul-16 
  ..Conventions = Conventions for variables named V2CF-1.6 
  
 GO bn_reset
@@ -78578,19 +78763,18 @@ GO bn_spawn_size
 let files = {spawn:"ls *cdf*.jnl"}
 list files
              VARIABLE : {SPAWN:"ls *cdf*.jnl"}
-             SUBSET   : 9 points (X)
+             SUBSET   : 8 points (X)
  1   / 1:"bn_cdf_errmsg.jnl"      
  2   / 2:"bn_cdf.jnl"             
  3   / 3:"bn_cdf_keepax.jnl"      
  4   / 4:"bn_netcdf4.jnl"         
- 5   / 5:"cdf.jnl"                
- 6   / 6:"err490_cdf_childax.jnl" 
- 7   / 7:"err491_cdf_childax.jnl" 
- 8   / 8:"err65_read_epic_cdf.jnl"
- 9   / 9:"err667_5d_netcdf.jnl"   
+ 5   / 5:"err490_cdf_childax.jnl" 
+ 6   / 6:"err491_cdf_childax.jnl" 
+ 7   / 7:"err65_read_epic_cdf.jnl"
+ 8   / 8:"err667_5d_netcdf.jnl"   
 say `files,return=isize`
- !-> MESSAGE/CONTINUE 9
-9
+ !-> MESSAGE/CONTINUE 8
+8
  
 ! Evaluate size without loading the variable first
 let datfiles = {spawn:"ls *.dat"}
@@ -78600,29 +78784,28 @@ say `datfiles,return=isize`
  
 ! expression syntax
 say `{spawn:"ls xml*.jnl"},return=isize`
- !-> MESSAGE/CONTINUE 4
-4
+ !-> MESSAGE/CONTINUE 3
+3
 list {spawn:"ls xml*.jnl"}
              VARIABLE : {SPAWN:"ls xml*.jnl"}
-             SUBSET   : 4 points (X)
+             SUBSET   : 3 points (X)
  1   / 1:"xml_header_script.jnl"
- 2   / 2:"xml_letd.jnl"         
- 3   / 3:"xml_use_coads.jnl"    
- 4   / 4:"xml_use_numstring.jnl"
+ 2   / 2:"xml_use_coads.jnl"    
+ 3   / 3:"xml_use_numstring.jnl"
  
 ! Test variables based on output of a spawn.
 ! These already worked correctly, has a grid-changing function.
  
 LET filesets = xcat({spawn:"ls *.nc"}, {spawn:"ls *.jnl"})
 say `filesets, return=isize`
- !-> MESSAGE/CONTINUE 1084
-1084
+ !-> MESSAGE/CONTINUE 972
+972
  
 let files = {spawn:"ls *cdf*.jnl"}
 let name_len = strindex(files, ".sub")
 say `name_len, return=isize`
- !-> MESSAGE/CONTINUE 9
-9
+ !-> MESSAGE/CONTINUE 8
+8
  
 GO bn_reset
 cancel mode verify
@@ -79112,7 +79295,7 @@ say `a[x=@min]`
  strip --> A[X=25E:25E(385)@MIN,D=2]
  strip modulo-void-filling A on X axis:     0    83 dset:   2
  strip moduloing A on X axis:     0    82 dset:   2
- reading A        M: 74 dset:   2 I:    1   82  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ reading A        M: 72 dset:   2 I:    1   82  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  doing moduloing A on X axis:     1    82 dset:   2
  doing modulo-void-filling A on X axis:     0    82 dset:   2
  doing --> A[X=25E:25E(385)@MIN,D=2]
@@ -81203,7 +81386,7 @@ use "run4.nc"
 define data/hide/F/agg fourfiles = 1,2,3,4
  
 sh grid sst
-    GRID (G089)
+    GRID (G091)
  name       axis              # pts   start                end                 subset
  LON1      LONGITUDE           10mr   109W                 91W                 full
  LAT       LATITUDE             9 r   13N                  29N                 full
@@ -81789,27 +81972,27 @@ LIST/PREC=7 tempz
  getgrid DEPTH    C:  9 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid GAO1            XAXLEVITR1YAXLEVITR4ZAXLEVITR NORMAL    NORMAL    NORMAL
  getgrid ZPTS     C:  9 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G094)          NORMAL    NORMAL    (AX113)   NORMAL    NORMAL    NORMAL
- dealloc  dynamic grid (G094)          NORMAL    NORMAL    (AX113)   NORMAL    NORMAL    NORMAL
- allocate dynamic grid (G094)          NORMAL    NORMAL    (AX113)   NORMAL    NORMAL    NORMAL
- allocate dynamic grid (G086)          XAXLEVITR1YAXLEVITR4(AX113)   NORMAL    NORMAL    NORMAL
- dealloc  dynamic grid (G086)          XAXLEVITR1YAXLEVITR4(AX113)   NORMAL    NORMAL    NORMAL
- allocate dynamic grid (G086)          XAXLEVITR1YAXLEVITR4(AX113)   NORMAL    NORMAL    NORMAL
- allocate dynamic grid (G086)          XAXLEVITR1YAXLEVITR4(AX113)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G096)          NORMAL    NORMAL    (AX113)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G096)          NORMAL    NORMAL    (AX113)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G096)          NORMAL    NORMAL    (AX113)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G088)          XAXLEVITR1YAXLEVITR4(AX113)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G088)          XAXLEVITR1YAXLEVITR4(AX113)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G088)          XAXLEVITR1YAXLEVITR4(AX113)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G088)          XAXLEVITR1YAXLEVITR4(AX113)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    2  J:    1    2  K:    1    5  L: -999 -999  M: -999 -999  N: -999 -999
  eval    TEMPZ    C:  6 dset:   1 I:    1    2  J:    1    2  K:    1    5  L: -999 -999  M: -999 -999  N: -999 -999
- allocate dynamic grid (G086)          XAXLEVITR1YAXLEVITR4(AX113)   NORMAL    NORMAL    NORMAL
- strip regrid on Z: TEMP --> (G086)           @LIN
+ allocate dynamic grid (G088)          XAXLEVITR1YAXLEVITR4(AX113)   NORMAL    NORMAL    NORMAL
+ strip regrid on Z: TEMP --> (G088)           @LIN
  eval    DEPTH    C:  9 dset:   1 I:    1    2  J:    1    2  K:    1   20  L: -999 -999  M: -999 -999  N: -999 -999
  pseudo  Z        M: 86 dset:   1 I: -999 -999  J: -999 -999  K:    1   20  L: -999 -999  M: -999 -999  N: -999 -999
  constan cnst     M: 82 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  reading TEMP     M: 80 dset:   1 I:    1    2  J:    1    2  K:    1    1  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE cnst     M: 82 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
- -DELETE tpry     M: 74 dset:   0 I:    1    2  J:    1    2  K:    1    1  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 72 dset:   0 I:    1    2  J:    1    2  K:    1    1  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE Z        M: 86 dset:   1 I: -999 -999  J: -999 -999  K:    1   20  L: -999 -999  M: -999 -999  N: -999 -999
  reading TEMP     M: 86 dset:   1 I:    1    2  J:    1    2  K:    7   12  L: -999 -999  M: -999 -999  N: -999 -999
- auxgrd  TEMP     M: 74 dset:   1 I:    1    2  J:    1    2  K:    1    5  L: -999 -999  M: -999 -999  N: -999 -999
- dealloc  dynamic grid (G086)          XAXLEVITR1YAXLEVITR4(AX113)   NORMAL    NORMAL    NORMAL
+ auxgrd  TEMP     M: 72 dset:   1 I:    1    2  J:    1    2  K:    1    5  L: -999 -999  M: -999 -999  N: -999 -999
+ dealloc  dynamic grid (G088)          XAXLEVITR1YAXLEVITR4(AX113)   NORMAL    NORMAL    NORMAL
              VARIABLE : TEMP[GZ(DEPTH)=ZPTS]
              FILENAME : levitus_3d_subset.nc
              SUBSET   : 2 by 2 by 5 points (LONGITUDE-LATITUDE-Z)
@@ -81831,10 +82014,10 @@ LIST/PREC=7 tempz
  48.5S / 2:  5.835500  6.045001
  49.5S / 1:  4.879000  5.102500
 SHOW GRID tempz
- dealloc  dynamic grid (G086)          XAXLEVITR1YAXLEVITR4(AX113)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G088)          XAXLEVITR1YAXLEVITR4(AX113)   NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G086)          XAXLEVITR1YAXLEVITR4(AX113)   NORMAL    NORMAL    NORMAL
-    GRID (G086)
+ allocate dynamic grid (G088)          XAXLEVITR1YAXLEVITR4(AX113)   NORMAL    NORMAL    NORMAL
+    GRID (G088)
  name       axis              # pts   start                end                 subset
  XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
  YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
@@ -81884,7 +82067,7 @@ LIST tempzax
  48.5S / 2:  5.835500  6.045001
  49.5S / 1:  4.879000  5.102500
 SHOW GRID tempzax
-    GRID (G109)
+    GRID (G107)
  name       axis              # pts   start                end                 subset
  XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
  YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
@@ -81920,7 +82103,7 @@ LIST/PREC=7 tempz_alt
  48.5S / 2:  7.726000  7.917999
  49.5S / 1:  6.843000  7.021999
 SHOW GRID tempz_alt
-    GRID (G096)
+    GRID (G098)
  name       axis              # pts   start                end                 subset
  XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
  YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
@@ -81947,7 +82130,7 @@ LIST/PREC=7 tempz_1pt
  48.5S / 2:  7.725600  7.917999
  49.5S / 1:  6.836600  7.016000
 SHOW GRID/z tempz_1pt
-    GRID (G089)
+    GRID (G091)
  name       axis              # pts   start                end                 subset
  XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
  YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
@@ -82014,7 +82197,7 @@ LIST/PREC=7 rvtempzax - tempz
  48.5S / 2:  0.0000000  0.0000000
  49.5S / 1:  0.0000000  0.0000000
 SHOW GRID rvtempzax
-    GRID (G109)
+    GRID (G107)
  name       axis              # pts   start                end                 subset
  XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
  YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
@@ -83209,7 +83392,7 @@ LIST/PREC=7 rvtempzaxave - tempz
  48.5S / 2:  0.00000000  0.00000000
  49.5S / 1:  0.00000000  0.00000000
 SHOW GRID/z rvtempzaxave
-    GRID (G109)
+    GRID (G107)
  name       axis              # pts   start                end                 subset
  XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
  YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
@@ -86192,6 +86375,7 @@ LIST dest, var[G$1=dcoarse]
  
  
 ! *********** v6.97 Additions ***********
+!            (released as V7.0)
  
 GO bn_reset
 cancel mode verify
@@ -86404,20 +86588,20 @@ GO err696_time_overlay
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
 sp date
-Wed Jun 15 12:07:20 PDT 2016
+Wed Jul  6 11:57:32 PDT 2016
 set view upper
 plot t[gt=tax_nlp]
 plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
 sp date
-Wed Jun 15 12:07:20 PDT 2016
+Wed Jul  6 11:57:32 PDT 2016
  
 sp date
-Wed Jun 15 12:07:20 PDT 2016
+Wed Jul  6 11:57:33 PDT 2016
 set view lower
 plot t[gt=tax_jul]
 plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
 sp date
-Wed Jun 15 12:07:20 PDT 2016
+Wed Jul  6 11:57:33 PDT 2016
  
 GO bn_reset
 cancel mode verify
@@ -86473,7 +86657,7 @@ variables:
 		var:long_name = "0*TT + X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -86617,7 +86801,7 @@ define axis/t=1-jan-2000:1-jan-2005:1/units=days  longtime
  
 let bigvar = x[gx=xaxis]+y[gy=yaxis] + z[gz=zaxis] + t[gt=longtime]
 sh grid bigvar
-    GRID (G092)
+    GRID (G094)
  name       axis              # pts   start                end                 subset
  XAXIS     X                  360 r   1                    360                 full
  YAXIS     Y                  180 r   1                    180                 full
@@ -87354,7 +87538,7 @@ variables:
 		TEMP:history = "From /home/data/socat/socatV3/11SS/11SS20140225.nc" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -89639,10 +89823,10 @@ save/clobber/file="tmp/test3.nc" i[i=1:3] + 3
 ! generate absolute path
 let dir = SPAWN("pwd")
 define sym use_abs_path = `DIR+"/tmp/test1.nc"`
- !-> define sym use_abs_path = /home/users/ansley/build/current_trunk/FERRET/bench/tmp/test1.nc
+ !-> define sym use_abs_path = /home/users/ansley/build/trunk/FERRET/bench/tmp/test1.nc
 say ($use_abs_path)
- !-> MESSAGE/CONTINUE /home/users/ansley/build/current_trunk/FERRET/bench/tmp/test1.nc
-/home/users/ansley/build/current_trunk/FERRET/bench/tmp/test1.nc
+ !-> MESSAGE/CONTINUE /home/users/ansley/build/trunk/FERRET/bench/tmp/test1.nc
+/home/users/ansley/build/trunk/FERRET/bench/tmp/test1.nc
  
 use tmp/test1.nc
 show data/brief
@@ -89669,17 +89853,17 @@ show data/brief
 canc data/all
  
 use "($use_abs_path)"
- !-> SET DAT/FORM=CDF "/home/users/ansley/build/current_trunk/FERRET/bench/tmp/test1.nc"
+ !-> SET DAT/FORM=CDF "/home/users/ansley/build/trunk/FERRET/bench/tmp/test1.nc"
 show data/brief
      currently SET data sets:
-    1> /home/users/ansley/build/current_trunk/FERRET/bench/tmp/test1.nc  (default)
+    1> /home/users/ansley/build/trunk/FERRET/bench/tmp/test1.nc  (default)
 canc data/all
  
 use ($use_abs_path)
- !-> SET DAT/FORM=CDF /home/users/ansley/build/current_trunk/FERRET/bench/tmp/test1.nc
+ !-> SET DAT/FORM=CDF /home/users/ansley/build/trunk/FERRET/bench/tmp/test1.nc
 show data/brief
      currently SET data sets:
-    1> /home/users/ansley/build/current_trunk/FERRET/bench/tmp/test1.nc  (default)
+    1> /home/users/ansley/build/trunk/FERRET/bench/tmp/test1.nc  (default)
 canc data/all
  
 use tmp/test1.nc,tmp/test2.nc,tmp/test3.nc
@@ -89745,10 +89929,10 @@ spawn echo 'say $1"1-n/a"  $2"2-n/a"  $3"3-n/a"  $4"4-n/a" $5"5-n/a" $6"6-n/a" $
 ! generate absolute path
 let dir = SPAWN("pwd")
 define sym abs_path = `DIR+"/tmp/testMe.jnl"`
- !-> define sym abs_path = /home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl
+ !-> define sym abs_path = /home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl
 say ($abs_path)
- !-> MESSAGE/CONTINUE /home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl
-/home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl
+ !-> MESSAGE/CONTINUE /home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl
+/home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl
  
 go tmp/testMe.jnl
 say $1"1-n/a"  $2"2-n/a"  $3"3-n/a"  $4"4-n/a" $5"5-n/a" $6"6-n/a" $7"7-n/a" $8"8-n/a"
@@ -89761,13 +89945,13 @@ say $1"1-n/a"  $2"2-n/a"  $3"3-n/a"  $4"4-n/a" $5"5-n/a" $6"6-n/a" $7"7-n/a" $8"
 1-n/a  2-n/a  3-n/a  4-n/a 5-n/a 6-n/a 7-n/a 8-n/a
  
 go ($abs_path)
- !-> go /home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl
+ !-> go /home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl
 say $1"1-n/a"  $2"2-n/a"  $3"3-n/a"  $4"4-n/a" $5"5-n/a" $6"6-n/a" $7"7-n/a" $8"8-n/a"
  !-> MESSAGE/CONTINUE 1-n/a  2-n/a  3-n/a  4-n/a 5-n/a 6-n/a 7-n/a 8-n/a
 1-n/a  2-n/a  3-n/a  4-n/a 5-n/a 6-n/a 7-n/a 8-n/a
  
 go "($abs_path)"
- !-> go "/home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl"
+ !-> go "/home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl"
 say $1"1-n/a"  $2"2-n/a"  $3"3-n/a"  $4"4-n/a" $5"5-n/a" $6"6-n/a" $7"7-n/a" $8"8-n/a"
  !-> MESSAGE/CONTINUE 1-n/a  2-n/a  3-n/a  4-n/a 5-n/a 6-n/a 7-n/a 8-n/a
 1-n/a  2-n/a  3-n/a  4-n/a 5-n/a 6-n/a 7-n/a 8-n/a
@@ -89783,13 +89967,13 @@ say $1"1-n/a"  $2"2-n/a"  $3"3-n/a"  $4"4-n/a" $5"5-n/a" $6"6-n/a" $7"7-n/a" $8"
 5  hello  bye  /quoted_path /unquoted_path 6-n/a 7-n/a 8-n/a
  
 go ($abs_path) 5 hello "bye" "/quoted_path" /unquoted_path
- !-> go /home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl 5 hello "bye" "/quoted_path" /unquoted_path
+ !-> go /home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl 5 hello "bye" "/quoted_path" /unquoted_path
 say $1"1-n/a"  $2"2-n/a"  $3"3-n/a"  $4"4-n/a" $5"5-n/a" $6"6-n/a" $7"7-n/a" $8"8-n/a"
  !-> MESSAGE/CONTINUE 5  hello  bye  /quoted_path /unquoted_path 6-n/a 7-n/a 8-n/a
 5  hello  bye  /quoted_path /unquoted_path 6-n/a 7-n/a 8-n/a
  
 go "($abs_path)" 5 hello "bye" "/quoted_path" /unquoted_path
- !-> go "/home/users/ansley/build/current_trunk/FERRET/bench/tmp/testMe.jnl" 5 hello "bye" "/quoted_path" /unquoted_path
+ !-> go "/home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl" 5 hello "bye" "/quoted_path" /unquoted_path
 say $1"1-n/a"  $2"2-n/a"  $3"3-n/a"  $4"4-n/a" $5"5-n/a" $6"6-n/a" $7"7-n/a" $8"8-n/a"
  !-> MESSAGE/CONTINUE 5  hello  bye  /quoted_path /unquoted_path 6-n/a 7-n/a 8-n/a
 5  hello  bye  /quoted_path /unquoted_path 6-n/a 7-n/a 8-n/a
@@ -90105,7 +90289,7 @@ show grid var
 ! dynamic grid
 let var = sst[y=-10:10:.1,l=1,x=160e]
 show grid var
-    GRID (G084)
+    GRID (G086)
  name       axis              # pts   start                end                 subset
  COADSX    LONGITUDE          180mr   21E                  19E(379)            1 pt
  (AX113)   LATITUDE           201 r   10S                  10N                 200 pts
@@ -90116,7 +90300,7 @@ show grid var
  
 ! striding
 show grid sst[i=1:180:3,j=1:90:2]
-    GRID (G088)
+    GRID (G090)
  name       axis              # pts   start                end                 subset
  (AX120)   LONGITUDE           60 r   21E                  15E(375)            59 pts
  (AX133)   LATITUDE            45 r   89S                  87N                 44 pts
@@ -90131,7 +90315,7 @@ use coads_vwnd
 define axis/t=1-jan-1980:31-dec-1982:1/units=days dax
 let vwnd_days = vwnd[gt=dax,t=1-jun-1982:15-jul-1982]
 sh grid vwnd_days
-    GRID (G088)
+    GRID (G090)
  name       axis              # pts   start                end                 subset
  COADSX    LONGITUDE          180mr   21E                  19E(379)            full
  COADSY    LATITUDE            90 r   89S                  89N                 full
@@ -90142,7 +90326,7 @@ sh grid vwnd_days
  
 let vwnd_clim = vwnd[gt=month_irreg@mod]
 sh grid vwnd_clim[L=4:9]
-    GRID (G104)
+    GRID (G106)
  name       axis              # pts   start                end                 subset
  COADSX    LONGITUDE          180mr   21E                  19E(379)            full
  COADSY    LATITUDE            90 r   89S                  89N                 full
@@ -90208,7 +90392,7 @@ use levitus_3d_subset
 let depth =  Z[G=TEMP]+ 0*TEMP[K=1]
 let depth_rev = zreverse(depth)
 show grid depth_rev
-    GRID (G083)
+    GRID (G085)
  name       axis              # pts   start                end                 subset
  XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
  YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
@@ -90222,7 +90406,7 @@ let tpts = t[gt=dayt]
 LET sample_function = sin(0.5*tpts - 6.)/2. - cos(0.3*tpts)
  
 show grid ffta(sample_function)
-    GRID (G088)
+    GRID (G090)
  name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
@@ -90232,7 +90416,7 @@ show grid ffta(sample_function)
  normal    F
  
 show grid ffta(sample_function[t=15-jan-1990:15-jun-1990])
-    GRID (G088)
+    GRID (G090)
  name       axis              # pts   start                end                 subset
  normal    X
  normal    Y
@@ -90242,7 +90426,7 @@ show grid ffta(sample_function[t=15-jan-1990:15-jun-1990])
  normal    F
  
 show grid ffta(sample_function + temp[d=levitus_3d_subset,z=0:40])
-    GRID (G104)
+    GRID (G106)
  name       axis              # pts   start                end                 subset
  XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
  YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
@@ -90262,7 +90446,7 @@ LET/D=levitus_3d_subset depth = z[g=temp]+ 0*temp[k=1]
 let  TEMPZ = TEMP[GZ(DEPTH)=ZPTS]
  
 sh grid tempz
-    GRID (G084)
+    GRID (G086)
  name       axis              # pts   start                end                 subset
  XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
  YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
@@ -90271,7 +90455,7 @@ sh grid tempz
  normal    E
  normal    F
 sh grid tempz[z=100:400]
-    GRID (G084)
+    GRID (G086)
  name       axis              # pts   start                end                 subset
  XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
  YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
@@ -90292,7 +90476,7 @@ LET rvtemp  = rvtemp0[gz=temp@asn]
 LET rvdepth0 = ZREVERSE(depth)
 LET rvtempzax = rvtemp[gz(rvdepth)=zax,z=100:500]
 show grid rvtempzax
-    GRID (G109)
+    GRID (G107)
  name       axis              # pts   start                end                 subset
  XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
  YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
@@ -90305,7 +90489,7 @@ show grid rvtempzax
  
 LET rvtempzax = rvtemp[gz(rvdepth)=zax]
 show grid rvtempzax[z=100:300]
-    GRID (G109)
+    GRID (G107)
  name       axis              # pts   start                end                 subset
  XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
  YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
@@ -92231,7 +92415,7 @@ SHOW DATA/ATT t_f04_e3_1v ! note atts im_everwhere vs im_not_everwhere
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        30   T       FERRET V7 (beta/dbg) 15-Jun-16
+ .                               history         CHAR        30   T       FERRET V7 (beta/dbg)  6-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (XAX)                  DOUBLE    point_spacing   CHAR        4    T       even
@@ -92729,7 +92913,7 @@ save/clobber/file=a.nc/outtype=float elev[d=1]
 use a.nc
 sh att .
      attributes for dataset: ./a.nc
- ..history = FERRET V7 (beta/dbg) 15-Jun-16 
+ ..history = FERRET V7 (beta/dbg)  6-Jul-16 
  ..Conventions = CF-1.6 
  ..dt_internal = 15
 sh att elev
@@ -92750,7 +92934,7 @@ save/clobber/file=a.nc/outtype=float elev[d=1]
 use a.nc
 sh att .
      attributes for dataset: ./a.nc
- ..history = FERRET V7 (beta/dbg) 15-Jun-16 
+ ..history = FERRET V7 (beta/dbg)  6-Jul-16 
  ..Conventions = CF-1.6 
 sh att elev
      attributes for dataset: ./a.nc
@@ -92877,9 +93061,9 @@ GO bn_speedtest
 ! bn_speedtest.jnl
 ! issue large numbers of commands, timing with clock time
 can mode verify
-10K LET commands LET a = 0 takes  1.294  seconds
-Second 10K LET commands LET a = 0 takes  2.96  seconds
-5K LOAD with transform takes  4.171  seconds
+10K LET commands LET a = 0 takes  1.334  seconds
+Second 10K LET commands LET a = 0 takes  3.169  seconds
+5K LOAD with transform takes  4.569  seconds
  
 GO bn_reset
 cancel mode verify
@@ -94668,7 +94852,7 @@ sho command def
  DEFINE SYMBOL
  DEFINE ATTRIBUT/DATASET/TYPE/OUTPUT/QUIET
  DEFINE PYFUNC/NAME
- DEFINE DATA/AGGREGAT/T/E/F/TITLE/QUIET/HIDE/U
+ DEFINE DATA/AGGREGAT/T/E/F/TITLE/QUIET/HIDE
  DEFINE ANNOTATI/USER/NORM/NOUSER/XPOS/YPOS/HALIGN/VALIGN/ANGLE/SIZE/NLAB
 sho command def r  ! DEFINE REGION
  DEFINE REGION/I/J/K/L/M/N/X/Y/Z/T/E/F/DEFAULT/DX/DY/DZ/DT/DE/DF/DI/DJ/DK
@@ -94691,7 +94875,7 @@ sho command def at ! DEFINE ATTRIBUTE
 sho command def P  ! DEFINE PYFUNC
  DEFINE PYFUNC/NAME
 sho command def d  ! DEFINE DATA
- DEFINE DATA/AGGREGAT/T/E/F/TITLE/QUIET/HIDE/U
+ DEFINE DATA/AGGREGAT/T/E/F/TITLE/QUIET/HIDE
 sho command def an ! DEFINE ANNOTATE
  DEFINE ANNOTATI/USER/NORM/NOUSER/XPOS/YPOS/HALIGN/VALIGN/ANGLE/SIZE/NLAB
  
@@ -95257,6 +95441,77 @@ list/nohead ..coordnames
  2   / 2:"ZAX3"   
  3   / 3:"XAX1_10"
  
+ 
+! *********** v7.1 Additions ***********
+ 
+GO bn_reset
+cancel mode verify
+GO bn710_bug_fixes
+! bn710_bug_fixes.jnl
+! test various fixes that went into version 7.1
+! 6/16 *acm*
+!
+ 
+! Bug 2445 missing or repeated coords when axis marked as regular
+go bn_reset
+cancel mode verify
+go err700_reg_axis_check
+! err700_reg_axis_check.jnl
+! Ticket 2445: regular axis, test for valid line_delta
+! ACM 7/6/2016
+ 
+use bug2445.nc
+show data
+     currently SET data sets:
+    1> ./bug2445.nc  (default)
+ name     title                             I         J         K         L         M         N
+ XAX                                       1:5       ...       ...       ...       ...       ...
+       (invalid coordinate axis)
+ YAX                                       ...       1:3       ...       ...       ...       ...
+       (invalid coordinate axis)
+ XX       X[GX=xax]                        1:5       ...       ...       ...       ...       ...
+ YY       Y var                            ...       1:3       ...       ...       ...       ...
+ 
+ 
+! Repeated coordinates in first 2 coordinates of x axis.
+list xx
+             VARIABLE : X[GX=xax]
+             FILENAME : bug2445.nc
+             SUBSET   : 5 points (X)
+ 1   / 1:  1.000000
+ 2   / 2:  2.000000
+ 3   / 3:  3.000000
+ 4   / 4:  4.000000
+ 5   / 5:  5.000000
+list xax
+             VARIABLE :  Maize harvest
+                        invalid coordinate axis
+             FILENAME : bug2445.nc
+             SUBSET   : 5 points (X)
+ 1   / 1:  1.000000
+ 2   / 2:  1.000000
+ 3   / 3:  1.000000
+ 4   / 4:  1.000000
+ 5   / 5:  1.000000
+ 
+! Missing coordinate in first 2 coordinates of y axis.
+! Coordinate data cannot be missing.
+list yy
+             VARIABLE : Y var
+             FILENAME : bug2445.nc
+             SUBSET   : 3 points (Y)
+ 1   / 1:  10.00000
+ 2   / 2:  20.00000
+ 3   / 3:  30.00000
+list yax
+             VARIABLE :  Maize harvest
+                        invalid coordinate axis
+             FILENAME : bug2445.nc
+             SUBSET   : 3 points (Y)
+ 1   / 1:  1.000000E+00
+ 2   / 2:  9.969210E+36
+ 3   / 3:  1.000000E+00
+ 
 !  *********** Always do a bn_reset  ***********
 !  *********** make sure things clean up well **
 GO bn_reset
@@ -95271,8 +95526,8 @@ yes?
 yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v7 (beta/dbg)
- 	Linux 2.6.32-642.1.1.el6.x86_64 64-bit - 06/15/16
- 	15-Jun-16 12:07     
+ 	Linux 2.6.32-642.1.1.el6.x86_64 64-bit - 07/06/16
+ 	 6-Jul-16 11:57     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -96126,7 +96381,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -96151,7 +96406,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -96175,7 +96430,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -96214,7 +96469,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -96249,7 +96504,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -96290,7 +96545,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -96347,7 +96602,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -96404,7 +96659,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -96459,7 +96714,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -96507,7 +96762,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -96601,7 +96856,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -96671,7 +96926,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -96722,7 +96977,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -96797,7 +97052,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -96824,7 +97079,7 @@ variables:
 		X_:long_name_mod = "axis ABSTRACT" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -96848,7 +97103,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -96875,11 +97130,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -96910,7 +97165,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -96982,7 +97237,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -97026,7 +97281,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -97068,7 +97323,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -97176,7 +97431,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -97217,7 +97472,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -97240,7 +97495,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -97266,7 +97521,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -97286,7 +97541,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -97307,7 +97562,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -97350,7 +97605,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -97390,7 +97645,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -97428,7 +97683,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -97457,7 +97712,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -97490,7 +97745,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -97516,7 +97771,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -97562,7 +97817,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -97669,7 +97924,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 		:dt_internal = 15. ;
 }
@@ -97711,7 +97966,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -97794,7 +98049,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -97831,7 +98086,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -97871,7 +98126,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -97922,7 +98177,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -97981,7 +98236,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -98026,7 +98281,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -98069,7 +98324,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -98104,7 +98359,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -98138,7 +98393,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -98168,7 +98423,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -98197,7 +98452,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -98258,7 +98513,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -98303,7 +98558,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -98322,37 +98577,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
-		:Conventions = "CF-1.6" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	double A(XAX) ;
-		A:missing_value = -1.e+34 ;
-		A:_FillValue = -1.e+34 ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -98382,7 +98607,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
+		:Conventions = "CF-1.6" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	double A(XAX) ;
+		A:missing_value = -1.e+34 ;
+		A:_FillValue = -1.e+34 ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -98435,7 +98690,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -98477,7 +98732,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -98495,7 +98750,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 err611_set_var_ez.jnl --- 
@@ -98514,7 +98769,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -98532,7 +98787,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -98549,7 +98804,7 @@ variables:
 		A:long_name = "{1.1,2.2,3.3}" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -98570,7 +98825,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -98633,7 +98888,7 @@ variables:
 		newvar:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_keep_axisnames.jnl --- test SAVE/KEEP_AXISNAMES
@@ -98660,7 +98915,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -98687,7 +98942,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, degrees_east, degrees_north, std names on axes:
@@ -98753,7 +99008,7 @@ variables:
 		ZUP:long_name = "Z[GZ=ZAXUP]" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, Convert forms of DEG, degrees to degrees_east:
@@ -98785,7 +99040,7 @@ variables:
 		Y_:long_name_mod = "axis YFIFTEEN" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, Downcase units, e.g. in time axis DAYS since
@@ -98818,7 +99073,7 @@ variables:
 		XYTVAR:history = "From bn_strides" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -98843,7 +99098,7 @@ variables:
 		TIME:history = "From http://tds.climatedatacloud.com/thredds/dodsC/ensembles/nmme_gfdl/TwoD" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -98881,7 +99136,7 @@ variables:
 		time:history = "From http://tds.climatedatacloud.com/thredds/dodsC/ensembles/nmme_gfdl/TwoD" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -98907,7 +99162,7 @@ variables:
 		MYVAR:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -98921,7 +99176,7 @@ variables:
 		MYVAR:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7 (beta/dbg) 15-Jun-16" ;
+		:history = "FERRET V7 (beta/dbg)  6-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 -----
@@ -98936,8 +99191,8 @@ yes?
 yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v7 (beta/dbg)
- 	Linux 2.6.32-642.1.1.el6.x86_64 64-bit - 06/15/16
- 	15-Jun-16 12:07     
+ 	Linux 2.6.32-642.1.1.el6.x86_64 64-bit - 07/06/16
+ 	 6-Jul-16 11:57     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 8 bytes)
@@ -98949,13 +99204,13 @@ FERRET_PLATFORM = "Linux 2.6.32-642.1.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "15-Jun-16"
-SESSION_TIME = "12:07"
-SESSION_PID = "3434"
+SESSION_DATE = " 6-Jul-16"
+SESSION_TIME = "11:57"
+SESSION_PID = "21127"
 DELTA_CPU = "0.05999"
-CLOCK_SECS = "0.289"
-CURRENT_DATE = "15-Jun-16"
-CURRENT_TIME = "12:07:45"
+CLOCK_SECS = "0.422"
+CURRENT_DATE = " 6-Jul-16"
+CURRENT_TIME = "11:57:58"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 GO_FILE = "./bn_startupfile.jnl"
@@ -98978,7 +99233,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "15-Jun-16:12:07"
+WIN_TITLE = "6-Jul-16:11:57"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -99042,8 +99297,8 @@ yes?
 yes? GO bn_gif
  	NOAA/PMEL TMAP
  	FERRET v7 (beta/dbg)
- 	Linux 2.6.32-642.1.1.el6.x86_64 64-bit - 06/15/16
- 	15-Jun-16 12:07     
+ 	Linux 2.6.32-642.1.1.el6.x86_64 64-bit - 07/06/16
+ 	 6-Jul-16 11:57     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -99579,8 +99834,8 @@ yes?
 yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v7 (beta/dbg)
- 	Linux 2.6.32-642.1.1.el6.x86_64 64-bit - 06/15/16
- 	15-Jun-16 12:07     
+ 	Linux 2.6.32-642.1.1.el6.x86_64 64-bit - 07/06/16
+ 	 6-Jul-16 11:57     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -99693,8 +99948,8 @@ yes?
 yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v7 (beta/dbg)
- 	Linux 2.6.32-642.1.1.el6.x86_64 64-bit - 06/15/16
- 	15-Jun-16 12:07     
+ 	Linux 2.6.32-642.1.1.el6.x86_64 64-bit - 07/06/16
+ 	 6-Jul-16 11:58     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -99778,4 +100033,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Wed Jun 15 12:07:47 PDT 2016
+Ended at Wed Jul 6 11:58:00 PDT 2016

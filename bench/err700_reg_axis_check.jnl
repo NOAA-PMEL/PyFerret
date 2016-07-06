@@ -1,0 +1,15 @@
+! err700_reg_axis_check.jnl
+! Ticket 2445: regular axis, test for valid line_delta
+! ACM 7/6/2016
+
+use bug2445.nc
+show data
+
+! Repeated coordinates in first 2 coordinates of x axis.
+list xx
+list xax
+
+! Missing coordinate in first 2 coordinates of y axis. 
+! Coordinate data cannot be missing.
+list yy
+list yax

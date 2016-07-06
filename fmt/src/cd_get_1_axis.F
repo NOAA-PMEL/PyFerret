@@ -188,6 +188,8 @@
 * V698  5/16 *acm* for ticket 1432, could write a note when encountering a 
 *                  supbspan modolo axis with length almost the modulo length.
 *                  (commented out for now.)
+* v7+   7/16 *acm* Ticket 2445, regular-spacing attribute and repeated or missing values
+*                  in the first 2 coordinates
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -239,7 +241,7 @@
      .        got_mod, mod_tf, setmodfalse, ok_cal, ok,
      .        got_edges, got_bnds, coordvar, its_irregular, 
      .        do_scale, do_offset, scale_is_dp, 
-     .        has_repeated, misordered, is_double
+     .        has_repeated, misordered, has_missing, is_double
 
       INTEGER TM_UNIT_ID, TM_LENSTR1,TM_GET_CALENDAR_ID,      
      .        STR_CASE_BLIND_COMPARE, STR_UPCASE, STR_SAME,
@@ -291,6 +293,8 @@
       days_neg4713 = 0.D0
       next_line_storage = next_line_mem_pos
       bad_bndsid = 0
+      misordered = .FALSE.
+      has_missing = .FALSE.
 
 * (From Wikipedia on precision:)
 * Single precision, called "float" in the C language family, and "real" 
@@ -717,6 +721,16 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
      .                       line_delta(iaxis), status )
          ENDIF
          IF ( status .NE. merr_ok ) GOTO 1000   ! 3/99 soft error
+
+* Invalid points. Cannot compute line_delta
+         IF (ABS(line_start(iaxis)) .GE. ABS(bad_r8)   .OR. 
+     .       ABS(line_delta(iaxis)) .GE. ABS(bad_r8) ) THEN 
+	    misordered = .TRUE.
+	    has_missing = .TRUE.
+	    words(1) = '2'
+	    GOTO 540
+	 ENDIF
+
 	 IF (do_scale) THEN
 	    IF (scale_is_dp) THEN
 	       line_start(iaxis) = line_start(iaxis)*dscale + doffset
@@ -748,6 +762,15 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
             reversed(iaxis) = .FALSE.
             line_delta(iaxis) = 1
          ENDIF
+
+* Ticket 2445: repeated coordinates on axis marked as regular is an invalid axis
+      
+	 IF (line_delta(iaxis) .EQ. 0.) THEN
+	    misordered = .TRUE.
+	    words(1) = '2'
+	    GOTO 540
+	 ENDIF
+
          line_subsc1(iaxis) = unspecified_int4
          last_coord = line_start(iaxis) + DBLE(npts-1)*line_delta(iaxis)
          firs_coord = line_start(iaxis)
@@ -908,15 +931,6 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
      .           vname(:vlen), tt)
          ENDIF
 
- 540	 IF (misordered) THEN
-	    words(1) = TM_LEFINT(i1-ipt1+1, istat)
-	    CALL TM_NOTE(
-     .           'unrepairable repeated axis coords on axis '//
-     .           vname(:vlen)//' at subscript '//words(1), tt)
-	    CALL TM_NOTE(
-     .           'A dummy axis of subscripts will be used', tt)
-	    GOTO 1000
-	 ENDIF
 
 * Check if axis is actually regularly spaced (though not flagged as "even")
 * Fix bug 1483; look at each delta rather than trying to compare with first delta.
@@ -1329,8 +1343,26 @@ c	CALL TM_WARN_SUBSPAN (iaxis)
         status = merr_ok
         RETURN
 
+
+ 540	IF (misordered) THEN
+	    words(1) = TM_LEFINT(i1-ipt1+1, istat)
+	    IF (has_missing) THEN
+	       CALL TM_NOTE(
+     .           'Coordinates missing on axis '//
+     .           vname(:vlen)//' at subscript '//words(1), tt)
+	    ELSE
+	       CALL TM_NOTE(
+     .           'unrepairable repeated axis coords on axis '//
+     .           vname(:vlen)//' at subscript '//words(1), tt)
+	    ENDIF
+	    CALL TM_NOTE(
+     .           'A dummy axis of subscripts will be used', tt)
+	 ENDIF
+
 * 3/99-style "soft" error - invalid axis but CDF file need not be rejected
- 1000   CALL TM_DEALLO_DYN_LINE(iaxis)
+ 1000   CONTINUE
+
+	CALL TM_DEALLO_DYN_LINE(iaxis)
 
         iaxis = 0
         status = merr_ok

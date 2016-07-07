@@ -106,6 +106,8 @@
 * V697 12/15 *acm* Ticket 2341 Check that cmnd_len hasn't been set to 0.
 * V697 2/16 *acm* DO NOT Increase length of cmnd buffer to 20480 but keep 
 *                 other related changes when reporting errors in long command lines
+* V7+  6/16 *acm* Ticket 2446: Include the script name in warnings about 
+*                 unclosed IF blocks
 
 
 #ifdef MIXING_NAG_F90_AND_C
@@ -122,13 +124,14 @@
      .		pure_comment, appending_cmnd 
 	INTEGER	TM_LENSTR, TM_LENSTR1,
      .		iqual, ilist, cmnd_len, double_eof,
-     .          has_more, i, cmnd_len_w_cmnt
+     .          has_more, i, cmnd_len_w_cmnt, i1, i2
 	CHARACTER prefix*5, raw_cmnd_buff*2048
+	CHARACTER symbuff*32, scriptname*512
 
 * local parameter declarations
         CHARACTER*1 backslash, tab
 	CHARACTER*5 dprefix
-	PARAMETER ( dprefix = ' !-> ')
+	PARAMETER ( dprefix = ' !-> ') 
 #ifdef NO_INTRINSIC_IN_PARAMETER
         PARAMETER ( backslash = o'134' )
 	PARAMETER ( tab = o'011' )
@@ -251,9 +254,17 @@ c        IF(has_more.NE.1) goto 210
 	GOTO 1000
 * end of command file - return to next lower control stack level
 * if we were in the midst of an open IF block, issue a warning
+* Include the script name in the note.
  210	IF (if_conditional) THEN
-	   IF (csp .LE. if_cs(ifstk) ) CALL WARN(
-     .			'Unclosed IF statement ... assuming ENDIF')
+	   IF (csp .LE. if_cs(ifstk) ) THEN
+	      symbuff = 'GO_FILE'
+	      CALL GETSYM( symbuff, scriptname, i2, i1 )
+	      IF (i1 .EQ. 0) THEN
+	         CALL WARN('Unclosed IF statement ... assuming ENDIF, in script '//scriptname(:i2) )
+	      ELSE
+	         CALL WARN('Unclosed IF statement ... assuming ENDIF')
+	      ENDIF
+	   ENDIF
 	ENDIF
 	CALL POP_CS
 	IF ( csp.EQ.0 .AND. mode_gui ) THEN		! GUI code ...

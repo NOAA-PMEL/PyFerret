@@ -41,6 +41,8 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
 *                  added to that dataset in the attribute structure.
+* v71   7/16 *acm* Fix ticket 2447: special handling of missing-value flags
+*                  when inheriting all attributes from one variable to another.
 
       INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
@@ -55,7 +57,7 @@
 
 * Local variable declarations
       LOGICAL coordvar
-      INTEGER TM_LENSTR, slen, tlen, dset1, dset2, 
+      INTEGER TM_LENSTR, STR_SAME, slen, tlen, dset1, dset2, 
      .  varid1, varid2, vtype, nvdims, nvatts1, nvatts2,
      .  vdims(8), iatt, first_quote, next_quote, dot, mr, cx, 
      .  all_outflag, cat, iflag
@@ -140,8 +142,11 @@
 
       DO 100 iatt = 1, nvatts2
          CALL CD_GET_VAR_ATT_NAME (dset2, varid2, iatt, attname, status)
-         CALL CD_DELETE_ATTRIBUTE (dset2, varid2, attname, status)
-         IF (status .NE. ferr_ok) GOTO 5030
+	 IF (STR_SAME(attname, 'missing_value')  .NE. 0 .AND.
+     .       STR_SAME(attname, '_FillValue') .NE. 0) THEN
+            CALL CD_DELETE_ATTRIBUTE (dset2, varid2, attname, status)
+            IF (status .NE. ferr_ok) GOTO 5030
+	 ENDIF
  100  CONTINUE
 
 * Get attribute information from variable 1 and put onto variable 2.
@@ -150,12 +155,16 @@
 
       iflag = 1
       DO 200 iatt = 1, nvatts1
-         CALL CD_TRANSFER_ATTRIBUTE (dset1, varid1, iatt, 
-     .        dset2, varid2, status)
-         IF (status .NE. ferr_ok) GOTO 5040
          CALL CD_GET_VAR_ATT_NAME (dset1, varid1, iatt, attname, status)
-	 CALL CD_SET_ATT_FLAG (dset2, varid2, attname, iflag, status)
-         IF (status .NE. ferr_ok) GOTO 5040
+	 IF (STR_SAME(attname, 'missing_value')  .NE. 0 .AND.
+     .       STR_SAME(attname, '_FillValue') .NE. 0) THEN
+
+            CALL CD_TRANSFER_ATTRIBUTE (dset1, varid1, iatt, 
+     .        dset2, varid2, status)
+            IF (status .NE. ferr_ok) GOTO 5040
+	    CALL CD_SET_ATT_FLAG (dset2, varid2, attname, iflag, status)
+            IF (status .NE. ferr_ok) GOTO 5040
+	 ENDIF
  200  CONTINUE
 
 * Update attribute information used by plotting etc (ds_units, ...)

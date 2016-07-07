@@ -6,3 +6,11 @@
 ! Bug 2445 missing or repeated coords when axis marked as regular
 go bn_reset
 go err700_reg_axis_check
+
+! Bug 2446 include script name on warning about unclosed IF block
+go bn_reset
+go err700_unclosed_if
+
+! Bug 2446 include script name on warning about unclosed IF block
+go bn_reset
+go err700_inherit_all

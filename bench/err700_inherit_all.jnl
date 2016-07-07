@@ -1,0 +1,25 @@
+! err700_inherit_all.jnl
+! Ticket 2447: If all attributes are inherited, missing-value flags
+! are wrong.
+
+! This non-standardfile has no missing-value attributes. 
+use no_miss_att.nc
+sh att a
+
+! Define a variable, using some missing-value flag
+let/bad=9999 b = if a ne 2 then a else 9999
+list b
+
+! Now inherit the attributes from variable a. 
+set att/like=a b
+show att b
+
+! The missing-value flag is not written, but the value 9999 is 
+save/file=a.nc/clobber b
+
+can var/all
+use a
+
+! Element 2 should be missing. Previously lists out the 9999. 
+list b
+

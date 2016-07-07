@@ -1,0 +1,72 @@
+
+
+! metvec : Definitions for plotting met wind vectors as constant length
+!          shafts with pennants, full, and half barbs to represent speed.
+!          Written by 14-Jan-05 by Mick Spillane     
+
+! Concept: A shaft of unit length represents each vector. one or more
+!          pennants, full barbs, and half barbs extend from the shaft
+!          to encode the wind speed in knots. The orientation of the
+!          shaft and its various barbs indicates the direction from
+!          which the wind blows.
+
+! Implementation: Since a combination of pennants, full barbs, and half
+!          barbs are needed to represent any wind speed, (and since
+!          pennants are filled triangles) an approach using ferret's
+!          polygon/line command seems promising. The first task is to
+!          define the coordinates of sets of pennants along a shaft.
+!          Individual pennants and barbs, can be suppressed with a mask
+!          and then the next task is to decode the wind speed into
+!          such masks. The coordinatates of the pennants and barbs are
+!          then rotated as appropriate to the direction from which the
+!          wind blows and are plotted as polygons.
+
+! Assumed inputs are arrays speedkt and dirfrom representing the speed
+! in knots and direction (degrees clockwise from north) representing
+! the wind field.
+
+! The final product of these definitions is a set of vertices xxbtot,yybtot
+! that will produce the desired "met vec" when drawn using polygon/coord_ax=z 
+ 
+let d2r=atan(1.)/45
+let radfrom=d2r*dirfrom
+let csf=cos(radfrom) ; let snf=sin(radfrom)
+
+let xpenn=zsequence({0,0.2,0,0, 0,0.2,0,0, 0,0.2,0,0, 0,0.2,0,0, 0,0.2,0,0,\
+           0,0.2,0,0, 0,0.2,0,0, 0,0.2,0,0, 0,0.2,0,0, 0,0.2,0,0})
+let xfull=xpenn
+let xhalf=0.5*xpenn
+
+let ypenn=zsequence({1.0,1.0,0.9,1.0, 0.9,0.9,0.8,0.9,\
+           0.8,0.8,0.7,0.8, 0.7,0.7,0.6,0.7, 0.6,0.6,0.5,0.6, 0.5,0.5,0.4,0.5,\
+           0.4,0.4,0.3,0.4, 0.3,0.3,0.2,0.3, 0.2,0.2,0.1,0.2, 0.1,0.1,0.0,0.1})
+let yfull=zsequence({1.0,1.1,1.0,0.9, 0.9,1.0,0.9,0.8,\
+           0.8,0.9,0.8,0.7, 0.7,0.8,0.7,0.6, 0.6,0.7,0.6,0.5, 0.5,0.6,0.5,0.4,\
+           0.4,0.5,0.4,0.3, 0.3,0.4,0.3,0.2, 0.2,0.3,0.2,0.1, 0.1,0.2,0.1,0.0})
+let yhalf=yfull-0.05*zsequence({0,1,0,0, 0,1,0,0, 0,1,0,0, 0,1,0,0, 0,1,0,0,\
+                     0,1,0,0, 0,1,0,0, 0,1,0,0, 0,1,0,0, 0,1,0,0})
+
+! decoding of wind speed
+let npenn=int(speedkt-mod(speedkt,50))/50                 ! number of pennants
+let nfull=int(speedkt-npenn*50-mod(speedkt,10))/10        ! number of full barbs
+let nhalf=int(speedkt-npenn*50-nfull*10-mod(speedkt,5))/5 ! number of half barbs
+
+let npenn0=if(npenn gt 0)then 1 else 0
+let nfull0=if(nfull gt 0)then 1 else 0
+
+let mpenn=if(k[k=1:40] le 4*npenn)then 1 else 0
+let mfull=if(k[k=1:40] gt 4*npenn and i[i=1:40] le 4*(npenn+nfull))then 1 else 0
+let mhalf=if(k[k=1:40] gt 4*(npenn+nfull) \
+          and k[k=1:40] le 4*(npenn+nfull+nhalf))then 1 else 0 
+let mpenn=if(k[k=1:40] le 4*npenn)then 1 else 0
+let mfull=if(k[k=1:40] gt 4*(npenn+npenn0) \
+          and k[k=1:40] le 4*(npenn+npenn0+nfull))then 1 else 0
+let mhalf=if(k[k=1:40] gt 4*(npenn+npenn0+nfull) \
+          and k[k=1:40] le 4*(npenn+npenn0+nfull+nhalf))then 1 else 0
+
+! the rotated vector components are
+let xbtot=mpenn*xpenn+mfull*xfull+mhalf*xhalf
+let ybtot=mpenn*ypenn+mfull*yfull+mhalf*yhalf
+let xxbtot=xbtot*csf+ybtot*snf
+let yybtot=ybtot*csf-xbtot*snf
+

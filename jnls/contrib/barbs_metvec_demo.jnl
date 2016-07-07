@@ -1,0 +1,82 @@
+! wind barbs demo
+! Mick Spillane, Tue, 18 Jan 2005
+! http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2005/msg00049.html
+
+! See the end of this script for the full contents of the email message.
+! The 'metvec.jnl' script is incuded in the Ferret distribution among contributed scripts.
+
+!
+!---------------------------------------------------------------
+!DEMO 1:
+!Here is a demo to draw one met vector for a fixed wind direction
+!(from 60 degrees true) and a range of wind speeds (1:75 knots)
+!so as to illustrate the windspeed decoding.
+
+! pause
+
+go metvec  ! define the variables needed
+
+let dirfrom=60 ! wind from 60 degrees true
+ppl axlen,5,5  ! combined with the /hlim=/vlim= this sets the
+
+repeat/i=1:75 (let speedkt=i ; \
+  POLYGON/nolab/LINE/COLOR=black/THICK=2/pal=black \
+  /hlim=-2:2/ylim=-2:2/coord_ax=z xxbtot,yybtot ; \
+  label 0 -1 0 0 0.2 @sr`i` knots)
+
+!-------------------------------------------------------------
+!DEMO 2:
+!Render a field of metvecs, defined here as random variables. I
+!didn't expect the "repeat"s would be necessary - just a single
+!polygon command. There must be something I'm not thinking of.
+
+pause
+
+go metvec
+
+def axis/x=2:8:2 xax ; def axis/y=2:6:2 yax ; def grid/x=xax/y=yax grd
+let xpos=x[g=grd]+0*y[g=grd] ; let ypos=y[g=grd]+0*x[g=grd]
+let speedkt=100*randu(xpos)
+let dirfrom=360*randu(ypos)
+
+! draw a box
+ppl axlen,5,5
+plot/vs/nolab/hlim=0:10/vlim=0:10 {0,10},{0,10}
+! and overlay the metvecs
+repeat/i=1:4 (repeat/j=1:3 POLYGON/nolab/LINE/COLOR=black/THICK=2 \
+   /pal=black/coord_ax=z/o xpos+xxbtot,ypos+yybtot )
+
+list/nohead speedkt ! to confirm that
+list/nohead dirfrom !    the results are as expected
+
+
+
+!
+!Hi Jonathan,
+!	I put a bit of thought into this (at the risk of reinventing
+!a wheel up and running by other users).  The problem has three parts:
+!
+!1) the generation of three type of barbs - pennants representing 50
+!   knots of wind speed, regular barbs each representing 10 kts of
+!   wind speed, and "half-barbs" representing 5 kts. The pennant(s)
+!   barbs and half-barbs project from a shaft.
+!2) decoding the wind speed into the appropriate set of pennants etc
+!   and orienting them according to the wind direction (from)
+!3) rendering one, or a field of such met vectors on the screen
+!
+!I've solved 1) and 2) and most of 3).  The niceties of 3) (plotting
+!a field of met vectors and perhaps correcting direction and amplitude
+!of the arrows to be appropriate for the map scale) I've not taken to
+!completion, but hopefully the current state of things will prove of
+!some use.
+!
+!The polygon command, al la Ned Cokelet's arrows, seems likely to be
+!of use in this situation.  The appended script "metvec.jnl" defines
+!the vertices of pennants, barbs, and half-barbs to be drawn with
+!polygon/coord_ax=z commands.  The decoding step basically defines a
+!set of masks that determine which vertices are needed to get the
+!appropriate combination of penntant/barbs.  And coordinate rotation
+!commands orient the met vector based on wind direction.
+!
+!Hope this stuff proves of use,
+!Mick

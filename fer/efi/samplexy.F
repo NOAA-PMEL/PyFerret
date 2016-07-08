@@ -80,6 +80,9 @@
 * 11/2005 acm -- Allow use of this on any X axis, not just regular ones 
 *                (see bug report 1358)
 *  1/2014 acm -- Fix ticket 2137: use correct indices when computing dx, dy.
+*  7/2016 acm -- Allocate the length of the axes for REAL*8 work arrays. 
+*                Use the argument subscript limits, so subsets are handled correctly.
+
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -253,45 +256,40 @@
 
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-*  Allocate double the length of the axes for REAL*8 work arrays.
 
-      mxl = arg_lo_ss(X_AXIS,ARG1)
-      myl = arg_lo_ss(Y_AXIS,ARG1)
-
-      mxh = mxl + 
-     .     2* (arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 1)
-      myh = myl + 
-     .     2* (arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1) + 1)
+*  Allocate the length of the axes for REAL*8 work arrays. Use the argument
+*  subscript limits, so subsets are handled correctly.
 
 *  xaxdat
       CALL ef_set_work_array_dims_6d(id, 1,
-     .                              mxl, 1, 1, 1, 1, 1,
-     .                              mxh, 1, 1, 1, 1, 1)
+     .                              arg_lo_ss(X_AXIS,ARG1), 1, 1, 1, 1, 1,
+     .                              arg_hi_ss(X_AXIS,ARG1), 1, 1, 1, 1, 1)
 
 *  yaxdat
       CALL ef_set_work_array_dims_6d(id, 2,
-     .                              myl, 1, 1, 1, 1, 1,
-     .                              myh, 1, 1, 1, 1, 1)
+     .                              arg_lo_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1,
+     .                              arg_hi_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1)
 
 *  xboxlo
       CALL ef_set_work_array_dims_6d(id, 3,
-     .                              mxl, 1, 1, 1, 1, 1,
-     .                              mxh, 1, 1, 1, 1, 1)
+     .                              arg_lo_ss(X_AXIS,ARG1), 1, 1, 1, 1, 1,
+     .                              arg_hi_ss(X_AXIS,ARG1), 1, 1, 1, 1, 1)
 
 *  xboxhi
       CALL ef_set_work_array_dims_6d(id, 4,
-     .                              mxl, 1, 1, 1, 1, 1,
-     .                              mxh, 1, 1, 1, 1, 1)
+     .                              arg_lo_ss(X_AXIS,ARG1), 1, 1, 1, 1, 1,
+     .                              arg_hi_ss(X_AXIS,ARG1), 1, 1, 1, 1, 1)
 
-*  yboxlo
+*  
       CALL ef_set_work_array_dims_6d(id, 5,
-     .                              myl, 1, 1, 1, 1, 1,
-     .                              myh, 1, 1, 1, 1, 1)
+     .                              arg_lo_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1,
+     .                              arg_hi_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1)
 
 *  yboxhi
       CALL ef_set_work_array_dims_6d(id, 6,
-     .                              myl, 1, 1, 1, 1, 1,
-     .                              myh, 1, 1, 1, 1, 1)
+     .                              arg_lo_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1,
+     .                              arg_hi_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1)
+
 
 *                                                                      ^
 *                                                                      |
@@ -325,22 +323,22 @@
      .            memresloz:memreshiz, memreslot:memreshit,
      .            memresloe:memreshie, memreslof:memreshif)
 
-      REAL*8 xaxdat(wrk1lox:wrk1lox+(wrk1hix-wrk1lox)/2,wrk1loy:wrk1hiy,
+      REAL*8 xaxdat(wrk1lox:wrk1hix,wrk1loy:wrk1hiy,
      .              wrk1loz:wrk1hiz, wrk1lot:wrk1hit,
      .              wrk1loe:wrk1hie, wrk1lof:wrk1hif)
-      REAL*8 yaxdat(wrk2lox:wrk2lox+(wrk2hix-wrk2lox)/2,wrk2loy:wrk2hiy,
+      REAL*8 yaxdat(wrk2lox:wrk2hix,wrk2loy:wrk2hiy,
      .              wrk2loz:wrk2hiz, wrk2lot:wrk2hit,
      .              wrk2loe:wrk2hie, wrk2lof:wrk2hif)
-      REAL*8 xboxlo(wrk3lox:wrk3lox+(wrk3hix-wrk3lox)/2,wrk3loy:wrk3hiy,
+      REAL*8 xboxlo(wrk3lox:wrk3hix,wrk3loy:wrk3hiy,
      .              wrk3loz:wrk3hiz, wrk3lot:wrk3hit,
      .              wrk3loe:wrk3hie, wrk3lof:wrk3hif)
-      REAL*8 xboxhi(wrk4lox:wrk4lox+(wrk4hix-wrk4lox)/2,wrk4loy:wrk4hiy,
+      REAL*8 xboxhi(wrk4lox:wrk4hix,wrk4loy:wrk4hiy,
      .              wrk4loz:wrk4hiz, wrk4lot:wrk4hit,
      .              wrk4loe:wrk4hie, wrk4lof:wrk4hif)
-      REAL*8 yboxlo(wrk5lox:wrk5lox+(wrk5hix-wrk5lox)/2,wrk5loy:wrk5hiy,
+      REAL*8 yboxlo(wrk5lox:wrk5hix,wrk5loy:wrk5hiy,
      .              wrk5loz:wrk5hiz, wrk5lot:wrk5hit,
      .              wrk5loe:wrk5hie, wrk5lof:wrk5hif)
-      REAL*8 yboxhi(wrk6lox:wrk6lox+(wrk6hix-wrk6lox)/2,wrk6loy:wrk6hiy,
+      REAL*8 yboxhi(wrk6lox:wrk6hix,wrk6loy:wrk6hiy,
      .              wrk6loz:wrk6hiz, wrk6lot:wrk6hit,
      .              wrk6loe:wrk6hie, wrk6lof:wrk6hif)
 

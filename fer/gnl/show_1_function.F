@@ -46,7 +46,7 @@
 
 * V450: 7/97
 * 97.07.30 *jc* added code to enable external functions
-	* V500: 1/99 *sh* added support for string arguments to functions
+* V500: 1/99 *sh* added support for string arguments to functions
 * V510: 5/00 *sh* added argument "detail"
 * V620:11/08 acm* On a show func/detail, list the alternative 
 *                 function for other arg types, if it exists.

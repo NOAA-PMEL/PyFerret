@@ -61,6 +61,8 @@
 *                 output will not list info for E,F dimensions.
 * V690  1/14 *sh* report 3-argument var-getting operation
 *		  allow for "false 1 point" regridding
+* V7    acm  6/16 Ticket 2437: Deprecating mode_6d_lab. 
+*		  Adjust output to 6-D or 4-D grids
 
 * calling argument declarations:
         IMPLICIT NONE
@@ -68,7 +70,8 @@
 	CHARACTER*(*) doing
 
 * internal variable declarations:
-	INTEGER	  TM_LENSTR1, slen, clen, ii, i, listdims
+	LOGICAL	FOUR_D_GRID
+	INTEGER	TM_LENSTR1, slen, clen, ii, i, listdims
 	CHARACTER*3   ALG_TRANS_CODE
 	CHARACTER*128 VAR_CODE,  var
 	CHARACTER*150 VAR_TRANS, out_buff
@@ -83,9 +86,6 @@
 	include	'xtext_info.cmn'
         include 'xalgebra.cmn'
 	include 'xrisc.cmn'		! 12/94 SPLIT_LIST buffer
-
-* If mode 6d_lab has been cancelled, we will list info only for 
-* the first 4 dimensions.
 
 	listdims = nferdims
 	IF ( .NOT. mode_6d_lab) listdims = 4
@@ -165,6 +165,8 @@
 * implicit grid allocation/deallocation
 	ELSEIF( act_class .EQ. isact_class_impl_grid ) THEN
 * ... special case: "cx" is actually the grid number !!!
+
+	   IF ( FOUR_D_GRID(cx) ) listdims = 4
 	   DO 500 ii = 1, listdims
 	      i = grid_line(ii,cx)
 	      IF ( i .GT. 0 ) THEN

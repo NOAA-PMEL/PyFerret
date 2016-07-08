@@ -57,6 +57,8 @@
 *                 various SHOW commnands will not list info for E,F dimensions.
 * V698  1/16 *sh* bug fix: the initial 6D trap was removing all possibility of
 *		  showing 5D or 6D variables
+* V7    acm  6/16 Ticket 2437: Deprecating mode_6d_lab. 
+*		  Adjust output to 6-D or 4-D grids
 
 
 	include	'tmap_dims.parm'
@@ -78,7 +80,7 @@
 * V500 *kob* 3/99- up VAR_CODE and vname decl's to 64 chars
 * V552 *acm* 4/03- up VAR_CODE and vname decl's from 64 to 128 chars
 * local variable declarations:
-	LOGICAL	ITS_UN_CACHED
+	LOGICAL	ITS_UN_CACHED, FOUR_D_GRID
 	INTEGER TM_LENSTR1, MR_DIM_LEN,
      .		idim, ndim, mrlen, bk1len, nbklen, dset, listdims
 	CHARACTER VAR_CODE*128, ALG_TRANS_CODE*3, ARG_STRING*12, TM_FMT*8,
@@ -93,6 +95,8 @@
 	listdims = nferdims
 	IF ( .NOT. mode_6d_lab) listdims = 4
 	status = ferr_ok
+
+	IF ( FOUR_D_GRID(mr_grid(mr)) ) listdims = 4
 
 * get shape
 	shape = ' '
@@ -205,6 +209,7 @@
  5000	RETURN
  5100	CALL ERRMSG( ferr_invalid_command, status,
      .		     'variable has more than 4 dimensions. Set mode 6D_LAB'
+     .		     //pCR//'Output will automatically adjust to 4D or 6D grid'
      .		     //pCR//cmnd_buff(:len_cmnd),
      .			*5000 )
 	END

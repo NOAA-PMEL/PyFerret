@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 117550255 Jul  6 11:53 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 117570387 Jul  7 12:13 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix for ticket 2445
+Note: tickets 2447, 2446, 2437
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Wed Jul 6 11:55:45 PDT 2016
+Beginning at Thu Jul 7 12:25:45 PDT 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -142,14 +142,14 @@ IF 0 THEN say ERROR ELIF 1 THEN say "CORRECT if you see this"
  **ERROR: command syntax: Trash after ENDIF
           IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
 IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF, in script ./bn_if.sub
  **ERROR: invalid command: ELSE can only be used between IF and ENDIF
 else
  **ERROR: invalid command: ENDIF can only be used in an IF clause
 endif
  **ERROR: invalid command: ELIF can only be used between IF and ENDIF
 elif
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF, in script ./bn_if.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
@@ -1461,7 +1461,6 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
            *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-rm: cannot remove `input.txt': No such file or directory
 ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3386,6 +3385,10 @@ DEFINE DATA/AGGREGAT/E windy = 1,2
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, more
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: MODE 6D_lab is deprecated. Leave the mode set; output automatically adjusts to 4D or 6D grids
+           *** NOTE: MODE 6D_lab is deprecated. Leave the mode set; output automatically adjusts to 4D or 6D grids
+           *** NOTE: MODE 6D_lab is deprecated. Leave the mode set; output automatically adjusts to 4D or 6D grids
+           *** NOTE: MODE 6D_lab is deprecated. Leave the mode set; output automatically adjusts to 4D or 6D grids
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3878,7 +3881,6 @@ list substring("hello",1,-2)
 list substring("hello",1,-3)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-rm: cannot remove `test_save_dsg.nc': No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file anew_global.nc
@@ -4100,7 +4102,6 @@ def anno/nou/xpos=0/hal=1/val=0 "My Lab"
 def anno/nou/user/xpos=0/ypos=0 "My Lab"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-rm: cannot remove `layerz_test_data.txt': No such file or directory
 Replacing definition of axis ZAX
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
@@ -4697,6 +4698,12 @@ Replacing definition of axis TAX
            *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: Unclosed IF statement ... assuming ENDIF, in script ./unclosed_if.sub
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -4803,4 +4810,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jul 6 11:58:00 PDT 2016
+Ended at Thu Jul 7 12:28:02 PDT 2016

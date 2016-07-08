@@ -56,12 +56,15 @@
 * V680  5/12 *acm* Add dataset ID to diagnostic output
 * V6.8  acm  6/12 Implement mode_6d_lab, set by default. If cancelled, the 
 *                 output will not list info for E,F dimensions.
+* V7    acm  6/16 Ticket 2437: Deprecating mode_6d_lab. 
+*		  Adjust output to 6-D or 4-D grids
 
 * calling argument declarations:
 	INTEGER		isub, pointer_type
 	CHARACTER*(*)	action
 
 * internal argument declarations:
+	LOGICAL	    FOUR_D_GRID
 	INTEGER	    TM_LENSTR1, lenbuff, i, listdims
 	CHARACTER   VAR_CODE*128, buff128*128, buff8*8
 
@@ -75,10 +78,14 @@
 
 
 * If mode 6d_lab has been cancelled, we will list info only for 
-* the first 4 dimensions.
+* the first 4 dimensions.  This test fails for some EX# expressions.
 
 	listdims = nferdims
-	IF ( .NOT. mode_6d_lab) listdims = 4
+	IF ( pointer_type .EQ. point_to_cx ) THEN
+	   IF ( FOUR_D_GRID(cx_grid(isub)) ) listdims = 4
+	ELSe
+	   IF ( FOUR_D_GRID(mr_grid(isub)) ) listdims = 4
+	ENDIF
 
 	risc_buff = ' '
 

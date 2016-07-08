@@ -149,6 +149,9 @@
 * V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
 *                  added to that dataset in the attribute structure.
 * V698  4/16 *acm* For ticket 2399: Apply MODE CALENDAR settings to F axes too
+* V7    acm  6/16 Ticket 2437: Deprecating mode_6d_lab. 
+*		  Adjust output to 6-D or 4-D grids
+
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -522,6 +525,10 @@
 !	            CALL GUI_PIPE_CLOSE( status )
 !		    IF ( status .NE. ferr_ok ) GOTO 5000
 
+                 ELSEIF ( mode .EQ. pmode_6d_lab ) THEN
+	            CALL WARN( 'MODE 6D_lab is deprecated. '//
+     .                'Leave the mode set; output '//
+     .                'automatically adjusts to 4D or 6D grids') 
 	         ENDIF
 		 GOTO 820
 	      ENDIF

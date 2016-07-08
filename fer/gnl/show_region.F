@@ -54,6 +54,8 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V6.8  acm  6/12 Implement mode_6d_lab, set by default. If cancelled, the 
 *                 various SHOW commnands will not list info for E,F dimensions.
+* V7    acm  6/16 Ticket 2437: Deprecating mode_6d_lab. 
+*		  Adjust output to 6-D or 4-D grids
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'

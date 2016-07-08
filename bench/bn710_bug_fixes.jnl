@@ -14,3 +14,5 @@ go err700_unclosed_if
 ! Bug 2446 include script name on warning about unclosed IF block
 go bn_reset
 go err700_inherit_all
+
+! Note the fix for # 2437 needs documentation: 4D output for grids in X,Y,Z,T only

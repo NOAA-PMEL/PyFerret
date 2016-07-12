@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Jun 17 15:17 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Jul 11 17:03 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -10,7 +10,7 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/flat/ksmith/PyFerret/ext_func/libs
+FER_EXTERNAL_FUNCTIONS=/home/flat/ksmith/Ferret/ext_func/libs
 FER_FONTS=/home/flat/ksmith/PyFerret/ppl/fonts
 FER_GO=. /home/flat/ksmith/PyFerret/go /home/flat/ksmith/PyFerret/examples /home/flat/ksmith/PyFerret/contrib
 FER_GRIDS=.
@@ -279,6 +279,7 @@ Benchmark scripts that will be run:
    bn_plot_decimate.jnl
    bn_auto_tprec.jnl
    bn_coordvars_atts.jnl
+   bn710_bug_fixes.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
@@ -294,7 +295,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Fri Jun 17 15:17:18 PDT 2016
+Beginning at Mon Jul 11 17:03:23 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -438,14 +439,14 @@ IF 0 THEN say ERROR ELIF 1 THEN say "CORRECT if you see this"
  **ERROR: command syntax: Trash after ENDIF
           IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
 IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF, in script ./bn_if.sub
  **ERROR: invalid command: ELSE can only be used between IF and ENDIF
 else
  **ERROR: invalid command: ENDIF can only be used in an IF clause
 endif
  **ERROR: invalid command: ELIF can only be used between IF and ENDIF
 elif
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF, in script ./bn_if.jnl
 *** Running ferret script: bn_expressions.jnl
  Cached data cleared from memory
  **ERROR: command syntax: IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
@@ -1520,7 +1521,10 @@ Replacing definition of axis YAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
+           *** NOTE: Coordinates missing on axis LONGITUDE at subscript 13
+           *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: Coordinates missing on axis LATITUDE at subscript 13
+           *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
  **ERROR: illegal limits: "DUMMY" does not exist at T=01-JAN-1990 00:00
           Axis extremes are T=31-DEC-1997 12:00:30-JAN-1998 12:00
@@ -2348,7 +2352,10 @@ set axis/stride=2 NORMAL
  Cached data cleared from memory
 *** Running ferret script: bn_fifty_files.jnl
  Cached data cleared from memory
-           *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
+           *** NOTE: Coordinates missing on axis LONGITUDE at subscript 4
+           *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: Coordinates missing on axis LATITUDE at subscript 4
+           *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
            *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
            *** NOTE: Substituting coordinate midpoints
@@ -3311,6 +3318,10 @@ DEFINE DATA/AGGREGAT/E windy = 1,2
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, more
 *** Running ferret script: bn_6d_lab_mode.jnl
  Cached data cleared from memory
+           *** NOTE: MODE 6D_lab is deprecated. Leave the mode set; output automatically adjusts to 4D or 6D grids
+           *** NOTE: MODE 6D_lab is deprecated. Leave the mode set; output automatically adjusts to 4D or 6D grids
+           *** NOTE: MODE 6D_lab is deprecated. Leave the mode set; output automatically adjusts to 4D or 6D grids
+           *** NOTE: MODE 6D_lab is deprecated. Leave the mode set; output automatically adjusts to 4D or 6D grids
 *** Running ferret script: bn682_bug_fixes.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -4561,6 +4572,20 @@ Replacing definition of axis TAX
 Replacing definition of axis TAX
 *** Running ferret script: bn_coordvars_atts.jnl
  Cached data cleared from memory
+*** Running ferret script: bn710_bug_fixes.jnl
+ Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: unrepairable repeated axis coords on axis xax at subscript 1
+           *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: unrepairable repeated axis coords on axis yax at subscript 1
+           *** NOTE: A dummy axis of subscripts will be used
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: Unclosed IF statement ... assuming ENDIF, in script ./unclosed_if.sub
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
 *** Running ferret script: bn_gif.jnl
  Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
@@ -4716,4 +4741,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testfermethods.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Fri Jun 17 15:19:14 PDT 2016
+Ended at Mon Jul 11 17:05:26 PDT 2016

@@ -80,6 +80,9 @@
 * v695 *acm*  4/15 Bug fix: output written in loop 300 was cut off
 * V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
 *                  using original upper/lowercase spelling
+* V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
+* V7    acm  6/16 Ticket 2437: Deprecating mode_6d_lab. 
+*		  Adjust output to 6-D or 4-D grids
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -105,7 +108,8 @@
 	INTEGER	lun, dset, status
 	
 * local variable declarations:
-	LOGICAL		first_time, its_delimited, is_undetermined, coordvar
+	LOGICAL		FOUR_D_GRID,
+     .			first_time, its_delimited, is_undetermined, coordvar
 	INTEGER 	TM_LENSTR1, TM_LENSTR, TM_GET_CALENDAR_ID, GRID_FROM_NAME,
      .			ivar, i, dlen, len, grid, taxis, slen(nferdims), tlen, 
      .			nfields, kvar, field_types(maxezvars), 
@@ -138,20 +142,65 @@
 
 * If mode 6d_lab has been canceled, we will list only the first 4 dimensions.
 
-	listdims = nferdims
+	listdims = 0
 	IF ( .NOT. mode_6d_lab) listdims = 4
 	status = ferr_ok
+
+* Adjust number of dimensions. If all grids are 4D, will just show those.
+
+	IF (mode_6d_lab) THEN
+	listdims = 0
+
+	DO 80 ivar = 1, maxvars
+	   IF ( ds_var_setnum(ivar) .NE. dset ) GOTO 80
+           IF ( ds_var_code(ivar) .EQ. '-' ) GOTO 80  
+* ... output variable code, title and subscript bounds within grid
+
+	   is_undetermined = .TRUE.
+	   DO 40 idim = 1, nferdims
+	      IF (ds_grid_start(1,ivar) .NE. int4_init) 
+     .            is_undetermined = .FALSE. 
+  40	   CONTINUE
+
+* Is this an aggregated dataset? - if so then we can go get the grid.
+* GRID_FROM_NAME increments the use count for the grid, so call
+* DEALLO_DYN_GRID to restore the count where it should be.
+
+           IF (is_undetermined .AND. 
+     .         (ds_type(dset).EQ.'ENS' .OR. ds_type(dset).EQ.'FCT' 
+     .          .OR. ds_type(dset).EQ.'UNI')) THEN
+              IF (ds_type(dset).EQ.'UNI') THEN
+	         igrid = ds_grid_number(ivar)
+	      ELSE
+	         igrid = GRID_FROM_NAME(ds_var_code(ivar), cx_last, status)
+	         IF (status .NE. ferr_ok) GOTO 5000
+	         CALL TM_DEALLO_DYN_GRID (igrid)  
+	      ENDIF
+
+           ELSE
+	      igrid = ds_grid_number(ivar)
+           ENDIF
+
+           IF (.NOT.is_undetermined) THEN	
+	      IF ( FOUR_D_GRID(igrid)) listdims = 4
+		   ENDIF
+ 80	CONTINUE
+
+	IF (listdims .EQ. 0) listdims = nferdims
+	ENDIF ! adjusting listdims
 
 * describe the variables in the set
 
 	risc_buff = ' '
-	IF (listdims .EQ. nferdims) THEN
+        IF (listdims .EQ. nferdims) THEN
            WRITE ( risc_buff, 3200 )
-	ELSE
+        ELSE
            WRITE ( risc_buff, 3210 )
-	ENDIF
+        ENDIF
 
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+
+
 	kvar = 0
 	DO 400 ivar = 1, maxvars
 	   IF ( ds_var_setnum(ivar) .NE. dset ) GOTO 400
@@ -170,18 +219,23 @@
 * DEALLO_DYN_GRID to restore the count where it should be.
 
            IF (is_undetermined .AND. 
-     .         (ds_type(dset).EQ.'ENS' .OR. ds_type(dset).EQ.'FCT')) THEN
-	      igrid = GRID_FROM_NAME(ds_var_code(ivar), cx_last, status)
-	      IF (status .NE. ferr_ok) GOTO 5000
-	      CALL TM_DEALLO_DYN_GRID (igrid)  
+     .         (ds_type(dset).EQ.'ENS' .OR. ds_type(dset).EQ.'FCT' 
+     .          .OR. ds_type(dset).EQ.'UNI')) THEN
+              IF (ds_type(dset).EQ.'UNI') THEN
+	         igrid = ds_grid_number(ivar)
+	      ELSE
+	         igrid = GRID_FROM_NAME(ds_var_code(ivar), cx_last, status)
+	         IF (status .NE. ferr_ok) GOTO 5000
+	         CALL TM_DEALLO_DYN_GRID (igrid)  
 
 *  Fill the grid in as in is_aggregate_grid
 
-	      IF (igrid .NE. unspecified_int4) THEN
-	         DO 220 nv = 1, maxvars
-	            IF (ds_grid_number(nv) .EQ. igrid)  GOTO 225
- 220	         CONTINUE
- 225	         CONTINUE
+	         IF (igrid .NE. unspecified_int4) THEN
+	            DO 220 nv = 1, maxvars
+	               IF (ds_grid_number(nv) .EQ. igrid) EXIT ! loop
+ 220	            CONTINUE
+	         ENDIF
+
 	      ENDIF
 
 	      IF (nv .LE. maxvars) THEN
@@ -192,10 +246,15 @@
  230	         CONTINUE
 	         is_undetermined = .FALSE.
               ENDIF
+           ELSE
+	      igrid = ds_grid_number(ivar)
            ENDIF
 
            IF (.NOT.is_undetermined) THEN
 	      
+	      listdims = 6
+	      IF ( FOUR_D_GRID(igrid)) listdims = 4
+
               DO 100 i = 1, listdims
                  WRITE( rbuff(i+listdims),'(I8)' ) ds_grid_start(i,ivar)
                  IF (FLOAT(ds_grid_start(i,ivar)) .EQ. 0.0) THEN
@@ -500,6 +559,7 @@
 5000    RETURN
 5100	CALL ERRMSG( ferr_invalid_command, status,
      .		     'variable has more than 4 dimensions. Set mode 6D_LAB'
+     .		     //pCR//'Output will automatically adjust to 4D or 6D grid'
      .		     //pCR//cmnd_buff(:len_cmnd),
      .			*5000 )
 	END

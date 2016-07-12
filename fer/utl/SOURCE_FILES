@@ -51,6 +51,7 @@ define_climat_att.F\
 dense_contig_region.F\
 depend_stat_var.F\
 depend_stat_var_sub.F\
+dir_line.F\
 display_dependency.F\
 display_dependency_sub.F\
 ensemble_member_dset.F\
@@ -62,6 +63,7 @@ extract_arg4_line.F\
 extract_line_sub.F\
 extract_z_line.F\
 field_minmax.F\
+four_d_grid.F\
 field_minmax_sub.F\
 free_uvar_grids.F\
 full_scan_indices.F\

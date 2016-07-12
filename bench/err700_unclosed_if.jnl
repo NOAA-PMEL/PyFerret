@@ -1,0 +1,7 @@
+! err71_unclosed_if.jnl
+! Ticket 2446
+! Add the script name when reporting an unclosed IF block
+! ACM 7/2016
+
+go unclosed_if.sub
+

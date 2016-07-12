@@ -105,6 +105,7 @@
 *                  uses a function having numeric and string versions.
 * v698 5/16  *acm* ticket 2413: New attribute keywords ncoordvars, coordnames
 *                  return info about coordinate-variables in datasets
+* V7    5/16 *acm* See ticket 2352. For LET/D variables look for info under that dataset
 
 	include 'tmap_dims.parm'
 #include "netcdf.inc"
@@ -533,7 +534,17 @@
         IF (dot .GT. 0) name = uvar_text(uvar)(1:dot-1)
         CALL FIND_VAR_NAME(pdset_irrelevant, name, cat, ivar)
         IF (  ivar .NE. munknown_var_name .AND.
-     .        cat .EQ. cat_user_var) dset = pdset_uvars
+     .        cat .EQ. cat_user_var) THEN
+           dset = pdset_uvars
+
+* Check whether its a LET/D variable
+           CALL CD_GET_VAR_ID (dset, uvar_text(uvar)(1:dot-1), varid, status)
+           IF (dset.EQ.pdset_uvars .AND. status.NE.ferr_ok) THEN
+	      dset = cx_data_set(hi_cx)
+	      CALL CD_GET_VAR_ID (dset, uvar_text(uvar)(1:dot-1), varid, status)
+           ENDIF
+           IF (status.NE.ferr_ok) do_err = .TRUE. 
+        ENDIF
 
         IF (dset .NE. unspecified_int4 .AND. 
      .      dset .NE. pdset_irrelevant) THEN

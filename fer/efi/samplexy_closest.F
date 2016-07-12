@@ -226,25 +226,38 @@
 
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-*  Allocate double the length of the axes for REAL*8 work arrays.
-
-      mxl = arg_lo_ss(X_AXIS,ARG1)
-      myl = arg_lo_ss(Y_AXIS,ARG1)
-
-      mxh = mxl + 
-     .     2* (arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 1)
-      myh = myl + 
-     .     2* (arg_hi_ss(Y_AXIS,ARG1)  - arg_lo_ss(Y_AXIS,ARG1) + 1)
+*  Allocate the length of the axes for REAL*8 work arrays. Use the argument
+*  subscript limits, so subsets are handled correctly.
 
 *  xaxdat
       CALL ef_set_work_array_dims_6d(id, 1,
-     .                              mxl, 1, 1, 1, 1, 1,
-     .                              mxh, 1, 1, 1, 1, 1)
+     .                              arg_lo_ss(X_AXIS,ARG1), 1, 1, 1, 1, 1,
+     .                              arg_hi_ss(X_AXIS,ARG1), 1, 1, 1, 1, 1)
 
 *  yaxdat
       CALL ef_set_work_array_dims_6d(id, 2,
-     .                              myl, 1, 1, 1, 1, 1,
-     .                              myh, 1, 1, 1, 1, 1)
+     .                              arg_lo_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1,
+     .                              arg_hi_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1)
+
+*  xboxlo
+      CALL ef_set_work_array_dims_6d(id, 3,
+     .                              arg_lo_ss(X_AXIS,ARG1), 1, 1, 1, 1, 1,
+     .                              arg_hi_ss(X_AXIS,ARG1), 1, 1, 1, 1, 1)
+
+*  xboxhi
+      CALL ef_set_work_array_dims_6d(id, 4,
+     .                              arg_lo_ss(X_AXIS,ARG1), 1, 1, 1, 1, 1,
+     .                              arg_hi_ss(X_AXIS,ARG1), 1, 1, 1, 1, 1)
+
+*  yboxlo
+      CALL ef_set_work_array_dims_6d(id, 5,
+     .                              arg_lo_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1,
+     .                              arg_hi_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1)
+
+*  yboxhi
+      CALL ef_set_work_array_dims_6d(id, 6,
+     .                              arg_lo_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1,
+     .                              arg_hi_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -257,7 +270,7 @@
 * In this subroutine we compute the result
 *
       SUBROUTINE samplexy_closest_compute(id, arg_1, arg_2, arg_3,
-     .        result, xaxdat, yaxdat)
+     .        result, xaxdat, yaxdat, xboxlo, xboxhi, yboxlo, yboxhi)
 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
@@ -276,12 +289,24 @@
      .            memresloz:memreshiz, memreslot:memreshit,
      .            memresloe:memreshie, memreslof:memreshif)
 
-      REAL*8 xaxdat(wrk1lox:wrk1lox+(wrk1hix-wrk1lox)/2,wrk1loy:wrk1hiy,
+      REAL*8 xaxdat(wrk1lox:wrk1hix,wrk1loy:wrk1hiy,
      .              wrk1loz:wrk1hiz, wrk1lot:wrk1hit,
      .              wrk1loe:wrk1hie, wrk1lof:wrk1hif)
-      REAL*8 yaxdat(wrk2lox:wrk2lox+(wrk2hix-wrk2lox)/2,wrk2loy:wrk2hiy,
+      REAL*8 yaxdat(wrk2lox:wrk2hix,wrk2loy:wrk2hiy,
      .              wrk2loz:wrk2hiz, wrk2lot:wrk2hit,
      .              wrk2loe:wrk2hie, wrk2lof:wrk2hif)
+      REAL*8 xboxlo(wrk3lox:wrk3hix,wrk3loy:wrk3hiy,
+     .              wrk3loz:wrk3hiz, wrk3lot:wrk3hit,
+     .              wrk3loe:wrk3hie, wrk3lof:wrk3hif)
+      REAL*8 xboxhi(wrk4lox:wrk4hix,wrk4loy:wrk4hiy,
+     .              wrk4loz:wrk4hiz, wrk4lot:wrk4hit,
+     .              wrk4loe:wrk4hie, wrk4lof:wrk4hif)
+      REAL*8 yboxlo(wrk5lox:wrk5hix,wrk5loy:wrk5hiy,
+     .              wrk5loz:wrk5hiz, wrk5lot:wrk5hit,
+     .              wrk5loe:wrk5hie, wrk5lof:wrk5hif)
+      REAL*8 yboxhi(wrk6lox:wrk6hix,wrk6loy:wrk6hiy,
+     .              wrk6loz:wrk6hiz, wrk6lot:wrk6hit,
+     .              wrk6loe:wrk6hie, wrk6lof:wrk6hif)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -301,7 +326,8 @@
 *                                                                     |
 *                                                                     V
 
-      LOGICAL TM_FPEQ
+      LOGICAL TM_FPEQ, full_span, ok
+      INTEGER STR_UPCASE
 
       INTEGER nx, nxx, nxy, nxz, nxt, nxe, nxf
       INTEGER ny, nyx, nyy, nyz, nyt, nye, nyf
@@ -310,18 +336,18 @@
       INTEGER i1, j1, k1, l1, m1, n1
       INTEGER i2, j2, k2, l2, m2, n2
       INTEGER i3, j3, k3, l3, m3, n3
-      INTEGER imatch, jmatch
-      INTEGER ibot, jbot
+      INTEGER ic, imatch, jmatch
+      INTEGER ibot, jbot, itop, jtop, ihi, ilo, jhi, jlo, xflag
       REAL xbot, xtop, ybot, ytop
       REAL x_to_xbot, x_to_xtop, y_to_ybot, y_to_ytop
-      CHARACTER*255 err_msg
+      REAL dx, dxlo, dxhi, dy, dylo, dyhi, delmodx, xpt, ypt
+      CHARACTER err_msg*255, test_str*16
 
 C  variables for checking axis characteristics (modulo axes)
 
       CHARACTER ax_name(6)*16, ax_units(6)*16
       LOGICAL backward(6), modulo(6), regular(6)
       INTEGER xlo, xhi, ylo, yhi
-      REAL dx, dy, delmodx, delmody, xpt, ypt
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -360,43 +386,63 @@ C  variables for checking axis characteristics (modulo axes)
 
 *  Get x and y coordinates of the data to be sampled.
 
-      CALL ef_get_coordinates(id, ARG1, X_AXIS,
-     .   arg_lo_ss(X_AXIS, ARG1), arg_hi_ss(X_AXIS, ARG1), xaxdat)
-      CALL ef_get_coordinates(id, ARG1, Y_AXIS,
-     .   arg_lo_ss(Y_AXIS, ARG1), arg_hi_ss(Y_AXIS, ARG1), yaxdat)
+      ilo = arg_lo_ss(X_AXIS,ARG1)
+      ihi = arg_hi_ss(X_AXIS,ARG1)
+      jlo = arg_lo_ss(Y_AXIS,ARG1)
+      jhi = arg_hi_ss(Y_AXIS,ARG1)
 
-*  Check to see if input x,y  axis is modulo
+      CALL ef_get_coordinates(id, ARG1, X_AXIS, ilo, ihi, xaxdat)
+      CALL ef_get_coordinates(id, ARG1, Y_AXIS, jlo, jhi, yaxdat)
+
+*  Check to see if input x axis is modulo, and if axes are regular.
 
       CALL ef_get_axis_info_6d(id, ARG1, ax_name, ax_units,
      .                         backward, modulo, regular)
+      IF ( regular(1) ) THEN
+         dx = xaxdat(ilo+1,1,1,1,1,1) - xaxdat(ilo,1,1,1,1,1)
+         dxlo = dx/2.
+         dxhi = dx/2.
+      ELSE
+         CALL ef_get_box_limits(id, ARG1, X_AXIS, ilo, ihi,
+     .                          xboxlo, xboxhi)
+         dxlo = (xboxlo(ilo+1,1,1,1,1,1) - xboxlo(ilo,1,1,1,1,1) ) / 2.
+         dxhi = (xboxhi(ihi,1,1,1,1,1) - xboxhi(ihi-1,1,1,1,1,1) ) / 2.
+      ENDIF
 
-      xlo = arg_lo_ss(X_AXIS,ARG1)
-      xhi = arg_hi_ss(X_AXIS,ARG1)
-      ylo = arg_lo_ss(Y_AXIS,ARG1)
-      yhi = arg_hi_ss(Y_AXIS,ARG1)
+      IF ( regular(2) ) THEN
+         dy = yaxdat(jlo+1,1,1,1,1,1) - yaxdat(jlo,1,1,1,1,1)
+         dylo = dy/2.
+         dyhi = dy/2.
+      ELSE
+         CALL ef_get_box_limits(id, ARG1, Y_AXIS, jlo, jhi,
+     .                          yboxlo, yboxhi)
+         dylo = (yboxlo(jlo+1,1,1,1,1,1) - yboxlo(jlo,1,1,1,1,1) )/ 2.
+         dyhi = (yboxhi(jhi,1,1,1,1,1) - yboxlo(jhi-1,1,1,1,1,1) )/ 2.
+      ENDIF
+
+* Check to see if input x,y axis is modulo. If its a longitude 
+* axis, check for full-span
 
       IF ( modulo(1) ) THEN
-         IF (.NOT. regular(1)) THEN
-            err_msg = 'cannot handle MODULO axis that is not regular'
-            GO TO 999
+         ic = STR_UPCASE (test_str, ax_units(1))
+         ok = (test_str(1:3) .EQ. 'DEG') 
+         dx = xaxdat(ilo+1,1,1,1,1,1) - xaxdat(ilo,1,1,1,1,1)
+         delmodx = (xaxdat(ihi,1,1,1,1,1) + dxhi) -
+     .             (xaxdat(ilo,1,1,1,1,1) - dxlo)
+         IF ( .NOT. regular(1) )
+     .      delmodx = xboxhi(ihi,1,1,1,1,1) - xboxlo(ilo,1,1,1,1,1)
+         IF ( ok ) THEN 
+            full_span = (delmodx .GT. 360.-dx)
+            delmodx = 360.
          ELSE
-            dx = xaxdat(xlo+1,1,1,1,1,1) - xaxdat(xlo,1,1,1,1,1)
-            delmodx = xaxdat(xhi,1,1,1,1,1) - xaxdat(xlo,1,1,1,1,1) + dx
-         ENDIF
-      ENDIF
-      IF ( modulo(2) ) THEN
-         IF (.NOT. regular(2)) THEN
-            err_msg = 'cannot handle MODULO axis that is not regular'
-            GO TO 999
-         ELSE
-            dy = yaxdat(ylo+1,1,1,1,1,1) - yaxdat(ylo,1,1,1,1,1)
-            delmody = yaxdat(yhi,1,1,1,1,1) - yaxdat(ylo,1,1,1,1,1) + dy
+            full_span = .TRUE.
          ENDIF
       ENDIF
 
 *  For each (xpt,ypt) pair, search the data array 
 *   arg_1 for the nearest higher (x,y) grid coordinates.  Find the 
 *   nearest in 2 directions for the result.
+
 
       i2 = arg_lo_ss(X_AXIS,ARG2)
       j2 = arg_lo_ss(Y_AXIS,ARG2)
@@ -425,44 +471,101 @@ C  variables for checking axis characteristics (modulo axes)
             DO 80 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
             DO 80 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
                result(i,j,k,l,m,n) = bad_flag_result
-  80        CONTINUE
-*           Go to the next coordinates pair
+   80       CONTINUE
+*           Go to the next pair of coordinates
             GOTO 690
          ENDIF
 
-         IF ( modulo(1) ) THEN
-* Relocate the X point within the range of modulo X axis 
-            DO WHILE ( xpt .GE. xaxdat(xhi,1,1,1,1,1) ) 
-               xpt = xpt - delmodx
-            ENDDO
-            DO WHILE (xpt .LT. xaxdat(xlo,1,1,1,1,1) )
-               xpt = xpt + delmodx
-            ENDDO
-         ENDIF
+* Flag for outside of a modulo axis
+         xflag = 0
 
+* Check if xpt is in the x-axis range.
          ibot = ef_unspecified_int4
+         itop = ef_unspecified_int4
          imatch = ef_unspecified_int4
+*  Locate the X point within the range of modulo X axis 
+*  If we have the whole span, then use the point at the other
+*  end to handle points within a half-grid cell of the edge.
 
-* Check if xpt exceeds the X-axis range.
-         i1 = arg_hi_ss(X_AXIS,ARG1)
-         IF ( TM_FPEQ(xaxdat(i1,1,1,1,1,1), xpt) ) THEN
-            imatch = i1
-            GOTO 120
-         ELSE IF ( xpt .GT. xaxdat(i1,1,1,1,1,1) ) THEN
-            GOTO 120
+         IF ( modulo(1) .AND. full_span ) THEN
+            IF ( xpt .GE. xaxdat(ihi,1,1,1,1,1) .AND.
+     .           xpt .LE. xaxdat(ihi,1,1,1,1,1) + dxhi ) THEN
+               ibot = ihi
+               xflag = 1
+            ELSE IF ( xpt .GE. xaxdat(ihi,1,1,1,1,1) ) THEN
+               DO WHILE ( xpt .GE. xaxdat(ihi,1,1,1,1,1) ) 
+                  xpt = xpt - delmodx
+               ENDDO
+            ENDIF
+
+            IF ( xpt .LT. xaxdat(ilo,1,1,1,1,1) .AND.
+     .           xpt .GE. xaxdat(ilo,1,1,1,1,1) - dxlo ) THEN
+               itop = ilo
+               xflag = -1
+            ELSE IF ( xpt .LT. xaxdat(ilo,1,1,1,1,1) ) THEN
+               DO WHILE (xpt .LT. xaxdat(ilo,1,1,1,1,1) )
+                  xpt = xpt + delmodx
+               ENDDO
+            ENDIF
          ENDIF
 
-* Find xpt in the X-axis range.
-         DO 110 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
-            IF ( TM_FPEQ(xaxdat(i1,1,1,1,1,1), xpt) ) THEN
+
+         DO 120 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+            IF ( TM_FPEQ(xpt, xaxdat(i1,1,1,1,1,1)) ) THEN
                imatch = i1
-               GOTO 120
-            ELSE IF ( xpt .GT. xaxdat(i1,1,1,1,1,1) ) THEN
+               GOTO 130
+            ELSE IF ( i1  .EQ. arg_lo_ss(X_AXIS,ARG1)     .AND.
+     .                xpt .LT. xaxdat(i1,1,1,1,1,1)       .AND.
+     .                xpt .GT. xaxdat(i1,1,1,1,1,1)-dxhi  .AND.
+     .               .NOT. modulo(1) ) THEN
+               ibot = i1
+            ELSE IF ( xpt .GE. xaxdat(i1,1,1,1,1,1) ) THEN
                ibot = i1
             ENDIF
-  110    CONTINUE
+ 120     CONTINUE
 
-  120    IF ( imatch .NE. ef_unspecified_int4 ) THEN
+         IF ( .NOT. modulo(1) ) THEN
+            IF ( xpt .GT. xaxdat(ihi,1,1,1,1,1) .AND.
+     .           xpt .LT. xaxdat(ihi,1,1,1,1,1) + dxhi ) THEN
+               ibot = ihi
+            ELSE IF ( xpt .GT. xaxdat(ihi,1,1,1,1,1) ) THEN
+               ibot = ef_unspecified_int4   ! ARG_2 XPT outside of range 
+            ENDIF
+         ENDIF
+
+  130    IF ( imatch .NE. ef_unspecified_int4 ) THEN
+            ibot = imatch
+            itop = imatch
+         ELSE IF ( ibot .NE. ef_unspecified_int4 ) THEN
+            itop = ibot + 1
+            IF ( itop .GT. ihi ) itop = ihi
+         ENDIF
+
+* If the data is at the very top or bottom of the modulo x axis, get the
+* point from the other end.
+
+         IF ( xflag .EQ. 1 ) THEN
+            ibot = ihi
+            itop = ilo
+         ENDIF
+         IF ( xflag .EQ. -1 ) THEN
+            itop = ilo
+            ibot = ihi
+         ENDIF
+
+         IF ( ibot .EQ. ef_unspecified_int4 ) THEN
+*           Coordinate outside the grid
+            DO 140 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+            DO 140 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+            DO 140 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            DO 140 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+               result(i,j,k,l,m,n) = bad_flag_result
+  140       CONTINUE
+*           Go to the next pair of coordinates
+            GOTO 690
+         ENDIF
+
+	 IF ( imatch .NE. ef_unspecified_int4 ) THEN
 cbf         matching the next neighbour is not of interest
             i1 = imatch
          ELSE IF ( ibot .EQ. ef_unspecified_int4 ) THEN
@@ -482,16 +585,6 @@ cbf         matching the next neighbour is not of interest
          ENDIF
 
 cbf      analogously in y direction
-
-         IF ( modulo(2) ) THEN
-* Relocate the Y point within the range of modulo Y axis 
-            DO WHILE ( ypt .GE. yaxdat(yhi,1,1,1,1,1) ) 
-               ypt = ypt - delmody
-            ENDDO
-            DO WHILE (ypt .LT. yaxdat(ylo,1,1,1,1,1) )
-               ypt = ypt + delmody
-            ENDDO
-         ENDIF
 
          jbot = ef_unspecified_int4
          jmatch = ef_unspecified_int4

@@ -96,10 +96,10 @@
 *                    user-variables remaining in the dataset are adjusted.
 * *sh*  5/16         added grid management for uvars -- dset/grid paris stored in a LIST
 *                    replaced uvflag with uvarid
+* *acm* 6/16         Make sure var.nmemb is initialized when adding a new variable.
 */
 
 #include <Python.h> /* make sure Python.h is first */
-#include "ferretmacros.h"
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <unistd.h>		/* for convenience */
 #include <stdlib.h>		/* for convenience */
@@ -1248,6 +1248,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 			var.is_axis = FALSE;
 			var.axis_dir = 0;
 			var.uvarid = 0;
+			var.nmemb = 0;
 			
 			var.attrs_list_initialized = FALSE;
 			for (i = 0; i < nc.ngatts; i++)
@@ -1956,6 +1957,7 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char
   var.outtype = *type;
   var.ndims = 6;
   var.natts = 0;
+  var.nmemb = 0;
      
   if (*varid < 0)
     {
@@ -2161,12 +2163,12 @@ int  FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar
        var.outtype = NC_CHAR;
        var.varid = 0;
 	   var.natts = 0;
+	   var.nmemb = 0;
        var.has_fillval = FALSE;
        var.fillval = NC_FILL_FLOAT;
 	   var.all_outflag = 1;
 	   var.is_axis = FALSE;
 	   var.axis_dir = 0;
-
 
    /*
     * Set variable structure and insert the new variable at the end of the 
@@ -2184,7 +2186,7 @@ int  FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar
   var.axis_dir = 0;
   var.has_fillval = FALSE;
   var.all_outflag = 1;
-  var.fillval = *bad;
+  var.fillval = *bad;	   
   var.attrs_list_initialized = FALSE;
 
   if ( (var.varattlist = list_init()) == NULL ) {

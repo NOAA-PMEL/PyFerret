@@ -1,0 +1,7 @@
+
+let a = 1
+if `a eq 1` THEN
+SAY YES
+
+let b = 1
+

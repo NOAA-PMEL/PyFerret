@@ -71,6 +71,8 @@
 * V697  12/15 *acm* Changes to add details on SHOW GRID uvar to indicate 
 *                   compressed or subset of axes
 * V697  12/15 *acm* Changes to formatting the output that shows subsets
+* V7    acm  6/16 Ticket 2437: Deprecating mode_6d_lab. 
+*		  Adjust output to 6-D or 4-D grids
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -87,20 +89,11 @@
 	INTEGER grid, cx, status
 
 * local variable declarations:
+	LOGICAL FOUR_D_GRID
 	INTEGER i, idim, listdims, uvar
 
-* If mode 6d_lab has been cancelled, we will list only the first 4 dimensions.
-* But if the grid has E or F axes, thats an error.
-
 	listdims = nferdims
-	IF ( .NOT. mode_6d_lab) listdims = 4
-	
-	status = ferr_ok
-	IF (listdims .LT. nferdims) THEN
-	   DO 90 i = listdims+1,nferdims
-	      IF ( grid_line(i,grid) .NE. mnormal) GOTO 5100
-  90	   CONTINUE
-	ENDIF
+	IF (FOUR_D_GRID(grid)) listdims = 4
 
 * Getting details about the grid of a user-variable
         uvar = -1
@@ -138,8 +131,4 @@
      .          'end',T80,'subset' )
 
 5000    RETURN
-5100	CALL ERRMSG( ferr_invalid_command, status,
-     .		     'variable has more than 4 dimensions. Set mode 6D_LAB'
-     .		     //pCR//cmnd_buff(:len_cmnd),
-     .			*5000 )
 	END

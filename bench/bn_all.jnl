@@ -1010,6 +1010,7 @@ GO bn_reset
 GO bn_bin_regrid
 
 ! *********** v6.97 Additions ***********
+!            (released as V7.0)
 
 GO bn_reset
 GO bn697_bug_fixes
@@ -1075,6 +1076,12 @@ GO bn_auto_tprec
 
 GO bn_reset
 GO bn_coordvars_atts
+
+
+! *********** v7.1 Additions ***********
+
+GO bn_reset
+GO bn710_bug_fixes
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

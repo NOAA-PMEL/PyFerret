@@ -1,4 +1,4 @@
-	FUNCTION SYMWID(HEIGHT,NCHAR,STRING)
+	INTEGER FUNCTION DIR_LINE (dircode)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -33,17 +33,25 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-* Split off from file symbel.F 5/2015
 
-C *kob* 04/07/96 passed in character strings had to be declared 
-C                with "*(*)" for the linux port 
-	CHARACTER STRING*(*)
-	NC=-IABS(NCHAR)
-C
-C	THIS FUNCTION RETURNS THE WIDTH OF THE STRING WITHOUT DRAWING IT
-C
-	SS=0.
-	IF (NC .NE. 0) CALL SYMBEL(SS,0.,0.,HEIGHT,NC,STRING)
-	SYMWID=SS
+* Given a 2-letter line_direction code, return the integer parameter for the direction
+* V7    acm  6/16 Ticket 2437: 
+
+	include	'ferret.parm'
+	CHARACTER*(*)	dircode
+
+	DIR_LINE = x_dim
+	IF ( dircode(1:2) .EQ. 'WE') DIR_LINE = x_dim
+	IF ( dircode(1:2) .EQ. 'SN') DIR_LINE = y_dim
+	IF ( dircode(1:2) .EQ. 'UD') DIR_LINE = z_dim
+	IF ( dircode(1:2) .EQ. 'DU') DIR_LINE = z_dim
+	IF ( dircode(1:2) .EQ. 'TI') DIR_LINE = t_dim
+	IF ( dircode(1:1) .EQ. 'X')  DIR_LINE = x_dim
+	IF ( dircode(1:1) .EQ. 'Y')  DIR_LINE = y_dim
+	IF ( dircode(1:1) .EQ. 'Z')  DIR_LINE = z_dim
+	IF ( dircode(1:1) .EQ. 'T')  DIR_LINE = t_dim
+	IF ( dircode(1:1) .EQ. 'E')  DIR_LINE = e_dim
+	IF ( dircode(1:1) .EQ. 'F')  DIR_LINE = f_dim
+
 	RETURN
 	END

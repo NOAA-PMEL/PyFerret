@@ -1,4 +1,4 @@
-	FUNCTION SYMWID(HEIGHT,NCHAR,STRING)
+	LOGICAL FUNCTION FOUR_D_GRID (grid)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -33,17 +33,24 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-* Split off from file symbel.F 5/2015
+*
+* Return TRUE if the grid does not have E or F dimensions.
 
-C *kob* 04/07/96 passed in character strings had to be declared 
-C                with "*(*)" for the linux port 
-	CHARACTER STRING*(*)
-	NC=-IABS(NCHAR)
-C
-C	THIS FUNCTION RETURNS THE WIDTH OF THE STRING WITHOUT DRAWING IT
-C
-	SS=0.
-	IF (NC .NE. 0) CALL SYMBEL(SS,0.,0.,HEIGHT,NC,STRING)
-	SYMWID=SS
+* V7    acm  6/16 Ticket 2437
+
+        include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+        include 'xtm_grid.cmn_text'
+	include 'ferret.parm'
+	INTEGER grid
+	   	
+	IF (grid .EQ. unspecified_int4) RETURN
+
+	FOUR_D_GRID =  
+     .  ( grid_line(e_dim,grid).EQ.mnormal  .AND. 
+     .    grid_line(f_dim,grid).EQ.mnormal  )
+	
+* First, for pre-change benchmarks
+
 	RETURN
 	END

@@ -142,29 +142,32 @@
       INTEGER arg_lo_ss(6,EF_MAX_ARGS), arg_hi_ss(6,EF_MAX_ARGS),
      .     arg_incr(6,EF_MAX_ARGS)
 
-      INTEGER nx, nr, lo_lim, hi_lim
+      INTEGER nx, nr, nee, lo_lim, hi_lim
+      CHARACTER*100 errtxt
 
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       nx = arg_hi_ss(X_AXIS, ARG1) - arg_lo_ss(X_AXIS, ARG1) + 1
 
 * will add a point for each row
 
-      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
-      nr = MAX( (arg_hi_ss(E_AXIS, ARG2) - arg_lo_ss( E_AXIS, ARG2) + 1), 
-     .          (arg_hi_ss(E_AXIS, ARG2) - arg_lo_ss( E_AXIS, ARG2) + 1) )
+      nr = arg_hi_ss(E_AXIS, ARG2) - arg_lo_ss( E_AXIS, ARG2) + 1
+      nee = arg_hi_ss(X_AXIS, ARG2) - arg_lo_ss( X_AXIS, ARG2) + 1
+      
+      IF (nee .GT. nr) THEN
+         IF (nr .NE. 1) THEN
+	    errtxt = 'Error argument 2 must be 1D and on X or E axis'
+	    GOTO 999
+	 ENDIF
+	 nr = nee
+      ENDIF
 
       lo_lim = 1
       hi_lim = nx + nr - 1
       CALL ef_set_axis_limits(id, X_AXIS, lo_lim, hi_lim)
 
+      RETURN
+ 999  CALL EF_BAIL_OUT(id, errtxt)
 
-
-*                                                                      ^
-*                                                                      |
-*                                            USER CONFIGURABLE PORTION |
-* **********************************************************************
-
-      RETURN 
       END
 
 
@@ -207,7 +210,7 @@
 *                                                                      V
 
       INTEGER i, i1, ir, k, m, slen
-      INTEGER nx, ne, msum, rend
+      INTEGER nx, msum, rend, nrr, nee, row_axis
       REAL fixlon, tol, nothing
       LOGICAL ifix
       CHARACTER*512 buff
@@ -219,7 +222,12 @@
       k = res_lo_ss(Z_AXIS)  ! index for unused dimensions
 
       nx = arg_hi_ss(X_AXIS, ARG1) - arg_lo_ss(X_AXIS, ARG1) + 1
-      ne = arg_hi_ss(E_AXIS, ARG2) - arg_lo_ss(E_AXIS, ARG2) + 1
+
+      nee = arg_hi_ss(E_AXIS, ARG2) - arg_lo_ss( E_AXIS, ARG2) + 1
+      nrr = arg_hi_ss(X_AXIS, ARG2) - arg_lo_ss( X_AXIS, ARG2) + 1
+
+      row_axis = E_AXIS
+      IF (nrr .GT. nee) row_axis = X_AXIS
 
       CALL ef_get_one_val(id, arg3, fixlon)
       ifix =  (fixlon .GT. 0.8)
@@ -228,10 +236,15 @@
       i1 = 1
       ir = 1
       msum = 0
-      DO m = arg_lo_ss(E_AXIS,ARG2), arg_hi_ss(E_AXIS, ARG2)
-         rend = arg_2(k,k,k,k,m,k)
+      DO m = arg_lo_ss(row_axis,ARG2), arg_hi_ss(row_axis, ARG2)
+         IF (row_axis .EQ. E_AXIS) THEN
+	    rend = arg_2(k,k,k,k,m,k)
+	 ELSE
+	    rend = arg_2(m,k,k,k,k,k)
+	 ENDIF
+
 	 msum = msum + rend
-	 IF (msum .GT. nx) msum = nx+1
+	 IF (msum .GT. nx) msum = nx-1
 	 DO i = i1, msum
 
 	    CALL ef_get_string_arg_element_6d(id, ARG1, arg_1,

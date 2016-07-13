@@ -1083,6 +1083,9 @@ GO bn_coordvars_atts
 GO bn_reset
 GO bn710_bug_fixes
 
+GO bn_reset
+GO bn_delim_datetime
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

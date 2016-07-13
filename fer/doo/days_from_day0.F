@@ -1,5 +1,5 @@
 	REAL FUNCTION DAYS_FROM_DAY0( date0_days, year, month, day,
-     .       rdum)
+     .       rdum, status)
 
 
 *
@@ -47,12 +47,15 @@
 *		based on tm_secs_from_bc by Mark Verschell
 * V530 12/00 *sh* - bug fix: avoid crash if month is not in [1,12]
 * V600 4/06  *acm*  return the result in rdum as well, for 64-bit build
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret
+* V701 *acm* 7/16  ticket 2449: report incorrect choice of date/ eurodate as an error
+
+        include 'errmsg.parm'
 
 * calling argument declarations:
-        IMPLICIT NONE
+
 	REAL*8 date0_days
-	INTEGER year, month, day
+	INTEGER year, month, day, status
         REAL rdum
 
 * Local Definition
@@ -71,8 +74,10 @@
 * to avoid crash for out of bounds month
 	IF (month .GT. 12) THEN
 	   mnth = 12
+	   status = ferr_out_of_range 
 	ELSEIF (month .LT. 1) THEN
 	   mnth = 1
+	   status = ferr_out_of_range 
 	ELSE
 	   mnth = month
 	ENDIF

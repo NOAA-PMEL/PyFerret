@@ -48,6 +48,7 @@
 *       *acm* 3/12 changes for 6D Ferret
 * V685 *acm* 1/13  Ticket 2030: if we run out of memory, issue a new message
 *                  and only clear the variables that had been initialized.
+* V701 *acm* 7/16  ticket 2449: report incorrect choice of date/ eurodate as an error
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -166,11 +167,16 @@
      .		     memory(1,buffblk), 4*1024 )
 
 * read the data via TMAP library routine
+* Status will report -1* variable number if the date/eurodate specification is wrong.
+
+	status = ferr_ok
 	CALL DECODE_FILE_JACKET (
      .		  memory(1,buffblk), memory(1,buffblk),
      .		  delims, sf_skip(istep), rec_to_read, 4*1024, nvar,
      .		  field_type, nread, mrlist, memory, mr_blk1,
-     .		  mem_blk_size, mr_bad_data, mr_c_pointer)
+     .		  mem_blk_size, mr_bad_data, mr_c_pointer, status)
+
+	IF (status .NE. ferr_ok) GOTO 5800
 
 * update the variables with info about the number of records actually read
 * (for multi-dimensional grid reads just truncate the last axis best we can)
@@ -249,7 +255,7 @@
            CALL WARN (errbuff)
 	ENDIF
  1000   FORMAT ('Delimited file reading: Insufficient memory reading variable ', i4)
-	DO 5010 nleft = 1, nvar20-1	! delete all initialized so far
+ 1100	DO 5010 nleft = 1, nvar20-1	! delete all initialized so far
  5010	CALL DELETE_VARIABLE(mrlist(nleft))
         CALL  RELEASE_WORK_SPC
  5500	RETURN
@@ -259,5 +265,8 @@
  5650	CALL ERRMSG( ferr_limits, status,
      .		'/COLUMNS is impossibly large', *5500 )
  5700	CALL ERRMSG( ferr_TMAP_error, status, ' ', *4900 )
+ 5800	WRITE (errbuff, 5810) -1*status
+ 5810   FORMAT ('Check Date or Eurodate formatting for file variable ',i4)
+	CALL ERRMSG( ferr_out_of_range, status, errbuff, *1100 )
  6000	CALL ERRMSG( ferr_internal, status, 'READ_EZ ??', *4900 )
 	END	

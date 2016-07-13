@@ -79,7 +79,7 @@
 *       moved it to parameter line 10/96
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V694 1/15 *acm* variable coordvar should be a logical not an integer
-
+* V701 7/16 *acm* ticket 2450. add date-time and euro-date-time field types
 
 	CHARACTER*4	ez_rev
 	CHARACTER*1	tab
@@ -127,7 +127,7 @@
      .			set_cnt, bpos, epos, ncnt, var_pos, num_names,
      .			nvar, jcnt, stp_cnt, nstp, field_type(maxezvars),
      .			num_types, i, j, name_limit, idummy(maxezvars),
-     .			l1, l2, ivar, vartype, varid
+     .			l1, l2, ivar, vartype, varid, tlen
 	CHARACTER	TM_STRING*13, TM_LEFINT*4, buff*48, 
      .			line_buff*2048
 
@@ -232,8 +232,9 @@
 *          ... parse users list of field types
 	     CALL TM_Parse_string(types,maxezvars,type_names,num_types)
 	     DO 530 i = 1, num_types
+	       tlen = MIN(TM_LENSTR1(type_names(i)), 4)
 	       DO 520 j = 1, FTYP_NUM_TYPES
-	         IF (type_names(i)(1:2) .EQ. ftyp_name(j)(1:2)) THEN
+	         IF (type_names(i)(1:tlen) .EQ. ftyp_name(j)(1:tlen)) THEN
 	            l1 = TM_LENSTR1(type_names(i))
 	            l2 = TM_LENSTR1(ftyp_name (j))
 	            IF (l1.GT.l2 ) GOTO 9300  ! ilegal type name
@@ -358,7 +359,9 @@
 	       ds_var_titl_mod(nvar) = 'all values missing'
 	       field_type(ncnt) = FTYP_NUMERIC
 	    ELSEIF (field_type(ncnt) .EQ. FTYP_EURODATE
-     .	       .OR. field_type(ncnt) .EQ. FTYP_DATE) THEN
+     .	       .OR. field_type(ncnt) .EQ. FTYP_DATE
+     .	       .OR. field_type(ncnt) .EQ. FTYP_DATIME
+     .	       .OR. field_type(ncnt) .EQ. FTYP_EDATIME) THEN
 	       ds_var_titl_mod(nvar) = 'Julian days since 1-Jan-1900'
 	       ds_var_units(nvar) = 'days'
 	    ELSEIF (field_type(ncnt) .EQ. FTYP_TIME) THEN

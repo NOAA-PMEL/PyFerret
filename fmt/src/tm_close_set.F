@@ -38,12 +38,21 @@
 * 2/2016 *sh*
 * all of the guts of this routine were moved to TM_CLOSE_SET_COND_DEALLO
 * allowing the de-allocation of grids to become a conditional matter
+* V7   5/12 *acm* Union aggregations: DEFINE DATA/AGG/U
+
+	include 'tmap_dims.parm'
+	include 'xdset_info.cmn_text'
+#       include "tmap_dset.parm"
 
 * calling argument declarations
 	INTEGER ds_num, status
-	
 
-	CALL TM_CLOSE_SET_COND_DEALLO( ds_num, .TRUE., status)
+	LOGICAL deallo		
+	
+* Union datasets don't allocate grids for their member variables
+	deallo = .TRUE.
+	IF (ds_type(ds_num) .EQ. 'UNI') deallo = .FALSE.
+	CALL TM_CLOSE_SET_COND_DEALLO( ds_num, deallo, status)
 
 	RETURN
 	END

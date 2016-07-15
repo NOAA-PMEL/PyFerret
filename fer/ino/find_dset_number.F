@@ -66,6 +66,7 @@
 * V680 6/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
+* V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -158,7 +159,8 @@ c *kob* 4/97
 
 	      IF ( TM_HAS_STRING(ds_type(dset),'CDF')   .OR. 
      .		   TM_HAS_STRING(ds_type(dset),'ENS')   .OR. 
-     .		   TM_HAS_STRING(ds_type(dset),'FCT') ) THEN
+     .		   TM_HAS_STRING(ds_type(dset),'FCT')   .OR. 
+     .		   TM_HAS_STRING(ds_type(dset),'UNI') ) THEN
 	         vax_code = STR_CASE_BLIND_COMPARE( ds_name(dset),
      .						    dname(1:short_len) )
 	         IF (  vax_code .EQ. vms_str_success

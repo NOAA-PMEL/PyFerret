@@ -76,6 +76,7 @@
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
+* V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -319,6 +320,7 @@
  	   IF (dset.NE.unspecified_int4) THEN
 	      IF (ds_type(dset).EQ.'ENS') category = cat_agg_e_var
 	      IF (ds_type(dset).EQ.'FCT') category = cat_agg_f_var
+	      IF (ds_type(dset).EQ.'UNI') category = cat_agg_u_var
  	   ENDIF
 	   variable = ivar
            test_name = buff

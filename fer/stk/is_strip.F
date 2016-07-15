@@ -75,6 +75,7 @@
 * V698 1/16 *sh* fix to bug #2347 (agg res var no instead of com var on stack)
 *		 alter agg setup to detect LET/D vars at eval time
 *      4/16 *sh* Allow that SET VAR/NAME= has altered the agg varname
+* V7   5/12 *acm* Union aggregations: DEFINE DATA/AGG/U
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -235,6 +236,70 @@
 
 	   is_uvar(lo_isp) = hi_var ! relevant if component 1 is LET/D
 
+*-*-*-*-*-*-*-*-*-*-
+
+	ELSEIF (aclass .EQ. isact_class_union_member) THEN
+
+* SET UP TO RETURN A VARIABLE IN A UNION AGGREGATION
+	   is_act( lo_isp ) = isact_get_union_member
+
+* set result pointer to indicate no memory result has been created yet
+	   is_mr( lo_isp ) = unspecified_int4
+	   is_sum( lo_isp ) = 1  ! or something... Set these equal.
+	   is_phase( lo_isp ) = 1
+
+* Set up context (hi_cx) to get the requested aggregate member
+* Start with bookkeeping to prepare to request component
+	   CALL TRANSFER_CONTEXT( lo_cx, hi_cx )
+
+	   agg_vname = VAR_CODE (cat_file_var, cx_variable(hi_cx))
+	   agg_vlen = TM_LENSTR1(agg_vname)
+
+* Get the member dataset, and the grid. imemb is the variable # in the union.
+
+	   CALL CD_GET_VAR_ID (dset, agg_vname, imemb, status)
+	   CALL CD_GET_AGG_VAR_INFO (dset, agg_vname, imemb, orig_cat, 
+     .                memb_dset, orig_grid, iline, orig_var, status)
+
+* a couple of 'delayed mode' use cases to beware -- actions the user may have
+* taken **SINCE** the aggregation was defined:
+*  1) user may have issued a SET VAR/NAME= (rename) of the aggregated variable
+*  2) user may have issued a LET/D on a member variable
+* If 1, then agg_vname will differ from memb_vname 
+* If 2, then cat# and var# associated with member name may have changed
+* Do a fresh "find" for the original member variable name
+
+	      memb_vname = VAR_CODE(orig_cat, orig_var)
+	      memb_vlen = TM_LENSTR1(memb_vname)
+	      CALL FIND_VAR_NAME (memb_dset,memb_vname, hi_cat, hi_var )
+	      IF (hi_var .EQ. munknown_var_name) CALL ERRMSG(
+     .		  ferr_aggregate_error, status, 'variable '//
+     .		  memb_vname(:memb_vlen)//' no longer found in agg member '//
+     .		  LEFINT(imemb,slen), *5000)
+
+* confirm grid has not changed since stored during DEFINE DATA/AGG
+	      hi_grid = KNOWN_GRID(memb_dset, hi_cat, hi_var)
+	      IF (hi_grid .EQ. unspecified_int4) THEN   ! can only be a uvar
+* ... GET_UVAR_GRID uses the interp_stack, so bump isp
+	         isp = lo_isp + 1
+	         CALL GET_UVAR_GRID( hi_var, memb_dset, status )
+	         isp = lo_isp  ! restore to value at start of routine
+                 IF ( status .NE. ferr_ok ) GOTO 5000
+	         hi_grid = KNOWN_GRID(memb_dset, hi_cat, hi_var)
+	      ENDIF
+
+* set up the member variable
+	   cx_data_set(hi_cx) = memb_dset
+	   cx_category(hi_cx) = hi_cat
+	   cx_variable(hi_cx) = hi_var
+	   cx_grid    (hi_cx) = hi_grid
+	   CALL GET_CONTEXT_BAD_FLAG(hi_cx)
+
+c	   CALL TRANSFER_CONTEXT( hi_cx, lo_cx )
+
+	   is_uvar(lo_isp) = hi_var ! relevant if component 1 is LET/D
+
+*-*-*-*-*-*-*-*-*-*-
 
 **************
 	ELSEIF ( aclass .EQ. isact_class_trans) THEN

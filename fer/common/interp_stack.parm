@@ -9,6 +9,7 @@
 * V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
+* V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U
 
 * minimum working space provided to transformations
 	INTEGER		iswksiz
@@ -25,7 +26,8 @@
      .			isact_class_sample,
      .			isact_class_subspan_fill,
      .			isact_class_aggregate_gather,
-     .			isact_class_aux_plot_vars
+     .			isact_class_aux_plot_vars,
+     .			isact_class_union_member
 	PARAMETER     ( isact_class_trans    = 1,
      .			isact_class_regrid   = 2,
      .			isact_class_gather   = 3,
@@ -36,7 +38,8 @@
      .			isact_class_sample   = 8,
      .			isact_class_subspan_fill = 9,
      .			isact_class_aggregate_gather = 10,
-     .			isact_class_aux_plot_vars = 11 )
+     .			isact_class_aux_plot_vars = 11,
+     .			isact_class_union_member = 12 )
 
 * to help in defining classes of activity codes ...
 	INTEGER		isact_trans_code
@@ -65,7 +68,8 @@
      .			isact_auxvar_regrid,
      .			isact_var_ready,
      .			isact_auxvar_ready,
-     .			isact_aux_plot_vars
+     .			isact_aux_plot_vars,
+     .			isact_get_union_member
 	PARAMETER     ( isact_request		= 1,
      .			isact_algebra		= 2,
      .			isact_rotate		= 3,
@@ -88,6 +92,7 @@
      .			isact_var_ready         = 22,
      .			isact_auxvar_ready      = 23,
      .			isact_aux_plot_vars     = 24,
+     .			isact_get_union_member  = 25,
      .          	isact_reduce = 16 ) ! never used: GC fcns perform axis reduction
 
 * transformations (which are also stack activities)

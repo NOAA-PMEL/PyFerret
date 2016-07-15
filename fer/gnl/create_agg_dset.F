@@ -41,6 +41,7 @@
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 * V695+ *sh*  11/15 Correct bugs in setting of aggregate dset title
 * V698  *sh*  1/16 pass explicit path name (for "USE file.agg" compatibility)
+* V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U
 
 * calling argument
 *   agg_dset	- dataset number of the aggregation (input)
@@ -86,6 +87,7 @@
 * Set the dataset type and title (can add other directions)
 	IF (agg_dim .EQ. e_dim ) ds_type(agg_dset) = 'ENS'
 	IF (agg_dim .EQ. f_dim ) ds_type(agg_dset) = 'FCT'
+	IF (agg_dim .EQ. unspecified_int4 ) ds_type(agg_dset) = 'UNI'
 
 	ds_name(agg_dset) = dname
 	ds_des_name(agg_dset) = dpath
@@ -94,12 +96,20 @@
 	   ntext = LEFINT(nsets, nlen)
 	   IF (agg_dim.EQ.e_dim) THEN
 	      ds_title(agg_dset) = "Ensemble"
-	   ELSE
+	   ELSEIF (agg_dim.EQ.f_dim) THEN
 	      ds_title(agg_dset) = "Forecast"
+	   ELSE
+	      ds_title(agg_dset) = "Union"
 	   ENDIF
-	   ds_title(agg_dset) = ds_title(agg_dset)(:8)//' series of '
+	   IF (agg_dim .EQ. unspecified_int4) THEN
+	      ds_title(agg_dset) = 
+     .	        'Union of variables from member datasets'
+	   ELSE
+	      ds_title(agg_dset) = ds_title(agg_dset)(:8)//' series of '
      .		//ntext(:nlen)//' datasets patterned on '//
      .		ds_name(dset1)
+	   ENDIF
+     
 	ELSE
 	   ds_title(agg_dset) = dtitle
 	ENDIF
@@ -117,7 +127,8 @@
        GOTO 5400
  
 * create the aggregate axis
- 100	CALL CREATE_AGG_AXIS (nsets, agg_dim, iline, status)
+ 100	IF (agg_dim .NE. unspecified_int4) 
+     .		CALL CREATE_AGG_AXIS (nsets, agg_dim, iline, status)
 	IF (status .NE. ferr_ok) GOTO 5300 
 
 	RETURN

@@ -251,6 +251,7 @@
 *                  (commented out for now.)
 * V698  5/16 *acm* Ticket 2416 allow all output types for DEFINE ATT.
 * V7    5/16 *acm* See ticket 2352. For LET/D variables look for info under that dataset
+* V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U
 
 
 	include	'tmap_errors.parm'
@@ -318,7 +319,8 @@
      .              slash_def_agg_e,
      .              slash_def_agg_f,
      .              slash_def_agg_hide,
-     .              slash_def_annot_nlab
+     .              slash_def_annot_nlab,
+     .              slash_def_agg_u
 
 	LOGICAL	    explct_defn
 	PARAMETER ( slash_dflt   = 1 + 12,
@@ -361,6 +363,7 @@
      .              slash_def_agg_title = 1 + 7,
      .              slash_def_agg_quiet = 1 + 8,
      .              slash_def_agg_hide  = 1 + 9,
+     .              slash_def_agg_u     = 1 + 10,
      .              slash_def_annot_nlab = 10,		! must be slash_annotate_siz+1
      .		    explct_defn  = .FALSE. )
 
@@ -2321,8 +2324,19 @@ c	CALL TM_WARN_SUBSPAN (iline)
            ENDIF
         ENDIF
 
+* Is there a /U  (ag_dim will be set to unspecified_int4)
+
+	IF (qual_given( slash_def_agg_u ) .GT. 0) THEN
+           IF (agg_dim .EQ. unspecified_int4) THEN
+              agg_dim = f_dim + 1
+           ELSE
+              GOTO 5510
+           ENDIF
+        ENDIF
+
 * default aggregation orientation
 	IF (agg_dim .EQ. unspecified_int4) agg_dim = t_dim
+
 
 * define data/hide
 	agg_hide = qual_given( slash_def_agg_hide ) .GT. 0
@@ -2363,8 +2377,10 @@ c	CALL TM_WARN_SUBSPAN (iline)
                  buff1 = 'TSERIES'
               ELSEIF (agg_dim.EQ.e_dim) THEN
                  buff1 = 'ENSEMBLE'
-              ELSE                   
+              ELSEIF (agg_dim.EQ.f_dim) THEN       
                  buff1 = 'FMRC'
+              ELSEIF (agg_dim.EQ.f_dim+1) THEN       
+                 buff1 = 'UNION'
               ENDIF
               buff3 = buff1    ! use dname as dpath, too
            ENDIF
@@ -2426,6 +2442,11 @@ c	CALL TM_WARN_SUBSPAN (iline)
            CALL INIT_T_AGGREGATE_DSET(memory(1, mr_blk1(mr)),
      .                  nagfiles, have_expr, buff1, buff3, buff2, 
      .                  t_regular, use_strict, dset, status)
+        ELSEIF (agg_dim .EQ. f_dim+1) THEN
+	   agg_dim = unspecified_int4
+	   CALL INIT_U_AGGREGATE_DSET (memory(1, mr_blk1(mr)),
+     .                  nagfiles, have_expr, buff1, buff3, buff2, dset,
+     .                  agg_quiet, agg_hide, agg_dim, status)
         ELSE
 	   CALL INIT_EF_AGGREGATE_DSET (memory(1, mr_blk1(mr)),
      .                  nagfiles, have_expr, buff1, buff3, buff2, dset,
@@ -2516,7 +2537,7 @@ c ?? if nlab=0, use next avail slot?
  5505	CALL ERRMSG( ferr_invalid_command, status,
      .		'DEFINE AXIS/DEPTH needs /Z=lo:hi:del', *5000 )
  5510	CALL ERRMSG( ferr_invalid_command, status,
-     .		'Conflicting /X,/Y,/Z or /T axis orientations given',
+     .		'Conflicting /X,/Y,/Z/T/E or /F axis orientations given',
      .								*5000 )
  5520	CALL ERRMSG( ferr_grid_definition, status,
      .			'error in start,end,delta', *5000 )

@@ -64,6 +64,7 @@
 * v686 *acm*  1/14 Fix ticket 2127: dont check file type if the variable not a file variable.
 * v687 *acm*  3/14 Fix ticket 2161: editing long_name or units of var in ascii files
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
+* V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
 
 * codes for data sets
 	INTEGER		set_not_open,set_open,file_not_open
@@ -461,6 +462,7 @@
      .               TM_HAS_STRING(ds_type(dset), 'MC') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'ENS') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'FCT') .OR.
+     .               TM_HAS_STRING(ds_type(dset), 'UNI') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'GT')  )
 
 * note on EZ vars:

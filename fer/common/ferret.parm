@@ -51,7 +51,9 @@
 *                 and is also consistent with Matlab
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
-* V698  3/16 *sh* expanded max_gfdl_dsets for EF agg needs
+* V698  3/16 *sh* expanded max_gfdl_dsets for EF agg needs+
+* V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U
+
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -154,7 +156,8 @@
      .			cat_constant, cat_file_rev,
      .			cat_const_var,   cat_string,
      .                  cat_counter_var, cat_attrib_val,
-     .                  cat_agg_e_var, cat_agg_f_var, cat_ef_time2d
+     .                  cat_agg_e_var, cat_agg_f_var, cat_ef_time2d,
+     .                  cat_agg_u_var
 	PARAMETER     ( cat_work_mr  = -9,
      .			cat_file_var = 1,
      .			cat_user_var = 3,
@@ -171,7 +174,8 @@
      .			cat_attrib_val = 14,
      .			cat_agg_e_var  = 15,
      .			cat_agg_f_var  = 16,
-     .			cat_ef_time2d  = 17 )
+     .			cat_ef_time2d  = 17,
+     .			cat_agg_u_var  = 18 )
 
 * codes referring to the user-defined variables
 	INTEGER		uvar_deleted,

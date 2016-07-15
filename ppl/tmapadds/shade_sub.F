@@ -104,6 +104,7 @@ C V602 *acm* 2/07 check status coming out of CURV_COORD_RANGE; part of fix to bu
 * V603 *acm* 5/07 Fix part 1 of bug 1302; if xmodulo is true, then set dim1_modulo true.
 * V6.8 *acm* 7/9/2012 For batch graphics on RHEL6, change ITS_BATCH_GRAPHICS
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
+* V701 *acm* 7/17 ticket 2451: cellarray plots with axis direction reversed by /VLIM or /HLIM
 
 	INCLUDE		'parampl5_dat.decl'
 	INCLUDE		'PARAMPL5.DAT'
@@ -310,7 +311,11 @@ c*       side from xeq_shade.
 * color map, either the first plot on the page, or if a PPL SHASET RESET has 
 * been issued.
 
-      do_cell = use_cell .AND. (lo_color_ndx(wsid).EQ.num_line_colors+1)
+* For ticket 2451: When the axes are reversed, the cellarray call draws nothing.
+* Also refuse to make the call in this case.
+
+      do_cell = use_cell .AND. (lo_color_ndx(wsid).EQ.num_line_colors+1) .AND. 
+     .    xinv.EQ.1 .AND. yinv.EQ.1
 
       IF (do_cell) THEN
       

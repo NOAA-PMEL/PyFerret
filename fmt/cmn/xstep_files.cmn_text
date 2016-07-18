@@ -8,6 +8,7 @@
 *             path names
 * v5.81 *acm* 4/2005  Add sf_ndxs and sf_ndxe to use indices rather than timesteps
 *                     for indexing mc datasets in mc_read.
+* V701  7/16 *kms* sf_name and vf_name increased to CHARACTER*2048 to match ds_name and s_filename
 
 	COMMON /XSTEP_FILES/
      .				sf_name   	(maxstepfiles),	! names of 'em
@@ -39,7 +40,7 @@
 	LOGICAL*1	sf_valid,sf_regvars,sf_regtimes,
      .			sf_compress
 
-	CHARACTER*512	vf_name(maxvarfiles)         ! ???same as s_filename in descript.def
+	CHARACTER*2048  vf_name(maxvarfiles)         ! ???same as s_filename in descript.def
 	CHARACTER*23	vf_index(maxvarfiles)
 	INTEGER		vf_setnum(maxvarfiles),vf_firstvar,
      .			vf_lastvar,vf_skip(maxvarfiles),

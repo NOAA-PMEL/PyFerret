@@ -49,13 +49,14 @@
 *			   tmap_dset.parm contains an ifdef
 * v581 *acm* 4/2005  Add sf_ndxs and sf_ndxe to use indices rather than timesteps
 *                     for indexing mc datasets in mc_read.
+* V701  7/16 *kms* Initialize sf_name with maxstepfile*char_init2048
 
 #include "tmap_dset.parm"		
 	include 'tmap_dims.parm'
 	include 'xstep_files.cmn_text'
 
 
-	DATA	sf_name			/maxstepfiles*char_init512/
+	DATA	sf_name			/maxstepfiles*char_init2048/
 	DATA	sf_setnum		/maxstepfiles*set_not_open/
 	DATA	sf_aux_set_num		/maxstepfiles*set_not_open/
 	DATA	sf_nrecperstep		/maxstepfiles*int4_init/

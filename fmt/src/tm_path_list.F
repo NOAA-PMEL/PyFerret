@@ -79,6 +79,7 @@
 *                    in descript.def
 * v5.42 10/02 *kob* - Increase size of temp_fname to 512
 * V6.04  7/07 *acm* - increase size of dataset names to 1024. 
+* V701  7/16 *kms*  - increase size of dataset names to 2048
 
 
 * calling argument declarations:
@@ -91,15 +92,15 @@
 * local variable declarations
       LOGICAL TM_F7721BUG_INQUIRE   ! temporary bug fix for f772.1
       INTEGER slen
-      PARAMETER ( slen = 1024)
+      PARAMETER ( slen = 2048 )
       INTEGER TM_LENSTR1, TM_LENSTR
       INTEGER start, end, plen, flen, len_pbuff, postslash, i
       INTEGER tilde, tilde_len, dot,path_len,lext           
       INTEGER vers_int,vers_len,end_tilde,path_tries
       LOGICAL file_exist,pos_ver,zero_ver
       LOGICAL relative, dot_next_to_tilde, retry_ext
-      CHARACTER  ext*8, path_buff*1024,suffix*16,TM_LEFINT*8
-      CHARACTER  tilde_buff*8,vers_no*8,temp_fname*1024
+      CHARACTER  ext*8, path_buff*(slen),suffix*16,TM_LEFINT*8
+      CHARACTER  tilde_buff*8,vers_no*8,temp_fname*(slen)
 
 	
 *

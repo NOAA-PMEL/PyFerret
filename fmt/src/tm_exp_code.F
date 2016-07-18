@@ -60,6 +60,7 @@
 * v540 *acm* 10/01  remove VMS include statements
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
 * V65  *acm* 2/10- all warnings and notes to std error not std out
+* V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
 
 *  Argument definitions
 	INTEGER*4	ds_num
@@ -83,7 +84,7 @@
 	temp_code(1:6) = ' '
 
 *  Is the requested data set initialized?
-	IF (ds_name(ds_num) .EQ. char_init1024) GOTO 9000
+	IF (ds_name(ds_num) .EQ. char_init2048) GOTO 9000
 
 *  If data set type is 'GT' then check for burst experiment
 * add a check for model runs using MOM (new, vibrant cray code) 4/92 kob

@@ -80,6 +80,7 @@
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V694 1/15 *acm* variable coordvar should be a logical not an integer
 * V701 7/16 *acm* ticket 2450. add date-time and euro-date-time field types
+* V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
 
 	CHARACTER*4	ez_rev
 	CHARACTER*1	tab
@@ -113,8 +114,8 @@
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xstep_files.cmn_text'
-	external xstep_files_data
-	include 'xez_info.cmn_text'
+        external xstep_files_data
+        include 'xez_info.cmn_text'
 	external xez_info_data
         include 'netcdf.inc'
 
@@ -134,7 +135,7 @@
 *
 * Assign data set number, exiting if maximum number of data sets are open
 	DO 100 set_cnt = 1,maxdsets
-	  IF (ds_name(set_cnt) .EQ. char_init1024) THEN
+	  IF (ds_name(set_cnt) .EQ. char_init2048) THEN
 	    dset = set_cnt
 	    ds_des_name(dset) = filename
 * Parse input line to obtain just filename without directory or extension

@@ -1,5 +1,5 @@
 #
-# platform_specific_includes.mk.i486-linux
+# platform_specific_flags.mk.x86_64-darwin
 #
 # This file is included in other Makefiles and defines
 # platform specific macros

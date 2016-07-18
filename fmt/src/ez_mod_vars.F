@@ -58,6 +58,7 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V68  *acm* 1/12 The variables should be declared REAL (conversion to double prec.)
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
 
 * Arguments:
 *	dset	- data set number
@@ -97,7 +98,7 @@
 * Local definitions
 *
 * Does data set exist?
-	IF (ds_name(dset) .EQ. char_init1024) GOTO 9100
+	IF (ds_name(dset) .EQ. char_init2048) GOTO 9100
 *
 * Defining variable title?
 	IF ( title .NE. char_init80 ) THEN

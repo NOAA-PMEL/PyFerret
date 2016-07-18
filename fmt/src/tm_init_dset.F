@@ -112,6 +112,7 @@
 * V693+ *sh* 12/14 added blank separator into error message 5600
 * V695+ *sh* 11/15 for DEF DATA/AGG/T added argument ok_re_use_existing
 *	           and check for existence of dataset from the get-go
+* V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -354,7 +355,7 @@
 
 * Assign data set number, exiting if maximum number of data sets are open
 	DO 110 set_cnt = 1,maxdsets
-	  IF (ds_name(set_cnt) .EQ. char_init1024) THEN
+	  IF (ds_name(set_cnt) .EQ. char_init2048) THEN
 	    dset_num = set_cnt
 	    ds_des_name(dset_num) = des_name
             ds_name(dset_num) = TM_CLEAN_FILENAME( dset_name )

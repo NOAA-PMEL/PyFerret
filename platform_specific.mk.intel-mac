@@ -67,11 +67,13 @@
 			  -ffpe-trap=overflow -fimplicit-none \
 			  -fdefault-real-8 -fdefault-double-8 $(FINCLUDES)
 
-#	PROF_FLAGS	= -pg
-	PROF_FLAGS	= 
+	OPT_FLAGS	= -O -DNDEBUG
+	PPLUS_OPT_FLAGS	= -O0
+	DBG_FLAGS	= -O0 -g
+	PROF_FLAGS	= -O0 -g
 
 	LD		= $(shell which gfortran-6)
-	LDFLAGS		= -fPIC -static-libgfortran
+	LDFLAGS		= -fPIC -static-libgfortran -static-libgcc
 
 	SYSLIB		= -L/usr/X11R6/lib -lX11 \
 			  -lcurl \

@@ -71,7 +71,10 @@
 			  -fimplicit-none \
 			  -fdefault-real-8 -fdefault-double-8 $(FINCLUDES)
 
-        # PROF_FLAGS	= -pg
+	OPT_FLAGS	= -O -DNDEBUG
+	PPLUS_OPT_FLAGS	= -O -DNDEBUG
+	DBG_FLAGS	= -O0 -g
+	PROF_FLAGS	= -O0 -g -pg
 
 	# Below this line are macro definitions used only for the final linking of the executable
 	#

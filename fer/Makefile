@@ -99,40 +99,40 @@ build: update fmt_libraries fer_libraries ppl_libraries special_code ferret
 .PHONY: ncdf4
 ncdf4:
 	mkdir -p ../lib
-	$(MAKE) "CFLAGS=$(CFLAGS) -O -DNDEBUG" \
-		"FFLAGS=$(FFLAGS) -O -DNDEBUG" \
-		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O" \
-		"DEBUG_TITLE = opt" \
+	$(MAKE) "CFLAGS=$(CFLAGS) $(OPT_FLAGS)" \
+		"FFLAGS=$(FFLAGS) $(OPT_FLAGS)" \
+		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(PPLUS_OPT_FLAGS)" \
+		"DEBUG_TITLE = optimized" \
 		"GUI_FAKES=special/gui_fakes.o" \
 		build
 
 .PHONY: beta
 beta:
 	mkdir -p ../lib
-	$(MAKE) "CFLAGS=$(CFLAGS) -O -DNDEBUG" \
-		"FFLAGS=$(FFLAGS) -O -DNDEBUG" \
-		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O" \
-		"DEBUG_TITLE = beta/opt" \
+	$(MAKE) "CFLAGS=$(CFLAGS) $(OPT_FLAGS)" \
+		"FFLAGS=$(FFLAGS) $(OPT_FLAGS)" \
+		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(PPLUS_OPT_FLAGS)" \
+		"DEBUG_TITLE = beta/optim" \
 		"GUI_FAKES=special/gui_fakes.o" \
 		build
 
 .PHONY: debug
 debug:
 	mkdir -p ../lib
-	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g"  \
-		"FFLAGS = $(FFLAGS) -O0 -g -fbounds-check" \
-		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O0 -g" \
-		"DEBUG_TITLE = beta/dbg" \
+	$(MAKE) "CFLAGS = $(CFLAGS) $(DBG_FLAGS)"  \
+		"FFLAGS = $(FFLAGS) $(DBG_FLAGS) -fbounds-check" \
+		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(DBG_FLAGS)" \
+		"DEBUG_TITLE = beta/debug" \
 		"GUI_FAKES=special/gui_fakes.o" \
 		build
 
 .PHONY: profiling
 profiling:
 	mkdir -p ../lib
-	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g $(PROF_FLAGS) "  \
-		"FFLAGS = $(FFLAGS) -O0 -g $(PROF_FLAGS) -fbounds-check" \
-		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O0 -g $(PROF_FLAGS)" \
-		"LDFLAGS = $(PPLUS_FFLAGS) $(PROF_FLAGS)" \
+	$(MAKE) "CFLAGS = $(CFLAGS) $(PROF_FLAGS) "  \
+		"FFLAGS = $(FFLAGS) $(PROF_FLAGS) -fbounds-check" \
+		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(PROF_FLAGS)" \
+		"LDFLAGS = $(LDFLAGS) $(PROF_FLAGS)" \
 		"DEBUG_TITLE = profiling" \
 		"GUI_FAKES=special/gui_fakes.o" build
 

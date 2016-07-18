@@ -58,6 +58,11 @@ CPP_FLAGS       = $(INCLUDES) -P -Dunix -DFORTRAN_90 \
 		  -DFULL_GUI_VERSION \
 		  -DXT_CODE
 
+OPT_FLAGS	= -O -DNDEBUG
+PPLUS_OPT_FLAGS	= -O0
+DBG_FLAGS	= -O0 -g
+PROF_FLAGS	= -O0 -g
+
 # Below this line are macro definitions used only for the final linking of the executable
 #
 

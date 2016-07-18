@@ -95,6 +95,10 @@
 			  -ffixed-line-length-132 \
 			  $(FINCLUDES)
 
+	OPT_FLAGS	= -O -DNDEBUG
+	PPLUS_OPT_FLAGS	= -O -DNDEBUG
+	DBG_FLAGS	= -O0 -g
+	PROF_FLAGS	= -O0 -g
 
 	# Below this line are macro definitions used only for the final linking of the executable
 	# specify gfortran library. With gfortran 4.4, ssee notews in the i386-linux platform

@@ -108,6 +108,7 @@
 *                  variables, pre-defined axes and grids, cat_calc_var.
 * V680 *acm* 5/16  Fix ticket 2366, putting the subspan void point and modulo
 *                  replications before transformations.
+* V7   5/12 *acm* Union aggregations: DEFINE DATA/AGG/U
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -437,6 +438,10 @@
 	   CALL IS_STRIP( isact_class_aggregate_gather, f_dim, *10, status )
 	   GOTO 5000
 	ENDIF
+ 	IF ( cat .EQ. cat_agg_u_var ) THEN
+	   CALL IS_STRIP( isact_class_union_member, no_dim, *10, status )
+	   GOTO 5000
+	ENDIF
 
 * ... reduce algebraic expression to its components ?
 
@@ -586,6 +591,8 @@ c	   GOTO 5000
 	      CALL IS_GATHER( memory, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_aggregate_gather	) THEN
 	      CALL IS_AGGREGATE_GATHER( memory, *10, *2500, status )
+	   ELSEIF ( act .EQ. isact_get_union_member	) THEN
+	      CALL IS_UNION_MEMBER( memory, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_sample		) THEN
 	      CALL IS_SAMPLE( memory, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_interp		) THEN

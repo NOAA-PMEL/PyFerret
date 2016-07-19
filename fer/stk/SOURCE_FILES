@@ -56,6 +56,7 @@ is_strip.F\
 is_subspan_fill.F\
 is_sample.F\
 is_trans.F\
+is_union_member.F\
 is_uvar_grid.F\
 its_auto_curvi.F\
 known_grid.F\

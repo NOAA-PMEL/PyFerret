@@ -38,6 +38,8 @@
 * Subroutine opens an EZ data set (ASCII and unformatted non_TMAP data files) 
 * and returns a count count the records in the datset, minus the number of 
 * records skipped. Addressing ticket 2182.
+*
+* V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
 * 
 
 * Arguments:
@@ -83,7 +85,7 @@
         REAL		buff
 
 * Does data set exist?
-	IF (ds_name(dset) .EQ. char_init1024) GOTO 9300
+	IF (ds_name(dset) .EQ. char_init2048) GOTO 9300
 *
 * Locate Step file entry
 	DO 10 sfcnt = 1,maxstepfiles
@@ -132,7 +134,7 @@
 * calculate RECL in longwords for unformatted (if not open)             
           IF (.NOT. file_open .AND. unformatted )
      .	                         sf_reclen(sfcnt) = sf_reclen(sfcnt)/4
-        ENDIF                                                              
+        ENDIF
 *
 * get free VMS logical unit #   
 	CALL LIB_GET_LUN (lunit)

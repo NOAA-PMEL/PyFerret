@@ -130,6 +130,7 @@
 * V698 *acm* 1/16 Allow for Epic CDF files, ds_type = 'ECDF'
 * V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
 *                  added to that dataset in the attribute structure
+* V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
 
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -298,7 +299,7 @@
         IF (dset .GT. pdset_irrelevant) THEN
           IF (ds_type(dset).EQ.'CDF' .OR. ds_type(dset).EQ.'ECDF' 
      .        .OR. ds_type(dset).EQ.' MC' .OR. ds_type(dset).EQ.'ENS' 
-     .        .OR. ds_type(dset).EQ.'FCT')
+     .        .OR. ds_type(dset).EQ.'FCT' .OR. ds_type(dset).EQ.'UNI')
      .       CALL CDF_LIST_GLOBAL_ATTS (dset, cdfid, status)
         ENDIF
         dset_last = dset
@@ -318,7 +319,8 @@
                  IF (ds_type(dset) .EQ. 'CDF' .OR. 
      .               ds_type(dset) .EQ. ' MC' .OR. 
      .               ds_type(dset) .EQ. 'ENS' .OR. 
-     .               ds_type(dset) .EQ. 'FCT')
+     .               ds_type(dset) .EQ. 'FCT' .OR. 
+     .               ds_type(dset) .EQ. 'UNI')
      .          CALL CDF_LIST_GLOBAL_ATTS (dset, cdfid, status)
               ENDIF
               dset_last = dset

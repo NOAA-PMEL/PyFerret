@@ -46,7 +46,7 @@
 * programmer - steve hankin
 * V695 *sh* 1/16
 * V698  3/16 *acm* Remove unneeded xdset_parms.cmn
-
+* V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -79,7 +79,8 @@
 	DO iset = 1, maxdsets
 	   IF ( ds_name(iset) .EQ. char_init1024) CYCLE
 	   IF (iset .EQ. dset) CYCLE
-	   IF ( ds_type(iset).NE.'ENS' .AND. ds_type(iset).NE.'FCT') CYCLE 
+	   IF ( ds_type(iset).NE.'ENS' .AND. ds_type(iset).NE.'FCT' 
+     .		.AND. ds_type(iset).NE.'UNI') CYCLE 
 
 * Get number of agg members in this one
 	   CALL CD_GET_AGG_DSET_INFO (iset, nmemb, status)

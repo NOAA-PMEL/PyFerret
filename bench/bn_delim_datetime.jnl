@@ -1,0 +1,56 @@
+! bn_delim_datetime.jnl
+! ACM 7/2016
+!
+! Tickets 2448, 2449, 2450: Improvements to date reading in delimited files.
+! New: date/time fields for US and European style dates.
+! Also report incorrect date/time spec (causes months out of range)
+! and put 2-digit years prior to 50 in the 21st century. (prev. cutoff was year 20)
+! 
+
+! File contains index,euro-date-time, us-date-time, us-date, eurodate
+! The years in variables 3 and 4 are 2-digit years after year 2020.
+
+columns/skip=3/var="index,edtim,udtim,udate,edate"/type="num,edatime,datime,date,eurodate" delim_datetime.csv
+sh dat
+list index,edtim,udtim,udate,edate
+
+! axis January 2014
+define axis/t/t0=1-jan-1900/units=days timax = edtim
+sh axis/t timax
+
+! time axis in 1991
+define axis/t/t0=1-jan-1900/units=days timax = edate
+sh axis/t timax
+
+! time axis in 2020 - 2024
+define axis/t/t0=1-jan-1900/units=days timax = udtim
+sh axis/t timax
+
+! time axis in 1995 - 2035
+define axis/t/t0=1-jan-1900/units=days timax = udate
+sh axis/t timax
+
+
+! Intentional errors, specifying the wrong date field type (catches the first error)
+! The error is found upon reading the file.
+
+set mode ignore
+can dat/all
+columns/skip=3/var="index,edtim,udtim,udate,edate"/type="num,datime,datime,date,date" delim_datetime.csv
+list index,edtim,udtim,udate,edate
+
+can dat/all
+columns/skip=3/var="index,edtim,udtim,udate,edate"/type="num,edatime,edatime,date,eurodate" delim_datetime.csv
+list index,edtim,udtim,udate,edate
+
+can dat/all
+columns/skip=3/var="index,edtim,udtim,udate,edate"/type="num,edatime,datime,eurodate,date" delim_datetime.csv
+list index,edtim,udtim,udate,edate
+
+can dat/all
+columns/skip=3/var="index,edtim,udtim,udate,edate"/type="num,edatime,datime,date,date" delim_datetime.csv
+list index,edtim,udtim,udate,edate
+
+set mode/last ignore
+
+

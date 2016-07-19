@@ -44,6 +44,7 @@
 *
 * V695 *sh* 1/16 - bulk of logic moved to CANCEL_ONE_DATA_SET 
 * V698  3/16 *acm* Remove unneeded xdset_parms.cmn
+* V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
 
 * calling arguments
 *  dset      -  (input) dataset number to be closed
@@ -91,7 +92,8 @@
 
 * if this dataset is an aggregation, cancel hidden member datasets, too
 * unless they are also members in some other aggregation
-	IF (ds_type(dset).EQ.'ENS' .OR. ds_type(dset).EQ.'FCT') THEN
+	IF (ds_type(dset).EQ.'ENS' .OR. ds_type(dset).EQ.'FCT' 
+     .      .OR. ds_type(dset).EQ.'UNI') THEN
 
 * ... loop over aggregation members
 	   CALL CD_GET_AGG_DSET_INFO (dset, nmemb, status)

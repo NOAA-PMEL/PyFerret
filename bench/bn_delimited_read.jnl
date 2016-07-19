@@ -53,6 +53,8 @@ cancel data/all
 ! file using blank as a delimiter
 ! Note record 1 has blanks at end of record
 ! Note record of many blanks sandwiched in as record 2
+! (note prev. to 7/13/2016 the file had incorrect date formats with the year first.
+!  File replaced so it can be read after the fix for ticket 2449.)
 file/form=delimited bn_delimited_read_2.dat
 show data
 file/form=delimited/delimiter=" " bn_delimited_read_2.dat

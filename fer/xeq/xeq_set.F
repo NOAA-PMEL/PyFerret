@@ -194,6 +194,7 @@
 *                  added to that dataset in the attribute structure.
 * V698  4/16 *acm* For ticket 2399: Apply MODE CALENDAR settings to F axes too
 * V7    5/16 *acm* See ticket 2352. For LET/D variables look for info under that dataset
+* V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -1299,7 +1300,8 @@ c *kob* 4/97
                     IF (ds_grid_number(i) .EQ. igrd) THEN 
 		       is_nc = (ds_type(ds_var_setnum(i)).EQ.'CDF') .OR.
      .                         (ds_type(ds_var_setnum(i)).EQ.'ENS') .OR.
-     .                         (ds_type(ds_var_setnum(i)).EQ.'FCT')
+     .                         (ds_type(ds_var_setnum(i)).EQ.'FCT') .OR.
+     .                         (ds_type(ds_var_setnum(i)).EQ.'UNI')
                        IF (.NOT. is_nc)  
      .                   GOTO 6088
                     ENDIF

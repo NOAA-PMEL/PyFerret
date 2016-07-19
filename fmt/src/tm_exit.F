@@ -40,6 +40,7 @@
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm* 10/01  remove VMS include statements
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
+* V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
 
 	include 'tmap_errors.parm'	! error code parameter defs
 #include "tmap_dset.parm"
@@ -55,7 +56,7 @@
 
 * loop over all data sets
 	DO 500 ds_num = 1, maxdsets
-	   IF (ds_name(ds_num) .EQ. char_init1024) GOTO 500
+	   IF (ds_name(ds_num) .EQ. char_init2048) GOTO 500
 
 * save the data format
            its_cdf = ds_type(ds_num) .EQ. 'CDF'

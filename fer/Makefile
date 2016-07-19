@@ -36,26 +36,35 @@ all: optimized
 
 .PHONY : optimized
 optimized:
-	$(MAKE) "CFLAGS = $(CFLAGS) -O -DNDEBUG" \
-		"FFLAGS = $(FFLAGS) -O -DNDEBUG" \
-		"VERSION_INFO = (opt)" \
-		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O -DNDEBUG" \
+	$(MAKE) "CFLAGS = $(CFLAGS) $(OPT_FLAGS)" \
+		"FFLAGS = $(FFLAGS) $(OPT_FLAGS)" \
+		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(PPLUS_OPT_FLAGS)" \
+		"VERSION_INFO = (optimized)" \
 		build
 
 .PHONY : beta
 beta:
-	$(MAKE) "CFLAGS = $(CFLAGS) -O -DNDEBUG" \
-		"FFLAGS = $(FFLAGS) -O -DNDEBUG" \
-		"VERSION_INFO = (beta/opt)" \
-		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O -DNDEBUG" \
+	$(MAKE) "CFLAGS = $(CFLAGS) $(OPT_FLAGS)" \
+		"FFLAGS = $(FFLAGS) $(OPT_FLAGS)" \
+		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(PPLUS_OPT_FLAGS)" \
+		"VERSION_INFO = (beta/optim)" \
 		build
 
 .PHONY : debug
 debug:
-	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" \
-		"FFLAGS = $(FFLAGS) -O0 -g -fbounds-check" \
-		"VERSION_INFO = (beta/dbg)" \
-		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O0 -g" \
+	$(MAKE) "CFLAGS = $(CFLAGS) $(DBG_FLAGS)"  \
+		"FFLAGS = $(FFLAGS) $(DBG_FLAGS) -fbounds-check" \
+		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(DBG_FLAGS)" \
+		"VERSION_INFO = (beta/debug)" \
+		build
+
+.PHONY: profiling
+profiling:
+	$(MAKE) "CFLAGS = $(CFLAGS) $(PROF_FLAGS) "  \
+		"FFLAGS = $(FFLAGS) $(PROF_FLAGS) -fbounds-check" \
+		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(PROF_FLAGS)" \
+		"LDFLAGS = $(LDFLAGS) $(PROF_FLAGS)" \
+		"VERSION_INFO = (profiling)" \
 		build
 
 .PHONY : build

@@ -43,6 +43,7 @@
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 * V695 *acm*  9/15 Fix #2317: length of name sent to FIND_DSET_NUMBER
 * V698 *sh* 1/16 Removed "Ferret-defined" annotation
+* V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -149,6 +150,10 @@
 	   ENDIF
 	   IF ( TM_HAS_STRING(ds_type(iset), 'FCT') ) THEN
 	      default = default(:len0)//'  Forecast aggregation'
+	      len0 = TM_LENSTR1( default )
+	   ENDIF
+	   IF ( TM_HAS_STRING(ds_type(iset), 'UNI') ) THEN
+	      default = default(:len0)//'  Union aggregation'
 	      len0 = TM_LENSTR1( default )
 	   ENDIF
 	   ENDIF

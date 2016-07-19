@@ -67,6 +67,8 @@
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
 * v695+ *sh* 5/15 initialize new ds_var_c_cache_ptr
 * v698 *sh* 12/15 declare larger dset arrays: maxdsets ==> pdsetalloc
+* V701  7/16 *kms* Initialize ds_name and ds_des_name to pdsetalloc*char_init2048 
+*                  instead of pdsetalloc*char_init1024
 
 #include "tmap_dset.parm"		
 	include 'tmap_dims.parm'		! parameter definitions
@@ -107,8 +109,8 @@
 	DATA	ds_alert_on_output	/pdsetalloc*.FALSE./
 	DATA	ds_message		/pdsetalloc*char_init80/
 ********************************************************************************
-	DATA	ds_des_name		/pdsetalloc*char_init1024/
-	DATA	ds_name			/pdsetalloc*char_init1024/
+	DATA	ds_des_name		/pdsetalloc*char_init2048/
+	DATA	ds_name			/pdsetalloc*char_init2048/
 	DATA	ds_1step		/pdsetalloc*real8_init/
 	DATA	ds_lastep		/pdsetalloc*real8_init/
 	DATA	ds_delstep		/pdsetalloc*real8_init/

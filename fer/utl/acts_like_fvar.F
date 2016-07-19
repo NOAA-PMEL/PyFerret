@@ -36,6 +36,7 @@
 * return TRUE for any variable category that stores its info in XDSET_INFO
 
 * V698 3/16 *sh* to accommodate added logic of cat_ef_time2d
+* V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
 
 
       include 'ferret.parm'
@@ -47,6 +48,7 @@
      .              .OR. category.EQ.cat_agg_e_var
      .              .OR. category.EQ.cat_agg_f_var
      .              .OR. category.EQ.cat_ef_time2d
+     .              .OR. category.EQ.cat_agg_u_var
 
       RETURN
       END

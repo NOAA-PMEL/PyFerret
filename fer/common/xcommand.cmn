@@ -59,6 +59,7 @@
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U
 
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
@@ -310,7 +311,7 @@
      .			nqual10h = 2, nqual_at10i = nqual_at10h + nqual10h,!SYMB
      .			nqual10i = 4, nqual_at10j = nqual_at10i + nqual10i,!ATTR
      .			nqual10j = 2, nqual_at10k = nqual_at10j + nqual10j,!PYFUNC
-     .			nqual10k =10, nqual_at10l = nqual_at10k + nqual10k, !DATA
+     .			nqual10k =14, nqual_at10l = nqual_at10k + nqual10k,!DATA
      .			nqual10l =10, nqual_at11a = nqual_at10l + nqual10l !ANNOTATION
      .		      )
 * EXIT		 - commmand # 11
@@ -444,7 +445,7 @@
      .			total_num_commands	= 30,
      .			total_num_subcommands	= nsub_at31 - 1,
      .			total_num_qualifiers	= nqual_at31a - 1,
-     .	                num_predefined_alias    = 25,
+     .	                num_predefined_alias    = 26,
      .			max_queries		= 50 )
 
 * declarations

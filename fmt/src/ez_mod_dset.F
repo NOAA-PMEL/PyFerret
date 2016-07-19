@@ -50,6 +50,7 @@
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V685+ 12/13 *acm* 6D Ferret: passed-in array had fixed dimensino of 4
+* V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
 
 * Arguments:
 *	dset	- data set number
@@ -79,7 +80,7 @@
 	INTEGER*4	vcnt, scnt
 *
 * Does data set exist?
-	IF (ds_name(dset) .EQ. char_init1024) GOTO 9000
+	IF (ds_name(dset) .EQ. char_init2048) GOTO 9000
 *
 * Defining title?
 	IF (title .NE. char_init1024) ds_title(dset) = title

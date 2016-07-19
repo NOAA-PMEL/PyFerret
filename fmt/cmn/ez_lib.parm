@@ -7,6 +7,8 @@
 * 2/95 *sh* increased maxezvars from 10 to 20
 * V530 - 10/00 *sh* ==> added field type parameters for delimited reads
 *		        and maxezfreefmtvars
+* V710 -  7/16*acm*     Add DATIME and EuroDate (same changes in ez_delimited_read.h)
+* V701    7/16 *acm*   ticket 2450: add date-time and euro-date-time field types
 
 * EZ lib parameters
 	INTEGER*4	maxezvars, maxezinput, maxezfreefmtvars
@@ -24,8 +26,10 @@
      .		FTYP_DATE,
      .		FTYP_EURODATE,
      .		FTYP_TIME,
-     .		FTYP_ANAL_MISSING
-	PARAMETER ( FTYP_NUM_TYPES = 8,
+     .		FTYP_ANAL_MISSING,
+     .		FTYP_DATIME,
+     .		FTYP_EDATIME
+	PARAMETER ( FTYP_NUM_TYPES = 10,
      .		FTYP_MISSING = 1,
      .		FTYP_NUMERIC = 2,
      .		FTYP_CHARACTER = 3,
@@ -34,5 +38,7 @@
      .		FTYP_DATE = 6,
      .		FTYP_EURODATE = 7,
      .		FTYP_TIME = 8,
+     .		FTYP_DATIME = 9,
+     .		FTYP_EDATIME = 10,
      .		FTYP_ANAL_MISSING = -FTYP_MISSING )
 

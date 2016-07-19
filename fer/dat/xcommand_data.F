@@ -1307,7 +1307,11 @@
 		DATA qualifiers  (nqual_at10k+ 6)/ 'F'    / ! f
 		DATA qualifiers  (nqual_at10k+ 7)/ 'TITLE' /
 		DATA qualifiers  (nqual_at10k+ 8)/ 'QUIET' /
-		DATA qualifiers  (nqual_at10k+ 9)/ 'HIDE' /	
+		DATA qualifiers  (nqual_at10k+ 9)/ 'HIDE' /
+		DATA qualifiers  (nqual_at10k+ 10)/ 'U' /	
+		DATA qualifiers  (nqual_at10k+ 11)/ '****' /	
+		DATA qualifiers  (nqual_at10k+ 12)/ '****' /	
+		DATA qualifiers  (nqual_at10k+ 13)/ '****' /		
 * DEFINE ANNOTATION
 	   DATA subcommands      (nsub_at10 + 11)/ 'ANNOTATION'	/
 	   DATA num_qualifs      (nsub_at10 + 11)/ nqual10l	/
@@ -1874,13 +1878,16 @@
      .		alias_name(25)	/ 'TSERIES' /,
      .		alias_len(25)	/ 22 /,
      .		alias(25)	/ 'DEFINE DATA/AGGREGAT/T' /
+     .		alias_name(26)	/ 'UNION' /,
+     .		alias_len(26)	/ 22 /,
+     .		alias(26)	/ 'DEFINE DATA/AGGREGAT/U' /
 
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)
-     .                   / 125*unspecified_name4 /,
-     .		(alias_len(i),i=num_predefined_alias+1,150) / 125*4 /,
+     .                   / 124*unspecified_name4 /,
+     .		(alias_len(i),i=num_predefined_alias+1,150) / 124*4 /,
      .		(alias(i),i=num_predefined_alias+1,150)
-     .                   / 125*unspecified_name4 /
+     .                   / 124*unspecified_name4 /
 
 
 	DATA queries(1) / 'STATUS' /,

@@ -42,6 +42,7 @@
 *
 * revision 0.00 - 08/14/89
 * V530 - 10/00 *sh* ==> added field type variable for delimited reads
+* V701 7/16 *acm* ticket 2450. add date-time and euro-date-time field types
 
 * COMMON/XEZ_INFO.....info for EZ_ data sets
 	include 'tmap_dims.parm'
@@ -59,5 +60,7 @@
      .       ftyp_name(6)/'DATE'/,
      .       ftyp_name(7)/'EURODATE'/,
      .       ftyp_name(8)/'TIME'/
+     .       ftyp_name(9)/'DATIME'/
+     .       ftyp_name(10)/'EDATIME'/
 
 	END

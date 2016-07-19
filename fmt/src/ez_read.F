@@ -78,6 +78,7 @@
 * V68  *acm* 1/12 The variables should be declared REAL (conversion to double prec.)
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V694 11/14 *acm* Ticket 2217: permuted ASCII reading in 6D
+* V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
 
 * Arguments:
 *	dset	- data set number
@@ -141,7 +142,7 @@
 
 
 * Does data set exist?
-	IF (ds_name(dset) .EQ. char_init1024) GOTO 9300
+	IF (ds_name(dset) .EQ. char_init2048) GOTO 9300
 *
 * Locate Step file entry
 	DO 10 sfcnt = 1,maxstepfiles
@@ -280,7 +281,7 @@
           IF (.NOT. file_open .AND. unformatted )
      .	                         sf_reclen(sfcnt) = sf_reclen(sfcnt)/4
 	  sf_valid(sfcnt) = .TRUE.      ! *sh* dset -> sfcnt 5/91
-        ENDIF                                                              
+        ENDIF
 *
 * get free VMS logical unit #   
 	CALL LIB_GET_LUN (lunit)

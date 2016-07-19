@@ -88,6 +88,7 @@
 * V698 *sh*  4/16  allow SET VARIABLE on agg dsets
 * V7   *acm* 5/16  Fix ticket 2432, see alsoticket 2352. For LET/D variables 
 *                  look for info under that dataset
+* V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -208,6 +209,7 @@
      .               TM_HAS_STRING(ds_type(dset), 'MC') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'ENS') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'FCT') .OR.
+     .               TM_HAS_STRING(ds_type(dset), 'UNI') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'GT')  )
 	   IF ( .NOT. ncfile ) GOTO 5700
 
@@ -229,6 +231,7 @@
      .               TM_HAS_STRING(ds_type(dset), 'MC') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'ENS') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'FCT') .OR.
+     .               TM_HAS_STRING(ds_type(dset), 'UNI') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'GT')  )
 	   IF ( .NOT. ncfile ) GOTO 5800
 

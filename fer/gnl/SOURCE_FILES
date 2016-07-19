@@ -26,6 +26,7 @@ ctrl_c.F\
 define_ef_aggregate_grid.F\
 define_special_grids.F\
 define_t_agg_mc_dset.F\
+define_u_aggregate_var.F\
 delete_one_line.F\
 do_query.F\
 dollar_arg.F\
@@ -35,7 +36,6 @@ equal_format.F\
 equal_permute.F\
 equal_str_lc.F\
 equal_string.F\
-equal_type.F\
 equal_val.F\
 equal_val_int.F\
 errmsg.F\
@@ -58,6 +58,7 @@ init_journal.F\
 init_memory.F\
 init_t_aggregate_dset.F\
 init_t_agg_mc_dset.F\
+init_u_aggregate_dset.F\
 initialize.F\
 is_agg_member.F\
 isit_const_arr_var.F\

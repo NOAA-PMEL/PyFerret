@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Jul 11 17:03 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Jul 19 12:14 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -280,6 +280,8 @@ Benchmark scripts that will be run:
    bn_auto_tprec.jnl
    bn_coordvars_atts.jnl
    bn710_bug_fixes.jnl
+   bn_delim_datetime.jnl
+   bn_aggregate_u.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
@@ -295,7 +297,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Mon Jul 11 17:03:23 PDT 2016
+Beginning at Tue Jul 19 12:14:58 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -1304,14 +1306,14 @@ list/nohead MAX("a",{"a","b","c"})
 Replacing definition of axis TAX
 Replacing definition of grid G1
  **TMAP ERR: syntax error in string
-             Unrecognized field type: D
+             Unrecognized field type: DA2
              Data set: ./bn_delimited_read_date_time.dat
-           *** NOTE: Valid types are: -,NUMERIC,TEXT,LATITUDE,LONGITUDE,DATE,EURODATE,TIME
+           *** NOTE: Valid types are: -,NUMERIC,TEXT,LATITUDE,LONGITUDE,DATE,EURODATE,TIME,DATIME,EDATIME
 SET DATA/FORM=delimited/type="d, da2,date2"  bn_delimited_read_date_time.dat
  **TMAP ERR: syntax error in string
              Unrecognized field type: DATE2
              Data set: ./bn_delimited_read_date_time.dat
-           *** NOTE: Valid types are: -,NUMERIC,TEXT,LATITUDE,LONGITUDE,DATE,EURODATE,TIME
+           *** NOTE: Valid types are: -,NUMERIC,TEXT,LATITUDE,LONGITUDE,DATE,EURODATE,TIME,DATIME,EDATIME
 SET DATA/FORM=delimited/type="da,da, date2"  bn_delimited_read_date_time.dat
  **ERROR: command syntax: ,,:
 SET DATA/EZ/form=delim/delim="/,,,:" bn_delimited_read_date_time.dat
@@ -4586,6 +4588,46 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
+*** Running ferret script: bn_delim_datetime.jnl
+ Cached data cleared from memory
+Replacing definition of axis TIMAX
+Replacing definition of axis TIMAX
+Replacing definition of axis TIMAX
+ **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable    2
+list index,edtim,udtim,udate,edate
+ **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable    3
+list index,edtim,udtim,udate,edate
+ **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable    4
+list index,edtim,udtim,udate,edate
+ **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable    5
+list index,edtim,udtim,udate,edate
+*** Running ferret script: bn_aggregate_u.jnl
+ Cached data cleared from memory
+ LISTing to file tmp/uagg_1.nc
+ LISTing to file tmp/uagg_2.nc
+ LISTing to file tmp/uagg_3.nc
+ LISTing to file tmp/uagg_4.nc
+ LISTing to file tmp/uagg_1_t1.nc
+ LISTing to file tmp/uagg_1_t2.nc
+ LISTing to file tmp/uagg_1_t3.nc
+ LISTing to file tmp/f01_e1_tu1.nc
+ LISTing to file tmp/f01_e1_tu2.nc
+ LISTing to file tmp/f01_e1_tu3.nc
+ LISTing to file tmp/f01_e2_tu1.nc
+ LISTing to file tmp/f01_e2_tu2.nc
+ LISTing to file tmp/f01_e2_tu3.nc
+ LISTing to file tmp/f02_e1_tu1.nc
+ LISTing to file tmp/f02_e1_tu2.nc
+ LISTing to file tmp/f02_e1_tu3.nc
+ LISTing to file tmp/f02_e2_tu1.nc
+ LISTing to file tmp/f02_e2_tu2.nc
+ LISTing to file tmp/f02_e2_tu3.nc
+ LISTing to file tmp/f03_e1_tu1.nc
+ LISTing to file tmp/f03_e1_tu2.nc
+ LISTing to file tmp/f03_e1_tu3.nc
+ LISTing to file tmp/f03_e2_tu1.nc
+ LISTing to file tmp/f03_e2_tu2.nc
+ LISTing to file tmp/f03_e2_tu3.nc
 *** Running ferret script: bn_gif.jnl
  Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
@@ -4741,4 +4783,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testfermethods.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Mon Jul 11 17:05:26 PDT 2016
+Ended at Tue Jul 19 12:17:00 PDT 2016

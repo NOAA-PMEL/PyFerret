@@ -119,6 +119,7 @@
 *  V698  4/16 *acm* When checking for dimension-only, this applies to file axes only.
 *  V698  5/16 *acm* Fix ticket 2415: write attributes using the requested data type
 *                   Routine CD_WRITE_ATTVAL_DP converts to the specified type.
+* V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -210,7 +211,7 @@
       IF (dset .LE. 0) THEN
          buff2  = name
          DO 50 iset = 1, maxdsets
-	    IF (ds_name(iset) .NE. char_init1024) THEN
+	    IF (ds_name(iset) .NE. char_init2048) THEN
 	       CALL CD_GET_VAR_ID (iset, buff2, varid, status)
 	       IF (status .EQ. merr_ok) THEN
 	          dset_num = iset

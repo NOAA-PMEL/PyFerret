@@ -302,7 +302,11 @@ c*       side from xeq_shade.
 * color map, either the first plot on the page, or if a PPL SHASET RESET has 
 * been issued.
 
-      do_cell = use_cell .AND. (lo_color_ndx(wsid).EQ.num_line_colors+1)
+* For ticket 2451: When the axes are reversed, the cellarray call draws nothing.
+* Also refuse to make the call in this case.
+
+      do_cell = use_cell .AND. (lo_color_ndx(wsid).EQ.num_line_colors+1) .AND. 
+     .    xinv.EQ.1 .AND. yinv.EQ.1
 
       IF (do_cell) THEN
       

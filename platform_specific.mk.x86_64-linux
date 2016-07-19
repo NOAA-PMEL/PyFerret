@@ -102,6 +102,11 @@ endif
 	PPLUS_FFLAGS	= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC -fno-automatic -fdollar-ok \
 			  -ffixed-line-length-132 -fno-second-underscore -fno-backslash
 
+	OPT_FLAGS	= -O -DNDEBUG
+	PPLUS_OPT_FLAGS	= -O -DNDEBUG
+	DBG_FLAGS	= -O0 -g
+	PROF_FLAGS	= -O0 -g -pg
+
 # Directly compile the .F source files to the .o object files
 # since gfortran can handle the C compiler directives in Fortran code
 %.o : %.F

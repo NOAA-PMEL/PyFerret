@@ -91,6 +91,9 @@
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V698 1/16 *sh* treat F aggregations ('FCT') like E-aggs
 *      2/16 *sh* create this routine from TM_CLOSE_SET
+* V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
+*                  Initialize ds_name and ds_des_name to char_init2048
+*                  sf_name initialized to char_init2048
 
 * arguments:
 *	ds_num	- (input) data set number (see COMMON /XSTEP_FILES/)
@@ -114,7 +117,7 @@
      .            f_num, ivar, iparm, iaux, idim
 
 * initialize: do we have an open set?
-	IF (ds_name(ds_num) .EQ. char_init1024) GOTO 9000
+	IF (ds_name(ds_num) .EQ. char_init2048) GOTO 9000
 
 * save the data format
 	its_cdf = ds_type(ds_num) .EQ. 'ENS'
@@ -154,8 +157,8 @@
 ********************************************************************************
 * Note that ds_basic_axes relate to the TMAP model output
 
-	ds_des_name(ds_num)		=	char_init1024
-	ds_name(ds_num)			=	char_init1024
+	ds_des_name(ds_num)		=	char_init2048
+	ds_name(ds_num)			=	char_init2048
 	ds_1step(ds_num)		=	real8_init
 	ds_lastep(ds_num)		=	real8_init
 	ds_delstep(ds_num)		=	real8_init
@@ -222,7 +225,7 @@
 	  ENDIF
 
 * delete step file from tables
-	  sf_name(f_num)		=	char_init256    ! *kob* 4/99
+	  sf_name(f_num)		=	char_init2048
 	  sf_setnum(f_num)		=	set_not_open
 	  sf_aux_set_num(f_num)		=	int4_init
 	  sf_nrecperstep(f_num)		=	int4_init

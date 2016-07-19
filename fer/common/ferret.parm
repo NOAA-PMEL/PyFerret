@@ -29,7 +29,7 @@
 * V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid. 
-*       2/12 *kms* Add e_dim, and f_dim parameters, nferdims is in tmap_dims.parm
+* V680  2/12 *kms* Add e_dim, and f_dim parameters, nferdims is in tmap_dims.parm
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V690 12/13-3/14 *sh* added max_auxregrid_trans for aux variable regridding,
 *		  and the pcurv_ parameters for automated aux var regridding
@@ -53,6 +53,8 @@
 *                  variables, pre-defined axes and grids, cat_calc_var.
 * V698  3/16 *sh* expanded max_gfdl_dsets for EF agg needs+
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U
+* V71  11/10 *kms* Add category cat_pystat_var (python static variable) 
+*                  just as a placeholder in Ferret (to reduce differences)
 
 
 * this should always match maxdsets in TMAP_FORMAT:
@@ -155,9 +157,10 @@
      .			cat_temp_var, cat_pseudo_var,
      .			cat_constant, cat_file_rev,
      .			cat_const_var,   cat_string,
-     .                  cat_counter_var, cat_attrib_val,
-     .                  cat_agg_e_var, cat_agg_f_var, cat_ef_time2d,
-     .                  cat_agg_u_var
+     .			cat_counter_var, cat_attrib_val,
+     .			cat_pystat_var,
+     .			cat_agg_e_var, cat_agg_f_var,
+     .			cat_ef_time2d, cat_agg_u_var
 	PARAMETER     ( cat_work_mr  = -9,
      .			cat_file_var = 1,
      .			cat_user_var = 3,
@@ -172,10 +175,11 @@
      .			cat_string     = 12,
      .			cat_counter_var= 13,
      .			cat_attrib_val = 14,
-     .			cat_agg_e_var  = 15,
-     .			cat_agg_f_var  = 16,
-     .			cat_ef_time2d  = 17,
-     .			cat_agg_u_var  = 18 )
+     .			cat_pystat_var = 15,
+     .			cat_agg_e_var  = 16,
+     .			cat_agg_f_var  = 17,
+     .			cat_ef_time2d  = 18,
+     .			cat_agg_u_var  = 19 )
 
 * codes referring to the user-defined variables
 	INTEGER		uvar_deleted,
@@ -739,6 +743,7 @@
 	PARAMETER     ( patnam_layerz = '__LayerzRef_',
      .		        patnam_curvx  = '__CurvxRef_',
      .		        patnam_curvy  = '__CurvyRef_'  )
+
 * alternative quotation atoms
 	CHARACTER*4	p_DQ_quote, p_SQ_quote
 	PARAMETER     ( p_DQ_quote = '_DQ_',

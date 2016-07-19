@@ -15,8 +15,7 @@ get_fer_dir() {
         echo " "
         echo " The environment variable FER_DIR is currently defined as "
         echo " '${FER_DIR}' "
-        echo " This is the directory where the 'fer_environment.tar.gz' "
-        echo " file was installed/extracted. "
+        echo " This is the directory containing the PyFerret installation. "
         echo " "
         read -p " Is that correct and acceptable (y/n) [y] " ans
         if [ -z "${ans}" ] || [ "${ans}" = "Y" ] || [ "${ans}" = "y" ]; then
@@ -26,9 +25,9 @@ get_fer_dir() {
 
     until [ 0 = 1 ]; do
         echo " "
-        echo " Enter the name of the directory where the 'fer_environment.tar.gz' "
-        echo " file was installed/extracted (FER_DIR).  The location recommended "
-        echo " in the Ferret installation guide was '/usr/local/ferret'. "
+        echo " Enter the name of the PyFerret installation directory (FER_DIR). "
+        echo " This directory should contain bin/Fenv. "
+        echo " A relative path name can be given (such a '.') "
         echo " "
         read -p " FER_DIR --> " fer_dir
         if [ ! -d "${fer_dir}" ]; then
@@ -37,7 +36,7 @@ get_fer_dir() {
 #           resolve relative pathnames
             fer_dir=`cd "${fer_dir}" ; pwd`
             if [ ! -x "${fer_dir}/bin/Fenv" ]; then
-                echo " The Ferret environment files are not in "
+                echo " The PyFerret files are not in "
                 echo " '${fer_dir}' "
             else
                 return 0
@@ -56,8 +55,7 @@ get_fer_dsets() {
         echo " "
         echo " The environment variable FER_DSETS is currently defined as "
         echo " '${FER_DSETS}' "
-        echo " This is the directory where the 'fer_dsets.tar.gz' file was "
-        echo " installed/extracted."
+        echo " This is the directory containing the default Ferret datasets. "
         echo " "
         read -p " Is that correct and acceptable (y/n) [y] " ans
         if [ -z "${ans}" ] || [ "${ans}" = "Y" ] || [ "${ans}" = "y" ]; then
@@ -67,8 +65,10 @@ get_fer_dsets() {
 
     until [ 0 = 1 ]; do
         echo " "
-        echo " Enter the name of the directory where the 'fer_dsets.tar.gz' "
-        echo " file was installed/extracted (FER_DSETS)."
+        echo " Enter the name of the directory containing the default Ferret "
+        echo " data sets (FER_DSETS).  This directory should contain "
+        echo " data/coads_climatology.cdf"
+        echo " A relative path name can be given (such a '../FerretDatasets') "
         echo " "
         read -p " FER_DSETS --> " fer_dsets
         if [ ! -d "${fer_dsets}" ]; then
@@ -77,7 +77,7 @@ get_fer_dsets() {
 #           resolve relative pathnames
             fer_dsets=`cd "${fer_dsets}" ; pwd`
             if [ ! -f "${fer_dsets}/data/coads_climatology.cdf" ]; then
-                echo " The Ferret demonstration data files are not in "
+                echo " The Ferret default data files are not in "
                 echo " '${fer_dsets}' "
             else
                 return 0
@@ -96,6 +96,7 @@ get_ferpaths_dir() {
         echo " Enter the name of the directory where you want to place "
         echo " the newly created 'ferret_paths.csh', 'ferret_path.sh', "
         echo " pyferret files; for example, '/usr/local/bin'."
+        echo " A relative path name can be given (such a '.') "
         echo " "
         read -p " desired ferret_paths location --> " ferpaths_dir
         if [ ! -d "${ferpaths_dir}" ]; then
@@ -369,16 +370,16 @@ python_subdir=\"${python_subdirectory}\"" \
 echo " "
 echo " This script creates the  'ferret_paths.csh' and 'ferret_paths.sh' in a directory "
 echo " you choose using values of FER_DIR (Ferret software directory at your site) and "
-echo " FER_DSETS (Ferret demonstration data at your site).  Furthermore, the link "
-echo " (shortcut) 'ferret_paths' can be created which refers to either 'ferret_paths.csh' "
-echo " or 'ferret_paths.sh'.  Finally, the executable shell script 'pyferret' is created. "
+echo " FER_DSETS (Ferret default data at your site).  Furthermore, the link (shortcut) "
+echo " 'ferret_paths' can be created which refers to either 'ferret_paths.csh' or "
+echo " 'ferret_paths.sh'.  Finally, the executable shell script 'pyferret' is created. "
 echo " "
 echo " Sourcing one of these 'ferret_paths' files ('source ferret_paths.csh' for csh or "
 echo " tcsh, '. ferret_paths.sh' for bash, sh ksh, or dash) will set up a user's "
-echo " environment for running ferret. "
+echo " environment for running pyferret. "
 echo " "
-echo " You will want to run this script if you are installing Ferret for the first time "
-echo " or if you relocated where Ferret is installed. "
+echo " You will want to run this script if you are installing PyFerret for the first time "
+echo " or if you relocated where PyFerret is installed. "
 echo " "
 read -p " Proceed? (y/n) [y] " ans
 if [ -n "${ans}" ] && [ "${ans}" != "Y" ] && [ "${ans}" != "y" ]; then

@@ -1,7 +1,40 @@
-Instructions for build PyFerret on Mac OSX using homebrew.
+Information related to using and building PyFerret on Mac OS X using homebrew to install required packages.
+
 If you do not have homebrew install, run the following at a command prompt (terminal window).
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 See http://brew.sh/ for more information on using homebrew.
+
+** Using PyFerret on Mac OS X using homebrew. **
+
+At this time you will need to install the gcc package to provide the gcc libraries used by PyFerret.
+You will also need to install the homebrew package for PyQt4 (pyqt).  I have always first installed
+the homebrew Python2.7 package (python), but I am not sure if this is required or not, 
+or the pyqt may require it and install it automatically.  Finally, install numpy 
+(and scipy and pyshp, while you are at it, althought not required) 
+using pip install from the python package.
+
+brew install gcc
+brew install python
+brew install pyqt
+pip install numpy
+pip install scipy
+pip install pyshp
+
+Download the MacOSX prebuilt tar.gz file and extract its contents.  
+(For PyFerret, there is only one tar.gz file containing the "environment" 
+and "executable" files that are packaged separately in Ferret.)  
+
+If you do not already have the default Ferret datasets, also download 
+and extract the contents of that tar.gz file.
+
+Run the bin/Finstall script that is found under the PyFerret installation directory.
+This script will ask for the PyFerret installation directory name, the default
+Ferret datasets name, the directory in which to create the ferret_paths scripts,
+and the python to use.  (The directories can all be relative path names.)
+The appropriate ferret_paths script must to "sourced" before running PyFerret.
+("source ferret_paths.csh" for C-shell users, ". ferret_paths.sh" for Bourne-shell users.)
+
+** Building PyFerret on Mac OS X using homebrew. **
 
 You will want to have the bin subdirectory of the homebrew package installation directory 
 (/usr/local/bin is the default) at the start of your path :

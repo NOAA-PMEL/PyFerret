@@ -98,7 +98,7 @@ endif
 			  -ffixed-line-length-132 -fno-second-underscore -fno-backslash
 
 	OPT_FLAGS	= -O -DNDEBUG
-	PPLUS_OPT_FLAGS	= -O0
+	PPLUS_OPT_FLAGS	= -O -DNDEBUG
 	DBG_FLAGS	= -O0 -g
 	PROF_FLAGS	= -O0 -g
 

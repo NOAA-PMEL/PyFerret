@@ -100,6 +100,11 @@
 * Some of the internal grid-changing functions (e.g. RESHAPE) require
 * slightly different rules for setting uvar_given -- see gcf_impose_axes.F
 *
+* V701:  7/16 *acm* Ticket 2452. Instances where the cx_*ww and mr*ww values 
+*	          should be exactly the same but the cx coordinates are ever 
+*	          so slightly too wide to match the request. Use TM_DFPEQ
+*	          to test for approx. equal values before rejecting the match  
+*	          with what is in memory.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -116,12 +121,11 @@
 	LOGICAL by_value, valid_search
 
 * internal variable declarations:
-	LOGICAL has_trans, itsa_uvar,
+	LOGICAL TM_DFPEQ, has_trans, itsa_uvar,
      .          normal(nferdims), non_modulo(nferdims)
 	INTEGER HASH_CX, line,
      .		mv, defining_grid, idim, var
         REAL*8  TM_WORLD, ww_hi_bound, c_cache_ptr
-
 
 * initialize
 	valid_search = .TRUE.
@@ -214,11 +218,17 @@
      .		      non_modulo(idim) )  ) GOTO 40
 
 * insist that the  grid stored in memory encompasses the requested data
-	      IF ( mr_lo_ww(idim,mv) .GT. cx_lo_ww(idim,cx)
-     .        .OR. mr_hi_ww(idim,mv) .LT. cx_hi_ww(idim,cx)) GOTO 100
+	      IF (mr_lo_ww(idim, mv) .GT. cx_lo_ww(idim, cx)) THEN
+                 IF ( .NOT. TM_DFPEQ(cx_lo_ww(idim,cx),mr_lo_ww(idim,mv)) ) GOTO 100
+	      ENDIF
+	      IF (mr_hi_ww(idim, mv) .LT. cx_hi_ww(idim, cx)) THEN
+                 IF ( .NOT. TM_DFPEQ(cx_hi_ww(idim,cx),mr_hi_ww(idim,mv)) ) GOTO 100
+	      ENDIF
 
 * insist that the delta values match
-	      IF ( mr_delta(idim,mv) .NE. cx_delta(idim,cx) ) GOTO 100
+	      IF ( mr_delta(idim,mv) .NE. cx_delta(idim,cx) ) THEN
+                 IF ( .NOT. TM_DFPEQ(mr_delta(idim,mv),cx_delta(idim,cx)) )  GOTO 100
+	      ENDIF
 
  40	   CONTINUE
 
@@ -234,11 +244,18 @@
 	      IF ( mr_trans(idim,mv) .NE. cx_trans(idim,cx) ) GOTO 100
 
 * insist that the  grid stored in memory encompasses the requested data
-	      IF ( mr_lo_ww(idim, mv) .GT. cx_lo_ww(idim, cx)
-     .        .OR. mr_hi_ww(idim, mv) .LT. cx_hi_ww(idim, cx)) GOTO 100
+
+	      IF (mr_lo_ww(idim, mv) .GT. cx_lo_ww(idim, cx)) THEN
+                 IF ( .NOT. TM_DFPEQ(cx_lo_ww(idim,cx),mr_lo_ww(idim,mv)) ) GOTO 100
+	      ENDIF
+	      IF (mr_hi_ww(idim, mv) .LT. cx_hi_ww(idim, cx)) THEN
+                 IF ( .NOT. TM_DFPEQ(cx_hi_ww(idim,cx),mr_hi_ww(idim,mv)) ) GOTO 100
+	      ENDIF
 
 * insist that the delta values match
-	      IF ( mr_delta(idim,mv) .NE. cx_delta(idim,cx) ) GOTO 100
+	      IF ( mr_delta(idim,mv) .NE. cx_delta(idim,cx) ) THEN
+                 IF ( .NOT. TM_DFPEQ(mr_delta(idim,mv),cx_delta(idim,cx)) ) GOTO 100
+	      ENDIF
 
  50	   CONTINUE
 
@@ -261,7 +278,9 @@
      .	      .OR. mr_hi_ss(mv, idim) .LT. cx_hi_ss(cx, idim)) GOTO 100
 
 * insist that the delta values match
-	      IF ( mr_delta(idim,mv) .NE. cx_delta(idim,cx) ) GOTO 100
+	      IF ( mr_delta(idim,mv) .NE. cx_delta(idim,cx) ) THEN
+	         IF ( .NOT. TM_DFPEQ(mr_delta(idim,mv),cx_delta(idim,cx)) ) GOTO 100
+	      ENDIF
 
  60	   CONTINUE
 	ENDIF

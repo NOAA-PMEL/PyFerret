@@ -52,6 +52,8 @@
 *                  commands via SPLIT_LIST to std error rather than std out.
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*    *acm* 7/17. It would be good to test a status flag on the system call.
+*                (see ticket 2452). Results are inconsistent.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'

@@ -103,10 +103,12 @@
 	LOGICAL match, itsa_uvar
 	INTEGER	TM_LENSTR1, STR_SAME,
      .		iset, dset1, item, ii, max_str_len,member_sets(nsets), 
-     .		nv, nvars, iline, slen, un_vars(pmaxvarsperset),
-     .		num_indices, j, jj, member, ignored_status
+     .		nv, nvars, iline, slen, jlen, un_vars(pmaxvarsperset),
+     .		num_indices, j, member, ignored_status
+	REAL	sset
 	CHARACTER TM_STRING*13
 	CHARACTER*512 GET_STRING_ELEMENT_1D_X, memb_dsetname(nsets)
+	CHARACTER*10 TM_FMT, strset
 	CHARACTER*128 vname
 
 * initialize
@@ -246,9 +248,21 @@
 	   DO nv = 1, maxvars
 	      IF (ds_var_setnum(nv) .EQ. member) THEN
 * ... skip it if it duplicates a name already found as a LET/D variable
+*     Issue a note unless they said /QUIET
+
 	         DO ii = 1, nvars
 	            IF (STR_SAME(ds_var_code(un_vars(ii)),
-     .			      ds_var_code(nv)           ) .EQ. 0) GOTO 400
+     .			      ds_var_code(nv)           ) .EQ. 0) THEN
+                       sset = member
+		       slen = TM_LENSTR1(ds_var_code(nv))
+		       strset = TM_FMT(sset, 10, 10, jlen)
+		       
+                       IF (.NOT.agg_quiet) CALL WARN ('Skipping variable '//
+     .			ds_var_code(nv)(:slen)//
+     .			' from set '//strset(:jlen) //
+     .			', already in the Union dataset.')
+		       GOTO 400
+	            ENDIF
 	         ENDDO
 	         nvars = nvars + 1
 	         un_vars(nvars) = nv

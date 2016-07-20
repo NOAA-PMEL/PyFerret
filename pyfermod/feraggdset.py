@@ -28,7 +28,7 @@ class FerAggDSet(pyferret.FerDSet):
                 such as with pyferret.showdata()
         '''
         # Create an empty dataset with the given Ferret name
-        super(FerAggDSet, self).__init__(qual=_anonymous_dataset_qualifier)
+        super(FerAggDSet, self).__init__('', qual=_anonymous_dataset_qualifier)
         if not isinstance(name, str):
             raise ValueError('Ferret name for the aggregate dataset must be astring')
         aggname = name.strip()

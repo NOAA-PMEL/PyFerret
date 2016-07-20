@@ -66,7 +66,7 @@ class FerAxis(object):
                 (Thus, coords[t, TIMEARRAY_YEARINDEX] gives the year of time t.)
                 Note: a relative time axis will be of type AXISTYPE_CUSTOM, with a unit
                       indicating the starting point, such as 'days since 01-JAN-2000'
-                For an abstact axis or an axis normal to the data, this argument is ignored.
+                For an abstract axis or an axis normal to the data, this argument is ignored.
             unit (string): unit of the axis; for a time axis, this gives the calendar 
                     as one of
                     pyferret.CALTYPE_360DAY
@@ -75,7 +75,7 @@ class FerAxis(object):
                     pyferret.CALTYPE_JULIAN
                     pyferret.CALTYPE_ALLLEAP
                     pyferret.CALTYPE_NONE    (calendar not specified)
-                For abstact axes, or axes normal to the data, this argument is ignored.
+                For abstract axes, or axes normal to the data, this argument is ignored.
             name (string): Ferret name for the axis
                 For an axis normal to the data, this argument is ignored.
         '''

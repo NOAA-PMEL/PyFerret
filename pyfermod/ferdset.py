@@ -11,7 +11,7 @@ class FerDSet(object):
     A data set and the data variables it contains
     '''
 
-    def __init__(self, filename='', title='', qual=''):
+    def __init__(self, filename, title='', qual=''):
         '''
         "Opens" the given NetCDF dataset file in Ferret using the Ferret "USE" command.
         Creates a FerVar for each data variable in this data file and 
@@ -20,7 +20,6 @@ class FerDSet(object):
             title (string): title for the dataset for plots and listing;
                 if not given, the Ferret name for the dataset will be used
             qual (string): Ferret qualifiers to be used with the "USE" command
-        If filename is None or empty, an anonymous dataset is returned.
         '''
         self._filename = ''
         self._dsetname = ''

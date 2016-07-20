@@ -72,7 +72,7 @@ import feraggdset
 from feraggdset import *
 
 # Create "the" anonymous dataset
-anondset = FerDSet(qual=ferdset._anonymous_dataset_qualifier)
+anondset = FerDSet('', qual=ferdset._anonymous_dataset_qualifier)
 
 # convenience methods for executing common Ferret commands
 import fermethods

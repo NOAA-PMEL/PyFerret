@@ -192,6 +192,7 @@ IF ($vtype"0|CHAR>1|*>0") THEN CAN SYM qual;\
 LET ($vname) = ($vname)_in[ge=traj@asn];\
 SET ATT/LIKE=($vname)_in ($vname);\
 SET ATT/OUTPUT=all ($vname);\
+if `strindex("($vtype)", "INT") gt 0` THEN set var/bad=`($vname)_in,return=bad` ($vname);\
 SAVE/QUIET/FILE="($outfile)"/APPEND($qual) ($vname))
 
 ! add nobs_deci on the same axis

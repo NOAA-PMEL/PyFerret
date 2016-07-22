@@ -7,4 +7,4 @@ sp rm -f 492C19881104_dec.nc
 ! Run the socat decimation script on a full-data DSG file
 go ddsg_socat3 492C19881104.nc 492C19881104_dec.nc
 ! Dump the contents of the decimated-data DSG file
-sp ncdump 492C19881104_dec.nc >> all_ncdump.out
+sp ncdump -h 492C19881104_dec.nc >> all_ncdump.out

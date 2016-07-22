@@ -1,0 +1,239 @@
+! ddsg_socat3.jnl
+! ACM 5/16/2014
+
+! Compute and apply sampling for a single-trajectory dsg file
+! using piecewise linear interpolation
+
+! Uses the external function piecewise3.so
+! This script contains a list of the variables in the input
+! files. This allows us to create the decimated dsg file
+! with the exact same names as in the input files.
+!
+! WOCE flags are not used in the decimated datasets, as they may change in the
+! full data. Keep them in the file for a consistent set of variables, but mark 
+! them with the unused flag "M".
+
+! arguments: 
+!  input_file single dsg file
+!  output_file to write
+! 
+
+DEFINE SYMBOL infile = ($1)
+DEFINE SYMBOL outfile = ($2)
+
+! Set the tolerances and control parameter
+
+DEFINE SYMBOL tol_lon = 1
+DEFINE SYMBOL tol_lat = 1
+DEFINE SYMBOL tol_var = 4
+
+LET tol1 = ($tol_lon)
+LET tol2 = ($tol_lat)
+let tol3 = ($tol_var)
+
+LET control = 2
+
+USE "($infile)"
+
+! The names in the input and output file must match.
+! To accomplish that we will rename the variables in the input file.
+! varnames_list is a stable list of the original names. Check that it 
+! matches what's in the file, and rename the file variables.
+
+LET varnames =  ..varnames
+LET nvars =  ..nvars
+
+! Will also add nobs_deci.
+
+LET varnames_traj = {\
+"num_obs","expocode","dataset_name","vessel_name","organization",\
+"geospatial_lon_min","geospatial_lon_max","geospatial_lat_min",\
+"geospatial_lat_max","time_coverage_start","time_converage_end",\
+"investigators","socat_version","all_region_ids","socat_doi",\
+"qc_flag","nobs_full"}
+
+! The text is too long for one Ferret command. Define two variables and concatenate them.
+
+LET varnames_list1 = {\
+"sample_number","year","month","day","hour","minute","second",\
+"longitude","latitude","sample_depth","sal","Temperature_equi",\
+"temp","Temperature_atm","Pressure_equi","Pressure_atm",\
+"xCO2_water_equi_temp_dry_ppm","xCO2_water_sst_dry_ppm",\
+"xCO2_water_equi_temp_wet_ppm","xCO2_water_sst_wet_ppm",\
+"pCO2_water_equi_temp","pCO2_water_sst_100humidity_uatm",\
+"fCO2_water_equi_uatm","fCO2_water_sst_100humidity_uatm",\
+"xCO2_atm_dry_actual","xCO2_atm_dry_interp",\
+"pCO2_atm_wet_actual","pCO2_atm_wet_interp",\
+"fCO2_atm_wet_actual","fCO2_atm_wet_interp",\
+"delta_xCO2","delta_pCO2","delta_fCO2",\
+"xH2O_equi","relative_humidity","specific_humidity",\
+"ship_speed","ship_dir","wind_speed_true","wind_speed_rel",\
+"wind_dir_true","wind_dir_rel","WOCE_CO2_water","WOCE_CO2_atm"\
+}
+LET varnames_list2 = {\
+"woa_sss","pressure_ncep_slp",\
+"fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm",\
+"fCO2_insitu_from_xCO2_water_sst_dry_ppm",\
+"fCO2_from_pCO2_water_water_equi_temp",\
+"fCO2_from_pCO2_water_sst_100humidity_uatm",\
+"fCO2_insitu_from_fCO2_water_equi_uatm",\
+"fCO2_insitu_from_fCO2_water_sst_100humidty_uatm",\
+"fCO2_from_pCO2_water_water_equi_temp_ncep",\
+"fCO2_from_pCO2_water_sst_100humidity_uatm_ncep",\
+"fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa",\
+"fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa",\
+"fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep",\
+"fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep",\
+"fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa",\
+"fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa",\
+"fCO2_recommended","fCO2_source","delta_temp","region_id",\
+"calc_speed","etopo2","gvCO2","dist_to_land",\
+"day_of_year","time","lon360","tmonth"\
+}
+
+LET varnames_list = XCAT(varnames_list1, varnames_list2)
+
+LET ntraj = `varnames_traj,return=isize`
+LET nlist = `varnames_list,return=isize`
+
+!IF `nvars NE (ntraj+nlist)` THEN
+!   say **ERROR List of variables in the script does not match list in the dataset 
+!   say **ERROR "($infile)" has `nvars` variables, script list has `nlist`
+!   exit/script
+!ENDIF
+
+! Check that the variable names in the lists are in the file.
+! If so rename the variables in the input file to varname_in
+
+
+SET VAR/NAME=nobs_deci_in nobs_deci
+
+LET vdiff = 0
+REPEAT/range=1:`ntraj`/name=v (DEFINE SYMBOL  vv = `v`;\
+ DEFINE SYMBOL vname = `varnames_traj[i=($vv)]`;\
+ IF `IS_ELEMENT_OF_STR_N(varnames, "($vname)") EQ 0` THEN LET vdiff = `v`;\
+ IF `vdiff GT 0` THEN EXIT/LOOP;\
+ SET VAR/NAME=($vname)_in ($vname))
+
+LET vdiff = 0
+REPEAT/range=1:`nlist`/name=v (DEFINE SYMBOL  vv = `v`;\
+ DEFINE SYMBOL vname = `varnames_list[i=($vv)]`;\
+ IF `IS_ELEMENT_OF_STR_N(varnames, "($vname)") EQ 0` THEN LET vdiff = `v`;\
+ IF `vdiff GT 0` THEN EXIT/LOOP;\
+ SET VAR/NAME=($vname)_in ($vname))
+
+IF `vdiff GT 0` THEN
+   say **ERROR List of variables in the script does not match list in the dataset "($infile)"
+   say **ERROR variable lists have *** ($vname) *** which is not in the file
+   exit/script
+ENDIF
+
+
+! Which longitude to use for decimating: lon360 or longitude
+
+let dlon = minmax(longitude_in[i=@ddf])
+let dlon360 = minmax(lon360_in[i=@ddf])
+
+IF `abs(dlon[i=@max]) LT abs(dlon360[i=@max])` THEN
+   DEFINE SYMBOL lonvar = longitude_in
+ELSE
+   DEFINE SYMBOL lonvar = lon360_in
+ENDIF
+
+LET sample_pts= piecewise3(($lonvar), latitude_in, fCO2_recommended_in, `control`, `tol1`, `tol2`, `tol3`)
+LOAD sample_pts
+
+DEFINE SYMBOL output_filename = ($outfile)
+
+! File will get all the global attributes
+
+set att/out=all .
+can mode upcase
+
+! Single-point axis for instance direction
+! The set axis/name is to make sure Ferret uses lowercase
+
+SET AXIS/NAME=traj_in `num_obs_in,RETURN=eaxis`
+DEF AXIS/E=1:1:1 traj_def
+SET AXIS/NAME=traj traj_def
+LET ee = _e[ge=traj]
+
+! obs axis for sampled observation variables
+
+SET AXIS/NAME=obj_in `longitude_in,RETURN=xaxis`
+LET nsample = `sample_pts[i=@ngd]`
+DEFINE AXIS/x=1:`nsample`:1 obs_def
+SET AXIS/NAME=obs obs_def
+LET samplevar = sample_pts[gx=obs@asn]
+
+! New num_obs variable with number of sampled data
+! Make sure it has the right sample_dimension attribute
+
+LET/BAD=-99 num_obs = reshape(nsample,ee)
+SET ATT/LIKE=num_obs_in num_obs
+DEFINE ATT/QUIET/OUTPUT num_obs.sample_dimension = "`num_obs_in.sample_dimension`"
+SET ATT/OUTPUT=all num_obs
+DEFINE SYMBOL num_obs_sampled = `nsample`
+
+! write a global attribute with the decimation parameters.
+DEFINE ATT/QUIET/OUTPUT ..decimation =  \
+"`nobs_full_in` original number of obs. Piecewise decimated to ($num_obs_sampled) obs using tolerances: lon ($tol_lon), lat ($tol_lon), fco2_rec ($tol_var) ($comment)" 
+
+SAVE/QUIET/FILE="($outfile)"/OUTTYPE=INT/CLOBBER num_obs
+
+
+! Write the traj variables
+
+REPEAT/RANGE=2:`ntraj`/NAME=q (DEFINE SYMBOL qq = `q`;\
+DEFINE SYMBOL vname = `varnames_traj[i=($qq)]`;\
+DEFINE SYMBOL vtype = `($vname)_in,RETURN=dtype`;\
+DEFINE SYMBOL qual = /OUTTYPE=($vtype);\
+IF ($vtype"0|CHAR>1|*>0") THEN CAN SYM qual;\
+LET ($vname) = ($vname)_in[ge=traj@asn];\
+SET ATT/LIKE=($vname)_in ($vname);\
+SET ATT/OUTPUT=all ($vname);\
+SAVE/QUIET/FILE="($outfile)"/APPEND($qual) ($vname))
+
+! add nobs_deci on the same axis
+LET/TITLE="`nobs_deci_in,RETURN=title`"/BAD=-99 nobs_deci = ($num_obs_sampled) + 0* nobs_full
+DEFINE ATTRIBUTE/OUTPUT/OUTPUT nobs_deci.note = "Piecewise decimated"
+SAVE/QUIET/FILE="($outfile)"/APPEND/OUTTYPE=int nobs_deci
+
+! Sample the obs variables. Keep attributes, make missing-data flags match.
+
+! Numeric variables
+REPEAT/RANGE=1:`nlist`/NAME=q (DEFINE SYMBOL qq = `q`;\
+DEFINE SYMBOL vname = `varnames_list[i=($qq)]`;\
+IF ($vname"0|sample_number>1|*>0") THEN EXIT/CYCLE;\
+DEFINE SYMBOL vtype = `($vname)_in,RETURN=dtype`;\
+IF ($vtype"0|CHAR>1|*>0") THEN EXIT/CYCLE;\
+LET/BAD=`($vname)_in,RETURN=bad,PREC=9` ($vname) = SAMPLE_FAST_I(($vname)_in, samplevar);\
+SET ATT/LIKE=($vname)_in ($vname);\
+SET ATT/OUTPUT=all ($vname);\
+SAVE/QUIET/APPEND/OUTTYPE=($vtype)/FILE="($outfile)" ($vname);\
+)
+
+! sample_number will be the sequence number within the decimated data
+! We can use this to pick up the pen when drawing lines where the constraints 
+! (on the decimated set) have skipped data
+
+LET/BAD=-1/TITLE="sequence number for decimated dataset" sample_number = i[gx=latitude]
+SAVE/QUIET/APPEND/OUTTYPE=INT/FILE="($outfile)" sample_number
+
+! Character variables
+
+REPEAT/RANGE=1:`nlist`/NAME=q (DEFINE SYMBOL qq = `q`;\
+DEFINE SYMBOL vname = `varnames_list[i=($qq)]`;\
+DEFINE SYMBOL vtype = `($vname)_in,RETURN=dtype`;\
+IF `($vtype"0|CHAR>1|*>0") EQ 0` THEN EXIT/CYCLE;\
+LET ($vname)_s = SAMPLEI(($vname)_in, samplevar);\
+LET ($vname) = RESHAPE(($vname)_s, x[gx=obs]);\
+SET ATT/LIKE=($vname)_in ($vname);\
+SET ATT/OUTPUT=all ($vname);\
+SAVE/QUIET/APPEND/FILE="($outfile)" ($vname) )
+
+can data/all
+can var/all
+can sym/all
+can axis/all
+

@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Jul 20 16:32 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Jul 25 11:05 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -285,6 +285,7 @@ Benchmark scripts that will be run:
    bn_ps.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
+   err700_decimate.jnl
    bn_outline_poly.jnl
    bn_contourcolor.jnl
    testgetstrdata.py
@@ -296,7 +297,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Wed Jul 20 16:32:39 PDT 2016
+Beginning at Mon Jul 25 11:10:28 PDT 2016
 *** Running ferret script: bn_syntax.jnl
 [?1034h! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -10498,13 +10499,13 @@ FERRET_PLATFORM = "Linux 2.6.32-642.3.1.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "20-Jul-16"
-SESSION_TIME = "16:32"
-SESSION_PID = "15118"
-DELTA_CPU = "0.204968"
-CLOCK_SECS = "0.097"
-CURRENT_DATE = "20-Jul-16"
-CURRENT_TIME = "16:32:47"
+SESSION_DATE = "25-Jul-16"
+SESSION_TIME = "11:10"
+SESSION_PID = "30795"
+DELTA_CPU = "0.202968"
+CLOCK_SECS = "0.098"
+CURRENT_DATE = "25-Jul-16"
+CURRENT_TIME = "11:10:36"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -10527,13 +10528,13 @@ FERRET_PLATFORM = "Linux 2.6.32-642.3.1.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "20-Jul-16"
-SESSION_TIME = "16:32"
-SESSION_PID = "15118"
-DELTA_CPU = "9.99E-04"
-CLOCK_SECS = "0.098"
-CURRENT_DATE = "20-Jul-16"
-CURRENT_TIME = "16:32:47"
+SESSION_DATE = "25-Jul-16"
+SESSION_TIME = "11:10"
+SESSION_PID = "30795"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "0.099"
+CURRENT_DATE = "25-Jul-16"
+CURRENT_TIME = "11:10:36"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 S1 = "hello"
@@ -10543,9 +10544,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "20-Jul-16"
-SESSION_TIME = "16:32"
-SESSION_PID = "15118"
+SESSION_DATE = "25-Jul-16"
+SESSION_TIME = "11:10"
+SESSION_PID = "30795"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10555,15 +10556,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "20-Jul-16"
-SESSION_TIME = "16:32"
-SESSION_PID = "15118"
+SESSION_DATE = "25-Jul-16"
+SESSION_TIME = "11:10"
+SESSION_PID = "30795"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "20-Jul-16"
-SESSION_TIME = "16:32"
-SESSION_PID = "15118"
+SESSION_DATE = "25-Jul-16"
+SESSION_TIME = "11:10"
+SESSION_PID = "30795"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10696,13 +10697,13 @@ FERRET_PLATFORM = "Linux 2.6.32-642.3.1.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "20-Jul-16"
-SESSION_TIME = "16:32"
-SESSION_PID = "15118"
-DELTA_CPU = "0.012999"
-CLOCK_SECS = "0.112"
-CURRENT_DATE = "20-Jul-16"
-CURRENT_TIME = "16:32:47"
+SESSION_DATE = "25-Jul-16"
+SESSION_TIME = "11:10"
+SESSION_PID = "30795"
+DELTA_CPU = "0.011998"
+CLOCK_SECS = "0.113"
+CURRENT_DATE = "25-Jul-16"
+CURRENT_TIME = "11:10:36"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -25070,7 +25071,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Wed Jul 20 16:32:54 PDT 2016
+Mon Jul 25 11:10:42 PDT 2016
  
 GO bn_reset
 cancel mode verify
@@ -47298,7 +47299,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "20-Jul-16_16:33"
+WIN_TITLE = "25-Jul-16_11:11"
  
 set win/title="set the title"
 sho sym win_title
@@ -47316,7 +47317,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="20-Jul-16:16:33"
+ !-> set win/title="25-Jul-16:11:11"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47325,16 +47326,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 20-Jul-16
+ !-> DEFINE SYMBOL the_date = 25-Jul-16
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 16:33
+ !-> DEFINE SYMBOL the_time = 11:11
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="20-Jul-16:16:33"
+ !-> SET WIN/TITLE="25-Jul-16:11:11"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "20-Jul-16:16:33"
+WIN_TITLE = "25-Jul-16:11:11"
 *** Running ferret script: bn_last_error.jnl
 [?1034h! bn_last_error.jnl
 ! acm Nov 2005
@@ -51705,7 +51706,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -51754,7 +51755,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -57628,10 +57629,10 @@ SH GRID am
  normal    T
 *** Running ferret script: bn_clock_syms.jnl
 [?1034hSH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.213966"
-CLOCK_SECS = "0.101"
-CURRENT_DATE = "20-Jul-16"
-CURRENT_TIME = "16:33:34"
+DELTA_CPU = "0.208967"
+CLOCK_SECS = "0.102"
+CURRENT_DATE = "25-Jul-16"
+CURRENT_TIME = "11:11:24"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57640,8 +57641,8 @@ CURRENT_TIME = "16:33:34"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.021997"
-CLOCK_SECS = "0.122"
+DELTA_CPU = "0.020997"
+CLOCK_SECS = "0.123"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57655,10 +57656,10 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.061991
+ !-> DEFINE VARIABLE ten_plots = 0.059991
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0"
-CLOCK_SECS = "0.185"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "0.184"
  
 let  sumclock = 0
 let  sumcpu = 0
@@ -57671,44 +57672,44 @@ let sumcpu =`sumcpu + dt`)
  !-> DEFINE VARIABLE dt = 0.006999
  !-> DEFINE VARIABLE sumcpu =0.006999
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.007999
- !-> DEFINE VARIABLE sumcpu =0.014998
+ !-> DEFINE VARIABLE dt = 0.007998
+ !-> DEFINE VARIABLE sumcpu =0.014997
 !-> REPEAT: K=3
  !-> DEFINE VARIABLE dt = 0.007999
- !-> DEFINE VARIABLE sumcpu =0.022997
+ !-> DEFINE VARIABLE sumcpu =0.022996
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.007999
- !-> DEFINE VARIABLE sumcpu =0.030996
+ !-> DEFINE VARIABLE dt = 0.006999
+ !-> DEFINE VARIABLE sumcpu =0.029995
 !-> REPEAT: K=5
  !-> DEFINE VARIABLE dt = 0.007999
- !-> DEFINE VARIABLE sumcpu =0.038995
+ !-> DEFINE VARIABLE sumcpu =0.037994
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.007998
- !-> DEFINE VARIABLE sumcpu =0.046993
+ !-> DEFINE VARIABLE dt = 0.007999
+ !-> DEFINE VARIABLE sumcpu =0.045993
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.007999
- !-> DEFINE VARIABLE sumcpu =0.054992
-!-> REPEAT: K=8
  !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.061991
+ !-> DEFINE VARIABLE sumcpu =0.052992
+!-> REPEAT: K=8
+ !-> DEFINE VARIABLE dt = 0.007998
+ !-> DEFINE VARIABLE sumcpu =0.06099
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.007999
- !-> DEFINE VARIABLE sumcpu =0.06999
+ !-> DEFINE VARIABLE dt = 0.006999
+ !-> DEFINE VARIABLE sumcpu =0.067989
 !-> REPEAT: K=10
  !-> DEFINE VARIABLE dt = 0.007999
- !-> DEFINE VARIABLE sumcpu =0.077989
+ !-> DEFINE VARIABLE sumcpu =0.075988
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.077989
-0.077989
+ !-> MESSAGE/CONTINUE 0.075988
+0.075988
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.265"
+CLOCK_SECS = "0.262"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "20-Jul-16"
-SESSION_TIME = "16:33"
-CURRENT_DATE = "20-Jul-16"
-CURRENT_TIME = "16:33:34"
+SESSION_DATE = "25-Jul-16"
+SESSION_TIME = "11:11"
+CURRENT_DATE = "25-Jul-16"
+CURRENT_TIME = "11:11:24"
 *** Running ferret script: bn63_bug_fixes.jnl
 [?1034h! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -61466,8 +61467,8 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! PyFERRET v7.01 (beta/debug)"                                             
- 3    /  3:" ! Linux 2.6.32-642.3.1.el6.x86_64 - 07/20/16"                              
- 4    /  4:" ! 20-Jul-16 16:33     "                                                    
+ 3    /  3:" ! Linux 2.6.32-642.3.1.el6.x86_64 - 07/25/16"                              
+ 4    /  4:" ! 25-Jul-16 11:11     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -63921,40 +63922,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.056
-randu2_randn2       0.224
-randu2_randn2       0.508
-randu2_randn2       0.078
-randu2_randn2       0.673
+randu2_randn2       0.722
+randu2_randn2       0.482
+randu2_randn2       0.575
+randu2_randn2       0.147
+randu2_randn2       0.649
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.421
-randu2_randn2       0.608
-randu2_randn2       0.870
-randu2_randn2       0.651
-randu2_randn2       0.614
+randu2_randn2       0.334
+randu2_randn2       0.401
+randu2_randn2       0.448
+randu2_randn2       0.538
+randu2_randn2       0.714
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.075
-randu2_randn2       0.234
-randu2_randn2       0.537
-randu2_randn2       0.301
-randu2_randn2       0.799
-randu2_randn2       0.804
+randu2_randn2       0.321
+randu2_randn2       0.476
+randu2_randn2       0.094
+randu2_randn2       0.186
+randu2_randn2       0.839
+randu2_randn2       0.323
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
+randu2_randn2       0.200
+randu2_randn2       0.330
+randu2_randn2       0.187
+randu2_randn2       0.902
+randu2_randn2       0.963
 randu2_randn2       0.138
-randu2_randn2       0.729
-randu2_randn2       0.342
-randu2_randn2       0.443
-randu2_randn2       0.311
-randu2_randn2       0.914
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -63979,40 +63980,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.283
-randu2_randn2      -0.870
-randu2_randn2      -1.600
-randu2_randn2       1.497
-randu2_randn2      -0.365
+randu2_randn2       2.053
+randu2_randn2       0.917
+randu2_randn2       1.197
+randu2_randn2       0.431
+randu2_randn2       1.323
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
+randu2_randn2       0.458
 randu2_randn2      -0.503
-randu2_randn2      -0.678
-randu2_randn2       0.271
-randu2_randn2       0.616
-randu2_randn2       0.010
+randu2_randn2      -0.176
+randu2_randn2       1.746
+randu2_randn2      -0.693
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.193
-randu2_randn2      -0.602
-randu2_randn2       0.040
-randu2_randn2      -0.628
-randu2_randn2      -1.357
-randu2_randn2       0.517
+randu2_randn2       2.110
+randu2_randn2       0.080
+randu2_randn2       0.613
+randu2_randn2      -0.334
+randu2_randn2      -0.425
+randu2_randn2       0.096
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2      -0.345
-randu2_randn2       0.423
-randu2_randn2       1.309
-randu2_randn2      -1.519
-randu2_randn2      -0.614
-randu2_randn2      -0.430
+randu2_randn2       0.562
+randu2_randn2       0.401
+randu2_randn2       2.102
+randu2_randn2      -2.334
+randu2_randn2      -1.068
+randu2_randn2      -0.715
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -64037,14 +64038,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.797       1.797       0.493
-randu2_randn2       1.702       1.702       0.493
-randu2_randn2       0.470       0.493       0.470
-randu2_randn2       0.493       0.470       0.470
-randu2_randn2      -0.456      -0.456       0.470
-randu2_randn2      -0.668      -0.456       0.470
-randu2_randn2      -0.109      -0.109       0.470
-randu2_randn2      -0.042      -0.042       0.493
+randu2_randn2       1.774       1.774       0.918
+randu2_randn2       0.918       1.077       0.918
+randu2_randn2       1.077       0.918       0.047
+randu2_randn2      -0.245      -0.013       0.549
+randu2_randn2      -0.013      -0.245       0.549
+randu2_randn2      -0.617      -0.013       0.549
+randu2_randn2       0.047       0.047       0.549
+randu2_randn2       0.549       0.549       0.549
 *** Running ferret script: bn_axis_cf.jnl
 [?1034h! Ticket 1792: Write axes with CF-compliant units
 ! and with standard name attributes for geophysical attrs.
@@ -69760,7 +69761,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -69818,7 +69819,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -69866,7 +69867,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -69914,7 +69915,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -69954,7 +69955,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -69995,7 +69996,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70065,7 +70066,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70118,7 +70119,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70182,7 +70183,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70226,7 +70227,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70270,7 +70271,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70314,7 +70315,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70355,7 +70356,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70586,7 +70587,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -70627,7 +70628,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -70678,7 +70679,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70726,7 +70727,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -70752,7 +70753,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -70778,7 +70779,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71208,7 +71209,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71237,7 +71238,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71288,7 +71289,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71856,8 +71857,8 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Wed Jul 20 16:33:54 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
-			"PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "Mon Jul 25 11:11:43 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
+			"PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
 }
@@ -71888,7 +71889,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71919,7 +71920,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71982,7 +71983,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -72010,7 +72011,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73707,7 +73708,7 @@ variables:
 		LABELS:history = "From http://dunkel.pmel.noaa.gov:8930/thredds/dodsC/data/atmos3.ncml" ;
 
 // global attributes:
-		:history = "PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73730,7 +73731,7 @@ variables:
 		STRVAR:long_name = "mystrings" ;
 
 // global attributes:
-		:history = "PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73946,7 +73947,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73976,7 +73977,7 @@ variables:
 		A:history = "From a" ;
 
 // global attributes:
-		:history = "PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73997,7 +73998,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74018,7 +74019,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74040,7 +74041,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74395,7 +74396,7 @@ sh grid a
  normal    X
  normal    Y
  normal    Z
- daysaxis  TIME                 5 r   01-MAY-2010 00:00    05-MAY-2010 00:00   full
+ DAYSAXIS  TIME                 5 r   01-MAY-2010 00:00    05-MAY-2010 00:00   full
  
 cancel data/all
  
@@ -74430,14 +74431,14 @@ X13AXIS
 ! Rename the axis
 set axis/name=x_in_meters x13axis
 say `a[d=1],return=xaxis`
- !-> MESSAGE/CONTINUE x_in_meters
-x_in_meters
+ !-> MESSAGE/CONTINUE X_IN_METERS
+X_IN_METERS
 say `b[d=2],return=xaxis`
- !-> MESSAGE/CONTINUE x_in_meters
-x_in_meters
+ !-> MESSAGE/CONTINUE X_IN_METERS
+X_IN_METERS
 say `c[d=3],return=xaxis`
- !-> MESSAGE/CONTINUE x_in_meters
-x_in_meters
+ !-> MESSAGE/CONTINUE X_IN_METERS
+X_IN_METERS
  
 ! For SHOW DAT/ATT we get info from the attribute structure.
 ! It has the udated name.
@@ -74447,7 +74448,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -74464,7 +74465,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -74481,7 +74482,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75684,7 +75685,7 @@ variables:
 		:geospatial_lat_max = 29.07 ;
 		:time_coverage_start = "2006-06-10T23:48:00Z" ;
 		:time_converage_end = "2006-06-11T00:12:00Z" ;
-		:history = "PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 }
  
 set mode/last upcase
@@ -75777,7 +75778,7 @@ variables:
 		lon360:history = "added to test_save_dsg.nc" ;
 
 // global attributes:
-		:history = "CruiseDsgNcFile 1.0PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "CruiseDsgNcFile 1.0PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 		:featureType = "Trajectory" ;
 		:Conventions = "Some other conventionsCF-1.6" ;
 		:geospatial_lon_min = -92.77 ;
@@ -75804,7 +75805,7 @@ can dat/all; use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
  ..history = Subset of etopo20,
- PyFERRET V7.01 (beta/debug) 20-Jul-16 
+ PyFERRET V7.01 (beta/debug) 25-Jul-16 
  ..Conventions = Existing conventions note, , CF-1.6 
  
  
@@ -75834,7 +75835,7 @@ can dat/all; use conventions_history
 ! The new attibutes
 sh att .
      attributes for dataset: ./conventions_history.nc
- ..history = The history of the filePyFERRET V7.01 (beta/debug) 20-Jul-16 
+ ..history = The history of the filePyFERRET V7.01 (beta/debug) 25-Jul-16 
  ..Conventions = Conventions for variables named V2CF-1.6 
 *** Running ferret script: bn_center_key_labels.jnl
 [?1034h! bn_center_key_labels
@@ -76727,8 +76728,8 @@ list {spawn:"ls xml*.jnl"}
  
 LET filesets = xcat({spawn:"ls *.nc"}, {spawn:"ls *.jnl"})
 say `filesets, return=isize`
- !-> MESSAGE/CONTINUE 972
-972
+ !-> MESSAGE/CONTINUE 975
+975
  
 let files = {spawn:"ls *cdf*.jnl"}
 let name_len = strindex(files, ".sub")
@@ -84421,20 +84422,20 @@ GO err696_time_overlay
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
 sp date
-Wed Jul 20 16:34:10 PDT 2016
+Mon Jul 25 11:12:00 PDT 2016
 set view upper
 plot t[gt=tax_nlp]
 plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
 sp date
-Wed Jul 20 16:34:10 PDT 2016
+Mon Jul 25 11:12:00 PDT 2016
  
 sp date
-Wed Jul 20 16:34:10 PDT 2016
+Mon Jul 25 11:12:00 PDT 2016
 set view lower
 plot t[gt=tax_jul]
 plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
 sp date
-Wed Jul 20 16:34:10 PDT 2016
+Mon Jul 25 11:12:00 PDT 2016
  
 GO bn_reset
 cancel mode verify
@@ -84491,7 +84492,7 @@ variables:
 		var:long_name = "0*TT + X[GX=XAX]" ;
 
 // global attributes:
-		:history = "PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -85362,7 +85363,7 @@ variables:
 		TEMP:history = "From /home/data/socat/socatV3/11SS/11SS20140225.nc" ;
 
 // global attributes:
-		:history = "PyFERRET V7.01 (beta/debug) 20-Jul-16" ;
+		:history = "PyFERRET V7.01 (beta/debug) 25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90137,7 +90138,7 @@ SHOW DATA/ATT t_f04_e3_1v ! note atts im_everwhere vs im_not_everwhere
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 20-Jul-16
+ .                               history         CHAR        37   T       PyFERRET V7.01 (beta/debug) 25-Jul-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (XAX)                  DOUBLE    units           CHAR        12   T       degrees_east
@@ -90621,7 +90622,7 @@ save/clobber/file=a.nc/outtype=float elev[d=1]
 use a.nc
 sh att .
      attributes for dataset: ./a.nc
- ..history = PyFERRET V7.01 (beta/debug) 20-Jul-16 
+ ..history = PyFERRET V7.01 (beta/debug) 25-Jul-16 
  ..Conventions = CF-1.6 
  ..dt_internal = 15
 sh att elev
@@ -90642,7 +90643,7 @@ save/clobber/file=a.nc/outtype=float elev[d=1]
 use a.nc
 sh att .
      attributes for dataset: ./a.nc
- ..history = PyFERRET V7.01 (beta/debug) 20-Jul-16 
+ ..history = PyFERRET V7.01 (beta/debug) 25-Jul-16 
  ..Conventions = CF-1.6 
 sh att elev
      attributes for dataset: ./a.nc
@@ -90764,9 +90765,9 @@ flow/DAT=2/den=3/L=3 taux,tauy
 [?1034h! bn_speedtest.jnl
 ! issue large numbers of commands, timing with clock time
 can mode verify
-10K LET commands LET a = 0 takes  1.271  seconds
-Second 10K LET commands LET a = 0 takes  2.907  seconds
-5K LOAD with transform takes  4.082  seconds
+10K LET commands LET a = 0 takes  1.249  seconds
+Second 10K LET commands LET a = 0 takes  2.808  seconds
+5K LOAD with transform takes  3.905  seconds
 *** Running ferret script: bn_show_noupcase.jnl
 [?1034h! bn_show_noupcase.jnl
 ! 1/2016 ticket 1796
@@ -95479,13 +95480,13 @@ FERRET_PLATFORM = "Linux 2.6.32-642.3.1.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "20-Jul-16"
-SESSION_TIME = "16:34"
-SESSION_PID = "18058"
-DELTA_CPU = "0.210967"
-CLOCK_SECS = "0.103"
-CURRENT_DATE = "20-Jul-16"
-CURRENT_TIME = "16:34:33"
+SESSION_DATE = "25-Jul-16"
+SESSION_TIME = "11:12"
+SESSION_PID = "1263"
+DELTA_CPU = "0.213967"
+CLOCK_SECS = "0.105"
+CURRENT_DATE = "25-Jul-16"
+CURRENT_TIME = "11:12:24"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 GO_FILE = "./bn_startupfile.jnl"
@@ -95511,7 +95512,7 @@ PPL$COMMAND_FILE = "$$MEMBUF$$"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 PPL$SCALE = "1.0000"
-WIN_TITLE = "20-Jul-16_16:34"
+WIN_TITLE = "25-Jul-16_11:12"
 VP_SCALE = "1"
 VP_RT_MARGIN = "1"
 VP_TOP_MARGIN = "1.4"
@@ -95564,6 +95565,2070 @@ VP_YHI = "1"
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3
  
+*** Running ferret script: err700_decimate.jnl
+[?1034h! err700_decimate.jnl
+! test decimation of SOCAT full-data DSG files
+!
+ 
+! Make sure the decimated file does not exist
+sp rm -f 492C19881104_dec.nc
+! Run the socat decimation script on a full-data DSG file
+go ddsg_socat3 492C19881104.nc 492C19881104_dec.nc
+! ddsg_socat3.jnl
+! ACM 5/16/2014
+ 
+! Compute and apply sampling for a single-trajectory dsg file
+! using piecewise linear interpolation
+ 
+! Uses the external function piecewise3.so
+! This script contains a list of the variables in the input
+! files. This allows us to create the decimated dsg file
+! with the exact same names as in the input files.
+!
+! WOCE flags are not used in the decimated datasets, as they may change in the
+! full data. Keep them in the file for a consistent set of variables, but mark
+! them with the unused flag "M".
+ 
+! arguments:
+!  input_file single dsg file
+!  output_file to write
+!
+ 
+DEFINE SYMBOL infile = ($1)
+ !-> DEFINE SYMBOL infile = 492C19881104.nc
+DEFINE SYMBOL outfile = ($2)
+ !-> DEFINE SYMBOL outfile = 492C19881104_dec.nc
+ 
+! Set the tolerances and control parameter
+ 
+DEFINE SYMBOL tol_lon = 1
+DEFINE SYMBOL tol_lat = 1
+DEFINE SYMBOL tol_var = 4
+ 
+LET tol1 = ($tol_lon)
+ !-> DEFINE VARIABLE tol1 = 1
+LET tol2 = ($tol_lat)
+ !-> DEFINE VARIABLE tol2 = 1
+let tol3 = ($tol_var)
+ !-> DEFINE VARIABLE tol3 = 4
+ 
+LET control = 2
+ 
+USE "($infile)"
+ !-> SET DAT/FORM=CDF "492C19881104.nc"
+ 
+! The names in the input and output file must match.
+! To accomplish that we will rename the variables in the input file.
+! varnames_list is a stable list of the original names. Check that it
+! matches what's in the file, and rename the file variables.
+ 
+LET varnames =  ..varnames
+LET nvars =  ..nvars
+ 
+! Will also add nobs_deci.
+ 
+LET varnames_traj = {\
+"num_obs","expocode","dataset_name","vessel_name","organization",\
+"geospatial_lon_min","geospatial_lon_max","geospatial_lat_min",\
+"geospatial_lat_max","time_coverage_start","time_converage_end",\
+"investigators","socat_version","all_region_ids","socat_doi",\
+"qc_flag","nobs_full"}
+ 
+! The text is too long for one Ferret command. Define two variables and concatenate them.
+ 
+LET varnames_list1 = {\
+"sample_number","year","month","day","hour","minute","second",\
+"longitude","latitude","sample_depth","sal","Temperature_equi",\
+"temp","Temperature_atm","Pressure_equi","Pressure_atm",\
+"xCO2_water_equi_temp_dry_ppm","xCO2_water_sst_dry_ppm",\
+"xCO2_water_equi_temp_wet_ppm","xCO2_water_sst_wet_ppm",\
+"pCO2_water_equi_temp","pCO2_water_sst_100humidity_uatm",\
+"fCO2_water_equi_uatm","fCO2_water_sst_100humidity_uatm",\
+"xCO2_atm_dry_actual","xCO2_atm_dry_interp",\
+"pCO2_atm_wet_actual","pCO2_atm_wet_interp",\
+"fCO2_atm_wet_actual","fCO2_atm_wet_interp",\
+"delta_xCO2","delta_pCO2","delta_fCO2",\
+"xH2O_equi","relative_humidity","specific_humidity",\
+"ship_speed","ship_dir","wind_speed_true","wind_speed_rel",\
+"wind_dir_true","wind_dir_rel","WOCE_CO2_water","WOCE_CO2_atm"\
+}
+LET varnames_list2 = {\
+"woa_sss","pressure_ncep_slp",\
+"fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm",\
+"fCO2_insitu_from_xCO2_water_sst_dry_ppm",\
+"fCO2_from_pCO2_water_water_equi_temp",\
+"fCO2_from_pCO2_water_sst_100humidity_uatm",\
+"fCO2_insitu_from_fCO2_water_equi_uatm",\
+"fCO2_insitu_from_fCO2_water_sst_100humidty_uatm",\
+"fCO2_from_pCO2_water_water_equi_temp_ncep",\
+"fCO2_from_pCO2_water_sst_100humidity_uatm_ncep",\
+"fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa",\
+"fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa",\
+"fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep",\
+"fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep",\
+"fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa",\
+"fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa",\
+"fCO2_recommended","fCO2_source","delta_temp","region_id",\
+"calc_speed","etopo2","gvCO2","dist_to_land",\
+"day_of_year","time","lon360","tmonth"\
+}
+ 
+LET varnames_list = XCAT(varnames_list1, varnames_list2)
+ 
+LET ntraj = `varnames_traj,return=isize`
+ !-> DEFINE VARIABLE ntraj = 17
+LET nlist = `varnames_list,return=isize`
+ !-> DEFINE VARIABLE nlist = 72
+ 
+!IF `nvars NE (ntraj+nlist)` THEN
+!   say **ERROR List of variables in the script does not match list in the dataset
+!   say **ERROR "($infile)" has `nvars` variables, script list has `nlist`
+!   exit/script
+!ENDIF
+ 
+! Check that the variable names in the lists are in the file.
+! If so rename the variables in the input file to varname_in
+ 
+ 
+SET VAR/NAME=nobs_deci_in nobs_deci
+ 
+LET vdiff = 0
+REPEAT/range=1:`ntraj`/name=v (DEFINE SYMBOL  vv = `v`;\
+ DEFINE SYMBOL vname = `varnames_traj[i=($vv)]`;\
+ IF `IS_ELEMENT_OF_STR_N(varnames, "($vname)") EQ 0` THEN LET vdiff = `v`;\
+ IF `vdiff GT 0` THEN EXIT/LOOP;\
+ SET VAR/NAME=($vname)_in ($vname))
+ !-> REPEAT/range=1:17/name=v (DEFINE SYMBOL  vv = `v`; DEFINE SYMBOL vname = `varnames_traj[i=($vv)]`; IF `IS_ELEMENT_OF_STR_N(varnames, "($vname)") EQ 0` THEN LET vdiff = `v`; IF `vdiff GT 0` THEN EXIT/LOOP; SET VAR/NAME=($vname)_in ($vname))
+!-> REPEAT: V:1
+ !-> DEFINE SYMBOL  vv = 1
+ !-> DEFINE SYMBOL vname = num_obs
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=num_obs_in num_obs
+!-> REPEAT: V:2
+ !-> DEFINE SYMBOL  vv = 2
+ !-> DEFINE SYMBOL vname = expocode
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=expocode_in expocode
+!-> REPEAT: V:3
+ !-> DEFINE SYMBOL  vv = 3
+ !-> DEFINE SYMBOL vname = dataset_name
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=dataset_name_in dataset_name
+!-> REPEAT: V:4
+ !-> DEFINE SYMBOL  vv = 4
+ !-> DEFINE SYMBOL vname = vessel_name
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=vessel_name_in vessel_name
+!-> REPEAT: V:5
+ !-> DEFINE SYMBOL  vv = 5
+ !-> DEFINE SYMBOL vname = organization
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=organization_in organization
+!-> REPEAT: V:6
+ !-> DEFINE SYMBOL  vv = 6
+ !-> DEFINE SYMBOL vname = geospatial_lon_min
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=geospatial_lon_min_in geospatial_lon_min
+!-> REPEAT: V:7
+ !-> DEFINE SYMBOL  vv = 7
+ !-> DEFINE SYMBOL vname = geospatial_lon_max
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=geospatial_lon_max_in geospatial_lon_max
+!-> REPEAT: V:8
+ !-> DEFINE SYMBOL  vv = 8
+ !-> DEFINE SYMBOL vname = geospatial_lat_min
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=geospatial_lat_min_in geospatial_lat_min
+!-> REPEAT: V:9
+ !-> DEFINE SYMBOL  vv = 9
+ !-> DEFINE SYMBOL vname = geospatial_lat_max
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=geospatial_lat_max_in geospatial_lat_max
+!-> REPEAT: V:10
+ !-> DEFINE SYMBOL  vv = 10
+ !-> DEFINE SYMBOL vname = time_coverage_start
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=time_coverage_start_in time_coverage_start
+!-> REPEAT: V:11
+ !-> DEFINE SYMBOL  vv = 11
+ !-> DEFINE SYMBOL vname = time_converage_end
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=time_converage_end_in time_converage_end
+!-> REPEAT: V:12
+ !-> DEFINE SYMBOL  vv = 12
+ !-> DEFINE SYMBOL vname = investigators
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=investigators_in investigators
+!-> REPEAT: V:13
+ !-> DEFINE SYMBOL  vv = 13
+ !-> DEFINE SYMBOL vname = socat_version
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=socat_version_in socat_version
+!-> REPEAT: V:14
+ !-> DEFINE SYMBOL  vv = 14
+ !-> DEFINE SYMBOL vname = all_region_ids
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=all_region_ids_in all_region_ids
+!-> REPEAT: V:15
+ !-> DEFINE SYMBOL  vv = 15
+ !-> DEFINE SYMBOL vname = socat_doi
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=socat_doi_in socat_doi
+!-> REPEAT: V:16
+ !-> DEFINE SYMBOL  vv = 16
+ !-> DEFINE SYMBOL vname = qc_flag
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=qc_flag_in qc_flag
+!-> REPEAT: V:17
+ !-> DEFINE SYMBOL  vv = 17
+ !-> DEFINE SYMBOL vname = nobs_full
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=nobs_full_in nobs_full
+ 
+LET vdiff = 0
+REPEAT/range=1:`nlist`/name=v (DEFINE SYMBOL  vv = `v`;\
+ DEFINE SYMBOL vname = `varnames_list[i=($vv)]`;\
+ IF `IS_ELEMENT_OF_STR_N(varnames, "($vname)") EQ 0` THEN LET vdiff = `v`;\
+ IF `vdiff GT 0` THEN EXIT/LOOP;\
+ SET VAR/NAME=($vname)_in ($vname))
+ !-> REPEAT/range=1:72/name=v (DEFINE SYMBOL  vv = `v`; DEFINE SYMBOL vname = `varnames_list[i=($vv)]`; IF `IS_ELEMENT_OF_STR_N(varnames, "($vname)") EQ 0` THEN LET vdiff = `v`; IF `vdiff GT 0` THEN EXIT/LOOP; SET VAR/NAME=($vname)_in ($vname))
+!-> REPEAT: V:1
+ !-> DEFINE SYMBOL  vv = 1
+ !-> DEFINE SYMBOL vname = sample_number
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=sample_number_in sample_number
+!-> REPEAT: V:2
+ !-> DEFINE SYMBOL  vv = 2
+ !-> DEFINE SYMBOL vname = year
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=year_in year
+!-> REPEAT: V:3
+ !-> DEFINE SYMBOL  vv = 3
+ !-> DEFINE SYMBOL vname = month
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=month_in month
+!-> REPEAT: V:4
+ !-> DEFINE SYMBOL  vv = 4
+ !-> DEFINE SYMBOL vname = day
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=day_in day
+!-> REPEAT: V:5
+ !-> DEFINE SYMBOL  vv = 5
+ !-> DEFINE SYMBOL vname = hour
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=hour_in hour
+!-> REPEAT: V:6
+ !-> DEFINE SYMBOL  vv = 6
+ !-> DEFINE SYMBOL vname = minute
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=minute_in minute
+!-> REPEAT: V:7
+ !-> DEFINE SYMBOL  vv = 7
+ !-> DEFINE SYMBOL vname = second
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=second_in second
+!-> REPEAT: V:8
+ !-> DEFINE SYMBOL  vv = 8
+ !-> DEFINE SYMBOL vname = longitude
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=longitude_in longitude
+!-> REPEAT: V:9
+ !-> DEFINE SYMBOL  vv = 9
+ !-> DEFINE SYMBOL vname = latitude
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=latitude_in latitude
+!-> REPEAT: V:10
+ !-> DEFINE SYMBOL  vv = 10
+ !-> DEFINE SYMBOL vname = sample_depth
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=sample_depth_in sample_depth
+!-> REPEAT: V:11
+ !-> DEFINE SYMBOL  vv = 11
+ !-> DEFINE SYMBOL vname = sal
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=sal_in sal
+!-> REPEAT: V:12
+ !-> DEFINE SYMBOL  vv = 12
+ !-> DEFINE SYMBOL vname = Temperature_equi
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=Temperature_equi_in Temperature_equi
+!-> REPEAT: V:13
+ !-> DEFINE SYMBOL  vv = 13
+ !-> DEFINE SYMBOL vname = temp
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=temp_in temp
+!-> REPEAT: V:14
+ !-> DEFINE SYMBOL  vv = 14
+ !-> DEFINE SYMBOL vname = Temperature_atm
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=Temperature_atm_in Temperature_atm
+!-> REPEAT: V:15
+ !-> DEFINE SYMBOL  vv = 15
+ !-> DEFINE SYMBOL vname = Pressure_equi
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=Pressure_equi_in Pressure_equi
+!-> REPEAT: V:16
+ !-> DEFINE SYMBOL  vv = 16
+ !-> DEFINE SYMBOL vname = Pressure_atm
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=Pressure_atm_in Pressure_atm
+!-> REPEAT: V:17
+ !-> DEFINE SYMBOL  vv = 17
+ !-> DEFINE SYMBOL vname = xCO2_water_equi_temp_dry_ppm
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=xCO2_water_equi_temp_dry_ppm_in xCO2_water_equi_temp_dry_ppm
+!-> REPEAT: V:18
+ !-> DEFINE SYMBOL  vv = 18
+ !-> DEFINE SYMBOL vname = xCO2_water_sst_dry_ppm
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=xCO2_water_sst_dry_ppm_in xCO2_water_sst_dry_ppm
+!-> REPEAT: V:19
+ !-> DEFINE SYMBOL  vv = 19
+ !-> DEFINE SYMBOL vname = xCO2_water_equi_temp_wet_ppm
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=xCO2_water_equi_temp_wet_ppm_in xCO2_water_equi_temp_wet_ppm
+!-> REPEAT: V:20
+ !-> DEFINE SYMBOL  vv = 20
+ !-> DEFINE SYMBOL vname = xCO2_water_sst_wet_ppm
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=xCO2_water_sst_wet_ppm_in xCO2_water_sst_wet_ppm
+!-> REPEAT: V:21
+ !-> DEFINE SYMBOL  vv = 21
+ !-> DEFINE SYMBOL vname = pCO2_water_equi_temp
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=pCO2_water_equi_temp_in pCO2_water_equi_temp
+!-> REPEAT: V:22
+ !-> DEFINE SYMBOL  vv = 22
+ !-> DEFINE SYMBOL vname = pCO2_water_sst_100humidity_uatm
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=pCO2_water_sst_100humidity_uatm_in pCO2_water_sst_100humidity_uatm
+!-> REPEAT: V:23
+ !-> DEFINE SYMBOL  vv = 23
+ !-> DEFINE SYMBOL vname = fCO2_water_equi_uatm
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_water_equi_uatm_in fCO2_water_equi_uatm
+!-> REPEAT: V:24
+ !-> DEFINE SYMBOL  vv = 24
+ !-> DEFINE SYMBOL vname = fCO2_water_sst_100humidity_uatm
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_water_sst_100humidity_uatm_in fCO2_water_sst_100humidity_uatm
+!-> REPEAT: V:25
+ !-> DEFINE SYMBOL  vv = 25
+ !-> DEFINE SYMBOL vname = xCO2_atm_dry_actual
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=xCO2_atm_dry_actual_in xCO2_atm_dry_actual
+!-> REPEAT: V:26
+ !-> DEFINE SYMBOL  vv = 26
+ !-> DEFINE SYMBOL vname = xCO2_atm_dry_interp
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=xCO2_atm_dry_interp_in xCO2_atm_dry_interp
+!-> REPEAT: V:27
+ !-> DEFINE SYMBOL  vv = 27
+ !-> DEFINE SYMBOL vname = pCO2_atm_wet_actual
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=pCO2_atm_wet_actual_in pCO2_atm_wet_actual
+!-> REPEAT: V:28
+ !-> DEFINE SYMBOL  vv = 28
+ !-> DEFINE SYMBOL vname = pCO2_atm_wet_interp
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=pCO2_atm_wet_interp_in pCO2_atm_wet_interp
+!-> REPEAT: V:29
+ !-> DEFINE SYMBOL  vv = 29
+ !-> DEFINE SYMBOL vname = fCO2_atm_wet_actual
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_atm_wet_actual_in fCO2_atm_wet_actual
+!-> REPEAT: V:30
+ !-> DEFINE SYMBOL  vv = 30
+ !-> DEFINE SYMBOL vname = fCO2_atm_wet_interp
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_atm_wet_interp_in fCO2_atm_wet_interp
+!-> REPEAT: V:31
+ !-> DEFINE SYMBOL  vv = 31
+ !-> DEFINE SYMBOL vname = delta_xCO2
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=delta_xCO2_in delta_xCO2
+!-> REPEAT: V:32
+ !-> DEFINE SYMBOL  vv = 32
+ !-> DEFINE SYMBOL vname = delta_pCO2
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=delta_pCO2_in delta_pCO2
+!-> REPEAT: V:33
+ !-> DEFINE SYMBOL  vv = 33
+ !-> DEFINE SYMBOL vname = delta_fCO2
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=delta_fCO2_in delta_fCO2
+!-> REPEAT: V:34
+ !-> DEFINE SYMBOL  vv = 34
+ !-> DEFINE SYMBOL vname = xH2O_equi
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=xH2O_equi_in xH2O_equi
+!-> REPEAT: V:35
+ !-> DEFINE SYMBOL  vv = 35
+ !-> DEFINE SYMBOL vname = relative_humidity
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=relative_humidity_in relative_humidity
+!-> REPEAT: V:36
+ !-> DEFINE SYMBOL  vv = 36
+ !-> DEFINE SYMBOL vname = specific_humidity
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=specific_humidity_in specific_humidity
+!-> REPEAT: V:37
+ !-> DEFINE SYMBOL  vv = 37
+ !-> DEFINE SYMBOL vname = ship_speed
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=ship_speed_in ship_speed
+!-> REPEAT: V:38
+ !-> DEFINE SYMBOL  vv = 38
+ !-> DEFINE SYMBOL vname = ship_dir
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=ship_dir_in ship_dir
+!-> REPEAT: V:39
+ !-> DEFINE SYMBOL  vv = 39
+ !-> DEFINE SYMBOL vname = wind_speed_true
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=wind_speed_true_in wind_speed_true
+!-> REPEAT: V:40
+ !-> DEFINE SYMBOL  vv = 40
+ !-> DEFINE SYMBOL vname = wind_speed_rel
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=wind_speed_rel_in wind_speed_rel
+!-> REPEAT: V:41
+ !-> DEFINE SYMBOL  vv = 41
+ !-> DEFINE SYMBOL vname = wind_dir_true
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=wind_dir_true_in wind_dir_true
+!-> REPEAT: V:42
+ !-> DEFINE SYMBOL  vv = 42
+ !-> DEFINE SYMBOL vname = wind_dir_rel
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=wind_dir_rel_in wind_dir_rel
+!-> REPEAT: V:43
+ !-> DEFINE SYMBOL  vv = 43
+ !-> DEFINE SYMBOL vname = WOCE_CO2_water
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=WOCE_CO2_water_in WOCE_CO2_water
+!-> REPEAT: V:44
+ !-> DEFINE SYMBOL  vv = 44
+ !-> DEFINE SYMBOL vname = WOCE_CO2_atm
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=WOCE_CO2_atm_in WOCE_CO2_atm
+!-> REPEAT: V:45
+ !-> DEFINE SYMBOL  vv = 45
+ !-> DEFINE SYMBOL vname = woa_sss
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=woa_sss_in woa_sss
+!-> REPEAT: V:46
+ !-> DEFINE SYMBOL  vv = 46
+ !-> DEFINE SYMBOL vname = pressure_ncep_slp
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=pressure_ncep_slp_in pressure_ncep_slp
+!-> REPEAT: V:47
+ !-> DEFINE SYMBOL  vv = 47
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_in fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm
+!-> REPEAT: V:48
+ !-> DEFINE SYMBOL  vv = 48
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_sst_dry_ppm
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_insitu_from_xCO2_water_sst_dry_ppm_in fCO2_insitu_from_xCO2_water_sst_dry_ppm
+!-> REPEAT: V:49
+ !-> DEFINE SYMBOL  vv = 49
+ !-> DEFINE SYMBOL vname = fCO2_from_pCO2_water_water_equi_temp
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_from_pCO2_water_water_equi_temp_in fCO2_from_pCO2_water_water_equi_temp
+!-> REPEAT: V:50
+ !-> DEFINE SYMBOL  vv = 50
+ !-> DEFINE SYMBOL vname = fCO2_from_pCO2_water_sst_100humidity_uatm
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_from_pCO2_water_sst_100humidity_uatm_in fCO2_from_pCO2_water_sst_100humidity_uatm
+!-> REPEAT: V:51
+ !-> DEFINE SYMBOL  vv = 51
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_fCO2_water_equi_uatm
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_insitu_from_fCO2_water_equi_uatm_in fCO2_insitu_from_fCO2_water_equi_uatm
+!-> REPEAT: V:52
+ !-> DEFINE SYMBOL  vv = 52
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_fCO2_water_sst_100humidty_uatm
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_insitu_from_fCO2_water_sst_100humidty_uatm_in fCO2_insitu_from_fCO2_water_sst_100humidty_uatm
+!-> REPEAT: V:53
+ !-> DEFINE SYMBOL  vv = 53
+ !-> DEFINE SYMBOL vname = fCO2_from_pCO2_water_water_equi_temp_ncep
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_from_pCO2_water_water_equi_temp_ncep_in fCO2_from_pCO2_water_water_equi_temp_ncep
+!-> REPEAT: V:54
+ !-> DEFINE SYMBOL  vv = 54
+ !-> DEFINE SYMBOL vname = fCO2_from_pCO2_water_sst_100humidity_uatm_ncep
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_from_pCO2_water_sst_100humidity_uatm_ncep_in fCO2_from_pCO2_water_sst_100humidity_uatm_ncep
+!-> REPEAT: V:55
+ !-> DEFINE SYMBOL  vv = 55
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa_in fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa
+!-> REPEAT: V:56
+ !-> DEFINE SYMBOL  vv = 56
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa_in fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa
+!-> REPEAT: V:57
+ !-> DEFINE SYMBOL  vv = 57
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_in fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep
+!-> REPEAT: V:58
+ !-> DEFINE SYMBOL  vv = 58
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_in fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep
+!-> REPEAT: V:59
+ !-> DEFINE SYMBOL  vv = 59
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa_in fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa
+!-> REPEAT: V:60
+ !-> DEFINE SYMBOL  vv = 60
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa_in fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa
+!-> REPEAT: V:61
+ !-> DEFINE SYMBOL  vv = 61
+ !-> DEFINE SYMBOL vname = fCO2_recommended
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_recommended_in fCO2_recommended
+!-> REPEAT: V:62
+ !-> DEFINE SYMBOL  vv = 62
+ !-> DEFINE SYMBOL vname = fCO2_source
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=fCO2_source_in fCO2_source
+!-> REPEAT: V:63
+ !-> DEFINE SYMBOL  vv = 63
+ !-> DEFINE SYMBOL vname = delta_temp
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=delta_temp_in delta_temp
+!-> REPEAT: V:64
+ !-> DEFINE SYMBOL  vv = 64
+ !-> DEFINE SYMBOL vname = region_id
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=region_id_in region_id
+!-> REPEAT: V:65
+ !-> DEFINE SYMBOL  vv = 65
+ !-> DEFINE SYMBOL vname = calc_speed
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=calc_speed_in calc_speed
+!-> REPEAT: V:66
+ !-> DEFINE SYMBOL  vv = 66
+ !-> DEFINE SYMBOL vname = etopo2
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=etopo2_in etopo2
+!-> REPEAT: V:67
+ !-> DEFINE SYMBOL  vv = 67
+ !-> DEFINE SYMBOL vname = gvCO2
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=gvCO2_in gvCO2
+!-> REPEAT: V:68
+ !-> DEFINE SYMBOL  vv = 68
+ !-> DEFINE SYMBOL vname = dist_to_land
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=dist_to_land_in dist_to_land
+!-> REPEAT: V:69
+ !-> DEFINE SYMBOL  vv = 69
+ !-> DEFINE SYMBOL vname = day_of_year
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=day_of_year_in day_of_year
+!-> REPEAT: V:70
+ !-> DEFINE SYMBOL  vv = 70
+ !-> DEFINE SYMBOL vname = time
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=time_in time
+!-> REPEAT: V:71
+ !-> DEFINE SYMBOL  vv = 71
+ !-> DEFINE SYMBOL vname = lon360
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=lon360_in lon360
+!-> REPEAT: V:72
+ !-> DEFINE SYMBOL  vv = 72
+ !-> DEFINE SYMBOL vname = tmonth
+ !-> IF 0 THEN LET vdiff = `v`
+ !-> IF 0 THEN EXIT/LOOP
+ !-> SET VAR/NAME=tmonth_in tmonth
+ 
+IF `vdiff GT 0` THEN
+ !-> IF 0 THEN
+ENDIF
+ 
+ 
+! Which longitude to use for decimating: lon360 or longitude
+ 
+let dlon = minmax(longitude_in[i=@ddf])
+let dlon360 = minmax(lon360_in[i=@ddf])
+ 
+IF `abs(dlon[i=@max]) LT abs(dlon360[i=@max])` THEN
+ !-> IF 0 THEN
+ELSE
+   DEFINE SYMBOL lonvar = lon360_in
+ENDIF
+ 
+LET sample_pts= piecewise3(($lonvar), latitude_in, fCO2_recommended_in, `control`, `tol1`, `tol2`, `tol3`)
+ !-> DEFINE VARIABLE sample_pts= piecewise3(lon360_in, latitude_in, fCO2_recommended_in, 2, 1, 1, 4)
+LOAD sample_pts
+ 
+DEFINE SYMBOL output_filename = ($outfile)
+ !-> DEFINE SYMBOL output_filename = 492C19881104_dec.nc
+ 
+! File will get all the global attributes
+ 
+set att/out=all .
+can mode upcase
+ 
+! Single-point axis for instance direction
+! The set axis/name is to make sure Ferret uses lowercase
+ 
+SET AXIS/NAME=traj_in `num_obs_in,RETURN=eaxis`
+ !-> SET AXIS/NAME=traj_in trajectory
+DEF AXIS/E=1:1:1 traj_def
+SET AXIS/NAME=traj traj_def
+LET ee = _e[ge=traj]
+ 
+! obs axis for sampled observation variables
+ 
+SET AXIS/NAME=obj_in `longitude_in,RETURN=xaxis`
+ !-> SET AXIS/NAME=obj_in obs
+LET nsample = `sample_pts[i=@ngd]`
+ !-> DEFINE VARIABLE nsample = 23
+DEFINE AXIS/x=1:`nsample`:1 obs_def
+ !-> DEFINE AXIS/x=1:23:1 obs_def
+SET AXIS/NAME=obs obs_def
+LET samplevar = sample_pts[gx=obs@asn]
+ 
+! New num_obs variable with number of sampled data
+! Make sure it has the right sample_dimension attribute
+ 
+LET/BAD=-99 num_obs = reshape(nsample,ee)
+SET ATT/LIKE=num_obs_in num_obs
+DEFINE ATT/QUIET/OUTPUT num_obs.sample_dimension = "`num_obs_in.sample_dimension`"
+ !-> DEFINE ATT/QUIET/OUTPUT num_obs.sample_dimension = "obs"
+SET ATT/OUTPUT=all num_obs
+DEFINE SYMBOL num_obs_sampled = `nsample`
+ !-> DEFINE SYMBOL num_obs_sampled = 23
+ 
+! write a global attribute with the decimation parameters.
+DEFINE ATT/QUIET/OUTPUT ..decimation =  \
+"`nobs_full_in` original number of obs. Piecewise decimated to ($num_obs_sampled) obs using tolerances: lon ($tol_lon), lat ($tol_lon), fco2_rec ($tol_var) ($comment)"
+ !-> DEFINE ATT/QUIET/OUTPUT ..decimation =  "218 original number of obs. Piecewise decimated to 23 obs using tolerances: lon 1, lat 1, fco2_rec 4  "
+ 
+SAVE/QUIET/FILE="($outfile)"/OUTTYPE=INT/CLOBBER num_obs
+ !-> LIST/FORMAT=CDF/QUIET/FILE="492C19881104_dec.nc"/OUTTYPE=INT/CLOBBER num_obs
+ 
+ 
+! Write the traj variables
+ 
+REPEAT/RANGE=2:`ntraj`/NAME=q (DEFINE SYMBOL qq = `q`;\
+DEFINE SYMBOL vname = `varnames_traj[i=($qq)]`;\
+DEFINE SYMBOL vtype = `($vname)_in,RETURN=dtype`;\
+DEFINE SYMBOL qual = /OUTTYPE=($vtype);\
+IF ($vtype"0|CHAR>1|*>0") THEN CAN SYM qual;\
+LET ($vname) = ($vname)_in[ge=traj@asn];\
+SET ATT/LIKE=($vname)_in ($vname);\
+SET ATT/OUTPUT=all ($vname);\
+if `strindex("($vtype)", "INT") gt 0` THEN set var/bad=`($vname)_in,return=bad` ($vname);\
+SAVE/QUIET/FILE="($outfile)"/APPEND($qual) ($vname))
+ !-> REPEAT/RANGE=2:17/NAME=q (DEFINE SYMBOL qq = `q`;DEFINE SYMBOL vname = `varnames_traj[i=($qq)]`;DEFINE SYMBOL vtype = `($vname)_in,RETURN=dtype`;DEFINE SYMBOL qual = /OUTTYPE=($vtype);IF ($vtype"0|CHAR>1|*>0") THEN CAN SYM qual;LET ($vname) = ($vname)_in[ge=traj@asn];SET ATT/LIKE=($vname)_in ($vname);SET ATT/OUTPUT=all ($vname);if `strindex("($vtype)", "INT") gt 0` THEN set var/bad=`($vname)_in,return=bad` ($vname);SAVE/QUIET/FILE="($outfile)"/APPEND($qual) ($vname))
+!-> REPEAT: Q:2
+ !-> DEFINE SYMBOL qq = 2
+ !-> DEFINE SYMBOL vname = expocode
+ !-> DEFINE SYMBOL vtype = CHAR
+ !-> DEFINE SYMBOL qual = /OUTTYPE=CHAR
+ !-> IF 1 THEN CAN SYM qual
+ !-> DEFINE VARIABLE expocode = expocode_in[ge=traj@asn]
+ !-> SET ATT/LIKE=expocode_in expocode
+ !-> SET ATT/OUTPUT=all expocode
+ !-> if 0 THEN set var/bad=`expocode_in,return=bad` expocode
+ !-> LIST/FORMAT=CDF/QUIET/FILE="492C19881104_dec.nc"/APPEND  expocode
+!-> REPEAT: Q:3
+ !-> DEFINE SYMBOL qq = 3
+ !-> DEFINE SYMBOL vname = dataset_name
+ !-> DEFINE SYMBOL vtype = CHAR
+ !-> DEFINE SYMBOL qual = /OUTTYPE=CHAR
+ !-> IF 1 THEN CAN SYM qual
+ !-> DEFINE VARIABLE dataset_name = dataset_name_in[ge=traj@asn]
+ !-> SET ATT/LIKE=dataset_name_in dataset_name
+ !-> SET ATT/OUTPUT=all dataset_name
+ !-> if 0 THEN set var/bad=`dataset_name_in,return=bad` dataset_name
+ !-> LIST/FORMAT=CDF/QUIET/FILE="492C19881104_dec.nc"/APPEND  dataset_name
+!-> REPEAT: Q:4
+ !-> DEFINE SYMBOL qq = 4
+ !-> DEFINE SYMBOL vname = vessel_name
+ !-> DEFINE SYMBOL vtype = CHAR
+ !-> DEFINE SYMBOL qual = /OUTTYPE=CHAR
+ !-> IF 1 THEN CAN SYM qual
+ !-> DEFINE VARIABLE vessel_name = vessel_name_in[ge=traj@asn]
+ !-> SET ATT/LIKE=vessel_name_in vessel_name
+ !-> SET ATT/OUTPUT=all vessel_name
+ !-> if 0 THEN set var/bad=`vessel_name_in,return=bad` vessel_name
+ !-> LIST/FORMAT=CDF/QUIET/FILE="492C19881104_dec.nc"/APPEND  vessel_name
+!-> REPEAT: Q:5
+ !-> DEFINE SYMBOL qq = 5
+ !-> DEFINE SYMBOL vname = organization
+ !-> DEFINE SYMBOL vtype = CHAR
+ !-> DEFINE SYMBOL qual = /OUTTYPE=CHAR
+ !-> IF 1 THEN CAN SYM qual
+ !-> DEFINE VARIABLE organization = organization_in[ge=traj@asn]
+ !-> SET ATT/LIKE=organization_in organization
+ !-> SET ATT/OUTPUT=all organization
+ !-> if 0 THEN set var/bad=`organization_in,return=bad` organization
+ !-> LIST/FORMAT=CDF/QUIET/FILE="492C19881104_dec.nc"/APPEND  organization
+!-> REPEAT: Q:6
+ !-> DEFINE SYMBOL qq = 6
+ !-> DEFINE SYMBOL vname = geospatial_lon_min
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> DEFINE SYMBOL qual = /OUTTYPE=DOUBLE
+ !-> IF 0 THEN CAN SYM qual
+ !-> DEFINE VARIABLE geospatial_lon_min = geospatial_lon_min_in[ge=traj@asn]
+ !-> SET ATT/LIKE=geospatial_lon_min_in geospatial_lon_min
+ !-> SET ATT/OUTPUT=all geospatial_lon_min
+ !-> if 0 THEN set var/bad=`geospatial_lon_min_in,return=bad` geospatial_lon_min
+ !-> LIST/FORMAT=CDF/QUIET/FILE="492C19881104_dec.nc"/APPEND/OUTTYPE=DOUBLE geospatial_lon_min
+!-> REPEAT: Q:7
+ !-> DEFINE SYMBOL qq = 7
+ !-> DEFINE SYMBOL vname = geospatial_lon_max
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> DEFINE SYMBOL qual = /OUTTYPE=DOUBLE
+ !-> IF 0 THEN CAN SYM qual
+ !-> DEFINE VARIABLE geospatial_lon_max = geospatial_lon_max_in[ge=traj@asn]
+ !-> SET ATT/LIKE=geospatial_lon_max_in geospatial_lon_max
+ !-> SET ATT/OUTPUT=all geospatial_lon_max
+ !-> if 0 THEN set var/bad=`geospatial_lon_max_in,return=bad` geospatial_lon_max
+ !-> LIST/FORMAT=CDF/QUIET/FILE="492C19881104_dec.nc"/APPEND/OUTTYPE=DOUBLE geospatial_lon_max
+!-> REPEAT: Q:8
+ !-> DEFINE SYMBOL qq = 8
+ !-> DEFINE SYMBOL vname = geospatial_lat_min
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> DEFINE SYMBOL qual = /OUTTYPE=DOUBLE
+ !-> IF 0 THEN CAN SYM qual
+ !-> DEFINE VARIABLE geospatial_lat_min = geospatial_lat_min_in[ge=traj@asn]
+ !-> SET ATT/LIKE=geospatial_lat_min_in geospatial_lat_min
+ !-> SET ATT/OUTPUT=all geospatial_lat_min
+ !-> if 0 THEN set var/bad=`geospatial_lat_min_in,return=bad` geospatial_lat_min
+ !-> LIST/FORMAT=CDF/QUIET/FILE="492C19881104_dec.nc"/APPEND/OUTTYPE=DOUBLE geospatial_lat_min
+!-> REPEAT: Q:9
+ !-> DEFINE SYMBOL qq = 9
+ !-> DEFINE SYMBOL vname = geospatial_lat_max
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> DEFINE SYMBOL qual = /OUTTYPE=DOUBLE
+ !-> IF 0 THEN CAN SYM qual
+ !-> DEFINE VARIABLE geospatial_lat_max = geospatial_lat_max_in[ge=traj@asn]
+ !-> SET ATT/LIKE=geospatial_lat_max_in geospatial_lat_max
+ !-> SET ATT/OUTPUT=all geospatial_lat_max
+ !-> if 0 THEN set var/bad=`geospatial_lat_max_in,return=bad` geospatial_lat_max
+ !-> LIST/FORMAT=CDF/QUIET/FILE="492C19881104_dec.nc"/APPEND/OUTTYPE=DOUBLE geospatial_lat_max
+!-> REPEAT: Q:10
+ !-> DEFINE SYMBOL qq = 10
+ !-> DEFINE SYMBOL vname = time_coverage_start
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> DEFINE SYMBOL qual = /OUTTYPE=DOUBLE
+ !-> IF 0 THEN CAN SYM qual
+ !-> DEFINE VARIABLE time_coverage_start = time_coverage_start_in[ge=traj@asn]
+ !-> SET ATT/LIKE=time_coverage_start_in time_coverage_start
+ !-> SET ATT/OUTPUT=all time_coverage_start
+ !-> if 0 THEN set var/bad=`time_coverage_start_in,return=bad` time_coverage_start
+ !-> LIST/FORMAT=CDF/QUIET/FILE="492C19881104_dec.nc"/APPEND/OUTTYPE=DOUBLE time_coverage_start
+!-> REPEAT: Q:11
+ !-> DEFINE SYMBOL qq = 11
+ !-> DEFINE SYMBOL vname = time_converage_end
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> DEFINE SYMBOL qual = /OUTTYPE=DOUBLE
+ !-> IF 0 THEN CAN SYM qual
+ !-> DEFINE VARIABLE time_converage_end = time_converage_end_in[ge=traj@asn]
+ !-> SET ATT/LIKE=time_converage_end_in time_converage_end
+ !-> SET ATT/OUTPUT=all time_converage_end
+ !-> if 0 THEN set var/bad=`time_converage_end_in,return=bad` time_converage_end
+ !-> LIST/FORMAT=CDF/QUIET/FILE="492C19881104_dec.nc"/APPEND/OUTTYPE=DOUBLE time_converage_end
+!-> REPEAT: Q:12
+ !-> DEFINE SYMBOL qq = 12
+ !-> DEFINE SYMBOL vname = investigators
+ !-> DEFINE SYMBOL vtype = CHAR
+ !-> DEFINE SYMBOL qual = /OUTTYPE=CHAR
+ !-> IF 1 THEN CAN SYM qual
+ !-> DEFINE VARIABLE investigators = investigators_in[ge=traj@asn]
+ !-> SET ATT/LIKE=investigators_in investigators
+ !-> SET ATT/OUTPUT=all investigators
+ !-> if 0 THEN set var/bad=`investigators_in,return=bad` investigators
+ !-> LIST/FORMAT=CDF/QUIET/FILE="492C19881104_dec.nc"/APPEND  investigators
+!-> REPEAT: Q:13
+ !-> DEFINE SYMBOL qq = 13
+ !-> DEFINE SYMBOL vname = socat_version
+ !-> DEFINE SYMBOL vtype = CHAR
+ !-> DEFINE SYMBOL qual = /OUTTYPE=CHAR
+ !-> IF 1 THEN CAN SYM qual
+ !-> DEFINE VARIABLE socat_version = socat_version_in[ge=traj@asn]
+ !-> SET ATT/LIKE=socat_version_in socat_version
+ !-> SET ATT/OUTPUT=all socat_version
+ !-> if 0 THEN set var/bad=`socat_version_in,return=bad` socat_version
+ !-> LIST/FORMAT=CDF/QUIET/FILE="492C19881104_dec.nc"/APPEND  socat_version
+!-> REPEAT: Q:14
+ !-> DEFINE SYMBOL qq = 14
+ !-> DEFINE SYMBOL vname = all_region_ids
+ !-> DEFINE SYMBOL vtype = CHAR
+ !-> DEFINE SYMBOL qual = /OUTTYPE=CHAR
+ !-> IF 1 THEN CAN SYM qual
+ !-> DEFINE VARIABLE all_region_ids = all_region_ids_in[ge=traj@asn]
+ !-> SET ATT/LIKE=all_region_ids_in all_region_ids
+ !-> SET ATT/OUTPUT=all all_region_ids
+ !-> if 0 THEN set var/bad=`all_region_ids_in,return=bad` all_region_ids
+ !-> LIST/FORMAT=CDF/QUIET/FILE="492C19881104_dec.nc"/APPEND  all_region_ids
+!-> REPEAT: Q:15
+ !-> DEFINE SYMBOL qq = 15
+ !-> DEFINE SYMBOL vname = socat_doi
+ !-> DEFINE SYMBOL vtype = CHAR
+ !-> DEFINE SYMBOL qual = /OUTTYPE=CHAR
+ !-> IF 1 THEN CAN SYM qual
+ !-> DEFINE VARIABLE socat_doi = socat_doi_in[ge=traj@asn]
+ !-> SET ATT/LIKE=socat_doi_in socat_doi
+ !-> SET ATT/OUTPUT=all socat_doi
+ !-> if 0 THEN set var/bad=`socat_doi_in,return=bad` socat_doi
+ !-> LIST/FORMAT=CDF/QUIET/FILE="492C19881104_dec.nc"/APPEND  socat_doi
+!-> REPEAT: Q:16
+ !-> DEFINE SYMBOL qq = 16
+ !-> DEFINE SYMBOL vname = qc_flag
+ !-> DEFINE SYMBOL vtype = CHAR
+ !-> DEFINE SYMBOL qual = /OUTTYPE=CHAR
+ !-> IF 1 THEN CAN SYM qual
+ !-> DEFINE VARIABLE qc_flag = qc_flag_in[ge=traj@asn]
+ !-> SET ATT/LIKE=qc_flag_in qc_flag
+ !-> SET ATT/OUTPUT=all qc_flag
+ !-> if 0 THEN set var/bad=`qc_flag_in,return=bad` qc_flag
+ !-> LIST/FORMAT=CDF/QUIET/FILE="492C19881104_dec.nc"/APPEND  qc_flag
+!-> REPEAT: Q:17
+ !-> DEFINE SYMBOL qq = 17
+ !-> DEFINE SYMBOL vname = nobs_full
+ !-> DEFINE SYMBOL vtype = INT4
+ !-> DEFINE SYMBOL qual = /OUTTYPE=INT4
+ !-> IF 0 THEN CAN SYM qual
+ !-> DEFINE VARIABLE nobs_full = nobs_full_in[ge=traj@asn]
+ !-> SET ATT/LIKE=nobs_full_in nobs_full
+ !-> SET ATT/OUTPUT=all nobs_full
+ !-> if 1 THEN set var/bad=`nobs_full_in,return=bad` nobs_full
+ !-> set var/bad=-99 nobs_full
+ !-> LIST/FORMAT=CDF/QUIET/FILE="492C19881104_dec.nc"/APPEND/OUTTYPE=INT4 nobs_full
+ 
+! add nobs_deci on the same axis
+LET/TITLE="`nobs_deci_in,RETURN=title`"/BAD=-99 nobs_deci = ($num_obs_sampled) + 0* nobs_full
+ !-> DEFINE VARIABLE/TITLE="Count in decimated trajectory"/BAD=-99 nobs_deci = 23 + 0* nobs_full
+DEFINE ATTRIBUTE/OUTPUT/OUTPUT nobs_deci.note = "Piecewise decimated"
+SAVE/QUIET/FILE="($outfile)"/APPEND/OUTTYPE=int nobs_deci
+ !-> LIST/FORMAT=CDF/QUIET/FILE="492C19881104_dec.nc"/APPEND/OUTTYPE=int nobs_deci
+ 
+! Sample the obs variables. Keep attributes, make missing-data flags match.
+ 
+! Numeric variables
+REPEAT/RANGE=1:`nlist`/NAME=q (DEFINE SYMBOL qq = `q`;\
+DEFINE SYMBOL vname = `varnames_list[i=($qq)]`;\
+IF ($vname"0|sample_number>1|*>0") THEN EXIT/CYCLE;\
+DEFINE SYMBOL vtype = `($vname)_in,RETURN=dtype`;\
+IF ($vtype"0|CHAR>1|*>0") THEN EXIT/CYCLE;\
+LET/BAD=`($vname)_in,RETURN=bad,PREC=9` ($vname) = SAMPLE_FAST_I(($vname)_in, samplevar);\
+SET ATT/LIKE=($vname)_in ($vname);\
+SET ATT/OUTPUT=all ($vname);\
+SAVE/QUIET/APPEND/OUTTYPE=($vtype)/FILE="($outfile)" ($vname);\
+)
+ !-> REPEAT/RANGE=1:72/NAME=q (DEFINE SYMBOL qq = `q`;DEFINE SYMBOL vname = `varnames_list[i=($qq)]`;IF ($vname"0|sample_number>1|*>0") THEN EXIT/CYCLE;DEFINE SYMBOL vtype = `($vname)_in,RETURN=dtype`;IF ($vtype"0|CHAR>1|*>0") THEN EXIT/CYCLE;LET/BAD=`($vname)_in,RETURN=bad,PREC=9` ($vname) = SAMPLE_FAST_I(($vname)_in, samplevar);SET ATT/LIKE=($vname)_in ($vname);SET ATT/OUTPUT=all ($vname);SAVE/QUIET/APPEND/OUTTYPE=($vtype)/FILE="($outfile)" ($vname);)
+!-> REPEAT: Q:1
+ !-> DEFINE SYMBOL qq = 1
+ !-> DEFINE SYMBOL vname = sample_number
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:2
+ !-> DEFINE SYMBOL qq = 2
+ !-> DEFINE SYMBOL vname = year
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = INT4
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1 year = SAMPLE_FAST_I(year_in, samplevar)
+ !-> SET ATT/LIKE=year_in year
+ !-> SET ATT/OUTPUT=all year
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=INT4/FILE="492C19881104_dec.nc" year
+!-> REPEAT: Q:3
+ !-> DEFINE SYMBOL qq = 3
+ !-> DEFINE SYMBOL vname = month
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = INT4
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1 month = SAMPLE_FAST_I(month_in, samplevar)
+ !-> SET ATT/LIKE=month_in month
+ !-> SET ATT/OUTPUT=all month
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=INT4/FILE="492C19881104_dec.nc" month
+!-> REPEAT: Q:4
+ !-> DEFINE SYMBOL qq = 4
+ !-> DEFINE SYMBOL vname = day
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = INT4
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1 day = SAMPLE_FAST_I(day_in, samplevar)
+ !-> SET ATT/LIKE=day_in day
+ !-> SET ATT/OUTPUT=all day
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=INT4/FILE="492C19881104_dec.nc" day
+!-> REPEAT: Q:5
+ !-> DEFINE SYMBOL qq = 5
+ !-> DEFINE SYMBOL vname = hour
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = INT4
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1 hour = SAMPLE_FAST_I(hour_in, samplevar)
+ !-> SET ATT/LIKE=hour_in hour
+ !-> SET ATT/OUTPUT=all hour
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=INT4/FILE="492C19881104_dec.nc" hour
+!-> REPEAT: Q:6
+ !-> DEFINE SYMBOL qq = 6
+ !-> DEFINE SYMBOL vname = minute
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = INT4
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1 minute = SAMPLE_FAST_I(minute_in, samplevar)
+ !-> SET ATT/LIKE=minute_in minute
+ !-> SET ATT/OUTPUT=all minute
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=INT4/FILE="492C19881104_dec.nc" minute
+!-> REPEAT: Q:7
+ !-> DEFINE SYMBOL qq = 7
+ !-> DEFINE SYMBOL vname = second
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 second = SAMPLE_FAST_I(second_in, samplevar)
+ !-> SET ATT/LIKE=second_in second
+ !-> SET ATT/OUTPUT=all second
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" second
+!-> REPEAT: Q:8
+ !-> DEFINE SYMBOL qq = 8
+ !-> DEFINE SYMBOL vname = longitude
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 longitude = SAMPLE_FAST_I(longitude_in, samplevar)
+ !-> SET ATT/LIKE=longitude_in longitude
+ !-> SET ATT/OUTPUT=all longitude
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" longitude
+!-> REPEAT: Q:9
+ !-> DEFINE SYMBOL qq = 9
+ !-> DEFINE SYMBOL vname = latitude
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 latitude = SAMPLE_FAST_I(latitude_in, samplevar)
+ !-> SET ATT/LIKE=latitude_in latitude
+ !-> SET ATT/OUTPUT=all latitude
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" latitude
+!-> REPEAT: Q:10
+ !-> DEFINE SYMBOL qq = 10
+ !-> DEFINE SYMBOL vname = sample_depth
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 sample_depth = SAMPLE_FAST_I(sample_depth_in, samplevar)
+ !-> SET ATT/LIKE=sample_depth_in sample_depth
+ !-> SET ATT/OUTPUT=all sample_depth
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" sample_depth
+!-> REPEAT: Q:11
+ !-> DEFINE SYMBOL qq = 11
+ !-> DEFINE SYMBOL vname = sal
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 sal = SAMPLE_FAST_I(sal_in, samplevar)
+ !-> SET ATT/LIKE=sal_in sal
+ !-> SET ATT/OUTPUT=all sal
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" sal
+!-> REPEAT: Q:12
+ !-> DEFINE SYMBOL qq = 12
+ !-> DEFINE SYMBOL vname = Temperature_equi
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 Temperature_equi = SAMPLE_FAST_I(Temperature_equi_in, samplevar)
+ !-> SET ATT/LIKE=Temperature_equi_in Temperature_equi
+ !-> SET ATT/OUTPUT=all Temperature_equi
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" Temperature_equi
+!-> REPEAT: Q:13
+ !-> DEFINE SYMBOL qq = 13
+ !-> DEFINE SYMBOL vname = temp
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 temp = SAMPLE_FAST_I(temp_in, samplevar)
+ !-> SET ATT/LIKE=temp_in temp
+ !-> SET ATT/OUTPUT=all temp
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" temp
+!-> REPEAT: Q:14
+ !-> DEFINE SYMBOL qq = 14
+ !-> DEFINE SYMBOL vname = Temperature_atm
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 Temperature_atm = SAMPLE_FAST_I(Temperature_atm_in, samplevar)
+ !-> SET ATT/LIKE=Temperature_atm_in Temperature_atm
+ !-> SET ATT/OUTPUT=all Temperature_atm
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" Temperature_atm
+!-> REPEAT: Q:15
+ !-> DEFINE SYMBOL qq = 15
+ !-> DEFINE SYMBOL vname = Pressure_equi
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 Pressure_equi = SAMPLE_FAST_I(Pressure_equi_in, samplevar)
+ !-> SET ATT/LIKE=Pressure_equi_in Pressure_equi
+ !-> SET ATT/OUTPUT=all Pressure_equi
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" Pressure_equi
+!-> REPEAT: Q:16
+ !-> DEFINE SYMBOL qq = 16
+ !-> DEFINE SYMBOL vname = Pressure_atm
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 Pressure_atm = SAMPLE_FAST_I(Pressure_atm_in, samplevar)
+ !-> SET ATT/LIKE=Pressure_atm_in Pressure_atm
+ !-> SET ATT/OUTPUT=all Pressure_atm
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" Pressure_atm
+!-> REPEAT: Q:17
+ !-> DEFINE SYMBOL qq = 17
+ !-> DEFINE SYMBOL vname = xCO2_water_equi_temp_dry_ppm
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 xCO2_water_equi_temp_dry_ppm = SAMPLE_FAST_I(xCO2_water_equi_temp_dry_ppm_in, samplevar)
+ !-> SET ATT/LIKE=xCO2_water_equi_temp_dry_ppm_in xCO2_water_equi_temp_dry_ppm
+ !-> SET ATT/OUTPUT=all xCO2_water_equi_temp_dry_ppm
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" xCO2_water_equi_temp_dry_ppm
+!-> REPEAT: Q:18
+ !-> DEFINE SYMBOL qq = 18
+ !-> DEFINE SYMBOL vname = xCO2_water_sst_dry_ppm
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 xCO2_water_sst_dry_ppm = SAMPLE_FAST_I(xCO2_water_sst_dry_ppm_in, samplevar)
+ !-> SET ATT/LIKE=xCO2_water_sst_dry_ppm_in xCO2_water_sst_dry_ppm
+ !-> SET ATT/OUTPUT=all xCO2_water_sst_dry_ppm
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" xCO2_water_sst_dry_ppm
+!-> REPEAT: Q:19
+ !-> DEFINE SYMBOL qq = 19
+ !-> DEFINE SYMBOL vname = xCO2_water_equi_temp_wet_ppm
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 xCO2_water_equi_temp_wet_ppm = SAMPLE_FAST_I(xCO2_water_equi_temp_wet_ppm_in, samplevar)
+ !-> SET ATT/LIKE=xCO2_water_equi_temp_wet_ppm_in xCO2_water_equi_temp_wet_ppm
+ !-> SET ATT/OUTPUT=all xCO2_water_equi_temp_wet_ppm
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" xCO2_water_equi_temp_wet_ppm
+!-> REPEAT: Q:20
+ !-> DEFINE SYMBOL qq = 20
+ !-> DEFINE SYMBOL vname = xCO2_water_sst_wet_ppm
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 xCO2_water_sst_wet_ppm = SAMPLE_FAST_I(xCO2_water_sst_wet_ppm_in, samplevar)
+ !-> SET ATT/LIKE=xCO2_water_sst_wet_ppm_in xCO2_water_sst_wet_ppm
+ !-> SET ATT/OUTPUT=all xCO2_water_sst_wet_ppm
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" xCO2_water_sst_wet_ppm
+!-> REPEAT: Q:21
+ !-> DEFINE SYMBOL qq = 21
+ !-> DEFINE SYMBOL vname = pCO2_water_equi_temp
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 pCO2_water_equi_temp = SAMPLE_FAST_I(pCO2_water_equi_temp_in, samplevar)
+ !-> SET ATT/LIKE=pCO2_water_equi_temp_in pCO2_water_equi_temp
+ !-> SET ATT/OUTPUT=all pCO2_water_equi_temp
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" pCO2_water_equi_temp
+!-> REPEAT: Q:22
+ !-> DEFINE SYMBOL qq = 22
+ !-> DEFINE SYMBOL vname = pCO2_water_sst_100humidity_uatm
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 pCO2_water_sst_100humidity_uatm = SAMPLE_FAST_I(pCO2_water_sst_100humidity_uatm_in, samplevar)
+ !-> SET ATT/LIKE=pCO2_water_sst_100humidity_uatm_in pCO2_water_sst_100humidity_uatm
+ !-> SET ATT/OUTPUT=all pCO2_water_sst_100humidity_uatm
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" pCO2_water_sst_100humidity_uatm
+!-> REPEAT: Q:23
+ !-> DEFINE SYMBOL qq = 23
+ !-> DEFINE SYMBOL vname = fCO2_water_equi_uatm
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_water_equi_uatm = SAMPLE_FAST_I(fCO2_water_equi_uatm_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_water_equi_uatm_in fCO2_water_equi_uatm
+ !-> SET ATT/OUTPUT=all fCO2_water_equi_uatm
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_water_equi_uatm
+!-> REPEAT: Q:24
+ !-> DEFINE SYMBOL qq = 24
+ !-> DEFINE SYMBOL vname = fCO2_water_sst_100humidity_uatm
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_water_sst_100humidity_uatm = SAMPLE_FAST_I(fCO2_water_sst_100humidity_uatm_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_water_sst_100humidity_uatm_in fCO2_water_sst_100humidity_uatm
+ !-> SET ATT/OUTPUT=all fCO2_water_sst_100humidity_uatm
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_water_sst_100humidity_uatm
+!-> REPEAT: Q:25
+ !-> DEFINE SYMBOL qq = 25
+ !-> DEFINE SYMBOL vname = xCO2_atm_dry_actual
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 xCO2_atm_dry_actual = SAMPLE_FAST_I(xCO2_atm_dry_actual_in, samplevar)
+ !-> SET ATT/LIKE=xCO2_atm_dry_actual_in xCO2_atm_dry_actual
+ !-> SET ATT/OUTPUT=all xCO2_atm_dry_actual
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" xCO2_atm_dry_actual
+!-> REPEAT: Q:26
+ !-> DEFINE SYMBOL qq = 26
+ !-> DEFINE SYMBOL vname = xCO2_atm_dry_interp
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 xCO2_atm_dry_interp = SAMPLE_FAST_I(xCO2_atm_dry_interp_in, samplevar)
+ !-> SET ATT/LIKE=xCO2_atm_dry_interp_in xCO2_atm_dry_interp
+ !-> SET ATT/OUTPUT=all xCO2_atm_dry_interp
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" xCO2_atm_dry_interp
+!-> REPEAT: Q:27
+ !-> DEFINE SYMBOL qq = 27
+ !-> DEFINE SYMBOL vname = pCO2_atm_wet_actual
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 pCO2_atm_wet_actual = SAMPLE_FAST_I(pCO2_atm_wet_actual_in, samplevar)
+ !-> SET ATT/LIKE=pCO2_atm_wet_actual_in pCO2_atm_wet_actual
+ !-> SET ATT/OUTPUT=all pCO2_atm_wet_actual
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" pCO2_atm_wet_actual
+!-> REPEAT: Q:28
+ !-> DEFINE SYMBOL qq = 28
+ !-> DEFINE SYMBOL vname = pCO2_atm_wet_interp
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 pCO2_atm_wet_interp = SAMPLE_FAST_I(pCO2_atm_wet_interp_in, samplevar)
+ !-> SET ATT/LIKE=pCO2_atm_wet_interp_in pCO2_atm_wet_interp
+ !-> SET ATT/OUTPUT=all pCO2_atm_wet_interp
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" pCO2_atm_wet_interp
+!-> REPEAT: Q:29
+ !-> DEFINE SYMBOL qq = 29
+ !-> DEFINE SYMBOL vname = fCO2_atm_wet_actual
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_atm_wet_actual = SAMPLE_FAST_I(fCO2_atm_wet_actual_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_atm_wet_actual_in fCO2_atm_wet_actual
+ !-> SET ATT/OUTPUT=all fCO2_atm_wet_actual
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_atm_wet_actual
+!-> REPEAT: Q:30
+ !-> DEFINE SYMBOL qq = 30
+ !-> DEFINE SYMBOL vname = fCO2_atm_wet_interp
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_atm_wet_interp = SAMPLE_FAST_I(fCO2_atm_wet_interp_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_atm_wet_interp_in fCO2_atm_wet_interp
+ !-> SET ATT/OUTPUT=all fCO2_atm_wet_interp
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_atm_wet_interp
+!-> REPEAT: Q:31
+ !-> DEFINE SYMBOL qq = 31
+ !-> DEFINE SYMBOL vname = delta_xCO2
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 delta_xCO2 = SAMPLE_FAST_I(delta_xCO2_in, samplevar)
+ !-> SET ATT/LIKE=delta_xCO2_in delta_xCO2
+ !-> SET ATT/OUTPUT=all delta_xCO2
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" delta_xCO2
+!-> REPEAT: Q:32
+ !-> DEFINE SYMBOL qq = 32
+ !-> DEFINE SYMBOL vname = delta_pCO2
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 delta_pCO2 = SAMPLE_FAST_I(delta_pCO2_in, samplevar)
+ !-> SET ATT/LIKE=delta_pCO2_in delta_pCO2
+ !-> SET ATT/OUTPUT=all delta_pCO2
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" delta_pCO2
+!-> REPEAT: Q:33
+ !-> DEFINE SYMBOL qq = 33
+ !-> DEFINE SYMBOL vname = delta_fCO2
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 delta_fCO2 = SAMPLE_FAST_I(delta_fCO2_in, samplevar)
+ !-> SET ATT/LIKE=delta_fCO2_in delta_fCO2
+ !-> SET ATT/OUTPUT=all delta_fCO2
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" delta_fCO2
+!-> REPEAT: Q:34
+ !-> DEFINE SYMBOL qq = 34
+ !-> DEFINE SYMBOL vname = xH2O_equi
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 xH2O_equi = SAMPLE_FAST_I(xH2O_equi_in, samplevar)
+ !-> SET ATT/LIKE=xH2O_equi_in xH2O_equi
+ !-> SET ATT/OUTPUT=all xH2O_equi
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" xH2O_equi
+!-> REPEAT: Q:35
+ !-> DEFINE SYMBOL qq = 35
+ !-> DEFINE SYMBOL vname = relative_humidity
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 relative_humidity = SAMPLE_FAST_I(relative_humidity_in, samplevar)
+ !-> SET ATT/LIKE=relative_humidity_in relative_humidity
+ !-> SET ATT/OUTPUT=all relative_humidity
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" relative_humidity
+!-> REPEAT: Q:36
+ !-> DEFINE SYMBOL qq = 36
+ !-> DEFINE SYMBOL vname = specific_humidity
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 specific_humidity = SAMPLE_FAST_I(specific_humidity_in, samplevar)
+ !-> SET ATT/LIKE=specific_humidity_in specific_humidity
+ !-> SET ATT/OUTPUT=all specific_humidity
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" specific_humidity
+!-> REPEAT: Q:37
+ !-> DEFINE SYMBOL qq = 37
+ !-> DEFINE SYMBOL vname = ship_speed
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 ship_speed = SAMPLE_FAST_I(ship_speed_in, samplevar)
+ !-> SET ATT/LIKE=ship_speed_in ship_speed
+ !-> SET ATT/OUTPUT=all ship_speed
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" ship_speed
+!-> REPEAT: Q:38
+ !-> DEFINE SYMBOL qq = 38
+ !-> DEFINE SYMBOL vname = ship_dir
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 ship_dir = SAMPLE_FAST_I(ship_dir_in, samplevar)
+ !-> SET ATT/LIKE=ship_dir_in ship_dir
+ !-> SET ATT/OUTPUT=all ship_dir
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" ship_dir
+!-> REPEAT: Q:39
+ !-> DEFINE SYMBOL qq = 39
+ !-> DEFINE SYMBOL vname = wind_speed_true
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 wind_speed_true = SAMPLE_FAST_I(wind_speed_true_in, samplevar)
+ !-> SET ATT/LIKE=wind_speed_true_in wind_speed_true
+ !-> SET ATT/OUTPUT=all wind_speed_true
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" wind_speed_true
+!-> REPEAT: Q:40
+ !-> DEFINE SYMBOL qq = 40
+ !-> DEFINE SYMBOL vname = wind_speed_rel
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 wind_speed_rel = SAMPLE_FAST_I(wind_speed_rel_in, samplevar)
+ !-> SET ATT/LIKE=wind_speed_rel_in wind_speed_rel
+ !-> SET ATT/OUTPUT=all wind_speed_rel
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" wind_speed_rel
+!-> REPEAT: Q:41
+ !-> DEFINE SYMBOL qq = 41
+ !-> DEFINE SYMBOL vname = wind_dir_true
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 wind_dir_true = SAMPLE_FAST_I(wind_dir_true_in, samplevar)
+ !-> SET ATT/LIKE=wind_dir_true_in wind_dir_true
+ !-> SET ATT/OUTPUT=all wind_dir_true
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" wind_dir_true
+!-> REPEAT: Q:42
+ !-> DEFINE SYMBOL qq = 42
+ !-> DEFINE SYMBOL vname = wind_dir_rel
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 wind_dir_rel = SAMPLE_FAST_I(wind_dir_rel_in, samplevar)
+ !-> SET ATT/LIKE=wind_dir_rel_in wind_dir_rel
+ !-> SET ATT/OUTPUT=all wind_dir_rel
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" wind_dir_rel
+!-> REPEAT: Q:43
+ !-> DEFINE SYMBOL qq = 43
+ !-> DEFINE SYMBOL vname = WOCE_CO2_water
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = CHAR
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:44
+ !-> DEFINE SYMBOL qq = 44
+ !-> DEFINE SYMBOL vname = WOCE_CO2_atm
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = CHAR
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:45
+ !-> DEFINE SYMBOL qq = 45
+ !-> DEFINE SYMBOL vname = woa_sss
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 woa_sss = SAMPLE_FAST_I(woa_sss_in, samplevar)
+ !-> SET ATT/LIKE=woa_sss_in woa_sss
+ !-> SET ATT/OUTPUT=all woa_sss
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" woa_sss
+!-> REPEAT: Q:46
+ !-> DEFINE SYMBOL qq = 46
+ !-> DEFINE SYMBOL vname = pressure_ncep_slp
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 pressure_ncep_slp = SAMPLE_FAST_I(pressure_ncep_slp_in, samplevar)
+ !-> SET ATT/LIKE=pressure_ncep_slp_in pressure_ncep_slp
+ !-> SET ATT/OUTPUT=all pressure_ncep_slp
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" pressure_ncep_slp
+!-> REPEAT: Q:47
+ !-> DEFINE SYMBOL qq = 47
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm = SAMPLE_FAST_I(fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_in fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm
+ !-> SET ATT/OUTPUT=all fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm
+!-> REPEAT: Q:48
+ !-> DEFINE SYMBOL qq = 48
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_sst_dry_ppm
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_insitu_from_xCO2_water_sst_dry_ppm = SAMPLE_FAST_I(fCO2_insitu_from_xCO2_water_sst_dry_ppm_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_insitu_from_xCO2_water_sst_dry_ppm_in fCO2_insitu_from_xCO2_water_sst_dry_ppm
+ !-> SET ATT/OUTPUT=all fCO2_insitu_from_xCO2_water_sst_dry_ppm
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_insitu_from_xCO2_water_sst_dry_ppm
+!-> REPEAT: Q:49
+ !-> DEFINE SYMBOL qq = 49
+ !-> DEFINE SYMBOL vname = fCO2_from_pCO2_water_water_equi_temp
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_from_pCO2_water_water_equi_temp = SAMPLE_FAST_I(fCO2_from_pCO2_water_water_equi_temp_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_from_pCO2_water_water_equi_temp_in fCO2_from_pCO2_water_water_equi_temp
+ !-> SET ATT/OUTPUT=all fCO2_from_pCO2_water_water_equi_temp
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_from_pCO2_water_water_equi_temp
+!-> REPEAT: Q:50
+ !-> DEFINE SYMBOL qq = 50
+ !-> DEFINE SYMBOL vname = fCO2_from_pCO2_water_sst_100humidity_uatm
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_from_pCO2_water_sst_100humidity_uatm = SAMPLE_FAST_I(fCO2_from_pCO2_water_sst_100humidity_uatm_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_from_pCO2_water_sst_100humidity_uatm_in fCO2_from_pCO2_water_sst_100humidity_uatm
+ !-> SET ATT/OUTPUT=all fCO2_from_pCO2_water_sst_100humidity_uatm
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_from_pCO2_water_sst_100humidity_uatm
+!-> REPEAT: Q:51
+ !-> DEFINE SYMBOL qq = 51
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_fCO2_water_equi_uatm
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_insitu_from_fCO2_water_equi_uatm = SAMPLE_FAST_I(fCO2_insitu_from_fCO2_water_equi_uatm_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_insitu_from_fCO2_water_equi_uatm_in fCO2_insitu_from_fCO2_water_equi_uatm
+ !-> SET ATT/OUTPUT=all fCO2_insitu_from_fCO2_water_equi_uatm
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_insitu_from_fCO2_water_equi_uatm
+!-> REPEAT: Q:52
+ !-> DEFINE SYMBOL qq = 52
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_fCO2_water_sst_100humidty_uatm
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_insitu_from_fCO2_water_sst_100humidty_uatm = SAMPLE_FAST_I(fCO2_insitu_from_fCO2_water_sst_100humidty_uatm_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_insitu_from_fCO2_water_sst_100humidty_uatm_in fCO2_insitu_from_fCO2_water_sst_100humidty_uatm
+ !-> SET ATT/OUTPUT=all fCO2_insitu_from_fCO2_water_sst_100humidty_uatm
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_insitu_from_fCO2_water_sst_100humidty_uatm
+!-> REPEAT: Q:53
+ !-> DEFINE SYMBOL qq = 53
+ !-> DEFINE SYMBOL vname = fCO2_from_pCO2_water_water_equi_temp_ncep
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_from_pCO2_water_water_equi_temp_ncep = SAMPLE_FAST_I(fCO2_from_pCO2_water_water_equi_temp_ncep_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_from_pCO2_water_water_equi_temp_ncep_in fCO2_from_pCO2_water_water_equi_temp_ncep
+ !-> SET ATT/OUTPUT=all fCO2_from_pCO2_water_water_equi_temp_ncep
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_from_pCO2_water_water_equi_temp_ncep
+!-> REPEAT: Q:54
+ !-> DEFINE SYMBOL qq = 54
+ !-> DEFINE SYMBOL vname = fCO2_from_pCO2_water_sst_100humidity_uatm_ncep
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_from_pCO2_water_sst_100humidity_uatm_ncep = SAMPLE_FAST_I(fCO2_from_pCO2_water_sst_100humidity_uatm_ncep_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_from_pCO2_water_sst_100humidity_uatm_ncep_in fCO2_from_pCO2_water_sst_100humidity_uatm_ncep
+ !-> SET ATT/OUTPUT=all fCO2_from_pCO2_water_sst_100humidity_uatm_ncep
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_from_pCO2_water_sst_100humidity_uatm_ncep
+!-> REPEAT: Q:55
+ !-> DEFINE SYMBOL qq = 55
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa = SAMPLE_FAST_I(fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa_in fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa
+ !-> SET ATT/OUTPUT=all fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa
+!-> REPEAT: Q:56
+ !-> DEFINE SYMBOL qq = 56
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa = SAMPLE_FAST_I(fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa_in fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa
+ !-> SET ATT/OUTPUT=all fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa
+!-> REPEAT: Q:57
+ !-> DEFINE SYMBOL qq = 57
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep = SAMPLE_FAST_I(fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_in fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep
+ !-> SET ATT/OUTPUT=all fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep
+!-> REPEAT: Q:58
+ !-> DEFINE SYMBOL qq = 58
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep = SAMPLE_FAST_I(fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_in fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep
+ !-> SET ATT/OUTPUT=all fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep
+!-> REPEAT: Q:59
+ !-> DEFINE SYMBOL qq = 59
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa = SAMPLE_FAST_I(fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa_in fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa
+ !-> SET ATT/OUTPUT=all fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa
+!-> REPEAT: Q:60
+ !-> DEFINE SYMBOL qq = 60
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa = SAMPLE_FAST_I(fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa_in fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa
+ !-> SET ATT/OUTPUT=all fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa
+!-> REPEAT: Q:61
+ !-> DEFINE SYMBOL qq = 61
+ !-> DEFINE SYMBOL vname = fCO2_recommended
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 fCO2_recommended = SAMPLE_FAST_I(fCO2_recommended_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_recommended_in fCO2_recommended
+ !-> SET ATT/OUTPUT=all fCO2_recommended
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" fCO2_recommended
+!-> REPEAT: Q:62
+ !-> DEFINE SYMBOL qq = 62
+ !-> DEFINE SYMBOL vname = fCO2_source
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = INT4
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1 fCO2_source = SAMPLE_FAST_I(fCO2_source_in, samplevar)
+ !-> SET ATT/LIKE=fCO2_source_in fCO2_source
+ !-> SET ATT/OUTPUT=all fCO2_source
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=INT4/FILE="492C19881104_dec.nc" fCO2_source
+!-> REPEAT: Q:63
+ !-> DEFINE SYMBOL qq = 63
+ !-> DEFINE SYMBOL vname = delta_temp
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 delta_temp = SAMPLE_FAST_I(delta_temp_in, samplevar)
+ !-> SET ATT/LIKE=delta_temp_in delta_temp
+ !-> SET ATT/OUTPUT=all delta_temp
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" delta_temp
+!-> REPEAT: Q:64
+ !-> DEFINE SYMBOL qq = 64
+ !-> DEFINE SYMBOL vname = region_id
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = CHAR
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:65
+ !-> DEFINE SYMBOL qq = 65
+ !-> DEFINE SYMBOL vname = calc_speed
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 calc_speed = SAMPLE_FAST_I(calc_speed_in, samplevar)
+ !-> SET ATT/LIKE=calc_speed_in calc_speed
+ !-> SET ATT/OUTPUT=all calc_speed
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" calc_speed
+!-> REPEAT: Q:66
+ !-> DEFINE SYMBOL qq = 66
+ !-> DEFINE SYMBOL vname = etopo2
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 etopo2 = SAMPLE_FAST_I(etopo2_in, samplevar)
+ !-> SET ATT/LIKE=etopo2_in etopo2
+ !-> SET ATT/OUTPUT=all etopo2
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" etopo2
+!-> REPEAT: Q:67
+ !-> DEFINE SYMBOL qq = 67
+ !-> DEFINE SYMBOL vname = gvCO2
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 gvCO2 = SAMPLE_FAST_I(gvCO2_in, samplevar)
+ !-> SET ATT/LIKE=gvCO2_in gvCO2
+ !-> SET ATT/OUTPUT=all gvCO2
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" gvCO2
+!-> REPEAT: Q:68
+ !-> DEFINE SYMBOL qq = 68
+ !-> DEFINE SYMBOL vname = dist_to_land
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 dist_to_land = SAMPLE_FAST_I(dist_to_land_in, samplevar)
+ !-> SET ATT/LIKE=dist_to_land_in dist_to_land
+ !-> SET ATT/OUTPUT=all dist_to_land
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" dist_to_land
+!-> REPEAT: Q:69
+ !-> DEFINE SYMBOL qq = 69
+ !-> DEFINE SYMBOL vname = day_of_year
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 day_of_year = SAMPLE_FAST_I(day_of_year_in, samplevar)
+ !-> SET ATT/LIKE=day_of_year_in day_of_year
+ !-> SET ATT/OUTPUT=all day_of_year
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" day_of_year
+!-> REPEAT: Q:70
+ !-> DEFINE SYMBOL qq = 70
+ !-> DEFINE SYMBOL vname = time
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 time = SAMPLE_FAST_I(time_in, samplevar)
+ !-> SET ATT/LIKE=time_in time
+ !-> SET ATT/OUTPUT=all time
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" time
+!-> REPEAT: Q:71
+ !-> DEFINE SYMBOL qq = 71
+ !-> DEFINE SYMBOL vname = lon360
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE/BAD=-1.E+34 lon360 = SAMPLE_FAST_I(lon360_in, samplevar)
+ !-> SET ATT/LIKE=lon360_in lon360
+ !-> SET ATT/OUTPUT=all lon360
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=DOUBLE/FILE="492C19881104_dec.nc" lon360
+!-> REPEAT: Q:72
+ !-> DEFINE SYMBOL qq = 72
+ !-> DEFINE SYMBOL vname = tmonth
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE SYMBOL vtype = CHAR
+ !-> IF 1 THEN EXIT/CYCLE
+ 
+! sample_number will be the sequence number within the decimated data
+! We can use this to pick up the pen when drawing lines where the constraints
+! (on the decimated set) have skipped data
+ 
+LET/BAD=-1/TITLE="sequence number for decimated dataset" sample_number = i[gx=latitude]
+SAVE/QUIET/APPEND/OUTTYPE=INT/FILE="($outfile)" sample_number
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/OUTTYPE=INT/FILE="492C19881104_dec.nc" sample_number
+ 
+! Character variables
+ 
+REPEAT/RANGE=1:`nlist`/NAME=q (DEFINE SYMBOL qq = `q`;\
+DEFINE SYMBOL vname = `varnames_list[i=($qq)]`;\
+DEFINE SYMBOL vtype = `($vname)_in,RETURN=dtype`;\
+IF `($vtype"0|CHAR>1|*>0") EQ 0` THEN EXIT/CYCLE;\
+LET ($vname)_s = SAMPLEI(($vname)_in, samplevar);\
+LET ($vname) = RESHAPE(($vname)_s, x[gx=obs]);\
+SET ATT/LIKE=($vname)_in ($vname);\
+SET ATT/OUTPUT=all ($vname);\
+SAVE/QUIET/APPEND/FILE="($outfile)" ($vname) )
+ !-> REPEAT/RANGE=1:72/NAME=q (DEFINE SYMBOL qq = `q`;DEFINE SYMBOL vname = `varnames_list[i=($qq)]`;DEFINE SYMBOL vtype = `($vname)_in,RETURN=dtype`;IF `($vtype"0|CHAR>1|*>0") EQ 0` THEN EXIT/CYCLE;LET ($vname)_s = SAMPLEI(($vname)_in, samplevar);LET ($vname) = RESHAPE(($vname)_s, x[gx=obs]);SET ATT/LIKE=($vname)_in ($vname);SET ATT/OUTPUT=all ($vname);SAVE/QUIET/APPEND/FILE="($outfile)" ($vname) )
+!-> REPEAT: Q:1
+ !-> DEFINE SYMBOL qq = 1
+ !-> DEFINE SYMBOL vname = sample_number
+ !-> DEFINE SYMBOL vtype = INT4
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:2
+ !-> DEFINE SYMBOL qq = 2
+ !-> DEFINE SYMBOL vname = year
+ !-> DEFINE SYMBOL vtype = INT4
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:3
+ !-> DEFINE SYMBOL qq = 3
+ !-> DEFINE SYMBOL vname = month
+ !-> DEFINE SYMBOL vtype = INT4
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:4
+ !-> DEFINE SYMBOL qq = 4
+ !-> DEFINE SYMBOL vname = day
+ !-> DEFINE SYMBOL vtype = INT4
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:5
+ !-> DEFINE SYMBOL qq = 5
+ !-> DEFINE SYMBOL vname = hour
+ !-> DEFINE SYMBOL vtype = INT4
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:6
+ !-> DEFINE SYMBOL qq = 6
+ !-> DEFINE SYMBOL vname = minute
+ !-> DEFINE SYMBOL vtype = INT4
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:7
+ !-> DEFINE SYMBOL qq = 7
+ !-> DEFINE SYMBOL vname = second
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:8
+ !-> DEFINE SYMBOL qq = 8
+ !-> DEFINE SYMBOL vname = longitude
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:9
+ !-> DEFINE SYMBOL qq = 9
+ !-> DEFINE SYMBOL vname = latitude
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:10
+ !-> DEFINE SYMBOL qq = 10
+ !-> DEFINE SYMBOL vname = sample_depth
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:11
+ !-> DEFINE SYMBOL qq = 11
+ !-> DEFINE SYMBOL vname = sal
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:12
+ !-> DEFINE SYMBOL qq = 12
+ !-> DEFINE SYMBOL vname = Temperature_equi
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:13
+ !-> DEFINE SYMBOL qq = 13
+ !-> DEFINE SYMBOL vname = temp
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:14
+ !-> DEFINE SYMBOL qq = 14
+ !-> DEFINE SYMBOL vname = Temperature_atm
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:15
+ !-> DEFINE SYMBOL qq = 15
+ !-> DEFINE SYMBOL vname = Pressure_equi
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:16
+ !-> DEFINE SYMBOL qq = 16
+ !-> DEFINE SYMBOL vname = Pressure_atm
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:17
+ !-> DEFINE SYMBOL qq = 17
+ !-> DEFINE SYMBOL vname = xCO2_water_equi_temp_dry_ppm
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:18
+ !-> DEFINE SYMBOL qq = 18
+ !-> DEFINE SYMBOL vname = xCO2_water_sst_dry_ppm
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:19
+ !-> DEFINE SYMBOL qq = 19
+ !-> DEFINE SYMBOL vname = xCO2_water_equi_temp_wet_ppm
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:20
+ !-> DEFINE SYMBOL qq = 20
+ !-> DEFINE SYMBOL vname = xCO2_water_sst_wet_ppm
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:21
+ !-> DEFINE SYMBOL qq = 21
+ !-> DEFINE SYMBOL vname = pCO2_water_equi_temp
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:22
+ !-> DEFINE SYMBOL qq = 22
+ !-> DEFINE SYMBOL vname = pCO2_water_sst_100humidity_uatm
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:23
+ !-> DEFINE SYMBOL qq = 23
+ !-> DEFINE SYMBOL vname = fCO2_water_equi_uatm
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:24
+ !-> DEFINE SYMBOL qq = 24
+ !-> DEFINE SYMBOL vname = fCO2_water_sst_100humidity_uatm
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:25
+ !-> DEFINE SYMBOL qq = 25
+ !-> DEFINE SYMBOL vname = xCO2_atm_dry_actual
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:26
+ !-> DEFINE SYMBOL qq = 26
+ !-> DEFINE SYMBOL vname = xCO2_atm_dry_interp
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:27
+ !-> DEFINE SYMBOL qq = 27
+ !-> DEFINE SYMBOL vname = pCO2_atm_wet_actual
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:28
+ !-> DEFINE SYMBOL qq = 28
+ !-> DEFINE SYMBOL vname = pCO2_atm_wet_interp
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:29
+ !-> DEFINE SYMBOL qq = 29
+ !-> DEFINE SYMBOL vname = fCO2_atm_wet_actual
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:30
+ !-> DEFINE SYMBOL qq = 30
+ !-> DEFINE SYMBOL vname = fCO2_atm_wet_interp
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:31
+ !-> DEFINE SYMBOL qq = 31
+ !-> DEFINE SYMBOL vname = delta_xCO2
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:32
+ !-> DEFINE SYMBOL qq = 32
+ !-> DEFINE SYMBOL vname = delta_pCO2
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:33
+ !-> DEFINE SYMBOL qq = 33
+ !-> DEFINE SYMBOL vname = delta_fCO2
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:34
+ !-> DEFINE SYMBOL qq = 34
+ !-> DEFINE SYMBOL vname = xH2O_equi
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:35
+ !-> DEFINE SYMBOL qq = 35
+ !-> DEFINE SYMBOL vname = relative_humidity
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:36
+ !-> DEFINE SYMBOL qq = 36
+ !-> DEFINE SYMBOL vname = specific_humidity
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:37
+ !-> DEFINE SYMBOL qq = 37
+ !-> DEFINE SYMBOL vname = ship_speed
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:38
+ !-> DEFINE SYMBOL qq = 38
+ !-> DEFINE SYMBOL vname = ship_dir
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:39
+ !-> DEFINE SYMBOL qq = 39
+ !-> DEFINE SYMBOL vname = wind_speed_true
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:40
+ !-> DEFINE SYMBOL qq = 40
+ !-> DEFINE SYMBOL vname = wind_speed_rel
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:41
+ !-> DEFINE SYMBOL qq = 41
+ !-> DEFINE SYMBOL vname = wind_dir_true
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:42
+ !-> DEFINE SYMBOL qq = 42
+ !-> DEFINE SYMBOL vname = wind_dir_rel
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:43
+ !-> DEFINE SYMBOL qq = 43
+ !-> DEFINE SYMBOL vname = WOCE_CO2_water
+ !-> DEFINE SYMBOL vtype = CHAR
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE WOCE_CO2_water_s = SAMPLEI(WOCE_CO2_water_in, samplevar)
+ !-> DEFINE VARIABLE WOCE_CO2_water = RESHAPE(WOCE_CO2_water_s, x[gx=obs])
+ !-> SET ATT/LIKE=WOCE_CO2_water_in WOCE_CO2_water
+ !-> SET ATT/OUTPUT=all WOCE_CO2_water
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/FILE="492C19881104_dec.nc" WOCE_CO2_water
+!-> REPEAT: Q:44
+ !-> DEFINE SYMBOL qq = 44
+ !-> DEFINE SYMBOL vname = WOCE_CO2_atm
+ !-> DEFINE SYMBOL vtype = CHAR
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE WOCE_CO2_atm_s = SAMPLEI(WOCE_CO2_atm_in, samplevar)
+ !-> DEFINE VARIABLE WOCE_CO2_atm = RESHAPE(WOCE_CO2_atm_s, x[gx=obs])
+ !-> SET ATT/LIKE=WOCE_CO2_atm_in WOCE_CO2_atm
+ !-> SET ATT/OUTPUT=all WOCE_CO2_atm
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/FILE="492C19881104_dec.nc" WOCE_CO2_atm
+!-> REPEAT: Q:45
+ !-> DEFINE SYMBOL qq = 45
+ !-> DEFINE SYMBOL vname = woa_sss
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:46
+ !-> DEFINE SYMBOL qq = 46
+ !-> DEFINE SYMBOL vname = pressure_ncep_slp
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:47
+ !-> DEFINE SYMBOL qq = 47
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:48
+ !-> DEFINE SYMBOL qq = 48
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_sst_dry_ppm
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:49
+ !-> DEFINE SYMBOL qq = 49
+ !-> DEFINE SYMBOL vname = fCO2_from_pCO2_water_water_equi_temp
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:50
+ !-> DEFINE SYMBOL qq = 50
+ !-> DEFINE SYMBOL vname = fCO2_from_pCO2_water_sst_100humidity_uatm
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:51
+ !-> DEFINE SYMBOL qq = 51
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_fCO2_water_equi_uatm
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:52
+ !-> DEFINE SYMBOL qq = 52
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_fCO2_water_sst_100humidty_uatm
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:53
+ !-> DEFINE SYMBOL qq = 53
+ !-> DEFINE SYMBOL vname = fCO2_from_pCO2_water_water_equi_temp_ncep
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:54
+ !-> DEFINE SYMBOL qq = 54
+ !-> DEFINE SYMBOL vname = fCO2_from_pCO2_water_sst_100humidity_uatm_ncep
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:55
+ !-> DEFINE SYMBOL qq = 55
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:56
+ !-> DEFINE SYMBOL qq = 56
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:57
+ !-> DEFINE SYMBOL qq = 57
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:58
+ !-> DEFINE SYMBOL qq = 58
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:59
+ !-> DEFINE SYMBOL qq = 59
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:60
+ !-> DEFINE SYMBOL qq = 60
+ !-> DEFINE SYMBOL vname = fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:61
+ !-> DEFINE SYMBOL qq = 61
+ !-> DEFINE SYMBOL vname = fCO2_recommended
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:62
+ !-> DEFINE SYMBOL qq = 62
+ !-> DEFINE SYMBOL vname = fCO2_source
+ !-> DEFINE SYMBOL vtype = INT4
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:63
+ !-> DEFINE SYMBOL qq = 63
+ !-> DEFINE SYMBOL vname = delta_temp
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:64
+ !-> DEFINE SYMBOL qq = 64
+ !-> DEFINE SYMBOL vname = region_id
+ !-> DEFINE SYMBOL vtype = CHAR
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE region_id_s = SAMPLEI(region_id_in, samplevar)
+ !-> DEFINE VARIABLE region_id = RESHAPE(region_id_s, x[gx=obs])
+ !-> SET ATT/LIKE=region_id_in region_id
+ !-> SET ATT/OUTPUT=all region_id
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/FILE="492C19881104_dec.nc" region_id
+!-> REPEAT: Q:65
+ !-> DEFINE SYMBOL qq = 65
+ !-> DEFINE SYMBOL vname = calc_speed
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:66
+ !-> DEFINE SYMBOL qq = 66
+ !-> DEFINE SYMBOL vname = etopo2
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:67
+ !-> DEFINE SYMBOL qq = 67
+ !-> DEFINE SYMBOL vname = gvCO2
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:68
+ !-> DEFINE SYMBOL qq = 68
+ !-> DEFINE SYMBOL vname = dist_to_land
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:69
+ !-> DEFINE SYMBOL qq = 69
+ !-> DEFINE SYMBOL vname = day_of_year
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:70
+ !-> DEFINE SYMBOL qq = 70
+ !-> DEFINE SYMBOL vname = time
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:71
+ !-> DEFINE SYMBOL qq = 71
+ !-> DEFINE SYMBOL vname = lon360
+ !-> DEFINE SYMBOL vtype = DOUBLE
+ !-> IF 1 THEN EXIT/CYCLE
+!-> REPEAT: Q:72
+ !-> DEFINE SYMBOL qq = 72
+ !-> DEFINE SYMBOL vname = tmonth
+ !-> DEFINE SYMBOL vtype = CHAR
+ !-> IF 0 THEN EXIT/CYCLE
+ !-> DEFINE VARIABLE tmonth_s = SAMPLEI(tmonth_in, samplevar)
+ !-> DEFINE VARIABLE tmonth = RESHAPE(tmonth_s, x[gx=obs])
+ !-> SET ATT/LIKE=tmonth_in tmonth
+ !-> SET ATT/OUTPUT=all tmonth
+ !-> LIST/FORMAT=CDF/QUIET/APPEND/FILE="492C19881104_dec.nc" tmonth
+ 
+can data/all
+can var/all
+can sym/all
+can axis/all
+ 
+! Dump the contents of the decimated-data DSG file
+sp ncdump -h 492C19881104_dec.nc >> all_ncdump.out
 *** Running ferret script: bn_outline_poly.jnl
 [?1034hset win /xinch=8 /thick=1 /asp=1 /outline=5 1
 let v = 2*3.14159*x[gx=0:1:.01]
@@ -97021,4 +99086,4 @@ True
 >>> del coads_uw
 >>> pyferret.showdata()
      currently SET data sets:
-Ended at Wed Jul 20 16:34:36 PDT 2016
+Ended at Mon Jul 25 11:12:30 PDT 2016

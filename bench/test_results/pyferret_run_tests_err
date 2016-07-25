@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Jul 20 16:32 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Jul 25 11:05 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -285,6 +285,7 @@ Benchmark scripts that will be run:
    bn_ps.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
+   err700_decimate.jnl
    bn_outline_poly.jnl
    bn_contourcolor.jnl
    testgetstrdata.py
@@ -296,7 +297,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Wed Jul 20 16:32:39 PDT 2016
+Beginning at Mon Jul 25 11:10:28 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -4745,6 +4746,8 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+*** Running ferret script: err700_decimate.jnl
+ Cached data cleared from memory
 *** Running ferret script: bn_outline_poly.jnl
  Cached data cleared from memory
 *** Running ferret script: bn_contourcolor.jnl
@@ -4786,4 +4789,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testfermethods.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Wed Jul 20 16:34:36 PDT 2016
+Ended at Mon Jul 25 11:12:30 PDT 2016

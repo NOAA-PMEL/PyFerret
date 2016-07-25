@@ -195,6 +195,8 @@
 * V698  4/16 *acm* For ticket 2399: Apply MODE CALENDAR settings to F axes too
 * V7    5/16 *acm* See ticket 2352. For LET/D variables look for info under that dataset
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
+* V701 *acm*  7/12 Ticket 2455: On a SET AXIS/NAME=, save the original spelling and 
+*                  an up-cased spelling of the axis name, as is done with DEFINE AXIS.
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -1046,7 +1048,7 @@ c *kob* 4/97
 * Replace the name in the linked-list structure.
 
           iset = pdset_coordvars  ! stored info on user-defined axes
-          CALL CD_GET_VAR_ID (iset, line_name(axis), varid, status )
+          CALL CD_GET_VAR_ID (iset, cmnd_buff(item_start(1):item_end(1)), varid, status )
 	  IF (varid .GT. 0) CALL CD_RENAME_VAR(iset, varid, buff1, status)
 
 	   DO 1240 iset = 1, maxdsets
@@ -1056,11 +1058,11 @@ c *kob* 4/97
  1240	   CONTINUE
 
 * Replace the name in Ferret's line storage.
+	   line_name_orig(axis) = buff1
+	   istat =  STR_UPCASE (buff1, buff1)
 	   line_name(axis) = buff1
 
         ENDIF
-
-
 
 *  /UNITS
 * Note we do not change line direction with a resetting of units; line

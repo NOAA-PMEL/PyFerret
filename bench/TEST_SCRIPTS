@@ -268,3 +268,5 @@ bn_gif.jnl
 bn_ps.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl
+! Test SOCAT decimation script (not part of normal benchmark tests)
+err700_decimate.jnl

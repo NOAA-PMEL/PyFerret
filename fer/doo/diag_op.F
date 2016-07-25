@@ -63,6 +63,7 @@
 *		  allow for "false 1 point" regridding
 * V7    acm  6/16 Ticket 2437: Deprecating mode_6d_lab. 
 *		  Adjust output to 6-D or 4-D grids
+* V701  acm  7/16 Avoid writing nulls when changing from 6-D to 4-D output
 
 * calling argument declarations:
         IMPLICIT NONE
@@ -177,8 +178,14 @@
 	         out_buff((ii-1)*10+1:ii*10) = '(invalid) '
 	      ENDIF
  500	   CONTINUE
-	   WRITE ( risc_buff, 3060 ) doing, grid_name(cx)(:16), 
+
+	   IF (listdims .EQ. 6)
+     .	     WRITE ( risc_buff, 3060 ) doing, grid_name(cx)(:16), 
      .	           out_buff(:60)
+	   IF (listdims .EQ. 4)
+     .	     WRITE ( risc_buff, 3060 ) doing, grid_name(cx)(:16), 
+     .	           out_buff(:40)
+
  3060	   FORMAT (1X,A,' dynamic grid ',2A)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 

@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Jul 25 13:06 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.01
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Jul 25 15:53 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.01
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -17,7 +17,6 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
-PYFER_EXTERNAL_FUNCTIONS=/home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -288,7 +287,7 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Mon Jul 25 13:46:00 PDT 2016
+Beginning at Mon Jul 25 15:56:25 PDT 2016
 *** Running ferret script: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -1537,17 +1536,17 @@ use coads_climatology
 set mode diagnostic
 let sst2 = sst[l=5:8]
 say `sst, return=size`    ! should only do a GETGRID
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL                        
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME                          
+ allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME
  !-> MESSAGE/CONTINUE 48600
 48600
 say `sst2,return=lend`    ! should inherit L=5:8
- dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME                          
+ dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid SST2     C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME                          
- allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME                          
+ allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME
+ allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME
  !-> MESSAGE/CONTINUE 8
 8
 set mode/last diagnostic
@@ -1663,7 +1662,7 @@ say `sst[L=1:3@ave]+sst,return=lsize`
 let a = XSEQUENCE(J[j=1:5])
 set mode diagnostic
 say `a,return=isize`          ! full evaluation occurs
- dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME                          
+ dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A        C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid (C01,V08 C:  9 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -1671,7 +1670,7 @@ say `a,return=isize`          ! full evaluation occurs
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  pass #2 (C11,V08 C: 11 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  -DELETE X        M:  4 dset:   0 I:  160  160  J: -999 -999  K: -999 -999  L: -999 -999
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  eval    A        C:  6 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
@@ -1681,19 +1680,19 @@ say `a,return=isize`          ! full evaluation occurs
  !-> MESSAGE/CONTINUE 5
 5
 say `a[i=2:3],return=isize`   ! full evaluation is bypassed
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  -DELETE J        M:  4 dset:   0 I: -999 -999  J:    1    5  K: -999 -999  L: -999 -999
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  found   A        M: 10 dset:   0 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  !-> MESSAGE/CONTINUE 2
 2
 say `a[i=100:200],return=isize`    ! correct starting with Ferret v694 (tkt 2213)
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  eval    A        C:  6 dset:   0 I:  100  200  J: -999 -999  K: -999 -999  L: -999 -999
@@ -3190,8 +3189,8 @@ USE gt4d011
 CANCEL MEMORY/ALL
 SET MODE DIAGNOSTIC
 DEFINE REGION/I=101 IPT
- dealloc  dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME1                         
- dealloc  dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME1
+ dealloc  dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME1
 DEFINE REGION/J=46 JPT
 DEFINE REGION/K=1 KPT
 DEFINE REGION/L=1 LPT
@@ -3200,7 +3199,7 @@ SET REG R4D
 SET EXPRESSION temp
 LOAD		! load full 4-D region
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME1                         
+ allocate dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME1
  eval    EX#1     C:  4 dset:   1 I:  101  105  J:   46   50  K:    1    5  L:    1    5
  reading TEMP     M: 31 dset:   1 I:  101  105  J:   46   50  K:    1    5  L:    1    5
 GO bn_geometry.sub
@@ -10499,12 +10498,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "25-Jul-16"
-SESSION_TIME = "13:46"
-SESSION_PID = "4026"
-DELTA_CPU = "0.004998"
-CLOCK_SECS = "0.002"
+SESSION_TIME = "15:56"
+SESSION_PID = "17164"
+DELTA_CPU = "0.009997"
+CLOCK_SECS = "0.003"
 CURRENT_DATE = "25-Jul-16"
-CURRENT_TIME = "13:46:04"
+CURRENT_TIME = "15:56:28"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10528,12 +10527,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "25-Jul-16"
-SESSION_TIME = "13:46"
-SESSION_PID = "4026"
+SESSION_TIME = "15:56"
+SESSION_PID = "17164"
 DELTA_CPU = "0.001"
-CLOCK_SECS = "0.003"
+CLOCK_SECS = "0.004"
 CURRENT_DATE = "25-Jul-16"
-CURRENT_TIME = "13:46:04"
+CURRENT_TIME = "15:56:28"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10544,8 +10543,8 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "25-Jul-16"
-SESSION_TIME = "13:46"
-SESSION_PID = "4026"
+SESSION_TIME = "15:56"
+SESSION_PID = "17164"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10556,14 +10555,14 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "25-Jul-16"
-SESSION_TIME = "13:46"
-SESSION_PID = "4026"
+SESSION_TIME = "15:56"
+SESSION_PID = "17164"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "25-Jul-16"
-SESSION_TIME = "13:46"
-SESSION_PID = "4026"
+SESSION_TIME = "15:56"
+SESSION_PID = "17164"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10697,12 +10696,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "25-Jul-16"
-SESSION_TIME = "13:46"
-SESSION_PID = "4026"
-DELTA_CPU = "0.016997"
-CLOCK_SECS = "0.023"
+SESSION_TIME = "15:56"
+SESSION_PID = "17164"
+DELTA_CPU = "0.018998"
+CLOCK_SECS = "0.034"
 CURRENT_DATE = "25-Jul-16"
-CURRENT_TIME = "13:46:04"
+CURRENT_TIME = "15:56:28"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -14949,14 +14948,14 @@ define axis/t=15-jan-1982:15-mar-1984:120/unit=hour tax5day
 define axis/x=120e:60w:10/unit=degrees xax10
 define grid/like=u/t=tax5day g5day
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
 define grid/like=u/x=xax10/z=w/t=tax5day g5_10
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  getgrid EX#1     C:  6 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  getgrid EX#1     C:  7 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DW11         PSXT      PSYT      PSZW      TIME1                         
+ allocate dynamic grid PS3DW11         PSXT      PSYT      PSZW      TIME1
  
 set reg/x=130w:125w/y=0:1.5/z=0:15/t=21-JAN-1982:24-jan-1982
 !set reg/i=101:105/j=41:42/k=1:2/l=3:4
@@ -14966,19 +14965,19 @@ use gtsa056_1    	!kob 4/99
 ! deliberate errors
 set mode ignore
 load temp[g=@lin]    ! no target grid specified
- dealloc  dynamic grid PS3DW11         PSXT      PSYT      PSZW      TIME1                         
+ dealloc  dynamic grid PS3DW11         PSXT      PSYT      PSZW      TIME1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME2                         
+ allocate dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  101  105  J:   45   50  K:    1    2  L:    3    4
  reading TEMP     M:  1 dset:   1 I:  101  105  J:   45   50  K:    1    2  L:    3    4
 load temp[gx=@ave]   ! no target grid specified
- dealloc  dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME2                         
+ allocate dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  101  105  J:   45   50  K:    1    2  L:    3    4
  found   TEMP     M:  1 dset:   1 I:  101  105  J:   45   50  K:    1    2  L:    3    4
 load temp[g=u,g=w]   ! more than 1 target grid
- dealloc  dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
 load temp[g=x]       ! g=user-or-pseudo-var not allowed
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -14987,28 +14986,28 @@ set mode/last ignore
 ! valid syntax tests
 load temp
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME2                         
+ allocate dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  101  105  J:   45   50  K:    1    2  L:    3    4
  found   TEMP     M:  1 dset:   1 I:  101  105  J:   45   50  K:    1    2  L:    3    4
 load temp[g=u]
- dealloc  dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  strip regrid on X: TEMP --> PS3DU2           @LIN
  reading TEMP     M:  2 dset:   1 I:  100  106  J:   45   50  K:    1    2  L:    3    4
  regrid XY
  regrid  TEMP     M:  3 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
 load temp[g=u@lin]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  found   TEMP     M:  3 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
 load temp[g=u@ave,gy=@asn]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  strip regrid on X: TEMP --> PS3DU2           @AVE
  strip regrid on Y: TEMP --> XNTERMED         @ASN
@@ -15017,9 +15016,9 @@ load temp[g=u@ave,gy=@asn]
  regrid  TEMP     M:  5 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  -DELETE TEMP     M:  4 dset:   1 I:  100  106  J:   45   49  K:    1    2  L:    3    4  M: -999 -999  N: -999 -999
 load temp[g=u@lin,gy=@asn]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  strip regrid on X: TEMP --> PS3DU2           @LIN
  strip regrid on Y: TEMP --> XNTERMED         @ASN
@@ -15028,35 +15027,35 @@ load temp[g=u@lin,gy=@asn]
  regrid  TEMP     M:  6 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  -DELETE TEMP     M:  4 dset:   1 I:  100  106  J:   45   49  K:    1    2  L:    3    4  M: -999 -999  N: -999 -999
 load temp[g=u,gx=@ave,gy=@asn]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  found   TEMP     M:  5 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
 load temp[gx=u]  		! changed V4.20 --> implicit regrid
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G009)          PSXU      PSYT      PSZT      TIME2                         
- dealloc  dynamic grid (G009)          PSXU      PSYT      PSZT      TIME2                         
- allocate dynamic grid (G009)          PSXU      PSYT      PSZT      TIME2                         
+ allocate dynamic grid (G009)          PSXU      PSYT      PSZT      TIME2
+ dealloc  dynamic grid (G009)          PSXU      PSYT      PSZT      TIME2
+ allocate dynamic grid (G009)          PSXU      PSYT      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   50  K:    1    2  L:    3    4
- allocate dynamic grid (G009)          PSXU      PSYT      PSZT      TIME2                         
+ allocate dynamic grid (G009)          PSXU      PSYT      PSZT      TIME2
  strip regrid on X: TEMP --> (G009)           @LIN
  found   TEMP     M:  2 dset:   1 I:  100  106  J:   45   50  K:    1    2  L:    3    4
  regrid  TEMP     M:  4 dset:   1 I:  100  105  J:   45   50  K:    1    2  L:    3    4
- dealloc  dynamic grid (G009)          PSXU      PSYT      PSZT      TIME2                         
+ dealloc  dynamic grid (G009)          PSXU      PSYT      PSZT      TIME2
 stat temp[g=u] - temp[g=u@ave,gx=u@lin,gy=u@lin,gz=u@lin,gt=u@lin]  ! == 0
- dealloc  dynamic grid (G009)          PSXU      PSYT      PSZT      TIME2                         
+ dealloc  dynamic grid (G009)          PSXU      PSYT      PSZT      TIME2
  -DELETE TEMP     M:  4 dset:   1 I:  100  105  J:   45   50  K:    1    2  L:    3    4
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  found   TEMP     M:  3 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  found   TEMP     M:  3 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  
              TEMP[G=U] - TEMP[G=U@AVE,GX=U@LIN,GY=U@LIN,GZ=U@LIN,GT=U@LIN]
              LONGITUDE: 130W to 125W
@@ -15075,9 +15074,9 @@ stat temp[g=u] - temp[g=u@ave,gx=u@lin,gy=u@lin,gz=u@lin,gt=u@lin]  ! == 0
  Standard deviation: 0
 stat temp[g=u,gx=@ave] - temp[gx=@ave,g=u]    ! == 0
  -DELETE EX#1     M:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  strip regrid on X: TEMP --> PS3DU2           @AVE
  strip regrid on Y: TEMP --> XNTERMED         @LIN
@@ -15106,9 +15105,9 @@ stat temp[g=u,gx=@ave] - temp[gx=@ave,g=u]    ! == 0
 ! basic regrid tests
 LIST temp[g=u@ave]
  -DELETE EX#1     M:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  strip regrid on X: TEMP --> PS3DU2           @AAV
  found   TEMP     M:  2 dset:   1 I:  100  106  J:   45   50  K:    1    2  L:    3    4
@@ -15147,15 +15146,15 @@ LIST temp[g=u@ave]
  0.33N / 46:  23.55  23.54  23.61  23.81  24.12  24.30
  0     / 45:  23.54  23.47  23.45  23.53  23.74  23.92
 LIST temp[g=u,gx=u@ave]	! V4.20 mod
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  found   TEMP     M:  7 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
              VARIABLE : TEMPERATURE (deg. C)
                         regrid: U on X@AVE, on Y@LIN
              FILENAME : gtsa056_1.cdf
@@ -15189,20 +15188,20 @@ LIST temp[g=u,gx=u@ave]	! V4.20 mod
  0.33N / 46:  23.55  23.54  23.61  23.81  24.12  24.30
  0     / 45:  23.54  23.47  23.45  23.53  23.74  23.92
 LIST temp[g=u,gy=u@ave]	! V4.20 mod
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  strip regrid on X: TEMP --> PS3DU2           @LIN
  strip regrid on Y: TEMP --> XNTERMED         @AVE
  found   TEMP     M:  2 dset:   1 I:  100  106  J:   45   50  K:    1    2  L:    3    4
  regrid  TEMP     M:  8 dset:   1 I:  100  106  J:   45   49  K:    1    2  L:    3    4
  regrid  TEMP     M:  9 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  -DELETE TEMP     M:  8 dset:   1 I:  100  106  J:   45   49  K:    1    2  L:    3    4  M: -999 -999  N: -999 -999
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
              VARIABLE : TEMPERATURE (deg. C)
                         regrid: U on X@LIN, on Y@AVE
              FILENAME : gtsa056_1.cdf
@@ -15236,15 +15235,15 @@ LIST temp[g=u,gy=u@ave]	! V4.20 mod
  0.33N / 46:  23.55  23.54  23.61  23.81  24.12  24.30
  0     / 45:  23.54  23.47  23.45  23.53  23.74  23.92
 LIST temp[g=u,gz=u@ave]	! V4.20 mod
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  found   TEMP     M:  3 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
              VARIABLE : TEMPERATURE (deg. C)
                         regrid: U
              FILENAME : gtsa056_1.cdf
@@ -15278,15 +15277,15 @@ LIST temp[g=u,gz=u@ave]	! V4.20 mod
  0.33N / 46:  23.55  23.54  23.61  23.81  24.12  24.30
  0     / 45:  23.54  23.47  23.45  23.53  23.74  23.92
 LIST temp[g=u,gt=u@ave]	! V4.20 mod, etc --> many more similar syntax chgs
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  found   TEMP     M:  3 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
              VARIABLE : TEMPERATURE (deg. C)
                         regrid: U
              FILENAME : gtsa056_1.cdf
@@ -15321,9 +15320,9 @@ LIST temp[g=u,gt=u@ave]	! V4.20 mod, etc --> many more similar syntax chgs
  0     / 45:  23.54  23.47  23.45  23.53  23.74  23.92
  
 LIST temp[g=u]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  found   TEMP     M:  3 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
              VARIABLE : TEMPERATURE (deg. C)
@@ -15359,9 +15358,9 @@ LIST temp[g=u]
  0.33N / 46:  23.55  23.54  23.61  23.81  24.12  24.30
  0     / 45:  23.54  23.47  23.45  23.53  23.74  23.92
 LIST temp[g=u@asn]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  strip regrid on X: TEMP --> PS3DU2           @ASN
  strip regrid on Y: TEMP --> XNTERMED         @ASN
@@ -15402,20 +15401,20 @@ LIST temp[g=u@asn]
  0.33N / 46:  23.54  23.48  23.46  23.52  23.76  24.05
  0     / 45:  23.62  23.51  23.42  23.38  23.48  23.69
 LIST temp[g=u,gx=u@asn]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  strip regrid on X: TEMP --> PS3DU2           @ASN
  strip regrid on Y: TEMP --> XNTERMED         @LIN
  found   TEMP     M:  2 dset:   1 I:  100  106  J:   45   50  K:    1    2  L:    3    4
  regrid  TEMP     M:  8 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  regrid  TEMP     M: 11 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  -DELETE TEMP     M:  8 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4  M: -999 -999  N: -999 -999
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
              VARIABLE : TEMPERATURE (deg. C)
                         regrid: U on X@ASN, on Y@LIN
              FILENAME : gtsa056_1.cdf
@@ -15449,15 +15448,15 @@ LIST temp[g=u,gx=u@asn]
  0.33N / 46:  23.57  23.54  23.55  23.66  23.97  24.27
  0     / 45:  23.58  23.50  23.44  23.45  23.62  23.87
 LIST temp[g=u,gy=u@asn]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  found   TEMP     M:  6 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
              VARIABLE : TEMPERATURE (deg. C)
                         regrid: U on X@LIN, on Y@ASN
              FILENAME : gtsa056_1.cdf
@@ -15491,15 +15490,15 @@ LIST temp[g=u,gy=u@asn]
  0.33N / 46:  23.51  23.47  23.49  23.64  23.90  24.09
  0     / 45:  23.57  23.47  23.40  23.43  23.58  23.74
 LIST temp[g=u,gz=u@asn]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  found   TEMP     M:  3 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
              VARIABLE : TEMPERATURE (deg. C)
                         regrid: U
              FILENAME : gtsa056_1.cdf
@@ -15533,15 +15532,15 @@ LIST temp[g=u,gz=u@asn]
  0.33N / 46:  23.55  23.54  23.61  23.81  24.12  24.30
  0     / 45:  23.54  23.47  23.45  23.53  23.74  23.92
 LIST temp[g=u,gt=u@asn]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  found   TEMP     M:  3 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
              VARIABLE : TEMPERATURE (deg. C)
                         regrid: U
              FILENAME : gtsa056_1.cdf
@@ -15577,7 +15576,7 @@ LIST temp[g=u,gt=u@asn]
  
 ! Z and T axes different
 LIST temp[g=g5day@ave]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    2    3
  strip regrid on X: TEMP --> G5DAY            @AAV
@@ -15620,7 +15619,7 @@ LIST temp[g=g5day@ave]
  0.33N / 46:  23.56  23.57  23.66  23.87  24.13  24.26
  0     / 45:  23.54  23.48  23.48  23.57  23.76  23.89
 LIST temp[g=g5day,gx=g5day@ave]
- dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY                       
+ dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY
  -DELETE TEMP     M: 13 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    2    3
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    2    3
@@ -15666,7 +15665,7 @@ LIST temp[g=g5day,gx=g5day@ave]
  0.33N / 46:  23.56  23.55  23.63  23.85  24.14  24.29
  0     / 45:  23.54  23.47  23.46  23.56  23.76  23.92
 LIST temp[g=g5day,gy=g5day@ave]
- dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY                       
+ dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    2    3
  strip regrid on X: TEMP --> G5DAY            @LIN
@@ -15711,7 +15710,7 @@ LIST temp[g=g5day,gy=g5day@ave]
  0.33N / 46:  23.56  23.55  23.63  23.85  24.14  24.29
  0     / 45:  23.54  23.47  23.46  23.56  23.76  23.92
 LIST temp[g=g5day,gz=g5day@ave]
- dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY                       
+ dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    2    3
  strip regrid on X: TEMP --> G5DAY            @LIN
@@ -15754,7 +15753,7 @@ LIST temp[g=g5day,gz=g5day@ave]
  0.33N / 46:  23.56  23.55  23.63  23.85  24.14  24.29
  0     / 45:  23.54  23.47  23.46  23.56  23.76  23.92
 LIST temp[g=g5day,gt=g5day@ave]
- dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY                       
+ dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    2    3
  strip regrid on X: TEMP --> G5DAY            @LIN
@@ -15798,7 +15797,7 @@ LIST temp[g=g5day,gt=g5day@ave]
  0     / 45:  23.54  23.48  23.48  23.57  23.76  23.89
  
 LIST temp[g=g5day]
- dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY                       
+ dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    2    3
  found   TEMP     M: 15 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    2    3
@@ -15835,7 +15834,7 @@ LIST temp[g=g5day]
  0.33N / 46:  23.56  23.55  23.63  23.85  24.14  24.29
  0     / 45:  23.54  23.47  23.46  23.56  23.76  23.92
 LIST temp[g=g5day@asn]
- dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY                       
+ dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    2    3
  strip regrid on X: TEMP --> G5DAY            @ASN
@@ -15880,7 +15879,7 @@ LIST temp[g=g5day@asn]
  0.33N / 46:  23.52  23.47  23.42  23.37  23.46  23.73
  0     / 45:  23.61  23.53  23.43  23.34  23.30  23.45
 LIST temp[g=g5day,gx=g5day@asn]
- dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY                       
+ dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    2    3
  strip regrid on X: TEMP --> G5DAY            @ASN
@@ -15925,7 +15924,7 @@ LIST temp[g=g5day,gx=g5day@asn]
  0.33N / 46:  23.57  23.54  23.57  23.70  24.00  24.28
  0     / 45:  23.58  23.50  23.45  23.47  23.64  23.88
 LIST temp[g=g5day,gy=g5day@asn]
- dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY                       
+ dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    2    3
  strip regrid on X: TEMP --> G5DAY            @LIN
@@ -15970,7 +15969,7 @@ LIST temp[g=g5day,gy=g5day@asn]
  0.33N / 46:  23.51  23.48  23.51  23.67  23.93  24.09
  0     / 45:  23.56  23.47  23.41  23.45  23.60  23.75
 LIST temp[g=g5day,gz=g5day@asn]
- dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY                       
+ dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    2    3
  found   TEMP     M: 15 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    2    3
@@ -16007,7 +16006,7 @@ LIST temp[g=g5day,gz=g5day@asn]
  0.33N / 46:  23.56  23.55  23.63  23.85  24.14  24.29
  0     / 45:  23.54  23.47  23.46  23.56  23.76  23.92
 LIST temp[g=g5day,gt=g5day@asn]
- dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY                       
+ dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:  100  105  J:   45   49  K:    1    2  L:    2    3
  strip regrid on X: TEMP --> G5DAY            @LIN
@@ -16052,7 +16051,7 @@ LIST temp[g=g5day,gt=g5day@asn]
  
 ! all 4 axes different
 LIST temp[g=g5_10@ave]
- dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY                       
+ dealloc  dynamic grid G5DAY           PSXU      PSYU      PSZT      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  strip regrid on X: TEMP --> G5_10            @AAV
@@ -16076,7 +16075,7 @@ LIST temp[g=g5_10@ave]
  20-JAN-1982 00 / 2:  23.88  23.97  24.15  24.37  24.63
  25-JAN-1982 00 / 3:  23.89  23.98  24.17  24.40  24.65
 LIST temp[g=g5_10,gx=g5_10@ave]
- dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY                       
+ dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY
  -DELETE TEMP     M: 21 dset:   1 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:   12   12  J:   45   49  K:    1    1  L:    2    3
@@ -16103,7 +16102,7 @@ LIST temp[g=g5_10,gx=g5_10@ave]
  20-JAN-1982 00 / 2:  23.88  23.98  24.15  24.38  24.63
  25-JAN-1982 00 / 3:  23.88  23.97  24.15  24.39  24.64
 LIST temp[g=g5_10,gy=g5_10@ave]
- dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY                       
+ dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  strip regrid on X: TEMP --> G5_10            @LIN
@@ -16129,7 +16128,7 @@ LIST temp[g=g5_10,gy=g5_10@ave]
  20-JAN-1982 00 / 2:  23.75  23.75  23.85  24.01  24.21
  25-JAN-1982 00 / 3:  23.75  23.76  23.85  24.02  24.21
 LIST temp[g=g5_10,gz=g5_10@ave]
- dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY                       
+ dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  strip regrid on X: TEMP --> G5_10            @LIN
@@ -16153,7 +16152,7 @@ LIST temp[g=g5_10,gz=g5_10@ave]
  20-JAN-1982 00 / 2:  23.75  23.75  23.85  24.01  24.21
  25-JAN-1982 00 / 3:  23.75  23.76  23.85  24.02  24.21
 LIST temp[g=g5_10,gt=g5_10@ave]
- dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY                       
+ dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  strip regrid on X: TEMP --> G5_10            @LIN
@@ -16178,7 +16177,7 @@ LIST temp[g=g5_10,gt=g5_10@ave]
  25-JAN-1982 00 / 3:  23.75  23.76  23.87  24.03  24.23
  
 LIST temp[g=g5_10@asn]
- dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY                       
+ dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  strip regrid on X: TEMP --> G5_10            @ASN
@@ -16204,7 +16203,7 @@ LIST temp[g=g5_10@asn]
  20-JAN-1982 00 / 2:  29.59  29.58  29.58  29.57  29.56
  25-JAN-1982 00 / 3:  29.58  29.57  29.57  29.55  29.54
 LIST temp[g=g5_10,gx=g5_10@asn]
- dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY                       
+ dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  strip regrid on X: TEMP --> G5_10            @ASN
@@ -16230,7 +16229,7 @@ LIST temp[g=g5_10,gx=g5_10@asn]
  20-JAN-1982 00 / 2:  29.57  29.57  29.55  29.53  29.53
  25-JAN-1982 00 / 3:  29.56  29.55  29.54  29.51  29.51
 LIST temp[g=g5_10,gy=g5_10@asn]
- dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY                       
+ dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  strip regrid on X: TEMP --> G5_10            @LIN
@@ -16256,7 +16255,7 @@ LIST temp[g=g5_10,gy=g5_10@asn]
  20-JAN-1982 00 / 2:  23.78  23.72  23.78  23.91  24.10
  25-JAN-1982 00 / 3:  23.77  23.72  23.79  23.92  24.11
 LIST temp[g=g5_10,gz=g5_10@asn]
- dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY                       
+ dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  strip regrid on X: TEMP --> G5_10            @LIN
@@ -16280,7 +16279,7 @@ LIST temp[g=g5_10,gz=g5_10@asn]
  20-JAN-1982 00 / 2:  23.96  23.95  24.02  24.15  24.32
  25-JAN-1982 00 / 3:  23.96  23.96  24.03  24.16  24.34
 LIST temp[g=g5_10,gt=g5_10@asn]
- dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY                       
+ dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  strip regrid on X: TEMP --> G5_10            @LIN
@@ -16309,15 +16308,15 @@ SET MODE IGNORE	! V.5 change
 canc reg
 set reg/l=1:3  ! x,y,z unspecified
 load temp
- dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY                       
+ dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME2                         
+ allocate dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:    1  160  J:    1  100  K:    1   27  L:    1    3
  reading TEMP     M: 32 dset:   1 I:    1  160  J:    5   89  K:    1    2  L:    1    3
 load temp[g=u]
- dealloc  dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:    1  160  J:    1  100  K:    1   27  L:    1    3
  strip regrid on X: TEMP --> PS3DU2           @LIN
  strip modulo-void-filling TEMP on X axis:     1   161 dset:   1
@@ -16326,9 +16325,9 @@ load temp[g=u]
  regrid XY
  regrid  TEMP     M: 34 dset:   1 I:    1  160  J:    1  100  K:    1    2  L:    1    3
 load temp[g=u@lin]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:    1  160  J:    1  100  K:    1   27  L:    1    3
  strip regrid on X: TEMP --> PS3DU2           @LIN
  strip modulo-void-filling TEMP on X axis:     1   161 dset:   1
@@ -16338,9 +16337,9 @@ load temp[g=u@lin]
  regrid  TEMP     M: 36 dset:   1 I:    1  160  J:    1  100  K:    1    2  L:    1    3
  
 load temp[g=u@ave]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:    1  160  J:    1  100  K:    1   27  L:    1    3
  strip regrid on X: TEMP --> PS3DU2           @AAV
  strip modulo-void-filling TEMP on X axis:     1   161 dset:   1
@@ -16349,13 +16348,13 @@ load temp[g=u@ave]
  regrid XY
  regrid  TEMP     M: 38 dset:   1 I:    1  160  J:    1  100  K:    1    2  L:    1    3
 load temp[g=u,gx=u@ave]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:    1  160  J:    1  100  K:    1   27  L:    1    3
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  strip regrid on X: TEMP --> PS3DU2           @AVE
  strip modulo-void-filling TEMP on X axis:     1   161 dset:   1
  strip regrid on Y: TEMP --> XNTERMED         @LIN
@@ -16364,15 +16363,15 @@ load temp[g=u,gx=u@ave]
  doing modulo-void-filling TEMP on X axis:     1   160 dset:   1
  regrid  TEMP     M: 41 dset:   1 I:    1  160  J:    1  100  K:    1    2  L:    1    3
  -DELETE TEMP     M: 40 dset:   1 I:    1  161  J:    1  100  K:    1    2  L:    1    3  M: -999 -999  N: -999 -999
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
 load temp[g=u,gy=u@ave]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:    1  160  J:    1  100  K:    1   27  L:    1    3
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  strip regrid on X: TEMP --> PS3DU2           @LIN
  strip modulo-void-filling TEMP on X axis:     1   161 dset:   1
  strip regrid on Y: TEMP --> XNTERMED         @AVE
@@ -16381,12 +16380,12 @@ load temp[g=u,gy=u@ave]
  doing modulo-void-filling TEMP on X axis:     1   160 dset:   1
  regrid  TEMP     M: 43 dset:   1 I:    1  160  J:    1  100  K:    1    2  L:    1    3
  -DELETE TEMP     M: 42 dset:   1 I:    1  161  J:    1  100  K:    1    2  L:    1    3  M: -999 -999  N: -999 -999
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  
 load temp[g=u@asn]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:    1  160  J:    1  100  K:    1   27  L:    1    3
  strip regrid on X: TEMP --> PS3DU2           @ASN
  strip regrid on Y: TEMP --> XNTERMED         @ASN
@@ -16395,28 +16394,28 @@ load temp[g=u@asn]
  regrid  TEMP     M: 44 dset:   1 I:    1  160  J:    1  100  K:    1    2  L:    1    3
  -DELETE TEMP     M: 42 dset:   1 I:    1  160  J:    1  100  K:    1    2  L:    1    3  M: -999 -999  N: -999 -999
 load temp[g=u,gx=u@asn]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:    1  160  J:    1  100  K:    1   27  L:    1    3
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  strip regrid on X: TEMP --> PS3DU2           @ASN
  strip regrid on Y: TEMP --> XNTERMED         @LIN
  found   TEMP     M: 37 dset:   1 I:    1  161  J:    5   89  K:    1    2  L:    1    3
  regrid  TEMP     M: 42 dset:   1 I:    1  160  J:    1  100  K:    1    2  L:    1    3
  regrid  TEMP     M: 45 dset:   1 I:    1  160  J:    1  100  K:    1    2  L:    1    3
  -DELETE TEMP     M: 42 dset:   1 I:    1  160  J:    1  100  K:    1    2  L:    1    3  M: -999 -999  N: -999 -999
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
 load temp[g=u,gy=u@asn]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 dset:   1 I:    1  160  J:    1  100  K:    1   27  L:    1    3
- allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  strip regrid on X: TEMP --> PS3DU2           @LIN
  strip modulo-void-filling TEMP on X axis:     1   161 dset:   1
  strip regrid on Y: TEMP --> XNTERMED         @ASN
@@ -16425,15 +16424,15 @@ load temp[g=u,gy=u@asn]
  doing modulo-void-filling TEMP on X axis:     1   160 dset:   1
  regrid  TEMP     M: 47 dset:   1 I:    1  160  J:    1  100  K:    1    2  L:    1    3
  -DELETE TEMP     M: 46 dset:   1 I:    1  161  J:    1  100  K:    1    2  L:    1    3  M: -999 -999  N: -999 -999
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  
 canc reg
 use gtsa056_2		!kob 4/99
 set reg/i=101:105/j=41:42  ! z,t unspecified
 load temp[g=u]
- dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2                         
+ dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  eval    EX#1     C:  4 dset:   2 I:  101  105  J:   41   42  K:    1   27  L:    1  168
  strip regrid on X: TEMP --> PS3DU1           @LIN
  reading TEMP     M: 46 dset:   2 I:  101  106  J:   41   43  K:    1    2  L:    1  168
@@ -16441,45 +16440,45 @@ load temp[g=u]
  regrid  TEMP     M: 48 dset:   2 I:  101  105  J:   41   42  K:    1    2  L:    1  168
  
 load temp[g=u@ave]
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  eval    EX#1     C:  4 dset:   2 I:  101  105  J:   41   42  K:    1   27  L:    1  168
  strip regrid on X: TEMP --> PS3DU1           @AAV
  found   TEMP     M: 46 dset:   2 I:  101  106  J:   41   43  K:    1    2  L:    1  168
  regrid XY
  regrid  TEMP     M: 49 dset:   2 I:  101  105  J:   41   42  K:    1    2  L:    1  168
 load temp[g=u,gz=u@ave]
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  eval    EX#1     C:  4 dset:   2 I:  101  105  J:   41   42  K:    1   27  L:    1  168
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  strip regrid on X: TEMP --> PS3DU1           @LIN
  found   TEMP     M: 46 dset:   2 I:  101  106  J:   41   43  K:    1    2  L:    1  168
  regrid XY
  regrid  TEMP     M: 50 dset:   2 I:  101  105  J:   41   42  K:    1    2  L:    1  168
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
 load temp[g=u,gt=u@ave]
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  eval    EX#1     C:  4 dset:   2 I:  101  105  J:   41   42  K:    1   27  L:    1  168
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  strip regrid on X: TEMP --> PS3DU1           @LIN
  found   TEMP     M: 46 dset:   2 I:  101  106  J:   41   43  K:    1    2  L:    1  168
  regrid XY
  regrid  TEMP     M: 51 dset:   2 I:  101  105  J:   41   42  K:    1    2  L:    1  168
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  
 load temp[g=u@asn]
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  eval    EX#1     C:  4 dset:   2 I:  101  105  J:   41   42  K:    1   27  L:    1  168
  strip regrid on X: TEMP --> PS3DU1           @ASN
  strip regrid on Y: TEMP --> XNTERMED         @ASN
@@ -16488,31 +16487,31 @@ load temp[g=u@asn]
  regrid  TEMP     M: 53 dset:   2 I:  101  105  J:   41   42  K:    1    2  L:    1  168
  -DELETE TEMP     M: 52 dset:   2 I:  101  105  J:   41   42  K:    1    2  L:    1  168  M: -999 -999  N: -999 -999
 load temp[g=u,gz=u@asn]
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  eval    EX#1     C:  4 dset:   2 I:  101  105  J:   41   42  K:    1   27  L:    1  168
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  strip regrid on X: TEMP --> PS3DU1           @LIN
  found   TEMP     M: 46 dset:   2 I:  101  106  J:   41   43  K:    1    2  L:    1  168
  regrid XY
  regrid  TEMP     M: 52 dset:   2 I:  101  105  J:   41   42  K:    1    2  L:    1  168
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
 load temp[g=u,gt=u@asn]
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  eval    EX#1     C:  4 dset:   2 I:  101  105  J:   41   42  K:    1   27  L:    1  168
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  strip regrid on X: TEMP --> PS3DU1           @LIN
  found   TEMP     M: 46 dset:   2 I:  101  106  J:   41   43  K:    1    2  L:    1  168
  regrid XY
  regrid  TEMP     M: 54 dset:   2 I:  101  105  J:   41   42  K:    1    2  L:    1  168
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
 SET MODE/LAST IGNORE	! V.5 change
  
 ! plot verifications
@@ -16524,9 +16523,9 @@ set window/size=.5/aspect=.4 1
 use gtsa056_1 		!kob 4/99
 set region/x=130E:90W/y=0/z=5/t=21-JAN-1982
 plot temp
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME2                         
+ allocate dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME2
  strip --> EX#1[T=21-JAN-198200:00@ITP,D=1]
  strip --> EX#1[Y=0@ITP,D=1]
  eval    EX#1     C:  6 dset:   1 I:    1  140  J:   45   46  K:    1    1  L:    2    3
@@ -25112,7 +25111,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Mon Jul 25 13:46:07 PDT 2016
+Mon Jul 25 15:56:31 PDT 2016
  
 GO bn_reset
 cancel mode verify
@@ -25249,15 +25248,15 @@ SHOW MEM/FREE
 cancel memory/all
 set mode diagnostic
 list/i=2 SAMPLEI(sst[l=1,y=-2:2],{30,40,50})	! only I=2 from result
- dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME                          
- dealloc  dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME                          
- dealloc  dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME                          
+ dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME
+ dealloc  dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME
+ dealloc  dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid (C01,V02 C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid (C09,V02 C: 10 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME                          
- allocate dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME                          
- allocate dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME                          
+ allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME
+ allocate dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME
+ allocate dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
  eval    (C01,V02 C:  7 dset:   1 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
@@ -25485,16 +25484,16 @@ cancel memory/all
 let/quiet fsst = sst[x=@fln] 		! fill holes to allow @iin to work
 let/quiet a = fsst[i=@iin]		! @iin forces all-at-once
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
- dealloc  dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME      ABSTRACT  ABSTRACT
- dealloc  dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME      ABSTRACT  ABSTRACT
- dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME      ABSTRACT  ABSTRACT
+ dealloc  dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME
+ dealloc  dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME
+ dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME
 list/l=1/y=-2:2  SAMPLEI(a,{30,40,50})
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A        C:  8 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid FSST     C: 10 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME      ABSTRACT  ABSTRACT
- allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME      ABSTRACT  ABSTRACT
- allocate dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME      ABSTRACT  ABSTRACT
+ allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME
+ allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME
+ allocate dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I: -999 -999  J:   45   46  K: -999 -999  L:    1    1
  const_v {30-,50} M: 16 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
@@ -26508,16 +26507,16 @@ SHOW DATA
 ! basic strides
 LIST VAR[i=2:4:2]
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1                        
- dealloc  dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1                        
- allocate dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 dset:   1 I:    1    4  J:    1    3  K:    1    2  L:    1    1
- allocate dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G006)           @XACT
  rdstride VAR      C:  7 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:  2 dset:   1 I:    1    2  J:    1    3  K:    1    2  L:    1    1
  -DELETE VAR      M:  1 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X
              FILENAME : bn_strides.cdf
@@ -26537,9 +26536,9 @@ LIST VAR[i=2:4:2]
 ! cache hit after changes to COMPLETE_MISSING_LIMS and FLESH_OUT_AXIS
 LIST VAR[i=2:4:2]
  eval    EX#1     C:  4 dset:   1 I:    1    4  J:    1    3  K:    1    2  L:    1    1
- allocate dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1
  found   VAR      M:  2 dset:   1 I:    1    2  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X
              FILENAME : bn_strides.cdf
@@ -26559,22 +26558,22 @@ LIST VAR[i=2:4:2]
 ! cache hit through non-file variable
 let a = VAR[i=2:4:2]
 list a
- dealloc  dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX021)   YAX1_3    ZAX1_2    TAX1_1
  -DELETE VAR      M:  2 dset:   1 I:    1    2  J:    1    3  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A        C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
- dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
- allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
- allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 dset:   1 I:    1    4  J:    1    3  K:    1    2  L:    1    1
  eval    A        C:  6 dset:   1 I:    1    2  J:    1    3  K:    1    2  L:    1    1
- allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G006)           @XACT
  rdstride VAR      C:  9 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:  1 dset:   1 I:    1    2  J:    1    3  K:    1    2  L:    1    1
  -DELETE VAR      M:  2 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : VAR[I=2:4:2]
              FILENAME : bn_strides.cdf
              SUBSET   : 2 by 3 by 2 points (X-Y-Z)
@@ -26612,24 +26611,24 @@ cancel memory/all
  -DELETE VAR      M:  1 dset:   1 I:    1    2  J:    1    3  K:    1    2  L:    1    1
  -DELETE A        M:  2 dset:   1 I:    1    2  J:    1    3  K:    1    2  L:    1    1
 load var
- dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GPC1            XAX1_4    YAX1_3    ZAX1_2    TAX1_1                        
+ allocate dynamic grid GPC1            XAX1_4    YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 dset:   1 I:    1    4  J:    1    3  K:    1    2  L:    1    1
  reading VAR      M:  2 dset:   1 I:    1    4  J:    1    3  K:    1    2  L:    1    1
 LIST VAR[i=2:4:2]
- dealloc  dynamic grid GPC1            XAX1_4    YAX1_3    ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid GPC1            XAX1_4    YAX1_3    ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
- dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
- allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 dset:   1 I:    1    4  J:    1    3  K:    1    2  L:    1    1
- allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G006)           @XACT
  rdstride VAR      C:  7 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:  3 dset:   1 I:    1    2  J:    1    3  K:    1    2  L:    1    1
  -DELETE VAR      M:  1 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X
              FILENAME : bn_strides.cdf
@@ -26646,18 +26645,18 @@ LIST VAR[i=2:4:2]
  2   / 2:  1222.  1224.
  3   / 3:  1232.  1234.
 LIST VAR[i=2:4:2,j=1:3:2]
- dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1                        
- dealloc  dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1                        
- allocate dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1
  eval    EX#1     C:  4 dset:   1 I:    1    4  J:    1    3  K:    1    2  L:    1    1
- allocate dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G007)           @XACT
  rdstride VAR      C:  7 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:  4 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:  1 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -26679,19 +26678,19 @@ CANC MEM/ALL
 ! modulo requests cannot use strides (as this example shows)
 set axis/modulo XAX1_4
 LIST VAR[I=1:10:3,j=1,k=1,l=1]    ! 1, 4, 7(3), 10(2)
- dealloc  dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          (AX021)   YAX1_3    ZAX1_2    TAX1_1                        
- dealloc  dynamic grid (G007)          (AX021)   YAX1_3    ZAX1_2    TAX1_1                        
- allocate dynamic grid (G007)          (AX021)   YAX1_3    ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G007)          (AX021)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G007)          (AX021)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G007)          (AX021)   YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 dset:   1 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- allocate dynamic grid (G007)          (AX021)   YAX1_3    ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G007)          (AX021)   YAX1_3    ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G007)           @XACT
  strip moduloing VAR on X axis:     1    10 dset:   1
  reading VAR      M:  4 dset:   1 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  doing moduloing VAR on X axis:     1     4 dset:   1
  regrid  VAR      M:  2 dset:   1 I:    1    4  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G007)          (AX021)   YAX1_3    ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G007)          (AX021)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 3 delta on X
              FILENAME : bn_strides.cdf
@@ -26712,18 +26711,18 @@ cancel axis/modulo XAX1_4
  
 ! strides applied to more than one axis need special attention in IS_REGRID
 LIST VAR[i=2:4:2,j=1:3:2]
- dealloc  dynamic grid (G007)          (AX021)   YAX1_3    ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G007)          (AX021)   YAX1_3    ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1                        
- dealloc  dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1                        
- allocate dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1
  eval    EX#1     C:  4 dset:   1 I:    1    4  J:    1    3  K:    1    2  L:    1    1
- allocate dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G007)           @XACT
  rdstride VAR      C:  7 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:  3 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:  4 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -26738,19 +26737,19 @@ LIST VAR[i=2:4:2,j=1:3:2]
  1   / 1:  1212.  1214.
  3   / 2:  1232.  1234.
 LIST VAR[i=2:6:2,j=1:5:2]
- dealloc  dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G007)          (AX020)   (AX022)   ZAX1_2    TAX1_1
  -DELETE VAR      M:  3 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G007)          (AX020)   (AX021)   ZAX1_2    TAX1_1                        
- dealloc  dynamic grid (G007)          (AX020)   (AX021)   ZAX1_2    TAX1_1                        
- allocate dynamic grid (G007)          (AX020)   (AX021)   ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G007)          (AX020)   (AX021)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G007)          (AX020)   (AX021)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G007)          (AX020)   (AX021)   ZAX1_2    TAX1_1
  eval    EX#1     C:  4 dset:   1 I:    1    4  J:    1    3  K:    1    2  L:    1    1
- allocate dynamic grid (G007)          (AX020)   (AX021)   ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G007)          (AX020)   (AX021)   ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G007)           @XACT
  rdstride VAR      C:  7 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:  4 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:  3 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G007)          (AX020)   (AX021)   ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G007)          (AX020)   (AX021)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -26767,24 +26766,24 @@ LIST VAR[i=2:6:2,j=1:5:2]
  
 ! deliberate error
 set mode ignore; LIST/i=2:4:2 VAR; cancel mode ignore
- dealloc  dynamic grid (G007)          (AX020)   (AX021)   ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G007)          (AX020)   (AX021)   ZAX1_2    TAX1_1
  -DELETE VAR      M:  4 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GPC1            XAX1_4    YAX1_3    ZAX1_2    TAX1_1                        
+ allocate dynamic grid GPC1            XAX1_4    YAX1_3    ZAX1_2    TAX1_1
  
 ! averaging causes bypass of strides
 LIST VAR[i=2:4:2@ave]
- dealloc  dynamic grid GPC1            XAX1_4    YAX1_3    ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid GPC1            XAX1_4    YAX1_3    ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
- dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
- allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 dset:   1 I:    1    4  J:    1    3  K:    1    2  L:    1    1
- allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G006)           @AVE
  reading VAR      M:  4 dset:   1 I:    1    4  J:    1    3  K:    1    2  L:    1    1
  regrid  VAR      M:  3 dset:   1 I:    1    2  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X@AVE
              FILENAME : bn_strides.cdf
@@ -26803,16 +26802,16 @@ LIST VAR[i=2:4:2@ave]
  
 ! test sub-region selection on strides axis
 let a = bigvar[i=1:40:5]
- dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
- dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G006)          (AX020)   YAX1_3    ZAX1_2    TAX1_1
  -DELETE VAR      M:  3 dset:   1 I:    1    2  J:    1    3  K:    1    2  L:    1    1
 list/j=1/k=1/l=1 a[i=3:5]
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A        C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX021)   YAX1_30   ZAX1_20   TAX1_10                       
- dealloc  dynamic grid (G006)          (AX021)   YAX1_30   ZAX1_20   TAX1_10                       
- allocate dynamic grid (G006)          (AX021)   YAX1_30   ZAX1_20   TAX1_10                       
- allocate dynamic grid (G006)          (AX021)   YAX1_30   ZAX1_20   TAX1_10                       
+ allocate dynamic grid (G006)          (AX021)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G006)          (AX021)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G006)          (AX021)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G006)          (AX021)   YAX1_30   ZAX1_20   TAX1_10
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  eval    A        C:  7 dset:   1 I:    3    5  J:    1    1  K:    1    1  L:    1    1
@@ -28477,7 +28476,7 @@ GO bn_cache_hits.sub sst
 stat $1
  !-> stat sst
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME                          
+ allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME
  eval    EX#1     C:  4 dset:   1 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  reading SST      M:  1 dset:   1 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  
@@ -28497,7 +28496,7 @@ stat $1
  Mean    value: 16.52 (unweighted average)
  Standard deviation: 10.139
 CONFUSE
- dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME                          
+ dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  pass #2 EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -30048,7 +30047,7 @@ say `a,return=isize`     ! no evaluation of a required -- just context
  getgrid A        C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  pass #2 A        C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    A        C:  6 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
@@ -30057,7 +30056,7 @@ say `a,return=isize`     ! no evaluation of a required -- just context
 10
 list/nohead a            ! evaluate it now
  -DELETE I        M: 15 dset:   0 I:    1   10  J: -999 -999  K: -999 -999  L: -999 -999
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  found   A        M: 16 dset:   0 I:    1   10  J: -999 -999  K: -999 -999  L: -999 -999
@@ -30073,22 +30072,22 @@ list/nohead a            ! evaluate it now
  10   / 10:  10.00
  
 let a = XSEQUENCE(j[j=1:5])
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  -DELETE A        M: 16 dset:   0 I:    1   10  J: -999 -999  K: -999 -999  L: -999 -999
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  -DELETE SST5SBX  M: 14 dset:   1 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME      ABSTRACT  ABSTRACT
+ dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME
  -DELETE SST5XAVE M:  9 dset:   1 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
- dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME      ABSTRACT  ABSTRACT
+ dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME
  -DELETE SST5XYT  M:  8 dset:   1 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- dealloc  dynamic grid GXYT            XTROP     YTROP     NORMAL    TIME      ABSTRACT  ABSTRACT
+ dealloc  dynamic grid GXYT            XTROP     YTROP     NORMAL    TIME
  -DELETE SST5     M:  3 dset:   1 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  -DELETE SST5     M:  5 dset:   1 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
  -DELETE SST5     M: 10 dset:   1 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST5     M: 11 dset:   1 I:    0  181  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST5     M: 12 dset:   1 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST5     M: 13 dset:   1 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME      ABSTRACT  ABSTRACT
+ dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME
 say `a,return=isize`     ! evaluate it now
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A        C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -30096,7 +30095,7 @@ say `a,return=isize`     ! evaluate it now
  getgrid (C11,V11 C: 11 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  pass #2 (C11,V11 C: 11 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    A        C:  6 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
@@ -30107,7 +30106,7 @@ say `a,return=isize`     ! evaluate it now
 5
 list/nohead a            ! cache hit
  -DELETE J        M: 13 dset:   0 I: -999 -999  J:    1    5  K: -999 -999  L: -999 -999
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    A        C:  6 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
@@ -30120,15 +30119,15 @@ list/nohead a            ! cache hit
  5   / 5:  5.000
  
 let a = SAMPLEI(I[i=1:100], {8,5,3})
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  -DELETE (C11,V11 M: 12 dset:   0 I: -999 -999  J:    1    5  K: -999 -999  L: -999 -999
- dealloc  dynamic grid YABSTRACT       NORMAL    ABSTRACT  NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid YABSTRACT       NORMAL    ABSTRACT  NORMAL    NORMAL
  -DELETE (C01,V11 M: 11 dset:   0 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE (C01,V11 M: 13 dset:   0 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  -DELETE A        M:  5 dset:   0 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE A        M: 10 dset:   0 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
 say `a,return=isize`     ! evaluate it now
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A        C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -30136,7 +30135,7 @@ say `a,return=isize`     ! evaluate it now
  getgrid (C09,V11 C: 12 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  pass #2 (C09,V11 C: 12 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    A        C:  6 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
@@ -30153,7 +30152,7 @@ say `a,return=isize`     ! evaluate it now
 3
 list/nohead a            ! cache hit
  -DELETE I        M: 11 dset:   0 I:    1  100  J: -999 -999  K: -999 -999  L: -999 -999
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    A        C:  6 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
@@ -30172,19 +30171,19 @@ list/nohead a            ! cache hit
 spawn rm -f foo.bar*
 spawn touch foo.bar1 foo.bar2 foo.bar3
 let a = SPAWN("ls foo.bar*")
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  -DELETE (C09,V11 M: 12 dset:   0 I:    1  100  J: -999 -999  K: -999 -999  L: -999 -999
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  -DELETE (C01,V11 M:  3 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE (C01,V11 M:  5 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  -DELETE A        M: 10 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE A        M: 11 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
 say `a,return=isize`     ! evaluate it now
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A        C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    A        C:  6 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
@@ -30192,7 +30191,7 @@ say `a,return=isize`     ! evaluate it now
  !-> MESSAGE/CONTINUE 3
 3
 list/nohead a            ! cache hit
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  found   A        M: 10 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
@@ -30202,9 +30201,9 @@ list/nohead a            ! cache hit
  
 ! RESHAPE, alone, is set to require matched limits in order to make a cache hit
 let a = RESHAPE(I[I=1:3]+10*j[j=1:3], I[i=1:9])
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  -DELETE A        M: 10 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
 say `a,return=isize`
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A        C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
@@ -30215,8 +30214,8 @@ say `a,return=isize`
  getgrid (C09,V11 C: 12 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  pass #2 (C09,V11 C: 12 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G002)          ABSTRACT  ABSTRACT  NORMAL    NORMAL    ABSTRACT  ABSTRACT
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ allocate dynamic grid (G002)          ABSTRACT  ABSTRACT  NORMAL    NORMAL
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    A        C:  6 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
@@ -30235,7 +30234,7 @@ say `a,return=isize`
 9
 list/nohead a            ! no cache hit
  -DELETE I        M: 10 dset:   0 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL    ABSTRACT  ABSTRACT
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    A        C:  6 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
@@ -34488,13 +34487,13 @@ let b =  a[i=18:23:2]
 list/nohead b            ! using rdstride
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid B        C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL                        
- dealloc  dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL                        
- allocate dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL                        
- allocate dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL                        
+ allocate dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  eval    B        C:  6 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- allocate dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL                        
+ allocate dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL
  strip regrid on X: A --> (G002)           @XACT
  strip moduloing A on X axis:    18    22 dset:   1
  rdstride A        C: 11 dset:   1 I:   18   20  J: -999 -999  K: -999 -999  L: -999 -999
@@ -34505,24 +34504,24 @@ list/nohead b            ! using rdstride
  -DELETE A        M:  1 dset:   1 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
  nulrgd  A        M:  1 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE A        M:  2 dset:   1 I:   18   22  J: -999 -999  K: -999 -999  L: -999 -999
- dealloc  dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL                        
+ dealloc  dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL
  18   / 1:  18.00
  20   / 2:  20.00
  22   / 3:   2.00
 list/nohead a[i=1:25:3]  ! no strides --> reads full region without strides
- dealloc  dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL                        
+ dealloc  dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL                        
- dealloc  dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL                        
- allocate dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL                        
+ allocate dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
- allocate dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL                        
+ allocate dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL
  strip regrid on X: A --> (G003)           @XACT
  strip moduloing A on X axis:     1    25 dset:   1
  reading A        M:  3 dset:   1 I:    1   20  J: -999 -999  K: -999 -999  L: -999 -999
  doing moduloing A on X axis:     1    20 dset:   1
  regrid  A        M:  4 dset:   1 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
- dealloc  dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL                        
+ dealloc  dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL
  1    / 1:   1.00
  4    / 2:   4.00
  7    / 3:   7.00
@@ -34533,10 +34532,10 @@ list/nohead a[i=1:25:3]  ! no strides --> reads full region without strides
  22   / 8:   2.00
  25   / 9:   5.00
 list/nohead b            ! reuse of cached result
- dealloc  dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL                        
+ dealloc  dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL
  -DELETE A        M:  4 dset:   1 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL                        
+ allocate dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  found   B        M:  2 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  18   / 1:  18.00
@@ -34739,14 +34738,14 @@ list/nohead a[i=106:145:5]
 !  ***** STRING TESTS *****
 set mode diag
 list/nohead str[i=18:23:2] ! using rdstride
- dealloc  dynamic grid (G003)          (AX001)   NORMAL    NORMAL    NORMAL                        
+ dealloc  dynamic grid (G003)          (AX001)   NORMAL    NORMAL    NORMAL
  -DELETE A        M:  4 dset:   1 I:    1    8  J: -999 -999  K: -999 -999  L: -999 -999
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL                        
- dealloc  dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL                        
- allocate dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL                        
+ allocate dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- allocate dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL                        
+ allocate dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL
  strip regrid on X: STR --> (G002)           @XACT
  strip moduloing STR on X axis:    18    22 dset:   1
  rdstride STR      C:  9 dset:   1 I:   18   20  J: -999 -999  K: -999 -999  L: -999 -999
@@ -34757,24 +34756,24 @@ list/nohead str[i=18:23:2] ! using rdstride
  -DELETE STR      M:  4 dset:   1 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
  nulrgd  STR      M:  4 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE STR      M:  6 dset:   1 I:   18   22  J: -999 -999  K: -999 -999  L: -999 -999
- dealloc  dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL                        
+ dealloc  dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL
  18   / 1:"r"
  20   / 2:"t"
  22   / 3:"b"
 list/nohead str[i=1:25:3]  ! no strides --> reads full region without strides
- dealloc  dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL                        
+ dealloc  dynamic grid (G002)          (AX002)   NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL                        
- dealloc  dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL                        
- allocate dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL                        
+ allocate dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
- allocate dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL                        
+ allocate dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL
  strip regrid on X: STR --> (G003)           @XACT
  strip moduloing STR on X axis:     1    25 dset:   1
  reading STR      M:  6 dset:   1 I:    1   20  J: -999 -999  K: -999 -999  L: -999 -999
  doing moduloing STR on X axis:     1    20 dset:   1
  regrid  STR      M:  8 dset:   1 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
- dealloc  dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL                        
+ dealloc  dynamic grid (G003)          (AX003)   NORMAL    NORMAL    NORMAL
  1    / 1:"a"
  4    / 2:"d"
  7    / 3:"g"
@@ -37362,11 +37361,11 @@ show mem/free
 use/ord=x-y test_100x100.nc
 list/prec=1 a[i=1:100:10] !  this looks just right!!
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G003)          (AX003)   YAX1_100  NORMAL    NORMAL                        
- dealloc  dynamic grid (G003)          (AX003)   YAX1_100  NORMAL    NORMAL                        
- allocate dynamic grid (G003)          (AX003)   YAX1_100  NORMAL    NORMAL                        
+ allocate dynamic grid (G003)          (AX003)   YAX1_100  NORMAL    NORMAL
+ dealloc  dynamic grid (G003)          (AX003)   YAX1_100  NORMAL    NORMAL
+ allocate dynamic grid (G003)          (AX003)   YAX1_100  NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1  100  J:    1  100  K: -999 -999  L: -999 -999
- allocate dynamic grid (G003)          (AX003)   YAX1_100  NORMAL    NORMAL                        
+ allocate dynamic grid (G003)          (AX003)   YAX1_100  NORMAL    NORMAL
  strip regrid on X: A --> (G003)           @XACT
  strip reversing A on Y axis:     1   100 dset:   1
  rdstride A        C:  8 dset:   1 I:    1   91  J:    1  100  K: -999 -999  L: -999 -999
@@ -37374,7 +37373,7 @@ list/prec=1 a[i=1:100:10] !  this looks just right!!
  -DELETE A        M:  1 dset:   1 I:    1   91  J:    1  100  K: -999 -999  L: -999 -999
  nulrgd  A        M:  1 dset:   1 I:    1   10  J:    1  100  K: -999 -999  L: -999 -999
  -DELETE A        M:  2 dset:   1 I:    1   91  J:    1  100  K: -999 -999  L: -999 -999
- dealloc  dynamic grid (G003)          (AX003)   YAX1_100  NORMAL    NORMAL                        
+ dealloc  dynamic grid (G003)          (AX003)   YAX1_100  NORMAL    NORMAL
              VARIABLE : IF I EQ J THEN 1 ELSE A0
                         regrid: 10 delta on X
              FILENAME : test_100x100.nc
@@ -37494,7 +37493,7 @@ show grid
 ! should be a diagonal path of steps all the way across the plot
 shade a[i=1:100:10]
  eval    EX#1     C:  4 dset:   1 I:    1  100  J:    1  100  K: -999 -999  L: -999 -999
- allocate dynamic grid (G003)          (AX003)   YAX1_100  NORMAL    NORMAL                        
+ allocate dynamic grid (G003)          (AX003)   YAX1_100  NORMAL    NORMAL
  strip regrid on X: A --> (G003)           @XACT
  strip reversing A on Y axis:     1   100 dset:   1
  rdstride A        C:  8 dset:   1 I:    1   91  J:    1  100  K: -999 -999  L: -999 -999
@@ -37502,7 +37501,7 @@ shade a[i=1:100:10]
  -DELETE A        M:  2 dset:   1 I:    1   91  J:    1  100  K: -999 -999  L: -999 -999
  nulrgd  A        M:  2 dset:   1 I:    1   10  J:    1  100  K: -999 -999  L: -999 -999
  -DELETE A        M:  3 dset:   1 I:    1   91  J:    1  100  K: -999 -999  L: -999 -999
- dealloc  dynamic grid (G003)          (AX003)   YAX1_100  NORMAL    NORMAL                        
+ dealloc  dynamic grid (G003)          (AX003)   YAX1_100  NORMAL    NORMAL
 setting up 2D plot
  -DELETE A        M:  3 dset:   1 I:    1   10  J:    1  100  K: -999 -999  L: -999 -999
 PPL plot 26   complete
@@ -38632,9 +38631,9 @@ set mode diag
 set mode stupid  ! always re-read and recompute
 lsx $1  ! default avoids void points
  !-> list/order=x vreg
- dealloc  dynamic grid GFJ3            XAX_SUBSPANORMAL    NORMAL    TAX_SUBSPA                    
+ dealloc  dynamic grid GFJ3            XAX_SUBSPANORMAL    NORMAL    TAX_SUBSPA
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GFJ1            XAX_SUBSPANORMAL    NORMAL    NORMAL                        
+ allocate dynamic grid GFJ1            XAX_SUBSPANORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    6  J: -999 -999  K: -999 -999  L: -999 -999
  reading VREG     M:  2 dset:   1 I:    1    6  J: -999 -999  K: -999 -999  L: -999 -999
              VARIABLE : X[GX=XAX_SUBSPAN] -40 + 10
@@ -42360,7 +42359,7 @@ repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
  -DELETE cnst     M: 11 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME      ABSTRACT  ABSTRACT
+ allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J:   46   70  K: -999 -999  L:    1    1
  strip --> SST[Y=0:50N@AV4,D=1]
  reading SST      M: 11 dset:   1 I:  131  140  J:   46   70  K: -999 -999  L:    1    1
@@ -42381,7 +42380,7 @@ repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
  -DELETE cnst     M:  9 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME      ABSTRACT  ABSTRACT
+ allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J:   46   70  K: -999 -999  L:    1    1
  strip --> SST[Y=0:50N@AV4,D=1]
  reading SST      M:  9 dset:   1 I:  131  155  J:   46   70  K: -999 -999  L:    1    1
@@ -42402,7 +42401,7 @@ repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
  -DELETE cnst     M:  3 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME      ABSTRACT  ABSTRACT
+ allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J:   46   70  K: -999 -999  L:    1    1
  strip --> SST[Y=0:50N@AV4,D=1]
  reading SST      M:  3 dset:   1 I:  131  170  J:   46   70  K: -999 -999  L:    1    1
@@ -42853,52 +42852,52 @@ let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
 load a
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A        C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)                       
- dealloc  dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)                       
- allocate dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)                       
- allocate dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)                       
+ allocate dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)
+ dealloc  dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)
+ allocate dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)
+ allocate dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)
  eval    EX#1     C:  4 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  eval    A        C:  6 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
- allocate dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)                       
+ allocate dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)
  strip regrid on X: TAUX --> (G005)           @XACT
  rdstride TAUX     C:  9 dset:   1 I:   50   54  J:   44   50  K: -999 -999  L:    1  161
  nulrgd  TAUX     M: 23 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  -DELETE TAUX     M: 24 dset:   1 I:   50   54  J:   44   50  K: -999 -999  L:    1  161
- dealloc  dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)                       
+ dealloc  dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)
 can mem/all
  -DELETE TAUX     M: 23 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  -DELETE A        M: 24 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  
 def grid/like=taux agrid
- dealloc  dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)                       
+ dealloc  dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)
  getgrid EX#1     C:  6 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME                          
+ allocate dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME
 set mode diag
 let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
- dealloc  dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME                          
- dealloc  dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)                       
+ dealloc  dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME
+ dealloc  dynamic grid (G005)          (AX009)   (AX010)   NORMAL    (AX011)
 load a
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A        C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)                       
- dealloc  dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)                       
- allocate dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)                       
- allocate dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)                       
+ allocate dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)
+ dealloc  dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)
+ allocate dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)
+ allocate dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)
  eval    EX#1     C:  4 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  eval    A        C:  6 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
- allocate dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)                       
+ allocate dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)
  strip regrid on X: TAUX --> (G005)           @XACT
  rdstride TAUX     C:  9 dset:   1 I:   50   54  J:   44   50  K: -999 -999  L:    1  161
  nulrgd  TAUX     M: 23 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  -DELETE TAUX     M: 24 dset:   1 I:   50   54  J:   44   50  K: -999 -999  L:    1  161
- dealloc  dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)                       
+ dealloc  dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)
  
 can mem/all
  -DELETE TAUX     M: 23 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  -DELETE A        M: 24 dset:   1 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
 can data/all
- dealloc  dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)                       
- dealloc  dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)                       
+ dealloc  dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)
+ dealloc  dynamic grid (G005)          (AX010)   (AX009)   NORMAL    (AX008)
  canceling dset ./gtsa056_2.cdf
  
 ! Some tests taken from  bn_strides_revs_perms.jnl but with
@@ -42909,25 +42908,25 @@ set region/i=3:6/j=2:4/k=1:2/l=1
 use bn_strides
 define grid/like=var agrid
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GPC1            XAX1_4    YAX1_3    ZAX1_2    TAX1_1                        
- dealloc  dynamic grid GPC1            XAX1_4    YAX1_3    ZAX1_2    TAX1_1                        
+ allocate dynamic grid GPC1            XAX1_4    YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid GPC1            XAX1_4    YAX1_3    ZAX1_2    TAX1_1
 define grid/like=midvar bgrid
  getgrid EX#1     C:  6 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GPC2            XAX1_9    YAX1_8    ZAX1_7    TAX1_6                        
+ allocate dynamic grid GPC2            XAX1_9    YAX1_8    ZAX1_7    TAX1_6
 define grid/like=bigvar cgrid
- dealloc  dynamic grid GPC2            XAX1_9    YAX1_8    ZAX1_7    TAX1_6                        
+ dealloc  dynamic grid GPC2            XAX1_9    YAX1_8    ZAX1_7    TAX1_6
  getgrid EX#1     C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GPC3            XAX1_40   YAX1_30   ZAX1_20   TAX1_10                       
+ allocate dynamic grid GPC3            XAX1_40   YAX1_30   ZAX1_20   TAX1_10
 define grid/like=unevenvar dgrid
- dealloc  dynamic grid GPC3            XAX1_40   YAX1_30   ZAX1_20   TAX1_10                       
+ dealloc  dynamic grid GPC3            XAX1_40   YAX1_30   ZAX1_20   TAX1_10
  getgrid EX#1     C:  8 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GPC4            XUNEVEN   YUNEVEN   ZAX1_6    TAX1_4                        
+ allocate dynamic grid GPC4            XUNEVEN   YUNEVEN   ZAX1_6    TAX1_4
 define grid/like=xytvar egrid
- dealloc  dynamic grid GPC4            XUNEVEN   YUNEVEN   ZAX1_6    TAX1_4                        
+ dealloc  dynamic grid GPC4            XUNEVEN   YUNEVEN   ZAX1_6    TAX1_4
  getgrid EX#1     C:  9 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GPC5            XLON      YLAT      NORMAL    TTIME                         
+ allocate dynamic grid GPC5            XLON      YLAT      NORMAL    TTIME
 canc data/all
- dealloc  dynamic grid GPC5            XLON      YLAT      NORMAL    TTIME                         
+ dealloc  dynamic grid GPC5            XLON      YLAT      NORMAL    TTIME
  canceling dset ./bn_strides.cdf
  
  
@@ -42939,18 +42938,18 @@ load var
  eval    EX#1     C:  4 dset:   1 I:    3    4  J:    2    3  K:    1    2  L:    1    1
  reading VAR      M: 24 dset:   1 I:    3    4  J:    2    3  K:    1    2  L:    1    1
 LIST VAR[i=2:4:2]
- dealloc  dynamic grid AGRID           XAX1_4    YAX1_3    ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid AGRID           XAX1_4    YAX1_3    ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX001)   YAX1_3    ZAX1_2    TAX1_1                        
- dealloc  dynamic grid (G006)          (AX001)   YAX1_3    ZAX1_2    TAX1_1                        
- allocate dynamic grid (G006)          (AX001)   YAX1_3    ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX001)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G006)          (AX001)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G006)          (AX001)   YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 dset:   1 I:    3    6  J:    2    3  K:    1    2  L:    1    1
- allocate dynamic grid (G006)          (AX001)   YAX1_3    ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX001)   YAX1_3    ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G006)           @XACT
  rdstride VAR      C:  7 dset:   1 I:    2    4  J:    2    3  K:    1    2  L:    1    1
  nulrgd  VAR      M: 22 dset:   1 I:    1    2  J:    2    3  K:    1    2  L:    1    1
  -DELETE VAR      M: 23 dset:   1 I:    2    4  J:    2    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G006)          (AX001)   YAX1_3    ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX001)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X
              FILENAME : bn_strides.cdf
@@ -42965,19 +42964,19 @@ LIST VAR[i=2:4:2]
  2   / 2:  1222.  1224.
  3   / 3:  1232.  1234.
 LIST VAR[i=2:4:2,j=1:3:2]
- dealloc  dynamic grid (G006)          (AX001)   YAX1_3    ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX001)   YAX1_3    ZAX1_2    TAX1_1
  -DELETE VAR      M: 22 dset:   1 I:    1    2  J:    2    3  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX007)   (AX002)   ZAX1_2    TAX1_1                        
- dealloc  dynamic grid (G006)          (AX007)   (AX002)   ZAX1_2    TAX1_1                        
- allocate dynamic grid (G006)          (AX007)   (AX002)   ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX007)   (AX002)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G006)          (AX007)   (AX002)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G006)          (AX007)   (AX002)   ZAX1_2    TAX1_1
  eval    EX#1     C:  4 dset:   1 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G006)          (AX007)   (AX002)   ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX007)   (AX002)   ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G006)           @XACT
  rdstride VAR      C:  7 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M: 23 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M: 22 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G006)          (AX007)   (AX002)   ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX007)   (AX002)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -42998,19 +42997,19 @@ CANC MEM/ALL
 ! modulo requests cannot use strides (as this example shows)
 set axis/modulo XAX1_4
 LIST VAR[I=1:10:3,j=1,k=1,l=1]    ! 1, 4, 7(3), 10(2)
- dealloc  dynamic grid (G006)          (AX007)   (AX002)   ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX007)   (AX002)   ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX007)   YAX1_3    ZAX1_2    TAX1_1                        
- dealloc  dynamic grid (G006)          (AX007)   YAX1_3    ZAX1_2    TAX1_1                        
- allocate dynamic grid (G006)          (AX007)   YAX1_3    ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX007)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G006)          (AX007)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G006)          (AX007)   YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 dset:   1 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G006)          (AX007)   YAX1_3    ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX007)   YAX1_3    ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G006)           @XACT
  strip moduloing VAR on X axis:     1    10 dset:   1
  reading VAR      M: 24 dset:   1 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  doing moduloing VAR on X axis:     1     4 dset:   1
  regrid  VAR      M: 22 dset:   1 I:    1    4  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G006)          (AX007)   YAX1_3    ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX007)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 3 delta on X
              FILENAME : bn_strides.cdf
@@ -43031,18 +43030,18 @@ cancel axis/modulo XAX1_4
  
 ! strides applied to more than one axis need special attention in IS_REGRID
 LIST VAR[i=2:4:2,j=1:3:2]
- dealloc  dynamic grid (G006)          (AX007)   YAX1_3    ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX007)   YAX1_3    ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX002)   (AX001)   ZAX1_2    TAX1_1                        
- dealloc  dynamic grid (G006)          (AX002)   (AX001)   ZAX1_2    TAX1_1                        
- allocate dynamic grid (G006)          (AX002)   (AX001)   ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX002)   (AX001)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G006)          (AX002)   (AX001)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G006)          (AX002)   (AX001)   ZAX1_2    TAX1_1
  eval    EX#1     C:  4 dset:   1 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G006)          (AX002)   (AX001)   ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX002)   (AX001)   ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G006)           @XACT
  rdstride VAR      C:  7 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M: 23 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M: 24 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G006)          (AX002)   (AX001)   ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX002)   (AX001)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -43057,19 +43056,19 @@ LIST VAR[i=2:4:2,j=1:3:2]
  1   / 1:  1212.  1214.
  3   / 2:  1232.  1234.
 LIST VAR[i=2:6:2,j=1:5:2]
- dealloc  dynamic grid (G006)          (AX002)   (AX001)   ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX002)   (AX001)   ZAX1_2    TAX1_1
  -DELETE VAR      M: 23 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX002)   (AX007)   ZAX1_2    TAX1_1                        
- dealloc  dynamic grid (G006)          (AX002)   (AX007)   ZAX1_2    TAX1_1                        
- allocate dynamic grid (G006)          (AX002)   (AX007)   ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX002)   (AX007)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G006)          (AX002)   (AX007)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G006)          (AX002)   (AX007)   ZAX1_2    TAX1_1
  eval    EX#1     C:  4 dset:   1 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G006)          (AX002)   (AX007)   ZAX1_2    TAX1_1                        
+ allocate dynamic grid (G006)          (AX002)   (AX007)   ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G006)           @XACT
  rdstride VAR      C:  7 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M: 24 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M: 23 dset:   1 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G006)          (AX002)   (AX007)   ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX002)   (AX007)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -43086,15 +43085,15 @@ LIST VAR[i=2:6:2,j=1:5:2]
  
 ! test sub-region selection on strides axis
 let a = bigvar[i=1:40:5]
- dealloc  dynamic grid (G006)          (AX002)   (AX007)   ZAX1_2    TAX1_1                        
+ dealloc  dynamic grid (G006)          (AX002)   (AX007)   ZAX1_2    TAX1_1
  -DELETE VAR      M: 24 dset:   1 I:    1    2  J:    1    2  K:    1    2  L:    1    1
 list/j=1/k=1/l=1 a[i=3:5]
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid A        C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G006)          (AX002)   YAX1_30   ZAX1_20   TAX1_10                       
- dealloc  dynamic grid (G006)          (AX002)   YAX1_30   ZAX1_20   TAX1_10                       
- allocate dynamic grid (G006)          (AX002)   YAX1_30   ZAX1_20   TAX1_10                       
- allocate dynamic grid (G006)          (AX002)   YAX1_30   ZAX1_20   TAX1_10                       
+ allocate dynamic grid (G006)          (AX002)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G006)          (AX002)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G006)          (AX002)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G006)          (AX002)   YAX1_30   ZAX1_20   TAX1_10
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I:    3    6  J:    1    1  K:    1    1  L:    1    1
  eval    A        C:  7 dset:   1 I:    3    5  J:    1    1  K:    1    1  L:    1    1
@@ -47348,7 +47347,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="25-Jul-16:13:46"
+ !-> set win/title="25-Jul-16:15:56"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47359,14 +47358,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 25-Jul-16
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 13:46
+ !-> DEFINE SYMBOL the_time = 15:56
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="25-Jul-16:13:46"
+ !-> SET WIN/TITLE="25-Jul-16:15:56"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "25-Jul-16:13:46"
+WIN_TITLE = "25-Jul-16:15:56"
 *** Running ferret script: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -57504,10 +57503,10 @@ SH GRID am
  normal    T
 *** Running ferret script: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.005998"
-CLOCK_SECS = "0.003"
+DELTA_CPU = "0.010997"
+CLOCK_SECS = "0.004"
 CURRENT_DATE = "25-Jul-16"
-CURRENT_TIME = "13:46:27"
+CURRENT_TIME = "15:56:51"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57516,8 +57515,8 @@ CURRENT_TIME = "13:46:27"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.035995"
-CLOCK_SECS = "0.042"
+DELTA_CPU = "0.033995"
+CLOCK_SECS = "0.04"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57531,60 +57530,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.139979
+ !-> DEFINE VARIABLE ten_plots = 0.142979
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.001"
-CLOCK_SECS = "0.182"
+DELTA_CPU = "0"
+CLOCK_SECS = "0.184"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.182"
+CLOCK_SECS = "0.184"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.014996
- !-> DEFINE VARIABLE sumcpu =0.014996
+ !-> DEFINE VARIABLE dt = 0.014997
+ !-> DEFINE VARIABLE sumcpu =0.014997
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.015999
- !-> DEFINE VARIABLE sumcpu =0.030995
+ !-> DEFINE VARIABLE dt = 0.016997
+ !-> DEFINE VARIABLE sumcpu =0.031994
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.015997
- !-> DEFINE VARIABLE sumcpu =0.046992
+ !-> DEFINE VARIABLE dt = 0.015998
+ !-> DEFINE VARIABLE sumcpu =0.047992
 !-> REPEAT: K=4
  !-> DEFINE VARIABLE dt = 0.015997
- !-> DEFINE VARIABLE sumcpu =0.062989
+ !-> DEFINE VARIABLE sumcpu =0.063989
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.014998
- !-> DEFINE VARIABLE sumcpu =0.077987
+ !-> DEFINE VARIABLE dt = 0.015998
+ !-> DEFINE VARIABLE sumcpu =0.079987
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.015998
- !-> DEFINE VARIABLE sumcpu =0.093985
-!-> REPEAT: K=7
  !-> DEFINE VARIABLE dt = 0.014998
- !-> DEFINE VARIABLE sumcpu =0.108983
-!-> REPEAT: K=8
+ !-> DEFINE VARIABLE sumcpu =0.094985
+!-> REPEAT: K=7
  !-> DEFINE VARIABLE dt = 0.015998
- !-> DEFINE VARIABLE sumcpu =0.124981
+ !-> DEFINE VARIABLE sumcpu =0.110983
+!-> REPEAT: K=8
+ !-> DEFINE VARIABLE dt = 0.015997
+ !-> DEFINE VARIABLE sumcpu =0.12698
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.014996
- !-> DEFINE VARIABLE sumcpu =0.139977
+ !-> DEFINE VARIABLE dt = 0.014997
+ !-> DEFINE VARIABLE sumcpu =0.141977
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.013998
- !-> DEFINE VARIABLE sumcpu =0.153975
+ !-> DEFINE VARIABLE dt = 0.015998
+ !-> DEFINE VARIABLE sumcpu =0.157975
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.153975
-0.153975
+ !-> MESSAGE/CONTINUE 0.157975
+0.157975
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.339"
+CLOCK_SECS = "0.343"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "25-Jul-16"
-SESSION_TIME = "13:46"
+SESSION_TIME = "15:56"
 CURRENT_DATE = "25-Jul-16"
-CURRENT_TIME = "13:46:27"
+CURRENT_TIME = "15:56:51"
 *** Running ferret script: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -58768,14 +58767,14 @@ define axis/t=15-jan-1982:15-mar-1984:120/unit=hour tax5day
 define axis/x=120e:60w:10/unit=degrees xax10
 define grid/like=u/t=tax5day g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day
  getgrid EX#1     C:  7 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
 define grid/like=u/x=xax10/z=w/t=tax5day g5_10g00abcdefghijklmnopqrstuvwxyz1234567890
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  getgrid EX#1     C:  8 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  getgrid EX#1     C:  9 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DW11         PSXT      PSYT      PSZW      TIME1                         
+ allocate dynamic grid PS3DW11         PSXT      PSYT      PSZW      TIME1
  
 set reg/x=130w:125w/y=0:1.5/z=0:15/t=21-JAN-1982:24-jan-1982
 !set reg/i=101:105/j=41:42/k=1:2/l=3:4
@@ -58783,7 +58782,7 @@ set reg/x=130w:125w/y=0:1.5/z=0:15/t=21-JAN-1982:24-jan-1982
 use gtsa056_1    	!kob 4/99
  
 LIST temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
- dealloc  dynamic grid PS3DW11         PSXT      PSYT      PSZW      TIME1                         
+ dealloc  dynamic grid PS3DW11         PSXT      PSYT      PSZW      TIME1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  strip regrid on X: TEMP --> G5_10G00ABCDEFGH @AAV
@@ -58807,7 +58806,7 @@ LIST temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
  20-JAN-1982 00 / 2:  23.88  23.97  24.15  24.37  24.63
  25-JAN-1982 00 / 3:  23.89  23.98  24.17  24.40  24.65
 LIST temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890,gx=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
- dealloc  dynamic grid G5_10G00ABCDEFGHXAX10     PSYU      PSZW      TAX5DAY                       
+ dealloc  dynamic grid G5_10G00ABCDEFGHXAX10     PSYU      PSZW      TAX5DAY
  -DELETE TEMP     M:  2 dset:   1 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:   12   12  J:   45   49  K:    1    1  L:    2    3
@@ -58835,7 +58834,7 @@ LIST temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890,gx=g5_10g00abcdefghijkl
  25-JAN-1982 00 / 3:  23.88  23.97  24.15  24.39  24.64
  
 LIST temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890,gt=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@asn]
- dealloc  dynamic grid G5_10G00ABCDEFGHXAX10     PSYU      PSZW      TAX5DAY                       
+ dealloc  dynamic grid G5_10G00ABCDEFGHXAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   1 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  strip regrid on X: TEMP --> G5_10G00ABCDEFGH @LIN
@@ -58863,25 +58862,25 @@ LIST temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890,gt=g5_10g00abcdefghijkl
 use gtsa056_2	!kob  4/99
 set region/x=180W/y=0/z=5/t=21-JAN-1982:13-JUN-1983
 load temp[i=50:51,j=45:56,k=1:2,l=1:172]  ! preload to save time
- dealloc  dynamic grid G5_10G00ABCDEFGHXAX10     PSYU      PSZW      TAX5DAY                       
+ dealloc  dynamic grid G5_10G00ABCDEFGHXAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DT1          PSXT      PSYT      PSZT      TIME1                         
+ allocate dynamic grid PS3DT1          PSXT      PSYT      PSZT      TIME1
  eval    EX#1     C:  4 dset:   2 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  strip moduloing TEMP on T axis:     1   172 dset:   2
  reading TEMP     M:  5 dset:   2 I:   50   51  J:   45   50  K:    1    2  L:    1  168
  doing moduloing TEMP on T axis:     1   168 dset:   2
 plot temp
- dealloc  dynamic grid PS3DT1          PSXT      PSYT      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DT1          PSXT      PSYT      PSZT      TIME1
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DT1          PSXT      PSYT      PSZT      TIME1                         
+ allocate dynamic grid PS3DT1          PSXT      PSYT      PSZT      TIME1
  eval    EX#1     C:  4 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    3  170
  found   TEMP     M:  3 dset:   2 I:   50   51  J:   45   50  K:    1    2  L:    1  172
 setting up plot
 PPL plot 1    complete
 plot/over temp[g=u]
- dealloc  dynamic grid PS3DT1          PSXT      PSYT      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DT1          PSXT      PSYT      PSZT      TIME1
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  eval    EX#1     C:  4 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    3  170
  strip moduloing TEMP on T axis:     3   170 dset:   2
  strip regrid on X: TEMP --> PS3DU1           @LIN
@@ -58897,7 +58896,7 @@ plot/over temp[g=u]
 setting up plot
 PPL plot 2    complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day]
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    2  104
  strip regrid on X: TEMP --> G5DAYG5DAYG5DAYG @LIN
@@ -58910,7 +58909,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day]
 setting up plot
 PPL plot 3    complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890]
- dealloc  dynamic grid G5DAYG5DAYG5DAYGPSXU      PSYU      PSZT      TAX5DAY                       
+ dealloc  dynamic grid G5DAYG5DAYG5DAYGPSXU      PSYU      PSZT      TAX5DAY
  -DELETE TEMP     M: 10 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    2  104
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   2 I:    7    7  J:   45   45  K:    1    1  L:    2  104
@@ -58927,9 +58926,9 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890]
 setting up plot
 PPL plot 4    complete
 plot/over temp[g=u@ave]
- dealloc  dynamic grid G5_10G00ABCDEFGHXAX10     PSYU      PSZW      TAX5DAY                       
+ dealloc  dynamic grid G5_10G00ABCDEFGHXAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  eval    EX#1     C:  4 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    3  170
  strip moduloing TEMP on T axis:     3   170 dset:   2
  strip regrid on X: TEMP --> PS3DU1           @AAV
@@ -58945,7 +58944,7 @@ plot/over temp[g=u@ave]
 setting up plot
 PPL plot 5    complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@ave]
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    2  104
  strip regrid on X: TEMP --> G5DAYG5DAYG5DAYG @AAV
@@ -58958,7 +58957,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@ave]
 setting up plot
 PPL plot 6    complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
- dealloc  dynamic grid G5DAYG5DAYG5DAYGPSXU      PSYU      PSZT      TAX5DAY                       
+ dealloc  dynamic grid G5DAYG5DAYG5DAYGPSXU      PSYU      PSZT      TAX5DAY
  -DELETE TEMP     M: 14 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    2  104
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   2 I:    7    7  J:   45   45  K:    1    1  L:    2  104
@@ -58977,9 +58976,9 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
 setting up plot
 PPL plot 7    complete
 plot/over temp[g=u@asn]
- dealloc  dynamic grid G5_10G00ABCDEFGHXAX10     PSYU      PSZW      TAX5DAY                       
+ dealloc  dynamic grid G5_10G00ABCDEFGHXAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  eval    EX#1     C:  4 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    3  170
  strip moduloing TEMP on T axis:     3   170 dset:   2
  strip regrid on X: TEMP --> PS3DU1           @ASN
@@ -58999,7 +58998,7 @@ plot/over temp[g=u@asn]
 setting up plot
 PPL plot 8    complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@asn]
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   2 I:    7    7  J:   45   45  K:    1    1  L:    2  104
  strip regrid on X: TEMP --> G5_10G00ABCDEFGH @ASN
@@ -59017,19 +59016,19 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@asn]
 setting up plot
 PPL plot 9    complete
 plot/over temp[g=u,gt=u@ave]
- dealloc  dynamic grid G5_10G00ABCDEFGHXAX10     PSYU      PSZW      TAX5DAY                       
+ dealloc  dynamic grid G5_10G00ABCDEFGHXAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  eval    EX#1     C:  4 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    3  170
- allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  found   TEMP     M:  7 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    3  170
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
 setting up plot
 PPL plot 10   complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@ave]
- dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    2  104
  strip regrid on X: TEMP --> G5DAYG5DAYG5DAYG @LIN
@@ -59042,7 +59041,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5da
 setting up plot
 PPL plot 11   complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890,gt=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
- dealloc  dynamic grid G5DAYG5DAYG5DAYGPSXU      PSYU      PSZT      TAX5DAY                       
+ dealloc  dynamic grid G5DAYG5DAYG5DAYGPSXU      PSYU      PSZT      TAX5DAY
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   2 I:    7    7  J:   45   45  K:    1    1  L:    2  104
  strip regrid on X: TEMP --> G5_10G00ABCDEFGH @LIN
@@ -59058,7 +59057,7 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890,gt=g5_10g00abcdefg
 setting up plot
 PPL plot 12   complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@asn]  ! invalid interpretation of data
- dealloc  dynamic grid G5_10G00ABCDEFGHXAX10     PSYU      PSZW      TAX5DAY                       
+ dealloc  dynamic grid G5_10G00ABCDEFGHXAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  eval    EX#1     C:  4 dset:   2 I:   50   50  J:   45   45  K:    1    1  L:    2  104
  strip regrid on X: TEMP --> G5DAYG5DAYG5DAYG @LIN
@@ -61343,7 +61342,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v7.01 (beta/debug)"                                               
  3    /  3:" ! Linux 2.6.32-642.3.1.el6.x86_64 64-bit - 07/25/16"                       
- 4    /  4:" ! 25-Jul-16 13:46     "                                                    
+ 4    /  4:" ! 25-Jul-16 15:56     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -63797,40 +63796,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.121
-randu2_randn2       0.425
-randu2_randn2       0.504
-randu2_randn2       0.826
-randu2_randn2       0.836
+randu2_randn2       0.369
+randu2_randn2       0.413
+randu2_randn2       0.065
+randu2_randn2       0.701
+randu2_randn2       0.873
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.439
-randu2_randn2       0.363
-randu2_randn2       0.775
-randu2_randn2       0.977
-randu2_randn2       0.282
+randu2_randn2       0.277
+randu2_randn2       0.697
+randu2_randn2       0.793
+randu2_randn2       0.869
+randu2_randn2       0.930
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.506
-randu2_randn2       0.006
-randu2_randn2       0.920
-randu2_randn2       0.306
-randu2_randn2       0.377
-randu2_randn2       0.071
+randu2_randn2       0.301
+randu2_randn2       0.744
+randu2_randn2       0.765
+randu2_randn2       0.831
+randu2_randn2       0.463
+randu2_randn2       0.423
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.968
-randu2_randn2       0.045
-randu2_randn2       0.956
-randu2_randn2       0.019
-randu2_randn2       0.378
-randu2_randn2       0.050
+randu2_randn2       0.497
+randu2_randn2       0.034
+randu2_randn2       0.870
+randu2_randn2       0.450
+randu2_randn2       0.004
+randu2_randn2       0.397
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -63855,40 +63854,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       1.381
-randu2_randn2      -0.969
-randu2_randn2      -0.999
-randu2_randn2       1.793
-randu2_randn2      -0.145
+randu2_randn2       0.312
+randu2_randn2       0.978
+randu2_randn2      -0.919
+randu2_randn2       0.598
+randu2_randn2       0.436
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.507
-randu2_randn2      -0.182
-randu2_randn2      -0.019
-randu2_randn2      -0.260
-randu2_randn2       0.641
+randu2_randn2      -0.374
+randu2_randn2       1.309
+randu2_randn2       0.103
+randu2_randn2      -1.019
+randu2_randn2      -0.202
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2      -1.052
-randu2_randn2      -0.345
-randu2_randn2      -0.993
-randu2_randn2       0.270
-randu2_randn2       0.102
-randu2_randn2      -0.555
+randu2_randn2      -1.541
+randu2_randn2       1.236
+randu2_randn2       0.319
+randu2_randn2      -1.868
+randu2_randn2       0.222
+randu2_randn2      -2.325
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2      -0.442
-randu2_randn2       1.797
-randu2_randn2      -0.161
-randu2_randn2      -1.405
-randu2_randn2      -0.142
-randu2_randn2       1.764
+randu2_randn2      -1.209
+randu2_randn2      -0.050
+randu2_randn2       1.459
+randu2_randn2      -0.602
+randu2_randn2       0.077
+randu2_randn2       1.229
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -63913,14 +63912,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.959       1.959       0.940
-randu2_randn2       1.556       1.556       0.940
-randu2_randn2       0.940       0.940       0.337
-randu2_randn2       0.337       0.337       0.337
-randu2_randn2      -0.432      -0.076       0.337
-randu2_randn2      -0.076      -0.076       0.337
-randu2_randn2       0.261       0.102       0.337
-randu2_randn2       0.102       0.261       0.337
+randu2_randn2       1.345       1.345       0.442
+randu2_randn2       1.345       1.345       0.442
+randu2_randn2       0.442       0.442       0.228
+randu2_randn2       0.121       0.121       0.442
+randu2_randn2      -0.126      -0.126       0.442
+randu2_randn2      -0.881      -0.126       0.442
+randu2_randn2       0.228       0.228       0.442
+randu2_randn2       0.473       0.473       0.473
 *** Running ferret script: bn_axis_cf.jnl
 ! Ticket 1792: Write axes with CF-compliant units
 ! and with standard name attributes for geophysical attrs.
@@ -68732,11 +68731,11 @@ let/d=ens4 airt = sst + 1
  
 ENSEMBLE fourfiles = ens1, ens3, ens2, ens4
  getgrid AIRT     C:  5 dset:   4 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME1     ENSEMBLE  NORMAL
+ allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME1
  getgrid AIRT     C:  5 dset:   3 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME1     ENSEMBLE  NORMAL
+ allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME1
  getgrid AIRT     C:  5 dset:   5 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME1     ENSEMBLE  NORMAL
+ allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME1
 show data fourfiles
      currently SET data sets:
     6> fourfiles  (default)  Ensemble aggregation
@@ -69222,9 +69221,9 @@ stat temp
 set mode diag
 set mode 6d_lab
 list/L=1:8 taux[x=@ave,y=@ave]
- dealloc  dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME1                         
+ dealloc  dynamic grid PS3DT2          PSXT      PSYT      PSZT      TIME1
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid PS2DU2          PSXU      PSYU      NORMAL    TIME1                         
+ allocate dynamic grid PS2DU2          PSXU      PSYU      NORMAL    TIME1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I:    1  160  J:    1  100  K: -999 -999  L:    1    8
  strip --> TAUX[Y=28.8S:51.4N@AV4,D=1]
@@ -71731,7 +71730,7 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Mon Jul 25 13:46:34 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
+		:history = "Mon Jul 25 15:56:58 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
 			"FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
@@ -77082,7 +77081,7 @@ let b = a[x=@min]
 set mode diag
 say `a[x=@min]`
  getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GSI1            COADSX51_1NORMAL    NORMAL    NORMAL                        
+ allocate dynamic grid GSI1            COADSX51_1NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 dset:   2 I:    0   83  J: -999 -999  K: -999 -999  L: -999 -999
  strip --> A[X=25E:25E(385)@MIN,D=2]
  strip modulo-void-filling A on X axis:     0    83 dset:   2
@@ -79707,22 +79706,22 @@ SHOW GRID
 SET MODE diagnostic
 LET tempz = temp[gz(depth)=zpts]
 LIST/PREC=7 tempz
- dealloc  dynamic grid GAO1            XAXLEVITR1YAXLEVITR4ZAXLEVITR NORMAL                        
+ dealloc  dynamic grid GAO1            XAXLEVITR1YAXLEVITR4ZAXLEVITR NORMAL
  getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid TEMPZ    C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  getgrid DEPTH    C:  9 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid GAO1            XAXLEVITR1YAXLEVITR4ZAXLEVITR NORMAL                        
+ allocate dynamic grid GAO1            XAXLEVITR1YAXLEVITR4ZAXLEVITR NORMAL
  getgrid ZPTS     C:  9 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G003)          NORMAL    NORMAL    (AX005)   NORMAL                        
- dealloc  dynamic grid (G003)          NORMAL    NORMAL    (AX005)   NORMAL                        
- allocate dynamic grid (G003)          NORMAL    NORMAL    (AX005)   NORMAL                        
- allocate dynamic grid (G002)          XAXLEVITR1YAXLEVITR4(AX005)   NORMAL                        
- dealloc  dynamic grid (G002)          XAXLEVITR1YAXLEVITR4(AX005)   NORMAL                        
- allocate dynamic grid (G002)          XAXLEVITR1YAXLEVITR4(AX005)   NORMAL                        
- allocate dynamic grid (G002)          XAXLEVITR1YAXLEVITR4(AX005)   NORMAL                        
+ allocate dynamic grid (G003)          NORMAL    NORMAL    (AX005)   NORMAL
+ dealloc  dynamic grid (G003)          NORMAL    NORMAL    (AX005)   NORMAL
+ allocate dynamic grid (G003)          NORMAL    NORMAL    (AX005)   NORMAL
+ allocate dynamic grid (G002)          XAXLEVITR1YAXLEVITR4(AX005)   NORMAL
+ dealloc  dynamic grid (G002)          XAXLEVITR1YAXLEVITR4(AX005)   NORMAL
+ allocate dynamic grid (G002)          XAXLEVITR1YAXLEVITR4(AX005)   NORMAL
+ allocate dynamic grid (G002)          XAXLEVITR1YAXLEVITR4(AX005)   NORMAL
  eval    EX#1     C:  4 dset:   1 I:    1    2  J:    1    2  K:    1    5  L: -999 -999
  eval    TEMPZ    C:  6 dset:   1 I:    1    2  J:    1    2  K:    1    5  L: -999 -999
- allocate dynamic grid (G002)          XAXLEVITR1YAXLEVITR4(AX005)   NORMAL                        
+ allocate dynamic grid (G002)          XAXLEVITR1YAXLEVITR4(AX005)   NORMAL
  strip regrid on Z: TEMP --> (G002)           @LIN
  eval    DEPTH    C:  9 dset:   1 I:    1    2  J:    1    2  K:    1   20  L: -999 -999
  pseudo  Z        M:  1 dset:   1 I: -999 -999  J: -999 -999  K:    1   20  L: -999 -999
@@ -79733,7 +79732,7 @@ LIST/PREC=7 tempz
  -DELETE Z        M:  1 dset:   1 I: -999 -999  J: -999 -999  K:    1   20  L: -999 -999
  reading TEMP     M:  1 dset:   1 I:    1    2  J:    1    2  K:    7   12  L: -999 -999
  auxgrd  TEMP     M:  4 dset:   1 I:    1    2  J:    1    2  K:    1    5  L: -999 -999
- dealloc  dynamic grid (G002)          XAXLEVITR1YAXLEVITR4(AX005)   NORMAL                        
+ dealloc  dynamic grid (G002)          XAXLEVITR1YAXLEVITR4(AX005)   NORMAL
              VARIABLE : TEMP[GZ(DEPTH)=ZPTS]
              FILENAME : levitus_3d_subset.nc
              SUBSET   : 2 by 2 by 5 points (LONGITUDE-LATITUDE-Z)
@@ -79755,9 +79754,9 @@ LIST/PREC=7 tempz
  48.5S / 2:  5.835500  6.045001
  49.5S / 1:  4.879000  5.102500
 SHOW GRID tempz
- dealloc  dynamic grid (G002)          XAXLEVITR1YAXLEVITR4(AX005)   NORMAL                        
+ dealloc  dynamic grid (G002)          XAXLEVITR1YAXLEVITR4(AX005)   NORMAL
  getgrid EX#1     C:  7 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
- allocate dynamic grid (G002)          XAXLEVITR1YAXLEVITR4(AX005)   NORMAL                        
+ allocate dynamic grid (G002)          XAXLEVITR1YAXLEVITR4(AX005)   NORMAL
     GRID (G002)
  name       axis              # pts   start                end                 subset
  XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
@@ -84292,20 +84291,20 @@ GO err696_time_overlay
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
 sp date
-Mon Jul 25 13:46:42 PDT 2016
+Mon Jul 25 15:57:06 PDT 2016
 set view upper
 plot t[gt=tax_nlp]
 plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
 sp date
-Mon Jul 25 13:46:42 PDT 2016
+Mon Jul 25 15:57:06 PDT 2016
  
 sp date
-Mon Jul 25 13:46:42 PDT 2016
+Mon Jul 25 15:57:06 PDT 2016
 set view lower
 plot t[gt=tax_jul]
 plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
 sp date
-Mon Jul 25 13:46:42 PDT 2016
+Mon Jul 25 15:57:06 PDT 2016
  
 GO bn_reset
 cancel mode verify
@@ -90643,9 +90642,9 @@ flow/DAT=2/den=3/L=3 taux,tauy
 ! bn_speedtest.jnl
 ! issue large numbers of commands, timing with clock time
 can mode verify
-10K LET commands LET a = 0 takes  1.221  seconds
-Second 10K LET commands LET a = 0 takes  2.781  seconds
-5K LOAD with transform takes  3.873  seconds
+10K LET commands LET a = 0 takes  1.225  seconds
+Second 10K LET commands LET a = 0 takes  2.754  seconds
+5K LOAD with transform takes  3.836  seconds
 *** Running ferret script: bn_show_noupcase.jnl
 ! bn_show_noupcase.jnl
 ! 1/2016 ticket 1796
@@ -95338,12 +95337,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "25-Jul-16"
-SESSION_TIME = "13:47"
-SESSION_PID = "6498"
-DELTA_CPU = "0.013997"
-CLOCK_SECS = "0.01"
+SESSION_TIME = "15:57"
+SESSION_PID = "19329"
+DELTA_CPU = "0.020995"
+CLOCK_SECS = "0.016"
 CURRENT_DATE = "25-Jul-16"
-CURRENT_TIME = "13:47:00"
+CURRENT_TIME = "15:57:23"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 GO_FILE = "./bn_startupfile.jnl"
@@ -97484,4 +97483,4 @@ can axis/all
  
 ! Dump the contents of the decimated-data DSG file
 sp ncdump -h 492C19881104_dec.nc >> all_ncdump.out
-Ended at Mon Jul 25 13:47:02 PDT 2016
+Ended at Mon Jul 25 15:57:26 PDT 2016

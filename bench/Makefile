@@ -15,7 +15,7 @@ run_tests:
 	fi
 	./RUN_TESTS.sh `which pyferret` "$(PYFER_EXTERNAL_FUNCTIONS)" "RUN_TESTS.sh test results for PyFerret"
 	@echo 'Differences in the generated bench PDF and PNG files versus against those in test_results'
-	@for img in *.pdf *.png ; \
+	-@for img in *.pdf *.png ; \
 	do \
 	    diff -q $$img test_results/$$img ; \
 	done

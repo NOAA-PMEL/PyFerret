@@ -51,7 +51,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -76,7 +76,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -113,7 +113,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -152,7 +152,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -187,7 +187,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -257,7 +257,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -314,7 +314,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -371,7 +371,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -426,7 +426,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -474,7 +474,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -568,7 +568,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -638,7 +638,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -689,7 +689,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -780,7 +780,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -807,7 +807,7 @@ variables:
 		X_:long_name_mod = "axis ABSTRACT" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -831,7 +831,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -858,14 +858,14 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 *** Running ferret script: bn_tab_comma_multivar.jnl
 *** Running ferret script: bn_element_functions.jnl
 *** Running ferret script: bn_long_revision_num.jnl
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 *** Running ferret script: bn_window_title.jnl
 *** Running ferret script: bn_last_error.jnl
 *** Running ferret script: bn_deg_min.jnl
@@ -901,7 +901,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -974,7 +974,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1018,7 +1018,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1060,7 +1060,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1168,7 +1168,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -1209,7 +1209,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -1232,7 +1232,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1258,7 +1258,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1278,7 +1278,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1299,7 +1299,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1342,7 +1342,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -1382,7 +1382,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -1420,7 +1420,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -1449,7 +1449,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1482,7 +1482,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1508,7 +1508,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1554,7 +1554,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -1661,7 +1661,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 		:dt_internal = 15. ;
 }
@@ -1703,7 +1703,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1786,7 +1786,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1823,7 +1823,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1863,7 +1863,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1914,7 +1914,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1973,7 +1973,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -2018,7 +2018,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -2061,7 +2061,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -2096,7 +2096,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -2130,7 +2130,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -2160,7 +2160,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -2189,7 +2189,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -2250,7 +2250,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -2295,7 +2295,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 *** Running ferret script: bn_transforms.jnl
@@ -2336,7 +2336,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -2366,7 +2366,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -2396,7 +2396,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -2449,7 +2449,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -2491,7 +2491,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -2509,7 +2509,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 *** Running ferret script: bn_no_valid_on_plot.jnl
@@ -2531,7 +2531,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -2549,7 +2549,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -2566,7 +2566,7 @@ variables:
 		A:long_name = "{1.1,2.2,3.3}" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -2587,7 +2587,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -2658,7 +2658,7 @@ variables:
 		newvar:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 *** Running ferret script: bn_cdf_keepax.jnl
@@ -2687,7 +2687,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -2714,7 +2714,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 *** Running ferret script: bn_key_label_minmax.jnl
@@ -2819,7 +2819,7 @@ variables:
 		ZUP:long_name = "Z[GZ=ZAXUP]" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, Convert forms of DEG, degrees to degrees_east:
@@ -2851,7 +2851,7 @@ variables:
 		Y_:long_name_mod = "axis YFIFTEEN" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, Downcase units, e.g. in time axis DAYS since
@@ -2884,7 +2884,7 @@ variables:
 		XYTVAR:history = "From bn_strides" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 *** Running ferret script: bn_repeated_coords.jnl
@@ -2961,7 +2961,7 @@ variables:
 		TIME:history = "From http://tds.climatedatacloud.com/thredds/dodsC/ensembles/nmme_gfdl/TwoD" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -2999,7 +2999,7 @@ variables:
 		time:history = "From http://tds.climatedatacloud.com/thredds/dodsC/ensembles/nmme_gfdl/TwoD" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -3051,7 +3051,7 @@ variables:
 		MYVAR:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -3065,7 +3065,7 @@ variables:
 		MYVAR:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7.01  19-Jul-16" ;
+		:history = "FERRET V7.01  25-Jul-16" ;
 		:Conventions = "CF-1.6" ;
 }
 *** Running ferret script: bn_list_clim_axes.jnl
@@ -3082,3 +3082,662 @@ variables:
 *** Running ferret script: bn_ps.jnl
 *** Running ferret script: bn_all_ef.jnl
 *** Running ferret script: bn_startupfile.jnl
+*** Running ferret script: err700_decimate.jnl
+netcdf \492C19881104_dec {
+dimensions:
+	traj = 1 ;
+	STRING1_12 = 12 ;
+	STRING1_1 = 1 ;
+	STRING1_10 = 10 ;
+	STRING1_9 = 9 ;
+	STRING1_4 = 4 ;
+	STRING1_3 = 3 ;
+	obs = 23 ;
+variables:
+	double traj(traj) ;
+		traj:point_spacing = "even" ;
+		traj:axis = "E" ;
+	int num_obs(traj) ;
+		num_obs:missing_value = -99 ;
+		num_obs:_FillValue = -99 ;
+		num_obs:sample_dimension = "obs" ;
+		num_obs:long_name = "Number of Observations" ;
+	char expocode(traj, STRING1_12) ;
+		expocode:long_name = "expocode" ;
+		expocode:cf_role = "trajectory_id" ;
+		expocode:ioos_category = "Identifier" ;
+		expocode:history = "From 492C19881104" ;
+	char dataset_name(traj, STRING1_1) ;
+		dataset_name:long_name = "dataset name" ;
+		dataset_name:ioos_category = "Identifier" ;
+		dataset_name:history = "From 492C19881104" ;
+	char vessel_name(traj, STRING1_10) ;
+		vessel_name:long_name = "vessel name" ;
+		vessel_name:standard_name = "platform_name" ;
+		vessel_name:ioos_category = "Identifier" ;
+		vessel_name:history = "From 492C19881104" ;
+	char organization(traj, STRING1_1) ;
+		organization:long_name = "organization" ;
+		organization:ioos_category = "Identifier" ;
+		organization:history = "From 492C19881104" ;
+	double geospatial_lon_min(traj) ;
+		geospatial_lon_min:missing_value = -1.e+34 ;
+		geospatial_lon_min:_FillValue = -1.e+34 ;
+		geospatial_lon_min:units = "degrees_east" ;
+		geospatial_lon_min:long_name = "westernmost longitude" ;
+		geospatial_lon_min:standard_name = "geospatial_lon_min" ;
+		geospatial_lon_min:ioos_category = "Location" ;
+		geospatial_lon_min:history = "From 492C19881104" ;
+	double geospatial_lon_max(traj) ;
+		geospatial_lon_max:missing_value = -1.e+34 ;
+		geospatial_lon_max:_FillValue = -1.e+34 ;
+		geospatial_lon_max:units = "degrees_east" ;
+		geospatial_lon_max:long_name = "easternmost longitude" ;
+		geospatial_lon_max:standard_name = "geospatial_lon_max" ;
+		geospatial_lon_max:ioos_category = "Location" ;
+		geospatial_lon_max:history = "From 492C19881104" ;
+	double geospatial_lat_min(traj) ;
+		geospatial_lat_min:missing_value = -1.e+34 ;
+		geospatial_lat_min:_FillValue = -1.e+34 ;
+		geospatial_lat_min:units = "degrees_north" ;
+		geospatial_lat_min:long_name = "southernmost latitude" ;
+		geospatial_lat_min:standard_name = "geospatial_lat_min" ;
+		geospatial_lat_min:ioos_category = "Location" ;
+		geospatial_lat_min:history = "From 492C19881104" ;
+	double geospatial_lat_max(traj) ;
+		geospatial_lat_max:missing_value = -1.e+34 ;
+		geospatial_lat_max:_FillValue = -1.e+34 ;
+		geospatial_lat_max:units = "degrees_north" ;
+		geospatial_lat_max:long_name = "northernmost latitude" ;
+		geospatial_lat_max:standard_name = "geospatial_lat_max" ;
+		geospatial_lat_max:ioos_category = "Location" ;
+		geospatial_lat_max:history = "From 492C19881104" ;
+	double time_coverage_start(traj) ;
+		time_coverage_start:missing_value = -1.e+34 ;
+		time_coverage_start:_FillValue = -1.e+34 ;
+		time_coverage_start:units = "seconds since 1970-01-01T00:00:00Z" ;
+		time_coverage_start:long_name = "beginning time" ;
+		time_coverage_start:standard_name = "time_coverage_start" ;
+		time_coverage_start:ioos_category = "Time" ;
+		time_coverage_start:history = "From 492C19881104" ;
+	double time_converage_end(traj) ;
+		time_converage_end:missing_value = -1.e+34 ;
+		time_converage_end:_FillValue = -1.e+34 ;
+		time_converage_end:units = "seconds since 1970-01-01T00:00:00Z" ;
+		time_converage_end:long_name = "ending time" ;
+		time_converage_end:standard_name = "time_converage_end" ;
+		time_converage_end:ioos_category = "Time" ;
+		time_converage_end:history = "From 492C19881104" ;
+	char investigators(traj, STRING1_9) ;
+		investigators:long_name = "investigators" ;
+		investigators:ioos_category = "Identifier" ;
+		investigators:history = "From 492C19881104" ;
+	char socat_version(traj, STRING1_4) ;
+		socat_version:long_name = "SOCAT version" ;
+		socat_version:ioos_category = "Identifier" ;
+		socat_version:history = "From 492C19881104" ;
+	char all_region_ids(traj, STRING1_3) ;
+		all_region_ids:long_name = "alphabetical list of all unique region IDs" ;
+		all_region_ids:ioos_category = "Identifier" ;
+		all_region_ids:history = "From 492C19881104" ;
+	char socat_doi(traj, STRING1_1) ;
+		socat_doi:long_name = "SOCAT DOI of this dataset" ;
+		socat_doi:ioos_category = "Identifier" ;
+		socat_doi:history = "From 492C19881104" ;
+	char qc_flag(traj, STRING1_1) ;
+		qc_flag:long_name = "QC flag" ;
+		qc_flag:ioos_category = "Quality" ;
+		qc_flag:history = "From 492C19881104" ;
+	int nobs_full(traj) ;
+		nobs_full:missing_value = -99 ;
+		nobs_full:_FillValue = -99 ;
+		nobs_full:long_name = "Count in original trajectory" ;
+		nobs_full:history = "From /home/data/socat/socatV3/492C/492C19881104.nc" ;
+	int nobs_deci(traj) ;
+		nobs_deci:missing_value = -99 ;
+		nobs_deci:_FillValue = -99 ;
+		nobs_deci:long_name = "Count in decimated trajectory" ;
+		nobs_deci:note = "Piecewise decimated" ;
+		nobs_deci:history = "From 492C19881104" ;
+	double obs(obs) ;
+		obs:point_spacing = "even" ;
+		obs:axis = "X" ;
+	int year(obs) ;
+		year:missing_value = -1 ;
+		year:_FillValue = -1 ;
+		year:long_name = "year" ;
+		year:ioos_category = "Time" ;
+		year:history = "From 492C19881104" ;
+	int month(obs) ;
+		month:missing_value = -1 ;
+		month:_FillValue = -1 ;
+		month:long_name = "month of year" ;
+		month:ioos_category = "Time" ;
+		month:history = "From 492C19881104" ;
+	int day(obs) ;
+		day:missing_value = -1 ;
+		day:_FillValue = -1 ;
+		day:long_name = "day of month" ;
+		day:ioos_category = "Time" ;
+		day:history = "From 492C19881104" ;
+	int hour(obs) ;
+		hour:missing_value = -1 ;
+		hour:_FillValue = -1 ;
+		hour:long_name = "hour of day" ;
+		hour:ioos_category = "Time" ;
+		hour:history = "From 492C19881104" ;
+	int minute(obs) ;
+		minute:missing_value = -1 ;
+		minute:_FillValue = -1 ;
+		minute:long_name = "minute of hour" ;
+		minute:ioos_category = "Time" ;
+		minute:history = "From 492C19881104" ;
+	double second(obs) ;
+		second:missing_value = -1.e+34 ;
+		second:_FillValue = -1.e+34 ;
+		second:long_name = "second of minute" ;
+		second:ioos_category = "Time" ;
+		second:history = "From 492C19881104" ;
+	double longitude(obs) ;
+		longitude:missing_value = -1.e+34 ;
+		longitude:_FillValue = -1.e+34 ;
+		longitude:units = "degrees_east" ;
+		longitude:long_name = "longitude" ;
+		longitude:standard_name = "longitude" ;
+		longitude:ioos_category = "Location" ;
+		longitude:history = "From 492C19881104" ;
+	double latitude(obs) ;
+		latitude:missing_value = -1.e+34 ;
+		latitude:_FillValue = -1.e+34 ;
+		latitude:units = "degrees_north" ;
+		latitude:long_name = "latitude" ;
+		latitude:standard_name = "latitude" ;
+		latitude:ioos_category = "Location" ;
+		latitude:history = "From 492C19881104" ;
+	double sample_depth(obs) ;
+		sample_depth:missing_value = -1.e+34 ;
+		sample_depth:_FillValue = -1.e+34 ;
+		sample_depth:units = "meters" ;
+		sample_depth:long_name = "sample depth" ;
+		sample_depth:positive = "down" ;
+		sample_depth:standard_name = "depth" ;
+		sample_depth:ioos_category = "Bathymetry" ;
+		sample_depth:history = "From 492C19881104" ;
+	double sal(obs) ;
+		sal:missing_value = -1.e+34 ;
+		sal:_FillValue = -1.e+34 ;
+		sal:units = "PSU" ;
+		sal:long_name = "salinity" ;
+		sal:standard_name = "sea_surface_salinity" ;
+		sal:ioos_category = "Salinity" ;
+		sal:history = "From 492C19881104" ;
+	double Temperature_equi(obs) ;
+		Temperature_equi:missing_value = -1.e+34 ;
+		Temperature_equi:_FillValue = -1.e+34 ;
+		Temperature_equi:units = "degrees C" ;
+		Temperature_equi:long_name = "equilibrator chamber temperature" ;
+		Temperature_equi:ioos_category = "Temperature" ;
+		Temperature_equi:history = "From 492C19881104" ;
+	double temp(obs) ;
+		temp:missing_value = -1.e+34 ;
+		temp:_FillValue = -1.e+34 ;
+		temp:units = "degrees C" ;
+		temp:long_name = "sea surface temperature" ;
+		temp:standard_name = "sea_surface_temperature" ;
+		temp:ioos_category = "Temperature" ;
+		temp:history = "From 492C19881104" ;
+	double Temperature_atm(obs) ;
+		Temperature_atm:missing_value = -1.e+34 ;
+		Temperature_atm:_FillValue = -1.e+34 ;
+		Temperature_atm:units = "degrees C" ;
+		Temperature_atm:long_name = "sea-level air temperature" ;
+		Temperature_atm:standard_name = "air_temperature_at_sea_level" ;
+		Temperature_atm:ioos_category = "Temperature" ;
+		Temperature_atm:history = "From 492C19881104" ;
+	double Pressure_equi(obs) ;
+		Pressure_equi:missing_value = -1.e+34 ;
+		Pressure_equi:_FillValue = -1.e+34 ;
+		Pressure_equi:units = "hPa" ;
+		Pressure_equi:long_name = "equilibrator chamber pressure" ;
+		Pressure_equi:ioos_category = "Pressure" ;
+		Pressure_equi:history = "From 492C19881104" ;
+	double Pressure_atm(obs) ;
+		Pressure_atm:missing_value = -1.e+34 ;
+		Pressure_atm:_FillValue = -1.e+34 ;
+		Pressure_atm:units = "hPa" ;
+		Pressure_atm:long_name = "sea-level air pressure" ;
+		Pressure_atm:standard_name = "air_pressure_at_sea_level" ;
+		Pressure_atm:ioos_category = "Pressure" ;
+		Pressure_atm:history = "From 492C19881104" ;
+	double xCO2_water_equi_temp_dry_ppm(obs) ;
+		xCO2_water_equi_temp_dry_ppm:missing_value = -1.e+34 ;
+		xCO2_water_equi_temp_dry_ppm:_FillValue = -1.e+34 ;
+		xCO2_water_equi_temp_dry_ppm:units = "umol/mol" ;
+		xCO2_water_equi_temp_dry_ppm:long_name = "water xCO2 dry using equi temp" ;
+		xCO2_water_equi_temp_dry_ppm:standard_name = "mole_fraction_of_carbon_dioxide_in_sea_water" ;
+		xCO2_water_equi_temp_dry_ppm:ioos_category = "CO2" ;
+		xCO2_water_equi_temp_dry_ppm:history = "From 492C19881104" ;
+	double xCO2_water_sst_dry_ppm(obs) ;
+		xCO2_water_sst_dry_ppm:missing_value = -1.e+34 ;
+		xCO2_water_sst_dry_ppm:_FillValue = -1.e+34 ;
+		xCO2_water_sst_dry_ppm:units = "umol/mol" ;
+		xCO2_water_sst_dry_ppm:long_name = "water xCO2 dry using sst" ;
+		xCO2_water_sst_dry_ppm:standard_name = "mole_fraction_of_carbon_dioxide_in_sea_water" ;
+		xCO2_water_sst_dry_ppm:ioos_category = "CO2" ;
+		xCO2_water_sst_dry_ppm:history = "From 492C19881104" ;
+	double xCO2_water_equi_temp_wet_ppm(obs) ;
+		xCO2_water_equi_temp_wet_ppm:missing_value = -1.e+34 ;
+		xCO2_water_equi_temp_wet_ppm:_FillValue = -1.e+34 ;
+		xCO2_water_equi_temp_wet_ppm:units = "umol/mol" ;
+		xCO2_water_equi_temp_wet_ppm:long_name = "water xCO2 wet using equi temp" ;
+		xCO2_water_equi_temp_wet_ppm:standard_name = "mole_fraction_of_carbon_dioxide_in_sea_water" ;
+		xCO2_water_equi_temp_wet_ppm:ioos_category = "CO2" ;
+		xCO2_water_equi_temp_wet_ppm:history = "From 492C19881104" ;
+	double xCO2_water_sst_wet_ppm(obs) ;
+		xCO2_water_sst_wet_ppm:missing_value = -1.e+34 ;
+		xCO2_water_sst_wet_ppm:_FillValue = -1.e+34 ;
+		xCO2_water_sst_wet_ppm:units = "umol/mol" ;
+		xCO2_water_sst_wet_ppm:long_name = "water xCO2 wet using sst" ;
+		xCO2_water_sst_wet_ppm:standard_name = "mole_fraction_of_carbon_dioxide_in_sea_water" ;
+		xCO2_water_sst_wet_ppm:ioos_category = "CO2" ;
+		xCO2_water_sst_wet_ppm:history = "From 492C19881104" ;
+	double pCO2_water_equi_temp(obs) ;
+		pCO2_water_equi_temp:missing_value = -1.e+34 ;
+		pCO2_water_equi_temp:_FillValue = -1.e+34 ;
+		pCO2_water_equi_temp:units = "uatm" ;
+		pCO2_water_equi_temp:long_name = "water pCO2 wet using equi temp" ;
+		pCO2_water_equi_temp:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		pCO2_water_equi_temp:ioos_category = "CO2" ;
+		pCO2_water_equi_temp:history = "From 492C19881104" ;
+	double pCO2_water_sst_100humidity_uatm(obs) ;
+		pCO2_water_sst_100humidity_uatm:missing_value = -1.e+34 ;
+		pCO2_water_sst_100humidity_uatm:_FillValue = -1.e+34 ;
+		pCO2_water_sst_100humidity_uatm:units = "uatm" ;
+		pCO2_water_sst_100humidity_uatm:long_name = "water pCO2 wet using sst" ;
+		pCO2_water_sst_100humidity_uatm:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		pCO2_water_sst_100humidity_uatm:ioos_category = "CO2" ;
+		pCO2_water_sst_100humidity_uatm:history = "From 492C19881104" ;
+	double fCO2_water_equi_uatm(obs) ;
+		fCO2_water_equi_uatm:missing_value = -1.e+34 ;
+		fCO2_water_equi_uatm:_FillValue = -1.e+34 ;
+		fCO2_water_equi_uatm:units = "uatm" ;
+		fCO2_water_equi_uatm:long_name = "water fCO2 wet using equi temp" ;
+		fCO2_water_equi_uatm:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		fCO2_water_equi_uatm:ioos_category = "CO2" ;
+		fCO2_water_equi_uatm:history = "From 492C19881104" ;
+	double fCO2_water_sst_100humidity_uatm(obs) ;
+		fCO2_water_sst_100humidity_uatm:missing_value = -1.e+34 ;
+		fCO2_water_sst_100humidity_uatm:_FillValue = -1.e+34 ;
+		fCO2_water_sst_100humidity_uatm:units = "uatm" ;
+		fCO2_water_sst_100humidity_uatm:long_name = "water fCO2 wet using sst" ;
+		fCO2_water_sst_100humidity_uatm:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		fCO2_water_sst_100humidity_uatm:ioos_category = "CO2" ;
+		fCO2_water_sst_100humidity_uatm:history = "From 492C19881104" ;
+	double xCO2_atm_dry_actual(obs) ;
+		xCO2_atm_dry_actual:missing_value = -1.e+34 ;
+		xCO2_atm_dry_actual:_FillValue = -1.e+34 ;
+		xCO2_atm_dry_actual:units = "umol/mol" ;
+		xCO2_atm_dry_actual:long_name = "actual air xCO2 dry" ;
+		xCO2_atm_dry_actual:standard_name = "mole_fraction_of_carbon_dioxide_in_air" ;
+		xCO2_atm_dry_actual:ioos_category = "CO2" ;
+		xCO2_atm_dry_actual:history = "From 492C19881104" ;
+	double xCO2_atm_dry_interp(obs) ;
+		xCO2_atm_dry_interp:missing_value = -1.e+34 ;
+		xCO2_atm_dry_interp:_FillValue = -1.e+34 ;
+		xCO2_atm_dry_interp:units = "umol/mol" ;
+		xCO2_atm_dry_interp:long_name = "interpolated air xCO2 dry" ;
+		xCO2_atm_dry_interp:standard_name = "mole_fraction_of_carbon_dioxide_in_air" ;
+		xCO2_atm_dry_interp:ioos_category = "CO2" ;
+		xCO2_atm_dry_interp:history = "From 492C19881104" ;
+	double pCO2_atm_wet_actual(obs) ;
+		pCO2_atm_wet_actual:missing_value = -1.e+34 ;
+		pCO2_atm_wet_actual:_FillValue = -1.e+34 ;
+		pCO2_atm_wet_actual:units = "uatm" ;
+		pCO2_atm_wet_actual:long_name = "actual air pCO2 wet" ;
+		pCO2_atm_wet_actual:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_air" ;
+		pCO2_atm_wet_actual:ioos_category = "CO2" ;
+		pCO2_atm_wet_actual:history = "From 492C19881104" ;
+	double pCO2_atm_wet_interp(obs) ;
+		pCO2_atm_wet_interp:missing_value = -1.e+34 ;
+		pCO2_atm_wet_interp:_FillValue = -1.e+34 ;
+		pCO2_atm_wet_interp:units = "uatm" ;
+		pCO2_atm_wet_interp:long_name = "interpolated air pCO2 wet" ;
+		pCO2_atm_wet_interp:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_air" ;
+		pCO2_atm_wet_interp:ioos_category = "CO2" ;
+		pCO2_atm_wet_interp:history = "From 492C19881104" ;
+	double fCO2_atm_wet_actual(obs) ;
+		fCO2_atm_wet_actual:missing_value = -1.e+34 ;
+		fCO2_atm_wet_actual:_FillValue = -1.e+34 ;
+		fCO2_atm_wet_actual:units = "uatm" ;
+		fCO2_atm_wet_actual:long_name = "actual air fCO2 wet" ;
+		fCO2_atm_wet_actual:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_air" ;
+		fCO2_atm_wet_actual:ioos_category = "CO2" ;
+		fCO2_atm_wet_actual:history = "From 492C19881104" ;
+	double fCO2_atm_wet_interp(obs) ;
+		fCO2_atm_wet_interp:missing_value = -1.e+34 ;
+		fCO2_atm_wet_interp:_FillValue = -1.e+34 ;
+		fCO2_atm_wet_interp:units = "uatm" ;
+		fCO2_atm_wet_interp:long_name = "interpolated air fCO2 wet" ;
+		fCO2_atm_wet_interp:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_air" ;
+		fCO2_atm_wet_interp:ioos_category = "CO2" ;
+		fCO2_atm_wet_interp:history = "From 492C19881104" ;
+	double delta_xCO2(obs) ;
+		delta_xCO2:missing_value = -1.e+34 ;
+		delta_xCO2:_FillValue = -1.e+34 ;
+		delta_xCO2:units = "umol/mol" ;
+		delta_xCO2:long_name = "water xCO2 minus atmospheric xCO2" ;
+		delta_xCO2:ioos_category = "CO2" ;
+		delta_xCO2:history = "From 492C19881104" ;
+	double delta_pCO2(obs) ;
+		delta_pCO2:missing_value = -1.e+34 ;
+		delta_pCO2:_FillValue = -1.e+34 ;
+		delta_pCO2:units = "uatm" ;
+		delta_pCO2:long_name = "water pCO2 minus atmospheric pCO2" ;
+		delta_pCO2:ioos_category = "CO2" ;
+		delta_pCO2:history = "From 492C19881104" ;
+	double delta_fCO2(obs) ;
+		delta_fCO2:missing_value = -1.e+34 ;
+		delta_fCO2:_FillValue = -1.e+34 ;
+		delta_fCO2:units = "uatm" ;
+		delta_fCO2:long_name = "water fCO2 minus atmospheric fCO2" ;
+		delta_fCO2:ioos_category = "CO2" ;
+		delta_fCO2:history = "From 492C19881104" ;
+	double xH2O_equi(obs) ;
+		xH2O_equi:missing_value = -1.e+34 ;
+		xH2O_equi:_FillValue = -1.e+34 ;
+		xH2O_equi:units = "mmol/mol" ;
+		xH2O_equi:long_name = "xH2O in equil air sample" ;
+		xH2O_equi:standard_name = "mole_fraction_of_water_in_air" ;
+		xH2O_equi:ioos_category = "Humidity" ;
+		xH2O_equi:history = "From 492C19881104" ;
+	double relative_humidity(obs) ;
+		relative_humidity:missing_value = -1.e+34 ;
+		relative_humidity:_FillValue = -1.e+34 ;
+		relative_humidity:long_name = "relative humidity" ;
+		relative_humidity:standard_name = "relative_humidity" ;
+		relative_humidity:ioos_category = "Humidity" ;
+		relative_humidity:history = "From 492C19881104" ;
+	double specific_humidity(obs) ;
+		specific_humidity:missing_value = -1.e+34 ;
+		specific_humidity:_FillValue = -1.e+34 ;
+		specific_humidity:long_name = "specific humidity" ;
+		specific_humidity:standard_name = "specific_humidity" ;
+		specific_humidity:ioos_category = "Humidity" ;
+		specific_humidity:history = "From 492C19881104" ;
+	double ship_speed(obs) ;
+		ship_speed:missing_value = -1.e+34 ;
+		ship_speed:_FillValue = -1.e+34 ;
+		ship_speed:units = "knots" ;
+		ship_speed:long_name = "measured ship speed" ;
+		ship_speed:standard_name = "platform_speed_wrt_ground" ;
+		ship_speed:history = "From 492C19881104" ;
+	double ship_dir(obs) ;
+		ship_dir:missing_value = -1.e+34 ;
+		ship_dir:_FillValue = -1.e+34 ;
+		ship_dir:units = "degrees" ;
+		ship_dir:long_name = "ship direction" ;
+		ship_dir:standard_name = "platform_course" ;
+		ship_dir:history = "From 492C19881104" ;
+	double wind_speed_true(obs) ;
+		wind_speed_true:missing_value = -1.e+34 ;
+		wind_speed_true:_FillValue = -1.e+34 ;
+		wind_speed_true:units = "m/s" ;
+		wind_speed_true:long_name = "true wind speed" ;
+		wind_speed_true:standard_name = "wind_speed" ;
+		wind_speed_true:ioos_category = "Wind" ;
+		wind_speed_true:history = "From 492C19881104" ;
+	double wind_speed_rel(obs) ;
+		wind_speed_rel:missing_value = -1.e+34 ;
+		wind_speed_rel:_FillValue = -1.e+34 ;
+		wind_speed_rel:units = "m/s" ;
+		wind_speed_rel:long_name = "relative wind speed" ;
+		wind_speed_rel:standard_name = "wind_speed" ;
+		wind_speed_rel:ioos_category = "Wind" ;
+		wind_speed_rel:history = "From 492C19881104" ;
+	double wind_dir_true(obs) ;
+		wind_dir_true:missing_value = -1.e+34 ;
+		wind_dir_true:_FillValue = -1.e+34 ;
+		wind_dir_true:units = "degrees" ;
+		wind_dir_true:long_name = "true wind direction" ;
+		wind_dir_true:standard_name = "wind_from_direction" ;
+		wind_dir_true:ioos_category = "Wind" ;
+		wind_dir_true:history = "From 492C19881104" ;
+	double wind_dir_rel(obs) ;
+		wind_dir_rel:missing_value = -1.e+34 ;
+		wind_dir_rel:_FillValue = -1.e+34 ;
+		wind_dir_rel:units = "degrees" ;
+		wind_dir_rel:long_name = "relative wind direction" ;
+		wind_dir_rel:standard_name = "wind_from_direction" ;
+		wind_dir_rel:ioos_category = "Wind" ;
+		wind_dir_rel:history = "From 492C19881104" ;
+	double woa_sss(obs) ;
+		woa_sss:missing_value = -1.e+34 ;
+		woa_sss:_FillValue = -1.e+34 ;
+		woa_sss:units = "PSU" ;
+		woa_sss:long_name = "salinity from World Ocean Atlas 2005" ;
+		woa_sss:standard_name = "sea_surface_salinity" ;
+		woa_sss:ioos_category = "Salinity" ;
+		woa_sss:history = "From 492C19881104" ;
+	double pressure_ncep_slp(obs) ;
+		pressure_ncep_slp:missing_value = -1.e+34 ;
+		pressure_ncep_slp:_FillValue = -1.e+34 ;
+		pressure_ncep_slp:units = "hPa" ;
+		pressure_ncep_slp:long_name = "sea level air pressure from NCEP/NCAR reanalysis" ;
+		pressure_ncep_slp:standard_name = "air_pressure_at_sea_level" ;
+		pressure_ncep_slp:ioos_category = "Pressure" ;
+		pressure_ncep_slp:history = "From 492C19881104" ;
+	double fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm(obs) ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm:missing_value = -1.e+34 ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm:_FillValue = -1.e+34 ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm:units = "uatm" ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm:long_name = "fCO2 from xCO2_water_equi_temp_dry_ppm, Pressure_equi, sal" ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm:ioos_category = "CO2" ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm:history = "From 492C19881104" ;
+	double fCO2_insitu_from_xCO2_water_sst_dry_ppm(obs) ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm:missing_value = -1.e+34 ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm:_FillValue = -1.e+34 ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm:units = "uatm" ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm:long_name = "fCO2 from xCO2_water_sst_dry_ppm, Pressure_equi, sal" ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm:ioos_category = "CO2" ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm:history = "From 492C19881104" ;
+	double fCO2_from_pCO2_water_water_equi_temp(obs) ;
+		fCO2_from_pCO2_water_water_equi_temp:missing_value = -1.e+34 ;
+		fCO2_from_pCO2_water_water_equi_temp:_FillValue = -1.e+34 ;
+		fCO2_from_pCO2_water_water_equi_temp:units = "uatm" ;
+		fCO2_from_pCO2_water_water_equi_temp:long_name = "fCO2 from pCO2_water_equi_temp, Pressure_equi, sal" ;
+		fCO2_from_pCO2_water_water_equi_temp:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		fCO2_from_pCO2_water_water_equi_temp:ioos_category = "CO2" ;
+		fCO2_from_pCO2_water_water_equi_temp:history = "From 492C19881104" ;
+	double fCO2_from_pCO2_water_sst_100humidity_uatm(obs) ;
+		fCO2_from_pCO2_water_sst_100humidity_uatm:missing_value = -1.e+34 ;
+		fCO2_from_pCO2_water_sst_100humidity_uatm:_FillValue = -1.e+34 ;
+		fCO2_from_pCO2_water_sst_100humidity_uatm:units = "uatm" ;
+		fCO2_from_pCO2_water_sst_100humidity_uatm:long_name = "fCO2 from pCO2_water_sst_100humidity_uatm, Pressure_equi, sal" ;
+		fCO2_from_pCO2_water_sst_100humidity_uatm:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		fCO2_from_pCO2_water_sst_100humidity_uatm:ioos_category = "CO2" ;
+		fCO2_from_pCO2_water_sst_100humidity_uatm:history = "From 492C19881104" ;
+	double fCO2_insitu_from_fCO2_water_equi_uatm(obs) ;
+		fCO2_insitu_from_fCO2_water_equi_uatm:missing_value = -1.e+34 ;
+		fCO2_insitu_from_fCO2_water_equi_uatm:_FillValue = -1.e+34 ;
+		fCO2_insitu_from_fCO2_water_equi_uatm:units = "uatm" ;
+		fCO2_insitu_from_fCO2_water_equi_uatm:long_name = "fCO2 from fCO2_water_equi_temp, Pressure_equi, sal" ;
+		fCO2_insitu_from_fCO2_water_equi_uatm:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		fCO2_insitu_from_fCO2_water_equi_uatm:ioos_category = "CO2" ;
+		fCO2_insitu_from_fCO2_water_equi_uatm:history = "From 492C19881104" ;
+	double fCO2_insitu_from_fCO2_water_sst_100humidty_uatm(obs) ;
+		fCO2_insitu_from_fCO2_water_sst_100humidty_uatm:missing_value = -1.e+34 ;
+		fCO2_insitu_from_fCO2_water_sst_100humidty_uatm:_FillValue = -1.e+34 ;
+		fCO2_insitu_from_fCO2_water_sst_100humidty_uatm:units = "uatm" ;
+		fCO2_insitu_from_fCO2_water_sst_100humidty_uatm:long_name = "fCO2 from fCO2_water_sst_100humidity_uatm, Pressure_equi, sal" ;
+		fCO2_insitu_from_fCO2_water_sst_100humidty_uatm:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		fCO2_insitu_from_fCO2_water_sst_100humidty_uatm:ioos_category = "CO2" ;
+		fCO2_insitu_from_fCO2_water_sst_100humidty_uatm:history = "From 492C19881104" ;
+	double fCO2_from_pCO2_water_water_equi_temp_ncep(obs) ;
+		fCO2_from_pCO2_water_water_equi_temp_ncep:missing_value = -1.e+34 ;
+		fCO2_from_pCO2_water_water_equi_temp_ncep:_FillValue = -1.e+34 ;
+		fCO2_from_pCO2_water_water_equi_temp_ncep:units = "uatm" ;
+		fCO2_from_pCO2_water_water_equi_temp_ncep:long_name = "fCO2 from pCO2_water_equi_temp, NCEP SLP, sal" ;
+		fCO2_from_pCO2_water_water_equi_temp_ncep:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		fCO2_from_pCO2_water_water_equi_temp_ncep:ioos_category = "CO2" ;
+		fCO2_from_pCO2_water_water_equi_temp_ncep:history = "From 492C19881104" ;
+	double fCO2_from_pCO2_water_sst_100humidity_uatm_ncep(obs) ;
+		fCO2_from_pCO2_water_sst_100humidity_uatm_ncep:missing_value = -1.e+34 ;
+		fCO2_from_pCO2_water_sst_100humidity_uatm_ncep:_FillValue = -1.e+34 ;
+		fCO2_from_pCO2_water_sst_100humidity_uatm_ncep:units = "uatm" ;
+		fCO2_from_pCO2_water_sst_100humidity_uatm_ncep:long_name = "fCO2 from pCO2_water_sst_100humidity_uatm, NCEP SLP, sal" ;
+		fCO2_from_pCO2_water_sst_100humidity_uatm_ncep:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		fCO2_from_pCO2_water_sst_100humidity_uatm_ncep:ioos_category = "CO2" ;
+		fCO2_from_pCO2_water_sst_100humidity_uatm_ncep:history = "From 492C19881104" ;
+	double fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa(obs) ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa:missing_value = -1.e+34 ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa:_FillValue = -1.e+34 ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa:units = "uatm" ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa:long_name = "fCO2 from xCO2_water_equi_temp_dry_ppm, Pressure_equi, WOA SSS" ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa:ioos_category = "CO2" ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_woa:history = "From 492C19881104" ;
+	double fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa(obs) ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa:missing_value = -1.e+34 ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa:_FillValue = -1.e+34 ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa:units = "uatm" ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa:long_name = "fCO2 from xCO2_water_sst_dry_ppm, Pressure_equi, WOA SSS" ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa:ioos_category = "CO2" ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_woa:history = "From 492C19881104" ;
+	double fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep(obs) ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep:missing_value = -1.e+34 ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep:_FillValue = -1.e+34 ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep:units = "uatm" ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep:long_name = "fCO2 from xCO2_water_equi_temp_dry_ppm, NCEP SLP, sal" ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep:ioos_category = "CO2" ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep:history = "From 492C19881104" ;
+	double fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep(obs) ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep:missing_value = -1.e+34 ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep:_FillValue = -1.e+34 ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep:units = "uatm" ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep:long_name = "fCO2 from xCO2_water_sst_dry_ppm, NCEP SLP, sal" ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep:ioos_category = "CO2" ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep:history = "From 492C19881104" ;
+	double fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa(obs) ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa:missing_value = -1.e+34 ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa:_FillValue = -1.e+34 ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa:units = "uatm" ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa:long_name = "fCO2 from xCO2_water_equi_temp_dry_ppm, NCEP SLP, WOA SSS" ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa:ioos_category = "CO2" ;
+		fCO2_insitu_from_xCO2_water_equi_temp_dry_ppm_ncep_woa:history = "From 492C19881104" ;
+	double fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa(obs) ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa:missing_value = -1.e+34 ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa:_FillValue = -1.e+34 ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa:units = "uatm" ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa:long_name = "fCO2 from xCO2_water_sst_dry_ppm, NCEP SLP, WOA SSS" ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa:ioos_category = "CO2" ;
+		fCO2_insitu_from_xCO2_water_sst_dry_ppm_ncep_woa:history = "From 492C19881104" ;
+	double fCO2_recommended(obs) ;
+		fCO2_recommended:missing_value = -1.e+34 ;
+		fCO2_recommended:_FillValue = -1.e+34 ;
+		fCO2_recommended:units = "uatm" ;
+		fCO2_recommended:long_name = "fCO2 recommended" ;
+		fCO2_recommended:standard_name = "surface_partial_pressure_of_carbon_dioxide_in_sea_water" ;
+		fCO2_recommended:ioos_category = "CO2" ;
+		fCO2_recommended:history = "From 492C19881104" ;
+	int fCO2_source(obs) ;
+		fCO2_source:missing_value = -1 ;
+		fCO2_source:_FillValue = -1 ;
+		fCO2_source:long_name = "Algorithm number for recommended fCO2" ;
+		fCO2_source:ioos_category = "Identifier" ;
+		fCO2_source:history = "From 492C19881104" ;
+	double delta_temp(obs) ;
+		delta_temp:missing_value = -1.e+34 ;
+		delta_temp:_FillValue = -1.e+34 ;
+		delta_temp:units = "degrees C" ;
+		delta_temp:long_name = "Equilibrator Temp - SST" ;
+		delta_temp:ioos_category = "Temperature" ;
+		delta_temp:history = "From 492C19881104" ;
+	double calc_speed(obs) ;
+		calc_speed:missing_value = -1.e+34 ;
+		calc_speed:_FillValue = -1.e+34 ;
+		calc_speed:units = "knots" ;
+		calc_speed:long_name = "calculated ship speed" ;
+		calc_speed:standard_name = "platform_speed_wrt_ground" ;
+		calc_speed:history = "From 492C19881104" ;
+	double etopo2(obs) ;
+		etopo2:missing_value = -1.e+34 ;
+		etopo2:_FillValue = -1.e+34 ;
+		etopo2:units = "meters" ;
+		etopo2:long_name = "bathymetry from ETOPO2" ;
+		etopo2:positive = "down" ;
+		etopo2:standard_name = "sea_floor_depth" ;
+		etopo2:ioos_category = "Bathymetry" ;
+		etopo2:history = "From 492C19881104" ;
+	double gvCO2(obs) ;
+		gvCO2:missing_value = -1.e+34 ;
+		gvCO2:_FillValue = -1.e+34 ;
+		gvCO2:units = "umol/mol" ;
+		gvCO2:long_name = "GlobalView xCO2" ;
+		gvCO2:standard_name = "mole_fraction_of_carbon_dioxide_in_air" ;
+		gvCO2:ioos_category = "CO2" ;
+		gvCO2:history = "From 492C19881104" ;
+	double dist_to_land(obs) ;
+		dist_to_land:missing_value = -1.e+34 ;
+		dist_to_land:_FillValue = -1.e+34 ;
+		dist_to_land:units = "km" ;
+		dist_to_land:long_name = "distance to land" ;
+		dist_to_land:ioos_category = "Location" ;
+		dist_to_land:history = "From 492C19881104" ;
+	double day_of_year(obs) ;
+		day_of_year:missing_value = -1.e+34 ;
+		day_of_year:_FillValue = -1.e+34 ;
+		day_of_year:units = "days" ;
+		day_of_year:long_name = "day of the year" ;
+		day_of_year:ioos_category = "Time" ;
+		day_of_year:history = "From 492C19881104" ;
+	double time(obs) ;
+		time:missing_value = -1.e+34 ;
+		time:_FillValue = -1.e+34 ;
+		time:units = "seconds since 1970-01-01T00:00:00Z" ;
+		time:long_name = "time" ;
+		time:standard_name = "time" ;
+		time:ioos_category = "Time" ;
+		time:time_origin = "01-JAN-1970 00:00:00" ;
+		time:history = "From 492C19881104" ;
+	double lon360(obs) ;
+		lon360:missing_value = -1.e+34 ;
+		lon360:_FillValue = -1.e+34 ;
+		lon360:long_name = "longitude" ;
+		lon360:units = "degrees_east" ;
+		lon360:ioos_category = "Location" ;
+		lon360:standard_name = "Longitude" ;
+		lon360:history = "added to /home/data/socat/socatV3/492C/492C19881104.nc" ;
+	int sample_number(obs) ;
+		sample_number:missing_value = -1 ;
+		sample_number:_FillValue = -1 ;
+		sample_number:long_name = "sequence number for decimated dataset" ;
+		sample_number:history = "From 492C19881104" ;
+	char WOCE_CO2_water(obs, STRING1_1) ;
+		WOCE_CO2_water:long_name = "WOCE flag for water CO2" ;
+		WOCE_CO2_water:ioos_category = "Quality" ;
+		WOCE_CO2_water:history = "From 492C19881104" ;
+	char WOCE_CO2_atm(obs, STRING1_1) ;
+		WOCE_CO2_atm:long_name = "WOCE flag for air CO2" ;
+		WOCE_CO2_atm:ioos_category = "Quality" ;
+		WOCE_CO2_atm:history = "From 492C19881104" ;
+	char region_id(obs, STRING1_1) ;
+		region_id:long_name = "SOCAT region ID" ;
+		region_id:ioos_category = "Identifier" ;
+		region_id:history = "From 492C19881104" ;
+	char tmonth(obs, STRING1_3) ;
+		tmonth:long_name = "month of year" ;
+		tmonth:history = "added to /home/data/socat/socatV3/492C/492C19881104.nc" ;
+
+// global attributes:
+		:history = "FERRET V7.01  25-Jul-16" ;
+		:Conventions = "CF-1.6" ;
+		:featureType = "Trajectory" ;
+		:decimation = "218 original number of obs. Piecewise decimated to 23 obs using tolerances: lon 1, lat 1, fco2_rec 4" ;
+}

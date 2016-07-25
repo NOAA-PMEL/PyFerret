@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Jul 19 12:00 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.01
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Jul 25 13:06 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.01
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -17,6 +17,7 @@ FER_GRIDS=.
 FER_LIBS=/home/flat/ksmith/Ferret/lib
 FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
+PYFER_EXTERNAL_FUNCTIONS=/home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -286,7 +287,8 @@ Benchmark scripts that will be run:
    bn_ps.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
-Beginning at Tue Jul 19 12:01:14 PDT 2016
+   err700_decimate.jnl
+Beginning at Mon Jul 25 13:46:00 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -4586,6 +4588,8 @@ list index,edtim,udtim,udate,edate
  LISTing to file tmp/uagg_1_t1.nc
  LISTing to file tmp/uagg_1_t2.nc
  LISTing to file tmp/uagg_1_t3.nc
+ LISTing to file tmp/uagg_5.nc
+           *** NOTE: Skipping variable SST from set 2, already in the Union dataset.
  LISTing to file tmp/f01_e1_tu1.nc
  LISTing to file tmp/f01_e1_tu2.nc
  LISTing to file tmp/f01_e1_tu3.nc
@@ -4604,6 +4608,8 @@ list index,edtim,udtim,udate,edate
  LISTing to file tmp/f03_e2_tu1.nc
  LISTing to file tmp/f03_e2_tu2.nc
  LISTing to file tmp/f03_e2_tu3.nc
+           *** NOTE: Skipping variable REALIZATION from set 1, already in the Union dataset.
+           *** NOTE: Skipping variable REALIZATION from set 8, already in the Union dataset.
 *** Running ferret script: bn_gif.jnl
  Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
@@ -4721,4 +4727,6 @@ LOAD/TEMPORARY vflag
  Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
-Ended at Tue Jul 19 12:02:15 PDT 2016
+*** Running ferret script: err700_decimate.jnl
+ Cached data cleared from memory
+Ended at Mon Jul 25 13:47:02 PDT 2016

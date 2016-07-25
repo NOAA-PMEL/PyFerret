@@ -15,7 +15,7 @@ run_tests:
 	fi
 	./RUN_TESTS.sh `which ferret` "$(FER_EXTERNAL_FUNCTIONS)" "RUN_TESTS.sh test results for Ferret"
 	@echo 'Differences in the generated bench/*.gif files versus against those in bench/test_results'
-	@for img in *.gif ; \
+	-@for img in *.gif ; \
 	do \
 	    diff -q $$img test_results/$$img ; \
 	done

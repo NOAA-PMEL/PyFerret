@@ -26,7 +26,7 @@ GO mp_aspect
 
 !   Plot the data.  Use SHAKEY to make the color key at the top of the plot and
 !   control its size and location.  For a description of SHAKEY see the on-line
-!   Ferret Users' Guide at http://www.ferret.noaa.gov/Ferret/Documentation/Users_Guide/current/fer_html.htm
+!   Ferret Users' Guide at http://ferret.pmel.noaa.gov/Ferret/documentation/users-guide
 
 !   The arguments to SHAKEY are 
 !   SHAKEY do_key, orient, klab_siz, klab_inc, klab_dig, klab_len, kx_lo, kx_hi, ky_lo, ky_hi

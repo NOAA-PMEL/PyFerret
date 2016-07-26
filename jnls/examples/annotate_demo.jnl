@@ -1,4 +1,6 @@
 ! annotate_examples.jnl
+! Description: demo of the ANNOTATE command for adding labels to plots
+!
 ! The command ANNOTATE /USER/NORM/NOUSER/XPOS/YPOS/HALIGN/VALIGN/ANGLE/SIZE
 ! locates user-defined labels on a plot.
 !   /USER and /NOUSER behave as the LABEL command does

@@ -73,15 +73,15 @@
 	PROF_FLAGS	= -O0 -g
 
 	LD		= $(shell which gfortran-6)
-	LDFLAGS		= -fPIC -static-libgfortran -static-libgcc -Xlinker -dead_strip
-#	LDFLAGS		+= -Xlinker -why_live -Xlinker -why_load -Xlinker -map -Xlinker ferret.map
+	LDFLAGS		= -fPIC -static-libgfortran -static-libgcc -dead_strip
 
 	SYSLIB		= -L/usr/X11R6/lib -lX11 \
 			  -lcurl \
 			  -ldl \
 			  -lz \
-			  /usr/local/Cellar/gcc/6.1.0/lib/gcc/6/libquadmath.a \
-			  -lm
+			  /usr/local/opt/gcc/lib/gcc/6/libquadmath.a \
+			  -lm \
+			  -Wl,-weak_library,/usr/local/opt/gcc/lib/gcc/6/libquadmath.0.dylib
 
 	GKSLIB		= ../xgks/src/lib/libxgks.a
 

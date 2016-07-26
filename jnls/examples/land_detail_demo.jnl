@@ -19,7 +19,7 @@ pause
 ! Showing national boundaries and rivers. Access the detailed
 ! topography/bathymetry data from Smith and Sandwell via OPeNDAP
 
-use "http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/smith_sandwell_topo_v8_2.nc"
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/smith_sandwell_topo_v8_2.nc"
 fill/lev=(0,10000,10000)/pal=tan/nokey/x=0:24/y=30:46 rose
 fill/over/nolab/lev=(-5000,-1000,500)(-1000,0,50)/key/pal=topo/x=0:24/y=30:46 rose
 go land_detail black overlay red green blue blue

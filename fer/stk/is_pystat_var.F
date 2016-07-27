@@ -33,6 +33,8 @@
 *
 *  Copy a pystat variable in ferret memory
 *
+*  *kms* 07/16 use nferdims in tmap_dims.parm
+*
       SUBROUTINE IS_PYSTAT_VAR(memory, *, *, sts)
 
       IMPLICIT NONE
@@ -69,7 +71,7 @@
       cx_variable(cx_var) = pyvar
       cx_grid(cx_var) = pyvar_grid_number(pyvar)
       cx_bad_data(cx_var) = pyvar_missing_flag(pyvar)
-      DO 100 idim = 1,4
+      DO 100 idim = 1,nferdims
          cx_lo_ss(cx_var, idim) = pyvar_grid_start(idim, pyvar)
          cx_hi_ss(cx_var, idim) = pyvar_grid_end(idim, pyvar)
          cx_by_ss(idim, cx_var) = .TRUE.
@@ -87,7 +89,7 @@
 *     the requested data and copy into it the given data where appropriate.
       newvar_needed = .FALSE.
       need_data = .TRUE.
-      DO 200 idim = 1,4
+      DO 200 idim = 1,nferdims
          IF ( cx_lo_ss(cx,idim) .LT. cx_lo_ss(cx_var,idim) ) THEN
 *           Limits exceeded so new expanded variable needed
             newvar_needed = .TRUE.
@@ -140,7 +142,7 @@
          IF ( need_data ) THEN
 *           Trim the cx_lo_ss and cx_hi_ss limits in cx_var (given data)
 *           so they do not exceed the limits in cx (used to create mr)
-            DO 300 idim = 1,4
+            DO 300 idim = 1,nferdims
                IF ( cx_lo_ss(cx_var,idim) .LT. cx_lo_ss(cx,idim) ) THEN
                   cx_lo_ss(cx_var,idim) = cx_lo_ss(cx,idim)
                ENDIF

@@ -173,7 +173,7 @@
   160     CONTINUE
 *         Successfully found the irregular axis
           axisstart = j
-          axisend = i
+          axisend = j + numcoords - 1
           CHECK_TIME_LINE_SUBSET = .TRUE.
           RETURN
       ENDIF

@@ -171,22 +171,44 @@ class PipedImagerPQ(QMainWindow):
 
     def closeEvent(self, event):
         '''
-        Override so the viewer cannot be closed from the
-        user selecting the windowframe close ('X') button.
-        Instead only hide the window.
+        Override so a dialog is presented about hiding or exiting the viewer.
         '''
+        # If shutting down, go ahead and close/exit
         if self.__shuttingdown:
             event.accept()
-        else:
+            return
+        # Present dialog about whether to close/exit or to just hide the window
+        msgbox = QMessageBox(self)
+        msgbox.setText(self.tr('Hide or terminate this PyFerret display window?'))
+        msgbox.setInformativeText(self.tr(
+                'Terminating a display window while PyFerret is still functioning ' \
+                'properly will cause problems later on in PyFerret when it attempts ' \
+                'to use the terminated window.  Instead one should just hide the ' \
+                'display window; it will be show again when something is drawn to it. ' \
+                '\n\n' \
+                'If, however, PyFerret has terminated but left this display window, ' \
+                'then one should terminate this window. '))
+        termbtn = msgbox.addButton(self.tr('Terminate'), QMessageBox.DestructiveRole)
+        hidebtn = msgbox.addButton(self.tr('Hide'), QMessageBox.AcceptRole)
+        cancbtn = msgbox.addButton(QMessageBox.Cancel)
+        msgbox.setDefaultButton(hidebtn)
+        ret = msgbox.exec_()
+        # get the button selected and do accordingly
+        btn = msgbox.clickedButton()
+        if btn == termbtn:
+            event.accept()
+        elif btn == hidebtn:
             event.ignore()
             self.hide()
+        else:
+            event.ignore()
 
-    def exitViewer(self):
+    def exitViewer(self, forceIt=False):
         '''
         Close and exit the viewer.
         '''
         self.__timer.stop()
-        self.__shuttingdown = True
+        self.__shuttingdown = forceIt
         self.close()
 
     def aboutMsg(self):
@@ -655,7 +677,7 @@ class PipedImagerPQ(QMainWindow):
                 self.__rspdpipe.send("**ERROR %s: %s" % (str(exctype), str(excval)))
             else:
                 self.__rspdpipe.send("**ERROR %s" % str(exctype))
-            self.exitViewer()
+            self.exitViewer(True)
 
     def processCommand(self, cmnd):
         '''
@@ -675,7 +697,7 @@ class PipedImagerPQ(QMainWindow):
                 bkgcolor = None
             self.clearScene(bkgcolor)
         elif cmndact == "exit":
-            self.exitViewer()
+            self.exitViewer(True)
         elif cmndact == "hide":
             self.hide()
         elif cmndact == "screenInfo":

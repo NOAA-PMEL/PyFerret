@@ -263,6 +263,7 @@ bn_coordvars_atts.jnl
 bn710_bug_fixes.jnl
 bn_delim_datetime.jnl
 bn_aggregate_u.jnl
+bn_ez_noupcase.jnl
 ! bn_gif, bn_all_ef, and bn_startupfile at end
 bn_gif.jnl
 bn_ps.jnl

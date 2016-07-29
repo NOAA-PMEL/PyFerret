@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Jul 25 15:53 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.01
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Jul 29 15:33 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.01
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -282,12 +282,13 @@ Benchmark scripts that will be run:
    bn710_bug_fixes.jnl
    bn_delim_datetime.jnl
    bn_aggregate_u.jnl
+   bn_ez_noupcase.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Mon Jul 25 15:56:25 PDT 2016
+Beginning at Fri Jul 29 15:48:51 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -4609,6 +4610,11 @@ list index,edtim,udtim,udate,edate
  LISTing to file tmp/f03_e2_tu3.nc
            *** NOTE: Skipping variable REALIZATION from set 1, already in the Union dataset.
            *** NOTE: Skipping variable REALIZATION from set 8, already in the Union dataset.
+*** Running ferret script: bn_ez_noupcase.jnl
+ Cached data cleared from memory
+ LISTing to file abc.dat
+ LISTing to file a.nc
+ LISTing to file a.nc
 *** Running ferret script: bn_gif.jnl
  Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
@@ -4728,4 +4734,4 @@ LOAD/TEMPORARY vflag
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
  Cached data cleared from memory
-Ended at Mon Jul 25 15:57:26 PDT 2016
+Ended at Fri Jul 29 15:50:02 PDT 2016

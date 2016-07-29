@@ -1,0 +1,27 @@
+! bn_ez_noupcase.jnl
+! 7/2016 *acm* see ticket 2454
+! 
+! Handle variable-name upcasing for Ascii data
+! in the same way as for netcdf variables.
+! Previously they were resolutely up-cased and the 
+! lowercase version was unavailable.
+
+can mode upcase
+
+let abc = {2,4,6,8,6}
+list/clobber/nohead/norow/file=abc.dat abc
+can var/all
+file/var=abc abc.dat
+sh dat
+sh dat/att
+save/clobber/file=a.nc abc
+sp ncdump -h a.nc
+
+! Delimited read
+columns/skip=1/var="lab,nothing,var,latitude,longitude"/type="text,text,num,latitude,longitude" bn_delimited_read_1.dat
+sh dat
+sh dat/att
+sav/file=a.nc/clobber var,longitude,latitude
+sp ncdump -h a.nc
+
+set mode/last upcase

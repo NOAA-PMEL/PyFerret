@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Jul 25 16:09 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Jul 29 15:43 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -281,6 +281,7 @@ Benchmark scripts that will be run:
    bn710_bug_fixes.jnl
    bn_delim_datetime.jnl
    bn_aggregate_u.jnl
+   bn_ez_noupcase.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
@@ -297,7 +298,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Mon Jul 25 16:09:34 PDT 2016
+Beginning at Fri Jul 29 15:54:58 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -4632,6 +4633,11 @@ list index,edtim,udtim,udate,edate
  LISTing to file tmp/f03_e2_tu3.nc
            *** NOTE: Skipping variable REALIZATION from set 1, already in the Union dataset.
            *** NOTE: Skipping variable REALIZATION from set 8, already in the Union dataset.
+*** Running ferret script: bn_ez_noupcase.jnl
+ Cached data cleared from memory
+ LISTing to file abc.dat
+ LISTing to file a.nc
+ LISTing to file a.nc
 *** Running ferret script: bn_gif.jnl
  Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
@@ -4789,4 +4795,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testfermethods.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Mon Jul 25 16:11:39 PDT 2016
+Ended at Fri Jul 29 15:57:00 PDT 2016

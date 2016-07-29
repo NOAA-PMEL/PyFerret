@@ -76,6 +76,8 @@
 * V687  2.14 *acm* fix ticket 2144: Make buffer for list of varnames longer
 * V692  7/14 *acm* fix ticket 2182: For ez datasets opened w/o a grid spec, 
 *                  count the records and define an axis
+* V701  7/16 *acm* Ticket 2454. If the user gives lower-case names when opening
+*                  an EZ dataset, keep those names on output, etc.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -257,7 +259,7 @@
 	IF ( loc .EQ. 0 ) THEN
 	   var_list = ' '
 	ELSE
-	   CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
      .			      var_list, status )
 	   IF ( status .NE. ferr_ok ) RETURN
 	ENDIF

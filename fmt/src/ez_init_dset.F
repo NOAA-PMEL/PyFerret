@@ -81,6 +81,9 @@
 * V694 1/15 *acm* variable coordvar should be a logical not an integer
 * V701 7/16 *acm* ticket 2450. add date-time and euro-date-time field types
 * V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
+* V701  7/16 *acm* Ticket 2454. If the user gives lower-case names when opening
+*                  an EZ dataset, keep those names on output, etc.
+
 
 	CHARACTER*4	ez_rev
 	CHARACTER*1	tab
@@ -113,6 +116,7 @@
 	include 'tmap_errors.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
+        include 'xdset_info.cd_equiv'
 	include 'xstep_files.cmn_text'
         external xstep_files_data
         include 'xez_info.cmn_text'
@@ -124,7 +128,7 @@
         LOGICAL         TM_LEGAL_NAME, vars_gvn, its_delimited, coordvar
 	CHARACTER*24	type_names(maxezvars)
 	CHARACTER*128	var_names(maxezvars)
-	INTEGER*4	TM_LENSTR1, STR_SAME,
+	INTEGER*4	TM_LENSTR1, STR_SAME, STR_UPCASE,
      .			set_cnt, bpos, epos, ncnt, var_pos, num_names,
      .			nvar, jcnt, stp_cnt, nstp, field_type(maxezvars),
      .			num_types, i, j, name_limit, idummy(maxezvars),
@@ -329,11 +333,11 @@
 *
 * Load variable record now
   150     var_pos = nvar
-*	  ds_var_code(nvar)	= var_names(ncnt)
-          CALL string_array_modify(ds_var_code_head,
+c	  status =  STR_UPCASE (line_buff, var_names(ncnt))
+          CALL string_array_modify_upcase(ds_var_code_head,
      .                             nvar,
      .                             var_names(ncnt),
-     .                             LEN(var_names(ncnt)))
+     .                             LEN(var_names(ncnt)) )
 	  ds_var_title(nvar)	= var_names(ncnt)
 	  ds_var_titl_mod(nvar)	= ' '
 	  ds_var_units(nvar)	= ' '
@@ -424,12 +428,13 @@
 
 
 * Put the information into the linked-list strucure for the dataset
-* and its variables
+* and its variables. Use the original non-upcased version of the variable name.
 
         CALL CD_STORE_DSET (dset, status)
         coordvar = .FALSE.
         varid = 0
 
+	ncnt = 1
         DO 200 ivar = 1, maxvars
            IF (ds_var_setnum(ivar) .EQ. set_not_open) GOTO 210
            IF (ds_var_setnum(ivar) .EQ. dset .AND.
@@ -444,9 +449,10 @@
                  vartype = NF_FLOAT
               ENDIF
         
-              CALL CD_ADD_VAR( dset, ds_var_code(ivar), varid, 
+              CALL CD_ADD_VAR( dset, var_names(ncnt), varid, 
      .          ds_var_title(ivar), ds_var_units(ivar), vartype,
      .          coordvar, ds_bad_flag(ivar), status)
+              ncnt = ncnt + 1
            ENDIF
   200   CONTINUE
 

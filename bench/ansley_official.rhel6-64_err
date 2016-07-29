@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 117774517 Jul 15 14:32 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 118548379 Jul 25 15:20 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Union Aggregations
+Note: nulls in diagonstic output
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,15 +14,13 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
-FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
-FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Fri Jul 15 16:31:50 PDT 2016
+Beginning at Mon Jul 25 15:26:39 PDT 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1378,17 +1376,27 @@ Replacing definition of axis TAX2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
  **ERROR: improper grid or axis definition: Axis length exceeds modulo length
 define axis/x=130e:500:10/modulo=360 xsub
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_subspan_modulo.nc
  LISTing to file test_subspan_modulo.nc
  LISTing to file test_subspan_modulo.nc
@@ -4052,6 +4060,7 @@ Replacing definition of grid GG
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 rm: cannot remove `WestCoastCarbon_9d9c_f562_77b5_5.nc': No such file or directory
+           *** NOTE: Shell command returned failure flag on command:rm WestCoastCarbon_9d9c_f562_77b5_5.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4727,6 +4736,8 @@ Replacing definition of axis TAX
  LISTing to file tmp/uagg_1_t1.nc
  LISTing to file tmp/uagg_1_t2.nc
  LISTing to file tmp/uagg_1_t3.nc
+ LISTing to file tmp/uagg_5.nc
+           *** NOTE: Skipping variable SST from set 2, already in the Union dataset.
  LISTing to file tmp/f01_e1_tu1.nc
  LISTing to file tmp/f01_e1_tu2.nc
  LISTing to file tmp/f01_e1_tu3.nc
@@ -4745,6 +4756,13 @@ Replacing definition of axis TAX
  LISTing to file tmp/f03_e2_tu1.nc
  LISTing to file tmp/f03_e2_tu2.nc
  LISTing to file tmp/f03_e2_tu3.nc
+           *** NOTE: Skipping variable REALIZATION from set 1, already in the Union dataset.
+           *** NOTE: Skipping variable REALIZATION from set 8, already in the Union dataset.
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file abc.dat
+ LISTing to file a.nc
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4853,4 +4871,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Jul 15 16:34:27 PDT 2016
+Ended at Mon Jul 25 15:29:25 PDT 2016

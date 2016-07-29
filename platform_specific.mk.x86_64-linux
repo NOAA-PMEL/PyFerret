@@ -72,7 +72,7 @@
 			  -fdefault-real-8 -fdefault-double-8 $(FINCLUDES)
 
 	OPT_FLAGS	= -O -DNDEBUG
-	PPLUS_OPT_FLAGS	= -O -DNDEBUG
+	PPLUS_OPT_FLAGS	= -O0
 	DBG_FLAGS	= -O0 -g
 	PROF_FLAGS	= -O0 -g -pg
 

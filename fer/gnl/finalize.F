@@ -1,5 +1,3 @@
-
-
 	SUBROUTINE FINALIZE
 
 *
@@ -37,7 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* initialize run-time variables and I/O in preparation to begin execution
+*  free allocated memory held in global variables/lists
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
         include 'tmap_errors.parm'  ! error codes
@@ -66,6 +64,8 @@
         CALL string_array_clear(ds_var_code_head)
 
         CALL deleted_list_clear(uvar_num_items_head)
+
+        CALL ncf_datasets_list_clear()
 
 	RETURN
 

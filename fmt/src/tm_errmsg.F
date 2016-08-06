@@ -289,8 +289,7 @@ cc	    fndbuff = TM_CMPRSS(found)
 	ENDIF
 
 * output step file and descriptor file if asked for
-	IF ( dset_num .NE. no_descfile      .AND.
-     .	     dset_num .NE. unspecified_int4       ) THEN
+	IF ( dset_num .GT. 0 ) THEN
 	  errbuf = ' '
 	  des_len = TM_LENSTR1(ds_des_name(dset_num))
 	  WRITE (errbuf,1300)
@@ -301,8 +300,7 @@ cc	    fndbuff = TM_CMPRSS(found)
           len_symbuf = len_symbuf + msg_len + 1
 	ENDIF
 
-	IF ( sf_num .NE. no_stepfile      .AND.
-     .	     sf_num .NE. unspecified_int4       ) THEN
+	IF ( sf_num .GT. 0 ) THEN
 	  errbuf = ' '
 	  sf_len = TM_LENSTR1(sf_name(sf_num))
 	  WRITE (errbuf,1300)

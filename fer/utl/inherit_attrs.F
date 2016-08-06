@@ -60,7 +60,7 @@
       INTEGER TM_LENSTR, STR_SAME, slen, tlen, dset1, dset2, 
      .  varid1, varid2, vtype, nvdims, nvatts1, nvatts2,
      .  vdims(8), iatt, first_quote, next_quote, dot, mr, cx, 
-     .  all_outflag, cat, iflag
+     .  all_outflag, cat, iflag, attnum
       CHARACTER*128 attname, buff1, buff2
 
 * Check that neither buffer contains varname.attname (If it is in 
@@ -139,14 +139,19 @@
       IF (coordvar) GOTO 5020
 
 * Remove attributes from variable 2
+* When an attribute is deleted, the following attributes move forward
+* so need to keep asking for the first attribute not skipped
 
+      attnum = 1
       DO 100 iatt = 1, nvatts2
-         CALL CD_GET_VAR_ATT_NAME (dset2, varid2, iatt, attname, status)
-	 IF (STR_SAME(attname, 'missing_value')  .NE. 0 .AND.
-     .       STR_SAME(attname, '_FillValue') .NE. 0) THEN
+         CALL CD_GET_VAR_ATT_NAME (dset2, varid2, attnum, attname, status)
+         IF ( STR_SAME(attname, 'missing_value')  .NE. 0 .AND.
+     .        STR_SAME(attname, '_FillValue') .NE. 0 ) THEN
             CALL CD_DELETE_ATTRIBUTE (dset2, varid2, attname, status)
             IF (status .NE. ferr_ok) GOTO 5030
-	 ENDIF
+         ELSE
+            attnum = attnum + 1
+         ENDIF
  100  CONTINUE
 
 * Get attribute information from variable 1 and put onto variable 2.

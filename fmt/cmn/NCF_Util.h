@@ -37,7 +37,7 @@
  *
  * Ansley Manke
  * Ferret V600 April 2005
-/* *acm*  5/12 Additions for creating aggregate datasets
+ * *acm*  5/12 Additions for creating aggregate datasets
  *
  * This is the header file to be included by routines which
  * are part of the Ferret NetCDF attribute handling library.
@@ -47,7 +47,15 @@
  *                 defined with LET/D=n are stored with dataset n. A flag in the ncvar 
  *                 structure tells that the variable is a user-var. 
  * V699 5/16 *sh* added grid management for uvars: gridList and uvarGrid
+ * V701 8/16 *kms* enclose in #ifndef _NCF_UTIL_H_ ... #endif so this is included only once per file;
+ *                 include netcdf.h to make sure the NC_... values are defined;
+ *                 remove the ...list_initialized... values - just check the list against NULL
  */
+
+#ifndef _NCF_UTIL_H_
+#define _NCF_UTIL_H_
+
+#include <netcdf.h>   /* for many NC_... values */
 
 /* .................... Defines ..................... */
 
@@ -61,7 +69,6 @@
 
 #define ATOM_NOT_FOUND 0  /* This should match the atom_not_found parameter in ferret.parm. */
 #define FERR_OK 3  /* This should match the ferr_ok parameter in errmsg.parm. */
-#define NC_GLOBAL -1    /* This should match the NC_GLOBAL parameter in netcdf.h */
 #define PDSET_UVARS -1  /* This should match pdset_uvars ferret.parm */
 
 /* Ferret-defined "netcdf error status" when a read was interrupted by Crtl-C */
@@ -98,14 +105,12 @@ typedef struct  {
 	int ngatts;
 	int recdim;
 	int nvars;
-	int vars_list_initialized;
 	int fer_dsetnum;
 	int fer_current;
 	int its_epic;
 	int its_agg;
 	int num_agg_members;
 	LIST *agg_dsetlist;
-	int agg_list_initialized;
 } ncdset;
 
 typedef struct  {          /* variable */
@@ -127,11 +132,9 @@ typedef struct  {          /* variable */
 	                          2 write all attrs,
 	                          3 reset attr flags to Ferret defaults */
 	double fillval;
-	int attrs_list_initialized;
 	LIST *varagglist;      /* if an aggregate dataset, for each var,
 	                          list the members of the aggregate components. */
         LIST *uvarGridList;    /* if a uvar, keep track of its grid(s) */
-	int agg_list_initialized;
 	int nmemb;
 } ncvar;
 
@@ -174,3 +177,6 @@ typedef struct {     /* for uvars: grid/dataset pairs*/
 #else
 #define FORTRAN(a) a##_
 #endif
+
+#endif   /* _NCF_UTIL_H_ */
+

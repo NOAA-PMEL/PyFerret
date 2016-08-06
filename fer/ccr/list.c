@@ -126,7 +126,7 @@ LIST *list_mvfront(LIST *list)
 
 LIST *list_mvrear(LIST *list)
 {
-   /* Move to the front of the list.*/
+   /* Move to the rear of the list.*/
    list->curr = list->rear;
    return(list);
 }

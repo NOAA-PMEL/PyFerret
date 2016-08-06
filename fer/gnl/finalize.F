@@ -1,5 +1,3 @@
-
-
 	SUBROUTINE FINALIZE
 
 *
@@ -40,7 +38,7 @@
 *
 *     *kms* 11/10 - added cat_pystat_var string_array_clear
 *                   cleared out VMS-specific includes
-*       *acm* 3/12 cleanup ifdefs and unnecessary include files
+*     *acm* 3/12 cleanup ifdefs and unnecessary include files
 
         include 'tmap_errors.parm'  ! error codes
 	include 'tmap_dims.parm'
@@ -71,6 +69,8 @@
         CALL string_array_clear(pyvar_code_head)
 
         CALL deleted_list_clear(uvar_num_items_head)
+
+        CALL ncf_datasets_list_clear()
 
 	RETURN
 

@@ -58,9 +58,7 @@ class PipedViewerPQ(QMainWindow):
           "outline":{"color":"black"},
           "location":(250,350) }
 
-    The command { "action":"exit" } will shutdown the viewer and is
-    the only way the viewer can be closed.  GUI actions can only hide
-    the viewer.
+    The command { "action":"exit" } will shutdown the viewer.
     '''
 
     def __init__(self, cmndpipe, rspdpipe):
@@ -178,8 +176,6 @@ class PipedViewerPQ(QMainWindow):
         sceneMenu.addAction(self.__scaleact)
         sceneMenu.addAction(self.__saveact)
         sceneMenu.addAction(self.__redrawact)
-        # sceneMenu.addSeparator()
-        # sceneMenu.addAction(self.__hideact)
         helpMenu = menuBar.addMenu(menuBar.tr("&Help"))
         helpMenu.addAction(self.__aboutact)
         helpMenu.addAction(self.__aboutqtact)
@@ -212,35 +208,37 @@ class PipedViewerPQ(QMainWindow):
 
     def closeEvent(self, event):
         '''
-        Override so a dialog is presented about hiding or exiting the viewer.
+        Override so a dialog is presented about minimizing or exiting the viewer.
         '''
         # If shutting down, go ahead and close/exit
         if self.__shuttingdown:
+            self.__timer.stop()
             event.accept()
             return
-        # Present dialog about whether to close/exit or to just hide the window
+        # Present dialog about whether to close/exit or to just minimize the window
         msgbox = QMessageBox(self)
-        msgbox.setText(self.tr('Hide or terminate this PyFerret display window?'))
+        msgbox.setText(self.tr('Minimize or terminate this PyFerret display window?'))
         msgbox.setInformativeText(self.tr(
                 'Terminating a display window while PyFerret is still functioning ' \
                 'properly will cause problems later on in PyFerret when it attempts ' \
-                'to use the terminated window.  Instead one should just hide the ' \
-                'display window; it will be show again when something is drawn to it. ' \
+                'to use the terminated window.  Instead one should just minimize the ' \
+                'display window; it will be shown again when something is drawn to it. ' \
                 '\n\n' \
-                'If, however, PyFerret has terminated but left this display window, ' \
-                'then one should terminate this window. '))
+                'If, however, PyFerret has terminated but did not close this display ' \
+                'window, then one should terminate this window. '))
         termbtn = msgbox.addButton(self.tr('Terminate'), QMessageBox.DestructiveRole)
-        hidebtn = msgbox.addButton(self.tr('Hide'), QMessageBox.AcceptRole)
+        hidebtn = msgbox.addButton(self.tr('Minimize'), QMessageBox.AcceptRole)
         cancbtn = msgbox.addButton(QMessageBox.Cancel)
         msgbox.setDefaultButton(hidebtn)
         ret = msgbox.exec_()
         # get the button selected and do accordingly
         btn = msgbox.clickedButton()
         if btn == termbtn:
+            self.__timer.stop()
             event.accept()
         elif btn == hidebtn:
             event.ignore()
-            self.hide()
+            self.showMinimized()
         else:
             event.ignore()
 
@@ -248,7 +246,6 @@ class PipedViewerPQ(QMainWindow):
         '''
         Close and exit the viewer.
         '''
-        self.__timer.stop()
         self.__shuttingdown = forceIt
         self.close()
 
@@ -360,7 +357,7 @@ class PipedViewerPQ(QMainWindow):
         viewer is visible.
         '''
         if not ignorevis:
-            if self.isHidden() or self.isMinimized():
+            if self.isMinimized() or not self.isVisible():
                 # Not shown, so do not waste time drawing
                 return
         if self.__createpixmap:
@@ -990,7 +987,7 @@ class PipedViewerPQ(QMainWindow):
         elif cmndact == "exit":
             self.exitViewer(True)
         elif cmndact == "hide":
-            self.hide()
+            self.showMinimized()
         elif cmndact == "screenInfo":
             scrnrect = QApplication.desktop().availableGeometry()
             info = ( self.physicalDpiX(), self.physicalDpiY(),
@@ -1041,7 +1038,9 @@ class PipedViewerPQ(QMainWindow):
             if value:
                 self.__lastformat = value.lower()
         elif cmndact == "show":
-            if self.isHidden():
+            if not self.isVisible():
+                self.show()
+            if self.isMinimized():
                 self.showNormal()
         elif cmndact == "noalpha":
             self.__noalpha = True

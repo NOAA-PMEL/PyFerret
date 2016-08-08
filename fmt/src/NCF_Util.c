@@ -2955,9 +2955,9 @@ int FORTRAN(ncf_set_uvar_grid)( int *LIST_dset, int *varid, int *grid, int *data
     uvarGrid uvgrid;
     int i;
 
-     /*
-        * Get the list of variables, find pointer to variable varid.
-        */
+    /*
+     * Get the list of variables, find pointer to variable varid.
+     */
     varlist = ncf_get_ds_varlist(LIST_dset);
     if ( varlist == NULL )
         return ATOM_NOT_FOUND;

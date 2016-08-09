@@ -117,6 +117,7 @@
 * V6.95 *acm* 3/15 Changes for PyFerret fonts. Scoot the vertical color key over to the left.
 * V697 *acm* 12/15 Fix ticket 2326: single level plus (inf) and/or (-inf)
 * V7.0 *acm*  6/17 Fix ticket 2440: alignment of colorbar labels, vertical colorbars.
+* V671 *acm*  8/16 Fix ticket 2440 when SHAKEY settings were made.
 
         IMPLICIT NONE
 
@@ -144,14 +145,14 @@
 	include        'gkspar.inc'
 	include        'pyfonts.cmn'
 	
-	integer TM_LENSTR1, ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
+	integer ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
      .          lab_add, nlab, i, kount, lev1, levn, nspace, shd_lev_hi,
      .		ITYPEX_save, ITYPEY_save, ic
 
 	real		SYMWID
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5),flaty(5),flatx(5)
 	real		xmaxx,ymaxx,vwidth,vheight,karht, ksiz_test
-	real		xx,yy,xxx,yyy, xx1, xxn, xxlen, wid, xpos
+	real		xx,yy,xxx,yyy, xx1, xxn, xxlen, wid, xpos, xp
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
      .                  val, del, x_inc_inf, y_inc_inf, frac, fixx, inc_min, 
      .                  center_add, ht_ann
@@ -753,15 +754,13 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 ! Use SYMWID to right-justify
 ! Set xpos = position of end of string, right-justify from there.
-! The hershey font needs some tweaking.
 
         xpos = kpx(2)/ 1000.0 - xorg
 
         IF ((kuser_loc(1) .OR. kuser_loc(2))) xpos = (kx_hi + x_inc)/ 1000. - xorg
 	   
-        max_len = TM_LENSTR1(buff)
         txt_out = buff(:max_len)//'X'   ! extra space between key and label
-        max_len = TM_LENSTR1(txt_out)
+        max_len = max_len + 1
 
         wid = SYMWID(karht,max_len,txt_out(:max_len))
         xpos = xpos + wid
@@ -777,26 +776,28 @@ c	IF ( no_lines ) cont_key = .TRUE.
 * If the user set the label size, leave it.  Otherwise make labels smaller
 * to try to fit them on the page.
 
-        IF (klab_size .NE. 0) THEN
-	      IF (xpos+xorg .GT. vwidth) xpos = vwidth - xorg - 0.1*karht
-        ELSE
+        IF (klab_size .EQ. 0 .AND. xpos+xorg .GT. vwidth) THEN
 
            ic = 0
            DO WHILE (xpos+xorg .GT. vwidth .AND. ic.LT.5)
 
-              xpos = kpx(2)/ 1000.0 - xorg
-              IF ((kuser_loc(1) .OR. kuser_loc(2))) xpos = (kx_hi + x_inc)/ 1000. - xorg
+              xp = kpx(2)/ 1000.0 - xorg
+              IF ((kuser_loc(1) .OR. kuser_loc(2))) xp = (kx_hi + x_inc)/ 1000. - xorg
               karht = 0.9* karht
 	      
               wid = SYMWID(karht,max_len,buff(:max_len))
-              xpos = xpos + wid
+              xp = xp + wid
               ic = ic + 1
               IF (karht .LT. 0.06) THEN 
-		    xpos = vwidth - xorg - 0.1*karht
+		    xp = vwidth - xorg - 0.1*karht
 		    EXIT ! from loop
               ENDIF
+	      xp = kpx(2)/ 1000.0 - xorg
+
            ENDDO
-        ENDIF
+
+           xpos = kpx(2)/ 1000.0 - xorg + wid
+	ENDIF
 
         do 1020 ndx = lev1,shd_lev_hi,incr
 *	   WRITE OUT CORRESPONDING VALUE

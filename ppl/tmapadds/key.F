@@ -141,7 +141,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5),flaty(5),flatx(5)
 	real		xmaxx,ymaxx,vwidth,vheight,karht, ksiz_test
-	real		xx,yy,xxx,yyy, xx1, xxn, xxlen
+	real		xx,yy,xxx,yyy, xx1, xxn, xxlen, xpos, wid, xp
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
      .                  val, del, x_inc_inf, y_inc_inf, frac, fixx, inc_min, 
      .                  center_add
@@ -713,39 +713,83 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	IF (center_key_labels) shd_lev_hi = shd_levels
 	IF (center_key_labels .AND. posinf) shd_lev_hi = shd_lev_hi-1
 
+
+
+* Recompute max_len as formatted for these labels.
+
+	max_len = 0
+	DO ndx = lev1+1, shd_levels
+           val = zlev(ndx)
+           IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	   buff = 
+     .          TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+           IF (max_len .lt. str_len) THEN
+	      max_len = str_len
+	      txt_out = buff
+	   ENDIF
+	ENDDO
+	buff = txt_out
+
+! Use SYMWID to right-justify
+! Set xpos = position of end of string, right-justify from there.
+
+        xpos = kpx(2)/ 1000.0 - xorg
+
+        IF ((kuser_loc(1) .OR. kuser_loc(2))) xpos = (kx_hi + x_inc)/ 1000. - xorg
+	   
+        txt_out = buff(:max_len)//'X'   ! extra space between key and label
+        max_len = max_len + 1
+
+        wid = SYMWID(karht,max_len,txt_out(:max_len))
+        xpos = xpos + wid
+
+* If klab_size negative put the key  on the left rather than 
+* the right of the keylabels
+
+        IF (klab_size .LT. 0) THEN
+           wid = SYMWID(karht,1,'X')
+           xpos = kx_lo/1000.0 - xorg - wid
+        ENDIF
+
+* If the user set the label size, leave it.  Otherwise make labels smaller
+* to try to fit them on the page.
+
+        IF (klab_size .EQ. 0 .AND. xpos+xorg .GT. vwidth) THEN
+
+           ic = 0
+           DO WHILE (xpos+xorg .GT. vwidth .AND. ic.LT.5)
+
+              xp = kpx(2)/ 1000.0 - xorg
+              IF ((kuser_loc(1) .OR. kuser_loc(2))) xp = (kx_hi + x_inc)/ 1000. - xorg
+              karht = 0.9* karht
+	      
+              wid = SYMWID(karht,max_len,buff(:max_len))
+              xp = xp + wid
+              ic = ic + 1
+              IF (karht .LT. 0.06) THEN 
+		    xp = vwidth - xorg - 0.1*karht
+		    EXIT ! from loop
+              ENDIF
+	      xp = kpx(2)/ 1000.0 - xorg
+
+           ENDDO
+
+           xpos = kpx(2)/ 1000.0 - xorg + wid
+	ENDIF
+
         do 1020 ndx = lev1,shd_lev_hi,incr
 *	   WRITE OUT CORRESPONDING VALUE
-             val = zlev(ndx)
-             IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
-             IF (ndx .EQ. 1 .AND. neginf) text = " "
-             IF (ndx .EQ. levn+1 .AND. posinf) text = " "
+	   val = zlev(ndx)
+	   IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	   text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+	   IF (ndx .EQ. 1 .AND. neginf) text = " "
+	   IF (ndx .EQ. levn+1 .AND. posinf) text = " "
 
-	   xx = (kx_lo + 5.0*x_inc)/1000.0 - xorg 
-	   xx = (kx_lo + 4.5*x_inc)/1000.0 - xorg 
-	   xx = (px(2) + 500*karht)/1000.0 - xorg 
-	   IF (val .LT. 0. )xx = (px(2) + 100*karht)/1000.0 - xorg 
+* Right-justify them.
 
-           IF (kuser_loc(1) .OR. kuser_loc(2)) 
-     .              xx = (kx_hi+2.*x_inc)/1000 - xorg
-
-* If klab_size negative put the key labels on the left rather than 
-* the right of the key
-
-           IF (klab_size .LT. 0) THEN
-	      xx = (kx_lo)/1000.0 - xorg -(REAL(str_len)+1.)* karht
-              txt_out = text
-
-* If the key labels are to the right, right-justify them.
-
-           ELSE
-              nspace = max_len - str_len
-              txt_out = text
-              IF (nspace .GT. 0 .AND. del.GT.1)THEN 
-                 txt_out = blanks(1:nspace)//text(1:str_len)
-                 str_len = max_len
-              ENDIF
-           ENDIF
+	   txt_out = text
+	   wid = SYMWID(karht,str_len,txt_out)
+	   xx = xpos - WID
 
 	   yy = ( ky_lo + y_inc* (center_add+ real(ndx-1)) )/1000.0 - 
      .        yorg - 0.5*karht

@@ -1,0 +1,17 @@
+! err700_levels_one_level.jnl
+! Ticket 2436. If the data has just one value, then shade it with
+! the correct color taken from the /LEVELS and /PALETTE settings
+
+use coads_climatology
+set view ul
+shade/l=1/lev=(0,30,5)  sst
+
+! These single-valued expressions should get the correct color from the color bar
+
+set view ur
+shade/l=1/lev=(0,30,5)  if sst gt 25 and sst le 30 then 28
+set view ll
+shade/l=1/lev=(0,30,5)  if sst gt 15 and sst le 20 then 18
+set view lr
+shade/l=1/lev=(0,30,5)  if sst gt  0 and sst le  5 then  3
+can view

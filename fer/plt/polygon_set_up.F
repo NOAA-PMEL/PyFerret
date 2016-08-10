@@ -135,7 +135,7 @@
 * V698  *acm*  3/16 #2396: On a POLYGON/OVERLAY with no /TITLE given, if there is 
 *                   no 3rd argument (colors), make nominal title
 * V698  4/16 *acm* New PLOT/SKIP= means change in call sequence for LINE_STYLE
-
+* V701  *acm* 8/16 Fix ticket 2463: single-valued data with a /LEVELS setting
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -765,10 +765,13 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 * If needed for the levels setting, compute data mean and std, store
 * in common.  If the user set a std to use, store that.
 * send 	REAL*4 rbad to compare with lev_max, lev_min inside compute_mnstd
+* If the user set some /LEVELS then use them - no need for compute_mnstd 
 
-       rbad = bad_val4
-       CALL compute_mnstd (x_dat, mr_bad_data(mr_color), need_std, 
+       IF (need_std) THEN
+          rbad = bad_val4
+          CALL compute_mnstd (x_dat, mr_bad_data(mr_color), need_std, 
      .    ncolor, rbad, status)
+       ENDIF
 
 * If histogram-based levels are requested, compute the 
 * histogram bins.

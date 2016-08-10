@@ -169,6 +169,7 @@
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* V701  *acm* 8/16 Fix ticket 2463: single-valued data with a /LEVELS setting
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -722,7 +723,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * If histogram-based levels are requested, compute the 
 * histogram bins.
 * send REAL*4 rbad to compare with lev_max, lev_min inside compute_mnstd
-
+* If the user set some /LEVELS then use them - no need for compute_mnstd 
 
 	   IF (ribbon_plot .AND. ipl.EQ.ribbon_var) THEN
 
@@ -738,7 +739,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      
 * ... clean up temporary variable
                  CALL DELETE_VARIABLE( mvh_temp )
-              ELSE
+              ELSE IF (need_std) THEN
 	         rbad = bad_val4
                  CALL COMPUTE_MNSTD (dep_dat, mr_bad_data(mv), need_std, npts, rbad, status)
               ENDIF

@@ -14,4 +14,5 @@ set view ll
 shade/l=1/lev=(0,30,5)  if sst gt 15 and sst le 20 then 18
 set view lr
 shade/l=1/lev=(0,30,5)  if sst gt  0 and sst le  5 then  3
+frame /file=levels_one_level.gif
 can view

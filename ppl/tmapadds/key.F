@@ -111,13 +111,15 @@
 *                 don't let them run over each other. Locate the horizontal colorbar close to
 *                 the plot with labels above them. Behavior of args to SHAKEY is unchanged.
 * v686 *acm* 2/14 Fix ticket 2124: Do the fix for 2124 only here, not in subr. LEV.
+* Get labels on colorbar right if there is just one level.
+c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
 *                  For centered labels add a level to corresp to the upper bound of 
 *                  the top color on thecolorbar, excluding any upper inf triangle.
 * V6.95 *acm* 3/15 Changes for PyFerret fonts. Scoot the vertical color key over to the left.
 * V697 *acm* 12/15 Fix ticket 2326: single level plus (inf) and/or (-inf)
-* V7.0 *acm*  6/17 Fix ticket 2440: alignment of colorbar labels, vertical colorbars.
-* V671 *acm*  8/16 Fix ticket 2440 when SHAKEY settings were made.
+* V7.0 *acm*  6/16 Fix ticket 2440: alignment of colorbar labels, vertical colorbars.
+* V701 *acm*  8/16 Fix ticket 2440 when SHAKEY settings were made.
 
         IMPLICIT NONE
 

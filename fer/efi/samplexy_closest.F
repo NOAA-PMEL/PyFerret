@@ -116,7 +116,7 @@
      .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
      .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
       CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
-      CALL ef_set_num_work_arrays(id, 2)
+      CALL ef_set_num_work_arrays(id, 6)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'DAT_TO_SAMPLE')
@@ -507,8 +507,23 @@ C  variables for checking axis characteristics (modulo axes)
                   xpt = xpt + delmodx
                ENDDO
             ENDIF
-         ENDIF
+	 ENDIF
 
+* Source variable has subspan-modulo axis 
+
+         IF ( modulo(1) .AND. .NOT.full_span ) THEN
+            IF (modulo(1) .AND. xpt .GE. xaxdat(ihi,1,1,1,1,1) ) THEN
+               DO WHILE ( xpt .GE. xaxdat(ihi,1,1,1,1,1) ) 
+               xpt = xpt - delmodx
+               ENDDO
+            ENDIF
+
+	    IF (modulo(1) .AND. xpt .LT. xaxdat(ilo,1,1,1,1,1) ) THEN
+               DO WHILE (xpt .LT. xaxdat(ilo,1,1,1,1,1) )
+                  xpt = xpt + delmodx
+               ENDDO
+            ENDIF
+         ENDIF
 
          DO 120 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
             IF ( TM_FPEQ(xpt, xaxdat(i1,1,1,1,1,1)) ) THEN
@@ -524,7 +539,7 @@ C  variables for checking axis characteristics (modulo axes)
             ENDIF
  120     CONTINUE
 
-         IF ( .NOT. modulo(1) ) THEN
+         IF ( .NOT. modulo(1) .OR. (modulo(1) .AND..NOT.full_span )) THEN
             IF ( xpt .GT. xaxdat(ihi,1,1,1,1,1) .AND.
      .           xpt .LT. xaxdat(ihi,1,1,1,1,1) + dxhi ) THEN
                ibot = ihi
@@ -541,7 +556,7 @@ C  variables for checking axis characteristics (modulo axes)
             IF ( itop .GT. ihi ) itop = ihi
          ENDIF
 
-* If the data is at the very top or bottom of the modulo x axis, get the
+* If the data is at the very top or bottom of a full-span modulo x axis, get the
 * point from the other end.
 
          IF ( xflag .EQ. 1 ) THEN

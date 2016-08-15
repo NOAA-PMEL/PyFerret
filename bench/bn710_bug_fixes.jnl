@@ -11,9 +11,18 @@ go err700_reg_axis_check
 go bn_reset
 go err700_unclosed_if
 
-! Bug 2446 include script name on warning about unclosed IF block
+! Bug 2446 inheriting attributes
 go bn_reset
 go err700_inherit_all
+
+! Bug 2458  Subspan modulo grids and SAMPLEXY
+go bn_reset
+go err700_samplexy_subspan_modulo
+
+
+! Bug 2463  SHADE/LEVELS and single-color data
+go bn_reset
+go err700_levels_one_level
 
 ! Note the fix for # 2437 needs documentation: 4D output for grids in X,Y,Z,T only
 ! Note the fix for # 2451 needs documentation: -gif mode plots with /HLIM or /VLIM reversing an axis.

@@ -1,0 +1,48 @@
+! The following script will find the distance between two points
+! on the earth using the law of cosines.
+!
+! For example, if the script is called great-circle-distance.jnlb,
+! find the distance between Seattle (47.55N, 122.33W) and Tokyo
+! (35.75N, 139.5E):
+
+! yes? go great-circle-distance.jnlb 47.55 `360-122.33` 35.75 139.5
+! !-> go great-circle-distance.jnlb 47.55 237.67 35.75 139.5
+! 7707.6 km
+
+! Contributed by Billy Kessler Jan 2005
+
+! --------------------------------------------------------------------
+\can mode verify
+! find the great circle distance between 2 points using the law of cosines
+! 4 input arguments specify the (decimal) latitudes/longitudes of the points
+! arg1=latitude 1
+! arg2=longitude 1 (pos E)
+! arg3=latitude 2
+! arg4=longitude 2 (pos (E)
+! arg5= variable name for result, distance in km
+
+let ed_pd=4*atan(1)/180 
+let ed_rearth=6371.2   ! radius of the earth in km
+
+! latitude must start from N pole (textbook law of cosines)
+let ed_lat1=90-$1
+let ed_lat2=90-$3
+let ed_lon1=$2
+let ed_lon2=$4
+
+define symbol result_name = ($5"distance")
+
+! convert spherical to Cartesian coordinates
+let ed_x1=sin(ed_pd*ed_lat1)*cos(ed_pd*ed_lon1)
+let ed_y1=sin(ed_pd*ed_lat1)*sin(ed_pd*ed_lon1)
+let ed_z1=cos(ed_pd*ed_lat1)
+let ed_x2=sin(ed_pd*ed_lat2)*cos(ed_pd*ed_lon2)
+let ed_y2=sin(ed_pd*ed_lat2)*sin(ed_pd*ed_lon2)
+let ed_z2=cos(ed_pd*ed_lat2)
+
+let ed_d1=(((ed_x1 - ed_x2)^2) + ((ed_y1 - ed_y2)^2)) + ((ed_z1 - ed_z2)^2)
+let ed_angle=acos(1-ed_d1/2)		! angular distance between the points
+let/units="km"/title="Distance on the surface of the earth" ($result_name)=ed_rearth*ed_angle	! distance on the sphere
+
+say Variable ($result_name) is Distance in km
+set mode verify

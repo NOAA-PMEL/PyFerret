@@ -112,22 +112,19 @@ if cairo_libdir:
         pixman_lib = "-lpixman-1"
     addn_link_args.append(pixman_lib);
     addn_link_args.extend([ "-lfreetype", "-lfontconfig", "-lpng", "-lXrender", "-lX11"])
+    # Bind symbols and function symbols to any internal definitions 
+    # and do not make any of the symbols or function symbols defined
+    # in any libraries externally visible (mainly for cairo and pixman).
+    # Those in the object files (including those from pyfermod and 
+    # fer/ef_utility) will still be visible.
+    addn_link_args.extend(["-Wl,-Bsymbolic", "-Wl,--exclude-libs -Wl,ALL"])
 else:
-   addn_link_args.append("-lcairo")
+    addn_link_args.append("-lcairo")
 
 # Link in the appropriate system libraries 
 if hdf5_libdir:
-   addn_link_args.extend(["-lcurl", "-lz"])
+    addn_link_args.extend(["-lcurl", "-lz"])
 addn_link_args.extend([ "-lgfortran", "-ldl", "-lm", "-fPIC", ])
-
-# Bind symbols and function symbols to any internal definitions 
-# and do not make any of the symbols or function symbols defined
-# in any libraries externally visible (mainly for cairo and pixman).
-# Those in the object files (including those from pyfermod and 
-# fer/ef_utility) will still be visible.
-# addn_link_args.append("-Wl,-Bsymbolic-functions")
-if buildtype != "intel-mac":
-    addn_link_args.extend(["-Wl,-Bsymbolic", "-Wl,--exclude-libs -Wl,ALL"])
 
 # Get the list of C source files in pyfermod
 src_list = [ ]
@@ -149,11 +146,13 @@ for srcname in os.listdir(dirname):
     if (srcname[0] == 'x') and (srcname[-7:] == "_data.o"):
         addnobjs_list.append(os.path.join(dirname, srcname))
 
-# Duplicate objects in libraries to make them externally visible (for las external functions)
-dirname = os.path.join("fmt", "src")
-addnobjs_list.append(os.path.join(dirname, "tm_lenstr.o"));
-addnobjs_list.append(os.path.join(dirname, "tm_fmt.o"));
-addnobjs_list.append(os.path.join(dirname, "tm_lefint.o"));
+if cairo_libdir:
+    # Duplicate objects in libraries to make them externally visible (for las 
+    # external functions) if the '--exclude-libs ALL' flag was passed to the linker.
+    dirname = os.path.join("fmt", "src")
+    addnobjs_list.append(os.path.join(dirname, "tm_lenstr.o"));
+    addnobjs_list.append(os.path.join(dirname, "tm_fmt.o"));
+    addnobjs_list.append(os.path.join(dirname, "tm_lefint.o"));
 
 # Create the pyferret.libpyferret Extension
 ext_mods = [ Extension("pyferret.libpyferret", include_dirs = incdir_list,

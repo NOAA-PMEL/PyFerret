@@ -4,6 +4,9 @@
 ! *kob*
 
 
+! NOTE the plots in bnplot_2.gif are different in PyFerret and Ferret,
+! because of different treatment of /TEXT= for viewport definitions.
+
 can mode logo
 
 ! define a 6 viewport window (modified definitions 11/92)

@@ -3,6 +3,8 @@
 ! frame/file=bnplot.gif....will create three gif files
 ! *kob*
 
+! NOTE the plots in bnplot_2.gif are different in PyFerret and Ferret,
+! because of different treatment of /TEXT= for viewport definitions.
 
 can mode logo
 

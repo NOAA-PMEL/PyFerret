@@ -158,6 +158,8 @@ sortm_str.F\
 sortn.F\
 sortn_str.F\
 str_mask.F\
+str_noblanks.F\
+str_replace.F\
 svdeof-4.F\
 tauto_cor.F\
 tax_datestring.F\

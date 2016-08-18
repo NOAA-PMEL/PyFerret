@@ -1089,6 +1089,14 @@ void FORTRAN(bxsequence_str_result_limits)(int *);
 void FORTRAN(bxsequence_str_custom_axes)(int *);
 void FORTRAN(bxsequence_str_compute)(int *, char *, char *);
 
+
+void FORTRAN(str_noblanks_init)(int *);
+void FORTRAN(str_noblanks_compute)(int *, char *, char *);
+
+void FORTRAN(str_replace_init)(int *);
+void FORTRAN(str_replace_compute)(int *, char *, char *, char *, char *);
+
+
 /*
  *  End of declarations for internally linked external functions
  *  ------------------------------------ */
@@ -1130,7 +1138,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-#define N_INTEF 180
+#define N_INTEF 182
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -1316,6 +1324,8 @@ struct {
    strcpy(I_EFnames[177].funcname, "bxsequence_str");
    strcpy(I_EFnames[178].funcname, "bcompressi");
    strcpy(I_EFnames[179].funcname, "scat2grid_bin_xyzt");
+   strcpy(I_EFnames[180].funcname, "str_noblanks");
+   strcpy(I_EFnames[181].funcname, "str_replace");
 
 /*    
  *  ------------------------------------ 
@@ -4295,6 +4305,14 @@ else if ( !strcmp(name,"bxsequence_str_compute_") ) return (void *)FORTRAN(bxseq
 else if ( !strcmp(name,"bcompressi_init_") ) return (void *)FORTRAN(bcompressi_init);
 else if ( !strcmp(name,"bcompressi_result_limits_") ) return (void *)FORTRAN(bcompressi_result_limits);
 else if ( !strcmp(name,"bcompressi_compute_") ) return (void *)FORTRAN(bcompressi_compute);
+
+/* str_noblanks.F */
+else if ( !strcmp(name,"str_noblanks_init_") ) return (void *)FORTRAN(str_noblanks_init);
+else if ( !strcmp(name,"str_noblanks_compute_") ) return (void *)FORTRAN(str_noblanks_compute);
+
+/* str_replace.F */
+else if ( !strcmp(name,"str_replace_init_") ) return (void *)FORTRAN(str_replace_init);
+else if ( !strcmp(name,"str_replace_compute_") ) return (void *)FORTRAN(str_replace_compute);
 
 return NULL;
  }

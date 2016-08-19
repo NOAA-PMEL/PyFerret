@@ -237,7 +237,7 @@ static void SWAP(unsigned char *p1, unsigned char *p2)
 }
 
 /* switch the order of the bytes in a long integer */
-static void SWAP32(void *i_in)
+static int SWAP32(void *i_in)
 {
   unsigned char *inptr = (unsigned char *)i_in;
   SWAP(inptr, &inptr[3]);
@@ -251,7 +251,7 @@ static void SWAP16(void *i_in)
   SWAP(inptr, &inptr[1]);
 }
  
-static void SWAP64(void *i_in)
+static double SWAP64(void *i_in)
 {
   unsigned char *inptr = (unsigned char *)i_in;
   SWAP(inptr, &inptr[7]);

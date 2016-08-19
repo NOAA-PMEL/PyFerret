@@ -208,7 +208,7 @@ cc     .                                  name, LEN(name))
 #else
 # ifdef FORTRAN_90
 	      uvar_text(uvar)(i2:i2) = CHAR( IAND(HEXDF, ICHAR(c)) )
-# elif defined gfortran || defined ifort
+# elif defined gfortran
 	      uvar_text(uvar)(i2:i2) = CHAR( AND('DF'X, ICHAR(c)) )
 #else
 * VMS needs IAND

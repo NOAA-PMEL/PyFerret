@@ -90,7 +90,7 @@ C	Check for special symbols
 C
 	IF(STR.EQ.'TIME')THEN
 
-#if defined gfortran || defined ifort
+#ifdef gfortran
 	   CALL  DATE_AND_TIME(adate, atime, zone, ival)
 	   WRITE (label, 101) ival(5), ival(6), ival(7)
   101	   FORMAT (I2.2, ':', I2.2 ':', I2.2)
@@ -115,7 +115,7 @@ C
 
 	ELSE IF(STR.EQ.'DATE')THEN
 
-#if defined gfortran || defined ifort
+#ifdef gfortran
 	   CALL  DATE_AND_TIME(adate, atime, zone, ival)
 * reformat the output
 	   WRITE (label, 102) ival(3), month_names(ival(2)), ival(1)

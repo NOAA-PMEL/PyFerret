@@ -61,7 +61,7 @@ int write_dods_(char*filename, int* slen, int *clobber, int *swap,
 
   /* allocate memory and save the filename to null-terminated string */
 
-  if ( ( fileptr = (char *) malloc(sizeof(char) * (*slen + 1) ) ) ) {
+  if ( fileptr = (char *) malloc(sizeof(char) * (*slen + 1) ) ) {
     strncpy (fileptr, filename, *slen);
     fileptr[*slen] = 0;    /* null-terminate the stored string */
   } else goto cleanup;
@@ -123,7 +123,7 @@ int write_dods_double_(char*filename, int* slen, int *clobber, int *swap,
 
   /* allocate memory and save the filename to null-terminated string */
 
-  if ( ( fileptr = (char *) malloc(sizeof(char) * (*slen + 1) ) ) ) {
+  if ( fileptr = (char *) malloc(sizeof(char) * (*slen + 1) ) ) {
     strncpy (fileptr, filename, *slen);
     fileptr[*slen] = 0;    /* null-terminate the stored string */
   } else goto cleanup;

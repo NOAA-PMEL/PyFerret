@@ -72,7 +72,7 @@
 #else
 #  ifdef FORTRAN_90 			
 	   upper_case = CHAR( IAND(HEXDF, ICHAR( input_char ) ) )
-# elif defined gfortran || defined ifort
+# elif defined gfortran
            upper_case = CHAR( AND('DF'X , ICHAR( input_char ) ) )
 #  else
 	   upper_case = CHAR( IAND('DF'X , ICHAR( input_char ) ) )

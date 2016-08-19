@@ -69,9 +69,6 @@
 * V68   2/13 *kms*- Symbol PROGRAM_NAME = Ferret or PyFerret
 
 * calling argument declarations:
-#ifdef ifort
-	USE IFPORT
-#endif
 	INTEGER	  isym, slen
 	CHARACTER name*(*), value*(*)
 

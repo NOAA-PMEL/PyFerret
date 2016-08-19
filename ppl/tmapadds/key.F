@@ -231,27 +231,23 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
         lab_add = 0
         increase_digits = .TRUE.
 
-	if (klab_incr .eq. 0) then
-	   incr = (shd_levels/25) + 1
-	else
-	   incr = klab_incr
-	end if
-
 	kount = 0
         DO WHILE (increase_digits .AND. ABS(lab_digits) .LE. klab_len .AND.kount.LT.10)
            buff = ' '
            val = zlev(lev1)
            IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
- 	   buff = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+5,str_len)
+ 	   buff = 
+     .        TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+5,str_len)
 
            READ (buff,*) val_last
            increase_digits = .FALSE.
 
            max_len = 0
-	   DO 30 ndx = lev1+incr, shd_levels, incr
+	   DO 30 ndx = lev1+1, shd_levels
              val = zlev(ndx)
              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	     buff = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+5,str_len)
+	     buff = 
+     .          TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+5,str_len)
 
              READ (buff,*) val_n
              IF ( TM_DFPEQ(val_last, val_n) ) increase_digits = .TRUE.
@@ -369,7 +365,12 @@ c	IF ( no_lines ) cont_key = .TRUE.
 * make sure there is a space between one label and the next
 	 max_len = max_len+1  
 
-	if ( (klab_incr .eq. 0) .and. (width/vwidth .GT. 1.5) ) incr = 2*incr
+	if (klab_incr .eq. 0) then
+	   incr = (shd_levels/25) + 1
+           IF (width/vwidth .GT. 1.5) incr = 2*incr
+	else
+	   incr = klab_incr
+	end if
 
 	karht = amin1 (xcsize*1000.0,
      .		1.0*x_inc*real(incr)/real(max_len))/1000.0
@@ -636,7 +637,12 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	   karht = ABS(klab_size)
 	end if
 
-	if (klab_incr.EQ.0 .AND. height/vheight.GT.1.5 .AND. shd_levels.GT.4) incr = 2*incr ! short plot, fewer labels
+	if (klab_incr .eq. 0) then
+	   incr = (shd_levels/25) + 1
+           IF (height/vheight.GT.1.5 .AND. shd_levels.GT.4) incr = 2*incr   ! short plot, fewer labels
+	else
+	   incr = klab_incr
+	end if
 	
 ! The default locations often make the labels run off to the right. 
 ! Check for this and move the key over
@@ -736,10 +742,11 @@ c	IF ( no_lines ) cont_key = .TRUE.
 * Recompute max_len as formatted for these labels.
 
 	max_len = 0
-	DO ndx = lev1+incr, shd_levels, incr
+	DO ndx = lev1+1, shd_levels
            val = zlev(ndx)
            IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	   buff = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+	   buff = 
+     .          TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
            IF (max_len .lt. str_len) THEN
 	      max_len = str_len
 	      txt_out = buff

@@ -71,7 +71,6 @@
 	line_blink(next_used_line)   = line_blink(line)
 
 * successful completion
-	TM_RM_TMP_LINE = 0
 	RETURN
 
 	END

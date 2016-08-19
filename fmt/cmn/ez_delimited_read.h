@@ -41,7 +41,7 @@ void analRec(char *recptr, char *delims, int* nfields, int field_type[],
 	    int max_fields);
 
 #ifdef double_p
-void decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
+int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	      int nrec,
 	      double** numeric_fields, char*** text_fields, double bad_flags[], 
 	      int* status);
@@ -61,7 +61,7 @@ void FORTRAN(decode_file_jacket)
 		  int mrlist[], double *memptr, int mr_blk1[], int* mblk_size,
 		  double mr_bad_flags[], char ***mr_c_ptr, int* status);
 #else
-void decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
+int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	      int nrec,
 	      float** numeric_fields, char*** text_fields, float bad_flags[], 
 		  int* status);

@@ -1,3 +1,4 @@
+# 1 "/var/folders/7f/4c6gzwrs2w9bfdsz3prc2l_h0000gn/T/flycheck30717nrB/key.F"
 	SUBROUTINE KEY 
 
 *
@@ -32,7 +33,7 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
 *
 *
 *	Generates color/gray scale key
@@ -52,27 +53,27 @@
 *       Mod for FILLPOL *jd* 3.99
 * v541 *acm*  5/02 add option to control outline on the shade key boxes (cont_key)
 *                  also remove VMS INCLUDES
-* 552 *acm* 4/03 Shade key improvements: 
-* 	1) Larger default label size 
+* 552 *acm* 4/03 Shade key improvements:
+* 	1) Larger default label size
 *       2) Can change the location of the labels from right to left and
 *           top to bottom, by sending a negative value for the label size.
-* 	3) The labels are right-justified (may not look it, depending on font) 
+* 	3) The labels are right-justified (may not look it, depending on font)
 *           for vertical shade keys that are labelled on the left
 *       4) Do not have to set all four corners when changing the size and
 *           location of the shade key -- can reset any of the four, and
 *           others will be filled in by making the key the default size
-*           in that direction.  See shade_key.F 
+*           in that direction.  See shade_key.F
 * v553 *acm* Fix bug where length of the first numeric key label was not
 *           taken into account when determining label size: computing max_len
-* V553 *acm* 9/03 Introduce flag check_0. On Linux, there may be a 
+* V553 *acm* 9/03 Introduce flag check_0. On Linux, there may be a
 *           be a level of -6.E-07 or some such, where it should be 0.
 *           Check whether the numbers for the labels are all small,
 *           in which case we leave things alone; otherwise use TM_FPEQ_SNGL
-*           to see if the value should be exactly 0.  
+*           to see if the value should be exactly 0.
 * V554 *acm* 11/03 Call TM_FMT_SNGL_digits rather than TM_FMT_SNGL: if the shakey
 *                  parameter klab_dig is negative, requesting an exact
 *                  number of decimal places.  The change is to force the
-*                  same number of digits for all labels. -- more consistent 
+*                  same number of digits for all labels. -- more consistent
 *                  output, better justification.
 * V580 *acm* 7/04  When the user has set the location and size of the colorbar,
 *                  the position of the labels was too close to the edge of the
@@ -80,32 +81,32 @@
 * V580 *acm* 8/04  Allow for PPL POLYGON as well as PPL FILLPOL after a POLY/SET command.
 * V580 *acm* 11/04 Make the default key label size 0.1, to match axis labels. Change
 *                  setting so the key labels do not go so close to the edge of the plot.
-* V580 *acm* 11/04 Fix bug 906: default number of digits did not distinguish different 
+* V580 *acm* 11/04 Fix bug 906: default number of digits did not distinguish different
 *                  levels; got repeated labels 370, 371, 371, 372, 372,...
 * v581 *acm* 3/05 open levels (-INF) (INF)
-* V600 *acm* 8/05 fix bug 1330; vertical position of key labels, -0.5*karht was missing 
+* V600 *acm* 8/05 fix bug 1330; vertical position of key labels, -0.5*karht was missing
 *                 on definition of yy
 * V600 *acm* 9/05 fix bug 1339, with (-inf) (inf) levels and the shakey setting klab_dig=0,
 *                 we had an infinite loop on DO 30. Start the loop at ndx = lev1+1, not 1.
-* V600 *acm* 1/06 Among the changes when we added TM_FMT_SNGL_digits, when checking whether more 
-*                 digits are needed, keep track of digits added; need to increase the  
-*                 argument klab_len by the same amount in subsequent calls to TM_FMT_SNGL_DIGITS  
-*                 when we are writing the numeric labels on the key. 
+* V600 *acm* 1/06 Among the changes when we added TM_FMT_SNGL_digits, when checking whether more
+*                 digits are needed, keep track of digits added; need to increase the
+*                 argument klab_len by the same amount in subsequent calls to TM_FMT_SNGL_DIGITS
+*                 when we are writing the numeric labels on the key.
 * V610 *acm* 3/08 For larger default number of levels, make fewer labels when the key is short.
-* V630 *acm* 9/09 Fix color key labels that run off the edge of the plot 
-* V670 *acm* 2/11 Fix ticket 1798. The fix to 1339 starting label loops at ndx=lev1+1 
+* V630 *acm* 9/09 Fix color key labels that run off the edge of the plot
+* V670 *acm* 2/11 Fix ticket 1798. The fix to 1339 starting label loops at ndx=lev1+1
 *                 was not applied to loop 20 for horizontal keys.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V685 *acm* 4/13 For horizontal keys check that there is room for the labels and adjust
 *                 label size and/or increment
-* PyFr *kms*  7/13 Use XCSIZE or YCSIZE (which scales with plot text size) as the 
-*                  (maximum, default) character height for the key labels; 
-*                  rename and remove local vars px and py equivalenced to local 
-*                  vars kpx and kpy; comment out calls to TM_FMT_SNGL_DIGITS 
+* PyFr *kms*  7/13 Use XCSIZE or YCSIZE (which scales with plot text size) as the
+*                  (maximum, default) character height for the key labels;
+*                  rename and remove local vars px and py equivalenced to local
+*                  vars kpx and kpy; comment out calls to TM_FMT_SNGL_DIGITS
 *                  that are immediately followed by a call to TM_FMT_SNGL
 * v686 *acm* 1/14 Fix ticket 2123: labeling color bar when there is just one level.
 *                 Remove the special code that labeled the top and bottom of a single-level
-*                 color key with the lower boundary of the level. See the 5/96 commend above) 
+*                 color key with the lower boundary of the level. See the 5/96 commend above)
 *                 Instead label with the upper and lower edges of that color level.
 * v686 *acm* 1/14 Fixes for labels on horizontal keys: make sure they don't get too small, and
 *                 don't let them run over each other. Locate the horizontal colorbar close to
@@ -114,7 +115,7 @@
 * Get labels on colorbar right if there is just one level.
 c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
-*                  For centered labels add a level to corresp to the upper bound of 
+*                  For centered labels add a level to corresp to the upper bound of
 *                  the top color on thecolorbar, excluding any upper inf triangle.
 * V6.95 *acm* 3/15 Changes for PyFerret fonts. Scoot the vertical color key over to the left.
 * V697 *acm* 12/15 Fix ticket 2326: single level plus (inf) and/or (-inf)
@@ -201,8 +202,8 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 
 * Decide whether to check for small numeric values in the key labels.
 * If delta is large, we dont want 0.000005 to be labelled in an exponential
-* format (it is zero with a bit of noise). But if all the numbers are 
-* small, label them as is. 
+* format (it is zero with a bit of noise). But if all the numbers are
+* small, label them as is.
 
         del = 1
         check_0 = .TRUE.
@@ -225,7 +226,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
         frac = 0.05
         ncount = 1./frac
 
-* See if klab_dig is enough digits to distinguish the levels. 
+* See if klab_dig is enough digits to distinguish the levels.
 
         lab_digits = klab_dig
         lab_add = 0
@@ -242,7 +243,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
            buff = ' '
            val = zlev(lev1)
            IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
- 	   buff = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+5,str_len)
+	   buff = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+5,str_len)
 
            READ (buff,*) val_last
            increase_digits = .FALSE.
@@ -508,7 +509,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
            IF (kuser_loc(3) .OR. kuser_loc(4) ) 
      .            yy = (ky_lo - y_inc)/1000.0-yorg-1.5*karht
 
-* If klab_size negative put the key labels on the top rather than the 
+* If klab_size negative put the key labels on the top rather than the
 * bottom of the key
 
            IF (klab_size .LE. 0) THEN
@@ -535,7 +536,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 	goto 2000
 
-*	MAKE A VERTICAL KEY 
+*	MAKE A VERTICAL KEY
 1000	CONTINUE
 
 * Define default x and y lo and hi locations
@@ -638,7 +639,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 	if (klab_incr.EQ.0 .AND. height/vheight.GT.1.5 .AND. shd_levels.GT.4) incr = 2*incr ! short plot, fewer labels
 	
-! The default locations often make the labels run off to the right. 
+! The default locations often make the labels run off to the right.
 ! Check for this and move the key over
 
 	IF ((kx_hi_def/1000 + max_len*karht ) .GT. width) THEN
@@ -671,7 +672,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
            ENDIF
 
 	   IF (ndx .GT. 2) THEN 
- 	      kpy(1) = kpy(3)
+	      kpy(1) = kpy(3)
 	      kpy(2) = kpy(4)
 	   ELSE
 	      kpy(1) = ky_lo + real (ndx - 2) * y_inc
@@ -760,7 +761,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
         wid = SYMWID(karht,max_len,txt_out(:max_len))
         xpos = xpos + wid
 
-* If klab_size negative put the key labels on the left rather than 
+* If klab_size negative put the key labels on the left rather than
 * the right of the key
 
         IF (klab_size .LT. 0) THEN

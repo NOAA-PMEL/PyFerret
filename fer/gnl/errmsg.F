@@ -95,6 +95,10 @@
 * V697 2/16 *acm* DO NOT Increase length of cmnd buffer to 20480 but keep related
 *                   changes here
 
+#ifdef ifort
+	USE IFCORE
+#endif
+
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -104,7 +108,6 @@
         include 'xrisc.cmn'
         include 'xgui.cmn'
 	include 'xplot_setup.cmn'
-
 
 * ^C handling routine
 	EXTERNAL CTRLC_AST

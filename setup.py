@@ -55,7 +55,7 @@ if pixman_libdir:
 libdir_list.append(python_libdir)
 
 # Non-standard library location on some systems for X11 (such as XQuartz on Mac OSX)
-if buildtype == "intel-mac":
+if (buildtype == "intel-mac") | (buildtype == "intel-mac-ifort"):
     libdir_list.append("/opt/X11/lib")
 
 # Get the list of ferret static libraries
@@ -67,7 +67,7 @@ for libname in os.listdir("lib"):
 
 # Create the list of libraries to link
 lib_list = fer_lib_list[:]
-if buildtype != "intel-mac":
+if (buildtype != "intel-mac") & (buildtype != "intel-mac-ifort"):
     # fer_lib_list is included multiple times to resolve interdependencies
     lib_list.extend(fer_lib_list)
     lib_list.extend(fer_lib_list)
@@ -111,20 +111,24 @@ if cairo_libdir:
     else:
         pixman_lib = "-lpixman-1"
     addn_link_args.append(pixman_lib);
-    addn_link_args.extend([ "-lfreetype", "-lfontconfig", "-lpng", "-lXrender", "-lX11"])
-    # Bind symbols and function symbols to any internal definitions 
+    addn_link_args.extend([ "-lfreetype", "-lfontconfig", "-lpng16", "-lXrender", "-lX11"])
+    # Bind symbols and function symbols to any internal definitions
     # and do not make any of the symbols or function symbols defined
     # in any libraries externally visible (mainly for cairo and pixman).
-    # Those in the object files (including those from pyfermod and 
+    # Those in the object files (including those from pyfermod and
     # fer/ef_utility) will still be visible.
-    addn_link_args.extend(["-Wl,-Bsymbolic", "-Wl,--exclude-libs -Wl,ALL"])
+    if buildtype != "intel-mac-ifort":
+        addn_link_args.extend(["-Wl,-Bsymbolic", "-Wl,--exclude-libs -Wl,ALL"])
 else:
     addn_link_args.append("-lcairo")
 
 # Link in the appropriate system libraries 
 if hdf5_libdir:
-    addn_link_args.extend(["-lcurl", "-lz"])
-addn_link_args.extend([ "-lgfortran", "-ldl", "-lm", "-fPIC", ])
+   addn_link_args.extend(["-lcurl", "-lz", "-lsz"])
+addn_link_args.extend([ "-ldl", "-lm", "-fPIC", ])
+
+if buildtype == "intel-mac-ifort":
+    addn_link_args.extend([ "/opt/intel/lib/libifcore.a", "/opt/intel/lib/libimf.a", "/opt/intel/lib/libirc.a", "/opt/intel/lib/libsvml.a", "/opt/intel/lib/libifport.a" ])
 
 # Get the list of C source files in pyfermod
 src_list = [ ]
@@ -140,7 +144,7 @@ for srcname in os.listdir(dirname):
         addnobjs_list.append(os.path.join(dirname, srcname))
 dirname = os.path.join("fer", "special")
 for srcname in ( "fakes3.o", "ferret_dispatch.o", "ferret_query_f.o",
-                 "gui_fakes.o", "linux_routines.o", ):
+                 "gui_fakes.o", ):
     addnobjs_list.append(os.path.join(dirname, srcname))
 for srcname in os.listdir(dirname):
     if (srcname[0] == 'x') and (srcname[-7:] == "_data.o"):

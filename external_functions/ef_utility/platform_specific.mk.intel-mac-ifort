@@ -1,0 +1,30 @@
+#
+# platform_specific_includes.mk.intel-mac
+#
+# This file is included in the External Function Makefiles and defines
+# platform specific macros
+
+# this assumes INSTALL_FER_DIR and PYTHON_EXE has already been defined
+# in site_specific.mk
+
+INCLUDES	= -I. -I../ef_utility -I../ef_utility/ferret_cmn
+
+CC		= $(shell which gcc-6)
+CFLAGS		= -fPIC -Ddouble_p -O $(INCLUDES)
+CFLAGS_DEBUG	= -O0 -g
+
+FC		= $(shell which $${FC:-ifort})
+F77		= $(shell which $${FC:-ifort})
+FFLAGS		= -fPIC -m64 -Ddouble_p -132 -assume no2underscores,nobscc \
+		  -r8 -autodouble -O $(INCLUDES)
+FFLAGS_DEBUG	= -O0 -g -fbounds-check
+
+LD		= $(shell which $${FC:-ifort})
+LD_DYN_FLAGS	= -fPIC -bundle -undefined dynamic_lookup
+SYSLIBS		= ../ef_utility/copy_ferret_ef_mem_subsc.o 
+
+# Directly compile the .F source files to the .o object files
+# since gfortran can handle the C compiler directives in Fortran code
+%.o : %.F
+	$(FC) $(FFLAGS) -c $*.F -o $*.o
+

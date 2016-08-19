@@ -37,13 +37,13 @@
 
 ! Check inputs. First 7 are required
 
-QUERY/IGNORE $1%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
-QUERY/IGNORE $2%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
-QUERY/IGNORE $3%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
-QUERY/IGNORE $4%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
-QUERY/IGNORE $5%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
-QUERY/IGNORE $6%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
-QUERY/IGNORE $7%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
+QUERY/IGNORE $1%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient%
+QUERY/IGNORE $2%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient%
+QUERY/IGNORE $3%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient%
+QUERY/IGNORE $4%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient%
+QUERY/IGNORE $5%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient%
+QUERY/IGNORE $6%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient%
+QUERY/IGNORE $7%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient%
 QUERY/IGNORE $8%v%
 LET ccb_orient = $8"1|v>1|h>2|*>1"
 

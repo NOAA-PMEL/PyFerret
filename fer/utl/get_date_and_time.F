@@ -37,6 +37,9 @@
 * result into todays_date and todays_time that Ferret wants.
 * *kob* 2/4/99
 
+#ifdef ifort
+      USE IFPORT
+#endif
 * calling arguments
       CHARACTER*(*) tdate
       CHARACTER*(*) ttime

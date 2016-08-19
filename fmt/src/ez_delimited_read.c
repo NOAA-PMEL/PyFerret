@@ -355,7 +355,7 @@ int FORTRAN(anal_file) (char* fname, char *recptr, char *delims, int* skip,
  *
  */
 
-int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
+void decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	      int rec,
 	      DFTYPE** numeric_fields, char*** text_fields, DFTYPE bad_flags[],
 	      int* status)

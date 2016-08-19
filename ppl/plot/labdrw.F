@@ -89,177 +89,180 @@ C	DRAW LABELS
 C  Y label. center each line 
 
 	IF (TM_LENSTR(ylab) .GT. 0) THEN
-	IF (pyfont .AND. pyf_set(ivlab)) igroup = ivlab
-        CALL tm_break_lines (ylab, lnbeg, lnend, numlines)
+	   IF (pyfont .AND. pyf_set(ivlab)) igroup = ivlab
+	   CALL tm_break_lines (ylab, lnbeg, lnend, numlines)
 
 * Adjust x position for multi-line label or when making
 * extra space between the degree-sign and N/S or E/W
-        IF(LABELY.LT.0.)THEN 
-           XL=XLO-(YWID+HYLAB)/XF
-           xl = xl - (numlines-1)*hylab/xf
-	   IF (ydspac .GT. 0) xl = xl - 0.5*ydspac*hylab/xf
-        ELSE
-           XL=XHI+(YWID+2.*HYLAB)/XF
-        ENDIF
+	   IF(LABELY.LT.0.)THEN
+	      XL=XLO-(YWID+HYLAB)/XF
+	      xl = xl - (numlines-1)*hylab/xf
+	      IF (ydspac .GT. 0) xl = xl - 0.5*ydspac*hylab/xf
+	   ELSE
+	      XL=XHI+(YWID+2.*HYLAB)/XF
+	   ENDIF
 
 
-        nfont = 0
-        npen = 0
-        fontprefix = ""
-        penprefix = ""
-        DO 10 j = 1, numlines
-           CALL getlabfonts (ylab, lnbeg, lnend, j, fontprefix, 
+	   nfont = 0
+	   npen = 0
+	   fontprefix = ""
+	   penprefix = ""
+	   DO 10 j = 1, numlines
+	      CALL getlabfonts (ylab, lnbeg, lnend, j, fontprefix,
      .           npnew, nfnew, newfont, newpen, nchr)
 
-	   YL=YLO+(YLEN-SYMWID(HYLAB, NCHR+npen+nfont,
+	      YL=YLO+(YLEN-SYMWID(HYLAB, NCHR+npen+nfont,
      .                 penprefix(1:npen)//fontprefix(1:nfont)//
      .                 ylab(lnbeg(j):lnend(j)) ))*.5/YF
 
-	   CALL SYMBEL(XL, YL, 90., HYLAB, NCHR+npen+nfont,
+	      CALL SYMBEL(XL, YL, 90., HYLAB, NCHR+npen+nfont,
      .                 penprefix(1:npen)//fontprefix(1:nfont)//
      .                 ylab(lnbeg(j):lnend(j)))
 
-           XL= xl + line_spacing*HYLAB/XF
+	      XL= xl + line_spacing*HYLAB/XF
 
 C  Set up to use any font settings from this line on subsequent lines.
 
-           IF (npnew.GT.0) THEN
-              penprefix(1:3) = newpen(1:3)
-              npen = 3
-           ENDIF
-           IF (nfnew.GT.0) THEN
-              fontprefix(1:3) = newfont(1:3)
-              nfont = 3
-           ENDIF
+	      IF (npnew.GT.0) THEN
+		 penprefix(1:3) = newpen(1:3)
+		 npen = 3
+	      ENDIF
+	      IF (nfnew.GT.0) THEN
+		 fontprefix(1:3) = newfont(1:3)
+		 nfont = 3
+	      ENDIF
 
-10      CONTINUE
+ 10	   CONTINUE
 
-	IF (pyfont) igroup = fnt_all
-	ENDIF ! TM_LENSTR(ylab)
+	   IF (pyfont) igroup = fnt_all
+	ENDIF			! TM_LENSTR(ylab)
 
 C  X label
 
+ 20	CONTINUE
+
 	IF (TM_LENSTR(xlab) .GT. 0) THEN
-	IF (pyfont .AND. pyf_set(ihlab)) igroup = ihlab
+	   IF (pyfont .AND. pyf_set(ihlab)) igroup = ihlab
 
-20	IF(LABELX.EQ.0.OR.(ITFLG.EQ.1.OR.ITFLG.EQ.2))GOTO 40
-        CALL tm_break_lines (xlab, lnbeg, lnend, numlines)
+ 	   IF(LABELX.EQ.0.OR.(ITFLG.EQ.1.OR.ITFLG.EQ.2))GOTO 40
+	   CALL tm_break_lines (xlab, lnbeg, lnend, numlines)
 
-	IF(LABELX.LT.0)THEN
-	    YL=YLO-(XWID+2.*HXLAB)/YF
-	ELSE
-	    YL=YHI+(XWID+HXLAB)/YF
-            IF (numlines .GT. 1) yl = yl + 
+	   IF(LABELX.LT.0)THEN
+	      YL=YLO-(XWID+2.*HXLAB)/YF
+	   ELSE
+	      YL=YHI+(XWID+HXLAB)/YF
+	      IF (numlines .GT. 1) yl = yl + 
      .           line_spacing*(numlines-1)* hxlab/yf
-	ENDIF
+	   ENDIF
 
 
-        nfont = 0
-        npen = 0
-        fontprefix = ""
-        penprefix = ""
+	   nfont = 0
+	   npen = 0
+	   fontprefix = ""
+	   penprefix = ""
 
-        DO 30 j = 1, numlines
+	   DO 30 j = 1, numlines
 cc For fixing bug 1582: missing label on horizontal axis. 
 cc This crept in with multi-line labels. no need for IF(LABELX.LT.0) here.
 cc	IF(LABELX.LT.0)THEN
 
-           CALL getlabfonts (xlab, lnbeg, lnend, j, fontprefix, 
+	      CALL getlabfonts (xlab, lnbeg, lnend, j, fontprefix, 
      .           npnew, nfnew, newfont, newpen, nchr)
 
-	   XL=XLO+(XLEN-SYMWID(HXLAB,NCHR+npen+nfont,
+	      XL=XLO+(XLEN-SYMWID(HXLAB,NCHR+npen+nfont,
      .                 penprefix(1:npen)//fontprefix(1:nfont)//
      .                 xlab(lnbeg(j):lnend(j)) ))*.5/XF
 
-	   CALL SYMBEL(XL,YL,0.,HXLAB, NCHR+npen+nfont,
+	      CALL SYMBEL(XL,YL,0.,HXLAB, NCHR+npen+nfont,
      .                 penprefix(1:npen)//fontprefix(1:nfont)//
      .                 xlab(lnbeg(j):lnend(j)))
 
-           yl = yl - line_spacing* hxlab/yf
+	      yl = yl - line_spacing* hxlab/yf
 
 C  Set up to use any font settings from this line on subsequent lines.
 
-           IF (npnew.GT.0) THEN
-              penprefix(1:3) = newpen(1:3)
-              npen = 3
-           ENDIF
-           IF (nfnew.GT.0) THEN
-              fontprefix(1:3) = newfont(1:3)
-              nfont = 3
-           ENDIF
+	      IF (npnew.GT.0) THEN
+		 penprefix(1:3) = newpen(1:3)
+		 npen = 3
+	      ENDIF
+	      IF (nfnew.GT.0) THEN
+		 fontprefix(1:3) = newfont(1:3)
+		 nfont = 3
+	      ENDIF
 
 cc        ENDIF
-30      CONTINUE
+ 30	   CONTINUE
 
-	IF (pyfont) igroup = fnt_all
-	ENDIF ! TM_LENSTR(xlab)
+	   IF (pyfont) igroup = fnt_all
+	ENDIF			! TM_LENSTR(xlab)
 
 C  Main label
 	
-	IF (TM_LENSTR(lab1) .GT. 0) THEN
-	IF (pyfont .AND. pyf_set(ititl)) igroup = ititl
+ 40	CONTINUE
 
-40      CALL tm_break_lines (lab1, lnbeg, lnend, numlines)
+	IF (TM_LENSTR(lab1) .GT. 0) THEN
+	   IF (pyfont .AND. pyf_set(ititl)) igroup = ititl
+
+ 	   CALL tm_break_lines (lab1, lnbeg, lnend, numlines)
 
 * Adjust character size for the length of the longest line
 * This may have already been done in box_label, but not if
 * title was set by a PPL TITLE command.
 
-        htnew = hlab1
-        wid = 0.
-        DO 330 k = 1, numlines
-           slen = lnend(k) - lnbeg(k) + 1
-	   wid = MAX(wid, SYMWID(htnew, slen, lab1(lnbeg(k):lnend(k))))
-  330   CONTINUE
+	   htnew = hlab1
+	   wid = 0.
+	   DO 330 k = 1, numlines
+	      slen = lnend(k) - lnbeg(k) + 1
+	      wid = MAX(wid, SYMWID(htnew, slen, lab1(lnbeg(k):lnend(k))))
+ 330	   CONTINUE
 
 * xsize in call to box_label is .75* x axis length
 
-        htnew = htnew * MIN(1., 1.25* .75*xlen/wid)
+	   htnew = htnew * MIN(1., 1.25* .75*xlen/wid)
 
 C	Determine starting y position of main label
 
-        ITFLG2=0
-        IF(ITFLG.EQ.1.OR.ITFLG.EQ.2)ITFLG2=1
-	IF (LABELX .GE. 0) THEN
-	  YTEMP = XWID - 1.9*ABS(XCSIZE) + 2.5*htnew
-	ELSE
-	  YTEMP = XWID + 2.0*HXLAB * (1-ITFLG2)
+	   ITFLG2=0
+	   IF(ITFLG.EQ.1.OR.ITFLG.EQ.2)ITFLG2=1
+	   IF (LABELX .GE. 0) THEN
+	      YTEMP = XWID - 1.9*ABS(XCSIZE) + 2.5*htnew
+	   ELSE
+	      YTEMP = XWID + 2.0*HXLAB * (1-ITFLG2)
      .	          + 2.5*htnew
-	ENDIF
-	YL=YLO-YTEMP/YF
+	   ENDIF
+	   YL=YLO-YTEMP/YF
 
-        nfont = 0
-        npen = 0
-        fontprefix = ""
-        penprefix = ""
+	   nfont = 0
+	   npen = 0
+	   fontprefix = ""
+	   penprefix = ""
 
-        DO 50 j = 1, numlines
-           CALL getlabfonts (lab1, lnbeg, lnend, j, fontprefix, 
+	   DO 50 j = 1, numlines
+	      CALL getlabfonts (lab1, lnbeg, lnend, j, fontprefix, 
      .           npnew, nfnew, newfont, newpen, nchr)
-	   XL=XLO+(XLEN-
+	      XL=XLO+(XLEN-
      .          SYMWID(htnew,NCHR,lab1(lnbeg(j):lnend(j))))*.5/XF
 
-	   CALL SYMBEL(XL,YL,0.,htnew, NCHR+npen+nfont,
+	      CALL SYMBEL(XL,YL,0.,htnew, NCHR+npen+nfont,
      .                 penprefix(1:npen)//fontprefix(1:nfont)//
      .                 lab1(lnbeg(j):lnend(j)))
 
-           yl = yl - line_spacing* htnew/yf
+	      yl = yl - line_spacing* htnew/yf
 
 C  Set up to use any font settings from this line on subsequent lines.
 
-           IF (npnew.GT.0) THEN
-              penprefix(1:3) = newpen(1:3)
-              npen = 3
-           ENDIF
-           IF (nfnew.GT.0) THEN
-              fontprefix(1:3) = newfont(1:3)
-              nfont = 3
-           ENDIF
-50      CONTINUE
+	      IF (npnew.GT.0) THEN
+		 penprefix(1:3) = newpen(1:3)
+		 npen = 3
+	      ENDIF
+	      IF (nfnew.GT.0) THEN
+		 fontprefix(1:3) = newfont(1:3)
+		 nfont = 3
+	      ENDIF
+ 50	   CONTINUE
 
-70      CONTINUE
-	IF (pyfont) igroup = fnt_all
-	ENDIF ! TM_LENSTR(lab1)
+	   IF (pyfont) igroup = fnt_all
+	ENDIF			! TM_LENSTR(lab1)
 
 	RETURN
 	END

@@ -114,7 +114,8 @@ C adjust back when creating the format.  (bug 1907)
 	 IF (NT .GE. ID) ID = NT + 1
       ENDIF
 
-
+* M:  limit digits to <= 9
+      ID = MIN(ID,9)
       WRITE(IF,999)IB+ID+3,ID 
 999   FORMAT('(F',I2,'.',I1,')')
       RETURN 
@@ -124,7 +125,8 @@ C adjust back when creating the format.  (bug 1907)
         IF (XX .NE. 0.) ip = MAX(ipres,
      .       (IFIX(ALOG10(xx*1.00001)) +1) - IFIX(ALOG10(dx)) )
         
-      ID=ip-1 
+* M: limit digits to <= 9
+      ID = MIN(IP-1,9)
       IF(ID.LT.0)ID=0 
       WRITE(IF,998) ID+7,ID 
 998   FORMAT('(1PE',I2,'.',I1,')') 

@@ -1,0 +1,112 @@
+#
+# platform_specific.mk.intel-mac-ifort
+#
+# This file is included in Makefiles under the
+# fer, fmt, and ppl directories and defines platform specific macros
+#
+
+#
+# DIR_PREFIX, HDF5_DIR, and NETCDF4_DIR are from site_specific.mk
+# which should have been included prior to this include.
+#
+
+#
+# Directories for the libraries.  
+#
+ifeq ($(strip $(CAIRO_DIR)),)
+	CAIRO_LIBDIR	=
+#	This include is only for code in Pango that did use the proper cairo include
+	CAIRO_INCLUDE	= -I/usr/include/cairo
+else
+	CAIRO_LIBDIR	= $(CAIRO_DIR)/lib
+#	The second include is only for code in Pango that did use the proper cairo include
+	CAIRO_INCLUDE	= -I$(CAIRO_DIR)/include -I$(CAIRO_DIR)/include/cairo
+endif
+
+ifeq ($(strip $(PIXMAN_DIR)),)
+	PIXMAN_LIBDIR	=
+	PIXMAN_INCLUDE	= 
+else
+	PIXMAN_LIBDIR	= $(PIXMAN_DIR)/lib
+	PIXMAN_INCLUDE	= -I$(PIXMAN_DIR)/include
+endif
+
+ifeq ($(strip $(HDF5_DIR)),)
+	HDF5_LIBDIR	=
+else
+	HDF5_LIBDIR	= $(HDF5_DIR)/lib
+endif
+
+	NETCDF4_LIBDIR	= $(NETCDF4_DIR)/lib
+
+#
+# Local defines
+#
+	MYINCLUDES	= -I$(PYTHONINCDIR) \
+			  -I$(DIR_PREFIX)/fer/common \
+			  -I$(DIR_PREFIX)/fer/grdel \
+			  -I$(DIR_PREFIX)/fer/cferbind \
+			  -I$(DIR_PREFIX)/fer/ccr \
+			  -I$(DIR_PREFIX)/fmt/cmn \
+			  -I$(DIR_PREFIX)/ppl/include \
+			  -I$(DIR_PREFIX)/ppl/tmap_inc \
+			  -I$(DIR_PREFIX)/pyfermod \
+			  -I$(DIR_PREFIX)/external_functions/ef_utility \
+			  $(CAIRO_INCLUDE) \
+			  $(PIXMAN_INCLUDE) \
+			  -I/usr/local/include/pango-1.0 \
+			  -I/usr/local/include/glib-2.0 \
+			  -I/usr/local/lib/glib-2.0/include \
+			  -I$(NETCDF4_DIR)/include
+
+	MYDEFINES	= -Dcrptd_cat_argument \
+			  -Ddouble_p \
+			  -Difort \
+			  -Dreclen_in_bytes \
+			  -Dunix \
+			  -Dxgks \
+			  -DG77_SIGNAL \
+			  -DG77 \
+			  -DINTERNAL_READ_FORMAT_BUG \
+			  -DLINUX \
+			  -DMANDATORY_FORMAT_WIDTHS \
+			  -DNEED_IAND \
+			  -DNO_DOUBLE_ESCAPE_SLASH \
+			  -DNO_OPEN_CARRIAGECONTROL \
+			  -DNO_OPEN_READONLY \
+			  -DNO_OPEN_RECORDTYPE \
+			  -DNO_OPEN_SHARED \
+			  -DNO_PASSED_CONCAT \
+			  -DNO_PREPEND_STRING \
+			  -DSTAR_1_SUPPORTED \
+			  -DVOID_SIGHANDLER \
+			  -DX_REFRESH \
+			  -DXT_CODE
+
+	CC		= $(shell which gcc)
+	FC		= $(shell which $${FC:-ifort})
+	F77		= $(shell which $${FC:-ifort})
+	AR		= $(shell which ar)
+	ARFLAGS		= -cr
+	RANLIB		= $(shell which ranlib)
+
+	CFLAGS		= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC -Wno-comment
+	FFLAGS		= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC -noauto \
+			  -132 -assume no2underscores,nobscc \
+			  -implicitnone -r8 -autodouble
+	PPLUS_FFLAGS	= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC -noauto \
+			  -132 -assume no2underscores,nobscc
+
+	OPT_FLAGS	= -O -DNDEBUG
+	PPLUS_OPT_FLAGS	= -O -DNDEBUG
+	DBG_FLAGS	= -O0 -g
+	PROF_FLAGS	= -O0 -g
+
+# Directly compile the .F source files to the .o object files
+# since ifort can handle the C compiler directives in Fortran code
+%.o : %.F
+	$(FC) $(FFLAGS) -c $*.F -o $*.o
+
+#
+# End of platform_specific.mk.intel-mac-ifort
+#

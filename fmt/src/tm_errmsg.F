@@ -85,6 +85,10 @@
 *			  special error, this might have another value.
 *	found		- the value found when "expected" value was expected
 
+#ifdef ifort
+	USE IFCORE
+#endif
+
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 #include "gt_lib.parm"

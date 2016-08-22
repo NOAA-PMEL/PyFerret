@@ -469,7 +469,12 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
 	break;
 
-	/* date */
+	/* date and time
+	   Parses fields that are date time separated by a space.
+	   It would be good to also allow for Z or T separator
+	   Currently those can be handled as separate date and time
+	   fields with T or Z given as a delimiter. */
+
       case FTYP_DATIME:
 
 	
@@ -562,9 +567,14 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
 	break;
 
-	/* -------------------------------------- */
+	/* Euro-date and time
+	   Parses fields that are date time separated by a space.
+	   It would be good to also allow for Z or T separator
+	   Currently those can be handled as separate date and time
+	   fields with T or Z given as a delimiter. */
 
 	      case FTYP_EDATIME:
+			  
 	if (sscanf(p,"%d/%d/%d %d:%d:%lf%1s",&idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,errstr) >= 4) {
 
 	  ndum = sscanf(p,"%d/%d/%d %d:%d:%lf%1s",&idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,errstr);
@@ -615,8 +625,6 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	else
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
 	break;
-
-	/* -------------------------------------- */
 	
 	/* time */
       case FTYP_TIME:

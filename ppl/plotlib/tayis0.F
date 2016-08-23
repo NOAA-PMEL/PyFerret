@@ -1,5 +1,5 @@
 	SUBROUTINE TAYIS0(TLO,ITIME1,ITIME2,DT,NSMTIC,LABEL,IHDB,IDDB,
-     *	TFACT,X,XFACT,CSIZE,xacross,hgrat,hcolor,hline)
+     *	TFACT,X,XFACT,CSIZE,xacross,hgrat,hcolor,hline,color0)
 
 *
 *
@@ -40,6 +40,8 @@
 
 C**
 C**    @(#)tayis0.f	1.1    3/10/88
+* *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
+C
 C**
 C**
 C***********************************************************************
@@ -94,7 +96,8 @@ C
         REAL dash1_1, dash1_2, dash1_3, dash1_4
         REAL dash2_1, dash2_2, dash2_3, dash2_4
         REAL hgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
-        INTEGER hcolor(*)      ! pen number 
+        INTEGER hcolor(*)      ! pen number for graticule lines
+	INTEGER color0	       ! pen number to restore 
         LOGICAL hline          ! If true, do the lines across.
         LOGICAL solid1, solid2   ! solid lines across at tics
         LOGICAL dashed1, dashed2 ! dashed lines across at tics
@@ -104,6 +107,12 @@ C
 
 	include 'xinterrupt.cmn'
         include 'century.cmn'  ! with MONYRLAB flag
+        include 'parampl5_dat.decl'
+        include 'PARAMPL5.DAT'
+        include 'lines_inc.decl'
+        include 'LINES.INC'
+        INCLUDE 'pen_inc.decl'  ! with IPEN(1)
+        INCLUDE 'PEN.INC'
 
 C     CHECK THE PARAMETERS PASSED TO THE SUBROUTINE.
 	IF(ITIME1(9:10).NE.'00')STOP ',1'
@@ -249,7 +258,7 @@ C      LOOP:
                     CALL PLOT(x,T+FLOAT(I)*TDIST,0,0) 
                     CALL PLOT(xacross,T+FLOAT(I)*TDIST,1,0)
                     CALL PLOT(x,T+FLOAT(I)*TDIST,0,0) 
-                    CALL COLOR(1)
+                    CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
 
@@ -267,7 +276,7 @@ C      LOOP:
                  CALL PLOT(x,t+tic,0,0) 
                  CALL PLOT(xacross,t+tic,1,0)
                  CALL PLOT(x,t+tic,0,0) 
-                 CALL COLOR(1)
+                 CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
 
@@ -283,7 +292,7 @@ C      LOOP:
                     CALL PLOT(x,t+tic,0,0) 
                     CALL PLOT(xacross,t+tic,1,0)
                     CALL PLOT(x,t+tic,0,0) 
-                    CALL COLOR(1)
+                    CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
 

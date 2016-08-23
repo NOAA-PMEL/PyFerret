@@ -1,5 +1,5 @@
 	SUBROUTINE TAYIS3(TLO,ITIME1,ITIME2,DT,NDAY,LABEL,IMDB,IYDB,
-     *	TFACT,X,XFACT,CSIZE,xacross,hgrat,hcolor,hline)
+     *	TFACT,X,XFACT,CSIZE,xacross,hgrat,hcolor,hline,color0)
 
 *
 *
@@ -58,6 +58,7 @@ C                with "*(*)" for the linux port
 C *acm* 03/04  new arguments and code for plotting graticule lines across plot. 
 C *acm*  3/10  Bug 670 fixed: New flag MULTICENFLAG for multi-decade plots, 
 C              do not make small tics by default.
+* *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
 
 
 C**
@@ -118,14 +119,21 @@ C
 
 	LOGICAL*4 not_zero_size
         include 'century.cmn'
-        
+        include 'parampl5_dat.decl'
+        include 'PARAMPL5.DAT'
+        include 'lines_inc.decl'
+        include 'LINES.INC'
+        INCLUDE 'pen_inc.decl'  ! with IPEN(1)
+        INCLUDE 'PEN.INC'
+
 * Parameters for drawing tics across plot
 
         REAL xacross
         REAL dash1_1, dash1_2, dash1_3, dash1_4
         REAL dash2_1, dash2_2, dash2_3, dash2_4
         REAL hgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
-        INTEGER hcolor(*)      ! pen number 
+        INTEGER hcolor(*)      ! pen number for graticule lines
+	INTEGER color0	       ! pen number to restore 
         LOGICAL hline          ! If true, do the lines across.
         LOGICAL solid1, solid2   ! solid lines across at tics
         LOGICAL dashed1, dashed2 ! dashed lines across at tics
@@ -307,7 +315,7 @@ C     LOOP:
                  CALL PLOT(x,t+tic,0,0) 
                  CALL PLOT(xacross,t+tic,1,0)
                  CALL PLOT(x,t+tic,0,0) 
-                 CALL COLOR(1)
+                 CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
 	   ELSE
@@ -323,7 +331,7 @@ C     LOOP:
                     CALL PLOT(x,t+tic,0,0) 
                     CALL PLOT(xacross,t+tic,1,0)
                     CALL PLOT(x,t+tic,0,0) 
-                    CALL COLOR(1)
+                    CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
               ENDIF
@@ -341,7 +349,7 @@ C     LOOP:
                  CALL PLOT(x,t+tic,0,0) 
                  CALL PLOT(xacross,t+tic,1,0)
                  CALL PLOT(x,t+tic,0,0) 
-                 CALL COLOR(1)
+                 CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
 
@@ -358,7 +366,7 @@ C     LOOP:
                     CALL PLOT(x,t+tic,0,0) 
                     CALL PLOT(xacross,t+tic,1,0)
                     CALL PLOT(x,t+tic,0,0) 
-                    CALL COLOR(1)
+                    CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
 

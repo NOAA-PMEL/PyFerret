@@ -1,5 +1,5 @@
 	SUBROUTINE TAYIS(IT,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
-     *	YF,XHI,XF,TCSIZE,xacross,hgrat,hcolor,hline,is_hours_axis)
+     *	YF,XHI,XF,TCSIZE,xacross,hgrat,hcolor,hline,color0,is_hours_axis)
 C** 
 C**    @(#)tayis.f	1.1    3/10/88
 C**
@@ -54,6 +54,8 @@ C *acm* 03/04  new arguments for plotting graticule lines across plot.
 C V695  *acm*  9/15 Changes for hour:min labeling on time axes
 C V697  *acm* 12/15 For short-time plots do the time axis in a separate
 C                   routine tayis4
+* *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
+
 
 C If graticule lines are to be drawn across the plot at the tics
 C then only do them for one horizontal and one vertical axis.  
@@ -63,23 +65,24 @@ C sides. HLINE and VLINE control this.
 	INTEGER is_hours_axis
         REAL xacross           ! to draw tic line across plot
         REAL hgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
-        INTEGER hcolor(*)      ! pen number 
+        INTEGER hcolor(*)      ! pen number for graticule lines
+	INTEGER color0	       ! pen number to restore 
         LOGICAL hline          ! If true, do the lines across.
 
 	CHARACTER*(*) IT1,IT2
 	GOTO (10,20,20,30)IT+1
 10	IF (is_hours_axis .EQ. 0) THEN 
 	   CALL TAYIS0(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
-     .              xacross,hgrat,hcolor,hline)
+     .              xacross,hgrat,hcolor,hline,color0)
 	ELSE
 	   CALL TAYIS4(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
-     .              xacross,hgrat,hcolor,hline,is_hours_axis)
+     .              xacross,hgrat,hcolor,hline,color0,is_hours_axis)
 	ENDIF
 	RETURN
 20	CALL TAYIS1(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
-     .              xacross,hgrat,hcolor,hline)
+     .              xacross,hgrat,hcolor,hline,color0)
 	RETURN
 30	CALL TAYIS3(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
-     .              xacross,hgrat,hcolor,hline)
+     .              xacross,hgrat,hcolor,hline,color0)
 	RETURN
 	END

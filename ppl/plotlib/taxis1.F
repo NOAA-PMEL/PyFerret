@@ -1,5 +1,5 @@
       SUBROUTINE TAXIS1(TLO,ITIME1,ITIME2,DT,NSMTIC,LABEL,IDDB,IMDB,
-     1    TFACT,Y,YFACT,CSIZE,yacross,vgrat,vcolor,vline)
+     1    TFACT,Y,YFACT,CSIZE,yacross,vgrat,vcolor,vline,color0)
 
 *
 *
@@ -54,6 +54,7 @@ C                 ITIME to ITIME2 at loop 10
 C *acm* 03/04  new arguments and code for plotting graticule lines across plot. 
 C V65  *acm*  1/10 New time-axis style for DAY and MONTH, DMY: adds the
 C                  year to DAY,MONTH or to MONTH.
+* *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
 
 C**
 C**    @(#)taxis1.f	1.1    3/10/88
@@ -120,7 +121,8 @@ C
         REAL dash1_1, dash1_2, dash1_3, dash1_4
         REAL dash2_1, dash2_2, dash2_3, dash2_4
         REAL vgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
-        INTEGER vcolor(*)      ! pen number 
+        INTEGER vcolor(*)      ! pen number for graticule lines
+	INTEGER color0	       ! pen number to restore 
         LOGICAL vline          ! If true, do the lines across.
         LOGICAL solid1, solid2   ! solid lines across at tics
         LOGICAL dashed1, dashed2 ! dashed lines across at tics
@@ -129,6 +131,12 @@ C
 
 	include 'xinterrupt.cmn'
         include 'century.cmn'  ! with MONYRLAB flag
+        include 'parampl5_dat.decl'
+        include 'PARAMPL5.DAT'
+        include 'lines_inc.decl'
+        include 'LINES.INC'
+        INCLUDE 'pen_inc.decl'  ! with IPEN(1)
+        INCLUDE 'PEN.INC'
 
 C     CHECK THE PARAMETERS PASSED TO THE SUBROUTINE.
 	IF(ITIME1(7:10).NE.'0000')STOP ',1'
@@ -265,7 +273,7 @@ C      LOOP:
                     CALL PLOT(T+FLOAT(I)*TDIST,y,0,0) 
                     CALL PLOT(T+FLOAT(I)*TDIST,yacross,1,0)
                     CALL PLOT(T+FLOAT(I)*TDIST,Y,0,0) 
-                    CALL COLOR(1)
+                    CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
 
@@ -284,7 +292,7 @@ C      LOOP:
                     CALL PLOT(t+tic,y,0,0) 
                     CALL PLOT(t+tic,yacross,1,0)
                     CALL PLOT(t+tic,Y,0,0) 
-                    CALL COLOR(1)
+                    CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
 
@@ -300,7 +308,7 @@ C      LOOP:
                  CALL PLOT(t+tic,y,0,0) 
                  CALL PLOT(t+tic,yacross,1,0)
                  CALL PLOT(t+tic,Y,0,0) 
-                 CALL COLOR(1)
+                 CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
 

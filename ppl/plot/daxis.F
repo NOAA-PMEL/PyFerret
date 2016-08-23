@@ -69,6 +69,7 @@ C              finished. For polygon plots only, draw the main label twice.
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
 
 C**
 C**    @(#)daxis.F	1.1    3/10/88
@@ -140,18 +141,18 @@ C	  YAXIS1 = LINEAR ,  YAXIS2 = LOG
 C
           IF(ITFLG.EQ.-1 .OR. ITFLG.EQ.2)THEN
               IF(ITFLG.EQ.-1) CALL TAYIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,
-     *        YF,XLO,XF,TCSIZE,XHI,HGRAT, HCOLOR, HLINE, is_hours_axis)
+     *        YF,XLO,XF,TCSIZE,XHI,HGRAT, HCOLOR, HLINE, IPEN(0), is_hours_axis)
               IF(ITFLG.EQ.2) CALL TAYIS(ITYPETb,TLOb,IT1b,IT2b,DT,NMTCTb,LTBb,IFDBb,ISDBb,
-     *        YF,XLO,XF,TCSIZEb,XHI,HGRAT, HCOLOR, HLINE, is_hours_axis)
+     *        YF,XLO,XF,TCSIZEb,XHI,HGRAT, HCOLOR, HLINE, IPEN(0), is_hours_axis)
             hline = .FALSE.
 	  ELSE IF(ITYPEY.EQ.1)THEN
 	   CALL YAXIS1(XLO,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYL,IFY,YF,
      *	    YCSIZE,XHI,YDMS,YDSPAC,HGRAT, HCOLOR, HLINE, YVALOFF, NOYLAB, 
-     *	    SHRINKY)
+     *	    SHRINKY, IPEN(0))
             hline = .FALSE.
 	  ELSE
             CALL YAXIS2(XLO,XF,YLO,YHI,0.,LYL,IFY,1,YF,YCSIZE,
-     .                    XHI,HGRAT, HCOLOR, HLINE)
+     .                    XHI,HGRAT, HCOLOR, HLINE, IPEN(0))
             hline = .FALSE.
           END IF
       END IF
@@ -160,18 +161,18 @@ C
 	IY=-ITY
         IF(ITFLG.EQ.-1 .OR. ITFLG.EQ.2)THEN
             IF(ITFLG.EQ.-1) CALL TAYIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
-     *      YF,XHI,XF,TCSIZE,XLO,HGRAT, HCOLOR, HLINE, is_hours_axis)
+     *      YF,XHI,XF,TCSIZE,XLO,HGRAT, HCOLOR, HLINE, IPEN(0), is_hours_axis)
             IF(ITFLG.EQ.2) CALL TAYIS(ITYPETb,TLOb,IT1b,IT2b,DT,NMTCTb,LTTb,IFDBb,ISDBb,
-     *      YF,XHI,XF,TCSIZEb,XLO,HGRAT, HCOLOR, HLINE, is_hours_axis)
+     *      YF,XHI,XF,TCSIZEb,XLO,HGRAT, HCOLOR, HLINE, IPEN(0), is_hours_axis)
            hline = .FALSE.
 	ELSE IF(ITYPEY.EQ.1)THEN
 	    CALL YAXIS1(XHI,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYR,IFY,YF,
      *     YCSIZE,XLO,YDMS,YDSPAC,HGRAT, HCOLOR, HLINE, YVALOFF, NOYLAB,
-     *	    SHRINKY)
+     *	    SHRINKY, IPEN(0))
            hline = .FALSE.
 	ELSE
 	   CALL YAXIS2(XHI,XF,YLO,YHI,0.,LYR,IFY,1,YF,YCSIZE,
-     .                    XLO,HGRAT, HCOLOR, HLINE)
+     .                    XLO,HGRAT, HCOLOR, HLINE, IPEN(0))
            hline = .FALSE.
 	ENDIF
       ENDIF
@@ -184,15 +185,15 @@ C					 TAXIS1 OR TAXIS3
 C
           IF(ITFLG.EQ.1 .OR. ITFLG.EQ.2)THEN
               CALL TAXIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
-     *        XF,YHI,YF,TCSIZE,YLO,VGRAT, VCOLOR, VLINE, is_hours_axis)
+     *        XF,YHI,YF,TCSIZE,YLO,VGRAT, VCOLOR, VLINE, IPEN(0), is_hours_axis)
               vline = .FALSE.
           ELSE IF (ITYPEX.EQ.1)THEN
 	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXT,IFX,XF,YHI,YF,
-     *	       XCSIZE,YLO,XDMS,XDSPAC,VGRAT, VCOLOR, VLINE, XVALOFF)
+     *	       XCSIZE,YLO,XDMS,XDSPAC,VGRAT, VCOLOR, VLINE, XVALOFF, IPEN(0))
               vline = .FALSE.
           ELSE
 	      CALL XAXIS2(XLO,XHI,0.,LXT,IFX,1,XF,YHI,YF,XCSIZE,
-     *                    YLO,VGRAT, VCOLOR, VLINE)
+     *                    YLO,VGRAT, VCOLOR, VLINE, IPEN(0))
               vline = .FALSE.
           END IF
       END IF
@@ -201,15 +202,15 @@ C
           IX=ITX
           IF(ITFLG.EQ.1 .OR. ITFLG.EQ.2)THEN
               CALL TAXIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,
-     *        XF,YLO,YF,TCSIZE,YHI,VGRAT, VCOLOR, VLINE, is_hours_axis)
+     *        XF,YLO,YF,TCSIZE,YHI,VGRAT, VCOLOR, VLINE, IPEN(0), is_hours_axis)
               vline = .FALSE.
           ELSE IF (ITYPEX.EQ.1) THEN
 	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXB,IFX,XF,YLO,YF,
-     *	      XCSIZE,YHI,XDMS,XDSPAC,VGRAT, VCOLOR, VLINE, XVALOFF)
+     *	      XCSIZE,YHI,XDMS,XDSPAC,VGRAT, VCOLOR, VLINE, XVALOFF, IPEN(0))
               vline = .FALSE.
           ELSE
 	      CALL XAXIS2(XLO,XHI,0.,LXB,IFX,1,XF,YLO,YF,XCSIZE,
-     *                    YHI,VGRAT, VCOLOR, VLINE)
+     *                    YHI,VGRAT, VCOLOR, VLINE, IPEN(0))
               vline = .FALSE.
           END IF
       END IF

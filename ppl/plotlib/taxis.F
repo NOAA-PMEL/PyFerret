@@ -1,5 +1,6 @@
 	SUBROUTINE TAXIS(IT,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
-     *	XF,YHI,YF,TCSIZE,yacross,vgrat,vcolor,vline,is_hours_axis)
+     .	XF,YHI,YF,TCSIZE,yacross,vgrat,vcolor,vline,color0,is_hours_axis)
+
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -51,6 +52,7 @@ C *acm* 03/04  new arguments for plotting graticule lines across plot.
 C V695  *acm*  9/15 Changes for hour:min labeling on time axes
 C V697  *acm* 12/15 For short-time plots do the time axis in a separate
 C                   routine taxis4
+* *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
 
 C If graticule lines are to be drawn across the plot at the tics
 C then only do them for one horizontal and one vertical axis.  
@@ -62,22 +64,23 @@ C sides. HLINE and VLINE control this.
 	INTEGER is_hours_axis
         REAL yacross
         REAL vgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
-        INTEGER vcolor(*)      ! pen number 
+        INTEGER vcolor(*)      ! pen number for graticule lines
+        INTEGER color0         ! pen number to restore
         LOGICAL vline          ! If true, do the lines across.
 
 	GOTO (10,20,20,30)IT+1
 10	IF (is_hours_axis .EQ. 0) THEN 
 	   CALL TAXIS0(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
-     .              yacross,vgrat,vcolor,vline)
+     .              yacross,vgrat,vcolor,vline,color0)
 	ELSE
 	   CALL TAXIS4(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
-     .              yacross,vgrat,vcolor,vline,is_hours_axis)
+     .              yacross,vgrat,vcolor,vline,color0,is_hours_axis)
 	ENDIF
 	RETURN
 20	CALL TAXIS1(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
-     .              yacross,vgrat,vcolor,vline)
+     .              yacross,vgrat,vcolor,vline,color0)
 	RETURN
 30	CALL TAXIS3(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
-     .              yacross,vgrat,vcolor,vline)
+     .              yacross,vgrat,vcolor,vline,color0)
 	RETURN
 	END

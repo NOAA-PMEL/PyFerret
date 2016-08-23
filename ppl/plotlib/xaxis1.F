@@ -1,6 +1,6 @@
       SUBROUTINE XAXIS1(XLO,XHI,XTIC,NSMTCX,LINTX,XUNIT,LABEL,
      *    IFORMT,XFACT,Y,YFACT,CSIZE,yacross,xdms,xdspac,vgrat,vcolor,
-     *    vline, xvaloff)
+     *    vline, xvaloff,color0)
 
 *
 *
@@ -55,6 +55,7 @@ C              after applying an offset.)
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
 
 
 C**
@@ -79,7 +80,8 @@ C**
 
         REAL yacross, dash1, dash2,dash3,dash4, xvaloff
         REAL vgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
-        INTEGER vcolor(*)      ! pen number 
+        INTEGER vcolor(*)      ! pen number for graticule lines
+	INTEGER color0	       ! pen number to restore 
         LOGICAL vline          ! If true, do the lines across.
         LOGICAL solid          ! solid lines across at tics
         LOGICAL dashed         ! dashed lines across at tics
@@ -91,11 +93,13 @@ C**
 
 
 * TMAP interrupt flag
-#ifdef unix
 	include 'xinterrupt.cmn'
-#else
-	INCLUDE 'tmap_pplv11inc:tmap_xinterrupt.cmn'
-#endif
+        include 'parampl5_dat.decl'
+        include 'PARAMPL5.DAT'
+        include 'lines_inc.decl'
+        include 'LINES.INC'
+        INCLUDE 'pen_inc.decl'  ! with IPEN(1)
+        INCLUDE 'PEN.INC'
 
 C     THIS ROUTINE DRAWS AN X AXIS.  IT LABELS THE AXIS BELOW
 C     IF LABEL=-1, ABOVE IF LABEL=1, AND NOT AT ALL
@@ -155,7 +159,7 @@ C
            CALL PLOT(X,Y,0,0) 
            CALL PLOT(X,yacross,1,0)
            CALL PLOT(X,Y,0,0) 
-           CALL COLOR(1)
+           CALL COLOR(color0)
            CALL VECTRS
         ENDIF
 
@@ -174,7 +178,7 @@ C
            CALL PLOT(X,Y,0,0) 
            CALL PLOT(X,yacross,1,0)
            CALL PLOT(X,Y,0,0) 
-           CALL COLOR(1)
+           CALL COLOR(color0)
            CALL VECTRS
         ENDIF
 

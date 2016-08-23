@@ -1,5 +1,6 @@
       SUBROUTINE TAXIS4(TLO,ITIME1,ITIME2,DT,NSMTIC,LABEL,IHDB,IDDB,
-     1    TFACT,Y,YFACT,CSIZE,yacross,vgrat,vcolor,vline,is_hours_axis)
+     .    TFACT,Y,YFACT,CSIZE,yacross,vgrat,vcolor,vline,color0,
+     .    is_hours_axis)
 
 *
 *
@@ -38,7 +39,9 @@
 *
 * 
 * From taxis0: separate routijne for hour:min labeling on time axes
-
+C V7.1 *acm* 8/2016 Ticket 2466: Graticule lines too dense
+* *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
+C
 C**
 C**    @(#)taxis4.f	1.1   12/09/15
 C**
@@ -88,6 +91,7 @@ C
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
 	COMMON/AXLWID/XWID,YWID
 
+
 	REAL*8  DIFF, difft
 	REAL*8  td, ytemp1, tfact_d, yfact_d
 	REAL    delt, rem, angl
@@ -100,7 +104,8 @@ C
         REAL dash1_1, dash1_2, dash1_3, dash1_4
         REAL dash2_1, dash2_2, dash2_3, dash2_4
         REAL vgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
-        INTEGER vcolor(*)      ! pen number 
+        INTEGER vcolor(*)      ! pen number for graticule lines
+	INTEGER color0	       ! pen number to restore
         LOGICAL vline          ! If true, do the lines across.
         LOGICAL solid1, solid2   ! solid lines across at tics
         LOGICAL dashed1, dashed2 ! dashed lines across at tics
@@ -109,7 +114,6 @@ C
 * TMAP interrupt flag
 	include 'xinterrupt.cmn'
         include 'century.cmn'  ! with MONYRLAB flag
-
 	
   80	FORMAT(I2.2)
   82	FORMAT(I2.2,':00')
@@ -280,7 +284,8 @@ C      LOOP:
 
 	IF(ITIME(13:14)//ITIME(1:12) .LE.
      .       ITIME2(13:14)//ITIME2(1:12)) THEN
-           IF(IHR.EQ.0) ltic = ltic + 1
+           IF(IHR.EQ.0 .AND. is_hours_axis.EQ.0) ltic = ltic + 1
+c           IF(IHR.EQ.0 .AND. imin.EQ.0 .AND. is_hours_axis.GT.0) ltic = ltic + 1
 	   IF (is_hours_axis .GT. 0) THEN
 	      IF (difft.LE.12 .AND. sec.EQ.0.) THEN 
 	         ltic = ltic+1
@@ -325,26 +330,27 @@ C      LOOP:
           DO 20 I=1,NSMTIC
               CALL PLOTT7(T+FLOAT(I)*TDIST,Y,TFACT,YFACT,1,-7)
 
-                 IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
-                    CALL COLOR(color2)
-                    IF (dashed2) THEN
-                       CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
-                       CALL DASHES
-                    ENDIF
-                    CALL PLOT(T+FLOAT(I)*TDIST,y,0,0) 
-                    CALL PLOT(T+FLOAT(I)*TDIST,yacross,1,0)
-                    CALL PLOT(T+FLOAT(I)*TDIST,Y,0,0) 
-                    CALL COLOR(1)
-                    CALL VECTRS
+              IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
+                 CALL COLOR(color2)
+                 IF (dashed2) THEN
+                    CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
+                    CALL DASHES
                  ENDIF
+                 CALL PLOT(T+FLOAT(I)*TDIST,y,0,0) 
+                 CALL PLOT(T+FLOAT(I)*TDIST,yacross,1,0)
+                 CALL PLOT(T+FLOAT(I)*TDIST,Y,0,0) 
+                 CALL COLOR(color0)
+                 CALL VECTRS
+              ENDIF
 
-   20         CONTINUE
+   20     CONTINUE
           CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
 	  
-	hvytic = ((is_hours_axis.EQ.0 .AND. IHR.EQ.0) .OR. 
+          hvytic = ((is_hours_axis.EQ.0 .AND. IHR.EQ.0) .OR. 
      .            (is_hours_axis.GT.0 .AND. MOD(imin,labint).EQ.0))
-	IF(hvytic)THEN
-	CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
+          IF(hvytic)THEN
+             CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
+	
               IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
                  CALL COLOR(color1)
                  IF (dashed1) THEN
@@ -354,33 +360,51 @@ C      LOOP:
                  CALL PLOT(t+tic,y,0,0) 
                  CALL PLOT(t+tic,yacross,1,0)
                  CALL PLOT(t+tic,Y,0,0) 
-                 CALL COLOR(1)
+                 CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
       
-	ELSE
+	  ELSE
               IF (is_hours_axis.GT.0) THEN
 	         IF (MOD(imin,ticint).EQ.0) THEN
                     CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
+		    
+c                 graticule line at tic
+		    IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
+                       CALL COLOR(color1)
+                       IF (dashed1) THEN
+                          CALL DASHSZ(dash1_1,dash2_1,dash1_3,dash1_4)
+                          CALL DASHES
+                       ENDIF
+                       CALL PLOT(t+tic,y,0,0) 
+                       CALL PLOT(t+tic,yacross,1,0)
+                       CALL PLOT(t+tic,Y,0,0) 
+                       CALL COLOR(color0)
+                       CALL VECTRS
+                    ENDIF
+
 		 ELSE 
                     CALL PLOT(T+TIC,Y,1,0)
 		 ENDIF
               ELSE
 	         CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
+		 
+c                 graticule line at tic
+                    IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
+                       CALL COLOR(color1)
+                       IF (dashed1) THEN
+                          CALL DASHSZ(dash1_1,dash2_1,dash1_3,dash1_4)
+                          CALL DASHES
+                       ENDIF
+                       CALL PLOT(t+tic,y,0,0) 
+                       CALL PLOT(t+tic,yacross,1,0)
+                       CALL PLOT(t+tic,Y,0,0) 
+                       CALL COLOR(color0)
+                       CALL VECTRS
+                    ENDIF
+
               ENDIF
     
-               IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
-                  CALL COLOR(color1)
-                  IF (dashed1) THEN
-                     CALL DASHSZ(dash1_1,dash2_1,dash1_3,dash1_4)
-                     CALL DASHES
-                  ENDIF
-                  CALL PLOT(t+tic,y,0,0) 
-                  CALL PLOT(t+tic,yacross,1,0)
-                  CALL PLOT(t+tic,Y,0,0) 
-                  CALL COLOR(1)
-                  CALL VECTRS
-               ENDIF
 
 	ENDIF
 C         THE LABELS
@@ -455,9 +479,10 @@ c          IF(ITIME.LE.ITIME2) GO TO 10
 
 
 c Finish out the line
-      CALL PLOT (t,y,0,0)
+      CALL PLOT (tlo,y,0,0)
       t = TLO + DIFF(ITIME1, ITIME2)/dt
       CALL PLOT (t,y,1,0)
+      CALL COLOR(color0)
 
       RETURN
       END

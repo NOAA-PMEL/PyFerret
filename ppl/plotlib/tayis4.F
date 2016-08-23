@@ -1,5 +1,6 @@
 	SUBROUTINE TAYIS4(TLO,ITIME1,ITIME2,DT,NSMTIC,LABEL,IHDB,IDDB,
-     *	TFACT,X,XFACT,CSIZE,xacross,hgrat,hcolor,hline,is_hours_axis)
+     .	TFACT,X,XFACT,CSIZE,xacross,hgrat,hcolor,hline,color0,
+     .    is_hours_axis)
 
 *
 *
@@ -36,28 +37,11 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* revised for TMAP
-* from PPLUS :
-*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]TAYIS0.FOR
-
-* search for "TMAP" to find all revisions
-* *sh*  - 1/23/89 added interrupt detection
-*		  ... no explicit declarations (too much trouble !) so it must
-*		      be compiled with /WARNINGS=NODECLARATIONS
-* *sh*  - 8/11/89 FERRET 2.00 (modelled after TAXIS0 correction)
-*       - changed "mon" to "date" in calls to SYMWID and SYMBEL.
-*         "mon" is the wrong data type                          
-
-* *jd* Mod for 4 digit years 11.27.95
-C *kob* 04/07/96 passed in character strings had to be declared 
-C                with "*(*)" for the linux port 
-C *acm* 24/01/00 Y2k Bug --Put century at start when comparing 
-C                 ITIME to ITIME2 at loop 10
-C *acm* 03/04  new arguments and code for plotting graticule lines across plot. 
-C V65  *acm*  1/10 New time-axis style for DAY and MONTH, DMY: adds the
-C                  year to DAY,MONTH or to MONTH.
+* From tayis0: separate routijne for hour:min labeling on time axes
 C V695  *acm*  9/15 Changes for hour:min labeling on time axes
-
+C V7.1 *acm* 8/2016 Ticket 2466: Graticule lines too dense
+* *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
+C
 C**
 C**    @(#)tayis4.f	1.1   12/09/15
 C**
@@ -121,6 +105,7 @@ C
         REAL dash2_1, dash2_2, dash2_3, dash2_4
         REAL hgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
         INTEGER hcolor(*)      ! pen number 
+	INTEGER color0	       ! pen number to restore
         LOGICAL hline          ! If true, do the lines across.
         LOGICAL solid1, solid2   ! solid lines across at tics
         LOGICAL dashed1, dashed2 ! dashed lines across at tics
@@ -130,7 +115,7 @@ C
 
 	include 'xinterrupt.cmn'
         include 'century.cmn'  ! with MONYRLAB flag
-	
+
   80	FORMAT(I2.2)
   82	FORMAT(I2.2,':00')
   84	FORMAT(I2.2,':',I2.2)
@@ -299,7 +284,7 @@ C      LOOP:
 
 	IF(ITIME(13:14)//ITIME(1:12) .LE.
      .       ITIME2(13:14)//ITIME2(1:12)) THEN
-           IF(IHR.EQ.0) ltic = ltic + 1
+           IF(IHR.EQ.0 .AND. is_hours_axis.EQ.0) ltic = ltic + 1
 	   IF (is_hours_axis .GT. 0) THEN
 	      IF (difft.LE.12 .AND. sec.EQ.0.) THEN
 	         ltic = ltic+1
@@ -353,7 +338,7 @@ C      LOOP:
                     CALL PLOT(x,T+FLOAT(I)*TDIST,0,0) 
                     CALL PLOT(xacross,T+FLOAT(I)*TDIST,1,0)
                     CALL PLOT(x,T+FLOAT(I)*TDIST,0,0) 
-                    CALL COLOR(1)
+                    CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
 
@@ -374,7 +359,7 @@ C      LOOP:
                  CALL PLOT(x,t+tic,0,0) 
                  CALL PLOT(xacross,t+tic,1,0)
                  CALL PLOT(x,t+tic,0,0) 
-                 CALL COLOR(1)
+                 CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
 
@@ -383,13 +368,28 @@ C      LOOP:
               IF (is_hours_axis.GT.0) THEN
                  IF (MOD(imin,ticint).EQ.0) THEN
                     CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,INML)
+
+c                 graticule line at tic		    
+                    IF ((solid1.OR.dashed1) .AND. hline) THEN ! make line across
+                       CALL COLOR(color1)
+                       IF (dashed1) THEN
+                          CALL DASHSZ(dash1_1,dash2_1,dash1_3,dash1_4)
+                          CALL DASHES
+                       ENDIF
+                      CALL PLOT(x,t+tic,0,0) 
+                      CALL PLOT(xacross,t+tic,1,0)
+                       CALL PLOT(x,t+tic,0,0) 
+                       CALL COLOR(color0)
+                       CALL VECTRS
+                    ENDIF
+
                  ELSE
                     CALL PLOT(X,T+TIC,1,0)
                  ENDIF
               ELSE
                  CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,INML)
-              ENDIF
 
+c                 graticule line at tic
                  IF ((solid1.OR.dashed1) .AND. hline) THEN ! make line across
                     CALL COLOR(color1)
                     IF (dashed1) THEN
@@ -399,9 +399,11 @@ C      LOOP:
                     CALL PLOT(x,t+tic,0,0) 
                     CALL PLOT(xacross,t+tic,1,0)
                     CALL PLOT(x,t+tic,0,0) 
-                    CALL COLOR(1)
+                    CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
+              ENDIF
+
 
 	ENDIF
 C         THE LABELS
@@ -477,6 +479,12 @@ c	IF(ITIME.LE.ITIME2) GO TO 10
 
          ENDIF
       ENDIF
+
+c Finish out the line
+
+      CALL PLOT (x,TLO,0,0)
+      t = TLO + DIFF(ITIME1, ITIME2)/dt
+      CALL PLOT (x,t,1,0)
 
       RETURN
       END

@@ -54,14 +54,12 @@ C              (axis data was read as double precision and converted to single
 C              after applying an offset.)
 
 * 11/2011 ACM Fixing ticket 1896: When needed, reset the size of numerical axis
-*             labels, so the labels dont run off the edge of the plot.
-C V695 *acm*  5/15 Restore color after a graticule using defined color 0
-C V695 *acm*  5/15 for PyFerret draw lines and tics only once, avoiding overdrawing.
-C V695 *acm* 10/15 Fix ticket 2320 - missing minor tic marks
+*             labes, so the labels dont run off the edge of the plot.
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
+
 
 C**
 C**    @(#)yaxis1.f	1.1    3/10/88
@@ -106,6 +104,7 @@ C**
         INCLUDE 'pen_inc.decl'  ! with IPEN(1)
         INCLUDE 'PEN.INC'
 C
+C
 C     THIS ROUTINE DRAWS A Y AXIS.  IT LABELS THE AXIS ON THE LEFT
 C     IF LABEL=-1, ON THE RIGHT IF LABEL=1, AND NOT AT ALL
 C     IF LABEL=0.  IF LABEL.NE.0 IFORMT TELLS US WHAT FORMAT TO WRITE
@@ -138,7 +137,7 @@ C
 	CALL PLOT(X,YT,0,0)
 	CALL SMY1(X,XFACT,YFACT,YT,YLO,-YTIC,NSMTCY,
      .     xacross,hgrat,hcolor,hline)
-        CALL PLOT(X,YT,1,0)
+	CALL PLOT(X,YLO,1,0)
 	CALL PLOTT7(X,YT,XFACT,YFACT,1,-6)
 
 	Y=YT
@@ -157,7 +156,7 @@ C
 	DO 100 I=1,ISTOP
 	IF ( interrupted ) RETURN		! TMAP interrupt
 	CALL SMY1(X,XFACT,YFACT,Y,YHI,YTIC,NSMTCY,
-     .        xacross,hgrat,hcolor,hline)
+     .     xacross,hgrat,hcolor,hline)
         IF ((solid.OR.dashed) .AND. hline) THEN ! make line across
            CALL COLOR(hcolor(1))
            IF (dashed) THEN
@@ -172,7 +171,6 @@ C
         ENDIF
 
 	Y=Y+YTIC
-	CALL PLOT(X,Y,0,0)
 	CALL PLOTT7(X,Y,XFACT,YFACT,1,-6)
 100	CONTINUE
 	CALL SMY1(X,XFACT,YFACT,Y,YHI,YTIC,NSMTCY,
@@ -191,8 +189,6 @@ C
            CALL VECTRS
         ENDIF
 
-* Draw the axis line
-	CALL PLOT(X,YLO,0,0)
 	CALL PLOT(X,YHI,1,0)
 
 C

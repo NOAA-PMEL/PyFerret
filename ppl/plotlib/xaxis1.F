@@ -1,6 +1,6 @@
       SUBROUTINE XAXIS1(XLO,XHI,XTIC,NSMTCX,LINTX,XUNIT,LABEL,
      *    IFORMT,XFACT,Y,YFACT,CSIZE,yacross,xdms,xdspac,vgrat,vcolor,
-     *    vline, xvaloff, color0)
+     *    vline, xvaloff,color0)
 
 *
 *
@@ -57,6 +57,7 @@ C V695 *acm*  5/15 for PyFerret draw lines and tics only once, avoiding overdraw
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
 
 C**
 C**    @(#)xaxis1.f	1.1    3/10/88
@@ -80,8 +81,8 @@ C**
 
         REAL yacross, dash1, dash2,dash3,dash4, xvaloff
         REAL vgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
-        INTEGER vcolor(*)      ! pen number 
-        INTEGER color0	       ! pen number for axis
+        INTEGER vcolor(*)      ! pen number for graticule lines
+	INTEGER color0	       ! pen number to restore 
         LOGICAL vline          ! If true, do the lines across.
         LOGICAL solid          ! solid lines across at tics
         LOGICAL dashed         ! dashed lines across at tics
@@ -93,9 +94,13 @@ C**
 
 
 * TMAP interrupt flag
-
 	include 'xinterrupt.cmn'
-
+        include 'parampl5_dat.decl'
+        include 'PARAMPL5.DAT'
+        include 'lines_inc.decl'
+        include 'LINES.INC'
+        INCLUDE 'pen_inc.decl'  ! with IPEN(1)
+        INCLUDE 'PEN.INC'
 
 C     THIS ROUTINE DRAWS AN X AXIS.  IT LABELS THE AXIS BELOW
 C     IF LABEL=-1, ABOVE IF LABEL=1, AND NOT AT ALL

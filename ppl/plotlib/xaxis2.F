@@ -52,6 +52,8 @@ C                with "*(*)" for the linux port
 *                inverse log axes and log depth axes.
 C V695 *acm*  5/15 Restore color after a graticule using defined color 0
 *
+*acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
+
 	CHARACTER XLAB*20,IFORMT*(*),XFRMT*12
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
 	COMMON/AXLWID/XWID,YWID
@@ -63,11 +65,18 @@ C V695 *acm*  5/15 Restore color after a graticule using defined color 0
         REAL dash2_1, dash2_2, dash2_3, dash2_4 
         REAL vgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
         REAL xt
-        INTEGER vcolor(*)      ! pen number 
-        INTEGER color0	       ! pen number for axis
+        INTEGER vcolor(*)      ! pen number for graticule lines
+	INTEGER color0	       ! pen number to restore 
         LOGICAL vline          ! If true, do the lines across.
         LOGICAL solid1, solid2 ! solid lines across at tics
         LOGICAL dashed1, dashed2 ! dashed lines across at tics
+
+        include 'parampl5_dat.decl'
+        include 'PARAMPL5.DAT'
+        include 'lines_inc.decl'
+        include 'LINES.INC'
+        INCLUDE 'pen_inc.decl'  ! with IPEN(1)
+        INCLUDE 'PEN.INC'
         
 C
 C     THIS ROUTINE PLOTS SEVERAL TYPES OF BASE 10 LOG XAXIS.

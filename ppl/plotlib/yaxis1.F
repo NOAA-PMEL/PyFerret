@@ -61,6 +61,7 @@ C V695 *acm* 10/15 Fix ticket 2320 - missing minor tic marks
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
 
 C**
 C**    @(#)yaxis1.f	1.1    3/10/88
@@ -82,9 +83,9 @@ C**
 
         REAL xacross, dash1, dash2, dash3, dash4
         REAL hgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
-        INTEGER hcolor(*)      ! pen number 
-        INTEGER color0	       ! pen number for axis
-        LOGICAL hline          ! If true, do the lines across.
+        INTEGER hcolor(*)      ! pen number for graticule lines
+        INTEGER color0         ! pen number to restore
+	LOGICAL hline          ! If true, do the lines across.
         LOGICAL solid          ! solid lines across at tics
         LOGICAL dashed         ! dashed lines across at tics
 	LOGICAL noylab
@@ -98,6 +99,12 @@ C**
 
 * TMAP interrupt flag
 	include 'xinterrupt.cmn'
+        include 'parampl5_dat.decl'
+        include 'PARAMPL5.DAT'
+        include 'lines_inc.decl'
+        include 'LINES.INC'
+        INCLUDE 'pen_inc.decl'  ! with IPEN(1)
+        INCLUDE 'PEN.INC'
 C
 C     THIS ROUTINE DRAWS A Y AXIS.  IT LABELS THE AXIS ON THE LEFT
 C     IF LABEL=-1, ON THE RIGHT IF LABEL=1, AND NOT AT ALL

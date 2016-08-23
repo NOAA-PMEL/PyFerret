@@ -50,6 +50,7 @@ C                with "*(*)" for the linux port
 * *acm* - 6/01   changes to allow plot qualifiers to set log axes,
 *                inverse log axes and log depth axes.
 C V695 *acm*  5/15 Restore color after a graticule using defined color 0
+* *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
 
 	CHARACTER YLAB*20,IFORMT*(*),YFRMT*12
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
@@ -62,11 +63,18 @@ C V695 *acm*  5/15 Restore color after a graticule using defined color 0
         REAL dash2_1, dash2_2, dash2_3, dash2_4
         REAL hgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
         REAL yt
-        INTEGER hcolor(*)      ! pen number 
-        INTEGER color0	       ! pen number for axis
+        INTEGER hcolor(*)      ! pen number for graticule lines
+        INTEGER color0         ! pen number to restore
         LOGICAL hline          ! If true, do the lines across.
         LOGICAL solid1,solid2  ! solid lines across at large, small tics
         LOGICAL dashed1, dashed2 ! dashed lines across at large, small tics
+
+        include 'parampl5_dat.decl'
+        include 'PARAMPL5.DAT'
+        include 'lines_inc.decl'
+        include 'LINES.INC'
+        INCLUDE 'pen_inc.decl'  ! with IPEN(1)
+        INCLUDE 'PEN.INC'
 
 C
 C     THIS ROUTINE PLOTS SEVERAL TYPES OF BASE 10 LOG YAXIS.

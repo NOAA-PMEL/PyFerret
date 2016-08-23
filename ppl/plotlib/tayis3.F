@@ -61,6 +61,7 @@ C              do not make small tics by default.
 C V695 *acm*  5/15 Restore color after a graticule using defined color 0
 C V695 *acm*  5/15 Restore color after a graticule using defined color 0
 C v7   *acm*  6/16 Fix ticket 2436: # characters used in time-axis labels 
+* *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
 
 C**
 C**    @(#)tayis3.f	1.1    3/10/88
@@ -120,15 +121,21 @@ C
 
 	LOGICAL*4 not_zero_size
         include 'century.cmn'
-        
+        include 'parampl5_dat.decl'
+        include 'PARAMPL5.DAT'
+        include 'lines_inc.decl'
+        include 'LINES.INC'
+        INCLUDE 'pen_inc.decl'  ! with IPEN(1)
+        INCLUDE 'PEN.INC'
+
 * Parameters for drawing tics across plot
 
         REAL xacross
         REAL dash1_1, dash1_2, dash1_3, dash1_4
         REAL dash2_1, dash2_2, dash2_3, dash2_4
         REAL hgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
-        INTEGER hcolor(*)      ! pen number 
-        INTEGER color0	       ! pen number for axis
+        INTEGER hcolor(*)      ! pen number for graticule lines
+	INTEGER color0	       ! pen number to restore 
         LOGICAL hline          ! If true, do the lines across.
         LOGICAL solid1, solid2   ! solid lines across at tics
         LOGICAL dashed1, dashed2 ! dashed lines across at tics

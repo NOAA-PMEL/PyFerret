@@ -135,7 +135,7 @@ C ---------- Skip this section if not drawing the axes ----------
 C
 C     DRAW AXIS, LEFT, RIGHT Y AXIS THEN TOP, BOTTOM XAXIS
 C
-	IF(MAKEP.EQ.'VIEW') GOTO 1000
+	IF (MAKEP.EQ.'VIEW') GOTO 1000
 
       
 * (PyFerret) labels along vertical axes will be drawn with the ivtics text style
@@ -144,8 +144,8 @@ C
       IF(MYLEF.EQ.0.AND.IAXON(3).EQ.1)THEN
 	  IY=ITY
 C	  YAXIS1 = LINEAR ,  YAXIS2 = LOG
-C  
-          IF((ITFLG.EQ.-1 .OR. ITFLG.EQ.2))THEN
+C
+          IF (ITFLG.EQ.-1 .OR. ITFLG.EQ.2) THEN
               IF(ITFLG.EQ.-1) CALL TAYIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,
      *        YF,XLO,XF,TCSIZE,XHI,HGRAT, HCOLOR, HLINE, IPEN(0), is_hours_axis)
               IF(ITFLG.EQ.2) CALL TAYIS(ITYPETb,TLOb,IT1b,IT2b,DT,NMTCTb,LTBb,IFDBb,ISDBb,
@@ -165,7 +165,7 @@ C
 	IF ( interrupted ) GOTO 3333		! TMAP interrupt
       IF(IAXON(4).EQ.1)THEN
 	IY=-ITY
-        IF((ITFLG.EQ.-1 .OR. ITFLG.EQ.2)) THEN
+        IF (ITFLG.EQ.-1 .OR. ITFLG.EQ.2) THEN
             IF(ITFLG.EQ.-1) CALL TAYIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
      *      YF,XHI,XF,TCSIZE,XLO,HGRAT, HCOLOR, HLINE, IPEN(0), is_hours_axis)
             IF(ITFLG.EQ.2) CALL TAYIS(ITYPETb,TLOb,IT1b,IT2b,DT,NMTCTb,LTTb,IFDBb,ISDBb,
@@ -195,7 +195,7 @@ C
 C	  XAXIS1 = LINEAR, XAXIS2 = LOG, TAXIS CALLS EITHER TAXIS0,
 C					 TAXIS1 OR TAXIS3
 C
-          IF((ITFLG.EQ.1 .OR. ITFLG.EQ.2)) THEN
+          IF (ITFLG.EQ.1 .OR. ITFLG.EQ.2) THEN
               CALL TAXIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
      *        XF,YHI,YF,TCSIZE,YLO,VGRAT, VCOLOR, VLINE, IPEN(0), is_hours_axis)
               vline = .FALSE.
@@ -212,7 +212,7 @@ C
 	IF ( interrupted ) GOTO 3333		! TMAP interrupt
       IF(MXBOT.EQ.0.AND.IAXON(2).EQ.1)THEN
           IX=ITX
-          IF((ITFLG.EQ.1 .OR. ITFLG.EQ.2)) THEN
+          IF (ITFLG.EQ.1 .OR. ITFLG.EQ.2) THEN
               CALL TAXIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,
      *        XF,YLO,YF,TCSIZE,YHI,VGRAT, VCOLOR, VLINE, IPEN(0), is_hours_axis)
               vline = .FALSE.
@@ -232,7 +232,7 @@ C ---------- End of skip section if not drawing the axes ----------
 
 * TMAP interrupt re-entry
  3333	CONTINUE
-	
+
 	IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
 	CALL CROSS
 	CALL WINDOW(0.,0.,0.,0.)

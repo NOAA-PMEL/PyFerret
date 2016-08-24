@@ -61,6 +61,7 @@ C                with "*(*)" for the linux port
 C *acm* 03/04  new arguments and code for plotting graticule lines across plot.
 C *acm*  3/10  Bug 670 fixed: New flag MULTICENFLAG for multi-decade plots, 
 C              do not make small tics by default.
+C V695 *acm*  5/15 for PyFerret draw lines and tics only once, avoiding overdrawing.
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
 
 C**
@@ -320,6 +321,7 @@ C     LOOP:
 	
 	   IF (IYDB .GT. 0) THEN
 	      IF (MOD(ICEN3*100+IYR3,IYDB).EQ.0) THEN
+	         CALL PLOT  (T+TIC,Y,0,0)
 	         CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
                  IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
                     CALL COLOR(color1)
@@ -336,7 +338,8 @@ C     LOOP:
 
 	      ELSE
 	         IF(NOT_ZERO_SIZE) THEN
-     		   CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML) 
+	         CALL PLOT  (T+TIC,Y,0,0)
+	         CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
                       IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
                          CALL COLOR(color2)
                          IF (dashed2) THEN
@@ -355,6 +358,7 @@ C     LOOP:
           ENDIF
 	ELSE
 	   IF(IMON3.EQ.1)THEN
+	      CALL PLOT  (T+TIC,Y,0,0)
 	      CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
               IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
                  CALL COLOR(color1)
@@ -370,6 +374,7 @@ C     LOOP:
               ENDIF
 	   ELSE
 	      IF(NOT_ZERO_SIZE) THEN
+                 CALL PLOT  (T+TIC,Y,0,0)
                  CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
                  IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
                     CALL COLOR(color2)
@@ -398,8 +403,8 @@ C         THE LABELS
 30	FORMAT(6X,A3,4X,A2,A2)
 	WRITE(SYM,40)MON,YR
    40         FORMAT(A3,' ',A2)
-        TSYM=T+(TIC-SYMWID(CSIZE,NC,SYM)/TFACT)*.5
-        CALL SYMBEL(TSYM,YTEMP1,0.,CSIZE,NC,SYM)
+        TSYM=T+(TIC-SYMWID(CSIZE,NC,SYM(:NC))/TFACT)*.5
+        CALL SYMBEL(TSYM,YTEMP1,0.,CSIZE,NC,SYM(:NC))
    50     CONTINUE
           IF(IYDB.EQ.0.OR.NC.EQ.6) GO TO 70
               IF(IYR.EQ.IYR3) GO TO 70
@@ -410,8 +415,8 @@ C             ELSE:
 	READ(SYM,30)MON,CEN,YR
 	WRITE(SYM,55)CEN,YR
    55             FORMAT(A2,A2)
-        TSYM=TYR+(T+TIC-TYR-SYMWID(1.4*CSIZE,4,SYM)/TFACT)*.5
-        CALL SYMBEL(TSYM,YTEMP2,0.,1.4*CSIZE,4,SYM)
+        TSYM=TYR+(T+TIC-TYR-SYMWID(1.4*CSIZE,4,SYM(:4))/TFACT)*.5
+        CALL SYMBEL(TSYM,YTEMP2,0.,1.4*CSIZE,4,SYM(:4))
 	ENDIF
    60         TYR=T+TIC
    70     CONTINUE
@@ -434,8 +439,8 @@ C     ELSE:
           CALL TIME2(ITIME,SYM)
 	READ(SYM,30)MON,CEN,YR
 	WRITE(SYM,55)CEN,YR
-        TSYM=TYR+(T-TYR-SYMWID(1.4*CSIZE,4,SYM)/TFACT)*.5
-        CALL SYMBEL(TSYM,YTEMP2,0.,1.4*CSIZE,4,SYM)
+        TSYM=TYR+(T-TYR-SYMWID(1.4*CSIZE,4,SYM(:4))/TFACT)*.5
+        CALL SYMBEL(TSYM,YTEMP2,0.,1.4*CSIZE,4,SYM(:4))
 	ENDIF
 C
 C     THE SECTION OF CODE THAT PUTS ON THE SMALL TIC MARKS.

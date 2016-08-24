@@ -58,8 +58,8 @@ C                with "*(*)" for the linux port
 C *acm* 03/04  new arguments and code for plotting graticule lines across plot. 
 C *acm*  3/10  Bug 670 fixed: New flag MULTICENFLAG for multi-decade plots, 
 C              do not make small tics by default.
+C v7   *acm*  6/16 Fix ticket 2436: # characters used in time-axis labels 
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
-
 
 C**
 C**    @(#)tayis3.f	1.1    3/10/88
@@ -386,8 +386,8 @@ C         THE LABELS
 30	FORMAT(6X,A3,4X,A2,A2)
 	WRITE(SYM,40)MON,YR
 40	FORMAT(A3,' ',A2)
-        TSYM=T+(TIC-SYMWID(CSIZE,NC,SYM)/TFACT)*.5
-        CALL SYMBEL(XTEMP1,TSYM,90.,CSIZE,NC,SYM)
+        TSYM=T+(TIC-SYMWID(CSIZE,NC,SYM(:NC))/TFACT)*.5
+        CALL SYMBEL(XTEMP1,TSYM,90.,CSIZE,NC,SYM(:NC))
 50	CONTINUE
 	IF(IYDB.EQ.0.OR.NC.EQ.6) GO TO 70
 	IF(IYR.EQ.IYR3) GO TO 70
@@ -398,8 +398,8 @@ C             ELSE:
 	    READ(SYM,30)MON,CEN,YR
 	    WRITE(SYM,55)CEN,YR
 55	    FORMAT(A2,A2)
-	    TSYM=TYR+(T+TIC-TYR-SYMWID(1.4*CSIZE,4,SYM)/TFACT)*.5
-	    CALL SYMBEL(XTEMP2,TSYM,90.,1.4*CSIZE,4,SYM)
+	    TSYM=TYR+(T+TIC-TYR-SYMWID(1.4*CSIZE,4,SYM(:4))/TFACT)*.5
+	    CALL SYMBEL(XTEMP2,TSYM,90.,1.4*CSIZE,4,SYM(:4))
 	ENDIF
 60	TYR=T+TIC
 70	CONTINUE
@@ -423,8 +423,8 @@ C     ELSE:
 	    CALL TIME2(ITIME,SYM)
 	    READ(SYM,30)MON,CEN,YR
 	    WRITE(SYM,55)CEN,YR
-	    TSYM=TYR+(T-TYR-SYMWID(1.4*CSIZE,4,SYM)/TFACT)*.5
-	    CALL SYMBEL(XTEMP2,TSYM,90.,1.4*CSIZE,4,SYM)
+	    TSYM=TYR+(T-TYR-SYMWID(1.4*CSIZE,4,SYM(:4))/TFACT)*.5
+	    CALL SYMBEL(XTEMP2,TSYM,90.,1.4*CSIZE,4,SYM(:4))
 	ENDIF
 C
 C     THE SECTION OF CODE THAT PUTS ON THE SMALL TIC MARKS.

@@ -69,7 +69,7 @@
       CALL ef_set_result_type(id, STRING_RETURN)
 
       arg = 1
-      CALL ef_set_arg_name(id, arg, 'STR')
+      CALL ef_set_arg_name(id, arg, 'INSTRING')
       CALL ef_set_arg_desc(id, arg, 'String variable to edit')
       CALL ef_set_axis_influence_6d(id, arg,
      .                              YES, YES, YES, YES, YES, YES)
@@ -77,14 +77,14 @@
       
 
       arg = 2
-      CALL ef_set_arg_name(id, arg, 'STR')
+      CALL ef_set_arg_name(id, arg, 'S1')
       CALL ef_set_arg_desc(id, arg, 'Single character to replace')
       CALL ef_set_axis_influence_6d(id, arg,
      .                              NO, NO, NO, NO, NO, NO)
       CALL ef_set_arg_type(id, arg, STRING_ARG)
       
       arg = 3
-      CALL ef_set_arg_name(id, arg, 'STR')
+      CALL ef_set_arg_name(id, arg, 'S2')
       CALL ef_set_arg_desc(id, arg, 'Single character to insert')
       CALL ef_set_axis_influence_6d(id, arg,
      .                              NO, NO, NO, NO, NO, NO)

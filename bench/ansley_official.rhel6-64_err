@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 118548379 Jul 25 15:20 /home/users/ansley/build/working/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 118727373 Aug 24 16:09 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: nulls in diagonstic output
+Note: Fixes for levels, vector settings. Tkt 2453: Warnings on spawn return of no-success
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,14 +13,14 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
-PWD=/home/users/ansley/build/working/FERRET/bench
+PWD=/home/users/ansley/build/trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Mon Jul 25 15:26:39 PDT 2016
+Beginning at Wed Aug 24 16:12:07 PDT 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1376,27 +1376,27 @@ Replacing definition of axis TAX2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  **ERROR: improper grid or axis definition: Axis length exceeds modulo length
 define axis/x=130e:500:10/modulo=360 xsub
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag on command:ncdump -h test_nomod.cdf | grep modulo
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_subspan_modulo.nc
  LISTing to file test_subspan_modulo.nc
  LISTing to file test_subspan_modulo.nc
@@ -4060,7 +4060,7 @@ Replacing definition of grid GG
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 rm: cannot remove `WestCoastCarbon_9d9c_f562_77b5_5.nc': No such file or directory
-           *** NOTE: Shell command returned failure flag on command:rm WestCoastCarbon_9d9c_f562_77b5_5.nc
+           *** NOTE: Shell command returned failure flag: rm WestCoastCarbon_9d9c_f562_77b5_5.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4390,9 +4390,9 @@ go/garbage tmp/testMe
  **ERROR: unknown command qualifier: garbage
 go/garbage "tmp/testMe"
  **ERROR: unknown command qualifier: garbage
-go/garbage /home/users/ansley/build/working/FERRET/bench/tmp/testMe.jnl
+go/garbage /home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl
  **ERROR: unknown command qualifier: garbage
-go/garbage "/home/users/ansley/build/working/FERRET/bench/tmp/testMe.jnl"
+go/garbage "/home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: command line too long -- exceeds 2048
@@ -4715,6 +4715,14 @@ Replacing definition of axis TAX
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis YAXIS
+ LISTing to file a.nc
+Replacing definition of axis TAX
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
@@ -4763,6 +4771,16 @@ Replacing definition of axis TAX
  LISTing to file abc.dat
  LISTing to file a.nc
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ls: cannot access notafile.nowhere: No such file or directory
+           *** NOTE: Shell command returned failure flag: ls notafile.nowhere
+           *** NOTE: Shell command returned failure flag: grep "this text is not in the file" bn_all.jnl
+rm: cannot remove `nothing.dat': No such file or directory
+           *** NOTE: Shell command returned failure flag: rm nothing.dat
+           *** NOTE: Shell command returned failure flag: grep modulus non_COARDS.cdl
+cp: cannot stat `nofile.dat': No such file or directory
+           *** NOTE: Shell command returned failure flag: cp nofile.dat not_either.dat
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4871,4 +4889,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Jul 25 15:29:25 PDT 2016
+Ended at Wed Aug 24 16:15:24 PDT 2016

@@ -59,7 +59,6 @@ C *acm* 03/04  new arguments and code for plotting graticule lines across plot.
 C *acm*  3/10  Bug 670 fixed: New flag MULTICENFLAG for multi-decade plots, 
 C              do not make small tics by default.
 C V695 *acm*  5/15 Restore color after a graticule using defined color 0
-C V695 *acm*  5/15 Restore color after a graticule using defined color 0
 C v7   *acm*  6/16 Fix ticket 2436: # characters used in time-axis labels 
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
 

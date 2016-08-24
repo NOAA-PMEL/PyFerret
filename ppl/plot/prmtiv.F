@@ -303,7 +303,7 @@ C
 	    call color(ipen(0))
 	    CALL XAXIS1(XLOW,XHIGH,XTICC,NSMTCS,LINTT,XUNIT,
      *		IPOS,FRMTX,XFF,Y,YFF,CHSIZE,across,xdms,xdspac,vgrat,
-     *		vcolor,vline,xvaloff,IPEN(0))
+     *		vcolor,vline,xvaloff,ipen(0))
 
             CALL tm_break_lines (xlab, lnbeg, lnend, numlines)
             nfont = 0
@@ -435,7 +435,7 @@ c	    ENDIF
 	    call color(ipen(0))
 	    CALL YAXIS1(XX,XFF,YLOW,YHIGH,YTICC,NSMTCS,LINTT,YUNIT,
      *		IPOS,FRMTX,YFF,CHSIZE,across,ydms,ydspac,hgrat,hcolor,hline,
-     *          yvaloff,.FALSE.,SHRINKY,IPEN(0))
+     *          yvaloff,.FALSE.,SHRINKY,ipen(0))
 
             CALL tm_break_lines (ylab, lnbeg, lnend, numlines)
             nfont = 0

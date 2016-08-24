@@ -52,15 +52,17 @@
 *                  commands via SPLIT_LIST to std error rather than std out.
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
-*    *acm* 7/17. It would be good to test a status flag on the system call.
-*                (see ticket 2452). Results are inconsistent.
+*    *acm* 7/17. Test a status flag on the system call (see ticket 2453). Results 
+*                seem inconsistent, make it a warning
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
+	include 'errmsg.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
 
 	LOGICAL IS_SECURE
+	INTEGER	status, slen
 
 	CALl ALL_1_ARG
 	IF ( num_args .GT. 0 ) THEN
@@ -72,7 +74,14 @@
 *             the system command will appear in the appropriate place.
               CALL FLUSH(ttout_lun)
               CALL FLUSH(err_lun)
-	      call system( cmnd_buff(arg_start(1):arg_end(1)) )
+	      CALL SYSTEM( cmnd_buff(arg_start(1):arg_end(1)),status )
+	      IF (status .NE. 0) CALL WARN (
+     .           'Shell command returned failure flag: '//
+     .            cmnd_buff(arg_start(1):arg_end(1)) )
+
+* To handle a nonzero return as an ERROR, comment out the WARN just above, and do this.
+c	      IF (status .NE. 0) GOTO 5100   
+
 	   end if
 	ELSE
 * user can get choice of shells with "SPAWN csh", or whatever.
@@ -83,7 +92,22 @@
      .    	//'and "exit" to return', 0)
 	ENDIF
 
+5000	CONTINUE
 	RETURN
+
+5100	CONTINUE
+
+
+* The return is the return flag from the command, which might be non-zero
+* if they look for a file that's non-existent. 
+* (Should this really be an ERROR!?  I'm thinking not) 
+*   sp rm nothing.dat >> returns 256. 
+*   sp ls nofile.dat  >> returns 512
+*   sp cat file.dat | grep "this text not in the file"  >> returns 256
+*   sp notAcommand >> returns 32512
+
+	CALL ERRMSG(ferr_sys_return, status, 
+     .            'SPAWN '//cmnd_buff(arg_start(1):arg_end(1)), *5000)
 
 	END
 

@@ -86,7 +86,8 @@
      .			ferr_aggregate_error,
      .			ferr_remotevar_error,
      .			ferr_file_not_found,
-     .			ferr_unknown_auxvar
+     .			ferr_unknown_auxvar,
+     .			ferr_sys_return
 	PARAMETER     ( ferr_insuff_memory	= greport		+ 1,
      .			ferr_too_many_vars	= ferr_insuff_memory	+ 1,
      .			ferr_perm_var		= ferr_too_many_vars	+ 1,
@@ -132,5 +133,6 @@
      .                  ferr_aggregate_error    = ferr_not_attribute    + 1,
      .                  ferr_remotevar_error    = ferr_aggregate_error  + 1,
      .                  ferr_file_not_found     = ferr_remotevar_error  + 1,
-     .			ferr_unknown_auxvar	= ferr_file_not_found   + 1)
-	PARAMETER     ( gnum_report	= 45 )
+     .			ferr_unknown_auxvar	= ferr_file_not_found   + 1,
+     .			ferr_sys_return		= ferr_unknown_auxvar   + 1)
+	PARAMETER     ( gnum_report	= 46 )

@@ -49,7 +49,8 @@ C**
 *                 the Ferret side.
 * V698 *acm* 2/16 Re-fix 2186. The fix for 2311 broke the fix for 2186, so the test 
 *                 for data outside 3*std correction wasn't made.
-	
+
+        IMPLICIT NONE
 	include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
 	include 'hd_inc.decl'
@@ -78,7 +79,7 @@ C**
 	LOGICAL TM_FPEQ_SNGL, zmax_test, zmin_test, ok
 	REAL  zero, rbad
 	REAL*8 x, xmean, sum2, sumc, variance_c, xdelta, z_max_tol, z_min_tol
-	INTEGER n, n2
+	INTEGER i, n, n2
 
 c  Already have zmin, zmax
 
@@ -93,10 +94,12 @@ c if min and max are equal, will use linear levels. No need to issue the warning
 	if (zmin .EQ. zmax) THEN
 	   zmean = zmin
 	   zstd = 0
-	   status = 0
+	   IF (need_std) status = 0
 	   GOTO 5000
 	ENDIF
 
+
+        IF (.not. need_std) GOTO 5000
 
 c Has the user set min or max levels to be used?
 c If so take those into account

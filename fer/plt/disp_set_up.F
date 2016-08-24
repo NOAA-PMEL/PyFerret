@@ -760,19 +760,17 @@ C ACM added 8/2001 save cal id if vertical time axis
 * Compute data mean and if needed for the levels setting the std, store
 * in common.  If the user set a std to use, store that.
 * send 	REAL*4 rbad to compare with lev_max, lev_min inside compute_mnstd
-* If the user set some /LEVELS then use them - no need for compute_mnstd 
+* If the user set some /LEVELS then compute_mnstd just returns 
 
        nsiz = size1* size2
-       IF (need_std) THEN
-          rbad = bad_val4
-          CALL COMPUTE_MNSTD (memory(1, xblk1), bad_x, need_std, 
+       rbad = bad_val4
+       CALL COMPUTE_MNSTD (memory(1, xblk1), bad_x, need_std, 
      .       nsiz, rbad, status)
-          IF (status .NE. ferr_ok) THEN
+       IF (need_std .AND. status.NE.ferr_ok) THEN
 * ... set up for automatic levels
-	     CALL PPLCMD ( from, line, 0, 'LEV,()', 1, 1 )
-             CALL USE_LINEAR_LEVELS
-	     status = ferr_ok
-          ENDIF
+          CALL PPLCMD ( from, line, 0, 'LEV,()', 1, 1 )
+          CALL USE_LINEAR_LEVELS
+          status = ferr_ok
        ENDIF
 
 * If histogram-based levels are requested, compute the 

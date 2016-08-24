@@ -300,6 +300,9 @@
 	DATA err_text( ferr_unknown_auxvar - greport )
      .		/ 'auxiliary variable unknown or not in data set' /
 
+	DATA err_text( ferr_sys_return - greport )
+     .		/ 'Shell command returned failure flag' /
+
 	DATA err_text( ferr_nomessge - greport )
      .		/ ' '/
 

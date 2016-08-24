@@ -94,10 +94,12 @@ c if min and max are equal, will use linear levels. No need to issue the warning
 	if (zmin .EQ. zmax) THEN
 	   zmean = zmin
 	   zstd = 0
-	   status = 0
+	   IF (need_std) status = 0
 	   GOTO 5000
 	ENDIF
 
+
+        IF (.not. need_std) GOTO 5000
 
 c Has the user set min or max levels to be used?
 c If so take those into account

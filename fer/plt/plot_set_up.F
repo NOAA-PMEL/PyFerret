@@ -679,6 +679,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
  	         CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi )
 	         dep_min = DBLE( lo )
 	         dep_max = DBLE( hi )
+		 IF (dep_min .LE. -1*mr_bad_data(mv)) dep_min = -1
+		 IF (dep_max .GE.    mr_bad_data(mv)) dep_max = 1
                  cx_y = cx_list(2) 	
                  buff1 = VAR_UNITS(cx_y)
                  iunits = TM_UNIT_ID(buff1)
@@ -740,7 +742,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * If histogram-based levels are requested, compute the 
 * histogram bins.
 * send REAL*4 rbad to compare with lev_max, lev_min inside compute_mnstd
-* If the user set some /LEVELS then use them - no need for compute_mnstd 
+* If the user set some /LEVELS then compute_mnstd just returns 
 
 	   IF (ribbon_plot .AND. ipl.EQ.ribbon_var) THEN
 
@@ -756,9 +758,16 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      
 * ... clean up temporary variable
                  CALL DELETE_VARIABLE( mvh_temp )
-              ELSE IF (need_std) THEN
+              ELSE 
 	         rbad = bad_val4
                  CALL COMPUTE_MNSTD (dep_dat, mr_bad_data(mv), need_std, npts, rbad, status)
+                 IF (need_std .AND. status.NE.ferr_ok) THEN
+* ... set up for automatic levels
+                    CALL PPLCMD ( from, line, 0, 'LEV,()', 1, 1 )
+                    CALL USE_LINEAR_LEVELS
+                    status = ferr_ok
+                 ENDIF
+
               ENDIF
 
 	   ENDIF

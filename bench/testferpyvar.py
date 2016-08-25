@@ -39,8 +39,6 @@ print ">>> pyferret.showdata()"
 pyferret.showdata()
 print ">>> coads.close()"
 coads.close()
-print ">>> del coads"
-del coads
 print ">>> pyferret.showdata()"
 pyferret.showdata()
 

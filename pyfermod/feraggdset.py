@@ -44,12 +44,14 @@ class FerAggDSet(pyferret.FerDSet):
         # and saving component FerDSets as needed
         if along not in ('T', 'E', 'F'):
             raise ValueError("along must be one of 'T', 'E', or 'F'")
-        cmdstr = 'DEFINE DATA/AGGREGATE/' + along
+        self._along = along
+        self._comphidden = bool(hide)
+        cmdstr = 'DEFINE DATA/AGGREGATE/' + self._along
         if title:
             cmdstr += '/TITLE="' + str(title) + '"'
         if not warn:
             cmdstr += '/QUIET'
-        if hide:
+        if self._comphidden:
             cmdstr += '/HIDE'
         cmdstr += ' ' + aggname + ' = '
         firstone = True
@@ -92,22 +94,27 @@ class FerAggDSet(pyferret.FerDSet):
         Representation to of this FerAggDSet.
         Includes the variable names as variables can be added after creation.
         '''
-        infostr = "FerAggDSet(name='%s', dsets=%s) with variables %s" % \
-                  (self._dsetname, str(self._compdsetnames), str(self.fernames(sort=True)))
+        infostr = "FerAggDSet(name='%s', dsets=%s, along=%s) with variables %s" % \
+                  (self._dsetname, str(self._compdsetnames), self._along, str(self.fernames(sort=True)))
         return infostr
 
 
     def __eq__(self, other):
         '''
         Two FerAddDSets are equal if their Ferret names, lists of aggregated 
-        dataset names, and dictionary of FerVar variables are all equal.
-        All string values are compared case-insensitive.
+        dataset names, aggregation axis, component dataset hidden status, and 
+        dictionary of FerVar are variables all equal.  All string values are 
+        compared case-insensitive.
         '''
         if not isinstance(other, pyferret.FerDSet):
             return NotImplemented
         if not isinstance(other, FerAggDSet):
             return False
         if not super(FerAggDSet, self).__eq__(other):
+            return False
+        if self._along != other._along:
+            return False
+        if self._comphidden != other._comphidden:
             return False
         if len(self._compdsetnames) != len(other._compdsetnames):
             return False
@@ -149,14 +156,17 @@ class FerAggDSet(pyferret.FerDSet):
         Removes (cancels) all the variables in Ferret associated with this dataset,
         then closes (cancels) this dataset in Ferret.  If the aggregated dataset was 
         created with hide=True, this will close (cancel) all the component datasets 
-        as well.  Raises a ValueError if there is a problem.
+        as well; otherwise the component datasets and dataset names will remain here
+        and in Ferret.  Raises a ValueError if there is a problem.
         '''
         # if the dataset is already closed, ignore this command
         if not self._dsetname:
             return
         # run the Ferret CANCEL commands in FerDSet.close
         super(FerAggDSet, self).close()
-        # clear the list of dataset names and dictionary of datasets
-        self._compdsets.clear()
-        self._compdsetnames = [ ]
+        # if component datasets were hidden, the above close also closed all the
+        # component datasets, so also clear the component dataset information
+        if self._comphidden:
+            self._compdsets.clear()
+            self._compdsetnames = [ ]
 

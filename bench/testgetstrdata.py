@@ -16,14 +16,6 @@ print ">>> strdata = strdict['data']"
 strdata = strdict['data']
 print ">>> repr(strdata.squeeze())"
 repr(strdata.squeeze())
-print ">>> del strdata"
-del strdata
-print ">>> del strdict"
-del strdict
-print ">>> strdict = pyferret.getstrdata('strarr')"
-strdict = pyferret.getstrdata('strarr')
 print ">>> repr(strdict)"
 repr(strdict)
-print ">>> del strdict"
-del strdict
 

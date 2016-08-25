@@ -116,14 +116,10 @@ print ">>> pyferret.showdata(brief=False)"
 pyferret.showdata(brief=False)
 print ">>> coads_uw.close()"
 coads_uw.close()
-print ">>> del coads_uw"
-del coads_uw
 print ">>> pyferret.showdata()"
 pyferret.showdata()
 print ">>> coads.close()"
 coads.close()
-print ">>> del coads"
-del coads
 print ">>> pyferret.showdata()"
 pyferret.showdata()
 

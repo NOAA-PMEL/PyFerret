@@ -6,14 +6,41 @@ print
 
 print ">>> dsetnames = ['./ens1.nc', './ens2.nc', './ens3.nc', './ens4.nc']"
 dsetnames = ['./ens1.nc', './ens2.nc', './ens3.nc', './ens4.nc']
+
+print ">>> onefileagg = pyferret.FerAggDSet(name='onefileagg', dsets=dsetnames[-1:], along='E')"
+onefileagg = pyferret.FerAggDSet(name='onefileagg', dsets=dsetnames[-1:], along='E')
+print ">>> pyferret.showdata()"
+pyferret.showdata()
+print ">>> print str(onefileagg)"
+print str(onefileagg)
+print ">>> onefileagg.close()"
+onefileagg.close()
+print ">>> pyferret.showdata()"
+pyferret.showdata()
+print ">>> print str(onefileagg)"
+print str(onefileagg)
+
+print ">>> twofileagg = pyferret.FerAggDSet(name='twofileagg', dsets=dsetnames[-2:], along='E', hide=True)"
+twofileagg = pyferret.FerAggDSet(name='twofileagg', dsets=dsetnames[-2:], along='E', hide=True)
+print ">>> pyferret.showdata()"
+pyferret.showdata()
+print ">>> print str(twofileagg)"
+print str(twofileagg)
+print ">>> twofileagg.close()"
+twofileagg.close()
+print ">>> pyferret.showdata()"
+pyferret.showdata()
+print ">>> print str(twofileagg)"
+print str(twofileagg)
+
 print ">>> fourfiles = pyferret.FerAggDSet(name='fourfiles', dsets=dsetnames, along='E')"
 fourfiles = pyferret.FerAggDSet(name='fourfiles', dsets=dsetnames, along='E')
+print ">>> pyferret.showdata()"
+pyferret.showdata()
 print ">>> fourfiles.show()"
 fourfiles.show()
 print ">>> print str(fourfiles)"
 print str(fourfiles)
-print ">>> dir(fourfiles)"
-dir(fourfiles)
 print ">>> fourfiles.getdsetnames()"
 fourfiles.getdsetnames()
 print ">>> fourfiles.getdsets()"
@@ -26,13 +53,10 @@ print ">>> fourfiles.close()"
 fourfiles.close()
 print ">>> print str(fourfiles)"
 print str(fourfiles)
-print ">>> dir(fourfiles)"
-dir(fourfiles)
 print ">>> fourfiles.getdsetnames()"
 fourfiles.getdsetnames()
 print ">>> fourfiles.getdsets()"
 fourfiles.getdsets()
-
-print ">>> del fourfiles"
-del fourfiles
+print ">>> pyferret.showdata()"
+pyferret.showdata()
 

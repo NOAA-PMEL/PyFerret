@@ -40,8 +40,8 @@ pyferret.lineplot(coads_uw.uwnd, vs=coads_uw.vwnd, color=coads_uw.mywnd, region=
 print ">>> pyferret.saveplot('testfermethods_lineplot.pdf')"
 pyferret.saveplot('testfermethods_lineplot.pdf')
 
-print ">>> del coads_uw"
-del coads_uw
+print ">>> coads_uw.close()"
+coads_uw.close()
 print ">>> pyferret.showdata()"
 pyferret.showdata()
 

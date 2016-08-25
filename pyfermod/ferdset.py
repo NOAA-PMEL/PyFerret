@@ -62,17 +62,6 @@ class FerDSet(object):
             self._fervarnames.add(varname)
 
 
-    def __del__(self):
-        '''
-        Removes this dataset from Ferret.
-        '''
-        try:
-            self.close()
-            # ignore any errors (Ferret or any other)
-        except Exception:
-            pass
-
-
     def __repr__(self):
         '''
         Representation to recreate this FerDataSet.

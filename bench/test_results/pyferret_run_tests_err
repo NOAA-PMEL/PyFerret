@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Aug 23 17:26 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1387 Aug 25 13:11 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -282,6 +282,7 @@ Benchmark scripts that will be run:
    bn_delim_datetime.jnl
    bn_aggregate_u.jnl
    bn_ez_noupcase.jnl
+   bn_spawn_fail.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
@@ -298,7 +299,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Tue Aug 23 17:26:23 PDT 2016
+Beginning at Thu Aug 25 13:11:34 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -1408,17 +1409,27 @@ Replacing definition of axis YAX
 *** Running ferret script: bn_subspan_modulo.jnl
  Cached data cleared from memory
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  **ERROR: improper grid or axis definition: Axis length exceeds modulo length
 define axis/x=130e:500:10/modulo=360 xsub
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_subspan_modulo.nc
  LISTing to file test_subspan_modulo.nc
  LISTing to file test_subspan_modulo.nc
@@ -1496,6 +1507,7 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 rm: cannot remove `input.txt': No such file or directory
+           *** NOTE: Shell command returned failure flag: rm input.txt
 ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3818,6 +3830,7 @@ list substring("hello",1,-3)
 *** Running ferret script: bn_append_dsg.jnl
  Cached data cleared from memory
 rm: cannot remove `test_save_dsg.nc': No such file or directory
+           *** NOTE: Shell command returned failure flag: rm test_save_dsg.nc
 *** Running ferret script: bn_global_atts.jnl
  Cached data cleared from memory
  LISTing to file anew_global.nc
@@ -3968,6 +3981,7 @@ Replacing definition of grid GRID3D
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 rm: cannot remove `WestCoastCarbon_9d9c_f562_77b5_5.nc': No such file or directory
+           *** NOTE: Shell command returned failure flag: rm WestCoastCarbon_9d9c_f562_77b5_5.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running ferret script: bn_f_tax_fcns.jnl
@@ -4021,6 +4035,7 @@ def anno/nou/user/xpos=0/ypos=0 "My Lab"
 *** Running ferret script: bn_auxiliary.jnl
  Cached data cleared from memory
 rm: cannot remove `layerz_test_data.txt': No such file or directory
+           *** NOTE: Shell command returned failure flag: rm layerz_test_data.txt
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
 SET VAR/layerz=depth noexist
@@ -4644,6 +4659,16 @@ list index,edtim,udtim,udate,edate
  LISTing to file abc.dat
  LISTing to file a.nc
  LISTing to file a.nc
+*** Running ferret script: bn_spawn_fail.jnl
+ Cached data cleared from memory
+ls: cannot access notafile.nowhere: No such file or directory
+           *** NOTE: Shell command returned failure flag: ls notafile.nowhere
+           *** NOTE: Shell command returned failure flag: grep "this text is not in the file" bn_all.jnl
+rm: cannot remove `nothing.dat': No such file or directory
+           *** NOTE: Shell command returned failure flag: rm nothing.dat
+           *** NOTE: Shell command returned failure flag: grep modulus non_COARDS.cdl
+cp: cannot stat `nofile.dat': No such file or directory
+           *** NOTE: Shell command returned failure flag: cp nofile.dat not_either.dat
 *** Running ferret script: bn_gif.jnl
  Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
@@ -4801,4 +4826,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testfermethods.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Tue Aug 23 17:28:25 PDT 2016
+Ended at Thu Aug 25 13:13:42 PDT 2016

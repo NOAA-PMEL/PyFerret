@@ -1,0 +1,11 @@
+! bn_spawn_fail.jnl
+!  See ticket 2453
+!  If a no-success flag is returned from a SPAWN, 
+!  report that as a warning.
+!  8/2016 *acm*
+
+sp ls notafile.nowhere
+sp grep "this text is not in the file" bn_all.jnl
+sp rm nothing.dat
+sp grep modulus non_COARDS.cdl
+sp cp nofile.dat not_either.dat

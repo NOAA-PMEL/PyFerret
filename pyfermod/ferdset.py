@@ -46,10 +46,8 @@ class FerDSet(object):
 
         # record the filename and Ferret dataset name 
         self._filename = filename
-        slashidx = filename.rfind('/') + 1
-        self._dsetname = filename[slashidx:]
-        if not self._dsetname:
-            raise ValueError('invalid dataset name derived from the filename')
+        # need to use the filename as given as the dataset name to avoid possible abiguity
+        self._dsetname = filename
         # create a FerVar for each variable in this dataset
         namesdict = pyferret.getstrdata('..varnames')
         for varname in namesdict['data'].flatten():
@@ -67,8 +65,8 @@ class FerDSet(object):
         Representation to recreate this FerDataSet.
         Also includes the variable names as variables can be added after creation.
         '''
-        infostr = "FerDSet('%s') using dataset name '%s' and variables %s" % \
-                  (self._filename, self._dsetname, str(self.fernames(sort=True)))
+        infostr = "FerDSet('%s') with variables %s" % \
+                  (self._filename, str(self.fernames(sort=True)))
         return infostr
 
 
@@ -294,10 +292,10 @@ class FerDSet(object):
         if not self._dsetname:
             return
         # now remove the dataset
-        cmdstr = 'CANCEL DATA %s' % self._dsetname
+        cmdstr = 'CANCEL DATA "%s"' % self._dsetname
         (errval, errmsg) = pyferret.run(cmdstr)
         if errval != pyferret.FERR_OK:
-            raise ValueError('unable to remove dataset %s in Ferret: %s' % self._dsetname)
+            raise ValueError('unable to remove dataset "%s" in Ferret: %s' % self._dsetname)
         # mark this dataset as closed
         self._dsetname = ''
 
@@ -328,8 +326,9 @@ class FerDSet(object):
                 cmdstr += '/FULL'
             if qual:
                 cmdstr += qual
-            cmdstr += ' '
+            cmdstr += ' "'
             cmdstr += self._dsetname
+            cmdstr += '"'
         (errval, errmsg) = pyferret.run(cmdstr)
         if errval != pyferret.FERR_OK:
             raise ValueError('Ferret command "%s" failed: %s' % (cmdstr, errmsg))

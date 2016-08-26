@@ -855,7 +855,7 @@ class FerVar(object):
         # Assign the variable in Ferret
         cmdstr = 'DEFINE VAR'
         if dsetname:
-            cmdstr += '/D=%s' % dsetname
+            cmdstr += '/D="%s"' % dsetname
         if self._title:
             cmdstr += '/TITLE="%s"' % self._title
         cmdstr += ' %s = %s' % (varname, self._definition)

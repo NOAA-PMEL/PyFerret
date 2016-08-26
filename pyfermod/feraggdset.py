@@ -94,8 +94,9 @@ class FerAggDSet(pyferret.FerDSet):
         Representation to of this FerAggDSet.
         Includes the variable names as variables can be added after creation.
         '''
-        infostr = "FerAggDSet(name='%s', dsets=%s, along=%s) with variables %s" % \
-                  (self._dsetname, str(self._compdsetnames), self._along, str(self.fernames(sort=True)))
+        infostr = "FerAggDSet(name='%s', dsets=%s, along='%s', hide=%s) with variables %s" % \
+                  (self._dsetname, str(self._compdsetnames), self._along, 
+                   str(self._comphidden), str(self.fernames(sort=True)))
         return infostr
 
 

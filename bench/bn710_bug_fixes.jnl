@@ -24,5 +24,9 @@ go err700_samplexy_subspan_modulo
 go bn_reset
 go err700_levels_one_level
 
+! Bug xxxx  Only examine key labels that are actually going to be printed
+go bn_reset
+go err700_key
+
 ! Note the fix for # 2437 needs documentation: 4D output for grids in X,Y,Z,T only
 ! Note the fix for # 2451 needs documentation: -gif mode plots with /HLIM or /VLIM reversing an axis.

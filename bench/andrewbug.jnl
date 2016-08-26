@@ -1,6 +1,0 @@
-use coads_climatology
-let a = 0; let b = 0; let c = 0
-can var c
-can var/noerr c b
-let b = `a`
-let a = 0

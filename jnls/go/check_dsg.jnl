@@ -1,0 +1,152 @@
+
+use $1
+IF ($checkfile"1|*>0") THEN 
+   define symbol checkfile = checking_dsg_($session_date)($session_time).dat
+   set redirect/clobber/tee/file=($checkfile)
+endif
+can mode ver
+
+let note_num = 0
+
+let note_num = `note_num + 1`
+define symbol note_`note_num` = File $1
+let note_num = `note_num + 1`
+define symbol note_`note_num` = ___________
+
+let globatts = ..attnames
+if `IS_ELEMENT_OF_STR_N(globatts, "featureType") ne 0` THEN 
+   define symbol feature_type = `..featureType`
+   let note_num = `note_num + 1`
+   define symbol note_`note_num` = DSG  featureType is ... ($feature_type)
+endif
+
+let varnames = ..varnames
+let nvars = `..nvars`
+
+define symbol vname = `varnames[i=1]`
+let dsetnum = `($vname),return=dsetnum`
+
+repeat/range=1:`nvars`/name=v (\
+define symbol v = `v`;\
+define symbol vname = `varnames[i=($v)]`;\
+let attnames = ($vname).attnames;\
+if `IS_ELEMENT_OF_STR_N(attnames, "sample_dimension") GT 0` THEN;\
+   define symbol rowvar = ($vname);\
+   define symbol sample_dimension = `($rowvar).sample_dimension`;\
+   let note_num = `note_num + 1`;\
+   define symbol note_`note_num` = RowSize variable is ... ($rowvar);\
+   let note_num = `note_num + 1`;\
+   define symbol note_`note_num` = Sample dimension is ... ($sample_dimension);\
+endif;\
+if `IS_ELEMENT_OF_STR_N(attnames, "cf_role") GT 0` THEN;\
+   define symbol idvar = ($vname);\
+   define symbol cf_role = `($idvar).cf_role`;\
+   let note_num = `note_num + 1`;\
+   define symbol note_`note_num` = ID variable is ... ($idvar);\
+   IF `STRCMP("($cf_role)", "($feature_type)_id") NE 0` THEN;\
+      say *** ERROR *** cf_role ($cf_role) does not match feature type ($feature_type);\
+      exit/program;\
+   ELSE;\
+      let note_num = `note_num + 1`;\
+      define symbol note_`note_num` = cf_role for ($idvar) is ... ($cf_role);\
+   ENDIF;\
+endif;\
+)
+
+
+! Make sure the rowSize and ID variable are on the same, non-normal grid.
+if `($idvar"0|*>1") AND ($rowvar"0|*>1")` then
+   let instance_grid = `($idvar),return=grid`
+   let rgrid = `($rowvar),return=grid`
+   if `STRCMP("($instance_grid)", "($rgrid)") NE 0` THEN 
+      say *** ERROR *** Grids of  ($idvar) AND ($rowvar) do not match
+      show grid ($idvar)
+      show grid ($rowvar)
+      exit/program
+   endif
+
+   define symbol ax = `rowsize,return=xaxis`; IF ($ax"0|NORMAL>0|*>1) then define symbol id_dir = X
+   if ($ax"0|NORMAL>1|*>0) then define symbol ax = `rowsize,return=yaxis`; IF ($ax"0|NORMAL>0|*>1) then define symbol id_dir = Y
+   if ($ax"0|NORMAL>1|*>0) then define symbol ax = `rowsize,return=zaxis`; IF ($ax"0|NORMAL>0|*>1) then define symbol id_dir = Z
+   if ($ax"0|NORMAL>1|*>0) then define symbol ax = `rowsize,return=taxis`; IF ($ax"0|NORMAL>0|*>1) then define symbol id_dir = T
+   if ($ax"0|NORMAL>1|*>0) then define symbol ax = `rowsize,return=eaxis`; IF ($ax"0|NORMAL>0|*>1) then define symbol id_dir = E
+   if ($ax"0|NORMAL>1|*>0) then define symbol ax = `rowsize,return=faxis`; IF ($ax"0|NORMAL>0|*>1) then define symbol id_dir = F
+   IF ($ax"0|NORMAL>1|*>0) then 
+      say *** ERROR *** Grid of  ($idvar) AND ($rowvar) should not be NORMAL
+      show grid ($idvar)
+      exit/program
+   else
+      say 
+   endif
+endif     
+
+! Look for longitude and latitude variables, and time variable
+! Time might be a dependent variable, or a time axis.
+
+repeat/range=1:`nvars`/name=v (\
+define symbol v = `v`;\
+define symbol vname = `varnames[i=($v)]`;\
+let mmvar = MINMAX(($vname));\
+let attnames = ($vname).attnames;\
+if `IS_ELEMENT_OF_STR_N(attnames, "units") GT 0` THEN;\
+   LET vunits = ($vname).units;\
+   if `strlen(vunits) LE 1` then exit/cycle;\
+   define symbol vunits = `($vname),RETURN=units`;\
+   if `STRINDEX(UPCASE("($vunits)"), "NORTH") GT 0` THEN;\
+      let note_num = `note_num + 1`;\
+      define symbol note_`note_num` = Latitude variable is ... ($vname) with units ($vunits), ($vname) range `mmvar[i=@min],prec=6`  to  `mmvar[i=@max],prec=6`;\
+      define symbol lat_var = ($vname);\
+   endif;\
+   if `STRINDEX(UPCASE("($vunits)"), "EAST") GT 0` THEN;\
+      let note_num = `note_num + 1`;\
+      let l1 = mmvar[i=@min];\
+      let l2 = mmvar[i=@max];\
+      define symbol note_`note_num` = Longitude variable is ... ($vname) with units ($vunits), ($vname) range `l1,prec=6`  to  `l2,prec=6`;\
+      if `($vname"0|longitude>1|*>0") and (l1 lt -180 or l2 gt 180)` then;\
+      say *** ERROR *** Longitude must be in -180:180;\
+      sh dat; \
+      pause;\
+      exit/program;\
+      endif;\
+   endif;\
+   if `STRINDEX(UPCASE("($vunits)"), "SECONDS SINCE") GT 0` THEN;\
+      let note_num = `note_num + 1`;\
+      define symbol note_`note_num` = Time variable is  ... ($vname) with units ($vunits). ($vname) range `mmvar[i=@min],prec=6`  to  `mmvar[i=@max],prec=6`;\
+      define symbol have_time = 1;\
+   endif;\
+endif;\
+cancel symbol vunits;\
+)
+
+IF `($have_time"0|1|*>0") EQ 0` THEN 
+   define symbol sample_shape= `($lat_var),return=shape`
+   IF ($sample_shape"0|($id_dir)>1|POINT>1|*>0") THEN 
+      define symbol timevariable = ($vname)
+   else
+      define symbol timevariable = ($lat_var)
+   endif
+   define symbol sample_shape= `($timevariable),return=shape`
+   let tt = ($sample_shape)[g($sample_shape)=($timevariable)]
+   define symbol  tunits = `($timevariable),return=tunits`
+   define symbol  torigin = `($timevariable),return=t0`
+   if  `strcmp(upcase("($tunits)"), "SECONDS") NE 0` THEN 
+      say *** ERROR *** Time units of `($timevariable),return=taxis` Must be seconds
+      exit/program
+   endif
+   if  `strindex(upcase("($torigin)"), "01-JAN-1970") EQ 0` THEN 
+      say *** ERROR *** Time origin of `($timevariable),return=taxis` Must be 01-JAN-1970
+      exit/program
+   endif
+   let note_num = `note_num + 1`
+   let nt = `($timevariable),return=lsize`
+   let ttn = tt[L=`nt`]
+   define symbol note_`note_num` = Time axis is ... `($timevariable),return=taxis`, \
+Date range  `tax_datestring(tt[l=1],tt[l=1], "day")`  to  `tax_datestring(ttn,ttn, "day")`
+
+
+endif
+
+repeat/i=1:`note_num` (def sym ii = `i`; say ($note_($ii)))
+
+cancel data `dsetnum`
+set mode/last ver

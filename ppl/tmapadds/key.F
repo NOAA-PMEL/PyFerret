@@ -231,6 +231,12 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
         lab_add = 0
         increase_digits = .TRUE.
 
+	if (klab_incr .eq. 0) then
+	   incr = (shd_levels/25) + 1
+	else
+	   incr = klab_incr
+	end if
+
 	kount = 0
         DO WHILE (increase_digits .AND. ABS(lab_digits) .LE. klab_len .AND.kount.LT.10)
            buff = ' '
@@ -243,7 +249,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
            increase_digits = .FALSE.
 
            max_len = 0
-	   DO 30 ndx = lev1+1, shd_levels
+	   DO 30 ndx = lev1+incr, shd_levels, incr
              val = zlev(ndx)
              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	     buff = 
@@ -366,10 +372,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	 max_len = max_len+1  
 
 	if (klab_incr .eq. 0) then
-	   incr = (shd_levels/25) + 1
            IF (width/vwidth .GT. 1.5) incr = 2*incr
-	else
-	   incr = klab_incr
 	end if
 
 	karht = amin1 (xcsize*1000.0,
@@ -638,12 +641,9 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	end if
 
 	if (klab_incr .eq. 0) then
-	   incr = (shd_levels/25) + 1
            IF (height/vheight.GT.1.5 .AND. shd_levels.GT.4) incr = 2*incr   ! short plot, fewer labels
-	else
-	   incr = klab_incr
 	end if
-	
+
 ! The default locations often make the labels run off to the right. 
 ! Check for this and move the key over
 
@@ -742,7 +742,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 * Recompute max_len as formatted for these labels.
 
 	max_len = 0
-	DO ndx = lev1+1, shd_levels
+	DO ndx = lev1+incr, shd_levels, incr
            val = zlev(ndx)
            IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	   buff = 

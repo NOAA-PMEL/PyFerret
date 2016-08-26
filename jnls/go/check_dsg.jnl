@@ -1,9 +1,6 @@
 
 use $1
-IF ($checkfile"1|*>0") THEN 
-   define symbol checkfile = checking_dsg_($session_date)($session_time).dat
-   set redirect/clobber/tee/file=($checkfile)
-endif
+
 can mode ver
 
 let note_num = 0

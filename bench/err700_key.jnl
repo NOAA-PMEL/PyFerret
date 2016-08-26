@@ -1,0 +1,6 @@
+use coads_climatology
+set window/aspect=0.7 1
+shade/levels="(-inf)(0,1.3,0.025)(inf)"/key=continuous/set_up sst[t=@ave]*5e-2
+ppl shakey 1, 1, 0.12, 4, -1, 4
+ppl shade
+frame /file=err700_key.gif

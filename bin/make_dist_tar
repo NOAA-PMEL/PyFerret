@@ -69,7 +69,11 @@ ctar_name="pyferret-${version}-${platform}"
 ctar_file="${target_dir}/${ctar_name}.tar.gz"
 
 # Make a clean temporary directory for the tar file contents
-parent_temp_dir="/var/tmp/pyferret_$$"
+if [ "$TMPDIR" != "" ]; then
+   parent_temp_dir="${TMPDIR}/pyferret_$$"
+else
+   parent_temp_dir="/tmp/pyferret_$$"
+fi
 echo "Creating temporary directory ${parent_temp_dir}"
 rm -fr ${parent_temp_dir}
 temp_dir="${parent_temp_dir}/${ctar_name}"

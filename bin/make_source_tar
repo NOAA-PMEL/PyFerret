@@ -39,7 +39,11 @@ else
 fi
 
 # Make a clean temporary directory for the tar file contents
-temp_dir="/var/tmp/fer_src_$$"
+if [ "$TMPDIR" != "" ]; then
+   temp_dir="${TMPDIR}/fer_src_$$"
+else
+   temp_dir="/tmp/fer_src_$$"
+fi
 rm -fr ${temp_dir}
 mkdir ${temp_dir}
 cd ${temp_dir}

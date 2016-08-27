@@ -59,7 +59,11 @@ echo "Ferret version number is ${version}"
 echo ""
 
 # Make a clean temporary directory for the tar file contents
-set temp_dir = "/var/tmp/fer_exe_$$"
+if ( $?TMPDIR ) then
+   set temp_dir = "${TMPDIR}/fer_exe_$$"
+else
+   set temp_dir = "/tmp/fer_exe_$$"
+endif
 rm -fr ${temp_dir}
 mkdir ${temp_dir}
 

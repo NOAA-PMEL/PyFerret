@@ -53,7 +53,11 @@ endif
 set target_dir = `cd "$2" ; pwd`
 
 # Make a clean temporary directory for the tar file contents
-set temp_dir = "/var/tmp/fer_env_$$"
+if ( $?TMPDIR ) then
+   set temp_dir = "${TMPDIR}/fer_env_$$"
+else
+   set temp_dir = "/tmp/fer_env_$$"
+endif
 rm -fr ${temp_dir}
 mkdir ${temp_dir}
 cd ${temp_dir}

@@ -155,7 +155,7 @@
 * V685  *acm* 9/13 Fixing ticket 2092. Check that the pplus internal storage
 *                  for coordinate data will be enough for the grid and if not
 *                  return an error message. 
-* V686 *acm* 12/13 Symbokls AX_HORIZ and AX_VERT may be x,y,z,t,e,f  
+* V686 *acm* 12/13 Symbols AX_HORIZ and AX_VERT may be x,y,z,t,e,f  
 * V691  *acm*  5/14 Clean up temp memory used for computing histogram levels
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V695+ *sh*  3/15 if an FMRC dataset disambiguate T and F axes with labels
@@ -166,6 +166,7 @@
 *                  returned a status flag of 0 from COMPUTE_MNSTD. Set status to ferr_ok
 *                  after handling the condition.
 * V701  *acm* 8/16 Fix ticket 2463: single-valued data with a /LEVELS setting
+* V701  *acm* 8/16 Fix ticket 2468: Symbols AX_HORIZ and AX_VERT are not reset on an /OVERLAY plot 
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -464,11 +465,13 @@ C   set up memory for the flag grid
 * Define symbols AX_HORIZ and AX_VERT with the x,y,z,t direction 
 * of the axes as they will appear on the plot.
 
+	IF (.NOT.overlay) THEN
         buff1 = axdir(dim1)
 	CALL PPLCMD ( from, line, 0, 'SET AX_HORIZ '//buff1, 1, 1 )
 
         buff1 = axdir(dim2)
         CALL PPLCMD ( from, line, 0, 'SET AX_VERT '//buff1, 1, 1 )
+	ENDIF
 
 * check that there is some valid data
 	no_x_rng = NO_GRID_RANGE( memory(1,xblk1), size, mvx_temp, valx1 )

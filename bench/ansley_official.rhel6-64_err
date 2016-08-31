@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 118727373 Aug 24 16:09 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 118581621 Aug 30 16:49 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Fixes for levels, vector settings. Tkt 2453: Warnings on spawn return of no-success
+Note: ticket 2468: symbol AX_HORIZ was corrupted
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Wed Aug 24 16:12:07 PDT 2016
+Beginning at Tue Aug 30 16:59:14 PDT 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1471,7 +1471,9 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
            *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+rm: cannot remove `input.txt': No such file or directory
 ls: cannot access input.txt: No such file or directory
+           *** NOTE: Shell command returned failure flag: rm input.txt
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XAX
@@ -3891,6 +3893,8 @@ list substring("hello",1,-2)
 list substring("hello",1,-3)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+rm: cannot remove `test_save_dsg.nc': No such file or directory
+           *** NOTE: Shell command returned failure flag: rm test_save_dsg.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file anew_global.nc
@@ -4113,6 +4117,8 @@ def anno/nou/xpos=0/hal=1/val=0 "My Lab"
 def anno/nou/user/xpos=0/ypos=0 "My Lab"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+rm: cannot remove `layerz_test_data.txt': No such file or directory
+           *** NOTE: Shell command returned failure flag: rm layerz_test_data.txt
 Replacing definition of axis ZAX
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
@@ -4723,6 +4729,8 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
@@ -4889,4 +4897,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Aug 24 16:15:24 PDT 2016
+Ended at Tue Aug 30 17:01:33 PDT 2016

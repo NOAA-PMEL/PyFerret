@@ -170,6 +170,7 @@
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 * V701  *acm* 8/16 Fix ticket 2463: single-valued data with a /LEVELS setting
+* V701  *acm* 8/16 Fix ticket 2468: Symbols AX_HORIZ and AX_VERT are not reset on an /OVERLAY plot
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -1013,12 +1014,14 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 
 	ENDIF
 
-        ax1 = axdir(indep_dim)
-	IF (flip) THEN
-           CALL PPLCMD ( from, line, 0, 'SET AX_VERT '//ax1, 1, 1 )
-	ELSE
-	   CALL PPLCMD ( from, line, 0, 'SET AX_HORIZ '//ax1, 1, 1 )
-        ENDIF
+	IF (.NOT.overlay) THEN
+           ax1 = axdir(indep_dim)
+  	   IF (flip) THEN
+              CALL PPLCMD ( from, line, 0, 'SET AX_VERT '//ax1, 1, 1 )
+	   ELSE
+	      CALL PPLCMD ( from, line, 0, 'SET AX_HORIZ '//ax1, 1, 1 )
+           ENDIf
+	ENDIF
 
 *  TITLES
 * Main plot title. Add labels for multi-lines as a key, 

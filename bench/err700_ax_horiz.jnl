@@ -1,0 +1,26 @@
+! err700_ax_horiz.jnl
+! 8/30/2016 *acm* Ticket 2468
+! Symbol axis_horiz was corrupted by overlaying a 
+! set of points using a list in other than the same
+! direction as the axis.
+
+use coads_climatology
+shade/l=1/pal=grayscale/x=100:140/y=-10:30 sst
+
+let xpts={111,115,120,129}
+let ypts = {-5,10,20,23}
+
+
+! this is ok; ax_horiz = X, ax_vert = y
+plot/vs/oversym/color=red/thick/siz=0.2 xpts,ypts
+sh sym ax*
+
+! Now overlay points whose grid is in the E direction
+
+let expts = esequence(xpts)
+let eypts = esequence(ypts)
+shade/l=1/pal=grayscale/x=100:140/y=-10:30 sst
+plot/vs/oversym/color=red/thick/siz=0.2 expts,eypts
+
+! this was incorrect, ax_horiz had changed to E
+sh sym ax*

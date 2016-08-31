@@ -28,5 +28,10 @@ go err700_levels_one_level
 go bn_reset
 go err700_key
 
+! Bug 2468 Symbol AX_HORIZ corrupted by an overlay
+go bn_reset
+go err700_ax_horiz
+
+
 ! Note the fix for # 2437 needs documentation: 4D output for grids in X,Y,Z,T only
 ! Note the fix for # 2451 needs documentation: -gif mode plots with /HLIM or /VLIM reversing an axis.

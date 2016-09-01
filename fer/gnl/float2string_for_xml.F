@@ -66,7 +66,7 @@
 * Ferret will write into data varaibles.
 
 	IF (STR_SAME(strng, 'NaN') .EQ. 0) THEN
-	print *, '  ATTRIBUTE is NaN'
+	   CALL WARN('ATTRIBUTE is NaN')
 	   slen = 3
 	   GOTO 5000
 	ENDIF

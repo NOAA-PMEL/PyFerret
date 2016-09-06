@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Aug 26 15:50 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.01
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Sep  6 13:18 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.01
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -284,12 +284,13 @@ Benchmark scripts that will be run:
    bn_aggregate_u.jnl
    bn_ez_noupcase.jnl
    bn_spawn_fail.jnl
+   bn_ave_of_ave.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Fri Aug 26 15:51:48 PDT 2016
+Beginning at Tue Sep  6 13:18:39 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -4589,6 +4590,8 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running ferret script: bn_delim_datetime.jnl
  Cached data cleared from memory
 Replacing definition of axis TIMAX
@@ -4648,6 +4651,8 @@ rm: cannot remove `nothing.dat': No such file or directory
            *** NOTE: Shell command returned failure flag: grep modulus non_COARDS.cdl
 cp: cannot stat `nofile.dat': No such file or directory
            *** NOTE: Shell command returned failure flag: cp nofile.dat not_either.dat
+*** Running ferret script: bn_ave_of_ave.jnl
+ Cached data cleared from memory
 *** Running ferret script: bn_gif.jnl
  Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
@@ -4767,4 +4772,4 @@ LOAD/TEMPORARY vflag
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
  Cached data cleared from memory
-Ended at Fri Aug 26 15:52:49 PDT 2016
+Ended at Tue Sep  6 13:19:52 PDT 2016

@@ -119,6 +119,8 @@
 * v695 *acm* 5/16 Ticket 2389. When the user gives `var,prec=xx`, return the acutal number
 *                 of digits requested. Return exponential formats when that makes the
 *                 result shorter. Changes are only for positive values of ,prec=
+* v710 *acm* 9/16 Ticket 2469: For RETURN=shape, use the same logic as in SHOW GRID,
+*                 for determining when a grid dimension is compressed by a transformation.
 
 #include "netcdf.inc"
 	include 'tmap_dims.parm'
@@ -149,15 +151,17 @@
 * internal variable declarations:
 	LOGICAL   need_formatting, zero_fill, coordvar,
      .            do_err, do_eval, get_ready, was_dep, const_arr_var,
-     .		  dqote, DQ, orig_name, user_prec
+     .		  dqote, DQ, orig_name, user_prec, uvgrid, compressed
 	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
      .		  FIND_DSET_NUMBER, GET_ABSTRACT_LINE, TM_LENSTR,
+     .		  TM_GET_GRIDNUM, GRID_FROM_NAME, TM_SUBSC, 
      .		  str_len, lenbuff, iend, itmp, axis,
      .		  mr, cx, mr_temp, i, i2, use_digits, true_end,
      .		  qual_end, brkt, idim, use_width, dset, varid, 
      .            vartype, nvdims, vdims(8), nvatts, ist, ind,
      .            attype, attlen, inxt, attoutflag,outflag, fertype, 
-     .            attid, ieq, base_isp, base_cx, cat, var
+     .            attid, ieq, base_isp, base_cx, cat, var, i1, uvar,  
+     .            i1ss, inss, grid
 	REAL	  result, val
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
 	CHARACTER TM_FMT*28, TM_FMT_USER*28, LEFINT*16, VAR_TITLE*(max_len),
@@ -750,8 +754,32 @@
 	      str_len = 0
 	      DO 210 idim = 1, nferdims
 	         IF ( CX_DIM_LEN( idim, cx ) .GT. 1 ) THEN
-	            str_len = str_len + 1
-	            repl(str_len:str_len) = ww_dim_name(idim)
+		    
+	         grid = GRID_FROM_NAME ( cmnd(istart:iend), cx, status )
+		    
+* Getting details about the grid of a user-variable
+
+		    i1 = TM_GET_GRIDNUM( cmnd(istart:iend) )
+		    uvgrid = (i1 .EQ. unspecified_int4 )
+		    uvar = -1
+		    IF (uvgrid) uvar = is_uvar(isp)
+
+		    compressed = .FALSE.
+		    IF ( uvar_given(idim,uvar) .EQ. uvlim_gvn_xact)  THEN
+		       IF (uvar_lo_ss(uvar, idim) .NE. unspecified_int4) THEN
+		          i1ss = uvar_lo_ss(uvar, idim)
+		          inss = uvar_hi_ss(uvar, idim)
+		       ELSE
+		          i1ss = TM_SUBSC ( uvar_lo_ww(idim, uvar), grid, idim, -1 )
+		          inss = TM_SUBSC ( uvar_hi_ww(idim, uvar), grid, idim, -1 )
+		       ENDIF
+	               compressed = (i1ss .NE. inss) 
+		    ENDIF
+
+		    IF (.NOT.compressed) THEN
+	               str_len = str_len + 1
+	               repl(str_len:str_len) = ww_dim_name(idim)
+	            ENDIF
 	         ENDIF
  210	      CONTINUE
 	      IF (str_len .EQ. 0) THEN

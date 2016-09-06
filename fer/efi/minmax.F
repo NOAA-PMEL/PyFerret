@@ -57,7 +57,7 @@
 *                                                                      V
 
       CALL ef_set_desc(id,
-     . 'Returns min and max of a var. result[i=1]=min,result[i=1]=max' )
+     . 'Returns min and max of a var. result[i=1]=min,result[i=2]=max' )
 
       CALL ef_set_num_args(id, 1)
       CALL ef_set_axis_inheritance_6d(id,

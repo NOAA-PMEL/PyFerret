@@ -1095,6 +1095,9 @@ GO bn_ez_noupcase
 GO bn_reset
 GO bn_spawn_fail
 
+GO bn_reset
+GO bn_ave_of_ave
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

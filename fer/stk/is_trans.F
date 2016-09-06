@@ -77,6 +77,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V691+ *acm* 8/14 Fix ticket 2196. Fill transformations component index range should 
 *                  be limited to the range of the axis.
+* V710  *acm* 9/16 For ticket 2469: Allow an average of an average and likewise @SUM, @MIN, @MAX 
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -155,7 +156,11 @@
 	DO 200 i = 1, ndim
 	  idim = axes(i)
 	  IF ( cx_lo_ss(com_cx,idim) .EQ. unspecified_int4 ) THEN
-             IF ( trans .NE. trans_interpolate ) GOTO 5100
+             IF ( trans .NE. trans_interpolate .AND.
+     .            trans .NE. trans_average .AND.
+     .            trans .NE. trans_max .AND.
+     .            trans .NE. trans_min .AND.
+     .            trans .NE. trans_sum) GOTO 5100
 	  ENDIF
  200	CONTINUE
 

@@ -1,0 +1,31 @@
+let a = x[gx=1:3:1] + t[gt=1:7:1]
+let a_xav = a[x=@ave]
+let a_dev = a - a_xav
+
+list a_dev[x=@ave]
+
+! Previously this was an error
+list a[x=@ave] - a_xav[x=@ave]
+
+! Combine with functions, regridding
+let a = x[gx=1:3:1] + t[gt=1:7:1]
+let a_xav = a[x=@ave]
+let a_xav_xav = a_xav[x=@ave]
+let b = samplel(a_xav_xav, l[gl=1:3:1])
+let c = b[gt=1:3:1]
+
+! Previously an error
+list c
+
+! Likewise for @SUM, @MIN, @MAX.
+
+let a = TSEQUENCE({1,2,3})
+let a_xtrns = a[t=@SUM]
+list a[t=@SUM] - a_xtrns[t=@SUM]
+
+let a_xtrns = a[t=@MIN]
+list a[t=@MIN] - a_xtrns[t=@MIN]
+
+let a_xtrns = a[t=@MAX]
+list a[t=@MAX] - a_xtrns[t=@MAX]
+

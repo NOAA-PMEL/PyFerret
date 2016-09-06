@@ -478,7 +478,7 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
     /* Let ferret deal with ctrl-C while in ferret mode */
     oldsighand = signal(SIGINT, pyferret_sigint_handler);
     if ( oldsighand == SIG_ERR ) {
-        PyErr_SetString(PyExc_SystemError, "Unable to catch SIGTERM while in Ferret");
+        PyErr_SetString(PyExc_SystemError, "Unable to catch SIGINT while in Ferret");
         return NULL;
     }
     /* do-loop only for dealing with Ferret "SET MEMORY /SIZE=..." resize command */
@@ -507,7 +507,7 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
             if ( is_secure_() == 0 )
                break;
             if ( sBuffer->flags[FRTN_ACTION] == FACTN_EXIT ) {
-               signal(SIGTERM, oldsighand);
+               signal(SIGINT, oldsighand);
                exit(0);
             }
         }

@@ -676,7 +676,7 @@ class FerVar(object):
                         val += 1
                         indexlimits[k] = '%d' % val
                         changed = True
-                    elif isinstance(start,float):
+                    elif isinstance(val,numbers.Real):
                         if coordlimits[k] or indexlimits[k]:
                             raise KeyError('two slices for axis index %d given' % k)
                         coordlimits[k] = '%s' % str(val)
@@ -746,7 +746,7 @@ class FerVar(object):
                 val += 1
                 indexlimits[k] = '%d' % val
                 changed = True
-            elif isinstance(start,float):
+            elif isinstance(start,numbers.Real):
                 coordlimits[k] = '%s' % str(val)
                 changed = True
             else:

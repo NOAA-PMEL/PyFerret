@@ -8,7 +8,7 @@ import numbers
 import pyferret
 
 
-def setwindow(num=1, plotasp=None, axisasp=None, color=None, thick=None, logo=None):
+def setwindow(num=1, plotasp=None, axisasp=None, color=None, thick=None, logo=None, outline=None):
     """
     Assigns the plot window to use for subsequent plotting commands.
     Also provides assignment of common window plots.  
@@ -32,6 +32,11 @@ def setwindow(num=1, plotasp=None, axisasp=None, color=None, thick=None, logo=No
         logo (boolean): include the Ferret logo in the plot?
             If not given, the current value is unchanged.
             The default on start-up is to include the logo.
+        outline (float): if positive, thickness of polygon outlines;
+            used to fix the 'thin white line' issue in plots.
+            If not given, the current value is unchanged.
+            The default on start-up is zero (no outlines drawn).
+            
     Raises a ValueError if a problem occurs.
     """
     # create and execute the SET WINDOW command
@@ -50,6 +55,10 @@ def setwindow(num=1, plotasp=None, axisasp=None, color=None, thick=None, logo=No
         if (not isinstance(thick, numbers.Real)) or (thick <= 0):
             raise ValueError('thick, if given, must be a positive number')
         cmdstr += '/THICK=' + str(thick)
+    if outline is not None:
+        if (not isinstance(outline, numbers.Real)) or (outline < 0):
+            raise ValueErrror('outline, if given, must be a non-negative number')
+        cmdstr += '/OUTLINE=' + str(outline)
     if color is not None:
         if isinstance(color, str):
             cmdstr += '/COLOR=' + color

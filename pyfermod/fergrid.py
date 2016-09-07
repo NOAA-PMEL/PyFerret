@@ -58,7 +58,7 @@ class FerGrid(object):
         infostr = "FerGrid(axes=[\n"
         for k in xrange(len(self._axes)):
             infostr += "    " + repr(self._axes[k]) + ",\n"
-        infostr += "    name='" + self._gridname + "'])"
+        infostr += "], name='" + self._gridname + "')"
         return infostr
 
 

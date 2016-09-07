@@ -117,7 +117,7 @@ if cairo_libdir:
     # in any libraries externally visible (mainly for cairo and pixman).
     # Those in the object files (including those from pyfermod and 
     # fer/ef_utility) will still be visible.
-    addn_link_args.extend(["-Wl,-Bsymbolic", "-Wl,--exclude-libs -Wl,ALL"])
+    # addn_link_args.extend(["-Wl,-Bsymbolic", "-Wl,--exclude-libs -Wl,ALL"])
 else:
     addn_link_args.append("-lcairo")
 

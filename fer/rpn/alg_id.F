@@ -85,7 +85,7 @@
 	INTEGER		STR_MATCH, GCF_FIND_FCN, TM_LENSTR1,
      .			imatch, i, i2, j, brac_pos, aend,
      .			num_indices, dot, new_nat, first, second, slen
-        CHARACTER*128   varname
+        CHARACTER*512   varname
         
         new_nat = 0
 

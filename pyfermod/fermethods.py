@@ -442,7 +442,7 @@ def pointplot(fvar, vs=None, color=None, sym=None, symsize=None, thick=None,
 
 
 def lineplot(fvar, vs=None, color=None, thick=None, dash=None, title=None, 
-             region=None, over=False, label=True, qual=''):
+             region=None, along=None, over=False, label=True, qual=''):
     """
     Create a line plot of the given value, or the given value versus another value (if vs is given),
     possibly colored by another value (if color is a FerVar).
@@ -464,6 +464,8 @@ def lineplot(fvar, vs=None, color=None, thick=None, dash=None, title=None,
         title (string): title for the plot; if not given,  Ferret's default title is used
         region (FerRegion): space-time region to plot; 
                 if None, the full extents of the data will be used
+        along (string; one of 'X','Y','Z','T','E','F', or lowercase): make a set of line plots 
+                from two-dimensional data with this axis as the horizontal axis.
         over (bool): overlay onto an existing plot
         label (bool): if False, suppress all plot labels
         qual (string): qualifiers to add to the Ferret PLOT/LINE command
@@ -512,11 +514,16 @@ def lineplot(fvar, vs=None, color=None, thick=None, dash=None, title=None,
        if not isinstance(title, str):
            raise ValueError('title must be a string')
        cmdstr += '/TITLE="' + title + '"'
+    if along is not None:
+       axisnames = ('X','Y','Z','T','E','F','x','y','z','t','e','f')
+       if not along in axisnames:
+           raise ValueError('along must be one of ' + str(axisnames))
+       cmdstr += '/ALONG=' + along.upper()
     if over:
         cmdstr += '/OVER'
     if region is not None:
         if not isinstance(region, pyferret.FerRegion):
-            raise ValueError('region, if given, must be a FerRegion')
+            raise ValueError('region must be a FerRegion')
         cmdstr += region._ferretqualifierstr();
     if not label:
         cmdstr += '/NOLABEL'

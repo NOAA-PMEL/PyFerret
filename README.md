@@ -4,7 +4,7 @@ This repository is regularly synchronized with PyFerret repository at PMEL
 (the pyferret branch of the ferret project in the TMAP SVN repository at PMEL)
 using git-svn.
 
-# Anaconda Installation on Linux, OS X, and Windows 10/bash
+## Anaconda Installation - Linux, OS X, and Windows 10/bash
 
 Download and install [miniconda](http://conda.pydata.org/miniconda.html) for your system. Note that Windows 10 bash must use the Linux version! The Python version in miniconda does not matter; `pyferret` only uses ` Python 2.7` and will install it in the `pyferret` environment.
 

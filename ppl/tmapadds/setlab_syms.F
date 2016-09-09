@@ -67,16 +67,17 @@
 
 * Internal arguments
 
-      REAL zmax, zmin, dz, diff
+      REAL zmax, zmin, dz, diff, eps
 
       CHARACTER ppl_buff*2048, TM_FMT_SNGL*10, buff*10, symbuff*120
       INTEGER TM_LENSTR1, STR_SAME, i, ier, ilen, slen, ist
-      LOGICAL TM_FPEQ_SNGL, reglevs
+      LOGICAL TM_FPEQ_EPS_SNGL, reglevs
 
 * Lowest and highest Z level
 
       zmin = zlevels(1)
       buff = TM_FMT_SNGL(zmin, -2, 10, slen)
+      IF (neginf) buff = 'open-ended'
 
       ppl_buff = 'LEV_MIN '//buff
       ilen = TM_LENSTR1(ppl_buff)
@@ -86,6 +87,10 @@
 
       zmax = zlevels(nlevels)
       buff = TM_FMT_SNGL(zmax, -2, 10, slen)
+      IF (posinf) buff = 'open-ended'
+
+* An epsilon for equal-sized deltas, need not be too tight a test
+      eps = 0.01* (zmax - zmin)/FLOAT(nlevels)
 
       ppl_buff = 'LEV_MAX '//buff
       ilen = TM_LENSTR1(ppl_buff)
@@ -124,7 +129,7 @@
             reglevs = .TRUE.
             DO 100 i=3,nlevels
                diff = ABS( zlevels(i)-zlevels(i-1) )
-               reglevs = TM_FPEQ_SNGL(diff, dz)
+               reglevs = TM_FPEQ_EPS_SNGL(eps, diff, dz)
 	       IF (.NOT.reglevs) GOTO 110
   100       CONTINUE
   110       IF (reglevs) THEN

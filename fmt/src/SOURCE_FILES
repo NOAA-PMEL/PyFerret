@@ -200,6 +200,7 @@ tm_fmt_sngl.F\
 tm_fmt_user.F\
 tm_fp_convert.F\
 tm_fpeq_eps.F\
+tm_fpeq_eps_sngl.F\
 tm_fpeq.F\
 tm_fpeq_sngl.F\
 tm_friendly_read.F\

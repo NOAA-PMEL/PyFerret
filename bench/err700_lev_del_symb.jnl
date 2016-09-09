@@ -1,0 +1,32 @@
+! err700_lev_del_symb.jnl
+! 9/9/2016
+! Ticket 2470: Symbol LEV_DEL was erroneously marked as Irregular
+! Also, the symbols LEV_MIN and LEV_MAX are changed to say open-ended
+! when (-inf), (inf) or /lev=v is used.
+
+use coads_climatology
+
+
+! LEV_DEL should be regular
+shade/lev=(16.4,24.4,0.4) sst[L=1,x=290:330,y=10:40]
+show sym lev*
+
+shade/lev=(16)(16.4)(16.8)(17.2)(17.6) sst[L=1,x=290:330,y=10:40]
+show sym lev*
+
+shade/lev=(22) sst[L=1,x=290:330,y=10:40]
+show sym lev*
+
+! LEV_DEL should be irregular
+
+shade/lev=(16.4,24.4,0.4)(inf) sst[L=1,x=290:330,y=10:40]
+show sym lev*
+
+shade/lev=20v sst[L=1,x=290:330,y=10:40]
+show sym lev*
+
+shade/lev=(16.4,24.4,0.4)(24.4,28.1,0.1) sst[L=1,x=290:330,y=10:40]
+show sym lev*
+
+shade/lev=(5)(16.4,24.4,0.4) sst[L=1,x=290:330,y=10:40]
+show sym lev*

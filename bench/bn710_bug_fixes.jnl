@@ -32,6 +32,9 @@ go err700_key
 go bn_reset
 go err700_ax_horiz
 
+! Bug 2470 Symbol LEV_DEL incorrect on a LEV=(lo,hi,delta)
+go bn_reset
+go err700_lev_del_symb
 
 ! Note the fix for # 2437 needs documentation: 4D output for grids in X,Y,Z,T only
 ! Note the fix for # 2451 needs documentation: -gif mode plots with /HLIM or /VLIM reversing an axis.

@@ -61,6 +61,7 @@ C                with "*(*)" for the linux port
 C *acm* 03/04  new arguments and code for plotting graticule lines across plot.
 C *acm*  3/10  Bug 670 fixed: New flag MULTICENFLAG for multi-decade plots, 
 C              do not make small tics by default.
+C V695 *acm*  5/15 Restore color after a graticule using defined color 0
 C V695 *acm*  5/15 for PyFerret draw lines and tics only once, avoiding overdrawing.
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
 
@@ -415,8 +416,8 @@ C             ELSE:
 	READ(SYM,30)MON,CEN,YR
 	WRITE(SYM,55)CEN,YR
    55             FORMAT(A2,A2)
-        TSYM=TYR+(T+TIC-TYR-SYMWID(1.4*CSIZE,4,SYM(:4))/TFACT)*.5
-        CALL SYMBEL(TSYM,YTEMP2,0.,1.4*CSIZE,4,SYM(:4))
+        TSYM=TYR+(T+TIC-TYR-SYMWID(1.1*CSIZE,4,SYM(:4))/TFACT)*.5
+        CALL SYMBEL(TSYM,YTEMP2,0.,1.1*CSIZE,4,SYM(:4))
 	ENDIF
    60         TYR=T+TIC
    70     CONTINUE
@@ -439,8 +440,8 @@ C     ELSE:
           CALL TIME2(ITIME,SYM)
 	READ(SYM,30)MON,CEN,YR
 	WRITE(SYM,55)CEN,YR
-        TSYM=TYR+(T-TYR-SYMWID(1.4*CSIZE,4,SYM(:4))/TFACT)*.5
-        CALL SYMBEL(TSYM,YTEMP2,0.,1.4*CSIZE,4,SYM(:4))
+        TSYM=TYR+(T-TYR-SYMWID(1.1*CSIZE,4,SYM(:4))/TFACT)*.5
+        CALL SYMBEL(TSYM,YTEMP2,0.,1.1*CSIZE,4,SYM(:4))
 	ENDIF
 C
 C     THE SECTION OF CODE THAT PUTS ON THE SMALL TIC MARKS.

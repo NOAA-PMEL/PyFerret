@@ -64,6 +64,7 @@ C              do not make small tics by default.
 C V695 *acm*  5/15 Restore color after a graticule using defined color 0
 C V695 *acm*  5/15 for PyFerret draw lines and tics only once, avoiding overdrawing.
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
+* V710 *acm*  8/16 make the year labels less large
 
 C**
 C**    @(#)taxis3.f	1.1    3/10/88
@@ -212,7 +213,7 @@ C     SET PARAMETERS.
 	FIMDB=-1.4
 	ENDIF
       IF(LABEL.LT.0) THEN
-         YTEMP1=Y-(1.4*CSIZE+YTEMP)/YFACT
+         YTEMP1=Y-(1.1*CSIZE+YTEMP)/YFACT
          YTEMP2=Y-((4.0+FIMDB)*CSIZE+YTEMP)/YFACT
 	 IF (ix.EQ.1 .AND. ytemp.NE.0) ytemp1 = ytemp1 + tlx*0.4/YFACT
 	 IF (ix.EQ.1 .AND. ytemp.NE.0) ytemp2 = ytemp2 + tlx*0.4/YFACT
@@ -224,7 +225,7 @@ C     SET PARAMETERS.
       ENDIF
 
       IF(LABEL.LT.0) THEN
-	 XTEMP1=X-(1.4*CSIZE+XTEMP)/XFACT
+	 XTEMP1=X-(1.1*CSIZE+XTEMP)/XFACT
 	 XTEMP2=X-((4.0+FIMDB)*CSIZE+XTEMP)/XFACT
 	 IF (iy.EQ.1) xtemp1 = xtemp1 + iy*tly*0.4/xfact
 	 IF (iy.EQ.1) xtemp2 = xtemp2 + iy*tly*0.4/xfact
@@ -416,8 +417,8 @@ C             ELSE:
 	READ(SYM,30)MON,CEN,YR
 	WRITE(SYM,55)CEN,YR
    55             FORMAT(A2,A2)
-        TSYM=TYR+(T+TIC-TYR-SYMWID(1.4*CSIZE,4,SYM(:4))/TFACT)*.5
-        CALL SYMBEL(TSYM,YTEMP2,0.,1.4*CSIZE,4,SYM(:4))
+        TSYM=TYR+(T+TIC-TYR-SYMWID(1.1*CSIZE,4,SYM(:4))/TFACT)*.5
+        CALL SYMBEL(TSYM,YTEMP2,0.,1.1*CSIZE,4,SYM(:4))
 	ENDIF
    60         TYR=T+TIC
    70     CONTINUE
@@ -440,8 +441,8 @@ C     ELSE:
           CALL TIME2(ITIME,SYM)
 	READ(SYM,30)MON,CEN,YR
 	WRITE(SYM,55)CEN,YR
-        TSYM=TYR+(T-TYR-SYMWID(1.4*CSIZE,4,SYM(:4))/TFACT)*.5
-        CALL SYMBEL(TSYM,YTEMP2,0.,1.4*CSIZE,4,SYM(:4))
+        TSYM=TYR+(T-TYR-SYMWID(1.1*CSIZE,4,SYM(:4))/TFACT)*.5
+        CALL SYMBEL(TSYM,YTEMP2,0.,1.1*CSIZE,4,SYM(:4))
 	ENDIF
 C
 C     THE SECTION OF CODE THAT PUTS ON THE SMALL TIC MARKS.

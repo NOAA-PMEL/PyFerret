@@ -61,6 +61,7 @@ C              do not make small tics by default.
 C V695 *acm*  5/15 Restore color after a graticule using defined color 0
 C v7   *acm*  6/16 Fix ticket 2436: # characters used in time-axis labels 
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
+* V710 *acm*  8/16 make the year labels less large
 
 C**
 C**    @(#)tayis3.f	1.1    3/10/88
@@ -210,7 +211,7 @@ C     SET PARAMETERS.
 	    FIMDB=-1.4
 	ENDIF
 	IF(LABEL.LT.0) THEN
-	    XTEMP1=X-(1.4*CSIZE+XTEMP)/XFACT
+	    XTEMP1=X-(1.1*CSIZEE+XTEMP)/XFACT
 	    XTEMP2=X-((4.0+FIMDB)*CSIZE+XTEMP)/XFACT
 	    IF (iy.eq.1) xtemp1 = xtemp1 + tly*0.4/xfact
 	    IF (iy.eq.1) xtemp2 = xtemp2 + tly*0.4/xfact
@@ -399,8 +400,8 @@ C             ELSE:
 	    READ(SYM,30)MON,CEN,YR
 	    WRITE(SYM,55)CEN,YR
 55	    FORMAT(A2,A2)
-	    TSYM=TYR+(T+TIC-TYR-SYMWID(1.4*CSIZE,4,SYM(:4))/TFACT)*.5
-	    CALL SYMBEL(XTEMP2,TSYM,90.,1.4*CSIZE,4,SYM(:4))
+	    TSYM=TYR+(T+TIC-TYR-SYMWID(1.1*CSIZEE,4,SYM(:4))/TFACT)*.5
+	    CALL SYMBEL(XTEMP2,TSYM,90.,1.1*CSIZEE,4,SYM(:4))
 	ENDIF
 60	TYR=T+TIC
 70	CONTINUE
@@ -424,8 +425,8 @@ C     ELSE:
 	    CALL TIME2(ITIME,SYM)
 	    READ(SYM,30)MON,CEN,YR
 	    WRITE(SYM,55)CEN,YR
-	    TSYM=TYR+(T-TYR-SYMWID(1.4*CSIZE,4,SYM(:4))/TFACT)*.5
-	    CALL SYMBEL(XTEMP2,TSYM,90.,1.4*CSIZE,4,SYM(:4))
+	    TSYM=TYR+(T-TYR-SYMWID(1.1*CSIZEE,4,SYM(:4))/TFACT)*.5
+	    CALL SYMBEL(XTEMP2,TSYM,90.,1.1*CSIZEE,4,SYM(:4))
 	ENDIF
 C
 C     THE SECTION OF CODE THAT PUTS ON THE SMALL TIC MARKS.

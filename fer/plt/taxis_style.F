@@ -57,6 +57,7 @@
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V695+ *sh*  3/15 Added argument "imposed_lab" to disambiguate F and T axes
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
+* V710 *acm*  8/16 Change the span for labeling year axes with months
 
 	include 'ferret.parm'
 	include 'plot_setup.parm'
@@ -109,11 +110,11 @@
      .		tax_style(5)	/  'YR'	/,
      .		tax_loint(5)	/    1	/,
      .		tax_hiint(5)	/    1	/
-	DATA	tax_hours(6)	/100800./,	! 5 to 12 year long axis
+	DATA	tax_hours(6)	/84000./,	! 5 to 10 year long axis
      .		tax_style(6)	/  'YR'	/,
      .		tax_loint(6)	/    3	/,
      .		tax_hiint(6)	/    1	/
-	DATA	tax_hours(7)	/144000./,	! 12 to 17 year long axis
+	DATA	tax_hours(7)	/144000./,	! 10 to 17 year long axis
      .		tax_style(7)	/  'YR'	/,
      .		tax_loint(7)	/    0	/,
      .		tax_hiint(7)	/    2	/

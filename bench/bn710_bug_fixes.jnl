@@ -36,5 +36,9 @@ go err700_ax_horiz
 go bn_reset
 go err700_lev_del_symb
 
+! Bug 2466 Graticule lines too dense on time plots
+go bn_reset
+go err700_timegrat
+
 ! Note the fix for # 2437 needs documentation: 4D output for grids in X,Y,Z,T only
 ! Note the fix for # 2451 needs documentation: -gif mode plots with /HLIM or /VLIM reversing an axis.

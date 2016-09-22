@@ -57,6 +57,7 @@ C *acm* 03/04  new arguments and code for plotting graticule lines across plot.
 C V65  *acm*  1/10 New time-axis style for DAY and MONTH, DMY: adds the
 C                  year to DAY,MONTH or to MONTH.
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
+* *acm* - 9/16   ticket 2466: graticule lines on major tics by default
 C**
 C**    @(#)taxis0.f	1.1    3/10/88
 C**
@@ -303,10 +304,10 @@ C      LOOP:
 	ELSE
 	       CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
      
-               IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
-                  CALL COLOR(color1)
+               IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across at small tics
+                  CALL COLOR(color2)
                   IF (dashed1) THEN
-                     CALL DASHSZ(dash1_1,dash2_1,dash1_3,dash1_4)
+                     CALL DASHSZ(dash2_1,dash2_1,dash2_3,dash2_4)
                      CALL DASHES
                   ENDIF
                   CALL PLOT(t+tic,y,0,0) 

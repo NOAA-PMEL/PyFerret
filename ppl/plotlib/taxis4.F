@@ -41,6 +41,7 @@
 * From taxis0: separate routijne for hour:min labeling on time axes
 C V7.1 *acm* 8/2016 Ticket 2466: Graticule lines too dense
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
+* *acm* - 9/16   ticket 2466: graticule lines on major tics by default
 C
 C**
 C**    @(#)taxis4.f	1.1   12/09/15
@@ -110,6 +111,8 @@ C
         LOGICAL solid1, solid2   ! solid lines across at tics
         LOGICAL dashed1, dashed2 ! dashed lines across at tics
         INTEGER ltic, color1, color2
+	LOGICAL heavy_at_labels  ! When lots of tic marks, make heavy 
+				 !tic/graticule at the location of labels.
 
 * TMAP interrupt flag
 	include 'xinterrupt.cmn'
@@ -282,10 +285,10 @@ C      LOOP:
   	CALL TIME1(1,ITIME,2,' ',I3,ITIME3,delt)
 	ITIME=ITIME3
 
+
 	IF(ITIME(13:14)//ITIME(1:12) .LE.
      .       ITIME2(13:14)//ITIME2(1:12)) THEN
            IF(IHR.EQ.0 .AND. is_hours_axis.EQ.0) ltic = ltic + 1
-c           IF(IHR.EQ.0 .AND. imin.EQ.0 .AND. is_hours_axis.GT.0) ltic = ltic + 1
 	   IF (is_hours_axis .GT. 0) THEN
 	      IF (difft.LE.12 .AND. sec.EQ.0.) THEN 
 	         ltic = ltic+1
@@ -314,6 +317,9 @@ c           IF(IHR.EQ.0 .AND. imin.EQ.0 .AND. is_hours_axis.GT.0) ltic = ltic + 
            ENDIF
 
         ENDIF
+     
+! IF many large tics, make fewer - at the locations of labels
+        heavy_at_labels = ltic .GT. 20
 
 ! Restore the state of ITIME, ITIME3
       ITIME=ITIME1
@@ -348,6 +354,15 @@ C      LOOP:
 	  
           hvytic = ((is_hours_axis.EQ.0 .AND. IHR.EQ.0) .OR. 
      .            (is_hours_axis.GT.0 .AND. MOD(imin,labint).EQ.0))
+	  IF (heavy_at_labels) THEN
+             IF (is_hours_axis .GT. 0) THEN
+	        hvytic = ( (imin .EQ. 0 .AND. MOD(ihr,hrint).EQ.0) .OR. 
+     .                     (MOD(imin,labint) .EQ. 0 .AND. hrint.LE.1) )
+             ELSE
+	        hvytic = (IHR.EQ.IHDB*(IHR/IHDB))
+	     ENDIF
+	  ENDIF
+
           IF(hvytic)THEN
              CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
 	
@@ -370,10 +385,10 @@ C      LOOP:
                     CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
 		    
 c                 graticule line at tic
-		    IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
-                       CALL COLOR(color1)
-                       IF (dashed1) THEN
-                          CALL DASHSZ(dash1_1,dash2_1,dash1_3,dash1_4)
+		    IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
+                       CALL COLOR(color2)
+                       IF (dashed2) THEN
+                          CALL DASHSZ(dash2_1,dash2_1,dash2_3,dash2_4)
                           CALL DASHES
                        ENDIF
                        CALL PLOT(t+tic,y,0,0) 

@@ -1,0 +1,28 @@
+!err700_timegrat.jnl
+! 22-sep-2016 *acm*
+! See ticket 2466, too many graticule lines on axis with short time axis.
+
+define axis/t="22-aug-2016:12":"23-aug-2016:18":6/units=hours tax
+define axis/z=0:50:2/depth/units=m zax
+let ztvar = sin(L[Gt=tax]/20) + z[gz=zax]
+
+set view upper; shade/grat ztvar
+set view lower; plot/grat=(color=light_blue)/z=20 ztvar
+
+can view
+set view left; shade/trans/grat ztvar
+set view right; plot/trans/grat=(color=light_blue)/z=20 ztvar
+
+! Axis of few days, likewise
+
+define axis/t=16-SEP-2016:21-SEP-2016:15/units=minutes/t0=16-SEP-2016 tax
+
+can view
+set view upper; shade/grat ztvar
+set view lower; plot/grat=(color=light_blue)/z=20 ztvar
+
+can view
+set view left; shade/trans/grat/t=16-SEP-2016:19-sep-2016 ztvar
+set view right; plot/trans/grat=(color=light_blue)/z=20/t=16-SEP-2016:19-sep-2016 ztvar
+
+

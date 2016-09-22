@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 118589162 Sep  9 11:33 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 90945376 Sep 22 11:51 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2470 fixed
+Note: ticket 2466: dense graticule lines on time plot.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 PWD=/home/users/ansley/build/trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Fri Sep 9 11:45:18 PDT 2016
+Beginning at Thu Sep 22 11:52:55 PDT 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -4729,6 +4729,11 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+Replacing definition of axis ZAX
+Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
@@ -4752,6 +4757,7 @@ Replacing definition of axis TAX
  LISTing to file tmp/uagg_1_t3.nc
  LISTing to file tmp/uagg_5.nc
            *** NOTE: Skipping variable SST from set 2, already in the Union dataset.
+Replacing definition of axis ZAX
  LISTing to file tmp/f01_e1_tu1.nc
  LISTing to file tmp/f01_e1_tu2.nc
  LISTing to file tmp/f01_e1_tu3.nc
@@ -4897,4 +4903,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Sep 9 11:47:27 PDT 2016
+Ended at Thu Sep 22 11:55:40 PDT 2016

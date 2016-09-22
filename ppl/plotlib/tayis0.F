@@ -41,6 +41,7 @@
 C**
 C**    @(#)tayis0.f	1.1    3/10/88
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
+* *acm* - 9/16   ticket 2466: graticule lines on major tics by default
 C
 C**
 C**
@@ -283,7 +284,7 @@ C      LOOP:
 	ELSE
 	    CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,INML)
             
-                 IF ((solid1.OR.dashed1) .AND. hline) THEN ! make line across
+                 IF ((solid2.OR.dashed2) .AND. hline) THEN ! make line across
                     CALL COLOR(color1)
                     IF (dashed1) THEN
                        CALL DASHSZ(dash1_1,dash2_1,dash1_3,dash1_4)

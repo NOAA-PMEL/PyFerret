@@ -1,6 +1,7 @@
 ! bn_let_remote.jnl
 ! Tests of the F-TDS LET/REMOTE
 ! 6/2016 installed NVODS on new-bock server 
+! 9/2016 load smaller subsets of the data 
 
 ! See if the F-TDS is working and bail if not.
 
@@ -10,18 +11,18 @@ if `status NE 0` then EXIT/SCRIPT
 
 use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl"
 let/D=1/remote myvar = t0112mn1[k=1:5@sum]
-let/D=1/remote ave_z = t0112mn1[z=0:1000@ave]
+let/D=1/remote ave_z = t0112mn1[z=0:20@ave]
 sh var
-set view ul; shade/l=7 myvar
-set view ur; shade/l=3 ave_z
+set view ul; shade/l=7/x=180:200/y=20:30 myvar
+set view ur; shade/l=3/x=180:200/y=20:30 ave_z
 
 list/l=7/x=300:310/y=15 myvar, ave_z
 
 let/D=1/remote ave_t = t0112mn1[L=1:12@ave]
-set view ll; shade/z=0 ave_t
+set view ll; shade/z=0/x=180:200/y=20:30 ave_t
 
 let/D=1/remote/units="`t0112mn1,ret=units`"/title="Summer average Temperature" ave_summer = t0112mn1[t=15-jun:15-sep@ave]
-set view lr; shade/z=0 ave_summer
+set view lr; shade/z=0/x=180:200/y=20:30 ave_summer
 
 can view
 can data/all; can var/all

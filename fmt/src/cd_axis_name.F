@@ -48,6 +48,7 @@
 *                 needed to rename an axis on file initialization for uniqueness;
 *                 we use the Ferret name throughout, restoring it only on output.
 * V697 12/15 *acm* Fix ticket 2336: consistent application of CAN MODE UPCASE
+* V710 9/16 *acm* Use ww_dim_name from xtext_info.cmn
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -63,6 +64,7 @@
 #include "gt_lib.parm"
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
+	include 'xtext_info.cmn'  ! with ww_dim_name
 
 * argument declarations
       INTEGER dset, grid, idim, nlen
@@ -72,9 +74,8 @@
       INTEGER TM_LENSTR1, iaxis, varid, vartype, nvdims, vdims(8), 
      .        nvatts, status, llen, ic, all_outflag
 
-      CHARACTER*1 ww_dim_name(nferdims), c
+      CHARACTER*1 c
       CHARACTER*130 buff
-      DATA ww_dim_name/'X', 'Y', 'Z', 'T', 'E', 'F'/
 
 * initialize
       iaxis = grid_line(idim, grid)

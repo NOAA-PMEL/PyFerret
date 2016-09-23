@@ -7,6 +7,7 @@ cd_add_var.F\
 cd_assoc_grids.F\
 cd_axis_name.F\
 cd_axis_outname.F\
+cd_axname_to_write.F\
 cd_axlen.F\
 cd_childax_name.F\
 cd_clean_grids.F\

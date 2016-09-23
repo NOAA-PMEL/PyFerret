@@ -120,6 +120,9 @@
 *  V698  5/16 *acm* Fix ticket 2415: write attributes using the requested data type
 *                   Routine CD_WRITE_ATTVAL_DP converts to the specified type.
 * V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
+* V710  9/16 *acm* Ticket 2459: If axis is already in the file with a different
+*                  direction write axis with a unique name for this direction.
+*                  Use ww_dim_name from xtext_info.cmn
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -148,11 +151,11 @@
         include 'xunits.cmn_text'
 	include 'xio.cmn_text'
         external xio_data
+	include 'xtext_info.cmn'  ! with ww_dim_name
 
 ! Declare netcdf function names. 
 ! The ones without trailing underscore are declared in netcdf.inc
 #include "netcdf_declareUnderscore.inc"
-
 
 * argument declarations
       LOGICAL recdim, mode_upcase_output, name_from_grid
@@ -167,7 +170,7 @@
      .       got_positive, got_spacing, got_axis, got_cartesian, got_it,
      .       coordvar, do_off, do_scale, dim_only
       PARAMETER (do_warn = .TRUE. )
-      INTEGER TM_LENSTR1, CD_AXLEN, STR_SAME, STR_DNCASE,
+      INTEGER TM_LENSTR1, CD_AXLEN, STR_SAME, STR_DNCASE, TM_LENSTR,
      .        dimid, iaxis, axid, cdfstat, lo, hi,
      .        nlen, elen, axlen, slen, edgid, bndid, npts, dim2d(2)
       INTEGER TM_GET_CALENDAR_ID, CD_WRITE_BNDSDIM, cal_id, varid,
@@ -185,7 +188,8 @@
      .       TM_FMT*12,
      .       name*128, name_in*128, units*48, datebuff*40, 
      .       buff*140, buff2*140, attname*128, dimstr*12, varstr*12, 
-     .       name_bnds*140
+     .       name_bnds*140, axis_dir*1
+
 
 !      REAL*8 val8_cdf, val8_tmap
 * 12/97
@@ -283,6 +287,12 @@
       cdfstat = NF_INQ_DIMID( cdfid, name(:nlen), dimid)
 #endif
 
+* ... check the axis attribute for direction. If the name has already
+*     been used writing a different dimension, write this axis with a new name.
+
+      IF ( cdfstat .EQ. NF_NOERR .AND. TM_LENSTR(name) .GT. 0) 
+     .   CALL CD_AXNAME_TO_WRITE (cdfid, idim, name, nlen, cdfstat)
+
 * already defined ? (limited consistency checking)
       IF ( cdfstat .EQ. NF_NOERR ) THEN
 
@@ -306,7 +316,7 @@
 * use the basic name straight from the grid
                   name = line_name(iaxis)
                   nlen = TM_LENSTR1( name )
-		        name_in = name   ! ??
+                  name_in = name   ! ??
 
 * If mode upcase_output is set, then upcase name
 
@@ -845,45 +855,11 @@
            ENDIF
             
 #ifdef usingDODSf2cUnderscore
-          IF (idim .eq. x_dim) THEN
-             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT_
-     .        	     ( cdfid, axid, attname, 1, 'X' )
-          ELSE IF (idim .eq. y_dim) THEN
-             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT_
-     .        	     ( cdfid, axid, attname, 1, 'Y' )
-          ELSE IF (idim .eq. z_dim) THEN
-             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT_
-     .        	     ( cdfid, axid, attname, 1, 'Z' )
-          ELSE IF (idim .eq. t_dim) THEN
-             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT_
-     .        	     ( cdfid, axid, attname, 1, 'T' )
-          ELSE IF (idim .eq. e_dim) THEN
-             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT_
-     .        	     ( cdfid, axid, attname, 1, 'E' )
-          ELSE IF (idim .eq. f_dim) THEN
-             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT_
-     .        	     ( cdfid, axid, attname, 1, 'F' )
-          ENDIF
+          IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT_
+     .        	     ( cdfid, axid, attname, 1, ww_dim_name(idim) )     
 #else
-          IF (idim .eq. x_dim) THEN
-             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
-     .        	     ( cdfid, axid, attname, 1, 'X' )
-          ELSE IF (idim .eq. y_dim) THEN
-             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
-     .        	     ( cdfid, axid, attname, 1, 'Y' )
-          ELSE IF (idim .eq. z_dim) THEN
-             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
-     .        	     ( cdfid, axid, attname, 1, 'Z' )
-          ELSE IF (idim .eq. t_dim) THEN
-             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
-     .        	     ( cdfid, axid, attname, 1, 'T' )
-          ELSE IF (idim .eq. e_dim) THEN
-             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
-     .        	     ( cdfid, axid, attname, 1, 'E' )
-          ELSE IF (idim .eq. f_dim) THEN
-             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
-     .        	     ( cdfid, axid, attname, 1, 'F' )
-          ENDIF
+          IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
+     .        	     ( cdfid, axid, attname, 1, ww_dim_name(idim) )
 #endif
        ENDIF
 

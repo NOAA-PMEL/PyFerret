@@ -106,6 +106,7 @@
 * v698 5/16  *acm* ticket 2413: New attribute keywords ncoordvars, coordnames
 *                  return info about coordinate-variables in datasets
 * V7    5/16 *acm* See ticket 2352. For LET/D variables look for info under that dataset
+* V710 9/16  *acm* ticket 2465: Parsing expressions including attribute references.
 
 	include 'tmap_dims.parm'
 #include "netcdf.inc"
@@ -514,7 +515,7 @@
  	cx_lo_ss(hi_cx, x_dim) = unspecified_int4
  	cx_hi_ss(hi_cx, x_dim) = unspecified_int4
 
-	CALL GET_VAR_CONTEXT (  uvar_text(uvar),
+	CALL GET_VAR_CONTEXT (  uvar_text(uvar)(start:end),
      .				lo_cx,
      .				hi_cx,
      .				status )
@@ -551,7 +552,7 @@
 
 * do_err: issue error message if attrib does not exist on varname.attname
            do_err = .TRUE.
-           CALL  BREAK_VARATTNAME (  uvar_text(uvar), dset, 
+           CALL  BREAK_VARATTNAME (  uvar_text(uvar)(start:end), dset, 
      .                            name, attname, varid, do_err, status )
 
 * Is the *attr name* a pseudo-name for a variable: attnames, dimnames,

@@ -86,5 +86,15 @@
 	    ENDIF
 	ENDIF
 
+* Is this axis already in the file?  Then we are done.
+
+#ifdef usingDODSf2cUnderscore
+	local_status = NF_INQ_VARID_( cdfid, name(:nlen), cvarid)
+#else
+	local_status = NF_INQ_VARID( cdfid, name(:nlen), cvarid)
+#endif
+
+	IF (local_status .EQ. NF_NOERR) cdfstat = NF_NOERR
+
 	RETURN
 	END

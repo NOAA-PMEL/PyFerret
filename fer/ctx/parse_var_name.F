@@ -77,6 +77,7 @@
 * V698  3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
 * v698 5/16  *acm* ticket 2413: New attribute keywords ncoordvars, coordnames
 *                  return info about coordinate-variables in datasets
+* V710 9/16  *acm* ticket 2465: Parsing expressions including attribute references.
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -265,7 +266,7 @@
      .                              attname, varid, do_err, status )
 
            IF (status .NE. ferr_ok) GOTO 5100
-           IF (varid .GT. 0) THEN
+           IF (varid .GE. 0) THEN
               CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid,
      .               status)
               IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
@@ -275,11 +276,15 @@
 * Is it a pseudo-attribute for the variable?
 
                  IF (STR_SAME(attname, 'attnames') .EQ. 0 .OR. 
-     .               STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
+     .               STR_SAME(attname, 'dimnames') .EQ. 0 .OR. 
+     .               STR_SAME(attname, 'varnames') .EQ. 0 .OR. 
+     .               STR_SAME(attname, 'coordnames') .EQ. 0 ) THEN
                     cx_type(var_cx) = ptype_string
                  ELSEIF (STR_SAME(attname, 'ndims') .EQ. 0 .OR. 
      .                   STR_SAME(attname, 'type')  .EQ. 0 .OR. 
-     .                   STR_SAME(attname, 'nattrs') .EQ. 0) THEN
+     .                   STR_SAME(attname, 'nvars') .EQ. 0 .OR. 
+     .                   STR_SAME(attname, 'nattrs') .EQ. 0 .OR. 
+     .                   STR_SAME(attname, 'ncoordvars') .EQ. 0) THEN
                     cx_type(var_cx) = ptype_float
                  ELSE
                     GOTO 5100
@@ -294,10 +299,14 @@
 
 * Is it a pseudo-attribute at the dataset level?
               cx_type(var_cx) = ptype_float
-              IF (STR_SAME (attname, 'varnames')  .EQ. 0 .OR.
-     .            STR_SAME (attname, 'dimnames')  .EQ. 0 .OR.
-     .            STR_SAME (attname, 'coordnames')  .EQ. 0 .OR.
-     .            STR_SAME (attname, 'attnames')  .EQ. 0 )
+              IF (STR_SAME (attname, 'varnames')   .EQ. 0 .OR.
+     .            STR_SAME (attname, 'dimnames')   .EQ. 0 .OR.
+     .            STR_SAME (attname, 'coordnames') .EQ. 0 .OR.
+     .            STR_SAME (attname, 'attnames')   .EQ. 0 .OR.
+     .            STR_SAME (attname, 'nvars')      .EQ. 0 .OR.
+     .            STR_SAME (attname, 'nattrs')     .EQ. 0 .OR.
+     .            STR_SAME (attname, 'ncoordvars') .EQ. 0 .OR. 
+     .               STR_SAME(attname, 'coordnames') .EQ. 0 )
      .         cx_type(var_cx) = ptype_string
            ENDIF
 	ELSE

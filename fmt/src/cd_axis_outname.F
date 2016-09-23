@@ -46,6 +46,7 @@
 * V63   9/09 *acm* Fixing bug 1686: if line_name_orig is not set, use line_name
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 * V6.85+ 12/13*acm* catch up to 6-D Ferret
+* V710 9/16 *acm* Use ww_dim_name from xtext_info.cmn
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -62,6 +63,7 @@
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
         include 'netcdf.inc'
+	include 'xtext_info.cmn'  ! with ww_dim_name
 
 * argument declarations
       INTEGER dset, grid, idim, nlen
@@ -72,9 +74,7 @@
      .  attlen, maxlen, attoutflag, alen
       REAL val
 
-      CHARACTER*1 ww_dim_name(nferdims)
       CHARACTER varname*130, buff*128, attname*128
-      DATA ww_dim_name/'X', 'Y', 'Z', 'T', 'E', 'F'/
 
 * initialize
       iaxis = grid_line(idim, grid)

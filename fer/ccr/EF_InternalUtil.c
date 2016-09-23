@@ -1096,6 +1096,9 @@ void FORTRAN(str_noblanks_compute)(int *, char *, char *);
 void FORTRAN(str_replace_init)(int *);
 void FORTRAN(str_replace_compute)(int *, char *, char *, char *, char *);
 
+void FORTRAN(expndi_to_et_init)(int *);
+void FORTRAN(expndi_to_et_work_size)(int *);
+void FORTRAN(expndi_to_et_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 /*
  *  End of declarations for internally linked external functions
@@ -1138,7 +1141,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-#define N_INTEF 182
+#define N_INTEF 183
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -1326,6 +1329,7 @@ struct {
    strcpy(I_EFnames[179].funcname, "scat2grid_bin_xyzt");
    strcpy(I_EFnames[180].funcname, "str_noblanks");
    strcpy(I_EFnames[181].funcname, "str_replace");
+   strcpy(I_EFnames[182].funcname, "expndi_to_et");
 
 /*    
  *  ------------------------------------ 
@@ -4313,6 +4317,11 @@ else if ( !strcmp(name,"str_noblanks_compute_") ) return (void *)FORTRAN(str_nob
 /* str_replace.F */
 else if ( !strcmp(name,"str_replace_init_") ) return (void *)FORTRAN(str_replace_init);
 else if ( !strcmp(name,"str_replace_compute_") ) return (void *)FORTRAN(str_replace_compute);
+
+/* expndi_to_et.F */
+else if ( !strcmp(name,"expndi_to_et_init_") ) return (void *)FORTRAN(expndi_to_et_init);
+else if ( !strcmp(name,"expndi_to_et_work_size_") ) return (void *)FORTRAN(expndi_to_et_work_size);
+else if ( !strcmp(name,"expndi_to_et_compute_") ) return (void *)FORTRAN(expndi_to_et_compute);
 
 return NULL;
  }

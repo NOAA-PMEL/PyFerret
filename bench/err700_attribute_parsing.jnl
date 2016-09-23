@@ -1,0 +1,24 @@
+! err700_attribute_parsing.jnl
+! See ticket 2465. Parsing errors for commands with attribute references 
+! acm  9/2016
+
+! Write a simple file and then try to get at its attributes.
+
+let/title="my variable" a = 1
+save/clob/file="a.nc"/title="my file" a
+can var a
+use a.nc
+
+! These were ok
+list/nohead ..title
+list/nohead a.long_name
+
+! errors
+list/nohead ..title EQ " "
+list/nohead (..title)
+list/nohead ..title + "text"
+list/nohead a.long_name EQ " "
+
+list/nohead strlen(a.long_name)
+list/nohead strindex(..title, "file")
+

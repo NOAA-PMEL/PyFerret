@@ -93,6 +93,8 @@
 * V698  4/16 *acm* Fix ticket 2241: If file has dimension but not a coordinate 
 *                  variable, do not write the coordinate variable, ONLY IF writing 
 *                  the full-span in that direction.
+* V710  9/16 *acm* Ticket 2459: If axis is already in the file with a different
+*                  direction write axis with a unique name for this direction.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -148,7 +150,7 @@
      .        dimid(8), iaxis, cdfstat, dims, idim, varid, vartyp,
      .        nvdims, vdims(8), nvatts, nlen, glen, vlen, ax_type,
      .        lo2(nferdims), hi2(nferdims), what_recdim, strdim, dimsize,
-     .        chunk_set
+     .        chunk_set, duplines, jaxis, ii
       REAL    val
 * *kob*  - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME, lname,
 *          cdfname, vname and gname to 64 from 24
@@ -315,7 +317,19 @@
         dims = 0
       ENDIF 
 
-* get axis name. If mode upcase_output is set, then upcase the name.
+* Are there grid lines duplicated in the grid (see tiket 2459 for an example)
+      duplines = 0
+      DO 280 idim = 1, nferdims
+         iaxis = grid_line(idim,grid)
+	 IF (iaxis.NE.int4_init .AND. iaxis.GT.0) THEN
+	    DO ii = 1, nferdims 
+	       jaxis = grid_line(ii,grid)
+	       IF (ii.NE.idim .AND. jaxis.EQ.iaxis) duplines = duplines+1
+	    ENDDO
+	 ENDIF
+  280 CONTINUE
+
+* get axis name. If mode upcase_output is set, then upcase the name
 
       DO 300 idim = 1, nferdims
          iaxis = grid_line(idim,grid)
@@ -336,6 +350,8 @@
                lname = buff
             ENDIF
          ENDIF
+
+	 CALL CD_AXNAME_TO_WRITE (cdfid, idim, lname, nlen, cdfstat)
 	 
 c	 IF (dim_only(idim)) THEN 
 c	    buff = CD_AXIS_OUTNAME(dset, grid, idim, nlen)

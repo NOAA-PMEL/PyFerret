@@ -48,11 +48,13 @@
 *                  use these for non-lat/lon axes. Assign the axis the 
 *                  corresponding direction.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* V710 9/16 *acm* Use ww_dim_name from xtext_info.cmn
 
         include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
         include 'xtm_grid.cmn_text'
+	include 'xtext_info.cmn'  ! with ww_dim_name
 
 * calling argument declarations:
       INTEGER  iaxis
@@ -61,8 +63,7 @@
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
       INTEGER STR_UPCASE, idim, istat
-      CHARACTER*1 c1, ww_dim_name(nferdims) 
-      DATA  ww_dim_name/'X','Y','Z','T','E','F'/
+      CHARACTER*1 c1
       CHARACTER*2 orient
 
 * initialize

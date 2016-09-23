@@ -52,6 +52,7 @@
 * V698 *acm* 1/16 Allow for Epic CDF files, ds_type = 'ECDF'
 * v698 5/16  *acm* ticket 2413: New attribute keywords ncoordvars, coordnames
 *                  return info about coordinate-variables in datasets
+* V710 9/16  *acm* ticket 2465: Parsing expressions including attribute references.
 
         include 'tmap_dims.parm'
 #       include "tmap_dset.parm"
@@ -79,7 +80,8 @@
      .          ngatts, recdim, ivar, vartype, nvdims,
      .          vdims(8), dsdims(200), iatt, nvatts, idim, nd, vd, na,
      .          attoutflag, all_outflag, xdim, i1, i2, slen,
-     .          i, indx, nv, dot, cat, attid, npts, dimid, nddims
+     .          i, indx, nv, dot, cat, attid, npts, dimid, nddims, 
+     .          iitem, start, end
 
 * --- end of introductory code ---
 * initialize
@@ -126,7 +128,20 @@
 
 * do_err: issue error message if attrib does not exist on varname.attname
         do_err = .TRUE. 
-        CALL BREAK_VARATTNAME ( uvar_text(uvar), dset, varname, 
+	
+	iitem = 0
+	DO i = 1, uvar_num_items(uvar)
+ 	   IF (dot .GE. uvar_item_start(i,uvar) .AND. 
+     .         dot .LT. uvar_item_end(i,uvar)) iitem = i
+	ENDDO
+	
+	start = 1
+	end = TM_LENSTR1(uvar_text(uvar))
+	IF (iitem .GT. 0) THEN
+	   start = uvar_item_start(iitem,uvar)
+	   end = uvar_item_end(iitem,uvar)
+	ENDIF
+        CALL BREAK_VARATTNAME ( uvar_text(uvar)(start:end), dset, varname, 
      .                          attname, varid, do_err, status )
  
         IF (STR_SAME (varname, '.') .EQ. 0) THEN

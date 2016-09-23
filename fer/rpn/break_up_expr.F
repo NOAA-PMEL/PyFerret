@@ -61,6 +61,7 @@
 *                  spelling of user-var names (no other changes in this routine).
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V685+ 12/13    - *acm*  bounds checking; dont refer to parts of the string outside its bounds.
+* V710 9/16  *acm* ticket 2465: Parsing expressions including attribute references.
 
         include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -79,7 +80,8 @@
 
 * internal variable declarations:
 	LOGICAL its_remote
-	INTEGER	tlen, uvar, natom, i, paren_level, at1,
+	INTEGER	TM_LENSTR1,
+     .		tlen, uvar, natom, i, paren_level, at1,
      .		at_type  (maxatoms), at_id  (maxatoms),
      .		at_start (maxatoms), at_end (maxatoms),
      .		exp_start(max_exp), exp_end(max_exp),
@@ -113,9 +115,10 @@ c        tlen = MIN( size_rbuff, LEN(text) )
 * as an attribute of the dataset.  Here just gloss over this by
 * temporarily replacing the two dots with a string.
 
-	IF (LEN(text) .GT. 1) THEN
-           t2 = text(1:2)
-           IF (t2 .EQ. '..') text(1:2) = 'aa'
+	IF (LEN(text) .GT. 1 .AND. INDEX(text,'..') .GT. 0) THEN
+           DO ii = 1, TM_LENSTR1(risc_buff)-1
+              IF (text(ii:ii+1) .EQ. '..') text(ii:ii+1) = 'aa'
+	   ENDDO
 	ENDIF
 
 * a similar hack when the expression is (coordvar).attname 
@@ -156,14 +159,8 @@ c        tlen = MIN( size_rbuff, LEN(text) )
 
 * ----
 * Restore text before the hack
-	IF (LEN(text) .GT. 1) THEN
-           text(1:2) = t2
-	ENDIF
-        
-        IF (paren .GT. 0) THEN
-           text(startparen:startparen) = '('
-           text(paren:paren) = ')'
-        ENDIF
+
+	text = risc_buff
 
 	IF ( status .NE. ferr_ok ) GOTO 5100
 

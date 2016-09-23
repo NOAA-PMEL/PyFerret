@@ -69,6 +69,7 @@
 *                 the user has said /KEEP_AXISNAMES
 * V69+ 4/14 *acm* After the above fix, need a tweak to be able to append to files having 
 *                 dimensions that are not coordinate variables
+* V710 9/16 *acm* Use ww_dim_name from xtext_info.cmn
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -89,6 +90,7 @@
         include 'cd_lib.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
+	include 'xtext_info.cmn'  ! with ww_dim_name
 
 ! Declare netcdf function names. 
 ! The ones without trailing underscore are declared in netcdf.inc
@@ -106,8 +108,6 @@
      .        defid, defdim, nlen, slen, cdfstat, iaxis, idim, glen, i
       CHARACTER CD_CHILDAX_NAME*132, CD_AXIS_OUTNAME*132, CD_AXIS_NAME*132,
      .		names*132, lname*132
-      CHARACTER*1 ww_dim_name(nferdims)
-      DATA ww_dim_name/'X', 'Y', 'Z', 'T', 'E', 'F'/
 
 * are the axes, alone, enough of a grid definition
       IF ( .NOT.itsa_slab ) GOTO 100

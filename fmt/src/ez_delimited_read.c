@@ -670,14 +670,14 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
       }
     }
 
-/* 	if (*status != 3) goto bad_status; */
+ 	if (*status != 3) goto bad_status; 
     p = pnext;	
     }
 	
 /* Error translating a date due to month out of range.
    Send back the month number, negative to distinguish from valid status=3 */
-/*bad_status:
-	if (*status != 3) *status = -1*(i+1); */
+bad_status:
+	if (*status != 3) *status = -1*(i+1); 
 }
 
 /*

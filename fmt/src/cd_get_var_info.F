@@ -80,7 +80,7 @@
       dset_num = dset
       cdfstat = NCF_INQ_VAR(dset_num, ivar, fhol, slen, vartype, 
      .            nvdims, nvatts, coordvar, outflag, rev)
-        IF (cdfstat .NE. pcd_ferr_ok) CALL WARN('ERROR in CD_GET_VAR_INFO')
+      IF (cdfstat .NE. pcd_ferr_ok) GOTO 5000  ! not found
       slen = MIN(slen, flen)
 
 * Return vname in original upper/lower case
@@ -97,10 +97,3 @@
 
 5000  RETURN
       END
-
-c   for (i=0; i <var_ptr->ndims ;i++ )
-c  {
-c	  ndx = var_ptr->ndims - i - 1; 
-c	  the_dim =  var_ptr->dims[i];
-c	  vdims[ var_ptr->ndims - i - 1] = the_dim + 1;
-c  }

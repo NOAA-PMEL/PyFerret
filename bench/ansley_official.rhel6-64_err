@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 118638832 Sep 23 15:54 /home/users/ansley/build/working/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 91310287 Oct  5 14:20 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2465: parsing expressions involving attribute references
+Note: Delimited reading, yyyy/mm/dd formatted data
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,14 +13,16 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
-FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/external_functions/ext_func
+FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
+FER_GO=. /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib
 FER_GRIDS=.
-FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
-FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
-PWD=/home/users/ansley/build/working/FERRET/bench
+FER_LIBS=/home/users/ansley/ferret_distributions/rhel6_64/lib
+FER_PALETTE=. /home/users/ansley/ferret_distributions/rhel6_64/ppl
+FER_WEB_BROWSER=firefox
+PWD=/home/users/ansley/build/trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Fri Sep 23 15:56:24 PDT 2016
+Beginning at Wed Oct 5 14:21:51 PDT 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -4390,9 +4392,9 @@ go/garbage tmp/testMe
  **ERROR: unknown command qualifier: garbage
 go/garbage "tmp/testMe"
  **ERROR: unknown command qualifier: garbage
-go/garbage /home/users/ansley/build/working/FERRET/bench/tmp/testMe.jnl
+go/garbage /home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl
  **ERROR: unknown command qualifier: garbage
-go/garbage "/home/users/ansley/build/working/FERRET/bench/tmp/testMe.jnl"
+go/garbage "/home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: command line too long -- exceeds 2048
@@ -4734,19 +4736,18 @@ Replacing definition of axis ZAX
 Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable    2
+Replacing definition of axis TIMAX
+Replacing definition of axis TIMAX
+ **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
 list index,edtim,udtim,udate,edate
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable    3
+ **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
 list index,edtim,udtim,udate,edate
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable    4
+ **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
 list index,edtim,udtim,udate,edate
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable    5
+ **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
 list index,edtim,udtim,udate,edate
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4906,4 +4907,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Sep 23 15:58:36 PDT 2016
+Ended at Wed Oct 5 14:24:46 PDT 2016

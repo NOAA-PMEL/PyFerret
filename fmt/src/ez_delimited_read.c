@@ -51,6 +51,7 @@
   V701 7/16 *acm*   ticket 2450: add date-time and euro-date-time field types
                     ticket 2448: for 2-digit years, put years prior to 50 into the 2000s
                     ticket 2449: report incorrect choice of date/ eurodate as an error
+  V702 10/16 *acm*  ticket 2472: Allow yyyy/dd/mm in any of the date types.   
 
 */
 
@@ -435,126 +436,177 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	
 	/* date */
       case FTYP_DATE:
-	if (sscanf(p,"%d/%d/%d%1s",
-		   &idummy1,&idummy2,&idummy3,errstr) == 3) {
-	   
-      /*printf("%d %d %d \n", idummy1,idummy2,idummy3); */
-	  /* need to check for 4 digit year - mm/dd/yyyy *kob* */
-	  if (idummy3 < 100) {
-	    if (idummy3 < break_century)   /* assign 2-digit year to century*/
-	      idummy3 += 2000;
-	    else
-	      idummy3 += 1900;
-	  }
-	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy3,&idummy1,&idummy2,&rdum,status);
-	  (*(numeric_fields+i))[rec] = rdum;
-
-	  /* force dates with dashes "-" to be in yyyy-mm-dd format *kob* */
-	} else if (sscanf(p,"%4d-%2d-%2d%1s",
-			  &idummy1,&idummy2,&idummy3,errstr) == 3) {
-	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
-	  (*(numeric_fields+i))[rec] = rdum;
-	  }
-	else if ( (sscanf(p,"%4d%2d%2d%1s",&idummy1,&idummy2,&idummy3,str1)==3)
-	      && idummy1>0
-	      && idummy2>=1 && idummy2<=12
-	      && idummy3>=1 && idummy3<=31 ) {
-	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
-	  (*(numeric_fields+i))[rec] = rdum;
-	  }
-	else
-	  (*(numeric_fields+i))[rec] = bad_flags[i];
-	break;
-
-	/* date and time
-	   Parses fields that are date time separated by a space.
-	   It would be good to also allow for Z or T separator
-	   Currently those can be handled as separate date and time
-	   fields with T or Z given as a delimiter. */
-
-      case FTYP_DATIME:
-
-	
-	if (sscanf(p,"%d/%d/%d %d:%d:%lf%1s",
-		   &idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,errstr) >= 4) {
-
-		ndum = sscanf(p,"%d/%d/%d %d:%d:%lf%1s",
-		   &idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,errstr) ;
-		tpart = -999;
-		if (ndum == 6) tpart = idummy4 + idummy5/60. + dummy/3600.;
-		if (ndum == 5) tpart = idummy4 + idummy5/60.;
-
-	  /* need to check for 4 digit year - mm/dd/yyyy *kob* */
-		if (idummy3 < 100) {
-			if (idummy3 < break_century)   /* assign 2-digit year to century*/
-			  idummy3 += 2000;
-			else
-			  idummy3 += 1900;
-	        }
-		  (*(numeric_fields+i))[rec] =
-		  days_from_day0_(&days_1900,&idummy3,&idummy1,&idummy2,&rdum,status);
-		   (*(numeric_fields+i))[rec] = rdum + tpart/24.;
-		  if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];
-
-	  /* force dates with dashes "-" to be in yyyy-mm-dd format *kob* */
-	 	} else if (sscanf(p,"%4d-%2d-%2d %d:%d:%lf%1s",			
-	 			  &idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,errstr) >= 4) {	
-	 	  ndum = sscanf(p,"%4d-%2d-%2d %d:%d:%lf%1s",	
-	 			  &idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,errstr);	
-
-	 	  tpart = -999;	
-	 	  if (ndum == 6) tpart = idummy4 + idummy5/60. + dummy/3600.;
-	 	  if (ndum == 5) tpart = idummy4 + idummy5/60.;	
-
-	 	  (*(numeric_fields+i))[rec] =	
-	 	  days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);	
-	 	  (*(numeric_fields+i))[rec] = rdum + tpart/24.;
-	 	  if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];	
-
-	 	} else if ( (sscanf(p,"%4d%2d%2d%1s",&idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,str1) >= 4)
-	      && idummy1>=1800 && idummy1<2100
-	      && idummy2>=1 && idummy2<=12
-	      && idummy3>=1 && idummy3<=31 ) {	
-	 		ndum = sscanf(p,"%4d%2d%2d %d:%d:%lf%1s",&idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,str1); 
-
-	 		tpart = -999;	
-	 		if (ndum == 6) tpart = idummy4 + idummy5/60. + dummy/3600.;	
-	 		if (ndum == 5) tpart = idummy4 + idummy5/60.;	
-
-	 		(*(numeric_fields+i))[rec] =	
-	 		days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);	
-	 		(*(numeric_fields+i))[rec] = rdum + tpart/24.;	
-	 		if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];	
-
-	} else
-	  (*(numeric_fields+i))[rec] = bad_flags[i];
-	
-	break;
-
-
-	/* date */
-      case FTYP_EURODATE:
 	if (sscanf(p,"%d/%d/%d%1s",&idummy1,&idummy2,&idummy3,errstr) == 3) {
 	  /* need to check to see if idummy3 which contains the year is in 
 	     the form YY or YYYY     *kob*  10/02  */
+		 
+	  /* Date of 00/00/00 is bad-data */
+	  if (idummy1 == 0 || idummy2 == 0 || idummy3 == 0) {
+		  (*(numeric_fields+i))[rec] = bad_flags[i];
+		  break;
+	  }
+
+	  /* check for yyyy/mm/dd */
+	  if (idummy1 > 1800) {
+		  (*(numeric_fields+i))[rec] =
+		  days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+		  (*(numeric_fields+i))[rec] = rdum;
+		  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
+		  break;
+	  }
+
+	  /* Check for 2-digit or 4-digit year */
 	  if (idummy3 < 100) { 
 	    if (idummy3 < break_century)   /* assign 2-digit year to century*/
 	      idummy3 += 2000;
 	    else
 	      idummy3 += 1900;
 	  }
+
+	  (*(numeric_fields+i))[rec] =
+	    days_from_day0_(&days_1900,&idummy3,&idummy1,&idummy2,&rdum,status);
+	  (*(numeric_fields+i))[rec] = rdum;
+	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
+	/* force dates with dashes "-" to be in yyyy-mm-dd format *kob* */
+	} else if (sscanf(p,"%4d-%2d-%2d%1s",
+			  &idummy1,&idummy2,&idummy3,errstr) == 3) {
+	  (*(numeric_fields+i))[rec] =
+	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+	  (*(numeric_fields+i))[rec] = rdum; 
+	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
+	  }
+	/* yyyyddmm date */
+	else if ( (sscanf(p,"%4d%2d%2d%1s",&idummy1,&idummy2,&idummy3,str1)==3)
+	      && idummy1>0
+	      && idummy2>=1 && idummy2<=12
+	      && idummy3>=1 && idummy3<=31 ) {
+	  (*(numeric_fields+i))[rec] =
+	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+	  (*(numeric_fields+i))[rec] = rdum; }
+	else
+	  (*(numeric_fields+i))[rec] = bad_flags[i];
+	break;
+
+	/* Date and time
+	   Parses fields that are date time separated by a space.
+	   It would be good to also allow for Z or T separator
+	   Currently those can be handled as separate date and time
+	   fields with T or Z given as a delimiter. */
+
+	      case FTYP_DATIME:
+			  
+	if (sscanf(p,"%d/%d/%d %d:%d:%lf%1s",&idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,errstr) >= 4) {
+
+	  /* Date of 00/00/00 in any order is bad-data */
+	  if (idummy1 == 0 || idummy2 == 0 || idummy3 == 0) {
+		  (*(numeric_fields+i))[rec] = bad_flags[i];
+		  break;
+	  }
+
+	  ndum = sscanf(p,"%d/%d/%d %d:%d:%lf%1s",&idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,errstr);
+	  tpart = -999;
+	  if (ndum == 6) tpart = idummy4 + idummy5/60. + dummy/3600.;
+	  if (ndum == 5) tpart = idummy4 + idummy5/60.;	
+
+	  /* check for yyyy/mm/dd */
+	  if (idummy1 > 1800) {
+		  (*(numeric_fields+i))[rec] =
+		  days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+		  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
+	  } else {
+
+	  /* Check for 2-digit or 4-digit year */
+		  if (idummy3 < 100) { 
+			  if (idummy3 < break_century)   /* assign 2-digit year to century*/
+			  idummy3 += 2000;
+		  else
+			  idummy3 += 1900;
+		  }
+		  
+		  (*(numeric_fields+i))[rec] =
+		  days_from_day0_(&days_1900,&idummy3,&idummy1,&idummy2,&rdum,status);
+		  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
+	  }
+
+	  (*(numeric_fields+i))[rec] = rdum + tpart/24.;
+	  if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];
+
+	  /* force dates with dashes "-" to be in yyyy-mm-dd format *kob* */
+	} else if (sscanf(p,"%4d-%2d-%2d %d:%d:%lf%1s",
+			  &idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,errstr)  >= 4) {
+		
+		ndum = sscanf(p,"%4d-%2d-%2d %d:%d:%lf%1s",&idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,errstr);
+		tpart = -999;	
+		if (ndum == 6) tpart = idummy4 + idummy5/60. + dummy/3600.;
+		if (ndum == 5) tpart = idummy4 + idummy5/60.;
+
+	  (*(numeric_fields+i))[rec] =
+	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+	  (*(numeric_fields+i))[rec] = rdum + tpart/24.; 
+	  if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];
+	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
+	  }
+
+	/* check for yyyymmdd date */
+	else if ( (sscanf(p,"%4d%2d%2d%1s",&idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,str1) >= 4)
+	      && idummy1>0
+	      && idummy3>=1 && idummy3<=12
+	      && idummy2>=1 && idummy2<=31 ) {
+		ndum = sscanf(p,"%4d%2d%2d%1s",&idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,str1);
+		tpart = -999;	
+		if (ndum == 6) tpart = idummy4 + idummy5/60. + dummy/3600.;
+		if (ndum == 5) tpart = idummy4 + idummy5/60.;	
+
+		(*(numeric_fields+i))[rec] =
+		days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+		(*(numeric_fields+i))[rec] = rdum + tpart/24.; 	
+	    if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];
+		if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
+	  }
+	else
+	  (*(numeric_fields+i))[rec] = bad_flags[i];
+	break;
+	
+	/* Euro-date */
+      case FTYP_EURODATE:
+	if (sscanf(p,"%d/%d/%d%1s",&idummy1,&idummy2,&idummy3,errstr) == 3) {
+	  /* need to check to see if idummy3 which contains the year is in 
+	     the form YY or YYYY     *kob*  10/02  */
+		 
+	  /* Date of 00/00/00 is bad-data */
+	  if (idummy1 == 0 || idummy2 == 0 || idummy3 == 0) {
+		  (*(numeric_fields+i))[rec] = bad_flags[i];
+		  break;
+	  }
+
+	  /* check for yyyy/mm/dd */
+	  if (idummy1 > 1800) {
+		  (*(numeric_fields+i))[rec] =
+		  days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+		  (*(numeric_fields+i))[rec] = rdum;
+		  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
+		  break;
+	  }
+
+	  /* Check for 2-digit or 4-digit year */
+	  if (idummy3 < 100) { 
+	    if (idummy3 < break_century)   /* assign 2-digit year to century*/
+	      idummy3 += 2000;
+	    else
+	      idummy3 += 1900;
+	  }
+
 	  (*(numeric_fields+i))[rec] =
 	    days_from_day0_(&days_1900,&idummy3,&idummy2,&idummy1,&rdum,status);
 	  (*(numeric_fields+i))[rec] = rdum;
+	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
 	  /* force dates with dashes "-" to be in yyyy-mm-dd format *kob* */
 	} else if (sscanf(p,"%4d-%2d-%2d%1s",
 			  &idummy1,&idummy2,&idummy3,errstr) == 3) {
 	  (*(numeric_fields+i))[rec] =
 	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
-	  (*(numeric_fields+i))[rec] = rdum; }
+	  (*(numeric_fields+i))[rec] = rdum;
+	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i]; }
 	/* add check for yyyyddmm euro date *kob* */
 	else if ( (sscanf(p,"%4d%2d%2d%1s",&idummy1,&idummy2,&idummy3,str1)==3)
 	      && idummy1>0
@@ -562,7 +614,8 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	      && idummy2>=1 && idummy2<=31 ) {
 	  (*(numeric_fields+i))[rec] =
 	    days_from_day0_(&days_1900,&idummy1,&idummy3,&idummy2,&rdum,status);
-	  (*(numeric_fields+i))[rec] = rdum; }
+	  (*(numeric_fields+i))[rec] = rdum;
+	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i]; }
 	else
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
 	break;
@@ -577,23 +630,39 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 			  
 	if (sscanf(p,"%d/%d/%d %d:%d:%lf%1s",&idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,errstr) >= 4) {
 
+	  /* Date of 00/00/00 in any order is bad-data */
+	  if (idummy1 == 0 || idummy2 == 0 || idummy3 == 0) {
+		  (*(numeric_fields+i))[rec] = bad_flags[i];
+		  break;
+	  }
+
 	  ndum = sscanf(p,"%d/%d/%d %d:%d:%lf%1s",&idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,errstr);
 	  tpart = -999;
 	  if (ndum == 6) tpart = idummy4 + idummy5/60. + dummy/3600.;
 	  if (ndum == 5) tpart = idummy4 + idummy5/60.;	
 
-	  /* need to check to see if idummy3 which contains the year is in 
-	     the form YY or YYYY     *kob*  10/02  */
+	  /* check for yyyy/mm/dd */
+	  if (idummy1 > 1800) {
+		  (*(numeric_fields+i))[rec] =
+		  days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+
+	  } else {
+
+	  /* Check for 2-digit or 4-digit year */
 		  if (idummy3 < 100) { 
 			  if (idummy3 < break_century)   /* assign 2-digit year to century*/
 			  idummy3 += 2000;
 		  else
 			  idummy3 += 1900;
 		  }
-
+		  
 		  (*(numeric_fields+i))[rec] =
 		  days_from_day0_(&days_1900,&idummy3,&idummy2,&idummy1,&rdum,status);
-		  (*(numeric_fields+i))[rec] = rdum + tpart/24.;
+	  }
+
+	  (*(numeric_fields+i))[rec] = rdum + tpart/24.;
+	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
+	  if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];
 
 	  /* force dates with dashes "-" to be in yyyy-mm-dd format *kob* */
 	} else if (sscanf(p,"%4d-%2d-%2d %d:%d:%lf%1s",
@@ -607,6 +676,8 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  (*(numeric_fields+i))[rec] =
 	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 	  (*(numeric_fields+i))[rec] = rdum + tpart/24.; 
+	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
+	  if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];
 	  }
 
 	/* add check for yyyyddmm euro date *kob* */
@@ -621,7 +692,9 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 
 		(*(numeric_fields+i))[rec] =
 		days_from_day0_(&days_1900,&idummy1,&idummy3,&idummy2,&rdum,status);
-		(*(numeric_fields+i))[rec] = rdum + tpart/24.; }
+		(*(numeric_fields+i))[rec] = rdum + tpart/24.;
+	    if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];
+	    if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];  }
 	else
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
 	break;
@@ -670,14 +743,13 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
       }
     }
 
- 	if (*status != 3) goto bad_status; 
+/* if bad status flag out of a date conversion, make the date the bad-flag
+   Then the user can deal with undefined times as desired */
+
+ 	if (*status != 3)  (*(numeric_fields+i))[rec] = bad_flags[i]; 
     p = pnext;	
     }
-	
-/* Error translating a date due to month out of range.
-   Send back the month number, negative to distinguish from valid status=3 */
-bad_status:
-	if (*status != 3) *status = -1*(i+1); 
+
 }
 
 /*

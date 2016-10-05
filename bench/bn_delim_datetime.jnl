@@ -10,6 +10,8 @@
 ! File contains index,euro-date-time, us-date-time, us-date, eurodate
 ! The years in variables 3 and 4 are 2-digit years after year 2020.
 
+! Ticket 2472: Allow yyyy/dd/mm in any of the date specs. 
+
 columns/skip=3/var="index,edtim,udtim,udate,edate"/type="num,edatime,datime,date,eurodate" delim_datetime.csv
 sh dat
 list index,edtim,udtim,udate,edate
@@ -28,6 +30,20 @@ sh axis/t timax
 
 ! time axis in 1995 - 2035
 define axis/t/t0=1-jan-1900/units=days timax = udate
+sh axis/t timax
+
+! Dates of yyyy/dd/mm
+! Dates with 00/00/00 return missing-data
+
+columns/skip=2/var="index,udate,udtim"/type="num,date,datime" delim_yyyy.csv
+sh dat
+list/prec=10 index,udate,udtim
+
+! axis January 2014
+define axis/t/t0=1-jan-1900/units=days timax = udate[i=1:4]
+sh axis/t timax
+! axis December 2001
+define axis/t/t0=1-jan-1900/units=days timax = udtim
 sh axis/t timax
 
 

@@ -163,7 +163,9 @@
 *                  returned a status flag of 0 from COMPUTE_MNSTD. Set status to ferr_ok
 *                  after handling the condition.
 * V701  *acm* 8/16 Fix ticket 2463: single-valued data with a /LEVELS setting
-* V701  *acm* 8/16 Fix ticket 2468: Symbols AX_HORIZ and AX_VERT are not reset on an /OVERLAY plot 
+* V701  *acm* 8/16 Fix ticket 2468: Symbols AX_HORIZ and AX_VERT are not reset on an /OVERLAY plot
+* V702  *acm* 10/16 Test the results of FIELD_MINMAX routine before use; if all data is 
+*                   all-missing it returns arbitrary_large_val4.
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -612,8 +614,14 @@ C   set up memory for the flag grid
 	   ELSEIF ( curvilinear ) THEN
 	      CALL FIELD_MINMAX( memory(1,mr_blk1(mr_xpos) ), 
      .				mr_xpos, cx_xpos, rlo, rhi )
-	      xaxlo = rlo
-	      xaxhi = rhi
+
+	      IF (rlo .EQ. arbitrary_large_val4) THEN ! all missing
+	         xaxlo = -1
+	         xaxhi = 1
+	      ElSE
+	         xaxlo = rlo
+	         xaxhi = rhi
+	      ENDIF
 	      IF (xaxlo .EQ. xaxhi) THEN
 		 letter = 'X'
 		 GOTO 5500
@@ -682,8 +690,14 @@ C ACM added 8/2001 save cal id if vertical time axis
 	   ELSEIF ( curvilinear ) THEN
 	      CALL FIELD_MINMAX( memory(1,mr_blk1(mr_ypos) ),
      .				mr_ypos, cx_ypos, rlo, rhi )
-	      yaxlo = rlo
-	      yaxhi = rhi
+	      IF (rlo .EQ. arbitrary_large_val4) THEN ! all missing
+	         yaxlo = -1
+	         yaxhi = 1
+	      ElSE
+	         yaxlo = rlo
+	         yaxhi = rhi
+	      ENDIF
+
 	      IF (yaxlo .EQ. yaxhi) THEN
 		 letter = 'Y'
 		 GOTO 5500

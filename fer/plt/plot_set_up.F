@@ -171,6 +171,8 @@
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 * V701  *acm* 8/16 Fix ticket 2463: single-valued data with a /LEVELS setting
 * V701  *acm* 8/16 Fix ticket 2468: Symbols AX_HORIZ and AX_VERT are not reset on an /OVERLAY plot
+* V702  *acm* 10/16 Test the results of MINMAX routine before use; if all data is 
+*                   all-missing it returns arbitrary_large_val4.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -447,8 +449,13 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      ENDIF
 	   ELSE
 	      CALL MINMAX( indep_dat, npts, mr_bad_data(mv), lo, hi )
-	      ind_min = DBLE( lo )
-	      ind_max = DBLE( hi )
+	      IF (lo .EQ. arbitrary_large_val4) THEN ! all missing
+	         ind_min = -1.
+	         ind_max =  1.
+	      ElSE
+	         ind_min = lo
+	         ind_max = hi
+	      ENDIF
 	   ENDIF
 
 * Set up modulo longitude handling if /vs and variable has units
@@ -661,11 +668,14 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      IF (ribbon_plot .OR. addgaps) set_axis = (ipl .EQ. var1)
               IF (versus .AND. set_axis .AND. .NOT.overlay) THEN
  	         CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi )
-	         dep_min = DBLE( lo )
-	         dep_max = DBLE( hi )
-		 IF (dep_min .LE. -1*mr_bad_data(mv)) dep_min = -1
-		 IF (dep_max .GE.    mr_bad_data(mv)) dep_max = 1
-                 cx_y = cx_list(2) 	
+ 	         IF (lo .EQ. arbitrary_large_val4) THEN ! all missing
+		    dep_min = -1
+		    dep_max =  1
+		 ELSE
+ 	            dep_min = lo
+	            dep_max = hi
+                 ENDIF
+		 cx_y = cx_list(2) 	
                  buff1 = VAR_UNITS(cx_y)
                  iunits = TM_UNIT_ID(buff1)
                  IF (iunits .EQ. 4) THEN
@@ -948,8 +958,9 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      IF (dep_is_log) THEN
 	      
 	         CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi )
-	         dep_min = DBLE( lo )
-	         dep_max = DBLE( hi )
+		 IF (lo .EQ. arbitrary_large_val4) GOTO 5171
+	         dep_min = lo
+	         dep_max = hi
 	         
 	         CALL AXIS_ENDS( dep_ax, the_taxis, grid, dep_min, dep_max, 
      .                        delta, dep_is_log, dep_axtyp, status )
@@ -986,8 +997,9 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      ENDIF   
 	   ELSEIF (dep_is_log) THEN	! get dependent var scaling and set up log axis
 	      CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi )
-	      dep_min = DBLE( lo )
-	      dep_max = DBLE( hi )
+	      IF (lo .EQ. arbitrary_large_val4) GOTO 5171  ! all missing
+	      dep_min = lo
+	      dep_max = hi
 	      
 	      CALL AXIS_ENDS( dep_ax, the_taxis, grid, dep_min, dep_max, 
      .                        delta, dep_is_log, dep_axtyp, status )
@@ -1093,6 +1105,10 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	CALL ERRMSG( ferr_out_of_range, status,
      . 'Limits for log axis negative or too small: '//
      .  buff1(:slen)// ' : '//  buff2(:slen2), *5000 )
+
+ 5171	CALL ERRMSG( ferr_out_of_range, status,
+     . 'Data all-missing. Cannot define log axis for plotting',
+     .  *5000 )
 
 
  5180	CALL ERRMSG( ferr_limits, status,

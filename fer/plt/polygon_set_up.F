@@ -136,6 +136,8 @@
 *                   no 3rd argument (colors), make nominal title
 * V698  4/16 *acm* New PLOT/SKIP= means change in call sequence for LINE_STYLE
 * V701  *acm* 8/16 Fix ticket 2463: single-valued data with a /LEVELS setting
+* V702  *acm* 10/16 Test the results of MINMAX routine before use; if all data is 
+*                   all-missing it returns arbitrary_large_val4.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -658,11 +660,15 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 * ... maintain check on x data range for PLOT+ auto-scaling
 	   CALL MINMAX( x_dat(start), npts, mr_bad_data(mr_x), lo, hi)
-	   IF (lo .LT. lox) lox = lo
-	   IF (hi .GT. hix) hix = hi
+	   IF (lo .NE. arbitrary_large_val4) THEN ! if it is arb-large, then all missing
+	      IF (lo .LT. lox) lox = lo
+	      IF (hi .GT. hix) hix = hi
+	   ENDIF
 	   CALL MINMAX( y_dat(start), npts, mr_bad_data(mr_y), lo, hi)
-	   IF (lo .LT. loy) loy = lo
-	   IF (hi .GT. hiy) hiy = hi
+	   IF (lo .NE. arbitrary_large_val4) THEN ! if it is arb-large, then all missing
+	      IF (lo .LT. loy) loy = lo
+	      IF (hi .GT. hiy) hiy = hi
+	   ENDIF
 
 * ... pass the data to PLOT+
 

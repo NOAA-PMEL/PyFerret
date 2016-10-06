@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Sep 28 14:54 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.02
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Oct  6 13:53 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.02
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -290,7 +290,7 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Wed Sep 28 14:54:22 PDT 2016
+Beginning at Thu Oct  6 13:53:31 PDT 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -4606,13 +4606,15 @@ Replacing definition of axis TAX
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable    2
+Replacing definition of axis TIMAX
+Replacing definition of axis TIMAX
+ **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
 list index,edtim,udtim,udate,edate
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable    3
+ **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
 list index,edtim,udtim,udate,edate
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable    4
+ **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
 list index,edtim,udtim,udate,edate
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable    5
+ **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
 list index,edtim,udtim,udate,edate
 *** Running ferret script: bn_aggregate_u.jnl
  Cached data cleared from memory
@@ -4781,4 +4783,4 @@ LOAD/TEMPORARY vflag
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
  Cached data cleared from memory
-Ended at Wed Sep 28 14:55:25 PDT 2016
+Ended at Thu Oct  6 13:54:36 PDT 2016

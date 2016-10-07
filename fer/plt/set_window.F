@@ -411,8 +411,9 @@ c 75        CONTINUE
            sc = SQRT(xsc * ysc)
            CALL FGD_SEND_IMAGE_SCALE(n, sc)
 
-*          Save xpixels and ypixels only for specifying the default
-*          size when saving raster graphics.
+*          Save xpixels and ypixels for specifying the default size 
+*          when saving raster graphics as well as values for 
+*          PPL$XPIXEL and PPL$YPIXEL
            wn_xpixels(n) = xpixels
            wn_ypixels(n) = ypixels
 

@@ -79,8 +79,8 @@ static size_t ferMemSize;
 static double *ferMemory = NULL;
 static float  *pplMemory = NULL;
 
-/* for recovering from seg faults */
-static void (*segv_handler)(int);
+/* for recovering from problems in external function calls */
+static void (*pyefcn_segv_handler)(int);
 static jmp_buf jumpbuffer;
 static void pyefcn_signal_handler(int signum)
 {
@@ -91,14 +91,60 @@ static void pyefcn_signal_handler(int signum)
  * Ctrl-C handler that just calls the CTRLC_AST Fortran subroutine 
  * defined in fer/gnl/ctrl_c.F (which has no arguments). 
  */
-static void pyferret_sigint_handler(int signum) {
+static void ferret_sigint_handler(int signum) {
     /* ignore any further Ctrl-C entries until done */
     signal(SIGINT, SIG_IGN);
     /* Now call the Fortran routine */
     ctrlc_ast_();
     /* Go back to catching Ctrl-C */
-    signal(SIGINT, pyferret_sigint_handler);
+    signal(SIGINT, ferret_sigint_handler);
 }
+
+/* 
+ * Store and restore original signal handlers.
+ * Includes SIGINT, so always define.
+ * Largest ANSI/POSIX/BSD value of signals caught 
+ * is SIGTERM = 15.
+ */
+static char *(signal_names[16]);
+static void (*(old_signal_handlers[16]))(int);
+static void clear_signal_names() {
+    int k;
+    for (k = 0; k < 16; k++) {
+        signal_names[k] = NULL;
+    }
+}
+static void restore_old_signal_handlers() {
+    int k;
+    for (k = 0; k < 16; k++) {
+        if ( signal_names[k] != NULL ) {
+            signal(k, old_signal_handlers[k]);
+        }
+    }
+}
+
+#ifdef NDEBUG
+/*
+ * Signal handler for program-quiting signals other than SIGINT.
+ * For exiting gracefully to shut down any displayed viewers
+ * and for generating a stderr message for LAS.
+ * Only for production (not debug); for debug allow the crash to happen.
+ */
+static void crash_signal_handler(int signum)
+{
+    /* 
+     * Restore all the original signal handlers in case 
+     * something else happens while shutting down, 
+     * or if something else needs to know about the exit.
+     */
+    restore_old_signal_handlers();
+    /* report the crash and exit gracefully - calls atexit */
+    fprintf(stderr, "**ERROR Ferret crash; signal = %d (%s)\n", 
+                    signum, signal_names[signum]);
+    fflush(stderr);
+    exit(-1);
+}
+#endif
 
 static char pyferretStartDocstring[] =
     "Initializes Ferret.  This allocates the initial amount of memory for \n"
@@ -449,7 +495,6 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
     const char *command;
     const char *iter_command;
     int  one_cmnd_mode_int;
-    void (*oldsighand)(int);
     int  cmnd_stack_level;
     char errmsg[2112];
     int  errval;
@@ -476,11 +521,83 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
         one_cmnd_mode_int = 1;
 
     /* Let ferret deal with ctrl-C while in ferret mode */
-    oldsighand = signal(SIGINT, pyferret_sigint_handler);
-    if ( oldsighand == SIG_ERR ) {
+    clear_signal_names();
+    old_signal_handlers[SIGINT] = signal(SIGINT, ferret_sigint_handler);
+    if ( old_signal_handlers[SIGINT] == SIG_ERR ) {
         PyErr_SetString(PyExc_SystemError, "Unable to catch SIGINT while in Ferret");
         return NULL;
     }
+    signal_names[SIGINT] = "SIGINT";
+
+#ifdef NDEBUG
+    /* Catch other program termination signals - if not compiled debug */
+    old_signal_handlers[SIGHUP] = signal(SIGHUP, crash_signal_handler);
+    if ( old_signal_handlers[SIGHUP] == SIG_ERR ) {
+        restore_old_signal_handlers();
+        PyErr_SetString(PyExc_SystemError, "Unable to catch SIGHUP while in Ferret");
+        return NULL;
+    }
+    signal_names[SIGHUP] = "SIGHUP";
+
+    old_signal_handlers[SIGQUIT] = signal(SIGQUIT, crash_signal_handler);
+    if ( old_signal_handlers[SIGQUIT] == SIG_ERR ) {
+        restore_old_signal_handlers();
+        PyErr_SetString(PyExc_SystemError, "Unable to catch SIGQUIT while in Ferret");
+        return NULL;
+    }
+    signal_names[SIGQUIT] = "SIGQUIT";
+
+    old_signal_handlers[SIGILL] = signal(SIGILL, crash_signal_handler);
+    if ( old_signal_handlers[SIGILL] == SIG_ERR ) {
+        restore_old_signal_handlers();
+        PyErr_SetString(PyExc_SystemError, "Unable to catch SIGILL while in Ferret");
+        return NULL;
+    }
+    signal_names[SIGILL] = "SIGILL";
+
+#ifdef SIGBUS
+    old_signal_handlers[SIGBUS] = signal(SIGBUS, crash_signal_handler);
+    if ( old_signal_handlers[SIGBUS] == SIG_ERR ) {
+        restore_old_signal_handlers();
+        PyErr_SetString(PyExc_SystemError, "Unable to catch SIGBUS while in Ferret");
+        return NULL;
+    }
+    signal_names[SIGBUS] = "SIGBUS";
+#endif
+
+    old_signal_handlers[SIGABRT] = signal(SIGABRT, crash_signal_handler);
+    if ( old_signal_handlers[SIGABRT] == SIG_ERR ) {
+        restore_old_signal_handlers();
+        PyErr_SetString(PyExc_SystemError, "Unable to catch SIGABRT while in Ferret");
+        return NULL;
+    }
+    signal_names[SIGABRT] = "SIGABRT";
+
+    old_signal_handlers[SIGFPE] = signal(SIGFPE, crash_signal_handler);
+    if ( old_signal_handlers[SIGFPE] == SIG_ERR ) {
+        restore_old_signal_handlers();
+        PyErr_SetString(PyExc_SystemError, "Unable to catch SIGFPE while in Ferret");
+        return NULL;
+    }
+    signal_names[SIGFPE] = "SIGFPE";
+
+    old_signal_handlers[SIGSEGV] = signal(SIGSEGV, crash_signal_handler);
+    if ( old_signal_handlers[SIGSEGV] == SIG_ERR ) {
+        restore_old_signal_handlers();
+        PyErr_SetString(PyExc_SystemError, "Unable to catch SIGSEGV while in Ferret");
+        return NULL;
+    }
+    signal_names[SIGSEGV] = "SIGSEGV";
+
+    old_signal_handlers[SIGTERM] = signal(SIGTERM, crash_signal_handler);
+    if ( old_signal_handlers[SIGTERM] == SIG_ERR ) {
+        restore_old_signal_handlers();
+        PyErr_SetString(PyExc_SystemError, "Unable to catch SIGTERM while in Ferret");
+        return NULL;
+    }
+    signal_names[SIGTERM] = "SIGTERM";
+#endif
+
     /* do-loop only for dealing with Ferret "SET MEMORY /SIZE=..." resize command */
     iter_command = command;
     do {
@@ -507,14 +624,16 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
             if ( is_secure_() == 0 )
                break;
             if ( sBuffer->flags[FRTN_ACTION] == FACTN_EXIT ) {
-               signal(SIGINT, oldsighand);
+               restore_old_signal_handlers();
                exit(0);
             }
         }
         /* submit an empty command to continue on with whaterever was going on */
         iter_command = "";
     } while ( (one_cmnd_mode_int == 0) || (cmnd_stack_level > 0) );
-    signal(SIGINT, oldsighand);
+
+    /* Restore all the signal handlers that were changed */
+    restore_old_signal_handlers();
 
     /* Set back to single command mode */
     if ( one_cmnd_mode_int == 0 ) {
@@ -1629,12 +1748,12 @@ static PyObject *pyefcnGetAxisCoordinates(PyObject *self, PyObject *args, PyObje
 
     /* Catch seg faults from indiscriminately calling this function */
     if ( setjmp(jumpbuffer) == 1 ) {
-        signal(SIGSEGV, segv_handler);
+        signal(SIGSEGV, pyefcn_segv_handler);
         PyErr_SetString(PyExc_ValueError, "Invalid function call - probably not from a ferret external function call");
         return NULL;
     }
-    segv_handler = signal(SIGSEGV, pyefcn_signal_handler);
-    if ( segv_handler == SIG_ERR ) {
+    pyefcn_segv_handler = signal(SIGSEGV, pyefcn_signal_handler);
+    if ( pyefcn_segv_handler == SIG_ERR ) {
         PyErr_SetString(PyExc_ValueError, "Unable to catch SIGSEGV");
         return NULL;
     }
@@ -1643,7 +1762,7 @@ static PyObject *pyefcnGetAxisCoordinates(PyObject *self, PyObject *args, PyObje
     ef_get_arg_subscripts_6d_(&id, steplo, stephi, incr);
 
     /* Restore the original segv handler */
-    signal(SIGSEGV, segv_handler);
+    signal(SIGSEGV, pyefcn_segv_handler);
 
     /* Check the indices for the coordinates of the desired axis of the argument */
     if ( (steplo[arg][axis] == UNSPECIFIED_INT4) || (stephi[arg][axis] == UNSPECIFIED_INT4) ||
@@ -1730,12 +1849,12 @@ static PyObject *pyefcnGetAxisBoxSizes(PyObject *self, PyObject *args, PyObject 
 
     /* Catch seg faults from indiscriminately calling this function */
     if ( setjmp(jumpbuffer) == 1 ) {
-        signal(SIGSEGV, segv_handler);
+        signal(SIGSEGV, pyefcn_segv_handler);
         PyErr_SetString(PyExc_ValueError, "Invalid function call - probably not from a ferret external function call");
         return NULL;
     }
-    segv_handler = signal(SIGSEGV, pyefcn_signal_handler);
-    if ( segv_handler == SIG_ERR ) {
+    pyefcn_segv_handler = signal(SIGSEGV, pyefcn_signal_handler);
+    if ( pyefcn_segv_handler == SIG_ERR ) {
         PyErr_SetString(PyExc_ValueError, "Unable to catch SIGSEGV");
         return NULL;
     }
@@ -1744,7 +1863,7 @@ static PyObject *pyefcnGetAxisBoxSizes(PyObject *self, PyObject *args, PyObject 
     ef_get_arg_subscripts_6d_(&id, steplo, stephi, incr);
 
     /* Restore the original segv handler */
-    signal(SIGSEGV, segv_handler);
+    signal(SIGSEGV, pyefcn_segv_handler);
 
     /* Check the indices for the coordinates of the desired axis of the argument */
     if ( (steplo[arg][axis] == UNSPECIFIED_INT4) || (stephi[arg][axis] == UNSPECIFIED_INT4) ||
@@ -1831,12 +1950,12 @@ static PyObject *pyefcnGetAxisBoxLimits(PyObject *self, PyObject *args, PyObject
 
     /* Catch seg faults from indiscriminately calling this function */
     if ( setjmp(jumpbuffer) == 1 ) {
-        signal(SIGSEGV, segv_handler);
+        signal(SIGSEGV, pyefcn_segv_handler);
         PyErr_SetString(PyExc_ValueError, "Invalid function call - probably not from a ferret external function call");
         return NULL;
     }
-    segv_handler = signal(SIGSEGV, pyefcn_signal_handler);
-    if ( segv_handler == SIG_ERR ) {
+    pyefcn_segv_handler = signal(SIGSEGV, pyefcn_signal_handler);
+    if ( pyefcn_segv_handler == SIG_ERR ) {
         PyErr_SetString(PyExc_ValueError, "Unable to catch SIGSEGV");
         return NULL;
     }
@@ -1845,7 +1964,7 @@ static PyObject *pyefcnGetAxisBoxLimits(PyObject *self, PyObject *args, PyObject
     ef_get_arg_subscripts_6d_(&id, steplo, stephi, incr);
 
     /* Restore the original segv handler */
-    signal(SIGSEGV, segv_handler);
+    signal(SIGSEGV, pyefcn_segv_handler);
 
     /* Check the indices for the coordinates of the desired axis of the argument */
     if ( (steplo[arg][axis] == UNSPECIFIED_INT4) || (stephi[arg][axis] == UNSPECIFIED_INT4) ||
@@ -1950,12 +2069,12 @@ static PyObject *pyefcnGetAxisInfo(PyObject *self, PyObject *args, PyObject *kwd
 
     /* Catch seg faults from indiscriminately calling this function */
     if ( setjmp(jumpbuffer) == 1 ) {
-        signal(SIGSEGV, segv_handler);
+        signal(SIGSEGV, pyefcn_segv_handler);
         PyErr_SetString(PyExc_ValueError, "Invalid function call - probably not from a ferret external function call");
         return NULL;
     }
-    segv_handler = signal(SIGSEGV, pyefcn_signal_handler);
-    if ( segv_handler == SIG_ERR ) {
+    pyefcn_segv_handler = signal(SIGSEGV, pyefcn_signal_handler);
+    if ( pyefcn_segv_handler == SIG_ERR ) {
         PyErr_SetString(PyExc_ValueError, "Unable to catch SIGSEGV");
         return NULL;
     }
@@ -1964,7 +2083,7 @@ static PyObject *pyefcnGetAxisInfo(PyObject *self, PyObject *args, PyObject *kwd
     ef_get_arg_subscripts_6d_(&id, steplo, stephi, incr);
 
     /* Restore the original segv handler */
-    signal(SIGSEGV, segv_handler);
+    signal(SIGSEGV, pyefcn_segv_handler);
 
     /* Check the indices for the coordinates of the desired axis of the argument */
     if ( (steplo[arg][axis] == UNSPECIFIED_INT4) || (stephi[arg][axis] == UNSPECIFIED_INT4) ||

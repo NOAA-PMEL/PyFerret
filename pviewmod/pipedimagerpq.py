@@ -647,10 +647,13 @@ class PipedImagerPQ(QMainWindow):
             # EOFError should never arise from recv since
             # the call is after poll returns True
             (exctype, excval) = sys.exc_info()[:2]
-            if excval:
-                self.__rspdpipe.send("**ERROR %s: %s" % (str(exctype), str(excval)))
-            else:
-                self.__rspdpipe.send("**ERROR %s" % str(exctype))
+            try:
+                if excval:
+                    self.__rspdpipe.send("**ERROR %s: %s" % (str(exctype), str(excval)))
+                else:
+                    self.__rspdpipe.send("**ERROR %s" % str(exctype))
+            except Exception:
+                pass
             self.exitViewer()
 
     def processCommand(self, cmnd):

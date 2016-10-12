@@ -81,17 +81,43 @@ static float  *pplMemory = NULL;
 
 /* for recovering from problems in external function calls */
 static void (*pyefcn_segv_handler)(int);
-static jmp_buf jumpbuffer;
+static jmp_buf pyefcn_jumpbuffer;
 static void pyefcn_signal_handler(int signum)
 {
-    longjmp(jumpbuffer, 1);
+    longjmp(pyefcn_jumpbuffer, 1);
+}
+
+/* 
+ * Store and restore original signal handlers when in 
+ * the ferret engine.  Largest ANSI/POSIX/BSD value 
+ * of signals caught is SIGTERM = 15.
+ */
+#define MAX_SIGHANDLERS 16
+static char *(signal_names[MAX_SIGHANDLERS]);
+static void (*(old_signal_handlers[MAX_SIGHANDLERS]))(int);
+static void clear_signal_names() 
+{
+    int k;
+    for (k = 0; k < MAX_SIGHANDLERS; k++) {
+        signal_names[k] = NULL;
+    }
+}
+static void restore_old_signal_handlers() 
+{
+    int k;
+    for (k = 0; k < MAX_SIGHANDLERS; k++) {
+        if ( signal_names[k] != NULL ) {
+            signal(k, old_signal_handlers[k]);
+        }
+    }
 }
 
 /* 
  * Ctrl-C handler that just calls the CTRLC_AST Fortran subroutine 
  * defined in fer/gnl/ctrl_c.F (which has no arguments). 
  */
-static void ferret_sigint_handler(int signum) {
+static void ferret_sigint_handler(int signum) 
+{
     /* ignore any further Ctrl-C entries until done */
     signal(SIGINT, SIG_IGN);
     /* Now call the Fortran routine */
@@ -100,51 +126,19 @@ static void ferret_sigint_handler(int signum) {
     signal(SIGINT, ferret_sigint_handler);
 }
 
-/* 
- * Store and restore original signal handlers.
- * Includes SIGINT, so always define.
- * Largest ANSI/POSIX/BSD value of signals caught 
- * is SIGTERM = 15.
- */
-static char *(signal_names[16]);
-static void (*(old_signal_handlers[16]))(int);
-static void clear_signal_names() {
-    int k;
-    for (k = 0; k < 16; k++) {
-        signal_names[k] = NULL;
-    }
-}
-static void restore_old_signal_handlers() {
-    int k;
-    for (k = 0; k < 16; k++) {
-        if ( signal_names[k] != NULL ) {
-            signal(k, old_signal_handlers[k]);
-        }
-    }
-}
-
-#ifdef NDEBUG
 /*
  * Signal handler for program-quiting signals other than SIGINT.
  * For exiting gracefully to shut down any displayed viewers
  * and for generating a stderr message for LAS.
  * Only for production (not debug); for debug allow the crash to happen.
  */
-static void crash_signal_handler(int signum)
+static jmp_buf crash_jumpbuffer;
+static char crash_errmsg[512];
+static void crash_signal_handler(int signum) 
 {
-    /* 
-     * Restore all the original signal handlers in case 
-     * something else happens while shutting down, 
-     * or if something else needs to know about the exit.
-     */
-    restore_old_signal_handlers();
-    /* report the crash and exit gracefully - calls atexit */
-    fprintf(stderr, "**ERROR Ferret crash; signal = %d (%s)\n", 
-                    signum, signal_names[signum]);
-    fflush(stderr);
-    exit(-1);
+    sprintf(crash_errmsg, "Ferret crash; signal = %d (%s)", signum, signal_names[signum]);
+    longjmp(crash_jumpbuffer, 1);
 }
-#endif
 
 static char pyferretStartDocstring[] =
     "Initializes Ferret.  This allocates the initial amount of memory for \n"
@@ -520,17 +514,29 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
     else
         one_cmnd_mode_int = 1;
 
-    /* Let ferret deal with ctrl-C while in ferret mode */
     clear_signal_names();
+
+    if ( setjmp(crash_jumpbuffer) == 1 ) {
+        /* 
+         * Signal caught if we get here.  Restore all the original 
+         * signal handlers and raise a RuntimeError with an appropriate 
+         * error message so the atexit methods will get called.
+         */
+        restore_old_signal_handlers();
+        PyErr_SetString(PyExc_RuntimeError, crash_errmsg);
+        return NULL;
+    }
+
+    /* Let ferret deal with ctrl-C while in ferret mode */
     old_signal_handlers[SIGINT] = signal(SIGINT, ferret_sigint_handler);
     if ( old_signal_handlers[SIGINT] == SIG_ERR ) {
+        restore_old_signal_handlers();
         PyErr_SetString(PyExc_SystemError, "Unable to catch SIGINT while in Ferret");
         return NULL;
     }
     signal_names[SIGINT] = "SIGINT";
 
-#ifdef NDEBUG
-    /* Catch other program termination signals - if not compiled debug */
+    /* Catch other program termination signals to gracefully return an error */
     old_signal_handlers[SIGHUP] = signal(SIGHUP, crash_signal_handler);
     if ( old_signal_handlers[SIGHUP] == SIG_ERR ) {
         restore_old_signal_handlers();
@@ -596,7 +602,6 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
         return NULL;
     }
     signal_names[SIGTERM] = "SIGTERM";
-#endif
 
     /* do-loop only for dealing with Ferret "SET MEMORY /SIZE=..." resize command */
     iter_command = command;
@@ -1747,7 +1752,7 @@ static PyObject *pyefcnGetAxisCoordinates(PyObject *self, PyObject *args, PyObje
     }
 
     /* Catch seg faults from indiscriminately calling this function */
-    if ( setjmp(jumpbuffer) == 1 ) {
+    if ( setjmp(pyefcn_jumpbuffer) == 1 ) {
         signal(SIGSEGV, pyefcn_segv_handler);
         PyErr_SetString(PyExc_ValueError, "Invalid function call - probably not from a ferret external function call");
         return NULL;
@@ -1848,7 +1853,7 @@ static PyObject *pyefcnGetAxisBoxSizes(PyObject *self, PyObject *args, PyObject 
     }
 
     /* Catch seg faults from indiscriminately calling this function */
-    if ( setjmp(jumpbuffer) == 1 ) {
+    if ( setjmp(pyefcn_jumpbuffer) == 1 ) {
         signal(SIGSEGV, pyefcn_segv_handler);
         PyErr_SetString(PyExc_ValueError, "Invalid function call - probably not from a ferret external function call");
         return NULL;
@@ -1949,7 +1954,7 @@ static PyObject *pyefcnGetAxisBoxLimits(PyObject *self, PyObject *args, PyObject
     }
 
     /* Catch seg faults from indiscriminately calling this function */
-    if ( setjmp(jumpbuffer) == 1 ) {
+    if ( setjmp(pyefcn_jumpbuffer) == 1 ) {
         signal(SIGSEGV, pyefcn_segv_handler);
         PyErr_SetString(PyExc_ValueError, "Invalid function call - probably not from a ferret external function call");
         return NULL;
@@ -2068,7 +2073,7 @@ static PyObject *pyefcnGetAxisInfo(PyObject *self, PyObject *args, PyObject *kwd
     }
 
     /* Catch seg faults from indiscriminately calling this function */
-    if ( setjmp(jumpbuffer) == 1 ) {
+    if ( setjmp(pyefcn_jumpbuffer) == 1 ) {
         signal(SIGSEGV, pyefcn_segv_handler);
         PyErr_SetString(PyExc_ValueError, "Invalid function call - probably not from a ferret external function call");
         return NULL;

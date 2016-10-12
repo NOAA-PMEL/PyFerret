@@ -164,11 +164,14 @@ class PipedImagerPQ(QMainWindow):
         '''
         Override so will just minimize if not shutting down
         '''
-        # If shutting down, go ahead and close/exit
-        if self.__shuttingdown:
+        # If shutting down or minimized (escape hatch), 
+        # go ahead and close/exit
+        if self.__shuttingdown or self.isMinimized():
             self.__timer.stop()
             event.accept()
             return
+        # Otherwise just minimize the window
+        event.ignore()
         self.showMinimized()
 
     def exitViewer(self):

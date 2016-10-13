@@ -359,6 +359,19 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         /* Never use the alpha channel */
         noalpha = 1;
     }
+    else if ( strcmp(fmtext, "EPS") == 0 ) {
+        /* Surface size is given in (floating-point) points */
+        savewidth = xinches * 72.0;
+        saveheight = yinches * 72.0;
+        scalefactor  = savewidth / instdata->imagewidth;
+        scalefactor += saveheight / instdata->imageheight;
+        /* recording surface is actually in points value of imagewidth, imageheight */
+        scalefactor *= instdata->pixelsperinch / 144.0;
+        saveheight += scalefactor * layoutheight;
+        savesurface = cairo_ps_surface_create(savename, savewidth, saveheight);
+        /* Never use the alpha channel */
+        noalpha = 1;
+    }
     else if ( strcmp(fmtext, "PS") == 0 ) {
         /* Surface size is given in (floating-point) points */
         savewidth = xinches * 72.0;
@@ -446,6 +459,9 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
             cairo_ps_surface_dsc_comment(savesurface,
                                          "%%PageOrientation: Portrait");
         }
+    }
+    else if ( strcmp(fmtext, "EPS") == 0 ) {
+        cairo_ps_surface_set_eps(savesurface, 1);
     }
 
     /* 

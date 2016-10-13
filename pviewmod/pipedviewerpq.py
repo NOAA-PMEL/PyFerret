@@ -678,6 +678,9 @@ class PipedViewerPQ(QMainWindow):
             if fileext == '.pdf':
                 # needs a PDF QPrinter
                 myformat = 'pdf'
+            elif fileext == '.eps':
+                # needs a PS QPrinter and never rotate
+                myformat = 'eps'
             elif fileext == '.ps':
                 # needs a PS QPrinter
                 myformat = 'ps'
@@ -725,14 +728,14 @@ class PipedViewerPQ(QMainWindow):
             annopicture = None
             annosize = None
 
-        if (myformat == 'ps') or (myformat == 'pdf'):
-            # Setup the QPrinter that will be used to create the PS or PDF file
+        if (myformat == 'ps') or (myformat == 'eps') or (myformat == 'pdf'):
+            # Setup the QPrinter that will be used to create the EPS, PS, or PDF file
             printer = QPrinter(QPrinter.HighResolution)
             printer.setOutputFileName(myfilename)
             # The print format is automatically set from the
             # filename extension; so the following is actually
             # only needed for absent or strange extensions
-            if myformat == 'ps':
+            if (myformat == 'ps') or (myformat == 'eps'):
                 printer.setOutputFormat(QPrinter.PostScriptFormat)
             else:
                 printer.setOutputFormat(QPrinter.PdfFormat)
@@ -755,7 +758,7 @@ class PipedViewerPQ(QMainWindow):
             # Set the image size
             try:
                 # Set custom paper size to just fit around the image
-                if ( imagewidth > imageheight ):
+                if (myformat != 'eps') and (imagewidth > imageheight):
                     printer.setPaperSize(QSizeF(imageheight, imagewidth), QPrinter.Inch)
                 else:
                     printer.setPaperSize(QSizeF(imagewidth, imageheight), QPrinter.Inch)
@@ -770,7 +773,7 @@ class PipedViewerPQ(QMainWindow):
             # No margins (setPageMargins introduced in 4.4)
             printer.setFullPage(True)
             # Default orientation
-            if ( imagewidth > imageheight ):
+            if (myformat != 'eps') and (imagewidth > imageheight):
                 printer.setOrientation(QPrinter.Landscape)
             else:
                 printer.setOrientation(QPrinter.Portrait)

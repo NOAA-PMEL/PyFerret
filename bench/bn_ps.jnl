@@ -77,6 +77,7 @@ plot/l=1:99000/nolabel sin(200000/(l+10000))
 
 frame/file=bnplot_4.pdf   ! Not an error in PyFerret
 frame/file=bnplot_4.ps    ! Not an error in PyFerret
+frame/file=bnplot_4.eps   ! Not an error in PyFerret
 
 
 

@@ -351,6 +351,8 @@ python_subdir=\"${python_subdirectory}\"" \
 python_exe=\"${python_executable}\"" \
            -e "/python_subdir=/c\\
 python_subdir=\"${python_subdirectory}\"" \
+           -e "/. FERRET_PATHS_SH_SCRIPT/c\\
+. \"${ferpaths_dir}/ferret_paths.sh\"" \
            "${fer_dir}/bin/pyferret_template" \
            > "${fer_dir}/bin/pyferret" ; then
         chmod +x "${fer_dir}/bin/pyferret"
@@ -376,7 +378,9 @@ echo " 'ferret_paths.sh'.  Finally, the executable shell script 'pyferret' is cr
 echo " "
 echo " Sourcing one of these 'ferret_paths' files ('source ferret_paths.csh' for csh or "
 echo " tcsh, '. ferret_paths.sh' for bash, sh ksh, or dash) will set up a user's "
-echo " environment for running pyferret. "
+echo " environment for running pyferret.  The pyferret script will automatically source "
+echo " the ferret_paths script created here if it detects the ferret environment has "
+echo " not already been set up. "
 echo " "
 echo " You will want to run this script if you are installing PyFerret for the first time "
 echo " or if you relocated where PyFerret is installed. "

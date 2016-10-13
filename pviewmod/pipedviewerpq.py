@@ -233,6 +233,13 @@ class PipedViewerPQ(QMainWindow):
             "The controlling application, however, may be unaware " \
             "of these modifications made to the image. " \
             "\n\n" \
+            "'Closing' this window (the window frame 'X' button) " \
+            "actually only minimizes this viewer as PyFerret expects " \
+            "it to exist until PyFerret closes it.  Selecting the " \
+            "close menu option from the *minimized* window (using " \
+            "a right mouse click) will actually close (exit) the " \
+            "viewer if PyFerret exited and left it up.  " \
+            "\n\n" \
             "PipedViewerPQ was developed by the Thermal Modeling and Analysis " \
             "Project (TMAP) of the National Oceanographic and Atmospheric " \
             "Administration's (NOAA) Pacific Marine Environmental Lab (PMEL). "))

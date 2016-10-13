@@ -249,6 +249,7 @@
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 * V7    6/16 *kms* Add reserved slots for PyFerret commands and qualifiers
 *                  to simplify future merges of Ferret into PyFerret
+* V7   10/16 *kms* New SET WINDOW /SCALE=
 
 *
 * !!!!!!!!!!
@@ -303,7 +304,7 @@
 		DATA qualifiers  (nqual_at1b+16)/ 'YINCHES'	/
 		DATA qualifiers  (nqual_at1b+17)/ 'TEXTPROM'	/
 		DATA qualifiers  (nqual_at1b+18)/ 'OUTLINE'	/
-		DATA qualifiers  (nqual_at1b+19)/ '****'	/
+		DATA qualifiers  (nqual_at1b+19)/ 'SCALE'	/
 * SET REGION
 	   DATA subcommands      (nsub_at1 + 2)	/ 'REGION'	/
 	   DATA num_qualifs      (nsub_at1 + 2)	/ nqual1c	/

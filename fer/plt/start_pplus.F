@@ -165,7 +165,9 @@
            BSIZE = 0.0
            CALL SIZE(width, height)
 *          set the default scaling factor for the scene - SQRT(0.7)
-           sc = dflt_imgscale
+*          the negative value means to scale using the absolute value
+*          then switch to autoscaling
+           sc = -1.0 * dflt_imgscale
            wn_xpixels(wsid) = wn_xinches(wsid) * windowdpix(wsid) * sc
            wn_ypixels(wsid) = wn_yinches(wsid) * windowdpiy(wsid) * sc
            CALL FGD_SEND_IMAGE_SCALE(wsid, sc)

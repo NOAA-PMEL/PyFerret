@@ -46,6 +46,9 @@
 * V533 *sh* 7/01 - set data type of grid/variable
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V699 *sh* 6/16 - variable uvar_grids replaced with LISTs in NCF_Util.c 
+* V710 *acm* 18/25/16 - Ticket 2462 Issue the warnings only if in MODE DIAGNOSTIC 
+* V710 *acm* 10/25/16 - Always issue the warnings: Memory-link fixes in NCF_Util.c 
+*                      
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -84,7 +87,7 @@
 * test the new LIST code
 	      nfound = nfound + 1
 
-	      IF (mode_diagnostic) THEN
+c	      IF (mode_diagnostic) THEN
 
 	      CALL GET_SAVED_UVAR_GRID(uvar, iset, saved_uvgrid)
 	      IF (saved_uvgrid .NE. uvar_grid(uvar,iset)) THEN
@@ -107,7 +110,7 @@
 	        ENDIF
 	      ENDDO
 
-	      ENDIF  !   mode_diagnostic
+c	      ENDIF  !   mode_diagnostic
 
 	      CALL DEALLO_DYN_GRID(uvar_grid(uvar,iset))
 	   ENDIF

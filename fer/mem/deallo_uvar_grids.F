@@ -56,7 +56,6 @@
 	include 'xvariables.cmn'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
-        include 'xprog_state.cmn'  ! with mode_diagnostic
 
 * calling argument declarations
 	INTEGER	uvar
@@ -87,8 +86,6 @@
 * test the new LIST code
 	      nfound = nfound + 1
 
-c	      IF (mode_diagnostic) THEN
-
 	      CALL GET_SAVED_UVAR_GRID(uvar, iset, saved_uvgrid)
 	      IF (saved_uvgrid .NE. uvar_grid(uvar,iset)) THEN
 	         CALL GET_SHORT_DSET_NAME( iset, tmp_buff, tmp_len)
@@ -110,8 +107,6 @@ c	      IF (mode_diagnostic) THEN
 	        ENDIF
 	      ENDDO
 
-c	      ENDIF  !   mode_diagnostic
-
 	      CALL DEALLO_DYN_GRID(uvar_grid(uvar,iset))
 	   ENDIF
 
@@ -125,7 +120,7 @@ c	      ENDIF  !   mode_diagnostic
 
 
 * free the LIST of grids associated with this uvar
-	IF (nfound .NE. ngrids .AND. mode_diagnostic) THEN
+	IF (nfound .NE. ngrids) THEN
 	   CALL WARN("UVGRIDERR: deallo_uvar_grids nfound")
 	   WRITE(6,*) 'UVGRIDERR: deallo_uvar_grids nfound'
 	   WRITE(6,*)'uvar=', uvar

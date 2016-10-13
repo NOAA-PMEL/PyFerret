@@ -212,6 +212,8 @@
 	   ELSE
               CALL TM_FRIENDLY_READ(prompt(:prompt_len),cmnd_buff,*20)
 	   ENDIF
+* clear interrupted if Ctrl-C was entered while typing command
+           INTERRUPTED = .FALSE.
 	   cmnd_len_w_cmnt = TM_LENSTR( cmnd_buff )
 	   double_eof = 0	! in case comment or blank line returns here
 

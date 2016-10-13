@@ -763,11 +763,6 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
         IF ( uvar_dset(uvar).EQ.unspecified_int4 )
      .            uvar_need_dset(uvar) = .NOT.cx_dset_gvn(big_cx)
 
-c        IF ( itype .EQ. alg_attrib_val  ) THEN
-c           uvar_dset(uvar) = dset
-c           uvar_need_dset(uvar) = .TRUE.
-c        ENDIF
-
 	IF ( uvar_need_dset(uvar) .AND. dset .NE. unspecified_int4) THEN
 	   this_dset = dset
 	ELSE

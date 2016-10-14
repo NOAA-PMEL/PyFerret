@@ -470,6 +470,10 @@ class PipedImagerPQ(QMainWindow):
         '''
         fltfactor = float(factor)
         if fltfactor != 0.0:
+            if resizewin:
+                # from command - turn off autoscaling for the following
+                # then turn back on if appropriate
+                self.__autoscale = False
             newfactor = abs(fltfactor)
             newlabwidth = int(newfactor * self.__scenewidth + 0.5)
             newlabheight = int(newfactor * self.__sceneheight + 0.5)
@@ -512,9 +516,6 @@ class PipedImagerPQ(QMainWindow):
             # From command - turn on autoscaling
             self.__autoscale = True
             self.autoScaleScene();
-        elif resizewin:
-            # From command - turn off autoscaling
-            self.__autoscale = False
 
     def inquireSaveFilename(self):
         '''

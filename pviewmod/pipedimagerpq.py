@@ -627,7 +627,8 @@ class PipedImagerPQ(QMainWindow):
             mypainter.drawImage(trgrect, self.__sceneimage, srcrect, Qt.AutoColor)
             mypainter.end()
             # save the image to file
-            myimage.save(myfilename, myformat)
+            if not myimage.save(myfilename, myformat):
+                raise ValueError("Unable to save the plot as " + myfilename)
         finally:
             self.statusBar().clearMessage()
             QApplication.restoreOverrideCursor()

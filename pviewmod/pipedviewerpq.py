@@ -924,7 +924,8 @@ class PipedViewerPQ(QMainWindow):
                                 widthscalefactor, "Saving", False)                
             painter.end()
             # save the image to file
-            image.save(myfilename, myformat)
+            if not image.save(myfilename, myformat):
+                raise ValueError("Unable to save the plot as " + myfilename)
 
     def checkCommandPipe(self):
         '''

@@ -116,6 +116,8 @@
 * v698 5/16  *acm* ticket 2413: New attribute keywords ncoordvars, coordnames
 *                  return info about coordinate-variables in datasets
 * V699  5/16 *sh*  replace variable uvar_grid with calls to c LIST structures
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grids, uvar_aux_cat, uvar_aux_var 
+*                  to be replaced with calls to LIST routines in NCF_Util.c 
 
 * calling argument declarations:
 	INTEGER	status
@@ -152,6 +154,7 @@
      .          status_deallo, agg_grid, agg_line, agg_len, agg_dset,
      .		imemb, memb_cat, memb_dset, memb_grid, iline, nv,
      .		hi_cat, hi_var, vlen, slen, dummy_aux(nferdims)
+	INTEGER igrid_test
 
 	CHARACTER VAR_CODE*128, LEFINT*6,
      .		  name*512, buff*2048, varname*512, 
@@ -690,6 +693,7 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 * have any variables been encountered ?
 * is this a completely abstract expression like X+Y*2 ?
 * ... 8/95 check uvar_dset: LET/D variable needs uvar_need_dset always true 
+
 	IF ( is_sum(isp) .EQ. isalg_transfer ) THEN
 	   IF ( uvar_dset(uvar).EQ.unspecified_int4 ) THEN
 	      uvar_need_dset(uvar) = .FALSE.
@@ -697,7 +701,8 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 	      uvar_data_type(uvar, pdset_irrelevant) = ptype_float
 	      CALL SAVE_UVAR_GRID(uvar, mgrid_abstract, ptype_float,
      .				  pdset_irrelevant)
-* ... 6/26 init aux info just for house-keeping
+* ... 6/16 init aux info just for house-keeping
+c*c  REMOVE LATER, only the SAVE_UVAR_AUX_INFO is needed.
 	      DO idim = 1, nferdims
 	         uvar_aux_cat(uvar,idim,pdset_irrelevant) = dummy_aux(idim)
 	         uvar_aux_var(uvar,idim,pdset_irrelevant) = dummy_aux(idim)
@@ -708,11 +713,15 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 !	      uvar_need_dset(uvar) = .TRUE.	! always TRUE anyway
 * *kob* 4/99 bug fix - check to see if let/d is dataset independent
 	      IF (dset .EQ. unspecified_int4) THEN
+
+c*c  REMOVE LATER, only the SAVE_UVAR_GRID is needed.
 		 uvar_grid(uvar, pdset_irrelevant) = mgrid_abstract
 	         uvar_data_type(uvar, pdset_irrelevant) = ptype_float
 	         CALL SAVE_UVAR_GRID(uvar, mgrid_abstract, ptype_float,
      .				     pdset_irrelevant)
 * ... 6/16 init aux info just for house-keeping
+
+c*c  REMOVE LATER, only the SAVE_UVAR_AUX_INFO is needed.
 	         DO idim = 1, nferdims
 	            uvar_aux_cat(uvar,idim,pdset_irrelevant) = dummy_aux(idim)
 	            uvar_aux_var(uvar,idim,pdset_irrelevant) = dummy_aux(idim)
@@ -720,10 +729,13 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 	         CALL SAVE_UVAR_AUX_INFO(uvar,
      .                         dummy_aux, dummy_aux, pdset_irrelevant)
               ELSE
+c*c  REMOVE LATER, only the SAVE_UVAR_GRID is needed.
                  uvar_grid(uvar, dset) = mgrid_abstract
 	         uvar_data_type(uvar, dset) = ptype_float
 	         CALL SAVE_UVAR_GRID(uvar, mgrid_abstract, ptype_float, dset)
 * ... 6/16 init aux info just for house-keeping
+
+c*c  REMOVE LATER, only the SAVE_UVAR_AUX_INFO is needed.
 	         DO idim = 1, nferdims
 	            uvar_aux_cat(uvar,idim,dset) = dummy_aux(idim)
 	            uvar_aux_var(uvar,idim,dset) = dummy_aux(idim)
@@ -734,11 +746,6 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 	   gnum = mgrid_abstract
 	   CALL TM_USE_DYN_GRID( mgrid_abstract )
 	   GOTO 2000
-	ELSEIF (uvar_grid(uvar,pdset_irrelevant).EQ.mgrid_abstract) THEN
-* ... abstract grid after second pass
-* (2/99 comment this out since pseudo-vars now determine their own grids:
-*	XABSTRACT, YABSTRACT, ZABSTRACT, or TABSTRACT
-!	   GOTO 2000	! removed 2/99
 	ENDIF
 
 * catalog this result checking for matching previously existing grid
@@ -770,9 +777,13 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 	ENDIF
 
 * store the important stuff!
+c*c  REMOVE LATER, only the SAVE_UVAR_GRID is needed.
 	uvar_grid( uvar, this_dset ) = gnum
 	uvar_data_type(uvar, this_dset) = cx_type(big_cx)
 	CALL SAVE_UVAR_GRID(uvar, gnum, cx_type(big_cx), this_dset)
+
+	
+c*c  REMOVE LATER, this loop. Only the SAVE_UVAR_AUX_INFO is needed.
 	DO  i = 1, nferdims
            uvar_aux_var (uvar, i, this_dset) = cx_aux_var (i, big_cx)
            uvar_aux_cat (uvar, i, this_dset) = cx_aux_cat (i, big_cx)

@@ -203,6 +203,8 @@
 * V698  3/16 *acm* Changes for ticket 2078: improved SHOW COMMANDS
 * V698  4/16 *acm* For ticket 2399: Apply MODE CALENDAR settings to F axes too
 * V7    5/16 *acm* See ticket 2352. For LET/D variables look for info under that dataset
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grids, uvar_aux_cat, uvar_aux_var 
+*                  to be replaced with calls to LIST routines in NCF_Util.c 
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -304,6 +306,9 @@
      .          base_cx, base_isp, grid_blocks, lensub, len_msubs
         INTEGER saved_num_indices, saved_index_list(max_uvar),
      .                             arr_buff(max_uvar)
+     
+	INTEGER aux_cat(nferdims), aux_var(nferdims)  ! get info from LIST 
+
 	REAL	xtemp, ytemp, attvals(100), cache_mb, cache_n, cache_p, rsize
 	CHARACTER EXPR_NAME*8, TM_FMT*12, VAR_CODE*128,
      .		default*10, show_str*2048, arg*128, name*128, argsym*120
@@ -855,6 +860,22 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
      .			              cat, var, mods_cx, status )
                  IF (cat .EQ. cat_user_var) THEN
 * ... trigger grid-getting, which also gets layerz associations
+
+
+	           CALL GET_SAVED_UVAR_AUX_INFO(var, dset,
+     .				           aux_cat, aux_var, status)
+c*c REMOVE LATER, this is just testing the get-saved...
+                   IF (status .EQ. ferr_ok) THEN
+	           DO idim = 1, nferdims
+	              IF (aux_cat(idim) .NE. uvar_aux_cat(var,idim,iset)
+     .                 .OR. aux_var(idim) .NE. uvar_aux_var(var,idim,iset))
+     .							THEN
+	                WRITE(6,3100) aux_cat(idim), uvar_aux_cat(var,idim,iset),
+     .				 aux_var(idim), uvar_aux_var(var,idim,iset)
+ 3100		        FORMAT(' UVAUXERR: deallo_uvar_grids', 4I8)
+	               ENDIF
+	           ENDDO
+
 	           grid = GRID_FROM_NAME
      .                    (cmnd_buff(item_start(i1):item_end(i1)),
      .			  cx_last, status )
@@ -864,6 +885,12 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
      .                  ' have conflicting LAYERZ references'
                    ELSEIF (uvar_aux_stat(var,z_dim).EQ.paux_stat_passed
      .                .OR. uvar_aux_stat(var,z_dim).EQ.paux_stat_needed) THEN
+
+
+c*c LATER, replace:
+c*c uvar_aux_var(var, idim, dataset) with aux_var(idim) and
+c*c uvar_aux_cat(var, idim, dataset) with aux_cat(idim)
+
                       risc_buff = VAR_CODE(uvar_aux_cat(var,z_dim,dset),
      .                                     uvar_aux_var(var,z_dim,dset))
                       attlen = TM_LENSTR1(risc_buff)
@@ -876,7 +903,8 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
      .                  ' contains explicit regrids of'//
      .                  ' its LAYERZ coordinates'
                    ENDIF 
-                 ENDIF
+                   ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
+                 ENDIF   ! is a uvar
               ELSE
 * ... show the explicit __layerz_ref_ attribute value
                 show_str = '  ' // risc_buff(:attlen) //

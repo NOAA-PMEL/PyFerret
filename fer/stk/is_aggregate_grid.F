@@ -50,6 +50,8 @@
 * V685 10/13 *acm* Fix ticket 1098, error defining ensemble when LET/D variables are present.
 * V698  3/16 *acm* Remove unneeded xdset_parms.cmn
 * V699  6/16 *sh*  replace variable uvar_grid with calls to c LIST structures
+* V710 *acm* 10/16 Ticket 2422: variable uvar_grids to be replaced with calls to 
+*                  LIST routines in NCF_Util.c 
 
 * calling argument declarations:
 * uvar and dset point to the variable in the aggregate dataset
@@ -224,6 +226,8 @@
 
 * set context for aggregate grid
 	cx_grid(agg_cx) = gnum
+
+c*c REMOVE LATER, only the SAVE_UVAR_GRID is needed.
 	uvar_grid( uvar, dset ) = gnum 
 	CALL SAVE_UVAR_GRID(uvar, gnum, ptype_float, dset)
 
@@ -232,7 +236,6 @@
 	IF (agg_dim .EQ. e_dim) cx_category(agg_cx) = cat_agg_e_var
 	IF (agg_dim .EQ. f_dim) cx_category(agg_cx) = cat_agg_f_var
 
-!	uvar_grid( uvar, dset ) = gnum   ! deleteMe duplicate line
 	uvar_dset( uvar ) = dset
 	uvar_need_dset( uvar ) = .TRUE.
 

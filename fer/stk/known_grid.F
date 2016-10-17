@@ -47,6 +47,8 @@
 * v554: 1/04 *acm* Counter variables for REPEAT/RANGE=/NAME=
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V698  3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
+* V710 *acm* 10/16 Ticket 2422: variable uvar_grids to be replaced with calls to 
+*                  LIST routines in NCF_Util.c 
 
 	include	'tmap_dims.parm'
 #       include "tmap_dset.parm"
@@ -62,6 +64,7 @@
 * internal variable declarations:
 	LOGICAL ACTS_LIKE_FVAR
 	INTEGER	dset
+	INTEGER igrid_test
 
 * different procedure for determining grid from each category
 	IF     ( ACTS_LIKE_FVAR(category) ) THEN
@@ -80,6 +83,10 @@
 	      dset = data_set
 	   ENDIF
 	   KNOWN_GRID = uvar_grid( variable, dset )
+	   
+	   CALL GET_SAVED_UVAR_GRID(variable,dset, igrid_test)
+c*c REMOVE LATER, replace the ref to uvar_grid(,) with a call GET_SAVED_UVAR_GRID returning KNOWN_GRID
+	   IF (igrid_test .NE. KNOWN_GRID)  CALL WARN("UVGRIDERR: known_grid")
 
 	ELSEIF ( category .EQ. cat_temp_var ) THEN
 

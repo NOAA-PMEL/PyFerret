@@ -48,11 +48,13 @@
 * V699 *sh* 6/16 - variable uvar_grids replaced with LISTs in NCF_Util.c 
 * V710 *acm* 18/25/16 - Ticket 2462 Issue the warnings only if in MODE DIAGNOSTIC 
 * V710 *acm* 10/25/16 - Always issue the warnings: Memory-link fixes in NCF_Util.c 
-*                      
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grids, uvar_aux_cat, uvar_aux_var 
+*                  to be replaced with calls to LIST routines in NCF_Util.c       
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
 	include 'ferret.parm'
+	include 'errmsg.parm'
 	include 'xvariables.cmn'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -62,7 +64,7 @@
 
 * local declarations
 	INTEGER iset, idim, ngrids, nfound, 
-     .		saved_uvgrid, tmp_len
+     .		saved_uvgrid, tmp_len, status
 	CHARACTER tmp_buff*256
 	INTEGER aux_cat(nferdims), aux_var(nferdims)  ! LIST diagnostics
 
@@ -94,20 +96,26 @@
 	         WRITE(6,*) 'UVGRIDERR: deallo_uvar_grids'
 	         WRITE(6,*)'dset='//tmp_buff(:tmp_len)
 	      ENDIF
+* this info not used; just testing.   When we delete the test code, and just
+* use the FREE call below, get rid of all of this.
 
 	      CALL GET_SAVED_UVAR_AUX_INFO(uvar, iset,
-     .				           aux_cat, aux_var)
-	      DO idim = 1, nferdims
-	        IF (aux_cat(idim) .NE. uvar_aux_cat(uvar,idim,iset)
-     .         .OR. aux_var(idim) .NE. uvar_aux_var(uvar,idim,iset))
+     .				           aux_cat, aux_var, status)
+              IF (status .EQ. ferr_ok) THEN
+	         DO idim = 1, nferdims
+	           IF (aux_cat(idim) .NE. uvar_aux_cat(uvar,idim,iset)
+     .            .OR. aux_var(idim) .NE. uvar_aux_var(uvar,idim,iset))
      .							THEN
-	           WRITE(6,3000) aux_cat(idim), uvar_aux_cat(uvar,idim,iset),
+	              WRITE(6,3000) aux_cat(idim), uvar_aux_cat(uvar,idim,iset),
      .				 aux_var(idim), uvar_aux_var(uvar,idim,iset)
- 3000		   FORMAT(' UVAUXERR: deallo_uvar_grids', 4I8)
-	        ENDIF
-	      ENDDO
+ 3000		      FORMAT(' UVAUXERR: deallo_uvar_grids', 4I8)
+	           ENDIF
+	         ENDDO
+	      ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
 
-	      CALL DEALLO_DYN_GRID(uvar_grid(uvar,iset))
+c*c LATER:
+c*c	      CALL DEALLO_DYN_GRID(saved_uvgrid)
+	      CALL DEALLO_DYN_GRID(uvar_grid(uvar,iset))  !--> saved_uvgrid
 	   ENDIF
 
 * set the grid pointer to its initialized state

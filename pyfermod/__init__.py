@@ -727,14 +727,14 @@ def _readline(myprompt):
     Arguments:
         myprompt - prompt string to use
     Returns:
-        the string read in, or None if EOFError occurs
+        the string read in, or None if an Exception occurs
     """
     try:
         if myprompt:
             myline = raw_input(myprompt)
         else:
             myline = raw_input()
-    except EOFError:
+    except Exception:
         myline = None
 
     return myline

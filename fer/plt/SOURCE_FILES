@@ -31,9 +31,7 @@ flow_set_up.F\
 get_axis_format.F\
 get_color_name.F\
 get_color_rgb.F\
-get_frame_size.F\
 get_view_size.F\
-get_window_pixels.F\
 gks_windows.F\
 gks_x_conid.F\
 internal_whoi_date.F\

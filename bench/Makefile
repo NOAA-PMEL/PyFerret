@@ -27,7 +27,7 @@ run_tests:
 .PHONY: clean
 clean:
 	rm -f all_*_ncdump all_*_err all_*_log
-	rm -f *.plt* *.gif* *.ps* *.png* *.pdf* ferret.jnl*
+	rm -f *.plt* *.gif* *.ps* *.eps* *.png* *.pdf* ferret.jnl*
 	rm -f `cat TRASH_FILES`
 	rm -f all_ncdump.out fort.41 make_stream_file
 	rm -fr subdir tmp

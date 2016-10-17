@@ -149,9 +149,6 @@ class PipedViewerPQ(QMainWindow):
         self.__aboutqtact = QAction(self.tr("About &Qt"), self,
                                 statusTip=self.tr("Show information about the Qt library"),
                                 triggered=self.aboutQtMsg)
-        self.__exitact = QAction(self.tr("&Exit"), self,
-                                statusTip=self.tr("Shut down the viewer"),
-                                triggered=self.exitViewer)
         self.createMenus()
         # Set the initial size of the viewer
         self.__framedelta = 4
@@ -179,8 +176,6 @@ class PipedViewerPQ(QMainWindow):
         helpMenu = menuBar.addMenu(menuBar.tr("&Help"))
         helpMenu.addAction(self.__aboutact)
         helpMenu.addAction(self.__aboutqtact)
-        helpMenu.addSeparator()
-        helpMenu.addAction(self.__exitact)
 
     def showEvent(self, event):
         '''
@@ -208,45 +203,23 @@ class PipedViewerPQ(QMainWindow):
 
     def closeEvent(self, event):
         '''
-        Override so a dialog is presented about minimizing or exiting the viewer.
+        Override so will just minimize if not shutting down
         '''
-        # If shutting down, go ahead and close/exit
-        if self.__shuttingdown:
+        # If shutting down or minimized (escape hatch), 
+        # go ahead and close/exit
+        if self.__shuttingdown or self.isMinimized():
             self.__timer.stop()
             event.accept()
             return
-        # Present dialog about whether to close/exit or to just minimize the window
-        msgbox = QMessageBox(self)
-        msgbox.setText(self.tr('Minimize or terminate this PyFerret display window?'))
-        msgbox.setInformativeText(self.tr(
-                'Terminating a display window while PyFerret is still functioning ' \
-                'properly will cause problems later on in PyFerret when it attempts ' \
-                'to use the terminated window.  Instead one should just minimize the ' \
-                'display window; it will be shown again when something is drawn to it. ' \
-                '\n\n' \
-                'If, however, PyFerret has terminated but did not close this display ' \
-                'window, then one should terminate this window. '))
-        termbtn = msgbox.addButton(self.tr('Terminate'), QMessageBox.DestructiveRole)
-        hidebtn = msgbox.addButton(self.tr('Minimize'), QMessageBox.AcceptRole)
-        cancbtn = msgbox.addButton(QMessageBox.Cancel)
-        msgbox.setDefaultButton(hidebtn)
-        ret = msgbox.exec_()
-        # get the button selected and do accordingly
-        btn = msgbox.clickedButton()
-        if btn == termbtn:
-            self.__timer.stop()
-            event.accept()
-        elif btn == hidebtn:
-            event.ignore()
-            self.showMinimized()
-        else:
-            event.ignore()
+        # Otherwise just minimize the window
+        event.ignore()
+        self.showMinimized()
 
-    def exitViewer(self, forceIt=False):
+    def exitViewer(self):
         '''
         Close and exit the viewer.
         '''
-        self.__shuttingdown = forceIt
+        self.__shuttingdown = True
         self.close()
 
     def aboutMsg(self):
@@ -260,11 +233,12 @@ class PipedViewerPQ(QMainWindow):
             "The controlling application, however, may be unaware " \
             "of these modifications made to the image. " \
             "\n\n" \
-            "Normally, the controlling program will exit the viewer " \
-            "when it is no longer needed.  The Help -> Exit menu item " \
-            "should not normally be used.  It is provided when problems " \
-            "occur and the controlling program cannot shut down the " \
-            "viewer properly. " \
+            "'Closing' this window (the window frame 'X' button) " \
+            "actually only minimizes this viewer as PyFerret expects " \
+            "it to exist until PyFerret closes it.  Selecting the " \
+            "close menu option from the *minimized* window (using " \
+            "a right mouse click) will actually close (exit) the " \
+            "viewer if PyFerret exited and left it up.  " \
             "\n\n" \
             "PipedViewerPQ was developed by the Thermal Modeling and Analysis " \
             "Project (TMAP) of the National Oceanographic and Atmospheric " \
@@ -518,7 +492,7 @@ class PipedViewerPQ(QMainWindow):
         the window size is changed by the user and auto-scaling is turn on.
 
         Returns:
-            True if the scene was resized
+            True if scaling of this scene is done (no window resize)
             False if the a new resize command was issued
         '''
         barheights = self.menuBar().height() + self.statusBar().height()
@@ -558,45 +532,59 @@ class PipedViewerPQ(QMainWindow):
         already scaled, that scaling is "removed" before this scaling
         factor is applied.  If resizewin is True, the main window is 
         resized to accommodate this new scaled scene size.
+
+        If factor is zero, just switch to auto-scaling at the current
+        window size.  If factor is negative, rescale using the absolute
+        value (possibly resizing the window) then switch to auto-scaling.
         '''
-        newfactor = float(factor)
-        newlabwidth = int(newfactor * self.__scenewidth + 0.5)
-        newlabheight = int(newfactor * self.__sceneheight + 0.5)
-        if (newlabwidth < self.__minsize) or (newlabheight < self.__minsize):
-            # Set to minimum size
-            if self.__scenewidth <= self.__sceneheight:
-                newfactor = float(self.__minsize) / float(self.__scenewidth)
-            else:
-                newfactor = float(self.__minsize) / float(self.__sceneheight)
+        fltfactor = float(factor)
+        if fltfactor != 0.0:
+            if resizewin:
+                # from command - turn off autoscaling for the following
+                # then turn back on if appropriate
+                self.__autoscale = False
+            newfactor = abs(fltfactor)
             newlabwidth = int(newfactor * self.__scenewidth + 0.5)
             newlabheight = int(newfactor * self.__sceneheight + 0.5)
-        oldlabwidth = int(self.__scalefactor * self.__scenewidth + 0.5)
-        oldlabheight = int(self.__scalefactor * self.__sceneheight + 0.5)
-        if (newlabwidth != oldlabwidth) or (newlabheight != oldlabheight):
-            # Set the new scaling factor
-            self.__scalefactor = newfactor
-            # Resize the label and set label values
-            # so the scrollarea knows of the new size
-            self.__label.setMinimumSize(newlabwidth, newlabheight)
-            self.__label.resize(newlabwidth, newlabheight)
-            # mark that the pixmap needs to be recreated
-            self.__createpixmap = True
-            # Redraw the scene from the beginning
-            self.redrawScene()
-        if resizewin:
-            # resize the main window (if possible)
-            barheights = self.menuBar().height() + self.statusBar().height()
-            mwheight = newlabheight + barheights + self.__framedelta
-            mwwidth = newlabwidth + self.__framedelta
-            # Do not exceed the available real estate on the screen.
-            # If autoscaling is in effect, the resize will trigger 
-            # any required adjustments.
-            scrnrect = QApplication.desktop().availableGeometry()
-            if mwwidth > 0.95 * scrnrect.width():
-                mwwidth = int(0.9 * scrnrect.width())
-            if mwheight > 0.95 * scrnrect.height():
-                mwheight = int(0.9 * scrnrect.height())
-            self.resize(mwwidth, mwheight)
+            if (newlabwidth < self.__minsize) or (newlabheight < self.__minsize):
+                # Set to minimum size
+                if self.__scenewidth <= self.__sceneheight:
+                    newfactor = float(self.__minsize) / float(self.__scenewidth)
+                else:
+                    newfactor = float(self.__minsize) / float(self.__sceneheight)
+                newlabwidth = int(newfactor * self.__scenewidth + 0.5)
+                newlabheight = int(newfactor * self.__sceneheight + 0.5)
+            oldlabwidth = int(self.__scalefactor * self.__scenewidth + 0.5)
+            oldlabheight = int(self.__scalefactor * self.__sceneheight + 0.5)
+            if (newlabwidth != oldlabwidth) or (newlabheight != oldlabheight):
+                # Set the new scaling factor
+                self.__scalefactor = newfactor
+                # Resize the label and set label values
+                # so the scrollarea knows of the new size
+                self.__label.setMinimumSize(newlabwidth, newlabheight)
+                self.__label.resize(newlabwidth, newlabheight)
+                # mark that the pixmap needs to be recreated
+                self.__createpixmap = True
+                # Redraw the scene from the beginning
+                self.redrawScene()
+            if resizewin:
+                # resize the main window (if possible)
+                barheights = self.menuBar().height() + self.statusBar().height()
+                mwheight = newlabheight + barheights + self.__framedelta
+                mwwidth = newlabwidth + self.__framedelta
+                # Do not exceed the available real estate on the screen.
+                # If autoscaling is in effect, the resize will trigger 
+                # any required adjustments.
+                scrnrect = QApplication.desktop().availableGeometry()
+                if mwwidth > 0.95 * scrnrect.width():
+                    mwwidth = int(0.9 * scrnrect.width())
+                if mwheight > 0.95 * scrnrect.height():
+                    mwheight = int(0.9 * scrnrect.height())
+                self.resize(mwwidth, mwheight)
+        if fltfactor <= 0.0:
+            # From command - turn on autoscaling
+            self.__autoscale = True
+            self.autoScaleScene();
 
     def inquireSaveFilename(self):
         '''
@@ -691,6 +679,9 @@ class PipedViewerPQ(QMainWindow):
             if fileext == '.pdf':
                 # needs a PDF QPrinter
                 myformat = 'pdf'
+            elif fileext == '.eps':
+                # needs a PS QPrinter and never rotate
+                myformat = 'eps'
             elif fileext == '.ps':
                 # needs a PS QPrinter
                 myformat = 'ps'
@@ -738,14 +729,14 @@ class PipedViewerPQ(QMainWindow):
             annopicture = None
             annosize = None
 
-        if (myformat == 'ps') or (myformat == 'pdf'):
-            # Setup the QPrinter that will be used to create the PS or PDF file
+        if (myformat == 'ps') or (myformat == 'eps') or (myformat == 'pdf'):
+            # Setup the QPrinter that will be used to create the EPS, PS, or PDF file
             printer = QPrinter(QPrinter.HighResolution)
             printer.setOutputFileName(myfilename)
             # The print format is automatically set from the
             # filename extension; so the following is actually
             # only needed for absent or strange extensions
-            if myformat == 'ps':
+            if (myformat == 'ps') or (myformat == 'eps'):
                 printer.setOutputFormat(QPrinter.PostScriptFormat)
             else:
                 printer.setOutputFormat(QPrinter.PdfFormat)
@@ -768,7 +759,7 @@ class PipedViewerPQ(QMainWindow):
             # Set the image size
             try:
                 # Set custom paper size to just fit around the image
-                if ( imagewidth > imageheight ):
+                if (myformat != 'eps') and (imagewidth > imageheight):
                     printer.setPaperSize(QSizeF(imageheight, imagewidth), QPrinter.Inch)
                 else:
                     printer.setPaperSize(QSizeF(imagewidth, imageheight), QPrinter.Inch)
@@ -783,7 +774,7 @@ class PipedViewerPQ(QMainWindow):
             # No margins (setPageMargins introduced in 4.4)
             printer.setFullPage(True)
             # Default orientation
-            if ( imagewidth > imageheight ):
+            if (myformat != 'eps') and (imagewidth > imageheight):
                 printer.setOrientation(QPrinter.Landscape)
             else:
                 printer.setOrientation(QPrinter.Portrait)
@@ -934,7 +925,8 @@ class PipedViewerPQ(QMainWindow):
                                 widthscalefactor, "Saving", False)                
             painter.end()
             # save the image to file
-            image.save(myfilename, myformat)
+            if not image.save(myfilename, myformat):
+                raise ValueError("Unable to save the plot as " + myfilename)
 
     def checkCommandPipe(self):
         '''
@@ -961,11 +953,14 @@ class PipedViewerPQ(QMainWindow):
             # EOFError should never arise from recv since
             # the call is after poll returns True
             (exctype, excval) = sys.exc_info()[:2]
-            if excval:
-                self.__rspdpipe.send("**ERROR %s: %s" % (str(exctype), str(excval)))
-            else:
-                self.__rspdpipe.send("**ERROR %s" % str(exctype))
-            self.exitViewer(True)
+            try:
+                if excval:
+                    self.__rspdpipe.send("**ERROR %s: %s" % (str(exctype), str(excval)))
+                else:
+                    self.__rspdpipe.send("**ERROR %s" % str(exctype))
+            except Exception:
+                pass
+            self.exitViewer()
 
     def processCommand(self, cmnd):
         '''
@@ -985,7 +980,7 @@ class PipedViewerPQ(QMainWindow):
                 bkgcolor = None
             self.clearScene(bkgcolor)
         elif cmndact == "exit":
-            self.exitViewer(True)
+            self.exitViewer()
         elif cmndact == "hide":
             self.showMinimized()
         elif cmndact == "screenInfo":
@@ -1005,8 +1000,6 @@ class PipedViewerPQ(QMainWindow):
             self.redrawScene(bkgcolor)
         elif cmndact == "rescale":
             newscale = float(cmnd["factor"])
-            if newscale <= 0.0:
-                raise ValueError("invalid scaling factor")
             self.scaleScene(newscale, True)
         elif cmndact == "resize":
             mysize = self.__helper.getSizeFromCmnd(cmnd)
@@ -1040,8 +1033,6 @@ class PipedViewerPQ(QMainWindow):
         elif cmndact == "show":
             if not self.isVisible():
                 self.show()
-            if self.isMinimized():
-                self.showNormal()
         elif cmndact == "noalpha":
             self.__noalpha = True
         elif cmndact == "beginView":

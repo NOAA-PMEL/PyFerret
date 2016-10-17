@@ -103,6 +103,7 @@
 ! ... assemble short name from beginning and end of full name 
 	   IF (lenbuff .GT. 8 ) THEN
 	      buff8 = buff128(1:3)//'-'//buff128(lenbuff-3:lenbuff)
+	      IF (buff128(1:1) .EQ. '{') buff8 = buff128(1:4)//'...'//'}'
 	   ELSE
 	      buff8 = buff128
 	   ENDIF

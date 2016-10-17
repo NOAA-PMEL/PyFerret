@@ -148,23 +148,31 @@ c        REAL DTIME
      .        1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600,
      .        2700) i
 
-* PPL$XPIXEL, PPL$YPIXEL
- 1100	CONTINUE
-* ... determine the current output window (GKS wkstn ID, that is)
- 1200	DO 1230 wsid = 1, max_windows
-           IF ( wn_active(wsid) ) GOTO 1240
- 1230   CONTINUE
+* PPL$XPIXEL
+* get the horizontal pixels size of the window as specified by the user
+ 1100   DO 1110 wsid = 1, max_windows
+           IF ( wn_active(wsid) ) THEN
+               value = LEFINT(NINT(wn_xpixels(wsid)),slen)
+               RETURN
+           ENDIF
+ 1110   CONTINUE
 * ... no currently active window
-	value = '0'
-	slen = 1
-	RETURN
- 1240	CALL GET_WINDOW_PIXELS(wsid, nxpix, nypix)
-	IF ( i.EQ.1 ) THEN
-	   value = LEFINT(nxpix,slen)
-	ELSE
-	   value = LEFINT(nypix,slen)
-	ENDIF
-	RETURN
+        value = '0'
+        slen = 1
+        RETURN
+
+* PPL$YPIXEL
+* get the vertical pixels size of the window as specified by the user
+ 1200   DO 1210 wsid = 1, max_windows
+           IF ( wn_active(wsid) ) THEN
+               value = LEFINT(NINT(wn_ypixels(wsid)),slen)
+               RETURN
+           ENDIF
+ 1210   CONTINUE
+* ... no currently active window
+        value = '0'
+        slen = 1
+        RETURN
 
 * BYTEORDER - get byteorder of this architecture
  1300	IF (active_cpu .EQ. cptype_sun) THEN

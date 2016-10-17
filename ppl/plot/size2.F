@@ -337,7 +337,7 @@ C SET DEVICE (WORKSTATION) VIEWPORT
 C
               IF ( wsid .GT. 0 ) THEN
                  CALL FGD_GSWKWN(wsid,0.0,fctx,0.0,fcty)
-                 CALL SET_WINDOW_SIZE(wsid,wkxmn,wkxmx,wkymn,wkymx)
+                 CALL FGD_GSWKVP(wsid,wkxmn,wkxmx,wkymn,wkymx)
               ENDIF
            ELSE
 C
@@ -349,7 +349,7 @@ C
               YMX=DMAXY*WKYMX
               IF ( wsid .GT. 0 ) THEN
                  CALL FGD_GSWKWN(wsid,0.0,fctx,0.0,fcty)
-                 CALL SET_WINDOW_SIZE(wsid,xmn,xmx,ymn,ymx)
+                 CALL FGD_GSWKVP(wsid,xmn,xmx,ymn,ymx)
               ENDIF
            ENDIF
 

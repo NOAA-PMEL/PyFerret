@@ -1,18 +1,14 @@
-%!PS-Adobe-3.0
+%!PS-Adobe-3.0 EPSF-3.0
 %%Creator: cairo 1.14.4 (http://cairographics.org)
-%%CreationDate: Thu Oct 13 15:52:45 2016
+%%CreationDate: Thu Oct 13 15:52:46 2016
 %%Pages: 1
 %%DocumentData: Clean7Bit
 %%LanguageLevel: 2
-%%DocumentMedia: 224x389mm 634 1102 0 () ()
-%%BoundingBox: 0 -1 634 1102
+%%BoundingBox: 0 -1 1102 634
 %%EndComments
 %%BeginProlog
-/languagelevel where
-{ pop languagelevel } { 1 } ifelse
-2 lt { /Helvetica findfont 12 scalefont setfont 50 500 moveto
-  (This print job requires a PostScript Language Level 2 printer.) show
-  showpage quit } if
+save
+50 dict begin
 /q { gsave } bind def
 /Q { grestore } bind def
 /cm { 6 array astore concat } bind def
@@ -62,53 +58,19 @@
 /g { setgray } bind def
 /rg { setrgbcolor } bind def
 /d1 { setcachedevice } bind def
-/cairo_set_page_size {
-  % Change paper size, but only if different from previous paper size otherwise
-  % duplex fails. PLRM specifies a tolerance of 5 pts when matching paper size
-  % so we use the same when checking if the size changes.
-  /setpagedevice where {
-    pop currentpagedevice
-    /PageSize known {
-      2 copy
-      currentpagedevice /PageSize get aload pop
-      exch 4 1 roll
-      sub abs 5 gt
-      3 1 roll
-      sub abs 5 gt
-      or
-    } {
-      true
-    } ifelse
-    {
-      2 array astore
-      2 dict begin
-        /PageSize exch def
-        /ImagingBBox null def
-      currentdict end
-      setpagedevice
-    } {
-      pop pop
-    } ifelse
-  } {
-    pop
-  } ifelse
-} def
 %%EndProlog
 %%BeginSetup
 %%EndSetup
 %%Page: 1 1
 %%BeginPageSetup
-%%PageOrientation: Landscape
-%%PageMedia: 224x389mm
-%%PageBoundingBox: 0 -1 634 1102
-634 1102 cairo_set_page_size
+%%PageBoundingBox: 0 -1 1102 634
 %%EndPageSetup
-q 0 -1 634 1103 rectclip q
+q 0 -1 1102 635 rectclip q
 1 g
-0 0 633.600014 1101.600014 rectfill
+0 0 1101.600014 633.600014 rectfill
 q
-0 1101.6 634 -1102 re W n
-[ 0 0.999814 -0.999814 0 633.881823 0 ] concat
+0 633.6 1102 -634 re W n
+[ 0.999814 0 0 0.999814 0 -0.281809 ] concat
   q
 0 g
 1 w
@@ -307,8 +269,8 @@ l 288.125 378.332 l 287.051 378.332 l 286.246 378.598 l 285.98 378.867 l
   Q
 Q
 q
-0 1101.6 634 -1102 re W n
-[ 0 0.999814 -0.999814 0 633.881823 0 ] concat
+0 633.6 1102 -634 re W n
+[ 0.999814 0 0 0.999814 0 -0.281809 ] concat
   q
 1 0 1 rg
 1 w
@@ -324,8 +286,8 @@ q
   Q
 Q
 q
-0 1101.6 634 -1102 re W n
-[ 0 0.999814 -0.999814 0 633.881823 0 ] concat
+0 633.6 1102 -634 re W n
+[ 0.999814 0 0 0.999814 0 -0.281809 ] concat
   q
 0 g
 1 w
@@ -436,8 +398,8 @@ q
   Q
 Q
 q
-0 1101.6 634 -1102 re W n
-[ 0 0.999814 -0.999814 0 633.881823 0 ] concat
+0 633.6 1102 -634 re W n
+[ 0.999814 0 0 0.999814 0 -0.281809 ] concat
   q
 1 0 1 rg
 1 w
@@ -582,8 +544,8 @@ q
   Q
 Q
 q
-0 1101.6 634 -1102 re W n
-[ 0 0.999814 -0.999814 0 633.881823 0 ] concat
+0 633.6 1102 -634 re W n
+[ 0.999814 0 0 0.999814 0 -0.281809 ] concat
   q
 0 g
 1 w
@@ -2751,8 +2713,8 @@ l 938.734 150 l 950.719 150.43 l 962.707 150.859 l 974.695 151.293 l 986.68
   Q
 Q
 q
-0 1101.6 634 -1102 re W n
-[ 0 0.999814 -0.999814 0 633.881823 0 ] concat
+0 633.6 1102 -634 re W n
+[ 0.999814 0 0 0.999814 0 -0.281809 ] concat
   q
 0 g
 1 w
@@ -2932,8 +2894,8 @@ l S
   Q
 Q
 q
-0 1101.6 634 -1102 re W n
-[ 0 0.999814 -0.999814 0 633.881823 0 ] concat
+0 633.6 1102 -634 re W n
+[ 0.999814 0 0 0.999814 0 -0.281809 ] concat
   q
 1 0 0 rg
 1 w
@@ -4966,8 +4928,8 @@ l 830.848 518.258 l 842.836 519.551 l 854.824 520.84 l 866.812 522.133 l
   Q
 Q
 q
-0 1101.6 634 -1102 re W n
-[ 0 0.999814 -0.999814 0 633.881823 0 ] concat
+0 633.6 1102 -634 re W n
+[ 0.999814 0 0 0.999814 0 -0.281809 ] concat
   q
 0 g
 1 w
@@ -20346,4 +20308,5 @@ Q
 Q Q
 showpage
 %%Trailer
+end restore
 %%EOF

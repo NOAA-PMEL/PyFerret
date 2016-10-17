@@ -97,6 +97,7 @@
 *                   set physical_chg to .TRUE. if START_PPLUS called or 
 *                   if the engine changes
 * V69x *sh* 21/1/15 clarify data type of arguments sent to QUERY_DISPLAY_SIZE
+* V7   *kms*  10/16 Add SET WINDOW /SCALE=
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -147,7 +148,8 @@
      .          slash_opacity,
      .          slash_thicken,
      .          slash_textprom,
-     .          slash_outline
+     .          slash_outline,
+     .          slash_scale
 	PARAMETER ( slash_new      =  1+1,
      .              slash_clear    =  4+1,
      .              slash_title    =  5+1,
@@ -159,7 +161,8 @@
      .              slash_opacity  = 11+1,
      .              slash_thicken  = 12+1,
      .              slash_textprom = 17+1,
-     .              slash_outline  = 18+1 )
+     .              slash_outline  = 18+1,
+     .              slash_scale    = 19+1 )
 
 	rzero = 0.0
 	rone = 1.0
@@ -408,11 +411,14 @@ c 75        CONTINUE
 *          compute the scaling factor using both height and width.
            xsc = xpixels / (xinches * windowdpix(n))
            ysc = ypixels / (yinches * windowdpiy(n))
-           sc = SQRT(xsc * ysc)
+*          negative value means set the scale to the absolute value 
+*          and then turn on auto-scaling
+           sc = -1.0 * SQRT(xsc * ysc)
            CALL FGD_SEND_IMAGE_SCALE(n, sc)
 
-*          Save xpixels and ypixels only for specifying the default
-*          size when saving raster graphics.
+*          Save xpixels and ypixels for specifying the default size 
+*          when saving raster graphics as well as values for 
+*          PPL$XPIXEL and PPL$YPIXEL
            wn_xpixels(n) = xpixels
            wn_ypixels(n) = ypixels
 
@@ -469,6 +475,16 @@ c 75        CONTINUE
             IF ( scl .LT. 0.0 ) GOTO 5100
             owd = scl
             CALL FGD_SET_OUTLINE_WIDTH(n, owd)
+        ENDIF
+
+* set scaling factor used in the viewer?
+        qp = qual_given(slash_scale)
+        IF ( qp .GT. 0 ) THEN
+            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)), 
+     .                     scl, status)
+            IF ( status .NE. ferr_ok ) RETURN
+            sc = scl
+            CALL FGD_SEND_IMAGE_SCALE(n, sc)
         ENDIF
 
 * background color will always use color number zero

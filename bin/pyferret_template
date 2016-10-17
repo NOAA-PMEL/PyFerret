@@ -9,10 +9,10 @@ python_exe=PYTHON_EXECUTABLE
 ## Make sure the FER_* environment variables are assigned
 if [ -z "${FER_LIBS}" ]; then
 ## Either source the ferret_paths script to assign the environment variables
-#    . "/my/path/to/ferret_paths.sh"
+. FERRET_PATHS_SH_SCRIPT
 ## or just throw an error if they should have already been defined
-    echo "**ERROR: Ferret environment variables are not defined"
-    exit 1
+#    echo "**ERROR: Ferret environment variables are not defined"
+#    exit 1
 ##
 fi
 
@@ -34,5 +34,5 @@ if echo "$@" | grep -q -- "-linebuffer"; then
 else
     python_flags="-i"
 fi
-${python_exe} ${python_flags} -c "import sys; import pyferret; (errval, errmsg) = pyferret.init(sys.argv[1:], True)" "$@"
+exec ${python_exe} ${python_flags} -c "import sys; import pyferret; (errval, errmsg) = pyferret.init(sys.argv[1:], True)" "$@"
 

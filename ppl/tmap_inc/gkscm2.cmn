@@ -9,6 +9,7 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * *acm* 1/13/12 For DP Ferret/ SP Pplus: explicitly declare REALs 
 *               as single-precision
+* *kms* 10/07/16 Remove pixx and pixy in PyFerret - no longer needed
 
         integer        ws_lun,tmp_wsid
         integer        tmp_lun
@@ -16,7 +17,6 @@
         integer        item_ndx_range,item_spectrum,item_protect
         integer        item_fill_ndx
         integer        lbtype,lbcolor
-        integer        pixx,pixy
 
         real*4         lbwidth,spline_tension
 
@@ -28,7 +28,7 @@
 
       common /gkscm2/ meta_file,gks_open,ws_lun,ws_file,item_gclrwk,
      .                item_ws_xform,tmp_wsid,tmp_lun,tmp_file,
-     .                lbtype,lbwidth,lbcolor,pixx,pixy,vpt_was_set,
+     .                lbtype,lbwidth,lbcolor,vpt_was_set,
      .                item_ndx_range,item_spectrum,item_protect,
      .                item_fill_ndx,item_pplpver,draftsman,
      .                save_on_exit,imgname_sent,spline_tension

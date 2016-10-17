@@ -34,6 +34,9 @@ class PyFerretBindings(AbstractPyFerretBindings):
         '''
         super(PyFerretBindings, self).__init__()
         self.__window = None
+        # wait time in seconds for error responses for "high-level" 
+        # (not drawing) commands that might have an error
+        self.__errwait = 0.01
 
     def createPipedViewerWindow(self, viewertype, title, visible, noalpha):
         '''
@@ -75,30 +78,38 @@ class PyFerretBindings(AbstractPyFerretBindings):
 
     def checkForResponse(self, timeout=0.0):
         '''
-        Checks the response pipe for an object within the given
-        timeout number of in seconds.  If timeout is None, this
-        method will wait indefinitely for something to be given
-        on the responds pipe.  If nothing is obtained within the
-        given timeout, None is returned.
-
-        Provided for use by functions defined in subclasses.
+        Checks the response pipe for an object within the given timeout 
+        number of in seconds.  If timeout is None, this method will wait 
+        indefinitely for something to be given on the responds pipe.  If 
+        timeout is zero (the default) the method does not wait if there 
+        is no response waiting.  If nothing is obtained within the given 
+        timeout, None is returned.
         '''
         result = self.__window.checkForResponse(timeout)
         return result
 
-    def checkForErrorResponse(self):
+    def checkForErrorResponse(self, timeout=0.0):
         '''
         Checks the response pipe for a message.  If anything is found,
         a RuntimeError is raised with the string of the full response.
+        If timeout is zero (the default) the method does not wait if there
+        is no response waiting; otherwise the method waits the given number
+        of seconds for a reponse to arrive.  An IllegalArgumentException
+        if raised if timeout is None, as error responses should not be an
+        expected result (thus an indefinite wait makes no sense).
         '''
+        if timeout is None:
+            raise IllegalArgumentException("timeout to checkForErrorResponse is None")
         fullresponse = None
-        response = self.__window.checkForResponse()
+        # Only wait (if timeout not zero) on the first check for a response
+        response = self.__window.checkForResponse(timeout)
         while response:
             if fullresponse:
                 fullresponse += '\n'
                 fullresponse += str(response)
             else:
                 fullresponse = str(response)
+            # Any further messages associated with this error should be immediate
             response = self.__window.checkForResponse()
         if fullresponse:
             raise RuntimeError(fullresponse)
@@ -113,7 +124,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         '''
         try:
             self.__window.submitCommand( { "action":"exit" } )
-            self.checkForErrorResponse()
+            self.checkForErrorResponse(self.__errwait)
             self.__window.waitForViewerExit()
         finally:
             self.__window = None
@@ -144,7 +155,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         if formatname:
             cmnd["format"] = formatname
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
+        self.checkForErrorResponse(self.__errwait)
 
     def setAntialias(self, antialias):
         '''
@@ -406,7 +417,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         cmnd["rastsize"] = { "width":xpixels, "height":ypixels }
         cmnd["annotations"] = annotations
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
+        self.checkForErrorResponse(self.__errwait)
 
     def createColor(self, redfrac, greenfrac, bluefrac, opaquefrac):
         '''

@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1387 Sep 28 15:04 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1404 Oct 13 15:50 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -300,7 +300,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Wed Sep 28 15:04:21 PDT 2016
+Beginning at Thu Oct 13 15:50:48 PDT 2016
 *** Running ferret script: bn_syntax.jnl
 [?1034h! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -10502,13 +10502,13 @@ FERRET_PLATFORM = "Linux 2.6.32-642.4.2.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "28-Sep-16"
-SESSION_TIME = "15:04"
-SESSION_PID = "17674"
-DELTA_CPU = "0.208967"
-CLOCK_SECS = "0.097"
-CURRENT_DATE = "28-Sep-16"
-CURRENT_TIME = "15:04:29"
+SESSION_DATE = "13-Oct-16"
+SESSION_TIME = "15:50"
+SESSION_PID = "9109"
+DELTA_CPU = "0.214967"
+CLOCK_SECS = "0.102"
+CURRENT_DATE = "13-Oct-16"
+CURRENT_TIME = "15:50:57"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -10531,13 +10531,13 @@ FERRET_PLATFORM = "Linux 2.6.32-642.4.2.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "28-Sep-16"
-SESSION_TIME = "15:04"
-SESSION_PID = "17674"
+SESSION_DATE = "13-Oct-16"
+SESSION_TIME = "15:50"
+SESSION_PID = "9109"
 DELTA_CPU = "0.001"
-CLOCK_SECS = "0.099"
-CURRENT_DATE = "28-Sep-16"
-CURRENT_TIME = "15:04:29"
+CLOCK_SECS = "0.103"
+CURRENT_DATE = "13-Oct-16"
+CURRENT_TIME = "15:50:57"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 S1 = "hello"
@@ -10547,9 +10547,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "28-Sep-16"
-SESSION_TIME = "15:04"
-SESSION_PID = "17674"
+SESSION_DATE = "13-Oct-16"
+SESSION_TIME = "15:50"
+SESSION_PID = "9109"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10559,15 +10559,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "28-Sep-16"
-SESSION_TIME = "15:04"
-SESSION_PID = "17674"
+SESSION_DATE = "13-Oct-16"
+SESSION_TIME = "15:50"
+SESSION_PID = "9109"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "28-Sep-16"
-SESSION_TIME = "15:04"
-SESSION_PID = "17674"
+SESSION_DATE = "13-Oct-16"
+SESSION_TIME = "15:50"
+SESSION_PID = "9109"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10692,21 +10692,21 @@ say ($delayed_eval)         ! translate symbol and then evaluate
 ! cleanup
 cancel symbols/all
 show symbols/all
-PPL$XPIXEL = "979"
-PPL$YPIXEL = "844"
+PPL$XPIXEL = "819"
+PPL$YPIXEL = "707"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.02"
 FERRET_PLATFORM = "Linux 2.6.32-642.4.2.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "28-Sep-16"
-SESSION_TIME = "15:04"
-SESSION_PID = "17674"
-DELTA_CPU = "0.012998"
-CLOCK_SECS = "0.112"
-CURRENT_DATE = "28-Sep-16"
-CURRENT_TIME = "15:04:29"
+SESSION_DATE = "13-Oct-16"
+SESSION_TIME = "15:50"
+SESSION_PID = "9109"
+DELTA_CPU = "0.011997"
+CLOCK_SECS = "0.116"
+CURRENT_DATE = "13-Oct-16"
+CURRENT_TIME = "15:50:57"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -25074,7 +25074,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Wed Sep 28 15:04:36 PDT 2016
+Thu Oct 13 15:51:04 PDT 2016
  
 GO bn_reset
 cancel mode verify
@@ -25223,7 +25223,7 @@ list/i=2 SAMPLEI(sst[l=1,y=-2:2],{30,40,50})	! only I=2 from result
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
  eval    (C01,V02 C:  7 dset:   1 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
- const_v {30-,50} M: 16 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ const_v {30,...} M: 16 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  doing sampling tpry on I axis:     1     3 dset:   1
  eval    (C09,V02 C: 11 dset:   1 I:   30   30  J: -999 -999  K: -999 -999  L: -999 -999
  reading SST      M: 13 dset:   1 I:   30   30  J:   45   46  K: -999 -999  L:    1    1
@@ -25234,7 +25234,7 @@ list/i=2 SAMPLEI(sst[l=1,y=-2:2],{30,40,50})	! only I=2 from result
  -DELETE (C09,V02 M: 14 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L:    3    3
  -DELETE SST      M: 15 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE tpry     M:  9 dset:   1 I:    1    3  J:   45   46  K: -999 -999  L:    1    1
- -DELETE {30-,50} M: 16 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE {30,...} M: 16 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
              VARIABLE : SAMPLEI(SST[L=1,Y=-2:2],{30,40,50})
              FILENAME : coads_climatology.cdf
              SUBSET   : 2 points (LATITUDE)
@@ -25261,7 +25261,7 @@ list/l=1/y=-2:2  SAMPLEI(sst,{30,40,50})
  allocate dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I: -999 -999  J:   45   46  K: -999 -999  L:    1    1
- const_v {30-,50} M: 15 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ const_v {30,...} M: 15 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  doing sampling tpry on I axis:     1     3 dset:   1
  reading SST      M:  8 dset:   1 I:   30   30  J:   45   46  K: -999 -999  L:    1    1
  reading SST      M:  5 dset:   1 I:   40   40  J:   45   46  K: -999 -999  L:    1    1
@@ -25269,7 +25269,7 @@ list/l=1/y=-2:2  SAMPLEI(sst,{30,40,50})
  -DELETE          M: 12 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L:    3    3
  -DELETE SST      M: 13 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE tpry     M:  7 dset:   1 I:    1    3  J:   45   46  K: -999 -999  L:    1    1
- -DELETE {30-,50} M: 15 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE {30,...} M: 15 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
              VARIABLE : SAMPLEI(SST,{30,40,50})
              FILENAME : coads_climatology.cdf
              SUBSET   : 3 by 2 points (X-LATITUDE)
@@ -25291,7 +25291,7 @@ list/l=1/y=-2:2  SAMPLEI(a  ,{30,40,50})
  allocate dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I: -999 -999  J:   45   46  K: -999 -999  L:    1    1
- const_v {30-,50} M: 13 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ const_v {30,...} M: 13 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  doing sampling tpry on I axis:     1     3 dset:   1
  eval    A        C:  9 dset:   1 I:   30   30  J:   45   46  K: -999 -999  L:    1    1
  reading SST      M:  4 dset:   1 I:   30   30  J:   45   46  K: -999 -999  L:    1    1
@@ -25302,7 +25302,7 @@ list/l=1/y=-2:2  SAMPLEI(a  ,{30,40,50})
  -DELETE SST      M:  5 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L:    3    3
  -DELETE SST      M:  8 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE tpry     M:  7 dset:   1 I:    1    3  J:   45   46  K: -999 -999  L:    1    1
- -DELETE {30-,50} M: 13 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE {30,...} M: 13 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
              VARIABLE : SAMPLEI(A  ,{30,40,50})
              FILENAME : coads_climatology.cdf
              SUBSET   : 3 by 2 points (X-LATITUDE)
@@ -25332,14 +25332,14 @@ list/l=1/y=-2:2  SAMPLEI(sst[i=30:40],{30,40,50})
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I: -999 -999  J:   45   46  K: -999 -999  L:    1    1
  eval    (C01,V02 C:  7 dset:   1 I: -999 -999  J:   45   46  K: -999 -999  L:    1    1
- const_v {30-,50} M: 16 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ const_v {30,...} M: 16 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  doing sampling tpry on I axis:     1     3 dset:   1
  eval    (C09,V02 C: 11 dset:   1 I: -999 -999  J:   45   46  K: -999 -999  L:    1    1
  reading SST      M: 12 dset:   1 I:   30   40  J:   45   46  K: -999 -999  L:    1    1
  -DELETE A        M: 14 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L:    3    3
  -DELETE A        M: 15 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE tpry     M:  8 dset:   1 I:    1    3  J:   45   46  K: -999 -999  L:    1    1
- -DELETE {30-,50} M: 16 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE {30,...} M: 16 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
              VARIABLE : SAMPLEI(SST[I=30:40],{30,40,50})
              FILENAME : coads_climatology.cdf
              SUBSET   : 3 by 2 points (X-LATITUDE)
@@ -25364,14 +25364,14 @@ list/l=1/y=-2:2  SAMPLEI(a,{30,40,50})
  allocate dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I: -999 -999  J:   45   46  K: -999 -999  L:    1    1
- const_v {30-,50} M: 12 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ const_v {30,...} M: 12 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  doing sampling tpry on I axis:     1     3 dset:   1
  eval    A        C:  9 dset:   1 I: -999 -999  J:   45   46  K: -999 -999  L:    1    1
  reading SST      M: 16 dset:   1 I:   30   40  J:   45   46  K: -999 -999  L:    1    1
  -DELETE          M:  9 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L:    3    3
  -DELETE          M: 15 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE tpry     M: 14 dset:   1 I:    1    3  J:   45   46  K: -999 -999  L:    1    1
- -DELETE {30-,50} M: 12 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE {30,...} M: 12 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
              VARIABLE : SAMPLEI(A,{30,40,50})
              FILENAME : coads_climatology.cdf
              SUBSET   : 3 by 2 points (X-LATITUDE)
@@ -25459,7 +25459,7 @@ list/l=1/y=-2:2  SAMPLEI(a,{30,40,50})
  allocate dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I: -999 -999  J:   45   46  K: -999 -999  L:    1    1
- const_v {30-,50} M: 16 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ const_v {30,...} M: 16 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  doing sampling tpry on I axis:     1     3 dset:   1
  eval    A        C:  9 dset:   1 I:    1  180  J:   45   46  K: -999 -999  L:    1    1
  strip --> FSST[X=20E:20E(380)@IIN,D=1]
@@ -25473,7 +25473,7 @@ list/l=1/y=-2:2  SAMPLEI(a,{30,40,50})
  -DELETE          M: 14 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L:    3    3
  -DELETE          M: 15 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE tpry     M:  5 dset:   1 I:    1    3  J:   45   46  K: -999 -999  L:    1    1
- -DELETE {30-,50} M: 16 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE {30,...} M: 16 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
              VARIABLE : SAMPLEI(A,{30,40,50})
              FILENAME : coads_climatology.cdf
              SUBSET   : 3 by 2 points (X-LATITUDE)
@@ -25506,13 +25506,13 @@ list/l=1/y=0  SAMPLEI(sst,{30,40,50})
  allocate dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I: -999 -999  J:   45   45  K: -999 -999  L:    1    1
- const_v {30-,50} M: 13 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ const_v {30,...} M: 13 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  doing sampling tpry on I axis:     1     3 dset:   1
  found   SST      M: 15 dset:   1 I:   30   50  J:   45   45  K: -999 -999  L:    1    1
  -DELETE SST      M:  9 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L:    3    3
  -DELETE SST      M: 12 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE tpry     M:  8 dset:   1 I:    1    3  J:   45   45  K: -999 -999  L:    1    1
- -DELETE {30-,50} M: 13 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE {30,...} M: 13 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
              VARIABLE : SAMPLEI(SST,{30,40,50})
              FILENAME : coads_climatology.cdf
              SUBSET   : 3 points (X)
@@ -25539,7 +25539,7 @@ list/l=1/y=0  SAMPLEI(sst,{30,40,50})
  allocate dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I: -999 -999  J:   45   45  K: -999 -999  L:    1    1
- const_v {30-,50} M: 12 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ const_v {30,...} M: 12 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  doing sampling tpry on I axis:     1     3 dset:   1
  found   SST      M: 15 dset:   1 I:   30   39  J:   45   45  K: -999 -999  L:    1    1
  reading SST      M:  7 dset:   1 I:   40   40  J:   45   45  K: -999 -999  L:    1    1
@@ -25547,7 +25547,7 @@ list/l=1/y=0  SAMPLEI(sst,{30,40,50})
  -DELETE tpry     M:  8 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L:    3    3
  -DELETE EX#1     M: 13 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE tpry     M:  9 dset:   1 I:    1    3  J:   45   45  K: -999 -999  L:    1    1
- -DELETE {30-,50} M: 12 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE {30,...} M: 12 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
              VARIABLE : SAMPLEI(SST,{30,40,50})
              FILENAME : coads_climatology.cdf
              SUBSET   : 3 points (X)
@@ -25576,14 +25576,14 @@ list/l=1/y=0  SAMPLEI(sst,{30,40,50})
  allocate dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I: -999 -999  J:   45   45  K: -999 -999  L:    1    1
- const_v {30-,50} M: 13 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ const_v {30,...} M: 13 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  doing sampling tpry on I axis:     1     3 dset:   1
  found   SST      M: 15 dset:   1 I:   30   40  J:   45   45  K: -999 -999  L:    1    1
  reading SST      M:  9 dset:   1 I:   50   50  J:   45   45  K: -999 -999  L:    1    1
  -DELETE SST      M:  4 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L:    3    3
  -DELETE SST      M:  7 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE tpry     M: 12 dset:   1 I:    1    3  J:   45   45  K: -999 -999  L:    1    1
- -DELETE {30-,50} M: 13 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE {30,...} M: 13 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
              VARIABLE : SAMPLEI(SST,{30,40,50})
              FILENAME : coads_climatology.cdf
              SUBSET   : 3 points (X)
@@ -25611,14 +25611,14 @@ list/l=1/y=0  SAMPLEI(sst,{30,40,50})
  allocate dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   1 I: -999 -999  J:   45   45  K: -999 -999  L:    1    1
- const_v {30-,50} M:  9 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ const_v {30,...} M:  9 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  doing sampling tpry on I axis:     1     3 dset:   1
  found   SST      M: 15 dset:   1 I:   30   41  J:   45   45  K: -999 -999  L:    1    1
  reading SST      M:  4 dset:   1 I:   50   50  J:   45   45  K: -999 -999  L:    1    1
  -DELETE EX#1     M: 13 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L:    3    3
  -DELETE EX#1     M:  7 dset:   1 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE tpry     M: 12 dset:   1 I:    1    3  J:   45   45  K: -999 -999  L:    1    1
- -DELETE {30-,50} M:  9 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE {30,...} M:  9 dset:   0 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
              VARIABLE : SAMPLEI(SST,{30,40,50})
              FILENAME : coads_climatology.cdf
              SUBSET   : 3 points (X)
@@ -25875,7 +25875,7 @@ list SAMPLEI(sst[l=1,y=5N],{31,33,35,37,44,46,48})
  allocate dynamic grid (G002)          ABSTRACT  COADSY    NORMAL    TIME
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  eval    (C01,V02 C:  6 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- const_v {31-,48} M: 15 dset:   0 I:    1    7  J: -999 -999  K: -999 -999  L: -999 -999
+ const_v {31,...} M: 15 dset:   0 I:    1    7  J: -999 -999  K: -999 -999  L: -999 -999
  doing sampling tpry on I axis:     1     7 dset:   1
  eval    (C09,V02 C: 10 dset:   1 I:   31   35  J: -999 -999  K: -999 -999  L: -999 -999
  reading SST      M: 11 dset:   1 I:   31   35  J:   48   48  K: -999 -999  L:    1    1
@@ -25886,7 +25886,7 @@ list SAMPLEI(sst[l=1,y=5N],{31,33,35,37,44,46,48})
  -DELETE (C01,V02 M: 12 dset:   0 I:    1    7  J: -999 -999  K: -999 -999  L:    7    7
  -DELETE SST      M: 14 dset:   1 I:    1    7  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE tpry     M:  7 dset:   1 I:    1    7  J:   48   48  K: -999 -999  L:    1    1
- -DELETE {31-,48} M: 15 dset:   0 I:    1    7  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE {31,...} M: 15 dset:   0 I:    1    7  J: -999 -999  K: -999 -999  L: -999 -999
              VARIABLE : SAMPLEI(SST[L=1,Y=5N],{31,33,35,37,44,46,48})
              FILENAME : coads_climatology.cdf
              SUBSET   : 7 points (X)
@@ -25906,7 +25906,7 @@ list SAMPLEI(sst[l=1,y=5N],{31,33,35,37,44,46,48})
 list SAMPLEI(sst[l=1,y=5N],{31,33,35,37,44,46,48}) !   <-- CACHE HIT FAILS!!!
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  eval    (C01,V02 C:  6 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- const_v {31-,48} M: 15 dset:   0 I:    1    7  J: -999 -999  K: -999 -999  L: -999 -999
+ const_v {31,...} M: 15 dset:   0 I:    1    7  J: -999 -999  K: -999 -999  L: -999 -999
  doing sampling tpry on I axis:     1     7 dset:   1
  found   (C09,V02 M:  8 dset:   1 I:   31   35  J:   48   48  K: -999 -999  L:    1    1
  found   (C09,V02 M:  3 dset:   1 I:   37   37  J:   48   48  K: -999 -999  L:    1    1
@@ -25914,7 +25914,7 @@ list SAMPLEI(sst[l=1,y=5N],{31,33,35,37,44,46,48}) !   <-- CACHE HIT FAILS!!!
  -DELETE (C01,V02 M: 12 dset:   0 I:    1    7  J: -999 -999  K: -999 -999  L:    7    7
  -DELETE tpry     M:  7 dset:   1 I:    1    7  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE tpry     M: 10 dset:   1 I:    1    7  J:   48   48  K: -999 -999  L:    1    1
- -DELETE {31-,48} M: 15 dset:   0 I:    1    7  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE {31,...} M: 15 dset:   0 I:    1    7  J: -999 -999  K: -999 -999  L: -999 -999
              VARIABLE : SAMPLEI(SST[L=1,Y=5N],{31,33,35,37,44,46,48})
              FILENAME : coads_climatology.cdf
              SUBSET   : 7 points (X)
@@ -25937,7 +25937,7 @@ list a 			!   <-- CACHE HIT FAILS!!!
  eval    EX#1     C:  4 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  eval    A        C:  6 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  eval    (C01,V01 C:  8 dset:   1 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- const_v {31-,48} M:  3 dset:   0 I:    1    7  J: -999 -999  K: -999 -999  L: -999 -999
+ const_v {31,...} M:  3 dset:   0 I:    1    7  J: -999 -999  K: -999 -999  L: -999 -999
  doing sampling tpry on I axis:     1     7 dset:   1
  found   (C09,V01 M:  8 dset:   1 I:   31   35  J:   48   48  K: -999 -999  L:    1    1
  found   (C09,V01 M: 15 dset:   1 I:   37   37  J:   48   48  K: -999 -999  L:    1    1
@@ -25945,7 +25945,7 @@ list a 			!   <-- CACHE HIT FAILS!!!
  -DELETE          M: 12 dset:   0 I:    1    7  J: -999 -999  K: -999 -999  L:    7    7
  -DELETE          M: 16 dset:   1 I:    1    7  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
  -DELETE tpry     M:  2 dset:   1 I:    1    7  J:   48   48  K: -999 -999  L:    1    1
- -DELETE {31-,48} M:  3 dset:   0 I:    1    7  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE {31,...} M:  3 dset:   0 I:    1    7  J: -999 -999  K: -999 -999  L: -999 -999
              VARIABLE : SAMPLEI(SST[L=1,Y=5N],{31,33,35,37,44,46,48})
              FILENAME : coads_climatology.cdf
              SUBSET   : 7 points (X)
@@ -47164,7 +47164,7 @@ sho command
  SET
  SET WINDOW/SIZE/NEW/LOCATION/ASPECT/CLEAR/TITLE/QUALITY/ANTIALIA/NOANTIAL
       /ENGINE/COLOR/OPACITY/THICKEN/XPIXELS/YPIXELS/XINCHES/YINCHES/TEXTPROM
-      /OUTLINE
+      /OUTLINE/SCALE
  SET REGION/I/J/K/L/M/N/X/Y/Z/T/E/F/DX/DY/DZ/DT/DE/DF/DI/DJ/DK/DL/DM/DN
  SET VIEWPORT
  SET EXPRSION
@@ -47302,7 +47302,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "28-Sep-16_15:05"
+WIN_TITLE = "13-Oct-16_15:51"
  
 set win/title="set the title"
 sho sym win_title
@@ -47320,7 +47320,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="28-Sep-16:15:05"
+ !-> set win/title="13-Oct-16:15:51"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47329,16 +47329,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 28-Sep-16
+ !-> DEFINE SYMBOL the_date = 13-Oct-16
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 15:05
+ !-> DEFINE SYMBOL the_time = 15:51
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="28-Sep-16:15:05"
+ !-> SET WIN/TITLE="13-Oct-16:15:51"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "28-Sep-16:15:05"
+WIN_TITLE = "13-Oct-16:15:51"
 *** Running ferret script: bn_last_error.jnl
 [?1034h! bn_last_error.jnl
 ! acm Nov 2005
@@ -51708,7 +51708,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -51757,7 +51757,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -57634,10 +57634,10 @@ SH GRID am
  normal    T
 *** Running ferret script: bn_clock_syms.jnl
 [?1034hSH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.218966"
-CLOCK_SECS = "0.108"
-CURRENT_DATE = "28-Sep-16"
-CURRENT_TIME = "15:05:18"
+DELTA_CPU = "0.222965"
+CLOCK_SECS = "0.11"
+CURRENT_DATE = "13-Oct-16"
+CURRENT_TIME = "15:51:45"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57646,8 +57646,8 @@ CURRENT_TIME = "15:05:18"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.020996"
-CLOCK_SECS = "0.13"
+DELTA_CPU = "0.019997"
+CLOCK_SECS = "0.131"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57664,12 +57664,12 @@ let ten_plots = ($DELTA_CPU)
  !-> DEFINE VARIABLE ten_plots = 0.059991
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0.001"
-CLOCK_SECS = "0.19"
+CLOCK_SECS = "0.191"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.191"
+CLOCK_SECS = "0.192"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
@@ -57677,22 +57677,22 @@ let sumcpu =`sumcpu + dt`)
  !-> DEFINE VARIABLE dt = 0.006999
  !-> DEFINE VARIABLE sumcpu =0.006999
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.007999
- !-> DEFINE VARIABLE sumcpu =0.014998
+ !-> DEFINE VARIABLE dt = 0.007998
+ !-> DEFINE VARIABLE sumcpu =0.014997
 !-> REPEAT: K=3
  !-> DEFINE VARIABLE dt = 0.007999
- !-> DEFINE VARIABLE sumcpu =0.022997
+ !-> DEFINE VARIABLE sumcpu =0.022996
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.006998
+ !-> DEFINE VARIABLE dt = 0.006999
  !-> DEFINE VARIABLE sumcpu =0.029995
 !-> REPEAT: K=5
  !-> DEFINE VARIABLE dt = 0.007999
  !-> DEFINE VARIABLE sumcpu =0.037994
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.044993
-!-> REPEAT: K=7
  !-> DEFINE VARIABLE dt = 0.007999
+ !-> DEFINE VARIABLE sumcpu =0.045993
+!-> REPEAT: K=7
+ !-> DEFINE VARIABLE dt = 0.006999
  !-> DEFINE VARIABLE sumcpu =0.052992
 !-> REPEAT: K=8
  !-> DEFINE VARIABLE dt = 0.006999
@@ -57701,20 +57701,20 @@ let sumcpu =`sumcpu + dt`)
  !-> DEFINE VARIABLE dt = 0.007999
  !-> DEFINE VARIABLE sumcpu =0.06799
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.074989
+ !-> DEFINE VARIABLE dt = 0.006998
+ !-> DEFINE VARIABLE sumcpu =0.074988
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.074989
-0.074989
+ !-> MESSAGE/CONTINUE 0.074988
+0.074988
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.267"
+CLOCK_SECS = "0.269"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "28-Sep-16"
-SESSION_TIME = "15:05"
-CURRENT_DATE = "28-Sep-16"
-CURRENT_TIME = "15:05:18"
+SESSION_DATE = "13-Oct-16"
+SESSION_TIME = "15:51"
+CURRENT_DATE = "13-Oct-16"
+CURRENT_TIME = "15:51:45"
 *** Running ferret script: bn63_bug_fixes.jnl
 [?1034h! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -61472,8 +61472,8 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! PyFERRET v7.02 (beta/debug)"                                             
- 3    /  3:" ! Linux 2.6.32-642.4.2.el6.x86_64 - 09/28/16"                              
- 4    /  4:" ! 28-Sep-16 15:05     "                                                    
+ 3    /  3:" ! Linux 2.6.32-642.4.2.el6.x86_64 - 10/13/16"                              
+ 4    /  4:" ! 13-Oct-16 15:51     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -63927,40 +63927,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.070
-randu2_randn2       0.587
-randu2_randn2       0.908
-randu2_randn2       0.123
-randu2_randn2       0.666
+randu2_randn2       0.702
+randu2_randn2       0.470
+randu2_randn2       0.864
+randu2_randn2       0.713
+randu2_randn2       0.565
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.429
-randu2_randn2       0.997
-randu2_randn2       0.613
-randu2_randn2       0.586
-randu2_randn2       0.908
+randu2_randn2       0.607
+randu2_randn2       0.226
+randu2_randn2       0.647
+randu2_randn2       0.007
+randu2_randn2       0.561
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.554
-randu2_randn2       0.208
-randu2_randn2       0.708
-randu2_randn2       0.750
-randu2_randn2       0.544
-randu2_randn2       0.443
+randu2_randn2       0.781
+randu2_randn2       0.228
+randu2_randn2       0.941
+randu2_randn2       0.495
+randu2_randn2       0.142
+randu2_randn2       0.810
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.386
-randu2_randn2       0.331
-randu2_randn2       0.855
-randu2_randn2       0.977
-randu2_randn2       0.236
-randu2_randn2       0.244
+randu2_randn2       0.992
+randu2_randn2       0.485
+randu2_randn2       0.942
+randu2_randn2       0.505
+randu2_randn2       0.778
+randu2_randn2       0.531
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -63985,40 +63985,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.975
-randu2_randn2       0.811
-randu2_randn2       1.289
-randu2_randn2       1.807
-randu2_randn2       0.280
+randu2_randn2      -0.897
+randu2_randn2      -0.425
+randu2_randn2       0.041
+randu2_randn2       2.105
+randu2_randn2       0.396
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -1.260
-randu2_randn2       0.046
-randu2_randn2      -0.594
-randu2_randn2      -0.461
-randu2_randn2      -1.358
+randu2_randn2      -0.394
+randu2_randn2      -0.587
+randu2_randn2      -0.189
+randu2_randn2       0.602
+randu2_randn2       0.194
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2      -0.733
-randu2_randn2       1.296
-randu2_randn2       0.308
-randu2_randn2      -0.335
-randu2_randn2       0.326
-randu2_randn2      -0.304
+randu2_randn2       0.159
+randu2_randn2       1.247
+randu2_randn2       0.407
+randu2_randn2      -1.031
+randu2_randn2      -0.848
+randu2_randn2      -0.288
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2      -0.372
-randu2_randn2      -2.171
-randu2_randn2      -0.564
-randu2_randn2       2.254
-randu2_randn2      -1.115
-randu2_randn2      -0.139
+randu2_randn2      -1.346
+randu2_randn2      -0.150
+randu2_randn2       0.416
+randu2_randn2       0.140
+randu2_randn2      -1.034
+randu2_randn2      -0.288
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -64043,14 +64043,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.121       1.581       0.751
-randu2_randn2       1.581       1.121       0.751
-randu2_randn2       0.751       0.751       0.373
-randu2_randn2       0.373       0.373       0.535
-randu2_randn2      -0.359      -0.170       0.535
-randu2_randn2      -0.170      -0.170       0.535
-randu2_randn2       0.108       0.108       0.535
-randu2_randn2       0.535       0.535       0.535
+randu2_randn2       1.874       1.874       0.443
+randu2_randn2       1.776       1.776       0.443
+randu2_randn2       0.407       0.443       0.407
+randu2_randn2       0.443       0.407       0.443
+randu2_randn2      -0.297      -0.297       0.443
+randu2_randn2      -0.557      -0.297       0.443
+randu2_randn2      -0.169      -0.169       0.443
+randu2_randn2       0.804       0.804       0.804
 *** Running ferret script: bn_axis_cf.jnl
 [?1034h! Ticket 1792: Write axes with CF-compliant units
 ! and with standard name attributes for geophysical attrs.
@@ -69766,7 +69766,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -69824,7 +69824,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -69872,7 +69872,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -69920,7 +69920,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -69960,7 +69960,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70001,7 +70001,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70071,7 +70071,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70124,7 +70124,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70188,7 +70188,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70232,7 +70232,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70276,7 +70276,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70320,7 +70320,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70361,7 +70361,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70592,7 +70592,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -70633,7 +70633,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -70684,7 +70684,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70732,7 +70732,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -70758,7 +70758,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -70784,7 +70784,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71214,7 +71214,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71243,7 +71243,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71294,7 +71294,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71862,8 +71862,8 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Wed Sep 28 15:05:38 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
-			"PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "Thu Oct 13 15:52:04 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
+			"PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
 }
@@ -71894,7 +71894,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71925,7 +71925,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71988,7 +71988,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -72016,7 +72016,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73713,7 +73713,7 @@ variables:
 		LABELS:history = "From http://dunkel.pmel.noaa.gov:8930/thredds/dodsC/data/atmos3.ncml" ;
 
 // global attributes:
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73736,7 +73736,7 @@ variables:
 		STRVAR:long_name = "mystrings" ;
 
 // global attributes:
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73952,7 +73952,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73982,7 +73982,7 @@ variables:
 		A:history = "From a" ;
 
 // global attributes:
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74003,7 +74003,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74024,7 +74024,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74046,7 +74046,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74453,7 +74453,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -74470,7 +74470,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -74487,7 +74487,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75691,7 +75691,7 @@ variables:
 		:geospatial_lat_max = 29.07 ;
 		:time_coverage_start = "2006-06-10T23:48:00Z" ;
 		:time_converage_end = "2006-06-11T00:12:00Z" ;
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 }
  
 set mode/last upcase
@@ -75784,7 +75784,7 @@ variables:
 		lon360:history = "added to test_save_dsg.nc" ;
 
 // global attributes:
-		:history = "CruiseDsgNcFile 1.0PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "CruiseDsgNcFile 1.0PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:featureType = "Trajectory" ;
 		:Conventions = "Some other conventionsCF-1.6" ;
 		:geospatial_lon_min = -92.77 ;
@@ -75811,7 +75811,7 @@ can dat/all; use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
  ..history = Subset of etopo20,
- PyFERRET V7.02 (beta/debug) 28-Sep-16 
+ PyFERRET V7.02 (beta/debug) 13-Oct-16 
  ..Conventions = Existing conventions note, , CF-1.6 
  
  
@@ -75841,7 +75841,7 @@ can dat/all; use conventions_history
 ! The new attibutes
 sh att .
      attributes for dataset: ./conventions_history.nc
- ..history = The history of the filePyFERRET V7.02 (beta/debug) 28-Sep-16 
+ ..history = The history of the filePyFERRET V7.02 (beta/debug) 13-Oct-16 
  ..Conventions = Conventions for variables named V2CF-1.6 
 *** Running ferret script: bn_center_key_labels.jnl
 [?1034h! bn_center_key_labels
@@ -84428,20 +84428,20 @@ GO err696_time_overlay
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
 sp date
-Wed Sep 28 15:05:55 PDT 2016
+Thu Oct 13 15:52:21 PDT 2016
 set view upper
 plot t[gt=tax_nlp]
 plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
 sp date
-Wed Sep 28 15:05:55 PDT 2016
+Thu Oct 13 15:52:21 PDT 2016
  
 sp date
-Wed Sep 28 15:05:55 PDT 2016
+Thu Oct 13 15:52:21 PDT 2016
 set view lower
 plot t[gt=tax_jul]
 plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
 sp date
-Wed Sep 28 15:05:55 PDT 2016
+Thu Oct 13 15:52:21 PDT 2016
  
 GO bn_reset
 cancel mode verify
@@ -84498,7 +84498,7 @@ variables:
 		var:long_name = "0*TT + X[GX=XAX]" ;
 
 // global attributes:
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -85369,7 +85369,7 @@ variables:
 		TEMP:history = "From /home/data/socat/socatV3/11SS/11SS20140225.nc" ;
 
 // global attributes:
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -90144,7 +90144,7 @@ SHOW DATA/ATT t_f04_e3_1v ! note atts im_everwhere vs im_not_everwhere
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 28-Sep-16
+ .                               history         CHAR        37   T       PyFERRET V7.02 (beta/debug) 13-Oct-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (XAX)                  DOUBLE    units           CHAR        12   T       degrees_east
@@ -90628,7 +90628,7 @@ save/clobber/file=a.nc/outtype=float elev[d=1]
 use a.nc
 sh att .
      attributes for dataset: ./a.nc
- ..history = PyFERRET V7.02 (beta/debug) 28-Sep-16 
+ ..history = PyFERRET V7.02 (beta/debug) 13-Oct-16 
  ..Conventions = CF-1.6 
  ..dt_internal = 15
 sh att elev
@@ -90649,7 +90649,7 @@ save/clobber/file=a.nc/outtype=float elev[d=1]
 use a.nc
 sh att .
      attributes for dataset: ./a.nc
- ..history = PyFERRET V7.02 (beta/debug) 28-Sep-16 
+ ..history = PyFERRET V7.02 (beta/debug) 13-Oct-16 
  ..Conventions = CF-1.6 
 sh att elev
      attributes for dataset: ./a.nc
@@ -90771,9 +90771,9 @@ flow/DAT=2/den=3/L=3 taux,tauy
 [?1034h! bn_speedtest.jnl
 ! issue large numbers of commands, timing with clock time
 can mode verify
-10K LET commands LET a = 0 takes  1.272  seconds
-Second 10K LET commands LET a = 0 takes  2.895  seconds
-5K LOAD with transform takes  3.907  seconds
+10K LET commands LET a = 0 takes  1.241  seconds
+Second 10K LET commands LET a = 0 takes  2.802  seconds
+5K LOAD with transform takes  3.915  seconds
 *** Running ferret script: bn_show_noupcase.jnl
 [?1034h! bn_show_noupcase.jnl
 ! 1/2016 ticket 1796
@@ -92375,7 +92375,7 @@ sho command set
  SET
  SET WINDOW/SIZE/NEW/LOCATION/ASPECT/CLEAR/TITLE/QUALITY/ANTIALIA/NOANTIAL
       /ENGINE/COLOR/OPACITY/THICKEN/XPIXELS/YPIXELS/XINCHES/YINCHES/TEXTPROM
-      /OUTLINE
+      /OUTLINE/SCALE
  SET REGION/I/J/K/L/M/N/X/Y/Z/T/E/F/DX/DY/DZ/DT/DE/DF/DI/DJ/DK/DL/DM/DN
  SET VIEWPORT
  SET EXPRSION
@@ -92398,7 +92398,7 @@ sho command set
 sho command set w  ! SET WINDOW
  SET WINDOW/SIZE/NEW/LOCATION/ASPECT/CLEAR/TITLE/QUALITY/ANTIALIA/NOANTIAL
       /ENGINE/COLOR/OPACITY/THICKEN/XPIXELS/YPIXELS/XINCHES/YINCHES/TEXTPROM
-      /OUTLINE
+      /OUTLINE/SCALE
 sho command set r  ! SET REGION
  SET REGION/I/J/K/L/M/N/X/Y/Z/T/E/F/DX/DY/DZ/DT/DE/DF/DI/DJ/DK/DL/DM/DN
 sho command set v  ! SET VIEWPORT
@@ -93727,6 +93727,8 @@ list/nohead strindex(..title, "file")
 ! File contains index,euro-date-time, us-date-time, us-date, eurodate
 ! The years in variables 3 and 4 are 2-digit years after year 2020.
  
+! Ticket 2472: Allow yyyy/dd/mm in any of the date specs.
+ 
 columns/skip=3/var="index,edtim,udtim,udate,edate"/type="num,edatime,datime,date,eurodate" delim_datetime.csv
 sh dat
      currently SET data sets:
@@ -93816,6 +93818,75 @@ T0 = 1-JAN-1900
        3>  20-MAY-2015 00:00:00  3652.5     20-MAY-2010 00:00:00    42142
        4>  20-MAY-2025 00:00:00  3652.5     19-MAY-2020 12:00:00    45795
        5>  20-MAY-2035 00:00:00  3652       20-MAY-2030 00:00:00    49447
+ 
+! Dates of yyyy/dd/mm
+! Dates with 00/00/00 return missing-data
+ 
+columns/skip=2/var="index,udate,udtim"/type="num,date,datime" delim_yyyy.csv
+sh dat
+     currently SET data sets:
+    1> ./delim_datetime.csv
+ name     title                             I         J         K         L
+ INDEX    index                            1:5       ...       ...       ...
+ EDTIM    edtim                            1:5       ...       ...       ...
+       (Julian days since 1-Jan-1900)
+ UDTIM    udtim                            1:5       ...       ...       ...
+       (Julian days since 1-Jan-1900)
+ UDATE    udate                            1:5       ...       ...       ...
+       (Julian days since 1-Jan-1900)
+ EDATE    edate                            1:5       ...       ...       ...
+       (Julian days since 1-Jan-1900)
+ 
+    2> ./delim_yyyy.csv  (default)
+ name     title                             I         J         K         L
+ INDEX    index                            1:8       ...       ...       ...
+ UDATE    udate                            1:8       ...       ...       ...
+       (Julian days since 1-Jan-1900)
+ UDTIM    udtim                            1:8       ...       ...       ...
+       (Julian days since 1-Jan-1900)
+ 
+list/prec=10 index,udate,udtim
+             DATA SET: ./delim_yyyy.csv
+             X: 0.5 to 6.5
+ Column  1: INDEX is index
+ Column  2: UDATE is udate (days)(Julian days since 1-Jan-1900)
+ Column  3: UDTIM is udtim (days)(Julian days since 1-Jan-1900)
+               INDEX      UDATE        UDTIM
+1   / 1:  1.000000000  40920.00000  37243.27778
+2   / 2:  2.000000000  40921.00000  37243.31944
+3   / 3:  3.000000000  40923.00000  37243.36111
+4   / 4:  4.000000000  40924.00000  37243.40278
+5   / 5:  5.000000000         ....  37243.48611
+6   / 6:  6.000000000  40925.00000  37243.61111
+ 
+! axis January 2014
+define axis/t/t0=1-jan-1900/units=days timax = udate[i=1:4]
+sh axis/t timax
+ name       axis              # pts   start                end
+ TIMAX     TIME                 4 i   14-JAN-2012 00:00    18-JAN-2012 00:00
+T0 = 1-JAN-1900
+   Axis span (to cell edges) = 5
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (DAYS)
+       1>  14-JAN-2012 00:00:00  1          13-JAN-2012 12:00:00    40920
+       2>  15-JAN-2012 00:00:00  1.5        14-JAN-2012 12:00:00    40921
+       3>  17-JAN-2012 00:00:00  1.5        16-JAN-2012 00:00:00    40923
+       4>  18-JAN-2012 00:00:00  1          17-JAN-2012 12:00:00    40924
+! axis December 2001
+define axis/t/t0=1-jan-1900/units=days timax = udtim
+sh axis/t timax
+ name       axis              # pts   start                end
+ TIMAX     TIME                 6 i   20-DEC-2001 06:40    20-DEC-2001 14:40
+T0 = 1-JAN-1900
+   Axis span (to cell edges) = 0.4166667
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (DAYS)
+       1>  20-DEC-2001 06:40:00  0.0416667  20-DEC-2001 06:10:00    37243.28
+       2>  20-DEC-2001 07:40:00  0.0416667  20-DEC-2001 07:10:00    37243.32
+       3>  20-DEC-2001 08:40:00  0.0416667  20-DEC-2001 08:10:00    37243.36
+       4>  20-DEC-2001 09:40:00  0.0625     20-DEC-2001 09:10:00    37243.4
+       5>  20-DEC-2001 11:40:00  0.1041667  20-DEC-2001 10:40:00    37243.49
+       6>  20-DEC-2001 14:40:00  0.125      20-DEC-2001 13:10:00    37243.61
  
  
 ! Intentional errors, specifying the wrong date field type (catches the first error)
@@ -94469,7 +94540,7 @@ variables:
 		abc:history = "From abc.dat" ;
 
 // global attributes:
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -94556,7 +94627,7 @@ variables:
 		latitude:history = "From bn_delimited_read_1.dat" ;
 
 // global attributes:
-		:history = "PyFERRET V7.02 (beta/debug) 28-Sep-16" ;
+		:history = "PyFERRET V7.02 (beta/debug) 13-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -94803,9 +94874,9 @@ frame/file=bnplot_3.gif
  
 ! Prior to v5.8 could not get the window size in pixels when in gif mode
 show symbol ppl$xpixel
-PPL$XPIXEL = "1468"
+PPL$XPIXEL = "1469"
 show symbol ppl$ypixel
-PPL$YPIXEL = "844"
+PPL$YPIXEL = "845"
  
 ! V6.13
 ! transparency with FRAME/TRANS
@@ -95273,6 +95344,7 @@ plot/l=1:99000/nolabel sin(200000/(l+10000))
  
 frame/file=bnplot_4.pdf   ! Not an error in PyFerret
 frame/file=bnplot_4.ps    ! Not an error in PyFerret
+frame/file=bnplot_4.eps   ! Not an error in PyFerret
  
  
  
@@ -96110,21 +96182,21 @@ exit
 exit/command
 *** Running ferret script: bn_startupfile.jnl
 [?1034h Current size of FERRET memory cache: 31 MegaWords  (1 word = 8 bytes)
-PPL$XPIXEL = "979"
-PPL$YPIXEL = "844"
+PPL$XPIXEL = "819"
+PPL$YPIXEL = "707"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.02"
 FERRET_PLATFORM = "Linux 2.6.32-642.4.2.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "28-Sep-16"
-SESSION_TIME = "15:06"
-SESSION_PID = "20771"
-DELTA_CPU = "0.222965"
-CLOCK_SECS = "0.111"
-CURRENT_DATE = "28-Sep-16"
-CURRENT_TIME = "15:06:20"
+SESSION_DATE = "13-Oct-16"
+SESSION_TIME = "15:52"
+SESSION_PID = "11811"
+DELTA_CPU = "0.217966"
+CLOCK_SECS = "0.108"
+CURRENT_DATE = "13-Oct-16"
+CURRENT_TIME = "15:52:46"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 GO_FILE = "./bn_startupfile.jnl"
@@ -96150,7 +96222,7 @@ PPL$COMMAND_FILE = "$$MEMBUF$$"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 PPL$SCALE = "1.0000"
-WIN_TITLE = "28-Sep-16_15:06"
+WIN_TITLE = "13-Oct-16_15:52"
 VP_SCALE = "1"
 VP_RT_MARGIN = "1"
 VP_TOP_MARGIN = "1.4"
@@ -99780,4 +99852,4 @@ True
 >>> coads_uw.close()
 >>> pyferret.showdata()
      currently SET data sets:
-Ended at Wed Sep 28 15:06:27 PDT 2016
+Ended at Thu Oct 13 15:52:52 PDT 2016

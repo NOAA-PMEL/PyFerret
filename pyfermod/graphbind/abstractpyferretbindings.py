@@ -207,7 +207,10 @@ class AbstractPyFerretBindings(object):
 
     def scaleWindow(self, scale):
         '''
-        Sets the scaling factor for the Window
+        Sets the scaling factor for the Window.  If zero, switch to 
+        auto-scaling (automatically scales to best fit window size 
+        without changing aspect ratio).  If negative, scale using 
+        the absolute value and then switch to auto-scaling.
 
         Arguments:
             scale: scaling factor to use

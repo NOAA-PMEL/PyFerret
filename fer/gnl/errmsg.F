@@ -104,10 +104,8 @@
         include 'xrisc.cmn'
         include 'xgui.cmn'
 	include 'xplot_setup.cmn'
+        include 'xinterrupt.cmn'
 
-
-* ^C handling routine
-	EXTERNAL CTRLC_AST
 
 * calling argument declarations:
 	INTEGER		status_in,status_out
@@ -245,10 +243,10 @@
            CALL PERROR( '**ERROR: '//risc_buff(:len_string) )
 #endif
 
-* interrupt processing ? Re-store ^C interrupt handler
+* interrupt processing ?
 	ELSEIF ( status .EQ. ferr_interrupt ) THEN
 	   CALL TM_SPLIT_MESSAGE( ttout_lun, '** INTERRUPTED! **')
-	   CALL SET_CTRL_C( CTRLC_AST )
+           INTERRUPTED = .FALSE.
 * *kob*	if animating during an interrupt, lets clean up
 	   IF ( animate ) THEN
 	      animate = .FALSE.

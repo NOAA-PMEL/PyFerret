@@ -94,9 +94,8 @@ static char *pyferret_readline(char *prompt)
     resultobj = PyObject_CallMethod(pyferret_module_pyobject, 
                                     "_readline", "s", prompt);
     if ( resultobj == NULL ) {
-        sprintf(static_line, "**ERROR pyferret_readline in tm_ftoc_readline.c: "
-                             "problems with the call to pyferret._readline: %s\n",
-                             pyefcn_get_error());
+        /* Exception - should not happen but treat as if EOF */
+        PyErr_Clear();
         return NULL;
     }
 
@@ -109,9 +108,8 @@ static char *pyferret_readline(char *prompt)
     /* get the string out of the result object */
     resultstr = PyString_AsString(resultobj);
     if ( resultstr == NULL ) {
-        sprintf(static_line, "**ERROR pyferret_readline in tm_ftoc_readline.c: "
-                             "problems interpreting the return value of pyferret._readline: %s\n",
-                             pyefcn_get_error());
+        /* Exception (not a string object) - should not happen but treat as if EOF */
+        PyErr_Clear();
         Py_DECREF(resultobj);
         return NULL;
     }

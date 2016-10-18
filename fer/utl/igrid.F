@@ -53,6 +53,8 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
+* V710 *acm* 10/16 Ticket 2422: variable uvar_grids to be replaced with calls to 
+*                  LIST routines in NCF_Util.c 
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -65,6 +67,7 @@
 
 * internal variable declarations:
 	INTEGER	KNOWN_GRID, TM_LENSTR1, dset
+	INTEGER igrid_test
 
 * only user variables have a status issue
 	status = ferr_ok
@@ -102,6 +105,10 @@
 	IF ( .NOT.uvar_need_dset(variable) )  dset = pdset_irrelevant
 
 	IGRID = uvar_grid( variable, dset )
+
+	CALL GET_SAVED_UVAR_GRID(variable,dset, igrid_test)
+c*c REMOVE LATER, replace the ref to uvar_grid(,) with a call GET_SAVED_UVAR_GRID returning IGRID
+	IF (igrid_test .NE. IGRID)  CALL WARN("UVGRIDERR: known_grid")
 
 	RETURN
 

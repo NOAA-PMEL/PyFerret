@@ -1,4 +1,4 @@
-      SUBROUTINE GET_SAVED_UVAR_AUX_INFO( uvar, dset, aux_cat, aux_var)
+      SUBROUTINE GET_SAVED_UVAR_AUX_INFO( uvar, dset, aux_cat, aux_var, status)
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -37,6 +37,7 @@
 * uvar grid/dset pair.
 
 * V699 5/16 *sh* new routine created to avoid the 2d uvar_grid array
+* V71 10/16 *acm* Send back a status flag.
 
 * arguments:
 *     uvar - the Ferret user variable number (input)
@@ -50,11 +51,10 @@
         include 'xvariables.cmn'
 
 * calling argument declarations
-        INTEGER uvar, aux_cat(nferdims), aux_var(nferdims), dset
+        INTEGER uvar, aux_cat(nferdims), aux_var(nferdims), dset, status
 
 * internal variable declarations
-        INTEGER NCF_GET_UVAR_AUX_INFO, c_list_dset, context_dset,
-     .          status
+        INTEGER NCF_GET_UVAR_AUX_INFO, c_list_dset, context_dset
 
 * c_list_dset  - dset value relevant in C LIST structures of NCF_Util.c
 * context_dset - dset for which grid of this uvar has been determined
@@ -72,10 +72,6 @@
 * store the grid
         status = NCF_GET_UVAR_AUX_INFO( c_list_dset, uvar,
      .                          context_dset, aux_cat, aux_var )
-
-* check that we were successful
-        IF (status .NE. ferr_ok) CALL WARN(
-     .                  'corruption getting uvar aux info')
 
         RETURN
         END

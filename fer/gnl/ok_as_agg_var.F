@@ -43,6 +43,8 @@
 *
 * V698 12/15 *sh* extracted from init_ef_aggregate_dset.F
 * V698  4/16 *sh* already used agg axis ok as long as scalar span (typ "@ave")
+* V710 *acm* 10/16 Ticket 2422: variable uvar_grids to be replaced with calls to 
+*                  LIST routines in NCF_Util.c 
 
 * arguments:
 * inputs:
@@ -81,6 +83,7 @@
 	LOGICAL SCALAR_GRID_LINE, found_name
 	INTEGER iset, member, j, iv, var, cat, grid, ref_grid, idim, 
      .		vlen, nuvars
+	INTEGER igrid_test
 	CHARACTER vname*128
 	INTEGER	STR_SAME, TM_LENSTR1, KNOWN_GRID
 
@@ -151,6 +154,11 @@
 	   ELSE
 	      IF (cat .EQ. cat_user_var) THEN
 	         grid = uvar_grid(var, member)
+
+	         CALL GET_SAVED_UVAR_GRID(var, member, igrid_test)
+c*c REMOVE LATER, replace the ref to uvar_grid(,) with a call GET_SAVED_UVAR_GRID returning grid
+	         IF (igrid_test .NE. grid)  CALL WARN("UVGRIDERR: ok_as_agg_var")
+
 	      ELSE			! cat_file, cat_agg_e, or cat_agg_f
 	         grid = ds_grid_number(var)
 	      ENDIF

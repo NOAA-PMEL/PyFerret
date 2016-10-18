@@ -49,6 +49,8 @@
 * *sh* 12/13
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * V7    5/16 *acm* See ticket 2352. For LET/D variables look for info under that dataset
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grids, uvar_aux_cat, uvar_aux_var 
+*                  to be replaced with calls to LIST routines in NCF_Util.c 
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -66,7 +68,8 @@
 	LOGICAL	  NC_GET_ATTRIB, got_it
 	INTEGER	  TM_LENSTR1, 
      .		  idim, dset, attlen, attoutflag, maxlen, varid, slen,
-     .		  status, aux_var, aux_cat
+     .		  vcat, vvar, status
+	INTEGER   aux_cat(nferdims), aux_var(nferdims)  !From GET_SAVED_UVAR_AUX_INFO 
 	REAL	  attvals(10)   ! only if __LayerzRef_ mis-defined as numeric!
 	CHARACTER VAR_CODE*128, refvarname*128, varname*128,
      .		  dsetname*128
@@ -84,14 +87,34 @@
 
 * user-defined variables may be associated with inherited auxiliary variables
 	IF (cat .EQ. cat_user_var) THEN
-	   DO idim = 1, nferdims
-	      IF (uvar_aux_stat(var,idim) .EQ. paux_stat_passed
-     .	     .OR. uvar_aux_stat(var,idim) .EQ. paux_stat_needed ) THEN
-	         curv_vars(idim) = uvar_aux_var(var, idim, dataset)
-	         curv_cats(idim) = uvar_aux_cat(var, idim, dataset)
-	      ENDIF
-	   ENDDO
-	ENDIF
+	
+	   CALL GET_SAVED_UVAR_AUX_INFO(var, dataset, aux_cat, aux_var, status)
+	   IF (status .EQ. ferr_ok) THEN
+	      DO idim = 1, nferdims
+
+c*c REMOVE LATER, checking for correct use of LIST storage for uvar_aux_var and uvar_aux_cat
+
+	         IF (aux_cat(idim) .NE. uvar_aux_cat(var,idim,dataset)
+     .          .OR. aux_var(idim) .NE. uvar_aux_var(var,idim,dataset))
+     .							THEN
+	            WRITE(6,3000) aux_cat(idim), uvar_aux_cat(var,idim,dataset),
+     .				 aux_var(idim), uvar_aux_var(var,idim,dataset)
+ 3000		   FORMAT(' UVAUXERR: get_auto_aux_vars', 4I8)
+	         ENDIF
+
+c*c LATER, replace 
+c*c uvar_aux_var(var, idim, dataset) with aux_var(idim) and
+c*c uvar_aux_cat(var, idim, dataset) with aux_cat(idim)
+
+	         IF (uvar_aux_stat(var,idim) .EQ. paux_stat_passed
+     .	        .OR. uvar_aux_stat(var,idim) .EQ. paux_stat_needed ) THEN
+	            curv_vars(idim) = uvar_aux_var(var, idim, dataset)
+	            curv_cats(idim) = uvar_aux_cat(var, idim, dataset)
+	         ENDIF
+	      ENDDO
+	   ENDIF  ! status from GET_SAVED_UVAR_AUX_INFO
+
+	ENDIF  ! user_var
 
 * get the variable ID in the linked list  (user vars stored under dset=pdset_uvars)
 	IF (cat .EQ. cat_user_var) THEN
@@ -121,8 +144,8 @@
 * NOTE:  wired to do only a Z axis  at this time  XXXXXXXXXXX
         CALL FIND_VAR_NAME( dataset,
      .			    refvarname,
-     .			    aux_cat, aux_var )
-	IF (aux_var .EQ. munknown_var_name) THEN
+     .			    vcat, vvar )
+	IF (vvar .EQ. munknown_var_name) THEN
 * .... "Variable TEMP associated with non-existent layerz variable DEPTH"
 *      "in levitus_climatology"
 	   CALL GET_SHORT_DSET_NAME(dataset, dsetname, slen )
@@ -131,8 +154,8 @@
      .		refvarname(:TM_LENSTR1(refvarname)) // pCR //
      .		'           in ' //dsetname(:slen) )
 	ELSE
-	   curv_vars(z_dim) = aux_var
-	   curv_cats(z_dim) = aux_cat
+	   curv_vars(z_dim) = vvar
+	   curv_cats(z_dim) = vcat
 	ENDIF
 
  5000	RETURN

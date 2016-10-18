@@ -40,6 +40,8 @@
 * NOAA/PMEL, Seattle, WA - SDIG
 
 * V7   5/12 *acm* Union aggregations: DEFINE DATA/AGG/U
+* V710 *acm* 10/16 Ticket 2422: variable uvar_grids to be replaced with calls to 
+*                  LIST routines in NCF_Util.c 
 
 
       IMPLICIT NONE
@@ -68,6 +70,7 @@
 	INTEGER STR_SAME, TM_LENSTR1, DIR_LINE,
      .		big_cx, idim, nv, nu, type, slen, igrid, vtype, 
      .		i, num_indices, varid, iline, imemb
+	INTEGER igrid_test
 	CHARACTER*8 TM_FMT, fset
 
 * Is this variable already in the union aggregation? If so, do not add it.
@@ -163,6 +166,11 @@ c	      ds_var_code(nv)     = uvar_name_code(nu)
 
 	      CALL GET_UVAR_GRID( nu, iset, status )
 	      igrid = uvar_grid(nu,iset)
+
+	      CALL GET_SAVED_UVAR_GRID(nu, iset, igrid_test)
+c*c REMOVE LATER, replace the ref to uvar_grid(,) with a call GET_SAVED_UVAR_GRID returning igrid
+	      IF (igrid_test .NE. igrid)  CALL WARN("UVGRIDERR: define_u_aggregate_grid")
+
 	      ds_grid_number(nv) = igrid
 	      DO idim = 1, nferdims
 	         iline = grid_line( idim, igrid )

@@ -96,7 +96,8 @@
 /* *sh*  5/16         added grid management for uvars -- dset/grid paris stored in a LIST
                       replaced uvflag with uvarid */
 /* *acm* 6/16         Make sure var.nmemb is initialized when adding a new variable. */
-/* *kms* 8/16         Reword the entire file to remove memory leaks and improve consistent initialization */
+/* *kms* 8/16         Rework the entire file to remove memory leaks and improve consistent initialization */
+/* *acm* 10/16        ncf_get_uvar_grid now returns the datatype as well as the grid  */
 
 
 #include "ferretmacros.h"
@@ -184,7 +185,7 @@ int  FORTRAN(ncf_put_agg_memb_grid)( int *, int *, int *, int *);
 /* uvar grid management functions */
 int  FORTRAN(ncf_free_uvar_grid_list)( int *, int *);
 int  FORTRAN(ncf_set_uvar_grid)( int *, int *, int *, int *, int *);
-int  FORTRAN(ncf_get_uvar_grid)( int *, int *, int *, int *);
+int  FORTRAN(ncf_get_uvar_grid)( int *, int *, int *, int *, int *);
 int  FORTRAN(ncf_set_uvar_aux_info)( int *, int *, int *, int *, int *);
 int  FORTRAN(ncf_get_uvar_aux_info)( int *, int *, int *, int *, int *);
 int  FORTRAN(ncf_get_uvar_grid_list_len)( int *, int *, int *);
@@ -3004,7 +3005,7 @@ int FORTRAN(ncf_set_uvar_grid)( int *LIST_dset, int *varid, int *grid, int *data
 
 /* ----
  * Find variable based on its variable ID and LIST_dset ID
- * Return the grid that corresponds to the context_dset pair
+ * Return the grid and variable datatype that corresponds to the context_dset pair
  *
  * The dual dataset arguments arise because Ferret's global uvars are managed
  * in the c LIST structures as a special dataset -- PDSET_UVARS
@@ -3012,7 +3013,7 @@ int FORTRAN(ncf_set_uvar_grid)( int *LIST_dset, int *varid, int *grid, int *data
  * So we refer to the dataset that owns (parents) the uvar as LIST_dset
  * and we refer to the dataset in which Ferret is evaluating the uvar is as context_dset
  */
-int FORTRAN(ncf_get_uvar_grid)( int *LIST_dset, int *uvarid, int *context_dset, int *uvgrid )
+int FORTRAN(ncf_get_uvar_grid)( int *LIST_dset, int *uvarid, int *context_dset, int *uvgrid, int *uvdtype )
 {
     LIST *varlist;
     int status;
@@ -3044,6 +3045,7 @@ int FORTRAN(ncf_get_uvar_grid)( int *LIST_dset, int *uvarid, int *context_dset, 
 
     uvgrid_ptr = (uvarGrid *) list_curr(uvgridlist);
     *uvgrid = uvgrid_ptr->grid;
+    *uvdtype = uvgrid_ptr->dtype;
 
     return FERR_OK;
 }

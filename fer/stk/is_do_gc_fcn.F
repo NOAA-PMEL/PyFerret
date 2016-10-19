@@ -59,6 +59,8 @@
 *                   of argument/return-type variable and predimensional (data size)
 *                   array parameter (pointer size to one in double-precision Ferret).
 * V694  *acm* 1214 Fixing ticket 2220: varname.attname in a function argument
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grids, uvar_data_type, uvar_aux_cat, 
+*                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -88,7 +90,8 @@
      .          typ1, typ2, typ3, typ4, typ5, typ6, typ7, typ8, typ9,
      .          typr, pdim1, pdim2, pdim3, pdim4, pdim5, pdim6, pdim7,
      .          pdim8, pdim9, pdimr, frame_bottom, com_cx, res_mr,
-     .          itype, arg_first_mismatch, slen, iset
+     .          itype, arg_first_mismatch, slen, iset, igrid,
+     .          aux_cat(nferdims), aux_var(nferdims)
         CHARACTER*40 TM_FMT, alt_name
 
 * convenience equivalences
@@ -207,6 +210,20 @@
 *          only truly-internal grid-changing functions get here
 *          Ferret already knows the return type since it may depend on argument type
 *          (under the get_uvar_grid - is_uvar_grid - merge_grid calling stack)
+
+           iset = cx_data_set(res_cx)
+           IF (iset .EQ. unspecified_int4) iset = pdset_irrelevant
+	   
+	   itype = ptype_unknown
+	   CALL GET_SAVED_UVAR_DTYPE(uvar, iset, itype) 
+	   CALL GET_SAVED_UVAR_GRID(uvar, iset, igrid)  ! just looking at it, not needed
+cc	   IF (itype .EQ. unspecified_int4) itype = ptype_unknown
+c*c REMOVE LATER, replace the ref to uvar_data_type(,) with a 
+c*c call GET_SAVED_UVAR_DTYPE returning itype
+	   IF (itype .NE. uvar_data_type(uvar, cx_data_set(res_cx)))  THEN
+	      CALL WARN("UVGRIDERR: is_do_gc_fcn")
+	   ENDIF
+
            cx_type(res_cx) = uvar_data_type(uvar, cx_data_set(res_cx))
            IF ( cx_type(res_cx) .EQ. ptype_string ) THEN
               typr = pfcn_rtn_string
@@ -234,6 +251,20 @@
            iset = cx_data_set(res_cx)
            IF (iset .EQ. unspecified_int4) iset = pdset_irrelevant
            uvar_data_type(uvar, iset) = cx_type(res_cx) 
+
+* Get the stored grid, then save the newly found type with it. The call to
+* SAVE_UVAR_GRID wipes out the grid information so also get and re-save the 
+* Auxiliary regridding info.
+	   
+	   CALL GET_SAVED_UVAR_DTYPE(uvar, iset, itype)
+	   IF (itype .NE. cx_type(res_cx)) THEN
+	      CALL GET_SAVED_UVAR_GRID(uvar, iset, igrid)
+	      CALL GET_SAVED_UVAR_AUX_INFO(uvar, iset, aux_cat, aux_var, status)
+
+	      CALL SAVE_UVAR_GRID( uvar, igrid, cx_type(res_cx), iset )
+	      CALL SAVE_UVAR_AUX_INFO(uvar, aux_cat, aux_var, iset)
+	   ENDIF
+
         ENDIF
 
 * need to fill in those axes that the function "imposes"

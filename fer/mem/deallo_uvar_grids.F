@@ -48,8 +48,8 @@
 * V699 *sh* 6/16 - variable uvar_grids replaced with LISTs in NCF_Util.c 
 * V710 *acm* 18/25/16 - Ticket 2462 Issue the warnings only if in MODE DIAGNOSTIC 
 * V710 *acm* 10/25/16 - Always issue the warnings: Memory-link fixes in NCF_Util.c 
-* V710 *acm* 10/16 Ticket 2422: variables uvar_grids, uvar_aux_cat, uvar_aux_var 
-*                  to be replaced with calls to LIST routines in NCF_Util.c       
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grids, uvar_data_type, uvar_aux_cat, 
+*                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c       
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -68,7 +68,8 @@
 	CHARACTER tmp_buff*256
 	INTEGER aux_cat(nferdims), aux_var(nferdims)  ! LIST diagnostics
 
-	nfound = 0
+	nfound = 0	
+! new 2nd arg is dset, dummy for now
 	CALL GET_SAVED_UVAR_GRID_LIST_LEN(uvar, ngrids)
 
 * OLD CODE - based upon XVARIABLES uvar_grid variable
@@ -88,30 +89,14 @@
 * test the new LIST code
 	      nfound = nfound + 1
 
+* SEE CODE IN show_dyn_grids, ngrid
+
 	      CALL GET_SAVED_UVAR_GRID(uvar, iset, saved_uvgrid)
 	      IF (saved_uvgrid .NE. uvar_grid(uvar,iset)) THEN
 	         CALL GET_SHORT_DSET_NAME( iset, tmp_buff, tmp_len)
 	         CALL WARN("UVGRIDERR: deallo_uvar_grids")
 	         CALL WARN("dset="//tmp_buff(:tmp_len))
-	         WRITE(6,*) 'UVGRIDERR: deallo_uvar_grids'
-	         WRITE(6,*)'dset='//tmp_buff(:tmp_len)
 	      ENDIF
-* this info not used; just testing.   When we delete the test code, and just
-* use the FREE call below, get rid of all of this.
-
-	      CALL GET_SAVED_UVAR_AUX_INFO(uvar, iset,
-     .				           aux_cat, aux_var, status)
-              IF (status .EQ. ferr_ok) THEN
-	         DO idim = 1, nferdims
-	           IF (aux_cat(idim) .NE. uvar_aux_cat(uvar,idim,iset)
-     .            .OR. aux_var(idim) .NE. uvar_aux_var(uvar,idim,iset))
-     .							THEN
-	              WRITE(6,3000) aux_cat(idim), uvar_aux_cat(uvar,idim,iset),
-     .				 aux_var(idim), uvar_aux_var(uvar,idim,iset)
- 3000		      FORMAT(' UVAUXERR: deallo_uvar_grids', 4I8)
-	           ENDIF
-	         ENDDO
-	      ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
 
 c*c LATER:
 c*c	      CALL DEALLO_DYN_GRID(saved_uvgrid)

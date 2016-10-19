@@ -697,6 +697,7 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 	IF ( is_sum(isp) .EQ. isalg_transfer ) THEN
 	   IF ( uvar_dset(uvar).EQ.unspecified_int4 ) THEN
 	      uvar_need_dset(uvar) = .FALSE.
+c*c REMOVE LATER refs to uvar_grid and uvar_data_type 
 	      uvar_grid(uvar, pdset_irrelevant) = mgrid_abstract
 	      uvar_data_type(uvar, pdset_irrelevant) = ptype_float
 	      CALL SAVE_UVAR_GRID(uvar, mgrid_abstract, ptype_float,

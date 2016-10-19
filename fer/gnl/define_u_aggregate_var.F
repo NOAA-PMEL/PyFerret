@@ -42,6 +42,7 @@
 * V7   5/12 *acm* Union aggregations: DEFINE DATA/AGG/U
 * V710 *acm* 10/16 Ticket 2422: variable uvar_grids to be replaced with calls to 
 *                  LIST routines in NCF_Util.c 
+* V710 *acm* 10/16 Ticket 2422: Also removing need for uvar_data_type(uvar,dset). 
 
 
       IMPLICIT NONE
@@ -69,7 +70,7 @@
 * local variable declarations:
 	INTEGER STR_SAME, TM_LENSTR1, DIR_LINE,
      .		big_cx, idim, nv, nu, type, slen, igrid, vtype, 
-     .		i, num_indices, varid, iline, imemb
+     .		i, num_indices, varid, iline, imemb, itype
 	INTEGER igrid_test
 	CHARACTER*8 TM_FMT, fset
 
@@ -165,11 +166,7 @@ c	      ds_var_code(nv)     = uvar_name_code(nu)
 	      cd_scaled(nv)       = .FALSE.
 
 	      CALL GET_UVAR_GRID( nu, iset, status )
-	      igrid = uvar_grid(nu,iset)
-
-	      CALL GET_SAVED_UVAR_GRID(nu, iset, igrid_test)
-c*c REMOVE LATER, replace the ref to uvar_grid(,) with a call GET_SAVED_UVAR_GRID returning igrid
-	      IF (igrid_test .NE. igrid)  CALL WARN("UVGRIDERR: define_u_aggregate_grid")
+	      CALL GET_SAVED_UVAR_GRID(nu, iset, igrid)
 
 	      ds_grid_number(nv) = igrid
 	      DO idim = 1, nferdims
@@ -179,7 +176,17 @@ c*c REMOVE LATER, replace the ref to uvar_grid(,) with a call GET_SAVED_UVAR_GRI
 	         ds_ordering(idim,nv)  = DIR_LINE(line_direction(iline))
 	      ENDDO
 * Type  ??
+	      
+	      CALL GET_SAVED_UVAR_DTYPE(nu, iset, itype)
+	      IF (itype .EQ. unspecified_int4) itype = ptype_unknown
+	      IF (itype .NE. uvar_data_type(nu, iset)) THEN
+	         CALL WARN("UVGRIDERR: define_u_aggregate_var")
+	      ENDIF
+	      ds_var_type(nv)  = itype
+c*c REMOVE LATER, replace the ref to uvar_data_type(,) with a 
+c*c call GET_SAVED_UVAR_DTYPE returning itype
 	      ds_var_type(nv)  = uvar_data_type(nu, iset)
+
 	      IF (ds_var_type(nv) .EQ. ptype_string) THEN
 	         type = NCCHAR
 	      ELSE
@@ -194,7 +201,7 @@ c*c REMOVE LATER, replace the ref to uvar_grid(,) with a call GET_SAVED_UVAR_GRI
 * LET/D= datset where it was defined.
 
 	      CALL GET_UVAR_GRID( nu, iset, status )
-	      igrid = uvar_grid(nu,iset)
+	      CALL GET_SAVED_UVAR_GRID(nu, iset, igrid)
 	      vtype = cat_user_var
 	      imemb = nvars
 	      iline = unspecified_int4

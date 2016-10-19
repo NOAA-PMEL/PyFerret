@@ -45,6 +45,8 @@
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
 * V698 3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
+* V710 *acm* 10/16 Ticket 2422: variable uvar_data_type to be replaced with calls to 
+*                  LIST routines in NCF_Util.c 
 
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -58,7 +60,7 @@
 
 * internal variable declarations:
 	LOGICAL ACTS_LIKE_FVAR
-	INTEGER	dset, data_set, category, variable, idim, trans
+	INTEGER	dset, data_set, category, variable, idim, trans, itype
 
 * initialize
 	category = cx_category(cx)
@@ -79,7 +81,18 @@
 	   ELSE
 	      dset = data_set
 	   ENDIF
+	   
+	   CALL GET_SAVED_UVAR_DTYPE(variable, dset, itype)
+
+ccc	   IF (itype .EQ. unspecified_int4) itype = ptype_unknown
+c*c REMOVE LATER, replace the ref to uvar_data_type(,) with a 
+c*c call GET_SAVED_UVAR_DTYPE returning itype
 	   cx_type(cx) = uvar_data_type( variable, dset )
+
+	   IF (itype .NE. cx_type(cx)) THEN
+	      CALL WARN("UVGRIDERR: known_data_type")
+	      print *, 'dset, cx, itype, cx_type(cx)', dset, cx, itype, cx_type(cx)
+	   ENDIF
 
 	ELSEIF ( category .EQ. cat_temp_var ) THEN
 !! here, variable may be up to 2000, mr_type is dimension 151

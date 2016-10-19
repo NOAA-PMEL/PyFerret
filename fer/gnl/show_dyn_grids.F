@@ -98,7 +98,7 @@
 * local variable declarations:
         LOGICAL show_all, shown, uvgrid
 	INTEGER grid, line, dset, var, count, i, slash_all, status
-	INTEGER igrid_test, count_test, ngrids
+	INTEGER igrid_test, count_test, ngrids, idum
 	CHARACTER sanity_msg*24
 
 * local parameter declarations
@@ -131,17 +131,27 @@ c*c This loop will replace the 120,125 loops below.
 	   count_test = 0
            IF (grid .EQ. mgrid_abstract) count_test = 1  ! is it SET GRID?
 	   
-	   DO 1251 var = 1, max_uvar	
+	   DO 1251 var = 1, max_uvar
 
               CALL GET_SAVED_UVAR_GRID_LIST_LEN(var, ngrids)
-	      DO 1201 dset = 0, ngrids
-	         CALL GET_SAVED_UVAR_GRID(var, dset, igrid_test)
+	      dset = uvar_dset(var)
+	      IF (dset .EQ. unspecified_int4) dset = pdset_irrelevant
+	      CALL GET_SAVED_UVAR_GRID(var, dset, igrid_test)
 c*c REMOVE LATER, will be getting rid of uvar_grid array
 	         IF (igrid_test .NE. unspecified_int4 .AND. 
      .               igrid_test .NE. uvar_grid(var,dset))  CALL WARN("UVGRIDERR: show_dyn_grids")
 
 	         IF ( uvar_grid(var,dset) .EQ. grid ) count_test = count_test + 1
- 1201	      CONTINUE
+		 IF (ngrids .GT. 0 .AND. dset.GT.pdset_irrelevant) THEN
+		   
+	            CALL GET_SAVED_UVAR_GRID(var, dset, igrid_test)
+c*c REMOVE LATER, will be getting rid of uvar_grid array
+	            IF (igrid_test .NE. unspecified_int4 .AND. 
+     .                  igrid_test .NE. uvar_grid(var,dset))  CALL WARN("UVGRIDERR: show_dyn_grids")
+
+	            IF ( uvar_grid(var,dset) .EQ. grid ) count_test = count_test + 1
+		 ENDIF
+		    
  1251	   CONTINUE
 
 c*c REMOVE this old code, once we have gested the SAVE_UVAR_GRID/GET_SAVED_UVAR_GRID machinery

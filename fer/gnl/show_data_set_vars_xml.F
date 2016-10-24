@@ -101,7 +101,7 @@
 	REAL      vals(100)
 
         LOGICAL   NC_GET_ATTRIB, got_it, coordvar, newatt, have_units,
-     .            have_title, have_dims, have_dtype
+     .            have_title, have_dims
 
 
 	CHARACTER TM_FMT*16
@@ -263,7 +263,6 @@ C Write statement that uses number 2075 when we change to using these.)
           CALL ESCAPE_FOR_XML (show_str, outstring, slen)
           WRITE ( risc_buff, 2020 ) 'ferret_datatype'
           CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-	  have_dtype = .TRUE.
 
           WRITE (risc_buff, 2055) outstring(1:slen)
           CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -384,11 +383,12 @@ C Write statement that uses number 2075 when we change to using these.)
 
 * show the data-set-specific user-defined variables
 
-        CALL deleted_list_get_undel(uvar_num_items_head,
+	CALL deleted_list_get_undel(uvar_num_items_head,
      .                              let_d_uvars_list(1),
      .                              max_uvar, num_indices )
-        DO 600 ivar = 1, num_indices
+	DO 600 ivar = 1, num_indices
            i = let_d_uvars_list(ivar)
+
 	   IF (uvar_dset(i) .EQ. dset .AND.
      .         uvar_parent(i) .EQ. 0   ) THEN
 
@@ -416,7 +416,6 @@ C Write statement that uses number 2075 when we change to using these.)
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
              WRITE ( risc_buff, 2060 ) 
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-
 
 * Write the units and title
              slen = TM_LENSTR(uvar_units(i))
@@ -507,11 +506,11 @@ C Write statement that uses number 2075 when we change to using these.)
 
 
                 IF (newatt) THEN
-                   blen = 2048  ! len of attbuff
-                   got_it = NC_GET_ATTRIB (dset, varid, attname, 
+                  blen = 2048  ! len of attbuff
+                  got_it = NC_GET_ATTRIB (dset, varid, attname, 
      .                                .TRUE., uvarname, blen, attlen, 
      .                                attoutflag, attbuff, vals)
-                   IF (attlen .GT. 0) THEN
+                  IF (attlen .GT. 0) THEN
 
                    CALL ESCAPE_FOR_XML (attname, aname, slen)
 
@@ -544,8 +543,8 @@ C Write statement that uses number 2075 when we change to using these.)
                    WRITE ( risc_buff, 2060 )
                    CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-                ENDIF  ! attlen GT 0
-                ENDIF
+                 ENDIF  ! attlen GT 0
+                ENDIF  ! newatt
  
  700         CONTINUE
 
@@ -556,8 +555,8 @@ C Write statement that uses number 2075 when we change to using these.)
 
 * Once the grid is set, the dtype is also known. Write that, then the grid.
 
-	        iset = uvar_dset(i)
-	        IF (iset .LE. pdset_irrelevant) iset = pdset_uvars
+                iset = uvar_dset(i)
+                IF (iset .LE. pdset_irrelevant) iset = pdset_uvars
                 CALL GET_SAVED_UVAR_DTYPE(i, iset, itype)
 
                 show_str = 'FLOAT'
@@ -566,9 +565,7 @@ C Write statement that uses number 2075 when we change to using these.)
                 CALL ESCAPE_FOR_XML (show_str, outstring, slen)
                 WRITE ( risc_buff, 2020 ) 'ferret_datatype'
 		
-                IF (.NOT.have_dtype) 
-     .               CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-	        have_dtype = .TRUE.
+                CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
                 WRITE (risc_buff, 2055) outstring(1:slen)
                 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -580,9 +577,7 @@ C Write statement that uses number 2075 when we change to using these.)
 	     ENDIF
              WRITE ( risc_buff, 2070 )
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-
-
-         ENDIF
+         ENDIF  ! uvar_dset(i) .EQ. dset .AND. uvar_parent(i) .EQ. 0
  600  CONTINUE
 
 

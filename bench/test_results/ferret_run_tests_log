@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Oct 24 13:24 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.02
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Oct 24 16:29 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.02
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -290,7 +290,7 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Mon Oct 24 13:25:52 PDT 2016
+Beginning at Mon Oct 24 16:31:17 PDT 2016
 *** Running ferret script: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -10501,12 +10501,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "24-Oct-16"
-SESSION_TIME = "13:25"
-SESSION_PID = "17331"
-DELTA_CPU = "0.011997"
+SESSION_TIME = "16:31"
+SESSION_PID = "12182"
+DELTA_CPU = "0.006998"
 CLOCK_SECS = "0.003"
 CURRENT_DATE = "24-Oct-16"
-CURRENT_TIME = "13:25:57"
+CURRENT_TIME = "16:31:21"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10530,12 +10530,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "24-Oct-16"
-SESSION_TIME = "13:25"
-SESSION_PID = "17331"
-DELTA_CPU = "0.016997"
-CLOCK_SECS = "0.02"
+SESSION_TIME = "16:31"
+SESSION_PID = "12182"
+DELTA_CPU = "0.008998"
+CLOCK_SECS = "0.011"
 CURRENT_DATE = "24-Oct-16"
-CURRENT_TIME = "13:25:57"
+CURRENT_TIME = "16:31:21"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10546,8 +10546,8 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "24-Oct-16"
-SESSION_TIME = "13:25"
-SESSION_PID = "17331"
+SESSION_TIME = "16:31"
+SESSION_PID = "12182"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10558,14 +10558,14 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "24-Oct-16"
-SESSION_TIME = "13:25"
-SESSION_PID = "17331"
+SESSION_TIME = "16:31"
+SESSION_PID = "12182"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "24-Oct-16"
-SESSION_TIME = "13:25"
-SESSION_PID = "17331"
+SESSION_TIME = "16:31"
+SESSION_PID = "12182"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10699,12 +10699,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "24-Oct-16"
-SESSION_TIME = "13:25"
-SESSION_PID = "17331"
-DELTA_CPU = "0.019998"
-CLOCK_SECS = "0.044"
+SESSION_TIME = "16:31"
+SESSION_PID = "12182"
+DELTA_CPU = "0.028996"
+CLOCK_SECS = "0.045"
 CURRENT_DATE = "24-Oct-16"
-CURRENT_TIME = "13:25:57"
+CURRENT_TIME = "16:31:21"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -25114,7 +25114,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Mon Oct 24 13:26:03 PDT 2016
+Mon Oct 24 16:31:27 PDT 2016
  
 GO bn_reset
 cancel mode verify
@@ -41533,6 +41533,7 @@ SHO DATA/VAR/XML 1
 <attribute name="long_name" type="char">
    <value><![CDATA[DDAT[D=2,X=@AVE]]]></value>
 </attribute>
+<attribute name="ferret_datatype" type="char">
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <grid name="GRR1">
@@ -41610,8 +41611,8 @@ SHO VAR/XML
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<attribute name="ferret_datatype" type="float">
-   <value>FLOAT</value>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
 </attribute>
 <grid name="GRR1">
 <axes>
@@ -41626,8 +41627,8 @@ SHO VAR/XML
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<attribute name="ferret_datatype" type="float">
-   <value>FLOAT</value>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
 </attribute>
 <grid name="ABSTRACT">
 <axes>
@@ -41641,8 +41642,8 @@ SHO VAR/XML
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<attribute name="ferret_datatype" type="float">
-   <value>FLOAT</value>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
 </attribute>
 <grid name="GRR1">
 <axes>
@@ -41665,8 +41666,8 @@ SHO VAR/XML
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<attribute name="ferret_datatype" type="float">
-   <value>FLOAT</value>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
 </attribute>
 <grid name="GRR1">
 <axes>
@@ -41681,8 +41682,8 @@ SHO VAR/XML
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<attribute name="ferret_datatype" type="float">
-   <value>FLOAT</value>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
 </attribute>
 <grid name="ABSTRACT">
 <axes>
@@ -41703,8 +41704,8 @@ SHOW VAR/XML
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<attribute name="ferret_datatype" type="float">
-   <value>FLOAT</value>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
 </attribute>
 <grid name="ABSTRACT">
 <axes>
@@ -41732,8 +41733,8 @@ SHOW VAR/XML
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<attribute name="ferret_datatype" type="float">
-   <value>FLOAT</value>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
 </attribute>
 <grid name="GSI1">
 <axes>
@@ -41747,8 +41748,8 @@ SHOW VAR/XML
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<attribute name="ferret_datatype" type="float">
-   <value>FLOAT</value>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
 </attribute>
 <grid name="GSI1">
 <axes>
@@ -41770,8 +41771,8 @@ SHOW VAR/XML dates
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<attribute name="ferret_datatype" type="float">
-   <value>STRING</value>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[STRING]]></value>
 </attribute>
 <grid name="GSI1">
 <axes>
@@ -41819,6 +41820,7 @@ SHO DATA/VAR/XML 1
 <attribute name="long_name" type="char">
    <value><![CDATA[TAX_DATESTRING(T[GT=TVAR], TVAR, "days")]]></value>
 </attribute>
+<attribute name="ferret_datatype" type="char">
    <value><![CDATA[STRING]]></value>
 </attribute>
 <grid name="GSI1">
@@ -47491,7 +47493,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="24-Oct-16:13:26"
+ !-> set win/title="24-Oct-16:16:31"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47502,14 +47504,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 24-Oct-16
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 13:26
+ !-> DEFINE SYMBOL the_time = 16:31
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="24-Oct-16:13:26"
+ !-> SET WIN/TITLE="24-Oct-16:16:31"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "24-Oct-16:13:26"
+WIN_TITLE = "24-Oct-16:16:31"
 *** Running ferret script: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -53604,8 +53606,8 @@ show var/xml
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<attribute name="ferret_datatype" type="float">
-   <value>FLOAT</value>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
 </attribute>
 <grid name="GRR1">
 <axes>
@@ -53621,8 +53623,8 @@ show var/xml
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<attribute name="ferret_datatype" type="float">
-   <value>FLOAT</value>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
 </attribute>
 <grid name="GRR1">
 <axes>
@@ -53638,8 +53640,8 @@ show var/xml
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<attribute name="ferret_datatype" type="float">
-   <value>FLOAT</value>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
 </attribute>
 <grid name="GSI1">
 <axes>
@@ -54435,6 +54437,7 @@ SHOW DATA/VAR/XML 2
 <attribute name="long_name" type="char">
    <value><![CDATA[ZAXREPLACE(DDAT_ORIG[D=1], CYCLE_ORIG[D=2], DUMMY)]]></value>
 </attribute>
+<attribute name="ferret_datatype" type="char">
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <grid name="(G006)">
@@ -57657,10 +57660,10 @@ SH GRID am
  normal    T
 *** Running ferret script: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.008998"
-CLOCK_SECS = "0.003"
+DELTA_CPU = "0.007998"
+CLOCK_SECS = "0.002"
 CURRENT_DATE = "24-Oct-16"
-CURRENT_TIME = "13:26:35"
+CURRENT_TIME = "16:31:57"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57669,8 +57672,8 @@ CURRENT_TIME = "13:26:35"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.038993"
-CLOCK_SECS = "0.046"
+DELTA_CPU = "0.041993"
+CLOCK_SECS = "0.049"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57684,60 +57687,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.142979
+ !-> DEFINE VARIABLE ten_plots = 0.141979
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0"
-CLOCK_SECS = "0.189"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "0.191"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.189"
+CLOCK_SECS = "0.192"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.014998
- !-> DEFINE VARIABLE sumcpu =0.014998
+ !-> DEFINE VARIABLE dt = 0.015997
+ !-> DEFINE VARIABLE sumcpu =0.015997
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.016997
+ !-> DEFINE VARIABLE dt = 0.015998
  !-> DEFINE VARIABLE sumcpu =0.031995
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.015997
- !-> DEFINE VARIABLE sumcpu =0.047992
-!-> REPEAT: K=4
  !-> DEFINE VARIABLE dt = 0.015998
+ !-> DEFINE VARIABLE sumcpu =0.047993
+!-> REPEAT: K=4
+ !-> DEFINE VARIABLE dt = 0.015997
  !-> DEFINE VARIABLE sumcpu =0.06399
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.015998
- !-> DEFINE VARIABLE sumcpu =0.079988
+ !-> DEFINE VARIABLE dt = 0.016997
+ !-> DEFINE VARIABLE sumcpu =0.080987
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.015997
+ !-> DEFINE VARIABLE dt = 0.014998
  !-> DEFINE VARIABLE sumcpu =0.095985
 !-> REPEAT: K=7
  !-> DEFINE VARIABLE dt = 0.015998
  !-> DEFINE VARIABLE sumcpu =0.111983
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.015997
- !-> DEFINE VARIABLE sumcpu =0.12798
-!-> REPEAT: K=9
  !-> DEFINE VARIABLE dt = 0.014998
- !-> DEFINE VARIABLE sumcpu =0.142978
+ !-> DEFINE VARIABLE sumcpu =0.126981
+!-> REPEAT: K=9
+ !-> DEFINE VARIABLE dt = 0.014997
+ !-> DEFINE VARIABLE sumcpu =0.141978
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.015998
- !-> DEFINE VARIABLE sumcpu =0.158976
+ !-> DEFINE VARIABLE dt = 0.015997
+ !-> DEFINE VARIABLE sumcpu =0.157975
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.158976
-0.158976
+ !-> MESSAGE/CONTINUE 0.157975
+0.157975
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.35"
+CLOCK_SECS = "0.352"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "24-Oct-16"
-SESSION_TIME = "13:26"
+SESSION_TIME = "16:31"
 CURRENT_DATE = "24-Oct-16"
-CURRENT_TIME = "13:26:35"
+CURRENT_TIME = "16:31:58"
 *** Running ferret script: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -61496,7 +61499,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v7.02 (beta/debug)"                                               
  3    /  3:" ! Linux 2.6.32-642.4.2.el6.x86_64 64-bit - 10/24/16"                       
- 4    /  4:" ! 24-Oct-16 13:26     "                                                    
+ 4    /  4:" ! 24-Oct-16 16:32     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -62172,8 +62175,8 @@ SH VAR/XML
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<attribute name="ferret_datatype" type="float">
-   <value>FLOAT</value>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
 </attribute>
 <grid name="GHU1">
 <axes>
@@ -62200,8 +62203,8 @@ SH VAR/XML
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<attribute name="ferret_datatype" type="float">
-   <value>FLOAT</value>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
 </attribute>
 <grid name="GHU1">
 <axes>
@@ -63956,98 +63959,98 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.960
-randu2_randn2       0.178
-randu2_randn2       0.737
-randu2_randn2       0.654
-randu2_randn2       0.864
+randu2_randn2       0.599
+randu2_randn2       0.240
+randu2_randn2       0.692
+randu2_randn2       0.173
+randu2_randn2       0.878
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.322
-randu2_randn2       0.916
-randu2_randn2       0.790
-randu2_randn2       0.201
-randu2_randn2       0.538
+randu2_randn2       0.868
+randu2_randn2       0.701
+randu2_randn2       0.952
+randu2_randn2       0.846
+randu2_randn2       0.971
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.673
-randu2_randn2       0.109
-randu2_randn2       0.031
-randu2_randn2       0.486
-randu2_randn2       0.911
-randu2_randn2       0.309
+randu2_randn2       0.691
+randu2_randn2       0.243
+randu2_randn2       0.813
+randu2_randn2       0.474
+randu2_randn2       0.621
+randu2_randn2       0.327
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.005
-randu2_randn2       0.563
-randu2_randn2       0.325
-randu2_randn2       0.697
-randu2_randn2       0.858
-randu2_randn2       0.757
-             VARIABLE : RANDU2(XX,12436)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.302
-randu2_randn2       0.380
-randu2_randn2       0.926
-randu2_randn2       0.672
-randu2_randn2       0.238
-randu2_randn2       0.638
-             VARIABLE : RANDU2(XX,12436)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.302
-randu2_randn2       0.380
-randu2_randn2       0.926
-randu2_randn2       0.672
-randu2_randn2       0.238
-randu2_randn2       0.638
-             VARIABLE : RANDN2(XBIG,-1)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 5 points (X)
-             X        : 0.5 to 5.5
-randu2_randn2       1.751
-randu2_randn2      -1.136
-randu2_randn2       1.116
-randu2_randn2      -0.315
-randu2_randn2       1.985
-             VARIABLE : RANDN2(XBIG,-1)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 5 points (X)
-             X        : 0.5 to 5.5
-randu2_randn2       0.752
-randu2_randn2       0.874
-randu2_randn2      -0.521
-randu2_randn2       0.137
-randu2_randn2       0.128
-             VARIABLE : RANDN2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.670
-randu2_randn2       1.686
+randu2_randn2       0.412
+randu2_randn2       0.149
+randu2_randn2       0.680
+randu2_randn2       0.030
+randu2_randn2       0.824
 randu2_randn2       0.429
-randu2_randn2       0.181
-randu2_randn2      -1.192
-randu2_randn2       0.847
+             VARIABLE : RANDU2(XX,12436)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.302
+randu2_randn2       0.380
+randu2_randn2       0.926
+randu2_randn2       0.672
+randu2_randn2       0.238
+randu2_randn2       0.638
+             VARIABLE : RANDU2(XX,12436)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.302
+randu2_randn2       0.380
+randu2_randn2       0.926
+randu2_randn2       0.672
+randu2_randn2       0.238
+randu2_randn2       0.638
+             VARIABLE : RANDN2(XBIG,-1)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 5 points (X)
+             X        : 0.5 to 5.5
+randu2_randn2      -2.496
+randu2_randn2      -0.646
+randu2_randn2       0.296
+randu2_randn2      -0.594
+randu2_randn2       0.805
+             VARIABLE : RANDN2(XBIG,-1)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 5 points (X)
+             X        : 0.5 to 5.5
+randu2_randn2      -0.585
+randu2_randn2      -0.321
+randu2_randn2      -0.672
+randu2_randn2      -0.241
+randu2_randn2       0.281
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.242
-randu2_randn2       1.022
-randu2_randn2      -0.763
-randu2_randn2       1.919
-randu2_randn2      -0.729
-randu2_randn2       1.700
+randu2_randn2       1.387
+randu2_randn2       0.171
+randu2_randn2       0.697
+randu2_randn2      -0.444
+randu2_randn2       0.450
+randu2_randn2      -0.641
+             VARIABLE : RANDN2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.328
+randu2_randn2       1.360
+randu2_randn2       0.298
+randu2_randn2       0.831
+randu2_randn2      -0.831
+randu2_randn2       0.042
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -64072,14 +64075,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.158       1.744       0.711
-randu2_randn2       1.744       1.158       0.711
-randu2_randn2       0.711       0.711       0.512
-randu2_randn2       0.512       0.512       0.711
-randu2_randn2      -0.202      -0.202       0.711
-randu2_randn2      -0.925      -0.202       0.711
-randu2_randn2       0.062       0.062       0.711
-randu2_randn2       0.936       0.936       0.936
+randu2_randn2       1.454       1.454       0.521
+randu2_randn2       1.046       1.046       0.521
+randu2_randn2       0.521       0.521       0.249
+randu2_randn2      -0.214       0.053       0.477
+randu2_randn2       0.053      -0.214       0.477
+randu2_randn2      -0.567       0.053       0.477
+randu2_randn2       0.249       0.249       0.477
+randu2_randn2       0.477       0.477       0.477
 *** Running ferret script: bn_axis_cf.jnl
 ! Ticket 1792: Write axes with CF-compliant units
 ! and with standard name attributes for geophysical attrs.
@@ -71890,7 +71893,7 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Mon Oct 24 13:26:47 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
+		:history = "Mon Oct 24 16:32:09 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
 			"FERRET V7.02  24-Oct-16" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
@@ -84452,20 +84455,20 @@ GO err696_time_overlay
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
 sp date
-Mon Oct 24 13:27:00 PDT 2016
+Mon Oct 24 16:32:21 PDT 2016
 set view upper
 plot t[gt=tax_nlp]
 plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
 sp date
-Mon Oct 24 13:27:00 PDT 2016
+Mon Oct 24 16:32:21 PDT 2016
  
 sp date
-Mon Oct 24 13:27:00 PDT 2016
+Mon Oct 24 16:32:21 PDT 2016
 set view lower
 plot t[gt=tax_jul]
 plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
 sp date
-Mon Oct 24 13:27:00 PDT 2016
+Mon Oct 24 16:32:21 PDT 2016
  
 GO bn_reset
 cancel mode verify
@@ -90803,9 +90806,9 @@ flow/DAT=2/den=3/L=3 taux,tauy
 ! bn_speedtest.jnl
 ! issue large numbers of commands, timing with clock time
 can mode verify
-10K LET commands LET a = 0 takes  0.987  seconds
-Second 10K LET commands LET a = 0 takes  2.209  seconds
-5K LOAD with transform takes  3.488  seconds
+10K LET commands LET a = 0 takes  1.025  seconds
+Second 10K LET commands LET a = 0 takes  2.252  seconds
+5K LOAD with transform takes  3.476  seconds
 *** Running ferret script: bn_show_noupcase.jnl
 ! bn_show_noupcase.jnl
 ! 1/2016 ticket 1796
@@ -91524,6 +91527,7 @@ SHO DATA/VAR/XML
 <attribute name="long_name" type="char">
    <value><![CDATA[TEMP[X=79E:79E@AVE]]]></value>
 </attribute>
+<attribute name="ferret_datatype" type="char">
    <value><![CDATA[FLOAT]]></value>
 </attribute>
 <grid name="GHU1">
@@ -91863,8 +91867,8 @@ SHO VAR/XML
 <attribute name="missing_value" type="float">
    <value>-1.E+34</value>
 </attribute>
-<attribute name="ferret_datatype" type="float">
-   <value>FLOAT</value>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
 </attribute>
 <grid name="GHU1">
 <axes>
@@ -96202,12 +96206,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "24-Oct-16"
-SESSION_TIME = "13:27"
-SESSION_PID = "19629"
-DELTA_CPU = "0.020996"
-CLOCK_SECS = "0.011"
+SESSION_TIME = "16:32"
+SESSION_PID = "14476"
+DELTA_CPU = "0.025995"
+CLOCK_SECS = "0.017"
 CURRENT_DATE = "24-Oct-16"
-CURRENT_TIME = "13:27:36"
+CURRENT_TIME = "16:32:56"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 GO_FILE = "./bn_startupfile.jnl"
@@ -98348,4 +98352,4 @@ can axis/all
  
 ! Dump the contents of the decimated-data DSG file
 sp ncdump -h 492C19881104_dec.nc >> all_ncdump.out
-Ended at Mon Oct 24 13:27:39 PDT 2016
+Ended at Mon Oct 24 16:32:59 PDT 2016

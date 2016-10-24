@@ -64,7 +64,9 @@
 *                  and are shown with their dataset on SHOW DATA commands
 * V7    6/16 *acm* Fix ticket 2441. For LET/D variables need to store the 
 *                  uvar list in a local array. If using deleted_list_result,
-*                  it got changed by the call to get the grid of the variable            
+*                  it got changed by the call to get the grid of the variable  
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
+*                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -94,11 +96,12 @@
      .            varid, vtype, nvdims, vdims(8), nvatts, blen, i, 
      .            len_attbuff, attoutflag, all_outflag, attid, 
      .            attlen, attype, iatt, iset, alen, npts, 
-     .            num_indices, status, let_d_uvars_list(max_uvar)
+     .            num_indices, status, let_d_uvars_list(max_uvar), 
+     .            itype
 	REAL      vals(100)
 
         LOGICAL   NC_GET_ATTRIB, got_it, coordvar, newatt, have_units,
-     .            have_title, have_dims
+     .            have_title, have_dims, have_dtype
 
 
 	CHARACTER TM_FMT*16
@@ -252,8 +255,7 @@ C Write statement that uses number 2075 when we change to using these.)
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
           ENDIF
 
-
-          IF (ds_var_type(ivar) .EQ. ptype_string ) THEN
+          IF (vtype .EQ. NF_CHAR ) THEN
              show_str = 'STRING'
           ELSE
              show_str = 'FLOAT'
@@ -261,6 +263,7 @@ C Write statement that uses number 2075 when we change to using these.)
           CALL ESCAPE_FOR_XML (show_str, outstring, slen)
           WRITE ( risc_buff, 2020 ) 'ferret_datatype'
           CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	  have_dtype = .TRUE.
 
           WRITE (risc_buff, 2055) outstring(1:slen)
           CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -461,20 +464,6 @@ C Write statement that uses number 2075 when we change to using these.)
              WRITE ( risc_buff, 2060 ) 
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-             IF (uvar_data_type(i,dset) .EQ. ptype_string ) THEN
-                show_str = 'STRING'
-             ELSE
-                show_str = 'FLOAT'
-             ENDIF
-
-             CALL ESCAPE_FOR_XML (show_str, outstring, slen)
-             WRITE ( risc_buff, 2020 ) 'ferret_datatype'
-             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-
-             WRITE (risc_buff, 2055) outstring(1:slen)
-             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-             WRITE ( risc_buff, 2060 ) 
-             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * Now get other attributes that may have been assigned.
 
@@ -563,11 +552,35 @@ C Write statement that uses number 2075 when we change to using these.)
 * The grid, if available.
              grid = GRID_FROM_NAME_XML( uvarname, cx_last, cx_expr, status )
 	     
-             IF (status .EQ. ferr_ok .AND. grid.NE.unspecified_int4) 
-     .         CALL SHOW_GRID_XML (lun, grid, cx_expr)
+             IF (status .EQ. ferr_ok .AND. grid.NE.unspecified_int4) THEN
 
+* Once the grid is set, the dtype is also known. Write that, then the grid.
+
+	        iset = uvar_dset(i)
+	        IF (iset .LE. pdset_irrelevant) iset = pdset_uvars
+                CALL GET_SAVED_UVAR_DTYPE(i, iset, itype)
+
+                show_str = 'FLOAT'
+                IF (itype .EQ. ptype_string ) show_str = 'STRING'
+
+                CALL ESCAPE_FOR_XML (show_str, outstring, slen)
+                WRITE ( risc_buff, 2020 ) 'ferret_datatype'
+		
+                IF (.NOT.have_dtype) 
+     .               CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	        have_dtype = .TRUE.
+
+                WRITE (risc_buff, 2055) outstring(1:slen)
+                CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+                WRITE ( risc_buff, 2060 ) 
+                CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)      
+
+	        CALL SHOW_GRID_XML (lun, grid, cx_expr)
+
+	     ENDIF
              WRITE ( risc_buff, 2070 )
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
 
          ENDIF
  600  CONTINUE

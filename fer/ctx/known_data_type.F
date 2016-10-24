@@ -46,6 +46,8 @@
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
 * V698 3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
+*                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -60,7 +62,7 @@
 
 * internal variable declarations:
 	LOGICAL ACTS_LIKE_FVAR
-	INTEGER	dset, data_set, category, variable, idim, trans
+	INTEGER	dset, data_set, category, variable, idim, trans, itype
 
 * initialize
 	category = cx_category(cx)
@@ -85,7 +87,9 @@
 	   ELSE
 	      dset = data_set
 	   ENDIF
-	   cx_type(cx) = uvar_data_type( variable, dset )
+	   
+	   CALL GET_SAVED_UVAR_DTYPE(variable, dset, itype)
+	   cx_type(cx) = itype
 
 	ELSEIF ( category .EQ. cat_temp_var ) THEN
 !! here, variable may be up to 2000, mr_type is dimension 151

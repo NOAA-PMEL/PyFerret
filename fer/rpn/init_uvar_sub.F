@@ -85,6 +85,8 @@
 *                  added to that dataset in the attribute structure.
 * V699  5/16 *sh* pass uvar to CD_ADD_VAR encoded as negative for a LET/D uvar
 *                 include EX# and child vars in the LIST structures
+* V710 *acm* 10/16 Ticket 2422: remove unneeded call to DEALLO_UVAR_GRIDS. 
+*                  Also clean up long-unused lines that were commented out.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'	
@@ -271,29 +273,11 @@ c* copy title, units, dset, and missing flag into buffers
         uvar_ifv(uvar) = .FALSE.
         IF ( STR_SAME( uvar_text(uvar)(1:3), 'IFV' ) .EQ. 0 )  
      .      uvar_ifv(uvar) = .TRUE.
-        
-!* add a terminator to the end of the list of RPN-ordered atoms
-!	natom_rpn = natom_rpn + 1
-!	uvar_item_type (natom_rpn,uvar) = alg_finished
 
 * store number of items in definition
 *	uvar_num_items( uvar ) = natom_rpn
         CALL deleted_list_modify(uvar_num_items_head, uvar,
      .                           natom_rpn )
-
-!* 7/98 - remove surrounding single quotes from variable names
-! no - keep 'em in to signal special name -- use 'em in MATCH_NAME
-!	DO 310 i = 1, natom_rpn
-!	   IF ( uvar_item_type (i,uvar) .EQ. alg_variable ) THEN
-!	      is = uvar_item_start(i,uvar)
-!	      ie = uvar_item_end(i,uvar)
-!	      IF ( uvar_text(uvar)(is:is) .EQ.'\''
-!	1	   .AND. uvar_text(uvar)(ie:ie).EQ.'\'') THEN
-!		 uvar_item_start(i,uvar) = is + 1
-!		 uvar_item_end  (i,uvar) = ie - 1
-!	      ENDIF
-!	   ENDIF
-! 310	CONTINUE
 
 * by default assume the definition requires an external data set specification
 	uvar_need_dset( uvar ) = .TRUE.
@@ -311,10 +295,6 @@ c* copy title, units, dset, and missing flag into buffers
 * by default assume that there are no pseudo-variables involved
 	DO 330 idim = 1, nferdims
  330	uvar_mod_pseudo(idim,uvar) = .FALSE.
-
-* set grid to unknown (to be determined at "run time") for all data sets
-* and clear all references in memory to any associated dynamic grids
-	CALL DEALLO_UVAR_GRIDS( uvar )	
 
 * successful completion
 	status = ferr_ok

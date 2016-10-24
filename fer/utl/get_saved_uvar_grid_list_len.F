@@ -50,7 +50,6 @@
         INTEGER NCF_GET_UVAR_GRID_LIST_LEN, status, c_list_dset
 
 * c_list_dset  - dset value relevant in C LIST structures of NCF_Util.c
-* context_dset - dset for which grid of this uvar has been determined
 
         IF ( uvar_dset(uvar) .GT. pdset_irrelevant) THEN
 * ... LET/D= variable
@@ -60,7 +59,7 @@
           c_list_dset  = pdset_uvars  ! fake dataset of global uvars
         ENDIF
 
-* store the grid
+* get the number of grids
         status = NCF_GET_UVAR_GRID_LIST_LEN( c_list_dset, uvar, ngrids)
 
 * check status

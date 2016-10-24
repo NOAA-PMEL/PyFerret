@@ -54,11 +54,14 @@
 *                  variables, pre-defined axes and grids, cat_calc_var.
 * V698  3/16 *sh* expanded max_gfdl_dsets for EF agg needs+
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
+*                  uvar_aux_var replaced with calls to LIST routines in NCF_Util.c 
+*                  Increase size of max_gfdl_dsets and max_grids
 
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
-	PARAMETER     (	max_gfdl_dsets	  = 400 ) ! =maxdsets in tmap_dims.parm
+	PARAMETER     (	max_gfdl_dsets	  = 5000 ) ! =maxdsets in tmap_dims.parm
 
 * numerical constants
 	REAL		deg2rad, radius, deg2km, deg2m, m_radius

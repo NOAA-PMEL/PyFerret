@@ -2,10 +2,14 @@
 ! new-V553 output in XML-style format
 ! Illustrate the SHOW commands with /XML xml-style output
 ! V5.80 11/04 new tests for SHOW VAR/XML; global variables.
-
+!
 ! 22-Feb-2005 USE SHO AXIS/XML `temp,return=taxis` instead
 ! of naming the axes; other axes of the same name (e.g. TIME) 
 ! may have been defined in other benchmark scrips.
+!
+! 24-Oct-2016 Changes in Ferret, handling of grid and datatype
+! info. Order of listing in xml output, ferret_data_type is listed
+* for all variables
 
 USE levitus_climatology.cdf
 
@@ -88,3 +92,8 @@ USE a
 LET t3 = tvar[t="15-jan-0000:00:00":"15-feb-0000:00:00"@AVE]
 SHOW VAR/XML
 
+! Test getting the data type of a user-defined variable
+
+let/d=a dates = tax_datestring(t[gt=tvar], tvar, "days")
+SHOW VAR/XML dates
+SHO DATA/VAR/XML 1

@@ -205,8 +205,8 @@
 * V698  3/16 *acm* Changes for ticket 2078: improved SHOW COMMANDS
 * V698  4/16 *acm* For ticket 2399: Apply MODE CALENDAR settings to F axes too
 * V7    5/16 *acm* See ticket 2352. For LET/D variables look for info under that dataset
-* V710 *acm* 10/16 Ticket 2422: variables uvar_grids, uvar_aux_cat, uvar_aux_var 
-*                  to be replaced with calls to LIST routines in NCF_Util.c 
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
+*                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 
         IMPLICIT NONE
 
@@ -893,49 +893,35 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
                  IF (cat .EQ. cat_user_var) THEN
 * ... trigger grid-getting, which also gets layerz associations
 
-
-	           CALL GET_SAVED_UVAR_AUX_INFO(var, dset,
-     .				           aux_cat, aux_var, status)
-c*c REMOVE LATER, this is just testing the get-saved...
-                   IF (status .EQ. ferr_ok) THEN
-	           DO idim = 1, nferdims
-	              IF (aux_cat(idim) .NE. uvar_aux_cat(var,idim,iset)
-     .                 .OR. aux_var(idim) .NE. uvar_aux_var(var,idim,iset))
-     .							THEN
-	                WRITE(6,3100) aux_cat(idim), uvar_aux_cat(var,idim,iset),
-     .				 aux_var(idim), uvar_aux_var(var,idim,iset)
- 3100		        FORMAT(' UVAUXERR: deallo_uvar_grids', 4I8)
-	               ENDIF
-	           ENDDO
-
-	           grid = GRID_FROM_NAME
+                    grid = GRID_FROM_NAME
      .                    (cmnd_buff(item_start(i1):item_end(i1)),
      .			  cx_last, status )
-                   IF (uvar_aux_stat(var, z_dim).EQ.paux_stat_conflict) THEN
-                      show_str = '   Components in the definition of ' // 
-     .                  varname(:len) //
-     .                  ' have conflicting LAYERZ references'
-                   ELSEIF (uvar_aux_stat(var,z_dim).EQ.paux_stat_passed
-     .                .OR. uvar_aux_stat(var,z_dim).EQ.paux_stat_needed) THEN
 
-
-c*c LATER, replace:
-c*c uvar_aux_var(var, idim, dataset) with aux_var(idim) and
-c*c uvar_aux_cat(var, idim, dataset) with aux_cat(idim)
-
-                      risc_buff = VAR_CODE(uvar_aux_cat(var,z_dim,dset),
-     .                                     uvar_aux_var(var,z_dim,dset))
-                      attlen = TM_LENSTR1(risc_buff)
-                      show_str = '  ' // risc_buff(:attlen) //
-     .                  ' holds the vertical (layerz) coordinates of ' //
-     .                  varname(:len)
-                   ELSEIF (uvar_aux_stat(var,z_dim).EQ.paux_stat_used) THEN
-                      show_str = '  The definition of ' // 
-     .                  varname(:len) //
-     .                  ' contains explicit regrids of'//
-     .                  ' its LAYERZ coordinates'
-                   ENDIF 
-                   ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
+c                    CALL GET_SAVED_UVAR_AUX_INFO(var, dset,
+c     .				           aux_cat, aux_var, status)
+c
+c                    IF (status .EQ. ferr_ok) THEN
+c		       IF (uvar_aux_stat(var, z_dim).EQ.paux_stat_conflict) THEN
+c		          show_str = '   Components in the definition of ' // 
+c     .		          varname(:len) //
+c     .		           ' have conflicting LAYERZ references'
+c		       ELSEIF (uvar_aux_stat(var,z_dim).EQ.paux_stat_passed
+c     .		          .OR. uvar_aux_stat(var,z_dim).EQ.paux_stat_needed) THEN
+c
+c		          risc_buff = VAR_CODE(aux_cat(idim), aux_var(idim))
+c		          attlen = TM_LENSTR1(risc_buff)
+c		          show_str = '  ' // risc_buff(:attlen) //
+c     .		           ' holds the vertical (layerz) coordinates of ' //
+c     .		            varname(:len)
+c		       ELSEIF (uvar_aux_stat(var,z_dim).EQ.paux_stat_used) THEN
+c		          show_str = '  The definition of ' // 
+c     .                            varname(:len) //
+c     .                     ' contains explicit regrids of'//
+c     .                     ' its LAYERZ coordinates'
+c		       ENDIF 
+c                    ELSE ! status from GET_SAVED_UVAR_AUX_INFO
+c		       PRINT *, 'ERROR getting saved uvar_aux info !!!!!'
+c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
                  ENDIF   ! is a uvar
               ELSE
 * ... show the explicit __layerz_ref_ attribute value

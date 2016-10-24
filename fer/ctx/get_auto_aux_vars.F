@@ -49,8 +49,8 @@
 * *sh* 12/13
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * V7    5/16 *acm* See ticket 2352. For LET/D variables look for info under that dataset
-* V710 *acm* 10/16 Ticket 2422: variables uvar_grids, uvar_aux_cat, uvar_aux_var 
-*                  to be replaced with calls to LIST routines in NCF_Util.c 
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
+*                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -91,25 +91,10 @@
 	   CALL GET_SAVED_UVAR_AUX_INFO(var, dataset, aux_cat, aux_var, status)
 	   IF (status .EQ. ferr_ok) THEN
 	      DO idim = 1, nferdims
-
-c*c REMOVE LATER, checking for correct use of LIST storage for uvar_aux_var and uvar_aux_cat
-
-	         IF (aux_cat(idim) .NE. uvar_aux_cat(var,idim,dataset)
-     .          .OR. aux_var(idim) .NE. uvar_aux_var(var,idim,dataset))
-     .							THEN
-	            WRITE(6,3000) aux_cat(idim), uvar_aux_cat(var,idim,dataset),
-     .				 aux_var(idim), uvar_aux_var(var,idim,dataset)
- 3000		   FORMAT(' UVAUXERR: get_auto_aux_vars', 4I8)
-	         ENDIF
-
-c*c LATER, replace 
-c*c uvar_aux_var(var, idim, dataset) with aux_var(idim) and
-c*c uvar_aux_cat(var, idim, dataset) with aux_cat(idim)
-
 	         IF (uvar_aux_stat(var,idim) .EQ. paux_stat_passed
      .	        .OR. uvar_aux_stat(var,idim) .EQ. paux_stat_needed ) THEN
-	            curv_vars(idim) = uvar_aux_var(var, idim, dataset)
-	            curv_cats(idim) = uvar_aux_cat(var, idim, dataset)
+	            curv_vars(idim) = aux_var(idim)
+	            curv_cats(idim) = aux_cat(idim)
 	         ENDIF
 	      ENDDO
 	   ENDIF  ! status from GET_SAVED_UVAR_AUX_INFO

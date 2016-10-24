@@ -37,7 +37,8 @@
 * uvar (a LET expression), when evaluated in the given dset
 
 * V699 5/16 *sh* new routine created to avoid the 2d uvar_grid array
-
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
+*                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 
         include 'ferret.parm'
         include 'tmap_dims.parm'
@@ -48,7 +49,7 @@
 
 * internal variable declarations
         INTEGER NCF_GET_UVAR_GRID, status,
-     .          c_list_dset, context_dset
+     .          c_list_dset, context_dset, uvdtype
 
 * c_list_dset  - dset value relevant in C LIST structures of NCF_Util.c
 * context_dset - dset for which grid of this uvar has been determined
@@ -57,17 +58,20 @@
 * ... LET/D= variable
           c_list_dset  = uvar_dset(uvar) ! the dset that owns this LET/D
           context_dset = uvar_dset(uvar) ! only one dset is possible
+	  IF (context_dset .NE. dset) THEN
+	     context_dset = dset
+	  ENDIF
         ELSE
 * ... global LET variable
           c_list_dset  = pdset_uvars  ! fake dataset of global uvars
           context_dset = dset
         ENDIF
 
-* store the grid
-        status = NCF_GET_UVAR_GRID( c_list_dset, uvar,
-     .                              context_dset, uvgrid)
+* get the grid and dtype
+        status = NCF_GET_UVAR_GRID( c_list_dset, uvar, context_dset, 
+     .                              uvgrid, uvdtype)
 
-* error return?
+* error return? Should we return the status??
         IF (status .EQ. atom_not_found) uvgrid = unspecified_int4
 
         RETURN

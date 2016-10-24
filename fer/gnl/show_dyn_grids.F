@@ -49,8 +49,8 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V697  12/15 *acm* Changes to add details on SHOW GRID uvar to indicate 
 *                   compressed or subsetted axes
-* V710 *acm* 10/16 Ticket 2422: variable uvar_grids to be replaced with calls to 
-*                  LIST routines in NCF_Util.c 
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
+*                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 
 * FERRET DOCUMENATION:  dynamic grids and axes
 * (entered 1/2016 *sh*)
@@ -98,7 +98,7 @@
 * local variable declarations:
         LOGICAL show_all, shown, uvgrid
 	INTEGER grid, line, dset, var, count, i, slash_all, status
-	INTEGER igrid_test, count_test, ngrids, idum
+	INTEGER ngrids, saved_uvgrid
 	CHARACTER sanity_msg*24
 
 * local parameter declarations
@@ -127,45 +127,24 @@
            ENDIF
 * ... sanity check the use count -- must be in use by user vars or dset vars
 
-c*c This loop will replace the 120,125 loops below.
-	   count_test = 0
-           IF (grid .EQ. mgrid_abstract) count_test = 1  ! is it SET GRID?
-	   
-	   DO 1251 var = 1, max_uvar
-
-              CALL GET_SAVED_UVAR_GRID_LIST_LEN(var, ngrids)
-	      dset = uvar_dset(var)
-	      IF (dset .EQ. unspecified_int4) dset = pdset_irrelevant
-	      CALL GET_SAVED_UVAR_GRID(var, dset, igrid_test)
-c*c REMOVE LATER, will be getting rid of uvar_grid array
-	         IF (igrid_test .NE. unspecified_int4 .AND. 
-     .               igrid_test .NE. uvar_grid(var,dset))  CALL WARN("UVGRIDERR: show_dyn_grids")
-
-	         IF ( uvar_grid(var,dset) .EQ. grid ) count_test = count_test + 1
-		 IF (ngrids .GT. 0 .AND. dset.GT.pdset_irrelevant) THEN
-		   
-	            CALL GET_SAVED_UVAR_GRID(var, dset, igrid_test)
-c*c REMOVE LATER, will be getting rid of uvar_grid array
-	            IF (igrid_test .NE. unspecified_int4 .AND. 
-     .                  igrid_test .NE. uvar_grid(var,dset))  CALL WARN("UVGRIDERR: show_dyn_grids")
-
-	            IF ( uvar_grid(var,dset) .EQ. grid ) count_test = count_test + 1
-		 ENDIF
-		    
- 1251	   CONTINUE
-
-c*c REMOVE this old code, once we have gested the SAVE_UVAR_GRID/GET_SAVED_UVAR_GRID machinery
-
 	   count = 0
            IF (grid .EQ. mgrid_abstract) count = 1  ! is it SET GRID?
 	   
-	   DO 125 var = 1, max_uvar	
-	      DO 120 dset = 0, max_gfdl_dsets
-	         IF ( uvar_grid(var,dset) .EQ. grid ) count = count + 1
- 120	      CONTINUE
- 125	   CONTINUE
+	   DO 125 var = 1, max_uvar
 
-	   IF (count_test .NE. count) CALL WARN("UVGRIDERR: show_dyn_grids")
+              CALL GET_SAVED_UVAR_GRID_LIST_LEN(var, ngrids)
+	      IF (ngrids .GT. 0) THEN
+
+		 dset = uvar_dset(var)             ! the dset that owns this LET/D
+		 IF (dset .LE. pdset_irrelevant) dset = pdset_uvars  ! global uvars
+		 DO i = 1, ngrids
+		    CALL NCF_NEXT_UVAR_GRID_IN_LIST ( dset, var, i, saved_uvgrid )
+		    IF ( saved_uvgrid .EQ. grid ) count = count + 1
+		 ENDDO
+
+	      ENDIF
+		    
+ 125	   CONTINUE
 
 	   DO 135 var = 1, maxvars
 	      IF ( ds_grid_number(var) .EQ. grid ) count = count + 1

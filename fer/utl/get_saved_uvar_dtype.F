@@ -37,8 +37,8 @@
 * uvar (a LET expression), when evaluated in the given dset
 
 * V710 10/16 *acm* new routine created to avoid the 2d uvar_data_type array
-* V710 *acm* 10/16 Ticket 2422: variables uvar_grids, uvar_data_type, uvar_aux_cat, 
-*                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
+*                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 
         include 'ferret.parm'
         include 'tmap_dims.parm'

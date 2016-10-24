@@ -54,7 +54,10 @@
 * calling argument declarations:
 	INTEGER	uvar
 
-	EXPLICIT_UVAR = INDEX( uvar_name_code(uvar), '#' ) .EQ. 0
+	LOGICAL is_explicit  ! just for testing
+
+	is_explicit = INDEX( uvar_name_code(uvar), '#' ) .EQ. 0
+	EXPLICIT_UVAR = is_explicit
 
 	RETURN
 	END

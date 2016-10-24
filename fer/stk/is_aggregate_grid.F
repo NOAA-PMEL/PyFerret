@@ -42,7 +42,7 @@
 *	may not be known until all other components are examined.  In this
 *	case a 2nd pass is required
 
-* programmer - Ansley Mankek (from is_uvar_grid)
+* programmer - Ansley Manke (from is_uvar_grid)
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * V6.83 *acm* 11/30/2012 If variable isn't a file variable, get the right definition.
 
@@ -50,8 +50,8 @@
 * V685 10/13 *acm* Fix ticket 1098, error defining ensemble when LET/D variables are present.
 * V698  3/16 *acm* Remove unneeded xdset_parms.cmn
 * V699  6/16 *sh*  replace variable uvar_grid with calls to c LIST structures
-* V710 *acm* 10/16 Ticket 2422: variable uvar_grids to be replaced with calls to 
-*                  LIST routines in NCF_Util.c 
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
+*                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 
 * calling argument declarations:
 * uvar and dset point to the variable in the aggregate dataset
@@ -226,9 +226,6 @@
 
 * set context for aggregate grid
 	cx_grid(agg_cx) = gnum
-
-c*c REMOVE LATER, only the SAVE_UVAR_GRID is needed.
-	uvar_grid( uvar, dset ) = gnum 
 	CALL SAVE_UVAR_GRID(uvar, gnum, ptype_float, dset)
 
 	cx_grid(agg_cx) = gnum

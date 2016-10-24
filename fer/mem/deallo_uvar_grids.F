@@ -45,11 +45,11 @@
 * V510 *sh* 4/00 - deallocate any grid, not just dynamic ones
 * V533 *sh* 7/01 - set data type of grid/variable
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
-* V699 *sh* 6/16 - variable uvar_grids replaced with LISTs in NCF_Util.c 
+* V699 *sh* 6/16 - variable uvar_grid replaced with LISTs in NCF_Util.c 
 * V710 *acm* 18/25/16 - Ticket 2462 Issue the warnings only if in MODE DIAGNOSTIC 
 * V710 *acm* 10/25/16 - Always issue the warnings: Memory-link fixes in NCF_Util.c 
-* V710 *acm* 10/16 Ticket 2422: variables uvar_grids, uvar_data_type, uvar_aux_cat, 
-*                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c       
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
+*                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -63,61 +63,34 @@
 	INTEGER	uvar
 
 * local declarations
-	INTEGER iset, idim, ngrids, nfound, 
-     .		saved_uvgrid, tmp_len, status
+	INTEGER ngrids, saved_uvgrid, i, c_list_dset
 	CHARACTER tmp_buff*256
-	INTEGER aux_cat(nferdims), aux_var(nferdims)  ! LIST diagnostics
-
-	nfound = 0	
-! new 2nd arg is dset, dummy for now
+	
 	CALL GET_SAVED_UVAR_GRID_LIST_LEN(uvar, ngrids)
-
-* OLD CODE - based upon XVARIABLES uvar_grid variable
-* The FUTURE CODE will replace all of the doubly-dimensioned
-* variables (max_uvar X max_gfdl_dsets) with calls to LISTs
 
 * THIS LOOP WILL BE REPLACED WITH a loop over ngrids (see above)
 * using LIST controls that allow you to traverse the list from end-to-end:
-* list_front, list_mvnext
-	DO 100 iset = 0, max_gfdl_dsets
+* list_front, list_mvnext (?)
 
-* Remove the grid
-* (and possibly all memory resident variables that depend on it)
-	   IF ( uvar_grid(uvar,iset) .GE. 1
-     .   .AND.  uvar_grid(uvar,iset) .LE. max_dyn_grids ) THEN
+        IF (ngrids .GT. 0) THEN
+	
+* c_list_dset  - dataset value relevant in C LIST structures of NCF_Util.c
 
-* test the new LIST code
-	      nfound = nfound + 1
+	   c_list_dset = uvar_dset(uvar)                    ! the dset that owns this LET/D
+	   IF (c_list_dset .LE. pdset_irrelevant) c_list_dset = pdset_uvars  ! global uvars
 
-* SEE CODE IN show_dyn_grids, ngrid
+	   DO i = 1, ngrids
 
-	      CALL GET_SAVED_UVAR_GRID(uvar, iset, saved_uvgrid)
-	      IF (saved_uvgrid .NE. uvar_grid(uvar,iset)) THEN
-	         CALL GET_SHORT_DSET_NAME( iset, tmp_buff, tmp_len)
-	         CALL WARN("UVGRIDERR: deallo_uvar_grids")
-	         CALL WARN("dset="//tmp_buff(:tmp_len))
-	      ENDIF
+	      CALL NCF_NEXT_UVAR_GRID_IN_LIST ( c_list_dset, uvar, i, saved_uvgrid )
+	      IF ( saved_uvgrid.GE.1 .AND. saved_uvgrid.LE.max_dyn_grids ) 
+     .           CALL DEALLO_DYN_GRID(saved_uvgrid)
 
-c*c LATER:
-c*c	      CALL DEALLO_DYN_GRID(saved_uvgrid)
-	      CALL DEALLO_DYN_GRID(uvar_grid(uvar,iset))  !--> saved_uvgrid
-	   ENDIF
+	   ENDDO
 
-* set the grid pointer to its initialized state
-	uvar_grid( uvar, iset ) = unspecified_int4
-
-* set the data type of the grid/variable
-	uvar_data_type( uvar, iset ) = unspecified_int4
-
- 100	CONTINUE
-
+        ENDIF
 
 * free the LIST of grids associated with this uvar
-	IF (nfound .NE. ngrids) THEN
-	   CALL WARN("UVGRIDERR: deallo_uvar_grids nfound")
-	   WRITE(6,*) 'UVGRIDERR: deallo_uvar_grids nfound'
-	   WRITE(6,*)'uvar=', uvar
-	ENDIF
+
 	CALL FREE_UVAR_GRIDS(uvar)
 
 	RETURN

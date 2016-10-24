@@ -59,7 +59,7 @@
 *                   of argument/return-type variable and predimensional (data size)
 *                   array parameter (pointer size to one in double-precision Ferret).
 * V694  *acm* 1214 Fixing ticket 2220: varname.attname in a function argument
-* V710 *acm* 10/16 Ticket 2422: variables uvar_grids, uvar_data_type, uvar_aux_cat, 
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
 *                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c
 
         IMPLICIT NONE
@@ -216,15 +216,8 @@
 	   
 	   itype = ptype_unknown
 	   CALL GET_SAVED_UVAR_DTYPE(uvar, iset, itype) 
-	   CALL GET_SAVED_UVAR_GRID(uvar, iset, igrid)  ! just looking at it, not needed
-cc	   IF (itype .EQ. unspecified_int4) itype = ptype_unknown
-c*c REMOVE LATER, replace the ref to uvar_data_type(,) with a 
-c*c call GET_SAVED_UVAR_DTYPE returning itype
-	   IF (itype .NE. uvar_data_type(uvar, cx_data_set(res_cx)))  THEN
-	      CALL WARN("UVGRIDERR: is_do_gc_fcn")
-	   ENDIF
 
-           cx_type(res_cx) = uvar_data_type(uvar, cx_data_set(res_cx))
+           cx_type(res_cx) = itype
            IF ( cx_type(res_cx) .EQ. ptype_string ) THEN
               typr = pfcn_rtn_string
               pdimr = pptr_words
@@ -250,7 +243,6 @@ c*c call GET_SAVED_UVAR_DTYPE returning itype
 
            iset = cx_data_set(res_cx)
            IF (iset .EQ. unspecified_int4) iset = pdset_irrelevant
-           uvar_data_type(uvar, iset) = cx_type(res_cx) 
 
 * Get the stored grid, then save the newly found type with it. The call to
 * SAVE_UVAR_GRID wipes out the grid information so also get and re-save the 

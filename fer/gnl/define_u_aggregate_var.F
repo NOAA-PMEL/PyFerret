@@ -40,10 +40,8 @@
 * NOAA/PMEL, Seattle, WA - SDIG
 
 * V7   5/12 *acm* Union aggregations: DEFINE DATA/AGG/U
-* V710 *acm* 10/16 Ticket 2422: variable uvar_grids to be replaced with calls to 
-*                  LIST routines in NCF_Util.c 
-* V710 *acm* 10/16 Ticket 2422: Also removing need for uvar_data_type(uvar,dset). 
-
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
+*                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -179,13 +177,7 @@ c	      ds_var_code(nv)     = uvar_name_code(nu)
 	      
 	      CALL GET_SAVED_UVAR_DTYPE(nu, iset, itype)
 	      IF (itype .EQ. unspecified_int4) itype = ptype_unknown
-	      IF (itype .NE. uvar_data_type(nu, iset)) THEN
-	         CALL WARN("UVGRIDERR: define_u_aggregate_var")
-	      ENDIF
 	      ds_var_type(nv)  = itype
-c*c REMOVE LATER, replace the ref to uvar_data_type(,) with a 
-c*c call GET_SAVED_UVAR_DTYPE returning itype
-	      ds_var_type(nv)  = uvar_data_type(nu, iset)
 
 	      IF (ds_var_type(nv) .EQ. ptype_string) THEN
 	         type = NCCHAR

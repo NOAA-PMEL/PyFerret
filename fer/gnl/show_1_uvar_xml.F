@@ -71,7 +71,7 @@
      .          slen, llen, grid, cx_expr, i, j, status,
      .            varid, vtype, nvdims, vdims(8), nvatts, blen, 
      .            len_attbuff, attoutflag, all_outflag, attid, 
-     .            attlen, attype, iatt, dset, alen
+     .            attlen, attype, iatt, dset, alen, itype
 	CHARACTER FULL_UVAR_NAME_XML*150, FULL_UVAR_NAME*150, 
      .            TM_FMT*12,
      .            buff*150, buff2*170, c*1, atype*10, aname*128, 
@@ -171,9 +171,28 @@
         WRITE ( risc_buff, 2060 ) 
         CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
+	
+* Once the grid is set, the dtype is also known. 
+
+        dset = uvar_dset(uvar)
+        IF (dset .LE. pdset_irrelevant) dset = pdset_uvars
+        CALL GET_SAVED_UVAR_DTYPE(uvar, dset, itype)
+
+	buff = 'FLOAT'
+        IF (itype .EQ. ptype_string ) buff = 'STRING'
+
+        CALL ESCAPE_FOR_XML (buff, outstring, slen)
+        WRITE ( risc_buff, 2030 ) 'ferret_datatype'
+        CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+        WRITE (risc_buff, 2050) outstring(1:slen)
+        CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+        WRITE ( risc_buff, 2060 ) 
+        CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)      
+
 * All attributes not already listed.
  
-	dset = pdset_uvars
+        dset = uvar_dset(uvar)
+        IF (dset .LE. pdset_irrelevant) dset = pdset_uvars
 	CALL CD_GET_VAR_ID (dset, vname, varid, status)
 	IF (status .NE. ferr_ok) THEN
 	    dset = cx_data_set(cx_last) 

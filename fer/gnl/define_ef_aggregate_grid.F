@@ -45,8 +45,8 @@
 * V695+ 4/15 *acm* and *sh* -- added support for forecast aggregations
 * V698 1/16 *sh* - support gappy and inconsistent length forecast members
 * V698 3/16 *sh* - shift both lag axes and F-calendar to pts at low cell edge
-* V710 *acm* 10/16 Ticket 2422: variable uvar_grids to be replaced with calls to 
-*                  LIST routines in NCF_Util.c 
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
+*                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -81,7 +81,6 @@
      .		axcalt, axlagf, gg, ipt1, ipte, fax,
      .		nv_dummy, igrid_dummy, vtype_dummy, num_indices,
      .		ef_time2d_dset, ef_time2d_grid
-	INTEGER igrid_test
 	REAL*8  TDEST_WORLD, TM_WORLD_AX, fdelta
 
 * Getting info back from the attribute-handling structure
@@ -264,12 +263,8 @@
 	            IF ( (uvar_dset(nv) .EQ. iset) .AND. 
      .                   (STR_SAME(uvar_name_code(nv), vname) .EQ. 0) ) THEN
 		       vtype = cat_user_var
-	               igrid = uvar_grid(nv,iset)
 
-		       CALL GET_SAVED_UVAR_GRID(nv, iset, igrid_test)
-c*c REMOVE LATER, replace the ref to uvar_grid(,) with a call GET_SAVED_UVAR_GRID returning igrid
-		       IF (igrid_test .NE. igrid)  CALL WARN("UVGRIDERR: define_ef_aggregate_grid")
-
+		       CALL GET_SAVED_UVAR_GRID(nv, iset, igrid)
 	               CALL CD_ADD_AGG_VAR_INFO (agg_dset, vname, ii, vtype, 
      .                   iset, igrid, iline, nv, status)
 * ... bump the use count for this grid to protect it from being deleted if

@@ -63,6 +63,8 @@
 *		   added space at the top of the isp stack for nferdims auxvars
 * V695+ *sh* 5/15  added uvar_c_cache_ptr for c-malloc caching of aux vars
 * V698+ *sh* 6/15  changed is_sum from REAL to INTEGER
+* V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
+*                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -148,8 +150,8 @@
 *	uvar_item_type	- coded (see alg_ in GFDLPROGRAM.PARM) item types
 *	uvar_item_start	- positions in text for starts of item text substrings
 *	uvar_item_end	- positions in text for ends   of item text substrings
-*	uvar_grid	- defining grid for the expression
-*	uvar_data_type	- data type for the expression
+*	uvar_grid	- defining grid for the expression   xxx removed Ferret v7.02
+*	uvar_data_type	- data type for the expression       xxx removed Ferret v7.02
 *	uvar_aux_var	- points to the curvi aux coord var for each axis
 *	uvar_aux_cat	- points to the curvi aux coord var for each axis
 *	uvar_aux_stat	- tells if aux axis has been regridded or remains free
@@ -277,10 +279,6 @@
      .		uvar_hi_ss	 ( max_uvar, nferdims ),
      .		uvar_num_items   ( max_uvar ),
      .		uvar_parent	 ( max_uvar ),
-     .		uvar_grid	 ( max_uvar, 0:max_gfdl_dsets ),
-     .		uvar_data_type	 ( max_uvar, 0:max_gfdl_dsets ),
-     .		uvar_aux_var	 ( max_uvar, nferdims, 0:max_gfdl_dsets ),
-     .		uvar_aux_cat	 ( max_uvar, nferdims, 0:max_gfdl_dsets ),
      .		uvar_aux_stat	 ( max_uvar, nferdims ),
      .		uvar_item_start	 ( max_uvar_items, max_uvar ),
      .		uvar_item_end	 ( max_uvar_items, max_uvar ),
@@ -390,10 +388,6 @@
      .			uvar_c_cache_ptr
 
         INTEGER		uvar_num_items  ,
-     .			uvar_grid	,
-     .			uvar_data_type	,
-     .			uvar_aux_var	,
-     .			uvar_aux_cat	,
      .			uvar_aux_stat	,
      .			uvar_item_start	,
      .			uvar_item_end	,

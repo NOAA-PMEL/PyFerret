@@ -182,9 +182,9 @@
         IF (itype .EQ. ptype_string ) buff = 'STRING'
 
         CALL ESCAPE_FOR_XML (buff, outstring, slen)
-        WRITE ( risc_buff, 2030 ) 'ferret_datatype'
+        WRITE ( risc_buff, 2020 ) 'ferret_datatype'
         CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-        WRITE (risc_buff, 2050) outstring(1:slen)
+        WRITE (risc_buff, 2055) buff(1:slen)
         CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
         WRITE ( risc_buff, 2060 ) 
         CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)      

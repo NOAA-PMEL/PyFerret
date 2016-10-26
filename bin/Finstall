@@ -11,22 +11,27 @@
 ### Assign $fer_dir, the desired FER_DIR value
 get_fer_dir() {
     if [ -n "${FER_DIR}" ]; then
-        fer_dir="${FER_DIR}"
-        echo " "
-        echo " The environment variable FER_DIR is currently defined as "
-        echo " '${FER_DIR}' "
-        echo " This is the directory containing the PyFerret installation. "
-        echo " "
-        read -p " Is that correct and acceptable (y/n) [y] " ans
-        if [ -z "${ans}" ] || [ "${ans}" = "Y" ] || [ "${ans}" = "y" ]; then
-            return 0
+        if [ -d "${FER_DIR}/ext_func/pylibs" ]; then
+            fer_dir="${FER_DIR}"
+            echo " "
+            echo " The environment variable FER_DIR is currently defined as "
+            echo "     '${FER_DIR}' "
+            echo " This should be the directory created from extracting the PyFerret "
+            echo " tar.gz file.  It contains subdirectories bin, contrib, examples, "
+            echo " ext_func, go, lib, and ppl. "
+            read -p " Is that correct and acceptable (y/n) [y] " ans
+            if [ -z "${ans}" ] || [ "${ans}" = "Y" ] || [ "${ans}" = "y" ]; then
+                return 0
+            fi
         fi
     fi
 
     until [ 0 = 1 ]; do
         echo " "
         echo " Enter the name of the PyFerret installation directory (FER_DIR). "
-        echo " This directory should contain bin/Fenv. "
+        echo " This should be the directory created from extracting the PyFerret "
+        echo " tar.gz file.  It contains subdirectories bin, contrib, examples, "
+        echo " ext_func, go, lib, and ppl. "
         echo " A relative path name can be given (such a '.') "
         echo " "
         read -p " FER_DIR --> " fer_dir
@@ -35,9 +40,9 @@ get_fer_dir() {
         else
 #           resolve relative pathnames
             fer_dir=`cd "${fer_dir}" ; pwd`
-            if [ ! -x "${fer_dir}/bin/Fenv" ]; then
+            if [ ! -d "${fer_dir}/ext_func/pylibs" ]; then
                 echo " The PyFerret files are not in "
-                echo " '${fer_dir}' "
+                echo "     '${fer_dir}' "
             else
                 return 0
             fi
@@ -51,23 +56,27 @@ get_fer_dir() {
 ### Assign $fer_dsets, the desired FER_DSETS value
 get_fer_dsets() {
     if [ -n "${FER_DSETS}" ]; then
-        fer_dsets="${FER_DSETS}"
-        echo " "
-        echo " The environment variable FER_DSETS is currently defined as "
-        echo " '${FER_DSETS}' "
-        echo " This is the directory containing the default Ferret datasets. "
-        echo " "
-        read -p " Is that correct and acceptable (y/n) [y] " ans
-        if [ -z "${ans}" ] || [ "${ans}" = "Y" ] || [ "${ans}" = "y" ]; then
-            return 0
+        if [ -f "${FER_DSETS}/data/coads_climatology.cdf" ]; then
+            fer_dsets="${FER_DSETS}"
+            echo " "
+            echo " The environment variable FER_DSETS is currently defined as "
+            echo "     '${FER_DSETS}' "
+            echo " This is the directory containing the default Ferret datasets. "
+            echo " It contains subdirectories data, descr, and grids, including "
+            echo " the data file data/coads_climatology.cdf "
+            echo " "
+            read -p " Is that correct and acceptable (y/n) [y] " ans
+            if [ -z "${ans}" ] || [ "${ans}" = "Y" ] || [ "${ans}" = "y" ]; then
+                return 0
+            fi
         fi
     fi
 
     until [ 0 = 1 ]; do
         echo " "
         echo " Enter the name of the directory containing the default Ferret "
-        echo " data sets (FER_DSETS).  This directory should contain "
-        echo " data/coads_climatology.cdf"
+        echo " data sets (FER_DSETS).  It contains subdirectories data, descr, "
+        echo " and grids, including the data file data/coads_climatology.cdf "
         echo " A relative path name can be given (such a '../FerretDatasets') "
         echo " "
         read -p " FER_DSETS --> " fer_dsets
@@ -78,7 +87,7 @@ get_fer_dsets() {
             fer_dsets=`cd "${fer_dsets}" ; pwd`
             if [ ! -f "${fer_dsets}/data/coads_climatology.cdf" ]; then
                 echo " The Ferret default data files are not in "
-                echo " '${fer_dsets}' "
+                echo "     '${fer_dsets}' "
             else
                 return 0
             fi
@@ -95,7 +104,7 @@ get_ferpaths_dir() {
         echo " "
         echo " Enter the name of the directory where you want to place "
         echo " the newly created 'ferret_paths.csh', 'ferret_path.sh', "
-        echo " pyferret files; for example, '/usr/local/bin'."
+        echo " and pyferret scripts."
         echo " A relative path name can be given (such a '.') "
         echo " "
         read -p " desired ferret_paths location --> " ferpaths_dir

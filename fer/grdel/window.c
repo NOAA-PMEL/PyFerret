@@ -1006,7 +1006,9 @@ int  grdelWindowSetDpi(grdelType window, float newdpi)
                             "no bindings associated with this Window");
         return 0;
     }
-    /* (at this time) anything with only C bindings has no display associated with it */
+    if ( mywindow->bindings.cferbind->setWindowDpi == NULL ) {
+        return -1;
+    }
     mywindow->bindings.cferbind->setWindowDpi(mywindow->bindings.cferbind, (double) newdpi);
     return 1;
 }

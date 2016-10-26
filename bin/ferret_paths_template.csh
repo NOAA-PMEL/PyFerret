@@ -101,7 +101,7 @@ set pysite = "${FER_LIBS}/${python_subdir}/site-packages"
 if ( ! $?PYTHONPATH ) then
     setenv PYTHONPATH "${pysite}"
 else
-    if ( "${PYTHONPATH}" !~ "*${pysite}*" ) then
+    if ( "${PYTHONPATH}" !~ "${pysite}*" ) then
         setenv PYTHONPATH "${pysite}:${PYTHONPATH}"
     endif
 endif
@@ -111,7 +111,7 @@ endif
 if ( ! $?LD_LIBRARY_PATH ) then
     setenv LD_LIBRARY_PATH "${pysite}/pyferret"
 else
-    if ( "${LD_LIBRARY_PATH}" !~ "*${pysite}/pyferret*" ) then
+    if ( "${LD_LIBRARY_PATH}" !~ "${pysite}/pyferret*" ) then
         setenv LD_LIBRARY_PATH "${pysite}/pyferret:${LD_LIBRARY_PATH}"
     endif
 endif

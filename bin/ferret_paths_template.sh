@@ -103,7 +103,7 @@ pysite="${FER_LIBS}/${python_subdir}/site-packages"
 if [ -z "${PYTHONPATH}" ]; then
     export PYTHONPATH="${pysite}"
 else
-    if ! echo "${PYTHONPATH}" | grep -q "${pysite}"; then
+    if ! echo "${PYTHONPATH}" | grep -q "^${pysite}"; then
         export PYTHONPATH="${pysite}:${PYTHONPATH}"
     fi
 fi
@@ -113,7 +113,7 @@ fi
 if [ -z "${LD_LIBRARY_PATH}" ]; then
     export LD_LIBRARY_PATH="${pysite}/pyferret"
 else
-    if ! echo "${LD_LIBRARY_PATH}" | grep -q "${pysite}/pyferret"; then
+    if ! echo "${LD_LIBRARY_PATH}" | grep -q "^${pysite}/pyferret"; then
         export LD_LIBRARY_PATH="${pysite}/pyferret:${LD_LIBRARY_PATH}"
     fi
 fi

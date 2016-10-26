@@ -88,6 +88,7 @@ void fgderrmsg_(char *errmsg, int *errmsglen)
  *     titlelen: actual length of the title
  *     visible: display Window on start-up?
  *     noalpha: do not use the alpha channel (opacity) in colors
+ *     rasteronly: only create raster images
  *
  * Returns a pointer to the window object created.
  * If an error occurs, NULL is returned and
@@ -95,11 +96,13 @@ void fgderrmsg_(char *errmsg, int *errmsglen)
  */
 grdelType grdelWindowCreate(const char *engine, int enginelen,
                             const char *title, int titlelen, 
-                            grdelBool visible, grdelBool noalpha)
+                            grdelBool visible, grdelBool noalpha, 
+                            grdelBool rasteronly)
 {
     GDWindow *window;
     PyObject *visiblebool;
     PyObject *noalphabool;
+    PyObject *rasteronlybool;
 
     /* Allocate memory for this GDWindow */
     window = (GDWindow *) PyMem_Malloc(sizeof(GDWindow));
@@ -118,7 +121,7 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
      * This will fail if it is a Python-based engine.
      */
     window->bindings.cferbind = cferbind_createWindow(engine, enginelen,
-                                         title, titlelen, visible, noalpha);
+                           title, titlelen, visible, noalpha, rasteronly);
     if ( window->bindings.cferbind != NULL ) {
         /* Success - engine found; done */
 #ifdef VERBOSEDEBUG
@@ -151,10 +154,16 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
         noalphabool = Py_True;
     else
         noalphabool = Py_False;
+    if ( rasteronly )
+        rasteronlybool = Py_True;
+    else
+        rasteronlybool = Py_False;
     window->bindings.pyobject = 
             PyObject_CallMethod(pyferret_graphbind_module_pyobject, 
-                                "createWindow", "s#s#OO", engine, enginelen,
-                                title, titlelen, visiblebool, noalphabool);
+                                "createWindow", "s#s#OOO", 
+                                engine, enginelen,
+                                title, titlelen, 
+                                visiblebool, noalphabool, rasteronlybool);
     if ( window->bindings.pyobject == NULL ) {
         sprintf(grdelerrmsg, "grdelWindowCreate: error when calling createWindow "
                              "in pyferret.graphbind: %s", pyefcn_get_error());
@@ -1070,17 +1079,19 @@ grdelBool grdelWindowSetWidthFactor(grdelType window, float widthfactor)
  *     titlelen: actual length of the title
  *     visible: display Window on start-up? If zero, no; if non-zero, yes.
  *     noalpha: do not use the alpha channel (opacity) in colors ?
+ *     rasteronly: only create raster images
  * Output Arguments:
  *     window: the window object created, or zero if failure.
  *             Use fgderrmsg_ to retreive the error message.
  */
 void fgdwincreate_(void **window, char *engine, int *enginelen,
-                   char *title, int *titlelen, int *visible, int *noalpha)
+                   char *title, int *titlelen, int *visible, 
+                   int *noalpha, int *rasteronly)
 {
     grdelType mywindow;
 
-    mywindow = grdelWindowCreate(engine, *enginelen, title, 
-                                 *titlelen, *visible, *noalpha);
+    mywindow = grdelWindowCreate(engine, *enginelen, title, *titlelen, 
+                                 *visible, *noalpha, *rasteronly);
     *window = mywindow;
 }
 

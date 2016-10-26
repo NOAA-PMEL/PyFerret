@@ -13,7 +13,7 @@
  * successful.  If an error occurs, grdelerrmsg is assigned
  * an appropriate error message and NULL is returned.
  */
-CFerBind *cairoCFerBind_createWindow(int noalpha)
+CFerBind *cairoCFerBind_createWindow(int noalpha, int rasteronly)
 {
     CFerBind *bindings;
     CairoCFerBindData *instdata;
@@ -84,7 +84,10 @@ CFerBind *cairoCFerBind_createWindow(int noalpha)
     /* Set non-zero default values */
     instdata = (CairoCFerBindData *) bindings->instancedata;
     /* Default Cairo surface type */
-    instdata->imageformat = CCFBIF_REC;
+    if ( rasteronly != 0 )
+        instdata->imageformat = CCFBIF_PNG;
+    else
+        instdata->imageformat = CCFBIF_REC;
     /* default DPI, image size, line width scaling factor, and minimum allowed value */
     instdata->pixelsperinch = 96;
     instdata->imagewidth = (int) (10.2 * instdata->pixelsperinch);

@@ -21,6 +21,7 @@ const int lenPyQtCairoCFerBindName = 11;
  *
  * For the "Cairo" engine, the windowname, winnamelen, and
  * visible arguments are ignored as they is not applicable.
+ * For the "PipedImager" engine, rasteronly is ignored.
  *
  * Returns a pointer to the bindings instance if successful.
  * If an error occurs, grdelerrmsg is assigned an appropriate
@@ -28,7 +29,7 @@ const int lenPyQtCairoCFerBindName = 11;
  */
 CFerBind *cferbind_createWindow(const char *enginename, int engnamelen,
                                 const char *windowname, int winnamelen, 
-                                int visible, int noalpha)
+                                int visible, int noalpha, int rasteronly)
 {
     CFerBind *bindings;
     int k;
@@ -37,7 +38,7 @@ CFerBind *cferbind_createWindow(const char *enginename, int engnamelen,
     if ( (engnamelen == lenCairoCFerBindName) &&
          (strncmp(enginename, CairoCFerBindName, lenCairoCFerBindName) == 0) ) {
         /* Create a bindings instance for a Cairo engine */
-        bindings = cairoCFerBind_createWindow(noalpha);
+        bindings = cairoCFerBind_createWindow(noalpha, rasteronly);
         return bindings;
     }
 

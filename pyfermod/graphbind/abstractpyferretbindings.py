@@ -29,17 +29,22 @@ class AbstractPyFerretBindings(object):
         '''
         super(AbstractPyFerretBindings, self).__init__()
 
-    def createWindow(self, title, visible, noalpha):
+    def createWindow(self, title, visible, noalpha, rasteronly):
         '''
         Creates a "Window object" for this graphics engine.  Here,
         a Window is the complete drawing area.  However, no drawing
         will be performed on a Window, only on Views (see beginView).
         Initializes the graphics engine if needed.
 
+        The rasteronly option is for possible faster drawing by
+        drawing directly to an image surface.  If true, deleting 
+        segments may not be supported.
+
         Arguments:
             title: display title for the Window
             visible: display Window on start-up?
             noalpha: do not use the alpha channel in colors?
+            rasteronly: only raster images will be used ?
 
         Returns True if a Window was successfully created.
         '''

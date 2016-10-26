@@ -109,7 +109,7 @@ def init(arglist=None, enterferret=True):
     ferret_help_message = \
     """
 
-    Usage:  pyferret  [-memsize <N>]  [-nodisplay]  [-nojnl]  [-noverify]
+    Usage:  pyferret  [-memsize <N>]  [-nodisplay]  [-png]  [-nojnl]  [-noverify]
                       [-secure]  [-server]  [-python]  [-version]  [-help] 
                       [-quiet]  [-linebuffer]  [-batch [<filename>]]  
                       [-transparent]  [-script <scriptname> [ <scriptarg> ... ]]
@@ -121,8 +121,12 @@ def init(arglist=None, enterferret=True):
                      using the FRAME command in any of the supported file
                      formats.  The /QUALITY option of SET WINDOW will be
                      ignored when this is specified.  The deprecated
-                     command-line options -unmapped and -gif are now
-                     aliases of this option.
+                     command-line option -unmapped is an alias of this option.
+
+       -png          only raster (PNG) images can be saved; implies
+                     -nodisplay and deletion of part of plot is no supported.
+                     The deprecatred command-line option -gif is an alias
+                     of this option.
 
        -nojnl:       on startup do not open a journal file (can be turned
                      on later with SET MODE JOURNAL)
@@ -175,6 +179,7 @@ def init(arglist=None, enterferret=True):
     my_metaname = None
     my_transparent = False
     my_unmapped = False
+    my_pngonly = False
     my_memsize = 25
     my_journal = True
     my_verify = True
@@ -216,11 +221,14 @@ def init(arglist=None, enterferret=True):
                     my_transparent = True
                 elif opt == "-nodisplay":
                     my_unmapped = True
-                elif opt == "-gif":
-                    my_unmapped = True
-                    my_metaname = "ferret.png"
                 elif opt == "-unmapped":
                     my_unmapped = True
+                elif opt == "-png":
+                    my_unmapped = True
+                    my_pngonly = True
+                elif opt == "-gif":
+                    my_unmapped = True
+                    my_pngonly = True
                 elif opt == "-nojnl":
                     my_journal = False
                 elif opt == "-noverify":
@@ -478,7 +486,7 @@ def init(arglist=None, enterferret=True):
     start(memsize=my_memsize, journal=False, verify=my_verify,
           restrict=my_restrict, server=my_server, metaname=my_metaname,
           transparent=my_transparent, unmapped=my_unmapped, 
-          quiet=my_quiet, linebuffer=my_linebuffer)
+          pngonly=my_pngonly, quiet=my_quiet, linebuffer=my_linebuffer)
 
     # define all the Ferret standard Python external functions
     for fname in std_pyefs:
@@ -526,17 +534,21 @@ def init(arglist=None, enterferret=True):
 
 def start(memsize=25, journal=True, verify=False, restrict=False,
           server=False, metaname=None, transparent=False,
-          unmapped=False, quiet=False, linebuffer=False):
+          unmapped=False, pngonly=False, quiet=False, linebuffer=False):
     """
     Initializes Ferret.  This allocates the initial amount of memory
     for Ferret (from Python-managed memory), opens the journal file,
-    if requested, and sets Ferret's verify mode.  If restrict is True,
-    some Ferret commands will not be available (to provide a secured
-    session).  Once restrict is set, it cannot be unset.  If server
-    is True, Ferret will be run in server mode.  If metaname is not
-    empty this value is used as the initial filename for automatic
-    output of graphics, and the graphics viewer will not be displayed.
+    if requested, and sets Ferret's verify mode.  
+    If restrict is True, some Ferret commands will not be available 
+    (to provide a secured session).  Once restrict is set, it cannot 
+    be unset.  
+    If metaname is not empty this value is used as the initial filename 
+    for automatic output of graphics, and the graphics viewer will not 
+    be displayed.
+    If server is True, Ferret will be run in server mode.  
     If unmapped is True, the graphics viewer will not be displayed.
+    If pngonly is True, only raster images can be saved and the 
+    graphics viewer will not be displayed.
     If quiet is True, the Ferret start-up header is not displayed.
     If linebuffer is True, stdout and stderr are set user line 
     buffering.  This cannot be reset once set.
@@ -553,6 +565,7 @@ def start(memsize=25, journal=True, verify=False, restrict=False,
         transparent: autosave (e.g., on exit) image files with a
                      transparent background?
         unmapped:    hide the graphics viewer?
+        pngonly:     only create raster (PNG) images?
         quiet:       do not display the Ferret start-up header?
         linebuffer:  print each line of output or error messages as soon as 
                      a full line is written?  Useful when redirecting these
@@ -601,7 +614,7 @@ def start(memsize=25, journal=True, verify=False, restrict=False,
     success = libpyferret._start(flt_memsize, bool(journal), bool(verify),
                                  bool(restrict), bool(server), str_metaname,
                                  bool(transparent), bool(unmapped), 
-                                 bool(quiet), bool(linebuffer))
+                                 bool(pngonly), bool(quiet), bool(linebuffer))
     if success:
         # register the libpyferret._quit function with atexit to ensure
         # open viewer windows do not hang a Python shutdown

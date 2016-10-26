@@ -128,6 +128,10 @@
 * Only reset by command-line options.
         CHARACTER*64 defaultenginename
 
+* Raster-only option - primarily for Cairo default engine
+* Only reset by command-line options.
+        LOGICAL rasteronly
+
 * Transparent background for save-on-exit (-batch)?
 * Should not change after start-up.
 * Only reset by the "-transparent" command-line option.
@@ -160,7 +164,7 @@
      .         lastbstylen, brushcolor, pencolor, symbolcolor, 
      .
      .         cliptoview, somethingdrawn, savetransparent, 
-     .         antialias, 
+     .         antialias, rasteronly, 
      .
      .         lastbrushstyle, defaultenginename, enginename, 
      .         windowtitle

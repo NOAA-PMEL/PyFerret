@@ -46,11 +46,9 @@
 #endif
 
 /* set_batch_graphics */
-void FORTRAN(set_batch_graphics)(char *outfile)
+void FORTRAN(set_batch_graphics)(char *outfile, int *pngonly)
 {
   int length;
-  int status;
-  int aaint;
 
   assert( outfile != NULL );
   length = strlen(outfile);
@@ -65,11 +63,13 @@ void FORTRAN(set_batch_graphics)(char *outfile)
   }
 
   /* 
-   * GKS metafile format no longer supported. The "-batch",
-   * "-gif", and "-unmapped" options do not change the workflow.
+   * GKS metafile format no longer supported. The "-batch"
+   * and "-unmapped" options do not change the workflow.
    * If one of these option is given, however, windows are not
    * made visible.  This allows the use of a faster graphics engine.
+   * -gif or -png sets the Cairo surface to an image surface
+   *  allowing even faster processing, but with limitations.
    */
-  FORTRAN(fgd_set_unmapped_default)();
+  FORTRAN(fgd_set_unmapped_default)(pngonly);
 }
 

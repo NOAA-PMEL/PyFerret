@@ -9,6 +9,7 @@
 *
 * Values used from fgrdel.cmn:
 *     enginename
+*     rasteronly
 *     windowtitle
 *     antialias
 *     thickfactor
@@ -26,8 +27,8 @@
 
         INTEGER TM_LENSTR
 
-        INTEGER engnamelen, wintitlelen, showit, 
-     .          noalpha, success, errmsglen, aaint
+        INTEGER engnamelen, wintitlelen, showit, noalpha, 
+     .          success, errmsglen, aaint, roint
         CHARACTER*2048 errmsg
         REAL*4 redf, greenf, bluef, opaquef
 
@@ -46,9 +47,16 @@
         showit = 1
 *       ignoring alpha in colors ?
         noalpha = 0
+*       raster only ?
+        IF ( rasteronly ) THEN
+            roint = 1
+        ELSE
+            roint = 0
+        ENDIF
         CALL FGDWINCREATE(windowobjs(windowid),
      .                    enginename(windowid), engnamelen,
-     .                    windowtitle, wintitlelen, showit, noalpha)
+     .                    windowtitle, wintitlelen, showit, 
+     .                    noalpha, roint)
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
             errmsg = ' '
             CALL FGDERRMSG(errmsg, errmsglen)

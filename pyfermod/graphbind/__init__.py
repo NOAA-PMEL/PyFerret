@@ -47,7 +47,7 @@ def knownPyFerretEngines():
     '''
     return tuple( __pyferret_bindings_classes.keys() )
     
-def createWindow(engine_name, title, visible, noalpha):
+def createWindow(engine_name, title, visible, noalpha, rasteronly):
     '''
     Creates an instance of the bindings class associated with
     engine_name and calls the createWindow method of that
@@ -60,6 +60,7 @@ def createWindow(engine_name, title, visible, noalpha):
         title: display title for the Window
         visible: display Window on start-up?
         noalpha: do not use the alpha channel in colors?
+        rasteronly: only raster images will be used ?
 
     Returns the instance of the binding class associated with
     the newly created Window if the createWindow method of the
@@ -73,7 +74,7 @@ def createWindow(engine_name, title, visible, noalpha):
     except KeyError:
         raise ValueError("Unknown graphics engine '%s'" % engine_name)
     bindinst = bindclass()
-    if not bindinst.createWindow(title, visible, noalpha):
+    if not bindinst.createWindow(title, visible, noalpha, rasteronly):
         del bindinst
         return None
     return bindinst
@@ -91,7 +92,7 @@ if __name__ == "__main__":
             return True
 
     addPyFerretBindings(TestBindings.engine_name, TestBindings)
-    bindinst = createWindow(TestBindings.engine_name, "test", False, False)
+    bindinst = createWindow(TestBindings.engine_name, "test", False, False, False)
     if not bindinst:
         raise RuntimeError("Unsuccessful creation of a Window")
     try:

@@ -113,7 +113,7 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
      * PipedImager methods interacting with the viewer.
      */
     instdata->viewer = grdelWindowCreate("PipedImagerPQ", 13, windowname,
-                                         windnamelen, visible, noalpha);
+                                         windnamelen, visible, noalpha, 1);
     if ( instdata->viewer == NULL ) {
         /* grdelerrmsg already assigned */
         PyMem_Free(bindings->instancedata);

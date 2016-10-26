@@ -811,7 +811,7 @@ class PViewerPQPyFerretBindings(PyFerretBindings):
     PyFerretBindings using a PipedViewerPQ as the viewer.
     '''
 
-    def createWindow(self, title, visible, noalpha):
+    def createWindow(self, title, visible, noalpha, rasteronly):
         '''
         Creates PyFerret bindings using a PipedViewerPQ.
 
@@ -819,6 +819,7 @@ class PViewerPQPyFerretBindings(PyFerretBindings):
             title: display title for the Window
             visible: display Window on start-up?
             noalpha: do not use the alpha channel in colors?
+            rasteronly: ignored
 
         Raises a RuntimeError if an active window is already associated
         with these bindings, or if there were problems with creating
@@ -846,7 +847,7 @@ class PImagerPQPyFerretBindings(PyFerretBindings):
     for the new scene to be displayed.
     '''
 
-    def createWindow(self, title, visible, noalpha):
+    def createWindow(self, title, visible, noalpha, rasteronly):
         '''
         Creates PyFerret bindings using a PipedImagerPQ.
 
@@ -854,6 +855,7 @@ class PImagerPQPyFerretBindings(PyFerretBindings):
             title: display title for the Window
             visible: display Window on start-up?
             noalpha: do not use the alpha channel in colors?
+            rasteronly: ignored
 
         Raises a RuntimeError if an active window is already associated
         with these bindings, or if there were problems with creating
@@ -945,7 +947,7 @@ if __name__ == "__main__":
         print "Testing bindings for %s" % viewertype
         # Create a viewer window
         title = viewertype + "Tester"
-        bindinst = pyferret.graphbind.createWindow(viewertype, title, True, False)
+        bindinst = pyferret.graphbind.createWindow(viewertype, title, True, False, False)
         # Resize the window to 500 x 500 pixels
         bindinst.resizeWindow(500, 500)
         # Turn on anti-aliasing

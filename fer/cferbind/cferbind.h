@@ -97,10 +97,10 @@ typedef struct CFerBind_struct {
  */
 CFerBind *cferbind_createWindow(const char *enginename, int engnamelen,
                                 const char *windowname, int winnamelen, 
-                                int visible, int noalpha);
+                                int visible, int noalpha, int rasteronly);
 
 /* The createWindow function for the Cairo engine */
-CFerBind *cairoCFerBind_createWindow(int noalpha);
+CFerBind *cairoCFerBind_createWindow(int noalpha, int rasteronly);
 /* The createWindow function for the PyQtCairo engine */
 CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen,
                                          int visible, int noalpha);

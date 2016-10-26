@@ -259,7 +259,8 @@ static char pyferretStartDocstring[] =
     "    restrict = <bool>: restrict Ferret's capabilities? (default False) \n"
     "    server = <bool>: run Ferret in server mode? (default False) \n"
     "    metaname = <string>: filename for Ferret graphics (default empty) \n"
-    "    unmapped = <bool>: hide the graphics viewer? (default False) \n"
+    "    unmapped = <bool>: hide the graphics viewer? (default False unless png is True) \n"
+    "    pngonly = <bool>: write directly to a PNG? (default False; True implies unmapped) \n"
     "    quiet = <bool>: do not print the ferret header? (default False) \n"
     "    linebuffer = <bool>: use line buffering for stdout and stderr? (default False) \n"
     "            Note: \n"
@@ -278,8 +279,8 @@ static char pyferretStartDocstring[] =
 static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
 {
     static char *argNames[] = {"memsize", "journal", "verify", "restrict", "server",
-                               "metaname", "transparent", "unmapped", "quiet", 
-                               "linebuffer", NULL};
+                               "metaname", "transparent", "unmapped", "pngonly", 
+                               "quiet", "linebuffer", NULL};
     double mwMemSize = 25.6;
     PyObject *pyoJournal = NULL;
     PyObject *pyoVerify = NULL;
@@ -287,6 +288,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     PyObject *pyoServer = NULL;
     PyObject *pyoTransparent = NULL;
     PyObject *pyoUnmapped = NULL;
+    PyObject *pyoPngonly = NULL;
     PyObject *pyoQuiet = NULL;
     PyObject *pyoLineBuffer = NULL;
     char *metaname = NULL;
@@ -296,6 +298,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     int serverFlag = 0;
     int transparentFlag = 0;
     int unmappedFlag = 0;
+    int pngonlyFlag = 0;
     int quietFlag = 0;
     int lineBufferFlag = 0;
     int pplMemSize;
@@ -308,19 +311,20 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     /* If already initialized, return False */
     if ( ferretInitialized ) {
         Py_INCREF(Py_False);
-        return Py_False;
+	return Py_False;
     }
 
     /* Import the function-pointer table for the PyArray_* functions */
     import_array1(NULL);
 
     /* Parse the arguments, checking if an Exception was raised */
-    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|dO!O!O!O!sO!O!O!O!",
+    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|dO!O!O!O!sO!O!O!O!O!",
                  argNames, &mwMemSize, &PyBool_Type, &pyoJournal,
                  &PyBool_Type, &pyoVerify, &PyBool_Type, &pyoRestrict,
                  &PyBool_Type, &pyoServer, &metaname,
                  &PyBool_Type, &pyoTransparent, &PyBool_Type, &pyoUnmapped,
-                 &PyBool_Type, &pyoQuiet, &PyBool_Type, &pyoLineBuffer) )
+                 &PyBool_Type, &pyoPngonly, &PyBool_Type, &pyoQuiet, 
+                 &PyBool_Type, &pyoLineBuffer) )
         return NULL;
 
     /* Interpret the booleans - Py_False and Py_True are singleton non-NULL objects, so just use == */
@@ -336,11 +340,15 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
         transparentFlag = 1;
     if ( pyoUnmapped == Py_True )
         unmappedFlag = 1;
+    if ( pyoPngonly == Py_True )
+        pngonlyFlag = 1;
     if ( pyoQuiet == Py_True )
         quietFlag = 1;
     if ( pyoLineBuffer == Py_True )
         lineBufferFlag = 1;
 
+    if ( pngonlyFlag != 0 )
+        unmappedFlag = 1;
     if ( metaname[0] == '\0' )
         metaname = NULL;
 
@@ -393,7 +401,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
        else {
            my_meta_name[0] = '\0';
        }
-       set_batch_graphics_(my_meta_name);
+       set_batch_graphics_(my_meta_name, &pngonlyFlag);
     }
 
     /* Set the default autosave transparency */

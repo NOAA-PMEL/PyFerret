@@ -59,6 +59,7 @@ C              after applying an offset.)
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
+* *acm* - 11/16  ticket 2477: incomplete axis on some plots
 
 
 C**
@@ -130,6 +131,7 @@ C     THE FOLLOWING SECTION OF CODE MAKES THIS ROUTINE UPWARD COMPATIABLE.
 C
 C	DRAW AXIS
 C
+
 	DIR=SIGN(1.,YTIC)
 	YT=INT(YLO/YTIC+SIGN(0.000001,DIR*YLO))*YTIC
 	IF(DIR*YT.LT.DIR*YLO)YT=YT+YTIC
@@ -137,7 +139,7 @@ C
 	CALL PLOT(X,YT,0,0)
 	CALL SMY1(X,XFACT,YFACT,YT,YLO,-YTIC,NSMTCY,
      .     xacross,hgrat,hcolor,hline)
-	CALL PLOT(X,YLO,1,0)
+
 	CALL PLOTT7(X,YT,XFACT,YFACT,1,-6)
 
 	Y=YT
@@ -163,7 +165,7 @@ C
               CALL DASHSZ(dash1,dash2,dash3,dash4)
               CALL DASHES
            ENDIF
-           CALL PLOT(X,Y,0,0) 
+           CALL PLOT(X,Y,0,0)
            CALL PLOT(xacross,Y,1,0)
            CALL PLOT(X,Y,0,0) 
            CALL COLOR(color0)
@@ -189,8 +191,8 @@ C
            CALL VECTRS
         ENDIF
 
+	CALL PLOT(X,YLO,1,0)
 	CALL PLOT(X,YHI,1,0)
-
 C
 C	DRAW LABELS
 C

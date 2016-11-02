@@ -1,0 +1,10 @@
+! err700_vs_plot_axes.jnl
+! See ticket 2477, in some cases the plot axes are not fully drawn
+! 11/2016 ACM
+
+
+USE err700_vs_data.nc
+
+! only with PLOT/VS plots, only with SYMBOLS not PLOT/VS/LINE
+PLOT/VS/THICK/COLOR=red/SIZ=0.2 lon,lat
+FRAME/FILE=bn_axis_vs.gif

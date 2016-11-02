@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 121894588 May 11 15:36 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 119115788 Nov  1 17:20 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: updates including subspan modulo fixes
+Note: all updates through 11/1/2016 on stout
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,13 +14,15 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/linux/FERRET/external_functions/ext_func
+FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/linux/go /home/users/tmap/ferret/linux/examples /home/users/tmap/ferret/linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
+FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/linux/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/linux/ext_func/pylibs
-Beginning at Wed May 11 16:10:59 PDT 2016
+Beginning at Tue Nov 1 17:29:39 PDT 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -142,14 +144,14 @@ IF 0 THEN say ERROR ELIF 1 THEN say "CORRECT if you see this"
  **ERROR: command syntax: Trash after ENDIF
           IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
 IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF, in script ./bn_if.sub
  **ERROR: invalid command: ELSE can only be used between IF and ENDIF
 else
  **ERROR: invalid command: ENDIF can only be used in an IF clause
 endif
  **ERROR: invalid command: ELIF can only be used between IF and ENDIF
 elif
-           *** NOTE: Unclosed IF statement ... assuming ENDIF
+           *** NOTE: Unclosed IF statement ... assuming ENDIF, in script ./bn_if.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
@@ -818,7 +820,6 @@ Replacing definition of grid TGRID
  TEMPORARY data cleared from memory
  **ERROR: command syntax: dash=(1., 2.)
           DASH[=(dn1,up1,dn2,up2)] takes 4 arguments or no argument
-plot/dash=(1., 2.)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
 
 Bailing out of external function "ffta":
 	 Time axis must be a regular axis
@@ -831,6 +832,7 @@ Bailing out of external function "eof_stat":
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+plot/dash=(1., 2.)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
  **ERROR: value out of legal range: dash=(-1., 2., 3., 4.)
           DASH arguments must be positive
 plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
@@ -1007,14 +1009,14 @@ Replacing definition of axis TAX
 Replacing definition of axis Z1
 Replacing definition of grid G1
  **TMAP ERR: syntax error in string
-             Unrecognized field type: D
+             Unrecognized field type: DA2
              Data set: ./bn_delimited_read_date_time.dat
-           *** NOTE: Valid types are: -,NUMERIC,TEXT,LATITUDE,LONGITUDE,DATE,EURODATE,TIME
+           *** NOTE: Valid types are: -,NUMERIC,TEXT,LATITUDE,LONGITUDE,DATE,EURODATE,TIME,DATIME,EDATIME
 SET DATA/FORM=delimited/type="d, da2,date2"  bn_delimited_read_date_time.dat
  **TMAP ERR: syntax error in string
              Unrecognized field type: DATE2
              Data set: ./bn_delimited_read_date_time.dat
-           *** NOTE: Valid types are: -,NUMERIC,TEXT,LATITUDE,LONGITUDE,DATE,EURODATE,TIME
+           *** NOTE: Valid types are: -,NUMERIC,TEXT,LATITUDE,LONGITUDE,DATE,EURODATE,TIME,DATIME,EDATIME
 SET DATA/FORM=delimited/type="da,da, date2"  bn_delimited_read_date_time.dat
  **ERROR: command syntax: ,,:
 SET DATA/EZ/form=delim/delim="/,,,:" bn_delimited_read_date_time.dat
@@ -1376,17 +1378,27 @@ Replacing definition of axis TAX2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  **ERROR: improper grid or axis definition: Axis length exceeds modulo length
 define axis/x=130e:500:10/modulo=360 xsub
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
+           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_subspan_modulo.nc
  LISTing to file test_subspan_modulo.nc
  LISTing to file test_subspan_modulo.nc
@@ -1461,7 +1473,9 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
            *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+rm: cannot remove `input.txt': No such file or directory
 ls: input.txt: No such file or directory
+           *** NOTE: Shell command returned failure flag: rm input.txt
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XAX
@@ -1492,7 +1506,10 @@ Replacing definition of axis Z1
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
+           *** NOTE: Coordinates missing on axis LONGITUDE at subscript 13
+           *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: Coordinates missing on axis LATITUDE at subscript 13
+           *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
  **ERROR: illegal limits: "DUMMY" does not exist at T=JAN-1990
           Axis extremes are T=DEC-1997:JAN-1998
@@ -2369,7 +2386,10 @@ curl error details:
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
+           *** NOTE: Coordinates missing on axis LONGITUDE at subscript 4
+           *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: Coordinates missing on axis LATITUDE at subscript 4
+           *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
            *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
            *** NOTE: Substituting coordinate midpoints
@@ -3106,6 +3126,9 @@ show grid garbage
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
+
+Bailing out of external function "tax_year":
+	 Function not valid for modulo time axis
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3116,9 +3139,6 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-
-Bailing out of external function "tax_year":
-	 Function not valid for modulo time axis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XAX
@@ -3377,6 +3397,10 @@ DEFINE DATA/AGGREGAT/E windy = 1,2
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, more
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: MODE 6D_lab is deprecated. Leave the mode set; output automatically adjusts to 4D or 6D grids
+           *** NOTE: MODE 6D_lab is deprecated. Leave the mode set; output automatically adjusts to 4D or 6D grids
+           *** NOTE: MODE 6D_lab is deprecated. Leave the mode set; output automatically adjusts to 4D or 6D grids
+           *** NOTE: MODE 6D_lab is deprecated. Leave the mode set; output automatically adjusts to 4D or 6D grids
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3595,6 +3619,7 @@ Replacing definition of axis ZAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: Changing the type of attribute a.ival
            *** NOTE: Changing the value of attribute a.ival
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3672,6 +3697,8 @@ set var/name=b a
 set var/name=temp salt
  **ERROR: invalid command: illegal new name.  Variable psi exists in dataset
 set var/name=psi myvar
+syntax error, unexpected WORD_STRING, expecting WORD_WORD
+context: Error { code = 500; message = "Error processing XML header file /usr/local/src/nvods/tomcat/content/las/conf/server/temp/6790FDCBF64A0E6EFAA6A20D854071E0/header.xml (No such file or directory)"^;};
  **ERROR: invalid command: illegal new name.  Variable diff already defined
 set var/name=diff w
  PERMANENT data cleared from memory
@@ -3700,6 +3727,56 @@ set axis/name=45 x_in_meters
 set axis/name=.fr x_in_meters
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "time_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "time_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "time_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+ **ERROR: command syntax: /REMOTE variable expression may not contain [d=
+DEFINE VARIABLE/D=1/remote rvar = t0112mn1[d=1,z=1:100@ave]
+ **ERROR: command syntax: /REMOTE variable definition must also specify /D=
+DEFINE VARIABLE/remote rvar = t0112mn1[d=1,z=1:100@ave]
+ **netCDF error
+             Unable to open URL with REMOTE variable definitions:
+             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
+ **TMAP ERR: attribute reading error
+             Unable to get bad-value for LET/REMOTE variable: NetCDF: Attribute not found (OPeNDAP/netCDF Error code -43)
+             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
+ **netCDF error
+             NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
+             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
+list/x=300/y=15 avar
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3813,6 +3890,8 @@ list substring("hello",1,-2)
 list substring("hello",1,-3)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+rm: cannot remove `test_save_dsg.nc': No such file or directory
+           *** NOTE: Shell command returned failure flag: rm test_save_dsg.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file anew_global.nc
@@ -3982,6 +4061,7 @@ Replacing definition of grid GG
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 rm: cannot remove `WestCoastCarbon_9d9c_f562_77b5_5.nc': No such file or directory
+           *** NOTE: Shell command returned failure flag: rm WestCoastCarbon_9d9c_f562_77b5_5.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4034,6 +4114,8 @@ def anno/nou/xpos=0/hal=1/val=0 "My Lab"
 def anno/nou/user/xpos=0/ypos=0 "My Lab"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+rm: cannot remove `layerz_test_data.txt': No such file or directory
+           *** NOTE: Shell command returned failure flag: rm layerz_test_data.txt
 Replacing definition of axis ZAX
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
@@ -4189,6 +4271,16 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+           *** NOTE: Changing the type of attribute sst.newch
+           *** NOTE: Changing the value of attribute sst.newch
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_1.nc
  LISTing to file tmp/tagg_reg_2.nc
@@ -4204,7 +4296,7 @@ Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_no_T.nc
  LISTing to file tmp/tagg_reg_2_overlarge.nc
            *** NOTE: Not deleted: TDAY
-           *** NOTE: Axis is in use by grid (G092)
+           *** NOTE: Axis is in use by grid (G088)
  LISTing to file tmp/tagg_irreg_1.nc
  LISTing to file tmp/tagg_irreg_2.nc
  LISTing to file tmp/tagg_irreg_3.nc
@@ -4218,7 +4310,7 @@ Replacing definition of axis TDAY
 Replacing definition of axis TDAY_IR
  LISTing to file tmp/tagg_irreg_2_reg.nc
            *** NOTE: Not deleted: TDAY_IR
-           *** NOTE: Axis is in use by grid (G092)
+           *** NOTE: Axis is in use by grid (G088)
  LISTing to file tmp/tagg_T0varying_1.nc
 Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_T0varying_2.nc
@@ -4254,7 +4346,7 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_disjoint_T0varying_3.nc
  LISTing to file tmp/tagg_disjoint_T0varying_4_wrong.nc
            *** NOTE: Not deleted: TDAY_WRONG
-           *** NOTE: Axis is in use by grid (G092)
+           *** NOTE: Axis is in use by grid (G088)
  LISTing to file tmp/tagg_single_1.nc
  LISTing to file tmp/tagg_single_2.nc
  LISTing to file tmp/tagg_single_3.nc
@@ -4262,7 +4354,7 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_single_5.nc
  LISTing to file tmp/tagg_single_6.nc
            *** NOTE: Not deleted: tday
-           *** NOTE: Axis is in use by grid (G092)
+           *** NOTE: Axis is in use by grid (G088)
  **ERROR: invalid command: given aggregation dataset name already in use: myagg2
 define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc, tmp/tagg_reg_2.nc
  **TMAP ERR: non-existent or not on line
@@ -4612,6 +4704,111 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: unrepairable repeated axis coords on axis xax at subscript 21
+           *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: unrepairable repeated axis coords on axis yax at subscript 21
+           *** NOTE: A dummy axis of subscripts will be used
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: Unclosed IF statement ... assuming ENDIF, in script ./unclosed_if.sub
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis YAXIS
+ LISTing to file a.nc
+Replacing definition of axis TAX
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+Replacing definition of axis ZAX
+Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TIMAX
+Replacing definition of axis TIMAX
+Replacing definition of axis TIMAX
+Replacing definition of axis TIMAX
+Replacing definition of axis TIMAX
+ **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
+list index,edtim,udtim,udate,edate
+ **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
+list index,edtim,udtim,udate,edate
+ **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
+list index,edtim,udtim,udate,edate
+ **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
+list index,edtim,udtim,udate,edate
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ LISTing to file tmp/uagg_1.nc
+ LISTing to file tmp/uagg_2.nc
+ LISTing to file tmp/uagg_3.nc
+ LISTing to file tmp/uagg_4.nc
+ LISTing to file tmp/uagg_1_t1.nc
+ LISTing to file tmp/uagg_1_t2.nc
+ LISTing to file tmp/uagg_1_t3.nc
+ LISTing to file tmp/uagg_5.nc
+           *** NOTE: Skipping variable SST from set 2, already in the Union dataset.
+Replacing definition of axis ZAX
+ LISTing to file tmp/f01_e1_tu1.nc
+ LISTing to file tmp/f01_e1_tu2.nc
+ LISTing to file tmp/f01_e1_tu3.nc
+ LISTing to file tmp/f01_e2_tu1.nc
+ LISTing to file tmp/f01_e2_tu2.nc
+ LISTing to file tmp/f01_e2_tu3.nc
+ LISTing to file tmp/f02_e1_tu1.nc
+ LISTing to file tmp/f02_e1_tu2.nc
+ LISTing to file tmp/f02_e1_tu3.nc
+ LISTing to file tmp/f02_e2_tu1.nc
+ LISTing to file tmp/f02_e2_tu2.nc
+ LISTing to file tmp/f02_e2_tu3.nc
+ LISTing to file tmp/f03_e1_tu1.nc
+ LISTing to file tmp/f03_e1_tu2.nc
+ LISTing to file tmp/f03_e1_tu3.nc
+ LISTing to file tmp/f03_e2_tu1.nc
+ LISTing to file tmp/f03_e2_tu2.nc
+ LISTing to file tmp/f03_e2_tu3.nc
+           *** NOTE: Skipping variable REALIZATION from set 1, already in the Union dataset.
+           *** NOTE: Skipping variable REALIZATION from set 8, already in the Union dataset.
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file abc.dat
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ls: notafile.nowhere: No such file or directory
+           *** NOTE: Shell command returned failure flag: ls notafile.nowhere
+           *** NOTE: Shell command returned failure flag: grep "this text is not in the file" bn_all.jnl
+rm: cannot remove `nothing.dat': No such file or directory
+           *** NOTE: Shell command returned failure flag: rm nothing.dat
+           *** NOTE: Shell command returned failure flag: grep modulus non_COARDS.cdl
+cp: cannot stat `nofile.dat': No such file or directory
+           *** NOTE: Shell command returned failure flag: cp nofile.dat not_either.dat
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -4716,4 +4913,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed May 11 16:14:42 PDT 2016
+Ended at Tue Nov 1 17:34:53 PDT 2016

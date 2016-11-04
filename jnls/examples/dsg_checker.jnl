@@ -27,7 +27,7 @@ IF `is_element_of_str_n(attnames, "featureType") gt 0` then define symbol featur
 
 IF `($feature_type"0|*>1) EQ 0` THEN
    SAY
-   SAY ** ERROR ** Global Feature_Type attribute is not found.
+   SAY **ERROR ** Global Feature_Type attribute is not found.
    SAY 
    SAY Exit
    SAY
@@ -36,7 +36,7 @@ IF `($feature_type"0|*>1) EQ 0` THEN
 
 ELSE
    SAY
-   SAY ** GOOD ** FeatureType is ($feature_type).
+   SAY **  **  ** FeatureType is ($feature_type).
 ENDIF
 
 ! Look for the cf_role attribute. It must be ($feature_type)_id.
@@ -51,17 +51,18 @@ DEFINE SYMBOL vname = `varnames[i=($q)]`;\
 IF `STRCMP( UPCASE("($vname)"), UPCASE("($ROWSIZE)") ) EQ 0` THEN \
  DEFINE SYMBOL rowsizevar = ($vname);\
 ;\
-IF `IS_ELEMENT_OF_STR_N(($vname).attnames, "cf_role") GT 0` THEN; \
+LET attnames = ($vname).attnames;\
+IF `IS_ELEMENT_OF_STR_N(attnames, "cf_role") GT 0` THEN; \
   DEFINE SYMBOL cf_role = `($vname).cf_role`;\
   DEFINE SYMBOL id_var = ($vname);\
 ENDIF;\
 ;\
-IF `IS_ELEMENT_OF_STR_N(($vname).attnames, "sample_dimension") GT 0` THEN; \
+IF `IS_ELEMENT_OF_STR_N(attnames, "sample_dimension") GT 0` THEN; \
   DEFINE SYMBOL sample_dimension = `($vname).sample_dimension;\
   DEFINE SYMBOL row_var = ($vname);\
 ENDIF;\
 ;\
-IF `($time_units"0|*>1") EQ 0 AND IS_ELEMENT_OF_STR_N(($vname).attnames, "units") GT 0` THEN; \
+IF `($time_units"0|*>1") EQ 0 AND IS_ELEMENT_OF_STR_N(attnames, "units") GT 0` THEN; \
   DEFINE SYMBOL units = `($vname).units`_aa;\
   IF `STRINDEX( UPCASE("($units)"), " SINCE " ) GT 0` THEN;\
      DEFINE SYMBOL time_var = ($vname);\
@@ -69,14 +70,31 @@ IF `($time_units"0|*>1") EQ 0 AND IS_ELEMENT_OF_STR_N(($vname).attnames, "units"
   ENDIF;\
 ENDIF)
 
-! Report cf_role attribute findings
+! If no cf_role, look for it on a coordinate variable.
+IF `($cf_role"0|*>1) EQ 0` THEN
+
+   LET coordnames = ..coordnames
+   LET ncoord = ..ncoordvars
+
+   REPEAT/RANGE=1:`ncoord`/NAME=q (\
+   DEFINE SYMBOL q = `q`;\
+   DEFINE SYMBOL cname = `coordnames[i=($q)]`;\
+   LET attnames = (($cname)).attnames;\
+   IF `IS_ELEMENT_OF_STR_N(attnames, "cf_role") GT 0` THEN; \
+     DEFINE SYMBOL cf_role = `(($cname)).cf_role`;\
+     DEFINE SYMBOL id_var = ($cname);\
+     DEFINE SYMBOL vtype = FLOAT;\
+   ENDIF)
+ENDIF
+
+! If no cf_role, look for it on a coordinate variable.
 IF `($cf_role"0|*>1) EQ 0` THEN
    SAY
-   SAY ** ERROR ** cf_role attribute is not found.
+   SAY **ERROR ** cf_role attribute is not found.
    LET errors = `errors + 1`
 ELSE
    SAY
-   SAY ** GOOD ** cf_role attribute found on variable ($id_var).
+   SAY **  **  ** cf_role attribute found on variable ($id_var).
 ENDIF
 
 ! Check that the feature type and cf_role attribute describe the same feature type.
@@ -85,25 +103,25 @@ DEFINE SYMBOL feature_type_test = ($feature_type)_id
 
 IF `STRCMP( UPCASE("($feature_type_test)"), UPCASE("($cf_role)") ) NE 0` THEN
    SAY
-   SAY ** ERROR ** cf_role attribute must match the feature type.
+   SAY **ERROR ** cf_role attribute must match the feature type.
    SAY **       ** Feature_Type is ($feature_type) cf_role is ($cf_role).
    LET errors = `errors + 1`
 ELSE
    SAY
-   SAY ** GOOD ** cf_role attribute ($cf_role) matches feature type ($feature_type).
+   SAY **  **  ** cf_role attribute ($cf_role) matches feature type ($feature_type).
 ENDIF
 
 
 ! For ERDDAP, the type of the ID variable must be String.
 
-DEFINE SYMBOL vtype = `($id_var),RETURN=dtype`
+IF `($vtype"0|*>1") EQ 0` THEN DEFINE SYMBOL vtype = `($id_var),RETURN=dtype`
 IF `($vtype"0|CHAR>1|*>0") EQ 0` THEN
    SAY
-   SAY ** ERROR ** The ID variable, ($id_var) must be of type string. Its type is ($vtype"Unknown").
+   SAY **ERROR ** The ID variable: ($id_var), must be of type string. Its type is ($vtype"Unknown").
    LET errors = `errors + 1`
 ELSE
    SAY
-   SAY ** GOOD ** ID variable, ($id_var), is of type string.
+   SAY **  **  ** ID variable, ($id_var), is of type string.
 ENDIF
 
 ! Check the sample_dimension attribute, matching a dimension name
@@ -124,10 +142,10 @@ ENDIF
 
 IF ($sample_dim"0|*>1") THEN
    SAY
-   SAY ** GOOD ** sample_dimension attribute found, ($sample_dim).
+   SAY **  **  ** sample_dimension attribute found, ($sample_dim).
 ELSE
    SAY
-   SAY ** NOTE ** sample_dimension attribute not found. This is acceptable for a file containing a single feature. 
+   SAY **NOTE  ** sample_dimension attribute not found. This is acceptable for a file containing a single feature. 
 ENDIF
 
 ! Is the sample_dimension attribute on the variable named rowSize? If not, it's legal,
@@ -136,7 +154,7 @@ ENDIF
 IF ($rowsizevar"0|*>1") THEN
    IF `($rowvar"0|*>1") AND (STRCMP( UPCASE("($rowvar)"), UPCASE("($rowsizevar)") ) NE 0)` THEN
    SAY
-   SAY ** NOTE ** There is a variable named ($rowvar), but the sample_dimension attribute is on variable ($rowsizevar)
+   SAY **NOTE  ** There is a variable named ($rowvar), but the sample_dimension attribute is on variable ($rowsizevar)
    ENDIF
 ENDIF
 
@@ -144,30 +162,30 @@ ENDIF
 
 IF `($time_var"0|*>1") EQ 0` THEN
    SAY  
-   SAY ** ERROR ** Time variable not found. Searching for units of xxx since date.
+   SAY **ERROR ** Time variable not found. Searching for units of xxx since date.
    LET errors = `errors + 1`
 ELSE
    IF `STRINDEX(UPCASE("($time_units)"), "SECONDS SINCE 1970-01-01") EQ 0` THEN
       SAY  
-      SAY ** ERROR ** Time Units must be seconds since 1970-01-01. \
+      SAY **ERROR ** Time Units must be seconds since 1970-01-01. \
       Units on ($time_var) are ($time_units)
       LET errors = `errors+1`
    ELSE
       SAY  
-      SAY ** GOOD ** Time variable ($time_var) with units of ($time_units).
+      SAY **  **  ** Time variable ($time_var) with units of ($time_units).
    ENDIF
 ENDIF
 
 IF `errors GT 0` THEN
    SAY  
-   SAY ** ERROR **
-   SAY File ($filename) `errors` errors detected.
-   SAY ** ERROR **
+   SAY **ERROR **
+   SAY **      **   File ($filename) `errors` errors detected.
+   SAY **ERROR **
 ELSE
    SAY  
-   SAY ** GOOD **
-   SAY **      **   ($filename) passed.
-   SAY ** GOOD **
+   SAY **  **  **
+   SAY **  **  **   ($filename) passed.
+   SAY **  **  **
 ENDIF
 
 SAY  

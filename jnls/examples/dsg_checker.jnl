@@ -1,4 +1,4 @@
-can mode ver
+\cancel mode verify   
 
 ! dsg_checker.jnl
 ! Check a DSG file for valid attributes and LAS/ ERDDAP reqirements
@@ -7,6 +7,10 @@ can mode ver
 !  * Attribute sample_dimension on the Rowsize variable (optional for single-feature files)
 !  * The ID variable must be of string type (for ERDDAP).
 !  * The time variable must be in units of "seconds since 1970-01-01" (for ERDDAP).
+
+
+query/ignore $1%|<Argument 1 is the file to check%
+
 
 use $1
 DEFINE SYMBOL filename = $1

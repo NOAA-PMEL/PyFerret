@@ -14,7 +14,7 @@ DEFINE SYMBOL filename = $1
 USE ($filename)
 
 SAY
-SAY " Analyzing ($filename)"
+SAY --------- Analyzing ($filename)
 SAY
 
 LET errors = 0
@@ -36,7 +36,7 @@ IF `($feature_type"0|*>1) EQ 0` THEN
 
 ELSE
    SAY
-   SAY **  **  ** FeatureType is ($feature_type).
+   SAY --------- FeatureType is ($feature_type).
 ENDIF
 
 ! Look for the cf_role attribute. It must be ($feature_type)_id.
@@ -58,7 +58,7 @@ IF `IS_ELEMENT_OF_STR_N(attnames, "cf_role") GT 0` THEN; \
 ENDIF;\
 ;\
 IF `IS_ELEMENT_OF_STR_N(attnames, "sample_dimension") GT 0` THEN; \
-  DEFINE SYMBOL sample_dimension = `($vname).sample_dimension;\
+  DEFINE SYMBOL sample_dimension = `($vname).sample_dimension`;\
   DEFINE SYMBOL row_var = ($vname);\
 ENDIF;\
 ;\
@@ -87,14 +87,14 @@ IF `($cf_role"0|*>1) EQ 0` THEN
    ENDIF)
 ENDIF
 
-! If no cf_role, look for it on a coordinate variable.
+! Report cf_role attribute.
 IF `($cf_role"0|*>1) EQ 0` THEN
    SAY
    SAY **ERROR ** cf_role attribute is not found.
    LET errors = `errors + 1`
 ELSE
    SAY
-   SAY **  **  ** cf_role attribute found on variable ($id_var).
+   SAY --------- cf_role attribute found on variable ($id_var).
 ENDIF
 
 ! Check that the feature type and cf_role attribute describe the same feature type.
@@ -108,11 +108,11 @@ IF `STRCMP( UPCASE("($feature_type_test)"), UPCASE("($cf_role)") ) NE 0` THEN
    LET errors = `errors + 1`
 ELSE
    SAY
-   SAY **  **  ** cf_role attribute ($cf_role) matches feature type ($feature_type).
+   SAY --------- cf_role attribute ($cf_role) matches feature type ($feature_type).
 ENDIF
 
 
-! For ERDDAP, the type of the ID variable must be String.
+! For LAS, the type of the ID variable must be String.
 
 IF `($vtype"0|*>1") EQ 0` THEN DEFINE SYMBOL vtype = `($id_var),RETURN=dtype`
 IF `($vtype"0|CHAR>1|*>0") EQ 0` THEN
@@ -121,7 +121,21 @@ IF `($vtype"0|CHAR>1|*>0") EQ 0` THEN
    LET errors = `errors + 1`
 ELSE
    SAY
-   SAY **  **  ** ID variable, ($id_var), is of type string.
+   SAY --------- ID variable, ($id_var), is of type string.
+ENDIF
+
+! Make sure the rowSize and ID variable are on the same, non-normal grid.
+IF `($rowsizevar"0|*>1") AND ($id_var"0|*>1")` THEN 
+
+   LET instance_grid = `($id_var),RETURN=grid`
+   LET rgrid = `($rowsizevar),RETURN=grid`
+   IF `STRCMP("($instance_grid)", "($rgrid)") NE 0` THEN 
+      SAY
+      SAY **ERROR ** Grids of OD variable, ($id_var), and Rowsize variable, ($rowsizevar), do not match
+      SHOW GRID ($idvar)
+      SHOW GRID ($rowvar)
+      LET errors = `errors + 1`
+   ENDIF
 ENDIF
 
 ! Check the sample_dimension attribute, matching a dimension name
@@ -138,11 +152,11 @@ IF `($sample_dimension"0|*>1") EQ 1` THEN
    ENDIF)
 ENDIF
 
-! If there is no sample_dimension attribute 
+! Report on the sample_dimension attribute 
 
 IF ($sample_dim"0|*>1") THEN
    SAY
-   SAY **  **  ** sample_dimension attribute found, ($sample_dim).
+   SAY --------- sample_dimension attribute found, ($sample_dim).
 ELSE
    SAY
    SAY **NOTE  ** sample_dimension attribute not found. This is acceptable for a file containing a single feature. 
@@ -158,6 +172,38 @@ IF ($rowsizevar"0|*>1") THEN
    ENDIF
 ENDIF
 
+
+! Look for longitude and latitude variables. 
+! Are the longitudes in -180:180?
+
+REPEAT/RANGE=1:`nvars`/NAME=q (\
+DEFINE SYMBOL q = `q`;\
+DEFINE SYMBOL vname = `varnames[i=($q)]`;\
+leT mmvar = MINMAX(($vname));\
+LET attnames = ($vname).attnames;\
+IF `IS_ELEMENT_OF_STR_N(attnames, "units") GT 0` THEN;\
+   LET vunits = ($vname).units;\
+   IF `strlen(vunits) LE 1` THEN EXIT/CYCLE;\
+   DEFINE SYMBOL vunits = `($vname),RETURN=units`;\
+   IF `STRINDEX(UPCASE("($vunits)"), "NORTH") GT 0` THEN;\
+      LET l1 = mmvar[i=@MIN];\
+      LET l2 = mmvar[i=@MAX];\
+      SAY;\
+      SAY --------- Latitude variable found ... ($vname) with units ($vunits), ($vname) range `l1,prec=6`  to  `l2,prec=6`;\
+   ENDIF;\
+   IF `STRINDEX(UPCASE("($vunits)"), "EAST") GT 0` THEN;\
+      SAY;\
+      LET l1 = mmvar[i=@MIN];\
+      LET l2 = mmvar[i=@MAX];\
+      SAY --------- Longitude variable found ... ($vname) with units ($vunits), ($vname) range `l1,prec=6`  to  `l2,prec=6`;\
+      IF `(l1 lt -180 or l2 gt 180)` then;\
+      SAY **ERROR ** Longitude must be in -180:180;\
+   ENDIF;\
+ENDIF;\
+CANCEL SYMBOL vunits;\
+)
+
+
 ! Check for the time variable and units of seconds since 1-jan-1970
 
 IF `($time_var"0|*>1") EQ 0` THEN
@@ -172,22 +218,20 @@ ELSE
       LET errors = `errors+1`
    ELSE
       SAY  
-      SAY **  **  ** Time variable ($time_var) with units of ($time_units).
+      SAY --------- Time variable ($time_var) with units of ($time_units).
    ENDIF
 ENDIF
 
-IF `errors GT 0` THEN
-   SAY  
-   SAY **ERROR **
-   SAY **      **   File ($filename) `errors` errors detected.
-   SAY **ERROR **
+SAY  
+SAY 
+SAY
+IF `errors GT 0` THEN     
+   SAY ---------   File ($filename) `errors` errors detected.
 ELSE
-   SAY  
-   SAY **  **  **
-   SAY **  **  **   ($filename) passed.
-   SAY **  **  **
+   SAY ---------   ($filename) passed.
 ENDIF
-
+SAY  
+SAY 
 SAY  
 
 CANCEL DATA/ALL; CANCEL VAR/ALL; CANCEL SYMBOL/ALL

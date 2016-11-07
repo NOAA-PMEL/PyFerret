@@ -1,7 +1,7 @@
 can mode ver
 
 ! dsg_checker.jnl
-! Check a DSG file for valid attributes and ERDDAP reqirements
+! Check a DSG file for valid attributes and LAS/ ERDDAP reqirements
 !  * Global attribute Feature_Type
 !  * Attribute cf_role attribute on the ID variable must match the feature type
 !  * Attribute sample_dimension on the Rowsize variable (optional for single-feature files)
@@ -174,7 +174,7 @@ ENDIF
 
 
 ! Look for longitude and latitude variables. 
-! Are the longitudes in -180:180?
+! For ERDDAP: Are the longitudes in -180:180?
 
 REPEAT/RANGE=1:`nvars`/NAME=q (\
 DEFINE SYMBOL q = `q`;\
@@ -204,7 +204,8 @@ CANCEL SYMBOL vunits;\
 )
 
 
-! Check for the time variable and units of seconds since 1-jan-1970
+! Check for the time variable 
+! For ERDDAP: units must be seconds since 1-jan-1970
 
 IF `($time_var"0|*>1") EQ 0` THEN
    SAY  

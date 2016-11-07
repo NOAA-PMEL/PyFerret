@@ -72,6 +72,8 @@
 * pre-defined axes and grids.
 * V698  3/16 *acm* Fix the line_subsc1 values for irregular axes
 * V698  3/16 *acm* Define monthly climatology for Julian axis.
+* V702 11/16 *sh* Commented out initialization of of grids cuz
+*                 was taking unacceptable long time to compile
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -303,14 +305,15 @@ c     .			/pline_mem_left*real8_init/
 	DATA	(grid_name(i),i=ngrd_def+1,grid_ceiling)
      .			/grids_left*char_init16/
 
-	DATA	((grid_line(i,j),i=1,nferdims),j=ngrd_def+1,grid_ceiling)
-     .			/grid_lines_left*int4_init/
-
-	DATA	(grid_rotation(i),i=ngrd_def+1,grid_ceiling)
-     .			/grids_left*real4_init/
-
-	DATA	((grid_out_prod(i,j),i=1,nferdims),j=ngrd_def+1,grid_ceiling)
-     .			/grid_lines_left*.FALSE./
+* 11/16 *sh* commented these out to speed compilation
+!	DATA	((grid_line(i,j),i=1,nferdims),j=ngrd_def+1,grid_ceiling)
+!     .			/grid_lines_left*int4_init/
+!
+!	DATA	(grid_rotation(i),i=ngrd_def+1,grid_ceiling)
+!     .			/grids_left*real4_init/
+!
+!	DATA	((grid_out_prod(i,j),i=1,nferdims),j=ngrd_def+1,grid_ceiling)
+!     .			/grid_lines_left*.FALSE./
 
 * DEFINE LINE AND BOX COORDS NEXT TO LAST
 

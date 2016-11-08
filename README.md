@@ -50,6 +50,7 @@ The following packages are needed to run PyFerret on Ubuntu:
  * `python-pyshp` (or use `pip install pyshp`; for shapefile functions; optional)
  * `libgfortran` (should be installed with python-scipy installation)
  * `default-jre` (or `default-jdk`; for ThreddsBrowser; optional)
+
 The following packages are also needed but should already be installed:
  * `python-qt4` (Python bindings for Qt4)
  * `libcurl3` or `libcurl4-openssl-dev` (for the libcurl.so.4 library)
@@ -61,11 +62,11 @@ The contents can be put extracted/cloned to whatever location desired.
 
 Extract the PyFerret tar.gz file in the desired location.
 Starting with PyFerret v7, there is only a single tar.gz file
-which extracts all its contents to a subdirectory that it creates.
-(As apposed to Ferret which has separate `fer_environment` and 
-`fer_executables` tar.gz files that extract into the current directory.)
-If desired, you can change the name of the subdirectory created at
-this time.
+which extracts all its contents to a subdirectory that it creates
+(as apposed to Ferret which has separate `fer_environment` and 
+`fer_executables` tar.gz files that extract into the current directory).
+If desired, at this time you can change the name of this subdirectory 
+that was created.
 
 Move into this PyFerret installation directory and run the `bin/Finstall`
 script to create the `ferret_paths.sh`, `ferret_paths.csh`, and `pyferret`

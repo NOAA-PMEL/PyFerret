@@ -67,6 +67,7 @@
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
+* V702  *sh* 11/16 support new syntax D=aggregation.member
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -83,7 +84,8 @@
 	LOGICAL		TM_DIGIT_TEST, TM_HAS_STRING,
      .		        cdf_name, des_name, full_name_used, nc_name
 	INTEGER		STR_CASE_BLIND_COMPARE, TM_LENSTR1,
-     .			vax_code, dset, full_len, short_len, status
+     .			vax_code, dset, full_len, short_len, status,
+     .			agg, memb, idot, nmemb
 	CHARACTER	TM_INQ_PATH*2048, buff*2048
 	CHARACTER*13	TM_STRING, buff13, vbuff
         REAL*8          val
@@ -99,17 +101,40 @@ c *kob* 4/97
 * *acm* 11/04 current linux compiler reads a filename starting with digits
 *             as just the digits with no error (10a.nc is read as dset=10)
 *             Check explicitly whether the dset read is the same as buff
+* *sh* 11/16 - read as a float, to allow aggregation.member syntax
 
-#ifdef MANDATORY_FORMAT_WIDTHS
-	   READ (buff,*, ERR=50 ) dset
-#else
-	   READ (buff, '(I)', ERR=50 ) dset
-#endif
-           val = dset
-           buff13 = TM_STRING(val)
-           CALL TM_PACK_STRING(buff13, vbuff, 1,13, short_len)
-	   vax_code = STR_CASE_BLIND_COMPARE( vbuff, buff(1:13) )
-	   IF (  vax_code .NE. vms_str_success ) GOTO 50
+	   READ (buff,*, ERR=50 ) val
+*    The TM_DIGIT_TEST above (from 10/05) removes the need
+*    discussed in the 11/04 comment just above.
+*    Here we comment out the 11/04 logic because D=12.3 becomes D=12.300
+*    which fails the packed string test
+!           buff13 = TM_STRING(val)
+!           CALL TM_PACK_STRING(buff13, vbuff, 1,13, short_len)
+!	    vax_code = STR_CASE_BLIND_COMPARE( vbuff, buff(1:13) )
+!	    IF (  vax_code .NE. vms_str_success ) GOTO 50
+
+* decode the agg.memb syntax (pathological syntaxes already checked)
+           dset = val    ! integer truncate
+	   IF (FLOAT(dset) .NE. val) THEN
+	      agg  = dset
+* ... check for valid aggregation parent dset
+	      IF ( agg .LT. 1 .OR. agg .GT. maxdsets ) GOTO 500
+	      IF ( ds_name(agg) .EQ. char_init40 ) GOTO 500
+              IF (ds_type(agg).NE.'ENS'
+     .	    .AND. ds_type(agg).NE.'FCT' 
+     .      .AND. ds_type(agg).NE.'UNI') GOTO 500
+
+* ... get member number
+	      idot = INDEX(buff,".")
+	      IF (idot .EQ. 0) GOTO 400 !cant happen. easier than ferr_internal
+	      READ (buff(idot+1:),*, ERR=50 ) val
+	      memb = val
+	      CALL CD_GET_AGG_DSET_INFO (agg, nmemb, status)
+	      IF (status .NE. ferr_ok)  CALL WARN('crptn: agg dset 1')
+	      IF (memb.GT.nmemb .OR. memb.LE.0) GOTO 500
+	      CALL CD_GET_AGG_DSET_MEMBER (agg, memb, dset, status)
+              IF (status .NE. ferr_ok)  CALL WARN('crptn: agg dset 2')
+	   ENDIF
 
 	   GOTO 400
 	ENDIF

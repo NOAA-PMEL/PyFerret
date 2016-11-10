@@ -69,7 +69,8 @@
      .		    slash_vars,
      .		    slash_file,
      .		    slash_attr,
-     .		    slash_xml
+     .		    slash_xml,
+     .		    slash_memb
 	CHARACTER default*60, outstring*2048
 
 	PARAMETER ( slash_brief    = 1 + 1,
@@ -77,7 +78,8 @@
      .		    slash_vars     = 1 + 3,
      .		    slash_file     = 1 + 4,
      .		    slash_attr     = 1 + 6,
-     .		    slash_xml      = 1 + 5)
+     .		    slash_xml      = 1 + 5,
+     .              slash_memb     = 1 + 11 )
 
 * initialize
 	show_lun = ttout_lun
@@ -87,10 +89,14 @@
    	sbrief = qual_given( slash_brief ) .GT. 0 
 	sfull  = qual_given( slash_full  ) .GT. 0
 	svars  = qual_given( slash_vars  ) .GT. 0   .OR. sfull
- 	sfile  = qual_given( slash_file  ) .GT. 0   .OR. sfull
+ 	sfile  = qual_given( slash_memb  ) .GT. 0
+     .	    .OR. qual_given( slash_file  ) .GT. 0   .OR. sfull
  	sattr  = qual_given( slash_attr  ) .GT. 0  
         IF (sattr) sbrief = .TRUE.
  	sxml  = qual_given( slash_xml  ) .GT. 0 
+
+	IF (qual_given( slash_file  ) .GT. 0)  CALL WARN
+     .		( '/FILES is deprecated.  Use /MEMBERS')
 
 * 	SHOW DATA/FILE=[/APPEND][/CLOBBER][/HIDDEN]
         sho_file = qual_given( slash_show_data_file )

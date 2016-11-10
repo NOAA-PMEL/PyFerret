@@ -580,14 +580,14 @@
 		DATA qualifiers  (nqual_at2g+1)	/ 'BRIEF'	/
 		DATA qualifiers  (nqual_at2g+2)	/ 'FULL'	/
 		DATA qualifiers  (nqual_at2g+3)	/ 'VARIABLE'	/
-		DATA qualifiers  (nqual_at2g+4)	/ 'FILES'	/
+		DATA qualifiers  (nqual_at2g+4)	/ 'FILES'	/ ! deprecated
 		DATA qualifiers  (nqual_at2g+5)	/ 'XML'		/
 		DATA qualifiers  (nqual_at2g+6)	/ 'ATTR'	/
 		DATA qualifiers  (nqual_at2g+7)	/ 'OUTFILE'	/
 		DATA qualifiers  (nqual_at2g+8)	/ 'APPEND'	/
 		DATA qualifiers  (nqual_at2g+9)	/ 'CLOBBER'	/
 		DATA qualifiers  (nqual_at2g+10)/ 'HIDDEN'	/
-		DATA qualifiers  (nqual_at2g+11)/ '****'	/
+		DATA qualifiers  (nqual_at2g+11)/ 'MEMBERS'	/
 		DATA qualifiers  (nqual_at2g+12)/ '****'	/
 		DATA qualifiers  (nqual_at2g+13)/ '****'	/
 		DATA qualifiers  (nqual_at2g+14)/ '****'	/

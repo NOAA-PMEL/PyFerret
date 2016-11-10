@@ -56,6 +56,7 @@
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 * V695 *sh*  12/15 For FMRCs and Ensembles show aggregation members
 * V698 *sh*   2/16 insert blank line at conclusion of list
+* V702 *sh*  11/16 number the member files with the syntax (e.g.) "12.3"
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -75,8 +76,8 @@
 * local variable declarations:
 	INTEGER		KNOWN_GRID, TM_LENSTR1,
      .			ivar, grid, istep, ndec, status, lskip, slen,
-     .			nmemb, memb_set, nfig
-	CHARACTER	LEFINT*8, lo_date*20, hi_date*20, buff*8
+     .			alen, nmemb, memb_set, nfig
+	CHARACTER	LEFINT*8, lo_date*20, hi_date*20, buff*8, abuff*8
 
 * special processing of EZ data sets
 	IF ( ds_type(dset) .EQ. pds_type_ez ) THEN
@@ -95,11 +96,14 @@
         ELSEIF (ds_type(dset) .EQ. 'ENS'
      .    .OR.  ds_type(dset) .EQ. 'FCT') THEN
 
+* ... get parent aggregation dataset number in string form
+	   abuff = LEFINT(dset, alen )
+
 * ... get number of aggregation members
 	   CALL CD_GET_AGG_DSET_INFO (dset, nmemb, status)
 	   IF (status .NE. ferr_ok) RETURN   ! should never happen
 	   CALL SPLIT_LIST(pttmode_explct, lun,
-     .		'          Aggregated datasets:', 0 )
+     .		'          Member datasets:', 0 )
 
 * ... loop through the aggregation members.
 	   nfig = LOG10(REAL(nmemb)) + 1
@@ -108,7 +112,8 @@
 	      IF (status .NE. ferr_ok) RETURN   ! should never happen
 	      buff = LEFINT(istep, slen )
 	      CALL SPLIT_LIST(pttmode_explct, lun,
-     .		'      '//buff(:nfig)//': '//ds_des_name(memb_set), 0 )
+     .		'      '//abuff(:alen)//'.'//buff(:nfig)//': '
+     .			       //ds_des_name(memb_set), 0 )
 	   ENDDO
 	   RETURN
 

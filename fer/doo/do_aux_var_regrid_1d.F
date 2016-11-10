@@ -41,7 +41,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* perform a 1D Z axis regrid guided by an auxiliary variable
+* perform a 1D axis regrid (not just Z axis) guided by an auxiliary variable
 * containing coord positions
 * allow for the usual Ferret promotion of point axes to match span axes
 * where either the source data or the position field may have degenerate axes
@@ -51,13 +51,18 @@
 *      dst == res
 *      src == com1
 *      pos == com2
+* Note that "k" that is found in the name of some variables is a meaningless
+* hold-over from the original K-only version of this routine
 
 
 * v690 11/13-4/14 *sh*
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * v695+ 3/15 *sh*  change to call name to accommodate T axis regridding
 * v698+ 5/15 *sh* linear regrid allows monotonic, but averaging doesnt
-*       6/15 *sh* bug fix in determination of ascending affects false_1pt_regrid [gz(aux)=pt]
+*       6/15 *sh* bug fix in determination of ascending affects
+*                 false_1pt_regrid [gz(aux)=pt]
+* V700 11/16 *sh* fixed bug in koffset_false lingering from K-only regrid
+*                 days of this routine
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -129,8 +134,10 @@
 	kdmax = kmax_dst
 	false_1pt_regrid = cx_aux_stat(axis,dst_cx)
      .		      .EQ. paux_stat_false_1pt_regrid
-*   koofset_false fixes ss of -999 used as a valid position in the dest axis.
-	koffset_false = kmin_dst - m5loz
+*   koffset_false fixes ss of -999 used as a valid position in the dest axis
+* ==> "k" in names is a misleading relic of the Z-only origins of this routine
+!	koffset_false = kmin_dst - m5loz   ! old Z-axis specific logic
+	koffset_false = kmin_dst - lo_ss(5,axis)
 	trans = cx_regrid_trans(axis,dst_cx)
 
 * flag(s) for bad or missing values

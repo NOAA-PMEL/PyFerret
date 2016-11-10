@@ -35,7 +35,8 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* replace "D
+* replace the number found in a [D=#]" syntax with the dataset name
+
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
@@ -48,6 +49,7 @@
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* 11/16 *sh* support for aggregation.member syntax
 
         include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -59,8 +61,9 @@
 	CHARACTER*(*) orig
 
 * internal variable declarations
-	INTEGER TM_LENSTR1, i, i0, i1, i2, i3, eqpos, inlen, outlen,
-     .       dset, nlen, maxlen
+	INTEGER TM_LENSTR1, FIND_DSET_NUMBER,
+     .		i, i0, i1, i2, i3, eqpos, inlen, outlen,
+     .          dset, nlen, maxlen
 
         CHARACTER*1 tab
 #ifdef NO_INTRINSIC_IN_PARAMETER
@@ -111,16 +114,13 @@
 
 * get the data set number
         DO 300 i3 = i2+1, inlen
-           IF ( orig(i3:i3).LT."0" .OR. orig(i3:i3).GT."9" ) GOTO 310
+           IF ( (orig(i3:i3).LT."0" .OR. orig(i3:i3).GT."9")
+     .    .AND. orig(i3:i3).NE."." ) GOTO 310
  300    CONTINUE
         GOTO 500   ! digit is final character ??
  310    i3 = i3 - 1
-#ifdef MANDATORY_FORMAT_WIDTHS
-        READ (orig(i2:i3),*,ERR=5000) dset
-#else
-        READ (orig(i2:i3),'(I)',ERR=5000) dset
-#endif
-        IF (dset.LT.1 .OR. dset.GT.maxdsets) GOTO 10    ! error if so
+	dset = FIND_DSET_NUMBER(orig(i2:i3))
+        IF (dset.LT.1 .OR. dset.GT.maxdsets) GOTO 10    ! error?
 
 * replace D=# with D=name
         nlen = TM_LENSTR1(ds_name(dset))

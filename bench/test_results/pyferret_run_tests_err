@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1404 Nov  2 14:57 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1404 Nov 10 15:19 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -284,6 +284,7 @@ Benchmark scripts that will be run:
    bn_ez_noupcase.jnl
    bn_spawn_fail.jnl
    bn_ave_of_ave.jnl
+   bn_agg_member_syntax.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
@@ -300,9 +301,10 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Wed Nov  2 14:59:20 PDT 2016
+Beginning at Thu Nov 10 15:19:12 PST 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -3313,6 +3315,7 @@ Replacing definition of axis FAX4DAY
  Cached data cleared from memory
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
  **ERROR: unknown data set: dset 3
 DEFINE DATA/AGGREGAT/E windy = 1,2,3
            *** NOTE: Variable "UWND" excluded from aggregate: T axis differs among members
@@ -3329,6 +3332,7 @@ DEFINE DATA/AGGREGAT/E windy = 1,2
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, fourfiles
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, some
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, more
@@ -4259,6 +4263,8 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_single_6.nc
            *** NOTE: Not deleted: tday
            *** NOTE: Axis is in use by grid (G001)
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
  **ERROR: invalid command: given aggregation dataset name already in use: myagg2
 define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc, tmp/tagg_reg_2.nc
  **TMAP ERR: non-existent or not on line
@@ -4271,9 +4277,13 @@ define data/agg/t myaggbad = tmp/tagg_reg_1.nc, tmp/tagg_no_exist.nc
 DEFINE DATA/AGGREGAT/T myTindepagg = tmp/tagg_reg_no_T.nc
  **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_reg_3.nc
 define data/agg/t myagg3 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2_overlarge.nc,tmp/tagg_reg_3.nc
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
  **TMAP ERR: Unknown variable code
              in file tmp/tagg_disjoint_T0varying_4_wrong.nc time axis variable is missing: TDAY_TVAR
 define data/agg/t myagg5_bad = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc,tmp/tagg_disjoint_T0varying_3.nc, tmp/tagg_disjoint_T0varying_4_wrong.nc,tmp/tagg_disjoint_T0varying_5.nc
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
  **ERROR: unknown command: garbage
 garbage command syntax
  **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_single_1.nc
@@ -4332,13 +4342,19 @@ load a
  LISTing to file tmp/consecutive_month_fcst.nc
 Replacing definition of axis TRUEMONTH
  LISTing to file tmp/irregular_start_time_fcst.nc
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, bn_aggregate_f.jnl
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, my_fmrc
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
  **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
 DEFINE DATA/AGGREGAT/F my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc,tmp/fcst_2.nc,tmp/fcst_3.nc
@@ -4519,6 +4535,8 @@ DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/irregular_start_time_fcst.nc")
  LISTing to file tmp/f04_e3_t1_1v.nc
  LISTing to file tmp/f04_e3_t2_1v.nc
  LISTing to file tmp/f04_e3_t3_1v.nc
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
  **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis X of agg member 3
 list/x=150E/y=15n/L=10 fcst_2
@@ -4670,8 +4688,10 @@ list index,edtim,udtim,udate,edate
  LISTing to file tmp/f03_e2_tu1.nc
  LISTing to file tmp/f03_e2_tu2.nc
  LISTing to file tmp/f03_e2_tu3.nc
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Skipping variable REALIZATION from set 1, already in the Union dataset.
            *** NOTE: Skipping variable REALIZATION from set 8, already in the Union dataset.
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
 *** Running ferret script: bn_ez_noupcase.jnl
  Cached data cleared from memory
  LISTing to file abc.dat
@@ -4689,6 +4709,14 @@ cp: cannot stat `nofile.dat': No such file or directory
            *** NOTE: Shell command returned failure flag: cp nofile.dat not_either.dat
 *** Running ferret script: bn_ave_of_ave.jnl
  Cached data cleared from memory
+*** Running ferret script: bn_agg_member_syntax.jnl
+ Cached data cleared from memory
+ **ERROR: unknown data set: D=5.3
+stat/br fcst[d=5.3]
+ **ERROR: unknown data set: D=12.30
+stat/br fcst[d=12.30]
+ **ERROR: unknown data set: D=12.300000
+stat/br fcst[d=12.300000]
 *** Running ferret script: bn_gif.jnl
  Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
@@ -4846,4 +4874,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testfermethods.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Wed Nov  2 15:02:07 PDT 2016
+Ended at Thu Nov 10 15:22:00 PST 2016

@@ -114,6 +114,7 @@ SET MODE VERIFY
 !       *sh* 3/16 - added bn_plot_along.jnl
 !       *acm*4/16 - added bn_show_commands.jnl
 !       *acm*4/16 - added bn_plot_decimate.jnl
+! V702 *sh 11/16 - added bn_agg_member_syntax.jnl
 
 ! Include this statement to compare the outupt of 6D Ferret with 
 ! previous 4D benchmark logs.
@@ -1097,6 +1098,9 @@ GO bn_spawn_fail
 
 GO bn_reset
 GO bn_ave_of_ave
+
+GO bn_reset
+GO bn_agg_member_syntax
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

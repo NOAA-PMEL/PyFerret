@@ -913,9 +913,8 @@ GO bn_stddev
 GO bn_reset
 GO bn_set_axis_name
 
-! FTDS server is down -- temporarily commenting this out
-!GO bn_reset
-!GO bn_let_remote
+GO bn_reset
+GO bn_let_remote
 
 ! *********** v6.93 Additions ***********
 GO bn_reset

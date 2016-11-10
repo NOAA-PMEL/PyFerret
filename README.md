@@ -61,8 +61,8 @@ from the [FerretDatasets github site](https://github.com/NOAA-PMEL/FerretDataset
 The contents can be put extracted/cloned to whatever location desired.
 
 Extract the PyFerret tar.gz file in the desired location.
-Starting with PyFerret v7, there is only a single tar.gz file
-which extracts all its contents to a subdirectory that it creates
+Starting with PyFerret v7, there is only one tar.gz file which 
+extracts all its contents to a subdirectory that it creates
 (as apposed to Ferret which has separate `fer_environment` and 
 `fer_executables` tar.gz files that extract into the current directory).
 If desired, at this time you can change the name of this subdirectory 

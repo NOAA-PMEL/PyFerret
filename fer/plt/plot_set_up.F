@@ -389,6 +389,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * * * * * * *    - - - INDEPENDENT AXIS DATA - - - * * * * * * * * *
 	IF ( versus ) THEN
 	   time_axis =	.FALSE.
+	   adjust_time = .TRUE.  ! (Says, do not try to further adjust time...)
 	   CALL EXTRACT_LINE ( cx,
      .			    memory( 1, mr_blk1(mv) ),
      .			    mv,

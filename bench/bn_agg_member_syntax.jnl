@@ -34,4 +34,33 @@ stat/br fcst[d=12.300000]
 
 set mode/last ignore
 
+cancel data/all
+cancel var/all
+
+! Tests for Ensembles
+let files = SPAWN("ls -1 ens*.nc")
+ensemble my_ens = files
+sh data/members my_ens
+
+show data 5.3
+stat sst[d=5]
+stat sst[d=5.2]
+
+can data my_ens
+
+! do them in another order
+ENSEMBLE fourfiles = ens1, ens3, ens2, ens4
+
+! not this is dataset 2
+show data 5.3
+
+stat sst[d=5] - sst[d=5.3]   ! ensemble minus member #3
+
+! deliberate errors
+set mode ignore
+
+stat/br sst[d=4.1]     ! not an ensemble
+stat/br sst[d=5.30]    ! not this many members
+
+set mode/last ignore
 

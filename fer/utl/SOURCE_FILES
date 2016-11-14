@@ -176,6 +176,7 @@ t0_adjust_init.F\
 t_deriv.F\
 tdest_world.F\
 tdest_world_init.F\
+tplot_axis_ends.F\
 transfer_axis.F\
 transfer_cx_axis_to_uv.F\
 transfer_grid.F\

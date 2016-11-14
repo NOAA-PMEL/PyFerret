@@ -1,0 +1,48 @@
+! err700_axis_dates.jnl
+! See ticket 2483. 11/10/2016 ACM
+!
+! The axis-ends symbols XAXIS_MIN,XAXIS_MAX, YAXIS_MIN,YAXIS_MAX
+! were not accurate for time axes, which get padded out to the nearest
+! time unit, e.g. whole months etc.
+
+! This axis gets plotted from 1-oct-2015 to the end of 30-apr-2016
+
+def axis/t=23-oct-2015:17-apr-2016:10/units=hours taxis
+
+! Define some variables
+let tt = t[gt=taxis]
+let var = cos(L[gt=taxis]/30)
+define axis/x=1:52:4 xaxis
+define axis/y=1:52:4 yaxis
+let xtvar = x[gx=xaxis] + var
+let ytvar = y[gy=yaxis] + var
+
+! 1-D time plot
+plot var
+
+! Previously these were set to the axis-coordinate
+! ends not the drawn axis ends.
+list tax_datestring(($xaxis_min), tt, "minutes"), tax_datestring(($xaxis_max), tt, "minutes")
+
+! 2D plots
+
+shade ytvar
+list tax_datestring(($xaxis_min), tt, "minutes"), tax_datestring(($xaxis_max), tt, "minutes")
+
+shade xtvar ! T axis on the vertical axis
+list tax_datestring(($yaxis_min), tt, "minutes"), tax_datestring(($yaxis_max), tt, "minutes")
+
+
+! Short time axis, plot ends extended out to the nearest hour
+def axis/t="23-oct-2015:01:15":"23-oct-2015:12:30":15/units=minutes taxis
+
+plot var
+list tax_datestring(($xaxis_min), tt, "minutes"), tax_datestring(($xaxis_max), tt, "minutes")
+
+shade ytvar
+list tax_datestring(($xaxis_min), tt, "minutes"), tax_datestring(($xaxis_max), tt, "minutes")
+
+shade xtvar
+list tax_datestring(($yaxis_min), tt, "minutes"), tax_datestring(($yaxis_max), tt, "minutes")
+
+

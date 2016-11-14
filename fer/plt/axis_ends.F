@@ -56,29 +56,35 @@
 * V580 *acm* 12/04 Fix bug 1129; send back correct value of delta if computed here
 * V68  *acm* 1/12 changes for double-precision ferret, single-precision pplus.
 * V695+ *sh* 4/15 format long longitude axes using a delta based upon 15 deg
+* V710  *acm* 11/16 Ticket 2483: Fix the axis-end symbols that are defined 
+*                   for time axis plots
 
+	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'plot_setup.parm'
 	include 'errmsg.parm'
-
+	include 'xtm_grid.cmn_text'
+	include 'xplot_setup.cmn'
 
 * kob 12/96
 	EXTERNAL RANGE
 * calling argument declarations:
 	LOGICAL		is_log
 	CHARACTER*1	plot_ax		! X (horiz) or Y (vert) axis of plot
-	INTEGER		dat_ax, grid	! X,Y,Z or T axis of data
+	INTEGER		dat_ax, grid	! X,Y,Z,... axis of data
 	REAL*8		first, last, delta
 
 * internal variable declarations:
 	LOGICAL		BKWD_AXIS, GEOG_LABEL
-	CHARACTER	val_buff*45
-	INTEGER		axtp, status
+	CHARACTER	val_buff*45, tstyle*3, xtra_lab*24
+	INTEGER		TM_GET_CALENDAR_ID, axtp, taxis, cal_id, status
 	REAL*4		x1, x2, uminr, umaxr, dint
-	REAL*8		firstl, lastl, epsilon, eps2, span
+	REAL*8		TSTEP_TO_SECS, SECS_TO_TSTEP, firstl, lastl, epsilon, eps2, span
 	PARAMETER	(epsilon=1.e-45)
 
 	STATUS = ferr_ok 
+
+	xtra_lab = ' '
 
 * For log axes set up PPLUS for a regular or inverted log axis
 
@@ -148,6 +154,24 @@
 	   ENDIF
 	ELSE
 	   dint = delta
+	ENDIF
+
+* if its a time axis, correct the  the actual axis ends that PPLUS will use.
+	IF (.NOT.adjust_time .AND. (dat_ax .EQ. t_dim .AND. GEOG_LABEL(t_dim,grid)) ) THEN
+	   taxis = grid_line(t_dim,grid)
+           cal_id = TM_GET_CALENDAR_ID ( line_cal_name(taxis) )
+
+	   first = TSTEP_TO_SECS(grid, t_dim, first)
+	   last  = TSTEP_TO_SECS(grid, t_dim, last)
+
+* Set time style: 'MON', 'YR', etc.  CALL TAXIS_STYLE to set the
+* parameter ITYPET in common
+
+	   CALL TAXIS_STYLE( plot_ax, first, last, tstyle, xtra_lab ) 
+
+	   CALL TPLOT_AXIS_ENDS  (first, last, cal_id, tstyle)
+	   first = SECS_TO_TSTEP( grid, t_dim, first )
+	   last  = SECS_TO_TSTEP( grid, t_dim, last )
 	ENDIF
 
 * and send the actual limits requested together with this tic interval to PPLUS

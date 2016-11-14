@@ -21,6 +21,8 @@
 * *acm* v683 11/12 add sym_so_far - symbols on line plots. Used to be SAVEd in line_style.F
 * V685+ *acm* 12/13 For 6D Ferret, key_doc longer for extra dimensions
 * V698 *sh* 3/16 added parameter max_line_on_plot, max_key_entries
+* V710  *acm* 11/16 Ticket 2483: Fix the axis-end symbols that are defined 
+*                   for time axis plots. New flag adjust_time
 
 	INTEGER max_line_on_plot, max_key_entries
 	PARAMETER (max_line_on_plot = 200)
@@ -36,7 +38,8 @@
      .		first_frame,
      .		need_std,
      .		need_histo,
-     .		ribbon_plot
+     .		ribbon_plot,
+     .		adjust_time
 	INTEGER	nvect_on,
      .		ncont_on,
      .		nlabs_on,
@@ -115,6 +118,7 @@
      .		need_std,
      .		need_histo,
      .		ribbon_plot,
+     .		adjust_time,
      .          active_win_id,
      .          sym_so_far,
      .		key_doc,

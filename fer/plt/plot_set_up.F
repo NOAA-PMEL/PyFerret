@@ -173,6 +173,8 @@
 * V701  *acm* 8/16 Fix ticket 2468: Symbols AX_HORIZ and AX_VERT are not reset on an /OVERLAY plot
 * V702  *acm* 10/16 Test the results of MINMAX routine before use; if all data is 
 *                   all-missing it returns arbitrary_large_val4.
+* V710  *acm* 11/16 Ticket 2483: Fix the axis-end symbols that are defined 
+*                   for time axis plots
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -216,7 +218,9 @@
      .			LEFT_REAL*16, TM_GET_CALENDAR_NAME*32, 
      .			indep_ax*1, dep_ax*1, tstyle*3, xtra_lab*24,
      .			buff1*16, buff2*16, buff3*8, t1_date*14, tref*14,
-     .                  cal_name*32, cal_name_new*32, val_buff*32, fmt*4
+     .                  cal_name*32, cal_name_new*32, val_buff*32, fmt*4,
+     .			whoimin*14, whoimax*14, 
+     .			whoimin_axlo*14, whoimax_axhi*14
 
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE, CGRID_AXIS,
      .			mv, cx, slen, ito, indep_lab, dep_lab, nline_in_mem,
@@ -225,7 +229,7 @@
      .			slen2, slen3, tax, plot_mem_used, nload, i,
      .			pxlim, pylim, phlim, pvlim,pindeplim, pdeplim,
      .			dep_axtyp, indep_axtyp, the_taxis, ribbon_var, 
-     .			gap_var, junits, iaxis, hblk1, mvh_temp, nkey_entries
+     .			gap_var, junits, iaxis, hblk1, mvh_temp, nkey_entries, t_axtyp
 
 	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
      .			cal_id_old, cal_id_new
@@ -233,9 +237,11 @@
 	CHARACTER*1     axdir(6), ax1
 
 	REAL		val1, dt_min, lo, hi, dep_len, 
-     .			ind_len, first, last, hlen, hrs
-	REAL*8		TSTEP_TO_SECS, SECS_TO_TSTEP,
-     .			ind_min, ind_max, dep_min, dep_max, delta, tmp
+     .			ind_len, first, last, hlen, hrs, 
+     .			bc_min, bc_max, step_lo, step_hi
+	REAL*8		TSTEP_TO_SECS, SECS_TO_TSTEP, DATE_TO_TSTEP, 
+     .			WHOI2BC,ind_min, ind_max, dep_min, dep_max, 
+     .			delta, tmp
 	REAL*4 rbad
 
 * local parameter declarations:
@@ -274,6 +280,7 @@
 	indep_axtyp = 1
 	mod_vs_x = .FALSE.
 	mod_vs_y = .FALSE.
+	adjust_time = .FALSE.
         cx_x = cx_list(1)
 	xtra_lab = ' '
         nkey_entries = nmv
@@ -921,6 +928,10 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	         CALL TAXIS_STYLE( indep_ax, ind_min, ind_max, tstyle, xtra_lab )
 * (6/99) Note: The time axis extrema symbols are only approximately correct
 *		since PLOT+ rounds out the time ranges ...
+
+* 11/16 Get the min and max as used by PPLUS.  That function uses WHOI formatted time
+	         CALL TPLOT_AXIS_ENDS (ind_min, ind_max, cal_id_1, tstyle)
+
 	         CALL AXIS_END_SYMS( indep_ax,
      .				SECS_TO_TSTEP( grid1, the_taxis, ind_min ),
      .				SECS_TO_TSTEP( grid1, the_taxis, ind_max ) )
@@ -942,6 +953,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      .                             no_labels, xtra_lab )
 	      ENDIF
 	   ENDIF
+
 * ... dependent axis scaling
 *  force axis scaling if the data has no range
 

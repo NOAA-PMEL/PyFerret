@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 115416290 Oct 24 14:14 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 115428722 Nov 14 12:06 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: writing ferret_datatype attribute to xml
+Note: ticket 2483: XAXIS_MIN, XAXIS_MAX etc for time axes
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,17 +14,18 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
-FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
-FER_GO=. /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib
+FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
+FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=.
-FER_LIBS=/home/users/ansley/ferret_distributions/rhel6_64/lib
-FER_PALETTE=. /home/users/ansley/ferret_distributions/rhel6_64/ppl
+FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
+FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
-PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/x86_64-linux/ext_func/pylibs
-Beginning at Mon Oct 24 14:18:54 PDT 2016
+PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
+Beginning at Mon Nov 14 12:32:00 PST 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
         SET EXPRESSION has not been given or implied
  **ERROR: unknown command qualifier: notaqualifier
 MESSAGE/CONTINUE/notaqualifier
@@ -3376,6 +3377,7 @@ Replacing definition of axis FAX4DAY
  TEMPORARY data cleared from memory
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
  **ERROR: unknown data set: dset 3
 DEFINE DATA/AGGREGAT/E windy = 1,2,3
            *** NOTE: Variable "UWND" excluded from aggregate: T axis differs among members
@@ -3392,6 +3394,7 @@ DEFINE DATA/AGGREGAT/E windy = 1,2
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, fourfiles
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, some
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, more
@@ -4354,6 +4357,8 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_single_6.nc
            *** NOTE: Not deleted: tday
            *** NOTE: Axis is in use by grid (G088)
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
  **ERROR: invalid command: given aggregation dataset name already in use: myagg2
 define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc, tmp/tagg_reg_2.nc
  **TMAP ERR: non-existent or not on line
@@ -4366,9 +4371,13 @@ define data/agg/t myaggbad = tmp/tagg_reg_1.nc, tmp/tagg_no_exist.nc
 DEFINE DATA/AGGREGAT/T myTindepagg = tmp/tagg_reg_no_T.nc
  **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_reg_3.nc
 define data/agg/t myagg3 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2_overlarge.nc,tmp/tagg_reg_3.nc
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
  **TMAP ERR: Unknown variable code
              in file tmp/tagg_disjoint_T0varying_4_wrong.nc time axis variable is missing: TDAY_TVAR
 define data/agg/t myagg5_bad = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc,tmp/tagg_disjoint_T0varying_3.nc, tmp/tagg_disjoint_T0varying_4_wrong.nc,tmp/tagg_disjoint_T0varying_5.nc
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
  **ERROR: unknown command: garbage
 garbage command syntax
  **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_single_1.nc
@@ -4431,13 +4440,19 @@ Replacing definition of axis YAX
  LISTing to file tmp/consecutive_month_fcst.nc
 Replacing definition of axis TRUEMONTH
  LISTing to file tmp/irregular_start_time_fcst.nc
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, bn_aggregate_f.jnl
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, my_fmrc
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
  **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
 DEFINE DATA/AGGREGAT/F my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc,tmp/fcst_2.nc,tmp/fcst_3.nc
@@ -4621,6 +4636,8 @@ Replacing definition of axis TRUEMONTH
  LISTing to file tmp/f04_e3_t1_1v.nc
  LISTing to file tmp/f04_e3_t2_1v.nc
  LISTing to file tmp/f04_e3_t3_1v.nc
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
  **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis X of agg member 3
 list/x=150E/y=15n/L=10 fcst_2
@@ -4739,6 +4756,14 @@ Replacing definition of axis TAX
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAXIS
+Replacing definition of axis XAXIS
+Replacing definition of axis YAXIS
+Replacing definition of axis TAXIS
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
@@ -4783,8 +4808,10 @@ Replacing definition of axis ZAX
  LISTing to file tmp/f03_e2_tu1.nc
  LISTing to file tmp/f03_e2_tu2.nc
  LISTing to file tmp/f03_e2_tu3.nc
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Skipping variable REALIZATION from set 1, already in the Union dataset.
            *** NOTE: Skipping variable REALIZATION from set 8, already in the Union dataset.
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file abc.dat
@@ -4802,6 +4829,20 @@ cp: cannot stat `nofile.dat': No such file or directory
            *** NOTE: Shell command returned failure flag: cp nofile.dat not_either.dat
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: unknown data set: D=5.3
+stat/br fcst[d=5.3]
+ **ERROR: unknown data set: D=12.30
+stat/br fcst[d=12.30]
+ **ERROR: unknown data set: D=12.300000
+stat/br fcst[d=12.300000]
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+ **ERROR: unknown data set: D=4.1
+stat/br sst[d=4.1]
+ **ERROR: unknown data set: D=5.30
+stat/br sst[d=5.30]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -4910,4 +4951,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Oct 24 14:21:49 PDT 2016
+Ended at Mon Nov 14 12:34:54 PST 2016

@@ -57,6 +57,8 @@
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * V695+ *sh*  3/15 Added argument "imposed_lab" to disambiguate F and T axes
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
+* V710  *acm* 11/16 Ticket 2483: Fix the axis-end symbols that are defined 
+*                   for time axis plots
 
 	include 'ferret.parm'
 	include 'plot_setup.parm'
@@ -64,7 +66,6 @@
 	include 'xplot_setup.cmn'
         include 'axis_inc.decl'	! with axis lengths
         include 'AXIS.INC'      ! with axis lengths	
-
 
 * calling argument declarations:
 	CHARACTER	x_or_y*1, tstyle*3
@@ -79,7 +80,7 @@
 
 * internal variable declarations:
 	LOGICAL		climatology, its_x
-	INTEGER		TM_LENSTR1, itax, hi_int, slen, i1, i2
+	INTEGER		TM_LENSTR1, TM_LENSTR, itax, hi_int, slen, ilen, i1, i2
 	CHARACTER	ppl_cmnd*128, tstyle_long*10, buff30*30, buff*10
 	REAL		hrs, hrsper8, axlen
 
@@ -165,6 +166,9 @@
 	   axlen = ylen
 	ENDIF
 
+*	
+	ilen = TM_LENSTR(imposed_lab)
+
 * regard axis as climatological if it starts in year 0000 or 0001 and
 * extends less than 2 years
 	climatology = lo_bc .LE. psecs_at_2_yrs
@@ -213,7 +217,7 @@
 	CALL PPLCMD ( from, line, 0, ppl_cmnd, 1, 1 )
 
 * special "imposed" labels (used to disambiguate T and F axes)
-	IF (imposed_lab .NE. ' ') THEN
+	IF (ilen.GT.0 .AND. imposed_lab .NE. ' ') THEN
 	   slen = TM_LENSTR1(imposed_lab)
 	   IF ( its_x ) THEN
 * ... lower left corner along the horizontal page edge

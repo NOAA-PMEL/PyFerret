@@ -271,7 +271,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
               IF (lab_digits .LT. 0) lab_digits = lab_digits - 1
               lab_add = lab_add + 1
            ENDIF
-	   kount = kount + 1
+           kount = kount + 1
         ENDDO
 
 	IF (vertical_key) GOTO 1000

@@ -137,7 +137,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 	include        'gkspar.inc'
 
 	integer		TM_LENSTR1, ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
-     .                  lab_add, nlab, i, kount, shd_lev_hi, num_dec
+     .                  lab_add, nlab, i, kount, shd_lev_hi, num_dec, maxstr
 
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5),flaty(5),flatx(5)
 	real		xmaxx,ymaxx,vwidth,vheight,karht, ksiz_test
@@ -151,7 +151,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
         character*20    buff
 	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, windof_hold, 
      .                  check_0, increase_digits, nofill, cont_key_keep, 
-     .                  no_lines, is_viewport
+     .                  no_lines, is_viewport, have_neg
 
 	external	TM_FMT_SNGL, TM_FMT_SNGL_DIGITS
 
@@ -223,6 +223,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
            increase_digits = .FALSE.
 
            num_dec = 0
+	   have_neg = .FALSE.
            max_len = 0
 	   DO 30 ndx = lev1+incr, shd_levels, incr
              val = zlev(ndx)
@@ -237,6 +238,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 
 	     i = INDEX(buff, '.')
              IF (i .GT. 0) num_dec = MAX(num_dec, str_len-i)
+	     have_neg = have_neg .OR. val.LT.0 
    30      CONTINUE
 
            IF (increase_digits) THEN
@@ -502,10 +504,12 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	      ENDIF
 
 	      IF (str_len.LT.max_len .AND. INDEX(text, 'E').EQ.0) THEN
-	         DO i = str_len+1,max_len
+	         maxstr = max_len
+		 IF (have_neg .AND. val .GE. 0.) maxstr = maxstr - 1
+	         DO i = str_len+1, maxstr
 		    text = text(:TM_LENSTR1(text))//'0'
 	         ENDDO
-		 str_len = max_len
+		 IF (str_len+1 .LT. maxstr) str_len = max_len
 	      ENDIF
 	   ENDIF
 
@@ -734,6 +738,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 * Recompute max_len as formatted for these labels.
 
 	num_dec = 0
+	have_neg = .FALSE.
 	max_len = 0
 	DO ndx = lev1+incr, shd_levels, incr
            val = zlev(ndx)
@@ -746,6 +751,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	   ENDIF
 	   i = INDEX(buff, '.')
            IF (i .GT. 0) num_dec = MAX(num_dec, str_len-i)
+	   have_neg = have_neg .OR. val.LT.0 
 	ENDDO
 	buff = txt_out
 
@@ -820,10 +826,12 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	      ENDIF
 
 	      IF (str_len.LT.max_len .AND. INDEX(text, 'E').EQ.0) THEN
-	         DO i = str_len+1,max_len
+	         maxstr = max_len
+		 IF (have_neg .AND. val .GE. 0.) maxstr = maxstr - 1
+	         DO i = str_len+1, maxstr
 		    text = text(:TM_LENSTR1(text))//'0'
 	         ENDDO
-		 str_len = max_len
+		 IF (str_len+1 .LT. maxstr) str_len = max_len
 	      ENDIF
 	   ENDIF
 

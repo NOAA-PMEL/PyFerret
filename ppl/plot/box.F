@@ -70,6 +70,7 @@ C**
         INCLUDE 'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
 #endif
 
+	logical  is_viewport
         real     vwidth,vheight,width2,height2
 
 C 	stmt added for linux *jd* 12.96
@@ -78,7 +79,7 @@ C 	stmt added for linux *jd* 12.96
 *******************************************************************************
 
         if (ppl_in_ferret) then
-           call get_view_size (vwidth,vheight)
+           call get_view_size (vwidth,vheight,is_viewport)
            width2 = vwidth
            height2 = vheight
         else

@@ -147,9 +147,9 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 	include        'gkspar.inc'
 	include        'pyfonts.cmn'
 	
-	integer ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
+	integer TM_LENSTR1, ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
      .          lab_add, nlab, i, kount, lev1, levn, nspace, shd_lev_hi,
-     .		ITYPEX_save, ITYPEY_save, ic
+     .		ITYPEX_save, ITYPEY_save, ic, num_dec
 
 	real		SYMWID
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5),flaty(5),flatx(5)
@@ -163,7 +163,8 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
      .			txt_out, blanks
         character*20    buff
 	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, windof_hold, 
-     .                  check_0, increase_digits, nofill, cont_key_keep, no_lines
+     .                  check_0, increase_digits, nofill, cont_key_keep, 
+     .                  no_lines, is_viewport
 
 	external	TM_FMT_SNGL, TM_FMT_SNGL_DIGITS
 
@@ -248,6 +249,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
            READ (buff,*) val_last
            increase_digits = .FALSE.
 
+	   num_dec = 0
            max_len = 0
 	   DO 30 ndx = lev1+incr, shd_levels, incr
              val = zlev(ndx)
@@ -259,6 +261,9 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
              IF ( TM_DFPEQ(val_last, val_n) ) increase_digits = .TRUE.
              val_last = val_n
              IF (max_len .lt. str_len) max_len = str_len
+	     
+	     i = INDEX(buff, '.')
+             IF (i .GT. 0) num_dec = MAX(num_dec, str_len-i)
    30      CONTINUE
 
            IF (increase_digits) THEN
@@ -275,7 +280,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 * Define default x and y lo and hi locations
 
         if (ppl_in_ferret) then
-           call get_view_size (vwidth,vheight)
+           call get_view_size (vwidth,vheight,is_viewport)
 
            IF (ITSA_AXIS_VIEW(1)) vheight = (ylen + yorg )* 1.15
 
@@ -418,7 +423,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	   ENDDO
 	   IF (karht .GT. ksiz_test) karht = ksiz_test
 	ENDIF
-
+	
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
 	val = zlev(lev1)
@@ -499,12 +504,34 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 *	   WRITE OUT CORRESPONDING VALUE
 
-             val = zlev(ndx)
-             IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+	   val = zlev(ndx)
+	   IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	   text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 
-             IF (ndx .EQ. 1 .AND. neginf) text = " "
-             IF (ndx .EQ. levn+1 .AND. posinf) text = " "
+	   IF (ndx .EQ. 1 .AND. neginf) text = " "
+	   IF (ndx .EQ. levn+1 .AND. posinf) text = " "
+
+* Add a .0 with the right number of 0's if the other labels have 
+* decimal-point .xx but this one does not
+
+	   IF (num_dec.GT.0 .AND. INDEX(text, 'E').EQ.0) THEN
+	      IF (INDEX(text, '.') .EQ. 0) THEN
+	         text = text(:TM_LENSTR1(text))//'.0'
+	         IF (num_dec .GT. 1) THEN
+	            DO i = 2,num_dec
+		       text = text(:TM_LENSTR1(text))//'0'
+	            ENDDO
+	         ENDIF
+	         str_len = str_len + num_dec+1
+	      ENDIF
+
+	      IF (str_len.LT.max_len .AND. INDEX(text, 'E').EQ.0) THEN
+	         DO i = str_len+1,max_len
+		    text = text(:TM_LENSTR1(text))//'0'
+	         ENDDO
+		 str_len = max_len
+	      ENDIF
+	   ENDIF
 
 	   xx = (kx_lo + x_inc*(center_add+real(ndx-1)))/1000.0
      .		 - karht*real(str_len)/2.0 - xorg
@@ -546,7 +573,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 
         if (ppl_in_ferret) then
-           call get_view_size (vwidth,vheight)
+           call get_view_size (vwidth,vheight,is_viewport)
 
            IF (ITSA_AXIS_VIEW(1)) vwidth = (xlen + xorg )* 1.15
            if (vwidth .le. xlen + xorg) goto 2000
@@ -644,15 +671,6 @@ c	IF ( no_lines ) cont_key = .TRUE.
            IF (height/vheight.GT.1.5 .AND. shd_levels.GT.4) incr = 2*incr   ! short plot, fewer labels
 	end if
 
-! The default locations often make the labels run off to the right. 
-! Check for this and move the key over
-
-	IF ((kx_hi_def/1000 + max_len*karht ) .GT. width) THEN
-	   fixx = (kx_hi_def/1000 + max_len*karht  - width) *1000
-           kx_lo_def = kx_lo_def - fixx
-           kx_hi_def = kx_hi_def - fixx
-        ENDIF
-
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
 
@@ -741,6 +759,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 * Recompute max_len as formatted for these labels.
 
+	num_dec = .FALSE.
 	max_len = 0
 	DO ndx = lev1+incr, shd_levels, incr
            val = zlev(ndx)
@@ -751,6 +770,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	      max_len = str_len
 	      txt_out = buff
 	   ENDIF
+	   i = INDEX(buff, '.')
+           IF (i .GT. 0) num_dec = MAX(num_dec, str_len-i)
 	ENDDO
 	buff = txt_out
 
@@ -762,9 +783,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
         IF ((kuser_loc(1) .OR. kuser_loc(2))) xpos = (kx_hi + x_inc)/ 1000. - xorg
 	   
         txt_out = buff(:max_len)//'X'   ! extra space between key and label
-        max_len = max_len + 1
 
-        wid = SYMWID(karht,max_len,txt_out(:max_len))
+        wid = SYMWID(karht,max_len+1,txt_out(:max_len))
         xpos = xpos + wid
 
 * If klab_size negative put the key labels on the left rather than 
@@ -773,12 +793,24 @@ c	IF ( no_lines ) cont_key = .TRUE.
         IF (klab_size .LT. 0) THEN
            wid = SYMWID(karht,1,'X')
            xpos = kx_lo/1000.0 - xorg - wid
-        ENDIF
+        ELSE
 
-* If the user set the label size, leave it.  Otherwise make labels smaller
-* to try to fit them on the page.
+! The default locations often make the labels run off to the right. 
+! Check for this and move the labels over a half space
 
-        IF (klab_size .EQ. 0 .AND. xpos+xorg .GT. vwidth) THEN
+c	   print *, rem, max_len, karht, (kx_hi_def-kx_lo_def)/1000 + (max_len)*karht 
+c	   IF ( (kx_hi_def-kx_lo_def)/1000 + (max_len+1)*karht  .GT. rem) THEN
+c	      wid = SYMWID(karht,max_len,'l')
+c              xpos = xpos - wid
+c           ENDIF
+	ENDIF
+
+* If the user set the label size, leave it. If we are drawing in a viewport,
+* leave the label sizes as-is.  The user can control whether the labels may
+* run into the next viewport or a margin. Otherwise make labels smaller to 
+* try to fit them on the page.
+
+        IF (klab_size.EQ.0 .AND. .NOT.is_viewport .AND. xpos+xorg.GT.vwidth) THEN
 
            ic = 0
            DO WHILE (xpos+xorg .GT. vwidth .AND. ic.LT.5)
@@ -808,6 +840,28 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	   text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 	   IF (ndx .EQ. 1 .AND. neginf) text = " "
 	   IF (ndx .EQ. levn+1 .AND. posinf) text = " "
+
+* Add a .0 with the right number of 0's if the other labels have 
+* decimal-point .xx but this one does not
+
+	   IF (num_dec.GT.0 .AND. INDEX(text, 'E').EQ.0) THEN
+	      IF (INDEX(text, '.') .EQ. 0) THEN
+	         text = text(:TM_LENSTR1(text))//'.0'
+	         IF (num_dec .GT. 1) THEN
+	            DO i = 2,num_dec
+		       text = text(:TM_LENSTR1(text))//'0'
+	            ENDDO
+	         ENDIF
+	         str_len = str_len + num_dec+1
+	      ENDIF
+
+	      IF (str_len.LT.max_len .AND. INDEX(text, 'E').EQ.0) THEN
+	         DO i = str_len+1,max_len
+		    text = text(:TM_LENSTR1(text))//'0'
+	         ENDDO
+		 str_len = max_len
+	      ENDIF
+	   ENDIF
 
 * Right-justify them.
 

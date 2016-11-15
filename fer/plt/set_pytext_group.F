@@ -42,13 +42,17 @@
 	INTEGER	igrp, status
 	CHARACTER*(*) buff1 
 
+	LOGICAL font_hershey
 	INTEGER TM_LENSTR1, STR_SAME, llen, slen, ii, loc
 	REAL	val_buf
-	CHARACTER arg*24, errstrng*20
+	CHARACTER errstrng*20
 
 * Settings for all text
 
       IF (igrp .EQ. fnt_all) THEN
+
+
+	font_hershey = (STR_SAME(pyfnt_fontname, 'hershey') .EQ. 0)
 
 c* ... SET TEXT/FONT
 	IF ( qual_given( slash_set_text_font ) .GT. 0 ) THEN
@@ -58,8 +62,19 @@ c* ... SET TEXT/FONT
      .			      buff1, status )
               IF ( status .NE. ferr_ok ) RETURN
 	      IF ( buff1 .EQ. ' ' ) GOTO 5440
+	      font_hershey = (STR_SAME(buff1, 'hershey') .EQ. 0)
 	      pyfnt_fontname = buff1
+
 	   ENDIF
+	ENDIF
+
+* The following settings apply only if we've set a non-Hershey font
+
+	IF (font_hershey) THEN
+	   IF (qual_given( slash_set_text_italic ) .GT. 0  .OR.
+     .         qual_given( slash_set_text_bold )   .GT. 0  .OR. 
+     .         qual_given( slash_set_text_isiz )   .GT. 0  .OR. 
+     .         qual_given( slash_set_text_color )  .GT. 0 ) GOTO 5430
 	ENDIF
 
 * ... SET TEXT/COLOR
@@ -77,12 +92,12 @@ c* ... SET TEXT/FONT
 	ENDIF 
 
 * ... SET TEXT/ITALIC
-	IF ( qual_given( slash_set_text_italic ) .GT. 0 ) THEN	
+	IF ( qual_given( slash_set_text_italic ) .GT. 0 ) THEN
 	   pyfnt_italic = 1
 	ENDIF
 
 * ... SET TEXT/BOLD
-	IF ( qual_given( slash_set_text_bold ) .GT. 0 ) THEN	
+	IF ( qual_given( slash_set_text_bold ) .GT. 0 ) THEN
 	   pyfnt_bold = 1
 	ENDIF
 
@@ -97,7 +112,7 @@ c* ... SET TEXT/FONT
 	   
            ii = INT(val_buf)
            IF (ii.LT.-4 .OR. ii.GT.4) GOTO 5460
-           pyfnt_isiz = ii
+	   pyfnt_isiz = ii
 	ENDIF
 
 * Set the group settings to the default values and unset pyf_set
@@ -115,7 +130,7 @@ c* ... SET TEXT/FONT
  1000	CONTINUE
 
       ELSE  ! group settings
-
+      
 * If there were not previous settings on this group, first apply the
 * current global settings to this group
 
@@ -132,6 +147,8 @@ c* ... SET TEXT/FONT
 * Read arguments for /COLOR=, /FONT=, and /ISIZE=
 
 c* ... SET TEXT/FONT
+        font_hershey = (STR_SAME(pyf_fontname(igrp), 'hershey') .EQ. 0)
+
 	IF ( qual_given( slash_set_text_font ) .GT. 0 ) THEN
            loc= qual_given( slash_set_text_font )
 	   IF ( loc.GT. 0 ) THEN
@@ -139,8 +156,20 @@ c* ... SET TEXT/FONT
      .			      buff1, status )
               IF ( status .NE. ferr_ok ) RETURN
 	      IF ( buff1 .EQ. ' ' ) GOTO 5440
+
+	      font_hershey = (STR_SAME(buff1, 'hershey') .EQ. 0)
+	      IF (font_hershey) GOTO 5430
 	      pyf_fontname(igrp) = buff1
 	   ENDIF
+	ENDIF
+
+* The following settings apply only if we've set a non-Hershey font
+	
+	IF (font_hershey) THEN
+	   IF (qual_given( slash_set_text_italic ) .GT. 0  .OR.
+     .         qual_given( slash_set_text_bold )   .GT. 0  .OR. 
+     .         qual_given( slash_set_text_isiz )   .GT. 0  .OR. 
+     .         qual_given( slash_set_text_color )  .GT. 0 ) GOTO 5430
 	ENDIF
 
 * ... SET TEXT/COLOR
@@ -164,7 +193,7 @@ c* ... SET TEXT/FONT
 	ENDIF
 
 * ... SET TEXT/BOLD
-	IF ( qual_given( slash_set_text_bold ) .GT. 0 ) THEN	
+	IF ( qual_given( slash_set_text_bold ) .GT. 0 ) THEN
 	   pyf_bold(igrp) = 1
 	ENDIF
 
@@ -176,7 +205,6 @@ c* ... SET TEXT/FONT
            CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                     val_buf, status )
            IF ( status .NE. ferr_ok ) GOTO 5450
-	   
            ii = INT(val_buf)
            IF (ii.LT.-4 .OR. ii.GT.4) GOTO 5460
            pyf_isiz(igrp) = ii
@@ -192,21 +220,38 @@ c* ... SET TEXT/FONT
 
 * If there were errors, cancel any settings made above
  5100	CALL CANCEL_PYTEXT_GROUP (igrp)
-	pyf_set(igrp) = .FALSE.
-	RETURN
+	IF (igrp .NE. fnt_all) pyf_set(igrp) = .FALSE.
+	GOTO 5000
+
+ 5430	CONTINUE
+* Set the global and group settings to the default values and unset any group settings.
+	CALL CANCEL_PYTEXT_GROUP (igrp)
+	errstrng = 'SET TEXT'
+	slen = TM_LENSTR1(errstrng)
+        llen = TM_LENSTR1(buff1)
+	CALL ERRMSG( ferr_invalid_command, status,
+     .			errstrng(:slen)//
+     .			' Font is Hershey. No other SET TEXT settings apply.', *5000 )
 
  5440   CALL ERRMSG( ferr_invalid_command, status,
      .			'SET TEXT/FONT=what? See Unix system fonts ', *5000 )
+
  5450   errstrng = 'SET TEXT'
 	slen = TM_LENSTR1(errstrng)
         llen = TM_LENSTR1(buff1)
 	CALL ERRMSG( ferr_invalid_command, status,
      .			errstrng(:slen)//'=what? ', *5100 )
+
  5460   errstrng = 'SET TEXT'
+*       Get the isize that was given, as a string
+	loc = qual_given(slash_set_text_isiz)
+	CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                     buff1, status )
 	slen = TM_LENSTR1(errstrng)
         llen = TM_LENSTR1(buff1)
 	CALL ERRMSG( ferr_out_of_range, status, 
      .                  buff1(:llen)//pCR//errstrng//
-     .			' argument must be between -4 and 4', 
+     .			'ISIZ argument must be between -4 and 4',
      .			*5100 )
+
 	END

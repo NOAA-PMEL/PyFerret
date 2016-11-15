@@ -1986,7 +1986,7 @@ c *kob* 4/97
 
 	IF (num_items .EQ. 0) THEN 
 	   igroup = fnt_all
-	   CALL SET_PYTEXT_GROUP (fnt_all, buff1, status)
+	   CALL SET_PYTEXT_GROUP (igroup, buff1, status)
 
 	ELSE
 

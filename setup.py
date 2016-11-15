@@ -225,14 +225,3 @@ setup(name = "gcircle",
       requires = [ "numpy", ],
       py_modules = [ "gcircle", ])
 
-setup(name = "ferretmagic",
-      version = pyferret_version,
-      description = "iPython notebook extension for PyFerret",
-      long_description = "iPython notebook extension for PyFerret " \
-                         "updated for this version of PyFerret.",
-      author = "Patrick Brockmann",
-      url = "https://github.com/PBrockmann/ipython-ferretmagic",
-      license = "Public Domain",
-      requires = [ "pyferret", ],
-      py_modules = [ "ferretmagic", ])
-

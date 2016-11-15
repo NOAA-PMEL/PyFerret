@@ -1,4 +1,4 @@
-      SUBROUTINE GET_VIEW_SIZE( vxsize, vysize )
+      SUBROUTINE GET_VIEW_SIZE( vxsize, vysize, is_viewport )
 
 *
 *
@@ -60,6 +60,7 @@
 	include	'PLT.INC'	! with sizing data, etc.
 
 * calling argument declarations:
+	LOGICAL is_viewport
 	REAL*4 vxsize, vysize
 
 * internal variable declarations:
@@ -68,9 +69,13 @@
 * initialize to full plot size
         vxsize = width
         vysize = height
+	is_viewport = .FALSE.
 
 * If viewports are active compute fraction of plot size in viewport
 	IF ( vp_num .NE. mvp_dflt ) THEN
+
+	   is_viewport = .TRUE.
+
            IF ( vp_xclip(vp_num) .EQ. unspecified_val4 ) THEN
               vxmax = 1.0
               vymax = 1.0

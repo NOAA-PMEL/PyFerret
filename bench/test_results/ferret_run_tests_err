@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Nov 10 15:02 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.02
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Nov 15 10:40 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.02
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -291,7 +291,7 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Thu Nov 10 15:03:19 PST 2016
+Beginning at Tue Nov 15 10:40:26 PST 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4621,6 +4621,11 @@ Replacing definition of axis TAX
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAXIS
+Replacing definition of axis YAXIS
+Replacing definition of axis TAXIS
 *** Running ferret script: bn_delim_datetime.jnl
  Cached data cleared from memory
 Replacing definition of axis TIMAX
@@ -4694,6 +4699,12 @@ stat/br fcst[d=5.3]
 stat/br fcst[d=12.30]
  **ERROR: unknown data set: D=12.300000
 stat/br fcst[d=12.300000]
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+ **ERROR: unknown data set: D=4.1
+stat/br sst[d=4.1]
+ **ERROR: unknown data set: D=5.30
+stat/br sst[d=5.30]
 *** Running ferret script: bn_gif.jnl
  Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
@@ -4813,4 +4824,4 @@ LOAD/TEMPORARY vflag
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
  Cached data cleared from memory
-Ended at Thu Nov 10 15:05:06 PST 2016
+Ended at Tue Nov 15 10:42:11 PST 2016

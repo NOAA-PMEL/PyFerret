@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1404 Nov 10 15:19 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1404 Nov 15 11:01 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -301,7 +301,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Thu Nov 10 15:19:12 PST 2016
+Beginning at Tue Nov 15 11:02:05 PST 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4644,6 +4644,11 @@ Replacing definition of axis TAX
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAXIS
+Replacing definition of axis YAXIS
+Replacing definition of axis TAXIS
 *** Running ferret script: bn_delim_datetime.jnl
  Cached data cleared from memory
 Replacing definition of axis TIMAX
@@ -4717,6 +4722,12 @@ stat/br fcst[d=5.3]
 stat/br fcst[d=12.30]
  **ERROR: unknown data set: D=12.300000
 stat/br fcst[d=12.300000]
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+ **ERROR: unknown data set: D=4.1
+stat/br sst[d=4.1]
+ **ERROR: unknown data set: D=5.30
+stat/br sst[d=5.30]
 *** Running ferret script: bn_gif.jnl
  Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
@@ -4874,4 +4885,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testfermethods.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Thu Nov 10 15:22:00 PST 2016
+Ended at Tue Nov 15 11:04:57 PST 2016

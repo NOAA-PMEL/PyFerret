@@ -149,7 +149,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 	
 	integer TM_LENSTR1, ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
      .          lab_add, nlab, i, kount, lev1, levn, nspace, shd_lev_hi,
-     .		ITYPEX_save, ITYPEY_save, ic, num_dec
+     .		ITYPEX_save, ITYPEY_save, ic, num_dec, maxstr
 
 	real		SYMWID
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5),flaty(5),flatx(5)
@@ -164,7 +164,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
         character*20    buff
 	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, windof_hold, 
      .                  check_0, increase_digits, nofill, cont_key_keep, 
-     .                  no_lines, is_viewport
+     .                  no_lines, is_viewport, have_neg
 
 	external	TM_FMT_SNGL, TM_FMT_SNGL_DIGITS
 
@@ -249,8 +249,9 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
            READ (buff,*) val_last
            increase_digits = .FALSE.
 
-	   num_dec = 0
-           max_len = 0
+           num_dec = 0
+           have_neg = .FALSE.
+	   max_len = 0
 	   DO 30 ndx = lev1+incr, shd_levels, incr
              val = zlev(ndx)
              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
@@ -262,8 +263,9 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
              val_last = val_n
              IF (max_len .lt. str_len) max_len = str_len
 	     
-	     i = INDEX(buff, '.')
+             i = INDEX(buff, '.')
              IF (i .GT. 0) num_dec = MAX(num_dec, str_len-i)
+             have_neg = have_neg .OR. val.LT.0 
    30      CONTINUE
 
            IF (increase_digits) THEN
@@ -512,7 +514,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	   IF (ndx .EQ. levn+1 .AND. posinf) text = " "
 
 * Add a .0 with the right number of 0's if the other labels have 
-* decimal-point .xx but this one does not
+* decimal-point .xx but this one does not.
 
 	   IF (num_dec.GT.0 .AND. INDEX(text, 'E').EQ.0) THEN
 	      IF (INDEX(text, '.') .EQ. 0) THEN
@@ -526,10 +528,12 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	      ENDIF
 
 	      IF (str_len.LT.max_len .AND. INDEX(text, 'E').EQ.0) THEN
-	         DO i = str_len+1,max_len
+	         maxstr = max_len
+	         IF (have_neg .AND. val .GE. 0.) maxstr = maxstr - 1
+	         DO i = str_len+1, maxstr
 		    text = text(:TM_LENSTR1(text))//'0'
 	         ENDDO
-		 str_len = max_len
+	         IF (str_len+1 .LT. maxstr) str_len = max_len
 	      ENDIF
 	   ENDIF
 
@@ -759,7 +763,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 * Recompute max_len as formatted for these labels.
 
-	num_dec = .FALSE.
+	num_dec = 0
+	have_neg = .FALSE.
 	max_len = 0
 	DO ndx = lev1+incr, shd_levels, incr
            val = zlev(ndx)
@@ -771,7 +776,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	      txt_out = buff
 	   ENDIF
 	   i = INDEX(buff, '.')
-           IF (i .GT. 0) num_dec = MAX(num_dec, str_len-i)
+	   IF (i .GT. 0) num_dec = MAX(num_dec, str_len-i)
+	   have_neg = have_neg .OR. val.LT.0
 	ENDDO
 	buff = txt_out
 
@@ -793,16 +799,6 @@ c	IF ( no_lines ) cont_key = .TRUE.
         IF (klab_size .LT. 0) THEN
            wid = SYMWID(karht,1,'X')
            xpos = kx_lo/1000.0 - xorg - wid
-        ELSE
-
-! The default locations often make the labels run off to the right. 
-! Check for this and move the labels over a half space
-
-c	   print *, rem, max_len, karht, (kx_hi_def-kx_lo_def)/1000 + (max_len)*karht 
-c	   IF ( (kx_hi_def-kx_lo_def)/1000 + (max_len+1)*karht  .GT. rem) THEN
-c	      wid = SYMWID(karht,max_len,'l')
-c              xpos = xpos - wid
-c           ENDIF
 	ENDIF
 
 * If the user set the label size, leave it. If we are drawing in a viewport,
@@ -856,10 +852,12 @@ c           ENDIF
 	      ENDIF
 
 	      IF (str_len.LT.max_len .AND. INDEX(text, 'E').EQ.0) THEN
-	         DO i = str_len+1,max_len
+	         maxstr = max_len
+	         IF (have_neg .AND. val .GE. 0.) maxstr = maxstr - 1
+	         DO i = str_len+1, maxstr
 		    text = text(:TM_LENSTR1(text))//'0'
 	         ENDDO
-		 str_len = max_len
+	         IF (str_len+1 .LT. maxstr) str_len = max_len
 	      ENDIF
 	   ENDIF
 

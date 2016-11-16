@@ -37,6 +37,7 @@
 * Return TRUE if the grid does not have E or F dimensions.
 
 * V7    acm  6/16 Ticket 2437
+* V7.02 acm 11/16 ticket 2487, initialize FOUR_D_GRID. 
 
         include 'tmap_dims.parm'
 #include "tmap_dset.parm"
@@ -44,13 +45,12 @@
 	include 'ferret.parm'
 	INTEGER grid
 	   	
+	FOUR_D_GRID = .FALSE.
 	IF (grid .EQ. unspecified_int4) RETURN
 
 	FOUR_D_GRID =  
      .  ( grid_line(e_dim,grid).EQ.mnormal  .AND. 
      .    grid_line(f_dim,grid).EQ.mnormal  )
-	
-* First, for pre-change benchmarks
 
 	RETURN
 	END

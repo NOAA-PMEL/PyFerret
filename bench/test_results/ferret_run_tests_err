@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Nov 15 13:12 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.02
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Nov 16 08:47 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.02
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -291,7 +291,7 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Tue Nov 15 13:23:05 PST 2016
+Beginning at Wed Nov 16 08:48:09 PST 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4824,4 +4824,4 @@ LOAD/TEMPORARY vflag
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
  Cached data cleared from memory
-Ended at Tue Nov 15 13:24:48 PST 2016
+Ended at Wed Nov 16 08:49:54 PST 2016

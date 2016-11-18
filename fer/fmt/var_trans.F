@@ -45,6 +45,7 @@
 * V500 *kob* 3/99- up VAR_CODE and local variable var to 64 chars
 * V552 *acm* 4/03- up VAR_CODE decl from 64 to 128 chars
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*       *acm*11/16 write a shortened var name to diag output when name is super long
 
 * calling argument declarations:
 	INTEGER	idim, cx, out_len
@@ -60,22 +61,30 @@
 	include	'xtext_info.cmn'
 
 * internal parameter declarations:
-	LOGICAL     full_precision
+	LOGICAL     full_precision, toolong
 	PARAMETER ( full_precision = .TRUE. )
 
 * initialize
 	var = VAR_CODE( cx_category(cx), cx_variable(cx) )
         vlen = TM_LENSTR1( var )
+	toolong = vlen .GT. 60
 
 * TRANSFORMATION
 * "VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	dim_str = CX_DIM_STR( idim, cx, ':',  full_precision, slen )
-	WRITE (out_buff,3000) var(:vlen), dim_str(:slen), cx_data_set(cx)
+	IF (toolong) THEN
+	   WRITE (out_buff,3000) var(:50), dim_str(:slen), cx_data_set(cx)
+	ELSE
+	   vlen = MIN(70, vlen)
+	   WRITE (out_buff,3100) var(:vlen), dim_str(:slen), cx_data_set(cx)
+	ENDIF
 	CALL TM_PACK_STRING( out_buff, out_buff, 1, 80, out_len )
 
- 3000	FORMAT (A,'[',A,',D=',I3,']')
+ 3000	FORMAT (A,' ... [',A,',D=',I3,']')
+ 3100	FORMAT (A,'[',A,',D=',I3,']')
 
 	VAR_TRANS = out_buff
+
 
 	RETURN
 	END

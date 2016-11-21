@@ -52,6 +52,7 @@
                     ticket 2448: for 2-digit years, put years prior to 50 into the 2000s
                     ticket 2449: report incorrect choice of date/ eurodate as an error
   V702 10/16 *acm*  ticket 2472: Allow yyyy/dd/mm in any of the date types.   
+  V702 11/16 *acm*   handling read errors in date/time reading
 
 */
 
@@ -145,10 +146,10 @@ void FORTRAN(decode_file_jacket)
       /*
 	isolate the bad data flags that correspond to the numeric fields
       */
-      if ( (field_type[i]!=FTYP_MISSING) && (field_type[i]!=FTYP_CHARACTER) )
-	bad_flags[i] = mr_bad_flags[mr];
-      else
+      if ( (field_type[i]==FTYP_MISSING) || (field_type[i]==FTYP_CHARACTER) )
 	bad_flags[i] = 0.0;
+      else
+	bad_flags[i] = mr_bad_flags[mr];
     }
 
   /*
@@ -378,8 +379,10 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
   int slen;     /* kob 12/01 needed to check for numberical string ending in e/E */
   int ndum;
   int break_century;
+  int rstatus;
   double tpart;
   p = recptr;
+  rstatus = 3; 
 
 /* 2-digit years need to be assigned to a century. 
    will break after 2049 or before 1950  (ACM 7/2016 was year 20 */
@@ -401,6 +404,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
       }
 
     } else {
+	  *status = 3;
       switch (field_type[i]) {
 	
 	/* latitude */
@@ -436,6 +440,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	
 	/* date */
       case FTYP_DATE:
+	(*(numeric_fields+i))[rec] = bad_flags[i];
 	if (sscanf(p,"%d/%d/%d%1s",&idummy1,&idummy2,&idummy3,errstr) == 3) {
 	  /* need to check to see if idummy3 which contains the year is in 
 	     the form YY or YYYY     *kob*  10/02  */
@@ -701,6 +706,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	
 	/* time */
       case FTYP_TIME:
+	(*(numeric_fields+i))[rec] = bad_flags[i];
 	if (sscanf(p,"%d:%d:%lf%1s",&idummy1,&idummy2,&dummy,errstr) == 3)
 	  (*(numeric_fields+i))[rec] = idummy1 + idummy2/60. + dummy/3600.;
 	else if (sscanf(p,"%d:%d%1s",&idummy1,&idummy2,errstr) == 2)
@@ -746,10 +752,12 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 /* if bad status flag out of a date conversion, make the date the bad-flag
    Then the user can deal with undefined times as desired */
 
- 	if (*status != 3)  (*(numeric_fields+i))[rec] = bad_flags[i]; 
+ 	if (*status != 3 && rstatus == 3) rstatus = -1* (i+1);
+
     p = pnext;	
     }
 
+   if (rstatus != 3) *status = rstatus; 
 }
 
 /*

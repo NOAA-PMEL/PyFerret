@@ -49,6 +49,7 @@
 * V685 *acm* 1/13  Ticket 2030: if we run out of memory, issue a new message
 *                  and only clear the variables that had been initialized.
 * V701 *acm* 7/16  ticket 2449: report incorrect choice of date/ eurodate as an error
+* V702 *acm*11/16  handling read errors in date/time reading
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -142,6 +143,7 @@
 
 * reserve and catalog space for the result
 	     CALL CREATE_MEM_VAR( cx_stack_ptr, mrlist(ivar), status )
+
 	     IF ( status .NE. ferr_ok ) GOTO 5000
 	   ENDIF
 
@@ -265,8 +267,15 @@
  5650	CALL ERRMSG( ferr_limits, status,
      .		'/COLUMNS is impossibly large', *5500 )
  5700	CALL ERRMSG( ferr_TMAP_error, status, ' ', *4900 )
- 5800	WRITE (errbuff, 5810) -1*status
- 5810   FORMAT ('Check Date or Eurodate formatting for file variable ',i4)
-	CALL ERRMSG( ferr_out_of_range, status, errbuff, *1100 )
+ 5800	CONTINUE
+
+* String variables not allocated in this error condition, so no need to free them
+* in the clean up steps that will follow.
+	DO ivar = 1, nvar
+	   IF (field_type(ivar) .eq. FTYP_CHARACTER)
+     .       mr_protected(mrlist(ivar)) = mr_table_entry_only
+	ENDDO 
+	CALL ERRMSG( ferr_nomessge, status, 
+     .       'Error reading file: Check Date or Time fields.', *1100 )
  6000	CALL ERRMSG( ferr_internal, status, 'READ_EZ ??', *4900 )
 	END	

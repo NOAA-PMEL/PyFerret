@@ -61,10 +61,10 @@ i586:
 intel-mac:
 	${MAKE} gksm2ps \
 		CC=gcc \
-		CFLAGS="-I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm -I/usr/X11R6/include" \
+		CFLAGS="-I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm -I/usr/X11/include" \
 		LDFLAGS= \
 		GKLIB="../xgks/src/lib/libxgks.a" \
-		LIB="-L/usr/X11R6/lib -lX11 -lm"
+		LIB="-L/usr/X11/lib -lX11 -lm"
 
 x86_64-linux:	
 	${MAKE} gksm2ps \

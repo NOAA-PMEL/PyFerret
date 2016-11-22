@@ -19,7 +19,7 @@
 			  -I../../fer/common \
 			  $(GKS_INCLUDES) \
 			  -I/usr/local/include \
-			  -I/usr/X11R6/include
+			  -I/usr/X11/include
 
 	FINCLUDES	= -I../../ppl/tmap_inc \
 			  -I../include \
@@ -75,7 +75,7 @@
 	LD		= $(shell which gfortran-6)
 	LDFLAGS		= -fPIC -static-libgfortran -static-libgcc -dead_strip
 
-	SYSLIB		= -L/usr/X11R6/lib -lX11 \
+	SYSLIB		= -L/usr/X11/lib -lX11 \
 			  -lcurl \
 			  -ldl \
 			  -lz \

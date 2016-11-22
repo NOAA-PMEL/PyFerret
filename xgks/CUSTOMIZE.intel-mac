@@ -22,7 +22,7 @@
 CC='gcc-6'
 #
 # C compiler flags (default is `-O'):
-CFLAGS='-O -I/usr/X11R6/include'
+CFLAGS='-O -I/usr/X11/include'
 # CFLAGS='-O0 -g'
 #
 # C preprocessor flags (default is `-DNDEBUG'):
@@ -38,6 +38,6 @@ FFLAGS='-O2 -fno-second-underscore -fno-backslash -fdollar-ok -ffixed-line-lengt
 
 OS=macosx
 
-CPP_X11='/usr/X11R6/include'
-LD_X11='-L/usr/X11R6/lib -lX11'
+CPP_X11='/usr/X11/include'
+LD_X11='-L/usr/X11/lib -lX11'
 

@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Nov 16 08:47 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.02
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Nov 23 04:26 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.02
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -291,7 +291,7 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Wed Nov 16 08:48:09 PST 2016
+Beginning at Wed Nov 23 04:27:00 PST 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4565,6 +4565,7 @@ Replacing definition of axis TAX
  LISTing to file a.nc
 Replacing definition of axis TAX
  LISTing to file a.nc
+ LISTing to file a.nc
 *** Running ferret script: bn_plot_along.jnl
  Cached data cleared from memory
            *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
@@ -4626,6 +4627,10 @@ Replacing definition of axis TAX
 Replacing definition of axis XAXIS
 Replacing definition of axis YAXIS
 Replacing definition of axis TAXIS
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ LISTing to file a.nc
 *** Running ferret script: bn_delim_datetime.jnl
  Cached data cleared from memory
 Replacing definition of axis TIMAX
@@ -4633,13 +4638,13 @@ Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
+ **ERROR: Error reading file: Check Date or Time fields.
 list index,edtim,udtim,udate,edate
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
+ **ERROR: Error reading file: Check Date or Time fields.
 list index,edtim,udtim,udate,edate
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
+ **ERROR: Error reading file: Check Date or Time fields.
 list index,edtim,udtim,udate,edate
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
+ **ERROR: Error reading file: Check Date or Time fields.
 list index,edtim,udtim,udate,edate
 *** Running ferret script: bn_aggregate_u.jnl
  Cached data cleared from memory
@@ -4824,4 +4829,4 @@ LOAD/TEMPORARY vflag
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
  Cached data cleared from memory
-Ended at Wed Nov 16 08:49:54 PST 2016
+Ended at Wed Nov 23 04:28:45 PST 2016

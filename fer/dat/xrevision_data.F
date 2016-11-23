@@ -138,6 +138,6 @@
 
 	DATA program_name	/ 'PyFERRET' /
 	DATA len_program_name	/  8       /
-	DATA revision_level	/  7.02    /
+	DATA revision_level	/  7.021   /
 
 	END

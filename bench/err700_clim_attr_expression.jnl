@@ -1,0 +1,22 @@
+! err700_clim_attr_expression.jnl
+! Ticket 2489
+! 11/22/2016
+!
+! The attribute climatology_time_range is created whena variable comes 
+! from a climatological regridding. It can be created only for user-defined 
+! variables not for an expression. Previously the SAVE command resulted in a crash.
+! (See bn_climatology_attr.jnl for more examples).
+
+! Define a monthly axis
+define axis/t=1-feb-1980:1-feb-2003/npoints=276/unit="day"/t0=1-jan-1900 tax
+
+let tvar = t[gt=tax]
+let clim1 = tvar[gt=month_irreg@mod]
+save/nobounds/file=a.nc/clobber 3*clim1
+
+can dat/all; use a.nc
+
+! The variable did not get a climatology_time_range attribute
+let vname = ..varnames
+show att `vname[i=1]`
+

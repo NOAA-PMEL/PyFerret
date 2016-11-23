@@ -56,3 +56,8 @@ go err700_vs_plot_axes
 ! Bug 2483. Fixing axis-ends symbols XAXIS_MIN,XAXIS_MAX, YAXIS_MIN,YAXIS_MAX
 go bn_reset
 go err700_axis_dates
+
+
+! Bug 2489. Attribute climatology_time_range not defined on an expression
+go bn_reset
+go err700_clim_attr_expression

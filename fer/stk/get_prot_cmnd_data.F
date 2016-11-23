@@ -95,6 +95,8 @@
 *                  as seen in err694_inconsistent_quotes.jnl
 * V698 *acm*  3/16 Ticket 2278: add an attribute with time range when
 *                  saving a modulo-regridded variable to netCDF
+* V702 *acm* 11/16 Ticket 2489: Do not try to add the attribute when
+*                  it's an expression instead of a user-defined variable
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -208,11 +210,18 @@
 
 	   IF (natt_computed_var .GT. 0) THEN
 
-	      IF (STR_SAME (attstr_computed_var(1:10), 'do not set') .NE. 0)  THEN
+	      IF (STR_SAME (attstr_computed_var(1:10), 'do not set') .EQ. 0)  GOTO 290
      
 * get the variable - will put an attrib onto it
 	      cat = cx_category(cx_expr)
 	      var = cx_variable(cx_expr)
+	      varcode = VAR_CODE( cat, var )
+
+* Ticket 2489: Skip this if it is an expression such as EX#2; There is 
+* no varid to attach the attribute to.
+
+	      IF (INDEX(varcode, '#') .GT. 0) GOTO 290
+
 	      dset = cx_data_set( cx_expr )
 	      varcode = SANITARY_VAR_CODE( cat, var )
 
@@ -246,10 +255,11 @@
 	         ENDIF
 	      ENDIF
 
+  290	      CONTINUE
 	      CALL RESET_CLIMAT_ATT
 
 	   ENDIF
-	   ENDIF
+
 
 ! temp diagnostic
 	   IF ( cx_stack_ptr .NE. cx_cmnd+nu ) CALL WARN( 'get_cmnd_???')

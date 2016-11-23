@@ -56,3 +56,19 @@ can dat/all; use a.nc
 can dat/all; use a.nc
 list/nohead/norow c.climatology_time_range
 
+
+! The attribute created only for user-defined variables not for an expression
+! 
+! Define a monthly axis
+define axis/t=1-feb-1980:1-feb-2003/npoints=276/unit="day"/t0=1-jan-1900 tax
+
+let tvar = t[gt=tax]
+let clim1 = tvar[gt=month_irreg@mod]
+save/nobounds/file=a.nc/clobber 3*clim1
+
+can dat/all; use a.nc
+
+! The variable did not get a climatology_time_range attribute
+let vname = ..varnames
+show att `vname[i=1]`
+

@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1404 Nov 16 09:26 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1404 Nov 23 04:39 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -301,7 +301,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Wed Nov 16 09:27:41 PST 2016
+Beginning at Wed Nov 23 04:39:55 PST 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4588,6 +4588,7 @@ Replacing definition of axis TAX
  LISTing to file a.nc
 Replacing definition of axis TAX
  LISTing to file a.nc
+ LISTing to file a.nc
 *** Running ferret script: bn_plot_along.jnl
  Cached data cleared from memory
            *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
@@ -4649,6 +4650,10 @@ Replacing definition of axis TAX
 Replacing definition of axis XAXIS
 Replacing definition of axis YAXIS
 Replacing definition of axis TAXIS
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ LISTing to file a.nc
 *** Running ferret script: bn_delim_datetime.jnl
  Cached data cleared from memory
 Replacing definition of axis TIMAX
@@ -4656,13 +4661,13 @@ Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
+ **ERROR: Error reading file: Check Date or Time fields.
 list index,edtim,udtim,udate,edate
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
+ **ERROR: Error reading file: Check Date or Time fields.
 list index,edtim,udtim,udate,edate
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
+ **ERROR: Error reading file: Check Date or Time fields.
 list index,edtim,udtim,udate,edate
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
+ **ERROR: Error reading file: Check Date or Time fields.
 list index,edtim,udtim,udate,edate
 *** Running ferret script: bn_aggregate_u.jnl
  Cached data cleared from memory
@@ -4885,4 +4890,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testfermethods.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Wed Nov 16 09:30:28 PST 2016
+Ended at Wed Nov 23 04:42:41 PST 2016

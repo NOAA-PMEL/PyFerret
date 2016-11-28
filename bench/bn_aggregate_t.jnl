@@ -186,6 +186,10 @@ tseries myTindepagg = tmp/tagg_reg_no_T.nc
 ! erroneous file 2 with 15 time steps, goes beyond start of file 3
 define data/agg/t myagg3 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2_overlarge.nc,tmp/tagg_reg_3.nc
 
+! Try to use dataset names not file names. This is not allowed for Tseries aggregations.
+use tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc
+define data/agg/t myagg2 = 1,2
+
 set mode/last ignore
 canc data/all
 

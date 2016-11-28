@@ -113,6 +113,7 @@
 * V695+ *sh* 11/15 for DEF DATA/AGG/T added argument ok_re_use_existing
 *	           and check for existence of dataset from the get-go
 * V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
+* V702 11/16 *acm* Ticket 2490, add coaching to error on tseries aggregations
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -573,12 +574,23 @@
      .			no_errstring, *9900)
 
  5400	risc_buff = dset_name
- 	CALL TM_ERRMSG (merr_notmounted, status, 'TM_INIT_DSET',
+        IF (ok_re_use_existing) THEN
+ 	   CALL TM_ERRMSG (merr_notmounted, status, 'TM_INIT_DSET',
      .			unspecified_int4, no_stepfile,
      .			'Searched $FER_DESCR and $FER_DATA for '
      .                  //risc_buff(:TM_LENSTR1(risc_buff))//
      .                  '('//def_ext//','//def_cdf//','//def_des//')',
      .			no_errstring, *9950)
+        ELSE
+ 	   CALL TM_ERRMSG (merr_notmounted, status, 'TM_INIT_DSET',
+     .			unspecified_int4, no_stepfile,
+     .			'Searched $FER_DESCR and $FER_DATA for '
+     .                  //risc_buff(:TM_LENSTR1(risc_buff))//
+     .                  '('//def_ext//','//def_cdf//','//def_des//
+     .                  '). For a Timeseries aggregation, specify the '//
+     .                  'NetCDF file/path names or OPeNDAP dataset names.',
+     .			no_errstring, *9950)
+        ENDIF
 
  5500	risc_buff = dset_name
 	CALL TM_ERRMSG (merr_notmounted, status, 'TM_INIT_DSET',

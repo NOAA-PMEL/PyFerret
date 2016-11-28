@@ -193,7 +193,6 @@ define data/agg/t myagg2num = 1,2
 set mode/last ignore
 canc data/all
 
-pause
 ! --- irregularly-spaced axes ---
 ! aggregation of 2 irregular datasets
  define data/agg/t myagg2 = tmp/tagg_irreg_1.nc, tmp/tagg_irreg_2.nc

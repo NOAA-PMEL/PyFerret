@@ -78,6 +78,10 @@ endif
 
 echo "Enter the path (including filename) to the FERRET version of choice"
 set fver = $<
+if ( ! -e  $fver ) then
+   echo File $fver not exist.
+   exit 0
+endif
 
 # XGKS version ?  (use "xg" as the indicator)
 echo $fver | grep -s "xg"

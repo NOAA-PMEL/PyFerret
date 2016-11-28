@@ -587,8 +587,8 @@
      .			'Searched $FER_DESCR and $FER_DATA for '
      .                  //risc_buff(:TM_LENSTR1(risc_buff))//
      .                  '('//def_ext//','//def_cdf//','//def_des//
-     .                  '). For a Timeseries aggregation, specify '//
-     .                  'the list of file names or urls.',
+     .                  '). For a Timeseries aggregation, specify the '//
+     .                  'NetCDF file/path names or OPeNDAP dataset names.',
      .			no_errstring, *9950)
         ENDIF
 

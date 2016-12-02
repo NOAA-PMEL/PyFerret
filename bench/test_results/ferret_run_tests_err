@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Nov 23 04:26 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.02
+lrwxrwxrwx. 1 ksmith oerdnewp 13 Dec  1 16:48 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.021
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -291,7 +291,7 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Wed Nov 23 04:27:00 PST 2016
+Beginning at Thu Dec  1 16:49:27 PST 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4254,6 +4254,9 @@ define data/agg/t myaggbad = tmp/tagg_reg_1.nc, tmp/tagg_no_exist.nc
 DEFINE DATA/AGGREGAT/T myTindepagg = tmp/tagg_reg_no_T.nc
  **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_reg_3.nc
 define data/agg/t myagg3 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2_overlarge.nc,tmp/tagg_reg_3.nc
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for 1(.nc ,.cdf,.des). For a Timeseries aggregation, specify the NetCDF file/path names or OPeNDAP dataset names.
+define data/agg/t myagg2num = 1,2
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4829,4 +4832,4 @@ LOAD/TEMPORARY vflag
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
  Cached data cleared from memory
-Ended at Wed Nov 23 04:28:45 PST 2016
+Ended at Thu Dec  1 16:51:16 PST 2016

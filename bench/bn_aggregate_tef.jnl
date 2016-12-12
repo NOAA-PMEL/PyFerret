@@ -92,7 +92,7 @@ cancel variable realization
 
 SET MODE VERIFY
 
-show data/files/br
+show data/members/br
 
 ! should share the same time axis
 show grid fcst[d=t_f01_e1]
@@ -118,7 +118,7 @@ SHOW DATA/ATT te_f11   ! notice the promotion of fcst.im_everywhere
 
 ! define tef aggregation
 FMRC/HIDE tef = te_f01, te_f02, te_f03, te_f04, te_f05, te_f06, te_f07, te_f08, te_f09, te_f10, te_f11
-SHOW DATA/brief/files
+SHOW DATA/brief/members
 show data/full tef
 
 ! simplest acess -- compact form -- just demonstrate it doesn't fail

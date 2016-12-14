@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 119115788 Nov  1 17:20 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 119269339 Dec 14 14:06 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: all updates through 11/1/2016 on stout
+Note: merged the true-monthly branch to the trunk
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,17 +14,16 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/linux/FERRET/external_functions/ext_func
-FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/linux/go /home/users/tmap/ferret/linux/examples /home/users/tmap/ferret/linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
-FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/linux/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/linux/ext_func/pylibs
-Beginning at Tue Nov 1 17:29:39 PDT 2016
+Beginning at Wed Dec 14 14:15:04 PST 2016
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
         SET EXPRESSION has not been given or implied
  **ERROR: unknown command qualifier: notaqualifier
 MESSAGE/CONTINUE/notaqualifier
@@ -819,7 +818,6 @@ Replacing definition of grid TGRID
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: dash=(1., 2.)
-          DASH[=(dn1,up1,dn2,up2)] takes 4 arguments or no argument
 
 Bailing out of external function "ffta":
 	 Time axis must be a regular axis
@@ -832,6 +830,7 @@ Bailing out of external function "eof_stat":
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+          DASH[=(dn1,up1,dn2,up2)] takes 4 arguments or no argument
 plot/dash=(1., 2.)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
  **ERROR: value out of legal range: dash=(-1., 2., 3., 4.)
           DASH arguments must be positive
@@ -1473,9 +1472,7 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
            *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-rm: cannot remove `input.txt': No such file or directory
 ls: input.txt: No such file or directory
-           *** NOTE: Shell command returned failure flag: rm input.txt
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XAX
@@ -3376,6 +3373,7 @@ Replacing definition of axis FAX4DAY
  TEMPORARY data cleared from memory
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
  **ERROR: unknown data set: dset 3
 DEFINE DATA/AGGREGAT/E windy = 1,2,3
            *** NOTE: Variable "UWND" excluded from aggregate: T axis differs among members
@@ -3392,6 +3390,7 @@ DEFINE DATA/AGGREGAT/E windy = 1,2
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, fourfiles
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, some
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, more
@@ -3695,10 +3694,10 @@ set var/name=b a
 set var/name=b a
  **ERROR: invalid command: illegal new name.  Variable temp exists in dataset
 set var/name=temp salt
- **ERROR: invalid command: illegal new name.  Variable psi exists in dataset
-set var/name=psi myvar
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 500; message = "Error processing XML header file /usr/local/src/nvods/tomcat/content/las/conf/server/temp/6790FDCBF64A0E6EFAA6A20D854071E0/header.xml (No such file or directory)"^;};
+ **ERROR: invalid command: illegal new name.  Variable psi exists in dataset
+set var/name=psi myvar
  **ERROR: invalid command: illegal new name.  Variable diff already defined
 set var/name=diff w
  PERMANENT data cleared from memory
@@ -3890,8 +3889,6 @@ list substring("hello",1,-2)
 list substring("hello",1,-3)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-rm: cannot remove `test_save_dsg.nc': No such file or directory
-           *** NOTE: Shell command returned failure flag: rm test_save_dsg.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file anew_global.nc
@@ -4114,8 +4111,6 @@ def anno/nou/xpos=0/hal=1/val=0 "My Lab"
 def anno/nou/user/xpos=0/ypos=0 "My Lab"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-rm: cannot remove `layerz_test_data.txt': No such file or directory
-           *** NOTE: Shell command returned failure flag: rm layerz_test_data.txt
 Replacing definition of axis ZAX
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
@@ -4355,6 +4350,8 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_single_6.nc
            *** NOTE: Not deleted: tday
            *** NOTE: Axis is in use by grid (G088)
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
  **ERROR: invalid command: given aggregation dataset name already in use: myagg2
 define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc, tmp/tagg_reg_2.nc
  **TMAP ERR: non-existent or not on line
@@ -4367,9 +4364,16 @@ define data/agg/t myaggbad = tmp/tagg_reg_1.nc, tmp/tagg_no_exist.nc
 DEFINE DATA/AGGREGAT/T myTindepagg = tmp/tagg_reg_no_T.nc
  **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_reg_3.nc
 define data/agg/t myagg3 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2_overlarge.nc,tmp/tagg_reg_3.nc
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for 1(.nc ,.cdf,.des). For a Timeseries aggregation, specify the NetCDF file/path names or OPeNDAP dataset names.
+define data/agg/t myagg2num = 1,2
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
  **TMAP ERR: Unknown variable code
              in file tmp/tagg_disjoint_T0varying_4_wrong.nc time axis variable is missing: TDAY_TVAR
 define data/agg/t myagg5_bad = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc,tmp/tagg_disjoint_T0varying_3.nc, tmp/tagg_disjoint_T0varying_4_wrong.nc,tmp/tagg_disjoint_T0varying_5.nc
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
  **ERROR: unknown command: garbage
 garbage command syntax
  **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_single_1.nc
@@ -4432,13 +4436,19 @@ Replacing definition of axis YAX
  LISTing to file tmp/consecutive_month_fcst.nc
 Replacing definition of axis TRUEMONTH
  LISTing to file tmp/irregular_start_time_fcst.nc
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, bn_aggregate_f.jnl
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, my_fmrc
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
  **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
 DEFINE DATA/AGGREGAT/F my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc,tmp/fcst_2.nc,tmp/fcst_3.nc
@@ -4680,6 +4690,7 @@ Replacing definition of axis TAX
  LISTing to file a.nc
 Replacing definition of axis TAX
  LISTing to file a.nc
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
            *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
@@ -4742,18 +4753,28 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis TAXIS
+Replacing definition of axis XAXIS
+Replacing definition of axis YAXIS
+Replacing definition of axis TAXIS
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
+ **ERROR: Error reading file: Check Date or Time fields.
 list index,edtim,udtim,udate,edate
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
+ **ERROR: Error reading file: Check Date or Time fields.
 list index,edtim,udtim,udate,edate
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
+ **ERROR: Error reading file: Check Date or Time fields.
 list index,edtim,udtim,udate,edate
- **ERROR: value out of legal range: Check Date or Eurodate formatting for file variable -425
+ **ERROR: Error reading file: Check Date or Time fields.
 list index,edtim,udtim,udate,edate
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4786,8 +4807,10 @@ Replacing definition of axis ZAX
  LISTing to file tmp/f03_e2_tu1.nc
  LISTing to file tmp/f03_e2_tu2.nc
  LISTing to file tmp/f03_e2_tu3.nc
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Skipping variable REALIZATION from set 1, already in the Union dataset.
            *** NOTE: Skipping variable REALIZATION from set 8, already in the Union dataset.
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file abc.dat
@@ -4807,19 +4830,91 @@ cp: cannot stat `nofile.dat': No such file or directory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ **ERROR: unknown data set: D=5.3
+stat/br fcst[d=5.3]
+ **ERROR: unknown data set: D=12.30
+stat/br fcst[d=12.30]
+ **ERROR: unknown data set: D=12.300000
+stat/br fcst[d=12.300000]
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+ **ERROR: unknown data set: D=4.1
+stat/br sst[d=4.1]
+ **ERROR: unknown data set: D=5.30
+stat/br sst[d=5.30]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+           *** NOTE: True monthly axis, T0 not specified. Using start of first year of axis
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+           *** NOTE: True monthly axis, T0 not specified. Using start of first year of axis
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+ LISTing to file a.nc
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+ LISTing to file a.nc
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+ LISTing to file a.nc
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+           *** NOTE: True monthly axis, T0 not specified. Using 01-jan-0000
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+ LISTing to file a.nc
+           *** NOTE: True monthly axis
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+           *** NOTE: True monthly axis, T0 not specified. Using start of first year of axis
+Replacing definition of axis TAXIS
+ **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY specify /UNITS=month or omit /UNITS (MONTH is default)
+define axis/t=1-jan-2010:31-jul-2011:30/t0=1-jan-2000/monthly/units=days taxis
+ **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis: /NPOINTS not allowed. Use /T=lo:hi:del
+define axis/t=1-jan-2010:31-dec-2012:1/t0=1-jan-2000/monthly/npoints=13 taxis
+ **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis delta-t must be 1
+define axis/t=1-jan-2010:31-dec-2012/t0=1-jan-2000/monthly taxis
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+ **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis delta-t must be 1
+define axis/t=1-jan-2010:31-dec-2012:2/t0=1-jan-2000/monthly taxis
+ **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis: Definition /FROMDATA not allowed. Use /T=LO:HI:DEL
+define axis/t/t0=1-jan-2000/monthly taxis = {123,124,126}
+ **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis: Definition /FROMDATA not allowed. Use /T=LO:HI:DEL
+define axis/from/t/t0=1-jan-2001/monthly/edges taxis = {5,6,6,6,7}
+ **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis: /BOUNDS not allowed. Use /T=lo:hi:del
+def axis/t/t0=1-jan-2000/monthly/bounds tax={1.2, 2, 3.2, 5, 7, 8.4, 9}, {0.5,1.5, 1.5,2.5, 2.5,3.5, 3.5,6.5, 6.5,7.5, 7.5,8.5, 8.5,9.5}
+ **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis: needs /T=lo:hi:del
+define axis/x=1:5:1/monthly aaxis
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- **ERROR: command syntax: writev5d(tr, 0, 0, 0, 0, 0, 0, 0, "vis5d_out.v5d")
-          unknown function "writev5d"
-DEFINE VARIABLE/QUIET vflag = writev5d(tr, 0, 0, 0, 0, 0, 0, 0, "vis5d_out.v5d")
- **ERROR: variable unknown or not in data set: VFLAG
-LOAD/TEMPORARY vflag
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  Cached data cleared from memory
@@ -4913,4 +5008,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Nov 1 17:34:53 PDT 2016
+Ended at Wed Dec 14 14:20:49 PST 2016

@@ -1084,10 +1084,6 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 	      truemonth_noted = .TRUE.
 	   ENDIF
 
-* Set the conversion factor, months to days
-	   grid_line(t_dim, dgrid_buff) = iline
-	   CALL TM_MONTH_TIME_FACTOR (dgrid_buff, true_month, timefac)
-
 	ENDIF
 
 * *acm* other calendar names* /CALENDAR = GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP
@@ -1730,6 +1726,11 @@ C /units=months  is 1/12 of the length of the year
 	  bc_to_t0 = SECS_FROM_BC( line_t0(iline), cal_id, status)
 	  CALL TM_WW_AX_1_N(iline, start, end)
 	  secs2start = bc_to_t0 + start*line_tunit(iline)
+	  
+* Set the conversion factor, months to days
+	   grid_line(t_dim, dgrid_buff) = iline
+	   CALL TM_MONTH_TIME_FACTOR (dgrid_buff, true_month, timefac)
+
 	  IF (true_month) secs2start = secs2start/ timefac
 
 	  IF ( (secs2start .LE. secsperyear)

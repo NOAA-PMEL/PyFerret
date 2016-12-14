@@ -36,7 +36,7 @@ foreach plt_file ($plt_files)
        Fprint -R -p portrait -o $plt_file.ps $plt_file
        Fprint -R -p portrait -o $plt_file.meta.ps metafile_masters_64bit_rh6/$plt_file
        compare $plt_file.ps $plt_file.meta.ps $plt_file.diff.ps
-       display $plt_file.ps &
+       display -title new $plt_file.ps &
        display $plt_file.meta.ps &  
        display $plt_file.diff.ps
 
@@ -52,7 +52,7 @@ foreach gif_file ($gif_files)
        echo "gif files differ $gif_file size $size metafile_masters_64bit_rh6/ size $size2" 
        rm -f $gif_file.diff_gif.gif
        compare $gif_file metafile_masters_64bit_rh6/$gif_file $gif_file.diff_gif.gif
-       display  $gif_file &
+       display  -title new $gif_file &
        display  metafile_masters_64bit_rh6/$gif_file &
        display $gif_file.diff_gif.gif
 
@@ -68,7 +68,7 @@ foreach ps_file ($ps_files)
        echo "plt files differ $ps_file size $size metafile_masters_64bit_rh6/ size $size2" 
        rm -f $ps_file.diff_ps.ps
        compare $ps_file metafile_masters_64bit_rh6/$ps_file $ps_file.diff_ps.ps
-       display $ps_file &
+       display -title new $ps_file &
        display metafile_masters_64bit_rh6/$ps_file &
        display $ps_file.diff_ps.ps
 

@@ -267,6 +267,7 @@ bn_ez_noupcase.jnl
 bn_spawn_fail.jnl
 bn_ave_of_ave.jnl
 bn_agg_member_syntax.jnl
+bn_true_monthly.jnl
 ! bn_gif, bn_all_ef, and bn_startupfile at end
 bn_gif.jnl
 bn_ps.jnl

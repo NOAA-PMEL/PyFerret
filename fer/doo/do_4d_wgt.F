@@ -55,6 +55,7 @@
 * 7/2014
 
 * V692 7/14 *acm* new transform @WGT, ticket 2180
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 	IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -69,8 +70,8 @@
 	external xgt_grid_data
 
 * internal variable declarations:
-	LOGICAL GEOG_COS_FACTOR, point, yes_ax(nferdims), no_ax(nferdims),
-     .		need_cos, one_y
+	LOGICAL GEOG_COS_FACTOR, ITSA_TRUEMONTH_AXIS,
+     .		point, yes_ax(nferdims), no_ax(nferdims),need_cos, one_y
 	INTEGER idim, i, j, ir, jr, kr, lr, mr, nr, ic, jc, kc, lc, mc, nc,
      .		grid, nbd, ngd, com_lo(nferdims), com_hi(nferdims),
      .		box_offset(nferdims), offset, ind_lo, ind_hi, cos_offset
@@ -187,6 +188,8 @@
 * ... perform integrations on standard units if possible
             unit = 1.
 	    unit = un_convert( line_unit_code(grid_line(idim,grid)) )
+	    IF (ITSA_TRUEMONTH_AXIS(grid_line(idim,grid))) 
+     .		  unit = un_convert(pun_day)
 
 	    DO 50 i = ind_lo, ind_hi
  	      boxes(i+offset) = boxes(i+offset) * unit

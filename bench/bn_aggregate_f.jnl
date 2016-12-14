@@ -81,6 +81,7 @@ fmrc/hide my_fmrc = XCAT(files[I=6:10],{"6","1"})           ! double-wide gaps
 show data/files my_fmrc
 show data/brief
 LIST tf_times
+
 GO bn_aggregate_f.sub
 
 cancel data my_fmrc

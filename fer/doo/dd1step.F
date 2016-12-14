@@ -50,6 +50,7 @@
 * V230: 5/6/92 - COS correction checks that J location is defined
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *       2/12 *kms* Include E and F dimensions (use nferdims in tmap_dims.parm)
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -72,7 +73,7 @@
      .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
 
 * internal variable declarations:
-	LOGICAL	GEOG_COS_FACTOR, need_cos
+	LOGICAL	GEOG_COS_FACTOR, ITSA_TRUEMONTH_AXIS, need_cos
 	INTEGER i, j, k, l, m, n, ii, grid,
      .          lo_sub(nferdims), hi_sub(nferdims), axis
 	REAL	bad_com, bad_res, lo_com, hi_com, unit, cos_factor,
@@ -113,6 +114,8 @@
 
 * perform differentiation in standard units if possible
 	unit = un_convert( line_unit_code(axis) )
+	IF (ITSA_TRUEMONTH_AXIS(axis)) unit = un_convert(pun_day)
+
 	DO 30 ii = lo_sub(idim), hi_sub(idim)
  30	box(ii) = box(ii) * unit
 

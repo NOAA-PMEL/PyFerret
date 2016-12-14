@@ -54,6 +54,7 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *      *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *      *acm* 3/13 Dont show axes with names in parentheses e.g. (AX004)
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -75,8 +76,10 @@
 	INTEGER 	lun, line
 
 * local variable declarations:
+
 	LOGICAL		TM_ITS_SUBSPAN_MODULO, NC_GET_ATTRIB, GEOG_LABEL, 
-     .                  got_it, calendar, bounds_done
+     .                  ITSA_TRUEMONTH_AXIS,
+     .			got_it, calendar, bounds_done, do_bounds
 	INTEGER		idim, orient, slen, iset, dset, alen, igrid
 	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id, status
 	CHARACTER	TM_FMT*32, buff*80, outbuff*20
@@ -339,7 +342,8 @@ C New form for attribute output, list values separately.
 * Write a bounds attribute for unevenly-spaced axes even if the intput file
 * didnt have a bounds or edges attribute.
 
-	IF ( (.NOT.bounds_done) .AND. (.NOT.line_regular( line )) ) THEN
+	do_bounds = ITSA_TRUEMONTH_AXIS(line) .OR. .NOT.line_regular( line )
+	IF ( (.NOT.bounds_done) .AND. do_bounds ) THEN
 	   attname = 'bounds'
 	   atype = 'char'
 	   slen = TM_LENSTR1(attname)

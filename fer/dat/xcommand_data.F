@@ -250,7 +250,8 @@
 * V7    6/16 *kms* Add reserved slots for PyFerret commands and qualifiers
 *                  to simplify future merges of Ferret into PyFerret
 * V7   10/16 *kms* New SET WINDOW /SCALE=
-
+* V710 *acm*  3/16 Added DEFINE AXIS /LIKE=
+* V710 *acm*  3/16 Ticket 2158: Add DEFINE AXIS /MONTHLY 
 *
 * !!!!!!!!!!
 * Use caution when defining new commands, qualifiers, or changing these data structures:
@@ -1230,7 +1231,7 @@
 	   DATA subcommands      (nsub_at10 + 4)/ 'AXIS'	/
 	   DATA num_qualifs      (nsub_at10 + 4)/ nqual10e	/
 	   DATA qualifier_pointer(nsub_at10 + 4)/ nqual_at10e	/
-* DEFINE AXIS /X/Y/Z/T/E/F /FILE /UNITS /QUIET /LIKE ...
+* DEFINE AXIS /X/Y/Z/T/E/F /FILE /UNITS /QUIET /MONTHLY /LIKE ...
 		DATA qualifiers  (nqual_at10e+ 0)/ 'X'	  /
 		DATA qualifiers  (nqual_at10e+ 1)/ 'Y'	  /
 		DATA qualifiers  (nqual_at10e+ 2)/ 'Z'	  /
@@ -1249,7 +1250,7 @@
 		DATA qualifiers  (nqual_at10e+ 15)/ 'CALENDAR' /
 		DATA qualifiers  (nqual_at10e+ 16)/ 'BOUNDS' /
 		DATA qualifiers  (nqual_at10e+ 17)/ 'QUIET' /
-		DATA qualifiers  (nqual_at10e+ 18)/ '****' /
+		DATA qualifiers  (nqual_at10e+ 18)/ 'MONTHLY' /
 		DATA qualifiers  (nqual_at10e+ 19)/ 'LIKE' /
 * DEFINE VIEW
 	   DATA subcommands      (nsub_at10 + 5)/ 'VIEWPORT'	/

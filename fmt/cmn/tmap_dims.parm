@@ -31,6 +31,7 @@
 *                  uvar_aux_var replaced with calls to LIST routines in NCF_Util.c 
 *                  Increase size of max_gfdl_dsets and max_grids
 *                  Also clean up long-unused lines that were commented out.
+* V710 *acm*  3/16  add dgrid_buff, for a fake grid to use in computing coordinates
 
 * for TMAP formatted files:
 	INTEGER	nrec_codes,ngrid_prenamed,nvari_prenamed,maxdsets,
@@ -40,9 +41,11 @@
      .		num_dyn_grids, max_dyn_grids, num_dyn_lines,
      .		max_dyn_lines, line_ceiling, grid_ceiling,
      .		tmp_line_hook, tmp_grid_hook, nferdims, maxvar2,
-     .		pdsetalloc, pdsets_addl, pdset_dummy, pdset_global
+     .		pdsetalloc, pdsets_addl, pdset_dummy, pdset_global, 
+     .		dgrid_buff
 
 * parameters used for dimensioning arrays
+	PARAMETER (dgrid_buff = 0)	! scratch buffer for grids (as in ferret.parm)
 	PARAMETER (nrec_codes = 11)	! # of different record codes
 	PARAMETER (ngrid_prenamed=11)	! # of pre-defined grids
 	PARAMETER (nvari_prenamed=7)	! # of pre-named variables

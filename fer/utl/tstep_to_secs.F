@@ -48,10 +48,12 @@
 * V530: *acm* 12/00 add calendar types; cal_id
 *       *acm* 3/12 6D Ferret: Add E and F dimensions 
 *                  A time axis may be a T axis or F axis, so idim is now an arg.
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 	include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'
 	external xgt_grid_data
+	include 'xunits.cmn_text'
         include 'ferret.parm'
 
 * calling argument declarations:
@@ -59,11 +61,12 @@
 	REAL*8	tstep
 
 * internal variable declarations:
+	LOGICAL		ITSA_TRUEMONTH_AXIS
 	INTEGER		TM_GET_CALENDAR_ID, axis, status, cal_id,
      .                  prev_cal_id
 !	CHARACTER*20	date
 	REAL*8		SECS_FROM_BC, start_secs, offset_secs,
-     .                  tstep_new
+     .                  tstep_new, unit_convert
 
 * internal parameter declarations:
 	INTEGER		seconds
@@ -102,8 +105,10 @@ c           ENDIF
 
 * Find the number of seconds since start of data set for this time step
 
-c	   offset_secs = tstep_new*line_tunit( axis )
-	   offset_secs = tstep*line_tunit( axis )
+	   unit_convert = line_tunit(axis)
+	   IF (ITSA_TRUEMONTH_AXIS(axis)) unit_convert =  un_convert(pun_day)
+
+	   offset_secs = tstep* unit_convert
 
 * Total seconds to this time step since 01-JAN-0000 00:00:00
 	   TSTEP_TO_SECS = start_secs + offset_secs

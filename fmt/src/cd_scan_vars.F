@@ -138,9 +138,9 @@
      .        TM_LEGAL_NAME, MATCH_NAME,
      .        got_it, got_bad, its_epic, 
      .        got_a_variable, failed_axis, 
-     .        coordvar
+     .        coordvar, has_gdef
       INTEGER STR_UPCASE, STR_CASE_BLIND_COMPARE, TM_LENSTR1, 
-     .        TM_LENSTR, NCF_INQ_DS, 
+     .        TM_LENSTR, NCF_INQ_DS, STR_SAME,
      .        nvars,  ndims, ngatts, recdim, 
      .        cdfstat, las_pos, first_pos, iaxis,
      .        ivcd, ivtm, vartyp, nvdim, vdims(8), nvatts, i, vlen,
@@ -214,10 +214,20 @@
            global_bad = -1.E34    ! default for FERRET
         ENDIF
 
-* See fi there is a global attribute missing_value in the file
+* See if there is a grid_definition dimension in the file
+* If so will skip true-monthly axis computation in get-axis step.
+
+	DO i = 1, ndims
+           CALL CD_GET_DS_DIMS (dset, i, aname, npts, status)
+	   has_gdef = (STR_SAME(aname, 'grid_definition') .EQ. 0) 
+	   IF (has_gdef) EXIT  ! from loop
+	ENDDO
+
+* See if there is a global attribute missing_value in the file
 
         IF (ngatts .GT. 0) THEN
            CALL CD_GET_VAR_ID (dset, '.', varid, status)
+
 
 * loop through global attributes looking for missing-value attrib
            DO 20 iatt = 1, ngatts
@@ -395,7 +405,7 @@
 * PROCESS AN AXIS	   
  100        CALL CD_GET_1_AXIS(dset, cdfid, ivcd, iaxis,
      .                         its_EPIC, reversed, tregular, use_strict, 
-     .                         bad_bndsid, status)
+     .                         bad_bndsid, has_gdef, status)
            IF ( status .NE. merr_ok ) GOTO 5900
 
 * invalid bounds or edges found. Make the bounds a dependent variable

@@ -1,5 +1,5 @@
-	DOUBLE PRECISION FUNCTION TM_WORLD_AX( isubscript, iaxis,
-     .					       where_in_box )
+	RECURSIVE FUNCTION TM_WORLD_AX( isubscript, iaxis,
+     .					where_in_box ) RESULT(world_ax_result)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -48,40 +48,117 @@
 * V541 2/02 *sh* - added support for subspan modulo axes
 *		 - slight change to calculation for all modulo axes
 * V542 10/02 *sh* - bug fix for irregular, subspan modulo
+* V542 10/02 *sh* - bug fix for irregular, subspan modulo
+* V71  12/16 *acm* Ticket 2158: working with true monthly time axes.
+*                  call tm_tcoord_trumonth to return the correct
+*                  coordinate value for irregular months corresponding 
+*                  to the calendar
 
 * Include files
 #include "gt_lib.parm"
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
+	include 'xunits.cmn_text'
+	external xunits_data
+	include 'implicit.parm'
 
 * calling argument declarations:
+	REAL*8  world_ax_result
 	INTEGER	isubscript, iaxis, where_in_box
 
 * internal variable declarations:
 	LOGICAL	TM_AXIS_RECURSIVE, TM_ITS_SUBSPAN_MODULO,
-     .		 recursive
-	INTEGER	TM_MODULO_LINE_DIM, isub, line_len, rmod
+     .		ITSA_TRUEMONTH_AXIS, recursive, true_month
+	INTEGER	TM_MODULO_LINE_DIM, isub, line_len, rmod, new_ss, 
+     .		lo_ss, hi_ss, parent_len, new_where
 	REAL*8	TM_WORLD_RECUR, TM_MODULO_AXLEN, 
      .		midpoint, box_size, tempwld, lo, hi
 
 * initialize
 	line_len = TM_MODULO_LINE_DIM( iaxis )
+	true_month = ITSA_TRUEMONTH_AXIS(iaxis)
 
 * if this is a child (e.g. every Nth point) of an irregularly-spaced
 * axis then use a recursive C routine to find the answer
 	recursive = iaxis .GT. max_lines
-	IF ( recursive ) THEN
-	  recursive = TM_AXIS_RECURSIVE(iaxis) 
-	  IF ( recursive ) THEN
-	    TM_WORLD_AX = TM_WORLD_RECUR(
-     .			isubscript,iaxis,where_in_box,max_lines,
-     .			line_mem,line_parent,line_class,line_dim,line_start,
-     .			line_delta,line_subsc1,line_modulo,
-     .			line_modulo_len,line_regular )
-	    RETURN
+	IF ( recursive ) 
+     .    recursive = TM_AXIS_RECURSIVE(iaxis, true_month)
+
+	IF (recursive) THEN 
+	world_ax_result = unspecified_val8  ! default
+
+	IF (line_class(iaxis) .EQ. PLINE_CLASS_STRIDE) THEN 
+* in irreg axis striding the box edges cannot simply be read from
+* the box edge array (think about it) So we have xtra logic here.
+
+	new_ss = INT(line_start(iaxis)) + (isubscript-1)* INT(line_delta(iaxis))
+	IF ( line_regular(iaxis) .OR. where_in_box.EQ.BOX_MIDDLE ) THEN 
+
+	  world_ax_result = TM_WORLD_AX (new_ss, line_parent(iaxis),
+     .					where_in_box)
+	    
+* Extra logic for irregular axis strides
+	ELSE  
+* cases to consider: interpolate to neighbor above or below
+* use lower or upper limit of entire axis
+
+	  IF (where_in_box .EQ.  BOX_LO_LIM) THEN
+	    lo_ss = INT(line_start(iaxis))
+     .		    + (isubscript-2)* INT(line_delta(iaxis))
+	    hi_ss = new_ss
+	  ELSE
+	    lo_ss = new_ss
+	    hi_ss = INT(line_start(iaxis))
+     .		     + (isubscript-0)* INT(line_delta(iaxis))
 	  ENDIF
-	ENDIF
+
+	  parent_len = line_dim( line_parent(iaxis))
+	  IF ( line_modulo( line_parent(iaxis) ) 
+     .	       .OR. (lo_ss.GE.1 .AND. hi_ss.LE.parent_len) ) THEN ! interpolate 
+	    new_where = BOX_MIDDLE
+	    world_ax_result = 0.5 * 
+     .		   ( TM_WORLD_AX (lo_ss, line_parent(iaxis),new_where) + 
+     .		     TM_WORLD_AX (hi_ss, line_parent(iaxis),new_where) )
+
+	  ELSE IF (where_in_box .EQ.  BOX_LO_LIM) THEN  ! lower axis edge  
+	    new_ss = 1
+	    world_ax_result = TM_WORLD_AX (new_ss, line_parent(iaxis), where_in_box)
+	  ELSE ! upper axis edge 
+	    new_ss = parent_len
+	    world_ax_result = TM_WORLD_AX (new_ss, line_parent(iaxis), where_in_box)
+	  ENDIF
+
+* Fix for getting data at ends when subspan modulo strides, irregular axis.
+	  
+	  IF ( TM_ITS_SUBSPAN_MODULO(line_parent(iaxis)) .AND. 
+     .	       line_modulo(line_parent(iaxis)) .AND. 
+     .	       parent_len.GT.0 ) THEN
+            IF (lo_ss .EQ. 0 .OR. lo_ss .EQ. -1) THEN
+	      new_where = BOX_LO_LIM
+	      lo_ss = 1
+	      world_ax_result = 
+     .		   TM_WORLD_AX (lo_ss, line_parent(iaxis),new_where)
+
+            ELSE IF (hi_ss .EQ. parent_len+1) THEN
+	      new_where = BOX_HI_LIM
+	      hi_ss = parent_len
+	      world_ax_result = 
+     .		   TM_WORLD_AX (hi_ss, line_parent(iaxis),new_where)
+            ENDIF
+
+	  ENDIF
+
+	ENDIF 
+
+! end of recursive for strides case
+	ELSE IF (line_class(iaxis) .EQ. PLINE_CLASS_MIDPT) THEN
+	   world_ax_result = TM_WORLD_AX(isubscript, iaxis, where_in_box)
+
+	ENDIF ! line_class: stride, or midpoint
+
+	RETURN
+	ENDIF  ! end of recursive  recursive 
 
 * force given subsc to data range as appropriate for modulo or non-modulo axes
 	IF ( line_modulo( iaxis ) ) THEN
@@ -108,12 +185,12 @@
 	  ELSE
 	    rmod = (isubscript-1)/line_len
 	  ENDIF
-	  TM_WORLD_AX = tempwld + rmod*line_modulo_len(iaxis)
+	  world_ax_result = tempwld + rmod* line_modulo_len(iaxis)
 
 	ELSEIF ( line_regular( iaxis ) ) THEN
 * regularly spaced points
 * ... calculate midpoint and box_size values
-	  midpoint = line_start(iaxis) + (isub-1)*line_delta(iaxis)
+	  midpoint = line_start(iaxis) + (isub-1)* line_delta(iaxis)
 	  box_size = line_delta(iaxis)
 * ... now where within the grid box ?
 	  IF ( where_in_box .EQ. box_lo_lim ) THEN
@@ -123,15 +200,21 @@
 	  ELSE
 	    tempwld = midpoint + ( box_size / 2. )
 	  ENDIF
+
+* Was it at true-month axis?  If so, adjust. 
+
+	  IF (true_month) CALL TM_TCOORD_TRUMONTH (iaxis, 
+     .			  midpoint, where_in_box, tempwld)
+
 	  IF ( line_modulo( iaxis ) ) THEN
 	    IF (isubscript .LE. 0) THEN
 	      rmod = isubscript/line_len - 1
 	    ELSE
 	      rmod = (isubscript-1)/line_len
 	    ENDIF
-	    TM_WORLD_AX = tempwld + rmod*TM_MODULO_AXLEN(iaxis)
+	    world_ax_result = tempwld + rmod*TM_MODULO_AXLEN(iaxis)
 	  ELSE
-	    TM_WORLD_AX = tempwld
+	    world_ax_result = tempwld
 	  ENDIF
 
 	ELSE
@@ -152,14 +235,12 @@
 	    ELSE
 	      rmod = (isubscript-1)/line_len
 	    ENDIF
-	    TM_WORLD_AX = tempwld + rmod*TM_MODULO_AXLEN(iaxis)
+	    world_ax_result = tempwld + rmod*TM_MODULO_AXLEN(iaxis)
 	  ELSE
-	    TM_WORLD_AX = tempwld
+	    world_ax_result = tempwld
 	  ENDIF
 
 	ENDIF
 
 	RETURN
 	END
-
-

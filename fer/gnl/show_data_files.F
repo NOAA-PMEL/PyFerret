@@ -57,6 +57,7 @@
 * V695 *sh*  12/15 For FMRCs and Ensembles show aggregation members
 * V698 *sh*   2/16 insert blank line at conclusion of list
 * V702 *sh*  11/16 number the member files with the syntax (e.g.) "12.3"
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -74,10 +75,12 @@
 	INTEGER	lun, dset
 	
 * local variable declarations:
+	LOGICAL		true_month
 	INTEGER		KNOWN_GRID, TM_LENSTR1,
      .			ivar, grid, istep, ndec, status, lskip, slen,
      .			alen, nmemb, memb_set, nfig
 	CHARACTER	LEFINT*8, lo_date*20, hi_date*20, buff*8, abuff*8
+	REAL		timefac
 
 * special processing of EZ data sets
 	IF ( ds_type(dset) .EQ. pds_type_ez ) THEN
@@ -150,12 +153,14 @@
 * output string precision (from SET MODE CALENDAR)
            ndec = ax_dec_pt( t_dim )
 
+	   CALL TM_MONTH_TIME_FACTOR (grid, true_month, timefac)
+
 * see which step files belong with this data set 
 	DO 300 istep = 1, maxstepfiles
 	    IF ( sf_setnum(istep) .EQ. dset ) THEN
-	      CALL TRANSLATE_TO_WORLD(	sf_1step(istep), t_dim, grid,
+	      CALL TRANSLATE_TO_WORLD(	timefac* sf_1step(istep), t_dim, grid,
      .					ndec, lo_date )
-	      CALL TRANSLATE_TO_WORLD(	sf_lastep(istep), t_dim, grid,
+	      CALL TRANSLATE_TO_WORLD(	timefac* sf_lastep(istep), t_dim, grid,
      .					ndec, hi_date )
 	      slen = TM_LENSTR1(hi_date)
 	      CALL SPLIT_LIST(pttmode_explct, lun,

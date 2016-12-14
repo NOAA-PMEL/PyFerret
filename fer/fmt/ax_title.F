@@ -46,6 +46,7 @@
 *			This because of "METERS" in the old grid files around.)
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V695+ *sh* 3/15 - generate axis titles for TIME LAG axes in FMRC variables
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -59,7 +60,7 @@
 	LOGICAL	GEOG_LABEL
 
 * internal variable declarations:
-        LOGICAL ITS_FMRC
+        LOGICAL ITS_FMRC, ITSA_TRUEMONTH_AXIS
 	INTEGER	TM_LENSTR1, i, line, ulen
 	CHARACTER*16 unit_name
 
@@ -99,6 +100,9 @@
               len = 18
            ENDIF
            unit_name = line_units(line)
+
+* If its a true-month axis then make the output unit name be day
+           IF ( ITSA_TRUEMONTH_AXIS(line) ) unit_name = 'day'
            ulen = TM_LENSTR1( unit_name )
            AX_TITLE = AX_TITLE(:len)//' ('//unit_name(:ulen)//')'
            len = len + 3 + ulen

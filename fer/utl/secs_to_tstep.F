@@ -47,10 +47,12 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
 *                  dimension is now an arg to SECS_TO_TSTEP.
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 	include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'
 	external xgt_grid_data
+	include 'xunits.cmn_text'
         include 'ferret.parm'
 
 * calling argument declarations:
@@ -58,9 +60,10 @@
 	REAL*8	secs
 
 * internal variable declarations:
+	LOGICAL		ITSA_TRUEMONTH_AXIS
 	INTEGER		TM_GET_CALENDAR_ID, axis, cal_id, status
 	CHARACTER*20	date
-	REAL*8		SECS_FROM_BC, bc_to_t0
+	REAL*8		SECS_FROM_BC, bc_to_t0, unit_convert
 
 * determine time axis of grid
 	axis = grid_line( idim, grid )
@@ -77,7 +80,10 @@
 	   bc_to_t0 = SECS_FROM_BC( line_t0(axis), cal_id, status )
 
 * convert to units used on this time axis
-	   SECS_TO_TSTEP = ( secs - bc_to_t0 ) / line_tunit(axis)
+
+	   unit_convert = line_tunit(axis)
+	   IF (ITSA_TRUEMONTH_AXIS(axis)) unit_convert =  un_convert(pun_day)
+	   SECS_TO_TSTEP = ( secs - bc_to_t0 ) / unit_convert
 
 	ELSE
 

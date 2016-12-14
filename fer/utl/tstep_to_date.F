@@ -54,6 +54,7 @@
 *       *acm* 3/12 6D Ferret: Add E and F dimensions 
 *                  A time axis may be a T axis or F axis.
 * V698  *acm* 5/16 Ticket 2405: MODE CALENDAR:auto
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 * Arguments:
 *	grid	 - grid containing a time axis
@@ -68,6 +69,8 @@
 	external xgt_grid_data
 	include 'ferret.parm'
 	include 'xtext_info.cmn'
+        include 'xunits.cmn_text'
+        external xunits_data
 
 * calling argument declarations
 	CHARACTER*(*)	date
@@ -75,7 +78,7 @@
 	REAL*8		tstep
 *
 * Local definitions
-        LOGICAL         modulo
+        LOGICAL         ITSA_TRUEMONTH_AXIS, modulo
 	CHARACTER*20	SECS_TO_DATE_OUT, buff, dms
 	INTEGER		TM_GET_CALENDAR_ID, DATE_PREC, axis, status, prec, 
      .                  cal_id
@@ -122,6 +125,9 @@
 
 * Find the number of seconds since start of data set for this time step
 	offset_secs = tstep*line_tunit( axis )
+
+* True-month axis? A true-month step has been converted from month to days
+	IF (ITSA_TRUEMONTH_AXIS(axis)) offset_secs = tstep* un_convert(pun_day)  
 
 * Total seconds to this time step since 01-JAN-0000 00:00:00
 	this_secs = start_secs + offset_secs

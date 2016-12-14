@@ -58,6 +58,7 @@
 * V541 - *sh* 2/02 - added support for subspan modulo axes
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -70,7 +71,7 @@
 	REAL	world_coord, factor
 
 * internal variable declarations:
-	LOGICAL	TM_ITS_SUBSPAN_MODULO, regular
+	LOGICAL	TM_ITS_SUBSPAN_MODULO, ITSA_TRUEMONTH_AXIS, regular
 	INTEGER	lo_look, hi_look, axis, ibot, itop, look,
      .		isub0, line_len, isubsc, num_mod, point
 	REAL 	subsc
@@ -100,10 +101,10 @@
 	      last = TM_WORLD(line_len, grid, idim, box_middle)
 	      regular = .FALSE.
 	   ELSE
-	      regular = line_regular( axis )  ! optimization - simple treatment
+	      regular = line_regular(axis) .AND. .NOT.ITSA_TRUEMONTH_AXIS(axis)
 	   ENDIF
 	ELSE
-	   regular = line_regular( axis )
+	   regular = line_regular(axis) .AND. .NOT.ITSA_TRUEMONTH_AXIS(axis)
 	ENDIF
 
 * initialize pointers for axes with irregularly spaced points

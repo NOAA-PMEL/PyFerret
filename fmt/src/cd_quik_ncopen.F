@@ -69,12 +69,13 @@
 	INTEGER   dset, cdfid, vid, bounds_id, n, status
 
 * Local variable declarations
-	LOGICAL	coordvar, got_it
-	INTEGER	TM_LENSTR1, CD_GET_ATTRIB,
+	LOGICAL	CD_GET_ATTRIB, coordvar, got_it
+	INTEGER	TM_LENSTR1, 
      .		vlen, vartyp, nvdim, vdims(8), nvatts, all_outflag,
-     .		maxlen, attlen, tmap_status, cdfstat, blen, dlen, elen
+     .		maxlen, attlen, tmap_status, cdfstat, blen, 
+     .		dlen, elen, nb
 	CHARACTER*2048   TM_INQ_PATH
-	CHARACTER	varname*128, buff*128, errmsg*80
+	CHARACTER	varname*128, buff*128, errmsg*80, dummy*20
 	REAL vals  ! potential numerical attributes
 
 
@@ -161,13 +162,30 @@
 	ELSE
 !	   blen = TM_LENSTR1(buff)
 * ... check the bounds variable, issue any warnings.
-!           CALL TM_CHECK_BNDS_ATTRIB (dset, n, vname, vlen, buff(:blen),
-          CALL TM_CHECK_BNDS_ATTRIB (dset, n, vname, vlen, buff(:attlen),
-     .                             bounds_id, tmap_status)
-           IF (tmap_status .EQ. pcdferr) GO TO 5200
-           IF (tmap_status .NE. merr_ok) THEN
+cc This call goes and gets info out of the list structure for member 1.
+cc          CALL TM_CHECK_BNDS_ATTRIB (dset, n, vname, vlen, buff(:attlen),
+cc     .                             bounds_id, tmap_status)
+
+
+#ifdef usingDODSf2cUnderscore
+           cdfstat = NF_INQ_VARID_(cdfid, buff(:attlen), bounds_id)
+           cdfstat = NF_INQ_VAR_(cdfid, bounds_id, buff, vartyp, nvdim, 
+     .              vdims, nvatts)
+           cdfstat = NF_INQ_DIM_( cdfid, vdims(2), dummy, nb )
+#else
+           cdfstat = NF_INQ_VARID(cdfid, buff(:attlen), bounds_id)
+           cdfstat = NF_INQ_VAR(cdfid, bounds_id, buff, vartyp, nvdim, 
+     .              vdims, nvatts)
+           cdfstat = NF_INQ_DIM( cdfid, vdims(2), dummy, nb )
+#endif
+
+	   IF ( cdfstat .NE. NF_NOERR .OR.nb.NE.n) THEN
+	      tmap_status = merr_badtimedef
+	      errmsg = 'errors with time axis bounds '//buff(:attlen)
 	      bounds_id = unspecified_int4    ! invalidate the bounds variable
+	      GOTO 5100
 	   ENDIF
+
 	ENDIF
 
 * get the units attribute if it exists

@@ -73,6 +73,7 @@
 * V685 *acm* 7/13  Fix ticket 2083: single-y and multi-D transform
 * V685+*acm* 12/13 Bug in y boxes; only when y axis in the transf.
 * V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 	IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -87,7 +88,8 @@
 	external xgt_grid_data
 
 * internal variable declarations:
-	LOGICAL GEOG_COS_FACTOR, point, yes_ax(nferdims), no_ax(nferdims),
+	LOGICAL GEOG_COS_FACTOR, ITSA_TRUEMONTH_AXIS,
+     .		point, yes_ax(nferdims), no_ax(nferdims),
      .		at_ave, at_var, at_din, at_nbd, at_ngd, at_sum, at_std, 
      .		short_comp,need_cos, one_y
 	INTEGER idim, i, j, ir, jr, kr, lr, mr, nr, ic, jc, kc, lc, mc, nc,
@@ -217,6 +219,8 @@
             unit = 1.
 	    IF ( at_din ) THEN
 	      unit = un_convert( line_unit_code(grid_line(idim,grid)) )
+	      IF (ITSA_TRUEMONTH_AXIS(grid_line(idim,grid))) 
+     .		  unit = un_convert(pun_day)
 	      DO 50 i = ind_lo, ind_hi
  	      boxes(i+offset) = boxes(i+offset) * unit
  50           continue

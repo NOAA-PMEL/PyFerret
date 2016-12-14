@@ -69,6 +69,7 @@
 * V532: 5/01 *sh* - added "metre"
 * V554: 2/04 *acm*  default year length is 365.2425 days
 * V570 *acm* 5/04  Add the calendar ALL_LEAP = 366_DAY, and units for the corresp. month.
+* V71 12/16 *acm* Ticket 2158: working with true monthly time axes.
 
 * local variable declarations
 !	INTEGER	i
@@ -113,6 +114,13 @@
      .		un_name(-13)	/ 'mon_noleap'/
      .		un_name(-14)	/ 'mon_360'/
      .		un_name(-15)	/ 'mon_julian'/
+     .          un_name(-16)    / 'mon_alleap'/
+
+     .		un_name(-17)	/ 'tmon_gregorian'/
+     .		un_name(-18)	/ 'tmon_noleap'/
+     .		un_name(-19)	/ 'tmon_360'/
+     .		un_name(-20)	/ 'tmon_julian'/
+     .		un_name(-21)	/ 'mon_alleap'/
 
 	DATA	un_convert( 1)	/ .01		/,
      .		un_convert( 2)	/ 1000.		/,
@@ -144,13 +152,20 @@ c     .		un_convert( -6)	/ 31536000.	/, ! sec per 365 day year (OLD default)
      .		un_convert( -9)	/ 31104000.	/, ! sec per 360 day year
      .		un_convert(-10)	/ 31556952.	/  ! sec per 365.2425 year
 
-     .		un_convert(-11)	/ 31536000.	/ ! sec per 365.0 day year
-     .		un_convert(-12)	/ 31557600.	/ ! sec per 365.25 day year
+     .		un_convert(-11)	/ 31536000.	/, ! sec per 365.0 day year
+     .		un_convert(-12)	/ 31557600.	/, ! sec per 365.25 day year
 
-     .		un_convert(-13)	/ 2628000.	/ ! 1/12 of sec per 365 day year
-     .		un_convert(-14)	/ 2592000.	/ ! 1/12 of sec per 360 day year
-     .		un_convert(-15)	/ 2629800.	/ ! 1/12 of sec per 365.25 day year
-     .		un_convert(-16)	/ 2635200.	/ ! 1/12 of sec per 366 day year
+     .		un_convert(-13)	/ 2628000.	/, ! 1/12 of sec per 365 day year
+     .		un_convert(-14)	/ 2592000.	/, ! 1/12 of sec per 360 day year
+     .		un_convert(-15)	/ 2629800.	/, ! 1/12 of sec per 365.25 day year
+     .		un_convert(-16)	/ 2635200.	/, ! 1/12 of sec per 366 day year
+
+     .		un_convert(-17)	/ 2629746.	/, ! 1/12 of sec per 365.2425 year
+     .		un_convert(-18)	/ 2628000.	/, ! 1/12 of sec per 365 day year
+     .		un_convert(-19)	/ 2592000.	/, ! 1/12 of sec per 360 day year
+     .		un_convert(-20)	/ 2629800.	/, ! 1/12 of sec per 365.25 day year
+     .		un_convert(-21)	/ 2635200.	/  ! 1/12 of sec per 366 day year
+
 
 	DATA	un_alt_name ( 1) / 'centim'	/,
      .		un_alt_subsc( 1) / 1 /,
@@ -197,21 +212,24 @@ c     .		un_convert( -6)	/ 31536000.	/, ! sec per 365 day year (OLD default)
      .		un_alt_name (15) / 'degree'	/,
      .		un_alt_subsc(15) / pun_degrees /,
      .
-     .		un_alt_name (16) / 'month'	/,
+     .		un_alt_name (16) / 'trumonth'	/,! use days
      .		un_alt_subsc(16) / -5 /,
      .
-     .		un_alt_name (17) / 'minute'	/,
-     .		un_alt_subsc(17) / -2 /,
+     .		un_alt_name (17) / 'month'	/,
+     .		un_alt_subsc(17) / -5 /,
      .
-     .		un_alt_name (18) / 'second'	/,
-     .		un_alt_subsc(18) / -1 /,
+     .		un_alt_name (18) / 'minute'	/,
+     .		un_alt_subsc(18) / -2 /,
      .
-     .		un_alt_name (19) / 'hr'		/,
-     .		un_alt_subsc(19) / -3 /,
+     .		un_alt_name (19) / 'second'	/,
+     .		un_alt_subsc(19) / -1 /,
      .
-     .		un_alt_name (20) / 'metre'	/, ! those Brits ...
-     .		un_alt_subsc(20) /  pun_meters /
-!     .		un_alt_name (20) / char_init12	/,
-!     .		un_alt_subsc(20) / 0 /
+     .		un_alt_name (20) / 'hr'		/,
+     .		un_alt_subsc(20) / -3 /,
+     .
+     .		un_alt_name (21) / 'metre'	/, ! those Brits ...
+     .		un_alt_subsc(21) /  pun_meters /
+!     .		un_alt_name (21) / char_init12	/,
+!     .		un_alt_subsc(21) / 0 /
 
 	END

@@ -74,6 +74,7 @@
 *      2/16  *sh* automatically xfer attributes from member vars to agg vars
 *      3/16  *sh* trap simple invalid commands
 *                 start TBOXLO[L=1], not TBOX[L=1], of tf_lag_t axis at 0.0 
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 * arguments:
 *	memb_dsetname_var - if have_expr, the variable of names (input)
@@ -117,7 +118,7 @@
      .		   pmaxvarsperset = 400)
 
 * local variable declarations:
-	LOGICAL	OK_AS_AGG_VAR, match, has_uvars
+	LOGICAL	OK_AS_AGG_VAR, ITSA_TRUEMONTH_AXIS, match, has_uvars
 	INTEGER	TM_LENSTR, TM_LENSTR1, STR_SAME,
      .		NCF_ADD_AGG_MEMBER, NCF_GET_AGG_MEMBER_INFO, 
      .          KNOWN_GRID,
@@ -291,9 +292,12 @@
 ! pre 3/16	   CALL TM_MAKE_BASIC_AXIS( buff, 0.0D0, avg_lag, nT,
 * note that if the FMRC gets aggregated by the THREDDS Data Server this
 * code never gets called.  See CD_SCAN_AUX_COORDS for that case.
+* If the member axes are true-month axes, make the time axis of the 
+* aggregation a daily axis, not true-month.
 	   CALL TM_MAKE_BASIC_AXIS( buff, avg_lag/2., avg_lag, nT,
      .				    tf_lag_t, status )
 	   line_unit_code(tf_lag_t) = line_unit_code(memb_tax)
+	   IF (ITSA_TRUEMONTH_AXIS(memb_tax)) line_unit_code(tf_lag_t) = pun_day
 	   line_units(tf_lag_t) = un_name(line_unit_code(tf_lag_t))
 	   line_direction(tf_lag_t) = 'TT'
 	   line_dattype  (tf_lag_t) = nf_double

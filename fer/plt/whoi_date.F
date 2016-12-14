@@ -49,10 +49,12 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *                  A time axis may be a T axis or F axis
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
+        include 'xunits.cmn_text'
 	include 'ferret.parm'
 
 * calling argument declarations
@@ -60,6 +62,7 @@
 	REAL*8	tstep
 
 * internal variable declarations
+	LOGICAL		ITSA_TRUEMONTH_AXIS
 	INTEGER 	yr100, yr, mon, day, hr, min, sec,
      .			status, i, axis
 	INTEGER		TM_GET_CALENDAR_ID, cal_id
@@ -85,6 +88,9 @@
 
 * Find the number of seconds since start of data set for this time step
 	offset_secs = tstep*line_tunit( axis )
+
+* A true-month axis has line-units of month, but output units of days
+	IF (ITSA_TRUEMONTH_AXIS(axis)) offset_secs = tstep* un_convert(pun_day)
 
 * Total seconds to this time step since 01-JAN-0000 00:00:00
 	this_secs = start_secs + offset_secs

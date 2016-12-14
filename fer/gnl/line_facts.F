@@ -63,6 +63,7 @@
 * V697  12/15 *acm* Changes to formatting the output that shows subsets
 * V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
 *                  using original upper/lowercase spelling
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -73,14 +74,18 @@
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
 	include 'xvariables.cmn'
 	include 'xprog_state.cmn'
+        include 'calendar.decl'
+        include 'calendar.cmn'
 
 * calling argument declarations
 	INTEGER	  lun, idim, grid, orient, uvar
 
 * local variable declarations:
-	LOGICAL	BKWD_AXIS, GEOG_LABEL, calendar, original
-	INTEGER TM_LENSTR1, TM_SUBSC, lo, hi, i, line, dlen, ndec, status,
-     .          nlen, naxlen, int1, slen, i1ss, inss
+	LOGICAL	BKWD_AXIS, GEOG_LABEL, ITSA_TRUEMONTH_AXIS, 
+     .          calendar, original, true_month
+	INTEGER TM_LENSTR1, TM_SUBSC, TM_GET_CALENDAR_ID, 
+     .          lo, hi, i, line, dlen, ndec, status,nlen, naxlen, 
+     .          int1, slen, i1ss, inss,cal_id 
 	CHARACTER AX_TITLE*32, TM_FMT*20, lo_str*20, hi_str*20, direction*1,
      .		  title*32, reg*1, modflag*1, truncated*1, frmt*80,
      .		  lo_uvar*20, hi_uvar*20, uvar_desc*40, cstr*3, countstr*20,
@@ -118,6 +123,8 @@
 	   ELSE
 	      ndec = -sig_figs	! 5 sig places w/out extra zeros
 	   ENDIF
+	   true_month = ITSA_TRUEMONTH_AXIS (line)
+	   IF (true_month) ndec = 2
 	   CALL TRANSLATE_TO_WORLD( lo_val8, idim, grid, ndec, lo_str )
 	   hi_val8 = TM_WORLD( line_dim(line), grid, idim, box_middle )
 	   IF ( calendar ) THEN
@@ -125,6 +132,8 @@
 	   ELSE
 	      ndec = -sig_figs
 	   ENDIF
+	   IF (true_month) ndec = 2
+
 	   CALL TRANSLATE_TO_WORLD( hi_val8, idim, grid, ndec, hi_str )
 
 * axis oriented backwards ?
@@ -150,10 +159,15 @@
 !	   title = title(:dlen)//direction	! 12/94 removed
 
 * regularly spaced ?
+
 	   IF ( line_regular( line ) ) THEN
 	     reg = 'r'
 	   ELSE
 	     reg = 'i'
+	   ENDIF
+	   IF (true_month) THEN
+               cal_id = TM_GET_CALENDAR_ID (line_cal_name (line))
+	       IF (cal_id .NE. d360) reg = 'i'
 	   ENDIF
 
 * modulo ?
@@ -286,6 +300,11 @@ c Compressing transfm, w/o limits
      .				lo_str,
      .				hi_str,
      .				uvar_desc
+
+	   ENDIF
+	   IF (true_month) THEN
+	      dlen = TM_LENSTR1(risc_buff)
+	      IF (dlen.GT.1) risc_buff = risc_buff(:dlen)//' (True Monthly)'
 	   ENDIF
 
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)

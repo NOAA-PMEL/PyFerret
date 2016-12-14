@@ -1,4 +1,4 @@
-	INTEGER FUNCTION DATE_PREC( grid, idim, dt )
+	LOGICAL FUNCTION ITSA_TRUEMONTH_AXIS( iaxis )
 
 *
 *
@@ -35,54 +35,24 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* determine the precision level needed for a date string to resolve "dt"
-* in units appropriate for the given grid time axis
+* determine whether a particular context grid axis is a modulo one
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* revision 0.0 - 3/18/88
-*       *acm* 3/12 cleanup ifdefs and unnecessary include files
-*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
-* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
+* programmer - Ansley Manke
+* NOAA/PMEL, Seattle, WA - TMAP
 
-	include 'tmap_dims.parm'
+* 11/2016
+
+#include "tmap_dset.parm"
+        include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-        include 'xunits.cmn_text'
-	include	'ferret.parm'
+	include 'xunits.cmn_text'
+        external xunits_data
 
-* calling argument declarations
-	INTEGER	grid, idim
-	REAL	dt
 
-* internal variable declarations:
-	LOGICAL ITSA_TRUEMONTH_AXIS
-	INTEGER	i
-	REAL	convert(5), delta
-	DATA	convert(1)/ 60. /,	! sec --> min
-     .		convert(2)/ 60. /,	! min --> hour
-     .		convert(3)/ 24. /,	! hr  --> day
-     .		convert(4)/ 30. /,	! day --> mon
-     .		convert(5)/ 12. /	! mon --> year
+* calling argument declarations:
+	INTEGER	iaxis
 
-* get the dt interval expressed in seconds
-	delta = dt * line_tunit( grid_line(idim,grid) )
+	ITSA_TRUEMONTH_AXIS =  (line_unit_code(iaxis) .LE. pun_trumonths)
 
-* A true-month axis has line-units of month, but output units of days
-	IF (ITSA_TRUEMONTH_AXIS(grid_line(idim,grid))) delta = dt * un_convert(pun_day)
-
-* see how big it is
-	DO 100 i = 1, 5
-	   delta = delta / convert(i)
-	   IF ( delta .LT. 1.0 ) THEN
-	      DATE_PREC = 7-i
-	      RETURN
-	   ENDIF
- 100	CONTINUE
-
-* very big ! use years, only to label
-	DATE_PREC = 1
 	RETURN
 	END

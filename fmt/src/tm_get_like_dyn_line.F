@@ -54,6 +54,8 @@
 * V541 *sh* 2/02 - added support for parent modulo length less than axis length
 * V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
 * v694 1/15 *acm* (see ticket 2227) handle the line_dim_only flag
+* V71 12/16 *acm* Ticket 2158: working with true monthly time axes, the def 
+*                  for line_start behaves as for irregular axes
 
 * Arguments
 	INTEGER		idim, like, class, outline, status
@@ -74,9 +76,11 @@
 	include 'tmap_errors.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
+	include 'xunits.cmn_text'
+	external xunits_data
 *
 * Local definitions
-	LOGICAL		TM_ITS_SUBSPAN_MODULO
+	LOGICAL		TM_ITS_SUBSPAN_MODULO, true_month
 	INTEGER		inline
 	INTEGER		TM_FIND_LIKE_DYN_LINE
 
@@ -133,7 +137,8 @@
 * ... every nth index of parent line
 	ELSEIF ( class .EQ. pline_class_stride ) THEN
 
-	   IF ( line_regular(inline) ) THEN
+	   true_month = line_unit_code(inline) .LE. pun_trumonths
+	   IF ( line_regular(inline) .AND. .NOT.true_month) THEN
 	      line_parent(inline)    = like
 	      line_start(inline)     = line_start(like)
      .				     + (lo-1)*line_delta(like)

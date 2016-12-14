@@ -57,6 +57,8 @@
 *                  dimension is now an arg to SECS_TO_TSTEP.
 * V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes. Return integer
+*                  monthly values in these listings
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -75,16 +77,17 @@
 	INTEGER grid, cx, idim
 
 * local variable declarations:
-	LOGICAL	GEOG_LABEL, calendar
+	LOGICAL	GEOG_LABEL, ITSA_TRUEMONTH_AXIS, calendar, true_month
 	INTEGER ISUBSCR_CX, TM_LENSTR, TM_LENSTR1,
-     .          TM_GET_CALENDAR_ID, axis,
+     .          TM_GET_CALENDAR_ID,
      .		lo, hi, i, line, loest, hiest, dlen,
      .		ndec, status, delta, exlen, cal_id,
      .          prev_cal_id, less_figs
 	CHARACTER TM_FMT*14, buff*14, pt_str*20, lo_str*20, extra*24
 	REAL	BOX_SIZE
 	REAL*8	TM_WORLD, SECS_TO_TSTEP,
-     .          pt_val8, lo_val8, start, end, new_ww
+     .          pt_val8, lo_val8, start, end, new_ww, new_lo, new_hi, timefac
+
 
 * local parameter declarations:
 	INTEGER		sig_figs
@@ -92,6 +95,7 @@
 
 * initialize
 	line = grid_line( idim, grid )
+	CALL TM_MONTH_TIME_FACTOR (grid, true_month, timefac)
 
 * ignore bogus lines (should never occur ...)
 	IF ( line .EQ. munknown
@@ -99,7 +103,9 @@
 
 	calendar = (idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. GEOG_LABEL( idim, grid )	
 	IF ( calendar ) THEN
-	   extra = 'TSTEP ('//line_units(line)
+	   exlen = INDEX(line_units(line), '(') - 1
+	   IF (exlen .LE. 0) exlen = TM_LENSTR(line_units(line))
+	   extra = 'TSTEP ('//line_units(line)(:exlen)
 	   extra = extra(:TM_LENSTR(extra))//')'
 	ELSE
 	   extra = ' '
@@ -132,9 +138,9 @@
 
 	   IF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. cx_calendar(idim,cx) ) THEN
 
-              axis = grid_line(idim, grid)
-	      IF (line_t0(axis) .EQ. char_init20) GOTO 110  ! Not a calendar ax (e.g. f axis)
-              cal_id = TM_GET_CALENDAR_ID(line_cal_name(axis))
+
+	      IF (line_t0(line) .EQ. char_init20) GOTO 110  ! Not a calendar ax (e.g. f axis)
+              cal_id = TM_GET_CALENDAR_ID(line_cal_name(line))
               cx_cal_id(cx) = cal_id
 
 	      start = cx_lo_ww(idim,cx)
@@ -151,7 +157,6 @@
 	         CALL RESET_SECS_FROM_BC (-end, new_ww, prev_cal_id, 
      .                                    cal_id, status)
 	         IF ( status .NE. ferr_ok ) RETURN
-
 	         cx_hi_ww(idim,cx) = new_ww
 
               ELSE IF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim)  .AND. 
@@ -167,6 +172,24 @@
               cx_hi_ww(idim,cx) =
      .		   SECS_TO_TSTEP( grid, idim, cx_hi_ww(idim,cx) )
  
+* Convert to months
+
+	          cx_lo_ww(idim,cx) = cx_lo_ww(idim,cx)/ timefac
+	          cx_hi_ww(idim,cx) = cx_hi_ww(idim,cx)/ timefac
+
+              IF (true_month) THEN
+c          cx_lo_ww(idim,cx) = INT(cx_lo_ww(idim,cx))
+c	          cx_hi_ww(idim,cx) = INT(cx_lo_ww(idim,cx)+1) 
+	          CALL TM_TCOORD_TRUMONTH (line, cx_lo_ww(idim,cx),  
+     .		    box_middle, new_lo)
+	          CALL TM_TCOORD_TRUMONTH (line, cx_hi_ww(idim,cx),  
+     .		    box_middle, new_hi)
+     
+* Convert to days
+	          cx_lo_ww(idim,cx) = new_lo* timefac
+	          cx_hi_ww(idim,cx) = new_hi* timefac
+
+              ENDIF
 
 * reset cx_calendar now that cx_lo/hi_ww have been converted
               cx_calendar(idim,cx) = .FALSE.
@@ -186,18 +209,28 @@
 	ENDIF
 
 * write lines of coord and box size data
+	IF ( calendar ) THEN
+	   ndec = 6	! was 5 1/95
+	ELSE
+	   ndec = -sig_figs
+	ENDIF
+	IF (true_month) ndec = 2
+
 	DO 120 i = lo, hi, delta
 	   IF ( interrupted ) CALL ERRMSG
      .		( ferr_interrupt, status, ' ', *1000 )
 	   lo_val8 = TM_WORLD( i, grid, idim, box_lo_lim )
 	   pt_val8 = TM_WORLD( i, grid, idim, box_middle )
-	   IF ( calendar ) THEN
-	      ndec = 6	! was 5 1/95
-	   ELSE
-	      ndec = -sig_figs
-	   ENDIF
 	   CALL TRANSLATE_TO_WORLD( pt_val8,idim,grid,ndec,pt_str )
-	   CALL TRANSLATE_TO_WORLD( lo_val8,idim,grid,ndec,lo_str )
+	   
+	   IF (true_month) THEN  ! show in months
+	      CALL TRANSLATE_TO_WORLD( lo_val8,idim,grid,ndec+1,lo_str )
+	      pt_val8 = INT((pt_val8+1)/timefac)
+	      
+	   ELSE
+	      CALL TRANSLATE_TO_WORLD( lo_val8,idim,grid,ndec,lo_str )
+	   ENDIF
+
 #ifdef double_p
 	   IF ( calendar ) extra = 
      .	         	TM_FMT( (pt_val8), sig_figs, 14, dlen )

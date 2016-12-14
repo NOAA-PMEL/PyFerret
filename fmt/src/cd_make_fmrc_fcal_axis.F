@@ -39,6 +39,7 @@
 * patterning after time axis info in axcalt
 
 * V695+ *sh*
+* v698  *acm* 4/16 remove unused function declarations
 
 * include files
         include 'netcdf.inc'
@@ -70,8 +71,7 @@
 
 	LOGICAL TM_DFPEQ_TOL, TM_FPEQ_EPS, NC_GET_ATTRIB, 
      .		coordvar, got_it, do_warn, ok_cal, yyyymmdd_time, got_torg
-	INTEGER STR_UPCASE, TM_LENSTR1, TM_GET_CALENDAR_ID, TM_UNIT_ID,
-     .		TM_FIND_LIKE_DYN_LINE,
+	INTEGER STR_UPCASE, TM_LENSTR1, TM_FIND_LIKE_DYN_LINE,
      .          i, l, n,  nvdim, vdims(8), nvatts, 
      .		npts_cdf, ipt1, ipte, iptn, iptnp1,
      .		outflag, next_line_storage, pre_exist,

@@ -252,7 +252,10 @@
 * V698  5/16 *acm* Ticket 2416 allow all output types for DEFINE ATT.
 * V7    5/16 *acm* See ticket 2352. For LET/D variables look for info under that dataset
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U
-
+* V710 12/16 *acm* Ticket 2158: working with true monthly time axes.
+*                  Add DEFINE AXIS /MONTHLY /LIKE=
+* V710  4/16 *acm* new TM_UNITS_CAL to account for calendar in units id
+* V702 12/16 *acm* handling modulo true-month axes added after merge back to trunk.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -272,6 +275,7 @@
 	include 'xtext_info.cmn'
 	include 'xcommand.cmn'
         include 'xgrid_chg_fcns.cmn'
+	include 'xinterrupt.cmn'
 	include 'calendar.decl'
 	include 'calendar.cmn'	
         include 'netcdf.inc'
@@ -294,6 +298,8 @@
      .		    slash_npoints,
      .		    slash_edges,
      .		    slash_calendar,
+     .		    slash_monthly,
+     .		    slash_def_ax_like,
      .		    slash_text,
      .		    slash_xlimits,
      .		    slash_ylimits,
@@ -338,9 +344,11 @@
      .		    slash_npoints= 1 + 13,
      .		    slash_edges  = 1 + 14,
      .		    slash_calendar = 1 + 15,
-     .              slash_bounds     = 1+16,
-     .              slash_def_ax_quiet = 1+17,
-     .              slash_text   = 1 + 0,
+     .		    slash_bounds = 1+16,
+     .		    slash_def_ax_quiet = 1+17,
+     .		    slash_monthly= 1 + 18,
+     .		    slash_def_ax_like  = 1+19,
+     .		    slash_text   = 1 + 0,
      .		    slash_xlimits= 1 + 1,
      .		    slash_ylimits= 1 + 2,
      .		    slash_size   = 1 + 3,
@@ -377,17 +385,19 @@
 	LOGICAL	  TM_DIGIT, TM_LEGAL_NAME, TM_LINE_MATCH, TM_GRID_MATCH,
      .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, MATCH_NAME,
      .            NC_GET_ATTRIB, TM_LEGAL_NAME_OP, TM_HAS_STRING,
-     .            ITSA_1LINEIF, MATCH4, GO_FILE_INPUT, IS_AGG_MEMBER,
+     .            ITSA_1LINEIF, MATCH4, GO_FILE_INPUT, IS_AGG_MEMBER, 
+     .            MATCH_TEMPLATE, 
      .            TM_ITS_SUBSPAN_MODULO,
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
      .            new_att, new_att_modulo, got_it, orient_t, agg_quiet,
      .            letdset, its_remote, agg_hide, def_att_quiet, purge_all,
-     .            user, norm, nouser, t_regular, use_strict, have_expr, original
+     .            user, norm, nouser, t_regular, use_strict, have_expr, 
+     .            original, true_month, line_allocated, truemonth_noted
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID, EFCN_SCAN,
      .		  TM_GET_LINENUM, TM_LENSTR1, 
-     .		  TM_GET_GRIDNUM, TM_UNIT_ID,
+     .		  TM_GET_GRIDNUM, TM_UNIT_ID, TM_UNITS_CAL, 
      .		  ALLO_MANAGED_AXIS, ALLO_MANAGED_GRID, FIND_DSET_NUMBER,
      .            TM_GET_CALENDAR_ID, STR_SAME,
      .		  tmap_status, npoints, i, 
@@ -402,7 +412,8 @@
      .            prev_cal_id, j, num_indices, varid, attype_spec,
      .            attoutflag, attlen, coordvar, 
      .            dset_to_add, dir, type, attype, attid, ibuff, i0,  
-     .            agg_dim, nagfiles, ivar, item, nlab, ierr, nlen, llen
+     .            agg_dim, nagfiles, ivar, item, nlab, ierr, nlen,  
+     .            llen, line, dstart, units, npts
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            val, dummy, val_buf, xloc, yloc, halign, angle, size
@@ -412,8 +423,8 @@
 	REAL*8	  SECS_FROM_BC, TM_WW_AXLEN,
      .		  bc_to_t0, start, new_ww, delta, end, secs2start,
      .            micro_adj, axwwlen, rmod_len, secsperyear, small, 
-     .            new_att_modulo_len, madj
-	CHARACTER TM_FMT*16, TM_CLEAN_FILENAME*512,
+     .            new_att_modulo_len, madj, firs_coord, last_coord, timefac
+	CHARACTER TM_FMT*16, TM_CLEAN_FILENAME*512,SECS_TO_DATE_OUT*11,
      .            reg_name*24, buff1*128, buff2*512, buff3*512, 
      .            buffsym*120, cal_name*32, buff*512,
      .            basic_orients(nferdims)*2, err_string*2048, replmsg*24,
@@ -421,7 +432,7 @@
      .            new_att_units*128, new_att_calendar*128,
      .            new_att_t0*128, dcode*2, axdir*1, t0string*128, 
      .            ustring*128, reserved_flow_name(3)*4, is_nan*3,
-     .            buff4*16, buff5*16
+     .            buff4*16, buff5*16, datestr*11, likename*64
 
         CHARACTER*1 tab
 #ifdef NO_INTRINSIC_IN_PARAMETER
@@ -831,6 +842,9 @@
 * ... /FILE=
  500	IF ( qual_given( slash_file ) .GT. 0 ) GOTO 300 ! like DEFINE GRID/FILE
 
+* initialize	
+	buff2 = ' '
+
 * DEFINE AXIS - what is "axisname" ?
 	iqual = qual_given( slash_name )
 	IF ( iqual .GT. 0 ) THEN
@@ -880,6 +894,7 @@
 	   rmod_len = 0.0D0
 	ENDIF
 
+
 * is this to be a regular or irregular definition?
 	irreg = qual_given(slash_name) .GT. 0
      .	  .OR. (qual_given(slash_name) .EQ. 0
@@ -911,6 +926,44 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
      .				unknown_qual_ok,
      .				status	)
 	IF ( status .NE. ferr_ok ) GOTO 5000
+
+* /LIKE
+
+	line_allocated = .FALSE.
+
+	iqual = qual_given( slash_def_ax_like )
+	IF ( iqual .GT. 0 ) THEN
+	  
+	   i1 = STR_UPCASE(likename,cmnd_buff(item_start(i):item_end(i)))
+*  ... first look in the static lines
+	   DO line = 1, max_lines
+	      IF ( interrupted ) CALL ERRMSG
+     .			( ferr_interrupt, status, ' ', *5000 )
+	      IF ( line_name(line) .EQ. char_init16 ) CYCLE 
+	      IF ( line_name(line)(1:1) .EQ. '(' ) CYCLE 
+	      IF (MATCH_TEMPLATE(line_name(line),likename)) GOTO 450
+ 	   ENDDO 
+
+*  ... then the dynamic lines
+              line = 0
+ 435          CALL TM_NEXT_DYN_LINE( line, *440)
+                 IF ( interrupted ) CALL ERRMSG
+     .			( ferr_interrupt, status, ' ', *5000 )
+                 IF (MATCH_TEMPLATE(line_name(line),likename)) GOTO 450
+	         GOTO 435
+ 440          CONTINUE
+           GOTO 5760
+ 450	   CONTINUE
+
+* find a space to catalog it
+	   status = ALLO_MANAGED_AXIS( iline )
+	   IF ( status .NE. merr_ok ) GOTO 5000
+	   line_allocated = .TRUE.
+
+* copy the line definition
+	   CALL TM_COPY_LINE ( line, iline )
+
+	ENDIF
 
 * orientation must be uniquely defined
 
@@ -950,6 +1003,15 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 	has_bounds =  qual_given( slash_bounds ) .GT. 0
         IF (has_bounds .AND. its_edges) GOTO 5730
 
+
+* is it a calendar axis definition?
+	its_calendar =  orient_t .AND. cx_calendar(orient,mods_cx)
+
+* /MONTHLY - set the true_month flag, time axes only. (what about F axes?)
+	true_month = qual_given( slash_monthly ) .GT. 0
+
+	IF (true_month .AND. orient.NE.t_dim) GOTO 5820
+
 * /UNITS = DEGREES,METERS, ... SECONDS (or supply defaults)
         buff1 = ' '
         new_att_units = ' ' 
@@ -965,15 +1027,67 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 	   buff1 = 'degrees'	! infer from input like "X=130E:80W"
 	ELSEIF ( orient_t
 * 8/97 *kob* use cx_calender to check if time is date rather than time step
-     .  .AND.  (     qual_given(slash_T0) .GT. 0
+     .  .AND.  (  qual_given( slash_t0 ) .GT. 0
      .		.OR. cx_calendar(orient,mods_cx))) THEN
-	   buff1 = 'HOURS'
+	    IF ( .NOT. true_month ) buff1 = 'HOURS'
 	ELSE
 	   buff1 = 'NONE'
 	ENDIF
 
-* is it a calendar axis definition?
-	its_calendar =  orient_t .AND. cx_calendar(orient,mods_cx)
+* /MONTHLY
+
+	timefac = 1.
+	IF ( true_month ) THEN
+	   IF (qual_given(slash_units) .GT. 0) THEN
+	      IF (STR_SAME(buff1,      ' '   ) .EQ. 0 .OR.
+     .		  STR_SAME(buff1(1:4), 'NONE') .EQ. 0 .OR.
+     .		  STR_SAME(buff1(1:3), 'MON' ) .EQ. 0) THEN
+	         buff1 = 'TRUMONTH'
+	      ELSE
+	         GOTO 5770
+	      ENDIF
+	   
+	   ENDIF
+
+* Do not allow /BOUNDS, /NPOINTS, irregular, 
+
+	   IF (has_bounds) GOTO 5780 
+	   IF (irreg) GOTO 5790
+
+* maybe later allow def axis/monthly/npoints=120/t0=1-jan-2001.  Not allowed now.
+	   IF (qual_given(slash_npoints) .GT. 0) GOTO 5800
+
+* Check that any delta given in /t=LO:HI:DELTA has value of 1
+* Should be able to handle that...
+
+	   delta = cx_delta (orient,mods_cx)
+	   IF ( delta.EQ.unspecified_val8 .OR. delta.LE.0.D0) GOTO 5810
+
+	   buff1 = 'TRUMONTH'
+
+* Edges is implied.  Issue a note if they didn't give /EDGES
+	   
+	   truemonth_noted = .FALSE.
+	   IF (.NOT. its_edges) THEN
+	      CALL WARN ('True monthly axis has an implicit /EDGES qualifier')
+	      truemonth_noted = .TRUE.
+	   ENDIF
+	   its_edges = .TRUE.
+	   
+* Will use a default if t0 not given
+
+	   IF (qual_given( slash_T0 ) .EQ. 0) THEN
+	      IF (its_calendar) THEN 
+	         CALL WARN (
+     .          'True monthly axis, T0 not specified. Using start of first year of axis')
+	      ELSE
+	         CALL WARN (
+     .          'True monthly axis, T0 not specified. Using 01-jan-0000')
+	      ENDIF
+	      truemonth_noted = .TRUE.
+	   ENDIF
+
+	ENDIF
 
 * *acm* other calendar names* /CALENDAR = GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP
 *       Gregorian is the default, also may be called STANDARD.
@@ -1003,6 +1117,7 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
         IF (cal_name(1:6) .EQ. 'COMMON') cal_name = 'NOLEAP' 
         IF (cal_name(1:6) .EQ. '365_DA') cal_name = 'NOLEAP' 
         IF (cal_name(1:6) .EQ. '366_DA') cal_name = 'ALL_LEAP' 
+
         cal_id = TM_GET_CALENDAR_ID (cal_name)
 	IF (cal_id .LE. 0  .OR. cal_id .GT. max_calendars ) GO TO 5720
         CALL TM_GET_CALENDAR_ATTRIBUTES (cal_id, nmonths, 
@@ -1010,51 +1125,75 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
      .                 d_before_mon, mon_by_d)
         IF (new_att_calendar .NE. " ") new_att_calendar = cal_name
 
+* True-month calendar:
+* If no time origin given, by default the monthly axis origin will be 
+* the beginning of the first month of the axis, if calendar date range 
+* given, or 1-jan-0000
+
+	IF (true_month) THEN
+	   IF (qual_given( slash_T0 ) .EQ. 0) THEN
+	      IF (its_calendar) THEN
+	         start = ABS(cx_lo_ww(orient,mods_cx))
+	         datestr = SECS_TO_DATE_OUT (start, cal_id, .FALSE., 1)
+                 buff2 = '01-JAN-'//datestr(1:4)
+	      ELSE
+	         buff2 = '01-JAN-0000'
+	      ENDIF
+	   ENDIF
+
+	ENDIF 
+
 * interpret the line units
 	IF ( buff1 .EQ. 'NONE' .OR. buff1 .EQ. ' ' ) THEN
 	   buff1 = ' '
 	   iunit = 0
+	   
 	ELSE
 	   iunit = TM_UNIT_ID( buff1 )
 	   IF ( iunit .EQ. 0 ) THEN
 	       CALL WARN('(fyi) units are not subject to auto-conversion: '
      .			//buff1)
 
-C /calendar=/unit=year gets length of year in that calendar.
-           ELSEIF (iunit .EQ. -6 .OR. iunit .EQ. -10) THEN  
-	      IF (cal_id .EQ. d360) iunit = -9
-	      IF (cal_id .EQ. julian) iunit = -12
-	      IF (cal_id .EQ. noleap) iunit = -11
-	      IF (cal_id .EQ. all_leap) iunit = -8
+C /calendar=/unit=year gets length of year in that calendar 
+C                      (true_month flag unused for yr axis)
+           ELSEIF (iunit .EQ. -6 .OR. iunit .EQ. -10) THEN
+	      iunit = TM_UNITS_CAL( iunit, cal_id, true_month )
 
 C /units=months  is 1/12 of the length of the year
 	   ELSEIF (iunit .EQ. -5) THEN    ! 1/97: "-5" is "MONTHS"
-              IF (cal_id .eq. GREGORIAN) THEN
-                 WRITE (err_string,3544) yeardays
-              ELSE
-                 WRITE (err_string,3540) yeardays
-                 IF (cal_id .eq. 2) THEN	! noleap
-                    iunit = -13
-                 ELSE IF (cal_id .eq. 3) THEN	! Julian
-		    iunit = -15
-		 ELSE IF (cal_id .eq. 4) THEN	! 360_DAY
-		    iunit = -14
-		 ELSE IF (cal_id .eq. 5) THEN	! ALL_LEAP
-		    iunit = -16
-	         ENDIF
+              WRITE (err_string,3540) yeardays
+	      IF (cal_id .EQ. GREGORIAN) 
+     .            WRITE (err_string,3544) yeardays
+ 
+* Named calendar with unit=month or year gets length according to calendar's year length.
+
+	      iunit = TM_UNITS_CAL( iunit, cal_id, true_month )
+
 *  Append calendar name to units string.
+              IF (cal_id .NE. GREGORIAN) THEN
 		 slen = TM_LENSTR1 (buff1)
 		 len_cal = TM_LENSTR1 (cal_name)
 		 buff1 = buff1(:slen)//'('//cal_name(:len_cal)//')'
               ENDIF
 	      
+* issue a note about monthly axes
+
+	      IF (true_month) THEN
+	         WRITE (err_string,3546) 
+		 IF (.NOT. truemonth_noted) CALL WARN (err_string) 
+	      ELSE
+	         CALL WARN (err_string)
+	      ENDIF
+	      
  3540         FORMAT 
      .        ('/UNIT=MONTHS  ... using 1/12 of ',F6.2,' days')
  3544         FORMAT 
      .        ('/UNIT=MONTHS is ambiguous ... using 1/12 of '
-     .                                                  ,F8.4,' days')
-	         CALL WARN (err_string) 
+     .                                           ,F8.4,' days')
+ 3546         FORMAT ('True monthly axis')
+
 	   ELSE
+
 * ... Issue warning for inappropriate units like HOURS on X ax
 *     and render the units unconvertible
  	      IF ( (  orient_t .AND.
@@ -1071,9 +1210,11 @@ C /units=months  is 1/12 of the length of the year
 	   ENDIF
  	ENDIF
 
-* find a space to catalog it
-	status = ALLO_MANAGED_AXIS( iline )
-	IF ( status .NE. merr_ok ) GOTO 5000
+* find a space to catalog it (may already be done above with DEF AX/LIKE=)
+	IF (.NOT. line_allocated) THEN
+	   status = ALLO_MANAGED_AXIS( iline )
+	   IF ( status .NE. merr_ok ) GOTO 5000
+	ENDIF
 
 * was /NPOINTS given ?
 * Read as an INTEGER then it can be really large and retain accuracy.
@@ -1408,6 +1549,10 @@ C /units=months  is 1/12 of the length of the year
 	     IF ( npoints .EQ. unspecified_int4 ) THEN
 	       delta = cx_delta (orient,mods_cx)
 	       IF ( delta.EQ.unspecified_val8 .OR. delta.LE.0.D0) GOTO 5520
+	       
+* Check for delta of 1 on true-month axis (for now)
+	       IF (true_month .AND. delta .NE. 1) GOTO 5810 
+
 	       IF ( .NOT.its_calendar ) THEN
 	          npoints = ( (end - start) / delta ) + 0.9999
 	       ENDIF
@@ -1417,12 +1562,13 @@ C /units=months  is 1/12 of the length of the year
 	       IF ( delta .LE. 0.0D0 ) GOTO 5520
 	     ENDIF
 	     IF ( its_calendar ) THEN
-	       start = start - delta/2.0*un_convert(iunit)
-	       end   = end   + delta/2.0*un_convert(iunit)
+	       start = start - (delta/2.0)*un_convert(iunit)
+	       end   = end   + (delta/2.0)*un_convert(iunit)
 	     ELSE
 	       start = start + delta/2.0
 	       end   = end   - delta/2.0
 	     ENDIF
+
 	   ELSE
 	     IF ( npoints .EQ. unspecified_int4 ) THEN
 	       delta = cx_delta (orient,mods_cx)
@@ -1451,9 +1597,11 @@ C /units=months  is 1/12 of the length of the year
 
 * /T0 = date (or supply default)
 	iqual = qual_given( slash_T0 )
-        new_att_t0 = " "
+        new_att_t0 = ' '
+	IF (true_month .AND. buff2 .NE. ' ') iqual = 1
 	IF ( iqual .GT. 0 ) THEN
-	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+	   IF (buff2 .EQ. ' ') 
+     .       CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      buff2, status )
 	   IF ( status .NE. ferr_ok ) RETURN
 	   CALL TM_BREAK_DATE( buff2, cal_id, i1,i2,i3,i4,i5,i6, 
@@ -1461,6 +1609,7 @@ C /units=months  is 1/12 of the length of the year
 	   IF ( buff2 .EQ. ' ' .OR. status .NE. ferr_ok ) GOTO 5540
            new_att_t0 = buff2
 	ELSE
+	   
 	   WRITE (buff2,3550) mon_names(1)
  3550      FORMAT ('15-', A3, '-1901')		! default
 	   IF (its_calendar ) THEN
@@ -1475,6 +1624,7 @@ C /units=months  is 1/12 of the length of the year
 	         GOTO 580
 	      ENDIF
 	   ENDIF
+
 	ENDIF
 
 * Combine new attribute units and/or time origin to express
@@ -1497,6 +1647,8 @@ C /units=months  is 1/12 of the length of the year
 	line_unit_code( iline ) = iunit
 	line_direction( iline ) = 'NA'
 	IF ( orient_t ) line_tunit(iline) = un_convert( iunit )
+
+
 
 * is it a formattable axis ?
 	IF ( orient .EQ. x_dim ) THEN
@@ -1531,6 +1683,7 @@ C /units=months  is 1/12 of the length of the year
 	      bc_to_t0 = SECS_FROM_BC( line_t0(iline), cal_id, status)
 	      line_dim  (iline) = (start-end) / (line_tunit(iline)*delta) + 1.9999
 	      line_start(iline) = (-line_start(iline)-bc_to_t0)/line_tunit(iline)
+
 	   ENDIF
 	   IF ( qual_given(slash_T0).GT.0 ) line_direction(iline) = 'FI'
 
@@ -1548,14 +1701,15 @@ C /units=months  is 1/12 of the length of the year
 	   line_direction(iline) = 'TT'
 	ENDIF
 
-* ... coordinate pointer for next line to save
-* Bounds are stored as edges, so increase by N coordinates and N+1 edges
+* ... true-month calendar given without calendar date range, fill in
+*     start, count, direction.
 
-* acm move this to before purge_mr_axis, which also resets next_line_mem_pos
-*     after it deletes old_line.
-
-	IF (irreg .AND. .NOT.line_regular(iline))
-     .			next_line_mem_pos = frst_pt + 2*n+1
+	IF (true_month .AND. .NOT.its_calendar) THEN
+	    line_start(iline) = cx_lo_ww(orient,mods_cx) - delta/2
+	    line_direction(iline) = 'TI'
+	    line_dim(iline) = 1 + 
+     .       ( cx_hi_ww(orient,mods_cx) - cx_lo_ww(orient,mods_cx) )/ delta
+	ENDIF
 
 * automatic longitude modulo
 	axwwlen = TM_WW_AXLEN(iline)
@@ -1565,25 +1719,35 @@ C /units=months  is 1/12 of the length of the year
 	     IF (rmod_len .EQ. 0.0D0)  rmod_len = 360.D0
 	     new_att_modulo = .TRUE.
 	     new_att_modulo_len = rmod_len
-
 	  ENDIF
-*  automatic calendar modulo
-	ELSEIF (line_direction(iline) .EQ. 'TI' .OR.
-     .          line_direction(iline) .EQ. 'FI' ) THEN
+
+*  Calendar modulo
+	ELSEIF (.NOT.its_modulo .AND. 
+     .          (line_direction(iline) .EQ. 'TI' .OR.
+     .           line_direction(iline) .EQ. 'FI') ) THEN
 	  secsperyear = DBLE(cals_yeardays(cal_id)) * (24.D0 * 60.D0 * 60.D0)
 	  bc_to_t0 = SECS_FROM_BC( line_t0(iline), cal_id, status)
 	  CALL TM_WW_AX_1_N(iline, start, end)
 	  secs2start = bc_to_t0 + start*line_tunit(iline)
+	  
+* Set the conversion factor, months to days
+	   grid_line(t_dim, dgrid_buff) = iline
+	   CALL TM_MONTH_TIME_FACTOR (dgrid_buff, true_month, timefac)
+
+	  IF (true_month) secs2start = secs2start/ timefac
+
 	  IF ( (secs2start .LE. secsperyear)
      .	 .AND. (axwwlen*line_tunit(iline) .LE. secsperyear) ) THEN
 	     its_modulo = .TRUE.
 	     IF (rmod_len .EQ. 0.0D0)  rmod_len =
-     .				       secsperyear/line_tunit(iline)
+     .				       timefac* secsperyear/line_tunit(iline)
 	     new_att_modulo = .TRUE.
 	     new_att_modulo_len = rmod_len
 	  ENDIF
 	ENDIF
+
 * set modulo and sanity check it
+
 	line_modulo( iline) = its_modulo
 	line_modulo_len( iline ) = rmod_len
 	IF (rmod_len .NE. 0.0D0) THEN
@@ -1596,9 +1760,52 @@ C /units=months  is 1/12 of the length of the year
            ENDIF
 	ENDIF
 
+
+* If the user said /monthly and /modulo, store the modulo length in months
+
+	IF (true_month .AND. its_modulo) THEN
+	   axwwlen = TM_WW_AXLEN(iline)  ! months, make it an integer
+	   IF (INT(axwwlen+0.5) .LE. 12.) THEN
+	      rmod_len = DFLOAT(INT(axwwlen+0.5))
+	      axwwlen = rmod_len
+	   ENDIF
+	   line_modulo_len(iline) = rmod_len
+	ENDIF
+
 * Write a note when subspan modulo axis length within a grid cell of modulo length
 c	CALL TM_WARN_SUBSPAN (iline)
 
+
+* ... Was it a true-month axis (defined in the classic way without the /MONTHLY qualifier)?
+
+	IF (.NOT. true_month .AND. irreg .AND. .NOT.line_modulo( iline)) THEN
+           units = TM_UNIT_ID( line_units(iline) )
+	   CALL TM_CHECK_MONTHLY_AXIS (line_mem(frst_pt), line_dim(iline), 
+     .              cal_id, line_t0(iline), units, line_units(iline),
+     .              start, delta, line_tunit(iline), true_month)
+	   IF (true_month) THEN
+	      line_regular(iline) = .TRUE.
+	      line_start  (iline) = start !* line_tunit(iline)/ un_convert(pun_day)
+	      line_delta  (iline) = delta
+	      line_subsc1 (iline) = unspecified_int4
+	      last_coord = line_start(iline) + DBLE(npts-1)*line_delta(iline)
+	      firs_coord = start
+	      line_unit_code (iline) = units
+	      line_tunit  (iline) = un_convert(units)
+	      its_edges = .FALSE.
+	      irreg = .FALSE.
+	   ENDIF
+	ENDIF
+
+
+* ... coordinate pointer for next line to save
+* Bounds are stored as edges, so increase by N coordinates and N+1 edges
+
+* acm move this to before purge_mr_axis, which also resets next_line_mem_pos
+*     after it deletes old_line.
+
+	IF (irreg .AND. .NOT.line_regular(iline))
+     .			next_line_mem_pos = frst_pt + 2*n+1
 * check for redefinitions
 	IF ( dup_name ) THEN
 	   IF ( TM_LINE_MATCH( old_line, iline ) ) THEN
@@ -1659,7 +1866,9 @@ c	CALL TM_WARN_SUBSPAN (iline)
            attname = 'point_spacing'
            attype = NCCHAR
            attoutflag = 1
-           IF ( line_regular(iline) ) THEN
+	   its_reg = .NOT.irreg .AND. .NOT.true_month
+	   IF (true_month .AND. cal_name .EQ. '360_DAY') its_reg = .TRUE.
+           IF ( its_reg ) THEN
               attlen = 4
               CALL CD_PUT_NEW_ATTR (dset_to_add, varid, attname, 
      .        attype, attlen, attoutflag, 'even', dummy, status) 
@@ -1700,7 +1909,7 @@ c	CALL TM_WARN_SUBSPAN (iline)
 
 * Bounds on irregular axis output by default.
 
-           IF (irreg) THEN
+           IF (.NOT.its_reg) THEN
               attname = 'bounds'
               attype = NCCHAR
               attoutflag = 1
@@ -2621,11 +2830,31 @@ c ?? if nlab=0, use next avail slot?
 5750	CALL ERRMSG( ferr_grid_definition, status,
      .   'BOUNDS specified do not correctly enclose coordinate points', 
      .   *5000 )
-
+5760	CALL ERRMSG( ferr_grid_definition, status,
+     .   'DEFINE AXIS/LIKE= Axis not found '//likename(:TM_LENSTR1(likename)),
+     .   *5000 )
+5770	CALL ERRMSG( ferr_grid_definition, status,
+     .   'DEFINE AXIS/MONTHLY specify /UNITS=month or omit /UNITS (MONTH is default)', 
+     .   *5000 )
+5780	CALL ERRMSG( ferr_grid_definition, status,
+     .   'DEFINE AXIS/MONTHLY True-month axis: /BOUNDS not allowed. Use /T=lo:hi:del', *5000 )
+5790	CALL ERRMSG( ferr_grid_definition, status,
+     .    'DEFINE AXIS/MONTHLY True-month axis: Definition /FROMDATA not allowed. '//
+     .    'Use /T=LO:HI:DEL', *5000 )
+5800	CALL ERRMSG( ferr_grid_definition, status,
+     .   'DEFINE AXIS/MONTHLY True-month axis: /NPOINTS not allowed. Use /T=lo:hi:del', *5000 )
+5810	CALL ERRMSG( ferr_grid_definition, status,
+     .   'DEFINE AXIS/MONTHLY True-month axis delta-t must be 1', *5000 )
+5820	CALL ERRMSG( ferr_grid_definition, status,
+     .   'DEFINE AXIS/MONTHLY True-month axis: needs /T=lo:hi:del', *5000 )
+5830	CALL ERRMSG( ferr_grid_definition, status,
+     .   'DEFINE AXIS/MONTHLY month boundaries cannot be day '//datestr(1:2)//
+     .   '. Day does not exist in all months.', *5000 )
+5840	CALL ERRMSG( ferr_grid_definition, status,
+     .   'DEFINE AXIS/MONTHLY must use calendar-time definition', *5000 )
 5900	CALL ERRMSG( ferr_invalid_command, status,
      .		'DEFINE what name.attribute?', *5000 )
 5920    slen = TM_LENSTR1(varname)
-
         IF (dset .GT. 0) THEN
            CALL ERRMSG( ferr_invalid_command, status,
      .		'variable or axis undefined or not in dataset '//

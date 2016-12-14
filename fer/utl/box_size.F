@@ -53,6 +53,8 @@
 *      6/00 *sh* -- bug fix: children of irregular modulo axes 
 * V533 6/01 *sh* -- using TM_AXIS_RECURSIVE
 * V541  2/02 *sh* -- support for subspan modulo axes
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
+
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -64,8 +66,8 @@
 	INTEGER	isubscript, grid, idim
 
 * internal variable declarations:
-	LOGICAL TM_AXIS_RECURSIVE, TM_ITS_SUBSPAN_MODULO,
-     .		recursive, modulo, regular
+	LOGICAL TM_AXIS_RECURSIVE, TM_ITS_SUBSPAN_MODULO, ITSA_TRUEMONTH_AXIS,
+     .		recursive, modulo, regular, true_month
 	INTEGER	TM_MODULO_LINE_DIM, axis, isub0, llen
 	REAL*8	TM_WORLD, lo_point, hi_point
 
@@ -75,6 +77,8 @@
 	   BOX_SIZE = bad_val4
 	   RETURN
 	ENDIF
+
+	true_month = ITSA_TRUEMONTH_AXIS(axis)
 
 * special consideration for sub-span modulo axis outside its core range
 	llen = TM_MODULO_LINE_DIM(axis)
@@ -88,6 +92,7 @@
 	   regular = line_regular( axis )
 	ENDIF
 
+	IF (true_month) regular = .FALSE.
 
 	IF ( regular ) THEN
 * regularly spaced points all have same grid box size
@@ -110,7 +115,7 @@
 
 * only dynamic lines have the possibility of recursive definitions
 * (since FORTRAN doesn't protect "AND" clauses this test in 2 steps)
-	   recursive = TM_AXIS_RECURSIVE(axis)
+	   recursive = TM_AXIS_RECURSIVE(axis, true_month)
 
 * use modulo logic if the parent line is modulo (6/00)
 	   modulo = line_modulo(axis)
@@ -120,6 +125,7 @@
 	   ENDIF
 
 * use TM_WORLD to compute BOX_SIZE for recursive defs (10/95)
+
 	   IF ( recursive ) THEN
 * ... every nth point from an irregular axis --> use midpoints as box bounds
 	      IF (isub0.EQ.1 .AND. .NOT.modulo ) THEN

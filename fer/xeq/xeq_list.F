@@ -331,7 +331,7 @@ c     .		 .AND. .NOT.do_comma_del
 	all_at_once  = do_multi.OR.do_epic.OR.do_cdf
 
 * permutation requested ?
-        DO 10 idim = 1, 7 ! 3/92 SUN port addition
+        DO 10 idim = 1, nferdims+1
  10     perm(idim) = idim
 	IF ( permute ) THEN
 * ... user-specified permutation
@@ -435,8 +435,10 @@ c     .		 .AND. .NOT.do_comma_del
 
 * Get any settings for netcdf-4 output
 
-        CALL NETCDF4_LIST_SETTINGS (status)
-        IF ( status .NE. ferr_ok ) GOTO 5000
+        IF (do_cdf) THEN
+	   CALL NETCDF4_LIST_SETTINGS (status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+	ENDIF
 
 * set up the output device
 	IF ( list_to_tty ) THEN

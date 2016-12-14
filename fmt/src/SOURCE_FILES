@@ -154,6 +154,7 @@ tm_check_bnds_attrib.F\
 tm_check_fmrc_bnds_attrib.F\
 tm_check_bnds_centered.F\
 tm_check_edges_attrib.F\
+tm_check_monthly_axis.F\
 tm_choose_read.F\
 tm_clean_filename.F\
 tm_close_set.F\
@@ -254,6 +255,7 @@ tm_bad_epic.F\
 tm_mod.F\
 tm_modulo_axlen.F\
 tm_modulo_line_dim.F\
+tm_month_time_factor.F\
 tm_new_grid_name.F\
 tm_new_line_name.F\
 tm_next_dyn_grid.F\
@@ -283,14 +285,17 @@ tm_scale_all.F\
 tm_scale_nobad.F\
 tm_secs_from_bc.F\
 tm_secs_to_date.F\
+tm_secs_to_ymdhms.F\
 tm_set_current_calendar.F\
 tm_split_message.F\
 tm_step_to_date.F\
 tm_string.F\
 tm_subsc.F\
+tm_tcoord_trumonth.F\
 tm_translate_axis.F\
 tm_translate_lat_long.F\
 tm_unit_id.F\
+tm_units_cal.F\
 tm_use_dyn_grid.F\
 tm_use_line.F\
 tm_warn_subspan.F\

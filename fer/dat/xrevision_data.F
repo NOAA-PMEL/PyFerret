@@ -132,12 +132,13 @@
 * v6.97 (working version)
 * v7.0     7/2016
 * v7.02    8/2016 Fixes graticules on time axes # 2466
+* v7.02   12/2016 Merged true-monthly axis branch to the trunk
 
         IMPLICIT NONE
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'PyFERRET' /
 	DATA len_program_name	/  8       /
-	DATA revision_level	/  7.021   /
+	DATA revision_level	/  7.022   /
 
 	END

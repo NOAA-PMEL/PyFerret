@@ -87,11 +87,13 @@
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
+        include 'xunits.cmn_text'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'ferret.parm'
@@ -118,7 +120,8 @@
 	PARAMETER     ( pyear_only = 1 )
 
 * internal variable declarations:
-	LOGICAL		GEOG_LABEL, GEOG_VAR, use_nice, special
+	LOGICAL		GEOG_LABEL, GEOG_VAR,ITSA_TRUEMONTH_AXIS,
+     .			use_nice, special
 	INTEGER		TM_LENSTR1, TM_LENSTR, dlen, places, ndec, dummy
 	CHARACTER	AX_TITLE*32, WHOI_DATE*14, VAR_TITLE*128,
      .			INTERNAL_WHOI_DATE*14,
@@ -181,6 +184,7 @@
 * labels formatted in calendar dates
 * .. convert units of time axis from seconds to minutes
 	      time_unit = line_tunit( grid_line(idim,grid) )
+	      IF (ITSA_TRUEMONTH_AXIS(grid_line(idim,grid))) time_unit = un_convert(pun_day)  
 	      dt_min = time_unit / 60.
 
 * ... TAXIS command

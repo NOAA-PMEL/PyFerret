@@ -1,4 +1,4 @@
-	LOGICAL FUNCTION TM_AXIS_RECURSIVE (axis)
+	LOGICAL FUNCTION TM_AXIS_RECURSIVE (axis, true_month)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -38,18 +38,20 @@
 
 
 * V533 *sh* 6/01
+* V710 12/16 *acm* Ticket 2158: working with true monthly time axes.
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
 	include	'xtm_grid.cmn_text'
 
 * calling argument declarations
+	LOGICAL true_month
 	INTEGER axis
 
 * internal variable declarations
 
 	TM_AXIS_RECURSIVE = line_parent(axis) .NE.0
-     .		      .AND. .NOT.line_regular(axis)
+     .   .AND. (.NOT.line_regular(axis) .OR. true_month)
 
 	RETURN
 	END

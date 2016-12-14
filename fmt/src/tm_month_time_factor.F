@@ -1,12 +1,11 @@
-	SUBROUTINE MAKE_PSEUDO_VAR ( cx, idim, pvar, mr, lo_ss, hi_ss )
+	SUBROUTINE TM_MONTH_TIME_FACTOR (grid, true_month, timefac)
 
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
-*
+*.
 *  Access and use of this software shall impose the following
 *  obligations and understandings on the user. The user is granted the
 *  right, without any fee or cost, to use, copy, modify, alter, enhance
@@ -34,79 +33,49 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-* create a "pseudo-variable" - numerical grid of data based solely on the
-* underlying grid (not involving external data)
-
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* revision 0.0 - 3/2/87
-* V200:  6/20/89 - 4D-symmetrical version
-* V530   1/01 - *sh* - added XBOXLO, XBOXHI and family ...
-*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
-*       *acm*      more 4s that should have been nferdims
-*      *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
+* Return a scale factor to write true-monthly data in original time units. 
+* Converting from the secs-per-month in the true-month calendar to units from 
+* the original axis.
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
-*                 (no actual changes, just modernizing the code a bit.)
 
+	include 'ferret.parm'
 	include 'tmap_dims.parm'
-	include	'ferret.parm'
-	include	'errmsg.parm'
-	include 'xvariables.cmn'
-	include 'xcontext.cmn'
-	include	'xalgebra.cmn'
+        include 'xunits.cmn_text'
+	include 'calendar.decl'
+        include 'xtm_grid.cmn_text'
+        external xgt_grid_data
 
-* calling argument declarations:
-	INTEGER	cx, mr, idim, lo_ss, hi_ss
-	REAL	pvar( lo_ss:hi_ss )
+	LOGICAL true_month
+	INTEGER grid
+	REAL timefac
 
-* internal variable declarations:
-	INTEGER	grid, dset, pv, i, iaxis
-	REAL	BOX_SIZE, TM_WORLD
+	LOGICAL ITSA_TRUEMONTH_AXIS
+	INTEGER TM_GET_CALENDAR_ID, 
+     .		iaxis, cal_id, monax_units_code, status
+	REAL	secspmon, secs_p_unit, unit_p_mon
 
-* initialize
+	timefac = 1.
+	iaxis = grid_line(t_dim, grid)
+!	print *, line_units(iaxis)
 
-* defining grid for output data
-	grid = cx_grid( cx )
-	dset = cx_data_set( cx )
+* get axis description stored by Ferret
 
-	pv = (mr_variable(mr)-1) / nferdims  + 1
+	true_month = ITSA_TRUEMONTH_AXIS(iaxis)
+	IF (.NOT. true_month) RETURN
 
-	IF ( pv .GT. nferdims+1 )  STOP 'MK_PSEUDO_VAR'	! diag
+	monax_units_code = line_unit_code(iaxis) 
 
-	GOTO (  100, 200, 300, 400, 500 ) pv
+	cal_id = TM_GET_CALENDAR_ID ( line_cal_name(iaxis) )
 
-* "I", "J", "K", "L", "M", "N"
- 100	DO 110 i = lo_ss, hi_ss
- 110	pvar( i ) = i
+* Convert to days
+
+* Translation from line-unit-code (true month) to days
+
+	secspmon = un_convert( monax_units_code )
+
+	secs_p_unit = un_convert( pun_day )
+	unit_p_mon = secspmon/ secs_p_unit
+	timefac = unit_p_mon
+
 	RETURN
-
-* "X", "Y", "Z", "T", "E", "F"
-* TM_WORLD returns days if it is a true-month time axis
-
- 200	DO i = lo_ss, hi_ss
-	   pvar( i ) = TM_WORLD( i,grid,idim,box_middle )
-	ENDDO
-	RETURN
-
-* "XBOX", "YBOX", "ZBOX", "TBOX", "EBOX", "FBOX"
- 300	DO i = lo_ss, hi_ss
-	   pvar( i ) = BOX_SIZE( i, grid, idim )
-	ENDDO
-	RETURN
-
-* "XBOXLO", "YBOXLO", "ZBOXLO", "TBOXLO", "EBOXLO", "FBOXLO"
- 400	DO i = lo_ss, hi_ss
-	   pvar( i ) =  TM_WORLD( i,grid,idim,box_lo_lim )
-	ENDDO
-	RETURN
-
-* "XBOXHI", "YBOXHI", "ZBOXHI", "TBOXHI", "EBOXHI", "FBOXHI"
- 500	DO i = lo_ss, hi_ss
-	   pvar( i ) =  TM_WORLD( i,grid,idim,box_hi_lim )
-	ENDDO
-	RETURN
-
 	END

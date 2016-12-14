@@ -67,6 +67,8 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 * V693+ *sh* 2/15 - added support for _DQ_ quotations
+* V72   *acm* 11/16 - improve error message for invalid date strings
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 * possible formats:
 * for subscript values ( subscript .EQ. .TRUE. ) :
@@ -95,7 +97,7 @@
 	INTEGER		TM_LENSTR1, end_pos, start_pos, pbad, i, 
      .                  slen, j, cal_id
 	REAL*8		SECS_FROM_BC, given_answer
-	CHARACTER	buff*32				! for AIX port 10/95
+	CHARACTER	buff*60				! for AIX port 10/95
 
 * internal parameter declarations:
 	CHARACTER*1	tab
@@ -199,7 +201,10 @@
 	      answer = -1.D0 * SECS_FROM_BC( buff(:slen), cal_id, 
      .                                       status )
 	      formatted = .TRUE.
-	      IF ( status .NE. ferr_ok ) GOTO 5000
+	      IF ( status .NE. ferr_ok ) THEN 
+	         buff = buff(:slen)//' is not valid in this calendar'
+		 GOTO 5200
+	      ENDIF
            ELSE
 * ... read it as a time step value
 	      READ ( buff,* , ERR=5000 ) answer
@@ -215,6 +220,7 @@
  5100	CALL ERRMSG( ferr_syntax, status,
      .		'"'//risc_buff(pbad:pbad)//'" is illegal in '//
      .		risc_buff(:len_rbuff), *5900 )
+ 5200	CALL ERRMSG( ferr_syntax, status, buff, *5900)
  5900	RETURN
 
 	END

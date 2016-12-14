@@ -295,6 +295,8 @@ stat/brief TBOXHI[g=myvar[d=MYsing_irreg_agg4]] - TBOXHI[g=myvar[d=MYsing_irreg_
 canc data/all
 
 ! OPeNDAP test
+! (Note: when running pre-true-month Ferret versions, the timestep output from 
+! show grid/T below was eliminated by the "clean_draconian" script)
 IF `test_opendap("http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2012.nc") EQ 0` THEN
    tseries COADS = http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2012.nc, http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2013.nc, http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2014.nc
 show data COADS

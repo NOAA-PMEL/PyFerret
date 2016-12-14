@@ -40,6 +40,7 @@
 * This is an older version of TSTEP_TO_DATE which was revised for better
 * output formatting in Ferret v6.0.  This version gives a fixed unchanging
 * format.
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 *
 * Arguments:
 *	grid	 - grid containing a time axis
@@ -55,6 +56,7 @@
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'ferret.parm'
+        include 'xunits.cmn_text'
 	include 'xtext_info.cmn'
 
 * calling argument declarations
@@ -63,7 +65,7 @@
 	REAL*8		tstep
 *
 * Local definitions
-	LOGICAL		modulo
+        LOGICAL         ITSA_TRUEMONTH_AXIS, modulo
 	CHARACTER*20	SECS_TO_DATE, SECS_TO_DATE_OUT, buff
 	CHARACTER*2     linedir
 	INTEGER		axis, status, prec,
@@ -110,6 +112,7 @@
 
 * Find the number of seconds since start of data set for this time step
 	offset_secs = tstep*line_tunit( axis )
+	IF (ITSA_TRUEMONTH_AXIS(axis)) offset_secs = tstep* un_convert(pun_day)  
 
 * Total seconds to this time step since 01-JAN-0000 00:00:00
 	this_secs = start_secs + offset_secs

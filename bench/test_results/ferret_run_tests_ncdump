@@ -3081,7 +3081,6 @@ variables:
 *** Running ferret script: bn_ez_noupcase.jnl
 *** Running ferret script: bn_spawn_fail.jnl
 *** Running ferret script: bn_ave_of_ave.jnl
-*** Running ferret script: bn_agg_member_syntax.jnl
 *** Running ferret script: bn_gif.jnl
 *** Running ferret script: bn_ps.jnl
 *** Running ferret script: bn_all_ef.jnl

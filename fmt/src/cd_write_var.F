@@ -79,6 +79,9 @@
 * V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
 * V694 *acm*  3/15 Ticket 2240. Get scale, offset, and bad per variable from the dataset 
 *                  being written.
+* V71 12/16 *acm* Ticket 2158: working with true monthly time axes. Write these axes
+*                  as irregularly spaced daily axes. For true-month axes, call TM_WORLD 
+*                  to write any true-month time coordinates as days.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -101,6 +104,7 @@
         include 'xvariables.cmn'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
+        include 'xunits.cmn_text'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 
@@ -124,16 +128,16 @@
      .        slab_min(nferdims), slab_max(nferdims), tmrecax, cdrecax, dims, varid,
      .        hilim, i100, i, j, k, l, m, n, recaxvar, lorec, hirec, rectyp,
      .	      vartyp, nvdim, vdims(8), nvatts, bndstart(2), bndcount(2),
-     .        mblk1, nblks, npts, savecount, llen, grid_blocks
-      LOGICAL CD_GET_BOUNDS, TM_ABSTRACT_AXIS, TM_DFPEQ, CD_GET_ATTVAL,
-     .        got_it, scaled, writebounds, do_warn
-      CHARACTER*13 TM_STRING
+     .        mblk1, nblks, npts, savecount, llen, grid_blocks, wunits
+      LOGICAL CD_GET_BOUNDS, TM_ABSTRACT_AXIS, TM_DFPEQ, CD_GET_ATTVAL, 
+     .        MATCH_NAME, ITSA_TRUEMONTH_AXIS,
+     .        got_it, scaled, writebounds, do_warn, true_month
+	      CHARACTER*13 TM_STRING
       CHARACTER*1  dimnam(nferdims)
       DATA  	   dimnam/'I','J','K','L','M','N'/
       CHARACTER*128 vbuff     ! needed because of fussy f772.1 DEC compiler
-      REAL   r_scale, r_offset, scaled_bad
-      
-      REAL   bad
+      REAL   bad, r_scale, r_offset, scaled_bad, secspmon, secs_p_unit, 
+     .       unit_p_mon
       REAL*8 scalefac, addoff
       REAL*8 r100_8(200)
       REAL*8 TM_WORLD
@@ -384,6 +388,7 @@ c      EQUIVALENCE (r100_8, r100_4)
 
 * write the record axis coords (buffer 100 at a time) (12/92 REAL*8 option)
 * (code lifted from CD_REC_SYNCH 10/92)
+
          DO 310 i100 = lorec, hirec, 100
             hilim = MIN(i100+99, hirec)
             DO 300 i = i100, hilim
@@ -422,9 +427,11 @@ c      EQUIVALENCE (r100_8, r100_4)
 
          iaxis = grid_line(tmrecax, grid)
 
+
 	 IF (do_bounds .GE. 0) THEN
-         IF ( (.NOT.line_regular(iaxis) .OR. writebounds) 
-     .         .AND. (edges_flag .EQ. 0) ) THEN
+         IF ( (.NOT.line_regular(iaxis) .OR. writebounds .OR. 
+     .          ITSA_TRUEMONTH_AXIS(iaxis) ) .AND. 
+     .        (edges_flag .EQ. 0) ) THEN
 
             name = CD_AXIS_NAME( dset, grid, tmrecax, nlen )
             IF (keepax_flag .EQ. 1) name = CD_AXIS_OUTNAME( dset, grid, tmrecax, nlen )
@@ -506,7 +513,7 @@ c      EQUIVALENCE (r100_8, r100_4)
       IF ( .NOT. TM_DFPEQ(scalefac, 1.D0) .OR. 
      .     .NOT. TM_DFPEQ(addoff, 0.D0) ) THEN
 
-         IF (.NOT. TM_DFPEQ(scalefac, 0.D0) ) r_scale = 1.D0/scalefac
+         IF (.NOT. TM_DFPEQ(scalefac, 0.D0) ) r_scale = 1. /scalefac
          r_offset = -1.D0* addoff* r_scale
 
          npts = 1

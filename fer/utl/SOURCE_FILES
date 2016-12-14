@@ -122,6 +122,7 @@ itsa_modulo_axis.F\
 itsa_modulo_gcf.F\
 itsa_modulo_regrid.F\
 itsa_pure_sum_var.F\
+itsa_truemonth_axis.F\
 legal_chars.F\
 make_axis.F\
 make_step_axis.F\

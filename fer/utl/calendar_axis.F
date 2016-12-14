@@ -40,25 +40,31 @@
 
 * Reset time step if axis is a different calendar than Gregorian.
 * V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
+	include 'xunits.cmn_text'
+	external xunits_data
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xvariables.cmn'
 	include	'xcontext.cmn'
 
+* calling argument declarations:
 	INTEGER idim, grid, cx, status
 
-	REAL*8	SECS_FROM_BC, bc_to_t0, ww, lo_ww, hi_ww,
-     .		new_lo_ww, new_hi_ww
-	INTEGER TM_GET_CALENDAR_ID, axis, cal_id, prev_cal_id, istat
+* internal variable declarations:
+	LOGICAL ITSA_TRUEMONTH_AXIS, true_month
+	REAL*8	SECS_FROM_BC, bc_to_t0, ww, new_lo_ww, new_hi_ww, 
+     .		new_lo, new_hi, timefac, tcoord
+	INTEGER TM_GET_CALENDAR_ID, axis, cal_id, prev_cal_id, istat, ndec
+	CHARACTER datestring*20, day_of_mo*2
 
 * axis for this dimension
 	axis = grid_line( idim, grid )
-
 * Is it really a calendar axis? Might be an F axis in a grid with a 
 * calendar T axis.
 
@@ -88,6 +94,45 @@
 
 	cx_lo_ww(idim,cx) = (new_lo_ww-bc_to_t0)/line_tunit(axis)
 	cx_hi_ww(idim,cx) = (new_hi_ww-bc_to_t0)/line_tunit(axis)
+
+* For a true-month axis, set the coordinate accurately.
+
+	true_month = ITSA_TRUEMONTH_AXIS(axis)
+
+	IF (true_month) THEN
+	
+	
+	   CALL TM_MONTH_TIME_FACTOR (grid, true_month, timefac)
+
+* Hack: Make the request lie inside the cell, if the upper limit is on 
+* the boundary. A request for 01-jan-yyy1 to 01-oct-yyy2 should end with
+* the grid cell of sep-yyy2, not in the cell that starts at 1-oct-yyy2
+* Shift the upper-limit by one second.
+
+           tcoord = (new_lo_ww-bc_to_t0)/line_tunit(axis)
+	   CALL TM_TCOORD_TRUMONTH (axis, tcoord, box_middle, new_lo)
+
+* See if the upper limit corresponds to 01-mmm-yyyy 00:00:00
+	   ndec = 6
+	   tcoord = cx_hi_ww(idim,cx) * timefac
+           CALL TRANSLATE_TO_WORLD( tcoord, idim, 
+     .                      dgrid_buff, ndec, datestring )
+	   day_of_mo = datestring
+
+	   tcoord = (new_hi_ww-bc_to_t0)/line_tunit(axis)
+	   IF (day_of_mo .EQ. '01' .AND. 
+     .         INDEX(datestring, '00:00:00') .GT. 0) 
+     .          tcoord = (new_hi_ww-bc_to_t0-1)/line_tunit(axis)
+
+	   CALL TM_TCOORD_TRUMONTH (axis, tcoord, box_middle, new_hi)
+
+* Convert to days
+	   CALL TM_MONTH_TIME_FACTOR (grid, true_month, timefac)
+
+	   cx_lo_ww(idim,cx) = timefac* new_lo
+	   cx_hi_ww(idim,cx) = timefac* new_hi
+        ENDIF
+ 
 
 * also fix the world limits for cx_cmnd, if they were originally set 
 * using default calendar

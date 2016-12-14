@@ -88,6 +88,8 @@
 * V650: *acm* 2/10 - Clean up line with coordinates on listings with tabs/commas
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V691+ *acm* 9/14 Ticket 2199: for string variables don't list a BAD FLAG in the header.
+* V71   *acm* 11/16 For true-month axes, call TM_WORLD to write any true-month
+*                  time coordinates as days.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -212,14 +214,23 @@
 	   span(idim) = CX_DIM_LEN( perm(idim), cx ) .GT. 1
 	   valid(idim) = cx_lo_ss( cx, perm(idim) ) .NE. unspecified_int4
  30	CONTINUE
+
+
 * * * * * * WRITE INTRODUCTORY LINES * * * * *
 	IF ( do_unform .OR. do_stream .OR. do_dods .OR.
      .       .NOT.heading ) GOTO 200
-* ... first the variable name
+* ... first the variable name with units
 	vname_buff   = VAR_TITLE( cx )
 	vlen   = TM_LENSTR1( vname_buff )
-	vname_buff   = vname_buff(:vlen)//' '//
+        IF (INDEX(VAR_UNITS(cx), 'truemonth') .GT. 0 .OR. 
+     .      INDEX(VAR_UNITS(cx), 'TRUEMONTH') .GT. 0 ) THEN
+           vname_buff   = vname_buff(:vlen)//' '//
+     .				PAREN_SURROUND('day', alen)
+        ELSE
+	   vname_buff   = vname_buff(:vlen)//' '//
      .				PAREN_SURROUND(VAR_UNITS(cx), alen)
+        ENDIF
+        
 	CALL SPLIT_LIST(pttmode_explct, list_lun,
      .				'             VARIABLE : '//vname_buff, 0)
 
@@ -599,8 +610,6 @@
      .        CALL NDIG_COORDS (grid, perm(4), lo4, hi4, del4, 
      .           bad_data, ndig(perm(4)), ax_dec_pt(perm(4)) )
 
-* Write coordinates
-
 	   DO 330 i = lo1, hi1, del1
 	      val8 = TM_WORLD( i, grid, row_ax, box_middle )
 	      width = FIELD_WIDTH(val8, grid, row_ax, ndig(row_ax),
@@ -612,6 +621,7 @@
 	         alen = max_line_len
 	         GOTO 331
 	      ENDIF
+	      
 	      CALL TRANSLATE_TO_WORLD
      .		      ( val8,
      .			row_ax,
@@ -867,8 +877,9 @@
 *       create carefully sized label for this row
 	         IF ( ndim .GE. 2 .AND. valid(2) .AND. 
      .               (.NOT.norow) ) THEN
+                    val8 = TM_WORLD( j, grid, col_ax, box_middle )
 	            CALL TRANSLATE_TO_WORLD
-     .		      ( TM_WORLD( j, grid, col_ax, box_middle ),
+     .		      ( val8,
      .			col_ax, grid, col_dec, line_buff(:row_wld) )
 	            WRITE ( line_buff(row_wld+1:cleft), row_ss_fmt ) j
 	         ENDIF

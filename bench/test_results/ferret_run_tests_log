@@ -285,7 +285,6 @@ Benchmark scripts that will be run:
    bn_ez_noupcase.jnl
    bn_spawn_fail.jnl
    bn_ave_of_ave.jnl
-   bn_agg_member_syntax.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
@@ -14951,7 +14950,7 @@ set mode diag
 define axis/t=15-jan-1982:15-mar-1984:120/unit=hour tax5day
 define axis/x=120e:60w:10/unit=degrees xax10
 define grid/like=u/t=tax5day g5day
- getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
 define grid/like=u/x=xax10/z=w/t=tax5day g5_10
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
@@ -47369,7 +47368,7 @@ sho command
  SHOW EXPRSION/ALL
  SHOW LIST/ALL
  SHOW DATA/ALL/BRIEF/FULL/VARIABLE/FILES/XML/ATTR/OUTFILE/APPEND/CLOBBER
-       /HIDDEN/MEMBERS
+       /HIDDEN
  SHOW MODE/ALL
  SHOW MOVIE/ALL
  SHOW VARIABLE/ALL/DATASET/USER/XML/OUTFILE/APPEND/CLOBBER/TREE/LAYERZ/CURVILIN
@@ -68028,7 +68027,7 @@ set mode calendar:years
 define axis/f=23-jan-1982:30-jan-1982:20/unit=hour fax20
 define axis/x=120e:60w:10/unit=degrees xax10
 define grid/like=temp/f=fax20 g5day
- getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GGR1            PSXT      PSYT5_89  PSZT1_2   TIME2     EAXIS     FAXIS
  
 set reg/x=130w:125w/y=0:1.5/e=1:2/f=23-JAN-1982:24-jan-1982/t=21-JAN-1982/z=5
@@ -68952,7 +68951,7 @@ list/i=3 airt[T=@ave]
  
 ! create an ensemble where one member is missing
 ENSEMBLE fourfiles_gap = ens1, -, ens3, ens4
- getgrid AIRT     C:  5 dset:   4 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ getgrid AIRT     C:  5 dset:   4 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME1
  getgrid AIRT     C:  5 dset:   5 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME1
@@ -68963,13 +68962,13 @@ show data/files fourfiles_gap
  SST      SST_IN                           1:10      1:9       ...       1:12      1:4       ...
  AIRT     AIR TEMPERATURE                  1:10      1:9       ...       1:12      1:4       ...
  
-          Member datasets:
-      7.1: ./ens1.nc
-      7.2: (dummy)
-      7.3: ./ens3.nc
-      7.4: ./ens4.nc
+          Aggregated datasets:
+      1: ./ens1.nc
+      2: (dummy)
+      3: ./ens3.nc
+      4: ./ens4.nc
 list/i=3 airt[T=@ave]
- getgrid EX#1     C:  5 dset:   7 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ getgrid EX#1     C:  5 dset:   7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G003)          COADSX116_COADSY52_6NORMAL    TIME1     ENSEMBLE  NORMAL
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   7 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M:    1    4  N: -999 -999
@@ -69167,7 +69166,7 @@ show command show
  SHOW EXPRSION/ALL
  SHOW LIST/ALL
  SHOW DATA/ALL/BRIEF/FULL/VARIABLE/FILES/XML/ATTR/OUTFILE/APPEND/CLOBBER
-       /HIDDEN/MEMBERS
+       /HIDDEN
  SHOW MODE/ALL
  SHOW MOVIE/ALL
  SHOW VARIABLE/ALL/DATASET/USER/XML/OUTFILE/APPEND/CLOBBER/TREE/LAYERZ/CURVILIN
@@ -69265,20 +69264,20 @@ show data/brief/files
      currently SET data sets:
     1> ./coads_climatology.cdf
     6> fourfiles     Ensemble aggregation
-          Member datasets:
-      6.1: ./ens1.nc
-      6.2: ./ens2.nc
-      6.3: ./ens3.nc
-      6.4: ./ens4.nc
+          Aggregated datasets:
+      1: ./ens1.nc
+      2: ./ens2.nc
+      3: ./ens3.nc
+      4: ./ens4.nc
     7> some     Ensemble aggregation
-          Member datasets:
-      7.1: ./ens1.nc
-      7.2: ./ens2.nc
+          Aggregated datasets:
+      1: ./ens1.nc
+      2: ./ens2.nc
     8> more  (default)  Ensemble aggregation
-          Member datasets:
-      8.1: ./ens2.nc
-      8.2: ./ens3.nc
-      8.3: ./ens4.nc
+          Aggregated datasets:
+      1: ./ens2.nc
+      2: ./ens3.nc
+      3: ./ens4.nc
  
 ! Cancel a member of all the ensembles.  All the ensembles get deleted.
 cancel data ens2
@@ -86331,7 +86330,7 @@ set view ul; shade a*x[gx=0:10:1]
 sh sym yaxis*
 YAXIS_REVERSED = "0"
 YAXIS_MIN = "31.0000000"
-YAXIS_MAX = "243.000000"
+YAXIS_MAX = "212.242500"
  
 ! But the top-right SHADE plot was all messed up; it shifts the data
 ! later by a full month, and stretches the last (shifted) cell all
@@ -86341,7 +86340,7 @@ set view ur; shade/t=1-jan-0001:1-jan-0002 a*x[gx=0:10:1]
 sh sym yaxis*
 YAXIS_REVERSED = "0"
 YAXIS_MIN = "31.0000000"
-YAXIS_MAX = "243.000000"
+YAXIS_MAX = "212.242500"
  
 ! In the bottom-right line plot, the actual plotted data look ok.
 ! But the plot limits extend all the way from 1-JUL-0000 to 1-MAR-0002,
@@ -86352,7 +86351,7 @@ set view lr; plot/step=con/t=1-jan-0001:1-jan-0002 a
 sh sym xaxis*
 XAXIS_REVERSED = "0"
 XAXIS_MIN = "31.0000000"
-XAXIS_MAX = "243.000000"
+XAXIS_MAX = "212.242500"
  
 go bn_reset
 cancel mode verify
@@ -88401,18 +88400,18 @@ show data/files my_fmrc
  FCST_2   another variable                 1:21      1:21      ...       1:24      ...       1:11
        (L=1:24)
  
-          Member datasets:
-      12.1 : tmp/fcst_1.nc
-      12.2 : tmp/fcst_2.nc
-      12.3 : tmp/fcst_3.nc
-      12.4 : tmp/fcst_4.nc
-      12.5 : tmp/fcst_5.nc
-      12.6 : tmp/fcst_6.nc
-      12.7 : tmp/fcst_7.nc
-      12.8 : tmp/fcst_8.nc
-      12.9 : tmp/fcst_9.nc
-      12.10: tmp/fcst_10.nc
-      12.11: tmp/fcst_11.nc
+          Aggregated datasets:
+      1 : tmp/fcst_1.nc
+      2 : tmp/fcst_2.nc
+      3 : tmp/fcst_3.nc
+      4 : tmp/fcst_4.nc
+      5 : tmp/fcst_5.nc
+      6 : tmp/fcst_6.nc
+      7 : tmp/fcst_7.nc
+      8 : tmp/fcst_8.nc
+      9 : tmp/fcst_9.nc
+      10: tmp/fcst_10.nc
+      11: tmp/fcst_11.nc
 show data/attr my_fmrc
      currently SET data sets:
    12> my_fmrc  (default)  Forecast aggregation
@@ -88658,18 +88657,18 @@ show data/files my_fmrc
  FCST_2   another variable                 1:21      1:21      ...       1:24      ...       1:11
        (L=1:24)
  
-          Member datasets:
-      12.1 : tmp/fcst_1.nc
-      12.2 : (dummy)
-      12.3 : (dummy)
-      12.4 : tmp/fcst_4.nc
-      12.5 : tmp/fcst_5.nc
-      12.6 : tmp/fcst_6.nc
-      12.7 : tmp/fcst_7.nc
-      12.8 : tmp/fcst_8.nc
-      12.9 : (dummy)
-      12.10: (dummy)
-      12.11: tmp/fcst_11.nc
+          Aggregated datasets:
+      1 : tmp/fcst_1.nc
+      2 : (dummy)
+      3 : (dummy)
+      4 : tmp/fcst_4.nc
+      5 : tmp/fcst_5.nc
+      6 : tmp/fcst_6.nc
+      7 : tmp/fcst_7.nc
+      8 : tmp/fcst_8.nc
+      9 : (dummy)
+      10: (dummy)
+      11: tmp/fcst_11.nc
 show data/brief
      currently SET data sets:
     2> tmp/fcst_2.nc
@@ -88919,16 +88918,16 @@ show data/files my_fmrc
  FCST_2   another variable                 1:21      1:21      ...       1:24      ...       1:9
        (L=1:36)
  
-          Member datasets:
-      10.1: tmp/long_fcst_1.nc
-      10.2: tmp/fcst_2.nc
-      10.3: tmp/fcst_3.nc
-      10.4: tmp/fcst_4.nc
-      10.5: tmp/fcst_5.nc
-      10.6: tmp/fcst_6.nc
-      10.7: tmp/fcst_7.nc
-      10.8: tmp/fcst_8.nc
-      10.9: tmp/fcst_9.nc
+          Aggregated datasets:
+      1: tmp/long_fcst_1.nc
+      2: tmp/fcst_2.nc
+      3: tmp/fcst_3.nc
+      4: tmp/fcst_4.nc
+      5: tmp/fcst_5.nc
+      6: tmp/fcst_6.nc
+      7: tmp/fcst_7.nc
+      8: tmp/fcst_8.nc
+      9: tmp/fcst_9.nc
 GO bn_aggregate_f.sub
 ! bn_aggregate_f.sub
  
@@ -89129,15 +89128,15 @@ show data/files my_fmrc
  FCST_2   another variable                 1:21      1:21      ...       1:24      ...       1:8
        (L=1:24)
  
-          Member datasets:
-      9.1: tmp/fcst_1.nc
-      9.2: tmp/fcst_2.nc
-      9.3: tmp/fcst_3.nc
-      9.4: tmp/fcst_4.nc
-      9.5: tmp/fcst_5.nc
-      9.6: tmp/long_fcst_6.nc
-      9.7: tmp/fcst_7.nc
-      9.8: tmp/fcst_8.nc
+          Aggregated datasets:
+      1: tmp/fcst_1.nc
+      2: tmp/fcst_2.nc
+      3: tmp/fcst_3.nc
+      4: tmp/fcst_4.nc
+      5: tmp/fcst_5.nc
+      6: tmp/long_fcst_6.nc
+      7: tmp/fcst_7.nc
+      8: tmp/fcst_8.nc
 GO bn_aggregate_f.sub
 ! bn_aggregate_f.sub
  
@@ -89333,12 +89332,12 @@ show data/files
        (L=7:30)
  TF_TIMES Forecast time step matrix        ...       ...       ...       1:24      ...       1:5
  
-          Member datasets:
-      6.1: tmp/fcst_3.nc
-      6.2: tmp/fcst_4.nc
-      6.3: tmp/fcst_5.nc
-      6.4: tmp/one_var_fcst_6.nc
-      6.5: tmp/fcst_7.nc
+          Aggregated datasets:
+      1: tmp/fcst_3.nc
+      2: tmp/fcst_4.nc
+      3: tmp/fcst_5.nc
+      4: tmp/one_var_fcst_6.nc
+      5: tmp/fcst_7.nc
 stat/l=1:20 fcst
  
              FIELD + FCST_ERROR
@@ -89382,12 +89381,12 @@ show data/full
  
   time range: 15.228 to 715.73
  
-          Member datasets:
-      6.1: tmp/fcst_3.nc
-      6.2: tmp/fcst_4.nc
-      6.3: tmp/fcst_5.nc
-      6.4: tmp/one_var_fcst_6.nc
-      6.5: tmp/fcst_7.nc
+          Aggregated datasets:
+      1: tmp/fcst_3.nc
+      2: tmp/fcst_4.nc
+      3: tmp/fcst_5.nc
+      4: tmp/one_var_fcst_6.nc
+      5: tmp/fcst_7.nc
     7> my_fmrc  (default)  Forecast aggregation
      Forecast series of 5 datasets patterned on fcst_3.nc
  name     title                             I         J         K         L         M         N
@@ -89401,12 +89400,12 @@ show data/full
  
   time range: 15.228 to 715.73
  
-          Member datasets:
-      7.1: tmp/fcst_3.nc
-      7.2: tmp/fcst_4.nc
-      7.3: tmp/fcst_5.nc
-      7.4: tmp/one_var_fcst_6.nc
-      7.5: tmp/fcst_7.nc
+          Aggregated datasets:
+      1: tmp/fcst_3.nc
+      2: tmp/fcst_4.nc
+      3: tmp/fcst_5.nc
+      4: tmp/one_var_fcst_6.nc
+      5: tmp/fcst_7.nc
  
 ! cancel a component dataset -- used in two aggregations
 cancel data tmp/fcst_4.nc
@@ -89447,14 +89446,14 @@ show data/files
  FCST_2   another variable                 1:21      1:21      ...       1:24      ...       1:7
        (L=1:24)
  
-          Member datasets:
-      9.1: tmp/fcst_1.nc
-      9.2: tmp/fcst_2.nc
-      9.3: tmp/fcst_3.nc
-      9.4: tmp/fcst_4.nc
-      9.5: tmp/fcst_5.nc
-      9.6: tmp/one_var_fcst_6.nc
-      9.7: tmp/fcst_7.nc
+          Aggregated datasets:
+      1: tmp/fcst_1.nc
+      2: tmp/fcst_2.nc
+      3: tmp/fcst_3.nc
+      4: tmp/fcst_4.nc
+      5: tmp/fcst_5.nc
+      6: tmp/one_var_fcst_6.nc
+      7: tmp/fcst_7.nc
    11> my_fmrc_letd_1     Forecast aggregation
  name     title                             I         J         K         L         M         N
  FCST_2   another variable                 1:21      1:21      ...       1:24      ...       1:7
@@ -89463,14 +89462,14 @@ show data/files
  FCST     FIELD + FCST_ERROR               1:21      1:21      ...       1:24      ...       1:7
        (L=1:24)
  
-          Member datasets:
-      11.1: tmp/one_var_fcst_1.nc
-      11.2: tmp/fcst_2.nc
-      11.3: tmp/fcst_3.nc
-      11.4: tmp/fcst_4.nc
-      11.5: tmp/fcst_5.nc
-      11.6: tmp/fcst_6.nc
-      11.7: tmp/fcst_7.nc
+          Aggregated datasets:
+      1: tmp/one_var_fcst_1.nc
+      2: tmp/fcst_2.nc
+      3: tmp/fcst_3.nc
+      4: tmp/fcst_4.nc
+      5: tmp/fcst_5.nc
+      6: tmp/fcst_6.nc
+      7: tmp/fcst_7.nc
    12> my_fmrc  (default)  Forecast aggregation
  name     title                             I         J         K         L         M         N
  FCST     FIELD + FCST_ERROR               1:21      1:21      ...       1:24      ...       1:7
@@ -89479,14 +89478,14 @@ show data/files
  FCST_2   another variable                 1:21      1:21      ...       1:24      ...       1:7
        (L=1:24)
  
-          Member datasets:
-      12.1: tmp/fcst_1.nc
-      12.2: tmp/fcst_2.nc
-      12.3: tmp/fcst_3.nc
-      12.4: tmp/fcst_4.nc
-      12.5: tmp/fcst_5.nc
-      12.6: tmp/fcst_6.nc
-      12.7: tmp/fcst_7.nc
+          Aggregated datasets:
+      1: tmp/fcst_1.nc
+      2: tmp/fcst_2.nc
+      3: tmp/fcst_3.nc
+      4: tmp/fcst_4.nc
+      5: tmp/fcst_5.nc
+      6: tmp/fcst_6.nc
+      7: tmp/fcst_7.nc
 show data
      currently SET data sets:
     9> my_fmrc_letd_6     Forecast aggregation
@@ -90036,12 +90035,12 @@ SHOW DATA/FULL te_f11
  
   time range: 16-JUL-1952 12:00 to 16-JUN-1955 00:00
  
-          Member datasets:
-      67.1: t_f11_e1
-      67.2: t_f11_e2
-      67.3: t_f11_e3
-      67.4: t_f11_e4
-      67.5: t_f11_e5
+          Aggregated datasets:
+      1: t_f11_e1
+      2: t_f11_e2
+      3: t_f11_e3
+      4: t_f11_e4
+      5: t_f11_e5
 SHOW DATA/ATT te_f11   ! notice the promotion of fcst.im_everywhere
      currently SET data sets:
    67> te_f11  (default)  Ensemble aggregation
@@ -90104,18 +90103,18 @@ SHOW DATA/brief/files
 16-OCT-1952 12:00 -> 16-SEP-1953 00:00    tmp/f04_e3_t3_1v.nc
  
    68> tef  (default)  Forecast aggregation
-          Member datasets:
-      68.1 : te_f01
-      68.2 : te_f02
-      68.3 : te_f03
-      68.4 : te_f04
-      68.5 : te_f05
-      68.6 : te_f06
-      68.7 : te_f07
-      68.8 : te_f08
-      68.9 : te_f09
-      68.10: te_f10
-      68.11: te_f11
+          Aggregated datasets:
+      1 : te_f01
+      2 : te_f02
+      3 : te_f03
+      4 : te_f04
+      5 : te_f05
+      6 : te_f06
+      7 : te_f07
+      8 : te_f08
+      9 : te_f09
+      10: te_f10
+      11: te_f11
 show data/full tef
      currently SET data sets:
    68> tef  (default)  Forecast aggregation
@@ -90135,18 +90134,18 @@ show data/full tef
  
   time range: 15.214 to 1080.2
  
-          Member datasets:
-      68.1 : te_f01
-      68.2 : te_f02
-      68.3 : te_f03
-      68.4 : te_f04
-      68.5 : te_f05
-      68.6 : te_f06
-      68.7 : te_f07
-      68.8 : te_f08
-      68.9 : te_f09
-      68.10: te_f10
-      68.11: te_f11
+          Aggregated datasets:
+      1 : te_f01
+      2 : te_f02
+      3 : te_f03
+      4 : te_f04
+      5 : te_f05
+      6 : te_f06
+      7 : te_f07
+      8 : te_f08
+      9 : te_f09
+      10: te_f10
+      11: te_f11
  
 ! simplest acess -- compact form -- just demonstrate it doesn't fail
 stat/brief fcst[i=11:12, j=5:6, l=31:32, m=1:2, n=5:6]
@@ -92499,7 +92498,7 @@ sho command sho
  SHOW EXPRSION/ALL
  SHOW LIST/ALL
  SHOW DATA/ALL/BRIEF/FULL/VARIABLE/FILES/XML/ATTR/OUTFILE/APPEND/CLOBBER
-       /HIDDEN/MEMBERS
+       /HIDDEN
  SHOW MODE/ALL
  SHOW MOVIE/ALL
  SHOW VARIABLE/ALL/DATASET/USER/XML/OUTFILE/APPEND/CLOBBER/TREE/LAYERZ/CURVILIN
@@ -92527,7 +92526,7 @@ sho command sho l  ! SHOW LIST
  SHOW LIST/ALL
 sho command sho d  ! SHOW DATA
  SHOW DATA/ALL/BRIEF/FULL/VARIABLE/FILES/XML/ATTR/OUTFILE/APPEND/CLOBBER
-       /HIDDEN/MEMBERS
+       /HIDDEN
 sho command sho m  ! SHOW MODE
  SHOW MODE/ALL
 sho command sho mov! SHOW MOVIE
@@ -93779,90 +93778,6 @@ PLOT/VS/THICK/COLOR=red/SIZ=0.2 lon,lat
 FRAME/FILE=bn_axis_vs.gif
  
  
-! Bug 2483. Fixing axis-ends symbols XAXIS_MIN,XAXIS_MAX, YAXIS_MIN,YAXIS_MAX
-go bn_reset
-cancel mode verify
-go err700_axis_dates
-! err700_axis_dates.jnl
-! See ticket 2483. 11/10/2016 ACM
-!
-! The axis-ends symbols XAXIS_MIN,XAXIS_MAX, YAXIS_MIN,YAXIS_MAX
-! were not accurate for time axes, which get padded out to the nearest
-! time unit, e.g. whole months etc.
- 
-! This axis gets plotted from 1-oct-2015 to the end of 30-apr-2016
- 
-def axis/t=23-oct-2015:17-apr-2016:10/units=hours taxis
- 
-! Define some variables
-let tt = t[gt=taxis]
-let var = cos(L[gt=taxis]/30)
-define axis/x=1:52:4 xaxis
-define axis/y=1:52:4 yaxis
-let xtvar = x[gx=xaxis] + var
-let ytvar = y[gy=yaxis] + var
- 
-! 1-D time plot
-plot var
- 
-! Previously these were set to the axis-coordinate
-! ends not the drawn axis ends.
-list tax_datestring(($xaxis_min), tt, "minutes"), tax_datestring(($xaxis_max), tt, "minutes")
- !-> list tax_datestring(1005528.00, tt, "minutes"), tax_datestring(1010640.00, tt, "minutes")
- Column  1: TAX_DATESTRING(1005528.00, TT, "minutes")
- Column  2: TAX_DATESTRING(1010640.00, TT, "minutes")
-                   (C001,V00      (C001,V008)
-I / *:    "01-OCT-2015 00:00" "01-MAY-2016 00:00"
- 
-! 2D plots
- 
-shade ytvar
-list tax_datestring(($xaxis_min), tt, "minutes"), tax_datestring(($xaxis_max), tt, "minutes")
- !-> list tax_datestring(1005528.00, tt, "minutes"), tax_datestring(1010640.00, tt, "minutes")
- Column  1: TAX_DATESTRING(1005528.00, TT, "minutes")
- Column  2: TAX_DATESTRING(1010640.00, TT, "minutes")
-                   (C001,V00      (C001,V008)
-I / *:    "01-OCT-2015 00:00" "01-MAY-2016 00:00"
- 
-shade xtvar ! T axis on the vertical axis
-list tax_datestring(($yaxis_min), tt, "minutes"), tax_datestring(($yaxis_max), tt, "minutes")
- !-> list tax_datestring(1005528.00, tt, "minutes"), tax_datestring(1010640.00, tt, "minutes")
- Column  1: TAX_DATESTRING(1005528.00, TT, "minutes")
- Column  2: TAX_DATESTRING(1010640.00, TT, "minutes")
-                   (C001,V00      (C001,V008)
-I / *:    "01-OCT-2015 00:00" "01-MAY-2016 00:00"
- 
- 
-! Short time axis, plot ends extended out to the nearest hour
-def axis/t="23-oct-2015:01:15":"23-oct-2015:12:30":15/units=minutes taxis
- 
-plot var
-list tax_datestring(($xaxis_min), tt, "minutes"), tax_datestring(($xaxis_max), tt, "minutes")
- !-> list tax_datestring(60363420.0, tt, "minutes"), tax_datestring(60364140.0, tt, "minutes")
- Column  1: TAX_DATESTRING(60363420.0, TT, "minutes")
- Column  2: TAX_DATESTRING(60364140.0, TT, "minutes")
-                   (C001,V00      (C001,V008)
-I / *:    "23-OCT-2015 01:00" "23-OCT-2015 13:00"
- 
-shade ytvar
-list tax_datestring(($xaxis_min), tt, "minutes"), tax_datestring(($xaxis_max), tt, "minutes")
- !-> list tax_datestring(60363420.0, tt, "minutes"), tax_datestring(60364140.0, tt, "minutes")
- Column  1: TAX_DATESTRING(60363420.0, TT, "minutes")
- Column  2: TAX_DATESTRING(60364140.0, TT, "minutes")
-                   (C001,V00      (C001,V008)
-I / *:    "23-OCT-2015 01:00" "23-OCT-2015 13:00"
- 
-shade xtvar
-list tax_datestring(($yaxis_min), tt, "minutes"), tax_datestring(($yaxis_max), tt, "minutes")
- !-> list tax_datestring(60363420.0, tt, "minutes"), tax_datestring(60364140.0, tt, "minutes")
- Column  1: TAX_DATESTRING(60363420.0, TT, "minutes")
- Column  2: TAX_DATESTRING(60364140.0, TT, "minutes")
-                   (C001,V00      (C001,V008)
-I / *:    "23-OCT-2015 01:00" "23-OCT-2015 13:00"
- 
- 
- 
- 
 ! Bug 2489. Attribute climatology_time_range not defined on an expression
 go bn_reset
 cancel mode verify
@@ -94463,9 +94378,9 @@ SHOW DATA/FULL tue_f03
  
   time range: 16-JUL-1950 12:00 to 16-JUN-1953 00:00
  
-          Member datasets:
-      21.1: t_f_u03_e1
-      21.2: t_f_u03_e2
+          Aggregated datasets:
+      1: t_f_u03_e1
+      2: t_f_u03_e2
 SHOW DATA/ATT tue_f03   ! notice the promotion of fcst.im_everywhere
      currently SET data sets:
    21> tue_f03  (default)  Ensemble aggregation
@@ -94576,10 +94491,10 @@ SHOW DATA/brief/files
 31-DEC-1899 23:59 -> 31-DEC-1899 23:59    t_f_u02_e2
  
    22> tuef  (default)  Forecast aggregation
-          Member datasets:
-      22.1: tue_f01
-      22.2: tue_f02
-      22.3: tue_f03
+          Aggregated datasets:
+      1: tue_f01
+      2: tue_f02
+      3: tue_f03
 show data/full tuef
      currently SET data sets:
    22> tuef  (default)  Forecast aggregation
@@ -94603,10 +94518,10 @@ show data/full tuef
  
   time range: 15.214 to 1080.2
  
-          Member datasets:
-      22.1: tue_f01
-      22.2: tue_f02
-      22.3: tue_f03
+          Aggregated datasets:
+      1: tue_f01
+      2: tue_f02
+      3: tue_f03
  
 ! The time-union-ensemble-forecast aggregation
  
@@ -94892,247 +94807,6 @@ list a[t=@MAX] - a_xtrns[t=@MAX]
              VARIABLE : A[T=@MAX] - A_XTRNS[T=@MAX]
              T        : 0.5 to 3.5
           0.0000
- 
-*** Running ferret script: bn_agg_member_syntax.jnl
-! bn_agg_member_syntax
- 
-! *sh* 11/16
- 
-! running of this benchmark assumes that a tmp directory has been created
-! and that it contains the aggregation member files created by bn_aggregate_f
- 
- 
-! define an 11-member FMRC aggregation
-let files = SPAWN("ls -1 tmp/fcst_*.nc")
-fmrc my_fmrc = files
-show data/members my_fmrc   ! /FILES is deprecated
-     currently SET data sets:
-   12> my_fmrc  (default)  Forecast aggregation
- name     title                             I         J         K         L         M         N
- FCST     FIELD + FCST_ERROR               1:21      1:21      ...       1:24      ...       1:11
-       (L=1:24)
- TF_TIMES Forecast time step matrix        ...       ...       ...       1:24      ...       1:11
- FCST_2   another variable                 1:21      1:21      ...       1:24      ...       1:11
-       (L=1:24)
- 
-          Member datasets:
-      12.1 : tmp/fcst_1.nc
-      12.2 : tmp/fcst_2.nc
-      12.3 : tmp/fcst_3.nc
-      12.4 : tmp/fcst_4.nc
-      12.5 : tmp/fcst_5.nc
-      12.6 : tmp/fcst_6.nc
-      12.7 : tmp/fcst_7.nc
-      12.8 : tmp/fcst_8.nc
-      12.9 : tmp/fcst_9.nc
-      12.10: tmp/fcst_10.nc
-      12.11: tmp/fcst_11.nc
- 
-show data 12.3   ! turns out to be dset=5
-     currently SET data sets:
-    5> tmp/fcst_3.nc
- name     title                             I         J         K         L
- FCST     FIELD + FCST_ERROR               1:21      1:21      ...       1:24
-       (L=7:30)
- FCST_2   another variable                 1:21      1:21      ...       1:24
-       (L=7:30)
- 
- 
-! these are now all allowable references to the parent aggregation
-stat fcst[d=12]
- 
-             FIELD + FCST_ERROR
-             LONGITUDE: 139.5E to 160.5E
-             LATITUDE: 19.5N to 40.5N
-             Z:  N/A
-             MODEL ELAPSED TIME (day): 0 to 729.39
-             E:  N/A
-             FORECAST: 16-NOV-1949 09:36 to 15-AUG-1952 14:24
-             DATA SET: my_fmrc
- 
- Total # of data points: 116424 (21*21*1*24*1*11)
- # flagged as bad  data: 0
- Minimum value: -1.0038
- Maximum value: 1.4046
- Mean    value: 0.13342 (unweighted average)
- Standard deviation: 0.55306
-stat/br fcst[d=12.]
- 
- Total # of data points: 116424 (21*21*1*24*1*11)
- # flagged as bad  data: 0
- Minimum value: -1.0038
- Maximum value: 1.4046
- Mean    value: 0.13342 (unweighted average)
-stat/br fcst[d=12.0]
- 
- Total # of data points: 116424 (21*21*1*24*1*11)
- # flagged as bad  data: 0
- Minimum value: -1.0038
- Maximum value: 1.4046
- Mean    value: 0.13342 (unweighted average)
- 
-! reference a member
-stat fcst[d=12.3]
- 
-             FIELD + FCST_ERROR
-             L=7:30
-             LONGITUDE: 139.5E to 160.5E
-             LATITUDE: 19.5N to 40.5N
-             Z:  N/A
-             TIME: 01-JUL-1950 00:00 to 01-JUL-1952 00:00
-             E:  N/A
-             F:  N/A
-             DATA SET: tmp/fcst_3.nc
- 
- Total # of data points: 10584 (21*21*1*24*1*1)
- # flagged as bad  data: 0
- Minimum value: -0.9973
- Maximum value: 1.4046
- Mean    value: 0.1338 (unweighted average)
- Standard deviation: 0.54369
-stat fcst[d=12.3] - fcst[d=5]   ! v-v=0
- 
-             FCST[D=fcst_3.nc] - FCST[D=fcst_3.nc]
-             LONGITUDE: 139.5E to 160.5E
-             LATITUDE: 19.5N to 40.5N
-             Z:  N/A
-             TIME: 01-JUL-1950 00:00 to 01-JUL-1952 00:00
-             E:  N/A
-             F:  N/A
-             DATA SET: N/A
- 
- Total # of data points: 10584 (21*21*1*24*1*1)
- # flagged as bad  data: 0
- Minimum value: 0
- Maximum value: 0
- Mean    value: 0 (unweighted average)
- Standard deviation: 0
- 
-! note that FMRC members have distinct time axes. Specify "L=1"
-stat fcst[d=12.3,l=1] - fcst[d=12.1,l=1]
- 
-             FCST[D=fcst_3.nc,L=1] - FCST[D=fcst_1.nc,L=1]
-             LONGITUDE: 139.5E to 160.5E
-             LATITUDE: 19.5N to 40.5N
-             Z:  N/A
-             TIME: 16-JUL-1950 12:00
-             E:  N/A
-             F:  N/A
-             DATA SET: N/A
- 
- Total # of data points: 441 (21*21*1*1*1*1)
- # flagged as bad  data: 0
- Minimum value: -0.12028
- Maximum value: 0.12005
- Mean    value: -0.007033 (unweighted average)
- Standard deviation: 0.07443
- 
-! deliberate errors
-set mode ignore
- 
-stat/br fcst[d=5.3]       ! d=5 is not an aggregation
-stat/br fcst[d=12.30]     ! not this many members
-stat/br fcst[d=12.300000]
- 
-set mode/last ignore
- 
-cancel data/all
-cancel var/all
- 
-! Tests for Ensembles
-let files = SPAWN("ls -1 ens*.nc")
-ensemble my_ens = files
-sh data/members my_ens
-     currently SET data sets:
-    5> my_ens  (default)  Ensemble aggregation
- name     title                             I         J         K         L         M         N
- SST      SST_IN                           1:10      1:9       ...       1:12      1:4       ...
- 
-          Member datasets:
-      5.1: ./ens1.nc
-      5.2: ./ens2.nc
-      5.3: ./ens3.nc
-      5.4: ./ens4.nc
- 
-show data 5.3
-     currently SET data sets:
-    3> ./ens3.nc
- name     title                             I         J         K         L
- SST      SST_IN                           1:10      1:9       ...       1:12
- 
-stat sst[d=5]
- 
-             SST_IN
-             LONGITUDE: 110W to 90W
-             LATITUDE: 12N to 30N
-             Z:  N/A
-             TIME: 01-JAN 00:45 to 31-DEC 06:34
-             E (realization): 0.5 to 4.5 (ens1.nc)
-             F:  N/A
-             DATA SET: my_ens
- 
- Total # of data points: 4320 (10*9*1*12*4*1)
- # flagged as bad  data: 1156
- Minimum value: 16.844
- Maximum value: 123.32
- Mean    value: 67.406 (unweighted average)
- Standard deviation: 30.975
-stat sst[d=5.2]
- 
-             SST_IN
-             LONGITUDE: 110W to 90W
-             LATITUDE: 12N to 30N
-             Z:  N/A
-             TIME: 01-JAN 00:45 to 31-DEC 06:34
-             E:  N/A
-             F:  N/A
-             DATA SET: ./ens2.nc
- 
- Total # of data points: 1080 (10*9*1*12*1*1)
- # flagged as bad  data: 289
- Minimum value: 33.688
- Maximum value: 61.66
- Mean    value: 53.925 (unweighted average)
- Standard deviation: 5.1904
- 
-can data my_ens
- 
-! do them in another order
-ENSEMBLE fourfiles = ens1, ens3, ens2, ens4
- 
-! not this is dataset 2
-show data 5.3
-     currently SET data sets:
-    3> ./ens2.nc
- name     title                             I         J         K         L
- SST      SST_IN                           1:10      1:9       ...       1:12
- 
- 
-stat sst[d=5] - sst[d=5.3]   ! ensemble minus member #3
- 
-             SST[D=fourfiles] - SST[D=ens2]
-             LONGITUDE: 110W to 90W
-             LATITUDE: 12N to 30N
-             Z:  N/A
-             TIME: 01-JAN 00:45 to 31-DEC 06:34
-             E (realization): 0.5 to 4.5
-             F:  N/A
-             DATA SET: N/A
- 
- Total # of data points: 4320 (10*9*1*12*4*1)
- # flagged as bad  data: 1156
- Minimum value: -30.83
- Maximum value: 61.66
- Mean    value: 13.481 (unweighted average)
- Standard deviation: 30.317
- 
-! deliberate errors
-set mode ignore
- 
-stat/br sst[d=4.1]     ! not an ensemble
-stat/br sst[d=5.30]    ! not this many members
- 
-set mode/last ignore
  
 *** Running ferret script: bn_gif.jnl
 ! bn450_gif.JNL - copied from bn450_plot.jnl

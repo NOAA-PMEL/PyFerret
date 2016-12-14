@@ -53,6 +53,7 @@
 *        been made), bug1348
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -78,7 +79,8 @@
      .		box( com_lo:com_hi )
 
 * internal variable declarations:
-	LOGICAL	GEOG_COS_FACTOR, need_cos
+	LOGICAL	GEOG_COS_FACTOR, ITSA_TRUEMONTH_AXIS, 
+     .          need_cos
 	INTEGER i, j, k, l, m, n, grid, lo, hi, axis,
      .          ii, jj, kk, ll, mm, nn
 	REAL	BOX_SIZE, unit, bad_com, bad_res, cos_factor,
@@ -108,6 +110,7 @@
 
 * perform integrations on standard units if possible
 	unit = un_convert( line_unit_code(axis) )
+	IF (ITSA_TRUEMONTH_AXIS(axis)) unit = un_convert(pun_day)
 	DO 110 i = lo, hi
  110	box(i) = box(i) * unit
 

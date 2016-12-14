@@ -1,6 +1,6 @@
         SUBROUTINE CD_GET_1_AXIS(dset, cdfid, ivar, iaxis, its_epic,
      .                           reversed, tregular, use_strict, 
-     .                           bad_bndsid, status)
+     .                           bad_bndsid, has_gdef, status)
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -190,6 +190,10 @@
 *                  (commented out for now.)
 * v7+   7/16 *acm* Ticket 2445, regular-spacing attribute and repeated or missing values
 *                  in the first 2 coordinates
+* V710  4/16 *acm* new TM_UNITS_CAL to account for calendar in units id
+* V710  4/16 *acm* Remove the 2-day shift correction. CDC does not seem to 
+*                  consistenly applythis logic to current files
+* V71 12/16 *acm* Ticket 2158: working with true monthly time axes.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -221,7 +225,7 @@
 
 * argument declarations
         LOGICAL  its_epic, reversed(max_lines:line_ceiling), tregular, 
-     .           use_strict
+     .           use_strict, has_gdef
         INTEGER  cdfid, dset, ivar, iaxis, bad_bndsid, status
 
 * local parameter definitions:
@@ -241,9 +245,9 @@
      .        got_mod, mod_tf, setmodfalse, ok_cal, ok,
      .        got_edges, got_bnds, coordvar, its_irregular, 
      .        do_scale, do_offset, scale_is_dp, 
-     .        has_repeated, misordered, has_missing, is_double
+     .        has_repeated, misordered, has_missing, is_double, true_month
 
-      INTEGER TM_UNIT_ID, TM_LENSTR1,TM_GET_CALENDAR_ID,      
+      INTEGER TM_UNIT_ID, TM_UNITS_CAL, TM_LENSTR1, TM_GET_CALENDAR_ID,      
      .        STR_CASE_BLIND_COMPARE, STR_UPCASE, STR_SAME,
      .        soft_err, 
      .        ipt1, ipte, vartype, vback, npts, vlen, cdfstat, istat,
@@ -256,7 +260,7 @@
      .        i1, i2, i3, i0
 
       REAL    rbuff, delta, first_delta, val, epsilon, lm_len, 
-     .        scale, offset
+     .        scale, offset, start
       REAL*4  r4delta
       REAL*8  TM_LONW2LONE, TM_WW_AXLEN, tmp8, axwwlen, 
      .        dscale, doffset,  micro_adj, madj
@@ -293,6 +297,7 @@
       days_neg4713 = 0.D0
       next_line_storage = next_line_mem_pos
       bad_bndsid = 0
+      cal_id = 1
       misordered = .FALSE.
       has_missing = .FALSE.
 
@@ -551,22 +556,9 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 
       units = TM_UNIT_ID( line_units(iaxis) )
 
-* Named calendar with unit=year gets length of year in that calendar.
+* Named calendar with unit=month or year gets length according to calendar's year length.
 
-      IF (units .EQ. -6 .OR. units .EQ. -10) THEN
-         IF (cal_id .EQ. d360) units = -9
-         IF (cal_id .EQ. julian) units = -12
-	 IF (cal_id .EQ. noleap) units = -11
-	 IF (cal_id .EQ. all_leap) units = -8
-      ENDIF
-
-* Named calendar with unit=month gets length of month in that calendar.
-
-      IF (units .EQ. -5) THEN
-         IF (cal_id .EQ. d360) units = -14
-         IF (cal_id .EQ. julian) units = -15
-	 IF (cal_id .EQ. noleap) units = -13
-      ENDIF
+      units = TM_UNITS_CAL( units, cal_id, .FALSE. )
 
       line_unit_code(iaxis) = units
       IF  (   units.EQ.0
@@ -1011,6 +1003,9 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
      .         'Reversing ordering for axis '//vname(:vlen), tt)
       ENDIF
 
+* 4/2016 remove this correction. CDC does not seem to consistenly apply
+* this logic to current files
+
 * hack to cope with Gregorian/Julian calendar ambiguities (used by NOAA/CDC)
 * Comments from Roland Schweitzer about CDC files:
 * These CDCfiles have units of the form: days since 1-1-1 00:00:00 or
@@ -1227,6 +1222,33 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
         ENDIF  ! valid bounds, also checked centered
 
  600    CONTINUE
+
+ 
+* Check if axis is a monthly axis for this calendar.  If so store as a 'true-month' 
+* axis, stored internally as if regular, but coordinates returned on true axis.
+* Do not call this if the file has enhanced header, with parent and child grids. 
+* (at least for now.)
+
+	true_month = .FALSE.
+	IF (line_direction(iaxis) .EQ. 'TI' .AND. 
+     .      .NOT.line_regular(iaxis) .AND.
+     .      .NOT.has_gdef ) 
+     .       CALL TM_CHECK_MONTHLY_AXIS (line_mem(ipt1), line_dim(iaxis), cal_id, 
+     .                                   line_t0(iaxis), units, line_units(iaxis),
+     .                                   start, delta, line_tunit(iaxis), true_month)
+
+        IF (true_month) THEN
+           line_regular(iaxis) = .TRUE.
+           line_start  (iaxis) = start !* line_tunit(iaxis)/ un_convert(pun_day)
+           line_delta  (iaxis) = delta
+           line_subsc1 (iaxis) = unspecified_int4
+           last_coord = line_start(iaxis) + DBLE(npts-1)*line_delta(iaxis)
+           firs_coord = start
+           line_unit_code (iaxis) = units
+           line_tunit  (iaxis) = un_convert(units)
+           got_edges = .FALSE.
+           got_bnds  = .FALSE.
+	ENDIF
 
 * Save the axis name (upper case) and memory storage.  For all irregular axes, 
 * we have saved N+1 edges for the axis cells. Increment the pointer.   

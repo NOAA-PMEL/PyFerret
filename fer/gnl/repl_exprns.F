@@ -145,8 +145,6 @@
 * local parameter declarations 
 	INTEGER	   max_len
 	PARAMETER (max_len = 2048)
-!	INTEGER	   fmt_lenH
-!	PARAMETER (fmt_len = 64 )
 
 * internal variable declarations:
 	LOGICAL   need_formatting, zero_fill, coordvar,
@@ -156,12 +154,12 @@
      .		  FIND_DSET_NUMBER, GET_ABSTRACT_LINE, TM_LENSTR,
      .		  TM_GET_GRIDNUM, GRID_FROM_NAME, TM_SUBSC, 
      .		  str_len, lenbuff, iend, itmp, axis,
-     .		  mr, cx, mr_temp, i, i2, use_digits, true_end,
+     .		  mr, cx, mr_temp, i, i1, i2, use_digits, true_end,
      .		  qual_end, brkt, idim, use_width, dset, varid, 
      .            vartype, nvdims, vdims(8), nvatts, ist, ind,
      .            attype, attlen, inxt, attoutflag,outflag, fertype, 
-     .            attid, ieq, base_isp, base_cx, cat, var, i1, uvar,  
-     .            i1ss, inss, grid
+     .            attid, ieq, base_isp, base_cx, cat, var, uvar,  
+     .            i1ss, inss, grid, ucode
 	REAL	  result, val
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
 	CHARACTER TM_FMT*28, TM_FMT_USER*28, LEFINT*16, VAR_TITLE*(max_len),
@@ -1092,6 +1090,18 @@
 	           repl = line_units( axis )
 	         ENDIF
 	         need_formatting = .FALSE.
+
+* Get the units attribute from the dataset. 
+* User-defined true-month axes are shown in days.
+	         IF ( repl(1:8) .EQ. "TRUMONTH") THEN
+	            dset = cx_data_set( cx )
+		    aname = 'days'
+c	            IF (dset .GT. pdset_irrelevant) THEN
+c	               CALL GET_ORIGINAL_UNITS (dset, cx_grid(cx), aname, ucode)
+c	               IF (ucode .NE. 0) repl = aname
+c		    ENDIF
+		 ENDIF
+
 	      ELSE
 	         GOTO 5520
 	      ENDIF

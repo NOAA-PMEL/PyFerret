@@ -52,6 +52,7 @@
 *
 * V695+ 10/15 *sh* -- based upon DEFINE_EF_AGGREGATE_GRID
 * V67    5/16 *acm*   Fixes for member sets with single-point time axes having bounds
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -62,7 +63,8 @@
 	external xdset_info_data
 	include 'xdset_info.cd_equiv'
         include 'xprog_state.cmn'
-	include 'xtm_grid.cmn_text'  
+	include 'xtm_grid.cmn_text'
+	include 'xunits.cmn_text' 
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
@@ -99,17 +101,18 @@
 
 
 * local variable declarations:
-	LOGICAL TM_DFPEQ_TOL, need_midpoints, need_T0_adjust,
-     .		swap_axes
+	LOGICAL TM_DFPEQ_TOL, ITSA_TRUEMONTH_AXIS, need_midpoints, need_T0_adjust,
+     .		swap_axes, true_month, memb_true_month
 	INTEGER TM_LENSTR1, TM_GET_CALENDAR_ID, TM_FIND_LIKE_DYN_LINE,
      .		taxis, nsteps, max_line_available, dtype, vlen, blen,
      .		i, ifile, istep, ivar, TMAP_status, isubsc1,
      .		cdfid, vid, bounds_id, gg, ilo, ihi, l, imemb,
      .		startpts(2), numpts(2), d1s, d1e, d2s, d2e,
-     .		agg_unit_code, file_unit_code, agg_cal_id, pre_exist
+     .		agg_unit_code, file_unit_code, agg_cal_id, pre_exist, 
+     .		nsteps_trumon
 	REAL	TM_WORLD_AX, T0_ADJUST,
      .		tt, delta, highest_tstep, dfirst_delta, 
-     .		depsilon
+     .		depsilon, start, tunit, coord_hi, hdel, coord_new
 	CHARACTER LEFINT*20, lname*20, vname*64, bname*12, units_str*128,
      .		  calendar_str*128, agg_t0_str*20, file_t0_str*20
 
@@ -137,6 +140,183 @@
 * axis in as a new axis and then replace the pointers to the old axis with the
 * new. 
 
+* Was the first file found to have a true-monthly time axis?
+	true_month = ITSA_TRUEMONTH_AXIS (taxis)
+
+	IF (true_month .AND. .NOT.t_regular) THEN
+
+* Loop through the files of the aggregation, checking for more compatible true-month axes.
+* The time axis from member 1 is not in line_mem, so just keep reading into the next slots
+
+	   nsteps_trumon = nsteps
+	   isubsc1 = next_line_mem_pos
+	   
+	   coord_hi = line_start(taxis) + (nsteps-1)* line_delta(taxis)
+
+* Translate fake true-month timestep to actual month-length step.
+
+	   CALL TM_TCOORD_TRUMONTH (taxis, coord_hi,  
+     .		       box_middle, coord_new)
+
+	   memb_order(1) = 1
+	   memb_nsteps(1) = nsteps
+	   memb_tstep_start(1) = line_start(taxis) 
+	   memb_tstep_end  (1) = coord_new
+
+	   TMLOOP: DO ifile = 2, nagfiles
+* ... first read the length of the time axis from the file to be aggregated
+	      CALL CD_QUIK_NCOPEN (dset_num, memb_filename(ifile),
+     .				      vname(:vlen),
+     .				      cdfid, vid, bounds_id,
+     .				      units_str, calendar_str,
+     .				      nsteps, TMAP_status)
+	      IF (TMAP_status .NE. merr_ok) GOTO 5010
+* ... check to see if calendar, units, and T0 are consistent with the agg axis
+	      CALL CD_GET_T0(memb_filename(ifile), units_str, calendar_str,
+     .                  agg_cal_id, file_unit_code, file_t0_str, status)
+
+	      IF (next_line_mem_pos+nsteps .GT. max_line_available) GOTO 5100
+
+* ... read the array of time steps from the file and read or compute bounds
+	      CALL CD_RD_R8_ARR(cdfid, vid,1, nsteps,dtype,vname(:vlen),
+     .				   line_mem(isubsc1), status)
+	      IF ( status .NE. merr_ok ) GOTO 5010
+
+	      IF (bounds_id .NE. unspecified_int4) THEN
+
+	         startpts(1) = 1
+	         startpts(2) = 1
+	         numpts(1) = 1
+	         numpts(2) = nsteps
+
+	         d1s = startpts(1)
+	         d1e = numpts(1)
+	         d2s = startpts(2)
+	         d2e = numpts(2)
+		 bname = 'bounds array'
+		 blen = 12
+
+		 CALL CD_RD_R8_BNDS( cdfid, bounds_id,
+     .			  startpts, numpts, dtype, bname(:blen),
+     .                    line_mem(isubsc1+nsteps),  
+     .                    d1s, d1e, d2s, d2e, status )
+	         IF ( status .NE. merr_ok ) GOTO 5010
+
+	      ELSE
+	         CALL TM_IRREGAX_MID( isubsc1,isubsc1 )
+	      ENDIF
+
+	      CALL TM_CHECK_MONTHLY_AXIS (line_mem(isubsc1), nsteps, agg_cal_id, 
+     .                                   file_T0_str, file_unit_code, units_str,
+     .                                   start, delta, tunit, memb_true_month)
+
+* Also bail on true-month if the units or t0 are different.
+
+	      need_T0_adjust = (file_unit_code .NE. agg_unit_code)
+     .			     .OR. (file_T0_str    .NE. agg_T0_str)
+	      IF (need_T0_adjust) memb_true_month = .FALSE.
+
+! check value of "start" relative to the stored axis -- checking sorting.
+	      IF (start .LT. coord_hi) memb_true_month = .FALSE.
+	      IF (start-coord_hi .GT. 2.*line_delta(taxis))  memb_true_month = .FALSE.
+	      IF (delta .NE. line_delta(taxis)) memb_true_month = .FALSE.
+
+	      IF (.NOT.memb_true_month) EXIT TMLOOP ! from loop
+
+	      nsteps_trumon = nsteps_trumon + nsteps
+	      coord_hi = line_start(taxis) + (nsteps_trumon-1)* line_delta(taxis)
+
+* Translate fake true-month timestep to actual month-length step.
+
+	      CALL TM_TCOORD_TRUMONTH (taxis, coord_hi,  
+     .		       box_middle, coord_new)
+
+	      memb_order(ifile) = ifile
+	      memb_nsteps(ifile) = nsteps
+	      memb_tstep_start(ifile) = start
+	      memb_tstep_end(ifile) = coord_new
+
+	      line_dim(taxis) = nsteps_trumon
+	      t_regular = .TRUE.
+	  
+	   ENDDO TMLOOP
+
+* ... If some month isn't a true-mnth axis, then we will not use a true-month axis.
+*     Get the original coordinates from the first member set and continue.
+
+	   IF (true_month .AND. .NOT.memb_true_month) THEN
+	   
+	      t_regular = .FALSE.
+	      ifile = 1
+	      CALL CD_QUIK_NCOPEN (dset_num, memb_filename(ifile),
+     .				      vname(:vlen),
+     .				      cdfid, vid, bounds_id,
+     .				      units_str, calendar_str,
+     .				      nsteps, TMAP_status)
+	      IF (TMAP_status .NE. merr_ok) GOTO 5010
+* ... check to see if calendar, units, and T0 are consistent with the agg axis
+	      CALL CD_GET_T0(memb_filename(ifile), units_str, calendar_str,
+     .                  agg_cal_id, file_unit_code, file_t0_str, status)
+
+* ... read the array of time steps from the file
+	      CALL CD_RD_R8_ARR(cdfid, vid,1, nsteps,dtype,vname(:vlen),
+     .				   line_mem(isubsc1), status)
+	      line_regular(taxis) = .FALSE.
+	      line_unit_code(taxis) = file_unit_code
+	      agg_unit_code = file_unit_code
+	      line_delta(taxis) = unspecified_val8
+
+	      IF (bounds_id .NE. unspecified_int4) THEN
+
+	         startpts(1) = 1
+	         startpts(2) = 1
+	         numpts(1) = 1
+	         numpts(2) = nsteps
+
+	         d1s = startpts(1)
+	         d1e = numpts(1)
+	         d2s = startpts(2)
+	         d2e = numpts(2)
+		 bname = 'bounds array'
+		 blen = 12
+
+		 CALL CD_RD_R8_BNDS( cdfid, bounds_id,
+     .			  startpts, numpts, dtype, bname(:blen),
+     .                    line_mem(isubsc1+nsteps),  
+     .                    d1s, d1e, d2s, d2e, status )
+	      ELSE
+	         CALL TM_IRREGAX_MID( isubsc1,isubsc1 )
+	      ENDIF
+
+	      true_month = .FALSE.
+	   ENDIF
+
+	ENDIF  ! true_month
+
+* Do some of the member sets need bounds?  If so then get them for all sets.
+c	IF (.NOT.t_regular .AND. line_regular(taxis)) THEN
+c	   need_midpoints = .TRUE.
+c	   DO ifile = 1, nagfiles
+c	      CALL CD_QUIK_NCOPEN (dset_num, memb_filename(ifile),
+c     .				      vname(:vlen),
+c     .				      cdfid, vid, bounds_id,
+c     .				      units_str, calendar_str,
+c     .				      nsteps, TMAP_status)
+c	      IF (bounds_id .NE. unspecified_int4) need_midpoints = .FALSE.
+c
+c	   ENDDO
+c	   IF (.NOT. need_midpoints) THEN  ! fill in coordinats and bounds for first member set
+c	      hdel = line_delta(taxis)/2.
+c	      DO istep = 0, nsteps-1
+c	         line_mem(next_line_mem_pos+istep) = line_start(taxis)
+c     .		+ istep*line_delta(taxis)
+c	         line_mem(next_line_mem_pos+nsteps+istep) = 
+c     .		    line_mem(next_line_mem_pos+istep) - hdel
+c	         line_mem(next_line_mem_pos+nsteps+istep+1) = 
+c     .		    line_mem(next_line_mem_pos+istep) + hdel
+c	      ENDDO
+c	   ENDIF
+c	ENDIF
 
 * set up for a regular or irregular T-agg axis as requested by t_regular
 	IF (t_regular .AND. .NOT.line_regular(taxis)) THEN
@@ -307,6 +487,8 @@
      .				   line_mem(isubsc1), status)
 	         IF ( status .NE. merr_ok ) GOTO 5010
 
+
+
 * ... adjust the time step values to the agg-chosen "<units> since <T0>"
 	         IF (need_T0_adjust) THEN
 	            DO istep = isubsc1, isubsc1+nsteps-1
@@ -371,6 +553,7 @@
 * ... reorder the newest nstep+1 bounds values into backwards order,
 *     ensuring one pass through the loop for single-step axis
 	            DO istep = 0, MAX(0,nsteps/2-1)
+
 	               ilo = max_line_available+istep
 	               ihi = max_line_available+nsteps-istep
 	               tt = line_mem(ilo)
@@ -414,6 +597,7 @@
 	         ihi = ihi - 1
 	         IF (ihi .LT. ilo) EXIT  ! exit loop; 1-point axes casuses this
 	      ENDDO
+
 * ... 2. shift the bounds down to sit just after the coordinates
 	      ilo = line_subsc1(taxis) + nsteps
 	      ihi = max_line_available
@@ -475,7 +659,7 @@
 *  ... first sanity check monotonicity and bounds bracketing
 	   IF (nsteps.EQ.1) GOTO 100
 	   ilo = line_subsc1(taxis)    ! L step on agg taxis
-!	   ihi = ilo + nsteps - 1
+	   ihi = ilo + nsteps - 1
            dfirst_delta = line_mem(ilo+1) - line_mem(ilo)
            depsilon = depsilon_46 * 2.*(ABS(line_mem(ilo))
      .		    / dfirst_delta )
@@ -561,6 +745,24 @@
 	   ENDIF
  500	   CONTINUE
 	ENDDO
+
+* Is the axis we have created a monthly axis?  IF so store it as such.
+
+	IF (.NOT. true_month .AND. .NOT.line_regular(taxis)) THEN
+	   CALL TM_CHECK_MONTHLY_AXIS (line_mem( line_subsc1(taxis)), line_dim(taxis), agg_cal_id, 
+     .                                   agg_T0_str, agg_unit_code, units_str,
+     .                                   start, delta, tunit, true_month)
+           IF (true_month) THEN
+              line_regular(taxis) = .TRUE.
+              line_start  (taxis) = start
+              line_delta  (taxis) = delta
+              line_subsc1 (taxis) = unspecified_int4
+	      line_unit_code (taxis) = agg_unit_code
+	      line_units (taxis) = units_str
+              line_tunit  (taxis) = un_convert(agg_unit_code)
+	   ENDIF
+	ENDIF
+
 
  5000	RETURN
  5010	CALL ERRMSG( ferr_TMAP_error, status, ' ', *5000 )

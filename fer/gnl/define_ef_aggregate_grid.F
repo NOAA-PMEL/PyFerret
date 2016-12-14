@@ -47,6 +47,7 @@
 * V698 3/16 *sh* - shift both lag axes and F-calendar to pts at low cell edge
 * V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
 *                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
+* v71  12/16 *acm* Ticket 2158: working with true monthly time axes.
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -72,7 +73,7 @@
 
 * local variable declarations:
 	LOGICAL	NC_GET_ATTRIB, ITS_FMRC_2DTIME, its_dynamic, itsa_uvar,
-     .		has_edges, has_gaps, found_fvar, ef_ordered_time2d
+     .		has_edges, has_gaps, found_fvar, ef_ordered_time2d, true_month
 	INTEGER STR_SAME, TM_LENSTR1,
      .		big_cx, igrid, idim, agg_grid, nv, type, ii, iset, slen, 
      .		ndim, vtype, i2, i, status,
@@ -80,7 +81,7 @@
      .		gap_size, max_gap_size, l,
      .		axcalt, axlagf, gg, ipt1, ipte, fax,
      .		nv_dummy, igrid_dummy, vtype_dummy, num_indices,
-     .		ef_time2d_dset, ef_time2d_grid
+     .		ef_time2d_dset, ef_time2d_grid, iaxis
 	REAL*8  TDEST_WORLD, TM_WORLD_AX, fdelta
 
 * Getting info back from the attribute-handling structure
@@ -416,6 +417,7 @@
 * line_mem contents will be:  2d_times, 2d_lo_lims, hi_lim_of_last_time
 	   nT = line_dim(grid_line(t_dim,agg_grid))
 	   nF = line_dim(grid_line(f_dim,agg_grid))
+
 	   npts = nT * nF
 	   ipt1 = next_line_mem_pos
 	   ipt  = ipt1
@@ -450,8 +452,7 @@
 	         ENDDO
 	      ENDIF
 	   ENDDO
-	   line_mem(ipt1+2*npts) =
-     .				 TDEST_WORLD(nT, memb_grid, t_dim, box_hi_lim)
+	   line_mem(ipt1+2*npts) = TDEST_WORLD(nT, memb_grid, t_dim, box_hi_lim)
 
 * ... if there were gaps in the forecast time array, fill 'em
 *     always compute lagF - the number of time steps between forecasts

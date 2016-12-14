@@ -38,6 +38,7 @@
 * Modulo is ignored in this calculation
 
 * V541 *sh* 2/02
+* V71 12/16 *acm* Ticket 2158: working with true monthly time axes.
 
 	include 'tmap_dims.parm'
 #include "gt_lib.parm"
@@ -48,11 +49,16 @@
 	REAL*8 lo, hi
 
 * internal variable declarations
+	LOGICAL ITSA_TRUEMONTH_AXIS
 	INTEGER	isub1, llen, iiaxis
+	REAL	TM_WORLD
 
 	IF ( axis .LT. 0 .OR. axis .GT. line_ceiling ) THEN
 	  lo = unspecified_val8
 	  hi = unspecified_val8
+c	ELSEIF ( ITSA_TRUEMONTH_AXIS(axis) ) THEN
+c	  lo = TM_WORLD (1, axis, box_lo_lim )
+c	  hi = TM_WORLD (line_dim(axis), axis, box_hi_lim )
 	ELSEIF ( line_regular(axis) ) THEN
 	  lo = line_start(axis) - 0.5D0*line_delta(axis)
 	  hi = lo + line_dim(axis)*line_delta(axis)

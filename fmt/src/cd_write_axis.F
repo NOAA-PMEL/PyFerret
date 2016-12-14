@@ -111,18 +111,19 @@
 *                 1-D coordinate var, don't write the axis Ferret creates
 * V697 12/15 *acm* Fix ticket 2336: consistent application of CAN MODE UPCASE
 * V698  2/16 *acm* Check status of queries before continuing
-*                  variable, do notwrite the coordinate variable, ONLY IF writing 
-*                  the full-span in that direction.
 * V698  4/16 *acm* Fix ticket 2241: If file has dimension but not a coordinate 
 *                  variable, do not write the coordinate variable, ONLY IF writing 
 *                  the full-span in that direction.
 *  V698  4/16 *acm* When checking for dimension-only, this applies to file axes only.
 *  V698  5/16 *acm* Fix ticket 2415: write attributes using the requested data type
 *                   Routine CD_WRITE_ATTVAL_DP converts to the specified type.
+* V698  4/16 *acm* Account for the calendar inside TM_UNIT_ID
 * V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
 * V710  9/16 *acm* Ticket 2459: If axis is already in the file with a different
 *                  direction write axis with a unique name for this direction.
 *                  Use ww_dim_name from xtext_info.cmn
+* V71  3/16 *acm* Ticket 2158: working with true monthly time axes. Write these axes
+*                  as irregularly spaced daily axes.
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -149,6 +150,8 @@
         include 'xtm_grid.cmn_text'
         external xgt_grid_data
         include 'xunits.cmn_text'
+	include 'calendar.decl'
+	include 'calendar.cmn'	
 	include 'xio.cmn_text'
         external xio_data
 	include 'xtext_info.cmn'  ! with ww_dim_name
@@ -166,17 +169,19 @@
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
       LOGICAL TM_ABSTRACT_AXIS, TM_DATE_OK, MATCH_NAME, NC_GET_ATTRIB,
+     .       ITSA_TRUEMONTH_AXIS,
      .       abstract, do_warn, got_modulo, got_calendar, got_units, 
      .       got_positive, got_spacing, got_axis, got_cartesian, got_it,
-     .       coordvar, do_off, do_scale, dim_only
+     .       coordvar, do_off, do_scale, dim_only, true_month, is_regular
       PARAMETER (do_warn = .TRUE. )
       INTEGER TM_LENSTR1, CD_AXLEN, STR_SAME, STR_DNCASE, TM_LENSTR,
      .        dimid, iaxis, axid, cdfstat, lo, hi,
      .        nlen, elen, axlen, slen, edgid, bndid, npts, dim2d(2)
-      INTEGER TM_GET_CALENDAR_ID, CD_WRITE_BNDSDIM, cal_id, varid,
-     .        llen, vartype, nvdims, nvatts, iatt, attype, attlen,
-     .        attoutflag, istat, maxlen, vdims(8), newid, all_outflag,
-     .        attid, dset_num, outtype, axis_packed, dlen, vlen, iset
+      INTEGER TM_GET_CALENDAR_ID, CD_WRITE_BNDSDIM, TM_UNIT_ID, TM_UNITS_CAL,
+     .        cal_id, varid, llen, vartype, nvdims, nvatts, iatt, 
+     .        attype, attlen,attoutflag, istat, maxlen, vdims(8), 
+     .        newid, all_outflag, attid, dset_num, outtype, axis_packed, 
+     .        dlen, vlen, iset
       REAL vals(100)
 
 !      LOGICAL condensed
@@ -200,6 +205,17 @@
       iaxis = grid_line(idim, grid)
       dset_num = dset
       dim_only = .FALSE.
+      true_month = ITSA_TRUEMONTH_AXIS(iaxis)
+      is_regular = line_regular(iaxis) .AND. .NOT.true_month 
+      cal_id = 1
+
+      IF (true_month) THEN
+         cal_id = TM_GET_CALENDAR_ID ( line_cal_name(iaxis) )
+         IF (cal_id .NE. d360) THEN
+            is_regular = .FALSE.
+            do_bounds = 1
+         ENDIF
+      ENDIF
 
       IF (.NOT.mode_upcase_output) keepax_flag = 1
 
@@ -225,6 +241,8 @@
    50 	CONTINUE
    60 	CONTINUE
       ENDIF
+
+      buff2 = ' '
 
       npts = line_dim(iaxis)
       abstract = TM_ABSTRACT_AXIS( iaxis )
@@ -509,7 +527,7 @@
 * If the user has not asked for bounds and if its a regular axis then
 *  do not write bounds attribute. (The bounds themselves arent written.)
             IF ( (STR_SAME(attname, 'bounds') .EQ. 0) .AND. 
-     .        ((line_regular(iaxis)) .AND. do_bounds.LE.0) ) 
+     .           (is_regular .AND. do_bounds.LE.0) ) 
      .               attoutflag = 0
 
 * If they asked for /NOBOUNDS, dont write bounds even if the axis is irregular.
@@ -539,16 +557,18 @@
      .           MATCH_NAME (attname,  TM_LENSTR1(attname), 
      .           'POINT_SPACING', 13) ) THEN
                got_spacing = .TRUE.
+	       IF (true_month) buff = 'uneven' 
             ELSE
                IF (attype .EQ. NF_CHAR .AND. attoutflag .EQ. 1) THEN
 		  IF (MATCH_NAME (attname,  5, 'UNITS', 5) ) THEN
                      buff2 = buff
                      status = STR_DNCASE(buff, buff2)
+
 		  ENDIF
                   llen = TM_LENSTR1(buff)
                   CALL CD_WRITE_ATTRIB (cdfid, name(:nlen), attname,
      .                               buff(:llen), .FALSE., status )
-               ELSE IF (attoutflag .EQ. 1) THEN
+	       ELSE IF (attoutflag .EQ. 1) THEN
                   CALL CD_WRITE_ATTVAL_DP(cdfid, name(:nlen), attname,
      .                                 vals, attlen, attype, status )
                ENDIF
@@ -603,8 +623,19 @@
 	    units = 'degrees_north'
 	ELSEIF ( line_direction(iaxis) .EQ. 'TI'
      . .AND. TM_DATE_OK( line_T0(iaxis),cal_id )    ) THEN
-            slen = TM_LENSTR1( line_units(iaxis) )
-	    units = line_units(iaxis)(:slen)//' since '
+            buff = line_units(iaxis)
+	    slen = TM_LENSTR1( buff )
+	    units = buff(:slen)//' since '
+
+* get original units. If a user-defined true-month axis, will write in units of days.
+	    IF (true_month) THEN  
+	       IF (buff2(1:8).EQ.'TRUMONTH' .OR. 
+     .             TM_LENSTR1(buff2).LE.1) buff2 = 'days'
+	       slen = INDEX(buff2, ' since') - 1
+	       IF (slen .LE. 0) slen = TM_LENSTR1 (buff2)
+	       units = buff2(:slen)//' since'
+	    ENDIF
+
             IF (line_shift_origin(iaxis)) THEN
                datebuff = '01-JAN-0001 00:00:00'
             ELSE
@@ -613,7 +644,6 @@
             CALL TM_DATE_REFORMAT(datebuff,pdate_vax,cal_id,
      .				  units(slen+8:),pdate_numslashnum,
      .				  .TRUE., status )
-	    IF ( status .NE. merr_ok ) GOTO 5900
 
             buff2 = units
             status = STR_DNCASE(units, buff2)
@@ -789,7 +819,7 @@
          CONTINUE
       ELSE
         IF (.NOT. got_spacing) THEN
-        IF ( line_regular(iaxis) ) THEN
+        IF ( is_regular ) THEN
            attname = 'point_spacing' 
            IF (varid .GT. 0) THEN
               CALL CD_GET_VAR_ATT_ID(dset_num, varid, attname, attid,status)
@@ -950,7 +980,7 @@
       IF (do_bounds .EQ. -1) attoutflag = 2
 
       IF (  (ax_type.EQ.pcdf_full_span .OR. ax_type.EQ.pcdf_sub_span)
-     .  .AND. ( .NOT.line_regular(iaxis) .OR. do_bounds.EQ.1) 
+     .  .AND. ( .NOT.is_regular .OR. do_bounds.EQ.1) 
      .  .AND. ( edges_flag .EQ. 0) 
      .  .AND. ( attoutflag .NE. 2) ) THEN
 
@@ -1027,7 +1057,7 @@
       IF (  (ax_type.EQ.pcdf_full_span .OR. ax_type.EQ.pcdf_sub_span)
      . .AND. ((edges_flag.EQ.1) .OR.
      .        (edges_flag.EQ.2 .AND.
-     .         .NOT.line_regular(iaxis) .AND. 
+     .         .NOT.is_regular .AND. 
      .         .NOT.recdim)) ) THEN
 
          name = name(:nlen)//'edges'

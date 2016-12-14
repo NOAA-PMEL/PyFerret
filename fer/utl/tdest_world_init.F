@@ -50,6 +50,7 @@
 *             to be done in DOUBLE precision.
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 * V695+ *sh* 5/15 calendar factor adjustments only if src/dst calendars differ
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -64,7 +65,7 @@
 	INTEGER	src_grid, dst_grid, idim, status
 
 * internal variable declarations:
-	LOGICAL TM_DATE_OK
+	LOGICAL TM_DATE_OK, ITSA_TRUEMONTH_AXIS
 	INTEGER	TM_GET_CALENDAR_ID ,
      .          src_line, dst_line, src_cal_id, dst_cal_id
 	REAL	CAL_FACTR
@@ -102,7 +103,9 @@
 
 * determine the units and absolute T0 for the two axes
 	usrc = un_convert( line_unit_code(src_line) )
+	IF ( ITSA_TRUEMONTH_AXIS(src_line) ) usrc = un_convert(pun_day)
 	udst = un_convert( line_unit_code(dst_line) )
+	IF ( ITSA_TRUEMONTH_AXIS(dst_line) ) udst = un_convert(pun_day)
 
 	at0src = SECS_FROM_BC( line_t0(src_line), src_cal_id, status )
 	IF ( status .NE. ferr_ok ) RETURN

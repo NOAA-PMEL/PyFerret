@@ -11,9 +11,13 @@
 *             secs per 365.25 days (change xunits_data.F too)
 *             also add all types of months: 1/12 of seconds/year 
 * 4/2016 *sh* added unit names for ensemble and forecast axes
+* V698  3/16 *acm* Ticket 2158: working with true monthly time axes.
+* V72  11/16 *acm* Add codes for seconds/minute, hour, day. (Add more
+*                  for different year definitions if needed.)
 
 	INTEGER		pun_1st_time,
      .			pun_last_time,
+     .			pun_trumonths,
      .			pun_1st_len,
      .			pun_last_len,
      .			pun_1st_unit,
@@ -22,29 +26,34 @@
      .			pun_degrees,
      .			pun_meters,
      .			pun_millibars,
-     .			pun_decibars
+     .			pun_decibars,
+     .			pun_minute,
+     .			pun_hour,
+     .			pun_day
 
-	PARAMETER     ( pun_1st_time  = -16,
+	PARAMETER     ( pun_1st_time  = -21,
      .			pun_last_time = -1,
+     .			pun_trumonths = -17,
      .			pun_1st_len   = 1,
      .			pun_last_len  = 15, 
      .			pun_1st_unit  = pun_1st_time,
      .			pun_last_unit = pun_last_len,
-     .			pun_num_alt   = 20,
+     .			pun_num_alt   = 21,
      .			pun_degrees   = 4,
      .			pun_meters    = 9,	! formerly 3
      .			pun_millibars = 3,	! formerly 9
-     .			pun_decibars  = 10 )
-
-
+     .			pun_decibars  = 10,
+     .			pun_minute    = -2,
+     .			pun_hour      = -3,
+     .			pun_day       = -4)
 	
 	INTEGER		un_alt_subsc( pun_num_alt )
 	REAL		un_convert  ( pun_1st_unit:pun_last_unit )
 	CHARACTER*12	un_name     ( pun_1st_unit:pun_last_unit ),
      .			un_alt_name ( pun_num_alt )
 
-	COMMON/ XUNIT /	un_alt_subsc,		! subscripts of unit names
-     .			un_convert,		! conversion factors
+	COMMON/ XUNIT /	un_convert,		! conversion factors
+     .			un_alt_subsc,		! subscripts of unit names
      .			un_name,		! unit names
      .			un_alt_name		! alternative unit names
 

@@ -60,6 +60,7 @@
 *                   to be returned.
 * V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 	include 'tmap_dims.parm'
 #      include "tmap_dset.parm"
@@ -74,12 +75,12 @@
 
 * internal variable declarations:
 	LOGICAL	TM_DFPEQ, TM_ITS_SUBSPAN_MODULO, TM_FPEQ_SNGL, 
-     .		is_regular, calendar
+     .		ITSA_TRUEMONTH_AXIS, is_regular, calendar, true_month
 	INTEGER	lo_look, hi_look, axis, ibot, itop, look,
      .		line_len, isubsc, num_mod
 	REAL*8	SECS_TO_TSTEP, TM_WORLD, TM_WW_AXLEN,
      .		wwindex, wcoord, half_way, start, aend, span, 
-     .		first, last, dsubsc
+     .		first, last, dsubsc, timefac
 	REAL*4  delsubsc, half
 
 * initialize
@@ -118,10 +119,11 @@
 	      line_len = line_len + 1
 	      is_regular = .FALSE.
 	   ELSE
-	      is_regular = line_regular( axis )
+	      is_regular = line_regular(axis) .AND. .NOT.ITSA_TRUEMONTH_AXIS(axis)
+
 	   ENDIF
 	ELSE
-	   is_regular = line_regular( axis )
+	   is_regular = line_regular(axis) .AND. .NOT.ITSA_TRUEMONTH_AXIS(axis)
 	ENDIF
 
 * initialize pointers for axes with irregularly spaced points
@@ -135,6 +137,14 @@
 * ... begin by computing axis limits as outer edges of end boxes
 	   span = TM_WW_AXLEN(axis)
 	   CALL TM_WW_AXLIMS(axis, start, aend)
+	    
+	   IF ( ITSA_TRUEMONTH_AXIS(axis) ) THEN 
+	      CALL TM_MONTH_TIME_FACTOR (grid, true_month, timefac)
+	      start = start * timefac
+	      aend = aend * timefac
+	      span = span * timefac
+	   ENDIF
+
 	   IF (TM_ITS_SUBSPAN_MODULO(axis)) THEN
 	      span = line_modulo_len(axis)
 	      aend = start + span

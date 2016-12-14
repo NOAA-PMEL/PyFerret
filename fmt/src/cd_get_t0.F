@@ -43,6 +43,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V695+  10/15 *sh* new routine extracted from code in cd_get_1_axis
+* V698  4/16 *acm* new TM_UNITS_CAL to account for calendar in units id
 
 * argument definitions:
 *       filename (input)
@@ -68,8 +69,9 @@
         CHARACTER*(*) filename, units_string, calendar_string, t0_string
 
 * local variable declarations:
-        LOGICAL ok_cal, yyyymmdd_time
-        INTEGER TM_LENSTR1, TM_UNIT_ID, TM_GET_CALENDAR_ID, STR_UPCASE,
+        LOGICAL ok_cal, yyyymmdd_time, true_month
+        INTEGER TM_LENSTR1, TM_UNIT_ID, TM_UNITS_CAL, 
+     .           TM_GET_CALENDAR_ID, STR_UPCASE,
      .           flen, clen, slen, istat, since_T0
         CHARACTER cal_name*32, tunits*32, dbuf*3, buff*128
         REAL*8 TM_SECS_FROM_BC, 
@@ -151,7 +153,6 @@ c string as the units.  i.e., "days_since_event".
 
 * decode the units
         unit_code = TM_UNIT_ID( tunits )
-        IF ( unit_code.EQ.0 .AND. tunits .NE. ' ' ) GOTO 5100
 
 * Named calendar with unit=year gets length of year in that calendar.
       IF (unit_code .EQ. -6 .OR. unit_code .EQ. -10) THEN
@@ -167,6 +168,13 @@ c string as the units.  i.e., "days_since_event".
          IF (agg_cal_id .EQ. julian) unit_code = -15
 	 IF (agg_cal_id .EQ. noleap) unit_code = -13
       ENDIF
+
+* Named calendar with unit=month or year gets length according to calendar's year length.
+
+        true_month = .FALSE. ! initialize
+	unit_code = TM_UNITS_CAL( unit_code, agg_cal_id, true_month )
+
+        IF ( unit_code.EQ.0 .AND. tunits .NE. ' ' ) GOTO 5100
 
 * successful completion
         status = merr_ok

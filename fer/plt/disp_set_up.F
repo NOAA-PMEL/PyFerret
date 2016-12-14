@@ -168,6 +168,7 @@
 *                   all-missing it returns arbitrary_large_val4.
 * V710  *acm* 11/16 Ticket 2483: Fix the axis-end symbols that are defined 
 *                   for time axis plots
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -175,6 +176,7 @@ C plus those starting w/ xbox_bounds:
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
+        include 'xunits.cmn_text'
 	include 'ferret.parm'
 	include 'plot_setup.parm'
 	include 'errmsg.parm'
@@ -220,12 +222,12 @@ C plus those starting w/ xbox_bounds:
 
         CHARACTER*1     axdir(6)
 
-	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, TM_FPEQ, ITS_FMRC,
+	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, TM_FPEQ, ITS_FMRC, 
+     .			ITSA_TRUEMONTH_AXIS,
      .			user_title, time_axis, time_axis_dim1, timeax_both, 
      .			regrid_1, regrid_2, no_y_rng, edges_ok,
      .			ITS_GIF_GRAPHICS, its_gif, REGULARLY_SPACED,
-     .                  irregular
-        LOGICAL         use_cell
+     .                  irregular, use_cell
 
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			dim1, dim2, mvx, mvx_temp, mvy, mvy_temp,
@@ -480,7 +482,8 @@ C   set up memory for the flag grid
 	   ENDIF
 	ENDIF
 
-* determine axis re-gridding needs
+* determine axis re-gridding needs 
+* (for true-month axis we can treat axis as regular)
 
         irregular = .NOT. ( line_regular(axis1) )
 	CALL AXIS_INTERVALS( 'X', mvx_temp, ctx, dim1, curvilinear, s1_axis,
@@ -574,6 +577,8 @@ C   set up memory for the flag grid
 	   IF (overlay) THEN
 	      t1_date =  INTERNAL_WHOI_DATE(grid, dim1, 1.0D0 )
 	      dt_min = line_tunit( grid_line(dim1,grid) ) / 60.
+	      IF (ITSA_TRUEMONTH_AXIS(grid_line(dim1,grid))) 
+     .                dt_min = un_convert(pun_day)/60. 
 	      CALL SET_T1_DATE (t1_date, dt_min)
 	   ENDIF
         ELSE
@@ -586,6 +591,8 @@ C   set up memory for the flag grid
 	      IF (overlay) THEN
 	         t1_date =  INTERNAL_WHOI_DATE(grid, dim2, 1.0D0 )
 	         dt_min = line_tunit( grid_line(dim2,grid) ) / 60.
+	         IF (ITSA_TRUEMONTH_AXIS(grid_line(dim2,grid))) 
+     .                dt_min = un_convert(pun_day)/60. 
 	         CALL SET_T1_DATE (t1_date, dt_min)
 	      ENDIF
 	   ENDIF

@@ -42,6 +42,9 @@
 * V695+ *acm* and *sh*
 * V698 2/16 *sh* - if identical pre-existing axes exist, re-use them
 * V698 3/16 *sh* - F-lag axis starts at 1/2 avg_lag (low cell bound at zero) 
+* V698  4/16 *acm* new TM_UNITS_CAL to account for calendar in units id
+* V71 12/16 *acm* Ticket 2158: working with true monthly time axes. fmrc axis is 
+*                 not defined as true month.
 
 * include files
         include 'netcdf.inc'
@@ -60,8 +63,8 @@
         include 'xio.cmn_text'
         include 'xunits.cmn_text'
         external xunits_data
-        include 'calendar.decl'
-        include 'calendar.cmn'
+c        include 'calendar.decl'
+c        include 'calendar.cmn'
 
 * calling argument declarations
 	LOGICAL	has_edges
@@ -74,10 +77,11 @@
 	PARAMETER (bufflen = 256)
 	CHARACTER TM_STRING*13, buff*256, dbuf*3, vupcase*128, pCR*1
 
-	LOGICAL TM_DFPEQ_TOL, TM_FPEQ_EPS, NC_GET_ATTRIB, 
-     .		coordvar, got_it, do_warn, ok_cal, yyyymmdd_time, got_torg
+	LOGICAL TM_DFPEQ_TOL, TM_FPEQ_EPS, NC_GET_ATTRIB, ITSA_TRUEMONTH_AXIS,
+     .		coordvar, got_it, do_warn, ok_cal, yyyymmdd_time, got_torg,
+     .          true_month
 	INTEGER STR_UPCASE, TM_LENSTR1, TM_GET_CALENDAR_ID, TM_UNIT_ID,
-     .		TM_FIND_LIKE_DYN_LINE,
+     .		TM_UNITS_CAL, TM_FIND_LIKE_DYN_LINE, STR_SAME,
      .          i, l, n,  nvdim, vdims(8), nvatts, npts2d,
      .		npts_cdf, ipt1, ipte, iptn, iptnp1,
      .		outflag, next_line_storage, pre_exist,
@@ -182,22 +186,16 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 
       units = TM_UNIT_ID( line_units(axcalt) )
 
-* Named calendar with unit=year gets length of year in that calendar.
+* Named calendar with unit=month or year gets length according to calendar's year length.
 
-      IF (units .EQ. -6 .OR. units .EQ. -10) THEN
-         IF (cal_id .EQ. d360) units = -9
-         IF (cal_id .EQ. julian) units = -12
-	 IF (cal_id .EQ. noleap) units = -11
-	 IF (cal_id .EQ. all_leap) units = -8
+      true_month = ITSA_TRUEMONTH_AXIS(axcalt)
+      IF (true_month) THEN
+         true_month = .FALSE.
+	 units = pun_day
+	 line_units(axcalt) = un_name(units) ! make it days, NOT true-month
       ENDIF
 
-* Named calendar with unit=month gets length of month in that calendar.
-
-      IF (units .EQ. -5) THEN
-         IF (cal_id .EQ. d360) units = -14
-         IF (cal_id .EQ. julian) units = -15
-	 IF (cal_id .EQ. noleap) units = -13
-      ENDIF
+      units = TM_UNITS_CAL( units, cal_id, true_month )
 
       line_unit_code(axcalt) = units
       IF  ( units.EQ.0 .AND. line_units(axcalt) .NE. ' ' ) THEN

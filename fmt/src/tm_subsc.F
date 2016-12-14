@@ -51,6 +51,7 @@
 * V542 2/02 *sh* - added support for modulo length > axis length
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V71  3/16 *acm* Ticket 2158: working with true monthly time axes.
 
 * calling arguments:
 * world_coord	- coordinate vaule to be translated to subscript
@@ -69,7 +70,7 @@
 	REAL*8	world_coord
 
 * internal variable declarations:
-	LOGICAL	TM_ITS_SUBSPAN_MODULO, regular
+	LOGICAL	TM_ITS_SUBSPAN_MODULO, ITSA_TRUEMONTH_AXIS, regular
 	INTEGER	lo_look, hi_look, ibot, itop, look, axis,
      .		line_len, isubsc
 	INTEGER	num_mod
@@ -91,10 +92,10 @@
 	      line_len = line_len + 1
 	      regular = .FALSE.
 	   ELSE
-	      regular = line_regular( axis )
+	      regular = line_regular(axis) .AND. .NOT.ITSA_TRUEMONTH_AXIS(axis)
 	   ENDIF
 	ELSE
-	   regular = line_regular( axis )
+	   regular = line_regular(axis) .AND. .NOT.ITSA_TRUEMONTH_AXIS(axis)
 	ENDIF
 
 * initialize pointers for axes with irregularly spaced points

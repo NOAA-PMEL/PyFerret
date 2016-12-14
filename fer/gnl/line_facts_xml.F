@@ -56,6 +56,7 @@
 *      *acm* 3/13 Dont show axes with names in parentheses e.g. (AX004)
 * V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
 *                  using original upper/lowercase spelling
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -72,7 +73,7 @@
 	INTEGER	  lun, idim, grid, orient
 
 * local variable declarations:
-	LOGICAL	BKWD_AXIS, GEOG_LABEL,
+	LOGICAL	BKWD_AXIS, GEOG_LABEL, ITSA_TRUEMONTH_AXIS,
      .          calendar, new, got_it, coordvar, original
 	INTEGER TM_LENSTR, TM_LENSTR1, TM_GET_CALENDAR_ID, 
      .          STR_SAME, line, slen, llen, ndec, cal_id, status,
@@ -252,7 +253,7 @@
 * regularly spaced ?
            WRITE ( risc_buff, 2030 ) 'point_spacing'
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-	   IF ( line_regular( line ) ) THEN
+	   IF ( line_regular( line ) .AND. .NOT.ITSA_TRUEMONTH_AXIS(line) ) THEN
               WRITE ( risc_buff, 2075 ) 'even'
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ELSE

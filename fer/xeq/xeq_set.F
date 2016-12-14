@@ -193,6 +193,7 @@
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
 * V701 *acm*  7/12 Ticket 2455: On a SET AXIS/NAME=, save the original spelling and 
 *                  an up-cased spelling of the axis name, as is done with DEFINE AXIS.
+* V710  4/16 *acm* new TM_UNITS_CAL to account for calendar in units id
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -239,7 +240,7 @@
 * local variable declarations:
 	INTEGER		REGION_NUMBER, VIEWPORT_NUMBER, GRID_FROM_NAME,
      .                  TM_GET_LINENUM, TM_LENSTR, TM_LENSTR1, 
-     .                  TM_UNIT_ID, TM_GET_CALENDAR_ID, 
+     .                  TM_UNIT_ID, TM_UNITS_CAL, TM_GET_CALENDAR_ID,
      .			FIND_DSET_NUMBER, STR_UPCASE, STR_SAME, 
      .                  ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS, ITS_BATCH_MODE,
      .                  equal_pos, colon_pos, dset_num, ich, status,
@@ -1108,15 +1109,10 @@ c *kob* 4/97
 
            units = TM_UNIT_ID( line_units(axis) )
 
-* Named calendar with unit=year gets length of year in that calendar.
+* Named calendar with unit=month or year gets length according to calendar's year length.
 
            cal_id = TM_GET_CALENDAR_ID (line_cal_name(axis))
-           IF (units .EQ. -6 .OR. units .EQ. -10) THEN
-              IF (cal_id .EQ. d360) units = -9
-              IF (cal_id .EQ. julian) units = -12
-              IF (cal_id .EQ. noleap) units = -11
-              IF (cal_id .EQ. all_leap) units = -8
-           ENDIF
+           units = TM_UNITS_CAL( units, cal_id, .FALSE. )
 
            line_unit_code(axis) = units
            IF  ( units.EQ.0 .AND. line_units(axis) .NE. ' ' ) THEN

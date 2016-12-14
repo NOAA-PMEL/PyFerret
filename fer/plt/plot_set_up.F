@@ -175,10 +175,12 @@
 *                   all-missing it returns arbitrary_large_val4.
 * V710  *acm* 11/16 Ticket 2483: Fix the axis-end symbols that are defined 
 *                   for time axis plots
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
+        include 'xunits.cmn_text'
 	include 'ferret.parm'
 	include 'plot_setup.parm'
 	include 'errmsg.parm'
@@ -207,7 +209,8 @@
 * V500 *kob* 3/99- up VAR_CODE and VAR_UNITS to 64 chars
 * internal variable declarations:
 	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, TM_HAS_STRING, ITS_FMRC,
-     .                  flip, time_axis,
+     .                  ITSA_TRUEMONTH_AXIS,
+     .			flip, time_axis,
      .			all_1_ind, formatted,
      .			indep_is_log, dep_is_log, use_nice,
      .                  this_no_range(max_line_on_plot), set_axis,
@@ -808,6 +811,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                  dt_min = 1.0
               ELSE
 	         dt_min = line_tunit( grid_line(the_taxis,grid) ) / 60.! sec-->min
+	         IF ( ITSA_TRUEMONTH_AXIS(grid_line(the_taxis,grid)) ) 
+     .                dt_min = un_convert(pun_day)/60. 
 
 *  Check for calendar mismatch for time- overlay plots
 	         IF (overlay) THEN

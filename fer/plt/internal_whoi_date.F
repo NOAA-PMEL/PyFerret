@@ -48,10 +48,12 @@
 * V420: 11/27/95 - 4-digit YEARS!!
 * v530  12/19/00 *acm* cal_id for non-standard calendar types.
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
+        include 'xunits.cmn_text'
 	include 'ferret.parm'
 
 * calling argument declarations
@@ -59,6 +61,7 @@
 	REAL*8	tstep
 
 * internal variable declarations
+        LOGICAL         ITSA_TRUEMONTH_AXIS
 	INTEGER 	yr100, yr, mon, day, hr, min, sec,
      .			status, i, axis
 	INTEGER		TM_GET_CALENDAR_ID, cal_id
@@ -84,6 +87,8 @@
 
 * Find the number of seconds since start of data set for this time step
 	offset_secs = tstep*line_tunit( axis )
+* True-month axis? A true-month step has been converted from month to days
+	IF (ITSA_TRUEMONTH_AXIS(axis)) offset_secs = tstep* un_convert(pun_day)  
 
 * Total seconds to this time step since 01-JAN-0000 00:00:00
 	this_secs = start_secs + offset_secs

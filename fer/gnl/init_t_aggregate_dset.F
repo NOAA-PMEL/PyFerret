@@ -57,6 +57,7 @@
 
 * V695+ *sh* 11/15 new routine 
 * V698 *sh* 1/16  pass explicit path name (for "USE file.agg" compatibility)
+* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
 * arguments:
 *	mem_filename_list - if have_expr, the variable of names (input)

@@ -1,4 +1,4 @@
-	DOUBLE PRECISION FUNCTION TM_WORLD ( isubscript, grid_num, idim,
+	DOUBLE PRECISION FUNCTION TM_WORLD ( isubscript, grid, idim,
      .					     where_in_box )
 
 *
@@ -62,6 +62,10 @@
 *		underlying axis is modulo
 * V530 *sh* 10/00 - guts extracted into TM_WORLD_AX
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* v71  12/16 *acm* Ticket 2158: working with true monthly time axes.
+*
+* If this is a 'true-month' axis, TM_WORLD_AX will convert the result 
+* to the correct true month length. Return the result in units of days.
 
 * Include files
 #include "gt_lib.parm"
@@ -70,14 +74,15 @@
 	external xgt_grid_data
 
 * calling argument declarations:
-	INTEGER	isubscript, grid_num, idim, where_in_box
+	INTEGER	isubscript, grid, idim, where_in_box
 
 * internal variable declarations:
+	LOGICAL ITSA_TRUEMONTH_AXIS, true_month
 	INTEGER	iaxis
-	REAL*8	TM_WORLD_AX
+	REAL*8	TM_WORLD_AX, timefac
 
 * initialize
-	iaxis    = grid_line( idim, grid_num )
+	iaxis    = grid_line( idim, grid )
 	IF ( iaxis .EQ. mpsnorm
      .	.OR. iaxis .EQ. mpsunkn
      .	.OR. (isubscript .EQ. unspecified_int4 
@@ -87,6 +92,15 @@
 	ENDIF
 
 	TM_WORLD = TM_WORLD_AX ( isubscript, iaxis, where_in_box )
+
+	true_month = ITSA_TRUEMONTH_AXIS(iaxis)
+	IF (true_month) THEN
+ 
+* Convert the time coordinate on a true-month axis to days.
+	   CALL TM_MONTH_TIME_FACTOR (grid, true_month, timefac)
+	   TM_WORLD = TM_WORLD* timefac
+
+	ENDIF
 
 	RETURN
 	END

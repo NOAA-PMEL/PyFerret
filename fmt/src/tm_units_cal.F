@@ -1,7 +1,4 @@
-	INTEGER FUNCTION DATE_PREC( grid, idim, dt )
-
-*
-*
+	INTEGER FUNCTION TM_UNITS_CAL( inunit, cal_id, true_month )
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -34,55 +31,44 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-* determine the precision level needed for a date string to resolve "dt"
-* in units appropriate for the given grid time axis
+* Reset the unit ID for a unit of month or year for non-gregorian calendars,
+* according to calendar's year length.
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* revision 0.0 - 3/18/88
-*       *acm* 3/12 cleanup ifdefs and unnecessary include files
-*       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
-* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
+	include 'calendar.decl'
+	include 'calendar.cmn'	
+* Argument definitions
+	LOGICAL true_month
+	INTEGER inunit, cal_id
 
-	include 'tmap_dims.parm'
-	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-        include 'xunits.cmn_text'
-	include	'ferret.parm'
+* Internal defitions
+	INTEGER iun
 
-* calling argument declarations
-	INTEGER	grid, idim
-	REAL	dt
+	iun = inunit
 
-* internal variable declarations:
-	LOGICAL ITSA_TRUEMONTH_AXIS
-	INTEGER	i
-	REAL	convert(5), delta
-	DATA	convert(1)/ 60. /,	! sec --> min
-     .		convert(2)/ 60. /,	! min --> hour
-     .		convert(3)/ 24. /,	! hr  --> day
-     .		convert(4)/ 30. /,	! day --> mon
-     .		convert(5)/ 12. /	! mon --> year
+C /calendar=/unit=year gets length of year in that calendar.
+	IF (inunit .EQ. -6 .OR. inunit .EQ. -10) THEN  
+	   IF (cal_id .EQ. d360) iun = -9
+	   IF (cal_id .EQ. julian) iun = -12
+	   IF (cal_id .EQ. noleap) iun = -11
+	   IF (cal_id .EQ. all_leap) iun = -8
+	ENDIF
 
-* get the dt interval expressed in seconds
-	delta = dt * line_tunit( grid_line(idim,grid) )
+C /units=months  is 1/12 of the length of the year
 
-* A true-month axis has line-units of month, but output units of days
-	IF (ITSA_TRUEMONTH_AXIS(grid_line(idim,grid))) delta = dt * un_convert(pun_day)
-
-* see how big it is
-	DO 100 i = 1, 5
-	   delta = delta / convert(i)
-	   IF ( delta .LT. 1.0 ) THEN
-	      DATE_PREC = 7-i
-	      RETURN
+	IF (inunit .EQ. -5) THEN    ! 1/97: "-5" is "MONTHS"
+	   IF (cal_id .eq. noleap) iun = -13
+	   IF (cal_id .eq. julian) iun = -15
+	   IF (cal_id .eq. d360  ) iun = -14
+	   IF (cal_id .eq. all_leap) iun = -16
+	   IF (true_month) THEN
+	       IF (cal_id .eq. gregorian) THEN
+	          iun = -17
+	       ELSE
+	          iun = iun - 5
+	      ENDIF
 	   ENDIF
- 100	CONTINUE
+	ENDIF
 
-* very big ! use years, only to label
-	DATE_PREC = 1
+	TM_UNITS_CAL = iun
 	RETURN
 	END

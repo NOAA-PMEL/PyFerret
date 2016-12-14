@@ -50,6 +50,7 @@
 * Unix/RISC port - 7/91   - eliminated unneeded *variables common
 * V4.20 - 10/95 - remove references to line_mem to permit recursive line defs
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V72   11/16 *acm* Ticket 2158: working with true monthly time axes.
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -61,6 +62,7 @@
 	REAL*8	lo,hi
 
 * local variable declarations
+	LOGICAL ITSA_TRUEMONTH_AXIS
 	INTEGER line_num, line_len
 	REAL*8	TM_WORLD
 
@@ -84,7 +86,7 @@
 
 	ELSE
 
-	   IF ( line_regular( line_num ) ) THEN
+	   IF ( line_regular( line_num ) .AND. .NOT.ITSA_TRUEMONTH_AXIS (line_num)) THEN
 	      lo = line_start( line_num ) - line_delta( line_num )/2.
 	      hi = lo + line_delta( line_num ) * line_dim( line_num )
 
@@ -92,7 +94,6 @@
 * ... lo limit of bottom box; hi limit of top box
 	      lo = TM_WORLD(       1, grid, idim, box_lo_lim)
 	      hi = TM_WORLD(line_len, grid, idim, box_hi_lim)
-
 
 	   ENDIF
 

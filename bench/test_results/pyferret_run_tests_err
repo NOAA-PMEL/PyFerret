@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1404 Dec  1 16:50 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1404 Dec 16 11:21 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -285,6 +285,7 @@ Benchmark scripts that will be run:
    bn_spawn_fail.jnl
    bn_ave_of_ave.jnl
    bn_agg_member_syntax.jnl
+   bn_true_monthly.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
@@ -301,7 +302,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Thu Dec  1 16:56:45 PST 2016
+Beginning at Fri Dec 16 11:22:17 PST 2016
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4538,8 +4539,6 @@ DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/irregular_start_time_fcst.nc")
  LISTing to file tmp/f04_e3_t1_1v.nc
  LISTing to file tmp/f04_e3_t2_1v.nc
  LISTing to file tmp/f04_e3_t3_1v.nc
-           *** NOTE: /FILES is deprecated.  Use /MEMBERS
-           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
  **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis X of agg member 3
 list/x=150E/y=15n/L=10 fcst_2
@@ -4736,6 +4735,72 @@ stat/br fcst[d=12.300000]
 stat/br sst[d=4.1]
  **ERROR: unknown data set: D=5.30
 stat/br sst[d=5.30]
+*** Running ferret script: bn_true_monthly.jnl
+ Cached data cleared from memory
+           *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+           *** NOTE: True monthly axis, T0 not specified. Using start of first year of axis
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+           *** NOTE: True monthly axis, T0 not specified. Using start of first year of axis
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+ LISTing to file a.nc
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+ LISTing to file a.nc
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+ LISTing to file a.nc
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+           *** NOTE: True monthly axis, T0 not specified. Using 01-jan-0000
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis TAXIS
+ LISTing to file a.nc
+           *** NOTE: True monthly axis
+Replacing definition of axis TAXIS
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+           *** NOTE: True monthly axis, T0 not specified. Using start of first year of axis
+Replacing definition of axis TAXIS
+ **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY specify /UNITS=month or omit /UNITS (MONTH is default)
+define axis/t=1-jan-2010:31-jul-2011:30/t0=1-jan-2000/monthly/units=days taxis
+ **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis: /NPOINTS not allowed. Use /T=lo:hi:del
+define axis/t=1-jan-2010:31-dec-2012:1/t0=1-jan-2000/monthly/npoints=13 taxis
+ **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis delta-t must be 1
+define axis/t=1-jan-2010:31-dec-2012/t0=1-jan-2000/monthly taxis
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+ **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis delta-t must be 1
+define axis/t=1-jan-2010:31-dec-2012:2/t0=1-jan-2000/monthly taxis
+ **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis: Definition /FROMDATA not allowed. Use /T=LO:HI:DEL
+define axis/t/t0=1-jan-2000/monthly taxis = {123,124,126}
+ **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis: Definition /FROMDATA not allowed. Use /T=LO:HI:DEL
+define axis/from/t/t0=1-jan-2001/monthly/edges taxis = {5,6,6,6,7}
+ **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis: /BOUNDS not allowed. Use /T=lo:hi:del
+def axis/t/t0=1-jan-2000/monthly/bounds tax={1.2, 2, 3.2, 5, 7, 8.4, 9}, {0.5,1.5, 1.5,2.5, 2.5,3.5, 3.5,6.5, 6.5,7.5, 7.5,8.5, 8.5,9.5}
+ **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis: needs /T=lo:hi:del
+define axis/x=1:5:1/monthly aaxis
 *** Running ferret script: bn_gif.jnl
  Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
@@ -4837,15 +4902,6 @@ Re-defining viewport UM6
 set region/@w
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: command syntax: writev5d(tr, 0, 0, 0, 0, 0, 0, 0, "vis5d_out.v5d")
-          unknown function "writev5d"
-DEFINE VARIABLE/QUIET vflag = writev5d(tr, 0, 0, 0, 0, 0, 0, 0, "vis5d_out.v5d")
- **ERROR: variable unknown or not in data set: VFLAG
-LOAD/TEMPORARY vflag
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
 *** Running ferret script: bn_startupfile.jnl
  Cached data cleared from memory
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -4893,4 +4949,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testfermethods.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Thu Dec  1 16:59:32 PST 2016
+Ended at Fri Dec 16 11:25:07 PST 2016

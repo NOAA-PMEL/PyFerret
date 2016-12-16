@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 13 Dec  1 16:48 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.021
+lrwxrwxrwx. 1 ksmith oerdnewp 13 Dec 16 10:54 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.022
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -285,12 +285,14 @@ Benchmark scripts that will be run:
    bn_ez_noupcase.jnl
    bn_spawn_fail.jnl
    bn_ave_of_ave.jnl
+   bn_agg_member_syntax.jnl
+   bn_true_monthly.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Thu Dec  1 16:49:27 PST 2016
+Beginning at Fri Dec 16 11:05:14 PST 2016
 *** Running ferret script: bn_syntax.jnl
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -10495,18 +10497,18 @@ show symbols/all
 PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "7.021"
-FERRET_PLATFORM = "Linux 2.6.32-642.6.2.el6.x86_64 64-bit"
+FERRET_VERSION = "7.022"
+FERRET_PLATFORM = "Linux 2.6.32-642.11.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 1-Dec-16"
-SESSION_TIME = "16:49"
-SESSION_PID = "12684"
-DELTA_CPU = "0.011997"
-CLOCK_SECS = "0.03"
-CURRENT_DATE = " 1-Dec-16"
-CURRENT_TIME = "16:49:32"
+SESSION_DATE = "16-Dec-16"
+SESSION_TIME = "11:05"
+SESSION_PID = "24267"
+DELTA_CPU = "0.014996"
+CLOCK_SECS = "0.003"
+CURRENT_DATE = "16-Dec-16"
+CURRENT_TIME = "11:05:19"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10524,18 +10526,18 @@ show symbol/all
 PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "7.021"
-FERRET_PLATFORM = "Linux 2.6.32-642.6.2.el6.x86_64 64-bit"
+FERRET_VERSION = "7.022"
+FERRET_PLATFORM = "Linux 2.6.32-642.11.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 1-Dec-16"
-SESSION_TIME = "16:49"
-SESSION_PID = "12684"
-DELTA_CPU = "0.006999"
-CLOCK_SECS = "0.038"
-CURRENT_DATE = " 1-Dec-16"
-CURRENT_TIME = "16:49:32"
+SESSION_DATE = "16-Dec-16"
+SESSION_TIME = "11:05"
+SESSION_PID = "24267"
+DELTA_CPU = "0.016998"
+CLOCK_SECS = "0.02"
+CURRENT_DATE = "16-Dec-16"
+CURRENT_TIME = "11:05:19"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10545,9 +10547,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 1-Dec-16"
-SESSION_TIME = "16:49"
-SESSION_PID = "12684"
+SESSION_DATE = "16-Dec-16"
+SESSION_TIME = "11:05"
+SESSION_PID = "24267"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10557,15 +10559,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 1-Dec-16"
-SESSION_TIME = "16:49"
-SESSION_PID = "12684"
+SESSION_DATE = "16-Dec-16"
+SESSION_TIME = "11:05"
+SESSION_PID = "24267"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 1-Dec-16"
-SESSION_TIME = "16:49"
-SESSION_PID = "12684"
+SESSION_DATE = "16-Dec-16"
+SESSION_TIME = "11:05"
+SESSION_PID = "24267"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10693,18 +10695,18 @@ show symbols/all
 PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "7.021"
-FERRET_PLATFORM = "Linux 2.6.32-642.6.2.el6.x86_64 64-bit"
+FERRET_VERSION = "7.022"
+FERRET_PLATFORM = "Linux 2.6.32-642.11.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 1-Dec-16"
-SESSION_TIME = "16:49"
-SESSION_PID = "12684"
-DELTA_CPU = "0.019997"
-CLOCK_SECS = "0.062"
-CURRENT_DATE = " 1-Dec-16"
-CURRENT_TIME = "16:49:32"
+SESSION_DATE = "16-Dec-16"
+SESSION_TIME = "11:05"
+SESSION_PID = "24267"
+DELTA_CPU = "0.017998"
+CLOCK_SECS = "0.042"
+CURRENT_DATE = "16-Dec-16"
+CURRENT_TIME = "11:05:19"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -14950,7 +14952,7 @@ set mode diag
 define axis/t=15-jan-1982:15-mar-1984:120/unit=hour tax5day
 define axis/x=120e:60w:10/unit=degrees xax10
 define grid/like=u/t=tax5day g5day
- getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1
+ getgrid EX#1     C:  5 dset:   2 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
 define grid/like=u/x=xax10/z=w/t=tax5day g5_10
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
@@ -24296,7 +24298,8 @@ list num1
 *** Running ferret script: bn_define_axes.jnl
 ! bn_define_axes.jnl
 ! *sh* 5/99
-! *sh* 12/99 - with streamlined syntax
+! *sh* 12/99 -  with streamlined syntax
+! *acm* 12/16 - change to a comment only
  
 ! exercise the DEFINE AXIS command
  
@@ -24519,6 +24522,9 @@ T0 = 1-JAN-1990
        2>  04-JAN-1990 12:00:00  3          03-JAN-1990 00:00:00    3.5
  
 ! real monthly calendar
+! (Note: when running pre-true-month Ferret versions, the timestep output from
+! show axis/l below was eliminated by the "clean_draconian" script)
+ 
 let month = MOD(l-1,12)+1
 let add_year = INT((l-1)/12)
 let tstep = DAYS1900(1980+add_year,month,1)
@@ -24526,58 +24532,58 @@ define axis/from_data/T/units=days/name=tax/t0=1-jan-1900/edges tstep[l=1:`20*12
  !-> define axis/from_data/T/units=days/name=tax/t0=1-jan-1900/edges tstep[l=1:241]
 show axis/l=1:20 tax
  name       axis              # pts   start                end
- TAX       TIME               240 i   16-JAN-1980 12:00    16-DEC-1999 12:00
+ TAX       TIME               240 i   JAN-1980             DEC-1999 (True Monthly)
 T0 = 1-JAN-1900
-   Axis span (to cell edges) = 7305
+   Axis span (to cell edges) = 240
  
-       L     T                   TBOX      TBOXLO                TSTEP (DAYS)
-       1>  16-JAN-1980 12:00:00  31         01-JAN-1980 00:00:00    29234.5
-       2>  15-FEB-1980 12:00:00  29         01-FEB-1980 00:00:00    29264.5
-       3>  16-MAR-1980 12:00:00  31         01-MAR-1980 00:00:00    29294.5
-       4>  16-APR-1980 00:00:00  30         01-APR-1980 00:00:00    29325
-       5>  16-MAY-1980 12:00:00  31         01-MAY-1980 00:00:00    29355.5
-       6>  16-JUN-1980 00:00:00  30         01-JUN-1980 00:00:00    29386
-       7>  16-JUL-1980 12:00:00  31         01-JUL-1980 00:00:00    29416.5
-       8>  16-AUG-1980 12:00:00  31         01-AUG-1980 00:00:00    29447.5
-       9>  16-SEP-1980 00:00:00  30         01-SEP-1980 00:00:00    29478
-      10>  16-OCT-1980 12:00:00  31         01-OCT-1980 00:00:00    29508.5
-      11>  16-NOV-1980 00:00:00  30         01-NOV-1980 00:00:00    29539
-      12>  16-DEC-1980 12:00:00  31         01-DEC-1980 00:00:00    29569.5
-      13>  16-JAN-1981 12:00:00  31         01-JAN-1981 00:00:00    29600.5
-      14>  15-FEB-1981 00:00:00  28         01-FEB-1981 00:00:00    29630
-      15>  16-MAR-1981 12:00:00  31         01-MAR-1981 00:00:00    29659.5
-      16>  16-APR-1981 00:00:00  30         01-APR-1981 00:00:00    29690
-      17>  16-MAY-1981 12:00:00  31         01-MAY-1981 00:00:00    29720.5
-      18>  16-JUN-1981 00:00:00  30         01-JUN-1981 00:00:00    29751
-      19>  16-JUL-1981 12:00:00  31         01-JUL-1981 00:00:00    29781.5
-      20>  16-AUG-1981 12:00:00  31         01-AUG-1981 00:00:00    29812.5
+       L     T                   TBOX      TBOXLO                TSTEP (TRUMONTH)
+       1>  JAN-1980              31         01-JAN-1980           960
+       2>  FEB-1980              29         01-FEB-1980           961
+       3>  MAR-1980              31         01-MAR-1980           962
+       4>  APR-1980              30         01-APR-1980           963
+       5>  MAY-1980              31         01-MAY-1980           964
+       6>  JUN-1980              30         01-JUN-1980           965
+       7>  JUL-1980              31         01-JUL-1980           966
+       8>  AUG-1980              31         01-AUG-1980           967
+       9>  SEP-1980              30         01-SEP-1980           968
+      10>  OCT-1980              31         01-OCT-1980           969
+      11>  NOV-1980              30         01-NOV-1980           970
+      12>  DEC-1980              31         01-DEC-1980           971
+      13>  JAN-1981              31         01-JAN-1981           972
+      14>  FEB-1981              28         01-FEB-1981           973
+      15>  MAR-1981              31         01-MAR-1981           974
+      16>  APR-1981              30         01-APR-1981           975
+      17>  MAY-1981              31         01-MAY-1981           976
+      18>  JUN-1981              30         01-JUN-1981           977
+      19>  JUL-1981              31         01-JUL-1981           978
+      20>  AUG-1981              31         01-AUG-1981           979
 show axis/l=1:240:12 tax
  name       axis              # pts   start                end
- TAX       TIME               240 i   16-JAN-1980 12:00    16-DEC-1999 12:00
+ TAX       TIME               240 i   JAN-1980             DEC-1999 (True Monthly)
 T0 = 1-JAN-1900
-   Axis span (to cell edges) = 7305
+   Axis span (to cell edges) = 240
  
-       L     T                   TBOX      TBOXLO                TSTEP (DAYS)
-       1>  16-JAN-1980 12:00:00  31         01-JAN-1980 00:00:00    29234.5
-      13>  16-JAN-1981 12:00:00  31         01-JAN-1981 00:00:00    29600.5
-      25>  16-JAN-1982 12:00:00  31         01-JAN-1982 00:00:00    29965.5
-      37>  16-JAN-1983 12:00:00  31         01-JAN-1983 00:00:00    30330.5
-      49>  16-JAN-1984 12:00:00  31         01-JAN-1984 00:00:00    30695.5
-      61>  16-JAN-1985 12:00:00  31         01-JAN-1985 00:00:00    31061.5
-      73>  16-JAN-1986 12:00:00  31         01-JAN-1986 00:00:00    31426.5
-      85>  16-JAN-1987 12:00:00  31         01-JAN-1987 00:00:00    31791.5
-      97>  16-JAN-1988 12:00:00  31         01-JAN-1988 00:00:00    32156.5
-     109>  16-JAN-1989 12:00:00  31         01-JAN-1989 00:00:00    32522.5
-     121>  16-JAN-1990 12:00:00  31         01-JAN-1990 00:00:00    32887.5
-     133>  16-JAN-1991 12:00:00  31         01-JAN-1991 00:00:00    33252.5
-     145>  16-JAN-1992 12:00:00  31         01-JAN-1992 00:00:00    33617.5
-     157>  16-JAN-1993 12:00:00  31         01-JAN-1993 00:00:00    33983.5
-     169>  16-JAN-1994 12:00:00  31         01-JAN-1994 00:00:00    34348.5
-     181>  16-JAN-1995 12:00:00  31         01-JAN-1995 00:00:00    34713.5
-     193>  16-JAN-1996 12:00:00  31         01-JAN-1996 00:00:00    35078.5
-     205>  16-JAN-1997 12:00:00  31         01-JAN-1997 00:00:00    35444.5
-     217>  16-JAN-1998 12:00:00  31         01-JAN-1998 00:00:00    35809.5
-     229>  16-JAN-1999 12:00:00  31         01-JAN-1999 00:00:00    36174.5
+       L     T                   TBOX      TBOXLO                TSTEP (TRUMONTH)
+       1>  JAN-1980              31         01-JAN-1980           960
+      13>  JAN-1981              31         01-JAN-1981           972
+      25>  JAN-1982              31         01-JAN-1982           984
+      37>  JAN-1983              31         01-JAN-1983           996
+      49>  JAN-1984              31         01-JAN-1984           1008
+      61>  JAN-1985              31         01-JAN-1985           1020
+      73>  JAN-1986              31         01-JAN-1986           1032
+      85>  JAN-1987              31         01-JAN-1987           1044
+      97>  JAN-1988              31         01-JAN-1988           1056
+     109>  JAN-1989              31         01-JAN-1989           1068
+     121>  JAN-1990              31         01-JAN-1990           1080
+     133>  JAN-1991              31         01-JAN-1991           1092
+     145>  JAN-1992              31         01-JAN-1992           1104
+     157>  JAN-1993              31         01-JAN-1993           1116
+     169>  JAN-1994              31         01-JAN-1994           1128
+     181>  JAN-1995              31         01-JAN-1995           1140
+     193>  JAN-1996              31         01-JAN-1996           1152
+     205>  JAN-1997              31         01-JAN-1997           1164
+     217>  JAN-1998              31         01-JAN-1998           1176
+     229>  JAN-1999              31         01-JAN-1999           1188
  
 ! modulo axis for arbitrary time interval
 define axis/t=1-jan-0001:1-jan-0002:1/unit=days/t0=1-jan-0000 tencoding
@@ -25114,7 +25120,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Thu Dec  1 16:49:38 PST 2016
+Fri Dec 16 11:05:25 PST 2016
  
 GO bn_reset
 cancel mode verify
@@ -47322,7 +47328,7 @@ list element_index_str_n (axy[k=1:2,j=1:2], {"a10", "a2", "d4", "c5"})
  
 ! ferret version
 sh sym FERRET_VERSION
-FERRET_VERSION = "7.021"
+FERRET_VERSION = "7.022"
  
 ! history attribute
 let a = 12
@@ -47340,7 +47346,7 @@ LAB1 = "X : 0.5 to 314.5"
  
 ! show commands without an argument, lists version number at the top
 sho command
- Commands in Program FERRET  version7.021:
+ Commands in Program FERRET  version7.022:
  SET
  SET WINDOW/SIZE/NEW/LOCATION/ASPECT/CLEAR/TITLE
  SET REGION/I/J/K/L/M/N/X/Y/Z/T/E/F/DX/DY/DZ/DT/DE/DF/DI/DJ/DK/DL/DM/DN
@@ -47368,7 +47374,7 @@ sho command
  SHOW EXPRSION/ALL
  SHOW LIST/ALL
  SHOW DATA/ALL/BRIEF/FULL/VARIABLE/FILES/XML/ATTR/OUTFILE/APPEND/CLOBBER
-       /HIDDEN
+       /HIDDEN/MEMBERS
  SHOW MODE/ALL
  SHOW MOVIE/ALL
  SHOW VARIABLE/ALL/DATASET/USER/XML/OUTFILE/APPEND/CLOBBER/TREE/LAYERZ/CURVILIN
@@ -47426,7 +47432,7 @@ sho command
  DEFINE GRID/X/Y/Z/T/E/F/FILE/LIKE
  DEFINE VARIABLE/TITLE/UNITS/QUIET/DATASET/BAD/REMOTE
  DEFINE AXIS/X/Y/Z/T/E/F/FILE/UNITS/T0/NAME/FROMDATA/DEPTH/MODULO/NPOINTS
-         /EDGES/CALENDAR/BOUNDS/QUIET/LIKE
+         /EDGES/CALENDAR/BOUNDS/QUIET/MONTHLY/LIKE
  DEFINE VIEWPORT/TEXT/XLIMITS/YLIMITS/SIZE/ORIGIN/CLIP/AXES
  DEFINE ALIAS
  DEFINE SYMBOL
@@ -47493,7 +47499,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 1-Dec-16:16:49"
+ !-> set win/title="16-Dec-16:11:05"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47502,16 +47508,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date =  1-Dec-16
+ !-> DEFINE SYMBOL the_date = 16-Dec-16
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 16:49
+ !-> DEFINE SYMBOL the_time = 11:05
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="1-Dec-16:16:49"
+ !-> SET WIN/TITLE="16-Dec-16:11:05"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "1-Dec-16:16:49"
+WIN_TITLE = "16-Dec-16:11:05"
 *** Running ferret script: bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -51881,7 +51887,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -51930,7 +51936,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -57661,9 +57667,9 @@ SH GRID am
 *** Running ferret script: bn_clock_syms.jnl
 SH SYM delta_cpu, clock_secs, current_date, current_time
 DELTA_CPU = "0.010997"
-CLOCK_SECS = "0.003"
-CURRENT_DATE = " 1-Dec-16"
-CURRENT_TIME = "16:50:10"
+CLOCK_SECS = "0.002"
+CURRENT_DATE = "16-Dec-16"
+CURRENT_TIME = "11:05:56"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57673,7 +57679,7 @@ use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0.038994"
-CLOCK_SECS = "0.045"
+CLOCK_SECS = "0.044"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57687,7 +57693,7 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.144979
+ !-> DEFINE VARIABLE ten_plots = 0.143979
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
 CLOCK_SECS = "0.189"
@@ -57695,52 +57701,52 @@ CLOCK_SECS = "0.189"
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.19"
+CLOCK_SECS = "0.189"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.014997
- !-> DEFINE VARIABLE sumcpu =0.014997
+ !-> DEFINE VARIABLE dt = 0.015998
+ !-> DEFINE VARIABLE sumcpu =0.015998
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.016997
- !-> DEFINE VARIABLE sumcpu =0.031994
+ !-> DEFINE VARIABLE dt = 0.015997
+ !-> DEFINE VARIABLE sumcpu =0.031995
 !-> REPEAT: K=3
  !-> DEFINE VARIABLE dt = 0.015998
- !-> DEFINE VARIABLE sumcpu =0.047992
+ !-> DEFINE VARIABLE sumcpu =0.047993
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.015997
- !-> DEFINE VARIABLE sumcpu =0.063989
-!-> REPEAT: K=5
  !-> DEFINE VARIABLE dt = 0.016998
- !-> DEFINE VARIABLE sumcpu =0.080987
-!-> REPEAT: K=6
+ !-> DEFINE VARIABLE sumcpu =0.064991
+!-> REPEAT: K=5
  !-> DEFINE VARIABLE dt = 0.015997
- !-> DEFINE VARIABLE sumcpu =0.096984
-!-> REPEAT: K=7
+ !-> DEFINE VARIABLE sumcpu =0.080988
+!-> REPEAT: K=6
  !-> DEFINE VARIABLE dt = 0.015998
- !-> DEFINE VARIABLE sumcpu =0.112982
+ !-> DEFINE VARIABLE sumcpu =0.096986
+!-> REPEAT: K=7
+ !-> DEFINE VARIABLE dt = 0.015997
+ !-> DEFINE VARIABLE sumcpu =0.112983
 !-> REPEAT: K=8
  !-> DEFINE VARIABLE dt = 0.014998
- !-> DEFINE VARIABLE sumcpu =0.12798
+ !-> DEFINE VARIABLE sumcpu =0.127981
 !-> REPEAT: K=9
  !-> DEFINE VARIABLE dt = 0.015997
- !-> DEFINE VARIABLE sumcpu =0.143977
+ !-> DEFINE VARIABLE sumcpu =0.143978
 !-> REPEAT: K=10
  !-> DEFINE VARIABLE dt = 0.015998
- !-> DEFINE VARIABLE sumcpu =0.159975
+ !-> DEFINE VARIABLE sumcpu =0.159976
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.159975
-0.159975
+ !-> MESSAGE/CONTINUE 0.159976
+0.159976
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.352"
+CLOCK_SECS = "0.351"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = " 1-Dec-16"
-SESSION_TIME = "16:50"
-CURRENT_DATE = " 1-Dec-16"
-CURRENT_TIME = "16:50:10"
+SESSION_DATE = "16-Dec-16"
+SESSION_TIME = "11:05"
+CURRENT_DATE = "16-Dec-16"
+CURRENT_TIME = "11:05:56"
 *** Running ferret script: bn63_bug_fixes.jnl
 ! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
@@ -58380,25 +58386,25 @@ LIST var
              VARIABLE : COS(T[GT=TRUEMONTH]/100)
              FILENAME : truemonth.nc
              SUBSET   : 19 points (TIME)
- DEC-1950 /  1: -0.7241
- DEC-1951 /  2:  0.2968
- DEC-1952 /  3:  0.2154
- DEC-1953 /  4: -0.6635
- DEC-1954 /  5:  0.9438
- DEC-1955 /  6: -0.9853
- DEC-1956 /  7:  0.7713
- DEC-1957 /  8: -0.3640
- DEC-1958 /  9: -0.1355
- DEC-1959 / 10:  0.6006
- DEC-1960 / 11: -0.9179
- DEC-1961 / 12:  0.9950
- DEC-1962 / 13: -0.8204
- DEC-1963 / 14:  0.4383
- DEC-1964 / 15:  0.0647
- DEC-1965 / 16: -0.5423
- DEC-1966 / 17:  0.8827
- DEC-1967 / 18: -0.9998
- DEC-1968 / 19:  0.8589
+ 16-DEC-1950 /  1: -0.7241
+ 16-DEC-1951 /  2:  0.2968
+ 16-DEC-1952 /  3:  0.2154
+ 16-DEC-1953 /  4: -0.6635
+ 16-DEC-1954 /  5:  0.9438
+ 16-DEC-1955 /  6: -0.9853
+ 16-DEC-1956 /  7:  0.7713
+ 16-DEC-1957 /  8: -0.3640
+ 16-DEC-1958 /  9: -0.1355
+ 16-DEC-1959 / 10:  0.6006
+ 16-DEC-1960 / 11: -0.9179
+ 16-DEC-1961 / 12:  0.9950
+ 16-DEC-1962 / 13: -0.8204
+ 16-DEC-1963 / 14:  0.4383
+ 16-DEC-1964 / 15:  0.0647
+ 16-DEC-1965 / 16: -0.5423
+ 16-DEC-1966 / 17:  0.8827
+ 16-DEC-1967 / 18: -0.9998
+ 16-DEC-1968 / 19:  0.8589
  
 SET MODE IGNORE_ERRROR
 ! Previously didnt check for negative offset value
@@ -61497,9 +61503,9 @@ list contents
              VARIABLE : { SPAWN:"cat redirect_journal.txt" }
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
- 2    /  2:" ! FERRET v7.021 (beta/debug)"                                              
- 3    /  3:" ! Linux 2.6.32-642.6.2.el6.x86_64 64-bit - 12/01/16"                       
- 4    /  4:" !  1-Dec-16 16:50     "                                                    
+ 2    /  2:" ! FERRET v7.022 (beta/debug)"                                              
+ 3    /  3:" ! Linux 2.6.32-642.11.1.el6.x86_64 64-bit - 12/16/16"                      
+ 4    /  4:" ! 16-Dec-16 11:06     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -63959,40 +63965,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.461
-randu2_randn2       0.547
-randu2_randn2       0.493
-randu2_randn2       0.333
-randu2_randn2       0.208
+randu2_randn2       0.559
+randu2_randn2       0.118
+randu2_randn2       0.102
+randu2_randn2       0.094
+randu2_randn2       0.186
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.867
-randu2_randn2       0.894
-randu2_randn2       0.640
-randu2_randn2       0.835
-randu2_randn2       0.980
+randu2_randn2       0.420
+randu2_randn2       0.717
+randu2_randn2       0.938
+randu2_randn2       0.547
+randu2_randn2       0.612
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.661
-randu2_randn2       0.085
-randu2_randn2       0.251
-randu2_randn2       0.225
-randu2_randn2       0.727
-randu2_randn2       0.620
+randu2_randn2       0.221
+randu2_randn2       0.190
+randu2_randn2       0.347
+randu2_randn2       0.565
+randu2_randn2       0.424
+randu2_randn2       0.521
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.516
-randu2_randn2       0.242
-randu2_randn2       0.709
-randu2_randn2       0.185
-randu2_randn2       0.625
-randu2_randn2       0.057
+randu2_randn2       0.138
+randu2_randn2       0.152
+randu2_randn2       0.165
+randu2_randn2       0.392
+randu2_randn2       0.763
+randu2_randn2       0.744
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -64017,40 +64023,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.127
-randu2_randn2       0.874
-randu2_randn2       0.799
-randu2_randn2      -1.272
-randu2_randn2      -1.301
-             VARIABLE : RANDN2(XBIG,-1)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 5 points (X)
-             X        : 0.5 to 5.5
-randu2_randn2      -0.178
-randu2_randn2       1.463
 randu2_randn2       0.957
-randu2_randn2      -0.142
-randu2_randn2      -1.223
-             VARIABLE : RANDN2(XX,0)
+randu2_randn2       1.112
+randu2_randn2       1.468
+randu2_randn2       0.243
+randu2_randn2       3.013
+             VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2      -0.974
-randu2_randn2      -0.881
-randu2_randn2      -0.226
-randu2_randn2      -1.925
-randu2_randn2      -0.746
-randu2_randn2      -0.857
-             VARIABLE : RANDN2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2      -0.537
-randu2_randn2      -1.953
-randu2_randn2       2.044
+             SUBSET   : 5 points (X)
+             X        : 0.5 to 5.5
+randu2_randn2      -0.116
+randu2_randn2       1.297
+randu2_randn2      -0.832
+randu2_randn2       0.593
 randu2_randn2       0.532
-randu2_randn2       0.892
-randu2_randn2      -1.159
+             VARIABLE : RANDN2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.109
+randu2_randn2      -0.013
+randu2_randn2      -0.602
+randu2_randn2       0.080
+randu2_randn2       0.026
+randu2_randn2      -1.019
+             VARIABLE : RANDN2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2      -1.117
+randu2_randn2       0.137
+randu2_randn2      -0.339
+randu2_randn2      -0.863
+randu2_randn2       1.066
+randu2_randn2      -0.821
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -64075,14 +64081,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.283       1.283       0.253
-randu2_randn2       1.213       1.213       0.253
-randu2_randn2       0.253       0.253      -0.164
-randu2_randn2      -0.164      -0.164       0.253
-randu2_randn2      -0.255      -0.255       0.253
-randu2_randn2      -0.620      -0.531       0.253
-randu2_randn2      -0.531      -0.531       0.253
-randu2_randn2       0.632       0.632       0.632
+randu2_randn2       1.252       1.554       0.531
+randu2_randn2       1.554       1.252       0.531
+randu2_randn2       0.413       0.531       0.413
+randu2_randn2       0.531       0.413       0.413
+randu2_randn2      -0.810      -0.267       0.413
+randu2_randn2      -0.267      -0.267       0.413
+randu2_randn2       0.267       0.267       0.413
+randu2_randn2       0.374       0.374       0.531
 *** Running ferret script: bn_axis_cf.jnl
 ! Ticket 1792: Write axes with CF-compliant units
 ! and with standard name attributes for geophysical attrs.
@@ -68027,7 +68033,7 @@ set mode calendar:years
 define axis/f=23-jan-1982:30-jan-1982:20/unit=hour fax20
 define axis/x=120e:60w:10/unit=degrees xax10
 define grid/like=temp/f=fax20 g5day
- getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1
+ getgrid EX#1     C:  5 dset:   1 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid GGR1            PSXT      PSYT5_89  PSZT1_2   TIME2     EAXIS     FAXIS
  
 set reg/x=130w:125w/y=0:1.5/e=1:2/f=23-JAN-1982:24-jan-1982/t=21-JAN-1982/z=5
@@ -68951,7 +68957,7 @@ list/i=3 airt[T=@ave]
  
 ! create an ensemble where one member is missing
 ENSEMBLE fourfiles_gap = ens1, -, ens3, ens4
- getgrid AIRT     C:  5 dset:   4 I:    1    1  J:    1    1  K:    1    1  L:    1    1
+ getgrid AIRT     C:  5 dset:   4 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME1
  getgrid AIRT     C:  5 dset:   5 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid GOH1            COADSX116_COADSY52_6NORMAL    TIME1
@@ -68962,13 +68968,13 @@ show data/files fourfiles_gap
  SST      SST_IN                           1:10      1:9       ...       1:12      1:4       ...
  AIRT     AIR TEMPERATURE                  1:10      1:9       ...       1:12      1:4       ...
  
-          Aggregated datasets:
-      1: ./ens1.nc
-      2: (dummy)
-      3: ./ens3.nc
-      4: ./ens4.nc
+          Member datasets:
+      7.1: ./ens1.nc
+      7.2: (dummy)
+      7.3: ./ens3.nc
+      7.4: ./ens4.nc
 list/i=3 airt[T=@ave]
- getgrid EX#1     C:  5 dset:   7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
+ getgrid EX#1     C:  5 dset:   7 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
  allocate dynamic grid (G003)          COADSX116_COADSY52_6NORMAL    TIME1     ENSEMBLE  NORMAL
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 dset:   7 I:    3    3  J:    1    9  K: -999 -999  L:    1   12  M:    1    4  N: -999 -999
@@ -69150,7 +69156,7 @@ show command define
  DEFINE GRID/X/Y/Z/T/E/F/FILE/LIKE
  DEFINE VARIABLE/TITLE/UNITS/QUIET/DATASET/BAD/REMOTE
  DEFINE AXIS/X/Y/Z/T/E/F/FILE/UNITS/T0/NAME/FROMDATA/DEPTH/MODULO/NPOINTS
-         /EDGES/CALENDAR/BOUNDS/QUIET/LIKE
+         /EDGES/CALENDAR/BOUNDS/QUIET/MONTHLY/LIKE
  DEFINE VIEWPORT/TEXT/XLIMITS/YLIMITS/SIZE/ORIGIN/CLIP/AXES
  DEFINE ALIAS
  DEFINE SYMBOL
@@ -69166,7 +69172,7 @@ show command show
  SHOW EXPRSION/ALL
  SHOW LIST/ALL
  SHOW DATA/ALL/BRIEF/FULL/VARIABLE/FILES/XML/ATTR/OUTFILE/APPEND/CLOBBER
-       /HIDDEN
+       /HIDDEN/MEMBERS
  SHOW MODE/ALL
  SHOW MOVIE/ALL
  SHOW VARIABLE/ALL/DATASET/USER/XML/OUTFILE/APPEND/CLOBBER/TREE/LAYERZ/CURVILIN
@@ -69264,20 +69270,20 @@ show data/brief/files
      currently SET data sets:
     1> ./coads_climatology.cdf
     6> fourfiles     Ensemble aggregation
-          Aggregated datasets:
-      1: ./ens1.nc
-      2: ./ens2.nc
-      3: ./ens3.nc
-      4: ./ens4.nc
+          Member datasets:
+      6.1: ./ens1.nc
+      6.2: ./ens2.nc
+      6.3: ./ens3.nc
+      6.4: ./ens4.nc
     7> some     Ensemble aggregation
-          Aggregated datasets:
-      1: ./ens1.nc
-      2: ./ens2.nc
+          Member datasets:
+      7.1: ./ens1.nc
+      7.2: ./ens2.nc
     8> more  (default)  Ensemble aggregation
-          Aggregated datasets:
-      1: ./ens2.nc
-      2: ./ens3.nc
-      3: ./ens4.nc
+          Member datasets:
+      8.1: ./ens2.nc
+      8.2: ./ens3.nc
+      8.3: ./ens4.nc
  
 ! Cancel a member of all the ensembles.  All the ensembles get deleted.
 cancel data ens2
@@ -69797,7 +69803,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -69855,7 +69861,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -69903,7 +69909,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -69951,7 +69957,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -69991,7 +69997,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70032,7 +70038,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70102,7 +70108,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70155,7 +70161,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70219,7 +70225,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70263,7 +70269,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70307,7 +70313,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70351,7 +70357,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70392,7 +70398,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70623,7 +70629,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -70664,7 +70670,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -70715,7 +70721,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70763,7 +70769,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -70789,7 +70795,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -70815,7 +70821,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71245,7 +71251,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71274,7 +71280,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71325,7 +71331,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71893,8 +71899,8 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Thu Dec  1 16:50:23 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
-			"FERRET V7.021   1-Dec-16" ;
+		:history = "Fri Dec 16 11:06:08 2016: ncks -h -A -h z1.nc append_to_this.nc\n",
+			"FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
 }
@@ -71925,7 +71931,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71956,7 +71962,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72019,7 +72025,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -72047,7 +72053,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73740,7 +73746,7 @@ variables:
 		LABELS:history = "From http://dunkel.pmel.noaa.gov:8930/thredds/dodsC/data/atmos3.ncml" ;
 
 // global attributes:
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73763,7 +73769,7 @@ variables:
 		STRVAR:long_name = "mystrings" ;
 
 // global attributes:
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73979,7 +73985,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74009,7 +74015,7 @@ variables:
 		A:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74030,7 +74036,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74051,7 +74057,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74073,7 +74079,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74480,7 +74486,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -74497,7 +74503,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -74514,7 +74520,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -75718,7 +75724,7 @@ variables:
 		:geospatial_lat_max = 29.07 ;
 		:time_coverage_start = "2006-06-10T23:48:00Z" ;
 		:time_converage_end = "2006-06-11T00:12:00Z" ;
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 }
  
 set mode/last upcase
@@ -75811,7 +75817,7 @@ variables:
 		lon360:history = "added to test_save_dsg.nc" ;
 
 // global attributes:
-		:history = "CruiseDsgNcFile 1.0FERRET V7.021   1-Dec-16" ;
+		:history = "CruiseDsgNcFile 1.0FERRET V7.022  16-Dec-16" ;
 		:featureType = "Trajectory" ;
 		:Conventions = "Some other conventionsCF-1.6" ;
 		:geospatial_lon_min = -92.77 ;
@@ -75838,7 +75844,7 @@ can dat/all; use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
  ..history = Subset of etopo20,
- FERRET V7.021   1-Dec-16 
+ FERRET V7.022  16-Dec-16 
  ..Conventions = Existing conventions note, , CF-1.6 
  
  
@@ -75868,7 +75874,7 @@ can dat/all; use conventions_history
 ! The new attibutes
 sh att .
      attributes for dataset: ./conventions_history.nc
- ..history = The history of the fileFERRET V7.021   1-Dec-16 
+ ..history = The history of the fileFERRET V7.022  16-Dec-16 
  ..Conventions = Conventions for variables named V2CF-1.6 
 *** Running ferret script: bn_center_key_labels.jnl
 ! bn_center_key_labels
@@ -76761,8 +76767,8 @@ list {spawn:"ls xml*.jnl"}
  
 LET filesets = xcat({spawn:"ls *.nc"}, {spawn:"ls *.jnl"})
 say `filesets, return=isize`
- !-> MESSAGE/CONTINUE 995
-995
+ !-> MESSAGE/CONTINUE 994
+994
  
 let files = {spawn:"ls *cdf*.jnl"}
 let name_len = strindex(files, ".sub")
@@ -84455,20 +84461,20 @@ GO err696_time_overlay
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
 sp date
-Thu Dec  1 16:50:35 PST 2016
+Fri Dec 16 11:06:21 PST 2016
 set view upper
 plot t[gt=tax_nlp]
 plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
 sp date
-Thu Dec  1 16:50:35 PST 2016
+Fri Dec 16 11:06:21 PST 2016
  
 sp date
-Thu Dec  1 16:50:35 PST 2016
+Fri Dec 16 11:06:21 PST 2016
 set view lower
 plot t[gt=tax_jul]
 plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
 sp date
-Thu Dec  1 16:50:35 PST 2016
+Fri Dec 16 11:06:21 PST 2016
  
 GO bn_reset
 cancel mode verify
@@ -84525,7 +84531,7 @@ variables:
 		var:long_name = "0*TT + X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -85404,7 +85410,7 @@ variables:
 		TEMP:history = "From /home/data/socat/socatV3/11SS/11SS20140225.nc" ;
 
 // global attributes:
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -86330,7 +86336,7 @@ set view ul; shade a*x[gx=0:10:1]
 sh sym yaxis*
 YAXIS_REVERSED = "0"
 YAXIS_MIN = "31.0000000"
-YAXIS_MAX = "212.242500"
+YAXIS_MAX = "243.000000"
  
 ! But the top-right SHADE plot was all messed up; it shifts the data
 ! later by a full month, and stretches the last (shifted) cell all
@@ -86340,7 +86346,7 @@ set view ur; shade/t=1-jan-0001:1-jan-0002 a*x[gx=0:10:1]
 sh sym yaxis*
 YAXIS_REVERSED = "0"
 YAXIS_MIN = "31.0000000"
-YAXIS_MAX = "212.242500"
+YAXIS_MAX = "243.000000"
  
 ! In the bottom-right line plot, the actual plotted data look ok.
 ! But the plot limits extend all the way from 1-JUL-0000 to 1-MAR-0002,
@@ -86351,7 +86357,7 @@ set view lr; plot/step=con/t=1-jan-0001:1-jan-0002 a
 sh sym xaxis*
 XAXIS_REVERSED = "0"
 XAXIS_MIN = "31.0000000"
-XAXIS_MAX = "212.242500"
+XAXIS_MAX = "243.000000"
  
 go bn_reset
 cancel mode verify
@@ -87554,6 +87560,8 @@ stat/brief TBOXHI[g=myvar[d=MYsing_irreg_agg4]] - TBOXHI[g=myvar[d=MYsing_irreg_
 canc data/all
  
 ! OPeNDAP test
+! (Note: when running pre-true-month Ferret versions, the timestep output from
+! show grid/T below was eliminated by the "clean_draconian" script)
 IF `test_opendap("http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2012.nc") EQ 0` THEN
  !-> IF 1 THEN
    tseries COADS = http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2012.nc, http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2013.nc, http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2014.nc
@@ -87569,45 +87577,45 @@ show grid/T air
  LON       LONGITUDE          180mr   1E                   1W                  full
  LAT       LATITUDE            90 r   89S                  89N                 full
  normal    Z
- TIME      TIME                36 i   16-JAN-2012 12:00    16-DEC-2014 12:00   full
+ TIME      TIME                36 i   JAN-2012             DEC-2014            full (True Monthly)
  
-       L     T                   TBOX      TBOXLO                TSTEP (days)
-       1>  16-JAN-2012 12:00:00  31         01-JAN-2012 00:00:00    77446.5
-       2>  15-FEB-2012 12:00:00  29         01-FEB-2012 00:00:00    77476.5
-       3>  16-MAR-2012 12:00:00  31         01-MAR-2012 00:00:00    77506.5
-       4>  16-APR-2012 00:00:00  30         01-APR-2012 00:00:00    77537
-       5>  16-MAY-2012 12:00:00  31         01-MAY-2012 00:00:00    77567.5
-       6>  16-JUN-2012 00:00:00  30         01-JUN-2012 00:00:00    77598
-       7>  16-JUL-2012 12:00:00  31         01-JUL-2012 00:00:00    77628.5
-       8>  16-AUG-2012 12:00:00  31         01-AUG-2012 00:00:00    77659.5
-       9>  16-SEP-2012 00:00:00  30         01-SEP-2012 00:00:00    77690
-      10>  16-OCT-2012 12:00:00  31         01-OCT-2012 00:00:00    77720.5
-      11>  16-NOV-2012 00:00:00  30         01-NOV-2012 00:00:00    77751
-      12>  16-DEC-2012 12:00:00  31         01-DEC-2012 00:00:00    77781.5
-      13>  16-JAN-2013 12:00:00  31         01-JAN-2013 00:00:00    77812.5
-      14>  15-FEB-2013 00:00:00  28         01-FEB-2013 00:00:00    77842
-      15>  16-MAR-2013 12:00:00  31         01-MAR-2013 00:00:00    77871.5
-      16>  16-APR-2013 00:00:00  30         01-APR-2013 00:00:00    77902
-      17>  16-MAY-2013 12:00:00  31         01-MAY-2013 00:00:00    77932.5
-      18>  16-JUN-2013 00:00:00  30         01-JUN-2013 00:00:00    77963
-      19>  16-JUL-2013 12:00:00  31         01-JUL-2013 00:00:00    77993.5
-      20>  16-AUG-2013 12:00:00  31         01-AUG-2013 00:00:00    78024.5
-      21>  16-SEP-2013 00:00:00  30         01-SEP-2013 00:00:00    78055
-      22>  16-OCT-2013 12:00:00  31         01-OCT-2013 00:00:00    78085.5
-      23>  16-NOV-2013 00:00:00  30         01-NOV-2013 00:00:00    78116
-      24>  16-DEC-2013 12:00:00  31         01-DEC-2013 00:00:00    78146.5
-      25>  16-JAN-2014 12:00:00  31         01-JAN-2014 00:00:00    78177.5
-      26>  15-FEB-2014 00:00:00  28         01-FEB-2014 00:00:00    78207
-      27>  16-MAR-2014 12:00:00  31         01-MAR-2014 00:00:00    78236.5
-      28>  16-APR-2014 00:00:00  30         01-APR-2014 00:00:00    78267
-      29>  16-MAY-2014 12:00:00  31         01-MAY-2014 00:00:00    78297.5
-      30>  16-JUN-2014 00:00:00  30         01-JUN-2014 00:00:00    78328
-      31>  16-JUL-2014 12:00:00  31         01-JUL-2014 00:00:00    78358.5
-      32>  16-AUG-2014 12:00:00  31         01-AUG-2014 00:00:00    78389.5
-      33>  16-SEP-2014 00:00:00  30         01-SEP-2014 00:00:00    78420
-      34>  16-OCT-2014 12:00:00  31         01-OCT-2014 00:00:00    78450.5
-      35>  16-NOV-2014 00:00:00  30         01-NOV-2014 00:00:00    78481
-      36>  16-DEC-2014 12:00:00  31         01-DEC-2014 00:00:00    78511.5
+       L     T                   TBOX      TBOXLO                TSTEP (TRUMONTH)
+       1>  JAN-2012              31         01-JAN-2012           2544
+       2>  FEB-2012              29         01-FEB-2012           2545
+       3>  MAR-2012              31         01-MAR-2012           2546
+       4>  APR-2012              30         01-APR-2012           2547
+       5>  MAY-2012              31         01-MAY-2012           2548
+       6>  JUN-2012              30         01-JUN-2012           2549
+       7>  JUL-2012              31         01-JUL-2012           2550
+       8>  AUG-2012              31         01-AUG-2012           2551
+       9>  SEP-2012              30         01-SEP-2012           2552
+      10>  OCT-2012              31         01-OCT-2012           2553
+      11>  NOV-2012              30         01-NOV-2012           2554
+      12>  DEC-2012              31         01-DEC-2012           2555
+      13>  JAN-2013              31         01-JAN-2013           2556
+      14>  FEB-2013              28         01-FEB-2013           2557
+      15>  MAR-2013              31         01-MAR-2013           2558
+      16>  APR-2013              30         01-APR-2013           2559
+      17>  MAY-2013              31         01-MAY-2013           2560
+      18>  JUN-2013              30         01-JUN-2013           2561
+      19>  JUL-2013              31         01-JUL-2013           2562
+      20>  AUG-2013              31         01-AUG-2013           2563
+      21>  SEP-2013              30         01-SEP-2013           2564
+      22>  OCT-2013              31         01-OCT-2013           2565
+      23>  NOV-2013              30         01-NOV-2013           2566
+      24>  DEC-2013              31         01-DEC-2013           2567
+      25>  JAN-2014              31         01-JAN-2014           2568
+      26>  FEB-2014              28         01-FEB-2014           2569
+      27>  MAR-2014              31         01-MAR-2014           2570
+      28>  APR-2014              30         01-APR-2014           2571
+      29>  MAY-2014              31         01-MAY-2014           2572
+      30>  JUN-2014              30         01-JUN-2014           2573
+      31>  JUL-2014              31         01-JUL-2014           2574
+      32>  AUG-2014              31         01-AUG-2014           2575
+      33>  SEP-2014              30         01-SEP-2014           2576
+      34>  OCT-2014              31         01-OCT-2014           2577
+      35>  NOV-2014              30         01-NOV-2014           2578
+      36>  DEC-2014              31         01-DEC-2014           2579
 canc data/all
 ELSE
 ENDIF
@@ -88400,18 +88408,18 @@ show data/files my_fmrc
  FCST_2   another variable                 1:21      1:21      ...       1:24      ...       1:11
        (L=1:24)
  
-          Aggregated datasets:
-      1 : tmp/fcst_1.nc
-      2 : tmp/fcst_2.nc
-      3 : tmp/fcst_3.nc
-      4 : tmp/fcst_4.nc
-      5 : tmp/fcst_5.nc
-      6 : tmp/fcst_6.nc
-      7 : tmp/fcst_7.nc
-      8 : tmp/fcst_8.nc
-      9 : tmp/fcst_9.nc
-      10: tmp/fcst_10.nc
-      11: tmp/fcst_11.nc
+          Member datasets:
+      12.1 : tmp/fcst_1.nc
+      12.2 : tmp/fcst_2.nc
+      12.3 : tmp/fcst_3.nc
+      12.4 : tmp/fcst_4.nc
+      12.5 : tmp/fcst_5.nc
+      12.6 : tmp/fcst_6.nc
+      12.7 : tmp/fcst_7.nc
+      12.8 : tmp/fcst_8.nc
+      12.9 : tmp/fcst_9.nc
+      12.10: tmp/fcst_10.nc
+      12.11: tmp/fcst_11.nc
 show data/attr my_fmrc
      currently SET data sets:
    12> my_fmrc  (default)  Forecast aggregation
@@ -88430,7 +88438,7 @@ show data/attr my_fmrc
                                  _lag_f_ax       CHAR        8    T       TF_LAG_F
   
  TF_TIMES              FLOAT     long_name       CHAR        25   T       Forecast time step matrix
-                                 units           CHAR        31   T       days since 01-JAN-1900 00:00:00
+                                 units           CHAR        47   T       TRUMONTH (GREGORIAN) since 01-JAN-1900 00:00:00
                                  missing_value   FLOAT       1    T       -1.E+34
                                  _CoordinateAxisType
                                                  CHAR        4    T       Time
@@ -88657,18 +88665,18 @@ show data/files my_fmrc
  FCST_2   another variable                 1:21      1:21      ...       1:24      ...       1:11
        (L=1:24)
  
-          Aggregated datasets:
-      1 : tmp/fcst_1.nc
-      2 : (dummy)
-      3 : (dummy)
-      4 : tmp/fcst_4.nc
-      5 : tmp/fcst_5.nc
-      6 : tmp/fcst_6.nc
-      7 : tmp/fcst_7.nc
-      8 : tmp/fcst_8.nc
-      9 : (dummy)
-      10: (dummy)
-      11: tmp/fcst_11.nc
+          Member datasets:
+      12.1 : tmp/fcst_1.nc
+      12.2 : (dummy)
+      12.3 : (dummy)
+      12.4 : tmp/fcst_4.nc
+      12.5 : tmp/fcst_5.nc
+      12.6 : tmp/fcst_6.nc
+      12.7 : tmp/fcst_7.nc
+      12.8 : tmp/fcst_8.nc
+      12.9 : (dummy)
+      12.10: (dummy)
+      12.11: tmp/fcst_11.nc
 show data/brief
      currently SET data sets:
     2> tmp/fcst_2.nc
@@ -88677,7 +88685,7 @@ show data/brief
     5> tmp/fcst_10.nc
    12> my_fmrc  (default)  Forecast aggregation
 LIST tf_times
-             VARIABLE : Forecast time step matrix (days since 01-JAN-1900 00:00:00)
+             VARIABLE : Forecast time step matrix (TRUMONTH (GREGORIAN) since 01-JAN-1900 00:00:00)
              DATA SET : Forecast series of 11 datasets patterned on fcst_1
              FILENAME : my_fmrc
              SUBSET   : 24 by 11 points (MODEL ELAPSED TIME (day)-FORECAST)
@@ -88696,6 +88704,7 @@ LIST tf_times
  01-JAN-1952 /  9:  19008.  19068.  19129.  19190.  19251.  19312.  19374.  19433.  19494.  19555.  19616.  19677.
  01-APR-1952 / 10:  19098.  19159.  19221.  19282.  19343.  19403.  19463.  19524.  19586.  19647.  19708.  19768.
  01-JUL-1952 / 11:  19190.  19251.  19312.  19374.  19433.  19494.  19555.  19616.  19677.  19739.  19798.  19859.
+ 
 GO bn_aggregate_f.sub
 ! bn_aggregate_f.sub
  
@@ -88918,16 +88927,16 @@ show data/files my_fmrc
  FCST_2   another variable                 1:21      1:21      ...       1:24      ...       1:9
        (L=1:36)
  
-          Aggregated datasets:
-      1: tmp/long_fcst_1.nc
-      2: tmp/fcst_2.nc
-      3: tmp/fcst_3.nc
-      4: tmp/fcst_4.nc
-      5: tmp/fcst_5.nc
-      6: tmp/fcst_6.nc
-      7: tmp/fcst_7.nc
-      8: tmp/fcst_8.nc
-      9: tmp/fcst_9.nc
+          Member datasets:
+      10.1: tmp/long_fcst_1.nc
+      10.2: tmp/fcst_2.nc
+      10.3: tmp/fcst_3.nc
+      10.4: tmp/fcst_4.nc
+      10.5: tmp/fcst_5.nc
+      10.6: tmp/fcst_6.nc
+      10.7: tmp/fcst_7.nc
+      10.8: tmp/fcst_8.nc
+      10.9: tmp/fcst_9.nc
 GO bn_aggregate_f.sub
 ! bn_aggregate_f.sub
  
@@ -89128,15 +89137,15 @@ show data/files my_fmrc
  FCST_2   another variable                 1:21      1:21      ...       1:24      ...       1:8
        (L=1:24)
  
-          Aggregated datasets:
-      1: tmp/fcst_1.nc
-      2: tmp/fcst_2.nc
-      3: tmp/fcst_3.nc
-      4: tmp/fcst_4.nc
-      5: tmp/fcst_5.nc
-      6: tmp/long_fcst_6.nc
-      7: tmp/fcst_7.nc
-      8: tmp/fcst_8.nc
+          Member datasets:
+      9.1: tmp/fcst_1.nc
+      9.2: tmp/fcst_2.nc
+      9.3: tmp/fcst_3.nc
+      9.4: tmp/fcst_4.nc
+      9.5: tmp/fcst_5.nc
+      9.6: tmp/long_fcst_6.nc
+      9.7: tmp/fcst_7.nc
+      9.8: tmp/fcst_8.nc
 GO bn_aggregate_f.sub
 ! bn_aggregate_f.sub
  
@@ -89332,12 +89341,12 @@ show data/files
        (L=7:30)
  TF_TIMES Forecast time step matrix        ...       ...       ...       1:24      ...       1:5
  
-          Aggregated datasets:
-      1: tmp/fcst_3.nc
-      2: tmp/fcst_4.nc
-      3: tmp/fcst_5.nc
-      4: tmp/one_var_fcst_6.nc
-      5: tmp/fcst_7.nc
+          Member datasets:
+      6.1: tmp/fcst_3.nc
+      6.2: tmp/fcst_4.nc
+      6.3: tmp/fcst_5.nc
+      6.4: tmp/one_var_fcst_6.nc
+      6.5: tmp/fcst_7.nc
 stat/l=1:20 fcst
  
              FIELD + FCST_ERROR
@@ -89376,17 +89385,17 @@ show data/full
                on grid GFN1 with -1.E+34 for missing data
              X=139.5E:160.5E  Y=19.5N:40.5N  F=16-MAY-1950 09:00:15-AUG-1951 15:00  
  TF_TIMES Forecast time step matrix        ...       ...       ...       1:24      ...       1:5
-             days since 01-JAN-1900 00:00:00 on grid FTI with -1.E+34 for missing data
+             TRUMONTH (GREGORIAN) since 01-JAN-1900 00:00:00 on grid FTI with -1.E+34 for missing data
              F=16-MAY-1950 09:00:15-AUG-1951 15:00  
  
   time range: 15.228 to 715.73
  
-          Aggregated datasets:
-      1: tmp/fcst_3.nc
-      2: tmp/fcst_4.nc
-      3: tmp/fcst_5.nc
-      4: tmp/one_var_fcst_6.nc
-      5: tmp/fcst_7.nc
+          Member datasets:
+      6.1: tmp/fcst_3.nc
+      6.2: tmp/fcst_4.nc
+      6.3: tmp/fcst_5.nc
+      6.4: tmp/one_var_fcst_6.nc
+      6.5: tmp/fcst_7.nc
     7> my_fmrc  (default)  Forecast aggregation
      Forecast series of 5 datasets patterned on fcst_3.nc
  name     title                             I         J         K         L         M         N
@@ -89395,17 +89404,17 @@ show data/full
                on grid GFN2 with -1.E+34 for missing data
              X=139.5E:160.5E  Y=19.5N:40.5N  F=16-MAY-1950 09:00:15-AUG-1951 15:00  
  TF_TIMES Forecast time step matrix        ...       ...       ...       1:24      ...       1:5
-             days since 01-JAN-1900 00:00:00 on grid FTI1 with -1.E+34 for missing data
+             TRUMONTH (GREGORIAN) since 01-JAN-1900 00:00:00 on grid FTI1 with -1.E+34 for missing data
              F=16-MAY-1950 09:00:15-AUG-1951 15:00  
  
   time range: 15.228 to 715.73
  
-          Aggregated datasets:
-      1: tmp/fcst_3.nc
-      2: tmp/fcst_4.nc
-      3: tmp/fcst_5.nc
-      4: tmp/one_var_fcst_6.nc
-      5: tmp/fcst_7.nc
+          Member datasets:
+      7.1: tmp/fcst_3.nc
+      7.2: tmp/fcst_4.nc
+      7.3: tmp/fcst_5.nc
+      7.4: tmp/one_var_fcst_6.nc
+      7.5: tmp/fcst_7.nc
  
 ! cancel a component dataset -- used in two aggregations
 cancel data tmp/fcst_4.nc
@@ -89446,14 +89455,14 @@ show data/files
  FCST_2   another variable                 1:21      1:21      ...       1:24      ...       1:7
        (L=1:24)
  
-          Aggregated datasets:
-      1: tmp/fcst_1.nc
-      2: tmp/fcst_2.nc
-      3: tmp/fcst_3.nc
-      4: tmp/fcst_4.nc
-      5: tmp/fcst_5.nc
-      6: tmp/one_var_fcst_6.nc
-      7: tmp/fcst_7.nc
+          Member datasets:
+      9.1: tmp/fcst_1.nc
+      9.2: tmp/fcst_2.nc
+      9.3: tmp/fcst_3.nc
+      9.4: tmp/fcst_4.nc
+      9.5: tmp/fcst_5.nc
+      9.6: tmp/one_var_fcst_6.nc
+      9.7: tmp/fcst_7.nc
    11> my_fmrc_letd_1     Forecast aggregation
  name     title                             I         J         K         L         M         N
  FCST_2   another variable                 1:21      1:21      ...       1:24      ...       1:7
@@ -89462,14 +89471,14 @@ show data/files
  FCST     FIELD + FCST_ERROR               1:21      1:21      ...       1:24      ...       1:7
        (L=1:24)
  
-          Aggregated datasets:
-      1: tmp/one_var_fcst_1.nc
-      2: tmp/fcst_2.nc
-      3: tmp/fcst_3.nc
-      4: tmp/fcst_4.nc
-      5: tmp/fcst_5.nc
-      6: tmp/fcst_6.nc
-      7: tmp/fcst_7.nc
+          Member datasets:
+      11.1: tmp/one_var_fcst_1.nc
+      11.2: tmp/fcst_2.nc
+      11.3: tmp/fcst_3.nc
+      11.4: tmp/fcst_4.nc
+      11.5: tmp/fcst_5.nc
+      11.6: tmp/fcst_6.nc
+      11.7: tmp/fcst_7.nc
    12> my_fmrc  (default)  Forecast aggregation
  name     title                             I         J         K         L         M         N
  FCST     FIELD + FCST_ERROR               1:21      1:21      ...       1:24      ...       1:7
@@ -89478,14 +89487,14 @@ show data/files
  FCST_2   another variable                 1:21      1:21      ...       1:24      ...       1:7
        (L=1:24)
  
-          Aggregated datasets:
-      1: tmp/fcst_1.nc
-      2: tmp/fcst_2.nc
-      3: tmp/fcst_3.nc
-      4: tmp/fcst_4.nc
-      5: tmp/fcst_5.nc
-      6: tmp/fcst_6.nc
-      7: tmp/fcst_7.nc
+          Member datasets:
+      12.1: tmp/fcst_1.nc
+      12.2: tmp/fcst_2.nc
+      12.3: tmp/fcst_3.nc
+      12.4: tmp/fcst_4.nc
+      12.5: tmp/fcst_5.nc
+      12.6: tmp/fcst_6.nc
+      12.7: tmp/fcst_7.nc
 show data
      currently SET data sets:
     9> my_fmrc_letd_6     Forecast aggregation
@@ -89627,7 +89636,7 @@ set mode/last ignore
 ! many time aggregations
 CANCEL MODE VERIFY
  
-show data/files/br
+show data/members/br
      currently SET data sets:
     1> t_f01_e1
           time-dependent data files:
@@ -89973,14 +89982,14 @@ show grid fcst[d=t_f01_e1]
  XAX       LONGITUDE           21mr   140E                 160E                full
  YAX       LATITUDE            11 r   10N                  20N                 full
  ZAX1      Z (m)                1 r   250                  250                 full
- TRUEMONTH1 TIME               36 i   16-JAN-1950 12:00    16-DEC-1952 12:00   full
+ TRUEMONTH1 TIME               36 i   JAN-1950             DEC-1952            full (True Monthly)
 show grid fcst[d=t_f01_e2]
     GRID GFA1
  name       axis              # pts   start                end                 subset
  XAX       LONGITUDE           21mr   140E                 160E                full
  YAX       LATITUDE            11 r   10N                  20N                 full
  ZAX1      Z (m)                1 r   250                  250                 full
- TRUEMONTH1 TIME               36 i   16-JAN-1950 12:00    16-DEC-1952 12:00   full
+ TRUEMONTH1 TIME               36 i   JAN-1950             DEC-1952            full (True Monthly)
  
 ! ======== TEST SET 1:  aggregate E first, then F
  
@@ -90035,12 +90044,12 @@ SHOW DATA/FULL te_f11
  
   time range: 16-JUL-1952 12:00 to 16-JUN-1955 00:00
  
-          Aggregated datasets:
-      1: t_f11_e1
-      2: t_f11_e2
-      3: t_f11_e3
-      4: t_f11_e4
-      5: t_f11_e5
+          Member datasets:
+      67.1: t_f11_e1
+      67.2: t_f11_e2
+      67.3: t_f11_e3
+      67.4: t_f11_e4
+      67.5: t_f11_e5
 SHOW DATA/ATT te_f11   ! notice the promotion of fcst.im_everywhere
      currently SET data sets:
    67> te_f11  (default)  Ensemble aggregation
@@ -90064,7 +90073,7 @@ SHOW DATA/ATT te_f11   ! notice the promotion of fcst.im_everywhere
  
 ! define tef aggregation
 FMRC/HIDE tef = te_f01, te_f02, te_f03, te_f04, te_f05, te_f06, te_f07, te_f08, te_f09, te_f10, te_f11
-SHOW DATA/brief/files
+SHOW DATA/brief/members
      currently SET data sets:
     1> t_f01_e1
           time-dependent data files:
@@ -90103,18 +90112,18 @@ SHOW DATA/brief/files
 16-OCT-1952 12:00 -> 16-SEP-1953 00:00    tmp/f04_e3_t3_1v.nc
  
    68> tef  (default)  Forecast aggregation
-          Aggregated datasets:
-      1 : te_f01
-      2 : te_f02
-      3 : te_f03
-      4 : te_f04
-      5 : te_f05
-      6 : te_f06
-      7 : te_f07
-      8 : te_f08
-      9 : te_f09
-      10: te_f10
-      11: te_f11
+          Member datasets:
+      68.1 : te_f01
+      68.2 : te_f02
+      68.3 : te_f03
+      68.4 : te_f04
+      68.5 : te_f05
+      68.6 : te_f06
+      68.7 : te_f07
+      68.8 : te_f08
+      68.9 : te_f09
+      68.10: te_f10
+      68.11: te_f11
 show data/full tef
      currently SET data sets:
    68> tef  (default)  Forecast aggregation
@@ -90125,7 +90134,7 @@ show data/full tef
                on grid GFN with -1.E+34 for missing data
              X=139.5E:160.5E  Y=9.5N:20.5N  Z=249.5:250.5  E=0.5:5.5  F=16-NOV-1949 09:36:15-AUG-1952 14:24  
  TF_TIMES Forecast time step matrix        ...       ...       ...       1:36      ...       1:11
-             days since 01-JAN-1900 00:00:00 on grid FTI1 with -1.E+34 for missing data
+             TRUMONTH (GREGORIAN) since 01-JAN-1900 00:00:00 on grid FTI1 with -1.E+34 for missing data
              F=16-NOV-1949 09:36:15-AUG-1952 14:24  
  FCST_2   another variable                 1:21      1:11      1:1       1:36      1:5       1:11
        (L=1:12)
@@ -90134,18 +90143,18 @@ show data/full tef
  
   time range: 15.214 to 1080.2
  
-          Aggregated datasets:
-      1 : te_f01
-      2 : te_f02
-      3 : te_f03
-      4 : te_f04
-      5 : te_f05
-      6 : te_f06
-      7 : te_f07
-      8 : te_f08
-      9 : te_f09
-      10: te_f10
-      11: te_f11
+          Member datasets:
+      68.1 : te_f01
+      68.2 : te_f02
+      68.3 : te_f03
+      68.4 : te_f04
+      68.5 : te_f05
+      68.6 : te_f06
+      68.7 : te_f07
+      68.8 : te_f08
+      68.9 : te_f09
+      68.10: te_f10
+      68.11: te_f11
  
 ! simplest acess -- compact form -- just demonstrate it doesn't fail
 stat/brief fcst[i=11:12, j=5:6, l=31:32, m=1:2, n=5:6]
@@ -90182,7 +90191,7 @@ SHOW DATA/ATT t_f04_e3_1v ! note atts im_everwhere vs im_not_everwhere
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V7.021   1-Dec-16
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
                                  Conventions     CHAR        6    F       CF-1.6
   
 (XAX)                  DOUBLE    units           CHAR        12   T       degrees_east
@@ -90473,7 +90482,7 @@ SHOW DATA/ATTRIB tfe   ! also notice the promotion of fcst.im_everywhere
                                  im_everywhere   CHAR        13   F       so promote me
   
  TF_TIMES              FLOAT     long_name       CHAR        25   T       Forecast time step matrix
-                                 units           CHAR        31   T       days since 01-JAN-1900 00:00:00
+                                 units           CHAR        47   T       TRUMONTH (GREGORIAN) since 01-JAN-1900 00:00:00
                                  missing_value   FLOAT       1    T       -1.E+34
                                  _CoordinateAxisType
                                                  CHAR        4    T       Time
@@ -90666,7 +90675,7 @@ save/clobber/file=a.nc/outtype=float elev[d=1]
 use a.nc
 sh att .
      attributes for dataset: ./a.nc
- ..history = FERRET V7.021   1-Dec-16 
+ ..history = FERRET V7.022  16-Dec-16 
  ..Conventions = CF-1.6 
  ..dt_internal = 15
 sh att elev
@@ -90687,7 +90696,7 @@ save/clobber/file=a.nc/outtype=float elev[d=1]
 use a.nc
 sh att .
      attributes for dataset: ./a.nc
- ..history = FERRET V7.021   1-Dec-16 
+ ..history = FERRET V7.022  16-Dec-16 
  ..Conventions = CF-1.6 
 sh att elev
      attributes for dataset: ./a.nc
@@ -90809,9 +90818,9 @@ flow/DAT=2/den=3/L=3 taux,tauy
 ! bn_speedtest.jnl
 ! issue large numbers of commands, timing with clock time
 can mode verify
-10K LET commands LET a = 0 takes  0.98  seconds
-Second 10K LET commands LET a = 0 takes  2.209  seconds
-5K LOAD with transform takes  3.496  seconds
+10K LET commands LET a = 0 takes  0.971  seconds
+Second 10K LET commands LET a = 0 takes  2.182  seconds
+5K LOAD with transform takes  3.473  seconds
 *** Running ferret script: bn_show_noupcase.jnl
 ! bn_show_noupcase.jnl
 ! 1/2016 ticket 1796
@@ -92498,7 +92507,7 @@ sho command sho
  SHOW EXPRSION/ALL
  SHOW LIST/ALL
  SHOW DATA/ALL/BRIEF/FULL/VARIABLE/FILES/XML/ATTR/OUTFILE/APPEND/CLOBBER
-       /HIDDEN
+       /HIDDEN/MEMBERS
  SHOW MODE/ALL
  SHOW MOVIE/ALL
  SHOW VARIABLE/ALL/DATASET/USER/XML/OUTFILE/APPEND/CLOBBER/TREE/LAYERZ/CURVILIN
@@ -92526,7 +92535,7 @@ sho command sho l  ! SHOW LIST
  SHOW LIST/ALL
 sho command sho d  ! SHOW DATA
  SHOW DATA/ALL/BRIEF/FULL/VARIABLE/FILES/XML/ATTR/OUTFILE/APPEND/CLOBBER
-       /HIDDEN
+       /HIDDEN/MEMBERS
 sho command sho m  ! SHOW MODE
  SHOW MODE/ALL
 sho command sho mov! SHOW MOVIE
@@ -92619,7 +92628,7 @@ sho command def
  DEFINE GRID/X/Y/Z/T/E/F/FILE/LIKE
  DEFINE VARIABLE/TITLE/UNITS/QUIET/DATASET/BAD/REMOTE
  DEFINE AXIS/X/Y/Z/T/E/F/FILE/UNITS/T0/NAME/FROMDATA/DEPTH/MODULO/NPOINTS
-         /EDGES/CALENDAR/BOUNDS/QUIET/LIKE
+         /EDGES/CALENDAR/BOUNDS/QUIET/MONTHLY/LIKE
  DEFINE VIEWPORT/TEXT/XLIMITS/YLIMITS/SIZE/ORIGIN/CLIP/AXES
  DEFINE ALIAS
  DEFINE SYMBOL
@@ -92636,7 +92645,7 @@ sho command def v  ! DEFINE VARIABLE
  DEFINE VARIABLE/TITLE/UNITS/QUIET/DATASET/BAD/REMOTE
 sho command def a  ! DEFINE AXIS
  DEFINE AXIS/X/Y/Z/T/E/F/FILE/UNITS/T0/NAME/FROMDATA/DEPTH/MODULO/NPOINTS
-         /EDGES/CALENDAR/BOUNDS/QUIET/LIKE
+         /EDGES/CALENDAR/BOUNDS/QUIET/MONTHLY/LIKE
 sho command def vi ! DEFINE VIEWPORT
  DEFINE VIEWPORT/TEXT/XLIMITS/YLIMITS/SIZE/ORIGIN/CLIP/AXES
 sho command def al ! DEFINE ALIAS
@@ -92818,7 +92827,7 @@ sho command/brief v
  
 ! All the commands, no subcommands, no qualifiers
 SHOW COMMAND/BRIEF
- Commands in Program FERRET  version7.021:
+ Commands in Program FERRET  version7.022:
  SET
  SHOW
  CANCEL
@@ -93141,7 +93150,7 @@ list/x=180/y=0/l=20:25 var
 let ttim = temp[d=levitus_climatology] + var
 shade/title="true-month axis"/L=32/x=60:70/y=-40:-30 ttim; sh sym  lab($labnum_t)
  !-> sh sym  lab2
-LAB2 = "TIME : 16-AUG-1952"
+LAB2 = "TIME : 16-AUG-1952 12"
  
 set mode/last calendar
  
@@ -93778,6 +93787,90 @@ PLOT/VS/THICK/COLOR=red/SIZ=0.2 lon,lat
 FRAME/FILE=bn_axis_vs.gif
  
  
+! Bug 2483. Fixing axis-ends symbols XAXIS_MIN,XAXIS_MAX, YAXIS_MIN,YAXIS_MAX
+go bn_reset
+cancel mode verify
+go err700_axis_dates
+! err700_axis_dates.jnl
+! See ticket 2483. 11/10/2016 ACM
+!
+! The axis-ends symbols XAXIS_MIN,XAXIS_MAX, YAXIS_MIN,YAXIS_MAX
+! were not accurate for time axes, which get padded out to the nearest
+! time unit, e.g. whole months etc.
+ 
+! This axis gets plotted from 1-oct-2015 to the end of 30-apr-2016
+ 
+def axis/t=23-oct-2015:17-apr-2016:10/units=hours taxis
+ 
+! Define some variables
+let tt = t[gt=taxis]
+let var = cos(L[gt=taxis]/30)
+define axis/x=1:52:4 xaxis
+define axis/y=1:52:4 yaxis
+let xtvar = x[gx=xaxis] + var
+let ytvar = y[gy=yaxis] + var
+ 
+! 1-D time plot
+plot var
+ 
+! Previously these were set to the axis-coordinate
+! ends not the drawn axis ends.
+list tax_datestring(($xaxis_min), tt, "minutes"), tax_datestring(($xaxis_max), tt, "minutes")
+ !-> list tax_datestring(1005528.00, tt, "minutes"), tax_datestring(1010640.00, tt, "minutes")
+ Column  1: TAX_DATESTRING(1005528.00, TT, "minutes")
+ Column  2: TAX_DATESTRING(1010640.00, TT, "minutes")
+                   (C001,V00      (C001,V008)
+I / *:    "01-OCT-2015 00:00" "01-MAY-2016 00:00"
+ 
+! 2D plots
+ 
+shade ytvar
+list tax_datestring(($xaxis_min), tt, "minutes"), tax_datestring(($xaxis_max), tt, "minutes")
+ !-> list tax_datestring(1005528.00, tt, "minutes"), tax_datestring(1010640.00, tt, "minutes")
+ Column  1: TAX_DATESTRING(1005528.00, TT, "minutes")
+ Column  2: TAX_DATESTRING(1010640.00, TT, "minutes")
+                   (C001,V00      (C001,V008)
+I / *:    "01-OCT-2015 00:00" "01-MAY-2016 00:00"
+ 
+shade xtvar ! T axis on the vertical axis
+list tax_datestring(($yaxis_min), tt, "minutes"), tax_datestring(($yaxis_max), tt, "minutes")
+ !-> list tax_datestring(1005528.00, tt, "minutes"), tax_datestring(1010640.00, tt, "minutes")
+ Column  1: TAX_DATESTRING(1005528.00, TT, "minutes")
+ Column  2: TAX_DATESTRING(1010640.00, TT, "minutes")
+                   (C001,V00      (C001,V008)
+I / *:    "01-OCT-2015 00:00" "01-MAY-2016 00:00"
+ 
+ 
+! Short time axis, plot ends extended out to the nearest hour
+def axis/t="23-oct-2015:01:15":"23-oct-2015:12:30":15/units=minutes taxis
+ 
+plot var
+list tax_datestring(($xaxis_min), tt, "minutes"), tax_datestring(($xaxis_max), tt, "minutes")
+ !-> list tax_datestring(60363420.0, tt, "minutes"), tax_datestring(60364140.0, tt, "minutes")
+ Column  1: TAX_DATESTRING(60363420.0, TT, "minutes")
+ Column  2: TAX_DATESTRING(60364140.0, TT, "minutes")
+                   (C001,V00      (C001,V008)
+I / *:    "23-OCT-2015 01:00" "23-OCT-2015 13:00"
+ 
+shade ytvar
+list tax_datestring(($xaxis_min), tt, "minutes"), tax_datestring(($xaxis_max), tt, "minutes")
+ !-> list tax_datestring(60363420.0, tt, "minutes"), tax_datestring(60364140.0, tt, "minutes")
+ Column  1: TAX_DATESTRING(60363420.0, TT, "minutes")
+ Column  2: TAX_DATESTRING(60364140.0, TT, "minutes")
+                   (C001,V00      (C001,V008)
+I / *:    "23-OCT-2015 01:00" "23-OCT-2015 13:00"
+ 
+shade xtvar
+list tax_datestring(($yaxis_min), tt, "minutes"), tax_datestring(($yaxis_max), tt, "minutes")
+ !-> list tax_datestring(60363420.0, tt, "minutes"), tax_datestring(60364140.0, tt, "minutes")
+ Column  1: TAX_DATESTRING(60363420.0, TT, "minutes")
+ Column  2: TAX_DATESTRING(60364140.0, TT, "minutes")
+                   (C001,V00      (C001,V008)
+I / *:    "23-OCT-2015 01:00" "23-OCT-2015 13:00"
+ 
+ 
+ 
+ 
 ! Bug 2489. Attribute climatology_time_range not defined on an expression
 go bn_reset
 cancel mode verify
@@ -94317,14 +94410,14 @@ show grid fcst[d=t_f01_e1]
  XAX       LONGITUDE           21mr   140E                 160E                full
  YAX       LATITUDE            11 r   10N                  20N                 full
  ZAX1      Z (m)                1 r   250                  250                 full
- TRUEMONTH1 TIME               36 i   16-JAN-1950 12:00    16-DEC-1952 12:00   full
+ TRUEMONTH1 TIME               36 i   JAN-1950             DEC-1952            full (True Monthly)
 show grid fcst_3[d=t_f_u01_e2]
     GRID GEM1
  name       axis              # pts   start                end                 subset
  XAX       LONGITUDE           21mr   140E                 160E                full
  YAX       LATITUDE            11 r   10N                  20N                 full
  ZAX1      Z (m)                1 r   250                  250                 full
- TRUEMONTH1 TIME               36 i   16-JAN-1950 12:00    16-DEC-1952 12:00   full
+ TRUEMONTH1 TIME               36 i   JAN-1950             DEC-1952            full (True Monthly)
  
 ! Now go on and aggregate these time & union aggregations, in E and F
  
@@ -94378,9 +94471,9 @@ SHOW DATA/FULL tue_f03
  
   time range: 16-JUL-1950 12:00 to 16-JUN-1953 00:00
  
-          Aggregated datasets:
-      1: t_f_u03_e1
-      2: t_f_u03_e2
+          Member datasets:
+      21.1: t_f_u03_e1
+      21.2: t_f_u03_e2
 SHOW DATA/ATT tue_f03   ! notice the promotion of fcst.im_everywhere
      currently SET data sets:
    21> tue_f03  (default)  Ensemble aggregation
@@ -94491,10 +94584,10 @@ SHOW DATA/brief/files
 31-DEC-1899 23:59 -> 31-DEC-1899 23:59    t_f_u02_e2
  
    22> tuef  (default)  Forecast aggregation
-          Aggregated datasets:
-      1: tue_f01
-      2: tue_f02
-      3: tue_f03
+          Member datasets:
+      22.1: tue_f01
+      22.2: tue_f02
+      22.3: tue_f03
 show data/full tuef
      currently SET data sets:
    22> tuef  (default)  Forecast aggregation
@@ -94505,7 +94598,7 @@ show data/full tuef
                on grid GFN with -1.E+34 for missing data
              X=139.5E:160.5E  Y=9.5N:20.5N  Z=249.5:250.5  E=0.5:2.5  F=16-NOV-1949 18:00:15-AUG-1950 06:00  
  TF_TIMES Forecast time step matrix        ...       ...       ...       1:36      ...       1:3
-             days since 01-JAN-1900 00:00:00 on grid FTI1 with -1.E+34 for missing data
+             TRUMONTH (GREGORIAN) since 01-JAN-1900 00:00:00 on grid FTI1 with -1.E+34 for missing data
              F=16-NOV-1949 18:00:15-AUG-1950 06:00  
  FCST_2   another variable                 1:21      1:11      1:1       1:36      1:2       1:3
        (L=1:12)
@@ -94518,10 +94611,10 @@ show data/full tuef
  
   time range: 15.214 to 1080.2
  
-          Aggregated datasets:
-      1: tue_f01
-      2: tue_f02
-      3: tue_f03
+          Member datasets:
+      22.1: tue_f01
+      22.2: tue_f02
+      22.3: tue_f03
  
 ! The time-union-ensemble-forecast aggregation
  
@@ -94635,7 +94728,7 @@ variables:
 		abc:history = "From abc.dat" ;
 
 // global attributes:
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -94722,7 +94815,7 @@ variables:
 		latitude:history = "From bn_delimited_read_1.dat" ;
 
 // global attributes:
-		:history = "FERRET V7.021   1-Dec-16" ;
+		:history = "FERRET V7.022  16-Dec-16" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -94808,6 +94901,1003 @@ list a[t=@MAX] - a_xtrns[t=@MAX]
              T        : 0.5 to 3.5
           0.0000
  
+*** Running ferret script: bn_agg_member_syntax.jnl
+! bn_agg_member_syntax
+ 
+! *sh* 11/16
+ 
+! running of this benchmark assumes that a tmp directory has been created
+! and that it contains the aggregation member files created by bn_aggregate_f
+ 
+ 
+! define an 11-member FMRC aggregation
+let files = SPAWN("ls -1 tmp/fcst_*.nc")
+fmrc my_fmrc = files
+show data/members my_fmrc   ! /FILES is deprecated
+     currently SET data sets:
+   12> my_fmrc  (default)  Forecast aggregation
+ name     title                             I         J         K         L         M         N
+ FCST     FIELD + FCST_ERROR               1:21      1:21      ...       1:24      ...       1:11
+       (L=1:24)
+ TF_TIMES Forecast time step matrix        ...       ...       ...       1:24      ...       1:11
+ FCST_2   another variable                 1:21      1:21      ...       1:24      ...       1:11
+       (L=1:24)
+ 
+          Member datasets:
+      12.1 : tmp/fcst_1.nc
+      12.2 : tmp/fcst_2.nc
+      12.3 : tmp/fcst_3.nc
+      12.4 : tmp/fcst_4.nc
+      12.5 : tmp/fcst_5.nc
+      12.6 : tmp/fcst_6.nc
+      12.7 : tmp/fcst_7.nc
+      12.8 : tmp/fcst_8.nc
+      12.9 : tmp/fcst_9.nc
+      12.10: tmp/fcst_10.nc
+      12.11: tmp/fcst_11.nc
+ 
+show data 12.3   ! turns out to be dset=5
+     currently SET data sets:
+    5> tmp/fcst_3.nc
+ name     title                             I         J         K         L
+ FCST     FIELD + FCST_ERROR               1:21      1:21      ...       1:24
+       (L=7:30)
+ FCST_2   another variable                 1:21      1:21      ...       1:24
+       (L=7:30)
+ 
+ 
+! these are now all allowable references to the parent aggregation
+stat fcst[d=12]
+ 
+             FIELD + FCST_ERROR
+             LONGITUDE: 139.5E to 160.5E
+             LATITUDE: 19.5N to 40.5N
+             Z:  N/A
+             MODEL ELAPSED TIME (day): 0 to 729.39
+             E:  N/A
+             FORECAST: 16-NOV-1949 09:36 to 15-AUG-1952 14:24
+             DATA SET: my_fmrc
+ 
+ Total # of data points: 116424 (21*21*1*24*1*11)
+ # flagged as bad  data: 0
+ Minimum value: -1.0038
+ Maximum value: 1.4046
+ Mean    value: 0.13342 (unweighted average)
+ Standard deviation: 0.55306
+stat/br fcst[d=12.]
+ 
+ Total # of data points: 116424 (21*21*1*24*1*11)
+ # flagged as bad  data: 0
+ Minimum value: -1.0038
+ Maximum value: 1.4046
+ Mean    value: 0.13342 (unweighted average)
+stat/br fcst[d=12.0]
+ 
+ Total # of data points: 116424 (21*21*1*24*1*11)
+ # flagged as bad  data: 0
+ Minimum value: -1.0038
+ Maximum value: 1.4046
+ Mean    value: 0.13342 (unweighted average)
+ 
+! reference a member
+stat fcst[d=12.3]
+ 
+             FIELD + FCST_ERROR
+             L=7:30
+             LONGITUDE: 139.5E to 160.5E
+             LATITUDE: 19.5N to 40.5N
+             Z:  N/A
+             TIME: 01-JUL-1950 00:00 to 01-JUL-1952 00:00
+             E:  N/A
+             F:  N/A
+             DATA SET: tmp/fcst_3.nc
+ 
+ Total # of data points: 10584 (21*21*1*24*1*1)
+ # flagged as bad  data: 0
+ Minimum value: -0.9973
+ Maximum value: 1.4046
+ Mean    value: 0.1338 (unweighted average)
+ Standard deviation: 0.54369
+stat fcst[d=12.3] - fcst[d=5]   ! v-v=0
+ 
+             FCST[D=fcst_3.nc] - FCST[D=fcst_3.nc]
+             LONGITUDE: 139.5E to 160.5E
+             LATITUDE: 19.5N to 40.5N
+             Z:  N/A
+             TIME: 01-JUL-1950 00:00 to 01-JUL-1952 00:00
+             E:  N/A
+             F:  N/A
+             DATA SET: N/A
+ 
+ Total # of data points: 10584 (21*21*1*24*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0
+ Maximum value: 0
+ Mean    value: 0 (unweighted average)
+ Standard deviation: 0
+ 
+! note that FMRC members have distinct time axes. Specify "L=1"
+stat fcst[d=12.3,l=1] - fcst[d=12.1,l=1]
+ 
+             FCST[D=fcst_3.nc,L=1] - FCST[D=fcst_1.nc,L=1]
+             LONGITUDE: 139.5E to 160.5E
+             LATITUDE: 19.5N to 40.5N
+             Z:  N/A
+             TIME: 16-JUL-1950 12:00
+             E:  N/A
+             F:  N/A
+             DATA SET: N/A
+ 
+ Total # of data points: 441 (21*21*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: -0.12028
+ Maximum value: 0.12005
+ Mean    value: -0.007033 (unweighted average)
+ Standard deviation: 0.07443
+ 
+! deliberate errors
+set mode ignore
+ 
+stat/br fcst[d=5.3]       ! d=5 is not an aggregation
+stat/br fcst[d=12.30]     ! not this many members
+stat/br fcst[d=12.300000]
+ 
+set mode/last ignore
+ 
+cancel data/all
+cancel var/all
+ 
+! Tests for Ensembles
+let files = SPAWN("ls -1 ens*.nc")
+ensemble my_ens = files
+sh data/members my_ens
+     currently SET data sets:
+    5> my_ens  (default)  Ensemble aggregation
+ name     title                             I         J         K         L         M         N
+ SST      SST_IN                           1:10      1:9       ...       1:12      1:4       ...
+ 
+          Member datasets:
+      5.1: ./ens1.nc
+      5.2: ./ens2.nc
+      5.3: ./ens3.nc
+      5.4: ./ens4.nc
+ 
+show data 5.3
+     currently SET data sets:
+    3> ./ens3.nc
+ name     title                             I         J         K         L
+ SST      SST_IN                           1:10      1:9       ...       1:12
+ 
+stat sst[d=5]
+ 
+             SST_IN
+             LONGITUDE: 110W to 90W
+             LATITUDE: 12N to 30N
+             Z:  N/A
+             TIME: 01-JAN 00:45 to 31-DEC 06:34
+             E (realization): 0.5 to 4.5 (ens1.nc)
+             F:  N/A
+             DATA SET: my_ens
+ 
+ Total # of data points: 4320 (10*9*1*12*4*1)
+ # flagged as bad  data: 1156
+ Minimum value: 16.844
+ Maximum value: 123.32
+ Mean    value: 67.406 (unweighted average)
+ Standard deviation: 30.975
+stat sst[d=5.2]
+ 
+             SST_IN
+             LONGITUDE: 110W to 90W
+             LATITUDE: 12N to 30N
+             Z:  N/A
+             TIME: 01-JAN 00:45 to 31-DEC 06:34
+             E:  N/A
+             F:  N/A
+             DATA SET: ./ens2.nc
+ 
+ Total # of data points: 1080 (10*9*1*12*1*1)
+ # flagged as bad  data: 289
+ Minimum value: 33.688
+ Maximum value: 61.66
+ Mean    value: 53.925 (unweighted average)
+ Standard deviation: 5.1904
+ 
+can data my_ens
+ 
+! do them in another order
+ENSEMBLE fourfiles = ens1, ens3, ens2, ens4
+ 
+! not this is dataset 2
+show data 5.3
+     currently SET data sets:
+    3> ./ens2.nc
+ name     title                             I         J         K         L
+ SST      SST_IN                           1:10      1:9       ...       1:12
+ 
+ 
+stat sst[d=5] - sst[d=5.3]   ! ensemble minus member #3
+ 
+             SST[D=fourfiles] - SST[D=ens2]
+             LONGITUDE: 110W to 90W
+             LATITUDE: 12N to 30N
+             Z:  N/A
+             TIME: 01-JAN 00:45 to 31-DEC 06:34
+             E (realization): 0.5 to 4.5
+             F:  N/A
+             DATA SET: N/A
+ 
+ Total # of data points: 4320 (10*9*1*12*4*1)
+ # flagged as bad  data: 1156
+ Minimum value: -30.83
+ Maximum value: 61.66
+ Mean    value: 13.481 (unweighted average)
+ Standard deviation: 30.317
+ 
+! deliberate errors
+set mode ignore
+ 
+stat/br sst[d=4.1]     ! not an ensemble
+stat/br sst[d=5.30]    ! not this many members
+ 
+set mode/last ignore
+ 
+*** Running ferret script: bn_true_monthly.jnl
+! bn_true_monthly.jnl
+! examples defining axes with /DEFINE AXIS/MONTHLY
+!
+! When a true monthly axis is found in a dataset, store it as a TRUEMONTH axis
+! When writing a TRUEMONTH axis, write the correct coordinates using the original
+! units if it came from a dataset, or using units of days if it's user-defined.
+ 
+! See known error conditions below
+ 
+ 
+! For comparison, define regularly-spaced monthly axis of the sort we've always defined
+ 
+define axis/t=1-jan-2010:31-jul-2011:1/t0=1-jan-2000/units=month/edges t_reg_month
+sh axis/t t_reg_month
+ name       axis              # pts   start                end
+ T_REG_MONTH TIME              19 r   16-JAN-2010 05:14    18-JUL-2011 01:58
+T0 = 1-JAN-2000
+   Axis span (to cell edges) = 19
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (MONTH)
+       1>  16-JAN-2010 05:14:33  1          01-JAN-2010 00:00:00   120.5189
+       2>  15-FEB-2010 15:43:39  1          31-JAN-2010 10:29:06   121.5189
+       3>  18-MAR-2010 02:12:45  1          02-MAR-2010 20:58:12   122.5189
+       4>  17-APR-2010 12:41:51  1          02-APR-2010 07:27:18   123.5189
+       5>  17-MAY-2010 23:10:57  1          02-MAY-2010 17:56:24   124.5189
+       6>  17-JUN-2010 09:40:03  1          02-JUN-2010 04:25:30   125.5189
+       7>  17-JUL-2010 20:09:09  1          02-JUL-2010 14:54:36   126.5189
+       8>  17-AUG-2010 06:38:15  1          02-AUG-2010 01:23:42   127.5189
+       9>  16-SEP-2010 17:07:21  1          01-SEP-2010 11:52:48   128.5189
+      10>  17-OCT-2010 03:36:27  1          01-OCT-2010 22:21:54   129.5189
+      11>  16-NOV-2010 14:05:33  1          01-NOV-2010 08:51:00   130.5189
+      12>  17-DEC-2010 00:34:39  1          01-DEC-2010 19:20:06   131.5189
+      13>  16-JAN-2011 11:03:45  1          01-JAN-2011 05:49:12   132.5189
+      14>  15-FEB-2011 21:32:51  1          31-JAN-2011 16:18:18   133.5189
+      15>  18-MAR-2011 08:01:57  1          03-MAR-2011 02:47:24   134.5189
+      16>  17-APR-2011 18:31:03  1          02-APR-2011 13:16:30   135.5189
+      17>  18-MAY-2011 05:00:09  1          02-MAY-2011 23:45:36   136.5189
+      18>  17-JUN-2011 15:29:15  1          02-JUN-2011 10:14:42   137.5189
+      19>  18-JUL-2011 01:58:21  1          02-JUL-2011 20:43:48   138.5189
+ 
+! true-monthly axes, t0 at start of axis
+define axis/t=1-jan-2010:31-jul-2011:1/t0=1-jan-2010/monthly taxis
+sh axis/t taxis
+ name       axis              # pts   start                end
+ TAXIS     TIME                19 i   JAN-2010             JUL-2011 (True Monthly)
+T0 = 1-JAN-2010
+   Axis span (to cell edges) = 19
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (TRUMONTH)
+       1>  JAN-2010              31         01-JAN-2010           0
+       2>  FEB-2010              28         01-FEB-2010           1
+       3>  MAR-2010              31         01-MAR-2010           2
+       4>  APR-2010              30         01-APR-2010           3
+       5>  MAY-2010              31         01-MAY-2010           4
+       6>  JUN-2010              30         01-JUN-2010           5
+       7>  JUL-2010              31         01-JUL-2010           6
+       8>  AUG-2010              31         01-AUG-2010           7
+       9>  SEP-2010              30         01-SEP-2010           8
+      10>  OCT-2010              31         01-OCT-2010           9
+      11>  NOV-2010              30         01-NOV-2010           10
+      12>  DEC-2010              31         01-DEC-2010           11
+      13>  JAN-2011              31         01-JAN-2011           12
+      14>  FEB-2011              28         01-FEB-2011           13
+      15>  MAR-2011              31         01-MAR-2011           14
+      16>  APR-2011              30         01-APR-2011           15
+      17>  MAY-2011              31         01-MAY-2011           16
+      18>  JUN-2011              30         01-JUN-2011           17
+      19>  JUL-2011              31         01-JUL-2011           18
+ 
+! t0 before start of axis
+define axis/t=1-jan-2010:31-jul-2011:1/t0=1-jan-2000/monthly taxis
+sh axis/t taxis
+ name       axis              # pts   start                end
+ TAXIS     TIME                19 i   JAN-2010             JUL-2011 (True Monthly)
+T0 = 1-JAN-2000
+   Axis span (to cell edges) = 19
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (TRUMONTH)
+       1>  JAN-2010              31         01-JAN-2010           120
+       2>  FEB-2010              28         01-FEB-2010           121
+       3>  MAR-2010              31         01-MAR-2010           122
+       4>  APR-2010              30         01-APR-2010           123
+       5>  MAY-2010              31         01-MAY-2010           124
+       6>  JUN-2010              30         01-JUN-2010           125
+       7>  JUL-2010              31         01-JUL-2010           126
+       8>  AUG-2010              31         01-AUG-2010           127
+       9>  SEP-2010              30         01-SEP-2010           128
+      10>  OCT-2010              31         01-OCT-2010           129
+      11>  NOV-2010              30         01-NOV-2010           130
+      12>  DEC-2010              31         01-DEC-2010           131
+      13>  JAN-2011              31         01-JAN-2011           132
+      14>  FEB-2011              28         01-FEB-2011           133
+      15>  MAR-2011              31         01-MAR-2011           134
+      16>  APR-2011              30         01-APR-2011           135
+      17>  MAY-2011              31         01-MAY-2011           136
+      18>  JUN-2011              30         01-JUN-2011           137
+      19>  JUL-2011              31         01-JUL-2011           138
+ 
+! default time origin is start of month of first month
+define axis/t=1-jul-2010:1-jan-2012:1/monthly taxis
+sh axis/t taxis
+ name       axis              # pts   start                end
+ TAXIS     TIME                19 i   JUL-2010             JAN-2012 (True Monthly)
+T0 = 01-JAN-2010
+   Axis span (to cell edges) = 19
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (TRUMONTH)
+       1>  JUL-2010              31         01-JUL-2010           6
+       2>  AUG-2010              31         01-AUG-2010           7
+       3>  SEP-2010              30         01-SEP-2010           8
+       4>  OCT-2010              31         01-OCT-2010           9
+       5>  NOV-2010              30         01-NOV-2010           10
+       6>  DEC-2010              31         01-DEC-2010           11
+       7>  JAN-2011              31         01-JAN-2011           12
+       8>  FEB-2011              28         01-FEB-2011           13
+       9>  MAR-2011              31         01-MAR-2011           14
+      10>  APR-2011              30         01-APR-2011           15
+      11>  MAY-2011              31         01-MAY-2011           16
+      12>  JUN-2011              30         01-JUN-2011           17
+      13>  JUL-2011              31         01-JUL-2011           18
+      14>  AUG-2011              31         01-AUG-2011           19
+      15>  SEP-2011              30         01-SEP-2011           20
+      16>  OCT-2011              31         01-OCT-2011           21
+      17>  NOV-2011              30         01-NOV-2011           22
+      18>  DEC-2011              31         01-DEC-2011           23
+      19>  JAN-2012              31         01-JAN-2012           24
+ 
+! Cell edges at mid-month
+define axis/t=15-mar-2010:15-dec-2011:1/t0=1-jan-2000/monthly taxis
+sh axis/t taxis
+ name       axis              # pts   start                end
+ TAXIS     TIME                22 i   MAR-2010             DEC-2011 (True Monthly)
+T0 = 1-JAN-2000
+   Axis span (to cell edges) = 22
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (TRUMONTH)
+       1>  MAR-2010              31         01-MAR-2010           122
+       2>  APR-2010              30         01-APR-2010           123
+       3>  MAY-2010              31         01-MAY-2010           124
+       4>  JUN-2010              30         01-JUN-2010           125
+       5>  JUL-2010              31         01-JUL-2010           126
+       6>  AUG-2010              31         01-AUG-2010           127
+       7>  SEP-2010              30         01-SEP-2010           128
+       8>  OCT-2010              31         01-OCT-2010           129
+       9>  NOV-2010              30         01-NOV-2010           130
+      10>  DEC-2010              31         01-DEC-2010           131
+      11>  JAN-2011              31         01-JAN-2011           132
+      12>  FEB-2011              28         01-FEB-2011           133
+      13>  MAR-2011              31         01-MAR-2011           134
+      14>  APR-2011              30         01-APR-2011           135
+      15>  MAY-2011              31         01-MAY-2011           136
+      16>  JUN-2011              30         01-JUN-2011           137
+      17>  JUL-2011              31         01-JUL-2011           138
+      18>  AUG-2011              31         01-AUG-2011           139
+      19>  SEP-2011              30         01-SEP-2011           140
+      20>  OCT-2011              31         01-OCT-2011           141
+      21>  NOV-2011              30         01-NOV-2011           142
+      22>  DEC-2011              31         01-DEC-2011           143
+ 
+! other calendars JULIAN
+define axis/cal=julian/t=1-jan-2011:31-jul-2012:1/t0=1-jan-2000/monthly taxis
+sh axis/t taxis
+ name       axis              # pts   start                end
+ TAXIS     TIME                19 i   JAN-2011             JUL-2012 (True Monthly)
+T0 = 1-JAN-2000
+CALENDAR = JULIAN
+   Axis span (to cell edges) = 19
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (TRUMONTH)
+       1>  JAN-2011              31         01-JAN-2011           132
+       2>  FEB-2011              28         01-FEB-2011           133
+       3>  MAR-2011              31         01-MAR-2011           134
+       4>  APR-2011              30         01-APR-2011           135
+       5>  MAY-2011              31         01-MAY-2011           136
+       6>  JUN-2011              30         01-JUN-2011           137
+       7>  JUL-2011              31         01-JUL-2011           138
+       8>  AUG-2011              31         01-AUG-2011           139
+       9>  SEP-2011              30         01-SEP-2011           140
+      10>  OCT-2011              31         01-OCT-2011           141
+      11>  NOV-2011              30         01-NOV-2011           142
+      12>  DEC-2011              31         01-DEC-2011           143
+      13>  JAN-2012              31         01-JAN-2012           144
+      14>  FEB-2012              29         01-FEB-2012           145
+      15>  MAR-2012              31         01-MAR-2012           146
+      16>  APR-2012              30         01-APR-2012           147
+      17>  MAY-2012              31         01-MAY-2012           148
+      18>  JUN-2012              30         01-JUN-2012           149
+      19>  JUL-2012              31         01-JUL-2012           150
+ 
+! default time origin
+define axis/cal=julian/t=15-mar-2010:15-dec-2011:1/monthly taxis
+sh axis/t taxis
+ name       axis              # pts   start                end
+ TAXIS     TIME                22 i   MAR-2010             DEC-2011 (True Monthly)
+T0 = 01-JAN-2010
+CALENDAR = JULIAN
+   Axis span (to cell edges) = 22
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (TRUMONTH)
+       1>  MAR-2010              31         01-MAR-2010           2
+       2>  APR-2010              30         01-APR-2010           3
+       3>  MAY-2010              31         01-MAY-2010           4
+       4>  JUN-2010              30         01-JUN-2010           5
+       5>  JUL-2010              31         01-JUL-2010           6
+       6>  AUG-2010              31         01-AUG-2010           7
+       7>  SEP-2010              30         01-SEP-2010           8
+       8>  OCT-2010              31         01-OCT-2010           9
+       9>  NOV-2010              30         01-NOV-2010           10
+      10>  DEC-2010              31         01-DEC-2010           11
+      11>  JAN-2011              31         01-JAN-2011           12
+      12>  FEB-2011              28         01-FEB-2011           13
+      13>  MAR-2011              31         01-MAR-2011           14
+      14>  APR-2011              30         01-APR-2011           15
+      15>  MAY-2011              31         01-MAY-2011           16
+      16>  JUN-2011              30         01-JUN-2011           17
+      17>  JUL-2011              31         01-JUL-2011           18
+      18>  AUG-2011              31         01-AUG-2011           19
+      19>  SEP-2011              30         01-SEP-2011           20
+      20>  OCT-2011              31         01-OCT-2011           21
+      21>  NOV-2011              30         01-NOV-2011           22
+      22>  DEC-2011              31         01-DEC-2011           23
+ 
+! other calendars NOLEAP
+define axis/cal=noleap/t=1-jan-2011:31-jul-2012:1/t0=1-jan-2000/monthly taxis
+sh axis/t taxis
+ name       axis              # pts   start                end
+ TAXIS     TIME                19 i   JAN-2011             JUL-2012 (True Monthly)
+T0 = 1-JAN-2000
+CALENDAR = NOLEAP
+   Axis span (to cell edges) = 19
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (TRUMONTH)
+       1>  JAN-2011              31         01-JAN-2011           132
+       2>  FEB-2011              28         01-FEB-2011           133
+       3>  MAR-2011              31         01-MAR-2011           134
+       4>  APR-2011              30         01-APR-2011           135
+       5>  MAY-2011              31         01-MAY-2011           136
+       6>  JUN-2011              30         01-JUN-2011           137
+       7>  JUL-2011              31         01-JUL-2011           138
+       8>  AUG-2011              31         01-AUG-2011           139
+       9>  SEP-2011              30         01-SEP-2011           140
+      10>  OCT-2011              31         01-OCT-2011           141
+      11>  NOV-2011              30         01-NOV-2011           142
+      12>  DEC-2011              31         01-DEC-2011           143
+      13>  JAN-2012              31         01-JAN-2012           144
+      14>  FEB-2012              28         01-FEB-2012           145
+      15>  MAR-2012              31         01-MAR-2012           146
+      16>  APR-2012              30         01-APR-2012           147
+      17>  MAY-2012              31         01-MAY-2012           148
+      18>  JUN-2012              30         01-JUN-2012           149
+      19>  JUL-2012              31         01-JUL-2012           150
+ 
+! not at first of month
+define axis/cal=julian/t=15-mar-2010:15-dec-2011:1/t0=1-jan-2000/monthly taxis
+sh axis/t taxis
+ name       axis              # pts   start                end
+ TAXIS     TIME                22 i   MAR-2010             DEC-2011 (True Monthly)
+T0 = 1-JAN-2000
+CALENDAR = JULIAN
+   Axis span (to cell edges) = 22
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (TRUMONTH)
+       1>  MAR-2010              31         01-MAR-2010           122
+       2>  APR-2010              30         01-APR-2010           123
+       3>  MAY-2010              31         01-MAY-2010           124
+       4>  JUN-2010              30         01-JUN-2010           125
+       5>  JUL-2010              31         01-JUL-2010           126
+       6>  AUG-2010              31         01-AUG-2010           127
+       7>  SEP-2010              30         01-SEP-2010           128
+       8>  OCT-2010              31         01-OCT-2010           129
+       9>  NOV-2010              30         01-NOV-2010           130
+      10>  DEC-2010              31         01-DEC-2010           131
+      11>  JAN-2011              31         01-JAN-2011           132
+      12>  FEB-2011              28         01-FEB-2011           133
+      13>  MAR-2011              31         01-MAR-2011           134
+      14>  APR-2011              30         01-APR-2011           135
+      15>  MAY-2011              31         01-MAY-2011           136
+      16>  JUN-2011              30         01-JUN-2011           137
+      17>  JUL-2011              31         01-JUL-2011           138
+      18>  AUG-2011              31         01-AUG-2011           139
+      19>  SEP-2011              30         01-SEP-2011           140
+      20>  OCT-2011              31         01-OCT-2011           141
+      21>  NOV-2011              30         01-NOV-2011           142
+      22>  DEC-2011              31         01-DEC-2011           143
+ 
+! other calendars 360_day
+define axis/cal=360_day/t=1-jan-2010:30-jul-2011:1/t0=1-jan-2000/monthly taxis
+sh axis/t taxis
+ name       axis              # pts   start                end
+ TAXIS     TIME                19 r   JAN-2010             JUL-2011 (True Monthly)
+T0 = 1-JAN-2000
+CALENDAR = 360_DAY
+   Axis span (to cell edges) = 19
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (TRUMONTH)
+       1>  JAN-2010              30         01-JAN-2010           120
+       2>  FEB-2010              30         01-FEB-2010           121
+       3>  MAR-2010              30         01-MAR-2010           122
+       4>  APR-2010              30         01-APR-2010           123
+       5>  MAY-2010              30         01-MAY-2010           124
+       6>  JUN-2010              30         01-JUN-2010           125
+       7>  JUL-2010              30         01-JUL-2010           126
+       8>  AUG-2010              30         01-AUG-2010           127
+       9>  SEP-2010              30         01-SEP-2010           128
+      10>  OCT-2010              30         01-OCT-2010           129
+      11>  NOV-2010              30         01-NOV-2010           130
+      12>  DEC-2010              30         01-DEC-2010           131
+      13>  JAN-2011              30         01-JAN-2011           132
+      14>  FEB-2011              30         01-FEB-2011           133
+      15>  MAR-2011              30         01-MAR-2011           134
+      16>  APR-2011              30         01-APR-2011           135
+      17>  MAY-2011              30         01-MAY-2011           136
+      18>  JUN-2011              30         01-JUN-2011           137
+      19>  JUL-2011              30         01-JUL-2011           138
+ 
+! Writing data, including a leap year
+ 
+define axis/t=3-mar-2011:3-jan-2013:1/monthly/t0=1-jan-2010 taxis
+def var tt = t[gt=taxis]
+save/clobber/file=a.nc tt
+ 
+can var/all
+use a
+sh dat/att
+     currently SET data sets:
+    1> ./a.nc  (default)
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
+  
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
+                                 Conventions     CHAR        6    F       CF-1.6
+  
+(TAXIS1)               DOUBLE    axis            CHAR        1    T       T
+                                 bounds          CHAR        10   T       TAXIS_bnds
+                                 time_origin     CHAR        10   T       1-JAN-2010
+                                 units           CHAR        30   T       days since 2010-01-01 00:00:00
+                                 standard_name   CHAR        4    F       time
+                                 orig_file_axname
+                                                 CHAR        5    F       TAXIS
+  
+ TAXIS_bnds            DOUBLE
+  
+ TT                    DOUBLE    missing_value   DOUBLE      1    T       -1.E+34
+                                 _FillValue      DOUBLE      1    T       -1.E+34
+                                 long_name       CHAR        11   T       T[GT=TAXIS]
+  
+sh grid tt
+    GRID GSI1
+ name       axis              # pts   start                end                 subset
+ normal    X
+ normal    Y
+ normal    Z
+ TAXIS1    TIME                23 i   MAR-2011             JAN-2013            full (True Monthly)
+sh axis/t taxis
+ name       axis              # pts   start                end
+ TAXIS     TIME                23 i   MAR-2011             JAN-2013 (True Monthly)
+T0 = 1-JAN-2010
+   Axis span (to cell edges) = 23
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (TRUMONTH)
+       1>  MAR-2011              31         01-MAR-2011           14
+       2>  APR-2011              30         01-APR-2011           15
+       3>  MAY-2011              31         01-MAY-2011           16
+       4>  JUN-2011              30         01-JUN-2011           17
+       5>  JUL-2011              31         01-JUL-2011           18
+       6>  AUG-2011              31         01-AUG-2011           19
+       7>  SEP-2011              30         01-SEP-2011           20
+       8>  OCT-2011              31         01-OCT-2011           21
+       9>  NOV-2011              30         01-NOV-2011           22
+      10>  DEC-2011              31         01-DEC-2011           23
+      11>  JAN-2012              31         01-JAN-2012           24
+      12>  FEB-2012              29         01-FEB-2012           25
+      13>  MAR-2012              31         01-MAR-2012           26
+      14>  APR-2012              30         01-APR-2012           27
+      15>  MAY-2012              31         01-MAY-2012           28
+      16>  JUN-2012              30         01-JUN-2012           29
+      17>  JUL-2012              31         01-JUL-2012           30
+      18>  AUG-2012              31         01-AUG-2012           31
+      19>  SEP-2012              30         01-SEP-2012           32
+      20>  OCT-2012              31         01-OCT-2012           33
+      21>  NOV-2012              30         01-NOV-2012           34
+      22>  DEC-2012              31         01-DEC-2012           35
+      23>  JAN-2013              31         01-JAN-2013           36
+ 
+can dat/all
+ 
+define axis/t=3-mar-2011:3-jan-2013:1/monthly/t0=1-jan-2010/calendar=julian taxis
+def var tt = t[gt=taxis]
+save/clobber/file=a.nc tt
+ 
+can var/all
+use a
+sh dat/att
+     currently SET data sets:
+    1> ./a.nc  (default)
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
+  
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
+                                 Conventions     CHAR        6    F       CF-1.6
+  
+(TAXIS1)               DOUBLE    axis            CHAR        1    T       T
+                                 bounds          CHAR        10   T       TAXIS_bnds
+                                 time_origin     CHAR        10   T       1-JAN-2010
+                                 calendar        CHAR        6    T       JULIAN
+                                 units           CHAR        30   T       days since 2010-01-01 00:00:00
+                                 standard_name   CHAR        4    F       time
+                                 orig_file_axname
+                                                 CHAR        5    F       TAXIS
+  
+ TAXIS_bnds            DOUBLE
+  
+ TT                    DOUBLE    missing_value   DOUBLE      1    T       -1.E+34
+                                 _FillValue      DOUBLE      1    T       -1.E+34
+                                 long_name       CHAR        11   T       T[GT=TAXIS]
+  
+sh grid tt
+    GRID GSI1
+ name       axis              # pts   start                end                 subset
+ normal    X
+ normal    Y
+ normal    Z
+ TAXIS1    TIME                23 i   MAR-2011             JAN-2013            full (True Monthly)
+sh axis/t taxis
+ name       axis              # pts   start                end
+ TAXIS     TIME                23 i   MAR-2011             JAN-2013 (True Monthly)
+T0 = 1-JAN-2010
+CALENDAR = JULIAN
+   Axis span (to cell edges) = 23
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (TRUMONTH)
+       1>  MAR-2011              31         01-MAR-2011           14
+       2>  APR-2011              30         01-APR-2011           15
+       3>  MAY-2011              31         01-MAY-2011           16
+       4>  JUN-2011              30         01-JUN-2011           17
+       5>  JUL-2011              31         01-JUL-2011           18
+       6>  AUG-2011              31         01-AUG-2011           19
+       7>  SEP-2011              30         01-SEP-2011           20
+       8>  OCT-2011              31         01-OCT-2011           21
+       9>  NOV-2011              30         01-NOV-2011           22
+      10>  DEC-2011              31         01-DEC-2011           23
+      11>  JAN-2012              31         01-JAN-2012           24
+      12>  FEB-2012              29         01-FEB-2012           25
+      13>  MAR-2012              31         01-MAR-2012           26
+      14>  APR-2012              30         01-APR-2012           27
+      15>  MAY-2012              31         01-MAY-2012           28
+      16>  JUN-2012              30         01-JUN-2012           29
+      17>  JUL-2012              31         01-JUL-2012           30
+      18>  AUG-2012              31         01-AUG-2012           31
+      19>  SEP-2012              30         01-SEP-2012           32
+      20>  OCT-2012              31         01-OCT-2012           33
+      21>  NOV-2012              30         01-NOV-2012           34
+      22>  DEC-2012              31         01-DEC-2012           35
+      23>  JAN-2013              31         01-JAN-2013           36
+ 
+can dat/all
+ 
+define axis/t=3-mar-2011:3-jan-2013:1/monthly/t0=1-jan-2010/calendar=360_day taxis
+def var tt = t[gt=taxis]
+save/clobber/file=a.nc tt
+ 
+can var/all
+use a
+sh dat/att
+     currently SET data sets:
+    1> ./a.nc  (default)
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
+  
+ .                               history         CHAR        24   T       FERRET V7.022  16-Dec-16
+                                 Conventions     CHAR        6    F       CF-1.6
+  
+(TAXIS1)               DOUBLE    axis            CHAR        1    T       T
+                                 bounds          CHAR        10   T       TAXIS_bnds
+                                 time_origin     CHAR        10   T       1-JAN-2010
+                                 calendar        CHAR        7    T       360_DAY
+                                 units           CHAR        30   T       days since 2010-01-01 00:00:00
+                                 standard_name   CHAR        4    F       time
+                                 orig_file_axname
+                                                 CHAR        5    F       TAXIS
+  
+ TAXIS_bnds            DOUBLE
+  
+ TT                    DOUBLE    missing_value   DOUBLE      1    T       -1.E+34
+                                 _FillValue      DOUBLE      1    T       -1.E+34
+                                 long_name       CHAR        11   T       T[GT=TAXIS]
+  
+sh grid tt
+    GRID GSI1
+ name       axis              # pts   start                end                 subset
+ normal    X
+ normal    Y
+ normal    Z
+ TAXIS1    TIME                22 r   16-MAR-2011 00:00    16-DEC-2012 00:00   full
+sh axis/t taxis
+ name       axis              # pts   start                end
+ TAXIS     TIME                22 r   MAR-2011             DEC-2012 (True Monthly)
+T0 = 1-JAN-2010
+CALENDAR = 360_DAY
+   Axis span (to cell edges) = 22
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (TRUMONTH)
+       1>  MAR-2011              30         01-MAR-2011           14
+       2>  APR-2011              30         01-APR-2011           15
+       3>  MAY-2011              30         01-MAY-2011           16
+       4>  JUN-2011              30         01-JUN-2011           17
+       5>  JUL-2011              30         01-JUL-2011           18
+       6>  AUG-2011              30         01-AUG-2011           19
+       7>  SEP-2011              30         01-SEP-2011           20
+       8>  OCT-2011              30         01-OCT-2011           21
+       9>  NOV-2011              30         01-NOV-2011           22
+      10>  DEC-2011              30         01-DEC-2011           23
+      11>  JAN-2012              30         01-JAN-2012           24
+      12>  FEB-2012              30         01-FEB-2012           25
+      13>  MAR-2012              30         01-MAR-2012           26
+      14>  APR-2012              30         01-APR-2012           27
+      15>  MAY-2012              30         01-MAY-2012           28
+      16>  JUN-2012              30         01-JUN-2012           29
+      17>  JUL-2012              30         01-JUL-2012           30
+      18>  AUG-2012              30         01-AUG-2012           31
+      19>  SEP-2012              30         01-SEP-2012           32
+      20>  OCT-2012              30         01-OCT-2012           33
+      21>  NOV-2012              30         01-NOV-2012           34
+      22>  DEC-2012              30         01-DEC-2012           35
+ 
+! Without date range spec,
+def axis/monthly/t0=1-jan-0000/t=1:24:1 taxis
+sh axis/t taxis
+ name       axis              # pts   start                end
+ TAXIS     TIME                24 i   JAN-0000             DEC-0001 (True Monthly)
+T0 = 1-JAN-0000
+   Axis span (to cell edges) = 24
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (TRUMONTH)
+       1>  JAN-0000              31         01-JAN-0000           0
+       2>  FEB-0000              29         01-FEB-0000           1
+       3>  MAR-0000              31         01-MAR-0000           2
+       4>  APR-0000              30         01-APR-0000           3
+       5>  MAY-0000              31         01-MAY-0000           4
+       6>  JUN-0000              30         01-JUN-0000           5
+       7>  JUL-0000              31         01-JUL-0000           6
+       8>  AUG-0000              31         01-AUG-0000           7
+       9>  SEP-0000              30         01-SEP-0000           8
+      10>  OCT-0000              31         01-OCT-0000           9
+      11>  NOV-0000              30         01-NOV-0000           10
+      12>  DEC-0000              31         01-DEC-0000           11
+      13>  JAN-0001              31         01-JAN-0001           12
+      14>  FEB-0001              28         01-FEB-0001           13
+      15>  MAR-0001              31         01-MAR-0001           14
+      16>  APR-0001              30         01-APR-0001           15
+      17>  MAY-0001              31         01-MAY-0001           16
+      18>  JUN-0001              30         01-JUN-0001           17
+      19>  JUL-0001              31         01-JUL-0001           18
+      20>  AUG-0001              31         01-AUG-0001           19
+      21>  SEP-0001              30         01-SEP-0001           20
+      22>  OCT-0001              31         01-OCT-0001           21
+      23>  NOV-0001              30         01-NOV-0001           22
+      24>  DEC-0001              31         01-DEC-0001           23
+ 
+! With T0 later than year 0
+def axis/monthly/t0=1-jan-2000/t=1:24:1 taxis
+sh axis/t taxis
+ name       axis              # pts   start                end
+ TAXIS     TIME                24 i   JAN-2000             DEC-2001 (True Monthly)
+T0 = 1-JAN-2000
+   Axis span (to cell edges) = 24
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (TRUMONTH)
+       1>  JAN-2000              31         01-JAN-2000           0
+       2>  FEB-2000              29         01-FEB-2000           1
+       3>  MAR-2000              31         01-MAR-2000           2
+       4>  APR-2000              30         01-APR-2000           3
+       5>  MAY-2000              31         01-MAY-2000           4
+       6>  JUN-2000              30         01-JUN-2000           5
+       7>  JUL-2000              31         01-JUL-2000           6
+       8>  AUG-2000              31         01-AUG-2000           7
+       9>  SEP-2000              30         01-SEP-2000           8
+      10>  OCT-2000              31         01-OCT-2000           9
+      11>  NOV-2000              30         01-NOV-2000           10
+      12>  DEC-2000              31         01-DEC-2000           11
+      13>  JAN-2001              31         01-JAN-2001           12
+      14>  FEB-2001              28         01-FEB-2001           13
+      15>  MAR-2001              31         01-MAR-2001           14
+      16>  APR-2001              30         01-APR-2001           15
+      17>  MAY-2001              31         01-MAY-2001           16
+      18>  JUN-2001              30         01-JUN-2001           17
+      19>  JUL-2001              31         01-JUL-2001           18
+      20>  AUG-2001              31         01-AUG-2001           19
+      21>  SEP-2001              30         01-SEP-2001           20
+      22>  OCT-2001              31         01-OCT-2001           21
+      23>  NOV-2001              30         01-NOV-2001           22
+      24>  DEC-2001              31         01-DEC-2001           23
+ 
+! Default T0, non-calendar t def
+define axis/monthly/t=1:36:1 taxis
+sh axis/t taxis
+ name       axis              # pts   start                end
+ TAXIS     TIME                36 i   JAN-0000             DEC-0002 (True Monthly)
+T0 = 01-JAN-0000
+   Axis span (to cell edges) = 36
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (TRUMONTH)
+       1>  JAN-0000              31         01-JAN-0000           0
+       2>  FEB-0000              29         01-FEB-0000           1
+       3>  MAR-0000              31         01-MAR-0000           2
+       4>  APR-0000              30         01-APR-0000           3
+       5>  MAY-0000              31         01-MAY-0000           4
+       6>  JUN-0000              30         01-JUN-0000           5
+       7>  JUL-0000              31         01-JUL-0000           6
+       8>  AUG-0000              31         01-AUG-0000           7
+       9>  SEP-0000              30         01-SEP-0000           8
+      10>  OCT-0000              31         01-OCT-0000           9
+      11>  NOV-0000              30         01-NOV-0000           10
+      12>  DEC-0000              31         01-DEC-0000           11
+      13>  JAN-0001              31         01-JAN-0001           12
+      14>  FEB-0001              28         01-FEB-0001           13
+      15>  MAR-0001              31         01-MAR-0001           14
+      16>  APR-0001              30         01-APR-0001           15
+      17>  MAY-0001              31         01-MAY-0001           16
+      18>  JUN-0001              30         01-JUN-0001           17
+      19>  JUL-0001              31         01-JUL-0001           18
+      20>  AUG-0001              31         01-AUG-0001           19
+      21>  SEP-0001              30         01-SEP-0001           20
+      22>  OCT-0001              31         01-OCT-0001           21
+      23>  NOV-0001              30         01-NOV-0001           22
+      24>  DEC-0001              31         01-DEC-0001           23
+      25>  JAN-0002              31         01-JAN-0002           24
+      26>  FEB-0002              28         01-FEB-0002           25
+      27>  MAR-0002              31         01-MAR-0002           26
+      28>  APR-0002              30         01-APR-0002           27
+      29>  MAY-0002              31         01-MAY-0002           28
+      30>  JUN-0002              30         01-JUN-0002           29
+      31>  JUL-0002              31         01-JUL-0002           30
+      32>  AUG-0002              31         01-AUG-0002           31
+      33>  SEP-0002              30         31-AUG-0002           32
+      34>  OCT-0002              31         01-OCT-0002           33
+      35>  NOV-0002              30         01-NOV-0002           34
+      36>  DEC-0002              31         01-DEC-0002           35
+ 
+! modulo
+define axis/t=1-jan-2010:31-dec-2010:1/t0=1-jan-2000/monthly/modulo taxis
+ 
+let var = {1,2,3,4,5,6,7,8,9,10,11,12}
+let tvar = reshape(var,t[gt=taxis])
+list/L=1:23 tvar
+             VARIABLE : RESHAPE(VAR,T[GT=TAXIS])
+             SUBSET   : 23 points (TIME)
+ 16-JAN-2010 12 /  1:   1.00
+ 15-FEB-2010 00 /  2:   2.00
+ 16-MAR-2010 12 /  3:   3.00
+ 16-APR-2010 00 /  4:   4.00
+ 16-MAY-2010 12 /  5:   5.00
+ 16-JUN-2010 00 /  6:   6.00
+ 16-JUL-2010 12 /  7:   7.00
+ 16-AUG-2010 12 /  8:   8.00
+ 16-SEP-2010 00 /  9:   9.00
+ 16-OCT-2010 12 / 10:  10.00
+ 16-NOV-2010 00 / 11:  11.00
+ 16-DEC-2010 12 / 12:  12.00
+ 16-JAN-2011 17 / 13:   1.00
+ 15-FEB-2011 05 / 14:   2.00
+ 16-MAR-2011 17 / 15:   3.00
+ 16-APR-2011 05 / 16:   4.00
+ 16-MAY-2011 17 / 17:   5.00
+ 16-JUN-2011 05 / 18:   6.00
+ 16-JUL-2011 17 / 19:   7.00
+ 16-AUG-2011 17 / 20:   8.00
+ 16-SEP-2011 05 / 21:   9.00
+ 16-OCT-2011 17 / 22:  10.00
+ 16-NOV-2011 05 / 23:  11.00
+ 
+! Striding on a monthly axis
+ 
+def axis/monthly/t0=1-jan-2000/t=1-jan-2000:31-dec-2004:1/unit=monthly taxis
+!sh axis/t/l=1:14 taxis
+let tt = t[gt=taxis]
+list tt[l=1:6:2]
+             VARIABLE : T[GT=TAXIS]
+                        regrid: 2 tmon_gregori on T
+             SUBSET   : 3 points (TIME)
+ 16-JAN-2000 / 1:   15.5
+ 16-MAR-2000 / 2:   75.5
+ 16-MAY-2000 / 3:  136.5
+ 
+list/prec=6 tt[l=1:60:12]
+             VARIABLE : T[GT=TAXIS]
+                        regrid: 12 tmon_gregori on T
+             SUBSET   : 5 points (TIME)
+ 16-JAN-2000 / 1:    15.50
+ 16-JAN-2001 / 2:   381.50
+ 16-JAN-2002 / 3:   746.50
+ 16-JAN-2003 / 4:  1111.50
+ 16-JAN-2004 / 5:  1476.50
+ 
+! From a file
+save/file=a.nc/clobber tt
+can dat/all; can var/all
+use a
+list/prec=6 tt[l=1:60:12]
+             VARIABLE : T[GT=TAXIS]
+                        regrid: on T
+             FILENAME : a.nc
+             SUBSET   : 5 points (TIME)
+ APR-2001 / 1:    15.50
+ OCT-2031 / 2:   381.50
+ MAR-2062 / 3:   746.50
+ AUG-2092 / 4:  1111.50
+ JAN-2123 / 5:  1476.50
+ 
+! DEFINE AXIS/MONTHLY warnings and error conditions:
+ 
+! Not an error - /EDGES is ignored, as it's the default
+define axis/t=1-jan-2010:31-jul-2011:1/t0=1-jan-2000/monthly/edges taxis
+sh axis taxis
+ name       axis              # pts   start                end
+ TAXIS     TIME                19 i   JAN-2010             JUL-2011 (True Monthly)
+T0 = 1-JAN-2000
+   Axis span (to cell edges) = 19
+ 
+! Not an error - /UNITS=month is the default
+define axis/t=1-jan-2010:31-jul-2011:1/t0=1-jan-2000/monthly/units=months taxis
+sh axis taxis
+ name       axis              # pts   start                end
+ TAXIS     TIME                19 i   JAN-2010             JUL-2011 (True Monthly)
+T0 = 1-JAN-2000
+   Axis span (to cell edges) = 19
+ 
+set mode ignore
+! not all months have day 30, cannot start at day 30
+define axis/t=30-mar-2010:30-dec-2011:1/monthly taxis
+ 
+! Units of other than months is an error
+define axis/t=1-jan-2010:31-jul-2011:30/t0=1-jan-2000/monthly/units=days taxis
+ 
+! /NPOINTS, /BOUNDS, /FROMDATA are not allowed. Errors in start:end:del
+define axis/t=1-jan-2010:31-dec-2012:1/t0=1-jan-2000/monthly/npoints=13 taxis
+ 
+! missing delta-t
+define axis/t=1-jan-2010:31-dec-2012/t0=1-jan-2000/monthly taxis
+ 
+! delta-t must be 1
+define axis/t=1-jan-2010:31-dec-2012:2/t0=1-jan-2000/monthly taxis
+ 
+! irregular or from-data
+define axis/t/t0=1-jan-2000/monthly taxis = {123,124,126}
+ 
+define axis/from/t/t0=1-jan-2001/monthly/edges taxis = {5,6,6,6,7}
+ 
+! bounds
+def axis/t/t0=1-jan-2000/monthly/bounds tax={1.2, 2, 3.2, 5, 7, 8.4, 9}, {0.5,1.5, 1.5,2.5, 2.5,3.5, 3.5,6.5, 6.5,7.5, 7.5,8.5, 8.5,9.5}
+ 
+! Must be T direction (do we need /F=?)
+define axis/x=1:5:1/monthly aaxis
+ 
+cancel mode ignore
 *** Running ferret script: bn_gif.jnl
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -95443,7 +96533,7 @@ exit/command
 SET MODE VERIFY
 ! bn_all_ef.jnl
 ! - run all the benchmark tests for externally-linked external functions.
- 
+! 12/16 vis5D functions have long been defunct. Remove that test
  
 GO bn_reset
 cancel mode verify
@@ -96219,45 +97309,7 @@ set mode/last ignore_errors
 !
 !!!!!!!!!!!!!!!!!!!!!!
  
-! Ansley's benchmarks
-! move bench tests that test internal external functions to their
-! own .jnl file  bn_internal_external_functions
-!
-! 4/2006 all efs distributed with Ferret except writev5d and the
-!        examples tested in bench_examples.jnl are now internally linked.
- 
-GO bn_reset
-cancel mode verify
-go bench_v5d
-! benchmark for Vis5D external function
-! 5/99 ACM
- 
- 
-!  Write data to a Vis5D file.  The first argument to the
-!  GO script is the file, arguments 2 through 9 are variable names to be written.
-! 7/2007 Funtion doesnt want to write a variable that doesnt have a vertical variation.
-!        To get a basic test of the function, make some data on a regularly-spaced xy grid.
- 
-can region
- set mode ignore_error
- 
-use gt4d011.cdf
-def axis/y=1:100:1/units=degrees yax
-let tr = temp[gy=yax@asn]
-go vis5d_write " " tr
-To view the file with Vis5D say:   GO vis5d_start vis5d_out.v5d
- 
-set mode/last ignore_error
- 
- 
-GO bn_reset
-cancel mode verify
-GO bn_ef_v5d_strings.jnl
-! bn_ef_v5d_strings.jnl
-! Taken out of bn_strings, because it calls so file writev5d.
-! testing string argument to external function.
-! 5/4/05 acm
-exit/script ! I dont have writev5d on this machine.
+! 12/16 No other external functions are distributed. Remove further references.
  
 go bn_reset
 cancel mode verify
@@ -96276,18 +97328,18 @@ exit/command
 PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "7.021"
-FERRET_PLATFORM = "Linux 2.6.32-642.6.2.el6.x86_64 64-bit"
+FERRET_VERSION = "7.022"
+FERRET_PLATFORM = "Linux 2.6.32-642.11.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = " 1-Dec-16"
-SESSION_TIME = "16:51"
-SESSION_PID = "14989"
-DELTA_CPU = "0.020996"
-CLOCK_SECS = "0.011"
-CURRENT_DATE = " 1-Dec-16"
-CURRENT_TIME = "16:51:13"
+SESSION_DATE = "16-Dec-16"
+SESSION_TIME = "11:07"
+SESSION_PID = "26577"
+DELTA_CPU = "0.018996"
+CLOCK_SECS = "0.014"
+CURRENT_DATE = "16-Dec-16"
+CURRENT_TIME = "11:07:00"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 GO_FILE = "./bn_startupfile.jnl"
@@ -98428,4 +99480,4 @@ can axis/all
  
 ! Dump the contents of the decimated-data DSG file
 sp ncdump -h 492C19881104_dec.nc >> all_ncdump.out
-Ended at Thu Dec  1 16:51:16 PST 2016
+Ended at Fri Dec 16 11:07:03 PST 2016

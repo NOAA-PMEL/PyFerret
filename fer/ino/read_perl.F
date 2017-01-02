@@ -47,6 +47,9 @@
 * v604 *acm* 7/07 increase length of ds_name
 * V63  *acm* 10/09 Changes for 1 build
 *       *acm* 3/12 cleanup old VMS ifdef
+* V702: *sh* 1/17 - bug fix: mr_protected must *end* at mr_not_in_use (=0)
+*                   note: this fix was never tested -- applied blindly
+*                   by analogy with other ino/read*.F routines
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -198,8 +201,8 @@
 * flag that all the data is available
 	DO 800 ivar = 1, nvar20
 	   mr1 = mr20(ivar)
-	   mr_protected( mr1 ) = mr_not_protected
-	   CALL MR_NOT_IN_USE( mr1 )
+	   mr_protected( mr1 ) = 1
+	   CALL MR_NOT_IN_USE( mr1 )    ! decrement to 0=mr_not_in_use
  800	CONTINUE
 
 * the data region obtained may be inadequate for the request

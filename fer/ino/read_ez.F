@@ -62,6 +62,7 @@
 * V552 *acm* 4/03- up VAR_CODE  to 128 chars
 *       *acm* 3/12 cleanup old VMS ifdef
 * V685 *acm* 1/13  Ticket 2030: if we run out of memory, issue a new message
+* V702: *sh* 1/17 - bug fix: mr_protected must *end* at mr_not_in_use (=0)
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -238,8 +239,8 @@
 * flag that all the data is available
 	DO 800 ivar = 1, nvar20
 	   mr1 = mr20(ivar)
-	   mr_protected( mr1 ) = mr_not_protected
-	   CALL MR_NOT_IN_USE( mr1 )
+	   mr_protected( mr1 ) = 1
+	   CALL MR_NOT_IN_USE( mr1 )	! decrement to 0=mr_not_in_use
  800	CONTINUE
 
 * the data region obtained may be inadequate for the request

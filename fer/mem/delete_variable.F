@@ -119,8 +119,8 @@
 	   next = mr_del_flink(mr)
 	   mr_del_flink(prev) = next
 	   mr_del_blink(next) = prev
-	   mr_del_flink(mr)   = unspecified_int4	! temp diag
-	   mr_del_blink(mr)   = unspecified_int4	! temp diag
+	   mr_del_flink(mr)   = unspecified_int4	! important 12/16
+	   mr_del_blink(mr)   = unspecified_int4	! important 12/16
 	ENDIF
 
 * release bulk memory that the variable used
@@ -134,6 +134,11 @@
 * set protection to indicate deleted
 	mr_protected( mr ) = mr_deleted
 
+* sanity check memory integrity after deletion
+#ifndef NDEBUG
+        IF ( mode_diagnostic ) CALL SANITY_CHECK_MEMORY("DELETE_VARIABLE")
+#endif
+
+
 	RETURN
 	END
-

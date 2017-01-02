@@ -46,6 +46,7 @@
 *
 * V200:  6/12/89
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V702 12/16 *sh* doc change only
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -64,8 +65,8 @@
 	   next = mr_del_flink(mr)
 	   mr_del_flink(prev) = next
 	   mr_del_blink(next) = prev
-	   mr_del_flink(mr)   = unspecified_int4	! temp diag
-	   mr_del_blink(mr)   = unspecified_int4	! temp diag
+	   mr_del_flink(mr)   = unspecified_int4	! important 12/16
+	   mr_del_blink(mr)   = unspecified_int4	! important 12/16
 	ENDIF
 
 * bump claims counter

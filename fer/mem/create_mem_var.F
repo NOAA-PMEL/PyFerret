@@ -47,6 +47,7 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
+* V702 1/16 *sh*: added sanity checking of memory when debugging
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -54,6 +55,7 @@
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
+	include 'xprog_state.cmn'
 
 * calling argument declarations:
 	INTEGER		cx, mr, status
@@ -91,6 +93,12 @@
      .			mr,
      .			status 	)
 	IF ( status .NE. ferr_ok ) RETURN
+
+* sanity check memory integrity after creating new variable
+#ifndef NDEBUG
+        IF ( mode_diagnostic ) CALL SANITY_CHECK_MEMORY("CREATE_MEM_VAR")
+#endif
+
 
 	RETURN
 

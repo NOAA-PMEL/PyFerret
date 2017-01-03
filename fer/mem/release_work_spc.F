@@ -42,7 +42,7 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.0 - 2/19/87
-* V702 *sh* 12/16  reset sp_num_blocks purely for house-keeping
+* V702 *sh* 12/16  clear sp_num_blocks and sp_start_block for house-keeping
 
         IMPLICIT NONE
 	include 'xwork_space.cmn'
@@ -51,6 +51,7 @@
 	   CALL FREE_MEMORY( sp_start_block, sp_num_blocks )
 	   sp_last_size  = 0
 	   sp_num_blocks = 0
+	   sp_start_block = -12345
 	ENDIF
 
 	RETURN

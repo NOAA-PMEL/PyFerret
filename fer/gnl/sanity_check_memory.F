@@ -60,7 +60,7 @@
      .		nmvlost, nmblost, n, pile, last, size, test_next,
      .		ninuse, navail, nperm, mbperm, ntemp, ndel,
      .		ninprogress, ntable_entries,
-     .		slen, nn
+     .		slen, nn, mb_allocated(pmax_mem_blks), i, iblk
 	CHARACTER LEFINT*8, buff*40, b12*12
 	PARAMETER (b12 = '            ')    !kob 12/96
 
@@ -197,6 +197,10 @@
 
 
 ************************************
+* initialize memory block allocation counts
+	DO mb = 1, pmax_mem_blks
+	   mb_allocated(mb) = 0
+	ENDDO
 
 * check available bulk memory
 	n      = 0	! number of contiguous regions
@@ -219,6 +223,13 @@
      .				//LEFINT(mb,slen)//tag )
 	   ENDIF
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* flag memory blocks allocated to the free list
+	   DO i = 1, size
+	      iblk = mb+i-1
+!	      IF (iblk .EQ.878) WRITE (6,*) '*** block 878 is free'
+	      mb_allocated(iblk) = mb_allocated(iblk) + 1
+	   ENDDO
+
 	   mb = mblk_flink( mb )
 	   GOTO 100
 	ENDIF	   
@@ -259,11 +270,29 @@
 	      IF (mr_protected(mv) .NE. mr_table_entry_only) THEN
 	         mbused = mbused + mr_nblks(mv)
 	      ENDIF
+
+* flag memory blocks allocated to a variable in a hash pile
+	      IF (mr_protected(mv) .NE. mr_table_entry_only) THEN
+	         DO i = 1, mr_nblks(mv)
+	            iblk = mr_blk1(mv)+i-1
+!	            IF (iblk .EQ.878) WRITE (6,*) '*** block 878 owned by',mv
+	            mb_allocated(iblk) = mb_allocated(iblk) + 1
+	         ENDDO
+	      ENDIF
+
 	      last   = mv
 	      mv     = mv_flink(mv)
 	      GOTO 300
 	   ENDIF
  310	CONTINUE
+
+* flag memory blocks allocated to work storage
+	   DO i = 1, sp_num_blocks
+	      iblk = sp_start_block+i-1
+!	      IF (iblk .EQ.878) WRITE (6,*) '*** block 878 is work storage',
+!     .		   sp_start_block, sp_num_blocks
+	      mb_allocated(iblk) = mb_allocated(iblk) + 1
+	   ENDDO
 
 
 * * * * integrity check * * * * * * * * * * * * * * * * * * * *
@@ -281,7 +310,20 @@
 	   ENDIF
 	   nn = nn + 1
 	   mvused = mvused + 1
-	   mbused = mbused + mr_nblks(mv)
+	   IF (mr_protected(mv) .NE. mr_table_entry_only) THEN
+	      mbused = mbused + mr_nblks(mv)
+	   ENDIF
+!	   mbused = mbused + mr_nblks(mv)
+
+* flag memory blocks allocated to a non-cached variable
+	   IF (mr_protected(mv) .NE. mr_table_entry_only) THEN
+	      DO i = 1, mr_nblks(mv)
+	         iblk = mr_blk1(mv)+i-1
+!	         IF (iblk .EQ.878) WRITE (6,*) '*** block 878 owned by',mv
+	         mb_allocated(iblk) = mb_allocated(iblk) + 1
+	      ENDDO
+	   ENDIF
+
 	   last   = mv
 	   mv     = mv_flink(mv)
 	   GOTO 350
@@ -299,6 +341,16 @@
 	   CALL WARN('SANITY ERR: lost memory blocks: '
      .				//LEFINT(nmblost,slen)//tag )
 	ENDIF
+
+* * * * integrity check * * * * * * * * * * * * * * * * * * * * *
+* make sure that every memory block is allocated to exactly one purpose
+	DO mb = 1, pmax_mem_blks
+	   IF (mb_allocated(mb) .NE. 1) THEN
+	      CALL WARN('SANITY ERR: allocation of block: '
+     .				//LEFINT(mb,slen)//
+     .			  ' is '//LEFINT(mb_allocated(mb),slen)//tag )
+	   ENDIF
+	ENDDO
 
 * * * * integrity check * * * * * * * * * * * * * * * * * * * * *
 * variable deletion priority chain

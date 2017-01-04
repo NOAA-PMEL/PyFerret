@@ -1,27 +1,52 @@
 ! bn_spawn_size.jnl
+! Added 9/9/2014
+! Fix for ticket 981
 ! Return the size of the result of a spawn, not 
-! the nominalabstract axis length.
+! the nominal abstract axis length.
 
-! ticket 981
+! 1/2017 *acm* change this script so the results are always consistent, 
+! not depending on the contents of the directory which may change.
 
-let files = {spawn:"ls *cdf*.jnl"}
+! Make some files to operate on
+let a = x + 1
+save/clobber/i=1:5/file=bn_spawn_size1.cdf a
+save/clobber/i=1:5/file=bn_spawn_size2.cdf a
+save/clobber/i=1:5/file=bn_spawn_size3.cdf a
+save/clobber/i=1:5/file=bn_spawn_size4.cdf a
+save/clobber/i=1:5/file=bn_spawn_size5.cdf a
+
+list/clobber/i=1:7/file=bn_spawn_size02.dat a
+list/clobber/i=1:7/file=bn_spawn_size04.dat a
+list/clobber/i=1:7/file=bn_spawn_size06.dat a
+list/clobber/i=1:7/file=bn_spawn_size08.dat a
+list/clobber/i=1:7/file=bn_spawn_size10.dat a
+list/clobber/i=1:7/file=bn_spawn_size12.dat a
+list/clobber/i=1:7/file=bn_spawn_size14.dat a
+
+! Previously these return=isize results returned 2000
+
+let files = {spawn:"ls *bn_spawn_size*4.*"}
 list files
 say `files,return=isize`
 
 ! Evaluate size without loading the variable first
-let datfiles = {spawn:"ls *.dat"}
+let datfiles = {spawn:"ls bn_spawn_size1*.dat"}
 say `datfiles,return=isize`
 
 ! expression syntax
-say `{spawn:"ls xml*.jnl"},return=isize`
-list {spawn:"ls xml*.jnl"}
+say `{spawn:"ls bn_spawn_size*.dat"},return=isize`
+list {spawn:"ls bn_spawn_size*.dat"}
 
-! Test variables based on output of a spawn.
+! Test variables based on a function operating on output of a spawn.
 ! These already worked correctly, has a grid-changing function.
 
-LET filesets = xcat({spawn:"ls *.nc"}, {spawn:"ls *.jnl"})
+LET filesets = XCAT({spawn:"ls bn_spawn_size*.cdf"}, {spawn:"ls bn_spawn_size*.dat"})
 say `filesets, return=isize`
 
-let files = {spawn:"ls *cdf*.jnl"}
-let name_len = strindex(files, ".sub")
+let files = {spawn:"ls bn_spawn_size*.dat"}
+let name_len = STRINDEX(files, "ze0")
 say `name_len, return=isize`
+
+! clean up
+sp rm bn_spawn_size*.dat bn_spawn_size*.cdf
+

@@ -112,6 +112,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 *                  For centered labels add a level to corresp to the upper bound of 
 *                  the top color on thecolorbar, excluding any upper inf triangle.
 * V697 *acm* 12/15 Fix ticket 2326: single level plus (inf) and/or (-inf)
+* V71  *acm*  1/157 Fix ticket 2491: labels on colorbar when it's a ribbon/vlog, ribbon/hlog plot
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -137,7 +138,8 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 	include        'gkspar.inc'
 
 	integer		TM_LENSTR1, ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
-     .                  lab_add, nlab, i, kount, shd_lev_hi, num_dec, maxstr
+     .                  lab_add, nlab, i, kount, shd_lev_hi, num_dec, maxstr,
+     .                  itypex_save, itypey_save
 
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5),flaty(5),flatx(5)
 	real		xmaxx,ymaxx,vwidth,vheight,karht, ksiz_test
@@ -172,6 +174,16 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 	if (center_key_labels) center_add = 0.5
 
 	incr = 0
+
+* If the plot has log axes, the location of labels is adjusted in routine
+* point_convert.  We do not want that on the color key, so reset the flag
+* here, and restore the values at the end
+
+	itypex_save = itypex
+	itypey_save = itypey
+	itypex = 1
+	itypey = 1
+
 
 * Decide whether to check for small numeric values in the key labels.
 * If delta is large, we dont want 0.000005 to be labelled in an exponential
@@ -864,6 +876,10 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 2000	windof = windof_hold
 	cont_key = cont_key_keep
+
+* Restore axis-type settings
+	itypex = itypex_save
+	itypey = itypey_save
 
 	return
 	end

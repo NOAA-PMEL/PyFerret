@@ -61,3 +61,9 @@ go err700_axis_dates
 ! Bug 2489. Attribute climatology_time_range not defined on an expression
 go bn_reset
 go err700_clim_attr_expression
+
+
+! Bug 2491: Location of colorbar labels wrong
+! on /HLOG or /VLOG plots
+go bn_reset
+go err700_ribbon_vlog

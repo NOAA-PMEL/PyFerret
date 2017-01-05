@@ -52,18 +52,19 @@ go err700_attribute_parsing
 go bn_reset
 go err700_vs_plot_axes
 
-
 ! Bug 2483. Fixing axis-ends symbols XAXIS_MIN,XAXIS_MAX, YAXIS_MIN,YAXIS_MAX
 go bn_reset
 go err700_axis_dates
-
 
 ! Bug 2489. Attribute climatology_time_range not defined on an expression
 go bn_reset
 go err700_clim_attr_expression
 
-
 ! Bug 2491: Location of colorbar labels wrong
 ! on /HLOG or /VLOG plots
 go bn_reset
 go err700_ribbon_vlog
+
+! Bug 2492: single-variable listings with /form=comma or /form=tab
+go bn_reset
+go err700_list_comma

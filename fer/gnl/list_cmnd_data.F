@@ -90,6 +90,9 @@
 * V691+ *acm* 9/14 Ticket 2199: for string variables don't list a BAD FLAG in the header.
 * V71   *acm* 11/16 For true-month axes, call TM_WORLD to write any true-month
 *                  time coordinates as days.
+* V71   *acm* 01/17 Ticket 2492. For single-variable LIST/FORMAT=comma or /FORMAT=tab listings, 
+*                   /NOROW had no effect; and there is an extra longitude location label below 
+*                   the header even when the longitude has been averaged away.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -610,35 +613,44 @@
      .        CALL NDIG_COORDS (grid, perm(4), lo4, hi4, del4, 
      .           bad_data, ndig(perm(4)), ax_dec_pt(perm(4)) )
 
-	   DO 330 i = lo1, hi1, del1
-	      val8 = TM_WORLD( i, grid, row_ax, box_middle )
-	      width = FIELD_WIDTH(val8, grid, row_ax, ndig(row_ax),
+* Skip this level of coordinate labels when they said /NOHEAD.
+* Do not make spurious labels from an  index=-999.
+	   IF (heading .AND. lo1.NE.unspecified_int4) THEN
+	      DO 330 i = lo1, hi1, del1
+	         val8 = TM_WORLD( i, grid, row_ax, box_middle )
+	         width = FIELD_WIDTH(val8, grid, row_ax, ndig(row_ax),
      .					numbers)
-	      alen = alen + width
-	      IF ( alen .GT. max_line_len ) THEN
-	         line_buff(max_line_len-18:max_line_len) = 
+	         alen = alen + width
+	         IF ( alen .GT. max_line_len ) THEN
+	            line_buff(max_line_len-18:max_line_len) = 
      .			'** line too long **'
-	         alen = max_line_len
-	         GOTO 331
-	      ENDIF
+	            alen = max_line_len
+	            GOTO 331
+	         ENDIF
 	      
-	      CALL TRANSLATE_TO_WORLD
+	         CALL TRANSLATE_TO_WORLD
      .		      ( val8,
      .			row_ax,
      .			grid,
      .			ndig(row_ax),
      .			line_buff(alen-(width-1):alen) )
-	      IF ( i .LT. hi1 ) THEN
-	         alen = alen + 1
-	         line_buff(alen:alen) = tab_or_comma
-	      ENDIF
- 330	   CONTINUE
- 331	   CALL SPLIT_LIST(pttmode_explct, list_lun,
+	         IF ( i .LT. hi1 ) THEN
+	            alen = alen + 1
+	            line_buff(alen:alen) = tab_or_comma
+	         ENDIF
+ 330	      CONTINUE
+	
+ 331	      CALL SPLIT_LIST(pttmode_explct, list_lun,
      .				line_buff(:alen), alen )
+
+	   ENDIF  ! skipped if heading turned off
+
+* As for non-comma or -tab listings, turn off these labels if /norow was given
 
 	   DO 350 n = lo6, hi6, del6
 * ... label the block of blocks (6th dimension)
-	      IF ( ndim .GE. 6 .AND. valid(6) ) THEN
+	      IF ( ndim .GE. 6 .AND. valid(6) .AND. 
+     .               (.NOT.norow) ) THEN
 	         CALL POS_LAB( l, cx, perm(6),
      .			    ndig(perm(6)), line_buff, alen )
 	         CALL SPLIT_LIST(pttmode_explct, list_lun,
@@ -646,7 +658,8 @@
 	      ENDIF
 	   DO 350 m = lo5, hi5, del5
 * ... label the block of blocks (5th dimension)
-	      IF ( ndim .GE. 5 .AND. valid(5) ) THEN
+	      IF ( ndim .GE. 5 .AND. valid(5) .AND. 
+     .               (.NOT.norow) ) THEN
 	         CALL POS_LAB( l, cx, perm(5),
      .			    ndig(perm(5)), line_buff, alen )
 	         CALL SPLIT_LIST(pttmode_explct, list_lun,
@@ -654,7 +667,8 @@
 	      ENDIF
 	   DO 350 l = lo4, hi4, del4
 * ... label the block of blocks (4th dimension)
-	      IF ( ndim .GE. 4 .AND. valid(4) ) THEN
+	      IF ( ndim .GE. 4 .AND. valid(4) .AND. 
+     .               (.NOT.norow) ) THEN
 	         CALL POS_LAB( l, cx, perm(4),
      .			    ndig(perm(4)), line_buff, alen )
 	         CALL SPLIT_LIST(pttmode_explct, list_lun,
@@ -662,7 +676,8 @@
 	      ENDIF
 	   DO 350 k = lo3, hi3, del3
 * ... label a single block (3rd dimension)
-	      IF ( ndim .GE. 3 .AND. valid(3) ) THEN
+	      IF ( ndim .GE. 3 .AND. valid(3) .AND. 
+     .               (.NOT.norow) ) THEN
 	         CALL POS_LAB( k, cx, perm(3),
      .			       ndig(perm(3)), line_buff, alen )
 	         CALL SPLIT_LIST(pttmode_explct, list_lun,
@@ -671,26 +686,40 @@
 	   DO 350 j = lo2, hi2, del2
 	      IF ( interrupted ) RETURN
 * ...  create label for this row
-	         IF ( ndim .GE. 2 .AND. valid(2) ) THEN
+	         IF ( ndim .GE. 2 .AND. valid(2) .AND. 
+     .               (.NOT.norow) ) THEN
 	            CALL TRANSLATE_TO_WORLD
      .		      ( TM_WORLD( j, grid, col_ax, box_middle ),
      .			col_ax, grid, ndig(col_ax), line_buff(:16) )
 	            alen = TM_LENSTR1(line_buff(:16))
-	         ELSE	! 1D row-only (will this ever happen?)
-	            line_buff(1:5) = 'row 1'	
-	            alen = 5
+	         ELSE	! 1D row-only 
+	            line_buff(1:5) = ''	
+	            alen = 0
 	         ENDIF
 * ...  and append the values for this row
 	         DO 340 i = lo1, hi1, del1
 	            IF ( itsa_string ) THEN
-	               line_buff = line_buff(:alen)//tab_or_COMMA//
+	               IF (alen.GT.0) THEN
+		          line_buff = line_buff(:alen)//tab_or_COMMA//
      .			GET_STRING_ELEMENT(
      .			m1lox,m1hix,m1loy,m1hiy,m1loz,m1hiz,m1lot,m1hit,
      .			m1loe,m1hie,m1lof,m1hif,grid_data,i,j,k,l,m,n,
      .			max_line_len,vlen )
+	               ELSE 
+		          line_buff = GET_STRING_ELEMENT(
+     .			m1lox,m1hix,m1loy,m1hiy,m1loz,m1hiz,m1lot,m1hit,
+     .			m1loe,m1hie,m1lof,m1hif,grid_data,i,j,k,l,m,n,
+     .			max_line_len,vlen )
+	               ENDIF
+
 	            ELSE
-	               line_buff = line_buff(:alen)//tab_or_COMMA//
+	               IF (alen.GT.0) THEN
+		          line_buff = line_buff(:alen)//tab_or_COMMA//
      .			TM_FMT(grid_data(i,j,k,l,m,n),prec_digits,16,vlen)
+	               ELSE
+		          line_buff = 
+     .			TM_FMT(grid_data(i,j,k,l,m,n),prec_digits,16,vlen)
+	               ENDIF
 	            ENDIF
 	            alen = alen+vlen+1
 	            IF ( alen .GT. max_line_len ) THEN

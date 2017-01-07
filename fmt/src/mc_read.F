@@ -78,6 +78,9 @@
 *                  linked with OPeNDAP library.
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* V71  *acm* 1/17 Ticket 2493 The E and F dimensions are "outside" of T and so 
+*                 just passing a start location into CD_READ to read in each file's 
+*                 of data gave incorrect results.
 
 * include files
         include 'netcdf.inc'
@@ -133,7 +136,8 @@
      .            hi_offset,a_lo_t_offset,
      .            a_hi_t_offset, vartype, nvdims,vdims(8),nvatts,
      .		  varid, varpos,ndims,nvars, natts, recdim,
-     .            npts, var_id,index, nsteps_in_file, vlen, end_lstep
+     .            npts, var_id,index, nsteps_in_file, vlen, end_lstep,
+     .            line, m, n
 	REAL*8	  TM_WORLD,start_tstep, end_tstep, start_read_tstep,
      .            end_read_tstep, epsilon
 	INTEGER   TM_SUBSC, TM_LENSTR1, prev_steps
@@ -318,20 +322,23 @@ c!c! uncomment this...
 	   IF (.NOT. mode_diagnostic) THEN
 	      sf_valid(sfcnt) = .TRUE.
 *       now verify the timestep value in the netcdf file
+*       Note this will report errors for time aggregations that have different time origins
 	   ELSE
 	      IF (.NOT. sf_valid(sfcnt)) THEN
+* Get the T dimension and look up its attributes
+
+		 line = grid_line(t_dim, grid)
+		 dim_name = line_name_orig(line)
+		 vlen = TM_LENSTR1(dim_name)
+
 #ifdef usingDODSf2cUnderscore
-		 cdfstat = NF_INQ_DIM_( cdfid, vdims(nvdims), dim_name, 
-     .                           npts )
-		 cdfstat = NF_INQ_VARID_(cdfid, dim_name, var_id)
+		 cdfstat = NF_INQ_VARID_(cdfid, dim_name(:vlen), var_id)
 * *kob* had to add an ncvinq to find out variable type of dimension because
 *		 NF_FLOAT dimensions were causing core dumps. 
 		 cdfstat = NF_INQ_VAR_(cdfid, var_id, dim_name, vartype, nvdims, 
      .      	      vdims,nvatts)
 #else
-		 cdfstat = NF_INQ_DIM( cdfid, vdims(nvdims), dim_name, 
-     .                           npts )
-		 cdfstat = NF_INQ_VARID (cdfid, dim_name, var_id)
+		 cdfstat = NF_INQ_VARID (cdfid, dim_name(:vlen), var_id)
 * *kob* had to add an ncvinq to find out variable type of dimension because
 *		 NF_FLOAT dimensions were causing core dumps. 
 		 cdfstat = NF_INQ_VAR (cdfid, var_id, dim_name, vartype, nvdims, 
@@ -359,7 +366,7 @@ c!c! uncomment this...
 		 IF (.NOT. TM_FPEQ(SNGL(r8buff), 
      .                        SNGL(start_read_tstep))) THEN
 #endif
-		    CALL TM_ERRMSG (merr_stpmtch, status, 'MC_READ',
+		    CALL TM_ERRMSG (merr_stpmtch, status, 'MC_READ (ignore for TSERIES aggregation)',
      .           	 sf_setnum(sfcnt), sfcnt,
      .  		 TM_STRING(start_read_tstep), TM_STRING(r8buff),*70)
 *Now check to make sure that the number of files in this stepfile pulled 
@@ -385,15 +392,28 @@ c!c! uncomment this...
 
            cd_scaled(ivar) = got_scale .OR. got_scale
 
-* let's read the data (finally)
-	   CALL CD_READ( dset, ivar,
-     .		a_lo_x, a_lo_y, a_lo_z, a_lo_t_offset, a_lo_e, a_lo_f,
-     .		a_hi_x, a_hi_y, a_hi_z, a_hi_t_offset, a_hi_e, a_hi_f, 
-     .	        tmp_lo, tmp_hi, stride,
-     .	        var(a_lo_x, a_lo_y, a_lo_z,
-     .	        a_lo_t+(start_read_lstep-use_lo(4)),
-     .	        a_lo_e, a_lo_f),
-     .		sfcnt, status)
+* let's read the data (finally). 
+
+* (Ticket 2493) The E and F dimensions are "outside" of T and so must be read 
+* sequentially if we are going to call CD_READ to do this. (Is there a more 
+* efficient solution?)
+
+	   DO n = a_lo_f, a_hi_f
+	      tmp_lo(6) = n
+	      tmp_hi(6) = n
+	      DO m = a_lo_e, a_hi_e
+	         tmp_lo(5) = m
+	         tmp_hi(5) = m
+	         CALL CD_READ( dset, ivar,
+     .		   a_lo_x, a_lo_y, a_lo_z, a_lo_t_offset, m, n, 
+     .		   a_hi_x, a_hi_y, a_hi_z, a_hi_t_offset, m, n, 
+     .	           tmp_lo, tmp_hi, stride,
+     .	           var(a_lo_x, a_lo_y, a_lo_z,
+     .	           a_lo_t+(start_read_lstep-use_lo(4)),
+     .	           m, n),
+     .		   sfcnt, status)
+	      ENDDO
+	   ENDDO
 * 7/97 - *kob* error check as in tm_choose_read.F
 	   if (status .NE. merr_ok) GOTO 5000
 	  

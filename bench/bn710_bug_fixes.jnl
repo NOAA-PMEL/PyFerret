@@ -68,3 +68,8 @@ go err700_ribbon_vlog
 ! Bug 2492: single-variable listings with /form=comma or /form=tab
 go bn_reset
 go err700_list_comma
+
+
+! Bug 2493: T aggregation when there are E or F axes
+go bn_reset
+go err700_aggT_5d

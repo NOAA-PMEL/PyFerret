@@ -61,6 +61,7 @@
 * V601 11/06 *acm*- fix bug 1466: memory for string vars is NOT allocated via malloc,
 *                   so do not FREE it here. 
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V702 1/16 *sh*: added sanity checking of memory when debugging
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -119,8 +120,8 @@
 	   next = mr_del_flink(mr)
 	   mr_del_flink(prev) = next
 	   mr_del_blink(next) = prev
-	   mr_del_flink(mr)   = unspecified_int4	! temp diag
-	   mr_del_blink(mr)   = unspecified_int4	! temp diag
+	   mr_del_flink(mr)   = unspecified_int4	! important 12/16
+	   mr_del_blink(mr)   = unspecified_int4	! important 12/16
 	ENDIF
 
 * release bulk memory that the variable used
@@ -134,6 +135,16 @@
 * set protection to indicate deleted
 	mr_protected( mr ) = mr_deleted
 
+* sanity check memory integrity after deletion
+! note that this call can give false indications of corruption.
+! When DELETE_VARIABLE is called due to the mr table being full during
+! CREATE_MEM_VAR.  In that case GET_MEMORY reserves the memory, and then
+! ASSIGN_VARIABLE (which calls FIND_MR_SLOT) deletes a variable to free up
+! a slot while the newly reserved memory has not yyet been assigned to an mr.
+!#ifndef NDEBUG
+!        IF ( mode_diagnostic ) CALL SANITY_CHECK_MEMORY("DELETE_VARIABLE")
+!#endif
+
+
 	RETURN
 	END
-

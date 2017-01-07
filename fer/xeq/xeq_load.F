@@ -60,6 +60,7 @@
 * V312: 5/94 - array "memory" as a calling argument
 * V530: *sh* 9/00 - added initial data type support in get_cmnd_data 
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V702 12/16 *sh* doc change only
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -110,8 +111,8 @@
 	         next = mr_del_flink(mr)
 	         mr_del_flink(prev) = next
 	         mr_del_blink(next) = prev
-	         mr_del_flink( mr ) = unspecified_int4	! temp diag
-	         mr_del_blink( mr ) = unspecified_int4	! temp diag
+	         mr_del_flink( mr ) = unspecified_int4	! important 12/16
+	         mr_del_blink( mr ) = unspecified_int4	! important 12/16
               ENDIF
  400	   CONTINUE
 

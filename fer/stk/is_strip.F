@@ -76,6 +76,8 @@
 *		 alter agg setup to detect LET/D vars at eval time
 *      4/16 *sh* Allow that SET VAR/NAME= has altered the agg varname
 * V7   5/12 *acm* Union aggregations: DEFINE DATA/AGG/U
+* V71  *acm* 1/17 Ticket 2493 When checking splitting of calculation, check that the
+*                 info has been set.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -599,6 +601,7 @@ c	   CALL TRANSFER_CONTEXT( hi_cx, lo_cx )
 	      ELSE
 	         split_ax = i
 	      ENDIF
+	      IF ( split_ax .EQ. 0 ) GOTO 500  ! ds_ax_speed is not yet set for an aggregation(?)
 	      IF ( cx_trans(split_ax,lo_cx) .NE. trans_no_transform ) GOTO 500
 	      IF ( ITSA_MODULO_REGRID(lo_cx,split_ax) ) GOTO 500
 * ... beware user-defined vars with limits specified in definition

@@ -45,31 +45,54 @@
 *
 * V200:  6/12/89
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+*        12/16 *sh* Bug fix - check if already *in* delete chain before adding
+*		added diagnostic sanity checks
+* V702: *sh* 1/17 issue error message on inappropriate calls to this routine
+*		  immediate return on protected variables
+*                 (have LOAD/TEMP code in XEQ_LOAD to remove permanance)
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
 	include 'ferret.parm'
+	include 'errmsg.parm'
 	include 'xvariables.cmn'
 
 * calling argument declarations:
 	INTEGER mr
 
 * internal variable declarations:
-	INTEGER last_head
+	INTEGER last_head, status
 
-	IF ( mr_protected(mr) .GT. mr_not_protected )
-     .		mr_protected(mr) = mr_protected(mr) - 1
 
+	IF ( mr_protected(mr) .GT. mr_not_protected ) THEN
+	   mr_protected(mr) = mr_protected(mr) - 1
+	ELSEIF ( mr_protected(mr) .LT. mr_not_protected ) THEN
+* ... see the list of possible mr_* states in ferret.parm
+	   RETURN
+	ELSE
+* ... over-freeing of the mr -- should never happen
+	   CALL ERRMSG( ferr_internal, status, 'xtra MR_NOT_IN_USE', *5000)
+	ENDIF
 
 * possibly insert the variable at the head of the deletion priority chain
 	IF ( mr_protected(mr) .EQ. mr_not_protected ) THEN
+
+* 12/16 - sanity check if it is already in the deletion chain before
+*         attempting to insert it again. Doubly inserting can occur
+*         only if this routine is called more often than it should be
+*         signaling an internal error
+	   IF (mr_del_flink(mr) .NE. unspecified_int4 ) THEN
+	      CALL ERRMSG( ferr_internal, status, 'MR_NOT_IN_USE', *5000)
+	   ELSE
+
 	   last_head = mr_del_flink(0)
 	   mr_del_blink(mr) = 0
 	   mr_del_flink(mr) = last_head
 	   mr_del_flink(0)  = mr
 	   mr_del_blink(last_head) = mr
+
+	   ENDIF
 	ENDIF
 
-	RETURN
+ 5000	RETURN
 	END
-

@@ -1,0 +1,21 @@
+! err700_aggT_5d.jnl
+! 1/6/2017 ACM  Ticket 2493
+! When there are E or F axes in the grid, the multi-file reading
+! for time aggregations or mc files corrupted the data.
+
+!  The two files have data in different ranges
+
+! data range in 260-270
+use aggT_5d1.nc
+list/i=3/j=2 thetao[d=1]
+
+! data range in 270-280
+use aggT_5d2.nc
+list/i=3/j=2 thetao[d=2]
+can data/all
+
+! Now make an aggregation. Previously the data was wrapped onto
+! the grid incorrectly, with zero in M=7 and higher
+
+define data/agg/t myagg = aggT_5d1.nc, aggT_5d2.nc
+list/i=3/j=2 thetao

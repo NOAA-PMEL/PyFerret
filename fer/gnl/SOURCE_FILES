@@ -89,6 +89,7 @@ redefine_ax_att.F\
 repl_exprns.F\
 reset_axis.F\
 reset_ax_att.F\
+sanity_check_memory.F\
 save_ppl_memory_size.F\
 save_scriptfile_name.F\
 scalar_grid_line.F\

@@ -43,6 +43,7 @@
 * NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
 
 * V695+ 10/15 *sh*
+* V71  *acm* 1/17 Ticket 2493 Fix to the piece of this that checks bounds attribute.
 
 *
 * arguments:
@@ -160,31 +161,31 @@
 	IF (.NOT.got_it) THEN
 	   bounds_id = unspecified_int4
 	ELSE
-!	   blen = TM_LENSTR1(buff)
-* ... check the bounds variable, issue any warnings.
-cc This call goes and gets info out of the list structure for member 1.
-cc          CALL TM_CHECK_BNDS_ATTRIB (dset, n, vname, vlen, buff(:attlen),
-cc     .                             bounds_id, tmap_status)
 
+* ... check the bounds variable, issue any warnings.
+
+* If bounds attribute but no bounds variable, just continue. Otherwise check the size
 
 #ifdef usingDODSf2cUnderscore
-           cdfstat = NF_INQ_VARID_(cdfid, buff(:attlen), bounds_id)
-           cdfstat = NF_INQ_VAR_(cdfid, bounds_id, buff, vartyp, nvdim, 
-     .              vdims, nvatts)
-           cdfstat = NF_INQ_DIM_( cdfid, vdims(2), dummy, nb )
-#else
-           cdfstat = NF_INQ_VARID(cdfid, buff(:attlen), bounds_id)
-           cdfstat = NF_INQ_VAR(cdfid, bounds_id, buff, vartyp, nvdim, 
-     .              vdims, nvatts)
-           cdfstat = NF_INQ_DIM( cdfid, vdims(2), dummy, nb )
-#endif
-
-	   IF ( cdfstat .NE. NF_NOERR .OR.nb.NE.n) THEN
-	      tmap_status = merr_badtimedef
-	      errmsg = 'errors with time axis bounds '//buff(:attlen)
+           cdfstat = NF_INQ_VARID_(cdfid, buff(:attlen), bounds_id)	   
+	   IF ( cdfstat .NE. NF_NOERR) THEN
 	      bounds_id = unspecified_int4    ! invalidate the bounds variable
-	      GOTO 5100
+	   ELSE
+              cdfstat = NF_INQ_VAR_(cdfid, bounds_id, buff, vartyp, nvdim, 
+     .              vdims, nvatts)
+              cdfstat = NF_INQ_DIM_( cdfid, vdims(2), dummy, nb )
 	   ENDIF
+#else
+
+           cdfstat = NF_INQ_VARID(cdfid, buff(:attlen), bounds_id)	   
+	   IF ( cdfstat .NE. NF_NOERR) THEN
+	      bounds_id = unspecified_int4    ! invalidate the bounds variable
+	   ELSE
+              cdfstat = NF_INQ_VAR(cdfid, bounds_id, buff, vartyp, nvdim, 
+     .              vdims, nvatts)
+              cdfstat = NF_INQ_DIM( cdfid, vdims(2), dummy, nb )
+	   ENDIF
+#endif
 
 	ENDIF
 

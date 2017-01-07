@@ -54,6 +54,7 @@
 * V606: 8/07 *acm* Set a symbol with the current memory setting
 * V62   5/09 *acm*- make FERRET_MEMORY a special symbol (remove 
 *                 code defining it from this routine)
+* V702: 11/16 *sh* - perform initial sanity check
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -103,6 +104,11 @@
 * large hierarchies of definitions -- so a command like "LIST var"
 * may involve far more data than the transformations of "var" alone
 	mode_arg(pmode_desperate,1) = 0.1 *  block_size *  number_of_blocks
+
+* sanity check
+#ifndef NDEBUG
+        CALL SANITY_CHECK_MEMORY("init_memory")
+#endif
 
 	RETURN
 	END

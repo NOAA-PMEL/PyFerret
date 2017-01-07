@@ -50,6 +50,7 @@
 *                  and only clear the variables that had been initialized.
 * V701 *acm* 7/16  ticket 2449: report incorrect choice of date/ eurodate as an error
 * V702 *acm*11/16  handling read errors in date/time reading
+* V702: *sh* 1/17 - bug fix: mr_protected must *end* at mr_not_in_use (=0)
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -218,8 +219,8 @@
 	DO 800 ivar = 1, nvar
 	   IF (field_type(ivar) .NE. FTYP_MISSING) THEN
 	     mr1 = mrlist(ivar)
-	     mr_protected( mr1 ) = mr_not_protected
-	     CALL MR_NOT_IN_USE( mr1 )
+	     mr_protected( mr1 ) = 1
+	     CALL MR_NOT_IN_USE( mr1 )	! decrement to 0=mr_not_in_use
 	   ENDIF
  800	CONTINUE
 

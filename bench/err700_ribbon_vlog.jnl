@@ -1,0 +1,19 @@
+! err700_ribbon_vlog.jnl
+! 1/3/2017 *acm*
+! See ticket 2491: Location of colorbar labels wrong
+! on /HLOG or /VLOG plots
+
+
+let a = 0.1* {1,2,3,4,5,6,7,8,9}
+set v ul
+plot/vs/rib/sym=25 a, a, a
+
+! Draw with /VLOG, previously put the colorbar labels in the wrong place
+set view lr
+plot/vs/rib/sym=25/vlog a, a, a
+
+! likewise /HLOG on a horizontal color key
+set view ll
+plot/vs/rib/sym=25/hlog/key=horiz a,a,a
+
+frame/file=bn_ribbon_vlog.gif

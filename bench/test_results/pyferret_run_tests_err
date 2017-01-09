@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1404 Dec 16 11:21 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1404 Jan  9 11:33 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -302,7 +302,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Fri Dec 16 11:22:17 PST 2016
+Beginning at Mon Jan  9 11:33:28 PST 2017
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -1036,6 +1036,162 @@ stat i, noname(i)
  Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 1        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 1        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 4        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 4        is 0       CREATE_MEM_VAR
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 4        is 0       CREATE_MEM_VAR
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 4        is 0       CREATE_MEM_VAR
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1046,30 +1202,30 @@ stat i, noname(i)
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 2        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 3        is 0       CREATE_MEM_VAR
 *** Running ferret script: bn_strides_revs_perms.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -1099,6 +1255,10 @@ LIST/i=2:4:2 VAR
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis BACKWARDS_AXIS
 *** Running ferret script: bn_cache_hits.jnl
  Cached data cleared from memory
+           *** NOTE: SANITY ERR: lost table slots: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: lost memory blocks: 2       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 6        is 0       CREATE_MEM_VAR
+           *** NOTE: SANITY ERR: allocation of block: 11       is 0       CREATE_MEM_VAR
 *** Running ferret script: bn_regrid_to_user.jnl
  Cached data cleared from memory
 Replacing definition of grid GG2
@@ -3867,6 +4027,18 @@ list f
  Cached data cleared from memory
 *** Running ferret script: bn_spawn_size.jnl
  Cached data cleared from memory
+ LISTing to file bn_spawn_size1.cdf
+ LISTing to file bn_spawn_size2.cdf
+ LISTing to file bn_spawn_size3.cdf
+ LISTing to file bn_spawn_size4.cdf
+ LISTing to file bn_spawn_size5.cdf
+ LISTing to file bn_spawn_size02.dat
+ LISTing to file bn_spawn_size04.dat
+ LISTing to file bn_spawn_size06.dat
+ LISTing to file bn_spawn_size08.dat
+ LISTing to file bn_spawn_size10.dat
+ LISTing to file bn_spawn_size12.dat
+ LISTing to file bn_spawn_size14.dat
 *** Running ferret script: bn_polygon_log.jnl
  Cached data cleared from memory
  **ERROR: value out of legal range: X coordinates on log axis negative or too small : -0.850
@@ -4656,6 +4828,12 @@ Replacing definition of axis TAXIS
  TEMPORARY data cleared from memory
 Replacing definition of axis TAX
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running ferret script: bn_delim_datetime.jnl
  Cached data cleared from memory
 Replacing definition of axis TIMAX
@@ -4949,4 +5127,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testfermethods.py
  Cached data cleared from memory
 >>> ... ... >>> 
-Ended at Fri Dec 16 11:25:07 PST 2016
+Ended at Mon Jan  9 11:36:20 PST 2017

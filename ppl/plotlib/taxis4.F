@@ -244,6 +244,7 @@ C
 
 c Check whether to make an hour label at the start of the axis
 c ihdb is hour-label frequency
+
       IF (IABS(LABEL).EQ.1 .AND. ihdb.EQ.1) THEN
          IF (IMIN .EQ. 0) THEN
             WRITE(SYM,82) IHR

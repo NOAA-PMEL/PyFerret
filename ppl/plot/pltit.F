@@ -442,7 +442,7 @@ c	    CALL PLOTPOL(X,NXS,XF,YF)
 
  3333	CONTINUE					! 1/89 - *sh*
 * post-interrupt re-entry				! 1/89 - *sh*
-
+	
 * Draw the plot axes 
 
 	IF (.NOT.SOVER) THEN

@@ -2,6 +2,8 @@
 Represents an aggregation of data sets
 '''
 
+import os
+import tempfile
 import pyferret
 from pyferret.ferdset import _anonymous_dataset_qualifier
 
@@ -40,12 +42,47 @@ class FerAggDSet(pyferret.FerDSet):
         self._compdsetnames = [ ]
         # But still use a dictionary with uppercase names for keys
         self._compdsets = { }
-        # Create the DEFINE DATA /AGGREGATE Ferret command, creating
-        # and saving component FerDSets as needed
+
         if along not in ('T', 'E', 'F'):
             raise ValueError("along must be one of 'T', 'E', or 'F'")
         self._along = along
         self._comphidden = bool(hide)
+
+        # Create a Ferret string variable containing all the dataset names to be aggregated
+        if not ( isinstance(dsets, tuple) or isinstance(dsets, list) ):
+            raise ValueError('dsets must be a tuple or list of strings and/or FerDSets')
+        filesfile = tempfile.NamedTemporaryFile(mode='w', delete=False, 
+                                  prefix=aggname + '_', suffix='_agg.txt')
+        filesfilename = filesfile.name
+        deletefilesfile = True
+        try:
+            for myitem in dsets:
+                if isinstance(myitem, str):
+                    mydset = pyferret.FerDSet(myitem)
+                elif isinstance(myitem, pyferret.FerDSet):
+                    mydset = myitem
+                else:
+                    raise ValueError('dsets must be a tuple or list of strings and/or FerDSets')
+                if mydset._dsetname.upper() in self._compdsets:
+                    raise ValueError('duplicate dataset name ' + mydset._dsetname)
+                print >>filesfile, mydset._dsetname
+                self._compdsetnames.append(mydset._dsetname)
+                self._compdsets[mydset._dsetname.upper()] = mydset
+            deletefilesfile = False
+        finally:
+            filesfile.close()
+            if deletefilesfile:
+                os.unlink(filesfilename)
+        filesvarname = aggname + "_datafile_names"
+        cmdstr = 'LET ' + filesvarname + ' = SPAWN("cat \'' + filesfilename + '\'")'
+        (errval, errmsg) = pyferret.run(cmdstr)
+        if errval != pyferret.FERR_OK:
+            os.unlink(filesfilename)
+            raise ValueError(errmsg)
+        # filesfile not read (SPAWN command executed) until filesvarname is needed
+
+        # Create the DEFINE DATA /AGGREGATE Ferret command, creating
+        # and saving component FerDSets as needed
         cmdstr = 'DEFINE DATA/AGGREGATE/' + self._along
         if title:
             cmdstr += '/TITLE="' + str(title) + '"'
@@ -53,27 +90,10 @@ class FerAggDSet(pyferret.FerDSet):
             cmdstr += '/QUIET'
         if self._comphidden:
             cmdstr += '/HIDE'
-        cmdstr += ' ' + aggname + ' = '
-        firstone = True
-        if not ( isinstance(dsets, tuple) or isinstance(dsets, list) ):
-            raise ValueError('dsets must be a tuple or list of strings and/or FerDSets')
-        for myitem in dsets:
-            if isinstance(myitem, str):
-                mydset = pyferret.FerDSet(myitem)
-            elif isinstance(myitem, pyferret.FerDSet):
-                mydset = myitem
-            else:
-                raise ValueError('dsets must be a tuple or list of strings and/or FerDSets')
-            if mydset._dsetname.upper() in self._compdsets:
-                raise ValueError('duplicate dataset name ' + mydset._dsetname)
-            if not firstone:
-                cmdstr += ', '
-            else:
-                firstone = False
-            cmdstr += mydset._dsetname
-            self._compdsetnames.append(mydset._dsetname)
-            self._compdsets[mydset._dsetname.upper()] = mydset
+        cmdstr += ' ' + aggname + ' = ' + filesvarname
         (errval, errmsg) = pyferret.run(cmdstr)
+        # filesfile now read so can delete it
+        os.unlink(filesfilename)
         if errval != pyferret.FERR_OK:
             raise ValueError(errmsg)
 

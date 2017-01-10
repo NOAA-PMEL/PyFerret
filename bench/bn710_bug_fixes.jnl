@@ -73,3 +73,7 @@ go err700_list_comma
 ! Bug 2493: T aggregation when there are E or F axes
 go bn_reset
 go err700_aggT_5d
+
+! Bug xxxx: shift on overlay of time series plot on 2d time plot
+go bn_reset
+go err700_time_overlay

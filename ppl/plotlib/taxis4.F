@@ -83,7 +83,7 @@ C         CSIZE = SIZE TO DRAW HOUR LABELS.
 C                 DAY LABELS WILL BE 1.5 TIMES AS LARGE.
 C
 C
-C     THIS ROUTINE WAS FIRST WRITTEN BY DAVID MANDEL IN JULY 1980.
+C     The original routine was first written by David Mandel in July 1980.
 C
 	CHARACTER ITIME3*14,DATE*6,BUFF*14,YEAR*4
 	CHARACTER ITIME*14,ITIME1*14,ITIME2*14,SYM*21
@@ -125,11 +125,6 @@ C
 
 C     CHECK THE PARAMETERS PASSED TO THE SUBROUTINE.
 
-	IF (is_hours_axis .EQ. 0) THEN
-	   IF(ITIME1(9:10).NE.'00')STOP ',1'  ! MINUTE,SECOND ARE 0
-	   IF(ITIME2(9:10).NE.'00')STOP ',2'
-	ENDIF
-
         IF(ITIME1(13:14)//ITIME1(1:12).GE.
      .	   ITIME2(13:14)//ITIME2(1:12)) STOP',3'
 
@@ -146,7 +141,8 @@ C     SET PARAMETERS.
 ! for hours axis (is_hours_axis eq 1) if difft > 60,
 ! then labint, ticint should be on the hour or half hour, so
 ! multiples of 30.
-! for more than 12 hours, label on a multiple of even hours, 
+! for more than 8 hours, label on a multiple of even hours, 
+! for more than 12 hours, label on a multiple of 4 hours, 
 ! up to a max of 36 hours labeled hh:mm (set in taxis_style)
 
 	IF (is_hours_axis.EQ.1) THEN
@@ -156,8 +152,8 @@ C     SET PARAMETERS.
            IF (difft .GE.  300) labint = 60
            IF (difft .GE.  600) labint = 120
 	   IF (difft .GE.  300) ticint = 30
-           IF (difft .GE. 1200) hrint = 2
-           IF (difft .GE. 1800) hrint = 4
+           IF (difft .GE.  800) hrint = 2
+           IF (difft .GE. 1200) hrint = 4
         ENDIF
         IF (is_hours_axis.EQ.2) THEN
            labint = 10
@@ -237,14 +233,10 @@ C
       yfact_d = yfact
 	
       CALL PLOT(TLO,Y,0,0)
-      IF(IHR.EQ.0 .AND.is_hours_axis.EQ.0 )THEN
-         CALL PLOTT7(TLO,Y,TFACT,YFACT,1,IHVY)  ! draw to the location and make a mark
+      IF (MOD(imin,labint) .EQ. 0) THEN
+         CALL PLOTT7(TLO,Y,TFACT,YFACT,1,IHVY)
       ELSE
-         IF (MOD(imin,labint) .EQ. 0) THEN
-            CALL PLOTT7(TLO,Y,TFACT,YFACT,1,IHVY)
-         ELSE
-	    CALL PLOTT7(TLO,Y,TFACT,YFACT,1,INML)
-         ENDIF
+	 CALL PLOTT7(TLO,Y,TFACT,YFACT,1,INML)
       ENDIF
 	
       CALL TIME1(1,ITIME,2,' ',I3,ITIME3,delt)  ! next time stepping from 1 (arg 1) to 2 (arg 2) -- return ITIME3
@@ -252,17 +244,11 @@ C
 
 c Check whether to make an hour label at the start of the axis
 c ihdb is hour-label frequency
-      IF(IABS(LABEL).EQ.1) THEN
-         IF (IHR.EQ.IHDB*(IHR/IHDB) .AND. is_hours_axis.EQ.0) THEN 
-            WRITE(SYM,80) IHR
-	    CALL scinot_d(Td,YTEMP1,angl,CSIZE,2,SYM,0,wid,tfact_d, yfact_d)
-	 ENDIF
-	   IF (is_hours_axis .GT. 0) THEN
-	    IF (IMIN .EQ. 0) THEN
-               WRITE(SYM,82) IHR
-	       CALL scinot_d(Td,YTEMP1,angl,CSIZE,5,SYM,0,wid,tfact_d, yfact_d)
-	    ENDIF
-	 ENDIF
+      IF (IABS(LABEL).EQ.1 .AND. ihdb.EQ.1) THEN
+         IF (IMIN .EQ. 0) THEN
+            WRITE(SYM,82) IHR
+	    CALL scinot_d(Td,YTEMP1,angl,CSIZE,5,SYM,0,wid,tfact_d, yfact_d)
+         ENDIF
       ENDIF
 
 c ----  count number of large tics. If no large tics will be drawn
@@ -286,13 +272,10 @@ C      LOOP:
 
 	IF(ITIME(13:14)//ITIME(1:12) .LE.
      .       ITIME2(13:14)//ITIME2(1:12)) THEN
-           IF(IHR.EQ.0 .AND. is_hours_axis.EQ.0) ltic = ltic + 1
-	   IF (is_hours_axis .GT. 0) THEN
-	      IF (difft.LE.12 .AND. sec.EQ.0.) THEN 
-	         ltic = ltic+1
-              ELSE
-	         IF (imin.EQ.0. .AND. ihr.NE.0) ltic = ltic+1
-              ENDIF
+	   IF (difft.LE.12 .AND. sec.EQ.0.) THEN 
+	      ltic = ltic+1
+           ELSE
+	      IF (imin.EQ.0. .AND. ihr.NE.0) ltic = ltic+1
 	   ENDIF
            GO TO 110
         ENDIF
@@ -328,153 +311,117 @@ C      LOOP:
 
 c ----
 
-C      LOOP:
-   10     CALL PLOT(T,Y,0,0)
-	  IF ( interrupted ) RETURN		! TMAP interrupt
-          DO 20 I=1,NSMTIC
-              CALL PLOTT7(T+FLOAT(I)*TDIST,Y,TFACT,YFACT,1,-7)
+C     LOOP:
+   10 CALL PLOT(T,Y,0,0)
+      IF ( interrupted ) RETURN		! TMAP interrupt
+      DO 20 I=1,NSMTIC
+         CALL PLOTT7(T+FLOAT(I)*TDIST,Y,TFACT,YFACT,1,-7)
 
-              IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
-                 CALL COLOR(color2)
-                 IF (dashed2) THEN
-                    CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
-                    CALL DASHES
-                 ENDIF
-                 CALL PLOT(T+FLOAT(I)*TDIST,y,0,0) 
-                 CALL PLOT(T+FLOAT(I)*TDIST,yacross,1,0)
-                 CALL PLOT(T+FLOAT(I)*TDIST,Y,0,0) 
-                 CALL COLOR(color0)
-                 CALL VECTRS
-              ENDIF
+         IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
+            CALL COLOR(color2)
+            IF (dashed2) THEN
+               CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
+               CALL DASHES
+            ENDIF
+            CALL PLOT(T+FLOAT(I)*TDIST,y,0,0) 
+            CALL PLOT(T+FLOAT(I)*TDIST,yacross,1,0)
+            CALL PLOT(T+FLOAT(I)*TDIST,Y,0,0) 
+            CALL COLOR(color0)
+            CALL VECTRS
+         ENDIF
 
-   20     CONTINUE
-          CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
+   20 CONTINUE
+      CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
 	  
-          hvytic = ((is_hours_axis.EQ.0 .AND. IHR.EQ.0) .OR. 
-     .            (is_hours_axis.GT.0 .AND. MOD(imin,labint).EQ.0))
-	  IF (heavy_at_labels) THEN
-             IF (is_hours_axis .GT. 0) THEN
-	        hvytic = ( (imin .EQ. 0 .AND. MOD(ihr,hrint).EQ.0) .OR. 
-     .                     (MOD(imin,labint) .EQ. 0 .AND. hrint.LE.1) )
-             ELSE
-	        hvytic = (IHR.EQ.IHDB*(IHR/IHDB))
-	     ENDIF
-	  ENDIF
+      hvytic = (MOD(imin,labint) .EQ. 0)
+      IF (heavy_at_labels) THEN
+         hvytic = ( (imin .EQ. 0 .AND. MOD(ihr,hrint).EQ.0) .OR. 
+     .              (MOD(imin,labint) .EQ. 0 .AND. hrint.LE.1) )
+      ENDIF
 
-          IF(hvytic)THEN
-             CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
+      IF(hvytic)THEN
+         CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
 	
-              IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
-                 CALL COLOR(color1)
-                 IF (dashed1) THEN
-                    CALL DASHSZ(dash1_1,dash1_2,dash1_3,dash1_4)
-                    CALL DASHES
-                 ENDIF
-                 CALL PLOT(t+tic,y,0,0) 
-                 CALL PLOT(t+tic,yacross,1,0)
-                 CALL PLOT(t+tic,Y,0,0) 
-                 CALL COLOR(color0)
-                 CALL VECTRS
-              ENDIF
+         IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
+            CALL COLOR(color1)
+            IF (dashed1) THEN
+               CALL DASHSZ(dash1_1,dash1_2,dash1_3,dash1_4)
+               CALL DASHES
+            ENDIF
+            CALL PLOT(t+tic,y,0,0) 
+            CALL PLOT(t+tic,yacross,1,0)
+            CALL PLOT(t+tic,Y,0,0) 
+            CALL COLOR(color0)
+            CALL VECTRS
+         ENDIF
       
-	  ELSE
-              IF (is_hours_axis.GT.0) THEN
-	         IF (MOD(imin,ticint).EQ.0) THEN
-                    CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
+      ELSE
+         IF (MOD(imin,ticint).EQ.0) THEN
+            CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
 		    
-c                 graticule line at tic
-		    IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
-                       CALL COLOR(color2)
-                       IF (dashed2) THEN
-                          CALL DASHSZ(dash2_1,dash2_1,dash2_3,dash2_4)
-                          CALL DASHES
-                       ENDIF
-                       CALL PLOT(t+tic,y,0,0) 
-                       CALL PLOT(t+tic,yacross,1,0)
-                       CALL PLOT(t+tic,Y,0,0) 
-                       CALL COLOR(color0)
-                       CALL VECTRS
-                    ENDIF
+c           graticule line at tic
+            IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
+               CALL COLOR(color2)
+               IF (dashed2) THEN
+                  CALL DASHSZ(dash2_1,dash2_1,dash2_3,dash2_4)
+                  CALL DASHES
+               ENDIF
+               CALL PLOT(t+tic,y,0,0) 
+               CALL PLOT(t+tic,yacross,1,0)
+               CALL PLOT(t+tic,Y,0,0) 
+               CALL COLOR(color0)
+               CALL VECTRS
+            ENDIF
 
-		 ELSE 
-                    CALL PLOT(T+TIC,Y,1,0)
-		 ENDIF
-              ELSE
-	         CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
-		 
-c                 graticule line at tic
-                    IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
-                       CALL COLOR(color1)
-                       IF (dashed1) THEN
-                          CALL DASHSZ(dash1_1,dash2_1,dash1_3,dash1_4)
-                          CALL DASHES
-                       ENDIF
-                       CALL PLOT(t+tic,y,0,0) 
-                       CALL PLOT(t+tic,yacross,1,0)
-                       CALL PLOT(t+tic,Y,0,0) 
-                       CALL COLOR(color0)
-                       CALL VECTRS
-                    ENDIF
+         ELSE 
+            CALL PLOT(T+TIC,Y,1,0)
+         ENDIF
 
-              ENDIF
+      ENDIF
 
-	ENDIF
-C         THE LABELS
+C THE LABELS
 
-	  IF (IABS(LABEL).EQ.1) THEN
-             IF (is_hours_axis .GT. 0) THEN
-	        IF (imin .EQ. 0 .AND. MOD(ihr,hrint).EQ.0) THEN
-	           WRITE(SYM,82) IHR
-	           CALL scinot_d(Td+TICd,YTEMP1,angl,CSIZE,5,SYM,0,wid,tfact_d, yfact_d)
-		ELSE
-                   IF (MOD(imin,labint) .EQ. 0 .AND. hrint.LE.1) THEN
-		      WRITE(SYM,84) ihr, imin
-	              CALL scinot_d(Td+TICd,YTEMP1,angl,CSIZE,5,SYM,0,wid,tfact_d, yfact_d)
-		   ENDIF
-		ENDIF
-             ELSE
-	        IF(IHR.EQ.IHDB*(IHR/IHDB)) THEN
-	           WRITE(SYM,80) IHR
-	           CALL scinot_d(Td+TICd,YTEMP1,angl,CSIZE,2,SYM,0,wid,tfact_d, yfact_d)
-	        ENDIF
-             ENDIF
-	  ENDIF
+      IF (IABS(LABEL).EQ.1) THEN
+         IF (imin .EQ. 0 .AND. MOD(ihr,hrint).EQ.0) THEN
+	    WRITE(SYM,82) IHR
+	    CALL scinot_d(Td+TICd,YTEMP1,angl,CSIZE,5,SYM,0,wid,tfact_d, yfact_d)
+         ELSE
+	    IF (MOD(imin,labint) .EQ. 0 .AND. hrint.LE.1) THEN
+	       WRITE(SYM,84) ihr, imin
+	       CALL scinot_d(Td+TICd,YTEMP1,angl,CSIZE,5,SYM,0,wid,tfact_d, yfact_d)
+	    ENDIF
+         ENDIF
+      ENDIF
 
-          CALL TIME1(1,ITIME,2,' ',I3,ITIME3,delt)
-          IF(IDDB.EQ.0.OR.IABS(LABEL).NE.1) GO TO 70
-              CALL TIME3(ITIME3,IYR3,IMON3,IDAY3,IHR3,IMIN3,ISEC3,ICEN3)
-              IF(IDAY.EQ.IDAY3) GO TO 70
-              IF(IDAY.NE.IDDB*(IDAY/IDDB))GO TO 60
+      CALL TIME1(1,ITIME,2,' ',I3,ITIME3,delt)
+      IF(IDDB.EQ.0.OR.IABS(LABEL).NE.1) GO TO 70
+      CALL TIME3(ITIME3,IYR3,IMON3,IDAY3,IHR3,IMIN3,ISEC3,ICEN3)
+      IF(IDAY.EQ.IDAY3) GO TO 70
+      IF(IDAY.NE.IDDB*(IDAY/IDDB))GO TO 60
 C             ELSE:
-	IF(T-TDAY.GT.180./DT)THEN
-           CALL TIME2(ITIME,SYM)
-	   READ(SYM,55) DATE, YEAR
-55	   FORMAT(6X,A6,1X,A4)
-65         FORMAT(A6,1X,A4)
-           IF (MONYRLAB) THEN
-	      WRITE (BUFF, 65) DATE, YEAR
-              TSYM=TDAY+(T+TIC-TDAY-SYMWID(CSIZE,14,BUFF)/TFACT)*.5
-              CALL SYMBEL(TSYM,YTEMP2,angl,CSIZE,14,BUFF)
-	   ELSE
-              TSYM=TDAY+(T+TIC-TDAY-SYMWID(1.5*CSIZE,6,DATE)/TFACT)*.5
-	      CALL SYMBEL(TSYM,YTEMP2,0.,1.5*CSIZE,6,DATE)
-	   ENDIF
-	ENDIF
-   60   TDAY=T+TIC
-   70     CONTINUE
-          ITIME=ITIME3
-          T=T+TIC
-	  td = td + ticd
-	  t=td
-c          IF(ITIME.LE.ITIME2) GO TO 10
+      IF(T-TDAY.GT.180./DT)THEN
+         CALL TIME2(ITIME,SYM)
+	 READ(SYM,55) DATE, YEAR
+55	 FORMAT(6X,A6,1X,A4)
+65       FORMAT(A6,1X,A4)
+         WRITE (BUFF, 65) DATE, YEAR
+         TSYM=TDAY+(T+TIC-TDAY-SYMWID(CSIZE,14,BUFF)/TFACT)*.5
+         CALL SYMBEL(TSYM,YTEMP2,angl,CSIZE,14,BUFF)
+      ENDIF
+   60 TDAY=T+TIC
+   70 CONTINUE
+      ITIME=ITIME3
+      T=T+TIC
+      td = td + ticd
+      t=td
 
-          IF(ITIME(13:14)//ITIME(1:12) .LE.
-     .       ITIME2(13:14)//ITIME2(1:12)) GO TO 10
+      IF(ITIME(13:14)//ITIME(1:12) .LE.
+     .   ITIME2(13:14)//ITIME2(1:12)) GO TO 10
 
       IF(IDDB.EQ.0) RETURN
 
       IF(IABS(LABEL).EQ.1.AND.IDAY.EQ.IDDB*(IDAY/IDDB) ) THEN
-         IF (is_hours_axis.GT.0 .OR. IHR3.GE.4) THEN
+         IF (IHR3 .GE. 4) THEN
            CALL TIME2(ITIME,SYM)
 	   READ(SYM,55) DATE, YEAR
 	   IF (MONYRLAB) THEN
@@ -488,7 +435,6 @@ c          IF(ITIME.LE.ITIME2) GO TO 10
 
          ENDIF
       ENDIF
-
 
 c Finish out the line
       CALL PLOT (tlo,y,0,0)

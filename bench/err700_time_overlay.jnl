@@ -1,0 +1,20 @@
+! err700_time_overlay.jnl
+! bug xxxx
+! Shifting on overlay of time series on 2D plot
+
+define axis/t=15-jun-1970:16-jun-1970:60/t0=1-jan-1970/units=seconds  tax
+def axis/y=-2:2:0.2 yaxis
+let tt = t[gt=tax]
+
+shade/pal=white/nokey/title="example plot" y[gy=yaxis] + t[gt=tax]
+
+! Previously the second plot was shifted in time
+plot/over/color=red  cos(tt/3000)
+plot/over/color=blue cos(tt/3000)+0.5
+
+! now vertical time axis
+shade/trans/pal=white/nokey/title="example plot" y[gy=yaxis] + t[gt=tax]
+
+plot/trans/over/color=red  cos(tt/3000)
+plot/trans/over/color=blue cos(tt/3000) + 0.5
+

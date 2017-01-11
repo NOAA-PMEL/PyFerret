@@ -1,5 +1,5 @@
 ! err700_time_overlay.jnl
-! bug xxxx
+! bug 2495
 ! Shifting on overlay of time series on 2D plot
 
 define axis/t=15-jun-1970:16-jun-1970:60/t0=1-jan-1970/units=seconds  tax

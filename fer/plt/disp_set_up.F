@@ -172,6 +172,8 @@
 * V710  *acm* 11/16 Ticket 2483: Fix the axis-end symbols that are defined 
 *                   for time axis plots
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
+* V71  1/17 *acm* For ticket 2494: Single-cell SHADE plots allowed. 
+*                 Handle degenerate region info.
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -235,7 +237,7 @@ C plus those starting w/ xbox_bounds:
      .			user_title, time_axis, time_axis_dim1, timeax_both, 
      .			regrid_1, regrid_2, no_y_rng, edges_ok,
      .			REGULARLY_SPACED,
-     .                  irregular, use_cell
+     .                  irregular, use_cell, valid
 
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			dim1, dim2, mvx, mvx_temp, mvy, mvy_temp,
@@ -253,7 +255,7 @@ C plus those starting w/ xbox_bounds:
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
      .                  first, last, labelht
 	REAL*8		xaxlo, xaxhi, yaxlo, yaxhi, delta
-	REAL*4		rw1lo, rw2lo, rbad, dt_min
+	REAL*4		rw1lo, rw2lo, rbad, dt_min, bounds(2)
 
         DATA axdir / 'X', 'Y', 'Z', 'T', 'E', 'F' /
 
@@ -352,10 +354,11 @@ C   set up memory for the flag grid
 	IF ( ndim .GT. 2 ) GOTO 5160
 	IF ( overlay ) THEN
 * *sh* 1/93 - restrictions less: coords merely have to be valid in 2D plane
+* acm  1/17 - Allow degenerate regions lo=hi 
            IF ( cx_lo_ss(ctx,dim1) .EQ. unspecified_int4
-     .     .OR. cx_lo_ww(dim1,ctx) .GE. cx_hi_ww(dim1,ctx) ) GOTO 5150
+     .     .OR. cx_lo_ww(dim1,ctx) .GT. cx_hi_ww(dim1,ctx) ) GOTO 5150
            IF ( cx_lo_ss(ctx,dim2) .EQ. unspecified_int4
-     .     .OR. cx_lo_ww(dim2,ctx) .GE. cx_hi_ww(dim2,ctx) ) GOTO 5150
+     .     .OR. cx_lo_ww(dim2,ctx) .GT. cx_hi_ww(dim2,ctx) ) GOTO 5150
 	ELSEIF ( vector) THEN     ! 1/94
 	   IF ( nplot_axis .GT. 2 ) GOTO 5160
 	ENDIF
@@ -498,12 +501,22 @@ C   set up memory for the flag grid
      .			     mr_lo_ss(mvx_temp,dim1), mr_hi_ss(mvx_temp,dim1),
      .			     w1_lo, w1_hi, n1_regrid, d1_regrid, regrid_1,
      .                       irregular )
+        IF (size1 .EQ. 1) THEN
+	   w1_lo = (cx_hi_ww(dim1,ctx) + cx_lo_ww(dim1,ctx))/2.
+	   w1_hi = w1_lo
+	   d1_regrid = cx_hi_ww(dim1,ctx) - cx_lo_ww(dim1,ctx)
+	ENDIF
 
         irregular = .NOT. ( line_regular(axis2) )
 	CALL AXIS_INTERVALS( 'Y', mvx_temp, ctx, dim2, curvilinear, s2_axis,
      .			     mr_lo_ss(mvx_temp,dim2), mr_hi_ss(mvx_temp,dim2),
      .			     w2_lo, w2_hi, n2_regrid, d2_regrid, regrid_2,
      .                       irregular )
+        IF (size2 .EQ. 1) THEN
+	   w2_lo = (cx_hi_ww(dim2,ctx) + cx_lo_ww(dim2,ctx))/2.
+	   w2_hi = w2_lo
+	   d2_regrid = cx_hi_ww(dim2,ctx) - cx_lo_ww(dim2,ctx)
+	ENDIF
 
 	IF ( regrid_1 .OR. regrid_2 ) THEN
 	   icode = 1
@@ -627,6 +640,12 @@ C   set up memory for the flag grid
 	      delta = unspecified_val8
 	   ELSE
 	      CALL CHOOSE_CX_WW( uvar, cx_cmnd, ctx, dim1, xaxlo, xaxhi, size1 )
+	      IF (xaxlo .EQ. xaxhi) THEN
+	         rw1lo = xaxlo
+	         CALL BOX_BOUNDS( 'X', rw1lo, 1, bounds, valid )
+		 xaxlo = bounds(1)
+		 xaxhi = bounds(2)
+	      ENDIF
               IF (shade_trim) CALL TRIM_AXIS_ENDS( uvar, cx_cmnd, ctx, 
      .                        dim1, xaxlo, xaxhi )
               IF (xaxlo .GE. xaxhi) GOTO 5160
@@ -703,6 +722,12 @@ C ACM added 8/2001 save cal id if vertical time axis
 	      delta = unspecified_val8
 	   ELSE
 	      CALL CHOOSE_CX_WW( uvar, cx_cmnd, ctx, dim2, yaxlo, yaxhi, size2 )
+	      IF (yaxlo .EQ. yaxhi) THEN
+	         rw1lo = yaxlo
+	         CALL BOX_BOUNDS( 'Y', rw1lo, 1, bounds, valid )
+		 yaxlo = bounds(1)
+		 yaxhi = bounds(2)
+	      ENDIF
               IF (shade_trim) CALL TRIM_AXIS_ENDS( uvar, cx_cmnd, ctx, 
      .                        dim2, yaxlo, yaxhi )
               IF (yaxlo .GE. yaxhi) GOTO 5160

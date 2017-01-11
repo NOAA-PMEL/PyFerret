@@ -40,6 +40,7 @@
 C V7.1 *acm* 8/2016 Ticket 2466: Graticule lines too dense
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
 * *acm* - 9/16   ticket 2466: graticule lines on major tics by default
+* *acm* - 1/17   Fix too-many labels on tic marks. Add year to Month-Day labels
 C
 C**
 C**    @(#)taxis4.f     1.1   12/09/15
@@ -425,15 +426,9 @@ C             ELSE:
          IF (IHR3 .GE. 4) THEN
            CALL TIME2(ITIME,SYM)
 	   READ(SYM,55) DATE, YEAR
-	   IF (MONYRLAB) THEN
-	      WRITE (BUFF, 65) DATE, YEAR
-              TSYM=TDAY+(T-TDAY-SYMWID(CSIZE,14,BUFF)/TFACT)*.5
-              CALL SYMBEL(TSYM,YTEMP2,angl,CSIZE,14,BUFF)
-           ELSE
-              TSYM=TDAY+(T-TDAY-SYMWID(1.5*CSIZE,6,DATE)/TFACT)*.5
-	      CALL SYMBEL(TSYM,YTEMP2,0.,1.5*CSIZE,6,DATE)
-           ENDIF
-
+	   WRITE (BUFF, 65) DATE, YEAR
+           TSYM=TDAY+(T-TDAY-SYMWID(CSIZE,14,BUFF)/TFACT)*.5
+           CALL SYMBEL(TSYM,YTEMP2,angl,CSIZE,14,BUFF)
          ENDIF
       ENDIF
 

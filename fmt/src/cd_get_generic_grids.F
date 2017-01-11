@@ -73,6 +73,8 @@
 * V697 11/15 *sh* return the line number of the native time axis of this dset
 * V697 12/15 *am* Fix the logic around checking the calendar attributes when 
 *                 grid has both T and F axes
+* V710 12/16 *am* If the dimension is not a coordinate variable don't try to 
+*                 check its calendar attribute
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -269,11 +271,15 @@
  150          IF (idim.LE.nferdims) tmplines(idim) = iaxis
 
               CALL CD_GET_VAR_ID (dset, name, axid, status)
-	      blen = 24
-              got_it = CD_GET_ATTRIB( cdfid, axid, 'calendar',
-     .                  do_warn, vname(:vlen), cal_str, attlen, blen )
-	      IF (got_it .AND. line_direction(iaxis)(1:1).EQ.'T') cal_t = cal_str
-	      IF (got_it .AND. line_direction(iaxis)(1:1).EQ.'F') cal_f = cal_str
+
+* Check the calendar attribute 
+	      IF (status .EQ. merr_ok) THEN 
+	         blen = 24
+                 got_it = CD_GET_ATTRIB( cdfid, axid, 'calendar',
+     .                  do_warn, name, cal_str, attlen, blen )
+	         IF (got_it .AND. line_direction(iaxis)(1:1).EQ.'T') cal_t = cal_str
+	         IF (got_it .AND. line_direction(iaxis)(1:1).EQ.'F') cal_f = cal_str
+	      ENDIF
 
  200       CONTINUE
 

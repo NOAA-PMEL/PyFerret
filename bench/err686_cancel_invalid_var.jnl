@@ -1,5 +1,7 @@
 ! err686_cancel_invalid_var
 ! ticket 2159
+! (Note that the shade of a one-cell or less region is
+!  allowed fully as of Ferret v7.1.  See ticket 2494)
 
 ! The cancel variable ran into an incorrect setting 
 ! for variable-in-memory 

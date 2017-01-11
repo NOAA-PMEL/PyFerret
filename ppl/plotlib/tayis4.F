@@ -43,6 +43,7 @@ C V7.1 *acm* 8/2016 Ticket 2466: Graticule lines too dense
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
 * *acm* - 9/16   ticket 2466: graticule lines on major tics by default
 *                Rewrite this routine to make it echo taxis4.F
+* *acm* - 1/17   Fix too-many labels on tic marks. Add year to Month-Day labels
 C
 C**
 C**    @(#)tayis4.f	1.1   12/09/15
@@ -409,14 +410,9 @@ C   ELSE:
          READ(SYM,55) DATE, YEAR
 55	 FORMAT(6X,A6,1X,A4)
 65       FORMAT(A6,1X,A4)
-         IF (MONYRLAB) THEN
-	    WRITE (BUFF, 65) DATE, YEAR
-	    TSYM=TDAY+(T+TIC-TDAY-SYMWID(CSIZE,14,BUFF)/TFACT)*.5
-	    CALL SYMBEL(XTEMP2,TSYM,90.,CSIZE,14,BUFF)
-	  ELSE
-	    TSYM=TDAY+(T+TIC-TDAY-SYMWID(1.5*CSIZE,6,DATE)/TFACT)*.5
-	    CALL SYMBEL(XTEMP2,TSYM,90.,1.5*CSIZE,6,DATE)
-	   ENDIF
+	 WRITE (BUFF, 65) DATE, YEAR
+	 TSYM=TDAY+(T+TIC-TDAY-SYMWID(CSIZE,14,BUFF)/TFACT)*.5
+	 CALL SYMBEL(XTEMP2,TSYM,90.,CSIZE,14,BUFF)
       ENDIF
    60 TDAY=T+TIC
    70 CONTINUE

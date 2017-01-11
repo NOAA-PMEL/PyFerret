@@ -1,0 +1,34 @@
+! err700_shade_singlecell.jnl
+! Ticket 2494, drawing a single-cell shade plot
+
+def axis/x=233.59375:293.90625:0.3125/units=degrees_east xlon
+def axis/y=24.125:50.625:0.25/units=degrees_north ylat
+let iijj = i[gx=xlon] + j[gy=ylat]
+set reg/x=77w:72.5w/y=38.9n:41.5n
+
+
+shade/pal=grayscale iijj
+shade/pal=blue/ov iijj[i=167:168,j=64:65]
+
+! previously this was drawn, but located one cell to the left of where it should be
+shade/pal=black/ov iijj[i=167,j=64]
+
+! Specify a cell by X,Y. Previously this gave a dimensions error
+shade/over/pal=green iijj[x=76w,y=40n]
+
+! These same sorts of degenerate regions, bug not as an overlay
+
+! Previously both of these drew a blank plot
+shade/pal=rnb2 iijj[i=167,j=64]
+shade/pal=rnb2 iijj[i=167,j=64:66]
+
+! Specify a cell by X,Y
+! Previously this gave a dimensions error
+shade/pal=green iijj[x=76w,y=40n]
+
+! Partial cell, given by xy limits.
+! Previously drew a blank plot
+shade/pal=green iijj[x=74.5w:74.4w,y=39.9:40.0]
+
+! Several cells in one direction - partial cells in y at edges
+yes? shade/pal=rnb2 iijj[x=74.5w,y=39.9:40.8]

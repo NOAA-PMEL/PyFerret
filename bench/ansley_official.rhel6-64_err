@@ -3924,9 +3924,6 @@ context: Error { code = 500; message = "Error processing XML header file /usr/lo
 LIST/FORMAT=CDF/clobber/keep/file=nc b,a[d=1]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: dimensions improperly specified: must be a 2D region
-          shade b
-shade b
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
            *** NOTE: Changing the value of attribute v1.long_name

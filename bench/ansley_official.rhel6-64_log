@@ -10412,7 +10412,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.022"
 FERRET_PLATFORM = "Linux 2.6.32-642.11.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
+NETCDF_VERSION = "4.4.0 of Feb  4 2016 20:13:32 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "10-Jan-17"
 SESSION_TIME = "12:11"
@@ -10441,7 +10441,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.022"
 FERRET_PLATFORM = "Linux 2.6.32-642.11.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
+NETCDF_VERSION = "4.4.0 of Feb  4 2016 20:13:32 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "10-Jan-17"
 SESSION_TIME = "12:11"
@@ -10613,7 +10613,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.022"
 FERRET_PLATFORM = "Linux 2.6.32-642.11.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
+NETCDF_VERSION = "4.4.0 of Feb  4 2016 20:13:32 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "10-Jan-17"
 SESSION_TIME = "12:11"
@@ -96800,12 +96800,12 @@ save/clobber/file=a.nc abc
 sp ncdump -h a.nc
 netcdf a {
 dimensions:
-	AX112 = 5 ;
+	AX018 = 5 ;
 variables:
-	double AX112(AX112) ;
-		AX112:point_spacing = "even" ;
-		AX112:axis = "X" ;
-	float abc(AX112) ;
+	double AX018(AX018) ;
+		AX018:point_spacing = "even" ;
+		AX018:axis = "X" ;
+	float abc(AX018) ;
 		abc:missing_value = -1.e+34f ;
 		abc:_FillValue = -1.e+34f ;
 		abc:long_name = "abc" ;
@@ -96873,24 +96873,24 @@ sav/file=a.nc/clobber var,longitude,latitude
 sp ncdump -h a.nc
 netcdf a {
 dimensions:
-	AX100 = 6 ;
+	AX104 = 6 ;
 variables:
-	double AX100(AX100) ;
-		AX100:point_spacing = "even" ;
-		AX100:axis = "X" ;
-	float var(AX100) ;
+	double AX104(AX104) ;
+		AX104:point_spacing = "even" ;
+		AX104:axis = "X" ;
+	float var(AX104) ;
 		var:missing_value = -1.e+34f ;
 		var:_FillValue = -1.e+34f ;
 		var:long_name = "var" ;
 		var:history = "From bn_delimited_read_1.dat" ;
-	float longitude(AX100) ;
+	float longitude(AX104) ;
 		longitude:missing_value = -1.e+34f ;
 		longitude:_FillValue = -1.e+34f ;
 		longitude:long_name = "longitude" ;
 		longitude:units = "degrees_east" ;
 		longitude:long_name_mod = "Longitude" ;
 		longitude:history = "From bn_delimited_read_1.dat" ;
-	float latitude(AX100) ;
+	float latitude(AX104) ;
 		latitude:missing_value = -1.e+34f ;
 		latitude:_FillValue = -1.e+34f ;
 		latitude:long_name = "latitude" ;
@@ -97994,6 +97994,9 @@ def axis/t/t0=1-jan-2000/monthly/bounds tax={1.2, 2, 3.2, 5, 7, 8.4, 9}, {0.5,1.
 define axis/x=1:5:1/monthly aaxis
  
 cancel mode ignore
+ 
+! Note the release notes for v7.1 should include mention of memory-leak fixes. For example see this exchange:
+! http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2017/msg00025.html
  
 !  *********** Always do a bn_reset  ***********
 !  *********** make sure things clean up well **
@@ -101647,7 +101650,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.022"
 FERRET_PLATFORM = "Linux 2.6.32-642.11.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
+NETCDF_VERSION = "4.4.0 of Feb  4 2016 20:13:32 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "10-Jan-17"
 SESSION_TIME = "12:14"

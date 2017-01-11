@@ -74,6 +74,12 @@ go err700_list_comma
 go bn_reset
 go err700_aggT_5d
 
-! Bug xxxx: shift on overlay of time series plot on 2d time plot
+! Bug 2495: shift on overlay of time series plot on 2d time plot
 go bn_reset
 go err700_time_overlay
+
+
+! Bug 2494:  drawing a single-cell shade plot
+go bn_reset
+go err700_shade_singlecell
+

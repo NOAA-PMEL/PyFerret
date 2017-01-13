@@ -112,7 +112,8 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 *                  For centered labels add a level to corresp to the upper bound of 
 *                  the top color on thecolorbar, excluding any upper inf triangle.
 * V697 *acm* 12/15 Fix ticket 2326: single level plus (inf) and/or (-inf)
-* V71  *acm*  1/157 Fix ticket 2491: labels on colorbar when it's a ribbon/vlog, ribbon/hlog plot
+* V71  *acm*  1/17 Fix ticket 2491: labels on colorbar when it's a ribbon/vlog, ribbon/hlog plot
+* V71  *acm*  1/17 Fix ticket 2491: Tweak to key labels, code adding .0 to numbers for consistency
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -137,7 +138,8 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 
 	include        'gkspar.inc'
 
-	integer		TM_LENSTR1, ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
+	integer		TM_LENSTR1, TM_LENSTR, 
+     .                  ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
      .                  lab_add, nlab, i, kount, shd_lev_hi, num_dec, maxstr,
      .                  itypex_save, itypey_save
 
@@ -504,7 +506,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 * Add a .0 with the right number of 0's if the other labels have 
 * decimal-point .xx but this one does not
 
-	   IF (num_dec.GT.0 .AND. INDEX(text, 'E').EQ.0) THEN
+	   IF (num_dec.GT.0 .AND. INDEX(text, 'E').EQ.0 .AND. TM_LENSTR(text).GT.0) THEN
 	      IF (INDEX(text, '.') .EQ. 0) THEN
 	         text = text(:TM_LENSTR1(text))//'.0'
 	         IF (num_dec .GT. 1) THEN
@@ -826,7 +828,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 * Add a .0 with the right number of 0's if the other labels have 
 * decimal-point .xx but this one does not
 
-	   IF (num_dec.GT.0 .AND. INDEX(text, 'E').EQ.0) THEN
+	   IF (num_dec.GT.0 .AND. INDEX(text, 'E').EQ.0 .AND. TM_LENSTR(text).GT.0) THEN
 	      IF (INDEX(text, '.') .EQ. 0) THEN
 	         text = text(:TM_LENSTR1(text))//'.0'
 	         IF (num_dec .GT. 1) THEN

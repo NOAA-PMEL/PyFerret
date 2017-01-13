@@ -35,6 +35,9 @@
 *
 *
 * diagnostic report on memory usage and integrity check
+* note that this routine could be streamlined -- the linked lists are
+* traversed two separate times.  Since this code is only run in diagnostic
+* situations we have not troubled to mske it nicer.
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
@@ -60,7 +63,7 @@
      .		nmvlost, nmblost, n, pile, last, size, test_next,
      .		ninuse, navail, nperm, mbperm, ntemp, ndel,
      .		ninprogress, ntable_entries,
-     .		slen, nn, mb_allocated(pmax_mem_blks), i, iblk
+     .		slen, mb_allocated(pmax_mem_blks), i, iblk
 	CHARACTER LEFINT*8, buff*40, b12*12
 	PARAMETER (b12 = '            ')    !kob 12/96
 
@@ -226,7 +229,6 @@
 * flag memory blocks allocated to the free list
 	   DO i = 1, size
 	      iblk = mb+i-1
-!	      IF (iblk .EQ.878) WRITE (6,*) '*** block 878 is free'
 	      mb_allocated(iblk) = mb_allocated(iblk) + 1
 	   ENDDO
 
@@ -252,7 +254,7 @@
 	   GOTO 200
 	ENDIF
 
-* * * * integrity check * * * * * * * * * * * * * * * * * * * *
+* * * * SUMMARIZE MEMORY BLOCKS AND TABLE SLOTS IN USE * * * *
 * check all the variables in all the hash piles
 	mvused = 0
 	mbused = 0
@@ -275,7 +277,6 @@
 	      IF (mr_protected(mv) .NE. mr_table_entry_only) THEN
 	         DO i = 1, mr_nblks(mv)
 	            iblk = mr_blk1(mv)+i-1
-!	            IF (iblk .EQ.878) WRITE (6,*) '*** block 878 owned by',mv
 	            mb_allocated(iblk) = mb_allocated(iblk) + 1
 	         ENDDO
 	      ENDIF
@@ -286,18 +287,13 @@
 	   ENDIF
  310	CONTINUE
 
-* flag memory blocks allocated to work storage
+* flag memory blocks allocated to GET_WORK_SPACE (as most work storage handled)
 	   DO i = 1, sp_num_blocks
 	      iblk = sp_start_block+i-1
-!	      IF (iblk .EQ.878) WRITE (6,*) '*** block 878 is work storage',
-!     .		   sp_start_block, sp_num_blocks
 	      mb_allocated(iblk) = mb_allocated(iblk) + 1
 	   ENDDO
 
-
-* * * * integrity check * * * * * * * * * * * * * * * * * * * *
 * check non-cached variables (10/99)
-	nn = 0
 	last = pmv_nocache_pile
 	mv = mv_flink( last )	! base pointer for slots in this hash #
  350	IF ( mv .GT. 0 ) THEN
@@ -308,7 +304,6 @@
 	      CALL WARN('SANITY ERR: uncached variable error: '
      .				//LEFINT(mv,slen)//tag )
 	   ENDIF
-	   nn = nn + 1
 	   mvused = mvused + 1
 	   IF (mr_protected(mv) .NE. mr_table_entry_only) THEN
 	      mbused = mbused + mr_nblks(mv)
@@ -319,7 +314,6 @@
 	   IF (mr_protected(mv) .NE. mr_table_entry_only) THEN
 	      DO i = 1, mr_nblks(mv)
 	         iblk = mr_blk1(mv)+i-1
-!	         IF (iblk .EQ.878) WRITE (6,*) '*** block 878 owned by',mv
 	         mb_allocated(iblk) = mb_allocated(iblk) + 1
 	      ENDDO
 	   ENDIF
@@ -327,6 +321,33 @@
 	   last   = mv
 	   mv     = mv_flink(mv)
 	   GOTO 350
+	ENDIF
+
+* check work storage allocated by GET_WORK_MR
+	last = pmv_work_var_pile
+	mv = mv_flink( last )	! base pointer for slots in this hash #
+ 370	IF ( mv .GT. 0 ) THEN
+	   IF ( mr_protected(mv) .NE. mr_in_progress
+     .	   .OR. mv_blink(mv) .NE. last ) THEN
+	      CALL WARN('SANITY ERR: table work storage variable error: '
+     .				//LEFINT(mv,slen)//tag )
+	   ENDIF
+	   mvused = mvused + 1
+	   IF (mr_protected(mv) .NE. mr_table_entry_only) THEN
+	      mbused = mbused + mr_nblks(mv)
+	   ENDIF
+
+* flag memory blocks allocated to a table work storage variable
+	   IF (mr_protected(mv) .NE. mr_table_entry_only) THEN
+	      DO i = 1, mr_nblks(mv)
+	         iblk = mr_blk1(mv)+i-1
+	         mb_allocated(iblk) = mb_allocated(iblk) + 1
+	      ENDDO
+	   ENDIF
+
+	   last   = mv
+	   mv     = mv_flink(mv)
+	   GOTO 370
 	ENDIF
 
 * * * * integrity check * * * * * * * * * * * * * * * * * * * *

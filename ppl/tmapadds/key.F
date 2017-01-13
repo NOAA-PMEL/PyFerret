@@ -120,6 +120,8 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 * V697 *acm* 12/15 Fix ticket 2326: single level plus (inf) and/or (-inf)
 * V7.0 *acm*  6/16 Fix ticket 2440: alignment of colorbar labels, vertical colorbars.
 * V701 *acm*  8/16 Fix ticket 2440 when SHAKEY settings were made.
+* V71  *acm*  1/17 Fix ticket 2491: labels on colorbar when it's a ribbon/vlog, ribbon/hlog plot
+* V71  *acm*  1/17 Fix ticket 2491: Tweak to key labels, code adding .0 to numbers for consistency
 
         IMPLICIT NONE
 
@@ -147,7 +149,8 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 	include        'gkspar.inc'
 	include        'pyfonts.cmn'
 	
-	integer TM_LENSTR1, ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
+	integer TM_LENSTR1, TM_LENSTR, 
+     .          ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
      .          lab_add, nlab, i, kount, lev1, levn, nspace, shd_lev_hi,
      .		ITYPEX_save, ITYPEY_save, ic, num_dec, maxstr
 
@@ -516,7 +519,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 * Add a .0 with the right number of 0's if the other labels have 
 * decimal-point .xx but this one does not.
 
-	   IF (num_dec.GT.0 .AND. INDEX(text, 'E').EQ.0) THEN
+	   IF (num_dec.GT.0 .AND. INDEX(text, 'E').EQ.0 .AND. TM_LENSTR(text).GT.0) THEN
 	      IF (INDEX(text, '.') .EQ. 0) THEN
 	         text = text(:TM_LENSTR1(text))//'.0'
 	         IF (num_dec .GT. 1) THEN
@@ -840,7 +843,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 * Add a .0 with the right number of 0's if the other labels have 
 * decimal-point .xx but this one does not
 
-	   IF (num_dec.GT.0 .AND. INDEX(text, 'E').EQ.0) THEN
+	   IF (num_dec.GT.0 .AND. INDEX(text, 'E').EQ.0 .AND. TM_LENSTR(text).GT.0) THEN
 	      IF (INDEX(text, '.') .EQ. 0) THEN
 	         text = text(:TM_LENSTR1(text))//'.0'
 	         IF (num_dec .GT. 1) THEN

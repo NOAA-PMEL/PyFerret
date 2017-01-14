@@ -98,6 +98,11 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V685 *acm* 4/13 For horizontal keys check that there is room for the labels and adjust
 *                 label size and/or increment
+* PyFr *kms*  7/13 Use XCSIZE or YCSIZE (which scales with plot text size) as the 
+*                  (maximum, default) character height for the key labels; 
+*                  rename and remove local vars px and py equivalenced to local 
+*                  vars kpx and kpy; comment out calls to TM_FMT_SNGL_DIGITS 
+*                  that are immediately followed by a call to TM_FMT_SNGL
 * v686 *acm* 1/14 Fix ticket 2123: labeling color bar when there is just one level.
 *                 Remove the special code that labeled the top and bottom of a single-level
 *                 color key with the lower boundary of the level. See the 5/96 commend above) 
@@ -111,9 +116,14 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
 *                  For centered labels add a level to corresp to the upper bound of 
 *                  the top color on thecolorbar, excluding any upper inf triangle.
+* V6.95 *acm* 3/15 Changes for PyFerret fonts. Scoot the vertical color key over to the left.
 * V697 *acm* 12/15 Fix ticket 2326: single level plus (inf) and/or (-inf)
+* V7.0 *acm*  6/16 Fix ticket 2440: alignment of colorbar labels, vertical colorbars.
+* V701 *acm*  8/16 Fix ticket 2440 when SHAKEY settings were made.
 * V71  *acm*  1/17 Fix ticket 2491: labels on colorbar when it's a ribbon/vlog, ribbon/hlog plot
 * V71  *acm*  1/17 Fix ticket 2491: Tweak to key labels, code adding .0 to numbers for consistency
+
+        IMPLICIT NONE
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -137,20 +147,22 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
         include         'gkscm2.cmn'
 
 	include        'gkspar.inc'
+	include        'pyfonts.cmn'
+	
+	integer TM_LENSTR1, TM_LENSTR, 
+     .          ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
+     .          lab_add, nlab, i, kount, lev1, levn, nspace, shd_lev_hi,
+     .		ITYPEX_save, ITYPEY_save, ic, num_dec, maxstr
 
-	integer		TM_LENSTR1, TM_LENSTR, 
-     .                  ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
-     .                  lab_add, nlab, i, kount, shd_lev_hi, num_dec, maxstr,
-     .                  itypex_save, itypey_save
-
+	real		SYMWID
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5),flaty(5),flatx(5)
 	real		xmaxx,ymaxx,vwidth,vheight,karht, ksiz_test
-	real		xx,yy,xxx,yyy, xx1, xxn, xxlen, xpos, wid, xp
+	real		xx,yy,xxx,yyy, xx1, xxn, xxlen, wid, xpos, xp
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
      .                  val, del, x_inc_inf, y_inc_inf, frac, fixx, inc_min, 
-     .                  center_add
+     .                  center_add, ht_ann
         real*8          val_n, val_last
-	character*12	text,TM_FMT_SNGL, TM_FMT_SNGL_DIGITS, 
+	character*12	text, TM_FMT_SNGL, TM_FMT_SNGL_DIGITS, 
      .			txt_out, blanks
         character*20    buff
 	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, windof_hold, 
@@ -158,8 +170,6 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
      .                  no_lines, is_viewport, have_neg
 
 	external	TM_FMT_SNGL, TM_FMT_SNGL_DIGITS
-
-	equivalence 	(px(1),kpx(1)),(py(1),kpy(1))
 
 	include 	'ppl_in_ferret.cmn'	
 
@@ -171,21 +181,27 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 	windof_hold = windof
 	windof = .false.
 
+* Save the axis ITYPE settings (log axes or not) so they aren'tn used for color key
+* label locations, which are linear. Will restore them at the end.  See the
+* examples in bn_polygon_log.jnl
+
+	ITYPEX_save = ITYPEX
+	ITYPEY_save = ITYPEY
+	ITYPEX = 1
+	ITYPEY = 1	
+
+* pyferret font settings
+
+	IF (pyfont) THEN
+	   igroup = fnt_all
+	   IF (pyf_set(icbar)) igroup = icbar
+	ENDIF
+
 	cont_key_keep = cont_key
 	center_add = 0.
 	if (center_key_labels) center_add = 0.5
 
 	incr = 0
-
-* If the plot has log axes, the location of labels is adjusted in routine
-* point_convert.  We do not want that on the color key, so reset the flag
-* here, and restore the values at the end
-
-	itypex_save = itypex
-	itypey_save = itypey
-	itypex = 1
-	itypey = 1
-
 
 * Decide whether to check for small numeric values in the key labels.
 * If delta is large, we dont want 0.000005 to be labelled in an exponential
@@ -237,8 +253,8 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
            increase_digits = .FALSE.
 
            num_dec = 0
-	   have_neg = .FALSE.
-           max_len = 0
+           have_neg = .FALSE.
+	   max_len = 0
 	   DO 30 ndx = lev1+incr, shd_levels, incr
              val = zlev(ndx)
              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
@@ -249,10 +265,10 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
              IF ( TM_DFPEQ(val_last, val_n) ) increase_digits = .TRUE.
              val_last = val_n
              IF (max_len .lt. str_len) max_len = str_len
-
-	     i = INDEX(buff, '.')
+	     
+             i = INDEX(buff, '.')
              IF (i .GT. 0) num_dec = MAX(num_dec, str_len-i)
-	     have_neg = have_neg .OR. val.LT.0 
+             have_neg = have_neg .OR. val.LT.0 
    30      CONTINUE
 
            IF (increase_digits) THEN
@@ -352,7 +368,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
            ENDIF
         ENDIF
 
-* Don't draw lines between color levels when they will be too close together (see ticket 1535)
+* Dont draw lines between color levels when they will be too close together (see ticket 1535)
 
 c	inc_min = 50
 c	no_lines = .FALSE.
@@ -369,9 +385,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
            IF (width/vwidth .GT. 1.5) incr = 2*incr
 	end if
 
-	karht = amin1 (0.1*1000.0,
+	karht = amin1 (xcsize*1000.0,
      .		1.0*x_inc*real(incr)/real(max_len))/1000.0
-        ksize_test = 0.
 	if (klab_size .NE. 0) karht = ABS(klab_size)  
 
 * Is there room for the labels at their current size?
@@ -389,7 +404,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	      karht = 0.85*xxlen/FLOAT(nlab*max_len)
 	   ENDIF
 
-	   ksiz_test = 0.06
+	   ksiz_test = 0.06 * xcsize
+	   IF (pyfont) ksiz_test = 0.06
            IF (klab_size .NE. 0) THEN
 	      IF (ABS(klab_size) .LT. ksiz_test) ksiz_test = ABS(klab_size)
 	   ENDIF
@@ -400,7 +416,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	      karht = 0.85*xxlen/FLOAT(nlab*max_len)
 	   ENDIF
 
-	   ksiz_test = 0.075
+	   ksiz_test = 0.075 * xcsize
+	   IF (pyfont) ksiz_test = 0.075
            IF (klab_size .NE. 0) ksiz_test = ABS(klab_size)
 	   kount = 0
 	   DO WHILE (karht .LT. ksiz_test .AND. karht.GT.0. .AND. kount.LT.10)
@@ -411,7 +428,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	   ENDDO
 	   IF (karht .GT. ksiz_test) karht = ksiz_test
 	ENDIF
-
+	
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
 	val = zlev(lev1)
@@ -421,34 +438,35 @@ c	IF ( no_lines ) cont_key = .TRUE.
         
         nhi = MAX(2,shd_levels+1)
 	do 10 ndx = 2, nhi
-	   px(1) = kx_lo + real (ndx - 2) * x_inc
-	   px(2) = kx_lo + real (ndx - 2) * x_inc
-	   px(3) = kx_lo + real (ndx - 1) * x_inc
-	   px(4) = kx_lo + real (ndx - 1) * x_inc
+	   kpx(1) = kx_lo + real (ndx - 2) * x_inc
+	   kpx(2) = kx_lo + real (ndx - 2) * x_inc
+	   kpx(3) = kx_lo + real (ndx - 1) * x_inc
+	   kpx(4) = kx_lo + real (ndx - 1) * x_inc
 
-	   py(1) = ky_hi
-	   py(2) = ky_hi - 4.0 * y_inc 
-	   py(3) = ky_hi - 4.0 * y_inc
-	   py(4) = ky_hi
+	   kpy(1) = ky_hi
+	   kpy(2) = ky_hi - 4.0 * y_inc 
+	   kpy(3) = ky_hi - 4.0 * y_inc
+	   kpy(4) = ky_hi
 
            IF (kuser_loc(3) .OR. kuser_loc(4)) THEN
-              py(2) = ky_lo
-              py(3) = ky_lo
-              py(1) = ky_hi
-              py(4) = ky_hi
+              kpy(2) = ky_lo
+              kpy(3) = ky_lo
+              kpy(1) = ky_hi
+              kpy(4) = ky_hi
            ENDIF
+	   ht_ann = 0.9*karht
 
            IF ( (ndx.EQ.2) .AND. (annotate_key.EQ.1) .AND. 
      .          (.NOT.neginf) ) CALL key_annotate 
-     .          (kpx, kpy, lab_digits, karht, 1, 2)
+     .          (kpx, kpy, lab_digits, ht_ann, 1, 2)
 
            IF ( (ndx.EQ.nhi) .AND. (annotate_key.EQ.1) .AND.
      .          (.NOT.posinf) ) CALL key_annotate 
-     .          (kpx, kpy, lab_digits, karht, 2, 2)
+     .          (kpx, kpy, lab_digits, ht_ann, 2, 2)
 
            IF (neginf .AND. (ndx .EQ. 2) ) THEN
               CALL key_lo_inf_horz (kpx, kpy, ndx, x_inc_inf, 
-     .          annotate_key, lab_digits, karht)
+     .          annotate_key, lab_digits, ht_ann)
               IF (posinf .AND. shd_levels.EQ.1) THEN
                  DO i = 1,4
                  px(i) = px(i) + x_inc
@@ -459,22 +477,17 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
            ELSE IF (posinf .AND. (ndx .EQ. nhi) ) THEN
               CALL key_hi_inf_horz (kpx, kpy, ndx, x_inc_inf, 
-     .          annotate_key, lab_digits, karht)
+     .          annotate_key, lab_digits, ht_ann)
 
            ELSE
 
-*	   CALL FILL AREA FOR THIS COLOR/GRAY VALUE
-	   call set_fill_ndx (ndx)
-	   call gfa (4,px,py)
+*	      CALL FILL AREA FOR THIS COLOR/GRAY VALUE
+              CALL set_fill_ndx (ndx)
+              CALL FGD_GFA(4,kpx,kpy)
 
-*	   TO RETAIN ABILITY FOR COLOR OR HATCHING IN METAFILE, WRITE 
-*	   NDX TO PRIVATE ITEM -- forget it 10.22
-*	   if (meta_actv .and. .not. area_bundles) call meta_fill_ndx (ndx)
-
-	   kpx(5) = kpx(1)
-	   kpy(5) = kpy(1)
-
-	   IF (.NOT. cont_key) call gpl (5,kpx,kpy)
+              kpx(5) = kpx(1)
+              kpy(5) = kpy(1)
+              IF (.NOT. cont_key) CALL FGD_GPL(5,kpx,kpy)
 
            ENDIF ! neginf or posinf
 
@@ -502,9 +515,9 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 	   IF (ndx .EQ. 1 .AND. neginf) text = " "
 	   IF (ndx .EQ. levn+1 .AND. posinf) text = " "
-	     
+
 * Add a .0 with the right number of 0's if the other labels have 
-* decimal-point .xx but this one does not
+* decimal-point .xx but this one does not.
 
 	   IF (num_dec.GT.0 .AND. INDEX(text, 'E').EQ.0 .AND. TM_LENSTR(text).GT.0) THEN
 	      IF (INDEX(text, '.') .EQ. 0) THEN
@@ -519,11 +532,11 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 	      IF (str_len.LT.max_len .AND. INDEX(text, 'E').EQ.0) THEN
 	         maxstr = max_len
-		 IF (have_neg .AND. val .GE. 0.) maxstr = maxstr - 1
+	         IF (have_neg .AND. val .GE. 0.) maxstr = maxstr - 1
 	         DO i = str_len+1, maxstr
 		    text = text(:TM_LENSTR1(text))//'0'
 	         ENDDO
-		 IF (str_len+1 .LT. maxstr) str_len = max_len
+	         IF (str_len+1 .LT. maxstr) str_len = max_len
 	      ENDIF
 	   ENDIF
 
@@ -541,12 +554,12 @@ c	IF ( no_lines ) cont_key = .TRUE.
            ENDIF
 
 *	   FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
-	   if (makep .eq. 'SHADE' .or. makep .eq. 'FILLPOL' .OR.
-     .         makep .EQ. 'POLYGON' .or. makep .eq. 'RIBPLOT') then
-	      call point_convert (xx,yy,xxx,yyy)
-	   else if (makep .eq. 'FILL') then
+
+	   if (makep .eq. 'FILL' .AND. .NOT.pyfont) THEN	   
 	      xxx = xx
 	      yyy = yy
+	   else
+              call point_convert (xx,yy,xxx,yyy)
 	   endif
 
 	   call symbel (xxx,yyy,0.0,karht,str_len,text(1:str_len))
@@ -555,8 +568,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
         ENDIF
 
 *  Set these to actual locations that were used for PPL LIST SHAKEY
-        ky_hi = py(1)
-        ky_lo = py(2)
+        ky_hi = kpy(1)
+        ky_lo = kpy(2)
 
 	goto 2000
 
@@ -573,17 +586,18 @@ c	IF ( no_lines ) cont_key = .TRUE.
            if (vwidth .le. xlen + xorg) goto 2000
 
 	   rem = vwidth - (xlen + xorg)
-	   xmaxx = 0.25*xlen
+	   xmaxx = 0.22*xlen
 
-           kx_lo_def = 1000.0 * (xorg + xlen + 0.2*min (rem,xmaxx))
-           kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,vwidth-0.08*rem)
+           kx_lo_def = 1000.0 * (xorg + xlen + 0.17*min (rem,xmaxx))
+           kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,vwidth-0.1*rem)
+
            ky_lo_def = 1000.0 *  yorg
            ky_hi_def = 1000.0 * (yorg + ylen)
         else
 	   rem = width - (xlen + xorg)
-	   xmaxx = 0.25*xlen
-           kx_lo_def = 1000.0 * (xorg + xlen + 0.2*min (rem,xmaxx))
-           kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,width-0.08*rem)
+	   xmaxx = 0.22*xlen
+           kx_lo_def = 1000.0 * (xorg + xlen + 0.17*min (rem,xmaxx))
+           kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,width-0.1*rem)
            ky_lo_def = 1000.0 *  yorg
            ky_hi_def = 1000.0 * (yorg + ylen)
         end if
@@ -655,7 +669,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 *	SET CHARACTER HEIGHT IN WORLD COORDINATES, AND INCR INDEX
         if (klab_size .eq. 0.0) then
-	   karht = amin1 (0.10*1000.0,500.0*rem/real(max_len))/1000.0
+	   karht = amin1 (ycsize*1000.0,500.0*rem/real(max_len))/1000.0
 	else
 	   karht = ABS(klab_size)
 	end if
@@ -675,34 +689,40 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
         nhi = MAX(2,shd_levels+1)
 	do 1010 ndx = 2, nhi
-	   px(1) = kx_lo
-	   px(2) = kx_lo + 4.0*x_inc
-	   px(3) = kx_lo + 4.0*x_inc
-	   px(4) = kx_lo
+	   kpx(1) = kx_lo
+	   kpx(2) = kx_lo + 4.0*x_inc
+	   kpx(3) = kx_lo + 4.0*x_inc
+	   kpx(4) = kx_lo
 
            IF ( kuser_loc(1) .OR. kuser_loc(2)) THEN
-              px(1) = kx_lo
-              px(4) = kx_lo
-              px(2) = kx_hi
-              px(3) = kx_hi
+              kpx(1) = kx_lo
+              kpx(4) = kx_lo
+              kpx(2) = kx_hi
+              kpx(3) = kx_hi
            ENDIF
 
-	   py(1) = ky_lo + real (ndx - 2) * y_inc
-	   py(2) = ky_lo + real (ndx - 2) * y_inc
-	   py(3) = ky_lo + real (ndx - 1) * y_inc
-	   py(4) = ky_lo + real (ndx - 1) * y_inc
+	   IF (ndx .GT. 2) THEN 
+ 	      kpy(1) = kpy(3)
+	      kpy(2) = kpy(4)
+	   ELSE
+	      kpy(1) = ky_lo + real (ndx - 2) * y_inc
+	      kpy(2) = ky_lo + real (ndx - 2) * y_inc
+	   ENDIF
+	   kpy(3) = ky_lo + real (ndx - 1) * y_inc
+	   kpy(4) = ky_lo + real (ndx - 1) * y_inc
 
+	   ht_ann = 0.9*karht
            IF ( (ndx.EQ.2) .AND. (annotate_key.EQ.1) .AND.
      .          (.NOT. neginf) ) CALL key_annotate 
-     .          (kpx, kpy, lab_digits, karht, 1, 1)
+     .          (kpx, kpy, lab_digits, ht_ann, 1, 1)
 
            IF ( (ndx.EQ.nhi) .AND. (annotate_key.EQ.1) .AND.
      .          (.NOT. posinf) ) CALL key_annotate 
-     .          (kpx, kpy, lab_digits, karht, 2, 1)
+     .          (kpx, kpy, lab_digits, ht_ann, 2, 1)
 
            IF (neginf .AND. (ndx .EQ. 2) ) THEN
               CALL key_lo_inf_vert (kpx, kpy, ndx, y_inc_inf, 
-     .          annotate_key, lab_digits, karht)
+     .          annotate_key, lab_digits, ht_ann)
               IF (posinf .AND. shd_levels.EQ.1) THEN
                  DO i = 1, 4
                  py(i) = py(i) + y_inc
@@ -713,35 +733,30 @@ c	IF ( no_lines ) cont_key = .TRUE.
      
            ELSE IF (posinf .AND. (ndx .EQ. nhi) ) THEN
               CALL key_hi_inf_vert (kpx, kpy, ndx, y_inc_inf, 
-     .          annotate_key, lab_digits, karht)
+     .          annotate_key, lab_digits, ht_ann)
 
            ELSE
 
 *	   CALL FILL AREA FOR THIS COLOR/GRAY VALUE
 	      call set_fill_ndx (ndx)
-	      call gfa (4,px,py)
-
-*	   TO RETAIN ABILITY FOR COLOR OR HATCHING IN METAFILE, WRITE 
-*	   NDX TO PRIVATE ITEM - forget it 10.22
-*	   if (meta_actv .and. .not. area_bundles) call meta_fill_ndx (ndx)
+	      call FGD_GFA(4,kpx,kpy)
 
               kpx(5) = kpx(1)
               kpy(5) = kpy(1)
-
-              IF (.NOT. cont_key) call gpl (5,kpx,kpy)
+              IF (.NOT. cont_key) call FGD_GPL(5,kpx,kpy)
 
            ENDIF ! neginf or posinf
 
            IF (ndx .GE. lev1 .AND. ndx .LE. levn) THEN
               val = zlev(ndx)
               IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	      text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
-	      if (max_len .lt. str_len) max_len = str_len
+              text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+              if (max_len .lt. str_len) THEN
+	         max_len = str_len
+	         buff = text
+              endif
            ENDIF
 1010	continue
-
-        ystart = 0.
-        IF (lev1 .NE. 1) ystart = y_inc
 
         IF (incr .GT. 0) THEN
 
@@ -764,8 +779,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	      txt_out = buff
 	   ENDIF
 	   i = INDEX(buff, '.')
-           IF (i .GT. 0) num_dec = MAX(num_dec, str_len-i)
-	   have_neg = have_neg .OR. val.LT.0 
+	   IF (i .GT. 0) num_dec = MAX(num_dec, str_len-i)
+	   have_neg = have_neg .OR. val.LT.0
 	ENDDO
 	buff = txt_out
 
@@ -781,13 +796,13 @@ c	IF ( no_lines ) cont_key = .TRUE.
         wid = SYMWID(karht,max_len+1,txt_out(:max_len))
         xpos = xpos + wid
 
-* If klab_size negative put the key  on the left rather than 
-* the right of the keylabels
+* If klab_size negative put the key labels on the left rather than 
+* the right of the key
 
         IF (klab_size .LT. 0) THEN
            wid = SYMWID(karht,1,'X')
            xpos = kx_lo/1000.0 - xorg - wid
-        ENDIF
+	ENDIF
 
 * If the user set the label size, leave it. If we are drawing in a viewport,
 * leave the label sizes as-is.  The user can control whether the labels may
@@ -841,11 +856,11 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 	      IF (str_len.LT.max_len .AND. INDEX(text, 'E').EQ.0) THEN
 	         maxstr = max_len
-		 IF (have_neg .AND. val .GE. 0.) maxstr = maxstr - 1
+	         IF (have_neg .AND. val .GE. 0.) maxstr = maxstr - 1
 	         DO i = str_len+1, maxstr
 		    text = text(:TM_LENSTR1(text))//'0'
 	         ENDDO
-		 IF (str_len+1 .LT. maxstr) str_len = max_len
+	         IF (str_len+1 .LT. maxstr) str_len = max_len
 	      ENDIF
 	   ENDIF
 
@@ -860,28 +875,29 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 *	   FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
 
-	   if (makep .eq. 'SHADE' .or. makep .eq. 'FILLPOL' .OR.
-     .         makep .EQ. 'POLYGON' .or. makep .eq. 'RIBPLOT') then
-              call point_convert (xx,yy,xxx,yyy)
-	   else if (makep .eq. 'FILL') then
+	   if (makep .eq. 'FILL' .AND. .NOT.pyfont) THEN	   
 	      xxx = xx
 	      yyy = yy
+	   else
+              call point_convert (xx,yy,xxx,yyy)
 	   endif
+
 	   call symbel (xxx,yyy,0.0,karht,str_len,txt_out(1:str_len))
 
 1020	continue
         ENDIF
 
 *  Set these to actual locations that were used for PPL LIST SHAKEY
-        kx_lo = px(1)
-        kx_hi = px(2)
+        kx_lo = kpx(1)
+        kx_hi = kpx(2)
 
 2000	windof = windof_hold
 	cont_key = cont_key_keep
 
-* Restore axis-type settings
-	itypex = itypex_save
-	itypey = itypey_save
+        IF (pyfont .AND. pyf_set(icbar)) igroup = fnt_all
+
+	ITYPEX = ITYPEX_save
+	ITYPEY = ITYPEY_save
 
 	return
 	end

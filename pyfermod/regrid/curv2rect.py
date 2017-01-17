@@ -179,11 +179,11 @@ def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
 
     # Increment the depth index last
     # most likely to change the undefined (e.g., land) mask 
-    for d_idx in xrange(curv_data.shape[2]):
+    for d_idx in range(curv_data.shape[2]):
         # Arrays are probably in Fortran order, so increment last indices last
-        for f_idx in xrange(curv_data.shape[5]):
-            for e_idx in xrange(curv_data.shape[4]):
-                for t_idx in xrange(curv_data.shape[3]):
+        for f_idx in range(curv_data.shape[5]):
+            for e_idx in range(curv_data.shape[4]):
+                for t_idx in range(curv_data.shape[3]):
                     # Determine curvilinear center points to ignore from undefined data
                     curv_center_ignore = ( numpy.abs(curv_data[:, :, d_idx, t_idx,
                                                 e_idx, f_idx] - curv_undef) < 1.0E-7 )

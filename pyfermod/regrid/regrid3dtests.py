@@ -3,6 +3,9 @@ Unit tests for CurvRect3DRegridder
 
 @author: Karl Smith
 '''
+
+from __future__ import print_function
+
 import unittest
 import numpy
 import ESMP
@@ -342,15 +345,15 @@ class CurvRect3DRegridderTests(unittest.TestCase):
                                                  ESMP.ESMP_REGRIDMETHOD_BILINEAR)
         expect_data = numpy.array(self.rect_data, dtype=numpy.float64)
         mismatch_found = False
-        for i in xrange(margin, expect_data.shape[0] - margin):
-            for j in xrange(margin, expect_data.shape[1] - margin):
-                for k in xrange(margin, expect_data.shape[2] - margin):
+        for i in range(margin, expect_data.shape[0] - margin):
+            for j in range(margin, expect_data.shape[1] - margin):
+                for k in range(margin, expect_data.shape[2] - margin):
                     if numpy.abs(expect_data[i, j, k] - regrid_data[i, j, k]) > delta:
                         mismatch_found = True
-                        print "expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
+                        print("expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
                               "lat = %5.1f, lev = %5.1f" % (expect_data[i, j, k], 
                               regrid_data[i, j, k], self.rect_center_lons[i], 
-                              self.rect_center_lats[j], self.rect_center_levs[k])
+                              self.rect_center_lats[j], self.rect_center_levs[k]))
         if mismatch_found:
             self.fail("data mismatch found for bilinear regridding without flags")
 
@@ -367,15 +370,15 @@ class CurvRect3DRegridderTests(unittest.TestCase):
         undef_flags = numpy.array(self.rect_center_ignr, dtype=numpy.bool)
         expect_data[undef_flags] = self.undef_val
         mismatch_found = False
-        for i in xrange(margin, expect_data.shape[0] - margin):
-            for j in xrange(margin, expect_data.shape[1] - margin):
-                for k in xrange(margin, expect_data.shape[2] - margin):
+        for i in range(margin, expect_data.shape[0] - margin):
+            for j in range(margin, expect_data.shape[1] - margin):
+                for k in range(margin, expect_data.shape[2] - margin):
                     if numpy.abs(expect_data[i, j, k] - regrid_data[i, j, k]) > delta:
                         mismatch_found = True
-                        print "expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
+                        print("expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
                               "lat = %5.1f, lev = %5.1f" % (expect_data[i, j, k], 
                               regrid_data[i, j, k], self.rect_center_lons[i], 
-                              self.rect_center_lats[j], self.rect_center_levs[k])
+                              self.rect_center_lats[j], self.rect_center_levs[k]))
         if mismatch_found:
             self.fail("data mismatch found for bilinear regridding with flags")
 
@@ -403,15 +406,15 @@ class CurvRect3DRegridderTests(unittest.TestCase):
                                                  ESMP.ESMP_REGRIDMETHOD_CONSERVE)
         expect_data = numpy.array(self.rect_data, dtype=numpy.float64)
         mismatch_found = False
-        for i in xrange(margin, expect_data.shape[0] - margin):
-            for j in xrange(margin, expect_data.shape[1] - margin):
-                for k in xrange(margin, expect_data.shape[2] - margin):
+        for i in range(margin, expect_data.shape[0] - margin):
+            for j in range(margin, expect_data.shape[1] - margin):
+                for k in range(margin, expect_data.shape[2] - margin):
                     if numpy.abs(expect_data[i, j, k] - regrid_data[i, j, k]) > delta:
                         mismatch_found = True
-                        print "expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
+                        print("expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
                               "lat = %5.1f, lev = %5.1f" % (expect_data[i, j, k], 
                               regrid_data[i, j, k], self.rect_center_lons[i], 
-                              self.rect_center_lats[j], self.rect_center_levs[k])
+                              self.rect_center_lats[j], self.rect_center_levs[k]))
         if mismatch_found:
             self.fail("data mismatch found for conservative regridding")
 
@@ -436,15 +439,15 @@ class CurvRect3DRegridderTests(unittest.TestCase):
                                                  ESMP.ESMP_REGRIDMETHOD_PATCH)
         expect_data = numpy.array(self.rect_data, dtype=numpy.float64)
         mismatch_found = False
-        for i in xrange(margin, expect_data.shape[0] - margin):
-            for j in xrange(margin, expect_data.shape[1] - margin):
-                for k in xrange(margin, expect_data.shape[2] - margin):
+        for i in range(margin, expect_data.shape[0] - margin):
+            for j in range(margin, expect_data.shape[1] - margin):
+                for k in range(margin, expect_data.shape[2] - margin):
                     if numpy.abs(expect_data[i, j, k] - regrid_data[i, j, k]) > delta:
                         mismatch_found = True
-                        print "expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
+                        print("expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
                               "lat = %5.1f, lev = %5.1f" % (expect_data[i, j, k], 
                               regrid_data[i, j, k], self.rect_center_lons[i], 
-                              self.rect_center_lats[j], self.rect_center_levs[k])
+                              self.rect_center_lats[j], self.rect_center_levs[k]))
         if mismatch_found:
             self.fail("data mismatch found for patch regridding")
 
@@ -469,15 +472,15 @@ class CurvRect3DRegridderTests(unittest.TestCase):
                                                  ESMP.ESMP_REGRIDMETHOD_BILINEAR)
         expect_data = numpy.array(self.curv_data, dtype=numpy.float64)
         mismatch_found = False
-        for i in xrange(margin, expect_data.shape[0] - margin):
-            for j in xrange(margin, expect_data.shape[1] - margin):
-                for k in xrange(margin, expect_data.shape[2] - margin):
+        for i in range(margin, expect_data.shape[0] - margin):
+            for j in range(margin, expect_data.shape[1] - margin):
+                for k in range(margin, expect_data.shape[2] - margin):
                     if numpy.abs(expect_data[i, j, k] - regrid_data[i, j, k]) > delta:
                         mismatch_found = True
-                        print "expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
+                        print("expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
                               "lat = %5.1f, lev = %5.1f" % (expect_data[i, j, k], 
                               regrid_data[i, j, k], self.curv_center_lons[i][j][k], 
-                              self.curv_center_lats[i][j][k], self.curv_center_levs[i][j][k])
+                              self.curv_center_lats[i][j][k], self.curv_center_levs[i][j][k]))
         if mismatch_found:
             self.fail("data mismatch found for bilinear regridding without flags")
 
@@ -494,15 +497,15 @@ class CurvRect3DRegridderTests(unittest.TestCase):
         undef_flags = numpy.array(self.rect_center_ignr, dtype=numpy.bool)
         expect_data[undef_flags] = self.undef_val
         mismatch_found = False
-        for i in xrange(margin, expect_data.shape[0] - margin):
-            for j in xrange(margin, expect_data.shape[1] - margin):
-                for k in xrange(margin, expect_data.shape[2] - margin):
+        for i in range(margin, expect_data.shape[0] - margin):
+            for j in range(margin, expect_data.shape[1] - margin):
+                for k in range(margin, expect_data.shape[2] - margin):
                     if numpy.abs(expect_data[i, j, k] - regrid_data[i, j, k]) > delta:
                         mismatch_found = True
-                        print "expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
+                        print("expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
                               "lat = %5.1f, lev = %5.1f" % (expect_data[i, j, k], 
                               regrid_data[i, j, k], self.curv_center_lons[i][j][k], 
-                              self.curv_center_lats[i][j][k], self.curv_center_levs[i][j][k])
+                              self.curv_center_lats[i][j][k], self.curv_center_levs[i][j][k]))
         if mismatch_found:
             self.fail("data mismatch found for bilinear regridding with flags")
 
@@ -530,15 +533,15 @@ class CurvRect3DRegridderTests(unittest.TestCase):
                                                  ESMP.ESMP_REGRIDMETHOD_CONSERVE)
         expect_data = numpy.array(self.curv_data, dtype=numpy.float64)
         mismatch_found = False
-        for i in xrange(margin, expect_data.shape[0] - margin):
-            for j in xrange(margin, expect_data.shape[1] - margin):
-                for k in xrange(margin, expect_data.shape[2] - margin):
+        for i in range(margin, expect_data.shape[0] - margin):
+            for j in range(margin, expect_data.shape[1] - margin):
+                for k in range(margin, expect_data.shape[2] - margin):
                     if numpy.abs(expect_data[i, j, k] - regrid_data[i, j, k]) > delta:
                         mismatch_found = True
-                        print "expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
+                        print("expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
                               "lat = %5.1f, lev = %5.1f" % (expect_data[i, j, k], 
                               regrid_data[i, j, k], self.curv_center_lons[i][j][k], 
-                              self.curv_center_lats[i][j][k], self.curv_center_levs[i][j][k])
+                              self.curv_center_lats[i][j][k], self.curv_center_levs[i][j][k]))
         if mismatch_found:
             self.fail("data mismatch found for conservative regridding")
 
@@ -565,15 +568,15 @@ class CurvRect3DRegridderTests(unittest.TestCase):
                                                  ESMP.ESMP_REGRIDMETHOD_PATCH)
         expect_data = numpy.array(self.curv_data, dtype=numpy.float64)
         mismatch_found = False
-        for i in xrange(margin, expect_data.shape[0] - margin):
-            for j in xrange(margin, expect_data.shape[1] - margin):
-                for k in xrange(margin, expect_data.shape[2] - margin):
+        for i in range(margin, expect_data.shape[0] - margin):
+            for j in range(margin, expect_data.shape[1] - margin):
+                for k in range(margin, expect_data.shape[2] - margin):
                     if numpy.abs(expect_data[i, j, k] - regrid_data[i, j, k]) > delta:
                         mismatch_found = True
-                        print "expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
+                        print("expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
                               "lat = %5.1f, lev = %5.1f" % (expect_data[i, j, k], 
                               regrid_data[i, j, k], self.curv_center_lons[i][j][k], 
-                              self.curv_center_lats[i][j][k], self.curv_center_levs[i][j][k])
+                              self.curv_center_lats[i][j][k], self.curv_center_levs[i][j][k]))
         if mismatch_found:
             self.fail("data mismatch found for patch regridding")
 

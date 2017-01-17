@@ -2,6 +2,9 @@
 Returns parameter values for a specified probability distribution type
 that best describe the distribution of a given array of values.
 """
+
+from __future__ import print_function
+
 import math
 import numpy
 import pyferret
@@ -59,7 +62,7 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     fitparams = pyferret.stats.getfitparams(values, distribname, estparams)
     result[:] = resbdf
     if fitparams != None:
-        for k in xrange(len(fitparams)):
+        for k in range(len(fitparams)):
             result[k] = fitparams[k]
 
 #
@@ -83,8 +86,8 @@ if __name__ == "__main__":
     resbdf = numpy.array([-6666.0], dtype=numpy.float64)
     values = numpy.empty((1, ydimen, zdimen, 1, 1, 1), dtype=numpy.float64, order='F')
     index = 0
-    for j in xrange(ydimen):
-        for k in xrange(zdimen):
+    for j in range(ydimen):
+        for k in range(zdimen):
             if (index % 103) == 13:
                 values[0, j, k, 0, 0, 0] = inpbdfs[0]
             else:
@@ -101,5 +104,5 @@ if __name__ == "__main__":
         raise ValueError("Norm fit fail; expected params: %s; found %s" % (str(expected), str(result)))
 
     # All successful
-    print "Success"
+    print("Success")
 

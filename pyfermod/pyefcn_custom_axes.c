@@ -34,6 +34,7 @@
 
 #include <Python.h>
 #define PY_ARRAY_UNIQUE_SYMBOL pyferret_ARRAY_API
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #define NO_IMPORT_ARRAY
 #include <numpy/arrayobject.h>
 #include "pyferret.h"
@@ -63,7 +64,11 @@ void pyefcn_custom_axes(int id, char modname[], char errmsg[])
     /*
      * Import the user's Python module
      */
+#if PY_MAJOR_VERSION > 2
+    valobj = PyUnicode_FromString(modname);
+#else
     valobj = PyString_FromString(modname);
+#endif
     if ( valobj == NULL ) {
         PyErr_Clear();
         sprintf(errmsg, "Problems creating a Python string from the module name: %s", modname);
@@ -152,7 +157,11 @@ void pyefcn_custom_axes(int id, char modname[], char errmsg[])
             strcpy(unit_name, " ");
             if ( subseqlen > 3 ) {
                 itemobj = PySequence_Fast_GET_ITEM(subseqobj, (Py_ssize_t) 3); /* borrowed reference */
+#if PY_MAJOR_VERSION > 2
+                strptr = PyUnicode_AsUTF8(itemobj);
+#else
                 strptr = PyString_AsString(itemobj);
+#endif
                 if ( strptr == NULL ) {
                     PyErr_Clear();
                     Py_DECREF(subseqobj);

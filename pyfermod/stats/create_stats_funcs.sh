@@ -1,5 +1,7 @@
-#! /bin/env python2.6
+#! /bin/env python
 #
+
+from __future__ import print_function
 
 import os.path
 import scipy.stats
@@ -17,7 +19,7 @@ def create_script(scriptname, distribname, distriblongname, funcname, funcreturn
         line = line.replace("<distriblongname>", distriblongname)
         line = line.replace("<funcname>", funcname)
         line = line.replace("<funcreturn>", funcreturn)
-        print >>scriptfile, line,
+        print(line, end=" ", file=scriptfile)
     templatefile.close()
     scriptfile.close()
 

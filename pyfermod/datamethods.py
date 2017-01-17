@@ -3,9 +3,11 @@ Methods in pyferret for transferring data between the Ferret engine
 and Python.
 """
 
+from __future__ import print_function
+
 import numpy
 import numpy.ma
-import StringIO
+import io
 
 import libpyferret
 
@@ -57,7 +59,7 @@ def metastr(datadict):
         if (key != "data") and (key not in keylist):
             keylist.append(key)
     # create the metadata string using StringIO
-    strbuf = StringIO.StringIO()
+    strbuf = io.StringIO()
     for key in keylist:
         try:
             # make sure the key:value pair exists
@@ -65,7 +67,7 @@ def metastr(datadict):
             # just in case the key is not a string (for printing)
             keystr = str(key)
             if keystr == "axis_coords":
-                print >>strbuf, keystr + ":"
+                print(keystr + ":", file=strbuf)
                 for (idx, item) in enumerate(val):
                     # add the axis name (which will be present if coordinates
                     # are given) as a label for the axis coordinates
@@ -95,7 +97,7 @@ def metastr(datadict):
                     indent = " " * len(itemlabel)
                     for addstr in strlist[1:]:
                         itemstr += "\n" + indent + addstr
-                    print >>strbuf, itemstr
+                    print(itemstr, file=strbuf)
             elif keystr == "axis_types":
                 # add a translation of the axis type number
                 valstr = "("
@@ -118,10 +120,10 @@ def metastr(datadict):
                     elif item == libpyferret.AXISTYPE_NORMAL:
                         valstr += "=unused"
                 valstr += ")"
-                print >>strbuf, keystr + ": " + valstr
+                print(keystr + ": " + valstr, file=strbuf)
             elif keystr == "missing_value":
                 # print the one value in the missing value array
-                print >>strbuf, keystr + ": " + str(val[0])
+                print(keystr + ": " + str(val[0]), file=strbuf)
             else:
                 # just print as "key: value", except
                 # adjust the subsequent-line-indent if multiple lines
@@ -130,7 +132,7 @@ def metastr(datadict):
                 indent = " " * (len(keystr) + 2)
                 for addstr in strlist[1:]:
                     valstr += "\n" + indent + addstr
-                print >>strbuf, keystr + ": " + valstr
+                print(keystr + ": " + valstr, file=strbuf)
         except KeyError:
             # known key not present - ignore
             pass
@@ -218,7 +220,7 @@ def getstrdata(name):
     axis_coords = vals[5]
     # A custom axis could be standard axis that is not in Ferret's expected order,
     # so check the units
-    for k in xrange(libpyferret.MAX_FERRET_NDIM):
+    for k in range(libpyferret.MAX_FERRET_NDIM):
         if axis_types[k] == libpyferret.AXISTYPE_CUSTOM:
             uc_units = axis_units[k].upper()
             if uc_units in _UC_LONGITUDE_UNITS:
@@ -313,7 +315,7 @@ def getdata(name, create_mask=True):
     axis_coords = vals[6]
     # A custom axis could be standard axis that is not in Ferret's expected order,
     # so check the units
-    for k in xrange(libpyferret.MAX_FERRET_NDIM):
+    for k in range(libpyferret.MAX_FERRET_NDIM):
         if axis_types[k] == libpyferret.AXISTYPE_CUSTOM:
             uc_units = axis_units[k].upper()
             if uc_units in _UC_LONGITUDE_UNITS:
@@ -455,7 +457,7 @@ def putdata(datavar_dict, axis_pos=None):
     if given_axis_types:
         if len(given_axis_types) > libpyferret.MAX_FERRET_NDIM:
             raise ValueError("More than %d axes (in the types) is not supported in Ferret at this time" % libpyferret.MAX_FERRET_NDIM)
-        for k in xrange(len(given_axis_types)):
+        for k in range(len(given_axis_types)):
             axis_types[k] = given_axis_types[k]
     #
     # axis names
@@ -464,7 +466,7 @@ def putdata(datavar_dict, axis_pos=None):
     if given_axis_names:
         if len(given_axis_names) > libpyferret.MAX_FERRET_NDIM:
             raise ValueError("More than %d axes (in the names) is not supported in Ferret at this time" % libpyferret.MAX_FERRET_NDIM)
-        for k in xrange(len(given_axis_names)):
+        for k in range(len(given_axis_names)):
             axis_names[k] = given_axis_names[k]
     #
     # axis units
@@ -473,7 +475,7 @@ def putdata(datavar_dict, axis_pos=None):
     if given_axis_units:
         if len(given_axis_units) > libpyferret.MAX_FERRET_NDIM:
             raise ValueError("More than %d axes (in the units) is not supported in Ferret at this time" % libpyferret.MAX_FERRET_NDIM)
-        for k in xrange(len(given_axis_units)):
+        for k in range(len(given_axis_units)):
             axis_units[k] = given_axis_units[k]
     # axis coordinates
     axis_coords = [ None ] * libpyferret.MAX_FERRET_NDIM
@@ -481,7 +483,7 @@ def putdata(datavar_dict, axis_pos=None):
     if given_axis_coords:
         if len(given_axis_coords) > libpyferret.MAX_FERRET_NDIM:
             raise ValueError("More than %d axes (in the coordinates) is not supported in Ferret at this time" % libpyferret.MAX_FERRET_NDIM)
-        for k in xrange(len(given_axis_coords)):
+        for k in range(len(given_axis_coords)):
             axis_coords[k] = given_axis_coords[k]
     #
     # data array
@@ -493,7 +495,7 @@ def putdata(datavar_dict, axis_pos=None):
         shape = datavar.shape
         if len(shape) > libpyferret.MAX_FERRET_NDIM:
             raise ValueError("More than %d axes (in the data) is not supported in Ferret at this time" % libpyferret.MAX_FERRET_NDIM)
-        for k in xrange(len(shape)):
+        for k in range(len(shape)):
             if (shape[k] > 1) and (axis_types[k] == libpyferret.AXISTYPE_NORMAL):
                 axis_types[k] = libpyferret.AXISTYPE_ABSTRACT
     except AttributeError:
@@ -501,7 +503,7 @@ def putdata(datavar_dict, axis_pos=None):
     #
     # assign any defaults on the axis information not given,
     # and make a copy of the axis coordinates (to ensure they are well-behaved)
-    for k in xrange(libpyferret.MAX_FERRET_NDIM):
+    for k in range(libpyferret.MAX_FERRET_NDIM):
         if axis_types[k] == libpyferret.AXISTYPE_LONGITUDE:
             if not axis_units[k]:
                 axis_units[k] = "DEGREES_E"
@@ -568,7 +570,7 @@ def putdata(datavar_dict, axis_pos=None):
     else:
         ferr_axis = [ -1 ] * libpyferret.MAX_FERRET_NDIM
         # assign positions of longitude/latitude/level/time
-        for k in xrange(len(axis_types)):
+        for k in range(len(axis_types)):
             if axis_types[k] == libpyferret.AXISTYPE_LONGITUDE:
                 if not libpyferret.X_AXIS in ferr_axis:
                     ferr_axis[k] = libpyferret.X_AXIS
@@ -617,7 +619,7 @@ def putdata(datavar_dict, axis_pos=None):
     #
     # get the data as an ndarray of MAX_FERRET_NDIM dimensions
     # adding new axes still reference the original data array - just creates new shape and stride objects
-    for k in xrange(len(shape), libpyferret.MAX_FERRET_NDIM):
+    for k in range(len(shape), libpyferret.MAX_FERRET_NDIM):
         data = data[..., numpy.newaxis]
     #
     # swap data axes and axis information to give (X_AXIS, Y_AXIS, Z_AXIS, T_AXIS, E_AXIS, F_AXIS) axes
@@ -716,7 +718,7 @@ def get(name, create_mask=True):
     axis_coords = data_dict["axis_coords"]
     # create the axis list for this variable
     var_axes = [ ]
-    for k in xrange(libpyferret.MAX_FERRET_NDIM):
+    for k in range(libpyferret.MAX_FERRET_NDIM):
         if axis_types[k] == libpyferret.AXISTYPE_LONGITUDE:
             newaxis = cdms2.createAxis(axis_coords[k], id=axis_names[k])
             newaxis.units = axis_units[k]
@@ -736,7 +738,7 @@ def get(name, create_mask=True):
             # create the time axis from cdtime.comptime (component time) objects
             time_coords = axis_coords[k]
             timevals = [ ]
-            for t in xrange(time_coords.shape[0]):
+            for t in range(time_coords.shape[0]):
                 day = time_coords[t, libpyferret.TIMEARRAY_DAYINDEX]
                 month = time_coords[t, libpyferret.TIMEARRAY_MONTHINDEX]
                 year = time_coords[t, libpyferret.TIMEARRAY_YEARINDEX]
@@ -781,7 +783,7 @@ def get(name, create_mask=True):
                     # use the relative time unit as given
                     relunit = " ".join(lc_vals)
                 timevals = [ ]
-                for t in xrange(axis_coords[k].shape[0]):
+                for t in range(axis_coords[k].shape[0]):
                     dtval = cdtime.reltime(axis_coords[k][t], relunit)
                     timevals.append(dtval)
                 newaxis = cdms2.createAxis(timevals, id=axis_names[k])
@@ -900,7 +902,7 @@ def put(datavar, axis_pos=None):
     axis_names = [ "" ] * libpyferret.MAX_FERRET_NDIM
     axis_units = [ "" ] * libpyferret.MAX_FERRET_NDIM
     axis_coords = [ None ] * libpyferret.MAX_FERRET_NDIM
-    for k in xrange(len(axis_list)):
+    for k in range(len(axis_list)):
         #
         # get the information for this axis
         axis = axis_list[k]
@@ -926,7 +928,7 @@ def put(datavar, axis_pos=None):
             # try to create a time axis reading the values as cdtime comptime objects
             try:
                 time_coords = numpy.empty((len(axis_data),6), dtype=numpy.int32, order="C")
-                for t in xrange(len(axis_data)):
+                for t in range(len(axis_data)):
                     tval = axis_data[t]
                     time_coords[t, libpyferret.TIMEARRAY_DAYINDEX] = tval.day
                     time_coords[t, libpyferret.TIMEARRAY_MONTHINDEX] = tval.month
@@ -956,12 +958,12 @@ def put(datavar, axis_pos=None):
             # if not comptime objects, assume reltime objects - create as a custom axis
             if axis_types[k] == libpyferret.AXISTYPE_CUSTOM:
                 time_coords = numpy.empty((len(axis_data),), dtype=numpy.float64)
-                for t in xrange(len(axis_data)):
+                for t in range(len(axis_data)):
                     time_coords[t] = axis_data[t].value
                 axis_coords[k] = timecoords
                 # assign axis_units as the reltime units - makes sure all are the same
                 axis_units[k] = axis_data[0].units
-                for t in xrange(1, len(axis_data)):
+                for t in range(1, len(axis_data)):
                     if axis_data[t].units != axis_units[k]:
                         raise ValueError("Relative time axis does not have a consistent start point")
         #

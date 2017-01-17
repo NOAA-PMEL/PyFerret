@@ -35,7 +35,7 @@ class FerGrid(object):
         self._axes = [ None ] * pyferret.MAX_FERRET_NDIM
         if axes:
             try:
-                for k in xrange(len(axes)):
+                for k in range(len(axes)):
                     ax = axes[k]
                     if ax:
                         if not isinstance(ax, pyferret.FerAxis):
@@ -45,7 +45,7 @@ class FerGrid(object):
                 raise TypeError('axes is not a sequence type')
             except IndexError:
                 raise ValueError('more than %d axes specified' % pyferret.MAX_FERRET_NDIM)
-        for k in xrange(len(self._axes)):
+        for k in range(len(self._axes)):
             if self._axes[k] is None:
                 self._axes[k] = pyferret.FerAxis(axtype=pyferret.AXISTYPE_NORMAL)
 
@@ -56,7 +56,7 @@ class FerGrid(object):
         '''
         # Not elegant, but will do
         infostr = "FerGrid(axes=[\n"
-        for k in xrange(len(self._axes)):
+        for k in range(len(self._axes)):
             infostr += "    " + repr(self._axes[k]) + ",\n"
         infostr += "], name='" + self._gridname + "')"
         return infostr
@@ -164,7 +164,7 @@ class FerGrid(object):
             if not isinstance(newax, pyferret.FerAxis):
                 raise ValueError('newax is not valid (not a FerAxis)')
             if (newaxidx is None) and (newax.getaxtype() != pyferret.AXISTYPE_NORMAL):
-                for k in xrange(len(self._axes)):
+                for k in range(len(self._axes)):
                     if self._axes[k].getaxtype() == newax.getaxtype():
                         newaxidx = k
                         break

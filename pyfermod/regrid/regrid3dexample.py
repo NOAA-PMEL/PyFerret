@@ -5,6 +5,9 @@ and also serves as a coding example of using this class.
 @author: Karl Smith
 '''
 
+from __future__ import print_function
+
+import sys
 import numpy
 import ESMP
 from esmpcontrol import ESMPControl
@@ -381,33 +384,36 @@ def printDiffs(grid_lons, grid_lats, grid_depths, undef_val, max_negl,
     for (_, lon, lat, depth, expect, found) in diff_list:
         if expect == undef_val:
             num_not_undef += 1
-            print "lon = %#7.3f, lat = %7.3f, depth = %7.2f, expect =  undef, " \
-                  "found = %#6.3f" % (lon, lat, depth, found)
+            print("lon = %#7.3f, lat = %7.3f, depth = %7.2f, expect =  undef, " \
+                  "found = %#6.3f" % (lon, lat, depth, found))
         elif found == undef_val:
             num_undef += 1
             # print "lon = %#7.3f, lat = %7.3f, depth = %7.2f, expect = %#6.3f, " \
             #       "found =  undef" % (lon, lat, depth, expect)
         else:
             num_diff += 1
-            print "lon = %#7.3f, lat = %7.3f, depth = %7.2f, expect = %#6.3f, " \
+            print("lon = %#7.3f, lat = %7.3f, depth = %7.2f, expect = %#6.3f, " \
                   "found = %#6.3f, diff = %#6.3f" \
-                  % (lon, lat, depth, expect, found, found - expect)
-    print "%3d undefined when defined might be expected" % num_undef
-    print "%3d with absolute difference > %#.3f" % (num_diff, max_negl)
-    print "%3d defined when undefined expected" % num_not_undef
-    print "%3d values in the grid" \
-            % (expect_data.shape[0] * expect_data.shape[1] * expect_data.shape[2])
+                  % (lon, lat, depth, expect, found, found - expect))
+    print("%3d undefined when defined might be expected" % num_undef)
+    print("%3d with absolute difference > %#.3f" % (num_diff, max_negl))
+    print("%3d defined when undefined expected" % num_not_undef)
+    print("%3d values in the grid" \
+            % (expect_data.shape[0] * expect_data.shape[1] * expect_data.shape[2]))
 
 
 if __name__ == '__main__':
     try:
         while True:
-            print 'cw2r: curvilinear with corners to rectilinear'
-            print 'co2r: curvilinear without corners to rectilinear'
-            print 'r2cw: rectilinear to curvilinear with corners'
-            print 'r2co: rectilinear to curvilinear without corners'
-            print 'Ctrl-D to quit'
-            direction = raw_input('Regrid test to run? ')
+            print('cw2r: curvilinear with corners to rectilinear')
+            print('co2r: curvilinear without corners to rectilinear')
+            print('r2cw: rectilinear to curvilinear with corners')
+            print('r2co: rectilinear to curvilinear without corners')
+            print('Ctrl-D to quit')
+            if sys.version_info.major == 2:
+                direction = raw_input('Regrid test to run? ')
+            else:
+                direction = input('Regrid test to run? ')
             direction = direction.strip().lower()
             if direction in ('cw2r', 'co2r', 'r2cw', 'r2co'):
                 break
@@ -460,11 +466,11 @@ if __name__ == '__main__':
 
     if direction in ('cw2r', 'co2r'):
 
-        print ""
+        print("")
         if direction == 'cw2r':
-            print "Examining rectilinear results from curvilinear with corners"
+            print("Examining rectilinear results from curvilinear with corners")
         else:
-            print "Examining rectilinear results from curvilinear without corners"
+            print("Examining rectilinear results from curvilinear without corners")
 
         # Create the curvilinear source field
         regridder.assignCurvField(curv_data)
@@ -492,8 +498,8 @@ if __name__ == '__main__':
             # Corners required for this method
             rect_regrid_data = regridder.regridCurvToRect(undef_val, ESMP.ESMP_REGRIDMETHOD_CONSERVE)
             # Print the differences between the expected and regrid data
-            print ""
-            print "analytic (expect) versus conserve regridded (found) differences"
+            print("")
+            print("analytic (expect) versus conserve regridded (found) differences")
             printDiffs(rect_3d_center_lons,
                        rect_3d_center_lats,
                        rect_3d_center_depths,
@@ -504,8 +510,8 @@ if __name__ == '__main__':
         # Regrid from curvilinear to rectilinear using the bilinear method
         rect_regrid_data = regridder.regridCurvToRect(undef_val, ESMP.ESMP_REGRIDMETHOD_BILINEAR)
         # Print the differences between the expected and regrid data
-        print ""
-        print "analytic (expect) versus bilinear regridded (found) differences"
+        print("")
+        print("analytic (expect) versus bilinear regridded (found) differences")
         printDiffs(rect_3d_center_lons,
                    rect_3d_center_lats,
                    rect_3d_center_depths,
@@ -516,8 +522,8 @@ if __name__ == '__main__':
         # Regrid from curvilinear to rectilinear using the patch method
         rect_regrid_data = regridder.regridCurvToRect(undef_val, ESMP.ESMP_REGRIDMETHOD_PATCH)
         # Print the differences between the expected and regrid data
-        print ""
-        print "analytic (expect) versus patch regridded (found) differences"
+        print("")
+        print("analytic (expect) versus patch regridded (found) differences")
         printDiffs(rect_3d_center_lons,
                    rect_3d_center_lats,
                    rect_3d_center_depths,
@@ -527,11 +533,11 @@ if __name__ == '__main__':
 
     elif direction in ('r2cw', 'r2co'):
 
-        print ""
+        print("")
         if direction == 'r2cw':
-            print "Examining curvilinear with corners results from rectilinear"
+            print("Examining curvilinear with corners results from rectilinear")
         else:
-            print "Examining curvilinear without corners results from rectilinear"
+            print("Examining curvilinear without corners results from rectilinear")
 
         # Create the rectilinear source field
         regridder.assignRectField(rect_data)
@@ -544,8 +550,8 @@ if __name__ == '__main__':
             # Corners required for this method
             curv_regrid_data = regridder.regridRectToCurv(undef_val, ESMP.ESMP_REGRIDMETHOD_CONSERVE)
             # Print the differences between the expected and regrid data
-            print ""
-            print "analytic (expect) versus conserve regridded (found) differences"
+            print("")
+            print("analytic (expect) versus conserve regridded (found) differences")
             printDiffs(curv_center_lons[:,:,1:-1],
                        curv_center_lats[:,:,1:-1],
                        curv_center_depths[:,:,1:-1],
@@ -556,8 +562,8 @@ if __name__ == '__main__':
         # Regrid from rectilinear to curvilinear using the bilinear method
         curv_regrid_data = regridder.regridRectToCurv(undef_val, ESMP.ESMP_REGRIDMETHOD_BILINEAR)
         # Print the differences between the expected and regrid data
-        print ""
-        print "analytic (expect) versus bilinear regridded (found) differences"
+        print("")
+        print("analytic (expect) versus bilinear regridded (found) differences")
         printDiffs(curv_center_lons[:,:,1:-1],
                    curv_center_lats[:,:,1:-1],
                    curv_center_depths[:,:,1:-1],
@@ -568,8 +574,8 @@ if __name__ == '__main__':
         # Regrid from rectilinear to curvilinear using the patch method
         curv_regrid_data = regridder.regridRectToCurv(undef_val, ESMP.ESMP_REGRIDMETHOD_PATCH)
         # Print the differences between the expected and regrid data
-        print ""
-        print "analytic (expect) versus patch regridded (found) differences"
+        print("")
+        print("analytic (expect) versus patch regridded (found) differences")
         printDiffs(curv_center_lons[:,:,1:-1],
                    curv_center_lats[:,:,1:-1],
                    curv_center_depths[:,:,1:-1],

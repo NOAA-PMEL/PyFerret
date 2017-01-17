@@ -34,6 +34,7 @@
 
 #include <Python.h>
 #define PY_ARRAY_UNIQUE_SYMBOL pyferret_ARRAY_API
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>
 
 #include <ctype.h>
@@ -315,7 +316,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     }
 
     /* Import the function-pointer table for the PyArray_* functions */
-    import_array1(NULL);
+    import_array();
 
     /* Parse the arguments, checking if an Exception was raised */
     if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|dO!O!O!O!sO!O!O!O!O!",
@@ -426,7 +427,11 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
         turnoff_verify_(&status);
 
     /* Get the PyObject representing the pyferret module */
+#if PY_MAJOR_VERSION > 2
+    modulename = PyUnicode_FromString("pyferret");
+#else
     modulename = PyString_FromString("pyferret");
+#endif
     if ( modulename == NULL ) {
         return NULL;
     }
@@ -437,7 +442,11 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     }
 
     /* Get the PyObject representing the pyferret.graphbind module */
+#if PY_MAJOR_VERSION > 2
+    modulename = PyUnicode_FromString("pyferret.graphbind");
+#else
     modulename = PyString_FromString("pyferret.graphbind");
+#endif
     if ( modulename == NULL ) {
         Py_DECREF(pyferret_module_pyobject);
         return NULL;
@@ -739,31 +748,31 @@ static char pyferretGetDataDocstring[] =
 
 static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
 {
-    static char *argNames[] = {"name", NULL};
-    char        *name;
-    int          lendataname;
-    char         dataname[1024];
-    int          arraystart;
-    int          memlo[MAX_FERRET_NDIM], memhi[MAX_FERRET_NDIM];
-    int          steplo[MAX_FERRET_NDIM], stephi[MAX_FERRET_NDIM], incr[MAX_FERRET_NDIM];
-    char         dataunit[64];
-    int          lendataunit;
-    AXISTYPE     axis_types[MAX_FERRET_NDIM];
-    char         errmsg[2112];
-    int          lenerrmsg;
-    double       badval;
-    int          i, j, k, l, m, n, q;
-    npy_intp     shape[MAX_FERRET_NDIM];
-    npy_intp     new_shape[2];
-    int          strides[MAX_FERRET_NDIM];
-    PyObject    *data_ndarray;
-    double      *ferdata;
-    double      *npydata;
-    PyObject    *badval_ndarray;
-    PyObject    *axis_coords[MAX_FERRET_NDIM];
-    char         axis_units[MAX_FERRET_NDIM][64];
-    char         axis_names[MAX_FERRET_NDIM][64];
-    CALTYPE      calendar_type;
+    static char   *argNames[] = {"name", NULL};
+    char          *name;
+    int            lendataname;
+    char           dataname[1024];
+    int            arraystart;
+    int            memlo[MAX_FERRET_NDIM], memhi[MAX_FERRET_NDIM];
+    int            steplo[MAX_FERRET_NDIM], stephi[MAX_FERRET_NDIM], incr[MAX_FERRET_NDIM];
+    char           dataunit[64];
+    int            lendataunit;
+    AXISTYPE       axis_types[MAX_FERRET_NDIM];
+    char           errmsg[2112];
+    int            lenerrmsg;
+    double         badval;
+    int            i, j, k, l, m, n, q;
+    npy_intp       shape[MAX_FERRET_NDIM];
+    npy_intp       new_shape[2];
+    int            strides[MAX_FERRET_NDIM];
+    PyArrayObject *data_ndarray;
+    double        *ferdata;
+    double        *npydata;
+    PyArrayObject *badval_ndarray;
+    PyArrayObject *axis_coords[MAX_FERRET_NDIM];
+    char           axis_units[MAX_FERRET_NDIM][64];
+    char           axis_names[MAX_FERRET_NDIM][64];
+    CALTYPE        calendar_type;
 
     /* If not initialized, raise a MemoryError */
     if ( ! ferretInitialized ) {
@@ -817,7 +826,7 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
         strides[k] *= incr[k];
 
     /* Create a new NumPy double ndarray (Fortran ordering) with the same shape */
-    data_ndarray = PyArray_EMPTY(MAX_FERRET_NDIM, shape, NPY_DOUBLE, 1);
+    data_ndarray = (PyArrayObject *) PyArray_EMPTY(MAX_FERRET_NDIM, shape, NPY_DOUBLE, 1);
     if ( data_ndarray == NULL ) {
         return NULL;
     }
@@ -851,7 +860,7 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
 
     /* Create a new NumPy float ndarray with the bad-data-flag value(s) */
     new_shape[0] = 1;
-    badval_ndarray = PyArray_SimpleNew(1, new_shape, NPY_DOUBLE);
+    badval_ndarray = (PyArrayObject *) PyArray_SimpleNew(1, new_shape, NPY_DOUBLE);
     if ( badval_ndarray == NULL ) {
        Py_DECREF(data_ndarray);
        return NULL;
@@ -868,7 +877,7 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
         case AXISTYPE_CUSTOM:
         case AXISTYPE_ABSTRACT:
             /* array of doubles, possibly with a units string */
-            axis_coords[k] = PyArray_SimpleNew(1, &(shape[k]), NPY_DOUBLE);
+            axis_coords[k] = (PyArrayObject *) PyArray_SimpleNew(1, &(shape[k]), NPY_DOUBLE);
             if ( axis_coords[k] == NULL ) {
                 while ( k > 0 ) {
                     k--;
@@ -900,7 +909,7 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
             /* array of 6-tuples of integers in C order, so: [N][6] in C or (6,N) in Fortran */
             new_shape[0] = shape[k];
             new_shape[1] = 6;
-            axis_coords[k] = PyArray_SimpleNew(2, new_shape, NPY_INT);
+            axis_coords[k] = (PyArrayObject *) PyArray_SimpleNew(2, new_shape, NPY_INT);
             if ( axis_coords[k] == NULL ) {
                 while ( k > 0 ) {
                     k--;
@@ -963,7 +972,7 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
         case AXISTYPE_NORMAL:
             /* axis normal to the results - no coordinates */
             Py_INCREF(Py_None);
-            axis_coords[k] = Py_None;
+            axis_coords[k] = (PyArrayObject *) Py_None;
             axis_units[k][0] = '\0';
             axis_names[k][0] = '\0';
             break;
@@ -1028,35 +1037,35 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
 {
     static char *argNames[] = {"codename", "title", "data", "bdfval", "units", "dset",
                                "axis_types", "axis_names", "axis_units", "axis_coords", NULL};
-    char        *codename;
-    char        *title;
-    PyObject    *data_ndarray;
-    PyObject    *bdfval_ndarray;
-    char        *units;
-    char        *dset;
-    PyObject    *axis_types_tuple;
-    PyObject    *axis_names_tuple;
-    PyObject    *axis_units_tuple;
-    PyObject    *axis_coords_tuple;
-    double       bdfval;
-    int          k;
-    PyObject    *seqitem;
-    AXISTYPE     axis_types[MAX_FERRET_NDIM];
-    char        *strptr;
-    char         axis_names[MAX_FERRET_NDIM][64];
-    char         axis_units[MAX_FERRET_NDIM][64];
-    int          num_coords[MAX_FERRET_NDIM];
-    void        *axis_coords[MAX_FERRET_NDIM];
-    CALTYPE      calendar_type;
-    int          axis_nums[MAX_FERRET_NDIM];
-    int          axis_starts[MAX_FERRET_NDIM];
-    int          axis_ends[MAX_FERRET_NDIM];
-    int          len_codename;
-    int          len_title;
-    int          len_units;
-    int          len_dset;
-    char         errmsg[2048];
-    int          len_errmsg;
+    char          *codename;
+    char          *title;
+    PyArrayObject *data_ndarray;
+    PyArrayObject *bdfval_ndarray;
+    char          *units;
+    char          *dset;
+    PyObject      *axis_types_tuple;
+    PyObject      *axis_names_tuple;
+    PyObject      *axis_units_tuple;
+    PyObject      *axis_coords_tuple;
+    double         bdfval;
+    int            k;
+    PyObject      *seqitem;
+    AXISTYPE       axis_types[MAX_FERRET_NDIM];
+    char          *strptr;
+    char           axis_names[MAX_FERRET_NDIM][64];
+    char           axis_units[MAX_FERRET_NDIM][64];
+    int            num_coords[MAX_FERRET_NDIM];
+    void          *axis_coords[MAX_FERRET_NDIM];
+    CALTYPE        calendar_type;
+    int            axis_nums[MAX_FERRET_NDIM];
+    int            axis_starts[MAX_FERRET_NDIM];
+    int            axis_ends[MAX_FERRET_NDIM];
+    int            len_codename;
+    int            len_title;
+    int            len_units;
+    int            len_dset;
+    char           errmsg[2048];
+    int            len_errmsg;
 
     /* If not initialized, raise a MemoryError */
     if ( ! ferretInitialized ) {
@@ -1072,15 +1081,15 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
 
     /* PyArray_Size returns 0 if the object is not an appropriate type */
     /* ISFARRAY_RO checks if it is F-contiguous, aligned, and in machine byte-order */
-    if ( (PyArray_Size(data_ndarray) < 1) || (PyArray_TYPE(data_ndarray) != NPY_DOUBLE) ||
-         (! PyArray_ISFARRAY_RO(data_ndarray)) || (! PyArray_CHKFLAGS(data_ndarray, NPY_OWNDATA)) ) {
+    if ( (PyArray_Size((PyObject *) data_ndarray) < 1) || (PyArray_TYPE(data_ndarray) != NPY_DOUBLE) ||
+         (! PyArray_ISFARRAY_RO(data_ndarray)) || (! PyArray_CHKFLAGS(data_ndarray, NPY_ARRAY_OWNDATA)) ) {
         PyErr_SetString(PyExc_ValueError, "data is not an appropriate ndarray of type float64");
         return NULL;
     }
 
     /* PyArray_Size returns 0 if the object is not an appropriate type */
     /* ISBEHAVED_RO checks if it is aligned and in machine byte-order */
-    if ( (PyArray_Size(bdfval_ndarray) < 1) || (PyArray_TYPE(bdfval_ndarray) != NPY_DOUBLE) ||
+    if ( (PyArray_Size((PyObject *) bdfval_ndarray) < 1) || (PyArray_TYPE(bdfval_ndarray) != NPY_DOUBLE) ||
          (! PyArray_ISBEHAVED_RO(bdfval_ndarray)) ) {
         PyErr_SetString(PyExc_ValueError, "bdfval is not an appropriate ndarray of type float64");
         return NULL;
@@ -1100,7 +1109,11 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
     }
     for (k = 0; k < MAX_FERRET_NDIM; k++) {
         seqitem = PySequence_Fast_GET_ITEM(axis_types_tuple, k); /* borrowed reference */
+#if PY_MAJOR_VERSION > 2
+        axis_types[k] = (int) PyLong_AsLong(seqitem);
+#else
         axis_types[k] = (int) PyInt_AsLong(seqitem);
+#endif
         if ( (axis_types[k] != AXISTYPE_LONGITUDE) &&
              (axis_types[k] != AXISTYPE_LATITUDE) &&
              (axis_types[k] != AXISTYPE_LEVEL) &&
@@ -1127,7 +1140,11 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
     }
     for (k = 0; k < MAX_FERRET_NDIM; k++) {
         seqitem = PySequence_Fast_GET_ITEM(axis_names_tuple, k); /* borrowed reference */
+#if PY_MAJOR_VERSION > 2
+        strptr = PyUnicode_AsUTF8(seqitem);
+#else
         strptr = PyString_AsString(seqitem);
+#endif
         if ( strptr == NULL ) {
             PyErr_Clear();
             PyErr_SetString(PyExc_ValueError, "Invalid axis_names item");
@@ -1151,7 +1168,11 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
     }
     for (k = 0; k < MAX_FERRET_NDIM; k++) {
         seqitem = PySequence_Fast_GET_ITEM(axis_units_tuple, k); /* borrowed reference */
+#if PY_MAJOR_VERSION > 2
+        strptr = PyUnicode_AsUTF8(seqitem);
+#else
         strptr = PyString_AsString(seqitem);
+#endif
         if ( strptr == NULL ) {
             PyErr_Clear();
             PyErr_SetString(PyExc_ValueError, "Invalid axis_units item");
@@ -1190,17 +1211,17 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
                 Py_DECREF(axis_coords_tuple);
                 return NULL;
             }
-            if ( PyArray_TYPE(seqitem) != NPY_DOUBLE ) {
+            if ( PyArray_TYPE((PyArrayObject *) seqitem) != NPY_DOUBLE ) {
                 PyErr_SetString(PyExc_ValueError, "a standard axis of axis_coords has an invalid type");
                 Py_DECREF(axis_coords_tuple);
                 return NULL;
             }
-            if ( ! PyArray_ISCARRAY_RO(seqitem) ) {
+            if ( ! PyArray_ISCARRAY_RO((PyArrayObject *) seqitem) ) {
                 PyErr_SetString(PyExc_ValueError, "a standard axis of axis_coords is not an appropriate ndarray");
                 Py_DECREF(axis_coords_tuple);
                 return NULL;
             }
-            axis_coords[k] = (int *)PyArray_DATA(seqitem);
+            axis_coords[k] = (int *)PyArray_DATA((PyArrayObject *) seqitem);
             get_axis_num_(&(axis_nums[k]), &(axis_starts[k]), &(axis_ends[k]), axis_names[k],
                           axis_units[k], axis_coords[k], &(num_coords[k]), &(axis_types[k]),
                           errmsg, &len_errmsg, strlen(axis_names[k]), strlen(axis_units[k]), 2048);
@@ -1221,13 +1242,13 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
                 Py_DECREF(axis_coords_tuple);
                 return NULL;
             }
-            if ( (PyArray_TYPE(seqitem) != NPY_INT) &&
-                 ((PyArray_TYPE(seqitem) != NPY_LONG) || (NPY_SIZEOF_LONG != 4)) ) {
+            if ( (PyArray_TYPE((PyArrayObject *) seqitem) != NPY_INT) &&
+                 ((PyArray_TYPE((PyArrayObject *) seqitem) != NPY_LONG) || (NPY_SIZEOF_LONG != 4)) ) {
                 PyErr_SetString(PyExc_ValueError, "an absolute-time axis of axis_coords has an invalid type");
                 Py_DECREF(axis_coords_tuple);
                 return NULL;
             }
-            if ( ! PyArray_ISCARRAY_RO(seqitem) ) {
+            if ( ! PyArray_ISCARRAY_RO((PyArrayObject *) seqitem) ) {
                 PyErr_SetString(PyExc_ValueError, "an absolute-time axis of axis_coords is not an appropriate ndarray");
                 Py_DECREF(axis_coords_tuple);
                 return NULL;
@@ -1256,7 +1277,7 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
                 Py_DECREF(axis_coords_tuple);
                 return NULL;
             }
-            axis_coords[k] = (int *)PyArray_DATA(seqitem);
+            axis_coords[k] = (int *)PyArray_DATA((PyArrayObject *) seqitem);
             get_time_axis_num_(&(axis_nums[k]), &(axis_starts[k]), &(axis_ends[k]),
                                axis_names[k], &calendar_type, axis_coords[k], &(num_coords[k]),
                                errmsg, &len_errmsg, strlen(axis_names[k]), 2048);
@@ -1350,15 +1371,15 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
     npy_intp       shape[MAX_FERRET_NDIM];
     npy_intp       new_shape[2];
     int            strides[MAX_FERRET_NDIM];
-    PyObject      *data_ndarray;
+    PyArrayObject *data_ndarray;
     void         **ferdata;
     char          *strptr;
     int            maxstrlen;
     int            thisstrlen;
     PyArray_Descr *strarraydescript;
     char          *npydata;
-    PyObject      *badval_ndarray;
-    PyObject      *axis_coords[MAX_FERRET_NDIM];
+    PyArrayObject *badval_ndarray;
+    PyArrayObject *axis_coords[MAX_FERRET_NDIM];
     char           axis_units[MAX_FERRET_NDIM][64];
     char           axis_names[MAX_FERRET_NDIM][64];
     CALTYPE        calendar_type;
@@ -1450,7 +1471,7 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
     /* Create a new NumPy String ndarray (Fortran ordering) with the same shape */
     strarraydescript = PyArray_DescrNewFromType(NPY_STRING);
     strarraydescript->elsize = maxstrlen;
-    data_ndarray = PyArray_Empty(MAX_FERRET_NDIM, shape, strarraydescript, 1);
+    data_ndarray = (PyArrayObject *) PyArray_Empty(MAX_FERRET_NDIM, shape, strarraydescript, 1);
     if ( data_ndarray == NULL ) {
         return NULL;
     }
@@ -1491,7 +1512,7 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
     new_shape[0] = 1;
     strarraydescript = PyArray_DescrNewFromType(NPY_STRING);
     strarraydescript->elsize = maxstrlen;
-    badval_ndarray = PyArray_Empty(1, new_shape, strarraydescript, 0);
+    badval_ndarray = (PyArrayObject *) PyArray_Empty(1, new_shape, strarraydescript, 0);
     if ( badval_ndarray == NULL ) {
        Py_DECREF(data_ndarray);
        return NULL;
@@ -1509,7 +1530,7 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
         case AXISTYPE_CUSTOM:
         case AXISTYPE_ABSTRACT:
             /* array of doubles, possibly with a units string */
-            axis_coords[k] = PyArray_SimpleNew(1, &(shape[k]), NPY_DOUBLE);
+            axis_coords[k] = (PyArrayObject *) PyArray_SimpleNew(1, &(shape[k]), NPY_DOUBLE);
             if ( axis_coords[k] == NULL ) {
                 while ( k > 0 ) {
                     k--;
@@ -1541,7 +1562,7 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
             /* array of 6-tuples of integers in C order, so: [N][6] in C or (6,N) in Fortran */
             new_shape[0] = shape[k];
             new_shape[1] = 6;
-            axis_coords[k] = PyArray_SimpleNew(2, new_shape, NPY_INT);
+            axis_coords[k] = (PyArrayObject *) PyArray_SimpleNew(2, new_shape, NPY_INT);
             if ( axis_coords[k] == NULL ) {
                 while ( k > 0 ) {
                     k--;
@@ -1604,7 +1625,7 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
         case AXISTYPE_NORMAL:
             /* axis normal to the results - no coordinates */
             Py_INCREF(Py_None);
-            axis_coords[k] = Py_None;
+            axis_coords[k] = (PyArrayObject *) Py_None;
             axis_units[k][0] = '\0';
             axis_names[k][0] = '\0';
             break;
@@ -1773,7 +1794,7 @@ static PyObject *pyefcnGetAxisCoordinates(PyObject *self, PyObject *args, PyObje
     int               incr[EF_MAX_COMPUTE_ARGS][MAX_FERRET_NDIM];
     int               lo, hi;
     npy_intp          shape[1];
-    PyObject         *coords_ndarray;
+    PyArrayObject    *coords_ndarray;
 
     /* Parse the arguments, checking if an Exception was raised */
     if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "iii", argNames, &id, &arg, &axis) )
@@ -1828,7 +1849,7 @@ static PyObject *pyefcnGetAxisCoordinates(PyObject *self, PyObject *args, PyObje
             incr[arg][axis] = -1;
     }
     shape[0] = (Py_ssize_t) ((stephi[arg][axis] - steplo[arg][axis] + incr[arg][axis]) / incr[arg][axis]);
-    coords_ndarray = PyArray_SimpleNew(1, shape, NPY_DOUBLE);
+    coords_ndarray = (PyArrayObject *) PyArray_SimpleNew(1, shape, NPY_DOUBLE);
     if ( coords_ndarray == NULL ) {
         return NULL;
     }
@@ -1840,7 +1861,7 @@ static PyObject *pyefcnGetAxisCoordinates(PyObject *self, PyObject *args, PyObje
     axis++;
     ef_get_coordinates_(&id, &arg, &axis, &lo, &hi, (double *)PyArray_DATA(coords_ndarray));
 
-    return coords_ndarray;
+    return (PyObject *) coords_ndarray;
 }
 
 
@@ -1874,7 +1895,7 @@ static PyObject *pyefcnGetAxisBoxSizes(PyObject *self, PyObject *args, PyObject 
     int               incr[EF_MAX_COMPUTE_ARGS][MAX_FERRET_NDIM];
     int               lo, hi;
     npy_intp          shape[1];
-    PyObject         *sizes_ndarray;
+    PyArrayObject    *sizes_ndarray;
 
     /* Parse the arguments, checking if an Exception was raised */
     if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "iii", argNames, &id, &arg, &axis) )
@@ -1929,7 +1950,7 @@ static PyObject *pyefcnGetAxisBoxSizes(PyObject *self, PyObject *args, PyObject 
             incr[arg][axis] = -1;
     }
     shape[0] = (Py_ssize_t) ((stephi[arg][axis] - steplo[arg][axis] + incr[arg][axis]) / incr[arg][axis]);
-    sizes_ndarray = PyArray_SimpleNew(1, shape, NPY_DOUBLE);
+    sizes_ndarray = (PyArrayObject *) PyArray_SimpleNew(1, shape, NPY_DOUBLE);
     if ( sizes_ndarray == NULL ) {
         return NULL;
     }
@@ -1941,7 +1962,7 @@ static PyObject *pyefcnGetAxisBoxSizes(PyObject *self, PyObject *args, PyObject 
     axis++;
     ef_get_box_size_(&id, &arg, &axis, &lo, &hi, (double *)PyArray_DATA(sizes_ndarray));
 
-    return sizes_ndarray;
+    return (PyObject *) sizes_ndarray;
 }
 
 
@@ -1975,7 +1996,7 @@ static PyObject *pyefcnGetAxisBoxLimits(PyObject *self, PyObject *args, PyObject
     int               incr[EF_MAX_COMPUTE_ARGS][MAX_FERRET_NDIM];
     int               lo, hi;
     npy_intp          shape[1];
-    PyObject         *low_limits_ndarray, *high_limits_ndarray;
+    PyArrayObject    *low_limits_ndarray, *high_limits_ndarray;
 
     /* Parse the arguments, checking if an Exception was raised */
     if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "iii", argNames, &id, &arg, &axis) )
@@ -2030,11 +2051,11 @@ static PyObject *pyefcnGetAxisBoxLimits(PyObject *self, PyObject *args, PyObject
             incr[arg][axis] = -1;
     }
     shape[0] = (Py_ssize_t) ((stephi[arg][axis] - steplo[arg][axis] + incr[arg][axis]) / incr[arg][axis]);
-    low_limits_ndarray = PyArray_SimpleNew(1, shape, NPY_DOUBLE);
+    low_limits_ndarray = (PyArrayObject *) PyArray_SimpleNew(1, shape, NPY_DOUBLE);
     if ( low_limits_ndarray == NULL ) {
         return NULL;
     }
-    high_limits_ndarray = PyArray_SimpleNew(1, shape, NPY_DOUBLE);
+    high_limits_ndarray = (PyArrayObject *) PyArray_SimpleNew(1, shape, NPY_DOUBLE);
     if ( high_limits_ndarray == NULL ) {
         Py_DECREF(low_limits_ndarray);
         return NULL;
@@ -2206,6 +2227,7 @@ static PyObject *pyefcnGetArgOneVal(PyObject *self, PyObject *args, PyObject *kw
     double            float_val;
     PyObject         *valobj;
     char              str_val[2048];
+    int               valtype;
     int               k;
 
     /* Parse the arguments, checking if an Exception was raised */
@@ -2225,7 +2247,11 @@ static PyObject *pyefcnGetArgOneVal(PyObject *self, PyObject *args, PyObject *kw
     }
 
     /* Get the Python module (should already be imported) */
+#if PY_MAJOR_VERSION > 2
+    modname = PyUnicode_FromString(ef_ptr->path);
+#else
     modname = PyString_FromString(ef_ptr->path);
+#endif
     if ( modname == NULL )
         return NULL;
     usermod = PyImport_Import(modname);
@@ -2254,7 +2280,12 @@ static PyObject *pyefcnGetArgOneVal(PyObject *self, PyObject *args, PyObject *kw
         PyErr_SetString(PyExc_ValueError, "argtype is neither FLOAT_ONEVAL nor STRING_ONEVAL");
         return NULL;
     }
-    switch( (int) PyInt_AsLong(typeobj) ) {
+#if PY_MAJOR_VERSION > 2
+    valtype = (int) PyLong_AsLong(typeobj);
+#else
+    valtype = (int) PyInt_AsLong(typeobj);
+#endif
+    switch( valtype ) {
         case FLOAT_ONEVAL:
             k = arg + 1;
             ef_get_one_val_(&id, &k, &float_val);
@@ -2268,7 +2299,11 @@ static PyObject *pyefcnGetArgOneVal(PyObject *self, PyObject *args, PyObject *kw
             for (k = 2048; k > 0; k--)
                 if ( ! isspace(str_val[k-1]) )
                     break;
+#if PY_MAJOR_VERSION > 2
+            valobj = PyUnicode_FromStringAndSize(str_val, k);
+#else
             valobj = PyString_FromStringAndSize(str_val, k);
+#endif
             break;
         default:
             PyErr_Clear();   /* Just to be safe */
@@ -2299,19 +2334,13 @@ static struct PyMethodDef pyferretMethods[] = {
     {NULL, (PyCFunction) NULL, 0, NULL}
 };
 
-static char pyferretModuleDocstring[] =
-"An extension module enabling the use of Ferret from Python \n";
-
-/* For the libpyferret module, this function must be named initlibpyferret */
-PyMODINIT_FUNC initlibpyferret(void)
+/* Add constants to the libpyferret module */
+static void AddConstantsToPyFerret(PyObject *mod)
 {
     char names[64][32];
     int  values[64];
     int  numvals;
     int  k;
-
-    /* Create the module with the indicated methods */
-    PyObject *mod = Py_InitModule3("libpyferret", pyferretMethods, pyferretModuleDocstring);
 
     /* Add ferret parameter values */
     get_ferret_params_(names, values, &numvals);
@@ -2374,4 +2403,49 @@ PyMODINIT_FUNC initlibpyferret(void)
     /* Private parameter return value from libpyferret._run indicating the program should shut down */
     PyModule_AddIntConstant(mod, "_FERR_EXIT_PROGRAM", FERR_EXIT_PROGRAM);
 }
+
+static char pyferretModuleName[] = "libpyferret";
+
+static char pyferretModuleDocstring[] =
+"An extension module enabling the use of Ferret from Python \n";
+
+#if PY_MAJOR_VERSION > 2
+
+static struct PyModuleDef moduledef = {
+    PyModuleDef_HEAD_INIT,
+    pyferretModuleName,
+    pyferretModuleDocstring,
+    -1,
+    pyferretMethods,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
+PyMODINIT_FUNC PyInit_libpyferret(void)
+{
+    PyObject *mod = PyModule_Create(&moduledef);
+    if ( mod == NULL )
+        return NULL;
+
+    AddConstantsToPyFerret(mod);
+    return mod;
+}
+
+#else
+
+/* For the libpyferret module, this function must be named initlibpyferret */
+PyMODINIT_FUNC initlibpyferret(void)
+{
+    /* Create the module with the indicated methods */
+    PyObject *mod = Py_InitModule3(pyferretModuleName, pyferretMethods, pyferretModuleDocstring);
+    if ( mod == NULL )
+        return;
+
+    AddConstantsToPyFerret(mod);
+    return;
+}
+
+#endif
 

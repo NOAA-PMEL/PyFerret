@@ -10,6 +10,8 @@ raised by some methods in the EOFAnalysis class.
 @author: Karl M. Smith
 '''
 
+from __future__ import print_function
+
 import math
 import numpy
 import numpy.linalg
@@ -222,7 +224,7 @@ class EOFAnalysis(object):
             raise InvalidStateError('analyze method has not been called')
         # The fracsignifs are ordered from smallest to largest.
         # Optimized for the usual case where most EOFs are insignificant.
-        for k in xrange(len(self.__fracsignifs)):
+        for k in range(len(self.__fracsignifs)):
             if self.__fracsignifs[-(k+1)] < self.__minsignif:
                 return k
         return len(self.__fracsignifs)
@@ -495,8 +497,8 @@ if __name__ == '__main__':
     cosT = numpy.cos(months * numpy.pi / 6.0)
     sinT = numpy.sin(months * numpy.pi / 6.0)
 
-    print
-    print 'spacetime = [ cosT, sinT + 1 ]'
+    print()
+    print('spacetime = [ cosT, sinT + 1 ]')
     spacetimedata = numpy.matrix([cosT,
                                   sinT + 1.0]).T
     eofanal = EOFAnalysis(spacetimedata)
@@ -504,24 +506,24 @@ if __name__ == '__main__':
     defminsignif = eofanal.minsignif();
     eofanal.setminsignif(0.1)
     fracsignifs = eofanal.signiffracs()
-    print 'EOF fractional significances:'
-    print formatter.pformat(fracsignifs)
+    print('EOF fractional significances:')
+    print(formatter.pformat(fracsignifs))
     numeofs = eofanal.numeofs()
-    print 'Number of significant EOFs: %d' % numeofs
+    print('Number of significant EOFs: %d' % numeofs)
     totalcontrib = eofanal.datapiece(0)
-    for k in xrange(1, numeofs+1):
+    for k in range(1, numeofs+1):
         eofvec = eofanal.eofvec(k)
         sqnorm = numpy.dot(eofvec, eofvec)
-        print 'EOF %d has norm^2: %#.4f' % (k, sqnorm)
-        print formatter.pformat(eofvec)
+        print('EOF %d has norm^2: %#.4f' % (k, sqnorm))
+        print(formatter.pformat(eofvec))
         tafvec = eofanal.tafvec(k)
         sqnorm = numpy.dot(tafvec, tafvec)
-        print 'TAF %d has norm^2: %#.4f' % (k, sqnorm)
-        print formatter.pformat(tafvec)
+        print('TAF %d has norm^2: %#.4f' % (k, sqnorm))
+        print(formatter.pformat(tafvec))
         tafeof = numpy.outer(tafvec, eofvec) 
         contrib = eofanal.datapiece(k)
         if numpy.allclose(contrib, tafeof):
-            print 'datapiece(%d) all close to expected values' % k
+            print('datapiece(%d) all close to expected values' % k)
         else:
             raise ValueError(
                     'datapiece(%d):\n    expected\n%s\n    found\n%s' % \
@@ -530,7 +532,7 @@ if __name__ == '__main__':
         totalcontrib += contrib
         expdata = eofanal.dataexplained(k)
         if numpy.allclose(expdata, totalcontrib):
-            print 'dataexplained(%d) all close to expected values' % k
+            print('dataexplained(%d) all close to expected values' % k)
         else:
             raise ValueError(
                     'dataexplained(%d):\n    expected\n%s\n    found\n%s' % \
@@ -539,18 +541,18 @@ if __name__ == '__main__':
         datadeltas = numpy.array(numpy.abs(spacetimedata - expdata)).flatten()
         maxdiff = numpy.max(datadeltas)
         rmsdiff = math.sqrt(numpy.average(datadeltas * datadeltas))
-        print 'Max and RMS diff btwn data explained by %d most' % k
-        print '    influential EOFs and actual data: %#.8f, %#.8f' % \
-              (maxdiff, rmsdiff)
+        print('Max and RMS diff btwn data explained by %d most' % k)
+        print('    influential EOFs and actual data: %#.8f, %#.8f' % \
+              (maxdiff, rmsdiff))
     datadeltas = numpy.array(numpy.abs(spacetimedata - totalcontrib)).flatten()
     maxdiff = numpy.max(datadeltas)
     rmsdiff = math.sqrt(numpy.average(datadeltas * datadeltas))
-    print 'Max and RMS diff btwn sum of all significant'
-    print '    data pieces and actual data: %#.8f, %#.8f' % \
-          (maxdiff, rmsdiff)
+    print('Max and RMS diff btwn sum of all significant')
+    print('    data pieces and actual data: %#.8f, %#.8f' % \
+          (maxdiff, rmsdiff))
 
-    print
-    print 'spacetime = [ cosT * cosT, cosT * sinT + 1, cosT * sinT + 2, sinT * sinT + 3 ]'
+    print()
+    print('spacetime = [ cosT * cosT, cosT * sinT + 1, cosT * sinT + 2, sinT * sinT + 3 ]')
     spacetimedata = numpy.matrix([ cosT * cosT,
                                    cosT * sinT + 1.0,
                                    cosT * sinT + 2.0,
@@ -558,24 +560,24 @@ if __name__ == '__main__':
     eofanal = EOFAnalysis(spacetimedata)
     eofanal.analyze()
     fracsignifs = eofanal.signiffracs()
-    print 'EOF fractional significances:'
-    print formatter.pformat(fracsignifs)
+    print('EOF fractional significances:')
+    print(formatter.pformat(fracsignifs))
     numeofs = eofanal.numeofs()
-    print 'Number of significant EOFs: %d' % numeofs
+    print('Number of significant EOFs: %d' % numeofs)
     totalcontrib = eofanal.datapiece(0)
-    for k in xrange(1, numeofs+1):
+    for k in range(1, numeofs+1):
         eofvec = eofanal.eofvec(k)
         sqnorm = numpy.dot(eofvec, eofvec)
-        print 'EOF %d has norm^2: %#.4f' % (k, sqnorm)
-        print formatter.pformat(eofvec)
+        print('EOF %d has norm^2: %#.4f' % (k, sqnorm))
+        print(formatter.pformat(eofvec))
         tafvec = eofanal.tafvec(k)
         sqnorm = numpy.dot(tafvec, tafvec)
-        print 'TAF %d has norm^2: %#.4f' % (k, sqnorm)
-        print formatter.pformat(tafvec)
+        print('TAF %d has norm^2: %#.4f' % (k, sqnorm))
+        print(formatter.pformat(tafvec))
         tafeof = numpy.outer(tafvec, eofvec) 
         contrib = eofanal.datapiece(k)
         if numpy.allclose(contrib, tafeof):
-            print 'datapiece(%d) all close to expected values' % k
+            print('datapiece(%d) all close to expected values' % k)
         else:
             raise ValueError(
                     'datapiece(%d):\n    expected\n%s\n    found\n%s' % \
@@ -584,7 +586,7 @@ if __name__ == '__main__':
         totalcontrib += contrib
         expdata = eofanal.dataexplained(k)
         if numpy.allclose(expdata, totalcontrib):
-            print 'dataexplained(%d) all close to expected values' % k
+            print('dataexplained(%d) all close to expected values' % k)
         else:
             raise ValueError(
                     'dataexplained(%d):\n    expected\n%s\n    found\n%s' % \
@@ -593,31 +595,31 @@ if __name__ == '__main__':
         datadeltas = numpy.array(numpy.abs(spacetimedata - expdata)).flatten()
         maxdiff = numpy.max(datadeltas)
         rmsdiff = math.sqrt(numpy.average(datadeltas * datadeltas))
-        print 'Max and RMS diff btwn data explained by %d most' % k
-        print '    influential EOFs and actual data: %#.8f, %#.8f' % \
-              (maxdiff, rmsdiff)
+        print('Max and RMS diff btwn data explained by %d most' % k)
+        print('    influential EOFs and actual data: %#.8f, %#.8f' % \
+              (maxdiff, rmsdiff))
     datadeltas = numpy.array(numpy.abs(spacetimedata - totalcontrib)).flatten()
     maxdiff = numpy.max(datadeltas)
     rmsdiff = math.sqrt(numpy.average(datadeltas * datadeltas))
-    print 'Max and RMS diff btwn sum of all significant'
-    print '    data pieces and actual data: %#.8f, %#.8f' % \
-          (maxdiff, rmsdiff)
+    print('Max and RMS diff btwn sum of all significant')
+    print('    data pieces and actual data: %#.8f, %#.8f' % \
+          (maxdiff, rmsdiff))
 
     fmat = spacetimedata - eofanal.datapiece(0)
-    for k in xrange(1, spacetimedata.shape[1] - numeofs + 1):
+    for k in range(1, spacetimedata.shape[1] - numeofs + 1):
         nullvec = eofanal.nullvec(k)
         sqnorm = numpy.dot(nullvec, nullvec)
-        print 'Null-space vector %d has norm^2: %#.4f' % (k, sqnorm)
-        print formatter.pformat(nullvec)
+        print('Null-space vector %d has norm^2: %#.4f' % (k, sqnorm))
+        print(formatter.pformat(nullvec))
         tafvec = numpy.array(fmat * numpy.matrix(nullvec).T).squeeze()
         sqnorm = numpy.dot(tafvec, tafvec)
-        print 'F * NSV %d has norm^2: %#.4f' % (k, sqnorm)
+        print('F * NSV %d has norm^2: %#.4f' % (k, sqnorm))
         # print formatter.pformat(tafvec)
 
-    import cPickle
+    import pickle
 
-    eofpicklestring = cPickle.dumps(eofanal)
-    print 'length of the eofanal pickle string: %d' % len(eofpicklestring)
-    neweofanal = cPickle.loads(eofpicklestring)
-    print 'unpickled eofanal.numeofs() = %d' % neweofanal.numeofs()
+    eofpicklestring = pickle.dumps(eofanal)
+    print('length of the eofanal pickle string: %d' % len(eofpicklestring))
+    neweofanal = pickle.loads(eofpicklestring)
+    print('unpickled eofanal.numeofs() = %d' % neweofanal.numeofs())
 

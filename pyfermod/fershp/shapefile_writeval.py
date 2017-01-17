@@ -6,6 +6,8 @@ of the bounding boxes of the X and Y axes of the given value array.  The
 value(s) associated with each shape comes from the value array.
 """
 
+from __future__ import print_function
+
 import pyferret
 import pyferret.fershp
 import shapefile
@@ -100,8 +102,8 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     # Write out the shapes and the records
     shape_written = False
     if z_coords == None:
-        for j in xrange(len(lowerys)):
-            for i in xrange(len(lowerxs)):
+        for j in range(len(lowerys)):
+            for i in range(len(lowerxs)):
                 if values[i, j, 0, 0, 0, 0] != missing_value:
                     pyferret.fershp.addquadxyvalues(sfwriter,
                                     ( lowerxs[i], lowerys[j] ),
@@ -112,9 +114,9 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
                                     [ float(values[i, j, 0, 0, 0, 0]) ])
                     shape_written = True
     else:
-        for k in xrange(len(z_coords)):
-            for j in xrange(len(lowerys)):
-                for i in xrange(len(lowerxs)):
+        for k in range(len(z_coords)):
+            for j in range(len(lowerys)):
+                for i in range(len(lowerxs)):
                     if values[i, j, k, 0, 0, 0] != missing_value:
                         pyferret.fershp.addquadxyvalues(sfwriter,
                                         ( lowerxs[i], lowerys[j] ),
@@ -145,4 +147,4 @@ if __name__ == "__main__":
     # Testing ferret_compute difficult due to call
     # to get_axis_box_limits and get_axis_coordinates
 
-    print "shapefile_writeval: SUCCESS (limited)"
+    print("shapefile_writeval: SUCCESS (limited)")

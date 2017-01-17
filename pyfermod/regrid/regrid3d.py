@@ -7,6 +7,8 @@ to ESMF to perform the regridding.
 @author: Karl Smith
 '''
 
+from __future__ import print_function
+
 import numpy
 import ESMP
 
@@ -225,10 +227,10 @@ class CurvRect3DRegridder(object):
             corner_ignore_array = None
 
         # Release any regridding procedures and clear the dictionaries
-        for handle in self.__rect_to_curv_handles.values():
+        for handle in list(self.__rect_to_curv_handles.values()):
             ESMP.ESMP_FieldRegridRelease(handle)
         self.__rect_to_curv_handles.clear()
-        for handle in self.__curv_to_rect_handles.values():
+        for handle in list(self.__curv_to_rect_handles.values()):
             ESMP.ESMP_FieldRegridRelease(handle)
         self.__curv_to_rect_handles.clear()
         # Destroy any curvilinear ESMP_Fields
@@ -288,12 +290,12 @@ class CurvRect3DRegridder(object):
             if self.__debug:
                 fout = open("curv_corner_xyz.txt", "w")
                 try:
-                    print >>fout, "curv_corner_x = %s" % \
-                        self.__myArrayStr(grid_x_coords, corner_lons_array.shape)
-                    print >>fout, "curv_corner_y = %s" % \
-                        self.__myArrayStr(grid_y_coords, corner_lons_array.shape)
-                    print >>fout, "curv_corner_z = %s" % \
-                        self.__myArrayStr(grid_z_coords, corner_lons_array.shape)
+                    print("curv_corner_x = %s" % \
+                        self.__myArrayStr(grid_x_coords, corner_lons_array.shape), file=fout)
+                    print("curv_corner_y = %s" % \
+                        self.__myArrayStr(grid_y_coords, corner_lons_array.shape), file=fout)
+                    print("curv_corner_z = %s" % \
+                        self.__myArrayStr(grid_z_coords, corner_lons_array.shape), file=fout)
                 finally:
                     fout.close()
             
@@ -346,12 +348,12 @@ class CurvRect3DRegridder(object):
         if self.__debug:
             fout = open("curv_center_xyz.txt", "w")
             try:
-                print >>fout, "curv_center_x = %s" % \
-                    self.__myArrayStr(grid_x_coords, self.__curv_shape)
-                print >>fout, "curv_center_y = %s" % \
-                    self.__myArrayStr(grid_y_coords, self.__curv_shape)
-                print >>fout, "curv_center_z = %s" % \
-                    self.__myArrayStr(grid_z_coords, self.__curv_shape)
+                print("curv_center_x = %s" % \
+                    self.__myArrayStr(grid_x_coords, self.__curv_shape), file=fout)
+                print("curv_center_y = %s" % \
+                    self.__myArrayStr(grid_y_coords, self.__curv_shape), file=fout)
+                print("curv_center_z = %s" % \
+                    self.__myArrayStr(grid_z_coords, self.__curv_shape), file=fout)
             finally:
                 fout.close()
 
@@ -429,8 +431,8 @@ class CurvRect3DRegridder(object):
             if self.__debug:
                 fout = open("curv_data.txt", "w")
                 try:
-                    print >>fout, "curv_data = %s" % \
-                        self.__myArrayStr(field_ptr, self.__curv_shape)
+                    print("curv_data = %s" % \
+                        self.__myArrayStr(field_ptr, self.__curv_shape), file=fout)
                 finally:
                     fout.close()
 
@@ -570,10 +572,10 @@ class CurvRect3DRegridder(object):
             corner_ignore_array = None
 
         # Release any regridding procedures and clear the dictionaries
-        for handle in self.__rect_to_curv_handles.values():
+        for handle in list(self.__rect_to_curv_handles.values()):
             ESMP.ESMP_FieldRegridRelease(handle)
         self.__rect_to_curv_handles.clear()
-        for handle in self.__curv_to_rect_handles.values():
+        for handle in list(self.__curv_to_rect_handles.values()):
             ESMP.ESMP_FieldRegridRelease(handle)
         self.__curv_to_rect_handles.clear()
         # Destroy any rectilinear ESMP_Fields
@@ -642,12 +644,12 @@ class CurvRect3DRegridder(object):
             if self.__debug:
                 fout = open("rect_corner_xyz.txt", "w")
                 try:
-                    print >>fout, "rect_corner_x = %s" % \
-                        self.__myArrayStr(grid_x_coords, corner_shape)
-                    print >>fout, "rect_corner_y = %s" % \
-                        self.__myArrayStr(grid_y_coords, corner_shape)
-                    print >>fout, "rect_corner_z = %s" % \
-                        self.__myArrayStr(grid_z_coords, corner_shape)
+                    print("rect_corner_x = %s" % \
+                        self.__myArrayStr(grid_x_coords, corner_shape), file=fout)
+                    print("rect_corner_y = %s" % \
+                        self.__myArrayStr(grid_y_coords, corner_shape), file=fout)
+                    print("rect_corner_z = %s" % \
+                        self.__myArrayStr(grid_z_coords, corner_shape), file=fout)
                 finally:
                     fout.close()
 
@@ -707,12 +709,12 @@ class CurvRect3DRegridder(object):
         if self.__debug:
             try:
                 fout = open("rect_center_xyz.txt", "w")
-                print >>fout, "rect_center_x = %s" % \
-                    self.__myArrayStr(grid_x_coords, self.__rect_shape)
-                print >>fout, "rect_center_y = %s" % \
-                    self.__myArrayStr(grid_y_coords, self.__rect_shape)
-                print >>fout, "rect_center_z = %s" % \
-                    self.__myArrayStr(grid_z_coords, self.__rect_shape)
+                print("rect_center_x = %s" % \
+                    self.__myArrayStr(grid_x_coords, self.__rect_shape), file=fout)
+                print("rect_center_y = %s" % \
+                    self.__myArrayStr(grid_y_coords, self.__rect_shape), file=fout)
+                print("rect_center_z = %s" % \
+                    self.__myArrayStr(grid_z_coords, self.__rect_shape), file=fout)
             finally:
                 fout.close()
 
@@ -790,8 +792,8 @@ class CurvRect3DRegridder(object):
             if self.__debug:
                 fout = open("rect_data.txt", "w")
                 try:
-                    print >>fout, "rect_data = %s" % \
-                        self.__myArrayStr(field_ptr, self.__rect_shape)
+                    print("rect_data = %s" % \
+                        self.__myArrayStr(field_ptr, self.__rect_shape), file=fout)
                 finally:
                     fout.close()
 
@@ -866,8 +868,8 @@ class CurvRect3DRegridder(object):
         if self.__debug:
             fout = open("regr_rect_data.txt", "w")
             try:
-                print >>fout, "regr_rect_data = %s" % \
-                    self.__myArrayStr(result, self.__rect_shape)
+                print("regr_rect_data = %s" % \
+                    self.__myArrayStr(result, self.__rect_shape), file=fout)
             finally:
                 fout.close()
 
@@ -946,8 +948,8 @@ class CurvRect3DRegridder(object):
         if self.__debug:
             fout = open("regr_curv_data.txt", "w")
             try:
-                print >>fout, "regr_curv_data = %s" % \
-                    self.__myArrayStr(result, self.__curv_shape)
+                print("regr_curv_data = %s" % \
+                    self.__myArrayStr(result, self.__curv_shape), file=fout)
             finally:
                 fout.close()
         result = result.reshape(self.__curv_shape, order='F')
@@ -968,10 +970,10 @@ class CurvRect3DRegridder(object):
             None
         '''
         # Release any regridding procedures and clear the dictionaries
-        for handle in self.__rect_to_curv_handles.values():
+        for handle in list(self.__rect_to_curv_handles.values()):
             ESMP.ESMP_FieldRegridRelease(handle)
         self.__rect_to_curv_handles.clear()
-        for handle in self.__curv_to_rect_handles.values():
+        for handle in list(self.__curv_to_rect_handles.values()):
             ESMP.ESMP_FieldRegridRelease(handle)
         self.__curv_to_rect_handles.clear()
         # Destroy any ESMP_Fields

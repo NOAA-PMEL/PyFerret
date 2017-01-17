@@ -6,10 +6,18 @@ This package was developed by the Thermal Modeling and Analysis Project
 Pacific Marine Environmental Lab (PMEL).
 '''
 
-from PyQt4.QtCore import SIGNAL, Qt
-from PyQt4.QtGui  import QApplication, QButtonGroup, QDialog, \
-                         QDialogButtonBox, QGridLayout, QGroupBox, \
-                         QLabel, QLineEdit, QMessageBox, QRadioButton
+from __future__ import print_function
+
+try:
+    from PyQt5.QtCore    import Qt
+    from PyQt5.QtWidgets import QApplication, QButtonGroup, QDialog, \
+                                QDialogButtonBox, QGridLayout, QGroupBox, \
+                                QLabel, QLineEdit, QMessageBox, QRadioButton
+except ImportError:
+    from PyQt4.QtCore import Qt
+    from PyQt4.QtGui  import QApplication, QButtonGroup, QDialog, \
+                             QDialogButtonBox, QGridLayout, QGroupBox, \
+                             QLabel, QLineEdit, QMessageBox, QRadioButton
 
 
 class ScaleDialogPQ(QDialog):
@@ -75,8 +83,8 @@ class ScaleDialogPQ(QDialog):
         self.__inchwidthlabel = QLabel(self.FLTSTR_FORMAT % self.__inchwidth, 
                                        self.__grpbox)
         widthend = QLabel(self.tr("inches on the screen"), self.__grpbox)
-        minwidthlabel = QLabel(self.tr("(must not be less than %1 pixels)") \
-                               .arg(str(self.__minpixwidth)), self.__grpbox)
+        minwidthlabel = QLabel(self.tr("(must not be less than %d pixels)" % \
+                               self.__minpixwidth), self.__grpbox)
 
         heightbegin = QLabel(self.tr("Height:"), self.__grpbox)
         self.__pixheightlabel = QLabel(str(int(self.__pixheight + 0.5)), 
@@ -85,8 +93,8 @@ class ScaleDialogPQ(QDialog):
         self.__inchheightlabel = QLabel(self.FLTSTR_FORMAT % self.__inchheight, 
                                         self.__grpbox)
         heightend = QLabel(self.tr("inches on the screen"), self.__grpbox)
-        minheightlabel = QLabel(self.tr("(must not be less than %1 pixels)") \
-                               .arg(str(self.__minpixheight)), self.__grpbox)
+        minheightlabel = QLabel(self.tr("(must not be less than %d pixels)" % \
+                                self.__minpixheight), self.__grpbox)
 
         # layout the widgets in this group box
         layout = QGridLayout()
@@ -135,14 +143,25 @@ class ScaleDialogPQ(QDialog):
         okbutton = buttonbox.button(QDialogButtonBox.Ok)
         okbutton.setDefault(True)
 
-        self.connect(self.__autoyesbtn, SIGNAL("clicked(bool)"), self.setAutoScale)
-        self.connect(self.__autonobtn, SIGNAL("clicked(bool)"), self.unsetAutoScale)
-
-        self.connect(self.__scaleedit, SIGNAL("textChanged(QString)"), self.updateValues)
-        self.connect(buttonbox, SIGNAL("accepted()"), self.checkValues)
-        self.connect(buttonbox, SIGNAL("rejected()"), self.reject)
         resetbutton = buttonbox.button(QDialogButtonBox.Reset)
-        self.connect(resetbutton, SIGNAL("clicked()"), self.resetValues)
+
+        self.__autoyesclicked = self.__autoyesbtn.clicked
+        self.__autoyesclicked.connect(self.setAutoScale)
+
+        self.__autonoclicked = self.__autonobtn.clicked
+        self.__autonoclicked.connect(self.unsetAutoScale)
+
+        self.__scaletextchanged = self.__scaleedit.textChanged
+        self.__scaletextchanged.connect(self.updateValues)
+
+        self.__buttonboxaccepted = buttonbox.accepted
+        self.__buttonboxaccepted.connect(self.checkValues)
+
+        self.__buttonboxrejected = buttonbox.rejected
+        self.__buttonboxrejected.connect(self.reject)
+
+        self.__resetbuttonclicked = resetbutton.clicked
+        self.__resetbuttonclicked.connect(self.resetValues)
 
         # initialize the state from autoscale
         if self.__autoscale:
@@ -163,8 +182,10 @@ class ScaleDialogPQ(QDialog):
             self.__scaleedit.selectAll()
 
     def updateValues(self, newstring):
-        (newscale, okay) = newstring.toFloat()
-        if okay:
+        try:
+            newscale = float(newstring)
+            if (newscale < 0.0001) or (newscale > 10000.0):
+                raise OverflowError()
             newval = self.__pixwidth * newscale / self.__scale
             self.__pixwidthlabel.setText(str(int(newval + 0.5)))
             newval = self.__inchwidth * newscale / self.__scale
@@ -173,6 +194,8 @@ class ScaleDialogPQ(QDialog):
             self.__pixheightlabel.setText(str(int(newval + 0.5)))
             newval = self.__inchheight * newscale / self.__scale
             self.__inchheightlabel.setText(self.FLTSTR_FORMAT % newval)
+        except Exception:
+            pass
 
     def checkValues(self):
         okay = self.getValues()[2]
@@ -185,14 +208,17 @@ class ScaleDialogPQ(QDialog):
     def getValues(self):
         if self.__autoyesbtn.isChecked():
             return (0.0, True, True)
-        (newscale, okay) = self.__scaleedit.text().toFloat()
-        if not okay:
-            return (0.0, False, False)
-        newwidth = self.__pixwidth * newscale / self.__scale
-        newwidth = int(newwidth + 0.5)
-        newheight = self.__pixheight * newscale / self.__scale
-        newheight = int(newheight + 0.5)
-        if (newwidth < self.__minpixwidth) or (newheight < self.__minpixheight):
+        try:
+            newscale = float(self.__scaleedit.text())
+            if (newscale < 0.0001) or (newscale > 10000.0):
+                raise OverflowError()
+            newwidth = self.__pixwidth * newscale / self.__scale
+            newwidth = int(newwidth + 0.5)
+            newheight = self.__pixheight * newscale / self.__scale
+            newheight = int(newheight + 0.5)
+            if (newwidth < self.__minpixwidth) or (newheight < self.__minpixheight):
+                raise OverflowError()
+        except Exception:
             return (0.0, False, False)
         return (newscale, False, True)
 
@@ -214,7 +240,7 @@ if __name__ == "__main__":
     app = QApplication(["tester"])
     resizedialog = ScaleDialogPQ(1.0, 500, 300, 75, 50, False)
     retval = resizedialog.exec_()
-    print "retval = %d" % retval
+    print("retval = %d" % retval)
     if retval == QDialog.Accepted:
         rettuple = resizedialog.getValues()
-        print "getValues returned: %s" % str(rettuple)
+        print("getValues returned: %s" % str(rettuple))

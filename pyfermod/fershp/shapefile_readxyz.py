@@ -4,6 +4,8 @@ coordinates from the points in the indicated shapefile.
 The missing value separates coordinates between shapes.
 """
 
+from __future__ import print_function
+
 import numpy
 import pyferret
 import shapefile
@@ -82,6 +84,6 @@ if __name__ == "__main__":
     info = ferret_init(0)
 
     # this is tested under shapefile_writexyzval
-    print "shapefile_readxyz: SUCCESS (limited)"
-    print "    run shapefile_writexyzval for full test"
+    print("shapefile_readxyz: SUCCESS (limited)")
+    print("    run shapefile_writexyzval for full test")
 

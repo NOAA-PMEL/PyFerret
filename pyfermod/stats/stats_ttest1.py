@@ -2,6 +2,9 @@
 Performs a two-sided T-test that the provided sample
 comes from a population with the given mean(s).
 """
+
+from __future__ import print_function
+
 import numpy
 import pyferret
 import scipy.stats
@@ -97,8 +100,8 @@ if __name__ == "__main__":
     samparr = numpy.empty((1, ydim, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
     trimsamp = [ ]
     index = 0
-    for j in xrange(ydim):
-        for k in xrange(zdim):
+    for j in range(ydim):
+        for k in range(zdim):
             if (index % 71) == 3:
                 samparr[0, j, k, 0, 0, 0] = inpbdfs[0]
             else:
@@ -131,10 +134,10 @@ if __name__ == "__main__":
     # call ferret_compute and check the results
     ferret_compute(0, result, resbdf, (samparr, meanarr), inpbdfs)
     if not numpy.allclose(result, expect):
-        print "expect[:,:,0,0,0,0]:\n   %s" % str(expect[:, :, 0, 0, 0, 0])
-        print "result[:,:,0,0,0,0]:\n   %s" % str(result[:, :, 0, 0, 0, 0])
+        print("expect[:,:,0,0,0,0]:\n   %s" % str(expect[:, :, 0, 0, 0, 0]))
+        print("result[:,:,0,0,0,0]:\n   %s" % str(result[:, :, 0, 0, 0, 0]))
         raise ValueError("Unexpected result")
 
     # All successful
-    print "Success"
+    print("Success")
 

@@ -24,7 +24,6 @@
 #include "cferbind.h"
 #include "pyferret.h"
 
-
 #ifdef VERBOSEDEBUG
 #include <stdio.h>
 #include <stdlib.h>
@@ -860,7 +859,11 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
                 return 0;
             }
             for (k = 0; k < numannotations; k++) {
+#if PY_MAJOR_VERSION > 2
+                annostrobj = PyUnicode_FromString((char *) annotations[k * 8 / sizeof(void *)]);
+#else
                 annostrobj = PyString_FromString((char *) annotations[k * 8 / sizeof(void *)]);
+#endif
                 if ( annostrobj == NULL ) {
                     Py_DECREF(annostuple);
                     strcpy(grdelerrmsg, "grdelWindowSave: unexpected error, "

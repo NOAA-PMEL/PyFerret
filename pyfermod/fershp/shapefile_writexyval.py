@@ -10,6 +10,8 @@ Quadrilaterals associated with missing values are omitted from
 the shapefile.
 """
 
+from __future__ import print_function
+
 import shapefile
 import pyferret
 import pyferret.fershp
@@ -96,8 +98,8 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
 
     # Add the shapes with their values
     shape_written = False
-    for j in xrange(grid_vals.shape[1]):
-        for i in xrange(grid_vals.shape[0]):
+    for j in range(grid_vals.shape[1]):
+        for i in range(grid_vals.shape[0]):
             if grid_vals[i, j, 0, 0, 0, 0] != missing_val:
                 shape_written = True
                 pyferret.fershp.addquadxyvalues(sfwriter,
@@ -236,8 +238,8 @@ if __name__ == "__main__":
     # Create the expected arrays of shape coordinates and values
     exppoints = []
     expvals = []
-    for j in xrange(vals.shape[1]):
-        for i in xrange(vals.shape[0]):
+    for j in range(vals.shape[1]):
+        for i in range(vals.shape[0]):
             if vals[i, j, 0, 0, 0, 0] != inpbdfs[3]:
                 exppoints.append( numpy.array([ [ geolon_c[i,   j,   0, 0, 0, 0], 
                                                   geolat_c[i,   j,   0, 0, 0, 0] ],
@@ -323,5 +325,5 @@ if __name__ == "__main__":
                                        fieldname, ""), inpbdfs)
     """
 
-    print "shapefile_writexyval: SUCCESS"
+    print("shapefile_writexyval: SUCCESS")
 

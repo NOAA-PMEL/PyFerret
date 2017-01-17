@@ -15,6 +15,10 @@ This package was developed by the Thermal Modeling and Analysis Project
 Pacific Marine Environmental Lab (PMEL).
 '''
 
+from __future__ import print_function
+
+import sys
+
 from pyferret.graphbind.abstractpyferretbindings import AbstractPyFerretBindings
 from pipedviewer import PipedViewer
 
@@ -892,7 +896,7 @@ class PImagerPQPyFerretBindings(PyFerretBindings):
         self.checkForErrorResponse()
         blocksize = 8192
         numblocks = (lenimgdata + blocksize - 1) // blocksize
-        for k in xrange(numblocks):
+        for k in range(numblocks):
             if k < (numblocks - 1):
                 blkdata = imagedata[k*blocksize:(k+1)*blocksize]
             else:
@@ -944,7 +948,7 @@ if __name__ == "__main__":
     # Initiate pyferret, but stay in python
     pyferret.init(None, False)
     for viewertype in ( "PipedViewerPQ", ):
-        print "Testing bindings for %s" % viewertype
+        print("Testing bindings for %s" % viewertype)
         # Create a viewer window
         title = viewertype + "Tester"
         bindinst = pyferret.graphbind.createWindow(viewertype, title, True, False, False)
@@ -980,7 +984,10 @@ if __name__ == "__main__":
         bindinst.endView()
         # Window should already be shown, but just to make sure
         bindinst.showWindow(True)
-        raw_input("Press Enter to continue")
+        if sys.version_info.major == 2:
+            raw_input("Press Enter to continue")
+        else:
+            input("Press Enter to continue")
         # Create a view of the whole window
         bindinst.beginView(0.0, 1.0, 1.0, 0.0, True)
         # Draw magenta points using various symbols
@@ -1023,7 +1030,10 @@ if __name__ == "__main__":
         bindinst.endView()
         # Window should already be shown, but just to make sure
         bindinst.showWindow(True)
-        raw_input("Press Enter to continue")
+        if sys.version_info.major == 2:
+            raw_input("Press Enter to continue")
+        else:
+            input("Press Enter to continue")
         try:
             while 1:
                 bindinst.deleteColor(mycolors.pop())
@@ -1031,5 +1041,5 @@ if __name__ == "__main__":
             pass
         bindinst.deleteFont(myfont)
         bindinst.deleteWindow()
-        print "Done with bindings for %s" % viewertype
+        print("Done with bindings for %s" % viewertype)
 

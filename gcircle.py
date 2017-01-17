@@ -4,6 +4,8 @@ Module of functions involving great circles
 with points given in longitudes and latitudes.
 """
 
+from __future__ import print_function
+
 import math
 import numpy
 import numpy.random
@@ -384,15 +386,15 @@ if __name__ == "__main__":
     dists = lonlatdistance(0.0, 0.0, tenten, 0.0)
     if not numpy.allclose(dists, tenten):
         raise ValueError("Equatorial distances FAIL; expect: %s; found: %s" % (str(tenten), str(dists)))
-    print "Equatorial distance: PASS"
-    print
+    print("Equatorial distance: PASS")
+    print()
 
     # On any meridian, distance = delta latitude
     dists = lonlatdistance(20.0, 0.0, 20.0, tenten)
     if not numpy.allclose(dists, tenten):
         raise ValueError("Meridional distances FAIL; expect: %s; found: %s" % (str(tenten), str(dists)))
-    print "Meridional distance: PASS"
-    print
+    print("Meridional distance: PASS")
+    print()
 
     # Play with some distances between cities (deg W, deg N)
     seattle =  (122.0 + (20.0 / 60.0), 47.0 + (37.0 / 60.0))
@@ -415,8 +417,8 @@ if __name__ == "__main__":
         raise ValueError("Seattle, Portland, Spokane distance matrix in miles\n" \
                          "    expect: %s\n"
                          "    found:  %s" % (str(expected), str(dists)))
-    print "Seattle, Portland, Spokane distance matrix: PASS"
-    print
+    print("Seattle, Portland, Spokane distance matrix: PASS")
+    print()
 
     lons = ( austin[0], houston[0], dallas[0] )
     lons1, lons2 = numpy.meshgrid(lons, lons)
@@ -431,8 +433,8 @@ if __name__ == "__main__":
         raise ValueError("Austin, Houston, Dallas distance matrix in miles\n" \
                          "    expect: %s\n"
                          "    found:  %s" % (str(expected), str(dists)))
-    print "Austin, Houston, Dallas distance matrix: PASS"
-    print
+    print("Austin, Houston, Dallas distance matrix: PASS")
+    print()
 
     # Test lonlatintersect
     # Intersections of the equator with meridians
@@ -469,8 +471,8 @@ if __name__ == "__main__":
     if not numpy.allclose(pt2lats[1:-1], 0.0):
         raise ValueError("Valid pt2lats: expect: all zeros, found %s" %\
                           str(pt2lats[1:-1]))
-    print "Equator/meridian intersections: PASS"
-    print
+    print("Equator/meridian intersections: PASS")
+    print()
 
     ((pt1lons, pt1lats), (pt2lons, pt2lats)) = \
             lonlatintersect( 0.0, 89.99, 180.0, 89.99,
@@ -482,8 +484,8 @@ if __name__ == "__main__":
                          (str([45.0, 90.0, 135.0, -90.0]),
                           str([float(pt1lons), float(pt1lats),
                                float(pt2lons), float(pt2lats)])))
-    print "Mini north pole cross intersections: PASS"
-    print
+    print("Mini north pole cross intersections: PASS")
+    print()
 
 
     # Test lonlatfwdpt
@@ -491,15 +493,15 @@ if __name__ == "__main__":
     if not ( numpy.allclose(lons, portland[0]) and numpy.allclose(lats, portland[1]) ):
         raise ValueError("Zero forward from portland to spokane: expect %s, found %s" % \
                          (str(portland), str((lons, lats))))
-    print "Zero forward: PASS"
-    print
+    print("Zero forward: PASS")
+    print()
 
     lons, lats = lonlatfwdpt(portland[0], portland[1], spokane[0], spokane[1], 1.0)
     if not ( numpy.allclose(lons, spokane[0]) and numpy.allclose(lats, spokane[1]) ):
         raise ValueError("One forward from portland to spokane: expect %s, found %s" % \
                          (str(spokane), str((lons, lats))))
-    print "One forward: PASS"
-    print
+    print("One forward: PASS")
+    print()
 
     lons, lats = lonlatfwdpt(0.0, 0.0, tenten, 0.0, 3.0)
     expectlons = 3.0 * tenten
@@ -520,8 +522,8 @@ if __name__ == "__main__":
     if not numpy.allclose(lats[1:], 0.0):
         raise ValueError("Valid fwd equator lats: expect: all zeros, found: %s" %\
                           str(lats[1:]))
-    print "Fwd equator: PASS"
-    print
+    print("Fwd equator: PASS")
+    print()
 
     lons, lats = lonlatfwdpt(0.0, -90.0, 0.0, tenten, 2.0)
     # First longitude could be anything, but this algorithm gives 0.0
@@ -538,16 +540,16 @@ if __name__ == "__main__":
                           (str(expvalid), str(validity)))
     # First longitude could be anything so ignore it
     # Others should be either 180 == -180
-    poslons = lons[:]
-    poslons[ poslons < 0.0 ] += 360.0
-    if not numpy.allclose(lons[1:-1], 180.0):
+    poslons = lons[1:-1]
+    poslons[(poslons < 0.0)] += 360.0
+    if not numpy.allclose(poslons, 180.0):
         raise ValueError("Valid fwd prime meridian lons: expect: all 180.0 or -180.0, found: %s" %\
-                          str(lons[1:-1]))
+                          str(poslons))
     if not numpy.allclose(lats[:-1], expectlats[:-1]):
         raise ValueError("Valid fwd prime meridian lats: expect: %s, found: %s" %\
                           (str(expectlats[:-1]), str(lats[:-1])))
-    print "Fwd prime meridian: PASS"
-    print
+    print("Fwd prime meridian: PASS")
+    print()
 
     lons, lats = lonlatfwdpt(0.0, 0.0, 45.0, 45.0, (2.0, 3.0, 4.0, 5.0))
     expectlons = [ 135.0, 180.0, -135.0, -45.0 ]
@@ -558,8 +560,8 @@ if __name__ == "__main__":
     if not numpy.allclose(lats, expectlats):
         raise ValueError("Fwd diagonal lats: expect: %s, found: %s" %\
                           (str(expectlats), str(lats)))
-    print "Fwd diagonal: PASS"
-    print
+    print("Fwd diagonal: PASS")
+    print()
 
     # Test equdistscatter
     lons, lats = equidistscatter(0.0, 0.0, 0.0, 0.0, 1.0)
@@ -568,8 +570,8 @@ if __name__ == "__main__":
         raise ValueError("Equidistscatter single-point FAIL; \n" \
                          "  expect: ([0.0],[0.0]), \n" \
                          "  found (%s,%s)" % (str(lons), str(lats)))
-    print "Equidistscatter single-point PASS"
-    print
+    print("Equidistscatter single-point PASS")
+    print()
 
     lons, lats = equidistscatter(0.0, 90.0, 90.0, 90.0, 1.0)
     if (lons.shape != (1,)) or (lons[0] != 45.0) or \
@@ -577,8 +579,8 @@ if __name__ == "__main__":
         raise ValueError("Equidistscatter pole-point FAIL; \n" \
                          "  expect: ([45.0],[90.0]), \n" \
                          "  found (%s,%s)" % (str(lons), str(lats)))
-    print "Equidistscatter pole-point PASS"
-    print
+    print("Equidistscatter pole-point PASS")
+    print()
 
     lons, lats = equidistscatter(0.0, 0.0, 90.0, 0.0, 1.0)
     if not numpy.all( lats == 0.0 ):
@@ -594,8 +596,8 @@ if __name__ == "__main__":
         raise ValueError("Equidistscatter equitorial FAIL; \n" \
                          "  expect: longitudes monotonic increasing by less than 1.0001 degrees, \n" \
                          "  found %s" % str(lons))
-    print "Equidistscatter equitorial PASS"
-    print
+    print("Equidistscatter equitorial PASS")
+    print()
 
     lons, lats = equidistscatter(0.0, 0.0, 0.0, 90.0, 1.0)
     if not numpy.all( lons == 0.0 ):
@@ -611,12 +613,12 @@ if __name__ == "__main__":
         raise ValueError("Equidistscatter meridional FAIL; \n" \
                          "  expect: latitudes monotonic increasing by less than 1.0001 degrees, \n" \
                          "  found %s" % str(lats))
-    print "Equidistscatter meridional PASS"
-    print
+    print("Equidistscatter meridional PASS")
+    print()
 
     lons, lats = equidistscatter(0.0, 0.0, 90.0, 90.0, 5.0, 15.0)
     nndists = [ ]
-    for j in xrange(len(lons)):
+    for j in range(len(lons)):
         gcdists = lonlatdistance(lons[j], lats[j], lons, lats)
         gcdists[j] = 180.0
         if not numpy.all( gcdists >= 5.0 ):
@@ -629,9 +631,9 @@ if __name__ == "__main__":
         raise ValueError("Equidistscatter region FAIL; \n" \
                          "  expect nearest neighbor distances < 10.0, \n" \
                          "  found %s" % str(nndists))
-    print "Nearest neighbor distances: \n" \
+    print("Nearest neighbor distances: \n" \
           "    min = %f, max = %f, mean = %f, stdev = %f" % \
-          (nndists.min(), nndists.max(), nndists.mean(), nndists.std())
+          (nndists.min(), nndists.max(), nndists.mean(), nndists.std()))
 
-    print "Equidistscatter region PASS"
-    print
+    print("Equidistscatter region PASS")
+    print()

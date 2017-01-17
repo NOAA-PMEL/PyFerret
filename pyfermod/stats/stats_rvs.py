@@ -2,6 +2,9 @@
 Returns the array of random variates for a probability distribution
 assigned to positions corresponding to defined values in an input array.
 """
+
+from __future__ import print_function
+
 import numpy
 import scipy.stats
 import pyferret
@@ -73,10 +76,10 @@ if __name__ == "__main__":
     template = numpy.zeros((xdim, ydim, zdim, tdim, 1, 1), dtype=numpy.float64, order='F')
     expectedgood = numpy.empty((xdim, ydim, zdim, tdim, 1, 1), dtype=bool, order='F')
     index = 0
-    for i in xrange(xdim):
-        for j in xrange(ydim):
-            for k in xrange(zdim):
-                for l in xrange(tdim):
+    for i in range(xdim):
+        for j in range(ydim):
+            for k in range(zdim):
+                for l in range(tdim):
                     if (index % 53) == 1:
                         template[i, j, k, l, 0, 0] = inpbdfs[0]
                         expectedgood[i, j, k, l, 0, 0] = False
@@ -96,5 +99,5 @@ if __name__ == "__main__":
         raise ValueError("Standard deviation of random sample: expected: 0.5; found: %f" % stdev)
 
     # All successful
-    print "Success"
+    print("Success")
 

@@ -197,13 +197,15 @@ get_python_vars() {
         fi
 #       expand to the full path name, just to be safe (may not be necessary)
         python_executable=`which "$ans"`
-#       assign python_subdirectory as 'python2.6' or 'python2.7' using the version
+#       assign python_subdirectory as 'pythonx.x' using the version
 #       number reported by the python executable (which validates the python executable)
-        python_subdirectory=`${ans} -c "import sys; print 'python%i.%i' % sys.version_info[:2]"`
+        python_subdirectory=`${ans} -c "from __future__ import print_function; import sys; print('python%i.%i' % sys.version_info[:2])"`
         if echo "${python_subdirectory}" | grep -q '^python2\.[67]$'; then
             return 0
+        elif echo "${python_subdirectory}" | grep -q '^python3'; then
+            return 0
         elif echo "${python_subdirectory}" | grep -q '^python'; then
-            echo " ${ans} appears to be ${python_subdirectory}; only python2.6 or python2.7 supported "
+            echo " ${ans} appears to be ${python_subdirectory}; only python2.6 or later is supported "
         else
             echo " ${ans} does not appear to be a valid python executable "
         fi

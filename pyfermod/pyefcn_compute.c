@@ -43,6 +43,26 @@
 #include "pyferret.h"
 #include "EF_Util.h"
 
+/* For older versions of NumPy (v1.4 with RHEL6), define these flags as the deprecated flags */
+#ifndef NPY_ARRAY_ALIGNED
+#define NPY_ARRAY_ALIGNED NPY_ALIGNED
+#endif
+#ifndef NPY_ARRAY_NOTSWAPPED
+#define NPY_ARRAY_NOTSWAPPED NPY_NOTSWAPPED
+#endif
+#ifndef NPY_ARRAY_F_CONTIGUOUS
+#define NPY_ARRAY_F_CONTIGUOUS NPY_F_CONTIGUOUS
+#endif
+#ifndef NPY_ARRAY_WRITEABLE
+#define NPY_ARRAY_WRITEABLE NPY_WRITEABLE
+#endif
+#ifndef NPY_ARRAY_FARRAY
+#define NPY_ARRAY_FARRAY NPY_FARRAY
+#endif
+#ifndef NPY_ARRAY_FARRAY_RO
+#define NPY_ARRAY_FARRAY_RO NPY_FARRAY_RO
+#endif
+
 /*
  * See pyferret.h for information on this function
  */

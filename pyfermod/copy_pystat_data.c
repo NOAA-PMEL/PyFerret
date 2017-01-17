@@ -42,6 +42,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* For older versions of NumPy (v1.4 with RHEL6), define this flag as the deprecated flag */
+#ifndef NPY_ARRAY_OWNDATA
+#define NPY_ARRAY_OWNDATA NPY_OWNDATA
+#endif
+
 /*
  * This function copies the data from the ndarray given by data_ndarray_ptr 
  * to the array of doubles given by dest.  The argument data_ndarray_ptr 

@@ -50,6 +50,11 @@
 #include "pyferret.h"
 #include "pplmem.h"
 
+/* For older versions of NumPy (v1.4 with RHEL6), define this flag as the deprecated flag */
+#ifndef NPY_ARRAY_OWNDATA
+#define NPY_ARRAY_OWNDATA NPY_OWNDATA
+#endif
+
 /* global pyferret Python module object used for readline */
 PyObject *pyferret_module_pyobject = NULL;
 

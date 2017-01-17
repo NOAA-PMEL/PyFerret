@@ -2,6 +2,9 @@
 Returns parameters resulting from a linear regression of one set
 of given data against another set of given data.
 """
+
+from __future__ import print_function
+
 import math
 import numpy
 import pyferret
@@ -111,7 +114,7 @@ if __name__ == "__main__":
     goodvals = numpy.empty((1000,), dtype=bool)
     index = 0
     numgood = 0
-    for j in xrange(1000):
+    for j in range(1000):
         if (index % 53) == 13:
             abscissa[0, j, 0, 0, 0, 0] = inpbdfs[0]
         else:
@@ -149,5 +152,5 @@ if __name__ == "__main__":
                          (str(expected), str(result)))
 
     # All successful
-    print "Success"
+    print("Success")
 

@@ -7,8 +7,12 @@ Project (TMAP) of the National Oceanographic and Atmospheric
 Administration's (NOAA) Pacific Marine Environmental Lab (PMEL).
 '''
 
-from PyQt4.QtCore import Qt, QPointF, QSizeF
-from PyQt4.QtGui import QBrush, QColor, QFont, QPainterPath, QPen
+try:
+    from PyQt5.QtCore import Qt, QPointF, QSizeF
+    from PyQt5.QtGui  import QBrush, QColor, QFont, QPainterPath, QPen
+except ImportError:
+    from PyQt4.QtCore import Qt, QPointF, QSizeF
+    from PyQt4.QtGui  import QBrush, QColor, QFont, QPainterPath, QPen
 
 
 class SidesRectF(object):

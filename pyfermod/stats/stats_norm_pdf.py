@@ -4,6 +4,9 @@ for the Normal probability distribution
 using the given arrays for the abscissa or template
 values and each of the parameters values.
 """
+
+from __future__ import print_function
+
 import numpy
 import pyferret
 import pyferret.stats
@@ -44,8 +47,8 @@ if __name__ == "__main__":
     mus = numpy.linspace(20.0, 45.0, xdim)
     sigmas = numpy.linspace(8.0, 14.0, tdim)
     pdfs = numpy.empty((xdim, ydim, zdim, tdim, 1, 1), dtype=numpy.float64, order='F')
-    for i in xrange(xdim):
-        for q in xrange(tdim):
+    for i in range(xdim):
+        for q in range(tdim):
             distf = scipy.stats.norm(mus[i], sigmas[q])
             values = distf.pdf(yzvals)
             pdfs[i, :, :, q, 0, 0] = values.reshape((ydim, zdim), order='F')
@@ -57,8 +60,8 @@ if __name__ == "__main__":
     resbdf = numpy.array([-6666.0], dtype=numpy.float64)
     # Throw in some undefined values
     index = 0
-    for k in xrange(zdim):
-        for j in xrange(ydim):
+    for k in range(zdim):
+        for j in range(ydim):
             if (index % 13) == 3:
                 abscissa[0, j, k, 0, 0, 0] = inpbdfs[0]
                 pdfs[:, j, k, :, 0, 0] = resbdf[0]
@@ -70,10 +73,10 @@ if __name__ == "__main__":
     result = -5555.0 * numpy.ones((xdim, ydim, zdim, tdim, 1, 1), dtype=numpy.float64, order='F')
     ferret_compute(0, result, resbdf, (yzvals, mus, sigmas), inpbdfs)
     if not numpy.allclose(result, pdfs):
-        print "Expect (flattened) =\n%s" % str(pdfs.reshape(-1))
-        print "Result (flattened) =\n%s" % str(result.reshape(-1))
+        print("Expect (flattened) =\n%s" % str(pdfs.reshape(-1)))
+        print("Result (flattened) =\n%s" % str(result.reshape(-1)))
         raise ValueError("Unexpected result")
 
     # All successful
-    print "Success"
+    print("Success")
 

@@ -2,6 +2,9 @@
 Returns the (unweighted) mean, variance, skew, and kurtoses
 of an array of values
 """
+
+from __future__ import print_function
+
 import math
 import numpy
 import pyferret
@@ -82,8 +85,8 @@ if __name__ == "__main__":
     input = numpy.empty((1, ydim, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
     sindex = 0
     iindex = 0
-    for j in xrange(ydim):
-        for k in xrange(zdim):
+    for j in range(ydim):
+        for k in range(zdim):
             if ((iindex % 13) == 3) or (sindex >= samplesize):
                 input[0, j, k, 0, 0, 0] = inpbdfs[0]
             else:
@@ -102,5 +105,5 @@ if __name__ == "__main__":
                          (str(expected), str(result)))
 
     # All successful
-    print "Success"
+    print("Success")
 

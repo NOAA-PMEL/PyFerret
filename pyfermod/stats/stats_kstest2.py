@@ -2,6 +2,9 @@
 Performs a two-sided Kolmogorov-Smirnov test that two samples
 come from the same continuous probability distribution.
 """
+
+from __future__ import print_function
+
 import numpy
 import pyferret
 import scipy.stats
@@ -88,8 +91,8 @@ if __name__ == "__main__":
     arrayb = numpy.empty((ydim, 1, 1, zdim, 1, 1), dtype=numpy.float64, order='F')
     arrayu = numpy.empty((ydim, 1, 1, zdim, 1, 1), dtype=numpy.float64, order='F')
     index = 0
-    for j in xrange(ydim):
-        for k in xrange(zdim):
+    for j in range(ydim):
+        for k in range(zdim):
             if (index % 23) == 3:
                 arraya[0, j, k, 0, 0, 0] = inpbdfs[0]
             else:
@@ -107,7 +110,7 @@ if __name__ == "__main__":
     # call ferret_compute with the samples from the same distribution and check the results
     ferret_compute(0, resultb, resbdf, (arraya, arrayb), inpbdfs)
     resultb = resultb.reshape(-1)
-    print "from same dist result: %s" % str(resultb)
+    print("from same dist result: %s" % str(resultb))
     if (resultb[0] < 0.00) or (resultb[0] > 0.01) or \
        (resultb[1] < 0.10) or (resultb[1] > 1.00):
         raise ValueError("Unexpected result")
@@ -115,11 +118,11 @@ if __name__ == "__main__":
     # call ferret_compute with data from different distributions and check the results
     ferret_compute(0, resultu, resbdf, (sampa, sampu), inpbdfs)
     resultu = resultu.reshape(-1)
-    print "from diff dist result: %s" % str(resultu)
+    print("from diff dist result: %s" % str(resultu))
     if (resultu[0] < 0.98) or (resultu[0] > 1.00) or \
        (resultu[1] < 0.00) or (resultu[1] > 0.01):
         raise ValueError("Unexpected result")
 
     # All successful
-    print "Success"
+    print("Success")
 

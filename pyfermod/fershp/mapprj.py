@@ -2,6 +2,8 @@
 Map projection file utility functions
 """
 
+from __future__ import print_function
+
 def name_to_descript(mapprj_name):
     """
     Returns the map projection file contents of the given common name
@@ -2709,4 +2711,4 @@ if __name__ == "__main__":
     if num_descripts != 1337:
         raise ValueError("Number of entries in _DESCRIPT_DICT: expect: 1337, found: %d" % num_descripts)
 
-    print "mapprj: SUCCESS"
+    print("mapprj: SUCCESS")

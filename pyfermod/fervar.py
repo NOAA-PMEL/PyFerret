@@ -585,7 +585,7 @@ class FerVar(object):
         changed = False
         # TODO: handle step values, try to condense code
         if isinstance(key, tuple):
-            for k in xrange(len(key)):
+            for k in range(len(key)):
                 piece = key[k]
                 if piece is None:
                     continue

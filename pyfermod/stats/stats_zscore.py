@@ -3,6 +3,9 @@ Returns the array of standard scores for an array of data.  The
 standard score are for the standard distribution centered of the
 mean value of the data with the same variance as the data.
 """
+
+from __future__ import print_function
+
 import math
 import numpy
 import pyferret
@@ -65,8 +68,8 @@ if __name__ == "__main__":
     expected = numpy.empty((1, ydim, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
     sindex = 0
     iindex = 0
-    for j in xrange(ydim):
-        for k in xrange(zdim):
+    for j in range(ydim):
+        for k in range(zdim):
             if ((iindex % 13) == 3) or (sindex >= samplesize):
                 input[0, j, k, 0, 0, 0] = inpbdfs[0]
                 expected[0, j, k, 0, 0, 0] = resbdf
@@ -82,10 +85,10 @@ if __name__ == "__main__":
     # call ferret_compute and check the results
     ferret_compute(0, result, resbdf, (input, ), inpbdfs)
     if not numpy.allclose(result, expected, rtol=2.0E-7, atol=2.0E-7):
-        print "expected (flattened) =\n%s" % str(expected.reshape(-1, order='F'))
-        print "result (flattened) =\n%s" % str(result.reshape(-1, order='F'))
+        print("expected (flattened) =\n%s" % str(expected.reshape(-1, order='F')))
+        print("result (flattened) =\n%s" % str(result.reshape(-1, order='F')))
         raise ValueError("Unexpected result")
 
     # All successful
-    print "Success"
+    print("Success")
 

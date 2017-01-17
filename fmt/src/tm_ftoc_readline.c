@@ -106,7 +106,11 @@ static char *pyferret_readline(char *prompt)
     }
 
     /* get the string out of the result object */
+#if PY_MAJOR_VERSION > 2
+    resultstr = PyUnicode_AsUTF8(resultobj);
+#else
     resultstr = PyString_AsString(resultobj);
+#endif
     if ( resultstr == NULL ) {
         /* Exception (not a string object) - should not happen but treat as if EOF */
         PyErr_Clear();

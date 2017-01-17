@@ -61,7 +61,11 @@ char *pyefcn_get_error()
             /* Get the string by calling Python str method with the exception */
             exc_string = PyObject_Str(exc_value);
             if ( exc_string != NULL ) {
+#if PY_MAJOR_VERSION > 2
+                strcpy(errmsg, PyUnicode_AsUTF8(exc_string));
+#else
                 strcpy(errmsg, PyString_AsString(exc_string));
+#endif
                 Py_DECREF(exc_string);
             }
         }

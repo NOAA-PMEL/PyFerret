@@ -9,6 +9,8 @@ be names of existing files that match the partially specified
 directory/file name.
 """
 
+from __future__ import print_function
+
 import os.path
 
 class FilenameCompleter(object):
@@ -116,12 +118,12 @@ if __name__ == '__main__':
     # Test an empty string
     actdirlist = os.listdir(os.curdir)
     actdirlist.sort()
-    print 'Contents of current directory'
+    print('Contents of current directory')
     cmpdirlist = []
     k = 0
     fnam = completer.complete('', 0)
     while fnam != None:
-        print '    %s' % fnam
+        print('    %s' % fnam)
         cmpdirlist.append(fnam)
         k += 1
         fnam = completer.complete('', k)
@@ -131,26 +133,26 @@ if __name__ == '__main__':
 
     # Test with a tilde string
     tildedir = '~' + os.sep
-    print ''
-    print 'Contents of %s' % tildedir
+    print('')
+    print('Contents of %s' % tildedir)
     tildenames = []
     k = 0
     fnam = completer.complete(tildedir, 0)
     while fnam != None:
-        print '    %s' % fnam
+        print('    %s' % fnam)
         tildenames.append(fnam)
         k += 1
         fnam = completer.complete(tildedir, k)
     
     # Test with an environment variable
     homedir = '$HOME' + os.sep
-    print ''
-    print 'Contents of %s' % homedir
+    print('')
+    print('Contents of %s' % homedir)
     homenames = []
     k = 0
     fnam = completer.complete(homedir, 0)
     while fnam != None:
-        print '    %s' % fnam
+        print('    %s' % fnam)
         homenames.append(fnam)
         k += 1
         fnam = completer.complete(homedir, k)
@@ -161,13 +163,13 @@ if __name__ == '__main__':
 
     # Try with $HOME/bin/
     bindir = '$HOME' + os.sep + 'bin' + os.sep
-    print ''
-    print 'Contents of %s' % bindir
+    print('')
+    print('Contents of %s' % bindir)
     binnames = []
     k = 0
     fnam = completer.complete(bindir, 0)
     while fnam != None:
-        print '    %s' % fnam
+        print('    %s' % fnam)
         binnames.append(fnam)
         k += 1
         fnam = completer.complete(bindir, k)
@@ -190,6 +192,6 @@ if __name__ == '__main__':
                          (invalid_name, fnam))
 
     # All tests successful
-    print ''
-    print 'Success'
+    print('')
+    print('Success')
 

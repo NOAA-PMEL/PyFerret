@@ -30,6 +30,8 @@ These methods also help reduce the need to know the Ferret language
 and syntax.
 """
 
+from __future__ import print_function
+
 import sys
 import os
 import atexit
@@ -39,52 +41,51 @@ except ImportError:
     pass
 import readline
 
-import libpyferret
+from pyferret import libpyferret
 # also import everything (not starting with an underscore) from libpyferret 
 # so constants in that module are seen as part of this module
-from libpyferret import *
+from pyferret.libpyferret import *
 
 # methods for transferring data between the Ferret engine and Python
-import datamethods
+from pyferret import datamethods
 # also import the methods given in datamethods into pyferret
-from datamethods import *
+from pyferret.datamethods import *
 
 # methods to assist in writing Ferret external functions written in Python
-import pyefmethods
+from pyferret import pyefmethods
 # also import the methods given in pyefmethods into pyferret
-from pyefmethods import *
+from pyferret.pyefmethods import *
 
 # the FerRegion, FerAxis, FerGrid, FerVar, FerPyVar, and FerDSet objects 
 # for working with Ferret from Python
-import ferregion
-from ferregion import *
-import feraxis
-from feraxis import *
-import fergrid
-from fergrid import *
-import fervar
-from fervar import *
-import ferpyvar
-from ferpyvar import *
-import ferdset
-from ferdset import *
-import feraggdset
-from feraggdset import *
+from pyferret import ferregion
+from pyferret.ferregion import *
+from pyferret import feraxis
+from pyferret.feraxis import *
+from pyferret import fergrid
+from pyferret.fergrid import *
+from pyferret import fervar
+from pyferret.fervar import *
+from pyferret import ferpyvar
+from pyferret.ferpyvar import *
+from pyferret import ferdset
+from pyferret.ferdset import *
+from pyferret import feraggdset
+from pyferret.feraggdset import *
 
 # Create "the" anonymous dataset
 anondset = FerDSet('', qual=ferdset._anonymous_dataset_qualifier)
 
 # convenience methods for executing common Ferret commands
-import fermethods
-from fermethods import *
+from pyferret import fermethods
+from pyferret.fermethods import *
 
 # bindings for the PyQt-based graphics engines
 import pipedviewer.pyferretbindings
 
-# the following should be in this (pyferret) directory, which should be examined first
-import filenamecompleter
-import graphbind
-import regrid
+from pyferret import filenamecompleter
+from pyferret import graphbind
+from pyferret import regrid
 
 def init(arglist=None, enterferret=True):
     """
@@ -265,13 +266,13 @@ def init(arglist=None, enterferret=True):
                 else:
                     raise ValueError("unrecognized option '%s'" % opt)
                 k += 1
-        except ValueError, errmsg:
+        except ValueError as errmsg:
             # print the error message, then print the help message
-            print >>sys.stderr, "\n%s" % errmsg
+            print("\n%s" % errmsg, file=sys.stderr)
             print_help = True
         if print_help:
             # print the help message, then mark for exiting
-            print >>sys.stderr, ferret_help_message
+            print(ferret_help_message, file=sys.stderr)
             just_exit = True
         if just_exit:
             # print the ferret header then exit completely
@@ -501,7 +502,7 @@ def init(arglist=None, enterferret=True):
                 try:
                     result = run('go "%s"; exit /topy' % init_script)
                 except:
-                    print >>sys.stderr, " **Error: exception raised in runnning script %s" % init_script
+                    print(" **Error: exception raised in runnning script %s" % init_script, file=sys.stderr)
                     result = run('exit /program')
                     # should not get here
                     raise SystemExit
@@ -513,7 +514,7 @@ def init(arglist=None, enterferret=True):
         try:
             result = run('go %s; exit /program' % script_line)
         except:
-            print >>sys.stderr, " **Error: exception raised in running script %s" % script_line
+            print(" **Error: exception raised in running script %s" % script_line, file=sys.stderr)
         # If exception or if returned early, force shutdown
         result = run('exit /program')
         # should not get here
@@ -626,9 +627,14 @@ def start(memsize=25, journal=True, verify=False, restrict=False,
         # Execute the $PYTHONSTARTUP file, if it exists and -secure not given
         if not restrict:
             try:
-                execfile(os.getenv('PYTHONSTARTUP', ''));
-            except IOError:
-                pass;
+                startfilename = os.getenv('PYTHONSTARTUP', '')
+                if startfilename:
+                    if sys.version_info.major == 2:
+                        execfile(startfilename)
+                    else:
+                        exec(compile(open(startfilename).read(), startfilename, 'exec'));
+            except Exception:
+                pass
 
     return success
 
@@ -743,10 +749,16 @@ def _readline(myprompt):
         the string read in, or None if an Exception occurs
     """
     try:
-        if myprompt:
-            myline = raw_input(myprompt)
+        if sys.version_info.major == 2:
+            if myprompt:
+                myline = raw_input(myprompt)
+            else:
+                myline = raw_input()
         else:
-            myline = raw_input()
+            if myprompt:
+                myline = input(myprompt)
+            else:
+                myline = input()
     except Exception:
         myline = None
 

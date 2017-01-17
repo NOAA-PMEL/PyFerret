@@ -2,6 +2,8 @@
 Helper functions for pyferret shapefile external functions.
 """
 
+from __future__ import print_function
+
 import numpy
 import shapefile
 import os
@@ -33,7 +35,7 @@ def createprjfile(shapefile_mapprj, shapefile_name):
         prj_descript = pyferret.fershp.mapprj.name_to_descript(shapefile_mapprj)
     (sfname, ext) = os.path.splitext(shapefile_name)
     prjfile = file("%s.prj" % sfname, "w")
-    print >>prjfile, prj_descript
+    print(prj_descript, file=prjfile)
     prjfile.close()
 
 
@@ -241,7 +243,7 @@ if __name__ == "__main__":
                          "    expect: %s\n" \
                          "    found:  %s" % (wgs84upsnorth_descript, descript))
     del prjfile, datalines, descript
-    print "createprjfile: SUCCESS"
+    print("createprjfile: SUCCESS")
 
     # Test quadxycentroids
     xvals = ( ( 0, 1 ), ( 3, 4 ) )
@@ -268,7 +270,7 @@ if __name__ == "__main__":
         raise ValueError("Centroid Y values: expected %s; found %s" % \
                           (str(expecty), str(centy)))
     del xvals, yvals, expectx, expecty, centx, centy
-    print "quadxycentroids: SUCCESS"
+    print("quadxycentroids: SUCCESS")
 
     # Test quadxycenters
     xvals = ( ( 0, 1 ), ( 3, 4 ) )
@@ -295,7 +297,7 @@ if __name__ == "__main__":
         raise ValueError("Centroid Y values: expected %s; found %s" % \
                           (str(expecty), str(centy)))
     del xvals, yvals, expectx, expecty, centx, centy
-    print "quadxycenters: SUCCESS"
+    print("quadxycenters: SUCCESS")
 
     # Test addquadxyvalues
     coords = [ [0.0, 0.0], [1.0, 0.0], [1.0, -1.0], [2.0, 1.0] ]
@@ -337,5 +339,5 @@ if __name__ == "__main__":
     os.remove("%s.shx" % shapefilename)
     os.remove("%s.prj" % shapefilename)
 
-    print "addquadxyvalues: SUCCESS"
+    print("addquadxyvalues: SUCCESS")
 

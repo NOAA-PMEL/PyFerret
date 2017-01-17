@@ -6,9 +6,8 @@ default, PyFerret uses the name of the module as the function name.
 Copy this file using a name that you would like to be the function
 name, then modify the contents of these functions and comments as
 desired. 
-
-@author: 
 '''
+
 import numpy
 
 

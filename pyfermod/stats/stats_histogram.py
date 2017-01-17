@@ -1,6 +1,9 @@
 """
 Returns histogram bin counts for a given array of values.
 """
+
+from __future__ import print_function
+
 import numpy
 import pyferret
 
@@ -48,7 +51,7 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
                raise ValueError("BINS_TEMPLATE has more than one defined non-singular axis")
             limits_tuple = this_tuple
             axis_used = axis_num
-    if limits_tuple == None:
+    if limits_tuple is None:
         raise ValueError("BINS_TEMPLATE does not have a defined non-singular axis")
     # get the histogram bin limits from the axis box limits
     if not numpy.allclose(limits_tuple[0][1:], limits_tuple[1][:-1]):
@@ -111,5 +114,5 @@ if __name__ == "__main__":
     # verify the results
     if not numpy.allclose(result, expected):
         raise ValueError("Unexpected results; expected:\n%s\nfound:\n%s" % (str(expected), str(result)))
-    print "Success"
+    print("Success")
 

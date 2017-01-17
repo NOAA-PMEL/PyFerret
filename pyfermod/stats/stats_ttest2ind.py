@@ -2,6 +2,9 @@
 Performs a two-sided T-test that two independent samples
 come from (normal) distributions with the same mean.
 """
+
+from __future__ import print_function
+
 import numpy
 import pyferret
 import scipy.stats
@@ -88,16 +91,16 @@ if __name__ == "__main__":
     arrayb = numpy.empty((ydimb, 1, 1, zdimb, 1, 1), dtype=numpy.float64, order='F')
     arrayu = numpy.empty((ydimb, 1, 1, zdimb, 1, 1), dtype=numpy.float64, order='F')
     index = 0
-    for j in xrange(ydima):
-        for k in xrange(zdima):
+    for j in range(ydima):
+        for k in range(zdima):
             if (index % 23) == 3:
                 arraya[0, j, k, 0, 0, 0] = inpbdfs[0]
             else:
                 arraya[0, j, k, 0, 0, 0] = sampa[index]
             index += 1
     index = 0
-    for j in xrange(ydimb):
-        for k in xrange(zdimb):
+    for j in range(ydimb):
+        for k in range(zdimb):
             if (index % 53) == 3:
                 arrayb[j, 0, 0, k, 0, 0] = inpbdfs[1]
                 arrayu[j, 0, 0, k, 0, 0] = inpbdfs[1]
@@ -111,7 +114,7 @@ if __name__ == "__main__":
     # call ferret_compute with the samples from distribs with the same mean and check
     ferret_compute(0, resultb, resbdf, (arraya, arrayb), inpbdfs)
     resultb = resultb.reshape(-1)
-    print "result from same mean: %s" % str(resultb)
+    print("result from same mean: %s" % str(resultb))
     if (abs(resultb[0]) > 2.0) or \
        (resultb[1] <  0.1) or (resultb[1] > 1.0):
         raise ValueError("Unexpected result")
@@ -119,11 +122,11 @@ if __name__ == "__main__":
     # call ferret_compute with the samples from distribs with different means and check
     ferret_compute(0, resultu, resbdf, (arraya, arrayu), inpbdfs)
     resultu = resultu.reshape(-1)
-    print "result from diff mean: %s" % str(resultu)
+    print("result from diff mean: %s" % str(resultu))
     if (resultu[0] > -20.0) or \
        (resultu[1] < 0.0) or (resultu[1] > 1.0E-5):
         raise ValueError("Unexpected result")
 
     # All successful
-    print "Success"
+    print("Success")
 

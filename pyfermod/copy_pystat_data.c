@@ -34,6 +34,7 @@
 
 #include <Python.h>
 #define PY_ARRAY_UNIQUE_SYMBOL pyferret_ARRAY_API
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #define NO_IMPORT_ARRAY
 #include <numpy/arrayobject.h>
 #include "pyferret.h"
@@ -49,25 +50,25 @@
  */
 void copy_pystat_data_(double dest[], void *data_ndarray_ptr)
 {
-    PyObject *data_ndarray;
-    double *data;
-    npy_intp num_items;
+    PyArrayObject *data_ndarray;
+    double        *data;
+    npy_intp       num_items;
 
-    data_ndarray = *( (PyObject **) data_ndarray_ptr);
+    data_ndarray = *( (PyArrayObject **) data_ndarray_ptr);
 
     /* Sanity check:
      *    PyArray_Size returns 0 if the object is not an appropriate type
      *    ISFARRAY_RO checks if it is F-contiguous, aligned, and in machine byte-order 
      */
-    num_items = PyArray_Size(data_ndarray);
+    num_items = PyArray_Size((PyObject *) data_ndarray);
     if ( (num_items < 1) || (PyArray_TYPE(data_ndarray) != NPY_DOUBLE) ||
-         (! PyArray_ISFARRAY_RO(data_ndarray)) || (! PyArray_CHKFLAGS(data_ndarray, NPY_OWNDATA)) ) {
+         (! PyArray_ISFARRAY_RO(data_ndarray)) || (! PyArray_CHKFLAGS(data_ndarray, NPY_ARRAY_OWNDATA)) ) {
         fflush(stdout);
         fputs("Unexpected data_ndarray pointer passed to copy_pystat_data_\n", stderr);
         fflush(stderr);
         abort();
     }
-    data = (double *)PyArray_DATA(data_ndarray);
+    data = (double *) PyArray_DATA(data_ndarray);
     memcpy(dest, data, (size_t)num_items * sizeof(double));
 }
 

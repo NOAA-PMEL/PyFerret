@@ -3,6 +3,9 @@ Performs a chi-square test that a sample with the observed
 counts of categorical data comes from a population with the
 given expected counts or relative frequencies of that data.
 """
+
+from __future__ import print_function
+
 import numpy
 import pyferret
 import scipy.stats
@@ -109,12 +112,12 @@ if __name__ == "__main__":
         histgr = numpy.array(histgr, dtype=numpy.float64)
         exphist = numpy.ones((nbins,), dtype=numpy.float64) * histgr.mean()
         chival = ((histgr - exphist)**2 / exphist).sum()
-        print "created a sample with chival = %f" % chival
+        print("created a sample with chival = %f" % chival)
     prob = scipy.stats.chi2(nbins - 1 - ddof).sf(chival)
     expect = numpy.array([chival, prob, nbins], dtype=numpy.float64)
-    print "sample histogram = \n%s" % str(histgr)
-    print "expect histogram value for all bins = %f" % exphist[0]
-    print "expect result = %s" % str(expect)
+    print("sample histogram = \n%s" % str(histgr))
+    print("expect histogram value for all bins = %f" % exphist[0])
+    print("expect result = %s" % str(expect))
 
     # setup for the call to ferret_compute - one non-singular axis
     inpbdfs = numpy.array([-9999.0, -8888.0, -7777.0], dtype=numpy.float64)
@@ -128,7 +131,7 @@ if __name__ == "__main__":
     # call ferret_compute and check the result
     ferret_compute(0, result, resbdf, (samhist, pophist, ddofarr), inpbdfs)
     result = result.reshape(-1)
-    print " found result = %s" % str(result)
+    print(" found result = %s" % str(result))
     if not numpy.allclose(result, expect):
         raise ValueError("Unexpected result")
 
@@ -145,10 +148,10 @@ if __name__ == "__main__":
     # call ferret_compute and check the result
     ferret_compute(0, result, resbdf, (samhist, pophist, ddofarr), inpbdfs)
     result = result.reshape(-1)
-    print " found result = %s" % str(result)
+    print(" found result = %s" % str(result))
     if not numpy.allclose(result, expect):
         raise ValueError("Unexpected result")
 
     # All successful
-    print "Success"
+    print("Success")
 

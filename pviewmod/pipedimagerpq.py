@@ -13,25 +13,38 @@ Project (TMAP) of the National Oceanographic and Atmospheric
 Administration's (NOAA) Pacific Marine Environmental Lab (PMEL).
 '''
 
+from __future__ import print_function
+
+import sys
+import os
+import time
+import signal
+
 import sip
 try:
     sip.setapi('QVariant', 2)
 except AttributeError:
     pass
 
-from PyQt4.QtCore import Qt, QPointF, QRectF, QSize, QString, QTimer
-from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, QDialog, \
-                         QFileDialog, QImage, QLabel, QMainWindow, \
-                         QMessageBox, QPainter, QPalette, QPen, QPixmap, \
-                         QPolygonF, QPushButton, QScrollArea
+try:
+    from PyQt5.QtCore    import Qt, QPointF, QRectF, QSize, QTimer
+    from PyQt5.QtGui     import QBrush, QColor, QImage, QPainter, \
+                                QPalette, QPen, QPixmap, QPolygonF
+    from PyQt5.QtWidgets import QAction, QApplication, QDialog, \
+                                QFileDialog, QLabel, QMainWindow, \
+                                QMessageBox, QPushButton, QScrollArea
+except ImportError:
+    from PyQt4.QtCore import Qt, QPointF, QRectF, QSize, QTimer
+    from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, QDialog, \
+                             QFileDialog, QImage, QLabel, QMainWindow, \
+                             QMessageBox, QPainter, QPalette, QPen, QPixmap, \
+                             QPolygonF, QPushButton, QScrollArea
+
+from multiprocessing import Pipe, Process
 
 from cmndhelperpq import CmndHelperPQ
 from scaledialogpq import ScaleDialogPQ
-from multiprocessing import Pipe, Process
-import sys
-import time
-import os
-import signal
+
 
 
 class PipedImagerPQ(QMainWindow):
@@ -538,7 +551,7 @@ class PipedImagerPQ(QMainWindow):
                           self.tr("XBM - X11 Bitmap (*.xbm)") ), ]
         # tr returns QStrings so the following does not work
         # filters = ";;".join( [ t[1] for t in formattypes ] )
-        filters = QString(formattypes[0][1])
+        filters = formattypes[0][1]
         for typePair in formattypes[1:]:
             filters.append(";;")
             filters.append(typePair[1])
@@ -795,11 +808,11 @@ class _CommandSubmitterPQ(QDialog):
             cmndstr = str(self.__cmndlist[self.__nextcmnd])
             if len(cmndstr) > 188:
                 cmndstr = cmndstr[:188] + '...'
-            print "Command: %s" % cmndstr
+            print("Command: %s" % cmndstr)
             self.__cmndpipe.send(self.__cmndlist[self.__nextcmnd])
             self.__nextcmnd += 1
             while self.__rspdpipe.poll():
-                print "Response: %s" % str(self.__rspdpipe.recv())
+                print("Response: %s" % str(self.__rspdpipe.recv()))
         except IndexError:
             self.__rspdpipe.close()
             self.__cmndpipe.close()
@@ -853,8 +866,8 @@ if __name__ == "__main__":
     # not a good way to get the pixel data
     testimgdata = bytearray(testimgheight * testimgstride)
     k = 0
-    for pty in xrange(testimgheight):
-        for ptx in xrange(testimgwidth):
+    for pty in range(testimgheight):
+        for ptx in range(testimgwidth):
             pixval = testimage.pixel(ptx, pty)
             (aval, rgbval) = divmod(pixval, 256 * 256 * 256)
             (rval, gbval) = divmod(rgbval, 256 * 256)
@@ -873,7 +886,7 @@ if __name__ == "__main__":
                         "width":testimgwidth,
                         "height":testimgheight,
                         "stride":testimgstride } )
-    for k in xrange(testnumblocks):
+    for k in range(testnumblocks):
         if k < (testnumblocks - 1):
             blkdata = testimgdata[k*testblocksize:(k+1)*testblocksize]
         else:

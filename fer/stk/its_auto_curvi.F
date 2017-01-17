@@ -56,11 +56,12 @@
 	frame_bottom = is_aux_ptr(is_ptr)
 	ITS_AUTO_CURVI = .FALSE.
 
-* count the stored auxiliary variables in the designated stack frame
-	DO idim = 1, nferdims
-	   which_axes(idim) = is_mr(frame_bottom+idim) .NE. unspecified_int4
-	   IF ( which_axes(idim) ) ITS_AUTO_CURVI = .TRUE.
-	ENDDO
+! 1/17 this code temporarily comments out
+!* count the stored auxiliary variables in the designated stack frame
+!	DO idim = 1, nferdims
+!	   which_axes(idim) = is_mr(frame_bottom+idim) .NE. unspecified_int4
+!	   IF ( which_axes(idim) ) ITS_AUTO_CURVI = .TRUE.
+!	ENDDO
 
 	RETURN
 	END

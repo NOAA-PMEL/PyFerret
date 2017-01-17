@@ -1784,7 +1784,7 @@ c     .              cal_id, line_t0(iline), units, line_units(iline),
 c     .              start, delta, line_tunit(iline), true_month)
 c	   IF (true_month) THEN
 c	      line_regular(iline) = .TRUE.
-	c	      line_start  (iline) = start !* line_tunit(iline)/ un_convert(pun_day)
+c	      line_start  (iline) = start !* line_tunit(iline)/ un_convert(pun_day)
 c	      line_delta  (iline) = delta
 c	      line_subsc1 (iline) = unspecified_int4
 c	      last_coord = line_start(iline) + DBLE(npts-1)*line_delta(iline)

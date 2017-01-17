@@ -13,7 +13,7 @@ graphics operations on this Window.
 
 from __future__ import print_function
 
-from abstractpyferretbindings import AbstractPyFerretBindings
+from pyferret.graphbind.abstractpyferretbindings import AbstractPyFerretBindings
 
 __pyferret_bindings_classes = { }
 

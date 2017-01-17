@@ -41,52 +41,51 @@ except ImportError:
     pass
 import readline
 
-import libpyferret
+from pyferret import libpyferret
 # also import everything (not starting with an underscore) from libpyferret 
 # so constants in that module are seen as part of this module
-from libpyferret import *
+from pyferret.libpyferret import *
 
 # methods for transferring data between the Ferret engine and Python
-import datamethods
+from pyferret import datamethods
 # also import the methods given in datamethods into pyferret
-from datamethods import *
+from pyferret.datamethods import *
 
 # methods to assist in writing Ferret external functions written in Python
-import pyefmethods
+from pyferret import pyefmethods
 # also import the methods given in pyefmethods into pyferret
-from pyefmethods import *
+from pyferret.pyefmethods import *
 
 # the FerRegion, FerAxis, FerGrid, FerVar, FerPyVar, and FerDSet objects 
 # for working with Ferret from Python
-import ferregion
-from ferregion import *
-import feraxis
-from feraxis import *
-import fergrid
-from fergrid import *
-import fervar
-from fervar import *
-import ferpyvar
-from ferpyvar import *
-import ferdset
-from ferdset import *
-import feraggdset
-from feraggdset import *
+from pyferret import ferregion
+from pyferret.ferregion import *
+from pyferret import feraxis
+from pyferret.feraxis import *
+from pyferret import fergrid
+from pyferret.fergrid import *
+from pyferret import fervar
+from pyferret.fervar import *
+from pyferret import ferpyvar
+from pyferret.ferpyvar import *
+from pyferret import ferdset
+from pyferret.ferdset import *
+from pyferret import feraggdset
+from pyferret.feraggdset import *
 
 # Create "the" anonymous dataset
 anondset = FerDSet('', qual=ferdset._anonymous_dataset_qualifier)
 
 # convenience methods for executing common Ferret commands
-import fermethods
-from fermethods import *
+from pyferret import fermethods
+from pyferret.fermethods import *
 
 # bindings for the PyQt-based graphics engines
 import pipedviewer.pyferretbindings
 
-# the following should be in this (pyferret) directory, which should be examined first
-import filenamecompleter
-import graphbind
-import regrid
+from pyferret import filenamecompleter
+from pyferret import graphbind
+from pyferret import regrid
 
 def init(arglist=None, enterferret=True):
     """

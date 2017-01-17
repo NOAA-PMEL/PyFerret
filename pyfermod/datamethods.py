@@ -9,7 +9,7 @@ import numpy
 import numpy.ma
 import io
 
-import libpyferret
+from pyferret import libpyferret
 
 # set of units (in uppercase) for checking if a custom axis is actual a longitude axis
 _UC_LONGITUDE_UNITS = frozenset( ("DEG E", "DEG_E", "DEG EAST", "DEG_EAST",

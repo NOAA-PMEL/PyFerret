@@ -3,7 +3,7 @@ Methods in pyferret to assist in the writing of Ferret external functions
 written in Python.
 """
 
-import libpyferret
+from pyferret import libpyferret
 
 def ferret_pyfunc():
     """

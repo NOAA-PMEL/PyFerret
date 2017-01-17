@@ -179,10 +179,10 @@ class CurvRectRegridder(object):
                                                            center_ignore_array)
 
         # Release any regridding procedures and clear the dictionaries
-        for handle in list(self.__rect_to_curv_handles.values()):
+        for handle in self.__rect_to_curv_handles.values():
             ESMP.ESMP_FieldRegridRelease(handle)
         self.__rect_to_curv_handles.clear()
-        for handle in list(self.__curv_to_rect_handles.values()):
+        for handle in self.__curv_to_rect_handles.values():
             ESMP.ESMP_FieldRegridRelease(handle)
         self.__curv_to_rect_handles.clear()
         # Destroy any curvilinear ESMP_Fields
@@ -443,10 +443,10 @@ class CurvRectRegridder(object):
                                                            center_ignore_array)
 
         # Release any regridding procedures and clear the dictionaries
-        for handle in list(self.__rect_to_curv_handles.values()):
+        for handle in self.__rect_to_curv_handles.values():
             ESMP.ESMP_FieldRegridRelease(handle)
         self.__rect_to_curv_handles.clear()
-        for handle in list(self.__curv_to_rect_handles.values()):
+        for handle in self.__curv_to_rect_handles.values():
             ESMP.ESMP_FieldRegridRelease(handle)
         self.__curv_to_rect_handles.clear()
         # Destroy any rectilinear ESMP_Fields
@@ -741,10 +741,10 @@ class CurvRectRegridder(object):
             None
         '''
         # Release any regridding procedures and clear the dictionaries
-        for handle in list(self.__rect_to_curv_handles.values()):
+        for handle in self.__rect_to_curv_handles.values():
             ESMP.ESMP_FieldRegridRelease(handle)
         self.__rect_to_curv_handles.clear()
-        for handle in list(self.__curv_to_rect_handles.values()):
+        for handle in self.__curv_to_rect_handles.values():
             ESMP.ESMP_FieldRegridRelease(handle)
         self.__curv_to_rect_handles.clear()
         # Destroy any ESMP_Fields

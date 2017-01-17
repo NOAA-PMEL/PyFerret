@@ -984,10 +984,10 @@ if __name__ == "__main__":
         bindinst.endView()
         # Window should already be shown, but just to make sure
         bindinst.showWindow(True)
-        if sys.version_info.major == 2:
-            raw_input("Press Enter to continue")
-        else:
+        if sys.version_info[0] > 2:
             input("Press Enter to continue")
+        else:
+            raw_input("Press Enter to continue")
         # Create a view of the whole window
         bindinst.beginView(0.0, 1.0, 1.0, 0.0, True)
         # Draw magenta points using various symbols
@@ -1030,10 +1030,10 @@ if __name__ == "__main__":
         bindinst.endView()
         # Window should already be shown, but just to make sure
         bindinst.showWindow(True)
-        if sys.version_info.major == 2:
-            raw_input("Press Enter to continue")
-        else:
+        if sys.version_info[0] > 2:
             input("Press Enter to continue")
+        else:
+            raw_input("Press Enter to continue")
         try:
             while 1:
                 bindinst.deleteColor(mycolors.pop())

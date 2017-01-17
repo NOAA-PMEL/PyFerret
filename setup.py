@@ -74,7 +74,7 @@ if buildtype != "intel-mac":
     lib_list.extend(fer_lib_list)
     lib_list.extend(fer_lib_list)
 # Add required system libraries to the list to link in
-lib_list.append("python%i.%i" % sys.version_info[:2])
+lib_list.append("python%d.%d" % sys.version_info[:2])
 
 # Linking in the rest of the system libraries were moved to addn_link_flags
 # in order to make sure the appropriate netcdff, netcdf, hdf5_hl, hdf5, and

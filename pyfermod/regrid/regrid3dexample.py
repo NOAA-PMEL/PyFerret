@@ -410,10 +410,10 @@ if __name__ == '__main__':
             print('r2cw: rectilinear to curvilinear with corners')
             print('r2co: rectilinear to curvilinear without corners')
             print('Ctrl-D to quit')
-            if sys.version_info.major == 2:
-                direction = raw_input('Regrid test to run? ')
-            else:
+            if sys.version_info[0] > 2:
                 direction = input('Regrid test to run? ')
+            else:
+                direction = raw_input('Regrid test to run? ')
             direction = direction.strip().lower()
             if direction in ('cw2r', 'co2r', 'r2cw', 'r2co'):
                 break

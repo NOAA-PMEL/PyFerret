@@ -253,10 +253,10 @@ if __name__ == "__main__":
                 print("Response: %s" % str(response))
                 response = pviewer.checkForResponse()
             if cmd["action"] == "show":
-                if sys.version_info.major == 2:
-                    raw_input("Press Enter to continue")
-                else:
+                if sys.version_info[0] > 2:
                     input("Press Enter to continue")
+                else:
+                    raw_input("Press Enter to continue")
         # end of the commands - shut down and check return value
         pviewer.waitForViewerExit()
         result = pviewer.getViewerExitCode()

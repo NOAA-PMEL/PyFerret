@@ -629,10 +629,10 @@ def start(memsize=25, journal=True, verify=False, restrict=False,
             try:
                 startfilename = os.getenv('PYTHONSTARTUP', '')
                 if startfilename:
-                    if sys.version_info.major == 2:
-                        execfile(startfilename)
-                    else:
+                    if sys.version_info[0] > 2:
                         exec(compile(open(startfilename).read(), startfilename, 'exec'));
+                    else:
+                        execfile(startfilename)
             except Exception:
                 pass
 
@@ -749,16 +749,16 @@ def _readline(myprompt):
         the string read in, or None if an Exception occurs
     """
     try:
-        if sys.version_info.major == 2:
-            if myprompt:
-                myline = raw_input(myprompt)
-            else:
-                myline = raw_input()
-        else:
+        if sys.version_info[0] > 2:
             if myprompt:
                 myline = input(myprompt)
             else:
                 myline = input()
+        else:
+            if myprompt:
+                myline = raw_input(myprompt)
+            else:
+                myline = raw_input()
     except Exception:
         myline = None
 

@@ -5,9 +5,13 @@ and Python.
 
 from __future__ import print_function
 
+import sys
 import numpy
 import numpy.ma
-import io
+if sys.version_info[0] > 2:
+    import io
+else:
+    import StringIO
 
 from pyferret import libpyferret
 
@@ -59,7 +63,10 @@ def metastr(datadict):
         if (key != "data") and (key not in keylist):
             keylist.append(key)
     # create the metadata string using StringIO
-    strbuf = io.StringIO()
+    if sys.version_info[0] > 2:
+        strbuf = io.StringIO()
+    else:
+        strbuf = StringIO.StringIO()
     for key in keylist:
         try:
             # make sure the key:value pair exists

@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1404 Jan 13 09:36 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1404 Jan 17 14:29 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -302,7 +302,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Fri Jan 13 09:36:50 PST 2017
+Beginning at Tue Jan 17 14:31:50 PST 2017
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4935,16 +4935,16 @@ set region/@w
  Cached data cleared from memory
 *** Running python script: testgetstrdata.py
  Cached data cleared from memory
->>> ... ... >>> 
+>>> ... ... >>> >>> >>> 
 *** Running python script: testferregion.py
  Cached data cleared from memory
->>> ... ... >>> >>> 
+>>> ... ... >>> >>> >>> >>> >>> 
 *** Running python script: testferdset.py
  Cached data cleared from memory
->>> ... ... >>> 
+>>> ... ... >>> >>> >>> 
 *** Running python script: testfervar.py
  Cached data cleared from memory
->>> ... ... >>> Traceback (most recent call last):
+>>> ... ... >>> >>> >>> Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
   File "/home/flat/ksmith/PyFerret/lib/python2.6/site-packages/pyferret/ferdset.py", line 226, in __delattr__
     self.__delitem__(name)
@@ -4956,18 +4956,18 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 
 *** Running python script: testferaggdset.py
  Cached data cleared from memory
->>> ... ... >>>            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+>>> ... ... >>> >>> >>>            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
 
 *** Running python script: testferaxis.py
  Cached data cleared from memory
->>> ... ... >>> >>> 
+>>> ... ... >>> >>> >>> >>> >>> 
 *** Running python script: testfergrid.py
  Cached data cleared from memory
->>> ... ... >>> >>> 
+>>> ... ... >>> >>> >>> >>> >>> 
 *** Running python script: testferpyvar.py
  Cached data cleared from memory
->>> ... ... >>> 
+>>> ... ... >>> >>> >>> 
 *** Running python script: testfermethods.py
  Cached data cleared from memory
->>> ... ... >>> 
-Ended at Fri Jan 13 09:39:38 PST 2017
+>>> ... ... >>> >>> >>> 
+Ended at Tue Jan 17 14:34:36 PST 2017

@@ -179,13 +179,26 @@
 	   cx_expr = cx_stack_ptr
 
 
-* ... a frame of size nferdims to hold aux vars needed for plotting and listing
-	   max_usable_intrp = max_usable_intrp - nferdims
-	   max_context      = max_context      - nferdims
-	   DO idim = 1, nferdims
-	      is_mr(max_usable_intrp+idim) = unspecified_int4
-	      is_cx(max_usable_intrp+idim) = unspecified_int4  ! bookkeeping
-	   ENDDO
+! *sh* 1/17
+! This block of code is experimental / untested from 2014.
+! It is connected to  CALL SET_AUTO_CURVI_MODES above (also half-baked).
+! For now I have commented it out, as it can eat up the context stack on
+! commands where num_uvars_in_cmnd is large
+! The logic here reserves a frame of nferdims slots at the top of the context
+! stack as the place to stash the contexts needed to describe the auxiliary
+! variables that are associated with each requested variable.
+! e.g. SHADE my_curvi_var should automate a 3-arg curvilinear plot.
+!  and LIST my_curvi_var should automatically list curvilinear coordinates
+! The stack frames detected by ITS_AUTO_CURVI (also temporarily disabled)
+! The code development only got as far as XEQ_LIST, (not SHADE, etc.) and
+! the relevant code is never triggered as long as ITS_AUTO_CURVI returns FALSE
+!* ... a frame of size nferdims to hold aux vars needed for plotting and listing
+!	   max_usable_intrp = max_usable_intrp - nferdims
+!	   max_context      = max_context      - nferdims
+!	   DO idim = 1, nferdims
+!	      is_mr(max_usable_intrp+idim) = unspecified_int4
+!	      is_cx(max_usable_intrp+idim) = unspecified_int4  ! bookkeeping
+!	   ENDDO
 
 * ... evaluate the next sub-expression
 	   CALL TRANSFER_CONTEXT( cx_cmnd, cx_expr )

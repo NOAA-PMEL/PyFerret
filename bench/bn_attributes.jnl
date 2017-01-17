@@ -6,6 +6,7 @@
 ! 31Aug2006 ACM Remove OPeNDAP references; not essential to the 
 ! benchmark tests.
 
+! small addition below 1/17 *sh*
 
 !-----
 
@@ -1012,3 +1013,8 @@ sho att temp[d=2]
 sho att (`temp[d=1],return=taxis`[d=1])
 
 sho att .
+
+! 1/17 *sh*
+! added a test of shifting attributes in is_attrib_val.F
+define att temp.test_counter = {1, 2, 3, 4, 5}
+list temp.test_counter[i=3:5]

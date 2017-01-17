@@ -194,6 +194,7 @@
 * V710  4/16 *acm* Remove the 2-day shift correction. CDC does not seem to 
 *                  consistenly applythis logic to current files
 * V71 12/16 *acm* Ticket 2158: working with true monthly time axes.
+* V7022 1/17 *acm* ticket 2497, Back off the auto-detection of monthly axes.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -1228,27 +1229,29 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * axis, stored internally as if regular, but coordinates returned on true axis.
 * Do not call this if the file has enhanced header, with parent and child grids. 
 * (at least for now.)
+* 1/13/2017 ticket 2497, Back off this auto-detection of monthly axes for now.
+
 
 	true_month = .FALSE.
-	IF (line_direction(iaxis) .EQ. 'TI' .AND. 
-     .      .NOT.line_regular(iaxis) .AND.
-     .      .NOT.has_gdef ) 
-     .       CALL TM_CHECK_MONTHLY_AXIS (line_mem(ipt1), line_dim(iaxis), cal_id, 
-     .                                   line_t0(iaxis), units, line_units(iaxis),
-     .                                   start, delta, line_tunit(iaxis), true_month)
-
-        IF (true_month) THEN
-           line_regular(iaxis) = .TRUE.
-           line_start  (iaxis) = start !* line_tunit(iaxis)/ un_convert(pun_day)
-           line_delta  (iaxis) = delta
-           line_subsc1 (iaxis) = unspecified_int4
-           last_coord = line_start(iaxis) + DBLE(npts-1)*line_delta(iaxis)
-           firs_coord = start
-           line_unit_code (iaxis) = units
-           line_tunit  (iaxis) = un_convert(units)
-           got_edges = .FALSE.
-           got_bnds  = .FALSE.
-	ENDIF
+c	IF (line_direction(iaxis) .EQ. 'TI' .AND. 
+c     .      .NOT.line_regular(iaxis) .AND.
+c     .      .NOT.has_gdef ) 
+c     .       CALL TM_CHECK_MONTHLY_AXIS (line_mem(ipt1), line_dim(iaxis), cal_id, 
+c     .                                   line_t0(iaxis), units, line_units(iaxis),
+c     .                                   start, delta, line_tunit(iaxis), true_month)
+c
+c        IF (true_month) THEN
+c           line_regular(iaxis) = .TRUE.
+c           line_start  (iaxis) = start !* line_tunit(iaxis)/ un_convert(pun_day)
+c           line_delta  (iaxis) = delta
+c           line_subsc1 (iaxis) = unspecified_int4
+c           last_coord = line_start(iaxis) + DBLE(npts-1)*line_delta(iaxis)
+c           firs_coord = start
+c           line_unit_code (iaxis) = units
+c           line_tunit  (iaxis) = un_convert(units)
+c           got_edges = .FALSE.
+c           got_bnds  = .FALSE.
+c	ENDIF
 
 * Save the axis name (upper case) and memory storage.  For all irregular axes, 
 * we have saved N+1 edges for the axis cells. Increment the pointer.   

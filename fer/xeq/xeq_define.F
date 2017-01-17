@@ -256,6 +256,7 @@
 *                  Add DEFINE AXIS /MONTHLY /LIKE=
 * V710  4/16 *acm* new TM_UNITS_CAL to account for calendar in units id
 * V702 12/16 *acm* handling modulo true-month axes added after merge back to trunk.
+* V7022 1/17 *acm* ticket 2497, Back off the auto-detection of monthly axes.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -1777,25 +1778,26 @@ c	CALL TM_WARN_SUBSPAN (iline)
 
 
 * ... Was it a true-month axis (defined in the classic way without the /MONTHLY qualifier)?
+* 1/13/2017 ticket 2497, Back off this auto-detection of monthly axes for now.
 
-	IF (.NOT. true_month .AND. irreg .AND. .NOT.line_modulo( iline)) THEN
-           units = TM_UNIT_ID( line_units(iline) )
-	   CALL TM_CHECK_MONTHLY_AXIS (line_mem(frst_pt), line_dim(iline), 
-     .              cal_id, line_t0(iline), units, line_units(iline),
-     .              start, delta, line_tunit(iline), true_month)
-	   IF (true_month) THEN
-	      line_regular(iline) = .TRUE.
-	      line_start  (iline) = start !* line_tunit(iline)/ un_convert(pun_day)
-	      line_delta  (iline) = delta
-	      line_subsc1 (iline) = unspecified_int4
-	      last_coord = line_start(iline) + DBLE(npts-1)*line_delta(iline)
-	      firs_coord = start
-	      line_unit_code (iline) = units
-	      line_tunit  (iline) = un_convert(units)
-	      its_edges = .FALSE.
-	      irreg = .FALSE.
-	   ENDIF
-	ENDIF
+c	IF (.NOT. true_month .AND. irreg .AND. .NOT.line_modulo( iline)) THEN
+c           units = TM_UNIT_ID( line_units(iline) )
+c	   CALL TM_CHECK_MONTHLY_AXIS (line_mem(frst_pt), line_dim(iline), 
+c     .              cal_id, line_t0(iline), units, line_units(iline),
+c     .              start, delta, line_tunit(iline), true_month)
+c	   IF (true_month) THEN
+c	      line_regular(iline) = .TRUE.
+c	      line_start  (iline) = start !* line_tunit(iline)/ un_convert(pun_day)
+c	      line_delta  (iline) = delta
+c	      line_subsc1 (iline) = unspecified_int4
+c	      last_coord = line_start(iline) + DBLE(npts-1)*line_delta(iline)
+c	      firs_coord = start
+c	      line_unit_code (iline) = units
+c	      line_tunit  (iline) = un_convert(units)
+c	      its_edges = .FALSE.
+c	      irreg = .FALSE.
+c	   ENDIF
+c	ENDIF
 
 
 * ... coordinate pointer for next line to save

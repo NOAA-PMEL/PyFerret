@@ -1,6 +1,7 @@
 ! bn_aggregate_tef.F
 ! 2/2016 *sh*
 ! 3/2016 - modified to test single point axis aggregations on Z axis
+! 1/2017 *acm* changes in output due to backing off auto-detection of truemonth axes, tkt 2497
 
 ! to avoid re-creating the test files include argument "0" as in
 !  yes?  GO bn_aggregate_tef 0

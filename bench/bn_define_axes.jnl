@@ -2,6 +2,7 @@
 ! *sh* 5/99
 ! *sh* 12/99 -  with streamlined syntax
 ! *acm* 12/16 - change to a comment only
+! 1/2017 *acm* changes in output due to backing off auto-detection of truemonth axes, tkt 2497
 
 ! exercise the DEFINE AXIS command
 
@@ -64,6 +65,7 @@ show axis/t tax
 ! real monthly calendar
 ! (Note: when running pre-true-month Ferret versions, the timestep output from 
 ! show axis/l below was eliminated by the "clean_draconian" script)
+! 1/17/2017 changes due to backing off auto-detection of truemonth axes, tkt 2497
 
 let month = MOD(l-1,12)+1
 let add_year = INT((l-1)/12)

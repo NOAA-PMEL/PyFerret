@@ -2,6 +2,7 @@
 ! 9/12/2015 *sh* tweak to put all test files into "tmp" subdirectory
 ! 1/2016 *sh* added implicit naming of aggregation from script filename
 ! 2/2016      and auto-sorting of member files
+! 1/2017 *acm* changes in output due to backing off auto-detection of truemonth axes, tkt 2497
 
 spawn "mkdir -p tmp"     ! tmp directory t store files
 
@@ -297,6 +298,8 @@ canc data/all
 ! OPeNDAP test
 ! (Note: when running pre-true-month Ferret versions, the timestep output from 
 ! show grid/T below was eliminated by the "clean_draconian" script)
+! 1/17/2017 changes due to backing off auto-detection of truemonth axes, tkt 2497
+
 IF `test_opendap("http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2012.nc") EQ 0` THEN
    tseries COADS = http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2012.nc, http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2013.nc, http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2014.nc
 show data COADS

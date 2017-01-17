@@ -1,5 +1,6 @@
 ! err62_axis_stride_off.jnl
 ! fixing bug 1689: offset shifted by 1 so /OFFSET=0 >> start index = 1
+! 1/2017 *acm* changes in output due to backing off auto-detection of truemonth axes, tkt 2497
 
 USE truemonth.nc
 

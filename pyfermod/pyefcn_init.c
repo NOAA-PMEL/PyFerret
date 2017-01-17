@@ -34,6 +34,7 @@
 
 #include <Python.h>
 #define PY_ARRAY_UNIQUE_SYMBOL pyferret_ARRAY_API
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #define NO_IMPORT_ARRAY
 #include <numpy/arrayobject.h>
 #include "pyferret.h"
@@ -74,7 +75,11 @@ void pyefcn_init(int id, char modname[], char errmsg[])
     /*
      * Import the user's Python module
      */
+#if PY_MAJOR_VERSION > 2
+    valobj = PyUnicode_FromString(modname);
+#else
     valobj = PyString_FromString(modname);
+#endif
     if ( valobj == NULL ) {
         PyErr_Clear();
         sprintf(errmsg, "Problems creating a Python string from the module name: %s", modname);
@@ -123,7 +128,11 @@ void pyefcn_init(int id, char modname[], char errmsg[])
                         INIT_METHOD_NAME, modname);
         return;
     }
+#if PY_MAJOR_VERSION > 2
+    num_args = (int) PyLong_AsLong(valobj);
+#else
     num_args = (int) PyInt_AsLong(valobj);
+#endif
     if ( (num_args < 1) || (num_args > EF_MAX_ARGS) ) {
         PyErr_Clear();
         Py_DECREF(initdict);
@@ -142,7 +151,11 @@ void pyefcn_init(int id, char modname[], char errmsg[])
                         INIT_METHOD_NAME, modname);
         return;
     }
+#if PY_MAJOR_VERSION > 2
+    strptr = PyUnicode_AsUTF8(valobj);
+#else
     strptr = PyString_AsString(valobj);
+#endif
     if ( strptr == NULL ) {
         PyErr_Clear();
         Py_DECREF(initdict);
@@ -158,7 +171,11 @@ void pyefcn_init(int id, char modname[], char errmsg[])
      */
     valobj = PyDict_GetItemString(initdict, "restype"); /* borrowed reference */
     if ( valobj != NULL ) {
+#if PY_MAJOR_VERSION > 2
+        restype = (int) PyLong_AsLong(valobj);
+#else
         restype = (int) PyInt_AsLong(valobj);
+#endif
         if ( restype == FLOAT_ARRAY ) {
             restype = FLOAT_RETURN;
         }
@@ -184,7 +201,11 @@ void pyefcn_init(int id, char modname[], char errmsg[])
      */
     valobj = PyDict_GetItemString(initdict, "resstrlen"); /* borrowed reference */
     if ( valobj != NULL ) {
+#if PY_MAJOR_VERSION > 2
+        resstrlen = (int) PyLong_AsLong(valobj);
+#else
         resstrlen = (int) PyInt_AsLong(valobj);
+#endif
         if ( resstrlen < 1 ) {
             PyErr_Clear();
             Py_DECREF(initdict);
@@ -230,7 +251,12 @@ void pyefcn_init(int id, char modname[], char errmsg[])
         rsltaxes[k] = IMPLIED_BY_ARGS;
         if ( k < seqlen ) {
             itemobj = PySequence_Fast_GET_ITEM(seqobj, (Py_ssize_t) k); /* borrowed reference */
-            switch( (int) PyInt_AsLong(itemobj) ) {
+#if PY_MAJOR_VERSION > 2
+            val = (int) PyLong_AsLong(itemobj);
+#else
+            val = (int) PyInt_AsLong(itemobj);
+#endif
+            switch( val ) {
                 case IMPLIED_BY_ARGS:
                     break;
                 case ABSTRACT:
@@ -345,7 +371,11 @@ void pyefcn_init(int id, char modname[], char errmsg[])
         if ( j < seqlen ) {
             /* Get the name from the tuple */
             itemobj = PySequence_Fast_GET_ITEM(seqobj, (Py_ssize_t) j); /* borrowed reference */
+#if PY_MAJOR_VERSION > 2
+            strptr = PyUnicode_AsUTF8(itemobj);
+#else
             strptr = PyString_AsString(itemobj);
+#endif
             if ( strptr != NULL ) {
                 strncpy(name, strptr, EF_MAX_NAME_LENGTH);
                 name[EF_MAX_NAME_LENGTH-1] = '\0';
@@ -392,7 +422,11 @@ void pyefcn_init(int id, char modname[], char errmsg[])
         if ( j < seqlen ) {
             /* Get the description from the tuple */
             itemobj = PySequence_Fast_GET_ITEM(seqobj, (Py_ssize_t) j); /* borrowed reference */
+#if PY_MAJOR_VERSION > 2
+            strptr = PyUnicode_AsUTF8(itemobj);
+#else
             strptr = PyString_AsString(itemobj);
+#endif
             if ( strptr != NULL ) {
                 strncpy(descript, strptr, EF_MAX_DESCRIPTION_LENGTH);
                 descript[EF_MAX_DESCRIPTION_LENGTH-1] = '\0';
@@ -446,7 +480,12 @@ void pyefcn_init(int id, char modname[], char errmsg[])
         if ( j < seqlen ) {
             /* Get the type from the tuple */
             itemobj = PySequence_Fast_GET_ITEM(seqobj, (Py_ssize_t) j); /* borrowed reference */
-            switch( (int) PyInt_AsLong(itemobj) ) {
+#if PY_MAJOR_VERSION > 2
+            val = (int) PyLong_AsLong(itemobj);
+#else
+            val = (int) PyInt_AsLong(itemobj);
+#endif
+            switch( val ) {
                 case FLOAT_ONEVAL:
                 case FLOAT_ARRAY:
                 case FLOAT_ARG:
@@ -625,7 +664,11 @@ void pyefcn_init(int id, char modname[], char errmsg[])
                         deltas[0] = 0; deltas[1] = 0;
                         for (q = 0; q < subsubseqlen; q++) {
                             itemobj = PySequence_Fast_GET_ITEM(subsubseqobj, (Py_ssize_t) q); /* borrowed reference */
+#if PY_MAJOR_VERSION > 2
+                            val = PyLong_AsLong(itemobj);
+#else
                             val = PyInt_AsLong(itemobj);
+#endif
                             if ( PyErr_Occurred() ) {
                                 PyErr_Clear();
                                 Py_DECREF(subsubseqobj);
@@ -669,7 +712,11 @@ void pyefcn_init(int id, char modname[], char errmsg[])
     seqlen = (int) PySequence_Fast_GET_SIZE(seqobj);
     for (k = 0; k < seqlen; k++) {
         itemobj = PySequence_Fast_GET_ITEM(seqobj, (Py_ssize_t) k); /* borrowed reference */
+#if PY_MAJOR_VERSION > 2
+        strptr = PyUnicode_AsUTF8(itemobj);
+#else
         strptr = PyString_AsString(itemobj);
+#endif
         if ( strptr == NULL ) {
             Py_DECREF(seqobj);
             Py_DECREF(keysobj);

@@ -13,34 +13,44 @@ Project (TMAP) of the National Oceanographic and Atmospheric
 Administration's (NOAA) Pacific Marine Environmental Lab (PMEL).
 '''
 
+from __future__ import print_function
+
+import sys
+import os
+import signal
+import time
+import math
+
 import sip
 try:
     sip.setapi('QVariant', 2)
 except AttributeError:
     pass
 
-from PyQt4.QtCore import Qt, QPointF, QRect, QRectF, QSize, QSizeF, \
-                         QString, QTimer
-from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, QDialog, \
-                         QFileDialog, QFontMetricsF, QImage, QLabel, \
-                         QMainWindow, QMessageBox, QPainter, QPalette, \
-                         QPen, QPicture, QPixmap, QPolygonF, QPrinter, \
-                         QPushButton, QScrollArea, QTextDocument
-
 try:
-    from PyQt4.QtSvg  import QSvgGenerator
-    HAS_QSvgGenerator = True
+    from PyQt5.QtCore    import Qt, QPointF, QRect, QRectF, QSize, QSizeF, QTimer
+    from PyQt5.QtGui     import QBrush, QColor, QFontMetricsF, QImage, QPainter, \
+                                QPalette, QPen, QPicture, QPixmap, QPolygonF, \
+                                QTextDocument
+    from PyQt5.QtWidgets import QAction, QApplication, QDialog, QFileDialog, QLabel, \
+                                QMainWindow, QMessageBox, QPushButton, QScrollArea
+    from PyQt5.QtSvg     import QSvgGenerator
+    from PyQt5.QtPrintSupport import QPrinter
+    HAS_QSTRING = False
 except ImportError:
-    HAS_QSvgGenerator = False
+    from PyQt4.QtCore import Qt, QPointF, QRect, QRectF, QSize, QSizeF, QTimer, QString
+    from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, QDialog, \
+                             QFileDialog, QFontMetricsF, QImage, QLabel, \
+                             QMainWindow, QMessageBox, QPainter, QPalette, \
+			     QPen, QPicture, QPixmap, QPolygonF, QPrinter, \
+			     QPushButton, QScrollArea, QTextDocument
+    from PyQt4.QtSvg  import QSvgGenerator
+    HAS_QSTRING = True
+
+from multiprocessing import Pipe, Process
 
 from cmndhelperpq import CmndHelperPQ
 from scaledialogpq import ScaleDialogPQ
-from multiprocessing import Pipe, Process
-import sys
-import time
-import os
-import signal
-import math
 
 
 class PipedViewerPQ(QMainWindow):
@@ -601,6 +611,8 @@ class PipedViewerPQ(QMainWindow):
                           self.tr("PDF - Portable Document Format (*.pdf)") ),
                         ( "ps",
                           self.tr("PS - PostScript (*.ps)") ),
+                        ( "svg",
+                          self.tr("SVG - Scalable Vector Graphics (*.svg)") ),
                         ( "bmp",
                           self.tr("BMP - Windows Bitmap (*.bmp)") ),
                         ( "ppm",
@@ -609,12 +621,9 @@ class PipedViewerPQ(QMainWindow):
                           self.tr("XPM - X11 Pixmap (*.xpm)") ),
                         ( "xbm",
                           self.tr("XBM - X11 Bitmap (*.xbm)") ), ]
-        if HAS_QSvgGenerator:
-            formattypes.insert(5, ( "svg",
-                          self.tr("SVG - Scalable Vector Graphics (*.svg)") ) )
-        # tr returns QStrings so the following does not work
+        # tr returns QStrings in PyQt4 so the following does not work
         # filters = ";;".join( [ t[1] for t in formattypes ] )
-        filters = QString(formattypes[0][1])
+        filters = formattypes[0][1]
         for typePair in formattypes[1:]:
             filters.append(";;")
             filters.append(typePair[1])
@@ -710,10 +719,6 @@ class PipedViewerPQ(QMainWindow):
             myfilename = os.path.splitext(filename)[0] + ".png"
         else:
             myfilename = filename
-
-        # The RHEL5 distribution of Qt4 does not have a QSvgGenerator
-        if (not HAS_QSvgGenerator) and (myformat == 'svg'):
-            raise ValueError("Your version of Qt does not support generation of SVG files")
 
         if myannotations:
             annopicture = QPicture()
@@ -820,7 +825,6 @@ class PipedViewerPQ(QMainWindow):
                                 widthscalefactor, "Saving", False)                
             painter.end()
         elif myformat == 'svg':
-            # if HAS_QSvgGenerator is False, it should never get here
             generator = QSvgGenerator()
             generator.setFileName(myfilename)
             if vectsize:
@@ -1442,7 +1446,9 @@ class PipedViewerPQ(QMainWindow):
             myfont = self.__activepainter.font()
         myfontmetrics = QFontMetricsF(myfont)
         mytext = cmnd["text"]
-        width = myfontmetrics.width(QString.fromUtf8(mytext))
+        if HAS_QSTRING:
+            mytext = QString.fromUtf8(mytext)
+        width = myfontmetrics.width(mytext)
         height = myfontmetrics.height()
         return (width, height)
 
@@ -1491,7 +1497,10 @@ class PipedViewerPQ(QMainWindow):
                 self.__activepainter.rotate(rotdeg)
             except KeyError:
                 pass
-            self.__activepainter.drawText(0, 0, QString.fromUtf8(mytext))
+            
+            if HAS_QSTRING:
+                mytext = QString.fromUtf8(mytext)
+            self.__activepainter.drawText(0, 0, mytext)
             self.__drawcount += 1
         finally:
             # return the painter to the default state
@@ -1575,11 +1584,11 @@ class _CommandSubmitterPQ(QDialog):
         or shutdown if there are no more commands to submit.
         '''
         try:
-            print "Command: %s" % str(self.__cmndlist[self.__nextcmnd])
+            print("Command: %s" % str(self.__cmndlist[self.__nextcmnd]))
             self.__cmndpipe.send(self.__cmndlist[self.__nextcmnd])
             self.__nextcmnd += 1
             while self.__rspdpipe.poll():
-                print "Response: %s" % str(self.__rspdpipe.recv())
+                print("Response: %s" % str(self.__rspdpipe.recv()))
         except IndexError:
             self.__rspdpipe.close()
             self.__cmndpipe.close()

@@ -2,6 +2,9 @@
 Returns the array of probability density function values for a
 discrete probability distribution and set of abscissa values.
 """
+
+from __future__ import print_function
+
 import numpy
 import scipy.stats
 import pyferret
@@ -67,7 +70,7 @@ if __name__ == "__main__":
     resbdf = numpy.array([-2.0], dtype=numpy.float64)
     abscissa = numpy.empty((1, dimen, 1, 1, 1, 1), dtype=numpy.float64, order='F')
     expected = numpy.empty((1, dimen, 1, 1, 1, 1), dtype=numpy.float64, order='F')
-    for j in xrange(dimen):
+    for j in range(dimen):
         if (j % 7) == 2:
             abscissa[0, j, 0, 0, 0, 0] = inpbdfs[0]
             expected[0, j, 0, 0, 0, 0] = resbdf[0]
@@ -77,10 +80,10 @@ if __name__ == "__main__":
     result = -888.0 * numpy.ones((1, dimen, 1, 1, 1, 1), dtype=numpy.float64, order='F')
     ferret_compute(0, result, resbdf, (abscissa, pfname, pfparams), inpbdfs)
     if not numpy.allclose(result, expected):
-        print "Result (flattened) = %s" % str(result.reshape(-1))
-        print "Expected (flattened) = %s" % str(expected.reshape(-1))
+        print("Result (flattened) = %s" % str(result.reshape(-1)))
+        print("Expected (flattened) = %s" % str(expected.reshape(-1)))
         raise ValueError("Unexpected result")
 
     # All successful
-    print "Success"
+    print("Success")
 

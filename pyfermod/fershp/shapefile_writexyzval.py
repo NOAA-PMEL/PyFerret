@@ -10,6 +10,8 @@ mentioned quadrilateral.  Quadrilaterals associated with missing
 values are omitted from the shapefile.
 """
 
+from __future__ import print_function
+
 import shapefile
 import pyferret
 import pyferret.fershp
@@ -105,8 +107,8 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
 
     # Add the shapes with their values
     shape_written = False
-    for j in xrange(grid_vals.shape[1]):
-        for i in xrange(grid_vals.shape[0]):
+    for j in range(grid_vals.shape[1]):
+        for i in range(grid_vals.shape[0]):
             if grid_vals[i, j, 0, 0, 0, 0] != missing_val:
                 shape_written = True
                 pyferret.fershp.addquadxyvalues(sfwriter,
@@ -241,8 +243,8 @@ if __name__ == "__main__":
     expzs = []
     expvals = []
     expcurvals = [ [], [], [], [] ]
-    for j in xrange(vals.shape[1]):
-        for i in xrange(vals.shape[0]):
+    for j in range(vals.shape[1]):
+        for i in range(vals.shape[0]):
             # add the values expected to be returned from shapefile.Reader
             exppoints.append( numpy.array([ [ geolon_c[i,   j,   0, 0, 0, 0], 
                                               geolat_c[i,   j,   0, 0, 0, 0] ],
@@ -310,7 +312,7 @@ if __name__ == "__main__":
                          "    expect: %s\n" \
                          "    found:  %s" % (wgs84_descript, descript))
 
-    print "shapefile_writexyzval: SUCCESS"
+    print("shapefile_writexyzval: SUCCESS")
 
     # Check the result for calling ferret_compute of shapefile_readxyz
     # in this directory.  This assumes the ordering of the shapes does
@@ -329,7 +331,7 @@ if __name__ == "__main__":
         raise ValueError("Zs from shapefile_readxyz:\n   expected\n%s\n   found\n%s" % \
                          (str(expcurvals[2]), str(result[:,2,0,0,0,0])))
 
-    print "shapefile_readxyz: SUCCESS"
+    print("shapefile_readxyz: SUCCESS")
 
     # Check the result for calling ferret_compute of shapefile_readxyzval
     # in this directory.  This assumes the ordering of the shapes does
@@ -354,7 +356,7 @@ if __name__ == "__main__":
         raise ValueError("Extra values from shapefile_readxyzval: expected all %s\n   found\n%s" % \
                          (str(float(resbdf[0])), str(result[numvals:,3,0,0,0,0])))
 
-    print "shapefile_readxyzval: SUCCESS"
+    print("shapefile_readxyzval: SUCCESS")
 
     os.remove("%s.dbf" % shapefilename)
     os.remove("%s.shp" % shapefilename)

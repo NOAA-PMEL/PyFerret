@@ -196,7 +196,7 @@ def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
         last_curv_center_ignore = None
         
     # Increment the time index last since zeta is time dependent
-    for t_idx in xrange(curv_data.shape[3]):
+    for t_idx in range(curv_data.shape[3]):
 
         if curv_center_zetas != None:
             # Expand the zetas for this time step to 3D - adding Z axis
@@ -210,8 +210,8 @@ def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
             last_curv_center_ignore = None
 
         # Arrays are probably in Fortran order, so increment last indices last
-        for f_idx in xrange(curv_data.shape[5]):
-            for e_idx in xrange(curv_data.shape[4]):
+        for f_idx in range(curv_data.shape[5]):
+            for e_idx in range(curv_data.shape[4]):
                 # Determine curvilinear center points to ignore from undefined data
                 curv_center_ignore = ( numpy.abs(curv_data[:, :, :, t_idx,
                                         e_idx, f_idx] - curv_undef) < 1.0E-7 )

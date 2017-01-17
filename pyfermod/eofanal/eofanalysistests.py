@@ -278,7 +278,7 @@ class EOFAnalysisTests(unittest.TestCase):
         ccssanal = eofanalysis.EOFAnalysis(self.ccssmat)
         ccssanal.analyze()
         datatotal = ccssanal.datapiece(0)
-        for k in xrange(1, ccssanal.numeofs()+1):
+        for k in range(1, ccssanal.numeofs()+1):
             eofvec = ccssanal.eofvec(k)
             tafvec = ccssanal.tafvec(k)
             tafeof = numpy.outer(tafvec, eofvec)
@@ -314,7 +314,7 @@ class EOFAnalysisTests(unittest.TestCase):
         ccssanal = eofanalysis.EOFAnalysis(self.ccssmat)
         ccssanal.analyze()
         datatotal = numpy.matrix(numpy.zeros(self.ccssmat.shape))
-        for k in xrange(ccssanal.numeofs()+1):
+        for k in range(ccssanal.numeofs()+1):
             datatotal += ccssanal.datapiece(k)
             dataexpld = ccssanal.dataexplained(k)
             self.assertTrue(numpy.allclose(dataexpld, datatotal), 

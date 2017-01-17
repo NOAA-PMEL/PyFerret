@@ -2,6 +2,9 @@
 Returns the Pearson product-moment correlation
 coefficient between two samples of data.
 """
+
+from __future__ import print_function
+
 import math
 import numpy
 import pyferret
@@ -103,8 +106,8 @@ if __name__ == "__main__":
     inputu = numpy.empty((1, ydim, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
     index = 0
     numgood = 0
-    for j in xrange(ydim):
-        for k in xrange(zdim):
+    for j in range(ydim):
+        for k in range(zdim):
             if (index % 23) == 3:
                 inputa[0, j, k, 0, 0, 0] = inpbdfs[0]
             else:
@@ -141,5 +144,5 @@ if __name__ == "__main__":
                          (str(expectu.reshape(-1)), str(resultu.reshape(-1))))
 
     # All successful
-    print "Success"
+    print("Success")
 

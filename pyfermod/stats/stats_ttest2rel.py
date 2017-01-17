@@ -2,6 +2,9 @@
 Performs a two-sided T-test that two related (paired) samples
 come from (normal) distributions with the same mean.
 """
+
+from __future__ import print_function
+
 import numpy
 import pyferret
 import scipy.stats
@@ -99,7 +102,7 @@ if __name__ == "__main__":
     arrayb = numpy.empty((1, 1, size, 1, 1, 1), dtype=numpy.float64, order='F')
     arrayu = numpy.empty((1, 1, size, 1, 1, 1), dtype=numpy.float64, order='F')
     numgood = 0
-    for j in xrange(size):
+    for j in range(size):
         if (j % 23) == 3:
             arraya[0, j, 0, 0, 0, 0] = inpbdfs[0]
         else:
@@ -118,7 +121,7 @@ if __name__ == "__main__":
     # call ferret_compute with the samples with the same mean and check
     ferret_compute(0, resultb, resbdf, (arraya, arrayb), inpbdfs)
     resultb = resultb.reshape(-1)
-    print "result from same mean:\n   %s" % str(resultb)
+    print("result from same mean:\n   %s" % str(resultb))
     if (abs(resultb[0]) > 2.0) or \
        (resultb[1] < 0.1) or (resultb[1] > 1.0) or \
        (abs(resultb[2] - numgood) > 1.0E-5):
@@ -127,12 +130,12 @@ if __name__ == "__main__":
     # call ferret_compute with samples with different means and check
     ferret_compute(0, resultu, resbdf, (arraya, arrayu), inpbdfs)
     resultu = resultu.reshape(-1)
-    print "result from diff mean:\n   %s" % str(resultu)
+    print("result from diff mean:\n   %s" % str(resultu))
     if (resultu[0] > -2000.0) or \
        (resultu[1] < 0.00) or (resultu[1] > 0.0001) or \
        (abs(resultb[2] - numgood) > 1.0E-5):
         raise ValueError("Unexpected result")
 
     # All successful
-    print "Success"
+    print("Success")
 

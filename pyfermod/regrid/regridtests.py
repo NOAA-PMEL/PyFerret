@@ -5,7 +5,7 @@ Tests of the regrid.__init__ functions
 '''
 import unittest
 import numpy
-import __init__ as regrid
+from . import __init__ as regrid
 
 class RegridTests(unittest.TestCase):
     '''
@@ -75,13 +75,13 @@ class RegridTests(unittest.TestCase):
                         "Expected X coordinates:\n%s\nFound X coordinates:\n%s" % \
                         (str(expect_ctry), str(ctry)))
 
-        for k in xrange(1, ptsx.shape[0]):
+        for k in range(1, ptsx.shape[0]):
             ptsx[k, :] += 3.0 * k
-        for k in xrange(expect_ctrx.shape[0]):
+        for k in range(expect_ctrx.shape[0]):
             expect_ctrx[k, :] += 1.5 * (2 * k + 1)
-        for k in xrange(1, ptsy.shape[1]):
+        for k in range(1, ptsy.shape[1]):
             ptsy[:, k] += 4.0 * k
-        for k in xrange(expect_ctry.shape[1]):
+        for k in range(expect_ctry.shape[1]):
             expect_ctry[:, k] += 2.0 * (2 * k + 1)
         ctrx, ctry = regrid.quadCentroids(ptsx, ptsy)
         self.assertTrue(numpy.allclose(expect_ctrx, ctrx),
@@ -91,13 +91,13 @@ class RegridTests(unittest.TestCase):
                         "Expected X coordinates:\n%s\nFound X coordinates:\n%s" % \
                         (str(expect_ctry), str(ctry)))
 
-        for k in xrange(1, ptsx.shape[1]):
+        for k in range(1, ptsx.shape[1]):
             ptsx[:, k] += 5.0 * k
-        for k in xrange(expect_ctrx.shape[1]):
+        for k in range(expect_ctrx.shape[1]):
             expect_ctrx[:, k] += 2.5 * (2 * k + 1)
-        for k in xrange(1, ptsy.shape[0]):
+        for k in range(1, ptsy.shape[0]):
             ptsy[k, :] += 7.0 * k
-        for k in xrange(expect_ctry.shape[0]):
+        for k in range(expect_ctry.shape[0]):
             expect_ctry[k, :] += 3.5 * (2 * k + 1)
         ctrx, ctry = regrid.quadCentroids(ptsx, ptsy)
         self.assertTrue(numpy.allclose(expect_ctrx, ctrx),

@@ -34,6 +34,7 @@
 
 #include <Python.h>
 #define PY_ARRAY_UNIQUE_SYMBOL pyferret_ARRAY_API
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #define NO_IMPORT_ARRAY
 #include <numpy/arrayobject.h>
 #include "pyferret.h"
@@ -60,7 +61,11 @@ void pyefcn_result_limits(int id, char modname[], char errmsg[])
     /*
      * Import the user's Python module
      */
+#if PY_MAJOR_VERSION > 2
+    valobj = PyUnicode_FromString(modname);
+#else
     valobj = PyString_FromString(modname);
+#endif
     if ( valobj == NULL ) {
         PyErr_Clear();
         sprintf(errmsg, "Problems creating a Python string from the module name: %s", modname);
@@ -130,7 +135,11 @@ void pyefcn_result_limits(int id, char modname[], char errmsg[])
             }
             for (q = 0; q < 2; q++) {
                 itemobj = PySequence_Fast_GET_ITEM(subseqobj, (Py_ssize_t) q); /* borrowed reference */
+#if PY_MAJOR_VERSION > 2
+                limits[q] = (int) PyLong_AsLong(itemobj);
+#else
                 limits[q] = (int) PyInt_AsLong(itemobj);
+#endif
                 if ( PyErr_Occurred() ) {
                     PyErr_Clear();
                     Py_DECREF(subseqobj);

@@ -19,11 +19,13 @@ BUILDTYPE = $(HOSTTYPE)
 # BUILDTYPE = i386-linux-gnu
 # BUILDTYPE = intel-mac
 
-## Python 2.x executable to invoke for build and install.
+## Python executable to invoke for build and install.
 PYTHON_EXE = python2.6
 # PYTHON_EXE = python2.7
+# PYTHON_EXE = python3.6
+
 ## The assignment of PYTHONINCDIR should not need any modifications
-PYTHONINCDIR := $(shell $(PYTHON_EXE) -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()")
+PYTHONINCDIR := $(shell $(PYTHON_EXE) -c "from __future__ import print_function ; import distutils.sysconfig; print(distutils.sysconfig.get_python_inc())")
 
 ## Installation directory for built Ferret.  Using the "install"
 ## Makefile target circumvents the need to create the fer_*.tar.gz

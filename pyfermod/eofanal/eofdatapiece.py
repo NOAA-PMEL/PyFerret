@@ -7,6 +7,8 @@ Time Amplitude Funtion (TAF)
 @author: Karl Smith
 '''
 
+from __future__ import print_function
+
 import numpy
 import pyferret
 import pyferret.eofanal as eofanal
@@ -100,7 +102,7 @@ def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
                                 input_bdfs[pyferret.ARG1]) >= 1.0E-5 )
     # Get the mask of where the data is defined for every time step
     defd_mask = numpy.logical_and.reduce(defined_data, axis=pyferret.T_AXIS)
-    for t in xrange(ntime):    
+    for t in range(ntime):
         defined_data[:, :, :, t] = defd_mask 
     # Convert to time-location (a 2-D array), 
     # eliminating locations with missing time steps, 
@@ -120,7 +122,7 @@ def ferret_compute(efid, result, result_bdf, inputs, input_bdfs):
     numeofs = eofs.numeofs()
     if (maxeofs > 0) and (numeofs > maxeofs):
         numeofs = maxeofs
-    for k in xrange(numeofs+1):
+    for k in range(numeofs+1):
         timeloc_piece = eofs.datapiece(k)
         loctime_piece = numpy.array(timeloc_piece.T).reshape(-1)
         result[:, :, :, :, k, 0][defined_data] = loctime_piece
@@ -145,12 +147,12 @@ if __name__ == "__main__":
     tdata = -5.0 * numpy.cos((tdata - 2190.0) * numpy.pi / 4380.0)
     yztdata += numpy.outer(yzdata, tdata).reshape((1, 17, 6, 25, 1, 1))
     yztdata += 6.0
-    print "time series at Y = 0.0, Z = 0.0"
-    print str(yztdata[0, 8, 0, :, 0, 0])
-    print "depth series at Y = 0.0, T = start of April"
-    print str(yztdata[0, 8, :, 6, 0, 0])
-    print "latitude series at Z = 0.0, T = start of April"
-    print str(yztdata[0, :, 0, 6, 0, 0])
+    print("time series at Y = 0.0, Z = 0.0")
+    print(str(yztdata[0, 8, 0, :, 0, 0]))
+    print("depth series at Y = 0.0, T = start of April")
+    print(str(yztdata[0, 8, :, 6, 0, 0]))
+    print("latitude series at Z = 0.0, T = start of April")
+    print(str(yztdata[0, :, 0, 6, 0, 0]))
     # Create the result array and the other ferret_compute arguments
     result = numpy.zeros((1, 17, 6, 25, 17*6, 1))
     resbdf = numpy.array([1.0E20])
@@ -160,20 +162,20 @@ if __name__ == "__main__":
     ferret_compute(0, result, resbdf, inputs, inpbdfs)
     piecesum = numpy.zeros((1, 17, 6, 25))
     lastone = 0
-    for m in xrange(17 * 6):
+    for m in range(17 * 6):
         if numpy.allclose(result[:, :, :, :, m, 0], resbdf):
             break;
-        print "EOF-TAF piece %d" % m
-        print "    time series at Y = 0.0, Z = 0.0"
-        print "    " + str(result[0, 8, 0, :, m, 0])
-        print "    depth series at Y = 0.0, T = start of April"
-        print "    " + str(result[0, 8, :, 6, m, 0])
-        print "    latitude series at Z = 0.0, T = start of April"
-        print "    " + str(result[0, :, 0, 6, m, 0])
+        print("EOF-TAF piece %d" % m)
+        print("    time series at Y = 0.0, Z = 0.0")
+        print("    " + str(result[0, 8, 0, :, m, 0]))
+        print("    depth series at Y = 0.0, T = start of April")
+        print("    " + str(result[0, 8, :, 6, m, 0]))
+        print("    latitude series at Z = 0.0, T = start of April")
+        print("    " + str(result[0, :, 0, 6, m, 0]))
         lastone = m
         piecesum += result[:, :, :, :, m, 0]
     if numpy.allclose(piecesum, yztdata[:, :, :, :, 0, 0]):
-        print "sum of %d pieces all close to input data" % lastone
+        print("sum of %d pieces all close to input data" % lastone)
     else:
-        print "sum %d pieces different from input data" % lastone
+        print("sum %d pieces different from input data" % lastone)
 

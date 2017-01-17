@@ -4,6 +4,8 @@ latitude), as well as a value for shapes from a shapefile.
 The missing value separates coordinates between shapes.
 """
 
+from __future__ import print_function
+
 import numpy
 import pyferret
 import shapefile
@@ -72,14 +74,14 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     fieldname = inputs[1].strip()
     # No function currently in the shapefile module to do this, so a bit of a hack here
     # Each field in shapefile is a tuple (name, type, size, precision)
-    for k in xrange(len(sf.fields)):
+    for k in range(len(sf.fields)):
         if sf.fields[k][0] == fieldname:
             break
     else:
-        print "Known fields (name, type, size, precision):"
+        print("Known fields (name, type, size, precision):")
         for field in sf.fields:
             if field[0] != 'DeletionFlag':
-                print "    %s" % str(field)
+                print("    %s" % str(field))
         raise ValueError("No field with the name '%s' found" % fieldname)
     if sf.fields[0][0] == 'DeletionFlag':
         field_index = k - 1
@@ -126,10 +128,10 @@ if __name__ == "__main__":
     inpbdfs = numpy.array([-8888.0, -7777.0], dtype=numpy.float64)
     maxpts = 3200 * 2400
     result = -6666.0 * numpy.ones((maxpts,3,1,1,1,1), dtype=numpy.float64, order='F')
-    print "ferret_compute start: time = %s" % time.asctime()
+    print("ferret_compute start: time = %s" % time.asctime())
     # INTPTLAT10 == latitude of an internal point in each county
     ferret_compute(0, result, resbdf, ("tl_2010_us_county10", "INTPTLAT10", maxpts, ), inpbdfs)
-    print "ferret_compute done; time = %s" % time.asctime()
+    print("ferret_compute done; time = %s" % time.asctime())
     good_x = numpy.logical_and((-180.0 <= result[:,0,0,0,0,0]), (result[:,0,0,0,0,0] <= -65.0))
     good_x = numpy.logical_or(good_x,
                  numpy.logical_and((172.0 <= result[:,0,0,0,0,0]), (result[:,0,0,0,0,0] <= 180.0)))
@@ -146,7 +148,7 @@ if __name__ == "__main__":
     at_end = False
     shape_num = 0
     total = 0
-    for k in xrange(result.shape[0]):
+    for k in range(result.shape[0]):
         if missing_x[k]:
             if count == 0:
                 at_end = True
@@ -167,5 +169,5 @@ if __name__ == "__main__":
     num_good = len(result[:,2,0,0,0,0][good_val])
     if num_good != shape_num:
         raise ValueError("number of values: expected %d, found %d" % (shape_num, num_good))
-    print "shapefile_readxyval: SUCCESS"
+    print("shapefile_readxyval: SUCCESS")
 

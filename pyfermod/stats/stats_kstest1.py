@@ -2,6 +2,9 @@
 Performs a two-sided Kolmogorov-Smirnov test that the provided
 sample comes from the given probability distribution function.
 """
+
+from __future__ import print_function
+
 import numpy
 import pyferret
 import pyferret.stats
@@ -49,16 +52,16 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     Undefined data given in inputs[0] are removed before performing the test.
     """
     # get the scipy.stats distribution name from the given distribution name
-    if inputs[1] == None:
+    if inputs[1] is None:
         raise ValueError("The name of a probability distribution function not given")
     distscipyname = pyferret.stats.getdistname(inputs[1])
-    if distscipyname == None:
+    if distscipyname is None:
         raise ValueError("Unknown or unsupported probability distribution function %s" % inputs[1])
     # get the scipy.stats distribution parameters from the given "standard" parameters
-    if inputs[2] == None:
+    if inputs[2] is None:
         raise ValueError("Paramaters for the probability distribution function not given")
     distscipyparams = pyferret.stats.getdistparams(distscipyname, inputs[2].reshape(-1))
-    if distscipyparams == None:
+    if distscipyparams is None:
         raise ValueError("Unknown or unsupported (for params) probability distribution function %s" % inputs[1])
     # get the valid sample values
     badmask = ( numpy.fabs(inputs[0] - inpbdfs[0]) < 1.0E-5 )
@@ -102,8 +105,8 @@ if __name__ == "__main__":
     sampc = numpy.empty((1, ydim, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
     sampu = numpy.empty((1, ydim, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
     index = 0
-    for j in xrange(ydim):
-        for k in xrange(zdim):
+    for j in range(ydim):
+        for k in range(zdim):
             if (index % 71) == 3:
                 sampc[0, j, k, 0, 0, 0] = inpbdfs[0]
                 sampu[0, j, k, 0, 0, 0] = inpbdfs[0]
@@ -117,7 +120,7 @@ if __name__ == "__main__":
     # call ferret_compute with data from the distribution and check the results
     ferret_compute(0, resultc, resbdf, (sampc, distname, distparams), inpbdfs)
     resultc = resultc.reshape(-1)
-    print "from same dist result: %s" % str(resultc)
+    print("from same dist result: %s" % str(resultc))
     if (resultc[0] < 0.00) or (resultc[0] > 0.01) or \
        (resultc[1] < 0.10) or (resultc[1] > 1.00):
         raise ValueError("Unexpected result")
@@ -125,11 +128,11 @@ if __name__ == "__main__":
     # call ferret_compute with data from a different distribution and check the results
     ferret_compute(0, resultu, resbdf, (sampu, distname, distparams), inpbdfs)
     resultu = resultu.reshape(-1)
-    print "from diff dist result:  %s" % str(resultu)
+    print("from diff dist result:  %s" % str(resultu))
     if (resultu[0] < 0.99) or (resultu[0] > 1.00) or \
        (resultu[1] < 0.00) or (resultu[1] > 0.01):
         raise ValueError("Unexpected result")
 
     # All successful
-    print "Success"
+    print("Success")
 

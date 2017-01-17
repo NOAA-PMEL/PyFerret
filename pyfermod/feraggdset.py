@@ -2,6 +2,8 @@
 Represents an aggregation of data sets
 '''
 
+from __future__ import print_function
+
 import os
 import tempfile
 import pyferret
@@ -65,7 +67,7 @@ class FerAggDSet(pyferret.FerDSet):
                     raise ValueError('dsets must be a tuple or list of strings and/or FerDSets')
                 if mydset._dsetname.upper() in self._compdsets:
                     raise ValueError('duplicate dataset name ' + mydset._dsetname)
-                print >>filesfile, mydset._dsetname
+                print(mydset._dsetname, file=filesfile)
                 self._compdsetnames.append(mydset._dsetname)
                 self._compdsets[mydset._dsetname.upper()] = mydset
             deletefilesfile = False
@@ -139,7 +141,7 @@ class FerAggDSet(pyferret.FerDSet):
             return False
         if len(self._compdsetnames) != len(other._compdsetnames):
             return False
-        for k in xrange(len(self._compdsetnames)):
+        for k in range(len(self._compdsetnames)):
             if self._compdsetnames[k].upper() != other._compdsetnames[k].upper():
                 return False
         return True

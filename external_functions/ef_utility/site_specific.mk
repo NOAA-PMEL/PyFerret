@@ -26,9 +26,10 @@ BUILDTYPE = $(HOSTTYPE)
 ## PyFerret installation directory, usually just $(FER_DIR)
 INSTALL_FER_DIR = $(FER_DIR)
 
-## Python version used by PyFerret, either python2.6 or python2.7
+## Python version used by PyFerret
 PYTHON_EXE = python2.6
 # PYTHON_EXE = python2.7
+# PYTHON_EXE = python3.6
 
 ## FER_LOCAL_EXTFCNS is the directory in which to install
 ## the Ferret Fortran external functions.  The example

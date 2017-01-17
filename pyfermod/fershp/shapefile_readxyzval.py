@@ -5,6 +5,8 @@ a shapefile.  The missing value separates coordinates
 between shapes.
 """
 
+from __future__ import print_function
+
 import numpy
 import pyferret
 import shapefile
@@ -74,14 +76,14 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     fieldname = inputs[1].strip()
     # No function currently in the shapefile module to do this, so a bit of a hack here
     # Each field in shapefile is a tuple (name, type, size, precision)
-    for k in xrange(len(sf.fields)):
+    for k in range(len(sf.fields)):
         if sf.fields[k][0] == fieldname:
             break
     else:
-        print "Known fields (name, type, size, precision):"
+        print("Known fields (name, type, size, precision):")
         for field in sf.fields:
             if field[0] != 'DeletionFlag':
-                print "    %s" % str(field)
+                print("    %s" % str(field))
         raise ValueError("No field with the name '%s' found" % fieldname)
     if sf.fields[0][0] == 'DeletionFlag':
         field_index = k - 1
@@ -124,6 +126,6 @@ if __name__ == "__main__":
     info = ferret_init(0)
 
     # this is tested under shapefile_writexyzval
-    print "shapefile_readxyzval: SUCCESS (limited)"
-    print "    run shapefile_writexyzval for full test"
+    print("shapefile_readxyzval: SUCCESS (limited)")
+    print("    run shapefile_writexyzval for full test")
 

@@ -3,6 +3,9 @@ Unit tests for CurvRectRegridder
 
 @author: Karl Smith
 '''
+
+from __future__ import print_function
+
 import unittest
 import numpy
 import ESMP
@@ -257,13 +260,13 @@ class CurvRectRegridderTests(unittest.TestCase):
         regrid_data[2, 0] = self.undef_val
         expect_data[2, 1] = self.undef_val
         regrid_data[2, 1] = self.undef_val
-        for i in xrange(expect_data.shape[0]):
-            for j in xrange(expect_data.shape[1]):
+        for i in range(expect_data.shape[0]):
+            for j in range(expect_data.shape[1]):
                 if numpy.abs(expect_data[i, j] - regrid_data[i, j]) > 0.0007:
                     mismatch_found = True
-                    print "expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
+                    print("expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
                           "lat = %5.1f" % (expect_data[i, j], regrid_data[i, j],
-                           self.rect_center_lons[i], self.rect_center_lats[j])
+                           self.rect_center_lons[i], self.rect_center_lats[j]))
         if mismatch_found:
             self.fail("data mismatch found")
 
@@ -285,13 +288,13 @@ class CurvRectRegridderTests(unittest.TestCase):
         mismatch_found = False
         # one point falls outside the curvilinear centerpoints grid?
         expect_data[5, 0] = self.undef_val
-        for i in xrange(expect_data.shape[0]):
-            for j in xrange(expect_data.shape[1]):
+        for i in range(expect_data.shape[0]):
+            for j in range(expect_data.shape[1]):
                 if numpy.abs(expect_data[i, j] - regrid_data[i, j]) > 0.0003:
                     mismatch_found = True
-                    print "expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
+                    print("expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
                           "lat = %5.1f" % (expect_data[i, j], regrid_data[i, j],
-                           self.rect_center_lons[i], self.rect_center_lats[j])
+                           self.rect_center_lons[i], self.rect_center_lats[j]))
         if mismatch_found:
             self.fail("data mismatch found")
 
@@ -317,13 +320,13 @@ class CurvRectRegridderTests(unittest.TestCase):
         # one point falls outside the curvilinear centerpoints grid?
         expect_data[5, 0] = self.undef_val
         mismatch_found = False
-        for i in xrange(expect_data.shape[0]):
-            for j in xrange(expect_data.shape[1]):
+        for i in range(expect_data.shape[0]):
+            for j in range(expect_data.shape[1]):
                 if numpy.abs(expect_data[i, j] - regrid_data[i, j]) > 0.0011:
                     mismatch_found = True
-                    print "expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
+                    print("expect = %#6.4f, found = %#6.4f for lon = %5.1f, " \
                           "lat = %5.1f" % (expect_data[i, j], regrid_data[i, j],
-                           self.rect_center_lons[i], self.rect_center_lats[j])
+                           self.rect_center_lons[i], self.rect_center_lats[j]))
         if mismatch_found:
             self.fail("data mismatch found")
 
@@ -358,13 +361,13 @@ class CurvRectRegridderTests(unittest.TestCase):
         # they aren't really well covered by the rectilinear grid
         # Also ignore the second east-most edge;
         # also not well covered and errors are larger 
-        for i in xrange(1, expect_data.shape[0] - 2):
-            for j in xrange(1, expect_data.shape[1] - 1):
+        for i in range(1, expect_data.shape[0] - 2):
+            for j in range(1, expect_data.shape[1] - 1):
                 if numpy.abs(expect_data[i, j] - regrid_data[i, j]) > 0.0004:
                     mismatch_found = True
-                    print "expect = %#6.4f, found = %#6.4f for lon = %7.3f, " \
+                    print("expect = %#6.4f, found = %#6.4f for lon = %7.3f, " \
                           "lat = %7.3f" % (expect_data[i, j], regrid_data[i, j], 
-                          self.curv_center_lons[i][j], self.curv_center_lats[i][j])
+                          self.curv_center_lons[i][j], self.curv_center_lats[i][j]))
         if mismatch_found:
             self.fail("data mismatch found")
 
@@ -388,13 +391,13 @@ class CurvRectRegridderTests(unittest.TestCase):
         # they aren't really well covered by the rectilinear grid
         # Also ignore the second east-most edge and second south-most edge;
         # also not covered
-        for i in xrange(1, expect_data.shape[0] - 2):
-            for j in xrange(2, expect_data.shape[1] - 1):
+        for i in range(1, expect_data.shape[0] - 2):
+            for j in range(2, expect_data.shape[1] - 1):
                 if numpy.abs(expect_data[i, j] - regrid_data[i, j]) > 0.0003:
                     mismatch_found = True
-                    print "expect = %#6.4f, found = %#6.4f for lon = %7.3f, " \
+                    print("expect = %#6.4f, found = %#6.4f for lon = %7.3f, " \
                           "lat = %7.3f" % (expect_data[i, j], regrid_data[i, j],
-                          self.curv_center_lons[i][j], self.curv_center_lats[i][j])
+                          self.curv_center_lons[i][j], self.curv_center_lats[i][j]))
         if mismatch_found:
             self.fail("data mismatch found")
 
@@ -425,13 +428,13 @@ class CurvRectRegridderTests(unittest.TestCase):
         # they aren't really well covered by the rectilinear grid
         # Also ignore the second east-most edge and second south-most edge;
         # also not covered
-        for i in xrange(1, expect_data.shape[0] - 2):
-            for j in xrange(2, expect_data.shape[1] - 1):
+        for i in range(1, expect_data.shape[0] - 2):
+            for j in range(2, expect_data.shape[1] - 1):
                 if numpy.abs(expect_data[i, j] - regrid_data[i, j]) > 0.0011:
                     mismatch_found = True
-                    print "expect = %#6.4f, found = %#6.4f for lon = %7.3f, " \
+                    print("expect = %#6.4f, found = %#6.4f for lon = %7.3f, " \
                           "lat = %7.3f" % (expect_data[i, j], regrid_data[i, j],
-                          self.curv_center_lons[i][j], self.curv_center_lats[i][j])
+                          self.curv_center_lons[i][j], self.curv_center_lats[i][j]))
         if mismatch_found:
             self.fail("data mismatch found")
 

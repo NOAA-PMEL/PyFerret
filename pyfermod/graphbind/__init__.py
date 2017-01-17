@@ -11,7 +11,9 @@ Other methods of the bindings instance are called directly to perform
 graphics operations on this Window.
 '''
 
-from abstractpyferretbindings import AbstractPyFerretBindings
+from __future__ import print_function
+
+from pyferret.graphbind.abstractpyferretbindings import AbstractPyFerretBindings
 
 __pyferret_bindings_classes = { }
 
@@ -110,5 +112,5 @@ if __name__ == "__main__":
        (known_engines[0] != TestBindings.engine_name):
         raise RuntimeError("Unexpected tuple of known engines: %s" % \
                            str(known_engines))
-    print "Success"
+    print("Success")
 

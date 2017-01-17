@@ -41,7 +41,7 @@ pixman_libdir = os.getenv("PIXMAN_LIBDIR")
 if pixman_libdir:
     pixman_libdir = pixman_libdir.strip()
 
-# The location of libpython2.x.so, in case it is not in a standard location
+# The location of libpythonx.x.so, in case it is not in a standard location
 python_libdir = os.path.split( distutils.sysconfig.get_python_lib(standard_lib=True) )[0]
 
 # The list of additional directories to examine for libraries

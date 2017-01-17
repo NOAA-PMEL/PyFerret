@@ -1,6 +1,9 @@
 """
 Returns interpolated percentiles through a sample of scores (values)
 """
+
+from __future__ import print_function
+
 import numpy
 import pyferret
 import scipy.stats
@@ -73,8 +76,8 @@ if __name__ == "__main__":
     # valid sample values are [1:100:1] + offset
     pval = 1
     index = 0
-    for j in xrange(ydim):
-        for k in xrange(zdim):
+    for j in range(ydim):
+        for k in range(zdim):
             if ((index % 7) == 3) or (pval > 100):
                 sample[0, j, k, 0, 0, 0] = inpbdfs[0]
             else:
@@ -93,10 +96,10 @@ if __name__ == "__main__":
     result = -888.0 * numpy.ones((1, 1, zdim, 1, 1, 1), dtype=numpy.float64, order='F')
     ferret_compute(0, result, resbdf, (sample, scores), inpbdfs)
     if not numpy.allclose(result, expected):
-        print "Expected (flattened) = %s" % str(expected.reshape(-1))
-        print "Result (flattened) = %s" % str(result.reshape(-1))
+        print("Expected (flattened) = %s" % str(expected.reshape(-1)))
+        print("Result (flattened) = %s" % str(result.reshape(-1)))
         raise ValueError("Unexpected result")
 
     # All successful
-    print "Success"
+    print("Success")
 

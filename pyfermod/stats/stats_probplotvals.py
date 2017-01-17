@@ -13,6 +13,9 @@ distribution.  Thus, the slope, intercept, and correlation coefficient
 (r) of this fitted line are returned and the first three X elements
 of the third Y axis value.
 """
+
+from __future__ import print_function
+
 import numpy
 import scipy.stats
 import pyferret
@@ -74,11 +77,11 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     """
     distribname = inputs[1]
     distname = pyferret.stats.getdistname(distribname)
-    if distname == None:
+    if distname is None:
         raise ValueError("Unknown probability function %s" % distribname)
     distribparams = inputs[2].reshape(-1)
     distparams = pyferret.stats.getdistparams(distname, distribparams)
-    if distparams == None:
+    if distparams is None:
         raise ValueError("Unknown (for params) probability function %s" % distribname)
 
     sample = inputs[0].reshape(-1)
@@ -125,8 +128,8 @@ if __name__ == "__main__":
     expected = numpy.empty(((ydim + 1) * (zdim + 1), 3, 1, 1, 1, 1), dtype=numpy.float64, order='F')
     n = 0
     index = 0
-    for j in xrange(ydim + 1):
-        for k in xrange(zdim + 1):
+    for j in range(ydim + 1):
+        for k in range(zdim + 1):
             if (k == j) or (k == j+1) or (n >= size):
                 inputarr[0, j, k, 0, 0, 0] = inpbdfs[0]
                 expected[index, 0, 0, 0, 0, 0] = resbdf[0]
@@ -148,15 +151,15 @@ if __name__ == "__main__":
     ferret_compute(0, result, resbdf, (inputarr, pfname, pfparams), inpbdfs)
     if not numpy.allclose(result, expected):
         if not numpy.allclose(result[:,0,0,0,0,0], expected[:,0,0,0,0,0]):
-            print "Expected[:,0,0,0,0,0] =\n%s" % str(expected[:,0,0,0,0,0])
-            print "Result[:,0,0,0,0,0] =\n%s" % str(result[:,0,0,0,0,0])
+            print("Expected[:,0,0,0,0,0] =\n%s" % str(expected[:,0,0,0,0,0]))
+            print("Result[:,0,0,0,0,0] =\n%s" % str(result[:,0,0,0,0,0]))
         if not numpy.allclose(result[:,1,0,0,0,0], expected[:,1,0,0,0,0]):
-            print "Expected[:,1,0,0,0,0] =\n%s" % str(expected[:,1,0,0,0,0])
-            print "Result[:,1,0,0,0,0] =\n%s" % str(result[:,1,0,0,0,0])
+            print("Expected[:,1,0,0,0,0] =\n%s" % str(expected[:,1,0,0,0,0]))
+            print("Result[:,1,0,0,0,0] =\n%s" % str(result[:,1,0,0,0,0]))
         if not numpy.allclose(result[:3,2,0,0,0,0], expected[:3,2,0,0,0,0]):
-            print "Expected[:3,2,0,0,0,0] =\n%s" % str(expected[:3,2,0,0,0,0])
-            print "Result[:3,2,0,0,0,0] =\n%s" % str(result[:3,2,0,0,0,0])
+            print("Expected[:3,2,0,0,0,0] =\n%s" % str(expected[:3,2,0,0,0,0]))
+            print("Result[:3,2,0,0,0,0] =\n%s" % str(result[:3,2,0,0,0,0]))
         raise ValueError("Unexpected result")
 
     # All successful
-    print "Success"
+    print("Success")

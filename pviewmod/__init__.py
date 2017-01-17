@@ -8,8 +8,11 @@ This package was developed by the Thermal Modeling and Analysis Project
 Pacific Marine Environmental Lab (PMEL).
 '''
 
-from multiprocessing import Pipe
+from __future__ import print_function
+
 import sys
+
+from multiprocessing import Pipe
 
 class PipedViewer(object):
     '''
@@ -24,8 +27,8 @@ class PipedViewer(object):
         using submitCommand.
 
         Currently supported viewer types are:
-            "PipedViewerPQ": PipedViewerPQ using PyQt4
-            "PipedImagerPQ": PipedImagerPQ using PyQt4
+            "PipedViewerPQ": PipedViewerPQ using PyQt5 or PyQt4
+            "PipedImagerPQ": PipedImagerPQ using PyQt5 or PyQt4
         '''
         super(PipedViewer, self).__init__()
         (self.__cmndrecvpipe, self.__cmndsendpipe) = Pipe(False)
@@ -34,14 +37,14 @@ class PipedViewer(object):
             try:
                 from pipedviewerpq import PipedViewerPQProcess
             except ImportError:
-                raise TypeError("The PQ viewers requires PyQt4")
+                raise TypeError("The PQ viewers requires PyQt5 or PyQt4")
             self.__vprocess = PipedViewerPQProcess(self.__cmndrecvpipe,
                                                    self.__rspdsendpipe)
         elif viewertype == "PipedImagerPQ":
             try:
                 from pipedimagerpq import PipedImagerPQProcess
             except ImportError:
-                raise TypeError("The PQ viewers requires PyQt4")
+                raise TypeError("The PQ viewers requires PyQt5 or PyQt4")
             self.__vprocess = PipedImagerPQProcess(self.__cmndrecvpipe,
                                                    self.__rspdsendpipe)
         else:
@@ -225,7 +228,7 @@ if __name__ == "__main__":
 
     # Test each known viewer.
     for viewername in ( "PipedViewerPQ", "PipedImagerPQ", "NoDisplayPQ" ):
-        print "Testing Viewer %s" % viewername
+        print("Testing Viewer %s" % viewername)
         # create the viewer
         pviewer = PipedViewer(viewername)
         mydrawcmnds = drawcmnds[:]
@@ -243,18 +246,21 @@ if __name__ == "__main__":
         
         # submit the commands, pausing after each "show" command
         for cmd in mydrawcmnds:
-            print "Command: %s" % str(cmd)
+            print("Command: %s" % str(cmd))
             pviewer.submitCommand(cmd)
             response = pviewer.checkForResponse()
             while response:
-                print "Response: %s" % str(response)
+                print("Response: %s" % str(response))
                 response = pviewer.checkForResponse()
             if cmd["action"] == "show":
-                raw_input("Press Enter to continue")
+                if sys.version_info.major == 2:
+                    raw_input("Press Enter to continue")
+                else:
+                    input("Press Enter to continue")
         # end of the commands - shut down and check return value
         pviewer.waitForViewerExit()
         result = pviewer.getViewerExitCode()
         if result != 0:
             sys.exit(result)
         else:
-            print "Done with %s" % viewername
+            print("Done with %s" % viewername)

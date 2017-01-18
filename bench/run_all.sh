@@ -85,7 +85,7 @@ echo "Beginning at $now"
 # check status before continuing *kob* 4/98
 if [ $? -ne 0 ]
 then
-    echo "FERRET ERRROR*********************************" >>$log_file
+    echo "FERRET ERRROR in benchmark run ****** exiting from run.sh ******" >>$log_file
     exit 1
 fi
 

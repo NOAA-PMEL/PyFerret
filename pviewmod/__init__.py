@@ -35,14 +35,14 @@ class PipedViewer(object):
         (self.__rspdrecvpipe, self.__rspdsendpipe) = Pipe(False)
         if viewertype == "PipedViewerPQ":
             try:
-                from pipedviewerpq import PipedViewerPQProcess
+                from pipedviewer.pipedviewerpq import PipedViewerPQProcess
             except ImportError:
                 raise TypeError("The PQ viewers requires PyQt5 or PyQt4")
             self.__vprocess = PipedViewerPQProcess(self.__cmndrecvpipe,
                                                    self.__rspdsendpipe)
         elif viewertype == "PipedImagerPQ":
             try:
-                from pipedimagerpq import PipedImagerPQProcess
+                from pipedviewer.pipedimagerpq import PipedImagerPQProcess
             except ImportError:
                 raise TypeError("The PQ viewers requires PyQt5 or PyQt4")
             self.__vprocess = PipedImagerPQProcess(self.__cmndrecvpipe,

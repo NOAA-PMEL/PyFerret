@@ -118,6 +118,8 @@ SET MODE VERIFY
 ! V702 *acm 12/16 - Merge/Reintigrate true-month-axis branch. New test bn_true_monthly.
 !                   and axes that are true-month in other tests are treated as true-month.
 ! V702 *acm 12/16 - Remove all references to the long unused and unsupported vis5D function
+! V7023 *acm 1/17 - Back out the changes that automatically detect a true-month axis in 
+!                   a netCDF file or from a DEFINE AXIS (when given without /MONTHLY).
 !
 ! Include this statement to compare the outupt of 6D Ferret with 
 ! previous 4D benchmark logs.

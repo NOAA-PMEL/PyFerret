@@ -83,3 +83,8 @@ go err700_time_overlay
 go bn_reset
 go err700_shade_singlecell
 
+
+! Bug 2496: errors using axis with nearly-repeating coordinates
+!           where coordinates are very near grid-cell edges.
+go bn_reset
+go err700_coords

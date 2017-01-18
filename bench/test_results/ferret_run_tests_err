@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Jan 17 14:01 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.10
+lrwxrwxrwx. 1 ksmith oerdnewp 12 Jan 18 09:33 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.03
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -292,7 +292,7 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Tue Jan 17 14:01:46 PST 2017
+Beginning at Wed Jan 18 09:34:16 PST 2017
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -948,13 +948,10 @@ Replacing definition of axis XAX
 Replacing definition of axis XAX
            *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
-           *** NOTE: Axis has repeated values -- micro-adjusting ...
  **ERROR: improper grid or axis definition: unrepairable repeated axis coords
 define axis/from/x/name=xax {6,6}
-           *** NOTE: Axis has repeated values -- micro-adjusting ...
  **ERROR: improper grid or axis definition: unrepairable repeated axis coords
 define axis/from/x/name=xax/edges {6,6}
-           *** NOTE: Axis has repeated values -- micro-adjusting ...
  **ERROR: improper grid or axis definition: unrepairable repeated axis coords
 define axis/from/x/name=xax/edges {6,6,6}
            *** NOTE: Axis has repeated values -- micro-adjusting ...
@@ -1509,9 +1506,9 @@ Replacing definition of axis YAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Coordinates missing on axis LONGITUDE at subscript 13
+           *** NOTE: Coordinates missing on axis LONGITUDE at subscript -1423
            *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: Coordinates missing on axis LATITUDE at subscript 13
+           *** NOTE: Coordinates missing on axis LATITUDE at subscript -1423
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
  **ERROR: illegal limits: "DUMMY" does not exist at T=01-JAN-1990 00:00
@@ -2011,6 +2008,8 @@ sho att/all .
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: unrepairable repeated axis coords on axis i at subscript -638
+           *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2344,9 +2343,9 @@ set axis/stride=2 NORMAL
  Cached data cleared from memory
 *** Running ferret script: bn_fifty_files.jnl
  Cached data cleared from memory
-           *** NOTE: Coordinates missing on axis LONGITUDE at subscript 4
+           *** NOTE: Coordinates missing on axis LONGITUDE at subscript -169
            *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: Coordinates missing on axis LATITUDE at subscript 4
+           *** NOTE: Coordinates missing on axis LATITUDE at subscript -169
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
            *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
@@ -3117,11 +3116,24 @@ Replacing definition of axis YAX_DUP_AXNAMES
  LISTing to file a.nc
 *** Running ferret script: bn_NaN_note.jnl
  Cached data cleared from memory
-           *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
+           *** NOTE: unrepairable repeated axis coords on axis i at subscript -126
+           *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: unrepairable repeated axis coords on axis j at subscript -126
+           *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: unrepairable repeated axis coords on axis l at subscript -126
+           *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
            *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: broiled
-           *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
+           *** NOTE: unrepairable repeated axis coords on axis i at subscript -126
+           *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: i
+           *** NOTE: unrepairable repeated axis coords on axis j at subscript -126
+           *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: j
+           *** NOTE: unrepairable repeated axis coords on axis l at subscript -126
+           *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: l
 *** Running ferret script: bn671_bug_fixes.jnl
 
 Bailing out of external function "tax_year":
@@ -3365,8 +3377,12 @@ DEFINE DATA/AGGREGAT/E windy = 1,2
 *** Running ferret script: bn_axis_outtype.jnl
  Cached data cleared from memory
  LISTing to file mytype.nc
+           *** NOTE: unrepairable repeated axis coords on axis TIME at subscript -126
+           *** NOTE: A dummy axis of subscripts will be used
  LISTing to file mytype.nc
            *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
+           *** NOTE: unrepairable repeated axis coords on axis TIME at subscript -126
+           *** NOTE: A dummy axis of subscripts will be used
  LISTing to file mytype.nc
  LISTing to file mytype.nc
  LISTing to file mytype.nc
@@ -3465,7 +3481,7 @@ Replacing definition of axis AXI
 Replacing definition of axis AXI_COARSE
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: unrepairable repeated axis coords on axis trdim at subscript 2
+           *** NOTE: unrepairable repeated axis coords on axis trdim at subscript -151
            *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4654,6 +4670,10 @@ Replacing definition of axis TAX
 Replacing definition of axis YAXIS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: Axis has repeated values -- micro-adjusting ...
+ LISTing to file a.nc
 *** Running ferret script: bn_delim_datetime.jnl
  Cached data cleared from memory
 Replacing definition of axis TIMAX
@@ -4909,4 +4929,4 @@ set region/@w
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
  Cached data cleared from memory
-Ended at Tue Jan 17 14:03:34 PST 2017
+Ended at Wed Jan 18 09:35:59 PST 2017

@@ -49,6 +49,7 @@
 *                  corresponding direction.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V710 9/16 *acm* Use ww_dim_name from xtext_info.cmn
+* V710 1/17 *acm* Recognize generic FF axis direction (FI is forecast-time specific)
 
         include 'tmap_dims.parm'
 #include "tmap_dset.parm"
@@ -88,6 +89,8 @@
          TM_AXIS_DIRECTION = y_dim
       ELSEIF (orient .EQ. 'TT' ) THEN
          TM_AXIS_DIRECTION = t_dim
+      ELSEIF (orient .EQ. 'FF' ) THEN
+         TM_AXIS_DIRECTION = f_dim
       ELSE
          TM_AXIS_DIRECTION = 0
       ENDIF

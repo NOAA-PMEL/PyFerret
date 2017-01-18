@@ -1,0 +1,24 @@
+! err700_coords.jnl
+! 1/17/2017
+! From bug 2496. Data with almost-repeating values used to define an axis
+
+use err700_coords.nc
+list/i=10:20/prec=16 du_coords, du_coords[i=@ddf]
+
+! The data has repeated coords, to 1.e15. Should be reported as micro-adjusted
+
+def ax/bounds/x/unit="degrees_east"/modulo=360 c2d_ax_x = du_coords[i=1:160], du_edges[i=1:161]
+
+
+sh axis c2d_ax_x
+let c = x[gx=c2d_ax_x]
+
+! for this region, the setup steps got data in index 11:31, then 
+! at the point of writing the index ragne was found to be 12:31
+
+set region/x=25:385
+set mode diag
+save/clob/file=a.nc c
+
+set mode /last diag
+

@@ -151,6 +151,7 @@ tm_break_str.F\
 tm_check_box_loc.F\
 tm_check_bnds.F\
 tm_check_bnds_attrib.F\
+tm_check_coords.F\
 tm_check_fmrc_bnds_attrib.F\
 tm_check_bnds_centered.F\
 tm_check_edges_attrib.F\

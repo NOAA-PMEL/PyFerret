@@ -42,8 +42,8 @@ except ImportError:
 
 from multiprocessing import Pipe, Process
 
-from cmndhelperpq import CmndHelperPQ
-from scaledialogpq import ScaleDialogPQ
+from pipedviewer.cmndhelperpq import CmndHelperPQ
+from pipedviewer.scaledialogpq import ScaleDialogPQ
 
 
 

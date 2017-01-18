@@ -52,11 +52,14 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 * V71  3/16 *acm* Ticket 2158: working with true monthly time axes.
+* V71  1/17 *acm* Ticket 2496: make the result index consistent with the
+*                 result form isubscr_cx when incoming coordinate value
+*                 is ON a cell boundary
 
 * calling arguments:
-* world_coord	- coordinate vaule to be translated to subscript
+* world_coord	- coordinate value to be translated to subscript
 * grid		- underlying grid number
-* idim		- underlying axis number (1-4)
+* idim		- underlying axis number (1-nferdims)
 * clue		- performance assist to code - check this as possible result
 
 	include 'tmap_dims.parm'
@@ -70,7 +73,7 @@
 	REAL*8	world_coord
 
 * internal variable declarations:
-	LOGICAL	TM_ITS_SUBSPAN_MODULO, ITSA_TRUEMONTH_AXIS, regular
+	LOGICAL	TM_ITS_SUBSPAN_MODULO, ITSA_TRUEMONTH_AXIS, TM_DFPEQ, regular
 	INTEGER	lo_look, hi_look, ibot, itop, look, axis,
      .		line_len, isubsc
 	INTEGER	num_mod
@@ -189,17 +192,26 @@
 	   IF ( hi_look - lo_look .LE. 1 ) THEN
 
 * yes - we found it - choose box containing it
+* Change the logic if the point is on the boundary, returning the lower index.
+* This is consistent with what isubscr_cx does.
+
 * ... box boundary between lo_look and hi_look
 	      half_way = TM_WORLD(hi_look, grid, idim, box_lo_lim)
 
-* no. value in upper half of box (or on the box boundary) ?
-	      IF ( wcoord .GE. half_way ) THEN
-	         isubsc = hi_look
-
-* no. value must be in lower half of box
-	      ELSE
+* value on box boundary ?
+	      IF ( TM_DFPEQ( half_way, wcoord ) ) THEN
 	         isubsc = lo_look
+	      ELSE
 
+* no. value in upper half of box ?
+	         IF ( wcoord .GT. half_way ) THEN
+	            isubsc = hi_look
+
+* no. value must be in lower half of box (or on the box boundary)
+	         ELSE
+	            isubsc = lo_look
+
+	         ENDIF
 	      ENDIF
 	   ELSE
 

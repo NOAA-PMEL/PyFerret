@@ -195,6 +195,9 @@
 *                  consistenly applythis logic to current files
 * V71 12/16 *acm* Ticket 2158: working with true monthly time axes.
 * V7022 1/17 *acm* ticket 2497, Back off the auto-detection of monthly axes.
+* 1/13/2017 *acm* Do the repeated-coordinates checking in the new routine
+*                 TM_CHECK_COORDS, also called by xeq_define, to consistently
+*                 handle almost-equal coordinates, differing by machine precision.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -245,7 +248,7 @@
      .        epic_time, west_lon, yyyymmdd_time, 
      .        got_mod, mod_tf, setmodfalse, ok_cal, ok,
      .        got_edges, got_bnds, coordvar, its_irregular, 
-     .        do_scale, do_offset, scale_is_dp, 
+     .        do_scale, do_offset, scale_is_dp, reg,
      .        has_repeated, misordered, has_missing, is_double, true_month
 
       INTEGER TM_UNIT_ID, TM_UNITS_CAL, TM_LENSTR1, TM_GET_CALENDAR_ID,      
@@ -865,65 +868,20 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
          micro_adj = 1E-7 *
      .		(line_mem(ipte) - line_mem(ipt1))
 
+	is_double = vartype .EQ. ncdouble
+
 * ... are there repeated values?
-         has_repeated = .FALSE.
-         DO 532 i1 = ipt1+1, ipte
-            IF (line_mem(i1-1) .EQ. line_mem(i1)) has_repeated = .TRUE.
- 532     CONTINUE
 
-* ... make micro-adjustments if axis has repeated values (4/99)
-         IF ( has_repeated ) THEN
-            IF (micro_adj .EQ. 0.D0) THEN
-	       i1 = ipt1+1
-	       misordered = .TRUE.
-	       GOTO 540
-	    ENDIF
+*	 micro_adj = -1. ! Or send this to compute this value inside the routine
+	 CALL TM_CHECK_COORDS (ipt1, ipte, is_double, use_strict, 
+     .                         has_repeated, misordered, micro_adj, 
+     .                         epsilon, depsilon)
 
-            i0 = ipt1
-            DO 538  i1 = ipt1+1, ipte
-               IF  (line_mem(i1-1) .EQ. line_mem(i1)) THEN
-*    ... locate end of repeating block
-                  DO 534 i2 = i1, ipte
-                     IF (line_mem(i2) .GT. line_mem(i1)) GOTO 535
- 534              CONTINUE
-                  i2 = ipte + 1    ! one beyond last value
-                  i0 = i1 - 2
-                  i3 = i2 - 1
-*    ... micro-adjust repeating values from i1 to i2-1
- 535              CONTINUE
-
-                  IF (line_mem(i2) .GT. line_mem(i1)) THEN
-                     i0 = i1-1
-                     i3 = i2
-                  ENDIF
-
-* Check and readjust the size of micro_adj if too small
-                  madj = micro_adj
-                  IF (micro_adj*(i2-i1+1) .GT. 
-     .                line_mem(i3) - line_mem(i0) ) THEN
-                     madj = (line_mem(i3)-line_mem(i0))/(i2-i1+1)
-                     IF (madj .EQ. 0.D0)  THEN
-	                misordered = .TRUE.
-	                GOTO 540
-	             ENDIF
-                  ENDIF
-                  DO 536 i3 = i1, i2-1
-                     line_mem(i3) = line_mem(i3) + (i3-i1+1)* madj
- 536              CONTINUE
-                  IF ( i2 .LT. ipte .AND. 
-     .		       (line_mem(i2-1) .GE. line_mem(i2)))  THEN
-	             misordered = .TRUE.
-	             GOTO 540
-                  ENDIF
-               ENDIF
- 538        CONTINUE
-         ENDIF
-
+	 IF (misordered) GOTO 540
          IF ( has_repeated .AND. .NOT.misordered ) THEN
             CALL TM_NOTE('Axis has repeated values -- micro-adjusting '//
      .           vname(:vlen), tt)
          ENDIF
-
 
 * Check if axis is actually regularly spaced (though not flagged as "even")
 * Fix bug 1483; look at each delta rather than trying to compare with first delta.
@@ -933,12 +891,8 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * See if double-precision coordinates are regularly-spaced
 	epsilon = 0.
 	depsilon = 0.
-	
-	is_double = vartype .EQ. ncdouble
 
         IF (is_double) THEN
-           dlast_coord = line_mem(ipte)
-           dfirs_coord = line_mem(ipt1)
            dfirst_delta = line_mem(ipt1+1) - line_mem(ipt1)
            depsilon = depsilon_46 * 2.*(ABS(line_mem(ipte)) / first_delta )
            depsilon = depsilon_46 * 2.*(ABS(line_mem(ipt1)) / first_delta )
@@ -1212,9 +1166,6 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
                     line_delta(iaxis) = line_mem(ibx1+1)-line_mem(ibx1)
                  ENDIF
                  line_subsc1 (iaxis) = unspecified_int4
-                 last_coord = line_start(iaxis) + 
-     .                DBLE(npts-1)*line_delta(iaxis)
-                 firs_coord = line_start(iaxis)
               ENDIF
            ELSE
               line_regular(iaxis) = .FALSE.

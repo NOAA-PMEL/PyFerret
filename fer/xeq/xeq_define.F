@@ -257,6 +257,9 @@
 * V710  4/16 *acm* new TM_UNITS_CAL to account for calendar in units id
 * V702 12/16 *acm* handling modulo true-month axes added after merge back to trunk.
 * V7022 1/17 *acm* ticket 2497, Back off the auto-detection of monthly axes.
+* 1/13/2017 *acm* Do the repeated-coordinates checking in the new routine
+*                 TM_CHECK_COORDS, also called by cd_get_1_axis, to consistently
+*                 handle almost-equal coordinates, differing by machine precision.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -392,7 +395,8 @@
      .            new_att, new_att_modulo, got_it, orient_t, agg_quiet,
      .            letdset, its_remote, agg_hide, def_att_quiet, purge_all,
      .            user, norm, nouser, t_regular, use_strict, have_expr, 
-     .            original, true_month, line_allocated, truemonth_noted
+     .            original, true_month, line_allocated, truemonth_noted,
+     .            is_double, misordered
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID,
      .		  TM_GET_LINENUM, TM_LENSTR1, 
@@ -415,7 +419,8 @@
      .            llen, line, dstart, units, npts
 
 	REAL	  rbuff, bad_flag, yeardays, 
-     .            val, dummy, val_buf, xloc, yloc, halign, angle, size
+     .            val, dummy, val_buf, xloc, yloc, halign, angle, size,
+     .            epsilon
 
 	REAL*4	  r4_unspec, scale, xlovp, ylovp,  xhivp, yhivp,
      .            xoei,  yoei,   xcei,  ycei
@@ -1268,7 +1273,7 @@ C /units=months  is 1/12 of the length of the year
                  n2 = n+1
               ELSEIF (num_uvars_in_cmnd .EQ. 3) THEN
                  IF (n2 .NE. n3) GOTO 5745
-                 IF (n2 .NE. n) GOTO 5745
+			 IF (n2 .NE. n) GOTO 5745
               ELSE
                  GOTO 5740
               ENDIF
@@ -1300,54 +1305,33 @@ C /units=months  is 1/12 of the length of the year
 	      CALL EXTRACT_DP_LINE( cx, memory(1, mr_blk1(mr)),
      .				 line_mem(frst_pt+n), idim, n+1 )
 	      npoints = n
+
+
+* ... monotonic?
+	      DO 527 i1 = frst_pt+n+1, frst_pt+n+n
+	         IF (.NOT. TM_FPEQ( line_mem(i1-1), line_mem(i1) ).AND. 
+     .               line_mem(i1-1) .GT. line_mem(i1)) GOTO 5570
+ 527	      CONTINUE
+
+* ... are there repeated values?
+
+	      has_repeated = .FALSE.
+	      is_double = .TRUE.
+	      misordered = .FALSE. 
+
+	      use_strict = .FALSE.  ! unused for DEFINE AXIS
 	      micro_adj = 1E-6 *
      .		(line_mem(frst_pt+n+n) - line_mem(frst_pt+n))
-* ... are there repeated values?
-	      has_repeated = .FALSE.
-	      DO 515 i1 = frst_pt+1, frst_pt+n
-	         IF      (line_mem(i1+n-1) .GT. line_mem(i1+n)) THEN
-	           GOTO 5570
-	         ELSEIF  (line_mem(i1+n-1) .EQ. line_mem(i1+n)) THEN
-	           has_repeated = .TRUE.
-		 ENDIF
- 515	      CONTINUE
-* ... make micro-adjustments if axis has repeated values (4/99)
-	      IF ( has_repeated ) THEN
-	         CALL WARN('Axis has repeated values -- micro-adjusting ...')
-	         IF (micro_adj .EQ. 0.D0) GOTO 5560
-		 i0 = frst_pt+n
-	         DO 526  i1 = frst_pt+n+1, frst_pt+n+n
-	             IF  (line_mem(i1-1) .EQ. line_mem(i1)) THEN
-*    ... locate end of repeating block
-	                DO 520 i2 = i1, frst_pt+n+n
-	                   IF (line_mem(i2) .GT. line_mem(i1)) GOTO 521
- 520		        CONTINUE
-	                i2 =  frst_pt+n+n+1    ! one beyond last value
-                        i0 = i1 - 2
-		        i3 = i2 - 1
-*    ... micro-adjust repeating values and edges from i1 to i2-1
- 521		        CONTINUE
-                        IF (line_mem(i2) .GT. line_mem(i1)) THEN
-                           i0 = i1-1
-                           i3 = i2
-                        ENDIF
 
-                        madj = micro_adj
-                        IF (micro_adj*(i2-i1+1) .GT. 
-     .	                     line_mem(i3) - line_mem(i0) ) THEN
-     	                   madj = (line_mem(i3) - line_mem(i0))/(i2-i1+1)
-			   IF (madj .EQ. 0.D0) GOTO 5560
-                        ENDIF
-  		        DO 522 i3 = i1, i2-1
-	                   line_mem(i3) = line_mem(i3) +
-     .	                     (i3-i1+1)* madj
- 522		        CONTINUE
-	                IF ( i2 .LE. frst_pt+n+n
-     .		       .AND. (line_mem(i2-1) .GE. line_mem(i2))) GOTO 5560
-	             ENDIF
- 526	          CONTINUE
-	      ENDIF
+	      CALL TM_CHECK_COORDS (frst_pt+n, frst_pt+n+n, is_double, 
+     .                              use_strict, has_repeated, misordered, 
+     .                              micro_adj, epsilon, epsilon)
+	      IF (misordered) GOTO 5560
+	      IF (has_repeated) 
+     .		CALL WARN('Axis has repeated values -- micro-adjusting ...')
+
 * ... store points: midway between box boundaries ...
+
 	      has_repeated = .FALSE.
 	      DO 528 i1 = frst_pt+1, frst_pt+n
 	         line_mem(i1-1) = (line_mem(i1+n-1)+line_mem(i1+n)) * 0.5
@@ -1356,6 +1340,7 @@ C /units=months  is 1/12 of the length of the year
 * Fix ticket 2400: Def of start was pointing to the lower grid cell edge not the
 * lower coordinate. The loop start and stop were one off, so most axes detected
 * as irregular as the last comparison took us beyond the upper edge of the axis.
+
 	      its_reg = .TRUE.	! until proven otherwise
 	      start = line_mem(frst_pt)
               delta = line_mem(frst_pt+1) - start
@@ -1378,6 +1363,7 @@ C /units=months  is 1/12 of the length of the year
 	      CALL EXTRACT_DP_LINE( cx, memory(1, mr_blk1(mr)),
      .				 line_mem(frst_pt), idim, n )
 	      IF ( npoints .EQ. unspecified_int4 ) npoints = n
+
 * ... a single point is always "regular" (unless definition has BOUNDS!!)
 	      IF (n .EQ. 1 .AND. .NOT.has_bounds) THEN
 	         start = line_mem(frst_pt)
@@ -1385,53 +1371,30 @@ C /units=months  is 1/12 of the length of the year
 	         its_reg = .TRUE.
 	         GOTO 560
 	      ENDIF
+	      
+* ... monotonic?	      
+
+	      DO 532 i1 = frst_pt+1, frst_pt+npoints-1
+	         IF (.NOT. TM_FPEQ( line_mem(i1-1), line_mem(i1) ).AND. 
+     .               line_mem(i1-1) .GT. line_mem(i1)) GOTO 5570
+ 532	      CONTINUE
+
+* ... are there repeated values?
+
+	      has_repeated = .FALSE.
+	      is_double = .TRUE.
+	      misordered = .FALSE. 
+
+	      use_strict = .FALSE.  ! unused for DEFINE AXIS
 	      micro_adj = 1E-6 *
      .		(line_mem(frst_pt+n-1) - line_mem(frst_pt))
-* ... are there repeated values?
-	      has_repeated = .FALSE.
-	      DO 532 i1 = frst_pt+1, frst_pt+npoints-1
-	         IF      (line_mem(i1-1) .GT. line_mem(i1)) THEN
-	            GOTO 5570
-	         ELSEIF  (line_mem(i1-1) .EQ. line_mem(i1)) THEN
-	            has_repeated = .TRUE.
-	         ENDIF
- 532	      CONTINUE
-* ... make micro-adjustments if axis has repeated values (4/99)
-	      IF ( has_repeated ) THEN
-	         CALL WARN('Axis has repeated values -- micro-adjusting ...')
-	         IF (micro_adj .EQ. 0.D0) GOTO 5560
 
-		 i0 = frst_pt
-	         DO 538  i1 = frst_pt+1, frst_pt+npoints-1
-	            IF  (line_mem(i1-1) .EQ. line_mem(i1)) THEN
-*    ... locate end of repeating block
-	               DO 534 i2 = i1, frst_pt+npoints-1
-	                  IF (line_mem(i2) .GT. line_mem(i1)) GOTO 535
- 534		       CONTINUE
-	               i2 = frst_pt+npoints    ! one beyond last value
-                       i0 = i1 - 2
-		       i3 = i2 - 1
-*    ... micro-adjust repeating values from i1 to i2-1
- 535		       CONTINUE
-                       IF (line_mem(i2) .GT. line_mem(i1)) THEN
-		          i0 = i1-1
-		          i3 = i2
-		       ENDIF
-                       madj = micro_adj
-                       IF (micro_adj*(i2-i1+1) .GT. 
-     .	                     line_mem(i3) - line_mem(i0) ) THEN
-     	                  madj = (line_mem(i3)-line_mem(i0))/(i2-i1+1)
-                       IF (madj .EQ. 0.D0) GOTO 5560
-                       ENDIF
-  		       DO 536 i3 = i1, i2-1
-	                  line_mem(i3) = line_mem(i3) +
-     .	                    (i3-i1+1)* madj
- 536		       CONTINUE
-	               IF ( i2 .LT. frst_pt+npoints .AND. 
-     .		       (line_mem(i2-1) .GE. line_mem(i2))) GOTO 5560
-	            ENDIF
- 538	         CONTINUE
-	      ENDIF
+	      CALL TM_CHECK_COORDS (frst_pt, frst_pt+npoints-1, is_double, 
+     .                              use_strict, has_repeated, misordered, 
+     .                              micro_adj, epsilon, epsilon)
+	      IF (misordered) GOTO 5560
+	      IF (has_repeated) 
+     .		CALL WARN('Axis has repeated values -- micro-adjusting ...')
 
 * Bounds specified by user
 

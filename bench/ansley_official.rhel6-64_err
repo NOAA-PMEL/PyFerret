@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 115587792 Jan 17 10:40 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 115593198 Jan 17 16:32 /home/users/ansley/build/working/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: back off the auto-dectection of true-month axes in files or defined w/o /MONTHLY
+Note:  fixes for ticket 2496
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,16 +13,16 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
-PWD=/home/users/ansley/build/trunk/FERRET/bench
+PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Tue Jan 17 11:04:57 PST 2017
+Beginning at Tue Jan 17 16:33:03 PST 2017
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -666,13 +666,10 @@ Replacing definition of axis XAX
 Replacing definition of axis XAX
            *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
-           *** NOTE: Axis has repeated values -- micro-adjusting ...
  **ERROR: improper grid or axis definition: unrepairable repeated axis coords
 define axis/from/x/name=xax {6,6}
-           *** NOTE: Axis has repeated values -- micro-adjusting ...
  **ERROR: improper grid or axis definition: unrepairable repeated axis coords
 define axis/from/x/name=xax/edges {6,6}
-           *** NOTE: Axis has repeated values -- micro-adjusting ...
  **ERROR: improper grid or axis definition: unrepairable repeated axis coords
 define axis/from/x/name=xax/edges {6,6,6}
            *** NOTE: Axis has repeated values -- micro-adjusting ...
@@ -1505,9 +1502,9 @@ Replacing definition of axis Z1
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Coordinates missing on axis LONGITUDE at subscript 13
+           *** NOTE: Coordinates missing on axis LONGITUDE at subscript -2033
            *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: Coordinates missing on axis LATITUDE at subscript 13
+           *** NOTE: Coordinates missing on axis LATITUDE at subscript -2033
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
  **ERROR: illegal limits: "DUMMY" does not exist at T=JAN-1990
@@ -2387,9 +2384,9 @@ curl error details:
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Coordinates missing on axis LONGITUDE at subscript 4
+           *** NOTE: Coordinates missing on axis LONGITUDE at subscript -1187
            *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: Coordinates missing on axis LATITUDE at subscript 4
+           *** NOTE: Coordinates missing on axis LATITUDE at subscript -1187
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
            *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
@@ -3550,7 +3547,7 @@ Replacing definition of axis AXI
 Replacing definition of axis AXI_COARSE
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: unrepairable repeated axis coords on axis trdim at subscript 2
+           *** NOTE: unrepairable repeated axis coords on axis trdim at subscript -2039
            *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4413,9 +4410,9 @@ go/garbage tmp/testMe
  **ERROR: unknown command qualifier: garbage
 go/garbage "tmp/testMe"
  **ERROR: unknown command qualifier: garbage
-go/garbage /home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl
+go/garbage /home/users/ansley/build/working/FERRET/bench/tmp/testMe.jnl
  **ERROR: unknown command qualifier: garbage
-go/garbage "/home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl"
+go/garbage "/home/users/ansley/build/working/FERRET/bench/tmp/testMe.jnl"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: command line too long -- exceeds 2048
@@ -4733,9 +4730,9 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: unrepairable repeated axis coords on axis xax at subscript 21
+           *** NOTE: unrepairable repeated axis coords on axis xax at subscript -4161
            *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: unrepairable repeated axis coords on axis yax at subscript 21
+           *** NOTE: unrepairable repeated axis coords on axis yax at subscript -4161
            *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4791,6 +4788,10 @@ Replacing definition of axis YAXIS
  TEMPORARY data cleared from memory
 Replacing definition of axis XLON
 Replacing definition of axis YLAT
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: Axis has repeated values -- micro-adjusting ...
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TIMAX
@@ -5038,4 +5039,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Jan 17 11:07:51 PST 2017
+Ended at Tue Jan 17 16:36:05 PST 2017

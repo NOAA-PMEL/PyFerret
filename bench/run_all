@@ -230,7 +230,7 @@ echo "Beginning at $now"
 
 # check status before continuing *kob* 4/98
 if ($status) then
-    echo "FERRET ERRROR*********************************" >>$log_file
+    echo "FERRET ERROR in benchmark run ****** exiting from run.sh ******"  >>$log_file
     exit 1
 endif
 

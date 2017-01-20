@@ -80,6 +80,9 @@
 	has_repeated = .FALSE.
 	misordered = .FALSE.
 
+
+	IF (ipte-ipt1 .LE. 1) RETURN
+
 * Set epsilon value for comparing coordinates
 
 	epsilon = 0.

@@ -1,0 +1,17 @@
+! err700_define_1pt_axis.jnl
+! Ticket 2499: regular axis, test for valid line_delta
+! ACM 7/6/2016
+
+
+def ax/t/bounds tax = 1, 0, 2
+show axis/t tax
+
+! check that reading such an axis from a file is ok
+let twelve = 12*t[gt=tax]
+
+save/file=a.nc/clobber twelve
+cancel var/all; cancel axis tax
+use a.nc
+sh dat
+sh axis/t tax
+

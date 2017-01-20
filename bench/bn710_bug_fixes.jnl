@@ -88,3 +88,8 @@ go err700_shade_singlecell
 !           where coordinates are very near grid-cell edges.
 go bn_reset
 go err700_coords
+
+! Bug 2499: Define a single-point axis with bounds
+go bn_reset
+go err700_define_1pt_axis
+

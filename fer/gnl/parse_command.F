@@ -113,7 +113,6 @@
 * V68  *acm* 3/12  For double-precision Ferret, let the precision of grave-accent 
 *                  expressions increase to 14.
 * V68  *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
-* V68  *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V68  *acm* 7/12 return 16 digits by default for grave-accent expressions
 * V685+ *acm* 12/13  bounds checking: dont refer to parts of the string outside its bounds.
 * V693 *sh* 12/14 moved arg_start/end inits into PARSE_COMMAND (housekeeping)

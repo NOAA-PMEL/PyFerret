@@ -212,7 +212,7 @@
 #else
 	PARAMETER     ( tab = CHAR(9) )
 #endif
-        PARAMETER ( grave_digits = 7 )
+        PARAMETER ( grave_digits = 16 )
 
 * intialize
 	grave_start	= 1

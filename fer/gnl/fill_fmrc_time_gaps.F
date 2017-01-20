@@ -40,6 +40,7 @@
 * missing rows in the 2d time array.  This routine fills thos gaps.
 *
 * V698 *sh* 12/15 
+* V710 *acm* 1/17 Fix ticket 2500: TM_DFPEQ to handle tiny precision differences
 
 * calling arguments
 *   has_gaps - (in) flag if gap-filling is needed

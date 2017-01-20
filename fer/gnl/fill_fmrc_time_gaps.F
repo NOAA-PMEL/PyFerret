@@ -40,6 +40,7 @@
 * missing rows in the 2d time array.  This routine fills thos gaps.
 *
 * V698 *sh* 12/15 
+* V710 *acm* 1/17 Fix ticket 2500: TM_DFPEQ to handle tiny precision differences
 
 * calling arguments
 *   has_gaps - (in) flag if gap-filling is needed
@@ -55,6 +56,7 @@
 	REAL time2d(nT, nF), edge2d(nT, nF)
 
 * internal variable declarations:
+	LOGICAL TM_DFPEQ
 	INTEGER ifcst, istep, ifcst2, istep2
 	REAL	tref
 	CHARACTER LEFINT*8
@@ -74,7 +76,7 @@
 	   IF (time2d(1,ifcst) .EQ. unspecified_val8) CYCLE
 * ... find the time step of this forecast where tref gets repeated
 	   DO istep = nT, 1, -1
-	      IF (time2d(istep, ifcst) .EQ. tref) THEN
+	      IF (TM_DFPEQ(time2d(istep, ifcst), tref)) THEN
 	         lagF = (nT-istep)/(ifcst-1)
 	         GOTO 100
 	      ENDIF

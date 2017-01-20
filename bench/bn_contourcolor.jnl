@@ -1,8 +1,8 @@
 set text /font=hershey
 contour/i=1:20/j=1:20/lev=(0)(-10,10,2.125)/color=blue/title="CONTOUR HERSHEY BLUE"  10*sin(i/3)*cos(j/4)
 frame /file=contourcolor_blue.pdf
-set text /font=tahoma
-contour/i=1:20/j=1:20/lev=(0)(-10,10,2.125)/color=green/title="CONTOUR TAHOMA GREEN"  10*sin(i/3)*cos(j/4)
+set text /font=lucida
+contour/i=1:20/j=1:20/lev=(0)(-10,10,2.125)/color=green/title="CONTOUR LUCIDA GREEN"  10*sin(i/3)*cos(j/4)
 frame /file=contourcolor_green.pdf
-contour/i=1:20/j=1:20/lev=(0)(-10,10,2.125)/color=(60,20,30)/title="CONTOUR TAHOMA (60,20,30)"  10*sin(i/3)*cos(j/4)
+contour/i=1:20/j=1:20/lev=(0)(-10,10,2.125)/color=(60,20,30)/title="CONTOUR LUCIDA (60,20,30)"  10*sin(i/3)*cos(j/4)
 frame /file=contourcolor_puce.pdf

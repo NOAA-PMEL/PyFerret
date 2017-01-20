@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1404 Jan 19 22:55 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1404 Jan 20 14:13 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -302,7 +302,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Thu Jan 19 22:56:33 PST 2017
+Beginning at Fri Jan 20 14:52:27 PST 2017
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -3116,7 +3116,7 @@ Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
-set mode desperate 1.E+10
+set mode desperate   9999999999.000000
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
 set mode desperate 1234567890123456789
  PERMANENT data cleared from memory
@@ -4983,4 +4983,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testfermethods.py
  Cached data cleared from memory
 >>> ... ... >>> >>> >>> 
-Ended at Thu Jan 19 22:59:16 PST 2017
+Ended at Fri Jan 20 14:55:15 PST 2017

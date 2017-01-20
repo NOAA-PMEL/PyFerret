@@ -55,6 +55,7 @@
 	REAL time2d(nT, nF), edge2d(nT, nF)
 
 * internal variable declarations:
+	LOGICAL TM_DFPEQ
 	INTEGER ifcst, istep, ifcst2, istep2
 	REAL	tref
 	CHARACTER LEFINT*8
@@ -74,7 +75,7 @@
 	   IF (time2d(1,ifcst) .EQ. unspecified_val8) CYCLE
 * ... find the time step of this forecast where tref gets repeated
 	   DO istep = nT, 1, -1
-	      IF (time2d(istep, ifcst) .EQ. tref) THEN
+	      IF (TM_DFPEQ(time2d(istep, ifcst), tref)) THEN
 	         lagF = (nT-istep)/(ifcst-1)
 	         GOTO 100
 	      ENDIF

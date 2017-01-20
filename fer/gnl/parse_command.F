@@ -137,6 +137,7 @@
 *                  start of command on an error
 * V697  3/16 Ticket 2376: parsing backslash escapes within repeat loops.
 * V697  3/16  *acm* ticket 2356 scale back change for multiple slash at end of command
+* V71  *acm* 1/17   Change to return 16 digits by default for grave-accent expressions was lost
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 115593198 Jan 17 16:32 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 115593206 Jan 20 17:03 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  fixes for ticket 2496
+Note: fix bug in itsa_truemonth_axis
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,15 +14,15 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
-FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
-FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
+FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
+FER_GO=. /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib /home/users/ansley/build/old_releases/ /home/users/ansley/build/
 FER_GRIDS=.
-FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
-FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
+FER_LIBS=/home/users/ansley/ferret_distributions/rhel6_64/lib
+FER_PALETTE=. /home/users/ansley/ferret_distributions/rhel6_64/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Tue Jan 17 16:33:03 PST 2017
+Beginning at Fri Jan 20 17:03:56 PST 2017
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -666,10 +666,8 @@ Replacing definition of axis XAX
 Replacing definition of axis XAX
            *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
- **ERROR: improper grid or axis definition: unrepairable repeated axis coords
-define axis/from/x/name=xax {6,6}
- **ERROR: improper grid or axis definition: unrepairable repeated axis coords
-define axis/from/x/name=xax/edges {6,6}
+Replacing definition of axis XAX
+Replacing definition of axis XAX
  **ERROR: improper grid or axis definition: unrepairable repeated axis coords
 define axis/from/x/name=xax/edges {6,6,6}
            *** NOTE: Axis has repeated values -- micro-adjusting ...
@@ -3547,8 +3545,6 @@ Replacing definition of axis AXI
 Replacing definition of axis AXI_COARSE
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: unrepairable repeated axis coords on axis trdim at subscript -2039
-           *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file sst_new.nc
@@ -4794,6 +4790,29 @@ Replacing definition of axis YLAT
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ LISTing to file a.nc
+           *** NOTE: Not deleted: TAX
+           *** NOTE: Axis is in use by grid TGRID
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **TMAP ERR: attribute already defined
+             coordinates for variable ZETA
+             Data set: testdata
+ **TMAP ERR: attribute already defined
+             coordinates for variable U
+             Data set: testdata
+ **TMAP ERR: attribute already defined
+             coordinates for variable V
+             Data set: testdata
+ **TMAP ERR: attribute already defined
+             coordinates for variable TEMP
+             Data set: testdata
+ **TMAP ERR: attribute already defined
+             coordinates for variable SALT
+             Data set: testdata
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
@@ -4809,7 +4828,7 @@ list index,edtim,udtim,udate,edate
 list index,edtim,udtim,udate,edate
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Replacing definition of axis TAX
+Replacing definition of axis tax
  LISTing to file tmp/uagg_1.nc
  LISTing to file tmp/uagg_2.nc
  LISTing to file tmp/uagg_3.nc
@@ -5039,4 +5058,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Jan 17 16:36:05 PST 2017
+Ended at Fri Jan 20 17:07:28 PST 2017

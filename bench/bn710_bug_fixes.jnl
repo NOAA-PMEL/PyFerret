@@ -93,3 +93,7 @@ go err700_coords
 go bn_reset
 go err700_define_1pt_axis
 
+
+! Bug 2498: Define a single-point axis with bounds
+go bn_reset
+go err700_aggregate_from_fmrc

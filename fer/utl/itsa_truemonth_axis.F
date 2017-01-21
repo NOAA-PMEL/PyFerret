@@ -41,6 +41,8 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 
 * 11/2016
+* 1/2017 *acm* Ticket 2498 Do not report a true-month axis when it's 
+*              actually an unitialized one.
 
 #include "tmap_dset.parm"
         include 'tmap_dims.parm'
@@ -52,7 +54,8 @@
 * calling argument declarations:
 	INTEGER	iaxis
 
-	ITSA_TRUEMONTH_AXIS =  (line_unit_code(iaxis) .LE. pun_trumonths)
+	ITSA_TRUEMONTH_AXIS =  (line_unit_code(iaxis) .LE. pun_trumonths
+     .			  .AND. line_unit_code(iaxis) .NE. int4_init)
 
 	RETURN
 	END

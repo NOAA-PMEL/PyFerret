@@ -1,0 +1,17 @@
+! err700_aggregate_from_fmrc.jnl
+! 1/2017 *acm*
+! (See ticket 2498)
+! Previously an incorrect definition of the F axis when datasets from 
+! thredds fmrc.xml are used in a Ferret F aggregation
+
+IF `TEST_OPENDAP(\
+"http://oos.soest.hawaii.edu/thredds/dodsC/hioos/roms_forec/hiig/runs/ROMS_Hawaii_Regional_Ocean_Model_RUN_2017-01-01T00:00:00Z") NE 0` \
+ THEN EXIT/SCRIPT
+
+use http://oos.soest.hawaii.edu/thredds/dodsC/hioos/roms_forec/hiig/runs/ROMS_Hawaii_Regional_Ocean_Model_RUN_2017-01-01T00:00:00Z
+use http://oos.soest.hawaii.edu/thredds/dodsC/hioos/roms_forec/hiig/runs/ROMS_Hawaii_Regional_Ocean_Model_RUN_2017-01-02T00:00:00Z
+use http://oos.soest.hawaii.edu/thredds/dodsC/hioos/roms_forec/hiig/runs/ROMS_Hawaii_Regional_Ocean_Model_RUN_2017-01-03T00:00:00Z
+
+DEFINE DATA/AGGREGATE/F testdata = 1,2,3
+! F axis should be  31-DEC-2016 to 02-JAN-2017
+SHOW GRID zeta

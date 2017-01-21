@@ -33,6 +33,10 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+*
+* V7031 1/17 *acm* ticket 2497, Back off the auto-detection of monthly axes.
+
+
 * Check time axis; if it is a monthly axis, with cells the length of the months
 * in the given calendar, then we will  define it as a "true_month" calendar.
 
@@ -50,6 +54,7 @@
 * tunit		time unit, e.g. 1/12 of seconds in the calendar year
 * true_month	flag for true-month calendars
 * line_characteristics arrays will also be adjusted
+
 
         include 'tmap_errors.parm'
         include 'tmap_dims.parm'
@@ -78,6 +83,13 @@
      .		datestring*20, moyr*3
 	
   50	FORMAT (7x, I4)
+
+c Backing out of auto-detecting monthly calendar axes. When restoring this,
+c get rid of the following statements
+
+	true_month = .FALSE.
+	RETURN
+
 
 * Initialize
 	

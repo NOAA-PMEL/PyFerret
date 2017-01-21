@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 13 Jan 19 22:46 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.031
+lrwxrwxrwx. 1 ksmith oerdnewp 13 Jan 21 08:11 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.031
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -292,7 +292,7 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Thu Jan 19 22:46:55 PST 2017
+Beginning at Sat Jan 21 08:13:18 PST 2017
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4667,6 +4667,23 @@ Replacing definition of axis YAXIS
  TEMPORARY data cleared from memory
 Replacing definition of axis TAX
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **TMAP ERR: attribute already defined
+             coordinates for variable ZETA
+             Data set: testdata
+ **TMAP ERR: attribute already defined
+             coordinates for variable U
+             Data set: testdata
+ **TMAP ERR: attribute already defined
+             coordinates for variable V
+             Data set: testdata
+ **TMAP ERR: attribute already defined
+             coordinates for variable TEMP
+             Data set: testdata
+ **TMAP ERR: attribute already defined
+             coordinates for variable SALT
+             Data set: testdata
 *** Running ferret script: bn_delim_datetime.jnl
  Cached data cleared from memory
 Replacing definition of axis TIMAX
@@ -4922,4 +4939,4 @@ set region/@w
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
  Cached data cleared from memory
-Ended at Thu Jan 19 22:48:37 PST 2017
+Ended at Sat Jan 21 08:15:03 PST 2017

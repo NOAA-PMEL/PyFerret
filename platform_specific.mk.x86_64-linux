@@ -48,9 +48,6 @@ else
 	PANGO_INCLUDE	= -I$(PANGO_DIR)/include/pango-1.0 -I$(PANGO_DIR)/include/glib-2.0 -I$(PANGO_DIR)/lib64/glib-2.0/include
 endif
 
-else
-endif
-
 ifeq ($(strip $(HDF5_DIR)),)
 	HDF5_LIBDIR	=
 else

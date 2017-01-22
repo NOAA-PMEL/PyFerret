@@ -19,6 +19,10 @@ incdir_list = [ "pyfermod",
                 os.path.join("fer", "ef_utility"),
                 os.path.join("fer", "grdel"), ]
 
+is_linux_system = os.getenv("IS_LINUX_SYSTEM")
+if is_linux_system:
+    is_linux_system = is_linux_system.strip()
+
 # NETCDF4_LIBDIR must be given, either for the static library or the shared-object library
 netcdf4_libdir = os.getenv("NETCDF4_LIBDIR")
 if netcdf4_libdir:
@@ -27,9 +31,16 @@ if not netcdf4_libdir:
     raise ValueError("Environment variable NETCDF4_LIBDIR is not defined")
 
 # HDF5_LIBDIR is only given if the HDF5 and NetCDF libraries are to be statically linked in
+# COMPRESS_LIB is the compression library used by this HDF5, if it is given
 hdf5_libdir = os.getenv("HDF5_LIBDIR")
 if hdf5_libdir:
     hdf5_libdir = hdf5_libdir.strip()
+    compress_lib = os.getenv("COMPRESS_LIB")
+    if compress_lib:
+        compress_lib = compress_lib.strip()
+    if not compress_lib in ('z', 'sz'):
+        raise ValueError("Environment variable COMPRESS_LIB must be either 'z' or 'sz'")
+    compress_lib = '-l' + compress_lib
 
 # CAIRO_LIBDIR is only given if the cairo library is to be statically linked in
 cairo_libdir = os.getenv("CAIRO_LIBDIR")
@@ -41,6 +52,12 @@ pixman_libdir = os.getenv("PIXMAN_LIBDIR")
 if pixman_libdir:
     pixman_libdir = pixman_libdir.strip()
 
+# PANGO_LIBDIR gives a non-standard location of the pango libraries and
+# the libraries it uses (ie, pangocairo, pango, freetype, fontconfig, png)
+pango_libdir = os.getenv("PANGO_LIBDIR")
+if pango_libdir:
+    pango_libdir = pango_libdir.strip()
+
 # The location of libpythonx.x.so, in case it is not in a standard location
 python_libdir = os.path.split( distutils.sysconfig.get_python_lib(standard_lib=True) )[0]
 
@@ -50,13 +67,11 @@ if hdf5_libdir:
     libdir_list.append(hdf5_libdir)
 if cairo_libdir:
     libdir_list.append(cairo_libdir)
-if pixman_libdir:
-    libdir_list.append(pixman_libdir)
+    if pixman_libdir:
+        libdir_list.append(pixman_libdir)
+    if pango_libdir:
+        libdir_list.append(pango_libdir)
 libdir_list.append(python_libdir)
-
-# Non-standard library location on some systems for X11 (such as XQuartz on Mac OSX)
-if buildtype == "intel-mac":
-    libdir_list.append("/opt/X11/lib")
 
 # Get the list of ferret static libraries
 # Stripping off the "lib" prefix and the ".a" suffix
@@ -99,9 +114,6 @@ if hdf5_libdir:
 else:
     addn_link_args.extend([ "-lnetcdff", "-lnetcdf" ])
 
-# The Pango text-rendering libraries
-addn_link_args.extend([ "-lpangocairo-1.0", "-lpango-1.0", "-lgobject-2.0" ])
-
 # Link to the cairo library and the libraries it requires.
 if cairo_libdir:
     cairo_lib = "-Wl," + os.path.join(cairo_libdir, "libcairo.a")
@@ -111,19 +123,24 @@ if cairo_libdir:
     else:
         pixman_lib = "-lpixman-1"
     addn_link_args.append(pixman_lib);
-    addn_link_args.extend([ "-lfreetype", "-lfontconfig", "-lpng", "-lXrender", "-lX11"])
-    # Bind symbols and function symbols to any internal definitions 
-    # and do not make any of the symbols or function symbols defined
-    # in any libraries externally visible (mainly for cairo and pixman).
-    # Those in the object files (including those from pyfermod and 
-    # fer/ef_utility) will still be visible.
-    addn_link_args.extend(["-Wl,-Bsymbolic", "-Wl,--exclude-libs -Wl,ALL"])
+    addn_link_args.extend([ "-lfreetype", "-lfontconfig", "-lpng" ])
+    if is_linux_system:
+        # Bind symbols and function symbols to any internal definitions
+        # and do not make any of the symbols or function symbols defined
+        # in any libraries externally visible (mainly for cairo and pixman).
+        # Those in the object files (including those from pyfermod and
+        # fer/ef_utility) will still be visible.
+        addn_link_args.extend([ "-lXrender", "-lX11",
+                                "-Wl,-Bsymbolic", "-Wl,--exclude-libs -Wl,ALL"])
 else:
     addn_link_args.append("-lcairo")
 
-# Link in the appropriate system libraries 
+# The Pango text-rendering libraries
+addn_link_args.extend([ "-lpangocairo-1.0", "-lpango-1.0", "-lgobject-2.0" ])
+
+# Link in the appropriate system libraries
 if hdf5_libdir:
-    addn_link_args.extend(["-lcurl", "-lz"])
+    addn_link_args.extend(["-lcurl", compress_lib])
 addn_link_args.extend([ "-lgfortran", "-ldl", "-lm", "-fPIC", ])
 
 # Get the list of C source files in pyfermod
@@ -147,7 +164,7 @@ for srcname in os.listdir(dirname):
         addnobjs_list.append(os.path.join(dirname, srcname))
 
 if cairo_libdir:
-    # Duplicate objects in libraries to make them externally visible (for las 
+    # Duplicate objects in libraries to make them externally visible (e.g., for las
     # external functions) if the '--exclude-libs ALL' flag was passed to the linker.
     dirname = os.path.join("fmt", "src")
     addnobjs_list.append(os.path.join(dirname, "tm_lenstr.o"));

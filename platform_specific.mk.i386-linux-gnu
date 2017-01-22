@@ -10,6 +10,9 @@
 # which should have been included prior to this include.
 #
 
+# Leave blank to omit additional Linux linker flags
+	IS_LINUX_SYSTEM = True
+
 #
 # Directories for the libraries
 #
@@ -29,6 +32,14 @@ ifeq ($(strip $(PIXMAN_DIR)),)
 else
 	PIXMAN_LIBDIR	= $(PIXMAN_DIR)/lib
 	PIXMAN_INCLUDE	= -I$(PIXMAN_DIR)/include
+endif
+
+ifeq ($(strip $(PANGO_DIR)),)
+	PANGO_LIBDIR	=
+	PANGO_INCLUDE	= -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/i386-linux-gnu/glib-2.0/include
+else
+	PANGO_LIBDIR	= $(PANGO_DIR)/lib
+	PANGO_INCLUDE	= -I$(PANGO_DIR)/include/pango-1.0 -I$(PANGO_DIR)/include/glib-2.0 -I$(PANGO_DIR)/lib/glib-2.0/include
 endif
 
 ifeq ($(strip $(HDF5_DIR)),)
@@ -54,9 +65,7 @@ endif
 			  -I$(DIR_PREFIX)/external_functions/ef_utility \
 			  $(CAIRO_INCLUDE) \
 			  $(PIXMAN_INCLUDE) \
-			  -I/usr/include/pango-1.0 \
-			  -I/usr/include/glib-2.0 \
-			  -I/usr/lib/i386-linux-gnu/glib-2.0/include \
+			  $(PANGO_INCLUDE) \
 			  -I$(NETCDF4_DIR)/include
 
 	MYDEFINES	= -Dcrptd_cat_argument \
@@ -97,11 +106,16 @@ endif
 	PPLUS_FFLAGS	= $(MYINCLUDES) $(MYDEFINES) -m32 -fPIC -fno-automatic -fdollar-ok \
 			  -ffixed-line-length-132 -fno-second-underscore -fno-backslash
 
+	OPT_FLAGS	= -O -DNDEBUG
+	PPLUS_OPT_FLAGS	= -O -DNDEBUG
+	DBG_FLAGS	= -O0 -g
+	PROF_FLAGS	= -O0 -g -pg
+
 # Directly compile the .F source files to the .o object files
 # since gfortran can handle the C compiler directives in Fortran code
 %.o : %.F
 	$(FC) $(FFLAGS) -c $*.F -o $*.o
 
 #
-# End of platform_specific.mk.i386-linux
+# End of platform_specific.mk.i386-linux-gnu
 #

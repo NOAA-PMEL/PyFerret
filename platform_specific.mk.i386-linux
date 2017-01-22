@@ -10,6 +10,9 @@
 # which should have been included prior to this include.
 #
 
+# Leave blank to omit additional Linux linker flags
+	IS_LINUX_SYSTEM = True
+
 #
 # Directories for the libraries
 #
@@ -29,6 +32,14 @@ ifeq ($(strip $(PIXMAN_DIR)),)
 else
 	PIXMAN_LIBDIR	= $(PIXMAN_DIR)/lib
 	PIXMAN_INCLUDE	= -I$(PIXMAN_DIR)/include
+endif
+
+ifeq ($(strip $(PANGO_DIR)),)
+	PANGO_LIBDIR	=
+	PANGO_INCLUDE	= -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include
+else
+	PANGO_LIBDIR	= $(PANGO_DIR)/lib
+	PANGO_INCLUDE	= -I$(PANGO_DIR)/include/pango-1.0 -I$(PANGO_DIR)/include/glib-2.0 -I$(PANGO_DIR)/lib/glib-2.0/include
 endif
 
 ifeq ($(strip $(HDF5_DIR)),)
@@ -54,9 +65,7 @@ endif
 			  -I$(DIR_PREFIX)/external_functions/ef_utility \
 			  $(CAIRO_INCLUDE) \
 			  $(PIXMAN_INCLUDE) \
-			  -I/usr/include/pango-1.0 \
-			  -I/usr/include/glib-2.0 \
-			  -I/usr/lib/glib-2.0/include \
+			  $(PANGO_INCLUDE) \
 			  -I$(NETCDF4_DIR)/include
 
 	MYDEFINES	= -Dcrptd_cat_argument \

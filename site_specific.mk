@@ -5,6 +5,7 @@
 ## Do not use $(shell pwd) since this is included in Makefiles in other directories.
 DIR_PREFIX = $(HOME)/build/pyferret_dev
 # DIR_PREFIX = $(HOME)/pyferret_dev
+# DIR_PREFIX = $(HOME)/git/PyFerret
 
 ## Machine type for which to build Ferret/PyFerret
 ##   x86_64-linux      for 64-bit RHEL
@@ -32,42 +33,61 @@ PYTHONINCDIR := $(shell $(PYTHON_EXE) -c "from __future__ import print_function 
 ## files just for creating a Ferret installation.
 INSTALL_FER_DIR = $(HOME)/ferret_distributions/rhel6_64
 # INSTALL_FER_DIR = $(FER_DIR)
+# INSTALL_FER_DIR = $(HOME)/PyFerret
 
-## Installation directory for cairo v1.12 or later static library 
+## Installation directory for cairo v1.12 or later static library
 ## (contains include and lib or lib64 subdirectories).  If blank,
-## the system's cairo shared library will be used.  Older versions 
-## of cairo (v1.8 or later) can be used, but raster images from 
+## the system's cairo shared library will be used.  Older versions
+## of cairo (v1.8 or later) can be used, but raster images from
 ## -nodisplay may look a little fuzzy unless -gif is specified.
 CAIRO_DIR = /usr/local/cairo-1.14.4
 # CAIRO_DIR = /usr/local
 # CAIRO_DIR =
+# CAIRO_DIR = $(HOME)/.local
 
-## Installation directory for pixman-1 static library (contains 
-## include and lib or lib64 subdirectories) used by the above cairo 
-## library.  If blank, or if CAIRO_DIR is blank, the system's 
+## Installation directory for pixman-1 static library (contains
+## include and lib or lib64 subdirectories) used by the above
+## cairo library.  If blank, or if CAIRO_DIR is blank, the system's
 ## pixman-1 shared library will be used.
 PIXMAN_DIR = /usr/local/cairo-1.14.4
+# PIXMAN_DIR = /usr/local/pixman-1-0.34.0
 # PIXMAN_DIR = /usr/local
 # PIXMAN_DIR =
+# PIXMAN_DIR = $(HOME)/.local
 
-## Installation directory for HDF5 static libraries (contains 
-## include and lib or lib64 subdirectories).  Do not give a location 
-## to link to NetCDF shared-object libraries.
+## Directory containing the pango-1.0, glib-2.0, freetype, fontconfig,
+## png libraries (contains include and lib or lib64 subdirectory).
+## If blank, or if CAIRO_DIR is blank, the system standard libraries
+## will be used.
+PANGO_DIR =
+# PANGO_DIR = /usr/local
+# PANGO_DIR = $(HOME)/.local
+
+## Installation directory for HDF5 static libraries (contains include
+## and lib or lib64 subdirectories).  To link to NetCDF shared-object 
+libraries, Do not give a location for HDF5_DIR.
 HDF5_DIR = /usr/local/hdf5-1.8.16
 # HDF5_DIR = /usr/local
-# HDF5_DIR = 
+# HDF5_DIR =
+# HDF5_DIR = $(HOME)/.local
+
+## Compression library used in the above HDF5 library, either 'z'
+## or 'sz'.  If HDF5_DIR is not given, this value is not used.
+COMPRESS_LIB = z
+# COMPRESS_LIB = sz
 
 ## Installation directory for NetCDF static or shared object libraries
-## (contains include and lib or lib64 subdirectories).  If HDF5_DIR 
-## (above) is blank, the netcdf shared-object (.so) libraries will be 
+## (contains include and lib or lib64 subdirectories).  If HDF5_DIR
+## (above) is blank, the netcdf shared-object (.so) libraries will be
 ## used;  otherwise the netcdf static (.a) libraries will be used.
 NETCDF4_DIR = /usr/local/netcdf-4.4.0
 # NETCDF4_DIR = /usr/local
+# NETCDF4_DIR = $(HOME)/.local
 
 ## Java home directory - this may be predefined
 ## from your shell environment.  If JAVA_HOME is defined,
 ## $(JAVA_HOME)/bin/javac and $(JAVA_HOME)/bin/jar is
-## called to build threddsBrowser.jar; otherwise, 
+## called to build threddsBrowser.jar; otherwise,
 ## threddsBrowser.jar is not built and the Ferret command
 ## SET DATA /BROWSE (or the alias OPEN) will not work.
 # JAVA_HOME = /usr/java/default
@@ -75,6 +95,5 @@ NETCDF4_DIR = /usr/local/netcdf-4.4.0
 # JAVA_HOME = /usr/lib/jvm/default-java
 # JAVA_HOME = /usr/lib/jvm/java-oracle
 JAVA_HOME = /usr/lib/jvm/java
-# JAVA_HOME = /Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home
+# JAVA_HOME = /Library/Java/JavaVirtualMachines/jdk1.8.0_112.jdk/Contents/Home
 
-##

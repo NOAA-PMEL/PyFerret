@@ -65,7 +65,7 @@ PANGO_DIR =
 
 ## Installation directory for HDF5 static libraries (contains include
 ## and lib or lib64 subdirectories).  To link to NetCDF shared-object 
-libraries, Do not give a location for HDF5_DIR.
+## libraries, do not give a location for HDF5_DIR.
 HDF5_DIR = /usr/local/hdf5-1.8.16
 # HDF5_DIR = /usr/local
 # HDF5_DIR =

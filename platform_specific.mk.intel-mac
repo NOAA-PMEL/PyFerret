@@ -36,7 +36,7 @@ endif
 
 ifeq ($(strip $(PANGO_DIR)),)
 	PANGO_LIBDIR	=
-	PANGO_INCLUDE	= -I/usr/local/include/pango-1.0 -I/usr/local/include/glib-2.0 -I/usr/local/lib/glib-2.0/include
+	PANGO_INCLUDE	= -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include
 else
 	PANGO_LIBDIR	= $(PANGO_DIR)/lib
 	PANGO_INCLUDE	= -I$(PANGO_DIR)/include/pango-1.0 -I$(PANGO_DIR)/include/glib-2.0 -I$(PANGO_DIR)/lib/glib-2.0/include

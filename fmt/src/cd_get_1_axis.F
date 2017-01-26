@@ -198,6 +198,8 @@
 * 1/13/2017 *acm* Do the repeated-coordinates checking in the new routine
 *                 TM_CHECK_COORDS, also called by xeq_define, to consistently
 *                 handle almost-equal coordinates, differing by machine precision.
+* 1/24/2017 *acm* Ticket 2504: If Ferret is computuing axis bounds, set them such 
+*                 that the axis lies within the given modulo length.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -249,7 +251,8 @@
      .        got_mod, mod_tf, setmodfalse, ok_cal, ok,
      .        got_edges, got_bnds, coordvar, its_irregular, 
      .        do_scale, do_offset, scale_is_dp, reg,
-     .        has_repeated, misordered, has_missing, is_double, true_month
+     .        has_repeated, misordered, has_missing, is_double, 
+     .        true_month, okmod
 
       INTEGER TM_UNIT_ID, TM_UNITS_CAL, TM_LENSTR1, TM_GET_CALENDAR_ID,      
      .        STR_CASE_BLIND_COMPARE, STR_UPCASE, STR_SAME,
@@ -1231,16 +1234,22 @@ c	ENDIF
               line_modulo(iaxis) = .TRUE.
               IF (line_modulo_len(iaxis).EQ.0.0D0)
      .                    line_modulo_len(iaxis) = 360.D0
-           ENDIF
+           ELSE
 
-	   IF (vartype.NE.ncdouble .AND. .NOT.line_modulo(iaxis) .AND. epsilon.NE.0.) THEN	      
-              IF (TM_FPEQ_EPS(epsilon, delta, 360.0) .OR. delta.LT.360.0) THEN
-                 line_modulo(iaxis) = .TRUE.
-                 IF (line_modulo_len(iaxis).EQ.0.0D0)
-     .                    line_modulo_len(iaxis) = 360.D0
-              ENDIF
-           ENDIF
+* Ticket 2504: Are the coordinates within a 360 deg but the bounds not?
 
+              IF (.NOT.line_regular(iaxis)) THEN
+	         IF (.NOT.got_bnds .AND. .NOT.got_edges .AND. 
+     .               line_mem(ipte) - line_mem(ipt1).LE.360.D0 ) THEN
+	            CALL TM_ADJUST_BOUNDS(iaxis, 360.0,
+     .                                    axwwlen, okmod)
+	            IF (okmod) THEN
+		       line_modulo(iaxis) = .TRUE.
+		       line_modulo_len(iaxis) = 360.D0
+		    ENDIF
+	         ENDIF
+	      ENDIF
+           ENDIF
         ENDIF
 
 * if it is a calendar time axis and the first point is in year 0000 or 0001
@@ -1264,10 +1273,37 @@ c           secsperyear = cals_yeardays(cal_id)* 24*60*60
               line_modulo(iaxis) = .TRUE.
               IF (line_modulo_len(iaxis).EQ.0.0D0)
      .          line_modulo_len(iaxis) = secsperyear/line_tunit(iaxis)
+
+* Ticket 2504: Are the coordinates within a year but the bounds not?
+           ELSEIF (.NOT.line_regular(iaxis) .AND. .NOT.got_bnds .AND. .NOT.got_edges) THEN  
+	      delta = tmp8 - first
+              IF ( (secs2start .LE.  2*secsperyear)
+     .	           .AND. (delta*line_tunit(iaxis) .LE. secsperyear) ) THEN
+	         CALL TM_ADJUST_BOUNDS(iaxis, 
+     .                    secsperyear/line_tunit(iaxis), axwwlen, okmod)
+	         IF (okmod) THEN
+		    line_modulo(iaxis) = .TRUE.
+		    line_modulo_len(iaxis) = axwwlen
+	         ENDIF
+              ENDIF
            ENDIF
         ENDIF
 
 * sanity check the modulo length
+
+* Ticket 2504: If the coordinates lie within the modulo length but the auto-
+* generated midpoint bounds make the axis too long, reset them so the axis 
+* is the prescribed length. (may have been done for special cases above)
+
+	IF (line_modulo(iaxis) .AND. .NOT.got_bnds .AND. .NOT.got_edges) THEN
+	   CALL TM_ADJUST_BOUNDS(
+     .                   iaxis, line_modulo_len(iaxis), axwwlen, okmod)
+	   IF (.NOT.okmod ) THEN
+	      line_modulo(iaxis) = .FALSE.
+	      line_modulo_len(iaxis) = 0.
+	   ENDIF
+	ENDIF
+
 * a whisker too small is assumed a precision error
 * a whisker larger is assumed to be deliberate
 * ACM 1/08 
@@ -1281,7 +1317,6 @@ c           secsperyear = cals_yeardays(cal_id)* 24*60*60
 
         IF (line_modulo(iaxis).AND.line_modulo_len(iaxis).NE.0.D0) THEN
            IF (line_modulo_len(iaxis) .LT. axwwlen) THEN
-c             line_modulo_len(iaxis) = 0.0D0
              IF (is_double) THEN
                 ok = TM_DFPEQ(axwwlen, line_modulo_len(iaxis)) 
              ELSE

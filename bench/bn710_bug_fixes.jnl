@@ -97,3 +97,8 @@ go err700_define_1pt_axis
 ! Bug 2498: time unit error in F-aggregation of some OPENDAP datasets
 go bn_reset
 go err700_aggregate_from_fmrc
+
+
+! Bug 2498: time unit error in F-aggregation of some OPENDAP datasets
+go bn_reset
+go err700_modulo

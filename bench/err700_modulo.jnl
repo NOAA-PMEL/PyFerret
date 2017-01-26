@@ -1,0 +1,65 @@
+! err700_modulo.jnl
+! See ticket 2504. Axis defintions where bounds are not given, and Ferret
+! is defining the cell edges. If axis coordinates lie within the modulo range
+! but the cell bounds defined automatically using coordinate midpoints range 
+! larger than 360 degrees, or 1 year, need to adjust bounds. This is done only 
+! for irregular axes, otherwise a regular axis becomes irregular.
+
+use modax
+
+! The axis 'irreg_no_bounds' is irregular and is stored in the file without 
+! bounds. The coordinate range is < 360 but previously the axis was set up 
+! as having axis length 369.45 so was not treated as modulo. 
+! Now it is marked modulo.
+
+sh axis irreg_no_bounds
+list/order=x/nohead x[gx=irreg_no_bounds]
+show axis/x irreg_no_bounds
+
+
+! The axis 'regular_no_bounds' is regular.  Its coordinate range is < 360, but
+! to adjust the grid cells would make it irregular, so this axis is still
+! marked as not modulo.
+
+sh axis regular_no_bounds
+list/order=x/nohead x[gx=regular_no_bounds]
+show axis/x regular_no_bounds
+
+! The axis 'irreg_with_bounds' is irregular, stored with bounds in the file.
+! Its coordinate range is < 360, but the range of the bounds is larger than 
+! 360. Because the bounds are in the file, they are not changed; it is marked 
+! as not modulo.
+
+sh axis irreg_with_bounds
+list/order=x/nohead x[gx=irreg_with_bounds]
+show axis/x irreg_with_bounds
+
+cancel data/all
+
+! DEFINE AXIS examples
+
+! Likewise define an axis whose coordinate range is < 360 but where the
+! default midpoint grid cell bounds would make it larger than 360.
+! Previously this axis was not defined as modulo, now it is.
+
+define axis/x/units=degrees_east xax = {0, 10, 20, 340, 358}
+show axis xax
+
+! Now define a regular axis whose coordinate range is < 360 but the
+! default midpoint grid cell bounds would make it larger than 360.
+! To keep it regular, mark as not modulo
+
+define axis/x=5:355:50/units=degrees_east xax
+show axis xax
+
+! similarly for time axes
+! Regular time axis with bounds that make it longer than a year.
+! leave this one so it stays regular and is not modulo.
+
+define axis/t=3:363:10/units=days/t0=1-jan-0000 treg
+show axis treg
+
+! An irregular axis where moving the bounds can make it a modulo calendar axis.
+define axis/t0=1-jan-0000/units=days/t tax2 = { 3, 55, 103, 153, 203, 253, 303, 353}
+sh axis tax2
+

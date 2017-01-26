@@ -260,6 +260,8 @@
 * 1/13/2017 *acm* Do the repeated-coordinates checking in the new routine
 *                 TM_CHECK_COORDS, also called by cd_get_1_axis, to consistently
 *                 handle almost-equal coordinates, differing by machine precision.
+* 1/24/2017 *acm* Ticket 2504: If Ferret is computuing axis bounds, set them such 
+*                 that the axis lies within the given modulo length.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -390,15 +392,14 @@
      .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, MATCH_NAME,
      .            NC_GET_ATTRIB, TM_LEGAL_NAME_OP, TM_HAS_STRING,
      .            ITSA_1LINEIF, MATCH4, GO_FILE_INPUT, IS_AGG_MEMBER, 
-     .            MATCH_TEMPLATE, 
-     .            TM_ITS_SUBSPAN_MODULO,
+     .            MATCH_TEMPLATE, TM_ITS_SUBSPAN_MODULO,
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
      .            new_att, new_att_modulo, got_it, orient_t, agg_quiet,
      .            letdset, its_remote, agg_hide, def_att_quiet, purge_all,
      .            user, norm, nouser, t_regular, use_strict, have_expr, 
      .            original, true_month, line_allocated, truemonth_noted,
-     .            is_double, misordered
+     .            is_double, misordered, bnds_or_edges, okmod
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID, EFCN_SCAN,
      .		  TM_GET_LINENUM, TM_LENSTR1, 
@@ -418,7 +419,7 @@
      .            attoutflag, attlen, coordvar, 
      .            dset_to_add, dir, type, attype, attid, ibuff, i0,  
      .            agg_dim, nagfiles, ivar, item, nlab, ierr, nlen,  
-     .            llen, line, dstart, units, npts
+     .            llen, line, dstart, units, npts, ipt1, ipte
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            val, dummy, val_buf, xloc, yloc, halign, angle, size,
@@ -1009,6 +1010,7 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 	has_bounds =  qual_given( slash_bounds ) .GT. 0
         IF (has_bounds .AND. its_edges) GOTO 5730
 
+	bnds_or_edges = has_bounds .OR. its_edges
 
 * is it a calendar axis definition?
 	its_calendar =  orient_t .AND. cx_calendar(orient,mods_cx)
@@ -1683,6 +1685,13 @@ C /units=months  is 1/12 of the length of the year
 	     IF (rmod_len .EQ. 0.0D0)  rmod_len = 360.D0
 	     new_att_modulo = .TRUE.
 	     new_att_modulo_len = rmod_len
+	  ELSE IF (.NOT.has_bounds .AND. .NOT.line_regular(iline)) THEN 
+	    CALL TM_ADJUST_BOUNDS(iline, 360.0, axwwlen, its_modulo)
+	     IF (its_modulo) THEN
+	        rmod_len = 360.D0
+	        new_att_modulo = .TRUE.
+	        new_att_modulo_len = rmod_len
+	     ENDIF   
 	  ENDIF
 
 *  Calendar modulo
@@ -1694,7 +1703,7 @@ C /units=months  is 1/12 of the length of the year
 	  CALL TM_WW_AX_1_N(iline, start, end)
 	  secs2start = bc_to_t0 + start*line_tunit(iline)
 	  
-* Set the conversion factor, months to days
+* Set the conversion factor for true-month, months to days
 	   grid_line(t_dim, dgrid_buff) = iline
 	   CALL TM_MONTH_TIME_FACTOR (dgrid_buff, true_month, timefac)
 
@@ -1707,7 +1716,35 @@ C /units=months  is 1/12 of the length of the year
      .				       timefac* secsperyear/line_tunit(iline)
 	     new_att_modulo = .TRUE.
 	     new_att_modulo_len = rmod_len
+
+* Is this an axis where we added bounds?  If so they might be adjustable
+* to make the axis modulo
+
+           ELSEIF (.NOT.line_regular(iline) .AND. .NOT.bnds_or_edges) THEN  
+	      delta = end - start
+              IF ( (secs2start .LE.  2*secsperyear)
+     .	           .AND. (delta*line_tunit(iline) .LE. secsperyear) ) THEN
+	         CALL TM_ADJUST_BOUNDS(iline, 
+     .                        secsperyear/line_tunit(iline), axwwlen, okmod)
+	         IF (okmod) THEN
+		    its_modulo = .TRUE.
+	            rmod_len = axwwlen
+	            new_att_modulo = .TRUE.
+	            new_att_modulo_len = rmod_len
+		 ENDIF
+              ENDIF
 	  ENDIF
+
+	ENDIF
+
+* Ticket 2504: If the coordinates on an irregular axis lie within the modulo 
+* length but bounds that were automatically computed from coordinate midpoints 
+* make the axis too long, reset the bounds so the axis is the modulo length.
+* (may have been done for special cases above)
+
+	IF (its_modulo .AND. .NOT.bnds_or_edges .AND. rmod_len.GT.0.) THEN
+	   CALL TM_ADJUST_BOUNDS(iline, rmod_len, axwwlen, okmod)
+	   IF (.NOT.okmod) its_modulo = .FALSE.
 	ENDIF
 
 * set modulo and sanity check it
@@ -1717,7 +1754,7 @@ C /units=months  is 1/12 of the length of the year
 	IF (rmod_len .NE. 0.0D0) THEN
 	   IF (axwwlen .GT. rmod_len) THEN
              IF (TM_DFPEQ(axwwlen, rmod_len)) THEN
-	       line_modulo_len( iline ) = 0.0D0
+	       line_modulo_len( iline ) = 0.0
              ELSE
                GOTO 5525
 	     ENDIF

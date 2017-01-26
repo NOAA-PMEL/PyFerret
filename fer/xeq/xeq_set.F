@@ -267,10 +267,10 @@
      .                  varname*512, attname*128, new_att_calendar*10, 
      .                  new_att_t0*128, new_att_units*128, buff3*512,
      .                  t0string*128, ustring*128, faccess*16, 
-     .                  fposition*16, fstatus*16, c1*1, typflag*10
+     .                  fposition*16, fstatus*16, c1*1, typflag*10  
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT, 
      .                  TM_DIGIT_ONLY,
-     .                  TM_HAS_STRING, TM_LEGAL_NAME, MATCH_NAME,
+     .                  TM_HAS_STRING, TM_LEGAL_NAME, MATCH_NAME, TM_FPEQ,
      .                  NC_GET_ATTRIB, set_last, any_delta, dset_cdf,
      .			do_laser_movie, past_laser_movie, start_frame,
      .                  do_ez, tregular, its_changed, ok_cal,
@@ -893,6 +893,23 @@ c *kob* 4/97
 	   ELSE
 	      val_buf = ABS(val_buf)  ! ABS to tolerate negatives
 	   ENDIF
+	   
+* Don't allow the modulo length be set longer than the axis length.
+
+	   IF (val_buf .NE. 0.0) THEN
+	      axwwlen = TM_WW_AXLEN(axis)
+
+	      IF (.NOT.TM_FPEQ(axwwlen, val_buf) .AND. 
+     .			   axwwlen .GT. val_buf) THEN
+                 arg = TM_FMT(val_buf, 8, 12, len)
+	         show_str = TM_FMT(axwwlen, 8, 12, slen)
+                 buff1 = 'illegal modulo value '//arg(:len) //
+     .             ' is less than axis length '//show_str(:slen)
+		 buff_len = TM_LENSTR1(buff1)
+	         GOTO 6220
+	      ENDIF
+	   ENDIF
+
 	   its_changed = .NOT.line_modulo(axis)
      .		    .OR.  val_buf .NE. line_modulo_len(axis)
            line_modulo( axis ) = .TRUE.
@@ -2088,6 +2105,9 @@ c *kob* 4/97
      .		     'no grid has been saved', *5000 )
  6210	CALL ERRMSG( ferr_invalid_command, status,
      .		 'unknown axis: '//cmnd_buff(item_start(1):item_end(1)),
+     .               *5000 )
+ 6220	CALL ERRMSG( ferr_invalid_command, status,
+     .		     buff1(:buff_len)//pCR//cmnd_buff(:len_cmnd),
      .               *5000 )
  6310	CALL ERRMSG( ferr_invalid_command, status,
      .	         'SET AXIS/CALENDAR=what? ', 

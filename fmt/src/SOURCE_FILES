@@ -132,6 +132,7 @@ nc_get_attrib_float.F\
 nc_get_attrib_string.F\
 tm_abstract_axis.F\
 tm_add_message.F\
+tm_adjust_bounds.F\
 tm_allo_dyn_grid.F\
 tm_allo_dyn_line.F\
 tm_allo_dyn_grid_sub.F\

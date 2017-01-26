@@ -56,8 +56,7 @@ from pyferret import pyefmethods
 # also import the methods given in pyefmethods into pyferret
 from pyferret.pyefmethods import *
 
-# the FerRegion, FerAxis, FerGrid, FerVar, FerPyVar, and FerDSet objects 
-# for working with Ferret from Python
+# the Fer... objects for working with Ferret from Python
 from pyferret import ferregion
 from pyferret.ferregion import *
 from pyferret import feraxis
@@ -72,6 +71,10 @@ from pyferret import ferdset
 from pyferret.ferdset import *
 from pyferret import feraggdset
 from pyferret.feraggdset import *
+from pyferret import ferfmrcdset
+from pyferret.ferfmrcdset import *
+from pyferret import ferfmrcvar
+from pyferret.ferfmrcvar import *
 
 # Create "the" anonymous dataset
 anondset = FerDSet('', qual=ferdset._anonymous_dataset_qualifier)

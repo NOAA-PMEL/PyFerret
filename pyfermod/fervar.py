@@ -167,7 +167,7 @@ class FerVar(object):
             they have the same Ferret variable name,
             they have the same dataset name, 
             they have the same title, and
-            they have the same defintion.
+            they have the same definition.
         All these comparisons are case-insensitive.
         '''
         try:
@@ -179,10 +179,10 @@ class FerVar(object):
     def __ne__(self, other):
         '''
         Two FerVars are not equal if any of the following are True:
-            they have different Ferret variable name,
-            they have different dataset name,
-            they have different title, or
-            they have different defintion.
+            they have different Ferret variable names,
+            they have different dataset names,
+            they have different titles, or
+            they have different definitions.
         All these comparisons are case-insensitive.
         '''
         try:

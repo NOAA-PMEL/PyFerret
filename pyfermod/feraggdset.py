@@ -124,7 +124,7 @@ class FerAggDSet(pyferret.FerDSet):
 
     def __eq__(self, other):
         '''
-        Two FerAddDSets are equal if their Ferret names, lists of aggregated 
+        Two FerAggDSets are equal if their Ferret names, lists of aggregated 
         dataset names, aggregation axis, component dataset hidden status, and 
         dictionary of FerVar are variables all equal.  All string values are 
         compared case-insensitive.

@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1404 Jan 21 08:27 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1404 Jan 26 16:26 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -293,6 +293,7 @@ Benchmark scripts that will be run:
    err700_decimate.jnl
    bn_outline_poly.jnl
    bn_contourcolor.jnl
+   bn_inf2missing.jnl
    testgetstrdata.py
    testferregion.py
    testferdset.py
@@ -302,7 +303,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Sat Jan 21 08:32:59 PST 2017
+Beginning at Thu Jan 26 16:26:26 PST 2017
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4707,6 +4708,9 @@ Replacing definition of axis TAX
  **TMAP ERR: attribute already defined
              coordinates for variable SALT
              Data set: testdata
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
 *** Running ferret script: bn_delim_datetime.jnl
  Cached data cleared from memory
 Replacing definition of axis TIMAX
@@ -4963,6 +4967,8 @@ set region/@w
  Cached data cleared from memory
 *** Running ferret script: bn_contourcolor.jnl
  Cached data cleared from memory
+*** Running ferret script: bn_inf2missing.jnl
+ Cached data cleared from memory
 *** Running python script: testgetstrdata.py
  Cached data cleared from memory
 >>> ... ... >>> >>> >>> 
@@ -5000,4 +5006,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testfermethods.py
  Cached data cleared from memory
 >>> ... ... >>> >>> >>> 
-Ended at Sat Jan 21 08:35:44 PST 2017
+Ended at Thu Jan 26 16:29:16 PST 2017

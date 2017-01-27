@@ -1,0 +1,11 @@
+! bn_inf2missing.jnl
+! test for trac ticket #2009 enhancement
+! convert any NaN and Inf values in PyEF returned data to the missing value for the array
+!
+! The value returned by this function is -infinity at zero and +infinity at one.
+! If left as infinity, no plot produced; if converted to the missing value, one 
+! sees a normal plot with the line stopping before reaching zero or one.
+
+plot stats_ppf(x[gx=0:1.0:0.01], "norm", {0,1})
+frame /file=bn_inf2missing.pdf
+

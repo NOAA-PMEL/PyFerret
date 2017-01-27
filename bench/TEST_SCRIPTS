@@ -278,6 +278,7 @@ err700_decimate.jnl
 ! PyFerret-only Ferret scripts
 bn_outline_poly.jnl
 bn_contourcolor.jnl
+bn_inf2missing.jnl
 ! PyFerret-only Python scripts
 testgetstrdata.py
 testferregion.py

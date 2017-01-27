@@ -1,7 +1,6 @@
 ! err700_save_mod_att.jnl
-! ticket 1480: do not write a modulo axis when saving an 
-! axis with length longer than the modulo length
-
+! ticket 1480: do not write a modulo axis when saving a modulo
+! axis with region longer than the modulo length
 
 ! write a dataset to use, modulo attribute
 define axis/x=20:377.5:2.5/units=degrees_east/modulo xlon
@@ -45,6 +44,6 @@ go bn_reset
 use a
 sh att (`sst,return=xaxis`)
 
-! previously the axis was marked modulo, length 362.
+! previously the axis, of length 362, was marked modulo.
 show axis `sst,return=xaxis`
 

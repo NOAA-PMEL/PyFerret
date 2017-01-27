@@ -201,7 +201,8 @@
      .			cx_buff_x, cx_buff_y,
      .			phlim, pvlim, pxdenig, pydenig,
      .                  cal_id, tax, x_axtyp, y_axtyp, n,
-     .                  ss_x_save, ss_y_save, hblk1, mvh_temp, ier, nc, skipsym
+     .                  ss_x_save, ss_y_save, hblk1, mvh_temp, ier, nc, 
+     .                  skipsym, nsiz, ngood
 
 	REAL		x_len, y_len, lo, hi, lox, hix, loy, hiy,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
@@ -424,6 +425,7 @@ c	ind_dim = plot_axis(1)
 * check that we have enough PPLUS memory and allocate more if needed.
 
         first_polygon = .TRUE.
+	ngood = 0
 
 * ...  point to the first polygon 
        IF ( oneD_form ) THEN
@@ -629,6 +631,7 @@ c	ind_dim = plot_axis(1)
 * ... locate the (next) contiguous segment in the arrays
 *    ...search for start of segment
 	   missing_polygon = .false.
+
 	   start = npts
 	   end   = npts
 	   DO 210 i = 1, npts
@@ -649,6 +652,8 @@ c	ind_dim = plot_axis(1)
  230	   CONTINUE
 
  240	   IF (start .GE. end ) missing_polygon = .true.
+	   nsiz = npts
+
 
 * ... check for adequate PLOT+ memory
  250	   npts = end-start+1
@@ -704,6 +709,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 	   IF (missing_polygon) THEN
 ! for time series overlays, dont load the data
+
               IF (.NOT. (has_time_axis .AND. overlay)) 
      .    	  CALL PPLLDX_envelope(3,mr_bad_data(mr_x),
      .            mr_bad_data(mr_y),1,t1_date,' ',dt_min,plot_mem_used)
@@ -716,10 +722,17 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	   ENDIF
 
 * ... increment number of lines on plot
-!	   nline_on     = nline_on     + 1
 	   nline_in_mem = nline_in_mem + 1
-
 	   npoly = npoly + 1
+	   ngood = ngood + 1
+	   x_dat(nsiz+npoly) = 1.  ! flag for use with color array: poly skipped?
+
+	   IF (missing_polygon .AND. has_time_axis .AND. overlay) THEN
+	      nline_in_mem = nline_in_mem - 1
+	      ngood = ngood - 1
+	      x_dat(nsiz+npoly) = -99  ! flag for use with color array: poly skipped
+	   ENDIF
+
 	GOTO 200	! end of DO-WHILE loop
  290	IF (npoly .EQ. 0 ) GOTO 5230
 
@@ -757,8 +770,20 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	   DO 300 ipoly = 1, npoly
  300	   x_dat(ipoly) = x_dat(1)	! single color applied to all pol'gs
 	   ncolor = npoly
+
+* for time-axis overlays, mising-polygons are not loaded. Account for that in the color array.
+	ELSEIF (ncolor.GT.ngood .AND. has_time_axis .AND. overlay) THEN
+	   nc = 0
+	   DO ipoly = 1, ncolor
+	      IF (x_dat(nsiz+ipoly) .NE. -99.) THEN
+	         nc = nc + 1
+		 x_dat(nc) = x_dat(ipoly)
+	      ENDIF
+	   ENDDO
+	   ncolor = nc
+	ELSE
+	   IF (ncolor .NE. npoly) GOTO 5220	! color array length wrong
 	ENDIF
-	IF (ncolor .NE. npoly) GOTO 5220	! color array length wrong
 
 * pass back a summary about the range of colors
 	no_range = NO_LINE_RANGE(x_dat,

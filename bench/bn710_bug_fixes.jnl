@@ -102,3 +102,7 @@ go err700_aggregate_from_fmrc
 ! Bug 2504: modulo axes and coordinates
 go bn_reset
 go err700_modulo
+
+! Bug 1480: saving modulo axis with too big a region
+go bn_reset
+go err700_save_mod_att

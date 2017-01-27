@@ -124,6 +124,8 @@
 *                  Use ww_dim_name from xtext_info.cmn
 * V71  3/16 *acm* Ticket 2158: working with true monthly time axes. Write these axes
 *                  as irregularly spaced daily axes.
+* 1/26/2017 *acm* Ticket 1480. Do not write a modulo attribute if the requested 
+*                 region is largerthan the length of the modulo axis.
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -172,7 +174,8 @@
      .       ITSA_TRUEMONTH_AXIS,
      .       abstract, do_warn, got_modulo, got_calendar, got_units, 
      .       got_positive, got_spacing, got_axis, got_cartesian, got_it,
-     .       coordvar, do_off, do_scale, dim_only, true_month, is_regular
+     .       coordvar, do_off, do_scale, dim_only, true_month, is_regular,
+     .       write_mod
       PARAMETER (do_warn = .TRUE. )
       INTEGER TM_LENSTR1, CD_AXLEN, STR_SAME, STR_DNCASE, TM_LENSTR,
      .        dimid, iaxis, axid, cdfstat, lo, hi,
@@ -487,6 +490,8 @@
       got_spacing = .FALSE.
       got_axis = .FALSE.
       got_cartesian = .FALSE.
+      
+      write_mod = .TRUE.
 
 ! get whatever attributes are available in the linked-list structure.
 ! use the name of the parent axis.
@@ -546,6 +551,17 @@
 
             IF ( MATCH_NAME (attname,  TM_LENSTR1(attname), 
      .           'MODULO', 6) ) THEN
+
+* Ticket 1480. For a modulo axis, if the requested region is longer than the 
+* axis length, do not write the modulo attribute. Issue a note.
+
+	       IF (hiss - loss .GE. line_dim(iaxis)) THEN
+                  CALL WARN ('Requested region on modulo axis '//name(:nlen)//
+     .               ' is larger than modulo length. Modulo attribute not written.')
+                  attoutflag = 0
+		  write_mod = .FALSE.
+	       ENDIF
+
                IF (attype .NE. NF_CHAR .AND. vals(1) .EQ. 0.) THEN
 ! Write line_modulo_len 
                   vals(1) = line_modulo_len(iaxis)
@@ -729,6 +745,8 @@
         ENDIF
       ENDIF
 
+* Ticket 1480. For a modulo axis, if the requested region is longer than the 
+* axis length, do not write the modulo attribute. 
 
       IF ( line_modulo(iaxis) .AND. (.NOT.got_modulo) ) THEN
 	 IF (line_modulo_len(iaxis) .EQ. 0.0D0 ) THEN
@@ -740,7 +758,7 @@
            ELSE
               attoutflag = 1
            ENDIF
-           IF (attoutflag .EQ. 1)
+           IF (attoutflag .EQ. 1 .AND. write_mod)
 #ifdef usingDODSf2cUnderscore 
      .       cdfstat = NF_PUT_ATT_TEXT_( cdfid, axid, attname,
      .        	       1, ' ' )
@@ -757,7 +775,7 @@
            ELSE
               attoutflag = 1
            ENDIF
-           IF (attoutflag .EQ. 1) 
+           IF (attoutflag .EQ. 1 .AND. write_mod) 
 #ifdef usingDODSf2cUnderscore
      .      cdfstat = NF_PUT_ATT_DOUBLE_( cdfid, axid, attname,
      .        	       outtype, 1, line_modulo_len(iaxis) )
@@ -767,7 +785,7 @@
 #endif
 	 ENDIF
 
-! Check if user want to write modulo=false to the file
+* Check if user wants to write modulo=false to the file
       ELSE IF (got_modulo .AND. (varid .GT. 0) .AND.
      .         .NOT.line_modulo(iaxis)  ) THEN 
             attname = 'modulo'

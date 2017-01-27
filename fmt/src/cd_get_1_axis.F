@@ -200,6 +200,9 @@
 *                 handle almost-equal coordinates, differing by machine precision.
 * 1/24/2017 *acm* Ticket 2504: If Ferret is computuing axis bounds, set them such 
 *                 that the axis lies within the given modulo length.
+* 1/26/2017 *acm* Ticket 1480. change the message if the modulo length is 
+*                 less than the axis length. The rest of that ticket is 
+*                 addressed in cd_write_axis.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -1314,6 +1317,8 @@ c           secsperyear = cals_yeardays(cal_id)* 24*60*60
 
 * Ticket 2172: If the axis is actually too long, reset the modulo flags
 * so it is treated as not modulo.
+* Ticket 1480, change the message; the modulo length is invalid if 
+* it's shorter than the axis.
 
         IF (line_modulo(iaxis).AND.line_modulo_len(iaxis).NE.0.D0) THEN
            IF (line_modulo_len(iaxis) .LT. axwwlen) THEN
@@ -1329,7 +1334,7 @@ c           secsperyear = cals_yeardays(cal_id)* 24*60*60
 	        line_modulo_len(iaxis) = 0
 		line_modulo(iaxis) = .FALSE.
                 CALL TM_NOTE(
-     .          'Ignored modulo length exceeding axis length: '
+     .          'Ignored modulo length less than axis length: '
      .          //vname(:vlen), tt )
              ENDIF
            ENDIF

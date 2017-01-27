@@ -1,0 +1,50 @@
+! err700_save_mod_att.jnl
+! ticket 1480: do not write a modulo axis when saving an 
+! axis with length longer than the modulo length
+
+
+! write a dataset to use, modulo attribute
+define axis/x=20:377.5:2.5/units=degrees_east/modulo xlon
+sh axis xlon
+let var = x[gx=xlon]
+
+save/clobber/file=a1.nc var
+sp ncdump -h a1.nc
+go bn_reset
+
+! Now set a region and write data. The axis length is 362.5
+use a1
+sh axis xlon
+set region/x=0:360
+
+! Now issues a note, not writing modulo attribute.
+save/clobber/file=a.nc var
+
+! previously the x axis still had the modulo attribute
+sp ncdump -h a.nc
+
+! The modulo=360 didnt match the length of the axis so there was a note,
+! modulo attribute ignored.  Now the modulo attribute is not there.
+
+go bn_reset
+use a
+sh axis `var,return=xaxis`
+
+go bn_reset
+
+
+! test the machinery for a file with attribute modulo=" "
+
+use coads_climatology
+sh att (`sst,return=xaxis`)
+set region/x=1:361  ! 0:360 is ok for these coordinates.
+
+save/clobber/file=a.nc/y=0/l=1 sst
+
+go bn_reset
+use a
+sh att (`sst,return=xaxis`)
+
+! previously the axis was marked modulo, length 362.
+show axis `sst,return=xaxis`
+

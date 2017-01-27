@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1404 Jan 26 16:26 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1404 Jan 26 17:10 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -303,7 +303,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Thu Jan 26 16:26:26 PST 2017
+Beginning at Thu Jan 26 17:16:55 PST 2017
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4687,6 +4687,7 @@ Replacing definition of axis YAXIS
  TEMPORARY data cleared from memory
            *** NOTE: Axis has repeated values -- micro-adjusting ...
  LISTing to file a.nc
+           *** NOTE: Requested region on modulo axis C2D_AX_X11_31 is larger than modulo length. Modulo attribute not written.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TAX
@@ -4711,6 +4712,22 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XLON
+ LISTing to file a1.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+           *** NOTE: Requested region on modulo axis XLONN7_137 is larger than modulo length. Modulo attribute not written.
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+           *** NOTE: Requested region on modulo axis COADSXN9_171 is larger than modulo length. Modulo attribute not written.
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running ferret script: bn_delim_datetime.jnl
  Cached data cleared from memory
 Replacing definition of axis TIMAX
@@ -5006,4 +5023,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testfermethods.py
  Cached data cleared from memory
 >>> ... ... >>> >>> >>> 
-Ended at Thu Jan 26 16:29:16 PST 2017
+Ended at Thu Jan 26 17:19:43 PST 2017

@@ -117,15 +117,17 @@
 	IF (cmnd_num .EQ. cmnd_polygon) THEN
 * ... allocate buffers used to extract individual polygon coord arrays
 *     set buffer size to the longest axis of 1st coord arg
+*     Polygon may need extra working storage to store info about 
+*     missing polygons on a time axis
 	   cx = is_cx(1)
 	   CALL GET_CX_DIMS(cx, ndim, dim)
 	   ax_len = 1
 	   DO 100 idim = 1, ndim
- 100	   ax_len = MAX(ax_len,
+ 100	   ax_len = 2* MAX(ax_len,
      .			cx_hi_ss(cx,dim(idim)) - 
      .			cx_lo_ss(cx,dim(idim)) + 1 )
 	ELSE
-* ... allocate memory used for single precision axes
+* ... allocate memory used for axes
 *     make them each equal to MAX in case /TRANSPOSE or mulit-dim PLOT/VS
 * (2/99: loop over all arguments to find largest requirement)
 * ?? why is CGRID_SIZE needed ... could get very large ??

@@ -72,8 +72,8 @@
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
-	LOGICAL	ITSA_MODULO_AXIS, table_entry_only
-	INTEGER nsrc, ndst, idim, dim, prm, ax_min_ss, ax_max_ss, grid,
+	LOGICAL	table_entry_only
+	INTEGER nsrc, ndst, idim, dim, prm, 
      .		src_len(nferdims), dst_len(nferdims),
      .          src_ax(nferdims),  dst_ax(nferdims)
 

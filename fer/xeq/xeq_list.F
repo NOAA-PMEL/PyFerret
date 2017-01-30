@@ -150,6 +150,10 @@
 * V685 *acm*  6/13 Dont add SAVE/NOCOORDS
 * V690 *sh*   1/14 Automated 3-argument auxiliary (curvilinear) plotting
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+* V710 *acm*  1/17 Ticket 1480: When writing to netCDF, check whether the region on 
+*                  modulo axes is just one grid-cell longer than the axis length,e.g. 
+*                  if they gave a region of /X=0:360.  If so, write one grid-cell less 
+*                  data so the axis can still be a valid modulo axis.
 
 	include 'tmap_dims.parm'
         include 'tmap_errors.parm'
@@ -614,10 +618,6 @@ c     .		 .AND. .NOT.do_comma_del
 	ENDIF
 
 * permute data to the desired output order
-* ... Ticket 1480: When writing to netCDF, CREATE_PERMUTATION also checks whether
-*     the region on modulo axes is just one grid-cell longer than the axis length,
-*     e.g. if they gave a region of /X=0:360.  If so, write one grid-cell less 
-*     data so the axis can still be a valid modulo axis.
 
 	IF ( all_at_once ) THEN
 * ... if no axis order was specified determine the permutation

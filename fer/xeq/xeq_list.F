@@ -174,7 +174,8 @@
      .			do_epic, do_cdf, do_unform, do_stream,
      .			do_comma_del, do_tab_del, do_dods, do_xml,
      .			permute, all_at_once, list_at_eof, head_enh,
-     .			clobber, quiet, have_outtype, curvi_axes(nferdims)
+     .			clobber, quiet, have_outtype, curvi_axes(nferdims), 
+     .			do_shrink
 
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, STR_CASE_BLIND_COMPARE,
      .                  STR_UPCASE, GET_MAX_STRING_LEN,
@@ -613,17 +614,27 @@ c     .		 .AND. .NOT.do_comma_del
 	ENDIF
 
 * permute data to the desired output order
+* ... Ticket 1480: When writing to netCDF, CREATE_PERMUTATION also checks whether
+*     the region on modulo axes is just one grid-cell longer than the axis length,
+*     e.g. if they gave a region of /X=0:360.  If so, write one grid-cell less 
+*     data so the axis can still be a valid modulo axis.
+
 	IF ( all_at_once ) THEN
 * ... if no axis order was specified determine the permutation
 c bug fix: see err540_write_order.jnl move inside loop:
+* ... Ticket 1480: When writing to netCDF, test the region 
+*     on modulo axes 
+
 c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
 	   DO 200 ilist = 1, nvars2list
 	      IF (.NOT.permute) CALL GET_CX_DIMS(my_cx(ilist),ndim,perm)
+	      CALL SHRINK_FOR_MODULO (my_cx(ilist), my_mr(ilist), do_cdf, do_shrink)
+
 	      CALL CREATE_PERMUTATION(	memory,
      .					my_cx  (ilist),
      .					my_mr  (ilist),
-     .					perm,
-     .					mr_perm(ilist), status )
+     .					perm, 
+     .					mr_perm(ilist), do_shrink, status )
 	      IF ( status .NE. ferr_ok ) GOTO 500
               npermuted = npermuted + 1
  200	   CONTINUE
@@ -641,7 +652,7 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
 	         perm(2) = i
 	      ENDIF
 	   ENDIF
-	   CALL CREATE_PERMUTATION(memory,cx,mr,perm,mr_perm,status)
+	   CALL CREATE_PERMUTATION(memory,cx,mr,perm,mr_perm,do_cdf,status)
 	   IF ( status .NE. ferr_ok ) GOTO 500
            npermuted = npermuted + 1
 	ENDIF

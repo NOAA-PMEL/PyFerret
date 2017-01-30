@@ -1,5 +1,5 @@
-	SUBROUTINE CREATE_PERMUTATION( memory,
-     .				cx, msrc, perm, mdst, status )
+	SUBROUTINE CREATE_PERMUTATION( memory,cx, msrc, perm, mdst, 
+     .				do_shrink, status )
 
 *
 *
@@ -54,6 +54,11 @@
 *                  computing world coordinates
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+* ... Ticket 1480: When writing to netCDF, check whether the region 
+*     on modulo axes is just one grid-cell longer than the axis length,
+*     e.g. if they give a region of /X=0:360.  If so, write one grid-cell 
+*     less data.so the axis can still be a valid modulo axis.
+
         IMPLICIT NONE
         include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -62,12 +67,13 @@
 	include 'xcontext.cmn'
 
 * calling argument declarations:
+	LOGICAL do_shrink
 	INTEGER	cx, msrc, perm(nferdims), mdst, status
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
-	LOGICAL	table_entry_only
-	INTEGER nsrc, ndst, idim, dim, prm,
+	LOGICAL	ITSA_MODULO_AXIS, table_entry_only
+	INTEGER nsrc, ndst, idim, dim, prm, ax_min_ss, ax_max_ss, grid,
      .		src_len(nferdims), dst_len(nferdims),
      .          src_ax(nferdims),  dst_ax(nferdims)
 
@@ -77,7 +83,8 @@
 * test if any action is necessary
 * ... it is unnecessary if all dimensions with length greater than 1 are
 * the same length and in the same order in the source data as in the requested
-* permutation
+* permutation, or if there is more than one dimension in the grid and a dimension
+* is shrunk.
 * (Note: msrc regions always span cx regions)
 * Compute src_len and dst_len - the non-unity axis lengths in the source and
 * destination data
@@ -118,6 +125,8 @@
 	   ENDIF
  300	CONTINUE
 
+	IF (do_shrink) GOTO 500
+
 * dimensions have not been permuted nor are context region sizes < stored data
 	status = ferr_ok
 	mdst = msrc
@@ -126,7 +135,9 @@
 * need a dummy entry
 
 * create a permuted context
- 500	DO 510 idim = 1,nferdims
+ 500	CONTINUE
+	
+	DO 510 idim = 1,nferdims
 	   prm = perm(idim)
 	   cx_lo_ss ( cx_buff, idim )   = cx_lo_ss ( cx, prm )
 	   cx_hi_ss ( cx_buff, idim )   = cx_hi_ss ( cx, prm )
@@ -157,7 +168,7 @@
 	IF ( status .NE. ferr_ok ) RETURN
 
 * permute or kludge around permuting the data
-	IF ( table_entry_only ) THEN
+	IF ( table_entry_only .AND. .NOT.do_shrink) THEN
 * ... point to the original data using permuted limits
 	   CALL FREE_MEMORY( mr_blk1(mdst), mr_nblks(mdst) )
 	   mr_c_pointer(mdst) = mr_c_pointer(msrc)

@@ -3,13 +3,13 @@
 ! is defining the cell edges. If axis coordinates lie within the modulo range
 ! but the cell bounds defined automatically using coordinate midpoints range 
 ! larger than 360 degrees, or 1 year, need to adjust bounds. This is done only 
-! for irregular axes, otherwise a regular axis becomes irregular.
+! for irregular axes.
 
 use modax
 
 ! The axis 'irreg_no_bounds' is irregular and is stored in the file without 
-! bounds. The coordinate range is < 360 but previously the axis was set up 
-! as having axis length 369.45 so was not treated as modulo. 
+! bounds. The coordinate range is < 360 but previously the computed bounds
+! made the axis length 369.45, so it was not treated as modulo. 
 ! Now it is marked modulo.
 
 sh axis irreg_no_bounds
@@ -27,7 +27,7 @@ show axis/x regular_no_bounds
 
 ! The axis 'irreg_with_bounds' is irregular, stored with bounds in the file.
 ! Its coordinate range is < 360, but the range of the bounds is larger than 
-! 360. Because the bounds are in the file, they are not changed; it is marked 
+! 360. Because the bounds are in the file, nothing is changed; it is marked 
 ! as not modulo.
 
 sh axis irreg_with_bounds
@@ -38,21 +38,21 @@ cancel data/all
 
 ! DEFINE AXIS examples
 
-! Likewise define an axis whose coordinate range is < 360 but where the
-! default midpoint grid cell bounds would make it larger than 360.
-! Previously this axis was not defined as modulo, now it is.
+! Likewise define an irregular axis whose coordinate range is < 360 but 
+! the default midpoint grid cell bounds would make it larger than 360.
+! Previously this axis was not modulo, now bounds are set so it is.
 
 define axis/x/units=degrees_east xax = {0, 10, 20, 340, 358}
 show axis xax
 
 ! Now define a regular axis whose coordinate range is < 360 but the
 ! default midpoint grid cell bounds would make it larger than 360.
-! To keep it regular, mark as not modulo
+! To keep it regular, mark as not modulo.
 
 define axis/x=5:355:50/units=degrees_east xax
 show axis xax
 
-! similarly for time axes
+! tests for time axes
 ! Regular time axis with bounds that make it longer than a year.
 ! leave this one so it stays regular and is not modulo.
 

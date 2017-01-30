@@ -13,7 +13,7 @@ save/clobber/file=a.nc var
 can var/all; use a
 
 list/y=22 var
-list samplexy(var, {-80,80}, {22,22}) ; pause
+list samplexy(var, {-80,80}, {22,22}) 
 
 list samplexy(var, -80, 22)       ! this is ok, in the native range of the axis
 list samplexy(var, `360-80`, 22)  ! this was wrong
@@ -24,7 +24,7 @@ list samplexy_closest(var, `360-80`, 22)  ! is ok
 list samplexy(var, {-80,80}, {22,22})
 list samplexy(var, {`360-80`,80}, {22,22})
 list samplexy_closest(var, {`360-80`,80}, {22,22})
-pause
+
 ! interpolation between grid points
 
 cancel mode interpolate
@@ -38,7 +38,7 @@ list samplexy(var, {`360-82.3`,82.3}, {21.2,21.2})
 
 ! this should match the non-MODE INTERPOLATE result
 list samplexy_closest(var, {`360-82.3`,82.3}, {21.2,21.2})
-pause
+
 can dat/all
 
 ! Test samplexyt functions

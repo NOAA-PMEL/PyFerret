@@ -164,6 +164,7 @@ set_auto_curvi_modes.F\
 sort_list.F\
 shellr.F\
 short_mod_copy.F\
+shrink_for_modulo.F\
 split_list.F\
 ss_neighbors.F\
 store_dependency.F\

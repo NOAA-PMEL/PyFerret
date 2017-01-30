@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 13 Jan 26 17:09 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.031
+lrwxrwxrwx. 1 ksmith oerdnewp 13 Jan 30 14:16 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.031
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -292,7 +292,7 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Thu Jan 26 17:10:03 PST 2017
+Beginning at Mon Jan 30 14:17:45 PST 2017
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4663,7 +4663,6 @@ Replacing definition of axis YAXIS
  TEMPORARY data cleared from memory
            *** NOTE: Axis has repeated values -- micro-adjusting ...
  LISTing to file a.nc
-           *** NOTE: Requested region on modulo axis C2D_AX_X11_31 is larger than modulo length. Modulo attribute not written.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TAX
@@ -4695,13 +4694,15 @@ Replacing definition of axis XLON
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
-           *** NOTE: Requested region on modulo axis XLONN7_137 is larger than modulo length. Modulo attribute not written.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
-           *** NOTE: Requested region on modulo axis COADSXN9_171 is larger than modulo length. Modulo attribute not written.
+           *** NOTE: Requested region on modulo axis XLONN7_141 is larger than modulo length. Modulo attribute not written.
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running ferret script: bn_delim_datetime.jnl
@@ -4959,4 +4960,4 @@ set region/@w
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
  Cached data cleared from memory
-Ended at Thu Jan 26 17:11:50 PST 2017
+Ended at Mon Jan 30 14:19:30 PST 2017

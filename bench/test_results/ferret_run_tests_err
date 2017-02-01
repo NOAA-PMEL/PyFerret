@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 13 Jan 30 16:43 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.032
+lrwxrwxrwx. 1 ksmith oerdnewp 13 Feb  1 11:58 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.032
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -292,7 +292,7 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Mon Jan 30 16:44:10 PST 2017
+Beginning at Wed Feb  1 11:59:29 PST 2017
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4287,6 +4287,10 @@ define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_1.nc
 define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc, tmp/tagg_single_5.nc
 *** Running ferret script: bn_unquoted_args.jnl
  Cached data cleared from memory
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
+Cannot create cookie file
  LISTing to file tmp/test1.nc
  LISTing to file tmp/test2.nc
  LISTing to file tmp/test3.nc
@@ -4960,4 +4964,4 @@ set region/@w
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
  Cached data cleared from memory
-Ended at Mon Jan 30 16:45:57 PST 2017
+Ended at Wed Feb  1 12:01:17 PST 2017

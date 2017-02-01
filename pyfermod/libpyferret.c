@@ -123,7 +123,7 @@ static void crash_signal_handler(int signum)
  * Storage for original signal handlers when in the ferret engine.  
  * Largest ANSI/POSIX/BSD value of signals caught is SIGTERM = 15.
  */
-#define MAX_SIGHANDLERS 16
+#define MAX_SIGHANDLERS 32
 static char *(signal_names[MAX_SIGHANDLERS]);
 static void (*(orig_signal_handlers[MAX_SIGHANDLERS]))(int);
 
@@ -174,6 +174,8 @@ static int assign_ferret_signal_handlers(void)
     }
     signal_names[SIGINT] = "SIGINT";
 
+    /* Only catch other signals when compiled optimized - for debug, let them crash */
+#ifdef NDEBUG
     /* Catch other program termination signals to gracefully return an error */
     orig_signal_handlers[SIGHUP] = signal(SIGHUP, crash_signal_handler);
     if ( orig_signal_handlers[SIGHUP] == SIG_ERR ) {
@@ -240,6 +242,7 @@ static int assign_ferret_signal_handlers(void)
         return -1;
     }
     signal_names[SIGTERM] = "SIGTERM";
+#endif
 
     return 0;
 }
@@ -636,9 +639,21 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
 
     errval = setjmp(crash_jumpbuffer);
     if ( errval != 0 ) {
-        /* Signal caught if we get here, and errval is the signal number. */
-        /*
-         * Raise a RuntimeError with an appropriate error message
+        /* 
+         * If we get here, a signal was caught with crash_signal_handler 
+         * as its handler.  The value errval is the signal number. 
+         */
+
+        /* 
+         * The following will exit completely but leaves up any displays:
+         *
+         *    fprintf(stderr, "**ERROR Ferret crash; signal = %d (%s)\n", 
+         *                    errval, signal_names[errval]);
+         *    remove_ferret_signal_handlers();
+         *    exit(-1);
+         *
+         *
+         * Instead, raise a RuntimeError with an appropriate error message
          * so a proper shutdown can be performed.
          */
         sprintf(errmsg, "\n\n"
@@ -646,18 +661,20 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
                         "Enter Ctrl-D to exit Python\n", 
                         errval, signal_names[errval]);
         remove_ferret_signal_handlers();
+        /* 
+         * Clear any problem status that might have arisen in Python.
+         * The RuntimeError will be raised instead.
+         */
+        PyErr_Clear();
         PyErr_SetString(PyExc_RuntimeError, errmsg);
         return NULL;
-        /* 
-         * The following will exit completely but leaves up any displays:
-         *    fprintf(stderr, "**ERROR Ferret crash; signal = %d (%s)\n", 
-         *                    errval, signal_names[errval]);
-         *    remove_ferret_signal_handlers();
-         *    exit(-1);
-         */
     }
+    /* Assign appropriate signal handlers */
     if ( assign_ferret_signal_handlers() != 0 ) {
-        /* Signals all restored to original and PyErr_SetString called */
+        /* 
+         * Problems assigning signal handlers; signals all
+         * restored to original and PyErr_SetString called 
+         */
         return NULL;
     }
 

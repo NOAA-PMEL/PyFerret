@@ -31,6 +31,9 @@
 * V510: *sh* 3/00 - bug fix: com_mr was passed instead of mr_perm to the EFs
 *                 - eliminated old code as marked by jon
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V710 *acm*  1/17 Ticket 1480: Flag sent to CREATE_PERMUTATION; in 
+*        xeq_list we maybe doing an adjustment for modulo length of an 
+*        axis, always FALSE here.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -92,6 +95,10 @@
 * Otherwise, cached variables will be passed through without being 
 * pared down to the desired context.
 
+* 1/2017 New flag sent to CREATE_PERMUTATION; in xeq_list we may
+*        be doing an adjustment for modulo length of an axis, always
+*        FALSE here.
+
        DO 10 i=1, nferdims
           perm(i) = i
  10    CONTINUE
@@ -99,7 +106,7 @@
        DO 100 i=1, num_com
 
           CALL CREATE_PERMUTATION(  memory, com_cx(i), com_mr(i),
-     .         perm, mr_perm(i), status )
+     .         perm, mr_perm(i), .FALSE., status )
 
           IF ( status .NE. ferr_OK ) GOTO 5000
 

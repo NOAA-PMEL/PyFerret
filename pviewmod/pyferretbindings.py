@@ -38,9 +38,12 @@ class PyFerretBindings(AbstractPyFerretBindings):
         '''
         super(PyFerretBindings, self).__init__()
         self.__window = None
-        # wait time in seconds for error responses for "high-level" 
-        # (not drawing) commands that might have an error
-        self.__errwait = 0.01
+        # short wait time in seconds for error responses 
+        # to high level (not drawing) commands
+        self.__shortwait = 0.01
+        # long wait time in seconds for error responses
+        # to major operations; eg, create, save
+        self.__longwait = 1.0
 
     def createPipedViewerWindow(self, viewertype, title, visible, noalpha):
         '''
@@ -69,7 +72,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
             self.__window.submitCommand( {"action":"show"} )
         if noalpha:
             self.__window.submitCommand( {"action":"noalpha"} )
-        self.checkForErrorResponse()
+        self.checkForErrorResponse(self.__longwait)
         return True
 
     def submitCommand(self, cmnd):
@@ -78,6 +81,9 @@ class PyFerretBindings(AbstractPyFerretBindings):
 
         Provided for use by functions defined in subclasses.
         '''
+        # Check for an error from any previous command
+        self.__checkForErrorResponse()
+        # If all okay, submit the command
         self.__window.submitCommand(cmnd)
 
     def checkForResponse(self, timeout=0.0):
@@ -128,7 +134,8 @@ class PyFerretBindings(AbstractPyFerretBindings):
         '''
         try:
             self.__window.submitCommand( { "action":"exit" } )
-            self.checkForErrorResponse(self.__errwait)
+            # wait briefly for any error messages
+            self.checkForErrorResponse(self.__shortwait)
             self.__window.waitForViewerExit()
         finally:
             self.__window = None
@@ -159,7 +166,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
         if formatname:
             cmnd["format"] = formatname
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse(self.__errwait)
 
     def setAntialias(self, antialias):
         '''
@@ -169,7 +175,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
         cmnd = { "action":"antialias",
                  "antialias":bool(antialias) }
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
         
     def beginView(self, leftfrac, bottomfrac, rightfrac, topfrac, clipit):
         '''
@@ -204,7 +209,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
                               "top":topfracflt, "bottom":bottomfracflt }, 
                  "clip":bool(clipit) }
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
 
     def clipView(self, clipit):
         '''
@@ -216,14 +220,12 @@ class PyFerretBindings(AbstractPyFerretBindings):
         cmnd = { "action":"clipView",
                  "clip":bool(clipit) }
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
 
     def endView(self):
         '''
         Close a View in the PipedViewer Window
         '''
         self.__window.submitCommand( { "action":"endView" } )
-        self.checkForErrorResponse()
 
     def beginSegment(self, segid):
         '''
@@ -236,7 +238,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
         cmnd = { "action":"beginSegment",
                  "segid":segid }
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
 
     def endSegment(self):
         '''
@@ -244,7 +245,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
         '''
         cmnd = { "action":"endSegment" }
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
 
     def deleteSegment(self, segid):
         '''
@@ -256,7 +256,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
         cmnd = { "action":"deleteSegment",
                  "segid":segid }
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
 
     def updateWindow(self):
         '''
@@ -264,7 +263,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
         '''
         cmnd = { "action":"update" }
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
 
     def clearWindow(self, bkgcolor):
         '''
@@ -281,7 +279,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
             cmnd = { }
         cmnd["action"] = "clear"
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
 
     def redrawWindow(self, bkgcolor):
         '''
@@ -299,7 +296,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
             cmnd = { }
         cmnd["action"] = "redraw"
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
 
     def resizeWindow(self, width, height):
         '''
@@ -315,7 +311,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
                  "width":width,
                  "height":height }
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
 
     def scaleWindow(self, scale):
         '''
@@ -327,7 +322,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
         cmnd = { "action":"rescale",
                  "factor":scale }
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
 
     def windowScreenInfo(self):
         '''
@@ -380,7 +374,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
         else:
             cmnd = { "action":"hide" }
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
 
     def saveWindow(self, filename, fileformat, transparent,
                    xinches, yinches, xpixels, ypixels, annotations):
@@ -421,7 +414,8 @@ class PyFerretBindings(AbstractPyFerretBindings):
         cmnd["rastsize"] = { "width":xpixels, "height":ypixels }
         cmnd["annotations"] = annotations
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse(self.__errwait)
+        # Wait awhile to see if there was any problems
+        self.checkForErrorResponse(self.__longwait)
 
     def createColor(self, redfrac, greenfrac, bluefrac, opaquefrac):
         '''
@@ -633,7 +627,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
         cmnd = { "action":"setWidthFactor",
                  "factor":widthfactor }
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
         
     def drawMultiline(self, ptsx, ptsy, pen):
         '''
@@ -654,7 +647,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
                  "points":points,
                  "pen":pen }
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
 
     def drawPoints(self, ptsx, ptsy, symbol, color, ptsize):
         '''
@@ -683,7 +675,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
         cmnd["symbol"] = symbol
         cmnd["size"] = ptsize
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
 
     def drawPolygon(self, ptsx, ptsy, brush, pen):
         '''
@@ -709,7 +700,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
         if pen:
             cmnd["outline"] = pen
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
 
     def drawRectangle(self, left, bottom, right, top, brush, pen):
         '''
@@ -736,7 +726,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
         if pen:
             cmnd["outline"] = pen
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
 
     def textSize(self, text, font):
         '''
@@ -807,7 +796,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
         if rotate != 0.0:
             cmnd["rotate"] = rotate
         self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
 
 
 class PViewerPQPyFerretBindings(PyFerretBindings):
@@ -893,7 +881,6 @@ class PImagerPQPyFerretBindings(PyFerretBindings):
                  "height":height,
                  "stride":stride }
         self.submitCommand(cmnd)
-        self.checkForErrorResponse()
         blocksize = 8192
         numblocks = (lenimgdata + blocksize - 1) // blocksize
         for k in range(numblocks):
@@ -907,7 +894,8 @@ class PImagerPQPyFerretBindings(PyFerretBindings):
                      "startindex":k*blocksize,
                      "blockdata":blkdata }
             self.submitCommand(cmnd)
-            self.checkForErrorResponse()
+        # wait breifly at the end for any error messages
+        self.checkForErrorResponse(self.__shortwait)
 
 
 #

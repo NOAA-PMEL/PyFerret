@@ -1395,10 +1395,10 @@ class PipedViewerPQ(QMainWindow):
         sides = self.__helper.getSidesFromCmnd(cmnd)
         width = sides.right() - sides.left()
         if width <= 0.0:
-            raise ValueError("width of the rectangle in not positive")
+            raise ValueError("width of the rectangle (%s) in not positive" % str(width))
         height = sides.bottom() - sides.top()
         if height <= 0.0:
-            raise ValueError("height of the rectangle in not positive")
+            raise ValueError("height of the rectangle (%s) in not positive" % str(height))
         myrect = QRectF(sides.left(), sides.top(), width, height)
         self.__activepainter.setRenderHint(QPainter.Antialiasing,
                                            False)

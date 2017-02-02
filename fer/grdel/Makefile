@@ -12,18 +12,11 @@ COBJS = $(CSRCS:.c=.o)
 FSRCS = $(wildcard *.F)
 FOBJS = $(FSRCS:.F=.o)
 
+# CFLAGS already modified to include debug or optimization flags
+# Just add the additional warning flags to CFLAGS
 .PHONY : all
-all : optimized
-
-.PHONY : optimized
-optimized :
-	$(MAKE) "CFLAGS = $(CFLAGS) -Wall -Werror -DNDEBUG -O" \
-		"FFLAGS = $(FFLAGS) -DNDEBUG -O" $(LIBNAME)
-
-.PHONY : debug
-debug :
-	$(MAKE) "CFLAGS = $(CFLAGS) -Wall -Werror -DVERBOSEDEBUG -O0 -g" \
-		"FFLAGS = $(FFLAGS) -O0 -g" $(LIBNAME)
+all : 
+	$(MAKE) "CFLAGS = $(CFLAGS) -Wall -Werror" $(LIBNAME)
 
 $(LIBNAME) : $(COBJS) $(FOBJS)
 	$(AR) $(ARFLAGS) $(LIBNAME) $(COBJS) $(FOBJS)

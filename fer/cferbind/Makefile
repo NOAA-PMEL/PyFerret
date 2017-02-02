@@ -10,18 +10,11 @@ CHDRS = $(wildcard *.h) ../grdel/grdel.h ../ccr/utf8str.h
 CSRCS = $(wildcard *.c)
 COBJS = $(CSRCS:.c=.o)
 
+# CFLAGS already modified to include debug or optimization flags
+# Just add the additional warning flags to CFLAGS
 .PHONY : all
-all : optimized
-
-# The -I$(CAIRO_DIR)/include/cairo is only needed for older cairo's (1.2) own include files
-
-.PHONY : optimized
-optimized :
-	$(MAKE) "CFLAGS = $(CFLAGS) -I$(CAIRO_DIR)/include/cairo -Wall -Wno-pointer-to-int-cast -Werror -DNDEBUG -O" $(LIBNAME)
-
-.PHONY : debug
-debug :
-	$(MAKE) "CFLAGS = $(CFLAGS) -I$(CAIRO_DIR)/include/cairo -Wall -Wno-pointer-to-int-cast -Werror -O0 -g" $(LIBNAME)
+all :
+	$(MAKE) "CFLAGS = $(CFLAGS) -Wall -Wno-pointer-to-int-cast -Werror" $(LIBNAME)
 
 $(LIBNAME) : $(COBJS)
 	$(AR) $(ARFLAGS) $(LIBNAME) $(COBJS)

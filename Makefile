@@ -48,7 +48,7 @@ pymod_optimized_build :
 	rm -fr $(DIR_PREFIX)/build $(DIR_PREFIX)/install
 	( cd $(DIR_PREFIX) ; \
 	  export CC=$(CC) ; \
-	  export CFLAGS="$(CFLAGS) -O" ; \
+	  export CFLAGS="$(CFLAGS) -DNDEBUG -O" ; \
 	  export BUILDTYPE=$(BUILDTYPE) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
@@ -66,7 +66,7 @@ pymod_optimized_install :
 	rm -fr $(DIR_PREFIX)/install
 	( cd $(DIR_PREFIX) ; \
 	  export CC=$(CC) ; \
-	  export CFLAGS="$(CFLAGS) -O" ; \
+	  export CFLAGS="$(CFLAGS) -DNDEBUG -O" ; \
 	  export BUILDTYPE=$(BUILDTYPE) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
@@ -87,7 +87,7 @@ pymod_debug_build :
 	rm -fr $(DIR_PREFIX)/build $(DIR_PREFIX)/install
 	( cd $(DIR_PREFIX) ; \
 	  export CC=$(CC) ; \
-	  export CFLAGS="$(CFLAGS) -O0 -g" ; \
+	  export CFLAGS="$(CFLAGS) -UNDEBUG -O0 -g" ; \
 	  export BUILDTYPE=$(BUILDTYPE) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
@@ -105,7 +105,7 @@ pymod_debug_install :
 	rm -fr $(DIR_PREFIX)/install
 	( cd $(DIR_PREFIX) ; \
 	  export CC=$(CC) ; \
-	  export CFLAGS="$(CFLAGS) -O0 -g" ; \
+	  export CFLAGS="$(CFLAGS) -UNDEBUG -O0 -g" ; \
 	  export BUILDTYPE=$(BUILDTYPE) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
@@ -114,7 +114,7 @@ pymod_debug_install :
 	  export COMPRESS_LIB=$(COMPRESS_LIB) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export IS_LINUX_SYSTEM=$(IS_LINUX_SYSTEM) ; \
-	  $(PYTHON_EXE) setup.py install -O0 --prefix=$(DIR_PREFIX)/install )
+	  $(PYTHON_EXE) setup.py --quiet install -O0 --prefix=$(DIR_PREFIX)/install )
 
 .PHONY : externals_debug
 externals_debug :
@@ -127,8 +127,8 @@ clean :
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix clean
 	$(MAKE) -C $(DIR_PREFIX)/external_functions clean
 	rm -fr $(DIR_PREFIX)/install $(DIR_PREFIX)/build ferret.jnl*
-	find $(DIR_PREFIX)/pviewmod -name '*.py[co]' -exec rm -f {} ';'
-	find $(DIR_PREFIX)/pyfermod -name '*.py[co]' -exec rm -f {} ';'
+	find $(DIR_PREFIX)/pviewmod -name '*.py[co]' -delete
+	find $(DIR_PREFIX)/pyfermod -name '*.py[co]' -delete
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser clean
 	$(MAKE) -C $(DIR_PREFIX)/fer clean
 	rm -fr $(DIR_PREFIX)/lib

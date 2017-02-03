@@ -26,14 +26,24 @@ try:
 except AttributeError:
     pass
 
+# First try to import just PyQt5, then just PyQt4 if that fails
 try:
+    import PyQt5
+    QT_VERSION = 5
+except ImportError:
+    import PyQt4
+    QT_VERSION = 4
+
+# Now that the PyQt version is determined, import the parts
+# allowing any import errors to propogate out
+if QT_VERSION == 5:
     from PyQt5.QtCore    import Qt, QPointF, QRectF, QSize, QTimer
     from PyQt5.QtGui     import QBrush, QColor, QImage, QPainter, \
                                 QPalette, QPen, QPixmap, QPolygonF
     from PyQt5.QtWidgets import QAction, QApplication, QDialog, \
                                 QFileDialog, QLabel, QMainWindow, \
                                 QMessageBox, QPushButton, QScrollArea
-except ImportError:
+else:
     from PyQt4.QtCore import Qt, QPointF, QRectF, QSize, QTimer
     from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, QDialog, \
                              QFileDialog, QImage, QLabel, QMainWindow, \
@@ -44,7 +54,6 @@ from multiprocessing import Pipe, Process
 
 from pipedviewer.cmndhelperpq import CmndHelperPQ
 from pipedviewer.scaledialogpq import ScaleDialogPQ
-
 
 
 class PipedImagerPQ(QMainWindow):

@@ -8,12 +8,22 @@ Pacific Marine Environmental Lab (PMEL).
 
 from __future__ import print_function
 
+# First try to import just PyQt5, then just PyQt4 if that fails
 try:
+    import PyQt5
+    QT_VERSION = 5
+except ImportError:
+    import PyQt4
+    QT_VERSION = 4
+
+# Now that the PyQt version is determined, import the parts
+# allowing any import errors to propogate out
+if QT_VERSION == 5:
     from PyQt5.QtCore    import Qt
     from PyQt5.QtWidgets import QApplication, QButtonGroup, QDialog, \
                                 QDialogButtonBox, QGridLayout, QGroupBox, \
                                 QLabel, QLineEdit, QMessageBox, QRadioButton
-except ImportError:
+else:
     from PyQt4.QtCore import Qt
     from PyQt4.QtGui  import QApplication, QButtonGroup, QDialog, \
                              QDialogButtonBox, QGridLayout, QGroupBox, \

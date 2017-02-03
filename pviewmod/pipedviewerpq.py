@@ -27,7 +27,17 @@ try:
 except AttributeError:
     pass
 
+# First try to import just PyQt5, then just PyQt4 if that fails
 try:
+    import PyQt5
+    QT_VERSION = 5
+except ImportError:
+    import PyQt4
+    QT_VERSION = 4
+
+# Now that the PyQt version is determined, import the parts
+# allowing any import errors to propogate out
+if QT_VERSION == 5:
     from PyQt5.QtCore    import Qt, QPointF, QRect, QRectF, QSize, QSizeF, QTimer
     from PyQt5.QtGui     import QBrush, QColor, QFontMetricsF, QImage, QPainter, \
                                 QPalette, QPen, QPicture, QPixmap, QPolygonF, \
@@ -36,8 +46,7 @@ try:
                                 QMainWindow, QMessageBox, QPushButton, QScrollArea
     from PyQt5.QtSvg     import QSvgGenerator
     from PyQt5.QtPrintSupport import QPrinter
-    HAS_QSTRING = False
-except ImportError:
+else:
     from PyQt4.QtCore import Qt, QPointF, QRect, QRectF, QSize, QSizeF, QTimer, QString
     from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, QDialog, \
                              QFileDialog, QFontMetricsF, QImage, QLabel, \
@@ -45,7 +54,6 @@ except ImportError:
 			     QPen, QPicture, QPixmap, QPolygonF, QPrinter, \
 			     QPushButton, QScrollArea, QTextDocument
     from PyQt4.QtSvg  import QSvgGenerator
-    HAS_QSTRING = True
 
 from multiprocessing import Pipe, Process
 
@@ -1446,7 +1454,7 @@ class PipedViewerPQ(QMainWindow):
             myfont = self.__activepainter.font()
         myfontmetrics = QFontMetricsF(myfont)
         mytext = cmnd["text"]
-        if HAS_QSTRING:
+        if QT_VERSION == 4:
             mytext = QString.fromUtf8(mytext)
         width = myfontmetrics.width(mytext)
         height = myfontmetrics.height()
@@ -1498,7 +1506,7 @@ class PipedViewerPQ(QMainWindow):
             except KeyError:
                 pass
             
-            if HAS_QSTRING:
+            if QT_VERSION == 4:
                 mytext = QString.fromUtf8(mytext)
             self.__activepainter.drawText(0, 0, mytext)
             self.__drawcount += 1

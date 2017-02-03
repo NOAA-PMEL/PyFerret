@@ -42,7 +42,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         # to high level (not drawing) commands
         self.__shortwait = 0.01
         # long wait time in seconds for error responses
-        # to major operations; eg, create, save
+        # to major operations; eg, save
         self.__longwait = 1.0
 
     def createPipedViewerWindow(self, viewertype, title, visible, noalpha):
@@ -72,7 +72,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
             self.__window.submitCommand( {"action":"show"} )
         if noalpha:
             self.__window.submitCommand( {"action":"noalpha"} )
-        self.checkForErrorResponse(self.__longwait)
+        self.checkForErrorResponse(self.__shortwait)
         return True
 
     def submitCommand(self, cmnd):
@@ -894,7 +894,7 @@ class PImagerPQPyFerretBindings(PyFerretBindings):
                      "startindex":k*blocksize,
                      "blockdata":blkdata }
             self.submitCommand(cmnd)
-        # wait breifly at the end for any error messages
+        # wait briefly at the end for any error messages
         self.checkForErrorResponse(self.__shortwait)
 
 

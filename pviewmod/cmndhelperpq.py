@@ -7,10 +7,20 @@ Project (TMAP) of the National Oceanographic and Atmospheric
 Administration's (NOAA) Pacific Marine Environmental Lab (PMEL).
 '''
 
+# First try to import just PyQt5, then just PyQt4 if that fails
 try:
+    import PyQt5
+    QT_VERSION = 5
+except ImportError:
+    import PyQt4
+    QT_VERSION = 4
+
+# Now that the PyQt version is determined, import the parts
+# allowing any import errors to propogate out
+if QT_VERSION == 5:
     from PyQt5.QtCore import Qt, QPointF, QSizeF
     from PyQt5.QtGui  import QBrush, QColor, QFont, QPainterPath, QPen
-except ImportError:
+else:
     from PyQt4.QtCore import Qt, QPointF, QSizeF
     from PyQt4.QtGui  import QBrush, QColor, QFont, QPainterPath, QPen
 

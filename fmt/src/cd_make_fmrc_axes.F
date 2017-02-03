@@ -107,6 +107,8 @@ c        include 'calendar.cmn'
 	ipt1 = next_line_mem_pos
 	ipte = ipt1 + npts - 1
 	npts2d = npts  ! save it
+      epsilon_23 =  2.**(-23) 
+      depsilon_46 =  2.**(-46) 
 
 *********  FIRST THE 1D CALENDAR TIME AXIS OF THE FMRC  *************
 * Define new axis

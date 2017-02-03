@@ -78,7 +78,7 @@
      .		start(nferdims),count(nferdims), zero(nferdims),
      .          maxlen, attlen, attoutflag, cal_id, since_T0, slen, vlen, 
      .          units, istat, nlag, noverlap, nleadtimes
-	REAL val, epsilon_23, t0NextForecast
+	REAL val, t0NextForecast
 	REAL*8 depsilon_46, depsilon, dlast_coord, dfirs_coord,
      .       dfirst_delta, ddelta, avg_lag
 
@@ -89,6 +89,7 @@
 * initialize things
 	ipt1 = next_line_mem_pos
 	ipte = ipt1 + nF - 1
+      depsilon_46 =  2.**(-46) 
 
 * from cd_get_1_axis.
 * check for regular spacing according to the data type of incoming data.

@@ -320,7 +320,6 @@
 * and its significand has a precision of 53 bits (about 16 decimal digits).
 
       epsilon_23 =  2.**(-23) 
-      depsilon_46 =  2.**(-52)
       depsilon_46 =  2.**(-46) 
 
 * get the vital statistics of the axis 

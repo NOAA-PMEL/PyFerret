@@ -59,6 +59,9 @@
 	REAL epsilon_23, epsilon
 	REAL*8 depsilon_46, depsilon, first_delta
 
+      epsilon_23 =  2.**(-23) 
+      depsilon_46 =  2.**(-46) 
+
 	ipt1 = line_subsc1(nline)
 	npts = line_dim(nline)
 	ibx1 = ipt1 + npts

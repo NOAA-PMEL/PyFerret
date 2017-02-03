@@ -80,7 +80,7 @@
         INTEGER nmin, nmax, dgrid, status,
      .		lsrc_min, lsrc_max, lsrc_start, lsrc_end, ldst_start, ldst_end
         REAL    tsrc_min, tsrc_max
-        REAL*8  TM_WORLD, depsilon_46, depsilon
+        REAL*8  TM_WORLD, depsilon
 * internally declared work arrays
 	REAL*8	tdst(ldst_min:ldst_max)
 
@@ -107,7 +107,6 @@
 	nmax    = cx_hi_ss(dst_cx,f_dim) !  hiest forecast axis index
 	lsrc_min = cx_lo_ss(src_cx,t_dim) ! l index min in source data
 	lsrc_max = cx_hi_ss(src_cx,t_dim) ! l index max in source data
-        depsilon_46 = 2.**(-46)
 
 * auxiliary TIME field is 2D on T-F so set up static indices for other axes
 	ip = cx_lo_ss(tsrc_cx,x_dim)
@@ -170,7 +169,7 @@
 	   tsrc_min = tsrc(ip,jp,kp,lsrc_min,mp,n) ! min time at this F
 	   tsrc_max = tsrc(ip,jp,kp,lsrc_max,mp,n) ! max time at this F
 * tolerance in time matching (would be better if it was consistent for all F)
-           depsilon = depsilon_46 * 
+           depsilon = 1.0D-12 *
      .             ABS( (tsrc_max-tsrc_min) / (lsrc_max-lsrc_min+1.0) )
         IF ( ((tdst(ldst_min) - tsrc_max) .GT. depsilon)
      .  .OR. ((tsrc_min - tdst(ldst_max)) .GT. depsilon) ) CYCLE  ! nothing to copy

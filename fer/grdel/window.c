@@ -966,6 +966,13 @@ grdelBool grdelWindowScreenInfo(grdelType window, float *dpix, float *dpiy,
         return 0;
     }
 
+#ifdef VERBOSEDEBUG
+    fprintf(debuglogfile, "grdelWindowScreenInfo response: "
+                          "dpix = %f, dpiy = %f, screenwidth = %d, screenheight = %d\n",
+                          *dpix, *dpiy, *screenwidth, *screenheight);
+    fflush(debuglogfile);
+#endif
+
     return 1;
 }
 

@@ -39,7 +39,9 @@ grdelBool grdelDrawMultiline(grdelType window, const float ptsx[],
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelDrawMultiline called: "
-            "window = %p, pen = %p\n", window, pen);
+            "window = %p, pen = %p, numpts = %d\n", window, pen, numpts);
+    for (k = 0; k < numpts; k++)
+        fprintf(debuglogfile, "   pt[%d] = (%f,%f)\n", k, ptsx[k], ptsy[k]);
     fflush(debuglogfile);
 #endif
 
@@ -185,7 +187,10 @@ grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelDrawPoints called: "
-            "window = %p, symbol = %p, color = %p", window, symbol, color);
+            "window = %p, symbol = %p, color = %p, ptsize = %f, numpts = %d", 
+            window, symbol, color, ptsize, numpts);
+    for (k = 0; k < numpts; k++)
+        fprintf(debuglogfile, "   pt[%d] = (%f,%f)\n", k, ptsx[k], ptsy[k]);
     fflush(debuglogfile);
 #endif
 
@@ -340,7 +345,10 @@ grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelDrawPolygon called: "
-            "window = %p, brush = %p, pen = %p\n", window, brush, pen);
+            "window = %p, brush = %p, pen = %p, numpts = %d\n", 
+            window, brush, pen, numpts);
+    for (k = 0; k < numpts; k++)
+        fprintf(debuglogfile, "   pt[%d] = (%f,%f)\n", k, ptsx[k], ptsy[k]);
     fflush(debuglogfile);
 #endif
 
@@ -505,7 +513,9 @@ grdelBool grdelDrawRectangle(grdelType window, float left, float bottom,
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelDrawRectangle called: "
-            "window = %p, brush = %p, pen = %p\n", window, brush, pen);
+            "window = %p, brush = %p, pen = %p\n"
+            "   left = %f, bottom = %f, right = %f, top = %f\n", 
+            window, brush, pen, left, bottom, right, top);
     fflush(debuglogfile);
 #endif
 
@@ -617,8 +627,8 @@ grdelBool grdelTextSize(grdelType window, const char *text, int textlen,
     double my, sx, sy, dx, dy;
 
 #ifdef VERBOSEDEBUG
-    fprintf(debuglogfile, "grdelDrawText called: "
-            "window = %p, font = %p\n", window, font);
+    fprintf(debuglogfile, "grdelTextSize called: "
+            "window = %p, font = %p, text = '%.*s'\n", window, font, textlen, text);
     fflush(debuglogfile);
 #endif
 
@@ -673,6 +683,12 @@ grdelBool grdelTextSize(grdelType window, const char *text, int textlen,
     *fltwidthptr = (float) (width / sx);
     *fltheightptr = (float) (height / sy);
 
+#ifdef VERBOSEDEBUG
+    fprintf(debuglogfile, "grdelTextSize reponse: width = %f, height = %f\n", 
+                          *fltwidthptr, *fltheightptr);
+    fflush(debuglogfile);
+#endif
+
     return 1;
 }
 
@@ -708,7 +724,8 @@ grdelBool grdelDrawText(grdelType window, const char *text, int textlen,
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelDrawText called: "
-            "window = %p, font = %p, color = %p\n", window, font, color);
+            "window = %p, font = %p, color = %p, rotate = %f, text = '%.*s'\n", 
+             window, font, color, rotate, textlen, text);
     fflush(debuglogfile);
 #endif
 

@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 13 Feb  1 11:58 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.032
+lrwxrwxrwx. 1 ksmith oerdnewp 13 Feb  3 17:04 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.032
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -292,7 +292,7 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Wed Feb  1 11:59:29 PST 2017
+Beginning at Fri Feb  3 17:11:50 PST 2017
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4287,10 +4287,6 @@ define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_1.nc
 define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc, tmp/tagg_single_5.nc
 *** Running ferret script: bn_unquoted_args.jnl
  Cached data cleared from memory
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
-Cannot create cookie file
  LISTing to file tmp/test1.nc
  LISTing to file tmp/test2.nc
  LISTing to file tmp/test3.nc
@@ -4709,6 +4705,8 @@ Replacing definition of axis XLON
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running ferret script: bn_delim_datetime.jnl
  Cached data cleared from memory
 Replacing definition of axis TIMAX
@@ -4964,4 +4962,4 @@ set region/@w
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
  Cached data cleared from memory
-Ended at Wed Feb  1 12:01:17 PST 2017
+Ended at Fri Feb  3 17:13:36 PST 2017

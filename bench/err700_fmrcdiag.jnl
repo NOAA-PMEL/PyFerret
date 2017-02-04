@@ -1,0 +1,35 @@
+! err700_fmrcdiag.jnl
+! these particular datasets (quarterly forecasts of two years of monthly data)
+! have times at regular intervals but at values (for 25 and 26) that are difficult 
+! to represent in binary
+!
+USE forecast24.nc
+USE forecast25.nc
+USE forecast26.nc
+USE forecast27.nc
+DEFINE DATA/AGGREGATE/F testdata = 1,2,3,4
+!
+! using the values of actual gives perfect forecasts; 
+! using the values of quirks has a sinusoidal error that get worse with greater lead time
+!
+SHOW GRID actual
+LIST /WIDTH=600 /X=120W/Y=50N/Z=50 actual
+SHADE /X=120W/Y=50N/Z=50 actual
+FRAME /FILE=forecast_actual.gif
+!
+! the diagonal should be a regular 3:1 stairstep on lower and upper
+! using actual should show single color on horizontal
+!
+LET /TITLE="actual (diag view)" diagview = actual[gt(tf_times)=tf_cal_t]
+SHOW GRID diagview
+LIST /WIDTH=600 /X=120W/Y=50N/Z=50 diagview
+SHADE /X=120W/Y=50N/Z=50 diagview
+FRAME /FILE=forecast_diagview.gif
+!
+! using actual should show single color on horizontal
+!
+LET /TITLE="actual (lead view)" leadview = actual[gt(tf_times)=tf_cal_t,gf(tf_times)=tf_lag_f]
+SHOW GRID leadview
+LIST /WIDTH=600 /X=120W/Y=50N/Z=50 leadview
+SHADE /X=120W/Y=50N/Z=50 leadview
+FRAME /FILE=forecast_leadview.gif

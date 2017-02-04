@@ -85,7 +85,7 @@
      .		lsrc_min, lsrc_max, lsrc_start, lsrc_end, ldst_start, ldst_end,
      .		nsrc_min, nsrc_max, nsrc0, lsrc0, f_axis, l_per_n, ldst0
         REAL    tsrc_min, tsrc_max, t_target, f_delta, t_delta
-        REAL*8  TM_WORLD
+        REAL*8  TM_WORLD, depsilon
 * internally declared work arrays
 	REAL*8	tdst(ldst_min:ldst_max)
 
@@ -130,14 +130,17 @@
      .	         - tsrc(ip,jp,kp,m1lot,mp,m1lof))
      .		                   / (m1hif-m1lof+1)
 
+* max insignificant time difference
+        depsilon = 1.0D-12 * ABS(f_delta)
+
 * extract the time step values of the destination
 	DO l = ldst_min, ldst_max
 	   tdst(l) = TM_WORLD(l, dgrid, t_dim, box_middle)
 	ENDDO
 
 * no source data overlapping with requested dest times?  Then quit here
-	IF (tdst(ldst_min) .GT. tsrc(ip,jp,kp,lsrc_max,mp,nsrc_max)
-     . .OR. tdst(ldst_max) .LT. tsrc(ip,jp,kp,lsrc_min,mp,nsrc_min) )
+       IF ( (tdst(ldst_min) - tsrc(ip,jp,kp,lsrc_max,mp,nsrc_max)) .GT. depsilon
+     . .OR. (tsrc(ip,jp,kp,lsrc_min,mp,nsrc_min) - tdst(ldst_max)) .GT. depsilon )
      .								RETURN
 * number of time steps before the start of the next forecast
 	t_delta = (tsrc(ip,jp,kp,m1hit,mp,m1lof)
@@ -202,9 +205,9 @@
 	DO ldst0 = ldst_min, ldst_max
 	   t_target = tdst(ldst0)
 	   DO nsrc0 = cx_hi_ss(tsrc_cx,f_dim),cx_lo_ss(tsrc_cx,f_dim), -1
-	      IF (t_target .GE. tsrc(ip,jp,kp,lsrc_min,mp,nsrc0)) THEN
+              IF ( (tsrc(ip,jp,kp,lsrc_min,mp,nsrc0) - t_target) .LE. depsilon ) THEN
 	         DO lsrc0 = lsrc_min,lsrc_max
-	            IF  (tsrc(ip,jp,kp,lsrc0,mp,nsrc0) .EQ. t_target) THEN
+                    IF ( ABS(tsrc(ip,jp,kp,lsrc0,mp,nsrc0) - t_target) .LE. depsilon ) THEN
 	               GOTO 50
 	            ELSEIF  (tsrc(ip,jp,kp,lsrc0,mp,nsrc0) .GT. t_target) THEN
 	               CALL WARN('1D time axis of FMRC contains time'//

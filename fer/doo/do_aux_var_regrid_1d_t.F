@@ -80,7 +80,7 @@
         INTEGER nmin, nmax, dgrid, status,
      .		lsrc_min, lsrc_max, lsrc_start, lsrc_end, ldst_start, ldst_end
         REAL    tsrc_min, tsrc_max
-        REAL*8  TM_WORLD
+        REAL*8  TM_WORLD, depsilon
 * internally declared work arrays
 	REAL*8	tdst(ldst_min:ldst_max)
 
@@ -168,30 +168,33 @@
 * are there time steps to be copied at this forecast index
 	   tsrc_min = tsrc(ip,jp,kp,lsrc_min,mp,n) ! min time at this F
 	   tsrc_max = tsrc(ip,jp,kp,lsrc_max,mp,n) ! max time at this F
-	   IF (tdst(ldst_min) .GT. tsrc_max
-     .    .OR. tdst(ldst_max) .LT. tsrc_min) CYCLE  ! nothing to copy
+* tolerance in time matching (would be better if it was consistent for all F)
+           depsilon = 1.0D-12 *
+     .             ABS( (tsrc_max-tsrc_min) / (lsrc_max-lsrc_min+1.0) )
+        IF ( ((tdst(ldst_min) - tsrc_max) .GT. depsilon)
+     .  .OR. ((tsrc_min - tdst(ldst_max)) .GT. depsilon) ) CYCLE  ! nothing to copy
 
 * locate the index at which the block of times to be copied begins in source and dest
-	   IF (tdst(ldst_min) .LT. tsrc_min ) THEN
+           IF ( (tsrc_min - tdst(ldst_min)) .GT. depsilon ) THEN
 	      lsrc_start = lsrc_min
 	      DO ldst_start = ldst_min, ldst_max
-	         IF (tdst(ldst_start) .EQ. tsrc_min) EXIT
+                  IF ( ABS(tdst(ldst_start) - tsrc_min) .LT. depsilon ) EXIT
 	      ENDDO
 	   ELSE
 	      ldst_start = ldst_min
 	      DO lsrc_start = lsrc_min, lsrc_max
-	         IF (tsrc(ip,jp,kp,lsrc_start,mp,n)
-     .	        .EQ. tdst(ldst_min)            ) EXIT
+                 IF ( ABS(tsrc(ip,jp,kp,lsrc_start,mp,n) -
+     .                    tdst(ldst_min)) .LT. depsilon ) EXIT
 	      ENDDO
 	   ENDIF
 
 * locate the index at which the block of times to be copied ends
-	   IF (tdst(ldst_max) .GT. tsrc_max ) THEN
+	   IF ( (tdst(ldst_max) - tsrc_max) .GT. depsilon ) THEN
 	      lsrc_end = lsrc_max
 	   ELSE
 	      DO lsrc_end = lsrc_max, lsrc_min, -1
-	         IF (tsrc(ip,jp,kp,lsrc_end,mp,n)
-     .	        .EQ. tdst(ldst_max)            ) EXIT
+                 IF ( ABS(tsrc(ip,jp,kp,lsrc_end,mp,n) -
+     .                    tdst(ldst_max)) .LT. depsilon ) EXIT
 	      ENDDO
 	   ENDIF
 	   ldst_end = ldst_start + (lsrc_end-lsrc_start)

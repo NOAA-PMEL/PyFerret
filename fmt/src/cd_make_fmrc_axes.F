@@ -107,6 +107,8 @@ c        include 'calendar.cmn'
 	ipt1 = next_line_mem_pos
 	ipte = ipt1 + npts - 1
 	npts2d = npts  ! save it
+      epsilon_23 =  2.**(-23) 
+      depsilon_46 =  2.**(-46) 
 
 *********  FIRST THE 1D CALENDAR TIME AXIS OF THE FMRC  *************
 * Define new axis
@@ -225,8 +227,10 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 	avg_lag = (line_mem(ipt1+nT*(nF-1))-line_mem(ipt1))
      .	        / (nF-1)
 	t0NextForecast = line_mem(ipt1+nT)
+        depsilon = depsilon_46 * ABS(avg_lag)
 	DO nlag = 1, nT-1
-	   IF (line_mem(ipt1+nlag) .EQ. t0NextForecast) GOTO 200
+	   IF ( TM_DFPEQ_TOL(line_mem(ipt1+nlag), t0NextForecast, depsilon) )
+     *         GOTO 200
 	ENDDO
 	CALL TM_NOTE('Corrupted FMRC time array'//pCR//
      .		     'Time values dont match between forecasts', lunit_errors)
@@ -243,7 +247,8 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 	   l = 0                   ! zero-based l index over input time axis
 	   IF (iptnp1 .LT. ipte) THEN
 *   .. copy early time step values from this forecast into 1D axis
- 	      DO WHILE (line_mem(iptn+l) .LT. line_mem(iptnp1))
+ 	      DO WHILE ( (line_mem(iptn+l) .LT. line_mem(iptnp1)) .AND.
+     *           .NOT. TM_DFPEQ_TOL(line_mem(iptn+l), line_mem(iptnp1), depsilon) )
 	         line_mem(ipt1+npts) = line_mem(iptn+l)
 	         IF (has_edges)  line_mem(ipt1+npts+npts2d) =
      .			         line_mem(iptn+l+npts2d)

@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1404 Feb  1 12:25 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1404 Feb  3 17:48 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -303,7 +303,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Wed Feb  1 12:26:45 PST 2017
+Beginning at Fri Feb  3 17:48:47 PST 2017
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4729,6 +4729,8 @@ Replacing definition of axis XLON
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running ferret script: bn_delim_datetime.jnl
  Cached data cleared from memory
 Replacing definition of axis TIMAX
@@ -5024,4 +5026,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testfermethods.py
  Cached data cleared from memory
 >>> ... ... >>> >>> >>> 
-Ended at Wed Feb  1 12:29:33 PST 2017
+Ended at Fri Feb  3 17:51:36 PST 2017

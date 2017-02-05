@@ -86,7 +86,7 @@ class PipedViewer(object):
         return self.__vprocess.exitcode
 
 
-if __name__ == "__main__":
+def _testviewers():
     # vertices of a pentagon (roughly) centered in a 1000 x 1000 square
     pentagonpts = ( (504.5, 100.0), (100.0, 393.9),
                     (254.5, 869.4), (754.5, 869.4),
@@ -227,7 +227,7 @@ if __name__ == "__main__":
                         "<b>Final</b> annotation line" )
 
     # Test each known viewer.
-    for viewername in ( "PipedViewerPQ", "PipedImagerPQ", "NoDisplayPQ" ):
+    for viewername in ( "PipedViewerPQ", "PipedImagerPQ" ):
         print("Testing Viewer %s" % viewername)
         # create the viewer
         pviewer = PipedViewer(viewername)
@@ -264,3 +264,6 @@ if __name__ == "__main__":
             sys.exit(result)
         else:
             print("Done with %s" % viewername)
+
+if __name__ == "__main__":
+    _testviewers()

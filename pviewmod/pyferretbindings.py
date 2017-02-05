@@ -902,7 +902,7 @@ class PImagerPQPyFerretBindings(PyFerretBindings):
 # The following is for testing this module
 #
 
-if __name__ == "__main__":
+def _test_pyferretbindings():
     import pyferret
     import pyferret.graphbind
 
@@ -1030,4 +1030,7 @@ if __name__ == "__main__":
         bindinst.deleteFont(myfont)
         bindinst.deleteWindow()
         print("Done with bindings for %s" % viewertype)
+
+if __name__ == "__main__":
+    _test_pyferretbindings()
 

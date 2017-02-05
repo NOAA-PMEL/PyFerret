@@ -1603,7 +1603,7 @@ class _CommandSubmitterPQ(QDialog):
             self.close()
 
 
-if __name__ == "__main__":
+def _test_pipedviewerpq():
     # vertices of a pentagon (roughly) centered in a 1000 x 1000 square
     pentagonpts = ( (504.5, 100.0), (100.0, 393.9),
                     (254.5, 869.4), (754.5, 869.4),
@@ -1779,4 +1779,7 @@ if __name__ == "__main__":
     result = app.exec_()
     if result != 0:
         sys.exit(result)
+
+if __name__ == "__main__":
+    _test_pipedviewerpq()
 

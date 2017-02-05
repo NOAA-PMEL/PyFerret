@@ -246,7 +246,7 @@ class ScaleDialogPQ(QDialog):
             self.unsetAutoScale(True)
 
 
-if __name__ == "__main__":
+def _test_scaledialogpq():
     app = QApplication(["tester"])
     resizedialog = ScaleDialogPQ(1.0, 500, 300, 75, 50, False)
     retval = resizedialog.exec_()
@@ -254,3 +254,7 @@ if __name__ == "__main__":
     if retval == QDialog.Accepted:
         rettuple = resizedialog.getValues()
         print("getValues returned: %s" % str(rettuple))
+
+if __name__ == "__main__":
+    _test_scaledialogpq()
+

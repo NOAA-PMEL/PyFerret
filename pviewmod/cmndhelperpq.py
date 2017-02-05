@@ -223,8 +223,7 @@ class CmndHelperPQ(object):
             elif mystyle == "diagcross":
                 mystyle = Qt.DiagCrossPattern
             else:
-                raise ValueError( self.__viewer.tr( \
-                      "Unknown brush style %1").arg(str(mystyle)) )
+                raise ValueError("Unknown brush style '%s'" % str(mystyle))
             mybrush.setStyle(mystyle)
         except KeyError:
             pass
@@ -272,8 +271,7 @@ class CmndHelperPQ(object):
             elif mystyle == "dashdotdot":
                 mystyle = Qt.DashDotDotLine
             else:
-                raise ValueError( self.__viewer.tr( \
-                      "Unknown pen style %1").arg(str(mystyle)) )
+                raise ValueError("Unknown pen style '%s'" % str(mystyle))
             mypen.setStyle(mystyle)
         except KeyError:
             pass
@@ -286,8 +284,7 @@ class CmndHelperPQ(object):
             elif mystyle == "round":
                 mystyle = Qt.RoundCap
             else:
-                raise ValueError( self.__viewer.tr( \
-                      "Unknown pen cap style %1").arg(str(mystyle)) )
+                raise ValueError("Unknown pen cap style '%s'" % str(mystyle))
             mypen.setCapStyle(mystyle)
         except KeyError:
             pass
@@ -300,8 +297,7 @@ class CmndHelperPQ(object):
             elif mystyle == "round":
                 mystyle = Qt.RoundJoin
             else:
-                raise ValueError( self.__viewer.tr( \
-                      "Unknown pen join style %1").arg(str(mystyle)) )
+                raise ValueError("Unknown pen join style '%s'" % str(mystyle))
             mypen.setJoinStyle(mystyle)
         except KeyError:
             pass

@@ -398,8 +398,8 @@ class PipedImagerPQ(QMainWindow):
             QApplication.restoreOverrideCursor()
             raise ValueError("invalid length of an image data block")
         # update the status message to show progress
-        self.statusBar().showMessage( self.tr("Loading new image (block %1 of %2)") \
-                                          .arg(str(myblocknum)).arg(str(mynumblocks)) )
+        self.statusBar().showMessage( self.tr("Loading new image (block %s of %s)" % \
+                                              (str(myblocknum),str(mynumblocks))) )
         # assign the data
         self.__scenedata[mystartindex:myendindex] = myblockdata
         # if this is the last block of data, create and display the scene image

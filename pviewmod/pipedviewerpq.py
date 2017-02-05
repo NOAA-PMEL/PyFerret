@@ -298,11 +298,9 @@ class PipedViewerPQ(QMainWindow):
         QApplication.setOverrideCursor(Qt.WaitCursor)
         # create the incomplete status message
         if (first + 1) < len(self.__viewpics):
-            mymsg = self.tr("%s (piece %%1 of %%2)" % statusmsg)
-            endstr = str(len(self.__viewpics))
+            mymsg = "%s (piece %%s of %s)" % (statusmsg, str(len(self.__viewpics)))
         else:
-            mymsg = self.tr("%s (piece %%1)" % statusmsg)
-            endstr = None
+            mymsg = "%s (piece %%s)" % statusmsg
         # get the origin for drawing the pictures after scaling
         myorigin = QPointF(leftx, uppery)
         # set the scaling factor for the pictures
@@ -313,10 +311,7 @@ class PipedViewerPQ(QMainWindow):
         for (viewpic, _) in self.__viewpics[first:]:
             k += 1
             # show the progress message
-            if endstr != None:
-                self.statusBar().showMessage( mymsg.arg(str(k)).arg(endstr) )
-            else:
-                self.statusBar().showMessage( mymsg.arg(str(k)) )
+            self.statusBar().showMessage( self.tr(mymsg % str(k)) )
             # draw the picture
             painter.drawPicture(myorigin, viewpic)
             if returnregion:

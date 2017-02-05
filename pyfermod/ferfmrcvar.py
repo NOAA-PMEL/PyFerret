@@ -46,17 +46,16 @@ class FerFMRCVar(pyferret.FerVar):
             raise ValueError('Invalid FerFMRCVar object')
         # TF_TIMES is an automatically generated variable for FMRC datasets in Ferret
         # TF_CAL_T is an automatically generated axis for FMRC datasets in Ferret
-        diagdefn = '%s[d=%s,gt(TF_TIMES[d=%s])=TF_CAL_T]' % \
-                   (self._varname, self._dsetname, self._dsetname)
+        diagdefn = '%s[gt(TF_TIMES)=TF_CAL_T]' % self._varname
         diagvar = pyferret.FerVar(defn=diagdefn, title=self._title)
         diagvar._requires.add(self._varname.upper())
         diagvar._requires.add("TF_TIMES")
         return diagvar
 
-    def skillform(self):
+    def leadform(self):
         '''
         Returns an anonymous FerVar that is the transformation of this FerFMRCVar 
-        to the "skill" form, where the T (time) axis is the date forecasted and 
+        to the "lead" form, where the T (time) axis is the date forecasted and 
         the F (forecast) axis is the lead time for the date forecasted (forecasted
         time minus time that the forecast was made).
         '''
@@ -65,10 +64,9 @@ class FerFMRCVar(pyferret.FerVar):
         # TF_TIMES is an automatically generated variable for FMRC datasets in Ferret
         # TF_CAL_T is an automatically generated axis for FMRC datasets in Ferret
         # TF_LAG_F is an automatically generated axis for FMRC datasets in Ferret
-        skilldefn = '%s[d=%s,gt(TF_TIMES[d=%s])=TF_CAL_T,gf(TF_TIMES[d=%s])=TF_LAG_F]' % \
-                    (self._varname, self._dsetname, self._dsetname, self._dsetname)
-        skillvar = pyferret.FerVar(defn=skilldefn, title=self._title)
-        skillvar._requires.add(self._varname.upper())
-        skillvar._requires.add("TF_TIMES")
-        return skillvar
+        leaddefn = '%s[gt(TF_TIMES)=TF_CAL_T,gf(TF_TIMES)=TF_LAG_F]' % self._varname
+        leadvar = pyferret.FerVar(defn=leaddefn, title=self._title)
+        leadvar._requires.add(self._varname.upper())
+        leadvar._requires.add("TF_TIMES")
+        return leadvar
 

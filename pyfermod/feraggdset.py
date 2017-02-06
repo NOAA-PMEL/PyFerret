@@ -4,6 +4,7 @@ Represents an aggregation of data sets
 
 from __future__ import print_function
 
+import sys
 import os
 import tempfile
 import pyferret
@@ -102,6 +103,9 @@ class FerAggDSet(pyferret.FerDSet):
         # create a FerVar for each variable in this dataset
         namesdict = pyferret.getstrdata('..varnames')
         for varname in namesdict['data'].flatten():
+            if sys.version_info[0] > 2:
+                # For Python3.x, namesdict['data'] is a NumPy array of bytes; convert to unicode
+                varname = str(varname, 'UTF-8')
             # create a FerVar representing this existing Ferret aggregated file variable
             filevar = pyferret.FerVar()
             filevar._markasknownvar(varname, self._dsetname, True)

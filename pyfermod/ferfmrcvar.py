@@ -47,7 +47,8 @@ class FerFMRCVar(pyferret.FerVar):
         # TF_TIMES is an automatically generated variable for FMRC datasets in Ferret
         # TF_CAL_T is an automatically generated axis for FMRC datasets in Ferret
         diagdefn = '%s[gt(TF_TIMES)=TF_CAL_T]' % self._varname
-        diagvar = pyferret.FerVar(defn=diagdefn, title=self._title)
+        title = self._title + ' (diag form)'
+        diagvar = pyferret.FerVar(defn=diagdefn, title=title)
         diagvar._requires.add(self._varname.upper())
         diagvar._requires.add("TF_TIMES")
         return diagvar
@@ -65,7 +66,8 @@ class FerFMRCVar(pyferret.FerVar):
         # TF_CAL_T is an automatically generated axis for FMRC datasets in Ferret
         # TF_LAG_F is an automatically generated axis for FMRC datasets in Ferret
         leaddefn = '%s[gt(TF_TIMES)=TF_CAL_T,gf(TF_TIMES)=TF_LAG_F]' % self._varname
-        leadvar = pyferret.FerVar(defn=leaddefn, title=self._title)
+        title = self._title + ' (lead form)'
+        leadvar = pyferret.FerVar(defn=leaddefn, title=title)
         leadvar._requires.add(self._varname.upper())
         leadvar._requires.add("TF_TIMES")
         return leadvar

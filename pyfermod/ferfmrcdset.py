@@ -1,7 +1,7 @@
 ''' Represents a forecast-model-run collection in Ferret '''
 
 import pyferret
-import pyferret.ferfmrcvar
+from pyferret.ferfmrcvar import _fmrc_var_qualifier
 
 class FerFMRCDSet(pyferret.FerAggDSet):
     '''
@@ -31,7 +31,7 @@ class FerFMRCDSet(pyferret.FerAggDSet):
             if uppername == 'TF_TIMES':
                 continue
             self._fervars[uppername] = pyferret.FerFMRCVar(self._fervars[uppername], 
-                                            pyferret.ferfmrcvar._fmrc_var_qualifier)
+                                                           _fmrc_var_qualifier)
 
     def __repr__(self):
         '''

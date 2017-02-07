@@ -558,30 +558,40 @@ class PipedImagerPQ(QMainWindow):
                           self.tr("XPM - X11 Pixmap (*.xpm)") ),
                         ( "xbm",
                           self.tr("XBM - X11 Bitmap (*.xbm)") ), ]
-        # tr returns QStrings so the following does not work
-        # filters = ";;".join( [ t[1] for t in formattypes ] )
-        filters = formattypes[0][1]
-        for typePair in formattypes[1:]:
-            filters.append(";;")
-            filters.append(typePair[1])
-        # getSaveFileNameAndFilter does not want to accept a default filter
-        # for (fmt, fmtQName) in formattypes:
-        #     if self.__lastformat == fmt:
-        #         dfltfilter = fmtQName
-        #         break
-        # else:
-        #     dfltfilter = formattypes[0][1]
-        # getSaveFileNameAndFilter is a PyQt (but not Qt?) method
-        (fileName, fileFilter) = QFileDialog.getSaveFileNameAndFilter(self,
-                                      self.tr("Save the current image as "),
-                                      self.__lastfilename, filters)
-        if fileName:
+        if QT_VERSION == 5:
+            # tr returns Python strings in PyQt5/Python3
+            filters = ";;".join( [ t[1] for t in formattypes ] )
             for (fmt, fmtQName) in formattypes:
-                if fmtQName.compare(fileFilter) == 0:
-                    fileFormat = fmt
+                if self.__lastformat == fmt:
+                    dfltfilter = fmtQName
                     break
             else:
-                raise RuntimeError("Unexpected file format name '%s'" % fileFilter)
+                dfltfilter = formattypes[0][1]
+            (fileName, fileFilter) = QFileDialog.getSaveFileName(self,
+                self.tr("Save the current image as "), self.__lastfilename, filters, dfltfilter)
+            if fileName:
+                for (fmt, fmtQName) in formattypes:
+                    if fmtQName == fileFilter:
+                        fileFormat = fmt
+                        break
+                else:
+                    raise RuntimeError("Unexpected file format name '%s'" % fileFilter)
+        else:
+            # tr returns QStrings in PyQt4
+            filters = formattypes[0][1]
+            for typePair in formattypes[1:]:
+                filters.append(";;")
+                filters.append(typePair[1])
+            (fileName, fileFilter) = QFileDialog.getSaveFileNameAndFilter(self,
+                 self.tr("Save the current image as "), self.__lastfilename, filters)
+            if fileName:
+                for (fmt, fmtQName) in formattypes:
+                    if fmtQName.compare(fileFilter) == 0:
+                        fileFormat = fmt
+                        break
+                else:
+                    raise RuntimeError("Unexpected file format name '%s'" % fileFilter)
+        if fileName:
             self.saveSceneToFile(fileName, fileFormat, None, None)
             self.__lastfilename = fileName
             self.__lastformat = fileFormat

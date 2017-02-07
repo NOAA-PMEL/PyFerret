@@ -173,15 +173,15 @@ def contourplot(fvar, region=None, over=False, qual=''):
         raise ValueError('Ferret shade command (%s) failed: %s' % (cmdstr, errmsg))
 
 
-def fillplot(fvar, line=False, region=None, over=False, qual=''):
+def fillplot(fvar, region=None, line=False, over=False, qual=''):
     """
     Create a color-filled contour plot of the specified Ferret variable using the Ferret 
     FILL command.  Drawing of the contour lines themselves is optional.
     The variable needs to be 2D (or qualifiers need to be added to specify a 2D slice).
         fvar (string or FerVar): Ferret variable to plot
-        line (bool): draw the contour lines?
         region (FerRegion): space-time region to plot; 
                 if None, the full extents of the data will be used
+        line (bool): draw the contour lines?
         over (bool): overlay on an existing plot?
         qual (string): qualifiers to add to the Ferret SHADE command
     """

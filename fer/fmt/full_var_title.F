@@ -1,4 +1,4 @@
-	CHARACTER*(*) FUNCTION FULL_VAR_TITLE( cx, tlen )
+	CHARACTER*(*) FUNCTION FULL_VAR_TITLE( cx, do_units, tlen )
 
 *
 *
@@ -53,6 +53,7 @@
 
 
 * calling argument declarations:
+	LOGICAL	do_units
 	INTEGER	cx, tlen
 
 * internal variable declarations:
@@ -70,9 +71,11 @@
 	tlen	       = TM_LENSTR1( FULL_VAR_TITLE )
 
 * units
-	FULL_VAR_TITLE = FULL_VAR_TITLE(:tlen) // ' ' //
+	IF (do_units) THEN
+	   FULL_VAR_TITLE = FULL_VAR_TITLE(:tlen) // ' ' //
      .		PAREN_SURROUND( VAR_UNITS(cx), slen )
-	tlen = MIN( maxlen, tlen+1+slen)
+	   tlen = MIN( maxlen, tlen+1+slen)
+	ENDIF
 
 * mods to title
 	FULL_VAR_TITLE = FULL_VAR_TITLE(:tlen) //

@@ -1,0 +1,68 @@
+! err700_legend_labels.jnl
+! See ticket 2231: 
+!   - consistent labeling of units
+!   - PLOT/KEY=title applies to PLOT/VS
+
+cancel symbol lab*
+use gt4d011.cdf
+
+! Previously vertical label had Deg C, legend labels had units.
+! Now label only the legend labels show the different units.
+set v ul; plot/l=1/k=1/y=0/key=title temp, taux, tauy
+annotate/norm/xpos=1/ypos=.5/halign=0/valign=-4/angle=-90/size=0.14 "Each label with units"
+
+sh sym lab*  ! laby is not used
+can sym lab*
+
+! Previously vertical label and legend labels had units.
+! Now label only the vertical axis with the common units.
+set v ur; plot/l=1/k=1/y=0/key=title taux, tauy
+annotate/norm/xpos=1/ypos=.5/halign=0/valign=-4/angle=-90/size=0.14 "Common Units, labeled on left"
+
+! legend labels now do not include units
+sh sym lab*
+can sym lab*
+
+! Define some variables with titles
+let/title="Temperature Avg"/units="`temp,return=units`" tmpave = temp[L=@ave,z=@ave]
+let/title="September Taux"/units="`taux,return=units`" taux_s = taux[t=23-SEP-1982, k=1]
+let/title="January Taux"/units="`taux,return=units`" taux_j = taux[t=4-jan-1983, k=1]
+
+! Set up a common set of axes for all variables
+set v lower
+plot/vs/sym=dot/y=0/nokey tmpave,taux_s,taux_j
+annotate/norm/xpos=1/ypos=.5/halign=0/valign=-4/angle=-90/size=0.14 "PLOT/VS with KEY=title"
+
+! Overlay; the legend titles are variable titles.
+plot/over/vs/color=red/thick/siz=0.14/y=0/key=title tmpave,taux_s
+plot/over/vs/color=green/thick/siz=0.14/y=0/key=title tmpave,taux_j
+
+frame/file=legend_1d_plots.gif
+
+! legend labels are titles
+sh sym lab*
+
+! Overlaying on a 2D field
+
+DEFINE AXIS/T="1-JAN-1980":"1-JAN-1990":5/UNITS=DAYS tdays
+DEFINE AXIS/Y=0:40N:2/UNITS=DEGREES yax
+
+LET/TITLE=XY my_var = 10*cos(T[gt=tdays]/2000)*EXP((-1)*y[gy=yax]/20)
+LET my_var2 = 10*cos(T[gt=tdays]/2000)*EXP((-1)*y[gy=yax]/20)
+
+! make a Hovmoller plot
+SHADE/nolab my_var
+
+! PLOT/OVER without key=title shows the def in the line key
+PLOT/OVER my_var[Y=@loc:-4]
+PLOT/OVER my_var2[Y=@loc:-3]
+
+! with /KEY=TITLE, the variable with a title uses that, 
+! variable without a title uses the variable name, 
+! an expression just puts the expression (same as w/o /key=title)
+
+PLOT/OVER/KEY=TITLE my_var[Y=@loc:-2]
+PLOT/OVER/KEY=TITLE my_var2[Y=@loc:-1]
+
+PLOT/OVER/KEY=TITLE 10+cos(T[gt=tdays]/200)
+

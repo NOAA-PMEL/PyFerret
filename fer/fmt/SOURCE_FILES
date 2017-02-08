@@ -13,6 +13,7 @@ field_width.F\
 full_uvar_name.F\
 full_uvar_name_xml.F\
 full_var_title.F\
+var_title_only.F\
 geog_label.F\
 get_dset_name.F\
 get_dset_title.F\

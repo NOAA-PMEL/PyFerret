@@ -171,7 +171,7 @@
 	            plot_title = VAR_TITLE_ONLY( cx_list(ipl), slen )
 	         ELSE
 		    do_units = .TRUE.
-		    IF (nmv.EQ.var1 .AND. .NOT.versus) do_units = .FALSE
+		    IF (nmv.EQ.var1 .AND. .NOT.versus) do_units = .FALSE.
 		    plot_title = FULL_VAR_TITLE( cx_list(ipl), do_units, slen )
 		 ENDIF
 	      ENDIF

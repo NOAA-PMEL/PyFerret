@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 13 Feb  3 17:04 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.032
+lrwxrwxrwx. 1 ksmith oerdnewp 13 Feb  8 15:01 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.032
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -292,7 +292,7 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Fri Feb  3 17:11:50 PST 2017
+Beginning at Wed Feb  8 15:01:44 PST 2017
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4707,6 +4707,8 @@ Replacing definition of axis XLON
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running ferret script: bn_delim_datetime.jnl
  Cached data cleared from memory
 Replacing definition of axis TIMAX
@@ -4962,4 +4964,4 @@ set region/@w
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
  Cached data cleared from memory
-Ended at Fri Feb  3 17:13:36 PST 2017
+Ended at Wed Feb  8 15:03:31 PST 2017

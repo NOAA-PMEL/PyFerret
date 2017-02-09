@@ -43,6 +43,9 @@
 * 8/12 ACM 
 * V6.83 *acm* 11/30/2012 Need AXIS.INC for the axis lengths, xlen, ylen
 * PyFr *kms*  7/13 Scale default lettering sizes by textscale
+* V71  *acm* 2/17  More on ticket 2231. Label set of line plots with their units
+*                  if units are different. If PLOT/KEY=title given, use the variable
+*                  title in the legend labels for both PLOT and PLOT/VS plots.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -65,12 +68,14 @@
 	CHARACTER*(*) tstyle
 
 * internal variable declarations:
-	LOGICAL user_title
-	INTEGER	TM_LENSTR1, TM_UNIT_ID, ipl, nline_in_mem, slen, slen1, 
-     .		status, ptitl, style, justify, iunits, istart
+	LOGICAL user_title, units_same, do_units
+	INTEGER	TM_LENSTR1, TM_UNIT_ID, STR_SAME, ipl, 
+     .		nline_in_mem, slen, slen1, status, ptitl, style, 
+     .		justify, iunits, istart, i
 	
-	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title, plot_title_1
-	CHARACTER	VAR_UNITS*64, SECS_TO_DATE*20, year*4, buff1*16
+	CHARACTER*2040	FULL_VAR_TITLE, VAR_TITLE_ONLY, KEY_STRING, 
+     .			plot_title, plot_title_1
+	CHARACTER	VAR_UNITS*64, SECS_TO_DATE*20, year*4, buff1*16, ustring*64
 	REAL		xkeypos, ykeypos, xkeysize, ykeysize, 
      .			lab_ht, labsize
 
@@ -104,6 +109,7 @@
 	         slen = TM_LENSTR1( plot_title )
 	      ELSE
 	         plot_title = KEY_STRING( cx_list(ipl), cx_xtra_doc, slen )
+	         IF (.NOT.use_keys) plot_title = VAR_TITLE_ONLY( cx_list(ipl), slen )
 	      ENDIF
               IF (this_no_range(ipl) .AND. mode_nodata_lab) THEN
                  plot_title(slen+1:slen+14) = ' No Valid Data'
@@ -133,21 +139,42 @@
 * *ACM* if time axis, then cal_id_1 is set to the calendar.  Label the
 *       plot with the calendar name if there is non-standard calendar
 	   CALL DISP_LABELS( cx_plot, year, cal_id_1 )
-* ... label dependent axis with units (over-written below if /vs)
+
+* If there are multiple variables with different units, do not label 
+* the vertical axis with the units 
+
+	   units_same = .FALSE.
+	   ustring = VAR_UNITS(cx_list(var1))
+	   IF (nmv .GT. var1) units_same = .TRUE.
+	   DO 300 ipl = var1+1, nmv
+	      IF (STR_SAME(ustring, VAR_UNITS(cx_list(ipl)) ) .NE. 0) 
+     .	          units_same = .FALSE.
+ 300	   CONTINUE
+	   IF (nmv.EQ.var1 .AND. .NOT.versus) units_same = .TRUE.
+
+* ... label dependent axis with units if all variables have the same units
+*     (over-written below if /vs)
+
 	   plot_title = VAR_UNITS( cx_list(var1) )
 	   slen = TM_LENSTR1( plot_title )
-	   CALL BOX_LABEL( dep_lab,
+	   IF (units_same) CALL BOX_LABEL( dep_lab,
      .			   plot_title(:slen),
      .			   0.0, 0.0, 0.6*dep_len, dflt_letsize_label*textscale,
      .			   dflt_letsize_label*textscale, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
-* ... keys for the dependent vars, or if one, only then title or axis label
+* ... keys for the dependent vars, or if one, only the title or axis label
 	   DO 600 ipl = var1, nmv
 	      nline_in_mem = nline_in_mem + 1
-	      IF ( use_keys .AND. (.NOT. nokey) ) THEN
+	      IF ( use_keys .AND. (.NOT. nokey) .AND.nmv.GT.var1) THEN
 	         plot_title = KEY_STRING( cx_list(ipl), key_doc, slen )
 	      ELSE
-	         plot_title = FULL_VAR_TITLE( cx_list(ipl), slen )
+	         IF (units_same .AND. .NOT.use_keys) THEN 
+	            plot_title = VAR_TITLE_ONLY( cx_list(ipl), slen )
+	         ELSE
+		    do_units = .TRUE.
+		    IF (nmv.EQ.var1 .AND. .NOT.versus) do_units = .FALSE.
+		    plot_title = FULL_VAR_TITLE( cx_list(ipl), do_units, slen )
+		 ENDIF
 	      ENDIF
               IF (this_no_range(ipl) .AND. mode_nodata_lab) THEN
                  plot_title(slen+1:slen+14) = ' No Valid Data'
@@ -189,7 +216,8 @@
  600	   CONTINUE
 
            IF (versus) THEN
-	      plot_title = FULL_VAR_TITLE( cx_list(1), slen )
+	      do_units = .TRUE.
+	      plot_title = FULL_VAR_TITLE( cx_list(1), do_units, slen )
               slen = TM_LENSTR1( plot_title )
               CALL BOX_LABEL( indep_lab,
      .                     plot_title(:slen),
@@ -220,19 +248,29 @@
 	         slen = TM_LENSTR1( plot_title )
 	      ELSE
 	         plot_title = KEY_STRING( cx_list(ipl), cx_xtra_doc, slen )
+		 IF (.NOT.use_keys) plot_title = VAR_TITLE_ONLY( cx_list(ipl), slen )
 	      ENDIF
               IF (this_no_range(ipl) .AND. mode_nodata_lab) THEN
                  plot_title(slen+1:slen+14) = ' No Valid Data'
                  slen = slen + 14
               ENDIF
-              IF (.NOT. nokey) THEN
-	         CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
+
+              IF (ipl.EQ.ribbon_var) THEN
+		 slen1 = TM_LENSTR1( plot_title_1 )
+                 plot_title = plot_title_1(1:slen1)//
+     .			', Colored by '//plot_title(1:slen)
+	         slen = TM_LENSTR1( plot_title)
+              ENDIF
+
+              plot_title_1 = plot_title ! ribbon plot: combine with color-by label
+ 1500	   CONTINUE
+           IF (.NOT. nokey) THEN
+              CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
      .			    lab_ht, style, justify, plot_title(:slen))
-	         CALL PUT_KEY( nline_in_mem, plot_title(:slen),
+              CALL PUT_KEY( nline_in_mem, plot_title(:slen),
      .			    xkeypos, ykeypos, xkeysize, ykeysize,
      .			    lab_ht, style, lab_loc_absolute, lab_loc_absolute )
-              ENDIF
- 1500	   CONTINUE
+           ENDIF
 
 	ELSE ! Not overlay
 
@@ -271,7 +309,8 @@
 	   ENDIF
 
 	   IF (versus .AND. ribbon_plot) THEN
-	      plot_title = FULL_VAR_TITLE( cx_list(var1), slen )
+	      do_units = .TRUE.
+	      plot_title = FULL_VAR_TITLE( cx_list(var1), do_units, slen )
 	      slen = TM_LENSTR1( plot_title )
 	      CALL BOX_LABEL( dep_lab,
      .			   plot_title(:slen),
@@ -289,11 +328,8 @@
 	   DO 1600 ipl = istart, var1+1
 	      IF (ipl .EQ. var1 .AND. (versus .AND. ribbon_plot)) GOTO 1600     
 	      nline_in_mem = nline_in_mem + 1
-	      IF ( use_keys .AND. (.NOT. nokey) ) THEN
-	         plot_title = KEY_STRING( cx_list(ipl), key_doc, slen )
-	      ELSE
-	         plot_title = FULL_VAR_TITLE( cx_list(ipl), slen )
-	      ENDIF
+	      do_units = .TRUE.
+	      plot_title = FULL_VAR_TITLE( cx_list(ipl), do_units, slen )
               IF (this_no_range(ipl) .AND. mode_nodata_lab) THEN
                  plot_title(slen+1:slen+14) = ' No Valid Data'
                  slen = slen + 14

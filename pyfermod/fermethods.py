@@ -138,7 +138,7 @@ def showdata(brief=True, qual=''):
         raise ValueError('Ferret command "%s" failed: %s' % (cmdstr, errmsg))
 
 
-def contourplot(fvar, region=None, over=False, qual=''):
+def contourplot(fvar, region=None, over=False, pal=None, lev=None, qual=''):
     """
     Create a contour plot of the specified Ferret variable using the Ferret CONTOUR command.
     Using the fill method to generated a color-filled contour plot.
@@ -173,7 +173,7 @@ def contourplot(fvar, region=None, over=False, qual=''):
         raise ValueError('Ferret shade command (%s) failed: %s' % (cmdstr, errmsg))
 
 
-def fillplot(fvar, region=None, line=False, over=False, qual=''):
+def fillplot(fvar, region=None, line=False, over=False, pal=None, lev=None, qual=''):
     """
     Create a color-filled contour plot of the specified Ferret variable using the Ferret 
     FILL command.  Drawing of the contour lines themselves is optional.
@@ -211,7 +211,7 @@ def fillplot(fvar, region=None, line=False, over=False, qual=''):
         raise ValueError('Ferret shade command (%s) failed: %s' % (cmdstr, errmsg))
 
 
-def shadeplot(fvar, region=None, over=False, qual=''):
+def shadeplot(fvar, region=None, over=False, pal=None, lev=None, qual=''):
     """
     Create a colored plot of the specified Ferret variable using the Ferret SHADE command.
     (Plot coloring grid cells based on the variable value in that cell.)
@@ -341,11 +341,13 @@ def shadewater(res=20, color='gray', over=True, solid=True, X=None, Y=None):
 
 
 def pointplot(fvar, vs=None, color=None, sym=None, symsize=None, thick=None,
-             line=False, title=None, region=None, over=False, label=True, qual=''):
+              line=False, title=None, region=None, over=False, pal=None, 
+              lev=None, label=True, qual=''):
     """
-    Create a point plot of the given value, or the given value versus another value (if vs is given),
-    possibly colored by another value (if color is a FerVar).
-    To create a line plot with symbols, use the pointplot command with the line option set to True.
+    Create a point plot of the given value, or the given value versus another value 
+    (if vs is given), possibly colored by another value (if color is a FerVar).
+    To create a line plot with symbols, use the pointplot command with the line 
+    option set to True.
         fvar (string or FerVar): Ferret variable to plot
         vs  (string or FerVar): if given, plot the above variable versus this variables
         color: line color or variable used to determine line color; if
@@ -442,11 +444,13 @@ def pointplot(fvar, vs=None, color=None, sym=None, symsize=None, thick=None,
 
 
 def lineplot(fvar, vs=None, color=None, thick=None, dash=None, title=None, 
-             region=None, along=None, over=False, label=True, qual=''):
+             region=None, along=None, over=False, pal=None, lev=None, 
+             label=True, qual=''):
     """
-    Create a line plot of the given value, or the given value versus another value (if vs is given),
-    possibly colored by another value (if color is a FerVar).
-    To create a line plot with symbols, use the pointplot command with the line option set to True.
+    Create a line plot of the given value, or the given value versus another value 
+    (if vs is given), possibly colored by another value (if color is a FerVar).
+    To create a line plot with symbols, use the pointplot command with the line 
+    option set to True.
         fvar (string or FerVar): Ferret variable to plot
         vs  (string or FerVar): if given, plot the above variable versus this variables
         color: line color or variable used to determine line color; if
@@ -464,8 +468,8 @@ def lineplot(fvar, vs=None, color=None, thick=None, dash=None, title=None,
         title (string): title for the plot; if not given,  Ferret's default title is used
         region (FerRegion): space-time region to plot; 
                 if None, the full extents of the data will be used
-        along (string; one of 'X','Y','Z','T','E','F', or lowercase): make a set of line plots 
-                from two-dimensional data with this axis as the horizontal axis.
+        along (string; one of 'X','Y','Z','T','E','F', or lowercase): make a set of line 
+                plots from two-dimensional data with this axis as the horizontal axis.
         over (bool): overlay onto an existing plot
         label (bool): if False, suppress all plot labels
         qual (string): qualifiers to add to the Ferret PLOT/LINE command

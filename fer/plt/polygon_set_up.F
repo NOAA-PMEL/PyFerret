@@ -140,6 +140,7 @@
 * V701  *acm* 8/16 Fix ticket 2463: single-valued data with a /LEVELS setting
 * V702  *acm* 10/16 Test the results of MINMAX routine before use; if all data is 
 *                   all-missing it returns arbitrary_large_val4.
+* V71  *acm* 2/17  More on ticket 2231. New argument to FULL_VAR_TITLE to control units labels
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -171,7 +172,8 @@
 
 * calling argument declarations:
 	LOGICAL		overlay, transpz, no_labels, no_range, use_line,
-     .			is_logx, is_logy, is_modx, do_mod_minus, do_mod_plus
+     .			is_logx, is_logy, is_modx, do_mod_minus, do_mod_plus, 
+     .			do_units
 	INTEGER		symbol, line_type, coord_ax, iunits, do_dash,
      .			nmv, mr_list( nmv ), cx_list( nmv ), status
 	REAL		memory( mem_blk_size, max_mem_blks )
@@ -219,6 +221,8 @@
 	LOGICAL		range_rqd
 	PARAMETER     ( range_rqd = .TRUE. )
 	PARAMETER     ( epsilon = 1.E-35 )
+
+	do_units = .TRUE.
 
 * signal that plot set-up has begun
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
@@ -1215,7 +1219,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
               IF ( status .NE. ferr_ok ) GOTO 5000
 	      slen = TM_LENSTR1( plot_title )
 	   ELSE
-	      plot_title = FULL_VAR_TITLE( cx_color, slen )
+	      plot_title = FULL_VAR_TITLE( cx_color, do_units, slen )
 	   ENDIF
 	   CALL BOX_LABEL( ppl_title,
      .			 plot_title(:slen),
@@ -1224,7 +1228,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
      .			 lab_loc_absolute, lab_loc_absolute )
 * ... label axis labels:  units from the polygon coordinates
 
-	   plot_title = FULL_VAR_TITLE( cx_x, slen )
+	   plot_title = FULL_VAR_TITLE( cx_x, do_units, slen )
 
 C	   plot_title = VAR_UNITS( cx_x )
 C	   slen = TM_LENSTR1( plot_title )
@@ -1234,7 +1238,7 @@ C	   slen = TM_LENSTR1( plot_title )
      .			 dflt_letsize_label*textscale, ppl_centered,
      .			 lab_loc_absolute, lab_loc_absolute )
 
-	   plot_title = FULL_VAR_TITLE( cx_y, slen )
+	   plot_title = FULL_VAR_TITLE( cx_y, do_units, slen )
 
 C	   plot_title = VAR_UNITS( cx_y )
 C	   slen = TM_LENSTR1( plot_title )

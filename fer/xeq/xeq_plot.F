@@ -117,6 +117,7 @@
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* V71  *acm* 2/17  More on ticket 2231. Initialize flag use_keys.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -367,6 +368,7 @@ CC       => Set values here instead.
 * ... /KEY[=title]  for control over labeling the multi-line legend
 
 	loc = qual_given( slash_plot_key )
+	use_keys = .TRUE.
 
 	IF ( loc .GT. 0) THEN
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),

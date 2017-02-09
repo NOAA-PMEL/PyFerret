@@ -178,6 +178,7 @@
 * V710  *acm* 11/16 Ticket 2483: Fix the axis-end symbols that are defined 
 *                   for time axis plots
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
+* V71  *acm* 2/17  More on ticket 2231. New argument to FULL_VAR_TITLE to control units labels
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -217,7 +218,7 @@
      .			all_1_ind, formatted,
      .			indep_is_log, dep_is_log, use_nice,
      .                  this_no_range(max_line_on_plot), set_axis,
-     .                  timeax_both
+     .                  timeax_both, do_units
 	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title
 	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
      .			SECS_TO_DATE*20, LEFINT*8, MERGED_WHOI_DATE*14, 
@@ -290,6 +291,7 @@
         cx_x = cx_list(1)
 	xtra_lab = ' '
         nkey_entries = nmv
+	do_units = .TRUE.
 
 * set limit on the number of plot keys
         IF (.NOT.nokey  .AND.  nmv.GT.max_key_entries) THEN
@@ -420,7 +422,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   var1 = 2		! since first var is independent axis
 	   ndv  = nmv - 1	! # of dependent variables
 	   use_keys = .FALSE.
-	   plot_title = FULL_VAR_TITLE( cx_list(1), slen )
+	   plot_title = FULL_VAR_TITLE( cx_list(1), do_units, slen )
 
 * ... label the independent axis as the first var given
 	   IF ( .NOT.no_labels ) THEN
@@ -694,7 +696,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 
 	      set_axis = .TRUE.
 	      IF (ribbon_plot .OR. addgaps) set_axis = (ipl .EQ. var1)
-              IF (versus .AND. set_axis .AND. .NOT.overlay) THEN
+              IF (set_axis .AND. .NOT.overlay) THEN
  	         CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi )
  	         IF (lo .EQ. arbitrary_large_val4) THEN ! all missing
 		    dep_min = -1

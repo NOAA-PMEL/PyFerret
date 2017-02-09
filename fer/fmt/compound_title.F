@@ -52,12 +52,14 @@
 * written for VAX computer under VMS operating system
 *
 * V200:   1/4/89 - from COMPOUND_PLOT_TITLE: major re-write without colors
+* V71  *acm* 2/17  More on ticket 2231. New argument to FULL_VAR_TITLE to control units labels
 
 * calling argument declarations:
 	INTEGER	ncx, cx_list(ncx), tlen
 
 * internal variable declarations:
 	CHARACTER*200	FULL_VAR_TITLE
+	LOGICAL		do_units
 	INTEGER		slen, maxlen, i
 
 	include 'ferret.parm'
@@ -65,13 +67,15 @@
 * maximum title length
 	maxlen = LEN( COMPOUND_TITLE )
 
+	do_units = .TRUE.
+
 * initialize to the first variable context
-	COMPOUND_TITLE = FULL_VAR_TITLE( cx_list(1), tlen )
+	COMPOUND_TITLE = FULL_VAR_TITLE( cx_list(1), do_units, tlen )
 
 * add any remaining variables separated by commas
 	DO 100 i = 2, ncx
 	   COMPOUND_TITLE = COMPOUND_TITLE(:tlen)//' , '//
-     .			    FULL_VAR_TITLE( cx_list(i), slen )
+     .			    FULL_VAR_TITLE( cx_list(i), do_units, slen )
 	   tlen = MIN( maxlen, tlen+slen+3 )
  100	CONTINUE
 

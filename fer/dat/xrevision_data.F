@@ -133,13 +133,14 @@
 * v7.0     7/2016
 * v7.02    8/2016 Fixes graticules on time axes # 2466
 * v7.02   12/2016 Merged true-monthly axis branch to the trunk
+* v7.1     2/2017 Official release
 
         IMPLICIT NONE
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  7.032   /
+	DATA revision_level	/  7.1   /
 
 ! Note we can put a debug title in the Ferret startup header lines
 ! by putting a title into the Makefile: $(MAKE) "DEBUG_TITLE=beta" update

@@ -138,7 +138,7 @@ def showdata(brief=True, qual=''):
         raise ValueError('Ferret command "%s" failed: %s' % (cmdstr, errmsg))
 
 
-def contourplot(fvar, region=None, over=False, pal=None, lev=None, qual=''):
+def contourplot(fvar, region=None, over=False, qual=''):
     """
     Create a contour plot of the specified Ferret variable using the Ferret CONTOUR command.
     Using the fill method to generated a color-filled contour plot.
@@ -173,7 +173,7 @@ def contourplot(fvar, region=None, over=False, pal=None, lev=None, qual=''):
         raise ValueError('Ferret shade command (%s) failed: %s' % (cmdstr, errmsg))
 
 
-def fillplot(fvar, region=None, line=False, over=False, pal=None, lev=None, qual=''):
+def fillplot(fvar, region=None, line=False, over=False, qual=''):
     """
     Create a color-filled contour plot of the specified Ferret variable using the Ferret 
     FILL command.  Drawing of the contour lines themselves is optional.
@@ -211,7 +211,7 @@ def fillplot(fvar, region=None, line=False, over=False, pal=None, lev=None, qual
         raise ValueError('Ferret shade command (%s) failed: %s' % (cmdstr, errmsg))
 
 
-def shadeplot(fvar, region=None, over=False, pal=None, lev=None, qual=''):
+def shadeplot(fvar, region=None, over=False, qual=''):
     """
     Create a colored plot of the specified Ferret variable using the Ferret SHADE command.
     (Plot coloring grid cells based on the variable value in that cell.)
@@ -341,8 +341,8 @@ def shadewater(res=20, color='gray', over=True, solid=True, X=None, Y=None):
 
 
 def pointplot(fvar, vs=None, color=None, sym=None, symsize=None, thick=None,
-              line=False, title=None, region=None, over=False, pal=None, 
-              lev=None, label=True, qual=''):
+              line=False, title=None, region=None, over=False, 
+              label=True, qual=''):
     """
     Create a point plot of the given value, or the given value versus another value 
     (if vs is given), possibly colored by another value (if color is a FerVar).
@@ -444,7 +444,7 @@ def pointplot(fvar, vs=None, color=None, sym=None, symsize=None, thick=None,
 
 
 def lineplot(fvar, vs=None, color=None, thick=None, dash=None, title=None, 
-             region=None, along=None, over=False, pal=None, lev=None, 
+             region=None, along=None, over=False, 
              label=True, qual=''):
     """
     Create a line plot of the given value, or the given value versus another value 

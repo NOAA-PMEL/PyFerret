@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 119269339 Dec 14 14:06 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 119374506 Feb 10 10:07 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: merged the true-monthly branch to the trunk
+Note: Ferret v7.1 release
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -20,7 +20,7 @@ FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 PWD=/home/users/ansley/build/linux/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/linux/ext_func/pylibs
-Beginning at Wed Dec 14 14:15:04 PST 2016
+Beginning at Fri Feb 10 10:08:34 PST 2017
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -664,13 +664,8 @@ Replacing definition of axis XAX
 Replacing definition of axis XAX
            *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
-           *** NOTE: Axis has repeated values -- micro-adjusting ...
- **ERROR: improper grid or axis definition: unrepairable repeated axis coords
-define axis/from/x/name=xax {6,6}
-           *** NOTE: Axis has repeated values -- micro-adjusting ...
- **ERROR: improper grid or axis definition: unrepairable repeated axis coords
-define axis/from/x/name=xax/edges {6,6}
-           *** NOTE: Axis has repeated values -- micro-adjusting ...
+Replacing definition of axis XAX
+Replacing definition of axis XAX
  **ERROR: improper grid or axis definition: unrepairable repeated axis coords
 define axis/from/x/name=xax/edges {6,6,6}
            *** NOTE: Axis has repeated values -- micro-adjusting ...
@@ -818,6 +813,13 @@ Replacing definition of grid TGRID
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: dash=(1., 2.)
+          DASH[=(dn1,up1,dn2,up2)] takes 4 arguments or no argument
+plot/dash=(1., 2.)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
+ **ERROR: value out of legal range: dash=(-1., 2., 3., 4.)
+          DASH arguments must be positive
+plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 
 Bailing out of external function "ffta":
 	 Time axis must be a regular axis
@@ -830,13 +832,6 @@ Bailing out of external function "eof_stat":
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
-          DASH[=(dn1,up1,dn2,up2)] takes 4 arguments or no argument
-plot/dash=(1., 2.)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
- **ERROR: value out of legal range: dash=(-1., 2., 3., 4.)
-          DASH arguments must be positive
-plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
  Using every   2th vector in the Y direction
  Using every   2th vector in the Y direction
  PERMANENT data cleared from memory
@@ -1472,7 +1467,9 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
            *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+rm: cannot remove `input.txt': No such file or directory
 ls: input.txt: No such file or directory
+           *** NOTE: Shell command returned failure flag: rm input.txt
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XAX
@@ -1503,9 +1500,9 @@ Replacing definition of axis Z1
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Coordinates missing on axis LONGITUDE at subscript 13
+           *** NOTE: Coordinates missing on axis LONGITUDE at subscript -2033
            *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: Coordinates missing on axis LATITUDE at subscript 13
+           *** NOTE: Coordinates missing on axis LATITUDE at subscript -2033
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
  **ERROR: illegal limits: "DUMMY" does not exist at T=JAN-1990
@@ -2383,9 +2380,9 @@ curl error details:
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Coordinates missing on axis LONGITUDE at subscript 4
+           *** NOTE: Coordinates missing on axis LONGITUDE at subscript -1187
            *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: Coordinates missing on axis LATITUDE at subscript 4
+           *** NOTE: Coordinates missing on axis LATITUDE at subscript -1187
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
            *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
@@ -3301,18 +3298,18 @@ Replacing definition of axis TNEW
 
 Bailing out of external function "eofsvd_stat":
 	There are no spatial locations having complete time series.
-
-Bailing out of external function "eofsvd_space":
-	There are no spatial locations having complete time series.
-
-Bailing out of external function "eofsvd_tfunc":
-	There are no spatial locations having complete time series.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis YAXIS
 Replacing definition of axis TAXIS
 Replacing definition of axis XAXIS
  **ERROR: error in external function
+
+Bailing out of external function "eofsvd_space":
+	There are no spatial locations having complete time series.
+
+Bailing out of external function "eofsvd_tfunc":
+	There are no spatial locations having complete time series.
 list eofsvd_stat(spacegap)
  **ERROR: error in external function
 list eofsvd_space(spacegap)
@@ -3546,8 +3543,6 @@ Replacing definition of axis AXI
 Replacing definition of axis AXI_COARSE
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: unrepairable repeated axis coords on axis trdim at subscript 2
-           *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file sst_new.nc
@@ -3674,9 +3669,6 @@ Replacing definition of axis XAXIS_TEST
 LIST/FORMAT=CDF/clobber/keep/file=nc b,a[d=1]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: dimensions improperly specified: must be a 2D region
-          shade b
-shade b
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
            *** NOTE: Changing the value of attribute v1.long_name
@@ -3694,8 +3686,6 @@ set var/name=b a
 set var/name=b a
  **ERROR: invalid command: illegal new name.  Variable temp exists in dataset
 set var/name=temp salt
-syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 500; message = "Error processing XML header file /usr/local/src/nvods/tomcat/content/las/conf/server/temp/6790FDCBF64A0E6EFAA6A20D854071E0/header.xml (No such file or directory)"^;};
  **ERROR: invalid command: illegal new name.  Variable psi exists in dataset
 set var/name=psi myvar
  **ERROR: invalid command: illegal new name.  Variable diff already defined
@@ -3704,6 +3694,8 @@ set var/name=diff w
  TEMPORARY data cleared from memory
            *** NOTE: Axis definition error on axis: MONTH_IRREG. Bounds describe cells that overlap one another
            *** NOTE: Error in bounds "MONTH_IRREG_bnds" or bounds do not enclose point on axis MONTH_IRREG
+syntax error, unexpected WORD_STRING, expecting WORD_WORD
+context: Error { code = 500; message = "Error processing XML header file /usr/local/src/nvods/tomcat/content/las/conf/server/temp/6790FDCBF64A0E6EFAA6A20D854071E0/header.xml (No such file or directory)"^;};
            *** NOTE: Substituting coordinate midpoints
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3889,6 +3881,8 @@ list substring("hello",1,-2)
 list substring("hello",1,-3)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+rm: cannot remove `test_save_dsg.nc': No such file or directory
+           *** NOTE: Shell command returned failure flag: rm test_save_dsg.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file anew_global.nc
@@ -3922,6 +3916,18 @@ list f
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file bn_spawn_size1.cdf
+ LISTing to file bn_spawn_size2.cdf
+ LISTing to file bn_spawn_size3.cdf
+ LISTing to file bn_spawn_size4.cdf
+ LISTing to file bn_spawn_size5.cdf
+ LISTing to file bn_spawn_size02.dat
+ LISTing to file bn_spawn_size04.dat
+ LISTing to file bn_spawn_size06.dat
+ LISTing to file bn_spawn_size08.dat
+ LISTing to file bn_spawn_size10.dat
+ LISTing to file bn_spawn_size12.dat
+ LISTing to file bn_spawn_size14.dat
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: value out of legal range: X coordinates on log axis negative or too small : -0.850
@@ -4111,6 +4117,8 @@ def anno/nou/xpos=0/hal=1/val=0 "My Lab"
 def anno/nou/user/xpos=0/ypos=0 "My Lab"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+rm: cannot remove `layerz_test_data.txt': No such file or directory
+           *** NOTE: Shell command returned failure flag: rm layerz_test_data.txt
 Replacing definition of axis ZAX
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
@@ -4717,9 +4725,9 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: unrepairable repeated axis coords on axis xax at subscript 21
+           *** NOTE: unrepairable repeated axis coords on axis xax at subscript -4161
            *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: unrepairable repeated axis coords on axis yax at subscript 21
+           *** NOTE: unrepairable repeated axis coords on axis yax at subscript -4161
            *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4763,6 +4771,76 @@ Replacing definition of axis TAX
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+Replacing definition of axis YAXIS
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XLON
+Replacing definition of axis YLAT
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: Axis has repeated values -- micro-adjusting ...
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ LISTing to file a.nc
+           *** NOTE: Not deleted: TAX
+           *** NOTE: Axis is in use by grid TGRID
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **TMAP ERR: attribute already defined
+             coordinates for variable ZETA
+             Data set: testdata
+ **TMAP ERR: attribute already defined
+             coordinates for variable U
+             Data set: testdata
+ **TMAP ERR: attribute already defined
+             coordinates for variable V
+             Data set: testdata
+ **TMAP ERR: attribute already defined
+             coordinates for variable TEMP
+             Data set: testdata
+ **TMAP ERR: attribute already defined
+             coordinates for variable SALT
+             Data set: testdata
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis TAX2
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XLON
+ LISTing to file a1.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+           *** NOTE: Requested region on modulo axis XLONN7_141 is larger than modulo length. Modulo attribute not written.
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TDAYS
+Replacing definition of axis YAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
@@ -4778,7 +4856,7 @@ list index,edtim,udtim,udate,edate
 list index,edtim,udtim,udate,edate
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Replacing definition of axis TAX
+Replacing definition of axis tax
  LISTing to file tmp/uagg_1.nc
  LISTing to file tmp/uagg_2.nc
  LISTing to file tmp/uagg_3.nc
@@ -4788,6 +4866,8 @@ Replacing definition of axis TAX
  LISTing to file tmp/uagg_1_t3.nc
  LISTing to file tmp/uagg_5.nc
            *** NOTE: Skipping variable SST from set 2, already in the Union dataset.
+Replacing definition of axis XAX
+Replacing definition of axis YAX
 Replacing definition of axis ZAX
  LISTing to file tmp/f01_e1_tu1.nc
  LISTing to file tmp/f01_e1_tu2.nc
@@ -5008,4 +5088,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Dec 14 14:20:49 PST 2016
+Ended at Fri Feb 10 10:13:50 PST 2017

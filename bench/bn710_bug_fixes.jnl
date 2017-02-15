@@ -114,3 +114,7 @@ go err700_fmrcdiag
 ! Bug 2331: Labeling the labels in line-plot legends.
 go bn_reset
 Go err700_legend_labels
+
+! Bug 2507: time aggregations with same time axis in different grids per file
+go bn_reset
+Go err700_aggt_dup_grids

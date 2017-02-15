@@ -29,5 +29,3 @@ tseries b2var = b1.nc, b2.nc
 ! listed as length 10
 sh dat
 
-sp rm b1.nc, b2.nc
-

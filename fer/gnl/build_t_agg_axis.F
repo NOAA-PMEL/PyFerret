@@ -54,9 +54,9 @@
 * V67    5/16 *acm*   Fixes for member sets with single-point time axes having bounds
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 * V7022 1/17 *acm* ticket 2497, Back off the auto-detection of monthly axes.
-* V71   2/17 *acm* ticket 2507, When agg axis identical to an existing one,
-*                  fix swapping of axis into grids - the swap axis may be in
-*                  multiple grids.
+* V71   2/17 *acm* ticket 2507, When agg axis matches an existing one, fix swapping 
+*                  of axis into grids - the swap axis may be in multiple grids.
+* V71   2/17 *acm* ticket 2507, further fix for when several variables have the same grid.
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -731,7 +731,7 @@ c	ENDIF
 	DO ivar = 1, maxvars
 	   IF ( ds_var_setnum(ivar) .EQ. dset_num ) THEN
 	      gg  = ds_grid_number(ivar)
-	      IF (grid_line(t_dim,gg) .EQ. taxis) THEN
+	      IF (grid_line(t_dim,gg).EQ.taxis .OR. grid_line(t_dim,gg).EQ.pre_exist) THEN
 	         ds_grid_end(t_dim,ivar) = nsteps
 	         IF (swap_axes) THEN
 * ... was this grid modified in this loop an instant ago?

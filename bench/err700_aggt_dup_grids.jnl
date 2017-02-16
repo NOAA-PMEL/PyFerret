@@ -1,0 +1,31 @@
+! err700_aggt_dup_grids
+! 2/15/2017 ACM
+! Bug 2507: new time axis is identical in two tseries aggregation.
+!  It exists in more than one grid. Previously the new time axis
+!  was swapped into only one of the grids for the second aggregation.
+
+! Define some datsets, with two variables with different grids each 
+! using a common time axis.
+
+use  tmp/tagg_irreg_1.nc
+define axis/x=1:1:1 xax1
+let newvar = x[gx=xax1] + myvar
+save/clobber/file=a1.nc myvar, newvar
+can dat/all
+use  tmp/tagg_irreg_2.nc
+save/clobber/file=a2.nc myvar, newvar
+
+can dat/all; can var/all
+
+! Define two aggregations; the second should share the time axis
+! that was set up in the first.
+sp ln -sf a1.nc b1.nc
+sp ln -sf a2.nc b2.nc
+
+tseries a2var = a1.nc, a2.nc
+tseries b2var = b1.nc, b2.nc
+
+! previously the time axis of the second variable in b2var was 
+! listed as length 10
+sh dat
+

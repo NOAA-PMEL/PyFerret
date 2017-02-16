@@ -8,7 +8,8 @@ import numbers
 import pyferret
 
 
-def setwindow(num=1, plotasp=None, axisasp=None, color=None, thick=None, logo=None, outline=None):
+def setwindow(num=1, plotasp=None, axisasp=None, color=None, pal=None, 
+              thick=None, logo=None, outline=None):
     """
     Assigns the plot window to use for subsequent plotting commands.
     Also provides assignment of common window plots.  
@@ -26,6 +27,8 @@ def setwindow(num=1, plotasp=None, axisasp=None, color=None, thick=None, logo=No
             of int values in [0,100] giving RGB or RGBA values.
             If not given, the current value is unchanged.
             The default background color on start-up is opaque white.
+        pal (string): default color palette to use in plots.
+            If not given, thr current value is unchanged.
         thick (float): line thickness scaling factor for the plot.
             If not given, the current scaling factor is unchanged.
             The default line thickness scaling factor on start-up is 1.0
@@ -74,6 +77,11 @@ def setwindow(num=1, plotasp=None, axisasp=None, color=None, thick=None, logo=No
     (errval, errmsg) = pyferret.run(cmdstr)
     if errval != pyferret.FERR_OK:
         raise ValueError('Problems executing Ferret command %s: %s' % (cmdstr, errmsg))
+    if pal is not None:
+        cmdstr = 'PALETTE ' + str(pal)
+        (errval, errmsg) = pyferret.run(cmdstr)
+        if errval != pyferret.FERR_OK:
+            raise ValueError('Problems executing Ferret command %s: %s' % (cmdstr, errmsg))
     # create and execute the mode logo command if logo is given
     if logo is not None:
         if logo:
@@ -138,7 +146,7 @@ def showdata(brief=True, qual=''):
         raise ValueError('Ferret command "%s" failed: %s' % (cmdstr, errmsg))
 
 
-def contourplot(fvar, region=None, over=False, qual=''):
+def contourplot(fvar, region=None, over=False, pal=None, qual=''):
     """
     Create a contour plot of the specified Ferret variable using the Ferret CONTOUR command.
     Using the fill method to generated a color-filled contour plot.
@@ -147,6 +155,7 @@ def contourplot(fvar, region=None, over=False, qual=''):
         region (FerRegion): space-time region to plot; 
                 if None, the full extents of the data will be used
         over (bool): overlay on an existing plot?
+        pal (string): color palette to use
         qual (string): qualifiers to add to the Ferret SHADE command
     """
     if not isinstance(qual, str):
@@ -164,6 +173,8 @@ def contourplot(fvar, region=None, over=False, qual=''):
         if not isinstance(region, pyferret.FerRegion):
             raise ValueError('region, if given, must be a FerRegion')
         cmdstr += region._ferretqualifierstr();
+    if pal is not None:
+        cmdstr += '/PALETTE=' + str(pal)
     if qual:
         cmdstr += qual
     cmdstr += ' '
@@ -173,7 +184,7 @@ def contourplot(fvar, region=None, over=False, qual=''):
         raise ValueError('Ferret shade command (%s) failed: %s' % (cmdstr, errmsg))
 
 
-def fillplot(fvar, region=None, line=False, over=False, qual=''):
+def fillplot(fvar, region=None, line=False, over=False, pal=None, qual=''):
     """
     Create a color-filled contour plot of the specified Ferret variable using the Ferret 
     FILL command.  Drawing of the contour lines themselves is optional.
@@ -183,6 +194,7 @@ def fillplot(fvar, region=None, line=False, over=False, qual=''):
                 if None, the full extents of the data will be used
         line (bool): draw the contour lines?
         over (bool): overlay on an existing plot?
+        pal (string): color palette to use
         qual (string): qualifiers to add to the Ferret SHADE command
     """
     if not isinstance(qual, str):
@@ -202,6 +214,8 @@ def fillplot(fvar, region=None, line=False, over=False, qual=''):
         if not isinstance(region, pyferret.FerRegion):
             raise ValueError('region, if given, must be a FerRegion')
         cmdstr += region._ferretqualifierstr();
+    if pal is not None:
+        cmdstr += '/PALETTE=' + str(pal)
     if qual:
         cmdstr += qual
     cmdstr += ' '
@@ -211,7 +225,7 @@ def fillplot(fvar, region=None, line=False, over=False, qual=''):
         raise ValueError('Ferret shade command (%s) failed: %s' % (cmdstr, errmsg))
 
 
-def shadeplot(fvar, region=None, over=False, qual=''):
+def shadeplot(fvar, region=None, over=False, pal=None, qual=''):
     """
     Create a colored plot of the specified Ferret variable using the Ferret SHADE command.
     (Plot coloring grid cells based on the variable value in that cell.)
@@ -220,6 +234,7 @@ def shadeplot(fvar, region=None, over=False, qual=''):
         region (FerRegion): space-time region to plot; 
                 if None, the full extents of the data will be used
         over (bool): overlay on an existing plot?
+        pal (string): color palette to use
         qual (string): qualifiers to add to the Ferret SHADE command
     """
     if not isinstance(qual, str):
@@ -237,6 +252,8 @@ def shadeplot(fvar, region=None, over=False, qual=''):
         if not isinstance(region, pyferret.FerRegion):
             raise ValueError('region, if given, must be a FerRegion')
         cmdstr += region._ferretqualifierstr();
+    if pal is not None:
+        cmdstr += '/PALETTE=' + str(pal)
     if qual:
         cmdstr += qual
     cmdstr += ' '
@@ -341,8 +358,7 @@ def shadewater(res=20, color='gray', over=True, solid=True, X=None, Y=None):
 
 
 def pointplot(fvar, vs=None, color=None, sym=None, symsize=None, thick=None,
-              line=False, title=None, region=None, over=False, 
-              label=True, qual=''):
+              line=False, title=None, region=None, over=False, label=True, qual=''):
     """
     Create a point plot of the given value, or the given value versus another value 
     (if vs is given), possibly colored by another value (if color is a FerVar).
@@ -444,8 +460,7 @@ def pointplot(fvar, vs=None, color=None, sym=None, symsize=None, thick=None,
 
 
 def lineplot(fvar, vs=None, color=None, thick=None, dash=None, title=None, 
-             region=None, along=None, over=False, 
-             label=True, qual=''):
+             region=None, along=None, over=False, label=True, qual=''):
     """
     Create a line plot of the given value, or the given value versus another value 
     (if vs is given), possibly colored by another value (if color is a FerVar).

@@ -1,0 +1,162 @@
+\cancel mode verify
+
+
+! Computes seawater equation of state from JMFWG 2006.
+
+! Adapted from their fortran subroutine eosall_from_theta(s,th,p,sigma,drhodS,drhodtheta,drhodp) by
+
+! E. D. Cokelet. NOAA/PMEL, 6 Jan 2012
+
+! Last modified 9 Jan 2012
+!
+! Execute the commented-out list statement at the end of this script to see the results
+!
+!   in-situ density and its derivatives as functions of
+!   salinity, potential temperature and pressure, as in
+!   Jackett, McDougall, Feistel, Wright and Griffies (2006), Journal of Atmospheric and Oceanic Technology, 23, 1709-1728.
+
+! Inputs:
+
+!   $1 = s                : salinity                           (psu)
+!   $2 = th               : potential temperature              (deg C, ITS-90)
+!   $3 = p                : gauge pressure                     (dbar)
+!                      (absolute pressure - 10.1325 dbar)
+!
+! Outputs:
+!   $4 = sigma = rho-1000  : in-situ density-1000               (kg m^-3)
+!   $5 = drhodS            : partial derivative wrt s           (kg m^-3 psu^-1)
+!   $6 = drhodtheta        : partial derivative wrt th          (kg m^-3 deg C^-1)
+!   $7 = drhodp            : partial derivative wrt p           (kg m^-3 dbar^-1)
+!
+!   check values     : go eqn_of_state_from_theta_JMFWG_2006 20,20,1000,sigma,drhodS,drhodtheta,drhodp 
+
+!          gives
+!                               rho =      1017.728 868019642
+
+!                               sigma =      17.72886 8019642
+!                               drhodS =      0.7510471 164699279
+!                               drhodtheta = -0.2570255 211349140
+!                               drhodp =      0.004317589 133273301
+
+!
+!
+!   DRJ on 10/12/03
+
+!      saline contraction coefficient = drhodS/rho
+!      thermal expansion coefficient  = -drhodtheta/rho
+!                         sound speed = 100/sqrt(drhodp)
+!
+
+
+let th2_$4   = $2*$2
+let sqrts_$4 = $1^0.5
+
+let anum0_$4 =   9.9984085444849347e+02 +      \
+        $2*( 7.3471625860981584e+00 + 	       \
+        $2*(-5.3211231792841769e-02 + 	       \
+        $2*  3.6492439109814549e-04)) +	       \
+        $1*( 2.5880571023991390e+00 - 	       \
+        $2*  6.7168282786692355e-03 + 	       \
+        $1*  1.9203202055760151e-03)
+
+let aden0_$4 =   1.0000000000000000e+00 +      \
+        $2*( 7.2815210113327091e-03 + 	       \
+        $2*(-4.4787265461983921e-05 + 	       \
+        $2*( 3.3851002965802430e-07 + 	       \
+        $2*  1.3651202389758572e-10))) +       \
+        $1*( 1.7632126669040377e-03 - 	       \
+        $2*( 8.8066583251206474e-06 + 	       \
+       th2_$4*  1.8832689434804897e-10) +      \
+     sqrts_$4*( 5.7463776745432097e-06 +       \
+       th2_$4*  1.4716275472242334e-09))
+
+
+let anum_s0_$4 = 2.5880571023991390e+00 -      \
+         $2*  6.7168282786692355e-03 + 	       \
+         $1*  3.8406404111520300e-03
+
+let aden_s_$4 =  1.7632126669040377e-03 +      \
+           $2*(-8.8066583251206470e-06 -       \
+       th2_$4*  1.8832689434804897e-10) +      \
+     sqrts_$4*( 8.6195665118148150e-06 +       \
+       th2_$4*  2.2074413208363504e-09)
+
+let anum_th0_$4 = 7.3471625860981580e+00 +     \
+        $2*(-1.0642246358568354e-01 +	       \
+        $2*  1.0947731732944364e-03)- 	       \
+	$1*  6.7168282786692355e-03
+
+let aden_th0_$4 = 7.2815210113327090e-03 +     \
+        $2*(-8.9574530923967840e-05 + 	       \
+        $2*( 1.0155300889740728e-06 +  	       \
+        $2*  5.4604809559034290e-10)) +	       \
+        $1*(-8.8066583251206470e-06 -         \
+       th2_$4*  5.6498068304414700e-10 +       \
+  $2*sqrts_$4*  2.9432550944484670e-09)
+
+let anum_p0_$4 = 1.1798263740430364e-02 +      \
+       th2_$4*  9.8920219266399120e-08 +       \
+         $1*  4.6996642771754730e-06
+
+let aden_p0_$4 =     6.7103246285651894e-06
+
+!if `$3 ne 0` then	
+! For ferret, eliminate this if statement when pressure = 0.
+
+  let pth_$4 = $3*$2
+
+  let anum_$4 = anum0_$4 +    $3*( 1.1798263740430364e-02 +   \
+                      th2_$4*  9.8920219266399117e-08 +       \
+                        $1*  4.6996642771754730e-06 -         \
+                        $3*( 2.5862187075154352e-08 +         \
+                      th2_$4*  3.2921414007960662e-12))
+
+  let aden_$4 = aden0_$4 +    $3*( 6.7103246285651894e-06 -    \
+                 pth_$4*(th2_$4*  2.4461698007024582e-17 +     \
+                        $3*  9.1534417604289062e-18))
+
+  let anum_s_$4 = anum_s0_$4 + $3*  4.6996642771754730e-06
+
+  let anum_th_$4 = anum_th0_$4 + pth_$4*( 1.9784043853279823e-07 - \
+                        $3*  6.5842828015921320e-12)
+
+  let aden_th_$4 = aden_th0_$4 -                              \
+                 $3*$3*(th2_$4*  7.3385094021073750e-17 +     \
+                        $3*  9.1534417604289060e-18)      
+
+  let anum_p_$4 = anum_p0_$4 - $3*( 5.1724374150308704e-08 +   \
+                      th2_$4*  6.5842828015921320e-12)
+
+  let aden_p_$4 = aden_p0_$4 -                                 \
+                 pth_$4*(th2_$4*  4.8923396014049170e-17 +     \ 
+                        $3*  2.7460325281286720e-17)
+
+
+!endif
+
+let rec_aden_$4 = 1.0/aden_$4
+
+
+let $4 = (anum_$4*rec_aden_$4)-1000
+set variable/title="Sigma=Density-1000"/units="kg/m**3" $4
+
+let rho_$4 = ($4+1000)
+set variable/title="Density"/units="kg/m**3" rho_$4
+
+let $5 = (anum_s_$4-aden_s_$4*($4+1000))*rec_aden_$4
+set variable/title="d(rho)/dS"/units="kg/m**3/psu" $5
+
+let $6 = (anum_th_$4-aden_th_$4*($4+1000))*rec_aden_$4
+set variable/title="d(rho)/d(theta)"/units="kg/m**3/deg. C" $6
+
+let $7 = (anum_p_$4-aden_p_$4*($4+1000))*rec_aden_$4
+set variable/title="d(rho)/dp"/units="kg/m**3/dbar" $7
+
+! 
+list/prec=15 $4, $5, $6, $7
+
+
+
+set mode/last verify
+
+

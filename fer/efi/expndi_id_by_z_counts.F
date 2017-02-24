@@ -213,9 +213,9 @@
          j1 = arg_lo_ss(Y_AXIS,ARG1)
          DO 300 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
-	    i1 = 1
-            DO 200 iout = 1, xlen
-               DO 100 kout = 1, arg_1(iout,j1,k1,l1)
+            i1 = 1
+            DO 200 iout = 1, NINT(xlen)
+               DO 100 kout = 1, NINT(arg_1(iout,j1,k1,l1))
                   result(iout,j,kout,l) = iout
                   i1 = i1 + 1
  100           CONTINUE

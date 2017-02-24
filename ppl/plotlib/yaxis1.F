@@ -287,7 +287,7 @@ C (ITYPE=3 arg to SCINOT)
 	CALL NUMCDE(TEMP,YLAB,LETTER,NC,IFORMT,ydms)
 	
 	spacwid = 0.
-	do_shift = INDEX(YLAB, '#')  ! longitude or latitude labels
+	do_shift = ( INDEX(YLAB, '#') .GT. 0 )  ! longitude or latitude labels
 	IF (do_shift) spacwid = SYMWID(ABSSZ,1,'N')
 
 * Now make the labels. 

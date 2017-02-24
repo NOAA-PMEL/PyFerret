@@ -228,7 +228,7 @@
 	   IF (ABS(steps_in_file/NINT(steps_in_file)-1.0) .GT. 1.E-6) THEN
               WRITE (string,1100)
  1100         FORMAT(' WARNING - NON-INTEGER NUMBER OF STEPS PER STEPFILE'/
-     .	         ' INDICATED IN DESCRIPTOR - TRYING TO CONTINUE ANYWAY')
+     .               ' INDICATED IN DESCRIPTOR - TRYING TO CONTINUE ANYWAY')
               lenb = TM_LENSTR( string )
               CALL WARN( string(:lenb) )
 	   ENDIF

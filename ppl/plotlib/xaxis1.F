@@ -208,7 +208,7 @@ C
 	CALL NUMCDE(TEMP,XLAB,LETTER,NC,IFORMT,xdms)
 
 	spacwid = 0.
-	do_shift = INDEX(XLAB, '#')  ! longitude or latitude labels
+	do_shift = ( INDEX(XLAB, '#') .GT. 0 )  ! longitude or latitude labels
 	IF (do_shift) spacwid = SYMWID(ABSSZ,1,'E')
 
 	x0 = x

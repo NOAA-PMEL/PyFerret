@@ -333,10 +333,10 @@ C	DATA
 C	PLOT
 1300	WRITE(LLUN,9977)WIDTH,HEIGHT,MOD,IR
 9977	FORMAT(9X,'WIDTH= ',F7.2,'  HEIGHT= ',F7.2,'  TKTYPE=',I5
-     *	,'  BAUD=',I5)
+     *  ,'  BAUD=',I5)
 	WRITE(LLUN,9978)ONOFF(IWIND),ONOFF(IP(1)),ICROSS,ICODE
 9978	FORMAT(9X,'WINDOW= ',A3,'  BOX= ',A3,'  CROSS=',I2,
-     *	'  PLTYPE=',I3)
+     *  '  PLTYPE=',I3)
 ***	WRITE(LLUN,9972)PMODE,FILEZ
 	WRITE(LLUN,9972)PMODE,meta_file
 9972	FORMAT(9X,'PLOT MODE= ',A3/9X,'PLOT FILE= ',A)
@@ -358,24 +358,24 @@ C	LIMITS
      *	YLE,CMYLE,YEQ,CMYEQ,YGE,CMYGE,
      *	ZLE,CMZLE,ZEQ,CMZEQ,ZGE,CMZGE
 9976	FORMAT(9X,'TEST',4X,'TRUE/FALSE',7X,'VALUE'//
-     *	10X,'XLE',8X,L1,8X,1PE11.3/
-     *	10X,'XEQ',8X,L1,8X,1PE11.3/
-     *	10X,'XGE',8X,L1,8X,1PE11.3/
-     *	10X,'YLE',8X,L1,8X,1PE11.3/
-     *	10X,'YEQ',8X,L1,8X,1PE11.3/
-     *	10X,'YGE',8X,L1,8X,1PE11.3/
-     *	10X,'ZLE',8X,L1,8X,1PE11.3/
-     *	10X,'ZEQ',8X,L1,8X,1PE11.3/
-     *	10X,'ZGE',8X,L1,8X,1PE11.3)
+     *  10X,'XLE',8X,L1,8X,1PE11.3/
+     *  10X,'XEQ',8X,L1,8X,1PE11.3/
+     *  10X,'XGE',8X,L1,8X,1PE11.3/
+     *  10X,'YLE',8X,L1,8X,1PE11.3/
+     *  10X,'YEQ',8X,L1,8X,1PE11.3/
+     *  10X,'YGE',8X,L1,8X,1PE11.3/
+     *  10X,'ZLE',8X,L1,8X,1PE11.3/
+     *  10X,'ZEQ',8X,L1,8X,1PE11.3/
+     *  10X,'ZGE',8X,L1,8X,1PE11.3)
 	GOTO 5000
 C	VECTOR
 1700	WRITE(LLUN,9968)VLEN,VUSRLN,VAUTO
 9968	FORMAT(9X,'SCALE LENGTH = ',F5.3,'  SCALE = ',1PG10.3,
-     *	'  AUTO SCALE = ',L4)
+     *  '  AUTO SCALE = ',L4)
 ***     *	'  AUTO SCALE = ',L)
 	WRITE(LLUN,9967)VXLOC,VYLOC,VUSER,VKEY,LT(IFIX(VPOS)),VFRMT
 9967	FORMAT(9X,'XPOS = ',1PG10.3,'  YPOS = ',G10.3,
-     *	'  USER = ',L4,'  DRAW KEY = ',L4/9X,'JUSTIFY ',A8,2X,A20)
+     *  '  USER = ',L4,'  DRAW KEY = ',L4/9X,'JUSTIFY ',A8,2X,A20)
 ***     *	'  USER = ',L,'  DRAW KEY = ',L/9X,'JUSTIFY ',A8,2X,A20)
 	goto 5000
 
@@ -423,7 +423,7 @@ C	SHASET info
 C	SHAKEY info
 1900	write (llun,10003) 
 10003	format (/9x,'DO KEY',2x,'ORIENT',2x,'LAB SIZE',2x,
-     .	'LAB INC',2x,'LAB DIG',2x,'LAB LEN')
+     .  'LAB INC',2x,'LAB DIG',2x,'LAB LEN')
 		
 	if (do_key) then                             
 	   x_do_key = 1
@@ -463,7 +463,7 @@ c  Write out location of key, whether it was user-located or automatically set
 C	ALINE info
 2000	none = .true.
 	do 2001 i = 1,lnum    
-	   if (aline_on(i)) none = .false.		
+	   if (aline_on(i)) none = .false.
 2001	continue
 
 	if (none) then
@@ -474,7 +474,7 @@ C	ALINE info
 
 	write (llun,10009)
 10009	format (//9x,'LINE #',5x,'UNITS',5x,'X MIN',5x,'Y MIN',
-     .			5x,'X MAX',5x,'Y MAX')
+     .                                   5x,'X MAX',5x,'Y MAX')
 	do 2002 i = 1,lnum
 	   if (.not. aline_on(i)) goto 2002
 

@@ -125,21 +125,21 @@ C
 	NOUT=LNBLK(OUT,80)
 	CALL ECHO(OUT,NOUT)
 999	FORMAT(
-     *	'C --  LINFIT RESULTS      Y = A + B*X')
+     *  'C --  LINFIT RESULTS      Y = A + B*X')
 998	FORMAT(
-     *	'C --                 LENGTH = ',I10)
+     *  'C --                 LENGTH = ',I10)
 997	FORMAT(
-     *	'C --  X LIMITS USED FOR FIT = ',1PG10.3,',',G10.3)
+     *  'C --  X LIMITS USED FOR FIT = ',1PG10.3,',',G10.3)
 996	FORMAT(
-     *	'C --                     R2 = ',0PF10.4)
+     *  'C --                     R2 = ',0PF10.4)
 995	FORMAT(
-     *	'C --  REGRESSION COEFFS:  A = ',1PG10.3,'   ST-DEV = ',G10.3)
+     *  'C --  REGRESSION COEFFS:  A = ',1PG10.3,'   ST-DEV = ',G10.3)
 994	FORMAT(
-     *	'C --                      B = ',  G10.3,'   ST-DEV = ',G10.3)
+     *  'C --                      B = ',  G10.3,'   ST-DEV = ',G10.3)
 993	FORMAT(
-     *	'C --         TOTAL VARIANCE = ',G10.3)
+     *  'C --         TOTAL VARIANCE = ',G10.3)
 992	FORMAT(
-     *	'C --      RESIDUAL VARIANCE = ',G10.3)
+     *  'C --      RESIDUAL VARIANCE = ',G10.3)
 991	FORMAT(1X,A70)
 C
 C	INSERT INTO NEXT LINE
@@ -183,7 +183,7 @@ C
 	NOUT=LNBLK(OUT,80)
 	CALL ECHO(OUT,NOUT)
 996	FORMAT(
-     *	'C -- X LIMITS USED FOR LINE = ',1PG10.3,',',G10.3)
+     *  'C -- X LIMITS USED FOR LINE = ',1PG10.3,',',G10.3)
 	X(IX+1)=XMIN
 	X(IY+1)=YMIN
 	X(IX+2)=XMAX

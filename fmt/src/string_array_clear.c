@@ -39,7 +39,7 @@
     4/06 *kob*  change type of argument to double, for 64-bit build
  */
 
-#include <stdio.h>
+#include <stdlib.h>
 #include "string_array.h"
 
 void string_array_clear_(double * string_array_header)

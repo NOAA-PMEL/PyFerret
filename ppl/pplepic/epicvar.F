@@ -83,16 +83,16 @@ c  Put out parameter list if parameter1 is ?
 c
 	    write (5,100)
 100	    format (' Pressure        P'/
-     1	                   ' Temperature     T'/
-     2	                   ' Salinity        SAL'/
-     3	                   ' Sigma-T         SIG'/
-     4	                   ' Oxygen          OX'/
-     5	                   ' Conductivity    CO'/
-     6	                   ' U               U'/
-     7	                   ' V               V'/
-     8	                   ' Dynamic Ht      DYN'/
-     9	                   ' Time            TIM'/
-     1	                   ' Stick Plots     STK'/)
+     1              ' Temperature     T'/
+     2              ' Salinity        SAL'/
+     3              ' Sigma-T         SIG'/
+     4              ' Oxygen          OX'/
+     5              ' Conductivity    CO'/
+     6              ' U               U'/
+     7              ' V               V'/
+     8              ' Dynamic Ht      DYN'/
+     9              ' Time            TIM'/
+     1              ' Stick Plots     STK'/)
 c
 c  If EVAR and no parameters, then use x=time, y=first variable after time
 c

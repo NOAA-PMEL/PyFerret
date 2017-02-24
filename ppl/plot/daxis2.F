@@ -177,7 +177,7 @@ c        line_spacing = 1.4
 	   ELSE
 	       WRITE(OUT,997)I,XL,YL,LTY,LABS(I)(:NCR)
 997	       FORMAT('C LABS/NOUSER,',I2,2(',',1PE10.3),',',I2,
-     *	       ',','"',A,'"')
+     *                ',','"',A,'"')
 	   ENDIF
 	   NOUT=LNBLK(OUT,255)
 	   CALL ECHO(OUT,NOUT)

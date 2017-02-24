@@ -70,7 +70,7 @@
 * call c-written routine to get input line
         CALL TM_FTOC_READLINE( hprompt, hbuff )
 
-* translate recieved input line to FORTRAN character array
+* translate received input line to FORTRAN character array
         CALL TM_CTOF_STRNG( hbuff, buff, blen )
 
 * null string returned means that EOF (^D) was entered

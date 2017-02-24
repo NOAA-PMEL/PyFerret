@@ -104,7 +104,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         a RuntimeError is raised with the string of the full response.
         If timeout is zero (the default) the method does not wait if there
         is no response waiting; otherwise the method waits the given number
-        of seconds for a reponse to arrive.  An IllegalArgumentException
+        of seconds for a response to arrive.  An IllegalArgumentException
         if raised if timeout is None, as error responses should not be an
         expected result (thus an indefinite wait makes no sense).
         '''

@@ -17,7 +17,7 @@ except ImportError:
     QT_VERSION = 4
 
 # Now that the PyQt version is determined, import the parts
-# allowing any import errors to propogate out
+# allowing any import errors to propagate out
 if QT_VERSION == 5:
     from PyQt5.QtCore    import Qt
     from PyQt5.QtWidgets import QApplication, QButtonGroup, QDialog, \

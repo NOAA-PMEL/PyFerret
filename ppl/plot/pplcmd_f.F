@@ -1151,8 +1151,8 @@ C	LINFIT
 8600	    I=IFIX(P(1))
 	    IF(I.GT.LINEN.OR.LLENG(I).LE.2.OR.LINEN.GE.NLINES)THEN
 		IF(.NOT.QUIETF)WRITE(LTTOUT,
-     *          '('' LINFIT ERROR -- NO ROOM OR LINE'',I3,
-     *          '' DOES NOT EXIST'')')
+     *            '('' LINFIT ERROR -- NO ROOM OR LINE'',I3,
+     *            '' DOES NOT EXIST'')')
 		GOTO 10
 	    ENDIF
 	    CALL LINFIT(I,pplmem,pplmem_nsize,IBASE,PBUF)

@@ -40,7 +40,7 @@
  */
 
 #include <Python.h> /* make sure Python.h is first */
-#include <stdio.h>
+#include <stdlib.h>
 #include "string_array.h"
 
 void string_array_clear_(double * string_array_header)

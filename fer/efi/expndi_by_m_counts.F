@@ -288,9 +288,9 @@
          m1 = arg_lo_ss(E_AXIS,ARG1)
          m2 = arg_lo_ss(E_AXIS,ARG2)
  
-	    i1 = 1
+            i1 = 1
             DO 200 mout=arg_lo_ss(E_AXIS,ARG2),arg_hi_ss(E_AXIS,ARG2)
-               DO 100 iout = 1, arg_2(i2,j2,k2,l2,mout,n1)
+               DO 100 iout = 1, NINT(arg_2(i2,j2,k2,l2,mout,n1))
                  IF ( arg_1(i1,j1,k1,l1,m1,n1) .NE. bad_flag(1) )
      .             result(iout,j,k,l,mout,n) = arg_1(i1,j1,k1,l1,m1,n1)
 

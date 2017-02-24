@@ -245,9 +245,9 @@
          j2 = arg_lo_ss(Y_AXIS,ARG2)
          DO 300 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
-	    i1 = 1
+            i1 = 1
             DO 200 iout=arg_lo_ss(X_AXIS,ARG2),arg_hi_ss(X_AXIS,ARG2)
-               DO 100 kout = 1, arg_2(iout,j2,k2,l2)
+               DO 100 kout = 1, NINT(arg_2(iout,j2,k2,l2))
                  IF ( arg_1(i1,j1,k1,l1) .NE. bad_flag(1) )
      .             result(iout,j,kout,l) = arg_1(i1,j1,k1,l1)
                   i1 = i1 + 1

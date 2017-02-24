@@ -107,7 +107,7 @@ c
 	if (theader(2)(78:78) .ne. 'T') then
 		write (6,104) theader(2)(78:78)
 104		format (//' This is not time series data.',
-     *		' Header type is ', a, ' - STOP')
+     *                    ' Header type is ', a, ' - STOP')
 		stop
 	endif
 	rewind lun1

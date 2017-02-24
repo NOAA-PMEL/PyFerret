@@ -16,7 +16,7 @@ except ImportError:
     QT_VERSION = 4
 
 # Now that the PyQt version is determined, import the parts
-# allowing any import errors to propogate out
+# allowing any import errors to propagate out
 if QT_VERSION == 5:
     from PyQt5.QtCore import Qt, QPointF, QSizeF
     from PyQt5.QtGui  import QBrush, QColor, QFont, QPainterPath, QPen

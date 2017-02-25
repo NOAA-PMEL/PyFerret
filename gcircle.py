@@ -10,7 +10,7 @@ import math
 import numpy
 import numpy.random
 
-# Equitorial radius of the earth in kilometers
+# Equatorial radius of the earth in kilometers
 EARTH_ER = 6378.137
 
 # Authalic radius of the earth in kilometers
@@ -133,7 +133,7 @@ def lonlatintersect(gc1lon1, gc1lat1, gc1lon2, gc1lat2,
     # to the two plane-perpendiculars and goes through the origin.
     # Points of intersection are the points on this line one unit
     # from the origin.  If the norm of the cross product is too
-    # small, the two planes are practically indistiguishable from
+    # small, the two planes are practically indistinguishable from
     # each other (coincide).
     pt1xyz = numpy.cross(gc1pp, gc2pp, axis=0)
     norm = (pt1xyz[0]**2 + pt1xyz[1]**2 + pt1xyz[2]**2)**0.5
@@ -244,7 +244,7 @@ def lonlatfwdpt(origlon, origlat, endlon, endlat, fwdfact):
 
 def equidistscatter(min_lon, min_lat, max_lon, max_lat, min_gcdist, dfactor=5.0):
     """
-    Create a roughly equidistance set of points in a specified region.
+    Create a roughly equidistant set of points in a specified region.
 
     This is done by creating a dense "grid" of points, then repeatedly
     randomly selecting a point from that collection and eliminating
@@ -268,7 +268,7 @@ def equidistscatter(min_lon, min_lat, max_lon, max_lat, min_gcdist, dfactor=5.0)
     Returns:
         (pt_lons, pt_lats) - ptlons is an array of longitudes and ptlats
                   is an array of latitudes of (somewhat random) points in
-                  the specified region that are roughly equidistance from
+                  the specified region that are roughly equidistant from
                   each other but not closer than min_gcdist to each other.
     """
     lonmin = float(min_lon)
@@ -290,7 +290,7 @@ def equidistscatter(min_lon, min_lat, max_lon, max_lat, min_gcdist, dfactor=5.0)
 
     # If lonmin is relatively close to lonmax, directly
     # compute the points.  Distance on a meridian is the
-    # differnce in latitudes.
+    # difference in latitudes.
     if math.fabs(lonmax - lonmin) < (0.05 * mindeg):
         lon = 0.5 * (lonmax + lonmin)
         dellat = mindeg
@@ -304,7 +304,7 @@ def equidistscatter(min_lon, min_lat, max_lon, max_lat, min_gcdist, dfactor=5.0)
 
     # If latmin is relatively close to latmax, directly
     # compute the points.  Distance depends on the latitude
-    # as well as the differnce in longitudes.
+    # as well as the difference in longitudes.
     if math.fabs(latmax - latmin) < (0.05 * mindeg):
         lat = 0.5 * (latmax + latmin)
         numer = math.sin(0.5 * DEG2RAD * mindeg)
@@ -584,19 +584,19 @@ if __name__ == "__main__":
 
     lons, lats = equidistscatter(0.0, 0.0, 90.0, 0.0, 1.0)
     if not numpy.all( lats == 0.0 ):
-        raise ValueError("Equidistscatter equitorial FAIL; \n" \
-                         "  expect: all zero latititudes, \n" \
+        raise ValueError("Equidistscatter equatorial FAIL; \n" \
+                         "  expect: all zero latitudes, \n" \
                          "  found %s" % str(lats))
     deltas = lons[1:] - lons[:-1]
     if not numpy.all( deltas >= 1.0 ):
-        raise ValueError("Equidistscatter equitorial FAIL; \n" \
+        raise ValueError("Equidistscatter equatorial FAIL; \n" \
                          "  expect: longitudes monotonic increasing by at least 1.0 degrees, \n" \
                          "  found %s" % str(lons))
     if not numpy.all( deltas < 1.0001 ):
-        raise ValueError("Equidistscatter equitorial FAIL; \n" \
+        raise ValueError("Equidistscatter equatorial FAIL; \n" \
                          "  expect: longitudes monotonic increasing by less than 1.0001 degrees, \n" \
                          "  found %s" % str(lons))
-    print("Equidistscatter equitorial PASS")
+    print("Equidistscatter equatorial PASS")
     print()
 
     lons, lats = equidistscatter(0.0, 0.0, 0.0, 90.0, 1.0)

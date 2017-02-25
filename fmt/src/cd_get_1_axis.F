@@ -995,7 +995,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
            secs1590 = TM_SECS_FROM_BC (GREGORIAN, 1590,1,1,0,0,0,status)
             IF ( status .NE. merr_ok ) GOTO 5900
 
-* ... correct axis if crosses 1590 threshhold
+* ... correct axis if crosses 1590 threshold
            IF (secs2firststep .GT. secs1590) THEN
               line_t0(iaxis) = '30-DEC-0000 00:00:00'
               line_shift_origin(iaxis) = .TRUE.

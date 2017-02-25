@@ -1,5 +1,5 @@
 """
-A Python module for running Ferret.  
+A Python module for running Ferret.
 For running the Ferret engine that is part of this module:
     init or start must first be called to initialize Ferret
     resize can be used to resize Ferret's allocated memory block
@@ -20,13 +20,13 @@ For writing Ferret external functions in Python, see the help message
 for pyferret.pyefmethods, whose methods are imported into the pyferret
 module.
 
-The FerRegion, FerAxis, FerGrid, FerVar, FerPyVar, and FerDSet objects 
-assist in working with the Ferret engine in a Python environment, 
+The FerRegion, FerAxis, FerGrid, FerVar, FerPyVar, and FerDSet objects
+assist in working with the Ferret engine in a Python environment,
 reducing the need to know the Ferret language and syntax.
 
 The convenience methods for executing common Ferret commands are found
 under pyferret.fermethods and are imported into the pyferret module.
-These methods also help reduce the need to know the Ferret language 
+These methods also help reduce the need to know the Ferret language
 and syntax.
 """
 
@@ -42,7 +42,7 @@ except ImportError:
 import readline
 
 from pyferret import libpyferret
-# also import everything (not starting with an underscore) from libpyferret 
+# also import everything (not starting with an underscore) from libpyferret
 # so constants in that module are seen as part of this module
 from pyferret.libpyferret import *
 
@@ -114,9 +114,8 @@ def init(arglist=None, enterferret=True):
     """
 
     Usage:  pyferret  [-memsize <N>]  [-nodisplay]  [-png]  [-nojnl]  [-noverify]
-                      [-secure]  [-server]  [-python]  [-version]  [-help] 
-                      [-quiet]  [-linebuffer]  [-batch [<filename>]]  
-                      [-transparent]  [-script <scriptname> [ <scriptarg> ... ]]
+                      [-secure]  [-server]  [-python]  [-version]  [-help]
+                      [-quiet]  [-linebuffer]  [-script <scriptname> [ <scriptarg> ... ]]
 
        -memsize:     initialize the memory cache size to <N> (default 25)
                      mega (10^6) floats (where 1 float = 8 bytes)
@@ -124,13 +123,12 @@ def init(arglist=None, enterferret=True):
        -nodisplay    do not display to the console; a drawing can be saved
                      using the FRAME command in any of the supported file
                      formats.  The /QUALITY option of SET WINDOW will be
-                     ignored when this is specified.  The deprecated
-                     command-line option -unmapped is an alias of this option.
+                     ignored when this is specified.
 
-       -png          only raster (PNG) images can be saved; implies
-                     -nodisplay and deletion of part of plot is no supported.
-                     The deprecatred command-line option -gif is an alias
-                     of this option.
+       -png          do not display to the console and only raster (PNG)
+                     images can be saved.  Implies -nodisplay and removes
+                     support for deletion of parts (segments) of a plot;
+                     however, plots will be generated faster.
 
        -nojnl:       on startup do not open a journal file (can be turned
                      on later with SET MODE JOURNAL)
@@ -141,10 +139,10 @@ def init(arglist=None, enterferret=True):
        -secure:      restrict Ferret's capabilities (e.g., SPAWN and
                      EXIT /TOPYTHON are not permitted)
 
-       -server:      run Ferret in server mode (don't stop on message commands)
+       -server:      run in server mode (don't stop on message commands)
 
        -python:      start at the Python prompt instead of the Ferret prompt.
-                     The ferret prompt can be obtained using 'pyferret.run()'
+                     The Ferret prompt can be obtained using 'pyferret.run()'
 
        -version:     print the Ferret header with version number and quit
 
@@ -152,32 +150,37 @@ def init(arglist=None, enterferret=True):
 
        -quiet        do not display the startup header
 
-       -linebuffer   print each line of output or error messages as soon as 
-                     a full line is written.  Useful when redirecting these
-                     messages to a file.
-                     Note: 
-                       the enviroment variable GFORTRAN_UNBUFFERED_PRECONNECTED 
-                       needs to be set to 1 in order to unbuffer the Fortran 
+       -linebuffer   print each line of output or error messages as soon as
+                     a full line is written.  Useful when redirecting both
+                     types of messages to a single file.
+                     Note:
+                       the environment variable GFORTRAN_UNBUFFERED_PRECONNECTED
+                       needs to be set to 1 in order to unbuffer the Fortran
                        units for output and error messages
 
-       -batch:       draw to <filename> (default "ferret.png") instead of
-                     displaying to the console.  The file format will be
-                     guessed from the filename extension.  When using this
-                     option, new windows should not be created and the
-                     FRAME command should not be used.
-
-                     Use of -batch (and -transparent) is not recommended.
-                     Instead use the -nodisplay option and the FRAME
-                     /FILE=<filename> [ /TRANSPARENT ] command.
-
-       -transparent: use a transparent background instead of opaque white
-                     when saving to the file given by -batch
-
-       -script:      execute the script <scriptname> with any arguments 
-                     specified and exit (THIS MUST BE SPECIFIED LAST).  
-                     The -script option also implies the -nojnl, -noverify, 
+       -script:      execute the script <scriptname> with any arguments
+                     specified and exit. (THIS MUST BE SPECIFIED LAST.)
+                     The -script option also implies the -nojnl, -noverify,
                      -server, and -quiet options.
 
+       Deprecated command-line options:
+
+           -gif:         this option is now an alias for -png
+
+	   -unmapped:    this option is now an alias for -nodisplay
+
+           -batch:       draw to <filename> (default "ferret.png") instead of
+                         displaying to the console.  The file format will be
+                         guessed from the filename extension.  When using this
+                         option, new windows should not be created and the
+                         FRAME command should not be used.
+
+           -transparent: use a transparent background instead of opaque white
+                         when saving to the file given by -batch
+
+        Use of -batch and -transparent options is strongly discouraged.  Instead,
+        use the -nodisplay option and the FRAME /FILE=<filename> [ /TRANSPARENT ]
+        Ferret command.
     """
 
     my_metaname = None
@@ -489,7 +492,7 @@ def init(arglist=None, enterferret=True):
     # start ferret without journaling
     start(memsize=my_memsize, journal=False, verify=my_verify,
           restrict=my_restrict, server=my_server, metaname=my_metaname,
-          transparent=my_transparent, unmapped=my_unmapped, 
+          transparent=my_transparent, unmapped=my_unmapped,
           pngonly=my_pngonly, quiet=my_quiet, linebuffer=my_linebuffer)
 
     # define all the Ferret standard Python external functions
@@ -542,19 +545,19 @@ def start(memsize=25, journal=True, verify=False, restrict=False,
     """
     Initializes Ferret.  This allocates the initial amount of memory
     for Ferret (from Python-managed memory), opens the journal file,
-    if requested, and sets Ferret's verify mode.  
-    If restrict is True, some Ferret commands will not be available 
-    (to provide a secured session).  Once restrict is set, it cannot 
-    be unset.  
-    If metaname is not empty this value is used as the initial filename 
-    for automatic output of graphics, and the graphics viewer will not 
+    if requested, and sets Ferret's verify mode.
+    If restrict is True, some Ferret commands will not be available
+    (to provide a secured session).  Once restrict is set, it cannot
+    be unset.
+    If metaname is not empty this value is used as the initial filename
+    for automatic output of graphics, and the graphics viewer will not
     be displayed.
-    If server is True, Ferret will be run in server mode.  
+    If server is True, Ferret will be run in server mode.
     If unmapped is True, the graphics viewer will not be displayed.
-    If pngonly is True, only raster images can be saved and the 
+    If pngonly is True, only raster images can be saved and the
     graphics viewer will not be displayed.
     If quiet is True, the Ferret start-up header is not displayed.
-    If linebuffer is True, stdout and stderr are set user line 
+    If linebuffer is True, stdout and stderr are set user line
     buffering.  This cannot be reset once set.
     This routine does NOT run any user initialization scripts.
 
@@ -571,12 +574,12 @@ def start(memsize=25, journal=True, verify=False, restrict=False,
         unmapped:    hide the graphics viewer?
         pngonly:     only create raster (PNG) images?
         quiet:       do not display the Ferret start-up header?
-        linebuffer:  print each line of output or error messages as soon as 
+        linebuffer:  print each line of output or error messages as soon as
                      a full line is written?  Useful when redirecting these
                      messages to a file.
-                     Note: 
-                       the enviroment variable GFORTRAN_UNBUFFERED_PRECONNECTED 
-                       needs to be set to 1 in order to unbuffer the Fortran 
+                     Note:
+                       the enviroment variable GFORTRAN_UNBUFFERED_PRECONNECTED
+                       needs to be set to 1 in order to unbuffer the Fortran
                        units for output and error messages
     Returns:
         True is successful
@@ -617,7 +620,7 @@ def start(memsize=25, journal=True, verify=False, restrict=False,
     # the actual call to ferret's start
     success = libpyferret._start(flt_memsize, bool(journal), bool(verify),
                                  bool(restrict), bool(server), str_metaname,
-                                 bool(transparent), bool(unmapped), 
+                                 bool(transparent), bool(unmapped),
                                  bool(pngonly), bool(quiet), bool(linebuffer))
     if success:
         # register the libpyferret._quit function with atexit to ensure

@@ -1,0 +1,7 @@
+! bn720_bug_fixes.jnl
+! test various fixes that went into version 7.2
+! 2/17 *acm*
+!
+
+GO bn_reset
+GO err71_uvar_strides

@@ -1110,8 +1110,11 @@ GO bn_agg_member_syntax
 GO bn_reset
 GO bn_true_monthly
 
-! Note the release notes for v7.1 should include mention of memory-leak fixes. For example see this exchange:
-! http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2017/msg00025.html
+
+! *********** v7.1 Additions ***********
+
+GO bn_reset
+GO bn720_bug_fixes
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

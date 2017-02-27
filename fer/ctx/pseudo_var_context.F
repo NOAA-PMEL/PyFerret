@@ -174,7 +174,12 @@
 *	4 and probably a crash.  This is side-stepped by using cx_grid(mods_cx)
 *	but with the result that the grid is not inherited.  To  work around
 *	the user must use "temp[x=lo:hi:del]+X[g=temp,x=lo:hi:del]"
-	   IF ( cx_grid(mods_cx) .NE. unspecified_int4 ) THEN
+
+*   ticket 2511: the grid number may be a large negative number due to the hack 
+*   in get_context_mods.F which encodes the start/end limits of the uvar name 
+*   into the grid. When that is the case we do not want to use that as base_grid.
+
+	   IF ( cx_grid(mods_cx) .GT. unspecified_int4 ) THEN
 	      base_grid = cx_grid(mods_cx)
 	   ELSE
 ! 2/22/99 addition

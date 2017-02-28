@@ -5,3 +5,6 @@
 
 GO bn_reset
 GO err71_uvar_strides
+
+GO bn_reset
+GO err71_prec_return

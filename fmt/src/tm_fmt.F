@@ -75,7 +75,7 @@
 	REAL		val
 
 * internal variable declarations:
-	LOGICAL		exp_fmt, negative, fixed_pt
+	LOGICAL		TM_DFPEQ, exp_fmt, negative, fixed_pt
 	INTEGER		slen, sig_left, sig_full, nleft, nright, full,
      .			sig_max, full10, xtra, sig_needed, pow10,
      .			chk10, chk10_save, waste, i, need_adjust, ind,
@@ -322,9 +322,13 @@
 * the adjustment for handling large values does not always produce 
 * accurate results. Compare the result to the original value and if
 * needed use the formatting method used in ascii data listings.
+* Ticket 2510: make the test more strict differing val and aval.
+* Using the VAR_DATA_FMT call takes care of the cases where the values
+* are so close that the number will be written as an integer.
 
+	str_len = TM_LENSTR1( outstring )
 	READ (outstring,*) aval
-	IF (need_adjust.GT.0 .AND. ABS(val-aval).GT.0.01) THEN
+	IF (need_adjust.GT.0 .AND. .NOT.TM_DFPEQ(val, aval) ) THEN
 	   width = 4
 	   prec_digits = ABS(digits)
 	   IF (digits .GT. 0) prec_digits = digits
@@ -334,6 +338,15 @@
 	   CALL VAR_DATA_FMT( nleft, nright, prec_digits, width,
      .                         width, fmt, dummy_fmt )
 	   WRITE ( outstring, fmt ) val
+	   str_len = TM_LENSTR1( outstring )
+
+* remove leading blanks.
+	   ind = 1
+	   DO WHILE (outstring(ind:ind) .EQ. ' ') 
+              ind = ind+1
+	   ENDDO
+           IF (ind.GT.1) outstring = outstring(ind:str_len)
+	   str_len = TM_LENSTR1( outstring )
 	ENDIF
 
 	str_len = TM_LENSTR1( outstring )

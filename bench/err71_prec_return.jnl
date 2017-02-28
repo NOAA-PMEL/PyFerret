@@ -1,0 +1,15 @@
+! err71_prec_return.jnl
+! Ticket 2510, `prec=hh` doesn't work when the data is very
+! near an integer.
+
+
+let a=1+1e-12
+
+! This should show the 001 at the end
+list/nohead/norow/prec=13 `a,prec=13`
+
+! This does not have the 001 at the end
+list/nohead/norow/prec=13 `a,prec=12`
+
+! The example from the ticket, with one more.
+list/nohead/norow/prec=12 {`1 + 0.1`, `1 + 1e-7`, `1 + 1e-8`, `1 + 1e-10`} - 1

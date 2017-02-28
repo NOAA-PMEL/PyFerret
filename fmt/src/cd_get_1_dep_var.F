@@ -276,7 +276,7 @@ c        ENDIF
 *
 * The CF standard says: 
 * The missing values of a variable with scale_factor and/or add_offset 
-* attributes (see section Section 8.1, “Packed Data”) are interpreted 
+* attributes (see section Section 8.1, Packed Data) are interpreted 
 * relative to the variable's external values, i.e., the values stored 
 * in the netCDF file. Applications that process variables that have 
 * attributes to indicate both a transformation (via a scale and/or 

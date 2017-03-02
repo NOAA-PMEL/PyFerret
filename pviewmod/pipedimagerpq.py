@@ -26,11 +26,16 @@ try:
 except AttributeError:
     pass
 
-# First try to import just PyQt5, then just PyQt4 if that fails
-try:
-    import PyQt5
-    QT_VERSION = 5
-except ImportError:
+if sys.version_info[0] > 2:
+    # First try to import PyQt5, then try PyQt4 if that fails
+    try:
+        import PyQt5
+        QT_VERSION = 5
+    except ImportError:
+        import PyQt4
+        QT_VERSION = 4
+else:
+    # PyQt5 requires Python3.x, so only try PyQt4
     import PyQt4
     QT_VERSION = 4
 

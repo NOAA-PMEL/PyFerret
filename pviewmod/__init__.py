@@ -14,6 +14,7 @@ import sys
 
 from multiprocessing import Pipe
 
+
 class PipedViewer(object):
     '''
     Creates and starts a PipedViewer of one of the supported viewer 

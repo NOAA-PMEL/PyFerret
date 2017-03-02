@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 11 Feb 16 10:12 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.1
+lrwxrwxrwx. 1 ksmith oerdnewp 11 Feb 28 10:35 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.1
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -287,12 +287,13 @@ Benchmark scripts that will be run:
    bn_ave_of_ave.jnl
    bn_agg_member_syntax.jnl
    bn_true_monthly.jnl
+   bn720_bug_fixes.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Thu Feb 16 10:15:03 PST 2017
+Beginning at Tue Feb 28 10:36:47 PST 2017
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -3089,7 +3090,7 @@ Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
-set mode desperate   9999999999.000000
+set mode desperate 9999999999.000000
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
 set mode desperate 1234567890123456789
  PERMANENT data cleared from memory
@@ -4858,6 +4859,12 @@ define axis/from/t/t0=1-jan-2001/monthly/edges taxis = {5,6,6,6,7}
 def axis/t/t0=1-jan-2000/monthly/bounds tax={1.2, 2, 3.2, 5, 7, 8.4, 9}, {0.5,1.5, 1.5,2.5, 2.5,3.5, 3.5,6.5, 6.5,7.5, 7.5,8.5, 8.5,9.5}
  **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis: needs /T=lo:hi:del
 define axis/x=1:5:1/monthly aaxis
+*** Running ferret script: bn720_bug_fixes.jnl
+ Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running ferret script: bn_gif.jnl
  Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
@@ -4968,4 +4975,4 @@ set region/@w
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
  Cached data cleared from memory
-Ended at Thu Feb 16 10:16:50 PST 2017
+Ended at Tue Feb 28 10:38:31 PST 2017

@@ -13,12 +13,12 @@
 !     you want to join those files together to view the data in Vis5D.
 !     
 !     The arguments are, in order:
-!        ·  An optional list of variables to omit from the output file. For
-!          example, if you want to omit the variables U and THETA you would
-!          use the arguments -U and -THETA.
-!        ·  The list of v5d files to append onto the target file.
-!        ·  The name of the target v5d file to create (if it doesnt exit)
-!          or append onto (if the target file already exists).
+!        -  An optional list of variables to omit from the output file. For
+!           example, if you want to omit the variables U and THETA you would
+!           use the arguments -U and -THETA.
+!        -  The list of v5d files to append onto the target file.
+!        -  The name of the target v5d file to create (if it doesnt exit)
+!           or append onto (if the target file already exists).
 !     
 !     Note that the dimensions of the grids (rows, columns and levels) must
 !     be the same in each file to append them together.  The map projection

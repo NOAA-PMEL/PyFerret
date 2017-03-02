@@ -1,0 +1,14 @@
+! err710_uvar_strides
+! see ticket 2511: crash when doing strides on the user-variable
+
+
+use coads_climatology
+
+! this is ok using a file variable
+let y_vec = x[gx=sst,x=0:360:30]
+list y_vec
+
+! but this gave a crash on loading the variable.
+let s = sst
+let y_vec = x[gx=s,x=0:360:30]
+list y_vec

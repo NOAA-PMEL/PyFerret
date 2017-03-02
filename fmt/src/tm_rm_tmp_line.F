@@ -1,4 +1,4 @@
-	INTEGER FUNCTION TM_RM_TMP_LINE( line )
+	SUBROUTINE TM_RM_TMP_LINE( line )
 
 *
 *

@@ -47,6 +47,8 @@
 *
 * V200:  6/1/89
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V702 *sh* 11/16 mods for trac #2428 - calculation in gathered fragments
+*                 pass address of buffer area, where weights are accumulated
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -61,17 +63,20 @@
 	REAL	arg, com(*), res(*), box(*)
 
 * internal variable declarations:
-* ...
+	INTEGER CGRID_SIZE, size
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
      .				( 'doing', isact_class_trans, res_cx, idim )
 
+* get size of result array to locate buffer area just beyond
+	size = CGRID_SIZE(res_cx)
+
 	CALL DO_AVE_INT( isact_average, idim,
      .			 cx_lo_ss(com_cx,idim), cx_hi_ss(com_cx,idim),
      .			 com, com_mr, com_cx,
      .			 res, res_mr, res_cx,
-     .			 box )
+     .			 box, res(size+1) )
 
 	DO_AVERAGE = ferr_ok
 

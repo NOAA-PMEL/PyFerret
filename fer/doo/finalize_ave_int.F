@@ -1,9 +1,6 @@
-	INTEGER FUNCTION DO_MAX( idim, arg,
-     .				 com, com_mr, com_cx,
-     .				 res, res_mr, res_cx,
-     .				 buff	)
+	SUBROUTINE FINALIZE_AVE_INT( trans, size,
+     .				     res_mr, res, weights )
 
-*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -38,43 +35,53 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* find the maximum value of the component grid along axis idim
+* finalize the result of average or definite integral based up accumulated
+* WIGHTED_SUM(values) and SUM(weights)
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
-* V200:  6/1/89
-*	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
-*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
-* V702 *sh* 11/16 this routine now performs accumulation only.  Initialization
-*                 and finalizing called separately from IS_TRANS
-* V71  *acm* 12/16 Send extra-buffer space that was allocated for the 
-*                 accumulation/finalization, to store counts. To distinguish 
-*                 all-missing data with a value of zero, from a zero max.
+* V702 *sh* 11/16 this routine performs the finalization step that was
+*		  previously a part of DO_AVE_INT
 
         IMPLICIT NONE
-	include	'errmsg.parm'
+        include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include	'interp_stack.parm'
+!	include	'xcontext.cmn'
+	include	'xvariables.cmn'
+!	include	'xmem_subsc.cmn'
+!	include 'xunits.cmn_text'
+!	external xunits_data
+!	include 'xtm_grid.cmn_text'
+!	external xgt_grid_data
 
 * calling argument declarations:
-	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
-	REAL	arg, buff(*),
-     .          com( * ), res( * )
+	INTEGER	trans, size, res_mr
+	REAL    res(size), weights(size)
 
 * internal variable declarations:
-         INTEGER CGRID_SIZE, size
+	LOGICAL	average
+	INTEGER	i
+	REAL	bad_res
 
-* Get size of result array to locate buffer area just beyond
-* Pass extra-buffer portion of res array to accumulate counts
+* --- end of introductory code ---
 
-	size = CGRID_SIZE(res_cx)
+* initialize
+	average = trans .EQ. trans_average
+     .       .OR. trans .EQ. trans_4d_ave
+	bad_res = mr_bad_data( res_mr )
 
-	CALL DO_MAX_SUB (idim, arg,
-     .                   com, com_mr, com_cx,
-     .                   res, res_mr, res_cx,
-     .                   res(size+1)	)
-
-	DO_MAX = ferr_ok
+* finalize (luv it!)
+	DO i = 1, size
+	   IF (res(i) .EQ. bad_res) THEN
+	      CONTINUE				! bad stays bad
+	   ELSEIF (weights(i) .EQ. 0.0D0) THEN
+	      res(i) = bad_res			! no input values to average
+	   ELSEIF (average) THEN
+	      res(i) = res(i)/weights(i)	! average
+	   ENDIF
+	ENDDO
 
 	RETURN
 	END

@@ -1,9 +1,6 @@
-	INTEGER FUNCTION DO_MAX( idim, arg,
-     .				 com, com_mr, com_cx,
-     .				 res, res_mr, res_cx,
-     .				 buff	)
+	SUBROUTINE FINALIZE_SUMS_COUNTS( trans, size,
+     .				     res_mr, res, counts )
 
-*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -38,43 +35,41 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* find the maximum value of the component grid along axis idim
+* finalize the result of Sums or Counts (NGD, NBD).
 
-* programmer - steve hankin
+* programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
-* V200:  6/1/89
-*	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
-*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
-* V702 *sh* 11/16 this routine now performs accumulation only.  Initialization
-*                 and finalizing called separately from IS_TRANS
-* V71  *acm* 12/16 Send extra-buffer space that was allocated for the 
-*                 accumulation/finalization, to store counts. To distinguish 
-*                 all-missing data with a value of zero, from a zero max.
+* V71 *acm* 12/16 this routine performs the finalization step that was
+*		  previously a part of DO_SUM, DO_MIN, DO_MAX, DO_NGOOD, etc.
 
         IMPLICIT NONE
-	include	'errmsg.parm'
+        include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include	'interp_stack.parm'
+	include	'xvariables.cmn'
 
 * calling argument declarations:
-	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
-	REAL	arg, buff(*),
-     .          com( * ), res( * )
+	INTEGER	trans, size, res_mr
+	REAL    res(size), counts(size)
 
 * internal variable declarations:
-         INTEGER CGRID_SIZE, size
+	INTEGER	i
+	REAL	bad_res
 
-* Get size of result array to locate buffer area just beyond
-* Pass extra-buffer portion of res array to accumulate counts
+* --- end of introductory code ---
 
-	size = CGRID_SIZE(res_cx)
+* initialize
+	bad_res = mr_bad_data( res_mr )
 
-	CALL DO_MAX_SUB (idim, arg,
-     .                   com, com_mr, com_cx,
-     .                   res, res_mr, res_cx,
-     .                   res(size+1)	)
+* res(i) already contains the accumulated sum or count.
+* counts(i) contains the number of valid data.
 
-	DO_MAX = ferr_ok
+	DO i = 1, size
+	   IF (counts(i) .EQ. 0.0D0) THEN
+	      res(i) = bad_res			! no valid input values 
+	   ENDIF
+	ENDDO
 
 	RETURN
 	END

@@ -1,13 +1,9 @@
-	INTEGER FUNCTION DO_MAX( idim, arg,
-     .				 com, com_mr, com_cx,
-     .				 res, res_mr, res_cx,
-     .				 buff	)
+	SUBROUTINE TRANS_FINALIZE( idim, arg,
+     .				   res, res_mr, res_cx )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -38,43 +34,79 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* find the maximum value of the component grid along axis idim
+* finalize a transform that contains accumulated values
+* e.g. average =  WIGHTED_SUM(values) divided by SUM(weights)
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
-* V200:  6/1/89
-*	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
-*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
-* V702 *sh* 11/16 this routine now performs accumulation only.  Initialization
-*                 and finalizing called separately from IS_TRANS
-* V71  *acm* 12/16 Send extra-buffer space that was allocated for the 
-*                 accumulation/finalization, to store counts. To distinguish 
-*                 all-missing data with a value of zero, from a zero max.
+* V702 11/16 *sh* for enhancement ticket 2428: split/gather on compressed axes
 
-        IMPLICIT NONE
-	include	'errmsg.parm'
 
 * calling argument declarations:
-	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
-	REAL	arg, buff(*),
-     .          com( * ), res( * )
+	INTEGER	idim, res_mr, res_cx
+	REAL	arg, res(*)
+
+	include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include 'interp_stack.parm'
+	include	'xcontext.cmn'
+	include	'xprog_state.cmn'
 
 * internal variable declarations:
-         INTEGER CGRID_SIZE, size
+	INTEGER	trans
+	INTEGER CGRID_SIZE, size
 
-* Get size of result array to locate buffer area just beyond
-* Pass extra-buffer portion of res array to accumulate counts
 
+* initiailize
+	trans = cx_trans( idim, res_cx )
 	size = CGRID_SIZE(res_cx)
 
-	CALL DO_MAX_SUB (idim, arg,
-     .                   com, com_mr, com_cx,
-     .                   res, res_mr, res_cx,
-     .                   res(size+1)	)
+	IF ( trans .EQ. trans_average
+     .  .OR. trans .EQ. trans_4d_ave   
+     .  .OR. trans .EQ. trans_integ_def
+     .  .OR. trans .EQ. trans_4d_int_def  ) THEN
+* ... diagnostic mode output: " final --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
+	   IF ( mode_diagnostic ) CALL DIAG_OP
+     .			( 'final', isact_class_trans, res_cx, idim )
+	   CALL FINALIZE_AVE_INT(trans, size,
+     .			         res_mr, res, res(size+1) )
 
-	DO_MAX = ferr_ok
+	ELSEIF ( trans .EQ. trans_sum
+     .      .OR. trans .EQ. trans_4d_sum
+     .      .OR. trans .EQ. trans_max
+     .      .OR. trans .EQ. trans_min   ) THEN
+
+	   CALL FINALIZE_SUMS_COUNTS(trans, size,
+     .			         res_mr, res, res(size+1) )
+
+	ELSEIF ( trans .EQ. trans_variance
+     .      .OR. trans .EQ. trans_4d_var
+     .	    .OR. trans .EQ. trans_std_dev
+     .      .OR. trans .EQ. trans_4d_std ) THEN
+
+	   IF ( mode_diagnostic ) CALL DIAG_OP
+     .			( 'final', isact_class_trans, res_cx, idim )
+	   CALL FINALIZE_VARIANCE(trans, size,
+     .			          res_mr, res, res(size+1), res(2*size+1) )
+
+
+	ELSE
+ 
+* trans_good_pt, trans_4d_good_pt, trans_bad_pt, trans_4d_bad_pt are simple 
+* counts, and do not need a finalization step.
+
+* all other transformations do not require initialization
+*      trans_locate - potentially could, but would need added machinery during
+*                     split gather since it is locating a result that lies
+*                     *between* two points
+
+
+	   CONTINUE   ! TBD
+
+	ENDIF
 
 	RETURN
+
 	END

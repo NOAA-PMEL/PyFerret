@@ -11,6 +11,7 @@ conformable_agg_grid.F\
 constant_context.F\
 const_var_context.F\
 crawl_dependencies.F\
+define_next_chunk_cx.F\
 diagnostic_out.F\
 eval_context.F\
 eval_expr.F\
@@ -64,6 +65,7 @@ non_array_subsc.F\
 offset_ss.F\
 operate.F\
 pass_ambig_lims.F\
+potent_ax_lims.F\
 potent_size.F\
 push_interp_stack.F\
 randn.F\
@@ -79,6 +81,7 @@ string_context.F\
 string_operate.F\
 string_concatenate.F\
 string_conditional.F\
+trans_init_value.F\
 transfer_isp.F\
 unprotect_cmnd_data.F\
 xerror.F 

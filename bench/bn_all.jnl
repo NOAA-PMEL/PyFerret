@@ -1116,6 +1116,9 @@ GO bn_true_monthly
 GO bn_reset
 GO bn720_bug_fixes
 
+GO bn_reset
+GO bn_compressed_gather
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

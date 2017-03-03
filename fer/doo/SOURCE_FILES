@@ -51,7 +51,9 @@ do_interpolate.F\
 do_lin_regrid.F\
 do_locate.F\
 do_max.F\
+do_max_sub.F\
 do_min.F\
+do_min_sub.F\
 do_nbad.F\
 do_nearest.F\
 do_nearest_dist_above.F\
@@ -77,6 +79,7 @@ do_stddev.F\
 do_string_goodbad.F\
 do_string_shift.F\
 do_sum.F\
+do_sum_sub.F\
 do_var_sub.F\
 do_variance.F\
 do_wgt.F\
@@ -84,6 +87,9 @@ do_window_regrid.F\
 do_xact_regrid.F\
 do_xyave_regrid.F\
 do_xylin_regrid.F\
+finalize_ave_int.F\
+finalize_sums_counts.F\
+finalize_variance.F\
 geog_cos_factor.F\
 get_linear_coef.F\
 hanng_wt.F\
@@ -99,6 +105,7 @@ parzn_wt.F\
 regrid_comments.F\
 rho_unesco.F\
 theta_foff.F\
+trans_finalize.F\
 welch_wt.F\
 window_regrid_1_axis.F\
 xact_ptr_regrid_1_axis.F\

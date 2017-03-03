@@ -109,6 +109,7 @@
 * V680 *acm* 5/16  Fix ticket 2366, putting the subspan void point and modulo
 *                  replications before transformations.
 * V7   5/12 *acm* Union aggregations: DEFINE DATA/AGG/U
+* V702 *sh* 11/16 split/gather on compressed axes -- see IS_TRANS calls
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -591,73 +592,73 @@ c	   GOTO 5000
 	   ELSEIF ( act .EQ. isact_sample		) THEN
 	      CALL IS_SAMPLE( memory, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_interp		) THEN
-	      CALL IS_TRANS( memory, DO_INTERPOLATE, *2500, status )
+	      CALL IS_TRANS( memory, DO_INTERPOLATE, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_average		) THEN
-	      CALL IS_TRANS( memory, DO_AVERAGE, *2500, status )
+	      CALL IS_TRANS( memory, DO_AVERAGE, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_avg_wgt		) THEN
-	      CALL IS_TRANS( memory, DO_AVG_WGT, *2500, status )
+	      CALL IS_TRANS( memory, DO_AVG_WGT, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_4d_ave		) THEN	! 7/96
-	      CALL IS_TRANS( memory, DO_4D_AVE, *2500, status )
+	      CALL IS_TRANS( memory, DO_4D_AVE, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_avg_4d_wgt		) THEN	
-	      CALL IS_TRANS( memory, DO_4D_AVE_WGT, *2500, status )
+	      CALL IS_TRANS( memory, DO_4D_AVE_WGT, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_integ_def		) THEN	! 7/96
-	      CALL IS_TRANS( memory, DO_INTEG_DEF, *2500, status )
+	      CALL IS_TRANS( memory, DO_INTEG_DEF, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_4d_int_def		) THEN
-	      CALL IS_TRANS( memory, DO_4D_INT_DEF, *2500, status )
+	      CALL IS_TRANS( memory, DO_4D_INT_DEF, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_shift		) THEN
-	      CALL IS_TRANS( memory, DO_SHIFT, *2500, status )
+	      CALL IS_TRANS( memory, DO_SHIFT, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_box		) THEN
-	      CALL IS_TRANS( memory, DO_SMTH_BOX, *2500, status )
+	      CALL IS_TRANS( memory, DO_SMTH_BOX, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_box_p		) THEN
-	      CALL IS_TRANS( memory, DO_SMTH_BOX_P, *2500, status )
+	      CALL IS_TRANS( memory, DO_SMTH_BOX_P, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_binml		) THEN
-	      CALL IS_TRANS( memory, DO_SMTH_BINML, *2500, status )
+	      CALL IS_TRANS( memory, DO_SMTH_BINML, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_hanng		) THEN
-	      CALL IS_TRANS( memory, DO_SMTH_HANNG, *2500, status )
+	      CALL IS_TRANS( memory, DO_SMTH_HANNG, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_max		) THEN
-	      CALL IS_TRANS( memory, DO_SMTH_MAX, *2500, status )
+	      CALL IS_TRANS( memory, DO_SMTH_MAX, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_median		) THEN
-	      CALL IS_TRANS( memory, DO_SMTH_MEDIAN, *2500, status )
+	      CALL IS_TRANS( memory, DO_SMTH_MEDIAN, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_min		) THEN
-	      CALL IS_TRANS( memory, DO_SMTH_MIN, *2500, status )
+	      CALL IS_TRANS( memory, DO_SMTH_MIN, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_parzn		) THEN
-	      CALL IS_TRANS( memory, DO_SMTH_PARZN, *2500, status )
+	      CALL IS_TRANS( memory, DO_SMTH_PARZN, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_welch		) THEN
-	      CALL IS_TRANS( memory, DO_SMTH_WELCH, *2500, status )
+	      CALL IS_TRANS( memory, DO_SMTH_WELCH, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_fill_ave		) THEN
-	      CALL IS_TRANS( memory, DO_FILL_AVE, *2500, status )
+	      CALL IS_TRANS( memory, DO_FILL_AVE, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_fill_interp		) THEN
-	      CALL IS_TRANS( memory, DO_FILL_INTERP, *2500, status )
+	      CALL IS_TRANS( memory, DO_FILL_INTERP, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_fill_near		) THEN
-	      CALL IS_TRANS( memory, DO_FILL_NEAR, *2500, status )
+	      CALL IS_TRANS( memory, DO_FILL_NEAR, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_deriv_fwrd		) THEN
-	      CALL IS_TRANS( memory, DO_DERIV_FRWD, *2500, status )
+	      CALL IS_TRANS( memory, DO_DERIV_FRWD, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_deriv_cntr		) THEN
-	      CALL IS_TRANS( memory, DO_DERIV_CNTR, *2500, status )
+	      CALL IS_TRANS( memory, DO_DERIV_CNTR, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_deriv_bkwd		) THEN
-	      CALL IS_TRANS( memory, DO_DERIV_BKWD, *2500, status )
+	      CALL IS_TRANS( memory, DO_DERIV_BKWD, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_min			) THEN
-	      CALL IS_TRANS( memory, DO_MIN, *2500, status )
+	      CALL IS_TRANS( memory, DO_MIN, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_max			) THEN
-	      CALL IS_TRANS( memory, DO_MAX, *2500, status )
+	      CALL IS_TRANS( memory, DO_MAX, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_integ_indef		) THEN
-	      CALL IS_TRANS( memory, DO_INT_INDEF, *2500, status )
+	      CALL IS_TRANS( memory, DO_INT_INDEF, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_locate		) THEN
-	      CALL IS_TRANS( memory, DO_LOCATE, *2500, status )
+	      CALL IS_TRANS( memory, DO_LOCATE, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_sum  		) THEN
-	      CALL IS_TRANS( memory, DO_SUM, *2500, status )
+	      CALL IS_TRANS( memory, DO_SUM, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_run_sum		) THEN
-	      CALL IS_TRANS( memory, DO_RUN_SUM, *2500, status )
+	      CALL IS_TRANS( memory, DO_RUN_SUM, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_variance		) THEN
-	      CALL IS_TRANS( memory, DO_VARIANCE, *2500, status )
+	      CALL IS_TRANS( memory, DO_VARIANCE, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_std_dev		) THEN
-	      CALL IS_TRANS( memory, DO_STDDEV, *2500, status )
+	      CALL IS_TRANS( memory, DO_STDDEV, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_good_pt		) THEN
-	      CALL IS_TRANS( memory, DO_NGOOD, *2500, status )
+	      CALL IS_TRANS( memory, DO_NGOOD, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_bad_pt		) THEN
-	      CALL IS_TRANS( memory, DO_NBAD, *2500, status )
+	      CALL IS_TRANS( memory, DO_NBAD, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_wgted_eq		) THEN
-	      CALL IS_TRANS( memory, DO_DIST_LOC, *2500, status )
+	      CALL IS_TRANS( memory, DO_DIST_LOC, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_regrid		) THEN
 	      CALL IS_REGRID( memory, *2500, status )
 	   ELSEIF ( act .EQ. isact_auxvar_regrid
@@ -666,25 +667,25 @@ c	   GOTO 5000
 	   ELSEIF ( act .EQ. isact_autogrid		) THEN
 	      CALL IS_AUTOGRID( *2500, status )
 	   ELSEIF ( act .EQ. isact_4d_var		) THEN	! 7/96
-	      CALL IS_TRANS( memory, DO_4D_VAR, *2500, status )
+	      CALL IS_TRANS( memory, DO_4D_VAR, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_4d_good_pt		) THEN	! 7/96
-	      CALL IS_TRANS( memory, DO_4D_NGD, *2500, status )
+	      CALL IS_TRANS( memory, DO_4D_NGD, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_4d_bad_pt		) THEN	! 7/96
-	      CALL IS_TRANS( memory, DO_4D_NBD, *2500, status )
+	      CALL IS_TRANS( memory, DO_4D_NBD, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_4d_sum		) THEN	! 11/10
-	      CALL IS_TRANS( memory, DO_4D_SUM, *2500, status )
+	      CALL IS_TRANS( memory, DO_4D_SUM, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_std_4d		) THEN
-	      CALL IS_TRANS( memory, DO_4D_STD, *2500, status )
+	      CALL IS_TRANS( memory, DO_4D_STD, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_nrst_dist_abv	) THEN	! 9/97
-	      CALL IS_TRANS( memory, DO_NEAREST_DIST_ABOVE, *2500, status )
+	      CALL IS_TRANS( memory,DO_NEAREST_DIST_ABOVE,*10, *2500, status )
 	   ELSEIF ( act .EQ. isact_nrst_dist_blw	) THEN	! 9/97
-	      CALL IS_TRANS( memory, DO_NEAREST_DIST_BELOW, *2500, status )
+	      CALL IS_TRANS( memory,DO_NEAREST_DIST_BELOW,*10, *2500, status )
 	   ELSEIF ( act .EQ. isact_nrst_indx_abv	) THEN	! 9/97
-	      CALL IS_TRANS( memory, DO_NEAREST_INDEX_ABOVE, *2500, status )
+	      CALL IS_TRANS( memory,DO_NEAREST_INDEX_ABOVE,*10, *2500, status )
 	   ELSEIF ( act .EQ. isact_nrst_indx_blw	) THEN	! 9/97
-	      CALL IS_TRANS( memory, DO_NEAREST_INDEX_BELOW, *2500, status )
+	      CALL IS_TRANS( memory,DO_NEAREST_INDEX_BELOW,*10, *2500, status )
 	   ELSEIF ( act .EQ. isact_event_mask		) THEN	! 6/01
-	      CALL IS_TRANS( memory, DO_EVENT, *2500, status )
+	      CALL IS_TRANS( memory, DO_EVENT, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_read			) THEN
 	      WRITE (6,*) 'Tell FERRET programmer to check INTERP_STACK'
 * ...	      could set "cat" and branch to above IS_READ

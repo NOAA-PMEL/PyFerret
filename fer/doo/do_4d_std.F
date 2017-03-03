@@ -42,8 +42,11 @@
 
 * programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - TMAP
-* V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
 
+* V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
+* V702 *sh* 11/16 mods for trac #2428 - calculation in gathered fragments
+*                 pass address of buffer area, where the components needed to
+*                 finalize the 1-pass weighted variance calculation are accumulated 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -57,17 +60,21 @@
 	REAL	arg, com(*), res(*), boxes(*)
 
 * internal variable declarations:
-	INTEGER	CX_DIM_LEN
+	INTEGER	CGRID_SIZE, size
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
      .				( 'doing', isact_class_trans, res_cx, idim )
 
+* get size of result array to locate buffer area just beyond
+	size = CGRID_SIZE(res_cx)
+
 * pass the transform to be performed
 	CALL DO_4D_TRANS(   trans_4d_std,
      .			    com, com_mr, com_cx,
      .			    res, res_mr, res_cx,
-     .			    boxes )
+     .			    boxes,
+     .			    res(size+1), res(2*size+1) )
 
 	DO_4D_STD = ferr_ok
 

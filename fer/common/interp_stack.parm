@@ -10,6 +10,8 @@
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U
+* V702 *sh* 11/16 added gathering on compressed axes using 
+*	          phases for computation of the compressing transform
 
 * minimum working space provided to transformations
 	INTEGER		iswksiz
@@ -27,7 +29,8 @@
      .			isact_class_subspan_fill,
      .			isact_class_aggregate_gather,
      .			isact_class_aux_plot_vars,
-     .			isact_class_union_member
+     .			isact_class_union_member,
+     .			isact_class_cmp_gather_dummy
 	PARAMETER     ( isact_class_trans    = 1,
      .			isact_class_regrid   = 2,
      .			isact_class_gather   = 3,
@@ -39,7 +42,8 @@
      .			isact_class_subspan_fill = 9,
      .			isact_class_aggregate_gather = 10,
      .			isact_class_aux_plot_vars = 11,
-     .			isact_class_union_member = 12 )
+     .			isact_class_union_member = 12,
+     .			isact_class_cmp_gather_dummy = 123456 )
 
 * to help in defining classes of activity codes ...
 	INTEGER		isact_trans_code
@@ -211,11 +215,17 @@
      .			isphase_2,
      .			isphase_get_aux_var,
      .			isphase_get_source_var,
-     .			isphase_do_aux_regrid
+     .			isphase_do_aux_regrid,
+     .			isphase_initialize_transform,
+     .			isphase_accumulate_transform,
+     .			isphase_completed_transform
 	PARAMETER     ( isphase_allatonce      = 1000,
      .			isphase_1	       = 1,
      .			isphase_2	       = 2,
      .			isphase_get_aux_var    = 1,
      .			isphase_get_source_var = 2,
-     .			isphase_do_aux_regrid  = 3 )
+     .			isphase_do_aux_regrid  = 3,
+     .			isphase_initialize_transform = 1111,
+     .			isphase_accumulate_transform = 2222,
+     .			isphase_completed_transform  = 3333 )
 

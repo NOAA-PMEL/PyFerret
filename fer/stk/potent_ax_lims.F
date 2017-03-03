@@ -1,13 +1,10 @@
-	INTEGER FUNCTION DO_MAX( idim, arg,
-     .				 com, com_mr, com_cx,
-     .				 res, res_mr, res_cx,
-     .				 buff	)
+	SUBROUTINE POTENT_AX_LIMS ( cx, axis, lo_ss, hi_ss )
 
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -38,43 +35,41 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* find the maximum value of the component grid along axis idim
+* determine the "potential" limits of axis in context cx - that is,
+* the subscript limits that would exist if we ignored compressing transforms  
+* note: uses cx_buff
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
-* V200:  6/1/89
-*	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
-*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
-* V702 *sh* 11/16 this routine now performs accumulation only.  Initialization
-*                 and finalizing called separately from IS_TRANS
-* V71  *acm* 12/16 Send extra-buffer space that was allocated for the 
-*                 accumulation/finalization, to store counts. To distinguish 
-*                 all-missing data with a value of zero, from a zero max.
-
-        IMPLICIT NONE
-	include	'errmsg.parm'
+* V702 *sh* 11/16 - using technique employed in POTENT_SIZE
+ 
+        include 'tmap_dims.parm'
+	include 'ferret.parm'
+	include 'xcontext.cmn'
 
 * calling argument declarations:
-	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
-	REAL	arg, buff(*),
-     .          com( * ), res( * )
+	INTEGER cx, axis, lo_ss, hi_ss
 
 * internal variable declarations:
-         INTEGER CGRID_SIZE, size
+	INTEGER	status
 
-* Get size of result array to locate buffer area just beyond
-* Pass extra-buffer portion of res array to accumulate counts
 
-	size = CGRID_SIZE(res_cx)
-
-	CALL DO_MAX_SUB (idim, arg,
-     .                   com, com_mr, com_cx,
-     .                   res, res_mr, res_cx,
-     .                   res(size+1)	)
-
-	DO_MAX = ferr_ok
+	IF (cx_trans(axis, cx) .GT. trans_compress_code) THEN
+* make a copy of the context axis in a scratch buffer
+	   cx_variable( cx_buff ) = cx_variable( cx )
+	   cx_category( cx_buff ) = cx_category( cx )
+	   cx_grid    ( cx_buff ) = cx_grid    ( cx )
+	   CALL TRANSFER_AXIS( axis, cx, cx_buff )
+	   cx_trans(axis,cx_buff) = trans_no_transform
+	   cx_by_ss(axis,cx_buff) = .FALSE.
+	   CALL FLESH_OUT_AXIS( axis, cx_buff, status )	! ignore status
+	   lo_ss = cx_lo_ss(cx_buff,axis)
+	   hi_ss = cx_hi_ss(cx_buff,axis)
+	ELSE
+	   lo_ss = cx_lo_ss(cx,axis)
+	   hi_ss = cx_hi_ss(cx,axis)
+	ENDIF
 
 	RETURN
 	END

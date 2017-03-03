@@ -33,66 +33,21 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* allocate and claim sufficient memory space, and assign and fill a slot in the 
-* memory variable table for the variable or expression indicated in the context
+* call CREATE_MEM_VAR_W_NBUFFERS, asking for only a single buffer
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* revision 0.0 - 2/19/87
-* V530   8/00 *sh* - double the memory allocation for string variables
-*			(to support 64 bit pointers)
-* V533   6/01 *sh* - use CGRID_SIZE_DELTA to allow mem vars with delta values
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
-*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
-* V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
+* V702 *sh* 11/16
 * V702 1/16 *sh*: added sanity checking of memory when debugging
 
         IMPLICIT NONE
-        include 'tmap_dims.parm'
-	include 'ferret.parm'
-	include 'errmsg.parm'
-	include 'xvariables.cmn'
-	include 'xcontext.cmn'
+	include 'tmap_dims.parm'
 	include 'xprog_state.cmn'
 
 * calling argument declarations:
 	INTEGER		cx, mr, status
 
 * internal variable declarations:
-	INTEGER	CGRID_SIZE_DELTA,
-     .		grid_size, start_block, num_blocks, num_slen, grid_blocks
-	REAL	R_CGRID_SIZE_DELTA, rgrid_size
-	CHARACTER  LEFINT*12, num_str*12
 
-* amount of storage space required
-* Compute as a real - grid sizes may overflow integer storage.
-
-	rgrid_size = R_CGRID_SIZE_DELTA( cx )  ! as a real
-
-* ... note: later we will want an array of word sizes indexed by type
-#ifdef double_p
-	IF (cx_type(cx) .EQ. ptype_string) rgrid_size = rgrid_size
-#else
-	IF (cx_type(cx) .EQ. ptype_string) rgrid_size = rgrid_size*2 ! 8 byte ptr
-#endif
-
-* COMPUTE # BLOCKS NEEDED
-	grid_blocks = INT( ( rgrid_size + mem_blk_size - 1 ) / mem_blk_size )
-
-* claim the storage space
-	CALL GET_MEMORY( INT(rgrid_size), grid_blocks, start_block, num_blocks, status )
-	IF ( status .NE. ferr_ok ) RETURN
-
-* catalog it in the memory variable table
-	CALL ASSIGN_VARIABLE
-     .		      ( cx,
-     .			start_block,
-     .			num_blocks,
-     .			mr,
-     .			status 	)
-	IF ( status .NE. ferr_ok ) RETURN
+	CALL CREATE_MEM_VAR_W_BUFFER(cx, mr, 1, status )
 
 * sanity check memory integrity after creating new variable
 #ifndef NDEBUG
@@ -101,14 +56,5 @@
 
 
 	RETURN
-
-5100	CONTINUE
-	num_str = LEFINT(INT((rgrid_size+0.99999E6)/1.0E6),num_slen)
-	CALL ERRMSG( ferr_insuff_memory,status,
-     .    num_str(:num_slen)//' Mwords were requested. ', *5130)
-5130    CALL WARN('You can use SET MEMORY/SIZE=xxx to increase memory.')
-	CALL WARN('The "Memory use" section of the FERRET '
-     .              //'Users Guide has further tips.') 
-
-	RETURN
 	END
+

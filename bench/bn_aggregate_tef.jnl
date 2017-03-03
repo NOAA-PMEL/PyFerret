@@ -15,6 +15,10 @@ CANCEL MODE VERIFY
 
 if ($1"1") then
 
+! Give the operator something to look at while we write all the data 
+plot/noax/nolab/vlim=0:1/i=4:5 i
+annotate/norm/x=0/y=0.5 "...writing data files for the TEF aggregation tests"
+
 ! *** create an artificial file collection ***
 spawn "mkdir -p tmp"     ! tmp directory to store files
 

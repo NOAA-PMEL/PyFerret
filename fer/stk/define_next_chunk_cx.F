@@ -1,13 +1,8 @@
-	INTEGER FUNCTION DO_MAX( idim, arg,
-     .				 com, com_mr, com_cx,
-     .				 res, res_mr, res_cx,
-     .				 buff	)
+	SUBROUTINE DEFINE_NEXT_CHUNK_CX(idim, com_cx, dflt_cx, frag, status)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -38,43 +33,40 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* find the maximum value of the component grid along axis idim
+* increment com_cx so that it becomes the context describing the next chunk
+* needed in a gather operation
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
-* V200:  6/1/89
-*	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
-*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
-* V702 *sh* 11/16 this routine now performs accumulation only.  Initialization
-*                 and finalizing called separately from IS_TRANS
-* V71  *acm* 12/16 Send extra-buffer space that was allocated for the 
-*                 accumulation/finalization, to store counts. To distinguish 
-*                 all-missing data with a value of zero, from a zero max.
+* V702: *sh* 11/16 - code pulled from IS_GATHER
 
-        IMPLICIT NONE
+	include	'tmap_dims.parm'
+	include	'ferret.parm'
 	include	'errmsg.parm'
+	include	'xcontext.cmn'
 
 * calling argument declarations:
-	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
-	REAL	arg, buff(*),
-     .          com( * ), res( * )
+	INTEGER idim, com_cx, dflt_cx, frag, status
+
+* calling argument definitions:
+*	idim - the axis of the gather operation
+*	com_cx - the context to be updated (the next component of the gather)
+*	dflt_cx - the target context, with transforms, pre-split/gather
+*	frag - the fragment (a.k.a increment) size
 
 * internal variable declarations:
-         INTEGER CGRID_SIZE, size
+	INTEGER top_ss, lo_ss
 
-* Get size of result array to locate buffer area just beyond
-* Pass extra-buffer portion of res array to accumulate counts
+* increment the subscript range by fragment size
+	top_ss = cx_hi_ss(com_cx,idim)
+	CALL TRANSFER_CONTEXT( dflt_cx, com_cx )
+	cx_lo_ss(com_cx,idim) = top_ss + 1
+	cx_hi_ss(com_cx,idim) = MIN( top_ss+frag, cx_hi_ss(dflt_cx,idim))
+	cx_by_ss(idim,com_cx) = .TRUE.
+	CALL FLESH_OUT_AXIS( idim, com_cx, status )       ! ignore status
 
-	size = CGRID_SIZE(res_cx)
-
-	CALL DO_MAX_SUB (idim, arg,
-     .                   com, com_mr, com_cx,
-     .                   res, res_mr, res_cx,
-     .                   res(size+1)	)
-
-	DO_MAX = ferr_ok
-
+* same exit whether success or failure
 	RETURN
-	END
+	END	
+

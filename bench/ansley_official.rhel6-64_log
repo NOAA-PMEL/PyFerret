@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 115666814 Feb 27 13:32 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 115884608 Mar  3 12:34 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: tickets 2510 and 2511
+Note: after merging the ferret_compressed_gather branch back to the trunk
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Tue Feb 28 10:02:29 PST 2017
+Beginning at Fri Mar 3 15:20:40 PST 2017
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10416,13 +10416,13 @@ FERRET_PLATFORM = "Linux 2.6.32-642.15.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "28-Feb-17"
-SESSION_TIME = "10:02"
-SESSION_PID = "12305"
-DELTA_CPU = "5.41018"
-CLOCK_SECS = "8.781"
-CURRENT_DATE = "28-Feb-17"
-CURRENT_TIME = "10:02:37"
+SESSION_DATE = " 3-Mar-17"
+SESSION_TIME = "15:20"
+SESSION_PID = "9040"
+DELTA_CPU = "5.85711"
+CLOCK_SECS = "8.41"
+CURRENT_DATE = " 3-Mar-17"
+CURRENT_TIME = "15:20:48"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10445,13 +10445,13 @@ FERRET_PLATFORM = "Linux 2.6.32-642.15.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "28-Feb-17"
-SESSION_TIME = "10:02"
-SESSION_PID = "12305"
-DELTA_CPU = "0.006999"
-CLOCK_SECS = "8.787"
-CURRENT_DATE = "28-Feb-17"
-CURRENT_TIME = "10:02:37"
+SESSION_DATE = " 3-Mar-17"
+SESSION_TIME = "15:20"
+SESSION_PID = "9040"
+DELTA_CPU = "0.004999"
+CLOCK_SECS = "8.416"
+CURRENT_DATE = " 3-Mar-17"
+CURRENT_TIME = "15:20:48"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10461,9 +10461,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "28-Feb-17"
-SESSION_TIME = "10:02"
-SESSION_PID = "12305"
+SESSION_DATE = " 3-Mar-17"
+SESSION_TIME = "15:20"
+SESSION_PID = "9040"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10473,15 +10473,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "28-Feb-17"
-SESSION_TIME = "10:02"
-SESSION_PID = "12305"
+SESSION_DATE = " 3-Mar-17"
+SESSION_TIME = "15:20"
+SESSION_PID = "9040"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "28-Feb-17"
-SESSION_TIME = "10:02"
-SESSION_PID = "12305"
+SESSION_DATE = " 3-Mar-17"
+SESSION_TIME = "15:20"
+SESSION_PID = "9040"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10517,7 +10517,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET (beta/debug) Ver.7.1"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "28-FEB-2017 10:02:37"
+LAB3 = "03-MAR-2017 15:20:48"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10617,13 +10617,13 @@ FERRET_PLATFORM = "Linux 2.6.32-642.15.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "28-Feb-17"
-SESSION_TIME = "10:02"
-SESSION_PID = "12305"
-DELTA_CPU = "0.012998"
-CLOCK_SECS = "8.801"
-CURRENT_DATE = "28-Feb-17"
-CURRENT_TIME = "10:02:37"
+SESSION_DATE = " 3-Mar-17"
+SESSION_TIME = "15:20"
+SESSION_PID = "9040"
+DELTA_CPU = "0.013998"
+CLOCK_SECS = "8.429"
+CURRENT_DATE = " 3-Mar-17"
+CURRENT_TIME = "15:20:48"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -25429,7 +25429,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Tue Feb 28 10:02:47 PST 2017
+Fri Mar  3 15:20:58 PST 2017
  
 GO bn_reset
 cancel mode verify
@@ -29407,6 +29407,7 @@ stat $1[x=@ave]
  strip --> SST[X=20E:20E(380)@AVE,D=1]
  reading SST      M: 14 dset:   1 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  doing --> SST[X=20E:20E(380)@AVE,D=1]
+ final --> SST[X=20E:20E(380)@AVE,D=1]
  
              SEA SURFACE TEMPERATURE
              LONGITUDE: 20E to 20E(380) (averaged)
@@ -29441,6 +29442,7 @@ stat $1[x=@ave]
  strip --> SST[X=20E:20E(380)@AVE,D=1]
  reading SST      M: 12 dset:   1 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  doing --> SST[X=20E:20E(380)@AVE,D=1]
+ final --> SST[X=20E:20E(380)@AVE,D=1]
  
              SEA SURFACE TEMPERATURE
              LONGITUDE: 20E to 20E(380) (averaged)
@@ -29472,6 +29474,7 @@ stat $1xave
  strip --> SST[X=20E:20E(380)@AVE,D=1]
  reading SST      M: 10 dset:   1 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  doing --> SST[X=20E:20E(380)@AVE,D=1]
+ final --> SST[X=20E:20E(380)@AVE,D=1]
  
              SST[X=@AVE]
              LONGITUDE: 20E to 20E(380)
@@ -29507,6 +29510,7 @@ stat $1xave
  strip --> SST[X=20E:20E(380)@AVE,D=1]
  reading SST      M:  5 dset:   1 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  doing --> SST[X=20E:20E(380)@AVE,D=1]
+ final --> SST[X=20E:20E(380)@AVE,D=1]
  
              SST[X=@AVE]
              LONGITUDE: 20E to 20E(380)
@@ -30304,6 +30308,7 @@ stat $1[x=@ave]
  constan cnst     M: 84 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE cnst     M: 84 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  doing --> SST5[X=20E:20E(380)@AVE,D=1]
+ final --> SST5[X=20E:20E(380)@AVE,D=1]
  
              SST+5
              LONGITUDE: 20E to 20E(380) (averaged)
@@ -30341,6 +30346,7 @@ stat $1[x=@ave]
  constan cnst     M: 79 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE cnst     M: 79 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  doing --> SST5[X=20E:20E(380)@AVE,D=1]
+ final --> SST5[X=20E:20E(380)@AVE,D=1]
  
              SST+5
              LONGITUDE: 20E to 20E(380) (averaged)
@@ -30375,6 +30381,7 @@ stat $1xave
  constan cnst     M: 75 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE cnst     M: 75 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  doing --> SST5[X=20E:20E(380)@AVE,D=1]
+ final --> SST5[X=20E:20E(380)@AVE,D=1]
  
              SST5[X=@AVE]
              LONGITUDE: 20E to 20E(380)
@@ -30413,6 +30420,7 @@ stat $1xave
  constan cnst     M: 67 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE cnst     M: 67 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  doing --> SST5[X=20E:20E(380)@AVE,D=1]
+ final --> SST5[X=20E:20E(380)@AVE,D=1]
  
              SST5[X=@AVE]
              LONGITUDE: 20E to 20E(380)
@@ -43350,6 +43358,7 @@ repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
  strip --> SST[Y=0:50N@AV4,D=1]
  reading SST      M:157 dset:   1 I:  131  140  J:   46   70  K: -999 -999  L:    1    1
  doing --> SST[Y=0:50N@AV4,D=1]
+ final --> SST[Y=0:50N@AV4,D=1]
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
              FILENAME : coads_climatology.cdf
              LONGITUDE: 80W to 60W (XY ave)
@@ -43371,6 +43380,7 @@ repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
  strip --> SST[Y=0:50N@AV4,D=1]
  reading SST      M:147 dset:   1 I:  131  155  J:   46   70  K: -999 -999  L:    1    1
  doing --> SST[Y=0:50N@AV4,D=1]
+ final --> SST[Y=0:50N@AV4,D=1]
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
              FILENAME : coads_climatology.cdf
              LONGITUDE: 80W to 30W (XY ave)
@@ -43392,6 +43402,7 @@ repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
  strip --> SST[Y=0:50N@AV4,D=1]
  reading SST      M:138 dset:   1 I:  131  170  J:   46   70  K: -999 -999  L:    1    1
  doing --> SST[Y=0:50N@AV4,D=1]
+ final --> SST[Y=0:50N@AV4,D=1]
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
              FILENAME : coads_climatology.cdf
              LONGITUDE: 80W to 0E(360) (XY ave)
@@ -47317,7 +47328,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS28-FEB-2017 10:03:19
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS03-MAR-2017 15:21:32
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -48743,7 +48754,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "28-Feb-17:10:02"
+WIN_TITLE = "3-Mar-17:15:20"
  
 set win/title="set the title"
 sho sym win_title
@@ -48761,7 +48772,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="28-Feb-17:10:02"
+ !-> set win/title=" 3-Mar-17:15:20"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -48770,16 +48781,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 28-Feb-17
+ !-> DEFINE SYMBOL the_date =  3-Mar-17
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 10:02
+ !-> DEFINE SYMBOL the_time = 15:20
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="28-Feb-17:10:02"
+ !-> SET WIN/TITLE="3-Mar-17:15:20"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "28-Feb-17:10:02"
+WIN_TITLE = "3-Mar-17:15:20"
  
 GO bn_reset
 cancel mode verify
@@ -53204,7 +53215,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -53253,7 +53264,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -59137,10 +59148,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "45.899"
-CLOCK_SECS = "78.741"
-CURRENT_DATE = "28-Feb-17"
-CURRENT_TIME = "10:03:47"
+DELTA_CPU = "46.7519"
+CLOCK_SECS = "79.781"
+CURRENT_DATE = " 3-Mar-17"
+CURRENT_TIME = "15:22:00"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -59149,8 +59160,8 @@ CURRENT_TIME = "10:03:47"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.034995"
-CLOCK_SECS = "78.842"
+DELTA_CPU = "0.035995"
+CLOCK_SECS = "79.895"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -59164,60 +59175,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.243962
+ !-> DEFINE VARIABLE ten_plots = 0.240963
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "80.123"
+CLOCK_SECS = "81.204"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "80.124"
+CLOCK_SECS = "81.205"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.030996
- !-> DEFINE VARIABLE sumcpu =0.030996
-!-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.028995
- !-> DEFINE VARIABLE sumcpu =0.059991
-!-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.025996
- !-> DEFINE VARIABLE sumcpu =0.085987
-!-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.030995
- !-> DEFINE VARIABLE sumcpu =0.116982
-!-> REPEAT: K=5
  !-> DEFINE VARIABLE dt = 0.029996
- !-> DEFINE VARIABLE sumcpu =0.146978
+ !-> DEFINE VARIABLE sumcpu =0.029996
+!-> REPEAT: K=2
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.062991
+!-> REPEAT: K=3
+ !-> DEFINE VARIABLE dt = 0.034994
+ !-> DEFINE VARIABLE sumcpu =0.097985
+!-> REPEAT: K=4
+ !-> DEFINE VARIABLE dt = 0.027996
+ !-> DEFINE VARIABLE sumcpu =0.125981
+!-> REPEAT: K=5
+ !-> DEFINE VARIABLE dt = 0.033995
+ !-> DEFINE VARIABLE sumcpu =0.159976
 !-> REPEAT: K=6
  !-> DEFINE VARIABLE dt = 0.030995
- !-> DEFINE VARIABLE sumcpu =0.177973
+ !-> DEFINE VARIABLE sumcpu =0.190971
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.041994
- !-> DEFINE VARIABLE sumcpu =0.219967
+ !-> DEFINE VARIABLE dt = 0.030995
+ !-> DEFINE VARIABLE sumcpu =0.221966
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.035995
- !-> DEFINE VARIABLE sumcpu =0.255962
+ !-> DEFINE VARIABLE dt = 0.033995
+ !-> DEFINE VARIABLE sumcpu =0.255961
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.040993
- !-> DEFINE VARIABLE sumcpu =0.296955
+ !-> DEFINE VARIABLE dt = 0.029995
+ !-> DEFINE VARIABLE sumcpu =0.285956
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.031996
- !-> DEFINE VARIABLE sumcpu =0.328951
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.322951
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.328951
-0.328951
+ !-> MESSAGE/CONTINUE 0.322951
+0.322951
 sh sym CLOCK_SECS
-CLOCK_SECS = "83.01"
+CLOCK_SECS = "83.633"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "28-Feb-17"
-SESSION_TIME = "10:02"
-CURRENT_DATE = "28-Feb-17"
-CURRENT_TIME = "10:03:52"
+SESSION_DATE = " 3-Mar-17"
+SESSION_TIME = "15:20"
+CURRENT_DATE = " 3-Mar-17"
+CURRENT_TIME = "15:22:03"
  
  
 ! ******** V6.3 Additions below ***********
@@ -63060,8 +63071,8 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v7.1 (beta/debug)"                                                
- 3    /  3:" ! Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 02/27/17"                      
- 4    /  4:" ! 28-Feb-17 10:02     "                                                    
+ 3    /  3:" ! Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 03/03/17"                      
+ 4    /  4:" !  3-Mar-17 15:20     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -65556,98 +65567,98 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.672
-randu2_randn2       0.136
-randu2_randn2       0.126
-randu2_randn2       0.461
-randu2_randn2       0.469
+randu2_randn2       0.117
+randu2_randn2       0.207
+randu2_randn2       0.718
+randu2_randn2       0.058
+randu2_randn2       0.535
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.283
-randu2_randn2       0.313
-randu2_randn2       0.589
-randu2_randn2       0.241
-randu2_randn2       0.001
+randu2_randn2       0.729
+randu2_randn2       0.540
+randu2_randn2       0.936
+randu2_randn2       0.704
+randu2_randn2       0.294
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.794
-randu2_randn2       0.819
-randu2_randn2       0.327
-randu2_randn2       0.688
-randu2_randn2       0.890
-randu2_randn2       0.560
+randu2_randn2       0.586
+randu2_randn2       0.121
+randu2_randn2       0.660
+randu2_randn2       0.147
+randu2_randn2       0.408
+randu2_randn2       0.170
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.896
-randu2_randn2       0.539
-randu2_randn2       0.946
-randu2_randn2       0.992
-randu2_randn2       0.978
-randu2_randn2       0.840
-             VARIABLE : RANDU2(XX,12436)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.302
-randu2_randn2       0.380
-randu2_randn2       0.926
-randu2_randn2       0.672
-randu2_randn2       0.238
-randu2_randn2       0.638
-             VARIABLE : RANDU2(XX,12436)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.302
-randu2_randn2       0.380
-randu2_randn2       0.926
-randu2_randn2       0.672
-randu2_randn2       0.238
-randu2_randn2       0.638
-             VARIABLE : RANDN2(XBIG,-1)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 5 points (X)
-             X        : 0.5 to 5.5
-randu2_randn2       0.143
-randu2_randn2      -0.771
-randu2_randn2       0.148
-randu2_randn2       0.021
-randu2_randn2      -0.861
-             VARIABLE : RANDN2(XBIG,-1)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 5 points (X)
-             X        : 0.5 to 5.5
-randu2_randn2      -1.317
-randu2_randn2       1.108
-randu2_randn2      -1.254
-randu2_randn2      -1.599
-randu2_randn2      -0.097
-             VARIABLE : RANDN2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2       0.410
-randu2_randn2      -2.056
-randu2_randn2      -0.716
-randu2_randn2       0.370
-randu2_randn2      -0.782
-randu2_randn2      -0.676
-             VARIABLE : RANDN2(XX,0)
-             BAD FLAG : -1.E+34       
-             SUBSET   : 6 points (X)
-             X        : 0.5 to 6.5
-randu2_randn2      -1.000
-randu2_randn2      -0.934
-randu2_randn2      -0.289
+randu2_randn2       0.541
+randu2_randn2       0.175
+randu2_randn2       0.782
+randu2_randn2       0.531
 randu2_randn2       0.043
-randu2_randn2      -0.779
-randu2_randn2      -0.406
+randu2_randn2       0.087
+             VARIABLE : RANDU2(XX,12436)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.302
+randu2_randn2       0.380
+randu2_randn2       0.926
+randu2_randn2       0.672
+randu2_randn2       0.238
+randu2_randn2       0.638
+             VARIABLE : RANDU2(XX,12436)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.302
+randu2_randn2       0.380
+randu2_randn2       0.926
+randu2_randn2       0.672
+randu2_randn2       0.238
+randu2_randn2       0.638
+             VARIABLE : RANDN2(XBIG,-1)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 5 points (X)
+             X        : 0.5 to 5.5
+randu2_randn2      -0.660
+randu2_randn2       0.745
+randu2_randn2       0.068
+randu2_randn2      -0.038
+randu2_randn2      -0.263
+             VARIABLE : RANDN2(XBIG,-1)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 5 points (X)
+             X        : 0.5 to 5.5
+randu2_randn2       0.679
+randu2_randn2      -2.433
+randu2_randn2      -0.241
+randu2_randn2       0.244
+randu2_randn2       0.436
+             VARIABLE : RANDN2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2      -0.560
+randu2_randn2      -1.456
+randu2_randn2      -1.526
+randu2_randn2       0.185
+randu2_randn2      -2.573
+randu2_randn2       0.358
+             VARIABLE : RANDN2(XX,0)
+             BAD FLAG : -1.E+34       
+             SUBSET   : 6 points (X)
+             X        : 0.5 to 6.5
+randu2_randn2       0.473
+randu2_randn2      -0.113
+randu2_randn2      -1.102
+randu2_randn2      -1.413
+randu2_randn2       1.888
+randu2_randn2      -0.705
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -65672,14 +65683,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.948       1.948       0.365
-randu2_randn2       1.720       1.720       0.365
-randu2_randn2       0.365       0.365       0.189
-randu2_randn2      -0.181       0.005       0.365
-randu2_randn2       0.005      -0.041       0.365
-randu2_randn2      -0.041       0.005       0.365
-randu2_randn2       0.189       0.189       0.365
-randu2_randn2       0.611       0.584       0.584
+randu2_randn2       1.450       1.450       0.744
+randu2_randn2       1.287       1.287       0.744
+randu2_randn2       0.744       0.744       0.446
+randu2_randn2       0.446       0.446       0.446
+randu2_randn2      -0.221      -0.221       0.446
+randu2_randn2      -0.508      -0.508       0.446
+randu2_randn2      -0.652      -0.508       0.446
+randu2_randn2       0.038       0.038       0.446
  
 GO bn_reset
 cancel mode verify
@@ -70517,6 +70528,7 @@ list/i=3 sst[T=@ave]
  doing aggregate gathering SST on E axis:     4     4 dset:   4
  -DELETE SST      M:120 dset:   4 I:    3    3  J:    1    9  K: -999 -999  L:    1   12
  doing --> SST[T=01-JAN00:45:31-DEC06:34@AVE,D=5]
+ final --> SST[T=01-JAN00:45:31-DEC06:34@AVE,D=5]
              VARIABLE : SST_IN (Deg C)
              DATA SET : Ensemble series of 4 datasets patterned on ens1
              FILENAME : fourfiles
@@ -70630,6 +70642,7 @@ list/i=3 airt[T=@ave]
  doing aggregate gathering AIRT on E axis:     4     4 dset:   5
  -DELETE AIRT     M:106 dset:   5 I:    3    3  J:    1    9  K: -999 -999  L:    1   12
  doing --> AIRT[T=01-JAN00:45:31-DEC06:34@AVE,D=6]
+ final --> AIRT[T=01-JAN00:45:31-DEC06:34@AVE,D=6]
              VARIABLE : AIR TEMPERATURE (DEG C)
              DATA SET : Ensemble series of 4 datasets patterned on ens1
              FILENAME : fourfiles
@@ -70687,6 +70700,7 @@ list/i=3 airt[T=@ave]
  doing aggregate gathering AIRT on E axis:     4     4 dset:   5
  -DELETE AIRT     M: 96 dset:   5 I:    3    3  J:    1    9  K: -999 -999  L:    1   12
  doing --> AIRT[T=01-JAN00:45:31-DEC06:34@AVE,D=7]
+ final --> AIRT[T=01-JAN00:45:31-DEC06:34@AVE,D=7]
              VARIABLE : AIR TEMPERATURE (DEG C)
              DATA SET : Ensemble series of 4 datasets patterned on ens1
              FILENAME : fourfiles_gap
@@ -71089,6 +71103,7 @@ list/L=1:8 taux[x=@ave,y=@ave]
  strip --> TAUX[Y=28.8361S:51.4321N@AV4,D=1]
  reading TAUX     M:104 dset:   1 I:   91  108  J:   35   55  K: -999 -999  L:    1    8
  doing --> TAUX[Y=3.5S:3.5N@AV4,D=1]
+ final --> TAUX[Y=3.5S:3.5N@AV4,D=1]
              VARIABLE : ZONAL WIND STRESS (dynes/cm**2)
              FILENAME : gt4d011.cdf
              SUBSET   : 8 points (TIME)
@@ -71508,7 +71523,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -71561,7 +71576,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -71603,7 +71618,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -71645,7 +71660,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -71678,7 +71693,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -71712,7 +71727,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -71775,7 +71790,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -71823,7 +71838,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -71880,7 +71895,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -71918,7 +71933,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -71956,7 +71971,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -71994,7 +72009,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72028,7 +72043,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72260,7 +72275,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          FLOAT     units           CHAR        13   T       degrees_north
@@ -72294,7 +72309,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          FLOAT     units           CHAR        13   T       degrees_north
@@ -72338,7 +72353,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSY46_48)          DOUBLE    units           CHAR        13   T       degrees_north
@@ -72379,7 +72394,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -72405,7 +72420,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -72431,7 +72446,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -72872,13 +72887,13 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
  TIME10 = 366, 1096.485, 1826.97 ;
 
- A = -0.0994369294620974, -0.0415768591396031, 0.141480238198142 ;
+ A = -0.0994369294620867, -0.0415768591395924, 0.141480238198152 ;
 }
  
 save/clob/file=aa.nc sst[x=@ave,y=@ave]-sst[x=@ave,y=@ave,t=@ave]
@@ -72901,13 +72916,13 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
  TIME10 = 366, 1096.485, 1826.97 ;
 
- E410 = -0.0994369294620974, -0.0415768591396031, 0.141480238198142 ;
+ E410 = -0.0994369294620867, -0.0415768591395924, 0.141480238198152 ;
 }
  
 ! Double check the missing-value matches what is written.
@@ -72952,7 +72967,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73517,8 +73532,8 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Tue Feb 28 10:04:12 2017: ncks -h -A -h z1.nc append_to_this.nc\n",
-			"FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "Fri Mar  3 15:22:25 2017: ncks -h -A -h z1.nc append_to_this.nc\n",
+			"FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
 }
@@ -73552,7 +73567,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73583,7 +73598,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -73646,7 +73661,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73674,7 +73689,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75386,7 +75401,7 @@ variables:
 		LABELS:history = "From http://dunkel.pmel.noaa.gov:8930/thredds/dodsC/data/atmos3.ncml" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75409,7 +75424,7 @@ variables:
 		STRVAR:long_name = "mystrings" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75633,7 +75648,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75663,7 +75678,7 @@ variables:
 		A:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75684,7 +75699,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75705,7 +75720,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -75727,7 +75742,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -76148,7 +76163,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -76165,7 +76180,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -76182,7 +76197,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -77397,7 +77412,7 @@ variables:
 		:geospatial_lat_max = 29.07 ;
 		:time_coverage_start = "2006-06-10T23:48:00Z" ;
 		:time_converage_end = "2006-06-11T00:12:00Z" ;
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 }
  
 set mode/last upcase
@@ -77493,7 +77508,7 @@ variables:
 		lon360:history = "added to test_save_dsg.nc" ;
 
 // global attributes:
-		:history = "CruiseDsgNcFile 1.0FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "CruiseDsgNcFile 1.0FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:featureType = "Trajectory" ;
 		:Conventions = "Some other conventionsCF-1.6" ;
 		:geospatial_lon_min = -92.77 ;
@@ -77520,7 +77535,7 @@ can dat/all; use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
  ..history = Subset of etopo20,
- FERRET V7.1 (beta/debug) 28-Feb-17 
+ FERRET V7.1 (beta/debug)  3-Mar-17 
  ..Conventions = Existing conventions note, , CF-1.6 
  
  
@@ -77553,7 +77568,7 @@ can dat/all; use conventions_history
 ! The new attibutes
 sh att .
      attributes for dataset: ./conventions_history.nc
- ..history = The history of the fileFERRET V7.1 (beta/debug) 28-Feb-17 
+ ..history = The history of the fileFERRET V7.1 (beta/debug)  3-Mar-17 
  ..Conventions = Conventions for variables named V2CF-1.6 
  
 GO bn_reset
@@ -86266,20 +86281,20 @@ GO err696_time_overlay
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
 sp date
-Tue Feb 28 10:04:34 PST 2017
+Fri Mar  3 15:22:48 PST 2017
 set view upper
 plot t[gt=tax_nlp]
 plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
 sp date
-Tue Feb 28 10:04:34 PST 2017
+Fri Mar  3 15:22:48 PST 2017
  
 sp date
-Tue Feb 28 10:04:34 PST 2017
+Fri Mar  3 15:22:48 PST 2017
 set view lower
 plot t[gt=tax_jul]
 plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
 sp date
-Tue Feb 28 10:04:34 PST 2017
+Fri Mar  3 15:22:48 PST 2017
  
 GO bn_reset
 cancel mode verify
@@ -86335,7 +86350,7 @@ variables:
 		var:long_name = "0*TT + X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -87214,7 +87229,7 @@ variables:
 		TEMP:history = "From /home/data/socat/socatV3/11SS/11SS20140225.nc" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -92017,7 +92032,7 @@ SHOW DATA/ATT t_f04_e3_1v ! note atts im_everwhere vs im_not_everwhere
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (XAX)                  DOUBLE    point_spacing   CHAR        4    T       even
@@ -92515,7 +92530,7 @@ save/clobber/file=a.nc/outtype=float elev[d=1]
 use a.nc
 sh att .
      attributes for dataset: ./a.nc
- ..history = FERRET V7.1 (beta/debug) 28-Feb-17 
+ ..history = FERRET V7.1 (beta/debug)  3-Mar-17 
  ..Conventions = CF-1.6 
  ..dt_internal = 15
 sh att elev
@@ -92536,7 +92551,7 @@ save/clobber/file=a.nc/outtype=float elev[d=1]
 use a.nc
 sh att .
      attributes for dataset: ./a.nc
- ..history = FERRET V7.1 (beta/debug) 28-Feb-17 
+ ..history = FERRET V7.1 (beta/debug)  3-Mar-17 
  ..Conventions = CF-1.6 
 sh att elev
      attributes for dataset: ./a.nc
@@ -92661,9 +92676,9 @@ GO bn_speedtest
 ! bn_speedtest.jnl
 ! issue large numbers of commands, timing with clock time
 can mode verify
-10K LET commands LET a = 0 takes  1.050999999999988  seconds
-Second 10K LET commands LET a = 0 takes  2.354999999999990  seconds
-5K LOAD with transform takes  3.670000000000016  seconds
+10K LET commands LET a = 0 takes  1.006  seconds
+Second 10K LET commands LET a = 0 takes  2.251  seconds
+5K LOAD with transform takes  3.718  seconds
  
 GO bn_reset
 cancel mode verify
@@ -96343,7 +96358,7 @@ variables:
 		VAR:long_name = "X[GX=XLON]" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 go bn_reset
@@ -96401,7 +96416,7 @@ variables:
 		VAR:history = "From a1" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -96446,7 +96461,7 @@ variables:
 		VAR:history = "From a1" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -97600,7 +97615,7 @@ variables:
 		abc:history = "From abc.dat" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -97687,7 +97702,7 @@ variables:
 		latitude:history = "From bn_delimited_read_1.dat" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -98356,7 +98371,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (TAXIS1)               DOUBLE    axis            CHAR        1    T       T
@@ -98425,7 +98440,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (TAXIS1)               DOUBLE    axis            CHAR        1    T       T
@@ -98496,7 +98511,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        34   T       FERRET V7.1 (beta/debug) 28-Feb-17
+ .                               history         CHAR        34   T       FERRET V7.1 (beta/debug)  3-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (TAXIS1)               DOUBLE    axis            CHAR        1    T       T
@@ -98872,6 +98887,1186 @@ list/nohead/norow/prec=12 {`1 + 0.1`, `1 + 1e-7`, `1 + 1e-8`, `1 + 1e-10`} - 1
    0.000000010000
    0.000000000100
  
+GO bn_reset
+cancel mode verify
+GO bn_compressed_gather
+! bn_compressed_gather.jnl
+! 11/2016 (for trac #2428 enhancement)
+ 
+! force a split/gather operation due to a T=@ave
+ 
+! in previous versions of Ferret the split could not occur on the transformed
+! axis, so the X axis would have been used.  Here the T=@ave axis will be used
+ 
+ 
+! ******* tests of  T=@DIN and T=@ave ******
+define axis/x=1:1001:1 xax
+define axis/T=1:1000:1 tax
+ 
+let xt = (x[gx=xax]-501) + T[gt=tax]
+ 
+* note: SUM of integers 1 to 1000 = N(N+1)/2 ==> 500500
+*       stat average of (x[gx=xax]-501) is zero
+*       so the full 2D stat mean should be 500500
+ 
+! confirm gathering is occuring by looking at the diagnostic output
+set mode diag
+set mode desperate: 400000
+stat xt[l=@din]
+ getgrid EX#1     C:  5 dset:-999 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ getgrid XT       C:  7 dset:-999 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ allocate dynamic grid (G184)          XAX       NORMAL    NORMAL    TAX
+ allocate dynamic grid (G184)          XAX       NORMAL    NORMAL    TAX
+ eval    EX#1     C:  4 dset:-999 I:    1 1001  J: -999 -999  K: -999 -999  L:    1 1000
+ strip gather/compress XT on T axis:     1  1000 dset:   0
+ doing gather/compress XT on T axis:     1   399 dset:   0
+ strip --> XT[T=0.5:1000.5@DIN,D=0]
+ eval    XT       C:  7 dset:   0 I:    1 1001  J: -999 -999  K: -999 -999  L:    1  399
+ pseudo  X        M:106 dset:   0 I:    1 1001  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M:106 dset:   0 I:    1 1001  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  T        M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1  399
+ -DELETE T        M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1  399
+ -DELETE tpry     M:103 dset:   0 I:    1 1001  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> XT[T=0.5:1000.5@DIN,D=0]
+ doing gather/compress XT on T axis:   400   798 dset:   0
+ eval    XT       C:  7 dset:   0 I:    1 1001  J: -999 -999  K: -999 -999  L:  400  798
+ pseudo  X        M:106 dset:   0 I:    1 1001  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M: 85 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M: 85 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M:106 dset:   0 I:    1 1001  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  T        M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:  400  798
+ -DELETE T        M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:  400  798
+ -DELETE tpry     M:122 dset:   0 I:    1 1001  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> XT[T=0.5:1000.5@DIN,D=0]
+ doing gather/compress XT on T axis:   799  1000 dset:   0
+ eval    XT       C:  7 dset:   0 I:    1 1001  J: -999 -999  K: -999 -999  L:  799 1000
+ pseudo  X        M:122 dset:   0 I:    1 1001  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M:122 dset:   0 I:    1 1001  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  T        M:122 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:  799 1000
+ -DELETE T        M:122 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:  799 1000
+ -DELETE tpry     M: 68 dset:   0 I:    1 1001  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> XT[T=0.5:1000.5@DIN,D=0]
+ final --> XT[T=0.5:1000.5@DIN,D=0]
+ 
+             (X[GX=XAX]-501) + T[GT=TAX]
+             X: 0.5 to 1002
+             Y:  N/A
+             Z:  N/A
+             T: 0.5 to 1000.5 (integrated)
+             E:  N/A
+             F:  N/A
+             DATA SET: N/A
+ 
+ Total # of data points: 1001 (1001*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 500
+ Maximum value: 1000500
+ Mean    value: 500500 (unweighted average)
+ Standard deviation: 289108
+ 
+! many variations on this test
+cancel mode diag
+GO bn_compressed_gather.sub xt[l=@din] 4000000 400000
+ 
+ Total # of data points: 1001 (1001*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 500
+ Maximum value: 1000500
+ Mean    value: 500500 (unweighted average)
+ 
+ Total # of data points: 1001 (1001*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 500
+ Maximum value: 1000500
+ Mean    value: 500500 (unweighted average)
+COMPRESSED GATHER success on expression xt[l=@din]
+ 
+! altered limits syntax
+GO bn_compressed_gather.sub xt[l=1:1000@din] 4000000 400000
+ 
+ Total # of data points: 1001 (1001*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 500
+ Maximum value: 1000500
+ Mean    value: 500500 (unweighted average)
+ 
+ Total # of data points: 1001 (1001*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 500
+ Maximum value: 1000500
+ Mean    value: 500500 (unweighted average)
+COMPRESSED GATHER success on expression xt[l=1:1000@din]
+ 
+! test T=@AVE
+GO bn_compressed_gather.sub xt[l=@ave] 4000000 400000
+ 
+ Total # of data points: 1001 (1001*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0.5
+ Maximum value: 1000.5
+ Mean    value: 500.5 (unweighted average)
+ 
+ Total # of data points: 1001 (1001*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0.5
+ Maximum value: 1000.5
+ Mean    value: 500.5 (unweighted average)
+COMPRESSED GATHER success on expression xt[l=@ave]
+ 
+! various partial grid points at end
+GO bn_compressed_gather.sub xt[T=@ave] 4000000 400000
+ 
+ Total # of data points: 1001 (1001*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0.5
+ Maximum value: 1000.5
+ Mean    value: 500.5 (unweighted average)
+ 
+ Total # of data points: 1001 (1001*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0.5
+ Maximum value: 1000.5
+ Mean    value: 500.5 (unweighted average)
+COMPRESSED GATHER success on expression xt[T=@ave]
+GO bn_compressed_gather.sub xt[T=0.5:1000.5@ave] 4000000 400000
+ 
+ Total # of data points: 1001 (1001*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0.5
+ Maximum value: 1000.5
+ Mean    value: 500.5 (unweighted average)
+ 
+ Total # of data points: 1001 (1001*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0.5
+ Maximum value: 1000.5
+ Mean    value: 500.5 (unweighted average)
+COMPRESSED GATHER success on expression xt[T=0.5:1000.5@ave]
+GO bn_compressed_gather.sub xt[T=0.6:1000.4@ave] 4000000 400000
+ 
+ Total # of data points: 1001 (1001*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0.5
+ Maximum value: 1000.5
+ Mean    value: 500.5 (unweighted average)
+ 
+ Total # of data points: 1001 (1001*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0.5
+ Maximum value: 1000.5
+ Mean    value: 500.5 (unweighted average)
+COMPRESSED GATHER success on expression xt[T=0.6:1000.4@ave]
+GO bn_compressed_gather.sub xt[T=1:1000@ave] 4000000 400000
+ 
+ Total # of data points: 1001 (1001*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0.5
+ Maximum value: 1000.5
+ Mean    value: 500.5 (unweighted average)
+ 
+ Total # of data points: 1001 (1001*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0.5
+ Maximum value: 1000.5
+ Mean    value: 500.5 (unweighted average)
+COMPRESSED GATHER success on expression xt[T=1:1000@ave]
+GO bn_compressed_gather.sub xt[T=1.2:999.8@ave] 4000000 400000
+ 
+ Total # of data points: 1001 (1001*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0.5
+ Maximum value: 1000.5
+ Mean    value: 500.5 (unweighted average)
+ 
+ Total # of data points: 1001 (1001*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0.5
+ Maximum value: 1000.5
+ Mean    value: 500.5 (unweighted average)
+COMPRESSED GATHER success on expression xt[T=1.2:999.8@ave]
+ 
+! *********************************************************
+! ******* tests of "4D" @DIN and @ave ******
+define axis/x=1:200:1 xax
+define axis/y=1:200:1 yax
+define axis/z=1:200:1 zax
+define axis/T=1:2:1  tax
+let xyz  = 0*X[gx=xax] + 0*Y[gy=yax] + Z[gz=zax]
+let xyzt = 0*X[gx=xax] + 0*Y[gy=yax] + Z[gz=zax] + 0*T[gt=tax]
+ 
+* note: SUM of Z is N*(N+1)/2 = 20100
+* area integral in XY is 200*200=40,000
+* total integral is 804,000,000 (8.04*E8)
+ 
+* 3D XYZ test
+* 2d slice size = 200*200 = 40,000
+* 3d full size is 8,000,000  - so 10,000,000 is bigger
+ 
+! confirm gathering is occuring by looking at the diagnostic output
+cancel memory/all
+set mode desp: 2000000  ! 2,000,000 small -- requires split/gather
+set mode diag
+! will split into 4 pieces (1/4 of 8,000,000 fits into 2,000,000)
+! so z=1:50; then =51:100, Z=101:150, Z=151:200
+stat xyz[x=@din,y=@din,z=@din]
+ getgrid EX#1     C:  5 dset:-999 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ getgrid XYZ      C:  7 dset:-999 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ eval    EX#1     C:  4 dset:-999 I:    1  200  J:    1  200  K:    1  200  L: -999 -999
+ strip gather/compress XYZ on Z axis:     1   200 dset:   0
+ doing gather/compress XYZ on Z axis:     1    50 dset:   0
+ strip --> XYZ[Z=0.5:200.5@IN4,D=0]
+ eval    XYZ      C:  7 dset:   0 I:    1  200  J:    1  200  K:    1   50  L: -999 -999
+ constan cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M:122 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M:122 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M:122 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M:122 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:103 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M:106 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M:106 dset:   0 I: -999 -999  J: -999 -999  K:    1   50  L: -999 -999
+ -DELETE Z        M:106 dset:   0 I: -999 -999  J: -999 -999  K:    1   50  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE tpry     M:104 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> XYZ[Z=0.5:200.5@IN4,D=0]
+ doing gather/compress XYZ on Z axis:    51   100 dset:   0
+ eval    XYZ      C:  7 dset:   0 I:    1  200  J:    1  200  K:   51  100  L: -999 -999
+ constan cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M:122 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M:122 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M:122 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M:122 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 85 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 68 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M: 68 dset:   0 I: -999 -999  J: -999 -999  K:   51  100  L: -999 -999
+ -DELETE Z        M: 68 dset:   0 I: -999 -999  J: -999 -999  K:   51  100  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE tpry     M:106 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> XYZ[Z=0.5:200.5@IN4,D=0]
+ doing gather/compress XYZ on Z axis:   101   150 dset:   0
+ eval    XYZ      C:  7 dset:   0 I:    1  200  J:    1  200  K:  101  150  L: -999 -999
+ constan cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M: 68 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M: 68 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M: 68 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M: 68 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 47 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M:122 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M:122 dset:   0 I: -999 -999  J: -999 -999  K:  101  150  L: -999 -999
+ -DELETE Z        M:122 dset:   0 I: -999 -999  J: -999 -999  K:  101  150  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE tpry     M:106 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> XYZ[Z=0.5:200.5@IN4,D=0]
+ doing gather/compress XYZ on Z axis:   151   200 dset:   0
+ eval    XYZ      C:  7 dset:   0 I:    1  200  J:    1  200  K:  151  200  L: -999 -999
+ constan cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M:122 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M:122 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M:122 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M:122 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 64 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 68 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M: 68 dset:   0 I: -999 -999  J: -999 -999  K:  151  200  L: -999 -999
+ -DELETE Z        M: 68 dset:   0 I: -999 -999  J: -999 -999  K:  151  200  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE tpry     M:106 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> XYZ[Z=0.5:200.5@IN4,D=0]
+ final --> XYZ[Z=0.5:200.5@IN4,D=0]
+ 
+             0*X[GX=XAX] + 0*Y[GY=YAX] + Z[GZ=ZAX]
+             X: 0.5 to 200.5 (XYZ integ.)
+             Y: 0.5 to 200.5 (XYZ integ.)
+             Z: 0.5 to 200.5 (XYZ integ.)
+             T:  N/A
+             E:  N/A
+             F:  N/A
+             DATA SET: N/A
+ 
+ Total # of data points: 1 (1*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 8.04E+08
+ Maximum value: 8.04E+08
+ Mean    value: 8.04E+08 (unweighted average)
+ 
+! the clean version of same test
+cancel mode diag
+GO bn_compressed_gather.sub xyz[x=@din,y=@din,z=@din] 10000000 2000000
+ 
+ Total # of data points: 1 (1*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 8.04E+08
+ Maximum value: 8.04E+08
+ Mean    value: 8.04E+08 (unweighted average)
+ 
+ Total # of data points: 1 (1*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 8.04E+08
+ Maximum value: 8.04E+08
+ Mean    value: 8.04E+08 (unweighted average)
+COMPRESSED GATHER success on expression xyz[x=@din,y=@din,z=@din]
+ 
+! also do the average, which will provide a comparison result for the test
+! that follows
+! average along Z is 100.5
+GO bn_compressed_gather.sub xyz[x=@ave,y=@ave,z=@ave] 10000000 2000000
+ 
+ Total # of data points: 1 (1*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 100.5
+ Maximum value: 100.5
+ Mean    value: 100.5 (unweighted average)
+ 
+ Total # of data points: 1 (1*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 100.5
+ Maximum value: 100.5
+ Mean    value: 100.5 (unweighted average)
+COMPRESSED GATHER success on expression xyz[x=@ave,y=@ave,z=@ave]
+ 
+! test splitting along 2 axes -- this one shows that it does NOT work
+! Since the T axis has only 2 points, the arithmetic above shows that the
+! chunks to be gathered will still be too large after splitting on T, which
+! in theory would trigger further splitting along Z.  However, there is only
+! one opportunity to process compressed axis splitting -- in IS_STRIP
+! at the time that it is stripping off the compressed transformation.  But
+! a "4D" transform is stripped in a single operation. IS_STRIP could have
+! subtler gather code.  As-is it chooses the fastest axis, regardless of
+! whether that axis is long enough to break into sufficiently small fragments
+set mode desp: 2000000  ! 2,000,000 small -- requires split/gather
+set mode diag
+stat xyzt[x=@ave,y=@ave,z=@ave,t=@ave]
+ dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
+ getgrid EX#1     C:  5 dset:-999 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ getgrid XYZT     C:  7 dset:-999 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ eval    EX#1     C:  4 dset:-999 I:    1  200  J:    1  200  K:    1  200  L:    1    2
+ strip gather/compress XYZT on T axis:     1     2 dset:   0
+ doing gather/compress XYZT on T axis:     1     1 dset:   0
+ strip --> XYZT[T=0.5:2.5@AV4,D=0]
+ eval    XYZT     C:  7 dset:   0 I:    1  200  J:    1  200  K:    1  200  L:    1    1
+ constan cnst     M:122 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M:104 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M:104 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:122 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:122 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M:104 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M:104 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M:122 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 47 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 64 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M: 64 dset:   0 I: -999 -999  J: -999 -999  K:    1  200  L: -999 -999
+ -DELETE Z        M: 64 dset:   0 I: -999 -999  J: -999 -999  K:    1  200  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE tpry     M:122 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M:122 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  T        M: 64 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
+ -DELETE T        M: 64 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
+ -DELETE cnst     M:122 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 47 dset:   0 I:    1  200  J:    1  200  K:    1  200  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> XYZT[T=0.5:2.5@AV4,D=0]
+ doing gather/compress XYZT on T axis:     2     2 dset:   0
+ eval    XYZT     C:  7 dset:   0 I:    1  200  J:    1  200  K:    1  200  L:    2    2
+ constan cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M: 64 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M: 64 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M: 64 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M: 64 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:106 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 32 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M: 32 dset:   0 I: -999 -999  J: -999 -999  K:    1  200  L: -999 -999
+ -DELETE Z        M: 32 dset:   0 I: -999 -999  J: -999 -999  K:    1  200  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE tpry     M:104 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  T        M: 32 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    2    2
+ -DELETE T        M: 32 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    2    2
+ -DELETE cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 64 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    2    2  M: -999 -999  N: -999 -999
+ -DELETE tpry     M:106 dset:   0 I:    1  200  J:    1  200  K:    1  200  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> XYZT[T=0.5:2.5@AV4,D=0]
+ final --> XYZT[T=0.5:2.5@AV4,D=0]
+ 
+             0*X[GX=XAX] + 0*Y[GY=YAX] + Z[GZ=ZAX] + 0*T[GT=TAX]
+             X: 0.5 to 200.5 (XYZT ave)
+             Y: 0.5 to 200.5 (XYZT ave)
+             Z: 0.5 to 200.5 (XYZT ave)
+             T: 0.5 to 2.5 (XYZT ave)
+             E:  N/A
+             F:  N/A
+             DATA SET: N/A
+ 
+ Total # of data points: 1 (1*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 100.5
+ Maximum value: 100.5
+ Mean    value: 100.5 (unweighted average)
+ 
+! again, test splitting along 2 axes -- this one shows when it DOES work
+! by making T=@AVE into a separate averaging operation, 2-level splitting
+! occurs.  Look for the Z split nested inside the T split in the diagnostics
+CANCEL MEMORY/ALL
+ -DELETE XYZT     M: 47 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE PROBLEM  M:103 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE XYZT     M:104 dset:   0 I:    1  200  J:    1  200  K:    1  200  L:    2    2
+ -DELETE XYZT     M:122 dset:   0 I:    1  200  J:    1  200  K:    1  200  L:    1    1
+LET xyzave = xyzt[x=@ave,y=@ave,z=@ave]
+set mode desp: 2000000  ! 2,000,000 small -- requires split/gather
+set mode diag
+stat xyzave[t=@ave]
+ dealloc  dynamic grid GFORMAT         XAX       YAX       ZAX       TAX
+ getgrid EX#1     C:  5 dset:-999 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ getgrid XYZAVE   C:  7 dset:-999 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ eval    EX#1     C:  4 dset:-999 I:    1  200  J:    1  200  K:    1  200  L:    1    2
+ strip gather/compress XYZAVE on T axis:     1     2 dset:   0
+ doing gather/compress XYZAVE on T axis:     1     1 dset:   0
+ strip --> XYZAVE[T=0.5:2.5@AVE,D=0]
+ eval    XYZAVE   C:  7 dset:   0 I:    1  200  J:    1  200  K:    1  200  L:    1    1
+ strip gather/compress XYZT on Z axis:     1   200 dset:   0
+ doing gather/compress XYZT on Z axis:     1    50 dset:   0
+ strip --> XYZT[Z=0.5:200.5@AV4,D=0]
+ eval    XYZT     C: 11 dset:   0 I:    1  200  J:    1  200  K:    1   50  L:    1    1
+ constan cnst     M:122 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M:104 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M:104 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:122 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:122 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M:104 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M:104 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M:122 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 47 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M:103 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M:103 dset:   0 I: -999 -999  J: -999 -999  K:    1   50  L: -999 -999
+ -DELETE Z        M:103 dset:   0 I: -999 -999  J: -999 -999  K:    1   50  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE tpry     M:122 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M:122 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  T        M:103 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
+ -DELETE T        M:103 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
+ -DELETE cnst     M:122 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 47 dset:   0 I:    1  200  J:    1  200  K:    1   50  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> XYZT[Z=0.5:200.5@AV4,D=0]
+ doing gather/compress XYZT on Z axis:    51   100 dset:   0
+ eval    XYZT     C: 11 dset:   0 I:    1  200  J:    1  200  K:   51  100  L:    1    1
+ constan cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M:103 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M:103 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M:103 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M:103 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 64 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M:106 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M:106 dset:   0 I: -999 -999  J: -999 -999  K:   51  100  L: -999 -999
+ -DELETE Z        M:106 dset:   0 I: -999 -999  J: -999 -999  K:   51  100  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE tpry     M:104 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  T        M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
+ -DELETE T        M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
+ -DELETE cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:103 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 64 dset:   0 I:    1  200  J:    1  200  K:   51  100  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> XYZT[Z=0.5:200.5@AV4,D=0]
+ doing gather/compress XYZT on Z axis:   101   150 dset:   0
+ eval    XYZT     C: 11 dset:   0 I:    1  200  J:    1  200  K:  101  150  L:    1    1
+ constan cnst     M: 64 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M:103 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M:103 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M: 64 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M: 64 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M:103 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M:103 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M: 64 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 32 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M:106 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M:106 dset:   0 I: -999 -999  J: -999 -999  K:  101  150  L: -999 -999
+ -DELETE Z        M:106 dset:   0 I: -999 -999  J: -999 -999  K:  101  150  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE tpry     M: 64 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M: 64 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  T        M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
+ -DELETE T        M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
+ -DELETE cnst     M: 64 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:103 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 32 dset:   0 I:    1  200  J:    1  200  K:  101  150  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> XYZT[Z=0.5:200.5@AV4,D=0]
+ doing gather/compress XYZT on Z axis:   151   200 dset:   0
+ eval    XYZT     C: 11 dset:   0 I:    1  200  J:    1  200  K:  151  200  L:    1    1
+ constan cnst     M: 32 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M:103 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M:103 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M: 32 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M: 32 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M:103 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M:103 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M: 32 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 85 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M:106 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M:106 dset:   0 I: -999 -999  J: -999 -999  K:  151  200  L: -999 -999
+ -DELETE Z        M:106 dset:   0 I: -999 -999  J: -999 -999  K:  151  200  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE tpry     M: 32 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M: 32 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  T        M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
+ -DELETE T        M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
+ -DELETE cnst     M: 32 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:103 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 85 dset:   0 I:    1  200  J:    1  200  K:  151  200  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> XYZT[Z=0.5:200.5@AV4,D=0]
+ final --> XYZT[Z=0.5:200.5@AV4,D=0]
+ doing --> XYZAVE[T=0.5:2.5@AVE,D=0]
+ doing gather/compress XYZAVE on T axis:     2     2 dset:   0
+ eval    XYZAVE   C:  7 dset:   0 I:    1  200  J:    1  200  K:    1  200  L:    2    2
+ strip gather/compress XYZT on Z axis:     1   200 dset:   0
+ doing gather/compress XYZT on Z axis:     1    50 dset:   0
+ strip --> XYZT[Z=0.5:200.5@AV4,D=0]
+ eval    XYZT     C: 11 dset:   0 I:    1  200  J:    1  200  K:    1   50  L:    2    2
+ constan cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M: 68 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M: 68 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M: 68 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M: 68 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 93 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 72 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M: 72 dset:   0 I: -999 -999  J: -999 -999  K:    1   50  L: -999 -999
+ -DELETE Z        M: 72 dset:   0 I: -999 -999  J: -999 -999  K:    1   50  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE tpry     M:106 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  T        M: 72 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    2    2
+ -DELETE T        M: 72 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    2    2
+ -DELETE cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 68 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    2    2  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 93 dset:   0 I:    1  200  J:    1  200  K:    1   50  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> XYZT[Z=0.5:200.5@AV4,D=0]
+ doing gather/compress XYZT on Z axis:    51   100 dset:   0
+ eval    XYZT     C: 11 dset:   0 I:    1  200  J:    1  200  K:   51  100  L:    2    2
+ constan cnst     M: 68 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M: 72 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M: 72 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M: 68 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M: 68 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M: 72 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M: 72 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M: 68 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 17 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 91 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M: 91 dset:   0 I: -999 -999  J: -999 -999  K:   51  100  L: -999 -999
+ -DELETE Z        M: 91 dset:   0 I: -999 -999  J: -999 -999  K:   51  100  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE tpry     M: 68 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M: 68 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  T        M: 91 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    2    2
+ -DELETE T        M: 91 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    2    2
+ -DELETE cnst     M: 68 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 72 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    2    2  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 17 dset:   0 I:    1  200  J:    1  200  K:   51  100  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> XYZT[Z=0.5:200.5@AV4,D=0]
+ doing gather/compress XYZT on Z axis:   101   150 dset:   0
+ eval    XYZT     C: 11 dset:   0 I:    1  200  J:    1  200  K:  101  150  L:    2    2
+ constan cnst     M: 17 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M: 72 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M: 72 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M: 17 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M: 17 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M: 72 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M: 72 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M: 17 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 16 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 91 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M: 91 dset:   0 I: -999 -999  J: -999 -999  K:  101  150  L: -999 -999
+ -DELETE Z        M: 91 dset:   0 I: -999 -999  J: -999 -999  K:  101  150  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE tpry     M: 17 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M: 17 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  T        M: 91 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    2    2
+ -DELETE T        M: 91 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    2    2
+ -DELETE cnst     M: 17 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 72 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    2    2  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 16 dset:   0 I:    1  200  J:    1  200  K:  101  150  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> XYZT[Z=0.5:200.5@AV4,D=0]
+ doing gather/compress XYZT on Z axis:   151   200 dset:   0
+ eval    XYZT     C: 11 dset:   0 I:    1  200  J:    1  200  K:  151  200  L:    2    2
+ constan cnst     M: 16 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M: 72 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M: 72 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M: 16 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M: 16 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M: 72 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M: 72 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M: 16 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 14 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 91 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M: 91 dset:   0 I: -999 -999  J: -999 -999  K:  151  200  L: -999 -999
+ -DELETE Z        M: 91 dset:   0 I: -999 -999  J: -999 -999  K:  151  200  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE tpry     M: 16 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M: 16 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  T        M: 91 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    2    2
+ -DELETE T        M: 91 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    2    2
+ -DELETE cnst     M: 16 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 72 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    2    2  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 14 dset:   0 I:    1  200  J:    1  200  K:  151  200  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> XYZT[Z=0.5:200.5@AV4,D=0]
+ final --> XYZT[Z=0.5:200.5@AV4,D=0]
+ doing --> XYZAVE[T=0.5:2.5@AVE,D=0]
+ final --> XYZAVE[T=0.5:2.5@AVE,D=0]
+ 
+             XYZT[X=@AVE,Y=@AVE,Z=@AVE]
+             X: 0.5 to 200.5
+             Y: 0.5 to 200.5
+             Z: 0.5 to 200.5
+             T: 0.5 to 2.5 (averaged)
+             E:  N/A
+             F:  N/A
+             DATA SET: N/A
+ 
+ Total # of data points: 1 (1*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 100.5
+ Maximum value: 100.5
+ Mean    value: 100.5 (unweighted average)
+ 
+! *********************************************************
+! ******* tests of T= @var and @std ******
+! the @var and @srd transformation had to be switched to
+! a single pass algorithm in order to implement split/gather
+define axis/x=1:1000:1 xax
+ -DELETE XYZAVE   M: 14 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    2    2
+ -DELETE XYZT     M: 16 dset:   0 I:    1  200  J:    1  200  K:  151  200  L:    2    2
+ -DELETE XYZT     M: 17 dset:   0 I:    1  200  J:    1  200  K:  101  150  L:    2    2
+ -DELETE XYZT     M: 32 dset:   0 I:    1  200  J:    1  200  K:  151  200  L:    1    1
+ -DELETE XYZT     M: 47 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
+ -DELETE XYZT     M: 64 dset:   0 I:    1  200  J:    1  200  K:  101  150  L:    1    1
+ -DELETE XYZT     M: 68 dset:   0 I:    1  200  J:    1  200  K:   51  100  L:    2    2
+ -DELETE XYZAVE   M: 85 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
+ -DELETE XYZT     M: 93 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    2    2
+ -DELETE XYZAVE   M:103 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE XYZT     M:104 dset:   0 I:    1  200  J:    1  200  K:   51  100  L:    1    1
+ -DELETE XYZT     M:106 dset:   0 I:    1  200  J:    1  200  K:    1   50  L:    2    2
+ -DELETE XYZT     M:122 dset:   0 I:    1  200  J:    1  200  K:    1   50  L:    1    1
+ dealloc  dynamic grid GFORMAT         xax       YAX       ZAX       TAX
+ dealloc  dynamic grid GFORMAT         xax       YAX       ZAX       TAX
+ dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
+ dealloc  dynamic grid GFORMAT         xax       YAX       ZAX       TAX
+define axis/T=1:1001:1 tax
+ 
+let xt = 0*x[gx=xax] + T[gt=tax]
+let constant = 0*X[gx=xax] + 0*T[gt=tax] + 1234
+let xt_zero_mean = 0*X[gx=xax] + (T[gt=tax]-501) + 1234
+ 
+* note: sum of a sequence 1 to N of square integers is [N*(N+1)*(2N+1)]/6
+* T-501 is 2 sequences: -500 to 1 and 1 to 500, therefore sum is
+* 2 * [500*501*1001]/6 = 83583500
+* mean of this sequence is 83583500/1001 = 83500
+* ==> look for this as the correct answer to variance
+ 
+! confirm gathering is occuring by looking at the diagnostic output
+set mode diag
+set mode desperate: 400000
+stat constant[l=@var]
+ getgrid EX#1     C:  5 dset:-999 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ getgrid CONSTANT C:  7 dset:-999 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ allocate dynamic grid (G184)          XAX       NORMAL    NORMAL    TAX
+ allocate dynamic grid (G184)          XAX       NORMAL    NORMAL    TAX
+ eval    EX#1     C:  4 dset:-999 I:    1 1000  J: -999 -999  K: -999 -999  L:    1 1001
+ strip gather/compress CONSTANT on T axis:     1  1001 dset:   0
+ doing gather/compress CONSTANT on T axis:     1   400 dset:   0
+ strip --> CONSTANT[T=0.5:1001.5@VAR,D=0]
+ eval    CONSTANT C:  7 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L:    1  400
+ constan cnst     M:122 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M:106 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M:106 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:122 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:122 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  T        M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1  400
+ -DELETE T        M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1  400
+ -DELETE cnst     M:122 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:103 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:    1  400  M: -999 -999  N: -999 -999
+ -DELETE tpry     M:104 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:122 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L:    1  400  M: -999 -999  N: -999 -999
+ doing --> CONSTANT[T=0.5:1001.5@VAR,D=0]
+ doing gather/compress CONSTANT on T axis:   401   800 dset:   0
+ eval    CONSTANT C:  7 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L:  401  800
+ constan cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M:106 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M:106 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  T        M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:  401  800
+ -DELETE T        M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:  401  800
+ -DELETE cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 85 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:  401  800  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 93 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M: 93 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M: 93 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:104 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L:  401  800  M: -999 -999  N: -999 -999
+ doing --> CONSTANT[T=0.5:1001.5@VAR,D=0]
+ doing gather/compress CONSTANT on T axis:   801  1001 dset:   0
+ eval    CONSTANT C:  7 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L:  801 1001
+ constan cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M: 93 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M: 93 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  T        M: 93 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:  801 1001
+ -DELETE T        M: 93 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:  801 1001
+ -DELETE cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 68 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L:  801 1001  M: -999 -999  N: -999 -999
+ -DELETE tpry     M:106 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:104 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L:  801 1001  M: -999 -999  N: -999 -999
+ doing --> CONSTANT[T=0.5:1001.5@VAR,D=0]
+ final --> CONSTANT[T=0.5:1001.5@VAR,D=0]
+ 
+             Variance of 0*X[GX=XAX] + 0*T[GT=TAX] + 1234
+             X: 0.5 to 1001
+             Y:  N/A
+             Z:  N/A
+             T: 0.5 to 1001.5 (variance)
+             E:  N/A
+             F:  N/A
+             DATA SET: N/A
+ 
+ Total # of data points: 1000 (1000*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0
+ Maximum value: 0
+ Mean    value: 0 (unweighted average)
+ Standard deviation: 0
+ 
+! clean test
+cancel memory/all
+ -DELETE CONSTANT M: 68 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L:  801 1001
+ -DELETE CONSTANT M: 85 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L:  401  800
+ -DELETE CONSTANT M:103 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L:    1  400
+ -DELETE CONSTANT M:122 dset:   0 I:    1 1000  J: -999 -999  K: -999 -999  L: -999 -999
+cancel mode diag
+GO bn_compressed_gather.sub constant[l=@var] 4000000 400000
+ 
+ Total # of data points: 1000 (1000*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0
+ Maximum value: 0
+ Mean    value: 0 (unweighted average)
+ 
+ Total # of data points: 1000 (1000*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0
+ Maximum value: 0
+ Mean    value: 0 (unweighted average)
+COMPRESSED GATHER success on expression constant[l=@var]
+ 
+! known result
+GO bn_compressed_gather.sub xt_zero_mean[l=@var] 4000000 400000
+ 
+ Total # of data points: 1000 (1000*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 83500
+ Maximum value: 83500
+ Mean    value: 83500 (unweighted average)
+ 
+ Total # of data points: 1000 (1000*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 83500
+ Maximum value: 83500
+ Mean    value: 83500 (unweighted average)
+COMPRESSED GATHER success on expression xt_zero_mean[l=@var]
+ 
+! adding a constant doesn't effect the variance
+GO bn_compressed_gather.sub xt[l=@var] 4000000 400000
+ 
+ Total # of data points: 1000 (1000*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 83500
+ Maximum value: 83500
+ Mean    value: 83500 (unweighted average)
+ 
+ Total # of data points: 1000 (1000*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 83500
+ Maximum value: 83500
+ Mean    value: 83500 (unweighted average)
+COMPRESSED GATHER success on expression xt[l=@var]
+ 
+! same test, but  on @std (only one line of code difference so limited test)
+* square root of 83500 is 288.96366553599779.
+* Note: previous Ferret versions gave a consistent value
+*  Minimum value: 288.9636655359978
+*  Maximum value: 288.9636655359978
+*  Mean    value: 288.9636655359978
+* Now (11/16) we are getting slight variations in the 16th decimal (see"6")
+*  Minimum value: 288.9636655359978
+*  Maximum value: 288.9636655359978
+*  Mean    value: 288.9636655359976
+* *sh* @std differs from @var only by taking a SQRT() in the finalization step.
+*      I suspect this is an artifact of the compiler optimization level
+GO bn_compressed_gather.sub xt[l=@std] 4000000 400000
+ 
+ Total # of data points: 1000 (1000*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 288.9636655359978
+ Maximum value: 288.9636655359978
+ Mean    value: 288.9636655359976 (unweighted average)
+ 
+ Total # of data points: 1000 (1000*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 288.9636655359978
+ Maximum value: 288.9636655359978
+ Mean    value: 288.9636655359976 (unweighted average)
+COMPRESSED GATHER success on expression xt[l=@std]
+ 
+ 
+! *********************************************************
+! ******* tests of "4D" @var and @std ******
+! the @var and @srd transformation had to be switched to
+! a single pass algorithm in order to implement split/gather
+define axis/x=1:200:1 xax
+define axis/y=1:200:1 yax
+define axis/z=1:201:1 zax
+define axis/T=1:200:1 tax
+! adding a constant doesn't effect variance
+let constant = 0*X[gx=xax] + 0*Y[gy=yax] + 0*Z[gz=zax] + 1234
+let xyz = 0*X[gx=xax] + 0*Y[gy=yax] + Z[gz=zax] + 1
+let xyz_zero_mean = 0*X[gx=xax] + 0*Y[gy=yax] + (Z[gz=zax]-101)
+ 
+* note: sum of a sequence 1 to N of square integers is [N*(N+1)*(2N+1)]/6
+* Z-101 is 2 sequences: -100 to -1 and 1 to 100, therefore sum is
+* 2 * [100*101*201]/6 = 676700
+* so the average is 676700/201 = 3366.666666 ...
+* At every XY point we have the identical sequence in Z, so the variance is
+* the same as the single Z sequence
+ 
+* 3D XYZ test
+* 2d slice size = 200*200 = 40,000
+* 3d full size is 8,000,000  - so 10,000,000 is bigger
+cancel memory/all
+set mode desp: 2000000  ! 2,000,000 small -- requires split/gather
+! will split into 4 pieces (1/4 of 8,000,000 fits into 2,000,000)
+! so z=1:50; then =51:100, Z=101:150, Z=151:200
+set mode diag
+LIST/PREC=12 constant[x=@var,y=@var,z=@var]
+ getgrid EX#1     C:  5 dset:-999 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ getgrid CONSTANT C:  7 dset:-999 I:    1    1  J:    1    1  K:    1    1  L:    1    1  M:    1    1  N:    1    1
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ eval    EX#1     C:  4 dset:-999 I:    1  200  J:    1  200  K:    1  201  L: -999 -999
+ strip gather/compress CONSTANT on Z axis:     1   201 dset:   0
+ doing gather/compress CONSTANT on Z axis:     1    50 dset:   0
+ strip --> CONSTANT[Z=0.5:201.5@VA4,D=0]
+ eval    CONSTANT C:  7 dset:   0 I:    1  200  J:    1  200  K:    1   50  L: -999 -999
+ constan cnst     M: 93 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M:122 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M:122 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M: 93 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M: 93 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M:122 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M:122 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M: 93 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 68 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M:104 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M: 68 dset:   0 I: -999 -999  J: -999 -999  K:    1   50  L: -999 -999
+ -DELETE Z        M: 68 dset:   0 I: -999 -999  J: -999 -999  K:    1   50  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE cnst     M:104 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:122 dset:   0 I: -999 -999  J: -999 -999  K:    1   50  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 93 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M: 93 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M: 93 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:104 dset:   0 I:    1  200  J:    1  200  K:    1   50  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> CONSTANT[Z=0.5:201.5@VA4,D=0]
+ doing gather/compress CONSTANT on Z axis:    51   100 dset:   0
+ eval    CONSTANT C:  7 dset:   0 I:    1  200  J:    1  200  K:   51  100  L: -999 -999
+ constan cnst     M: 93 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M: 68 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M: 68 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M: 93 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M: 93 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M: 68 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M: 68 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M: 93 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:103 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 85 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M: 85 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M:103 dset:   0 I: -999 -999  J: -999 -999  K:   51  100  L: -999 -999
+ -DELETE Z        M:103 dset:   0 I: -999 -999  J: -999 -999  K:   51  100  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE cnst     M: 85 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 68 dset:   0 I: -999 -999  J: -999 -999  K:   51  100  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 93 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M: 93 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M: 93 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 85 dset:   0 I:    1  200  J:    1  200  K:   51  100  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> CONSTANT[Z=0.5:201.5@VA4,D=0]
+ doing gather/compress CONSTANT on Z axis:   101   150 dset:   0
+ eval    CONSTANT C:  7 dset:   0 I:    1  200  J:    1  200  K:  101  150  L: -999 -999
+ constan cnst     M: 85 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M: 93 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M: 93 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M: 85 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M: 85 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M: 93 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M: 93 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M: 85 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:106 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M:103 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M:103 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M:106 dset:   0 I: -999 -999  J: -999 -999  K:  101  150  L: -999 -999
+ -DELETE Z        M:106 dset:   0 I: -999 -999  J: -999 -999  K:  101  150  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE cnst     M:103 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 93 dset:   0 I: -999 -999  J: -999 -999  K:  101  150  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 85 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M: 85 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M: 85 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:103 dset:   0 I:    1  200  J:    1  200  K:  101  150  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> CONSTANT[Z=0.5:201.5@VA4,D=0]
+ doing gather/compress CONSTANT on Z axis:   151   200 dset:   0
+ eval    CONSTANT C:  7 dset:   0 I:    1  200  J:    1  200  K:  151  200  L: -999 -999
+ constan cnst     M:103 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M: 85 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M: 85 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:103 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:103 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M: 85 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M: 85 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M:103 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 64 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M:106 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M: 64 dset:   0 I: -999 -999  J: -999 -999  K:  151  200  L: -999 -999
+ -DELETE Z        M: 64 dset:   0 I: -999 -999  J: -999 -999  K:  151  200  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 85 dset:   0 I: -999 -999  J: -999 -999  K:  151  200  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M:103 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M:103 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:103 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:106 dset:   0 I:    1  200  J:    1  200  K:  151  200  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> CONSTANT[Z=0.5:201.5@VA4,D=0]
+ doing gather/compress CONSTANT on Z axis:   201   201 dset:   0
+ eval    CONSTANT C:  7 dset:   0 I:    1  200  J:    1  200  K:  201  201  L: -999 -999
+ constan cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  X        M:103 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE X        M:103 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ pseudo  Y        M:103 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ -DELETE Y        M:103 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    YAX       NORMAL    NORMAL
+ -DELETE cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 47 dset:   0 I: -999 -999  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M: 64 dset:   0 I:    1  200  J: -999 -999  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M: 64 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ allocate dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ pseudo  Z        M: 47 dset:   0 I: -999 -999  J: -999 -999  K:  201  201  L: -999 -999
+ -DELETE Z        M: 47 dset:   0 I: -999 -999  J: -999 -999  K:  201  201  L: -999 -999
+ dealloc  dynamic grid (G184)          NORMAL    NORMAL    ZAX       NORMAL
+ -DELETE cnst     M: 64 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:103 dset:   0 I: -999 -999  J: -999 -999  K:  201  201  L: -999 -999  M: -999 -999  N: -999 -999
+ -DELETE tpry     M:106 dset:   0 I:    1  200  J:    1  200  K: -999 -999  L: -999 -999  M: -999 -999  N: -999 -999
+ constan cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:106 dset:   0 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M: 64 dset:   0 I:    1  200  J:    1  200  K:  201  201  L: -999 -999  M: -999 -999  N: -999 -999
+ doing --> CONSTANT[Z=0.5:201.5@VA4,D=0]
+ final --> CONSTANT[Z=0.5:201.5@VA4,D=0]
+             VARIABLE : 0*X[GX=XAX] + 0*Y[GY=YAX] + 0*Z[GZ=ZAX] + 1234
+             X        : 0.5 to 200.5 (XYZ variance)
+             Y        : 0.5 to 200.5 (XYZ variance)
+             Z        : 0.5 to 201.5 (XYZ variance)
+          0.000000000000
+ 
+cancel mode diag
+! variance of a constant is zero
+GO bn_compressed_gather.sub constant[x=@var,y=@var,z=@var] 10000000 2000000
+ 
+ Total # of data points: 1 (1*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0
+ Maximum value: 0
+ Mean    value: 0 (unweighted average)
+ 
+ Total # of data points: 1 (1*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0
+ Maximum value: 0
+ Mean    value: 0 (unweighted average)
+COMPRESSED GATHER success on expression constant[x=@var,y=@var,z=@var]
+ 
+! confirm that we get the result computed above
+GO bn_compressed_gather.sub xyz_zero_mean[x=@var,y=@var,z=@var]  10000000 2000000
+ 
+ Total # of data points: 1 (1*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 3366.7
+ Maximum value: 3366.7
+ Mean    value: 3366.7 (unweighted average)
+ 
+ Total # of data points: 1 (1*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 3366.7
+ Maximum value: 3366.7
+ Mean    value: 3366.7 (unweighted average)
+COMPRESSED GATHER success on expression xyz_zero_mean[x=@var,y=@var,z=@var]
+LIST/PREC=12 xyz_zero_mean[x=@var,y=@var,z=@var]
+             VARIABLE : 0*X[GX=XAX] + 0*Y[GY=YAX] + (Z[GZ=ZAX]-101)
+             X        : 0.5 to 200.5 (XYZ variance)
+             Y        : 0.5 to 200.5 (XYZ variance)
+             Z        : 0.5 to 201.5 (XYZ variance)
+          3366.66666667
+ 
+! confirm that adding a constant does not change the result
+GO bn_compressed_gather.sub xyz[x=@var,y=@var,z=@var]  10000000 2000000
+ 
+ Total # of data points: 1 (1*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 3366.7
+ Maximum value: 3366.7
+ Mean    value: 3366.7 (unweighted average)
+ 
+ Total # of data points: 1 (1*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 3366.7
+ Maximum value: 3366.7
+ Mean    value: 3366.7 (unweighted average)
+COMPRESSED GATHER success on expression xyz[x=@var,y=@var,z=@var]
+LIST/PREC=12 xyz[x=@var,y=@var,z=@var]
+             VARIABLE : 0*X[GX=XAX] + 0*Y[GY=YAX] + Z[GZ=ZAX] + 1
+             X        : 0.5 to 200.5 (XYZ variance)
+             Y        : 0.5 to 200.5 (XYZ variance)
+             Z        : 0.5 to 201.5 (XYZ variance)
+          3366.66666667
+ 
+CANCEL MEMORY/ALL  ! IF PRESENT THIS PREVENTS THE MEMORY CORRUPTION
+! confirm the @std gives the square root of the variance
+! SQRT(676700/201) = 58.022983951764034269074805569046
+GO bn_compressed_gather.sub xyz[x=@std,y=@std,z=@std]  10000000 2000000
+ 
+ Total # of data points: 1 (1*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 58.023
+ Maximum value: 58.023
+ Mean    value: 58.023 (unweighted average)
+ 
+ Total # of data points: 1 (1*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 58.023
+ Maximum value: 58.023
+ Mean    value: 58.023 (unweighted average)
+COMPRESSED GATHER success on expression xyz[x=@std,y=@std,z=@std]
+LIST/PREC=12 xyz[x=@std,y=@std,z=@std]
+             VARIABLE : 0*X[GX=XAX] + 0*Y[GY=YAX] + Z[GZ=ZAX] + 1
+             X        : 0.5 to 200.5 (XYZ stddev)
+             Y        : 0.5 to 200.5 (XYZ stddev)
+             Z        : 0.5 to 201.5 (XYZ stddev)
+          58.0229839518
+ 
+ 
+! add more tests here
+! the highest liklihood of problem is in the formulation of "the next chunk"
+! when IS_TRANS requests the next piece to be gathered
+! ... variations on inner and outer limits
+!     (i.e. averaging an expression with limits embedded inside of it
+!      where the averaging limits may or may not match the inner limits)
+! ... file variable, vs user variables
+! ... embedded functions, especially grid-changing functions
+!
+! ... test irregular axes (unequal weighting) and see how significant are
+!     the changes in results from old Ferret (particularly on @var)
+ 
+ 
 !  *********** Always do a bn_reset  ***********
 !  *********** make sure things clean up well **
 GO bn_reset
@@ -98886,8 +100081,8 @@ yes?
 yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v7.1 (beta/debug)
- 	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 02/27/17
- 	28-Feb-17 10:05     
+ 	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 03/03/17
+ 	 3-Mar-17 15:24     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -99030,21 +100225,21 @@ list a - sst[l=@ave]
              TIME     : 01-JAN 00:45 to 01-APR 08:12
                   1S      
                   45
- 151E   / 66:  0.000E+00
- 153E   / 67: -3.553E-15
- 155E   / 68:  0.000E+00
+ 151E   / 66: -3.553E-15
+ 153E   / 67:  0.000E+00
+ 155E   / 68: -3.553E-15
  157E   / 69:  0.000E+00
- 159E   / 70:  3.553E-15
- 161E   / 71:  7.105E-15
- 163E   / 72:  3.553E-15
- 165E   / 73:  0.000E+00
- 167E   / 74:  0.000E+00
- 169E   / 75:  3.553E-15
+ 159E   / 70: -3.553E-15
+ 161E   / 71:  0.000E+00
+ 163E   / 72: -3.553E-15
+ 165E   / 73: -3.553E-15
+ 167E   / 74: -3.553E-15
+ 169E   / 75: -3.553E-15
  171E   / 76:  0.000E+00
- 173E   / 77:  3.553E-15
- 175E   / 78:  0.000E+00
- 177E   / 79:  3.553E-15
- 179E   / 80:  3.553E-15
+ 173E   / 77: -3.553E-15
+ 175E   / 78:  3.553E-15
+ 177E   / 79:  0.000E+00
+ 179E   / 80:  0.000E+00
  
 can region
 let a = x[i=1:9,k=1:5] + t[l=1:5]
@@ -99703,7 +100898,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -99728,7 +100923,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -99752,7 +100947,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -99791,7 +100986,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -99826,7 +101021,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -99867,7 +101062,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -99924,7 +101119,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -99981,7 +101176,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -100036,7 +101231,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -100084,7 +101279,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -100178,7 +101373,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -100248,7 +101443,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -100299,7 +101494,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -100374,7 +101569,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -100401,7 +101596,7 @@ variables:
 		X_:long_name_mod = "axis ABSTRACT" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -100425,7 +101620,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -100452,11 +101647,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -100487,7 +101682,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -100559,7 +101754,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -100603,7 +101798,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -100645,7 +101840,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -100753,7 +101948,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -100794,7 +101989,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -100817,7 +102012,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -100843,7 +102038,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -100863,7 +102058,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -100884,7 +102079,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -100927,7 +102122,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -100967,7 +102162,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -101005,7 +102200,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -101034,7 +102229,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -101067,7 +102262,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -101093,7 +102288,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -101139,7 +102334,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -101246,7 +102441,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 		:dt_internal = 15. ;
 }
@@ -101288,7 +102483,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -101371,7 +102566,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -101408,7 +102603,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -101448,7 +102643,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -101499,7 +102694,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -101558,7 +102753,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -101603,7 +102798,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -101646,7 +102841,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -101681,7 +102876,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -101715,7 +102910,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -101745,7 +102940,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -101774,7 +102969,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -101835,7 +103030,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -101880,7 +103075,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -101899,37 +103094,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
-		:Conventions = "CF-1.6" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	double A(XAX) ;
-		A:missing_value = -1.e+34 ;
-		A:_FillValue = -1.e+34 ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -101959,7 +103124,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
+		:Conventions = "CF-1.6" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	double A(XAX) ;
+		A:missing_value = -1.e+34 ;
+		A:_FillValue = -1.e+34 ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -102012,7 +103207,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -102054,7 +103249,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -102072,7 +103267,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 err611_set_var_ez.jnl --- 
@@ -102091,7 +103286,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -102109,7 +103304,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -102126,7 +103321,7 @@ variables:
 		A:long_name = "{1.1,2.2,3.3}" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -102147,7 +103342,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -102210,7 +103405,7 @@ variables:
 		newvar:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_keep_axisnames.jnl --- test SAVE/KEEP_AXISNAMES
@@ -102237,7 +103432,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -102264,7 +103459,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, degrees_east, degrees_north, std names on axes:
@@ -102330,7 +103525,7 @@ variables:
 		ZUP:long_name = "Z[GZ=ZAXUP]" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, Convert forms of DEG, degrees to degrees_east:
@@ -102362,7 +103557,7 @@ variables:
 		Y_:long_name_mod = "axis YFIFTEEN" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, Downcase units, e.g. in time axis DAYS since
@@ -102395,7 +103590,7 @@ variables:
 		XYTVAR:history = "From bn_strides" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -102420,7 +103615,7 @@ variables:
 		TIME:history = "From http://tds.climatedatacloud.com/thredds/dodsC/ensembles/nmme_gfdl/TwoD" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -102458,7 +103653,7 @@ variables:
 		time:history = "From http://tds.climatedatacloud.com/thredds/dodsC/ensembles/nmme_gfdl/TwoD" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -102484,7 +103679,7 @@ variables:
 		MYVAR:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -102498,7 +103693,7 @@ variables:
 		MYVAR:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V7.1 (beta/debug) 28-Feb-17" ;
+		:history = "FERRET V7.1 (beta/debug)  3-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 -----
@@ -102513,8 +103708,8 @@ yes?
 yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v7.1 (beta/debug)
- 	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 02/27/17
- 	28-Feb-17 10:05     
+ 	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 03/03/17
+ 	 3-Mar-17 15:24     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 8 bytes)
@@ -102526,13 +103721,13 @@ FERRET_PLATFORM = "Linux 2.6.32-642.15.1.el6.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "28-Feb-17"
-SESSION_TIME = "10:05"
-SESSION_PID = "17705"
-DELTA_CPU = "0.027994"
-CLOCK_SECS = "0.356"
-CURRENT_DATE = "28-Feb-17"
-CURRENT_TIME = "10:05:23"
+SESSION_DATE = " 3-Mar-17"
+SESSION_TIME = "15:24"
+SESSION_PID = "9951"
+DELTA_CPU = "0.063989"
+CLOCK_SECS = "0.418"
+CURRENT_DATE = " 3-Mar-17"
+CURRENT_TIME = "15:24:05"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 GO_FILE = "./bn_startupfile.jnl"
@@ -102555,7 +103750,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "28-Feb-17:10:05"
+WIN_TITLE = "3-Mar-17:15:24"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -102619,8 +103814,8 @@ yes?
 yes? GO bn_gif
  	NOAA/PMEL TMAP
  	FERRET v7.1 (beta/debug)
- 	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 02/27/17
- 	28-Feb-17 10:05     
+ 	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 03/03/17
+ 	 3-Mar-17 15:24     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -103158,8 +104353,8 @@ yes?
 yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v7.1 (beta/debug)
- 	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 02/27/17
- 	28-Feb-17 10:05     
+ 	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 03/03/17
+ 	 3-Mar-17 15:24     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -103272,8 +104467,8 @@ yes?
 yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v7.1 (beta/debug)
- 	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 02/27/17
- 	28-Feb-17 10:05     
+ 	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 03/03/17
+ 	 3-Mar-17 15:24     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -103357,4 +104552,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Tue Feb 28 10:05:26 PST 2017
+Ended at Fri Mar 3 15:24:08 PST 2017

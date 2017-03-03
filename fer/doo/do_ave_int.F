@@ -1,7 +1,7 @@
 	SUBROUTINE DO_AVE_INT(	action, idim, com_lo, com_hi,
      .				com, com_mr, com_cx,
      .				res, res_mr, res_cx,
-     .				box )
+     .				box, weights )
 
 *
 *
@@ -38,12 +38,11 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* perform both averaging and integrating (definite) - since they differ only
-* by a multiplying factor
+* perform both accumulation of values needed for both averaging and integrating
+* (definite) - since they differ only by a multiplying factor
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
 * V200: ????
 *      10/11/89 - modified array declarations using XMEM_SUBSC.CMN
@@ -53,6 +52,9 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
+* V702 *sh* 11/16 this routine now performs accumulation only.  Initialization
+*                 and finalizing called separately from IS_TRANS
+
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -76,10 +78,12 @@
 
 * calling argument declarations:
 	INTEGER	action, idim, com_lo, com_hi, com_mr, com_cx, res_mr, res_cx
-	REAL    com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
-     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
-     .          res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
-     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
+	REAL    com     ( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .                    m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .          res     ( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .                    m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
+     .          weights ( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .                    m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
      .		box( com_lo:com_hi )
 
 * --- end of introductory code ---
@@ -96,17 +100,21 @@
         point = .FALSE.
 
 * get and save grid box sizes (weights) just once for efficiency
-* (end boxes may be only partially weighted)
         IF ( lo .EQ. hi ) THEN    ! 8/92
            box(lo) = cx_hi_ww(idim,res_cx) - cx_lo_ww(idim,res_cx)
            point = box(lo) .EQ. 0.0
         ELSE
-	   box(lo) = TM_WORLD(lo, grid, idim, box_hi_lim)
-     .		   - cx_lo_ww(idim,res_cx)
-	   DO 100 i = lo+1, hi-1
+	   DO 100 i = lo, hi
  100	   box(i)  = BOX_SIZE( i, grid, idim )
-	   box(hi) = cx_hi_ww(idim,res_cx)
-     .		   - TM_WORLD(hi, grid, idim, box_lo_lim)
+* 11/16 ... end boxes may be only partial cells
+	   IF (TM_WORLD(lo, grid, idim, box_lo_lim)
+     .    .LT. cx_lo_ww(idim,res_cx)                ) box(lo) = 
+     .			TM_WORLD(lo, grid, idim, box_hi_lim)
+     .		      - cx_lo_ww(idim,res_cx)
+	   IF (TM_WORLD(hi, grid, idim, box_hi_lim)
+     .    .GT. cx_hi_ww(idim,res_cx)                ) box(hi) =
+     .			cx_hi_ww(idim,res_cx)
+     .		      - TM_WORLD(hi, grid, idim, box_lo_lim)
         ENDIF
 
 * perform integrations on standard units if possible
@@ -125,7 +133,8 @@
 	   need_cos = GEOG_COS_FACTOR( idim, grid )
      .                .AND. cx_lo_s2(com_cx).NE.unspecified_int4
 	   DO 210 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   IF ( need_cos ) THEN
+	   cos_factor = 1.
+	   IF ( need_cos .AND. integrate ) THEN
 #ifdef double_p
 	      cos_factor = COS( deg2rad *       
      .             TM_WORLD(j, grid, y_dim, box_middle) ) 
@@ -165,17 +174,9 @@
 	         bsum = bsum + box(i)
 	         dsum = dsum + box(i)*com(i,j,k,l,m,n)
  200	      CONTINUE
-	      IF ( bsum .EQ. 0.0D0 ) THEN
-	         res(pt,j,k,l,m,n) = bad_res
-	      ELSEIF (integrate) THEN
-	         IF ( need_cos ) THEN
-	            res(pt,j,k,l,m,n) = dsum * cos_factor
-	         ELSE
-	            res(pt,j,k,l,m,n) = dsum
-	         ENDIF
-	      ELSE
-	         res(pt,j,k,l,m,n) = dsum/bsum
-	      ENDIF
+	      res(pt,j,k,l,m,n) = res(pt,j,k,l,m,n) + dsum* cos_factor
+	      weights(pt,j,k,l,m,n) = weights(pt,j,k,l,m,n) + bsum
+
  210	   CONTINUE
 
 * ALONG Y AXIS
@@ -202,13 +203,8 @@
 	         bsum = bsum + box(j)
 	         dsum = dsum + box(j)*com(i,j,k,l,m,n)
  300	      CONTINUE
-	      IF ( bsum .EQ. 0.0D0 ) THEN
-	         res(i,pt,k,l,m,n) = bad_res
-	      ELSEIF (integrate) THEN
-	         res(i,pt,k,l,m,n) = dsum
-	      ELSE
-	         res(i,pt,k,l,m,n) = dsum/bsum
-	      ENDIF
+	      res(i,pt,k,l,m,n) = res(i,pt,k,l,m,n) + dsum
+	      weights(i,pt,k,l,m,n) = weights(i,pt,k,l,m,n) + bsum
  310	   CONTINUE
 
 * ALONG Z AXIS
@@ -235,13 +231,8 @@
 	         bsum = bsum + box(k)
 	         dsum = dsum + box(k)*com(i,j,k,l,m,n)
  400	      CONTINUE
-              IF ( bsum .EQ. 0.0D0 ) THEN
-	         res(i,j,pt,l,m,n) = bad_res
-	      ELSEIF (integrate) THEN
-	         res(i,j,pt,l,m,n) = dsum
-	      ELSE
-	         res(i,j,pt,l,m,n) = dsum/bsum
-	      ENDIF
+              res(i,j,pt,l,m,n) = res(i,j,pt,l,m,n) + dsum
+              weights(i,j,pt,l,m,n) = weights(i,j,pt,l,m,n) + bsum
  410	   CONTINUE
 
 * ALONG T AXIS
@@ -268,13 +259,9 @@
 	         bsum = bsum + box(l)
 	         dsum = dsum + box(l)*com(i,j,k,l,m,n)
  500	      CONTINUE
-	      IF ( bsum .EQ. 0.0D0 ) THEN
-	         res(i,j,k,pt,m,n) = bad_res
-	      ELSEIF (integrate) THEN
-	         res(i,j,k,pt,m,n) = dsum
-	      ELSE
-	         res(i,j,k,pt,m,n) = dsum/bsum
-	      ENDIF
+* ... accumulate weighted values and weights
+	      weights(i,j,k,pt,m,n) = weights(i,j,k,pt,m,n) + bsum
+	      res    (i,j,k,pt,m,n) = res    (i,j,k,pt,m,n) + dsum
  510	   CONTINUE
 
 
@@ -302,13 +289,8 @@
 	         bsum = bsum + box(m)
 	         dsum = dsum + box(m)*com(i,j,k,l,m,n)
  600	      CONTINUE
-	      IF ( bsum .EQ. 0.0D0 ) THEN
-	         res(i,j,k,l,pt,n) = bad_res
-	      ELSEIF (integrate) THEN
-	         res(i,j,k,l,pt,n) = dsum
-	      ELSE
-	         res(i,j,k,l,pt,n) = dsum/bsum
-	      ENDIF
+	      res(i,j,k,l,pt,n) = res(i,j,k,l,pt,n) + dsum
+	      weights(i,j,k,l,pt,n) = weights(i,j,k,l,pt,n) + bsum
  610	   CONTINUE
 
 
@@ -336,13 +318,8 @@
 	         bsum = bsum + box(n)
 	         dsum = dsum + box(n)*com(i,j,k,l,m,n)
  700	      CONTINUE
-	      IF ( bsum .EQ. 0.0D0 ) THEN
-	         res(i,j,k,l,m,pt) = bad_res
-	      ELSEIF (integrate) THEN
-	         res(i,j,k,l,m,pt) = dsum
-	      ELSE
-	         res(i,j,k,l,m,pt) = dsum/bsum
-	      ENDIF
+	      res(i,j,k,l,m,pt) = res(i,j,k,l,m,pt) + dsum
+	      weights(i,j,k,l,m,pt) = weights(i,j,k,l,m,pt) + bsum
  710	   CONTINUE
 
 	ENDIF

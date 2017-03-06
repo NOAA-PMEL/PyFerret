@@ -203,6 +203,8 @@
 * 1/26/2017 *acm* Ticket 1480. change the message if the modulo length is 
 *                 less than the axis length. The rest of that ticket is 
 *                 addressed in cd_write_axis.
+* v720 2/2017 *acm* Ticket 2513. Check that bounds or edges data is in the file when 
+*                 attribute is found, before trying to use it.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -289,7 +291,7 @@
       PARAMETER (bufflen = 256)
       CHARACTER*256 buff
       REAL*8   TM_SECS_FROM_BC, first, secs2firststep, secs1590,
-     .         t0_secs, last_coord, firs_coord, secsperyear, secs2start,
+     .         t0_secs, last_coord, firs_coord, secsperyear, secs2start, 
      .         days_neg4713, days_1901_may68, secs_to_1901, secs_to_1968 
 
 * parameter declarations
@@ -435,12 +437,44 @@
      .                       do_warn, vname(:vlen), maxlen,
      .                       attlen, attoutflag, ename, val)
 
-* Cannot have both "edges" and "bounds" atrtributes
-      IF ( got_bnds .AND. got_edges )THEN
-         CALL TM_NOTE(
-     .     'Axis has both edges and bounds attributes: '//
-     .      vname(:vlen)//' - edges definition ignored', tt )
-         GOTO 500
+* Cannot have both "edges" and "bounds" attributes
+* Ticket 2513
+* Check that the file has the bounds or edges listed in the attribute.
+* Use bounds if they are in the file, else edges.
+
+      IF ( got_bnds .AND. got_edges ) THEN
+         bndid = 0
+	 edgid = 0
+	 CALL CD_GET_VAR_ID (dset, bname, bndid, status)
+	 CALL CD_GET_VAR_ID (dset, ename, edgid, status)
+
+* If bounds or edges are in the file, use bounds preferentially, else edges
+
+	 IF (bndid + edgid .GT. 0) THEN
+	    IF (bndid .GT. 0) THEN
+               CALL TM_NOTE(
+     .          'Axis has both edges and bounds attributes: '//
+     .           vname(:vlen)//' - edges definition ignored', tt )
+               got_bnds = .FALSE.
+	    ENDIF
+	    IF (edgid .GT. 0 .AND. bndid.EQ.0) THEN
+               CALL TM_NOTE(
+     .          'Axis has both edges and bounds attributes: '//
+     .           vname(:vlen)//'. Bounds not in file. Ignore bounds definition', tt )
+               got_bnds = .FALSE.
+	    ENDIF
+	 ENDIF ! at least one of bounds and edges is in the file
+	 
+* If attributes but not data for bounds/edges, issue a note	    
+	 IF (bndid + edgid .EQ. 0) THEN
+            CALL TM_NOTE(
+     .           'Axis has both edges and bounds attributes: '//
+     .           vname(:vlen)//'. Bounds and edges not in file, '//
+     .           'ignore bounds and edges attributes', tt )
+            got_bnds = .FALSE.
+            got_edges = .FALSE.
+	 ENDIF
+
       ENDIF
 
 * We will be checking bounds or edges. Read the coords too
@@ -502,10 +536,9 @@
       IF ( since_T0 .GT. 2 ) THEN
          line_units(iaxis) = buff(:since_T0-1)  ! just the "tunits" part 
 
-         istat = STR_UPCASE( dbuf, buff(1:3) )
-
          slen = TM_LENSTR1(buff)
          IF ( slen .GT. since_T0 + 5) THEN
+	 
             IF (buff(since_T0+6:since_T0+10) .EQ. '-4713' .AND.
      .          dbuf .EQ. 'DAY')  THEN
 

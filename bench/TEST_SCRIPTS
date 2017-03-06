@@ -269,6 +269,7 @@ bn_ave_of_ave.jnl
 bn_agg_member_syntax.jnl
 bn_true_monthly.jnl
 bn720_bug_fixes.jnl
+bn_compressed_gather.jnl
 !
 ! bn_gif, bn_all_ef, and bn_startupfile at end
 !

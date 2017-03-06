@@ -278,7 +278,11 @@
      .		( ferr_not_implemented, status,
      .			'cannot /APPEND with STREAM format', *4999)
 
-* /RIGID for netCDF ?
+* /RIGID for netCDF ?  
+* As of 2/2017, write bounds if /RIGID and irregular, rather than edges,
+* unless they say /EDGES. So bounds are now treated in the default way when
+* /RIGID is given.
+
         i = qual_given( slash_rigid )
         IF ( i .GT. 0 ) THEN
            cdf_recax = 'N'   ! no record axis
@@ -302,7 +306,6 @@
 	do_bounds = 0
         IF (qual_given( slash_list_bounds ) .GT. 0) do_bounds = 1
         IF (qual_given( slash_list_nobounds ) .GT. 0) do_bounds = -1
-
  
 * only for cdf, and not both edges and bounds.  Use BOUNDS if both specified.
 
@@ -313,23 +316,9 @@
              IF (qual_given( slash_list_edges ) .GT. 0)
      .            CALL WARN('Cannot have both /BOUNDS and /EDGES '//
      .           'Ignoring /EDGES')
-             IF (qual_given( slash_rigid ) .GT. 0)
-     .            CALL WARN('Cannot have both /BOUNDS and /RIGID '//
-     .           'Ignoring /RIGID')
-              cdf_recax = 'T'   ! "T" is record axis
               edges_flag = 0
            ENDIF
         ENDIF
-
-* /RIGID implies /EDGES. Make sure to turn off bounds.
-* The case of /RIGID and /BOUNDS together is already handled.
-
-	IF ( qual_given( slash_rigid ) .GT. 0) THEN
-	   IF (do_bounds .EQ. 0) THEN
-	      edges_flag = 2
-	      do_bounds = -1
-	   ENDIF
-	ENDIF
 
 * get the requested data somehow
 * (leave the variables flagged as "in-use" 7/92)

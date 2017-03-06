@@ -1,5 +1,5 @@
 *
-* minmax.F
+* minmax function
 *
 * Ansley Manke
 * May 2009

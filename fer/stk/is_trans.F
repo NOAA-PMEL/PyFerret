@@ -1,4 +1,4 @@
-	SUBROUTINE IS_TRANS( memory, ROUTINE, *, status )
+	SUBROUTINE IS_TRANS( memory, ROUTINE, *, *, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -69,16 +69,21 @@
 *		variables
 * V530:  8/00 *sh* changed string trap to be based on data type, not category
 * V533:  7/01 *sh* transform @SHF supported for strings
-* v552   4/03 *acm* up VAR_TRANS to 150 characters (variables are up to 128, plus
-*                   space for the transformation specifier)
-* V600  10/05 *acm* Fis bug 899: rather than the ungraceful STOP, issue an error
-*                   message if a 4-D transform was requested but the dimensions 
-*                   are not available in the grid.
+* v552   4/03 *acm* up VAR_TRANS to 150 characters (variables are up to 128,
+*                   plus space for the transformation specifier)
+* V600  10/05 *acm* is bug 899: rather than the ungraceful STOP, issue an
+*		    error message if a 4-D transform was requested but the
+*		    dimensions are not available in the grid.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
-* V691+ *acm* 8/14 Fix ticket 2196. Fill transformations component index range should 
-*                  be limited to the range of the axis.
-* V710  *acm* 9/16 For ticket 2469: Allow an average of an average and likewise @SUM, @MIN, @MAX 
-
+* V691+ *acm* 8/14 Fix ticket 2196. Fill transformations component index range
+*		   should be limited to the range of the axis.
+* V710  *acm* 9/16 For ticket 2469: Allow an average of an average and likewise
+*		   @SUM, @MIN, @MAX 
+* V702 *sh* 11/16 mods for trac #2428 - calculation in gathered fragments
+*		   Compute transformations in 3 phases: i)initialize,
+*		   ii) accumulate, and iii) finalize so that compressed axes
+*		   may be split/gathered (in IS_STRIP and IS_GATHER)
+	
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	include	'ferret.parm'
@@ -89,6 +94,7 @@
 	include	'xtext_info.cmn'
 	include	'xalgebra.cmn'
 	include	'xfr_grid.cmn'
+	include 'xprog_state.cmn'
 
 * calling argument declarations:
 	INTEGER	status
@@ -100,30 +106,36 @@
 
 * internal variable declarations:
 * ... "res"="result" , "com"="component"
-	LOGICAL	ITSA_FILL_TRANS, ITSA_MODULO_AXIS, its_4d, string_bad_good, string_com
+	LOGICAL	ITSA_FILL_TRANS, ITSA_MODULO_AXIS, its_4d, string_bad_good,
+     .		string_com, need_init
 	INTEGER CX_DIM_LEN, MGRID_SIZE_DELTA, DO_4D_STRING_TRANS, CAXIS_LEN,
      .		slen, cx_valid,
      .		res_isp, com_isp, res_cx, com_cx, com_mr, res_mr, idim,
      .		trans, grid, lo_off, hi_off, ss_lo, ss_hi, wksiz, wkblk,
-     .		mrlist(2), axes(nferdims), idim1, i, ndim, axis
+     .		mrlist(2), axes(nferdims), idim1, i, ndim, axis, nbuffer,
+     .		dflt_cx, frag
 	REAL	arg
-	REAL*8	TM_WORLD, ww, ww_lo, ww_hi
+	REAL*8	TM_WORLD, ww, ww_lo, ww_hi, init_val
 	CHARACTER VAR_TRANS*150, buff*150
 
 * --- end of introductory code ---
 
-* initialize
+* ***** initial set up and error checks *****
 	res_isp	= isp
 	com_isp	= res_isp + 1
 	res_cx  = is_cx( res_isp )
 	com_cx  = is_cx( com_isp )
+        res_mr  = is_mr( res_isp ) ! gets set in isphase_initialize_transform
 	com_mr	= is_mr( com_isp )
+ 	dflt_cx = is_big_cx( res_isp )
+	frag    = is_sum   ( res_isp )
 	idim1	= is_axis( res_isp )
 	trans	= cx_trans( idim1, res_cx )
 	arg	= cx_trans_arg( idim1, res_cx )
 	grid    = cx_grid( com_cx )
 	string_bad_good = .FALSE.
 	string_com = .FALSE.
+	need_init = .FALSE.
 
 * determine if this is a 1D or a 4D (multiple axis) transformation
 	its_4d = .FALSE.
@@ -177,15 +189,22 @@
               CALL COPY_GRID(
      .           memory( 1, mr_blk1(com_mr) ) , com_mr,
      .           memory( 1, mr_blk1(res_mr) ) , res_mr )
-              is_mr( res_isp ) = res_mr
+              is_mr   (res_isp) = res_mr
               GOTO 1000
             ENDIF
          ENDIF
 
+* ***** end of initial set up and error checks *****
+
+* This is_phase branch occurs only when additional data has arrived to be
+* accumulated in a split/gather operation
+	IF (is_phase(res_isp) .EQ. isphase_accumulate_transform) GOTO 500
+* 11111 start of isphase_initialize_transform 11111 *
+
 * create a result context based on the received component
 	cx_valid= cx_buff
 	CALL TRANSFER_CONTEXT( com_cx, cx_valid )
-		DO 300 i = 1, ndim
+	DO 300 i = 1, ndim
 	   idim = axes(i)
 * ... if the requested region was unknown use the component region
 
@@ -193,13 +212,22 @@
 
 	   IF ( cx_lo_ss(res_cx,idim).EQ.unspecified_int4
      .	   .AND.cx_lo_ww(idim,res_cx).NE.unspecified_val8 ) THEN
-	      IF (cx_grid(com_cx) .GE. mgrid_abstract .AND. cx_grid(com_cx) .LE. mgrid_fabstract ) THEN  
+	      IF (cx_grid(com_cx) .GE. mgrid_abstract
+     .	    .AND. cx_grid(com_cx) .LE. mgrid_fabstract ) THEN  
 	         cx_lo_ss( res_cx, idim ) = cx_lo_ss(com_cx,idim)
 	         cx_hi_ss( res_cx, idim ) = cx_hi_ss(com_cx,idim)
               ENDIF
 	   ENDIF
 
-	   IF ( cx_lo_ss(res_cx,idim).EQ.unspecified_int4
+	   IF (is_phase(res_isp) .EQ. isphase_initialize_transform
+     .	.AND. idim.EQ.idim1 ) THEN
+* 11/16 - we are initializing a result to be determined by a gather operation
+* along the transformed axis
+	      CONTINUE  ! leave result ax-s as-is
+! note that this is an imperfect solution.  Might the requested result region
+! be incorrect?  eg. LIST V[l=@ave], where v = v2[L=100:200]
+! check with totalview whether the result incorrectly has full axis span
+	   ELSEIF ( cx_lo_ss(res_cx,idim).EQ.unspecified_int4
      .	   .AND.cx_lo_ww(idim,res_cx).EQ.unspecified_val8 ) THEN
 * 11/95 - FLESH_OUT_AXIS cannot be trusted to flesh this out.
 *	  It puts responsibility for redundant limits onto the various interp
@@ -214,8 +242,8 @@
 	         cx_by_ss( idim, res_cx ) = .FALSE.
 	      ENDIF
 ! pre=11/95cx_lo_ss(res_cx,idim) = cx_lo_ss(com_cx,idim)
-!	      cx_hi_ss(res_cx,idim) = cx_hi_ss(com_cx,idim)
-!	      cx_by_ss(idim,res_cx) = .TRUE.
+!	         cx_hi_ss(res_cx,idim) = cx_hi_ss(com_cx,idim)
+!	         cx_by_ss(idim,res_cx) = .TRUE.
 
 * 11/95 - is interpolation the only case of a compressing transform
 * where the component ww range normally doesn't match the result?
@@ -257,21 +285,35 @@
      .         trans .EQ. trans_bad_pt     .OR.
      .         trans .EQ. trans_4d_good_pt .OR.
      .         trans .EQ. trans_4d_bad_pt ) THEN
-              string_bad_good = .TRUE.
-              cx_type(res_cx) = ptype_float
+               string_bad_good = .TRUE.
+               cx_type(res_cx) = ptype_float
            ENDIF
         ENDIF
 
-	CALL CREATE_MEM_VAR( res_cx, res_mr, status )
+* 11/16: allow extra buffer space for accumulating weight values or counts?
+	CALL TRANS_INIT_VALUE(idim1, res_cx,
+     .			             need_init, init_val, nbuffer)
+
+* allocate memory for the result
+	CALL CREATE_MEM_VAR_W_BUFFER( res_cx, res_mr, nbuffer, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	is_mr( res_isp ) = res_mr
 	IF ( mr_type(res_mr) .EQ. ptype_string .AND.
-     .       (.NOT.string_bad_good)) THEN
+     .     (.NOT.string_bad_good)                    ) THEN
 * ... only applicable to @SHF transformation; else will return a null string.
            CALL INIT_C_STRING_ARRAY( MGRID_SIZE_DELTA(res_mr),
      .                               memory(1, mr_blk1(res_mr)),
      .                               mr_c_pointer(res_mr)      )
 	ENDIF
+
+* 11/16: pre-fill the result with an initialization value
+	IF (need_init) CALL FILL_MEMORY( memory,
+     .					 mr_blk1(res_mr),mr_nblks(res_mr),
+     .					 init_val )
+
+* if starting up a split/gather ...
+	IF (is_phase(res_isp).EQ.isphase_initialize_transform) 
+     .	    is_phase(res_isp)  = isphase_accumulate_transform
 
 !* diagnostic message ?
 !	IF (mode_diagnostic) CALL DIAGNOSTIC_OUT(
@@ -308,12 +350,14 @@
 	   IF  ( .NOT. ITSA_MODULO_AXIS(com_cx, idim) ) THEN
 	      cx_lo_ss( cx_valid, idim ) = MAX(1,cx_lo_ss( cx_valid, idim ))
 	      cx_hi_ss( cx_valid, idim ) = MAX(1,cx_hi_ss( cx_valid, idim ))
-	      cx_lo_ss( cx_valid, idim ) = MIN(CAXIS_LEN(idim,com_cx), cx_lo_ss( cx_valid, idim ))
-	      cx_hi_ss( cx_valid, idim ) = MIN(CAXIS_LEN(idim,com_cx), cx_hi_ss( cx_valid, idim ))
+	      cx_lo_ss( cx_valid, idim ) = MIN(CAXIS_LEN(idim,com_cx),
+     .					       cx_lo_ss( cx_valid, idim ))
+	      cx_hi_ss( cx_valid, idim ) = MIN(CAXIS_LEN(idim,com_cx),
+     .					       cx_hi_ss( cx_valid, idim ))
 	   ENDIF 
 
+* insufficient component data to compute anything?
 	   IF ( cx_lo_ss(cx_valid,idim) .GT. cx_hi_ss(cx_valid,idim) ) THEN
-* ... insufficient component data to compute anything
 	      IF ( mr_type(res_mr) .EQ. ptype_string ) THEN
 	        CALL SET_NULL_C_STRING_ARRAY(mr_c_pointer(res_mr),
      .                                       MGRID_SIZE_DELTA(res_mr) )
@@ -322,7 +366,9 @@
      .		  		  mr_bad_data(res_mr) )
 	      ENDIF
 	      GOTO 1000
-	   ELSEIF (  cx_lo_ss(res_cx,idim) .LT. cx_lo_ss(cx_valid,idim)
+	   ENDIF
+
+	   IF (  cx_lo_ss(res_cx,idim) .LT. cx_lo_ss(cx_valid,idim)
      .		.OR. cx_hi_ss(res_cx,idim) .GT. cx_hi_ss(cx_valid,idim) ) THEN
 * ... insufficient component data to compute the entire requested region
 	      CALL BAD_EDGES( cx_valid, memory(1,mr_blk1(res_mr)), res_mr )
@@ -353,8 +399,10 @@
 
 	      axis = grid_line( idim, cx_grid(com_cx) )
 	      IF (.NOT. line_modulo(axis)) THEN
-	         cx_lo_ss(com_cx,idim) = MAX(1, cx_lo_ss(com_cx,idim))
-	         cx_hi_ss(com_cx,idim) = MIN(line_dim(axis), cx_hi_ss(com_cx,idim))
+	         cx_lo_ss(com_cx,idim) = MAX(1,
+     .					     cx_lo_ss(com_cx,idim))
+	         cx_hi_ss(com_cx,idim) = MIN(line_dim(axis),
+     .				             cx_hi_ss(com_cx,idim))
 	      ENDIF
 
 	      cx_by_ss(idim,res_cx) = .TRUE.
@@ -362,6 +410,11 @@
 	      IF ( status .NE. ferr_ok ) GOTO 5000
 	   ENDIF
 	ENDIF
+
+* 11111 end of isphase_initialize_transform 11111 *
+
+ 500	CONTINUE
+* 22222 start of isphase_accumulate_transform 22222 *
 
 * set up 4D array limits as unsubscripted variables in COMMON
 	mrlist(1) = com_mr
@@ -397,10 +450,11 @@
 * Note: this logic is a loose hodge-podge to get an upper bound size for all
 * the different cases: 4D, 1D, with arguments, etc.
 	wksiz = 1
-	DO 500 i = 1, ndim
+	DO i = 1, ndim
 	   idim = axes(i)
 	   wksiz = wksiz + CX_DIM_LEN(idim,com_cx)
- 500	CONTINUE
+	ENDDO
+
 * ... allow room for COS(lat) array during 4D transforms (8/96)
 	IF (ndim .GT. 1 )  wksiz = wksiz + CX_DIM_LEN(y_dim,com_cx)
 * ... set minimum work size
@@ -411,22 +465,49 @@
 	CALL GET_WORK_SPC( wksiz, wkblk, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
-* do the transform
-
+* do the transform (or at least accumulate results in preparation to finalize)
 	status = ROUTINE( idim, arg,
      .		memory( 1, mr_blk1(com_mr) ), com_mr, com_cx, ! component
      .		memory( 1, mr_blk1(res_mr) ), res_mr, res_cx, ! result
      .		memory( 1, wkblk )			    ) ! work space
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
+* go back for more input data to compress into the transform?
+	IF ( is_phase(res_isp) .EQ. isphase_accumulate_transform ) THEN
+
+	   IF (cx_hi_ss(com_cx,idim1).LT.cx_hi_ss(dflt_cx,idim1) ) THEN
+* yes - get next fragment
+
+* ... remove component protections that signaled this calculation needed it
+	      CALL MR_NOT_IN_USE( com_mr )	
+
+* ... adjust the component limits to get the next fragment as setup by IS_STRIP
+	      CALL DEFINE_NEXT_CHUNK_CX(idim1, com_cx, dflt_cx, frag, status)
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+	      IF ( mode_diagnostic )
+     .		   CALL DIAG_OP('doing', isact_class_cmp_gather_dummy,
+     .							com_cx, idim1)
+* ... push the interpretation stack and go get it
+	      isp = com_isp
+	      RETURN 1
+	   ELSE
+* no - all fragments have been processed.  Get ready to finalize
+	      cx_stack_ptr = cx_stack_ptr - 1   ! free big_cx
+	   ENDIF
+	ENDIF
+
+* finialize (e.g. average = WEIGHTED_SUM(values) / SUM(weights)
+	CALL TRANS_FINALIZE( idim, arg,
+     .		memory( 1, mr_blk1(res_mr) ), res_mr, res_cx )
+
 * remove component protections that signaled this calculation needed it
  1000	CALL MR_NOT_IN_USE( com_mr )	
 
-* free the context stack space
+* ... successful completion
+*     free the context stack space
 	cx_stack_ptr = cx_stack_ptr - 1
-
-* success
-	RETURN 1
+	is_phase(res_isp)  =   isphase_completed_transform ! housekeeping
+	RETURN 2
 
 * error exit
  5000	RETURN

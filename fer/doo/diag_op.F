@@ -64,6 +64,7 @@
 * V7    acm  6/16 Ticket 2437: Deprecating mode_6d_lab. 
 *		  Adjust output to 6-D or 4-D grids
 * V701  acm  7/16 Avoid writing nulls when changing from 6-D to 4-D output
+* V702 *sh* 11/16 report gathering on compressed axis
 
 * calling argument declarations:
         IMPLICIT NONE
@@ -131,6 +132,16 @@
      .			cx_data_set(cx)
  3030	   FORMAT
      . (1X,A5,' gathering ',A,' on ',A1,' axis:',2I6,' dset:',I4)
+	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
+
+* COMPRESSED AXIS SPLITTING/GATHERING
+	ELSEIF( act_class .EQ. isact_class_cmp_gather_dummy ) THEN
+	   WRITE ( risc_buff, 3031 ) doing, var(1:slen),
+     .                  ww_dim_name( idim ),
+     .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim),
+     .			cx_data_set(cx)
+ 3031	   FORMAT
+     . (1X,A5,' gather/compress ',A,' on ',A1,' axis:',2I6,' dset:',I4)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
 * SAMPLING (SAMPLE* functions)

@@ -1,6 +1,7 @@
-	SUBROUTINE DO_POINTS(	action, idim,
-     .				com, com_mr, com_cx,
-     .				res, res_mr, res_cx )
+	INTEGER FUNCTION DO_MAX_SUB ( idim, arg,
+     .				 com, com_mr, com_cx,
+     .				 res, res_mr, res_cx,
+     .				 counts	)
 
 *
 *
@@ -37,49 +38,56 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* determine the number of good and number of bad points along the given axis
+* find the MAXIMUM value of the component grid along axis idim
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
 *
-* V230:   2/3/92 - based on DO_AVE_INT
+* V200:  6/1/89
+*	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V71 *acm* 12/16 this routine now performs accumulation, possibly continuing
 *                 over several chunks, so keep adding to the count in res(). 
 *                 Initialization and finalizing called separately from IS_TRANS
+*                 Counts are saved for the finalization step, to distinguish
+*                 between maximum of zero and result that indicates all-missing-data.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
 	include	'ferret.parm'
+	include	'errmsg.parm'
 	include	'interp_stack.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
-	include 'xunits.cmn_text'
-	external xunits_data
-	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-
-* internal variable declarations:
-	LOGICAL	good_un
-	INTEGER i, j, k, l, m, n, pt, ngd, nbd
-	REAL	bad_com, bad_res
+	include	'xprog_state.cmn'
 
 * calling argument declarations:
-	INTEGER	action, idim, com_mr, com_cx, res_mr, res_cx
-	REAL    com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
+	REAL	arg, 
+     .          com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
      .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
      .          res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
-     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
+     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
+     .          counts ( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .                    m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
 
-* --- end of introductory code ---
+* internal variable declarations:
+	INTEGER i, j, k, l, m, n, pt
+	REAL	bad_res, ok
+
+* internal parameter declaration
+	REAL		too_small
+	PARAMETER     ( too_small = -1.E33 )
+
+* diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
+	IF ( mode_diagnostic ) 	CALL DIAG_OP
+     .				( 'doing', isact_class_trans, res_cx, idim )
 
 * initialize
-        pt   = cx_lo_ss( res_cx, idim )
-	bad_com = mr_bad_data( com_mr )
-        bad_res = mr_bad_data( res_mr )
-	good_un  = action .EQ. isact_good_pt
+	pt   = cx_lo_ss( res_cx, idim )
+	bad_res = mr_bad_data( res_mr )
 
 * ALONG X AXIS
 	IF ( idim .EQ. x_dim ) THEN
@@ -88,20 +96,16 @@
 	   DO 110 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 110 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 110 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-              ngd = 0
-              nbd = 0
+	      ok = 0.
 	      DO 100 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
-                    nbd = nbd + 1
-                 ELSE
-                    ngd = ngd + 1
-                 ENDIF
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_res ) GOTO 100
+		 ok = ok + 1.
+	         IF ( com(i,j,k,l,m,n) .GT. res(pt,j,k,l,m,n) )
+     .              res(pt,j,k,l,m,n) = com(i,j,k,l,m,n)
  100	      CONTINUE
-              IF ( good_un ) THEN
-                 res(pt,j,k,l,m,n) = res(pt,j,k,l,m,n) + ngd
-              ELSE
-                 res(pt,j,k,l,m,n) = res(pt,j,k,l,m,n) + nbd
-              ENDIF
+	      IF (counts(pt,j,k,l,m,n) .EQ. too_small) 
+     .              counts(pt,j,k,l,m,n) = 0.
+	      counts(pt,j,k,l,m,n) = counts(pt,j,k,l,m,n) + ok
  110	   CONTINUE
 
 * ALONG Y AXIS
@@ -111,20 +115,16 @@
 	   DO 210 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 210 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 210 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-              ngd = 0
-              nbd = 0
+	      ok = 0.
 	      DO 200 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
-                    nbd = nbd + 1
-                 ELSE
-                    ngd = ngd + 1
-                 ENDIF
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_res ) GOTO 200
+		 ok = ok + 1.
+	         IF ( com(i,j,k,l,m,n) .GT. res(i,pt,k,l,m,n) )
+     .              res(i,pt,k,l,m,n) = com(i,j,k,l,m,n)
  200	      CONTINUE
-              IF ( good_un ) THEN
-                 res(i,pt,k,l,m,n) = res(i,pt,k,l,m,n) + ngd
-              ELSE
-                 res(i,pt,k,l,m,n) = res(i,pt,k,l,m,n) + nbd
-              ENDIF
+	      IF (counts(i,pt,k,l,m,n) .EQ. too_small) 
+     .              counts(i,pt,k,l,m,n) = 0.
+	      counts(i,pt,k,l,m,n) = counts(i,pt,k,l,m,n) + ok
  210	   CONTINUE
 
 * ALONG Z AXIS
@@ -134,20 +134,16 @@
 	   DO 310 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 310 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 310 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-              ngd = 0
-              nbd = 0
+	      ok = 0.
 	      DO 300 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
-                    nbd = nbd + 1
-                 ELSE
-                    ngd = ngd + 1
-                 ENDIF
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_res ) GOTO 300
+		 ok = ok + 1.
+	         IF ( com(i,j,k,l,m,n) .GT. res(i,j,pt,l,m,n) )
+     .              res(i,j,pt,l,m,n) = com(i,j,k,l,m,n)
  300	      CONTINUE
-              IF ( good_un ) THEN
-                 res(i,j,pt,l,m,n) = res(i,j,pt,l,m,n) + ngd
-              ELSE
-                 res(i,j,pt,l,m,n) = res(i,j,pt,l,m,n) + nbd
-              ENDIF
+	      IF (counts(i,j,pt,l,m,n) .EQ. too_small) 
+     .              counts(i,j,pt,l,m,n) = 0.
+	      counts(i,j,pt,l,m,n) = counts(i,j,pt,l,m,n) + ok
  310	   CONTINUE
 
 * ALONG T AXIS
@@ -157,20 +153,16 @@
 	   DO 410 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 410 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 410 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-              ngd = 0
-              nbd = 0
+	      ok = 0.
 	      DO 400 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
-                    nbd = nbd + 1
-                 ELSE
-                    ngd = ngd + 1
-                 ENDIF
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_res ) GOTO 400
+		 ok = ok + 1.
+	         IF ( com(i,j,k,l,m,n) .GT. res(i,j,k,pt,m,n) )
+     .              res(i,j,k,pt,m,n) = com(i,j,k,l,m,n)
  400	      CONTINUE
-              IF ( good_un ) THEN
-                 res(i,j,k,pt,m,n) = res(i,j,k,pt,m,n) + ngd
-              ELSE
-                 res(i,j,k,pt,m,n) = res(i,j,k,pt,m,n) + nbd
-              ENDIF
+	      IF (counts(i,j,k,pt,m,n) .EQ. too_small) 
+     .              counts(i,j,k,pt,m,n) = 0.
+	      counts(i,j,k,pt,m,n) = counts(i,j,k,pt,m,n) + ok
  410	   CONTINUE
 
 * ALONG E AXIS
@@ -180,20 +172,16 @@
 	   DO 510 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 510 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 510 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-              ngd = 0
-              nbd = 0
+	      ok = 0.
 	      DO 500 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
-                    nbd = nbd + 1
-                 ELSE
-                    ngd = ngd + 1
-                 ENDIF
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_res ) GOTO 500
+		 ok = ok + 1.
+	         IF ( com(i,j,k,l,m,n) .GT. res(i,j,k,l,pt,n) )
+     .              res(i,j,k,l,pt,n) = com(i,j,k,l,m,n)
  500	      CONTINUE
-              IF ( good_un ) THEN
-                 res(i,j,k,l,pt,n) = res(i,j,k,l,pt,n) + ngd
-              ELSE
-                 res(i,j,k,l,pt,n) = res(i,j,k,l,pt,n) + nbd
-              ENDIF
+	      IF (counts(i,j,k,l,pt,n) .EQ. too_small) 
+     .              counts(i,j,k,l,pt,n) = 0.
+	      counts(i,j,k,l,pt,n) = counts(i,j,k,l,pt,n) + ok
  510	   CONTINUE
 
 * ALONG F AXIS
@@ -203,20 +191,16 @@
 	   DO 610 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 610 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 610 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-              ngd = 0
-              nbd = 0
+	      ok = 0.
 	      DO 600 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
-                    nbd = nbd + 1
-                 ELSE
-                    ngd = ngd + 1
-                 ENDIF
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_res ) GOTO 600
+		 ok = ok + 1.
+	         IF ( com(i,j,k,l,m,n) .GT. res(i,j,k,l,m,pt) )
+     .              res(i,j,k,l,m,pt) = com(i,j,k,l,m,n)
  600	      CONTINUE
-              IF ( good_un ) THEN
-                 res(i,j,k,l,m,pt) = res(i,j,k,l,m,pt) + ngd
-              ELSE
-                 res(i,j,k,l,m,pt) = res(i,j,k,l,m,pt) + nbd
-              ENDIF
+	      IF (counts(i,j,k,l,m,pt) .EQ. too_small) 
+     .              counts(i,j,k,l,m,pt) = 0.
+	      counts(i,j,k,l,m,pt) = counts(i,j,k,l,m,pt) + ok
  610	   CONTINUE
 
 	ENDIF

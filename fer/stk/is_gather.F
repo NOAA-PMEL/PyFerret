@@ -115,12 +115,7 @@
 	ENDIF
 
 * no - set up com_cx to get the next component grid
-	top = cx_hi_ss(com_cx,idim)
-	CALL TRANSFER_CONTEXT( dflt_cx, com_cx )
-	cx_lo_ss(com_cx,idim) = top + 1
-	cx_hi_ss(com_cx,idim) = MIN( top+frag, cx_hi_ss(dflt_cx,idim)	)
-	cx_by_ss(idim,com_cx) = .TRUE.
-	CALL FLESH_OUT_AXIS( idim, com_cx, status )
+	CALL DEFINE_NEXT_CHUNK_CX(idim, com_cx, dflt_cx, frag, status)
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * push the interpretation stack and go get it

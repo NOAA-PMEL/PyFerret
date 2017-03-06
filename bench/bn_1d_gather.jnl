@@ -1,0 +1,8 @@
+! bn_1d_gather.jnl
+! test all kinds of gathering in 1 dimension
+
+go bn_gather_DIM_ave $1
+go bn_gather_DIM_sum $1
+go bn_gather_DIM_din $1
+go bn_gather_DIM_minmax $1
+go bn_gather_DIM_good_bad $1

@@ -1,7 +1,8 @@
 	SUBROUTINE DO_4D_TRANS( action,
      .				com, com_mr, com_cx,
      .				res, res_mr, res_cx,
-     .				boxes )
+     .				boxes,
+     .			        weights, s_var )
 
 *
 *
@@ -48,6 +49,9 @@
 * first axis equally, despite the fact that they represented different
 * numbers of data points.
 
+* for a discussion of the 1-pass variance and standard deviation calculations
+* see DO_VAR_SUB
+
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
@@ -74,6 +78,7 @@
 * V685+*acm* 12/13 Bug in y boxes; only when y axis in the transf.
 * V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
+* V702 *sh* 11/16 mods for trac #2428 - calculation in gathered fragments
 
 	IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -91,21 +96,26 @@
 	LOGICAL GEOG_COS_FACTOR, ITSA_TRUEMONTH_AXIS,
      .		point, yes_ax(nferdims), no_ax(nferdims),
      .		at_ave, at_var, at_din, at_nbd, at_ngd, at_sum, at_std, 
-     .		short_comp,need_cos, one_y
+     .		short_comp,need_cos, one_y, its_var_or_std, its_ave_or_din
 	INTEGER idim, i, j, ir, jr, kr, lr, mr, nr, ic, jc, kc, lc, mc, nc,
      .		grid, nbd, ngd, com_lo(nferdims), com_hi(nferdims),
      .		box_offset(nferdims), offset, ind_lo, ind_hi, cos_offset
 	REAL	BOX_SIZE, unit, bad_com, bad_res, box, mean, diff,
      .		xbox, ybox, zbox, tbox, ebox, fbox,
-     .		yc, yh, yh_2, bb, ybxlo, ybxhi
-	REAL*8	TM_WORLD, dsum, bsum
+     .		yc, yh, yh_2, bb, ybxlo, ybxhi, lo_box_lo, hi_box_hi
+	REAL*8	TM_WORLD, dsum, bsum, ok,
+     .		w, v, wsum_chunk, mean_chunk, mean_old, s_chunk
 
 * calling argument declarations:
 	INTEGER	action, com_mr, com_cx, res_mr, res_cx
-	REAL    com ( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
-     .                m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
-     .          res ( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
-     .                m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
+	REAL    com     ( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .                    m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .          res     ( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .                    m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
+     .          weights ( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .                    m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
+     .          s_var   ( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .                    m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
      .		boxes(*)
 
 * equivalences
@@ -167,6 +177,8 @@
 	at_sum = action .EQ. trans_4d_sum
 	at_std = action .EQ. trans_4d_std
 	short_comp = at_ngd .OR. at_nbd	.OR. at_sum	! for speed, only
+	its_ave_or_din = at_ave .OR. at_din
+	its_var_or_std = at_var .OR. at_std
 
 * determine the axes to be transformed
 	DO 10 idim = 1, nferdims
@@ -199,22 +211,25 @@
 	  ind_hi = cx_hi_ss(com_cx,idim)
 	  offset = box_offset(idim)
 	  IF (yes_ax(idim)) THEN
-            IF ( ind_lo .EQ. ind_hi ) THEN    ! 8/92
-              boxes(ind_lo+offset) = cx_hi_ww(idim,res_cx)
-     .				 - cx_lo_ww(idim,res_cx)
-              point = point  .OR.   boxes(ind_lo+offset) .EQ. 0.0
-            ELSE
-* ... partial box at lower end
-	      boxes(ind_lo+offset) = TM_WORLD(ind_lo, grid, idim, box_hi_lim)
-     .				 - cx_lo_ww(idim,res_cx)
-
-* ... complete boxes mid-axis
-	      DO 40 i = ind_lo+1, ind_hi-1
- 40	      boxes(i+offset)  = BOX_SIZE( i, grid, idim )
-* ... partial box at upper end
-	      boxes(ind_hi+offset) = cx_hi_ww(idim,res_cx)
-     .		   - TM_WORLD(ind_hi, grid, idim, box_lo_lim)
-            ENDIF
+* ... complete boxes mid-axis (incl. default full boxes at endpoints)
+	   DO i = ind_lo, ind_hi
+	      boxes(i+offset)  = BOX_SIZE( i, grid, idim )
+	   ENDDO
+* 11/16 re-engineered the 8/92 fix - that axis region may lie in a single box
+	   lo_box_lo = cx_lo_ww(idim,com_cx)
+	   hi_box_hi = cx_hi_ww(idim,com_cx)
+! ... the preceding is a more efficient way to obtain
+!	   lo_box_lo = TM_WORLD(ind_lo, grid, idim, box_lo_lim)
+!	   hi_box_hi = TM_WORLD(ind_hi, grid, idim, box_hi_lim)
+* ... trim if partial box at lower end
+	   IF ( lo_box_lo .LT. cx_lo_ww(idim,res_cx) ) boxes(ind_lo+offset) =
+     .         boxes(ind_lo+offset) - 
+     .			( cx_lo_ww(idim,res_cx) - lo_box_lo )
+* ... trim if partial box at upper end
+	   IF ( hi_box_hi .GT. cx_hi_ww(idim,res_cx) ) boxes(ind_hi+offset) = 
+     .            boxes(ind_hi+offset) - 
+     .			( hi_box_hi - cx_hi_ww(idim,res_cx) )
+	   point = point .OR. boxes(ind_lo+offset).EQ.0.0
 * ... perform integrations on standard units if possible
             unit = 1.
 	    IF ( at_din ) THEN
@@ -379,10 +394,19 @@ C (Unless there is just one grid cell in the y direction.)
           ENDIF
 
 * initialize the inner loop accumulators
-	  dsum = 0.0D0	! data
-	  bsum = 0.0D0	! boxes
-	  ngd  = 0
-	  nbd  = 0
+	  IF (its_var_or_std) THEN
+* ... initializations were done from IS_TRANS
+* ... start from the last accumulated value to support split/gather
+	    wsum_chunk = weights(ir,jr,kr,lr,mr,nr)
+	    mean_chunk = res    (ir,jr,kr,lr,mr,nr)
+	    s_chunk    = s_var  (ir,jr,kr,lr,mr,nr)
+	  ELSE
+	    dsum = 0.0D0	! data
+	    bsum = 0.0D0	! boxes
+	    ok	 = 0.0D0	! count valid
+	    ngd  = 0
+	    nbd  = 0
+	  ENDIF
 
 * now loop over the component data accumulating results along relevant axes
 * ... two separate loops for efficiency, only -- keep @ngd and @nbd fast
@@ -401,7 +425,10 @@ C (Unless there is just one grid cell in the y direction.)
 	        nbd = nbd + 1
 	      ELSE
 	        ngd = ngd + 1
-		IF (at_sum) dsum = dsum + com(ic,jc,kc,lc,mc,nc)
+	        IF (at_sum) THEN
+	           dsum = dsum + com(ic,jc,kc,lc,mc,nc)
+	           ok = ok + 1
+	        ENDIF
 	      ENDIF
 
  210	    CONTINUE
@@ -424,62 +451,50 @@ C (Unless there is just one grid cell in the y direction.)
 	      IF ( com(ic,jc,kc,lc,mc,nc) .NE. bad_com ) THEN
 	        box = xbox * ybox * zbox * tbox * ebox * fbox
 	        IF (need_cos) box = box * boxes(jc+cos_offset)
-	        bsum = bsum + box
-	        dsum = dsum + box*com(ic,jc,kc,lc,mc,nc)
+	      	IF (its_var_or_std) THEN
+	          v = com(ic,jc,kc,lc,mc,nc)
+	          w = box
+	          wsum_chunk = wsum_chunk + w
+	          mean_old = mean_chunk
+	          mean_chunk = mean_old + (w/wsum_chunk)*(v-mean_old)
+	          s_chunk = s_chunk + w * (v-mean_old)*(v-mean_chunk)
+	        ELSE
+	          bsum = bsum + box
+	          dsum = dsum + box*com(ic,jc,kc,lc,mc,nc)
+	        ENDIF
 	      ENDIF
 
  220	    CONTINUE
 
-! for variance or std calculation, only: a 2nd pass ...
-	    IF ( at_var .OR. at_std) THEN
-	      IF (bsum .NE. 0.0D0) THEN
-	        mean = dsum / bsum
-	        dsum = 0.0D0
-	        DO 230 nc = n_lo, n_hi
-	        IF (yes_fax) fbox = boxes(nc+noffset)
-	        DO 230 mc = m_lo, m_hi
-	        IF (yes_eax) ebox = boxes(mc+moffset)
-	        DO 230 lc = l_lo, l_hi
-	        IF (yes_tax) tbox = boxes(lc+loffset)
-	        DO 230 kc = k_lo, k_hi
-	        IF (yes_zax) zbox = boxes(kc+koffset)
-	        DO 230 jc = j_lo, j_hi
-	        IF (yes_yax) ybox = boxes(jc+joffset)
-	        DO 230 ic = i_lo, i_hi
-	        IF (yes_xax) xbox = boxes(ic+ioffset)
-
-	          IF ( com(ic,jc,kc,lc,mc,nc) .NE. bad_com ) THEN
-	            box = xbox * ybox * zbox * tbox * ebox * fbox
-	            IF (need_cos) box = box * boxes(jc+cos_offset)
-	            diff = com(ic,jc,kc,lc,mc,nc) - mean
-	            dsum = dsum + box*diff*diff
-	          ENDIF
-
- 230	        CONTINUE
-	      ENDIF
-	    ENDIF
-
 	  ENDIF
 
-* compute result from accumulators
+* *sh* 11/16 -- accumulate values, only in this routine.  Finalize elsewhere
+* acm notes: 
+*   o at_ngd and at_nbd, add the current result to res(ir,jr,... )?  
+*   o If bsum EQ 0, do not set the accumulating result to bad_res.  Do we 
+*     need to pass back an accumulated ngd to use in the finalize step?
+
 	  IF (at_ngd) THEN
-	     res(ir,jr,kr,lr,mr,nr) = ngd
+	     res(ir,jr,kr,lr,mr,nr) = ngd  
 	  ELSEIF (at_nbd) THEN
-	     res(ir,jr,kr,lr,mr,nr) = nbd
+	     res(ir,jr,kr,lr,mr,nr) = nbd  
 	  ELSEIF (at_sum .AND. ngd.GT.0) THEN
 	     res(ir,jr,kr,lr,mr,nr) = dsum
+	     weights(ir,jr,kr,lr,mr,nr) = weights(ir,jr,kr,lr,mr,nr) + ok ! weights are #valid
+	  ELSEIF (its_ave_or_din) THEN
+	    IF (res(ir,jr,kr,lr,mr,nr) .NE. bad_res) THEN
+	      res    (ir,jr,kr,lr,mr,nr) = res    (ir,jr,kr,lr,mr,nr) + dsum
+	      weights(ir,jr,kr,lr,mr,nr) = weights(ir,jr,kr,lr,mr,nr) + bsum
+	    ENDIF
+	  ELSEIF (its_var_or_std) THEN
+	    res    (ir,jr,kr,lr,mr,nr) = mean_chunk
+	    weights(ir,jr,kr,lr,mr,nr) = wsum_chunk
+	    s_var  (ir,jr,kr,lr,mr,nr) = s_chunk
           ELSEIF ( bsum .EQ. 0.0D0 ) THEN
 	     res(ir,jr,kr,lr,mr,nr) = bad_res
-	  ELSEIF (at_din) THEN
-	     res(ir,jr,kr,lr,mr,nr) = dsum
 	  ELSE
 	  
-	     IF (at_std) THEN
-	        res(ir,jr,kr,lr,mr,nr) = SQRT( dsum/bsum )
-	     ELSE
-	        res(ir,jr,kr,lr,mr,nr) = dsum/bsum	! average or variance
-	     ENDIF
-
+	     CONTINUE
 	  ENDIF
 
  300	CONTINUE

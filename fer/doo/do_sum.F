@@ -48,168 +48,35 @@
 
 * V230: 12/91 - based on DO_MAX
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V702 *sh* 11/16 this routine now performs accumulation only.  Initialization
+*                 and finalizing called separately from IS_TRANS
+* V71  *acm* 12/16 Send extra-buffer space that was allocated for the 
+*                 accumulation/finalization, to store counts. To distinguish 
+*                all-missin data with a value of zero, from all-zero sums.
 
         IMPLICIT NONE
-        include 'tmap_dims.parm'
-	include	'ferret.parm'
 	include	'errmsg.parm'
-	include	'interp_stack.parm'
-	include	'xcontext.cmn'
-	include	'xvariables.cmn'
-	include	'xmem_subsc.cmn'
-	include	'xprog_state.cmn'
 
 * calling argument declarations:
 	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
 	REAL	arg, buff(*),
-     .          com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
-     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
-     .          res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
-     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
+     .          com( * ), res( * )
 
 * internal variable declarations:
-        LOGICAL all_bad
-	INTEGER i, j, k, l, m, n, pt
-	REAL	bad_com, bad_res 
-	REAL*8  sum
+         INTEGER CGRID_SIZE, size
 
-* diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
-	IF ( mode_diagnostic ) 	CALL DIAG_OP
-     .				( 'doing', isact_class_trans, res_cx, idim )
+* Get size of result array to locate buffer area just beyond
+* Pass extra-buffer portion of res array to accumulate counts
+* - to distinguish between an all-missing and an all-zero sum.
 
-* initialize
-	pt   = cx_lo_ss( res_cx, idim )
-	bad_com = mr_bad_data( com_mr )
-	bad_res = mr_bad_data( res_mr )
+	size = CGRID_SIZE(res_cx)
 
-* ALONG X AXIS
-	IF ( idim .EQ. x_dim ) THEN
-	   DO 110 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 110 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 110 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 110 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 110 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-              all_bad = .TRUE.
-              sum = 0.0D0
-	      DO 100 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 100
-                 sum = sum + com(i,j,k,l,m,n)
-                 all_bad = .FALSE.
- 100	      CONTINUE
-	      IF ( all_bad ) THEN
-	         res(pt,j,k,l,m,n) = bad_res
-	      ELSE
-	         res(pt,j,k,l,m,n) = sum
-	      ENDIF
- 110	   CONTINUE
+	CALL DO_SUM_SUB (idim, arg,
+     .                   com, com_mr, com_cx,
+     .                   res, res_mr, res_cx,
+     .                   res(size+1)	)
 
-* ALONG Y AXIS
-	ELSEIF ( idim .EQ. y_dim ) THEN
-	   DO 210 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 210 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 210 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 210 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 210 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-              all_bad = .TRUE.
-              sum = 0.0D0
-	      DO 200 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 200
-                 sum = sum + com(i,j,k,l,m,n)
-                 all_bad = .FALSE.
- 200	      CONTINUE
-	      IF ( all_bad ) THEN
-	         res(i,pt,k,l,m,n) = bad_res
-	      ELSE
-	         res(i,pt,k,l,m,n) = sum
-	      ENDIF
- 210	   CONTINUE
-
-* ALONG Z AXIS
-	ELSEIF ( idim .EQ. z_dim ) THEN
-	   DO 310 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 310 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 310 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 310 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 310 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-              all_bad = .TRUE.
-              sum = 0.0D0
-	      DO 300 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 300
-                 sum = sum + com(i,j,k,l,m,n)
-                 all_bad = .FALSE.
- 300	      CONTINUE
-	      IF ( all_bad ) THEN
-	         res(i,j,pt,l,m,n) = bad_res
-	      ELSE
-	         res(i,j,pt,l,m,n) = sum
-	      ENDIF
- 310	   CONTINUE
-
-* ALONG T AXIS
-	ELSEIF ( idim .EQ. t_dim ) THEN
-	   DO 410 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 410 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 410 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 410 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 410 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-              all_bad = .TRUE.
-              sum = 0.0D0
-	      DO 400 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 400
-                 sum = sum + com(i,j,k,l,m,n)
-                 all_bad = .FALSE.
- 400	      CONTINUE
-	      IF ( all_bad ) THEN
-	         res(i,j,k,pt,m,n) = bad_res
-	      ELSE
-	         res(i,j,k,pt,m,n) = sum
-	      ENDIF
- 410	   CONTINUE
-
-* ALONG E AXIS
-	ELSEIF ( idim .EQ. e_dim ) THEN
-	   DO 510 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 510 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 510 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 510 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 510 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-              all_bad = .TRUE.
-              sum = 0.0D0
-	      DO 500 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 500
-                 sum = sum + com(i,j,k,l,m,n)
-                 all_bad = .FALSE.
- 500	      CONTINUE
-	      IF ( all_bad ) THEN
-	         res(i,j,k,l,pt,n) = bad_res
-	      ELSE
-	         res(i,j,k,l,pt,n) = sum
-	      ENDIF
- 510	   CONTINUE
-* ALONG F AXIS
-	ELSEIF ( idim .EQ. f_dim ) THEN
-	   DO 610 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 610 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 610 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 610 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 610 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-              all_bad = .TRUE.
-              sum = 0.0D0
-	      DO 600 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 600
-                 sum = sum + com(i,j,k,l,m,n)
-                 all_bad = .FALSE.
- 600	      CONTINUE
-	      IF ( all_bad ) THEN
-	         res(i,j,k,l,m,pt) = bad_res
-	      ELSE
-	         res(i,j,k,l,m,pt) = sum
-	      ENDIF
- 610	   CONTINUE
-
-	ENDIF
 
 	DO_SUM = ferr_ok
 	RETURN
 	END
-

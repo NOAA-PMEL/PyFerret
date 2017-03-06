@@ -1,0 +1,50 @@
+! bn_gather_4d_ave.jnl
+! 2/2017
+
+! force a split/gather operation due on multi-axis @ave
+
+set mode diag
+
+define axis/x=1:200:1  xax
+define axis/y=1:200:1  yax
+define axis/z=1:200:1 zax
+define axis/T=1:200:1 tax
+let xyz = 0*X[gx=xax] + 0*Y[gy=yax] + Z[gz=zax]
+
+* note: Ave of Z is 100.5
+
+* 3D XYZ test
+* 2d slice size = 200*200 = 40,000
+* 3d full size is 8,000,000  - so 10,000,000 is bigger
+set mode desp: 10000000    ! big: no need to split/gather
+stat/br xyz[x=@ave,y=@ave,z=@ave]
+
+! again -- this time force split/gather because 
+cancel memory/all
+set mode desp: 2000000  ! 2,000,000 small -- requires split/gather
+
+! will split into 4 pieces (1/4 of 8,000,000 fits into 2,000,000)
+! so z=1:50; then =51:100, Z=101:150, Z=151:200
+stat/br xyz[x=@ave,y=@ave,z=@ave]
+
+define axis/Y=1:200:1 Yax
+define axis/Z=1:200:1 Zax
+define axis/E=1:200:1 Eax
+define axis/F=1:200:1 Fax
+let zef = 0*Z[gz=zax] + 0*_E[ge=eax] + _F[gF=fax]
+
+stat/br zef[z=@ave,e=@ave,f=@ave]
+
+let zte = 0*Z[gz=zax] + _T[gt=tax] + 0*_E[ge=eax]
+stat/br zte[z=@ave,e=@ave,f=@ave]
+
+can var/all
+can mem/all
+
+! Now with a gridded variable from a dataset.
+use levitus_climatology
+define axis/T=1:60:1 tax
+let xyzt = temp + 0.01*t[gt=tax]
+set mode desp: 2.e7
+can mem; set mode diag; list/prec=8 xyzt[x=@din,y=@din,t=@din]/1.e12
+

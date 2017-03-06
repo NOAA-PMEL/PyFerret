@@ -83,7 +83,7 @@ list_value_xml.F\
 lon_lat_time_string.F\
 lsl_lowpass.F\
 maxminmax.F\
-minmax.F\
+minmax_fcn.F\
 minminmax.F\
 minutes24.F\
 modscat.F\

@@ -58,17 +58,21 @@
 	REAL	arg, com(*), res(*), boxes(*)
 
 * internal variable declarations:
-	INTEGER	CX_DIM_LEN
+	INTEGER	CX_DIM_LEN, CGRID_SIZE, size
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
      .				( 'doing', isact_class_trans, res_cx, idim )
 
+* get size of result array to locate buffer area just beyond
+	size = CGRID_SIZE(res_cx)
+
 * pass the transform to be performed
 	CALL DO_4D_TRANS(   trans_4d_sum,
      .			    com, com_mr, com_cx,
      .			    res, res_mr, res_cx,
-     .			    boxes )
+     .			    boxes,
+     .			    res(size+1), res(size+1) )
 
 	DO_4D_SUM = ferr_ok
 

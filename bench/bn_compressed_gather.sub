@@ -1,0 +1,39 @@
+\ cancel mode verify
+! bn_compressed_gather.sub
+
+! test whether a compressed gather gets consistent results with
+! its uncompressed equivalent
+
+!  the two *_size arguments below refer to the mode desperate limit size
+
+! GO bn_compressed_gather expression_to_test  no_gather_size do_gather_size
+
+! test without gathering and save the result
+set mode desp: $2    ! big: no need to split/gather
+stat/brief $1
+
+! save results
+DEFINE SYMBOL no_gather_stat_min  = ($STAT_MIN)
+DEFINE SYMBOL no_gather_stat_max  = ($STAT_MAX)
+DEFINE SYMBOL no_gather_stat_mean = ($STAT_MEAN)
+
+! test again -- this time with split/gather being used
+cancel memory/all
+set mode desp: $3   ! small
+
+! will split into pieces of size le 400,000 = 400*1000
+! so X=1:400; then X=401:800, then X=801:1000x[gx=xax]-500
+stat/brief $1
+
+! report a problem?
+LET problem = (($no_gather_stat_min)  NE ($STAT_MIN)) \
+           OR (($no_gather_stat_max)  NE ($STAT_MAX)) \
+           OR (($no_gather_stat_mean) NE ($STAT_MEAN))
+
+IF `problem` THEN
+    SAY "***** ERROR PERFORMING COMPRESSED GATHER on expression ($1)"
+ELSE
+    SAY "COMPRESSED GATHER success on expression ($1)"
+ENDIF
+
+set mode verify/last

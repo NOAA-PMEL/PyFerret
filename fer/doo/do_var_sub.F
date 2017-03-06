@@ -1,7 +1,8 @@
 	SUBROUTINE DO_VAR_SUB(	idim, com_lo, com_hi,
      .				com, com_mr, com_cx,
      .				res, res_mr, res_cx,
-     .				box, stddev )
+     .				box, stddev,
+     .				wsum, s )
 
 *
 *
@@ -38,12 +39,39 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* (what about COSINE weighting along Y axis if in XY plane ??)
 * determine the variance along the indicated axis
 * nested with DO_VARIANCE in order to ease the dimension checking of box
 
-* calculation is done in two passes to accomodate unequal weighting and
-* to increase numerical stability 
+* COSINE weighting not applied because this is a strictly 1D calculation
+* see DO_4D_TRANS for the contrasting multi-dimensional calculation
+
+* calculation is done in a single pass (a change 11/2016)
+* using the algorithm of West (1979) as described succintly in Wikipedia
+* as the "Weighted incremental algorithm" for computing variance
+* see D. H. D. West (1979). Communications of the ACM, 22, 9, 532-535:
+*     Updating Mean and Variance Estimates: An Improved Method
+* Note that the new algorithm may treat the unequal weghting of points
+* differently than the old.  The new is better to be trusted IMHO.
+
+****
+* The algorithm:
+*
+* These initializations already done from IS_TRANS
+*    wSum = 0
+*    mean = 0    ! "res" in this code
+*    S =0
+*
+* This routine performs this loop (see Wikipedia reference)
+* v,w  is the value,weight pair contributed by each grid cell
+*        wSum = wSum + w
+*        meanOld = mean
+*        mean = meanOld + (w / wSum) * (v - meanOld)
+*        S = S + w * (v - meanOld) * (v - mean)
+*	
+* Split/gather memory management may cause this routine to be called many times
+* in the finalize step we will compute
+*    variance = S / wSum
+****
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
@@ -58,6 +86,7 @@
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 *
 * v687  3/14  *acm* Option to return standard deviation
+* v702 *sh* 11/16 -  mods for trac #2428 - calculation in gathered fragments
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -70,18 +99,21 @@
 * internal variable declarations:
 	LOGICAL stddev
 	INTEGER CGRID_AXIS, i, j, k, l, m, n,
-     .          grid, pt, lo, hi, axis, npt
+     .          grid, pt, lo, hi, axis
 	REAL	BOX_SIZE, bad_com, bad_res
-	REAL*8	TM_WORLD, dsum, bsum, mean, diff
-	REAL*8  x, xmean, xdelta
-
+	REAL*8	TM_WORLD, dsum, bsum
+	REAL*8  w, v, wsum_chunk, mean_chunk, mean_old, s_chunk
 
 * calling argument declarations:
 	INTEGER	idim, com_lo, com_hi, com_mr, com_cx, res_mr, res_cx
-	REAL    com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
-     .               m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
-     .          res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
-     .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
+	REAL    com ( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
+     .                m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
+     .          res ( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .                m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
+     .          wsum( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .                m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
+     .          s   ( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
+     .                m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
      .		box( com_lo:com_hi )
 
 * --- end of introductory code ---
@@ -96,13 +128,22 @@
 	bad_res = mr_bad_data( res_mr )
 
 * get and save grid box sizes (weights) just once for efficiency
-* (end boxes may be only partially weighted)
-	box(lo) = TM_WORLD(lo, grid, idim, box_hi_lim)
-     .		- cx_lo_ww(idim,res_cx)
-	DO 100 i = lo+1, hi-1
+	DO 100 i = lo, hi
  100	box(i)  = BOX_SIZE( i, grid, idim )
-	box(hi) = cx_hi_ww(idim,res_cx)
-     .		- TM_WORLD(hi, grid, idim, box_lo_lim)
+* 11/16 ... end boxes may be only partial cells
+	IF  (TM_WORLD(lo, grid, idim, box_lo_lim)
+     .  .LT. cx_lo_ww(idim,res_cx)                ) box(lo) = 
+     .			TM_WORLD(lo, grid, idim, box_hi_lim)
+     .		      - cx_lo_ww(idim,res_cx)
+	IF  (TM_WORLD(hi, grid, idim, box_hi_lim)
+     .  .GT. cx_hi_ww(idim,res_cx)                ) box(hi) =
+     .			cx_hi_ww(idim,res_cx)
+     .		      - TM_WORLD(hi, grid, idim, box_lo_lim)
+
+!	box(lo) = TM_WORLD(lo, grid, idim, box_hi_lim)
+!     .		- cx_lo_ww(idim,res_cx)
+!	box(hi) = cx_hi_ww(idim,res_cx)
+!     .		- TM_WORLD(hi, grid, idim, box_lo_lim)
 
 * ALONG X AXIS
 	IF ( idim .EQ. x_dim ) THEN
@@ -111,49 +152,21 @@
 	   DO 210 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 210 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 210 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-* ... Pass #1: determine mean
-              npt = 0
-	      dsum = 0.0D0	! data
-	      bsum = 0.0D0	! boxes
-	      DO 200 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 200
-	         bsum = bsum + box(i)
-	         dsum = dsum + box(i)*com(i,j,k,l,m,n)
-                 npt = npt + 1
- 200	      CONTINUE
-	      IF ( npt .LE. 1 ) THEN
-	         res(pt,j,k,l,m,n) = bad_res
-                 GOTO 210
-	      ELSE
-                 mean = dsum / bsum
-              ENDIF
-
-* ... Pass #2: determine variance or std dev
-
-* Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
-
-* On-line algorithm with mean subtracted first. Noted as the most robust.
-* Since we always compute the mean first anyway, use it.
-
-	      npt = 0
-              xmean = 0.D0
-              dsum = 0.D0
-              DO 205 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-	         x = com(i,j,k,l,m,n)
-                 IF ( x .NE. bad_com ) THEN
-                    npt = npt + 1
-		    x = x - mean
-                    xdelta = x - xmean
-                    xmean = xmean + xdelta/ FLOAT(npt)
-                    dsum = dsum + xdelta*(x - xmean)  ! This expression uses the new value of mean
-                  ENDIF
- 205          CONTINUE
-* because of checking above, npt .GT. 1
-	      IF (stddev) THEN
-                 res(pt,j,k,l,m,n) = SQRT( dsum / FLOAT(npt) )
-	      ELSE
-                 res(pt,j,k,l,m,n) = dsum / FLOAT(npt)
-	      ENDIF
+	      wsum_chunk = wsum(pt,j,k,l,m,n)
+	      mean_chunk = res (pt,j,k,l,m,n)
+	      s_chunk    = s   (pt,j,k,l,m,n)
+	      DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	         v = com(i,j,k,l,m,n)
+	         IF ( v .EQ. bad_com ) CYCLE
+	         w = box(i)
+	         wsum_chunk = wsum_chunk + w
+	         mean_old = mean_chunk
+	         mean_chunk = mean_old + (w/wsum_chunk)*(v-mean_old)
+	         s_chunk = s_chunk + w * (v-mean_old)*(v-mean_chunk)
+	      ENDDO
+	      wsum(pt,j,k,l,m,n) = wsum_chunk
+	      res (pt,j,k,l,m,n) = mean_chunk
+	      s   (pt,j,k,l,m,n) = s_chunk
  210	   CONTINUE
 
 * ALONG Y AXIS
@@ -164,49 +177,21 @@
 	   DO 310 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 310 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 310 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-* ... Pass #1: determine mean
-              npt = 0
-	      dsum = 0.0D0	! data
-	      bsum = 0.0D0	! boxes
-	      DO 300 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 300
-	         bsum = bsum + box(j)
-	         dsum = dsum + box(j)*com(i,j,k,l,m,n)
-                 npt = npt + 1
- 300	      CONTINUE
-	      IF ( npt .LE. 1 ) THEN
-	         res(i,pt,k,l,m,n) = bad_res
-                 GOTO 310
-	      ELSE
-                 mean = dsum / bsum
-              ENDIF
-
-* ... Pass #2: determine variance or std dev
-
-* Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
-
-* On-line algorithm with mean subtracted first. Noted as the most robust.
-* Since we always compute the mean first anyway, use it.
-
-	      npt = 0
-              xmean = 0.D0
-              dsum = 0.D0
-              DO 305 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	         x = com(i,j,k,l,m,n)
-                 IF ( x .NE. bad_com ) THEN
-	            npt = npt + 1
-		    x = x - mean
-                    xdelta = x - xmean
-                    xmean = xmean + xdelta/ FLOAT(npt)
-                    dsum = dsum + xdelta*(x - xmean)  ! This expression uses the new value of mean
-                  ENDIF
- 305          CONTINUE
-* because of checking above, npt .GT. 1
-	      IF (stddev) THEN
-                 res(i,pt,k,l,m,n)  = SQRT( dsum / FLOAT(npt) )
-	      ELSE
-                 res(i,pt,k,l,m,n) = dsum / FLOAT(npt)
-	      ENDIF
+	      wsum_chunk = wsum(i,pt,k,l,m,n)
+	      mean_chunk = res (i,pt,k,l,m,n)
+	      s_chunk    = s   (i,pt,k,l,m,n)
+	      DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	         v = com(i,j,k,l,m,n)
+	         IF ( v .EQ. bad_com ) CYCLE
+	         w = box(2)
+	         wsum_chunk = wsum_chunk + w
+	         mean_old = mean_chunk
+	         mean_chunk = mean_old + (w/wsum_chunk)*(v-mean_old)
+	         s_chunk = s_chunk + w * (v-mean_old)*(v-mean_chunk)
+	      ENDDO
+	      wsum(i,pt,k,l,m,n) = wsum_chunk
+	      res (i,pt,k,l,m,n) = mean_chunk
+	      s   (i,pt,k,l,m,n) = s_chunk
  310	   CONTINUE
 
 
@@ -217,49 +202,21 @@
 	   DO 410 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 410 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 410 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-* ... Pass #1: determine mean
-              npt = 0
-	      dsum = 0.0D0	! data
-	      bsum = 0.0D0	! boxes
-	      DO 400 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 400
-	         bsum = bsum + box(k)
-	         dsum = dsum + box(k)*com(i,j,k,l,m,n)
-                 npt = npt + 1
- 400	      CONTINUE
-	      IF ( npt .LE. 1 ) THEN
-	         res(i,j,pt,l,m,n) = bad_res
-                 GOTO 410
-	      ELSE
-                 mean = dsum / bsum
-              ENDIF
-
-* ... Pass #2: determine variance or std dev
-
-* Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
-
-* On-line algorithm with mean subtracted first. Noted as the most robust.
-* Since we always compute the mean first anyway, use it.
-
-	      npt = 0
-              xmean = 0.D0
-              dsum = 0.D0
-	      DO 405 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	         x = com(i,j,k,l,m,n)
-                 IF ( x .NE. bad_com ) THEN
-	            npt = npt + 1
-		    x = x - mean
-                    xdelta = x - xmean
-                    xmean = xmean + xdelta/ FLOAT(npt)
-                    dsum = dsum + xdelta*(x - xmean)  ! This expression uses the new value of mean
-                  ENDIF
- 405          CONTINUE
-* because of checking above, npt .GT. 1
-	      IF (stddev) THEN
-                 res(i,j,pt,l,m,n)  = SQRT( dsum / FLOAT(npt) )
-	      ELSE
-                 res(i,j,pt,l,m,n) = dsum / FLOAT(npt)
-	      ENDIF
+	      wsum_chunk = wsum(i,j,pt,l,m,n)
+	      mean_chunk = res (i,j,pt,l,m,n)
+	      s_chunk    = s   (i,j,pt,l,m,n)
+	      DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	         v = com(i,j,k,l,m,n)
+	         IF ( v .EQ. bad_com ) CYCLE
+	         w = box(k)
+	         wsum_chunk = wsum_chunk + w
+	         mean_old = mean_chunk
+	         mean_chunk = mean_old + (w/wsum_chunk)*(v-mean_old)
+	         s_chunk = s_chunk + w * (v-mean_old)*(v-mean_chunk)
+	      ENDDO
+	      wsum(i,j,pt,l,m,n) = wsum_chunk
+	      res (i,j,pt,l,m,n) = mean_chunk
+	      s   (i,j,pt,l,m,n) = s_chunk
  410	   CONTINUE
 
 * ALONG T AXIS
@@ -269,49 +226,22 @@
 	   DO 510 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 510 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 510 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-* ... Pass #1: determine mean
-              npt = 0
-	      dsum = 0.0D0	! data
-	      bsum = 0.0D0	! boxes
-	      DO 500 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 500
-	         bsum = bsum + box(l)
-	         dsum = dsum + box(l)*com(i,j,k,l,m,n)
-                 npt = npt + 1
- 500	      CONTINUE
-	      IF ( npt .LE. 1 ) THEN
-	         res(i,j,k,pt,m,n) = bad_res
-                 GOTO 510
-	      ELSE
-                 mean = dsum / bsum
-              ENDIF
 
-* ... Pass #2: determine variance or std dev
-
-* Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
-
-* On-line algorithm with mean subtracted first. Noted as the most robust.
-* Since we always compute the mean first anyway, use it.
-
-	      npt = 0
-              xmean = 0.D0
-              dsum = 0.D0
-	      DO 505 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	         x = com(i,j,k,l,m,n)
-                 IF ( x .NE. bad_com ) THEN
-		    npt = npt + 1
-		    x = x - mean
-                    xdelta = x - xmean
-                    xmean = xmean + xdelta/ FLOAT(npt)
-                    dsum = dsum + xdelta*(x - xmean)  ! This expression uses the new value of mean
-                  ENDIF
- 505          CONTINUE
-* because of checking above, npt .GT. 1
-	      IF (stddev) THEN
-                 res(i,j,k,pt,m,n)  = SQRT( dsum / FLOAT(npt) )
-	      ELSE
-                 res(i,j,k,pt,m,n) = dsum / FLOAT(npt)
-	      ENDIF
+	      wsum_chunk = wsum(i,j,k,pt,m,n)
+	      mean_chunk = res (i,j,k,pt,m,n)
+	      s_chunk    = s   (i,j,k,pt,m,n)
+	      DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	         v = com(i,j,k,l,m,n)
+	         IF ( v .EQ. bad_com ) CYCLE
+	         w = box(l)
+	         wsum_chunk = wsum_chunk + w
+	         mean_old = mean_chunk
+	         mean_chunk = mean_old + (w/wsum_chunk)*(v-mean_old)
+	         s_chunk = s_chunk + w * (v-mean_old)*(v-mean_chunk)
+	      ENDDO
+	      wsum(i,j,k,pt,m,n) = wsum_chunk
+	      res (i,j,k,pt,m,n) = mean_chunk
+	      s   (i,j,k,pt,m,n) = s_chunk
  510	   CONTINUE
 
 * ALONG E AXIS
@@ -321,49 +251,21 @@
 	   DO 610 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 610 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 610 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-* ... Pass #1: determine mean
-              npt = 0
-	      dsum = 0.0D0	! data
-	      bsum = 0.0D0	! boxes
-	      DO 600 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 600
-	         bsum = bsum + box(m)
-	         dsum = dsum + box(m)*com(i,j,k,l,m,n)
-                 npt = npt + 1
- 600	      CONTINUE
-	      IF ( npt .LE. 1 ) THEN
-	         res(i,j,k,l,pt,n) = bad_res
-                 GOTO 610
-	      ELSE
-                 mean = dsum / bsum
-              ENDIF
-
-* ... Pass #2: determine variance or std dev
-
-* Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
-
-* On-line algorithm with mean subtracted first. Noted as the most robust.
-* Since we always compute the mean first anyway, use it.
-
-	      npt = 0
-              xmean = 0.D0
-              dsum = 0.D0
-	      DO 605 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	         x = com(i,j,k,l,m,n)
-                 IF ( x .NE. bad_com ) THEN
-		    npt = npt + 1
-		    x = x - mean
-                    xdelta = x - xmean
-                    xmean = xmean + xdelta/ FLOAT(npt)
-                    dsum = dsum + xdelta*(x - xmean)  ! This expression uses the new value of mean
-                  ENDIF
- 605          CONTINUE
-* because of checking above, npt .GT. 1
-	      IF (stddev) THEN
-                 res(i,j,k,l,pt,n)  = SQRT( dsum / FLOAT(npt) )
-	      ELSE
-                 res(i,j,k,l,pt,n) = dsum / FLOAT(npt)
-	      ENDIF
+	      wsum_chunk = wsum(i,j,k,l,pt,n)
+	      mean_chunk = res (i,j,k,l,pt,n)
+	      s_chunk    = s   (i,j,k,l,pt,n)
+	      DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	         v = com(i,j,k,l,m,n)
+	         IF ( v .EQ. bad_com ) CYCLE
+	         w = box(m)
+	         wsum_chunk = wsum_chunk + w
+	         mean_old = mean_chunk
+	         mean_chunk = mean_old + (w/wsum_chunk)*(v-mean_old)
+	         s_chunk = s_chunk + w * (v-mean_old)*(v-mean_chunk)
+	      ENDDO
+	      wsum(i,j,k,l,pt,n) = wsum_chunk
+	      res (i,j,k,l,pt,n) = mean_chunk
+	      s   (i,j,k,l,pt,n) = s_chunk
  610	   CONTINUE
 
 * ALONG F AXIS
@@ -373,49 +275,21 @@
 	   DO 710 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 710 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 710 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-* ... Pass #1: determine mean
-              npt = 0
-	      dsum = 0.0D0	! data
-	      bsum = 0.0D0	! boxes
-	      DO 700 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 700
-	         bsum = bsum + box(n)
-	         dsum = dsum + box(n)*com(i,j,k,l,m,n)
-                 npt = npt + 1
- 700	      CONTINUE
-	      IF ( npt .LE. 1 ) THEN
-	         res(i,j,k,l,m,pt) = bad_res
-                 GOTO 710
-	      ELSE
-                 mean = dsum / bsum
-              ENDIF
-
-* ... Pass #2: determine variance or std dev
-
-* Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
-
-* On-line algorithm with mean subtracted first. Noted as the most robust.
-* Since we always compute the mean first anyway, use it.
-
-	      npt = 0
-              xmean = 0.D0
-              dsum = 0.D0
-	      DO 705 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	         x = com(i,j,k,l,m,n)
-                 IF ( x .NE. bad_com ) THEN
-		    npt = npt + 1
-		    x = x - mean
-                    xdelta = x - xmean
-                    xmean = xmean + xdelta/ FLOAT(npt)
-                    dsum = dsum + xdelta*(x - xmean)  ! This expression uses the new value of mean
-                  ENDIF
- 705          CONTINUE
-* because of checking above, npt .GT. 1
-	      IF (stddev) THEN
-                 res(i,j,k,l,m,pt) = SQRT( dsum / FLOAT(npt) )
-	      ELSE
-                 res(i,j,k,l,m,pt) = dsum / FLOAT(npt)
-	      ENDIF
+	      wsum_chunk = wsum(i,j,k,l,m,pt)
+	      mean_chunk = res (i,j,k,l,m,pt)
+	      s_chunk    = s   (i,j,k,l,m,pt)
+	      DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	         v = com(i,j,k,l,m,n)
+	         IF ( v .EQ. bad_com ) CYCLE
+	         w = box(n)
+	         wsum_chunk = wsum_chunk + w
+	         mean_old = mean_chunk
+	         mean_chunk = mean_old + (w/wsum_chunk)*(v-mean_old)
+	         s_chunk = s_chunk + w * (v-mean_old)*(v-mean_chunk)
+	      ENDDO
+	      wsum(i,j,k,l,m,pt) = wsum_chunk
+	      res (i,j,k,l,m,pt) = mean_chunk
+	      s   (i,j,k,l,m,pt) = s_chunk
  710	   CONTINUE
 
 	ENDIF

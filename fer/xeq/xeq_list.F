@@ -154,6 +154,8 @@
 *                  modulo axes is just one grid-cell longer than the axis length,e.g. 
 *                  if they gave a region of /X=0:360.  If so, write one grid-cell less 
 *                  data so the axis can still be a valid modulo axis.
+* v720 2/2017 *acm* Ticket 2513. If /RIGID write edges but do not write bounds or 
+*                  bounds attribute.
 
 	include 'tmap_dims.parm'
         include 'tmap_errors.parm'
@@ -276,7 +278,11 @@
      .		( ferr_not_implemented, status,
      .			'cannot /APPEND with STREAM format', *4999)
 
-* /RIGID for netCDF ?
+* /RIGID for netCDF ?  
+* As of 2/2017, write bounds if /RIGID and irregular, rather than edges,
+* unless they say /EDGES. So bounds are now treated in the default way when
+* /RIGID is given.
+
         i = qual_given( slash_rigid )
         IF ( i .GT. 0 ) THEN
            cdf_recax = 'N'   ! no record axis
@@ -295,7 +301,6 @@
 * /EDGES for netCDF ?
         edges_flag = 0
         IF ( qual_given(slash_list_edges) .GT. 0) edges_flag = 1
-        IF ( qual_given( slash_rigid ) .GT. 0) edges_flag = 2 
 
 * /BOUNDS for netCDF ?
 	do_bounds = 0
@@ -311,10 +316,6 @@
              IF (qual_given( slash_list_edges ) .GT. 0)
      .            CALL WARN('Cannot have both /BOUNDS and /EDGES '//
      .           'Ignoring /EDGES')
-             IF (qual_given( slash_rigid ) .GT. 0)
-     .            CALL WARN('Cannot have both /BOUNDS and /RIGID '//
-     .           'Ignoring /RIGID')
-              cdf_recax = 'T'   ! "T" is record axis
               edges_flag = 0
            ENDIF
         ENDIF

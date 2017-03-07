@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 115884608 Mar  3 12:34 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 115885413 Mar  6 15:41 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: after merging the ferret_compressed_gather branch back to the trunk
+Note: more on ticket 2513: make bounds the default with /RIGID
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Fri Mar 3 15:20:40 PST 2017
+Beginning at Mon Mar 6 15:43:16 PST 2017
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -1715,7 +1715,6 @@ def axis/t/bounds tax= {12, 12.2, 36, 36.2, 60, 60.2, 84, 84.2, 108} , {0,24, 0,
            *** NOTE: Axis is in use by grid GFORMAT
  LISTing to file a.nc
  LISTing to file a.nc
-           *** NOTE: Cannot have both /BOUNDS and /RIGID Ignoring /RIGID
  LISTing to file a.nc
            *** NOTE: Cannot have both /BOUNDS and /EDGES Ignoring /EDGES
  LISTing to file a.nc
@@ -5002,6 +5001,10 @@ define axis/x=1:5:1/monthly aaxis
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of axis XAX
 Replacing definition of axis TAX
  PERMANENT data cleared from memory
@@ -5158,4 +5161,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Mar 3 15:24:08 PST 2017
+Ended at Mon Mar 6 15:46:42 PST 2017

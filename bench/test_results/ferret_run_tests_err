@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 11 Mar  6 10:37 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.1
+lrwxrwxrwx. 1 ksmith oerdnewp 11 Mar  7 10:10 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.1
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -294,7 +294,7 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Mon Mar  6 10:38:03 PST 2017
+Beginning at Tue Mar  7 10:11:32 PST 2017
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -1711,7 +1711,6 @@ def axis/t/bounds tax={1.2,2,3.2,5,7,8.4,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.
 def axis/t/bounds tax= {12, 12.2, 36, 36.2, 60, 60.2, 84, 84.2, 108} , {0,24, 0,24, 24,48, 24,48, 48,72, 48,72, 72,96, 72,96, 96,120}
  LISTing to file a.nc
  LISTing to file a.nc
-           *** NOTE: Cannot have both /BOUNDS and /RIGID Ignoring /RIGID
  LISTing to file a.nc
            *** NOTE: Cannot have both /BOUNDS and /EDGES Ignoring /EDGES
  LISTing to file a.nc
@@ -4866,6 +4865,9 @@ define axis/x=1:5:1/monthly aaxis
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
 *** Running ferret script: bn_compressed_gather.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -5031,4 +5033,4 @@ set region/@w
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
  Cached data cleared from memory
-Ended at Mon Mar  6 10:40:11 PST 2017
+Ended at Tue Mar  7 10:13:44 PST 2017

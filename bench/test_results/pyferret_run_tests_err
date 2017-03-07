@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1404 Mar  6 10:54 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1404 Mar  7 10:27 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -305,7 +305,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Mon Mar  6 10:55:17 PST 2017
+Beginning at Tue Mar  7 10:27:38 PST 2017
 *** Running ferret script: bn_syntax.jnl
  Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -1744,7 +1744,6 @@ def axis/t/bounds tax={1.2,2,3.2,5,7,8.4,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.
 def axis/t/bounds tax= {12, 12.2, 36, 36.2, 60, 60.2, 84, 84.2, 108} , {0,24, 0,24, 24,48, 24,48, 48,72, 48,72, 72,96, 72,96, 96,120}
  LISTing to file a.nc
  LISTing to file a.nc
-           *** NOTE: Cannot have both /BOUNDS and /RIGID Ignoring /RIGID
  LISTing to file a.nc
            *** NOTE: Cannot have both /BOUNDS and /EDGES Ignoring /EDGES
  LISTing to file a.nc
@@ -4890,6 +4889,9 @@ define axis/x=1:5:1/monthly aaxis
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
 *** Running ferret script: bn_compressed_gather.jnl
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -5095,4 +5097,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 *** Running python script: testfermethods.py
  Cached data cleared from memory
 >>> ... ... >>> >>> >>> 
-Ended at Mon Mar  6 10:58:32 PST 2017
+Ended at Tue Mar  7 10:30:53 PST 2017

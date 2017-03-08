@@ -5,6 +5,8 @@ cancel mode verify
 !		-- individual benchmarks must now specify MODE DIAG if needed
 !  5/00 *acm* added CANCEL MODE IGNORE_ERRORS
 !  7/09 *acm* added CANCEL VIEWPORTS
+!  3/17 *sh* accept an argument "GO bn_reset scriptname" and use it to
+!            put helpful separators into the log and err files
 
 ! reset FERRET to prepare for another benchmark test
 CANCEL REGION/ALL
@@ -16,5 +18,13 @@ CANCEL MODE DIAGNOSTIC
 CANCEL MODE IGNORE_ERROR
 CANCEL VIEWPORTS
 PPL TICS .125,.25,.125,.25 !reset tics to default
+
+! announce the start of the next script
+spawn echo "ooooooooooooooooooooooooooooooooooooooooooo" >>/dev/stderr
+spawn echo "ooooooooooooooooooooooooooooooooooooooooooo" >>/dev/stdout
+if ($1"0|*>1") then
+  spawn echo Starting test: $1 >>/dev/stderr
+  spawn echo Starting test: $1 >>/dev/stdout
+endif
 
 set mode/last verify

@@ -20,11 +20,11 @@ CANCEL VIEWPORTS
 PPL TICS .125,.25,.125,.25 !reset tics to default
 
 ! announce the start of the next script
-spawn echo "ooooooooooooooooooooooooooooooooooooooooooo" >>/dev/stderr
-spawn echo "ooooooooooooooooooooooooooooooooooooooooooo" >>/dev/stdout
+message/error/continue ooooooooooooooooooooooooooooooooooooooooooo
+message/continue ooooooooooooooooooooooooooooooooooooooooooo
 if ($1"0|*>1") then
-  spawn echo Starting test: $1 >>/dev/stderr
-  spawn echo Starting test: $1 >>/dev/stdout
+  message/error/continue Starting test: $1 
+  message/continue Starting test: $1
 endif
 
 set mode/last verify

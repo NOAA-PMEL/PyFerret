@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1404 Mar  7 10:27 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1404 Mar  9 15:29 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -305,7 +305,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Tue Mar  7 10:27:38 PST 2017
+Beginning at Thu Mar  9 15:29:52 PST 2017
 *** Running ferret script: bn_syntax.jnl
 [?1034h! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -10507,13 +10507,13 @@ FERRET_PLATFORM = "Linux 2.6.32-642.15.1.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 7-Mar-17"
-SESSION_TIME = "10:27"
-SESSION_PID = "3193"
-DELTA_CPU = "0.217966"
-CLOCK_SECS = "0.101"
-CURRENT_DATE = " 7-Mar-17"
-CURRENT_TIME = "10:27:48"
+SESSION_DATE = " 9-Mar-17"
+SESSION_TIME = "15:30"
+SESSION_PID = "11379"
+DELTA_CPU = "0.210967"
+CLOCK_SECS = "0.1"
+CURRENT_DATE = " 9-Mar-17"
+CURRENT_TIME = "15:30:01"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -10536,13 +10536,13 @@ FERRET_PLATFORM = "Linux 2.6.32-642.15.1.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 7-Mar-17"
-SESSION_TIME = "10:27"
-SESSION_PID = "3193"
-DELTA_CPU = "0.008999"
-CLOCK_SECS = "0.109"
-CURRENT_DATE = " 7-Mar-17"
-CURRENT_TIME = "10:27:48"
+SESSION_DATE = " 9-Mar-17"
+SESSION_TIME = "15:30"
+SESSION_PID = "11379"
+DELTA_CPU = "0.007999"
+CLOCK_SECS = "0.107"
+CURRENT_DATE = " 9-Mar-17"
+CURRENT_TIME = "15:30:01"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 S1 = "hello"
@@ -10552,9 +10552,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 7-Mar-17"
-SESSION_TIME = "10:27"
-SESSION_PID = "3193"
+SESSION_DATE = " 9-Mar-17"
+SESSION_TIME = "15:30"
+SESSION_PID = "11379"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10564,15 +10564,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 7-Mar-17"
-SESSION_TIME = "10:27"
-SESSION_PID = "3193"
+SESSION_DATE = " 9-Mar-17"
+SESSION_TIME = "15:30"
+SESSION_PID = "11379"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 7-Mar-17"
-SESSION_TIME = "10:27"
-SESSION_PID = "3193"
+SESSION_DATE = " 9-Mar-17"
+SESSION_TIME = "15:30"
+SESSION_PID = "11379"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10705,13 +10705,13 @@ FERRET_PLATFORM = "Linux 2.6.32-642.15.1.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 7-Mar-17"
-SESSION_TIME = "10:27"
-SESSION_PID = "3193"
-DELTA_CPU = "0.019997"
-CLOCK_SECS = "0.129"
-CURRENT_DATE = " 7-Mar-17"
-CURRENT_TIME = "10:27:48"
+SESSION_DATE = " 9-Mar-17"
+SESSION_TIME = "15:30"
+SESSION_PID = "11379"
+DELTA_CPU = "0.017997"
+CLOCK_SECS = "0.125"
+CURRENT_DATE = " 9-Mar-17"
+CURRENT_TIME = "15:30:01"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
  
@@ -22646,7 +22646,9 @@ shade/x=0/l=1/ylim=0:200:-20/lev ZAXREPLACE(flow[z=0:200],depth[z=0:200],z[z=0:2
  
 set mode/last verify
 ********File successfully written******
+ooooooooooooooooooooooooooooooooooooooooooo
 ****Variable defined successfully******
+ooooooooooooooooooooooooooooooooooooooooooo
  
              T
              axis ABSTRACT
@@ -22842,6 +22844,7 @@ list tgap[t=-5:-8@fav]  ! value at T=-6 should be -6
 ! l=@ave compression failure
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err490_l_ave.jnl
 ! err490_lave.jnl 12/1/97 - *sh* (reported by Weimin Wang)
 ! L=@AVE is failing to compress to a point
@@ -22925,6 +22928,7 @@ quit
 ! neg time axis grid failure
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err490_neg_time_show_grid.jnl
 ! err490_neg_time_show_grid
  
@@ -23067,6 +23071,7 @@ show grid/t=15-JAN-1982:15-JAN-1983 temp
 !explicit limit problem
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err491_explicit_limits.jnl
 ! err491_explicit_limits
 ! 2/98 *sh*
@@ -23117,6 +23122,7 @@ list timestamp[i=1:1]
 !regridding by association problem  *kob* 4/98
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err491_asn.jnl
 ! err491_asn.jnl 4/98 *sh* (extracted from bug reported by Jennifer Adams)
 ! Ferret crashes on regridding by association where destination
@@ -23196,6 +23202,7 @@ exit/script
 !double precision attribute problem *kob* 4/98
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err491_attrib_dp.jnl
 ! err491_attrib_dp.jnl
 ! kob  4/23/98
@@ -24802,6 +24809,7 @@ can mode meta
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err491_RESHAPE_ctx.jnl
 ! err491_RESHAPE_ctx
  
@@ -24917,6 +24925,7 @@ list/l=1 out
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err491_delete_child_var.jnl
 ! err491_delete_child_var.jnl
 ! *sh* 4/99
@@ -24954,6 +24963,7 @@ list  ypolymark	! incorrect values: 10, 20, 30
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err491_dp_time_write.jnl
 ! err491_dp_time_write.jnl
 ! *sh* 10/98
@@ -24976,6 +24986,7 @@ sp ncdump out.cdf >> all_ncdump.out
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err491_gmax.jnl
 ! err491_gmax.jnl
 ! 9 Dec. 1998 *sh*
@@ -24992,6 +25003,7 @@ load ts[gt=t24@max]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err491_grid_from_name.jnl
 ! err491_grid_from_name.jnl
 ! *sh* 3/99
@@ -25016,6 +25028,7 @@ can mode ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err491_let_d.jnl
 ! err491_let_d.jnl
 ! *sh* 10/98
@@ -25046,6 +25059,7 @@ stat/i=1:3/j=1:3 a
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err491_sh_var_templates.jnl
 ! SHOW VARIABLE templates are not robust
  
@@ -25060,6 +25074,7 @@ sho var mld*dec		! works
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err491_single_char_replace.jnl
 ! err491_single_char_replace.jnl
  
@@ -25078,6 +25093,7 @@ hh
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err491_spawn_quotes.jnl
 ! err491_spawn_quotes.jnl
  
@@ -25085,10 +25101,11 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Tue Mar  7 10:27:57 PST 2017
+Thu Mar  9 15:30:11 PST 2017
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err491_time_regridding.jnl
 ! err491_time_regridding.jnl
 ! from Jon 10/16/98
@@ -25124,6 +25141,7 @@ plot/over bad[t=@sbx:3]
 ! 3/01 *kob* uncomment the below - seems to run on all systems
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err491_unknown_function.jnl
 ! err491_unknown_function
 ! 3/99 *sh*
@@ -25141,6 +25159,7 @@ can mode ignore
 ! *kob* added 6/11/1999
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err500_IF_THEN_ELSE_quote.jnl
 ! err500_IF_THEN_ELSE_quote.jnl
  
@@ -30970,6 +30989,7 @@ vector/flow/over/len=10  u,v
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 set mode meta flowlines.plt
 can mode logo
  
@@ -30982,6 +31002,7 @@ can mode meta
 ! curvilinear flowline plots
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 use coads_climatology
 go mp_sinusoidal
@@ -31052,6 +31073,7 @@ plot/hlog fcn
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go bench_fft
 ! Benchmark Ferret script for FFT.  Uses analytic function of time.
  
@@ -31190,6 +31212,7 @@ CANCEL MODE IGNORE_ERRORS
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go bench_gridding
 ! bench_gridding.jnl
 ! *acm* 8/99
@@ -31387,6 +31410,7 @@ can axis x10
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go bn_scat2grid_test
 ! bn_scat2grid_test.jnl
 ! From JonCallahan's insitu_gaussian_*.jnl
@@ -31534,6 +31558,7 @@ can axis x_20
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go bn_scat2grid_gl
 ! bn_scat2grid_gl.jnl
 ! test the scat2gridgauss and scat2gridlaplace functions,
@@ -32061,6 +32086,7 @@ can axis x_15
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go bn_scat2gridlaplace_tarasoff
 ! bn_scat2gridlaplace_tarasoff
 ! check for error reported by Lev Tarasoff 5/10/2006
@@ -32162,6 +32188,7 @@ cancel axis ylatef
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go bn_scat2grid_nobs
 ! bn_scat2grid_nobs.jnl
 ! test of scat2grid_nobs functions,
@@ -32465,6 +32492,7 @@ can axis x_15
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go bn_scat2grid_t
 ! bn_scat2grid_t.jnl
 ! test the ave_scat2grid_t and scat2grid_t functions,
@@ -32544,6 +32572,7 @@ can axis t_32
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go bn_transpose
 ! bn_tranpose.jnl
 ! test the transpose functions,
@@ -32915,6 +32944,7 @@ can axis xaxs
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go bn_unique_str2int
 ! bn_unique_str2int.jnl
  
@@ -32994,6 +33024,7 @@ list unique_str2int(blist), blist
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go bench_sort
  
  
@@ -33727,6 +33758,7 @@ list my_vwnd
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go bench_eof
 ! Benchmark for EOF functions
 ! Statically linked as of ferret V5.34
@@ -33797,6 +33829,7 @@ exit/script
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go bench_compress_by
 let mask = {1,,1,,1} + 0*L[l=101:102] + 0*K[k=10:11]
 list compressi_by({10,20,30,40,50},mask)
@@ -33834,6 +33867,7 @@ list compressi_by({10,20,30,40,50},mask2)
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go bench_compress
  ! NOAA/PMEL TMAP
  ! Program FERRET
@@ -33982,6 +34016,7 @@ list compressk(a[i=91,j=35,l=1])
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO bench_internal_string_functions
 ! test internal string functions:
 !       strlen
@@ -34077,6 +34112,7 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO bn_ef_bench_extrema.jnl
 ! bench_extrema.jnl
 !  benchmark tests for findhi and findlo
@@ -34133,6 +34169,7 @@ list a[i=@ngd]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO bn_ef_err541_date_delim.jnl
 ! err541_date_delim.jnl
 ! Fix errors occurring with delimted reads - four digit years were
@@ -34205,6 +34242,7 @@ if `date_check` then say **** DELIMTED READ DATE CHECK FAILED
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO bn_ef_zaxr_fcns.jnl
 ! bn_ef_zaxr_functions.jnl
 ! 04-apr-05 *acm* move to tests of shared-obj efs.
@@ -34256,6 +34294,7 @@ list ddat_a, ddat_b, ddat_c
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO bn_ef_curv_to_rect.jnl
 ! bn_ef_curv_to_rect.jnl
 ! Test of curvilinear to rectilinear regridding
@@ -34405,6 +34444,7 @@ shade fill_xy(sst[l=1], mask[l=1], 4)
 ! Compare SAMPLEXY and SAMPLEIJ
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO bn_samplexy_sampleij
 ! bn_samplexy_sampleij
  
@@ -36901,6 +36941,7 @@ cancel mode ignore
 !
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 ! tics on horiz log axes were wrong; (plot only)
 ! GO bn_reset
@@ -36910,6 +36951,7 @@ cancel mode verify
 !missing vertices in polygon call
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err540_polymissing
 ! err540_polymissing.jnl
 ! 3/02 *acm*
@@ -36941,6 +36983,7 @@ polygon  xvertex1,yvertex,values
 ! formatting axis label numbers
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err540_ill_format.jnl
 ! err540_ill_format.jnl
 ! 3/02 *acm*
@@ -36959,6 +37002,7 @@ plot/trans/i=1:100  0.001 - 0.002/ i
 ! variable permutation in netCDF writes
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err540_write_order
 ! err540_write_order.jnl
 ! *sh* 3/02
@@ -37037,6 +37081,7 @@ sp rm -f test_bad_order.cdf
 !@AVE error when plotting unlike grids together
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err540_ax_ave
 !err540_ax_ave.jnl
 ! 3/02 *acm
@@ -37053,6 +37098,7 @@ plot/x=140w/y=0/sym/line sst,sst[gt=t2@ave]
 !Make PPL AXSET settings persist, but not settings made w/ qualifiers /AXES= or /NOAXES
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err540_axset
 !err540_axset.jnl
 ! 3/02 *acm
@@ -37087,6 +37133,7 @@ PPL axset 1,1,1,1
 !Previously couldn't do PLOT/VS/DASH, but no reason not to allow it.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err540_vs_dash
 ! PLOT/VS/DASH  previously was not allowed.
  
@@ -37130,6 +37177,7 @@ plot/over/thick/dash/color=blue 50*sin(ypts/3)+700, 30*cos(ypts/3)+800, 20*cos(y
 !overlay on polygon plots
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err540_poly_overlay
 !overlay on polygon plots
  
@@ -37141,6 +37189,7 @@ shade/over/i=1:2/j=0:2/opac=25 i+j
 !polytube failed on plot/over; go polytube, because YAXIS_MIN, _MAX not defined.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err540_axis_symbols
 ! err540_axis_symbols.jnl
 ! 3/02 *acm*
@@ -37173,6 +37222,7 @@ XAXIS_MAX = "10.00000"
 !nested repeat loops and parsing parentheses
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err540_parse_repeat
 ! err540_parse_repeat.jnl
 ! 3/03 *acm
@@ -37218,6 +37268,7 @@ why not
 ! appending a scalar to NetCDF file
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err540_cd_use_recdim
 ! err540_cd_use_recdim
 ! 3/02 *sh*
@@ -37260,6 +37311,7 @@ sp rm -f profiles.nc
 !missing data in xpts,ypts sample points wasnt checked
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err540_samplexy_missing
 ! err540_samplexy_missing.jnl
 ! 3/03 *acm
@@ -37292,6 +37344,7 @@ list asst
 ! test the fixed delta stride bug
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err540_strides_rev.jnl
 ! err540_strides_rev.jnl
  
@@ -37720,6 +37773,7 @@ set mem/size=25.6
 ! unknown data type for clauses with constants only
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err540_data_type.jnl
 ! err540_data_type
 ! 2/19/02 *sh*
@@ -37753,6 +37807,7 @@ plot IF {1,3,5} GE 3 THEN 1  ! data type unknown
 ! gridding scattered points to modulo axis had bug
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err540_modscat.jnl
 ! test gridding scattered points to modulo axis.
 ! Show Southern hemisphere.
@@ -37776,6 +37831,7 @@ plot/vs/over xpts[i=1:1000]+360, ypts[i=1:1000]
 ! make sure the USE bug reported 5/01 by A Wittenberg is fixed
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err540_use.jnl
 ! err540_use.jnl
 !
@@ -37876,6 +37932,7 @@ set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 ! longax cancel axis axname
 repeat/k=1:10 go bn_cancel_axes_1.sub
 !-> REPEAT: K=1
@@ -38001,6 +38058,7 @@ can data longax.dat
  
  go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 ! longax cancel axis/all
  
 ! Note: cancel axes/all tested in err541_cancel_axes.jnl
@@ -38011,6 +38069,7 @@ cancel mode verify
 ! test remaining axes are intact when we cancel one.
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 define axis/x ax1={2,4,5,6,9}
 define axis/x ax2={30,60,90,100}
 sh axis/x ax2
@@ -38120,6 +38179,7 @@ T0 = 01-JAN-0000 00:00:00
 ! Interior tics disappear on FILL plots
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err541_fill_tics
 ! pplus tics bug - pre 5.42, fill plots overlaid interior tics.
  
@@ -38138,6 +38198,7 @@ ppl tics,,.25,,.25,-1,-1
 ! are used rather than date specifications
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err541_non_gregorian
 !From Andrew Wittenberg, non-Gregorian time axis bug 01 Oct 2002
 ! pre-542, second axis has just one point.
@@ -38167,6 +38228,7 @@ CALENDAR = JULIAN
 ! Could not write or read a NetCDF file with a 4-D string variable.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err541_string4d
  ! Write a 4-D NetCDF file with a string variable.
  
@@ -38272,6 +38334,7 @@ list axy
 ! Cancel axis/all did not check whether axes were in use
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err541_cancel_axes
 ! Check that an axis in use cannot be cancelled.
 ! 4/2013 changes for Ferret with climatological axes
@@ -38317,6 +38380,7 @@ show axis test_i*
 ! 5/4/05 *acm* Move to bn_ef_err541_date_delim; pulling all jnls that call shared-obj efs out
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 ! GO err541_date_delim
  
 *** Running ferret script: bn_subspan_modulo.jnl
@@ -39804,6 +39868,7 @@ T0 = %%
 ! Polygon/overlay calendar axis bug
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err542_poly_over_calendar
 ! POLY/OVER when data has a non-standard calendar caused
 ! calendar mismatch error, even on a plot with no time axis.
@@ -39823,6 +39888,7 @@ poly/over/color=red/line=2/title="polygon" {220,240,280,250},{-20,70,40,-30}
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err550_view_axes_fill.jnl
 ! err550_view_axes_fill.jnl
 ! acm 2/5/03
@@ -39904,6 +39970,7 @@ set win/aspect=0.75
 ! defined as a VIEW/AXES viewport.
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err550_view_axes_position.jnl
 ! err550_view_axes_position.jnl
 ! acm 2/5/03
@@ -39922,6 +39989,7 @@ shade/x=1:10/y=1:10 x-y
 ! SHADE bug: hlimits, vlimits without effect
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err550_shade_limits.jnl
 ! err550_shade_limits.jnl
 ! acm 2/5/03
@@ -39936,6 +40004,7 @@ set view lower; shade/hlimits=212:324/vlimits=-34:23 sst[l=1]
 ! Redefining an axis with a new calendar definition
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err550_redefine_calendar_axis.jnl
 ! err550_redefine_calendar_axis.jnl
 ! different calendar axis not recognized as a different specifier,
@@ -39959,6 +40028,7 @@ CALENDAR = JULIAN
 ! Bug in defining axis from an expression.
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err550_define_axis_expression.jnl
 ! err550_define_axis_expression.jnl
 ! reported by A. Wittenberg.
@@ -40010,6 +40080,7 @@ list x[gx=xax]
 ! Bug in reading seconds from time origin in nc file.
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err550_nc_seconds.jnl
 ! err550_nc_seconds.jnl
 ! 2/12/03 ACM
@@ -40036,6 +40107,7 @@ list t[gt=height]    ! Seconds should be 36, 37, 38...
 ! Bug in plotting polymarker dots with pen numbers gt 6
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err550_dots_thickpens.jnl
 ! err550_dots_thickpens.jnl
 ! For pen code higher than 6, get *  rather than dot.
@@ -40180,6 +40252,7 @@ ppl rlabs,4,0
 ! Default behavior (all axes on) was not reset after a plot/set/AXES=
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err551_axes_set.jnl
 ! Default behavior (all axes on) was not reset after a PLOT/SET/AXES=
  
@@ -40199,6 +40272,7 @@ plot/i=1:100/title="PLOT (no quals); all axes plotted" i*cos(i/12)
 ! test on SHADE and POLYGON plots, and these crashed Ferret.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err551_num_levels.jnl
 ! Test whether too many levels specified. Previous to v552, no
 ! test was made on SHADE and POLYGON plots, and these crashed Ferret.
@@ -40225,6 +40299,7 @@ SET WIN/CLEAR
 ! Check for invalid value of calendar attribute on reading NetCDF files.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err551_invalid_calendar.jnl
 ! check on input for invalid calendar name
 ! If file gives calendar attribute with unrecognized name,
@@ -40242,6 +40317,7 @@ sh data
 ! String bug fixes *kob*
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err551_strings.jnl
  
  
@@ -40311,6 +40387,7 @@ list strcmp("b", mystring)
 ! 2-D @AVE bug fix
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err551_2dave.jnl
 ! Bug in 2-D averaging, if source data thats loaded has a
 ! larger range than the dest data, code didnt check whether
@@ -40340,6 +40417,7 @@ list/l=1/y=20 sst[gx=xax@ave,gy=yax@ave]
 ! RETURN error message, and new var,RETURN=dsettitle  argument
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err551_return_message.jnl
  ! err551_return_message.jnl
  ! 4/15/03 ACM
@@ -40363,6 +40441,7 @@ SET MODE/LAST IGNORE_ERROR
 !  file/form=stream didnt see file in another directory
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err551_streamread_directory.jnl
 ! Bug: file/form=stream doesnt see file in another directory
  
@@ -40392,6 +40471,7 @@ list a
 ! GXY=var  regridding syntax, when the variable hasnt been loaded
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err551_regrid_undef_grid.jnl
 ! err551_regrid_undef_grid.jnl
 ! 5/03 *acm* based on bn_regrid_to_user; more testing of multi-axis GXY=var
@@ -40527,6 +40607,7 @@ list dzdt_anom
 ! Symbol substituted on each repetition of REPEAT
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err551_repeat_sym.jnl
  
 ! This had worked, but stopped working in v541
@@ -40554,6 +40635,7 @@ def sym a 0; rep/i=1:3:1 (def sym a `i`; say ($a))
 ! another time axis, some times have missing data
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err551_modulo_nc_regrid.jnl
 ! data from nc file with time axis having modulo=value, when regridded
 ! to another time axis, some times have missing data
@@ -40615,6 +40697,7 @@ list/l=23:27 vwnd_clim[gt=vwnd[d=1]]
 ! FFT frequency axis not computed accurately enough.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err551_fft_freqaxis.jnl
  
 DEFINE AXIS/t=1:4998:1 dayt
@@ -40642,6 +40725,7 @@ list `tpts,return=lend`
 ! No error message on request for time on bad time axis
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err551_no_taxis_errmsg.jnl
 ! The time axis is bad, having repeated values, so an abstract axis is
 ! used by Ferret and the list/t=time should result in an error.
@@ -40745,6 +40829,7 @@ SHOW GRID
 ! save to a file a variable that is 128 long
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 LET a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L234567 = {12,14,20,28,22,10}
 SAVE/CLOBBER/FILE=longvname.nc a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L234567
@@ -40752,6 +40837,7 @@ SAVE/CLOBBER/FILE=longvname.nc a234567890b234567890c234567890d234567890e23456789
 ! read from the file
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 USE longvname
 LIST a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L234567
              VARIABLE : {12,14,20,28,22,10}
@@ -40767,11 +40853,13 @@ LIST a234567890b234567890c234567890d234567890e234567890f234567890g234567890h2345
 ! save a 4-D variable
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 LET a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L234567 = I[I=1:5] * J[J=1:4] * K[K=1:3] + L[L=1:3]
 SAVE/CLOBBER/FILE=longvname.nc a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L234567
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 USE longvname.nc
 lIST/I=1/J=2 a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L234567
              VARIABLE : I[I=1:5] * J[J=1:4] * K[K=1:3] + L[L=1:3]
@@ -41444,6 +41532,7 @@ save/clobber/file=b.nc ddat
 can var/all
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 USE a.nc
 USE b.nc
@@ -41931,6 +42020,7 @@ can var/all
 ! Make sure numeric filenames works
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err553_numeric_filename.jnl
 ! err553_numeric_filename.jnl
 ! 9/03 kob
@@ -41966,6 +42056,7 @@ list vwnd_clim
 ! Make sure long string variables work
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err553_long_string_var_name.jnl
 ! err553_long_string_var_name.jnl
 ! 9/03 kob
@@ -41989,6 +42080,7 @@ list a
 ! Fixes for colorbar key labelling
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err551_colorkey.jnl
  
 ! colorkey label bugs
@@ -42624,6 +42716,7 @@ cancel mode ignore
 ! Test use of longer strings in region names
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err553_regionname_lengths.jnl
 ! In v5.50, we upped the region name storage to
 ! allow 24-characters.  Wasnt fully implemented.
@@ -42680,6 +42773,7 @@ SET MODE/LAST IGNORE_ERRORS
 ! Reqests for data at times outside range of data
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err553_timeregion.jnl
 ! try to apply a region whose limits are both below,
 ! or both above, the data bounds. In v5.53 the error
@@ -42698,6 +42792,7 @@ SET MODE/LAST IGNORE_ERRORS
 ! Contour plot on fine grid has precision problems
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err553_contour_fine_grid.jnl
 ! err553_contour_find_grid.jnl
 ! 11/21/03 ACM
@@ -42733,6 +42828,7 @@ PPLUS/RESET   ! reset aspect ratio
 ! PLOT/SYM/SIZE= did not change the size
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err553_symsize.jnl
 ! PLOT/SYM/SIZE= does not change the size from the default.
 ! acm 11/03
@@ -42743,6 +42839,7 @@ plot/over/i=1:10/sym=20/siz=0.2 i
 ! test labels on shade keys; consistent number of digits set by 5th shakey arg
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err553_shakey_labels.jnl
 ! The 5th argument to shakey is supposed to define
 ! number of digits in the label.
@@ -42759,6 +42856,7 @@ ppl shade
 ! couldnt set the number of small tics with arg to %xaxis, %yaxis commands
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err553_xaxis_nsmtc.jnl
 ! Bug: 5th argument failed to set the number of small
 ! tics for the axis.
@@ -42775,6 +42873,7 @@ ppl %yaxis/nouser 1,100,10,2,6
 ! vs DEFINE AXIS/UNIT=yr
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err553_year_yr.jnl
 ! err553_year_yr.jnl
 ! 2/2004 ACM
@@ -42966,6 +43065,7 @@ can mode ignore
 ! strides, Ferret did a regridding instead.  Test the fix for this
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err553_stride_def_grid.jnl
  
 use gtsa056_2.cdf
@@ -43702,6 +43802,7 @@ canc data/all
 ! DEFINE AXIS can get the axis too long (bug 673)
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err553_axis_too_long.jnl
 ! From Ned Cokelet
 ! First definition of axis had last grid cell completely
@@ -43732,6 +43833,7 @@ LIST X[GX=x_ax], XBOXLO[GX=x_ax], XBOXHI[GX=x_ax]
 ! non-centered shade key
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err553_lev_c.jnl
  ! under linux only, this has a non-centered shade key
  
@@ -43761,6 +43863,7 @@ ppl list shakey
 ! At lon = 0, we used to have an E; remove this.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err553_lon_ax_0_label.jnl
 ! Label longitude axes with the degree sign only
 ! at x=0 (previously had an E).
@@ -43774,6 +43877,7 @@ shade/x=-20:20/y=-40:40/L=1 sst
 ! Errors listing string and numeric data together
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err553_list_string_numeric.jnl
 ! err553_list_string_numeric.jnl
 ! 2/2004 ACM
@@ -43869,6 +43973,7 @@ list/i=3:4/l=1:2 b, c, v
 ! Bug in setting axis to depth when reading from nc file
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err553_set_axis_depth.jnl
  ! NOAA/PMEL TMAP
  ! FERRET v5.53
@@ -43888,6 +43993,7 @@ q
 ! Set symbols showing levels settings when poly command is called
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err553_symbol_lev.jnl
 ! err553_symbol_lev.jnl
 ! 2/2004 ACM
@@ -43945,6 +44051,7 @@ can sym lev*
 ! Fixes for modulo striding bugs
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err553_stride_modulo.jnl
 ! err553_stride_modulo_neg.jnl
 ! *acm* 3/31/2004
@@ -44047,6 +44154,7 @@ can mem; list/y=0 var[i=68]
 ! Fixes bug creating format for listing a very long line
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err553_list_width.jnl
 ! err553_list_width.jnl
 ! *acm* 4/1/2004
@@ -44493,6 +44601,7 @@ can mode ignore
 ! Test use of automatic levels in SHADE
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err560_shade_levels.jnl
 ! err560_shade_levels.jnl  *acm* 4/28/04
 ! Missing levels on SHADE auto-level
@@ -44507,6 +44616,7 @@ set view lower; shade/i=1:10/j=1:10 -1*i*j*0.0034
 ! Test use of reading irregular-time mc datasets
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err560_mc_irreg_t.jnl
 ! err560_mc_irreg_t.jnl
 ! 4/2004  ACM
@@ -44543,6 +44653,7 @@ list/x=180/y=0/t=2000 sst
 ! Crashed on SHADE of variable with NOLEAP axis, and subregion.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err560_shade_noleap.jnl
 ! err560_shade_noleap.jnl
 ! 4/30/04 ACM
@@ -44560,6 +44671,7 @@ shade/t=4-jan-2000:10-nov-2000 a
 ! -111, was treated as missing rather than a valid index.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err560_regridding_gaps.jnl
 ! err560_regrid
 !
@@ -44685,6 +44797,7 @@ sp rm xlongshift.nc
 ! bug in drawing the time axis.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err560_leap_years.jnl
 ! err560_leap_years.jnl
 ! Fixes for bug 882, inconsistency in computing whether
@@ -44703,6 +44816,7 @@ plot v[gt=tax@asn]
 ! Century portion of years were not properly tested in numdm1.F
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err560_century
 ! err560_century.jnl.jnl  *acm* 4/28/04
 ! Century portion of years were not properly tested in numdm1.F
@@ -44974,6 +45088,7 @@ PLOT/OVER/NOKEY/X=180/Y=1/K=1 temp
 ! POLYGON (or SHADE) plots with a single level had no fill color
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_singlecolor.jnl
 ! err570_singlecolor.jnl
 ! 7/6/2004
@@ -45017,6 +45132,7 @@ poly/lev=2 {0,1,2},{1,2,1},a ! OR lev=1
 ! colorbar labels too close to the bar, when user sets bar location
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_shakeylab.jnl
  
 ! err570_shakeylab.jnl
@@ -45078,6 +45194,7 @@ ppl dfltfnt sr
 ! Null input gives wierd error message
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_null_symbol.jnl
 ! err570_null_symbol.jnl
 ! null input -- > wierd error message see bug 919
@@ -45095,6 +45212,7 @@ can mode ignore
 ! Replace text expression with its value: string variable was too short
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_parse_labelcommand.jnl
 ! err570_parse_labelcommand.jnl
 ! fix for bug 956.
@@ -45125,6 +45243,7 @@ label/nouser 3.6,`($ppl$ylen)+0.2`,0,0,0.08, `tsulab`
 ! result of COMPRESSK_BY function does not vary in X
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_compressk_by.jnl
 ! err570_compress_by.jnl
 ! fix for bug 925
@@ -45218,6 +45337,7 @@ list tlev[k=1]
 ! Command parsing on PPL side had string lengths too short
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_long_label.jnl
 ! err570_long_label.jnl
 ! Fix for bug 956
@@ -45268,6 +45388,7 @@ set mode/last verify
 ! Allow PPL POLYGON after a POLY/SET (previously was PPL FILLPOL)
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_ppl_poly.jnl
 ! err570_ppl_poly.jnl
  
@@ -45290,6 +45411,7 @@ ppl polygon
 ! Fix formatting of coordinates on LIST/FORMAT=tab or /FORMAT=comma
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_list_tab_coords.jnl
 ! err570_list_tab_coords.jnl
 ! acm 9/7/04
@@ -45333,6 +45455,7 @@ list/form=comma aa
 ! Fix bug in HASH_CX for large numbers of varibles
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_many_variables.jnl
 ! err570_many_variables.jnl
 ! 27-sep-2004  ACM
@@ -45596,6 +45719,7 @@ list str4a
 ! Fix bug in @CNNN within multi-line labels
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_cnnn_multiline.jnl
 ! Changing pen with @Cnnn did not work in
 ! multi-line labels
@@ -45610,6 +45734,7 @@ label 0.1, 0.3, 0, 0, 0.2, "greek<NL>@SGt@SR_y<NL>works"
 ! For a very fine grid, coordinates not listed with enough precision.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_fine_grid_list.jnl
 ! err570_fine_grid_list.jnl
 ! ACM 10/2004
@@ -45714,6 +45839,7 @@ cancel list/precision
 ! Plot using /HLIM
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_hlimit_onepoint
 !err570_hlimit_onepoint.jnl
 ! 15-Oct-2004  ACM
@@ -45736,6 +45862,7 @@ set mode/last ignore_error
 ! caused a segfault.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_index111.jnl
 ! err570_index111.jnl
 ! 3-nov-04 ACM
@@ -45782,6 +45909,7 @@ LIST/T=1-jan-1997:1-jan-1998 s2[GT=s1@NRST]
 ! crashed on trying to format value for the output buffer.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_sh_dat_nan.jnl
 ! err570_sh_dat_nan.jnl
 ! 4-Nov-2004 acm
@@ -45807,6 +45935,7 @@ show data/full
 ! Time reqest out of range on NOLEAP axes.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_time_range.jnl
 ! err570_time_range.jnl  bug1080
 ! time request out of range with calendar axis and RETURN=
@@ -45831,6 +45960,7 @@ set var/units="`a[gx=var1_grid_,gy=var1_grid_,d=2,t="16-Jan-1861 12:00:00"],retu
 ! a non-standard calendar axis
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_poly_over_julian.jnl
 ! err570_poly_over_julian.jnl
 ! ACM 11/12/04
@@ -45853,6 +45983,7 @@ poly/ov/pal=green {400,900,900,400}, {25.5,25.5,26.5,25.5}
 ! string substitution returns the user-given error message
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_coaching hello
 ! err570_coaching.jnl
 ! ACM 11/12/04  Bug 1077
@@ -45897,6 +46028,7 @@ set mode/last ignore_errors
 ! name of the script
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_dollar_zero.jnl
 ! err570_dollar_zero.jnl
 ! (bug 485) Got a command syntax error;
@@ -45912,6 +46044,7 @@ SET MODE/LAST ignore_error
 ! Fix for bug 596; list/i=0:300:0 var crashed Ferret
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_illegal_stride.jnl
 ! err570_illegal_stride.jnl
 ! (bug 596) list/i=0:300:0 var crashed Ferret
@@ -45925,6 +46058,7 @@ SET MODE/LAST ignore_error
 ! Fix for bug 1085; /THICK without color specifier caused all lines to revert to black
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_thick_colors.jnl
 ! err570_thick_colors.jnl  bug1085
 ! /THICK without color specifier causes all lines to revert to black
@@ -45950,6 +46084,7 @@ PLOT/OVER/VS/LINE/THICK=1/I=1:314 i*cos(i/14), i*sin(i/14)
 ! starts with a digit.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_digit_filename.jnl
 ! err570_digit_filename.jnl
 ! Bug 1102: under linux, var[d=filename] fails if filename
@@ -46015,6 +46150,7 @@ list a[i=1:4,d=10a.nc]
 ! Fix for bug 1098: DODS URL label was cut off
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_dods_url_label.jnl
 ! err570_dods_url_label.jnl
 !
@@ -46085,6 +46221,7 @@ ppl list labels
 ! Fix for bug 906: auto-formatting of labels on color keys loses precision
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_keylabels.jnl
 ! err570_keylabels.jnl
 ! 11/2004
@@ -46100,6 +46237,7 @@ shade/lev=(370,382,0.5) a
 ! where polygon arguments have latitude or longitude units
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err570_poly_lonlat_axis.jnl
 ! err570_poly_lonlat_axis.jnl
 ! 12/14/04
@@ -46662,6 +46800,7 @@ ppl fill
 ! Bug 1160 short axis with irreg bounds seen as regular.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err580_irreg_bounds.jnl
 ! err580_irreg_bounds.jnl
 ! Define a short irregular time axis with some time_bounds,
@@ -46708,6 +46847,7 @@ show grid/t a
 ! Bug 1179 Cartesian_axis and positive="down" resulted in depth axis not being recognized
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err580_cartesian_depth.jnl
  ! err580_cartesian_depth.jnl
 ! cartesian_axis attribute
@@ -46727,6 +46867,7 @@ sh grid temp
 ! Bug 1181 Titles were truncated at 80 characters
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err580_long_title.jnl
  
  ! err580_long_title.jnl
@@ -46740,6 +46881,7 @@ sp ncdump longtitle.nc >> all_ncdump.out
 ! Bug 1180 Allow "use filename.des"
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err580_use_des.jnl
 ! err580_use_des.jnl
 ! Allow "use filename.des"   (previously gave an "is this a CDF file?" error)
@@ -46756,6 +46898,7 @@ sh data
 ! Bug 1180 Allow "use filename.des"
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err580_use_des.jnl
 ! err580_use_des.jnl
 ! Allow "use filename.des"   (previously gave an "is this a CDF file?" error)
@@ -46771,6 +46914,7 @@ sh data
 ! fix for bug 1181: dataset title was limited to 80 characters.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err580_long_dsettitle.jnl
 ! err580_long_dsettitle
 ! fix for bug 1181
@@ -46793,6 +46937,7 @@ sp ncdump longtitle.nc >> all_ncdump.out
 ! fix for bug 1200:crash due to the long veckey format spec.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err580_long_veckey.jnl
 ! err580_long_veckey.jnl
 ! Bug 1200 The following caused a crash due to the long veckey format spec.
@@ -46808,6 +46953,7 @@ ppl veckey,0,0,,"(1PG10.3)"
 ! fix for bug 1201: mistranslation of time region.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err580_cal360_region.jnl
 ! err580_cal360_region.jnl
 ! Wrong output region: the set region mistakenly tranlated
@@ -46829,6 +46975,7 @@ default region:
 ! fix for bug 1203: crash if time range left off.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err580_def_tax_norange.jnl
 ! err580_def_t_norange.jnl
 ! bug 1203. without the T range, these statements cause a STOP.
@@ -46841,6 +46988,7 @@ DEFINE AXIS/T0="1-JAN-1861"/UNITS=months/T/CALENDAR=noleap myt
 ! fix for bug 1207: closest distance and closest index transformations.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err580_cdb.jnl
 ! err580_cdb.jnl
 ! bug 1207
@@ -46884,6 +47032,7 @@ list var[i=5@cia:10]
 ! fix for bug 1214: crash on repeating a SET VIEW when viewport defined with /AXES
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err580_def_view_axes.jnl
 ! err580_def_view_axes.jnl
 ! BUG 1214
@@ -46924,6 +47073,7 @@ sp rm -f viewaxes.plt*
 ! fix for bug 1205: symbol LEV_DEL wrong when single level specified
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err580_lev_del.jnl
 ! err580_lev_del.jnl
 ! demonstrates bug 1205; precision of LEV_DEL when single level specified.
@@ -46952,6 +47102,7 @@ LEV_DEL = "1.2"
 ! Fix for bug 1174: strfloat_c("nonsense") gave result of 0 rather than missing.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err580_strfloat_errors.jnl
 ! err580_strfloat_errors.jnl
 ! Previously a nonsense input gave a result of 0.
@@ -46973,6 +47124,7 @@ list/prec=6 strfloat(b)
 ! Fixes for bugs 1249, 1250: uppercase not recognized for qualifier argument
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err580_arg_case.jnl
 ! err580_arg_case.jnl
 ! 5/2005
@@ -46992,6 +47144,7 @@ plot/step=CONN/i=1:10 sin(i)
 ! Fixes for bugs 1019: kludge for CDC time axes made time origin incorrect on outputs
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err580_cdc_timeaxis.jnl
 ! err580_cdc_timeaxis.jnl
 ! 6/3/05
@@ -47041,6 +47194,7 @@ sp rm -f my_cdc_timeaxis.nc
 ! Fix for bug 1272: show axis/t= with NOLEAP calendar
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err580_show_axis_t.jnl
 ! err580_show_axis_t
 ! bug 1272: wrong range shown when nonstd calendar
@@ -47087,6 +47241,7 @@ T0 = 15-JAN-1901
 ! Fix for bug 1279 which was only in the first iteration of v5.81 release
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_nlev.jnl
 ! err580_nlev.jnl
 ! bug 1279
@@ -47101,6 +47256,7 @@ fill/lev=30 sst[l=2]
 ! acm 8/29/2005
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_vs_poly_axis.jnl
 ! err581_vs_poly_axis.jnl
 ! Test fix of bug 1349: formatted axis labels on PLOT/VS and POLYGON plot
@@ -47461,7 +47617,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "7-Mar-17_10:28"
+WIN_TITLE = "9-Mar-17_15:30"
  
 set win/title="set the title"
 sho sym win_title
@@ -47479,7 +47635,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 7-Mar-17:10:28"
+ !-> set win/title=" 9-Mar-17:15:30"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47488,16 +47644,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date =  7-Mar-17
+ !-> DEFINE SYMBOL the_date =  9-Mar-17
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 10:28
+ !-> DEFINE SYMBOL the_time = 15:30
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="7-Mar-17:10:28"
+ !-> SET WIN/TITLE="9-Mar-17:15:30"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "7-Mar-17:10:28"
+WIN_TITLE = "9-Mar-17:15:30"
 *** Running ferret script: bn_last_error.jnl
 [?1034h! bn_last_error.jnl
 ! acm Nov 2005
@@ -48244,6 +48400,7 @@ can mode ignore
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 !-----
 ! attributes of string variables
@@ -48259,6 +48416,7 @@ sp ncdump a.nc >> all_ncdump.out
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 !-----
 ! Demonstrate `var,return=` output for attributes
@@ -48303,6 +48461,7 @@ say `broiled.acf,return=size`
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 !-----
 ! define variables to contain attribute value(s)
@@ -48337,6 +48496,7 @@ list s
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 !-----
 ! Variables containing number of variables, attributes, dimensions,
@@ -48545,6 +48705,7 @@ let anames = `names[i=2]`.attnames
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
  
 !-----
@@ -48586,6 +48747,7 @@ say `(yax_lev94).nattrs[d=1]`
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 !-----
 ! more on access to attribute names and values as variables
@@ -48727,6 +48889,7 @@ list a[i=1]
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 !-----
 ! keyword . to refer to global properties and attributes
@@ -48864,6 +49027,7 @@ list/d=2 pp
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 !-----
 ! Editing attributes: add new attributes to a variable.
@@ -48916,6 +49080,7 @@ sh att/all temp[d=1]
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 !-----
 ! Edit existing attributes on variables
@@ -49084,6 +49249,7 @@ can view
 can mode ignore
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 !-----
 ! Edit attributes: inherit all attrs from another variable
@@ -49158,6 +49324,7 @@ sh att/all temp2
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 !-----
 ! Edit attributes, changing type
@@ -49247,6 +49414,7 @@ list pq
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 ! When we CANCEL MODE upcase_output, writing a netcdf file preserves
 ! case of variable and axis names. This file has lower case and some
@@ -49268,6 +49436,7 @@ set mode/last upcase_output
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 !-----
  
@@ -49315,6 +49484,7 @@ sp ncdump -c a.nc >> all_ncdump.out
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
  
 !-----
@@ -49378,6 +49548,7 @@ sp ncdump -h a.nc >> all_ncdump.out
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 !-----
 ! Read EZ ascii, delimited, and stream data files,
@@ -49447,6 +49618,7 @@ sh att/all num
  num.new = a string attribute 
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 !-----
 ! manipulate attributes of user-defined variables
@@ -49499,6 +49671,7 @@ sp ncdump -h a.nc >> all_ncdump.out
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 !-----
  
@@ -49564,6 +49737,7 @@ sp ncdump a.nc  >> all_ncdump.out
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 !-----
 ! Set type of data on output, uses netcdf call to output
@@ -49631,6 +49805,7 @@ can data test0
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 !-----
 ! More tests of user-defined variables. Bug 1427, now fixed, problem with varid of user vars
@@ -49706,6 +49881,7 @@ set var/outtype=garbage broiled
 can mode ignore
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
  
 !---!!!---
@@ -49753,6 +49929,7 @@ save/file=a.nc/clobber/L=1 t2
 sp ncdump -h a.nc >> all_ncdump.out
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 ! User-defined axes and variables
  
@@ -49783,6 +49960,7 @@ sh att/all (x2ax)
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 use levitus_climatology
 define att/out (`temp,return=xaxis`).new_att = "something"
@@ -49826,6 +50004,7 @@ save/file=a.nc/clobber/y=0:5 two
 sp ncdump -h a.nc >> all_ncdump.out
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 ! defining more axes with attributes
  
@@ -49859,6 +50038,7 @@ sp ncdump -h string4d.nc >> all_ncdump.out
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 ! For SET ATT timeaxis.units or SET ATT timeaxis.time_origin
 ! include the correct time origin as part of the units attribute.
  
@@ -50515,6 +50695,7 @@ set mode/last ignore
 ! Bug 1129 axis formatting when /HLIM sets axis length < 0.15 deg
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_hlim_axislab.jnl
 ! err581_hlim_axislab.jn
 ! bug 1129
@@ -50549,6 +50730,7 @@ ppl list xaxis
 ! Bug 1275 stray characters appear in data lines listing string data
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_list_stray_chars.jnl
 ! err581_list_stray_chars.jnl
 ! 8/2005 (acm) bug 1275  stray characters in data listing
@@ -50586,6 +50768,7 @@ list/i=1:5 id, country, type
 ! pattern matching for SHO FUNC failed to match all EF's
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_sho_func_pattern_match.jnl
 ! err581_sho_func_pattern_match.jnl
 ! bug 1186
@@ -50630,6 +50813,7 @@ IS_ELEMENT_OF_STR_N(VAR,VALUES)
 ! FILL on data with subspan modulo axis, got wrong data
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_subspanx_fill_bug.jnl
 ! err581_subspanx_fill_bug.jnl
 ! bug 900: subspan longitude axis and hlimits gets wrong data
@@ -50655,6 +50839,7 @@ sp rm -f err581_subspanx_fill_bug.nc
 ! bug 1318 Spurious error message on USE file where file has axes with bounds.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_use_bounds.jnl
 ! err581_use_bounds.jnl
 ! bug 1318 Spurious error message on USE file where file has axes with bounds.
@@ -50670,6 +50855,7 @@ use xyir
 ! Bug 1332 variable not scaled unless it is first variable in stepfile.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_des_scale.jnl
 ! err581_des_scale.jnl  bug 1332. When using a descriptor file and
 ! a varriable has scale_factor and/or add_offset attributes, the
@@ -50689,6 +50875,7 @@ EXIT/SCRIPT   ! error in namelist record...
 ! Bug 1335 Zero-contour should be dark line.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_contour_zero_lev.jnl
 ! err581_contour_zero_lev.jnl
 ! acm 9/7/2005
@@ -50701,6 +50888,7 @@ contour/lev=(-20,20,2) sst[L=1] - 20
 ! Bug 1339, code hangs with this combination of (-INF)(INF) levels and shakey
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_shakey_inf.jnl
 ! err581_shakey_inf.jnl
 ! acm 9/7/2005
@@ -50719,6 +50907,7 @@ ppl/reset  ! undo the SHAKEY setting.
 ! Bug 918, immediate mode parsing in IF blocks
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_if_conditional.jnl
 ! err581_if_conditional.jnl  bug 918.
 ! acm 10/2005
@@ -50929,6 +51118,7 @@ palette rainbow
 ! Ungraceful STOP if we asl for multi-var transformations on axis where there is no data
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_illegal_trans.jnl
 ! err581_illegal_trans.jnl
 ! Ungraceful STOP if we do @VAR on an axis where there is no data
@@ -50945,6 +51135,7 @@ can mode ignore_error
 ! missing flag gets scaled by scale and offset factors!
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_missing_scale_off.jnl
 ! err581_missing_scale_off.jnl
 ! ACM 11/8/05
@@ -50978,6 +51169,7 @@ list tt
 ! SHOW GRID and other output have wrong dates, non-std calendar axesv
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_cal_dates_output.jnl
 ! err581_cal_dates_output.jnl
 ! bug 1363:
@@ -51004,6 +51196,7 @@ sho grid t3
 ! STOP on shade command when modulo-regridding a time-limited nonstd calendar
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_noleap_mod.jnl
 ! err581_noleap_mod.jnl
 ! This is bug 1365: STOP on shade command
@@ -51023,6 +51216,7 @@ shade/y=0/k=1 a_clim
 ! CANCEL DATA errors
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_cancel_data.jnl
 ! err581_cancel_data.jnl
  
@@ -51075,6 +51269,7 @@ sp rm -f subdir/0000_a.nc
 ! CANCEL DATA errors
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_since_units.jnl
 ! err581_since_units.jnl
 ! bug 1394: units of months_since_event
@@ -51107,6 +51302,7 @@ list a
 ! CANCEL DATA errors
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_exp_spaces.jnl
 ! err581_exp_spaces.jnl
 ! bug 1395
@@ -51163,6 +51359,7 @@ can mode ignore
 ! bugs 439,1390: applying command context
 GO bn_reset.jnl
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_command_cx.jnl
 ! err590_command_cx.jnl
 ! bugs 439 and 1390: the command context should apply to immed. mode evaluation
@@ -51189,6 +51386,7 @@ can mode ignore
 ! bug 1401: define 1-point axis with bounds; gets bounds wrong
 GO bn_reset.jnl
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_define_1pt_bounds.jnl
 ! err581_define_1pt_bounds.jnl
 ! see bug 1401:
@@ -51232,6 +51430,7 @@ list xboxlo[gx=xax],xboxhi[gx=xax],x[gx=xax]
 ! Bug in strrindex when 1st argument is a list of strings
 GO bn_reset.jnl
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_strrindex.jnl
 ! err581_strrindex.jnl
 ! 5/2/2006
@@ -51251,6 +51450,7 @@ list strrindex(var,"s")
 ! POLYGON/LINE over a depth axis.
 GO bn_reset.jnl
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err581_poly_rev.jnl
 ! err581_poly_rev.jnl
 ! POLYGON/LINE mis-locates the line when there is a depth or
@@ -51313,6 +51513,7 @@ set mem /size=25.6
 ! Bug 1443
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err600_long_bounds_name
 ! err600_long_bounds_name.jnl
 ! Long name for bounds attribute was not read by Ferret
@@ -51345,6 +51546,7 @@ list  x[gx=var], xbox[gx=var], xboxlo[gx=var], xboxhi[gx=var]
 ! bug1434
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err600_check_bounds_regular.jnl
 ! err600_check_bounds_regular.jnl
 ! Previously TM_CHECK_BNDS had not been used to check bounds on regular axes.
@@ -51365,6 +51567,7 @@ use b
 ! Bug 1439
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err600_long_symbol_string.jnl
 ! err600_longsym_symbol_string.jnl
 ! Long values for symbols: previously strings were cut off at 255 characters.
@@ -51408,6 +51611,7 @@ CANCEL SYMBOL longsym*
 ! bug 1445
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err600_missing_flag.jnl
 ! noglobalhistory.nc has no global history attribute, and
 ! also the variable B has no missing or fill value flag
@@ -51431,6 +51635,7 @@ list b
 ! ( a parsing error, confusing the dot in the filename with dot in `var.att,return=size` )
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err600_returnsize.jnl
 ! err600_returnsize.jnl
 ! ACM 10-4-2006
@@ -51458,6 +51663,7 @@ say `(($the_x_axis)).units,return=size`
 ! thrown off and we got an error about an invalid ENDIF
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err600_if_comments_tab.jnl
 ! err600_if_comments_tab.jnl
 ! ACM 10-4-2006
@@ -51475,6 +51681,7 @@ ENDIF
 ! Bug 1454 Settings made by SET VAR/TITLE=/UNITS= were not saved in output file
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err600_set_var_title.jnl
 ! err600_set_var_title.jnl
 ! Bug 1454
@@ -51532,6 +51739,7 @@ use a.nc
 ! be labelled with the var name but it only has units label
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err600_var_label.jnl
 ! err600_var_label.jnl
 ! bug1442
@@ -51577,6 +51785,7 @@ list/i=70/l=1/j=30/k=1 temp
 ! Bug 1461 upcasing of axis name on creating bounds variable for output
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err600_upcase.jnl
  ! err600_upcase.jnl
  ! 10/23/2006
@@ -51601,6 +51810,7 @@ SET MODE/LAST ignore_error
 ! structure fail, and the list of variable names was incorrect.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err600_let_d.jnl
 ! err600_let_d.jnl
 ! Making a LET/D= assignment caused the return of dimension
@@ -51628,6 +51838,7 @@ list ..varnames
 ! Bug 1459 order of multiple descriptor file opening causes netCDF error
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err600_nc_des_order.jnl
 ! err600_nc_des_order.jnl
 ! 11/07/2006 ACM
@@ -51689,6 +51900,7 @@ stat rose[j=12,d=1]
 ! in the attribute structure.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err600_reset_redefine_axis.jnl
 ! err600_reset_redefine_axis.jnl
 ! Bug 1470; redefine or reset attributes of an axis
@@ -51822,6 +52034,7 @@ show axis ($zax)
 ! orig_file_axname keeps the input name.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err600_ferret_axis_names.jnl
 ! err600_ferret_axis_names.jnl
 ! If Ferret needed to rename an axis on file initialization for uniqueness,
@@ -51879,7 +52092,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -51928,7 +52141,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -51979,6 +52192,7 @@ sho dat/att
 ! should output a comma or tab as placeholder for the missing value
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err600_tab_comma_missingdat.jnl
 ! err600_tab_comma_missingdat.jnl
 ! 11/21/2006 acm
@@ -52051,6 +52265,7 @@ list/form=tab a,b,a
 ! VECTOR/ASPECT plots are wrong (incorrect fix for bug 1348)
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err600_vec_aspect.jnl
 ! err600_vec_aspect.jnl
 ! VECTOR/ASPECT plots are wrong (incorrect fix for bug 1348)
@@ -52074,6 +52289,7 @@ vec/asp/over a,b
 ! when checking whether 2nd variable has same grid.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err600_save_two.jnl
 ! err600_save_two.jnl
 ! 12/11/2006
@@ -52091,6 +52307,7 @@ save/clobber/file="out.nc" olr[d=1], swdn_toa[d=2]
 ! Bug 1459 order of multiple descriptor file opening causes netCDF error
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err600_nc_des_order.jnl
 ! err600_nc_des_order.jnl
 ! 11/07/2006 ACM
@@ -52694,6 +52911,7 @@ say `axy,return=xmod`
 ! bug 1468: SHOW AXIS/ALL/XML listed the wrong info for the calendar
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err601_sho_ax_xml_calendar.jnl
 ! err601_sho_ax_xml_calendar.jnl
 ! 11/8/2006 ACM
@@ -52748,6 +52966,7 @@ sh axis/xml timenoleap
 ! with unspecified_int4.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err601_index_111.jnl
  
 ! err601_index_111.jnl
@@ -52774,6 +52993,7 @@ list x[gx=sst,x=-193:-203]
 ! Check for irregular axis actually being irregular failed; bug 1483
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err601_irregular_axis.jnl
 ! err601_irregular_axis.jnl
 ! V6.0 had a new scheme to check for irregular axes; for an axis
@@ -52846,6 +53066,7 @@ SHOW GRID/Z atmos
 ! see bug 1485, check on missing coordinates for 3-argument graphics
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err601_check_missing_3arg.jnl
 ! err601_check_missing_3arg.jnl
 ! see bug 1485: if missing coordinates in a curvilinear dataset, we should be
@@ -52929,6 +53150,7 @@ sp rm -f tripolar_missing_lon.nc
 !  when the last element is missing.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err601_missing_string_element.jnl
 ! err601_missing_string_element.jnl
 !  Bug 1488. Seg fault when try to list a string variable
@@ -53073,6 +53295,7 @@ cancel mode ignore_error
 ! SHADE/LEV did not keep same levels after a SHADE/LINE
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err602_shade_line_lev.jnl
 ! err602_shade_line_lev.jnl
 ! Bug 904.
@@ -53112,6 +53335,7 @@ LEV_DEL = "0.05"
 ! Draw correct SHADE and FILL plots across the modulo branch cut.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err602_curvi_modulo_cut
 ! err602_curvi_modulo_cut.jnl
 ! 5/07  bug 1302
@@ -53134,6 +53358,7 @@ fill/hlim=75:85/vlim=-10:0/mod u,geolon_c,geolat_c
 ! SET LIST/PREC worked for multi-var listings, LIST/PREC= var1,var2 did not
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err602_list_prec
 ! err602_list_prec.jnl
 ! fixes for bug 1388: SET LIST/PREC worked for multi-variable listings,
@@ -53257,6 +53482,7 @@ show memory
 ! Fix for Bug 1524: irregular axis detected as REGULAR
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err604_irreg_axis.jnl
 ! Bug 1524: irregular axis detected as REGULAR!
  
@@ -53288,6 +53514,7 @@ list t[gt=month_irreg], tbox[gt=month_irreg]
 ! SHOW FUNCTIONS caused a crash or a message
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err605_show_func.jnl
 ! err605_show_func.jnl
 ! Reported by Andrew W.
@@ -53729,6 +53956,7 @@ SHAPEFILE_WRITEXYZVAL(SHAPEFILE,GRIDX,GRIDY,GRIDZ,VALUE,VALNAME,MAPPRJ)
 ! Fix for Bug 1539: SHOW VAR/XML
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err607_show_var_xml
 ! Bug 1539 SHOW VAR/XML didnt show all vars.
  
@@ -53814,6 +54042,7 @@ show var/xml
 ! err607_set_new_history_att
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err607_set_new_history_att
 ! err607_set_new_history_att.jnl
 ! Previously if we set a history attribute on a user-defined variable that
@@ -53842,6 +54071,7 @@ show att/all var
 ! Symbols YAXIS_MIN, YAXIS_MAX were 0 when values small
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err607_axis_minmax_syms
 ! Bug 1542
 ! Symbols YAXIS_MIN, YAXIS_MAX were 0 when values small
@@ -53875,6 +54105,7 @@ YAXIS_MAX = "2.005050505E-06"
 ! Error message for too many contour levels requested
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err607_lev_errmsg
 ! err607_lev_errmsg.F
 ! Make the error message more detailed, saying it is the choice of
@@ -53965,6 +54196,7 @@ set mode nlevels 40
 ! Error processing parentheses on abstract axis names.
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err608_bug1556
 ! err608_bug1556.jnl
 ! Error processing parentheses on abstract axis names.
@@ -53992,6 +54224,7 @@ SAVE/FILE=a.nc/CLOBBER sst[i=1:5:1,j=1:5:1,l=1:1:1]
 ! Precision of immediate-mode output of negative values
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err608_precision_neg_numbers
 ! err608_precision_neg_numbers.jnl
 ! ACM 1/2/2008
@@ -54036,6 +54269,7 @@ CANCEL MODE IGNORE
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err61_write_bounds
 ! err61_write_bounds.jnl
 ! test fixes for bugzilla 1534: write correct bounds
@@ -54065,6 +54299,7 @@ sp ncdump a.nc >> all_ncdump.out
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err61_poly_shade_over_noaxes
 ! err61_poly_shade_over_noaxes.jnl
 ! See bug 1571
@@ -54120,6 +54355,7 @@ go polymark poly/lev=(-5,30,1)/fill/line=1/nolab/over v1 v2 v3 circle 2
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err61_context_scalar_strings
 ! err61_context_scalar_strings.jnl
 ! Bug 1558, first present in Ferret v6.02
@@ -54136,6 +54372,7 @@ say `"a" EQ "a"`
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err61_exit_script
 ! Bug 1566 Andrew Wittenberb
 !
@@ -54282,6 +54519,7 @@ exit/script
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err61_new_attr_on_axis
 ! err61_new_attr_on_axis.jnl
 ! For any var or axis, allow adding an attribute
@@ -54314,6 +54552,7 @@ sp ncdump -h a.nc >> all_ncdump.out
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO bn_varcontext_attributes
 ! Examples from bn_attributes, where instead of var.att[specifiers]
 ! we use var[specifiers].att  where appropriate.
@@ -54374,6 +54613,7 @@ list lnames
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
  
 !-----
@@ -54414,6 +54654,7 @@ say `($yaxnam)[d=1].nattrs`
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 !-----
 ! more on access to attribute names and values as variables
@@ -54457,6 +54698,7 @@ list a[i=2]
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 ! When the variable context is given in an attribute
 ! spec, we want to ignore the information except for the
@@ -54492,6 +54734,7 @@ list ($ferret_plot_var).history
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 use levitus_climatology
 use coads_climatology
@@ -54517,6 +54760,7 @@ list ($yaxnam).point_spacing[d=1]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err61_show_dat_var_xml
 ! err61_show_dat_var_xml.jnl
 ! See bug 1580. Intermediate variablels associated with a
@@ -54677,6 +54921,7 @@ SHOW DATA/VAR/XML 2
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err61_360_calendar
 ! err61_360_calendar.jnl
 !
@@ -54702,6 +54947,7 @@ define axis/t=30-feb-1909:07-mar-1909:2/units=days/t0=1-jan-1909/calendar=d360 t
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_exit_if.jnl
 ! err611_exit_if.jnl
 !
@@ -54728,6 +54974,7 @@ exit/script
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_save_irreg.jnl
 ! err611_save_irreg.jnl
 !
@@ -54927,6 +55174,7 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_axislab
 ! err611_axislab.jnl
 ! Fix bug 1582: Horizontal axis label disappeared
@@ -54941,6 +55189,7 @@ ppl plot
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err61_360_calendar
 ! err61_360_calendar.jnl
 !
@@ -54966,6 +55215,7 @@ define axis/t=30-feb-1909:07-mar-1909:2/units=days/t0=1-jan-1909/calendar=d360 t
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_exit_if.jnl
 ! err611_exit_if.jnl
 !
@@ -54992,6 +55242,7 @@ exit/script
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_save_irreg.jnl
 ! err611_save_irreg.jnl
 !
@@ -55016,6 +55267,7 @@ save/clob/file=b.nc b
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_wrong_fineaxis_range
 ! err611_wrong_fineaxis_range.jnl
 ! Bug 1594
@@ -55086,6 +55338,7 @@ say `the_plot_var,return=size`
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_digit_filename
 ! err611_digit_filename.jnl
 ! Under linux, FILE command fails if filename
@@ -55185,6 +55438,7 @@ SHOW DATA
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_parse_semicolon
 ! err611_parse_semicolon.jnl
 ! Bug 1608. The first time it was issued, the first command
@@ -55205,6 +55459,7 @@ c (d; say a ; b
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_ov_ax
 ! err611_ov_ax.jnl
 !
@@ -55225,6 +55480,7 @@ set v lr; ppl axlabp 0 0; plot/nolab {-1,1,6}
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_context_after_error
 ! err611_context_after_error.jnl
 ! ACM 11/12/08
@@ -55305,6 +55561,7 @@ SET MODE/LAST ignore_error
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_isize_gc_fcns
 ! err611_isize_gc_fcns.jnl
 ! ACM 11/13/2008
@@ -55348,6 +55605,7 @@ SAY `XSEQUENCE(a),RETURN=size`
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_return_precision
 ! err611_return_precision.jnl
 ! 17-Nov-08 ACM
@@ -55498,6 +55756,7 @@ a-950
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_set_var_ez
 ! err611_set_var_ez.jnl
 ! 6-Jan-2009
@@ -55544,6 +55803,7 @@ SP ncdump -h a.nc >> all_ncdump.out
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_convert_missing_type
 ! err611_convert_missing_type.jnl
 ! Fix for bug 1620 message about converting data type of
@@ -55566,6 +55826,7 @@ SAVE/CLOBBER/FILE=lonlat.nc lat, lon
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_shade_fill_levs
 ! err611_shade_fill_levs.jnl
 ! 2/27/2009
@@ -55587,6 +55848,7 @@ LEV_DEL = "0.05"
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_set_uvar_outtyp
 ! err611_set_uvar_outtyp.jnl
 ! fix for bug 1646: set outtype for user variables.
@@ -55609,6 +55871,7 @@ SP ncdump a.nc >> all_ncdump.out
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_save_from_desc
 ! err611_save_from_desc.jnl
 !
@@ -55620,6 +55883,7 @@ save/clobber/file=a.nc/i=100 sst
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_irregular_axis
  ! err611_irregular_axis.jnl
  
@@ -55650,6 +55914,7 @@ sh grid cc
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_ef_string_result
 ! err611_ef_string_result.jnl
 ! testing the fix for bug 1621
@@ -55735,6 +56000,7 @@ list xt
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err61_contour_subspan_reps
 ! err61_contour_subspan_reps.jnl
 ! Bug 1659.
@@ -57444,6 +57710,7 @@ shade/lev=35 sst[L=1]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err618_julday.jnl
 ! err618_julday.jnl
 ! Bug 1639
@@ -57493,6 +57760,7 @@ list/t=27-feb-1999:02-mar-1999 rjulianday
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err611_polygons.jnl
 ! err611_polygons.jnl
 ! bug 1661
@@ -57814,10 +58082,10 @@ SH GRID am
  normal    T
 *** Running ferret script: bn_clock_syms.jnl
 [?1034hSH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "0.215966"
+DELTA_CPU = "0.208967"
 CLOCK_SECS = "0.1"
-CURRENT_DATE = " 7-Mar-17"
-CURRENT_TIME = "10:28:50"
+CURRENT_DATE = " 9-Mar-17"
+CURRENT_TIME = "15:31:01"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57827,7 +58095,7 @@ use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0.022997"
-CLOCK_SECS = "0.123"
+CLOCK_SECS = "0.122"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57844,20 +58112,20 @@ let ten_plots = ($DELTA_CPU)
  !-> DEFINE VARIABLE ten_plots = 0.060991
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "0.185"
+CLOCK_SECS = "0.184"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "0.185"
+CLOCK_SECS = "0.184"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.006998
- !-> DEFINE VARIABLE sumcpu =0.006998
+ !-> DEFINE VARIABLE dt = 0.006999
+ !-> DEFINE VARIABLE sumcpu =0.006999
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.007999
+ !-> DEFINE VARIABLE dt = 0.007998
  !-> DEFINE VARIABLE sumcpu =0.014997
 !-> REPEAT: K=3
  !-> DEFINE VARIABLE dt = 0.007999
@@ -57866,41 +58134,42 @@ let sumcpu =`sumcpu + dt`)
  !-> DEFINE VARIABLE dt = 0.007999
  !-> DEFINE VARIABLE sumcpu =0.030995
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.007999
- !-> DEFINE VARIABLE sumcpu =0.038994
+ !-> DEFINE VARIABLE dt = 0.008999
+ !-> DEFINE VARIABLE sumcpu =0.039994
 !-> REPEAT: K=6
  !-> DEFINE VARIABLE dt = 0.007998
- !-> DEFINE VARIABLE sumcpu =0.046992
+ !-> DEFINE VARIABLE sumcpu =0.047992
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.007999
+ !-> DEFINE VARIABLE dt = 0.006999
  !-> DEFINE VARIABLE sumcpu =0.054991
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.007999
- !-> DEFINE VARIABLE sumcpu =0.06299
+ !-> DEFINE VARIABLE dt = 0.008999
+ !-> DEFINE VARIABLE sumcpu =0.06399
 !-> REPEAT: K=9
  !-> DEFINE VARIABLE dt = 0.006999
- !-> DEFINE VARIABLE sumcpu =0.069989
+ !-> DEFINE VARIABLE sumcpu =0.070989
 !-> REPEAT: K=10
  !-> DEFINE VARIABLE dt = 0.007999
- !-> DEFINE VARIABLE sumcpu =0.077988
+ !-> DEFINE VARIABLE sumcpu =0.078988
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.077988
-0.077988
+ !-> MESSAGE/CONTINUE 0.078988
+0.078988
 sh sym CLOCK_SECS
 CLOCK_SECS = "0.265"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = " 7-Mar-17"
-SESSION_TIME = "10:28"
-CURRENT_DATE = " 7-Mar-17"
-CURRENT_TIME = "10:28:50"
+SESSION_DATE = " 9-Mar-17"
+SESSION_TIME = "15:31"
+CURRENT_DATE = " 9-Mar-17"
+CURRENT_TIME = "15:31:02"
 *** Running ferret script: bn63_bug_fixes.jnl
 [?1034h! bn63_bug_fixes.jnl
 ! Fixes that go into v6.3 release
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err62_string_write_nc
 ! err62_string_write_nc.jnl
 ! Bug 1664: string variable written as a float.
@@ -57979,6 +58248,7 @@ list cruise_id_xz
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err62_levset
 ! err62_levset.jnl
 ! fix for bug 1672, top color level chopped off in some circumstances
@@ -57990,6 +58260,7 @@ shade/x=350:390/y=1:10/lev=(376.6,379.0,0.8)(379.0,385.4,0.2) var
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err62_thick_tic_time_axis
 ! err62_thick_tic_time_axis.jnl
 ! Fixing bug 1668
@@ -58043,6 +58314,7 @@ set win/new
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err62_reset_after_inf
 ! err62_reset_after_inf.jnl
 ! Bug 1292
@@ -58062,6 +58334,7 @@ cancel mode meta
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err62_reversed_up
 ! err62_reversed_up.jnl
 !
@@ -58108,6 +58381,7 @@ list z[gz=temp], zboxlo[gz=temp], zboxhi[gz=temp]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err62_samplexy
 ! err62_samplexy
 ! bug 1677
@@ -58142,6 +58416,7 @@ list sr
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err62_one_point_bounds
 ! err62_one_point_bounds.jnl
 ! Bug 1680
@@ -58174,6 +58449,7 @@ I / *:     5.000  4.890  5.110
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err62_cos_lat_uncentered
 !err62_cos_lat_uncentered.jnl
 ! See this thread, here is the esample, with his test.nc renamed to uncentered.nc
@@ -58322,6 +58598,7 @@ list cell18[x=@din,y=@din]/total_area
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err62_if_inside_repeat
 ! err62_if_inside_repeat.jnl
 ! Bug 1681. Parsing error when, inside the REPEAT, we have
@@ -58388,6 +58665,7 @@ done
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err62_title_curvi_plot
 ! err62_title_curvi_plot.jnl
 ! bug 1669; when the variable and its coordinate variables
@@ -58425,6 +58703,7 @@ LABTIT = "SEA SURFACE TEMPERATURE (Deg C)"
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err62_save_missingcoordvar
 ! err62_save_missingcoordvar.jnl
 ! see bug 1686
@@ -58441,6 +58720,7 @@ save/clobber/file=a.nc sst
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err62_contourbug
 ! err62_contourbug.jnl
 ! Bug 1688
@@ -58463,6 +58743,7 @@ fill/hlimits=-100:400:50 0.0000001*(xb2+zb)^3,xb2,zb
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err62_append_irreg_to_reg
 ! err62_append_irreg_to_reg.jnl
 ! bug 1692
@@ -58495,6 +58776,7 @@ SET MODE/LAST IGNORE
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err62_axis_stride_off
 ! err62_axis_stride_off.jnl
 ! fixing bug 1689: offset shifted by 1 so /OFFSET=0 >> start index = 1
@@ -58572,6 +58854,7 @@ SET MODE/LAST IGNORE
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err62_compound_string_conditional
 ! err62_compound_string_conditional
 ! Bug 1380
@@ -58784,6 +59067,7 @@ shade/line/key/lev=50h/title="/LEV=50h" cvar[K=1]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err63_days1900toydmhms
 ! err63_days1900toydmhms.jnl
 !
@@ -58808,6 +59092,7 @@ list/k=2:3 tpts
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err63_log_vaxis
 ! err63_log_vaxis.jnl
 ! fix for bug 1708
@@ -58826,6 +59111,7 @@ plot/vlog z[gz=vert_axis_dn]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err63_delim_E.jnl
 ! err63_delim_E.jnl
 ! bug 1700
@@ -59070,6 +59356,7 @@ stat v1234[g=even]-veven, v1234
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 ! regrid_transforms
 use gtsa056_1
 use gtsa056_2
@@ -59387,6 +59674,7 @@ set mode/last diag
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 ! regrid_to_user
  
 use coads_climatology
@@ -59600,6 +59888,7 @@ set mode/last ignore
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 ! dynamic grid commands
  
@@ -59665,6 +59954,7 @@ sh dat/xml/var
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err64_very_small_latlon
 ! err64_very_small_latlon.jnl
 ! Based on a report and data file from Jean Newman.
@@ -59679,6 +59969,7 @@ shade/i=1:10/j=1:10 bathy
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err64_packed_data
 ! err64_packed_data.jnl
 ! Test writing packed data. Prior to v6.4 this example shows the
@@ -59771,6 +60062,7 @@ list/i=1:15 sst
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO bn_repl_9999999
 ! bn_repl_9999999.jnl
 ! Bug 1717
@@ -59785,6 +60077,7 @@ can view view9999999
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err64_shakey_missingdata
 ! err64_shakey_missingdata.jnl
 ! starting with v6.2 a polygon plot with all missing data.
@@ -59809,6 +60102,7 @@ go polytube polygon/over/key/lev=(0,6,1) xpts,ypts,zpts
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err64_return_precision
 !err64_return_precision.jnl
 ! most of these resulted in *** - format too small.
@@ -59841,6 +60135,7 @@ say `999.999,p=-2`
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err64_parse_equals
 ! err64_parse_equals
 ! Bug1469 (and duplicate 1690)
@@ -59861,6 +60156,7 @@ DEFINE SYMBOL my_sym  = `UPCASE("/lev=(0,30,2)")`
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err64_regrid_noleap
 ! err64_regrid_noleap.jnl
 !
@@ -59904,6 +60200,7 @@ list b[t=15-feb-1150]  ! Now ok??
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err64_polymark_over_calendar
 ! err64_polymark_over_calendar.jnl
 ! bug1722.  Polymark script failed with calendar mismatch
@@ -60332,6 +60629,7 @@ sp cat the_xml_file.xml
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err65_averages.jnl
  
 use gt4d011
@@ -60922,6 +61220,7 @@ AX_VERT = "Y"
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err65_dots_in_dashes.jnl
 ! err65_dots_in_dashes.jnl
 ! Test fix to bug 1396: dots where there should
@@ -60942,6 +61241,7 @@ cancel mode meta
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err66_all_missing_lev_v.jnl
 ! err66_all_missing_lev_v.jnl
 ! Ferret hangs with /LEV=V and all missing data
@@ -61148,6 +61448,7 @@ show grid
 ! --- clean up
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 cancel grid mygrid
  
 ! --- read a NetCDF file with the irregular axes and data
@@ -61653,8 +61954,8 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! PyFerret v7.1 (beta/debug)"                                              
- 3    /  3:" ! Linux 2.6.32-642.15.1.el6.x86_64 - 03/07/17"                             
- 4    /  4:" !  7-Mar-17 10:29     "                                                    
+ 3    /  3:" ! Linux 2.6.32-642.15.1.el6.x86_64 - 03/09/17"                             
+ 4    /  4:" !  9-Mar-17 15:31     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -62108,6 +62409,7 @@ LAB4 = "CALENDAR: NOLEAP"
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err664_xml_keep_case
 ! err664_xml_keep_case.jnl
 !
@@ -62303,6 +62605,7 @@ REPEAT/RANGE=1:`nd`/name=m (DEFINE SYMBOL m = `m`; SH AXIS/XML `axis_names[i=($m
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err664_xml_one_point_axis
 ! err664_xml_one_point_axis.jnl
 ! See LAS ticket 969.
@@ -62374,6 +62677,7 @@ SH VAR/XML
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err65_read_epic_cdf
 ! Ned Cokelet reports that the time coordinate is read incorrectly
 ! from this file.  Should translate to  04-MAY-2007 05:02
@@ -62412,6 +62716,7 @@ list ..dimnames
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err664_tax_fcns
 ! err664_tax_fcns.jnl
 ! Fixes for tickets 1766 and 1765
@@ -62609,6 +62914,7 @@ LIST/X=165W:135W/Y=-50/L=1 STRLEN(var)
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err665_sum_4d_labels
 ! A multi-dimensioned sum is now done as a 4D transformation.
 ! the labels on a LISTing of the result contained ???
@@ -62625,6 +62931,7 @@ list sst[X=125E,Y=75S:75N@sum,l=1:12@sum]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err665_din
 ! err665_din
 ! Fixing incorrect latitude corrections for single-point y axis,
@@ -62694,6 +63001,7 @@ list p[x=279:380@din,z=0:10@din]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err665_centered_lev
 ! err665_centered_lev
 ! Bug 1803; computation of new levels isnt requested for
@@ -62734,6 +63042,7 @@ LEV_DEL = "5"
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err665_hours_since_T
 ! err665_hours_since_T.jnl
 ! Ticket 1806: allow time-axis units string to
@@ -62752,6 +63061,7 @@ T0 = 15-JAN-1901 12:00:00
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err667_att_too_long
 ! err667_att_too_long.jnl
 ! 3/25/2011 ACM
@@ -62802,6 +63112,7 @@ save/file=aa.nc/clobber sfco2
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err667_mode_desperate
 ! err667_mode_desperate
 ! 3/25/2011 ACM
@@ -62838,6 +63149,7 @@ cancel mode desperate
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err667_dup_axnames
 ! err667_dup_axnames.jnl
 ! See bug 1750
@@ -62868,6 +63180,7 @@ save/clob/file="justg.nc" g[d=1]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err667_string_if
 ! err667_string_if.jnl
 ! Previously both of these LIST commands caused a crash.
@@ -62893,6 +63206,7 @@ list IF strings EQ "a" THEN "" ELSE strings
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err667_show_var_twice
  ! err667_show_var_twice.jnl
  ! ticket 1825
@@ -62914,11 +63228,13 @@ sh var airt2[d=1]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err667_5d_netcdf
 exit/script  ! this test is not valid for 6D Ferret.
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err67_save_append_open
 ! err67_save_append_open.jnl
 ! ticket 1832
@@ -62971,6 +63287,7 @@ USE test0
 ! Now we get the NOTE
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 SET MODE diag
 USE test0
 CANCEL MODE diag
@@ -62981,6 +63298,7 @@ CANCEL MODE diag
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err67_tax_modtime
 ! err67_tax_modtime.jnl
 ! 5/17/2011
@@ -63051,6 +63369,7 @@ list tax_units(tvar)
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err67_save_append_open
 ! err67_save_append_open.jnl
 ! ticket 1832
@@ -63091,6 +63410,7 @@ sh dat
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err67_regridding_dyn
 ! err67_regridding_dyn.jnl
 !  6/2011
@@ -63198,6 +63518,7 @@ list/x=330/y=40:90 filled[d=3,gxy=filled[d=2]]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err67_reverse_bounds
 ! err67_reverse_bounds.jnl
 !
@@ -63240,6 +63561,7 @@ list lev_var, zboxlo[gz=lev_var], zboxhi[gz=lev_var]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err67_nrst_trans
 ! err67_nrst_trans.jnl
 !
@@ -63270,6 +63592,7 @@ list var
 !
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err672_stray_line
 ! err672_stray_line.jnl
 ! bug 1545, present in older versions of Ferret too.
@@ -63290,6 +63613,7 @@ plot/over/vs/nolab/line/sym {148.83, 148.17}, {-29.96, -29.68}
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err672_tax_functions_prec
 ! See ticket 1642: arg 1 of TAX_* functions
 ! is a single-precision variale representing double-precision coords.
@@ -63587,6 +63911,7 @@ can mode ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err672_subscr_precision
 ! err672_subscr_precision.jnl
 ! See ticket 1888.
@@ -63614,6 +63939,7 @@ list/t="02-JUN-2010:13:34:40":"02-JUN-2010:13:34:50" tt
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err672_vert_axislabel
 ! err672_vert_axislabel.jnl
 ! bug 1896
@@ -63644,6 +63970,7 @@ SET MODE/LAST shrink_ylab
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err672_axis_label_prec
 ! See ticket 1907
 ! Axis label format didnt give enough precision for accurate labels
@@ -63677,6 +64004,7 @@ plot v
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err672_long_show_axis
 ! See ticket 1905 - axes with very large number of points overflowed
 ! the format in SHOW AXIS commands
@@ -63692,6 +64020,7 @@ can axis huge
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err672_axis_order
 ! err672_axis_order
 ! See comment 5 under ticket 1774.
@@ -63760,6 +64089,7 @@ list/k=3/i=1 ucov[d=2]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err672_runoff_page
 ! err672_runoff_page
 ! acm 5/3/2012
@@ -63780,6 +64110,7 @@ SET MODE/LAST shrink_ylab
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err672_samplexy_modulo
 ! err672_samplexy_modulo.jnl
 ! See ticket 1950: samplexy doesnt correctly do modulo operations.
@@ -63838,6 +64169,7 @@ list samplexyt(sst,{160,180,-20},{0,0,0},{`t1`,`t1`,`t1`})
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err672_varnames
 ! err672_varnames.jnl
 ! ticket 1938
@@ -63868,6 +64200,7 @@ CAN MODE IGNORE
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err672_dset_cx
 ! err672_dset_cx.jnl
 ! Ticket 1951: The dataset specified in list x[gx=a[d=1,i=1:3]] is not applied.
@@ -64114,40 +64447,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.664
-randu2_randn2       0.279
-randu2_randn2       0.491
-randu2_randn2       0.107
-randu2_randn2       0.545
+randu2_randn2       0.178
+randu2_randn2       0.166
+randu2_randn2       0.627
+randu2_randn2       0.371
+randu2_randn2       0.356
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.770
-randu2_randn2       0.987
-randu2_randn2       0.071
-randu2_randn2       0.920
-randu2_randn2       0.536
+randu2_randn2       0.789
+randu2_randn2       0.623
+randu2_randn2       0.932
+randu2_randn2       0.079
+randu2_randn2       0.513
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.790
-randu2_randn2       0.091
-randu2_randn2       0.879
-randu2_randn2       0.747
-randu2_randn2       0.962
+randu2_randn2       0.422
+randu2_randn2       0.694
 randu2_randn2       0.578
+randu2_randn2       0.240
+randu2_randn2       0.631
+randu2_randn2       0.328
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.730
-randu2_randn2       0.966
-randu2_randn2       0.716
-randu2_randn2       0.594
-randu2_randn2       0.278
-randu2_randn2       0.905
+randu2_randn2       0.527
+randu2_randn2       0.025
+randu2_randn2       0.606
+randu2_randn2       0.762
+randu2_randn2       0.113
+randu2_randn2       0.316
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -64172,40 +64505,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       1.660
-randu2_randn2      -0.909
-randu2_randn2       1.133
-randu2_randn2       0.190
-randu2_randn2       1.101
+randu2_randn2      -1.583
+randu2_randn2       0.922
+randu2_randn2      -3.064
+randu2_randn2       0.829
+randu2_randn2      -0.436
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.325
-randu2_randn2      -1.427
-randu2_randn2       0.010
-randu2_randn2      -0.007
-randu2_randn2       2.935
+randu2_randn2      -0.687
+randu2_randn2      -0.690
+randu2_randn2       0.663
+randu2_randn2       1.627
+randu2_randn2      -1.246
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2      -1.409
-randu2_randn2       0.834
-randu2_randn2      -0.604
-randu2_randn2       0.562
-randu2_randn2      -1.911
-randu2_randn2       0.580
+randu2_randn2      -0.400
+randu2_randn2      -0.012
+randu2_randn2      -0.436
+randu2_randn2      -0.555
+randu2_randn2      -0.685
+randu2_randn2      -0.175
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.587
-randu2_randn2      -0.404
-randu2_randn2       2.033
-randu2_randn2      -1.010
-randu2_randn2      -1.188
-randu2_randn2      -0.119
+randu2_randn2      -0.209
+randu2_randn2       0.093
+randu2_randn2      -0.635
+randu2_randn2      -0.451
+randu2_randn2       1.861
+randu2_randn2       0.751
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -64230,14 +64563,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.291       1.291       0.533
-randu2_randn2       1.245       1.245       0.533
-randu2_randn2       0.533       0.533       0.311
-randu2_randn2       0.311       0.311       0.398
-randu2_randn2      -0.367      -0.205       0.398
-randu2_randn2      -0.205      -0.205       0.398
-randu2_randn2       0.140       0.140       0.398
-randu2_randn2       0.398       0.398       0.398
+randu2_randn2       1.482       1.701       0.974
+randu2_randn2       1.701       1.482       0.974
+randu2_randn2       0.974       0.974       0.479
+randu2_randn2       0.479       0.479       0.479
+randu2_randn2      -0.078      -0.078       0.479
+randu2_randn2      -0.260      -0.078       0.479
+randu2_randn2       0.215       0.215       0.479
+randu2_randn2       0.287       0.287       0.479
 *** Running ferret script: bn_axis_cf.jnl
 [?1034h! Ticket 1792: Write axes with CF-compliant units
 ! and with standard name attributes for geophysical attrs.
@@ -69599,6 +69932,7 @@ set mode 6d_lab
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err681_dims_direction
 ! err681_dims_direction.jnl
 ! ticket 1955: Code still existed that determined axis direction
@@ -69646,6 +69980,7 @@ sho grid lon_c
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err682_shrink_axlab
 ! err682_shrink_axlab.jnl
 ! See ticket 1958. Scripts may want the axis labels to
@@ -69673,6 +70008,7 @@ set mode/last shrink_ylab
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err682_xact_high_prec
 ! err682_xact_high_prec.jnl
 ! based on an example from the Users List,
@@ -69758,6 +70094,7 @@ List /T="2-nov-2011 07:54:30":"2-nov-2011 07:54:50" var_sec
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err682_if_yes_exit
 ! err682_if_yes_exit.jnl
 ! Ticket 1965
@@ -69774,6 +70111,7 @@ if `test` then exit
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err682_use_no_quotes
 ! err682_use_no_quotes.jnl
 ! See ticket 1974 - on 64-bit machines, this statement causes a crash.
@@ -69787,6 +70125,7 @@ CANCEL MODE ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err682_axis_no_clue
 ! err682_axis_no_clue.jnl
 ! See ticket 1975. The axis sax is intended to be
@@ -69804,6 +70143,7 @@ sh dat
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err682_grid_merge
 ! err682_grid_merge.jnl
 ! Bug 1972. When merging contexts, the calendar time-axis
@@ -69850,6 +70190,7 @@ list b[T=1-JAN-1960:1-JAN-1961]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err682_scale_no_offset
 ! err682_scale_no_offset.jnl
 ! See ticket 1980 and the report on the Ferret list at
@@ -69885,6 +70226,7 @@ say `sst_rms[x=@nbd,y=@nbd]`  SHOULD BE 30
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err682_append_packed
 ! err682_append_packed.jnl
 ! See ticket 2004. Write packed variable with scale attributes
@@ -69957,7 +70299,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70015,7 +70357,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70063,7 +70405,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70111,7 +70453,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70151,7 +70493,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70192,7 +70534,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70262,7 +70604,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70315,7 +70657,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70379,7 +70721,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70423,7 +70765,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70467,7 +70809,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70511,7 +70853,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70552,7 +70894,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70783,7 +71125,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -70824,7 +71166,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        FLOAT     units           CHAR        12   T       degrees_east
@@ -70875,7 +71217,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (COADSX140_140)        DOUBLE    units           CHAR        12   T       degrees_east
@@ -70923,7 +71265,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -70949,7 +71291,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             INT       units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -70975,7 +71317,7 @@ use mytype.nc; sh dat/att mytype.nc; can data mytype
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (MYHOURS1)             DOUBLE    units           CHAR        31   T       hours since 1901-01-15 00:00:00
@@ -71055,6 +71397,7 @@ can view
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_label_quotes
 ! err684_label_quotes.jnl
 ! See ticket 1298.
@@ -71082,6 +71425,7 @@ label 4.5 .5 0 0 .3 "'hello'"
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_context_shape
 ! when limits are omitted with a compressing transformation the grave
 ! accent R=SHAPE erroneously includes the corresponding axis in the shape
@@ -71112,6 +71456,7 @@ XY
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_tax_fcns
 !err684_tax_fcns.jnl
 ! See ticket 2043, bug in workaround for single-precision arguments
@@ -71200,6 +71545,7 @@ GO err684_tax_fcns
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_save_subset
 ! err684_bug_save_subset
 ! see ticke 2064, precision in internal comparison of coordinate data
@@ -71212,6 +71558,7 @@ save/clobber/file=aa.nc/i=5:15 sh
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_save_subset
 ! err684_bug_save_subset
 ! see ticke 2064, precision in internal comparison of coordinate data
@@ -71224,6 +71571,7 @@ save/clobber/file=aa.nc/i=5:15 sh
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_line_plot_zero
 ! err684_line_plot_zero.jnl
 ! plot all-zero variable gave blank plot.
@@ -71237,6 +71585,7 @@ YAXIS_MAX = "1.00000000"
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_delimited_precision
 ! err684_delimited_precision.jnl
 ! 5/2013 Fixing bug 2066
@@ -71284,6 +71633,7 @@ list/prec=10 day, lon, lat, tim
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err6842_context_shape
 ! err6842_context_shape.jnl
 ! 5/2013 acm
@@ -71336,6 +71686,7 @@ XYT
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_evnt_z
 ! err684_evnt_z.jnl
 ! see ticket 2054
@@ -71376,6 +71727,7 @@ list my_var, my_event
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_save_expression
 ! err684_save_expression.jnl
 ! Bug 2076. If we write out an expression that has not been defined
@@ -71405,7 +71757,7 @@ variables:
 		A:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71434,7 +71786,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71485,7 +71837,7 @@ variables:
 		E410:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -71520,6 +71872,7 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_degC_axlab
 ! err684_degC_axlab.jnl
 ! ACM 6/2013
@@ -71539,6 +71892,7 @@ set mode/last logo
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_null_stringwrite
 ! err684_null_stringwrite.jnl
 ! 18-Jun-2013 ACM
@@ -71561,6 +71915,7 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_FillValue_xml
 ! err684_FillValue_xml.jnl
 ! ACM 6/2013
@@ -71648,6 +72003,7 @@ sh dat/var/xml
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_axticlab
 ! err684_axticlab
 ! 7/10/2013 *acm
@@ -71671,6 +72027,7 @@ cancel mode meta
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_dotstart
 ! err684_dotstart.jnl
 ! 12-Jul-2013 ACM
@@ -71697,6 +72054,7 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_vfine_to_coarse
  ! err684_vfine_to_coarse
  ! see ticket 2070.
@@ -71826,6 +72184,7 @@ list v eq v_coarse[gf=v@ave]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_repeated_coordindates
 ! err685_repeated_coordindates.jnl
 !  The NOTE about repeated axis coordaintes reported the wrong index location.
@@ -71835,6 +72194,7 @@ use latestOb.nc
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_packed_output
 ! err684_packed_output.jnl
 ! See ticket 2089
@@ -71875,6 +72235,7 @@ list/i=1:3 sst
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_string_dim_name
 ! err685_string_dim_name.jnl
 ! Ticket 2091. If the string variable shares its dimension name,
@@ -71898,6 +72259,7 @@ list ..varnames
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err684_define_grid
 ! err684_define_grid.jnl
 ! 25-Oct-2013 ACM
@@ -72053,8 +72415,8 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Tue Mar  7 10:29:14 2017: ncks -h -A -h z1.nc append_to_this.nc\n",
-			"PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "Thu Mar  9 15:31:25 2017: ncks -h -A -h z1.nc append_to_this.nc\n",
+			"PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
 }
@@ -72085,7 +72447,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72116,7 +72478,7 @@ variables:
 		AVAR:long_name = "X[GX=XIRREG]" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -72179,7 +72541,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -72207,7 +72569,7 @@ variables:
 		A:history = "From coads" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73518,6 +73880,7 @@ vtree=all tempz4
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err685_ribbon_by_val
 ! err685_ribbon_by_val.jnl
 ! 11/21/2013
@@ -73533,6 +73896,7 @@ plot/vs/line/thick/ribbon/MISS=black/PAL=ocean_temp xpts, ypts, fpts
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err685_ppl_palette
 ! err685_ppl_palette.jnl
 ! Further fix for ticket 2049. If the palette or pattern file
@@ -73566,6 +73930,7 @@ palette default
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err685_show_grid_e
 ! err685_show_grid_e.jnl
 ! See ticket 2122
@@ -73632,6 +73997,7 @@ sh grid /f gensy
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err685_lowercaseAxis
 ! err685_lowercaseAxis.jnl
 ! Ticket  2126
@@ -73697,6 +74063,7 @@ list/L=1:5 aa
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err685_redefine_uvar_att
 ! err685_redefine_uvar_att.jnl
 ! ticket 2127 Redefine an attribute for a
@@ -73709,6 +74076,7 @@ define att/type=STRING  a.ival = 99
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err685_use_no_extension
 ! Ticket 2128: if no extension, we should try .cdf, .nc, .des
 !  but .des was not being tried.
@@ -73745,6 +74113,7 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err685_samplexy
 ! err685_samplexy.jnl
 ! Fix for ticket 2137. out-of-bounds error
@@ -73767,6 +74136,7 @@ list  samplexy(sst[x=290:310,y=0:20], lon, lat)
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err685_shade_set
 ! err685_shade_set.jnl
 !
@@ -73814,6 +74184,7 @@ set mode/last logo
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err686_individual_levels
 ! err686_individual_levels.jnl
 ! Ticket 2142
@@ -73904,7 +74275,7 @@ variables:
 		LABELS:history = "From http://dunkel.pmel.noaa.gov:8930/thredds/dodsC/data/atmos3.ncml" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73927,7 +74298,7 @@ variables:
 		STRVAR:long_name = "mystrings" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -73955,6 +74326,7 @@ fill/lev=(20,30,10)/L=1 sst
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err686_long_list_varnames
 ! err686_long_list_varnames.jnl
 !
@@ -74042,6 +74414,7 @@ list etopo2_depth
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err686_faxis_label
 ! err686_faxis_label.jnl
 ! 3/11/2014 ACM
@@ -74075,6 +74448,7 @@ LAB2 = "FORECAST : 03-JAN-2000 00:00 JULIAN"
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err686_dup_axnames
 ! err686_dup_axnames
 ! Ticket 1750
@@ -74143,7 +74517,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74173,7 +74547,7 @@ variables:
 		A:history = "From a" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74194,7 +74568,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74215,7 +74589,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74237,7 +74611,7 @@ variables:
 		B:history = "From b" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -74250,6 +74624,7 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err686_cancel_invalid_var
 ! err686_cancel_invalid_var
 ! ticket 2159
@@ -74273,6 +74648,7 @@ shade/x=161.1:161.3/y=0.2:0.4/L=1 sst
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err686_redef_ascii_att
 ! err686_redef_ascii_att.jnl
 ! Bug 2161
@@ -74311,6 +74687,7 @@ sh att v1
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err686_sho_nonexist_att
 ! err686_sho_nonexist_att.jnl
 ! See ticket 2133
@@ -74326,6 +74703,7 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err686_set_var_name
 ! err686_set_var_name.jnl
 ! ticket 2152
@@ -74646,7 +75024,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -74663,7 +75041,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -74680,7 +75058,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (x_in_meters)          DOUBLE    units           CHAR        6    T       meters
@@ -74912,6 +75290,7 @@ can dat/all; can var/all
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_arg_type_error
 ! err69_arg_type_error
 ! See ticket 2169
@@ -74974,6 +75353,7 @@ set mode /last ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_bad_bounds
 ! err69_bad_bounds.jnl
 ! See ticket 2170
@@ -75046,6 +75426,7 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_const_array
 ! err69_const_array.jnl
 ! 5/8/2014  ACM
@@ -75081,6 +75462,7 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_multi_label_ascii
 ! err69_multi_label_ascii.jnl
 ! 5/2014  ACM
@@ -75114,6 +75496,7 @@ label .55 .2 0 0 .16 "@ASEscape_color_not_font<NL>@P2@SRred_1<NL>@P3@SRgreen_2
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_ens_badvalue
 ! err69_ens_badvalue.jnl
 !
@@ -75149,6 +75532,7 @@ list/y=29.25  MAIZE_YIELD[d=1], MAIZE_YIELD[d=2], MAIZE_YIELD[d=3],  MAIZE_YIELD
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_ribbon_by_levels
 ! err69_ribbon_by_levels.jnl
 ! ACM 5/19/2014
@@ -75174,6 +75558,7 @@ RIBBON/vs/line/thick/lev=(1,20,1)/fast/pal=ten_by_levels xpts,ypts,var
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_ribbon_histogram
 ! err69_ribbon_histogram.jnl
 ! ACM 5/24/2014
@@ -75201,6 +75586,7 @@ ribbon/vs/line/thick/lev=10h xpts,ypts,var
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_repl_scinot
 ! err69_repl_scinot.jnl
 ! ticket 2175
@@ -75228,6 +75614,7 @@ say (`a`)
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err691_bnds_case
 ! err691_bnds_case
 ! 6/30/14
@@ -75242,6 +75629,7 @@ set mode/last upcase_output
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_plot_vs_labs
 ! err69_plot_vs_labs.jnl
 ! ticket 2187: the axis labels on the dependent axis
@@ -75279,6 +75667,7 @@ LABY = "A[X=150W:90W@AVE]"
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_levels_v
 ! err69_levels_v.jnl
 ! Ferret ticket 2186, and LAS ticket 1598
@@ -75304,6 +75693,7 @@ LEV_DEL = "irregular"
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_letd_dsetnum
 ! err69_letd_dsetnum.jnl
 !  Ticket 2189. Previously the grave-accent expression didn't get
@@ -75323,6 +75713,7 @@ sh dat
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_long_string_to_xml
 ! err69_long_string_to_xml.jnl
 ! ticket 2190  8-8-2014
@@ -75341,6 +75732,7 @@ sp cat out.xml
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_fill_trans
 ! err69_fill_trans.jnl
 ! ticket 2196. Visible only if bounds-checking is turned on.
@@ -75389,6 +75781,7 @@ list myvar[x=6@fav:18]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_load_big_grid
 ! err69_load_big_grid
 ! ticket 1758
@@ -75429,6 +75822,7 @@ cancel mode ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_write_attribute
 ! err69_write_attribute.jnl
 ! Bug 1863
@@ -75567,6 +75961,7 @@ sp rm aa.nc bb.nc
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_isready_status_errmsgs
 ! err69_isready_status_errmsgs
 ! ticket 2197
@@ -75590,6 +75985,7 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_isready_status_errmsgs
 ! err69_isready_status_errmsgs
 ! ticket 2197
@@ -75613,6 +76009,7 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_countervar_context
 ! err69_countervar_context.jnl
 ! ACM 10/3/2014
@@ -75637,6 +76034,7 @@ can region
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_label_backspace
 ! err69_label_backspace
 ! Ticket 2203:  \\ before a character backspaces before
@@ -75648,6 +76046,7 @@ label .5 .5 0 0 1 "El Nin\\^@MA45@SRo\!"
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_isready_and_regridding
 ! err69_isready_and_regridding.jnl
 ! Ticket 2204: A `var,return=isready` sends Ferret into a hanged
@@ -75693,6 +76092,7 @@ ENDIF
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_vtree_and_uvar_regrid
 ! err69_vtree_and_uvar_regrid.jnl
 ! Ticket 2206: This lead to a crash.
@@ -75718,6 +76118,7 @@ c is ready and AVAILABLE
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_vtree_cancel_axis
 ! err69_vtree_cancel_axis
 ! Ticket 2201: After a return=isready,
@@ -75745,6 +76146,7 @@ cancel axis xax2
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err69_isready_bugs
 ! err69_isready_bugs.jnl
 ! Tickets 2201 and 2215
@@ -75796,6 +76198,7 @@ m
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err691_substring_arg
 ! err693_substring_arg
 ! ACM 12/10/2014
@@ -75884,7 +76287,7 @@ variables:
 		:geospatial_lat_max = 29.07 ;
 		:time_coverage_start = "2006-06-10T23:48:00Z" ;
 		:time_converage_end = "2006-06-11T00:12:00Z" ;
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 }
  
 set mode/last upcase
@@ -75977,7 +76380,7 @@ variables:
 		lon360:history = "added to test_save_dsg.nc" ;
 
 // global attributes:
-		:history = "CruiseDsgNcFile 1.0PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "CruiseDsgNcFile 1.0PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:featureType = "Trajectory" ;
 		:Conventions = "Some other conventionsCF-1.6" ;
 		:geospatial_lon_min = -92.77 ;
@@ -76004,7 +76407,7 @@ can dat/all; use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
  ..history = Subset of etopo20,
- PyFerret V7.1 (beta/debug)  7-Mar-17 
+ PyFerret V7.1 (beta/debug)  9-Mar-17 
  ..Conventions = Existing conventions note, , CF-1.6 
  
  
@@ -76034,7 +76437,7 @@ can dat/all; use conventions_history
 ! The new attibutes
 sh att .
      attributes for dataset: ./conventions_history.nc
- ..history = The history of the filePyFerret V7.1 (beta/debug)  7-Mar-17 
+ ..history = The history of the filePyFerret V7.1 (beta/debug)  9-Mar-17 
  ..Conventions = Conventions for variables named V2CF-1.6 
 *** Running ferret script: bn_center_key_labels.jnl
 [?1034h! bn_center_key_labels
@@ -77002,6 +77405,7 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_upcase_quoted_name
 ! err693_upcase_quoted_name.jnl
 ! ticket 2050. Names are saved in uppercase
@@ -77026,6 +77430,7 @@ set mode/last upcase
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_isready_hang
 ! err693_isready_hang.jnl
 ! ACM 12/10/2014
@@ -77053,6 +77458,7 @@ IF `a,r=isready` THEN; let/title="`a,r=title`" a5 = a; ENDIF
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_isready_dyn_grid_crash   ! 12/23/2014
 let/unit="m" b = x[gx=1:5:1]
 say "`b,r=unit`"     ! this causes dynamic grid of b to be created
@@ -77068,6 +77474,7 @@ VTREE b2
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_attr_in_gcfcn
 ! err693_attr_in_gcfcn.jnl
 ! ACM 12/10/2014
@@ -77107,6 +77514,7 @@ list is_element_of_str (a, {"Kelvin", "Celsius", "DEG C"})
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_inconsistent_quote
 ! inconsistent interpretation of surrounding double quotes
 ! the original source of the problem is in PARSE_COMMAND
@@ -77128,6 +77536,7 @@ LIST "foobar"           ! error: lists the value instead
 ! IF-THEN flow tests
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_if_then_flow_2214
 ! bug 2214
 ! If we put the "say hi" in parentheses, this seems to work.
@@ -77159,6 +77568,7 @@ CORRECT
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_if_then_flow_2211
 ! bug #2211
  
@@ -77169,6 +77579,7 @@ ELSE
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_if_then_flow_1860
 ! from bug 1860
 ! continue line found within grave accents
@@ -77184,6 +77595,7 @@ CORRECT IF THIS DISPLAYS
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_if_then_flow_1446
 ! testing ticket 1446
  
@@ -77198,6 +77610,7 @@ ENDIF
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_if_then_flow_1681
 ! testing ticker 1681
  
@@ -77226,6 +77639,7 @@ endif
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_if_then_flow_1706
 ! testing ticket 1706
 !
@@ -77242,6 +77656,7 @@ ENDIF
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_if_then_flow_1368   ! Jan 28, 2010, Ferret version 5.812
 ! testing ticket 1368 - first found in Ferret v5.812 (Jan 28, 2010)
  
@@ -77274,6 +77689,7 @@ ENDIF
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_ribbon_start_missing
 ! err693_ribbon_start_missing
 ! 1/6/2015 ACM
@@ -77324,6 +77740,7 @@ let vvar = {,1.e7,,271,319}
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err691_pt_in_poly
 ! err691_pt_in_poly
 ! ticket 1961: modulo longitude for pt_in_poly
@@ -77372,6 +77789,7 @@ list minmax(pts)
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_undetected_regrid_dset
 ! err693_undetected_regrid_dset.jnl    - Jan 2015
  
@@ -77391,6 +77809,7 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_line_over_axis
 ! Ticket 2232: line plots overlaid the plot axes
 show mode meta
@@ -77409,6 +77828,7 @@ plot/ribbon/vs/line/thick=3/over/nolab/pal=green_light xval, yval, yval
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_save_packed
 ! err693_save_packed.jnl
 ! ticket 2240: bug writing multiple vars with one SAVE when scaled
@@ -77420,6 +77840,7 @@ save/clobber/file=a.nc QA_OF_SEAICE_CONC_CDR, GODDARD_MERGED_SEAICE_CONC
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_subspan_trans
 ! err693_subspan_trans
 ! bug 2241  3/9/2015
@@ -77494,6 +77915,7 @@ bad
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_repeat_err
 !   err693_repeat_err.jnl
 ! test fix for ticket 2244: Error handling in REPEAT
@@ -77525,6 +77947,7 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_edit_useratt
 ! err693_edit_useratt.jnl
 ! ticket 2249: set attribute properties for user-defined variable
@@ -77584,6 +78007,7 @@ list/x=135.402W:135.321W/y=58.609 elev
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_redef_rec_axis
 ! err693_redef_rec_axis.jnl
 ! ticket 2271. Redefining the record axis meant
@@ -77618,6 +78042,7 @@ show data/full
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_frame_types
 ! bn_frame_types.jnl
 ! Ticket 2275
@@ -77642,6 +78067,7 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_shape
 ! err693_shape.jnl
 ! bug 2273 shape of variable with various subexpressions
@@ -77666,6 +78092,7 @@ say `sst,r=isize`  `a,r=isize` `a_anom,r=isize`
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_ef_axis_precision
  ! NOAA/PMEL TMAP
  ! FERRET v6.94
@@ -77697,6 +78124,7 @@ q
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_string_results
 ! err693_string_results.jnl
 ! Ticket 2234, the LIST B returned the numeric pointer to the string.
@@ -77718,6 +78146,7 @@ list d
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_lev_nv_over
 ! err693_lev_nv_over.jnl
 ! The polygon command with /LEV=20V caused a crash; levels settings incorrect.
@@ -77738,6 +78167,7 @@ GO polymark polygon/over/lev=20v/key/title="SST"  xpts,ypts,sst,square, 0.5
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_fcn_of_attvar
 ! err693_fcn_of_attvar.jnl
 ! Ticket 2291 Function of attribute-expression
@@ -77789,6 +78219,7 @@ list ysequence(dncase(sst.dimnames))
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_isize_and_gcfcn
 ! err693_isize_and_gcfcn.jnl
 ! ticket 2213
@@ -77846,6 +78277,7 @@ can mode verify
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_ribbon_scale
 ! err693_ribbon_scale.jnl
 ! ticket 2295: the vertical scale is mis-computed
@@ -77863,6 +78295,7 @@ YAXIS_MAX = "-80.0000000"
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_parse_curly
 ! err693_parse_curly.jnl
 ! the sub-routine defines a string variable containing commands for overlays in
@@ -77976,6 +78409,7 @@ define symbol overcommands = `p1s_ov`
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_list_missing
 ! err693_list_missing.jnl
  
@@ -77997,6 +78431,7 @@ list a,b
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_shf_subscr
 ! err693_shf_subscr.jnl
 ! ticket 2231  Subscripts used to compute @SHF-1 at the low end of the axis
@@ -78039,6 +78474,7 @@ list/k=3:4 zdiff_t
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_shift_w_region
 ! err693_shift_w_region
 ! Ticket 2300.  In fact with bounds checking on, the list a[i=@shf] would have
@@ -78072,6 +78508,7 @@ list a[i=@shf]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_scalar_grids
 ! err693_scalar_grids.jnl
 ! See ticket 1602
@@ -79064,6 +79501,7 @@ plot/vlim=-2:2/hlim=_DQ_1-jan-1980_DQ_:_DQ_15-feb-1980:12:00_DQ_ \
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err694_shf_missing
 ! err694_shf_missing.jnl
 ! Test the fix for ticket 2314
@@ -79121,6 +79559,7 @@ list/x=10:30/y=-60/l=1  sst[i=@shf:3]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err694_longname_showdat
 ! err694_longname_showdat.jnl
 ! ticket 2317
@@ -79169,6 +79608,7 @@ sp rm WestCoastCarbon_9d9c_f562_77b5_5.nc
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err693_std4d
 ! err693_std4d
 ! Check fix to ticket 2319: std transform in multi-dimensions
@@ -83962,6 +84402,7 @@ LIST/X=165W/L=1 var1[j=1:40:2], var2[j=1:40:2]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err695_bounds_match_axis
 ! err695_bounds_match_axis.jnl
 ! ticket 2321.
@@ -83990,6 +84431,7 @@ sh grid/l=1:4444 temp
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err695_show_dat_nodata
 ! err695_show_dat_nodata.jnl
 ! ticket 2322
@@ -84022,6 +84464,7 @@ SET MODE/LAST ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err695_grave_prec
 ! err695_grave_prec
 ! Bug 2323. Large numbers had incorrect results on grave-accent
@@ -84442,6 +84885,7 @@ LIST dest, var[G$1=dcoarse]
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err696_only_inf_lev
 ! Bug 2326: levels with only a value and (inf) or (-inf)
 ! should show values less-equal or greater-equal to that level.
@@ -84469,6 +84913,7 @@ set view ur; shade/key=horiz/lev=(-inf)(22)(inf) sst
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err696_plot_ax_ppl
 ! err696_plot_ax_ppl.jnl
 ! ticket 2327
@@ -84552,6 +84997,7 @@ plot/i=1:199 i*cos(i/10)
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err696_ft_calendars
 ! err696_ft_calendars.jnl
 ! see ticket 2332: check for matching calendars when
@@ -84578,6 +85024,7 @@ can data/all
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err696_centerlab_restore
 ! err696_centerlab_restore
 ! Ticket 2331.
@@ -84638,6 +85085,7 @@ polygon/trans/i=1:20/nolab/key=horiz  xpts+xsqr, ypts+ysqr, x*x/10
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err696_time_overlay
 ! err696_time_overlay
 ! bug 2334, first plot/over takes too long and the line is incorrect.
@@ -84645,23 +85093,24 @@ GO err696_time_overlay
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
 sp date
-Tue Mar  7 10:29:36 PST 2017
+Thu Mar  9 15:31:46 PST 2017
 set view upper
 plot t[gt=tax_nlp]
 plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
 sp date
-Tue Mar  7 10:29:36 PST 2017
+Thu Mar  9 15:31:46 PST 2017
  
 sp date
-Tue Mar  7 10:29:36 PST 2017
+Thu Mar  9 15:31:46 PST 2017
 set view lower
 plot t[gt=tax_jul]
 plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
 sp date
-Tue Mar  7 10:29:36 PST 2017
+Thu Mar  9 15:31:46 PST 2017
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err696_save_noupcase
 ! err696_save_noupcase
 ! Ticket 2336: When UPCASE canceled an extra upcase axis
@@ -84715,7 +85164,7 @@ variables:
 		var:long_name = "0*TT + X[GX=XAX]" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -84723,6 +85172,7 @@ set mode/last upcase
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err696_argument_blanks
 ! err696_argument_blanks.jnl
 ! Ticket 2343: quoted argument with a blank at the end.
@@ -84759,6 +85209,7 @@ Hi Hi there my friend
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err696_annotate_numeric
 ! err696_annotate_numeric
 ! 1/7/2016
@@ -84791,6 +85242,7 @@ annotate/nouser/xpos=1/ypos=0.5 1,2,3,4,5
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err696_e_component_mem_crptn
 ! canceling of an E aggregation dataset is leaving
 ! corrupted variables in memory as seen by the variable names "%%"
@@ -84840,6 +85292,7 @@ exit
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err696_mem_err_report
 ! err696_mem_err_report.jnl
 ! 1/21/2016 *acm*
@@ -84896,6 +85349,7 @@ set mem/siz=`memsize`
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err696_multiple_slashes
 ! err696_multiple_slashes.jnl
 ! 1/25/2016 *acm*
@@ -85034,6 +85488,7 @@ repeat/l=1:2 (set reg/x=1:4//)
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err696_2d_time_overlay
 ! err696_2d_time_overlay.jnl
 ! ticket 2360: 2-D time overlay plots have never worked.
@@ -85083,6 +85538,7 @@ shade/ov/pal=grayscale/lev f2
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err696_singlevec_over
 ! err696_singlevec_over.jnl
 ! Ticket 2365: overlay a single vector. If
@@ -85126,6 +85582,7 @@ PPL_VECLEN = "  27.2"
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err696_return_type
 ! err696_return_type
 ! See ticket #2367
@@ -85179,6 +85636,7 @@ list allcat
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err696_hovmuller_mod_fill
 ! err696_hovmuller_mod_fill.jnl
 ! 3/7/2016 ACM
@@ -85194,6 +85652,7 @@ fill/lin/t=1-jan-0000:31-dec-0001/hlim=1-jan-0000:1-jan-0001/x=180/lev=8 sst
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err696_repeat_escapes.jnl
 ! err696_repeat_escapes.jnl
 ! Ticket 2376 - parsing error with escaped grave-accent syntax
@@ -85241,6 +85700,7 @@ repeat/k=1:3 (rep/i=1:2 (sp echo \``a`\`))
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err696_red_keylab.jnl
 ! err696_red_keylab.jnl
 ! Ticket 2375: outline and labels of color key were
@@ -85255,6 +85715,7 @@ fill/over/nolab/key/lev=v,2min temp
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err696_poly_over_label
 ! err696_poly_over_label
 ! Tiket 2396: incorrect label in the lower
@@ -85314,6 +85775,7 @@ ppl list labels  ! shows cvar for lab2
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err696_def_ax_f
 ! err696_def_ax_f.jnl
 ! See ticket 2380
@@ -85361,6 +85823,7 @@ list _t[gt=aax]
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err696_mode_cal_f
 ! err696_mode_cal_f.jnl
 ! ticket 2399 MODE CALENDAR and F calendar axes
@@ -85424,6 +85887,7 @@ LAB1 = "F (DAY) : 1.5"
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err696_def_ax_edges
 ! err696_def_ax_edges
 ! See ticket 2400
@@ -85541,6 +86005,7 @@ def ax/edge/x xax = edges[i=1:4]; sh axis xax; list x[gx=xax]
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err696_write_no_dim
 ! err696_write_no_dim.jnl
 ! ticket 2241: save a subset of a variable whose grid
@@ -85586,7 +86051,7 @@ variables:
 		TEMP:history = "From /home/data/socat/socatV3/11SS/11SS20140225.nc" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -85596,6 +86061,7 @@ data:
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err696_mod_sub_fln
 ! err696_mod_sub_fln.jnl
 ! Ticket 2366, @FLN on a modulo subspan axis
@@ -85664,6 +86130,7 @@ list/x=-180:720 b, b[x=@fln]
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err696_subspan_transforms
 ! err696_subspan_transforms.jnl
 ! See ticket 2364.  Results previously
@@ -86463,6 +86930,7 @@ can var a; can ax xaxis; use a.nc
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err696_subspan_mod_in_expr
 ! err696_subspan_mod_in_expr.jnl
 ! ticket 1845: a subspan modulo due to context info buried
@@ -86494,6 +86962,7 @@ XAXIS_MAX = "145.345261"
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err696_shade_subspan_clim
 ! err696_shade_subspan_clim
 ! See ticket 2404
@@ -86537,10 +87006,12 @@ XAXIS_MAX = "243.000000"
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 ! go err696_subspan_mod_strides  ! do this test in bn_gif
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err696_def_att
 ! err696_def_att.jnl
 ! tickets 2415, 2416
@@ -86596,6 +87067,7 @@ sp ncdump a.nc | grep -i sst
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err696_return_prec
 ! err696_return_prec.jnl
 ! ACM 5/16 See ticket 2389.
@@ -86666,6 +87138,7 @@ say `1.555555001e8,p=14`
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err686_show_xml_letd
 ! ! bn_show_xml_letd
 ! Testing SHOW DATA/VAR/XML with a let/D variable
@@ -90371,7 +90844,7 @@ SHOW DATA/ATT t_f04_e3_1v ! note atts im_everwhere vs im_not_everwhere
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (XAX)                  DOUBLE    units           CHAR        12   T       degrees_east
@@ -90855,7 +91328,7 @@ save/clobber/file=a.nc/outtype=float elev[d=1]
 use a.nc
 sh att .
      attributes for dataset: ./a.nc
- ..history = PyFerret V7.1 (beta/debug)  7-Mar-17 
+ ..history = PyFerret V7.1 (beta/debug)  9-Mar-17 
  ..Conventions = CF-1.6 
  ..dt_internal = 15
 sh att elev
@@ -90876,7 +91349,7 @@ save/clobber/file=a.nc/outtype=float elev[d=1]
 use a.nc
 sh att .
      attributes for dataset: ./a.nc
- ..history = PyFerret V7.1 (beta/debug)  7-Mar-17 
+ ..history = PyFerret V7.1 (beta/debug)  9-Mar-17 
  ..Conventions = CF-1.6 
 sh att elev
      attributes for dataset: ./a.nc
@@ -90998,9 +91471,9 @@ flow/DAT=2/den=3/L=3 taux,tauy
 [?1034h! bn_speedtest.jnl
 ! issue large numbers of commands, timing with clock time
 can mode verify
-10K LET commands LET a = 0 takes  1.012  seconds
-Second 10K LET commands LET a = 0 takes  2.277  seconds
-5K LOAD with transform takes  3.747  seconds
+10K LET commands LET a = 0 takes  0.999  seconds
+Second 10K LET commands LET a = 0 takes  2.24  seconds
+5K LOAD with transform takes  3.744  seconds
 *** Running ferret script: bn_show_noupcase.jnl
 [?1034h! bn_show_noupcase.jnl
 ! 1/2016 ticket 1796
@@ -91093,6 +91566,7 @@ show data
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
  
 ! xml output
@@ -93425,6 +93899,7 @@ list/nohead ..coordnames
 ! Bug 2445 missing or repeated coords when axis marked as regular
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_reg_axis_check
 ! err700_reg_axis_check.jnl
 ! Ticket 2445: regular axis, test for valid line_delta
@@ -93485,6 +93960,7 @@ list yax
 ! Bug 2446 include script name on warning about unclosed IF block
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_unclosed_if
 ! err71_unclosed_if.jnl
 ! Ticket 2446
@@ -93504,6 +93980,7 @@ let b = 1
 ! Bug 2446 inheriting attributes
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_inherit_all
 ! err700_inherit_all.jnl
 ! Ticket 2447: If all attributes are inherited, missing-value flags
@@ -93555,6 +94032,7 @@ list b
 ! Bug 2458  Subspan modulo grids and SAMPLEXY
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_samplexy_subspan_modulo
 ! err700_samplexy_subspan_modulo.jnl
 ! 7/29/2016 ACM
@@ -93754,6 +94232,7 @@ list samplexyt(sst, -80, 22, `t[gt=sst,l=1]`)
 ! Bug 2463  SHADE/LEVELS and single-color data
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_levels_one_level
 ! err700_levels_one_level.jnl
 ! Ticket 2436. If the data has just one value, then shade it with
@@ -93777,6 +94256,7 @@ can view
 ! Bug xxxx  Only examine key labels that are actually going to be printed
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_key
 use coads_climatology
 set window/aspect=0.7 1
@@ -93788,6 +94268,7 @@ frame /file=err700_key.gif
 ! Bug 2468 Symbol AX_HORIZ corrupted by an overlay
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_ax_horiz
 ! err700_ax_horiz.jnl
 ! 8/30/2016 *acm* Ticket 2468
@@ -93823,6 +94304,7 @@ AX_VERT = "Y"
 ! Bug 2470 Symbol LEV_DEL incorrect on a LEV=(lo,hi,delta)
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_lev_del_symb
 ! err700_lev_del_symb.jnl
 ! 9/9/2016
@@ -93896,6 +94378,7 @@ LEV_DEL = "irregular"
 ! Bug 2466 Graticule lines too dense on time plots
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_timegrat
 !err700_timegrat.jnl
 ! 22-sep-2016 *acm*
@@ -93929,6 +94412,7 @@ set view right; plot/trans/grat=(color=light_blue)/z=20/t=16-SEP-2016:19-sep-201
 ! Bug 2465 parsing errors on commands with expressions involving attrbutes
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_attribute_parsing
 ! err700_attribute_parsing.jnl
 ! See ticket 2465. Parsing errors for commands with attribute references
@@ -93970,6 +94454,7 @@ list/nohead strindex(..title, "file")
 ! Bug 2477 plot axes are not fully drawn, some /VS plots
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_vs_plot_axes
 ! err700_vs_plot_axes.jnl
 ! See ticket 2477, in some cases the plot axes are not fully drawn
@@ -93985,6 +94470,7 @@ FRAME/FILE=bn_axis_vs.gif
 ! Bug 2483. Fixing axis-ends symbols XAXIS_MIN,XAXIS_MAX, YAXIS_MIN,YAXIS_MAX
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_axis_dates
 ! err700_axis_dates.jnl
 ! See ticket 2483. 11/10/2016 ACM
@@ -94068,6 +94554,7 @@ I / *:    "23-OCT-2015 01:00" "23-OCT-2015 13:00"
 ! Bug 2489. Attribute climatology_time_range not defined on an expression
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_clim_attr_expression
 ! err700_clim_attr_expression.jnl
 ! Ticket 2489
@@ -94101,6 +94588,7 @@ show att `vname[i=1]`
 ! on /HLOG or /VLOG plots
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_ribbon_vlog
 ! err700_ribbon_vlog.jnl
 ! 1/3/2017 *acm*
@@ -94125,6 +94613,7 @@ frame/file=bn_ribbon_vlog.gif
 ! Bug 2492: single-variable listings with /form=comma or /form=tab
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_list_comma
 ! err700_list_comma.jnl
 ! 1/4/2017 Fixes for ticket 2492: for single-variable listings, /FORM=comma and /FORM=tab
@@ -94243,6 +94732,7 @@ list/norow/nohead/L=1:3/K=1/i=95/j=40/form=tab taux
 ! Bug 2493: T aggregation when there are E or F axes
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_aggT_5d
 ! err700_aggT_5d.jnl
 ! 1/6/2017 ACM  Ticket 2493
@@ -94326,6 +94816,7 @@ list/i=3/j=2 thetao
 ! Bug 2495: shift on overlay of time series plot on 2d time plot
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_time_overlay
 ! err700_time_overlay.jnl
 ! bug 2495
@@ -94352,6 +94843,7 @@ plot/trans/over/color=blue cos(tt/3000) + 0.5
 ! Bug 2494:  drawing a single-cell shade plot
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_shade_singlecell
 ! err700_shade_singlecell.jnl
 ! Ticket 2494, drawing a single-cell shade plot
@@ -94393,6 +94885,7 @@ shade/pal=rnb2 iijj[x=74.5w,y=39.9:40.8]
 !           where coordinates are very near grid-cell edges.
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_coords
 ! err700_coords.jnl
 ! 1/17/2017
@@ -94455,6 +94948,7 @@ set mode /last diag
 ! Bug 2499: Define a single-point axis with bounds
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_define_1pt_axis
 ! err700_define_1pt_axis.jnl
 ! Ticket 2499: regular axis, test for valid line_delta
@@ -94496,6 +94990,7 @@ T0 = %%
 ! Bug 2498: time unit error in F-aggregation of some OPENDAP datasets
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_aggregate_from_fmrc
 ! err700_aggregate_from_fmrc.jnl
 ! 1/2017 *acm*
@@ -94529,6 +95024,7 @@ SHOW GRID zeta
 ! Bug 2504: modulo axes and coordinates
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_modulo
 ! err700_modulo.jnl
 ! See ticket 2504. Axis defintions where bounds are not given, and Ferret
@@ -94664,6 +95160,7 @@ T0 = 1-JAN-0000
 ! Bug 1480: saving modulo axis with too big a region
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_save_mod_att
 ! err700_save_mod_att.jnl
 ! ticket 1480: do not write a modulo axis when saving a modulo
@@ -94697,11 +95194,12 @@ variables:
 		VAR:long_name = "X[GX=XLON]" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 ! Now set a region and write data. The axis length would be 362.5
 use a1
@@ -94755,12 +95253,13 @@ variables:
 		VAR:history = "From a1" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 use a
 sh axis `var,return=xaxis`
  !-> sh axis XLONN7_136
@@ -94770,6 +95269,7 @@ sh axis `var,return=xaxis`
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
  
 ! Now set a bigger region and write data. The axis length is 372.5
 use a1
@@ -94800,12 +95300,13 @@ variables:
 		VAR:history = "From a1" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 use a
 sh axis `var,return=xaxis`
  !-> sh axis XLONN7_141
@@ -94829,6 +95330,7 @@ save/clobber/file=a.nc/y=0/l=1 sst
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 use a
 sh att (`sst,return=xaxis`)
  !-> sh att (COADSXN9_170)
@@ -94852,6 +95354,7 @@ show axis `sst,return=xaxis`
 ! Bug 2502: FMRC regridding sensitive to insignificant floating-point differences in time
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err700_fmrcdiag
 ! err700_fmrcdiag.jnl
 ! these particular datasets (quarterly forecasts of two years of monthly data)
@@ -94963,6 +95466,7 @@ FRAME /FILE=forecast_leadview.gif
 ! Bug 2331: Labeling the labels in line-plot legends.
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 Go err700_legend_labels
 ! err700_legend_labels.jnl
 ! See ticket 2231:
@@ -95068,6 +95572,7 @@ PLOT/OVER/KEY=TITLE 10+cos(T[gt=tdays]/200)
 ! Bug 2507: time aggregations with same time axis in different grids per file
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 Go err700_aggt_dup_grids
 ! err700_aggt_dup_grids
 ! 2/15/2017 ACM
@@ -95937,7 +96442,7 @@ variables:
 		abc:history = "From abc.dat" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -96024,7 +96529,7 @@ variables:
 		latitude:history = "From bn_delimited_read_1.dat" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 }
  
@@ -96681,7 +97186,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (TAXIS1)               DOUBLE    axis            CHAR        1    T       T
@@ -96750,7 +97255,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (TAXIS1)               DOUBLE    axis            CHAR        1    T       T
@@ -96821,7 +97326,7 @@ sh dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  7-Mar-17
+ .                               history         CHAR        36   T       PyFerret V7.1 (beta/debug)  9-Mar-17
                                  Conventions     CHAR        6    F       CF-1.6
   
 (TAXIS1)               DOUBLE    axis            CHAR        1    T       T
@@ -97115,6 +97620,7 @@ cancel mode ignore
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err71_uvar_strides
 ! err710_uvar_strides
 ! see ticket 2511: crash when doing strides on the user-variable
@@ -97165,6 +97671,7 @@ list y_vec
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err71_prec_return
 ! err71_prec_return.jnl
 ! Ticket 2510, `prec=hh` doesn't work when the data is very
@@ -97193,6 +97700,7 @@ list/nohead/norow/prec=12 {`1 + 0.1`, `1 + 1e-7`, `1 + 1e-8`, `1 + 1e-10`} - 1
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err71_save_rigid
 ! err71_save_rigid.jnl
 ! Ticket 2513: SAVE/RIGID with irregular axis wrote a bad file.
@@ -97233,7 +97741,7 @@ variables:
 		VART:long_name = "RESHAPE(VAR, T[GT=TAX])" ;
 
 // global attributes:
-		:history = "PyFerret V7.1 (beta/debug)  7-Mar-17" ;
+		:history = "PyFerret V7.1 (beta/debug)  9-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -98733,6 +99241,7 @@ frame/trans/file=testbackground.gif
 ! has trouble when running the benchmarks from remote desktop
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go err491_long_gif_name
 ! err491_long_gif_name.jnl
 ! *sh* 4/99 - test 175 character gif name
@@ -98768,6 +99277,7 @@ set win/siz=1/asp=1
 ! New benchmark gif outputs in v6.97
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO bn_hovmuller_overlays
 ! bn_hovmuller_overlays.jnl
 ! Previously a time series plot overlaid oon a Hovmuller plot did not
@@ -98849,6 +99359,7 @@ FRAME/FILE=bn_hovmuller_overlays.pdf
  
 Go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO bn_labels_on_taxis
 ! bn_labels_on_taxis.jnl
 ! tests of labels and overlays on time axes
@@ -98994,6 +99505,7 @@ FRAME/FILE=bn_labels_on_taxis.pdf
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err696_contour_conset
 ! err696_contour_conset.jnl
 ! Ticket 2351. The PPL CONSET command had stopped working to set
@@ -99054,6 +99566,7 @@ frame/file=bn_contour_conset.gif
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO err696_subspan_mod_strides
 ! err696_subspan_mod_strides
 ! See ticket 513. Axis is subspan modulo, and strides
@@ -99193,6 +99706,7 @@ frame/file=bnplot_4.eps   ! Not an error in PyFerret
  
 GO bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 GO bn_ef_external_functions.jnl
 ! Tests of external functions that are distributed as shared object files.
  
@@ -99969,6 +100483,7 @@ set mode/last ignore_errors
  
 go bn_reset
 cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
 go bn_fcn_calls.jnl
 ! Simple tests of external functions
 ! these are not otherwise tested in the benchmarkd
@@ -99989,13 +100504,13 @@ FERRET_PLATFORM = "Linux 2.6.32-642.15.1.el6.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = " 7-Mar-17"
-SESSION_TIME = "10:30"
-SESSION_PID = "6047"
-DELTA_CPU = "0.221965"
-CLOCK_SECS = "0.105"
-CURRENT_DATE = " 7-Mar-17"
-CURRENT_TIME = "10:30:45"
+SESSION_DATE = " 9-Mar-17"
+SESSION_TIME = "15:32"
+SESSION_PID = "14149"
+DELTA_CPU = "0.222965"
+CLOCK_SECS = "0.106"
+CURRENT_DATE = " 9-Mar-17"
+CURRENT_TIME = "15:32:53"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 GO_FILE = "./bn_startupfile.jnl"
@@ -100021,7 +100536,7 @@ PPL$COMMAND_FILE = "$$MEMBUF$$"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 PPL$SCALE = "1.0000"
-WIN_TITLE = "7-Mar-17_10:30"
+WIN_TITLE = "9-Mar-17_15:32"
 VP_SCALE = "1"
 VP_RT_MARGIN = "1"
 VP_TOP_MARGIN = "1.4"
@@ -103663,4 +104178,4 @@ True
 >>> coads_uw.close()
 >>> pyferret.showdata()
      currently SET data sets:
-Ended at Tue Mar  7 10:30:53 PST 2017
+Ended at Thu Mar  9 15:33:00 PST 2017

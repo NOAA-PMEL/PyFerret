@@ -125,50 +125,50 @@ SET MODE VERIFY
 ! previous 4D benchmark logs.
 ! cancel mode 6d_lab
 
-GO bn_reset
+GO bn_reset bn_syntax
 GO bn_syntax
 cancel mode metafile      !9/97
 
-GO bn_reset
+GO bn_reset bn_dollar
 GO bn_dollar hello    ! test command arg
 
 ! added in bn400
-GO bn_reset
+GO bn_reset bn_grave
 GO bn_grave
 
 ! added in bn420
-GO bn_reset
+GO bn_reset bn_letd
 GO bn_letd
 
 ! added in bn430
-GO bn_reset
+GO bn_reset bn_if
 GO bn_if
 
-GO bn_reset
+GO bn_reset bn_expressions
 GO bn_expressions
 
-GO bn_reset
+GO bn_reset bn_geometry
 GO bn_geometry
 
-GO bn_reset
 set mode ignore		! needed for AIX   11/94
+GO bn_reset   bn_output
 GO bn_output
 cancel list/format
 can mode ignore		! needed for AIX
 
-GO bn_reset
+GO bn_reset bn_in_plane
 GO bn_in_plane
 
-GO bn_reset
+GO bn_reset bn_compress
 GO bn_compress
 
-GO bn_reset
+GO bn_reset bn_interpolate
 GO bn_interpolate
 
-GO bn_reset
+GO bn_reset bn_regrid
 GO bn_regrid
 
-GO bn_reset
+GO bn_reset bn_ez
 GO bn_ez		! changed from bn200_ez 8/10/95
 
 ! ****
@@ -180,14 +180,14 @@ PPL ECHO ON		! added 10/27/93
 
 ! 10/97 *kob* now set mode metafile
 set mode metafile bnplot.plt
-GO bn_reset
+GO bn_reset bn_plot
 GO bn_plot		! upgraded from bn320_plot 10/1/97 *kob*
 
 
 !added in bn450 10/97 *kob*
 ! moved to right after bn450_plot to capture metafiles *kob* 2/98
-GO bn_reset
 ! 2/98 changed bn450_curv to bn491_curv - just some cosmetic changes *kob*
+GO bn_reset bn_curv
 GO bn_curv
 
 SET WINDOW/CLEAR/SIZE=0.2 ! 8/25/92
@@ -195,24 +195,24 @@ SET WINDOW/CLEAR/SIZE=0.2 ! 8/25/92
 ! 10/97 *kob* now cancel mode metafile
 cancel mode metafile
 
-GO bn_reset
+GO bn_reset bn_symbols
 GO bn_symbols	! added 6/22/95
 
-GO bn_reset
+GO bn_reset bn_comma_delimited
 GO bn_comma_delimited	! added 10/2/95
 
-GO bn_reset
+GO bn_reset bn_dynamic_grids
 GO bn_dynamic_grids	! added 9/27/95, V420 ->V491 4/98
 
-GO bn_reset
+GO bn_reset bn_cdf
 GO bn_cdf
 
-GO bn_reset
+GO bn_reset bn_regrid_transforms
 GO bn_regrid_transforms
 
-GO bn_reset		! reordered reset before next test: 2/94
-GO bn_axis_limits	! added 10/27/93
-SET WINDOW/CLEAR/SIZE=0.2 ! added 2/94
+GO bn_reset bn_axis_limits	! reordered reset before next test: 2/94
+GO bn_axis_limits	        ! added 10/27/93
+SET WINDOW/CLEAR/SIZE=0.2       ! added 2/94
 
 !GO bn_reset
 !GO bn301_mem_mgmt
@@ -220,309 +220,308 @@ MESSAGE/CONTINUE  ***** bn301_mem_mgmt has been removed from run_all.
 MESSAGE/CONTINUE  ***** Its too slow!!!
 MESSAGE/CONTINUE  ***** Remember to run it separately
 
-GO bn_reset
+GO bn_reset bn_movie
 GO bn_movie
 
 ! added in bn311
-GO bn_reset
+GO bn_reset bn_ez_order
 GO bn_ez_order	! was bn311 until 9/95
 
 ! added in bn312  6/3/94
-GO bn_reset
+GO bn_reset bn_user
 ! cancel mode metafile   ! needed temporarily 6/94: PLOT+/XGKS interaction bug
 GO bn_user
 set window 1		! clean up
 
 ! added in bn420  1/96
-GO bn_reset
+GO bn_reset bn_stream
 GO bn_stream
 
 !added in bn430 9/96 *kob*
-GO bn_reset
+GO bn_reset bn_mc
 GO bn_mc
 
 !added in bn450 10/97 *kob*
-GO bn_reset
+GO bn_reset bn_negative_t
 GO bn_negative_t
 
 !added in bn450 10/97 *kob*
-GO bn_reset
+GO bn_reset bn_xact_regrid
 GO bn_xact_regrid
 
 !added in bn450 11/97 *kob*
 ! replace w/ bn500 *kob* 5/99
-GO bn_reset
+GO bn_reset bn_gc_functions
 GO bn_gc_functions
 
 !added in bn491 - originally had this in run_all, but moved it here to 
 ! properly echo commands  *kob*
-GO bn_reset
 set mode verify  ! somehow this was off
-
+GO bn_reset bn491_bug_fixes.jnl
 GO bn491_bug_fixes.jnl
 
 ! ******** V500 Additions below ***********
 
-GO bn_reset
+GO bn_reset bn_odd_variable_name
 GO bn_odd_variable_name
 
-GO bn_reset
+GO bn_reset bn_test_stream
 GO bn_test_stream
 
-GO bn_reset
+GO bn_reset bn_define_axes
 GO bn_define_axes
 
 GO bn_reset
 ! GO bn_external_functions  ! move to tests of shared-obj efs.
 
-GO bn_reset
+GO bn_reset bn_pattern
 GO bn_pattern
 
-GO bn_reset
+GO bn_reset bn_polygon
 GO bn_polygon
 
-GO bn_reset
+GO bn_reset bn500_bug_fixes
 GO bn500_bug_fixes
 
 ! ******** V510 Additions below ***********
 
-GO bn_reset
+GO bn_reset bn_sample
 GO bn_sample			! internal (optimized) SAMPLE* functions
 
-GO bn_reset
+GO bn_reset bn_strides_revs_perms
 GO bn_strides_revs_perms	! netCDF fancy reads
 
-GO bn_reset
+GO bn_reset bn_non_COARDS_netCDF	
 GO bn_non_COARDS_netCDF		! non-standard netCDF files
 
-GO bn_reset
+GO bn_reset bn_cache_hits
 GO bn_cache_hits		! cache hits on unspecified (full) regions
 
-GO bn_reset
+GO bn_reset bn_regrid_to_user
 GO bn_regrid_to_user		! G=user_var and related
 
 ! ******** V53 Additions below ***********
 
-GO bn_reset
+GO bn_reset bn_calendar
 GO bn_calendar
 
-GO bn_reset
+GO bn_reset bn_dash_dot
 GO bn_dash_dot
 
-GO bn_reset
+GO bn_reset bn_flowlines
 GO bn_flowlines
 
 ! ******** V533 Additions below ***********
 
-GO bn_reset
+GO bn_reset bn_logaxes
 GO bn_logaxes
 
 ! *kob* same tests for internal external functions but moved out of
 !       the bn_external_function jnl file.  
-GO bn_reset
+GO bn_reset bn_internal_external_functions
 GO bn_internal_external_functions
 
-GO bn_reset
+GO bn_reset bn_modulo_strides
 GO bn_modulo_strides
 
 ! ******** V54 Additions below ***********
 
-GO bn_reset
+GO bn_reset bn_axis_viewports
 GO bn_axis_viewports
 
-GO bn_reset
+GO bn_reset bn_strings
 GO bn_strings
 
-GO bn_reset
+GO bn_reset bn_axcontrol
 GO bn_axcontrol
 
-GO bn_reset
+GO bn_reset bn_vec_curv
 GO bn_vec_curv
 
-GO bn_reset
+GO bn_reset bn_delimited_read
 GO bn_delimited_read
 
 
 ! ******** V5.41 Additions below ***********
 
-GO bn_reset
+GO bn_reset bn541_bug_fixes
 GO bn541_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_cancel_axes
 GO bn_cancel_axes
 
 ! ******** V5.42 Additions below ***********
 
-GO bn_reset
+GO bn_reset bn542_bug_fixes
 GO bn542_bug_fixes
 
 ! ******** V5.50 Additions below ***********
 
-GO bn_reset
+GO bn_reset bn_subspan_modulo
 GO bn_subspan_modulo
 
-GO bn_reset
+GO bn_reset bn_dots
 GO bn_dots
 
-GO bn_reset
+GO bn_reset bn_lev_symbols
 GO bn_lev_symbols
 
-GO bn_reset
+! GO bn_reset 
 ! GO bench_extrema  ! moved to bn_ef_bench_extrema; tests of shared-obj efs.
 
-GO bn_reset
+GO bn_reset bn_mode_logo_lab
 GO bn_mode_logo_lab
 
-GO bn_reset
+GO bn_reset bn_modulo_attribute
 GO bn_modulo_attribute
 
-GO bn_reset
+GO bn_reset bn550_bug_fixes
 GO bn550_bug_fixes
 
 ! ******** V5.51 Additions below ***********
 
-GO bn_reset
+GO bn_reset bn551_bug_fixes
 GO bn551_bug_fixes
 
 ! ******** V5.52 Additions below ***********
 
 GO bn_multi_line_labels.jnl
 
-GO bn_reset
+GO bn_reset bn552_bug_fixes
 GO bn552_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_set_var_scale_off.jnl
 GO bn_set_var_scale_off.jnl
 
-GO bn_reset
+GO bn_reset bn_longvarnames.jnl
 GO bn_longvarnames.jnl
 
-GO bn_reset
+GO bn_reset bn_shakey.jnl
 GO bn_shakey.jnl
 
-GO bn_reset
+GO bn_reset bn_eof_4d.jnl
 GO bn_eof_4d.jnl
 
-GO bn_reset
+GO bn_reset bn_abstract_axis_names.jnl
 GO bn_abstract_axis_names.jnl
 
-GO bn_reset
+GO bn_reset bn_many_polygons.jnl
 GO bn_many_polygons.jnl
 
-GO bn_reset
+! GO bn_reset
 ! GO bn_zaxr_fcns.jnl ! move to tests of shared-obj efs.
 
-GO bn_reset
+GO bn_reset bn_fill_irregular.jnl
 GO bn_fill_irregular.jnl
 
 ! ******** V5.53 Additions below ***********
-GO bn_reset
+GO bn_reset bn_xml_output.jnl
 GO bn_xml_output.jnl
 
-GO bn_reset
+GO bn_reset bn_test_nan.jnl
 GO bn_test_nan.jnl
 
-GO bn_reset
+GO bn_reset bn553_bug_fixes.jnl
 GO bn553_bug_fixes.jnl
 
 
 ! ******** V5.6Additions below ***********
 
-GO bn_reset
+GO bn_reset bn_graticules.jnl
 GO bn_graticules.jnl
 
-GO bn_reset
+GO bn_reset bn_repeat_range.jnl
 GO bn_repeat_range.jnl
 
-GO bn_reset
+GO bn_reset bn554_bug_fixes.jnl
 GO bn554_bug_fixes.jnl
 
 
 ! ******** V5.7 Additions below ***********
 
-GO bn_reset
+GO bn_reset bn_bounds.jnl
 GO bn_bounds.jnl
 
-GO bn_reset
+GO bn_reset bn_all_leap.jnl
 GO bn_all_leap.jnl
 
-GO bn_reset
+GO bn_reset bn_reset_attributes.jnl
 GO bn_reset_attributes.jnl
 
-GO bn_reset
+GO bn_reset bn570_bug_fixes.jnl
 GO bn570_bug_fixes.jnl
 
 ! ******** V5.8 Additions below ***********
 
-GO bn_reset
+GO bn_reset bn_modstats.jnl
 GO bn_modstats.jnl
 
-GO bn_reset
+GO bn_reset bn_mc_vary_scale.jnl
 GO bn_mc_vary_scale.jnl
 
-GO bn_reset
+GO bn_reset bn_plot_nokey.jnl
 GO bn_plot_nokey.jnl
 
-GO bn_reset
+GO bn_reset bn580_bug_fixes.jnl
 GO bn580_bug_fixes.jnl
 
 ! ******** V5.81 Additions below ***********
-GO bn_reset
+GO bn_reset bn_inf_levels.jnl 
 GO bn_inf_levels.jnl 
 
-GO bn_reset
+GO bn_reset bn_regulart.jnl
 GO bn_regulart.jnl
 
-GO bn_reset
+GO bn_reset bn_labwid.jnl
 GO bn_labwid.jnl
 
-GO bn_reset
+GO bn_reset bn_redefine_taxis_mc.jnl
 GO bn_redefine_taxis_mc.jnl
 
-GO bn_reset
+GO bn_reset bn_illegal_axisname.jnl
 GO bn_illegal_axisname.jnl
 
-GO bn_reset
+GO bn_reset bn_exit_script.jnl
 GO bn_exit_script.jnl
 
-GO bn_reset
+GO bn_reset bn_exit_cycle.jnl
 GO bn_exit_cycle.jnl
 
-GO bn_reset
+GO bn_reset bn_curv_mod.jnl
 GO bn_curv_mod.jnl
 
-GO bn_reset
+GO bn_reset bn_shade_keycont.jnl
 GO bn_shade_keycont.jnl
 
-GO bn_reset
+GO bn_reset bn581_bug_fixes.jnl
 GO bn581_bug_fixes.jnl
 
 ! ******** V6.00 Additions below ***********
-GO bn_reset
+GO bn_reset bn_tab_comma_multivar.jnl
 GO bn_tab_comma_multivar.jnl
 
-GO bn_reset
+GO bn_reset bn_element_functions.jnl
 GO bn_element_functions.jnl
 
-GO bn_reset
+GO bn_reset bn_long_revision_num.jnl
 GO bn_long_revision_num.jnl
 
-GO bn_reset
+GO bn_reset bn_window_title.jnl
 GO bn_window_title.jnl
 
-GO bn_reset
+GO bn_reset bn_last_error.jnl
 GO bn_last_error.jnl
 
-GO bn_reset
+GO bn_reset bn_deg_min.jnl
 GO bn_deg_min.jnl
 
-GO bn_reset
+GO bn_reset bn_dp_readscale.jnl
 GO bn_dp_readscale.jnl
 
-GO bn_reset
+GO bn_reset bn_bounds_defineax.jnl
 GO bn_bounds_defineax.jnl
 
-go bn_reset
+go bn_reset bn_attributes.jnl
 go bn_attributes.jnl
 
 !=======
@@ -531,146 +530,147 @@ go bn_attributes.jnl
 !go bn_reset
 !go bn_nco_functions.jnl
 
-go bn_reset
+go bn_reset bn_transforms.jnl
 go bn_transforms.jnl
 
-go bn_reset
+go bn_reset bn_variance.jnl
 go bn_variance.jnl
 
-go bn_reset
+go bn_reset bn_linecolors.jnl
 go bn_linecolors.jnl
 
-go bn_reset
+go bn_reset bn_cdf_errmsg.jnl
 go bn_cdf_errmsg.jnl
 
-GO bn_reset
+GO bn_reset bn600_bug_fixes.jnl
 GO bn600_bug_fixes.jnl
 
 ! ******** V6.01 Additions below ***********
-GO bn_reset
+GO bn_reset bn601_bug_fixes.jnl
 GO bn601_bug_fixes.jnl
 
 ! ******** V6.02 Additions below ***********
-GO bn_reset
+GO bn_reset bn_set_strides.jnl
 GO bn_set_strides.jnl
 
-GO bn_reset
+GO bn_reset bn_lsl_lowpass.jnl
 GO bn_lsl_lowpass.jnl
 
-GO bn_reset
+GO bn_reset bn_return_xmod_tmod.jnl
 GO bn_return_xmod_tmod.jnl
 
-GO bn_reset
+GO bn_reset bn602_bug_fixes
 GO bn602_bug_fixes
 
 
 ! ******** V6.03 Additions below ***********
-GO bn_reset
+GO bn_reset bn_modnbd.jnl
 GO bn_modnbd.jnl
 
-GO bn_reset
+GO bn_reset bn_fifty_files.jnl
 GO bn_fifty_files.jnl
 
-GO bn_reset
+GO bn_reset bn603_bug_fixes
 GO bn603_bug_fixes
 
 ! ******** V6.05 Additions below ***********
 
-GO bn_reset
+GO bn_reset bn_set_var_name.jnl
 GO bn_set_var_name.jnl
 
-GO bn_reset
+!GO bn_reset 
 ! This routine executes a ppl error which exits us from Ferret
 ! when run in the benchmark suite. Should test this, but dont do it
 ! here, for now.
 !GO bn_ppl_errors.jnl
 
-GO bn_reset
+GO bn_reset bn_memory_symbol
 GO bn_memory_symbol
 
-GO bn_reset
+GO bn_reset bn605_bug_fixes
 GO bn605_bug_fixes
 
-GO bn_reset
+GO bn_reset bn608_bug_fixes
 GO bn608_bug_fixes
 
 
 ! ******** V6.1 Additions below ***********
 
-GO bn_reset
+GO bn_reset bn_shade_trim
 GO bn_shade_trim
 
-GO bn_reset
+GO bn_reset bn_mode_nlevels
 GO bn_mode_nlevels
 
-GO bn_reset
+GO bn_reset bn61_bug_fixes
 GO bn61_bug_fixes
 
 
 ! ******** V6.11 Additions below ***********
-GO bn_reset
+GO bn_reset bn_test_opendap
 GO bn_test_opendap
 
-GO bn_reset
+GO bn_reset bn611_bug_fixes
 GO bn611_bug_fixes
 
 ! ******** V6.13 Additions below ***********
-GO bn_reset
+GO bn_reset bn_no_valid_on_plot
 GO bn_no_valid_on_plot
 
-GO bn_reset
+GO bn_reset bn_median
 GO bn_median
 
-GO bn_reset
+GO bn_reset bn614_bug_fixes
 GO bn614_bug_fixes
 
 ! ******** V6.14 Additions below ***********
-GO bn_reset
+GO bn_reset bn_mode_nodata_lab
 GO bn_mode_nodata_lab
 
-GO bn_reset
+GO bn_reset bn_proleptic_gregorian_calendar
 GO bn_proleptic_gregorian_calendar
 
-GO bn_reset
+GO bn_reset bn_string_ngd_nbd
 GO bn_string_ngd_nbd
 
-GO bn_reset
+GO bn_reset bn_cat_string
 GO bn_cat_string
 
-GO bn_reset
+GO bn_reset bn_sort_strings
 GO bn_sort_strings
 
-GO bn_reset
+GO bn_reset bn_samplexyt
 GO bn_samplexyt
 
-GO bn_reset
+GO bn_reset bn_last_go_file.jnl
 GO bn_last_go_file.jnl
 
-GO bn_reset
+GO bn_reset bn_cancel_upcase_uservar.jnl
 GO bn_cancel_upcase_uservar.jnl
 
-GO bn_reset
+GO bn_reset bn_cdf_keepax.jnl
 GO bn_cdf_keepax.jnl
 
-GO bn_reset
+GO bn_reset bn_keep_axisnames.jnl
 GO bn_keep_axisnames.jnl
 
-GO bn_reset
+GO bn_reset bn_key_label_minmax.jnl
 GO bn_key_label_minmax.jnl
 
 ! ******** V6.2 Additions below ***********
-GO bn_reset
+GO bn_reset bn62_bug_fixes.jnl
 GO bn62_bug_fixes.jnl
 
-GO bn_reset
+GO bn_reset bn_convolve.jnl
 GO bn_convolve.jnl
 
-GO bn_reset
+GO bn_reset bn_tax_tstep.jnl
 GO bn_tax_tstep.jnl
 
-GO bn_reset
+GO bn_reset bn_grads_z.jnl
 GO bn_grads_z.jnl
 
+GO bn_reset bn_clock_syms
 GO bn_clock_syms
 
 
@@ -679,444 +679,444 @@ GO bn_clock_syms
 ! window, not only in window 1, is implemented in v6.3. Not
 ! tested in the benchmarks.
 
-GO bn_reset
+GO bn_reset bn63_bug_fixes.jnl
 GO bn63_bug_fixes.jnl
 
-GO bn_reset
+GO bn_reset bn_axis_reversed_syms
 GO bn_axis_reversed_syms
 
-GO bn_reset
+GO bn_reset bn_isdepth
 GO bn_isdepth
 
-GO bn_reset
+GO bn_reset bn_var_hist_levels.jnl
 GO bn_var_hist_levels.jnl
 
 
 ! ******** V6.4 Additions below ***********
 
-GO bn_reset
+GO bn_reset bn64_bug_fixes
 GO bn64_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_long_grid_names
 GO bn_long_grid_names
 
-GO bn_reset
+GO bn_reset bn_xml_repl
 GO bn_xml_repl
 
 ! ******** V6.5 Additions below ***********
 
-GO bn_reset
+GO bn_reset bn65_bug_fixes
 GO bn65_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_txtype_dmy
 GO bn_txtype_dmy
 
-GO bn_reset
+GO bn_reset bn_n_open_dsets_sym
 GO bn_n_open_dsets_sym
 
-GO bn_reset
+GO bn_reset bn_multi_decade
 GO bn_multi_decade
 
-GO bn_reset
+GO bn_reset bn_show_xml_file
 GO bn_show_xml_file
 
 
-! GO bn_reset
+! GO bn_reset O bn_encode_url
 ! GO bn_encode_url
 
 ! ******** V6.6 Additions below ***********
 
-GO bn_reset
+GO bn_reset bn66_bug_fixes
 GO bn66_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_netcdf4
 GO bn_netcdf4
 
-GO bn_reset
+GO bn_reset bn_scat2grid_bin.jnl
 GO bn_scat2grid_bin.jnl
 
 ! *********** v6.62 Additions ***********
 
-GO bn_reset
+GO bn_reset bn_axis_dir_symbols
 GO bn_axis_dir_symbols
 
 ! *********** v6.63 Additions ***********
 
-GO bn_reset
+GO bn_reset bn663_bug_fixes
 GO bn663_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_set_axis_regular
 GO bn_set_axis_regular
 
-GO bn_reset
+GO bn_reset bn_set_cancel_redirect
 GO bn_set_cancel_redirect
 
-GO bn_reset
+GO bn_reset bn_min_max_smoothers
 GO bn_min_max_smoothers
 
-GO bn_reset
+GO bn_reset bn_vector_symbols
 GO bn_vector_symbols
 
-GO bn_reset
+GO bn_reset bn_variance_large
 GO bn_variance_large
 
-GO bn_reset
+GO bn_reset bn_labnum_calendar
 GO bn_labnum_calendar
 
 
 ! *********** v6.65 Additions ***********
-GO bn_reset
+GO bn_reset bn665_bug_fixes
 GO bn665_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_floatstr
 GO bn_floatstr
 
 ! *********** v6.7 Additions ***********
-GO bn_reset
+GO bn_reset bn67_bug_fixes
 GO bn67_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_NaN_note
 GO bn_NaN_note
 
 ! *********** v6.71 Additions ***********
-GO bn_reset
+GO bn_reset bn671_bug_fixes
 GO bn671_bug_fixes
 
 ! *********** v6.8 Additions ***********
-GO bn_reset
+GO bn_reset bn68_bug_fixes
 GO bn68_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_ifv
 GO bn_ifv
 
-GO bn_reset
+GO bn_reset bn_randu2_randn2
 GO bn_randu2_randn2
 
-GO bn_reset
+GO bn_reset bn_axis_cf
 GO bn_axis_cf
 
-GO bn_reset
+GO bn_reset bn_repeated_coords
 GO bn_repeated_coords
 
-GO bn_reset
+GO bn_reset bn_xml_header
 GO bn_xml_header
 
-GO bn_reset
+GO bn_reset bn_eof_simple
 GO bn_eof_simple
 
-GO bn_reset
+GO bn_reset bn_eof_simple2
 GO bn_eof_simple2
 
 ! 6D tests for Ferret v6.8
 
-GO bn_reset
+GO bn_reset bn_interpolate_6d
 GO bn_interpolate_6d
 
-GO bn_reset
+GO bn_reset bn_regrid_6d
 GO bn_regrid_6d
 
-GO bn_reset
+GO bn_reset bn_syntax_6d
 GO bn_syntax_6d
 
-GO bn_reset
+GO bn_reset bn_expressions_6d
 GO bn_expressions_6d
 
-GO bn_reset
+GO bn_reset bn_direction_fcns_6d
 GO bn_direction_fcns_6d
 
-GO bn_reset
+GO bn_reset bn_regrid_transforms_6d
 GO bn_regrid_transforms_6d
 
-GO bn_reset
+GO bn_reset bn_aggregate_e
 GO bn_aggregate_e
 
-GO bn_reset
+GO bn_reset bn_6d_lab_mode
 GO bn_6d_lab_mode
 
 
 ! *********** v6.82 Additions ***********
-GO bn_reset
+GO bn_reset bn682_bug_fixes
 GO bn682_bug_fixes
 
 ! *********** v6.83 Additions ***********
 !  (was released as v6.84)
 
-GO bn_reset
+GO bn_reset bn683_bug_fixes
 GO bn683_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_outtype
 GO bn_outtype
 
-GO bn_reset
+GO bn_reset bn_ribbon_plot
 GO bn_ribbon_plot
 
-GO bn_reset
+GO bn_reset bn_descr_4digit
 GO bn_descr_4digit
 
-GO bn_reset
+GO bn_reset bn_axis_outtype
 GO bn_axis_outtype
 
-GO bn_reset
+GO bn_reset bn_axis_nonmonotonic
 GO bn_axis_nonmonotonic
 
-GO bn_reset
+GO bn_reset bn_vec_mod
 GO bn_vec_mod
 
 ! *********** v6.85 Additions ***********
-GO bn_reset
+GO bn_reset bn685_bug_fixes
 GO bn685_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_dsg_e_x
 GO bn_dsg_e_x
 
-GO bn_reset
+GO bn_reset bn_nco_append
 GO bn_nco_append
 
-GO bn_reset
+GO bn_reset bn_nobounds
 GO bn_nobounds
 
-GO bn_reset
+GO bn_reset bn_write_integer_att
 GO bn_write_integer_att
 
-GO bn_reset
+GO bn_reset bn_descriptor_mc
 GO bn_descriptor_mc
 
-GO bn_reset
+GO bn_reset bn_plot_color_only
 GO bn_plot_color_only
 
-GO bn_reset
+GO bn_reset bn_vtree
 GO bn_vtree
 
 
 ! *********** v6.86 Additions ***********
-GO bn_reset
+GO bn_reset bn686_bug_fixes
 GO bn686_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_long_symnames
 GO bn_long_symnames
 
-GO bn_reset
+GO bn_reset bn_strdim
 GO bn_strdim
 
-GO bn_reset
+GO bn_reset bn_single_colorlev
 GO bn_single_colorlev
 
 
 ! *********** v6.9 Additions ***********
-GO bn_reset
+GO bn_reset bn69_bug_fixes
 GO bn69_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_bad_axis_bounds
 GO bn_bad_axis_bounds
 
-GO bn_reset
+GO bn_reset bn_enter_exit_GO
 GO bn_enter_exit_GO
 
-GO bn_reset
+GO bn_reset bn_stddev
 GO bn_stddev
 
-GO bn_reset
+GO bn_reset bn_set_axis_name
 GO bn_set_axis_name
 
-GO bn_reset
+GO bn_reset bn_let_remote
 GO bn_let_remote
 
 ! *********** v6.93 Additions ***********
-GO bn_reset
+GO bn_reset bn691_bug_fixes
 GO bn691_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_append_dsg
 GO bn_append_dsg
 
-GO bn_reset
+GO bn_reset bn_global_atts
 GO bn_global_atts
 
-GO bn_reset
+GO bn_reset bn_conventions_history
 GO bn_conventions_history
 
-GO bn_reset
+GO bn_reset bn_center_key_labels
 GO bn_center_key_labels
 
-GO bn_reset
+GO bn_reset bn_wgt_transform
 GO bn_wgt_transform
 
-GO bn_reset
+GO bn_reset bn_show_outfile
 GO bn_show_outfile
 
-GO bn_reset
+GO bn_reset bn_date1900_array
 GO bn_date1900_array
 
-GO bn_reset
+GO bn_reset bn_spawn_size
 GO bn_spawn_size
 
-GO bn_reset
+GO bn_reset bn_polygon_log
 GO bn_polygon_log
 
 ! *********** v6.94Additions ***********
 
-GO bn_reset
+GO bn_reset bn694_bug_fixes
 GO bn694_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_permute_ascii
 GO bn_permute_ascii
 
-GO bn_reset
+GO bn_reset bn_lon_lat_time_string
 GO bn_lon_lat_time_string
 
-GO bn_reset
+GO bn_reset bn_save_justdim
 GO bn_save_justdim
 
-GO bn_reset
+GO bn_reset bn_time2d
 GO bn_time2d
 
-GO bn_reset
+GO bn_reset bn_legend_labels
 GO bn_legend_labels
 
-GO bn_reset
+GO bn_reset bn_DQ
 GO bn_DQ
 
 ! *********** v6.95Additions ***********
 
-GO bn_reset
+GO bn_reset bn695_bug_fixes
 GO bn695_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_f_tax_fcns
 GO bn_f_tax_fcns
 
-GO bn_reset
+GO bn_reset bn_fmrc
 GO bn_fmrc
 
-GO bn_reset
+GO bn_reset bn_return_defined
 GO bn_return_defined
 
-GO bn_reset
+GO bn_reset bn_can_var_noerr
 GO bn_can_var_noerr
 
-GO bn_reset
+GO bn_reset bn_annotate
 GO bn_annotate
 
-GO bn_reset
+GO bn_reset bn_auxiliary
 GO bn_auxiliary
 
-GO bn_reset
+GO bn_reset bn_plot_ribbon_gaploc
 GO bn_plot_ribbon_gaploc
 
-GO bn_reset
+GO bn_reset bn_time_short_axes
 GO bn_time_short_axes
 
-GO bn_reset
+GO bn_reset bn_floatstr_extended
 GO bn_floatstr_extended
 
 ! *********** v6.96 Additions ***********
 
-GO bn_reset
+GO bn_reset bn696_bug_fixes
 GO bn696_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_bin_regrid
 GO bn_bin_regrid
 
 ! *********** v6.97 Additions ***********
 !            (released as V7.0)
 
-GO bn_reset
+GO bn_reset bn697_bug_fixes
 GO bn697_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_aggregate_t
 GO bn_aggregate_t
 
-GO bn_reset
+GO bn_reset bn_unquoted_args
 GO bn_unquoted_args
 
-GO bn_reset
+GO bn_reset bn_long_lists
 GO bn_long_lists
 
-GO bn_reset
+GO bn_reset bn_show_uvar_grid
 GO bn_show_uvar_grid
 
-GO bn_reset
+GO bn_reset bn_aggregate_f
 GO bn_aggregate_f
 
-GO bn_reset
+GO bn_reset bn_aggregate_tef
 GO bn_aggregate_tef
 
-GO bn_reset
+!GO bn_reset
 ! Add this to the gif benchmark tests
 ! GO bn_hovmuller_overlays
 
-GO bn_reset
+!GO bn_reset
 ! Add this to the gif benchmark tests
 ! GO bn_labels_on_taxis
 
-GO bn_reset
+GO bn_reset bn_dataset_qualifier
 GO bn_dataset_qualifier
 
-GO bn_reset
+GO bn_reset bn_speedtest
 GO bn_speedtest
 
-GO bn_reset
+GO bn_reset bn_show_noupcase
 GO bn_show_noupcase
 
-GO bn_reset
+GO bn_reset bn_letd_attributes
 GO bn_letd_attributes
 
-GO bn_reset
+GO bn_reset bn_list_clim_axes
 GO bn_list_clim_axes
 
-GO bn_reset
+GO bn_reset bn_climatology_attr
 GO bn_climatology_attr
 
-GO bn_reset
+GO bn_reset bn_plot_along
 GO bn_plot_along
 
-GO bn_reset
+GO bn_reset bn_show_commands
 GO bn_show_commands
 
-GO bn_reset
+GO bn_reset bn_plot_decimate
 GO bn_plot_decimate
 
-GO bn_reset
+GO bn_reset bn_auto_tprec
 GO bn_auto_tprec
 
 !GO bn_reset
 !GO bn_warn_subspan
 
-GO bn_reset
+GO bn_reset bn_coordvars_atts
 GO bn_coordvars_atts
 
 
 ! *********** v7.1 Additions ***********
 
-GO bn_reset
+GO bn_reset bn710_bug_fixes
 GO bn710_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_delim_datetime
 GO bn_delim_datetime
 
-GO bn_reset
+GO bn_reset bn_aggregate_u
 GO bn_aggregate_u
 
-GO bn_reset
+GO bn_reset bn_ez_noupcase
 GO bn_ez_noupcase
 
-GO bn_reset
+GO bn_reset bn_spawn_fail
 GO bn_spawn_fail
 
-GO bn_reset
+GO bn_reset bn_ave_of_ave
 GO bn_ave_of_ave
 
-GO bn_reset
+GO bn_reset bn_agg_member_syntax
 GO bn_agg_member_syntax
 
-GO bn_reset
+GO bn_reset bn_true_monthly
 GO bn_true_monthly
 
 
 ! *********** v7.1 Additions ***********
 
-GO bn_reset
+GO bn_reset bn720_bug_fixes
 GO bn720_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_compressed_gather
 GO bn_compressed_gather
 
 !  *********** Always do a bn_reset  *********** 

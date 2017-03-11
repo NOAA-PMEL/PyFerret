@@ -1,5 +1,6 @@
 ! bn_dods_strides.jnl
 ! *sh* 3/00
+! acm* 3/17 check the URL with TEST_OPENDAP befor trying to open it.
 
 ! drawn identically from bn_strides_revs_perms.jnl on 3/16/00
 
@@ -23,6 +24,10 @@ cancel mode diagnostic
 set region/i=3:6/j=2:4/k=1:2/l=1
 !use bn_strides
 ! use "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/bn_strides.cdf"
+
+IF `test_opendap("http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc") NE 0` THEN EXIT/SCRIPT
+
+
 set data "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 
 

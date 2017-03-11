@@ -3,7 +3,7 @@
 ! Bug 1098. Look for the label with the URL: it should include
 ! everything up to the last slash.  
 ! acm 11/04
-
+! acm* 3/17 check the URL with TEST_OPENDAP befor trying to open it.
 
 !! Change to another dataset, our server down...
 !!use  "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/bn_strides.cdf"
@@ -33,7 +33,9 @@
 !!plot/x=180/y=0/k=1 temp
 !!ppl list labels
 
-
+! If we cant open this, just bail on the test
+IF `test_opendap("http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/coads_climatology.nc") NE 0` THEN EXIT/SCRIPT
+ 
 use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/coads_climatology.nc"
 sh data
 plot/x=180/y=0 sst 

@@ -6,7 +6,7 @@ SET MODE IGNORE
 !!list test_opendap ("http://iridl.ldeo.NOT.columbia.edu/SOURCES/.LEVITUS/.MONTHLY/.temp/dods")
 
 !! Change to another server, this one not working 8/2012
-list test_opendap ("http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/s0112an1.nc")
+list test_opendap ("http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/WOA05nc/monthly/s0112an1.nc")
 list test_opendap ("http://ferret.pmel.NOT.noaa.gov/thredds/dodsC/data/PMEL/WOA05nc/monthly/s0112an1.nc")
 
 

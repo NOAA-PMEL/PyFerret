@@ -48,15 +48,15 @@ use tmp/test1.nc,"tmp/test2.nc", tmp/test3.nc
 show data/brief
 canc data/all
 
-IF `test_opendap("http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf") EQ 0` THEN
-  use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf"
+IF `test_opendap("http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf") EQ 0` THEN
+  use "http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf"
   show data/brief
   canc data/all
-  use http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf
+  use http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf
   show data/brief
   canc data/all
 
-  use tmp/test1.nc, "tmp/test2.nc", http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf
+  use tmp/test1.nc, "tmp/test2.nc", http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf
   show data/brief
   canc data/all
 ELSE

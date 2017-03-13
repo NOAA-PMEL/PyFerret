@@ -3,6 +3,7 @@
 ! Time labels on plots always just get the precision from MODE CALENDAR
 ! Instead, use the same logic as is used for text labels, automatically adjust.
 ! (later make this the default setting??)
+! acm* 3/17 check the URL with TEST_OPENDAP befor trying to open it.
 
 set mode calendar:auto
 show mode calendar
@@ -32,7 +33,10 @@ list/k=1/x=60/y=-40/L=1:6 ttim
 shade/title="hours "/l=3/k=1/x=60:70/y=-40:-30 ttim; sh sym  lab($labnum_t)
 
 ! Reynolds SST weekly, even 7-day spacing
-use http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/reynolds_sst_wk.nc
+
+IF `test_opendap("http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/reynolds_sst_wk.nc") NE 0` THEN EXIT/SCRIPT
+
+use http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/reynolds_sst_wk.nc
 list/x=180/y=0/l=20:25 fsst
 shade/title="7-day axis"/l=30/x=60:70/y=-40:-30 fsst; sh sym  lab($labnum_t)
 

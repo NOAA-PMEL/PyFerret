@@ -300,8 +300,8 @@ canc data/all
 ! show grid/T below was eliminated by the "clean_draconian" script)
 ! 1/17/2017 changes due to backing off auto-detection of truemonth axes, tkt 2497
 
-IF `test_opendap("http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2012.nc") EQ 0` THEN
-   tseries COADS = http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2012.nc, http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2013.nc, http://ferret.pmel.noaa.gov/thredds/dodsC/data/ferret/test_coads_monthly_air_2014.nc
+IF `test_opendap("http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/ferret/test_coads_monthly_air_2012.nc") EQ 0` THEN
+   tseries COADS = http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/ferret/test_coads_monthly_air_2012.nc, http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/ferret/test_coads_monthly_air_2013.nc, http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/ferret/test_coads_monthly_air_2014.nc
 show data COADS
 show grid/T air
 canc data/all

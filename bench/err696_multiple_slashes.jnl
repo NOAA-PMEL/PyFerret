@@ -25,8 +25,8 @@ def sym regqual = /x=300:360///y=-20:20/L=3
 fill/($regqual)($plotqual) sst
 
 ! command lines with urls unchanged
-IF `test_opendap("http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf") EQ 0` THEN
-   set data///format=cdf http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf
+IF `test_opendap("http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf") EQ 0` THEN
+   set data///format=cdf http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf
    let//d=coads_sst myvar = 1
    sh dat
    cancel data/all

@@ -55,8 +55,8 @@ PLOT/OVER/thick/y=8 my_var+10
 ! Like the dataset example from the FAQ
 set view ll6
 
-IF `test_opendap("http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf") EQ 0` THEN
-   use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf"
+IF `test_opendap("http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf") EQ 0` THEN
+   use "http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_sst.cdf"
    set region/x=40w/y=10n:60n/t=15-jan-1982:15-dec-1983
    shade sst
    plot/over/thick/TITLE="at 20"  sst[y=@LOC:20]
@@ -68,10 +68,10 @@ can region
 ! vector plots with a time series
 set view lr6
 
-IF `test_opendap("http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_uwnd.cdf") EQ 0 AND\
- test_opendap("http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_uwnd.cdf") EQ 0` THEN
-   use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_uwnd.cdf"
-   use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_vwnd.cdf"
+IF `test_opendap("http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_uwnd.cdf") EQ 0 AND\
+ test_opendap("http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_uwnd.cdf") EQ 0` THEN
+   use "http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_uwnd.cdf"
+   use "http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_vwnd.cdf"
 
    vec/x=0/y=-10:10/t=1-jan-1980:1-jan-1990 uwnd[d=1], vwnd[d=2]
 

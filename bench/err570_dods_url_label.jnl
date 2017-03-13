@@ -34,9 +34,9 @@
 !!ppl list labels
 
 ! If we cant open this, just bail on the test
-IF `test_opendap("http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/coads_climatology.nc") NE 0` THEN EXIT/SCRIPT
+IF `test_opendap("http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/coads_climatology.nc") NE 0` THEN EXIT/SCRIPT
  
-use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/coads_climatology.nc"
+use "http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/coads_climatology.nc"
 sh data
 plot/x=180/y=0 sst 
 ppl list labels

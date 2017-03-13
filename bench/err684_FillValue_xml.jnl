@@ -1,7 +1,7 @@
 ! err684_FillValue_xml.jnl
 ! ACM 6/2013 
 !
-! See the dataset at http://ferret.pmel.noaa.gov/thredds/dodsC/woa09_1deg_monthly
+! See the dataset at http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/woa09_1deg_monthly
 ! where the "number of" variables have  _FillValues attributes = -2147483647
 ! This value was being written to the xml headers as a float, without enough precision.
 ! See las ticket #761, fixes in show_data_set_vars_xml.F

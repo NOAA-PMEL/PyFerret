@@ -23,6 +23,9 @@ use this_is_not_a_file.nc
 ! This is a valid address
 use "http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_air.cdf"
 
+
+! Intentional errors
+
 ! change the variable name to something nonexistent
 use "http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf"
 

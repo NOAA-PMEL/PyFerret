@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 115885413 Mar 20 16:37 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 115885413 Mar 20 17:12 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: New lines written to log; Starting test: xxx
+Note: ticket 2518: output of SHOW GRID myvar
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Mon Mar 20 16:47:18 PDT 2017
+Beginning at Mon Mar 20 17:13:28 PDT 2017
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10449,12 +10449,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "20-Mar-17"
-SESSION_TIME = "16:47"
-SESSION_PID = "25789"
-DELTA_CPU = "14.0179"
-CLOCK_SECS = "16.108"
+SESSION_TIME = "17:13"
+SESSION_PID = "1140"
+DELTA_CPU = "6.09607"
+CLOCK_SECS = "8.413"
 CURRENT_DATE = "20-Mar-17"
-CURRENT_TIME = "16:47:34"
+CURRENT_TIME = "17:13:37"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -10478,12 +10478,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "20-Mar-17"
-SESSION_TIME = "16:47"
-SESSION_PID = "25789"
-DELTA_CPU = "0.018997"
-CLOCK_SECS = "16.128"
+SESSION_TIME = "17:13"
+SESSION_PID = "1140"
+DELTA_CPU = "0.005999"
+CLOCK_SECS = "8.42"
 CURRENT_DATE = "20-Mar-17"
-CURRENT_TIME = "16:47:34"
+CURRENT_TIME = "17:13:37"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 S1 = "hello"
@@ -10494,8 +10494,8 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "20-Mar-17"
-SESSION_TIME = "16:47"
-SESSION_PID = "25789"
+SESSION_TIME = "17:13"
+SESSION_PID = "1140"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10506,14 +10506,14 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "20-Mar-17"
-SESSION_TIME = "16:47"
-SESSION_PID = "25789"
+SESSION_TIME = "17:13"
+SESSION_PID = "1140"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "20-Mar-17"
-SESSION_TIME = "16:47"
-SESSION_PID = "25789"
+SESSION_TIME = "17:13"
+SESSION_PID = "1140"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10549,7 +10549,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET (beta/debug) Ver.7.1"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "20-MAR-2017 16:47:34"
+LAB3 = "20-MAR-2017 17:13:37"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10650,12 +10650,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "20-Mar-17"
-SESSION_TIME = "16:47"
-SESSION_PID = "25789"
-DELTA_CPU = "0.040994"
-CLOCK_SECS = "16.169"
+SESSION_TIME = "17:13"
+SESSION_PID = "1140"
+DELTA_CPU = "0.011998"
+CLOCK_SECS = "8.433"
 CURRENT_DATE = "20-Mar-17"
-CURRENT_TIME = "16:47:34"
+CURRENT_TIME = "17:13:37"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
  
@@ -13040,7 +13040,7 @@ show grid/x
  Last successful data access was on grid (G004)
     GRID (G004)
  name       axis              # pts   start                end                 subset
- (AX009)   X                    5 i   1                    6561                4 pts
+ (AX009)   X                    5 i   1                    6561                5 pts
  normal    Y
  normal    Z
  normal    T
@@ -22901,7 +22901,36 @@ GO bn491_bug_fixes.jnl
 ! 4/98 - added err491_attrib_dp.jnl - problem w/ double precision attributes
  
 set mode/last verify
+can viewport
+can win/all
+set window 1
+ 
+!netcdf write error
+GO err490_cdf_childax
+!err490_cdf_childax  *kob*  12/10/97 - initial crash reported by jerry
+ 
+! ERROR Fixed: listing a netcdf file w/ an extended child axis caused OSF
+!              core dump
+!
+!  routines modified:    fmt/src/cd_childax_name.F
+!			 fmt/src/cd_write_axis.F
+!                        fmt/src/cd_make_var.F
+! 3.4.98 *kob* add define region statement - needed to include the
+!              bn491_bug_fixes.jnl in w/ bn491_all
+ 
+ 
+define region/x=130:290/y=-23.5:23.5 t
+set data ocean_atlas_temp
+set reg/@t/z=0/l=1
+save/file=test.cdf/clobber temp
+ 
+message/continue ********File successfully written******
 ********File successfully written******
+ 
+ 
+! command parser
+GO bn_reset
+cancel mode verify
 ooooooooooooooooooooooooooooooooooooooooooo
 GO err490_command_parser
 ! err490_command_parser.jnl 12/1/98 - reported by billy kessler
@@ -25488,7 +25517,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Mon Mar 20 16:47:51 PDT 2017
+Mon Mar 20 17:13:47 PDT 2017
  
 GO bn_reset
 cancel mode verify
@@ -31210,7 +31239,7 @@ show grid
     GRID (G012)
  name       axis              # pts   start                end                 subset
  COADSX    LONGITUDE          180mr   21E                  19E(379)            1 pt
- (AX018)   LATITUDE           201 r   10S                  10N                 200 pts
+ (AX018)   LATITUDE           201 r   10S                  10N                 201 pts
  normal    Z
  TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58        1 pt
 show grid/dynamic
@@ -31338,47 +31367,47 @@ SHOW GRID temp[d=2,gx=sst[d=1],y=10s:2s:.2]             ! implicit Y axis
     GRID (G018)
  name       axis              # pts   start                end                 subset
  COADSX    LONGITUDE          180mr   21E                  19E(379)            full
- (AX025)   LATITUDE            41 r   10S                  2S                  40 pts
+ (AX025)   LATITUDE            41 r   10S                  2S                  41 pts
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   full
  normal    T
 SHOW GRID "temp[d=2,gx=sst[d=1],y=10s:2s:.2] + 5"
     GRID (G018)
  name       axis              # pts   start                end                 subset
  COADSX    LONGITUDE          180mr   21E                  19E(379)            full
- (AX018)   LATITUDE            41 r   10S                  2S                  40 pts
+ (AX018)   LATITUDE            41 r   10S                  2S                  41 pts
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   full
  normal    T
 SHOW GRID FFTA(sst[d=1,gx=temp[d=2],y=10s:2s:.2,l=1:5]) ! imposed T axis
     GRID (G011)
  name       axis              # pts   start                end                 subset
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E              full
- (AX025)   LATITUDE            41 r   10S                  2S                  40 pts
+ (AX025)   LATITUDE            41 r   10S                  2S                  41 pts
  normal    Z
  (AX012)   T (CYC/hour)         2 r   0.00034224           0.00068448          (axis from grid-changing func)
 SHOW GRID SORTI(temp[d=2,gx=sst[d=1],y=10s:2s:.2])      ! abstract X axis
     GRID (G018)
  name       axis              # pts   start                end                 subset
  ABSTRACT  X             99999999 r   1                    1.E+08              (axis from grid-changing func)
- (AX025)   LATITUDE            41 r   10S                  2S                  40 pts
+ (AX025)   LATITUDE            41 r   10S                  2S                  41 pts
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   full
  normal    T
 SHOW GRID "temp[d=2,gx=sst[d=1],y=10s:2s:.2] + 5",FFTA(sst[d=1,gx=temp[d=2],y=10s:2s:.2,l=1:5]),SORTI(temp[d=2,gx=sst[d=1],y=10s:2s:.2])
     GRID (G018)
  name       axis              # pts   start                end                 subset
  COADSX    LONGITUDE          180mr   21E                  19E(379)            full
- (AX012)   LATITUDE            41 r   10S                  2S                  40 pts
+ (AX012)   LATITUDE            41 r   10S                  2S                  41 pts
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   full
  normal    T
     GRID (G011)
  name       axis              # pts   start                end                 subset
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E              full
- (AX025)   LATITUDE            41 r   10S                  2S                  40 pts
+ (AX025)   LATITUDE            41 r   10S                  2S                  41 pts
  normal    Z
  (AX018)   T (CYC/hour)         2 r   0.00034224           0.00068448          (axis from grid-changing func)
     GRID (G018)
  name       axis              # pts   start                end                 subset
  ABSTRACT  X             99999999 r   1                    1.E+08              (axis from grid-changing func)
- (AX025)   LATITUDE            41 r   10S                  2S                  40 pts
+ (AX025)   LATITUDE            41 r   10S                  2S                  41 pts
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   full
  normal    T
  
@@ -31389,7 +31418,7 @@ SHOW GRID
     GRID (G018)
  name       axis              # pts   start                end                 subset
  COADSX    LONGITUDE          180mr   21E                  19E(379)            full
- (AX018)   LATITUDE            41 r   10S                  2S                  40 pts
+ (AX018)   LATITUDE            41 r   10S                  2S                  41 pts
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0                   full
  normal    T
 SET GRID  FFTA(sst[d=1,gx=temp[d=2],y=10s:2s:.2,l=1:5]) + 5
@@ -38357,7 +38386,7 @@ show grid
  Last successful data access was on grid (G005)
     GRID (G005)
  name       axis              # pts   start                end                 subset
- (AX015)   X                   10 r   1                    91                  9 pts
+ (AX015)   X                   10 r   1                    91                  10 pts
  YAX1_100  Y                  100 r   1                    100                 full
  normal    Z
  normal    T
@@ -47604,7 +47633,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS20-MAR-2017 16:48:51
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS20-MAR-2017 17:14:19
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -49078,7 +49107,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "20-Mar-17:16:47"
+WIN_TITLE = "20-Mar-17:17:13"
  
 set win/title="set the title"
 sho sym win_title
@@ -49096,7 +49125,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="20-Mar-17:16:47"
+ !-> set win/title="20-Mar-17:17:13"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -49107,14 +49136,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 20-Mar-17
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 16:47
+ !-> DEFINE SYMBOL the_time = 17:13
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="20-Mar-17:16:47"
+ !-> SET WIN/TITLE="20-Mar-17:17:13"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "20-Mar-17:16:47"
+WIN_TITLE = "20-Mar-17:17:13"
  
 GO bn_reset bn_last_error.jnl
 cancel mode verify
@@ -59680,10 +59709,10 @@ ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_clock_syms
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "98.605"
-CLOCK_SECS = "136.375"
+DELTA_CPU = "47.5358"
+CLOCK_SECS = "75.865"
 CURRENT_DATE = "20-Mar-17"
-CURRENT_TIME = "16:49:35"
+CURRENT_TIME = "17:14:44"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -59692,8 +59721,8 @@ CURRENT_TIME = "16:49:35"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.080987"
-CLOCK_SECS = "136.613"
+DELTA_CPU = "0.035995"
+CLOCK_SECS = "76.022"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -59707,60 +59736,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.433934
+ !-> DEFINE VARIABLE ten_plots = 0.226965
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0.001"
-CLOCK_SECS = "138.114"
+CLOCK_SECS = "77.334"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "138.116"
+CLOCK_SECS = "77.335"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.050992
- !-> DEFINE VARIABLE sumcpu =0.050992
+ !-> DEFINE VARIABLE dt = 0.039994
+ !-> DEFINE VARIABLE sumcpu =0.039994
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.053991
- !-> DEFINE VARIABLE sumcpu =0.104983
+ !-> DEFINE VARIABLE dt = 0.030995
+ !-> DEFINE VARIABLE sumcpu =0.070989
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.053993
- !-> DEFINE VARIABLE sumcpu =0.158976
+ !-> DEFINE VARIABLE dt = 0.033995
+ !-> DEFINE VARIABLE sumcpu =0.104984
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.052991
- !-> DEFINE VARIABLE sumcpu =0.211967
+ !-> DEFINE VARIABLE dt = 0.033995
+ !-> DEFINE VARIABLE sumcpu =0.138979
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.054992
- !-> DEFINE VARIABLE sumcpu =0.266959
+ !-> DEFINE VARIABLE dt = 0.029995
+ !-> DEFINE VARIABLE sumcpu =0.168974
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.052992
- !-> DEFINE VARIABLE sumcpu =0.319951
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.200969
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.054991
- !-> DEFINE VARIABLE sumcpu =0.374942
+ !-> DEFINE VARIABLE dt = 0.033995
+ !-> DEFINE VARIABLE sumcpu =0.234964
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.055992
- !-> DEFINE VARIABLE sumcpu =0.430934
+ !-> DEFINE VARIABLE dt = 0.034995
+ !-> DEFINE VARIABLE sumcpu =0.269959
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.052993
- !-> DEFINE VARIABLE sumcpu =0.483927
+ !-> DEFINE VARIABLE dt = 0.035994
+ !-> DEFINE VARIABLE sumcpu =0.305953
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.053991
- !-> DEFINE VARIABLE sumcpu =0.537918
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.338948
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.537918
-0.537918
+ !-> MESSAGE/CONTINUE 0.338948
+0.338948
 sh sym CLOCK_SECS
-CLOCK_SECS = "140.729"
+CLOCK_SECS = "79.753"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "20-Mar-17"
-SESSION_TIME = "16:47"
+SESSION_TIME = "17:13"
 CURRENT_DATE = "20-Mar-17"
-CURRENT_TIME = "16:49:39"
+CURRENT_TIME = "17:14:48"
  
  
 ! ******** V6.3 Additions below ***********
@@ -61510,7 +61539,7 @@ show grid
     GRID (G104)
  name       axis              # pts   start                end                 subset
  COADSX    LONGITUDE          180mr   21E                  19E(379)            1 pt
- (AX121)   LATITUDE           201 r   10S                  10N                 200 pts
+ (AX121)   LATITUDE           201 r   10S                  10N                 201 pts
  normal    Z
  TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        1 pt
 show grid/dynamic
@@ -62564,7 +62593,7 @@ sh grid tt
  normal    X
  normal    Y
  normal    Z
- TOUT      TIME                10 r   01-JAN-2010 00:00    01-APR-2010 00:00   9 pts
+ TOUT      TIME                10 r   01-JAN-2010 00:00    01-APR-2010 00:00   10 pts
  
  
 define axis/x=0:10:0.05 x10
@@ -62769,7 +62798,7 @@ show grid tt
  x10       X                  201 r   0                    10                  full
  Y10       Y                  201 r   0                    10                  full
  normal    Z
- TOUT      TIME                10 r   01-JAN-2010 00:00    01-APR-2010 00:00   9 pts
+ TOUT      TIME                10 r   01-JAN-2010 00:00    01-APR-2010 00:00   10 pts
  
 let sgrid = scat2grid_bin_xyt (xpts, ypts, tpts, sample_function, x[gx=xax5], y[gy=yax5], tt)
 SAVE/FILE=a.nc/clobber sgrid
@@ -63675,7 +63704,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v7.1 (beta/debug)"                                                
  3    /  3:" ! Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 03/20/17"                      
- 4    /  4:" ! 20-Mar-17 16:47     "                                                    
+ 4    /  4:" ! 20-Mar-17 17:13     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -65979,7 +66008,7 @@ let a = x[gx=0:2:1]; save/clob/file=a1.nc a
 sho grid/x a
     GRID (G103)
  name       axis              # pts   start                end                 subset
- (AX084)   X                    3 r   0                    2                   2 pts
+ (AX084)   X                    3 r   0                    2                   3 pts
  normal    Y
  normal    Z
  normal    T
@@ -65993,7 +66022,7 @@ let a = x[gx=1:3:1]; save/clob/file=a2.nc a
 sho grid/x a
     GRID (G103)
  name       axis              # pts   start                end                 subset
- (AX121)   X                    3 r   1                    3                   2 pts
+ (AX121)   X                    3 r   1                    3                   3 pts
  normal    Y
  normal    Z
  normal    T
@@ -66226,40 +66255,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.023
-randu2_randn2       0.349
-randu2_randn2       0.187
-randu2_randn2       0.756
-randu2_randn2       0.111
+randu2_randn2       0.802
+randu2_randn2       0.153
+randu2_randn2       0.413
+randu2_randn2       0.979
+randu2_randn2       0.122
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.859
-randu2_randn2       0.363
-randu2_randn2       0.796
-randu2_randn2       0.104
-randu2_randn2       0.012
+randu2_randn2       0.168
+randu2_randn2       0.086
+randu2_randn2       0.419
+randu2_randn2       0.632
+randu2_randn2       0.107
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.650
-randu2_randn2       0.991
-randu2_randn2       0.228
-randu2_randn2       0.331
-randu2_randn2       0.741
-randu2_randn2       0.326
+randu2_randn2       0.070
+randu2_randn2       0.557
+randu2_randn2       0.068
+randu2_randn2       0.423
+randu2_randn2       0.288
+randu2_randn2       0.785
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.355
-randu2_randn2       0.249
-randu2_randn2       0.554
-randu2_randn2       0.598
-randu2_randn2       0.434
-randu2_randn2       0.373
+randu2_randn2       0.721
+randu2_randn2       0.393
+randu2_randn2       0.406
+randu2_randn2       0.918
+randu2_randn2       0.848
+randu2_randn2       0.159
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -66284,40 +66313,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.340
-randu2_randn2      -1.505
-randu2_randn2       0.753
-randu2_randn2       0.290
-randu2_randn2       1.514
+randu2_randn2      -0.270
+randu2_randn2      -1.540
+randu2_randn2      -1.599
+randu2_randn2       0.036
+randu2_randn2       1.124
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.788
-randu2_randn2       1.512
-randu2_randn2       0.050
-randu2_randn2      -0.877
-randu2_randn2       0.387
+randu2_randn2      -0.757
+randu2_randn2       0.115
+randu2_randn2      -0.642
+randu2_randn2       1.474
+randu2_randn2      -1.869
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       1.288
-randu2_randn2      -0.060
-randu2_randn2      -2.020
-randu2_randn2       0.485
-randu2_randn2       1.555
-randu2_randn2       0.890
+randu2_randn2      -0.394
+randu2_randn2      -0.624
+randu2_randn2      -0.277
+randu2_randn2      -1.119
+randu2_randn2       0.027
+randu2_randn2       0.380
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       1.231
-randu2_randn2      -1.498
-randu2_randn2      -0.377
-randu2_randn2       0.088
-randu2_randn2       0.302
-randu2_randn2      -1.717
+randu2_randn2       0.008
+randu2_randn2      -0.110
+randu2_randn2       2.322
+randu2_randn2      -0.511
+randu2_randn2      -1.005
+randu2_randn2      -0.666
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -66342,14 +66371,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.261       1.261       1.041
-randu2_randn2       1.181       1.181       1.041
-randu2_randn2       1.041       1.041       0.297
-randu2_randn2       0.297       0.297       0.396
-randu2_randn2      -0.888      -0.021       0.396
-randu2_randn2      -0.021      -0.606       0.396
-randu2_randn2      -0.606      -0.021       0.396
-randu2_randn2       0.396       0.396       0.396
+randu2_randn2       1.315       1.315       0.687
+randu2_randn2       1.196       1.196       0.687
+randu2_randn2       0.687       0.687       0.044
+randu2_randn2       0.044       0.044       0.433
+randu2_randn2      -0.143      -0.143       0.433
+randu2_randn2      -0.491      -0.143       0.433
+randu2_randn2       0.005       0.005       0.433
+randu2_randn2       0.433       0.433       0.433
  
 GO bn_reset bn_axis_cf
 cancel mode verify
@@ -74268,7 +74297,7 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Mon Mar 20 16:50:19 2017: ncks -h -A -h z1.nc append_to_this.nc\n",
+		:history = "Mon Mar 20 17:15:09 2017: ncks -h -A -h z1.nc append_to_this.nc\n",
 			"FERRET V7.1 (beta/debug) 20-Mar-17" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
@@ -80231,7 +80260,7 @@ can mode verify
 8
     GRID XABSTRACT
  name       axis              # pts   start                end                 subset
- ABSTRACT  X             99999999 r   1                    1.E+08              7 pts
+ ABSTRACT  X             99999999 r   1                    1.E+08              8 pts
  normal    Y
  normal    Z
  normal    T
@@ -82556,7 +82585,7 @@ SHOW GRID
  name       axis              # pts   start                end                 subset
  XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
  YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
- ZAXLEVITR DEPTH (m)           20 i-  0                    5000                10 pts
+ ZAXLEVITR DEPTH (m)           20 i-  0                    5000                11 pts
  normal    T
  
 ! use aux var regridding.  Target coordinate points match the source points
@@ -82704,7 +82733,7 @@ SHOW GRID tempz_alt
  name       axis              # pts   start                end                 subset
  XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
  YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
- (AX122)   Z                    5 r   2                    10                  4 pts
+ (AX122)   Z                    5 r   2                    10                  5 pts
  normal    T
  
 !! do same regrid using the shorhand semi-automated notation
@@ -87193,20 +87222,20 @@ GO err696_time_overlay
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
 sp date
-Mon Mar 20 16:50:59 PDT 2017
+Mon Mar 20 17:15:31 PDT 2017
 set view upper
 plot t[gt=tax_nlp]
 plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
 sp date
-Mon Mar 20 16:50:59 PDT 2017
+Mon Mar 20 17:15:32 PDT 2017
  
 sp date
-Mon Mar 20 16:50:59 PDT 2017
+Mon Mar 20 17:15:32 PDT 2017
 set view lower
 plot t[gt=tax_jul]
 plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
 sp date
-Mon Mar 20 16:50:59 PDT 2017
+Mon Mar 20 17:15:32 PDT 2017
  
 GO bn_reset
 cancel mode verify
@@ -90787,7 +90816,7 @@ use coads_climatology
 show grid sst[x=240:320,y=0,t=@ave]
     GRID GSQ1
  name       axis              # pts   start                end                 subset
- COADSX    LONGITUDE          180mr   21E                  19E(379)            39 pts
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            40 pts
  COADSY    LATITUDE            90 r   89S                  89N                 1 pt
  normal    Z
  TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        compressed
@@ -90796,10 +90825,10 @@ show grid sst[x=240:320,y=0,t=@ave]
 show grid sst[x=0:540,L=1:15]
     GRID GSQ1
  name       axis              # pts   start                end                 subset
- COADSX    LONGITUDE          180mr   21E                  19E(379)            269 pts
+ COADSX    LONGITUDE          180mr   21E                  19E(379)            270 pts
  COADSY    LATITUDE            90 r   89S                  89N                 full
  normal    Z
- TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        14 pts
+ TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        15 pts
  
 ! Constant: full abstract grid
 show grid 1
@@ -90824,7 +90853,7 @@ let var = {1,2,4,8}  ! Note that show grid {1,2,4,8} fails: bug
 show grid var
     GRID XABSTRACT
  name       axis              # pts   start                end                 subset
- ABSTRACT  X             99999999 r   1                    1.E+08              3 pts
+ ABSTRACT  X             99999999 r   1                    1.E+08              4 pts
  normal    Y
  normal    Z
  normal    T
@@ -90888,7 +90917,7 @@ show grid var
     GRID (G086)
  name       axis              # pts   start                end                 subset
  COADSX    LONGITUDE          180mr   21E                  19E(379)            1 pt
- (AX111)   LATITUDE           201 r   10S                  10N                 200 pts
+ (AX111)   LATITUDE           201 r   10S                  10N                 201 pts
  normal    Z
  TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        1 pt
  
@@ -90896,8 +90925,8 @@ show grid var
 show grid sst[i=1:180:3,j=1:90:2]
     GRID (G085)
  name       axis              # pts   start                end                 subset
- (AX113)   LONGITUDE           60 r   21E                  15E(375)            59 pts
- (AX133)   LATITUDE            45 r   89S                  87N                 44 pts
+ (AX113)   LONGITUDE           60 r   21E                  15E(375)            60 pts
+ (AX133)   LATITUDE            45 r   89S                  87N                 45 pts
  normal    Z
  TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        full
  
@@ -90912,7 +90941,7 @@ sh grid vwnd_days
  COADSX    LONGITUDE          180mr   21E                  19E(379)            full
  COADSY    LATITUDE            90 r   89S                  89N                 full
  normal    Z
- DAX       TIME              1096 r   01-JAN-1980 00:00    31-DEC-1982 00:00   44 pts
+ DAX       TIME              1096 r   01-JAN-1980 00:00    31-DEC-1982 00:00   45 pts
  
 let vwnd_clim = vwnd[gt=month_irreg@mod]
 sh grid vwnd_clim[L=4:9]
@@ -90921,7 +90950,7 @@ sh grid vwnd_clim[L=4:9]
  COADSX    LONGITUDE          180mr   21E                  19E(379)            full
  COADSY    LATITUDE            90 r   89S                  89N                 full
  normal    Z
- MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49        5 pts
+ MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49        6 pts
  
 can dat/all
 use coads_climatology
@@ -90942,7 +90971,7 @@ show grid var
     GRID GSQ1
  name       axis              # pts   start                end                 subset
  COADSX    LONGITUDE          180mr   21E                  19E(379)            full
- COADSY    LATITUDE            90 r   89S                  89N                 29 pts
+ COADSY    LATITUDE            90 r   89S                  89N                 30 pts
  normal    Z
  TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        full
  
@@ -90962,7 +90991,7 @@ show grid var
  name       axis              # pts   start                end                 subset
  XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
  YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
- ZAXLEVITR DEPTH (m)           20 i-  0                    5000                6 pts
+ ZAXLEVITR DEPTH (m)           20 i-  0                    5000                7 pts
  normal    T
  
  
@@ -91004,7 +91033,7 @@ show grid ffta(sample_function + temp[d=levitus_3d_subset,z=0:40])
  name       axis              # pts   start                end                 subset
  XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
  YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
- ZAXLEVITR DEPTH (m)           20 i-  0                    5000                3 pts
+ ZAXLEVITR DEPTH (m)           20 i-  0                    5000                4 pts
  (AX125)   T (CYC/HOURS)      182 r   0.00011447           0.020833            (axis from grid-changing func)
  
 can dat/all
@@ -91029,7 +91058,7 @@ sh grid tempz[z=100:400]
  name       axis              # pts   start                end                 subset
  XAXLEVITR101_102 LONGITUDE     2mr   120.5E               121.5E              full
  YAXLEVITR41_42 LATITUDE        2 r   49.5S                48.5S               full
- (AX111)   Z                    5 r   100                  500                 3 pts
+ (AX111)   Z                    5 r   100                  500                 4 pts
  normal    T
  
 ! and with a grid-changing function thrown in
@@ -93524,7 +93553,7 @@ show grid
     GRID (G200)
  name       axis              # pts   start                end                 subset
  COADSX    LONGITUDE          180mr   21E                  19E(379)            1 pt
- (AX110)   LATITUDE           201 r   10S                  10N                 200 pts
+ (AX110)   LATITUDE           201 r   10S                  10N                 201 pts
  normal    Z
  TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58        1 pt
  
@@ -93627,9 +93656,9 @@ GO bn_speedtest
 ! bn_speedtest.jnl
 ! issue large numbers of commands, timing with clock time
 can mode verify
-10K LET commands LET a = 0 takes  1.990000000000009  seconds
-Second 10K LET commands LET a = 0 takes  3.277000000000044  seconds
-5K LOAD with transform takes  3.846999999999980  seconds
+10K LET commands LET a = 0 takes  1.009000000000015  seconds
+Second 10K LET commands LET a = 0 takes  2.258000000000010  seconds
+5K LOAD with transform takes  3.710999999999984  seconds
  
 GO bn_reset bn_show_noupcase
 cancel mode verify
@@ -93658,7 +93687,7 @@ show var
 show grid MyUpperLowerCaseVar
     GRID (G204)
  name       axis              # pts   start                end                 subset
- ABSTRACT  X             99999999 r   1                    1.E+08              9 pts
+ ABSTRACT  X             99999999 r   1                    1.E+08              10 pts
  normal    Y
  normal    Z
  tday      TIME                31 r   01-JAN-1999 00:00    31-JAN-1999 00:00   full
@@ -101185,7 +101214,7 @@ yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v7.1 (beta/debug)
  	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 03/20/17
- 	20-Mar-17 16:52     
+ 	20-Mar-17 17:16     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -104814,7 +104843,7 @@ yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v7.1 (beta/debug)
  	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 03/20/17
- 	20-Mar-17 16:52     
+ 	20-Mar-17 17:16     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 8 bytes)
@@ -104827,12 +104856,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "20-Mar-17"
-SESSION_TIME = "16:52"
-SESSION_PID = "26965"
-DELTA_CPU = "0.038993"
-CLOCK_SECS = "0.151"
+SESSION_TIME = "17:16"
+SESSION_PID = "1857"
+DELTA_CPU = "0.066989"
+CLOCK_SECS = "0.215"
 CURRENT_DATE = "20-Mar-17"
-CURRENT_TIME = "16:52:38"
+CURRENT_TIME = "17:16:43"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 GO_FILE = "./bn_startupfile.jnl"
@@ -104855,7 +104884,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "20-Mar-17:16:52"
+WIN_TITLE = "20-Mar-17:17:16"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -104920,7 +104949,7 @@ yes? GO bn_gif
  	NOAA/PMEL TMAP
  	FERRET v7.1 (beta/debug)
  	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 03/20/17
- 	20-Mar-17 16:52     
+ 	20-Mar-17 17:16     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -105468,7 +105497,7 @@ yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v7.1 (beta/debug)
  	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 03/20/17
- 	20-Mar-17 16:52     
+ 	20-Mar-17 17:16     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -105582,7 +105611,7 @@ yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v7.1 (beta/debug)
  	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 03/20/17
- 	20-Mar-17 16:52     
+ 	20-Mar-17 17:16     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -105666,4 +105695,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Mon Mar 20 16:52:43 PDT 2017
+Ended at Mon Mar 20 17:16:46 PDT 2017

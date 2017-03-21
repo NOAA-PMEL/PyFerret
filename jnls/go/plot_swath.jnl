@@ -2,6 +2,7 @@
 ! plot_swath.jnl
 ! 6/99 *sh*
 ! 1/02 *acm* add note on limits
+! 3/17 *acm* handle positive-down Z axis
 
 ! Description: Plot a color-filed swath between upper and lower bounds
 
@@ -81,7 +82,12 @@ LET/QUIET PSWx4_0 = IF PSWpindex EQ 1 OR PSWpindex EQ 4 then PSWx ELSE PSWx[($PS
 LET/QUIET PSWy4_1 = IF PSWpindex LE 2 then PSWylo ELSE PSWyhi
 LET/QUIET PSWy4_0 = IF PSWpindex EQ 1 OR PSWpindex EQ 4 then PSWy4_1 ELSE PSWy4_1[($PSWax)=@shf:1]
 
-$1/coord_ax=($PSWquad_ax)  PSWx4_0,PSWy4_0
+! If the plot is in the Z direction and it is a depth axis, need /TRANS
+IF ($PSWax"|Z>1|*>0") THEN 
+   IF `PSWx4_0,return=isDepth` THEN DEFINE SYMBOL flip = /TRANS
+ENDIF
+
+$1($flip)/coord_ax=($PSWquad_ax)  PSWx4_0,PSWy4_0
 
 cancel symbol PSW*
 cancel variable PSW*

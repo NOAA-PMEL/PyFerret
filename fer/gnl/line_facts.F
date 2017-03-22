@@ -64,6 +64,7 @@
 * V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
 *                  using original upper/lowercase spelling
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
+* V72  3/17 *acm* Fix ticket 2518: The number of points reported in a subset was incorrect
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -226,7 +227,7 @@
 	      IF (i1ss .EQ. inss) THEN
 	         uvar_desc = '1 pt'
 	      ELSE
-	         countstr = TM_FMT(FLOAT(inss-i1ss), 15, 20, slen)
+	         countstr = TM_FMT(FLOAT(inss-i1ss+1), 15, 20, slen)
 	         uvar_desc = countstr(:slen)//' pts'
 	      ENDIF
 	   ENDIF

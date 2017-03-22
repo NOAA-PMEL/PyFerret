@@ -71,6 +71,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
+* V720  *acm* 2/17 ticket 2511 Dynamic grids on user-defined variables
 
 	include	'ferret.parm'
 	include	'errmsg.parm'

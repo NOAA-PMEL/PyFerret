@@ -1,0 +1,78 @@
+! err71_plotVS_mode_label.jnl
+!  *acm*3/17/17 Ticket 2517: 
+! MODE LONG_LABEL, MODE LATIT_LABEL need to apply 
+! to PLOT/VS plots.
+
+can mode logo
+
+set mode long_lab
+set mode latit_lab
+
+let/title="|Roll|"/units="degree" abscissa_roll = {0, 20}
+let/title="Wind Speed"/units="kn" ordinate_spd  = {0, 0}
+
+! labeled lon/lat axes. Units of "degrees" is taken to be degrees 
+! east or north depending on which plot axis it is drawn on.
+
+set view ul
+plot/vs/line/vlimits=-20:20 abscissa_roll, ordinate_spd
+set view ur
+plot/vs/line/hlimits=-20:20 ordinate_spd, abscissa_roll
+
+! These modes turn off lon/lat axis labeling
+
+cancel mode long_lab
+cancel mode latit_lab
+ 
+set view ll
+plot/vs/line/vlimits=-20:20 abscissa_roll, ordinate_spd
+set view lr
+plot/vs/line/hlimits=-20:20 ordinate_spd, abscissa_roll
+
+! Explicit units units of degrees_east and degrees_north:
+! degrees_east draws longitude labeling on whichever plot axis
+! the associated variable is drawn, and likewise for degrees_north. 
+! Setting or cancelling the label modes applies to the variable 
+! units not the plot-axis direction.
+
+cancel view
+set mode long_lab
+set mode latit_lab
+
+let/title="East"/units="degrees_east" lon = {10,20,30}
+let/title="North"/units="degrees_north" lat = {-10,0,10}
+
+! longitude axis on the horizontal, latitude axis on the vertical
+
+set view ul; plot/vs/line/sym/hlim=0:40/vlim=-20:20 lon, lat
+annotate/norm/x=0.1/y=0.9/siz=0.1 "long TRUE  latit TRUE"
+
+! latitude axis on the horizontal, longitude axis on the vertical
+
+set view ur; plot/vs/line/sym/hlim=0:40/vlim=-20:20 lat,lon 
+annotate/norm/x=0.1/y=0.9/siz=0.1 "long vertical  latit horizontal"
+
+! longitude axis on the horizontal, latitude axis on the vertical
+! but with latitude labeling turned off
+
+set mode long_lab
+cancel mode latit_lab
+set view ll; plot/vs/line/sym/hlim=0:40/vlim=-20:20 lon, lat
+annotate/norm/x=0.1/y=0.9/siz=0.1 "long TRUE  latit FALSE"
+
+! latitude axis on the horizontal, longitude axis on the vertical
+! but with longitude labeling turned off
+
+cancel mode long_lab
+set mode latit_lab
+set view lr; plot/vs/line/sym/hlim=0:40/vlim=-20:20 lat,lon
+annotate/norm/x=0.1/y=0.9/siz=0.1 "long FALSE  latit TRUE"
+
+frame/file=lon_lat_label_controls.gif
+
+
+! Restore default settings
+set mode long_lab
+set mode latit_lab
+
+set mode/last logo

@@ -171,6 +171,7 @@
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 * V71  1/17 *acm* For ticket 2494: Single-cell SHADE plots allowed. 
 *                 Handle degenerate region info.
+* V72  3/17 *acm* Changes for ticket 2517, call to AXIS_ENDS changed.
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -228,7 +229,7 @@ C plus those starting w/ xbox_bounds:
      .			user_title, time_axis, time_axis_dim1, timeax_both, 
      .			regrid_1, regrid_2, no_y_rng, edges_ok,
      .			ITS_GIF_GRAPHICS, its_gif, REGULARLY_SPACED,
-     .                  irregular, use_cell, valid
+     .                  irregular, use_cell, valid, vflag
 
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			dim1, dim2, mvx, mvx_temp, mvy, mvy_temp,
@@ -265,6 +266,7 @@ C plus those starting w/ xbox_bounds:
         plot_mem_used = 0
 	mvx_temp  = 0
 	adjust_time = .FALSE.
+	vflag     = .FALSE.
 
 	IF ( vector ) THEN
 	   mvy	  = mr_list( 2 )
@@ -664,7 +666,7 @@ C   set up memory for the flag grid
 	   haxhi = xaxhi	! will know them
 
 	   CALL AXIS_ENDS  ( 'X', dim1, grid, xaxlo, xaxhi, delta, is_logx,
-     .			      x_axtyp, status )
+     .			      x_axtyp, vflag, status )
 	   IF ( status .NE. ferr_ok ) THEN
               first = xaxlo
               last  = xaxhi
@@ -746,7 +748,7 @@ C ACM added 8/2001 save cal id if vertical time axis
 	   vaxhi = yaxhi	! will know them
 
 	   CALL AXIS_ENDS  ( 'Y', dim2, grid, yaxlo, yaxhi, delta, is_logy,
-     .			      y_axtyp, status )
+     .			      y_axtyp, vflag, status )
 	   IF ( status .NE. ferr_ok ) THEN
               first = xaxlo
               last  = xaxhi

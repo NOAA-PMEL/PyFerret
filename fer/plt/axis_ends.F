@@ -1,5 +1,5 @@
 	SUBROUTINE AXIS_ENDS( plot_ax, dat_ax, grid, first, last, delta,
-     .                        is_log,  axtp, status )
+     .                        is_log, axtp, versus, status )
 
 *
 *
@@ -58,6 +58,9 @@
 * V695+ *sh* 4/15 format long longitude axes using a delta based upon 15 deg
 * V710  *acm* 11/16 Ticket 2483: Fix the axis-end symbols that are defined 
 *                   for time axis plots
+* V720  *acm*  2/17 Ticket 2246. If the plot is a PLOT/VS plot (or polygon plot?),
+*                   then axis-backwards is not relevant. The plot axis is drawn
+*                   from the data values not the grid.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -69,7 +72,7 @@
 * kob 12/96
 	EXTERNAL RANGE
 * calling argument declarations:
-	LOGICAL		is_log
+	LOGICAL		is_log, versus
 	CHARACTER*1	plot_ax		! X (horiz) or Y (vert) axis of plot
 	INTEGER		dat_ax, grid	! X,Y,Z,... axis of data
 	REAL*8		first, last, delta
@@ -93,7 +96,7 @@
 * Check for negative or too-tiny values of range
 	   IF (first .LT. epsilon .OR. last  .LT. epsilon) GO TO 5000
 
-	   IF ( BKWD_AXIS(dat_ax, grid) ) THEN
+	   IF (.NOT.versus .AND. BKWD_AXIS(dat_ax, grid) ) THEN
 	      axtp = 4		! inverse log axis (leave type 3 as is in PPLUS)
            ELSE
 	      axtp = 2		! log axis
@@ -119,7 +122,7 @@
 * Convert to single precision and reverse order if a depth plot on Y axis
 
 #ifdef double_p
-	IF ( plot_ax .EQ. 'Y'  .AND.  BKWD_AXIS(dat_ax, grid) ) THEN
+	IF ( plot_ax .EQ. 'Y'  .AND. .NOT.versus .AND. BKWD_AXIS(dat_ax, grid) ) THEN
 	   x2 = (first)
 	   x1 = (last)
 	ELSE
@@ -127,7 +130,7 @@
 	   x2 = (last)
 	ENDIF
 #else	
-	IF ( plot_ax .EQ. 'Y'  .AND.  BKWD_AXIS(dat_ax, grid) ) THEN
+	IF ( plot_ax .EQ. 'Y'  .AND. NOT.versus .AND. BKWD_AXIS(dat_ax, grid) ) THEN
 	   x2 = SNGL(first)
 	   x1 = SNGL(last)
 	ELSE
@@ -140,7 +143,7 @@
 	IF ( delta .EQ. unspecified_val8 ) THEN
 	   IF (dat_ax .EQ. x_dim
      .   .AND. GEOG_LABEL(x_dim,grid)
-     .	 .AND. span .GT. 75.  ) THEN
+     .	 .AND. span .GT. 75. .AND..NOT.versus ) THEN
 * ... use 15-degree delta for long longitude axes
 	      IF (span .GT. 180.) THEN
 	         delta = 30.
@@ -157,7 +160,8 @@
 	ENDIF
 
 * if its a time axis, correct the  the actual axis ends that PPLUS will use.
-	IF (.NOT.adjust_time .AND. (dat_ax .EQ. t_dim .AND. GEOG_LABEL(t_dim,grid)) ) THEN
+	IF (.NOT.versus .AND. .NOT.adjust_time .AND. 
+     .      (dat_ax .EQ. t_dim .AND. GEOG_LABEL(t_dim,grid)) ) THEN
 	   taxis = grid_line(t_dim,grid)
            cal_id = TM_GET_CALENDAR_ID ( line_cal_name(taxis) )
 

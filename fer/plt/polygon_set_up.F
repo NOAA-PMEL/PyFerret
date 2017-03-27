@@ -139,6 +139,7 @@
 * V702  *acm* 10/16 Test the results of MINMAX routine before use; if all data is 
 *                   all-missing it returns arbitrary_large_val4.
 * V71  *acm* 2/17  More on ticket 2231. New argument to FULL_VAR_TITLE to control units labels
+* V72  *acm* 3/17  For ticket 2517, changes to arguments in calls to AXIS_ENDS
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -180,7 +181,7 @@
 	LOGICAL         missing_polygon, first_polygon, use_nice
 	LOGICAL		NO_LINE_RANGE, ambiguous_coord_axis,
      .			formatted, user_title, oneD_form, stack_up,
-     .			x_is_log, y_is_log
+     .			x_is_log, y_is_log, vflag
 	CHARACTER*2048	KEY_STRING, FULL_VAR_TITLE, plot_title
 * 3/99 *kob* - upped VAR_UNITS from 32 to 64 chars
 	CHARACTER	VAR_UNITS*64, LEFINT*6, TM_GET_CALENDAR_NAME*32, 
@@ -219,6 +220,7 @@
 	PARAMETER     ( epsilon = 1.E-45 )
 
 	do_units = .TRUE.
+	vflag = .FALSE.  ! argument to axis_ends
 
 * signal that plot set-up has begun
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
@@ -1013,7 +1015,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 *  Check for valid log axis before proceeding if log and limits are given
 	      IF (is_logx) THEN
 	          CALL AXIS_ENDS(x_ax, coord_dim, cx_grid(cx_x), vmin, 
-     .			     vmax, delta, x_is_log, x_axtyp, status )
+     .			     vmax, delta, x_is_log, x_axtyp, vflag, status )
 	         IF ( status .NE. ferr_ok ) THEN
                     first = vmin
                     last  = vmax
@@ -1028,7 +1030,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 
               CALL AXIS_ENDS(x_ax, coord_dim, cx_grid(cx_x), vmin, 
-     .			     vmax, delta, x_is_log, x_axtyp, status )
+     .			     vmax, delta, x_is_log, x_axtyp, vflag, status )
 		 IF ( status .NE. ferr_ok ) THEN
 		 first = vmin
 		 last = vmax
@@ -1040,7 +1042,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 * ... no data range -- provide artifical axis limits
               CALL AXIS_ENDS(x_ax, coord_dim, cx_grid(cx_x),
      .			DBLE(lox-1.0), DBLE(lox+1.0), 0.5D0, x_is_log, 
-     .			x_axtyp, status )
+     .			x_axtyp, vflag, status )
 	      IF ( status .NE. ferr_ok ) THEN
 		 first = lox-1.0
 		 last = lox+1.0
@@ -1048,7 +1050,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	      ENDIF
 	   ELSE
               CALL AXIS_ENDS(x_ax,coord_dim,cx_grid(cx_x),
-     .	       DBLE(lox),DBLE(hix), delta, x_is_log, x_axtyp, status )
+     .	       DBLE(lox),DBLE(hix), delta, x_is_log, x_axtyp, vflag, status )
 	      IF ( status .NE. ferr_ok ) THEN
 		 first = lox
 		 last = hix
@@ -1089,7 +1091,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 *  Check for valid log axis before proceeding if log and limits are given
 	      IF (y_is_log) THEN 
                  CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
-     .			     vmin,vmax,delta, y_is_log, y_axtyp, status )
+     .			     vmin,vmax,delta, y_is_log, y_axtyp, vflag, status )
 	         IF ( status .NE. ferr_ok ) THEN
 		    first = vmin
 		    last = vmax
@@ -1103,7 +1105,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
      .			formatted, range_rqd, cal_id, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
               CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
-     .			     vmin,vmax,delta, y_is_log, y_axtyp, status )
+     .			     vmin,vmax,delta, y_is_log, y_axtyp, vflag, status )
 	      IF ( status .NE. ferr_ok ) THEN
 		 first = vmin
 		 last = vmax
@@ -1114,7 +1116,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 * ... no data range -- provide artifical axis limits
               CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
      .			DBLE(loy-1.0),DBLE(loy+1.0), 0.5D0, y_is_log, 
-     .			y_axtyp, status )
+     .			y_axtyp, vflag, status )
 	      IF ( status .NE. ferr_ok ) THEN
 		 first = loy-1.0
 		 last = loy+1.0
@@ -1122,7 +1124,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	      ENDIF
 	   ELSE
               CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
-     .		DBLE(loy),DBLE(hiy), delta, y_is_log, y_axtyp, status )
+     .		DBLE(loy),DBLE(hiy), delta, y_is_log, y_axtyp, vflag, status )
 	      IF ( status .NE. ferr_ok ) THEN
 		 first = loy
 		 last = hiy

@@ -15,6 +15,7 @@ full_uvar_name_xml.F\
 full_var_title.F\
 var_title_only.F\
 geog_label.F\
+geog_label_vs.F\
 get_dset_name.F\
 get_dset_title.F\
 get_prec_digits.F\
@@ -39,4 +40,4 @@ var_data_fmt.F\
 var_title.F\
 var_title_mod.F\
 var_trans.F\
-var_units.F 
+var_units.F

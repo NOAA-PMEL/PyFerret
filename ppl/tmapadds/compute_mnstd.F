@@ -49,6 +49,8 @@ C**
 *                 the Ferret side.
 * V698 *acm* 2/16 Re-fix 2186. The fix for 2311 broke the fix for 2186, so the test 
 *                 for data outside 3*std correction wasn't made.
+* V720 *acm* 2/17 Make sure zmin and zmax have been computed. May not be done yet for 
+*                 plot/vs/ribbon plots.
 
         IMPLICIT NONE
 	include 'parampl5_dat.decl'
@@ -78,15 +80,22 @@ C**
 
 	LOGICAL TM_FPEQ_SNGL, zmax_test, zmin_test, ok
 	REAL  zero, rbad
-	REAL*8 x, xmean, sum2, sumc, variance_c, xdelta, z_max_tol, z_min_tol
+	REAL*8 x, xmean, sum2, sumc, variance_c, xdelta, 
+     .         z_max_tol, z_min_tol, zlo, zhi
 	INTEGER i, n, n2
-
-c  Already have zmin, zmax
 
         IF (.not. need_std .AND. centered) THEN
 	   zstd = lev_std
 	   zmean = 0.
 	   GOTO 5000
+	ENDIF
+
+c  Already have zmin, zmax? (not true for ribbon plots...)
+
+	IF (zmin.EQ.0.0 .AND. zmax.EQ.0.0) THEN
+	   CALL MINMAX( z, nsize, badz, zlo, zhi )
+	   zmin = zlo
+	   zmax = zhi
 	ENDIF
 
 c if min and max are equal, will use linear levels. No need to issue the warning.
@@ -97,7 +106,6 @@ c if min and max are equal, will use linear levels. No need to issue the warning
 	   IF (need_std) status = 0
 	   GOTO 5000
 	ENDIF
-
 
         IF (.not. need_std) GOTO 5000
 

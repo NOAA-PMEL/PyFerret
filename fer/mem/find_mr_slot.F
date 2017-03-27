@@ -1,4 +1,4 @@
-	SUBROUTINE FIND_MR_SLOT( cx, mr, status )
+	SUBROUTINE FIND_MR_SLOT( mr, status )
 
 *
 *
@@ -45,6 +45,8 @@
 * revision 0.0 - 7/21/88
 * V200:  6/12/89 - delete priorities handled through linked lists
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V702 *sh* 1/17 - split half of the code into the new HOOK_MR_SLOT
+*                  as part of the new dynamic memory management
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -54,35 +56,31 @@
 	include 'xcontext.cmn'
 
 * calling argument declarations:
-	INTEGER cx, mr, status
+	INTEGER mr, status
 
 * internal variable declarations:
-	INTEGER HASH_cx, pile, head
 
-* is there a slot in the free slot list ?
- 100	IF ( mv_flink( 0 ) . EQ. 0 ) THEN
-* ... no - delete lowest priority variable to make room and try again
+*****
+
+* start with the first entry on the free mr list
+	mr = mv_flink( 0 )
+
+* if it isn't free, then free the most vulnerable mr on the delete chain
+	IF ( mr . EQ. 0 ) THEN
 	   mr = mr_del_blink(0)
 	   IF ( mr .EQ. 0 ) GOTO 5010
 	   CALL DELETE_VARIABLE( mr )
 	ENDIF
 
-* transfer the slot from the free list to the cx hash pile
+* remove it from the free list to indicate 
 *    ... remove from free list head
-	mr = mv_flink( 0 )
+!	mr = mv_flink( 0 )
 	mv_flink( 0 ) = mv_flink( mr )
-*    ... add to head of hash pile
-	pile = HASH_cx( cx )
-	head = mv_flink( pile )
-	mv_flink( pile ) = mr
-	mv_flink( mr ) = head
-	mv_blink( mr ) = pile
-	mv_blink( head ) = mr
 
 * successful completion
 	status = ferr_ok
  5000	RETURN
 
-* error exit : no space available
+* error exit : no space available (empty delete chain)
  5010	CALL ERRMSG( ferr_too_many_vars, status,' ', *5000 )
 	END

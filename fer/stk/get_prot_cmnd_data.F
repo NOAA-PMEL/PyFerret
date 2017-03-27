@@ -1,4 +1,4 @@
-	SUBROUTINE GET_PROT_CMND_DATA ( memory, dflt_cx, dtype, status )
+	SUBROUTINE GET_PROT_CMND_DATA (  dflt_cx, dtype, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -97,6 +97,8 @@
 *                  saving a modulo-regridded variable to netCDF
 * V702 *acm* 11/16 Ticket 2489: Do not try to add the attribute when
 *                  it's an expression instead of a user-defined variable
+*		   - And trac enhancement #2369 -- dynamic memory management 
+* V702 *sh*  3/17 Dynamic memory
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -111,7 +113,6 @@
 
 * calling argument declarations
 	INTEGER	dflt_cx, dtype, status
-	REAL	memory(*) 
 
 * local variable declarations
 	LOGICAL		auto_auxvar_changed
@@ -128,6 +129,10 @@
 * initialize aux stack frames at top of isp stack
 	max_usable_intrp = max_intrp
 	max_context = max_noframe_context  ! just to be clear (not needed)
+
+* initialize memory usage diagnostic
+	completed_args_mem = 0
+	nsplits = 0
 
 * determine if in auto-curvilinear mode
 	CALL SET_AUTO_CURVI_MODES( auto_auxvar_changed )
@@ -200,16 +205,23 @@
 !	      is_cx(max_usable_intrp+idim) = unspecified_int4  ! bookkeeping
 !	   ENDDO
 
+* ... initialize memory diagnostics
+	   current_cmnd_uvar = nu
+	   deferred_committed_mem = 0
+
 * ... evaluate the next sub-expression
 	   CALL TRANSFER_CONTEXT( cx_cmnd, cx_expr )
-	   CALL INTERP_STACK( memory, nu, cx_expr,
+	   CALL INTERP_STACK(  nu, cx_expr,
      .			      EXPR_NAME(nu), status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 
-* check for legal data type
+* ... check for legal data type
 	   IF ( dtype .NE. ptype_native ) THEN
 	      IF (mr_type(is_mr(isp)) .NE. dtype ) GOTO 5100
 	   ENDIF
+
+* ... add memory occupied by this result to the on-hold total of arguments
+	   completed_args_mem = completed_args_mem + mr_size(is_mr(isp))
 
 * tag the result for what it is
 * note that since aux vars may now be returned on the ISP stack, isp may be GT nu
@@ -286,7 +298,7 @@
  5000	RETURN
  5100	buff = VAR_CODE(mr_category(is_mr(nu)),mr_variable(is_mr(nu)))
 * ... copied from INTERP_STACK error exit ... probably over-kill
-	CALL RELEASE_WORK_SPC
+	CALL RELEASE_DYN_WORK_SPACE
         CALL DELETE_MRS_IN_PROGRESS
         CALL UNPROTECT_ALL_MRS
         CALL DEALLO_ALL_GRIDS

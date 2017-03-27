@@ -1,4 +1,4 @@
-	SUBROUTINE EVAL_EXPR ( memory, dflt_cx, expression, apply_cx, 
+	SUBROUTINE EVAL_EXPR (  dflt_cx, expression, apply_cx, 
      .              status )
 
 *
@@ -66,6 +66,7 @@
 *                     of immed. mode expressions in the command.
 * V600 *acm* 3/06  fixing bugs 439&1390, pass apply_cx to get_new_cx to say whether
 *                  to apply command context to grave-accent expressions.
+* V702 *sh*  3/17 Dynamic memory
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -79,7 +80,6 @@
 * calling argument declarations
         LOGICAL apply_cx
 	INTEGER	dflt_cx, status
-	REAL	memory(*) 
 	CHARACTER*(*) expression
 
 * local variable declarations
@@ -90,6 +90,12 @@
 * initialize grid stack pointer (pushes down from top)
 	tlen = LEN(expression)
 	grd_stk_ptr = max_grids
+
+* initialize memory usage diagnostic
+	completed_args_mem = 0
+	current_cmnd_uvar = 1
+	deferred_committed_mem = 0
+	nsplits = 0
 
 * delete any memory left-overs from last command
 	CALL DELETE_MRS_IN_PROGRESS
@@ -113,7 +119,7 @@
 
 * evaluate the expression
 	CALL TRANSFER_CONTEXT( cx_cmnd, cx_expr )
-	CALL INTERP_STACK( memory, 1, cx_expr, EXPR_NAME(1), status )
+	CALL INTERP_STACK(  1, cx_expr, EXPR_NAME(1), status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 ! temp diagnostic

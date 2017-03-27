@@ -1,4 +1,4 @@
-	SUBROUTINE IS_SAMPLE( memory, *, *, status )
+	SUBROUTINE IS_SAMPLE(  *, *, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -56,7 +56,6 @@
 
 * calling argument declarations:
 	INTEGER	status
-	REAL	memory( mem_blk_size, max_mem_blks )
 * normal return is for error conditions
 * exit #1 is to request another grid ( stack has been pushed )
 * exit #2 is to signal completion of the activity at this stack level
@@ -114,15 +113,13 @@
 * pre-fill output with missing flags, in case a missing index was given
 	      IF ( mr_type(hold_mr) .EQ. ptype_string ) THEN
 	        CALL INIT_C_STRING_ARRAY( MGRID_SIZE_DELTA(hold_mr),
-     .                                    memory(1, mr_blk1(hold_mr)),
+     .                                    memry(hold_mr)%ptr,
      .                                    mr_c_pointer(hold_mr)      )
 	        CALL SET_NULL_C_STRING_ARRAY(mr_c_pointer(hold_mr),
      .					     MGRID_SIZE_DELTA(hold_mr) )
 
 	      ELSE
-	        CALL FILL_MEMORY ( memory, mr_blk1 (hold_mr),
-     .				   mr_nblks(hold_mr),
-     .				   mr_bad_data(hold_mr) )
+	        CALL FILL_MEMORY ( hold_mr, mr_bad_data(hold_mr) )
 	      ENDIF
 
 	   ENDIF
@@ -132,7 +129,7 @@
 * the ADJUST_COPY_LIMITS routine will modify "phase" to use all available data
 	     n = phase
 	     CALL ADJUST_COPY_LIMITS(axis, chunk_mr,
-     .				     memory(1,mr_blk1(mr_sorted_indices)),
+     .				     memry(mr_sorted_indices)%ptr,
      .				     phase, nvalid )
 	     IF (phase .GT. n) THEN
 * ... apply the optimization
@@ -145,10 +142,10 @@
 
 * copy data just received into the result
 	     CALL COPY_INTO_MAPPED(
-     .			memory(1,mr_blk1(chunk_mr)), chunk_mr, chunk_cx,
-     .			memory(1,mr_blk1(mr_sorted_indices)),
-     .			memory(1,mr_blk1(mr_index_map)), phase, axis,
-     .			memory(1,mr_blk1(hold_mr)), hold_mr )
+     .			memry(chunk_mr)%ptr, chunk_mr, chunk_cx,
+     .			memry(mr_sorted_indices)%ptr,
+     .			memry(mr_index_map)%ptr, phase, axis,
+     .			memry(hold_mr)%ptr, hold_mr )
 
 * ... remove the component protection that signaled we needed it here
 	   ENDIF
@@ -193,7 +190,7 @@
 	   hi_cx_lim = cx_hi_ss(chunk_cx,axis)
 	ELSE
 	   is_phase(hold_isp) = DENSE_CONTIG_REGION(
-     .				memory(1,mr_blk1(mr_sorted_indices)), 
+     .				memry(mr_sorted_indices)%ptr, 
      .				phase+1, nvalid,
      .				mr_bad_data(mr_sorted_indices),
      .				lo_cx_lim, hi_cx_lim )

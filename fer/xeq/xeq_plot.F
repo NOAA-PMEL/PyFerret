@@ -1,4 +1,4 @@
-	SUBROUTINE XEQ_PLOT( memory )
+	SUBROUTINE XEQ_PLOT
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -114,6 +114,7 @@
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * V71  *acm* 2/17  More on ticket 2231. Initialize flag use_keys.
 
 	include 'tmap_dims.parm'
@@ -140,7 +141,6 @@
 
 	
 * calling argument declarations:
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	LOGICAL		TM_HAS_STRING, 
@@ -151,8 +151,7 @@
 	INTEGER		TM_LENSTR1, TM_LENSTR, STR_UPCASE, STR_SAME,
      .                  symbol, color, color1, status,
      .			loc, limit, slen, thick, step_inc,
-     .			ax1_blks, ax1_start,
-     .			ax2_blks, ax2_start,
+     .			ax1_work, ax2_work,
      .			do_dash, s1, s2, it_start(4), it_end(4),
      .			nparm, dot_sym, num_it, i, iax(4), i1,
      .                  loch, locv, nvs, skipsym
@@ -167,8 +166,7 @@
 
 * set up the graphics environment and get the data
 	CALL START_PPLUS
-	CALL DISP_DATA_SET_UP( memory,
-     .		ax1_start, ax1_blks, ax2_start, ax2_blks, status )
+	CALL DISP_DATA_SET_UP(  ax1_work, ax2_work, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
 
         ncolors = mode_arg(pmode_linecolors,1)
@@ -653,7 +651,7 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 
 * set up the axes and title and load the data into PPLUS
 
-	CALL PLOT_SET_UP   ( 	memory,
+	CALL PLOT_SET_UP   ( 	
      .				overlay,
      .				transpz,
      .				versus,
@@ -676,8 +674,8 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
      .				is_mr,
      .				is_cx,
      .				num_uvars_in_cmnd,
-     .				memory( 1, ax1_start ),
-     .				memory( 1, ax2_start ),
+     .				workmem(ax1_work)%ptr,
+     .				workmem(ax2_work)%ptr,
      .				status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	
@@ -802,8 +800,8 @@ c done in plot_set_up.
 ! PLOT/ALONG does a hack to num_uvars_in_cmnd that can lead to a problem
 ! in GET_PROT_CMND_DATA if the same argument string is re-used in the next cmnd
  1000	IF (along) num_uvars_in_cmnd = 1
-	CALL FREE_MEMORY( ax2_start, ax2_blks )
- 	CALL FREE_MEMORY( ax1_start, ax2_blks )
+ 	CALL FREE_WS_DYNMEM( ax1_work )
+	CALL FREE_WS_DYNMEM( ax2_work )
 	CALL UNPROTECT_CMND_DATA			! 1/94
  5100	RETURN
 

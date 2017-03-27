@@ -135,6 +135,7 @@
 *                    definition of macro DFTYPE in ferret.h. ppl_memory remains float.
 * *kms*  2/16      - only catch/handle crash signals and exit gracefully if NDEBUG is defined;
 *                    if debug build, let it crash
+* *sh* 2/17        - removed global "memory" -- now 1 malloc per Ferret var
 */
 
 #include <unistd.h>
@@ -152,7 +153,7 @@ char script_args[2048];
 int arg_pos;
 
 DFTYPE **gui_get_memory();
-static void command_line_run(DFTYPE **memory);
+static void command_line_run();
 
 void help_text()
 {
@@ -194,14 +195,7 @@ static void fer_signal_handler(int signal_num)
  * JS
  */
 
-static int ttout_lun=TTOUT_LUN,
-  max_mem_blks=PMAX_MEM_BLKS,
-  mem_blk_size,
-  old_mem_blk_size,
-  pmemsize;
-
-/* make mem_size the appropriate type for malloc (size_t usually unsigned long) */
-static size_t mem_size = PMEM_BLK_SIZE * PMAX_MEM_BLKS;
+static int ttout_lun=TTOUT_LUN;
 
 
 main (int oargc, char *oargv[])
@@ -247,7 +241,7 @@ main (int oargc, char *oargv[])
 #endif
 
   /* decode the command line options: "-memsize", and "-unmapped" */
-  rmem_size = (double)mem_size/1.E6;
+  // pre-2017 code:   rmem_size = (double)mem_size/1.E6;
   while (i<argc) {
     if (strcmp(argv[i],"-version")==0){
       FORTRAN(version_only)();
@@ -256,7 +250,7 @@ main (int oargc, char *oargv[])
       if (++i==argc) help_text();
       if ( sscanf(argv[i++],"%lf",&rmem_size) != 1 ) help_text();
       if ( rmem_size <= 0.0 ) help_text();
-      mem_size = (size_t)(rmem_size * 1.E6);
+      // pre-2017 code:    mem_size = (size_t)(rmem_size * 1.E6);
     } else if (strcmp(argv[i],"-unmapped")==0) {
       WindowMapping(0);  /* new routine added to xopws.c */
       i++;    /* advance to next argument */
@@ -368,21 +362,26 @@ main (int oargc, char *oargv[])
   }
 
   /* initial allocation of memory space */
-  mem_blk_size =  mem_size / max_mem_blks;
-  j = (int)(mem_size - ((size_t)mem_blk_size * (size_t) max_mem_blks));
-  if ( (mem_blk_size <= 0) || (j < 0) || (j >= max_mem_blks) ) { 
-    printf("Internal overflow expressing %#.1f Mwords as words (%lu) \n",rmem_size,(unsigned long)mem_size);
-    printf("Unable to allocate the requested %#.1f Mwords of memory.\n",rmem_size);
-    exit(0);
-  }
-  /* Reset mem_size to exactly the size Ferret thinks it is being handed */
-  mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
-  *memory = (DFTYPE *) malloc(mem_size*sizeof(DFTYPE));
 
-  if ( *memory == NULL ) {
-    printf("Unable to allocate the requested %#.1f Mwords of memory.\n",(double)mem_size/1.E6);
-    exit(0);
-  }
+  /* ***** COMMENTED OUT 2/2017 with removal of block-oriented memory */
+
+  //  mem_blk_size =  mem_size / max_mem_blks;
+  //  j = (int)(mem_size - ((size_t)mem_blk_size * (size_t) max_mem_blks));
+  //  if ( (mem_blk_size <= 0) || (j < 0) || (j >= max_mem_blks) ) { 
+  //    printf("Internal overflow expressing %#.1f Mwords as words (%lu) \n",rmem_size,(unsigned long)mem_size);
+  //    printf("Unable to allocate the requested %#.1f Mwords of memory.\n",rmem_size);
+  //    exit(0);
+  //  }
+  //  /* Reset mem_size to exactly the size Ferret thinks it is being handed */
+  //  mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
+  //  *memory = (DFTYPE *) malloc(mem_size*sizeof(DFTYPE));
+  //
+  //  if ( *memory == NULL ) {
+  //    printf("Unable to allocate the requested %#.1f Mwords of memory.\n",(double)mem_size/1.E6);
+  //    exit(0);
+  //  }
+
+  /* ***** END OF COMMENTED OUT MEMORY CODE */
  
   /* initial allocation of PPLUS memory size pointer*/
   pplmem_size = (int)(0.5* 1.E6);  
@@ -409,12 +408,12 @@ main (int oargc, char *oargv[])
   }
 
   /* initialize size and shape of memory and linked lists */
-  FORTRAN(init_memory)( &mem_blk_size, &max_mem_blks );
+  FORTRAN(init_memory)();
 
   if ( using_gui ) {
     gui_run(&argc, argv);
   } else {
-    command_line_run(memory);
+    command_line_run();
   }
   /* 
    *kob* 5/97 - need to close f90 files and flush buffers.....
@@ -428,14 +427,13 @@ main (int oargc, char *oargv[])
 #endif
 }
 
-  static void command_line_run(DFTYPE **memory){
+  static void command_line_run(){
 
   FILE *fp = 0;
   char init_command[2176], script_file[2048], *home = getenv("HOME");
   int ipath = 0;
   int len_str = 0;
   int script_resetmem = 0;
-  size_t blk_size;
   double rmem_size;
 
   /* turn on ^C interrupts  */
@@ -501,9 +499,9 @@ main (int oargc, char *oargv[])
 
 	if ( script_resetmem == 0 )
 	  {
-      ferret_dispatch_c( *memory, init_command, sBuffer );
+      ferret_dispatch_c( init_command, sBuffer );
 	  } else {
-	  ferret_dispatch_c( *memory, " ", sBuffer );
+	  ferret_dispatch_c( " ", sBuffer );
 	  script_resetmem = 0;
 	  }
 
@@ -517,42 +515,48 @@ main (int oargc, char *oargv[])
 
     /* ***** REALLOCATE MEMORY ***** */
     if (sBuffer->flags[FRTN_ACTION] == FACTN_MEM_RECONFIGURE) {
-      old_mem_blk_size = mem_blk_size;
-      mem_blk_size = sBuffer->flags[FRTN_IDATA1];
-      mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
-      /* Make sure this has not overflowed */
-      blk_size = mem_size / (size_t) max_mem_blks;
-      if ( blk_size != (size_t)mem_blk_size ) {
-        rmem_size = (double)mem_blk_size * (double)max_mem_blks / 1.0E6;
-        printf("Internal overflow expressing %#.1f Mwords as words (%lu) \n",rmem_size,(unsigned long)mem_size);
-        printf("Unable to allocate the requested %#.1f Mwords of memory.\n",rmem_size);
-	mem_blk_size = old_mem_blk_size;
-	mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
-	printf("Memory remaining at %#.1f Mwords.\n", (double)mem_size/1.E6);
-      }
-      else {
-        /*
-	  printf("memory reconfiguration requested: %lu\n",(unsigned long)mem_size);
-	  printf("new mem_blk_size = %d\n",mem_blk_size);
-        */
-        free( (void *) *memory );
-        *memory = (DFTYPE *) malloc(mem_size*sizeof(DFTYPE));
 
-        if ( *memory == NULL ) {
-          printf("Unable to allocate %#.1f Mwords of memory.\n", (double)mem_size/1.E6);
-          mem_blk_size = old_mem_blk_size;
-          mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
-          *memory = (DFTYPE *) malloc(mem_size*sizeof(DFTYPE));
+      /* TAKE NO ACTION -- MEMORY NO LONGER ALLOCATED HERE */
 
-          if ( *memory == NULL ) {
-            printf("Unable to reallocate previous memory of %#.1f Mwords.\n",(double)(mem_size)/1.E6);
-            exit(0);
-          }
-	  printf("Restoring previous memory of %#.1f Mwords.\n", (double)(mem_size)/1.E6);
-        }
-      }
-      FORTRAN(init_memory)( &mem_blk_size, &max_mem_blks );
-      script_resetmem = 1;
+/* **** START OF PRE-2017 MEMORY MANAGEMENT CODE */
+//      old_mem_blk_size = mem_blk_size;
+//      mem_blk_size = sBuffer->flags[FRTN_IDATA1];
+//      mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
+//      /* Make sure this has not overflowed */
+//      blk_size = mem_size / (size_t) max_mem_blks;
+//      if ( blk_size != (size_t)mem_blk_size ) {
+//        rmem_size = (double)mem_blk_size * (double)max_mem_blks / 1.0E6;
+//        printf("Internal overflow expressing %#.1f Mwords as words (%lu) \n",rmem_size,(unsigned long)mem_size);
+//        printf("Unable to allocate the requested %#.1f Mwords of memory.\n",rmem_size);
+//	mem_blk_size = old_mem_blk_size;
+//	mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
+//	printf("Memory remaining at %#.1f Mwords.\n", (double)mem_size/1.E6);
+//      }
+//      else {
+//        /*
+//	  printf("memory reconfiguration requested: %lu\n",(unsigned long)mem_size);
+//	  printf("new mem_blk_size = %d\n",mem_blk_size);
+//        */
+//        free( (void *) *memory );
+//        *memory = (DFTYPE *) malloc(mem_size*sizeof(DFTYPE));
+//
+//        if ( *memory == NULL ) {
+//          printf("Unable to allocate %#.1f Mwords of memory.\n", (double)mem_size/1.E6);
+//          mem_blk_size = old_mem_blk_size;
+//          mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
+//          *memory = (DFTYPE *) malloc(mem_size*sizeof(DFTYPE));
+//
+//          if ( *memory == NULL ) {
+//            printf("Unable to reallocate previous memory of %#.1f Mwords.\n",(double)(mem_size)/1.E6);
+//            exit(0);
+//          }
+//	  printf("Restoring previous memory of %#.1f Mwords.\n", (double)(mem_size)/1.E6);
+//        }
+//      }
+//      FORTRAN(init_memory)();
+//      script_resetmem = 1;
+/* **** END OF PRE-2017 MEMORY MANAGEMENT CODE */
+
     }
 
     /* ***** EXIT ***** */

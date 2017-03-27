@@ -1,4 +1,4 @@
-	SUBROUTINE XEQ_POLYGON( memory )
+	SUBROUTINE XEQ_POLYGON
 
 *
 *
@@ -72,6 +72,7 @@
 * V697 *acm* 12/15 Fixes for bug 2327 move call of PPL_AXES_RESTORE back to end of plot routines
 * v697 *acm* 12/15 Ticket 2331, add flag changed_key to common, to restore the color key
 *                  style after a color plot and also after SHADE/SET; SHADE.
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -97,7 +98,6 @@
 
 	
 * calling argument declarations:
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
         LOGICAL         TM_HAS_STRING, no_range, do_key, spectrum, pattern,
@@ -107,8 +107,7 @@
 	INTEGER         sp, patt, TM_LENSTR1, TM_LENSTR, STR_UPCASE
 	INTEGER		symbol, color, status,
      .			loc, limit, slen, coord_ax, thick,
-     .			ax1_blks, ax1_start,
-     .			ax2_blks, ax2_start,
+     .			ax1_work, ax2_work,
      .			s1, s2, it_start(4), it_end(4),
      .			nparm,  num_it, i, iax(4), i1, loch, locv
 	REAL		val, only_val, sym_size, add_lon
@@ -122,8 +121,7 @@
 * set up the graphics environment and get the data
 	CALL START_PPLUS
 
-	CALL DISP_DATA_SET_UP( memory,
-     .		ax1_start, ax1_blks, ax2_start, ax2_blks, status )
+	CALL DISP_DATA_SET_UP(  ax1_work, ax2_work, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
 
 * Initialize the lines buffer in PPL before setting up
@@ -308,7 +306,7 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 * set up the axes and title and load the data into PPLUS
 
  220	CONTINUE 
-	CALL POLYGON_SET_UP   ( memory,
+	CALL POLYGON_SET_UP   ( 
      .				overlay,
      .				transpz,
      .				coord_ax,
@@ -327,8 +325,8 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
      .				do_mod_minus, 
      .				do_mod_plus,
      .				add_lon,
-     .				memory( 1, ax1_start ),
-     .				memory( 1, ax2_start ),
+     .				workmem(ax1_work)%ptr,
+     .				workmem(ax2_work)%ptr,
      .				status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
@@ -511,8 +509,8 @@ C Reset pplus lines
 	ENDIF
 
 * release the memory used for axis buffers
- 1000	CALL FREE_MEMORY( ax2_start, ax2_blks )
- 	CALL FREE_MEMORY( ax1_start, ax2_blks )
+ 1000 	CALL FREE_WS_DYNMEM( ax1_work )
+	CALL FREE_WS_DYNMEM( ax2_work )
 	CALL UNPROTECT_CMND_DATA			! 1/94
  5100	RETURN
 

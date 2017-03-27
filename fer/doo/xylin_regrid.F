@@ -1,6 +1,7 @@
 	SUBROUTINE XYLIN_REGRID( cx_lims,
      .				 dst_lox, dst_hix, dst_loy, dst_hiy,
      .				 src, msrc, dst, mdst, src_cx, dst_cx, 
+     .			         isrc_lo, isrc_hi,
      .			         iss12, coefi, jss12, coefj, work)
 
 *
@@ -66,6 +67,10 @@
 * V68  *acm* 1/12   use TM_FPEQ for double-precision ferret.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm);
 *                   removed unused bilinear interpolation code.
+* V702 *sh* 3/2017 Dynamic memory revealed a bug in array "work" dimensioning
+*		   It was dimensioned using the mr size instead of the cx
+*		   which is wrong when a larger object is re-used from cache
+*                  To address it we turned isrc_lo, isrc_hi into call arguments
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -76,7 +81,8 @@
 
 * calling argument declarations:
 	INTEGER	cx_lims, msrc, mdst, dst_lox, dst_hix,
-     .          dst_loy, dst_hiy, src_cx, dst_cx 
+     .          dst_loy, dst_hiy, src_cx, dst_cx,
+     .	        isrc_lo, isrc_hi 
 	INTEGER	iss12(dst_lox:dst_hix+1), jss12(dst_loy:dst_hiy+1)
 
 	REAL    src( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
@@ -84,17 +90,17 @@
      .          dst( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
      .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
      .		coefi( dst_lox:dst_hix ), coefj(dst_loy:dst_hiy)
+        REAL    work(isrc_lo:isrc_hi,dst_loy:dst_hiy)  ! srcx by dsty
 
 * local variable declarations:
 
         LOGICAL	TM_FPEQ
 	INTEGER	dim1, dim2, src_grid, dst_grid,
      .          i, j, k, l, m, n, iss, jss,
-     .          isrc_lo, isrc_hi, jsrc_lo, jsrc_hi,
+     .                            jsrc_lo, jsrc_hi,
      .          idst_lo ,idst_hi, jdst_lo, jdst_hi
 	REAL	bad_src, bad_dst, c1i, c1j, c2i, c2j, 
      .          z1, z2
-        REAL work(m1lox:m1hix,dst_loy:dst_hiy)  ! srcx by dsty
 ********************************************************************************
 
 * initialize
@@ -106,8 +112,8 @@
 	dim2     = y_dim
 
 * limits for calculation
-        isrc_lo = cx_lo_ss(src_cx,dim1)
-        isrc_hi = cx_hi_ss(src_cx,dim1)
+!        isrc_lo = cx_lo_ss(src_cx,dim1)	! 3/17 passed as arg
+!        isrc_hi = cx_hi_ss(src_cx,dim1)	! 3/17 passed as arg
         jsrc_lo = cx_lo_ss(src_cx,dim2)
         jsrc_hi = cx_hi_ss(src_cx,dim2)
 

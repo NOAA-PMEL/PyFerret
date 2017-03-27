@@ -10,6 +10,8 @@
  *
  * 	  if ( sBuffer->flags[FRTN_CONTROL] == FCTRL_IN_FERRET ) 
  *
+ * V702 *sh* 2/2017 - eliminated global "memory" - using individual mallocs now
+
  */
 
 #ifndef _FERRET_SHARED_BUFFER_H 
@@ -45,7 +47,6 @@ typedef sharedMem *smPtr;
 
 __global smPtr sBuffer;
 
-__global DFTYPE *memory;
 __global float *ppl_memory;
 
 

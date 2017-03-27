@@ -1,9 +1,4 @@
-	SUBROUTINE ASSIGN_VARIABLE
-     .		      ( cx,
-     .			start_block,
-     .			num_blocks,
-     .			mr,
-     .			status      )
+	SUBROUTINE ASSIGN_VARIABLE( cx, mr, status )
 
 *
 *
@@ -60,6 +55,8 @@
 * V200:  5/18/89 - 4D symmetrical; using mr_del_ deletion chain
 *		 - context assignment in a separate routine
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V702:  1/17 *sh* - dynamic memory management
+*                  - find MR slot outside of this routine 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -69,26 +66,24 @@
 	include 'xcontext.cmn'
 
 * calling argument declarations:
-	INTEGER		cx, start_block, num_blocks, mr, status
+	INTEGER		cx, mr, status
 
 * internal variable declarations:
 	CHARACTER*4	VAR_CODE
 
-* get a free slot in the memory variable table
-	CALL FIND_MR_SLOT( cx, mr, status )
-	IF ( status .NE. ferr_ok ) RETURN
-
-* point mr slot to data in bulk memory
-	mr_blk1     ( mr )	= start_block
-	mr_nblks    ( mr )	= num_blocks
-
 * flag it as "in progress"
-	mr_protected( mr )	= mr_in_progress
+	mr_protected( mr ) = mr_in_progress
+
+* since it is in progress it is "essential" (not safe to delete)
+	essential_mem = essential_mem + mr_size(mr)
+	IF (essential_mem.GT.peak_essential_mem) 
+     .		peak_essential_mem = essential_mem
 
 * assign variable context to slot
 	CALL ASSIGN_MR_CX( cx, mr )
 
 * success
+	status = ferr_ok    ! 1/17 no longer a failure possibility here
  5000	RETURN
 
 * error exit : no space available

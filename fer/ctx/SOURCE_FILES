@@ -7,7 +7,9 @@ apply_delta_context.F\
 aux_axis_from_arg.F\
 cgrid_axis.F\
 cgrid_size.F\
+cgrid_size8.F\
 cgrid_size_max.F\
+cgrid_uvar_size.F\
 complete_missing_limits.F\
 confine_context.F\
 create_new_context.F\

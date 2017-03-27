@@ -61,7 +61,8 @@
 * V601 11/06 *acm*- fix bug 1466: memory for string vars is NOT allocated via malloc,
 *                   so do not FREE it here. 
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
-* V702 1/16 *sh*: added sanity checking of memory when debugging
+* V702 1/16 *sh*: dynamic memory management
+*                 (commented out) sanity checking of memory when debugging
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -75,24 +76,21 @@
 * internal variable declarations:
 	INTEGER MGRID_SIZE_DELTA, size, idim, prev, next
 
+* diagnostic "delete" message
 	IF (mode_diagnostic) THEN
 	   IF ( mr_protected(mr) .NE. mr_table_entry_only )
      .			CALL DIAGNOSTIC_OUT( '-DELETE', mr, point_to_mr )
-
-	   IF     ( mr_protected( mr ) .EQ. mr_not_protected	) THEN
-	      CONTINUE
-	   ELSEIF ( mr_protected( mr ) .EQ. mr_temporary	) THEN
-	      CONTINUE
-	   ELSEIF ( mr_protected( mr ) .EQ. mr_table_entry_only	) THEN
-	      CONTINUE
-	   ELSEIF ( mr_protected( mr ) .EQ. mr_perm_protected	) THEN
+	   IF ( mr_protected( mr ) .EQ. mr_perm_protected	) THEN
 	      CALL SPLIT_LIST(pttmode_ops, ttout_lun,'PERMANENT', 9)
-	   ELSEIF ( mr_protected( mr ) .EQ. mr_in_progress	) THEN
-	      CONTINUE
-	   ELSE
-	      CALL WARN( 'CORRUPTION! mr_protected ????' )
 	   ENDIF
 	ENDIF
+
+* book keeping
+	   IF ( mr_protected( mr ) .EQ. mr_temporary	
+     .	  .OR.  mr_protected( mr ) .EQ. mr_in_progress
+     .	  .OR.  mr_protected( mr ) .GT. mr_not_protected    ) THEN
+	      essential_mem = essential_mem - mr_size(mr)
+	   ENDIF
 
 * if this is a string array variable then free the "C" memory allocated
 * if mr_table_entry_only, no memory was given to the variable
@@ -102,17 +100,17 @@
 	   CALL FREE_C_STRING_ARRAY(mr_c_pointer(mr), size)
 	ENDIF
 
-* diagnostic "delete" message
 * remove variable slot from hash pile doubly linked list
-	prev = mv_blink( mr )
-	next = mv_flink( mr )
-	mv_flink( prev ) = next
-	mv_blink( next ) = prev
+        prev = mv_blink( mr )
+        next = mv_flink( mr )
+        mv_flink( prev ) = next
+        mv_blink( next ) = prev
 
 * return the slot to the memory variable free list
-	mv_flink( mr ) = mv_flink( 0 )	
-	mv_blink( mr ) = unspecified_int4		! temp diag
-	mv_flink( 0 ) = mr
+* this code is equivalent to MR2FREELIST. kept in-line here for speed
+        mv_flink( mr ) = mv_flink( 0 )
+        mv_blink( mr ) = unspecified_int4               ! house keeping
+        mv_flink( 0 ) = mr
 
 * remove the variable from the deletion chain if it is there
 	IF ( mr_protected(mr) .EQ. mr_not_protected ) THEN
@@ -125,10 +123,13 @@
 	ENDIF
 
 * release bulk memory that the variable used
-	IF ( mr_protected( mr ) .NE. mr_table_entry_only ) 
-     . 		CALL FREE_MEMORY( mr_blk1(mr), mr_nblks(mr) )
-
-
+	IF ( mr_protected( mr ) .NE. mr_table_entry_only ) THEN
+	   CALL FREE_MR_DYNMEM( mr )
+	ELSE
+* ... remove the table_entry_only pointer for good housekeeping
+	   CALL NULLIFY_MR(mr)
+	   mr_size(mr) = 0  
+	ENDIF
 * eliminate any stray indications that this variable points to a grid
 	mr_grid( mr ) = unspecified_int4
 
@@ -140,7 +141,9 @@
 ! When DELETE_VARIABLE is called due to the mr table being full during
 ! CREATE_MEM_VAR.  In that case GET_MEMORY reserves the memory, and then
 ! ASSIGN_VARIABLE (which calls FIND_MR_SLOT) deletes a variable to free up
-! a slot while the newly reserved memory has not yyet been assigned to an mr.
+! a slot while the newly reserved memory has not yet been assigned to an mr.
+! NOTE: this may no longer be true since code change to CREATE_MEM_VAR:
+!       FIND_MR_SLOT is now called before GET_MEMORY and ASSIGN_VARIABLE
 !#ifndef NDEBUG
 !        IF ( mode_diagnostic ) CALL SANITY_CHECK_MEMORY("DELETE_VARIABLE")
 !#endif

@@ -91,6 +91,8 @@
 *      *acm*  9/14 Make DATE1900 accept an array of date strings, returning an array of coordinates
 *      *acm*  2/15 TAX_DATESTRING works on an F or a T axis
 *      *acm*  2/15 new Functions TIME_REFORMAT, FT_TO_ORTHOGONAL
+* V702 *sh*   1/17 added support for FORTRAN90 dynamic memory management
+*                  removing "memory" pointer in favor of individual arg ptrs
 */
 
 
@@ -116,19 +118,24 @@
 
 /* ................ Global Variables ................ */
 /*
- * The memory_ptr, mr_list_ptr and cx_list_ptr are obtained from Ferret
+ * The mr_list_ptr and cx_list_ptr are obtained from Ferret
  * and cached whenever they are passed into one of the "efcn_" functions.
  * These pointers can be accessed by the utility functions in efn_ext/.
  * This way the EF writer does not need to see these pointers.
  *
+ * 1/17 - c argument pointers (GLOBAL_arg_ptrs) and the result pointer
+ *        (GLOBAL_res_ptr)are obtained from FORTRAN later on demand
+ *
  * This is the instantiation of these values.
  */
 
-DFTYPE *GLOBAL_memory_ptr;
 int    *GLOBAL_mr_list_ptr;
 int    *GLOBAL_cx_list_ptr;
 int    *GLOBAL_mres_ptr;
 DFTYPE *GLOBAL_bad_flag_ptr;
+
+DFTYPE *GLOBAL_arg_ptrs[EF_MAX_ARGS];
+DFTYPE *GLOBAL_res_ptr;
 
 static LIST *STATIC_ExternalFunctionList;
 
@@ -215,8 +222,8 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
 
 int  FORTRAN(efcn_gather_info)( int * );
 void FORTRAN(efcn_get_custom_axes)( int *, int *, int * );
-void FORTRAN(efcn_get_result_limits)( int *, DFTYPE *, int *, int *, int * );
-void FORTRAN(efcn_compute)( int *, int *, int *, int *, int *, DFTYPE *, int *, DFTYPE *, int * );
+void FORTRAN(efcn_get_result_limits)( int *, int *, int *, int * );
+void FORTRAN(efcn_compute)( int *, int *, int *, int *, int *, DFTYPE *, int * );
 
 
 void FORTRAN(efcn_get_custom_axis_sub)( int *, int *, double *, double *, double *, char *, int * );
@@ -243,6 +250,9 @@ void FORTRAN(efcn_get_arg_name)( int *, int *, char * );
 void FORTRAN(efcn_get_arg_unit)( int *, int *, char * );
 void FORTRAN(efcn_get_arg_desc)( int *, int *, char * );
 int  FORTRAN(efcn_get_rtn_type)( int *);
+void FORTRAN(efcn_rqst_mr_ptrs)( int *, int *, int * ); // narg, mr_list, mres 
+void FORTRAN(efcn_pass_arg_ptr)(int *, DFTYPE *);
+void FORTRAN(efcn_pass_res_ptr)(DFTYPE *);
 
 
 /* .... Functions called internally .... */
@@ -264,7 +274,7 @@ int EF_Util_ressig();
 
 void FORTRAN(ef_err_bail_out)(int *, char *);
 
-void EF_store_globals(DFTYPE *, int *, int *, int *, DFTYPE *);
+void EF_store_globals(int *, int *, int *, DFTYPE *);
 
 ExternalFunction *ef_ptr_from_id_ptr(int *);
 
@@ -1820,7 +1830,7 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr, int *status )
   /*
    * Store the context list globally.
    */
-  EF_store_globals(NULL, NULL, cx_list_ptr, NULL, NULL);
+  EF_store_globals(NULL, cx_list_ptr, NULL, NULL);
 
   /*
    * Find the external function.
@@ -1947,8 +1957,10 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr, int *status )
  * Find an external function based on its integer ID, 
  * Query the function about abstract axes. Pass memory,
  * mr_list and cx_list info into the external function.
+ * 1/17 *SH* removed argument "memory" from the calling arguments
+ *           It was never used by the routine, anyway.
  */
-void FORTRAN(efcn_get_result_limits)( int *id_ptr, DFTYPE *memory, int *mr_list_ptr, int *cx_list_ptr, int *status )
+void FORTRAN(efcn_get_result_limits)( int *id_ptr, int *mr_list_ptr, int *cx_list_ptr, int *status )
 {
   ExternalFunction *ef_ptr=NULL;
   char tempText[EF_MAX_NAME_LENGTH]="";
@@ -1964,7 +1976,7 @@ void FORTRAN(efcn_get_result_limits)( int *id_ptr, DFTYPE *memory, int *mr_list_
   /*
    * Store the memory pointer and various lists globally.
    */
-  EF_store_globals(memory, mr_list_ptr, cx_list_ptr, NULL, NULL);
+  EF_store_globals(mr_list_ptr, cx_list_ptr, NULL, NULL);
 
   /*
    * Find the external function.
@@ -2097,13 +2109,14 @@ void FORTRAN(efcn_get_result_limits)( int *id_ptr, DFTYPE *memory, int *mr_list_
  * the function to calculate the result.
  */
 void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *mr_list_ptr, int *mres_ptr,
-	DFTYPE *bad_flag_ptr, int *mr_arg_offset_ptr, DFTYPE *memory, int *status )
+	DFTYPE *bad_flag_ptr, int *status )
 {
   ExternalFunction *ef_ptr=NULL;
   ExternalFunctionInternals *i_ptr=NULL;
   DFTYPE *arg_ptr[EF_MAX_COMPUTE_ARGS];
   int xyzt=0, i=0, j=0;
   int size=0;
+  int nargs=0;
   char tempText[EF_MAX_NAME_LENGTH]="";
   int internally_linked = FALSE;
 
@@ -2160,7 +2173,7 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
    * Store the memory pointer and various lists globally.
    */
   FORTRAN(efcn_copy_array_dims)();
-  EF_store_globals(memory, mr_list_ptr, cx_list_ptr, mres_ptr, bad_flag_ptr);
+  EF_store_globals(mr_list_ptr, cx_list_ptr, mres_ptr, bad_flag_ptr);
 
   /*
    * Find the external function.
@@ -2174,20 +2187,27 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
 
   i_ptr = ef_ptr->internals_ptr;
 
+/* 
+   1/17 tell FORTRAN to pass the pointers (place them into GLOBALs)
+*/
+  nargs = i_ptr->num_reqd_args;
+  FORTRAN(efcn_rqst_mr_ptrs)(&nargs, mr_list_ptr, mres_ptr);
+
   if ( i_ptr->language == EF_F ) {
     /*
      * Begin assigning the arg_ptrs.
      */
 
+
     /* First come the arguments to the function. */
 
      for (i=0; i<i_ptr->num_reqd_args; i++) {
-       arg_ptr[i] = memory + mr_arg_offset_ptr[i];
+       arg_ptr[i] = GLOBAL_arg_ptrs[i];
      }
 
     /* Now for the result */
 
-     arg_ptr[i++] = memory + mr_arg_offset_ptr[EF_MAX_ARGS];
+     arg_ptr[i++] = GLOBAL_res_ptr;
 
     /* Now for the work arrays */
 
@@ -2626,10 +2646,11 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
           }
       }
 
+
       /* First the results grid array, then the argument grid arrays */
-      arg_ptr[0] = memory + mr_arg_offset_ptr[EF_MAX_ARGS];
+      arg_ptr[0] = GLOBAL_res_ptr; // 1/17 *sh*
       for (i = 0; i < i_ptr->num_reqd_args; i++) {
-          arg_ptr[i+1] = memory + mr_arg_offset_ptr[i];
+          arg_ptr[i+1] = GLOBAL_arg_ptrs[i];
       }
 
       /* Assign the memory limits, step values, and bad-data-flag values - first result, then arguments */
@@ -3322,17 +3343,27 @@ int EF_New( ExternalFunction *this )
  * Store the global values which will be needed by utility routines
  * in EF_ExternalUtil.c
  */
-void EF_store_globals(DFTYPE *memory_ptr, int *mr_list_ptr, int *cx_list_ptr, 
+void EF_store_globals(int *mr_list_ptr, int *cx_list_ptr, 
 	int *mres_ptr, DFTYPE *bad_flag_ptr)
 {
   int i=0;
 
-  GLOBAL_memory_ptr = memory_ptr;
   GLOBAL_mr_list_ptr = mr_list_ptr;
   GLOBAL_cx_list_ptr = cx_list_ptr;
   GLOBAL_mres_ptr = mres_ptr;
   GLOBAL_bad_flag_ptr = bad_flag_ptr;
 
+}
+void FORTRAN(efcn_pass_arg_ptr)(int *iarg, DFTYPE *arg_ptr)
+{
+  int iarg_c = *iarg-1;   // FORTRAN index to c index
+
+  GLOBAL_arg_ptrs[iarg_c] = arg_ptr;
+}
+
+void FORTRAN(efcn_pass_res_ptr)(DFTYPE *res_ptr)
+{
+  GLOBAL_res_ptr = res_ptr;
 }
 
 

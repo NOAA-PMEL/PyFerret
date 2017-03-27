@@ -1,4 +1,4 @@
-	SUBROUTINE XEQ_SET( memory, reconfig )
+	SUBROUTINE XEQ_SET
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -194,6 +194,8 @@
 * V701 *acm*  7/12 Ticket 2455: On a SET AXIS/NAME=, save the original spelling and 
 *                  an up-cased spelling of the axis name, as is done with DEFINE AXIS.
 * V710  4/16 *acm* new TM_UNITS_CAL to account for calendar in units id
+* V702  3/17 *sh* added MODE FRUGAL
+*		  Fixed bug in error message for invalid SET LIST/OUT
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -234,8 +236,7 @@
         include 'netcdf.inc'    ! with NCCHAR
       
 * calling argument declarations:
-	INTEGER	reconfig
-	REAL	memory( mem_blk_size, max_mem_blks )
+!	INTEGER	reconfig   ! removed for dynamic memory management 2/2017
 
 * local variable declarations:
 	INTEGER		REGION_NUMBER, VIEWPORT_NUMBER, GRID_FROM_NAME,
@@ -254,6 +255,7 @@
      .                  dset, istat, cache_size, cache_nelems, 
      .                  cache_preemption, numpts, redir_file_lun, 
      .                  iline, iset, n
+	INTEGER*8	i8_val
         REAL*8          TM_WW_AXLEN, axwwlen, new_att_modulo_len
         REAL*8          delta, dlo, dhi, firstval, lastval
 	REAL		val_buf, cache_size_mb
@@ -284,7 +286,7 @@
 	LOGICAL is_secure
 
 * initialize
-	reconfig = 0   	! zero signals NO memory reconfigure
+!	reconfig = 0   	! zero signals NO memory reconfigure
 
 * select subcommand
 	GOTO ( 100,200,300,400,500,600,700,800,900,1000,
@@ -773,6 +775,9 @@ c *kob* 4/97
               ELSEIF ( mode .EQ. pmode_time_lab ) THEN
 	         ax_dec_pt(f_dim) = ax_dec_pt(t_dim)  
 	         ax_fmt(f_dim) = ax_fmt(t_dim) 
+
+              ELSEIF ( mode .EQ. pmode_desperate ) THEN
+	         CALL WARN("MODE DESPERATE is deprecated. Use MODE FRUGAL")
 
 	      ENDIF
 	      GOTO 820
@@ -1418,8 +1423,8 @@ c *kob* 4/97
 * SET MEMORY/MWORDS=megawords
  1300	IF ( num_args .GT. 0 ) GOTO 5800
 	if (is_secure()) then
-	   call SPLIT_LIST(pttmode_help, err_lun,
-     1	        'This command is not allowed.', 0)
+	   CALL SPLIT_LIST(pttmode_help, err_lun,
+     1	        'This command is not allowed in secure mode.', 0)
 	   return
 	endif
         lp = qual_given( slash_set_memory_words )
@@ -1428,31 +1433,15 @@ c *kob* 4/97
      .			   val_buf, status )
            IF ( status .NE. ferr_ok ) RETURN
 	ELSE
-	   val_buf = 0
+	   val_buf = max_mem_allowed / 1E6    ! retain current size
 	ENDIF
-	IF ( val_buf .GT. 0.0 ) THEN
-* for neatness make mem_blk_size always be a multiple of 100
-* If val_buf is small, make it the minimum size for the block size
-* When val_buf is large, the calculation can overflow.
-* Check for this...
+	IF ( val_buf .LE. 0.0 ) GOTO 5805
+	i8_val = (val_buf*1.0000000001D0) * 1000000  ! int tuncation issues ...
 
-	   reconfig = INT(val_buf*1E6/(max_mem_blks*100))
-	   IF (reconfig .EQ. 0) reconfig = 1
-	   reconfig = reconfig * 100
-
-           IF (reconfig .LT. 0) THEN
-              reconfig = 0
-              CALL WARN('internal overflow expressing '//
-     .          cmnd_buff(qual_start(lp)+4:qual_end(lp))//
-     .		' Mwords as words. Restoring previous memory size.')
-           ENDIF
-	ENDIF
-* clear the current contents of memory
-	DO 1310 i = 1,max_mr_avail
-	   IF ( mr_protected(i) .NE. mr_deleted ) CALL DELETE_VARIABLE(i)
- 1310	CONTINUE
-	CALL SPLIT_LIST(pttmode_ops, err_lun,
-     .			' Cached data cleared from memory', 0)
+* reset the memory size
+	max_mem_allowed = i8_val 
+	peak_mem = 0
+	peak_essential_mem = 0
 
         RETURN
 
@@ -1630,7 +1619,7 @@ c *kob* 4/97
         IF (arg_start(1) .LT. pos) arg_start(1) = pos
         IF ( (iflag .EQ. 1 .AND. arg_end(1) .LT. len_cmnd) .OR. 
      .       (isetout .EQ. 0) ) THEN
-           CALL GET_PROT_CMND_DATA ( memory, cx_last, ptype_native, 
+           CALL GET_PROT_CMND_DATA (  cx_last, ptype_native, 
      .              status )
            IF ( status .NE. ferr_ok ) THEN      ! 8/6/92
               list_fmt_type = plist_default ! restore for next command
@@ -1700,7 +1689,7 @@ c *kob* 4/97
         IF ( (iflag .EQ. 1 .AND. arg_end(1) .LT. len_cmnd) .OR.
      .       (isetout .EQ. 0) ) THEN 
            mr = is_mr( 1 )
-           CALL EDIT_ATTRIBUTE(  memory(1, mr_blk1(mr)), mr, 
+           CALL EDIT_ATTRIBUTE(  memry(mr)%ptr, mr, 
      .               buff1, dset_num, attype_spec, set_att_quiet, status )
   
 ! errmsg already called in edit_attribute so just exit
@@ -2067,6 +2056,9 @@ c *kob* 4/97
  5800	CALL ERRMSG( ferr_syntax, status,
      .		     'To reconfigure use SET MEMORY/SIZE=megawords'
      .		     //pCR//cmnd_buff(:len_cmnd), *5000 )
+ 5805	CALL ERRMSG( ferr_invalid_command, status,
+     .		     'Negative SET MEMORY/SIZE= value: '
+     .		     //pCR//cmnd_buff(item_start(1):item_end(1)), *5000)
  5810	CALL ERRMSG( ferr_invalid_command, status,
      .		     'SET MODE REMOTE_X requires a node name argument',
      .			*5000 )
@@ -2183,8 +2175,8 @@ c *kob* 4/97
  6800   CALL ERRMSG( ferr_erreq, status, title, *5000 )
  6810	CALL ERRMSG( ferr_invalid_command, status,
      .		'Unrecognized option/'//
-     .          cmnd_buff(qual_start(i):qual_end(i)) //pCR//
-     .		' Valid options are /OUTTYPE=DOUBLE,FLOAT,INT,SHORT,or BYTE', *1000 )
+     .          cmnd_buff(qual_start(lp):qual_end(lp)) //pCR//
+     .	' Valid options are /OUTTYPE=DOUBLE,FLOAT,INT,SHORT,or BYTE', *5000 )
      
  6900	CALL ERRMSG( ferr_unknown_arg, status,
      .'Can SET AXIS/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE, or NONE',

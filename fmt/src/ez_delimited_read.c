@@ -52,8 +52,8 @@
                     ticket 2448: for 2-digit years, put years prior to 50 into the 2000s
                     ticket 2449: report incorrect choice of date/ eurodate as an error
   V702 10/16 *acm*  ticket 2472: Allow yyyy/dd/mm in any of the date types.   
-  V702 11/16 *acm*   handling read errors in date/time reading
-
+  V702 11/16 *acm*  handling read errors in date/time reading
+  V702  1/17 *sh*   removal of block-oriented memory management
 */
 
 
@@ -98,9 +98,7 @@
  nfields - number of fields to decode on each record
  field_types - type of each field (input)
  mrlist - list of integers pointing to Ferret memory blocks
- memptr - pointer to base of Ferret "heap" storage
- mr_blk1 - memory chunk numbers indexed by mr_list
- mblk_size - chunk size within Ferret heap
+ mr_ptrs_val - integer containing the c pointer to array of mr memory pointers 
  mr_bad_flags - missing value flags indexed by mr_list
  *
  */
@@ -110,11 +108,18 @@ void FORTRAN(decode_file_jacket)
 		( char* fname, char *recptr, char *delims, int *skip,
 		  int* maxrec, int* reclen, int* nfields,
 		  int field_type[], int* nrec,
+		  int mrlist[], long* mr_ptrs_val,
+		  DFTYPE mr_bad_flags[], char ***mr_c_ptr, int* status)
+/* 1/17 --- pre-dynamic memory call
+void FORTRAN(decode_file_jacket)
+		( char* fname, char *recptr, char *delims, int *skip,
+		  int* maxrec, int* reclen, int* nfields,
+		  int field_type[], int* nrec,
 		  int mrlist[], DFTYPE *memptr, int mr_blk1[], int* mblk_size,
 		  DFTYPE mr_bad_flags[], char ***mr_c_ptr, int* status)
-
+*/
 {
-
+  DFTYPE** mr_ptrs = (DFTYPE**) *mr_ptrs_val;
   DFTYPE **numeric_fields  = (DFTYPE **) malloc(sizeof(DFTYPE*) * (*nfields));
   DFTYPE *bad_flags        = (DFTYPE *)  malloc(sizeof(DFTYPE) * (*nfields));
 
@@ -135,12 +140,12 @@ void FORTRAN(decode_file_jacket)
       if (field_type[i] == FTYP_CHARACTER )
 	{
 	  /* *kob* make sure were using size of real*4 float */
-	  text_fields[i] = (char**) (memptr + ((mr_blk1[mr]-1)*(*mblk_size)*4)/sizeof(float));
+	  text_fields[i] = (char**) mr_ptrs[i];
 	  mr_c_ptr[mr*pinc] = text_fields[i];
 	}
       else if (field_type[i] != FTYP_MISSING )
 	{
-	  numeric_fields[i] = memptr + (mr_blk1[mr]-1)*(*mblk_size);
+	  numeric_fields[i] = mr_ptrs[i];
 	  mr_c_ptr[mr*pinc] = (char**) NULL;
 	}
       /*

@@ -1,6 +1,4 @@
-
-
-	SUBROUTINE INIT_MEMORY( block_size, number_of_blocks )
+	SUBROUTINE INIT_MEMORY
 
 *
 *
@@ -54,7 +52,8 @@
 * V606: 8/07 *acm* Set a symbol with the current memory setting
 * V62   5/09 *acm*- make FERRET_MEMORY a special symbol (remove 
 *                 code defining it from this routine)
-* V702: 11/16 *sh* - perform initial sanity check
+* V702: 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
+*                - perform initial sanity check
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -64,27 +63,11 @@
 	include 'xprog_state.cmn'
 
 * calling argument declarations:
-	INTEGER block_size, number_of_blocks
 
 * internal variable declarations
-	INTEGER	bigblk, mv
-      INTEGER i1, i2, len
-      CHARACTER*30 TM_FMT, sym_name, buff
-
-* initialize memory configuration
-	mem_blk_size = block_size
-	max_mem_blks = number_of_blocks
-
-* BULK MEMORY
-* note: arrays mblk_* are initialized by DATA to unspecified
-* ... designate all the rest as 1 giant free contiguous block
-	bigblk = 1
-	mblk_flink(0) = bigblk
-	mblk_blink(0) = bigblk
-	mblk_size (0) = 0
-	mblk_flink(bigblk) = 0
-	mblk_blink(bigblk) = 0
-	mblk_size (bigblk) = max_mem_blks
+	INTEGER	bigblk, mv, ws
+        INTEGER i1, i2, len
+        CHARACTER*30 TM_FMT, sym_name, buff
 
 * LINKS IN MEMORY VARIABLE TABLE
 * ... all hash pile start pointers point to self (empty lists)
@@ -103,7 +86,28 @@
 * the reason so small is that Ferret memory management is not aware of
 * large hierarchies of definitions -- so a command like "LIST var"
 * may involve far more data than the transformations of "var" alone
-	mode_arg(pmode_desperate,1) = 0.1 *  block_size *  number_of_blocks
+	mode_arg(pmode_desperate,1) = 0.1 *  pmax_mem_default
+
+* initialize malloced dynamic memory management variables  (2/2017)
+        DO mv = 1, max_mrs
+           CALL NULLIFY_MR(mv)
+           mr_size(mv) = 0
+        ENDDO
+        DO ws = 1, max_ws
+           CALL NULLIFY_WS(ws)
+           ws_size(ws) = 0
+        ENDDO
+
+* SET MEMORY limit default
+	max_mem_allowed = pmax_mem_default
+
+* accounting variables (see xvariables.cmn)
+        total_mem = 0
+        peak_mem = 0
+        peak_essential_mem = 0
+	need_memlim_warning = .TRUE.
+	permanent_mem = 0
+	essential_mem = 0
 
 * sanity check
 #ifndef NDEBUG

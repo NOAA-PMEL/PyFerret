@@ -1,4 +1,4 @@
-	SUBROUTINE RELEASE_WORK_SPC
+	SUBROUTINE DYNMEM_MRLIST_C ( n, mrlist, c_ptr_array, status )
 
 *
 *
@@ -35,24 +35,41 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* releases claim to temporary work space allocated by GET_WORK_SPC
+* pass the list of pointers implies by the list of pointers in mrlist
+* into a c pointer list, where they will be readily accessible in c
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
-* revision 0.0 - 2/19/87
-* V702 *sh* 12/16  clear sp_num_blocks and sp_start_block for house-keeping
+* V702 1/17 *sh* 
 
         IMPLICIT NONE
-	include 'xwork_space.cmn'
+        include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include 'errmsg.parm'
+	include	'xvariables.cmn'
 
-	IF ( sp_last_size .GT. 0 ) THEN
-	   CALL FREE_MEMORY( sp_start_block, sp_num_blocks )
-	   sp_last_size  = 0
-	   sp_num_blocks = 0
-	   sp_start_block = -12345
-	ENDIF
+* calling argument declarations:
+	INTEGER	n, mrlist(n), status
+        INTEGER*8 c_ptr_array
+
+* internal variable declarations:
+	INTEGER	i, mr
+
+* create the c pointer array
+	CALL DYNMEM_MAKE_PTR_ARRAY(n, c_ptr_array, status)
+	IF (status .NE. ferr_ok) RETURN
+
+* pass the FORTRAN pointers into c
+	DO i = 1, n
+	   mr = mrlist(i)
+	   IF (mr .EQ. 0) THEN
+	      CALL DYNMEM_PASS_1_PTR(i, memry(dummy_mr)%ptr, c_ptr_array)
+	   ELSE
+	      CALL DYNMEM_PASS_1_PTR(i, memry(mr)%ptr, c_ptr_array)
+	   ENDIF
+	ENDDO
 
 	RETURN
 	END
+

@@ -48,6 +48,8 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
+* V702 1/16 *sh*: find MR slot here, before calling ASSIGN_VARIABLE
+*		  for trac enhancement #2369 -- dynamic memory management 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -57,12 +59,15 @@
 	include 'xcontext.cmn'
 
 * calling argument declarations:
-	INTEGER		cx, mr, status
+	INTEGER	cx, mr, status
 
 * internal variable declarations:
-	INTEGER	CGRID_SIZE_DELTA,
-     .		grid_size, start_block, num_blocks, grid_blocks
+	INTEGER*8 i8_size
 	REAL R_CGRID_SIZE_DELTA, rgrid_size
+
+* get a free slot in the memory variable table -- delete another var if needed
+	CALL FIND_MR_SLOT( mr, status )
+	IF ( status .NE. ferr_ok ) RETURN
 
 * amount of storage space required
 * Compute as a real - grid sizes may overflow integer storage.
@@ -76,22 +81,20 @@
 	IF (cx_type(cx) .EQ. ptype_string) rgrid_size = rgrid_size*2 ! 8 byte ptr
 #endif
 
-* claim the storage space
-
-* COMPUTE # BLOCKS NEEDED
-	grid_blocks = ( INT(rgrid_size) + mem_blk_size - 1 ) / mem_blk_size
-
-	CALL GET_MEMORY( INT(rgrid_size), grid_blocks, start_block, num_blocks, status )
-	IF ( status .NE. ferr_ok ) RETURN
+* claim the dynamic storage space needed
+	i8_size = rgrid_size
+	CALL GET_MR_DYNMEM( i8_size, mr, status )
+	IF ( status .NE. ferr_ok ) THEN
+	   CALL MR2FREELIST(mr)
+	   RETURN
+	ENDIF
 
 * catalog it in the memory variable table
-	CALL ASSIGN_TEMP_VAR
-     .		      ( cx,
-     .			start_block,
-     .			num_blocks,
-     .			mr,
-     .			status 	)
+	CALL ASSIGN_TEMP_VAR( cx, mr, status )
 	IF ( status .NE. ferr_ok ) RETURN
+
+* hook it into the right cache search list
+	CALL HOOK_MR_SLOT( cx, mr)
 
 	RETURN
 	END

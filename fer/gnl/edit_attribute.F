@@ -1,5 +1,3 @@
-
-
       SUBROUTINE EDIT_ATTRIBUTE( grid_data, mr, varattname, dset, 
      .         attype_spec, att_quiet, status )
 
@@ -65,6 +63,7 @@
 * v687 *acm*  3/14 Fix ticket 2161: editing long_name or units of var in ascii files
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
+* V702 *sh*   1/17 For dynamic memory -- use PURGE_ALL_UVARS_EXCEPT_EX
 
 * codes for data sets
 	INTEGER		set_not_open,set_open,file_not_open
@@ -472,10 +471,14 @@
 *	 mr_grid, units, etc.  They need to be deleted only if they were on 
 * 	 non-standard grids or units.  The UVAR's need to be purged only if
 *	 they depend on the FVAR being changed)
+
+* 1/17 use PURGE_ALL_UVARS_EXCEPT_EX instead of PURGE_ALL_UVARS because EX#n
+*      was passed to this routine.  With dynamic memory we must not free
+*      a memory pointer that was passed in as an argument
 	IF ( ez ) THEN
 	   IF ( have_mods ) THEN
 	      CALL PURGE_FILE_VAR( var ) ! remove memory-resident variables
-	      CALL PURGE_ALL_UVARS	 ! delete (possibly dependent) uvars
+	      CALL PURGE_ALL_UVARS_EXCEPT_EX !delete (possibly dependent) uvars
 	      CALL EZ_MOD_VARS( dset,var,varid,
      .			        newname,title,units,grid,bad,tmap_status )
 	      IF ( tmap_status .NE. merr_ok ) THEN
@@ -488,7 +491,7 @@
 
 	   IF ( bad  .NE. real4_init  ) THEN
 	      CALL PURGE_FILE_VAR( var ) ! remove memory-resident variables
-	      CALL PURGE_ALL_UVARS	 ! delete (possibly dependent) uvars
+	      CALL PURGE_ALL_UVARS_EXCEPT_EX !delete (possibly dependent) uvars
 	      ds_missing_flag(var) = ds_bad_flag(var)
 	      ds_bad_flag    (var) = bad
 	   ENDIF
@@ -498,13 +501,13 @@
 
            IF ((scalefac .NE. real4_init) .AND. ncfile) THEN
 	      CALL PURGE_FILE_VAR( var ) ! remove memory-resident variables
-	      CALL PURGE_ALL_UVARS	 ! delete (possibly dependent) uvars
+	      CALL PURGE_ALL_UVARS_EXCEPT_EX
               ds_var_scale(var) = scalefac
               ds_var_scaleit(var)       = .TRUE.
            ENDIF
            IF ((offset .NE. real4_init) .AND. ncfile) THEN
 	      CALL PURGE_FILE_VAR( var ) ! remove memory-resident variables
-	      CALL PURGE_ALL_UVARS	 ! delete (possibly dependent) uvars
+	      CALL PURGE_ALL_UVARS_EXCEPT_EX
               ds_var_off(var)   = offset
               ds_var_scaleit(var)       = .TRUE.
            ENDIF
@@ -514,7 +517,7 @@
 	   IF ( units .NE. char_init16 ) uvar_units( var )  = units
 	   IF ( title .NE. char_init80 ) uvar_title( var )  = title
 	   IF ( bad  .NE. real4_init  ) THEN
-	      CALL PURGE_ALL_UVARS	 ! delete invalidated uvars
+	      CALL PURGE_ALL_UVARS_EXCEPT_EX	 ! delete invalidated uvars
 	      uvar_bad_data(var) = bad
 	   ENDIF
 

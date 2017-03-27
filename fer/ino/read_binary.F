@@ -1,4 +1,4 @@
-	SUBROUTINE READ_BINARY ( memory, cx, mr, status )
+	SUBROUTINE READ_BINARY (  cx, mr, status )
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -48,8 +48,10 @@
 * v604 *acm* 7/07 increase length of ds_name
 * V63  *acm* 10/09 Changes for gfortran build
 *       *acm* 3/12 cleanup old VMS ifdef
-* V685 *acm* 1/13  Ticket 2030: if we run out of memory, issue a new message
+* V685 *acm* 1/13  Ticket 2030: if we run out of  issue a new message
 * V702: *sh* 1/17 - bug fix: mr_protected must *end* at mr_not_in_use (=0)
+*		  - for trac enhancement #2369 -- dynamic memory management 
+*                 (it appears that dynamic work space is allocated but never used)
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -68,7 +70,7 @@
 
 * calling argument declarations:
 	INTEGER	cx, mr, status, fstatus
-	REAL	memory( mem_blk_size, max_mem_blks ), fdummy(1)
+	REAL	 fdummy(1)
 
 * functions
 	INTEGER BR_OPEN, BR_READ, BR_ADD_VAR
@@ -81,7 +83,7 @@
      .			fvar, nvar20, the_var, nleft, 
      .			cx0, cx1, cx20(20), mr20(20),
      .			mr1, rec1, scnt,
-     .			rec_to_read, nrepeat, columns, num_names, buffblk
+     .			rec_to_read, nrepeat, columns, num_names
 	INTEGER         lengths(nferdimsp1), permutes(nferdimsp1), skip, doRead
 	LOGICAL         firstTime
 	CHARACTER	VAR_CODE*128
@@ -172,10 +174,6 @@
 	   mr20(nleft) = dummy_mr
 	END DO
 	
-* allocate a buffer big enough for one record
-        CALL GET_WORK_SPC( columns, buffblk, status )	! was "nrepeat" B4 3/95
-	IF ( status .NE. merr_ok ) GOTO 5500
-
 * Get the current permutation list
 	CALL BR_GET_PERMUTES(permutes)
 
@@ -202,8 +200,8 @@
  		 IF (INDEX( ds_var_code(fvar),'-') .EQ. 0 ) THEN
 		    doRead = 1
 		    nvar20 = nvar20 + 1
-		    fstatus = BR_ADD_VAR(memory(1, mr_blk1(mr20(nvar20))),
-     1		                 doRead)
+		    fstatus = BR_ADD_VAR( memry(mr20(nvar20))%ptr,
+     1		                 doRead )
 		 ELSE
 		    doRead = 0
 		    fstatus = BR_ADD_VAR(fdummy, doRead)
@@ -217,17 +215,11 @@
 * read the data
 	if (BR_READ() .EQ. 0) goto 6000
 
-
-
-* free up the buffer space
-        CALL  RELEASE_WORK_SPC
-
 * flag that all the data is available
-	DO 800 ivar = 1, nvar20
+	DO ivar = 1, nvar20
 	   mr1 = mr20(ivar)
-	   mr_protected( mr1 ) = 1
-	   CALL MR_NOT_IN_USE( mr1 )	! decrement to 0=mr_not_in_use
- 800	CONTINUE
+	   CALL MR_AVAILABLE(mr1)
+	ENDDO
 
 * the data region obtained may be inadequate for the request
 * ("cx" is request, "cx1" is available)
@@ -264,7 +256,6 @@
  1000   FORMAT ('Binary file reading: Insufficient memory reading variable ', i4)
 	DO 5010 nleft = 1, nvar20-1	! delete all except last
  5010	CALL DELETE_VARIABLE(mr20(nleft))
-        CALL  RELEASE_WORK_SPC
 	CALL BR_CLOSE()
  5500	RETURN
  5600	CALL ERRMSG( ferr_limits, status,

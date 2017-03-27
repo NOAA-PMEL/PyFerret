@@ -74,6 +74,7 @@ randu.F\
 rcvd_regrid.F\
 regrid_lims.F\
 rqst_regrid.F\
+setup_gather.F\
 setup_sample.F\
 stack_ptr_dn.F\
 stack_ptr_up.F\

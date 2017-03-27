@@ -1,4 +1,4 @@
-	SUBROUTINE IS_AUXVAR_REGRID( memory, *, *, status )
+	SUBROUTINE IS_AUXVAR_REGRID(  *, *, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -67,7 +67,6 @@
 
 * calling argument declarations:
 	INTEGER	status
-	REAL	memory( mem_blk_size, max_mem_blks )
 * normal exit is for error conditions
 * exit #1 is to signal completion of the activity at this stack level
 
@@ -219,9 +218,9 @@
 
 * create the context for the source data needed to perform the regrid
               CALL AUX_REGRID_LIMS( lo_cx, hi_cx, axis_list, naxis,
-     .                memory( 1, mr_blk1(mr1) ), mr1, cx1,
-     .                memory( 1, mr_blk1(mr2) ), mr2, cx2,
-     .                memory( 1, mr_blk1(mr3) ), mr3, cx3,
+     .                memry(mr1)%ptr, mr1, cx1,
+     .                memry(mr2)%ptr, mr2, cx2,
+     .                memry(mr3)%ptr, mr3, cx3,
      .                status )
               IF (status .NE. ferr_ok) GOTO 5000
 	   ENDIF
@@ -358,9 +357,7 @@
 	   is_mr( lo_isp ) = dst_mr
 
 * auxiliary regridding often creates ragged edges, so pre-fill with missing values
-           CALL FILL_MEMORY ( memory, mr_blk1 (dst_mr),
-     .                        mr_nblks(dst_mr),
-     .                        mr_bad_data(dst_mr) )
+           CALL FILL_MEMORY ( dst_mr, mr_bad_data(dst_mr) )
 
 * diagnostic message ?
 	   IF (mode_diagnostic) THEN
@@ -372,12 +369,12 @@
 	   aux_mr_list(5) = dst_mr
            CALL NON_ARRAY_SUBSC( aux_mr_list, 5 )    ! 5 arguments to pass
 
-	   CALL DO_AUX_VAR_REGRID( memory, axis_list, naxis, aux_has_cell_pts,
-     .	   		memory(1,mr_blk1(src_mr )), src_mr,  src_cx,
-     .			memory(1,mr_blk1(dst_mr )), dst_mr,  dst_cx,
-     .			memory(1,mr_blk1(mr1)), mr1, cx1,
-     .			memory(1,mr_blk1(mr2)), mr2, cx2,
-     .			memory(1,mr_blk1(mr3)), mr3, cx3,
+	   CALL DO_AUX_VAR_REGRID(  axis_list, naxis, aux_has_cell_pts,
+     .	   		memry(src_mr )%ptr, src_mr,  src_cx,
+     .			memry(dst_mr )%ptr, dst_mr,  dst_cx,
+     .			memry(mr1)%ptr, mr1, cx1,
+     .			memry(mr2)%ptr, mr2, cx2,
+     .			memry(mr3)%ptr, mr3, cx3,
      .			status )
 
 	   IF (status .NE. ferr_ok) GOTO 5000

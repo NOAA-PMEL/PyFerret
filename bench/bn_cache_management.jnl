@@ -1,0 +1,136 @@
+! bn_cache_management.jnl
+
+! 1/2017 - try to force Ferret into a complex juggling of dependencies
+! and cache maintenance in order to reproduce the problem seen in trac
+! ticket #2485 (from Ned Cokelet)
+
+! Ferret's cache of memory-resident results is full when it holds 500 of them.
+! At that point it must delete cached results to make room for new variables.
+! It is supposed to chose the cached result that has not been used for the
+! longest time, AND that is not being "protected" because it is needed in a
+! pending calculation.  This script is intended to exercise that behavior.
+
+! Memory footprint needed:
+! Each dataset contains 7 variables of 1 Mword each
+! VTREE reveals that the "result" variable requires 78 intermediate variables
+! of size 1Mword (plus 7 small ones)
+! Of these only 12 variables needed in the top level "result" sum calculation
+! Each of the top level variables in turn requires ?25? component variables
+! But the top level variables need these components only in sequence. 
+! So if no split-gather is performed, Ferret requires ~12+25=37 Mwords 
+
+DEFINE SYMBOL saved_memory_size = ($FERRET_MEMORY)
+
+! ******* !!!! ********
+! ***** BUG yet TO BE FOUND AND FIXED *****
+! WHEN THIS SCRIPT IS RUN ALONE MEMORY=20 IS SUFFICIENT, BUT WHEN
+! IT IS RUN UNDER BN_ALL IT RUNS OUT OF MEMORY.  SEE NOTES IN
+! ERR_ALL_CACHE_MANAGEMENT.JNL
+!SET MEMORY/SIZE=20
+SET MEMORY/SIZE=35
+CANCEL MEMORY/ALL
+
+DEFINE SYMBOL nsets = 20
+
+define axis/x=1:1000000:1 xmillion
+
+! aside: to demonstrate lmitations of ferret memory management prior to
+! dynamic memory, use
+!     yes? set memory/size=37
+!     yes? GO test_auto_cache_delete 0 20
+
+! see if the test files already exist
+SPAWN "mkdir -p tmp"     ! tmp directory to store files
+SPAWN ls tmp/test_auto_cache_($nsets).nc
+IF ($SPAWN_STATUS) THEN
+ say test files already exist.  not re-creating them
+ELSE
+!**************************************
+ say creating test files
+ cancel mode verify
+! define axis/x=1:1000:1 x10
+! define axis/y=1:1000:1 y10
+ define axis/x=1:100:1 x10
+ define axis/y=1:100:1 y10
+ let shape = 0*(X[gx=x10]+Y[gy=y10])
+ let one      = 1 + shape
+ let ten      = 10 + shape
+ let hundred  = 100 + shape
+ let thousand = 1000 + shape
+ let tenthou  = 10000 + shape
+ let hundthou = 100000 + shape
+ let million  = 1000000 + shape
+  
+ REPEAT/k=1:($nsets)  \
+ save/file="tmp/test_auto_cache_`k`.nc"/clobber one, ten, hundred, thousand, tenthou, hundthou, million
+ cancel var/all
+ set mode/last verify
+!**************************************
+ENDIF
+
+! open the many input datasets
+REPEAT/k=1:($nsets)  USE tmp/test_auto_cache_`k`.nc
+
+! define a huge tree of variables
+let  r_one      = RESHAPE(one,X[gx=xmillion])
+let  r_ten      = RESHAPE(ten,X[gx=xmillion])
+let  r_hundred  = RESHAPE(hundred,X[gx=xmillion])
+let  r_thousand = RESHAPE(thousand,X[gx=xmillion])
+let  r_tenthou  = RESHAPE(tenthou,X[gx=xmillion])
+let  r_hundthou = RESHAPE(hundthou,X[gx=xmillion])
+let  r_million  = RESHAPE(million,X[gx=xmillion])
+
+let a_one     = r_one[X=@ave]
+let a_ten     = r_ten[X=@ave]
+let a_hundred = r_hundred[X=@ave]
+let a_thousand= r_thousand[X=@ave]
+let a_tenthou = r_tenthou[X=@ave]
+let a_hundthou= r_hundthou[X=@ave]
+let a_million = r_million[X=@ave]
+
+let one_2      = a_one
+let ten_2      = a_ten
+let hundred_2  = a_hundred 
+let thousand_2 = a_thousand
+let tenthou_2  = a_tenthou 
+let hundthou_2 = a_hundthou 
+let million_2  = a_million
+
+let one_3      = a_one
+let ten_3      = a_ten
+let hundred_3  = a_hundred 
+let thousand_3 = a_thousand
+let tenthou_3  = a_tenthou 
+let hundthou_3 = a_hundthou 
+let million_3  = a_million
+
+let result_31 = \
+one_3 + ten_3 + hundred_3 + thousand_3 + tenthou_3 + hundthou_3 + million_3
+
+let result_21 = \
+one_2 + ten_2 + hundred_2 + thousand_2 + tenthou_2 + hundthou_2 + million_2
+
+let result_32 = \
+one_3 + ten_3 + hundred_3 + thousand_3 + tenthou_3 + hundthou_3 + million_3
+
+let result_22 = \
+one_2 + ten_2 + hundred_2 + thousand_2 + tenthou_2 + hundthou_2 + million_2
+
+let result = result_31 + result_21 + result_32 + result_22 + \
+a_one + a_ten + a_hundred + a_thousand + a_tenthou + a_hundthou + a_million
+
+! process all of the datasets in turn
+! ==> WATCH HOW THE NUMBER OF FREE SLOTS IS PROGRESSIVELY EXHAUSTED
+! This proves that we are exercising the limits of table space
+sp rm -f test_auto_cache.out
+REPEAT/k=1:($nsets)  \
+(list/nohead/file=test_auto_cache.out/append result[d=test_auto_cache_`k`.nc];\
+SHOW MEMORY/DIAG)
+
+! success
+vtree result
+! show that the calculation result never varied
+spawn cat test_auto_cache.out
+
+! clean up
+SET MEMORY/SIZE=($saved_memory_size)

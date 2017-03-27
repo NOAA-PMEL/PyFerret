@@ -1,4 +1,4 @@
-      SUBROUTINE DO_EXTERNAL_GC_FCN( memory,
+      SUBROUTINE DO_EXTERNAL_GC_FCN( 
      .				fcn, num_com, com_mr, com_cx,
      .				com1, mr1,
      .				com2, mr2,
@@ -27,7 +27,7 @@
 *       7/25/97 - increase number of args from 4 to 9
 *               - add function PPLGRID
 * V500: 10/26/98 - *jc* add CREATE_PERMUTATION section
-*        7/99 *sh* check ststus on retun from efvn_compute
+*        7/99 *sh* check status on retun from efvn_compute
 * V510: *sh* 3/00 - bug fix: com_mr was passed instead of mr_perm to the EFs
 *                 - eliminated old code as marked by jon
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
@@ -46,7 +46,6 @@
 * calling argument declarations:
 	INTEGER	fcn, num_com, com_mr(10), com_cx(9), status,
      .       mr1, mr2, mr3, mr4, mr5, mr6, mr7, mr8, mr9, mres
-        REAL memory( mem_blk_size, max_mem_blks )
 	REAL com1( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
      .             m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
      .       com2( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
@@ -69,9 +68,9 @@
      .            m10lot:m10hit,m10loe:m10hie,m10lof:m10hif )
 
 * internal variable declarations:
-        INTEGER mr_arg_offset_array(10)
         REAL bad_flag_array(10)
 
+        LOGICAL is_permuted(9)
         INTEGER i, mr, perm(nferdims), mr_perm(9)
 
 * internal parameter declarations:
@@ -85,13 +84,11 @@
 
 * initialize all of the possible passed arguments just for good housekeeping
         DO 5 i= 1, 9
-            mr_arg_offset_array(i)  = ( mr_blk1(dummy_mr)-1 )
-     .                              * mem_blk_size
             bad_flag_array(i)  = mr_bad_data ( dummy_mr )
  5      CONTINUE
 
 * In order to pass arguments to the external function as continguous 
-* pieces of memory, we need to use CREATE_PERMUTATION.  
+* pieces of  we need to use CREATE_PERMUTATION.  
 * Otherwise, cached variables will be passed through without being 
 * pared down to the desired context.
 
@@ -105,15 +102,13 @@
 
        DO 100 i=1, num_com
 
-          CALL CREATE_PERMUTATION(  memory, com_cx(i), com_mr(i),
+          CALL CREATE_PERMUTATION(   com_cx(i), com_mr(i),
      .         perm, mr_perm(i), .FALSE., status )
-
           IF ( status .NE. ferr_OK ) GOTO 5000
+          is_permuted(i) = mr_perm(i) .NE. com_mr(i)
 
           CALL NON_ARRAY_SUBSC( mr_perm, 1 )
 
-          mr_arg_offset_array(i)  = ( mr_blk1(mr_perm(i)) - 1 ) * 
-     .         mem_blk_size
           bad_flag_array(i)  = mr_bad_data ( mr_perm(i) )
 
  100   CONTINUE
@@ -121,23 +116,22 @@
 * store the restricted limits as known by mr_perm instead of com_mr
         CALL NON_ARRAY_SUBSC( mr_perm, num_com )
 
-        mr_arg_offset_array(10) = ( mr_blk1(mres) - 1 ) * mem_blk_size
         bad_flag_array(10) = mr_bad_data ( mres )
 
-        call efcn_compute(fcn, num_com, com_cx, mr_perm, mres, 
-     .      bad_flag_array, mr_arg_offset_array, memory, status)
+        CALL EFCN_COMPUTE(fcn, num_com, com_cx, mr_perm, mres, 
+     .      bad_flag_array,  status)
         IF (status .NE. ferr_ok) CALL ERRMSG(ferr_ef_error, status,
      .          'error in external function', *190)
 
  
-* clean temporary results from memory cache
- 190    DO 200 i = 1, num_com
-          mr = mr_perm(i)
-          IF ( mr_protected(mr) .EQ. mr_temporary
-     .         .OR. mr_protected(mr) .EQ. mr_table_entry_only )
-     .         CALL DELETE_VARIABLE( mr )
- 200   CONTINUE
-
+! bug fix 1/17 -- only delete the temporary variables created *here*
+* clean temporary, permuted results from memory cache
+ 190    DO i = 1, num_com
+          IF (is_permuted(i)) THEN
+            mr = mr_perm(i)
+            CALL DELETE_VARIABLE( mr )
+          ENDIF
+        ENDDO
 
 * error exits
  5000	RETURN

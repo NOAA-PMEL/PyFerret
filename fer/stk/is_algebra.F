@@ -1,4 +1,4 @@
-	SUBROUTINE IS_ALGEBRA( memory, *, *, isp_base, status )
+	SUBROUTINE IS_ALGEBRA(  *, *, isp_base, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -107,6 +107,8 @@
 *                  return info about coordinate-variables in datasets
 * V7    5/16 *acm* See ticket 2352. For LET/D variables look for info under that dataset
 * V710 9/16  *acm* ticket 2465: Parsing expressions including attribute references.
+* V702 1/17 *sh* as a part of conversion to dynamic memory fixed bug that 
+*                CHECK_NAN_DATA_SUB was being called on string variables
 
 	include 'tmap_dims.parm'
 #include "netcdf.inc"
@@ -122,8 +124,7 @@
 
 * calling argument declarations:
 	INTEGER	isp_base, status
-!	REAL	memory( mem_blk_size, max_mem_blks )  ! old
-	REAL	memory( mem_blk_size, * )             ! experimental change
+!	REAL	memory( mem_blk_size, * )             ! experimental change
 * normal return is for error conditions
 * exit #1 is to request another grid ( stack has been pushed )
 * exit #2 is to signal completion of the activity at this stack level
@@ -457,7 +458,7 @@
 * ...compute new value replacing component(s) (if any) on stack
 * ...and changing variable protections appropriately
 * ...also pop the space they used on the context stack
- 500	CALL IS_DO_OP( memory, itype, uvar_text(uvar)(start:end),
+ 500	CALL IS_DO_OP(  itype, uvar_text(uvar)(start:end),
      .		       lo_isp, uvar_ifv(uvar), status )
 	IF ( status .NE. ferr_ok ) RETURN
 	GOTO 100
@@ -472,7 +473,7 @@
 * CALL ADD_RDC_XFORM is a test to see if we can get the right
 * context onto the context which will be used for the result
  600    CALL ADD_RDC_XFORM(is_big_cx(lo_isp), status)
-	CALL IS_DO_GC_FCN( memory, uvar, uvar_text(uvar)(start:end),
+	CALL IS_DO_GC_FCN(  uvar, uvar_text(uvar)(start:end),
      .		       lo_isp, status )
 	IF ( status .NE. ferr_ok ) RETURN
 	GOTO 100
@@ -828,11 +829,11 @@
 * at this point the list of indices has been evaluated and is on the isp stack
 * (at lo_isp+1). Setup "sampling" activity on the stack, using that list to
 * guide obtaining the other arg
- 900	CALL SETUP_SAMPLE( memory, is_cx(lo_isp+1), is_mr(lo_isp+1),
+ 900	CALL SETUP_SAMPLE(  is_cx(lo_isp+1), is_mr(lo_isp+1),
      .			   ifcn, big_cx, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 * ... setup to grab first chunk of sampling data
-	CALL IS_SAMPLE( memory, *910, *5900, status ) !	RETURN 2 means all done
+	CALL IS_SAMPLE(  *910, *5900, status ) !	RETURN 2 means all done
 	GOTO 5900
  910	RETURN 1
 
@@ -892,14 +893,15 @@
 * flags removed (otherwise done when they're used as operands)
 * (ticket 2291) Handle variables from attribute information the same way.
 
-	IF ( mr_category( hi_mr ) .EQ. cat_temp_var .OR.
-     .	     mr_category(hi_mr) .EQ. cat_attrib_val) THEN
+	IF ( mr_type(hi_mr) .NE. ptype_string
+     .	.AND. (mr_category(hi_mr) .EQ. cat_temp_var .OR.
+     .	       mr_category(hi_mr) .EQ. cat_attrib_val)    ) THEN
 * ... result of algebraic computation
 * ... if user set the missing value flag make sure it is used
 	   IF ( cx_bad_data(big_cx) .NE. mr_bad_data(hi_mr) ) THEN
 	      size = MGRID_SIZE( hi_mr )
 	      CALL REPLACE_BAD_DATA_SUB ( mr_bad_data(hi_mr),
-     .			                  memory(1,mr_blk1(hi_mr)), size,
+     .			                  memry(hi_mr)%ptr, size,
      .                                    cx_bad_data(big_cx)  )
 	   ENDIF
 
@@ -922,8 +924,8 @@ c Tentative fix for ticket 2234
 	   CALL CREATE_MEM_VAR( big_cx, new_mr, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   is_mr( lo_isp ) = new_mr
-	   CALL COPY_GRID( memory(1,mr_blk1(hi_mr)),  hi_mr,
-     .			   memory(1,mr_blk1(new_mr)), new_mr )
+	   CALL COPY_GRID( memry(hi_mr)%ptr,  hi_mr,
+     .			   memry(new_mr)%ptr, new_mr )
 	   CALL PASS_AMBIG_LIMS( lo_cx, new_mr, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 * component no longer needed
@@ -949,19 +951,20 @@ c Tentative fix for ticket 2234
 	ENDIF
 
 * if user set the missing value flag make sure it is used
-	IF ( mr_category(hi_mr) .NE. cat_attrib_val) THEN 
+	IF ( mr_category(hi_mr) .NE. cat_attrib_val
+     .	.AND.mr_type    (hi_mr) .NE. ptype_string   ) THEN 
 	   IF ( cx_bad_data(lo_cx) .NE. mr_bad_data(is_mr(lo_isp))) THEN  
 	      new_mr = is_mr(lo_isp)
 	      size = MGRID_SIZE( new_mr )
 	      CALL REPLACE_BAD_DATA_SUB ( mr_bad_data(new_mr),
-     .			               memory(1,mr_blk1(new_mr)), size,
+     .			               memry(new_mr)%ptr, size,
      .                                  cx_bad_data(lo_cx)  )
 	      mr_bad_data(new_mr) = cx_bad_data(lo_cx)
 
 	   ELSE
 	      new_mr = is_mr(lo_isp)
 	      size = MGRID_SIZE( new_mr )
-	      CALL CHECK_NAN_DATA_SUB ( memory(1,mr_blk1(new_mr)), size,
+	      CALL CHECK_NAN_DATA_SUB ( memry(new_mr)%ptr, size,
      .                                 mr_bad_data(new_mr) )
 	   ENDIF
 	ENDIF

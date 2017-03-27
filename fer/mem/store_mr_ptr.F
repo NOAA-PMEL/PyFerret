@@ -1,8 +1,8 @@
-/*
-*
+        SUBROUTINE STORE_MR_PTR(mr, size, array)
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -30,34 +30,27 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
-*/
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*
+*
+* this routine is called from C
+* store pointer to malloc-allocated memory into an F90 pointer in the mr table
+*
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
+        IMPLICIT NONE
 
-/* 
- * Add integer offset to the given pointer.
- * Pointer may be spaced "naturally" (del=0) or at 8 byte intervals (del=1).
- *
- */
+* calling argumemnts
+        INTEGER mr, size
+        REAL(8), TARGET :: array(size)
 
-#include <stdlib.h>
+        include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include 'xvariables.cmn'
 
-double add_c_pointer_(ptr, del, offset)
-     char*** ptr;
-     int* del;
-     int* offset;
-{
+* store the pointer
+        memry(mr)%ptr => array
 
-  int delta = *del ? 8/sizeof(char**) : 1;
-  union ptr_or_doub
-  {
-    double d;
-    char** ptr;
-  };
-  union ptr_or_doub new_ptr;
+        RETURN
 
-  new_ptr.ptr = *ptr + (*offset * delta) ;
-
-  return new_ptr.d;
-
-}
+	END

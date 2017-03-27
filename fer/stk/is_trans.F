@@ -1,4 +1,4 @@
-	SUBROUTINE IS_TRANS( memory, ROUTINE, *, *, status )
+	SUBROUTINE IS_TRANS(  ROUTINE, *, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -83,6 +83,7 @@
 *		   Compute transformations in 3 phases: i)initialize,
 *		   ii) accumulate, and iii) finalize so that compressed axes
 *		   may be split/gathered (in IS_STRIP and IS_GATHER)
+* V702 *sh*  1/17 for trac enhancement #2369 -- dynamic memory management 
 	
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -98,7 +99,6 @@
 
 * calling argument declarations:
 	INTEGER	status
-	REAL	memory( mem_blk_size, max_mem_blks )
 * normal exit is for error conditions
 * exit #1 is to signal completion of the activity at this stack level
 	INTEGER	ROUTINE		! (returns status )
@@ -111,9 +111,10 @@
 	INTEGER CX_DIM_LEN, MGRID_SIZE_DELTA, DO_4D_STRING_TRANS, CAXIS_LEN,
      .		slen, cx_valid,
      .		res_isp, com_isp, res_cx, com_cx, com_mr, res_mr, idim,
-     .		trans, grid, lo_off, hi_off, ss_lo, ss_hi, wksiz, wkblk,
+     .		trans, grid, lo_off, hi_off, ss_lo, ss_hi,
      .		mrlist(2), axes(nferdims), idim1, i, ndim, axis, nbuffer,
      .		dflt_cx, frag
+	INTEGER*8 i8_size
 	REAL	arg
 	REAL*8	TM_WORLD, ww, ww_lo, ww_hi, init_val
 	CHARACTER VAR_TRANS*150, buff*150
@@ -187,8 +188,8 @@
               CALL CREATE_MEM_VAR( res_cx, res_mr, status )
               IF ( status .NE. ferr_ok ) GOTO 5000
               CALL COPY_GRID(
-     .           memory( 1, mr_blk1(com_mr) ) , com_mr,
-     .           memory( 1, mr_blk1(res_mr) ) , res_mr )
+     .           memry(com_mr)%ptr , com_mr,
+     .           memry(res_mr)%ptr , res_mr )
               is_mr   (res_isp) = res_mr
               GOTO 1000
             ENDIF
@@ -297,19 +298,20 @@
 * allocate memory for the result
 	CALL CREATE_MEM_VAR_W_BUFFER( res_cx, res_mr, nbuffer, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
-	is_mr( res_isp ) = res_mr
+* ... no nonger deferred.  Memory allocation for result has just been done.
+	is_deferred_mem(res_isp  ) = 0  ! chunk  memory no longer deferred
+	IF (res_isp .GT.1) is_deferred_mem(res_isp-1) = 0  ! result mem
+	is_mr(res_isp) = res_mr
 	IF ( mr_type(res_mr) .EQ. ptype_string .AND.
      .     (.NOT.string_bad_good)                    ) THEN
 * ... only applicable to @SHF transformation; else will return a null string.
            CALL INIT_C_STRING_ARRAY( MGRID_SIZE_DELTA(res_mr),
-     .                               memory(1, mr_blk1(res_mr)),
+     .                               memry(res_mr)%ptr,
      .                               mr_c_pointer(res_mr)      )
 	ENDIF
 
 * 11/16: pre-fill the result with an initialization value
-	IF (need_init) CALL FILL_MEMORY( memory,
-     .					 mr_blk1(res_mr),mr_nblks(res_mr),
-     .					 init_val )
+	IF (need_init) CALL FILL_MEMORY( res_mr, init_val )
 
 * if starting up a split/gather ...
 	IF (is_phase(res_isp).EQ.isphase_initialize_transform) 
@@ -362,8 +364,7 @@
 	        CALL SET_NULL_C_STRING_ARRAY(mr_c_pointer(res_mr),
      .                                       MGRID_SIZE_DELTA(res_mr) )
 	      ELSE
-	        CALL FILL_MEMORY( memory,mr_blk1(res_mr),mr_nblks(res_mr),
-     .		  		  mr_bad_data(res_mr) )
+	        CALL FILL_MEMORY( res_mr, mr_bad_data(res_mr) )
 	      ENDIF
 	      GOTO 1000
 	   ENDIF
@@ -371,7 +372,7 @@
 	   IF (  cx_lo_ss(res_cx,idim) .LT. cx_lo_ss(cx_valid,idim)
      .		.OR. cx_hi_ss(res_cx,idim) .GT. cx_hi_ss(cx_valid,idim) ) THEN
 * ... insufficient component data to compute the entire requested region
-	      CALL BAD_EDGES( cx_valid, memory(1,mr_blk1(res_mr)), res_mr )
+	      CALL BAD_EDGES( cx_valid, memry(res_mr)%ptr, res_mr )
 	   ELSEIF (  cx_lo_ss(res_cx,idim) .GT. cx_lo_ss(cx_valid,idim)
      .		.OR. cx_hi_ss(res_cx,idim) .LT. cx_hi_ss(cx_valid,idim) ) THEN
 * ... *1/98* component data is BIGGER than expected for requested result
@@ -425,19 +426,19 @@
 	IF ( string_com ) THEN
 	   IF (trans .EQ. trans_shift) THEN
 	      CALL DO_STRING_SHIFT ( idim, arg,
-     .		memory( 1, mr_blk1(com_mr) ), com_mr, com_cx, ! component
-     .		memory( 1, mr_blk1(res_mr) ), res_mr, res_cx) ! result
+     .		memry(com_mr)%ptr, com_mr, com_cx, ! component
+     .		memry(res_mr)%ptr, res_mr, res_cx) ! result
 	   ELSEIF (string_bad_good) THEN
 	   
 	      IF (its_4d) THEN
 	         status = DO_4D_STRING_TRANS( trans,
-     .		 memory( 1, mr_blk1(com_mr) ), com_mr, com_cx, ! component
-     .		 memory( 1, mr_blk1(res_mr) ), res_mr, res_cx) ! result
+     .		 memry(com_mr)%ptr, com_mr, com_cx, ! component
+     .		 memry(res_mr)%ptr, res_mr, res_cx) ! result
 	         IF ( status .NE. ferr_ok ) GOTO 5000
               ELSE
  	         CALL DO_STRING_GOODBAD ( idim, trans,
-     .		 memory( 1, mr_blk1(com_mr) ), com_mr, com_cx, ! component
-     .		 memory( 1, mr_blk1(res_mr) ), res_mr, res_cx) ! result                            ! result
+     .		 memry(com_mr)%ptr, com_mr, com_cx, ! component
+     .		 memry(res_mr)%ptr, res_mr, res_cx) ! result                            ! result
 	      ENDIF
 	   ELSE
 	     CALL SET_NULL_C_STRING_ARRAY(mr_c_pointer(res_mr),
@@ -449,27 +450,27 @@
 * reserve working space for the transformation
 * Note: this logic is a loose hodge-podge to get an upper bound size for all
 * the different cases: 4D, 1D, with arguments, etc.
-	wksiz = 1
+	i8_size = 1
 	DO i = 1, ndim
 	   idim = axes(i)
-	   wksiz = wksiz + CX_DIM_LEN(idim,com_cx)
+	   i8_size = i8_size + CX_DIM_LEN(idim,com_cx)
 	ENDDO
 
 * ... allow room for COS(lat) array during 4D transforms (8/96)
-	IF (ndim .GT. 1 )  wksiz = wksiz + CX_DIM_LEN(y_dim,com_cx)
+	IF (ndim .GT. 1 )  i8_size = i8_size + CX_DIM_LEN(y_dim,com_cx)
 * ... set minimum work size
-	wksiz = MAX( iswksiz, wksiz )
+	i8_size = MAX( iswksiz, i8_size )
 * ... for transforms like smoothers allow extra slop on each end 
-	IF ( arg .NE. bad_val4 )  wksiz =
-     .			MAX( wksiz, CX_DIM_LEN(idim1,res_cx)+INT(arg) )
-	CALL GET_WORK_SPC( wksiz, wkblk, status )
+	IF ( arg .NE. bad_val4 )  i8_size =
+     .			MAX( i8_size, CX_DIM_LEN(idim1,res_cx)+INT(arg) )
+	CALL GET_DYN_WORK_SPACE( i8_size, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * do the transform (or at least accumulate results in preparation to finalize)
 	status = ROUTINE( idim, arg,
-     .		memory( 1, mr_blk1(com_mr) ), com_mr, com_cx, ! component
-     .		memory( 1, mr_blk1(res_mr) ), res_mr, res_cx, ! result
-     .		memory( 1, wkblk )			    ) ! work space
+     .		memry(com_mr)%ptr, com_mr, com_cx, ! component
+     .		memry(res_mr)%ptr, res_mr, res_cx, ! result
+     .		workmem(plegacy_work_buffer)%ptr ) ! work space
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * go back for more input data to compress into the transform?
@@ -498,7 +499,7 @@
 
 * finialize (e.g. average = WEIGHTED_SUM(values) / SUM(weights)
 	CALL TRANS_FINALIZE( idim, arg,
-     .		memory( 1, mr_blk1(res_mr) ), res_mr, res_cx )
+     .		memry(res_mr)%ptr, res_mr, res_cx )
 
 * remove component protections that signaled this calculation needed it
  1000	CALL MR_NOT_IN_USE( com_mr )	

@@ -1,4 +1,4 @@
-	SUBROUTINE READ_DELIMITED( memory, cx, mr, status )
+	SUBROUTINE READ_DELIMITED(  cx, mr, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -46,11 +46,12 @@
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars
 * V552 *acm* 4/03- up VAR_CODE  to 128 chars
 *       *acm* 3/12 changes for 6D Ferret
-* V685 *acm* 1/13  Ticket 2030: if we run out of memory, issue a new message
+* V685 *acm* 1/13  Ticket 2030: if we run out of  issue a new message
 *                  and only clear the variables that had been initialized.
 * V701 *acm* 7/16  ticket 2449: report incorrect choice of date/ eurodate as an error
 * V702 *acm*11/16  handling read errors in date/time reading
 * V702: *sh* 1/17 - bug fix: mr_protected must *end* at mr_not_in_use (=0)
+*		  - for trac enhancement #2369 -- dynamic memory management 
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -69,7 +70,6 @@
 
 * calling argument declarations:
 	INTEGER	cx, mr, status
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	INTEGER 	CGRID_SIZE, CX_DIM_LEN, TM_LENSTR1,
@@ -79,8 +79,10 @@
      .			cxlist(maxezvars), mrlist(maxezvars),
      .			field_type(maxezvars),
      .			mr1, ndim, las_dim, fst_dim, dims(nferdims),
-     .			rec_to_read, buffblk
+     .			rec_to_read
+	INTEGER*8	i8_size, c_ptr_array
 	CHARACTER	VAR_CODE*128, delims*80, errbuff*100
+
 
 * --- end of introductory code ---
 
@@ -144,7 +146,6 @@
 
 * reserve and catalog space for the result
 	     CALL CREATE_MEM_VAR( cx_stack_ptr, mrlist(ivar), status )
-
 	     IF ( status .NE. ferr_ok ) GOTO 5000
 	   ENDIF
 
@@ -161,24 +162,29 @@
 	IF (mode_diagnostic) CALL DIAGNOSTIC_OUT('reading',mr,point_to_mr)
 
 * allocate a buffer big enough for one input ASCII record
-        CALL GET_WORK_SPC( 1024, buffblk, status ) ! really 4x1024
+	i8_size = 1024				
+        CALL GET_DYN_WORK_SPACE( i8_size, status )    
         IF ( status .NE. merr_ok ) GOTO 5500
 
 * create a null terminated string from the data set name (use record buffer)
 	CALL TM_FTOC_STRNG( ds_des_name(dset)
      .		     (:TM_LENSTR1(ds_des_name(dset))),
-     .		     memory(1,buffblk), 4*1024 )
+     .		     workmem(plegacy_work_buffer)%ptr, 4*1024 )
+
+* setup a c pointer array from the mrlist
+	CALL DYNMEM_MRLIST_C ( nvar, mrlist, c_ptr_array, status )
+        IF ( status .NE. merr_ok ) GOTO 5500
 
 * read the data via TMAP library routine
 * Status will report -1* variable number if the date/eurodate specification is wrong.
-
 	status = ferr_ok
 	CALL DECODE_FILE_JACKET (
-     .		  memory(1,buffblk), memory(1,buffblk),
+     .		  workmem(plegacy_work_buffer)%ptr,
+     .		  workmem(plegacy_work_buffer)%ptr,
      .		  delims, sf_skip(istep), rec_to_read, 4*1024, nvar,
-     .		  field_type, nread, mrlist, memory, mr_blk1,
-     .		  mem_blk_size, mr_bad_data, mr_c_pointer, status)
-
+     .		  field_type, nread, mrlist, c_ptr_array,
+     .		  mr_bad_data, mr_c_pointer, status)
+	CALL DYNMEM_FREE_PTR_ARRAY( c_ptr_array )
 	IF (status .NE. ferr_ok) GOTO 5800
 
 * update the variables with info about the number of records actually read
@@ -216,13 +222,12 @@
 	ENDIF
 
 * flag that all the data is available
-	DO 800 ivar = 1, nvar
+	DO ivar = 1, nvar
 	   IF (field_type(ivar) .NE. FTYP_MISSING) THEN
 	     mr1 = mrlist(ivar)
-	     mr_protected( mr1 ) = 1
-	     CALL MR_NOT_IN_USE( mr1 )	! decrement to 0=mr_not_in_use
+	     CALL MR_AVAILABLE(mr1)
 	   ENDIF
- 800	CONTINUE
+	ENDDO
 
 * the data region obtained may be inadequate for the request
 * ("cx" is request, "cx1" is available)
@@ -257,10 +262,12 @@
 	   WRITE ( errbuff, 1000 ) nvar20
            CALL WARN (errbuff)
 	ENDIF
- 1000   FORMAT ('Delimited file reading: Insufficient memory reading variable ', i4)
+ 1000   FORMAT ('Delimited file reading: Insufficient memory '
+     .        //'reading variable ', i4)
  1100	DO 5010 nleft = 1, nvar20-1	! delete all initialized so far
  5010	CALL DELETE_VARIABLE(mrlist(nleft))
-        CALL  RELEASE_WORK_SPC
+        CALL RELEASE_DYN_WORK_SPACE
+
  5500	RETURN
  5600	CALL ERRMSG( ferr_limits, status,
      .		ww_dim_name(idim)//' axis of '//VAR_CODE(cat_file_var,ask_var),

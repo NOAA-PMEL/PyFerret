@@ -1,0 +1,91 @@
+! bn_dynamic_gather.jnl
+! *sh* 3/2017
+
+! There's not really anything "dynamic" about this benchmark, except that it
+! excercises the split/gather improvements that were implemented together with
+! dynamic memory management
+
+
+! **************************************
+! create the test data
+spawn "mkdir -p tmp"     ! tmp directory to store files
+
+! see if the test file already exists
+SPAWN "ls tmp/test_dyn_mem.nc"
+IF ($SPAWN_STATUS) THEN
+  say test files already exist.  not re-creating them
+ELSE
+  define symbol saved_memory_size = ($FERRET_MEMORY)
+  set mem/size=50
+  define axis/x=1:1000:1 x1000
+  define axis/y=1:1000:1 y1000
+  define axis/z=1:2:1 z2
+  define axis/t=1:10:1 t10
+  define grid/x=x1000/y=y1000/z=z2/t=t10 gg
+  let v = x[g=gg]+y[g=gg]+z[g=gg]+t[g=gg]
+  save/clobber/file="tmp/test_dyn_mem.nc" v
+
+  define axis/t=1:1000:1 t1000
+  define axis/x=1:10:1   x10
+  define axis/y=1:100:1  y100
+  define axis/z=1:4:1 z4
+  let v1000 = x[gx=x10]+y[gy=y100]+z[gz=z4]+t[gt=t1000]
+  save/append/file="tmp/test_dyn_mem.nc" v1000
+
+  cancel variable/all
+  cancel mem/all
+  set memory/size=($saved_memory_size)
+ENDIF
+
+! ************************************
+
+use tmp/test_dyn_mem.nc
+show data
+
+! excercise under the least strict memory management
+CANCEL MODE FRUGAL
+GO bn_dynamic_gather.sub
+
+! now run the same tests under 3 different FRUGAL levels
+! save the outputs so they can be compared
+
+! excercise under the least strict memory management
+CANCEL REDIRECT
+SET REDIRECT/CLOBBER/FILE=bn_dynamic_gather_0.out
+CANCEL MODE FRUGAL
+SHOW MODE FRUGAL
+GO bn_dynamic_gather.sub
+
+! excercise under the default memory management
+CANCEL REDIRECT
+SET REDIRECT/CLOBBER/FILE=bn_dynamic_gather_30.out
+SET MODE FRUGAL    ! 30%
+SHOW MODE FRUGAL
+GO bn_dynamic_gather.sub
+
+! excercise under pretty strict memory management
+CANCEL REDIRECT
+SET REDIRECT/CLOBBER/FILE=bn_dynamic_gather_60.out
+SET MODE FRUGAL:60
+SHOW MODE FRUGAL
+GO bn_dynamic_gather.sub
+
+CANCEL REDIRECT
+
+! now compare the three output logs:
+! differences in *how* the results are computed are fine
+! differences in what the results are would be problems
+SAY **************************************************
+SAY ************* DIFF FRUGAL 0 TO 30 ****************
+SPAWN diff bn_dynamic_gather_0.out bn_dynamic_gather_30.out
+
+SAY **************************************************
+SAY ************* DIFF FRUGAL 0 TO 60 ****************
+SPAWN diff bn_dynamic_gather_0.out bn_dynamic_gather_60.out
+
+
+! deliberate error
+SET MODE IGNORE
+SET MODE FRUGAL:95
+SET MODE/LAST IGNORE
+

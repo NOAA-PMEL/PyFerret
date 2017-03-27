@@ -1,5 +1,5 @@
-	SUBROUTINE CREATE_PERMUTATION( memory,cx, msrc, perm, mdst, 
-     .				do_shrink, status )
+	SUBROUTINE CREATE_PERMUTATION( cx, msrc, perm, mdst, do_shrink,
+     .				       status )
 
 *
 *
@@ -53,6 +53,7 @@
 *v580  *acm* 11/04 transfer cx_cal_id, the calendar ID used when  
 *                  computing world coordinates
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
 * ... Ticket 1480: When writing to netCDF, check whether the region 
 *     on modulo axes is just one grid-cell longer than the axis length,
@@ -69,7 +70,6 @@
 * calling argument declarations:
 	LOGICAL do_shrink
 	INTEGER	cx, msrc, perm(nferdims), mdst, status
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	LOGICAL	table_entry_only
@@ -170,15 +170,19 @@
 * permute or kludge around permuting the data
 	IF ( table_entry_only .AND. .NOT.do_shrink) THEN
 * ... point to the original data using permuted limits
-	   CALL FREE_MEMORY( mr_blk1(mdst), mr_nblks(mdst) )
+* ... a duplicated pointer, only 
+*     mr_size of the table-entry-only mr will be zero
+*     total_mem need not be adjusted cuz no actual new memory is involved
+	   essential_mem = essential_mem - mr_size(mdst)
+	   CALL FREE_MR_DYNMEM( mdst )
+	   memry(mdst)%ptr => memry(msrc)%ptr
+
 	   mr_c_pointer(mdst) = mr_c_pointer(msrc)
-	   mr_blk1     (mdst) = mr_blk1(msrc)
-	   mr_nblks    (mdst) = mr_nblks(msrc)
 	   mr_protected(mdst) = mr_table_entry_only
 	ELSE
 * ... permute the data
-	   CALL PERMUTE( cx, memory(1, mr_blk1(msrc)), msrc,
-     .			     memory(1, mr_blk1(mdst)), mdst, perm )
+	   CALL PERMUTE( cx, memry(msrc)%ptr, msrc,
+     .			     memry(mdst)%ptr, mdst, perm )
 	ENDIF
 
 	RETURN

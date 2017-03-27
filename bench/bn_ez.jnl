@@ -68,6 +68,10 @@ LIST X1
 SHOW DATA
 
 ! truncate reading by grid size limit
+! V702: *sh* note that with 3 columns of pairs and a request to read only
+! 8 values total, the final record is incomplete.  These final values
+! **do not get initialized**.  This has been reported in trac #2509
+! The presence of uninitialized values can throw off the formatting of the output
 DEFINE AXIS/X=1:8:1 xez3
 DEFINE GRID/X=XEZ3 GEZ3
 FILE/VAR="X1,X2"/COLUMNS=6/GRID=GEZ3 EZ.DAT

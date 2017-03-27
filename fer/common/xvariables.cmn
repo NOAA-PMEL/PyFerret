@@ -63,32 +63,25 @@
 *		   added space at the top of the isp stack for nferdims auxvars
 * V695+ *sh* 5/15  added uvar_c_cache_ptr for c-malloc caching of aux vars
 * V698+ *sh* 6/15  changed is_sum from REAL to INTEGER
-* V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
+* V701 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
 *                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
+* V702 *sh* 1/17   implement malloc-based dynamic memory management
+*                  remove block-managed "memory" array
 
 * Terminology:
 *	"mr"	- "memory resident"
 *	("mv")	  table of information about variables currently stored in
 *		  memory
-*	"mblk"	- related to management of array "memory" where bulk data is
-*		  stored
 *	"uvar"	- information about user-defined variables (and implicit user-
 *		  defined variables given as command arguments)
 *	"is"	- pertaining to the "interpretation stack" on which user 
 *		  variables are evaluated, axis transformations are executed
 *		  and grids in awkward planes are assembled
 
-* BULK MEMORY MANAGEMENT:
-*  The free bulk memory list is organized as follows:
-*     o Each contiguous region of free memory is identified by its starting
-*	block number in from array "memory" - usually "mblk"
-*     o Each contiguous region of free memory contains its size (mblk_size)
-*	and link pointers to the surrounding free regions (mblk_&link)
-*     o The linked list is ordered by increasing mblk value
-*  Bulk memory in use is removed from the free list.  Its starting block #
-*   is found in "mr_blk1" (of the memory resident table) of the variable
-*   using this memory.  Its size is redundantly stored (an historical artifact)
-*   in both "mr_nblks" and mblk_size( start_block )
+* BULK FERRET VARIABLE MEMORY MANAGEMENT:
+*  Each line number in the memory variable table is the index into a FORTRAN 90
+*  array of memory pointers.  under the hood those pointers are actually
+*  created by calls to malloc in c (or equivalent in python)
 
 * MEMORY RESIDENT TABLE MANAGEMENT:
 *  The slots of the memory variable table are organized as a number of doubly
@@ -108,24 +101,34 @@
 *   removed from the list if they are in-progress or in-use.  See mr_protected.
 
 * explanation of selected variables:
-*	mr_blk1     - First memory block of contiguous storage for this var.
-*	mr_nblks    -	Number of contiguous storage blocks for this variable
+*	memry	  - array of F90 pointers for memory resident (mr) vars
+*	workmem   - array of temporary "work" memory pointers
+*                   (index 1 is managed specially -- plegacy_work_buffer)
+*	total_mem - total amount of mr memory currently in use
+*	peak_mem  - peak amount of mr memory used since last SET MEM/SIZE
+*	permanent_mem - amount of mr memory memory used by LOAD/PERMANENT
+*	essential_mem - amount of mr memory essential to current command
+*                       i.e. mr_protected flagged as mr_temporary,
+*                            mr_in_progress or in use (> mr_not_protected)
+*       completed_args_mem - amount of mr memory tied up by command arg already
+*	               computed (also included in the essential_mem total)
+*	mr_size	  - memory size occupied by each mr
+*	ws_size   - memory size occupied by each work buffer
+*	max_mem_allowed - size as specified by SET MEMORY/SIZE=
+*
+*       mr_size	    - number of words of storage allocated for this variable
 *			See further documemtation in GET_MEMORY
-*	mr_trans    - designates what mathematical transformations have been
+*	mr_trans    -   designates what mathematical transformations have been
 *			applied to the data along each axis (see FERRET.PARM)
 *	mv_flink      - forward and backwards links into the memory variable
 *	mv_blink	table.  Stored variables are hashed into pmv_npiles
 *			piles with start pointers stored in the negative
 *			subscripts of these arrays
-*	mblk_flink    - sizes and links of free contiguous regions
-*	mblk_size	available in array "memory"
-*	mblk_blink
 *
 *	mr_del_flink  -	forward and backwards links for the chain of variables
 *	mr_del_blink	that are available to be deleted if memory space runs
 *			short
-*	mr_del_last_mblk - memory region freed by the last deletion
-*	mr_del_last_size - size of that memory region
+*	mr_del_last_size - size of memory region freed by the last deletion
 *
 *	mr_protected  - flags variables as "deleted", "in_progress",
 *			"perm_protrcted" or "not_protected".  Variables which
@@ -191,24 +194,30 @@
 * memory storage capacity
 	INTEGER		max_mrs,
      .			max_mr_avail,
-     .			pmem_blk_size,
-     .			pmax_mem_blks,
+     .			pmax_mem_default,
+     .			pint_size_test,
+     .			max_ws,
+     .			plegacy_work_buffer,
      .			pmv_npiles,
      .			pmv_nocache_pile,
      .			pmv_work_var_pile,
      .			pmv_adjoint_var_pile,
      .			pmv_lowest_head,
-     .			dummy_mr
+     .			dummy_mr,
+     .			max_splits
 	PARAMETER     ( max_mrs   = 501,
      .			dummy_mr  = max_mrs,
+     .			max_ws    = 8,
+     .			plegacy_work_buffer = 1,
      .			max_mr_avail = max_mrs - 1,
-     .			pmem_blk_size = 2*(160*100*4/10), !2* 9/01 see ferret.h
-     .			pmax_mem_blks   = 2000,
+     .			pmax_mem_default = 25600000,  !25.6 megawords
+     .			pint_size_test = -999,   ! if needed use c __WORDSIZE
      .			pmv_npiles     = 299,	! prime # of hash piles
      .			pmv_nocache_pile = -pmv_npiles - 1,
      .			pmv_work_var_pile = -pmv_npiles - 2,
      .			pmv_adjoint_var_pile = -pmv_npiles - 3,
-     .			pmv_lowest_head = -pmv_npiles - 5)  ! -4, -5 unused
+     .			pmv_lowest_head = -pmv_npiles - 5,  ! -4, -5 unused
+     .			max_splits = 10 )
 ! pmv_adjoint_pile reserved for future EF's returning multiple results
 
 	INTEGER		max_uvar,
@@ -224,10 +233,48 @@
 
 ********************************************************************************
 ******				COMMON DECLARATION			  ******
+* ******* added 1/17
+* dynamic memory pointer areas
+* 2 tables: mr, ws (work storage), (possible 3rd future cs - coordinate store)
+* ... an array of pointers to 1D arrays in F90
+        TYPE mem_table_slot
+           SEQUENCE     ! force data elements to be memory-contiguous
+           REAL(8), POINTER :: ptr(:)
+        END TYPE
+        TYPE(mem_table_slot) :: memry(max_mrs)
+        TYPE(mem_table_slot) :: workmem(max_ws)
+        INTEGER*8 total_mem, peak_mem, permanent_mem, essential_mem,
+     .		  peak_essential_mem, completed_args_mem, max_mem_allowed
+	INTEGER mr_size, ws_size
+	LOGICAL need_memlim_warning
+        COMMON / XDYN_MEM /  
+     .          memry,
+     .		workmem,
+     .          total_mem,
+     .		peak_mem,
+     .		permanent_mem,
+     .	        essential_mem,
+     .		peak_essential_mem,
+     .		completed_args_mem,
+     .		max_mem_allowed,
+     .		mr_size(max_mrs),
+     .		ws_size(max_ws),
+     .		need_memlim_warning
 
-	COMMON / XMEM_DESCR /
-     .		mem_blk_size,
-     .		max_mem_blks
+* *******
+
+	INTEGER nsplits, split_var, split_cat, split_axis, split_frag,
+     .			 split_trans, split_repeats
+	INTEGER*8 deferred_committed_mem
+        COMMON / XSPLIT_GATHER /  
+     .		deferred_committed_mem,
+     .		nsplits,
+     .		split_var  (max_splits),
+     .		split_cat  (max_splits),
+     .		split_axis (max_splits),
+     .		split_trans(max_splits),
+     .		split_frag (max_splits),
+     .		split_repeats(max_splits)
 
 * Reordered as REAL*8, REAL (which may be REAL*8 or REAL*4), INTEGER, LOGICAL,
 * CHARACTER to eliminate padding requirements from the compiler.
@@ -255,8 +302,6 @@
      .		mr_lo_ss	( max_mrs, nferdims ),
      .		mr_hi_ss	( max_mrs, nferdims ),
      .		mr_protected	( max_mrs ),
-     .		mr_blk1		( max_mrs ),
-     .		mr_nblks	( max_mrs ),
      .		mr_data_set	( max_mrs ),
      .		mr_category	( max_mrs ),
      .		mr_variable	( max_mrs ),
@@ -265,16 +310,13 @@
      .		mr_naux   	( max_mrs ),
      .		mr_aux_var	( nferdims, max_mrs ),
      .		mr_aux_cat	( nferdims, max_mrs ),
-     .		mblk_flink      ( 0:pmax_mem_blks ),
-     .		mblk_blink      ( 0:pmax_mem_blks ),
-     .		mblk_size       ( 0:pmax_mem_blks ),
      .		mv_flink        ( pmv_lowest_head:max_mrs ),
      .		mv_blink        ( pmv_lowest_head:max_mrs ),
      .		mr_del_flink    ( 0:max_mrs ),
      .		mr_del_blink    ( 0:max_mrs ),
-     .		mr_del_last_mblk,
      .		mr_del_last_size,
      .		num_uvars_in_cmnd,
+     .		current_cmnd_uvar,
      .		uvar_lo_ss	 ( max_uvar, nferdims ),
      .		uvar_hi_ss	 ( max_uvar, nferdims ),
      .		uvar_num_items   ( max_uvar ),
@@ -303,6 +345,7 @@
      .		is_uvar 	( max_intrp ),
      .		is_mr		( max_intrp ),
      .		is_aux_ptr 	( max_intrp ),
+     .		is_deferred_mem ( max_intrp ),
      .
      .		mr_unstand_grid	 ( max_mrs ),
      .		uvar_by_ss	 ( nferdims, max_uvar ),
@@ -322,21 +365,14 @@
 ********************************************************************************
 ******			COMMON VARIABLE TYPE DECLARATIONS		  ******
 
-	INTEGER	mem_blk_size,
-     .		max_mem_blks
-
-	INTEGER	mblk_flink,
-     .		mblk_blink,
-     .		mblk_size
-
 	INTEGER	mv_flink,
      .		mv_blink,
      .		mr_del_flink,
      .		mr_del_blink,
-     .		mr_del_last_mblk,
      .		mr_del_last_size
 
-	INTEGER		num_uvars_in_cmnd
+	INTEGER		num_uvars_in_cmnd,
+     .		        current_cmnd_uvar
 
 	LOGICAL		mr_unstand_grid
 
@@ -360,8 +396,6 @@
      .			mr_category	,
      .			mr_variable	,
      .			mr_protected	,
-     .			mr_blk1		,
-     .			mr_nblks	,
      .			mr_grid 	,
      .			mr_type 	,
      .			mr_naux		,
@@ -415,6 +449,8 @@
      .			is_mr,
      .			is_aux_ptr,
      .			is_sum
+
+	INTEGER*8	is_deferred_mem
 
 * equivalences to assist with declaration statements
 	INTEGER mr_lo_s1( max_mrs ),

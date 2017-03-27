@@ -1,4 +1,4 @@
-	SUBROUTINE DO_AUX_VAR_REGRID( memory, axis_list, naxis, aux_has_cell_pts,
+	SUBROUTINE DO_AUX_VAR_REGRID(  axis_list, naxis, aux_has_cell_pts,
      .				      src,  msrc,  src_cx,
      .				      dst,  mdst,  dst_cx,
      .				      aux1, maux1, aux1_cx,
@@ -61,7 +61,6 @@
 	INTEGER	naxis, axis_list(naxis), status,
      .		msrc, mdst, maux1, maux2, maux3,
      .		src_cx, dst_cx, aux1_cx, aux2_cx, aux3_cx
-	REAL	memory( mem_blk_size, max_mem_blks )
         REAL    src(*), dst(*), aux1(*), aux2(*), aux3(*)
 
 * internal variable declarations

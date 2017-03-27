@@ -1,5 +1,4 @@
 SRCS_C = \
-add_c_pointer.c\
 backing_store_enabled.c\
 batch_graphics.c\
 binaryRead.c\
@@ -17,6 +16,7 @@ check_nan_data_sub.c\
 copy_buffered_window.c\
 compare_c_strings.c\
 copy_c_string.c\
+dynmemUtil.c\
 perl_read.c\
 EF_InternalUtil.c\
 fermain_c.c\
@@ -25,9 +25,13 @@ ferret_query.c\
 free_cached_full_array.c\
 free_c_pointer.c\
 free_c_string_array.c\
+free_dyn_mem.c\
+get_c_pointer.c\
 get_c_string.c\
 get_c_string_len.c\
 get_max_c_string_len.c\
+get_mr_mem.c\
+get_ws_mem.c\
 get_offset_c_string.c\
 get_offset_c_string_len.c\
 get_sys_cmnd.c\
@@ -36,6 +40,8 @@ grab_image_xwd.c\
 init_c_string_array.c\
 linux_routines_c.c\
 list.c\
+nullify_mr.c\
+nullify_ws.c\
 put_frame.c\
 recover_cached_2d_array_point.c\
 recover_cached_full_array.c\

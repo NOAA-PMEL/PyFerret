@@ -1,4 +1,4 @@
-	SUBROUTINE IS_STRING( memory, *, *, status )
+	SUBROUTINE IS_STRING(  *, *, status )
 
 * create a string  "variable" in memory
 
@@ -20,7 +20,6 @@
 
 * calling argument declarations:
 	INTEGER	status
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	INTEGER	MGRID_SIZE, mr, cx, uvar, item, start, end
@@ -47,7 +46,7 @@
 
 * save the pointer array address in cx_c_pointer
 	CALL INIT_C_STRING_ARRAY( MGRID_SIZE(mr),
-     .				  memory(1,mr_blk1(mr)),
+     .				  memry(mr)%ptr,
      .				  mr_c_pointer(mr)      )
 
 * determine the string to be stored

@@ -1,4 +1,4 @@
-	SUBROUTINE XEQ_WIRE( memory )
+	SUBROUTINE XEQ_WIRE
 
 *
 *
@@ -57,6 +57,7 @@
 * V552: *acm* 5/03 add argument use_cell to DISP_SET_UP call (not used by wire)
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *                  A time axis may be a T axis or F axis
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -71,14 +72,12 @@
 
 	
 * calling argument declarations:
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	LOGICAL	  no_range, overlay, no_labels, transpz, got_vpoint,
      .		  is_logh, is_logv, is_shade, use_cell, set_up, inc_grid
 	INTEGER	  status, qp,
-     .		  ax1_blks, ax1_start,
-     .		  ax2_blks, ax2_start, density
+     .		  ax1_work, ax2_work, density
 	REAL	  only_val, aspect
 	PARAMETER (aspect = 0.0) 		!kob 12/96
 	CHARACTER vpoint*24, zlims*24, zscale*24
@@ -92,8 +91,7 @@
 	CALL START_PPLUS
 
 * get the data (possibly ?? on a slightly oversized region)
-	CALL DISP_DATA_SET_UP( memory,
-     .		ax1_start, ax1_blks, ax2_start, ax2_blks, status )
+	CALL DISP_DATA_SET_UP(  ax1_work, ax2_work, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
 
 * initialize
@@ -150,7 +148,7 @@
 * set up the axes and title and load the data into PPLUS
 
 	inc_grid = set_up
-	CALL DISP_SET_UP   ( 	memory,
+	CALL DISP_SET_UP   ( 	
      .				not_vector,
      .                          is_shade,
      .                          use_cell,
@@ -167,8 +165,8 @@
      .				num_uvars_in_cmnd,
      .				is_cx,		! pass list
      .				is_uvar,	
-     .				memory( 1, ax1_start ),
-     .				memory( 1, ax2_start ),
+     .				workmem(ax1_work)%ptr,
+     .				workmem(ax2_work)%ptr,
      .				-1, 			! auto pen select
      .				set_up,
      .				status )
@@ -205,8 +203,8 @@
 	ENDIF
 
 * release the memory used for axis buffers
- 1000 	CALL FREE_MEMORY( ax2_start, ax2_blks )
- 	CALL FREE_MEMORY( ax1_start, ax2_blks )
+ 1000 	CALL FREE_WS_DYNMEM( ax1_work )
+	CALL FREE_WS_DYNMEM( ax2_work )
 	CALL UNPROTECT_CMND_DATA			! 1/94
  5100	RETURN
 

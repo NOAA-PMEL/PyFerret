@@ -1,7 +1,5 @@
-	SUBROUTINE GET_WORK_SPC ( size, start_block, status )
+	SUBROUTINE MR2FREELIST ( mr )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -35,49 +33,27 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* provide a region of temporary working space to the calling routine.
-* For greatest speed simply reuse the last provided if it is large enough
+* return an mr slot to the free list
+* (this routine normally called after an error condition aborts mr creation)
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
-* revision 0.0 - 2/19/87
-* V510: *sh 1/2000 - bug fix when unable to allocate requested work space
-*        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
-* V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
+* V702 1/16 *sh*: lines copied from DELETE_VARIABLE
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
 	include 'ferret.parm'
-	include 'errmsg.parm'
 	include 'xvariables.cmn'
-	include 'xwork_space.cmn'
+	include 'xprog_state.cmn'
 
 * calling argument declarations:
-	INTEGER	size, start_block, status
+	INTEGER mr
 
-* internal variable declarations:
-	INTEGER grid_blocks
+* return the slot to the memory variable free list
+        mv_flink( mr ) = mv_flink( 0 )
+        mv_blink( mr ) = unspecified_int4               ! house keeping
+        mv_flink( 0 ) = mr
 
-* --- end of introductory code ---
-
-	IF ( size .LE. sp_last_size ) THEN
-	   status = ferr_ok
-
-	ELSE
-	   CALL RELEASE_WORK_SPC
-* COMPUTE # BLOCKS NEEDED
-	   grid_blocks = ( size + mem_blk_size - 1 ) / mem_blk_size
-	   CALL GET_MEMORY( size, grid_blocks, sp_start_block, sp_num_blocks, status )
-	   IF ( status .EQ. ferr_ok ) THEN
-	      sp_last_size = sp_num_blocks * mem_blk_size
-	   ELSE
-	      sp_last_size = 0
-	   ENDIF
-	ENDIF
-
-	start_block = sp_start_block
 	RETURN
 	END
-

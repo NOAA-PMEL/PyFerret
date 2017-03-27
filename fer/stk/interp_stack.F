@@ -1,4 +1,4 @@
-	SUBROUTINE INTERP_STACK ( memory, isp_base, dflt_cx,
+	SUBROUTINE INTERP_STACK (  isp_base, dflt_cx,
      .				  name_code, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -108,8 +108,9 @@
 *                  variables, pre-defined axes and grids, cat_calc_var.
 * V680 *acm* 5/16  Fix ticket 2366, putting the subspan void point and modulo
 *                  replications before transformations.
-* V7   5/12 *acm* Union aggregations: DEFINE DATA/AGG/U
-* V702 *sh* 11/16 split/gather on compressed axes -- see IS_TRANS calls
+* V7    5/12 *acm* Union aggregations: DEFINE DATA/AGG/U
+* V702 11/16 *sh*  split/gather on compressed axes -- see IS_TRANS calls
+* V702  1/17 *sh*  for trac enhancement #2369 -- dynamic memory management
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -118,11 +119,11 @@
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xinterrupt.cmn'
+	include	'xprog_state.cmn'
 	include	'xfr_grid.cmn'
 
 * calling argument declarations:
 	INTEGER		isp_base, dflt_cx, status
-	REAL		memory(*)
 	CHARACTER*(*)	name_code
 
 * internal variable declarations:
@@ -130,10 +131,12 @@
      .			ITSA_MODULO_GCF, TM_ITS_SUBSPAN_MODULO,
      .			look_again, modulo_axes(nferdims), 
      .			explicit_qualifiers, is_remote_var
-	INTEGER		UVAR_NUMBER, KNOWN_GRID, CGRID_AXIS, 
+	INTEGER		UVAR_NUMBER, KNOWN_GRID, CGRID_AXIS,
      .			CAXIS_MODLEN, TM_AXES_REVERSED, rev_axes(nferdims),
      .			cx, mr, idim, cat, act, uvar_pointer,
-     .			com_mr, var, dset
+     .			com_mr, var, dset, slen, slen2
+!	INTEGER*8	CGRID_SIZE8, cxsize
+	CHARACTER	TM_FMT*12, num_str*12, num_str2*12
 
 * external routines passed
 	EXTERNAL	DO_SHIFT, DO_SMTH_BOX, DO_FILL_AVE, DO_AVERAGE,
@@ -293,20 +296,24 @@
 	var  = cx_variable( cx )
 	dset = cx_data_set( cx )
 
+! check that there are no corrupted string arrays in memory
+! use for help diagnosing string pointer errors
+!	CALL SANITY_CHECK_STRING_ARRAYS("INTERP_STACK")
+
 * constants and pseudo-variables and counter variables may be handled immediately
 * ... get user variable grids if unknown
 	IF     ( dset .EQ. pdset_dummy ) THEN
-	   CALL IS_DUMMY ( memory, *2000, status )
+	   CALL IS_DUMMY (  *2000, status )
 	   GOTO 5000
 	ELSEIF ( cat .EQ. cat_pseudo_var ) THEN
-	   CALL IS_PSEUDO ( memory, *2000, status )
+	   CALL IS_PSEUDO (  *2000, status )
 	   GOTO 5000
 	ELSEIF ( cat .EQ. cat_constant ) THEN
-	   CALL IS_CONSTANT( memory, *2000, status )
+	   CALL IS_CONSTANT(  *2000, status )
 	   GOTO 5000
 * ... get a counter variable
 	ELSEIF ( cat .EQ. cat_counter_var ) THEN
-	   CALL IS_COUNTER_VAR   (var, memory, *2000, status )
+	   CALL IS_COUNTER_VAR   (var,  *2000, status )
 	   GOTO 5000
 
         ENDIF
@@ -324,7 +331,7 @@
         CALL COMPLETE_MISSING_LIMITS( cx )
 
 * check in memory to see if we already have the data 
-	CALL FIND_MEM_VAR_INCL_C_CACHE( cx, mr, search_by_value, memory )
+	CALL FIND_MEM_VAR_INCL_C_CACHE( cx, mr, search_by_value )
 	IF ( mr .GT. mr_nonexist ) THEN
 * ... yes - already in memory
 	   is_mr( isp ) = mr
@@ -334,6 +341,31 @@
 	   ENDIF
 	   GOTO 2000						! pop stack
 	ENDIF
+
+* check to make sure that this result can fit into memory.
+*   added 2/2017 just in order to generate earlier, friendlier error message
+! problem: the context, at least when a pseudo-variable is being evaluated
+! may contain context limits (inherited from SET REGION or command qualifiers)
+! that are actually irrelevant to the variable being evaluated.  The result is
+! that CGRID_SIZE8 may return a result that is much larger than what is correct
+! I left this block of code in just in case someone ever wants to follow this
+! path.  It would be nicer to issue an error message at this early point.
+!	IF (.NOT.mode_state(pmode_greedy,1)) THEN
+!	   cxsize = CGRID_SIZE8( cx )
+!	   IF (cxsize .GT. max_mem_allowed) THEN
+!	      IF (cxsize .EQ. 99999999 ) THEN
+!	         CALL ERRMSG(ferr_limits,status,
+!     .		"Did you use an ABSTRACT axis without specifying limits?",
+!     .			*5000)
+!	      ELSE
+!	         num_str  = TM_FMT( max_mem_allowed/1.E6, 3, 12, slen)
+!		 num_str2 = TM_FMT( cxsize/1.E6,          3, 12, slen2)
+!	         CALL ERRMSG( ferr_insuff_memory,status,
+!     .		 "Size of request="//num_str2(:slen2)//
+!     .		 " but currently SET MEMORY/SIZE="//num_str(:slen), *5000)
+!	      ENDIF
+!	   ENDIF
+!	ENDIF
 
 ******************************************************************************
 * * * * * * * * STRIP AWAY TRANSFORMATIONS ONTO STACK * * * * * * * * * * * * 
@@ -453,11 +485,11 @@
 	   is_remote_var = ( uvar_remote(var) )
 
 	   IF (.NOT. is_remote_var) THEN
-	      CALL IS_ALGEBRA( memory, *10, *2000, isp_base, status )
+	      CALL IS_ALGEBRA(  *10, *2000, isp_base, status )
 	   ELSE
 	   
 	      CALL INIT_FTDS_DSET ( cx_data_set(cx), var, status)
-	      CALL IS_READ_REMOTE( memory, *10, *2000, status )
+	      CALL IS_READ_REMOTE(  *10, *2000, status )
 	   ENDIF
 
 	   GOTO 5000
@@ -483,8 +515,7 @@
  300	      CONTINUE
 	      IF ( look_again ) THEN
 * ...         check again in memory - maybe we already have it after all
-	         CALL FIND_MEM_VAR_INCL_C_CACHE( cx, mr,
-     .						search_by_value, memory )
+	         CALL FIND_MEM_VAR_INCL_C_CACHE( cx, mr, search_by_value)
 	         IF ( mr .GT. mr_nonexist ) THEN
 * ...            yes - already in memory ... worth the trouble
 	            is_mr( isp ) = mr
@@ -499,27 +530,27 @@
 	      ENDIF
 	   ENDIF
 
-	   CALL IS_READ( memory, *10, *2000, status )
+	   CALL IS_READ(  *10, *2000, status )
 	   GOTO 5000
 
 * ... get a "constant variable" (say, "{1,3,5}")
 	ELSEIF ( cat .EQ. cat_const_var	) THEN
-	   CALL IS_CONST_VAR   ( memory, *10, *2000, status )
+	   CALL IS_CONST_VAR   (  *10, *2000, status )
 	   GOTO 5000
 
 * ... get a string in qouble quotes
 	ELSEIF ( cat .EQ. cat_string	) THEN
-	   CALL IS_STRING   ( memory, *10, *2000, status )
+	   CALL IS_STRING   (  *10, *2000, status )
 	   GOTO 5000
 
 * ... get an attribute value
 	ELSEIF ( cat .EQ. cat_attrib_val ) THEN
-	   CALL IS_ATTRIB_VAL   ( memory, *10, *2000, status )
+	   CALL IS_ATTRIB_VAL   (  *10, *2000, status )
 	   GOTO 5000
 
 * ... get a counter variable
 c	ELSEIF ( cat .EQ. cat_counter_var ) THEN
-c	   CALL IS_COUNTER_VAR   ( var, memory, *10, *2000, status )
+c	   CALL IS_COUNTER_VAR   ( var,  *10, *2000, status )
 c	   GOTO 5000
 
 	ELSE
@@ -554,7 +585,7 @@ c	   GOTO 5000
 	   STOP 'isp_undfl'	! IS stack underflowed
 	ELSEIF ( isp .EQ. isp_base ) THEN
 * ... yes - clean up and go home
-	   CALL RELEASE_WORK_SPC
+	   CALL RELEASE_DYN_WORK_SPACE
 	   RETURN
 	ELSE
 *    ... since the stack activity at this level is now completed it contains a
@@ -574,122 +605,122 @@ c	   GOTO 5000
 	   IF     ( act .EQ. isact_request		) THEN
 	      GOTO 10					! grid just obtained
 	   ELSEIF ( act .EQ. isact_reconcile		) THEN
-	      CALL IS_RECONCILE( memory, *10, *2500, status ) ! 11/95
+	      CALL IS_RECONCILE(  *10, *2500, status ) ! 11/95
 	   ELSEIF ( act .EQ. isact_algebra		) THEN
-	      CALL IS_ALGEBRA( memory, *10, *2500, isp_base, status )
+	      CALL IS_ALGEBRA(  *10, *2500, isp_base, status )
 	   ELSEIF ( act .EQ. isact_modulo		) THEN
-	      CALL IS_MODULO( memory, *10, *2500, status )     ! 12/94
+	      CALL IS_MODULO(  *10, *2500, status )     ! 12/94
 	   ELSEIF ( act .EQ. isact_subspan_fill		) THEN
-	      CALL IS_SUBSPAN_FILL( memory, *10, *2500, status )! 7/02
+	      CALL IS_SUBSPAN_FILL(  *10, *2500, status )! 7/02
 	   ELSEIF ( act .EQ. isact_reverse		) THEN
-	      CALL IS_REVERSE( memory, *10, *2500, status )     ! 2/95
+	      CALL IS_REVERSE(  *10, *2500, status )     ! 2/95
 	   ELSEIF ( act .EQ. isact_gather		) THEN
-	      CALL IS_GATHER( memory, *10, *2500, status )
+	      CALL IS_GATHER(  *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_aggregate_gather	) THEN
-	      CALL IS_AGGREGATE_GATHER( memory, *10, *2500, status )
+	      CALL IS_AGGREGATE_GATHER(  *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_get_union_member	) THEN
-	      CALL IS_UNION_MEMBER( memory, *10, *2500, status )
+	      CALL IS_UNION_MEMBER(  *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_sample		) THEN
-	      CALL IS_SAMPLE( memory, *10, *2500, status )
+	      CALL IS_SAMPLE(  *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_interp		) THEN
-	      CALL IS_TRANS( memory, DO_INTERPOLATE, *10, *2500, status )
+	      CALL IS_TRANS(  DO_INTERPOLATE, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_average		) THEN
-	      CALL IS_TRANS( memory, DO_AVERAGE, *10, *2500, status )
+	      CALL IS_TRANS(  DO_AVERAGE, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_avg_wgt		) THEN
-	      CALL IS_TRANS( memory, DO_AVG_WGT, *10, *2500, status )
+	      CALL IS_TRANS(  DO_AVG_WGT, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_4d_ave		) THEN	! 7/96
-	      CALL IS_TRANS( memory, DO_4D_AVE, *10, *2500, status )
+	      CALL IS_TRANS(  DO_4D_AVE, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_avg_4d_wgt		) THEN	
-	      CALL IS_TRANS( memory, DO_4D_AVE_WGT, *10, *2500, status )
+	      CALL IS_TRANS(  DO_4D_AVE_WGT, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_integ_def		) THEN	! 7/96
-	      CALL IS_TRANS( memory, DO_INTEG_DEF, *10, *2500, status )
+	      CALL IS_TRANS(  DO_INTEG_DEF, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_4d_int_def		) THEN
-	      CALL IS_TRANS( memory, DO_4D_INT_DEF, *10, *2500, status )
+	      CALL IS_TRANS(  DO_4D_INT_DEF, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_shift		) THEN
-	      CALL IS_TRANS( memory, DO_SHIFT, *10, *2500, status )
+	      CALL IS_TRANS(  DO_SHIFT, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_box		) THEN
-	      CALL IS_TRANS( memory, DO_SMTH_BOX, *10, *2500, status )
+	      CALL IS_TRANS(  DO_SMTH_BOX, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_box_p		) THEN
-	      CALL IS_TRANS( memory, DO_SMTH_BOX_P, *10, *2500, status )
+	      CALL IS_TRANS(  DO_SMTH_BOX_P, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_binml		) THEN
-	      CALL IS_TRANS( memory, DO_SMTH_BINML, *10, *2500, status )
+	      CALL IS_TRANS(  DO_SMTH_BINML, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_hanng		) THEN
-	      CALL IS_TRANS( memory, DO_SMTH_HANNG, *10, *2500, status )
+	      CALL IS_TRANS(  DO_SMTH_HANNG, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_max		) THEN
-	      CALL IS_TRANS( memory, DO_SMTH_MAX, *10, *2500, status )
+	      CALL IS_TRANS(  DO_SMTH_MAX, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_median		) THEN
-	      CALL IS_TRANS( memory, DO_SMTH_MEDIAN, *10, *2500, status )
+	      CALL IS_TRANS(  DO_SMTH_MEDIAN, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_min		) THEN
-	      CALL IS_TRANS( memory, DO_SMTH_MIN, *10, *2500, status )
+	      CALL IS_TRANS(  DO_SMTH_MIN, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_parzn		) THEN
-	      CALL IS_TRANS( memory, DO_SMTH_PARZN, *10, *2500, status )
+	      CALL IS_TRANS(  DO_SMTH_PARZN, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_welch		) THEN
-	      CALL IS_TRANS( memory, DO_SMTH_WELCH, *10, *2500, status )
+	      CALL IS_TRANS(  DO_SMTH_WELCH, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_fill_ave		) THEN
-	      CALL IS_TRANS( memory, DO_FILL_AVE, *10, *2500, status )
+	      CALL IS_TRANS(  DO_FILL_AVE, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_fill_interp		) THEN
-	      CALL IS_TRANS( memory, DO_FILL_INTERP, *10, *2500, status )
+	      CALL IS_TRANS(  DO_FILL_INTERP, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_fill_near		) THEN
-	      CALL IS_TRANS( memory, DO_FILL_NEAR, *10, *2500, status )
+	      CALL IS_TRANS(  DO_FILL_NEAR, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_deriv_fwrd		) THEN
-	      CALL IS_TRANS( memory, DO_DERIV_FRWD, *10, *2500, status )
+	      CALL IS_TRANS(  DO_DERIV_FRWD, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_deriv_cntr		) THEN
-	      CALL IS_TRANS( memory, DO_DERIV_CNTR, *10, *2500, status )
+	      CALL IS_TRANS(  DO_DERIV_CNTR, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_deriv_bkwd		) THEN
-	      CALL IS_TRANS( memory, DO_DERIV_BKWD, *10, *2500, status )
+	      CALL IS_TRANS(  DO_DERIV_BKWD, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_min			) THEN
-	      CALL IS_TRANS( memory, DO_MIN, *10, *2500, status )
+	      CALL IS_TRANS(  DO_MIN, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_max			) THEN
-	      CALL IS_TRANS( memory, DO_MAX, *10, *2500, status )
+	      CALL IS_TRANS(  DO_MAX, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_integ_indef		) THEN
-	      CALL IS_TRANS( memory, DO_INT_INDEF, *10, *2500, status )
+	      CALL IS_TRANS(  DO_INT_INDEF, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_locate		) THEN
-	      CALL IS_TRANS( memory, DO_LOCATE, *10, *2500, status )
+	      CALL IS_TRANS(  DO_LOCATE, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_sum  		) THEN
-	      CALL IS_TRANS( memory, DO_SUM, *10, *2500, status )
+	      CALL IS_TRANS(  DO_SUM, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_run_sum		) THEN
-	      CALL IS_TRANS( memory, DO_RUN_SUM, *10, *2500, status )
+	      CALL IS_TRANS(  DO_RUN_SUM, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_variance		) THEN
-	      CALL IS_TRANS( memory, DO_VARIANCE, *10, *2500, status )
+	      CALL IS_TRANS(  DO_VARIANCE, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_std_dev		) THEN
-	      CALL IS_TRANS( memory, DO_STDDEV, *10, *2500, status )
+	      CALL IS_TRANS(  DO_STDDEV, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_good_pt		) THEN
-	      CALL IS_TRANS( memory, DO_NGOOD, *10, *2500, status )
+	      CALL IS_TRANS(  DO_NGOOD, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_bad_pt		) THEN
-	      CALL IS_TRANS( memory, DO_NBAD, *10, *2500, status )
+	      CALL IS_TRANS(  DO_NBAD, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_wgted_eq		) THEN
-	      CALL IS_TRANS( memory, DO_DIST_LOC, *10, *2500, status )
+	      CALL IS_TRANS(  DO_DIST_LOC, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_regrid		) THEN
-	      CALL IS_REGRID( memory, *2500, status )
+	      CALL IS_REGRID( *2500, status )
 	   ELSEIF ( act .EQ. isact_auxvar_regrid
      .         .OR. act .EQ. isact_aux_plot_vars	) THEN
-	      CALL IS_AUXVAR_REGRID( memory, *10, *2500, status )
+	      CALL IS_AUXVAR_REGRID(  *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_autogrid		) THEN
 	      CALL IS_AUTOGRID( *2500, status )
 	   ELSEIF ( act .EQ. isact_4d_var		) THEN	! 7/96
-	      CALL IS_TRANS( memory, DO_4D_VAR, *10, *2500, status )
+	      CALL IS_TRANS(  DO_4D_VAR, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_4d_good_pt		) THEN	! 7/96
-	      CALL IS_TRANS( memory, DO_4D_NGD, *10, *2500, status )
+	      CALL IS_TRANS(  DO_4D_NGD, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_4d_bad_pt		) THEN	! 7/96
-	      CALL IS_TRANS( memory, DO_4D_NBD, *10, *2500, status )
+	      CALL IS_TRANS(  DO_4D_NBD, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_4d_sum		) THEN	! 11/10
-	      CALL IS_TRANS( memory, DO_4D_SUM, *10, *2500, status )
+	      CALL IS_TRANS(  DO_4D_SUM, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_std_4d		) THEN
-	      CALL IS_TRANS( memory, DO_4D_STD, *10, *2500, status )
+	      CALL IS_TRANS(  DO_4D_STD, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_nrst_dist_abv	) THEN	! 9/97
-	      CALL IS_TRANS( memory,DO_NEAREST_DIST_ABOVE,*10, *2500, status )
+	      CALL IS_TRANS(  DO_NEAREST_DIST_ABOVE, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_nrst_dist_blw	) THEN	! 9/97
-	      CALL IS_TRANS( memory,DO_NEAREST_DIST_BELOW,*10, *2500, status )
+	      CALL IS_TRANS(  DO_NEAREST_DIST_BELOW, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_nrst_indx_abv	) THEN	! 9/97
-	      CALL IS_TRANS( memory,DO_NEAREST_INDEX_ABOVE,*10, *2500, status )
+	      CALL IS_TRANS(  DO_NEAREST_INDEX_ABOVE, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_nrst_indx_blw	) THEN	! 9/97
-	      CALL IS_TRANS( memory,DO_NEAREST_INDEX_BELOW,*10, *2500, status )
+	      CALL IS_TRANS(  DO_NEAREST_INDEX_BELOW, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_event_mask		) THEN	! 6/01
-	      CALL IS_TRANS( memory, DO_EVENT, *10, *2500, status )
+	      CALL IS_TRANS(  DO_EVENT, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_read			) THEN
 	      WRITE (6,*) 'Tell FERRET programmer to check INTERP_STACK'
 * ...	      could set "cat" and branch to above IS_READ
-	      CALL IS_READ( memory, *10, *2000, status )    ! temp ?? needed ?
+	      CALL IS_READ(  *10, *2000, status )    ! temp ?? needed ?
 	   ELSE
               CALL ERRMSG( ferr_internal, status,
      .             'unknown transform', *5000 )
@@ -711,7 +742,7 @@ c	   GOTO 5000
 	GOTO 2000
 
 * error exit - clean up
- 5000	CALL RELEASE_WORK_SPC
+ 5000	CALL RELEASE_DYN_WORK_SPACE
 	CALL DELETE_MRS_IN_PROGRESS
 	CALL UNPROTECT_ALL_MRS
 	CALL DEALLO_ALL_GRIDS

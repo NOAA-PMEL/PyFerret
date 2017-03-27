@@ -1,4 +1,4 @@
-	SUBROUTINE ASSIGN_TEMP_VAR ( cx, start_blk, num_blks, mr, status )
+	SUBROUTINE ASSIGN_TEMP_VAR ( cx, mr, status )
 
 *
 *
@@ -55,16 +55,12 @@
 	include	'xcontext.cmn'
 
 * calling arguments and local variables . . . . . . .
-	INTEGER	cx, start_blk, num_blks, mr, status
+	INTEGER	cx, mr, status
 
 * begin executable code:
 
 * assign the temporary variable into the memory variable list
-	CALL ASSIGN_VARIABLE  (	cx,
-     .				start_blk,
-     .				num_blks,
-     .				mr,
-     .				status		)
+	CALL ASSIGN_VARIABLE  (	cx, mr, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * modify assigned slot in memory table to reflect temporary nature of variable

@@ -124,6 +124,7 @@ SET MODE VERIFY
 ! Include this statement to compare the outupt of 6D Ferret with 
 ! previous 4D benchmark logs.
 ! cancel mode 6d_lab
+! V702 *sh* 3/17 - added dynamic memory benchmarks.  Tweaked a couple of others
 
 GO bn_reset bn_syntax
 GO bn_syntax
@@ -1118,6 +1119,15 @@ GO bn720_bug_fixes
 
 GO bn_reset bn_compressed_gather
 GO bn_compressed_gather
+
+! *********** v7.2 Additions ***********
+
+GO bn_reset bn_dynamic_gather
+GO bn_dynamic_gather
+
+! TEMPORARILY REMOVED -- SEE err_all_cache_management.jnl
+!GO bn_reset bn_cache_management
+!GO bn_cache_management
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

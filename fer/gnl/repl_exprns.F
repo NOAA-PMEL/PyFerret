@@ -1,4 +1,4 @@
-	SUBROUTINE REPL_EXPRNS( memory, cmnd, lencmnd, cmnd_num,
+	SUBROUTINE REPL_EXPRNS(  cmnd, lencmnd, cmnd_num,
      .				istart, max_check,
      .				digits, did_sub, status  )
 
@@ -119,8 +119,9 @@
 * v695 *acm* 5/16 Ticket 2389. When the user gives `var,prec=xx`, return the acutal number
 *                 of digits requested. Return exponential formats when that makes the
 *                 result shorter. Changes are only for positive values of ,prec=
-* v710 *acm* 9/16 Ticket 2469: For RETURN=shape, use the same logic as in SHOW GRID,
+* v701 *acm* 9/16 Ticket 2469: For RETURN=shape, use the same logic as in SHOW GRID,
 *                 for determining when a grid dimension is compressed by a transformation.
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
 #include "netcdf.inc"
 	include 'tmap_dims.parm'
@@ -139,7 +140,6 @@
 * calling argument declarations:
 	LOGICAL	  did_sub, info_query, itsa_subsc, apply_cx
 	INTEGER	  cmnd_num, lencmnd, istart, max_check, digits, status
-	REAL	  memory( mem_blk_size, max_mem_blks )
 	CHARACTER cmnd*(*)
 
 * local parameter declarations 
@@ -372,7 +372,7 @@
 *   given expression.
 	   IF (repl(1:4).EQ. 'STAT' .OR. repl(1:4) .EQ. 'ISRE') THEN
 	      get_ready = repl(1:4) .EQ. 'ISRE'
-	      CALL GET_DEPENDENCY_STATUS(memory, cmnd(istart:iend),
+	      CALL GET_DEPENDENCY_STATUS( cmnd(istart:iend),
      .					 repl, str_len, status) 
 	      CALL EXIT_DEPENDENCY_MODE
               IF (status.NE. ferr_ok) GOTO 5050
@@ -718,7 +718,7 @@
 		    do_eval = (do_eval .OR. 
      .	                 CGRID_AXIS(idim, cx) .EQ. GET_ABSTRACT_LINE(idim) )
 	            IF ( do_eval .OR. has_uvar_gc .OR. is_uvar_const) THEN
-	               CALL EVAL_EXPR ( memory, cx_last,
+	               CALL EVAL_EXPR (  cx_last,
      .		                     cmnd(istart:iend), apply_cx, status )
 	               IF ( status .NE. ferr_ok ) GOTO 5000
 	               cx = is_cx(1)	! always comes back as the first context
@@ -731,7 +731,7 @@
 * nominal length of the abstract axis. This should not be a performance problem.
 
               CALL ISIT_CONST_ARR_VAR ( cx, const_arr_var, status )
-              IF (const_arr_var) CALL EVAL_EXPR ( memory, cx_last,
+              IF (const_arr_var) CALL EVAL_EXPR (  cx_last,
      .		                     cmnd(istart:iend), apply_cx, status )
 
 	   ENDIF
@@ -907,7 +907,7 @@
 
 *  evaluate expr to get type and translate ferret type to netcdf
 
-	         CALL EVAL_EXPR ( memory, cx_last,
+	         CALL EVAL_EXPR (  cx_last,
      .		                     cmnd(istart:iend), apply_cx, status )
 	         IF ( status .NE. ferr_ok ) GOTO 5000
                  fertype = cx_type(cx)
@@ -1129,7 +1129,7 @@ c		    ENDIF
 	ELSE
 * single number answer desired
 * ... evaluate the expression
-	   CALL EVAL_EXPR ( memory, cx_last, cmnd(istart:iend), 
+	   CALL EVAL_EXPR (  cx_last, cmnd(istart:iend), 
      .        .TRUE., status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   cx = is_cx(1)	! always comes back as the first context
@@ -1141,8 +1141,8 @@ c		    ENDIF
 * ... extract the result scalar from the (possibly larger) memory variable
 	   CALL CREATE_TEMP_MEM_VAR( cx, mr_temp, status )
 	   IF ( status .NE. ferr_ok ) RETURN
-	   CALL COPY_GRID( memory(1, mr_blk1(mr)     ), mr,
-     .                     memory(1, mr_blk1(mr_temp)), mr_temp )
+	   CALL COPY_GRID( memry(mr)%ptr, mr,
+     .                     memry(mr_temp)%ptr, mr_temp )
 
 	   IF (mr_type(mr_temp) .EQ. ptype_string ) THEN
 
@@ -1154,7 +1154,7 @@ c		    ENDIF
      .				mr_lo_s4(mr_temp), mr_hi_s4(mr_temp),
      .				mr_lo_s5(mr_temp), mr_hi_s5(mr_temp),
      .				mr_lo_s6(mr_temp), mr_hi_s6(mr_temp),
-     .				memory(1, mr_blk1(mr_temp)),
+     .				memry(mr_temp)%ptr,
      .				cx_lo_s1(cx), cx_lo_s2(cx),
      .				cx_lo_s3(cx), cx_lo_s4(cx),
      .				cx_lo_s5(cx), cx_lo_s6(cx),
@@ -1165,7 +1165,7 @@ c		    ENDIF
 *      Ticket 2389: TM_FMT_USER applies use_digits more strictly 
 *      than TM_FMT, returns results of exponentials more consistently. 
 
-	     result =  memory(1, mr_blk1(mr_temp))
+	     result =  memry(mr_temp)%ptr(1)
 	     IF ( result .EQ. mr_bad_data(mr) ) THEN
 	        repl = bad_str
 	        str_len = TM_LENSTR1(bad_str)
@@ -1219,7 +1219,7 @@ c		    ENDIF
 	RETURN
 
 * error exits
- 5050	CALL RELEASE_WORK_SPC
+ 5050	CALL RELEASE_DYN_WORK_SPACE
  5000   RETURN
  5100	risc_buff = cmnd(:lencmnd)
 	CALL ERRMSG( ferr_syntax, status,

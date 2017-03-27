@@ -1,4 +1,4 @@
-	SUBROUTINE DISP_SET_UP( memory,
+	SUBROUTINE DISP_SET_UP( 
      .				vector, shade, use_cell, aspect, overlay, 
      .				transpz, no_labels, no_x_rng, valx1, 
      .				density, is_logx, is_logy, mr_list, nmv, 
@@ -210,7 +210,6 @@ C plus those starting w/ xbox_bounds:
      .			is_logx, is_logy, flows, shade, inc_grid
 	INTEGER		nmv, mr_list( nmv ), cx_list( nmv ), uvar,
      .			density, pen, status
-	REAL		memory( mem_blk_size, max_mem_blks )
 	REAL 		aspect, valx1, s1_axis(*), s2_axis(*)
 
 * internal variable declarations:
@@ -233,7 +232,7 @@ C plus those starting w/ xbox_bounds:
 
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			dim1, dim2, mvx, mvx_temp, mvy, mvy_temp,
-     .			ctx, cty, xblk1, yblk1, plot_mem_used, nvars,
+     .			ctx, cty, plot_mem_used, nvars,
      .			lo1, lo2, hi1, hi2, size1, size2, size,
      .			n1_regrid, n2_regrid, grid, slen, pxlim, pylim,
      .			style, justify, ipen, ndim, dims(nferdims), ptitl,
@@ -241,7 +240,7 @@ C plus those starting w/ xbox_bounds:
      .			phlim, pvlim, slen2, cal_id, tax,
      .			x_axtyp, y_axtyp, iscl, siz, nsiz, 
      .			TM_GET_CALENDAR_ID, mode_num, axis1, axis2,
-     .                  hblk1, mvh_temp
+     .                  mvh_temp
 	REAL		s, w1_lo, w1_hi, w2_lo, w2_hi, valy1,
      .			d1_regrid, d2_regrid, bad_x, bad_y, rlo, rhi,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
@@ -406,28 +405,26 @@ C   set up memory for the flag grid
 * create temporary buffers to contain the plot data
 	CALL CREATE_TEMP_MEM_VAR( ctx, mvx_temp, status )
 	IF ( status .NE. ferr_ok ) RETURN
-	xblk1 = mr_blk1( mvx_temp )
 	IF ( vector ) THEN
 	   CALL CREATE_TEMP_MEM_VAR( cty, mvy_temp, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5010
-	   yblk1 = mr_blk1( mvy_temp )
 	ENDIF
 
 * copy the plot data to the buffer(s) - possibly transposing
 	IF ( transpz ) THEN
 	   CALL COPY_GRID_TRANS( size1, size2,
-     .				 memory(1, mr_blk1(mvx)), mvx,
-     .				 memory(1, xblk1       ), mvx_temp )
+     .				 memry(mvx)%ptr, mvx,
+     .				 memry(mvx_temp)%ptr, mvx_temp )
 	   IF ( vector )
      .		CALL COPY_GRID_TRANS(   size1, size2,
-     .					memory(1, mr_blk1(mvy)), mvy,
-     .					memory(1, yblk1       ), mvy_temp )
+     .					memry(mvy)%ptr, mvy,
+     .					memry(mvy_temp)%ptr, mvy_temp )
 	ELSE
-	   CALL COPY_GRID( memory(1, mr_blk1(mvx)), mvx,
-     .			   memory(1, xblk1       ), mvx_temp )
+	   CALL COPY_GRID( memry(mvx)%ptr, mvx,
+     .			   memry(mvx_temp)%ptr, mvx_temp )
 	   IF ( vector )
-     .		CALL COPY_GRID(	memory(1, mr_blk1(mvy)), mvy,
-     .				memory(1, yblk1       ), mvy_temp )
+     .		CALL COPY_GRID(	memry(mvy)%ptr, mvy,
+     .				memry(mvy_temp)%ptr, mvy_temp )
 	ENDIF
 	
 * determine plotting limits
@@ -475,10 +472,10 @@ C   set up memory for the flag grid
 	ENDIF
 
 * check that there is some valid data
-	no_x_rng = NO_GRID_RANGE( memory(1,xblk1), size, mvx_temp, valx1 )
+	no_x_rng = NO_GRID_RANGE( memry(mvx_temp)%ptr, size, mvx_temp, valx1 )
 	IF ( no_x_rng .AND. valx1 .EQ. bad_x ) valx1 = bad_val4
 	IF ( vector ) THEN
-	   no_y_rng = NO_GRID_RANGE( memory(1,yblk1), size, mvy_temp, valy1 )
+	   no_y_rng = NO_GRID_RANGE( memry(mvy_temp)%ptr, size, mvy_temp, valy1 )
 	   IF ( no_y_rng .AND. valy1 .EQ. bad_y  ) THEN
 	      valx1 = bad_val4
 	      no_x_rng = no_y_rng	! need both to have either
@@ -634,7 +631,7 @@ C   set up memory for the flag grid
      .				 cal_id, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	   ELSEIF ( curvilinear ) THEN
-	      CALL FIELD_MINMAX( memory(1,mr_blk1(mr_xpos) ), 
+	      CALL FIELD_MINMAX( memry(mr_xpos)%ptr, 
      .				mr_xpos, cx_xpos, rlo, rhi )
 
 	      IF (rlo .EQ. arbitrary_large_val4) THEN ! all missing
@@ -716,7 +713,7 @@ C ACM added 8/2001 save cal id if vertical time axis
      .				 cal_id, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	   ELSEIF ( curvilinear ) THEN
-	      CALL FIELD_MINMAX( memory(1,mr_blk1(mr_ypos) ),
+	      CALL FIELD_MINMAX( memry(mr_ypos)%ptr,
      .				mr_ypos, cx_ypos, rlo, rhi )
 	      IF (rlo .EQ. arbitrary_large_val4) THEN ! all missing
 	         yaxlo = -1
@@ -775,8 +772,8 @@ C ACM added 8/2001 save cal id if vertical time axis
 	IF ( vector .AND. aspect.GT.0. ) CALL RE_ORIENT(
      .			haxlo, haxhi, vaxlo, vaxhi, dim1, dim2,
      .			size1, size2, transpz, aspect,
-     .			memory(1, xblk1), mvx_temp,
-     .			memory(1, yblk1), mvy_temp, s )
+     .			memry(mvx_temp)%ptr, mvx_temp,
+     .			memry(mvy_temp)%ptr, mvy_temp, s )
 	if (overlay) SOVER = .true.
 
 
@@ -789,7 +786,7 @@ C ACM added 8/2001 save cal id if vertical time axis
 	rw1lo = w1_lo
 	rw2lo = w2_lo
 
-	CALL PPLLDC_envelope ( icode, memory(1, xblk1), size1, size2,
+	CALL PPLLDC_envelope ( icode, memry(mvx_temp)%ptr, size1, size2,
      .		      1, size1, 1, size2, s1_axis, s2_axis, 
      .		      n1_regrid, n2_regrid, rw1lo, rw2lo,
      .		      d1_regrid, d2_regrid, plot_mem_used)
@@ -800,8 +797,8 @@ C ACM added 8/2001 save cal id if vertical time axis
 	   wwxmax = xaxhi
 	   wwymin = yaxlo
 	   wwymax = yaxhi
-	   CALL LOAD_CURVILINEAR( memory(1,mr_blk1(mr_xpos)),
-     .				  memory(1,mr_blk1(mr_ypos)),
+	   CALL LOAD_CURVILINEAR( memry(mr_xpos)%ptr,
+     .				  memry(mr_ypos)%ptr,
      .				  dim1, dim2, arg_xpos,
      .				  edges_ok, mr_xpos, mr_ypos,
      .				  cx_xpos, cx_ypos, ctx, status)
@@ -815,7 +812,7 @@ C ACM added 8/2001 save cal id if vertical time axis
 
        nsiz = size1* size2
        rbad = bad_val4
-       CALL COMPUTE_MNSTD (memory(1, xblk1), bad_x, need_std, 
+       CALL COMPUTE_MNSTD (memry(mvx_temp)%ptr, bad_x, need_std, 
      .       nsiz, rbad, status)
        IF (need_std .AND. status.NE.ferr_ok) THEN
 * ... set up for automatic levels
@@ -831,10 +828,9 @@ C ACM added 8/2001 save cal id if vertical time axis
 * create temporary buffer to contain workspace
 	  CALL CREATE_TEMP_MEM_VAR( ctx, mvh_temp, status )
 	  IF ( status .NE. ferr_ok ) RETURN
-	  hblk1 = mr_blk1( mvh_temp )
           plot_mem_used = plot_mem_used + nsiz
 
-	  CALL compute_histo_bins (memory(1,xblk1), memory(1,hblk1), 
+	  CALL compute_histo_bins (memry(mvx_temp)%ptr, memry(mvh_temp)%ptr, 
      .       bad_x, nsiz, status) 
      
 * ... clean up temporary variable
@@ -853,7 +849,7 @@ C ACM added 8/2001 save cal id if vertical time axis
 
 	IF ( vector ) THEN
 * load the Y vector component
-	   CALL PPLLDV_envelope ( icode, memory(1,yblk1), size1, size2,
+	   CALL PPLLDV_envelope ( icode, memry(mvy_temp)%ptr, size1, size2,
      .		      1, size1, 1, size2)
 	   CALL DELETE_VARIABLE( mvy_temp )
 	ENDIF

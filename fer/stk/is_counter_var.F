@@ -1,4 +1,4 @@
-	SUBROUTINE IS_COUNTER_VAR( var, memory, *, status )
+	SUBROUTINE IS_COUNTER_VAR( var,  *, status )
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -55,7 +55,6 @@
 
 * calling argument declarations:
 	INTEGER	var, status
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	INTEGER	mr, cx, csp1, idim
@@ -99,7 +98,7 @@
 	IF (mode_diagnostic) CALL DIAGNOSTIC_OUT('constan',mr,point_to_mr)
 
 * insert the constant
-	memory( 1, mr_blk1(mr) ) = counter_const
+	memry(mr)%ptr(1) = counter_const
 
 * set context data
 	cx_bad_data( cx ) = bad_val4

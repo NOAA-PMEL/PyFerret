@@ -1,4 +1,4 @@
-	SUBROUTINE FIND_MEM_VAR_INCL_C_CACHE( cx, mr, by_value, memory )
+	SUBROUTINE FIND_MEM_VAR_INCL_C_CACHE( cx, mr, by_value )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -58,7 +58,6 @@
 * calling argument declarations:
 	INTEGER cx, mr
 	LOGICAL by_value
-	REAL    memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	LOGICAL valid_search
@@ -92,7 +91,7 @@
 	   CALL CREATE_MEM_VAR( cx_buff, mr, status )
 	   IF (status .NE. ferr_ok) GOTO 5000
 	   npts = CGRID_SIZE(cx_buff)
-	   CALL RECOVER_CACHED_FULL_ARRAY(memory(1,mr_blk1(mr)),
+	   CALL RECOVER_CACHED_FULL_ARRAY(memry(mr)%ptr,
      .				npts, c_cache_ptr)
 	   IF (mode_diagnostic) CALL DIAGNOSTIC_OUT('c-found',mr,point_to_mr)
 	   RETURN  ! YAHOO!  Made a last didch cache hit.

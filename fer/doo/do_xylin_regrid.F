@@ -48,6 +48,13 @@
 *                    The XY linear regridding matches past Ferret behavior, 
 *                    not using bilinear regridding for now
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V702 *sh* 3/2017 Dynamic memory revealed a bug in work array sizes
+*  NOTE!!:  The logic for providing work arrays to this routine and its cousins
+*           is a legacy of the bad-old days when there was only a single work
+*           array.  Various starting indices into that array were passed
+*           to XYLIN_REGRID as distinct work arrays.  Now that we have true
+*           dynamic memory we could simplify this code by allocating 5 separate
+*	    work arrays.  Or not ...
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -63,6 +70,7 @@
      .			   cx_lo_ss(cx_lims,x_dim), cx_hi_ss(cx_lims,x_dim),
      .			   cx_lo_ss(cx_lims,y_dim), cx_hi_ss(cx_lims,y_dim),
      .			   src, msrc, dst, mdst, src_cx, dst_cx, 
+     .			   cx_lo_ss(src_cx, x_dim), cx_hi_ss(src_cx, x_dim),
      .                     work(1), work(iwork2), work(iwork3), work(iwork4),
      .                     work(iwork5) )
 

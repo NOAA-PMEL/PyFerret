@@ -58,7 +58,7 @@ void FORTRAN(decode_file_jacket)
 		( char* fname, char *recptr, char *delims, int *skip,
 		  int* maxrec, int* reclen, int* nfields,
 		  int field_type[], int* nrec,
-		  int mrlist[], double *memptr, int mr_blk1[], int* mblk_size,
+		  int mrlist[], long* mr_ptrs_val,
 		  double mr_bad_flags[], char ***mr_c_ptr, int* status);
 #else
 int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
@@ -78,7 +78,7 @@ void FORTRAN(decode_file_jacket)
 		( char* fname, char *recptr, char *delims, int *skip,
 		  int* maxrec, int* reclen, int* nfields,
 		  int field_type[], int* nrec,
-		  int mrlist[], float *memptr, int mr_blk1[], int* mblk_size,
+		  int mrlist[], int* mr_ptrs_val,
 		  float mr_bad_flags[], char ***mr_c_ptr, int* status);
 #endif
 

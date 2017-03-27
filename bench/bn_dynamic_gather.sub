@@ -1,0 +1,198 @@
+! bn_dynamic_gather.sub
+
+! this subroutine to get called repeatedly for different values of MODE FRUGAL
+
+!**************
+! remember to test:
+! - MODE FRUGAL
+! done - case of no single axis long enough
+! done - case of transformed axis not long enough, but another is
+! 2-axis split including compressed
+! 2-axis split not including
+! 3-axis splits
+!    -- with slowest axis GT 5 in length
+!    -- with slowest axis LT 5 and second slowest GT 50
+! - modulo regrid examples
+! 2d and 3d @AVE
+! mixed @AVE and @DIN
+!*************
+
+! **************************************************
+! test memory that is too small to accommodate the result
+! this request will fail trying to get the third argument
+set mode ignore
+set memory/siz=1.99
+stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
+cancel mode ignore
+
+! **************************************************
+! if memory size is large enough to accommodate the result data plus
+! its accumulation buffer(s) when split along the compressed axis (4M)
+! then it can choose to use the compressed axis.
+! The smallest chunk along that axis is 1000x1000x2x1 ==> 2M
+set memory/siz=6
+stat/brief v[l=1:10@ave]
+show memory/diagnostic   ! T axis split, chunk size = 1, peak mem=6
+show memory/all          ! in memory following the last chunk
+cancel memory/all
+
+! **************************************************
+! Since @VAR requires two buffers - the total size of the result is 2M+2*2M=6M
+! if we were to split along T the size of a chunk would be 1000x1000x2x1 = 2M
+! So the total memory needed would be 6M+2M=8M to split along T
+set memory/size=8
+stat/brief v[l=1:10@var]
+show memory/diagnostic   ! T axis split, chunk size = 1, peak mem=8
+cancel memory/all   
+
+! **************************************************
+! if memory size is NOT large enough to accommodate the result data plus
+! its accumulation buffer(s) then it cannot split along T
+set memory/siz=5.9
+stat/brief v[l=1:10@ave]
+show memory/diagnostic   ! Y axis split, big chunk size = 1
+cancel memory/all
+
+! **************************************************
+! memory barely large enough to accommodate the result (2M), and the
+! smallest achievable chunk
+! splitting along the Y axis, the smallest chunk size is 1000x1x2x10 ==> 20000
+! and the average of a single chunk (incl buffer) is 1000x1x2x1*2 ==> 4000
+set memory/siz=2.024
+stat/brief v[l=1:10@ave]
+show memory/diagnostic ! Y axis split, chunk size=1, peak mem=2.024
+show memory/all        ! in memory following the last chunk
+cancel memory/all
+
+! **************************************************
+! Since @VAR requires two buffers - the total size of the result is 2M+2*2M=6M
+! if we were to split along T the size of a chunk would be 1000x1000x2x1 = 2M
+! So the total memory needed would be 6M+2M=8M.  So the current SET MEMORY=6 
+! is not enuf mem to split along the T axis
+set memory/siz=6
+stat/brief v[l=1:10@var]
+show memory/diagnostic   ! Y axis split
+cancel memory/all
+
+! **************************************************
+! 3D averaging  v[x=@ave,y=@ave,z=@ave,L=1]
+! result size will be 1x1x1x1*2 = 2
+! chunk size if split along Z will be 1000x1000x1x1 = 1M
+! chunk size if split along Y will be 1000x1x2x1    = 2K
+
+! this request can succeed by splitting along Z
+set memory/siz=1.001
+stat/brief v[x=@ave,y=@ave,z=@ave,L=1]
+show memory/diagnostic     ! Z axis split
+cancel memory/all
+
+! **************************************************
+! but if memory is so small that the Z axis of 2 points does not provide
+! enough size reduction, then we choose to split along Y
+set memory/siz=.99
+stat/brief v[x=@ave,y=@ave,z=@ave,L=1]
+show memory/diagnostic     ! Y axis split
+cancel memory/all
+
+! **************************************************
+! multiple transformations on a single expression
+! Use of these expressions **is a bad idea in Ferret**
+! he "potential size" of the source data is 1000x1000x20x10=20M
+! we just get aggressive about memory saving: choose the longest axis
+! preferring an uncompressed axis if available
+! Here we see a triple level strip: Z-T-Y
+! (SHOW MEM/DIAG repeats on each of the 2 K values) 
+set memory/siz=.99
+stat/brief v[x=@ave,y=@ave,L=@SUM]
+show memory/diagnostic        !  split on Z-(T-Y,T-Y)
+cancel memory/all 
+
+! **************************************************
+! now the same situation, but where Z is compressed as well
+! Z is not stripped off because other axes are longer 
+set memory/siz=.99
+stat/brief v[x=@ave,y=@ave,z=@ave,L=@SUM]
+show memory/diagnostic       ! split on T-Y
+cancel memory/all 
+
+! **************************************************
+! multiple transformation again
+! first strip YZT@AVE. Split the long Y axis, no further split needed 
+set memory/siz=.99
+stat/brief v[x=@SUM,y=@ave,z=@ave,L=@ave]
+show memory/diagnostic      ! split on Y
+cancel memory/all 
+
+! **************************************************
+! MODULO REGRID 
+
+! v1000 is 10x100x4x1000
+! for gt=@mod the full result size is 10x100x4x12 ==>  48,000
+
+define axis/mod/t=1:12:1 t12mod
+
+!**************************************************
+set mem/size=10   ! bigger than needed
+stat/brief v1000[gt=t12mod@mod]
+show mem/diag     ! note peak size demand a bit over 4
+canc mem/all
+
+!**************************************************
+set mem/size=4
+stat/brief v1000[gt=t12mod@mod]
+show mem/diag              ! big z chunks (3 on ax of len 4)
+canc mem/all
+
+!**************************************************
+set mem/size=1
+stat/brief v1000[gt=t12mod@mod]
+show mem/diag              !  big y chunks (22 on ax of len 100)
+canc mem/all
+ 
+!**************************************************
+! if the chunk size is 1, then each chunk src is 10x1x4x1000 ==> 40000
+! and requires a result plus 2 buffers:          10x1x4x12*3 ==>  1440
+! plus the full result size in IS_GATHER                     ==> 48000
+!                                                      total ==> 89440
+set mem/size=.09
+stat/brief v1000[gt=t12mod@mod]
+show mem/diag              !  y chunk size = 1
+canc mem/all
+
+
+! ************** USER VARIABLES ********************
+let a = v[k=1]
+let b = v[k=2]
+let c = a + b
+let d = a + c
+
+! for comparison: memory management to average a simple file variable
+set memory/siz=3
+stat/brief v[l=1:10@ave,k=1]
+show memory/diagnostic   ! T axis split, chunk size = 1, peak mem=6
+cancel memory/all
+
+! compare to memory management averaging user variables
+! not split on T because more memory is needed for components of calculation
+set memory/siz=3
+
+stat/brief a[l=1:10@ave]
+show memory/diagnostic   ! X axis split, chunk size = 1, peak mem=1.82
+cancel memory/all
+
+stat/brief d[l=1:10@ave]
+show memory/diagnostic   ! X axis split, chunk size = 1, peak mem=2.23
+cancel memory/all
+
+! progressively more frugal mem mgmt is needed as multiple results accumulate
+stat/brief a[i=1:500,l=1:10@ave], b[i=1:500,l=1:10@ave], c[i=1:500,l=1:10@ave], d[i=1:500,l=1:10@ave]
+show memory/diagnostic   ! X axis split, chunk size = 1, peak mem=2.23
+cancel memory/all
+
+! if the initial arguments take up too much memory we cannot succeed
+set mode ignore
+stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
+show memory/diagnostic   ! X axis split, chunk size = 1, peak mem=2.23
+cancel mode ignore
+cancel memory/all
+

@@ -1,4 +1,4 @@
-	SUBROUTINE IS_DO_OP( memory, alg_type, alg_text, lo_isp, 
+	SUBROUTINE IS_DO_OP(  alg_type, alg_text, lo_isp, 
      ,                       ifv, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -96,7 +96,6 @@
 * calling arguments
 	LOGICAL		ifv
 	INTEGER		alg_type, lo_isp, status
-	REAL		memory( mem_blk_size, max_mem_blks )
 	CHARACTER*(*)	alg_text
 
 * local variables
@@ -224,7 +223,7 @@
 * special HACK to support "a"+"b" (see MERGE_GRID)
 	IF ( mr_type(res_mr) .EQ. ptype_string ) THEN
            CALL INIT_C_STRING_ARRAY( MGRID_SIZE_DELTA(res_mr),
-     .                               memory(1, mr_blk1(res_mr)),
+     .                               memry(res_mr)%ptr,
      .                               mr_c_pointer(res_mr)      )
 	ENDIF
 
@@ -248,9 +247,7 @@
 
 	IF (.NOT.arg_types_matched ) THEN 
 * ... allow mix of float and string arguments (lets us use symbols as numbers)
-	    CALL FILL_MEMORY ( memory, mr_blk1 (res_mr),
-     .                       mr_nblks(res_mr),
-     .                       mr_bad_data(res_mr) )
+	    CALL FILL_MEMORY ( res_mr, mr_bad_data(res_mr) )
 
 	ELSEIF ( arg_type.EQ.ptype_string .AND. numerical_op ) THEN 
 * ... inappropriate use of string arguments
@@ -262,33 +259,33 @@
 	  IF (op_num .EQ. 1 ) THEN  ! "+"
 	    CALL STRING_CONCATENATE
      .		       ( is_cx(frame_bottom),
-     .			 memory(1, mr_blk1(mr1) ),   mr1,
-     .			 memory(1, mr_blk1(mr2) ),   mr2,
-     .			 memory(1, mr_blk1(res_mr)), res_mr )
+     .			 memry(mr1)%ptr,   mr1,
+     .			 memry(mr2)%ptr,   mr2,
+     .			 memry(res_mr)%ptr, res_mr )
 	  ELSEIF (op_num .GT. offset_logic_struc) THEN
 	    CALL STRING_CONDITIONAL
      .		       ( op_num-offset_logic_struc,
      .			 num_com, is_cx(frame_bottom),
-     .			 memory(1, mr_blk1(mr1) ),   mr1,
-     .			 memory(1, mr_blk1(mr2) ),   mr2,
-     .			 memory(1, mr_blk1(mr3) ),   mr3,
-     .			 memory(1, mr_blk1(res_mr)), res_mr )
+     .			 memry(mr1)%ptr,   mr1,
+     .			 memry(mr2)%ptr,   mr2,
+     .			 memry(mr3)%ptr,   mr3,
+     .			 memry(res_mr)%ptr, res_mr )
 	  ELSE  ! "EQ", "NE", "LT", ...
 	    CALL STRING_OPERATE
      .		       ( op_num, is_cx(frame_bottom),
-     .			 memory(1, mr_blk1(mr1) ),   mr1,
-     .			 memory(1, mr_blk1(mr2) ),   mr2,
-     .			 memory(1, mr_blk1(res_mr)), res_mr )
+     .			 memry(mr1)%ptr,   mr1,
+     .			 memry(mr2)%ptr,   mr2,
+     .			 memry(res_mr)%ptr, res_mr )
             cx_type(res_cx) = ptype_float
             mr_type(res_mr) = ptype_float
 	  ENDIF
 	ELSE
 	  CALL OPERATE ( op_num, num_com, ifv, is_cx(frame_bottom),
-     .			 memory(1, mr_blk1(mr1) ),   mr1,
-     .			 memory(1, mr_blk1(mr2) ),   mr2,
-     .			 memory(1, mr_blk1(mr3) ),   mr3,
-     .			 memory(1, mr_blk1(mr4) ),   mr4,
-     .			 memory(1, mr_blk1(res_mr)), res_mr )
+     .			 memry(mr1)%ptr,   mr1,
+     .			 memry(mr2)%ptr,   mr2,
+     .			 memry(mr3)%ptr,   mr3,
+     .			 memry(mr4)%ptr,   mr4,
+     .			 memry(res_mr)%ptr, res_mr )
 	ENDIF
 
 * clean up 

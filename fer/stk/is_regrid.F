@@ -1,4 +1,4 @@
-	SUBROUTINE IS_REGRID( memory, *, status )
+	SUBROUTINE IS_REGRID(  *, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -88,6 +88,7 @@
 * V696 *acm* 11/15 Added @BIN and @NBIN regridding transforms
 * V698 *acm*  3/16 Ticket 2278: add an attribute with time range when
 *                  saving a modulo-regridded variable to netCDF
+* V702 3/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -100,7 +101,6 @@
 
 * calling argument declarations:
 	INTEGER	status
-	REAL	memory( mem_blk_size, max_mem_blks )
 * normal exit is for error conditions
 * exit #1 is to signal completion of the activity at this stack level
 
@@ -111,7 +111,8 @@
 	INTEGER hi_isp, lo_isp, axis, cx_valid, idim,
      .		rgrd_trans, mrlist(5), wk_size, wk_size2,
      .		dst_cx, src_cx, dst_mr, src_mr, ngd_mr, ave_mr,
-     .		blk1, axis_list(nferdims), naxis, i, nbd_mr, nxsrc
+     .		axis_list(nferdims), naxis, i, nbd_mr, nxsrc
+	INTEGER*8 i8_size
 	CHARACTER dtype*4
 
 *        ... interpretation stack setup at the time this is called ...
@@ -228,7 +229,7 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
 	ENDIF
 
 * create a space for the new result possibly with the edges flagged as bad
-	CALL NEW_MR_W_EDGES( memory, cx_valid, dst_cx, dst_mr, status )
+	CALL NEW_MR_W_EDGES(  cx_valid, dst_cx, dst_mr, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	is_mr( lo_isp ) = dst_mr
 
@@ -251,52 +252,54 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
 
 * reserve working array space
 	IF ( rgrd_trans .EQ. prgrd_xy_ave) THEN
-	   CALL GET_WORK_SPC( wk_size+wk_size2, blk1, status )
+	   i8_size = wk_size+wk_size2
 	ELSEIF (rgrd_trans .EQ. prgrd_xy_lin) THEN
 	   nxsrc = cx_hi_ss(src_cx,x_dim)-cx_lo_ss(src_cx,x_dim) + 1
-	   CALL GET_WORK_SPC( nxsrc*wk_size2+2*(wk_size+wk_size2), blk1, status )
+	   i8_size = nxsrc*wk_size2+2*(wk_size+wk_size2)
 	ELSE
-	   CALL GET_WORK_SPC( 2*wk_size, blk1, status )
+	   i8_size = 2*wk_size
 	ENDIF
+	CALL GET_DYN_WORK_SPACE( i8_size, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * do the regridding
 	IF ( done_by_strides ) THEN
-	   CALL COPY_GRID( memory(1,mr_blk1(src_mr)),  src_mr,
-     .			   memory(1,mr_blk1(dst_mr)),  dst_mr )
+	   CALL COPY_GRID( memry(src_mr)%ptr,  src_mr,
+     .			   memry(dst_mr)%ptr,  dst_mr )
 	ELSEIF ( rgrd_trans .EQ. prgrd_linear_interp ) THEN
 	   IF ( itsa_string ) GOTO 5010
 	   CALL DO_LIN_REGRID( cx_valid, axis,
-     .			memory(1,mr_blk1(src_mr)), src_mr,
-     .			memory(1,mr_blk1(dst_mr)), dst_mr,
-     .			memory(1, blk1), wk_size+1, 2*wk_size )
+     .			memry(src_mr)%ptr, src_mr,
+     .			memry(dst_mr)%ptr, dst_mr,
+     .			workmem(plegacy_work_buffer)%ptr,
+     .			wk_size+1, 2*wk_size )
 	ELSEIF ( rgrd_trans .EQ. prgrd_associate ) THEN
 	   CALL DO_ASN_REGRID( cx_valid, axis,
-     .			memory(1,mr_blk1(src_mr)), src_mr,
-     .			memory(1,mr_blk1(dst_mr)), dst_mr )
+     .			memry(src_mr)%ptr, src_mr,
+     .			memry(dst_mr)%ptr, dst_mr )
 	ELSEIF ( rgrd_trans .EQ. prgrd_average
      .	 .OR.    rgrd_trans .EQ. prgrd_variance
      .	 .OR.    rgrd_trans .EQ. prgrd_sum
      .	 .OR.    rgrd_trans .EQ. prgrd_good_pt ) THEN
 	   IF ( itsa_string ) GOTO 5010
 	   CALL DO_AVE_REGRID( cx_valid, axis, rgrd_trans,
-     .			memory(1,mr_blk1(src_mr)), src_mr,
-     .			memory(1,mr_blk1(dst_mr)), dst_mr,
-     .			memory(1, blk1), src_cx, dst_cx,
+     .			memry(src_mr)%ptr, src_mr,
+     .			memry(dst_mr)%ptr, dst_mr,
+     .			workmem(plegacy_work_buffer)%ptr, src_cx, dst_cx,
      .                  wk_size+1 )
 	ELSEIF ( rgrd_trans .EQ. prgrd_xy_ave ) THEN
 	   IF ( itsa_string ) GOTO 5010
 	   CALL DO_XYAVE_REGRID( cx_valid,
-     .			memory(1,mr_blk1(src_mr)), src_mr,
-     .			memory(1,mr_blk1(dst_mr)), dst_mr,
-     .			memory(1, blk1), src_cx, dst_cx,
+     .			memry(src_mr)%ptr, src_mr,
+     .			memry(dst_mr)%ptr, dst_mr,
+     .			workmem(plegacy_work_buffer)%ptr, src_cx, dst_cx,
      .                  wk_size+1, wk_size+wk_size2 )
 	ELSEIF ( rgrd_trans .EQ. prgrd_xy_lin ) THEN
 	   IF ( itsa_string ) GOTO 5010
 	   CALL DO_XYLIN_REGRID( cx_valid,
-     .			memory(1,mr_blk1(src_mr)), src_mr,
-     .			memory(1,mr_blk1(dst_mr)), dst_mr,
-     .			memory(1, blk1), src_cx, dst_cx,
+     .			memry(src_mr)%ptr, src_mr,
+     .			memry(dst_mr)%ptr, dst_mr,
+     .			workmem(plegacy_work_buffer)%ptr, src_cx, dst_cx,
      .                  wk_size+1, 2*wk_size+1, 
      .                  2*wk_size+wk_size2+1, 2*(wk_size+wk_size2)+1, 
      .                  nxsrc*wk_size2+2*(wk_size+wk_size2) )
@@ -304,25 +307,27 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
      .	   .OR. rgrd_trans.EQ.prgrd_max ) THEN
 	   IF ( itsa_string ) GOTO 5010
 	   CALL DO_WINDOW_REGRID( cx_valid, axis, rgrd_trans,
-     .			memory(1,mr_blk1(src_mr)), src_mr,
-     .			memory(1,mr_blk1(dst_mr)), dst_mr,
-     .			memory(1, blk1), wk_size+1)
+     .			memry(src_mr)%ptr, src_mr,
+     .			memry(dst_mr)%ptr, dst_mr,
+     .			workmem(plegacy_work_buffer)%ptr, wk_size+1)
 	ELSEIF ( rgrd_trans .EQ. prgrd_xact_pts ) THEN
 	   CALL DO_XACT_REGRID( cx_valid, axis,
-     .			memory(1,mr_blk1(src_mr)), src_mr,
-     .			memory(1,mr_blk1(dst_mr)), dst_mr,
-     .			memory(1, blk1), wk_size+1, 2*wk_size )
+     .			memry(src_mr)%ptr, src_mr,
+     .			memry(dst_mr)%ptr, dst_mr,
+     .			workmem(plegacy_work_buffer)%ptr, wk_size+1,
+     .			2*wk_size )
 	ELSEIF ( rgrd_trans .EQ. prgrd_nearest ) THEN
 	   CALL DO_NEAREST_REGRID( cx_valid, axis,
-     .			memory(1,mr_blk1(src_mr)), src_mr,
-     .			memory(1,mr_blk1(dst_mr)), dst_mr,
-     .			memory(1, blk1), wk_size+1, 2*wk_size )
+     .			memry(src_mr)%ptr, src_mr,
+     .			memry(dst_mr)%ptr, dst_mr,
+     .			workmem(plegacy_work_buffer)%ptr, wk_size+1,
+     .			2*wk_size )
 	ELSEIF ( rgrd_trans .EQ. prgrd_bin
      .	 .OR.    rgrd_trans .EQ. prgrd_nbin ) THEN
 	   CALL DO_BIN_REGRID( cx_valid, axis, rgrd_trans,
-     .			memory(1,mr_blk1(src_mr)), src_mr,
-     .			memory(1,mr_blk1(dst_mr)), dst_mr,
-     .			memory(1, blk1), src_cx, dst_cx,
+     .			memry(src_mr)%ptr, src_mr,
+     .			memry(dst_mr)%ptr, dst_mr,
+     .			workmem(plegacy_work_buffer)%ptr, src_cx, dst_cx,
      .                  wk_size+1 )
 * modulo regridding
 	ELSE
@@ -337,15 +342,15 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
 	   ave_mr = dummy_mr	! component 3 default
 
 	   CALL CREATE_TEMP_MEM_VAR(cx_valid,ngd_mr,status)
-	   IF ( status .NE. ferr_ok ) GOTO 5200
+	   IF ( status .NE. ferr_ok ) GOTO 5100
 	   mr_regrid_trans ( axis, ngd_mr ) =  prgrd_modngd
 
 	   CALL CREATE_TEMP_MEM_VAR(cx_valid,nbd_mr,status)
-	   IF ( status .NE. ferr_ok ) GOTO 5300
+	   IF ( status .NE. ferr_ok ) GOTO 5100
 	   mr_regrid_trans ( axis, nbd_mr ) =  prgrd_modnbd
 
 	   IF ( rgrd_trans .EQ. prgrd_modvar ) THEN
-	      CALL NEW_MR_W_EDGES(memory,cx_valid,dst_cx,ave_mr,status)
+	      CALL NEW_MR_W_EDGES(cx_valid,dst_cx,ave_mr,status)
 	      IF ( status .NE. ferr_ok ) GOTO 5100
 !	      mr_regrid_trans ( axis, ave_mr ) = prgrd_modulo	! bookkeeping
 	   ENDIF
@@ -356,11 +361,11 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
 	   mrlist(5) = ave_mr
 	   CALL NON_ARRAY_SUBSC( mrlist, 5 )
 	   CALL MODULO_REGRID( cx_valid, axis, rgrd_trans,
-     .			memory(1,mr_blk1(src_mr)), src_mr,
-     .			memory(1,mr_blk1(dst_mr)), dst_mr,
-     .			memory(1,mr_blk1(ngd_mr)), ngd_mr,
-     .			memory(1,mr_blk1(nbd_mr)), nbd_mr,
-     .			memory(1,mr_blk1(ave_mr)), ave_mr )
+     .			memry(src_mr)%ptr, src_mr,
+     .			memry(dst_mr)%ptr, dst_mr,
+     .			memry(ngd_mr)%ptr, ngd_mr,
+     .			memry(nbd_mr)%ptr, nbd_mr,
+     .			memry(ave_mr)%ptr, ave_mr )
 
 * ... For modulo regrid in time, add an attribute listing the source dates
 
@@ -374,7 +379,7 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
 	   ENDIF
 
 	ENDIF
-	CALL RELEASE_WORK_SPC
+        CALL  RELEASE_DYN_WORK_SPACE
 
 * indicate we are done with the component
  1000   CALL MR_NOT_IN_USE( src_mr )
@@ -397,9 +402,7 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
  5010	CALL ERRMSG( ferr_invalid_command, status,
      .		'cant use this regrid transform on strings: @'
      .		//alg_regrid_code(rgrd_trans), *5000)
- 5100	CALL DELETE_VARIABLE( dst_mr )
- 5200	CALL DELETE_VARIABLE( ngd_mr )
- 5300	CALL DELETE_VARIABLE( nbd_mr )
+ 5100	CALL DELETE_MRS_IN_PROGRESS
 	GOTO 5000
 	END	
 

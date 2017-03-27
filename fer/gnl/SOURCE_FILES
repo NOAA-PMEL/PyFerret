@@ -115,6 +115,7 @@ show_grid_string_xml.F\
 show_line.F\
 show_line_xml.F\
 show_line_coords.F\
+show_mem_usage_line.F\
 show_mem_vars.F\
 show_region.F\
 show_regrid_transforms.F\
@@ -129,6 +130,5 @@ turnoff_verify.F\
 var_stat.F\
 version_only.F\
 warn.F\
-warn_occasionally.F\
 write_dods_fmt.F \
 write_multi.F 

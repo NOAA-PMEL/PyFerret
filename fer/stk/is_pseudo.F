@@ -1,4 +1,4 @@
-	SUBROUTINE IS_PSEUDO( memory, *, status )
+	SUBROUTINE IS_PSEUDO(  *, status )
 
 *
 *
@@ -48,6 +48,7 @@
 * V312: 5/94 - array "memory" as a calling argument
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
+*       *sh*  2/17 pre-check for 99999999 in order to issue nicer error message
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -60,10 +61,9 @@
 
 * calling argument declarations:
 	INTEGER	status
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
-	INTEGER	mr, cx, idim
+	INTEGER	CX_DIM_LEN, mr, cx, idim, pvlen
 
 * --- end of introductory code ---
 * initialize
@@ -73,6 +73,13 @@
 * for pseudo-vars it just means the grid was explicitly specified - there
 * is no regridding)
 	cx_unstand_grid( cx ) = .FALSE.
+
+* Get the direction of the pseudo-variable.
+	idim = MOD( cx_variable(cx)-1, nferdims ) + 1
+
+* pre-check to make sure limits were given
+	pvlen = CX_DIM_LEN(idim, cx)
+	IF (pvlen .EQ. 99999999) GOTO 5100
 
 * reserve and catalog space for the result
 	CALL CREATE_TEMP_MEM_VAR( cx, mr, status )
@@ -84,15 +91,16 @@
 
 * fill the space with the desired data
 
-* Get the direction of the pseudo-variable.
 
-	idim = MOD( cx_variable(cx)-1, nferdims ) + 1
-
-	CALL MAKE_PSEUDO_VAR( cx, idim, memory(1, mr_blk1(mr)), mr,
+	CALL MAKE_PSEUDO_VAR( cx, idim, memry(mr)%ptr, mr,
      .			      mr_lo_ss(mr,idim), mr_hi_ss(mr,idim) )
 
 	RETURN 1
 
 * error exit
  5000	RETURN
+
+ 5100	CALL ERRMSG(ferr_limits,status,
+     .         "Limits must be provided for pseudo-variable.", *5000)
+     .		
 	END	

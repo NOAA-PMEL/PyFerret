@@ -1,4 +1,4 @@
-      SUBROUTINE DO_INTERNAL_GC_FCN( memory,
+      SUBROUTINE DO_INTERNAL_GC_FCN( 
      .				fcn, num_com, com_cx,
      .				com1, mr1, pdim1, typ1,
      .				com2, mr2, pdim2, typ2,
@@ -98,7 +98,9 @@
 * V68   5/12 *acm* Add ESEQUENCE, FSEQUENCE, SAMPLEM, SAMPLEN
 * V693 10/14 *acm* ticket 2210: check for negative arguments to SUBSTRING
 
-* keep max_cmnd_len for SPAWN at 2048 while Ferret command buffer increases to 20480
+* keep max_cmnd_len for SPAWN at 2048 while Ferret command buffer
+*      increases to 20480
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -116,7 +118,6 @@
      .          pdim8, pdim9, pdimr,
      .          typ1, typ2, typ3, typ4, typ5, typ6, typ7, typ8, typ9,
      .          typr, res_cx
-        REAL	memory( mem_blk_size, max_mem_blks )
 	REAL com1( pdim1,m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,
      .             m1lot:m1hit,m1loe:m1hie,m1lof:m1hif ),
      .       com2( pdim2,m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
@@ -153,8 +154,9 @@
      .          si2, sj2, sk2, sl2, sm2, sn2,
      .          si3, sj3, sk3, sl3, sm3, sn3,
      .          ind(nferdims)
-        INTEGER klo, khi, ndx_lo, wkblk, ioff, ilen
+        INTEGER klo, khi, ndx_lo, ioff, ilen
         INTEGER coded_pointer, uvar, item, start, end   ! for TIMES2
+        INTEGER*8 i8_size
 	REAL    bad_res, bad1, bad2, bad3,
      .          zval, frac
         REAL*8  TM_WORLD
@@ -377,8 +379,10 @@
      .		 'Z limits of data and depth fields must match', *5000)
 
 * ... allocate a work array for a single profile of Z depths
-	CALL GET_WORK_SPC( m2hiz-m2loz+1, wkblk, status )
+        i8_size = m2hiz-m2loz+1
+	CALL GET_DYN_WORK_SPACE( i8_size, status )
         IF ( status .NE. ferr_ok ) GOTO 5000
+
 
 * ... loop over the X,Y,T,E,F range of the input fields
 	n1 = sn1
@@ -412,7 +416,7 @@
      .               cx_lo_s3(cx2), cx_hi_s3(cx2), 
      .               m2lox, m2hix, m2loy, m2hiy, m2loz, m2hiz,
      .               m2lot, m2hit, m2loe, m2hie, m2lof, m2hif,
-     .               memory(1,wkblk), klo, khi )
+     .               workmem(plegacy_work_buffer)%ptr, klo, khi )
 
              IF ( klo .LT. 1 ) THEN
 
@@ -436,7 +440,7 @@
 #endif
 * ... search the Z field (com2) for the index just below this value
 * ... note that ndx_lo is always referenced to a starting index of 1
-                   CALL HUNT_R4(memory(1,wkblk),
+                   CALL HUNT_R4(workmem(plegacy_work_buffer)%ptr,
      .                          klo, khi, zval, ndx_lo, frac)
                    IF ( frac .LT. 0.0 ) THEN
 * ... no luck -- the Z axis value we seek is outside the range in com2
@@ -444,7 +448,7 @@
                    ELSEIF ( com1(1,i1,j1,sk1+ndx_lo,l1,m1,n1)
      .                      .EQ. bad1 ) THEN
                       res(1,i,j,k,l,m,n) = bad_res
-                   ELSEIF ( frac .EQ. 1.0 ) THEN                  ! exactly on point
+                   ELSEIF ( frac .EQ. 1.0 ) THEN      ! exactly on point
                       res(1,i,j,k,l,m,n) =
      .                   com1(1,i1,j1,sk1+ndx_lo,l1,m1,n1)
                    ELSEIF ( com1(1,i1,j1,sk1+ndx_lo+1,l1,m1,n1)
@@ -461,7 +465,7 @@
              ENDIF
 
  1450	CONTINUE
-        CALL RELEASE_WORK_SPC
+        CALL RELEASE_DYN_WORK_SPACE
         RETURN
 
 

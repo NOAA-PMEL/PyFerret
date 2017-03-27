@@ -1,4 +1,4 @@
-	SUBROUTINE XEQ_LIST( memory )
+	SUBROUTINE XEQ_LIST
 
 *
 *
@@ -150,6 +150,7 @@
 * V685 *acm*  6/13 Dont add SAVE/NOCOORDS
 * V690 *sh*   1/14 Automated 3-argument auxiliary (curvilinear) plotting
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * V710 *acm*  1/17 Ticket 1480: When writing to netCDF, check whether the region on 
 *                  modulo axes is just one grid-cell longer than the axis length,e.g. 
 *                  if they gave a region of /X=0:360.  If so, write one grid-cell less 
@@ -171,7 +172,6 @@
         include 'xrisc.cmn'
 
 * calling argument declarations:
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * local variable declarations
 	LOGICAL		is_secure
@@ -187,11 +187,12 @@
      .                  STR_UPCASE, GET_MAX_STRING_LEN,
      .			status, mr, cx, inext, ilist, wsize, vax_code,
      .			rlen, flen, reclen, i, cx1, qfile, idim,
-     .			ndim, wkblk, perm(7), mr_perm(max_intrp),
+     .			ndim, perm(7), mr_perm(max_intrp),
      .                  npermuted, recsofar, do_stream_phase, nvars,
      .                  edges_flag, keepax_flag, nn, slen, do_bounds,
      .			my_mr(max_intrp), my_cx(max_intrp), frame_bottom,
      .			nvars2list
+	INTEGER*8	i8_size
 
 	CHARACTER	AUTO_FILENAME*2048, filename*2048, raw_name*2048, 
      .			buff*2048, fstatus*8, faccess*12, fformatted*12,
@@ -229,13 +230,13 @@
 	   list_fmt_type = plist_default ! restore for next command
 	   num_uvars_in_cmnd = 0	 ! wipe out past memory of expressions
 	   CALL CDF_PREP_CACHE( cx_last, filename, nvars,
-     .			  memory, is_mr, is_cx, clobber, status )
+     .			   is_mr, is_cx, clobber, status )
 	   IF ( status .NE. ferr_ok ) RETURN
            edges_flag = 0
            do_bounds = 0
 	   keepax_flag = 0
 	   out_type = "DFLT"
-	   CALL CDF_LIST( memory, filename( 1:TM_LENSTR1(filename)), 
+	   CALL CDF_LIST(  filename( 1:TM_LENSTR1(filename)), 
      .                    .FALSE., 'N', nvars, is_mr, is_cx,
      .			   ' ', .TRUE., pcdf_mode_cache, clobber, 
      .                    edges_flag, do_bounds, keepax_flag, out_type,  
@@ -322,7 +323,7 @@
 
 * get the requested data somehow
 * (leave the variables flagged as "in-use" 7/92)
-	CALL GET_PROT_CMND_DATA ( memory, cx_last, ptype_native, status )
+	CALL GET_PROT_CMND_DATA (  cx_last, ptype_native, status )
 	IF ( status .NE. ferr_ok ) THEN      ! 8/6/92
            list_fmt_type = plist_default ! restore for next command
 	   list_format_given = .FALSE.
@@ -560,7 +561,7 @@ c     .		 .AND. .NOT.do_comma_del
 	         IF ( mr_type(my_mr(i)) .EQ. ptype_string ) THEN
 	            reclen = MAX(reclen,
      .			GET_MAX_STRING_LEN(my_cx(i), my_mr(i),
-     .					   memory(1,mr_blk1(my_mr(i))))+1 )
+     .					   memry(my_mr(i))%ptr)+1 )
 	         ELSE
 	            reclen = MAX(reclen,4)
 	         ENDIF
@@ -608,13 +609,14 @@ c     .		 .AND. .NOT.do_comma_del
      .             wsize = wsize * CX_DIM_LEN(idim,cx)
 	   ENDIF
 	ENDIF
-	CALL GET_WORK_SPC( wsize, wkblk, status )
+	i8_size = wsize
+	CALL GET_DYN_WORK_SPACE( i8_size, status )
 	IF ( status .NE. ferr_ok ) GOTO 1000
 
 * special handling of EPIC data - no permutations
 	IF ( do_epic ) THEN
 	   CALL EPIC_LIST( raw_name, my_mr, my_cx, 
-     .			   memory(1, wkblk), wsize, status )
+     .			   workmem(plegacy_work_buffer)%ptr, wsize, status )
 	   GOTO 1000
 	ENDIF
 
@@ -629,10 +631,9 @@ c bug fix: see err540_write_order.jnl move inside loop:
 c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
 	   DO 200 ilist = 1, nvars2list
 	      IF (.NOT.permute) CALL GET_CX_DIMS(my_cx(ilist),ndim,perm)
-	      CALL SHRINK_FOR_MODULO (my_cx(ilist), my_mr(ilist), do_cdf, do_shrink)
-
-	      CALL CREATE_PERMUTATION(	memory,
-     .					my_cx  (ilist),
+	      CALL SHRINK_FOR_MODULO (my_cx(ilist), my_mr(ilist), do_cdf,
+     .				      do_shrink)
+	      CALL CREATE_PERMUTATION(	my_cx  (ilist),
      .					my_mr  (ilist),
      .					perm, 
      .					mr_perm(ilist), do_shrink, status )
@@ -653,7 +654,7 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
 	         perm(2) = i
 	      ENDIF
 	   ENDIF
-	   CALL CREATE_PERMUTATION(memory,cx,mr,perm,mr_perm,do_cdf,status)
+	   CALL CREATE_PERMUTATION(cx,mr,perm,mr_perm,do_cdf,status)
 	   IF ( status .NE. ferr_ok ) GOTO 500
            npermuted = npermuted + 1
 	ENDIF
@@ -669,27 +670,27 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
 *     .                          clobber, raw_name, status)
 
 	ELSEIF ( do_cdf ) THEN
-	   CALL CDF_LIST( memory, raw_name( 1:TM_LENSTR1(raw_name)), 
+	   CALL CDF_LIST(  raw_name( 1:TM_LENSTR1(raw_name)), 
      .                    list_at_eof, cdf_recax, nvars2list,
      .			  mr_perm, my_cx, buff, head_enh,
      .			  pcdf_mode_normal, clobber, edges_flag, do_bounds,
      .                    keepax_flag, out_type, quiet, status )
 
 	ELSEIF( all_at_once ) THEN
-	   CALL LIST_MULTI( memory, mr_perm, my_cx, heading, perm,
-     .			    wsize, memory(1, wkblk), status )
+	   CALL LIST_MULTI(  mr_perm, my_cx, heading, perm,
+     .			    wsize, workmem(plegacy_work_buffer)%ptr,status )
 	ELSE
 	   CALL NON_ARRAY_SUBSC( mr_perm, 1 )
            nn = mr_perm(1)
-	   CALL LIST_CMND_DATA( memory(1, mr_blk1(mr_perm(1))),
-     .                          nn, cx, memory(1, wkblk), 
+	   CALL LIST_CMND_DATA( memry(mr_perm(1))%ptr,
+     .                          nn, cx,  workmem(plegacy_work_buffer)%ptr, 
      .                          heading, head_enh, recsofar, perm, 
      .                          clobber, raw_name, status)
 	ENDIF
 
 * EXIT sequence
 * ... relinquish working space
- 500	CALL RELEASE_WORK_SPC
+ 500	CALL RELEASE_DYN_WORK_SPACE
 
 * ... close any special output device
 	IF ( normal_file ) CLOSE ( UNIT = list_lun, ERR = 5010 )

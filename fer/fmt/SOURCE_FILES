@@ -25,6 +25,7 @@ get_sig_digits.F\
 get_user_offset.F\
 get_user_scale.F\
 lefint.F\
+lefint8.F\
 left_just.F\
 left_real.F\
 lohi_string.F\

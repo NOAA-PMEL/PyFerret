@@ -47,6 +47,7 @@
 *		 - variable is assumed NOT to be in deletion chain
 *		 - use ASSIGN_MR_CX
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V702:  3/17 *sh* dynamic memory management
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -61,7 +62,15 @@
 * internal variable declarations:
 	INTEGER HASH_CX, prev, next, pile, head
 
-* flag the variable as "in progress"
+* this should never happen, but to be safe ...
+	IF (mr_protected(mr) .EQ. mr_not_protected) THEN
+	   CALL WARN("crptn??: re_assign_variable")
+	   essential_mem = essential_mem + mr_size(mr)
+	   IF (essential_mem.GT.peak_essential_mem) 
+     .		peak_essential_mem = essential_mem
+	ENDIF
+
+* flag the variabe as in progress
 	mr_protected(mr) = mr_in_progress
 
 * make this mem var the property of the new context

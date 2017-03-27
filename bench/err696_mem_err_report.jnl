@@ -1,5 +1,9 @@
 ! err696_mem_err_report.jnl
 ! 1/21/2016 *acm*
+! V702: *sh* 2/17 - This script depends upon the specific formatting
+! of the error string, when memory is exceeded
+! Tweaked it to match the new formatting
+
 ! Ticket 2354: The error message shows the wrong number for memory needed.
 !
 ! Try to load some data larger than the default amount of memory
@@ -24,15 +28,12 @@ load/l=1:5 bigvar
 show sym fer_last_error
 cancel mode ignore
 
-! Get the number Ferret says it needs
-let ms1 = `strrindex("($fer_last_error)", ":")`
-let ms2 = `strindex("($fer_last_error)", "Mword")`
-let siz = substring("($fer_last_error)", `ms1+1`, `ms2-ms1-1`)
+! V702:  we no longer have to parse the error string.
+! Instead look at PEAK_MEMORY 
 
-! Increase memory accordingly
-
-set mem/siz=`siz`
+SET MEMORY/SIZE=15
 load/l=1:5 bigvar
+SHOW SYMBOL ($PEAK_MEMORY)
 
 ! restore default
 set mem/siz=`memsize`

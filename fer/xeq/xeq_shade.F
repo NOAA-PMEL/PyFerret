@@ -1,4 +1,4 @@
- 	SUBROUTINE XEQ_SHADE( memory )
+ 	SUBROUTINE XEQ_SHADE
 
 *
 *
@@ -109,6 +109,7 @@
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -127,7 +128,6 @@
 
 
 * calling argument declarations:
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	LOGICAL	  TM_HAS_STRING, 
@@ -136,8 +136,7 @@
      .		  is_logh, is_logv, is_shade, use_cell, inc_grid
 
 	INTEGER	  TM_LENSTR1, TM_LENSTR, STR_UPCASE, status, slen, sp, patt,
-     .		  ax1_blks, ax1_start,
-     .		  ax2_blks, ax2_start, i, nparm, num_it, 
+     .		  ax1_work, ax2_work, i, nparm, num_it, 
      .		  loc, s1, s2, it_start(4), it_end(4), iax(4),
      .            density, i1, loch, locv
         INTEGER	  grid, mvx
@@ -154,8 +153,7 @@
 
 * set up the graphics environment and get the data
 	CALL START_PPLUS
-	CALL DISP_DATA_SET_UP( memory,
-     .		ax1_start, ax1_blks, ax2_start, ax2_blks, status )
+	CALL DISP_DATA_SET_UP(  ax1_work, ax2_work, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
 
 * initialize
@@ -229,7 +227,7 @@
 
 * set up the axes and title and load the data into PPLUS
 	inc_grid = set_up
-	CALL DISP_SET_UP   (    memory,
+	CALL DISP_SET_UP   (    
      .				not_vector,
      .				is_shade,
      .				use_cell,
@@ -246,8 +244,8 @@
      .				num_uvars_in_cmnd,
      .				is_cx,
      .				is_uvar,
-     .				memory( 1, ax1_start ),
-     .				memory( 1, ax2_start ),
+     .				workmem(ax1_work)%ptr,
+     .				workmem(ax2_work)%ptr,
      .				-1, 			! auto pen select,
      .				inc_grid,
      .				status )
@@ -489,8 +487,8 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
  1000 	CONTINUE
  
 
-	CALL FREE_MEMORY( ax2_start, ax2_blks )
- 	CALL FREE_MEMORY( ax1_start, ax2_blks )
+ 	CALL FREE_WS_DYNMEM( ax1_work )
+	CALL FREE_WS_DYNMEM( ax2_work )
 	CALL UNPROTECT_CMND_DATA			! 1/94
  5100	RETURN
 

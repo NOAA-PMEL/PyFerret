@@ -54,6 +54,7 @@
 *   *js* 6.99 Set line buffering if in server mode
 *  *acm* 1/12 - Ferret 6.8 ifdef double_p for double-precision ferret, see the
 *              definition of macro DFTYPE in ferret.h 
+*  *sh* 1/17 - trac enhancement #2369 -- dynamic memory management 
 */
 
 #include <unistd.h>
@@ -69,25 +70,24 @@
 #   ifdef _NO_PROTO
 void ferret_dispatch_( );
 #   else
-void ferret_dispatch( DFTYPE *memory, char *init_command, int *rtn_flags,
-		       int *nflags, char *rtn_chars, int *nchars, int *nerrlines );
+void ferret_dispatch( char *init_command, int *rtn_flags,
+		      int *nflags, char *rtn_chars, int *nchars, int *nerrlines );
 #   endif
 #else                     /*NO_ENTRY_NAME_UNDERSCORES*/
 #   ifdef _NO_PROTO
 void ferret_dispatch_( );
 #   else
-void ferret_dispatch_( DFTYPE *memory, char *init_command, int *rtn_flags,
+void ferret_dispatch_( char *init_command, int *rtn_flags,
 		       int *nflags, char *rtn_chars, int *nchars, int *nerrlines );
 #   endif
 #endif                    /*NO_ENTRY_NAME_UNDERSCORES*/
 
 #ifdef _NO_PROTO
-void ferret_dispatch_c( memory, init_command, sBuffer )
-DFTYPE *memory;
+void ferret_dispatch_c( init_command, sBuffer )
 char *init_command;
 smPtr sBuffer;
 #else
-void ferret_dispatch_c( DFTYPE *memory, char *init_command, smPtr sBuffer )
+void ferret_dispatch_c( char *init_command, smPtr sBuffer )
 #endif
 {
   int flag_buff_size  = NUMFLAGS;
@@ -97,13 +97,15 @@ void ferret_dispatch_c( DFTYPE *memory, char *init_command, smPtr sBuffer )
 /* call the FORTRAN program that actually does the FERRET command */
 /* all arguments must be pointers for FORTRAN */
 /*ifdef check added 5/95 *kob* */
+/* 1/17 *sh* removed the "memory" argument -- replaced by dynamic allocation
+   of hyperslab memory using FORTRAN90 pointers and c (or python) */
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
   ferret_dispatch
 #else
   ferret_dispatch_
 #endif
-                  ( memory, init_command, sBuffer->flags, &flag_buff_size,
+                  ( init_command, sBuffer->flags, &flag_buff_size,
 		    sBuffer->text, &TEXTLENGTH_size, &(sBuffer->numStrings) );
 
   return;

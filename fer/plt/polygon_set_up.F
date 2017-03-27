@@ -1,5 +1,5 @@
 	SUBROUTINE POLYGON_SET_UP
-     .			      ( memory,
+     .			      ( 
      .				overlay, transpz, coord_ax, no_labels,
      .				no_range, only_val,
      .				symbol, line_type, use_line,
@@ -173,7 +173,6 @@
      .			do_units
 	INTEGER		symbol, line_type, coord_ax, iunits, do_dash,
      .			nmv, mr_list( nmv ), cx_list( nmv ), status
-	REAL		memory( mem_blk_size, max_mem_blks )
 	REAL		x_dat(*), y_dat(*)     ! dynamic space allocation 
 	REAL            only_val, dashstyle(4), add_lon
 
@@ -200,8 +199,8 @@
      .			cx_buff_x, cx_buff_y,
      .			phlim, pvlim, pxdenig, pydenig,
      .                  cal_id, tax, x_axtyp, y_axtyp, n,
-     .                  ss_x_save, ss_y_save, hblk1, mvh_temp, ier, nc, 
-     .                  skipsym, nsiz, ngood
+     .			ss_x_save, ss_y_save, mvh_temp, ier, nc, skipsym,
+     .			nsiz, ngood
 
 	REAL		x_len, y_len, lo, hi, lox, hix, loy, hiy,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
@@ -478,7 +477,7 @@ c	ind_dim = plot_axis(1)
 * ... extract 1-dimensional arrays -- possibly with embedded missing values
 * ... x coordinates
 	   CALL EXTRACT_LINE (	cx_buff_x,
-     .				memory( 1, mr_blk1(mr_x) ),
+     .				memry(mr_x)%ptr,
      .				mr_x,
      .				x_dat,
      .				coord_dim,
@@ -488,7 +487,7 @@ c	ind_dim = plot_axis(1)
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 * ... y coordinates
 	   CALL EXTRACT_LINE (	cx_buff_y,
-     .				memory( 1, mr_blk1(mr_y) ),
+     .				memry(mr_y)%ptr,
      .				mr_y,
      .				y_dat,
      .				coord_dim,
@@ -505,7 +504,7 @@ c	ind_dim = plot_axis(1)
 
 	   IF (first_polygon .AND. .NOT.oneD_form) THEN
               plot_mem_used = 4* npts* npoly
-              CALL reallo_envelope(plot_mem_used)
+              CALL REALLO_ENVELOPE(plot_mem_used)
 
               first_polygon = .FALSE.
               plot_mem_used = 0
@@ -758,7 +757,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	   x_dat(1) = 0.0
 	else
 	   CALL EXTRACT_LINE (	cx_color,
-     .				memory( 1, mr_blk1(mr_color) ),
+     .				memry(mr_color)%ptr,
      .				mr_color,
      .				x_dat,
      .				color_dim,
@@ -819,10 +818,9 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 	  CALL CREATE_TEMP_MEM_VAR( cx_x, mvh_temp, status )
 	  IF ( status .NE. ferr_ok ) RETURN
-	  hblk1 = mr_blk1( mvh_temp )
           plot_mem_used = plot_mem_used + ncolor
 
-	  CALL compute_histo_bins (x_dat, memory(1,hblk1), 
+	  CALL COMPUTE_HISTO_BINS (x_dat, memry(mvh_temp)%ptr, 
      .       mr_bad_data(mr_color), ncolor, status) 
 
 * ... clean up temporary variable
@@ -872,7 +870,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 * ... extract 1-dimensional arrays -- possibly with embedded missing values
 * ... x coordinates
 	   CALL EXTRACT_LINE (	cx_buff_x,
-     .				memory( 1, mr_blk1(mr_x) ),
+     .				memry(mr_x)%ptr,
      .				mr_x,
      .				x_dat,
      .				coord_dim,
@@ -882,7 +880,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 * ... y coordinates
 	   CALL EXTRACT_LINE (	cx_buff_y,
-     .				memory( 1, mr_blk1(mr_y) ),
+     .				memry(mr_y)%ptr,
      .				mr_y,
      .				y_dat,
      .				coord_dim,

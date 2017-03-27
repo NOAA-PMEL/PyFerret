@@ -53,6 +53,7 @@
 * V697 12/15 *acm* Ticket 2337 Increase length of cmnd buffer to 20480
 *		  - increased max_item_list 250 -> 1000
 * V697  2/16 *acm* DO NOT Increase length of cmnd buffer from 2048
+* V702 2/17 *sh* add mode FRUGAL and spawn_status
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -80,7 +81,8 @@
      .			pmode_ppllist, pmode_gui, pmode_logo, pmode_labels,
      .                  pmode_grat, pmode_linecolors, pmode_upcase_output,
      .                  pmode_nlevels, pmode_nodata_lab, pmode_shrink_ylab,
-     .                  pmode_curvilinear, pmode_layerz, pmode_6d_lab
+     .                  pmode_curvilinear, pmode_layerz, pmode_6d_lab,
+     .			pmode_frugal
 
 	PARAMETER     ( pmode_diagnostic	= 1,
      .			pmode_verify		= 2,
@@ -116,7 +118,8 @@
      .                  pmode_shrink_ylab       = 31,
      .			pmode_curvilinear	= 32,
      .			pmode_layerz		= 33,
-     .			pmode_6d_lab		= 34 )
+     .			pmode_6d_lab		= 34,
+     .			pmode_frugal		= 35 )
 
 	CHARACTER	pmode_unused*10
 	PARAMETER     ( pmode_unused = '%% unused %%' )
@@ -193,7 +196,8 @@
      .          allowed_err,
      .          one_cmnd_mode,
      .		mode_auto_curvi, mode_auto_curvi_last,
-     .		mode_auto_layerz, mode_auto_layerz_last
+     .		mode_auto_layerz, mode_auto_layerz_last,
+     .		spawn_status
 
 
 ! Note: available_char_var is unused
@@ -252,6 +256,7 @@
      .		in_get_grid_mode, 
      .		mode_auto_curvi, mode_auto_curvi_last,
      .		mode_auto_layerz, mode_auto_layerz_last,
+     .		spawn_status,
      .		frame_compress, available_char_var,
      .		journal_file, ppllist_file,
      .		xwind_node, xwind_node_len,

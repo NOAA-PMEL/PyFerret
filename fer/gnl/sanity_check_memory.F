@@ -44,12 +44,14 @@
 *
 * V702: *sh* 11/16 This is an expanded version of CHECK_MEMORY intended 
 *      for use with -D debug copilations
+*            1/17 - output to stdout for easier debugging
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'ferret.parm'
 	include 'xvariables.cmn'
+	include 'xprog_state.cmn'
 	include 'xwork_space.cmn'
 
 * calling argument declarations:
@@ -58,16 +60,26 @@
 
 * internal variable declarations:
 	LOGICAL mv_accounted_for(max_mrs)
-	INTEGER	mv, mb, mvfree, mvused, mvuncached, mvwork,
-     .		mbfree, mbused, mbmax,
-     .		nmvlost, nmblost, n, pile, last, size, test_next,
+	INTEGER	mv, mvfree, mvused, mvuncached, mvwork,
+     .		nmvlost, n, pile, last, msize, test_next,
      .		ninuse, navail, nperm, mbperm, ntemp, ndel,
-     .		ninprogress, ntable_entries,
-     .		slen, mb_allocated(pmax_mem_blks), i, iblk
-	CHARACTER LEFINT*8, buff*40, b12*12
+     .		ninprogress, ntable_entries, 
+     .		slen, nn, i, ws, s1, s2
+	INTEGER*8 sum, mem_in_use
+	CHARACTER LEFINT*10, buff*40, b12*12
 	PARAMETER (b12 = '            ')    !kob 12/96
 
 ************************************
+* check Ferret variable memory allocations
+        mem_in_use = 0
+        DO mv = 1, max_mrs
+           mem_in_use = mem_in_use + mr_size(mv)
+        ENDDO
+        IF (mem_in_use .NE. total_mem) THEN
+	      CALL WARN('***** corrupted total mem size: '
+     .                  //LEFINT(mem_in_use,slen) )
+        ENDIF
+
 * 11/16 brute force check of memory table list integrity
 	DO mv = 1, max_mrs
 	   mv_accounted_for(mv) = .FALSE.
@@ -79,11 +91,12 @@
  10	IF ( mv .NE. 0 ) THEN
 	   n = n + 1  ! number of passes
 	   IF (n .GT. max_mrs + 5) THEN
-	      CALL WARN('SANITY ERR: Trapped in free list ...')
+	      CALL TM_NOTE('SANITY ERR: Trapped in free list ...'
+     .				, ttout_lun)
 	   ENDIF
 	   IF (mv_accounted_for(mv)) THEN
-	      CALL WARN('SANITY ERR: free mr list is corrupted: '
-     .	   			//LEFINT(mv,slen)//tag )  ! loop forever
+	      CALL TM_NOTE('SANITY ERR: free mr list is corrupted: '
+     .	   		//LEFINT(mv,slen)//tag, ttout_lun)   ! loop forever
 	   ENDIF
 	   mv_accounted_for(mv) = .TRUE.
 	   mvfree = mvfree + 1
@@ -99,17 +112,19 @@
  12	   IF ( mv .GT. 0 ) THEN
 	      n = n + 1  ! number of passes
 	      IF (n .GT. max_mrs + 5) THEN
-	         CALL WARN('SANITY ERR: Trapped in hash pile ...'
-     .			//LEFINT(-pile,slen))
+	         CALL TM_NOTE('SANITY ERR: Trapped in hash pile ...'
+     .			//LEFINT(-pile,slen), ttout_lun) 
 	      ENDIF
 	      IF (mv_accounted_for(mv)) THEN
-	         CALL WARN
+	         CALL TM_NOTE
      .			('SANITY ERR: cached mr slot found in multiple lists: '
-     .	   			//LEFINT(mv,slen)//LEFINT(-pile,slen)//tag )
+     .	   			//LEFINT(mv,slen)//LEFINT(-pile,slen)//tag,
+     .				ttout_lun) 
 	      ENDIF
 	      IF (mv_blink(mv) .NE. last) THEN
-	         CALL WARN ('SANITY ERR: hash pile back link error: '
-     .	   			//LEFINT(mv,slen)//LEFINT(-pile,slen)//tag )
+	         CALL TM_NOTE ('SANITY ERR: hash pile back link error: '
+     .	   			//LEFINT(mv,slen)//LEFINT(-pile,slen)//tag,
+     .				ttout_lun) 
 	      ENDIF
 	      mv_accounted_for(mv) = .TRUE.
 	      mvused = mvused + 1
@@ -126,16 +141,18 @@
  16	IF ( mv .GT. 0 ) THEN
 	   n = n + 1  ! number of passes
 	   IF (n .GT. max_mrs + 5) THEN
-	      CALL WARN('SANITY ERR: Trapped in work space chain ...')
+	      CALL TM_NOTE('SANITY ERR: Trapped in work space chain ...',
+     .				ttout_lun) 
+
 	   ENDIF
 	   IF (mv_accounted_for(mv)) THEN
-	      CALL WARN
+	      CALL TM_NOTE
      .		('SANITY ERR: work var mr slot found in multiple lists: '
-     .	   			//LEFINT(mv,slen)//tag )
+     .	   			//LEFINT(mv,slen)//tag, ttout_lun) 
 	   ENDIF
 	   IF (mv_blink(mv) .NE. last) THEN
-	      CALL WARN('SANITY ERR: work var back link error: '
-     .	   			//LEFINT(mv,slen)//tag )
+	      CALL TM_NOTE('SANITY ERR: work var back link error: '
+     .	   			//LEFINT(mv,slen)//tag, ttout_lun)
 	   ENDIF
 	   mv_accounted_for(mv) = .TRUE.
 	   mvwork = mvwork + 1
@@ -151,16 +168,17 @@
  18	IF ( mv .GT. 0 ) THEN
 	   n = n + 1  ! number of passes
 	   IF (n .GT. max_mrs + 5) THEN
-	      CALL WARN('SANITY ERR: Trapped in uncached chain ...')
+	      CALL TM_NOTE('SANITY ERR: Trapped in uncached chain ...',
+     .				ttout_lun)	
 	   ENDIF
 	   IF (mv_accounted_for(mv)) THEN
-	      CALL WARN
+	      CALL TM_NOTE
      .		('SANITY ERR: uncached mr slot found in multiple lists: '
-     .	   			//LEFINT(mv,slen)//tag )
+     .	   			//LEFINT(mv,slen)//tag, ttout_lun)
 	   ENDIF
 	   IF (mv_blink(mv) .NE. last) THEN
-	      CALL WARN('SANITY ERR: uncached back link error: '
-     .	   			//LEFINT(mv,slen)//tag )
+	      CALL TM_NOTE('SANITY ERR: uncached back link error: '
+     .	   			//LEFINT(mv,slen)//tag, ttout_lun)
 	   ENDIF
 	   mv_accounted_for(mv) = .TRUE.
 	   mvuncached = mvuncached + 1
@@ -169,13 +187,13 @@
 	   GOTO 18
 	ENDIF
 	IF (mvused+mvfree+mvwork+mvuncached .NE. max_mr_avail) THEN
-	   CALL WARN
-     .		('SANITY ERR: number of mr slots doesnt tally')
+	   CALL TM_NOTE
+     .		('SANITY ERR: number of mr slots doesnt tally', ttout_lun)
 	ENDIF
 	DO mv = 1, max_mr_avail
 	   IF( .NOT.mv_accounted_for(mv)) THEN
-	      CALL WARN('SANITY ERR: mr unaccounted in any list: '
-     .	   			//LEFINT(mv,slen)//tag )
+	      CALL TM_NOTE('SANITY ERR: mr unaccounted in any list: '
+     .	   			//LEFINT(mv,slen)//tag, ttout_lun)
 	   ENDIF
 	ENDDO
 
@@ -186,12 +204,13 @@
  19	IF ( mv .NE. 0 ) THEN
 	   n = n + 1  ! number of passes
 	   IF (n .GT. max_mrs + 5) THEN
-	      CALL WARN('SANITY ERR: Trapped in deleted chain ...'//tag)
+	      CALL TM_NOTE('SANITY ERR: Trapped in deleted chain ...'
+     .				//tag, ttout_lun)
 	      STOP 
 	   ENDIF
 	   IF (mr_del_blink(mv) .NE. last) THEN
-	      CALL WARN ('SANITY ERR: deletion chain back link error: '
-     .	   			//LEFINT(mv,slen)//tag )
+	      CALL TM_NOTE ('SANITY ERR: deletion chain back link error: '
+     .	   			//LEFINT(mv,slen)//tag, ttout_lun)
 	   ENDIF
 	   last = mv
 	   mv = mr_del_flink(mv)
@@ -200,41 +219,6 @@
 
 
 ************************************
-* initialize memory block allocation counts
-	DO mb = 1, pmax_mem_blks
-	   mb_allocated(mb) = 0
-	ENDDO
-
-* check available bulk memory
-	n      = 0	! number of contiguous regions
-	mbfree = 0	! number of free blocks
-	mbmax  = 0	! biggest contiguous region
-	mb = mblk_flink( 0 )
- 100	IF ( mb .NE. 0 ) THEN
-	   n      = n + 1
-	   size   = mblk_size( mb ) 
-	   mbmax  = MAX( mbmax, size )
-	   mbfree = mbfree + size
-* * * * integrity check * * * * * * * * * * * * * * * * * * * *
-* ... no gaps should exist between sized regions - both free and used are sized
-	   test_next = mb + size
-	   IF ( test_next .EQ. max_mem_blks + 1 ) THEN
-	      CONTINUE
-	   ELSEIF ( test_next .GT. max_mem_blks + 1 
-     .     .OR.     mblk_size(test_next) .EQ. unspecified_int4 ) THEN
-	      CALL WARN('SANITY ERR:  improper region size: '
-     .				//LEFINT(mb,slen)//tag )
-	   ENDIF
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-* flag memory blocks allocated to the free list
-	   DO i = 1, size
-	      iblk = mb+i-1
-	      mb_allocated(iblk) = mb_allocated(iblk) + 1
-	   ENDDO
-
-	   mb = mblk_flink( mb )
-	   GOTO 100
-	ENDIF	   
 
 * check slots in memory variable table
 * ... free table slots
@@ -244,8 +228,8 @@
 
 * * * * integrity check * * * * * * * * * * * * * * * * * * * *
 	   IF ( mr_protected(mv) .NE. mr_deleted ) THEN
-	      CALL WARN('SANITY ERR: improperly deleted: '
-     .				//LEFINT(mv,slen)//tag )
+	      CALL TM_NOTE('SANITY ERR: improperly deleted: '
+     .				//LEFINT(mv,slen)//tag, ttout_lun)
 	   ENDIF
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -254,44 +238,24 @@
 	   GOTO 200
 	ENDIF
 
-* * * * SUMMARIZE MEMORY BLOCKS AND TABLE SLOTS IN USE * * * *
+* * * * SUMMARIZE MEMORY TABLE SLOTS IN USE * * * *
 * check all the variables in all the hash piles
 	mvused = 0
-	mbused = 0
 	DO 310 pile = 1, pmv_npiles
 	   last = -pile
 	   mv = mv_flink( last )	! base pointer for slots in this hash #
  300	   IF ( mv .GT. 0 ) THEN
 	      IF ( mr_protected(mv) .EQ. mr_deleted
-     .	      .OR. mr_nblks    (mv) .NE. mblk_size( mr_blk1(mv) )
      .	      .OR. mv_blink(mv) .NE. last ) THEN
-	          CALL WARN('SANITY ERR: improperly cataloged: '
-     .				//LEFINT(mv,slen)//tag )
+	          CALL TM_NOTE('SANITY ERR: improperly cataloged: '
+     .				//LEFINT(mv,slen)//tag, ttout_lun)
 	      ENDIF
 	      mvused = mvused + 1
-	      IF (mr_protected(mv) .NE. mr_table_entry_only) THEN
-	         mbused = mbused + mr_nblks(mv)
-	      ENDIF
-
-* flag memory blocks allocated to a variable in a hash pile
-	      IF (mr_protected(mv) .NE. mr_table_entry_only) THEN
-	         DO i = 1, mr_nblks(mv)
-	            iblk = mr_blk1(mv)+i-1
-	            mb_allocated(iblk) = mb_allocated(iblk) + 1
-	         ENDDO
-	      ENDIF
-
 	      last   = mv
 	      mv     = mv_flink(mv)
 	      GOTO 300
 	   ENDIF
  310	CONTINUE
-
-* flag memory blocks allocated to GET_WORK_SPACE (as most work storage handled)
-	   DO i = 1, sp_num_blocks
-	      iblk = sp_start_block+i-1
-	      mb_allocated(iblk) = mb_allocated(iblk) + 1
-	   ENDDO
 
 * check non-cached variables (10/99)
 	last = pmv_nocache_pile
@@ -299,25 +263,11 @@
  350	IF ( mv .GT. 0 ) THEN
 	   IF ( mr_protected(mv) .EQ. mr_deleted
      .	   .OR. mr_protected(mv) .EQ. mr_in_progress
-     .	   .OR. mr_nblks    (mv) .NE. mblk_size( mr_blk1(mv) )
      .	   .OR. mv_blink(mv) .NE. last ) THEN
-	      CALL WARN('SANITY ERR: uncached variable error: '
-     .				//LEFINT(mv,slen)//tag )
+	      CALL TM_NOTE('SANITY ERR: uncached variable error: '
+     .				//LEFINT(mv,slen)//tag, ttout_lun)
 	   ENDIF
 	   mvused = mvused + 1
-	   IF (mr_protected(mv) .NE. mr_table_entry_only) THEN
-	      mbused = mbused + mr_nblks(mv)
-	   ENDIF
-!	   mbused = mbused + mr_nblks(mv)
-
-* flag memory blocks allocated to a non-cached variable
-	   IF (mr_protected(mv) .NE. mr_table_entry_only) THEN
-	      DO i = 1, mr_nblks(mv)
-	         iblk = mr_blk1(mv)+i-1
-	         mb_allocated(iblk) = mb_allocated(iblk) + 1
-	      ENDDO
-	   ENDIF
-
 	   last   = mv
 	   mv     = mv_flink(mv)
 	   GOTO 350
@@ -329,22 +279,10 @@
  370	IF ( mv .GT. 0 ) THEN
 	   IF ( mr_protected(mv) .NE. mr_in_progress
      .	   .OR. mv_blink(mv) .NE. last ) THEN
-	      CALL WARN('SANITY ERR: table work storage variable error: '
-     .				//LEFINT(mv,slen)//tag )
+	      CALL TM_NOTE('SANITY ERR: table work storage variable error: '
+     .				//LEFINT(mv,slen)//tag, ttout_lun)
 	   ENDIF
 	   mvused = mvused + 1
-	   IF (mr_protected(mv) .NE. mr_table_entry_only) THEN
-	      mbused = mbused + mr_nblks(mv)
-	   ENDIF
-
-* flag memory blocks allocated to a table work storage variable
-	   IF (mr_protected(mv) .NE. mr_table_entry_only) THEN
-	      DO i = 1, mr_nblks(mv)
-	         iblk = mr_blk1(mv)+i-1
-	         mb_allocated(iblk) = mb_allocated(iblk) + 1
-	      ENDDO
-	   ENDIF
-
 	   last   = mv
 	   mv     = mv_flink(mv)
 	   GOTO 370
@@ -353,25 +291,10 @@
 * * * * integrity check * * * * * * * * * * * * * * * * * * * *
 * make sure no table slots or memory blocks have been lost
 	nmvlost = max_mr_avail - ( mvfree+mvused )
-	nmblost = max_mem_blks   - ( mbfree+mbused+sp_num_blocks )
 	IF ( nmvlost .NE. 0 ) THEN
-	   CALL WARN('SANITY ERR: lost table slots: '
-     .				//LEFINT(nmvlost,slen)//tag )
+	   CALL TM_NOTE('SANITY ERR: lost table slots: '
+     .				//LEFINT(nmvlost,slen)//tag, ttout_lun)
 	ENDIF
-	IF ( nmblost .NE. 0 ) THEN
-	   CALL WARN('SANITY ERR: lost memory blocks: '
-     .				//LEFINT(nmblost,slen)//tag )
-	ENDIF
-
-* * * * integrity check * * * * * * * * * * * * * * * * * * * * *
-* make sure that every memory block is allocated to exactly one purpose
-	DO mb = 1, pmax_mem_blks
-	   IF (mb_allocated(mb) .NE. 1) THEN
-	      CALL WARN('SANITY ERR: allocation of block: '
-     .				//LEFINT(mb,slen)//
-     .			  ' is '//LEFINT(mb_allocated(mb),slen)//tag )
-	   ENDIF
-	ENDDO
 
 * * * * integrity check * * * * * * * * * * * * * * * * * * * * *
 * variable deletion priority chain
@@ -380,7 +303,8 @@
  400	IF ( mv .NE. 0 ) THEN
 	   navail = navail + 1
 	   IF ( mr_protected(mv) .NE. mr_not_protected ) THEN
-	      CALL WARN('SANITY ERR: Protected variables deleted')
+	      CALL TM_NOTE('SANITY ERR: Protected variables deleted',
+     .				ttout_lun)
 	   ENDIF
 	   mv = mr_del_flink(mv)
 	   GOTO 400
@@ -388,7 +312,6 @@
 	ninuse = 0
 	ndel   = 0
 	nperm  = 0
-	mbperm = 0
 	ntemp  = 0
         ninprogress = 0
 	ntable_entries = 0
@@ -397,7 +320,6 @@
 	      ninuse = ninuse + 1
 	   ELSEIF ( mr_protected(mv) .EQ. mr_perm_protected ) THEN
 	      nperm  = nperm  + 1
-	      mbperm = mbperm + mr_nblks(mv)
 	   ELSEIF ( mr_protected(mv) .EQ. mr_deleted ) THEN
 	      ndel = ndel + 1
 	   ELSEIF ( mr_protected(mv) .EQ. mr_temporary ) THEN
@@ -408,28 +330,47 @@
 	      ntable_entries = ntable_entries + 1
 	   ENDIF
  410	CONTINUE
-!	IF ( nperm .GT. 0 ) THEN
-!	   CALL SPLIT_LIST( pttmode_explct, lun,
-!     .			 b12//'number of /PERMANENT variables: '//
-!     .			 LEFINT(nperm,slen), 0 )
-!	   CALL SPLIT_LIST( pttmode_explct, lun,
-!     .			 b12//'number of blocks used /PERM: '//
-!     .			 LEFINT(mbperm,slen), 0 )
-!	ENDIF
 	nmvlost = max_mr_avail
      .		- (ninuse+navail+nperm+ndel+ntemp+ninprogress+ntable_entries)
 	IF ( nmvlost .NE. 0 ) THEN
-	   CALL WARN( 'SANITY ERR: Unaccountable var protection: '
-     .				//LEFINT(nmvlost,slen)//tag )
+	   CALL TM_NOTE( 'SANITY ERR: Unaccountable var protection: '
+     .				//LEFINT(nmvlost,slen)//tag, ttout_lun)
 	ENDIF
 	n = ndel - mvfree
 	IF ( n .NE. 0 ) THEN
-	   CALL WARN( 'SANITY ERR: Deleted vars unaccountable: '
-     .				//LEFINT(nmvlost,slen)//tag )
+	   CALL TM_NOTE( 'SANITY ERR: Deleted vars unaccountable: '
+     .				//LEFINT(nmvlost,slen)//tag, ttout_lun)
 	ENDIF
+
+* * * * * * dynamic memory sanity check * * * * *
+	sum = 0
+	DO mv = 1, max_mr_avail
+	   s1 = mr_size(mv)
+	   s2 = SIZE(memry(mv)%ptr) 
+	   sum = sum + s1
+           IF (s1 .NE. s2) THEN
+	      CALL TM_NOTE( 'SANITY ERR: Dynamic mem size error: '
+     .			//LEFINT(mv,slen)//LEFINT(s1,slen)
+     .			//LEFINT(s2,slen)//tag, ttout_lun)
+	   ENDIF
+	ENDDO
+	IF (sum .NE. total_mem) THEN
+	   CALL TM_NOTE( 'SANITY ERR: Dynamic mem total: '
+     .			//LEFINT(sum,slen)//LEFINT(total_mem,slen)//tag,
+     .			 ttout_lun)
+	ENDIF
+
+* work storage
+	DO ws = 1, max_ws
+	   s1 = ws_size(ws)
+	   s2 = SIZE(workmem(ws)%ptr) 
+           IF (s1 .NE. s2) THEN
+	      CALL TM_NOTE( 'SANITY ERR: Dynamic work space size error: '
+     .			//LEFINT(ws,slen)//LEFINT(s1,slen)
+     .			//LEFINT(s2,slen)//tag, ttout_lun)
+	   ENDIF
+	ENDDO
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	RETURN
 	END
-
-

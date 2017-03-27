@@ -1,4 +1,4 @@
-	SUBROUTINE FERRET_DISPATCH( memory, command, rtn_flags, nflags,
+	SUBROUTINE FERRET_DISPATCH(  command, rtn_flags, nflags,
      .					rtn_chars, nchars, nerrlines )
 
 *
@@ -119,6 +119,7 @@
 *       *acm* 3/12 removing use USER command
 * V685 *acm* 11/13 Issue an ERROR not a NOTE if USER command is tried.
 * V695 *acm*  6/16 New ANNOTATE command.
+* V702 *sh*   2/17 dynamic memory management - no return for SET MEMORY
 
 	include 'tmap_dims.parm'
 	include 'xalt_messages.cmn_text'
@@ -164,7 +165,6 @@
 * temporarily we simply declare the "memory" array right here
 * calling argument declarations
 	INTEGER nflags, nchars, rtn_flags(nflags), nerrlines
-	REAL memory(*)
 #ifdef NEED_BYTE
         BYTE       command(*), rtn_chars(nchars)
 #else
@@ -191,55 +191,54 @@ c	DO 2 i = 1, 200
 	   IF ( command(i) .EQ. 0 ) GOTO 5
  2	cmnd_buff(i:i) = CHAR( command(i) )
 
- 5	CALL GET_FER_COMMAND( memory, cmnd_buff, status, *300 )
+ 5	CALL GET_FER_COMMAND(  cmnd_buff, status, *300 )
 
 	GOTO (	 10, 20, 30, 40, 50, 60, 70, 80, 90,100,
      .		110,120,130,140,150,160,170,180,190,200,
      .          210,220,230,240,250,260,270,280 ) cmnd_num
 
- 10	CALL XEQ_SET( memory, reconfig )
-	IF ( reconfig .NE. 0 ) GOTO 400
+ 10	CALL XEQ_SET
 	GOTO 300
- 20	CALL XEQ_SHOW( memory )
+ 20	CALL XEQ_SHOW
 	GOTO 300
- 30	CALL XEQ_CANCEL( memory )
+ 30	CALL XEQ_CANCEL
 	GOTO 300
- 40	CALL XEQ_CONTOUR( memory )	! after rev 1.00 1/5/87
+ 40	CALL XEQ_CONTOUR	! after rev 1.00 1/5/87
 	GOTO 300
- 50	CALL XEQ_LIST( memory )
+ 50	CALL XEQ_LIST
 	GOTO 300
- 60	CALL XEQ_PLOT( memory )
+ 60	CALL XEQ_PLOT
 	GOTO 300
  70	CALL XEQ_GO
 	GOTO 300
  80	CALL XEQ_HELP
 	GOTO 300
- 90	CALL XEQ_LOAD( memory )
+ 90	CALL XEQ_LOAD
 	GOTO 300
- 100	CALL XEQ_DEFINE( memory )
+ 100	CALL XEQ_DEFINE
 	GOTO 300
  110	CALL XEQ_EXIT( *500, *450 )
 	GOTO 300			! command file xit or error
  120	CALL XEQ_MESSAGE
 	GOTO 300
- 130	CALL XEQ_VECTOR( memory )
+ 130	CALL XEQ_VECTOR
 	GOTO 300
  140	CALL XEQ_PPLUS
 	GOTO 300
- 150	CALL XEQ_FRAME( memory )
+ 150	CALL XEQ_FRAME
 	GOTO 300
  160	CALL XEQ_REPEAT
 	GOTO 300
- 170	CALL XEQ_STAT( memory )
+ 170	CALL XEQ_STAT
 	GOTO 300
- 180	CALL XEQ_SHADE( memory )
+ 180	CALL XEQ_SHADE
 	GOTO 300
  190	CALL XEQ_SPAWN
 	GOTO 300
- 200	CONTINUE! CALL XEQ_USER_COMMAND( memory )
+ 200	CONTINUE! CALL XEQ_USER_COMMAND
         CALL ERRMSG(ferr_syntax, status, 
      .    'USER command not available in this Ferret version ', *300)
- 210	CALL XEQ_WIRE( memory )
+ 210	CALL XEQ_WIRE
 	GOTO 300
  220	CALL XEQ_QUERY
 	GOTO 300
@@ -251,7 +250,7 @@ c	DO 2 i = 1, 200
 	GOTO 300
  260	CALL XEQ_ENDIF
 	GOTO 300
- 270	CALL XEQ_POLYGON( memory )
+ 270	CALL XEQ_POLYGON
 	GOTO 300
  280	CALL XEQ_ANNOTATE
 	GOTO 300
@@ -317,13 +316,6 @@ c	DO 2 i = 1, 200
 	   RETURN
 	ENDIF
 	   
-* reconfigure main memory
- 400	rtn_flags(frtn_control) = fctrl_in_ferret
-	rtn_flags(frtn_status)  = gui_status
-	rtn_flags(frtn_action)  = factn_mem_reconfigure
-	rtn_flags(frtn_idata1)  = reconfig
-	RETURN
-
 * exit the dispatch loop - if from pfyrret, to return control to python
 *                          if from ferret_c, just re-enter the dispatch loop
  450    rtn_flags(frtn_control) = fctrl_in_ferret

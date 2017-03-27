@@ -1,5 +1,5 @@
 	SUBROUTINE IS_DO_GC_FCN
-     .			( memory, uvar, alg_text, lo_isp, status )
+     .			(  uvar, alg_text, lo_isp, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -78,7 +78,6 @@
 
 * calling arguments
 	INTEGER		uvar, lo_isp, status
-	REAL		memory( mem_blk_size, max_mem_blks )
 	CHARACTER*(*)	alg_text
 
 * local variables
@@ -260,7 +259,7 @@
         ENDIF
 
 * need to fill in those axes that the function "imposes"
-	CALL GCF_IMPOSE_RESULT_LIMS( ifcn, memory, is_mr(lo_isp+1),
+	CALL GCF_IMPOSE_RESULT_LIMS( ifcn,  is_mr(lo_isp+1),
      .			 is_cx(lo_isp+1), res_cx, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
         
@@ -272,7 +271,7 @@
 	mr_variable( res_mr ) = res_mr	! cat_temp_var vars point to themselves
 	IF (cx_type(res_cx) .EQ. ptype_string) THEN
 	   CALL INIT_C_STRING_ARRAY( MGRID_SIZE_DELTA(res_mr),
-     .                               memory(1, mr_blk1(res_mr)),
+     .                               memry(res_mr)%ptr,
      .                               mr_c_pointer(res_mr)      )
 	ENDIF
 
@@ -290,39 +289,38 @@
 
 	IF (IFCN .LE. GFCN_NUM_INTERNAL) THEN
 
-	  CALL DO_INTERNAL_GC_FCN( memory,
+	  CALL DO_INTERNAL_GC_FCN( 
      .		ifcn, num_com, is_cx(frame_bottom),
-     .		memory(1, mr_blk1(mr1) ), mr1, pdim1, typ1,
-     .		memory(1, mr_blk1(mr2) ), mr2, pdim2, typ2,
-     .		memory(1, mr_blk1(mr3) ), mr3, pdim3, typ3,
-     .		memory(1, mr_blk1(mr4) ), mr4, pdim4, typ4,
-     .		memory(1, mr_blk1(mr5) ), mr5, pdim5, typ5,
-     .		memory(1, mr_blk1(mr6) ), mr6, pdim6, typ6,
-     .		memory(1, mr_blk1(mr7) ), mr7, pdim7, typ7,
-     .		memory(1, mr_blk1(mr8) ), mr8, pdim8, typ8,
-     .		memory(1, mr_blk1(mr9) ), mr9, pdim9, typ9,
-     .		memory(1, mr_blk1(res_mr)), res_mr, pdimr, typr,
+     .		memry(mr1)%ptr, mr1, pdim1, typ1,
+     .		memry(mr2)%ptr, mr2, pdim2, typ2,
+     .		memry(mr3)%ptr, mr3, pdim3, typ3,
+     .		memry(mr4)%ptr, mr4, pdim4, typ4,
+     .		memry(mr5)%ptr, mr5, pdim5, typ5,
+     .		memry(mr6)%ptr, mr6, pdim6, typ6,
+     .		memry(mr7)%ptr, mr7, pdim7, typ7,
+     .		memry(mr8)%ptr, mr8, pdim8, typ8,
+     .		memry(mr9)%ptr, mr9, pdim9, typ9,
+     .		memry(res_mr)%ptr, res_mr, pdimr, typr,
      .		res_cx, status )
-	  IF ( status .NE. ferr_ok ) GOTO 5100
 
 	ELSE 
 
-	  CALL DO_EXTERNAL_GC_FCN( memory,
+	  CALL DO_EXTERNAL_GC_FCN( 
      .			ifcn, num_com, com, is_cx(frame_bottom),
-     .			memory(1, mr_blk1(mr1) ), mr1,
-     .			memory(1, mr_blk1(mr2) ), mr2,
-     .			memory(1, mr_blk1(mr3) ), mr3,
-     .			memory(1, mr_blk1(mr4) ), mr4,
-     .			memory(1, mr_blk1(mr5) ), mr5,
-     .			memory(1, mr_blk1(mr6) ), mr6,
-     .			memory(1, mr_blk1(mr7) ), mr7,
-     .			memory(1, mr_blk1(mr8) ), mr8,
-     .			memory(1, mr_blk1(mr9) ), mr9,
-     .			memory(1, mr_blk1(res_mr)), res_mr,
+     .			memry(mr1)%ptr, mr1,
+     .			memry(mr2)%ptr, mr2,
+     .			memry(mr3)%ptr, mr3,
+     .			memry(mr4)%ptr, mr4,
+     .			memry(mr5)%ptr, mr5,
+     .			memry(mr6)%ptr, mr6,
+     .			memry(mr7)%ptr, mr7,
+     .			memry(mr8)%ptr, mr8,
+     .			memry(mr9)%ptr, mr9,
+     .			memry(res_mr)%ptr, res_mr,
      .			status )
 
-
 	ENDIF
+	IF ( status .NE. ferr_ok ) GOTO 5100
 
 * clean up 
  

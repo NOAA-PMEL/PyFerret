@@ -1,4 +1,4 @@
-        SUBROUTINE PLOT_SET_UP( memory,
+        SUBROUTINE PLOT_SET_UP( 
      .				overlay, transpz, versus, no_labels,
      .				symbol, sym_size, color, color1, use_line,
      .				step_inc, do_dash, dashstyle,
@@ -176,6 +176,8 @@
 * V710  *acm* 11/16 Ticket 2483: Fix the axis-end symbols that are defined 
 *                   for time axis plots
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
+* V702 *sh* 1/17 bug fix - ensure only 1D data goes to EXTRACT_LINE if not a
+*                      PLOT/VERSUS
 * V71  *acm* 2/17  More on ticket 2231. New argument to FULL_VAR_TITLE to control units labels
 
 	include 'tmap_dims.parm'
@@ -203,7 +205,7 @@
      .			is_logx, is_logy, nokey, all_1_dep, addgaps
 	INTEGER		symbol, color, color1, step_inc, do_dash, skipsym,
      .			nmv, mv_list( nmv ), cx_list( nmv ), status
-	REAL		memory( mem_blk_size, max_mem_blks ), sym_size,
+	REAL		 sym_size,
      .                  dashstyle(*), only_val
 	REAL		indep_dat(*), dep_dat(*)     ! dynamic space allocation
  
@@ -396,7 +398,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   time_axis =	.FALSE.
 	   adjust_time = .TRUE.  ! (Says, do not try to further adjust time...)
 	   CALL EXTRACT_LINE ( cx,
-     .			    memory( 1, mr_blk1(mv) ),
+     .			    memry(mv)%ptr,
      .			    mv,
      .			    indep_dat,
      .			    indep_dim,
@@ -642,9 +644,13 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   mv   = mv_list( ipl )
 	   cx   = cx_list( ipl )
 	   grid = cx_grid( cx )
+           IF (.NOT.versus) THEN                ! 1/17
+              CALL GET_CX_DIMS( cx, ndim, dims )
+              IF (ndim .GT. 1) GOTO 5110
+           ENDIF
 * set up a dependent variable
 	   CALL EXTRACT_LINE (	cx,
-     .				memory( 1, mr_blk1(mv) ),
+     .				memry(mv)%ptr,
      .				mv,
      .				dep_dat,
      .				dep_dim,
@@ -757,10 +763,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * create temporary buffer to contain workspace
                  CALL CREATE_TEMP_MEM_VAR( cx, mvh_temp, status )
                  IF ( status .NE. ferr_ok ) RETURN
-                 hblk1 = mr_blk1( mvh_temp )
                  plot_mem_used = plot_mem_used + npts
-
-                 CALL compute_histo_bins (dep_dat, memory(1,hblk1), 
+                 CALL COMPUTE_HISTO_BINS (dep_dat, memry(mvh_temp)%ptr, 
      .            mr_bad_data(mv), npts, status) 
      
 * ... clean up temporary variable

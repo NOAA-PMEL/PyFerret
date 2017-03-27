@@ -33,27 +33,24 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* call CREATE_MEM_VAR_W_NBUFFERS, asking for only a single buffer
+* call CREATE_MEM_VAR_W_BUFFER, asking for only a single ("1") buffer
 
-* V702 *sh* 11/16
-* V702 1/16 *sh*: added sanity checking of memory when debugging
+* V702 *sh* 11/16  -- most code moved to CREATE_MEM_VAR_W_BUFFER
+*                     change needed for split-gather on compressed axis
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xprog_state.cmn'
 
 * calling argument declarations:
-	INTEGER		cx, mr, status
-
-* internal variable declarations:
+	INTEGER	cx, mr, status
 
 	CALL CREATE_MEM_VAR_W_BUFFER(cx, mr, 1, status )
 
-* sanity check memory integrity after creating new variable
+* diagnostic sanity check of memory after creating new variable
 #ifndef NDEBUG
         IF ( mode_diagnostic ) CALL SANITY_CHECK_MEMORY("CREATE_MEM_VAR")
 #endif
-
 
 	RETURN
 	END

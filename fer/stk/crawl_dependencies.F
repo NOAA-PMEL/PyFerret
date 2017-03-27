@@ -1,5 +1,5 @@
 	SUBROUTINE CRAWL_DEPENDENCIES
-     .		( memory, expression, base_cx, status )
+     .		(  expression, base_cx, status )
 
 *
 *
@@ -57,7 +57,6 @@
 
 * calling argument declarations
 	INTEGER	base_cx, status
-	REAL	memory( mem_blk_size, max_mem_blks )
 	CHARACTER*(*) expression
 
 * local variable declarations
@@ -89,7 +88,8 @@
 	
 * when called the request is ALWAYS for an untransformed implicitly defined
            CALL GET_DEPENDENCIES( uvar_pointer,
-     .		dependency_dflt_dset, memory(1,dependency_block1), status )
+     .		dependency_dflt_dset, workmem(plegacy_work_buffer)%ptr,
+     .		status )
            IF ( status .NE. ferr_ok ) GOTO 5000
 
 ! temp diagnostic

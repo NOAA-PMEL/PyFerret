@@ -50,6 +50,7 @@
 * V532: 6/01 *sh* bug fix:  CALL DEALLO_UNFORMED_GRID instead of DEALLO_GRID
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V685: 1/13 *sh* ensure that sst[L=@ave] is recognized as a compressed axis
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -166,14 +167,11 @@
 	RETURN
 
 * error exit - clean up
- 5000	CALL RELEASE_WORK_SPC
+ 5000	CALL RELEASE_DYN_WORK_SPACE
 	CALL DELETE_MRS_IN_PROGRESS
 	CALL UNPROTECT_ALL_MRS
 	CALL DEALLO_ALL_GRIDS
         CALL CLEAN_STACK
 	RETURN
 	END
-
-
-
 

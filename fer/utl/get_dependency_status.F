@@ -1,5 +1,5 @@
 	SUBROUTINE GET_DEPENDENCY_STATUS
-     .			( memory, expr, status_string, slen, status )
+     .			(  expr, status_string, slen, status )
 
 *
 *
@@ -44,6 +44,7 @@
 
 * V685+  *sh* 11/13 
 * V690  *sg* 5/14 - bug fix: changed declaraation type of "memory"
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -53,7 +54,6 @@
 
 * calling argument declarations:
 	INTEGER status, slen
-	REAL	memory(mem_blk_size, max_mem_blks )
 	CHARACTER*(*) expr, status_string
 
 * internal variable declarations:
@@ -64,7 +64,7 @@
         CALL INIT_DEPENDENCIES( cx_last, .TRUE., base_isp, status )
         IF (status.NE. ferr_ok) GOTO 5000
 
-        CALL CRAWL_DEPENDENCIES (memory, expr, base_cx, status)
+        CALL CRAWL_DEPENDENCIES ( expr, base_cx, status)
         IF (status .NE. ferr_ok) GOTO 5000
 
 	IF (    dependency_status .EQ. df_valid_var) THEN
@@ -89,12 +89,12 @@
 * if status incicates a problem, append a substring from the variable definitions
 	IF (dependency_status .NE. df_valid_var ) THEN
 	   status_string(slen+1:slen+2) = ': '
-	   CALL DEPEND_STAT_VAR( memory(1,dependency_block1),
+	   CALL DEPEND_STAT_VAR( workmem(plegacy_work_buffer)%ptr,
      .					status_string(slen+3:) )
 	   slen = TM_LENSTR1(status_string)
 	ENDIF
 
- 5000	CALL RELEASE_WORK_SPC
+ 5000	CALL RELEASE_DYN_WORK_SPACE
 	RETURN
 	END
 

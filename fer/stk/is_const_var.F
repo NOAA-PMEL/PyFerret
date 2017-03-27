@@ -1,4 +1,4 @@
-	SUBROUTINE IS_CONST_VAR( memory, *, *, status )
+	SUBROUTINE IS_CONST_VAR(  *, *, status )
 
 * create a constant valued array  "variable" in memory
 
@@ -21,7 +21,6 @@
 
 * calling argument declarations:
 	INTEGER	status
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	INTEGER	CGRID_SIZE,
@@ -57,7 +56,7 @@
      .	.OR. INDEX(uvar_text(uvar)(start:end), "_SQ_") .GT. 0 ) THEN
 * ... set up FORTRAN-independent pointer
 	   CALL INIT_C_STRING_ARRAY( size,
-     .				     memory(1,mr_blk1(mr)),
+     .				     memry(mr)%ptr,
      .				     mr_c_pointer(mr)      )
 
 * ... array of strings
@@ -71,7 +70,7 @@
 * ... array of numbers
 ! ... as-of 12/98 limited to one block max array lentgh
 	   CALL PARSE_NUMBER_LIST(uvar_text(uvar)(start:end),
-     .			          memory( 1, mr_blk1(mr)),
+     .			          memry(mr)%ptr,
      .			          size,
      .			          n,
      .			          status)

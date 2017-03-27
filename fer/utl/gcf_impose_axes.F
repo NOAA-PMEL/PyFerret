@@ -111,13 +111,15 @@
 	         uvar_given(idim,uvar) = uvlim_hidden	! 12/99
 	      ELSEIF ( gcfcn .EQ. p_spawn ) THEN
 	         uvar_given(idim,uvar) = uvlim_hidden   ! 7/01
+	      ELSEIF ( gcfcn .EQ. p_reshape ) THEN
+	         uvar_given(idim,uvar) = uvlim_hidden   ! 3/17
 	      ELSE
 * ... allows XSEQUENCE, etc. context to be determined w/out full evaluation
 *     This can make some scripts more efficient ... others maybe less because
 *     uvlim_hidden would make caching more effective.  Example like
 *       "let a = XSEQUENCE(J[j=1:5]); say `a[i=100:200],return=isize`"
 *     can actually yield a wrong answer
-	         uvar_given(idim,uvar) = uvlim_needed ! for fcns like RESHAPE
+	         uvar_given(idim,uvar) = uvlim_needed ! 3/17 - not for RESHAPE
 	      ENDIF
 	   ELSE
 * ... it is evidently, a mergible axis ... continue on

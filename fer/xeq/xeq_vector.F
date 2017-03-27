@@ -1,4 +1,4 @@
-	SUBROUTINE XEQ_VECTOR( memory )
+	SUBROUTINE XEQ_VECTOR
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -105,6 +105,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *                  A time axis may be a T axis or F axis
 * V697 *acm* 12/15 Fixes for bug 2327 move call of PPL_AXES_RESTORE back to end of plot routines
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
 
 	include 'tmap_dims.parm'
@@ -124,7 +125,6 @@
 
 
 * calling argument declarations:
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	LOGICAL		overlay, transpz, no_labels, no_x_rng,
@@ -134,8 +134,7 @@
 	INTEGER		TM_LENSTR1, status, cx, 
      .			loc, ipen, thick,
      .			dim1, dim2, asp,
-     .			ax1_blks, ax1_start,
-     .			ax2_blks, ax2_start,
+     .			ax1_work, ax2_work,
      .			x_skip, y_skip,
      .                  density, slen, i, nparm, num_it, 
      .			s1, s2, it_start(4), it_end(4), iax(4),
@@ -153,8 +152,7 @@
 
 * set up the graphics environment and get the data
 	CALL START_PPLUS
-	CALL DISP_DATA_SET_UP( memory,
-     .		ax1_start, ax1_blks, ax2_start, ax2_blks, status )
+	CALL DISP_DATA_SET_UP(  ax1_work, ax2_work, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
 
 * make sure the number of expressions given is even ( x and y components )
@@ -291,7 +289,7 @@
 * set up title and load the x component data into PPLUS
 
 	inc_grid = .FALSE.
-	CALL DISP_SET_UP   ( 	memory,
+	CALL DISP_SET_UP   ( 	
      . 			 	vector,
      .				is_shade,
      .				use_cell,
@@ -308,8 +306,8 @@
      .				num_uvars_in_cmnd,
      .				is_cx,
      .				is_uvar,	
-     .				memory( 1, ax1_start ),
-     .				memory( 1, ax2_start ),
+     .				workmem(ax1_work)%ptr,
+     .				workmem(ax2_work)%ptr,
      .				ipen,
      .				inc_grid,
      .				status )
@@ -526,8 +524,8 @@ C   Save the skip values in a symbol PPL_VEC_XSKIP, PPL_VEC_YSKIP
 	ENDIF
 
 * release the memory used for axis buffers
- 1000 	CALL FREE_MEMORY( ax2_start, ax2_blks )
- 	CALL FREE_MEMORY( ax1_start, ax2_blks )
+ 1000 	CALL FREE_WS_DYNMEM( ax1_work )
+	CALL FREE_WS_DYNMEM( ax2_work )
 	CALL UNPROTECT_CMND_DATA			! 1/94
  5100	RETURN
 

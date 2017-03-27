@@ -67,6 +67,8 @@
 * V68   1/12 *acm*- Symbol FERRET_PRECISION is single or double.
 * V68   3/12 *acm*- Symbol SESSION_PID for the process ID
 * V68   2/13 *kms*- Symbol PROGRAM_NAME = Ferret or PyFerret
+* V702  3/17 *sh* - Dynamic memory calculation change for FERRET_MEMORY symbol
+*                 - added PEAK_MEMORY and SPAWN_STATUS
 
 * calling argument declarations:
 	INTEGER	  isym, slen
@@ -74,7 +76,7 @@
 
 * internal parameter declaration
 	INTEGER nspecial
-	PARAMETER (nspecial = 17)
+	PARAMETER (nspecial = 19)
 
 * internal variable declarations:
 	INTEGER STR_UPCASE, TM_LENSTR, i, i1, ierr, wsid, 
@@ -82,7 +84,8 @@
 c        REAL DTIME 
         REAL TArray(2), dtime_res, clock_secs, count, cputime_now
 	CHARACTER special(nspecial)*16, upname*16
-	CHARACTER LEFINT*16, TM_FMT*12, NF_INQ_LIBVERS*80, NF_INQ_LIBVERS_*80
+	CHARACTER LEFINT*16, TM_FMT*12, NF_INQ_LIBVERS*80, NF_INQ_LIBVERS_*80,
+     .		  LEFINT8*16
         CHARACTER*10 current_date, current_time, zone
 	INTEGER itimes(8)
 
@@ -103,7 +106,9 @@ c        REAL DTIME
      .	     special(14)/ 'CURRENT_DATE' /,
      .	     special(15)/ 'CURRENT_TIME' /,
      .	     special(16)/ 'N_OPEN_DSETS' /,
-     .	     special(17)/ 'PROGRAM_NAME' /
+     .	     special(17)/ 'PROGRAM_NAME' /,
+     .	     special(18)/ 'PEAK_MEMORY' /,
+     .	     special(19)/ 'SPAWN_STATUS' /
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -114,6 +119,7 @@ c        REAL DTIME
 	include 'xvariables.cmn'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
+	include 'xprog_state.cmn'	! for spawn_status
 
 * #ifdef for endianness info.
 #ifdef sun
@@ -146,7 +152,7 @@ c        REAL DTIME
 
  200	GOTO (1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 
      .        1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600,
-     .        2700) i
+     .        2700, 2800, 2900 ) i
 
 * PPL$XPIXEL, PPL$YPIXEL
  1100	CONTINUE
@@ -208,7 +214,7 @@ c        REAL DTIME
 	RETURN
 
 * FERRET_MEMORY
- 1800	value = TM_FMT(max_mem_blks*mem_blk_size/1.E6,3,12,llen)
+ 1800	value = TM_FMT(max_mem_allowed/1.E6,3,12,llen)
 	slen = llen
 	RETURN
 
@@ -306,5 +312,17 @@ c        CALL DTIME(TArray)
         slen = 6
         RETURN
 
+* PEAK_MEMORY
+ 2800	value = LEFINT8(peak_mem,slen)
+        RETURN
+
+* SPAWN_STATUS
+ 2900	IF (spawn_status) THEN
+	   value = "1"
+	ELSE
+	   value = "0"
+	ENDIF
+	slen = 1
+        RETURN
 
 	END

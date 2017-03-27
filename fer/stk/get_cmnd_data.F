@@ -1,4 +1,4 @@
-	SUBROUTINE GET_CMND_DATA ( memory, dflt_cx, dtype, status )
+	SUBROUTINE GET_CMND_DATA (  dflt_cx, dtype, status )
 
 *
 *
@@ -69,12 +69,11 @@
 
 * calling argument declarations
 	INTEGER	dflt_cx, dtype, status
-	REAL	memory(*)
 
 * local variable declarations
 * ...
 
-        CALL GET_PROT_CMND_DATA( memory, dflt_cx, dtype, status )
+        CALL GET_PROT_CMND_DATA(  dflt_cx, dtype, status )
         IF ( status .NE. ferr_ok ) RETURN
 
         CALL UNPROTECT_CMND_DATA

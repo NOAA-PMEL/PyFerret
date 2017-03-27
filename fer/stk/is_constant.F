@@ -1,4 +1,4 @@
-	SUBROUTINE IS_CONSTANT( memory, *, status )
+	SUBROUTINE IS_CONSTANT(  *, status )
 
 *
 *
@@ -59,7 +59,6 @@
 
 * calling argument declarations:
 	INTEGER	status
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	INTEGER	mr, cx
@@ -81,7 +80,7 @@
 	IF (mode_diagnostic) CALL DIAGNOSTIC_OUT('constan',mr,point_to_mr)
 
 * insert the constant
-	memory( 1, mr_blk1(mr) ) = cx_value(cx)
+	memry(mr)%ptr(1) = cx_value(cx)
 
 * set the bad data flag to an unusual number
 	mr_bad_data( mr ) = -2.1E34

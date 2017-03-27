@@ -1,4 +1,4 @@
-	SUBROUTINE IS_SUBSPAN_FILL( memory, *, *, status )
+	SUBROUTINE IS_SUBSPAN_FILL(  *, *, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -54,7 +54,6 @@
 
 * calling argument declarations:
 	INTEGER	status
-	REAL	memory( mem_blk_size, max_mem_blks )
 * normal return is for error conditions
 * exit #1 is to request another grid ( stack has been pushed )
 * exit #2 is to signal completion of the activity at this stack level
@@ -114,7 +113,7 @@
 
 	IF ( mr_type(res_mr) .EQ. ptype_string ) THEN
 	   CALL INIT_C_STRING_ARRAY( MGRID_SIZE_DELTA(res_mr),
-     .                               memory(1, mr_blk1(res_mr)),
+     .                               memry(res_mr)%ptr,
      .                               mr_c_pointer(res_mr)      )
 	   CALL SET_NULL_C_STRING_ARRAY(mr_c_pointer(res_mr),
      .                                  MGRID_SIZE_DELTA(res_mr) )
@@ -124,14 +123,13 @@
 * 11/95: if there might be voids in the result pre-fill with missing data flags
 * to-do: could make this more efficient and fill only the "N+1" virtual point.
 	IF ( mr_type(res_mr) .EQ. ptype_float  ) CALL FILL_MEMORY
-     .				( memory,mr_blk1(res_mr),mr_nblks(res_mr),
-     .                            mr_bad_data(res_mr) )
+     .				( res_mr, mr_bad_data(res_mr) )
 
 * Copy the component data into the result (unless the silly user
 *  requested the void point, alone
 	IF ( cx_lo_ss(res_cx, idim) .LT. npts ) CALL COPY_INTO
-     .		       ( memory(1, mr_blk1(com_mr)), com_mr, com_cx,
-     .			 memory(1, mr_blk1(res_mr)) ,res_mr )
+     .		       ( memry(com_mr)%ptr, com_mr, com_cx,
+     .			 memry(res_mr)%ptr ,res_mr )
 
 * Successful completion of modulo operation
 	CALL MR_NOT_IN_USE( com_mr )	! remove memory protection on component

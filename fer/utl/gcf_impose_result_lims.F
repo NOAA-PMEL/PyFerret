@@ -1,4 +1,4 @@
-      SUBROUTINE GCF_IMPOSE_RESULT_LIMS( gcfcn, memory, mr_list,
+      SUBROUTINE GCF_IMPOSE_RESULT_LIMS( gcfcn,  mr_list,
      .     cx_list, res_cx, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -78,7 +78,6 @@
 
 * calling argument declarations
 	INTEGER	gcfcn, cx_list(*), mr_list(*), res_cx, status
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations
 	LOGICAL fix_me(nferdims)
@@ -359,7 +358,7 @@
      .          .OR. axis_will_be(4) .EQ. pgc_axis_is_abstract
      .          .OR. axis_will_be(5) .EQ. pgc_axis_is_abstract
      .          .OR. axis_will_be(6) .EQ. pgc_axis_is_abstract)	THEN
-              CALL EFCN_GET_RESULT_LIMITS(gcfcn, memory, mr_list, 
+              CALL EFCN_GET_RESULT_LIMITS(gcfcn,  mr_list, 
      .             cx_list, status)
               IF (status .NE. ferr_ok) CALL ERRMSG
      .                          ( status, status,' ', *5000 )

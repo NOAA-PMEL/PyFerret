@@ -66,9 +66,16 @@
 
 	IF ( mr_protected(mr) .GT. mr_not_protected ) THEN
 	   mr_protected(mr) = mr_protected(mr) - 1
+* ... if no one needs this variable any longer it is no longer "essential"
+	   IF ( mr_protected(mr) .EQ. mr_not_protected ) THEN
+	      essential_mem = essential_mem - mr_size(mr)
+	   ENDIF
+
 	ELSEIF ( mr_protected(mr) .LT. mr_not_protected ) THEN
-* ... see the list of possible mr_* states in ferret.parm
+* ... mr_temporary variables can end up here during immediate mode evaluations
+*     see the list of possible mr_* states in ferret.parm
 	   RETURN
+
 	ELSE
 * ... over-freeing of the mr -- should never happen
 	   CALL ERRMSG( ferr_internal, status, 'xtra MR_NOT_IN_USE', *5000)

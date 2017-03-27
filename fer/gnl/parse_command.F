@@ -1,4 +1,4 @@
-	SUBROUTINE PARSE_COMMAND ( memory, cmnd_buff,
+	SUBROUTINE PARSE_COMMAND (  cmnd_buff,
      .				   max_words, max_quals,
      .				   cmnd_len, cmnd_num, subcmnd_num,
      .				   num_quals, qualifier_list,
@@ -161,7 +161,6 @@
 
 * declare calling arguments of SUBROUTINE
 	LOGICAL		reverify, arg1_quoted
-	REAL		memory(*)
 	CHARACTER*(*)	cmnd_buff
 	INTEGER		max_words,max_quals,cmnd_len,cmnd_num,subcmnd_num,
      .			num_quals,qualifier_list(max_quals),
@@ -991,7 +990,7 @@ cc  Allow zero-length null string in quotes
 	      grave_end = cmnd_len
 	   ENDIF
            apply_cx = its_action_command(cmnd_num)
-	   CALL REPL_EXPRNS( memory, cmnd_buff, cmnd_len,
+	   CALL REPL_EXPRNS(  cmnd_buff, cmnd_len,
      .			     apply_cx, grave_start, grave_end,
      .                       grave_digits, subst, status  )
 	   IF ( status .NE. ferr_ok ) GOTO 5000	

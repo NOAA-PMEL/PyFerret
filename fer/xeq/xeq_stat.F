@@ -1,4 +1,4 @@
-	SUBROUTINE XEQ_STAT( memory )
+	SUBROUTINE XEQ_STAT
 
 *
 *
@@ -58,7 +58,6 @@
 	include 'xprog_state.cmn'
 
 * calling argument declarations:
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * local variable declarations:
 	LOGICAL	full
@@ -68,7 +67,7 @@
 	full = qual_given( slash_stat_brief ) .EQ. 0
 
 * get the requested data somehow
-	CALL GET_CMND_DATA ( memory, cx_last, ptype_native, status )
+	CALL GET_CMND_DATA (  cx_last, ptype_native, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * compute and display the results
@@ -76,7 +75,7 @@
 	   mv = is_mr( istat )
 	   cx = is_cx( istat )
 	   CALL NON_ARRAY_SUBSC( mv, 1 )
-	   CALL VAR_STAT( memory(1, mr_blk1(mv)), mv, cx,
+	   CALL VAR_STAT( memry(mv)%ptr, mv, cx,
      .			  ttout_lun, full, status )
            IF (status .NE. ferr_ok) GOTO 5000
  400	CONTINUE

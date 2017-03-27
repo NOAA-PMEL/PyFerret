@@ -1,6 +1,4 @@
-
-
-	SUBROUTINE READ_PERL ( memory, cx, mr, status )
+	SUBROUTINE READ_PERL (  cx, mr, status )
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -50,6 +48,8 @@
 * V702: *sh* 1/17 - bug fix: mr_protected must *end* at mr_not_in_use (=0)
 *                   note: this fix was never tested -- applied blindly
 *                   by analogy with other ino/read*.F routines
+*		  - and for trac #2369 -- dynamic memory management 
+*		    (was dynamic memory ever used in this routine?)
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -68,7 +68,6 @@
 
 * calling argument declarations:
 	INTEGER	cx, mr, status, fstatus
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * functions
 	INTEGER PL_OPEN, PL_READ_VAR
@@ -81,7 +80,7 @@
      .			fvar, nvar20, the_var, nleft, 
      .			cx0, cx1, cx20(20), mr20(20),
      .			mr1, rec1, 
-     .			rec_to_read, nrepeat, columns, num_names, buffblk
+     .			rec_to_read, nrepeat, columns, num_names
 	INTEGER         lengths(nferdimsp1)
 	LOGICAL         firstTime
 	CHARACTER	VAR_CODE*128
@@ -169,10 +168,6 @@
 	DO nleft = nvar20+1, 20
 	   mr20(nleft) = dummy_mr
 	END DO
-	
-* allocate a buffer big enough for one record
-        CALL GET_WORK_SPC( columns, buffblk, status )	! was "nrepeat" B4 3/95
-	IF ( status .NE. merr_ok ) GOTO 5500
 
 * initialize the Perl reader
 	call toChar(ds_name(data_set), cname)
@@ -185,25 +180,19 @@
 	      IF ( ds_var_setnum( fvar ) .EQ. data_set ) then
  		 IF (INDEX( ds_var_code(fvar),'-') .EQ. 0 ) THEN
 		    nvar20 = nvar20 + 1
-		    fstatus = PL_READ_VAR(memory(1, mr_blk1(mr20(nvar20))),
-     1		                 lengths)
+		    fstatus = PL_READ_VAR( memry(mr20(nvar20))%ptr,
+     1		                 lengths )
 		 END IF
 		 if (fstatus .EQ. 0) goto 6000
 	      END IF
 	   END DO
 	END DO
 
-
-
-* free up the buffer space
-        CALL  RELEASE_WORK_SPC
-
 * flag that all the data is available
-	DO 800 ivar = 1, nvar20
+	DO ivar = 1, nvar20
 	   mr1 = mr20(ivar)
-	   mr_protected( mr1 ) = 1
-	   CALL MR_NOT_IN_USE( mr1 )    ! decrement to 0=mr_not_in_use
- 800	CONTINUE
+	   CALL MR_AVAILABLE(mr1)
+	ENDDO
 
 * the data region obtained may be inadequate for the request
 * ("cx" is request, "cx1" is available)
@@ -235,7 +224,6 @@
  5000	cx_stack_ptr = cx0
 	DO 5010 nleft = 1, nvar20-1	! delete all except last
  5010	CALL DELETE_VARIABLE(mr20(nleft))
-        CALL  RELEASE_WORK_SPC
 	CALL PL_CLOSE()
  5500	RETURN
  5600	CALL ERRMSG( ferr_limits, status,

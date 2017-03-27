@@ -1,4 +1,4 @@
-	SUBROUTINE NEW_MR_W_EDGES(memory,cx_valid,cx_model,mr,status)
+	SUBROUTINE NEW_MR_W_EDGES(cx_valid,cx_model,mr,status)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -54,7 +54,6 @@
 
 * calling argument declarations:
 	INTEGER	cx_valid, cx_model, mr, status
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations
 	INTEGER MGRID_SIZE
@@ -65,12 +64,12 @@
 
 	IF ( mr_type(mr) .EQ. ptype_string ) THEN
            CALL INIT_C_STRING_ARRAY( MGRID_SIZE(mr),
-     .                               memory(1, mr_blk1(mr)),
+     .                               memry(mr)%ptr,
      .                               mr_c_pointer(mr)      )
 	ENDIF
 
 * fill edges
-	CALL BAD_EDGES( cx_valid, memory(1, mr_blk1(mr)), mr )
+	CALL BAD_EDGES( cx_valid, memry(mr)%ptr, mr )
 
 	RETURN
 	END

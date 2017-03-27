@@ -239,6 +239,7 @@
 * V710 *acm*  3/16 Ticket 2158: Add DEFINE AXIS /MONTHLY 
 * V702 *sh*   1/17 Removed the USER command
 *	      3/17 Added SHOW MEMORY/DIAGNOSTIC
+* V720 *acm*  3/17 Ticket 2512: Add STAT/PRECISION=
 *
 * !!!!!!!!!!
 * Use caution when defining new commands, qualifiers, or changing these data structures:
@@ -1479,9 +1480,9 @@
 	   DATA subcommands      (nsub_at17 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at17 + 0)	/ nqual17a	/
 	   DATA qualifier_pointer(nsub_at17 + 0)	/ nqual_at17a	/
-* STAT /I/J/K/L/M/N/X/Y/Z/T/E/F/DATASET/G
+* STAT /BRIEF/PRECISION/I/J/K/L/M/N/X/Y/Z/T/E/F/DATASET/G
 		DATA qualifiers  (nqual_at17a+0)	/ 'BRIEF'/
-		DATA qualifiers  (nqual_at17a+1)	/ '****'/
+		DATA qualifiers  (nqual_at17a+1)	/ 'PRECISION'/
 		DATA qualifiers  (nqual_at17a+2)	/ 'I'	/
 		DATA qualifiers  (nqual_at17a+3)	/ 'J'	/
 		DATA qualifiers  (nqual_at17a+4)	/ 'K'	/

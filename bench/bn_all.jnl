@@ -1123,6 +1123,9 @@ GO bn_compressed_gather
 GO bn_reset bn_dynamic_gather
 GO bn_dynamic_gather
 
+GO bn_reset bn_stat_precision
+GO bn_stat_precision
+
 ! TEMPORARILY REMOVED -- SEE err_all_cache_management.jnl
 !GO bn_reset bn_cache_management
 !GO bn_cache_management

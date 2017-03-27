@@ -1,4 +1,4 @@
-	SUBROUTINE VAR_STAT( dat, mv, cx, lun, full, status )
+	SUBROUTINE VAR_STAT( dat, mv, cx, lun, full, stat_digits, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -73,6 +73,7 @@
 * V6.68  acm 3/14 ticket 2148: fix truncated ntot or nbad in stat listing
 * v6.931 acm 11/14 Delete ALL the stat* symbols that may be left over from 
 *                  a previous evaluation. STAT/BRIEF does not reset them all.
+* V720 *acm*  3/17 Ticket 2512: Add STAT/PRECICISION=
 
 	include 'tmap_dims.parm'
 	include 'errmsg.parm'
@@ -89,14 +90,14 @@
 
 * calling argument declarations:
 	LOGICAL	full
-	INTEGER	mv, cx, lun, status
+	INTEGER	mv, cx, lun, stat_digits, status
 	REAL    dat( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit,m1loe:m1hie,m1lof:m1hif )
 
 * internal variable declarations:
 	INTEGER	TM_LENSTR1, CGRID_SIZE, GET_MAX_STRING_LEN,
      .		i, j, k, l, m, n, nbad, ngood, ntot, idim,
      .		len_line, len_set_name, grid, slen, i1, i2, nok, 
-     .		listdims, nfig
+     .		listdims, nfig, max_dig
 	REAL	datum, bad, std_dev, large, small, mean, sumsq_dev, dev
 	REAL*8	sum, sum2, xmean, zmean, x, xdelta, variance_c, diff
 
@@ -118,6 +119,13 @@
 	large = arbitrary_small_val4
 	sum   = 0.0D0
         sumsq_dev = 0.0
+
+	max_dig = 0
+	IF (stat_digits .NE. 0) THEN
+	   max_dig = stat_digits
+	ELSE
+	   stat_digits = sig_fig
+	ENDIF
 
 	listdims = nferdims
 	IF ( .NOT. mode_6d_lab) listdims = 4
@@ -289,18 +297,18 @@
      .			' # flagged as bad  data: '//rbuff(1),0)
 	IF ( ngood .GT. 0 ) THEN
 	   nfig = 0
-           rbuff(1) = TM_FMT(small, sig_fig, 12, slen)
-           rbuff(2) = TM_FMT(large, sig_fig, 12, slen)
+           rbuff(1) = TM_FMT(small, stat_digits, 16, slen)
+           rbuff(2) = TM_FMT(large, stat_digits, 16, slen)
 	   diff = (large-small)/MAX( ABS(large), ABS(small) )
 	   IF (diff.LT.0.01 .AND. ngood.GT.1) THEN
-	      nfig = 4
-              rbuff(1) = TM_FMT(small, sig_fig+nfig, 20, slen)
-              rbuff(2) = TM_FMT(large, sig_fig+nfig, 20, slen)
+	      IF (max_dig .EQ. 0) nfig = 4
+              rbuff(1) = TM_FMT(small, stat_digits+nfig, 20, slen)
+              rbuff(2) = TM_FMT(large, stat_digits+nfig, 20, slen)
 	      diff = (large-small)/MAX( ABS(large), ABS(small) )
 	      IF (diff .LT. 1.e-7) THEN
-	        nfig = 16-sig_fig
-	        rbuff(1) = TM_FMT(small, sig_fig+nfig, 20, slen)
-	        rbuff(2) = TM_FMT(large, sig_fig+nfig, 20, slen)
+	       IF (max_dig .EQ. 0) nfig = 16-stat_digits
+	        rbuff(1) = TM_FMT(small, stat_digits+nfig, 20, slen)
+	        rbuff(2) = TM_FMT(large, stat_digits+nfig, 20, slen)
 	      ENDIF
 	   ENDIF
 
@@ -308,7 +316,7 @@
               rbuff(3) = '**too big**'
 	      slen = 11
            ELSE
-              rbuff(3) = TM_FMT(mean , sig_fig+nfig, 20, slen)
+              rbuff(3) = TM_FMT(mean , stat_digits+nfig, 20, slen)
            ENDIF
 	   CALL SPLIT_LIST(pttmode_explct, lun,
      .			' Minimum value: '//rbuff(1), 0)
@@ -371,7 +379,7 @@
            IF ( sumsq_dev .GE. 3.E35 ) THEN
               rbuff(1) = ' **too big**' 
            ELSE
-              rbuff(1) = TM_FMT(std_dev, sig_fig, 12, slen)
+              rbuff(1) = TM_FMT(std_dev, stat_digits, 16, slen)
            ENDIF
 	   CALL SPLIT_LIST(pttmode_explct, lun,
      .			' Standard deviation: '//rbuff(1), 0)

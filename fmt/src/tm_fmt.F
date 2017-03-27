@@ -62,6 +62,8 @@
 * *acm*  V6.1 3/08  further corrections to last fix when writing a value with 
 *              negative exponent
 * *acm*  V6.5 1/10 Fix bug 1717: If the format is going to be (I0) make it (I1)
+* *acm*  V7,2 3/17 Floating-point formatted output could still have trailing zeros
+*                  after the decimal point. Remove them.
 
 * calling arguments:
 * val		- REAL*4 value to be converted
@@ -349,6 +351,7 @@
 	   str_len = TM_LENSTR1( outstring )
 	ENDIF
 
+* Remove trailing 0s before the exponent.
 	str_len = TM_LENSTR1( outstring )
 	IF (INDEX(outstring, '0E') .GT. 0) THEN
 	   ind = INDEX(outstring, '0E')
@@ -359,15 +362,22 @@
 	   ENDDO
 	ENDIF
 
-	str_len = TM_LENSTR1( outstring )
-	IF (INDEX(outstring, '0E') .GT. 0) THEN
-	   ind = INDEX(outstring, '0E')
-	   DO WHILE (ind .GT. 0)
-	      strend = outstring(ind+1:str_len)
-	      outstring = outstring(1:ind-1)//strend
-	      ind = INDEX(outstring, '0E')
+* Remove trailing 0s on a floating point formatted number
+	slen = TM_LENSTR1( outstring )
+	IF (INDEX(outstring, '.') .GT.0 .AND. 
+     .	    INDEX(outstring, 'E+').EQ.0 .AND. 
+     .	    INDEX(outstring, 'E-').EQ.0) THEN
+	   DO i = slen,1,-1
+	      IF (outstring(i:i) .EQ. '0') THEN
+                 outstring(i:i) = ' '
+	      ELSE
+                 GOTO 3500
+	      ENDIF
 	   ENDDO
+ 3500      CONTINUE
 	ENDIF
+
+
 	str_len = TM_LENSTR1( outstring )
 
 	TM_FMT = outstring

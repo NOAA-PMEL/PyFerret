@@ -49,6 +49,7 @@
 * V420	 2/7/96  - added STAT/BRIEF
 * V530: *sh* 9/00 - added initial data type support in get_cmnd_data 
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V720 *acm*  3/17 Ticket 2512: Add STAT/PRECICISION=
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -61,10 +62,22 @@
 
 * local variable declarations:
 	LOGICAL	full
-	INTEGER	mv, cx, istat, status
+	INTEGER	mv, cx, istat, lp, stat_digits, status
+	REAL	value
 	
 * decode the qualifiers
 	full = qual_given( slash_stat_brief ) .EQ. 0
+
+* determine precision for outputting values
+* First, use STAT/PREC= setting.
+	stat_digits = 0
+	lp = qual_given( slash_stat_precision ) 
+	IF ( lp .GT. 0 ) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(lp):qual_end(lp)),
+     .                     value, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+	   stat_digits = MAX(1.,MIN(value, 16.))	! 1 to 16	   
+	ENDIF
 
 * get the requested data somehow
 	CALL GET_CMND_DATA (  cx_last, ptype_native, status )
@@ -76,7 +89,7 @@
 	   cx = is_cx( istat )
 	   CALL NON_ARRAY_SUBSC( mv, 1 )
 	   CALL VAR_STAT( memry(mv)%ptr, mv, cx,
-     .			  ttout_lun, full, status )
+     .			  ttout_lun, full, stat_digits, status )
            IF (status .NE. ferr_ok) GOTO 5000
  400	CONTINUE
 

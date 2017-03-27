@@ -7,6 +7,9 @@
 ! in previous versions of Ferret the split could not occur on the transformed
 ! axis, so the X axis would have been used.  Here the T=@ave axis will be used 
 
+! Give us something to look at while we run these tests which dont make plots
+plot/noax/nolab/vlim=0:1/i=4:5 i
+annotate/norm/x=0/y=0.5 "@AC... running bn_compressed_gather"
 
 ! ******* tests of  T=@DIN and T=@ave ******
 define axis/x=1:1001:1 xax

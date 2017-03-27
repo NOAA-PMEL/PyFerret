@@ -1112,15 +1112,13 @@ GO bn_reset bn_true_monthly
 GO bn_true_monthly
 
 
-! *********** v7.1 Additions ***********
+! *********** v7.2 Additions ***********
 
 GO bn_reset bn720_bug_fixes
 GO bn720_bug_fixes
 
 GO bn_reset bn_compressed_gather
 GO bn_compressed_gather
-
-! *********** v7.2 Additions ***********
 
 GO bn_reset bn_dynamic_gather
 GO bn_dynamic_gather

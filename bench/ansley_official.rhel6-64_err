@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 115885413 Mar 20 17:12 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
+-rwxr-xr-x. 1 ansley oerdnewp 116381111 Mar 27 10:51 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func/
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2518: output of SHOW GRID myvar
+Note: after merge from dynamic memory branch
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,7 +13,7 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/external_functions/ext_func/
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=.
@@ -22,7 +22,7 @@ FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Mon Mar 20 17:13:28 PDT 2017
+Beginning at Mon Mar 27 10:53:19 PDT 2017
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -383,12 +383,8 @@ list tu
 list tu
  **ERROR: regridding: Axis orientation not matching request:GX=PSYU
 list tu
- Cached data cleared from memory
- **ERROR: request exceeds memory setting: 50 Mwords were requested.
+ **ERROR: request exceeds memory setting
 list temp[gz=z999999,z=5:15]
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
- Cached data cleared from memory
            *** NOTE: Ambiguous coordinates on X axis: X[X=0.1:10:1.5] +  X[X=1.1:11:1.5]
            *** NOTE: Ambiguous coordinates on X axis: X[X=0.1:10:1.5] +  X[X=1.1:11:1.5]
            *** NOTE: Ambiguous coordinates on X axis: TEMP[I=101:120:4]+X[I=101:120:4]
@@ -642,22 +638,16 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_odd_variable_name
- Cached data cleared from memory
  **ERROR: command syntax: v2-and-minus
           - before and is illegal
 list v2-and-minus
- **ERROR: dimensions improperly specified: 99999999 words were requested.
+ **ERROR: illegal limits: Limits must be provided for pseudo-variable.
 list x
-           *** NOTE: Check for unspecified limits on an ABSTRACT axis
-           *** NOTE: Use the SHOW GRID command to see the axes
- **ERROR: dimensions improperly specified: 99999999 words were requested.
+ **ERROR: illegal limits: Limits must be provided for pseudo-variable.
 list i
-           *** NOTE: Check for unspecified limits on an ABSTRACT axis
-           *** NOTE: Use the SHOW GRID command to see the axes
  **ERROR: command syntax: v2-and-minus[i=5:15@ddc]
           - before and is illegal
 list v2-and-minus[i=5:15@ddc]
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -668,17 +658,13 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
- **ERROR: request exceeds memory setting: 48000 Mwords were requested.
+ **ERROR: request exceeds memory setting
 load num
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
- **ERROR: request exceeds memory setting: 2000 Mwords were requested.
+ **ERROR: request exceeds memory setting
 load num
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
@@ -1220,8 +1206,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file test_100x100.nc
- Cached data cleared from memory
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1551,27 +1535,17 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_subspan_modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  **ERROR: improper grid or axis definition: Axis length exceeds modulo length
 define axis/x=130e:500:10/modulo=360 xsub
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_subspan_modulo.nc
  LISTing to file test_subspan_modulo.nc
  LISTing to file test_subspan_modulo.nc
@@ -1670,6 +1644,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+rm: cannot remove `input.txt': No such file or directory
 ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2695,8 +2670,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- Cached data cleared from memory
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2879,10 +2852,6 @@ Starting test: bn_set_var_name.jnl
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_memory_symbol
- Cached data cleared from memory
- Cached data cleared from memory
- Cached data cleared from memory
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3802,6 +3771,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
 set mode desperate 9999999999.000000
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
 set mode desperate 1234567890123456789
+           *** NOTE: MODE DESPERATE is deprecated. Use MODE FRUGAL
+           *** NOTE: MODE DESPERATE is deprecated. Use MODE FRUGAL
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4646,15 +4617,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Replacing definition of axis XAXIS
- **ERROR: request exceeds memory setting: 4739 Mwords were requested.
+ **ERROR: request exceeds memory setting
 load bigvar
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis LONGTIME
- **ERROR: request exceeds memory setting: 9472 Mwords were requested.
+ **ERROR: request exceeds memory setting
 load bigvar
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4717,6 +4684,7 @@ list substring("hello",1,-3)
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_append_dsg
+rm: cannot remove `test_save_dsg.nc': No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4966,7 +4934,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 rm: cannot remove `WestCoastCarbon_9d9c_f562_77b5_5.nc': No such file or directory
-           *** NOTE: Shell command returned failure flag: rm WestCoastCarbon_9d9c_f562_77b5_5.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5032,6 +4999,7 @@ def anno/nou/user/xpos=0/ypos=0 "My Lab"
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_auxiliary
+rm: cannot remove `layerz_test_data.txt': No such file or directory
 Replacing definition of axis ZAX
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
@@ -5136,14 +5104,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- Cached data cleared from memory
 Replacing definition of axis LONGTIME
- **ERROR: request exceeds memory setting: 13 Mwords were requested.
+ **ERROR: request exceeds memory setting
 load/l=1:5 bigvar
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
- Cached data cleared from memory
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5933,13 +5896,8 @@ Starting test: bn_ez_noupcase
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_spawn_fail
 ls: cannot access notafile.nowhere: No such file or directory
-           *** NOTE: Shell command returned failure flag: ls notafile.nowhere
-           *** NOTE: Shell command returned failure flag: grep "this text is not in the file" bn_all.jnl
 rm: cannot remove `nothing.dat': No such file or directory
-           *** NOTE: Shell command returned failure flag: rm nothing.dat
-           *** NOTE: Shell command returned failure flag: grep modulus non_COARDS.cdl
 cp: cannot stat `nofile.dat': No such file or directory
-           *** NOTE: Shell command returned failure flag: cp nofile.dat not_either.dat
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6049,6 +6007,7 @@ Replacing definition of axis TAX
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_compressed_gather
 Replacing definition of axis XAX
+Replacing definition of axis YAX
 Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -6108,6 +6067,190 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_dynamic_gather
+ls: cannot access tmp/test_dyn_mem.nc: No such file or directory
+Replacing definition of axis Z2
+Replacing definition of grid GG
+ LISTing to file tmp/test_dyn_mem.nc
+Replacing definition of axis x10
+Replacing definition of axis Z4
+ LISTing to file tmp/test_dyn_mem.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: No active redirects to cancel
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: value out of legal range: illegal mode argument. Must be 0 to 90 percent 95
+SET MODE FRUGAL:95
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6116,7 +6259,6 @@ set region/@w
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -6212,4 +6354,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Mar 20 17:16:46 PDT 2017
+Ended at Mon Mar 27 10:58:15 PDT 2017

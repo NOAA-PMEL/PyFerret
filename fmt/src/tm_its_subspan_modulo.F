@@ -41,6 +41,7 @@
 *                 it is single precision. When put into double prec, the last 
 *                 several digits have random stuff, so got a return of TRUE  
 *                 from this fcn when it wasnt.  Do single-precision comparison.
+* V720 *acm* 3/17 Fix ticket 2520. Axis longer than modulo lenght was marked subspan.
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -57,12 +58,10 @@
 	   TM_ITS_SUBSPAN_MODULO = .FALSE.
 	ELSEIF ( line_modulo(axis) ) THEN
 
-cc           TM_ITS_SUBSPAN_MODULO = TM_WW_AXLEN    (axis)
-cc     .                        .NE. TM_MODULO_AXLEN(axis)
-
+C for ticket 2520: axis that is slightly too LONG, was marked as subspan!
            wwlen = TM_WW_AXLEN(axis)
            modlen = TM_MODULO_AXLEN(axis) 
-	   TM_ITS_SUBSPAN_MODULO = (.NOT. TM_FPEQ(wwlen, modlen) )
+	   TM_ITS_SUBSPAN_MODULO = (.NOT. TM_FPEQ(wwlen, modlen) ).AND. (wwlen.LT.modlen)
 
 	ELSE 
 	   TM_ITS_SUBSPAN_MODULO = .FALSE.

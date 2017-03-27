@@ -1,0 +1,27 @@
+! bn_stat_precision.jnl
+! 3/2017 *acm* Ticket 2512
+
+! The stat command self-adjusts precision to make the 
+! min and max listed distinct
+
+let var = {1907.1,1907.05,1907.11}
+stat/br var
+
+let var = {1907.001,1907.0005,1907.0011}
+stat/br var
+
+let var = {221907.001,221907.0005,221907.0011}
+stat/br var
+
+
+! STAT/PREC controls the precision, writing more or less digits
+
+stat/br/prec=5 var
+stat/br/prec=12 var
+
+! some more examples
+let var = 30*randu(1+i[i=1:10])
+stat/br var
+stat/br/prec=3 var
+stat/br/prec=7 var
+stat/br/prec=12 var

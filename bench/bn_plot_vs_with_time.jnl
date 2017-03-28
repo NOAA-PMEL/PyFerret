@@ -9,10 +9,10 @@
 
 can mode logo
 
-! Date units syntax days since 2011-01-01 is valid
+! Date units syntax days since 1982-01-01 is valid
 
 define axis/t=1:500:10/units=days/t0="01-jan-1982" tax
-let/units="days since 2011-01-01" mytime2 = t[gt=tax]
+let/units="days since 1982-01-01" mytime2 = t[gt=tax]
 
 let myvar2 = RANDU(mytime2)
 plot/vs/line mytime2, myvar2
@@ -20,9 +20,9 @@ plot/vs/over/sym/color=red mytime2[L=1:50:2], myvar2[L=1:50:2]
 
 ! time axis on the vertical
 
-! Date syntax days since 01-jan-2011 is also valid.
+! Date syntax days since 01-jan-1982 is also valid.
 define axis/t=1:500:10/units=days/t0="01-jan-1982" tax
-let/units="days since 01-jan-2011" mytime2 = t[gt=tax]
+let/units="days since 01-jan-1982" mytime2 = t[gt=tax]
 
 plot/vs/line myvar2, mytime2
 plot/vs/over/sym/color=red/line  myvar2[L=1:50:2],  mytime2[L=1:50:2]

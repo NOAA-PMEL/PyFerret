@@ -118,6 +118,7 @@
 * V699  5/16 *sh*  replace variable uvar_grid with calls to c LIST structures
 * V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
 *                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
+* V720  3/17 *acm*  clean up long commented-out code referring to aggregations 
 
 * calling argument declarations:
 	INTEGER	status
@@ -665,29 +666,13 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 	is_uvar ( isp ) = cx_variable( hi_cx )
 	is_act  ( isp ) = isact_get_grid	! temp diagnostic
 	RETURN 1
-
-!* grid for at least 1 member variable of this aggregated dataset is not known.
-!* Go back to get_uvar_grid and call is_aggregate_grid to get it
-!* ... repeat this phase again when we get back
-! 990	is_phase(isp) = is_phase(isp) - 1
-!* load the new variable info onto the IS stack
-!	CALL PUSH_INTERP_STACK( isp, status )
-!	IF ( status .NE. ferr_ok ) RETURN
-!
-!	is_cx   ( isp ) = hi_cx
-!	is_uvar ( isp ) = cx_variable( hi_cx )
-!	is_act  ( isp ) = isact_get_agg_grid	! get aggregate grid on return.
-!
-!	RETURN 1
 	
 ***  DONE - clean up
  1000	CONTINUE
 * for grid-changing vars all of the arguments contextx are still on the stack 
 	IF ( its_gc ) THEN
-	   DO 1010 i = 1, nitem - 1	! 3/99 - strings not on stack
+	   DO 1010 i = 1, nitem - 1
 	      cx_stack_ptr = cx_stack_ptr - 1
-!	      IF (uvar_item_type(i,uvar).NE. alg_string)
-!     .			cx_stack_ptr = cx_stack_ptr - 1
  1010	   CONTINUE
 	ENDIF
 * have any variables been encountered ?

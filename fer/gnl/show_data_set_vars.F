@@ -82,6 +82,8 @@
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
 * V7    acm  6/16 Ticket 2437: Deprecating mode_6d_lab. 
 *		  Adjust output to 6-D or 4-D grids
+* V720  3/17 *acm*  clean up long commented-out code referring to aggregations 
+
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -226,7 +228,7 @@
 	         IF (status .NE. ferr_ok) GOTO 5000
 	         CALL TM_DEALLO_DYN_GRID (igrid)  
 
-*  Fill the grid in as in is_aggregate_grid
+*  Fill the grid in as in define_ef_aggregate_grid
 
 	         IF (igrid .NE. unspecified_int4) THEN
 	            DO 220 nv = 1, maxvars

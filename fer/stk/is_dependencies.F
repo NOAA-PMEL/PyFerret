@@ -49,6 +49,7 @@
 *       later same month: tweak the repair to fix bug #2225
 *	and always report TWO (or more) dependency lines when regridding occurs
 * V695+ 2/15 *sh* - report target of regrid even if auxvar is involved 
+* V720  3/17 *acm*  clean up long commented-out code referring to aggregations 
 
 * calling argument declarations:
 	INTEGER	status
@@ -323,22 +324,6 @@
 	   cx_stack_ptr = cx_stack_ptr - 1
 	   GOTO 100
 	ENDIF
-
-* more aggregate variable support
-!* grid for this aggregate dataset is not known.  Back to get_uvar_grid and call
-!* is_aggregate_grid to get it
-!* ... repeat this phase again when we get back
-! 990	is_phase(isp) = is_phase(isp) - 1
-!* load the new variable info onto the IS stack
-!	CALL PUSH_INTERP_STACK( isp, status )
-!	IF ( status .NE. ferr_ok ) RETURN
-!c	is_sum( isp ) = isalg_merge_n
-!
-!	is_cx   ( isp ) = hi_cx
-!	is_uvar ( isp ) = cx_variable( hi_cx )
-!	is_act  ( isp ) = isact_get_agg_grid	! get aggregate grid on return.
-!
-!	RETURN 1
 	
 * clean up: release context and isp stack space
  1000	CONTINUE

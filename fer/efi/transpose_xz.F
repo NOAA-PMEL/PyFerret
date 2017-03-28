@@ -1,48 +1,41 @@
 *
 * transpose_xz.F
-*
 * 
+*  This software was developed by the Thermal Modeling and Analysis
+*  Project(TMAP) of the National Oceanographic and Atmospheric
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  hereafter referred to as NOAA/PMEL/TMAP.
+*
+*  Access and use of this software shall impose the following
+*  obligations and understandings on the user. The user is granted the
+*  right, without any fee or cost, to use, copy, modify, alter, enhance
+*  and distribute this software, and any derivative works thereof, and
+*  its supporting documentation for any purpose whatsoever, provided
+*  that this entire notice appears in all copies of the software,
+*  derivative works and supporting documentation.  Further, the user
+*  agrees to credit NOAA/PMEL/TMAP in any publications that result from
+*  the use of this software or in any product that includes this
+*  software. The names TMAP, NOAA and/or PMEL, however, may not be used
+*  in any advertising or publicity to endorse or promote any products
+*  or commercial entity unless specific written permission is obtained
+*  from NOAA/PMEL/TMAP. The user also understands that NOAA/PMEL/TMAP
+*  is not obligated to provide the user with any support, consulting,
+*  training or assistance of any kind with regard to the use, operation
+*  and performance of this software nor to provide the user with any
+*  updates, revisions, new versions or "bug fixes".
+*
+*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
+*  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
+*  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+*  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
+*  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*
+* 3/2017 ACM completing the set of TRANSPOSE functions
 * 
-*
-* This function sets the second argument to be equal
-* to the first one with the X and Z axes switched.
-*
 
-
-*
-* In this subroutine we provide information about
-* the function.  The user configurable information 
-* consists of the following:
-*
-* descr              Text description of the function
-*
-* num_args           Required number of arguments
-*
-* axis_inheritance   Type of axis for the result
-*                       ( CUSTOM, IMPLIED_BY_ARGS, NORMAL, ABSTRACT )
-*                       CUSTOM          - user defined axis
-*                       IMPLIED_BY_ARGS - same axis as the incoming argument
-*                       NORMAL          - the result is normal to this axis
-*                       ABSTRACT        - an axis which only has index values
-*
-* piecemeal_ok       For memory optimization:
-*                       axes where calculation may be performed piecemeal
-*                       ( YES, NO )
-* 
-*
-* For each argument we provide the following information:
-*
-* name               Text name for an argument
-*
-* unit               Text units for an argument
-*
-* desc               Text description of an argument
-*
-* axis_influence     Are this argument''s axes the same as the result grid?
-*                       ( YES, NO )
-*
-* axis_extend       How much does Ferret need to extend arg limits relative to result 
-*
 
 
       SUBROUTINE transpose_xz_init(id)
@@ -52,12 +45,7 @@
 
       INTEGER id, arg
 
-* **********************************************************************
-*                                            USER CONFIGURABLE PORTION |
-*                                                                      |
-*                                                                      V
-
-      CALL ef_set_desc(id, 'transposes x and z axes of given variable')
+      CALL ef_set_desc(id, 'transposes X and Z axes of given variable')
       CALL ef_set_num_args(id, 1)
       CALL ef_set_axis_inheritance_6d(id,
      .                                ABSTRACT,        IMPLIED_BY_ARGS,
@@ -71,11 +59,6 @@
       CALL ef_set_axis_influence_6d(id, arg,
      .                              NO, YES, NO, YES, YES, YES)
 
-*                                                                      ^
-*                                                                      |
-*                                            USER CONFIGURABLE PORTION |
-* **********************************************************************
-
       RETURN 
       END
 
@@ -87,17 +70,12 @@
 
       INTEGER id
 
-* **********************************************************************
-*                                           USER CONFIGURABLE PORTION |
-*                                                                     |
-*                                                                     V
-
       INTEGER arg_lo_ss(6,EF_MAX_ARGS),
      .        arg_hi_ss(6,EF_MAX_ARGS),
      .        arg_incr (6,EF_MAX_ARGS)
-      INTEGER my_lo_x, my_hi_x, my_lo_z, my_hi_z, nx, nz
+      INTEGER lo_x, hi_x, lo_z, hi_z, nx, nz
 
-*     Set the abstract X and Z axes.
+*     Set the ABSTRACT X and Z axes.
 
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
@@ -107,18 +85,13 @@
 *     The below has the effect of translating any sub-matrix so that
 *     the indices will always begin at 1 as expected for an abstract axis.
 
-      my_lo_x = 1
-      my_hi_x = nz
-      my_lo_z = 1
-      my_hi_z = nx
+      lo_x = 1
+      hi_x = nz
+      lo_z = 1
+      hi_z = nx
 
-      CALL ef_set_axis_limits(id, X_AXIS, my_lo_x, my_hi_x)
-      CALL ef_set_axis_limits(id, Z_AXIS, my_lo_z, my_hi_z)
-
-*                                                                     ^
-*                                                                     |
-*                                           USER CONFIGURABLE PORTION |
-* **********************************************************************
+      CALL ef_set_axis_limits(id, X_AXIS, lo_x, hi_x)
+      CALL ef_set_axis_limits(id, Z_AXIS, lo_z, hi_z)
 
       RETURN 
 
@@ -155,11 +128,6 @@
      .        arg_incr (6,EF_MAX_ARGS)
 
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
-
-* **********************************************************************
-*                                            USER CONFIGURABLE PORTION |
-*                                                                      |
-*                                                                      V
 
       INTEGER i, j, k, l, m, n
       INTEGER i1, j1, k1, l1, m1, n1
@@ -226,11 +194,6 @@
       RETURN 
 
  999  CALL EF_BAIL_OUT(id, errtxt)
-
-*                                                                      ^
-*                                                                      |
-*                                            USER CONFIGURABLE PORTION |
-* **********************************************************************
 
       RETURN 
       END

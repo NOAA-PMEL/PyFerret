@@ -1,5 +1,5 @@
 *
-* transpose_yt.F
+* transpose_yf.F
 * 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -36,33 +36,32 @@
 * 3/2017 ACM completing the set of TRANSPOSE functions
 * 
 
-
-      SUBROUTINE transpose_yt_init(id)
+      SUBROUTINE transpose_yf_init(id)
 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
 
-      CALL ef_set_desc(id, 'transposes Y and T axes of given variable')
+      CALL ef_set_desc(id, 'transposes Y and F axes of given variable')
       CALL ef_set_num_args(id, 1)
       CALL ef_set_axis_inheritance_6d(id,
      .                                IMPLIED_BY_ARGS, ABSTRACT,
-     .                                IMPLIED_BY_ARGS, ABSTRACT,
-     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, ABSTRACT        )
       CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'VAR')
-      CALL ef_set_arg_desc(id, arg, 'variable to transpose in Y and T')
+      CALL ef_set_arg_desc(id, arg, 'variable to transpose in Y and F')
       CALL ef_set_axis_influence_6d(id, arg,
-     .                              YES, NO, YES, NO, YES, YES)
+     .                              YES, NO, YES, YES, YES, NO)
 
       RETURN 
       END
 
 
-      SUBROUTINE transpose_yt_result_limits(id)
+      SUBROUTINE transpose_yf_result_limits(id)
 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
@@ -72,25 +71,25 @@
       INTEGER arg_lo_ss(6,EF_MAX_ARGS),
      .        arg_hi_ss(6,EF_MAX_ARGS),
      .        arg_incr (6,EF_MAX_ARGS)
-      INTEGER lo_t, hi_t, lo_y, hi_y, nt, ny
+      INTEGER lo_f, hi_f, lo_y, hi_y, nf, ny
 
-*     Set the ABSTRACT T and Y axes.
+*     Set the ABSTRACT Y and F axes.
 
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-      nt = arg_hi_ss(T_AXIS, ARG1) - arg_lo_ss(T_AXIS, ARG1) + 1
+      nf = arg_hi_ss(F_AXIS, ARG1) - arg_lo_ss(F_AXIS, ARG1) + 1
       ny = arg_hi_ss(Y_AXIS, ARG1) - arg_lo_ss(Y_AXIS, ARG1) + 1
 
 *     The below has the effect of translating any sub-matrix so that
 *     the indices will always begin at 1 as expected for an abstract axis.
 
-      lo_t = 1
-      hi_t = ny
       lo_y = 1
-      hi_y = nt
+      hi_y = nf
+      lo_f = 1
+      hi_f = ny
 
-      CALL ef_set_axis_limits(id, T_AXIS, lo_t, hi_t)
       CALL ef_set_axis_limits(id, Y_AXIS, lo_y, hi_y)
+      CALL ef_set_axis_limits(id, F_AXIS, lo_f, hi_f)
 
       RETURN 
 
@@ -100,7 +99,7 @@
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE transpose_yt_compute(id, arg_1, result)
+      SUBROUTINE transpose_yf_compute(id, arg_1, result)
 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
@@ -142,26 +141,26 @@
          WRITE(errtxt,*) 'Y axis cannot be a normal axis'
          GOTO 999
       ENDIF
-      IF ( (arg_lo_ss(T_AXIS, ARG1) .EQ. ef_unspecified_int4) .OR. 
-     .     (arg_hi_ss(T_AXIS, ARG1) .EQ. ef_unspecified_int4) ) THEN
-         WRITE(errtxt,*) 'T axis cannot be a normal axis'
+      IF ( (arg_lo_ss(F_AXIS, ARG1) .EQ. ef_unspecified_int4) .OR. 
+     .     (arg_hi_ss(F_AXIS, ARG1) .EQ. ef_unspecified_int4) ) THEN
+         WRITE(errtxt,*) 'F axis cannot be a normal axis'
          GOTO 999
       ENDIF
 
       n1 = arg_lo_ss(F_AXIS, ARG1)
-      DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+      DO 600 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
       m1 = arg_lo_ss(E_AXIS, ARG1)
       DO 500 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
 
       l1 = arg_lo_ss(T_AXIS, ARG1)
-      DO 400 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS) 
+      DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
       k1 = arg_lo_ss(Z_AXIS, ARG1)
-      DO 300 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+      DO 300  k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
       j1 = arg_lo_ss(Y_AXIS, ARG1)
-      DO 200 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS) 
+      DO 200 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
 
       i1 = arg_lo_ss(X_AXIS, ARG1)
       DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)

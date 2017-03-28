@@ -858,6 +858,26 @@ void FORTRAN(scat2grid_t_init)(int *);
 void FORTRAN(scat2grid_t_work_size)(int *);
 void FORTRAN(scat2grid_t_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
+void FORTRAN(transpose_ef_init)(int *);
+void FORTRAN(transpose_ef_result_limits)(int *);
+void FORTRAN(transpose_ef_compute)(int *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(transpose_te_init)(int *);
+void FORTRAN(transpose_te_result_limits)(int *);
+void FORTRAN(transpose_te_compute)(int *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(transpose_tf_init)(int *);
+void FORTRAN(transpose_tf_result_limits)(int *);
+void FORTRAN(transpose_tf_compute)(int *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(transpose_xe_init)(int *);
+void FORTRAN(transpose_xe_result_limits)(int *);
+void FORTRAN(transpose_xe_compute)(int *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(transpose_xf_init)(int *);
+void FORTRAN(transpose_xf_result_limits)(int *);
+void FORTRAN(transpose_xf_compute)(int *, DFTYPE *, DFTYPE *);
+
 void FORTRAN(transpose_xt_init)(int *);
 void FORTRAN(transpose_xt_result_limits)(int *);
 void FORTRAN(transpose_xt_compute)(int *, DFTYPE *, DFTYPE *);
@@ -870,6 +890,14 @@ void FORTRAN(transpose_xz_init)(int *);
 void FORTRAN(transpose_xz_result_limits)(int *);
 void FORTRAN(transpose_xz_compute)(int *, DFTYPE *, DFTYPE *);
 
+void FORTRAN(transpose_ye_init)(int *);
+void FORTRAN(transpose_ye_result_limits)(int *);
+void FORTRAN(transpose_ye_compute)(int *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(transpose_yf_init)(int *);
+void FORTRAN(transpose_yf_result_limits)(int *);
+void FORTRAN(transpose_yf_compute)(int *, DFTYPE *, DFTYPE *);
+
 void FORTRAN(transpose_yt_init)(int *);
 void FORTRAN(transpose_yt_result_limits)(int *);
 void FORTRAN(transpose_yt_compute)(int *, DFTYPE *, DFTYPE *);
@@ -877,6 +905,14 @@ void FORTRAN(transpose_yt_compute)(int *, DFTYPE *, DFTYPE *);
 void FORTRAN(transpose_yz_init)(int *);
 void FORTRAN(transpose_yz_result_limits)(int *);
 void FORTRAN(transpose_yz_compute)(int *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(transpose_ze_init)(int *);
+void FORTRAN(transpose_ze_result_limits)(int *);
+void FORTRAN(transpose_ze_compute)(int *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(transpose_zf_init)(int *);
+void FORTRAN(transpose_zf_result_limits)(int *);
+void FORTRAN(transpose_zf_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(transpose_zt_init)(int *);
 void FORTRAN(transpose_zt_result_limits)(int *);
@@ -1198,7 +1234,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-#define N_INTEF 183
+#define N_INTEF 192
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -1336,58 +1372,66 @@ struct {
    strcpy(I_EFnames[129].funcname, "tcat");
    strcpy(I_EFnames[130].funcname, "tcat_str");
    strcpy(I_EFnames[131].funcname, "test_opendap");
-   strcpy(I_EFnames[132].funcname, "transpose_xt");
-   strcpy(I_EFnames[133].funcname, "transpose_xy");
-   strcpy(I_EFnames[134].funcname, "transpose_xz");
-   strcpy(I_EFnames[135].funcname, "transpose_yt");
-   strcpy(I_EFnames[136].funcname, "transpose_yz");
-   strcpy(I_EFnames[137].funcname, "transpose_zt");
-   strcpy(I_EFnames[138].funcname, "treverse");
-   strcpy(I_EFnames[139].funcname, "unique_str2int");
-   strcpy(I_EFnames[140].funcname, "write_webrow");
-   strcpy(I_EFnames[141].funcname, "xauto_cor");
-   strcpy(I_EFnames[142].funcname, "xcat");
-   strcpy(I_EFnames[143].funcname, "xcat_str");
-   strcpy(I_EFnames[144].funcname, "xreverse");
-   strcpy(I_EFnames[145].funcname, "ycat");
-   strcpy(I_EFnames[146].funcname, "ycat_str");
-   strcpy(I_EFnames[147].funcname, "yreverse");
-   strcpy(I_EFnames[148].funcname, "zaxreplace_avg");
-   strcpy(I_EFnames[149].funcname, "zaxreplace_bin");
-   strcpy(I_EFnames[150].funcname, "zaxreplace_rev");
-   strcpy(I_EFnames[151].funcname, "zaxreplace_zlev");
-   strcpy(I_EFnames[152].funcname, "zcat");
-   strcpy(I_EFnames[153].funcname, "zcat_str");
-   strcpy(I_EFnames[154].funcname, "zreverse");
-   strcpy(I_EFnames[155].funcname, "eofsvd_space");
-   strcpy(I_EFnames[156].funcname, "eofsvd_stat");
-   strcpy(I_EFnames[157].funcname, "eofsvd_tfunc");
-   strcpy(I_EFnames[158].funcname, "expnd_by_len");
-   strcpy(I_EFnames[159].funcname, "expnd_by_len_str");
-   strcpy(I_EFnames[160].funcname, "fc_isubset");
-   strcpy(I_EFnames[161].funcname, "expndi_by_z_counts");
-   strcpy(I_EFnames[162].funcname, "expndi_id_by_z_counts");
-   strcpy(I_EFnames[163].funcname, "expndi_by_m_counts");
-   strcpy(I_EFnames[164].funcname, "str_mask");
-   strcpy(I_EFnames[165].funcname, "samplexyt_nrst");
-   strcpy(I_EFnames[166].funcname, "separate");
-   strcpy(I_EFnames[167].funcname, "time_reformat");
-   strcpy(I_EFnames[168].funcname, "ft_to_orthogonal");
-   strcpy(I_EFnames[169].funcname, "curv_to_rect_fsu");
-   strcpy(I_EFnames[170].funcname, "piecewise3");
-   strcpy(I_EFnames[171].funcname, "sample_fast_i");
-   strcpy(I_EFnames[172].funcname, "sample_fast_i_str");
-   strcpy(I_EFnames[173].funcname, "separate_str");
-   strcpy(I_EFnames[174].funcname, "write_webrow_gwt");
-   strcpy(I_EFnames[175].funcname, "bxcat");
-   strcpy(I_EFnames[176].funcname, "bxsequence");
-   strcpy(I_EFnames[177].funcname, "bxsequence_str");
-   strcpy(I_EFnames[178].funcname, "bcompressi");
-   strcpy(I_EFnames[179].funcname, "scat2grid_bin_xyzt");
-   strcpy(I_EFnames[180].funcname, "str_noblanks");
-   strcpy(I_EFnames[181].funcname, "str_replace");
-   strcpy(I_EFnames[182].funcname, "expndi_to_et");
-
+   strcpy(I_EFnames[132].funcname, "transpose_ef");
+   strcpy(I_EFnames[133].funcname, "transpose_te");
+   strcpy(I_EFnames[134].funcname, "transpose_tf");
+   strcpy(I_EFnames[135].funcname, "transpose_xe");
+   strcpy(I_EFnames[136].funcname, "transpose_xf");
+   strcpy(I_EFnames[137].funcname, "transpose_xt");
+   strcpy(I_EFnames[138].funcname, "transpose_xy");
+   strcpy(I_EFnames[139].funcname, "transpose_xz");
+   strcpy(I_EFnames[140].funcname, "transpose_ye");
+   strcpy(I_EFnames[141].funcname, "transpose_yf");
+   strcpy(I_EFnames[142].funcname, "transpose_yt");
+   strcpy(I_EFnames[143].funcname, "transpose_yz");
+   strcpy(I_EFnames[144].funcname, "transpose_ze");
+   strcpy(I_EFnames[145].funcname, "transpose_zf");
+   strcpy(I_EFnames[146].funcname, "transpose_zt");
+   strcpy(I_EFnames[147].funcname, "treverse");
+   strcpy(I_EFnames[148].funcname, "unique_str2int");
+   strcpy(I_EFnames[149].funcname, "write_webrow");
+   strcpy(I_EFnames[150].funcname, "xauto_cor");
+   strcpy(I_EFnames[151].funcname, "xcat");
+   strcpy(I_EFnames[152].funcname, "xcat_str");
+   strcpy(I_EFnames[153].funcname, "xreverse");
+   strcpy(I_EFnames[154].funcname, "ycat");
+   strcpy(I_EFnames[155].funcname, "ycat_str");
+   strcpy(I_EFnames[156].funcname, "yreverse");
+   strcpy(I_EFnames[157].funcname, "zaxreplace_avg");
+   strcpy(I_EFnames[158].funcname, "zaxreplace_bin");
+   strcpy(I_EFnames[159].funcname, "zaxreplace_rev");
+   strcpy(I_EFnames[160].funcname, "zaxreplace_zlev");
+   strcpy(I_EFnames[161].funcname, "zcat");
+   strcpy(I_EFnames[162].funcname, "zcat_str");
+   strcpy(I_EFnames[163].funcname, "zreverse");
+   strcpy(I_EFnames[164].funcname, "eofsvd_space");
+   strcpy(I_EFnames[165].funcname, "eofsvd_stat");
+   strcpy(I_EFnames[166].funcname, "eofsvd_tfunc");
+   strcpy(I_EFnames[167].funcname, "expnd_by_len");
+   strcpy(I_EFnames[168].funcname, "expnd_by_len_str");
+   strcpy(I_EFnames[169].funcname, "fc_isubset");
+   strcpy(I_EFnames[170].funcname, "expndi_by_z_counts");
+   strcpy(I_EFnames[171].funcname, "expndi_id_by_z_counts");
+   strcpy(I_EFnames[172].funcname, "expndi_by_m_counts");
+   strcpy(I_EFnames[173].funcname, "str_mask");
+   strcpy(I_EFnames[174].funcname, "samplexyt_nrst");
+   strcpy(I_EFnames[175].funcname, "separate");
+   strcpy(I_EFnames[176].funcname, "time_reformat");
+   strcpy(I_EFnames[177].funcname, "ft_to_orthogonal");
+   strcpy(I_EFnames[178].funcname, "curv_to_rect_fsu");
+   strcpy(I_EFnames[179].funcname, "piecewise3");
+   strcpy(I_EFnames[180].funcname, "sample_fast_i");
+   strcpy(I_EFnames[181].funcname, "sample_fast_i_str");
+   strcpy(I_EFnames[182].funcname, "separate_str");
+   strcpy(I_EFnames[183].funcname, "write_webrow_gwt");
+   strcpy(I_EFnames[184].funcname, "bxcat");
+   strcpy(I_EFnames[185].funcname, "bxsequence");
+   strcpy(I_EFnames[186].funcname, "bxsequence_str");
+   strcpy(I_EFnames[187].funcname, "bcompressi");
+   strcpy(I_EFnames[188].funcname, "scat2grid_bin_xyzt");
+   strcpy(I_EFnames[189].funcname, "str_noblanks");
+   strcpy(I_EFnames[190].funcname, "str_replace");
+   strcpy(I_EFnames[191].funcname, "expndi_to_et");
 /*    
  *  ------------------------------------ 
  */
@@ -4187,6 +4231,31 @@ else if ( !strcmp(name,"scat2ddups_init_") ) return (void *)FORTRAN(scat2ddups_i
 else if ( !strcmp(name,"scat2ddups_result_limits_") ) return (void *)FORTRAN(scat2ddups_result_limits);
 else if ( !strcmp(name,"scat2ddups_compute_") ) return (void *)FORTRAN(scat2ddups_compute);
 
+/* transpose_ef.F */
+else if ( !strcmp(name,"transpose_ef_init_") ) return (void *)FORTRAN(transpose_ef_init);
+else if ( !strcmp(name,"transpose_ef_result_limits_") ) return (void *)FORTRAN(transpose_ef_result_limits);
+else if ( !strcmp(name,"transpose_ef_compute_") ) return (void *)FORTRAN(transpose_ef_compute);
+
+/* transpose_te.F */
+else if ( !strcmp(name,"transpose_te_init_") ) return (void *)FORTRAN(transpose_te_init);
+else if ( !strcmp(name,"transpose_te_result_limits_") ) return (void *)FORTRAN(transpose_te_result_limits);
+else if ( !strcmp(name,"transpose_te_compute_") ) return (void *)FORTRAN(transpose_te_compute);
+
+/* transpose_tf.F */
+else if ( !strcmp(name,"transpose_tf_init_") ) return (void *)FORTRAN(transpose_tf_init);
+else if ( !strcmp(name,"transpose_tf_result_limits_") ) return (void *)FORTRAN(transpose_tf_result_limits);
+else if ( !strcmp(name,"transpose_tf_compute_") ) return (void *)FORTRAN(transpose_tf_compute);
+
+/* transpose_xe.F */
+else if ( !strcmp(name,"transpose_xe_init_") ) return (void *)FORTRAN(transpose_xe_init);
+else if ( !strcmp(name,"transpose_xe_result_limits_") ) return (void *)FORTRAN(transpose_xe_result_limits);
+else if ( !strcmp(name,"transpose_xe_compute_") ) return (void *)FORTRAN(transpose_xe_compute);
+
+/* transpose_xf.F */
+else if ( !strcmp(name,"transpose_xf_init_") ) return (void *)FORTRAN(transpose_xf_init);
+else if ( !strcmp(name,"transpose_xf_result_limits_") ) return (void *)FORTRAN(transpose_xf_result_limits);
+else if ( !strcmp(name,"transpose_xf_compute_") ) return (void *)FORTRAN(transpose_xf_compute);
+
 /* transpose_xt.F */
 else if ( !strcmp(name,"transpose_xt_init_") ) return (void *)FORTRAN(transpose_xt_init);
 else if ( !strcmp(name,"transpose_xt_result_limits_") ) return (void *)FORTRAN(transpose_xt_result_limits);
@@ -4202,6 +4271,16 @@ else if ( !strcmp(name,"transpose_xz_init_") ) return (void *)FORTRAN(transpose_
 else if ( !strcmp(name,"transpose_xz_result_limits_") ) return (void *)FORTRAN(transpose_xz_result_limits);
 else if ( !strcmp(name,"transpose_xz_compute_") ) return (void *)FORTRAN(transpose_xz_compute);
 
+/* transpose_ye.F */
+else if ( !strcmp(name,"transpose_ye_init_") ) return (void *)FORTRAN(transpose_ye_init);
+else if ( !strcmp(name,"transpose_ye_result_limits_") ) return (void *)FORTRAN(transpose_ye_result_limits);
+else if ( !strcmp(name,"transpose_ye_compute_") ) return (void *)FORTRAN(transpose_ye_compute);
+
+/* transpose_yf.F */
+else if ( !strcmp(name,"transpose_yf_init_") ) return (void *)FORTRAN(transpose_yf_init);
+else if ( !strcmp(name,"transpose_yf_result_limits_") ) return (void *)FORTRAN(transpose_yf_result_limits);
+else if ( !strcmp(name,"transpose_yf_compute_") ) return (void *)FORTRAN(transpose_yf_compute);
+
 /* transpose_yt.F */
 else if ( !strcmp(name,"transpose_yt_init_") ) return (void *)FORTRAN(transpose_yt_init);
 else if ( !strcmp(name,"transpose_yt_result_limits_") ) return (void *)FORTRAN(transpose_yt_result_limits);
@@ -4211,6 +4290,16 @@ else if ( !strcmp(name,"transpose_yt_compute_") ) return (void *)FORTRAN(transpo
 else if ( !strcmp(name,"transpose_yz_init_") ) return (void *)FORTRAN(transpose_yz_init);
 else if ( !strcmp(name,"transpose_yz_result_limits_") ) return (void *)FORTRAN(transpose_yz_result_limits);
 else if ( !strcmp(name,"transpose_yz_compute_") ) return (void *)FORTRAN(transpose_yz_compute);
+
+/* transpose_ze.F */
+else if ( !strcmp(name,"transpose_ze_init_") ) return (void *)FORTRAN(transpose_ze_init);
+else if ( !strcmp(name,"transpose_ze_result_limits_") ) return (void *)FORTRAN(transpose_ze_result_limits);
+else if ( !strcmp(name,"transpose_ze_compute_") ) return (void *)FORTRAN(transpose_ze_compute);
+
+/* transpose_zf.F */
+else if ( !strcmp(name,"transpose_zf_init_") ) return (void *)FORTRAN(transpose_zf_init);
+else if ( !strcmp(name,"transpose_zf_result_limits_") ) return (void *)FORTRAN(transpose_zf_result_limits);
+else if ( !strcmp(name,"transpose_zf_compute_") ) return (void *)FORTRAN(transpose_zf_compute);
 
 /* transpose_zt.F */
 else if ( !strcmp(name,"transpose_zt_init_") ) return (void *)FORTRAN(transpose_zt_init);

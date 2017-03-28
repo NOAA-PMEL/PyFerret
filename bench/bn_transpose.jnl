@@ -18,7 +18,70 @@ list transpose_xz(myvar)
 list transpose_xt(myvar)
 list transpose_yz(myvar)
 list transpose_yt(myvar)
-list transpose_zt(myvar)
+list transpose_zt(myvar) 
+
+def axis /X=0.0:4.0:1.0/units=degrees_east xaxs
+def axis /Y=0.0:3.0:1.0/units=degrees_north yaxs
+def axis /Z=0.0:1.4:0.2/units=m/depth zaxs
+def axis /T=0.0:6.0:1.0/units=days/t0=1-jan-2001 taxs
+def axis /E=0.0:10.0:5 eaxs
+def axis /F=0.0:100.0:20 faxs
+def grid /X=xaxs /Y=yaxs /Z=zaxs /T=taxs /E=eaxs /F=faxs mygrd 
+
+set grid mygrd
+let myvar = X + 5.0 * (Y + 4.0 * (Z + 3.0 * T)) + _E - _F
+
+
+! * * * * Simple XYZTEF examples * * *
+
+list/x=1/y=1/z=1/t=1 myvar
+list/x=1/y=1/z=1/t=1 transpose_ef(myvar)
+
+list/e=5/y=1/z=1/t=1 myvar
+list/e=5/y=1/z=1/t=1 transpose_xf(myvar)
+list/F=25/y=1/z=1/t=1 myvar
+list/F=25/y=1/z=1/t=1 transpose_xe(myvar)
+
+list/e=5/x=1/z=1/t=1 myvar
+list/e=5/x=1/z=1/t=1 transpose_yf(myvar)
+list/F=25/x=1/z=1/t=1 myvar
+list/F=25/x=1/z=1/t=1 transpose_ye(myvar)
+
+list/e=5/x=1/y=1/t=1 myvar
+list/e=5/x=1/y=1/t=1 transpose_zf(myvar)
+list/F=25/x=1/y=1/t=1 myvar
+list/F=25/x=1/y=1/t=1 transpose_ze(myvar)
+
+list/e=5/x=1/y=1/z=1 myvar
+list/e=5/x=1/y=1/z=1 transpose_tf(myvar)
+list/F=25/x=1/y=1/z=1 myvar
+list/F=25/x=1/y=1/z=1 transpose_te(myvar)
+
+
+! * * * *  XYZTEF examples with another dimension * * *
+
+list/y=1/z=1/t=1 myvar
+list/y=1/z=1/t=1 transpose_ef(myvar) 
+
+list/e=5/z=1/t=1 myvar
+list/e=5/z=1/t=1 transpose_xf(myvar) 
+list/F=25/z=1/t=1 myvar
+list/F=25/z=1/t=1 transpose_xe(myvar) 
+
+list/e=5/z=1/t=1 myvar
+list/e=5/z=1/t=1 transpose_yf(myvar) 
+list/F=25/z=1/t=1 myvar
+list/F=25/z=1/t=1 transpose_ye(myvar) 
+
+list/e=5/y=1/t=1 myvar
+list/e=5/y=1/t=1 transpose_zf(myvar) 
+list/F=25/y=1/t=1 myvar
+list/F=25/y=1/t=1 transpose_ze(myvar) 
+
+list/e=5/y=1/z=1 myvar
+list/e=5/y=1/z=1 transpose_tf(myvar) 
+list/F=25/y=1/z=1 myvar
+list/F=25/y=1/z=1 transpose_te(myvar) 
 
 can var /all
 set grid abstract
@@ -27,4 +90,5 @@ can axis taxs
 can axis zaxs
 can axis yaxs
 can axis xaxs
-
+can axis eaxs
+can axis faxs

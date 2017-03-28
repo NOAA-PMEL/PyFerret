@@ -182,6 +182,10 @@
 * V71  *acm* 2/17  More on ticket 2231. New argument to FULL_VAR_TITLE to control units labels
 * V720 *acm* 3/2017 Ticket 2517: Bugs in PLOT/VS when the units are degrees. Axis formatting
 *                   needs to be consistent and controlled by modes long_label and latit_label
+* v7.2 *acm* 2/2017 ticket 2446 Drawing formatted time axes on a PLOT/VS when a variable has
+*                   units of e.g. "days since datestring". The datestring can be in a recognized
+*                   format: 01-jan-2011, or 2011-01-01. MM:HH:SS if present can be written
+*                   separated by a space, or a colon, or Z.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -199,6 +203,8 @@
 	include 'xtext_info.cmn'
         include 'axis_inc.decl'    ! with axis lengths
         include 'AXIS.INC'         ! with axis lengths	
+	include 'taxis_inc.decl'
+	include 'TAXIS.INC'
 	include 'PPLDAT.INC'
         include 'switch_inc.decl'
         include 'SWITCH.INC'
@@ -220,7 +226,8 @@
      .			all_1_ind, formatted,
      .			indep_is_log, dep_is_log, use_nice,
      .                  this_no_range(max_line_on_plot), set_axis,
-     .                  timeax_both, do_units, doing_ribbon_color
+     .                  timeax_both, do_units, doing_ribbon_color,
+     .                  x_is_time, y_is_time
 	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title
 	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
      .			SECS_TO_DATE*20, LEFINT*8, MERGED_WHOI_DATE*14, 
@@ -251,7 +258,7 @@
      .			bc_min, bc_max, step_lo, step_hi
 	REAL		TSTEP_TO_SECS, SECS_TO_TSTEP, DATE_TO_TSTEP, 
      .			WHOI2BC,ind_min, ind_max, dep_min, dep_max, 
-     .			delta, tmp
+     .			delta, tmp, dum, ww_save
 	REAL*4 rbad
 
 * local parameter declarations:
@@ -296,8 +303,11 @@
         cx_x = cx_list(1)
 	xtra_lab = ' '
         nkey_entries = nmv
-	itmp = 0
+	itmp = mnormal
 	do_units = .TRUE.
+	x_is_time = .FALSE.
+	y_is_time = .FALSE.
+	icode = 0
 
 * set limit on the number of plot keys
         IF (.NOT.nokey  .AND.  nmv.GT.max_key_entries) THEN
@@ -422,6 +432,66 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   IF ( .NOT.no_labels) THEN
 	      buff1 = VAR_UNITS(cx_x)
 	      iunits = TM_UNIT_ID(buff1)
+	      
+* Does it have time units? If so draw a formatted time axis
+	      x_is_time = .FALSE.
+	      since_T0 = MAX( INDEX(buff1,'since'), INDEX(buff1,'SINCE') )
+	      slen = TM_LENSTR1(buff1)
+	      IF (since_T0.GT.0 .AND. slen.GT.since_T0+5) THEN
+	         cal_id_1 = 1
+	         CALL TM_ALLO_DYN_LINE( itmp, status )	
+	         CALL CD_GET_TIME_UNITS ( buff1, cal_id_1, line_units(itmp), 
+     .			                   line_t0(itmp), dum, status )
+		 IF (status .EQ. ferr_ok) THEN
+		    x_is_time = .TRUE.
+		    iunits = TM_UNIT_ID( line_units(itmp) )
+		    line_unit_code(itmp) = TM_UNIT_ID( line_units(itmp) )
+		    line_tunit(itmp) = un_convert(line_unit_code(itmp))
+		    line_cal_name(itmp) = 'GREGORIAN'
+		    line_direction( itmp ) = 'TI'
+
+	            CALL MINMAX( indep_dat, npts, mr_bad_data(mv), lo, hi )
+		    grid_line(t_dim, mgrid_buff) = itmp
+		 
+		    igrd_save =  cx_grid(cx_list(1))
+		    cx_grid(cx_list(1)) = mgrid_buff
+		    ww_save = cx_lo_ww(t_dim,cx_list(1) ) 
+		    cx_lo_ww(t_dim,cx_list(1)) = lo
+
+		    ind_min = TSTEP_TO_SECS (mgrid_buff, t_dim, lo)
+		    ind_max = TSTEP_TO_SECS (mgrid_buff, t_dim, hi)
+		    
+
+* Plotting short time range? If so recompute tref     
+* axis length in hours from time since BC in seconds
+		    IF (.NOT.overlay) THEN
+                       hrs = ( ind_max - ind_min ) / 3600.
+                       IF (hrs.LT.24)tref = 
+     .                  MERGED_WHOI_DATE( cx_list(var1), t_dim, nmv, .TRUE. )
+
+                       all_1_ind = ind_min .EQ. ind_max
+                       IF ( all_1_ind ) THEN
+                          ind_min = ind_min - 1.
+                          ind_max = ind_max + 1.
+                       ENDIF
+		    
+                       CALL TAXIS_STYLE( indep_ax, ind_min, ind_max, tstyle, xtra_lab )
+* 11/16 Get the min and max as used by PPLUS.  That function uses WHOI formatted time
+                      CALL TPLOT_AXIS_ENDS (ind_min, ind_max, cal_id_1, tstyle)
+ 
+                      CALL AXIS_END_SYMS( indep_ax,
+     .                          SECS_TO_TSTEP( mgrid_buff, t_dim, ind_min ),
+     .                          SECS_TO_TSTEP( mgrid_buff, t_dim, ind_max ) )
+
+		    ENDIF
+
+	         ELSE
+		    IF (itmp .NE. mnormal) CALL TM_DEALLO_DYN_LINE( itmp )
+		    itmp = mnormal
+	         ENDIF
+	      ENDIF
+
+	      slen = TM_LENSTR1(plot_title)
 
 	      IF (iunits .NE. 4) 
      .           CALL BOX_LABEL( indep_lab,
@@ -484,10 +554,11 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * Set up modulo longitude handling if /vs and variable has units
 * of longitude
 
+	   
 	   cx_x = cx_list(1)	 
 	   cx_y = cx_list(2)
 	   buff1 = VAR_UNITS(cx_x)
-	   iunits = TM_UNIT_ID(buff1)
+	   IF (iunits .GE. 0) iunits = TM_UNIT_ID(buff1)
 
 	   IF (.NOT.overlay) THEN
 	      CALL AXIS_ENDS(indep_ax,indep_dim,grid1,ind_min,ind_max,
@@ -639,10 +710,11 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   mv   = mv_list( ipl )
 	   cx   = cx_list( ipl )
 	   grid = cx_grid( cx )
-           IF (.NOT.versus) THEN                ! 1/17
+           IF (.NOT.versus) THEN 
               CALL GET_CX_DIMS( cx, ndim, dims )
               IF (ndim .GT. 1) GOTO 5110
            ENDIF
+
 * set up a dependent variable
 	   CALL EXTRACT_LINE (	cx,
      .				memry(mv)%ptr,
@@ -705,6 +777,49 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	         IF (.NOT.overlay) THEN
 
 		 
+
+* Does it have time units? If so draw a formatted time axis
+                 y_is_time = .FALSE.
+                 since_T0 = MAX( INDEX(buff1,'since'), INDEX(buff1,'SINCE') )
+                 slen = TM_LENSTR1(buff1)
+                 IF (.NOT.x_is_time .AND. since_T0.GT.0 .AND. slen.GT.since_T0+5) THEN
+	            cal_id_1 = 1
+	            CALL TM_ALLO_DYN_LINE( itmp, status )	
+	            CALL CD_GET_TIME_UNITS ( buff1, cal_id_1, line_units(itmp), 
+     .			                   line_t0(itmp), dum, status )
+		    IF (status .EQ. ferr_ok) THEN
+		       y_is_time = .TRUE.
+		       time_axis = .TRUE.
+		       has_time_axis = .TRUE.
+		       iunits = TM_UNIT_ID( line_units(itmp) )
+		       line_unit_code(itmp) = TM_UNIT_ID( line_units(itmp) )
+		       line_tunit(itmp) = un_convert(line_unit_code(itmp))
+		       line_cal_name(itmp) = 'GREGORIAN'
+		       line_direction( itmp ) = 'TI'
+
+		       grid_line(t_dim, mgrid_buff) = itmp
+		 
+		       igrd_save =  cx_grid(cx_list(1))
+		       cx_grid(cx_list(1)) = mgrid_buff
+		       ww_save = cx_lo_ww(t_dim,cx_list(1) ) 
+		       cx_lo_ww(t_dim,cx_list(1)) = lo
+
+		       dep_min = TSTEP_TO_SECS (mgrid_buff, t_dim, lo)
+		       dep_max = TSTEP_TO_SECS (mgrid_buff, t_dim, hi)
+		    
+		       CALL TAXIS_STYLE( dep_ax, dep_min, dep_max, tstyle, xtra_lab )
+* 11/16 Get the min and max as used by PPLUS.  That function uses WHOI formatted time
+		       CALL TPLOT_AXIS_ENDS (dep_min, dep_max, cal_id_1, tstyle)
+ 
+		       CALL AXIS_END_SYMS( dep_ax,
+     .                          SECS_TO_TSTEP( mgrid_buff, t_dim, dep_min ),
+     .                          SECS_TO_TSTEP( mgrid_buff, t_dim, dep_max ) )
+
+
+		    ENDIF
+
+		 ENDIF
+
 * This routine checks the units and the setting for formatted lon/lat (time?) axes
 * If the formatting has been turned off, resets iunits and flag mod_vs_x.
 
@@ -726,44 +841,32 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * use east for the vert. If they said degrees_e for the y var but just degrees for the x,
 * use lon for the y axis.
 
+
                        IF (axis_x_dir.EQ.y_dim .AND. axis_y_dir.EQ.no_dim) THEN
-		          IF (iunits .EQ. 4) THEN
-			     ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
+		          IF (iunits .EQ. 4) ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                       ',''''LONE'''')' 
-			     CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-			     CALL LON_LAT_FMT (y_dim, 'Y')
-		          ENDIF
                        ELSEIF (axis_y_dir .EQ. x_dim) THEN
 		          ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                       ',''''LONE'''')' 
-			     CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-			     CALL LON_LAT_FMT (y_dim, 'X')
-    		          mod_vs_y = .TRUE.
-
-			  IF (axis_x_dir .EQ. no_dim) THEN
-			     buff1 = VAR_UNITS(cx_x)
-			     iiunits = TM_UNIT_ID(buff1)
-			     CALL GEOG_LABEL_VS (buff1, iiunits, x_dim, axis_x_dir)
-			     IF (iiunits .EQ. 4) ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
+		          mod_vs_y = .TRUE.
+		          IF (axis_x_dir .EQ. no_dim) THEN
+		             buff1 = VAR_UNITS(cx_x)
+		             iiunits = TM_UNIT_ID(buff1)
+		             CALL GEOG_LABEL_VS (buff1, iiunits, x_dim, axis_x_dir)
+		             IF (iiunits .EQ. 4) ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                           ',''''LAT'''')'
-			     CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-			     CALL LON_LAT_FMT (y_dim, 'Y')
-                          ENDIF
-
+		          ENDIF
                        ELSEIF (axis_y_dir .EQ. y_dim) THEN
                            ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                       ',''''LAT'''')'
-                           CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-                           CALL LON_LAT_FMT (y_dim, 'Y')
                        ELSE
 		          ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                       ',''''LAT'''')' 
-                           CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-                           CALL LON_LAT_FMT (y_dim, 'Y')
                        ENDIF
 
                        CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
                     ENDIF
+		 
 		 
                  ELSEIF (iunits .LT. 0) THEN ! time axis formatting
                     CALL PPLCMD ( from, line, 0, 'TIME', 1, 1 )
@@ -771,6 +874,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	            ppl_buff = ' '
 	            WRITE ( ppl_buff, 3004 ) 'GREGORIAN'
                     CALL PPLCMD (from, line, 0, ppl_buff, 1, 1)
+
+
 	         ELSE
                  CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )	 
                  ENDIF	
@@ -930,7 +1035,72 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      ENDIF
 	   ENDIF
 
-	   icode = 0
+
+* If a /vs plot has a variable with units of time, put the itmp line into 
+* the scratch grid mgrid_buff, so the WHOI_DATE functions can get at the 
+* line_* information stored above after calls to CD_GET_TIME_UNITS. 
+
+	   IF (versus) THEN
+	      IF (x_is_time) THEN
+		 dt_min = line_tunit(itmp)/ 60.
+		 
+		 adjust_time = .FALSE.
+		 CALL AXIS_ENDS(indep_ax,t_dim,mgrid_buff,ind_min,ind_max,
+     .                       delta, indep_is_log, indep_axtyp, versus, status)
+
+                 tref = MERGED_WHOI_DATE( cx_list(1), t_dim, 1, .FALSE. )
+                 t1_date = INTERNAL_WHOI_DATE( mgrid_buff, t_dim, 1.0D0 )
+
+		 cx_grid(cx_list(1)) = igrd_save
+		 cx_lo_ww(t_dim,cx_list(1) ) = ww_save 
+		 IF (ipl .EQ. nmv) THEN
+		    IF (itmp .NE. mnormal) CALL TM_DEALLO_DYN_LINE( itmp )
+		    itmp = mnormal
+		 ENDIF
+
+	      ENDIF
+	      
+	      IF (y_is_time .AND. .NOT.doing_ribbon_color) THEN
+	      
+		 dt_min = line_tunit(itmp)/ 60.
+		 
+		 adjust_time = .FALSE.
+		 CALL AXIS_ENDS(dep_ax,t_dim,mgrid_buff,dep_min,dep_max,
+     .                       delta, indep_is_log, indep_axtyp, versus, status)
+
+                 tref = MERGED_WHOI_DATE( cx_list(1), t_dim, 1, .FALSE. )
+                 t1_date = INTERNAL_WHOI_DATE( mgrid_buff, t_dim, 1.0D0 )
+
+		 cx_grid(cx_list(1)) = igrd_save
+		 cx_lo_ww(t_dim,cx_list(1) ) = ww_save 
+		 IF (ipl .EQ. nmv) THEN
+		    IF (itmp .NE. mnormal) CALL TM_DEALLO_DYN_LINE( itmp )
+		    itmp = mnormal
+		 ENDIF
+
+
+		 IF (.NOT.overlay) THEN
+	            saved_dt_min  = dt_min		! to re-use on PLOT/VS or POLYGON
+	            saved_t1_date = t1_date
+	            saved_calendar_id = cal_id_1
+	         ENDIF
+
+		 IF (iunits .LT. 0) THEN
+	            dt_min = saved_dt_min
+	            t1_date = saved_t1_date
+	            cal_id_1 = saved_calendar_id
+		 ENDIF 
+		         
+	      ENDIF
+
+	   ENDIF
+
+* See pplldx comments. When loading the color-by variable lon vertical time axis
+* this forces the right combination of settings.
+
+	   IF (doing_ribbon_color) icode = 2
+	   IF (y_is_time .AND. doing_ribbon_color) icode = 7
+
 	   IF ( flip ) THEN
 	      CALL PPLLDX_envelope(icode,dep_dat,indep_dat,nload,
      .                             t1_date, tref, dt_min, plot_mem_used)
@@ -1127,6 +1297,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 *
 	hlen = xlen ! single-precision xlen from PPLUS common -> double prec. var
 
+	IF (x_is_time .OR. y_is_time) ul_dolab(t_dim) = .FALSE.
 	IF ( .NOT.no_labels ) 
      .          CALL LINE_PLOT_LABELS (var1, nkey_entries, ndv, cx_list, 
      .		this_no_range, overlay, versus, nokey, time_axis, 
@@ -1139,6 +1310,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 
 * error exit
  5000	CALL PPLCMD ( from, line, 0, 'NLINES', 1, 1 )	! wipe buffers clean
+ 	IF (itmp .NE. mnormal) CALL TM_DEALLO_DYN_LINE( itmp )
 	RETURN
  5050	buff1 = LEFINT( max_line_on_plot,  slen  )
 	CALL ERRMSG( ferr_invalid_command, status, 'cannot plot more than '

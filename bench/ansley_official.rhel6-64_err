@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 116402025 Mar 27 14:44 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 116421158 Mar 28 10:07 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2517: PLOT/VS labeled with lon and lat respond to MODEs LONG_LAB, LATIT_LAB
+Note: Ticket 2246: PLOT/VS with formatted time axes
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -22,7 +22,7 @@ FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Mon Mar 27 14:56:58 PDT 2017
+Beginning at Tue Mar 28 11:04:17 PDT 2017
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6237,12 +6237,343 @@ stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:
 stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
  **ERROR: value out of legal range: illegal mode argument. Must be 0 to 90 percent 95
 SET MODE FRUGAL:95
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_stat_precision
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_plot_vs_with_time
+Replacing definition of axis TAX
+Replacing definition of axis TIME
+Replacing definition of axis ZAXIS
+Replacing definition of axis TIME
+           *** NOTE: Graphics limits settings to 250 line/thickness combinations plus existing spectrum colors
+           *** NOTE: Cannot draw /THICK=3 lines with current number of color levels = 57; THICK=1 or 2 will be ok
+Replacing definition of axis TIME
+           *** NOTE: Graphics limits settings to 250 line/thickness combinations plus existing spectrum colors
+           *** NOTE: Cannot draw /THICK=2 lines with current number of color levels = 57; THICK=1 will be ok
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6349,4 +6680,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Mar 27 15:01:39 PDT 2017
+Ended at Tue Mar 28 11:09:15 PDT 2017

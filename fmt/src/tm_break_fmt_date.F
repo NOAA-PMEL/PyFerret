@@ -51,7 +51,7 @@
 * V67  *acm* 3/11 - If there is a T between the date and time in the unitsi 
 *                   string "months since yyyy-mm-ddThh:mm:ss (as in GRIB files) 
 *                   allow that. Replace T with a space. Ticket 1806.
-
+* V72 *acm*  3/17   If there is a Z at the end, lop that off.
 
 * ARGUMENT DEFINITIONS
 *  form  - code for the date string format
@@ -98,6 +98,10 @@
 
 *     If there is a T between the date and time (as in GRIB files) replace with a space.
            IF (date(11:11) .EQ. 'T') date(11:11) = ' '
+
+* If there is a Z at the end, lop that off.
+
+           IF (date(dlen:dlen) .EQ. 'Z') date(dlen:dlen) = ' '
 
 	   CALL TM_FTOC_STRNG( date(:dlen), dhol, slen)
 	   status = TM_BREAK_FMT_DATE_C(dhol, year, month,

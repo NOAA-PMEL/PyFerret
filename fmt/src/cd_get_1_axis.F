@@ -205,6 +205,8 @@
 *                 addressed in cd_write_axis.
 * v720 2/2017 *acm* Ticket 2513. Check that bounds or edges data is in the file when 
 *                 attribute is found, before trying to use it.
+* v720 3/2017 *acm* Ticket 2246. Call CD_GET_TIME_UNITS routine to get t0 date and time units 
+
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -281,7 +283,6 @@
      .        spacing_attr*14, bname*128, TM_FMT*32
       CHARACTER*13 TM_STRING
       CHARACTER*1 axis_dir
-      CHARACTER*3 dbuf
       CHARACTER*2 dcode
 
       INTEGER tt  ! nice short name
@@ -292,11 +293,7 @@
       CHARACTER*256 buff
       REAL*8   TM_SECS_FROM_BC, first, secs2firststep, secs1590,
      .         t0_secs, last_coord, firs_coord, secsperyear, secs2start, 
-     .         days_neg4713, days_1901_may68, secs_to_1901, secs_to_1968 
-
-* parameter declarations
-        REAL*8          psecs_per_day
-        PARAMETER     ( psecs_per_day = 60.*60.*24. )
+     .         days_neg4713
 
 * initialize for EPIC
       do_warn = .NOT.its_epic     ! EPIC files can get away with anything
@@ -539,27 +536,9 @@
          slen = TM_LENSTR1(buff)
          IF ( slen .GT. since_T0 + 5) THEN
 	 
-            IF (buff(since_T0+6:since_T0+10) .EQ. '-4713' .AND.
-     .          dbuf .EQ. 'DAY')  THEN
-
-c  This is the simple conversion; but we will reset the origin to 1901.
-c               buff = 'DAYS since 1968-05-23 00:00:00'
-c               days_neg4713 = 2440000.D0
-
-               buff = 'DAYS since 1901-01-15 00:00:00'
-               secs_to_1901 = TM_SECS_FROM_BC 
-     .                        (GREGORIAN, 1901,1,15,0,0,0,status)
-               secs_to_1968 = TM_SECS_FROM_BC 
-     .                        (GREGORIAN, 1968,5,23,0,0,0,status)
-               days_1901_may68 = (secs_to_1968 - secs_to_1901)/
-     .                             psecs_per_day
-               days_neg4713 = 2440000.D0 - days_1901_may68
-
-            ENDIF
-            got_torg = .TRUE.
-            CALL TM_DATE_REFORMAT(buff(since_T0+6:),pdate_numslashnum,
-     .                            cal_id, line_t0(iaxis), 
-     .                            pdate_vax, .FALSE., status )
+	    got_torg = .TRUE.
+	    CALL CD_GET_TIME_UNITS (buff, cal_id, line_units(iaxis), 
+     .			            line_t0(iaxis), days_neg4713, status)
 
 c fix for bug 1394
 c If the part after since is not a date/time, just keep the whole

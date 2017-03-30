@@ -1894,10 +1894,13 @@ c *kob* 4/97
               CALL ERRMSG( ferr_invalid_command, status,
      .                     'SET REDIRECT /FILE= what name?', *5000 )
            ENDIF
-           IF ( .NOT. TM_LEGAL_UNIX_NAME(title) ) THEN
-              CALL ERRMSG( ferr_invalid_command, status, 
-     .            'Illegal file name: ' // title, *5000 )
-           ENDIF
+
+c This check is not made for other file specifications e.g. writing data or graphics
+c files, or opening datasets. (ticket 2521).
+c           IF ( .NOT. TM_LEGAL_UNIX_NAME(title) ) THEN
+c              CALL ERRMSG( ferr_invalid_command, status, 
+c     .            'Illegal file name: ' // title, *5000 )
+c           ENDIF
 *
 *          Open or create the file
            INQUIRE( FILE = title, EXIST = fexist )

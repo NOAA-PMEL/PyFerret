@@ -14,3 +14,6 @@ GO err71_save_rigid
 
 GO bn_reset
 GO err71_plotvs_mode_label
+
+GO bn_reset
+GO err71_set_redirect

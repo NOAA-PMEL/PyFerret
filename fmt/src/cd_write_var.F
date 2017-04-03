@@ -463,7 +463,6 @@ c      EQUIVALENCE (r100_8, r100_4)
             
 * If not mode upcase_output, then keep the incoming case. 
             ELSE 
-               name = CD_AXIS_NAME( dset, grid, tmrecax, nlen )
                buff = CD_AXIS_OUTNAME( dset, grid, tmrecax, llen )
                IF (STR_SAME(name, buff) .EQ. 0) THEN 
 	          name = buff

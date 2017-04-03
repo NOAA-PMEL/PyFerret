@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 116612757 Apr  3 14:59 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/trunk/FERRET/fer/external_functions/ext_func
+-rwxr-xr-x. 1 ansley oerdnewp 116612589 Apr  3 15:25 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix for ticket 2132
+Note: ticket 2524
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,7 +13,7 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/fer/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=.
@@ -22,7 +22,7 @@ FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Mon Apr 3 15:01:41 PDT 2017
+Beginning at Mon Apr 3 15:29:25 PDT 2017
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10463,12 +10463,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = " 3-Apr-17"
-SESSION_TIME = "15:01"
-SESSION_PID = "23897"
-DELTA_CPU = "5.83111"
-CLOCK_SECS = "7.995"
+SESSION_TIME = "15:29"
+SESSION_PID = "25950"
+DELTA_CPU = "5.74613"
+CLOCK_SECS = "7.93"
 CURRENT_DATE = " 3-Apr-17"
-CURRENT_TIME = "15:01:49"
+CURRENT_TIME = "15:29:33"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 PEAK_MEMORY = "0"
@@ -10494,12 +10494,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = " 3-Apr-17"
-SESSION_TIME = "15:01"
-SESSION_PID = "23897"
-DELTA_CPU = "0.005999"
-CLOCK_SECS = "8.001"
+SESSION_TIME = "15:29"
+SESSION_PID = "25950"
+DELTA_CPU = "0.006999"
+CLOCK_SECS = "7.937"
 CURRENT_DATE = " 3-Apr-17"
-CURRENT_TIME = "15:01:49"
+CURRENT_TIME = "15:29:33"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 PEAK_MEMORY = "0"
@@ -10512,8 +10512,8 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = " 3-Apr-17"
-SESSION_TIME = "15:01"
-SESSION_PID = "23897"
+SESSION_TIME = "15:29"
+SESSION_PID = "25950"
 SPAWN_STATUS = "1"
 S1 = "hello"
 S2 = ""hello""
@@ -10525,15 +10525,15 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = " 3-Apr-17"
-SESSION_TIME = "15:01"
-SESSION_PID = "23897"
+SESSION_TIME = "15:29"
+SESSION_PID = "25950"
 SPAWN_STATUS = "1"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = " 3-Apr-17"
-SESSION_TIME = "15:01"
-SESSION_PID = "23897"
+SESSION_TIME = "15:29"
+SESSION_PID = "25950"
 SPAWN_STATUS = "1"
 S1 = "hello"
 S3 = "hello and goodbye"
@@ -10570,7 +10570,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET (beta/debug) Ver.7.1"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "03-APR-2017 15:01:49"
+LAB3 = "03-APR-2017 15:29:33"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10671,12 +10671,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = " 3-Apr-17"
-SESSION_TIME = "15:01"
-SESSION_PID = "23897"
-DELTA_CPU = "0.013998"
-CLOCK_SECS = "8.015"
+SESSION_TIME = "15:29"
+SESSION_PID = "25950"
+DELTA_CPU = "0.012998"
+CLOCK_SECS = "7.95"
 CURRENT_DATE = " 3-Apr-17"
-CURRENT_TIME = "15:01:49"
+CURRENT_TIME = "15:29:33"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 PEAK_MEMORY = "201"
@@ -25529,7 +25529,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Mon Apr  3 15:01:59 PDT 2017
+Mon Apr  3 15:29:43 PDT 2017
  
 GO bn_reset
 cancel mode verify
@@ -34995,6 +34995,10 @@ SAMPLE_FAST_I(V,Indices)
 SAMPLE_FAST_I_STR(S,Indices)
     Fast 1D sample string variable using set of indices
     S: String Variable to sample (STRING)
+    Indices: List of indices at which to sample
+SAMPLE_FAST_I(V,Indices)
+    Fast 1D sample variable using set of indices
+    V: Variable to sample
     Indices: List of indices at which to sample
  
 go bench_sorti.jnl
@@ -48610,7 +48614,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS03-APR-2017 15:02:28
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS03-APR-2017 15:30:16
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -50083,7 +50087,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "3-Apr-17:15:01"
+WIN_TITLE = "3-Apr-17:15:29"
  
 set win/title="set the title"
 sho sym win_title
@@ -50101,7 +50105,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 3-Apr-17:15:01"
+ !-> set win/title=" 3-Apr-17:15:29"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -50112,14 +50116,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date =  3-Apr-17
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 15:01
+ !-> DEFINE SYMBOL the_time = 15:29
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="3-Apr-17:15:01"
+ !-> SET WIN/TITLE="3-Apr-17:15:29"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "3-Apr-17:15:01"
+WIN_TITLE = "3-Apr-17:15:29"
  
 GO bn_reset bn_last_error.jnl
 cancel mode verify
@@ -56359,6 +56363,33 @@ SCAT2GRID_BIN_XYZT(XPTS,YPTS,ZPTS,TPTS,F,XAXPTS,YAXPTS,ZAXPTS,TAXPTS)
 STR_NOBLANKS(STR)
 STR_REPLACE(INSTRING,S1,S2)
 EXPNDI_TO_ET(var data,time data,Rowsize (E direction),Result T)
+ADD_9(A,B,C,D,E,F,G,H,I)
+APPENDE(ENS,VAR)
+AVET(A)
+DATES(Offsets)
+EFSTRINGS(--)
+FACTORIAL(A)
+FFT_AMP(A)
+FFTA_SAMPLE(A)
+FFT_PHAS(A)
+LENGTH_OF_STRINGS(--)
+MAXSTRLEN(A)
+PASS_THRU(A)
+PASS_THRU_STRING(A)
+PERCENT_GOOD_T(A)
+PICK_A_STRING(A,N)
+PIECEWISE3(V1,V2,V3,Control parameter,Tol1,Tol2,Tol3)
+SAMPLE_FAST_I(V,Indices)
+SEPARATE(A,Rowsize,FixLongitudes)
+SEPARATE_STR(A,Rowsize,FixLongitudes)
+STORAGE(A)
+STRING_ARG(Flags,NString)
+STRING_CAT3(A,B,C)
+STRING_LEN_SUM(S1,S2)
+STRINGS_AS_ARGS(S1,S2,NCHAR)
+STR_MISSING(MASK,STR,REPL)
+STUDENT_T_CUTOFF(P,nf)
+SUBTRACT(A,B)
  
  
 GO bn_reset bn608_bug_fixes
@@ -60656,10 +60687,10 @@ ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_clock_syms
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "47.6758"
-CLOCK_SECS = "71.128"
+DELTA_CPU = "47.2348"
+CLOCK_SECS = "77.87"
 CURRENT_DATE = " 3-Apr-17"
-CURRENT_TIME = "15:02:52"
+CURRENT_TIME = "15:30:43"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -60668,8 +60699,8 @@ CURRENT_TIME = "15:02:52"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.036995"
-CLOCK_SECS = "71.195"
+DELTA_CPU = "0.037994"
+CLOCK_SECS = "77.98"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -60683,60 +60714,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.226966
+ !-> DEFINE VARIABLE ten_plots = 0.234964
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.001"
-CLOCK_SECS = "71.877"
+DELTA_CPU = "0"
+CLOCK_SECS = "79.232"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "71.879"
+CLOCK_SECS = "79.232"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.027996
- !-> DEFINE VARIABLE sumcpu =0.027996
+ !-> DEFINE VARIABLE dt = 0.030995
+ !-> DEFINE VARIABLE sumcpu =0.030995
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.034994
- !-> DEFINE VARIABLE sumcpu =0.06299
+ !-> DEFINE VARIABLE dt = 0.030995
+ !-> DEFINE VARIABLE sumcpu =0.06199
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.026996
- !-> DEFINE VARIABLE sumcpu =0.089986
-!-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.025996
- !-> DEFINE VARIABLE sumcpu =0.115982
-!-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.034995
- !-> DEFINE VARIABLE sumcpu =0.150977
-!-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.182972
-!-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.036995
- !-> DEFINE VARIABLE sumcpu =0.219967
-!-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.027995
- !-> DEFINE VARIABLE sumcpu =0.247962
-!-> REPEAT: K=9
  !-> DEFINE VARIABLE dt = 0.029996
- !-> DEFINE VARIABLE sumcpu =0.277958
+ !-> DEFINE VARIABLE sumcpu =0.091986
+!-> REPEAT: K=4
+ !-> DEFINE VARIABLE dt = 0.029995
+ !-> DEFINE VARIABLE sumcpu =0.121981
+!-> REPEAT: K=5
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.158976
+!-> REPEAT: K=6
+ !-> DEFINE VARIABLE dt = 0.033995
+ !-> DEFINE VARIABLE sumcpu =0.192971
+!-> REPEAT: K=7
+ !-> DEFINE VARIABLE dt = 0.029995
+ !-> DEFINE VARIABLE sumcpu =0.222966
+!-> REPEAT: K=8
+ !-> DEFINE VARIABLE dt = 0.029996
+ !-> DEFINE VARIABLE sumcpu =0.252962
+!-> REPEAT: K=9
+ !-> DEFINE VARIABLE dt = 0.030995
+ !-> DEFINE VARIABLE sumcpu =0.283957
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.024996
- !-> DEFINE VARIABLE sumcpu =0.302954
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.315952
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.302954
-0.302954
+ !-> MESSAGE/CONTINUE 0.315952
+0.315952
 sh sym CLOCK_SECS
-CLOCK_SECS = "73.319"
+CLOCK_SECS = "81.682"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = " 3-Apr-17"
-SESSION_TIME = "15:01"
+SESSION_TIME = "15:29"
 CURRENT_DATE = " 3-Apr-17"
-CURRENT_TIME = "15:02:54"
+CURRENT_TIME = "15:30:46"
  
  
 ! ******** V6.3 Additions below ***********
@@ -64651,7 +64682,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v7.1 (beta/debug)"                                                
  3    /  3:" ! Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 04/03/17"                      
- 4    /  4:" !  3-Apr-17 15:01     "                                                    
+ 4    /  4:" !  3-Apr-17 15:29     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -67202,40 +67233,40 @@ can mode ver
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.220
-randu2_randn2       0.780
-randu2_randn2       0.924
-randu2_randn2       0.268
-randu2_randn2       0.603
+randu2_randn2       0.916
+randu2_randn2       0.909
+randu2_randn2       0.407
+randu2_randn2       0.188
+randu2_randn2       0.615
              VARIABLE : RANDU2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       0.841
-randu2_randn2       0.233
-randu2_randn2       0.599
-randu2_randn2       0.797
-randu2_randn2       0.049
+randu2_randn2       0.271
+randu2_randn2       0.312
+randu2_randn2       0.822
+randu2_randn2       0.585
+randu2_randn2       0.221
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.789
-randu2_randn2       0.393
-randu2_randn2       0.539
-randu2_randn2       0.111
-randu2_randn2       0.350
-randu2_randn2       0.672
+randu2_randn2       0.942
+randu2_randn2       0.280
+randu2_randn2       0.326
+randu2_randn2       0.273
+randu2_randn2       0.416
+randu2_randn2       0.261
              VARIABLE : RANDU2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2       0.898
-randu2_randn2       0.089
-randu2_randn2       0.567
-randu2_randn2       0.736
-randu2_randn2       0.514
-randu2_randn2       0.532
+randu2_randn2       0.516
+randu2_randn2       0.208
+randu2_randn2       0.857
+randu2_randn2       0.552
+randu2_randn2       0.014
+randu2_randn2       0.022
              VARIABLE : RANDU2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -67260,40 +67291,40 @@ randu2_randn2       0.638
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2      -0.670
-randu2_randn2       0.281
-randu2_randn2      -0.967
-randu2_randn2      -0.041
-randu2_randn2       1.212
+randu2_randn2       0.044
+randu2_randn2       0.437
+randu2_randn2      -0.014
+randu2_randn2       0.630
+randu2_randn2      -1.716
              VARIABLE : RANDN2(XBIG,-1)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (X)
              X        : 0.5 to 5.5
-randu2_randn2       1.927
-randu2_randn2      -0.120
-randu2_randn2       1.940
-randu2_randn2      -1.794
-randu2_randn2      -0.142
+randu2_randn2      -0.341
+randu2_randn2       1.396
+randu2_randn2       0.535
+randu2_randn2       0.180
+randu2_randn2      -0.237
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2      -0.260
-randu2_randn2       0.344
-randu2_randn2       1.043
-randu2_randn2      -0.012
-randu2_randn2      -0.505
-randu2_randn2       1.359
+randu2_randn2      -0.035
+randu2_randn2      -1.034
+randu2_randn2       0.586
+randu2_randn2      -0.993
+randu2_randn2      -0.222
+randu2_randn2      -0.728
              VARIABLE : RANDN2(XX,0)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
              X        : 0.5 to 6.5
-randu2_randn2      -1.198
-randu2_randn2      -0.343
-randu2_randn2      -0.710
-randu2_randn2      -0.225
-randu2_randn2      -0.489
-randu2_randn2       0.096
+randu2_randn2       1.732
+randu2_randn2      -0.812
+randu2_randn2      -0.836
+randu2_randn2       1.301
+randu2_randn2       0.961
+randu2_randn2      -0.707
              VARIABLE : RANDN2(XX,12436)
              BAD FLAG : -1.E+34       
              SUBSET   : 6 points (X)
@@ -67318,14 +67349,14 @@ randu2_randn2      -1.279
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-randu2_randn2       1.546       1.546       0.769
-randu2_randn2       0.924       0.924       0.769
-randu2_randn2       0.769       0.769       0.118
-randu2_randn2       0.111       0.111       0.451
-randu2_randn2      -0.578      -0.075       0.451
-randu2_randn2      -0.075      -0.075       0.451
-randu2_randn2       0.118       0.118       0.451
-randu2_randn2       0.451       0.451       0.451
+randu2_randn2       1.596       1.596       0.578
+randu2_randn2       1.395       1.395       0.578
+randu2_randn2       0.578       0.578       0.201
+randu2_randn2       0.188       0.188       0.391
+randu2_randn2      -0.677       0.007       0.391
+randu2_randn2       0.007       0.007       0.391
+randu2_randn2       0.201       0.201       0.391
+randu2_randn2       0.391       0.391       0.391
  
 GO bn_reset bn_axis_cf
 cancel mode verify
@@ -75253,7 +75284,7 @@ variables:
 		DDAT_ORIG:long_name = "DDAT[GZ=ZAXIS_ORIG@ASN]" ;
 
 // global attributes:
-		:history = "Mon Apr  3 15:03:12 2017: ncks -h -A -h z1.nc append_to_this.nc\n",
+		:history = "Mon Apr  3 15:31:07 2017: ncks -h -A -h z1.nc append_to_this.nc\n",
 			"FERRET V7.1 (beta/debug)  3-Apr-17" ;
 		:Conventions = "CF-1.6" ;
 		:NCO = "4.4.6" ;
@@ -88182,20 +88213,20 @@ GO err696_time_overlay
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=noleap tax_nlp
 def ax/t="1-jan-0001":"1-jan-0009":1/unit="year"/t0="1-jan-0001"/cal=julian tax_jul
 sp date
-Mon Apr  3 15:03:35 PDT 2017
+Mon Apr  3 15:31:30 PDT 2017
 set view upper
 plot t[gt=tax_nlp]
 plot/ov/vs/line/dash {1,1}, 1e6*{-1,1}
 sp date
-Mon Apr  3 15:03:35 PDT 2017
+Mon Apr  3 15:31:30 PDT 2017
  
 sp date
-Mon Apr  3 15:03:35 PDT 2017
+Mon Apr  3 15:31:30 PDT 2017
 set view lower
 plot t[gt=tax_jul]
 plot/ov/vs/line/dash {2,2}, 1e6*{-1,1}
 sp date
-Mon Apr  3 15:03:35 PDT 2017
+Mon Apr  3 15:31:30 PDT 2017
  
 GO bn_reset
 cancel mode verify
@@ -94622,9 +94653,9 @@ GO bn_speedtest
 ! bn_speedtest.jnl
 ! issue large numbers of commands, timing with clock time
 can mode verify
-10K LET commands LET a = 0 takes  1.009000000000015  seconds
-Second 10K LET commands LET a = 0 takes  2.259000000000015  seconds
-5K LOAD with transform takes  3.525999999999982  seconds
+10K LET commands LET a = 0 takes  1.029999999999973  seconds
+Second 10K LET commands LET a = 0 takes  2.278  seconds
+5K LOAD with transform takes  3.536  seconds
  
 GO bn_reset bn_show_noupcase
 cancel mode verify
@@ -101217,6 +101248,20 @@ show att a.myAttr
  a.myAttr = whatever 
  
  
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err71_save_bounds
+! err71_save_bounds
+! Ticket 2524. The SAVE command previously gave an error
+ 
+define axis/t time = {1,2,4}
+use write_int_att.nc
+ 
+! Tell Ferret to use the axis names from the file, and write data
+cancel mode upcase
+save/file=a.nc/clobber mhchla
+ 
 GO bn_reset bn_compressed_gather
 cancel mode verify
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -101951,29 +101996,12 @@ spawn "mkdir -p tmp"     ! tmp directory to store files
  
 ! see if the test file already exists
 SPAWN "ls tmp/test_dyn_mem.nc"
+tmp/test_dyn_mem.nc
 IF ($SPAWN_STATUS) THEN
- !-> IF 0 THEN
+ !-> IF 1 THEN
+  say test files already exist.  not re-creating them
+test files already exist.  not re-creating them
 ELSE
-  define symbol saved_memory_size = ($FERRET_MEMORY)
- !-> define symbol saved_memory_size = 2
-  set mem/size=50
-  define axis/x=1:1000:1 x1000
-  define axis/y=1:1000:1 y1000
-  define axis/z=1:2:1 z2
-  define axis/t=1:10:1 t10
-  define grid/x=x1000/y=y1000/z=z2/t=t10 gg
-  let v = x[g=gg]+y[g=gg]+z[g=gg]+t[g=gg]
-  save/clobber/file="tmp/test_dyn_mem.nc" v
-  define axis/t=1:1000:1 t1000
-  define axis/x=1:10:1   x10
-  define axis/y=1:100:1  y100
-  define axis/z=1:4:1 z4
-  let v1000 = x[gx=x10]+y[gy=y100]+z[gz=z4]+t[gt=t1000]
-  save/append/file="tmp/test_dyn_mem.nc" v1000
-  cancel variable/all
-  cancel mem/all
-  set memory/size=($saved_memory_size)
- !-> set memory/size=2
 ENDIF
  
 ! ************************************
@@ -103453,7 +103481,7 @@ yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v7.1 (beta/debug)
  	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 04/03/17
- 	 3-Apr-17 15:06     
+ 	 3-Apr-17 15:34     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -103470,14 +103498,25 @@ GO bn_ef_external_functions.jnl
 go bench_examples
 set mode ignore_error
 show func/ext add_9
+ADD_9(A,B,C,D,E,F,G,H,I)
+    (demonstration function) adds 9 arguments
 show func/ext ave*
 AVE_SCAT2GRID_T(TPTS,VPTS,TAXIS)
     Compute average of a variable in each cell of output time axis
     TPTS: T coordinates of scattered input time coordinates
     VPTS: Variable at times in TPTS
     TAXIS: Output time axis
+AVET(A)
+    (demonstration function) returns the time average
+    A: data to be averaged over the time axis
 show func pass_thru
+PASS_THRU(A)
+    (demonstration function) sets result equal to input
+    A: this arg is passed through
 show func sto*
+STORAGE(A)
+    sets result equal to input/10
+    A: input
  
 go bench_add_9
 ! Bench_add_9.jnl
@@ -103499,7 +103538,49 @@ let a3 = sst[d=1,l=3]
 let a = add_9(a1,a2,a3,a1,a2,a3,a1,a2,a3)
  
 list a
+             VARIABLE : ADD_9(A1,A2,A3,A1,A2,A3,A1,A2,A3)
+             SUBSET   : 15 points (LONGITUDE)
+             LATITUDE : 1S
+             TIME     : 16-JAN 06:00
+                1S    
+                45
+ 151E   / 66:  263.6
+ 153E   / 67:  264.5
+ 155E   / 68:  264.2
+ 157E   / 69:  261.3
+ 159E   / 70:  260.9
+ 161E   / 71:  262.4
+ 163E   / 72:  264.0
+ 165E   / 73:  261.1
+ 167E   / 74:  260.9
+ 169E   / 75:  261.0
+ 171E   / 76:  259.3
+ 173E   / 77:  257.9
+ 175E   / 78:  257.0
+ 177E   / 79:  259.1
+ 179E   / 80:  254.8
 list  a - 3 * sst[d=1,l=1:3@sum]
+             VARIABLE : A - 3 * SST[D=coads_climatology,L=1:3@SUM]
+             SUBSET   : 15 points (LONGITUDE)
+             LATITUDE : 1S
+             TIME     : 16-JAN 06:00
+                 1S    
+                 45
+ 151E   / 66:  0.0000
+ 153E   / 67:  0.0000
+ 155E   / 68:  0.0000
+ 157E   / 69:  0.0000
+ 159E   / 70:  0.0000
+ 161E   / 71:  0.0000
+ 163E   / 72:  0.0000
+ 165E   / 73:  0.0000
+ 167E   / 74:  0.0000
+ 169E   / 75:  0.0000
+ 171E   / 76:  0.0000
+ 173E   / 77:  0.0000
+ 175E   / 78:  0.0000
+ 177E   / 79:  0.0000
+ 179E   / 80:  0.0000
 set mode/last ignore_errors
 go bench_avet
 ! Bench_avet.jnl
@@ -103515,13 +103596,69 @@ set region/x=151E:179E/y=0
  
 let a = avet(sst)
 list a
+             VARIABLE : AVET(SST)
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 15 points (LONGITUDE)
+             LATITUDE : 1S
+                1S    
+                45
+ 151E   / 66:  29.28
+ 153E   / 67:  29.39
+ 155E   / 68:  29.35
+ 157E   / 69:  29.03
+ 159E   / 70:  28.99
+ 161E   / 71:  29.15
+ 163E   / 72:  29.33
+ 165E   / 73:  29.01
+ 167E   / 74:  28.99
+ 169E   / 75:  29.00
+ 171E   / 76:  28.81
+ 173E   / 77:  28.66
+ 175E   / 78:  28.56
+ 177E   / 79:  28.79
+ 179E   / 80:  28.31
 list a - sst[l=@ave]
+             VARIABLE : A - SST[L=@AVE]
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 15 points (LONGITUDE)
+             LATITUDE : 1S
+             TIME     : 01-JAN 00:45 to 01-APR 08:12
+                  1S      
+                  45
+ 151E   / 66: -3.553E-15
+ 153E   / 67:  0.000E+00
+ 155E   / 68: -3.553E-15
+ 157E   / 69:  0.000E+00
+ 159E   / 70: -3.553E-15
+ 161E   / 71:  0.000E+00
+ 163E   / 72: -3.553E-15
+ 165E   / 73: -3.553E-15
+ 167E   / 74: -3.553E-15
+ 169E   / 75: -3.553E-15
+ 171E   / 76:  0.000E+00
+ 173E   / 77: -3.553E-15
+ 175E   / 78:  3.553E-15
+ 177E   / 79:  0.000E+00
+ 179E   / 80:  0.000E+00
  
 can region
 let a = x[i=1:9,k=1:5] + t[l=1:5]
 let b = x[i=1:9,k=1:5]
 let c = avet(a)
 list b, c
+             X: 0.5 to 9.5
+ Column  1: B is X[I=1:9,K=1:5]
+ Column  2: C is AVET(A)
+             B     C
+1   / 1:  1.000   4.00
+2   / 2:  2.000   5.00
+3   / 3:  3.000   6.00
+4   / 4:  4.000   7.00
+5   / 5:  5.000   8.00
+6   / 6:  6.000   9.00
+7   / 7:  7.000  10.00
+8   / 8:  8.000  11.00
+9   / 9:  9.000  12.00
  
 set mode/last ignore_errors
 go bench_pass_thru
@@ -103535,18 +103672,354 @@ set mode ignore_errors
 can region
 let a = pass_thru(x)
 list a[i=1:20]
+             VARIABLE : PASS_THRU(X)
+             SUBSET   : 20 points (X)
+ 1    /  1:   1.00
+ 2    /  2:   2.00
+ 3    /  3:   3.00
+ 4    /  4:   4.00
+ 5    /  5:   5.00
+ 6    /  6:   6.00
+ 7    /  7:   7.00
+ 8    /  8:   8.00
+ 9    /  9:   9.00
+ 10   / 10:  10.00
+ 11   / 11:  11.00
+ 12   / 12:  12.00
+ 13   / 13:  13.00
+ 14   / 14:  14.00
+ 15   / 15:  15.00
+ 16   / 16:  16.00
+ 17   / 17:  17.00
+ 18   / 18:  18.00
+ 19   / 19:  19.00
+ 20   / 20:  20.00
 set region/i=1:20
 list sin(a)
+             VARIABLE : SIN(A)
+             SUBSET   : 20 points (X)
+ 1    /  1:  0.8415
+ 2    /  2:  0.9093
+ 3    /  3:  0.1411
+ 4    /  4: -0.7568
+ 5    /  5: -0.9589
+ 6    /  6: -0.2794
+ 7    /  7:  0.6570
+ 8    /  8:  0.9894
+ 9    /  9:  0.4121
+ 10   / 10: -0.5440
+ 11   / 11: -1.0000
+ 12   / 12: -0.5366
+ 13   / 13:  0.4202
+ 14   / 14:  0.9906
+ 15   / 15:  0.6503
+ 16   / 16: -0.2879
+ 17   / 17: -0.9614
+ 18   / 18: -0.7510
+ 19   / 19:  0.1499
+ 20   / 20:  0.9129
 can var/all
 can region
  
 use coads_climatology
 let a = pass_thru(sst[l=@ave,y=@sbx:11])
 list/x=50 a
+             VARIABLE : PASS_THRU(SST[L=@AVE,Y=@SBX:11])
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 90 points (LATITUDE)
+             LONGITUDE: 49E
+             TIME     : 01-JAN 00:45 to 01-APR 08:12
+               49E   
+               15
+ 89N   / 90:   ....
+ 87N   / 89:   ....
+ 85N   / 88:   ....
+ 83N   / 87:   ....
+ 81N   / 86:   ....
+ 79N   / 85:   ....
+ 77N   / 84:   ....
+ 75N   / 83:   ....
+ 73N   / 82:   ....
+ 71N   / 81:   ....
+ 69N   / 80:   ....
+ 67N   / 79:   ....
+ 65N   / 78:   ....
+ 63N   / 77:   ....
+ 61N   / 76:   ....
+ 59N   / 75:   ....
+ 57N   / 74:   ....
+ 55N   / 73:   ....
+ 53N   / 72:   ....
+ 51N   / 71:   ....
+ 49N   / 70:   ....
+ 47N   / 69:   ....
+ 45N   / 68:   ....
+ 43N   / 67:   ....
+ 41N   / 66:   ....
+ 39N   / 65:   ....
+ 37N   / 64:   ....
+ 35N   / 63:   ....
+ 33N   / 62:   ....
+ 31N   / 61:   ....
+ 29N   / 60:   ....
+ 27N   / 59:   ....
+ 25N   / 58:   ....
+ 23N   / 57:   ....
+ 21N   / 56:   ....
+ 19N   / 55:   ....
+ 17N   / 54:   ....
+ 15N   / 53:   ....
+ 13N   / 52:   ....
+ 11N   / 51:   ....
+ 9N    / 50:   ....
+ 7N    / 49:   ....
+ 5N    / 48:  26.94
+ 3N    / 47:  27.22
+ 1N    / 46:  27.48
+ 1S    / 45:  27.67
+ 3S    / 44:  27.78
+ 5S    / 43:  27.92
+ 7S    / 42:  28.04
+ 9S    / 41:  28.12
+ 11S   / 40:  28.18
+ 13S   / 39:  28.14
+ 15S   / 38:  28.03
+ 17S   / 37:  27.82
+ 19S   / 36:  27.45
+ 21S   / 35:  27.04
+ 23S   / 34:  26.52
+ 25S   / 33:  25.86
+ 27S   / 32:  25.09
+ 29S   / 31:  24.17
+ 31S   / 30:  23.04
+ 33S   / 29:  21.37
+ 35S   / 28:  19.60
+ 37S   / 27:  17.68
+ 39S   / 26:  15.76
+ 41S   / 25:  13.87
+ 43S   / 24:  11.98
+ 45S   / 23:  10.18
+ 47S   / 22:   8.45
+ 49S   / 21:   6.82
+ 51S   / 20:   5.33
+ 53S   / 19:   4.03
+ 55S   / 18:   3.19
+ 57S   / 17:   2.42
+ 59S   / 16:   ....
+ 61S   / 15:   ....
+ 63S   / 14:   ....
+ 65S   / 13:   ....
+ 67S   / 12:   ....
+ 69S   / 11:   ....
+ 71S   / 10:   ....
+ 73S   /  9:   ....
+ 75S   /  8:   ....
+ 77S   /  7:   ....
+ 79S   /  6:   ....
+ 81S   /  5:   ....
+ 83S   /  4:   ....
+ 85S   /  3:   ....
+ 87S   /  2:   ....
+ 89S   /  1:   ....
 let a = pass_thru(sst)
 set region/@w
 list/x=50 a[l=1]
+             VARIABLE : PASS_THRU(SST)
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 90 points (LATITUDE)
+             LONGITUDE: 49E
+             TIME     : 16-JAN 06:00
+               49E   
+               15
+ 89N   / 90:   ....
+ 87N   / 89:   ....
+ 85N   / 88:   ....
+ 83N   / 87:   ....
+ 81N   / 86:   ....
+ 79N   / 85:   ....
+ 77N   / 84:   ....
+ 75N   / 83:   ....
+ 73N   / 82:   0.59
+ 71N   / 81:   0.62
+ 69N   / 80:   0.45
+ 67N   / 79:   ....
+ 65N   / 78:   ....
+ 63N   / 77:   ....
+ 61N   / 76:   ....
+ 59N   / 75:   ....
+ 57N   / 74:   ....
+ 55N   / 73:   ....
+ 53N   / 72:   ....
+ 51N   / 71:   ....
+ 49N   / 70:   ....
+ 47N   / 69:   ....
+ 45N   / 68:   3.32
+ 43N   / 67:   4.72
+ 41N   / 66:   4.84
+ 39N   / 65:   8.63
+ 37N   / 64:   8.07
+ 35N   / 63:   ....
+ 33N   / 62:   ....
+ 31N   / 61:   ....
+ 29N   / 60:  18.91
+ 27N   / 59:  20.83
+ 25N   / 58:   ....
+ 23N   / 57:   ....
+ 21N   / 56:   ....
+ 19N   / 55:   ....
+ 17N   / 54:   ....
+ 15N   / 53:  25.41
+ 13N   / 52:  25.37
+ 11N   / 51:  25.82
+ 9N    / 50:  27.20
+ 7N    / 49:  26.11
+ 5N    / 48:  26.10
+ 3N    / 47:  26.25
+ 1N    / 46:  26.44
+ 1S    / 45:  27.01
+ 3S    / 44:  27.61
+ 5S    / 43:  28.24
+ 7S    / 42:  28.71
+ 9S    / 41:  28.46
+ 11S   / 40:  28.07
+ 13S   / 39:  28.15
+ 15S   / 38:  28.08
+ 17S   / 37:  28.29
+ 19S   / 36:  27.61
+ 21S   / 35:  27.59
+ 23S   / 34:  27.06
+ 25S   / 33:  26.70
+ 27S   / 32:  25.89
+ 29S   / 31:  24.65
+ 31S   / 30:  23.86
+ 33S   / 29:  22.16
+ 35S   / 28:  20.58
+ 37S   / 27:  19.20
+ 39S   / 26:  17.51
+ 41S   / 25:  14.44
+ 43S   / 24:   8.55
+ 45S   / 23:   7.51
+ 47S   / 22:   5.77
+ 49S   / 21:   4.21
+ 51S   / 20:   3.64
+ 53S   / 19:   2.87
+ 55S   / 18:   2.67
+ 57S   / 17:   2.05
+ 59S   / 16:   1.37
+ 61S   / 15:   1.33
+ 63S   / 14:   0.77
+ 65S   / 13:  -0.04
+ 67S   / 12:  -0.93
+ 69S   / 11:   ....
+ 71S   / 10:   ....
+ 73S   /  9:   ....
+ 75S   /  8:   ....
+ 77S   /  7:   ....
+ 79S   /  6:   ....
+ 81S   /  5:   ....
+ 83S   /  4:   ....
+ 85S   /  3:   ....
+ 87S   /  2:   ....
+ 89S   /  1:   ....
 list/x=50 a[l=@ave,y=@sbx:11]
+             VARIABLE : PASS_THRU(SST)
+                        box smoothed by 11 pts on Y
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 90 points (LATITUDE)
+             LONGITUDE: 49E
+             TIME     : 01-JAN 00:45 to 01-APR 08:12 (averaged)
+               49E   
+               15
+ 89N   / 90:   ....
+ 87N   / 89:   ....
+ 85N   / 88:   ....
+ 83N   / 87:   ....
+ 81N   / 86:   ....
+ 79N   / 85:   ....
+ 77N   / 84:   ....
+ 75N   / 83:   ....
+ 73N   / 82:   ....
+ 71N   / 81:   ....
+ 69N   / 80:   ....
+ 67N   / 79:   ....
+ 65N   / 78:   ....
+ 63N   / 77:   ....
+ 61N   / 76:   ....
+ 59N   / 75:   ....
+ 57N   / 74:   ....
+ 55N   / 73:   ....
+ 53N   / 72:   ....
+ 51N   / 71:   ....
+ 49N   / 70:   ....
+ 47N   / 69:   ....
+ 45N   / 68:   ....
+ 43N   / 67:   ....
+ 41N   / 66:   ....
+ 39N   / 65:   ....
+ 37N   / 64:   ....
+ 35N   / 63:   ....
+ 33N   / 62:   ....
+ 31N   / 61:   ....
+ 29N   / 60:   ....
+ 27N   / 59:   ....
+ 25N   / 58:   ....
+ 23N   / 57:   ....
+ 21N   / 56:   ....
+ 19N   / 55:   ....
+ 17N   / 54:   ....
+ 15N   / 53:   ....
+ 13N   / 52:   ....
+ 11N   / 51:   ....
+ 9N    / 50:   ....
+ 7N    / 49:   ....
+ 5N    / 48:  26.94
+ 3N    / 47:  27.22
+ 1N    / 46:  27.48
+ 1S    / 45:  27.67
+ 3S    / 44:  27.78
+ 5S    / 43:  27.92
+ 7S    / 42:  28.04
+ 9S    / 41:  28.12
+ 11S   / 40:  28.18
+ 13S   / 39:  28.14
+ 15S   / 38:  28.03
+ 17S   / 37:  27.82
+ 19S   / 36:  27.45
+ 21S   / 35:  27.04
+ 23S   / 34:  26.52
+ 25S   / 33:  25.86
+ 27S   / 32:  25.09
+ 29S   / 31:  24.17
+ 31S   / 30:  23.04
+ 33S   / 29:  21.37
+ 35S   / 28:  19.60
+ 37S   / 27:  17.68
+ 39S   / 26:  15.76
+ 41S   / 25:  13.87
+ 43S   / 24:  11.98
+ 45S   / 23:  10.18
+ 47S   / 22:   8.45
+ 49S   / 21:   6.82
+ 51S   / 20:   5.33
+ 53S   / 19:   4.03
+ 55S   / 18:   3.19
+ 57S   / 17:   2.42
+ 59S   / 16:   ....
+ 61S   / 15:   ....
+ 63S   / 14:   ....
+ 65S   / 13:   ....
+ 67S   / 12:   ....
+ 69S   / 11:   ....
+ 71S   / 10:   ....
+ 73S   /  9:   ....
+ 75S   /  8:   ....
+ 77S   /  7:   ....
+ 79S   /  6:   ....
+ 81S   /  5:   ....
+ 83S   /  4:   ....
+ 85S   /  3:   ....
+ 87S   /  2:   ....
+ 89S   /  1:   ....
  
 set mode/last ignore_errors
 go bench_storage
@@ -103561,16 +104034,59 @@ use gtsa056_1
 let a = storage(temp)
 set region/k=1/l=5/i=1:2/j=44:50
 list  a
+             VARIABLE : STORAGE(TEMP)
+             FILENAME : gtsa056_1.cdf
+             SUBSET   : 2 by 7 points (LONGITUDE-LATITUDE)
+             DEPTH (m): 5
+             TIME     : 27-JAN-1982 18:00
+              130.5E 131.5E 
+                1      2
+ 1.5N  / 50:   ....  2.955
+ 1.17N / 49:   ....  2.962
+ 0.83N / 48:   ....  2.966
+ 0.5N  / 47:   ....  2.973
+ 0.17N / 46:   ....  2.985
+ 0.17S / 45:   ....  2.990
+ 0.5S  / 44:   ....   ....
  
 can region
 set region/x=140w/y=10n/k=1
 list a
+             VARIABLE : STORAGE(TEMP)
+             FILENAME : gtsa056_1.cdf
+             SUBSET   : 5 points (TIME)
+             LONGITUDE: 140.5W
+             LATITUDE : 9.8N
+             DEPTH (m): 5
+                      140.5W 
+                       90
+ 15-JAN-1982 14 / 1:  2.656
+ 18-JAN-1982 15 / 2:  2.654
+ 21-JAN-1982 16 / 3:  2.652
+ 24-JAN-1982 17 / 4:  2.649
+ 27-JAN-1982 18 / 5:  2.646
  
 can region
  
 let b = temp[x=140e:60w]
 let c = storage(b)
 list/i=11:20 c[k=1,l=5,j=44:50@ave]
+             VARIABLE : STORAGE(B)
+             FILENAME : gtsa056_1.cdf
+             SUBSET   : 10 points (LONGITUDE)
+             LATITUDE : 0.7S to 1.7N (averaged)
+             DEPTH (m): 5
+             TIME     : 27-JAN-1982 18:00
+ 140.5E / 11:  2.953
+ 141.5E / 12:  2.956
+ 142.5E / 13:  2.961
+ 143.5E / 14:  2.966
+ 144.5E / 15:  2.968
+ 145.5E / 16:  2.968
+ 146.5E / 17:  2.967
+ 147.5E / 18:  2.970
+ 148.5E / 19:  2.974
+ 149.5E / 20:  2.979
  
 set mode/last ignore_errors
  
@@ -103590,31 +104106,152 @@ let oatemp = temp[d=ocean_atlas_temp,g=sst[d=coads_climatology]]
 set region/l=1
 let a = subtract(oatemp,sst)
 list/x=150:160/y=0  a
+             VARIABLE : SUBTRACT(OATEMP,SST)
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 5 points (LONGITUDE)
+             LATITUDE : 1S
+             DEPTH (m): 0
+             TIME     : 16-JAN 06:00
+                 1S    
+                 45
+ 151E   / 66:  0.0233
+ 153E   / 67:  0.0346
+ 155E   / 68:  0.1315
+ 157E   / 69:  0.2809
+ 159E   / 70:  0.2610
 let b = oatemp- sst
 list/x=150:160/y=0  a - b
+             VARIABLE : A - B
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 5 points (LONGITUDE)
+             LATITUDE : 1S
+             DEPTH (m): 0
+             TIME     : 16-JAN 06:00
+                 1S    
+                 45
+ 151E   / 66:  0.0000
+ 153E   / 67:  0.0000
+ 155E   / 68:  0.0000
+ 157E   / 69:  0.0000
+ 159E   / 70:  0.0000
  
 can region
 let a = oatemp[l=1]
 let b = sst[l=1]
 list/x=150:160/y=0  subtract(a,b)
+             VARIABLE : SUBTRACT(A,B)
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 5 points (LONGITUDE)
+             LATITUDE : 1S
+             DEPTH (m): 0
+             TIME     : 16-JAN 06:00
+                 1S    
+                 45
+ 151E   / 66:  0.0233
+ 153E   / 67:  0.0346
+ 155E   / 68:  0.1315
+ 157E   / 69:  0.2809
+ 159E   / 70:  0.2610
  
 let a = oatemp[x=180]
 let b = sst[x=180]
 list/y=0 subtract(a,b)
+             VARIABLE : SUBTRACT(A,B)
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 3 points (TIME)
+             LONGITUDE: 179E
+             LATITUDE : 1S
+             DEPTH (m): 0
+                    179E   
+                     80
+ 16-JAN      / 1:  0.1934
+ 15-FEB      / 2:  0.1304
+ 17-MAR      / 3:    ....
  
 can region
 let a = x[i=1:30]
 let b = y[j=1:30]
 list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg in V550
+             VARIABLE : SUBTRACT(A,B)
+             SUBSET   : 30 points (X)
+             Y        : 15
+              15    
+              15
+ 1    /  1: -14.00
+ 2    /  2: -13.00
+ 3    /  3: -12.00
+ 4    /  4: -11.00
+ 5    /  5: -10.00
+ 6    /  6:  -9.00
+ 7    /  7:  -8.00
+ 8    /  8:  -7.00
+ 9    /  9:  -6.00
+ 10   / 10:  -5.00
+ 11   / 11:  -4.00
+ 12   / 12:  -3.00
+ 13   / 13:  -2.00
+ 14   / 14:  -1.00
+ 15   / 15:   0.00
+ 16   / 16:   1.00
+ 17   / 17:   2.00
+ 18   / 18:   3.00
+ 19   / 19:   4.00
+ 20   / 20:   5.00
+ 21   / 21:   6.00
+ 22   / 22:   7.00
+ 23   / 23:   8.00
+ 24   / 24:   9.00
+ 25   / 25:  10.00
+ 26   / 26:  11.00
+ 27   / 27:  12.00
+ 28   / 28:  13.00
+ 29   / 29:  14.00
+ 30   / 30:  15.00
  
 can region
 let a = sst[l=1]
 let b = 26
 list/x=150:160/y=0 subtract(a,b)
+             VARIABLE : SUBTRACT(A,B)
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 5 points (LONGITUDE)
+             LATITUDE : 1S
+             TIME     : 16-JAN 06:00
+                1S    
+                45
+ 151E   / 66:  3.416
+ 153E   / 67:  3.431
+ 155E   / 68:  3.334
+ 157E   / 69:  3.190
+ 159E   / 70:  3.219
 list/x=150:160/y=0 subtract(a,26)
+             VARIABLE : SUBTRACT(A,26)
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 5 points (LONGITUDE)
+             LATITUDE : 1S
+             TIME     : 16-JAN 06:00
+                1S    
+                45
+ 151E   / 66:  3.416
+ 153E   / 67:  3.431
+ 155E   / 68:  3.334
+ 157E   / 69:  3.190
+ 159E   / 70:  3.219
  
 let b = sst[x=180,y=0,l=@ave]
 list/x=150:160/y=0  subtract(a,b)
+             VARIABLE : SUBTRACT(A,B)
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 5 points (LONGITUDE)
+             LATITUDE : 1S
+             TIME     : 01-JAN 00:45 to 01-APR 08:12
+                1S    
+                45
+ 151E   / 66:  1.109
+ 153E   / 67:  1.124
+ 155E   / 68:  1.027
+ 157E   / 69:  0.883
+ 159E   / 70:  0.912
  
 set mode/last ignore_errors
  
@@ -106473,7 +107110,7 @@ yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v7.1 (beta/debug)
  	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 04/03/17
- 	 3-Apr-17 15:06     
+ 	 3-Apr-17 15:34     
 
 CAN MODE VERIFY
     SET MEMORY/SIZE: 31 megawords
@@ -106488,12 +107125,12 @@ FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.0 of Feb  4 2016 19:21:00 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = " 3-Apr-17"
-SESSION_TIME = "15:06"
-SESSION_PID = "24675"
-DELTA_CPU = "0.061989"
-CLOCK_SECS = "0.341"
+SESSION_TIME = "15:34"
+SESSION_PID = "26978"
+DELTA_CPU = "0.06199"
+CLOCK_SECS = "0.411"
 CURRENT_DATE = " 3-Apr-17"
-CURRENT_TIME = "15:06:18"
+CURRENT_TIME = "15:34:09"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "Ferret"
 PEAK_MEMORY = "0"
@@ -106518,7 +107155,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "3-Apr-17:15:06"
+WIN_TITLE = "3-Apr-17:15:34"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -106584,7 +107221,7 @@ yes? GO bn_gif
  	NOAA/PMEL TMAP
  	FERRET v7.1 (beta/debug)
  	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 04/03/17
- 	 3-Apr-17 15:06     
+ 	 3-Apr-17 15:34     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -107132,7 +107769,7 @@ yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v7.1 (beta/debug)
  	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 04/03/17
- 	 3-Apr-17 15:06     
+ 	 3-Apr-17 15:34     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -107246,7 +107883,7 @@ yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v7.1 (beta/debug)
  	Linux 2.6.32-642.15.1.el6.x86_64 64-bit - 04/03/17
- 	 3-Apr-17 15:06     
+ 	 3-Apr-17 15:34     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -107330,4 +107967,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Mon Apr 3 15:06:21 PDT 2017
+Ended at Mon Apr 3 15:34:12 PDT 2017

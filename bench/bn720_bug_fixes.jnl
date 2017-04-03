@@ -26,3 +26,6 @@ GO err71_err_attrib_overrun
 
 GO bn_reset
 GO err71_user_var_attrib
+
+GO bn_reset
+GO err71_save_bounds

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 116612757 Apr  3 14:59 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/trunk/FERRET/fer/external_functions/ext_func
+-rwxr-xr-x. 1 ansley oerdnewp 116612589 Apr  3 15:25 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix for ticket 2132
+Note: ticket 2524
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,7 +13,7 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/fer/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=.
@@ -22,8 +22,7 @@ FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Mon Apr 3 15:01:41 PDT 2017
-ls: cannot access /home/users/ansley/build/trunk/FERRET/fer/external_functions/ext_func/: No such file or directory
+Beginning at Mon Apr 3 15:29:25 PDT 2017
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1650,7 +1649,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-rm: cannot remove `input.txt': No such file or directory
 ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2713,9 +2711,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file b.nc
  LISTing to file b.nc
-NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
- TAX3_bnds not found. Attempt to append irregular coordinates to NetCDF axis which has no bounds attribute. Write data originally with the /BOUNDS qualifier.
-LIST/FORMAT=CDF/CLOBBER/FILE=b.nc v
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4690,7 +4685,6 @@ list substring("hello",1,-3)
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_append_dsg
-rm: cannot remove `test_save_dsg.nc': No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5005,7 +4999,6 @@ def anno/nou/user/xpos=0/ypos=0 "My Lab"
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_auxiliary
-rm: cannot remove `layerz_test_data.txt': No such file or directory
 Replacing definition of axis ZAX
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
@@ -6026,10 +6019,15 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis TIME
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_compressed_gather
-Replacing definition of axis XAX
-Replacing definition of axis YAX
-Replacing definition of axis TAX
+Replacing definition of axis xax
+Replacing definition of axis yax
+Replacing definition of axis tax
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -6046,10 +6044,10 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Replacing definition of axis XAX
-Replacing definition of axis YAX
-Replacing definition of axis ZAX
-Replacing definition of axis TAX
+Replacing definition of axis xax
+Replacing definition of axis yax
+Replacing definition of axis zax
+Replacing definition of axis tax
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -6058,8 +6056,8 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Replacing definition of axis XAX
-Replacing definition of axis TAX
+Replacing definition of axis xax
+Replacing definition of axis tax
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -6070,9 +6068,9 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Replacing definition of axis XAX
-Replacing definition of axis ZAX
-Replacing definition of axis TAX
+Replacing definition of axis xax
+Replacing definition of axis zax
+Replacing definition of axis tax
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -6089,15 +6087,6 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_dynamic_gather
-ls: cannot access tmp/test_dyn_mem.nc: No such file or directory
-Replacing definition of axis Z2
-Replacing definition of grid GG
- LISTing to file tmp/test_dyn_mem.nc
-Replacing definition of axis x10
-Replacing definition of axis Z4
- LISTing to file tmp/test_dyn_mem.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
  **ERROR: request exceeds memory setting: Requested result is larger than the available memory
 stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
  PERMANENT data cleared from memory
@@ -6595,104 +6584,26 @@ Starting test: bn_stat_precision
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_plot_vs_with_time
-Replacing definition of axis TAX
-Replacing definition of axis TIME
-Replacing definition of axis ZAXIS
-Replacing definition of axis TIME
+Replacing definition of axis tax
+Replacing definition of axis time
+Replacing definition of axis zaxis
+Replacing definition of axis time
            *** NOTE: Graphics limits settings to 250 line/thickness combinations plus existing spectrum colors
            *** NOTE: Cannot draw /THICK=3 lines with current number of color levels = 57; THICK=1 or 2 will be ok
-Replacing definition of axis TIME
+Replacing definition of axis time
            *** NOTE: Graphics limits settings to 250 line/thickness combinations plus existing spectrum colors
            *** NOTE: Cannot draw /THICK=2 lines with current number of color levels = 57; THICK=1 will be ok
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-ls: cannot access /home/users/ansley/build/trunk/FERRET/fer/external_functions/ext_func/: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR: command syntax: add_9(a1,a2,a3,a1,a2,a3,a1,a2,a3)
-          unknown function "add_9"
-DEFINE VARIABLE a = add_9(a1,a2,a3,a1,a2,a3,a1,a2,a3)
- **ERROR: variable unknown or not in data set: A
-list a
- **ERROR: variable unknown or not in data set: A
-list  a - 3 * sst[d=1,l=1:3@sum]
- **ERROR: command syntax: avet(sst)
-          unknown function "avet"
-DEFINE VARIABLE a = avet(sst)
- **ERROR: variable unknown or not in data set: A
-list a
- **ERROR: variable unknown or not in data set: A
-list a - sst[l=@ave]
- **ERROR: command syntax: avet(a)
-          unknown function "avet"
-DEFINE VARIABLE c = avet(a)
- **ERROR: variable unknown or not in data set: C
-list b, c
- **ERROR: command syntax: pass_thru(x)
-          unknown function "pass_thru"
-DEFINE VARIABLE a = pass_thru(x)
- **ERROR: variable unknown or not in data set: A[I=1:20]
-list a[i=1:20]
- **ERROR: variable unknown or not in data set: A
-list sin(a)
- **ERROR: command syntax: pass_thru(sst[l=@ave,y=@sbx:11])
-          unknown function "pass_thru"
-DEFINE VARIABLE a = pass_thru(sst[l=@ave,y=@sbx:11])
- **ERROR: variable unknown or not in data set: A
-list/x=50 a
- **ERROR: command syntax: pass_thru(sst)
-          unknown function "pass_thru"
-DEFINE VARIABLE a = pass_thru(sst)
  **ERROR: command syntax: unknown region name: @w
 set region/@w
- **ERROR: variable unknown or not in data set: A[L=1]
-list/x=50 a[l=1]
- **ERROR: variable unknown or not in data set: A[L=@AVE,Y=@SBX:11]
-list/x=50 a[l=@ave,y=@sbx:11]
- **ERROR: command syntax: storage(temp)
-          unknown function "storage"
-DEFINE VARIABLE a = storage(temp)
- **ERROR: variable unknown or not in data set: A
-list  a
- **ERROR: variable unknown or not in data set: A
-list a
- **ERROR: command syntax: storage(b)
-          unknown function "storage"
-DEFINE VARIABLE c = storage(b)
- **ERROR: variable unknown or not in data set: C[K=1,L=5,J=44:50@AVE]
-list/i=11:20 c[k=1,l=5,j=44:50@ave]
- **ERROR: command syntax: subtract(oatemp,sst)
-          unknown function "subtract"
-DEFINE VARIABLE a = subtract(oatemp,sst)
- **ERROR: variable unknown or not in data set: A
-list/x=150:160/y=0  a
- **ERROR: variable unknown or not in data set: A
-list/x=150:160/y=0  a - b
- **ERROR: command syntax: subtract(a,b)
-          unknown function "subtract"
-list/x=150:160/y=0  subtract(a,b)
- **ERROR: command syntax: subtract(a,b)
-          unknown function "subtract"
-list/y=0 subtract(a,b)
- **ERROR: command syntax: subtract(a,b)
-          unknown function "subtract"
-list/y=15 subtract(a,b)
- **ERROR: command syntax: subtract(a,b)
-          unknown function "subtract"
-list/x=150:160/y=0 subtract(a,b)
- **ERROR: command syntax: subtract(a,26)
-          unknown function "subtract"
-list/x=150:160/y=0 subtract(a,26)
- **ERROR: command syntax: subtract(a,b)
-          unknown function "subtract"
-list/x=150:160/y=0  subtract(a,b)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-ls: cannot access /home/users/ansley/build/trunk/FERRET/fer/external_functions/ext_func/: No such file or directory
-ls: cannot access /home/users/ansley/build/trunk/FERRET/fer/external_functions/ext_func/: No such file or directory
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -6757,7 +6668,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Replacing definition of axis XAX
-ls: cannot access /home/users/ansley/build/trunk/FERRET/fer/external_functions/ext_func/: No such file or directory
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -6788,6 +6698,5 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
-ls: cannot access /home/users/ansley/build/trunk/FERRET/fer/external_functions/ext_func/: No such file or directory
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Apr 3 15:06:21 PDT 2017
+Ended at Mon Apr 3 15:34:12 PDT 2017

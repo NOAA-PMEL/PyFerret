@@ -1,0 +1,41 @@
+! err71_err_attrib_overrun.jnl
+! See ticket 2523
+
+! this ends with a segment fault sensitive to any changes
+! presumably a buffer over-run
+
+! the crash is occuring because of a buffer over-run
+! in IS_ATTRIB_VAL we call CREATE_TEMP_MEM_VAR to create an mr of size=1
+! later we call INIT_C_STRING_ARRAY and tell it to initialize this mr array 
+! using a length nvdims=3  ==> OVERRUN
+
+! This bug never reared its head in the pre-dynamic memory Ferret, because
+! the buffers couldn't really be over-run, since they were part of a huge
+! static memory block
+
+! other INIT_* calls in IS_ATTRIB_VAL may have a similar issue
+
+
+set mode diag
+
+use ocean_atlas_temp
+use gt4d011
+use levitus_climatology
+
+use coads_climatology
+
+let lnames = ..dimnames[d=2]
+
+CANCEL DATA/ALL
+
+! this line seems to be essential making the crash happen
+PPL TICS .125,.25,.125,.25 !reset tics to default
+
+use coads_climatology
+
+let a = sst[d=1].dimnames
+show mem/diag   ! looks like no dynamic memory actions have occured
+
+! resulted in a seg fault (on 32-bit stout)
+list a[i=2]
+

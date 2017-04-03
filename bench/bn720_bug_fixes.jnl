@@ -17,3 +17,9 @@ GO err71_plotvs_mode_label
 
 GO bn_reset
 GO err71_set_redirect
+
+GO bn_reset
+GO err71_set_redirect
+
+GO bn_reset
+GO err71_err_attrib_overrun

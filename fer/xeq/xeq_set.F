@@ -196,6 +196,9 @@
 * V710  4/16 *acm* new TM_UNITS_CAL to account for calendar in units id
 * V702  3/17 *sh* added MODE FRUGAL
 *		  Fixed bug in error message for invalid SET LIST/OUT
+* V720 3/17 *acm* Fix ticket 2521; do not call TM_LEGAL_UNIX_NAME for path and 
+*                file name on SET REDIRECT.
+ 
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'

@@ -1,0 +1,10 @@
+! err71_user_var_attrib.jnl
+! See ticket 2132
+
+! command was trying to list dataset information for a user variable
+! 
+
+let a = 1
+define att a.myAttr = "whatever"
+show att a.myAttr
+

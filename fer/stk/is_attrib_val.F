@@ -54,8 +54,6 @@
 *                  return info about coordinate-variables in datasets
 * V710 9/16  *acm* ticket 2465: Parsing expressions including attribute references.
 * 712 2/17 *sh* fix latent bug when shifting an array of attribute values
-* 712 3/17 *acm* fix ticket 2523. For ..dimnames and a couple others, when asking
-*               for string results on a subset of the full length of the attribute list
 
         include 'tmap_dims.parm'
 #       include "tmap_dset.parm"
@@ -81,7 +79,7 @@
      .          varid, attype, attlen, ndims, nvars, 
      .          ngatts, recdim, ivar, vartype, nvdims,
      .          vdims(8), dsdims(200), iatt, nvatts, idim, nd, vd, na,
-     .          attoutflag, all_outflag, xdim, i1, i2, ncx, slen,
+     .          attoutflag, all_outflag, xdim, i1, i2, slen,
      .          i, indx, nv, dot, cat, attid, npts, dimid, nddims, 
      .          iitem, start, end, wk_buff
 
@@ -96,7 +94,6 @@
         xdim = 1
         i1 = cx_lo_ss(cx,xdim)
         i2 = cx_hi_ss(cx,xdim)
-        ncx = i2 - i1 + 1
         got_it = .FALSE.
 
         IF (i2 .LT. i1) GOTO 5100
@@ -158,7 +155,8 @@
 
 * Get and store the variable names.
 
-              CALL INIT_C_STRING_ARRAY( ncx,
+              n = i2 - i1 + 1
+              CALL INIT_C_STRING_ARRAY( n,
      .				     memry(mr)%ptr,
      .				     mr_c_pointer(mr)    )
               n = 0
@@ -183,7 +181,8 @@
 * dimension names that are also coordinate variables
            ELSE IF (STR_SAME(attname, 'coordnames') .EQ. 0 ) THEN
 
-              CALL INIT_C_STRING_ARRAY( ncx,
+              n = i2 - i1 + 1
+              CALL INIT_C_STRING_ARRAY( n,
      .				     memry(mr)%ptr,
      .				     mr_c_pointer(mr)    )
               n = 0
@@ -206,9 +205,11 @@
  
            ELSE IF (STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
 	   
-* Get and store the dimension names requested
 
-	      CALL INIT_C_STRING_ARRAY( ncx,
+* Get and store the dimension names.
+
+              n = i2 - i1 + 1
+	      CALL INIT_C_STRING_ARRAY( n,
      .				     memry(mr)%ptr,
      .				     mr_c_pointer(mr)    )
                 IF (ds_type(dset).NE.'CDF' .AND. ds_type(dset).NE.'ECDF') GOTO 5200
@@ -235,7 +236,7 @@
               IF (ngatts .GT. 0) THEN
                  CALL CD_GET_VAR_ID (dset, '.', varid, status)
 
-	         CALL INIT_C_STRING_ARRAY( ncx,
+	         CALL INIT_C_STRING_ARRAY( ngatts,
      .				     memry(mr)%ptr,
      .				     mr_c_pointer(mr)    )
                  n = 0
@@ -343,7 +344,7 @@
               IF (STR_SAME(attname, 'attnames') .EQ. 0 ) THEN
                  IF (nvatts .GT. 0) THEN
 
-	           CALL INIT_C_STRING_ARRAY( ncx,
+	           CALL INIT_C_STRING_ARRAY( nvatts,
      .				     memry(mr)%ptr,
      .				     mr_c_pointer(mr)    )
                    n = 0
@@ -359,12 +360,11 @@
 
              ELSE IF (STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
 
-* Get the datset dimension names as requested - 
-* not all dimensions are a coordinate variable.
+* Get the datset dimension names - not all dimensions are a coordinate variable.
 
                 IF (nvdims .GT. 0) THEN
-		   
-	           CALL INIT_C_STRING_ARRAY( ncx,
+
+	           CALL INIT_C_STRING_ARRAY( nvdims,
      .				     memry(mr)%ptr,
      .				     mr_c_pointer(mr)    )
                 IF (ds_type(dset).NE.'CDF' .AND. ds_type(dset).NE.'ECDF') GOTO 5200

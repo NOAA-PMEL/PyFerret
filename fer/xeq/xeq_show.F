@@ -206,6 +206,7 @@
 * V701 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
 *                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management
+* V720 3/17 *acm* Ticket 2132, attribute of user-defined variable, do not try to show dataset info
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -1951,8 +1952,9 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
      .                              all_outflag, status)
 
 * Write header line
+
               IF (.NOT. sxml) THEN
-                 IF (dset .NE. dset_last ) THEN
+                 IF (dset.NE.dset_last .AND. dset.GT.pdset_irrelevant) THEN
                     llen = TM_LENSTR1(ds_des_name(dset))
                     WRITE (risc_buff, 4800) ds_des_name(dset)(:llen)
                     CALL SPLIT_LIST(pttmode_explct, show_lun, 

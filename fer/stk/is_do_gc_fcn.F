@@ -82,16 +82,18 @@
 
 * local variables
 	LOGICAL	ITS_UN_CACHED, not_reusable, check_alt_fcn
-	INTEGER	GCF_FIND_FCN, GCF_NUM_ARGS, GCF_ARG_TYPE,
+	INTEGER	GCF_FIND_FCN, GCF_find_dir_fcn, GCF_NUM_ARGS, GCF_ARG_TYPE,
      .		MGRID_SIZE_DELTA, GCF_ARG_EVAL_ORDER, EFCN_GET_RTN_TYPE,
      .		ifcn, icom, iarg, num_com, mr, res_cx,
      .		mr1, mr2, mr3, mr4, mr5, mr6, mr7, mr8, mr9, impl_grid,
      .          typ1, typ2, typ3, typ4, typ5, typ6, typ7, typ8, typ9,
      .          typr, pdim1, pdim2, pdim3, pdim4, pdim5, pdim6, pdim7,
      .          pdim8, pdim9, pdimr, frame_bottom, com_cx, res_mr,
-     .          itype, arg_first_mismatch, slen, iset, igrid,
-     .          aux_cat(nferdims), aux_var(nferdims)
-        CHARACTER*40 TM_FMT, alt_name
+     .          itype, arg_first_mismatch, slen, iset, igrid, idim,
+     .          aux_cat(nferdims), aux_var(nferdims), 
+     .          idir_args(nferdims), idir_vals(nferdims), num_dirs
+        CHARACTER*40 TM_FMT, GCF_NAME*40, alt_name
+	REAL	oneval
 
 * convenience equivalences
 	INTEGER	com(10), typ(9), pdim(9)
@@ -148,6 +150,13 @@
 	IF ( frame_bottom .LE. lo_isp ) CALL ERRMSG
      .		( ferr_syntax, status, 'RPN', *5000 )
 
+* point to the memory resident components
+* (if fewer than 9 components default extras to dummy)
+	DO 333 icom = 1, num_com
+ 333	com(icom) = is_mr(frame_bottom+icom-1)
+	DO 313 icom = num_com+1, 9
+ 313	com(icom) = dummy_mr
+
 * trap attempts to pass arguments of the wrong type (1/99)
 
         arg_first_mismatch = 0
@@ -201,7 +210,34 @@
  101	   CONTINUE
         ENDIF
 
-!* the merged context is already nearly complete
+
+* Does the function designate an alternate function depending on a 'direction' argument?
+* If so update alg_text and ifcn
+
+        IF ( ifcn .LE. GFCN_NUM_INTERNAL ) THEN
+
+	   CALL GCF_GET_ALT_FCN_DIR_ARG ( ifcn, idir_args )
+	   num_dirs = 0
+	   DO idim = 1, nferdims 
+	      IF (idir_args(idim) .GT. 0) THEN
+	         CALL GET_ONE_VAL (memry(com(idir_args(idim)))%ptr, oneval)
+	         idir_vals(idim) = oneval
+		 IF (idir_vals(idim).GE.1 .AND. idir_vals(idim).LE.nferdims) THEN
+		    num_dirs = num_dirs + 1
+		 ELSE
+		    GOTO 5300  ! invalid value for a direction-setting arg
+		 ENDIF
+	      ENDIF
+	   ENDDO
+
+	   IF (num_dirs .GT. 0) THEN
+	      CALL GCF_SET_ALT_FCN_FOR_DIR (ifcn, idir_vals, num_dirs)
+	      IF (ifcn .EQ. unspecified_int4 ) GOTO 5400
+	      alg_text = GCF_NAME(ifcn)
+	   ENDIF
+        ENDIF
+
+* the merged context is already nearly complete
 	res_cx = is_big_cx(lo_isp)
 
 * determine data type of result - and set pdimr and typr
@@ -373,5 +409,29 @@
 	CALL ERRMSG( ferr_invalid_command, status,
      .		'string/numeric data type mix-up. Argument '//
      .		alt_name(:slen)//' : '//risc_buff, *5000 )
+
+ 5300	CONTINUE
+* Invalid value for for direction
+        risc_buff = alg_text
+	CALL ERRMSG( ferr_invalid_command, status,
+     .		'Arguments for direction of function must l ie in 1 through 6 '//
+     .		risc_buff, *5000 )
+
+
+ 5400	CONTINUE
+* Could not find alternative function for direction
+        risc_buff = alg_text
+	CALL ERRMSG( ferr_invalid_command, status,
+     .		'Could not find alternative function for directions given '//
+     .		risc_buff, *5000 )
+
 	END
+
+
+	SUBROUTINE GET_ONE_VAL (com, val)
+	REAL com, val
+
+	val = com
+	return
+	end
 

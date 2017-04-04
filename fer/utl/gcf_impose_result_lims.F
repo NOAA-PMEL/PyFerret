@@ -366,7 +366,6 @@
 
 	   DO 450 idim = 1, nferdims
 
-
 * If the axis is abstract ... 
 *   get the lo and hi limits for this axis
 *   create one as in *SEQUENCE above
@@ -382,10 +381,12 @@
 
 
 * If the axis is normal ... nothing needs to be done
+*  - if the function set using a dimension argument, limits need resetting  
 
-*	      ELSEIF (axis_will_be(idim) .EQ. pgc_axis_is_normal) THEN
-*       do nothing
+	      ELSEIF (axis_will_be(idim) .EQ. pgc_axis_is_normal) THEN
 
+		 CALL GCF_SET_NORMAL_AXIS (res_grd, idim)
+		 CALL FLESH_OUT_AXIS (idim, res_cx, status)  ! set everything needed in the cx
 
 * If the axis is custom
 

@@ -25,8 +25,10 @@
      .				gfcn_piecemeal_ok, 
      .				gfcn_axis_implied_from, 
      .				gfcn_arg_extend_lo, 
-     .				gfcn_arg_extend_hi, 
+     .				gfcn_arg_extend_hi,
+     .				gfcn_dir_args, 
      .				gfcn_name,
+     .				gfcn_alt_name_base,
      .				gfcn_descr,
      .				gfcn_arg_name,
      .				gfcn_arg_units,
@@ -46,6 +48,8 @@
 
 * name of grid changing function
 	CHARACTER*40	gfcn_name	      ( pmax_grid_chg_fcns )
+
+	CHARACTER*40	gfcn_alt_name_base    ( pmax_grid_chg_fcns )
 
 * text description of grid changing function
 	CHARACTER*128	 gfcn_descr	      ( pmax_grid_chg_fcns )
@@ -71,6 +75,9 @@
 
 * pointer from function to array of information about arguments
 	INTEGER		gfcn_arg_ptr       ( pmax_grid_chg_fcns )
+
+* does Ferret need to find the right function to run based on arguments
+	INTEGER		gfcn_dir_args ( nferdims, pmax_grid_chg_fcns )
 
 * for each argument: what is its required data type
 	INTEGER		gfcn_arg_type	   ( pmax_gfcn_args )

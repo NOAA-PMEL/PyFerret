@@ -86,6 +86,7 @@ typedef struct {
   DFTYPE version;
   char description[EF_MAX_DESCRIPTION_LENGTH];
   char alt_fcn_name[EF_MAX_NAME_LENGTH];
+  char alt_base_fcn_name[EF_MAX_NAME_LENGTH];
   int  language;
   int  num_reqd_args, has_vari_args;
   int  num_work_arrays;
@@ -95,6 +96,7 @@ typedef struct {
   int  axis_reduction[NFERDIMS];
   int  piecemeal_ok[NFERDIMS];
   int  return_type;
+  int  direction_args[NFERDIMS];
   Axis axis[NFERDIMS];
 
   /* Information specific to each argument of the function */

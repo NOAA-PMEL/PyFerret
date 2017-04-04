@@ -1192,6 +1192,24 @@ void FORTRAN(expndi_to_et_init)(int *);
 void FORTRAN(expndi_to_et_work_size)(int *);
 void FORTRAN(expndi_to_et_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
+void FORTRAN(innerproduct_x_init)(int *);
+void FORTRAN(innerproduct_x_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(innerproduct_y_init)(int *);
+void FORTRAN(innerproduct_y_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(innerproduct_z_init)(int *);
+void FORTRAN(innerproduct_z_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(innerproduct_t_init)(int *);
+void FORTRAN(innerproduct_t_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(innerproduct_e_init)(int *);
+void FORTRAN(innerproduct_e_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(innerproduct_f_init)(int *);
+void FORTRAN(innerproduct_f_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
+
 /*
  *  End of declarations for internally linked external functions
  *  ------------------------------------ */
@@ -1234,7 +1252,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-#define N_INTEF 192
+#define N_INTEF 198
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -1432,6 +1450,13 @@ struct {
    strcpy(I_EFnames[189].funcname, "str_noblanks");
    strcpy(I_EFnames[190].funcname, "str_replace");
    strcpy(I_EFnames[191].funcname, "expndi_to_et");
+   strcpy(I_EFnames[192].funcname, "innerproduct_x");
+   strcpy(I_EFnames[193].funcname, "innerproduct_y");
+   strcpy(I_EFnames[194].funcname, "innerproduct_z");
+   strcpy(I_EFnames[195].funcname, "innerproduct_t");
+   strcpy(I_EFnames[196].funcname, "innerproduct_e");
+   strcpy(I_EFnames[197].funcname, "innerproduct_f");
+
 /*    
  *  ------------------------------------ 
  */
@@ -4562,6 +4587,25 @@ else if ( !strcmp(name,"str_replace_compute_") ) return (void *)FORTRAN(str_repl
 else if ( !strcmp(name,"expndi_to_et_init_") ) return (void *)FORTRAN(expndi_to_et_init);
 else if ( !strcmp(name,"expndi_to_et_work_size_") ) return (void *)FORTRAN(expndi_to_et_work_size);
 else if ( !strcmp(name,"expndi_to_et_compute_") ) return (void *)FORTRAN(expndi_to_et_compute);
+
+else if ( !strcmp(name,"innerproduct_x_init_") ) return (void *)FORTRAN(innerproduct_x_init);
+else if ( !strcmp(name,"innerproduct_x_compute_") ) return (void *)FORTRAN(innerproduct_x_compute);
+
+else if ( !strcmp(name,"innerproduct_y_init_") ) return (void *)FORTRAN(innerproduct_y_init);
+else if ( !strcmp(name,"innerproduct_y_compute_") ) return (void *)FORTRAN(innerproduct_y_compute);
+
+else if ( !strcmp(name,"innerproduct_z_init_") ) return (void *)FORTRAN(innerproduct_z_init);
+else if ( !strcmp(name,"innerproduct_z_compute_") ) return (void *)FORTRAN(innerproduct_z_compute);
+
+else if ( !strcmp(name,"innerproduct_t_init_") ) return (void *)FORTRAN(innerproduct_t_init);
+else if ( !strcmp(name,"innerproduct_t_compute_") ) return (void *)FORTRAN(innerproduct_t_compute);
+
+else if ( !strcmp(name,"innerproduct_e_init_") ) return (void *)FORTRAN(innerproduct_e_init);
+else if ( !strcmp(name,"innerproduct_e_compute_") ) return (void *)FORTRAN(innerproduct_e_compute);
+
+else if ( !strcmp(name,"innerproduct_f_init_") ) return (void *)FORTRAN(innerproduct_f_init);
+else if ( !strcmp(name,"innerproduct_f_compute_") ) return (void *)FORTRAN(innerproduct_f_compute);
+
 
 return NULL;
  }

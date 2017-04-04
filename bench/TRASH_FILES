@@ -27,6 +27,9 @@ b.jnl
 b.nc
 b1.nc
 b2.nc
+bn_dynamic_gather_0.out
+bn_dynamic_gather_30.out
+bn_dynamic_gather_60.out
 bn_test_stream.jnl
 c1.nc
 c2.nc

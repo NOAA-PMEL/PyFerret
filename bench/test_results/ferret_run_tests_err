@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 11 Mar 22 11:41 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.1
+lrwxrwxrwx. 1 ksmith oerdnewp 11 Apr  4 12:37 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.1
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -289,14 +289,17 @@ Benchmark scripts that will be run:
    bn_true_monthly.jnl
    bn720_bug_fixes.jnl
    bn_compressed_gather.jnl
+   bn_dynamic_gather.jnl
+   bn_stat_precision.jnl
+   bn_plot_vs_with_time.jnl
+   bn_inner.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Wed Mar 22 11:42:18 PDT 2017
+Beginning at Tue Apr  4 12:38:02 PDT 2017
 *** Running ferret script: bn_syntax.jnl
- Cached data cleared from memory
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -317,7 +320,6 @@ that
  **ERROR: command syntax: \!
 \! ignore (err cuz bang gets escaped)
 *** Running ferret script: bn_dollar.jnl
- Cached data cleared from memory
  **ERROR: invalid command: Value needed for argument 3 in command
           GO bn_dollar.jnl hello
 message/cont $3
@@ -367,7 +369,6 @@ say ($100)
           GO bn_dollar.jnl hello
 say ($10)0
 *** Running ferret script: bn_grave.jnl
- Cached data cleared from memory
  **ERROR: command syntax: unpaired grave accents: message/continue "2+2=`2+2"
 message/continue "2+2=`2+2"
  **ERROR: variable unknown or not in data set: GARBAGE
@@ -409,7 +410,6 @@ MESSAGE/CONTINUE `sst,return=Xsize`
           sst,return=trash
 MESSAGE/CONTINUE `sst,return=trash`
 *** Running ferret script: bn_letd.jnl
- Cached data cleared from memory
  **ERROR: unknown data set: NOEXIST
 DEFINE VARIABLE/d=noexist a = b
  **ERROR: variable unknown or not in data set: AIRT[D=GT4D011]
@@ -419,7 +419,6 @@ can var
  LISTing to file v12file.nc
  LISTing to file v1file.nc
 *** Running ferret script: bn_if.jnl
- Cached data cleared from memory
  **ERROR: invalid command: ENDIF can only be used in an IF clause
 ENDIF
  **ERROR: command syntax: ELIF cannot be used in single line IF
@@ -437,7 +436,6 @@ endif
 elif
            *** NOTE: Unclosed IF statement ... assuming ENDIF, in script ./bn_if.jnl
 *** Running ferret script: bn_expressions.jnl
- Cached data cleared from memory
  **ERROR: command syntax: IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
           Cannot use multiple IFs in an expression
 LIST/ORDER=X  IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
@@ -448,7 +446,6 @@ DEFINE VARIABLE A = IF I LT 5 THEN I ELSE -9
  **ERROR: variable unknown or not in data set: A1
 load a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21
 *** Running ferret script: bn_geometry.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -459,7 +456,6 @@ load a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21
           expression has 5 points (I=1:5)
 LIST X[I=1:5] - X[I=6:9]
 *** Running ferret script: bn_output.jnl
- Cached data cleared from memory
  LISTing to file WV.J34K56L7
  LISTing to file test.dat
  LISTing to file test.dat
@@ -467,15 +463,11 @@ LIST X[I=1:5] - X[I=6:9]
  **ERROR: invalid subcommand: File type no longer supported TMA
 LIST/FILE=test.gt/FORMAT=TMAP/L=1:3 v,v^0.5
 *** Running ferret script: bn_in_plane.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_compress.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running ferret script: bn_interpolate.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_regrid.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XFINE
@@ -484,10 +476,8 @@ Replacing definition of axis YFINE
 Replacing definition of axis YCOARSE
 Replacing definition of grid G24
 *** Running ferret script: bn_ez.jnl
- Cached data cleared from memory
  LISTing to file test.unf
 *** Running ferret script: bn_plot.jnl
- Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -549,7 +539,6 @@ cont/over/i=1:10/thick=4 i
           Value must be positive
 cont/over/i=1:10/sigdig=-1 i
 *** Running ferret script: bn_curv.jnl
- Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 Replacing definition of axis LON_FIELD_I_AXIS
 Replacing definition of axis LON_FIELD_J_AXIS
@@ -569,7 +558,6 @@ shade/nolabel sst, x_page[j=1:12], y_page
 shade/nolabel sst, x_page[j=1:12], y_page
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: bn_symbols.jnl
- Cached data cleared from memory
  **ERROR: command syntax: illegal name: TEST*
 define symbol test* = hello
  **ERROR: invalid command: Value needed for argument 5 in command
@@ -588,9 +576,7 @@ message/continue ($t2"|solong>really hello|bye|")
            *** NOTE: symbol t2 received was: hello
            *** NOTE: Valid symbol t2 choices are: solong>really hello|bye|
 *** Running ferret script: bn_comma_delimited.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_dynamic_grids.jnl
- Cached data cleared from memory
  **ERROR: unknown defining grid: GX=NOEXIST
 list temp[gx=noexist]
  **ERROR: command syntax: P=NOEXIST
@@ -633,12 +619,8 @@ list tu
 list tu
  **ERROR: regridding: Axis orientation not matching request:GX=PSYU
 list tu
- Cached data cleared from memory
- **ERROR: request exceeds memory setting: 50 Mwords were requested.
+ **ERROR: request exceeds memory setting
 list temp[gz=z999999,z=5:15]
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
- Cached data cleared from memory
            *** NOTE: Ambiguous coordinates on X axis: X[X=0.1:10:1.5] +  X[X=1.1:11:1.5]
            *** NOTE: Ambiguous coordinates on X axis: X[X=0.1:10:1.5] +  X[X=1.1:11:1.5]
            *** NOTE: Ambiguous coordinates on X axis: TEMP[I=101:120:4]+X[I=101:120:4]
@@ -660,7 +642,6 @@ list a
           Axis extremes are I=1:8
 list a
 *** Running ferret script: bn_cdf.jnl
- Cached data cleared from memory
  LISTing to file test0a.cdf
  LISTing to file test0b.cdf
  LISTing to file test0c.cdf
@@ -773,13 +754,11 @@ list/format=cdf/l=13/append/file=test_abs.cdf l1
  LISTing to file test_fil.cdf
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis Y1010_REV
 *** Running ferret script: bn_regrid_transforms.jnl
- Cached data cleared from memory
  **ERROR: regridding: G=W - more than 1 target grid
 load temp[g=u,g=w]
  **ERROR: unknown defining grid: G=X --> g=user-or-pseudo-var not allowed
 load temp[g=x]
 *** Running ferret script: bn_axis_limits.jnl
- Cached data cleared from memory
            *** NOTE: /XLIMITS and /YLIMITS are deprecated.
            *** NOTE: Use /HLIMITS and /VLIMITS instead.
  **ERROR: command syntax: xlimits
@@ -799,9 +778,7 @@ plot/xlimits=1:2: i
  **ERROR: invalid command: Must give a range: xlimits=5:5
 plot/xlimits=5:5 i
 *** Running ferret script: bn_movie.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_ez_order.jnl
- Cached data cleared from memory
  LISTing to file test_perm10.dat
  LISTing to file test_perm24.dat
  LISTing to file test_perm48.dat
@@ -811,12 +788,9 @@ plot/xlimits=5:5 i
  LISTing to file test_stream.unf
  LISTing to file test_stream.unf
 *** Running ferret script: bn_user.jnl
- Cached data cleared from memory
            *** NOTE: Only one window can be open in batch mode
 *** Running ferret script: bn_stream.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_mc.jnl
- Cached data cleared from memory
  **TMAP ERR: Attempt to access unsupported feature
              Descriptor requests delta of 0, please use 1
              Data set: ./coads_clim_bad_delta.des
@@ -828,18 +802,14 @@ set data coads_clim_step_order.des
              coads_clim.001b
 list sst
 *** Running ferret script: bn_negative_t.jnl
- Cached data cleared from memory
  **ERROR: regridding: only @ASN regridding between calendar and
           non-calendar axes: A
 LIST a[gt=tcal]
 *** Running ferret script: bn_xact_regrid.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_gc_functions.jnl
- Cached data cleared from memory
            *** NOTE: /XLIMITS and /YLIMITS are deprecated.
            *** NOTE: Use /HLIMITS and /VLIMITS instead.
 *** Running ferret script: bn491_bug_fixes.jnl
- Cached data cleared from memory
            *** NOTE: Cannot cancel window when in batch mode
  LISTing to file test.cdf
  PERMANENT data cleared from memory
@@ -869,38 +839,36 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_odd_variable_name.jnl
- Cached data cleared from memory
- Cached data cleared from memory
  **ERROR: command syntax: v2-and-minus
           - before and is illegal
 list v2-and-minus
- **ERROR: dimensions improperly specified: 99999999 words were requested.
+ **ERROR: illegal limits: Limits must be provided for pseudo-variable.
 list x
-           *** NOTE: Check for unspecified limits on an ABSTRACT axis
-           *** NOTE: Use the SHOW GRID command to see the axes
- **ERROR: dimensions improperly specified: 99999999 words were requested.
+ **ERROR: illegal limits: Limits must be provided for pseudo-variable.
 list i
-           *** NOTE: Check for unspecified limits on an ABSTRACT axis
-           *** NOTE: Use the SHOW GRID command to see the axes
  **ERROR: command syntax: v2-and-minus[i=5:15@ddc]
           - before and is illegal
 list v2-and-minus[i=5:15@ddc]
- Cached data cleared from memory
 *** Running ferret script: bn_test_stream.jnl
- Cached data cleared from memory
  LISTing to file permutedBinaryTest.dat
  LISTing to file junk.dat
- **ERROR: request exceeds memory setting: 48000 Mwords were requested.
+ **ERROR: request exceeds memory setting
 load num
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
+    To fulfill this request would exceed the current SET MEMORY/SIZE= limit of 25.6 megawords
+    At the moment that the memory limit was reached
+    memory was committed as follows:
+        - to objects used in computation: : 0 (0%)
+    The size of the requested object was: : 24000000000 (93750%)
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
- **ERROR: request exceeds memory setting: 2000 Mwords were requested.
+ **ERROR: request exceeds memory setting
 load num
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
+    To fulfill this request would exceed the current SET MEMORY/SIZE= limit of 25.6 megawords
+    At the moment that the memory limit was reached
+    memory was committed as follows:
+        - to objects used in computation: : 0 (0%)
+    The size of the requested object was: : 1000000000 (3906%)
 Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
@@ -916,7 +884,6 @@ SET DATA/EZ/var=num/order=vxyzt/grid=mygrid junk.dat
  **ERROR: invalid command: invalid argument for /TYPE
 SET DATA/EZ/var=num/type=i3/grid=mygrid/form=stream junk.dat
 *** Running ferret script: bn_define_axes.jnl
- Cached data cleared from memory
 Replacing definition of axis XAX
 Replacing definition of axis XAX
 Replacing definition of axis XAX
@@ -969,16 +936,13 @@ Replacing definition of axis XAX2
            *** NOTE: (fyi) units are not subject to auto-conversion: BLAHS
 Replacing definition of axis XAX2
 *** Running ferret script: bn_pattern.jnl
- Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
            *** NOTE: Only one window can be open in batch mode
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
            *** NOTE: Cannot cancel window when in batch mode
 *** Running ferret script: bn_polygon.jnl
- Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: bn500_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1024,7 +988,6 @@ stat i, noname(i)
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_sample.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1062,7 +1025,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running ferret script: bn_strides_revs_perms.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1082,23 +1044,19 @@ LIST/i=2:4:2 VAR
            *** NOTE: Not using NetCDF strides for multi-cycle modulo
            *** NOTE: Stride value not a factor of axis length
 *** Running ferret script: bn_non_COARDS_netCDF.jnl
- Cached data cleared from memory
            *** NOTE: Coordinates out of order or missing on axis UNORDERED_AXIS at subscript 4
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis BACKWARDS_AXIS
 *** Running ferret script: bn_cache_hits.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_regrid_to_user.jnl
- Cached data cleared from memory
 Replacing definition of grid GG2
  **ERROR: unknown defining grid: G=NO_EXIST
 load/x=160e/y=5s temp[d=2,k=1,g=no_exist]
  **ERROR: unknown defining grid: GX=A[D=1]
 load/x=160e/y=5s v2
 *** Running ferret script: bn_calendar.jnl
- Cached data cleared from memory
 Replacing definition of axis TDAYS
 Replacing definition of axis TDAYS
 Replacing definition of axis TDAYS
@@ -1113,7 +1071,6 @@ Replacing definition of axis TDAYS
 Replacing definition of grid TGRID
            *** NOTE: /UNIT=MONTHS  ... using 1/12 of 365.25 days
 *** Running ferret script: bn_dash_dot.jnl
- Cached data cleared from memory
  **ERROR: command syntax: dash=(1., 2.)
           DASH[=(dn1,up1,dn2,up2)] takes 4 arguments or no argument
 plot/dash=(1., 2.)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
@@ -1121,7 +1078,6 @@ plot/dash=(1., 2.)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
           DASH arguments must be positive
 plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
 *** Running ferret script: bn_flowlines.jnl
- Cached data cleared from memory
  Using every   2th vector in the Y direction
  Using every   2th vector in the Y direction
  PERMANENT data cleared from memory
@@ -1134,7 +1090,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_logaxes.jnl
- Cached data cleared from memory
 Replacing definition of axis DLOG
 Replacing definition of axis DLOG
  **ERROR: value out of legal range: Limits for log axis negative or too small: -9.00 : 0.00
@@ -1152,7 +1107,6 @@ Bailing out of external function "eof_stat":
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1193,6 +1147,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis XAXS
+Replacing definition of axis YAXS
+Replacing definition of axis ZAXS
+Replacing definition of axis TAXS
+Replacing definition of grid MYGRD
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1251,7 +1210,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_modulo_strides.jnl
- Cached data cleared from memory
  LISTing to file test_modulo.cdf
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1260,7 +1218,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Not using NetCDF strides for multi-cycle modulo
            *** NOTE: Stride value not a factor of axis length
 *** Running ferret script: bn_axis_viewports.jnl
- Cached data cleared from memory
 Re-defining viewport MID
 Re-defining viewport MID2
 Re-defining viewport LLAX
@@ -1268,7 +1225,6 @@ Re-defining viewport LRAX
 Re-defining viewport ULAX
 Re-defining viewport URAX
 *** Running ferret script: bn_strings.jnl
- Cached data cleared from memory
  **ERROR: command syntax: "string2"}
 list e
  **ERROR: command syntax: 5, "string2"}
@@ -1311,13 +1267,10 @@ list/nohead SIN({"a","b","c"})
  **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead MAX("a",{"a","b","c"})
 *** Running ferret script: bn_axcontrol.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_vec_curv.jnl
- Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: bn_delimited_read.jnl
- Cached data cleared from memory
 Replacing definition of axis TAX
 Replacing definition of grid G1
  **TMAP ERR: syntax error in string
@@ -1333,7 +1286,6 @@ SET DATA/FORM=delimited/type="da,da, date2"  bn_delimited_read_date_time.dat
  **ERROR: command syntax: ,,:
 SET DATA/EZ/form=delim/delim="/,,,:" bn_delimited_read_date_time.dat
 *** Running ferret script: bn541_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1379,8 +1331,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file test_100x100.nc
- Cached data cleared from memory
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1393,7 +1343,6 @@ Replacing definition of axis YAX
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_cancel_axes.jnl
- Cached data cleared from memory
  LISTing to file longax.dat
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1417,7 +1366,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: regarding ./test_axes.nc ...
            *** NOTE: Climatological axes test_irreg, test_seas defined
 *** Running ferret script: bn542_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1444,29 +1392,18 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_subspan_modulo.jnl
- Cached data cleared from memory
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  **ERROR: improper grid or axis definition: Axis length exceeds modulo length
 define axis/x=130e:500:10/modulo=360 xsub
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_subspan_modulo.nc
  LISTing to file test_subspan_modulo.nc
  LISTing to file test_subspan_modulo.nc
@@ -1479,27 +1416,21 @@ define axis/x=130e:500:10/modulo=360 xsub
            *** NOTE: Not using NetCDF strides for multi-cycle modulo
            *** NOTE: Stride value not a factor of axis length
 *** Running ferret script: bn_dots.jnl
- Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
            *** NOTE: /THICKNESS ignored  on /SYMBOL=DOT
            *** NOTE: /SIZE= ignored  on /SYMBOL=DOT
 *** Running ferret script: bn_lev_symbols.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_mode_logo_lab.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_modulo_attribute.jnl
- Cached data cleared from memory
            *** NOTE: Undecipherable value of netCDF attribute modulo on variable lon_moderr
            *** NOTE: modulo = "j"
            *** NOTE: Undecipherable value of netCDF attribute modulo on variable time_moderr
            *** NOTE: modulo = "j"
 *** Running ferret script: bn550_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn551_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1524,11 +1455,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_multi_line_labels.jnl
- Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: bn552_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1554,7 +1483,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
 rm: cannot remove `input.txt': No such file or directory
 ls: cannot access input.txt: No such file or directory
-           *** NOTE: Shell command returned failure flag: rm input.txt
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1599,13 +1527,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
           Axis extremes are T=31-DEC-1997 12:00:30-JAN-1998 12:00
 list/t=1-jan-1990 dummy
 *** Running ferret script: bn_set_var_scale_off.jnl
- Cached data cleared from memory
  **ERROR: invalid command: Can SET VARIABLE/OFFSET= only with NetCDF datasets
 SET VAR/OFFSET=1 x1
  **ERROR: invalid command: Can SET VARIABLE/SCALEFAC= only with NetCDF datasets
 SET VAR/SCALE=10 x2
 *** Running ferret script: bn_longvarnames.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1621,14 +1547,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_shakey.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_eof_4d.jnl
- Cached data cleared from memory
  LISTing to file eofsp.cdf
  LISTing to file eofti.cdf
  LISTing to file eofst.cdf
 *** Running ferret script: bn_abstract_axis_names.jnl
- Cached data cleared from memory
  LISTing to file confuse_xz.nc
  LISTing to file confuse_yz.nc
  LISTing to file confuse_yt.nc
@@ -1638,12 +1561,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file confuse_yt.nc
  LISTing to file confuse_yzt.nc
 *** Running ferret script: bn_many_polygons.jnl
- Cached data cleared from memory
 Replacing definition of axis YQ
 *** Running ferret script: bn_fill_irregular.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_xml_output.jnl
- Cached data cleared from memory
  LISTing to file a.nc
  LISTing to file b.nc
  PERMANENT data cleared from memory
@@ -1659,9 +1579,7 @@ SHOW VAR/XML
 SHOW VAR/XML
  LISTing to file a.nc
 *** Running ferret script: bn_test_nan.jnl
- Cached data cleared from memory
 *** Running ferret script: bn553_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1672,7 +1590,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_graticules.jnl
- Cached data cleared from memory
  Using every   5th vector in the X direction
  Using every   3th vector in the Y direction
  Using every   2th vector in the X direction
@@ -1683,7 +1600,6 @@ Replacing definition of axis TAX
 Replacing definition of axis TAX
 Replacing definition of axis TAX
 *** Running ferret script: bn_repeat_range.jnl
- Cached data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: invalid command: REPEAT/NAME requires /RANGE
 rep/name=a say `a`
@@ -1714,7 +1630,6 @@ repeat/range=3:1:-1/name=a list a
  **ERROR: command syntax: nested REPEAT loops with the same counter name a
 repeat/range=3:1:-1/name=a list a
 *** Running ferret script: bn554_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1792,7 +1707,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
 Replacing definition of axis XAX
 Replacing definition of axis YAX
 *** Running ferret script: bn_bounds.jnl
- Cached data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
@@ -1840,11 +1754,9 @@ def axis/t/bounds tax= {12, 12.2, 36, 36.2, 60, 60.2, 84, 84.2, 108} , {0,24, 0,
            *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
            *** NOTE: Substituting coordinate midpoints
 *** Running ferret script: bn_all_leap.jnl
- Cached data cleared from memory
  **ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP
 def axis/t/cal=nogood/t=1-jan-2000:1-jan-2010:1/units=months tax
 *** Running ferret script: bn570_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1870,15 +1782,11 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_modstats.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_mc_vary_scale.jnl
- Cached data cleared from memory
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
 *** Running ferret script: bn_plot_nokey.jnl
- Cached data cleared from memory
 *** Running ferret script: bn580_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1997,13 +1905,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_inf_levels.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_regulart.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_labwid.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_redefine_taxis_mc.jnl
- Cached data cleared from memory
 Replacing definition of axis TIME1
            *** NOTE: grid GHB1 used by data set coads_clim
            *** NOTE: Redefinition may alter apparent contents of data set
@@ -2011,7 +1915,6 @@ Replacing definition of axis TIME1
            *** NOTE: grid GHB1 used by data set coads_clim
            *** NOTE: Redefinition may alter apparent contents of data set
 *** Running ferret script: bn_illegal_axisname.jnl
- Cached data cleared from memory
 Replacing definition of axis COADSX.ILLEGAL
            *** NOTE: grid GEX1 used by data set illeg_axname
            *** NOTE: Redefinition may alter apparent contents of data set
@@ -2023,15 +1926,10 @@ Replacing definition of axis COADSY.ILLEGAL
            *** NOTE: grid GEX3 used by data set illeg_axname
            *** NOTE: Redefinition may alter apparent contents of data set
 *** Running ferret script: bn_exit_script.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_exit_cycle.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_curv_mod.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_shade_keycont.jnl
- Cached data cleared from memory
 *** Running ferret script: bn581_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2101,14 +1999,10 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_tab_comma_multivar.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_element_functions.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_long_revision_num.jnl
- Cached data cleared from memory
  LISTing to file revision.nc
 *** Running ferret script: bn_window_title.jnl
- Cached data cleared from memory
            *** NOTE: Cannot create new windows when batch mode set
            *** NOTE: Cannot create new windows when batch mode set
            *** NOTE: Cannot cancel window when in batch mode
@@ -2117,7 +2011,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
 
 Bailing out of external function "ffta":
 	 Time axis must be a regular axis
- Cached data cleared from memory
  **ERROR: command syntax: IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
           Cannot use multiple IFs in an expression
 LIST/ORDER=X  IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
@@ -2137,18 +2030,14 @@ repeat/range=1:3/name=L (use coads_climatology; list/nohead [sst=I=1,j=1])
  **ERROR: error in external function
 LOAD vw_fft
 *** Running ferret script: bn_deg_min.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_dp_readscale.jnl
- Cached data cleared from memory
  TEMPORARY data cleared from memory
 *** Running ferret script: bn_bounds_defineax.jnl
- Cached data cleared from memory
 Replacing definition of axis TAX
  LISTing to file irrxzt.nc
 Replacing definition of axis ZAX
 Replacing definition of axis ZAX2
 *** Running ferret script: bn_attributes.jnl
- Cached data cleared from memory
  **ERROR: invalid command: SHOW ATTRIBUTE given with no argument
 sho att/all
  **ERROR: unknown data set: d=2
@@ -2327,11 +2216,8 @@ Replacing definition of axis TIME
  LISTing to file a.nc
  LISTing to file a.nc
 *** Running ferret script: bn_transforms.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_variance.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_linecolors.jnl
- Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
            *** NOTE: Cannot cancel window when in batch mode
            *** NOTE: Cannot create new windows when batch mode set
@@ -2347,7 +2233,6 @@ syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
 CURL Error: Couldn't resolve host name
 curl error details: 
- Cached data cleared from memory
  **TMAP ERR: non-existent or not on line
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
@@ -2365,7 +2250,6 @@ SET DAT/FORM=CDF  "http://noserver/a/nofile.cdf"
              Data set: ./asc.nc
 SET DAT/FORM=CDF asc.nc
 *** Running ferret script: bn600_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2446,10 +2330,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- Cached data cleared from memory
- Cached data cleared from memory
 *** Running ferret script: bn601_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2517,7 +2398,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_set_strides.jnl
- Cached data cleared from memory
  **ERROR: invalid command: it is a child axis already
 set axis/stride=2/offset=1 (AX005)
  **ERROR: invalid command: not a strided axis: COADSX
@@ -2532,11 +2412,8 @@ cancel axis/stride COADSX
  **ERROR: invalid command: unknown axis: NORMAL
 set axis/stride=2 NORMAL
 *** Running ferret script: bn_lsl_lowpass.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_return_xmod_tmod.jnl
- Cached data cleared from memory
 *** Running ferret script: bn602_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2559,9 +2436,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_modnbd.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_fifty_files.jnl
- Cached data cleared from memory
            *** NOTE: Coordinates missing on axis LONGITUDE at subscript -169
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Coordinates missing on axis LATITUDE at subscript -169
@@ -2591,7 +2466,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis BACKWARDS_AXIS
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis Y1010_REV
 *** Running ferret script: bn603_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2602,15 +2476,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_set_var_name.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_memory_symbol.jnl
- Cached data cleared from memory
- Cached data cleared from memory
- Cached data cleared from memory
- Cached data cleared from memory
- Cached data cleared from memory
 *** Running ferret script: bn605_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2618,7 +2485,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn608_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2637,11 +2503,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: invalid command: "300": Number of contour levels must be between 1 and 250
 SHADE/LEV=300/I=1:100/J=1:100 i+j
 *** Running ferret script: bn_shade_trim.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_mode_nlevels.jnl
- Cached data cleared from memory
 *** Running ferret script: bn61_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2652,9 +2515,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_test_opendap.jnl
 CURL Error: Couldn't resolve host name
 curl error details: 
- Cached data cleared from memory
 *** Running ferret script: bn611_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2711,14 +2572,11 @@ Replacing definition of axis TIME
  LISTing to file b.nc
  LISTing to file b.nc
 *** Running ferret script: bn_no_valid_on_plot.jnl
- Cached data cleared from memory
  Using every   5th vector in the X direction
 *** Running ferret script: bn_median.jnl
- Cached data cleared from memory
  **ERROR: value out of legal range: Median smoother length must be odd
 plot/trans var, var[z=@med:4]
 *** Running ferret script: bn614_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2803,11 +2661,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
  LISTing to file b.nc
 *** Running ferret script: bn_mode_nodata_lab.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_proleptic_gregorian_calendar.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_string_ngd_nbd.jnl
- Cached data cleared from memory
            *** NOTE: @NGD of string variable, counting null strings as missing
            *** NOTE: @NBD of string variable, counting null strings as missing
            *** NOTE: @NGD of string variable, counting null strings as missing
@@ -2830,21 +2685,15 @@ Replacing definition of axis TAX
            *** NOTE: @NBD of string variable, counting null strings as missing
            *** NOTE: @NGD of string variable, counting null strings as missing
 *** Running ferret script: bn_cat_string.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_sort_strings.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_samplexyt.jnl
- Cached data cleared from memory
            *** NOTE: /XLIMITS and /YLIMITS are deprecated.
            *** NOTE: Use /HLIMITS and /VLIMITS instead.
 *** Running ferret script: bn_last_go_file.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_cancel_upcase_uservar.jnl
- Cached data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
 *** Running ferret script: bn_cdf_keepax.jnl
- Cached data cleared from memory
  LISTing to file test0a.cdf
  LISTing to file test0b.cdf
  LISTing to file test0c.cdf
@@ -3040,13 +2889,10 @@ list/format=cdf/keep_axnames/append/file=test_fil.cdf ijklave
 show grid ijkl
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis Y1010_REV
 *** Running ferret script: bn_keep_axisnames.jnl
- Cached data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
 *** Running ferret script: bn_key_label_minmax.jnl
- Cached data cleared from memory
 *** Running ferret script: bn62_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3054,20 +2900,15 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_convolve.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_tax_tstep.jnl
- Cached data cleared from memory
  LISTing to file a.nc
 Replacing definition of axis TSEC
 *** Running ferret script: bn_grads_z.jnl
- Cached data cleared from memory
 Replacing definition of axis CAXIS
            *** NOTE: grid GMY1 used by data set grads_bug_file
            *** NOTE: Redefinition may alter apparent contents of data set
 *** Running ferret script: bn_clock_syms.jnl
- Cached data cleared from memory
 *** Running ferret script: bn63_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3142,13 +2983,9 @@ SET AXIS/STRIDE=-1/OFFSET=1 truemonth
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_axis_reversed_syms.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_isdepth.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_var_hist_levels.jnl
- Cached data cleared from memory
 *** Running ferret script: bn64_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3159,7 +2996,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_long_grid_names.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3173,10 +3009,8 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_xml_repl.jnl
- Cached data cleared from memory
  LISTing to file a.nc
 *** Running ferret script: bn65_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3212,12 +3046,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
 Replacing definition of axis TAX
 *** Running ferret script: bn_txtype_dmy.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_n_open_dsets_sym.jnl
- Cached data cleared from memory
  LISTing to file list_of_numbers.dat
 *** Running ferret script: bn_multi_decade.jnl
- Cached data cleared from memory
 Re-defining viewport V1
 Re-defining viewport V2
 Re-defining viewport V3
@@ -3227,16 +3058,13 @@ Re-defining viewport V6
 Re-defining viewport V7
 Re-defining viewport V8
 *** Running ferret script: bn_show_xml_file.jnl
- Cached data cleared from memory
  LISTing to file b.nc
  LISTing to file dummy.dat
 *** Running ferret script: bn66_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_netcdf4.jnl
- Cached data cleared from memory
  Restoring default chunk cache settings
  Restoring default chunk cache settings
  PERMANENT data cleared from memory
@@ -3270,15 +3098,12 @@ LIST/FORMAT=CDF/file=nc4_deflate4_t1.nc/clobber/ncformat=4/deflate/shuffle/tchun
              TChunkSize 0 is larger than dimension length 3
 LIST/FORMAT=CDF/file=nc4_deflate4chunktoobig.nc/clobber/ncformat=4/deflate=1/xchunk=6/ychunk=18/tchunk=15 sst
 *** Running ferret script: bn_scat2grid_bin.jnl
- Cached data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running ferret script: bn_axis_dir_symbols.jnl
- Cached data cleared from memory
 *** Running ferret script: bn663_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3287,7 +3112,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_set_axis_regular.jnl
- Cached data cleared from memory
            *** NOTE: Axis reset to be regular (evenly-spaced): MYX
            *** NOTE: Axis is already regular: MYX
  PERMANENT data cleared from memory
@@ -3295,7 +3119,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis reset to be regular (evenly-spaced): MYX1
 *** Running ferret script: bn_set_cancel_redirect.jnl
- Cached data cleared from memory
  Use the GO command to name a file of FERRET commands to be executed.
      e.g.   yes? GO filename
  
@@ -3350,17 +3173,12 @@ show grid garbage
  
  Use "GO/HELP filename" to read documentation in  the file to be executed.
 *** Running ferret script: bn_min_max_smoothers.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_vector_symbols.jnl
- Cached data cleared from memory
  Using every   8th vector in the X direction
  Using every   7th vector in the Y direction
 *** Running ferret script: bn_variance_large.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_labnum_calendar.jnl
- Cached data cleared from memory
 *** Running ferret script: bn665_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3376,9 +3194,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_floatstr.jnl
- Cached data cleared from memory
 *** Running ferret script: bn67_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3401,9 +3217,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
-set mode desperate 9999999999.000000
+set mode desperate 9999999999.
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
 set mode desperate 1234567890123456789
+           *** NOTE: MODE DESPERATE is deprecated. Use MODE FRUGAL
+           *** NOTE: MODE DESPERATE is deprecated. Use MODE FRUGAL
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3428,7 +3246,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
  LISTing to file a.nc
 *** Running ferret script: bn_NaN_note.jnl
- Cached data cleared from memory
            *** NOTE: unrepairable repeated axis coords on axis j at subscript -126
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: unrepairable repeated axis coords on axis l at subscript -126
@@ -3447,7 +3264,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
 
 Bailing out of external function "tax_year":
 	 Function not valid for modulo time axis
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3474,7 +3290,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn68_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3539,7 +3354,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a1.nc
  LISTing to file a2.nc
 *** Running ferret script: bn_ifv.jnl
- Cached data cleared from memory
  **ERROR: command syntax: IFV I GT 3 THEN ( IFV I LT 5 THEN I ELSE -9 ) ELSE .333
           Cannot use multiple IFs in an expression
 LIST/ORDER=X  IFV I GT 3 THEN ( IFV I LT 5 THEN I ELSE -9 ) ELSE .333
@@ -3548,7 +3362,6 @@ LIST/ORDER=X  IFV I GT 3 THEN ( IFV I LT 5 THEN I ELSE -9 ) ELSE .333
           negative constants need to be enclosed in parentheses
 DEFINE VARIABLE A = ifv I LT 5 THEN I ELSE -9
 *** Running ferret script: bn_randu2_randn2.jnl
- Cached data cleared from memory
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
@@ -3556,7 +3369,6 @@ DEFINE VARIABLE A = ifv I LT 5 THEN I ELSE -9
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
 *** Running ferret script: bn_axis_cf.jnl
- Cached data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
@@ -3566,13 +3378,11 @@ DEFINE VARIABLE A = ifv I LT 5 THEN I ELSE -9
  LISTing to file a.nc
  LISTing to file a.nc
 *** Running ferret script: bn_repeated_coords.jnl
- Cached data cleared from memory
            *** NOTE: Axis has repeated values -- micro-adjusting TMIN
            *** NOTE: Coordinates out of order or missing on axis TMIN at subscript 4
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Axis has repeated values -- micro-adjusting ...
 *** Running ferret script: bn_xml_header.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_eof_simple.jnl
 
 Bailing out of external function "eofsvd_stat":
@@ -3583,7 +3393,6 @@ Bailing out of external function "eofsvd_space":
 
 Bailing out of external function "eofsvd_tfunc":
 	There are no spatial locations having complete time series.
- Cached data cleared from memory
 Replacing definition of axis XAXIS
  **ERROR: error in external function
 list eofsvd_stat(spacegap)
@@ -3592,11 +3401,8 @@ list eofsvd_space(spacegap)
  **ERROR: error in external function
 list eofsvd_tfunc(spacegap)
 *** Running ferret script: bn_eof_simple2.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_interpolate_6d.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_regrid_6d.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XFINE
@@ -3605,9 +3411,7 @@ Replacing definition of axis YFINE
 Replacing definition of axis YCOARSE
 Replacing definition of grid G24
 *** Running ferret script: bn_syntax_6d.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_expressions_6d.jnl
- Cached data cleared from memory
  **ERROR: command syntax: IF _m GT 3 THEN ( IF _m LT 5 THEN _m ELSE -9 ) ELSE .333
           Cannot use multiple IFs in an expression
 LIST/order=e  IF _m GT 3 THEN ( IF _m LT 5 THEN _m ELSE -9 ) ELSE .333
@@ -3618,12 +3422,9 @@ DEFINE VARIABLE A = IF _m LT 5 THEN _m ELSE -9
  **ERROR: variable unknown or not in data set: A1
 load a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21
 *** Running ferret script: bn_direction_fcns_6d.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_regrid_transforms_6d.jnl
- Cached data cleared from memory
 Replacing definition of axis FAX4DAY
 *** Running ferret script: bn_aggregate_e.jnl
- Cached data cleared from memory
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -3648,18 +3449,15 @@ DEFINE DATA/AGGREGAT/E windy = 1,2
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, some
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, more
 *** Running ferret script: bn_6d_lab_mode.jnl
- Cached data cleared from memory
            *** NOTE: MODE 6D_lab is deprecated. Leave the mode set; output automatically adjusts to 4D or 6D grids
            *** NOTE: MODE 6D_lab is deprecated. Leave the mode set; output automatically adjusts to 4D or 6D grids
            *** NOTE: MODE 6D_lab is deprecated. Leave the mode set; output automatically adjusts to 4D or 6D grids
            *** NOTE: MODE 6D_lab is deprecated. Leave the mode set; output automatically adjusts to 4D or 6D grids
 *** Running ferret script: bn682_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn683_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3689,7 +3487,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
  LISTing to file a.nc
 *** Running ferret script: bn_outtype.jnl
- Cached data cleared from memory
  LISTing to file mytype.nc
  LISTing to file mytype.nc
            *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
@@ -3705,11 +3502,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file mytype.nc
  LISTing to file mytype.nc
 *** Running ferret script: bn_ribbon_plot.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_descr_4digit.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_axis_outtype.jnl
- Cached data cleared from memory
  LISTing to file mytype.nc
            *** NOTE: unrepairable repeated axis coords on axis TIME at subscript -126
            *** NOTE: A dummy axis of subscripts will be used
@@ -3731,16 +3525,13 @@ NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
 LIST/FORMAT=CDF/clobber/file=mytype.nc my_data
  LISTing to file mytype.nc
 *** Running ferret script: bn_axis_nonmonotonic.jnl
- Cached data cleared from memory
  **ERROR: improper grid or axis definition: data for DEFINE AXIS/FROM_VARIABLE is not monotonically increasing at index 12
 define axis/t/units=days tax = tvar
 *** Running ferret script: bn_vec_mod.jnl
- Cached data cleared from memory
  Using every   9th vector in the X direction
  Using every   9th vector in the X direction
  Using every   9th vector in the X direction
 *** Running ferret script: bn685_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3843,12 +3634,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_dsg_e_x.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_nco_append.jnl
- Cached data cleared from memory
  LISTing to file append_to_this.nc
 *** Running ferret script: bn_nobounds.jnl
- Cached data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
            *** NOTE: Axis definition error on axis: TGAP
@@ -3857,12 +3645,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
  LISTing to file a.nc
 *** Running ferret script: bn_write_integer_att.jnl
- Cached data cleared from memory
  LISTing to file a.nc
 *** Running ferret script: bn_descriptor_mc.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_plot_color_only.jnl
- Cached data cleared from memory
            *** NOTE: New # of line colors will take effect on next new window: SET WIN/NEW then define pen colors
            *** NOTE: Cannot cancel window when in batch mode
            *** NOTE: Cannot create new windows when batch mode set
@@ -3876,7 +3661,6 @@ plot/i=1:100/over/COLOR 0.6*sin(i/7)
           /COLOR not valid for PLOT/LEVELS ribbon plot
 plot/i=1:100/ribbon/COLOR sin(i/6),0.6*sin(i/7)
 *** Running ferret script: bn_vtree.jnl
- Cached data cleared from memory
            *** NOTE: Variable "FVX" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "FVZ" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "FVZ" excluded from aggregate: Not found in all member datasets
@@ -3893,7 +3677,6 @@ list e
 list f
 Replacing definition of axis ZAX
 *** Running ferret script: bn686_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3940,15 +3723,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_long_symnames.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_strdim.jnl
- Cached data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
 *** Running ferret script: bn_single_colorlev.jnl
- Cached data cleared from memory
 *** Running ferret script: bn69_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3998,16 +3777,12 @@ set var/name=psi myvar
  **ERROR: invalid command: illegal new name.  Variable diff already defined
 set var/name=diff w
 *** Running ferret script: bn_bad_axis_bounds.jnl
- Cached data cleared from memory
            *** NOTE: Axis definition error on axis: MONTH_IRREG. Bounds describe cells that overlap one another
            *** NOTE: Error in bounds "MONTH_IRREG_bnds" or bounds do not enclose point on axis MONTH_IRREG
            *** NOTE: Substituting coordinate midpoints
 *** Running ferret script: bn_enter_exit_GO.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_stddev.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_set_axis_name.jnl
- Cached data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file b.nc
@@ -4023,7 +3798,6 @@ set axis/name=.fr x_in_meters
 *** Running ferret script: bn_let_remote.jnl
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
 context: Error { code = 500; message = "Error processing XML header file /usr/local/src/nvods/tomcat/content/las/conf/server/temp/6790FDCBF64A0E6EFAA6A20D854071E0/header.xml (No such file or directory)"^;};
- Cached data cleared from memory
            *** NOTE: netCDF bounds variable definition error
            *** NOTE: Bounds definition "time_bnds" points to no existing axis
            *** NOTE: Ignoring BOUNDS attribute
@@ -4078,7 +3852,6 @@ DEFINE VARIABLE/remote rvar = t0112mn1[d=1,z=1:100@ave]
              Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
 list/x=300/y=15 avar
 *** Running ferret script: bn691_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4145,15 +3918,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Replacing definition of axis XAXIS
- **ERROR: request exceeds memory setting: 4739 Mwords were requested.
+ **ERROR: request exceeds memory setting
 load bigvar
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis LONGTIME
- **ERROR: request exceeds memory setting: 9472 Mwords were requested.
+ **ERROR: request exceeds memory setting
 load bigvar
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4213,21 +3982,14 @@ list substring("hello",1,-2)
  **ERROR: value out of legal range: Negative argument to function. Argument 3 : SUBSTRING
 list substring("hello",1,-3)
 *** Running ferret script: bn_append_dsg.jnl
- Cached data cleared from memory
 rm: cannot remove `test_save_dsg.nc': No such file or directory
-           *** NOTE: Shell command returned failure flag: rm test_save_dsg.nc
 *** Running ferret script: bn_global_atts.jnl
- Cached data cleared from memory
  LISTing to file anew_global.nc
 *** Running ferret script: bn_conventions_history.jnl
- Cached data cleared from memory
  LISTing to file conventions_history.nc
 *** Running ferret script: bn_center_key_labels.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_wgt_transform.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_show_outfile.jnl
- Cached data cleared from memory
            *** NOTE: Variable "FVX" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "FVZ" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "FVZ" excluded from aggregate: Not found in all member datasets
@@ -4243,9 +4005,7 @@ list e
           Are you giving explicit limits when SET REGION would suffice ?
 list f
 *** Running ferret script: bn_date1900_array.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_spawn_size.jnl
- Cached data cleared from memory
  LISTing to file bn_spawn_size1.cdf
  LISTing to file bn_spawn_size2.cdf
  LISTing to file bn_spawn_size3.cdf
@@ -4259,13 +4019,11 @@ list f
  LISTing to file bn_spawn_size12.dat
  LISTing to file bn_spawn_size14.dat
 *** Running ferret script: bn_polygon_log.jnl
- Cached data cleared from memory
  **ERROR: value out of legal range: X coordinates on log axis negative or too small : -0.850
 poly/i=1:100/vlog xbad+xsqr,ybad+ysqr,x*x/10
  **ERROR: value out of legal range: X coordinates on log axis negative or too small : -0.689E-02
 poly/i=1:100/hlog xbad+xsqr,ybad+ysqr,x*x/10
 *** Running ferret script: bn694_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4391,26 +4149,19 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_permute_ascii.jnl
- Cached data cleared from memory
 Replacing definition of grid GRID3D
 *** Running ferret script: bn_lon_lat_time_string.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_save_justdim.jnl
- Cached data cleared from memory
  LISTing to file a.nc
            *** NOTE: Saving E or F axis with time axis uses /RIGID in time
  LISTing to file a.nc
 *** Running ferret script: bn_time2d.jnl
- Cached data cleared from memory
            *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
 *** Running ferret script: bn_legend_labels.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_DQ.jnl
- Cached data cleared from memory
            *** NOTE: Changing the value of attribute foobar.some_text
            *** NOTE: Changing the value of attribute foobar.some_text
 *** Running ferret script: bn695_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4418,26 +4169,20 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 rm: cannot remove `WestCoastCarbon_9d9c_f562_77b5_5.nc': No such file or directory
-           *** NOTE: Shell command returned failure flag: rm WestCoastCarbon_9d9c_f562_77b5_5.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_f_tax_fcns.jnl
- Cached data cleared from memory
  LISTing to file a.nc
 Replacing definition of axis FSEC
            *** NOTE: grid GSI1 used by data set a
            *** NOTE: Redefinition may alter apparent contents of data set
 *** Running ferret script: bn_fmrc.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_return_defined.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_can_var_noerr.jnl
- Cached data cleared from memory
  **ERROR: variable unknown or not in data set: B
 cancel var b,a
 *** Running ferret script: bn_annotate.jnl
- Cached data cleared from memory
  **ERROR: command syntax: xpos=a2
 annotate/nouser/xpos=a2/ypos=0/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
  **ERROR: command syntax: ypos=b
@@ -4471,9 +4216,7 @@ def anno/nou/xpos=0/hal=1/val=0 "My Lab"
  **ERROR: invalid command: Specify only one of /USER /NOUSER /NORM
 def anno/nou/user/xpos=0/ypos=0 "My Lab"
 *** Running ferret script: bn_auxiliary.jnl
- Cached data cleared from memory
 rm: cannot remove `layerz_test_data.txt': No such file or directory
-           *** NOTE: Shell command returned failure flag: rm layerz_test_data.txt
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
 SET VAR/layerz=depth noexist
@@ -4482,7 +4225,6 @@ SET VAR/layerz=depth noexist
 LIST/PREC=7 tempz6d_unmatch
 Replacing definition of axis ZAX
 *** Running ferret script: bn_plot_ribbon_gaploc.jnl
- Cached data cleared from memory
  **ERROR: command syntax: PLOT/VS/RIBBON/GAPLOC plot needs 4 arguments
 plot/vs/thick/line/sym=21/siz=.3/ribbon/gap xpts, 10*ypts, color
  **ERROR: command syntax: PLOT/GAPLOC applies only to PLOT/VS/RIBBON
@@ -4490,11 +4232,8 @@ plot/vs/thick/line/sym=21/siz=0.3/gap xpts, 10*ypts, 10.1*ypts, 9.93*ypts, gvar
  **ERROR: command syntax: PLOT/GAPLOC applies only to PLOT/VS/RIBBON
 plot/ov/nolab/vs/thick/line/sym=21/siz=.3/gapl xpts, color, gvar
 *** Running ferret script: bn_time_short_axes.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_floatstr_extended.jnl
- Cached data cleared from memory
 *** Running ferret script: bn696_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4513,7 +4252,6 @@ SHOW DATA/ATT noexist
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_bin_regrid.jnl
- Cached data cleared from memory
 Replacing definition of axis DCOARSE
 Replacing definition of axis IRR
 Replacing definition of axis DCOARSE
@@ -4525,7 +4263,6 @@ Replacing definition of axis IRR
 Replacing definition of axis DCOARSE
 Replacing definition of axis IRR
 *** Running ferret script: bn697_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4562,13 +4299,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- Cached data cleared from memory
- **ERROR: request exceeds memory setting: 13 Mwords were requested.
+ **ERROR: request exceeds memory setting
 load/l=1:5 bigvar
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
- Cached data cleared from memory
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4655,7 +4387,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_aggregate_t.jnl
- Cached data cleared from memory
  LISTing to file tmp/tagg_reg_1.nc
  LISTing to file tmp/tagg_reg_2.nc
  LISTing to file tmp/tagg_reg_3.nc
@@ -4760,7 +4491,6 @@ define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_1.nc
  **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_single_5.nc
 define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc, tmp/tagg_single_5.nc
 *** Running ferret script: bn_unquoted_args.jnl
- Cached data cleared from memory
  LISTing to file tmp/test1.nc
  LISTing to file tmp/test2.nc
  LISTing to file tmp/test3.nc
@@ -4780,7 +4510,6 @@ go/garbage /home/flat/ksmith/ferret_dev/bench/tmp/testMe.jnl
  **ERROR: unknown command qualifier: garbage
 go/garbage "/home/flat/ksmith/ferret_dev/bench/tmp/testMe.jnl"
 *** Running ferret script: bn_long_lists.jnl
- Cached data cleared from memory
  **ERROR: command syntax: command line too long -- exceeds 2048
 DEFINE VARIABLE a={1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5...
  **ERROR: variable unknown or not in data set: A
@@ -4790,9 +4519,7 @@ load a
  **ERROR: command syntax: "/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf...
 "/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc",\}
 *** Running ferret script: bn_show_uvar_grid.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_aggregate_f.jnl
- Cached data cleared from memory
  LISTing to file tmp/fcst_1.nc
  LISTing to file tmp/fcst_2.nc
  LISTing to file tmp/fcst_3.nc
@@ -4835,7 +4562,6 @@ DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/consecutive_month_fcst.nc")
  **ERROR: error defining aggregate dataset: forecast start times are irregular or too gappy
 DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/irregular_start_time_fcst.nc")
 *** Running ferret script: bn_aggregate_tef.jnl
- Cached data cleared from memory
  LISTing to file tmp/f01_e1_t1.nc
  LISTing to file tmp/f01_e1_t2.nc
  LISTing to file tmp/f01_e1_t3.nc
@@ -5028,27 +4754,21 @@ DEFINE DATA/AGGREGAT/E bad_ens = te_f01, te_f03, te_f04
  **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
 DEFINE DATA/AGGREGAT/F bad_fmrc = tf_e1, tf_e3, tf_e4
 *** Running ferret script: bn_dataset_qualifier.jnl
- Cached data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
 *** Running ferret script: bn_speedtest.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_show_noupcase.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 SHO VAR/XML
 SHO VAR/XML
 *** Running ferret script: bn_letd_attributes.jnl
- Cached data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
 *** Running ferret script: bn_list_clim_axes.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_climatology_attr.jnl
- Cached data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
 Replacing definition of axis TAX
@@ -5058,28 +4778,22 @@ Replacing definition of axis TAX
  LISTing to file a.nc
  LISTing to file a.nc
 *** Running ferret script: bn_plot_along.jnl
- Cached data cleared from memory
            *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
            *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
            *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
            *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
 *** Running ferret script: bn_show_commands.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_plot_decimate.jnl
- Cached data cleared from memory
            *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
            *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
            *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
            *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
 *** Running ferret script: bn_auto_tprec.jnl
- Cached data cleared from memory
 Replacing definition of axis TAX
 Replacing definition of axis TAX
 Replacing definition of axis TAX
 *** Running ferret script: bn_coordvars_atts.jnl
- Cached data cleared from memory
 *** Running ferret script: bn710_bug_fixes.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5220,7 +4934,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a1.nc
  LISTing to file a2.nc
 *** Running ferret script: bn_delim_datetime.jnl
- Cached data cleared from memory
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
@@ -5235,7 +4948,6 @@ list index,edtim,udtim,udate,edate
  **ERROR: Error reading file: Check Date or Time fields.
 list index,edtim,udtim,udate,edate
 *** Running ferret script: bn_aggregate_u.jnl
- Cached data cleared from memory
  LISTing to file tmp/uagg_1.nc
  LISTing to file tmp/uagg_2.nc
  LISTing to file tmp/uagg_3.nc
@@ -5268,24 +4980,15 @@ list index,edtim,udtim,udate,edate
            *** NOTE: Skipping variable REALIZATION from set 8, already in the Union dataset.
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
 *** Running ferret script: bn_ez_noupcase.jnl
- Cached data cleared from memory
  LISTing to file abc.dat
  LISTing to file a.nc
  LISTing to file a.nc
 *** Running ferret script: bn_spawn_fail.jnl
- Cached data cleared from memory
 ls: cannot access notafile.nowhere: No such file or directory
-           *** NOTE: Shell command returned failure flag: ls notafile.nowhere
-           *** NOTE: Shell command returned failure flag: grep "this text is not in the file" bn_all.jnl
 rm: cannot remove `nothing.dat': No such file or directory
-           *** NOTE: Shell command returned failure flag: rm nothing.dat
-           *** NOTE: Shell command returned failure flag: grep modulus non_COARDS.cdl
 cp: cannot stat `nofile.dat': No such file or directory
-           *** NOTE: Shell command returned failure flag: cp nofile.dat not_either.dat
 *** Running ferret script: bn_ave_of_ave.jnl
- Cached data cleared from memory
 *** Running ferret script: bn_agg_member_syntax.jnl
- Cached data cleared from memory
  **ERROR: unknown data set: D=5.3
 stat/br fcst[d=5.3]
  **ERROR: unknown data set: D=12.30
@@ -5299,7 +5002,6 @@ stat/br sst[d=4.1]
  **ERROR: unknown data set: D=5.30
 stat/br sst[d=5.30]
 *** Running ferret script: bn_true_monthly.jnl
- Cached data cleared from memory
            *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
            *** NOTE: True monthly axis has an implicit /EDGES qualifier
            *** NOTE: True monthly axis has an implicit /EDGES qualifier
@@ -5365,7 +5067,25 @@ def axis/t/t0=1-jan-2000/monthly/bounds tax={1.2, 2, 3.2, 5, 7, 8.4, 9}, {0.5,1.
  **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis: needs /T=lo:hi:del
 define axis/x=1:5:1/monthly aaxis
 *** Running ferret script: bn720_bug_fixes.jnl
- Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5377,7 +5097,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
 *** Running ferret script: bn_compressed_gather.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -5395,6 +5114,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XAX
+Replacing definition of axis YAX
 Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -5431,8 +5151,192 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+*** Running ferret script: bn_dynamic_gather.jnl
+ls: cannot access tmp/test_dyn_mem.nc: No such file or directory
+ LISTing to file tmp/test_dyn_mem.nc
+ LISTing to file tmp/test_dyn_mem.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: No active redirects to cancel
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: value out of legal range: illegal mode argument. Must be 0 to 90 percent
+SET MODE FRUGAL:95
+*** Running ferret script: bn_stat_precision.jnl
+*** Running ferret script: bn_plot_vs_with_time.jnl
+Replacing definition of axis TIME
+Replacing definition of axis TIME
+*** Running ferret script: bn_inner.jnl
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
 *** Running ferret script: bn_gif.jnl
- Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -5498,7 +5402,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
 Replacing definition of axis XAX
 *** Running ferret script: bn_ps.jnl
- Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -5533,7 +5436,6 @@ Re-defining viewport UM6
           frame/file=bnplot.ps
 frame/file=bnplot.ps
 *** Running ferret script: bn_all_ef.jnl
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5543,9 +5445,7 @@ set region/@w
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_startupfile.jnl
- Cached data cleared from memory
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
- Cached data cleared from memory
-Ended at Wed Mar 22 11:44:32 PDT 2017
+Ended at Tue Apr  4 12:41:31 PDT 2017

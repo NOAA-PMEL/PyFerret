@@ -13,7 +13,11 @@
 ! many time aggregations
 CANCEL MODE VERIFY
 
-if ($1"1") then
+! see if the test file already exists
+SPAWN "ls tmp/f04_e3_t3_1v.nc"
+IF ($SPAWN_STATUS) THEN
+  say *** NOT RE-CREATING bn_aggregate_tef.jnl test files. They already exist.
+ELSE
 
 ! Give the operator something to look at while we write all the data 
 plot/noax/nolab/vlim=0:1/i=4:5 i
@@ -76,7 +80,7 @@ repeat/name=fdate/range=10:10:3 (\
 
 cancel variables/all
 
-endif
+ENDIF
 
 ! ***** end of TEF file creation ****************
 

@@ -7,12 +7,14 @@ cancel mode verify
 !  7/09 *acm* added CANCEL VIEWPORTS
 !  3/17 *sh* accept an argument "GO bn_reset scriptname" and use it to
 !            put helpful separators into the log and err files
+!  4/17 *sh* added CANCEL MODE STUPID (was left on by bn_regrid_6d.jnl)
 
 ! reset FERRET to prepare for another benchmark test
 CANCEL REGION/ALL
 CANCEL DATA/ALL
 CANCEL VARIABLES/ALL
 CANCEL MEMORY/ALL
+CANCEL MODE STUPID   ! added 4/2017
 SET GRID ABSTRACT
 CANCEL MODE DIAGNOSTIC
 CANCEL MODE IGNORE_ERROR

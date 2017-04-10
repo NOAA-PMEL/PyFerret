@@ -6,7 +6,6 @@ BUILDTYPE	= $(HOSTTYPE)
 # BUILDTYPE	= x86_64-linux
 # BUILDTYPE	= i386-linux
 # BUILDTYPE	= i386-apple-darwin
-# BUILDTYPE	= intel-mac
 
 ## Installation directory for built Ferret.  Using the "install"
 ## Makefile target circumvents the need to create the fer_*.tar.gz
@@ -18,13 +17,15 @@ INSTALL_FER_DIR = $(HOME)/ferret_distributions/rhel6_64
 ## (contains include and lib or lib64 subdirectories)
 # HDF5_DIR	= /usr
 # HDF5_DIR	= /usr/local
-HDF5_DIR	= /usr/local/hdf5-1.8.16
+#  pre 26oct15 HDF5_DIR	= /usr/local/hdf5-1.8.15.1
+HDF5_DIR	= /usr/local/hdf5_189
 
 ## Installation directory for NetCDF static libraries
 ## (contains include and lib or lib64 subdirectories)
 # NETCDF4_DIR	= /usr
 # NETCDF4_DIR	= /usr/local
-NETCDF4_DIR	= /usr/local/netcdf-4.4.0
+# pre 26oct15 NETCDF4_DIR	= /usr/local/netcdf-4.3.3.1
+NETCDF4_DIR	= /usr/local/netcdf_432
 
 ## Installation directory for readline static libraries
 ## (contains include and lib or lib64 subdirectories)
@@ -42,13 +43,11 @@ LIBZ_DIR	= /usr/local
 ## Java home directory - this may be predefined
 ## from your shell environment.  If JAVA_HOME is defined,
 ## $(JAVA_HOME)/bin/javac and $(JAVA_HOME)/bin/jar is
-## called to build threddsBrowser.jar; otherwise, 
-## threddsBrowser.jar is not built and the Ferret command
-## SET DATA /BROWSE (or the alias OPEN) will not work.
+## called to build threddsBrowser.jar; otherwise, it just
+## uses javac and jar (from the path).
 # JAVA_HOME	= /usr/java/latest
 # JAVA_HOME	= /usr/lib/jvm/java-oracle
 # JAVA_HOME	= /usr/lib/jvm/java-sun
 JAVA_HOME	= /usr/lib/jvm/java
-# JAVA_HOME	= /Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home
 
 ##

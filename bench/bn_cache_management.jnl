@@ -1,6 +1,6 @@
 ! bn_cache_management.jnl
 
-! 1/2017 - try to force Ferret into a complex juggling of dependencies
+ ! 1/2017 - try to force Ferret into a complex juggling of dependencies
 ! and cache maintenance in order to reproduce the problem seen in trac
 ! ticket #2485 (from Ned Cokelet)
 
@@ -21,13 +21,7 @@
 
 DEFINE SYMBOL saved_memory_size = ($FERRET_MEMORY)
 
-! ******* !!!! ********
-! ***** BUG yet TO BE FOUND AND FIXED *****
-! WHEN THIS SCRIPT IS RUN ALONE MEMORY=20 IS SUFFICIENT, BUT WHEN
-! IT IS RUN UNDER BN_ALL IT RUNS OUT OF MEMORY.  SEE NOTES IN
-! ERR_ALL_CACHE_MANAGEMENT.JNL
-!SET MEMORY/SIZE=20
-SET MEMORY/SIZE=35
+SET MEMORY/SIZE=20
 CANCEL MEMORY/ALL
 
 DEFINE SYMBOL nsets = 20

@@ -1132,9 +1132,8 @@ GO bn_plot_vs_with_time
 GO bn_reset bn_inner
 GO bn_inner
 
-! TEMPORARILY REMOVED -- SEE err_all_cache_management.jnl
-!GO bn_reset bn_cache_management
-!GO bn_cache_management
+GO bn_reset bn_cache_management
+GO bn_cache_management
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
@@ -1142,7 +1141,3 @@ GO bn_reset
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
-
-
-
- fmt/src/tm_fmt.F fer/gnl/var_stat.F fer/common/slash.parm fer/xeq/xeq_stat.F fer/dat/xcommand_data.F

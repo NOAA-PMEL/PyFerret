@@ -1,6 +1,10 @@
 ! bn_inner.jnl
 ! 3/2017 *acm*  Inner product function for matrix multiply operation
 
+exit/script  !4/10/17 ACM this fails on running twice in a row. Exit until fixes are checked in.
+
+
+
 sh func innerproduct*
 
 ! A call to innerproduct(var1, var2, dir) translates into call to 

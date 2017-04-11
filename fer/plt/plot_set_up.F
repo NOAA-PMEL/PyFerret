@@ -258,7 +258,7 @@
      .			bc_min, bc_max, step_lo, step_hi
 	REAL		TSTEP_TO_SECS, SECS_TO_TSTEP, DATE_TO_TSTEP, 
      .			WHOI2BC,ind_min, ind_max, dep_min, dep_max, 
-     .			delta, tmp, dum, ww_save
+     .			delta, tmp, dum, ww_save, cen, yr
 	REAL*4 rbad
 
 * local parameter declarations:
@@ -1297,7 +1297,12 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 *
 	hlen = xlen ! single-precision xlen from PPLUS common -> double prec. var
 
-	IF (x_is_time .OR. y_is_time) ul_dolab(t_dim) = .FALSE.
+        IF (x_is_time .OR. y_is_time) THEN
+           ul_dolab(t_dim) = .FALSE.
+           READ (t1_date(13:14), *) cen
+           READ (t1_date(1:2), *) yr
+           ind_min = 100*cen + yr 
+        ENDIF
 	IF ( .NOT.no_labels ) 
      .          CALL LINE_PLOT_LABELS (var1, nkey_entries, ndv, cx_list, 
      .		this_no_range, overlay, versus, nokey, time_axis, 

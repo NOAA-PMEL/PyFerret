@@ -205,7 +205,7 @@ c
 	ny=1
 	flip = itflg .EQ. -1		!  FERRET mod 10/93
 
-	translate = ABS(itflg).eq.1
+	translate = ABS(itflg).eq.1 .AND. itstrt(1:1).NE.' '
 
 * Hack, plot/vs/ribbon on a time axis
 	IF (icode .EQ. 7) THEN

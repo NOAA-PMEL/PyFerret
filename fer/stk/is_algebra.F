@@ -109,6 +109,7 @@
 * V710 9/16  *acm* ticket 2465: Parsing expressions including attribute references.
 * V702 1/17 *sh* as a part of conversion to dynamic memory fixed bug that 
 *                CHECK_NAN_DATA_SUB was being called on string variables
+* V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 
 	include 'tmap_dims.parm'
 #include "netcdf.inc"
@@ -284,7 +285,8 @@
      .	    .OR. itype .EQ. alg_log_struct
      .	    .OR. itype .EQ. alg_log_vstruct   ) THEN
 	   GOTO 500
-	ELSEIF ( itype .EQ. alg_grid_chg_fcn ) THEN
+	ELSEIF ( itype .EQ. alg_grid_chg_fcn
+     .	    .OR. itype .EQ. alg_dir_chg_fcn ) THEN
 	   GOTO 600
 	ELSEIF ( itype .EQ. alg_const_var ) THEN
 	   GOTO 700

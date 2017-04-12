@@ -36,6 +36,7 @@
 *
 *
 * is the indicated variable one which is contains a grid changing function?
+* V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 
 * V450: 1/97
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
@@ -51,10 +52,12 @@
 
 
 * in reverse Polish order the final item of a grid changing variable will
-* always be a grid changing function
+* always be a grid changing function.
+* The direction changing functions are a subset of the grid-changing functions.
 
-	ITSA_GCVAR = uvar_item_type( uvar_num_items(uvar), uvar )
-     .		.EQ. alg_grid_chg_fcn
+	ITSA_GCVAR = 
+     .    uvar_item_type( uvar_num_items(uvar), uvar ).EQ. alg_grid_chg_fcn .OR. 
+     .    uvar_item_type( uvar_num_items(uvar), uvar ).EQ. alg_dir_chg_fcn
 
 	RETURN
 	END

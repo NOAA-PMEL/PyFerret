@@ -61,6 +61,11 @@
 * V694  *acm* 1214 Fixing ticket 2220: varname.attname in a function argument
 * V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
 *                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c
+* V710 *acm*  4/17 Implement ability to run one of a family of functions based on 
+*                  arguments that indicate the coordinate directions to operate on,
+*                  e.g. INNERPRODUCT(VAR1,VAR2,2) to compute the inner product of the 
+*                  variables in the Y direction by running innerproduct_y
+
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -91,7 +96,7 @@
      .          pdim8, pdim9, pdimr, frame_bottom, com_cx, res_mr,
      .          itype, arg_first_mismatch, slen, iset, igrid, idim,
      .          aux_cat(nferdims), aux_var(nferdims), 
-     .          idir_args(nferdims), idir_vals(nferdims), num_dirs
+     .          idir_args(nferdims), idir_vals(nferdims), num_dirs, ival
         CHARACTER*40 TM_FMT, GCF_NAME*40, alt_name
 	REAL	oneval
 
@@ -152,10 +157,12 @@
 
 * point to the memory resident components
 * (if fewer than 9 components default extras to dummy)
-	DO 333 icom = 1, num_com
- 333	com(icom) = is_mr(frame_bottom+icom-1)
-	DO 313 icom = num_com+1, 9
- 313	com(icom) = dummy_mr
+	DO icom = 1, num_com
+	   com(icom) = is_mr(frame_bottom+icom-1)
+	ENDDO
+	DO icom = num_com+1, 9
+	   com(icom) = dummy_mr
+	ENDDO
 
 * trap attempts to pass arguments of the wrong type (1/99)
 
@@ -214,16 +221,25 @@
 * Does the function designate an alternate function depending on a 'direction' argument?
 * If so update alg_text and ifcn
 
+        has_uvar_dc = .FALSE.
         IF ( ifcn .LE. GFCN_NUM_INTERNAL ) THEN
 
 	   CALL GCF_GET_ALT_FCN_DIR_ARG ( ifcn, idir_args )
 	   num_dirs = 0
+	   DO idim = 1, nferdims
+	      idir_vals(idim) = 0
+	   ENDDO
+
+* Collect the directions to use in determing the alt fcn. 
+* allow them to be out of dimension order.
 	   DO idim = 1, nferdims 
 	      IF (idir_args(idim) .GT. 0) THEN
-	         CALL GET_ONE_VAL (memry(com(idir_args(idim)))%ptr, oneval)
-	         idir_vals(idim) = oneval
-		 IF (idir_vals(idim).GE.1 .AND. idir_vals(idim).LE.nferdims) THEN
+	         CALL RETURN_ONE_VAL (memry(com(idir_args(idim)))%ptr, oneval)
+	         ival = INT(oneval)
+		 IF (ival.GE.1 .AND. ival.LE.nferdims) THEN
+		    IF (idir_vals(ival) .NE. 0) GOTO 5300
 		    num_dirs = num_dirs + 1
+	            idir_vals(ival) = ival
 		 ELSE
 		    GOTO 5300  ! invalid value for a direction-setting arg
 		 ENDIF
@@ -233,7 +249,7 @@
 	   IF (num_dirs .GT. 0) THEN
 	      CALL GCF_SET_ALT_FCN_FOR_DIR (ifcn, idir_vals, num_dirs)
 	      IF (ifcn .EQ. unspecified_int4 ) GOTO 5400
-	      alg_text = GCF_NAME(ifcn)
+	      has_uvar_dc = .TRUE.
 	   ENDIF
         ENDIF
 
@@ -311,13 +327,6 @@
      .                               mr_c_pointer(res_mr)      )
 	ENDIF
 
-* point to the memory resident components
-* (if fewer than 9 components default extras to dummy)
-	DO 300 icom = 1, num_com
- 300	com(icom) = is_mr(frame_bottom+icom-1)
-	DO 310 icom = num_com+1, 9
- 310	com(icom) = dummy_mr
-
 * set up 6D array limits as unsubscripted variables in COMMON
 	CALL NON_ARRAY_SUBSC( com, 10 )
 
@@ -393,6 +402,7 @@
 * save the result context at the cx level previously used by the 1st component
 	cx_stack_ptr = cx_stack_ptr + 1
 	CALL TRANSFER_CONTEXT( res_cx, cx_stack_ptr )
+
 	is_cx( isp ) = cx_stack_ptr
 
 	RETURN
@@ -414,8 +424,8 @@
 * Invalid value for for direction
         risc_buff = alg_text
 	CALL ERRMSG( ferr_invalid_command, status,
-     .		'Arguments for direction of function must l ie in 1 through 6 '//
-     .		risc_buff, *5000 )
+     . 'Arguments for direction of function must not repeat and be between 1 and 6 '//
+     .  risc_buff, *5000 )
 
 
  5400	CONTINUE
@@ -426,12 +436,4 @@
      .		risc_buff, *5000 )
 
 	END
-
-
-	SUBROUTINE GET_ONE_VAL (com, val)
-	REAL com, val
-
-	val = com
-	return
-	end
 

@@ -1,5 +1,7 @@
-	SUBROUTINE GCF_SET_ALT_FCN_FOR_DIR( gcfcn, idirs, num_dirs)
+	SUBROUTINE TM_MAKE_NEW_DYN_GRID ( ingrid, outgrid,  status)
 
+*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -32,51 +34,34 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-* Find the correct function name and update to the right function number
-* for direction-changing functions which have arguments that specifies the
-* direction of operation.
+** V7.2 *acm* 4/2017 
+* Rreate a new dynamic grid and copy the definition of ingrid to it.
+* Returns "outgrid" with the number of the new dynamic grid.
+* This is used for the new class of direction-changing functions as a subset 
+* of grid-changing fcns. An entirely grid is defined for these at grid 
+* initialization time; it will be changed according to the function and the
+* directions chosen in the function call.
 
-* V7.20 *acm* 4/2017
+* Arguments
+	INTEGER	 ingrid, outgrid, status
+*
+* INCLUDE FILES
+	include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+#include "gt_lib.parm"
+	include 'tmap_errors.parm'
+	include 'xtm_grid.cmn_text'
+	external xgt_grid_data
 
-        include 'tmap_dims.parm'
-        include 'ferret.parm'
-	include 'grid_chg_fcns.parm' 
-	include 'xgrid_chg_fcns.cmn'
+	CALL TM_ALLO_DYN_GRID( outgrid, status )
+	IF (status .NE. merr_ok) GOTO 9000
+	CALL TM_COPY_GRID_W_LINE_USE( ingrid, outgrid )
 
+* name it "(Gnnn)"
+	WRITE ( grid_name(outgrid), 3000 ) outgrid - max_grids
+ 3000	FORMAT('(G',I3.3,')')		! restricted to 3 digits
 
-* calling argument declarations
-	INTEGER		gcfcn, idirs(*), num_dirs
-
-* Local declarations
-	INTEGER	TM_LENSTR1, GCF_FIND_FCN, nlen, isubst, idim
-	CHARACTER name*40, buff*40, axdir(nferdims)*1
-        DATA axdir / 'X', 'Y', 'Z', 'T', 'E', 'F' /
-
-	IF (num_dirs .EQ. 0)  GOTO 5100
-
-	name = gfcn_alt_name_base(gcfcn)
-	nlen = TM_LENSTR1( name )
-	isubst = INDEX(name, '%')
-	IF (isubst .EQ. 0) GOTO 5100
-
-* substitute axis direction names to get the new function
-
-	DO idim = 1, nferdims
-	   IF (idirs(idim) .NE. 0) THEN
-	      buff = name
-	      nlen = TM_LENSTR1( buff )
-	      isubst = INDEX(buff, '%')
-	      IF (isubst .EQ. 0) GOTO 5100
-	      buff = buff(:isubst-1)//axdir(idirs(idim))//
-     .          buff(isubst+1:nlen)
-              name = buff
-	   ENDIF
-        ENDDO
-	   
-	nlen = TM_LENSTR1( name )
-	gcfcn = GCF_FIND_FCN( name )
-
-	RETURN
-5100    gcfcn = unspecified_int4
-	RETURN
+* successful completion
+	status = merr_ok
+ 9000	RETURN
 	END

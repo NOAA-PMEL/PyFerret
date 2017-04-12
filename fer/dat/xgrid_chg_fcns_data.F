@@ -54,6 +54,8 @@
 *                    internal string handling functions   
 * V550: *acm*10/02 - Correct the function description for SUBSTRING
 *        2/12 *kms* Add E and F dimensions (set to nferdims in tmap_dims.parm)
+* V720: 4/17 *acm* Add INNERPRODUCT and TRANSPOSE as direction-changing functions
+*                  which call specific funcions depenging on direction arguments
 
 * the addition (or major modification) of an internal grid-changing function
 * requires changes to these routines:
@@ -1297,15 +1299,84 @@
 	DATA (gfcn_axis_implied_from(i, p_innerprod_arg_start+1),i=1,nferdims)
      .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 
+c-------------
+
+* TRANSPOSE(var,dim1,dim2) - return transpose of variable in the two given directions
+	INTEGER		p_transpose_arg_start, p_transpose_num_args
+	PARAMETER     ( p_transpose_arg_start = p_innerprod_arg_start +
+     .					    p_innerprod_num_args,
+     .			p_transpose_num_args  = 3 )
+	DATA gfcn_name         (p_transpose) /'TRANSPOSE'/
+	DATA gfcn_alt_name_base (p_transpose) /'TRANSPOSE_%%'/
+	DATA gfcn_version      (p_transpose) / 1.0 /
+	DATA gfcn_descr        (p_transpose) /
+     .	'Compute the in two given dimensions' /
+	DATA gfcn_rtn_type     (p_transpose) /pfcn_rtn_float /
+	DATA gfcn_num_reqd_args(p_transpose) /p_transpose_num_args/
+	DATA (gfcn_dir_args(i,p_transpose),i=1,nferdims)/2,3,0,0,0,0/
+	DATA gfcn_has_vari_args(p_transpose) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_transpose),i=1,nferdims)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args/
+	DATA (gfcn_piecemeal_ok(i,p_transpose),i=1,nferdims)
+     .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
+	DATA gfcn_arg_ptr(p_transpose) /p_transpose_arg_start/
+
+* ... description of argument 1
+	DATA gfcn_arg_name(p_transpose_arg_start+0)/'VAR'/
+	DATA gfcn_arg_type(p_transpose_arg_start+0)/parg_type_float/
+	DATA gfcn_arg_units(p_transpose_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_transpose_arg_start+0)/'Variable to transpose'/
+	DATA (gfcn_arg_extend_lo (i,p_transpose_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_transpose_arg_start+0),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_transpose_arg_start+0),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
+
+* ... description of argument 2
+	DATA gfcn_arg_name(p_transpose_arg_start+1)/'DIM1'/
+	DATA gfcn_arg_type(p_transpose_arg_start+1)/parg_type_float/
+	DATA gfcn_arg_units(p_transpose_arg_start+1)/' '/
+	DATA gfcn_arg_descr(p_transpose_arg_start+1)/'Dimension 1 for transpose (1,2,...)'/
+	DATA (gfcn_arg_extend_lo (i,p_transpose_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_transpose_arg_start+1),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+* ... merge the axes implied by argument 2 ?
+	DATA (gfcn_axis_implied_from(i, p_transpose_arg_start+1),i=1,nferdims)
+     .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
+
+* ... description of argument 3
+	DATA gfcn_arg_name(p_transpose_arg_start+2)/'DIM2'/
+	DATA gfcn_arg_type(p_transpose_arg_start+2)/parg_type_float/
+	DATA gfcn_arg_units(p_transpose_arg_start+2)/' '/
+	DATA gfcn_arg_descr(p_transpose_arg_start+2)/'Dimension 2 for transpose (1,2,...)'/
+	DATA (gfcn_arg_extend_lo (i,p_transpose_arg_start+2),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_transpose_arg_start+2),i=1,nferdims)
+     .    / 0, 0, 0, 0, 0, 0 /
+* ... merge the axes implied by argument 3 ?
+	DATA (gfcn_axis_implied_from(i, p_transpose_arg_start+2),i=1,nferdims)
+     .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
+
 
 * internal parameters helpful for initialization
-	DATA gfcn_num_internal/p_innerprod/
+	DATA gfcn_num_internal/p_transpose/
+
+c-------------
+
 
 * template for next function ...
 	INTEGER		p_next, p_next_arg_start, p_next_num_args 
-	PARAMETER     ( p_next = p_innerprod + 1,
-     .			p_next_arg_start = p_innerprod_arg_start +
-     .					   p_innerprod_num_args,
+	PARAMETER     ( p_next = p_transpose + 1,
+     .			p_next_arg_start = p_transpose_arg_start +
+     .					   p_transpose_num_args,
      .			p_next_num_args  = 1 )
 
 	END

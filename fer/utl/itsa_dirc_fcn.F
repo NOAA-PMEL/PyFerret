@@ -1,5 +1,7 @@
-	SUBROUTINE GCF_SET_ALT_FCN_FOR_DIR( gcfcn, idirs, num_dirs)
+	LOGICAL FUNCTION ITSA_DIRC_FCN( ifcn )
 
+*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -32,51 +34,30 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-* Find the correct function name and update to the right function number
-* for direction-changing functions which have arguments that specifies the
-* direction of operation.
+*
+* Is the indicated function a grid-changing function which depends on arguments
+* to determine the directions of operations and potentially the grid?
 
-* V7.20 *acm* 4/2017
+* V720: 4/17 Ansley Manke
+
+* calling argument declarations
+	INTEGER	ifcn
+
+* internal variable declarations
 
         include 'tmap_dims.parm'
         include 'ferret.parm'
-	include 'grid_chg_fcns.parm' 
-	include 'xgrid_chg_fcns.cmn'
+        include 'grid_chg_fcns.parm'
+        include 'xgrid_chg_fcns.cmn'
 
+	INTEGER	idim, ndims
 
-* calling argument declarations
-	INTEGER		gcfcn, idirs(*), num_dirs
-
-* Local declarations
-	INTEGER	TM_LENSTR1, GCF_FIND_FCN, nlen, isubst, idim
-	CHARACTER name*40, buff*40, axdir(nferdims)*1
-        DATA axdir / 'X', 'Y', 'Z', 'T', 'E', 'F' /
-
-	IF (num_dirs .EQ. 0)  GOTO 5100
-
-	name = gfcn_alt_name_base(gcfcn)
-	nlen = TM_LENSTR1( name )
-	isubst = INDEX(name, '%')
-	IF (isubst .EQ. 0) GOTO 5100
-
-* substitute axis direction names to get the new function
-
+	ndims = 0
 	DO idim = 1, nferdims
-	   IF (idirs(idim) .NE. 0) THEN
-	      buff = name
-	      nlen = TM_LENSTR1( buff )
-	      isubst = INDEX(buff, '%')
-	      IF (isubst .EQ. 0) GOTO 5100
-	      buff = buff(:isubst-1)//axdir(idirs(idim))//
-     .          buff(isubst+1:nlen)
-              name = buff
-	   ENDIF
-        ENDDO
-	   
-	nlen = TM_LENSTR1( name )
-	gcfcn = GCF_FIND_FCN( name )
+	   ndims = ndims + gfcn_dir_args(idim, ifcn)
+	ENDDO
 
-	RETURN
-5100    gcfcn = unspecified_int4
+	ITSA_DIRC_FCN = ndims .GT. 0
+
 	RETURN
 	END

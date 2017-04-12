@@ -1,4 +1,4 @@
-	SUBROUTINE GCF_SET_ALT_FCN_FOR_DIR( gcfcn, idirs, num_dirs)
+	SUBROUTINE GCF_SET_ABSTRACT_AXIS( grid, idim )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -32,51 +32,24 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-* Find the correct function name and update to the right function number
-* for direction-changing functions which have arguments that specifies the
-* direction of operation.
+*
+* A grid has been determined to need an abstract axis in a particular direction,
+* when setting an alternate function to run depending on direction arguments.
 
-* V7.20 *acm* 4/2017
+* 
+* V720 3/16 *acm* 
 
-        include 'tmap_dims.parm'
-        include 'ferret.parm'
-	include 'grid_chg_fcns.parm' 
-	include 'xgrid_chg_fcns.cmn'
+	include 'ferret.parm'
+	include 'tmap_dims.parm'
+	include	'xtm_grid.cmn_text'
+	external xgt_grid_data
+	include 'xfr_grid.cmn'       ! w/ mgrid_abstract
 
 
 * calling argument declarations
-	INTEGER		gcfcn, idirs(*), num_dirs
+	INTEGER		grid, idim
 
-* Local declarations
-	INTEGER	TM_LENSTR1, GCF_FIND_FCN, nlen, isubst, idim
-	CHARACTER name*40, buff*40, axdir(nferdims)*1
-        DATA axdir / 'X', 'Y', 'Z', 'T', 'E', 'F' /
+	grid_line(idim, grid) = grid_line(idim,mgrid_abstract)
 
-	IF (num_dirs .EQ. 0)  GOTO 5100
-
-	name = gfcn_alt_name_base(gcfcn)
-	nlen = TM_LENSTR1( name )
-	isubst = INDEX(name, '%')
-	IF (isubst .EQ. 0) GOTO 5100
-
-* substitute axis direction names to get the new function
-
-	DO idim = 1, nferdims
-	   IF (idirs(idim) .NE. 0) THEN
-	      buff = name
-	      nlen = TM_LENSTR1( buff )
-	      isubst = INDEX(buff, '%')
-	      IF (isubst .EQ. 0) GOTO 5100
-	      buff = buff(:isubst-1)//axdir(idirs(idim))//
-     .          buff(isubst+1:nlen)
-              name = buff
-	   ENDIF
-        ENDDO
-	   
-	nlen = TM_LENSTR1( name )
-	gcfcn = GCF_FIND_FCN( name )
-
-	RETURN
-5100    gcfcn = unspecified_int4
 	RETURN
 	END

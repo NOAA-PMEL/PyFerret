@@ -58,7 +58,7 @@
 * V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
 *                  uvar_aux_var replaced with calls to LIST routines in NCF_Util.c 
 *                  Increase size of max_gfdl_dsets and max_grids
-
+* V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -480,6 +480,7 @@
      .			alg_operand,
      .			alg_if_marker,
      .			alg_then_marker,
+     .			alg_dir_chg_fcn,
      .			alg_grid_chg_fcn,
      .			alg_child_var,
      .			alg_const_var,
@@ -501,6 +502,7 @@
      .			alg_operand    = 11,
      .			alg_if_marker    = 21,
      .			alg_then_marker  = 22,
+     .			alg_dir_chg_fcn  = 12,
      .			alg_grid_chg_fcn = 13,
      .			alg_child_var    = 14,
      .			alg_const_var    = 15,
@@ -508,7 +510,7 @@
      .                  alg_counter_var  = 17,
      .                  alg_attrib_val   = 18,
      .                  alg_log_vstruct  = 19,
-     .                  alg_agg_var	 = 20 )
+     .                  alg_agg_var	 = 20)
 
 * codes to distinguish between context choices
 * (contexts describe space/time/variable/transformation/data_set,etc.)

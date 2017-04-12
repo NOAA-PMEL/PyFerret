@@ -51,6 +51,7 @@
 *                   varname.attname
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid. 
+* V720: 4/17 *acm* add direction-changing functions as a subset of grid-changing ones
 
 	include		'ferret.parm'
 	include		'rpn.parm'
@@ -129,7 +130,8 @@
 
 *	   FUNCTION
 	   if (atom_type(atom(i)) .eq. alg_function
-     .	  .OR. atom_type(atom(i)) .eq. alg_grid_chg_fcn) then
+     .	  .OR. atom_type(atom(i)) .eq. alg_grid_chg_fcn
+     .	  .OR. atom_type(atom(i)) .eq. alg_dir_chg_fcn) then
 	      ndx(i) = 8
 	      goto 100
 	   end if

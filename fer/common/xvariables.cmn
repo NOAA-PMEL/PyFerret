@@ -67,6 +67,7 @@
 *                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 * V702 *sh* 1/17   implement malloc-based dynamic memory management
 *                  remove block-managed "memory" array
+* V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -168,6 +169,8 @@
 *	uvar_bad_data	- missing value flag to be used for this variable
 *	uvar_c_cache_ptr- pointer to c-cahce of full range variable
 *	has_uvar_gc	- variable is a grid-changing variable
+*	has_uvar_dc	- a grid-changing variable where the function changes based 
+*			  on argument(s) which tell which dimension(s) to operateon
 *	is_uvar_const	- variable is a constant-array variable
 
 *	isp	 	- interpretation stack pointer
@@ -355,6 +358,7 @@
      .		uvar_need_dset	 ( max_uvar ),
      .		uvar_c_cache_ptr ( max_uvar ),
      .		has_uvar_gc,
+     .		has_uvar_dc,
      .		is_uvar_const,
      .
      .		uvar_text	 ( max_uvar ),
@@ -411,6 +415,7 @@
      .			uvar_mod_pseudo,
      .			uvar_by_ss,
      .			has_uvar_gc,
+     .			has_uvar_dc,
      .			is_uvar_const,
      .			uvar_ifv,
      .			uvar_remote,

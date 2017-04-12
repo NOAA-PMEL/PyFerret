@@ -1,5 +1,7 @@
-	SUBROUTINE GCF_SET_ALT_FCN_FOR_DIR( gcfcn, idirs, num_dirs)
+	LOGICAL FUNCTION ITSA_DCVAR( uvar )
 
+*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -32,51 +34,26 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-* Find the correct function name and update to the right function number
-* for direction-changing functions which have arguments that specifies the
-* direction of operation.
-
-* V7.20 *acm* 4/2017
-
-        include 'tmap_dims.parm'
-        include 'ferret.parm'
-	include 'grid_chg_fcns.parm' 
-	include 'xgrid_chg_fcns.cmn'
-
+*
+* is the indicated variable one which is contains a direction-changing function?
+* V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 
 * calling argument declarations
-	INTEGER		gcfcn, idirs(*), num_dirs
+	INTEGER	uvar
 
-* Local declarations
-	INTEGER	TM_LENSTR1, GCF_FIND_FCN, nlen, isubst, idim
-	CHARACTER name*40, buff*40, axdir(nferdims)*1
-        DATA axdir / 'X', 'Y', 'Z', 'T', 'E', 'F' /
+* internal variable declarations
 
-	IF (num_dirs .EQ. 0)  GOTO 5100
+	include	'tmap_dims.parm'
+	include 'ferret.parm'
+	include 'xvariables.cmn'
 
-	name = gfcn_alt_name_base(gcfcn)
-	nlen = TM_LENSTR1( name )
-	isubst = INDEX(name, '%')
-	IF (isubst .EQ. 0) GOTO 5100
 
-* substitute axis direction names to get the new function
+* in reverse Polish order the final item of a grid changing variable will
+* always be a grid changing function.
+* A direction changing function is a subset of the grid-changing functions.
 
-	DO idim = 1, nferdims
-	   IF (idirs(idim) .NE. 0) THEN
-	      buff = name
-	      nlen = TM_LENSTR1( buff )
-	      isubst = INDEX(buff, '%')
-	      IF (isubst .EQ. 0) GOTO 5100
-	      buff = buff(:isubst-1)//axdir(idirs(idim))//
-     .          buff(isubst+1:nlen)
-              name = buff
-	   ENDIF
-        ENDDO
-	   
-	nlen = TM_LENSTR1( name )
-	gcfcn = GCF_FIND_FCN( name )
+	ITSA_DCVAR = uvar_item_type( uvar_num_items(uvar), uvar )
+     .		.EQ. alg_dir_chg_fcn
 
-	RETURN
-5100    gcfcn = unspecified_int4
 	RETURN
 	END

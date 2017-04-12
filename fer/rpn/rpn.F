@@ -57,6 +57,7 @@
 *		   to enable IF cond THEN string1 ELSE string2 
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid. 
+* V720: 4/17 *acm* add direction-changing functions as a subset of grid-changing ones
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -120,6 +121,7 @@
 
 	   if (.not. OK_JUXTAPO (las_ptr,inf_ptr,atom_type,atom_id)) goto 5200
 	   if (atom_type(inf_ptr) .eq. alg_grid_chg_fcn
+     .	  .OR. atom_type(inf_ptr) .eq. alg_dir_chg_fcn
      .	  .OR. atom_type(inf_ptr) .eq. alg_function )
      .						fcn_ndx = fcn_ndx + 1
 	
@@ -180,7 +182,8 @@
 		    if (arg_cnt(fcn_ndx) .ne. narg)  goto 5400
 		    arg_cnt(fcn_ndx) = 1
 		    fcn_ndx 	     = fcn_ndx - 1
-	         ELSEif (atom_type(tmp_ptr) .eq. alg_grid_chg_fcn) then
+	         ELSEif (atom_type(tmp_ptr) .eq. alg_grid_chg_fcn .OR.
+     .		         atom_type(tmp_ptr) .eq. alg_dir_chg_fcn ) then
 *                   ==> grid changing Ferret function
 *		        variable arguments?
 	            narg = GCF_NUM_ARGS( atom_id(tmp_ptr) )

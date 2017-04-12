@@ -94,6 +94,7 @@
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 * V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
+* V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 
         include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -121,7 +122,7 @@
 	
 * take data type from the memory resident result
 	cx_type( cx ) = mr_type( mr )
-	
+
 * axis limits and subscripts:
 	DO 100 idim = 1, nferdims
 
@@ -191,7 +192,18 @@
 	      cx_lo_ww(idim,cx) = mr_lo_ww(idim,mr)
 	      cx_hi_ww(idim,cx) = mr_hi_ww(idim,mr)
 
+* If the computation has a grid-changing fcn chosen at run-time, we still need
+* to use the limits as loaded
+	   ELSEIF (has_uvar_dc .AND. uvar_given(idim,uvar) .EQ. uvlim_needed
+     .		  .AND. .NOT.cx_given(idim,cx) 	    ) THEN
+
+	         cx_lo_ss(cx,idim) = mr_lo_ss(mr,idim)
+	         cx_hi_ss(cx,idim) = mr_hi_ss(mr,idim)
+	         cx_lo_ww(idim,cx) = mr_lo_ww(idim,mr)
+	         cx_hi_ww(idim,cx) = mr_hi_ww(idim,mr)
+
 	   ENDIF
+ 
 
 * 8/12/91 bug fix during Unix port
 * this is not known to be the perfect fix (kludge)...

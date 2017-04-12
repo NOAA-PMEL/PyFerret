@@ -63,6 +63,7 @@
 * V533: 7/01 *sh* - added SPAWN function
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V6.8  *acm* 5/12 Add EUNRAVEL, FUNRAVEL
+* V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 
 * debug declarations for TIMES2
 !	INTEGER	n_com1, n_grid, com1_grid
@@ -376,8 +377,11 @@
 		 cx_lo_ss(res_cx,idim) = lo_lim
 		 cx_hi_ss(res_cx,idim) = hi_lim
 		 cx_by_ss(idim, res_cx) = .TRUE.
+		 IF (has_uvar_dc) CALL GCF_SET_ABSTRACT_AXIS (res_grd, idim)
 		 CALL FLESH_OUT_AXIS( idim, res_cx, status )
 		 IF ( status .NE. ferr_ok ) GOTO 5000
+
+		 IF (has_uvar_dc) uvar_given(idim,uvar) = uvlim_hidden
 
 
 * If the axis is normal ... nothing needs to be done
@@ -387,6 +391,7 @@
 
 		 CALL GCF_SET_NORMAL_AXIS (res_grd, idim)
 		 CALL FLESH_OUT_AXIS (idim, res_cx, status)  ! set everything needed in the cx
+		 IF (has_uvar_dc) uvar_given(idim,uvar) = uvlim_irrelevant
 
 * If the axis is custom
 

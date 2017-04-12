@@ -41,6 +41,7 @@
 * V533 *sh* 7/01
 * v554: 1/04 *acm* Counter variables for REPEAT/RANGE=/NAME=
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 
 * calling argument declarations
 	INTEGER	uvar
@@ -87,7 +88,8 @@
 	  ELSEIF (
      .		 itype .EQ. alg_child_var   
      .	  .OR.   itype .EQ. alg_variable   
-     .	  .OR.   itype .EQ. alg_grid_chg_fcn 
+     .	  .OR.   itype .EQ. alg_grid_chg_fcn  
+     .	  .OR.   itype .EQ. alg_dir_chg_fcn 
      .	  .OR.   itype .EQ. alg_const_var
      .	  .OR.   itype .EQ. alg_string    
      .	  .OR.   itype .EQ. alg_attrib_val  ) THEN

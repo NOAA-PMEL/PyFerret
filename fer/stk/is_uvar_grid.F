@@ -119,6 +119,7 @@
 * V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
 *                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 * V720  3/17 *acm*  clean up long commented-out code referring to aggregations 
+* V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 
 * calling argument declarations:
 	INTEGER	status
@@ -140,10 +141,10 @@
 	include	'xfr_grid.cmn'
 
 * internal variable declarations:
-	LOGICAL	ITSA_GCVAR, ITSA_CONST_VAR,
+	LOGICAL	ITSA_GCVAR, ITSA_CONST_VAR, ITSA_DCVAR,
      .		its_dynamic, its_gc, need_another_pass,
      .		saved_ifthen_type, do_err, ok_remote,
-     .		getting_aux_var, its_const_var
+     .		getting_aux_var, its_const_var, its_dc
 	INTEGER KNOWN_GRID, STR_SAME,
      .		TM_LENSTR1, GCF_PARENT_UVAR, GCF_PARENT_CHAR, 
      .		NCF_GET_AGG_COUNT, iaux,
@@ -176,7 +177,9 @@
 	dset   = cx_data_set( lo_cx )
 	nitem  = uvar_num_items( uvar )
 	its_gc = ITSA_GCVAR(uvar)
+	its_dc = ITSA_DCVAR(uvar)
 	has_uvar_gc = has_uvar_gc .OR. its_gc  ! for repl_exprns fixing bug 1523
+	has_uvar_dc = .FALSE.                  ! function changes based on args
 	is_uvar_const = ITSA_CONST_VAR(uvar)   ! for repl_exprns fixing bug 2213
 * ... initialization to support 2/99 pass-2 changes
 	pass_number = 1
@@ -709,8 +712,16 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 	ENDIF
 
 * catalog this result checking for matching previously existing grid
-	CALL TM_GET_LIKE_DYN_GRID(grid, its_dynamic, gnum, 
+
+* For dimension-changing function, make a new grid and copy gnum to it
+* The function will change the grid so we do not want to use existing one.
+
+	IF (its_dc) THEN
+	   CALL TM_MAKE_NEW_DYN_GRID(grid, gnum, status )
+ 	ELSE     
+	   CALL TM_GET_LIKE_DYN_GRID(grid, its_dynamic, gnum, 
      .				grd_stk_ptr, status )  
+ 	ENDIF
 	IF (status .NE. merr_ok) GOTO 5000
 	IF ( its_dynamic ) THEN
 	   IF ( mode_diagnostic )  CALL DIAG_OP

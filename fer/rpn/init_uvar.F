@@ -96,6 +96,9 @@
 * V694  *acm* 1214 Fixing ticket 2220: a variablename.attname argument to a function
 *                  needs to be added as a child variable
 * V699 *sh* 6/16 bail out code at 5900 needs to clean up child LIST structures
+* V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
+*                  A new grid is defined for these at grid initialization time; it
+*                  will be changed later.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'	
@@ -149,7 +152,7 @@
 * grid cannot necessarily be inferred from the component arguments.
  200	paren_level = 0
 	DO 300 iat = gcf_start(gcfstk)+1, natom
-	   IF ( at_type(iat).EQ. alg_grid_chg_fcn ) THEN
+	   IF ( at_type(iat).EQ.alg_grid_chg_fcn .OR.  at_type(iat).EQ.alg_dir_chg_fcn ) THEN
 * ... find the variable number for this "child variable"
 *     Note that for the simple non-nested case of LET v = GCF(arg, arg, ...)
 *     no child variables are needed - so at the end of this routine we clean
@@ -243,7 +246,8 @@
  800	CALL GCF_CHILD_VAR_NAME( uvar,
      .				 at_start(child_start)-(at_start(1)-1),
      .				 child_name )
-	itsa_gc = at_type(child_start) .EQ. alg_grid_chg_fcn
+	itsa_gc = at_type(child_start) .EQ. alg_grid_chg_fcn .OR. 
+     .            at_type(child_start) .EQ. alg_dir_chg_fcn
 
 	IF ( itsa_gc ) THEN
 	   uvar_child = gcf_uvar(gcfstk)

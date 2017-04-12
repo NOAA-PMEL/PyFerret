@@ -307,6 +307,7 @@
 	do_units = .TRUE.
 	x_is_time = .FALSE.
 	y_is_time = .FALSE.
+	tstyle = ' '
 	icode = 0
 
 * set limit on the number of plot keys

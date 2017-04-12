@@ -1,0 +1,22 @@
+! bn_transp_choose.jnl
+!  Test the TRANSPOSE function which chooses which of the 
+! transpose_ functions to run based on arguments
+
+can mem
+sh func transpose
+
+use gt4d011
+
+list/K=1/l=1 u[i=91:100,j=35:45]
+let var = transpose (u[i=91:100,j=35:41], 1, 2)
+list/K=1/l=1 var
+
+! same as transpose_xy function
+list/k=1/l=1 transpose_xy(u[i=91:100,j=35:41])
+
+! Combine transpose with other operations
+let vari = u - v
+list/l=1 vari[i=91:100,j=35:41,k=1:5@ave]
+let var = transpose (vari[i=91:100,j=35:41,k=1:5@ave], 1, 2)
+list/l=1 var
+

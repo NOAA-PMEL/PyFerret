@@ -186,6 +186,9 @@
 *                   units of e.g. "days since datestring". The datestring can be in a recognized
 *                   format: 01-jan-2011, or 2011-01-01. MM:HH:SS if present can be written
 *                   separated by a space, or a colon, or Z.
+* V7.2 *acm* 4/2017 Ticket 2318: for constant-value data on a line plot, make the axis
+*                   range +/- 10% of the value instead of +/- 1. For very large or small
+*                   values the +/- 1 corrupted the labels or the location of the plot.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -535,11 +538,13 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	   ELSEIF ( all_1_ind .AND. .NOT.overlay ) THEN
 	      IF ( val1 .EQ. mr_bad_data(mv) ) THEN
+		 delta = 1.
 	         ind_min = 0.D0
 	         ind_max = 1.D0
 	      ELSE
-	         ind_min = val1 - 1.
-	         ind_max = val1 + 1.
+	         delta = 0.1* val1
+	         ind_min = val1 - delta
+	         ind_max = val1 + delta
 	      ENDIF
 	   ELSE
 	      CALL MINMAX( indep_dat, npts, mr_bad_data(mv), lo, hi )
@@ -777,8 +782,6 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 
 	         IF (.NOT.overlay) THEN
 
-		 
-
 * Does it have time units? If so draw a formatted time axis
                  y_is_time = .FALSE.
                  since_T0 = MAX( INDEX(buff1,'since'), INDEX(buff1,'SINCE') )
@@ -911,8 +914,10 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      ENDIF
 	      all_1_ind = ind_min .EQ. ind_max
 	      IF ( all_1_ind ) THEN
-	         ind_min = ind_min - 1.
-	         ind_max = ind_max + 1.
+	         delta = 1.0
+		 IF (ind_min .NE. 0) delta = 0.1* ind_min
+	         ind_min = ind_min - delta
+	         ind_max = ind_max + delta
 	      ENDIF
 	   ENDIF
 
@@ -1247,12 +1252,14 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 
 	   ELSEIF ( all_1_dep ) THEN
 	      IF (only_val .EQ. bad_val4) val1 = 0.0	! 10/99
+	      delta = 1.
+	      IF (val1 .NE. 0) delta = 0.1* val1
 	      
-	      CALL AXIS_ENDS( dep_ax, the_taxis, grid,val1-1.D0,val1+1.D0,1.D0,
+	      CALL AXIS_ENDS( dep_ax, the_taxis, grid,val1-delta,val1+delta,delta,
      .                        dep_is_log, dep_axtyp, versus, status )   
 	      IF ( status .NE. ferr_OK ) THEN
-                  first = val1-1.0
-		  last  = val1+1.0
+                  first = val1-delta
+		  last  = val1+delta
 		  GOTO 5170
 	      ENDIF   
 	   ELSEIF (dep_is_log) THEN	! get dependent var scaling and set up log axis

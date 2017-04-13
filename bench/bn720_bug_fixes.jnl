@@ -29,3 +29,6 @@ GO err71_user_var_attrib
 
 GO bn_reset
 GO err71_save_bounds
+
+GO bn_reset
+GO err71_vs_constant

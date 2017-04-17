@@ -275,6 +275,7 @@ bn_stat_precision.jnl
 bn_plot_vs_with_time.jnl
 bn_inner.jnl
 bn_cache_management.jnl
+bn_transp_choose.jnl
 !
 ! bn_gif, bn_all_ef, and bn_startupfile at end
 !

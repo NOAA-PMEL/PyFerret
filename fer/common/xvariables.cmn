@@ -294,6 +294,7 @@
      .          uvar_name_code_padding,
      .          uvar_num_items_head,
      .          uvar_num_items_padding,
+     .		uvar_c_cache_ptr ( max_uvar ),
      .
      .		mr_trans_arg	( nferdims, max_mrs ),
      .		mr_bad_data   	( max_mrs ),
@@ -356,7 +357,6 @@
      .		uvar_ifv	 ( max_uvar ),
      .		uvar_title_w_text( max_uvar ),
      .		uvar_need_dset	 ( max_uvar ),
-     .		uvar_c_cache_ptr ( max_uvar ),
      .		has_uvar_gc,
      .		has_uvar_dc,
      .		is_uvar_const,

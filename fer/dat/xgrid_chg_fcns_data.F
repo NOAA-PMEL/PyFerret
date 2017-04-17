@@ -1310,7 +1310,7 @@ c-------------
 	DATA gfcn_alt_name_base (p_transpose) /'TRANSPOSE_%%'/
 	DATA gfcn_version      (p_transpose) / 1.0 /
 	DATA gfcn_descr        (p_transpose) /
-     .	'Compute the in two given dimensions' /
+     .	'Compute the transpose along two given dimensions' /
 	DATA gfcn_rtn_type     (p_transpose) /pfcn_rtn_float /
 	DATA gfcn_num_reqd_args(p_transpose) /p_transpose_num_args/
 	DATA (gfcn_dir_args(i,p_transpose),i=1,nferdims)/2,3,0,0,0,0/

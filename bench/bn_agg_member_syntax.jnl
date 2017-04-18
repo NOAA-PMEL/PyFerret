@@ -37,6 +37,14 @@ set mode/last ignore
 cancel data/all
 cancel var/all
 
+! Union datasets and SHOW DATA/MEMBERS
+union tmp/uagg_1.nc,tmp/uagg_2.nc,tmp/uagg_3.nc,tmp/uagg_4.nc
+show data/members
+show data 5.2
+show data 5.3
+
+cancel data/all
+
 ! Tests for Ensembles
 let files = SPAWN("ls -1 ens*.nc")
 ensemble my_ens = files
@@ -55,6 +63,7 @@ ENSEMBLE fourfiles = ens1, ens3, ens2, ens4
 show data 5.3
 
 stat sst[d=5] - sst[d=5.3]   ! ensemble minus member #3
+
 
 ! deliberate errors
 set mode ignore

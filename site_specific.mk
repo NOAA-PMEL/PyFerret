@@ -5,18 +5,18 @@
 ## Full path name of the directory containing this file (the ferret root directory).
 ## Do not use $(shell pwd) since this is included in Makefiles in other directories.
 ## =========================
-# DIR_PREFIX = $(HOME)/build/pyferret_dev
+DIR_PREFIX = $(HOME)/build/pyferret_dev
 # DIR_PREFIX = $(HOME)/git/PyFerret
-DIR_PREFIX = $(HOME)/pyferret_dev
+# DIR_PREFIX = $(HOME)/pyferret_dev
 
 ## =========================
 ## Installation directory for built PyFerret.  Using the "install"
 ## Makefile target automatically creates a generic pyferret-*.tar.gz
 ## file and then extracts it to create a PyFerret installation.
 ## =========================
-# INSTALL_FER_DIR = $(HOME)/ferret_distributions/rhel6_64
+INSTALL_FER_DIR = $(HOME)/ferret_distributions/rhel6_64
 # INSTALL_FER_DIR = $(HOME)/PyFerret
-INSTALL_FER_DIR = $(FER_DIR)
+# INSTALL_FER_DIR = $(FER_DIR)
 
 ## =========================
 ## Machine type for which to build Ferret/PyFerret

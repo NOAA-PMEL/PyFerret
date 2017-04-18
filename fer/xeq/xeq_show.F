@@ -1384,7 +1384,7 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
         CALL SHOW_MEM_USAGE_LINE('Peak demand', peak_essential_mem)
         CALL SHOW_MEM_USAGE_LINE('Current cache', total_mem)
         IF (permanent_mem .NE. 0 ) THEN
-           CALL SHOW_MEM_USAGE_LINE('Permamnent', permanent_mem)
+           CALL SHOW_MEM_USAGE_LINE('Permanent', permanent_mem)
         ENDIF
 
 	IF ( qual_given( slash_mem_free ) .GT. 0 ) THEN

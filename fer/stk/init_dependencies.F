@@ -49,6 +49,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V685+ 9/13 *sh*  
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -62,7 +63,8 @@
 	INTEGER	dflt_cx, base_isp, status
 
 * local variable declarations
-	INTEGER		mr, num_indices, j, uv, wkblk, total_items
+	INTEGER		mr, num_indices, j, uv, total_items
+	INTEGER*8	i8_size
 
 * initialize grid stack pointer (pushes down from top)
 	dependency_tree_mode = .TRUE.
@@ -95,14 +97,14 @@
 	dependency_max_recs = total_items/2
 	dependency_max_recs = (dependency_max_recs*dependency_max_recs)/4
 	dependency_max_recs = MAX(dependency_max_recs, 1000)
-	CALL GET_WORK_SPC( dependency_max_recs*dependency_nfields,
-     .			   wkblk, status )
+	i8_size = dependency_max_recs*dependency_nfields
+	CALL GET_DYN_WORK_SPACE( i8_size, status )
 	IF (status .NE. ferr_ok) GOTO 5000
 
 * initialize dependency COMMON
 	dependency_nrows      = 0
 	dependency_root_level = base_isp
-	dependency_block1     = wkblk
+!	dependency_block1     = wkblk    ! 1/17 pre-dynamic memory
 	dependency_status     = df_valid_var
 	IF (cx_data_set(cx_cmnd) .EQ. unspecified_int4) THEN
 	   dependency_dflt_dset  = pdset_irrelevant

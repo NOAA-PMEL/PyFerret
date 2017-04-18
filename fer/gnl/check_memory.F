@@ -1,5 +1,3 @@
-
-
 	SUBROUTINE CHECK_MEMORY ( lun )
 
 *
@@ -57,6 +55,7 @@
 *               declaration line.
 * V510: 10/99 *sh* - make checks on 
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V702 *sh* Added dynamic memory checks.  Removed old block-oriented stuff
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -68,53 +67,28 @@
 	INTEGER	lun
 
 * internal variable declarations:
-	INTEGER	mv, mb, mvfree, mvused, mbfree, mbused, mbmax,
-     .		nmvlost, nmblost, n, pile, last, size, test_next,
-     .		navail, nperm, mbperm, ntemp, ndel, slen, nn
-	CHARACTER LEFINT*8, buff*40, b12*12
-	PARAMETER (b12 = '            ')    !kob 12/96
-* check available bulk memory
-	n      = 0	! number of contiguous regions
-	mbfree = 0	! number of free blocks
-	mbmax  = 0	! biggest contiguous region
-	mb = mblk_flink( 0 )
- 100	IF ( mb .NE. 0 ) THEN
-	   n      = n + 1
-	   size   = mblk_size( mb ) 
-	   mbmax  = MAX( mbmax, size )
-	   mbfree = mbfree + size
-* * * * integrity check * * * * * * * * * * * * * * * * * * * *
-* ... no gaps should exist between sized regions - both free and used are sized
-	   test_next = mb + size
-	   IF ( test_next .EQ. max_mem_blks + 1 ) THEN
-	      CONTINUE
-	   ELSEIF ( test_next .GT. max_mem_blks + 1 
-     .     .OR.     mblk_size(test_next) .EQ. unspecified_int4 ) THEN
-	      CALL WARN('***** improper region size: '//LEFINT(mb,slen) )
-	   ENDIF
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	   mb = mblk_flink( mb )
-	   GOTO 100
-	ENDIF	   
+	INTEGER	mv, mvfree, mvused, 
+     .		nmvlost, pile, last, size, test_next,
+     .		navail, nperm, ntemp, ndel, slen, nn
+        INTEGER*8 mem_in_use
+	CHARACTER LEFINT*8, buff*40, b04*4
+	PARAMETER (b04 = '    ')
+
+
+* check Ferret variable memory allocations
+        mem_in_use = 0
+        DO mv = 1, max_mrs
+           mem_in_use = mem_in_use + mr_size(mv)
+        ENDDO
+* ... no valid ws_size() work memory in use when this routine is called
+        IF (mem_in_use .NE. total_mem) THEN
+	      CALL WARN('***** corrupted total mem size: '
+     .                  //LEFINT(mem_in_use,slen) )
+        ENDIF
 	CALL SPLIT_LIST( pttmode_explct, lun, 
-     .			 b12//'total memory table slots: '//
+     .			 b04//'Total table slots: '//
      .			 LEFINT(max_mr_avail,slen), 0 )
-	CALL SPLIT_LIST( pttmode_explct, lun,
-     .			 b12//'total memory blocks: '//
-     .			 LEFINT(max_mem_blks,slen), 0 )
-	CALL SPLIT_LIST( pttmode_explct, lun,
-     .			 b12//'memory block size: '//
-     .			 LEFINT( mem_blk_size,slen), 0 )
-	CALL SPLIT_LIST( pttmode_explct, lun,' ', 1 )		! <CR>
-	CALL SPLIT_LIST( pttmode_explct, lun,
-     .			 b12//'number of free memory blocks: '//
-     .			 LEFINT(mbfree,slen), 0 )
-	CALL SPLIT_LIST( pttmode_explct, lun,
-     .			 b12//'largest free region: '//
-     .			 LEFINT(mbmax,slen), 0 )
-	CALL SPLIT_LIST( pttmode_explct, lun,
-     .			 b12//'number of free regions: '//
-     .			 LEFINT(n,slen), 0 )
+
 
 * check slots in memory variable table
 * ... free table slots
@@ -133,25 +107,22 @@
 	   GOTO 200
 	ENDIF
 	CALL SPLIT_LIST( pttmode_explct, lun,
-     .			 b12//'free memory table slots: '//
+     .			 b04//'Free table slots: '//
      .			 LEFINT(mvfree,slen), 0 )
 
 * * * * integrity check * * * * * * * * * * * * * * * * * * * *
 * check all the variables in all the hash piles
 	mvused = 0
-	mbused = 0
 	DO 310 pile = 1, pmv_npiles
 	   last = -pile
 	   mv = mv_flink( last )	! base pointer for slots in this hash #
  300	   IF ( mv .GT. 0 ) THEN
 	      IF ( mr_protected(mv) .EQ. mr_deleted
      .	      .OR. mr_protected(mv) .EQ. mr_in_progress
-     .	      .OR. mr_nblks    (mv) .NE. mblk_size( mr_blk1(mv) )
      .	      .OR. mv_blink(mv) .NE. last ) 	CALL WARN
      .			('CORRUPTION! improperly cataloged: '
      .						//LEFINT(mv,slen) )
 	      mvused = mvused + 1
-	      mbused = mbused + mr_nblks(mv)
 	      last   = mv
 	      mv     = mv_flink(mv)
 	      GOTO 300
@@ -167,19 +138,17 @@
  350	IF ( mv .GT. 0 ) THEN
 	   IF ( mr_protected(mv) .EQ. mr_deleted
      .	   .OR. mr_protected(mv) .EQ. mr_in_progress
-     .	   .OR. mr_nblks    (mv) .NE. mblk_size( mr_blk1(mv) )
      .	   .OR. mv_blink(mv) .NE. last ) 	CALL WARN
      .			('CORRUPTION! uncached variable error: '
      .						//LEFINT(mv,slen) )
 	   nn = nn + 1
 	   mvused = mvused + 1
-	   mbused = mbused + mr_nblks(mv)
 	   last   = mv
 	   mv     = mv_flink(mv)
 	   GOTO 350
 	ENDIF
 	CALL SPLIT_LIST( pttmode_explct, lun,
-     .			 b12//'number of UN-CACHED variables: '//
+     .			 b04//'Un-cached variables: '//
      .			 LEFINT(nn,slen), 0 )
 
 * * * * integrity check * * * * * * * * * * * * * * * * * * * *
@@ -190,7 +159,6 @@
  360	IF ( mv .GT. 0 ) THEN
 	   nn = nn + 1
 	   mvused = mvused + 1
-	   mbused = mbused + mr_nblks(mv)
 	   last   = mv
 	   mv     = mv_flink(mv)
 	   GOTO 360
@@ -203,13 +171,9 @@
 * * * * integrity check * * * * * * * * * * * * * * * * * * * *
 * make sure no table slots or memory blocks have been lost
 	nmvlost = max_mr_avail - ( mvfree+mvused )
-	nmblost = max_mem_blks   - ( mbfree+mbused )
 	IF ( nmvlost .NE. 0 ) CALL WARN
      .			('CORRUPTION! lost table slots: '
      .						//LEFINT(nmvlost,slen) )
-	IF ( nmblost .NE. 0 ) CALL WARN
-     .			('CORRUPTION! lost memory blocks: '
-     .						//LEFINT(nmblost,slen) )
 
 * * * * integrity check * * * * * * * * * * * * * * * * * * * * *
 * variable deletion priority chain
@@ -224,12 +188,12 @@
 	ENDIF
 	ndel   = 0
 	nperm  = 0
-	mbperm = 0
 	ntemp  = 0
+        mem_in_use = 0
 	DO 410 mv = 1, max_mr_avail
 	   IF ( mr_protected(mv) .EQ. mr_perm_protected ) THEN
 	      nperm  = nperm  + 1
-	      mbperm = mbperm + mr_nblks(mv)
+              mem_in_use = mem_in_use + mr_size(mv)
 	   ELSEIF ( mr_protected(mv) .EQ. mr_deleted ) THEN
 	      ndel = ndel + 1
 	   ELSEIF ( mr_protected(mv) .EQ. mr_temporary ) THEN
@@ -238,18 +202,18 @@
  410	CONTINUE
 	IF ( nperm .GT. 0 ) THEN
 	   CALL SPLIT_LIST( pttmode_explct, lun,
-     .			 b12//'number of /PERMANENT variables: '//
+     .			 b04//'number of /PERMANENT variables: '//
      .			 LEFINT(nperm,slen), 0 )
 	   CALL SPLIT_LIST( pttmode_explct, lun,
-     .			 b12//'number of blocks used /PERM: '//
-     .			 LEFINT(mbperm,slen), 0 )
+     .			 b04//'memory used for /PERM: '//
+     .			 LEFINT(mem_in_use,slen), 0 )
 	ENDIF
 	nmvlost = max_mr_avail - (navail+nperm+ndel+ntemp)
 	IF ( nmvlost .NE. 0 ) CALL WARN
      .		( 'CORRUPTION! Protected vars unaccountable: '
      .				//LEFINT(nmvlost,slen) )
-	n = ndel - mvfree
-	IF ( n .NE. 0 ) CALL WARN
+	nn = ndel - mvfree
+	IF ( nn .NE. 0 ) CALL WARN
      .		( 'CORRUPTION! Deleted vars unaccountable: '
      .				//LEFINT(nmvlost,slen) )
 

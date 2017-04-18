@@ -56,12 +56,19 @@
 * internal variable declarations:
 	INTEGER last_head
 
+* if this variable held "essential" data, flag that it no longer is essential
+	   IF ( mr_protected( mr ) .EQ. mr_temporary	
+     .	  .OR.  mr_protected( mr ) .EQ. mr_in_progress
+     .	  .OR.  mr_protected( mr ) .GT. mr_not_protected    ) THEN
+	      essential_mem = essential_mem - mr_size(mr)
+	   ENDIF
+
 * set flag that it is available for use and for deletion
 	mr_protected( mr ) = mr_not_protected
 
 ! temp diag
 	IF (mr_del_flink(mr) .NE. unspecified_int4) 
-     .		WRITE (6,*)' mr_avail_err'
+     .		WRITE (6,*)' crptn: mr_available'
 
 * insert the variable at the head of the deletion priority chain
 	last_head = mr_del_flink(0)

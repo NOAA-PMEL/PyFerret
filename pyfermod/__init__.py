@@ -666,8 +666,8 @@ def resize(memsize):
             raise ValueError
     except:
         raise ValueError("memsize must be a positive number")
-    # the actual call
-    return libpyferret._resize(flt_memsize)
+    # the actual call - now just a ferret command handled internally
+    return libpyferret._run("SET MEMORY /SIZE=%d" % flt_memsize)
 
 
 def run(command=None):

@@ -51,8 +51,8 @@
 *     errmsg - error message if an error occurs
 *     lenerr - actual length of errmsg, will be zero if and only if no errors
 *
-      SUBROUTINE GET_STR_DATA_ARRAY_PARAMS(datnam, lennam, memory, 
-     .                          start, memlo, memhi, steplo, stephi, 
+      SUBROUTINE GET_STR_DATA_ARRAY_PARAMS(datnam, lennam, arraystart,
+     .                          memlo, memhi, steplo, stephi, 
      .                          incr, axtyp, errmsg, lenerr)
       IMPLICIT NONE
 
@@ -67,12 +67,12 @@
       INCLUDE 'pyferret.parm'
 
 *     Passed arguments
+      TYPE(mem_table_slot) :: arraystart
       CHARACTER*(*) datnam, errmsg
-      INTEGER       lennam, start, lenerr, 
+      INTEGER       lennam, lenerr, 
      .              memlo(nferdims), memhi(nferdims),
      .              steplo(nferdims), stephi(nferdims),
      .              incr(nferdims), axtyp(nferdims)
-      REAL          memory(*)
 
 *     Function declarations
       INTEGER TM_LENSTR
@@ -82,10 +82,10 @@
       INTEGER sts, mr, cx, k, cmnd_stack_level, grid, line
 
 *     Use GET_FER_COMMAND with a LOAD command to deal with parsing the data description
-      CALL GET_FER_COMMAND(memory, 'LOAD ' // datnam(1:lennam), sts, *1000)
+      CALL GET_FER_COMMAND('LOAD ' // datnam(1:lennam), sts, *1000)
 
 *     Get the data into memory
-      CALL GET_CMND_DATA(memory, cx_last, ptype_string, sts)
+      CALL GET_CMND_DATA(cx_last, ptype_string, sts)
       IF ( sts .NE. FERR_OK ) THEN
            GOTO 1000
       ENDIF
@@ -93,8 +93,7 @@
       mr = is_mr(isp)
       cx = is_cx(isp)
 
-*     Starting place in memory for this array
-      start = (mr_blk1(mr) - 1) * mem_blk_size
+      arraystart = memry(mr)
 
 *     Step values for this array.
 *     If the whole array was not requested, a new copy of the data

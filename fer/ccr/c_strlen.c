@@ -43,10 +43,9 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <string.h>
+#include "ferret.h"
 
-void c_strlen_(in_ptr, out_ptr)
-     char** in_ptr;
-     int* out_ptr;
+void FORTRAN(c_strlen)(char **in_ptr, int *out_ptr)
 {
    /* this treats an undefined string the same as an empty string */
    if ( *in_ptr == NULL )

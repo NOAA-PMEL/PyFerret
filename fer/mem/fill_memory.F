@@ -1,4 +1,4 @@
-	SUBROUTINE FILL_MEMORY ( memory, start_block, num_blocks, fill_word )
+	SUBROUTINE FILL_MEMORY ( mr, fill_word )
 
 *
 *
@@ -35,7 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* fill a memory region with the specified value
+* fill a memory resident variable with the specified value
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
@@ -43,6 +43,7 @@
 *
 * revision 0.0 - 4/23/86
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -50,16 +51,15 @@
 	include	'xvariables.cmn'
 
 * calling argument declarations:
-	INTEGER	start_block, num_blocks
-	REAL	memory( mem_blk_size, max_mem_blks )
+	INTEGER	mr
 	REAL	fill_word
 
 * internal variable declarations:
-	INTEGER	iword, iblock
+	INTEGER	i
 
-	DO 100 iblock = start_block, start_block+num_blocks-1
-	DO 100 iword  = 1, mem_blk_size
- 100	memory( iword, iblock ) = fill_word
+	DO i = 1, mr_size(mr)
+	   memry(mr)%ptr(i) = fill_word
+	ENDDO
 
 	RETURN
 	END

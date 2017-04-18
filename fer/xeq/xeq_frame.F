@@ -192,7 +192,7 @@
         CALL TM_PARK_LAST_VERSION(filename(:flen), sts)
 
 * save that baby
-        CALL SAVE_FRAME(memory, filename(:flen), fformat, annovar,
+        CALL SAVE_FRAME(filename(:flen), fformat, annovar,
      .                  xinches, yinches, xpixels, ypixels, sts)
 
  5000   RETURN

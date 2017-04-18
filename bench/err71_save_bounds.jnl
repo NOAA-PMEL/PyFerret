@@ -1,0 +1,9 @@
+! err71_save_bounds
+! Ticket 2524. The SAVE command previously gave an error
+
+define axis/t time = {1,2,4}
+use write_int_att.nc
+
+! Tell Ferret to use the axis names from the file, and write data
+cancel mode upcase
+save/file=a.nc/clobber mhchla

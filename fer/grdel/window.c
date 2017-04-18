@@ -1299,9 +1299,8 @@ void fgdwinsetvis_(int *success, void **window, int *visible)
  *     yinches: vertical size of vector image in inches
  *     xpixels: horizontal size of raster image in pixels
  *     ypixels: vertical size of raster image in pixels
- *     memory: ferret memory containing annotation C strings; 
- *             pointers are always 8 bytes apart
- *     firststr: offset into memory of the first annotation C string
+ *     firststr: ferret memory pointer to the first annotation C string;
+ *               pointers are always 8 bytes apart
  *     numstr: number of annotation C strings
  *
  * If formatlen is zero, the fileformat is guessed from the
@@ -1314,15 +1313,14 @@ void fgdwinsetvis_(int *success, void **window, int *visible)
 void fgdwinsave_(int *success, void **window, char *filename, int *namelen,
                  char *fileformat, int *formatlen, int *transparentbkg,
                  float *xinches, float *yinches, int *xpixels, int *ypixels,
-                 void **memory, int *firststr, int *numstr)
+                 void **firststr, int *numstr)
 {
     grdelBool result;
 
     result = grdelWindowSave(*window, filename, *namelen,
                              fileformat, *formatlen, *transparentbkg,
                              *xinches, *yinches, *xpixels, *ypixels,
-                             &(memory[(*firststr) * 8 / sizeof(void *)]), 
-                             *numstr);
+                             firststr, *numstr);
     *success = result;
 }
 

@@ -40,17 +40,10 @@
  */
 
 #include <Python.h> /* make sure Python.h is first */
-#include <stdlib.h>
+#include "ferret.h"
 
-void xfer_c_ptrs_(src_ptr, src_del, src_offset,
-		  dst_ptr, dst_del, dst_offset, nptr)
-     char*** src_ptr;
-     int* src_del;
-     int* src_offset;
-     char*** dst_ptr;
-     int* dst_del;
-     int* dst_offset;
-     int* nptr;
+void FORTRAN(xfer_c_ptrs)(char ***src_ptr, int *src_del, int *src_offset,
+		          char ***dst_ptr, int *dst_del, int *dst_offset, int *nptr)
 {
    int src_delta = *src_del ? 8/sizeof(char**) : 1;
    int dst_delta = *dst_del ? 8/sizeof(char**) : 1;
@@ -60,7 +53,7 @@ void xfer_c_ptrs_(src_ptr, src_del, src_offset,
 
    for (i=0; i<*nptr; i++) {
       if ( *dst != NULL )
-         free(*dst);
+         PyMem_Free(*dst);
       *dst = *src;
       src += src_delta;
       dst += dst_delta;

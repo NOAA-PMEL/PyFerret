@@ -41,6 +41,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+#include "ferret.h"
 #include "pyferret.h"
 #include "EF_Util.h"
 
@@ -475,7 +476,7 @@ void pyefcn_compute(int id, char modname[], double *data[], int numarrays,
                         if ( strptr[j] == '\0' )
                             break;
                     dptr = dataptr + d0 + d1 + d2 + d3 + d4 + d5;
-                    ef_put_string_(strptr, &j, (char **) dptr);
+                    FORTRAN(ef_put_string)(strptr, &j, (char **) dptr);
                     (indices[0])++;
                   }
                   (indices[1])++;

@@ -52,6 +52,7 @@
 * V554 1/04 *acm* - add counter variables for named REPEAT/RANGE control
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid. 
+* V720: 4/17 *acm* add direction-changing functions as a subset of grid-changing ones
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -92,6 +93,7 @@
      .	   .OR.  atom_type(atom) .EQ. alg_function
      .	   .OR.  atom_type(atom) .EQ. alg_operator
      .	   .OR.  atom_type(atom) .EQ. alg_grid_chg_fcn
+     .	   .OR.  atom_type(atom) .EQ. alg_dir_chg_fcn
      .	   .OR.  atom_type(atom) .EQ. alg_child_var
      .	   .OR.  atom_type(atom) .EQ. alg_string
      .	   .OR.  atom_type(atom) .EQ. alg_const_var

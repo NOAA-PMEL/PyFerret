@@ -1,4 +1,4 @@
-	SUBROUTINE READ_TM ( memory, cx, mr, status )
+	SUBROUTINE READ_TM (  cx, mr, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -55,6 +55,8 @@
 * v602  8/06 - *jli* native strides  replace cx_delta logic by the line_delta
 *       *acm* 3/12 cleanup old VMS ifdef
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V702 1/17 *sh* as a part of conversion to dynamic memory fixed bug that 
+*                REPLACE_BAD_DATA was being called on string variables
 
 
 	include	'tmap_errors.parm'
@@ -71,11 +73,10 @@
 
 * calling argument declarations:
 	INTEGER	cx, mr, status
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	LOGICAL	has_a_stride, has_strides(nferdims)
-	INTEGER MGRID_SIZE,
+	INTEGER MGRID_SIZE_DELTA,
      .			idim, variable, category, data_set, grid,
      .			sf_num, tmap_status, 
      .			lo_ss(nferdims), hi_ss(nferdims),
@@ -120,8 +121,8 @@
 	CALL CREATE_MEM_VAR( cx, mr, status )
 	IF ( status .NE. ferr_ok ) GOTO 5900
 	IF (ds_var_type(variable) .EQ. ptype_string)
-     .		CALL INIT_C_STRING_ARRAY( MGRID_SIZE(mr),
-     .			                  memory(1,mr_blk1(mr)),
+     .		CALL INIT_C_STRING_ARRAY( MGRID_SIZE_DELTA(mr),
+     .			                  memry(mr)%ptr,
      .					  mr_c_pointer(mr)      )
 
 * un-cache it?
@@ -250,7 +251,7 @@
      .			lo_ss,
      .			hi_ss,
      .			stride,
-     .			memory( 1, mr_blk1( mr ) ),
+     .			memry( mr )%ptr,
      .			sf_num,
      .			tmap_status		)
 	IF ( tmap_status .NE. merr_ok ) THEN
@@ -261,10 +262,13 @@
 * replace multiple bad data flags in some variables
 * IF ( ds_bad_flag( variable ) .NE. ds_missing_flag( variable ) )
 * *kob* 2/99 - call new routine to check for usage of NaN
-	IF (REPLACEABLE_BAD_FLAGS(ds_bad_flag(variable), 
-     .                            ds_missing_flag(variable)) .EQ. 1)
+! 1/17 *sh* check mr_type is needed here because missing data flags are not
+! properly initialized on string variables
+	IF ( mr_type(mr) .NE. ptype_string
+     . .AND. REPLACEABLE_BAD_FLAGS(ds_bad_flag(variable), 
+     .                             ds_missing_flag(variable)) .EQ. 1)
      .	   CALL REPLACE_BAD_DATA
-     .		(memory(1,mr_blk1(mr)),mr,cx,ds_missing_flag(variable))
+     .		(memry(mr)%ptr,mr,cx,ds_missing_flag(variable))
 
 * successful completion
 	RETURN

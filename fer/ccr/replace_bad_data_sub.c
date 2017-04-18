@@ -52,8 +52,7 @@
 #include "ferret.h"
 
 void FORTRAN(replace_bad_data_sub)( DFTYPE *old_bad, DFTYPE *src, 
-			   int *size, DFTYPE *new_bad )
-
+			            int *size, DFTYPE *new_bad )
 {
   int i;
   double tmp;

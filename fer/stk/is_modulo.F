@@ -1,4 +1,4 @@
-	SUBROUTINE IS_MODULO( memory, *, *, status )
+	SUBROUTINE IS_MODULO(  *, *, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -64,7 +64,6 @@
 
 * calling argument declarations:
 	INTEGER	status
-	REAL	memory( mem_blk_size, max_mem_blks )
 * normal return is for error conditions
 * exit #1 is to request another grid ( stack has been pushed )
 * exit #2 is to signal completion of the activity at this stack level
@@ -153,7 +152,7 @@
 
 	   IF ( mr_type(res_mr) .EQ. ptype_string ) THEN
 	      CALL INIT_C_STRING_ARRAY( MGRID_SIZE_DELTA(res_mr),
-     .                               memory(1, mr_blk1(res_mr)),
+     .                               memry(res_mr)%ptr,
      .                               mr_c_pointer(res_mr)      )
 	      CALL SET_NULL_C_STRING_ARRAY(mr_c_pointer(res_mr),
      .                                     MGRID_SIZE_DELTA(res_mr) )
@@ -162,8 +161,7 @@
 * 11/95: if there might be voids in the result pre-fill with missing data flags
 	   IF ( CX_DIM_LEN(idim,com_cx) .LT. npts
      .	  .AND. mr_type(res_mr) .EQ. ptype_float  ) CALL FILL_MEMORY
-     .				( memory,mr_blk1(res_mr),mr_nblks(res_mr),
-     .                            mr_bad_data(res_mr) )
+     .				( res_mr, mr_bad_data(res_mr) )
 
 	   ENDIF
 
@@ -182,15 +180,17 @@
 * range(s) of the result.  For this purpose dual memory table entries are
 * created that will describe the component data.  The dual version will be
 * deleted before exiting this routine.
-	CALL FIND_MR_SLOT( com_cx, tmp_mr, status )
+! (could probably factor this code into CREATE_PERMUTATION for cleanup)
+	CALL FIND_MR_SLOT( tmp_mr, status )
 	IF ( status .NE. ferr_ok ) GOTO 5910
+	CALL HOOK_MR_SLOT( com_cx, tmp_mr )     ! 1/17 was inside FIND_MR_SLOT
 	CALL ASSIGN_MR_CX( com_cx, tmp_mr )     ! affects diag output, only
 	DO 100 i = 1, nferdims
 	   mr_lo_ss(tmp_mr,i) = mr_lo_ss(com_mr,i)
 	   mr_hi_ss(tmp_mr,i) = mr_hi_ss(com_mr,i)
  100	CONTINUE
-	mr_blk1 (tmp_mr) = mr_blk1 (com_mr)    ! just for good house-keeping
-	mr_nblks(tmp_mr) = mr_nblks(com_mr)    ! just for good house-keeping
+	mr_size(tmp_mr)   =  mr_size(com_mr)
+	memry(tmp_mr)%ptr => memry(com_mr)%ptr 
 	mr_protected(tmp_mr) = mr_table_entry_only
 
 * * * * *
@@ -205,7 +205,7 @@
 	   lo_parity = MODULO_PARITY(res_lo, npts, idel)
 	   res_hi = MIN(res_lo+(((npts-lo_parity)/idel)*idel),
      .		        cx_hi_ss(res_cx,idim))
-	   CALL SHORT_MOD_COPY( memory,
+	   CALL SHORT_MOD_COPY( 
      .				res_lo, res_hi, idim,
      .				com_cx, tmp_mr, res_cx, res_mr)
  300	CONTINUE

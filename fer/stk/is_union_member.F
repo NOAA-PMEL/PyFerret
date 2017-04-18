@@ -1,4 +1,4 @@
-	SUBROUTINE IS_UNION_MEMBER( memory, *, *, status )
+	SUBROUTINE IS_UNION_MEMBER(  *, *, status )
 
 *
 *
@@ -53,7 +53,6 @@
 
 * calling argument declarations:
 	INTEGER	status
-	REAL	memory( mem_blk_size, max_mem_blks )
 * normal return is for error conditions
 * exit #2 is to signal completion of the activity at this stack level
 
@@ -102,8 +101,8 @@
 
 * copy data just received into the result
 * bad data flag differences are resolved during this COPY operation
-	CALL COPY_INTO( memory(1,mr_blk1(com_mr)), com_mr, com_cx,
-     .			memory(1,mr_blk1(res_mr)), res_mr )
+	CALL COPY_INTO( memry(com_mr)%ptr, com_mr, com_cx,
+     .			memry(res_mr)%ptr, res_mr )
 
 * ... remove the component protection that signaled we needed it here
 	IF (cx_data_set(com_cx) .NE. pdset_dummy) THEN

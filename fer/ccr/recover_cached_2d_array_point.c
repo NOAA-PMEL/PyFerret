@@ -49,19 +49,15 @@
  */
 
 #include <Python.h> /* make sure Python.h is first */
-#include <stdlib.h>
 #include "ferret.h"
  
-void FORTRAN(recover_cached_2d_array_point)(
-					 double *array, int *dim1, int *dim2, 
-                                         int *i, int *j,
-					 double **pointer_val )
-
 /*
   see related routine recover_cached_full_array.c
   FORTRAN subscripting reversed from C, and indexed to 1 instead of 0
 */
-
+void FORTRAN(recover_cached_2d_array_point)( double *array, int *dim1, int *dim2, 
+                                             int *i, int *j,
+					     double **pointer_val )
 {
   double *ptr;
   int index;

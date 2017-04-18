@@ -37,6 +37,7 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #define NO_IMPORT_ARRAY
 #include <numpy/arrayobject.h>
+#include "ferret.h"
 #include "pyferret.h"
 #include "EF_Util.h"
 
@@ -193,7 +194,7 @@ void pyefcn_custom_axes(int id, char modname[], char errmsg[])
             /* Make the assignment for this axis */
             Py_DECREF(subseqobj);
             q = k+1;
-            ef_set_custom_axis_sub_(&id, &q, &(values[0]), &(values[1]), &(values[2]), unit_name, &is_modulo);
+            FORTRAN(ef_set_custom_axis_sub)(&id, &q, &(values[0]), &(values[1]), &(values[2]), unit_name, &is_modulo);
             call_made = 1;
         }
     }

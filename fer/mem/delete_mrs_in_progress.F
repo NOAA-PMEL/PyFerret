@@ -47,6 +47,7 @@
 * V200:  6/27/89 - delete temporary variables, too 
 * V420: 11/95 - also delete un-cached memory vars
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V702:  3/17 *sh* dynamic memory
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -56,14 +57,25 @@
 * internal variable declarations:
 	INTEGER	mr
 
-	DO 100 mr = 1, max_mrs
+	DO mr = 1, max_mrs
+
 	   IF ( mr_protected( mr ) .EQ. mr_in_progress
-     .	   .OR. mr_protected( mr ) .EQ. mr_temporary )
-     .						CALL DELETE_VARIABLE( mr )
- 100	CONTINUE
+     .	   .OR. mr_protected( mr ) .EQ. mr_temporary ) THEN
+	      CALL DELETE_VARIABLE( mr )
+	   ELSEIF ( mr_protected( mr ) .GT. mr_not_protected ) THEN
+	      CALL MR_AVAILABLE(mr) ! use count=0 and onto deletion chain
+	   ENDIF
+
+	ENDDO
 
 * also delete un-cached memory variables
 	CALL DELETE_UN_CACHED_MVARS
+
+* sanity check that memory management is working correctly
+	IF (essential_mem .NE. 0 ) THEN
+	   CALL WARN("crptn??: delete_mrs_in_progress")
+	   essential_mem = 0
+	ENDIF
 
 	RETURN
 	END

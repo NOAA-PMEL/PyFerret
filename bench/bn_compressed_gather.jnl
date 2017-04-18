@@ -1,43 +1,57 @@
 ! bn_compressed_gather.jnl
 ! 11/2016 (for trac #2428 enhancement)
+! updated 3/17 for dynamic memory and using SHOW MEM/DIAG
 
 ! force a split/gather operation due to a T=@ave
 
 ! in previous versions of Ferret the split could not occur on the transformed
 ! axis, so the X axis would have been used.  Here the T=@ave axis will be used 
 
+! Give us something to look at while we run these tests which dont make plots
+plot/noax/nolab/vlim=0:1/i=4:5 i
+annotate/norm/x=0/y=0.5 "@AC... running bn_compressed_gather"
 
 ! ******* tests of  T=@DIN and T=@ave ******
 define axis/x=1:1001:1 xax
+define axis/y=1:10:1 yax
 define axis/T=1:1000:1 tax
 
-let xt = (x[gx=xax]-501) + T[gt=tax]
+let xt = (x[gx=xax]-501) + 0*y[gy=yax] + T[gt=tax]
 
 * note: SUM of integers 1 to 1000 = N(N+1)/2 ==> 500500
 *       stat average of (x[gx=xax]-501) is zero
 *       so the full 2D stat mean should be 500500
 
+! there are 10*1000*1001 points in the full grid => ~10M
+! given the necessary cautions (see IS_STRIP and MODE FRUGAL),
+! a size of 12 for sure requires a gather operation
 ! confirm gathering is occuring by looking at the diagnostic output
-set mode diag
-set mode desperate: 400000
+
+!set mode desperate: 400000
+SET MEMORY/SIZE=12
+
 stat xt[l=@din] 
+SHOW MEMORY/DIAGNOSTIC   ! look at peak memory usage
 
 ! many variations on this test
-cancel mode diag
-GO bn_compressed_gather.sub xt[l=@din] 4000000 400000
+! note that in the first case peak memory will show as ZERO.
+! The first SET MEMORY command resets the peak memory to zero, and
+! then the expression "xt[l=@din]" gets found without re-computation
+! having been computed just above
+GO bn_compressed_gather.sub xt[l=@din] 40 12
 
 ! altered limits syntax
-GO bn_compressed_gather.sub xt[l=1:1000@din] 4000000 400000
+GO bn_compressed_gather.sub xt[l=1:1000@din] 40 12
 
 ! test T=@AVE
-GO bn_compressed_gather.sub xt[l=@ave] 4000000 400000
+GO bn_compressed_gather.sub xt[l=@ave]  40 12
 
 ! various partial grid points at end
-GO bn_compressed_gather.sub xt[T=@ave] 4000000 400000
-GO bn_compressed_gather.sub xt[T=0.5:1000.5@ave] 4000000 400000
-GO bn_compressed_gather.sub xt[T=0.6:1000.4@ave] 4000000 400000
-GO bn_compressed_gather.sub xt[T=1:1000@ave] 4000000 400000
-GO bn_compressed_gather.sub xt[T=1.2:999.8@ave] 4000000 400000
+GO bn_compressed_gather.sub xt[T=@ave]  40 12
+GO bn_compressed_gather.sub xt[T=0.5:1000.5@ave]  40 12
+GO bn_compressed_gather.sub xt[T=0.6:1000.4@ave]  40 12
+GO bn_compressed_gather.sub xt[T=1:1000@ave]  40 12
+GO bn_compressed_gather.sub xt[T=1.2:999.8@ave] 40 12
 
 ! *********************************************************
 ! ******* tests of "4D" @DIN and @ave ******
@@ -58,48 +72,46 @@ let xyzt = 0*X[gx=xax] + 0*Y[gy=yax] + Z[gz=zax] + 0*T[gt=tax]
  
 ! confirm gathering is occuring by looking at the diagnostic output
 cancel memory/all
-set mode desp: 2000000  ! 2,000,000 small -- requires split/gather
-set mode diag
+!set mode desp: 2000000  
+set memory/size = 2  ! 2M v 8M: requires split/gather
 ! will split into 4 pieces (1/4 of 8,000,000 fits into 2,000,000)
 ! so z=1:50; then =51:100, Z=101:150, Z=151:200
 stat xyz[x=@din,y=@din,z=@din]
+SHOW MEMORY/DIAGNOSTIC   ! look at peak memory usage
 
 ! the clean version of same test
-cancel mode diag
-GO bn_compressed_gather.sub xyz[x=@din,y=@din,z=@din] 10000000 2000000
+GO bn_compressed_gather.sub xyz[x=@din,y=@din,z=@din] 20 2
 
 ! also do the average, which will provide a comparison result for the test
 ! that follows
 ! average along Z is 100.5
-GO bn_compressed_gather.sub xyz[x=@ave,y=@ave,z=@ave] 10000000 2000000
+GO bn_compressed_gather.sub xyz[x=@ave,y=@ave,z=@ave] 20 2
 
-! test splitting along 2 axes -- this one shows that it does NOT work
 ! Since the T axis has only 2 points, the arithmetic above shows that the
 ! chunks to be gathered will still be too large after splitting on T, which
 ! in theory would trigger further splitting along Z.  However, there is only
 ! one opportunity to process compressed axis splitting -- in IS_STRIP
 ! at the time that it is stripping off the compressed transformation.  But
-! a "4D" transform is stripped in a single operation. IS_STRIP could have
-! subtler gather code.  As-is it chooses the fastest axis, regardless of
-! whether that axis is long enough to break into sufficiently small fragments
-set mode desp: 2000000  ! 2,000,000 small -- requires split/gather
-set mode diag
+! a "4D" transform is stripped in a single operation. We choose an axis that
+! is long enough to break into sufficiently small fragments
+set memory/size = 6  ! 16M points in grid, 8M in each T-chunk 
 stat xyzt[x=@ave,y=@ave,z=@ave,t=@ave]
+show mem/diagnostic
 
-! again, test splitting along 2 axes -- this one shows when it DOES work
-! by making T=@AVE into a separate averaging operation, 2-level splitting
-! occurs.  Look for the Z split nested inside the T split in the diagnostics
+! test splitting along 2 axes in succession by making T=@AVE into a separate
+! averaging operation
 CANCEL MEMORY/ALL
 LET xyzave = xyzt[x=@ave,y=@ave,z=@ave]
-set mode desp: 2000000  ! 2,000,000 small -- requires split/gather
-set mode diag
+!set mode desp: 2000000  
+set memory/size = 6  ! 2M v 8M: requires split/gather
 stat xyzave[t=@ave]
+SHOW MEMORY/DIAGNOSTIC   ! look at peak memory usage
 
 ! *********************************************************
 ! ******* tests of T= @var and @std ******
-! the @var and @srd transformation had to be switched to
+! the @var and @std transformation had to be switched to
 ! a single pass algorithm in order to implement split/gather
-define axis/x=1:1000:1 xax
+define axis/x=1:10000:1 xax
 define axis/T=1:1001:1 tax
 
 let xt = 0*x[gx=xax] + T[gt=tax]
@@ -113,20 +125,20 @@ let xt_zero_mean = 0*X[gx=xax] + (T[gt=tax]-501) + 1234
 * ==> look for this as the correct answer to variance
 
 ! confirm gathering is occuring by looking at the diagnostic output
-set mode diag
-set mode desperate: 400000
+!set mode desperate: 400000
+set memory/size= 12
 stat constant[l=@var] 
+SHOW MEMORY/DIAGNOSTIC   ! look at peak memory usage
 
 ! clean test
 cancel memory/all
-cancel mode diag
-GO bn_compressed_gather.sub constant[l=@var] 4000000 400000
+GO bn_compressed_gather.sub constant[l=@var] 40 12
 
 ! known result
-GO bn_compressed_gather.sub xt_zero_mean[l=@var] 4000000 400000
+GO bn_compressed_gather.sub xt_zero_mean[l=@var] 40 12
 
 ! adding a constant doesn't effect the variance
-GO bn_compressed_gather.sub xt[l=@var] 4000000 400000
+GO bn_compressed_gather.sub xt[l=@var] 40 12
 
 ! same test, but  on @std (only one line of code difference so limited test)
 * square root of 83500 is 288.96366553599779.
@@ -167,28 +179,27 @@ let xyz_zero_mean = 0*X[gx=xax] + 0*Y[gy=yax] + (Z[gz=zax]-101)
 * 2d slice size = 200*200 = 40,000
 * 3d full size is 8,000,000  - so 10,000,000 is bigger
 cancel memory/all
-set mode desp: 2000000  ! 2,000,000 small -- requires split/gather
+!set mode desp: 2000000  
+set memory/size = 2  ! 2M v 8M: requires split/gather
 ! will split into 4 pieces (1/4 of 8,000,000 fits into 2,000,000)
 ! so z=1:50; then =51:100, Z=101:150, Z=151:200
-set mode diag
 LIST/PREC=12 constant[x=@var,y=@var,z=@var]
 
-cancel mode diag
 ! variance of a constant is zero
-GO bn_compressed_gather.sub constant[x=@var,y=@var,z=@var] 10000000 2000000
+GO bn_compressed_gather.sub constant[x=@var,y=@var,z=@var] 20 2
 
 ! confirm that we get the result computed above
-GO bn_compressed_gather.sub xyz_zero_mean[x=@var,y=@var,z=@var]  10000000 2000000
+GO bn_compressed_gather.sub xyz_zero_mean[x=@var,y=@var,z=@var]  20 2
 LIST/PREC=12 xyz_zero_mean[x=@var,y=@var,z=@var]
 
 ! confirm that adding a constant does not change the result
-GO bn_compressed_gather.sub xyz[x=@var,y=@var,z=@var]  10000000 2000000
+GO bn_compressed_gather.sub xyz[x=@var,y=@var,z=@var]  20 2
 LIST/PREC=12 xyz[x=@var,y=@var,z=@var]
 
 CANCEL MEMORY/ALL  ! IF PRESENT THIS PREVENTS THE MEMORY CORRUPTION
 ! confirm the @std gives the square root of the variance
 ! SQRT(676700/201) = 58.022983951764034269074805569046
-GO bn_compressed_gather.sub xyz[x=@std,y=@std,z=@std]  10000000 2000000
+GO bn_compressed_gather.sub xyz[x=@std,y=@std,z=@std]  20 2
 LIST/PREC=12 xyz[x=@std,y=@std,z=@std]
 
 

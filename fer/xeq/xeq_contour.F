@@ -1,4 +1,4 @@
-	SUBROUTINE XEQ_CONTOUR( memory )
+	SUBROUTINE XEQ_CONTOUR
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -129,6 +129,8 @@
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
+* PyFr *kms*  4/17 Remove SAVE_FRAME for HDF format since no longer supported
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -148,7 +150,6 @@
         include 'GKSCM1.INC'    ! wsid
 	
 * calling argument declarations:
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	LOGICAL	TM_HAS_STRING, 
@@ -156,8 +157,8 @@
      .            do_key, spectrum, set_up, noaxes, axes, pattern, 
      .		  no_data, is_logh, is_logv, inc_grid
 	INTEGER	  TM_LENSTR, TM_LENSTR1, status, slen, sp, ipen, icolor, 
-     .		  ax1_blks, ax1_start, loc, sigdig,
-     .		  ax2_blks, ax2_start, patt, i, nparm, num_it, 
+     .		  ax1_work, ax2_work, loc, sigdig,
+     .		  patt, i, nparm, num_it, 
      .		  s1, s2, it_start(4), it_end(4), iax(4), density,
      .            loch, locv
         INTEGER   STR_UPCASE, i1
@@ -179,8 +180,7 @@
 
 * get the data (possibly ?? on a slightly oversized region)
 !	cx_ovsiz(cx_last) = ovsiz_plane	! ... causes too many headaches !
-	CALL DISP_DATA_SET_UP( memory,
-     .		ax1_start, ax1_blks, ax2_start, ax2_blks, status )
+	CALL DISP_DATA_SET_UP(  ax1_work, ax2_work, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
 
 * initialize
@@ -366,7 +366,7 @@
 
 * set up the axes and title and load the data into PPLUS
 	inc_grid = set_up
-	CALL DISP_SET_UP   ( 	memory,
+	CALL DISP_SET_UP   ( 	
      . 			 	not_vector,
      .				is_shade,
      .				use_cell,
@@ -383,8 +383,8 @@
      .				num_uvars_in_cmnd,
      .				is_cx,		! pass list
      .				is_uvar,	
-     .				memory( 1, ax1_start ),
-     .				memory( 1, ax2_start ),
+     .				workmem(ax1_work)%ptr,
+     .				workmem(ax2_work)%ptr,
      .				ipen,
      .				inc_grid,
      .				status )
@@ -638,15 +638,9 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
 * interrupt occurred during plot ?
 	IF ( ppl_interrupted ) GOTO 1000
 
-* capture the bit map ? (discontinued with v6.6)
-	IF ( qual_given( slash_cont_frame ) .GT. 0 ) THEN
-	   CALL SAVE_FRAME( frame_file, "HDF", status )
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-	ENDIF
-
 * release the memory used for axis buffers
- 1000 	CALL FREE_MEMORY( ax2_start, ax2_blks )
- 	CALL FREE_MEMORY( ax1_start, ax2_blks )
+ 1000 	CALL FREE_WS_DYNMEM( ax1_work )
+	CALL FREE_WS_DYNMEM( ax2_work )
 	CALL UNPROTECT_CMND_DATA			! 1/94
  5100	RETURN
 

@@ -65,6 +65,9 @@
 *		  Adjust output to 6-D or 4-D grids
 * V701  acm  7/16 Avoid writing nulls when changing from 6-D to 4-D output
 * V702 *sh* 11/16 report gathering on compressed axis
+* V702  sh   1/17 Output total_mem along with gather diagnostics
+*                 Increase field sizes for long axes
+
 
 * calling argument declarations:
         IMPLICIT NONE
@@ -73,7 +76,9 @@
 
 * internal variable declarations:
 	LOGICAL	FOUR_D_GRID
-	INTEGER	TM_LENSTR1, slen, clen, ii, i, listdims
+	INTEGER	TM_LENSTR1, CGRID_SIZE,
+     .		slen, clen, ii, i, listdims, chunk_size
+	INTEGER*8 available_mem
 	CHARACTER*3   ALG_TRANS_CODE
 	CHARACTER*128 VAR_CODE,  var
 	CHARACTER*150 VAR_TRANS, out_buff
@@ -83,6 +88,7 @@
 	external xgt_grid_data
 	include	'ferret.parm'
 	include	'interp_stack.parm'
+	include	'xvariables.cmn'
 	include	'xcontext.cmn'
 	include	'xprog_state.cmn'
 	include	'xtext_info.cmn'
@@ -126,22 +132,28 @@
 
 * SPLITTING/GATHERING
 	ELSEIF( act_class .EQ. isact_class_gather ) THEN
+	   chunk_size = CGRID_SIZE(cx)
+	   available_mem = max_mem_allowed-(permanent_mem+essential_mem)
 	   WRITE ( risc_buff, 3030 ) doing, var(1:slen),
      .                  ww_dim_name( idim ),
      .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim),
-     .			cx_data_set(cx)
+     .			cx_data_set(cx), chunk_size, available_mem
  3030	   FORMAT
-     . (1X,A5,' gathering ',A,' on ',A1,' axis:',2I6,' dset:',I4)
+     . (1X,A5,' gathering ',A,' on ',A1,' axis:',2I9,' dset:',I4, 
+     .  I14,'=request', I14, '=availableMem')
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
 * COMPRESSED AXIS SPLITTING/GATHERING
 	ELSEIF( act_class .EQ. isact_class_cmp_gather_dummy ) THEN
+	   chunk_size = CGRID_SIZE(cx)
+	   available_mem = max_mem_allowed-(permanent_mem+essential_mem)
 	   WRITE ( risc_buff, 3031 ) doing, var(1:slen),
      .                  ww_dim_name( idim ),
      .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim),
-     .			cx_data_set(cx)
+     .			cx_data_set(cx), chunk_size, available_mem
  3031	   FORMAT
-     . (1X,A5,' gather/compress ',A,' on ',A1,' axis:',2I6,' dset:',I4)
+     . (1X,A5,' gather/compress ',A,' on ',A1,' axis:',2I9,' dset:',I4, 
+     .  I14,'=request', I14, '=availableMem')
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
 * SAMPLING (SAMPLE* functions)
@@ -151,7 +163,7 @@
      .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim),
      .			cx_data_set(cx)
  3035	   FORMAT
-     . (1X,A5,' sampling ',A,' on ',A1,' axis:',2I6,' dset:',I4)
+     . (1X,A5,' sampling ',A,' on ',A1,' axis:',2I9,' dset:',I4)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
 * ASSEMBLING MODULO COMPONENTS
@@ -161,7 +173,7 @@
      .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim),
      .			cx_data_set(cx)
  3040	   FORMAT 
-     . (1X,A5,' moduloing ',A,' on ',A1,' axis:',2I6,' dset:',I4)
+     . (1X,A5,' moduloing ',A,' on ',A1,' axis:',2I9,' dset:',I4)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
 * reversed axis reads
@@ -171,7 +183,7 @@
      .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim),
      .			cx_data_set(cx)
  3050	   FORMAT
-     . (1X,A5,' reversing ',A,' on ',A1,' axis:',2I6,' dset:',I4)
+     . (1X,A5,' reversing ',A,' on ',A1,' axis:',2I9,' dset:',I4)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
 * implicit grid allocation/deallocation
@@ -221,7 +233,7 @@
      .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim),
      .			cx_data_set(cx)
  3080	   FORMAT 
-     . (1X,A5,' modulo-void-filling ',A,' on ',A1,' axis:',2I6,' dset:',I4)
+     . (1X,A5,' modulo-void-filling ',A,' on ',A1,' axis:',2I9,' dset:',I4)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
 
@@ -232,7 +244,7 @@
      .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim),
      .			cx_data_set(cx)
  3090	   FORMAT
-     . (1X,A5,' aggregate gathering ',A,' on ',A1,' axis:',2I6,' dset:',I4)
+     . (1X,A5,' aggregate gathering ',A,' on ',A1,' axis:',2I9,' dset:',I4)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
 * getting arguments needed for curvilinear plotting
@@ -242,7 +254,7 @@
      .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim),
      .			cx_data_set(cx)
  3100	   FORMAT
-     . (1X,A5,' getting aux vars ',A,' on ',A1,' axis:',2I6,' dset:',I4)
+     . (1X,A5,' getting aux vars ',A,' on ',A1,' axis:',2I9,' dset:',I4)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
 	ELSE

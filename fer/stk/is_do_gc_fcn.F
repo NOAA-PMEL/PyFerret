@@ -1,5 +1,5 @@
 	SUBROUTINE IS_DO_GC_FCN
-     .			( memory, uvar, alg_text, lo_isp, status )
+     .			(  uvar, alg_text, lo_isp, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -61,6 +61,11 @@
 * V694  *acm* 1214 Fixing ticket 2220: varname.attname in a function argument
 * V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
 *                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c
+* V710 *acm*  4/17 Implement ability to run one of a family of functions based on 
+*                  arguments that indicate the coordinate directions to operate on,
+*                  e.g. INNERPRODUCT(VAR1,VAR2,2) to compute the inner product of the 
+*                  variables in the Y direction by running innerproduct_y
+
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -78,21 +83,22 @@
 
 * calling arguments
 	INTEGER		uvar, lo_isp, status
-	REAL		memory( mem_blk_size, max_mem_blks )
 	CHARACTER*(*)	alg_text
 
 * local variables
 	LOGICAL	ITS_UN_CACHED, not_reusable, check_alt_fcn
-	INTEGER	GCF_FIND_FCN, GCF_NUM_ARGS, GCF_ARG_TYPE,
+	INTEGER	GCF_FIND_FCN, GCF_find_dir_fcn, GCF_NUM_ARGS, GCF_ARG_TYPE,
      .		MGRID_SIZE_DELTA, GCF_ARG_EVAL_ORDER, EFCN_GET_RTN_TYPE,
      .		ifcn, icom, iarg, num_com, mr, res_cx,
      .		mr1, mr2, mr3, mr4, mr5, mr6, mr7, mr8, mr9, impl_grid,
      .          typ1, typ2, typ3, typ4, typ5, typ6, typ7, typ8, typ9,
      .          typr, pdim1, pdim2, pdim3, pdim4, pdim5, pdim6, pdim7,
      .          pdim8, pdim9, pdimr, frame_bottom, com_cx, res_mr,
-     .          itype, arg_first_mismatch, slen, iset, igrid,
-     .          aux_cat(nferdims), aux_var(nferdims)
-        CHARACTER*40 TM_FMT, alt_name
+     .          itype, arg_first_mismatch, slen, iset, igrid, idim,
+     .          aux_cat(nferdims), aux_var(nferdims), 
+     .          idir_args(nferdims), idir_vals(nferdims), num_dirs, ival
+        CHARACTER*40 TM_FMT, GCF_NAME*40, alt_name
+	REAL	oneval
 
 * convenience equivalences
 	INTEGER	com(10), typ(9), pdim(9)
@@ -149,6 +155,15 @@
 	IF ( frame_bottom .LE. lo_isp ) CALL ERRMSG
      .		( ferr_syntax, status, 'RPN', *5000 )
 
+* point to the memory resident components
+* (if fewer than 9 components default extras to dummy)
+	DO icom = 1, num_com
+	   com(icom) = is_mr(frame_bottom+icom-1)
+	ENDDO
+	DO icom = num_com+1, 9
+	   com(icom) = dummy_mr
+	ENDDO
+
 * trap attempts to pass arguments of the wrong type (1/99)
 
         arg_first_mismatch = 0
@@ -202,7 +217,43 @@
  101	   CONTINUE
         ENDIF
 
-!* the merged context is already nearly complete
+
+* Does the function designate an alternate function depending on a 'direction' argument?
+* If so update alg_text and ifcn
+
+        has_uvar_dc = .FALSE.
+        IF ( ifcn .LE. GFCN_NUM_INTERNAL ) THEN
+
+	   CALL GCF_GET_ALT_FCN_DIR_ARG ( ifcn, idir_args )
+	   num_dirs = 0
+	   DO idim = 1, nferdims
+	      idir_vals(idim) = 0
+	   ENDDO
+
+* Collect the directions to use in determing the alt fcn. 
+* allow them to be out of dimension order.
+	   DO idim = 1, nferdims 
+	      IF (idir_args(idim) .GT. 0) THEN
+	         CALL RETURN_ONE_VAL (memry(com(idir_args(idim)))%ptr, oneval)
+	         ival = INT(oneval)
+		 IF (ival.GE.1 .AND. ival.LE.nferdims) THEN
+		    IF (idir_vals(ival) .NE. 0) GOTO 5300
+		    num_dirs = num_dirs + 1
+	            idir_vals(ival) = ival
+		 ELSE
+		    GOTO 5300  ! invalid value for a direction-setting arg
+		 ENDIF
+	      ENDIF
+	   ENDDO
+
+	   IF (num_dirs .GT. 0) THEN
+	      CALL GCF_SET_ALT_FCN_FOR_DIR (ifcn, idir_vals, num_dirs)
+	      IF (ifcn .EQ. unspecified_int4 ) GOTO 5400
+	      has_uvar_dc = .TRUE.
+	   ENDIF
+        ENDIF
+
+* the merged context is already nearly complete
 	res_cx = is_big_cx(lo_isp)
 
 * determine data type of result - and set pdimr and typr
@@ -260,7 +311,7 @@
         ENDIF
 
 * need to fill in those axes that the function "imposes"
-	CALL GCF_IMPOSE_RESULT_LIMS( ifcn, memory, is_mr(lo_isp+1),
+	CALL GCF_IMPOSE_RESULT_LIMS( ifcn,  is_mr(lo_isp+1),
      .			 is_cx(lo_isp+1), res_cx, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
         
@@ -272,16 +323,9 @@
 	mr_variable( res_mr ) = res_mr	! cat_temp_var vars point to themselves
 	IF (cx_type(res_cx) .EQ. ptype_string) THEN
 	   CALL INIT_C_STRING_ARRAY( MGRID_SIZE_DELTA(res_mr),
-     .                               memory(1, mr_blk1(res_mr)),
+     .                               memry(res_mr)%ptr,
      .                               mr_c_pointer(res_mr)      )
 	ENDIF
-
-* point to the memory resident components
-* (if fewer than 9 components default extras to dummy)
-	DO 300 icom = 1, num_com
- 300	com(icom) = is_mr(frame_bottom+icom-1)
-	DO 310 icom = num_com+1, 9
- 310	com(icom) = dummy_mr
 
 * set up 6D array limits as unsubscripted variables in COMMON
 	CALL NON_ARRAY_SUBSC( com, 10 )
@@ -290,39 +334,38 @@
 
 	IF (IFCN .LE. GFCN_NUM_INTERNAL) THEN
 
-	  CALL DO_INTERNAL_GC_FCN( memory,
+	  CALL DO_INTERNAL_GC_FCN( 
      .		ifcn, num_com, is_cx(frame_bottom),
-     .		memory(1, mr_blk1(mr1) ), mr1, pdim1, typ1,
-     .		memory(1, mr_blk1(mr2) ), mr2, pdim2, typ2,
-     .		memory(1, mr_blk1(mr3) ), mr3, pdim3, typ3,
-     .		memory(1, mr_blk1(mr4) ), mr4, pdim4, typ4,
-     .		memory(1, mr_blk1(mr5) ), mr5, pdim5, typ5,
-     .		memory(1, mr_blk1(mr6) ), mr6, pdim6, typ6,
-     .		memory(1, mr_blk1(mr7) ), mr7, pdim7, typ7,
-     .		memory(1, mr_blk1(mr8) ), mr8, pdim8, typ8,
-     .		memory(1, mr_blk1(mr9) ), mr9, pdim9, typ9,
-     .		memory(1, mr_blk1(res_mr)), res_mr, pdimr, typr,
+     .		memry(mr1)%ptr, mr1, pdim1, typ1,
+     .		memry(mr2)%ptr, mr2, pdim2, typ2,
+     .		memry(mr3)%ptr, mr3, pdim3, typ3,
+     .		memry(mr4)%ptr, mr4, pdim4, typ4,
+     .		memry(mr5)%ptr, mr5, pdim5, typ5,
+     .		memry(mr6)%ptr, mr6, pdim6, typ6,
+     .		memry(mr7)%ptr, mr7, pdim7, typ7,
+     .		memry(mr8)%ptr, mr8, pdim8, typ8,
+     .		memry(mr9)%ptr, mr9, pdim9, typ9,
+     .		memry(res_mr)%ptr, res_mr, pdimr, typr,
      .		res_cx, status )
-	  IF ( status .NE. ferr_ok ) GOTO 5100
 
 	ELSE 
 
-	  CALL DO_EXTERNAL_GC_FCN( memory,
+	  CALL DO_EXTERNAL_GC_FCN( 
      .			ifcn, num_com, com, is_cx(frame_bottom),
-     .			memory(1, mr_blk1(mr1) ), mr1,
-     .			memory(1, mr_blk1(mr2) ), mr2,
-     .			memory(1, mr_blk1(mr3) ), mr3,
-     .			memory(1, mr_blk1(mr4) ), mr4,
-     .			memory(1, mr_blk1(mr5) ), mr5,
-     .			memory(1, mr_blk1(mr6) ), mr6,
-     .			memory(1, mr_blk1(mr7) ), mr7,
-     .			memory(1, mr_blk1(mr8) ), mr8,
-     .			memory(1, mr_blk1(mr9) ), mr9,
-     .			memory(1, mr_blk1(res_mr)), res_mr,
+     .			memry(mr1)%ptr, mr1,
+     .			memry(mr2)%ptr, mr2,
+     .			memry(mr3)%ptr, mr3,
+     .			memry(mr4)%ptr, mr4,
+     .			memry(mr5)%ptr, mr5,
+     .			memry(mr6)%ptr, mr6,
+     .			memry(mr7)%ptr, mr7,
+     .			memry(mr8)%ptr, mr8,
+     .			memry(mr9)%ptr, mr9,
+     .			memry(res_mr)%ptr, res_mr,
      .			status )
 
-
 	ENDIF
+	IF ( status .NE. ferr_ok ) GOTO 5100
 
 * clean up 
  
@@ -359,6 +402,7 @@
 * save the result context at the cx level previously used by the 1st component
 	cx_stack_ptr = cx_stack_ptr + 1
 	CALL TRANSFER_CONTEXT( res_cx, cx_stack_ptr )
+
 	is_cx( isp ) = cx_stack_ptr
 
 	RETURN
@@ -375,5 +419,21 @@
 	CALL ERRMSG( ferr_invalid_command, status,
      .		'string/numeric data type mix-up. Argument '//
      .		alt_name(:slen)//' : '//risc_buff, *5000 )
+
+ 5300	CONTINUE
+* Invalid value for for direction
+        risc_buff = alg_text
+	CALL ERRMSG( ferr_invalid_command, status,
+     . 'Arguments for direction of function must not repeat and be between 1 and 6 '//
+     .  risc_buff, *5000 )
+
+
+ 5400	CONTINUE
+* Could not find alternative function for direction
+        risc_buff = alg_text
+	CALL ERRMSG( ferr_invalid_command, status,
+     .		'Could not find alternative function for directions given '//
+     .		risc_buff, *5000 )
+
 	END
 

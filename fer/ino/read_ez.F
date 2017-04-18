@@ -1,4 +1,4 @@
-	SUBROUTINE READ_EZ ( memory, cx, mr, status )
+	SUBROUTINE READ_EZ (  cx, mr, status )
 
 *
 *
@@ -61,8 +61,9 @@
 * V510: 6/00 *sh* - bug fix trap /COLUMNS= >grid size
 * V552 *acm* 4/03- up VAR_CODE  to 128 chars
 *       *acm* 3/12 cleanup old VMS ifdef
-* V685 *acm* 1/13  Ticket 2030: if we run out of memory, issue a new message
+* V685 *acm* 1/13  Ticket 2030: if we run out of  issue a new message
 * V702: *sh* 1/17 - bug fix: mr_protected must *end* at mr_not_in_use (=0)
+*		  - for trac enhancement #2369 -- dynamic memory management 
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -79,7 +80,6 @@
 
 * calling argument declarations:
 	INTEGER	cx, mr, status
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	INTEGER 	CGRID_SIZE, CX_DIM_LEN,
@@ -87,7 +87,8 @@
      .			fvar, nvar20, the_var, nleft, nsize,
      .			cx0, cx1, cx20(20), mr20(20), nread,
      .			mr1, ndim, las_dim, fst_dim, dims(nferdims), rec1,
-     .			rec_to_read, nrepeat, columns, num_names, buffblk
+     .			rec_to_read, nrepeat, columns, num_names
+	INTEGER*8	i8_size
 	CHARACTER	VAR_CODE*128, errbuff*100
 
 * --- end of introductory code ---
@@ -168,7 +169,8 @@
  600	mr20(nleft) = dummy_mr
 	
 * allocate a buffer big enough for one record
-        CALL GET_WORK_SPC( columns, buffblk, status )	! was "nrepeat" B4 3/95
+	i8_size = columns
+        CALL GET_DYN_WORK_SPACE( i8_size, status )	! was "nrepeat" B4 3/95
 	IF ( status .NE. merr_ok ) GOTO 5500
 
 * diagnostic output
@@ -178,31 +180,31 @@
 	nread = rec_to_read
 
 	CALL EZ_READ( data_set, nread, nrepeat, columns,
-     .          memory( 1, buffblk), status,
-     .		memory( 1, mr_blk1(mr20( 1)) ),
-     .		memory( 1, mr_blk1(mr20( 2)) ),
-     .		memory( 1, mr_blk1(mr20( 3)) ),
-     .		memory( 1, mr_blk1(mr20( 4)) ),
-     .		memory( 1, mr_blk1(mr20( 5)) ),
-     .		memory( 1, mr_blk1(mr20( 6)) ),
-     .		memory( 1, mr_blk1(mr20( 7)) ),
-     .		memory( 1, mr_blk1(mr20( 8)) ),
-     .		memory( 1, mr_blk1(mr20( 9)) ),
-     .		memory( 1, mr_blk1(mr20(10)) ),
-     .		memory( 1, mr_blk1(mr20(11)) ),
-     .		memory( 1, mr_blk1(mr20(12)) ),
-     .		memory( 1, mr_blk1(mr20(13)) ),
-     .		memory( 1, mr_blk1(mr20(14)) ),
-     .		memory( 1, mr_blk1(mr20(15)) ),
-     .		memory( 1, mr_blk1(mr20(16)) ),
-     .		memory( 1, mr_blk1(mr20(17)) ),
-     .		memory( 1, mr_blk1(mr20(18)) ),
-     .		memory( 1, mr_blk1(mr20(19)) ),
-     .		memory( 1, mr_blk1(mr20(20)) )  )
+     .          workmem(plegacy_work_buffer)%ptr, status,
+     .		memry(mr20( 1))%ptr,
+     .		memry(mr20( 2))%ptr,
+     .		memry(mr20( 3))%ptr,
+     .		memry(mr20( 4))%ptr,
+     .		memry(mr20( 5))%ptr,
+     .		memry(mr20( 6))%ptr,
+     .		memry(mr20( 7))%ptr,
+     .		memry(mr20( 8))%ptr,
+     .		memry(mr20( 9))%ptr,
+     .		memry(mr20(10))%ptr,
+     .		memry(mr20(11))%ptr,
+     .		memry(mr20(12))%ptr,
+     .		memry(mr20(13))%ptr,
+     .		memry(mr20(14))%ptr,
+     .		memry(mr20(15))%ptr,
+     .		memry(mr20(16))%ptr,
+     .		memry(mr20(17))%ptr,
+     .		memry(mr20(18))%ptr,
+     .		memry(mr20(19))%ptr,
+     .		memry(mr20(20))%ptr  )
 	IF ( status .NE. merr_ok ) GOTO 5700
 
 * free up the buffer space
-        CALL  RELEASE_WORK_SPC
+        CALL  RELEASE_DYN_WORK_SPACE
 
 * update the variables with info about the number of records actually read
 * (for multi-dimensional grid reads just truncate the last axis best we can)
@@ -237,11 +239,10 @@
 	ENDIF
 
 * flag that all the data is available
-	DO 800 ivar = 1, nvar20
+	DO ivar = 1, nvar20
 	   mr1 = mr20(ivar)
-	   mr_protected( mr1 ) = 1
-	   CALL MR_NOT_IN_USE( mr1 )	! decrement to 0=mr_not_in_use
- 800	CONTINUE
+	   CALL MR_AVAILABLE(mr1)
+	ENDDO
 
 * the data region obtained may be inadequate for the request
 * ("cx" is request, "cx1" is available)
@@ -276,7 +277,7 @@
  1000   FORMAT ('ASCII file reading: Insufficient memory reading variable ', i4)
 	DO 5010 nleft = 1, nvar20-1	! delete all except last
  5010	CALL DELETE_VARIABLE(mr20(nleft))
-        CALL  RELEASE_WORK_SPC
+        CALL  RELEASE_DYN_WORK_SPACE
  5500	RETURN
  5600	CALL ERRMSG( ferr_limits, status,
      .		ww_dim_name(idim)//' axis of '//VAR_CODE(cat_file_var,ask_var),

@@ -74,6 +74,7 @@
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* V720 *acm*  3/17 Ticket 2512: Add STAT/PRECICISION=
 
 
 * command qualifier states
@@ -381,6 +382,7 @@
      .			slash_frame_annotate,
      .
      .			slash_stat_brief,
+     .			slash_stat_precision,
      .
      .			slash_levels,
      .			slash_length,
@@ -703,6 +705,7 @@
      .			slash_frame_annotate	= 7 + 1,
      .
      .			slash_stat_brief	= 0 + 1,
+     .			slash_stat_precision 	= 0 + 2,
 
      .			slash_levels		= 1+20,
      .			slash_length		= 1+20,

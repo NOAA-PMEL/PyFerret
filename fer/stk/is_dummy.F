@@ -1,4 +1,4 @@
-	SUBROUTINE IS_DUMMY( memory, *, status )
+	SUBROUTINE IS_DUMMY(  *, status )
 
 *
 *
@@ -53,7 +53,6 @@
 
 * calling argument declarations:
 	INTEGER	status
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	INTEGER	mr, cx
@@ -71,8 +70,7 @@
 	IF (mode_diagnostic) CALL DIAGNOSTIC_OUT('dummy',mr,point_to_mr)
 
 * insert a block of missing value flags
-	CALL FILL_MEMORY( memory, mr_blk1(mr),
-     .			  mr_nblks(mr), mr_bad_data(mr) )
+	CALL FILL_MEMORY( mr, mr_bad_data(mr) )
 
 	RETURN 1
 

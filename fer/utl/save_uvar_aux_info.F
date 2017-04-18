@@ -37,6 +37,7 @@
 * uvar grid/dset pair.
 
 * V699 5/16 *sh* new routine created to avoid the 2d uvar_grid array
+* V702 3/17 *sh* standardize corruption messages
 
 * arguments:
 *     uvar - the Ferret user variable number (input)
@@ -74,8 +75,7 @@
      .                              aux_cat, aux_var, context_dset )
 
 * check that we were successful
-        IF (status .NE. ferr_ok) CALL WARN(
-     .                  'corruption setting uvar aux info')
+        IF (status .NE. ferr_ok) CALL WARN('crptn??: save_uvar_aux_info')
 
         RETURN
         END

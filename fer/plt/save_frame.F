@@ -1,4 +1,4 @@
-        SUBROUTINE SAVE_FRAME(memory, filename, fformat, annovar,
+        SUBROUTINE SAVE_FRAME(filename, fformat, annovar,
      .                        xinches, yinches, xpixels, ypixels, sts)
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -56,22 +56,16 @@
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 * PyFr  *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to FRAME
 * PyFr  *kms*  8/13 Add /ANNOTATE to FRAME; include memory argument
+* PyFr  *kms*  4/17 Revised for new memory management
 
 * calling argument declarations:
         IMPLICIT NONE
-        REAL memory(*)
         CHARACTER*(*) filename, fformat, annovar
         REAL*4 xinches, yinches
         INTEGER xpixels, ypixels, sts
 
 * function return value declarations
         INTEGER TM_LENSTR
-
-* internal variable declarations:
-        INTEGER windowid, namlen, fmtlen, success, errstrlen, 
-     .          mr, cx, k, memlo, memhi, steplo, stephi, 
-     .          firststr, numstr
-        CHARACTER*2048 errstr
 
         INCLUDE 'tmap_dims.parm'
         INCLUDE 'ferret.parm'
@@ -80,6 +74,12 @@
         INCLUDE 'xplot_state.cmn'
         INCLUDE 'xvariables.cmn'
         INCLUDE 'fgrdel.cmn'
+
+* internal variable declarations:
+        TYPE(mem_table_slot) :: firststr
+        INTEGER windowid, namlen, fmtlen, success, errstrlen, 
+     .          mr, cx, k, memlo, memhi, steplo, stephi, numstr
+        CHARACTER*2048 errstr
 
         namlen = TM_LENSTR(filename)
         fmtlen = TM_LENSTR(fformat)
@@ -101,15 +101,16 @@
 *       Get the annotation strings to add at the top
         IF ( annovar .NE. ' ' ) THEN
 *           Get the string array given by the variable named in annovar
-            CALL GET_FER_COMMAND(memory, 'LOAD ' // annovar, sts, *5200)
+            CALL GET_FER_COMMAND('LOAD ' // annovar, sts, *5200)
             IF ( sts .NE. FERR_OK ) GOTO 5200
 *           Get the string data into memory
-            CALL GET_CMND_DATA(memory, cx_last, ptype_string, sts)
+            CALL GET_CMND_DATA(cx_last, ptype_string, sts)
             IF ( sts .NE. FERR_OK ) GOTO 5200
             mr = is_mr(isp)
             cx = is_cx(isp)
+
 *           Starting place in memory for this array of pointers to C strings
-            firststr = (mr_blk1(mr) - 1) * mem_blk_size
+            firststr = memry(mr)
 *           If the whole array was not specified, a new copy of the data
 *           has been made in memory with unit increments (or so it appears).
             numstr = 0
@@ -131,14 +132,14 @@
   120       CONTINUE
             IF ( numstr .LE. 0 ) GOTO 5400
         ELSE
-            firststr = 0
             numstr = 0
+*           firststr not used by fgdwinsave
         ENDIF
 
         CALL FGDWINSAVE(success, windowobjs(windowid), filename,
      .                  namlen, fformat, fmtlen, transparent, 
      .                  xinches, yinches, xpixels, ypixels,
-     .                  memory, firststr, numstr)
+     .                  firststr, numstr)
         IF ( success .EQ. 0 ) GOTO 5100
 
 * successful completion
@@ -150,8 +151,6 @@
         CALL FGDERRMSG(errstr, errstrlen)
         CALL ERRMSG(ferr_invalid_command, sts, errstr, *5000)
  5200   errstr = 'problems evaluating ' // annovar
-        CALL ERRMSG(ferr_invalid_command, sts, errstr, *5000)
- 5300   errstr = annovar//' is not a string array'
         CALL ERRMSG(ferr_invalid_command, sts, errstr, *5000)
  5400   errstr = annovar//' is not a valid string array'
         CALL ERRMSG(ferr_invalid_command, sts, errstr, *5000)

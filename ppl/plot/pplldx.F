@@ -14,10 +14,15 @@ C**
 C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+C v7.2 *acm* 2/2017 ticket 2246 Allow drawing formatted time axes on a PLOT/VS; 
+C                this needed changes when time axis is vertical
 c
 c	icode	0 use both x and y
 c		1 use x only
 c		2 use y only
+c		7 use y only, do not translate. For ribbon plots on vertical
+c		              time axis, loading the color variable still 
+c		              drawing the axis vertically
 c
 c                  When saving polygon data, save npts per polygon with 
 c                  the data, not in the array lleng(): unlimited # polygons
@@ -174,7 +179,7 @@ c
 #endif
 	CHARACTER BC2WHOI*14, tstrt*(*), tref*(*)
 	REAL*8	WHOI2BC, DIFF, tstart, tstop, time, tmin, off, rate, 
-     .		dxmin, dxmax, dymin, dymax, xymin, xymax dtd
+     .		dxmin, dxmax, dymin, dymax, xymin, xymax, dtd
 	INTEGER	icode, npts, i, ix, iy
 	REAL	xs, ys
 	LOGICAL  TM_FPEQ_SNGL
@@ -200,9 +205,14 @@ c
 	ny=1
 	flip = itflg .EQ. -1		!  FERRET mod 10/93
 
-**	if(ABS(itflg).eq.1)then		!  FERRET mod 10/93  "ABS"
+	translate = ABS(itflg).eq.1 .AND. itstrt(1:1).NE.' '
 
-	translate = ABS(itflg).eq.1
+* Hack, plot/vs/ribbon on a time axis
+	IF (icode .EQ. 7) THEN
+	   icode = 2
+	   translate = .FALSE.
+	ENDIF
+
 	if (translate) then	
 c
 c	time axis is on.
@@ -326,6 +336,12 @@ C 8/2015 compute min and max in double precision, then translate
 	        else
 		   pplmem(ix+i)=xt(i)
 	        endif
+		
+	        IF ( .NOT.(xeq .AND. TM_FPEQ_SNGL(xs,cmxeq)) ) THEN
+		   dxmin = MIN(dxmin, xt(i))
+		   dxmax = MAX(dxmax, xt(i))
+	        ENDIF
+
 200	    continue
 	else
 	    do 300 i=1,npts
@@ -341,6 +357,11 @@ C 8/2015 compute min and max in double precision, then translate
 		   pplmem(ix+i)=float(i)
 	        endif
 		pplmem(iy+i)=yt(i)
+		
+		IF ( .NOT.(yeq .AND. TM_FPEQ_SNGL(ys,cmyeq)) ) THEN
+		   dymin = MIN(dymin, yt(i))
+		   dymax = MAX(dymax, yt(i))
+		ENDIF
 300	    continue
 	endif
 * FERRET mod 2/89 - replace bad data LIMITS flags

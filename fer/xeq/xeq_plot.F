@@ -1,4 +1,4 @@
-	SUBROUTINE XEQ_PLOT( memory )
+	SUBROUTINE XEQ_PLOT
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -117,7 +117,9 @@
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * V71  *acm* 2/17  More on ticket 2231. Initialize flag use_keys.
+* PyFr *kms*  4/17 Remove SAVE_FRAME for HDF format since no longer supported
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -144,7 +146,6 @@
         include 'CONT.INC'
 
 * calling argument declarations:
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	LOGICAL		TM_HAS_STRING, 
@@ -155,8 +156,7 @@
 	INTEGER		TM_LENSTR1, TM_LENSTR, STR_UPCASE, STR_SAME,
      .                  symbol, icolor, ipen, icolor1, ipen1, status,
      .			loc, limit, slen, thick, step_inc,
-     .			ax1_blks, ax1_start,
-     .			ax2_blks, ax2_start,
+     .			ax1_work, ax2_work,
      .			do_dash, s1, s2, it_start(4), it_end(4),
      .			nparm, dot_sym, num_it, i, iax(4), i1,
      .                  loch, locv, nvs, skipsym
@@ -172,8 +172,7 @@
 
 * set up the graphics environment and get the data
 	CALL START_PPLUS(.FALSE.)
-	CALL DISP_DATA_SET_UP( memory,
-     .		ax1_start, ax1_blks, ax2_start, ax2_blks, status )
+	CALL DISP_DATA_SET_UP(  ax1_work, ax2_work, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
 
         ncolors = mode_arg(pmode_linecolors,1)
@@ -654,7 +653,7 @@ CC       => Set values here instead.
 
 * set up the axes and title and load the data into PPLUS
 
-	CALL PLOT_SET_UP   ( 	memory,
+	CALL PLOT_SET_UP   ( 	
      .				overlay,
      .				transpz,
      .				versus,
@@ -677,8 +676,8 @@ CC       => Set values here instead.
      .				is_mr,
      .				is_cx,
      .				num_uvars_in_cmnd,
-     .				memory( 1, ax1_start ),
-     .				memory( 1, ax2_start ),
+     .				workmem(ax1_work)%ptr,
+     .				workmem(ax2_work)%ptr,
      .				status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	
@@ -780,12 +779,6 @@ c done in plot_set_up.
 * interrupt occurred during plot ?
 	IF ( ppl_interrupted ) GOTO 1000
 
-* capture the bit map ?
-	IF ( qual_given( slash_plot_frame ) .GT. 0 ) THEN
-	   CALL SAVE_FRAME( frame_file, "HDF", status )
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-	ENDIF
-
 *  Save log axis state
 
 	IF (overlay) THEN
@@ -808,8 +801,8 @@ c done in plot_set_up.
 ! PLOT/ALONG does a hack to num_uvars_in_cmnd that can lead to a problem
 ! in GET_PROT_CMND_DATA if the same argument string is re-used in the next cmnd
  1000	IF (along) num_uvars_in_cmnd = 1
-	CALL FREE_MEMORY( ax2_start, ax2_blks )
- 	CALL FREE_MEMORY( ax1_start, ax2_blks )
+ 	CALL FREE_WS_DYNMEM( ax1_work )
+	CALL FREE_WS_DYNMEM( ax2_work )
 	CALL UNPROTECT_CMND_DATA			! 1/94
  5100	RETURN
 

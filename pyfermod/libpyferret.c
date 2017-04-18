@@ -102,22 +102,24 @@ static void ferret_sigint_handler(int signum)
     /* ignore any further Ctrl-C entries until done */
     signal(SIGINT, SIG_IGN);
     /* Now call the Fortran routine */
-    ctrlc_ast_();
+    FORTRAN(ctrlc_ast)();
     /* Go back to catching Ctrl-C */
     signal(SIGINT, ferret_sigint_handler);
 }
 
+static jmp_buf crash_jumpbuffer;
+#ifdef NDEBUG
 /*
  * Signal handler for program-quiting signals other than SIGINT.
  * For exiting gracefully to shut down any displayed viewers
  * and for generating a stderr message for LAS.
  * Only for production (not debug); for debug allow the crash to happen.
  */
-static jmp_buf crash_jumpbuffer;
 static void crash_signal_handler(int signum) 
 {
     longjmp(crash_jumpbuffer, signum);
 }
+#endif
 
 /* 
  * Storage for original signal handlers when in the ferret engine.  
@@ -311,7 +313,6 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     int quietFlag = 0;
     int lineBufferFlag = 0;
     int pplMemSize;
-    size_t blksiz;
     int status;
     int ttoutLun = TTOUT_LUN;
     int one_cmnd_mode_int;
@@ -382,24 +383,12 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     if ( pplMemory == NULL )
         return PyErr_NoMemory();
     set_ppl_memory(pplMemory, pplMemSize);
-
-    /* Initial allocation of Ferret memory - multiples of 100 PMAX_MEM_BLKS */
-    blksiz  = (size_t) ((mwMemSize * 1.0E6 + (double)PMAX_MEM_BLKS - 1.0) / (double)PMAX_MEM_BLKS);
-    blksiz  = (blksiz + 99) / 100;
-    blksiz *= 100;
-    ferMemSize = blksiz * (size_t)PMAX_MEM_BLKS;
-    /* Check for overflow */
-    if ( blksiz != ferMemSize / (size_t)PMAX_MEM_BLKS )
-        return PyErr_NoMemory();
-    ferMemory = (double *) PyMem_Malloc(ferMemSize * (size_t)sizeof(double));
-    if ( ferMemory == NULL )
-        return PyErr_NoMemory();
-    set_fer_memory(ferMemory, ferMemSize);
+    FORTRAN(init_memory)();
 
     if ( (metaname != NULL) || (unmappedFlag != 0) ) {
        /*
         * Set the default graphics filename for saving before ending.
-        * Make a copy of the name just in case set_batch_graphics_ changes
+        * Make a copy of the name just in case set_batch_graphics changes
         * something.  This also hides the graphics viewer.
         */
        char my_meta_name[2048];
@@ -410,29 +399,29 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
        else {
            my_meta_name[0] = '\0';
        }
-       set_batch_graphics_(my_meta_name, &pngonlyFlag);
+       set_batch_graphics(my_meta_name, &pngonlyFlag);
     }
 
     /* Set the default autosave transparency */
-    fgd_set_transparency_(&transparentFlag);
+    FORTRAN(fgd_set_transparency)(&transparentFlag);
 
     /* Initialize stuff: keyboard, todays date, grids, GFDL terms, PPL brain */
-    initialize_();
+    FORTRAN(initialize)();
 
     /* Open the output journal file, if appropriate */
     if ( journalFlag != 0 ) {
-        init_journal_(&status);
+        FORTRAN(init_journal)(&status);
         if ( status != FERR_OK ) {
             PyErr_SetString(PyExc_IOError, "Unable to open the journal file ferret.jnl");
             return NULL;
         }
     }
     else
-        no_journal_();
+        FORTRAN(no_journal)();
 
     /* Set the verify flag */
     if ( verifyFlag == 0 )
-        turnoff_verify_(&status);
+        FORTRAN(turnoff_verify)(&status);
 
     /* Get the PyObject representing the pyferret module */
 #if PY_MAJOR_VERSION > 2
@@ -466,59 +455,16 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     }
 
     /* Set and possibly output program name and revision number */
-    proclaim_c_(&ttoutLun, "\t", &quietFlag);
+    FORTRAN(proclaim_c)(&ttoutLun, "\t", &quietFlag);
 
     /* Set so that ferret_dispatch returns after every command */
     one_cmnd_mode_int = 1;
-    set_one_cmnd_mode_(&one_cmnd_mode_int);
+    FORTRAN(set_one_cmnd_mode)(&one_cmnd_mode_int);
 
     /* Success - return True */
     ferretInitialized = 1;
     Py_INCREF(Py_True);
     return Py_True;
-}
-
-
-/*
- * Helper function to reallocate Ferret's memory from Python.
- * Argument: the new number of floats of Ferret's memory cache is given by
- *           blksiz * PMAX_MEM_BLKS (defined in ferret.h as 2000)
- * Returns: zero if fails, non-zero if successful
- */
-static int resizeFerretMemory(int blksiz)
-{
-    size_t actual_blksiz;
-    size_t newFerMemSize;
-
-    /* Get the new size for the memory and check for overflow */
-    if ( blksiz <= 0 )
-        return 0;
-    actual_blksiz = (blksiz  + 99)/ 100;
-    actual_blksiz *= 100;
-    newFerMemSize = actual_blksiz * (size_t)PMAX_MEM_BLKS;
-    if ( actual_blksiz != newFerMemSize / (size_t)PMAX_MEM_BLKS )
-        return 0;
-
-    /*
-     * Free the old memory and allocate new memory rather than use
-     * realloc since the contents of the old memory isn't needed.
-     * This could also result in a better garbage collection.
-     */
-    PyMem_Free(ferMemory);
-    ferMemory = (double *) PyMem_Malloc(newFerMemSize * (size_t)sizeof(double));
-    if ( ferMemory == NULL ) {
-        ferMemory = (double *) PyMem_Malloc(ferMemSize * (size_t)sizeof(double));
-        if ( ferMemory == NULL ) {
-            fprintf(stderr, "**ERROR: Unable to restore Ferret's memory cache of %f Mdoubles\n", (double)ferMemSize / 1.0E6);
-            exit(1);
-        }
-        return 0;
-    }
-
-    /* Reallocation successful; assign the new memory */
-    ferMemSize = newFerMemSize;
-    set_fer_memory(ferMemory, ferMemSize);
-    return 1;
 }
 
 
@@ -535,50 +481,6 @@ void reallo_ppl_memory(int new_size)
         exit(1);
     }
     set_ppl_memory(pplMemory, new_size);
-}
-
-
-static char pyferretResizeMemoryDocstring[] =
-    "Reset the the amount of memory allocated for Ferret from Python-managed memory. \n"
-    "\n"
-    "Required arguments: \n"
-    "    memsize = <float>: the new size, in megadouble (where a double is 8 bytes), \n"
-    "                       for Ferret's memory cache \n"
-    "\n"
-    "Optional arguments: \n"
-    "    (none) \n"
-    "\n"
-    "Returns: \n"
-    "    True if successful - Ferret has the new amount of memory \n"
-    "    False if unsuccessful - Ferret has the previous amount of memory \n"
-    "\n"
-    "Raises: \n"
-    "    MemoryError if Ferret has not been started or has been stopped \n";
-
-static PyObject *pyferretResizeMemory(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    static char *argNames[] = {"memsize", NULL};
-    double mwMemSize;
-
-    /* If not initialized, raise a MemoryError */
-    if ( ! ferretInitialized ) {
-        PyErr_SetString(PyExc_MemoryError, "Ferret not started");
-        return NULL;
-    }
-
-    /* Parse the arguments, checking if an Exception was raised */
-    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "d", argNames, &mwMemSize) )
-        return NULL;
-
-    /* Reallocate the new amount of memory for Ferret */
-    if ( resizeFerretMemory((int) ((mwMemSize * 1.0E6 + (double)PMAX_MEM_BLKS - 1.0) / (double)PMAX_MEM_BLKS)) == 0 ) {
-        Py_INCREF(Py_False);
-        return Py_False;
-    }
-
-    /* Success - return True */
-    Py_INCREF(Py_True);
-    return Py_True;
 }
 
 
@@ -609,8 +511,8 @@ static char pyferretRunCommandDocstring[] =
 static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kwds)
 {
     static char *argNames[] = {"command", NULL};
-    const char *command;
-    const char *iter_command;
+    char *command;
+    char *iter_command;
     int  one_cmnd_mode_int;
     int  cmnd_stack_level;
     char errmsg[2112];
@@ -627,12 +529,12 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
         return NULL;
 
     /* Clear the last error message and value */
-    clear_fer_last_error_info_();
+    FORTRAN(clear_fer_last_error_info)();
 
     /* If an empty string, temporarily turn off the one-command mode */
     if ( command[0] == '\0' ) {
         one_cmnd_mode_int = 0;
-        set_one_cmnd_mode_(&one_cmnd_mode_int);
+        FORTRAN(set_one_cmnd_mode)(&one_cmnd_mode_int);
     }
     else
         one_cmnd_mode_int = 1;
@@ -683,25 +585,19 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
     do {
         cmnd_stack_level = 0;
         /* Run the Ferret command */
-	ferret_dispatch_c(ferMemory, iter_command, sBuffer);
+	ferret_dispatch_c(iter_command, sBuffer);
 
         if ( sBuffer->flags[FRTN_ACTION] == FACTN_MEM_RECONFIGURE ) {
-            /* resize, then re-enter if not single-command mode */
-            if ( resizeFerretMemory(sBuffer->flags[FRTN_IDATA1]) == 0 ) {
-                printf("Unable to resize Ferret's memory cache to %f Mdoubles\n",
-                       (double)(sBuffer->flags[FRTN_IDATA1]) * (double)PMAX_MEM_BLKS / 1.0E6);
-                printf("Ferret's memory cache remains at %f Mdoubles\n",
-                       (double)(ferMemSize) / 1.0E6);
-            }
+            /* Now handled internally */
             cmnd_stack_level = sBuffer->flags[FRTN_IDATA2];
         }
         else {
             /*
              * Not a memory resize command; probably an exit command.
              * Do not allow return to the Python prompt if in restricted mode
-             * (is_secure_() returns non-zero).
+             * (is_secure returns non-zero).
              */
-            if ( is_secure_() == 0 )
+            if ( FORTRAN(is_secure)() == 0 )
                break;
             if ( sBuffer->flags[FRTN_ACTION] == FACTN_EXIT ) {
                remove_ferret_signal_handlers();
@@ -718,7 +614,7 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
     /* Set back to single command mode */
     if ( one_cmnd_mode_int == 0 ) {
         one_cmnd_mode_int = 1;
-        set_one_cmnd_mode_(&one_cmnd_mode_int);
+        FORTRAN(set_one_cmnd_mode)(&one_cmnd_mode_int);
     }
 
     if ( sBuffer->flags[FRTN_ACTION] == FACTN_EXIT ) {
@@ -734,7 +630,7 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
     }
 
     /* Get the last error message (null terminated) and value */
-    get_fer_last_error_info_(&errval, errmsg, 2112);
+    FORTRAN(get_fer_last_error_info)(&errval, errmsg, 2112);
 
     /* Return the tuple of the last error value and message */
     return Py_BuildValue("is", errval, errmsg);
@@ -774,7 +670,7 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
     char          *name;
     int            lendataname;
     char           dataname[1024];
-    int            arraystart;
+    double        *arraystart;
     int            memlo[MAX_FERRET_NDIM], memhi[MAX_FERRET_NDIM];
     int            steplo[MAX_FERRET_NDIM], stephi[MAX_FERRET_NDIM], incr[MAX_FERRET_NDIM];
     char           dataunit[64];
@@ -788,7 +684,6 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
     npy_intp       new_shape[2];
     int            strides[MAX_FERRET_NDIM];
     PyArrayObject *data_ndarray;
-    double        *ferdata;
     double        *npydata;
     PyArrayObject *badval_ndarray;
     PyArrayObject *axis_coords[MAX_FERRET_NDIM];
@@ -818,7 +713,7 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
      * Retrieve the memory parameters describing the data array requested.
      * Assumes Unix standard for passing strings to Fortran (appended array lengths).
      */
-    get_data_array_params_(dataname, &lendataname, ferMemory, &arraystart, memlo, memhi,
+    FORTRAN(get_data_array_params)(dataname, &lendataname, &arraystart, memlo, memhi,
                            steplo, stephi, incr, dataunit, &lendataunit, axis_types,
                            &badval, errmsg, &lenerrmsg, 1024, 64, 2112);
     if ( lenerrmsg > 0 ) {
@@ -857,7 +752,6 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
      * Assign the data in the new ndarray.
      * Note: if MAX_FERRET_NDIM changes, this needs editing.
      */
-    ferdata = ferMemory + arraystart;
     npydata = (double *)PyArray_DATA(data_ndarray);
     q = 0;
     for (n = 0; n < (int)(shape[5]); n++) {
@@ -866,12 +760,12 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
           for (k = 0; k < (int)(shape[2]); k++) {
             for (j = 0; j < (int)(shape[1]); j++) {
               for (i = 0; i < (int)(shape[0]); i++) {
-                npydata[q] = ferdata[ i * strides[0] + 
-                                      j * strides[1] + 
-                                      k * strides[2] + 
-                                      l * strides[3] +
-                                      m * strides[4] +
-                                      n * strides[5] ];
+                npydata[q] = arraystart[ i * strides[0] + 
+                                         j * strides[1] + 
+                                         k * strides[2] + 
+                                         l * strides[3] +
+                                         m * strides[4] +
+                                         n * strides[5] ];
                 q++;
               }
             }
@@ -912,7 +806,7 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
             /* get the coordinates and the units string */
             q = k+1;
             j = (int) shape[k];
-            get_data_array_coords_((double *)PyArray_DATA(axis_coords[k]), axis_units[k],
+            FORTRAN(get_data_array_coords)((double *)PyArray_DATA(axis_coords[k]), axis_units[k],
                                    axis_names[k], &q, &j, errmsg, &lenerrmsg, 64, 64, 2112);
             if ( lenerrmsg > 0 ) {
                 errmsg[lenerrmsg] = '\0';
@@ -944,7 +838,7 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
             /* get the time coordinate integers */
             q = k+1;
             j = (int) shape[k];
-            get_data_array_time_coords_((int (*)[6])PyArray_DATA(axis_coords[k]), &calendar_type, axis_names[k],
+            FORTRAN(get_data_array_time_coords)((int (*)[6])PyArray_DATA(axis_coords[k]), &calendar_type, axis_names[k],
                                         &q, &j, errmsg, &lenerrmsg, 64, 2112);
             if ( lenerrmsg > 0 ) {
                 errmsg[lenerrmsg] = '\0';
@@ -1244,7 +1138,7 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
                 return NULL;
             }
             axis_coords[k] = (int *)PyArray_DATA((PyArrayObject *) seqitem);
-            get_axis_num_(&(axis_nums[k]), &(axis_starts[k]), &(axis_ends[k]), axis_names[k],
+            FORTRAN(get_axis_num)(&(axis_nums[k]), &(axis_starts[k]), &(axis_ends[k]), axis_names[k],
                           axis_units[k], axis_coords[k], &(num_coords[k]), &(axis_types[k]),
                           errmsg, &len_errmsg, strlen(axis_names[k]), strlen(axis_units[k]), 2048);
             if ( len_errmsg > 0 ) {
@@ -1300,7 +1194,7 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
                 return NULL;
             }
             axis_coords[k] = (int *)PyArray_DATA((PyArrayObject *) seqitem);
-            get_time_axis_num_(&(axis_nums[k]), &(axis_starts[k]), &(axis_ends[k]),
+            FORTRAN(get_time_axis_num)(&(axis_nums[k]), &(axis_starts[k]), &(axis_ends[k]),
                                axis_names[k], &calendar_type, axis_coords[k], &(num_coords[k]),
                                errmsg, &len_errmsg, strlen(axis_names[k]), 2048);
             if ( len_errmsg > 0 ) {
@@ -1331,7 +1225,7 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
     len_title = strlen(title);
     len_units = strlen(units);
     len_dset = strlen(dset);
-    add_pystat_var_(&data_ndarray, codename, title, units, &bdfval, dset,
+    FORTRAN(add_pystat_var)(&data_ndarray, codename, title, units, &bdfval, dset,
                     axis_nums, axis_starts, axis_ends, errmsg, &len_errmsg,
                     len_codename, len_title, len_units, len_dset, 2048);
     if ( len_errmsg > 0 ) {
@@ -1383,7 +1277,7 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
     char          *name;
     int            lendataname;
     char           dataname[1024];
-    int            arraystart;
+    char         **arraystart;
     int            memlo[MAX_FERRET_NDIM], memhi[MAX_FERRET_NDIM];
     int            steplo[MAX_FERRET_NDIM], stephi[MAX_FERRET_NDIM], incr[MAX_FERRET_NDIM];
     AXISTYPE       axis_types[MAX_FERRET_NDIM];
@@ -1394,7 +1288,6 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
     npy_intp       new_shape[2];
     int            strides[MAX_FERRET_NDIM];
     PyArrayObject *data_ndarray;
-    void         **ferdata;
     char          *strptr;
     int            maxstrlen;
     int            thisstrlen;
@@ -1428,7 +1321,7 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
      * Retrieve the memory parameters describing the data array requested.
      * Assumes Unix standard for passing strings to Fortran (appended array lengths).
      */
-    get_str_data_array_params_(dataname, &lendataname, ferMemory, &arraystart, 
+    FORTRAN(get_str_data_array_params)(dataname, &lendataname, &arraystart, 
                                memlo, memhi, steplo, stephi, incr, axis_types,
                                errmsg, &lenerrmsg, 1024, 64, 2112);
     if ( lenerrmsg > 0 ) {
@@ -1461,7 +1354,6 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
      */
 
     /* Get the maximum string length of all the strings in this array */
-    ferdata = (void **) (ferMemory + arraystart);
     /* Use STRING_MISSING_VALUE for missing strings */
     maxstrlen = (int)(strlen(STRING_MISSING_VALUE) + 1);
     for (n = 0; n < (int)(shape[5]); n++) {
@@ -1470,12 +1362,12 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
           for (k = 0; k < (int)(shape[2]); k++) {
             for (j = 0; j < (int)(shape[1]); j++) {
               for (i = 0; i < (int)(shape[0]); i++) {
-                strptr = (char *) ferdata[ i * strides[0] + 
-                                           j * strides[1] + 
-                                           k * strides[2] + 
-                                           l * strides[3] +
-                                           m * strides[4] +
-                                           n * strides[5] ];
+                strptr = arraystart[ i * strides[0] + 
+                                     j * strides[1] + 
+                                     k * strides[2] + 
+                                     l * strides[3] +
+                                     m * strides[4] +
+                                     n * strides[5] ];
                 if ( strptr != NULL ) {
                   /* add one so always null-terminated */
                   thisstrlen = (int)(strlen(strptr) + 1);
@@ -1511,12 +1403,12 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
           for (k = 0; k < (int)(shape[2]); k++) {
             for (j = 0; j < (int)(shape[1]); j++) {
               for (i = 0; i < (int)(shape[0]); i++) {
-                strptr = (char *) ferdata[ i * strides[0] + 
-                                           j * strides[1] + 
-                                           k * strides[2] + 
-                                           l * strides[3] +
-                                           m * strides[4] +
-                                           n * strides[5] ];
+                strptr = arraystart[ i * strides[0] + 
+                                     j * strides[1] + 
+                                     k * strides[2] + 
+                                     l * strides[3] +
+                                     m * strides[4] +
+                                     n * strides[5] ];
                 if ( strptr == NULL ) {
                    strptr = STRING_MISSING_VALUE;
                 }
@@ -1565,7 +1457,7 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
             /* get the coordinates and the units string */
             q = k+1;
             j = (int) shape[k];
-            get_data_array_coords_((double *)PyArray_DATA(axis_coords[k]), axis_units[k],
+            FORTRAN(get_data_array_coords)((double *)PyArray_DATA(axis_coords[k]), axis_units[k],
                                    axis_names[k], &q, &j, errmsg, &lenerrmsg, 64, 64, 2112);
             if ( lenerrmsg > 0 ) {
                 errmsg[lenerrmsg] = '\0';
@@ -1597,7 +1489,7 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
             /* get the time coordinate integers */
             q = k+1;
             j = (int) shape[k];
-            get_data_array_time_coords_((int (*)[6])PyArray_DATA(axis_coords[k]), &calendar_type, axis_names[k],
+            FORTRAN(get_data_array_time_coords)((int (*)[6])PyArray_DATA(axis_coords[k]), &calendar_type, axis_names[k],
                                         &q, &j, errmsg, &lenerrmsg, 64, 2112);
             if ( lenerrmsg > 0 ) {
                 errmsg[lenerrmsg] = '\0';
@@ -1712,17 +1604,17 @@ static PyObject *pyferretStop(PyObject *self)
     pyferret_module_pyobject = NULL;
 
     /* Run commands to clear/reset Ferret's state */
-    ferret_dispatch_c(ferMemory, "SET GRID ABSTRACT", sBuffer);
-    ferret_dispatch_c(ferMemory, "CANCEL WINDOW /ALL", sBuffer);
-    ferret_dispatch_c(ferMemory, "CANCEL VARIABLE /ALL", sBuffer);
-    ferret_dispatch_c(ferMemory, "CANCEL SYMBOL /ALL", sBuffer);
-    ferret_dispatch_c(ferMemory, "CANCEL DATA /ALL", sBuffer);
-    ferret_dispatch_c(ferMemory, "CANCEL REGION /ALL", sBuffer);
-    ferret_dispatch_c(ferMemory, "CANCEL MEMORY /ALL", sBuffer);
-    ferret_dispatch_c(ferMemory, "EXIT /PROGRAM", sBuffer);
+    ferret_dispatch_c("SET GRID ABSTRACT", sBuffer);
+    ferret_dispatch_c("CANCEL WINDOW /ALL", sBuffer);
+    ferret_dispatch_c("CANCEL VARIABLE /ALL", sBuffer);
+    ferret_dispatch_c("CANCEL SYMBOL /ALL", sBuffer);
+    ferret_dispatch_c("CANCEL DATA /ALL", sBuffer);
+    ferret_dispatch_c("CANCEL REGION /ALL", sBuffer);
+    ferret_dispatch_c("CANCEL MEMORY /ALL", sBuffer);
+    ferret_dispatch_c("EXIT /PROGRAM", sBuffer);
 
     /* Free memory allocated inside Ferret */
-    finalize_();
+    FORTRAN(finalize)();
 
     /* Free memory allocated for Ferret */
     PyMem_Free(ferMemory);
@@ -1769,10 +1661,10 @@ static PyObject *pyferretQuit(PyObject *self)
     pyferret_module_pyobject = NULL;
 
     /* Let Ferret do its orderly shutdown - including closing viewers */
-    ferret_dispatch_c(ferMemory, "EXIT /PROGRAM", sBuffer);
+    ferret_dispatch_c("EXIT /PROGRAM", sBuffer);
 
     /* Free memory allocated inside Ferret */
-    finalize_();
+    FORTRAN(finalize)();
 
     /* Free memory allocated for Ferret */
     PyMem_Free(ferMemory);
@@ -1851,7 +1743,7 @@ static PyObject *pyefcnGetAxisCoordinates(PyObject *self, PyObject *args, PyObje
     }
 
     /* Get the subscripts for all of the arguments */
-    ef_get_arg_subscripts_6d_(&id, steplo, stephi, incr);
+    FORTRAN(ef_get_arg_subscripts_6d)(&id, steplo, stephi, incr);
 
     /* Restore the original segv handler */
     signal(SIGSEGV, pyefcn_segv_handler);
@@ -1881,7 +1773,7 @@ static PyObject *pyefcnGetAxisCoordinates(PyObject *self, PyObject *args, PyObje
     hi = stephi[arg][axis];
     arg++;
     axis++;
-    ef_get_coordinates_(&id, &arg, &axis, &lo, &hi, (double *)PyArray_DATA(coords_ndarray));
+    FORTRAN(ef_get_coordinates)(&id, &arg, &axis, &lo, &hi, (double *)PyArray_DATA(coords_ndarray));
 
     return (PyObject *) coords_ndarray;
 }
@@ -1952,7 +1844,7 @@ static PyObject *pyefcnGetAxisBoxSizes(PyObject *self, PyObject *args, PyObject 
     }
 
     /* Get the subscripts for all of the arguments */
-    ef_get_arg_subscripts_6d_(&id, steplo, stephi, incr);
+    FORTRAN(ef_get_arg_subscripts_6d)(&id, steplo, stephi, incr);
 
     /* Restore the original segv handler */
     signal(SIGSEGV, pyefcn_segv_handler);
@@ -1982,7 +1874,7 @@ static PyObject *pyefcnGetAxisBoxSizes(PyObject *self, PyObject *args, PyObject 
     hi = stephi[arg][axis];
     arg++;
     axis++;
-    ef_get_box_size_(&id, &arg, &axis, &lo, &hi, (double *)PyArray_DATA(sizes_ndarray));
+    FORTRAN(ef_get_box_size)(&id, &arg, &axis, &lo, &hi, (double *)PyArray_DATA(sizes_ndarray));
 
     return (PyObject *) sizes_ndarray;
 }
@@ -2053,7 +1945,7 @@ static PyObject *pyefcnGetAxisBoxLimits(PyObject *self, PyObject *args, PyObject
     }
 
     /* Get the subscripts for all of the arguments */
-    ef_get_arg_subscripts_6d_(&id, steplo, stephi, incr);
+    FORTRAN(ef_get_arg_subscripts_6d)(&id, steplo, stephi, incr);
 
     /* Restore the original segv handler */
     signal(SIGSEGV, pyefcn_segv_handler);
@@ -2088,7 +1980,7 @@ static PyObject *pyefcnGetAxisBoxLimits(PyObject *self, PyObject *args, PyObject
     hi = stephi[arg][axis];
     arg++;
     axis++;
-    ef_get_box_limits_(&id, &arg, &axis, &lo, &hi, (double *)PyArray_DATA(low_limits_ndarray), 
+    FORTRAN(ef_get_box_limits)(&id, &arg, &axis, &lo, &hi, (double *)PyArray_DATA(low_limits_ndarray), 
                                                    (double *)PyArray_DATA(high_limits_ndarray));
 
     return Py_BuildValue("NN", low_limits_ndarray, high_limits_ndarray); /* Steals the references to the two ndarrays */
@@ -2172,7 +2064,7 @@ static PyObject *pyefcnGetAxisInfo(PyObject *self, PyObject *args, PyObject *kwd
     }
 
     /* Get the subscripts for all of the arguments */
-    ef_get_arg_subscripts_6d_(&id, steplo, stephi, incr);
+    FORTRAN(ef_get_arg_subscripts_6d)(&id, steplo, stephi, incr);
 
     /* Restore the original segv handler */
     signal(SIGSEGV, pyefcn_segv_handler);
@@ -2195,9 +2087,9 @@ static PyObject *pyefcnGetAxisInfo(PyObject *self, PyObject *args, PyObject *kwd
     /* Get the rest of the info */
     arg++;
     axis++;
-    ef_get_single_axis_info_(&id, &arg, &axis, name, unit, &backwards, &modulo, &regular, 80, 80);
+    FORTRAN(ef_get_single_axis_info)(&id, &arg, &axis, name, unit, &backwards, &modulo, &regular, 80, 80);
     if ( modulo != 0 )
-        ef_get_axis_modulo_len_(&id, &arg, &axis, &modulolen);
+        FORTRAN(ef_get_axis_modulo_len)(&id, &arg, &axis, &modulolen);
     else
         modulolen = 0.0;
 
@@ -2310,14 +2202,14 @@ static PyObject *pyefcnGetArgOneVal(PyObject *self, PyObject *args, PyObject *kw
     switch( valtype ) {
         case FLOAT_ONEVAL:
             k = arg + 1;
-            ef_get_one_val_(&id, &k, &float_val);
+            FORTRAN(ef_get_one_val)(&id, &k, &float_val);
             valobj = PyFloat_FromDouble(float_val);
             break;
         case STRING_ONEVAL:
         case STRING_ARG:
             k = arg + 1;
             /* Assumes gcc standard for passing Hollerith strings */
-            ef_get_arg_string_(&id, &k, str_val, 2048);
+            FORTRAN(ef_get_arg_string)(&id, &k, str_val, 2048);
             for (k = 2048; k > 0; k--)
                 if ( ! isspace(str_val[k-1]) )
                     break;
@@ -2345,7 +2237,6 @@ static struct PyMethodDef pyferretMethods[] = {
     {"_get", (PyCFunction) pyferretGetData, METH_VARARGS | METH_KEYWORDS, pyferretGetDataDocstring},
     {"_getstrdata", (PyCFunction) pyferretGetStrData, METH_VARARGS | METH_KEYWORDS, pyferretGetStrDataDocstring},
     {"_put", (PyCFunction) pyferretPutData, METH_VARARGS | METH_KEYWORDS, pyferretPutDataDocstring},
-    {"_resize", (PyCFunction) pyferretResizeMemory, METH_VARARGS | METH_KEYWORDS, pyferretResizeMemoryDocstring},
     {"_stop", (PyCFunction) pyferretStop, METH_NOARGS, pyferretStopDocstring},
     {"_quit", (PyCFunction) pyferretQuit, METH_NOARGS, pyferretQuitDocstring},
     {"_get_axis_coordinates", (PyCFunction) pyefcnGetAxisCoordinates, METH_VARARGS | METH_KEYWORDS, pyefcnGetAxisCoordinatesDocstring},
@@ -2365,7 +2256,7 @@ static void AddConstantsToPyFerret(PyObject *mod)
     int  k;
 
     /* Add ferret parameter values */
-    get_ferret_params_(names, values, &numvals);
+    FORTRAN(get_ferret_params)(names, values, &numvals);
     for (k = 0; k < numvals; k++) {
         PyModule_AddIntConstant(mod, names[k], values[k]);
     }

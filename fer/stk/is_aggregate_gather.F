@@ -1,4 +1,4 @@
-	SUBROUTINE IS_AGGREGATE_GATHER( memory, *, *, status )
+	SUBROUTINE IS_AGGREGATE_GATHER(  *, *, status )
 
 *
 *
@@ -61,7 +61,6 @@
 
 * calling argument declarations:
 	INTEGER	status
-	REAL	memory( mem_blk_size, max_mem_blks )
 * normal return is for error conditions
 * exit #1 is to request another member ( stack has been pushed )
 * exit #2 is to signal completion of the activity at this stack level
@@ -122,8 +121,8 @@
 
 * copy data just received into the result
 * bad data flag differences are resolved during this COPY operation
-	CALL COPY_AGG_INTO( memory(1,mr_blk1(com_mr)), com_mr, com_cx, agg_dim,
-     .			memory(1,mr_blk1(res_mr)), res_mr, is_phase(isp) )
+	CALL COPY_AGG_INTO( memry(com_mr)%ptr, com_mr, com_cx, agg_dim,
+     .			memry(res_mr)%ptr, res_mr, is_phase(isp) )
 
 * ... remove the component protection that signaled we needed it here
 	IF (cx_data_set(com_cx) .NE. pdset_dummy) THEN

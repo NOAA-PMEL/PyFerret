@@ -1,4 +1,4 @@
-	SUBROUTINE IS_ATTRIB_VAL( memory, *, *, status )
+	SUBROUTINE IS_ATTRIB_VAL(  *, *, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -53,6 +53,7 @@
 * v698 5/16  *acm* ticket 2413: New attribute keywords ncoordvars, coordnames
 *                  return info about coordinate-variables in datasets
 * V710 9/16  *acm* ticket 2465: Parsing expressions including attribute references.
+* 712 2/17 *sh* fix latent bug when shifting an array of attribute values
 
         include 'tmap_dims.parm'
 #       include "tmap_dset.parm"
@@ -67,7 +68,6 @@
 
 * calling argument declarations:
 	INTEGER	status
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
         CHARACTER*512 varname, name
@@ -81,7 +81,9 @@
      .          vdims(8), dsdims(200), iatt, nvatts, idim, nd, vd, na,
      .          attoutflag, all_outflag, xdim, i1, i2, slen,
      .          i, indx, nv, dot, cat, attid, npts, dimid, nddims, 
-     .          iitem, start, end
+     .          iitem, start, end, wk_buff
+
+	INTEGER*8 n8
 
 * --- end of introductory code ---
 * initialize
@@ -155,7 +157,7 @@
 
               n = i2 - i1 + 1
               CALL INIT_C_STRING_ARRAY( n,
-     .				     memory(1,mr_blk1(mr)),
+     .				     memry(mr)%ptr,
      .				     mr_c_pointer(mr)    )
               n = 0
               nv = 0
@@ -181,7 +183,7 @@
 
               n = i2 - i1 + 1
               CALL INIT_C_STRING_ARRAY( n,
-     .				     memory(1,mr_blk1(mr)),
+     .				     memry(mr)%ptr,
      .				     mr_c_pointer(mr)    )
               n = 0
               nv = 0
@@ -208,7 +210,7 @@
 
               n = i2 - i1 + 1
 	      CALL INIT_C_STRING_ARRAY( n,
-     .				     memory(1,mr_blk1(mr)),
+     .				     memry(mr)%ptr,
      .				     mr_c_pointer(mr)    )
                 IF (ds_type(dset).NE.'CDF' .AND. ds_type(dset).NE.'ECDF') GOTO 5200
 
@@ -235,7 +237,7 @@
                  CALL CD_GET_VAR_ID (dset, '.', varid, status)
 
 	         CALL INIT_C_STRING_ARRAY( ngatts,
-     .				     memory(1,mr_blk1(mr)),
+     .				     memry(mr)%ptr,
      .				     mr_c_pointer(mr)    )
                  n = 0
                  DO 300 iatt = i1, i2
@@ -251,11 +253,11 @@
            ELSE IF (STR_SAME(attname, 'ndims') .EQ. 0 ) THEN
               IF (ds_type(dset).NE.'CDF' .AND. ds_type(dset).NE.'ECDF') GOTO 5200
 
-              memory( 1, mr_blk1(mr)) = ndims
+              memry(mr)%ptr(1) = ndims
               got_it = .TRUE.
 
            ELSE IF (STR_SAME(attname, 'nattrs') .EQ. 0 ) THEN
-              memory( 1, mr_blk1(mr)) = ngatts
+              memry(mr)%ptr(1) = ngatts
               got_it = .TRUE.
 
            ELSE IF (STR_SAME(attname, 'nvars') .EQ. 0 .OR.
@@ -270,7 +272,7 @@
                  IF (.NOT. coordvar) n = n + 1
  400          CONTINUE
               IF (STR_SAME(attname, 'ncoordvars') .EQ. 0) n = nvars-n
-              memory( 1, mr_blk1(mr)) = n
+              memry(mr)%ptr(1) = n
               got_it = .TRUE.
            ENDIF
 
@@ -293,7 +295,7 @@
 * ... set up FORTRAN-independent pointer
 
 	            CALL INIT_C_STRING_ARRAY( 1,
-     .				     memory(1,mr_blk1(mr)),
+     .				     memry(mr)%ptr,
      .				     mr_c_pointer(mr)    )
 
 * ... string
@@ -301,7 +303,7 @@
      .			         varname, attname, status)
 	         ELSE
 * ... array of numbers
-	            CALL ATTRIB_VALS (memory( 1, mr_blk1(mr)), 
+	            CALL ATTRIB_VALS (memry(mr)%ptr, 
      .                size, n, dset, varid, varname, attname, status)
 	         ENDIF
                  IF ( status .NE. ferr_ok ) GOTO 5000
@@ -316,7 +318,7 @@
                  IF (attname(1:1) .EQ. "'" .AND. 
      .               attname(slen:slen) .EQ. "'" ) THEN
 
-	            CALL ATTRIB_VALS (memory( 1, mr_blk1(mr)), 
+	            CALL ATTRIB_VALS (memry(mr)%ptr, 
      .                 size, n, dset, varid, varname, attname, status)
                     IF (status .NE. ferr_ok ) CALL ATTRIB_STRING (cx, mr, 
      .	                      dset, varid,  varname, attname, status)
@@ -343,7 +345,7 @@
                  IF (nvatts .GT. 0) THEN
 
 	           CALL INIT_C_STRING_ARRAY( nvatts,
-     .				     memory(1,mr_blk1(mr)),
+     .				     memry(mr)%ptr,
      .				     mr_c_pointer(mr)    )
                    n = 0
                    DO 600 iatt = i1, i2
@@ -363,7 +365,7 @@
                 IF (nvdims .GT. 0) THEN
 
 	           CALL INIT_C_STRING_ARRAY( nvdims,
-     .				     memory(1,mr_blk1(mr)),
+     .				     memry(mr)%ptr,
      .				     mr_c_pointer(mr)    )
                 IF (ds_type(dset).NE.'CDF' .AND. ds_type(dset).NE.'ECDF') GOTO 5200
 
@@ -381,16 +383,16 @@
              ELSE IF (STR_SAME(attname, 'ndims') .EQ. 0 ) THEN
                 IF (ds_type(dset).NE.'CDF' .AND. ds_type(dset).NE.'ECDF') GOTO 5200
 
-                memory( 1, mr_blk1(mr)) = nvdims
+                memry(mr)%ptr(1) = nvdims
                 got_it = .TRUE.
 
              ELSE IF (STR_SAME(attname, 'nctype') .EQ. 0 ) THEN
 
-                memory( 1, mr_blk1(mr)) = vartype
+                memry(mr)%ptr(1) = vartype
                 got_it = .TRUE.
 
              ELSE IF (STR_SAME(attname, 'nattrs') .EQ. 0 ) THEN
-                memory( 1, mr_blk1(mr)) = nvatts
+                memry(mr)%ptr(1) = nvatts
                 got_it = .TRUE.
 
              ENDIF
@@ -421,7 +423,7 @@
  900	      IF ( attype .EQ. NCCHAR ) THEN
 * ... set up FORTRAN-independent pointer
 	         CALL INIT_C_STRING_ARRAY( 1,
-     .				     memory(1,mr_blk1(mr)),
+     .				     memry(mr)%ptr,
      .				     mr_c_pointer(mr)    )
 
 * ... string
@@ -429,15 +431,26 @@
      .			          status)
 	      ELSE
 * ... array of numbers
-	         CALL ATTRIB_VALS (memory( 1, mr_blk1(mr)), size, n, dset, 
+
+* 2/17 - for a case like 
+*	define att v.att = {1, 2, 3, 4, 5}
+*	load v.att[i=3:5]
+* the allocated memory will not be large enough to accommodate the full array
+* of attribute values, so we need to allocate a work array
+! since other calls are ignoring return status, we will, too ...
+	         n8 = attlen
+	         CALL CREATE_DYN_WRKSPC( n8, wk_buff, status )
+	         CALL ATTRIB_VALS (workmem(wk_buff)%ptr, size, n, dset, 
      .                varid, varname, attname, status)
      
-                 indx = 1
+* ... left-shift the results to start a context low limit
+                 indx = 0
                  DO 800 i = i1, i2
-                    memory(indx, mr_blk1(mr)) = memory(i,mr_blk1(mr))
                     indx = indx + 1
+                    memry(mr)%ptr(indx) = workmem(wk_buff)%ptr(i)
 800              CONTINUE
-                    
+
+	         CALL FREE_WS_DYNMEM( wk_buff )
 
 	      ENDIF
 	      IF ( status .NE. ferr_ok ) GOTO 5000

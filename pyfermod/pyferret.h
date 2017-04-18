@@ -1,10 +1,8 @@
 #ifndef PYFERRET_H_
 #define PYFERRET_H_
 
-/* Python.h should already have been included */
-
-/* Ferret memory cache */
-extern double *memory;
+#include <Python.h>
+#include "ferret.h"
 
 /* PlotPlus memory */
 extern float *ppl_memory;
@@ -56,58 +54,61 @@ typedef enum CALTYPE_ {
 #define CALTYPE_NONE_STR "CALTYPE_NONE"
 
 /* Prototypes for library C functions */
-void set_fer_memory(double *mem, size_t mem_size);
 void set_ppl_memory(float *mem, int mem_size);
 void set_shared_buffer(void);
-void decref_pyobj_(void *pyobj_ptr_ptr);
-void copy_pystat_data_(double dest[], void *data_ndarray_ptr);
+void FORTRAN(decref_pyobj)(void *pyobj_ptr_ptr);
+void FORTRAN(copy_pystat_data)(double dest[], void *data_ndarray_ptr);
 
 /* Prototypes for library Fortan functions accessed from C routines */
-void add_pystat_var_(void *data_ndarray_ptr_ptr, char codename[], char title[], char units[],
+void FORTRAN(add_pystat_var)(void *data_ndarray_ptr_ptr, char codename[], char title[], char units[],
                      double *bdfval, char dset[], int axis_nums[MAX_FERRET_NDIM],
                      int axis_starts[MAX_FERRET_NDIM], int axis_ends[MAX_FERRET_NDIM],
                      char errmsg[], int *lenerrmsg, int len_codename, int len_title,
                      int len_units, int len_dset, int maxlen_errmsg);
-void clear_fer_last_error_info_(void);
-void ef_get_single_axis_info_(int *id, int *argnum, int *axisnum,
+void FORTRAN(clear_fer_last_error_info)(void);
+void FORTRAN(ctrlc_ast)(void);
+void FORTRAN(ef_get_single_axis_info)(int *id, int *argnum, int *axisnum,
                               char axisname[], char axisunit[],
                               int *backwards_axis, int *modulo_axis, int *regular_axis,
                               int maxlen_axisname, int maxlen_axisunit);
-void finalize_(void);
-void ef_get_arg_type_(int *id, int *argnum, int *argtype);
-void ef_get_arg_string_(int *id, int *argnum, char *argtext, int maxlen_argtext);
-void ef_get_one_val_(int *id, int *arg, double *val);
-void get_axis_num_(int *axisnum, int *axisstart, int *axisend, char axisname[], char axisunit[],
+void FORTRAN(finalize)(void);
+void FORTRAN(ef_get_arg_type)(int *id, int *argnum, int *argtype);
+void FORTRAN(ef_get_arg_string)(int *id, int *argnum, char *argtext, int maxlen_argtext);
+void FORTRAN(ef_get_one_val)(int *id, int *arg, double *val);
+void FORTRAN(get_axis_num)(int *axisnum, int *axisstart, int *axisend, char axisname[], char axisunit[],
                    double axiscoords[], int *numcoords, AXISTYPE *axistype, char *errmsg,
                    int *lenerrmsg, int maxlen_axisname, int maxlen_axisunit, int maxlen_errmsg);
-void get_data_array_params_(char dataname[], int *lendataname, double *memory, int *arraystart,
+void FORTRAN(get_data_array_params)(char dataname[], int *lendataname, double **arraystart,
                             int memlo[MAX_FERRET_NDIM], int memhi[MAX_FERRET_NDIM],
                             int steplo[MAX_FERRET_NDIM], int stephi[MAX_FERRET_NDIM],
                             int incr[MAX_FERRET_NDIM], char dataunit[], int *lendataunit,
                             AXISTYPE axtypes[MAX_FERRET_NDIM], double *badval, char errmsg[],
                             int *lenerrmsg, int maxlen_dataname, int maxlen_dataunit, int maxlen_errmsg);
-void get_str_data_array_params_(char dataname[], int *lendataname, double *memory, int *arraystart,
+void FORTRAN(get_str_data_array_params)(char dataname[], int *lendataname, char ***arraystart,
                             int memlo[MAX_FERRET_NDIM], int memhi[MAX_FERRET_NDIM],
                             int steplo[MAX_FERRET_NDIM], int stephi[MAX_FERRET_NDIM],
                             int incr[MAX_FERRET_NDIM], AXISTYPE axtypes[MAX_FERRET_NDIM], char errmsg[],
                             int *lenerrmsg, int maxlen_dataname, int maxlen_dataunit, int maxlen_errmsg);
-void get_data_array_coords_(double axiscoords[], char axisunit[], char axisname[],
+void FORTRAN(get_data_array_coords)(double axiscoords[], char axisunit[], char axisname[],
                             int *axisnum, int *numcoords, char errmsg[], int *lenerrmsg,
                             int maxlen_axisunit, int maxlen_axisname, int maxlen_errmsg);
-void get_data_array_time_coords_(int timecoords[][6], CALTYPE *caltype, char axisname[],
+void FORTRAN(get_data_array_time_coords)(int timecoords[][6], CALTYPE *caltype, char axisname[],
                                  int *axisnum, int *numcoords, char errmsg[], int *lenerrmsg,
                                  int maxlen_axisname, int maxlen_errmsg);
-void get_fer_last_error_info_(int *errval, char errmsg[], int maxlen_errmsg);
-void get_ferret_params_(char errnames[][32], int errvals[], int *numvals);
-void get_time_axis_num_(int *axisnum, int *axisstart, int *axisend, char axisname[],
+void FORTRAN(get_fer_last_error_info)(int *errval, char errmsg[], int maxlen_errmsg);
+void FORTRAN(get_ferret_params)(char errnames[][32], int errvals[], int *numvals);
+void FORTRAN(get_time_axis_num)(int *axisnum, int *axisstart, int *axisend, char axisname[],
                         CALTYPE *calendartype, int axiscoords[][6], int *numcoords,
                         char *errmsg, int *lenerrmsg, int maxlen_axisname, int maxlen_errmsg);
-void init_journal_(int *status);
-void initialize_(void);
-void no_journal_(void);
-void proclaim_c_(int *ttoutLun, char *leader, int *quiet);
-void set_one_cmnd_mode_(int *one_cmnd_mode_int);
-void turnoff_verify_(int *status);
+void FORTRAN(init_journal)(int *status);
+void FORTRAN(init_memory)(void);
+void FORTRAN(initialize)(void);
+void FORTRAN(no_journal)(void);
+void FORTRAN(proclaim_c)(int *ttoutLun, char *leader, int *quiet);
+void FORTRAN(save_ppl_memory_size)(int *ppl_mem_size);
+void FORTRAN(init_memory)(void);
+void FORTRAN(set_one_cmnd_mode)(int *one_cmnd_mode_int);
+void FORTRAN(turnoff_verify)(int *status);
 
 /* Missing value for string arrays in Python - must be null-terminated string */
 #define STRING_MISSING_VALUE "\004\000"

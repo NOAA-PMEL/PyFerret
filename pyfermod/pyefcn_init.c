@@ -37,6 +37,7 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #define NO_IMPORT_ARRAY
 #include <numpy/arrayobject.h>
+#include "ferret.h"
 #include "pyferret.h"
 #include "EF_Util.h"
 
@@ -139,7 +140,7 @@ void pyefcn_init(int id, char modname[], char errmsg[])
         strcpy(errmsg, "Invalid \"numargs\" value (not an integer [0-9])");
         return;
     }
-    ef_set_num_args_(&id, &num_args);
+    FORTRAN(ef_set_num_args)(&id, &num_args);
 
     /*
      * "descript": string description of the function [required]
@@ -164,7 +165,7 @@ void pyefcn_init(int id, char modname[], char errmsg[])
     }
     strncpy(descript, strptr, EF_MAX_DESCRIPTION_LENGTH);
     descript[EF_MAX_DESCRIPTION_LENGTH - 1] = '\0';
-    ef_set_desc_sub_(&id, descript);
+    FORTRAN(ef_set_desc_sub)(&id, descript);
 
     /*
      * "restype": type of the result argument [optional, default: FLOAT_ARRAY]
@@ -193,7 +194,7 @@ void pyefcn_init(int id, char modname[], char errmsg[])
         /* Key not present but no error raised */
         restype = FLOAT_RETURN;
     }
-    ef_set_result_type_(&id, &restype);
+    FORTRAN(ef_set_result_type)(&id, &restype);
 
     /*
      * "resstrlen": (maximum) length of strings in the result string array [optional]
@@ -288,9 +289,9 @@ void pyefcn_init(int id, char modname[], char errmsg[])
         }
     }
     Py_XDECREF(seqobj);
-    ef_set_axis_inheritance_6d_(&id, &(axisvals[0]), &(axisvals[1]), &(axisvals[2]), 
+    FORTRAN(ef_set_axis_inheritance_6d)(&id, &(axisvals[0]), &(axisvals[1]), &(axisvals[2]), 
                                      &(axisvals[3]), &(axisvals[4]), &(axisvals[5]));
-    ef_set_axis_reduction_6d_(&id, &(axisredu[0]), &(axisredu[1]), &(axisredu[2]), 
+    FORTRAN(ef_set_axis_reduction_6d)(&id, &(axisredu[0]), &(axisredu[1]), &(axisredu[2]), 
                                    &(axisredu[3]), &(axisredu[4]), &(axisredu[5]));
 
     /*
@@ -337,7 +338,7 @@ void pyefcn_init(int id, char modname[], char errmsg[])
         }
     }
     Py_XDECREF(seqobj);
-    ef_set_piecemeal_ok_6d_(&id, &(axisvals[0]), &(axisvals[1]), &(axisvals[2]), 
+    FORTRAN(ef_set_piecemeal_ok_6d)(&id, &(axisvals[0]), &(axisvals[1]), &(axisvals[2]), 
                                  &(axisvals[3]), &(axisvals[4]), &(axisvals[5]));
 
     /*
@@ -388,7 +389,7 @@ void pyefcn_init(int id, char modname[], char errmsg[])
             }
         }
         q = j+1;
-        ef_set_arg_name_sub_(&id, &q, name);
+        FORTRAN(ef_set_arg_name_sub)(&id, &q, name);
     }
     Py_XDECREF(seqobj);
 
@@ -440,7 +441,7 @@ void pyefcn_init(int id, char modname[], char errmsg[])
             }
         }
         q = j + 1;
-        ef_set_arg_desc_sub_(&id, &q, descript);
+        FORTRAN(ef_set_arg_desc_sub)(&id, &q, descript);
     }
     Py_XDECREF(seqobj);
 
@@ -504,7 +505,7 @@ void pyefcn_init(int id, char modname[], char errmsg[])
             }
         }
         q = j+1;
-        ef_set_arg_type_(&id, &q, &argtype);
+        FORTRAN(ef_set_arg_type)(&id, &q, &argtype);
     }
     Py_XDECREF(seqobj);
 
@@ -588,7 +589,7 @@ void pyefcn_init(int id, char modname[], char errmsg[])
             }
         }
         q = j+1;
-        ef_set_axis_influence_6d_(&id, &q, &(axisvals[0]), &(axisvals[1]), &(axisvals[2]), 
+        FORTRAN(ef_set_axis_influence_6d)(&id, &q, &(axisvals[0]), &(axisvals[1]), &(axisvals[2]), 
                                            &(axisvals[3]), &(axisvals[4]), &(axisvals[5]));
     }
     Py_XDECREF(seqobj);
@@ -696,7 +697,7 @@ void pyefcn_init(int id, char modname[], char errmsg[])
                         }
                         q = j+1;
                         val = k+1;
-                        ef_set_axis_extend_(&id, &q, &val, &(deltas[0]), &(deltas[1]));
+                        FORTRAN(ef_set_axis_extend)(&id, &q, &val, &(deltas[0]), &(deltas[1]));
                         Py_DECREF(subsubseqobj);
                     }
                 }

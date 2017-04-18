@@ -58,6 +58,7 @@
 *                 output will not list info for E,F dimensions.
 * V7    acm  6/16 Ticket 2437: Deprecating mode_6d_lab. 
 *		  Adjust output to 6-D or 4-D grids
+* V702 *sh* 1/17  7 digit integer output fields instead of 5
 
 * calling argument declarations:
 	INTEGER		isub, pointer_type
@@ -152,9 +153,9 @@
       ENDIF
 
  3000	FORMAT (1X,A,1X,A8,1X,A1,':',I3,' dset:',i4,
-     . ' I:',2I5,'  J:',2I5,'  K:',2I5,'  L:',2I5,'  M:',2I5,'  N:',2I5)
+     . ' I:',2I7,'  J:',2I5,'  K:',2I5,'  L:',2I7,'  M:',2I5,'  N:',2I5)
  3100	FORMAT (1X,A,1X,A8,1X,A1,':',I3,' dset:',i4,
-     . ' I:',2I5,'  J:',2I5,'  K:',2I5,'  L:',2I5)
+     . ' I:',2I7,'  J:',2I5,'  K:',2I5,'  L:',2I7)
 
 	RETURN
 	END	

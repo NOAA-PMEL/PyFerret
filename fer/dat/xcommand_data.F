@@ -252,6 +252,9 @@
 * V7   10/16 *kms* New SET WINDOW /SCALE=
 * V710 *acm*  3/16 Added DEFINE AXIS /LIKE=
 * V710 *acm*  3/16 Ticket 2158: Add DEFINE AXIS /MONTHLY 
+* V702 *sh*   1/17 Removed the USER command
+*	      3/17 Added SHOW MEMORY/DIAGNOSTIC
+* V720 *acm*  3/17 Ticket 2512: Add STAT/PRECISION=
 *
 * !!!!!!!!!!
 * Use caution when defining new commands, qualifiers, or changing these data structures:
@@ -651,7 +654,7 @@
 	   DATA qualifier_pointer(nsub_at2 +11)	/ nqual_at2l	/
 * SHOW MEMORY /ALL /TEMP /PERM /FREE
 		DATA qualifiers  (nqual_at2l+0)	/ 'ALL '	/
-		DATA qualifiers  (nqual_at2l+1)	/ '****'	/
+		DATA qualifiers  (nqual_at2l+1)	/ 'DIAGNOSTIC'	/
 		DATA qualifiers  (nqual_at2l+2)	/ 'TEMPORY'	/
 		DATA qualifiers  (nqual_at2l+3)	/ 'PERMANT'	/
 		DATA qualifiers  (nqual_at2l+4)	/ 'FREE'	/
@@ -1493,9 +1496,9 @@
 	   DATA subcommands      (nsub_at17 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at17 + 0)	/ nqual17a	/
 	   DATA qualifier_pointer(nsub_at17 + 0)	/ nqual_at17a	/
-* STAT /I/J/K/L/M/N/X/Y/Z/T/E/F/DATASET/G
+* STAT /BRIEF/PRECISION/I/J/K/L/M/N/X/Y/Z/T/E/F/DATASET/G
 		DATA qualifiers  (nqual_at17a+0)	/ 'BRIEF'/
-		DATA qualifiers  (nqual_at17a+1)	/ '****'/
+		DATA qualifiers  (nqual_at17a+1)	/ 'PRECISION'/
 		DATA qualifiers  (nqual_at17a+2)	/ 'I'	/
 		DATA qualifiers  (nqual_at17a+3)	/ 'J'	/
 		DATA qualifiers  (nqual_at17a+4)	/ 'K'	/
@@ -1571,8 +1574,8 @@
 	   DATA num_qualifs      (nsub_at19 + 0)	/ nqual19a	/
 	   DATA qualifier_pointer(nsub_at19 + 0)	/ nqual_at19a	/
 
-* USER - command # 20
-	DATA commands(20)			/ 'USER'	/
+* **** formerly USER - command # 20
+	DATA commands(20)			/ '****'	/
         DATA its_action_command(20)             / .TRUE.        /
 	DATA num_subcommands(20)		/ nsub20	/
 	DATA subcommand_pointer(20)		/ nsub_at20	/

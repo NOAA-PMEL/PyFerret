@@ -48,29 +48,26 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
+#include "ferret.h"
 
-void c_substr_(in_ptr, offset, length, out_ptr)
-     char** in_ptr;
-     int* offset;
-     int* length;
-     char** out_ptr;     
+void FORTRAN(c_substr)(char **in_ptr, int *offset, int *length, char **out_ptr)
 {
    char* tmp;
    char* tmp2;
    int i, int_length, int_offset;
 
    if ( *out_ptr != NULL )
-      free(*out_ptr);
+      PyMem_Free(*out_ptr);
    if ( *in_ptr == NULL ) {
       /* undefined string given, so return an undefined string */
       *out_ptr = NULL;
       return;
    }
 
-   int_length = (int)(*length + 0.5);
-   int_offset = (int)(*offset + 0.5) - 1;
+   int_length = *length;
+   int_offset = *offset - 1;
 
-   *out_ptr = (char *) malloc(sizeof(char) * (int_length + 1));
+   *out_ptr = (char *) PyMem_Malloc(sizeof(char) * (int_length + 1));
    if ( *out_ptr == NULL )
       abort();
 

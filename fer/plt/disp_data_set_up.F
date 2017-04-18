@@ -1,5 +1,4 @@
-	SUBROUTINE DISP_DATA_SET_UP
-     .	( memory, ax1_start, ax1_blks, ax2_start, ax2_blks, status )
+	SUBROUTINE DISP_DATA_SET_UP(  ax1_work, ax2_work, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -59,6 +58,7 @@
 *	            only if PLOT/VS
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -70,14 +70,14 @@
 	include 'xprog_state.cmn'
 	
 * calling argument declarations:
-	INTEGER	ax1_blks, ax1_start, ax2_blks, ax2_start, status
-	REAL memory(*)
+	INTEGER	ax1_work, ax2_work, status
 
 * internal variable declarations:
 	LOGICAL plot_vs
 	INTEGER	MR_DIM_LEN, CX_DIM_LEN, CGRID_SIZE,
-     .		idim, ndim, dim(nferdims), mr1, ax_len, cx, ivar,
-     .		factor, loc, grid_blocks
+     .		idim, ndim, dim(nferdims), mr1, cx, ivar,
+     .		factor, loc
+	INTEGER*8 i8_ax_len
 	CHARACTER buff*4
 
 * check for PLOT/VS -- significant in axis buffer sizes
@@ -85,7 +85,7 @@
      .	.AND. qual_given(slash_plot_vs) .GT. 0
 
 * get the requested data somehow  (and leave it protected 1/94)
-	CALL GET_PROT_CMND_DATA ( memory, cx_last, ptype_float, status )
+	CALL GET_PROT_CMND_DATA (  cx_last, ptype_float, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
 
 * PLOT/ALONG -- reinterpret a multi-D data block as a collection of lines
@@ -121,9 +121,9 @@
 *     missing polygons on a time axis
 	   cx = is_cx(1)
 	   CALL GET_CX_DIMS(cx, ndim, dim)
-	   ax_len = 1
+	   i8_ax_len = 1
 	   DO 100 idim = 1, ndim
- 100	   ax_len = 2* MAX(ax_len,
+ 100	   i8_ax_len = 2* MAX(i8_ax_len,
      .			cx_hi_ss(cx,dim(idim)) - 
      .			cx_lo_ss(cx,dim(idim)) + 1 )
 	ELSE
@@ -131,37 +131,34 @@
 *     make them each equal to MAX in case /TRANSPOSE or mulit-dim PLOT/VS
 * (2/99: loop over all arguments to find largest requirement)
 * ?? why is CGRID_SIZE needed ... could get very large ??
-	   ax_len = 1
+	   i8_ax_len = 1
 	   DO 200 ivar = 1, num_uvars_in_cmnd
 	      mr1 = is_mr( ivar )
 	      CALL GET_CX_DIMS( is_cx(ivar), ndim, dim )
-	      ax_len = MAX( ax_len,
+	      i8_ax_len = MAX( i8_ax_len,
      .			    MR_DIM_LEN( dim(1), mr1 ),
      .		            MR_DIM_LEN( dim(2), mr1 ),
      .			    factor*CX_DIM_LEN(dim(1), is_cx(ivar)),
      .			    factor*CX_DIM_LEN(dim(2), is_cx(ivar)) )
-	      IF (plot_vs) ax_len =
-     .		       MAX( ax_len,
+	      IF (plot_vs) i8_ax_len =
+     .		       MAX( i8_ax_len,
      .		            CGRID_SIZE(is_cx(ivar))  )
  200	   CONTINUE
 	ENDIF
 
 * allocate working storage
-
-* COMPUTE # BLOCKS NEEDED
-	grid_blocks = ( ax_len + mem_blk_size - 1 ) / mem_blk_size
-
-	CALL GET_MEMORY( ax_len, grid_blocks, ax1_start, ax1_blks, status )
+* the somewhat odd logic is cuz we're making minimal changes to the 
+* pre-dynamic memory code
+	CALL CREATE_DYN_WRKSPC( i8_ax_len, ax1_work, status )
 	IF ( status .NE. ferr_ok ) GOTO 5020
-	CALL GET_MEMORY( ax_len, grid_blocks, ax2_start, ax2_blks, status )
+	CALL CREATE_DYN_WRKSPC( i8_ax_len, ax2_work, status )
 	IF ( status .NE. ferr_ok ) GOTO 5010
 
 * successful completion
 	RETURN
 
 * error exits - release the memory used for axis buffers
-! 5000	CALL FREE_MEMORY( ax2_start, ax2_blks )
- 5010	CALL FREE_MEMORY( ax1_start, ax2_blks )
+ 5010	CALL FREE_WS_DYNMEM( ax1_work )
  5020	CALL UNPROTECT_CMND_DATA	! added 2/99
  5100	RETURN
 	END

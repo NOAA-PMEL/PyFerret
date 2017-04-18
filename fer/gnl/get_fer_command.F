@@ -1,4 +1,4 @@
-	SUBROUTINE GET_FER_COMMAND( memory, called_string, status, * )
+	SUBROUTINE GET_FER_COMMAND( called_string, status, * )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -116,7 +116,6 @@
 
 * calling argument declarations:
 	INTEGER		status
-	REAL		memory(*)
 	CHARACTER*(*)	called_string
 
 * internal variable declarations:
@@ -395,7 +394,7 @@ c        IF(has_more.NE.1) goto 210
 
 *************** PARSE THE COMMAND LINE ***************************************
 * 1/14 the command string now has no continuations and no comments
-	CALL PARSE_COMMAND ( memory, cmnd_buff,
+	CALL PARSE_COMMAND (  cmnd_buff,
      .			     max_arg_list, max_qual_list,
      .			     len_cmnd, cmnd_num, subcmnd_num, 
      .			     num_qualifiers, qualifier_list,

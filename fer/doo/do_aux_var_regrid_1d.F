@@ -63,6 +63,7 @@
 *                 false_1pt_regrid [gz(aux)=pt]
 * V700 11/16 *sh* fixed bug in koffset_false lingering from K-only regrid
 *                 days of this routine
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -365,7 +366,7 @@
  1000	CONTINUE
 
 * successful completion.  Clean up.
-        CALL RELEASE_WORK_SPC
+        CALL RELEASE_DYN_WORK_SPACE
         RETURN
 
 * error exit

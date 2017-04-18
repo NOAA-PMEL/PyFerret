@@ -43,11 +43,9 @@
 #include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 #include <string.h>
+#include "ferret.h"
 
-void c_strcat_(in_ptr1, in_ptr2, out_ptr)  
-     char** in_ptr1;
-     char** in_ptr2;
-     char** out_ptr;
+void FORTRAN(c_strcat)(char **in_ptr1, char **in_ptr2, char **out_ptr)  
 {
    char* tmp1; 
    char* tmp2;
@@ -55,7 +53,7 @@ void c_strcat_(in_ptr1, in_ptr2, out_ptr)
    int len2;
 
    if ( *out_ptr != NULL )
-      free(*out_ptr);
+      PyMem_Free(*out_ptr);
 
    /* this treats an undefined string the same as an empty string */
    if ( *in_ptr1 == NULL )
@@ -67,7 +65,7 @@ void c_strcat_(in_ptr1, in_ptr2, out_ptr)
    else
       len2 = strlen(*in_ptr2);
 
-   *out_ptr = (char *) malloc(sizeof(char) * (len1 + len2 + 1));
+   *out_ptr = (char *) PyMem_Malloc(sizeof(char) * (len1 + len2 + 1));
    if ( *out_ptr == NULL )
       abort();
 

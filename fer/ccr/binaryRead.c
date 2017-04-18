@@ -21,6 +21,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "ferret.h"
 #include "binaryRead.h"
 
                                 /* FORTRAN interface variables */
@@ -126,15 +127,16 @@ static void freeMemory(FileInfo *file) {
 
 static FileInfo *createBinaryReader(char *name, int lengths[MAXDIMS],
                              int permutes[MAXDIMS], int skip, int swap){
-  FileInfo *fi = (FileInfo *)calloc(1, sizeof(FileInfo));
   int i;
+  FileInfo *fi = (FileInfo *)PyMem_Malloc(sizeof(FileInfo));
+  memset(fi, 0, sizeof(FileInfo));
                                 /* Open file */
   if (!checkMem(fi)){
     return 0;
   }
   Errbuf[0] = '\0';
   fi->pageSize = getpagesize();
-  fi->name = (char *)malloc(strlen(name)+1);
+  fi->name = (char *)PyMem_Malloc(strlen(name)+1);
   fi->doSwap = swap;
   if (!checkMem(fi->name)){
     return 0;
@@ -178,14 +180,14 @@ static FileInfo *createBinaryReader(char *name, int lengths[MAXDIMS],
 }
 
 static void deleteVar(VarInfo *theVar) {
-  free(theVar);
+  PyMem_Free(theVar);
 }
 
 static void deleteBinaryReader(FileInfo *fi){
-  free(fi->vars);
+  PyMem_Free(fi->vars);
   tidyUp(fi);
-  free(fi->name);
-  free(fi);
+  PyMem_Free(fi->name);
+  PyMem_Free(fi);
 }
 
 static int addVar(FileInfo *fi, DFTYPE *data, int type, int doRead){
@@ -193,9 +195,9 @@ static int addVar(FileInfo *fi, DFTYPE *data, int type, int doRead){
   int i;
 
   if (fi->vars == (VarInfo *)0){
-    fi->vars = malloc(sizeof(VarInfo));
+    fi->vars = PyMem_Malloc(sizeof(VarInfo));
   } else {
-    fi->vars = (VarInfo *)realloc(fi->vars, sizeof(VarInfo)*(fi->nvars+1));
+    fi->vars = (VarInfo *)PyMem_Realloc(fi->vars, sizeof(VarInfo)*(fi->nvars+1));
   }
   if (!checkMem(fi->vars)){
     return 0;

@@ -37,6 +37,7 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #define NO_IMPORT_ARRAY
 #include <numpy/arrayobject.h>
+#include "ferret.h"
 #include "pyferret.h"
 #include "EF_Util.h"
 
@@ -153,7 +154,7 @@ void pyefcn_result_limits(int id, char modname[], char errmsg[])
             }
             Py_DECREF(subseqobj);
             q = k+1;
-            ef_set_axis_limits_(&id, &q, &(limits[0]), &(limits[1]));
+            FORTRAN(ef_set_axis_limits)(&id, &q, &(limits[0]), &(limits[1]));
             call_made = 1;
         }
     }

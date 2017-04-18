@@ -33,7 +33,7 @@
  */
 
 #include <Python.h> /* make sure Python.h is first */
-#include "utf8str.h"
+#include "ferret.h"
 
 /*
  * Translates an extended-character string into a UTF-8 string.
@@ -48,7 +48,7 @@
  *               has minimum length 2*textlen + 1)
  *     utf8strlen - length of the UTF-8 string created
  */
-void text_to_utf8_(const char *text, const int *textlen, char *utf8str, int *utf8strlen)
+void FORTRAN(text_to_utf8)(const char *text, const int *textlen, char *utf8str, int *utf8strlen)
 {
     int codept;
     char utf8chars[4];
@@ -57,7 +57,7 @@ void text_to_utf8_(const char *text, const int *textlen, char *utf8str, int *utf
 
     for (j = 0, k = 0; j < *textlen; j++) {
         codept = (unsigned char) (text[j]);
-        create_utf8_str_(&codept, utf8chars, &numutf8chars);
+        FORTRAN(create_utf8_str)(&codept, utf8chars, &numutf8chars);
         for (q = 0; q < numutf8chars; q++, k++)
            utf8str[k] = utf8chars[q];
     }

@@ -33,9 +33,10 @@
  */
 
 #include <Python.h>
+#include "ferret.h"
 #include "pyferret.h"
 
-void decref_pyobj_(void *pyobj_ptr_ptr)
+void FORTRAN(decref_pyobj)(void *pyobj_ptr_ptr)
 {
    PyObject *pyobj;
 

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley oerdnewp 115885413 Mar 20 17:12 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley oerdnewp 116929211 Apr 13 10:41 /home/users/ansley/build/working/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2518: output of SHOW GRID myvar
+Note:  ticket 2318: axis range when data is constant
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,16 +13,16 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
-PWD=/home/users/ansley/build/trunk/FERRET/bench
+PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Mon Mar 20 17:13:28 PDT 2017
+Beginning at Thu Apr 13 10:44:07 PDT 2017
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -383,12 +383,8 @@ list tu
 list tu
  **ERROR: regridding: Axis orientation not matching request:GX=PSYU
 list tu
- Cached data cleared from memory
- **ERROR: request exceeds memory setting: 50 Mwords were requested.
+ **ERROR: request exceeds memory setting
 list temp[gz=z999999,z=5:15]
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
- Cached data cleared from memory
            *** NOTE: Ambiguous coordinates on X axis: X[X=0.1:10:1.5] +  X[X=1.1:11:1.5]
            *** NOTE: Ambiguous coordinates on X axis: X[X=0.1:10:1.5] +  X[X=1.1:11:1.5]
            *** NOTE: Ambiguous coordinates on X axis: TEMP[I=101:120:4]+X[I=101:120:4]
@@ -642,22 +638,16 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_odd_variable_name
- Cached data cleared from memory
  **ERROR: command syntax: v2-and-minus
           - before and is illegal
 list v2-and-minus
- **ERROR: dimensions improperly specified: 99999999 words were requested.
+ **ERROR: illegal limits: Limits must be provided for pseudo-variable.
 list x
-           *** NOTE: Check for unspecified limits on an ABSTRACT axis
-           *** NOTE: Use the SHOW GRID command to see the axes
- **ERROR: dimensions improperly specified: 99999999 words were requested.
+ **ERROR: illegal limits: Limits must be provided for pseudo-variable.
 list i
-           *** NOTE: Check for unspecified limits on an ABSTRACT axis
-           *** NOTE: Use the SHOW GRID command to see the axes
  **ERROR: command syntax: v2-and-minus[i=5:15@ddc]
           - before and is illegal
 list v2-and-minus[i=5:15@ddc]
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -668,17 +658,13 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
- **ERROR: request exceeds memory setting: 48000 Mwords were requested.
+ **ERROR: request exceeds memory setting
 load num
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
- **ERROR: request exceeds memory setting: 2000 Mwords were requested.
+ **ERROR: request exceeds memory setting
 load num
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
@@ -1008,6 +994,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis XAXS
+Replacing definition of axis YAXS
+Replacing definition of axis ZAXS
+Replacing definition of axis TAXS
+Replacing definition of grid MYGRD
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1220,8 +1211,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file test_100x100.nc
- Cached data cleared from memory
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1551,27 +1540,17 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_subspan_modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  **ERROR: improper grid or axis definition: Axis length exceeds modulo length
 define axis/x=130e:500:10/modulo=360 xsub
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_mod.cdf
-           *** NOTE: Shell command returned failure flag: ncdump -h test_nomod.cdf | grep modulo
  LISTing to file test_subspan_modulo.nc
  LISTing to file test_subspan_modulo.nc
  LISTing to file test_subspan_modulo.nc
@@ -2695,8 +2674,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- Cached data cleared from memory
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2734,9 +2711,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file b.nc
  LISTing to file b.nc
-NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
- TAX3_bnds not found. Attempt to append irregular coordinates to NetCDF axis which has no bounds attribute. Write data originally with the /BOUNDS qualifier.
-LIST/FORMAT=CDF/CLOBBER/FILE=b.nc v
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2879,10 +2853,6 @@ Starting test: bn_set_var_name.jnl
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_memory_symbol
- Cached data cleared from memory
- Cached data cleared from memory
- Cached data cleared from memory
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3799,9 +3769,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
-set mode desperate 9999999999.000000
+set mode desperate 9999999999.
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
 set mode desperate 1234567890123456789
+           *** NOTE: MODE DESPERATE is deprecated. Use MODE FRUGAL
+           *** NOTE: MODE DESPERATE is deprecated. Use MODE FRUGAL
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4454,7 +4426,7 @@ Replacing definition of axis XAXIS_TEST
  LISTing to file c.nc
  LISTing to file c.nc
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 500; message = "Error processing XML header file /usr/local/src/nvods/tomcat/content/las/conf/server/temp/6790FDCBF64A0E6EFAA6A20D854071E0/header.xml (No such file or directory)"^;};
+context: Error { code = 500; message = "Error processing XML header file /usr/local/src/apache-tomcat-7.0.34/content/NVODS/conf/server/temp/D1D5FD4B2FB7337E19977C571F94C6FF/header.xml (No such file or directory)"^;};
  LISTing to file nc
  **TMAP ERR: error in line definition
              file coords dont match variable coords on axis XAXIS_TEST
@@ -4564,16 +4536,16 @@ DEFINE VARIABLE/D=1/remote rvar = t0112mn1[d=1,z=1:100@ave]
 DEFINE VARIABLE/remote rvar = t0112mn1[d=1,z=1:100@ave]
  **netCDF error
              Unable to open URL with REMOTE variable definitions:
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
+             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
  **TMAP ERR: attribute reading error
              Unable to get varid for LET/REMOTE variable: NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
+             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
  **TMAP ERR: attribute reading error
              Unable to get bad-value for LET/REMOTE variable: NetCDF: Attribute not found (OPeNDAP/netCDF Error code -43)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
+             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
  **netCDF error
              NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
+             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl
 list/x=300/y=15 avar
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4646,15 +4618,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Replacing definition of axis XAXIS
- **ERROR: request exceeds memory setting: 4739 Mwords were requested.
+ **ERROR: request exceeds memory setting
 load bigvar
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
 Replacing definition of axis LONGTIME
- **ERROR: request exceeds memory setting: 9472 Mwords were requested.
+ **ERROR: request exceeds memory setting
 load bigvar
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4966,7 +4934,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 rm: cannot remove `WestCoastCarbon_9d9c_f562_77b5_5.nc': No such file or directory
-           *** NOTE: Shell command returned failure flag: rm WestCoastCarbon_9d9c_f562_77b5_5.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5136,14 +5103,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- Cached data cleared from memory
 Replacing definition of axis LONGTIME
- **ERROR: request exceeds memory setting: 13 Mwords were requested.
+ **ERROR: request exceeds memory setting
 load/l=1:5 bigvar
-           *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
-           *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
- Cached data cleared from memory
- Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5367,9 +5329,9 @@ go/garbage tmp/testMe
  **ERROR: unknown command qualifier: garbage
 go/garbage "tmp/testMe"
  **ERROR: unknown command qualifier: garbage
-go/garbage /home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl
+go/garbage /home/users/ansley/build/working/FERRET/bench/tmp/testMe.jnl
  **ERROR: unknown command qualifier: garbage
-go/garbage "/home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl"
+go/garbage "/home/users/ansley/build/working/FERRET/bench/tmp/testMe.jnl"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5439,177 +5401,6 @@ DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/irregular_start_time_fcst.nc")
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_aggregate_tef
-Replacing definition of axis YAX
-Replacing definition of axis ZAX
-Replacing definition of axis TRUEMONTH
- LISTing to file tmp/f01_e1_t1.nc
- LISTing to file tmp/f01_e1_t2.nc
- LISTing to file tmp/f01_e1_t3.nc
- LISTing to file tmp/f01_e2_t1.nc
- LISTing to file tmp/f01_e2_t2.nc
- LISTing to file tmp/f01_e2_t3.nc
- LISTing to file tmp/f01_e3_t1.nc
- LISTing to file tmp/f01_e3_t2.nc
- LISTing to file tmp/f01_e3_t3.nc
- LISTing to file tmp/f01_e4_t1.nc
- LISTing to file tmp/f01_e4_t2.nc
- LISTing to file tmp/f01_e4_t3.nc
- LISTing to file tmp/f01_e5_t1.nc
- LISTing to file tmp/f01_e5_t2.nc
- LISTing to file tmp/f01_e5_t3.nc
- LISTing to file tmp/f02_e1_t1.nc
- LISTing to file tmp/f02_e1_t2.nc
- LISTing to file tmp/f02_e1_t3.nc
- LISTing to file tmp/f02_e2_t1.nc
- LISTing to file tmp/f02_e2_t2.nc
- LISTing to file tmp/f02_e2_t3.nc
- LISTing to file tmp/f02_e3_t1.nc
- LISTing to file tmp/f02_e3_t2.nc
- LISTing to file tmp/f02_e3_t3.nc
- LISTing to file tmp/f02_e4_t1.nc
- LISTing to file tmp/f02_e4_t2.nc
- LISTing to file tmp/f02_e4_t3.nc
- LISTing to file tmp/f02_e5_t1.nc
- LISTing to file tmp/f02_e5_t2.nc
- LISTing to file tmp/f02_e5_t3.nc
- LISTing to file tmp/f03_e1_t1.nc
- LISTing to file tmp/f03_e1_t2.nc
- LISTing to file tmp/f03_e1_t3.nc
- LISTing to file tmp/f03_e2_t1.nc
- LISTing to file tmp/f03_e2_t2.nc
- LISTing to file tmp/f03_e2_t3.nc
- LISTing to file tmp/f03_e3_t1.nc
- LISTing to file tmp/f03_e3_t2.nc
- LISTing to file tmp/f03_e3_t3.nc
- LISTing to file tmp/f03_e4_t1.nc
- LISTing to file tmp/f03_e4_t2.nc
- LISTing to file tmp/f03_e4_t3.nc
- LISTing to file tmp/f03_e5_t1.nc
- LISTing to file tmp/f03_e5_t2.nc
- LISTing to file tmp/f03_e5_t3.nc
- LISTing to file tmp/f04_e1_t1.nc
- LISTing to file tmp/f04_e1_t2.nc
- LISTing to file tmp/f04_e1_t3.nc
- LISTing to file tmp/f04_e2_t1.nc
- LISTing to file tmp/f04_e2_t2.nc
- LISTing to file tmp/f04_e2_t3.nc
- LISTing to file tmp/f04_e3_t1.nc
- LISTing to file tmp/f04_e3_t2.nc
- LISTing to file tmp/f04_e3_t3.nc
- LISTing to file tmp/f04_e4_t1.nc
- LISTing to file tmp/f04_e4_t2.nc
- LISTing to file tmp/f04_e4_t3.nc
- LISTing to file tmp/f04_e5_t1.nc
- LISTing to file tmp/f04_e5_t2.nc
- LISTing to file tmp/f04_e5_t3.nc
- LISTing to file tmp/f05_e1_t1.nc
- LISTing to file tmp/f05_e1_t2.nc
- LISTing to file tmp/f05_e1_t3.nc
- LISTing to file tmp/f05_e2_t1.nc
- LISTing to file tmp/f05_e2_t2.nc
- LISTing to file tmp/f05_e2_t3.nc
- LISTing to file tmp/f05_e3_t1.nc
- LISTing to file tmp/f05_e3_t2.nc
- LISTing to file tmp/f05_e3_t3.nc
- LISTing to file tmp/f05_e4_t1.nc
- LISTing to file tmp/f05_e4_t2.nc
- LISTing to file tmp/f05_e4_t3.nc
- LISTing to file tmp/f05_e5_t1.nc
- LISTing to file tmp/f05_e5_t2.nc
- LISTing to file tmp/f05_e5_t3.nc
- LISTing to file tmp/f06_e1_t1.nc
- LISTing to file tmp/f06_e1_t2.nc
- LISTing to file tmp/f06_e1_t3.nc
- LISTing to file tmp/f06_e2_t1.nc
- LISTing to file tmp/f06_e2_t2.nc
- LISTing to file tmp/f06_e2_t3.nc
- LISTing to file tmp/f06_e3_t1.nc
- LISTing to file tmp/f06_e3_t2.nc
- LISTing to file tmp/f06_e3_t3.nc
- LISTing to file tmp/f06_e4_t1.nc
- LISTing to file tmp/f06_e4_t2.nc
- LISTing to file tmp/f06_e4_t3.nc
- LISTing to file tmp/f06_e5_t1.nc
- LISTing to file tmp/f06_e5_t2.nc
- LISTing to file tmp/f06_e5_t3.nc
- LISTing to file tmp/f07_e1_t1.nc
- LISTing to file tmp/f07_e1_t2.nc
- LISTing to file tmp/f07_e1_t3.nc
- LISTing to file tmp/f07_e2_t1.nc
- LISTing to file tmp/f07_e2_t2.nc
- LISTing to file tmp/f07_e2_t3.nc
- LISTing to file tmp/f07_e3_t1.nc
- LISTing to file tmp/f07_e3_t2.nc
- LISTing to file tmp/f07_e3_t3.nc
- LISTing to file tmp/f07_e4_t1.nc
- LISTing to file tmp/f07_e4_t2.nc
- LISTing to file tmp/f07_e4_t3.nc
- LISTing to file tmp/f07_e5_t1.nc
- LISTing to file tmp/f07_e5_t2.nc
- LISTing to file tmp/f07_e5_t3.nc
- LISTing to file tmp/f08_e1_t1.nc
- LISTing to file tmp/f08_e1_t2.nc
- LISTing to file tmp/f08_e1_t3.nc
- LISTing to file tmp/f08_e2_t1.nc
- LISTing to file tmp/f08_e2_t2.nc
- LISTing to file tmp/f08_e2_t3.nc
- LISTing to file tmp/f08_e3_t1.nc
- LISTing to file tmp/f08_e3_t2.nc
- LISTing to file tmp/f08_e3_t3.nc
- LISTing to file tmp/f08_e4_t1.nc
- LISTing to file tmp/f08_e4_t2.nc
- LISTing to file tmp/f08_e4_t3.nc
- LISTing to file tmp/f08_e5_t1.nc
- LISTing to file tmp/f08_e5_t2.nc
- LISTing to file tmp/f08_e5_t3.nc
- LISTing to file tmp/f09_e1_t1.nc
- LISTing to file tmp/f09_e1_t2.nc
- LISTing to file tmp/f09_e1_t3.nc
- LISTing to file tmp/f09_e2_t1.nc
- LISTing to file tmp/f09_e2_t2.nc
- LISTing to file tmp/f09_e2_t3.nc
- LISTing to file tmp/f09_e3_t1.nc
- LISTing to file tmp/f09_e3_t2.nc
- LISTing to file tmp/f09_e3_t3.nc
- LISTing to file tmp/f09_e4_t1.nc
- LISTing to file tmp/f09_e4_t2.nc
- LISTing to file tmp/f09_e4_t3.nc
- LISTing to file tmp/f09_e5_t1.nc
- LISTing to file tmp/f09_e5_t2.nc
- LISTing to file tmp/f09_e5_t3.nc
- LISTing to file tmp/f10_e1_t1.nc
- LISTing to file tmp/f10_e1_t2.nc
- LISTing to file tmp/f10_e1_t3.nc
- LISTing to file tmp/f10_e2_t1.nc
- LISTing to file tmp/f10_e2_t2.nc
- LISTing to file tmp/f10_e2_t3.nc
- LISTing to file tmp/f10_e3_t1.nc
- LISTing to file tmp/f10_e3_t2.nc
- LISTing to file tmp/f10_e3_t3.nc
- LISTing to file tmp/f10_e4_t1.nc
- LISTing to file tmp/f10_e4_t2.nc
- LISTing to file tmp/f10_e4_t3.nc
- LISTing to file tmp/f10_e5_t1.nc
- LISTing to file tmp/f10_e5_t2.nc
- LISTing to file tmp/f10_e5_t3.nc
- LISTing to file tmp/f11_e1_t1.nc
- LISTing to file tmp/f11_e1_t2.nc
- LISTing to file tmp/f11_e1_t3.nc
- LISTing to file tmp/f11_e2_t1.nc
- LISTing to file tmp/f11_e2_t2.nc
- LISTing to file tmp/f11_e2_t3.nc
- LISTing to file tmp/f11_e3_t1.nc
- LISTing to file tmp/f11_e3_t2.nc
- LISTing to file tmp/f11_e3_t3.nc
- LISTing to file tmp/f11_e4_t1.nc
- LISTing to file tmp/f11_e4_t2.nc
- LISTing to file tmp/f11_e4_t3.nc
- LISTing to file tmp/f11_e5_t1.nc
- LISTing to file tmp/f11_e5_t2.nc
- LISTing to file tmp/f11_e5_t3.nc
- LISTing to file tmp/f04_e3_t1_1v.nc
- LISTing to file tmp/f04_e3_t2_1v.nc
- LISTing to file tmp/f04_e3_t3_1v.nc
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
  **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis X of agg member 3
 list/x=150E/y=15n/L=10 fcst_2
@@ -5899,6 +5690,7 @@ Replacing definition of axis tax
 Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
+Replacing definition of axis TRUEMONTH
  LISTing to file tmp/f01_e1_tu1.nc
  LISTing to file tmp/f01_e1_tu2.nc
  LISTing to file tmp/f01_e1_tu3.nc
@@ -5933,13 +5725,8 @@ Starting test: bn_ez_noupcase
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_spawn_fail
 ls: cannot access notafile.nowhere: No such file or directory
-           *** NOTE: Shell command returned failure flag: ls notafile.nowhere
-           *** NOTE: Shell command returned failure flag: grep "this text is not in the file" bn_all.jnl
 rm: cannot remove `nothing.dat': No such file or directory
-           *** NOTE: Shell command returned failure flag: rm nothing.dat
-           *** NOTE: Shell command returned failure flag: grep modulus non_COARDS.cdl
 cp: cannot stat `nofile.dat': No such file or directory
-           *** NOTE: Shell command returned failure flag: cp nofile.dat not_either.dat
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6047,9 +5834,39 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis TIME
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Re-defining viewport LL6
+Re-defining viewport UL6
+Re-defining viewport LM6
+Re-defining viewport UM6
+Re-defining viewport LR6
+Re-defining viewport UR6
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_compressed_gather
-Replacing definition of axis XAX
-Replacing definition of axis TAX
+Replacing definition of axis xax
+Replacing definition of axis yax
+Replacing definition of axis tax
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -6066,10 +5883,10 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Replacing definition of axis XAX
-Replacing definition of axis YAX
-Replacing definition of axis ZAX
-Replacing definition of axis TAX
+Replacing definition of axis xax
+Replacing definition of axis yax
+Replacing definition of axis zax
+Replacing definition of axis tax
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -6078,21 +5895,8 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Replacing definition of axis XAX
-Replacing definition of axis TAX
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-Replacing definition of axis XAX
-Replacing definition of axis ZAX
-Replacing definition of axis TAX
+Replacing definition of axis xax
+Replacing definition of axis tax
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -6103,7 +5907,568 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis xax
+Replacing definition of axis zax
+Replacing definition of axis tax
  PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_dynamic_gather
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+           *** NOTE: No active redirects to cancel
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: request exceeds memory setting: Requested result is larger than the available memory
+stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+gsetmarkerrep()   66 Polymarker index is invalid
+gsetlinerep()   60 Polyline index is invalid
+ **ERROR: value out of legal range: illegal mode argument. Must be 0 to 90 percent 95
+SET MODE FRUGAL:95
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_stat_precision
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_plot_vs_with_time
+Replacing definition of axis tax
+Replacing definition of axis time
+Replacing definition of axis zaxis
+Replacing definition of axis time
+           *** NOTE: Graphics limits settings to 250 line/thickness combinations plus existing spectrum colors
+           *** NOTE: Cannot draw /THICK=3 lines with current number of color levels = 57; THICK=1 or 2 will be ok
+Replacing definition of axis time
+           *** NOTE: Graphics limits settings to 250 line/thickness combinations plus existing spectrum colors
+           *** NOTE: Cannot draw /THICK=2 lines with current number of color levels = 57; THICK=1 will be ok
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_inner
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_cache_management
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ LISTing to file test_auto_cache.out
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_transp_choose
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -6116,7 +6481,6 @@ set region/@w
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -6212,4 +6576,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Mar 20 17:16:46 PDT 2017
+Ended at Thu Apr 13 10:48:44 PDT 2017

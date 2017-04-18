@@ -103,6 +103,11 @@ define axis/t=1-jan-2010:31-dec-2010:1/t0=1-jan-2000/monthly/modulo taxis
 let var = {1,2,3,4,5,6,7,8,9,10,11,12}
 let tvar = reshape(var,t[gt=taxis])
 list/L=1:23 tvar
+! *sh* 3/17:  a possible alternative syntax:
+!  let var = TSEQUENCE({1,2,3,4,5,6,7,8,9,10,11,12})
+!  let tvar = var[gt=taxis@asn]
+! Since this is a fairly common need -- creating a line along some axis
+! should we offer a new function AXSEQUENCE(array, axis)  ?
 
 ! Striding on a monthly axis
 

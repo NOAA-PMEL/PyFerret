@@ -42,13 +42,14 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V685+ 11/13 *sh*  
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'xdependency_tree.cmn'
 
 	dependency_tree_mode = .FALSE.
-	CALL RELEASE_WORK_SPC
+        CALL RELEASE_DYN_WORK_SPACE ! ?? needed ??
 
      	RETURN
 	END

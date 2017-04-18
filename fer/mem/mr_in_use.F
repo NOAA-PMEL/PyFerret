@@ -67,6 +67,14 @@
 	   mr_del_blink(next) = prev
 	   mr_del_flink(mr)   = unspecified_int4	! important 12/16
 	   mr_del_blink(mr)   = unspecified_int4	! important 12/16
+* ... changing to "in use" makes it "essential memory"
+	   essential_mem = essential_mem + mr_size(mr)
+	   IF (essential_mem.GT.peak_essential_mem) 
+     .		peak_essential_mem = essential_mem
+
+	ELSEIF ( mr_protected(mr) .EQ. mr_in_progress ) THEN
+	   mr_protected(mr) = mr_not_protected  ! to be incremented just below
+* ... mr_in_progress vars are already considered "essential memory"
 	ENDIF
 
 * bump claims counter

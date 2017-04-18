@@ -37,10 +37,11 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #define NO_IMPORT_ARRAY
 #include <numpy/arrayobject.h>
-#include "pyferret.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "ferret.h"
+#include "pyferret.h"
 
 /* For older versions of NumPy (v1.4 with RHEL6), define this flag as the deprecated flag */
 #ifndef NPY_ARRAY_OWNDATA
@@ -53,7 +54,7 @@
  * is a pointer to a PyObject pointer that is a float64 ndarray containing
  * the array of data for this static variable.
  */
-void copy_pystat_data_(double dest[], void *data_ndarray_ptr)
+void FORTRAN(copy_pystat_data)(double dest[], void *data_ndarray_ptr)
 {
     PyArrayObject *data_ndarray;
     double        *data;

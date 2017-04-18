@@ -4,6 +4,8 @@
 
 ! shows that the @XACT regridding in double-precision Ferret is broken.
 
+! 3/17 *sh* - broke after change to RESHAPE in GCF_IMPOSE_AXES
+!           - fixed it by cleaning up the definition of var_regrid
 
 Let time = {\
  22585.3295833333,\
@@ -20,8 +22,11 @@ Let time = {\
 Define Axis /T /From /T0=1-JAN-1950 /Units=days my_axis = time
 
 Let fake_var = T[GT=my_axis]
-Let var = RANDU( fake_var )
-Let var_regrid = RESHAPE( var, fake_var )
+! this was the definition prior to 3/17
+!Let var = RANDU( fake_var )
+!Let var_regrid = RESHAPE( var, fake_var )
+Let var_regrid = RANDU( fake_var )   ! new definition
+
 
 List /T="2-nov-2011 07:54":"2-nov-2011 08:04" var_regrid
 

@@ -50,6 +50,7 @@
 * V600 8/05 *acm* - Add variable type attrib_val 
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid. 
+* V720: 4/17 *acm* add direction-changing functions as a subset of grid-changing ones
 
 	include		'ferret.parm'
 	include		'rpn.parm'
@@ -76,6 +77,7 @@
      .		(atom_prc(i,alg_log_struct),i=1,2)/1,2/,
      .		(atom_prc(i,alg_operand),i=1,2)/21,22/,
      .		(atom_prc(i,alg_finished),i=1,2)/0,-999/,
+     .		(atom_prc(i,alg_dir_chg_fcn),i=1,2)/17,18/,
      .		(atom_prc(i,alg_grid_chg_fcn),i=1,2)/17,18/,
      .		(atom_prc(i,alg_child_var),i=1,2)/21,22/,
      .		(atom_prc(i,alg_const_var),i=1,2)/21,22/,

@@ -1,5 +1,5 @@
 	SUBROUTINE POLYGON_SET_UP
-     .			      ( memory,
+     .			      ( 
      .				overlay, transpz, coord_ax, no_labels,
      .				no_range, only_val,
      .				symbol, line_type, use_line,
@@ -141,6 +141,7 @@
 * V702  *acm* 10/16 Test the results of MINMAX routine before use; if all data is 
 *                   all-missing it returns arbitrary_large_val4.
 * V71  *acm* 2/17  More on ticket 2231. New argument to FULL_VAR_TITLE to control units labels
+* V72  *acm* 3/17  For ticket 2517, changes to arguments in calls to AXIS_ENDS
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -176,7 +177,6 @@
      .			do_units
 	INTEGER		symbol, line_type, coord_ax, iunits, do_dash,
      .			nmv, mr_list( nmv ), cx_list( nmv ), status
-	REAL		memory( mem_blk_size, max_mem_blks )
 	REAL		x_dat(*), y_dat(*)     ! dynamic space allocation 
 	REAL            only_val, dashstyle(4), add_lon
 
@@ -184,7 +184,7 @@
 	LOGICAL         missing_polygon, first_polygon, use_nice
 	LOGICAL		NO_LINE_RANGE, ambiguous_coord_axis,
      .			formatted, user_title, oneD_form, stack_up,
-     .			x_is_log, y_is_log
+     .			x_is_log, y_is_log, vflag
 	CHARACTER*2048	KEY_STRING, FULL_VAR_TITLE, plot_title
 * 3/99 *kob* - upped VAR_UNITS from 32 to 64 chars
 	CHARACTER	VAR_UNITS*64, LEFINT*6, TM_GET_CALENDAR_NAME*32, 
@@ -203,8 +203,8 @@
      .			cx_buff_x, cx_buff_y,
      .			phlim, pvlim, pxdenig, pydenig,
      .                  cal_id, tax, x_axtyp, y_axtyp, n,
-     .                  ss_x_save, ss_y_save, hblk1, mvh_temp, ier, nc, 
-     .                  skipsym, nsiz, ngood
+     .			ss_x_save, ss_y_save, mvh_temp, ier, nc, skipsym,
+     .			nsiz, ngood
 
 	REAL		x_len, y_len, lo, hi, lox, hix, loy, hiy,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
@@ -223,6 +223,7 @@
 	PARAMETER     ( epsilon = 1.E-35 )
 
 	do_units = .TRUE.
+	vflag = .FALSE.  ! argument to axis_ends
 
 * signal that plot set-up has begun
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
@@ -481,7 +482,7 @@ c	ind_dim = plot_axis(1)
 * ... extract 1-dimensional arrays -- possibly with embedded missing values
 * ... x coordinates
 	   CALL EXTRACT_LINE (	cx_buff_x,
-     .				memory( 1, mr_blk1(mr_x) ),
+     .				memry(mr_x)%ptr,
      .				mr_x,
      .				x_dat,
      .				coord_dim,
@@ -491,7 +492,7 @@ c	ind_dim = plot_axis(1)
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 * ... y coordinates
 	   CALL EXTRACT_LINE (	cx_buff_y,
-     .				memory( 1, mr_blk1(mr_y) ),
+     .				memry(mr_y)%ptr,
      .				mr_y,
      .				y_dat,
      .				coord_dim,
@@ -508,7 +509,7 @@ c	ind_dim = plot_axis(1)
 
 	   IF (first_polygon .AND. .NOT.oneD_form) THEN
               plot_mem_used = 4* npts* npoly
-              CALL reallo_envelope(plot_mem_used)
+              CALL REALLO_ENVELOPE(plot_mem_used)
 
               first_polygon = .FALSE.
               plot_mem_used = 0
@@ -761,7 +762,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	   x_dat(1) = 0.0
 	else
 	   CALL EXTRACT_LINE (	cx_color,
-     .				memory( 1, mr_blk1(mr_color) ),
+     .				memry(mr_color)%ptr,
      .				mr_color,
      .				x_dat,
      .				color_dim,
@@ -822,10 +823,9 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 	  CALL CREATE_TEMP_MEM_VAR( cx_x, mvh_temp, status )
 	  IF ( status .NE. ferr_ok ) RETURN
-	  hblk1 = mr_blk1( mvh_temp )
           plot_mem_used = plot_mem_used + ncolor
 
-	  CALL compute_histo_bins (x_dat, memory(1,hblk1), 
+	  CALL COMPUTE_HISTO_BINS (x_dat, memry(mvh_temp)%ptr, 
      .       mr_bad_data(mr_color), ncolor, status) 
 
 * ... clean up temporary variable
@@ -875,7 +875,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 * ... extract 1-dimensional arrays -- possibly with embedded missing values
 * ... x coordinates
 	   CALL EXTRACT_LINE (	cx_buff_x,
-     .				memory( 1, mr_blk1(mr_x) ),
+     .				memry(mr_x)%ptr,
      .				mr_x,
      .				x_dat,
      .				coord_dim,
@@ -885,7 +885,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 * ... y coordinates
 	   CALL EXTRACT_LINE (	cx_buff_y,
-     .				memory( 1, mr_blk1(mr_y) ),
+     .				memry(mr_y)%ptr,
      .				mr_y,
      .				y_dat,
      .				coord_dim,
@@ -1018,7 +1018,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 *  Check for valid log axis before proceeding if log and limits are given
 	      IF (is_logx) THEN
 	          CALL AXIS_ENDS(x_ax, coord_dim, cx_grid(cx_x), vmin, 
-     .			     vmax, delta, x_is_log, x_axtyp, status )
+     .			     vmax, delta, x_is_log, x_axtyp, vflag, status )
 	         IF ( status .NE. ferr_ok ) THEN
                     first = vmin
                     last  = vmax
@@ -1033,7 +1033,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 
               CALL AXIS_ENDS(x_ax, coord_dim, cx_grid(cx_x), vmin, 
-     .			     vmax, delta, x_is_log, x_axtyp, status )
+     .			     vmax, delta, x_is_log, x_axtyp, vflag, status )
 		 IF ( status .NE. ferr_ok ) THEN
 		 first = vmin
 		 last = vmax
@@ -1045,7 +1045,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 * ... no data range -- provide artifical axis limits
               CALL AXIS_ENDS(x_ax, coord_dim, cx_grid(cx_x),
      .			DBLE(lox-1.0), DBLE(lox+1.0), 0.5D0, x_is_log, 
-     .			x_axtyp, status )
+     .			x_axtyp, vflag, status )
 	      IF ( status .NE. ferr_ok ) THEN
 		 first = lox-1.0
 		 last = lox+1.0
@@ -1053,7 +1053,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	      ENDIF
 	   ELSE
               CALL AXIS_ENDS(x_ax,coord_dim,cx_grid(cx_x),
-     .	       DBLE(lox),DBLE(hix), delta, x_is_log, x_axtyp, status )
+     .	       DBLE(lox),DBLE(hix), delta, x_is_log, x_axtyp, vflag, status )
 	      IF ( status .NE. ferr_ok ) THEN
 		 first = lox
 		 last = hix
@@ -1094,7 +1094,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 *  Check for valid log axis before proceeding if log and limits are given
 	      IF (y_is_log) THEN 
                  CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
-     .			     vmin,vmax,delta, y_is_log, y_axtyp, status )
+     .			     vmin,vmax,delta, y_is_log, y_axtyp, vflag, status )
 	         IF ( status .NE. ferr_ok ) THEN
 		    first = vmin
 		    last = vmax
@@ -1108,7 +1108,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
      .			formatted, range_rqd, cal_id, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
               CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
-     .			     vmin,vmax,delta, y_is_log, y_axtyp, status )
+     .			     vmin,vmax,delta, y_is_log, y_axtyp, vflag, status )
 	      IF ( status .NE. ferr_ok ) THEN
 		 first = vmin
 		 last = vmax
@@ -1119,7 +1119,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 * ... no data range -- provide artifical axis limits
               CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
      .			DBLE(loy-1.0),DBLE(loy+1.0), 0.5D0, y_is_log, 
-     .			y_axtyp, status )
+     .			y_axtyp, vflag, status )
 	      IF ( status .NE. ferr_ok ) THEN
 		 first = loy-1.0
 		 last = loy+1.0
@@ -1127,7 +1127,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	      ENDIF
 	   ELSE
               CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
-     .		DBLE(loy),DBLE(hiy), delta, y_is_log, y_axtyp, status )
+     .		DBLE(loy),DBLE(hiy), delta, y_is_log, y_axtyp, vflag, status )
 	      IF ( status .NE. ferr_ok ) THEN
 		 first = loy
 		 last = hiy

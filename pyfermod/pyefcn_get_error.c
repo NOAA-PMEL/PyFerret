@@ -33,6 +33,7 @@
  */
 
 #include <Python.h>
+#include "ferret.h"
 #include "pyferret.h"
 
 /*

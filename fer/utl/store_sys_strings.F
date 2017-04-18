@@ -55,7 +55,7 @@
 
 * internal variable declarations:
 	INTEGER	TM_LENSTR1,clen, old_len, istat, new_mr
-	REAL*8	 ADD_C_POINTER, sysout_ptr
+	REAL*8	 sysout_ptr
 
 * --- end of introductory code ---
 
@@ -86,15 +86,24 @@
 	cx_hi_ww(x_dim, cx) = cx_hi_ss(cx, x_dim)
 
 * do we need to allocate a larger block of memory?
-	IF ( cx_hi_ss(cx, x_dim) .GT. mr_nblks(mr)*mem_blk_size ) THEN
+	IF ( cx_hi_ss(cx, x_dim) .GT. mr_size(mr) ) THEN
+* ... this is effectively a "reallocate" of a larger memory block
 	   CALL CREATE_TEMP_MEM_VAR( cx, new_mr, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   mr_c_pointer(new_mr) = ADD_C_POINTER(mr_c_pointer(mr), 0,
-     .				(mr_blk1(new_mr)-mr_blk1(mr))*mem_blk_size)
-	   CALL XFER_C_PTRS( mr_c_pointer(mr),     1, 0,
-     .			     mr_c_pointer(new_mr), 1, 0, old_len )
+	   CALL GET_C_POINTER(memry(new_mr)%ptr, mr_c_pointer(new_mr))
+! 2/2017 - there are no string pointers in the too-short mr yet, so why are
+!          we attempting to transfer the string pointers?
+!          Looks like this is a left-over from some earlier logic. 
+!	   CALL XFER_C_PTRS( mr_c_pointer(mr),     1, 0,
+!     .			     mr_c_pointer(new_mr), 1, 0, old_len )
+* 2/2017 -- because a pointer to the original mr was passed as an argument
+* the routine that called this, freeing that memory from here would corrupt
+* runtime stack and crash the program.  So in lieu of deleting the variable
+* here, we set it to be deleted later and make it non-cache retrievable
 	   mr_type(mr) = ptype_float ! a trick so that C strings are not freed
-	   CALL DELETE_VARIABLE(mr)  ! when DELETE_VARIABLE is called
+!	   CALL DELETE_VARIABLE(mr)  ! when DELETE_VARIABLE is called
+	   CALL MR_AVAILABLE(mr)     ! put it onto the deletable chain
+	   CALL UN_CACHE(mr)         ! set to non-retreivable
 	   mr = new_mr
 	ELSE
 	   mr_hi_ss(mr, x_dim) = cx_hi_ss(cx, x_dim)

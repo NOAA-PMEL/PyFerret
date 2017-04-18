@@ -1,4 +1,4 @@
-	SUBROUTINE IS_READ_REMOTE ( memory, *, *, status )
+	SUBROUTINE IS_READ_REMOTE (  *, *, status )
 
 *
 *
@@ -44,7 +44,6 @@
 
 * calling argument declarations:
 	INTEGER	status
-	REAL	memory(*)
 	REAL	baddat
 
 * normal exit is for error conditions
@@ -72,7 +71,7 @@
 	cat = cx_category(cx)
 	cx_category(cx) = cat_user_var
 
-	CALL READ_REMOTE(memory, baddat, cx, is_mr(isp), status )
+	CALL READ_REMOTE( baddat, cx, is_mr(isp), status )
         IF ( status .EQ. ferr_ok ) GOTO 2
 
 * error exit

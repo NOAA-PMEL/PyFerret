@@ -41,8 +41,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
-#include "run_thredds_browser.h"
+#include "ferret.h"
 
 /*
  * Interface to the FORTRAN function:
@@ -54,10 +53,10 @@
  * to this function.  Does not do bounds checking.
  *
  * Assumes Holerith strings are passed as a char array with a max string 
- * length appended to the end of the argument list.  Also assumes the C 
- * name is the single underscore appended to the lower-cased FORTRAN name.
+ * length appended to the end of the argument list.
  */
-int run_thredds_browser_(char dataset_name[], char err_warn_msg[], int max_len_dataset_name, int max_len_err_warn_msg) {
+int FORTRAN(run_thredds_browser)(char dataset_name[], char err_warn_msg[], 
+                                 int max_len_dataset_name, int max_len_err_warn_msg) {
     int len_dataset_name;
 
     /* Run the browser */

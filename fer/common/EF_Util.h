@@ -15,6 +15,7 @@
 *                  Ferret will run XCAT_STR
 * V664  9/10 *kms* Add EF_PYTHON
 *       3/12 *kms* Add E and F dimensions; use NFERDIMS
+* V702  1/17 *sh* prototype of ef_get_one_val_sub altered
 */
 
 
@@ -85,6 +86,7 @@ typedef struct {
   DFTYPE version;
   char description[EF_MAX_DESCRIPTION_LENGTH];
   char alt_fcn_name[EF_MAX_NAME_LENGTH];
+  char alt_base_fcn_name[EF_MAX_NAME_LENGTH];
   int  language;
   int  num_reqd_args, has_vari_args;
   int  num_work_arrays;
@@ -94,6 +96,7 @@ typedef struct {
   int  axis_reduction[NFERDIMS];
   int  piecemeal_ok[NFERDIMS];
   int  return_type;
+  int  direction_args[NFERDIMS];
   Axis axis[NFERDIMS];
 
   /* Information specific to each argument of the function */
@@ -143,8 +146,7 @@ extern void FORTRAN(ef_get_box_limits)(int *id, int *arg, int *axis, int *lo, in
                                        double lo_lims[], double hi_lims[]);
 /* the modlen argument in ef_get_axis_modulo_len is explicitly real*8 */
 extern void FORTRAN(ef_get_axis_modulo_len)(int *id, int *arg, int *axis, double *modlen);
-extern void FORTRAN(ef_get_one_val_sub)(int *id_ptr, DFTYPE *mem_ptr,
-                                        int *arg_ptr, DFTYPE *val_ptr);
+extern void FORTRAN(ef_get_one_val_sub)(int *id_ptr, int *arg_ptr, DFTYPE *val_ptr);
 
 /* these are called by the 4D function definitions */
 extern void FORTRAN(ef_set_axis_influence_6d)(int *id_ptr, int *arg,

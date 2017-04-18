@@ -49,6 +49,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V702 11/16 *sh* for enhancement ticket 2428: split/gather on compressed axes
+*       3/17 *sh* nbuffers must be 2 (or more) whenever there is an
+*                 accumulation operation implied (e.g. summing, min, max, ...)
 
 * calling argument declarations:
 	LOGICAL need_init
@@ -93,7 +95,7 @@
      .      .OR. trans .EQ. trans_4d_bad_pt   ) THEN
 	   need_init = .TRUE.
 	   init_val = 0.0
-	   nbuffer = 1
+	   nbuffer = 2
 	ELSEIF ( trans .EQ. trans_variance
      .      .OR. trans .EQ. trans_4d_var
      .	    .OR. trans .EQ. trans_std_dev
@@ -104,11 +106,11 @@
 	ELSEIF ( trans .EQ. trans_max ) THEN
 	   need_init = .TRUE.
 	   init_val = too_small
-	   nbuffer = 1
+	   nbuffer = 2
 	ELSEIF ( trans .EQ. trans_min ) THEN
 	   need_init = .TRUE.
 	   init_val = too_large
-	   nbuffer = 1
+	   nbuffer = 2
 	ELSE
 * all other transformations do not require initialization
 *      trans_locate - potentially could, but would need added machinery during

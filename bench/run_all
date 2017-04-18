@@ -30,6 +30,7 @@
 #            append this to the log file 
 # acm*  1/14 Change the order of the questions asked: test efs? If so what directory are they in?
 #            Also list the contents of the external fucntions directory
+# *sh* 3/17 Check for corruption warnings in the error log
 #
 # usage % run_all
 
@@ -339,3 +340,7 @@ ls -l $log_file >>&  $bench_hist
 # make a clean version of the log file that can easily be compared
 ./clean_draconian $log_file
 
+# check for corruption warnings ("crptn") in the error log
+grep -q "crptn" $err_file
+set captured_status = $status
+if ( $captured_status == 0 ) echo "*** CORRUPTION WARNINGS FOUND IN ERROR LOG ***"

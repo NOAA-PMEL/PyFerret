@@ -127,7 +127,7 @@ void fgdwinsetvis_(int *success, void **window, int *visible);
 void fgdwinsave_(int *success, void **window, char *filename, int *namelen,
                  char *fileformat, int *formatlen, int *tranparentbkg,
                  float *xinches, float *yinches, int *xpixels, int *ypixels,
-                 void **memory, int *firststr, int *numstr);
+                 void **firststr, int *numstr);
 void fgdwinscreeninfo_(int *success, void **window, float *dpix, float *dpiy,
                        int *screenwidth, int* screenheight);
 void fgdwinsetwidthfactor_(int *success, void **window, float *widthfactor);

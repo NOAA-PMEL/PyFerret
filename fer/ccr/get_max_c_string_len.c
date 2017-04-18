@@ -41,10 +41,9 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <string.h>
+#include "ferret.h"
 
-int get_max_c_string_len_(fer_ptr, nstr)
-     char*** fer_ptr;
-     int* nstr;
+int FORTRAN(get_max_c_string_len)(char ***fer_ptr, int *nstr)
 {
    char** each_str_ptr;
    int max=0;

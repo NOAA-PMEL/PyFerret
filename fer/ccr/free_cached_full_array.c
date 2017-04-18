@@ -50,23 +50,20 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
-#include <assert.h>
 #include "ferret.h"
 
  
-void FORTRAN(free_cached_full_array)( double **pointer_val )
-
 /*
   see complementary routines recover_cached_full_array and cache_full_array.c
 */
-
+void FORTRAN(free_cached_full_array)( double **pointer_val )
 {
   double *ptr;
 
   ptr = *pointer_val;
 
   if (ptr) {
-	  free(ptr);  // could do assert on ptr==0
+	  PyMem_Free(ptr);
 	  *pointer_val=0;
   }
 

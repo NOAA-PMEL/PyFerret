@@ -46,6 +46,8 @@
 * V71  *acm* 2/17  More on ticket 2231. Label set of line plots with their units
 *                  if units are different. If PLOT/KEY=title given, use the variable
 *                  title in the legend labels for both PLOT and PLOT/VS plots.
+* v7.2 *acm* 4/2017 ticket 2446 Drawing formatted time axes on a PLOT/VS, label
+*                  at the top with the year if needed.
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -135,7 +137,13 @@
                  ppl_buff = SECS_TO_DATE( ind_min, cal_id_1 ) 
                  year = ppl_buff(8:11) 
               ENDIF 
-           ENDIF 
+           ELSE
+              IF ( tstyle.EQ.'MON' .OR. tstyle.EQ.'DAY' ) THEN  ! plot/vs with time variable
+	         i = ind_min
+                 WRITE (year, '(I4)') i
+              ENDIF 
+	   ENDIF
+
 * *ACM* if time axis, then cal_id_1 is set to the calendar.  Label the
 *       plot with the calendar name if there is non-standard calendar
 	   CALL DISP_LABELS( cx_plot, year, cal_id_1 )
@@ -286,6 +294,11 @@
                  ppl_buff = SECS_TO_DATE( ind_min, cal_id_1 ) 
                  year = ppl_buff(8:11) 
 	      ENDIF 
+           ELSE
+              IF ( tstyle.EQ.'MON' .OR. tstyle.EQ.'DAY' ) THEN  ! plot/vs with time variable
+	         i = ind_min
+                 WRITE (year, '(I4)') i
+              ENDIF 
 	   ENDIF 
 
 * *ACM* if time axis, then cal_id_1 is set to the calendar.  Label the

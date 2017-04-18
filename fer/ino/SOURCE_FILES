@@ -7,7 +7,6 @@ init_ez_dset.F\
 read_ez.F\
 read_binary.F\
 read_delimited.F\
-read_perl.F\
 read_remote.F\
 read_tm.F\
 repl_tm_find_grid_slot.F\

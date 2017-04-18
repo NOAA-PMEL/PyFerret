@@ -50,7 +50,7 @@ c* called since the stacks would get re-initialized and the {,,,} would need
 c* to be parsed
 
 
-      SUBROUTINE EF_GET_ONE_VAL_SUB(id, memory, iarg, value)
+      SUBROUTINE EF_GET_ONE_VAL_SUB(id,  iarg, value)
 
       IMPLICIT NONE
       INCLUDE 'tmap_dims.parm'
@@ -64,7 +64,6 @@ c* to be parsed
 * calling argument declarations
       REAL    value
       INTEGER id, iarg
-      REAL    memory(mem_blk_size, max_mem_blks)
 
 * internal variable declarations
       INTEGER mr, cx, uv, status
@@ -77,7 +76,7 @@ c* to be accessible to the external function.
 
       IF (mr_list(1) .GT. 0 ) THEN
         mr = mr_list(iarg)
-        CALL EF_GET_ONE_VAL_SUB_SUB(memory(1, mr_blk1(mr)), 
+        CALL EF_GET_ONE_VAL_SUB_SUB(memry(mr)%ptr, 
      .                              lo_ss(iarg,1), hi_ss(iarg, 1),
      .                              lo_ss(iarg,2), hi_ss(iarg, 2),
      .                              lo_ss(iarg,3), hi_ss(iarg, 3),

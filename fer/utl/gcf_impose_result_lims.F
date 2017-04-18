@@ -1,4 +1,4 @@
-      SUBROUTINE GCF_IMPOSE_RESULT_LIMS( gcfcn, memory, mr_list,
+      SUBROUTINE GCF_IMPOSE_RESULT_LIMS( gcfcn,  mr_list,
      .     cx_list, res_cx, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -63,6 +63,7 @@
 * V533: 7/01 *sh* - added SPAWN function
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V6.8  *acm* 5/12 Add EUNRAVEL, FUNRAVEL
+* V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 
 * debug declarations for TIMES2
 !	INTEGER	n_com1, n_grid, com1_grid
@@ -78,7 +79,6 @@
 
 * calling argument declarations
 	INTEGER	gcfcn, cx_list(*), mr_list(*), res_cx, status
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations
 	LOGICAL fix_me(nferdims)
@@ -359,14 +359,13 @@
      .          .OR. axis_will_be(4) .EQ. pgc_axis_is_abstract
      .          .OR. axis_will_be(5) .EQ. pgc_axis_is_abstract
      .          .OR. axis_will_be(6) .EQ. pgc_axis_is_abstract)	THEN
-              CALL EFCN_GET_RESULT_LIMITS(gcfcn, memory, mr_list, 
+              CALL EFCN_GET_RESULT_LIMITS(gcfcn,  mr_list, 
      .             cx_list, status)
               IF (status .NE. ferr_ok) CALL ERRMSG
      .                          ( status, status,' ', *5000 )
            ENDIF
 
 	   DO 450 idim = 1, nferdims
-
 
 * If the axis is abstract ... 
 *   get the lo and hi limits for this axis
@@ -378,15 +377,21 @@
 		 cx_lo_ss(res_cx,idim) = lo_lim
 		 cx_hi_ss(res_cx,idim) = hi_lim
 		 cx_by_ss(idim, res_cx) = .TRUE.
+		 IF (has_uvar_dc) CALL GCF_SET_ABSTRACT_AXIS (res_grd, idim)
 		 CALL FLESH_OUT_AXIS( idim, res_cx, status )
 		 IF ( status .NE. ferr_ok ) GOTO 5000
 
+		 IF (has_uvar_dc) uvar_given(idim,uvar) = uvlim_hidden
+
 
 * If the axis is normal ... nothing needs to be done
+*  - if the function set using a dimension argument, limits need resetting  
 
-*	      ELSEIF (axis_will_be(idim) .EQ. pgc_axis_is_normal) THEN
-*       do nothing
+	      ELSEIF (axis_will_be(idim) .EQ. pgc_axis_is_normal) THEN
 
+		 CALL GCF_SET_NORMAL_AXIS (res_grd, idim)
+		 CALL FLESH_OUT_AXIS (idim, res_cx, status)  ! set everything needed in the cx
+		 IF (has_uvar_dc) uvar_given(idim,uvar) = uvlim_irrelevant
 
 * If the axis is custom
 

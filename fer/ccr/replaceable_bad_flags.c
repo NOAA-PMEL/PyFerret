@@ -49,9 +49,7 @@
 #include <math.h>
 #include "ferret.h"
 
-int FORTRAN(replaceable_bad_flags)(bad1, bad2)
-     DFTYPE *bad1, *bad2;
-
+int FORTRAN(replaceable_bad_flags)(DFTYPE *bad1, DFTYPE *bad2)
 {
   if (isnan(*bad1) || isnan(*bad2))
     return 1; 
@@ -59,5 +57,4 @@ int FORTRAN(replaceable_bad_flags)(bad1, bad2)
     return 1;
   else
     return 0;
-
 }

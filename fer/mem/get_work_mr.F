@@ -1,4 +1,4 @@
-	SUBROUTINE GET_WORK_MR ( size, mr, status )
+	SUBROUTINE GET_WORK_MR ( i8_size, mr, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -59,28 +59,24 @@
 	include 'xcontext.cmn'
 
 * calling argument declarations:
-	INTEGER	size, mr, status
+	INTEGER	mr, status
+	INTEGER*8 i8_size
 
 * internal variable declarations
-	INTEGER start_block, num_blocks, grid_blocks, idim
+	INTEGER idim
 
 * --- end of introductory code ---
 
-* COMPUTE # BLOCKS NEEDED
-	grid_blocks = ( size + mem_blk_size - 1 ) / mem_blk_size
-	CALL GET_MEMORY( size, grid_blocks, start_block, num_blocks, status )
-
 * get a free slot in the memory variable table
-	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
+	CALL FIND_MR_SLOT( mr, status )
 	IF ( status .NE. ferr_ok ) RETURN
-	cx_category(cx_stack_ptr) = cat_work_mr
-	CALL FIND_MR_SLOT( cx_stack_ptr, mr, status )
-	IF ( status .NE. ferr_ok ) RETURN
-	cx_stack_ptr = cx_stack_ptr - 1
 
-* point mr slot to data in bulk memory
-	mr_blk1     ( mr )	= start_block
-	mr_nblks    ( mr )	= num_blocks
+* allocate memory
+	CALL GET_MR_DYNMEM( i8_size, mr, status )
+	IF ( status .NE. ferr_ok ) THEN
+	   CALL MR2FREELIST(mr)
+	   RETURN
+	ENDIF
 
 * always set its data type to float
 	mr_type( mr ) = ptype_float
@@ -91,16 +87,28 @@
 * flag it as "in progress"
 	mr_protected( mr )	= mr_in_progress
 
+* book keeping about memory usage
+	essential_mem = essential_mem + mr_size(mr)
+	IF (essential_mem.GT.peak_essential_mem) 
+     .		peak_essential_mem = essential_mem
+
 * work arrays do not use any grids
 	mr_grid( mr ) = unspecified_int4
 
 * for good house-keeping, set the mr subscripts
 	mr_lo_ss(mr,x_dim) = 1
-	mr_hi_ss(mr,x_dim) = size
+	mr_hi_ss(mr,x_dim) = i8_size
 	DO 100 idim = 2, nferdims
 	   mr_lo_ss(mr,idim) = unspecified_int4
 	   mr_hi_ss(mr,idim) = unspecified_int4
  100	CONTINUE
+
+* hook it into the cacke search list (just to be consistent with other vars)
+	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
+	IF ( status .NE. ferr_ok ) RETURN
+	cx_category(cx_stack_ptr) = cat_work_mr
+	CALL HOOK_MR_SLOT( cx_stack_ptr, mr )
+	cx_stack_ptr = cx_stack_ptr - 1
 
 	RETURN
 	END

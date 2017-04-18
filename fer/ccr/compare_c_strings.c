@@ -39,10 +39,9 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <string.h>
+#include "ferret.h"
 
-int compare_c_strings_(ptr_1, ptr_2)
-     char** ptr_2;
-     char** ptr_1;
+int FORTRAN(compare_c_strings)(char **ptr_1, char **ptr_2)
 {
    char *str1;
    char *str2;

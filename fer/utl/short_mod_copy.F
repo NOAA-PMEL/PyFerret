@@ -1,4 +1,4 @@
-	SUBROUTINE SHORT_MOD_COPY( memory, res_lo, res_hi, idim,
+	SUBROUTINE SHORT_MOD_COPY(  res_lo, res_hi, idim,
      .				   tcom_cx, tcom_mr, res_cx, res_mr)
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -65,7 +65,6 @@
 
 * calling argument declarations:
 	INTEGER	res_lo, res_hi, idim, tcom_cx, tcom_mr, res_cx, res_mr
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	INTEGER CAXIS_MODLEN, MODULO_PARITY,
@@ -142,9 +141,9 @@
 	   mr_hi_ss(tcom_mr, idim) = mr_hi_sav + xlate
 	   IF ( MODULO_PARITY(cx_lo_sav,             npts,idel)
      .	   .EQ. MODULO_PARITY(cx_lo_ss(tcom_cx,idim),npts,idel) ) THEN
-	      CALL COPY_INTO( memory(1,mr_blk1(tcom_mr)), tcom_mr,
+	      CALL COPY_INTO( memry(tcom_mr)%ptr, tcom_mr,
      .			      tcom_cx,
-     .			      memory(1,mr_blk1(res_mr)), res_mr )
+     .			      memry(res_mr)%ptr, res_mr )
 	   ENDIF
 * NOTE:  it is KNOWN that sometimes this routine needlessle copies the same
 *	 region of component into the same region of result at both STEP 1
@@ -167,9 +166,9 @@
 	   mr_hi_ss(tcom_mr, idim) = mr_hi_sav + xlate
 	   IF ( MODULO_PARITY(cx_lo_sav,             npts,idel)
      .	   .EQ. MODULO_PARITY(cx_lo_ss(tcom_cx,idim),npts,idel) ) THEN
-	      CALL COPY_INTO( memory(1,mr_blk1(tcom_mr)), tcom_mr,
+	      CALL COPY_INTO( memry(tcom_mr)%ptr, tcom_mr,
      .			   tcom_cx,
-     .			   memory(1,mr_blk1(res_mr)), res_mr )
+     .			   memry(res_mr)%ptr, res_mr )
 	   ENDIF
 	ENDIF
 

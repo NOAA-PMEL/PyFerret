@@ -35,7 +35,7 @@
 *
 *  *kms* 07/16 use nferdims in tmap_dims.parm
 *
-      SUBROUTINE IS_PYSTAT_VAR(memory, *, *, sts)
+      SUBROUTINE IS_PYSTAT_VAR(*, *, sts)
 
       IMPLICIT NONE
       INCLUDE 'ferret.parm'
@@ -50,7 +50,6 @@
 
 *     Calling argument declarations
       INTEGER sts
-      REAL    memory(mem_blk_size, max_mem_blks)
 
 *     Function declarations
       CHARACTER*128 VAR_CODE
@@ -119,8 +118,7 @@
 *        Set the bad data flag
          mr_bad_data(mr_var) = pyvar_missing_flag(pyvar)
 *        Get all the given data from the python data array object
-         CALL COPY_PYSTAT_DATA(memory(1, mr_blk1(mr_var)),
-     .                         pyvar_ndarray_obj(pyvar))
+         CALL COPY_PYSTAT_DATA(memry(mr_var)%ptr, pyvar_ndarray_obj(pyvar))
       ENDIF
 
 
@@ -137,8 +135,7 @@
 *        Set the bad data flag
          mr_bad_data(mr) = pyvar_missing_flag(pyvar)
 *        Fill completely with the missing value
-         CALL FILL_MEMORY(memory, mr_blk1(mr), mr_nblks(mr), 
-     .                    mr_bad_data(mr))
+         CALL FILL_MEMORY(mr, mr_bad_data(mr))
          IF ( need_data ) THEN
 *           Trim the cx_lo_ss and cx_hi_ss limits in cx_var (given data)
 *           so they do not exceed the limits in cx (used to create mr)
@@ -151,8 +148,8 @@
                ENDIF
   300       CONTINUE
 *           Copy over the given data where appropriate
-            CALL COPY_INTO(memory(1, mr_blk1(mr_var)), mr_var, cx_var,
-     .                     memory(1, mr_blk1(mr)),     mr)
+            CALL COPY_INTO( memry(mr_var)%ptr, mr_var, cx_var, 
+     .                      memry(mr)%ptr, mr )
 *           Delete the variable with the all the given data (cheap to recreate)
             CALL DELETE_VARIABLE(mr_var)
          ENDIF

@@ -39,12 +39,9 @@
  */
 
 #include <Python.h> /* make sure Python.h is first */
+#include "ferret.h"
 
-void get_offset_c_string_(fer_ptr, offset, outstring, maxlen)
-     char*** fer_ptr;
-     int* offset;
-     char* outstring;
-     int* maxlen;
+void FORTRAN(get_offset_c_string)(char ***fer_ptr, int *offset, char *outstring, int *maxlen)
 {
    char** each_str_ptr;
    char* str_ptr;

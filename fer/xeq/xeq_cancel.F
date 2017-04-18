@@ -1,4 +1,4 @@
-	SUBROUTINE XEQ_CANCEL( memory )
+	SUBROUTINE XEQ_CANCEL
 
 *
 *
@@ -186,7 +186,6 @@
         include 'pyfonts.cmn'
 
 * calling argument declarations:
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * local variable declarations:
 	INTEGER		REGION_NUMBER, FIND_DSET_NUMBER,
@@ -294,10 +293,20 @@
 	   DO 410 mr = 1,max_mr_avail
 	      IF ( mr_protected( mr ) .EQ. mr_deleted ) GOTO 410
 	      perm_var = mr_protected(mr) .EQ. mr_perm_protected
-	      IF ( del_perm .AND. perm_var
-     .	      .OR. del_temp .AND. .NOT.perm_var )
-     .				CALL DELETE_VARIABLE( mr )
- 410	   CONTINUE
+	      IF ( del_perm .AND. perm_var ) THEN
+* ... permanent_mem could more efficiently be set after all deletions are
+*     done, but this way we are performing a sanity check as well
+	         permanent_mem = permanent_mem - mr_size(mr)
+	         CALL DELETE_VARIABLE( mr )
+	      ELSEIF ( del_temp .AND. .NOT.perm_var ) THEN  ! same as "ELSE"?
+	         CALL DELETE_VARIABLE( mr )
+	      ENDIF
+ 410       CONTINUE
+* ... /ALL resets to peaks indicators
+	IF (slash_all) THEN
+           peak_mem = 0
+           peak_essential_mem = 0
+	ENDIF
 	IF ( del_perm ) CALL SPLIT_LIST(pttmode_ops, err_lun, 
      .			' PERMANENT data cleared from memory', 0)
 	IF ( del_temp ) CALL SPLIT_LIST(pttmode_ops, err_lun, 
@@ -521,6 +530,10 @@
 	            CALL WARN( 'MODE 6D_lab is deprecated. '//
      .                'Leave the mode set; output '//
      .                'automatically adjusts to 4D or 6D grids') 
+
+                 ELSEIF ( mode .EQ. pmode_desperate ) THEN
+	            CALL WARN("MODE DESPERATE is deprecated. Use MODE FRUGAL")
+
 	         ENDIF
 		 GOTO 820
 	      ENDIF

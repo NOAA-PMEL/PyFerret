@@ -1,4 +1,4 @@
-	SUBROUTINE CDF_PREP_CACHE( dflt_cx, filename, nvars, memory,
+	SUBROUTINE CDF_PREP_CACHE( dflt_cx, filename, nvars, 
      .			           mrlist, cxlist, clobber, status )
 
 *
@@ -66,7 +66,6 @@
 * calling argument declarations:
 	LOGICAL clobber
 	INTEGER dflt_cx, nvars, mrlist(*), cxlist(*), status
-	REAL	memory( mem_blk_size, max_mem_blks )
 	CHARACTER TM_INQ_PATH*2048, filename*(*)
 
 * local variable declarations
@@ -167,7 +166,7 @@
 	   CALL CREATE_TEMP_MEM_VAR( cx, mrlist(nvars), status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   CALL UN_CACHE( mrlist(nvars) )
-	   memory(1, mr_blk1(mrlist(nvars))) = 0.0    ! just good house-keeping
+!	   memory(1, mr_blk1(mrlist(nvars))) = 0.0    ! just good house-keeping
  100	CONTINUE
 
 * echo the name of the output cache file

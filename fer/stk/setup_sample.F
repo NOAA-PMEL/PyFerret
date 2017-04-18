@@ -1,4 +1,4 @@
-	SUBROUTINE SETUP_SAMPLE( memory, cx_indices, mr_indices,
+	SUBROUTINE SETUP_SAMPLE(  cx_indices, mr_indices,
      .				 ifcn, big_cx, status )
 
 *
@@ -57,7 +57,6 @@
 
 * calling argument declarations:
 	INTEGER	cx_indices, ifcn, mr_indices, big_cx, status
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents
@@ -69,6 +68,7 @@
 	INTEGER n, dims(nferdims), ndim, hold_isp, cx_holder,
      .		min_ss, max_ss, res_grid,
      .		mr_sorted_indices, mr_index_map, axis, nvalid
+	INTEGER*8 n8
 
 * --- end of introductory code ---
 
@@ -83,17 +83,18 @@
 
 * create memory managed work arrays for the sorted_indices and index_map
 	n = CGRID_SIZE(cx_indices)
-	CALL GET_WORK_MR(n,mr_sorted_indices, status)
+	n8 = n     ! promote to INTEGER*8
+	CALL GET_WORK_MR(n8,mr_sorted_indices, status)
 	IF ( status .NE. ferr_ok ) GOTO 5000
-	CALL GET_WORK_MR(n,mr_index_map, status)
+	CALL GET_WORK_MR(n8,mr_index_map, status)
 	IF ( status .NE. ferr_ok ) GOTO 5000
 !	mr_hi_ss(mr_index_map,x_dim) = n	! done in GET_WORK_MR
 
 * extract the 1D list of indices to be obtained
         CALL EXTRACT_LINE ( cx_indices,
-     .                      memory( 1, mr_blk1(mr_indices) ),
+     .                      memry(mr_indices)%ptr,
      .                      mr_indices,
-     .                      memory( 1, mr_blk1(mr_sorted_indices) ),
+     .                      memry(mr_sorted_indices)%ptr,
      .                      dims,
      .                      ndim,
      .                      n,
@@ -109,8 +110,8 @@
 	CALL SORT_LIST(n, min_ss, max_ss,  
      .			   mr_bad_data(mr_indices),
      .			   mr_bad_data(mr_sorted_indices),
-     .			   memory(1,mr_blk1(mr_sorted_indices)),
-     .			   memory(1,mr_blk1(mr_index_map)), nvalid )
+     .			   memry(mr_sorted_indices)%ptr,
+     .			   memry(mr_index_map)%ptr, nvalid )
 
 * pass the number of valid points through the (irrelevant) T axis indices
 * of the (one-dimensional) mr_index_map array

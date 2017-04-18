@@ -10,9 +10,9 @@
 a1.nc
 a2.nc
 aa.nc
+abc.dat
 abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
 abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.png
-abc.dat
 a.gif
 a.jnl
 a.nc
@@ -23,10 +23,13 @@ append_to_this.nc
 asc.nc
 a.txt
 b1566.jnl
-b.jnl
-b.nc
 b1.nc
 b2.nc
+b.jnl
+b.nc
+bn_dynamic_gather_0.out
+bn_dynamic_gather_30.out
+bn_dynamic_gather_60.out
 bn_test_stream.jnl
 c1.nc
 c2.nc
@@ -148,6 +151,7 @@ test0p.cdf
 test_100x100.nc
 test2.cdf
 test_abs.cdf
+test_auto_cache.out
 test.cdf
 test.dat
 test_fil0.cdf

@@ -15,14 +15,6 @@
 #define MEM_INFO_BLOCKSIZE      1048576	/* Max mem chunk size */
 #define MEM_INFO_MINTHRESH      1024 /* No closer to mmap boundary than this! */
 
-/* Easier way of handling single/double floating-point declarations */
-#ifdef double_p
-#define DFTYPE double
-#else
-#define DFTYPE float
-#endif
-
-
 typedef struct _MemInfo {
   char *data;			/* Memory mapped file contents */
   int relPos;			/* Position relative to mem block start */
@@ -60,9 +52,5 @@ typedef struct _FileInfo {
   int pageSize;			/* System pagesize */
   int doSwap;			/* Swap bytes */
 } FileInfo;
-
-#ifndef FORTRAN
-#define FORTRAN(a) a##_
-#endif
 
 #endif

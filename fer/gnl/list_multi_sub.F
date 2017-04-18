@@ -1,4 +1,4 @@
-	SUBROUTINE LIST_MULTI_SUB(memory, mr_list,cx_list,heading,
+	SUBROUTINE LIST_MULTI_SUB( mr_list,cx_list,heading,
      .				  perm,ws,xact_range, has_size, bad,
      .				  pt_blk, size, msize, width, out,
      .				  status)
@@ -85,6 +85,7 @@
 *                    spreadsheets, so the user wants the missing flags in there.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V691+ *acm* 9/14 Ticket 2199: for string variables don't list a BAD FLAG in the header.
+* V702: *sh*  2/17 Dynamic memory management (pt_blk no longer used)
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -111,7 +112,6 @@
 	LOGICAL	heading
 	INTEGER	mr_list(num_uvars_in_cmnd), cx_list(num_uvars_in_cmnd),
      .		perm(nferdims), ws, status
-	REAL	memory( mem_blk_size, max_mem_blks )
 * ... work arrays ...
 	LOGICAL		xact_range(ws), has_size(nferdims,ws)
 	INTEGER		pt_blk(ws), size(nferdims,ws), msize(ws), width(ws)
@@ -128,7 +128,7 @@
      .			w0, w, data_len, nleft, nright, alen, blen,
      .			idim, vlen, cleft, col_ax, col_dec,
      .			cx, slen1, slen2, slen3, i, 
-     .			ivar, point, word, block, iwd, iblk, dset, ax, new_ax,
+     .			ivar, point, iwd, dset, ax, new_ax,
      .			min_width, row_ww_wid, lp, prec_digits, ww,
      .			lo(nferdims), hi(nferdims), del(nferdims), 
      .			pt(nferdims), valid_ax(nferdims)
@@ -286,7 +286,6 @@
 	   cx = cx_list(ivar)
 	   vcode(ivar)  = VAR_CODE( cx_category(cx), cx_variable(cx) )
 	   bad(ivar)    = mr_bad_data(  mr_list(ivar) )
-	   pt_blk(ivar) = mr_blk1( mr_list(ivar) )	
  50	CONTINUE
 
 * * * * * * WRITE INTRODUCTORY LINES * * * * *
@@ -378,7 +377,7 @@
 * Note: cannot direct user format to GUI because records may be
 * arbitrarily long
  200	IF ( do_unform .OR. list_format_given ) THEN
-	   point = -1                    ! bug fix 4/93
+	   point = 0
 	   DO 300 i6 = lo6, hi6, del6
 	   DO 300 i5 = lo5, hi5, del5
 	   DO 300 i4 = lo4, hi4, del4
@@ -388,15 +387,13 @@
 	      IF ( interrupted ) RETURN
 * default memory pointer for full-region variables
 	      point = point + 1
-	      block = point / mem_blk_size
-	      word  = point - block*mem_blk_size
 
 * loop through all variables for each record
 	      DO 250 ivar = 1, num_uvars_in_cmnd
 	         IF (mr_type(mr_list(ivar)) .EQ. ptype_string) GOTO 5040
 * ... optimized calculation for full-region variables
 	         IF ( xact_range(ivar) ) THEN
-	            out(ivar) = memory( word+1, pt_blk(ivar)+block ) 
+	            out(ivar) = memry(mr_list(ivar))%ptr(point)
 	         ELSE
 * ... separate pointer calcs for non-full region variables
 * ... e.g. a 2D field listed with a 3D will replicate at each 3rd-D location
@@ -406,9 +403,7 @@
 	            iwd = iwd*size(i,ivar)
 		    IF ( has_size(i,ivar) ) iwd = iwd + (pt(i)-lo(i))
  240	            CONTINUE
-	            iblk = iwd / mem_blk_size
-	            iwd  = iwd - iblk*mem_blk_size
-	            out(ivar) = memory( iwd+1, pt_blk(ivar)+iblk ) 
+	            out(ivar) = memry(mr_list(ivar))%ptr(iwd+1)
 	         ENDIF
  250	      CONTINUE
 	      IF ( do_unform ) THEN
@@ -441,9 +436,9 @@
 	   IF ( mr_type(mr_list(ivar)) .EQ. ptype_string ) THEN
 	       nleft = GET_MAX_STRING_LEN(cx_list(ivar),
      .					  mr_list(ivar),
-     .					  memory(1,pt_blk(ivar)) )
+     .					  memry(mr_list(ivar))%ptr )
 	   ELSE 
-	      CALL MINMAX( memory(1,pt_blk(ivar)), msize(ivar),
+	      CALL MINMAX( memry(mr_list(ivar))%ptr, msize(ivar),
      .			   bad(ivar), small, big )
 	      all_bad = small .EQ. arbitrary_large_val4
 
@@ -538,7 +533,7 @@
 * If the /NOROWLAB qualifier was given, do not do the "coord/sub:" on each data line
 
  3050   FORMAT (1X,4('-'),1X,A)
-	point = -1                    ! bug fix 4/93
+	point = -1
 	DO 600 i6 = lo6, hi6, del6
 * label the block of block of blocks (6th dimension)
 	   risc_buff = ' '
@@ -608,8 +603,6 @@
 
 * default memory pointer for full-region variables
 	   point = point + 1
-	   block = point / mem_blk_size
-	   word  = point - block*mem_blk_size
 
 * loop through all variables for each record
            ww = w0 + 1
@@ -665,7 +658,7 @@
 * ... numerical variable
 * ... optimized calculation for full-region variables
 	        IF ( xact_range(ivar) ) THEN
-	           out(ivar) = memory( word+1, pt_blk(ivar)+block ) 
+	           out(ivar) = memry(mr_list(ivar))%ptr(point+1)
 	        ELSE
 * ... separate pointer calcs for non-full region variables
 * ... e.g. a 2D field listed with a 3D will replicate at each 3rd-D location
@@ -675,9 +668,7 @@
 	           iwd = iwd*size(i,ivar)
 	           IF ( has_size(i,ivar) ) iwd = iwd + (pt(i)-lo(i))
  540	           CONTINUE
-	           iblk = iwd / mem_blk_size
-	           iwd  = iwd - iblk*mem_blk_size
-	           out(ivar) = memory( iwd+1, pt_blk(ivar)+iblk ) 
+	           out(ivar) = memry(mr_list(ivar))%ptr(iwd+1)
 	        ENDIF
 	        IF ( out(ivar) .EQ. bad(ivar) ) THEN
                    IF (do_comma_del .OR. do_tab_del) THEN

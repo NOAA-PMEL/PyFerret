@@ -1,4 +1,5 @@
 ! err540_strides_rev.jnl
+! V702: *sh* 2/2017 - modified this bench script
 
 ! reported Feb '02
 ! fixed April 17, '02
@@ -33,7 +34,10 @@ cancel var/all
 
 set mode stupid
 set mode diag
-set mem/size=0.05
+! *sh* 2/17 - such a small memory size makes it impossible to succeed
+! with the command under the new dynamic memory management
+!set mem/size=0.05
+set mem/size=1   ! use this larger size, instead
 show mem/free
 
 use/ord=x-y test_100x100.nc

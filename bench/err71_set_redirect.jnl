@@ -1,0 +1,19 @@
+! err71_set_redirect.jnl
+! 3/2017 ACM
+! redirect results to a file with a path. 
+! See ticket 2521, the path was previously rejected if it contains dashes 
+
+spawn "mkdir -p sub-dir"
+!
+! Previously this resulted in an error.
+set redirect /tee /file="./sub-dir/redirect_stdout.txt" /clobber  stderr stdout
+
+! write to the file and look at the results
+
+show symbol ferret_precision, ferret_memory
+cancel redirect
+let contents = { spawn:"cat ./sub-dir/redirect_stdout.txt" }
+list contents
+cancel var contents
+
+sp rm -rf sub-dir

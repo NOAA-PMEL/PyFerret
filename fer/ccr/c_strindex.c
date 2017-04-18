@@ -43,11 +43,9 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <string.h>
+#include "ferret.h"
 
-void c_strindex_(in_ptr1, in_ptr2, out_ptr)
-     char** in_ptr1;
-     char** in_ptr2;
-     int* out_ptr;
+void FORTRAN(c_strindex)(char **in_ptr1, char **in_ptr2, int *out_ptr)
 {
    char * result;
 

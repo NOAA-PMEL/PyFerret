@@ -66,6 +66,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V685+ 12/13 *acm*  bounds checking: tm_digit needs more care in the argument sent in.
 * V693+ 12/14 *sh* allow _QD_ and _SQ_ for quotation alternatives 
+* V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 
         include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -81,7 +82,8 @@
 	CHARACTER*(*)	text
 
 * internal variable declarations:
-	LOGICAL		TM_DIGIT, TM_LEGAL_NAME, is_digit, single_quoted
+	LOGICAL		TM_DIGIT, TM_LEGAL_NAME, ITSA_DIRC_FCN, 
+     .			is_digit, single_quoted
 	INTEGER		STR_MATCH, GCF_FIND_FCN, TM_LENSTR1,
      .			imatch, i, i2, j, brac_pos, aend,
      .			num_indices, dot, new_nat, first, second, slen
@@ -122,6 +124,7 @@
 	   imatch = GCF_FIND_FCN( text(at_start(i):at_end(i)) )
 	   IF ( imatch .NE. unspecified_int4 ) THEN
 	      at_type(i) = alg_grid_chg_fcn
+	      IF (ITSA_DIRC_FCN(imatch) ) at_type(i) = alg_dir_chg_fcn
 	      at_id(i)   = imatch
 	      GOTO 100
 	   ENDIF

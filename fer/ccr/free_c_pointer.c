@@ -40,11 +40,10 @@
  */
 
 #include <Python.h> /* make sure Python.h is first */
-#include <stdlib.h>
+#include "ferret.h"
 
-void free_c_pointer_(fer_ptr)
-     char*** fer_ptr;
+void FORTRAN(free_c_pointer)(char **fer_ptr)
 {
-   free(*fer_ptr);
+   PyMem_Free(*fer_ptr);
    *fer_ptr = NULL;
 }

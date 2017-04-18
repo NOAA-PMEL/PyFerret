@@ -31,7 +31,6 @@ init_random_seed.F\
 interp_context.F\
 interp_stack.F\
 is_aggregate_gather.F\
-is_aggregate_grid.F\
 is_algebra.F\
 is_auxvar_regrid.F\
 is_attrib_val.F\
@@ -75,6 +74,7 @@ randu.F\
 rcvd_regrid.F\
 regrid_lims.F\
 rqst_regrid.F\
+setup_gather.F\
 setup_sample.F\
 stack_ptr_dn.F\
 stack_ptr_up.F\

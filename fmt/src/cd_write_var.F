@@ -1,4 +1,4 @@
-	SUBROUTINE CD_WRITE_VAR ( memory, cdfid, dset, vname, grid, lo,
+	SUBROUTINE CD_WRITE_VAR ( cdfid, dset, vname, grid, lo,
      .                            hi, dat, edges_flag, do_bounds, 
      .                            mode_upcase_output, 
      .                            keepax_flag, status )
@@ -82,6 +82,9 @@
 * V71 12/16 *acm* Ticket 2158: working with true monthly time axes. Write these axes
 *                  as irregularly spaced daily axes. For true-month axes, call TM_WORLD 
 *                  to write any true-month time coordinates as days.
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
+*	         including bug fix in computation of npts, work mem size
+*                also: bug fix of unitialized "count" variable
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -118,17 +121,18 @@
      .        edges_flag, do_bounds, keepax_flag, status
       CHARACTER*(*) vname
       REAL dat(*)
-      REAL memory( mem_blk_size, max_mem_blks )
 
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
       INTEGER TM_LENSTR1, STR_SAME,
      .        start(nferdims), count(nferdims), idim, iaxis, cdfstat, vlen,
-     .        slab_min(nferdims), slab_max(nferdims), tmrecax, cdrecax, dims, varid,
+     .        slab_min(nferdims), slab_max(nferdims), tmrecax, cdrecax,
+     .	      dims, varid, wrkspc,
      .        hilim, i100, i, j, k, l, m, n, recaxvar, lorec, hirec, rectyp,
      .	      vartyp, nvdim, vdims(8), nvatts, bndstart(2), bndcount(2),
      .        mblk1, nblks, npts, savecount, llen, grid_blocks, wunits
+      INTEGER*8 rqst_size
       LOGICAL CD_GET_BOUNDS, TM_ABSTRACT_AXIS, TM_DFPEQ, CD_GET_ATTVAL, 
      .        MATCH_NAME, ITSA_TRUEMONTH_AXIS,
      .        got_it, scaled, writebounds, do_warn, true_month
@@ -157,6 +161,9 @@ c      EQUIVALENCE (r100_8, r100_4)
 * initialize
       vlen = TM_LENSTR1( vname )
       writebounds = do_bounds .GT. 0
+      DO idim = 1, nferdims
+         count(idim) = 0
+      ENDDO
 
 * get the variable id
 #ifdef usingDODSf2cUnderscore
@@ -347,38 +354,50 @@ c      EQUIVALENCE (r100_8, r100_4)
 * Write a time-step slab containing missing data
             npts = 1
             DO 220  idim = 1, nferdims
-               IF ( idim .EQ. tmrecax ) GOTO 220
+! *sh* commented out 1/17 -- why was this line ever here?
+! npts is udes to compute the work memory size.  Excluding recdim is
+! inconsistent with the loop a few lines below where the work memory is filled
+!               IF ( idim .EQ. tmrecax ) GOTO 220
                IF ( count(idim) .GT. 0 ) npts = npts* count(idim)
  220        CONTINUE
 
 * allocate memory for missing-data
+! Note: This code belongs in the Ferret libraries, rather than
+!       in the TMAP libs, as it calls upon Ferret COMMON and memory mgmt
 
+!DYNMEM_FIXME
 * COMPUTE # BLOCKS NEEDED
-            grid_blocks = ( npts*4 + mem_blk_size - 1 ) / mem_blk_size
+!            grid_blocks = ( npts*4 + mem_blk_size - 1 ) / mem_blk_size
+!
+!            CALL GET_MEMORY( npts*4, grid_blocks, mblk1, nblks, status )
+!            IF ( status .NE. merr_ok ) GOTO 5900
 
-            CALL GET_MEMORY( npts*4, grid_blocks, mblk1, nblks, status )
-            IF ( status .NE. merr_ok ) GOTO 5900
+	    wrkspc = 4  ! arbitrarily slot 4 of Ferret tempry work storage
+            rqst_size = npts * 4
+	    CALL GET_WS_DYNMEM( rqst_size, wrkspc, status )
+	    IF ( status .NE. merr_ok ) GOTO 5900
 
             CALL CD_GET_MISSING_FLAG (cdfid, varid, vname, .TRUE., 
      .           missflag, status)
             IF (status .EQ. 0) missflag = unspecified_val4
 
             npts = 1
-            memory(npts, mblk1) = missflag
+	    workmem(wrkspc)%ptr(npts) = missflag
+! 1/17 *sh* note that recdim is not excluded from this look
             DO 240 i = 1, MAX(count(1),1)
             DO 240 j = 1, MAX(count(2),1)
             DO 240 k = 1, MAX(count(3),1)
             DO 240 l = 1, MAX(count(4),1)
             DO 240 m = 1, MAX(count(5),1)
             DO 240 n = 1, MAX(count(6),1)
-               memory(npts, mblk1) = missflag
+               workmem(wrkspc)%ptr(npts) = missflag
                npts = npts + 1
  240        CONTINUE
 
             CALL CD_WRITE_VAR_SUB( cdfid, varid, vartyp, dims, start,
-     .             count, vdims(1), memory(1, mblk1), cdfstat )
+     .             count, vdims(1), workmem(wrkspc)%ptr, cdfstat )
  
-            CALL FREE_MEMORY( mblk1, nblks )
+            CALL FREE_WS_DYNMEM( wrkspc )
             start(cdrecax) = start(cdrecax) + 1
             count(cdrecax) = savecount
          ENDIF
@@ -444,7 +463,6 @@ c      EQUIVALENCE (r100_8, r100_4)
             
 * If not mode upcase_output, then keep the incoming case. 
             ELSE 
-               name = CD_AXIS_NAME( dset, grid, tmrecax, nlen )
                buff = CD_AXIS_OUTNAME( dset, grid, tmrecax, llen )
                IF (STR_SAME(name, buff) .EQ. 0) THEN 
 	          name = buff

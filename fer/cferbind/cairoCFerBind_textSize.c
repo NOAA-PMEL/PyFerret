@@ -1,10 +1,10 @@
 /* Python.h should always be first */
 #include <Python.h>
 #include <string.h>
+#include "ferret.h"
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
-#include "utf8str.h"
 
 /*
  * Return the size of the text if drawn to this "Window" using the given font.

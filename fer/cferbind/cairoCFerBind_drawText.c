@@ -1,10 +1,10 @@
 /* Python.h should always be first */
 #include <Python.h>
 #include <string.h>
+#include "ferret.h"
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
-#include "utf8str.h"
 
 /*
  * Draw text to this "Window".  Text is a UTF-8 encoding of the desired text, 

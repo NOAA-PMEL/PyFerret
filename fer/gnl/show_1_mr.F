@@ -59,7 +59,8 @@
 *		  showing 5D or 6D variables
 * V7    acm  6/16 Ticket 2437: Deprecating mode_6d_lab. 
 *		  Adjust output to 6-D or 4-D grids
-
+* V702 *sh* 2/17  Reveal dynamic memory instead of block memory
+*		  Increase field widths for long axes
 
 	include	'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -82,13 +83,13 @@
 * local variable declarations:
 	LOGICAL	ITS_UN_CACHED, FOUR_D_GRID
 	INTEGER TM_LENSTR1, MR_DIM_LEN,
-     .		idim, ndim, mrlen, bk1len, nbklen, dset, listdims
+     .		idim, ndim, mrlen, mrsizelen, dset, listdims
 	CHARACTER VAR_CODE*128, ALG_TRANS_CODE*3, ARG_STRING*12, TM_FMT*8,
      .		  protection*4, shape*4, dname*14, gname*12, vname*128,
      .		  ww_lo(nferdims)*20, ww_hi(nferdims)*20, 
-     .		  ss_lo(nferdims)*6, ss_hi(nferdims)*6,
-     .		  mrbuf*4, bk1buf*4, 
-     .		  nbkbuf*4, cache_stat*8
+     .		  ss_lo(nferdims)*9, ss_hi(nferdims)*9,
+     .		  mrbuf*4, mrsizebuf*8,
+     .		  cache_stat*8
 
 * If mode 6d_lab has been canceled, we will list only the first 4 dimensions.
 
@@ -129,14 +130,15 @@
      .		     ax_dec_pt(idim), ww_hi(idim) )
 	   ENDIF
 	   IF ( mr_lo_ss(mr,idim) .EQ. unspecified_int4 ) THEN
-	      ss_lo(idim) = ' ...'
-	      ss_hi(idim) = ' ...'
+	      ss_lo(idim) = '     ...'
+	      ss_hi(idim) = '     ...'
 	   ELSEIF ( mr_hi_ss(mr,idim) .GT. 9999 ) THEN
-	      WRITE ( ss_lo(idim), '(I6)' ) mr_lo_ss(mr,idim)
-	      WRITE ( ss_hi(idim), '(I6)' ) mr_hi_ss(mr,idim)
+! not needed any longer ...
+	      WRITE ( ss_lo(idim), '(I9)' ) mr_lo_ss(mr,idim)
+	      WRITE ( ss_hi(idim), '(I9)' ) mr_hi_ss(mr,idim)
 	   ELSE
-	      WRITE ( ss_lo(idim), '(I4)' ) mr_lo_ss(mr,idim)
-	      WRITE ( ss_hi(idim), '(I4)' ) mr_hi_ss(mr,idim)
+	      WRITE ( ss_lo(idim), '(I9)' ) mr_lo_ss(mr,idim)
+	      WRITE ( ss_hi(idim), '(I9)' ) mr_hi_ss(mr,idim)
 	   ENDIF
  180	CONTINUE
 
@@ -166,17 +168,15 @@
 	ELSE
 	   gname = ']'
 	ENDIF
-	mrbuf  = TM_FMT( FLOAT(mr), 0, 4, mrlen )
-	nbkbuf = TM_FMT( FLOAT(mr_nblks(mr)),0,4,nbklen )
-	bk1buf = TM_FMT( FLOAT(mr_blk1(mr)),0,4,bk1len )
-	risc_buff = ' '
+	mrbuf      = TM_FMT( FLOAT(mr), 0, 4, mrlen )
+	mrsizebuf  = TM_FMT( FLOAT(mr_size(mr)), 0, 8, mrsizelen )
+	risc_buff  = ' '
 	WRITE ( risc_buff, 3010 )	vname(:TM_LENSTR1(vname)),
      .					dname(:TM_LENSTR1(dname)),
      .					gname(:TM_LENSTR1(gname)),
      .					shape,
      .					mrbuf(:mrlen),
-     .					bk1buf(:bk1len),
-     .					nbkbuf(:nbklen),
+     .					mrsizebuf(:mrsizelen),
      .					protection,
      .					cache_stat
 
@@ -201,9 +201,8 @@
 
 	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 
- 3010	FORMAT(T2,A,'[',2A,T36,A4,'  mr:',A,'  blk1:',A,
-     .'  nblk:',A,1X,A4,1x,A8)
- 3020	FORMAT(T2,5(A6,'/',A12),A6,'/',A12)
+ 3010	FORMAT(T2,A,'[',2A,T36,A4,'  mr:',A, ' size:', A, 1X,A4,1x,A8)
+ 3020	FORMAT(T2,5(A9,'/',A12),A9,'/',A12)
  3030	FORMAT(T2,6(4X,A3,A12))
 
  5000	RETURN

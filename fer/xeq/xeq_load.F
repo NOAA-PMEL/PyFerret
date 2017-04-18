@@ -1,4 +1,4 @@
-	SUBROUTINE XEQ_LOAD( memory )
+	SUBROUTINE XEQ_LOAD
 
 *
 *
@@ -60,7 +60,7 @@
 * V312: 5/94 - array "memory" as a calling argument
 * V530: *sh* 9/00 - added initial data type support in get_cmnd_data 
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
-* V702 12/16 *sh* doc change only
+* V702 2/17 *sh* keep track of LOAD/PERM memory usage
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -75,7 +75,6 @@
      .			slash_name = 16 )
 
 * calling argument declarations:
-	REAL	memory(*)
 
 * local variable declarations:
 	LOGICAL		EXPLICIT_UVAR, permanent, named, temp
@@ -91,7 +90,7 @@
      .		'/NAME= no longer supported - use DEFINE VARIABLE', *5000 )
 	
 * get the requested data somehow
-	CALL GET_CMND_DATA ( memory, cx_last, ptype_native, status )
+	CALL GET_CMND_DATA (  cx_last, ptype_native, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * set protections as indicated (check for already protected 8/92)
@@ -113,10 +112,10 @@
 	         mr_del_blink(next) = prev
 	         mr_del_flink( mr ) = unspecified_int4	! important 12/16
 	         mr_del_blink( mr ) = unspecified_int4	! important 12/16
+	         permanent_mem = permanent_mem + mr_size(mr)
               ENDIF
  400	   CONTINUE
 
-* LOAD/TEMPORARY - explicitly specified to reverse /PERMANENT
 	ELSEIF ( temp ) THEN
 	   DO 500 iload = 1, num_uvars_in_cmnd
 	      mr = is_mr( iload )
@@ -128,7 +127,9 @@
 	         mr_del_flink(mr) = last_head
 	         mr_del_flink(0)  = mr
 	         mr_del_blink(last_head) = mr
+	         permanent_mem = permanent_mem - mr_size(mr)
 	      ENDIF
+	      
  500	   CONTINUE
 
 	ENDIF

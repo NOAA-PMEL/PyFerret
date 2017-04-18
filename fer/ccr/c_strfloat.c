@@ -48,10 +48,7 @@
 #include <stdlib.h>
 #include "ferret.h"
 
-void c_strfloat_(in_ptr, out_ptr, bad_ptr)
-     char** in_ptr;
-     DFTYPE* out_ptr;
-     DFTYPE* bad_ptr;
+void FORTRAN(c_strfloat)(char **in_ptr, DFTYPE *out_ptr, DFTYPE *bad_ptr)
 {
    double dval;
    char  *endptr;

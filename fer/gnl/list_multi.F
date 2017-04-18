@@ -1,4 +1,4 @@
-	SUBROUTINE LIST_MULTI( memory, mr_list, cx_list,
+	SUBROUTINE LIST_MULTI(  mr_list, cx_list,
      .			       heading, perm, wsize, work, status )
 
 *
@@ -52,7 +52,7 @@
 * calling argument declarations:
 	LOGICAL	heading
 	INTEGER	mr_list(*), cx_list(*), perm(nferdims), wsize, status
-	REAL	memory(*), work(0:wsize)
+	REAL	work(0:wsize)
 	
 * internal variable declarations:
 	INTEGER ws
@@ -62,14 +62,14 @@
 *	work(0)	     is xact_range(nvar)
 *	work(ws)     is has_size(nferdims,nvar)
 *	work(7*ws)   is bad(nvar)
-*	work(8*ws)   is pt_blk(nvar)
+*	work(8*ws)   is pt_blk(nvar)   (not used after 2/12 changes)
 *	work(9*ws)   is size(nferdims,nvar)
 *	work(15*ws)  is msize(nvar)
 *	work(16*ws)  is width(nvar)
 *	work(17*ws)  is out(nvar)
 
 	ws = wsize / (2*nferdims+6)
-	CALL LIST_MULTI_SUB(memory,mr_list,cx_list,heading,perm, ws,
+	CALL LIST_MULTI_SUB(mr_list,cx_list,heading,perm, ws,
      .			work(0),     work(ws),   work(7*ws),
      .			work(8*ws),  work(9*ws), work(15*ws),
      .			work(16*ws), work(17*ws),

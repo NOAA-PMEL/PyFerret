@@ -61,6 +61,7 @@
 *       2/12 *kms* Add E and F dimensions (set to nferdims in tmap_dims.parm)
 * V685+: 3/14 *sh* - initialize max_usable_intrp
 * V695+: 5/15 *sh* - initialize uvar_c_cache_ptr
+* V702:  2/17 *sh* - remove old block memory management variables
 
         IMPLICIT NONE
 #include "tmap_dset.parm"
@@ -77,8 +78,7 @@
 
 * dummy stored memory variable
 	DATA mr_protected	( dummy_mr ) / mr_perm_protected /
-	DATA mr_blk1		( dummy_mr ) / 1		/
-	DATA mr_nblks		( dummy_mr ) / 0		/
+	DATA mr_size		( dummy_mr ) / 0		/
 	DATA mr_data_set	( dummy_mr ) / unspecified_int4	/
 	DATA mr_category	( dummy_mr ) / cat_dummy_var	/
 	DATA mr_variable	( dummy_mr ) / unspecified_int4	/
@@ -95,14 +95,6 @@
 
 * interp stack pointer movable top
 	DATA max_usable_intrp / max_intrp /
-
-* bulk storage initialization
-	DATA (mblk_flink(i),i=1,pmax_mem_blks)
-     .			/ pmax_mem_blks*unspecified_int4 /
-	DATA (mblk_blink(i),i=1,pmax_mem_blks)
-     .			/ pmax_mem_blks*unspecified_int4 /
-	DATA (mblk_size (i),i=1,pmax_mem_blks)
-     .			/ pmax_mem_blks*unspecified_int4 /
 
 * memory variable table and delete priority chain initialization
 * (1/92 - made initialization limits explicit for Sun port)

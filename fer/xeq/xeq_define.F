@@ -1,4 +1,4 @@
- 	SUBROUTINE XEQ_DEFINE( memory )
+ 	SUBROUTINE XEQ_DEFINE
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -384,7 +384,6 @@
      .		    explct_defn  = .FALSE. )
 
 * calling argument declarations:
-	REAL	memory( mem_blk_size, max_mem_blks )
 
 * local variable declarations:
 
@@ -1241,7 +1240,7 @@ C /units=months  is 1/12 of the length of the year
 	IF ( irreg ) THEN
            line_regular( iline ) = .FALSE.  ! this may be reset to true later.
 * ... get axis points from a memory variable
-	   CALL GET_CMND_DATA ( memory, cx_last, ptype_float, status )
+	   CALL GET_CMND_DATA (  cx_last, ptype_float, status )
 	   IF ( status .NE. ferr_ok ) RETURN
            IF ( num_uvars_in_cmnd .NE. 1 .AND.
      .         (.NOT. has_bounds) )GOTO 5580
@@ -1307,7 +1306,7 @@ C /units=months  is 1/12 of the length of the year
 * ... "/edges" definition - 4/99
 	      n = n - 1  ! edges array is one longer than points
 	      IF (n .LE. 0) GOTO 5520
-	      CALL EXTRACT_DP_LINE( cx, memory(1, mr_blk1(mr)),
+	      CALL EXTRACT_DP_LINE( cx, memry(mr)%ptr,
      .				 line_mem(frst_pt+n), idim, n+1 )
 	      npoints = n
 
@@ -1365,7 +1364,7 @@ C /units=months  is 1/12 of the length of the year
 
 * NOT EDGES -- POINTS
 
-	      CALL EXTRACT_DP_LINE( cx, memory(1, mr_blk1(mr)),
+	      CALL EXTRACT_DP_LINE( cx, memry(mr)%ptr,
      .				 line_mem(frst_pt), idim, n )
 	      IF ( npoints .EQ. unspecified_int4 ) npoints = n
 
@@ -1408,7 +1407,7 @@ C /units=months  is 1/12 of the length of the year
                  cx = is_cx(2)
                  mr = is_mr(2)
 
-	         CALL EXTRACT_DP_LINE2( cx, memory(1, mr_blk1(mr)),
+	         CALL EXTRACT_DP_LINE2( cx, memry(mr)%ptr,
      .	  	    line_mem(next_line_mem_pos + n), idim, n2 )
 
 * If given as coords, lo_bounds, hi_bounds, then
@@ -1419,7 +1418,7 @@ C /units=months  is 1/12 of the length of the year
                  IF (num_uvars_in_cmnd .EQ. 3) THEN
                     cx = is_cx(3)
                     mr = is_mr(3)
-                    CALL EXTRACT_DP_LINE2( cx, memory(1, mr_blk1(mr)),
+                    CALL EXTRACT_DP_LINE2( cx, memry(mr)%ptr,
      .	 	       line_mem(next_line_mem_pos + n+n2), idim, n3 )
                     DO i = 1, n3-1
                        IF (line_mem(next_line_mem_pos + n+i) .NE.
@@ -2292,7 +2291,7 @@ c	ENDIF
 * get the requested data somehow
 
         IF (arg_start(1) .LT. pos) arg_start(1) = pos
-	CALL GET_PROT_CMND_DATA ( memory, cx_last, ptype_native, status )
+	CALL GET_PROT_CMND_DATA (  cx_last, ptype_native, status )
         mr = is_mr(1)
 
         IF ( status .NE. ferr_ok ) THEN      ! 8/6/92
@@ -2367,13 +2366,13 @@ c	ENDIF
      .                               varid, status )
         IF (status .NE. ferr_ok) goto 5920
 
-        CALL ADD_ATTRIBUTE(  memory(1, mr_blk1(mr)), mr, 
+        CALL ADD_ATTRIBUTE(  memry(mr)%ptr, mr, 
      .         buff1, dset, attype_spec, attoutflag, new_att, status )
         IF (status .NE. ferr_ok) GOTO 6500
 
 * Change attribute value
         IF (.NOT. new_att) THEN
-           CALL EDIT_ATTRIBUTE(  memory(1, mr_blk1(mr)), mr, 
+           CALL EDIT_ATTRIBUTE(  memry(mr)%ptr, mr, 
      .               buff1, dset, attype_spec, def_att_quiet, status )
            IF (status .NE. ferr_ok) GOTO 6500
         ENDIF
@@ -2642,7 +2641,7 @@ c	ENDIF
            CALL ALL_1_ARG
 	   num_args = 1	 ! used by GET_CMND_DATA
 	   arg_start(1) = pos ! skip over "name ="
-	   CALL GET_CMND_DATA ( memory, cx_last, ptype_string, status )
+	   CALL GET_CMND_DATA (  cx_last, ptype_string, status )
 	   IF ( status .NE. ferr_ok ) RETURN
            IF ( num_uvars_in_cmnd .NE. 1 ) GOTO 6400
            cx = is_cx(1)
@@ -2661,16 +2660,16 @@ c	ENDIF
         IF (agg_dim .EQ. t_dim) THEN
            t_regular  = .FALSE.   ! ToDo /REGULART -- not yet implemented
            use_strict = .FALSE.   ! ToDo ?? T coordinate micro-adjustment ??
-           CALL INIT_T_AGGREGATE_DSET(memory(1, mr_blk1(mr)),
+           CALL INIT_T_AGGREGATE_DSET(memry(mr)%ptr,
      .                  nagfiles, have_expr, buff1, buff3, buff2, 
      .                  t_regular, use_strict, dset, status)
         ELSEIF (agg_dim .EQ. f_dim+1) THEN
 	   agg_dim = unspecified_int4
-	   CALL INIT_U_AGGREGATE_DSET (memory(1, mr_blk1(mr)),
+	   CALL INIT_U_AGGREGATE_DSET (memry(mr)%ptr,
      .                  nagfiles, have_expr, buff1, buff3, buff2, dset,
      .                  agg_quiet, agg_hide, agg_dim, status)
         ELSE
-	   CALL INIT_EF_AGGREGATE_DSET (memory(1, mr_blk1(mr)),
+	   CALL INIT_EF_AGGREGATE_DSET (memry(mr)%ptr,
      .                  nagfiles, have_expr, buff1, buff3, buff2, dset,
      .                  agg_quiet, agg_hide, agg_dim, status)
 

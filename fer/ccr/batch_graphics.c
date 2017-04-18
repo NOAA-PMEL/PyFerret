@@ -37,16 +37,11 @@
 #include <Python.h> /* make sure Python.h is first */
 #include <assert.h>
 #include <string.h>
+#include "ferret.h"
 #include "grdel.h"
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
-
 /* set_batch_graphics */
-void FORTRAN(set_batch_graphics)(char *outfile, int *pngonly)
+void set_batch_graphics(char *outfile, int *pngonly)
 {
   int length;
 

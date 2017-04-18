@@ -66,6 +66,7 @@
 *                    and allow for a floating-point input
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V698  *acm* 5/16 Ticket 2405: MODE CALENDAR:auto
+* V702  *sh*  2/17 Added mode frugal
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -89,6 +90,7 @@
 	IF ( text .EQ. ' ' ) THEN
 	   IF ( mode .EQ. pmode_verify ) arg = 1   ! reset to "DEFAULT"
            IF ( mode .EQ. pmode_stupid ) arg = 2   ! same as unspecified_int4
+!           IF ( mode .EQ. pmode_frugal ) arg = 30
 	   RETURN
 	ENDIF
 
@@ -165,6 +167,11 @@
 	   IF ( iarg.LT.1 .OR. iarg .GT. 250 ) GOTO 5020
 	   arg = iarg
 
+	ELSEIF ( mode .EQ. pmode_frugal ) THEN
+	   READ ( text, '(BN,I10)', ERR=5040 ) iarg
+	   IF ( iarg.LT.0 .OR. iarg.GT.90) GOTO 5040
+	   arg = iarg
+
         ELSE
 	   GOTO 5010	! mode does not accept argument
 	ENDIF
@@ -182,7 +189,7 @@
  5020   tlen = TM_LENSTR1(text)
         risc_buff = text(:tlen)
         CALL ERRMSG( ferr_out_of_range, status,
-     .   'illegal mode argument must be in [1,250] '//risc_buff, *5500 )
+     .   'illegal mode argument. Must be in [1,250] '//risc_buff, *5500 )
  5030   tlen = TM_LENSTR1(text)
         risc_buff = text(:tlen)
         CALL ERRMSG( ferr_out_of_range, status,
@@ -193,11 +200,14 @@
      .   'illegal mode argument < 6 '//text(:tlen), *5500 )
  5020   tlen = TM_LENSTR1(text)
         CALL ERRMSG( ferr_out_of_range, status,
-     .   'illegal mode argument must be in [1,250] '//text(:tlen), *5500 )
+     .   'illegal mode argument. Must be in [1,250] '//text(:tlen), *5500 )
  5030   tlen = TM_LENSTR1(text)
         CALL ERRMSG( ferr_out_of_range, status,
      .   'illegal mode argument > 1.e+9, ', *5500 )
 #endif
+ 5040   CALL ERRMSG( ferr_out_of_range, status,
+     .   'illegal mode argument. Must be 0 to 90 percent '
+     .          //text(:tlen), *5000 )
  5500   IF ( mode .EQ. pmode_verify ) CALL WARN(
      .          'Legal VERIFY arguments are DEFAULT, ALL, and ALWAYS')
         GOTO 5000

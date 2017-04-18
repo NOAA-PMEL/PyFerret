@@ -1,4 +1,4 @@
-    	SUBROUTINE XEQ_SHOW( memory )
+    	SUBROUTINE XEQ_SHOW
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -174,7 +174,7 @@
 * v675  *acm  4/12 Fix ticket 1934, simpler SHOW ATTRIBUTE syntax.
 * V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
 *                 various SHOW commnands will not list info for E,F dimensions.
-*                 SHOW with 6D variable and mode_6d_lab cancelled, is an error.
+*                 SHOW with 6D variable and mode_6d_lab canceled, is an error.
 * V683 *acm*  8/12 On SHOW LIST, show the output-type setting from SET LIST/OUTTYPE=  
 * V685 *acm*  2/13 LET/REMOTE changes: show internally-defined climatological axes
 *                  in xml output.
@@ -205,8 +205,10 @@
 * V698  3/16 *acm* Changes for ticket 2078: improved SHOW COMMANDS
 * V698  4/16 *acm* For ticket 2399: Apply MODE CALENDAR settings to F axes too
 * V7    5/16 *acm* See ticket 2352. For LET/D variables look for info under that dataset
-* V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
+* V701 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
 *                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management
+* V720 3/17 *acm* Ticket 2132, attribute of user-defined variable, do not try to show dataset info
 
         IMPLICIT NONE
 
@@ -245,6 +247,7 @@
 	LOGICAL	    brief
 	INTEGER	    len_show_str,
      .		    slash_mem_free,
+     .		    slash_mem_diag,
      .		    slash_mem_temp,
      .		    slash_mem_perm,
      .		    slash_brief,
@@ -265,6 +268,7 @@
      .              
 	PARAMETER ( len_show_str = 2048,		! length of output line buffer
      .		    brief	 = .TRUE.,
+     .		    slash_mem_diag = 1 + 1,
      .		    slash_mem_temp = 1 + 2,
      .		    slash_mem_perm = 1 + 3,
      .		    slash_mem_free = 1 + 4,
@@ -285,7 +289,6 @@
      .		    slash_attr_output = 1 + 2)
 
 * calling argument declarations:
-	REAL memory( mem_blk_size, max_mem_blks )
 
 * local variable declarations:
 	LOGICAL	MATCH4, MATCH_TEMPLATE, IS_TEMPLATE, TM_HAS_STRING,
@@ -297,11 +300,11 @@
 	INTEGER TM_LENSTR1, TM_LENSTR, UVAR_NUMBER, STR_UPCASE,
      .		REGION_NUMBER, GRID_FROM_NAME, FIND_DSET_NUMBER,
      .		EFCN_MATCH_TEMPLATE, TM_GET_LINENUM, STR_SAME, TM_GET_GRIDNUM,
-     .		category, mods_cx, v1_blk1, v1_nblks, grid, cx,
+     .		category, mods_cx, grid, cx,
      .		status, iqual, mode, iset, i, icmnd, isub, n,
      .		len, len0, iuvar, ivar, dset, line, ivp, i1, i2,
      .		rqst_dset, tmp_grid, num_predefined_axes, 
-     .          flen, wsize, wkblk, len_test, len_mchars, outlist_file,
+     .          flen, wsize, len_test, len_mchars, outlist_file,
      .          j, num_indices, varid, attlen, maxlen, attype,
      .          vtype, nvdims, vdims(8), nvatts, iatt, dset_last,
      .          llen, loc, cat, var, attoutflag, all_outflag, dot, brkt,
@@ -316,7 +319,7 @@
 
 	REAL	xtemp, ytemp, attvals(100), cache_mb, cache_n, cache_p, rsize,
      .		v1, v2, v3
-	CHARACTER EXPR_NAME*8, TM_FMT*12, VAR_CODE*128,
+	CHARACTER EXPR_NAME*8, TM_FMT*12, VAR_CODE*128, ALG_TRANS_CODE*3,
      .		default*10, show_str*2048, arg*128, name*128, argsym*120
 	CHARACTER	varatt*641, varname*512, attname*128,
      .			efname*40, upname*40, aname*128, outstring*2048,
@@ -733,7 +736,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 	   IF ( mode_state( mode, 1 ) ) THEN
 	      show_str(24:) = 'SET'
 	   ELSE
-	      show_str(21:) = 'CANCELLED'
+	      show_str(21:) = 'CANCELED'
 	   ENDIF
 	   IF ( mode .EQ. pmode_time_lab ) THEN
 	      show_str(36:) = date_labels( ABS(ax_dec_pt(t_dim)) )
@@ -947,24 +950,24 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
 	   IF (status .NE. ferr_ok ) GOTO 5000
 	ENDIF
 
-* ... SHOW VARIABLES/DIAGNOSTIC
-        IF ( (slash_all .AND. .NOT.sho_tree)
-     .  .OR. qual_given(slash_show_var_diag) .GT. 0 ) THEN
-	   IF ( num_args .GT. 0 ) THEN
-	      arg = cmnd_buff(arg_start(1):arg_end(1))
-	   ELSE
-	      arg = unspecified_name4
-	   ENDIF
-	   rsize = FLOAT(max_mrs)
-	   
-* COMPUTE # BLOCKS NEEDED
-	   grid_blocks = ( INT(rsize) + mem_blk_size - 1 ) / mem_blk_size
-
-	   CALL GET_MEMORY( INT(rsize), grid_blocks, v1_blk1, v1_nblks, status )
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-c	   CALL SHOW_DIAG_VARS( arg, memory(1,v1_blk1) )
-	   CALL FREE_MEMORY( v1_blk1, v1_nblks )
-	ENDIF
+!* ... SHOW VARIABLES/DIAGNOSTIC
+!        IF ( (slash_all .AND. .NOT.sho_tree)
+!     .  .OR. qual_given(slash_show_var_diag) .GT. 0 ) THEN
+!	   IF ( num_args .GT. 0 ) THEN
+!	      arg = cmnd_buff(arg_start(1):arg_end(1))
+!	   ELSE
+!	      arg = unspecified_name4
+!	   ENDIF
+!	   rsize = FLOAT(max_mrs)
+!	   
+!* COMPUTE # BLOCKS NEEDED
+!	   grid_blocks = ( INT(rsize) + mem_blk_size - 1 ) / mem_blk_size
+!
+!	   CALL GET_MEMORY( INT(rsize), grid_blocks, v1_blk1, v1_nblks, status )
+!	   IF ( status .NE. ferr_ok ) GOTO 5000
+!c	   CALL SHOW_DIAG_VARS( arg, memory(1,v1_blk1) )
+!	   CALL FREE_MEMORY( v1_blk1, v1_nblks )
+!	ENDIF
 
 * ... SHOW VARIABLE/TREE [expr]
         IF ( sho_tree ) THEN 
@@ -1005,7 +1008,7 @@ c	   CALL SHOW_DIAG_VARS( arg, memory(1,v1_blk1) )
  1007         saved_index_list(i) = deleted_list_result(i)
               DO 1008 i = 1, saved_num_indices
                  CALL CRAWL_DEPENDENCIES
-     .                          ( memory,
+     .                          ( 
      .                          uvar_name_code(saved_index_list(i)), 
      .                          base_cx, status )
                  IF (status .NE. ferr_ok) GOTO 5050
@@ -1014,12 +1017,12 @@ c	   CALL SHOW_DIAG_VARS( arg, memory(1,v1_blk1) )
 *       SHOW VAR/TREE  expr1, expr2, ...
 *  ... multiplicity of items is handled by BREAK_UP_EXPR in CRAWL_DEPENDENCIES
               CALL CRAWL_DEPENDENCIES
-     .                   ( memory,
+     .                   ( 
      .                     cmnd_buff(item_start(1):item_end(num_items)), 
      .                     base_cx, status )
               IF (status .NE. ferr_ok) GOTO 5050
            ENDIF
-           CALL DISPLAY_DEPENDENCY( memory(1,dependency_block1) )
+           CALL DISPLAY_DEPENDENCY( workmem(plegacy_work_buffer)%ptr )
  1010      CALL EXIT_DEPENDENCY_MODE
             IF (sho_file .GT. 0) CLOSE( UNIT = show_lun, ERR = 5000 )
            RETURN
@@ -1376,21 +1379,46 @@ c	   CALL SHOW_DIAG_VARS( arg, memory(1,v1_blk1) )
  1199	IF ( limited_show ) RETURN
 
 * SHOW MEMORY
- 1200   show_str = TM_FMT( FLOAT(mem_blk_size) * 
-     .                     FLOAT(max_mem_blks) / 1.E6, 3, 12, len)
-     
-#ifdef double_p
-	WRITE (risc_buff, *)
-     .	   'Current size of FERRET memory cache: '
-     .		//show_str(:len)//' MegaWords  (1 word = 8 bytes)'
-#else
-	WRITE (risc_buff, *)
-     .	   'Current size of FERRET memory cache: '
-     .		//show_str(:len)//' MegaWords  (1 word = 4 bytes)'
-#endif
+ 1200   IF ( qual_given(slash_mem_diag) .GT. 0 ) THEN
+* ... SHOW MEMORY/DIAGNOSTIC
+           IF (nsplits .EQ. 0) THEN
+	      CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .             '    No split/gather occurred in the last evaluation', 0)
+           ELSE
+	      CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .             '    Last gather', 0)
+	      CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .             '        Variable    Axis   Xform     '
+     .             //'Chunk    Repeated', 0)
+              DO i = 1, nsplits
+                 name = VAR_CODE(split_cat(i), split_var(i))
+                 WRITE (risc_buff, 4201)
+     .                          name,
+     .                          ww_dim_name(split_axis(i)),
+     .                          ALG_TRANS_CODE(split_trans(i)),
+     .                          split_frag(i),
+     .                          split_repeats(i)
+	         CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 
-	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
-	risc_buff = ' '
+                 IF (i .EQ. max_splits) THEN
+                    CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .                      " ... and others", 0)
+                    EXIT
+                 ENDIF
+              ENDDO
+           ENDIF
+* ... run the memory diagnostic as part of /DIAGNOSTIC
+	   CALL CHECK_MEMORY( show_lun )
+        ENDIF
+ 4201   FORMAT(8x,A15,A1,A8,I10,I12)
+
+        CALL SHOW_MEM_USAGE_LINE('SET MEMORY/SIZE', max_mem_allowed)
+        CALL SHOW_MEM_USAGE_LINE('Peak demand', peak_essential_mem)
+        CALL SHOW_MEM_USAGE_LINE('Current cache', total_mem)
+        IF (permanent_mem .NE. 0 ) THEN
+           CALL SHOW_MEM_USAGE_LINE('Permamnent', permanent_mem)
+        ENDIF
+
 	IF ( qual_given( slash_mem_free ) .GT. 0 ) THEN
 	   CALL CHECK_MEMORY( show_lun )
 	ELSEIF( slash_all
@@ -1956,8 +1984,9 @@ c	   CALL SHOW_DIAG_VARS( arg, memory(1,v1_blk1) )
      .                              all_outflag, status)
 
 * Write header line
+
               IF (.NOT. sxml) THEN
-                 IF (dset .NE. dset_last ) THEN
+                 IF (dset.NE.dset_last .AND. dset.GT.pdset_irrelevant) THEN
                     llen = TM_LENSTR1(ds_des_name(dset))
                     WRITE (risc_buff, 4800) ds_des_name(dset)(:llen)
                     CALL SPLIT_LIST(pttmode_explct, show_lun, 
@@ -2202,7 +2231,7 @@ c* ... Font
 
 
 * error exit
- 5050   CALL RELEASE_WORK_SPC
+ 5050   CALL RELEASE_DYN_WORK_SPACE
  5000	RETURN
  5071	name = cmnd_buff(arg_start(1):arg_end(1))
 	CALL ERRMSG( ferr_unknown_data_set, status,

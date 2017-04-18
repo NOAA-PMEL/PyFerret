@@ -156,8 +156,7 @@ for srcname in os.listdir(dirname):
     if srcname[-2:] == ".o":
         addnobjs_list.append(os.path.join(dirname, srcname))
 dirname = os.path.join("fer", "special")
-for srcname in ( "fakes3.o", "ferret_dispatch.o", "ferret_query_f.o",
-                 "gui_fakes.o", "linux_routines.o", ):
+for srcname in ( "fakes3.o", "ferret_dispatch.o", "gui_fakes.o", "linux_routines.o", ):
     addnobjs_list.append(os.path.join(dirname, srcname))
 for srcname in os.listdir(dirname):
     if (srcname[0] == 'x') and (srcname[-7:] == "_data.o"):

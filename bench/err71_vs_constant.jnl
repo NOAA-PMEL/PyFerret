@@ -1,0 +1,36 @@
+! err71_vs_constant.jnl
+! See ticket 2318, defining plot axes when data is constant
+! 4/2017 acm
+
+! The axis ranges had been set as val-1, val+1 which 
+! worked poorly for large or small data values
+
+
+
+
+def view/xlim=   0,.333/ylim=0,.5 ll6   ! ok
+def view/xlim=   0,.333/ylim=.5,1 ul6   ! long tic labels
+def view/xlim=.333,.666/ylim=0,.5 lm6   ! long tic labels, logo corrupted
+def view/xlim=.333,.666/ylim=.5,1 um6   ! plot positioning and labels are corrupted
+def view/xlim=.666,   1/ylim=0,.5 lr6   ! no plot at all
+def view/xlim=.666,   1/ylim=.5,1 ur6   ! no vertical tic labels 
+
+
+set view ul6; plot/vs/color/thick/line/sym/siz=0.2 {1,2},  1e4*{1,1} 
+set view um6; plot/vs/color/thick/line/sym/siz=0.2 {1,2},  1e5*{1,1} 
+set view ur6; plot/vs/color/thick/line/sym/siz=0.2 {1,2},  1e6*{1,1} 
+set view ll6; plot/vs/color/thick/line/sym/siz=0.2 {1,2},  1e7*{1,1} 
+set view lm6; plot/vs/color/thick/line/sym/siz=0.2 {1,2},  1e8*{1,1} 
+set view lr6; plot/vs/color/thick/line/sym/siz=0.2 {1,2}, 1e-2*{1,1} 
+
+frame/file=bn_vs_const_value.gif
+
+! With constant data value as the first argument
+
+can view
+set view ul6; plot/vs/color/thick/line/sym/siz=0.2  1e4*{1,1}, {1,2} 
+set view um6; plot/vs/color/thick/line/sym/siz=0.2  1e5*{1,1}, {1,2} 
+set view ur6; plot/vs/color/thick/line/sym/siz=0.2  1e6*{1,1}, {1,2} 
+set view ll6; plot/vs/color/thick/line/sym/siz=0.2  1e7*{1,1}, {1,2} 
+set view lm6; plot/vs/color/thick/line/sym/siz=0.2  1e8*{1,1}, {1,2} 
+set view lr6; plot/vs/color/thick/line/sym/siz=0.2 1e-2*{1,1}, {1,2} 

@@ -52,8 +52,9 @@
 *                  commands via SPLIT_LIST to std error rather than std out.
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
-*    *acm* 7/17. Test a status flag on the system call (see ticket 2453). Results 
-*                seem inconsistent, make it a warning
+*    *acm* 7/17. Test a status flag on the system call (see ticket 2453).
+*                 Results seem inconsistent, make it a warning
+* V702 3/17 Use the return status to set Ferret symbol ($SPAWN_STATUS)
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -64,7 +65,7 @@
 	LOGICAL IS_SECURE
 	INTEGER	status, slen
 
-	CALl ALL_1_ARG
+	CALL ALL_1_ARG
 	IF ( num_args .GT. 0 ) THEN
 	   if (IS_SECURE()) then
 	      call SPLIT_LIST(pttmode_help, err_lun,
@@ -75,10 +76,11 @@
               CALL FLUSH(ttout_lun)
               CALL FLUSH(err_lun)
 	      CALL SYSTEM( cmnd_buff(arg_start(1):arg_end(1)),status )
-	      IF (status .NE. 0) CALL WARN (
-     .           'Shell command returned failure flag: '//
-     .            cmnd_buff(arg_start(1):arg_end(1)) )
-
+	      IF (status .NE. 0) THEN
+	         spawn_status = .FALSE.  ! failure of unix command
+	      ELSE
+	         spawn_status = .TRUE.   ! successful unix command
+	      ENDIF
 * To handle a nonzero return as an ERROR, comment out the WARN just above, and do this.
 c	      IF (status .NE. 0) GOTO 5100   
 
@@ -95,7 +97,6 @@ c	      IF (status .NE. 0) GOTO 5100
 5000	CONTINUE
 	RETURN
 
-5100	CONTINUE
 
 
 * The return is the return flag from the command, which might be non-zero
@@ -106,8 +107,8 @@ c	      IF (status .NE. 0) GOTO 5100
 *   sp cat file.dat | grep "this text not in the file"  >> returns 256
 *   sp notAcommand >> returns 32512
 
-	CALL ERRMSG(ferr_sys_return, status, 
-     .            'SPAWN '//cmnd_buff(arg_start(1):arg_end(1)), *5000)
+!5100	CALL ERRMSG(ferr_sys_return, status, 
+!     .            'SPAWN '//cmnd_buff(arg_start(1):arg_end(1)), *5000)
 
 	END
 

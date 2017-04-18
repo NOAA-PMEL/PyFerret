@@ -1,5 +1,4 @@
 SRCS_C = \
-add_c_pointer.c\
 batch_graphics.c\
 binaryRead.c\
 c_strcmp.c\
@@ -16,22 +15,27 @@ check_nan_data_sub.c\
 compare_c_strings.c\
 copy_c_string.c\
 create_utf8_string.c\
-perl_read.c\
+dynmemUtil.c\
 EF_InternalUtil.c\
 ferret_dispatch_c.c\
-ferret_query.c\
 free_cached_full_array.c\
 free_c_pointer.c\
 free_c_string_array.c\
+free_dyn_mem.c\
+get_c_pointer.c\
 get_c_string.c\
 get_c_string_len.c\
 get_max_c_string_len.c\
+get_mr_mem.c\
+get_ws_mem.c\
 get_offset_c_string.c\
 get_offset_c_string_len.c\
 get_sys_cmnd.c\
 init_c_string_array.c\
 linux_routines_c.c\
 list.c\
+nullify_mr.c\
+nullify_ws.c\
 recover_cached_2d_array_point.c\
 recover_cached_full_array.c\
 replaceable_bad_flags.c \
@@ -42,7 +46,6 @@ save_c_string.c\
 set_nan.c\
 set_null_c_string.c\
 set_null_c_string_array.c\
-sizeof_pointer.c\
 text_to_utf8.c\
 write_dods.c\
 xfer_c_ptrs.c

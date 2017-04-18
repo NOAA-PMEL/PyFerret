@@ -1,102 +1,10 @@
 #ifndef _FERRET_H 
 #define _FERRET_H
 
+#include <sys/types.h>
+#include <stdio.h>
 
-/* non-ANSI function prototypes */
-#ifdef NO_ENTRY_NAME_UNDERSCORES      /*added ifdef for HP port *kob* 6.95*/
-
-void ctrlc_ast();   /* pointer to ^C interrupt routine */
-void initialize();
-void set_ctrl_c(); /* void set_ctrl_c_( void (*CTRLC_AST_)() ); */ 
-void help_text();
-void init_journal( );
-void no_journal( );
-void proclaim_c( );
-void init_memory( );
-void ferret_dispatch( );
-void save_ppl_memory_size( );
-void get_ppl_memory_size( );
-void reallo_ppl_memory();
-void ferret_dispatch_c();
-void WindowMapping();
-void mode_gui_on();
-void secs_to_date_c();
-double tm_secs_from_bc();
-void xgks_x_events();
-void gescinqxattr();
-void set_batch_graphics();
-void set_secure();
-void set_server();
-int  is_secure();
-
-#else
-
-void ctrlc_ast_();   /* pointer to ^C interrupt routine */
-void initialize_();
-void set_ctrl_c_(); /* void set_ctrl_c_( void (*CTRLC_AST_)() ); */ 
-void help_text();
-void init_journal_( );
-void no_journal_( );
-void proclaim_c_( );
-void init_memory_( );
-void ferret_dispatch_( );
-void save_ppl_memory_size_( );
-void get_ppl_memory_size_( );
-void ferret_dispatch_c();
-void WindowMapping();
-void mode_gui_on();
-void secs_to_date_c();
-double tm_secs_from_bc_();
-void xgks_x_events();
-void gescinqxattr();
-void set_batch_graphics_();
-void set_secure();
-void set_server();
-int  is_secure_();
-
-#endif
-
-#define NFERDIMS 6
-
-/* memory configuration defaults */
-/* NOTE!! PMEM_BLK_SIZE must match pmem_blk_size in xvariables.cmn */
-/* * V62  2/09 *acm*  increase initial memory by 4. */
-#define PMEM_BLK_SIZE 2*(160*100*4/10)  /*  2* 9/01 *sh* */
-#define PMAX_MEM_BLKS 2000
-
-/* from XPROG_STATE COMMON */
-#define TTOUT_LUN 6
-
-/* these parameters describe the first few integers of the buffer
- returned by FERRET to its GUI*/
-#define FRTN_CONTROL  0    /* 1 in FORTRAN */
-#define FRTN_STATUS   1    /* 2 in FORTRAN */
-#define FRTN_ACTION   2    /* 3 in FORTRAN */
-#define FRTN_IDATA1   5    /* 6 in FORTRAN */
-#define FRTN_IDATA2   6    /* 7 in FORTRAN */
-#define FRTN_IDATA3   7    /* 8 in FORTRAN */
-
-/* who is in control according to return_buff(frtn_control) ?
-when the GUI is running FERRET control may return to the GUI at times
-other than at the completion of a command - for example, when FERRET
-is requesting that a warning message be displayed or that memory be
-reconfigured.  These codes indicate why FERRET has returned.
-FERRET will reset the control variable to "ctrl_not_finished" if
-the given command was really multiple commands and they are not yet complete*/
-#define FCTRL_BACK_TO_GUI  1
-#define FCTRL_IN_FERRET    2
-
-/* what special action has FERRET requested in return_buff(frtn_action) ? */
-#define FACTN_NO_ACTION        0
-#define FACTN_MEM_RECONFIGURE  1
-#define FACTN_EXIT             2
-#define FACTN_DISPLAY_WARNING  3
-#define FACTN_DISPLAY_ERROR    4
-#define FACTN_DISPLAY_TEXT     5
-#define FACTN_SYNCH_SET_DATA   6  /* added 11/1/94 */
-#define FACTN_SYNCH_LET        7
-#define FACTN_SYNCH_WINDOW     8
-#define FACTN_PAUSE           10
+#include "ferret_shared_buffer.h"
 
 /* Easier way of handling FORTRAN calls with underscore/no underscore */
 #ifndef FORTRAN
@@ -107,14 +15,51 @@ the given command was really multiple commands and they are not yet complete*/
 #endif
 #endif
 
-/* *acm*  1/12 - Ferret 6.8 double-precision ferret */
-/* Easier way of handling single/double floating-point declarations */
+#define NFERDIMS 6
+
+#define TTOUT_LUN 6
+
+#define FRTN_CONTROL  0    /* 1 in FORTRAN */
+#define FRTN_ACTION   2    /* 3 in FORTRAN */
+#define FRTN_IDATA1   5    /* 6 in FORTRAN */
+#define FRTN_IDATA2   6    /* 7 in FORTRAN */
+
+#define FCTRL_IN_FERRET    2
+
+#define FACTN_MEM_RECONFIGURE  1
+#define FACTN_EXIT             2
 
 #ifdef double_p
 #define DFTYPE double
 #else
 #define DFTYPE float
 #endif
+
+/* Prototypes for C functions */
+FILE *executableOutput(char *exeArgv[], pid_t *childPidPtr, char errMsg[]);
+void ferret_dispatch_c( char *init_command, smPtr sBuffer );
+int  getJavaVersion(char javaExeName[], char errMsg[]);
+int  runThreddsBrowser(char datasetName[], char errWarn[]);
+void set_batch_graphics( char *outfile, int *pngonly );
+void set_secure( void );
+void set_server( void );
+
+void FORTRAN(create_utf8_str)(const int *codepoint, char *utf8str, int *utf8strlen);
+void FORTRAN(dynmem_free_ptr_array)( long* mr_ptrs_val );
+void FORTRAN(dynmem_make_ptr_array)( int* n, long* mr_ptrs_val, int* status );
+void FORTRAN(dynmem_pass_1_ptr)( int* iarg, DFTYPE* arg_ptr, long* mr_ptrs_val );
+void FORTRAN(free_dyn_mem) ( double *mvar );
+void FORTRAN(get_mr_mem)( double *index, int *alen, int *status );
+int  FORTRAN(is_secure)( void );
+int  FORTRAN(is_server)( void );
+int  FORTRAN(run_thredds_browser)(char dataset_name[], char err_warn_msg[], 
+                                  int max_len_data_set, int max_len_err_warn_msg);
+void FORTRAN(text_to_utf8)(const char *text, const int *textlen, char *utf8str, int *utf8strlen);
+
+/* Prototypes for Fortran functions called by C functions */
+void FORTRAN(ferret_dispatch)( char *init_command, int *rtn_flags, int *nflags, 
+		               char *rtn_chars, int *nchars, int *nerrlines );
+
 
 #endif /* _FERRET_H */
 

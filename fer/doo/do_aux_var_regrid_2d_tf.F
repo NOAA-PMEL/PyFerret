@@ -50,6 +50,7 @@
 * V695+ 3/15 *sh*
 * V698  3/16 *sh* - compute f_delta from the time2d field rather than F axis
 *                   allowing the F axis to be redefined
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -282,7 +283,7 @@
 	ENDDO     ! L loop
 
 * successful completion.  Clean up.
-        CALL RELEASE_WORK_SPC    ! ?? needed ??
+        CALL RELEASE_DYN_WORK_SPACE    ! ?? needed ??
         RETURN
 
 * error exit

@@ -1,4 +1,4 @@
-	SUBROUTINE IS_RECONCILE( memory, *, *, status )
+	SUBROUTINE IS_RECONCILE(  *, *, status )
 
 *
 *
@@ -57,7 +57,6 @@
 
 * calling argument declarations:
 	INTEGER	status
-	REAL	memory( mem_blk_size, max_mem_blks )
 * normal return is for error conditions
 * exit #1 is to request another grid ( stack has been pushed )
 * exit #2 is to signal completion of the activity at this stack level

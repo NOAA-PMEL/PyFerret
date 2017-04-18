@@ -1,4 +1,4 @@
-	SUBROUTINE IS_REVERSE( memory, *, *, status )
+	SUBROUTINE IS_REVERSE(  *, *, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -63,7 +63,6 @@
 
 * calling argument declarations:
 	INTEGER	status
-	REAL	memory( mem_blk_size, max_mem_blks )
 * normal return is for error conditions
 * exit #1 is to request another grid ( stack has been pushed )
 * exit #2 is to signal completion of the activity at this stack level
@@ -159,13 +158,13 @@
 
 * copy the source data into the result
 	CALL COPY_INTO(
-     .    memory( 1, mr_blk1(com_mr) ), com_mr, com_cx,
-     .    memory( 1, mr_blk1(res_mr) ), res_mr   )
+     .    memry(com_mr)%ptr, com_mr, com_cx,
+     .    memry(res_mr)%ptr, res_mr   )
 
 * reverse the result along all of the required axes
 	DO 400 i = 1, nrev
 	   CALL REVERSE_GRID_AXIS
-     .		( reversed(i), res_cx, res_mr,memory(1, mr_blk1(res_mr)) )
+     .		( reversed(i), res_cx, res_mr,memry(res_mr)%ptr )
  400	CONTINUE
 
 * successful completion of modulo operation

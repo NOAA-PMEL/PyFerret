@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <netinet/in.h> /* for htonl; header probably varies by platform */
 #include <assert.h>
+#include "ferret.h"
 
 /*
  * if clobber == 0, open filename for overwriting.
@@ -37,14 +38,8 @@
  *                          fine as long as length is less than 2e31.
  */
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
-
-int write_dods_(char*filename, int* slen, int *clobber, int *swap, 
-                int *length, float *data) 
+int FORTRAN(write_dods)(char*filename, int* slen, int *clobber, int *swap, 
+                        int *length, float *data) 
 {
   FILE *f;
   int i, length_n, result = 0;
@@ -61,7 +56,7 @@ int write_dods_(char*filename, int* slen, int *clobber, int *swap,
 
   /* allocate memory and save the filename to null-terminated string */
 
-  if ( fileptr = (char *) malloc(sizeof(char) * (*slen + 1) ) ) {
+  if ( fileptr = (char *) PyMem_Malloc(sizeof(char) * (*slen + 1) ) ) {
     strncpy (fileptr, filename, *slen);
     fileptr[*slen] = 0;    /* null-terminate the stored string */
   } else goto cleanup;
@@ -91,7 +86,7 @@ int write_dods_(char*filename, int* slen, int *clobber, int *swap,
   }
 
 cleanup:
-  if (fileptr) free(fileptr);
+  if (fileptr) PyMem_Free(fileptr);
   result = errno;
   if (f) {
     if (errno) {             /* preserve original error even if close fails */
@@ -105,8 +100,8 @@ cleanup:
 }
 
 
-int write_dods_double_(char*filename, int* slen, int *clobber, int *swap, 
-                       int *length, double *data) 
+int FORTRAN(write_dods_double)(char*filename, int* slen, int *clobber, int *swap, 
+                               int *length, double *data) 
 {
   FILE *f;
   int i, length_n, result = 0;
@@ -123,7 +118,7 @@ int write_dods_double_(char*filename, int* slen, int *clobber, int *swap,
 
   /* allocate memory and save the filename to null-terminated string */
 
-  if ( fileptr = (char *) malloc(sizeof(char) * (*slen + 1) ) ) {
+  if ( fileptr = (char *) PyMem_Malloc(sizeof(char) * (*slen + 1) ) ) {
     strncpy (fileptr, filename, *slen);
     fileptr[*slen] = 0;    /* null-terminate the stored string */
   } else goto cleanup;
@@ -156,7 +151,7 @@ int write_dods_double_(char*filename, int* slen, int *clobber, int *swap,
   }
 
 cleanup:
-  if (fileptr) free(fileptr);
+  if (fileptr) PyMem_Free(fileptr);
   result = errno;
   if (f) {
     if (errno) {             /* preserve original error even if close fails */

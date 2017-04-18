@@ -122,6 +122,8 @@
 *                    ax_dec_pt(MODE_6D_LAB still turns on and off the listing of all 
 *                    6 dimensions on SHOW commands.)
 * V698  4/16 *acm* For ticket 2399: Apply MODE CALENDAR settings to F axes too
+* V702  3/17 *sh* new mode FRUGAL
+*                 SPAWN command returns spawn_status
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -228,6 +230,8 @@
      .					/ mode_stack_size*.FALSE.   /
      .		(mode_state( pmode_6d_lab,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.TRUE.   /
+     .		(mode_state( pmode_frugal,i), i=1,mode_stack_size)
+     .					/ mode_stack_size*.TRUE.   /
 
 	DATA	mode_name ( pmode_diagnostic  )	/ 'DIAGNOSTIC  ' /,
      .		mode_name ( pmode_verify      )	/ 'VERIFY      ' /,
@@ -263,7 +267,7 @@
      .		mode_name ( pmode_curvilinear ) / 'CURVILINEAR'  /,
      .		mode_name ( pmode_layerz      ) / 'LAYERZ'       /,
      .		mode_name ( pmode_6d_lab      ) / '6D_LAB'       /,
-     .		mode_name ( 35     ) / pmode_unused /,
+     .		mode_name ( pmode_frugal      ) / 'FRUGAL'	 /,
      .		mode_name ( 36     ) / pmode_unused /,
      .		mode_name ( 37     ) / pmode_unused /,
      .		mode_name ( 38     ) / pmode_unused /,
@@ -338,6 +342,8 @@
      .				/ mode_stack_size*unspecified_int4 /
      .		(mode_arg  ( pmode_6d_lab,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /
+     .		(mode_arg  ( pmode_frugal,i), i=1,mode_stack_size)
+     .				/ mode_stack_size*30 /
 
 * If the value of nlevels is changed, also change NLEV in plot/ppldata.F
 
@@ -391,5 +397,6 @@
         DATA    grat_on                 / .FALSE. /
         DATA    num_linecolors          / 6 /
         DATA    its_pyferret            / .TRUE. /
+        DATA    spawn_status            / .TRUE. /  ! =last cmnd was successful
 
 	END

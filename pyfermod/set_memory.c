@@ -38,26 +38,14 @@
 #include "pyferret.h"
 
 /* create the extern pointers to the allocated memory */
-double *memory;
 float *ppl_memory;
 sharedMem *sBuffer;
-
-/* assign the memory for ferret's use */
-void set_fer_memory(double *mem, size_t mem_size)
-{
-    int max_mem_blks = PMAX_MEM_BLKS;
-    int mem_blk_size;
-
-    memory = mem;
-    mem_blk_size = (int)(mem_size / (size_t)max_mem_blks);
-    init_memory_( &mem_blk_size, &max_mem_blks );
-}
 
 /* assign the memory for plot plus' use */
 void set_ppl_memory(float *mem, int mem_size)
 {
     ppl_memory = mem;
-    save_ppl_memory_size_( &mem_size );
+    FORTRAN(save_ppl_memory_size)( &mem_size );
 }
 
 /* assign the shared buffer */

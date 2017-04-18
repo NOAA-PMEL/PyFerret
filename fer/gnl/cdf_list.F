@@ -1,4 +1,4 @@
-	SUBROUTINE CDF_LIST ( memory, fname, append, crecdim, nvars,
+	SUBROUTINE CDF_LIST ( fname, append, crecdim, nvars,
      .			      mr_list, cx_list, title, enhead, mode,
      .			      clobber, edges_flag, do_bounds, 
      .			      keepax_flag, out_type, quiet, status )
@@ -131,6 +131,7 @@
 * V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
 *                  added to that dataset in the attribute structure
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -154,7 +155,6 @@
         LOGICAL         append, enhead, clobber, quiet
 	INTEGER		nvars, mr_list(nvars), cx_list(nvars), mode,
      .			edges_flag, keepax_flag, do_bounds, status
-	REAL		memory( mem_blk_size, max_mem_blks )
         CHARACTER*(*)   fname, title, out_type
         CHARACTER*1     crecdim
 
@@ -1190,9 +1190,8 @@
            IF (interrupted) CALL ERRMSG(ferr_interrupt,status,' ',*5800)
 
 * write the data for this variable
-
-           CALL CD_WRITE_VAR ( memory, cdfid, dset_num, varcode, grid, 
-     .                        write_lo, write_hi, memory(1,mr_blk1(mr)), 
+           CALL CD_WRITE_VAR (cdfid, dset_num, varcode, grid, 
+     .                        write_lo, write_hi, memry(mr)%ptr, 
      .                        edges_flag, do_bounds, mode_upcase_output, 
      .                        keepax_flag, status )
            IF ( status .NE. merr_ok ) GOTO 5800

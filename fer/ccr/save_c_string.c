@@ -39,20 +39,15 @@
  */
 
 #include <Python.h> /* make sure Python.h is first */
-#include <stdlib.h>
+#include "ferret.h"
 
-void save_c_string_(string, inlen, fer_ptr, offset, stat)
-     char* string;
-     int* inlen;
-     char*** fer_ptr;
-     int* offset;
-     int* stat;
+void FORTRAN(save_c_string)(char *string, int *inlen, char ***fer_ptr, int *offset, int *stat)
 {
    int i;
    char* ptr;
    char** each_str_ptr;
 
-   ptr = (char *) malloc(sizeof(char) * (*inlen + 1));
+   ptr = (char *) PyMem_Malloc(sizeof(char) * (*inlen + 1));
    if ( ptr != NULL ) {
       for (i=0; i<*inlen; i++)
          ptr[i] = string[i];
@@ -62,7 +57,7 @@ void save_c_string_(string, inlen, fer_ptr, offset, stat)
       each_str_ptr = *fer_ptr;   /* holds pointer to the first string */
       each_str_ptr += *offset * 8/sizeof(char**); /* point to the desired string */ 
       if ( *each_str_ptr != NULL )
-         free( *each_str_ptr );
+         PyMem_Free( *each_str_ptr );
       *each_str_ptr = ptr;
 
       *stat = 0;

@@ -99,7 +99,7 @@
      .		NC_GET_ATTRIB_STRING, ITSA_MODULO_AXIS, TM_SAME_GRID_DEF,
      .		SCALAR_GRID_LINE, 
      .		itsa_uvar, modulo_dest_regrid, allatonce, attoutflag, 
-     .		got_it, split_on_compressed_ax
+     .		got_it
 	INTEGER	CGRID_SIZE_MAX, CAXIS_LEN, CAXIS_MODLEN, CX_DIM_LEN, 
      .		AUX_AXIS_FROM_ARG, CGRID_AXIS, POTENT_SIZE, 
      .		ISUBSCR_CX, TM_AXES_REVERSED, CGRID_SIZE, MODULO_PARITY,
@@ -107,13 +107,12 @@
      .		nrev, reversed(nferdims), idel,
      .		trans, grid, dset, lo_off, hi_off, aclass,
      .		lo_cx, hi_cx, big_cx, lo_isp, i, axis,
-     .		cxsize, split_ax, split_ax_len, split_trans, frag,
-     .		var, ss, lo_ss, hi_ss,
+     .		var, ss, lo_ss, hi_ss, res_size,
      .		nmod, nmodhi, npts, xlate, dup_cx, i4d,
-     .          line, imemb, imemb_dset, grids_dset, len,
+     .          line, imemb, imemb_dset, grids_dset, len, ncomp,
      .		orig_grid, iline, attlen, maxlen, orig_cat, orig_var,
      .		memb_dset, hi_cat, hi_var, hi_grid, agg_vlen, memb_vlen, slen
-	REAL	ax_frac
+	INTEGER*8 available_mem, biggest_allowed
 	REAL*8	TM_WORLD, ww_given, ww_nrst
 	CHARACTER*128 VAR_CODE, agg_vname, memb_vname
 	CHARACTER*128 buff
@@ -133,6 +132,7 @@
 	itsa_uvar = cx_category(lo_cx) .EQ. cat_user_var
 	modulo_dest_regrid = .FALSE.		! if regrid requires modulo
 	big_cx = lo_cx   ! initialize default. Used in compressed split/gather
+	trans  = trans_no_transform
 
 * set up a context buffer to be modified for various grids needed
 	CALL CREATE_NEW_CONTEXT( lo_cx, hi_cx, status )	! pushes stack
@@ -416,7 +416,6 @@ c	   CALL TRANSFER_CONTEXT( hi_cx, lo_cx )
 	   ENDIF
 	   aclass = isact_class_regrid
 
-
 	ELSEIF( aclass .EQ. isact_class_aux_plot_vars ) THEN
 * SET UP TO GET AUXILIARY ARGUMETS FOR 3-ARG PLOTS ONTO THE STACK
 * ...  set up to get the first aux var
@@ -577,112 +576,22 @@ c	   CALL TRANSFER_CONTEXT( hi_cx, lo_cx )
 * size limits then try to split the calculation into fragments.
 * For example, TEMP[I=1:100@DIN,J=1:100@AVE,K=1:25@AVE,L=1:100@AVE]
 * the required data is 100x100x25x100 - TOO BIG !!
-* after the L and K transforms have been split off we will have
-* TEMP[I=1:100@DIN,J=1:100@AVE,K=1:25,L=1:100] which is a reasonable 2500 pts.
-* after the next strip, however, the request will be 100 times larger.  At this
-* time we would be better to split up the context, say, along the L axis so
-* that each requested component is a manageable size.
-* 11/95: similarly, modulo regrids may involve source data greatly in excess
+* Similarly, modulo regrids may involve source data greatly in excess
 * of the result
- 300	IF ( aclass.EQ.isact_class_trans
+	IF ( aclass.EQ.isact_class_trans
      .		.AND. trans.GT.trans_compress_code
+     .		.AND. trans.NE.trans_interpolate
      . .OR.  aclass.EQ.isact_class_regrid
      .		.AND. ITSA_MODULO_REGRID(lo_cx, axis)		) THEN
-	   IF ( aclass.EQ.isact_class_trans ) THEN 
-	      cxsize = CGRID_SIZE( hi_cx )	! well tested of old (11/95)
-	   ELSE
-	      cxsize = CGRID_SIZE_MAX( hi_cx )	! unknown lims get len=line_dim
-	   ENDIF
-
-* do we have a size problem ?
-	   IF ( cxsize .LE. mode_arg( pmode_desperate,1 ) ) GOTO 800
-* yes, too big ! can we split the calculation along some axis ?
-*  ( try to split along a slow access axis of the data )
-	   DO 500 i = nferdims, 1, -1
-	      IF ( dset.GT.pdset_irrelevant .AND. dset.LE.maxdsets ) THEN
-	         split_ax = ds_ax_speed(i, dset)
-	      ELSE
-	         split_ax = i
-	      ENDIF
-* 11/16 cannot split/gather on axes that are transformed with an algorithm
-*       that depends upon looking at neighboring data points (well, not so
-*       easily, anyway). smoothers, fillers, @LOC, etc.
-	      split_trans = cx_trans(split_ax,lo_cx)
-	      IF    (split_trans .NE. trans_no_transform) THEN
-	         IF (split_trans .LE. trans_compress_code
-     .          .OR. split_trans .EQ. trans_locate        ) GOTO 500
-	      ENDIF
-
-	      IF ( ITSA_MODULO_REGRID(lo_cx,split_ax) ) GOTO 500
-* ... beware user-defined vars with limits specified in definition
-	      IF ( itsa_uvar ) THEN
-	         IF ( uvar_given(split_ax,var) .NE. uvlim_needed ) GOTO 500
-	      ENDIF
-* ... (sigh: probably the hi_ss lims would be correct for both compressed and
-*      uncompressed split eliminating need to call POTENT_AX_LIMS)
-	      CALL POTENT_AX_LIMS(lo_cx, split_ax, lo_ss, hi_ss)
-	      split_ax_len = hi_ss - lo_ss + 1
-	      split_on_compressed_ax = split_trans .GT. trans_compress_code
-* ... no splitting possible on a unit-length axis
-* ==> IN A FUTURE ENHANCEMENT WE COULD PUT MORE SOPHISTICATED LOGIC HERE
-*     WE MIGHT BYPASS AXES WITH TOO FEW POINTS TO SPLIT INTO FRAGMENTS
-*     OF SIZE BELOW csize.  HOWEVER, EVEN A SHORT AXIS IS BETTER THAN FINDING
-*     NO SUITABLE AXIS AT ALL, SO WE WILL LIVE WITH THIS FOR NOW
-	      IF ( split_ax_len .EQ. 1 
-     .	     .AND. .NOT.split_on_compressed_ax) GOTO 500
-* ... the only compressed axis allowed is the one we are stripping off now
-	      If ( split_ax.NE.axis .AND.split_on_compressed_ax ) GOTO 500
-* ... in desparation, only, consider splitting along the fastest access axis
-	      IF ( i.EQ.1 .AND. .NOT.mode_desperate )  GOTO 500
-	      GOTO 510
- 500	   CONTINUE	   
-* no way to split up the calculation
-	   GOTO 800
-* OK - lets divvie this baby up !
-* save the default context so it can be re-used at each chunk
-* a compressed axis is represented as lo/hi_ss=-999, which is not what we want
-* so if splitting on a compressed axis, store hi_cx
- 510	   IF (split_on_compressed_ax) THEN
-* ... when splitting on a compressed axis the stack activity remains the 
-*     compressing transform.  It is IS_TRANS, instead of IS_GATHER, that
-*     will control the fetching of fragment after fragment
-	      CALL CREATE_NEW_CONTEXT( hi_cx, big_cx, status )	! pushes stack
-	      is_phase( lo_isp ) = isphase_initialize_transform
-	   ELSE
-	      aclass = isact_class_gather
-	      is_act(lo_isp) = isact_gather
-	      axis = split_ax
-	      CALL CREATE_NEW_CONTEXT( lo_cx, big_cx, status )	! pushes stack
-	   ENDIF
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   is_big_cx( lo_isp ) = big_cx
-* cancel result pointer to indicate no result yet
-	   is_mr( lo_isp ) = unspecified_int4
-* determine the largest fragment satisfying the "desperate mode" argument
-* for compressing transforms consider here ALL of the axes that may expand 
-	   IF ( aclass.EQ.isact_class_trans ) cxsize = POTENT_SIZE(lo_cx)
-	   ax_frac = FLOAT(mode_arg(pmode_desperate,1)) / cxsize
-	   frag = MAX( 1, INT(split_ax_len*ax_frac) )
-	   is_sum( lo_isp ) = frag
-* set the subscript range for the first gather fragment
-	   CALL TRANSFER_CONTEXT( big_cx, hi_cx )
-	   cx_hi_ss(hi_cx,axis) = lo_ss + frag - 1
-	   cx_by_ss(axis,hi_cx) = .TRUE.
-	   CALL FLESH_OUT_AXIS( axis, hi_cx, status )
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-	ENDIF
-
-* diagnostic output about split on compressed axis
-*    (this is a "dummy" interp stack activity in the sense that is_act is
-*     never actually given this activity.  It exists only to generate an
-*     informative diagnostic report)
-	IF ( mode_diagnostic .AND. split_on_compressed_ax ) THEN
-	   CALL DIAG_OP('strip', isact_class_cmp_gather_dummy, big_cx, axis)
-	   CALL DIAG_OP('doing', isact_class_cmp_gather_dummy,  hi_cx, axis)
+* ... create the context of the first chunk, if possible
+*     SETUP_GATHER may change nothing, or it may set up split/gather
+*     in hi_cx, axis and the is_* variables
+	   CALL SETUP_GATHER(aclass, lo_cx, hi_cx, lo_isp, axis, status)
+	   IF (status .NE. ferr_ok) GOTO 5000
 	ENDIF
 
 * diagnostic mode output: "strip --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
- 800	IF ( mode_diagnostic ) 	CALL DIAG_OP('strip', aclass, lo_cx, axis)
+	IF ( mode_diagnostic ) 	CALL DIAG_OP('strip', aclass, lo_cx, axis)
 
 * push stack to go after the requested component
 	is_axis ( lo_isp ) = axis

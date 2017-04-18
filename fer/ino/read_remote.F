@@ -1,4 +1,4 @@
-	SUBROUTINE READ_REMOTE ( memory, baddat, cx, mr, status )
+	SUBROUTINE READ_REMOTE (  baddat, cx, mr, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -55,7 +55,7 @@
 
 * calling argument declarations:
 	INTEGER	cx, mr, status
-	REAL	memory( mem_blk_size, max_mem_blks ), baddat
+	REAL	 baddat
 
 * internal variable declarations:
 	LOGICAL	has_a_stride, has_strides(nferdims)
@@ -158,7 +158,7 @@
 	IF ( status .NE. ferr_ok ) GOTO 5900
 	IF (ds_var_type(uvar) .EQ. ptype_string)
      .		CALL INIT_C_STRING_ARRAY( MGRID_SIZE(mr),
-     .			                  memory(1,mr_blk1(mr)),
+     .			                  memry(mr)%ptr,
      .					  mr_c_pointer(mr)      )
 
 * un-cache it?
@@ -292,7 +292,7 @@
      .			grid_start,
      .			grid_end,
      .			grid_order,
-     .			memory( 1, mr_blk1( mr ) ),
+     .			memry( mr )%ptr,
      .			baddat, 
      .			sf_num,
      .			tmap_status		)
@@ -311,10 +311,11 @@
 * replace multiple bad data flags in some variables
 * IF ( ds_bad_flag( variable ) .NE. ds_missing_flag( variable ) )
 * *kob* 2/99 - call new routine to check for usage of NaN
-	IF (REPLACEABLE_BAD_FLAGS(ds_bad_flag(uvar), 
-     .                            ds_missing_flag(uvar)) .EQ. 1)
+	IF (mr_type(mr) .NE. ptype_string
+     .  .AND. REPLACEABLE_BAD_FLAGS(ds_bad_flag(uvar), 
+     .                              ds_missing_flag(uvar)) .EQ. 1)
      .	   CALL REPLACE_BAD_DATA
-     .		(memory(1,mr_blk1(mr)),mr,cx,ds_missing_flag(uvar))
+     .		(memry(mr)%ptr,mr,cx,ds_missing_flag(uvar))
 
 * successful completion
  	RETURN

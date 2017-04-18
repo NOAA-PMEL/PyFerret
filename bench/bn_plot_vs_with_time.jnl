@@ -1,0 +1,67 @@
+! bn_plot_vs_with_time.jnl
+! See ticket 2246
+! 3/27/2017 *ACM*
+
+! PLOT/VS plots automatically draw a formatted time axis
+! when one of the variables has calendar units and time origin
+
+! (Currently allow just one axis to be time formatted)
+
+can mode logo
+
+! Date units syntax days since 1982-01-01 is valid
+
+define axis/t=1:500:10/units=days/t0="01-jan-1982" tax
+let/units="days since 1982-01-01" mytime2 = t[gt=tax]
+
+let myvar2 = RANDU(mytime2)
+plot/vs/line mytime2, myvar2
+plot/vs/over/sym/color=red mytime2[L=1:50:2], myvar2[L=1:50:2]
+
+! time axis on the vertical
+
+! Date syntax days since 01-jan-1982 is also valid.
+define axis/t=1:500:10/units=days/t0="01-jan-1982" tax
+let/units="days since 01-jan-1982" mytime2 = t[gt=tax]
+
+plot/vs/line myvar2, mytime2
+plot/vs/over/sym/color=red/line  myvar2[L=1:50:2],  mytime2[L=1:50:2]
+
+! LAS style plots:
+! Dataset with pressure,temperature on ZT grid. Define a time variable
+! send it to PLOT/VS to draw plots with time-formatted axis, plain
+! 2-variable plots and plot/vs plots.
+! Define variables as if gridded T-Z data in spurs dataset
+
+define axis/t="25-JAN-2017:23:00":"02-FEB-2017 10:00":12/units=hours/t0=1-jan-2017 time
+define axis/z=1:50:4/units=m/depth zaxis
+let/title=pressure/units=m pres=z[gz=zaxis] + 0.3*randu(t[gt=time])
+let/title=temperature/units="Deg C" temp = 20 - z[gz=zaxis] + 10*randu(t[gt=time])
+
+! Define a time variable
+let/units="`pres,return=tunits` since `pres,return=t0`" ttvar = t[gt=temp] + 0*temp
+
+! time on horizontal axis
+set v ul; plot/vs/ribbon/sym=17/thick/vlim=50:0  ttvar, pres, temp
+
+! time on vertical axis
+set v ur; plot/vs/ribbon/sym=17/thick/hlim=50:0  pres, ttvar, temp
+
+! More time axis styles
+
+define axis/t=1-jan-2016:1-jan-2017:45/units=days/t0=1-jan-1970 time
+let/title=pressure/units=m pres=z[gz=zaxis] + 0.3*randu(t[gt=time])
+let/title=temperature/units="Deg C" temp = 20 - z[gz=zaxis] + 10*randu(t[gt=time])
+let/units="`pres,return=tunits` since `pres,return=t0`" ttvar = t[gt=temp] + 0*temp
+
+set v ll; plot/vs/ribbon/sym=17/thick/vlim=50:0  ttvar, pres, temp
+
+define axis/t=1-jan-2001:1-jan-2012:181/units=days/t0=1-jan-1970 time
+let/title=pressure/units=m pres=z[gz=zaxis] + 0.3*randu(t[gt=time])
+let/title=temperature/units="Deg C" temp = 20 - z[gz=zaxis] + 10*randu(t[gt=time])
+let/units="`pres,return=tunits` since `pres,return=t0`" ttvar = t[gt=temp] + 0*temp
+
+set v lr; plot/vs/ribbon/sym=17/thick/vlim=50:0  ttvar, pres, temp
+
+
+set mode/last logo

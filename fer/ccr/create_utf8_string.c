@@ -33,7 +33,7 @@
  */
 
 #include <Python.h> /* make sure Python.h is first */
-#include "utf8str.h"
+#include "ferret.h"
 
 /*
  * Assigns a character string with the values for a UTF-8 character
@@ -47,7 +47,7 @@
  *                  representation of the UTF-8 characters, 
  *                  or zero if the codepoint is invalid for UTF-8
  */
-void create_utf8_str_(const int *codepoint, char *utf8str, int *utf8strlen) 
+void FORTRAN(create_utf8_str)(const int *codepoint, char *utf8str, int *utf8strlen) 
 {
     int codept = *codepoint;
 

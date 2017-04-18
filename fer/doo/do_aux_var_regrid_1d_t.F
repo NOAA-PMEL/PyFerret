@@ -48,6 +48,7 @@
 * This code copied/modified from do_aux_var_regrid_1d_z.F
 
 * V695+ 3/15 *sh*
+* V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -228,7 +229,7 @@
 	ENDDO
 
 * successful completion.  Clean up.
-        CALL RELEASE_WORK_SPC    ! ?? needed ??
+        CALL RELEASE_DYN_WORK_SPACE   ! ?? needed ??
         RETURN
 
 * error exit

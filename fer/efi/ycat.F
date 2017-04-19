@@ -199,7 +199,7 @@
          i = res_lo_ss(X_AXIS)
          DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
 
-            IF ( arg_1(i1,j1,k1,l1,m1,n2) .EQ. bad_flag(ARG1) ) THEN
+            IF ( arg_1(i1,j1,k1,l1,m1,n1) .EQ. bad_flag(ARG1) ) THEN
                result(i,j,k,l,m,n) = bad_flag_result
             ELSE
                result(i,j,k,l,m,n) = arg_1(i1,j1,k1,l1,m1,n1)

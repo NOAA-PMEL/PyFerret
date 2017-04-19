@@ -58,6 +58,9 @@
 * NOAA/PMEL, Seattle, WA - SDIG
 *
 * V7   5/12 *acm* Union aggregations: DEFINE DATA/AGG/U
+* V7.2 5/17 *acm* Ticket 2526 For SHOW DATA/MEMBERS of Union datasets need to 
+*                 have called NCF_ADD_AGG_MEMBERto list the dataset members in 
+*                 the linked-list structure for the union dataset
 
 * arguments:
 *	memb_dsetname_var - if have_expr, the variable of names (input)
@@ -101,7 +104,7 @@
 
 * local variable declarations:
 	LOGICAL match, itsa_uvar
-	INTEGER	TM_LENSTR1, STR_SAME,
+	INTEGER	TM_LENSTR1, STR_SAME, NCF_ADD_AGG_MEMBER,
      .		iset, dset1, item, ii, max_str_len,member_sets(nsets), 
      .		nv, nvars, iline, slen, jlen, un_vars(pmaxvarsperset),
      .		num_indices, j, member, ignored_status
@@ -279,6 +282,12 @@
 	ENDDO  ! 2, nsets
 
 	IF (nvars .EQ. 0) GOTO 5500
+
+
+* register member datasets to aggregate dataset
+	DO iset = 1, nsets
+	   status = NCF_ADD_AGG_MEMBER (agg_dset, iset, member_sets(iset)) 
+	ENDDO
 
 * If user requested /HIDE, then mark the member datasets for hidden status
 	IF (agg_hide) THEN

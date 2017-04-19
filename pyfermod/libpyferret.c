@@ -1288,6 +1288,7 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
     npy_intp       new_shape[2];
     int            strides[MAX_FERRET_NDIM];
     PyArrayObject *data_ndarray;
+    int            factor;
     char          *strptr;
     int            maxstrlen;
     int            thisstrlen;
@@ -1351,7 +1352,10 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
      * Note: for string arrays, each "double" is a pointer 
      * to allocated memory containing a null-terminated string;
      * or null for missing strings.
+     * This means pointer are spaced 8 bytes apart regardless of pointer size,
+     * so need to double for 4-byte (32-bit) pointers.
      */
+    factor = 8 / sizeof(char *);
 
     /* Get the maximum string length of all the strings in this array */
     /* Use STRING_MISSING_VALUE for missing strings */
@@ -1362,12 +1366,13 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
           for (k = 0; k < (int)(shape[2]); k++) {
             for (j = 0; j < (int)(shape[1]); j++) {
               for (i = 0; i < (int)(shape[0]); i++) {
-                strptr = arraystart[ i * strides[0] + 
+                strptr = arraystart[ factor * ( 
+                                     i * strides[0] + 
                                      j * strides[1] + 
                                      k * strides[2] + 
                                      l * strides[3] +
                                      m * strides[4] +
-                                     n * strides[5] ];
+                                     n * strides[5] ) ];
                 if ( strptr != NULL ) {
                   /* add one so always null-terminated */
                   thisstrlen = (int)(strlen(strptr) + 1);
@@ -1403,12 +1408,13 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
           for (k = 0; k < (int)(shape[2]); k++) {
             for (j = 0; j < (int)(shape[1]); j++) {
               for (i = 0; i < (int)(shape[0]); i++) {
-                strptr = arraystart[ i * strides[0] + 
+                strptr = arraystart[ factor * (
+                                     i * strides[0] + 
                                      j * strides[1] + 
                                      k * strides[2] + 
                                      l * strides[3] +
                                      m * strides[4] +
-                                     n * strides[5] ];
+                                     n * strides[5] ) ];
                 if ( strptr == NULL ) {
                    strptr = STRING_MISSING_VALUE;
                 }

@@ -2,26 +2,28 @@
 ! Tests of the F-TDS LET/REMOTE
 ! 6/2016 installed NVODS on new-bock server 
 ! 9/2016 load smaller subsets of the data 
-! 4/2017 Use the THREDDS server at http://ferret.pmel.noaa.gov/pmel/thredds
+! 4/2017 Update thredds server urls. To find the right URL, go to the dataset
+!        in the NVODS server, and hit the "Export to Desktop Application"
+!        button. The .jnl address is the correct F-TDS URL.
 
 ! See if the F-TDS is working and bail if not.
-let status = TEST_OPENDAP("http://ferret.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl")
+let status = TEST_OPENDAP("http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl")
 load status
 if `status NE 0` then EXIT/SCRIPT
 
-use "http://ferret.pmel.noaa.gov/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl"
-let/D=1/remote myvar = t0112mn1[k=1:5@sum]
-let/D=1/remote ave_z = t0112mn1[z=0:20@ave]
+use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl"
+let/D=1/remote myvar = t00an1[k=1:5@sum]
+let/D=1/remote ave_z = t00an1[z=0:20@ave]
 sh var
 set view ul; shade/l=7/x=180:200/y=20:30 myvar
 set view ur; shade/l=3/x=180:200/y=20:30 ave_z
 
 list/l=7/x=300:310/y=15 myvar, ave_z
 
-let/D=1/remote ave_t = t0112mn1[L=1:12@ave]
+let/D=1/remote ave_t = t00an1[L=1:12@ave]
 set view ll; shade/z=0/x=180:200/y=20:30 ave_t
 
-let/D=1/remote/units="`t0112mn1,ret=units`"/title="Summer average Temperature" ave_summer = t0112mn1[t=15-jun:15-sep@ave]
+let/D=1/remote/units="`t00an1,ret=units`"/title="Summer average Temperature" ave_summer = t00an1[t=15-jun:15-sep@ave]
 set view lr; shade/z=0/x=180:200/y=20:30 ave_summer
 
 can view
@@ -29,8 +31,8 @@ can data/all; can var/all
 
 ! open another dataset, define more remote variables
 
-use "http://ferret.pmel.noaa.gov/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl"
-use "http://ferret.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
+use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl"
+use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
 let/D=2/remote sstsum = sst[L=1:5@sum]
 let/D=2/remote airtsum = airt[L=1:5@sum]
 sh dat
@@ -46,7 +48,7 @@ list/y=-10/x=50:59 sstsum, airtsum, both
 can dat/all; can var/all
 
 ! make several remote definitions. They can be used together in an expression. 
-use "http://ferret.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
+use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
 let/D=1/remote sstsum = sst[L=1:5@sum]
 let/D=1/remote airtsum = airt[L=1:5@sum]
 let/D=1/remote factor = 12
@@ -56,10 +58,10 @@ list/y=-5/x=130w:110w combo
 
 can dat/all; can var/all
 
-use "http://ferret.pmel.noaa.gov/thredds/dodsC/las/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112mn1.nc.jnl"
+use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl"
 
 ! This is ok let/remote/D=
-let/D=1/remote myvar = t0112mn1[z=1:100@ave]
+let/D=1/remote myvar = t00an1[z=1:100@ave]
 
 ! Intentional errors:
 
@@ -67,17 +69,17 @@ let/D=1/remote myvar = t0112mn1[z=1:100@ave]
 ! the remote server so the same datsets are not open there.
 
 set mode ignore
-let/D=1/remote rvar = t0112mn1[d=1,z=1:100@ave]
+let/D=1/remote rvar = t00an1[d=1,z=1:100@ave]
 
 
 ! But, require LET/D= with /REMOTE
-let/remote rvar = t0112mn1[d=1,z=1:100@ave]
+let/remote rvar = t00an1[d=1,z=1:100@ave]
 
 ! If expressions involve local variables not defined in the remote dset,
 ! then the variable can be computed but not as a remote-var.
 
 let a = 12
-let/D=1/remote avar = a*t0112mn1[L=@ave]
+let/D=1/remote avar = a*t00an1[L=@ave]
 list/x=300/y=15 avar
 
 SET MODE/LAST ignore

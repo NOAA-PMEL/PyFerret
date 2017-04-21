@@ -1,0 +1,7 @@
+RGB_Mapping By_value
+ 
+! Level  Red  Green  Blue
+      2    0    20  100  !  blue 
+      3   99    60   16  !  yellow-orange
+      4   40     0    0  ! muddy dark purple     26    31   50 
+

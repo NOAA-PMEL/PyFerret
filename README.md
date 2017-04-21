@@ -8,7 +8,9 @@ using git-svn.
 
 The latest ferretmagic module from Patrick Brockmann for using PyFerret 
 with the iPython notebook can be obtained using `pip install ferretmagic`, or see
-[http://pypi.python.org/pypi/ferretmagic](http://pypi.python.org/pypi/ferretmagic)
+[http://pypi.python.org/pypi/ferretmagic](http://pypi.python.org/pypi/ferretmagic).
+Note that this only installs the ferretmagic module for PyFerret;
+it does not install PyFerret.
 
 ## Anaconda Installation - Linux, OS X, and Windows 10/bash
 

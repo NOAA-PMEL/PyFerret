@@ -1,0 +1,13 @@
+RGB_Mapping By_level
+ 
+! Level    Red  Green   Blue
+      1    0.0    0.0  100.0  ! blue
+      2  100.0   55.0    0.0  ! orange 100.0   50.0    0.0
+      3   70.0    0.0  100.0  ! purple
+      4    0.0  100.0  100.0  ! light blue
+      5   66.0   56.0   10.0  ! olive
+      6   50.0  100.0  10.0  ! light green 
+      7  100.0    0.0  100.0  ! magenta
+      8  100.0   10.0    0.0  ! bright red
+      9    0.0   60.0   30.0  ! green
+     10  100.0   90.0    0.0  ! yellow

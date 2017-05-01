@@ -34,7 +34,7 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 # Targets
 #
 
-all:	add_9.so appende.so avet.so dates.so factorial.so pass_thru.so percent_good_t.so \
+all:	add_9.so appende.so avet.so factorial.so pass_thru.so percent_good_t.so \
 	storage.so string_arg.so subtract.so 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug" "CFLAGS = $(CFLAGS) -g -Ddebug"  all

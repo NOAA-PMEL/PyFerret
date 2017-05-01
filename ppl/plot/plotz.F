@@ -96,6 +96,8 @@ C
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V695 *acm* 3/15 Changes for PyFerret fonts - text group settings for labels along contour lines
 * V698 *acm* 3/16  Ticket 2375: outline color key in black even on an overlay.
+* V720 *acm* 5/17 Ticket 2528: If contour text group not set, apply general SET TEXT settings 
+*                 except get the contour-line color 
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -133,8 +135,7 @@ C
 C*       *jd* Linux port 12.96 add EXTERNAL calls below
         external scale, range
 
-C	VAX/VMS
-C
+
 	DIMENSION IZMRKD(3)
 	DATA IZMRKD/12,16,3/
 
@@ -268,8 +269,9 @@ C
 	IF (IWIND.NE.0) CALL WINDOW(0.0,0.0,XLEN,YLEN)
 	CALL COLOR(IPEN(1))
 
-*  If the user has set text style with SET TEXT/CONTOUR, use those settings.
-*  Otherwise get the color fractions for the pen being used for the contours. 
+*  If the user has set text style with SET TEXT for the CONTOUR group, use those settings.
+*  Otherwise get the color fractions for the pen being used for the contours.
+*  Apply any overall SET TEXT settings (other than color). 
 
        IF (pyfont) THEN
           igroup = icont
@@ -277,6 +279,10 @@ C
              CALL FGD_GQPEN(IWIND, IPEN(1), ier, pyf_red(igroup), 
      .                pyf_grn(igroup), pyf_blu(igroup), opaqfrac)
              pyf_set(icont) = .TRUE.
+             pyf_fontname(icont) = pyfnt_fontname
+             pyf_italic(icont) = pyfnt_italic
+             pyf_bold(icont) = pyfnt_bold
+             pyf_isiz(icont) = pyfnt_isiz
              tmpsetcolor = .TRUE.
           ELSE
              tmpsetcolor = .FALSE.
@@ -386,7 +392,7 @@ C
 *          Restore settings in pyfont common
            igroup = 0
            IF ( tmpsetcolor ) THEN
-              pyf_set(icont) = .FALSE.
+              CALL CANCEL_PYTEXT_GROUP (icont)
            ENDIF
         ENDIF
 

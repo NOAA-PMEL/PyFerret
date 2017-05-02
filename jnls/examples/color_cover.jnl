@@ -1,0 +1,196 @@
+! modified from ferret_icon_large.jnl to produce Users Guide cover
+! 4-22-94 *sh*
+! 8/94 - modified with updated Tao time series (??)
+!	and "Ping Chang" name removed
+! 3/6/96  - *kob* add peter map projection to levitus sst shade
+! 3/5/98  - *jc*  replacing "Peter's" with "orange peel" map
+!                 and general cleanup.
+! 8/30/00 - *acm* update dates and title for use in Ferret Users Guide 
+!                 and web pages
+! 4/2015  - *acm* Require PyFerret. Modernize (some of) the graphics comands, 
+!                 viwport definitions etc
+!                 
+
+cancel mode logo
+cancel viewports
+
+if ($program_name"|pyferret>0|ferret>1") THEN 
+  say Use PyFerret for this script
+  EXIT/SCRIPT
+endif
+set text/font=ariel
+
+set wind/asp=1.32/siz=.65
+
+! Define the various views needed
+
+define view/xlim=0,1/ylim=0.825,1 URhb 
+define view/xlim=0,0.50/ylim=0.16,0.4 llu
+define view/xlim=0,0.50/ylim=0.02,0.8 lll
+define view/xlim=0.55,0.95/ylim=0.,0.384 lr2 
+define view/axes/x=0.001,0.999/y=0.001,0.999 xyfull
+set v xyfull
+
+! line around the whole plot
+shade/nolab/nokey/vlim=0:1/hlim=0:1/lev=(0)/i=1:5/j=1:5 i+j
+plot/over/vs/nolab/line/color=black/vlim=0:1/hlim=0:1  {0.001,0.001,0.999,0.999,0.001}, {.001,.999,.999,.001,.001}
+
+! box around the title
+plot/over/vs/line/color=(10,10,66)/nolab/noax {0.05,0.05,0.96,0.96,0.05}, {.69,.83,.83,.69,.69}
+cancel region
+
+! Toga/TAO line plots
+set view URhb
+go margins 0.5 0.5 1 0.5
+
+! Get these from http://www.pmel.noaa.gov/tao/data_deliv/frames/main.html
+! Use the non-java option, TAO/TRITON (pacific) data, netCDF 4-byte CF time
+! De-select all sites, then select equatorial 110W and 140W dots.
+
+use "./taodata/sst0n110w_5day.cdf"
+use "./taodata/sst0n140w_5day.cdf"
+
+ppl color,3,0,85,0  ! a less-glaring green
+plot/set/color/t=1-mar-1990:1-apr-2017 t_25[d=1], t_25[d=2]
+
+ppl labs/nouser 2, 23,34
+ppl labs/nouser 3, 23,34
+ppl labs/nouser 4, 23,34
+ppl labs/nouser 5, 23,34
+ppl labs/nouser 6, 23,34
+ppl labs/nouser 7, 23,34
+ppl labs/nouser 8,2.5,-.7,-1, 2n,110w
+ppl labs/nouser 9,4.7,-.7,-1, 2n,140w
+ppl ylab <&deg>C
+ppl aline/nouser 1,1.9,-.65,2.4,-.65,on
+ppl aline/nouser 2,4.1,-.65,4.6,-.65,on
+ppl axlsze ,.1
+ppl txlsze .075
+ppl yaxis 20,30,5
+ppl axlint ,1
+ppl axnmtc ,4
+ppl yfor (I2)
+ppl plot
+
+annotate/norm/halign=0/xpos=0.5/ypos=0.8/siz=0.14 "TOGA - TAO SST"
+
+! Draw main title and 'orange-peel' map projection
+
+set view full
+
+! ACM change title. Use a dark blue
+plot/vs/noax/nolab/hlim=-1:0 {1,2}, {1,2}
+
+set text/color=(10,10,66) !blue
+set text/font=times/italic
+label/nouser 3.00,7.3,0,0,0.17 NOAA/ PMEL
+label/nouser 3.00,6.65,0,0,0.4 F E R R E T
+label/nouser 3.00,6.25,0,0,0.17 An Analysis Tool for Gridded and Non-Gridded Data
+
+set text/color=black
+set text/font=arial
+cancel text/italic
+
+! The label for the next plot
+label/nouser 2.75,5.6,0,0,.15 @acLevitus Climatological SST
+
+set data levitus_climatology
+set reg/z=1/l=1/
+
+go mp_mcbryde_fpp
+!go my_ocean_stripmap temp[x=@fln] "levels=(-4,32,4)" default 1 1
+go my_ocean_stripmap_tn MISSING(temp,-6) "levels=(-14,32,2)" pale_green_blue_rev 1 1
+
+ppl axset,1,1,1,1
+ppl axlabp,-1,-1
+
+! end "orange peel" <--
+
+!================================
+set view lr2
+
+GO margins 1 0.5 .2 .2 
+
+! (Replace Vents plot with a ribbon plot)
+! Data is a couple of Cathy Cosca cruises from the SOCAT database,
+! CYNS20120124, CYNS20120216, CYNS20120416
+use 9261F2F516DF9D3B2CF475C98E6DA805_netcdf
+
+use etopo20
+shade/pal=grey_dark/nokey/lev=(0,10000,10000)/nolab/set rose[X=142:258,Y=-80:72]
+   ppl axlsze .11,.11
+ppl shade
+can data  etopo20
+
+use etopo5
+shade/over/pal=grey_dark/nokey/lev=(0,10000,10000)/nolab rose
+can data  etopo5
+
+use "9261F2F516DF9D3B2CF475C98E6DA805_netcdf.nc"
+let/units=degrees_north  lat_with_gaps = separate(latitude[i=1:272], rowsize, 0)
+let/units=degrees_east  lon_with_gaps = separate(longitude[i=1:272], rowsize, 1)
+let  var_with_gaps = separate(fco2_recommended[i=1:272], rowsize, 0)
+
+ppl shaset reset
+set text/isiz=4 cbar
+plot/vs/over/nolab/ribbon/line/fast/key=hor/thick=3/\
+levels=(-inf)(160,260,20)(260,450,10)(440,560,20)(inf)/palette=rainbow/\
+ missing=black lon_with_gaps, lat_with_gaps, var_with_gaps
+
+!================================
+!define math function
+
+LET lg=10
+LET delta=.25
+
+LET a=y/lg
+LET tanh = (EXP(a)-EXP(-1*a))/(EXP(a)+EXP(-1*a))
+LET d = (1+delta*(tanh-1))^.5
+LET b = -1*x/d
+LET vhat=-1*(.5+b)*d[y=@ddc]*EXP(b)/(d*d)
+LET hhat=-1*(.5-b)*d[Y=@DDC]*EXP(b)/d
+
+DEFINE AXIS/X=0:20:.1   xax
+DEFINE AXIS/Y=-20:20:.2/unit="ROSSBY RADIUS" yax
+DEFINE AXIS/Y=-20:20:1/unit="ROSSBY RADIUS" yax
+DEFINE GRID/X=xax/Y=yax gping
+SET GRID gping
+SET REGION/X=0:4/Y=-20:20
+
+set view llu
+
+contour/set vhat
+ppl lev () (-.012,.005,.001) pen(-.012,-.001,.001,4) pen(0,.005,.001,2) dark(0)
+ppl labs
+ppl hlabs 1,.18
+! shift origin to center 3/94
+ppl origin 1.4   ! was 1.7
+ppl conset 0.14
+ppl ylab ROSSBY RADIUS
+ppl labset,,,.14
+ppl axlint,,2
+ppl contour " "
+ppl conset 0.08
+ppl labset,,,.12
+
+annotate/norm/xpos=0.5/ypos=1.1/siz=0.16/halign=0 "Perturbation Solution"
+
+!================================
+set view lll
+go margins 1.4 0.4
+ppl lev ()
+
+DEFINE AXIS/X=0:20:.25   xax
+DEFINE AXIS/Y=-20:20:1.5/unit="ROSSBY RADIUS" yax
+contour/set vhat
+ppl vpoint 0.5,-80,.004
+ppl labs
+ppl labs/nouser 1,2.0,-.35,0 -(B+1/2)*D_y*e^B/D^2       ! with sub/superscripts
+ppl hlabs 1,.16
+ppl title
+ppl labset,,,.16
+ppl axlen ,5
+ppl window off
+ppl view 1800   ! was 1500 3/93
+
+frame/file=FerretTitlePage.png

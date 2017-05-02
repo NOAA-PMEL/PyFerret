@@ -63,8 +63,8 @@
 *                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c
 * V710 *acm*  4/17 Implement ability to run one of a family of functions based on 
 *                  arguments that indicate the coordinate directions to operate on,
-*                  e.g. INNERPRODUCT(VAR1,VAR2,2) to compute the inner product of the 
-*                  variables in the Y direction by running innerproduct_y
+*                  e.g. DOT(VAR1,VAR2,2) to compute the inner product of the 
+*                  variables in the Y direction by running dot_y
 
 
         IMPLICIT NONE

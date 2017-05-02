@@ -1,0 +1,114 @@
+! bn_dot_product.jnl
+! 3/2017 *acm*  dot product function for matrix multiply operation
+
+
+sh func dot*
+
+! A call to dot(var1, var2, dir) translates into call to 
+! function dot_q(var1,var2) where q is the pax direction 
+! corresponding to dir=1,2,...,6
+
+set list/pre=7
+
+define axis/x=1:5:1 xpax
+define axis/y=0.1:0.3:0.1 ypax
+define axis/z=0.01:0.04:0.01 zpax
+define axis/e=-3:-1:1 epax
+define axis/f=-0.4:-0.1:0.1 fpax
+
+let var1 = x[gx=xpax]
+let var2 = 1+0*x[gx=xpax]
+list var1, var2
+list  dot(var1, var2, 1)
+!can var/all
+
+let var1 = x[gx=xpax]
+let var2 = 1+0*x[gx=xpax]
+list  dot_x(var1, var2)
+
+let var1 = y[gy=ypax]
+let var2 = 1+0*y[gy=ypax]
+list var1, var2
+list  dot(var1, var2, 2)
+
+let var1 = z[gz=zpax]
+let var2 = 1+0*z[gz=zpax]
+list var1, var2
+list  dot(var1, var2, 3)
+
+let var1 = L[gt=month_reg]
+let var2 = 1+0*L[gt=month_reg]
+list var1, var2
+list  dot(var1, var2, 4)
+
+let var1 = _e[ge=epax]
+let var2 = 1+0*_e[ge=epax]
+list var1, var2
+list  dot(var1, var2, 5)
+
+let var1 = _f[gf=fpax]
+let var2 = 1+0*_f[gf=fpax]
+list var1, var2
+list  dot(var1, var2, 6)
+
+let axy = x[gx=xpax] + y[gy=ypax]
+let bxz = 0*x[gx=xpax]+  10*Z[GZ=Zpax]
+list axy, bxz
+list dot(axy, bxz, 1)
+
+let byz = y[gy=ypax]+  10*Z[GZ=Zpax]
+list dot(axy, byz, 2)
+
+let lvar = L[gt=month_reg] - 1
+let axyt = axy + lvar
+let multi_dot = dot(axyt, byz, 2)
+save/file=a.nc/clobber multi_dot
+
+can var multi_dot
+use a.nc
+!  This should be the same as dot(axy, byz, 2)
+list/l=1 multi_dot
+
+!  z and t
+
+
+let axz = x[gx=xpax] + z[gz=zpax]
+let bzt = 0*z[gz=zpax]+  10*L[gt=month_reg]
+list dot(axz, bzt, 3)
+
+let ayt = y[gy=ypax]+ 10*L[gt=month_reg]
+list dot(ayt, bzt, 4)
+
+
+let xvar = x[gx=xpax] - 1
+let axyt = ayt + xvar
+let multi_dot = dot(axyt, bzt, 4)
+save/file=a.nc/clobber multi_dot
+
+can var multi_dot
+use a.nc
+!  This should be the same as dot(ayt, bzt, 4)
+list/i=1 multi_dot
+
+can dat/all
+
+!  e and f
+
+let ayf = _f[gf=fpax] + y[gy=ypax]
+let bfe = 0*_f[gf=fpax]+  10*_e[ge=epax]
+list dot(ayf, bfe, 6)
+
+let aze = z[gz=zpax]+ 10*_e[ge=epax]
+list dot(aze, bfe, 5)
+
+let xvar = x[gx=xpax] - 1
+let azex = aze + xvar
+let multi_dot = dot(azex, bfe, 5)
+save/file=a.nc/clobber multi_dot
+
+can var multi_dot
+use a.nc
+!  This should be the same as dot(azex, bfe, 5)
+list/i=1 multi_dot
+
+cancel list/precision

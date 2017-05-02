@@ -1129,8 +1129,8 @@ GO bn_stat_precision
 GO bn_reset bn_plot_vs_with_time
 GO bn_plot_vs_with_time
 
-GO bn_reset bn_inner
-GO bn_inner
+GO bn_reset bn_dot_product
+GO bn_dot_product
 
 GO bn_reset bn_cache_management
 GO bn_cache_management

@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith oerdnewp 12 Apr 21 11:34 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.11
+lrwxrwxrwx. 1 ksmith oerdnewp 12 May  2 13:36 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.11
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -292,7 +292,7 @@ Benchmark scripts that will be run:
    bn_dynamic_gather.jnl
    bn_stat_precision.jnl
    bn_plot_vs_with_time.jnl
-   bn_inner.jnl
+   bn_dot_product.jnl
    bn_cache_management.jnl
    bn_transp_choose.jnl
    bn_gif.jnl
@@ -300,7 +300,7 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Fri Apr 21 11:37:01 PDT 2017
+Beginning at Tue May  2 13:37:05 PDT 2017
 *** Running ferret script: bn_syntax.jnl
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -2515,6 +2515,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_test_opendap.jnl
+Cannot create cookie file
+Cannot create cookie file
 CURL Error: Couldn't resolve host name
 curl error details: 
 *** Running ferret script: bn611_bug_fixes.jnl
@@ -5338,7 +5340,7 @@ SET MODE FRUGAL:95
 *** Running ferret script: bn_plot_vs_with_time.jnl
 Replacing definition of axis TIME
 Replacing definition of axis TIME
-*** Running ferret script: bn_inner.jnl
+*** Running ferret script: bn_dot_product.jnl
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
@@ -5500,4 +5502,4 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
-Ended at Fri Apr 21 11:40:39 PDT 2017
+Ended at Tue May  2 13:40:36 PDT 2017

@@ -54,7 +54,7 @@
 *                    internal string handling functions   
 * V550: *acm*10/02 - Correct the function description for SUBSTRING
 *        2/12 *kms* Add E and F dimensions (set to nferdims in tmap_dims.parm)
-* V720: 4/17 *acm* Add INNERPRODUCT and TRANSPOSE as direction-changing functions
+* V720: 4/17 *acm* Add DOT (inner product) and TRANSPOSE as direction-changing functions
 *                  which call specific funcions depenging on direction arguments
 
 * the addition (or major modification) of an internal grid-changing function
@@ -1234,14 +1234,14 @@
      .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 
-* INNERPRODUCT(var1,var2,idim) - return inner-product of two variables 
+* dot(var1,var2,idim) - return inner-product of two variables 
 *                                computed along a given common dimension
 	INTEGER		p_innerprod_arg_start, p_innerprod_num_args
 	PARAMETER     ( p_innerprod_arg_start = p_strfloat_arg_start +
      .					    p_strfloat_num_args,
      .			p_innerprod_num_args  = 3 )
-	DATA gfcn_name         (p_innerprod) /'INNERPRODUCT'/
-	DATA gfcn_alt_name_base (p_innerprod) /'INNERPRODUCT_%'/
+	DATA gfcn_name         (p_innerprod) /'DOT'/
+	DATA gfcn_alt_name_base (p_innerprod) /'DOT_%'/
 	DATA gfcn_version      (p_innerprod) / 1.0 /
 	DATA gfcn_descr        (p_innerprod) /
      .	'Compute the inner product of two variables along given dimension' /

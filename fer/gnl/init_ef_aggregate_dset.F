@@ -120,8 +120,7 @@
 * local variable declarations:
 	LOGICAL	OK_AS_AGG_VAR, ITSA_TRUEMONTH_AXIS, match, has_uvars
 	INTEGER	TM_LENSTR, TM_LENSTR1, STR_SAME,
-     .		NCF_ADD_AGG_MEMBER, NCF_GET_AGG_MEMBER_INFO, 
-     .          KNOWN_GRID,
+     .		NCF_ADD_AGG_MEMBER, KNOWN_GRID,
      .		iset, dset1, item, ii, nT, max_str_len,
      .		perm(nferdims), member_sets(nsets+pmaxgaps),
      .		imatch, nv, grid, igrid, idim, ivar, nvars, nuvars, iline, 

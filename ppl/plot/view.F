@@ -44,7 +44,8 @@ C**
 C***********************************************************************
 C**
 C**
-#ifdef unix
+* V720 *acm*   Ticket 2530 add WIRE/COLOR= and draw the color with pen 1
+
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'HD.INC'
 	INCLUDE 'CMRD.INC'
@@ -57,20 +58,7 @@ C**
 	INCLUDE 'VIEW.INC'
 	INCLUDE 'SYSTEM.INC'
 	INCLUDE 'SWITCH.INC'
-#else
-	INCLUDE 'pplinc:PARAMPL5.DAT'
-	INCLUDE 'pplinc:HD.INC'
-	INCLUDE 'pplinc:CMRD.INC'
-	INCLUDE 'pplinc:CMRDL.INC'
-	INCLUDE 'pplinc:LABELS.INC'
-	INCLUDE 'pplinc:LABCOM.INC'
-	INCLUDE 'pplinc:HAB.INC'
-	INCLUDE 'pplinc:PEN.INC'
-	INCLUDE 'pplinc:PLT.INC'
-	INCLUDE 'pplinc:VIEW.INC'
-	INCLUDE 'cmdinc:SYSTEM.INC'
-	INCLUDE 'cmdinc:SWITCH.INC'
-#endif
+
 	IF(NX.EQ.0.OR.NY.EQ.0)RETURN
 	call trans(0,xmin,ymin,xtm,ytm)
 	call trans(0,xmax,ymax,xtx,ytx)
@@ -94,7 +82,13 @@ C     TRANSFORM VIEWPOINT
 	XV=(XMX-XM)*(VIEWX-xtm)/(xtx-xtm)+XM
 	YV=(YMX-YM)*(VIEWY-ytm)/(ytx-ytm)+YM
 	ICOUNT=ICOUNT+1
+
+	CALL COLOR(IPEN(1))
+
 	CALL SURFCE(X,XM,XMX,NX,YM,YMX,NY,VEWZMN,VEWZMX,
      *	XV,YV,VIEWZ)
+
+	CALL COLOR(IPEN(0))
+
 	RETURN
 	END

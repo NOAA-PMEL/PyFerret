@@ -58,6 +58,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *                  A time axis may be a T axis or F axis
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
+* V72  5/17 acm* Ticket 2530 add WIRE/COLOR= 
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -77,7 +78,7 @@
 	LOGICAL	  no_range, overlay, no_labels, transpz, got_vpoint,
      .		  is_logh, is_logv, is_shade, use_cell, set_up, inc_grid
 	INTEGER	  status, qp,
-     .		  ax1_work, ax2_work, density
+     .		  ax1_work, ax2_work, density, ipen
 	REAL	  only_val, aspect
 	PARAMETER (aspect = 0.0) 		!kob 12/96
 	CHARACTER vpoint*24, zlims*24, zscale*24
@@ -136,6 +137,16 @@
            IF ( status .NE. ferr_ok ) RETURN
         ENDIF
 
+* ... /COLOR=color name or pen number
+	qp = qual_given(slash_wire_color)
+	IF ( qp .GT. 0 ) THEN
+           CALL EQUAL_COLOR( cmnd_buff(qual_start(qp):qual_end(qp)),
+     .                           ipen, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+	ELSE
+	   ipen = -1	! auto-select in DISP_SET_UP
+	ENDIF
+
 * prepare PLOT+ environment
 	CALL DISP_PREP( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
@@ -167,7 +178,7 @@
      .				is_uvar,	
      .				workmem(ax1_work)%ptr,
      .				workmem(ax2_work)%ptr,
-     .				-1, 			! auto pen select
+     .				ipen,
      .				set_up,
      .				status )
 	IF ( status .NE. ferr_ok ) GOTO 5000

@@ -70,6 +70,8 @@
 * V7    6/16 *kms* Add reserved slots for PyFerret commands and qualifiers
 *                  to simplify future merges of Ferret into PyFerret
 * V720 *acm*  3/17 Ticket 2512: Add STAT/PRECICISION=
+* V720 *acm*  5/17 Ticket 2530 add WIRE/COLOR= and draw the color with pen 1
+
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -345,6 +347,7 @@
      .			slash_wire_view,
      .			slash_wire_zlimits,
      .			slash_wire_zscale,
+     .			slash_wire_color,
      .
      .			slash_frame_format,
      .			slash_frame_file,
@@ -644,6 +647,7 @@
      .			slash_wire_view		= 1+16,
      .			slash_wire_zlimits	= 1+17,
      .			slash_wire_zscale	= 1+20,
+     .			slash_wire_color	= 1+21,
      .
      .			slash_frame_format	= 0 + 1,
      .			slash_frame_file	= 1 + 1,

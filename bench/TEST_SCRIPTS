@@ -284,9 +284,11 @@ bn_ps.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl
 !
-! Test SOCAT decimation script (not part of normal benchmark tests)
+! Test SOCAT decimation script and color wire plots
+! (not part of normal benchmark tests)
 !
 err700_decimate.jnl
+bn_color_wire.jnl
 ! PyFerret-only Ferret scripts
 bn_outline_poly.jnl
 bn_contourcolor.jnl

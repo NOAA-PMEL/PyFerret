@@ -1,0 +1,13 @@
+set text /font=lucida
+set region /i=1:80 /j=1:80
+let bump = exp(-1.0*(((I-40)/20)^2 + ((J-40)/20)^2))
+wire /color=blue /viewpoint=-4,-10,2 bump
+frame /file=bluewire.png
+set window /color=blue 1
+set text /font=lucida /color=(100,100,25)
+wire /color=red /thick=3.5 /viewpoint=-4,-10,2 bump
+frame /file=redwire.png
+wire /color=(100,0,0,25) /thick=3.5 /viewpoint=-4,-10,2 bump
+frame /file=red25wire.png
+wire /color=(100,0,0) /opacity=10 /thick=3.5 /viewpoint=-4,-10,2 bump
+frame /file=red10wire.png

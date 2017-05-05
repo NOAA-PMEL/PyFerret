@@ -59,6 +59,8 @@
 *                  A time axis may be a T axis or F axis
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * PyFr *kms*  4/17 Remove SAVE_FRAME for HDF format since no longer supported
+* V72  5/17 acm* Ticket 2530 add WIRE/COLOR= 
+* PyFr *kms*  5/17 Ticket 2530 add WIRE/COLOR= /OPACITY= /THICKNESS= 
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -70,6 +72,8 @@
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
 	include 'xplot_setup.cmn'
+        include 'gkscm1_inc.decl'
+        include 'GKSCM1.INC'    ! wsid
 
 	
 * calling argument declarations:
@@ -78,8 +82,9 @@
 	LOGICAL	  no_range, overlay, no_labels, transpz, got_vpoint,
      .		  is_logh, is_logv, is_shade, use_cell, set_up, inc_grid
 	INTEGER	  status, qp,
-     .		  ax1_work, ax2_work, density
-	REAL	  only_val, aspect
+     .		  ax1_work, ax2_work, density, icolor, ipen
+	REAL	  only_val, aspect, vbuf
+        REAL*4    dfltthick, opacity
 	PARAMETER (aspect = 0.0) 		!kob 12/96
 	CHARACTER vpoint*24, zlims*24, zscale*24
 
@@ -137,6 +142,55 @@
            IF ( status .NE. ferr_ok ) RETURN
         ENDIF
 
+* ... /COLOR=color name or pen number
+        dfltthick = 1.0
+	qp = qual_given(slash_wire_color)
+	IF ( qp .GT. 0 ) THEN
+*          get the color ID and default thickness
+           CALL EQUAL_COLOR( cmnd_buff(qual_start(qp):qual_end(qp)),
+     .                           icolor, dfltthick, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+	ELSE
+	   icolor = -1	! auto-select in DISP_SET_UP
+	ENDIF
+
+* ... /OPACITY=n
+        qp = qual_given( slash_wire_opacity )
+        IF ( qp .GT. 0 ) THEN
+           IF ( icolor .GE. 0 ) THEN
+               CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)),
+     .                        vbuf, status)
+               IF ( status .NE. ferr_ok ) GOTO 5000
+               IF ( (vbuf .LT. 0.0) .OR. (vbuf .GT. 100.0) ) GOTO 5500
+               opacity = vbuf / 100.0
+               CALL DUP_COLOR_SET_OPACITY(wsid, icolor, opacity)
+           ELSE
+*             leave as the auto-select value (-1)
+              CALL WARN ('/OPACITY ignored unless /COLOR is given')
+           ENDIF
+        ENDIF
+
+* ... CONTOUR/THICKNESS=n
+        qp = qual_given( slash_wire_thick )
+        IF ( qp .GT. 0  ) THEN
+           IF ( icolor .GE. 0 ) THEN
+              CALL EQUAL_THICK(cmnd_buff(qual_start(qp):qual_end(qp)),
+     .                         dfltthick, icolor, ipen, status)
+              IF ( status .NE. ferr_ok ) GOTO 5000
+           ELSE
+*             leave as the auto-select value (-1)
+              CALL WARN ('/THICKNESS ignored unless /COLOR is given')
+              ipen = icolor
+           ENDIF
+        ELSEIF ( icolor .GE. 0 ) THEN
+*          /THICK not given; convert color ID to pen ID using default thickness
+           CALL EQUAL_THICK(' ', dfltthick, icolor, ipen, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
+        ELSE
+*          /THICK and /COLOR not given; leave as auto-select value (-1)
+           ipen = icolor
+        ENDIF
+
 * prepare PLOT+ environment
 	CALL DISP_PREP( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
@@ -168,7 +222,7 @@
      .				is_uvar,	
      .				workmem(ax1_work)%ptr,
      .				workmem(ax2_work)%ptr,
-     .				-1, 			! auto pen select
+     .				ipen,
      .				set_up,
      .				status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
@@ -205,4 +259,7 @@
 
 * error exits
  5000	GOTO 1000
+ 5500   CALL ERRMSG( ferr_out_of_range, status,
+     .          cmnd_buff(qual_start(qp):qual_end(qp))//pCR//
+     .          'Value from 0 to 100 must be given', *1000 )
 	END

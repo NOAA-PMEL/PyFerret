@@ -152,7 +152,7 @@
 * V685+ *acm  12/13 In dependent axis setup, make sure variable the_taxis is set.
 * V691  *acm*  5/14 For ribbon line plots, set up for histogram levels
 * V691  *acm*  7/14 Fix ticket 2187: axis labels for PLOT/VS plots.
-* V693  *acm* 10/14 Fix 2122: Check for a valid axis if they've asked for a 
+* V693  *acm* 10/14 Fix 2212: Check for a valid axis if they've asked for a 
 *                   log axis before proceeding with vlimits or hlimits
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V695+ *sh*  3/15 if an FMRC dataset disambiguate T and F axes with labels
@@ -191,6 +191,8 @@
 * V7.2 *acm* 4/2017 Ticket 2318: for constant-value data on a line plot, make the axis
 *                   range +/- 10% of the value instead of +/- 1. For very large or small
 *                   values the +/- 1 corrupted the labels or the location of the plot.
+* V7.2 *acm* 4/2017 In fix for 2212, make sure ind_min,ind_max are defined before using them 
+*                   to check log limits on log axis.  Make sure the limits are actually applied.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -479,7 +481,6 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 
 		    ind_min = TSTEP_TO_SECS (mgrid_buff, t_dim, lo)
 		    ind_max = TSTEP_TO_SECS (mgrid_buff, t_dim, hi)
-		    
 
 * Plotting short time range? If so recompute tref     
 * axis length in hours from time since BC in seconds
@@ -508,6 +509,9 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 		    IF (itmp .NE. mnormal) CALL TM_DEALLO_DYN_LINE( itmp )
 		    itmp = mnormal
 	         ENDIF
+	      ELSE  ! not time axis
+	      
+	         CALL MINMAX( indep_dat, npts, mr_bad_data(mv), ind_min, ind_max )
 	      ENDIF
 
 	      slen = TM_LENSTR1(plot_title)
@@ -537,7 +541,13 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
               cal_name = line_cal_name(tax)
               cal_id_1 = TM_GET_CALENDAR_ID ( cal_name )
 
+	      CALL EQUAL_RANGE(
+     .			cmnd_buff(qual_start(pindeplim):qual_end(pindeplim)),
+     .			indep_dim, ind_min, ind_max, delta,
+     .			formatted, range_rqd, cal_id_1, status )
+
 * Check for a valid axis if they've asked for a log axis before proceeding
+
 	      IF (indep_is_log) THEN
 	         CALL AXIS_ENDS(indep_ax,indep_dim,grid1,ind_min,ind_max,
      .                       delta, indep_is_log, indep_axtyp, versus, status)
@@ -546,12 +556,15 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                     last  = ind_max
                     GOTO 5170
                  ENDIF
-	      ENDIF
 
-	      CALL EQUAL_RANGE(
+* Get requested ends in data units again
+	         IF (versus) CALL EQUAL_RANGE(
      .			cmnd_buff(qual_start(pindeplim):qual_end(pindeplim)),
      .			indep_dim, ind_min, ind_max, delta,
      .			formatted, range_rqd, cal_id_1, status )
+
+	      ENDIF
+
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	   ELSEIF ( all_1_ind .AND. .NOT.overlay ) THEN
 	      IF ( val1 .EQ. mr_bad_data(mv) ) THEN
@@ -1155,6 +1168,11 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	            CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
 	            denig_xylim_msg_done = .TRUE.
 	         ENDIF
+	         CALL EQUAL_RANGE(
+     .			cmnd_buff(qual_start(pindeplim):qual_end(pindeplim)),
+     .			indep_dim, ind_min, ind_max, delta,
+     .			formatted, range_rqd, cal_id_1, status )
+	         IF ( status .NE. ferr_OK ) GOTO 5000
 		 
 *  Check for valid log axis before proceeding
 	         IF (indep_is_log) THEN
@@ -1166,12 +1184,15 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                        last  = ind_max
                        GOTO 5170
                     ENDIF
-	         ENDIF
-	         CALL EQUAL_RANGE(
+
+* Get requested ends in data units again    
+	            CALL EQUAL_RANGE(
      .			cmnd_buff(qual_start(pindeplim):qual_end(pindeplim)),
      .			indep_dim, ind_min, ind_max, delta,
      .			formatted, range_rqd, cal_id_1, status )
-	         IF ( status .NE. ferr_OK ) GOTO 5000
+
+	         ENDIF
+
 * convert time given in time steps to absolute units	   
 	         IF ( time_axis .AND. .NOT.formatted ) THEN
 * time limits given as tstep range although mode calendar is true

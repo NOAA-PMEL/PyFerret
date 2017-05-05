@@ -75,6 +75,8 @@
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 * V720 *acm*  3/17 Ticket 2512: Add STAT/PRECICISION=
+* V720 *acm*  5/17 Ticket 2530 add WIRE/COLOR= and draw the color with pen 1
+* PyFr *kms*  5/17 Ticket 2530 add WIRE/COLOR= /OPACITY= /THICKNESS= 
 
 
 * command qualifier states
@@ -371,6 +373,9 @@
      .			slash_wire_view,
      .			slash_wire_zlimits,
      .			slash_wire_zscale,
+     .			slash_wire_color,
+     .			slash_wire_thick,
+     .			slash_wire_opacity,
      .
      .			slash_frame_format,
      .			slash_frame_file,
@@ -694,6 +699,9 @@
      .			slash_wire_view		= 1+16,
      .			slash_wire_zlimits	= 1+17,
      .			slash_wire_zscale	= 1+20,
+     .			slash_wire_color	= 1+21,
+     .			slash_wire_thick	= 1+22,
+     .			slash_wire_opacity	= 1+23,
      .
      .			slash_frame_format	= 0 + 1,
      .			slash_frame_file	= 1 + 1,

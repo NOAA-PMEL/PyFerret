@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1404 May  2 13:54 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1404 May  4 15:52 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -299,6 +299,7 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
+   bn_color_wire.jnl
    bn_outline_poly.jnl
    bn_contourcolor.jnl
    bn_inf2missing.jnl
@@ -311,7 +312,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Tue May  2 13:55:14 PDT 2017
+Beginning at Thu May  4 17:19:03 PDT 2017
 *** Running ferret script: bn_syntax.jnl
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -5522,6 +5523,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
 *** Running ferret script: err700_decimate.jnl
+*** Running ferret script: bn_color_wire.jnl
 *** Running ferret script: bn_outline_poly.jnl
 *** Running ferret script: bn_contourcolor.jnl
 *** Running ferret script: bn_inf2missing.jnl
@@ -5553,4 +5555,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 >>> ... ... >>> >>> >>> 
 *** Running python script: testfermethods.py
 >>> ... ... >>> >>> >>> 
-Ended at Tue May  2 13:59:45 PDT 2017
+Ended at Thu May  4 17:23:38 PDT 2017

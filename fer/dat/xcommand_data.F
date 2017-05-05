@@ -255,6 +255,9 @@
 * V702 *sh*   1/17 Removed the USER command
 *	      3/17 Added SHOW MEMORY/DIAGNOSTIC
 * V720 *acm*  3/17 Ticket 2512: Add STAT/PRECISION=
+* V720 *acm*  5/17 Ticket 2530 add WIRE/COLOR= 
+* PyFr *kms*  5/17 Ticket 2530 add WIRE/COLOR= /OPACITY= /THICKNESS=
+
 *
 * !!!!!!!!!!
 * Use caution when defining new commands, qualifiers, or changing these data structures:
@@ -1630,9 +1633,9 @@
 		DATA qualifiers  (nqual_at21a+18)/ 'TRANPOSE'/  
 		DATA qualifiers  (nqual_at21a+19)/ 'NOLABEL'/   
 		DATA qualifiers  (nqual_at21a+20)/ 'ZSCALE'/
-		DATA qualifiers  (nqual_at21a+21)/ '****'/
-		DATA qualifiers  (nqual_at21a+22)/ '****'/
-		DATA qualifiers  (nqual_at21a+23)/ '****'/
+		DATA qualifiers  (nqual_at21a+21)/ 'COLOR'/
+		DATA qualifiers  (nqual_at21a+22)/ 'THICKNES'/
+		DATA qualifiers  (nqual_at21a+23)/ 'OPACITY'/
 		DATA qualifiers  (nqual_at21a+24)/ '****'/
 		DATA qualifiers  (nqual_at21a+25)/ '****'/
 		DATA qualifiers  (nqual_at21a+26)/ 'TITLE'/

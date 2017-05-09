@@ -180,6 +180,15 @@ GO err696_contour_conset
 GO bn_reset
 GO err696_subspan_mod_strides
 
+GO bn_reset
+GO err71_plotvs_mode_label
+
+GO bn_reset
+GO err700_vs_plot_axes
+
+GO bn_reset
+GO err71_vs_constant
+
 exit/command
 
 

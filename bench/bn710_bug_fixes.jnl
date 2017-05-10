@@ -49,8 +49,9 @@ go err700_attribute_parsing
 
 
 ! Bug 2477 plot axes are not fully drawn, some /VS plots
-go bn_reset
-go err700_vs_plot_axes
+! move this to bn_gif.jnl 
+! go bn_reset
+! go err700_vs_plot_axes
 
 ! Bug 2483. Fixing axis-ends symbols XAXIS_MIN,XAXIS_MAX, YAXIS_MIN,YAXIS_MAX
 go bn_reset

@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1404 May  4 15:52 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith oerdnewp 1404 May 10 08:14 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -312,7 +312,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Thu May  4 17:19:03 PDT 2017
+Beginning at Wed May 10 08:17:22 PDT 2017
 *** Running ferret script: bn_syntax.jnl
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -4867,9 +4867,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
 Replacing definition of axis XAXIS
 Replacing definition of axis YAXIS
 Replacing definition of axis TAXIS
@@ -5121,13 +5118,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_compressed_gather.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -5479,6 +5470,21 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Replacing definition of axis XAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Re-defining viewport LL6
+Re-defining viewport UL6
+Re-defining viewport LM6
+Re-defining viewport UM6
+Re-defining viewport LR6
+Re-defining viewport UR6
 *** Running ferret script: bn_ps.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
@@ -5555,4 +5561,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 >>> ... ... >>> >>> >>> 
 *** Running python script: testfermethods.py
 >>> ... ... >>> >>> >>> 
-Ended at Thu May  4 17:23:38 PDT 2017
+Ended at Wed May 10 08:22:06 PDT 2017

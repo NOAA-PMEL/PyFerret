@@ -113,8 +113,10 @@
 
            IF (lastl .GE. firstl ) THEN
 	      IF (ABS(lastl - last) .GT. eps2) last = last + 1.
+	      IF (ABS(lastl - last) .GT. 1.) last = last - 1.
 	   ELSE
              IF (ABS(firstl - first) .GT. eps2) first = first + 1.
+	      IF (ABS(firstl - first) .GT. 1.) first = first - 1.
 	   ENDIF
        ENDIF
        span = ABS(last-first)

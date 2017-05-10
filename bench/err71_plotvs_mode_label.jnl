@@ -1,4 +1,4 @@
-! err71_plotVS_mode_label.jnl
+! err71_plotvs_mode_label.jnl
 !  *acm*3/17/17 Ticket 2517: 
 ! MODE LONG_LABEL, MODE LATIT_LABEL need to apply 
 ! to PLOT/VS plots.

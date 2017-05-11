@@ -135,6 +135,7 @@
 * v7.02   12/2016 Merged true-monthly axis branch to the trunk
 * v7.1     2/2017 Official release
 * v7.11    4/19/2017 Tag before GFDL visit 4/2017
+* v7.12    5/11/2017 
 
         IMPLICIT NONE
 	include	'xrevision.cmn'

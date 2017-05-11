@@ -93,16 +93,11 @@
          GOTO 999
       ENDIF
 
-* Initialize the result
+* Initialize the result, F90 initialize whole array
 
-      DO 90 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-      DO 90 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-      DO 90 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-      DO 90 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-      DO 90 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-      DO 90 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-         result(i,j,k,l,m,n) = bad_flag_result
-  90  CONTINUE
+      result = bad_flag_result  
+
+* Compute the dot product
 
       n1 = arg_lo_ss(F_AXIS,ARG1)
       n2 = arg_lo_ss(F_AXIS,ARG2)

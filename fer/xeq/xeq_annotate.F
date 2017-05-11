@@ -113,7 +113,6 @@
 
 * ... pass a the command to PPLUS
 
-c	print *, ppl_buff(:rlen)
 	CALL PPLCMD (' ',' ',0,ppl_buff(:rlen),1,1)
 
  5000	RETURN

@@ -29,6 +29,7 @@
 *                are compatible with parg_type_float=1, parg_type_string=2
 * v720: 03/17 -- added p_innerprod for inner product function
 * v720: 03/17 -- added p_transpose for transpose function
+* v720: 05/17 -- rename innerproduct functions to dot
 
 
 	INTEGER		p_xunravel, p_times2, p_reshape, p_zlayer,
@@ -38,7 +39,7 @@
      .			p_samplem, p_samplen,
      .			p_spawn, p_strcmp, p_strlen, p_upcase, 
      .                  p_strindex, p_strrindex, p_dncase, p_strcat,
-     .                  p_substring, p_strfloat, p_innerprod, p_transpose
+     .                  p_substring, p_strfloat, p_dot, p_transpose
 
 	PARAMETER     ( p_xunravel = 1,
      .			p_times2      = p_xunravel  + 1,
@@ -65,8 +66,8 @@
      .                  p_strcat      = p_dncase    + 1,
      .                  p_substring   = p_strcat    + 1,
      .                  p_strfloat    = p_substring + 1,
-     .                  p_innerprod   = p_strfloat  + 1,
-     .                  p_transpose   = p_innerprod + 1 )
+     .                  p_dot         = p_strfloat  + 1,
+     .                  p_transpose   = p_dot + 1 )
 
 * parameters to control the passing of context information
 	INTEGER		pset_to_unspec, ppass_along

@@ -56,6 +56,8 @@
 *        2/12 *kms* Add E and F dimensions (set to nferdims in tmap_dims.parm)
 * V720: 4/17 *acm* Add DOT (inner product) and TRANSPOSE as direction-changing functions
 *                  which call specific funcions depenging on direction arguments
+* v720: 5/17 *acm* Rename innerproduct functions to dot
+*                  Also fix gfcn_axis_implied_from definition for arg 3 of DOT function
 
 * the addition (or major modification) of an internal grid-changing function
 * requires changes to these routines:
@@ -1236,75 +1238,80 @@
 
 * dot(var1,var2,idim) - return inner-product of two variables 
 *                                computed along a given common dimension
-	INTEGER		p_innerprod_arg_start, p_innerprod_num_args
-	PARAMETER     ( p_innerprod_arg_start = p_strfloat_arg_start +
+	INTEGER		p_dot_arg_start, p_dot_num_args
+	PARAMETER     ( p_dot_arg_start = p_strfloat_arg_start +
      .					    p_strfloat_num_args,
-     .			p_innerprod_num_args  = 3 )
-	DATA gfcn_name         (p_innerprod) /'DOT'/
-	DATA gfcn_alt_name_base (p_innerprod) /'DOT_%'/
-	DATA gfcn_version      (p_innerprod) / 1.0 /
-	DATA gfcn_descr        (p_innerprod) /
+     .			p_dot_num_args  = 3 )
+	DATA gfcn_name         (p_dot) /'DOT'/
+	DATA gfcn_alt_name_base (p_dot) /'DOT_%'/
+	DATA gfcn_version      (p_dot) / 1.0 /
+	DATA gfcn_descr        (p_dot) /
      .	'Compute the inner product of two variables along given dimension' /
-	DATA gfcn_rtn_type     (p_innerprod) /pfcn_rtn_float /
-	DATA gfcn_num_reqd_args(p_innerprod) /p_innerprod_num_args/
-	DATA (gfcn_dir_args(i,p_innerprod),i=1,nferdims)/3,0,0,0,0,0/
-	DATA gfcn_has_vari_args(p_innerprod) /.FALSE./
-	DATA (gfcn_axis_will_be(i,p_innerprod),i=1,nferdims)/
+	DATA gfcn_rtn_type     (p_dot) /pfcn_rtn_float /
+	DATA gfcn_num_reqd_args(p_dot) /p_dot_num_args/
+	DATA (gfcn_dir_args(i,p_dot),i=1,nferdims)/3,0,0,0,0,0/
+	DATA gfcn_has_vari_args(p_dot) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_dot),i=1,nferdims)/
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args,
      .					pgc_axis_implied_by_args/
-	DATA (gfcn_piecemeal_ok(i,p_innerprod),i=1,nferdims)
+	DATA (gfcn_piecemeal_ok(i,p_dot),i=1,nferdims)
      .      / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
-	DATA gfcn_arg_ptr(p_innerprod) /p_innerprod_arg_start/
+	DATA gfcn_arg_ptr(p_dot) /p_dot_arg_start/
 
 * ... description of argument 1
-	DATA gfcn_arg_name(p_innerprod_arg_start+0)/'VAR1'/
-	DATA gfcn_arg_type(p_innerprod_arg_start+0)/parg_type_float/
-	DATA gfcn_arg_units(p_innerprod_arg_start+0)/' '/
-	DATA gfcn_arg_descr(p_innerprod_arg_start+0)/'Variable 1'/
-	DATA (gfcn_arg_extend_lo (i,p_innerprod_arg_start+0),i=1,nferdims)
+	DATA gfcn_arg_name(p_dot_arg_start+0)/'VAR1'/
+	DATA gfcn_arg_type(p_dot_arg_start+0)/parg_type_float/
+	DATA gfcn_arg_units(p_dot_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_dot_arg_start+0)/'Variable 1'/
+	DATA (gfcn_arg_extend_lo (i,p_dot_arg_start+0),i=1,nferdims)
      .    / 0, 0, 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_innerprod_arg_start+0),i=1,nferdims)
+	DATA (gfcn_arg_extend_hi (i,p_dot_arg_start+0),i=1,nferdims)
      .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
-	DATA (gfcn_axis_implied_from(i, p_innerprod_arg_start+0),i=1,nferdims)
+	DATA (gfcn_axis_implied_from(i, p_dot_arg_start+0),i=1,nferdims)
+     .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
+
+     
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_substring_arg_start+0),i=1,nferdims)
      .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 * ... description of argument 2
-	DATA gfcn_arg_name(p_innerprod_arg_start+1)/'VAR2'/
-	DATA gfcn_arg_type(p_innerprod_arg_start+1)/parg_type_float/
-	DATA gfcn_arg_units(p_innerprod_arg_start+1)/' '/
-	DATA gfcn_arg_descr(p_innerprod_arg_start+1)/'Variable 2'/
-	DATA (gfcn_arg_extend_lo (i,p_innerprod_arg_start+1),i=1,nferdims)
+	DATA gfcn_arg_name(p_dot_arg_start+1)/'VAR2'/
+	DATA gfcn_arg_type(p_dot_arg_start+1)/parg_type_float/
+	DATA gfcn_arg_units(p_dot_arg_start+1)/' '/
+	DATA gfcn_arg_descr(p_dot_arg_start+1)/'Variable 2'/
+	DATA (gfcn_arg_extend_lo (i,p_dot_arg_start+1),i=1,nferdims)
      .    / 0, 0, 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_innerprod_arg_start+1),i=1,nferdims)
+	DATA (gfcn_arg_extend_hi (i,p_dot_arg_start+1),i=1,nferdims)
      .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 2 ?
-	DATA (gfcn_axis_implied_from(i, p_innerprod_arg_start+1),i=1,nferdims)
+	DATA (gfcn_axis_implied_from(i, p_dot_arg_start+1),i=1,nferdims)
      .    / .TRUE., .TRUE., .TRUE., .TRUE., .TRUE., .TRUE. /
 
 * ... description of argument 3
-	DATA gfcn_arg_name(p_innerprod_arg_start+2)/'IDIM'/
-	DATA gfcn_arg_type(p_innerprod_arg_start+2)/parg_type_float/
-	DATA gfcn_arg_units(p_innerprod_arg_start+2)/' '/
-	DATA gfcn_arg_descr(p_innerprod_arg_start+2)/'Dimension (e.g.1,2,...)'/
-	DATA (gfcn_arg_extend_lo (i,p_innerprod_arg_start+1),i=1,nferdims)
+	DATA gfcn_arg_name(p_dot_arg_start+2)/'IDIM'/
+	DATA gfcn_arg_type(p_dot_arg_start+2)/parg_type_float/
+	DATA gfcn_arg_units(p_dot_arg_start+2)/' '/
+	DATA gfcn_arg_descr(p_dot_arg_start+2)/'Dimension (e.g.1,2,...)'/
+	DATA (gfcn_arg_extend_lo (i,p_dot_arg_start+1),i=1,nferdims)
      .    / 0, 0, 0, 0, 0, 0 /
-	DATA (gfcn_arg_extend_hi (i,p_innerprod_arg_start+1),i=1,nferdims)
+	DATA (gfcn_arg_extend_hi (i,p_dot_arg_start+1),i=1,nferdims)
      .    / 0, 0, 0, 0, 0, 0 /
 * ... merge the axes implied by argument 3 ?
-	DATA (gfcn_axis_implied_from(i, p_innerprod_arg_start+1),i=1,nferdims)
+	DATA (gfcn_axis_implied_from(i, p_dot_arg_start+2),i=1,nferdims)
      .    / .FALSE., .FALSE., .FALSE., .FALSE., .FALSE., .FALSE. /
 
 c-------------
 
 * TRANSPOSE(var,dim1,dim2) - return transpose of variable in the two given directions
 	INTEGER		p_transpose_arg_start, p_transpose_num_args
-	PARAMETER     ( p_transpose_arg_start = p_innerprod_arg_start +
-     .					    p_innerprod_num_args,
+	PARAMETER     ( p_transpose_arg_start = p_dot_arg_start +
+     .					    p_dot_num_args,
      .			p_transpose_num_args  = 3 )
 	DATA gfcn_name         (p_transpose) /'TRANSPOSE'/
 	DATA gfcn_alt_name_base (p_transpose) /'TRANSPOSE_%%'/

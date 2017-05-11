@@ -595,7 +595,7 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
  100       ENDDO
 
 	   IF ( buff .NE. ' ' ) THEN
-* Check for optional pareskipeses
+* Check for optional parentheses
 
               slen = TM_LENSTR1(buff)
               s1 = 1

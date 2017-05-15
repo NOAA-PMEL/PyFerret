@@ -98,7 +98,7 @@
 /* *acm* 6/16         Make sure var.nmemb is initialized when adding a new variable. */
 /* *kms* 8/16         Rework the entire file to remove memory leaks and improve consistent initialization */
 /* *acm* 10/16        ncf_get_uvar_grid now returns the datatype as well as the grid  */
-
+/* *acm*  5/17        Add new ncf_get_var_type function
 
 #include "ferretmacros.h"
 

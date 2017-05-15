@@ -98,7 +98,7 @@
 /* *acm* 6/16         Make sure var.nmemb is initialized when adding a new variable. */
 /* *kms* 8/16         Rework the entire file to remove memory leaks and improve consistent initialization */
 /* *acm* 10/16        ncf_get_uvar_grid now returns the datatype as well as the grid  */
-/* *acm*  5/17        Add new ncf_get_var_type function
+
 
 #include "ferretmacros.h"
 
@@ -311,7 +311,6 @@ int FORTRAN(ncf_get_var_outtype)( int *dset, int *varid,    int *outtype )
     return FERR_OK;
 }
 
-
 /* ----
  * Find a variable in a dataset based on the dataset integer ID and
  * variable id. Return the variable type.
@@ -327,7 +326,6 @@ int FORTRAN(ncf_get_var_type)( int *dset, int *varid, int *vartype )
     *vartype = var_ptr->type;
     return FERR_OK;
 }
-
 
 /* ----
  * Find a variable attribute based on its variable ID and dataset ID, and attribute name
@@ -1646,8 +1644,7 @@ int FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar,
         list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
     }
 
-    /* Now the missing_value, for numeric variables. If the data type
-	   was given for the variable, make missing_value the same.*/
+    /* Now the missing_value, for numeric variables */
     var.natts = var.natts+1;
     var.fillval = *bad;
     ncf_init_attribute(&att);
@@ -1657,11 +1654,6 @@ int FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar,
 #ifdef double_p
     att.type = NC_DOUBLE;
     att.outtype = NC_DOUBLE;
-    if (var.type != 0)
-		{
-		att.type = var.type;
-		att.outtype = var.type;
-		}
 #else
     att.type = NC_FLOAT;
     att.outtype = NC_FLOAT;

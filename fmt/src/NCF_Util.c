@@ -146,6 +146,7 @@ int  FORTRAN(ncf_get_attr_from_id) (int *, int *, int * , int *, double* );
 
 int  FORTRAN(ncf_get_var_outflag) (int *, int *, int *);
 int  FORTRAN(ncf_get_var_outtype) (int *, int *, int *);
+int  FORTRAN(ncf_get_var_type) (int *, int *, int *);
 int  FORTRAN(ncf_get_var_uvflag) (int *, int *, int *);
 
 int  FORTRAN(ncf_init_uvar_dset)( int *);
@@ -309,6 +310,24 @@ int FORTRAN(ncf_get_var_outtype)( int *dset, int *varid,    int *outtype )
     *outtype = var_ptr->outtype;
     return FERR_OK;
 }
+
+
+/* ----
+ * Find a variable in a dataset based on the dataset integer ID and
+ * variable id. Return the variable type.
+ */
+int FORTRAN(ncf_get_var_type)( int *dset, int *varid, int *vartype )
+{
+    ncvar *var_ptr;
+
+    var_ptr = ncf_get_ds_var_ptr(dset, varid);
+    if ( var_ptr == NULL )
+        return ATOM_NOT_FOUND;
+
+    *vartype = var_ptr->type;
+    return FERR_OK;
+}
+
 
 /* ----
  * Find a variable attribute based on its variable ID and dataset ID, and attribute name
@@ -1627,7 +1646,8 @@ int FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar,
         list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
     }
 
-    /* Now the missing_value, for numeric variables */
+    /* Now the missing_value, for numeric variables. If the data type
+	   was given for the variable, make missing_value the same.*/
     var.natts = var.natts+1;
     var.fillval = *bad;
     ncf_init_attribute(&att);
@@ -1635,11 +1655,16 @@ int FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar,
     strcpy(att.name,"missing_value");
     att.len = 1;
 #ifdef double_p
-    att.type = NC_FLOAT;
-    att.outtype = NC_FLOAT;
-#else
     att.type = NC_DOUBLE;
     att.outtype = NC_DOUBLE;
+    if (var.type != 0)
+		{
+		att.type = var.type;
+		att.outtype = var.type;
+		}
+#else
+    att.type = NC_FLOAT;
+    att.outtype = NC_FLOAT;
 #endif
     att.vals = (double *) malloc(att.len * sizeof(double));
     att.vals[0] = *bad;

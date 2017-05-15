@@ -51,6 +51,7 @@ cd_get_var_id.F\
 cd_get_var_info.F\
 cd_get_var_outflag.F\
 cd_get_var_outtype.F\
+cd_get_var_type.F\
 cd_get_var_uvflag.F\
 cd_init_dset.F\
 cd_init_agg_dset.F\

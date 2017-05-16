@@ -1,0 +1,11 @@
+! err71_vs_lon_over.jnl
+! PLOT/VS/OVER does longitude moduloing if the xpts
+!  variable has units of degrees east.
+
+use coads_climatology
+shade/l=1/x=0:360/nolab/nokey if sst then 1
+let/units=degrees_east xpts = {-170,-150,-100, 100, 150, 170}
+let/units=degrees_north ypts = {-30, -20, -10,   0,  10,  20}
+
+plot/vs/over/thick/siz=0.2/sym=19 xpts,ypts
+frame/file=vs_lon_over.gif

@@ -580,18 +580,6 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   buff1 = VAR_UNITS(cx_x)
 	   IF (iunits .GE. 0) iunits = TM_UNIT_ID(buff1)
 	   
-	   IF (iunits .EQ. 4) THEN
-	      mod_vs_x = (TM_HAS_STRING(buff1, '_e') .OR.
-     .                   TM_HAS_STRING(buff1, 'lon') )
-	         
-	   ENDIF
-
-	   buff1 = VAR_UNITS(cx_y)	 
-	   junits = TM_UNIT_ID(buff1)
-	   IF (junits .EQ. 4) THEN
-               mod_vs_y = (TM_HAS_STRING(buff1, '_e') .OR.
-     .                     TM_HAS_STRING(buff1, 'lon') ) 
-	   ENDIF
 
 
 	   IF (.NOT.overlay) THEN
@@ -640,9 +628,24 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                  CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )	 
               ENDIF	 
 		  
-              CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 ) ! for now, anyway	 
-           ELSE
+              CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 ) ! for now, anyway	
+	      
+           ELSE ! overlay
               CALL PPLCMD ( from, line, 0, indep_ax//'FOR 0', 1, 1 )
+
+              IF (iunits .EQ. 4) THEN
+	         mod_vs_x = (TM_HAS_STRING(buff1, '_e') .OR.
+     .                   TM_HAS_STRING(buff1, 'lon') )
+	         
+              ENDIF
+
+              buff1 = VAR_UNITS(cx_y)	 
+              junits = TM_UNIT_ID(buff1)
+              IF (junits .EQ. 4) THEN
+                  mod_vs_y = (TM_HAS_STRING(buff1, '_e') .OR.
+     .                        TM_HAS_STRING(buff1, 'lon') ) 
+              ENDIF
+
 	   ENDIF
 
 	ELSE	! (not VERSUS)

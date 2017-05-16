@@ -34,3 +34,7 @@ GO err71_save_bounds
 ! move this to bn_gif.jnl 
 ! GO bn_reset
 ! GO err71_vs_constant
+
+! run this from bn_gif.jnl 
+! GO bn_reset
+! GO err71_vs_lon_over 

@@ -135,7 +135,8 @@
 *                    definition of macro DFTYPE in ferret.h. ppl_memory remains float.
 * *kms*  2/16      - only catch/handle crash signals and exit gracefully if NDEBUG is defined;
 *                    if debug build, let it crash
-* *sh* 2/17        - removed global "memory" -- now 1 malloc per Ferret var
+* *sh*  2/17       - removed global "memory" -- now 1 malloc per Ferret var
+* *acm* 5/17       - restore -memsize switch to make the initial SET MEMORY setting
 */
 
 #include <unistd.h>
@@ -158,13 +159,12 @@ static void command_line_run();
 void help_text()
 {
   printf(
-	 "Usage:  ferret [-memsize Mflts] [-batch [outfile]] [-server] [-secure] [-gif] [-gui] [-unmapped] [-help] [-nojnl] [-noverify] [-script [args]]\n"
+	 "Usage:  ferret [-memsize Mflts] [-batch [outfile]] [-server] [-secure] [-gif] [-unmapped] [-help] [-nojnl] [-noverify] [-script [args]]\n"
          "   -memsize:  specify the memory cache size (default 25.6) in mega (10^6) flts where a flt\n"
-         "              is 8 bytes in double-precision Ferret, 4 bytes in single-precision Ferret\n"
+         "              is 8 bytes in double-precision Ferret\n"
          "   -batch:  output directly to metafile \"outfile\" w/out X windows\n"
          "   -unmapped:  use invisible output windows (superceded by -batch)\n"
          "   -gif:  output to GIF file w/o X windows only w/ FRAME command\n"
-         "   -gui:  to start Ferret in point and click mode (not available on all platforms)\n"
          "   -secure:  run securely -- don't allow system commands\n"
          "   -server:  run in server mode -- don't stop on message commands\n"
          "   -help:  obtain this listing\n"
@@ -208,7 +208,7 @@ main (int oargc, char *oargv[])
 
   int i=1;
   int j=1;
-  double rmem_size;
+  double rmem_size = 0;
   int using_gui = 0;
   int pplmem_size;
 
@@ -242,6 +242,7 @@ main (int oargc, char *oargv[])
 
   /* decode the command line options: "-memsize", and "-unmapped" */
   // pre-2017 code:   rmem_size = (double)mem_size/1.E6;
+  /* 5/17     pass rmem_size as is to init_memory, convert it there*/ 
   while (i<argc) {
     if (strcmp(argv[i],"-version")==0){
       FORTRAN(version_only)();
@@ -282,14 +283,6 @@ main (int oargc, char *oargv[])
       verify_flag = 0;    
 	  ++i;
       
-    } else if (strcmp(argv[i],"-gui")==0) {
-      i++;
-      if (gui_enabled){
-	using_gui = 1;  /* new routine added to xopws.c */
-      } else {
-	fprintf(stderr,
-		"Warning: the -gui flag has no effect on this platform\n");
-      }
     /* -script mode implies -server and -nojnl */
     } else if (strcmp(argv[i],"-script")==0)  {
 
@@ -408,7 +401,7 @@ main (int oargc, char *oargv[])
   }
 
   /* initialize size and shape of memory and linked lists */
-  FORTRAN(init_memory)();
+  FORTRAN(init_memory)(&rmem_size);
 
   if ( using_gui ) {
     gui_run(&argc, argv);

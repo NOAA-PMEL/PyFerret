@@ -1,4 +1,4 @@
-	SUBROUTINE INIT_MEMORY
+	SUBROUTINE INIT_MEMORY (vmem_size_arg)
 
 *
 *
@@ -54,6 +54,8 @@
 *                 code defining it from this routine)
 * V702: 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 *                - perform initial sanity check
+* V72 : 5/17 *acm* rmem_size comes in as-is; handle it as in xeq_set for a 
+*                  SET MEM/SIZ=
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -63,10 +65,12 @@
 	include 'xprog_state.cmn'
 
 * calling argument declarations:
+	REAL vmem_size_arg
 
 * internal variable declarations
 	INTEGER	bigblk, mv, ws
         INTEGER i1, i2, len
+	INTEGER*8 i8_val
         CHARACTER*30 TM_FMT, sym_name, buff
 
 * LINKS IN MEMORY VARIABLE TABLE
@@ -99,7 +103,14 @@
         ENDDO
 
 * SET MEMORY limit default
-	max_mem_allowed = pmax_mem_default
+* -memsize command-line argument passed in, handle as in xeq_set
+
+	IF (vmem_size_arg .NE. 0.) THEN 
+	   i8_val = (vmem_size_arg*1.0000000001D0) * 1000000  ! int tuncation issues ...
+	   max_mem_allowed = i8_val 
+	ELSE
+	   max_mem_allowed = pmax_mem_default
+	ENDIF
 
 * accounting variables (see xvariables.cmn)
         total_mem = 0

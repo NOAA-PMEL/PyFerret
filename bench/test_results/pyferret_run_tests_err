@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith oerdnewp 1404 May 10 08:14 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith tmap 1404 May 16 15:04 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -312,7 +312,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Wed May 10 08:17:22 PDT 2017
+Beginning at Tue May 16 15:05:14 PDT 2017
 *** Running ferret script: bn_syntax.jnl
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -2170,7 +2170,12 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
+           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
+           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2662,13 +2667,17 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file dat.dat
  LISTing to file a.nc
+           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file unf.dat
  LISTing to file a.nc
+           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file lonlat.dat
  LISTing to file lonlat.nc
+           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5008,7 +5017,11 @@ list index,edtim,udtim,udate,edate
 *** Running ferret script: bn_ez_noupcase.jnl
  LISTing to file abc.dat
  LISTing to file a.nc
+           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
+           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
 *** Running ferret script: bn_spawn_fail.jnl
 ls: cannot access notafile.nowhere: No such file or directory
 rm: cannot remove `nothing.dat': No such file or directory
@@ -5561,4 +5574,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 >>> ... ... >>> >>> >>> 
 *** Running python script: testfermethods.py
 >>> ... ... >>> >>> >>> 
-Ended at Wed May 10 08:22:06 PDT 2017
+Ended at Tue May 16 15:09:59 PDT 2017

@@ -101,12 +101,11 @@ void FORTRAN(get_time_axis_num)(int *axisnum, int *axisstart, int *axisend, char
                         CALTYPE *calendartype, int axiscoords[][6], int *numcoords,
                         char *errmsg, int *lenerrmsg, int maxlen_axisname, int maxlen_errmsg);
 void FORTRAN(init_journal)(int *status);
-void FORTRAN(init_memory)(void);
+void FORTRAN(init_memory)(double *maxmegawords);
 void FORTRAN(initialize)(void);
 void FORTRAN(no_journal)(void);
 void FORTRAN(proclaim_c)(int *ttoutLun, char *leader, int *quiet);
 void FORTRAN(save_ppl_memory_size)(int *ppl_mem_size);
-void FORTRAN(init_memory)(void);
 void FORTRAN(set_one_cmnd_mode)(int *one_cmnd_mode_int);
 void FORTRAN(turnoff_verify)(int *status);
 

@@ -383,7 +383,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     if ( pplMemory == NULL )
         return PyErr_NoMemory();
     set_ppl_memory(pplMemory, pplMemSize);
-    FORTRAN(init_memory)();
+    FORTRAN(init_memory)(&mwMemSize);
 
     if ( (metaname != NULL) || (unmappedFlag != 0) ) {
        /*

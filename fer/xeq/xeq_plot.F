@@ -597,7 +597,7 @@ CC       => Set values here instead.
  100       ENDDO
 
 	   IF ( buff .NE. ' ' ) THEN
-* Check for optional pareskipeses
+* Check for optional parentheses
 
               slen = TM_LENSTR1(buff)
               s1 = 1

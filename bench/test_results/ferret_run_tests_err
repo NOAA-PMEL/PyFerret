@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith tmap 12 May 16 14:49 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.12
+lrwxrwxrwx. 1 ksmith tmap 12 May 16 16:16 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.12
 Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
@@ -300,7 +300,7 @@ Benchmark scripts that will be run:
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Tue May 16 14:49:48 PDT 2017
+Beginning at Tue May 16 16:28:37 PDT 2017
 *** Running ferret script: bn_syntax.jnl
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -5472,6 +5472,9 @@ Re-defining viewport LM6
 Re-defining viewport UM6
 Re-defining viewport LR6
 Re-defining viewport UR6
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_ps.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
@@ -5519,4 +5522,4 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
-Ended at Tue May 16 14:53:27 PDT 2017
+Ended at Tue May 16 16:32:16 PDT 2017

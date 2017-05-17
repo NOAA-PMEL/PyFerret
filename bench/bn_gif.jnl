@@ -192,6 +192,9 @@ GO err700_vs_plot_axes
 GO bn_reset
 GO err71_vs_constant
 
+GO bn_reset 
+GO err71_vs_lon_over
+
 exit/command
 
 

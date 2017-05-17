@@ -49,7 +49,7 @@ annotate/norm/x=0.1/y=0.9/siz=0.1 "long TRUE  latit TRUE"
 
 ! latitude axis on the horizontal, longitude axis on the vertical
 
-set view ur; plot/vs/line/sym/hlim=0:40/vlim=-20:20 lat,lon 
+set view ur; plot/vs/line/sym/vlim=0:40/hlim=-20:20 lat,lon 
 annotate/norm/x=0.1/y=0.9/siz=0.1 "long vertical  latit horizontal"
 
 ! longitude axis on the horizontal, latitude axis on the vertical
@@ -65,7 +65,7 @@ annotate/norm/x=0.1/y=0.9/siz=0.1 "long TRUE  latit FALSE"
 
 cancel mode long_lab
 set mode latit_lab
-set view lr; plot/vs/line/sym/hlim=0:40/vlim=-20:20 lat,lon
+set view lr; plot/vs/line/sym/vlim=0:40/hlim=-20:20 lat,lon
 annotate/norm/x=0.1/y=0.9/siz=0.1 "long FALSE  latit TRUE"
 
 frame/file=lon_lat_label_controls.gif

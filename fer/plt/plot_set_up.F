@@ -193,6 +193,7 @@
 *                   values the +/- 1 corrupted the labels or the location of the plot.
 * V7.2 *acm* 4/2017 In fix for 2212, make sure ind_min,ind_max are defined before using them 
 *                   to check log limits on log axis.  Make sure the limits are actually applied.
+* V7.2 *acm* 5/2017 restore correct longitude moduloing for PLOT/VS overlay plots
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -229,7 +230,7 @@
 * V500 *kob* 3/99- up VAR_CODE and VAR_UNITS to 64 chars
 * internal variable declarations:
 	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, ITS_FMRC,
-     .                  ITSA_TRUEMONTH_AXIS,
+     .                  ITSA_TRUEMONTH_AXIS, TM_HAS_STRING,
      .			flip, time_axis,
      .			all_1_ind, formatted,
      .			indep_is_log, dep_is_log, use_nice,
@@ -258,7 +259,7 @@
 
 	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
      .			cal_id_old, cal_id_new
-        INTEGER         TM_UNIT_ID, cx_x , cx_y, iunits, axis_x_dir, axis_y_dir
+        INTEGER         TM_UNIT_ID, cx_x , cx_y, iunits, junits, axis_x_dir, axis_y_dir
 	CHARACTER*1     axdir(6), ax1
 
 	REAL		val1, dt_min, lo, hi, dep_len, 
@@ -595,6 +596,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   cx_y = cx_list(2)
 	   buff1 = VAR_UNITS(cx_x)
 	   IF (iunits .GE. 0) iunits = TM_UNIT_ID(buff1)
+	   
+
 
 	   IF (.NOT.overlay) THEN
 	      CALL AXIS_ENDS(indep_ax,indep_dim,grid1,ind_min,ind_max,
@@ -642,9 +645,24 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                  CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )	 
               ENDIF	 
 		  
-              CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 ) ! for now, anyway	 
-           ELSE
+              CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 ) ! for now, anyway	
+	      
+           ELSE ! overlay
               CALL PPLCMD ( from, line, 0, indep_ax//'FOR 0', 1, 1 )
+
+              IF (iunits .EQ. 4) THEN
+	         mod_vs_x = (TM_HAS_STRING(buff1, '_e') .OR.
+     .                   TM_HAS_STRING(buff1, 'lon') )
+	         
+              ENDIF
+
+              buff1 = VAR_UNITS(cx_y)	 
+              junits = TM_UNIT_ID(buff1)
+              IF (junits .EQ. 4) THEN
+                  mod_vs_y = (TM_HAS_STRING(buff1, '_e') .OR.
+     .                        TM_HAS_STRING(buff1, 'lon') ) 
+              ENDIF
+
 	   ENDIF
 
 	ELSE	! (not VERSUS)

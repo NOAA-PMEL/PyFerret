@@ -84,6 +84,7 @@ PANGO_DIR =
 ## and lib or lib64 subdirectories).  To link to NetCDF shared-object 
 ## libraries, do not give a location for HDF5_DIR.
 ## =========================
+# HDF5_DIR = /usr/local/hdf5-1.8.18
 HDF5_DIR = /usr/local/hdf5-1.8.16
 # HDF5_DIR = $(HOME)/.local
 # HDF5_DIR = /usr/local
@@ -102,6 +103,7 @@ COMPRESS_LIB = z
 ## (above) is blank, the netcdf shared-object (.so) libraries will be
 ## used;  otherwise the netcdf static (.a) libraries will be used.
 ## =========================
+# NETCDF4_DIR = /usr/local/netcdf-4.4.1.1
 NETCDF4_DIR = /usr/local/netcdf-4.4.0
 # NETCDF4_DIR = $(HOME)/.local
 # NETCDF4_DIR = /usr/local

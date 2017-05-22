@@ -19,12 +19,14 @@ INSTALL_FER_DIR = $(HOME)/ferret_distributions/rhel6_64
 # HDF5_DIR	= /usr
 # HDF5_DIR	= /usr/local
 HDF5_DIR	= /usr/local/hdf5-1.8.16
+# HDF5_DIR	= /usr/local/hdf5-1.8.18
 
 ## Installation directory for NetCDF static libraries
 ## (contains include and lib or lib64 subdirectories)
 # NETCDF4_DIR	= /usr
 # NETCDF4_DIR	= /usr/local
 NETCDF4_DIR	= /usr/local/netcdf-4.4.0
+# NETCDF4_DIR	= /usr/local/netcdf-4.4.1.1
 
 ## Installation directory for readline static libraries
 ## (contains include and lib or lib64 subdirectories)

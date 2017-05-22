@@ -41,8 +41,8 @@
  * $__Header$
  */
 
-#ifndef  LOCAL_H
-#define  LOCAL_H
+#ifndef  GKS_DEFINES_H
+#define  GKS_DEFINES_H
 
 /*
  * Macros for insuring the proper compilation of macros which contain
@@ -75,6 +75,12 @@
 #define GKSERROR(c,n,m)	GKS_STMT(if (c) { (void)gerrorhand( (n), (m), \
 			    xgks_state.gks_err_file); return( (n) ); })
 
+/* make sure voidp is defined by including udposix.h here */
+#include "udposix.h"
+extern void	ufree		PROTO((voidp ptr));
+extern voidp	umalloc		PROTO((size_t size));
+extern voidp	urealloc	PROTO((voidp ptr, size_t size));
+
 /*
  *	Manage memory safely (i.e. ignore signals while doing it).
  *
@@ -94,12 +100,6 @@
 #   define malloc(size)		umalloc(size)
 #   define realloc(ptr, size)	urealloc(ptr, size)
 #endif
-
-/* make sure voidp is defined by including udposix.h here */
-#include "udposix.h"
-extern void	ufree		PROTO((voidp ptr));
-extern voidp	umalloc		PROTO((size_t size));
-extern voidp	urealloc	PROTO((voidp ptr, size_t size));
 
 /*
  *	Free allocated memory.

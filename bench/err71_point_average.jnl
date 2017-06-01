@@ -1,0 +1,43 @@
+! err71_point_average.jnl
+! Average over a point removes dependence on that dimension.
+! previously returned missing-data
+
+let a = x[x=1:5] + y[y=1:3]
+list a
+
+list a[y=2@ave]
+list a[x=2@ave]
+list a[y=2@ave,x=4@ave]  ! all prev. versions listed these as missing
+
+let a = z[z=1:5] + t[t=1:3]
+list a[z=2@ave]
+list a[t=2@ave]
+
+list a[t=2@ave,z=4@ave]
+
+let a = _e[e=1:5] + _f[f=1:3]
+list a[f=2@ave]
+list a[e=2@ave]
+list a[f=2@ave,e=4@ave]
+
+! multiple directions including e,f
+
+use 6dfile.nc
+
+! average, result is on xz
+let uave = u[i=1:3,j=50@ave,l=1@ave,m=3@ave,n=2@ave]
+list uave
+save/clobber/nobounds/file=a.nc uave
+sp ncdump -h a.nc
+
+! average, result is on yt
+let uave = u[i=3@ave,j=50:60,l=3:6,z=40@ave,m=3@ave,n=2@ave]
+list uave
+save/clobber/nobounds/file=a.nc uave
+sp ncdump -h a.nc
+
+! average, result is on e-f, single time
+let uave = u[i=3@ave,y=8@ave,z=15@ave,t="15-MAR-1983 11:00"]
+list uave
+save/clobber/nobounds/file=a.nc uave
+sp ncdump -h a.nc

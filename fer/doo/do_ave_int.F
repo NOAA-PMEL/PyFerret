@@ -54,7 +54,8 @@
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 * V702 *sh* 11/16 this routine now performs accumulation only.  Initialization
 *                 and finalizing called separately from IS_TRANS
-
+* V72  *acm* 5/17 Fix ticket 2538: scatter/gather weights when average 
+*                 over a "point"
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -165,6 +166,7 @@
                  ELSE
                     res(pt,j,k,l,m,n) = com(lo,j,k,l,m,n)
                  ENDIF
+		 weights(pt,j,k,l,m,n) = 1.0
                  GOTO 210
               ENDIF
 	      dsum = 0.0D0	! data
@@ -194,6 +196,7 @@
                  ELSE
                     res(i,pt,k,l,m,n) = com(i,lo,k,l,m,n)
                  ENDIF
+		 weights(i,pt,k,l,m,n) = 1.0
                  GOTO 310
               ENDIF
 	      dsum = 0.0D0	! data
@@ -222,6 +225,7 @@
                  ELSE
                     res(i,j,pt,l,m,n) = com(i,j,lo,l,m,n)
                  ENDIF
+                 weights(i,j,pt,l,m,n) = 1.0
                  GOTO 410
 	      ENDIF
 	      dsum = 0.0D0	! data
@@ -250,6 +254,7 @@
                  ELSE
                     res(i,j,k,pt,m,n) = com(i,j,k,lo,m,n)
                  ENDIF
+		 weights(i,j,k,pt,m,n) = 1.0
                  GOTO 510
               ENDIF
 	      dsum = 0.0D0	! data
@@ -280,6 +285,7 @@
                  ELSE
                     res(i,j,k,l,pt,n) = com(i,j,k,l,lo,n)
                  ENDIF
+		 weights(i,j,k,l,pt,n) = 1.0
                  GOTO 610
               ENDIF
 	      dsum = 0.0D0	! data
@@ -309,6 +315,7 @@
                  ELSE
                     res(i,j,k,l,m,pt) = com(i,j,k,l,m,lo)
                  ENDIF
+		 weights(i,j,k,l,m,pt) = 1.0
                  GOTO 710
               ENDIF
 	      dsum = 0.0D0	! data

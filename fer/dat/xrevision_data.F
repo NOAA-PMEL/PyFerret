@@ -136,6 +136,7 @@
 * v7.1     2/2017 Official release
 * v7.11    4/19/2017 Tag before GFDL visit 4/2017
 * v7.12    5/11/2017 
+* v7.13    6/ 6/2017  fixes to tickets 2538, 2539
 
         IMPLICIT NONE
 	include	'xrevision.cmn'

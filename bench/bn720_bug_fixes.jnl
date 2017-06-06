@@ -42,3 +42,6 @@ GO err71_save_bounds
 
 GO bn_reset
 GO err71_point_average
+
+GO bn_reset
+GO err71_2d_ave_miss0

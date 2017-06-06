@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 88082880 May 31 17:18 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func/
+-rwxr-xr-x. 1 ansley tmap 116977284 Jun  5 16:28 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2538: scatter/gather weights wrong when average over single point
+Note:  ticket 2539
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,7 +13,7 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/external_functions/ext_func/
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=.
@@ -22,7 +22,7 @@ FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Wed May 31 17:19:36 PDT 2017
+Beginning at Mon Jun 5 16:36:09 PDT 2017
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1370,7 +1370,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid JGRID
            *** NOTE: Not deleted: MONTHT
            *** NOTE: Axis is in use by grid TGRID
-           *** NOTE: Not deleted: x10
+           *** NOTE: Not deleted: X10
            *** NOTE: Axis is in use by grid G10X5
            *** NOTE: Not deleted: YAX
            *** NOTE: Axis is in use by grid GFORMAT
@@ -1500,7 +1500,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid JGRID
            *** NOTE: Not deleted: MONTHT
            *** NOTE: Axis is in use by grid TGRID
-           *** NOTE: Not deleted: x10
+           *** NOTE: Not deleted: X10
            *** NOTE: Axis is in use by grid G10X5
            *** NOTE: Not deleted: YAX
            *** NOTE: Axis is in use by grid GFORMAT
@@ -1958,7 +1958,7 @@ def axis/t/bounds tax= {12, 12.2, 36, 36.2, 60, 60.2, 84, 84.2, 108} , {0,24, 0,
  LISTing to file a.nc
 Replacing definition of axis XAX
 Replacing definition of axis ZAX
-Replacing definition of axis tax
+Replacing definition of axis TAX
  LISTing to file irrxzt.nc
  LISTing to file a.nc
  LISTing to file a.nc
@@ -2662,7 +2662,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-Replacing definition of axis tax
+Replacing definition of axis TAX
            *** NOTE: Invalid I axis limits ignored: TEMP
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=100/k=1 temp[x=122.5W]"
@@ -3621,7 +3621,7 @@ Starting test: bn_scat2grid_bin.jnl
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: Not deleted: x10
+           *** NOTE: Not deleted: X10
            *** NOTE: Axis is in use by grid G10X5
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4435,7 +4435,7 @@ Replacing definition of axis XAXIS_TEST
  LISTing to file c.nc
  LISTing to file c.nc
 syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 500; message = "Error processing XML header file /usr/local/src/nvods/tomcat/content/las/conf/server/temp/B181CF84342A76391141817212F0F4D2/header.xml (No such file or directory)"^;};
+context: Error { code = 500; message = "java.io.IOException: java.lang.Exception: Could not parse Ferret config file: java.io.FileNotFoundException: /usr/local/src/nvods/apache-tomcat-7.0.64/webapps/thredds/WEB-INF/classes/resources/iosp/FerretConfig.xml (Too many open files)"^;};
  LISTing to file nc
  **TMAP ERR: error in line definition
              file coords dont match variable coords on axis XAXIS_TEST
@@ -4503,59 +4503,6 @@ set axis/name=.fr x_in_meters
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_let_remote
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "time_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "time_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "time_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
- **ERROR: command syntax: /REMOTE variable expression may not contain [d=
-DEFINE VARIABLE/D=1/remote rvar = t00an1[d=1,z=1:100@ave]
- **ERROR: command syntax: /REMOTE variable definition must also specify /D=
-DEFINE VARIABLE/remote rvar = t00an1[d=1,z=1:100@ave]
- **netCDF error
-             Unable to open URL with REMOTE variable definitions:
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
- **TMAP ERR: attribute reading error
-             Unable to get varid for LET/REMOTE variable: NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
- **TMAP ERR: attribute reading error
-             Unable to get bad-value for LET/REMOTE variable: NetCDF: Attribute not found (OPeNDAP/netCDF Error code -43)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
- **netCDF error
-             NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
-list/x=300/y=15 avar
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5015,7 +4962,7 @@ SET VAR/layerz=depth noexist
            *** NOTE: Ambiguous coordinates on Z axis: TEMP6D-TEMPZ6D
  **ERROR: invalid command: auxiliary variable DEPTH6D has a T axis not found on variable TEMP
 LIST/PREC=7 tempz6d_unmatch
-Replacing definition of axis xax
+Replacing definition of axis XAX
 Replacing definition of axis ZAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -5131,8 +5078,8 @@ Replacing definition of axis TAX2
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  Using every   4th vector in the Y direction
-Replacing definition of axis xax
-Replacing definition of axis yax
+Replacing definition of axis XAX
+Replacing definition of axis YAX
  Using every   4th vector in the Y direction
  Using every   4th vector in the Y direction
  PERMANENT data cleared from memory
@@ -5287,7 +5234,7 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_single_4.nc
  LISTing to file tmp/tagg_single_5.nc
  LISTing to file tmp/tagg_single_6.nc
-           *** NOTE: Not deleted: tday
+           *** NOTE: Not deleted: TDAY
            *** NOTE: Axis is in use by grid (G088)
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -5469,7 +5416,7 @@ Starting test: bn_list_clim_axes
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_climatology_attr
-Replacing definition of axis tax
+Replacing definition of axis TAX
  LISTing to file a.nc
  LISTing to file a.nc
 Replacing definition of axis TAX
@@ -5683,7 +5630,7 @@ list index,edtim,udtim,udate,edate
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_aggregate_u
-Replacing definition of axis tax
+Replacing definition of axis TAX
  LISTing to file tmp/uagg_1.nc
  LISTing to file tmp/uagg_2.nc
  LISTing to file tmp/uagg_3.nc
@@ -5863,6 +5810,10 @@ Replacing definition of axis TIME
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
  LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -6598,4 +6549,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed May 31 17:23:09 PDT 2017
+Ended at Mon Jun 5 16:40:43 PDT 2017

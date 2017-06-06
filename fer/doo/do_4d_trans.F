@@ -79,6 +79,8 @@
 * V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 * V702 *sh* 11/16 mods for trac #2428 - calculation in gathered fragments
+* V72  *acm* 6/17 Ticket 2539: Do not set res to bad-value for ave, din.
+*                 Weights of zero or non-zero mark whether data is found.
 
 	IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -100,8 +102,8 @@
 	INTEGER idim, i, j, ir, jr, kr, lr, mr, nr, ic, jc, kc, lc, mc, nc,
      .		grid, nbd, ngd, com_lo(nferdims), com_hi(nferdims),
      .		box_offset(nferdims), offset, ind_lo, ind_hi, cos_offset
-	REAL	BOX_SIZE, unit, bad_com, bad_res, box, mean, diff,
-     .		xbox, ybox, zbox, tbox, ebox, fbox,
+	REAL	BOX_SIZE, unit, bad_com, bad_res, box, mean, 
+     .		diff,xbox, ybox, zbox, tbox, ebox, fbox,
      .		yc, yh, yh_2, bb, ybxlo, ybxhi, lo_box_lo, hi_box_hi
 	REAL*8	TM_WORLD, dsum, bsum, ok,
      .		w, v, wsum_chunk, mean_chunk, mean_old, s_chunk
@@ -381,15 +383,8 @@ C (Unless there is just one grid cell in the y direction.)
             jc = j_lo
             ic = i_lo
 
-	    IF (at_din) THEN
-               IF (com(ic,jc,kc,lc,mc,nc) .EQ. bad_com) THEN
-                  res(ir,jr,kr,lr,mr,nr) = bad_res
-               ELSE
-                  res(ir,jr,kr,lr,mr,nr) = 0.0
-	       ENDIF
-            ELSE
-               res(ir,jr,kr,lr,mr,nr) = bad_res
-            ENDIF
+	    IF (at_din .AND. com(ic,jc,kc,lc,mc,nc) .NE. bad_com) 
+     .        res(ir,jr,kr,lr,mr,nr) = 0.0
             GOTO 300
           ENDIF
 
@@ -471,8 +466,9 @@ C (Unless there is just one grid cell in the y direction.)
 * *sh* 11/16 -- accumulate values, only in this routine.  Finalize elsewhere
 * acm notes: 
 *   o at_ngd and at_nbd, add the current result to res(ir,jr,... )?  
-*   o If bsum EQ 0, do not set the accumulating result to bad_res.  Do we 
-*     need to pass back an accumulated ngd to use in the finalize step?
+*   o If bsum EQ 0, do not set the accumulating result to bad_res as
+*     we did in the non-scatter and finalize code.  The weights take 
+*     care of knowing if any good data was found.
 
 	  IF (at_ngd) THEN
 	     res(ir,jr,kr,lr,mr,nr) = ngd  
@@ -482,17 +478,12 @@ C (Unless there is just one grid cell in the y direction.)
 	     res(ir,jr,kr,lr,mr,nr) = dsum
 	     weights(ir,jr,kr,lr,mr,nr) = weights(ir,jr,kr,lr,mr,nr) + ok ! weights are #valid
 	  ELSEIF (its_ave_or_din) THEN
-	    IF (res(ir,jr,kr,lr,mr,nr) .NE. bad_res) THEN
 	      res    (ir,jr,kr,lr,mr,nr) = res    (ir,jr,kr,lr,mr,nr) + dsum
 	      weights(ir,jr,kr,lr,mr,nr) = weights(ir,jr,kr,lr,mr,nr) + bsum
-	    ENDIF
 	  ELSEIF (its_var_or_std) THEN
 	    res    (ir,jr,kr,lr,mr,nr) = mean_chunk
 	    weights(ir,jr,kr,lr,mr,nr) = wsum_chunk
 	    s_var  (ir,jr,kr,lr,mr,nr) = s_chunk
-          ELSEIF ( bsum .EQ. 0.0D0 ) THEN
-	     res(ir,jr,kr,lr,mr,nr) = bad_res
-	  ELSE
 	  
 	     CONTINUE
 	  ENDIF

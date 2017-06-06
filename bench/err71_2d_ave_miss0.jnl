@@ -1,0 +1,16 @@
+! err71_2d_ave_miss0.jnl
+! Ticket 2539: data with 0 as missing flag, 
+! 2D average or definite integral all-missing
+! 6/5/2017 *acm*
+
+use gt4d011.cdf
+let temp0 = temp
+set var/bad=0. temp0
+save/clobber/file=a.nc temp0
+can dat/all
+can var/all
+use a.nc
+
+! Both of these should have all valid numbers,
+! previously (in v7.1+) they were all-missing.
+list/k=1/L=1:10 temp0[x=@ave,y=@ave], temp0[x=@din,y=@din]

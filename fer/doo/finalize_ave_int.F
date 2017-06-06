@@ -43,6 +43,8 @@
 *
 * V702 *sh* 11/16 this routine performs the finalization step that was
 *		  previously a part of DO_AVE_INT
+* V72  *acm* 6/17 Ticket 2539: Do not set res to bad-value for ave, din.
+*                 Weights of zero or non-zero mark whether data is found.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -62,7 +64,7 @@
 
 * internal variable declarations:
 	LOGICAL	average
-	INTEGER	i
+	INTEGER	i 
 	REAL	bad_res
 
 * --- end of introductory code ---
@@ -74,9 +76,7 @@
 
 * finalize (luv it!)
 	DO i = 1, size
-	   IF (res(i) .EQ. bad_res) THEN
-	      CONTINUE				! bad stays bad
-	   ELSEIF (weights(i) .EQ. 0.0D0) THEN
+	   IF (weights(i) .EQ. 0.0D0) THEN  
 	      res(i) = bad_res			! no input values to average
 	   ELSEIF (average) THEN
 	      res(i) = res(i)/weights(i)	! average

@@ -38,3 +38,10 @@ GO err71_save_bounds
 ! run this from bn_gif.jnl 
 ! GO bn_reset
 ! GO err71_vs_lon_over 
+
+
+GO bn_reset
+GO err71_point_average
+
+GO bn_reset
+GO err71_2d_ave_miss0

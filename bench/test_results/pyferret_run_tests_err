@@ -1,5 +1,5 @@
 Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith tmap 1404 May 16 16:43 /home/flat/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith tmap 1404 Jun  6 11:36 /home/flat/ksmith/PyFerret/bin/pyferret
 Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
@@ -312,7 +312,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Tue May 16 16:52:42 PDT 2017
+Beginning at Tue Jun  6 11:37:11 PDT 2017
 *** Running ferret script: bn_syntax.jnl
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -5132,6 +5132,17 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+           *** NOTE: Saving E or F axis with time axis uses /RIGID in time
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
 *** Running ferret script: bn_compressed_gather.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -5577,4 +5588,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 >>> ... ... >>> >>> >>> 
 *** Running python script: testfermethods.py
 >>> ... ... >>> >>> >>> 
-Ended at Tue May 16 16:57:19 PDT 2017
+Ended at Tue Jun  6 11:41:51 PDT 2017

@@ -1,0 +1,31 @@
+! err71_read_delim.jnl
+! 6/9/2017 ACM
+! Ticket 2540, Write errors when data is read using - to skip fields
+! in a delimited read
+
+define axis/x=1:10:1 row_ax
+define grid/x=row_ax in_grid
+
+
+FILE/FORM=delim/skip=1/grid=in_grid\
+/var="YEAR,MONTH,LON,LAT,-,HAULJOIN,LENGTH,FREQ,-,BTTM_TEMP,SST,BTTM_DEPTH,CPUE,BIN"\
+/typ="num,num,num,num,-,num,num,num,-,num,num,num,num,num,"/delim="\,"\ 
+ shorttest.dat
+
+set var/title="year" YEAR
+set var/title="month" MONTH
+set var/title="lon"/units="degrees_E" LON
+set var/title="lat"/units="degrees_N" LAT
+set var/title="hauljoin" HAULJOIN
+set var/title="length"/units="mm" LENGTH
+set var/title="freq"/units="Number" FREQ
+set var/title="bttm_temp"/units="degrees_C" BTTM_TEMP
+set var/title="SST"/units="degrees_C" SST
+set var/title="bttm_depth"/units="m" BTTM_DEPTH
+set var/title="CPUE"/units="fish/km**2" CPUE
+set var/title="bin_size"/units="mm" BIN
+
+! Previously this caused netcdf library errors and exited out of Ferret
+save/file=a.nc/clobber year, month, lon, lat, hauljoin, length, freq, bttm_temp, SST, bttm_depth, CPUE, bin
+
+sp ncdump -h a.nc

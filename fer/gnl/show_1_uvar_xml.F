@@ -48,6 +48,7 @@
 * V650  Write to lun which may be set to a file unit number rather than std out
 * V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
 * V67  *acm* 2/16 Fixes for getting extra attributes that may have been assigned
+* V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 
         include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -66,11 +67,10 @@
         LOGICAL first
 	
 * local variable declarations:
-        LOGICAL NC_GET_ATTRIB, got_it, coordvar
+        LOGICAL NC_GET_ATTRIB, got_it
 	INTEGER TM_LENSTR1, GRID_FROM_NAME_XML, STR_SAME,
      .          slen, llen, grid, cx_expr, i, j, status,
-     .            varid, vtype, nvdims, vdims(8), nvatts, blen, 
-     .            len_attbuff, attoutflag, all_outflag, attid, 
+     .            varid, nvatts, blen, len_attbuff, attoutflag, attid, 
      .            attlen, attype, iatt, dset, alen, itype
 	CHARACTER FULL_UVAR_NAME_XML*150, FULL_UVAR_NAME*150, 
      .            TM_FMT*12,
@@ -200,8 +200,8 @@
         ENDIF
 	IF (status .NE. ferr_ok) GOTO 1000
 
-	CALL CD_GET_VAR_INFO (dset, varid, vname, vtype, nvdims, 
-     .            vdims, nvatts, coordvar, all_outflag, status)
+	CALL CD_GET_VAR_NATTS (dset, varid, vname, nvatts, status)
+
 	IF (status .NE. ferr_ok) GOTO 1000
 
 	DO 200 iatt = 1, nvatts

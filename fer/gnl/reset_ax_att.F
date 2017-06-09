@@ -43,6 +43,7 @@
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 *                  Use pseudo-dataset of user-defined axes to keep track of attributes.
 * V698  3/16 *acm* Remove unneeded xdset_parms.cmn
+* V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -67,12 +68,11 @@
 * local variable declarations: 
       
       INTEGER TM_LENSTR1, STR_SAME, 
-     .        dset, varid, attlen, attype, attoutflag, 
-     .        vartype, nvdims, nvatts, vdims(8), all_outflag,
+     .        dset, varid, attlen, attype, attoutflag,
      .        attid, len, maxlen, status
       REAL dummy
       CHARACTER buff*128, varname*128, attbuff*10, attname*128, dir*4
-      LOGICAL	coordvar, do_warn, got_it
+      LOGICAL	CD_ISIT_COORDVAR, do_warn, got_it
 
       dummy = 0.
       do_warn = .FALSE.
@@ -93,10 +93,8 @@ c    user-defined axes. See if name exists as an axis name.
 
          IF (status .EQ. ferr_ok) THEN  
 ! name is a variable; is it a coordinate variable of the dataset?
-
-            CALL CD_GET_VAR_INFO (dset, varid, name, vartype, 
-     .          nvdims, vdims, nvatts, coordvar, all_outflag, status) 
-            IF (.NOT. coordvar) goto 100
+     
+            IF (.NOT. CD_ISIT_COORDVAR (dset, varid, name, status)) goto 100
 
          ELSE
 	    GOTO 100

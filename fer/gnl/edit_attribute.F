@@ -42,6 +42,7 @@
 * 3/2006 Allow commands equivalent to SET AXIS/modulo/depth/units etc.
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * V64  10/09 *acm* longer string length for grid_name
+* V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 
 	include 'tmap_dims.parm'
 *TMAP_DSET.PARM
@@ -245,7 +246,7 @@
 
 * calling argument declarations:
 
-      LOGICAL att_quiet
+      LOGICAL CD_ISIT_COORDVAR, coordvar, att_quiet
       INTEGER mr, attype_spec, dset, status
       REAL grid_data(mr_lo_ss(mr,1):mr_hi_ss(mr,1),
      .               mr_lo_ss(mr,2):mr_hi_ss(mr,2),
@@ -258,11 +259,10 @@
 * local variable declarations: 
       
       LOGICAL TM_HAS_STRING, 
-     .        valid, do_err, coordvar, have_mods, ez, ncfile
+     .        valid, do_err, have_mods, ez, ncfile
       INTEGER MR_DIM_LEN, TM_LENSTR1, STR_SAME, varid, idim, ndims,
      .        attlen, attype, span, lo(nferdims), hi(nferdims), del(nferdims), slen, vlen, 
-     .        attlen_old, attype_old, attoutflag, vartype, nvdims,
-     .        nvatts, vdims(8), all_outflag, cat, var, tmap_status,
+     .        attlen_old, attype_old, attoutflag, cat, var, tmap_status,
      .        grid, mod_cx, attid
       REAL dummy, bad, scalefac, offset
       CHARACTER GET_STRING_ELEMENT*2048, TM_FMT*2048, attbuff*2048, 
@@ -308,9 +308,7 @@
      .              attname, varid, do_err, status )
       IF (status .NE. ferr_ok) GOTO 5400
 
-      CALL CD_GET_VAR_INFO (dset, varid, varname, vartype, nvdims, 
-     .            vdims, nvatts, coordvar, all_outflag, status)
-
+      coordvar = CD_ISIT_COORDVAR (dset, varid, varname, status)
       IF (coordvar) THEN
 
 * Do not allow user to change the direction of an axis.

@@ -133,7 +133,7 @@ int  FORTRAN(ncf_get_dsnum)( char * );
 int  FORTRAN(ncf_get_dsname)( int *, char *);
 int  FORTRAN(ncf_get_dim_id)( int *, char *);
 
-int  FORTRAN(ncf_get_var_name)( int *, int *, char *);
+int  FORTRAN(ncf_get_var_name)( int *, int *, char *, int *);
 int  FORTRAN(ncf_get_var_id)( int *, int*, char *);
 int  FORTRAN(ncf_get_var_id_case)( int *, int*, char *);
 int  FORTRAN(ncf_get_var_axflag)( int *, int *, int *, int *);
@@ -438,7 +438,7 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[] )
  * Find a variable in a dataset based on the dataset integer ID and
  * variable id. Return the variable name.
  */
-int FORTRAN(ncf_get_var_name)( int *dset, int* ivar, char* string )
+int FORTRAN(ncf_get_var_name)( int *dset, int* ivar, char* string, int* len_name )
 {
     ncvar *var_ptr;
 
@@ -448,6 +448,7 @@ int FORTRAN(ncf_get_var_name)( int *dset, int* ivar, char* string )
         return ATOM_NOT_FOUND;
 
     strcpy(string, var_ptr->name);
+	*len_name = strlen(string);
 
     return FERR_OK;
 }

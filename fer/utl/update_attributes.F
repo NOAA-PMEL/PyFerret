@@ -40,6 +40,7 @@
 * V670  2/11 *acm*   Fixes for inheriting attributes.
 * V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
 *                  added to that dataset in the attribute structure.
+* V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 
 * Get the attribute information from the linked-list structure that is needed 
 * to do a plot.
@@ -65,22 +66,18 @@
       CHARACTER*(*) vname
 
 * Local variable declarations
-      LOGICAL NC_GET_ATTRIB, coordvar, got_it, do_warn, uvflag
-      INTEGER TM_LENSTR1, varid, vartyp, nvdim, vdims(8),
-     .        nvatts, attlen, attoutflag, status, vlen, maxlen, 
-     .        all_outflag
+      LOGICAL NC_GET_ATTRIB, got_it, do_warn, uvflag
+      INTEGER TM_LENSTR1, varid,
+     .        attlen, attoutflag, status, vlen, maxlen
       REAL tmp
       CHARACTER*128 buff
 
       vlen = TM_LENSTR1(vname)
-       CALL CD_GET_VAR_ID (dset, vname, varid, status)
-       IF (status .NE. ferr_ok) GOTO 1100
+      CALL CD_GET_VAR_ID (dset, vname, varid, status)
+      IF (status .NE. ferr_ok) GOTO 1100
 
-* get the vital statistics for this variable
+* get the needed info for this variable
 
-      CALL CD_GET_VAR_INFO(dset, varid, vname, vartyp, 
-     .      nvdim, vdims, nvatts, coordvar, all_outflag, status)
-      IF (status .NE. ferr_ok) GOTO 1200
       CALL CD_GET_VAR_UVFLAG (dset, varid, uvflag, status)
       IF (status .NE. ferr_ok) GOTO 1200
 

@@ -84,12 +84,10 @@
 	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id, status
 	CHARACTER	TM_FMT*32, buff*80, outbuff*20
 
-        LOGICAL         coordvar, new
+        LOGICAL         new
         INTEGER         STR_SAME, 
-     .                  ivar,  llen,
-     .                  varid, vtype, nvdims, vdims(8), nvatts, blen, i, 
-     .                  len_attbuff, attoutflag, all_outflag, attid, 
-     .                  attlen, attype, iatt
+     .                  ivar, llen, varid, vtype, nvatts, blen, i, len_attbuff, 
+     .                  attoutflag, attid,  attlen, attype, iatt
         CHARACTER       vname*128, attname*128, attbuff*2048, 
      .                  outstring*2048, atype*10
 	REAL            vals(100)
@@ -237,9 +235,8 @@ C New form for attribute output, list values separately.
    50   dset = iset
 
 * other attributes
-
-        CALL CD_GET_VAR_INFO (dset, varid, vname, vtype, nvdims,
-     .           vdims, nvatts, coordvar, all_outflag, status)
+        CALL CD_GET_VAR_TYPE (dset, varid, vname, vtype, status)
+        CALL CD_GET_VAR_NATTS (dset, varid, vname, nvatts, status)
 
 * Data type of the axis in the file...
 

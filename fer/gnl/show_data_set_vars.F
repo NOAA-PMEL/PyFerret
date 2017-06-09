@@ -83,7 +83,7 @@
 * V7    acm  6/16 Ticket 2437: Deprecating mode_6d_lab. 
 *		  Adjust output to 6-D or 4-D grids
 * V720  3/17 *acm*  clean up long commented-out code referring to aggregations 
-
+* V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -109,13 +109,12 @@
 	
 * local variable declarations:
 	LOGICAL		FOUR_D_GRID,
-     .			first_time, its_delimited, is_undetermined, coordvar
+     .			first_time, its_delimited, is_undetermined
 	INTEGER 	TM_LENSTR1, TM_LENSTR, TM_GET_CALENDAR_ID, GRID_FROM_NAME,
      .			ivar, i, dlen, len, grid, taxis, slen(nferdims), tlen, 
      .			nfields, kvar, field_types(maxezvars), 
      .			cal_id, len_cal, j, num_indices, rlen(nferdims), iok,
-     .			listdims, idim, igrid, nv, varid, vtype, nvdims, outflag,
-     .                  vdims(8),  nvatts
+     .			listdims, idim, igrid, nv, varid
 	CHARACTER	LEFINT*16, LOHI_STRING*48, TM_FMT*14, 
      .			TM_GET_CAL*32, 
      .			line*255, cal_name*32
@@ -273,8 +272,7 @@
 	   line = ds_var_code(ivar)
 	   IF (.NOT.mode_upcase_output) THEN  ! get original variable name
 	      CALL CD_GET_VAR_ID (dset, ds_var_code(ivar), varid, status)
-	      CALL CD_GET_VAR_INFO (dset, varid, line, vtype, 
-     .            nvdims, vdims, nvatts, coordvar, outflag, status)
+	      CALL CD_GET_VAR_VARNAME (dset, varid, line, status)
 	   ENDIF
 
 * ... separate into two lines if variable code is too long (11/92)
@@ -320,8 +318,7 @@
 	   line = ds_var_code(ivar)
 	   IF (.NOT.mode_upcase_output) THEN  ! get original variable name
 	      CALL CD_GET_VAR_ID (dset, ds_var_code(ivar), varid, status)
-	      CALL CD_GET_VAR_INFO (dset, varid, line, vtype, 
-     .            nvdims, vdims, nvatts, coordvar, outflag, status)
+	      CALL CD_GET_VAR_VARNAME (dset, varid, line, status)
 	   ENDIF
 * ... separate into two lines if variable code is too long (11/92)
            IF ( TM_LENSTR1( line ) .GT. 8 ) THEN

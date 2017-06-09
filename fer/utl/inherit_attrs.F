@@ -43,6 +43,7 @@
 *                  added to that dataset in the attribute structure.
 * v71   7/16 *acm* Fix ticket 2447: special handling of missing-value flags
 *                  when inheriting all attributes from one variable to another.
+* V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 
       INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
@@ -56,11 +57,11 @@
       INTEGER status
 
 * Local variable declarations
-      LOGICAL coordvar
+      LOGICAL CD_ISIT_COORDVAR
       INTEGER TM_LENSTR, STR_SAME, slen, tlen, dset1, dset2, 
-     .  varid1, varid2, vtype, nvdims, nvatts1, nvatts2,
-     .  vdims(8), iatt, first_quote, next_quote, dot, mr, cx, 
-     .  all_outflag, cat, iflag, attnum
+     .  varid1, varid2, nvatts1, nvatts2,
+     .  iatt, first_quote, next_quote, dot, mr, cx, 
+     .  cat, iflag, attnum
       CHARACTER*128 attname, buff1, buff2
 
 * Check that neither buffer contains varname.attname (If it is in 
@@ -130,13 +131,11 @@
 
 * Get number of attributes for variables
 
-      CALL CD_GET_VAR_INFO (dset1, varid1, varname1, vtype, nvdims, vdims,
-     .       nvatts1, coordvar, all_outflag, status)
-      IF (coordvar) GOTO 5020
+      IF (CD_ISIT_COORDVAR(dset1, varid1, varname1, status)) GOTO 5020
+      CALL CD_GET_VAR_NATTS (dset1, varid1, varname1, nvatts1, status)
 
-      CALL CD_GET_VAR_INFO (dset2, varid2, varname2, vtype, nvdims, vdims,
-     .       nvatts2, coordvar, all_outflag, status)
-      IF (coordvar) GOTO 5020
+      IF (CD_ISIT_COORDVAR(dset2, varid2, varname2, status)) GOTO 5020
+      CALL CD_GET_VAR_NATTS (dset2, varid2, varname2, nvatts2, status)
 
 * Remove attributes from variable 2
 * When an attribute is deleted, the following attributes move forward

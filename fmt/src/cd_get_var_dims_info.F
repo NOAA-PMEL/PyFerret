@@ -1,7 +1,6 @@
-	CHARACTER*(*) FUNCTION FULL_UVAR_NAME_XML(uvar, len)
+      SUBROUTINE CD_GET_VAR_DIMS_INFO (dset, ivar, vname, nvdims, 
+     .        vdims, status)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -35,60 +34,68 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* append to the given user variable name the data set information
-*	var[D=dset_name]  
-* For xml output give the full URL.
+* Read the linked list structure for netcdf variable information: given
+* dset and ivar return variable name (in its original upper/lowercase 
+* form), type, dimensions, number of attributes
 
-* programmer - Ansley Manke
-*             from FULL_UVAR_NAME
+* Programmer Ansley Manke
+* NOAA/PMEL, Seattle, WA - TMAP
 
-* V 6.66
-* V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
-*                  using original upper/lowercase spelling
-* V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
+* Argument declarations
 
+      CHARACTER*(*) vname
+      INTEGER dset, ivar, nvdims, vdims(*), status
 
-* calling argument declarations:
-	INTEGER	uvar
+* Internal declarations
 
-* local variable declarations:
-	INTEGER TM_LENSTR1, len, len2
-	INTEGER dset, varid, status
+#include "gt_lib.parm"
+      INCLUDE 'netcdf.inc'
+      INCLUDE 'tmap_errors.parm'
 
-	include 'tmap_dims.parm'
-	include 'xdset_info.cmn_text'
-	external xdset_info_data
-	include 'ferret.parm'
-	include	'xvariables.cmn'
-	include	'xprog_state.cmn'
-	include 'errmsg.parm'
+      INTEGER TM_LENSTR1, NCF_INQ_VAR, slen, flen, rev(8), i, ndx, 
+     .	      vartype, nvatts, outflag, dset_num
+      LOGICAL coordvar
 
-* variable name and definition
-*	len = TM_LENSTR1(uvar_name_code(uvar))
-        CALL string_array_get_strlen1(uvar_name_code_head,uvar,len)
-	FULL_UVAR_NAME_XML = uvar_name_code(uvar)(:len)
+      PARAMETER (flen=512)      ! size of variable name string
 
-* Get the original upper/lowercase spelling if mode upcase is canceled.
-	IF (.NOT.mode_upcase_output) THEN  ! get original variable name
-	   dset = pdset_uvars
-	   CALL CD_GET_VAR_ID (dset, uvar_name_code(uvar), varid, status)
-	   IF (status .EQ. ferr_ok) 
-     .      CALL CD_GET_ID_VARNAME (dset, varid, FULL_UVAR_NAME_XML, status)
+#ifdef sun
+      BYTE      fhol(flen)      ! c-type Hollerith string buffer
+#else
+      INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
+#endif 
 
-	ENDIF
+      nvdims = 0
+      status = atom_not_found
 
-	IF (uvar_dset(uvar) .GT. pdset_irrelevant) THEN
-	   len2 = TM_LENSTR1(ds_des_name(uvar_dset(uvar)))
-	   FULL_UVAR_NAME_XML = FULL_UVAR_NAME_XML(:len)//'[D='//
-     .			ds_des_name(uvar_dset(uvar))(:len2)//']'
-	   len = len + len2 + 4
-	ELSEIF (uvar_dset(uvar) .EQ. pdset_irrelevant) THEN
-	   FULL_UVAR_NAME_XML = FULL_UVAR_NAME_XML(:len)//
-     .			' (/D default)'
-	   len = len + 13
-	ENDIF
+      IF (dset .EQ. unspecified_int4) RETURN
+      
+* If the varid is not set, find it from the variable name
+      IF (ivar.LE.0 .OR. ivar.EQ.unspecified_int4) THEN
+        slen = TM_LENSTR1(vname)
+	CALL CD_GET_VAR_ID (dset, vname(:slen), ivar, status)
+      ENDIF
 
-	RETURN
-	END
+      IF (ivar.LT.0 .OR. status.NE.pcd_ferr_ok) RETURN
 
+      IF (ivar .LT. 0) RETURN
 
+      dset_num = dset
+      status = NCF_INQ_VAR(dset_num, ivar, fhol, slen, vartype, 
+     .            nvdims, nvatts, coordvar, outflag, rev)
+      IF (status .NE. pcd_ferr_ok) GOTO 5000  ! not found
+      slen = MIN(slen, flen)
+
+* Return vname in original upper/lower case
+      CALL TM_CTOF_STRNG ( fhol, vname, slen )
+
+* These dims are 0,1,2,3. For Fortran want 1,2,3,4, so add 1
+* Also, the dims are in C order t,z,y,x. Reverse the order, for 
+* opposite array ordering of Fortran vs c
+
+      DO 100 i = 1, nvdims
+	  ndx = nvdims - i + 1
+	  vdims(i) = rev(ndx) + 1
+ 100  CONTINUE   
+
+5000  RETURN
+      END

@@ -1,10 +1,6 @@
 SRCS_F = \
 ave_scat2grid_t.F\
 bin_index_wt.F\
-bcompressi.F\
-bxcat.F\
-bxsequence.F\
-bxsequence_str.F\
 compressi.F\
 compressj.F\
 compressk.F\
@@ -110,6 +106,8 @@ samplei_multi.F\
 samplej_multi.F\
 samplek_multi.F\
 samplel_multi.F\
+samplem_multi.F\
+samplen_multi.F\
 samplet_date.F\
 samplexy.F\
 samplexy_closest.F\

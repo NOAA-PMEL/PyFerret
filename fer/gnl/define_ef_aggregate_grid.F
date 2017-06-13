@@ -48,6 +48,7 @@
 * V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
 *                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 * v71  12/16 *acm* Ticket 2158: working with true monthly time axes.
+* v72   6/17 *acm* Variable type in aggregations should match what is in the member files
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -81,7 +82,7 @@
      .		gap_size, max_gap_size, l,
      .		axcalt, axlagf, gg, ipt1, ipte, fax,
      .		nv_dummy, igrid_dummy, vtype_dummy, num_indices,
-     .		ef_time2d_dset, ef_time2d_grid, iaxis
+     .		ef_time2d_dset, ef_time2d_grid, iaxis, fvartype
 	REAL*8  TDEST_WORLD, TM_WORLD_AX, fdelta
 
 * Getting info back from the attribute-handling structure
@@ -97,6 +98,12 @@
 	has_gaps = .FALSE.
 	ef_ordered_time2d = .FALSE.
 	ef_time2d_dset = ds_var_setnum(fvar)
+
+* Get the file-variable type
+        slen = TM_LENSTR1(vname)
+	varid = 0
+        CALL CD_GET_VAR_TYPE (ef_time2d_dset, varid, vname(:slen), 
+     .                        fvartype, status)
 
 * the 2D time variable in an E-aggregation of F-aggregations has special needs
 * its grid should not have the agg axis 
@@ -173,11 +180,11 @@
 	   ds_grid_number(nv) = agg_grid
 	ENDIF
 
-* Type should be NCFLOAT or NCCHAR
+* Type should be what is in the original file
 	IF (ds_var_type(nv) .EQ. ptype_string) THEN
 	   type = NCCHAR
 	ELSE
-	   type = NCFLOAT
+	   type = fvartype
 	ENDIF
 
 * Hook the aggregated variable into the linked list structures
@@ -362,7 +369,7 @@
 * ... save the sequence number of this variable, so we can cache it later
 	   it2d = nv
 
-	   type = NCFLOAT
+	   type = NCDOUBLE
 	   nvars = nvars + 1
       
 	   CALL CD_ADD_VAR( agg_dset, tcoordname, nvars, 

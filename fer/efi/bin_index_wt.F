@@ -74,7 +74,7 @@
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'WT')
-      CALL ef_set_arg_desc(id, arg, 'Weight for with each index')
+      CALL ef_set_arg_desc(id, arg, 'Weight for each index')
       CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
 
       arg = 3

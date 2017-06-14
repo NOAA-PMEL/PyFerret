@@ -1138,6 +1138,9 @@ GO bn_cache_management
 GO bn_reset bn_transp_choose
 GO bn_transp_choose
 
+GO bn_reset bn_transp_choose
+GO bn_iin_regrid
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

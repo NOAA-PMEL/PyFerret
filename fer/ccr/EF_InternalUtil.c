@@ -3758,6 +3758,12 @@ else if ( !strcmp(name,"samplexy_closest_result_limits_") ) return (void *)FORTR
 else if ( !strcmp(name,"samplexy_closest_work_size_") ) return (void *)FORTRAN(samplexy_closest_work_size);
 else if ( !strcmp(name,"samplexy_closest_compute_") ) return (void *)FORTRAN(samplexy_closest_compute);
 
+/* samplexy_nrst.F */
+else if ( !strcmp(name,"samplexy_nrst_init_") ) return (void *)FORTRAN(samplexy_nrst_init);
+else if ( !strcmp(name,"samplexy_nrst_result_limits_") ) return (void *)FORTRAN(samplexy_nrst_result_limits);
+else if ( !strcmp(name,"samplexy_nrst_work_size_") ) return (void *)FORTRAN(samplexy_nrst_work_size);
+else if ( !strcmp(name,"samplexy_nrst_compute_") ) return (void *)FORTRAN(samplexy_nrst_compute);
+
 /* samplexz.F */
 else if ( !strcmp(name,"samplexz_init_") ) return (void *)FORTRAN(samplexz_init);
 else if ( !strcmp(name,"samplexz_result_limits_") ) return (void *)FORTRAN(samplexz_result_limits);

@@ -49,6 +49,8 @@
 * V690  *sh* 11/13 - fixed problem in aux regridding variable dependencies
 *                    by adding a new calling arg
 * V693+ *sh* 1/21/15 - store regridding dependency lines
+* V720  acm* 6/2017  Fix for ticket 2533, reporting ok for regridding to 
+*                    undefined variable
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -94,8 +96,12 @@
 	var    = cx_variable(cx)
 	dset   = cx_data_set(cx)
 	desist = .FALSE.
+
+* Fix for ticket 2533, if known_var when bad status, and pcx_vtree_regrid_report,
+* regridding to an undefined variable was reported ready
+
 	known_var = cx_status .EQ. ferr_ok
-     .         .OR. cx_status .EQ. pcx_vtree_regrid_report
+cc     .         .OR. cx_status .EQ. pcx_vtree_regrid_report 
 !     .	      .OR.  cx_status .EQ. ferr_unknown_auxvar  ! ???
 
 * set up regrid target reports

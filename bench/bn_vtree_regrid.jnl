@@ -2,6 +2,7 @@
 ! exercise 12/14 enhancements to display regrid target on a separate line 
 ! updated 1/26/15 to exercise multiple regrid target outputs
 ! updated 2/23/15 to report target of regrid even when aux regridding occurs
+! 5/2017 note that the fix for #2533 causes some duplicate  UNKNOWN GRID lines 
 
 ! case 1: target grid known,   regridded variable known
 let myvar = 1           ! var to be regridded is known

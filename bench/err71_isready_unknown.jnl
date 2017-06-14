@@ -1,0 +1,17 @@
+! err71_isready_unknown.jnl
+! ticket 2533, variable b depending on undefined variable c is 
+! reported not ready, but variable a with a regridding operation is
+! mistakenly reported ready.
+
+use coads_climatology
+let a = b[gxy=sst[d=1]]
+let b = c
+
+! both should return 0
+say `b,r=isready`
+say `a,r=isready`
+
+! And VTREE reported no unknown variables in its tree
+! The line for C should say UNKNOWN VARIABLE
+sho var/tree a
+

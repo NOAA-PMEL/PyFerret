@@ -48,3 +48,6 @@ GO err71_2d_ave_miss0
 
 GO bn_reset
 GO err71_read_delim
+
+GO bn_reset
+GO err71_isready_unknown

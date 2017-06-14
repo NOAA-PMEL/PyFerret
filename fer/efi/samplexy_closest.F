@@ -105,7 +105,7 @@
       CHARACTER*100 fcn_desc
 
       WRITE (fcn_desc, 10)
-   10 FORMAT ('This function is dprecated. It is renamed to SAMPLEXY_NRST')
+   10 FORMAT ('This function is deprecated. It is renamed to SAMPLEXY_NRST')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 3)

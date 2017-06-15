@@ -43,6 +43,7 @@ do_external_gc_fcn.F\
 do_fill_ave.F\
 do_fill_interp.F\
 do_fill_near.F\
+do_iin_regrid.F\
 do_int_indef.F\
 do_int_indef_sub.F\
 do_integ_def.F\
@@ -93,6 +94,7 @@ finalize_variance.F\
 geog_cos_factor.F\
 get_linear_coef.F\
 hanng_wt.F\
+iin_regrid.F\
 lin_regrid_1_axis.F\
 maxsmoother.F\
 median.F\

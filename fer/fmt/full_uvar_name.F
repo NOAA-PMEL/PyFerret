@@ -48,16 +48,15 @@
 *                  using original upper/lowercase spelling
 * V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
 *                  added to that dataset in the attribute structure
+* V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 
 * calling argument declarations:
 	INTEGER	uvar
 
 * local variable declarations:
-	
-	LOGICAL coordvar
+
 	INTEGER TM_LENSTR1, len, len2
-	INTEGER dset, varid, vtype, nvdims, outflag, vdims(8), 
-     .		nvatts, status
+	INTEGER dset, varid, status
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -81,8 +80,7 @@
 	      CALL CD_GET_VAR_ID (dset, uvar_name_code(uvar), varid, status)
 	   ENDIF
 	   IF (status .EQ. ferr_ok) 
-     .      CALL CD_GET_VAR_INFO (dset, varid, FULL_UVAR_NAME, vtype, 
-     .            nvdims, vdims, nvatts, coordvar, outflag, status)
+     .      CALL CD_GET_ID_VARNAME (dset, varid, FULL_UVAR_NAME, status)
 	ENDIF
 
 	IF (uvar_dset(uvar) .GT. pdset_irrelevant) THEN

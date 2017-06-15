@@ -83,7 +83,8 @@
 * V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
 * V701  7/16 *acm* Ticket 2454. If the user gives lower-case names when opening
 *                  an EZ dataset, keep those names on output, etc.
-
+* V72   6/17 *acm* Ticket 2540, inconsistencies in skipping over variables defined
+*                  in a Delimited-file read as name and type "-".
 
 	CHARACTER*4	ez_rev
 	CHARACTER*1	tab
@@ -128,7 +129,7 @@
         LOGICAL         TM_LEGAL_NAME, vars_gvn, its_delimited, coordvar
 	CHARACTER*24	type_names(maxezvars)
 	CHARACTER*128	var_names(maxezvars)
-	INTEGER*4	TM_LENSTR1, STR_SAME, STR_UPCASE,
+	INTEGER*4	TM_LENSTR1, STR_SAME, STR_CASE_BLIND_COMPARE,
      .			set_cnt, bpos, epos, ncnt, var_pos, num_names,
      .			nvar, jcnt, stp_cnt, nstp, field_type(maxezvars),
      .			num_types, i, j, name_limit, idummy(maxezvars),
@@ -330,11 +331,11 @@
   140     CONTINUE
 * No room left for new variables
 	  GOTO 9100
+
 *
 * Load variable record now
   150     var_pos = nvar
-c	  status =  STR_UPCASE (line_buff, var_names(ncnt))
-          CALL string_array_modify_upcase(ds_var_code_head,
+          CALL string_array_modify_upcase (ds_var_code_head,
      .                             nvar,
      .                             var_names(ncnt),
      .                             LEN(var_names(ncnt)) )
@@ -434,7 +435,6 @@ c	  status =  STR_UPCASE (line_buff, var_names(ncnt))
         coordvar = .FALSE.
         varid = 0
 
-	ncnt = 1
         DO 200 ivar = 1, maxvars
            IF (ds_var_setnum(ivar) .EQ. set_not_open) GOTO 210
            IF (ds_var_setnum(ivar) .EQ. dset .AND.
@@ -442,17 +442,24 @@ c	  status =  STR_UPCASE (line_buff, var_names(ncnt))
 
               varid = varid + 1
 	      IF (ds_var_type(ivar) .EQ. ptype_float) THEN
-	         vartype = NF_FLOAT
+	         vartype = NF_DOUBLE
 	      ELSEIF  (ds_var_type(ivar) .EQ. ptype_string) THEN
 	         vartype = NF_CHAR
 	      ELSE
-                 vartype = NF_FLOAT
+	         vartype = NF_DOUBLE
               ENDIF
-        
-              CALL CD_ADD_VAR( dset, var_names(ncnt), varid, 
+
+	      line_buff = ds_var_code(ivar)
+	      DO ncnt = 1, num_names
+	         IF (STR_CASE_BLIND_COMPARE(ds_var_code(ivar), var_names(ncnt)) .EQ. 0) THEN
+	            line_buff = var_names(ncnt)
+		    EXIT ! from loop
+		 ENDIF
+	      ENDDO
+
+	      CALL CD_ADD_VAR( dset, line_buff, varid, 
      .          ds_var_title(ivar), ds_var_units(ivar), vartype,
      .          coordvar, ds_bad_flag(ivar), status)
-              ncnt = ncnt + 1
            ENDIF
   200   CONTINUE
 

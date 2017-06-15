@@ -1,21 +1,21 @@
-Using FERRET /home/flat/ksmith/Ferret/bin/ferret
-lrwxrwxrwx. 1 ksmith tmap 12 Jun  6 13:14 /home/flat/ksmith/Ferret/bin/ferret -> ferret_v7.13
-Using external functions from /home/flat/ksmith/Ferret/ext_func/libs
+Using FERRET /home/merlot/ksmith/Ferret/bin/ferret
+lrwxrwxrwx. 1 ksmith tmap 12 Jun 14 15:16 /home/merlot/ksmith/Ferret/bin/ferret -> ferret_v7.13
+Using external functions from /home/merlot/ksmith/Ferret/ext_func/libs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for Ferret
 ****** Restricting Ferret paths to bench directory ******
 FER_DAT=.
 FER_DATA=.
-FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/flat/ksmith/Datasets
+FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/merlot/ksmith/Datasets
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/flat/ksmith/Ferret/ext_func/libs
-FER_FONTS=/home/flat/ksmith/Ferret/ppl/fonts
-FER_GO=. /home/flat/ksmith/Ferret/go /home/flat/ksmith/Ferret/examples /home/flat/ksmith/Ferret/contrib
+FER_EXTERNAL_FUNCTIONS=/home/merlot/ksmith/Ferret/ext_func/libs
+FER_FONTS=/home/merlot/ksmith/Ferret/ppl/fonts
+FER_GO=. /home/merlot/ksmith/Ferret/go /home/merlot/ksmith/Ferret/examples /home/merlot/ksmith/Ferret/contrib
 FER_GRIDS=.
-FER_LIBS=/home/flat/ksmith/Ferret/lib
-FER_PALETTE=. /home/flat/ksmith/Ferret/ppl
+FER_LIBS=/home/merlot/ksmith/Ferret/lib
+FER_PALETTE=. /home/merlot/ksmith/Ferret/ppl
 FER_WEB_BROWSER=firefox
 Benchmark scripts that will be run:
    bn_syntax.jnl
@@ -295,12 +295,13 @@ Benchmark scripts that will be run:
    bn_dot_product.jnl
    bn_cache_management.jnl
    bn_transp_choose.jnl
+   bn_iin_regrid.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
    bn_startupfile.jnl
    err700_decimate.jnl
-Beginning at Tue Jun  6 13:14:31 PDT 2017
+Beginning at Wed Jun 14 15:16:42 PDT 2017
 *** Running ferret script: bn_syntax.jnl
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -1483,7 +1484,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-rm: cannot remove `input.txt': No such file or directory
+rm: cannot remove ‘input.txt’: No such file or directory
 ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2137,12 +2138,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2236,8 +2232,6 @@ Replacing definition of axis TIME
            *** NOTE: Cannot cancel window when in batch mode
            *** NOTE: Cannot create new windows when batch mode set
 *** Running ferret script: bn_cdf_errmsg.jnl
-syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
 CURL Error: Couldn't resolve host name
 curl error details: 
  **TMAP ERR: non-existent or not on line
@@ -2637,17 +2631,13 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file dat.dat
  LISTing to file a.nc
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file unf.dat
  LISTing to file a.nc
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file lonlat.dat
  LISTing to file lonlat.nc
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3473,7 +3463,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Adjusting Y-axis label size from 0.100 to 0.001, to avoid running off page.
-           *** NOTE: /home/flat/ksmith/Ferret/go/magnify.jnl
+           *** NOTE: /home/merlot/ksmith/Ferret/go/magnify.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3618,6 +3608,8 @@ list a.units
 list ..history
  **ERROR: variable unknown or not in data set: ..HISTORY
 list ..history
+ **ERROR: command syntax: .
+list .
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3807,8 +3799,6 @@ set axis/name=45 x_in_meters
  **ERROR: invalid command: illegal new name given for axis .fr
 set axis/name=.fr x_in_meters
 *** Running ferret script: bn_let_remote.jnl
-syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 500; message = "Error processing XML header file /usr/local/src/nvods/tomcat/content/las/conf/server/temp/B181CF84342A76391141817212F0F4D2/header.xml (No such file or directory)"^;};
            *** NOTE: netCDF bounds variable definition error
            *** NOTE: Bounds definition "time_bnds" points to no existing axis
            *** NOTE: Ignoring BOUNDS attribute
@@ -3993,7 +3983,7 @@ list substring("hello",1,-2)
  **ERROR: value out of legal range: Negative argument to function. Argument 3 : SUBSTRING
 list substring("hello",1,-3)
 *** Running ferret script: bn_append_dsg.jnl
-rm: cannot remove `test_save_dsg.nc': No such file or directory
+rm: cannot remove ‘test_save_dsg.nc’: No such file or directory
 *** Running ferret script: bn_global_atts.jnl
  LISTing to file anew_global.nc
 *** Running ferret script: bn_conventions_history.jnl
@@ -4179,7 +4169,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-rm: cannot remove `WestCoastCarbon_9d9c_f562_77b5_5.nc': No such file or directory
+rm: cannot remove ‘WestCoastCarbon_9d9c_f562_77b5_5.nc’: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4227,7 +4217,7 @@ def anno/nou/xpos=0/hal=1/val=0 "My Lab"
  **ERROR: invalid command: Specify only one of /USER /NOUSER /NORM
 def anno/nou/user/xpos=0/ypos=0 "My Lab"
 *** Running ferret script: bn_auxiliary.jnl
-rm: cannot remove `layerz_test_data.txt': No such file or directory
+rm: cannot remove ‘layerz_test_data.txt’: No such file or directory
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
 SET VAR/layerz=depth noexist
@@ -4469,7 +4459,7 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_single_4.nc
  LISTing to file tmp/tagg_single_5.nc
  LISTing to file tmp/tagg_single_6.nc
-           *** NOTE: Not deleted: tday
+           *** NOTE: Not deleted: TDAY
            *** NOTE: Axis is in use by grid (G001)
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4517,9 +4507,9 @@ go/garbage tmp/testMe
  **ERROR: unknown command qualifier: garbage
 go/garbage "tmp/testMe"
  **ERROR: unknown command qualifier: garbage
-go/garbage /home/flat/ksmith/ferret_dev/bench/tmp/testMe.jnl
+go/garbage /home/merlot/ksmith/ferret_dev/bench/tmp/testMe.jnl
  **ERROR: unknown command qualifier: garbage
-go/garbage "/home/flat/ksmith/ferret_dev/bench/tmp/testMe.jnl"
+go/garbage "/home/merlot/ksmith/ferret_dev/bench/tmp/testMe.jnl"
 *** Running ferret script: bn_long_lists.jnl
  **ERROR: command syntax: command line too long -- exceeds 2048
 DEFINE VARIABLE a={1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5...
@@ -4991,15 +4981,11 @@ list index,edtim,udtim,udate,edate
 *** Running ferret script: bn_ez_noupcase.jnl
  LISTing to file abc.dat
  LISTing to file a.nc
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
 *** Running ferret script: bn_spawn_fail.jnl
 ls: cannot access notafile.nowhere: No such file or directory
-rm: cannot remove `nothing.dat': No such file or directory
-cp: cannot stat `nofile.dat': No such file or directory
+rm: cannot remove ‘nothing.dat’: No such file or directory
+cp: cannot stat ‘nofile.dat’: No such file or directory
 *** Running ferret script: bn_ave_of_ave.jnl
 *** Running ferret script: bn_agg_member_syntax.jnl
  **ERROR: unknown data set: D=5.3
@@ -5117,6 +5103,13 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_compressed_gather.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -5403,6 +5396,25 @@ ls: cannot access tmp/test_auto_cache_20.nc: No such file or directory
  LISTing to file test_auto_cache.out
 *** Running ferret script: bn_transp_choose.jnl
  TEMPORARY data cleared from memory
+*** Running ferret script: bn_iin_regrid.jnl
+ **ERROR: regridding: @IIN regridding must be to axis with same grid-cell sizes
+list a[gx=alinenew@iin]
+Replacing definition of axis ALINENEW
+Replacing definition of axis ALINENEW
+Replacing definition of axis ALINENEW
+ TEMPORARY data cleared from memory
+Replacing definition of axis ALINE
+Replacing definition of axis ALINE_EDGES
+Replacing definition of axis ALINE
+Replacing definition of axis ALINE_EDGES
+Replacing definition of axis OTHERAXIS
+Replacing definition of axis ALINE
+Replacing definition of axis ALINE_EDGES
+Replacing definition of axis OTHERAXIS
+Replacing definition of axis ALINE
+Replacing definition of axis ALINE_EDGES
+Replacing definition of axis ALINE
+Replacing definition of axis ALINE_EDGES
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
@@ -5533,4 +5545,4 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: err700_decimate.jnl
-Ended at Tue Jun  6 13:18:02 PDT 2017
+Ended at Wed Jun 14 15:20:36 PDT 2017

@@ -1,4 +1,4 @@
-      SUBROUTINE CD_GET_VAR_TYPE (dset, vname, varid, vtype, status)
+      SUBROUTINE CD_GET_VAR_TYPE (dset, varid, vname, vtype, status)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -54,6 +54,8 @@
 * Internal declarations
       INTEGER NCF_GET_VAR_TYPE, TM_LENSTR1
       INTEGER slen, var_id
+
+      status = merr_ok
 
       var_id = varid
       IF (varid.EQ.0 .OR. varid.EQ.unspecified_int4) THEN

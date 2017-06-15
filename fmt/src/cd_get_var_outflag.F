@@ -1,4 +1,4 @@
-      SUBROUTINE CD_GET_VAR_OUTFLAG (dset, varid, iflag, status)
+      SUBROUTINE CD_GET_VAR_OUTFLAG (dset, ivar, vname, iflag, status)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -34,33 +34,45 @@
 *
 *
 * Read the linked list structure for netcdf variable information: 
-* given dset and variable id return its outflag for outputting attributes
-
-* Programmer Ansley Manke
-* NOAA/PMEL, Seattle, WA - TMAP
-
-* V600 12/05 *acm* Attribute control.
-* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
-* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
-
-
-* include files
-#include "gt_lib.parm"
-      INCLUDE "tmap_errors.parm"
-
+* given dset and variable name OR variable ID return the flag for 
+* output-all-attributes.
+* If varid is 0 or -999, use vname
 * Argument declarations
 
-      INTEGER dset, varid, iflag
+      CHARACTER*(*) vname
+      INTEGER dset, ivar, outflag, status
 
 * Internal declarations
 
+#include "gt_lib.parm"
       INCLUDE 'netcdf.inc'
+      INCLUDE 'tmap_errors.parm'
 
-      INTEGER NCF_GET_VAR_OUTFLAG, dset_num, status
+      INTEGER TM_LENSTR1, NCF_GET_VAR_OUTFLAG, 
+     .        slen, flen, dset_num, iflag
+
+      PARAMETER (flen=512)      ! size of variable name string
+
+#ifdef sun
+      BYTE      fhol(flen)      ! c-type Hollerith string buffer
+#else
+      INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
+#endif 
+
+      status = merr_ok
+      iflag = 0
+      IF (dset .EQ. unspecified_int4) RETURN
+
+* If the varid is not set, find it from the variable name
+      IF (ivar.LE.0 .OR. ivar.EQ.unspecified_int4) THEN
+        slen = TM_LENSTR1(vname)
+	CALL CD_GET_VAR_ID (dset, vname(:slen), ivar, status)
+      ENDIF
+
+      IF (ivar.LT.0 .OR. status.NE.pcd_ferr_ok) RETURN
 
       dset_num = dset
-      IF (dset_num .LT. -2) dset_num = -2
-      status = NCF_GET_VAR_OUTFLAG(dset_num, varid, iflag)
+      status = NCF_GET_VAR_OUTFLAG(dset_num, ivar, iflag)
 
- 5000 RETURN
+      RETURN
       END

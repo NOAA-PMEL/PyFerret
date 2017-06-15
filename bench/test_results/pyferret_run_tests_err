@@ -1,22 +1,22 @@
-Using FERRET /home/flat/ksmith/PyFerret/bin/pyferret
--rwxr-xr-x. 1 ksmith tmap 1404 Jun  6 11:36 /home/flat/ksmith/PyFerret/bin/pyferret
-Using external functions from /home/flat/ksmith/PyFerret/ext_func/pylibs
+Using FERRET /home/merlot/ksmith/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ksmith tmap 1402 Jun 15 10:37 /home/merlot/ksmith/PyFerret/bin/pyferret
+Using external functions from /home/merlot/ksmith/PyFerret/ext_func/pylibs
 Benchmark run by ksmith
 Note: RUN_TESTS.sh test results for PyFerret
 ****** Restricting Ferret paths to bench directory ******
 FER_DAT=.
 FER_DATA=.
-FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/flat/ksmith/Datasets
+FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/merlot/ksmith/Datasets
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_FONTS=/home/flat/ksmith/PyFerret/ppl/fonts
-FER_GO=. /home/flat/ksmith/PyFerret/go /home/flat/ksmith/PyFerret/examples /home/flat/ksmith/PyFerret/contrib
+FER_FONTS=/home/merlot/ksmith/PyFerret/ppl/fonts
+FER_GO=. /home/merlot/ksmith/PyFerret/go /home/merlot/ksmith/PyFerret/examples /home/merlot/ksmith/PyFerret/contrib
 FER_GRIDS=.
-FER_LIBS=/home/flat/ksmith/PyFerret/lib
-FER_PALETTE=. /home/flat/ksmith/PyFerret/ppl
+FER_LIBS=/home/merlot/ksmith/PyFerret/lib
+FER_PALETTE=. /home/merlot/ksmith/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-PYFER_EXTERNAL_FUNCTIONS=/home/flat/ksmith/PyFerret/ext_func/pylibs
+PYFER_EXTERNAL_FUNCTIONS=/home/merlot/ksmith/PyFerret/ext_func/pylibs
 Benchmark scripts that will be run:
    bn_syntax.jnl
    bn_dollar.jnl
@@ -294,6 +294,7 @@ Benchmark scripts that will be run:
    bn_dot_product.jnl
    bn_cache_management.jnl
    bn_transp_choose.jnl
+   bn_iin_regrid.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
@@ -312,7 +313,7 @@ Benchmark scripts that will be run:
    testfergrid.py
    testferpyvar.py
    testfermethods.py
-Beginning at Tue Jun  6 11:37:11 PDT 2017
+Beginning at Thu Jun 15 12:24:42 PDT 2017
 *** Running ferret script: bn_syntax.jnl
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -1517,7 +1518,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-rm: cannot remove `input.txt': No such file or directory
+rm: cannot remove ‘input.txt’: No such file or directory
 ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2170,12 +2171,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2269,8 +2265,6 @@ Replacing definition of axis TIME
  **TMAP ERR: non-existent or not on line
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
-syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
  **Internet Data error
              NetCDF: file not found (OPeNDAP/netCDF Error code -90)
              Data set: http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf
@@ -2667,17 +2661,13 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file dat.dat
  LISTing to file a.nc
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file unf.dat
  LISTing to file a.nc
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file lonlat.dat
  LISTing to file lonlat.nc
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3503,7 +3493,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Adjusting Y-axis label size from 0.100 to 0.001, to avoid running off page.
-           *** NOTE: /home/flat/ksmith/PyFerret/go/magnify.jnl
+           *** NOTE: /home/merlot/ksmith/PyFerret/go/magnify.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3652,6 +3642,8 @@ list a.units
 list ..history
  **ERROR: variable unknown or not in data set: ..HISTORY
 list ..history
+ **ERROR: command syntax: .
+list .
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3877,8 +3869,6 @@ set axis/name=.fr x_in_meters
 DEFINE VARIABLE/D=1/remote rvar = t00an1[d=1,z=1:100@ave]
  **ERROR: command syntax: /REMOTE variable definition must also specify /D=
 DEFINE VARIABLE/remote rvar = t00an1[d=1,z=1:100@ave]
-syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 500; message = "Error processing XML header file /usr/local/src/nvods/tomcat/content/las/conf/server/temp/B181CF84342A76391141817212F0F4D2/header.xml (No such file or directory)"^;};
  **netCDF error
              Unable to open URL with REMOTE variable definitions:
              Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
@@ -4023,7 +4013,7 @@ list substring("hello",1,-2)
  **ERROR: value out of legal range: Negative argument to function. Argument 3 : SUBSTRING
 list substring("hello",1,-3)
 *** Running ferret script: bn_append_dsg.jnl
-rm: cannot remove `test_save_dsg.nc': No such file or directory
+rm: cannot remove ‘test_save_dsg.nc’: No such file or directory
 *** Running ferret script: bn_global_atts.jnl
  LISTing to file anew_global.nc
 *** Running ferret script: bn_conventions_history.jnl
@@ -4205,7 +4195,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-rm: cannot remove `WestCoastCarbon_9d9c_f562_77b5_5.nc': No such file or directory
+rm: cannot remove ‘WestCoastCarbon_9d9c_f562_77b5_5.nc’: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4253,7 +4243,7 @@ def anno/nou/xpos=0/hal=1/val=0 "My Lab"
  **ERROR: invalid command: Specify only one of /USER /NOUSER /NORM
 def anno/nou/user/xpos=0/ypos=0 "My Lab"
 *** Running ferret script: bn_auxiliary.jnl
-rm: cannot remove `layerz_test_data.txt': No such file or directory
+rm: cannot remove ‘layerz_test_data.txt’: No such file or directory
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
 SET VAR/layerz=depth noexist
@@ -4495,7 +4485,7 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_single_4.nc
  LISTing to file tmp/tagg_single_5.nc
  LISTing to file tmp/tagg_single_6.nc
-           *** NOTE: Not deleted: tday
+           *** NOTE: Not deleted: TDAY
            *** NOTE: Axis is in use by grid (G001)
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
@@ -4543,9 +4533,9 @@ go/garbage tmp/testMe
  **ERROR: unknown command qualifier: garbage
 go/garbage "tmp/testMe"
  **ERROR: unknown command qualifier: garbage
-go/garbage /home/flat/ksmith/pyferret_dev/bench/tmp/testMe.jnl
+go/garbage /home/merlot/ksmith/pyferret_dev/bench/tmp/testMe.jnl
  **ERROR: unknown command qualifier: garbage
-go/garbage "/home/flat/ksmith/pyferret_dev/bench/tmp/testMe.jnl"
+go/garbage "/home/merlot/ksmith/pyferret_dev/bench/tmp/testMe.jnl"
 *** Running ferret script: bn_long_lists.jnl
  **ERROR: command syntax: command line too long -- exceeds 2048
 DEFINE VARIABLE a={1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5...
@@ -5017,15 +5007,11 @@ list index,edtim,udtim,udate,edate
 *** Running ferret script: bn_ez_noupcase.jnl
  LISTing to file abc.dat
  LISTing to file a.nc
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
-           *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
 *** Running ferret script: bn_spawn_fail.jnl
 ls: cannot access notafile.nowhere: No such file or directory
-rm: cannot remove `nothing.dat': No such file or directory
-cp: cannot stat `nofile.dat': No such file or directory
+rm: cannot remove ‘nothing.dat’: No such file or directory
+cp: cannot stat ‘nofile.dat’: No such file or directory
 *** Running ferret script: bn_ave_of_ave.jnl
 *** Running ferret script: bn_agg_member_syntax.jnl
  **ERROR: unknown data set: D=5.3
@@ -5143,6 +5129,13 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_compressed_gather.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -5429,6 +5422,25 @@ ls: cannot access tmp/test_auto_cache_20.nc: No such file or directory
  LISTing to file test_auto_cache.out
 *** Running ferret script: bn_transp_choose.jnl
  TEMPORARY data cleared from memory
+*** Running ferret script: bn_iin_regrid.jnl
+ **ERROR: regridding: @IIN regridding must be to axis with same grid-cell sizes
+list a[gx=alinenew@iin]
+Replacing definition of axis ALINENEW
+Replacing definition of axis ALINENEW
+Replacing definition of axis ALINENEW
+ TEMPORARY data cleared from memory
+Replacing definition of axis ALINE
+Replacing definition of axis ALINE_EDGES
+Replacing definition of axis ALINE
+Replacing definition of axis ALINE_EDGES
+Replacing definition of axis OTHERAXIS
+Replacing definition of axis ALINE
+Replacing definition of axis ALINE_EDGES
+Replacing definition of axis OTHERAXIS
+Replacing definition of axis ALINE
+Replacing definition of axis ALINE_EDGES
+Replacing definition of axis ALINE
+Replacing definition of axis ALINE_EDGES
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
@@ -5569,11 +5581,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
 *** Running python script: testfervar.py
 >>> ... ... >>> >>> >>> Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
-  File "/home/flat/ksmith/PyFerret/lib/python2.6/site-packages/pyferret/ferdset.py", line 230, in __delattr__
+  File "/home/merlot/ksmith/PyFerret/lib/python2.7/site-packages/pyferret/ferdset.py", line 230, in __delattr__
     self.__delitem__(name)
-  File "/home/flat/ksmith/PyFerret/lib/python2.6/site-packages/pyferret/ferdset.py", line 165, in __delitem__
+  File "/home/merlot/ksmith/PyFerret/lib/python2.7/site-packages/pyferret/ferdset.py", line 165, in __delitem__
     value._removefromferret()
-  File "/home/flat/ksmith/PyFerret/lib/python2.6/site-packages/pyferret/fervar.py", line 882, in _removefromferret
+  File "/home/merlot/ksmith/PyFerret/lib/python2.7/site-packages/pyferret/fervar.py", line 882, in _removefromferret
     raise NotImplementedError('%s is a file variable; close the dataset to remove' % fername)
 NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the dataset to remove
 
@@ -5588,4 +5600,4 @@ NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the 
 >>> ... ... >>> >>> >>> 
 *** Running python script: testfermethods.py
 >>> ... ... >>> >>> >>> 
-Ended at Tue Jun  6 11:41:51 PDT 2017
+Ended at Thu Jun 15 12:29:41 PDT 2017

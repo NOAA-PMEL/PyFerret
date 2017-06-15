@@ -45,6 +45,7 @@
 * V698 *sh* 2/16 
 * V698 *acm* 2/16 LET/D variables are now stored with their associated datset
 *                 in the List structure so can get their attribute info
+* V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 
         INCLUDE 'tmap_dims.parm'
         INCLUDE 'ferret.parm'
@@ -73,13 +74,12 @@
         INTEGER maxlen
         PARAMETER (maxlen = 2048)
 
-        LOGICAL NC_GET_ATTRIB, coordvar, got_it
+        LOGICAL NC_GET_ATTRIB, got_it
         INTEGER TM_LENSTR1, vlen, ref_dset, ref_id, var_id,
-     .          vtype, nvdims, nvatts, vdims(8), iatt, imemb,
-     .          attype, attlen, attoutflag,
+     .          nvatts, att, imemb, attype, attlen, attoutflag,
      .          m_attid, m_attype, m_attlen, m_attoutflag,
      .          m_dset, m_cat, m_grid, m_var, m_ens_ax,
-     .          all_outflag, memb_id(nsets), i
+     .          all_outflag, memb_id(nsets), i, iatt
         REAL    attvals(50), m_attvals(50)
         CHARACTER attname*128
         CHARACTER*(maxlen) attstr, m_attstr
@@ -119,11 +119,8 @@
         ENDDO
 
 * Get number of attributes from the reference variable
-        CALL CD_GET_VAR_INFO (ref_dset, ref_id, vname(:vlen),
-     .                        vtype, nvdims, vdims,
-     .                        nvatts, coordvar, all_outflag, status)
-!       IF (coordvar) GOTO error
-
+        CALL CD_GET_VAR_NATTS (ref_dset, ref_id, vname(:vlen),
+     .                         nvatts, status)
 
 **** loop through the attribute list from the reference variable
         attloop: DO iatt = 1, nvatts

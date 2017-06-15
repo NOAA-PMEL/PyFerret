@@ -97,7 +97,10 @@ IF `style EQ 0` THEN
   go bar_chart2 plot/line wt_count $6"y|X|Y|Z|T"
 ELSE
   message/cont You may want to replot with /HLIM /PALETTE or other qualifiers on PLOT:
+  message/cont Color may be same as wt_count or another variable with the same shape
+  message/cont Base is a constant value, the value with a bar of size zero.
   message/cont >>>  go bar_chart3 poly/line/nolabel/fill wt_count [color] [base]
   go bar_chart3 poly/line/nolabel/fill wt_count
+ENDIF
 
 set mode/last verify

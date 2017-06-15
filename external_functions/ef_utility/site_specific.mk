@@ -34,8 +34,8 @@ INSTALL_FER_DIR = $(FER_DIR)
 ## =========================
 ## Python version used by PyFerret
 ## =========================
-PYTHON_EXE = python2.6
-# PYTHON_EXE = python2.7
+# PYTHON_EXE = python2.6
+PYTHON_EXE = python2.7
 # PYTHON_EXE = python3.6
 
 ## =========================

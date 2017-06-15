@@ -37,6 +37,7 @@ cd_get_ds_info.F\
 cd_get_agg_var_info.F\
 cd_get_generic_bounds.F\
 cd_get_generic_grids.F\
+cd_get_id_varname.F\
 cd_get_line_direction.F\
 cd_get_missing_flag.F\
 cd_get_parent_grids.F\
@@ -47,14 +48,18 @@ cd_get_tmap_parms.F\
 cd_get_var_att_id.F\
 cd_get_var_att_info.F\
 cd_get_var_att_name.F\
+cd_get_var_dims_info.F\
 cd_get_var_id.F\
 cd_get_var_info.F\
+cd_get_var_natts.F\
 cd_get_var_outflag.F\
 cd_get_var_outtype.F\
 cd_get_var_type.F\
 cd_get_var_uvflag.F\
+cd_get_var_varname.F\
 cd_init_dset.F\
 cd_init_agg_dset.F\
+cd_isit_coordvar.F\
 cd_isit_epic.F\
 cd_isit_recdim.F\
 cd_load_dset_attrs.F\

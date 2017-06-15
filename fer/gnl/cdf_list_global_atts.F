@@ -40,6 +40,7 @@
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * V600  6/06 *acm* - additional declarations found by Solaris compiler
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 
 #include "netcdf.inc"
         include 'cd_lib.parm'
@@ -50,10 +51,9 @@
         INTEGER dset, cdfid, status
         
 * internal variable declarations:
-        LOGICAL MATCH_NAME, NC_GET_ATTRIB, coordvar, do_warn, got_it
-        INTEGER TM_LENSTR1, varid, vartype, nvdims, vdims(8), nvatts, 
-     .          all_outflag, iatt, slen, attype, attlen, attoutflag,
-     .          bufflen
+        LOGICAL MATCH_NAME, NC_GET_ATTRIB, do_warn, got_it
+        INTEGER TM_LENSTR1, varid, nvatts, iatt, slen, attype, attlen, 
+     .          attoutflag, bufflen
 	REAL	vals(100)
         CHARACTER*128 varname, attname, aname
         CHARACTER*10240 buff
@@ -65,8 +65,8 @@
 * Get global attributes from dset and if they have been marked for output,
 * write to the file cdfid
 
-        CALL CD_GET_VAR_INFO (dset, varid, varname, vartype, nvdims, 
-     .            vdims, nvatts, coordvar, all_outflag, status) 
+        varname = '.'
+        CALL CD_GET_VAR_NATTS (dset, varid, varname, nvatts, status) 
 
         DO 80 iatt = 1, nvatts
            CALL CD_GET_VAR_ATT_NAME( dset, varid, iatt, attname, status)

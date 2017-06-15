@@ -74,6 +74,8 @@
 *                  argument "axis" in this routine is a dimension, 1, 2, ... 
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 * V696 *acm* 11/15 Added @BIN and @NBIN regridding transforms
+* V720: 6/17 *acm* Ticket 2346: new @IIN regridding transform
+
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -169,7 +171,8 @@
      .      .OR. rgrd_trans .EQ. prgrd_good_pt
      .      .OR. rgrd_trans .EQ. prgrd_average
      .      .OR. rgrd_trans .EQ. prgrd_bin
-     .      .OR. rgrd_trans .EQ. prgrd_nbin ) THEN
+     .      .OR. rgrd_trans .EQ. prgrd_nbin
+     .      .OR. rgrd_trans .EQ. prgrd_iin ) THEN  ! I think @iin is whole box
 	   where_loest = box_lo_lim
 	   where_hiest = box_hi_lim
 	ELSEIF ( rgrd_trans .EQ. prgrd_associate ) THEN

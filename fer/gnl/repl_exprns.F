@@ -122,6 +122,7 @@
 * v701 *acm* 9/16 Ticket 2469: For RETURN=shape, use the same logic as in SHOW GRID,
 *                 for determining when a grid dimension is compressed by a transformation.
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
+* V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 
 #include "netcdf.inc"
 	include 'tmap_dims.parm'
@@ -156,8 +157,8 @@
      .		  str_len, lenbuff, iend, itmp, axis,
      .		  mr, cx, mr_temp, i, i1, i2, use_digits, true_end,
      .		  qual_end, brkt, idim, use_width, dset, varid, 
-     .            vartype, nvdims, vdims(8), nvatts, ist, ind,
-     .            attype, attlen, inxt, attoutflag,outflag, fertype, 
+     .            vartype, ist, ind,
+     .            attype, attlen, inxt, attoutflag, fertype, 
      .            attid, ieq, base_isp, base_cx, cat, var, uvar,  
      .            i1ss, inss, grid, ucode
 	REAL	  result, val
@@ -562,9 +563,8 @@
 	            CALL CD_GET_VAR_ID(dset, cmnd(istart:iend), varid, status)
 
 	            IF (status .EQ. ferr_ok)  
-     .                CALL CD_GET_VAR_INFO (dset, varid, cmnd(istart:iend), 
-     .                              vartype, nvdims, vdims, nvatts,
-     .                              coordvar, outflag, status )
+     .                CALL CD_GET_VAR_TYPE (dset, varid, cmnd(istart:iend), 
+     .                              vartype, status )
 
                     IF (vartype.EQ.0 ) GOTO 4000
 		    
@@ -899,9 +899,8 @@
               CALL CD_GET_VAR_ID(dset, cmnd(istart:iend), varid, status)
 
               IF (status .EQ. ferr_ok)  
-     .          CALL CD_GET_VAR_INFO (dset, varid, cmnd(istart:iend), 
-     .                              vartype, nvdims, vdims, nvatts,
-     .                              coordvar, outflag, status )
+     .          CALL CD_GET_VAR_TYPE (dset, varid, cmnd(istart:iend), 
+     .                              vartype, status )
 
               IF (vartype.EQ.0 ) THEN  
 

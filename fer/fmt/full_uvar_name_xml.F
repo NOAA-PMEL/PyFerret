@@ -45,16 +45,15 @@
 * V 6.66
 * V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
 *                  using original upper/lowercase spelling
+* V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 
 
 * calling argument declarations:
 	INTEGER	uvar
 
 * local variable declarations:
-	LOGICAL coordvar
 	INTEGER TM_LENSTR1, len, len2
-	INTEGER dset, varid, vtype, nvdims, outflag, vdims(8), 
-     .		nvatts, status
+	INTEGER dset, varid, status
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -74,8 +73,8 @@
 	   dset = pdset_uvars
 	   CALL CD_GET_VAR_ID (dset, uvar_name_code(uvar), varid, status)
 	   IF (status .EQ. ferr_ok) 
-     .      CALL CD_GET_VAR_INFO (dset, varid, FULL_UVAR_NAME_XML, vtype, 
-     .            nvdims, vdims, nvatts, coordvar, outflag, status)
+     .      CALL CD_GET_ID_VARNAME (dset, varid, FULL_UVAR_NAME_XML, status)
+
 	ENDIF
 
 	IF (uvar_dset(uvar) .GT. pdset_irrelevant) THEN

@@ -153,6 +153,7 @@
 * V698  4/16 *acm* For ticket 2399: Apply MODE CALENDAR settings to F axes too
 * V7    acm  6/16 Ticket 2437: Deprecating mode_6d_lab. 
 *		  Adjust output to 6-D or 4-D grids
+* V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 
 
 	include 'tmap_dims.parm'
@@ -197,8 +198,7 @@
      .			idim, iqual, iset, item, ivar, nth, mr,
      .			mode, cx, axis, grid, mod_cx,
      .                  TM_LENSTR, len_test, len_mchars, varid,
-     .                  dset, cat, var, mods_cx, iflag, loc, 
-     .                  nvdims, vdims(8), nvatts, vtype, all_outflag, 
+     .                  dset, cat, var, mods_cx, iflag, loc, nvatts, 
      .                  slen, iatt, igrd, iline, new_att_modulo_len,
      .			cache_size, cache_nelems, cache_preemption
 	LOGICAL		MATCH4, TM_DIGIT_TEST, IS_TEMPLATE, MATCH_TEMPLATE,
@@ -985,9 +985,7 @@ c	ENDIF
      .           attname, i, .FALSE., status)
               IF (attname .NE. '') GOTO 6240
 
-              CALL CD_GET_VAR_INFO (dset, varid, varname, vtype,
-     .                              nvdims, vdims, nvatts, coordvar, 
-     .                              all_outflag, status)
+              CALL CD_GET_VAR_NATTS (dset, varid, varname, nvatts, status)
 
 * Set all attribute output flags to 0
 

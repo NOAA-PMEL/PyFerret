@@ -58,6 +58,7 @@
 *                  uvar_aux_var replaced with calls to LIST routines in NCF_Util.c 
 *                  Increase size of max_gfdl_dsets and max_grids
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
+* V720: 6/17 *acm* Ticket 2346: new @IIN regridding transform
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -398,7 +399,8 @@
      .			prgrd_nbin,
      .			prgrd_from_source,
      .			prgrd_from_ntrmed,
-     .			pinterpolate
+     .			pinterpolate,
+     .			prgrd_iin
 	PARAMETER     (	max_regrid_trans	= 30,   ! increased 11/95
      .			prgrd_exact		= 1,
      .			prgrd_linear_interp	= 2,
@@ -424,6 +426,7 @@
      .			prgrd_nbin		= 22,
      .			prgrd_from_source	= -6,
      .			prgrd_from_ntrmed	= -7,
+     .			prgrd_iin		= 23,
      .			pinterpolate		= 0 )
 
 * auxiliary regridding transformations

@@ -96,6 +96,7 @@
 * V695 *acm* 10/15 Fix #2319: @STD as a multi-D transform
 * V696 *acm* 11/15 Added @BIN and @NBIN regridding transforms
 * V696 *acm8 11/15 Clarify descriptions for @BIN, @NBIN, @AVE, @NGD, @SUM regridding
+* V720: 6/17 *acm* Ticket 2346: new @IIN regridding transform
 
         IMPLICIT NONE
 	include	'ferret.parm'
@@ -774,13 +775,16 @@
      .		alg_regrid_title( prgrd_nbin )		/ '#good in bin'/,
      .		alg_regrid_code ( prgrd_nbin )		/ 'NBIN'	/
      .		alg_regrid_vizb ( prgrd_nbin )		/ .TRUE.	/,
+     .		alg_regrid_title( prgrd_iin )		/ '#indef integral'/,
+     .		alg_regrid_code ( prgrd_iin )		/ 'IIN'	/
+     .		alg_regrid_vizb ( prgrd_iin )		/ .TRUE.	/,
 
-     .		(alg_regrid_title(i),i=prgrd_nbin+1,max_regrid_trans)
-     .				/8*unspecified_name4/,
-     .		(alg_regrid_code (i),i=prgrd_nbin+1,max_regrid_trans)
-     .				/8*unspecified_name4/,
-     .		(alg_regrid_vizb (i),i=prgrd_nbin+1,max_regrid_trans)
-     .				/8*.FALSE./
+     .		(alg_regrid_title(i),i=prgrd_iin+1,max_regrid_trans)
+     .				/7*unspecified_name4/,
+     .		(alg_regrid_code (i),i=prgrd_iin+1,max_regrid_trans)
+     .				/7*unspecified_name4/,
+     .		(alg_regrid_vizb (i),i=prgrd_iin+1,max_regrid_trans)
+     .				/7*.FALSE./
 
 
 	DATA

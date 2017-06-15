@@ -89,6 +89,7 @@
 * V7   *acm* 5/16  Fix ticket 2432, see alsoticket 2352. For LET/D variables 
 *                  look for info under that dataset
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
+* V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -111,12 +112,11 @@
 * internal variable declarations:
 	LOGICAL		VALID_GRID, TM_LEGAL_NAME, TM_HAS_STRING,
      .			ACTS_LIKE_FVAR,
-     .                  have_mods, ez, gtts, ncfile, coordvar
+     .                  have_mods, ez, gtts, ncfile
 	INTEGER		GRID_FROM_NAME, TM_LENSTR1, STR_UPCASE, mod_cx,
      .			i, dset, grid, cat, var, loc, TMAP_status, 
      .			testvar, outtype_flag, varid, attid, attype, attlen, 
-     .			attoutflag, vartype, nvdims, nvatts, vdims(8), 
-     .			varoutflag, cx, idum
+     .			attoutflag, vartype, cx, idum
 	REAL		bad, scalefac, offset, val, dummy
 	CHARACTER	grid_name*64, title*128, units*128, newname*128,
      .                  is_nan*3, flag*10, typflag*10, varattname*512,
@@ -378,9 +378,7 @@
 
 * Get input type, store in variable outtype_flag
            IF (outtype_flag .EQ. 99) THEN
-              CALL CD_GET_VAR_INFO (dset, varid, varname, vartype, 
-     .                  nvdims, vdims, nvatts, coordvar, varoutflag, 
-     .                  status) 
+              CALL CD_GET_VAR_TYPE (dset, varid, vname, vartype, status)
               outtype_flag = vartype 
            ENDIF
 

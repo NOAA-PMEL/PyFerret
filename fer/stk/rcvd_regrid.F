@@ -77,6 +77,7 @@
 *                  dimension is now an arg to SECS_TO_TSTEP. Note the input 
 *                  argument "axis" in this routine is a dimension, 1, 2, ... 
 * V696 *acm* 11/15 Added @BIN and @NBIN regridding transforms
+* V720: 6/17 *acm* Ticket 2346: new @IIN regridding transform
 
 * calling argument declarations:
 	INTEGER	src_cx, dst_cx, axis, work, ok_min, ok_max, status
@@ -158,7 +159,8 @@
      .	    .OR. rgrd_trans .EQ. prgrd_average
      .	    .OR. rgrd_trans .EQ. prgrd_nearest
      .	    .OR. rgrd_trans .EQ. prgrd_bin
-     .	    .OR. rgrd_trans .EQ. prgrd_nbin ) THEN
+     .	    .OR. rgrd_trans .EQ. prgrd_nbin
+     .	    .OR. rgrd_trans .EQ. prgrd_iin ) THEN   ! I think @iin is whole box
 	   dst_where_loest = box_lo_lim
 	   dst_where_hiest = box_hi_lim
 	   src_where_loest = box_lo_lim

@@ -50,7 +50,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -75,7 +75,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -112,7 +112,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -151,7 +151,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -186,7 +186,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -256,7 +256,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -313,7 +313,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -370,7 +370,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -425,7 +425,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -473,7 +473,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -567,7 +567,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -637,7 +637,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -688,7 +688,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -779,7 +779,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -806,7 +806,7 @@ variables:
 		X_:long_name_mod = "axis ABSTRACT" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -830,7 +830,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -857,14 +857,14 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 *** Running ferret script: bn_tab_comma_multivar.jnl
 *** Running ferret script: bn_element_functions.jnl
 *** Running ferret script: bn_long_revision_num.jnl
 bn_long_revision_num.jnl --- history attribute
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 *** Running ferret script: bn_window_title.jnl
 *** Running ferret script: bn_last_error.jnl
 *** Running ferret script: bn_deg_min.jnl
@@ -900,7 +900,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -973,7 +973,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1017,7 +1017,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1059,7 +1059,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1167,7 +1167,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -1208,7 +1208,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -1231,7 +1231,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1257,7 +1257,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1277,7 +1277,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1298,7 +1298,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1341,7 +1341,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -1381,7 +1381,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -1419,7 +1419,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -1430,25 +1430,25 @@ variables:
 	double AX002(AX002) ;
 		AX002:point_spacing = "even" ;
 		AX002:axis = "X" ;
-	float A1(AX002) ;
-		A1:missing_value = -1.e+34f ;
-		A1:_FillValue = -1.e+34f ;
+	double A1(AX002) ;
+		A1:missing_value = -1.e+34 ;
+		A1:_FillValue = -1.e+34 ;
 		A1:long_name = "a1" ;
 		A1:three = 1.f, 2.f, 3.f ;
 		A1:history = "From EZ.DAT" ;
-	float A2(AX002) ;
-		A2:missing_value = -1.e+34f ;
-		A2:_FillValue = -1.e+34f ;
+	double A2(AX002) ;
+		A2:missing_value = -1.e+34 ;
+		A2:_FillValue = -1.e+34 ;
 		A2:long_name = "a2" ;
 		A2:history = "From EZ.DAT" ;
-	float A3(AX002) ;
-		A3:missing_value = -1.e+34f ;
-		A3:_FillValue = -1.e+34f ;
+	double A3(AX002) ;
+		A3:missing_value = -1.e+34 ;
+		A3:_FillValue = -1.e+34 ;
 		A3:long_name = "a3" ;
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1468,20 +1468,20 @@ variables:
 	double AX012(AX012) ;
 		AX012:point_spacing = "even" ;
 		AX012:axis = "X" ;
-	float V1(AX012) ;
-		V1:missing_value = -1.e+34f ;
-		V1:_FillValue = -1.e+34f ;
+	double V1(AX012) ;
+		V1:missing_value = -1.e+34 ;
+		V1:_FillValue = -1.e+34 ;
 		V1:long_name = "V1" ;
 		V1:strval = "2" ;
 		V1:history = "From EZ.DAT" ;
-	float V4(AX012) ;
-		V4:missing_value = -1.e+34f ;
-		V4:_FillValue = -1.e+34f ;
+	double V4(AX012) ;
+		V4:missing_value = -1.e+34 ;
+		V4:_FillValue = -1.e+34 ;
 		V4:long_name = "V4" ;
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1507,7 +1507,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1553,7 +1553,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -1660,7 +1660,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 		:dt_internal = 15. ;
 }
@@ -1702,7 +1702,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1785,7 +1785,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1822,7 +1822,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1862,7 +1862,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1913,7 +1913,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -1972,7 +1972,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -2017,7 +2017,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -2060,7 +2060,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -2095,7 +2095,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -2129,7 +2129,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -2159,7 +2159,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -2188,7 +2188,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -2249,7 +2249,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -2294,7 +2294,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 *** Running ferret script: bn_transforms.jnl
@@ -2335,7 +2335,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -2365,7 +2365,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -2395,7 +2395,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -2448,7 +2448,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -2490,7 +2490,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -2508,7 +2508,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 *** Running ferret script: bn_no_valid_on_plot.jnl
@@ -2522,15 +2522,15 @@ variables:
 	double AX002(AX002) ;
 		AX002:point_spacing = "even" ;
 		AX002:axis = "X" ;
-	float MY_ASC(AX002) ;
-		MY_ASC:missing_value = 3.f ;
-		MY_ASC:_FillValue = 3.f ;
+	double MY_ASC(AX002) ;
+		MY_ASC:missing_value = 3. ;
+		MY_ASC:_FillValue = 3. ;
 		MY_ASC:long_name = "chlorophyll" ;
 		MY_ASC:units = "micrograms/L" ;
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -2540,15 +2540,15 @@ variables:
 	double AX002(AX002) ;
 		AX002:point_spacing = "even" ;
 		AX002:axis = "X" ;
-	float MY_UNF(AX002) ;
-		MY_UNF:missing_value = 5.f ;
-		MY_UNF:_FillValue = 5.f ;
+	double MY_UNF(AX002) ;
+		MY_UNF:missing_value = 5. ;
+		MY_UNF:_FillValue = 5. ;
 		MY_UNF:long_name = "Some Unformatted input" ;
 		MY_UNF:units = "metres" ;
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -2565,7 +2565,7 @@ variables:
 		A:long_name = "{1.1,2.2,3.3}" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -2586,7 +2586,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -2657,7 +2657,7 @@ variables:
 		newvar:history = "From a" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 *** Running ferret script: bn_cdf_keepax.jnl
@@ -2686,7 +2686,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -2713,7 +2713,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 *** Running ferret script: bn_key_label_minmax.jnl
@@ -2818,7 +2818,7 @@ variables:
 		ZUP:long_name = "Z[GZ=ZAXUP]" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, Convert forms of DEG, degrees to degrees_east:
@@ -2850,7 +2850,7 @@ variables:
 		Y_:long_name_mod = "axis YFIFTEEN" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 bn_axis_cf.jnl, Downcase units, e.g. in time axis DAYS since
@@ -2883,7 +2883,7 @@ variables:
 		XYTVAR:history = "From bn_strides" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 *** Running ferret script: bn_repeated_coords.jnl
@@ -2960,7 +2960,7 @@ variables:
 		TIME:history = "From http://tds.climatedatacloud.com/thredds/dodsC/ensembles/nmme_gfdl/TwoD" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -2998,7 +2998,7 @@ variables:
 		time:history = "From http://tds.climatedatacloud.com/thredds/dodsC/ensembles/nmme_gfdl/TwoD" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 data:
 
@@ -3050,7 +3050,7 @@ variables:
 		MYVAR:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 netcdf a {
@@ -3064,7 +3064,7 @@ variables:
 		MYVAR:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 }
 *** Running ferret script: bn_list_clim_axes.jnl
@@ -3090,6 +3090,7 @@ variables:
 *** Running ferret script: bn_dot_product.jnl
 *** Running ferret script: bn_cache_management.jnl
 *** Running ferret script: bn_transp_choose.jnl
+*** Running ferret script: bn_iin_regrid.jnl
 *** Running ferret script: bn_gif.jnl
 *** Running ferret script: bn_ps.jnl
 *** Running ferret script: bn_all_ef.jnl
@@ -3748,7 +3749,7 @@ variables:
 		tmonth:history = "added to /home/data/socat/socatV3/492C/492C19881104.nc" ;
 
 // global attributes:
-		:history = "PyFerret V7.13 (beta/debug)  6-Jun-17" ;
+		:history = "PyFerret V7.13 (beta/debug) 15-Jun-17" ;
 		:Conventions = "CF-1.6" ;
 		:featureType = "Trajectory" ;
 		:decimation = "218 original number of obs. Piecewise decimated to 23 obs using tolerances: lon 1, lat 1, fco2_rec 4" ;

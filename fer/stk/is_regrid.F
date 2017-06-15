@@ -89,6 +89,7 @@
 * V698 *acm*  3/16 Ticket 2278: add an attribute with time range when
 *                  saving a modulo-regridded variable to netCDF
 * V702 3/17 *sh* for trac enhancement #2369 -- dynamic memory management 
+* V720: 6/17 *acm* Ticket 2346: new @IIN regridding transform
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -329,6 +330,15 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
      .			memry(dst_mr)%ptr, dst_mr,
      .			workmem(plegacy_work_buffer)%ptr, src_cx, dst_cx,
      .                  wk_size+1 )
+
+	ELSEIF ( rgrd_trans .EQ. prgrd_iin ) THEN
+	   CALL DO_IIN_REGRID( cx_valid, axis,
+     .			memry(src_mr)%ptr, src_mr,
+     .			memry(dst_mr)%ptr, dst_mr,
+     .			workmem(plegacy_work_buffer)%ptr, wk_size+1, status )
+     
+	   IF ( status .NE. ferr_ok ) GOTO 5100
+
 * modulo regridding
 	ELSE
 	   IF ( itsa_string ) GOTO 5010

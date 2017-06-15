@@ -38,6 +38,31 @@
 * dset and ivar return variable name (in its original upper/lowercase 
 * form), type, dimensions, number of attributes
 
+* See also these routines which get subsets of these. 
+* All of the below calls take either a variable id or variable name. 
+* If the varid is < 0, it looks at the variable name and gets the varid.
+*
+*  The variable dimension info, 
+*       SUBROUTINE CD_GET_VAR_DIMS_INFO (dset, ivar, vname, nvdims, 
+*     .        vdims, status)
+*
+*  The logical flag true if it is a coordinate variable
+*       LOGICAL FUNCTION CD_ISIT_COORDVAR (dset, ivar, vname, status)
+*
+*  The number of attributes the variable hase
+*      SUBROUTINE CD_GET_VAR_NATTS (dset, ivar, vname, nvatts, status)
+*
+*  The flag, output-all-attributes
+*      SUBROUTINE CD_GET_VAR_OUTFLAG (dset, ivar, vname, outflag, status)
+*
+*  The variable type, netCDF type 
+*     SUBROUTINE CD_GET_VAR_TYPE (dset, varid, vname, vtype, status)
+*
+*  The variable name as it appears in the input file or variable definition,
+*  including the original upper- or lower-case spelling
+*      SUBROUTINE CD_GET_VAR_VARNAME (dset, varid, vname, status)
+
+
 * Programmer Ansley Manke
 * NOAA/PMEL, Seattle, WA - TMAP
 

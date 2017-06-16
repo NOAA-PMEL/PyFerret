@@ -77,6 +77,8 @@ C
 * V62  *acm* 5/09 Fixing bug 1661: if the plot is TRANSPOSED, then apply 
 *                 xinv, yinv to the opposite axis.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* V72  *acm* 6/17  PyFerret ticket 2542, check for zero-extent on polygons before
+*                  calling graphics routines
 
         IMPLICIT NONE
         include         'xinterrupt.cmn' ! 1/89 *sh*
@@ -141,7 +143,7 @@ C
 *jd*
 	real            zzmin, zzmax, zt
 	integer         status, nlm1
-	real		dz,znp,zmp
+	real		dz,znp,zmp, x1val, y1val, xdel, ydel 
 	integer		i,j,uprdn, llen, ptsbase
 	logical         line_it, fill_it
         integer         slen1, slen2, ICNT, ii, IY
@@ -292,6 +294,14 @@ C      set already.
 * note: all points in the polygon are guaranteed to be "valid"
 	   nvertex = 0
 
+* Check that the polygon has a nonzero size in both directions
+* PyFerret fails e.g. on a zero-height rectangle. This is not a 
+* perfect test but will catch most cases.
+
+           x1val = x(IBASE+1)
+           y1val = x(iy+IBASE+1)
+	   xdel = 0.
+	   ydel = 0.
 	   DO 150 J=IBASE+1,IBASE+llen
 !	      CALL TRANS(I,X(J),X(IY+J),XT,YT)
 !	      nvertex = nvertex + 1
@@ -300,7 +310,12 @@ C      set already.
 	      nvertex = nvertex + 1
 	      x(xvertexbase+nvertex-1) = x(j)
 	      x(ypolybase+nvertex-1) = x(iy+j)
+              IF (j .GT. ibase+1) THEN
+	         xdel = MAX( xdel, ABS(x1val-x(j)) )
+	         ydel = MAX( ydel, ABS(y1val-x(iy+j)) )
+              ENDIF
  150	   CONTINUE
+	   IF (xdel.LT.epsilon .OR. ydel.LT.epsilon) GOTO 199
 
 	   if (fill_it) then
 *             Determine the color index for the fill

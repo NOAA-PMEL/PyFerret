@@ -13,7 +13,7 @@ run_tests:
 	    echo "*** Ferret must be installed and the ferret_paths script must have sourced for these tests ***" ; \
 	    exit 1 ; \
 	fi
-	./RUN_TESTS.sh `which ferret` "$(FER_EXTERNAL_FUNCTIONS)" "RUN_TESTS.sh test results for Ferret"
+	./RUN_TESTS.sh `which ferret` "$(FER_EXTERNAL_FUNCTIONS)"
 	@echo 'Differences in the generated bench/*.gif files versus against those in bench/test_results'
 	-@for img in *.gif ; \
 	do \
@@ -26,7 +26,7 @@ run_tests:
 
 .PHONY: clean
 clean:
-	rm -f all_*_ncdump all_*_err all_*_log
+	rm -f all_*_ncdump all_*_err all_*_log all_*_ncdump_orig all_*_err_orig all_*_log_orig cleanups.sed
 	rm -f *.plt* *.gif* *.ps* *.png* *.pdf* ferret.jnl*
 	rm -f `cat TRASH_FILES`
 	rm -f all_ncdump.out fort.41 make_stream_file

@@ -1,24 +1,19 @@
 #! /bin/sh -f
 # run individually each of the benchmark tests listed in TEST_SCRIPTS
 
-if [ $# -lt 2 ]; then
+if [ $# -ne 2 ]; then
    echo ""
-   echo "Usage:  $0  Ferret  ExtFuncsDir  [ ... ]"
+   echo "Usage:  $0  Ferret  ExtFuncsDir"
    echo "where:"
    echo "       Ferret is the ferret executable or pyferret script to use"
    echo "       ExtFuncsDir is the external functions directory to use"
    echo "           (if '.', bn_all_ef.jnl will not be run)"
-   echo "       Any remaining arguments are used as comments in the log files"
    echo ""
    exit 1
 fi
 
 fver="$1"
-shift
-efdir="$1"
-shift
-bmarker="$USER"
-bcomment="$*"
+efdir="$2"
 
 PS1='$ '
 export PS1
@@ -86,12 +81,6 @@ echo "Testing log output in $log_file"
 echo "Testing errors in $err_file" 
 echo "Testing ncdump output in $ncdump_file"
 
-echo "Using FERRET $fver" >> $log_file
-ls -l $fver >> $log_file
-echo "Using external functions from $efdir" >> $log_file
-echo "Benchmark run by $bmarker" >> $log_file
-echo "Note: $bcomment" >> $log_file
-
 if ! echo "$fver" | grep -q "pyferret"; then
    ispyferret=0
 #  command-line options for ferret
@@ -108,7 +97,7 @@ else
    export PYFER_EXTERNAL_FUNCTIONS
 fi
 
-#set up a generic data environment
+# set up a generic data environment
 echo "****** Restricting Ferret paths to bench directory ******" >> $log_file
 FER_DATA="."
 export FER_DATA
@@ -122,7 +111,6 @@ FER_GRIDS="."
 export FER_GRIDS
 FER_DIR="."
 export FER_DIR
-Fenv >> $log_file
 
 # always replace $HOME/.ferret with default.ferret so results are consistent
 rm -f keep.ferret
@@ -141,11 +129,6 @@ if [ "$ispyferret" -ne 0 ]; then
       echo "   $script" >> $log_file
    done
 fi
-
-now=`date`
-echo "Beginning at $now" >> $log_file
-cp $log_file $err_file
-echo "Beginning at $now"
 
 # run each of the scripts in the list
 rm -f all_ncdump.out
@@ -212,12 +195,54 @@ if [ -f keep.ferret ]; then
    mv keep.ferret $HOME/.ferret
 fi
 
+# Replace insignificant differences with constant values
+cleanups="cleanups.sed"
+
+builddir=`dirname $PWD | sed -e 's/\\//\\\\\\//g'`
+echo "s/$builddir/....../g" > $cleanups
+
+exebindir=`dirname $fver`
+exeferdir=`dirname $exebindir | sed -e 's/\\//\\\\\\//g'`
+echo "s/$exeferdir/....../g" >> $cleanups
+
+timeregex=`date +%e.%h.%Y`
+echo "s/$timeregex/DD-MON-YYYY/g" >> $cleanups
+
+timeregex=`date +%e.%h.%y`
+echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]/DD-MON-YY HH:MM/g" >> $cleanups
+echo "s/$timeregex/DD-MON-YY/g" >> $cleanups
+
+timeregex=`date | sed -e 's/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/'`
+echo "s/$timeregex/WKD MON DD HH:MM:SS ZZZ YYYY/g" >> $cleanups
+
+timeregex=`date +%a.%h.%e.%T.%Y | sed -e 's/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/'`
+echo "s/$timeregex/WKD MON DD HH:MM:SS YYYY/g" >> $cleanups
+
+echo 's/^randu2_randn2 [0-9 .-]+$/randu2_randn2      ....../' >> $cleanups
+echo 's/the_time = [0-9][0-9]:[0-9][0-9]/the_time = HH:MM/g' >> $cleanups
+echo 's/\(AX[0-9][0-9][0-9]\)/(AX###)/g' >> $cleanups
+echo 's/\(G[0-9][0-9][0-9]\)/(G###)/g' >> $cleanups
+echo 's/CURRENT_TIME = "[0-9][0-9]:[0-9][0-9]:[0-9][0-9]"/CURRENT_TIME = "HH:MM:SS"/g' >> $cleanups
+echo 's/SESSION_TIME = "[0-9][0-9]:[0-9][0-9]"/SESSION_TIME = "HH:MM"/g' >> $cleanups
+echo 's/SESSION_PID = "[0-9]+"/SESSION_PID = "#####"/g' >> $cleanups
+echo 's/DELTA_CPU = "[0-9]\.[0-9E-]+"/DELTA_CPU = "######"/g' >> $cleanups
+echo 's/CLOCK_SECS = "[0-9]\.[0-9E-]+"/CLOCK_SECS = "######"/g' >> $cleanups
+echo 's/Second 10K LET commands LET a = 0 takes  [0-4]\.[0-9]+  seconds/Second 10K LET commands LET a = 0 takes [0-5] seconds/' >> $cleanups
+echo 's/10K LET commands LET a = 0 takes  [0-2]\.[0-9]+  seconds/10K LET commands LET a = 0 takes [0-3] seconds/' >> $cleanups
+echo 's/5K LOAD with transform takes  [0-8]\.[0-9]+  seconds/5K LOAD with transform takes [0-9] seconds/' >> $cleanups
+echo 's/DEFINE VARIABLE ten_plots = 0\.[0-9]+/DEFINE VARIABLE ten_plots = 0.######/' >> $cleanups
+echo 's/DEFINE VARIABLE dt = 0\.[0-9]+/DEFINE VARIABLE dt = 0.######/' >> $cleanups
+echo 's/DEFINE VARIABLE sumcpu =[ ]?0\.[0-9]+/DEFINE VARIABLE sumcpu = 0.######/' >> $cleanups
+echo '/say `sumcpu`/,+1 s/^ !-> MESSAGE\/CONTINUE 0\.[0-9]+$/ !-> MESSAGE\/CONTINUE 0.######/' >> $cleanups
+echo '/say `sumcpu`/,+2 s/^0\.[0-9]+$/0.######/' >> $cleanups
+
+sed -r -i_orig -f $cleanups $log_file
+sed -r -i_orig -f $cleanups $err_file
+sed -r -i_orig -f $cleanups $ncdump_file
+
+rm -f $cleanups
+
 # Clean-up
 rm -f `cat TRASH_FILES`
 rm -fr subdir tmp
-
-now=`date`
-echo  "Ended at $now" >> $err_file
-echo  "Ended at $now" >> $log_file
-echo  "Ended at $now"
 

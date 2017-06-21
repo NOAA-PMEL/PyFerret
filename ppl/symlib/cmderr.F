@@ -80,6 +80,7 @@ C       11-Dec-2003 ACM Add the string **ERROR before the error message,
 C                       to be consistent with Ferret error messages.
 C  
 C    V6.06 ACM Write error messages to Standard Error, unit number is LERROR
+C    V7.2  ACM Fix ticket 2543 runtime error when argument to command is missing
 
 	INCLUDE 'SYSTEM.INC'
 	INCLUDE 'CMDCOM.INC'
@@ -99,6 +100,8 @@ C    V6.06 ACM Write error messages to Standard Error, unit number is LERROR
 998	FORMAT(A1,1X,A)
 	IF(IPOS.LE.ILEN)THEN
 	    WRITE(FRMT,997)IPOS
+	    ! if no argument mark where it should have started
+	    IF (IPOS.EQ.0) WRITE(FRMT,997)ILEN+1  
 997	    FORMAT('(A1,',I3.3,'X,''^'')')
 	    WRITE(LERROR,FRMT)' '
 	ENDIF

@@ -51,3 +51,6 @@ GO err71_read_delim
 
 GO bn_reset
 GO err71_isready_unknown
+
+GO bn_reset
+GO err71_ppl_sho_empty

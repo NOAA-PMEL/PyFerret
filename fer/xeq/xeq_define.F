@@ -1240,7 +1240,7 @@ C /units=months  is 1/12 of the length of the year
 	   CALL GET_CMND_DATA (  cx_last, ptype_float, status )
 	   IF ( status .NE. ferr_ok ) RETURN
            IF ( num_uvars_in_cmnd .NE. 1 .AND.
-     .         (.NOT. has_bounds) )GOTO 5580
+     .         (.NOT. has_bounds) ) GOTO 5580
            cx = is_cx(1)
 * ... make sure it's an line (not a point,plane,etc.) of data
 	   CALL GET_CX_DIMS( cx, ndim, dim )
@@ -1290,7 +1290,14 @@ C /units=months  is 1/12 of the length of the year
 * ... original start of free line memory
 	   frst_pt = next_line_mem_pos
 * ... allocate some storage for the coordinates
-	   IF (frst_pt+3*n .GT. maxlinestore) GOTO 5590
+	   IF (frst_pt+2*n+1 .GT. maxlinestore) GOTO 5590
+	   
+* ... If they gave upper- and lower-bounds we need to store all that,
+*     at least temporarily.  IF its too big suggest edges.
+	   IF (has_bounds .AND. frst_pt+3*n .GT. maxlinestore) THEN 
+	      IF (num_uvars_in_cmnd .EQ. 2 .AND. n2.EQ.2*n) GOTO 5592
+	      IF (num_uvars_in_cmnd .EQ. 3) GOTO 5592
+	   ENDIF
 
 * ... store coordinate positions (error status already checked)
            IF (has_bounds) THEN
@@ -2770,7 +2777,10 @@ c ?? if nlab=0, use next avail slot?
  5582	CALL ERRMSG( ferr_grid_definition, status,
      .		'illegal argument for DEFINE AXIS/NPOINTS', *5000 )
  5590	CALL ERRMSG( ferr_prog_limit, status,
-     .		'axis coordinate storage exhausted - restart FERRET', *5000 )
+     .		'axis coordinate storage exhausted - issue CANCEL AXIS/ALL', *5000  )
+ 5592	CALL ERRMSG( ferr_prog_limit, status,
+     .		'axis coordinate storage exhausted -  '//
+     .		'use /EDGES not /BOUNDS to save space', *5000 )
  5600   slen = TM_LENSTR1(buff3)
         CALL ERRMSG( ferr_syntax, status,
      .               'error initializing '//buff3(:slen), *5000 )

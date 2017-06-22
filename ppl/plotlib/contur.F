@@ -70,6 +70,9 @@ C  v67  2/2011 *acm* Fix ticket 1799; do contouring in larger sections.
 *                 and 4-arg plot commands. 
 * V6.95 *acm* 3/15 Changes for PyFerret fonts. 
 * V6.96 *acm*12/15 Fix ticket 2328 - contour labels spilling outside plot axes 
+* V7.2  *acm* 6/17 Fix ticket bug2544 for depth-axis plots the above needs
+*                  different tests. If clipping is implented we can get rid of
+*                  the changes for 2328 and 2544.
 
 ****************************************************************************
 C**
@@ -150,7 +153,7 @@ c     oceanography emr   dec/69
 ! of contour labels expected on any ONE contour line in the plot.
 	parameter (mlab=200)
 	real xlabp(mlab),ylabp(mlab),xlabc(mlab),ylabc(mlab),widthp
-        realxadd,lmin,lmax
+        realxadd,lmin,lmax, xloskp,xhiskp, yloskp,yhiskp
 
 C	Place init into data stmt *jd* 12.96 linux
 	integer	nlabp,nlabc
@@ -180,6 +183,23 @@ c
 	igroup = fnt_all
         IF (pyfont .AND. pyf_set(icont)) igroup = icont
 
+* For checking that labels are within the plot box	
+        IF (pyfont) THEN
+	   IF (xlo .LE. xhi) THEN 
+	      xloskp = xlo
+	      xhiskp = xhi
+	   ELSE
+	      xloskp = xhi
+	      xhiskp = xlo
+	   ENDIF
+	   IF (ylo .LE. yhi) THEN 
+	      yloskp = ylo
+	      yhiskp = yhi
+	   ELSE
+	      yloskp = yhi
+	      yhiskp = ylo
+	   ENDIF
+        ENDIF
 c
 c	apply the rotation and scaling
 c
@@ -528,7 +548,6 @@ c
 	  call kurv1(kmax-1,x(2),y(2),0.,0.,3,splxp,splyp,
      ,      spltmp,spls,spline_tension,splier)
 	  if (splier.ne.0) then
-	    print*,' error in pplmod_contur.F, call to kurv1 ',splier
 	  endif
 	endif
 ! TMAP mod, horz contour labels:
@@ -688,7 +707,6 @@ c	yendl = y(k) + width*dyy/space
 	      dxx=spacex*sign(1.0,(x(kk)-x(k)))
 	      if (xb.eq.0.) then
 	        dyy=spacey*sign(1.0,(y(kk)-y(k)))
-	        print *,' pplmod_contur.F, note xb.eq.0 in contur ',str(1:4)
 	      else
 	        dyy=ya+yb*(spacex-abs(xa))/abs(xb)
 	      endif
@@ -696,7 +714,6 @@ c	yendl = y(k) + width*dyy/space
 	      dyy=spacey*sign(1.0,(y(kk)-y(k)))
 	      if (yb.eq.0.) then
 	        dxx=spacex*sign(1.0,(x(kk)-x(k)))
-	        print *,' pplmod_contur.F, note yb.eq.0 in contur ',str(1:4)
 	      else
 	        dxx=xa+xb*(spacey-abs(ya))/abs(yb)
 	      endif
@@ -705,7 +722,6 @@ c	yendl = y(k) + width*dyy/space
 	    dyy=spacey*sign(1.0,(y(kk)-y(k)))
 	    if (yb.eq.0.) then
 	      dxx=spacex*sign(1.0,(x(kk)-x(k)))
-	      print *,' pplmod_contur.F, note yb.eq.0 in contur ',str(1:4)
 	    else
 	      dxx=xa+xb*(spacey-abs(ya))/abs(yb)
 	    endif
@@ -713,7 +729,6 @@ c	yendl = y(k) + width*dyy/space
 	    dxx=spacex*sign(1.0,(x(kk)-x(k)))
 	    if (xb.eq.0.) then
 	      dyy=spacey*sign(1.0,(y(kk)-y(k)))
-	      print *,' pplmod_contur.F, note xb.eq.0 in contur ',str(1:4)
 	    else
 	      dyy=ya+yb*(spacex-abs(xa))/abs(xb)
 	    endif
@@ -861,10 +876,10 @@ c
 	  ylab = (ylab - yoff)/ yf
 
 	  skiplab = 0
-	  if (ylab.LT.ylo .OR. ylab.GT.yhi) skiplab = 1
-	  if (xlab.LT.xlo .OR. xlab.GT.xhi) skiplab = 1
-	  if (ylabend.LT.ylo .OR. ylabend.GT.yhi) skiplab = 1
-	  if (xlabend.LT.xlo .OR. xlabend.GT.xhi) skiplab = 1
+	  if (ylab.LT.yloskp .OR. ylab.GT.yhiskp) skiplab = 1
+	  if (xlab.LT.xloskp .OR. xlab.GT.xhiskp) skiplab = 1
+	  if (ylabend.LT.yloskp .OR. ylabend.GT.yhiskp) skiplab = 1
+	  if (xlabend.LT.xloskp .OR. xlabend.GT.xhiskp) skiplab = 1
 	ENDIF
 
 	iF (skiplab.EQ.0) call symbel(xlab,ylab,angle,hgt,nchar,str)
@@ -877,18 +892,6 @@ c
 	  xlabc(nlabc)=xlab
 	  ylabc(nlabc)=ylab
 	endif
-c
-        IF (curvilinear .AND. .NOT.curvilinear) THEN
-	print *, 'IF (curvilinear .AND. .NOT.curvilinear) in contur.F'
-           x_curv(1)=(xendl-xoff)/xf
-           y_curv(1)=(yendl-yoff)/yf
-
-           CALL CURV_COORD(x_curv, y_curv, 1, 1.0, 1.0, status) ! xform the pts
-	   IF (curv_missing) GOTO 1000
-
-           xendl=x_curv(1)*xf + xoff
-           yendl=y_curv(1)*yf + yoff
-        ENDIF
 
 	call plotny(xendl,yendl,3,0)
 ! TMAP mod, spline fit:

@@ -6,3 +6,11 @@ contour/i=1:20/j=1:20/lev=(0)(-10,10,2.125)/color=green/title="CONTOUR LUCIDA GR
 frame /file=contourcolor_green.pdf
 contour/i=1:20/j=1:20/lev=(0)(-10,10,2.125)/color=(60,20,30)/title="CONTOUR LUCIDA (60,20,30)"  10*sin(i/3)*cos(j/4)
 frame /file=contourcolor_puce.pdf
+
+
+! Test contour labels in different colors
+! Test contour labels on a depth axis
+use gt4d011.cdf
+set text/color=blue contour
+contour/j=40/l=1/color=(30,60,30)/title="CONTOUR depth var with blue labels"  temp
+frame /file=contourcolor_depth.pdf

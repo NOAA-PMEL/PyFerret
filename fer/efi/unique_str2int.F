@@ -59,7 +59,7 @@
       CHARACTER*100 descrip
 
       WRITE (descrip, 100)
-  100 FORMAT ('Returns an ID number for each unique string',
+  100 FORMAT ('Returns an ID number for each unique string ',
      .        'in the input array of strings (case sensitive)')
       CALL ef_set_desc(id, descrip)
 

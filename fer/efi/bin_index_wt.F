@@ -79,7 +79,7 @@
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'INDXMAX')
-      CALL ef_set_arg_desc(id, arg, 'Maximum index value')
+      CALL ef_set_arg_desc(id, arg, 'Length of result axis')
       CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
 *                                                                     ^
 *                                                                     |

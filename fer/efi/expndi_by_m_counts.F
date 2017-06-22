@@ -62,121 +62,35 @@
 *                                                                      V
 
       CALL ef_set_desc(id,
-     .  'Expand arg1 into an XE grid. (split I variable into E-Rows)' )
+     .  'Expand arg1 into an XE grid. (Split I variable into E-Rows)' )
 
       CALL ef_set_num_args(id, 3)
       CALL ef_set_has_vari_args(id, NO)
-      CALL ef_set_axis_inheritance_6d(id, CUSTOM, NORMAL, 
-     .     NORMAL, NORMAL, CUSTOM, NORMAL)
+      CALL ef_set_axis_inheritance_6d(id, IMPLIED_BY_ARGS, NORMAL, 
+     .     NORMAL, NORMAL, IMPLIED_BY_ARGS, NORMAL)
+
+* Tell Ferret to run the following instead, if the arguments are strings.
+      CALL ef_set_alt_fcn_name(id, 'EXPNDI_BY_M_COUNTS_STR')
 
       arg = 1
-      CALL ef_set_arg_name(id, arg, 'dat')
+      CALL ef_set_arg_name(id, arg, 'Data')
       CALL ef_set_arg_desc(id, arg, '1-D variable to expand')
       CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
 
       arg = 2
-      CALL ef_set_arg_name(id, arg, 'counts')
+      CALL ef_set_arg_name(id, arg, 'Row Sizes')
       CALL ef_set_arg_desc(id, arg,
-     .          '1-D list on E axis: count of values in each trajectory')
-      CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
+     .          '1-D list on E axis: count of values in each feature')
+      CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, YES, NO)
 
       arg = 3
-      CALL ef_set_arg_name(id, arg, 'max_row_len')
+      CALL ef_set_arg_name(id, arg, 'Rexult X axis')
       CALL ef_set_arg_desc(id, arg,
-     .          'I size of result (constant)')
-      CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
+     .          'Variable on a 1-D grid, axis of length max_row_len')
+      CALL ef_set_axis_influence_6d(id, arg, YES, NO, NO, NO, NO, NO)
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
-* **********************************************************************
-
-      RETURN 
-      END
-
- 
-      SUBROUTINE expndi_by_m_counts_custom_axes(id)
- 
-      IMPLICIT NONE
-      INCLUDE 'EF_Util.cmn'
- 
-      INTEGER id
-
-      REAL size, ene
-      integer arg, idim, nm
-
-       INTEGER arg_lo_ss(6,EF_MAX_ARGS),
-     .        arg_hi_ss(6,EF_MAX_ARGS),
-     .        arg_incr (6,EF_MAX_ARGS)
-*
-*     Use utility functions to get context information about the arguments.
-*
-       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
- 
-* output X axis size: Longest feature
-
-      CALL ef_get_one_val(id, ARG3, size)
-      CALL ef_set_custom_axis(id, X_AXIS, 1.0, size, 1.0, 'Obs', NO)
-
-
-* output E axis size: Rowsize
-      arg = 2
-      nm = arg_hi_ss(E_AXIS,arg)-arg_lo_ss(E_AXIS,arg) + 1
-      ene = FLOAT(nm)
-      CALL ef_set_custom_axis(id, E_AXIS, 1., ene, 1., 'Row', NO)
- 
-*                                                                     ^
-*                                                                     |
-*                                           USER CONFIGURABLE PORTION |
-* **********************************************************************
-
-      RETURN 
-      END
- 
-*
-* In this subroutine we provide information about the lo and hi
-* limits associated with each abstract or custom axis.   The user 
-* configurable information consists of the following:
-*
-* lo_ss               lo subscript for an axis
-*
-* hi_ss               hi subscript for an axis
-*
-
-      SUBROUTINE expndi_by_m_counts_result_limits(id)
-
-      INCLUDE 'EF_Util.cmn'
-
-      INTEGER id
-
-* **********************************************************************
-*                                           USER CONFIGURABLE PORTION |
-*                                                                     |
-*                                                                     V
-
-      REAL size
-      integer nm, arg, idim
-      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
-     .        arg_hi_ss(6,EF_MAX_ARGS),
-     .        arg_incr (6,EF_MAX_ARGS)
-
-*
-*     Use utility functions to get context information about the arguments.
-*
-      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
-
-* output X axis size: Longest feature
-      CALL ef_get_one_val(id, ARG3, size)
-      nm = INT(ABS(size))
-      CALL ef_set_axis_limits(id, X_AXIS, 1, nm)
-
-* output E axis size
-      arg = 1
-      nm = arg_hi_ss(E_AXIS,arg)-arg_lo_ss(E_AXIS,arg) + 1
-      CALL ef_set_axis_limits(id, E_AXIS, 1, nm)
-
-*                                                                     ^
-*                                                                     |
-*                                           USER CONFIGURABLE PORTION |
 * **********************************************************************
 
       RETURN 

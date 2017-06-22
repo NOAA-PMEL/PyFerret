@@ -518,7 +518,6 @@ c
 	  call kurv1(kmax-1,x(2),y(2),0.,0.,3,splxp,splyp,
      ,      spltmp,spls,spline_tension,splier)
 	  if (splier.ne.0) then
-	    print*,' error in pplmod_contur.F, call to kurv1 ',splier
 	  endif
 	endif
 ! TMAP mod, horz contour labels:
@@ -678,7 +677,6 @@ c	yendl = y(k) + width*dyy/space
 	      dxx=spacex*sign(1.0,(x(kk)-x(k)))
 	      if (xb.eq.0.) then
 	        dyy=spacey*sign(1.0,(y(kk)-y(k)))
-	        print *,' pplmod_contur.F, note xb.eq.0 in contur ',str(1:4)
 	      else
 	        dyy=ya+yb*(spacex-abs(xa))/abs(xb)
 	      endif
@@ -686,7 +684,6 @@ c	yendl = y(k) + width*dyy/space
 	      dyy=spacey*sign(1.0,(y(kk)-y(k)))
 	      if (yb.eq.0.) then
 	        dxx=spacex*sign(1.0,(x(kk)-x(k)))
-	        print *,' pplmod_contur.F, note yb.eq.0 in contur ',str(1:4)
 	      else
 	        dxx=xa+xb*(spacey-abs(ya))/abs(yb)
 	      endif
@@ -695,7 +692,6 @@ c	yendl = y(k) + width*dyy/space
 	    dyy=spacey*sign(1.0,(y(kk)-y(k)))
 	    if (yb.eq.0.) then
 	      dxx=spacex*sign(1.0,(x(kk)-x(k)))
-	      print *,' pplmod_contur.F, note yb.eq.0 in contur ',str(1:4)
 	    else
 	      dxx=xa+xb*(spacey-abs(ya))/abs(yb)
 	    endif
@@ -703,7 +699,6 @@ c	yendl = y(k) + width*dyy/space
 	    dxx=spacex*sign(1.0,(x(kk)-x(k)))
 	    if (xb.eq.0.) then
 	      dyy=spacey*sign(1.0,(y(kk)-y(k)))
-	      print *,' pplmod_contur.F, note xb.eq.0 in contur ',str(1:4)
 	    else
 	      dyy=ya+yb*(spacex-abs(xa))/abs(xb)
 	    endif
@@ -842,18 +837,6 @@ c
 	  xlabc(nlabc)=xlab
 	  ylabc(nlabc)=ylab
 	endif
-c
-        IF (curvilinear .AND. .NOT.curvilinear) THEN
-	print *, 'IF (curvilinear .AND. .NOT.curvilinear) in contur.F'
-           x_curv(1)=(xendl-xoff)/xf
-           y_curv(1)=(yendl-yoff)/yf
-
-           CALL CURV_COORD(x_curv, y_curv, 1, 1.0, 1.0, status) ! xform the pts
-	   IF (curv_missing) GOTO 1000
-
-           xendl=x_curv(1)*xf + xoff
-           yendl=y_curv(1)*yf + yoff
-        ENDIF
 
 	call plotny(xendl,yendl,3,0)
 ! TMAP mod, spline fit:

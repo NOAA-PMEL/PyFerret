@@ -44,12 +44,13 @@ ereverse.F\
 expnd_by_len.F\
 expnd_by_len_str.F\
 expndi_by.F\
+expndi_by_m_counts.F\
+expndi_by_m_counts_str.F\
 expndi_by_t.F\
 expndi_by_z.F\
 expndi_by_z_counts.F\
 expndi_id_by_z_counts.F\
 expndi_to_et.F\
-expndi_by_m_counts.F\
 fc_isubset.F\
 fcat.F\
 fcat_str.F\
@@ -69,6 +70,7 @@ freverse.F\
 ft_to_orthogonal.F\
 gausswt.F\
 gausswt_v0.F\
+gridding_subs.F\
 heap2_str.F\
 dot_x.F\
 dot_y.F\
@@ -124,8 +126,10 @@ scat2grid_bin_xy.F\
 scat2grid_bin_xyt.F\
 scat2grid_bin_xyz.F\
 scat2grid_bin_xyzt.F\
+scat2grid_minmax_xyt.F\
 scat2grid_nbin_xy.F\
 scat2grid_nbin_xyt.F\
+scat2grid_std_xyt.F\
 scat2gridgauss_xt.F\
 scat2gridgauss_xy.F\
 scat2gridgauss_xz.F\
@@ -184,6 +188,8 @@ tcat.F\
 tcat_str.F\
 test_opendap.F\
 time_reformat.F\
+tracks2grid_mask_ave_xyt.F\
+tracks2grid_std_xyt.F\
 transpose_ef.F\
 transpose_xe.F\
 transpose_xf.F\

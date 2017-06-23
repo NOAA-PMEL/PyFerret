@@ -94,7 +94,7 @@
 
       WRITE (fcn_desc, 10)
    10 FORMAT ('Returns 1 if first argument contains any of the ',
-     .        'values in 2nd argument (case sensitive), else 0')
+     .        'values in 2nd arg (case sensitive), else 0')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 2)

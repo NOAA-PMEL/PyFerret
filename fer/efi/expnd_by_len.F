@@ -63,6 +63,9 @@
       CALL ef_set_axis_inheritance_6d(id, ABSTRACT, NORMAL, 
      .     NORMAL, NORMAL, NORMAL, NORMAL)
 
+* Tell Ferret to run the following instead, if the arguments are strings.
+      CALL ef_set_alt_fcn_name(id, 'EXPND_BY_LEN_STR')
+
       arg = 1
       CALL ef_set_arg_name(id, arg, 'var')
       CALL ef_set_arg_unit(id, arg, ' ')

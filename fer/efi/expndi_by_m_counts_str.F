@@ -1,5 +1,5 @@
 * 
-*  expndi_by_m_counts.F
+*  expndi_by_m_counts_str.F
 * 
 *  Ansley Manke (from expndi_by_z_counts)
 *  4/2014
@@ -50,7 +50,7 @@
 *
 
 
-      SUBROUTINE expndi_by_m_counts_init(id)
+      SUBROUTINE expndi_by_m_counts_str_init(id)
 
       INCLUDE 'EF_Util.cmn'
 
@@ -62,20 +62,19 @@
 *                                                                      V
 
       CALL ef_set_desc(id,
-     .  'Expand arg1 into an XE grid. (Split I variable into E-Rows)' )
+     .  'Expand String-valued arg1 into an XE grid. (Split I variable into E-Rows)' )
 
       CALL ef_set_num_args(id, 3)
       CALL ef_set_has_vari_args(id, NO)
       CALL ef_set_axis_inheritance_6d(id, IMPLIED_BY_ARGS, NORMAL, 
      .     NORMAL, NORMAL, IMPLIED_BY_ARGS, NORMAL)
-
-* Tell Ferret to run the following instead, if the arguments are strings.
-      CALL ef_set_alt_fcn_name(id, 'EXPNDI_BY_M_COUNTS_STR')
+      CALL ef_set_result_type(id, STRING_RETURN)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'Data')
       CALL ef_set_arg_desc(id, arg, '1-D variable to expand')
       CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
+      CALL ef_set_arg_type (id, arg, STRING_ARG)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'Row Sizes')
@@ -99,7 +98,7 @@
 * 
 *  In this subroutine we compute the result
 * 
-      SUBROUTINE expndi_by_m_counts_compute(id, arg_1, arg_2, arg_3, 
+      SUBROUTINE expndi_by_m_counts_str_compute(id, arg_1, arg_2, arg_3, 
      .                               result)
 
       INCLUDE 'EF_Util.cmn'
@@ -138,7 +137,8 @@
       INTEGER i,j,k,l,m,n
       INTEGER i1, j1, k1, l1, m1, n1
       INTEGER i2, j2, k2, l2, m2, n2
-      INTEGER imax, iout, isum, mmax, mrow, mout
+      INTEGER imax, iout, isum, mmax, mrow, mout, slen
+      CHARACTER*2048 buff
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -167,16 +167,6 @@
      .         'arg 2 values (counts) must sum to x-dimension length of of arg1 ')
  20   CONTINUE
 
-* pre-fill the entire output result with missing value flags
-*  (since length of each profile may have different number of pts)
-      DO 50 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-      DO 50 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-      DO 50 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-      DO 50 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-      DO 50 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-      DO 50 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-         result(i,j,k,l,m,n) = bad_flag_result
- 50   CONTINUE
 
 * fill in the points as specified by the counts
 
@@ -205,11 +195,13 @@
             i1 = 1
             DO 200 mout=arg_lo_ss(E_AXIS,ARG2),arg_hi_ss(E_AXIS,ARG2)
                DO 100 iout = 1, NINT(arg_2(i2,j2,k2,l2,mout,n1))
-                 IF ( arg_1(i1,j1,k1,l1,m1,n1) .NE. bad_flag(1) )
-     .             result(iout,j,k,l,mout,n) = arg_1(i1,j1,k1,l1,m1,n1)
+                  CALL EF_GET_STRING_ARG_ELEMENT_6D(id, ARG1, arg_1,
+     .                             i1,j1,k1,l1,m1,n1, slen, buff)
+                  CALL EF_PUT_STRING(buff, slen, result(iout,j,k,l,mout,n))
 
                   i1 = i1 + 1
  100           CONTINUE
+
  200        CONTINUE
 
          j1 = j1 + arg_incr(Y_AXIS,ARG1)

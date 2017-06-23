@@ -10503,7 +10503,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.13"
-FERRET_PLATFORM = "Linux 3.10.0-514.21.1.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-514.21.2.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of May 18 2017 16:45:16 $"
 FERRET_MEMORY = "25.6"
@@ -10534,7 +10534,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.13"
-FERRET_PLATFORM = "Linux 3.10.0-514.21.1.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-514.21.2.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of May 18 2017 16:45:16 $"
 FERRET_MEMORY = "25.6"
@@ -10708,7 +10708,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.13"
-FERRET_PLATFORM = "Linux 3.10.0-514.21.1.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-514.21.2.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of May 18 2017 16:45:16 $"
 FERRET_MEMORY = "25.6"
@@ -33946,7 +33946,7 @@ go bn_unique_str2int
  
 SHOW FUNC/DETAIL unique_str2int
 UNIQUE_STR2INT(A)
-    Returns an ID number for each unique stringin the input array of strings (case sensitive)
+    Returns an ID number for each unique string in the input array of strings (case sensitive)
         Axes of result:
           X: inherited from argument(s)
           Y: inherited from argument(s)
@@ -51792,11 +51792,11 @@ ELEMENT_INDEX_STR_N(VAR,STRINGS)
     VAR: string data to mask (STRING)
     STRINGS: list of strings to match (STRING)
 IS_ELEMENT_OF(VAR,VALUES)
-    Returns 1 if first argument contains any of the values in argument 2, else 0
+    Returns 1 if first argument contains any of the values in 2nd arg, else 0
     VAR: data to test
     VALUES: values to search for
 IS_ELEMENT_OF_STR(VAR,VALUES)
-    Returns 1 if first argument contains any of the values in 2nd argument (case sensitive), else 0
+    Returns 1 if first argument contains any of the values in 2nd arg (case sensitive), else 0
     VAR: string (STRING)
     VALUES: strings to search (STRING)
 IS_ELEMENT_OF_STR_N(VAR,VALUES)
@@ -54619,7 +54619,8 @@ EREVERSE(A)
 EXPND_BY_LEN(var,len,nx)
 EXPND_BY_LEN_STR(var,len,nx)
 EXPNDI_BY(dat,mask,outsize)
-EXPNDI_BY_M_COUNTS(dat,counts,max_row_len)
+EXPNDI_BY_M_COUNTS(Data,Row Sizes,Result X axis)
+EXPNDI_BY_M_COUNTS_STR(Data,Row Sizes,Result X axis)
 EXPNDI_BY_T(dat,mask,n_profiles,max_profile_len)
 EXPNDI_BY_Z(dat,mask,n_profiles,max_profile_len)
 EXPNDI_BY_Z_COUNTS(dat,counts,max_profile_len)
@@ -54680,6 +54681,8 @@ SCAT2GRID_BIN_XY(XPTS,YPTS,F,XAXPTS,YAXPTS)
 SCAT2GRID_BIN_XYT(XPTS,YPTS,TPTS,F,XAXPTS,YAXPTS,TAXPTS)
 SCAT2GRID_BIN_XYZ(XPTS,YPTS,ZPTS,F,XAXPTS,YAXPTS,ZAXPTS)
 SCAT2GRID_BIN_XYZT(XPTS,YPTS,ZPTS,TPTS,F,XAXPTS,YAXPTS,ZAXPTS,TAXPTS)
+SCAT2GRID_MINMAX_XYT(XPTS,YPTS,TPTS,F,XAXPTS,YAXPTS,TAXPTS)
+SCAT2GRID_STD_XYT(XPTS,YPTS,TPTS,F,XAXPTS,YAXPTS,TAXPTS)
 SCAT2GRIDGAUSS_XT(XPTS,TPTS,F,XAXPTS,TAXPTS,XSCALE,TSCALE,CUTOFF,0)
 SCAT2GRIDGAUSS_XT_V0(XPTS,TPTS,F,XAXPTS,TAXPTS,XSCALE,TSCALE,CUTOFF,0)
 SCAT2GRIDGAUSS_XY(XPTS,YPTS,F,XAXPTS,YAXPTS,XSCALE,YSCALE,CUTOFF,0)
@@ -54736,6 +54739,8 @@ TCAT(A,B)
 TCAT_STR(A,B)
 TEST_OPENDAP(url)
 TIME_REFORMAT(A)
+TRACKS2GRID_MASK_AVE_XYT(VAR,XPTS,YPTS,TPTS,ICRUISE,XAXPTS,YAXPTS,TAXPTS,MASK)
+TRACKS2GRID_STD_XYT(VARIABLE,XPTS,YPTS,TPTS,ICRUISE,XAXPTS,YAXPTS,TAXPTS)
 TRANSPOSE_EF(VAR)
 TRANSPOSE_TE(VAR)
 TRANSPOSE_TF(VAR)
@@ -62803,7 +62808,7 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v7.13 (beta/debug)"                                               
- 3    /  3:" ! Linux 3.10.0-514.21.1.el7.x86_64 64-bit - 06/20/17"                      
+ 3    /  3:" ! Linux 3.10.0-514.21.2.el7.x86_64 64-bit - 06/23/17"                      
  4    /  4:" ! DD-MON-YY HH:MM     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
@@ -99323,6 +99328,34 @@ sho var/tree a
      B = C
        C ??			<== UNKNOWN VARIABLE ******
  
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err71_ppl_sho_empty
+! err71_ppl_sho_empty.jnl
+! ticket 2543, PPL SHOW pplsym is a command, but it
+! gave a Fortran runtime error if given with no argument
+ 
+! Thsi is a valid sequence, pplus symbol definition
+pplus set xpos 3.2
+pplus show xpos
+ XPOS                           = 3.2
+ 
+! intentional error
+ 
+set mode ignore
+! NOTE PPLUS ERRORS do not interrupt Ferret,
+! so set mode ignore not really needed...
+ 
+! This is a correct error message, undefined symbol
+pplus show nosymbol
+ 
+! This previously hit a runtime error, symbol name missing.
+ppl show
+ 
+set mode/last ignore
+ 
 *** Running ferret script: bn_compressed_gather.jnl
 ! bn_compressed_gather.jnl
 ! 11/2016 (for trac #2428 enhancement)
@@ -104589,7 +104622,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.13"
-FERRET_PLATFORM = "Linux 3.10.0-514.21.1.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-514.21.2.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of May 18 2017 16:45:16 $"
 FERRET_MEMORY = "31"

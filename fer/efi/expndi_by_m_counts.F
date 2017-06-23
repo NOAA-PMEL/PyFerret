@@ -84,7 +84,7 @@
       CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, YES, NO)
 
       arg = 3
-      CALL ef_set_arg_name(id, arg, 'Rexult X axis')
+      CALL ef_set_arg_name(id, arg, 'Result X axis')
       CALL ef_set_arg_desc(id, arg,
      .          'Variable on a 1-D grid, axis of length max_row_len')
       CALL ef_set_axis_influence_6d(id, arg, YES, NO, NO, NO, NO, NO)

@@ -1,12 +1,12 @@
 * XYLABP_INC.DECL - converted to Unix 2.26.91         
 * COMMON for PLOT+ with all variables declared
 * created for TMAP usage by Steve Hankin 7/88
-	REAL	XLABS
-	REAL	YLABS
-	REAL	RLABS
+	REAL*4	XLABS
+	REAL*4	YLABS
+	REAL*4	RLABS
 	INTEGER	LTYPE
-	REAL	XLLABS
-	REAL	YLLABS
+	REAL*4	XLLABS
+	REAL*4	YLLABS
 	INTEGER	LLTYPE
-	REAL	RHLABS
+	REAL*4	RHLABS
 * requires: INCLUDE 'PPLV11INC:XYLABP.INC'                                  

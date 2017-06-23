@@ -46,14 +46,16 @@ C**
 C**
 C** v552 *acm* 3/03 Longer strings: changes for multi-line labels
 C    V6.06 ACM Write error messages to Standard Error, unit number is LERROR
+* V72  *acm*  6/17 - Call Ferret's errmsg routine for syntax
+*                    errors calling PPLUS, see ticket 2543
 
 	INCLUDE 'CMRDL.INC'
 	INCLUDE 'LUNITS.INC'
 	INCLUDE 'SYSTEM.INC'
+	include 'errmsg.parm'
 C
-	IF(.NOT.QUIETF)WRITE(lerror,998)ICOM
-998	FORMAT(' **ERROR  COMMAND : ',A12,' NOT RECOGNIZED')
-c
+	IF(.NOT.QUIETF) 
+     .    CALL ERRMSG (ferr_ppl_error, status,' Command not recognized: PPLUS '//ICOM, *5000)
 
-	RETURN
+ 5000	RETURN
 	END

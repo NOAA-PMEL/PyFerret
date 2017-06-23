@@ -9,6 +9,8 @@
 * V684 9/12 *acm*  - Add error code for file not found
 *                    (error message for font files not found)
 * V685+ *sh* 10/13 - added ferr_unknown_auxvar
+* V72  *acm*  6/17 - add ferr_ppl_error to call errmsg routine for syntax
+*                    errors calling PPLUS, see ticket 2543
 
 * error coding:
 *	gspecial +1--> gnoreport	- error codes requiring special action
@@ -87,6 +89,7 @@
      .			ferr_remotevar_error,
      .			ferr_file_not_found,
      .			ferr_unknown_auxvar,
+     .			ferr_ppl_error,
      .			ferr_sys_return
 	PARAMETER     ( ferr_insuff_memory	= greport		+ 1,
      .			ferr_too_many_vars	= ferr_insuff_memory	+ 1,
@@ -128,11 +131,13 @@
      .			ferr_ef_error	        = ferr_unknown_command	+ 1,
      .			ferr_data_type	        = ferr_ef_error 	+ 1,
      .			ferr_nomessge	        = ferr_data_type 	+ 1,
-     .                  ferr_unknown_attribute  = ferr_nomessge         + 1,
-     .                  ferr_not_attribute      = ferr_unknown_attribute+ 1,
+     .                  ferr_unknown_attribute  = ferr_nomessge         + 1)
+
+	PARAMETER     ( ferr_not_attribute      = ferr_unknown_attribute+ 1,
      .                  ferr_aggregate_error    = ferr_not_attribute    + 1,
      .                  ferr_remotevar_error    = ferr_aggregate_error  + 1,
      .                  ferr_file_not_found     = ferr_remotevar_error  + 1,
      .			ferr_unknown_auxvar	= ferr_file_not_found   + 1,
-     .			ferr_sys_return		= ferr_unknown_auxvar   + 1)
-	PARAMETER     ( gnum_report	= 46 )
+     .			ferr_ppl_error		= ferr_unknown_auxvar   + 1,
+     .			ferr_sys_return		= ferr_ppl_error        + 1)
+	PARAMETER     ( gnum_report	= 47 )

@@ -68,6 +68,9 @@
 * V684 9/12 *acm*  - Add error code for file not found
 *                    (error message for font files not found)
 * V658+ *sh* 10/13 - added ferr_unknown_auxvar
+* V72  *acm*  6/17 - add ferr_ppl_error to call errmsg routine for syntax
+*                    errors calling PPLUS, see ticket 2543
+
 
         IMPLICIT NONE
 	include 'errmsg.parm'	! parameter definitions
@@ -299,6 +302,13 @@
 
 	DATA err_text( ferr_unknown_auxvar - greport )
      .		/ 'auxiliary variable unknown or not in data set' /
+	DATA report_err_code( ferr_aggregate_error - greport )
+     .		/ 'auxvar_error' /
+
+	DATA err_text( ferr_ppl_error - greport )
+     .		/ 'PPLUS command syntax error' /
+	DATA report_err_code( ferr_ppl_error - greport )
+     .		/ 'ppl_cmd_error' /
 
 	DATA err_text( ferr_sys_return - greport )
      .		/ 'Shell command returned failure flag' /

@@ -80,12 +80,15 @@ C       11-Dec-2003 ACM Add the string **ERROR before the error message,
 C                       to be consistent with Ferret error messages.
 C  
 C    V6.06 ACM Write error messages to Standard Error, unit number is LERROR
-C    V7.2  ACM Fix ticket 2543 runtime error when argument to command is missing
+* V72  *acm*  6/17 - Call Ferret's errmsg routine for syntax errors calling 
+*                    PPLUS, see ticket 2543
 
 	INCLUDE 'SYSTEM.INC'
 	INCLUDE 'CMDCOM.INC'
 	INCLUDE 'LUNITS.INC'
+	include 'errmsg.parm'
 
+	integer TM_LENSTR1, slen, status
 	CHARACTER LINE*(*),frmt*30
 	CHARACTER ERRMES(11)*30
 	DATA ERRMES/'Symbol not found','Unmatched ''',
@@ -93,42 +96,10 @@ C    V7.2  ACM Fix ticket 2543 runtime error when argument to command is missing
      *	'IF levels improperly nested','No operator found',
      *	'Unmatched "','WHILE levels improperly nested',
      *	'Syntax error','Unmatched (','Maximum no. levels exceeded'/
-	IF(IER.EQ.0)RETURN
-	WRITE(LERROR,999)' **ERROR',ERRMES(IER)
-999	FORMAT(A8,1X,A30)
-	WRITE(LERROR,998)' ',LINE(:ILEN)
-998	FORMAT(A1,1X,A)
-	IF(IPOS.LE.ILEN)THEN
-	    WRITE(FRMT,997)IPOS
-	    ! if no argument mark where it should have started
-	    IF (IPOS.EQ.0) WRITE(FRMT,997)ILEN+1  
-997	    FORMAT('(A1,',I3.3,'X,''^'')')
-	    WRITE(LERROR,FRMT)' '
-	ENDIF
-	IF(ECHOF)THEN
-	    WRITE(ECHLUN,999)'C ERROR',ERRMES(IER)
-	    WRITE(ECHLUN,998)'C',LINE(:ILEN)
-	    IF(IPOS.LE.ILEN)WRITE(ECHLUN,FRMT)'C'
-	ENDIF
 
-C *kob* 4/99 minor mod - add (0) to exit call
-C *js* 9/00 Problems with exit call in cygwin, just halt instead
-#ifdef __CYGWIN__
-	IF(BATCHF)STOP
-#else
-	IF(BATCHF)CALL EXIT(0)
-#endif
-	IF(.NOT.TERMF)THEN
-C
-C	     If not interactive abort command file
-C	     Return to lowest level
-C
-	    IF(.NOT.ECHOF)THEN
-		WRITE(ECHLUN,999)'C **ERROR',ERRMES(IER)
-		WRITE(ECHLUN,998)'C',LINE(:ILEN)
-		IF(IPOS.LE.ILEN)WRITE(ECHLUN,FRMT)'C'
-	    ENDIF
-	    CALL ATFLSH
-	ENDIF
-	RETURN
+	IF(IER.EQ.0)RETURN
+	slen = TM_LENSTR1(ERRMES(IER))
+        CALL ERRMSG (ferr_ppl_error, status, ERRMES(IER)(:slen)//' PPLUS '//LINE(:ILEN), *5000)
+
+ 5000	RETURN
 	END

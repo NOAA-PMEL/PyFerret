@@ -85,7 +85,7 @@
 	SYSLIB		= -lX11 \
 			  -lcurl \
 			  -ldl \
-			  $(LIBZ_DIR)/lib64/libz.a \
+			  -lz \
 			  -Wl,-Bstatic -lgfortran -Wl,-Bdynamic \
 			  -lm
 
@@ -94,25 +94,17 @@
 
 	GKSLIB		= ../xgks/src/lib/libxgks.a
 
-# For netCDF4 using new hdf5 and new zlib
+# For netCDF4 using new hdf5
 
 	CDFLIB		= $(NETCDF4_DIR)/lib64/libnetcdff.a \
 			  $(NETCDF4_DIR)/lib64/libnetcdf.a \
 			  $(HDF5_DIR)/lib64/libhdf5_hl.a \
-			  $(HDF5_DIR)/lib64/libhdf5.a \
-			  $(LIBZ_DIR)/lib64/libz.a
+			  $(HDF5_DIR)/lib64/libhdf5.a
 
 	LINUX_OBJS	= special/linux_routines.o \
 			  dat/*.o \
 			  ../fmt/src/x*.o \
 			  ../ppl/plot/ppldata.o
-
-# Use the home-built libncurses.so to build so
-# libtinfo.so is not a requirement from RHEL6
-# builds.
-# (But use the system ncurses.so.5 for running.)
-
-	TERMCAPLIB	= -L/usr/local/lib64 -lncurses
 
 # For statically linking in the readline and history libraries
 #	READLINELIB = -L$(READLINE_DIR)/lib64 -Wl,-Bstatic -lreadline -lhistory -Wl,-Bdynamic

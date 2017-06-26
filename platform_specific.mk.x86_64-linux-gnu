@@ -85,7 +85,7 @@
 	SYSLIB		= -lX11 \
 			  -lcurl \
 			  -ldl \
-			  -L$(LIBZ_DIR)/lib/x86_64-linux-gnu -lz \
+			  -lz \
 			  -lgfortran \
 			  -lm
 
@@ -94,20 +94,17 @@
 
 	GKSLIB		= ../xgks/src/lib/libxgks.a
 
-# For netCDF4 using new hdf5 and new zlib
+# For netCDF4 using new hdf5
 
 	CDFLIB		= $(NETCDF4_DIR)/lib/libnetcdff.a \
 			  $(NETCDF4_DIR)/lib/libnetcdf.a \
 			  $(HDF5_DIR)/lib/libhdf5_hl.a \
-			  $(HDF5_DIR)/lib/libhdf5.a \
-			  -L$(LIBZ_DIR)/lib/x86_64-linux-gnu -lz
+			  $(HDF5_DIR)/lib/libhdf5.a
 
 	LINUX_OBJS	= special/linux_routines.o \
 			  dat/*.o \
 			  ../fmt/src/x*.o \
 			  ../ppl/plot/ppldata.o
-
-	TERMCAPLIB	= -L/usr/lib/x86_64-linux-gnu -lncurses
 
 # For statically linking in the readline and history libraries
 #	READLINELIB = -L$(READLINE_DIR)/lib64 -Wl,-Bstatic -lreadline -lhistory -Wl,-Bdynamic

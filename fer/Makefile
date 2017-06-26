@@ -152,7 +152,6 @@ ferret:
 		$(FERLIBS) \
 		$(PPLLIBS) \
 		$(READLINELIB) \
-		$(TERMCAPLIB) \
 		$(CDFLIB) \
 		$(HDFLIB) \
 		$(GKSLIB) \

@@ -1,9 +1,11 @@
 ## Site-dependent definitions included in Makefiles
 
+## !!! Also check external_functions/ef_utility/site_specific.mk !!!
+
 ## Machine for which to build Ferret
 ## Use $(HOSTTYPE) to build natively for the machine you are using
-BUILDTYPE	= $(HOSTTYPE)
-# BUILDTYPE	= x86_64-linux
+# BUILDTYPE	= $(HOSTTYPE)
+BUILDTYPE	= x86_64-linux
 # BUILDTYPE	= i386-linux
 # BUILDTYPE	= i386-apple-darwin
 # BUILDTYPE	= intel-mac
@@ -18,28 +20,23 @@ INSTALL_FER_DIR = $(HOME)/ferret_distributions/rhel6_64
 ## (contains include and lib or lib64 subdirectories)
 # HDF5_DIR	= /usr
 # HDF5_DIR	= /usr/local
-HDF5_DIR	= /usr/local/hdf5-1.8.16
 # HDF5_DIR	= /usr/local/hdf5-1.8.18
+HDF5_DIR	= /usr/local/hdf5-1.8.18-64
+# HDF5_DIR	= /usr/local/hdf5-1.8.18-32
 
 ## Installation directory for NetCDF static libraries
 ## (contains include and lib or lib64 subdirectories)
 # NETCDF4_DIR	= /usr
 # NETCDF4_DIR	= /usr/local
-NETCDF4_DIR	= /usr/local/netcdf-4.4.0
 # NETCDF4_DIR	= /usr/local/netcdf-4.4.1.1
+NETCDF4_DIR	= /usr/local/netcdf-4.4.1.1-64
+# NETCDF4_DIR	= /usr/local/netcdf-4.4.1.1-32
 
 ## Installation directory for readline static libraries
 ## (contains include and lib or lib64 subdirectories)
 # READLINE_DIR	= /
 READLINE_DIR	= /usr
 # READLINE_DIR	= /usr/local
-
-## Installation directory for libz static library
-## (contains include and lib or lib64 subdirectories)
-## Version 1.2.5 or higher recommended by NetCDF
-# LIBZ_DIR	= /
-# LIBZ_DIR	= /usr
-LIBZ_DIR	= /usr/local
 
 ## Java home directory - this may be predefined
 ## from your shell environment.  If JAVA_HOME is defined,

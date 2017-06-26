@@ -95,8 +95,6 @@
 			  ../fmt/src/x*.o \
 			  ../ppl/plot/ppldata.o
 
-	TERMCAPLIB	= -lncurses
-
 	READLINELIB = -L$(READLINE_DIR)/lib -lreadline 
 
 # Directly compile the .F source files to the .o object files

@@ -2,8 +2,8 @@
 
 ## Machine type for which to build the local external functions
 ## Use $(HOSTTYPE) to build natively for the machine you are using
-BUILDTYPE	= $(HOSTTYPE)
-# BUILDTYPE	= x86_64-linux
+# BUILDTYPE	= $(HOSTTYPE)
+BUILDTYPE	= x86_64-linux
 # BUILDTYPE	= i386-linux
 # BUILDTYPE	= intel-mac
 

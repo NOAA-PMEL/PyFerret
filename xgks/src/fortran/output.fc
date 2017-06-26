@@ -42,9 +42,9 @@
 /*LINTLIBRARY*/
 
 #define OUTPUT
-#include "udposix.h"
 #include <string.h>
 #include <stdlib.h>
+#include "udposix.h"
 #include "xgks.h"
 #include "fortxgks.h"
 

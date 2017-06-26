@@ -38,9 +38,9 @@
 		 gcc compiler crapped out otherwise  */
 
 #include <wchar.h>
-#include "udposix.h"
 #include <stdlib.h>
 #include <string.h>
+#include "udposix.h"
 #include "gks_implem.h"
 #include "cgm/cgm.h"		/* for public, API details */
 #include "cgm/cgm_implem.h"		/* for implementation details */

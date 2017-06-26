@@ -1,8 +1,8 @@
 #include <wchar.h>
-#include "udposix.h"
 #include <stdlib.h>
 #include <signal.h>		/* for sigset_t, sigfillset(), sigprocmask() */
 				/* and associated macros */
+#include "udposix.h"
 
 /*
  * Uninterruptible malloc().

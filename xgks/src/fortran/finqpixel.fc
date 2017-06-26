@@ -43,8 +43,9 @@
 
 /*LINTLIBRARY*/
 
-#include "udposix.h"
 #include <stdlib.h>
+#include <wchar.h>
+#include "udposix.h"
 #include "xgks.h"
 #include "fortxgks.h"
 
@@ -52,8 +53,6 @@
 /* extra definitions from inqpixel.c for skipping  
  * the call to ginqpixelarraydim when in gif mode*/
 
-#include <wchar.h>
-#include <wchar.h>
 #include "gks_implem.h"
 
 /* end of extra definitions from inqpixel.c: */

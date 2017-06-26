@@ -37,7 +37,7 @@
 #endif
 
 #include "udposix.h"
-#include <xgks.h>
+#include "xgks.h"
 #include "fortxgks.h"
 
 

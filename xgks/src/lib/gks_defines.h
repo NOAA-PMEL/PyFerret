@@ -75,6 +75,9 @@
 #define GKSERROR(c,n,m)	GKS_STMT(if (c) { (void)gerrorhand( (n), (m), \
 			    xgks_state.gks_err_file); return( (n) ); })
 
+/* include actual prototypes for free, malloc, realloc before redefining */
+#include <stdlib.h>
+
 /* make sure voidp is defined by including udposix.h here */
 #include "udposix.h"
 extern void	ufree		PROTO((voidp ptr));

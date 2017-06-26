@@ -41,9 +41,9 @@
 /*LINTLIBRARY*/
 
 #include <wchar.h>
-#include "udposix.h"
 #include <stdio.h>
 #include <string.h>
+#include "udposix.h"
 
 #ifndef lint
     static char	*rcsid	="$Id$";

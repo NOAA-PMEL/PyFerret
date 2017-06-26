@@ -52,9 +52,9 @@
 /*LINTLIBRARY*/
 
 #include <wchar.h>
-#include "udposix.h"
 #include <stdlib.h>
 #include <math.h>
+#include "udposix.h"
 #include "gks_implem.h"
 
 #ifndef lint

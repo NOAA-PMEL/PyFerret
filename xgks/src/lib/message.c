@@ -40,10 +40,10 @@
 /*LINTLIBRARY*/
 
 #include <wchar.h>
-#include "udposix.h"
-#include "gks_implem.h"
 #include <string.h>
 #include <stdlib.h>
+#include "udposix.h"
+#include "gks_implem.h"
 
 #ifdef lint
     static void	lint_malloc(n) size_t n; { n++; }

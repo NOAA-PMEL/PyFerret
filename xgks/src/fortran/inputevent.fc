@@ -45,11 +45,11 @@
 /*LINTLIBRARY*/
 
 #include <wchar.h>
-#include "udposix.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "udposix.h"
 #include "xgks.h"
 #include "fortxgks.h"
 

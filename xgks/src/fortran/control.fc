@@ -46,13 +46,13 @@
 
 /*LINTLIBRARY*/
 
-#include "udposix.h"
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/param.h>
 #include <string.h>
 #include <limits.h>
+#include "udposix.h"
 #include "xgks.h"
 #include "gks_defines.h"
 #include "fortxgks.h"

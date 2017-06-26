@@ -46,7 +46,6 @@
 /*LINTLIBRARY*/
 
 #include <wchar.h>
-#include "udposix.h"
 #include <stdlib.h>
 #include <time.h>		/* for time(), localtime(), and strftime() */
 #include <sys/types.h>		/* for uid_t */
@@ -55,6 +54,7 @@
 #include <math.h>
 #include <ctype.h>
 #include <assert.h>
+#include "udposix.h"
 #include "gks_implem.h"
 #include "gksm/gksm.h"
 #include "cgm/cgm.h"

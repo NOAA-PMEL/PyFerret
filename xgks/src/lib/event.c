@@ -42,13 +42,13 @@
 
 #include <wchar.h>
 #include <wchar.h>
-#include "udposix.h"
 #include <sys/types.h>		/* for pid_t */
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
 #include <math.h>		/* for ceil() */
 #include <assert.h>		/* for assert() */
+#include "udposix.h"
 #include "gks_implem.h"
 
 #ifdef lint

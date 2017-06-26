@@ -39,16 +39,16 @@
 /*LINTLIBRARY*/
 #include <wchar.h>
 #include <wchar.h>
-#include "udposix.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <string.h>
-#include "gks_implem.h"
 #define XK_MISCELLANY
 #define XK_LATIN1
 #include <X11/keysymdef.h>
+#include "udposix.h"
+#include "gks_implem.h"
 
 #ifdef lint
     static void	lint_malloc(n) size_t n; { n++; }

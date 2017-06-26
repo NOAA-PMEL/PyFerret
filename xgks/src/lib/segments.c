@@ -106,12 +106,12 @@
 /*LINTLIBRARY*/
 
 #include <wchar.h>
-#include "udposix.h"
 #include <stddef.h>		/* for "size_t" */
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include "udposix.h"
 #include "gks_implem.h"
 
 #ifdef lint

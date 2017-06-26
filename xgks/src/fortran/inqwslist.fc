@@ -48,9 +48,9 @@
 
 /*LINTLIBRARY*/
 
-#include "udposix.h"
 #include <stdlib.h>
 #include <string.h>
+#include "udposix.h"
 #include "xgks.h"
 #include "fortxgks.h"
 

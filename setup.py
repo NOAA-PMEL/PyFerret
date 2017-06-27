@@ -101,23 +101,23 @@ addn_link_args = [ ]
 # The hdf5 libraries are only used to resolve netcdf library function
 # calls when statically linking in the netcdf libraries.
 if hdf5_libdir:
-    netcdff_lib = "-Wl," + os.path.join(netcdf4_libdir, "libnetcdff.a")
+    netcdff_lib = os.path.join(netcdf4_libdir, "libnetcdff.a")
     addn_link_args.append(netcdff_lib)
-    netcdf_lib = "-Wl," + os.path.join(netcdf4_libdir, "libnetcdf.a")
+    netcdf_lib = os.path.join(netcdf4_libdir, "libnetcdf.a")
     addn_link_args.append(netcdf_lib)
-    hdf5_hl_lib = "-Wl," + os.path.join(hdf5_libdir, "libhdf5_hl.a")
+    hdf5_hl_lib = os.path.join(hdf5_libdir, "libhdf5_hl.a")
     addn_link_args.append(hdf5_hl_lib)
-    hdf5_lib = "-Wl," + os.path.join(hdf5_libdir, "libhdf5.a")
+    hdf5_lib = os.path.join(hdf5_libdir, "libhdf5.a")
     addn_link_args.append(hdf5_lib)
 else:
     addn_link_args.extend([ "-lnetcdff", "-lnetcdf" ])
 
 # Link to the cairo library and the libraries it requires.
 if cairo_libdir:
-    cairo_lib = "-Wl," + os.path.join(cairo_libdir, "libcairo.a")
+    cairo_lib = os.path.join(cairo_libdir, "libcairo.a")
     addn_link_args.append(cairo_lib);
     if pixman_libdir:
-        pixman_lib = "-Wl," + os.path.join(pixman_libdir, "libpixman-1.a")
+        pixman_lib = os.path.join(pixman_libdir, "libpixman-1.a")
     else:
         pixman_lib = "-lpixman-1"
     addn_link_args.append(pixman_lib);

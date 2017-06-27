@@ -196,22 +196,14 @@
 *                                                                     |
 *                                                                     V
 
-#ifdef usingDODSf2cUnderscore 
-      INTEGER NF_OPEN_
-      CHARACTER*1024 NF_STRERROR_
-#else
-      INTEGER NF_OPEN
-      CHARACTER*1024 NF_STRERROR
-#endif 
-      EXTERNAL NCCLOS
+      include 'netcdf.inc'
+#include "netcdf_declareUnderscore.inc"
 
       INTEGER i, j, k, l, m, n
       INTEGER i1, j1, k1, l1, m1, n1
       INTEGER istatus, slen, cdfid
       CHARACTER*2048 filename
       CHARACTER*1024 errbuff
-      INTEGER nf_nowrite
-      PARAMETER (nf_nowrite = 0)
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -239,14 +231,14 @@
            istatus = NF_OPEN_(filename, NF_NOWRITE, cdfid) 
            IF ( istatus .NE. 0 ) errbuff = NF_STRERROR_(istatus)
 * close the netCDF file
-           IF ( istatus .EQ. 0 ) CALL NCCLOS(cdfid, istatus)
+           IF ( istatus .EQ. 0 ) istatus = NF_CLOSE_(cdfid)
 
 #else
 
            istatus = NF_OPEN(filename, NF_NOWRITE, cdfid) 
            IF ( istatus .NE. 0 ) errbuff = NF_STRERROR(istatus)
 * close the netCDF file
-           IF ( istatus .EQ. 0 ) CALL NCCLOS(cdfid, istatus)
+           IF ( istatus .EQ. 0 ) istatus = NF_CLOSE(cdfid)
 
 #endif 
 

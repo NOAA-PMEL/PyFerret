@@ -10505,7 +10505,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.13"
 FERRET_PLATFORM = "Linux 3.10.0-514.21.2.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.4.1.1 of May 18 2017 16:45:16 $"
+NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "DD-MON-YY"
 SESSION_TIME = "HH:MM"
@@ -10536,7 +10536,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.13"
 FERRET_PLATFORM = "Linux 3.10.0-514.21.2.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.4.1.1 of May 18 2017 16:45:16 $"
+NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "DD-MON-YY"
 SESSION_TIME = "HH:MM"
@@ -10710,7 +10710,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.13"
 FERRET_PLATFORM = "Linux 3.10.0-514.21.2.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.4.1.1 of May 18 2017 16:45:16 $"
+NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "DD-MON-YY"
 SESSION_TIME = "HH:MM"
@@ -62808,7 +62808,7 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v7.13 (beta/debug)"                                               
- 3    /  3:" ! Linux 3.10.0-514.21.2.el7.x86_64 64-bit - 06/23/17"                      
+ 3    /  3:" ! Linux 3.10.0-514.21.2.el7.x86_64 64-bit - 06/27/17"                      
  4    /  4:" ! DD-MON-YY HH:MM     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
@@ -99336,8 +99336,10 @@ GO err71_ppl_sho_empty
 ! err71_ppl_sho_empty.jnl
 ! ticket 2543, PPL SHOW pplsym is a command, but it
 ! gave a Fortran runtime error if given with no argument
+! Now send these errors through the Ferret errmsg routine.
  
-! Thsi is a valid sequence, pplus symbol definition
+! This is a valid sequence, pplus symbol definition
+ 
 pplus set xpos 3.2
 pplus show xpos
  XPOS                           = 3.2
@@ -99345,14 +99347,16 @@ pplus show xpos
 ! intentional error
  
 set mode ignore
-! NOTE PPLUS ERRORS do not interrupt Ferret,
-! so set mode ignore not really needed...
  
 ! This is a correct error message, undefined symbol
 pplus show nosymbol
  
 ! This previously hit a runtime error, symbol name missing.
 ppl show
+ 
+! Another PPL error we might hit is an invalid command.
+! Write this error message
+PPL nonsense
  
 set mode/last ignore
  
@@ -104624,7 +104628,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.13"
 FERRET_PLATFORM = "Linux 3.10.0-514.21.2.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.4.1.1 of May 18 2017 16:45:16 $"
+NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "DD-MON-YY"
 SESSION_TIME = "HH:MM"

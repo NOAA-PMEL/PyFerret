@@ -4809,12 +4809,12 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR Symbol not found              
-  show nosymbol
-       ^
- **ERROR Symbol not found              
-  show
-      ^
+ **ERROR: PPLUS command syntax error: Symbol not found PPLUS show nosymbol
+pplus show nosymbol
+ **ERROR: PPLUS command syntax error: Symbol not found PPLUS show
+ppl show
+ **ERROR: PPLUS command syntax error:  Command not recognized: PPLUS NONSENSE
+PPL nonsense
 *** Running ferret script: bn_compressed_gather.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory

@@ -227,6 +227,7 @@ echo 's/SESSION_TIME = "[0-9][0-9]:[0-9][0-9]"/SESSION_TIME = "HH:MM"/g' >> $cle
 echo 's/SESSION_PID = "[0-9]+"/SESSION_PID = "#####"/g' >> $cleanups
 echo 's/DELTA_CPU = "[0-9]\.[0-9E-]+"/DELTA_CPU = "######"/g' >> $cleanups
 echo 's/CLOCK_SECS = "[0-9]\.[0-9E-]+"/CLOCK_SECS = "######"/g' >> $cleanups
+echo 's/^\[\?1034h//' >> $cleanups
 echo 's/Second 10K LET commands LET a = 0 takes  [0-4]\.[0-9]+  seconds/Second 10K LET commands LET a = 0 takes [0-5] seconds/' >> $cleanups
 echo 's/10K LET commands LET a = 0 takes  [0-2]\.[0-9]+  seconds/10K LET commands LET a = 0 takes [0-3] seconds/' >> $cleanups
 echo 's/5K LOAD with transform takes  [0-8]\.[0-9]+  seconds/5K LOAD with transform takes [0-9] seconds/' >> $cleanups

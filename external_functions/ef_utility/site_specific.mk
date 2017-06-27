@@ -11,8 +11,8 @@
 ## This value is used to determine which platform_specific.mk
 ## file to include in the Makefiles.
 ## =========================
-BUILDTYPE = $(HOSTTYPE)
-# BUILDTYPE = x86_64-linux
+# BUILDTYPE = $(HOSTTYPE)
+BUILDTYPE = x86_64-linux
 # BUILDTYPE = x86_64-linux-gnu
 # BUILDTYPE = i386-linux
 # BUILDTYPE = i386-linux-gnu

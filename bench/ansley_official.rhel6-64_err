@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 112389974 Jun 22 15:25 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 117449902 Jun 23 15:44 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: statically link EFs used for SOCAT gridding
+Note: more on ticket 2543, invalid input to PPLUS
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,15 +14,15 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
-FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
-FER_GO=. /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib
+FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
+FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=.
-FER_LIBS=/home/users/ansley/ferret_distributions/rhel6_64/lib
-FER_PALETTE=. /home/users/ansley/ferret_distributions/rhel6_64/ppl
+FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
+FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Thu Jun 22 15:27:32 PDT 2017
+Beginning at Fri Jun 23 16:09:49 PDT 2017
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -862,8 +862,6 @@ LIST/i=2:4:2 VAR
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_non_COARDS_netCDF
- **TMAP ERR: limit on storage for coordinates has been reached
-             MAX=      100200
            *** NOTE: Coordinates out of order or missing on axis UNORDERED_AXIS at subscript 4
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
@@ -1382,6 +1380,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid GLB1
            *** NOTE: Not deleted: COADSX
            *** NOTE: Axis is in use by grid GG
+           *** NOTE: Not deleted: YAXLEVITR1_90
+           *** NOTE: Axis is in use by grid GG2
            *** NOTE: Not deleted: XAXLEVITR1_160
            *** NOTE: Axis is in use by grid GG1
            *** NOTE: Not deleted: PSYT
@@ -1396,15 +1396,13 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G5DAY
            *** NOTE: Not deleted: PSYU
            *** NOTE: Axis is in use by grid G5DAY
-           *** NOTE: Not deleted: ZAXLEVITR1_1
-           *** NOTE: Axis is in use by grid GG2
            *** NOTE: Not deleted: TIME4
            *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: TEST_IRREG
            *** NOTE: Axis is in use by grid (G023)
            *** NOTE: Not deleted: PSZW
            *** NOTE: Axis is in use by grid G5_10
-           *** NOTE: Not deleted: YAXLEVITR1_90
+           *** NOTE: Not deleted: ZAXLEVITR1_1
            *** NOTE: Axis is in use by grid GG2
            *** NOTE: Not deleted: XEVEN
            *** NOTE: Axis is in use by grid EVEN
@@ -1512,6 +1510,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid GLB1
            *** NOTE: Not deleted: COADSX
            *** NOTE: Axis is in use by grid GG
+           *** NOTE: Not deleted: YAXLEVITR1_90
+           *** NOTE: Axis is in use by grid GG2
            *** NOTE: Not deleted: XAXLEVITR1_160
            *** NOTE: Axis is in use by grid GG1
            *** NOTE: Not deleted: PSYT
@@ -1526,13 +1526,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G5DAY
            *** NOTE: Not deleted: PSYU
            *** NOTE: Axis is in use by grid G5DAY
-           *** NOTE: Not deleted: ZAXLEVITR1_1
-           *** NOTE: Axis is in use by grid GG2
            *** NOTE: Not deleted: TIME4
            *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: PSZW
            *** NOTE: Axis is in use by grid G5_10
-           *** NOTE: Not deleted: YAXLEVITR1_90
+           *** NOTE: Not deleted: ZAXLEVITR1_1
            *** NOTE: Axis is in use by grid GG2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2202,9 +2200,9 @@ Replacing definition of axis TIME1
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_illegal_axisname.jnl
 Replacing definition of axis COADSX.ILLEGAL
-           *** NOTE: grid GEX1 used by data set illeg_axname
-           *** NOTE: Redefinition may alter apparent contents of data set
            *** NOTE: grid GEX2 used by data set illeg_axname
+           *** NOTE: Redefinition may alter apparent contents of data set
+           *** NOTE: grid GEX1 used by data set illeg_axname
            *** NOTE: Redefinition may alter apparent contents of data set
 Replacing definition of axis COADSY.ILLEGAL
            *** NOTE: grid GEX3 used by data set illeg_axname
@@ -2828,8 +2826,6 @@ Starting test: bn_fifty_files.jnl
            *** NOTE: They will not be convertible:
            *** NOTE: regarding ./climatological_axes.cdf ...
            *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
- **TMAP ERR: limit on storage for coordinates has been reached
-             MAX=      100200
            *** NOTE: Coordinates out of order or missing on axis UNORDERED_AXIS at subscript 4
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
@@ -5869,12 +5865,12 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR Symbol not found              
-  show nosymbol
-       ^
- **ERROR Symbol not found              
-  show
-      ^
+ **ERROR: PPLUS command syntax error: Symbol not found PPLUS show nosymbol
+pplus show nosymbol
+ **ERROR: PPLUS command syntax error: Symbol not found PPLUS show
+ppl show
+ **ERROR: PPLUS command syntax error:  Command not recognized: PPLUS NONSENSE
+PPL nonsense
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6631,4 +6627,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Jun 22 15:32:25 PDT 2017
+Ended at Fri Jun 23 16:14:23 PDT 2017

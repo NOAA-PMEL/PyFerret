@@ -1,22 +1,26 @@
 ! err71_ppl_sho_empty.jnl
 ! ticket 2543, PPL SHOW pplsym is a command, but it
 ! gave a Fortran runtime error if given with no argument
+! Now send these errors through the Ferret errmsg routine.
 
-! Thsi is a valid sequence, pplus symbol definition
+! This is a valid sequence, pplus symbol definition
+
 pplus set xpos 3.2
 pplus show xpos
 
 ! intentional error
 
 set mode ignore
-! NOTE PPLUS ERRORS do not interrupt Ferret,
-! so set mode ignore not really needed...
 
 ! This is a correct error message, undefined symbol
 pplus show nosymbol
 
 ! This previously hit a runtime error, symbol name missing.
 ppl show
+
+! Another PPL error we might hit is an invalid command. 
+! Write this error message 
+PPL nonsense
 
 set mode/last ignore
 

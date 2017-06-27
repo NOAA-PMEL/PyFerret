@@ -1,5 +1,6 @@
 ## Site-dependent definitions included in Makefiles
-## Also verify the values in external_functions/ef_utility/site_specific.mk
+
+## !!! Also verify the values in external_functions/ef_utility/site_specific.mk !!!
 
 ## =========================
 ## Full path name of the directory containing this file (the ferret root directory).
@@ -7,7 +8,7 @@
 ## =========================
 DIR_PREFIX = $(HOME)/build/pyferret_dev
 # DIR_PREFIX = $(HOME)/git/PyFerret
-# DIR_PREFIX = $(HOME)/pyferret_dev
+# DIR_PREFIX = $(HOME)/svn/pyferret
 
 ## =========================
 ## Installation directory for built PyFerret.  Using the "install"
@@ -26,8 +27,8 @@ INSTALL_FER_DIR = $(HOME)/ferret_distributions/rhel6_64
 ##   i386-linux-gnu    for 32-bit Ubuntu and many "free" Linux systems
 ##   intel-mac         for Mac OSX
 ## =========================
-BUILDTYPE = $(HOSTTYPE)
-# BUILDTYPE = x86_64-linux
+# BUILDTYPE = $(HOSTTYPE)
+BUILDTYPE = x86_64-linux
 # BUILDTYPE = x86_64-linux-gnu
 # BUILDTYPE = i386-linux
 # BUILDTYPE = i386-linux-gnu
@@ -52,7 +53,9 @@ PYTHONINCDIR := $(shell $(PYTHON_EXE) -c "from __future__ import print_function 
 ## of cairo (v1.8 or later) can be used, but raster images from
 ## -nodisplay may look a little fuzzy unless -gif is specified.
 ## =========================
-CAIRO_DIR = /usr/local/cairo-1.14.4
+# CAIRO_DIR = /usr/local/cairo-1.14.10
+CAIRO_DIR = /usr/local/cairo-1.14.10-64
+# CAIRO_DIR = /usr/local/cairo-1.14.10-32
 # CAIRO_DIR = $(HOME)/.local
 # CAIRO_DIR = /usr/local
 # CAIRO_DIR =
@@ -63,8 +66,9 @@ CAIRO_DIR = /usr/local/cairo-1.14.4
 ## cairo library.  If blank, or if CAIRO_DIR is blank, the system's
 ## pixman-1 shared library will be used.
 ## =========================
-PIXMAN_DIR = /usr/local/cairo-1.14.4
-# PIXMAN_DIR = /usr/local/pixman-1-0.34.0
+# PIXMAN_DIR = /usr/local/pixman-0.34.0
+PIXMAN_DIR = /usr/local/pixman-0.34.0-64
+# PIXMAN_DIR = /usr/local/pixman-0.34.0-32
 # PIXMAN_DIR = $(HOME)/.local
 # PIXMAN_DIR = /usr/local
 # PIXMAN_DIR =
@@ -85,7 +89,8 @@ PANGO_DIR =
 ## libraries, do not give a location for HDF5_DIR.
 ## =========================
 # HDF5_DIR = /usr/local/hdf5-1.8.18
-HDF5_DIR = /usr/local/hdf5-1.8.16
+HDF5_DIR = /usr/local/hdf5-1.8.18-64
+# HDF5_DIR = /usr/local/hdf5-1.8.18-32
 # HDF5_DIR = $(HOME)/.local
 # HDF5_DIR = /usr/local
 # HDF5_DIR =
@@ -104,7 +109,8 @@ COMPRESS_LIB = z
 ## used;  otherwise the netcdf static (.a) libraries will be used.
 ## =========================
 # NETCDF4_DIR = /usr/local/netcdf-4.4.1.1
-NETCDF4_DIR = /usr/local/netcdf-4.4.0
+NETCDF4_DIR = /usr/local/netcdf-4.4.1.1-64
+# NETCDF4_DIR = /usr/local/netcdf-4.4.1.1-32
 # NETCDF4_DIR = $(HOME)/.local
 # NETCDF4_DIR = /usr/local
 

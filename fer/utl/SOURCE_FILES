@@ -162,6 +162,7 @@ reverse_grid_axis_sub.F\
 return_one_val.F\
 save_uvar_aux_info.F\
 save_uvar_grid.F\
+save_uvar_type.F\
 secs_from_bc.F\
 secs_to_date.F\
 secs_to_date_c.F\

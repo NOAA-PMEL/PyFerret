@@ -907,7 +907,7 @@
      .                                    cx_bad_data(big_cx)  )
 	   ENDIF
 
-c Tentative fix for ticket 2234
+c Tentative fix for ticket 2234.  See also ticket 2547.
 	   cx_type(big_cx) = cx_type(hi_cx)
 	   CALL RE_ASSIGN_VARIABLE( hi_mr, big_cx )
 

@@ -12,6 +12,7 @@ C**
 C**
 C       Mod *JD* 3.19.91 for unix -- use environment variable PLOTFONTS
 C       *jd* 7.92 variable IF renamed to KIF for MAC
+C       *kms* 06-2017 - change from PLOTFONTS to FER_FONTS
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -160,7 +161,7 @@ C	IF(.NOT.READIR)GOTO 2020
 	IF(.NOT.READIR) THEN
 #ifdef unix
 C *JD* Mod below fix for unix  -- use environment variable 3.19.91	
-	   call getenv ('PLOTFONTS',fontdir)
+	   call getenv ('FER_FONTS',fontdir)
        	   dirlen = lnblk (fontdir,255)
 
 C *kob* 1/02 - cygwin 1.3.x requires "\" for unix directory accesses

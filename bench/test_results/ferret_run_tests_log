@@ -10503,7 +10503,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.13"
-FERRET_PLATFORM = "Linux 3.10.0-514.21.2.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-514.26.1.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
@@ -10534,7 +10534,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.13"
-FERRET_PLATFORM = "Linux 3.10.0-514.21.2.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-514.26.1.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
@@ -10708,7 +10708,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.13"
-FERRET_PLATFORM = "Linux 3.10.0-514.21.2.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-514.26.1.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
@@ -36687,9 +36687,7 @@ list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "g
  2   / 2:"then, goodbye, my friend""then, hello, friend"     
  
 SET MODE IGNORE
-list/nohead ysequence({98, 99})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + "friend"
- 1   / 1:........
- 2   / 2:........
+! list/nohead ysequence({98, 99})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + "friend"
 list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+99 ELSE "goodbye"+", my ") + "friend"
  1   / 1:........
  2   / 2:........
@@ -42697,7 +42695,7 @@ SHO VAR/XML
 <attribute name="ferret_datatype" type="char">
    <value><![CDATA[FLOAT]]></value>
 </attribute>
-<grid name="ABSTRACT">
+<grid name="GSI1">
 <axes>
 </axes>
 </grid>
@@ -42752,7 +42750,7 @@ SHO VAR/XML
 <attribute name="ferret_datatype" type="char">
    <value><![CDATA[FLOAT]]></value>
 </attribute>
-<grid name="ABSTRACT">
+<grid name="GSI1">
 <axes>
 </axes>
 </grid>
@@ -42774,7 +42772,7 @@ SHOW VAR/XML
 <attribute name="ferret_datatype" type="char">
    <value><![CDATA[FLOAT]]></value>
 </attribute>
-<grid name="ABSTRACT">
+<grid name="GSI1">
 <axes>
 </axes>
 </grid>
@@ -62808,7 +62806,7 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v7.13 (beta/debug)"                                               
- 3    /  3:" ! Linux 3.10.0-514.21.2.el7.x86_64 64-bit - 06/27/17"                      
+ 3    /  3:" ! Linux 3.10.0-514.26.1.el7.x86_64 64-bit - 06/30/17"                      
  4    /  4:" ! DD-MON-YY HH:MM     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
@@ -80103,16 +80101,19 @@ say ($a)
 foobar
  
 ! ======
+! Note this result changes 6/30/2017, due to change in merge_grid for ticket
+! 2313, in grid-merging the grid of a constant is now a normal grid. Previously
+! it was the abstract grid.
 DEFINE SYMBOL a    "(`foobar,return=xaxis`)"
- !-> DEFINE SYMBOL a    "(ABSTRACT)"
+ !-> DEFINE SYMBOL a    "(NORMAL)"
 say ($a)
- !-> MESSAGE/CONTINUE (ABSTRACT)
-(ABSTRACT)
+ !-> MESSAGE/CONTINUE (NORMAL)
+(NORMAL)
 DEFINE SYMBOL a _DQ_(`foobar,return=xaxis`)_DQ_
- !-> DEFINE SYMBOL a _DQ_(ABSTRACT)_DQ_
+ !-> DEFINE SYMBOL a _DQ_(NORMAL)_DQ_
 say ($a)
- !-> MESSAGE/CONTINUE (ABSTRACT)
-(ABSTRACT)
+ !-> MESSAGE/CONTINUE (NORMAL)
+(NORMAL)
  
 ! ======
 GO bn_DQ.sub _DQ_+-/_SQ_\!foo"bar;_SQ_"_DQ_    "_DQ_+-/_SQ_\!foobar;_SQ_"
@@ -95798,7 +95799,7 @@ save/clob/file=a.nc c
  eval    EX#1     C:  4 dset:   1 I:     11     31  J: -999 -999  K: -999 -999  L:   -999   -999
  eval    C        C:  6 dset:   0 I:     11     31  J: -999 -999  K: -999 -999  L:   -999   -999
  allocate dynamic grid (G###)          C2D_AX_X  NORMAL    NORMAL    NORMAL
- pseudo  X        M:  8 dset:   0 I:     11     31  J: -999 -999  K: -999 -999  L:   -999   -999
+ pseudo  X        M:  7 dset:   0 I:     11     31  J: -999 -999  K: -999 -999  L:   -999   -999
  dealloc  dynamic grid (G###)          C2D_AX_X  NORMAL    NORMAL    NORMAL
  -DELETE C        M:  5 dset:   0 I:     11     30  J: -999 -999  K: -999 -999  L:   -999   -999
  
@@ -99360,6 +99361,138 @@ PPL nonsense
  
 set mode/last ignore
  
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err71_string_and_if
+! err71_string_and_if.jnl
+!  6/28/2018, ticket 2547
+ 
+! problem with masked strings -> unexpected values instead of strings:
+can var/all
+let test = {1,1,0}
+let strings = {"a", "b", "c"}
+list if (test) then strings
+             VARIABLE : IF (TEST) THEN STRINGS
+             SUBSET   : 3 points (X)
+ 1   / 1:"a"
+ 2   / 2:"b"
+ 3   / 3:"" 
+ 
+! works: define a masked variable instead, then list
+let masked = if (test) then strings
+list masked
+             VARIABLE : IF (TEST) THEN STRINGS
+             SUBSET   : 3 points (X)
+ 1   / 1:"a"
+ 2   / 2:"b"
+ 3   / 3:"" 
+ 
+! alternatively, do the same listing for a float first
+let floats = {2,3,4}
+list if (test) then floats
+             VARIABLE : IF (TEST) THEN FLOATS
+             SUBSET   : 3 points (X)
+ 1   / 1:  2.000
+ 2   / 2:  3.000
+ 3   / 3:   ....
+ 
+! now, also for strings listing while masking works
+list if (test) then strings
+             VARIABLE : IF (TEST) THEN STRINGS
+             SUBSET   : 3 points (X)
+ 1   / 1:"a"
+ 2   / 2:"b"
+ 3   / 3:"" 
+ 
+ 
+ 
+! the next problem comes with xsequence
+! again unexpected numerical values instead of strings
+can var/all
+let test = {1,1,0}
+let strings = {"a", "b", "c"}
+let masked = if (test) then strings
+list xsequence(masked)
+             VARIABLE : XSEQUENCE(MASKED)
+             SUBSET   : 3 points (X)
+ 1   / 1:"a"
+ 2   / 2:"b"
+ 3   / 3:"" 
+ 
+! but doing a listing first fixes it:
+can var/all
+let test = {1,1,0}
+let strings = {"a", "b", "c"}
+list if (test) then strings
+             VARIABLE : IF (TEST) THEN STRINGS
+             SUBSET   : 3 points (X)
+ 1   / 1:"a"
+ 2   / 2:"b"
+ 3   / 3:"" 
+let masked = if (test) then strings
+list xsequence(masked)
+             VARIABLE : XSEQUENCE(MASKED)
+             SUBSET   : 3 points (X)
+ 1   / 1:"a"
+ 2   / 2:"b"
+ 3   / 3:"" 
+ 
+ 
+! NOT fixed by defining a second masked variable before:
+can var/all
+let test = {1,1,0}
+let strings = {"a", "b", "c"}
+let masked = if (test) then strings
+let masked2 = xsequence(masked)
+list masked2
+             VARIABLE : XSEQUENCE(MASKED)
+             SUBSET   : 3 points (X)
+ 1   / 1:"a"
+ 2   / 2:"b"
+ 3   / 3:"" 
+ 
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err71_expr_w_const
+! err71_expr_w_const.jnl
+! ticket 2313: return= is loading the whole
+! grid unnecessarily in the last example
+ 
+set mem/size=1
+def ax/t=1-jan-0001:1-jan-1000:1/unit=year tax
+let a = t[gt=tax] + x[gx=1:1000:1] + y[gy=1:1000:1]
+ 
+! These work fine
+say `a,return=cal`
+ !-> MESSAGE/CONTINUE GREGORIAN
+GREGORIAN
+ 
+use coads_climatology
+let s1= sst[x=@ave,y=1,L=@max]
+say `s1*a,return=cal`
+ !-> MESSAGE/CONTINUE GREGORIAN
+GREGORIAN
+ 
+! but the constant variable "let one = 1" introduced abstract
+! axes to the grid which  caused Ferret to try to load the
+! data in A which is large
+ 
+let one = 1
+let a1 = a*one
+show grid a1
+    GRID (G###)
+ name       axis              # pts   start                end                 subset
+ (AX###)   X                 1000 r   1                    1000                1000 pts
+ (AX###)   Y                 1000 r   1                    1000                1000 pts
+ normal    Z
+ tax       TIME              1000 r   01-JAN-0001 00:00    01-JAN-1000 06:10   full
+say `a*one,return=cal`
+ !-> MESSAGE/CONTINUE GREGORIAN
+GREGORIAN
 *** Running ferret script: bn_compressed_gather.jnl
 ! bn_compressed_gather.jnl
 ! 11/2016 (for trac #2428 enhancement)
@@ -104626,7 +104759,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.13"
-FERRET_PLATFORM = "Linux 3.10.0-514.21.2.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-514.26.1.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "31"

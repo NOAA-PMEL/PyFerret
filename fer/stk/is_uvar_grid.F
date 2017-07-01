@@ -120,6 +120,8 @@
 *                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 * V720  3/17 *acm*  clean up long commented-out code referring to aggregations 
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
+* V720: 6/17 *acm* Fix ticket 2547: the grid and type of uvars are stored, but the
+*                  information may be collected on different passes through this routine.
 
 * calling argument declarations:
 	INTEGER	status
@@ -183,6 +185,8 @@
 	is_uvar_const = ITSA_CONST_VAR(uvar)   ! for repl_exprns fixing bug 2213
 * ... initialization to support 2/99 pass-2 changes
 	pass_number = 1
+
+	cx_type(big_cx) = ptype_unknown   ! initialize; fixing ticket 2547
 ! 4/99
 	need_another_pass = is_phase(isp) .LT. 0  ! saved from last time here
 	is_phase(isp) = ABS( is_phase(isp) )
@@ -668,6 +672,13 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 	is_cx   ( isp ) = hi_cx
 	is_uvar ( isp ) = cx_variable( hi_cx )
 	is_act  ( isp ) = isact_get_grid	! temp diagnostic
+
+* Fixing ticket 2547. Save the type now. Later passes do not do the ifthen_type logic.
+	
+	IF (cx_type(big_cx).NE.cx_none .AND. cx_type(big_cx).NE.unspecified_int4) THEN
+	   CALL SAVE_UVAR_TYPE(uvar, cx_type(big_cx), this_dset)
+	ENDIF
+
 	RETURN 1
 	
 ***  DONE - clean up
@@ -685,6 +696,7 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 	IF ( is_sum(isp) .EQ. isalg_transfer ) THEN
 	   IF ( uvar_dset(uvar).EQ.unspecified_int4 ) THEN
 	      uvar_need_dset(uvar) = .FALSE.
+	      
 	      CALL SAVE_UVAR_GRID(uvar, mgrid_abstract, ptype_float,
      .				  pdset_irrelevant)
 * ... 6/16 init aux info just for house-keeping
@@ -694,7 +706,6 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 !	      uvar_need_dset(uvar) = .TRUE.	! always TRUE anyway
 * *kob* 4/99 bug fix - check to see if let/d is dataset independent
 	      IF (dset .EQ. unspecified_int4) THEN
-
 	         CALL SAVE_UVAR_GRID(uvar, mgrid_abstract, ptype_float,
      .				     pdset_irrelevant)
 * ... 6/16 init aux info just for house-keeping

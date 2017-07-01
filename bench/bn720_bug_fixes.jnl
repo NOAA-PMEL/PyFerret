@@ -54,3 +54,9 @@ GO err71_isready_unknown
 
 GO bn_reset
 GO err71_ppl_sho_empty
+
+GO bn_reset
+GO err71_string_and_if
+
+GO bn_reset
+GO err71_expr_w_const

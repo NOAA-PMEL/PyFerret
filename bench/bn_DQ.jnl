@@ -111,6 +111,9 @@ DEFINE SYMBOL a _DQ_foobar_DQ_
 say ($a)
 
 ! ======
+! Note this result changes 6/30/2017, due to change in merge_grid for ticket
+! 2313, in grid-merging the grid of a constant is now a normal grid. Previously
+! it was the abstract grid.
 DEFINE SYMBOL a    "(`foobar,return=xaxis`)"
 say ($a)
 DEFINE SYMBOL a _DQ_(`foobar,return=xaxis`)_DQ_

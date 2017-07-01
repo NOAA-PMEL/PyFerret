@@ -118,6 +118,10 @@
 *                 of other exprns.
 * V695 *acm* 6/16 Fix ticket 1602. Do not substitute abstract axes for normal axes
 *                 when merging a constant.
+* V72  *acm* 6/17 For the above change, ticket 1602, and also for comment #3 of 2313, 
+*                 do the check differently. If the the grid of the component is 
+*                 all-abstract (and the variable is a constant), do not add abstract 
+*                 axes to the merged grid.
 
 	include 'tmap_dims.parm'
 	include 'grid_chg_fcns.parm'
@@ -273,12 +277,13 @@
      .          .EQ. alg_constant
 	ENDIF
 
-* Is the mrg_grd all normal or abstract ?
+* Is the com_grd all  abstract ?  If so we won't add abstract axes willy-nilly
+* to the grid
 	mabstract = grid_line( 1, mgrid_abstract )
 	normabst = .TRUE.
 	DO idim = 1, nferdims
-	   iline = grid_line(idim,mrg_grd)
-	   IF (iline.NE.mnormal .AND. iline.NE.mabstract) normabst = .FALSE.
+	   iline = grid_line(idim,com_grd)
+	   IF (iline.NE.mabstract) normabst = .FALSE.
 	ENDDO
 
 * for merged context to be data set independent all components must be so
@@ -490,7 +495,8 @@
 * when merging a constant
 
 	IF (com_ax.EQ.mabstract .AND. mrg_ax.EQ.mnormal) THEN
-	   IF (.NOT. (normabst) .AND. var_is_const) GOTO 400
+c	   IF (.NOT. (normabst) .AND. var_is_const) GOTO 400
+	   IF (normabst .AND. var_is_const) GOTO 400
 	ENDIF
 
 * take appropriate merging action

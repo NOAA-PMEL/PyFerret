@@ -1,0 +1,47 @@
+! err71_string_and_if.jnl
+!  6/28/2018, ticket 2547
+
+! problem with masked strings -> unexpected values instead of strings:
+can var/all
+let test = {1,1,0}
+let strings = {"a", "b", "c"}
+list if (test) then strings
+
+! works: define a masked variable instead, then list
+let masked = if (test) then strings
+list masked
+
+! alternatively, do the same listing for a float first
+let floats = {2,3,4}
+list if (test) then floats
+
+! now, also for strings listing while masking works
+list if (test) then strings
+
+
+
+! the next problem comes with xsequence
+! again unexpected numerical values instead of strings
+can var/all
+let test = {1,1,0}
+let strings = {"a", "b", "c"}
+let masked = if (test) then strings
+list xsequence(masked)
+
+! but doing a listing first fixes it:
+can var/all
+let test = {1,1,0}
+let strings = {"a", "b", "c"}
+list if (test) then strings
+let masked = if (test) then strings
+list xsequence(masked)
+
+
+! NOT fixed by defining a second masked variable before:
+can var/all
+let test = {1,1,0}
+let strings = {"a", "b", "c"}
+let masked = if (test) then strings
+let masked2 = xsequence(masked)
+list masked2
+

@@ -167,7 +167,7 @@ list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", ") + "fri
 list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + "friend"
 
 SET MODE IGNORE
-list/nohead ysequence({98, 99})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + "friend"
+! list/nohead ysequence({98, 99})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + "friend"
 list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+99 ELSE "goodbye"+", my ") + "friend"
 list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+99) + "friend"
 list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + 99

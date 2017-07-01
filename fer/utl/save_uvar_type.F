@@ -1,4 +1,4 @@
-      SUBROUTINE SAVE_UVAR_GRID( uvar, uvgrid, uvdtype, dset )
+      SUBROUTINE SAVE_UVAR_TYPE( uvar, uvdtype, dset )
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -33,25 +33,24 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 
-* store the grid that has been determined to be correct for this
+* store the data type that has been determined to be correct for this
 * uvar (a LET expression), when evaluated in the given dset
 
 * V699 5/16 *sh* new routine created to avoid the 2d uvar_grid array
-* V720: 6/17 *acm* Fix ticket 2547: We store the grid and type of user variables and
-*                  expressions, but the grid and type may be determined on different 
-*                  iterations in is_uvar_grid.
+* V720: 6/17 *acm* Fix ticket 2547: the grid and type of uvars are stored, but the
+*                  information may be collected on different calls from is_uvar_grid.
 
         include 'ferret.parm'
         include 'tmap_dims.parm'
         include 'xvariables.cmn'
 
 * calling argument declarations
-        INTEGER uvar, uvgrid, uvdtype, dset
+        INTEGER uvar, uvdtype, dset
 
 * internal variable declarations
         INTEGER NCF_SET_UVAR_GRID,
-     .          c_list_dset, context_dset, 
-     .          pretype, savetype, status
+     .          c_list_dset, context_dset, pretype, savetype,
+     .          dummy_grid, status
 
 * c_list_dset  - dset value relevant in C LIST structures of NCF_Util.c
 * context_dset - dset for which grid of this uvar has been determined
@@ -66,16 +65,13 @@
           context_dset = dset
         ENDIF
 
-* We may have already stored the uvar type.  Check for that.
+* We may have already stored the grid. 
 
-	savetype = uvdtype
-	CALL GET_SAVED_UVAR_DTYPE( uvar, dset, pretype )
-	IF (pretype .NE. unspecified_int4 .AND. 
-     .      pretype .NE. ptype_unknown) savetype = pretype
+	CALL GET_SAVED_UVAR_GRID ( uvar, c_list_dset, dummy_grid )
 
 * store the grid
         status = NCF_SET_UVAR_GRID( c_list_dset, uvar,
-     .                              uvgrid, savetype, context_dset )
+     .                              dummy_grid, uvdtype, context_dset )
 
 * Note that an ATOM_NOT_FOUND error is not trapped
 * We should really trap it and call ERRMSG(ferr_internal)

@@ -206,6 +206,7 @@ int decode_file (char* fname, char *recptr, char *delims, int *skip,
   FILE *fp;
   int slen, i;
   int pinc = 8/sizeof(char*);  /* pointers spaced 8 bytes apart */
+  char *startptr;
 
   *nrec = 0;
 
@@ -224,15 +225,16 @@ int decode_file (char* fname, char *recptr, char *delims, int *skip,
       if ( fgets(recptr,*reclen,fp) )
 	{
 	  /* skip leading blanks */
-	  while (*recptr==' ')
-	    recptr++;
+          startptr = recptr;
+	  while (*startptr ==' ')
+	    startptr++;
 
 	  /* overwrite the newline record terminator with a NULL */
-	  if ((slen = strlen(recptr)) > 0)
-	    if (recptr[slen-1] == '\n')
-	      recptr[slen-1] = '\0';
+	  if ((slen = strlen(startptr)) > 0)
+	    if (startptr[slen-1] == '\n')
+	      startptr[slen-1] = '\0';
 	  
-	  decodeRec(recptr, delims, nfields, field_type, *nrec,
+	  decodeRec(startptr, delims, nfields, field_type, *nrec,
 		    numeric_fields, text_fields, bad_flags, status);
 
 #ifdef diagnostic_output	  /* ************* */
@@ -282,6 +284,7 @@ int FORTRAN(anal_file) (char* fname, char *recptr, char *delims, int* skip,
   FILE *fp;
   int slen, i, rec;
   int nsuccess = 0;
+  char *startptr;
 
   fp = fopen(fname,"r");
 
@@ -305,14 +308,15 @@ int FORTRAN(anal_file) (char* fname, char *recptr, char *delims, int* skip,
 	  rec++;
 
 	  /* skip leading blanks */
-	  while (*recptr==' ')
-	    recptr++;
+          startptr = recptr;
+	  while (*startptr ==' ')
+	    startptr++;
 
 	  /* overwrite the newline record terminator with a NULL */
-	  if ((slen = strlen(recptr)) > 0)
-	    recptr[slen-1] = '\0';
+	  if ((slen = strlen(startptr)) > 0)
+	    startptr[slen-1] = '\0';
 	  
-	  analRec(recptr, delims, nfields, field_type, *max_fields);
+	  analRec(startptr, delims, nfields, field_type, *max_fields);
 
 	  /* check for unknown field types */
 	  i = 0;

@@ -1083,6 +1083,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: regarding ./test_axes.nc ...
            *** NOTE: Climatological axes test_irreg, test_seas defined
+ LISTing to file longaxspace.dat
 *** Running ferret script: bn542_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory

@@ -205,17 +205,24 @@ exebindir=`dirname $fver`
 exeferdir=`dirname $exebindir | sed -e 's/\\//\\\\\\//g'`
 echo "s/$exeferdir/....../g" >> $cleanups
 
-timeregex=`date +%e.%h.%Y`
+timeregex=`date +%_d.%h.%Y`
+echo "s/$timeregex/DD-MON-YYYY/g" >> $cleanups
+# If date assigned to symbol and then symbol used elsewhere, any beginning space is dropped
+timeregex=`date +%-d.%h.%Y`
 echo "s/$timeregex/DD-MON-YYYY/g" >> $cleanups
 
-timeregex=`date +%e.%h.%y`
+timeregex=`date +%_d.%h.%y`
+echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]/DD-MON-YY HH:MM/g" >> $cleanups
+echo "s/$timeregex/DD-MON-YY/g" >> $cleanups
+# If date assigned to symbol and then symbol used elsewhere, any beginning space is dropped
+timeregex=`date +%-d.%h.%y`
 echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]/DD-MON-YY HH:MM/g" >> $cleanups
 echo "s/$timeregex/DD-MON-YY/g" >> $cleanups
 
 timeregex=`date | sed -e 's/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/'`
 echo "s/$timeregex/WKD MON DD HH:MM:SS ZZZ YYYY/g" >> $cleanups
 
-timeregex=`date +%a.%h.%e.%T.%Y | sed -e 's/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/'`
+timeregex=`date +%a.%h.%_d.%T.%Y | sed -e 's/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/'`
 echo "s/$timeregex/WKD MON DD HH:MM:SS YYYY/g" >> $cleanups
 
 echo 's/^randu2_randn2 [0-9 .-]+$/randu2_randn2      ....../' >> $cleanups

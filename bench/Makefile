@@ -17,7 +17,11 @@ run_tests:
 	@echo 'Differences in the generated bench PDF and PNG files versus against those in test_results'
 	-@for img in *.pdf *.png ; \
 	do \
-	    diff -q $$img test_results/$$img ; \
+	    if diff -q $$img test_results/$$img ; then \
+	        echo "Files $$img and test_results/$$img are identical"; \
+	    else \
+	        compare $$img test_results/$$img "$$img"_diff.png ; \
+	    fi \
 	done
 	@echo ''
 	@echo 'Inspect the bench/all_*_ncdump, bench/all_*_err, and bench/all_*_log files just created '

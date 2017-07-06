@@ -10507,7 +10507,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.13"
-FERRET_PLATFORM = "Linux 3.10.0-514.26.1.el7.x86_64"
+FERRET_PLATFORM = "Linux 3.10.0-514.26.2.el7.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
@@ -10538,7 +10538,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.13"
-FERRET_PLATFORM = "Linux 3.10.0-514.26.1.el7.x86_64"
+FERRET_PLATFORM = "Linux 3.10.0-514.26.2.el7.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
@@ -10712,7 +10712,7 @@ PPL$XPIXEL = "819"
 PPL$YPIXEL = "707"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.13"
-FERRET_PLATFORM = "Linux 3.10.0-514.26.1.el7.x86_64"
+FERRET_PLATFORM = "Linux 3.10.0-514.26.2.el7.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
@@ -39134,6 +39134,19 @@ T0 = 01-JAN-0000 00:00:00
        3>  16-AUG 06:38:15       2191.455   01-JUL 14:54:36        5478.637
        4>  15-NOV 14:05:33       2191.455   30-SEP 22:21:54        7670.092
  
+! test reading space delimited values - trac #2549
+columns/skip=3/var="v1,v2"/typ="num,num" longax.dat
+list/clobber/file=longaxspace.dat/norow/nohead v1, v2
+let nrecs = `v1,return=isize`
+ !-> DEFINE VARIABLE nrecs = 20500
+can data/all
+define axis/x=1:`nrecs`:1 xax
+ !-> define axis/x=1:20500:1 xax
+define grid/x=xax xgrid
+columns/grid=xgrid/delim="\b"/var="v1,v2"/typ="num,num" longaxspace.dat
+! this used to cause a crash (due to improper memory advancing to skip spaces)
+load v1
+ 
 *** Running ferret script: bn542_bug_fixes.jnl
 ! bn542_bug_fixes.jnl
 ! test various fixes that went into version 5.42
@@ -62934,7 +62947,7 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! PyFerret v7.13 (beta/debug)"                                             
- 3    /  3:" ! Linux 3.10.0-514.26.1.el7.x86_64 - 06/30/17"                             
+ 3    /  3:" ! Linux 3.10.0-514.26.2.el7.x86_64 - 07/05/17"                             
  4    /  4:" ! DD-MON-YY HH:MM     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
@@ -104899,7 +104912,7 @@ PPL$XPIXEL = "819"
 PPL$YPIXEL = "707"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.13"
-FERRET_PLATFORM = "Linux 3.10.0-514.26.1.el7.x86_64"
+FERRET_PLATFORM = "Linux 3.10.0-514.26.2.el7.x86_64"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "31"

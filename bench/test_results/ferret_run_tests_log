@@ -62819,7 +62819,7 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v7.13 (beta/debug)"                                               
- 3    /  3:" ! Linux 3.10.0-514.26.2.el7.x86_64 64-bit - 07/06/17"                      
+ 3    /  3:" ! Linux 3.10.0-514.26.2.el7.x86_64 64-bit - MM-DD-YY"                      
  4    /  4:" ! DD-MON-YY HH:MM     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         

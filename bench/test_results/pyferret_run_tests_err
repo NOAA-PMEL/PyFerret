@@ -4838,6 +4838,14 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
 Replacing definition of axis tax
            *** NOTE: Ambiguous coordinates on T axis: S1*A
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ **ERROR: invalid command: Mismatched parentheses within REPEAT loop
+repeat/range=1:3:1/name=count (def sym count = `count`; say 3; message/continue))
 *** Running ferret script: bn_compressed_gather.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory

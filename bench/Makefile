@@ -1,5 +1,5 @@
 #
-# Makefile for the PyFerret source bench subdirectory
+# Makefile for the PyFerret bench subdirectory
 #
 
 # include platform specific macro definitions for make_stream_file
@@ -14,7 +14,7 @@ run_tests:
 	    exit 1 ; \
 	fi
 	./RUN_TESTS.sh `which pyferret` "$(PYFER_EXTERNAL_FUNCTIONS)"
-	@echo 'Differences in the generated bench PDF and PNG files versus against those in test_results'
+	@echo 'Differences in the generated bench PDF and PNG files versus those in bench/test_results'
 	-@for img in *.pdf *.png ; \
 	do \
 	    if diff -q $$img test_results/$$img ; then \
@@ -23,15 +23,19 @@ run_tests:
 	        compare $$img test_results/$$img "$$img"_diff.png ; \
 	    fi \
 	done
+	-@( datetag=`date +'%d%h%yAT'|tr '[A-Z]' '[a-z]'` ; \
+	    diff all_$${datetag}*_ncdump test_results/pyferret_run_tests_ncdump 1> pyferret_run_tests_ncdump.diff 2>&1 ; \
+	    diff all_$${datetag}*_err test_results/pyferret_run_tests_err 1> pyferret_run_tests_err.diff 2>&1 ; \
+	    diff all_$${datetag}*_log test_results/pyferret_run_tests_log 1> pyferret_run_tests_log.diff 2>&1 \
+	)
 	@echo ''
-	@echo 'Inspect the bench/all_*_ncdump, bench/all_*_err, and bench/all_*_log files just created '
-	@echo 'against bench/test_results/pyferret_run_tests_ncdump, bench/test_results/pyferret_run_test_err, '
-	@echo 'and bench/test_results/pyferret_run_tests_log'
+	@echo 'Inspect the *_diff.png files for actual differences in the images'
+	@echo 'Inspect the pyferret_run_tests_*.diff files for actual differences in the output'
 
 .PHONY: clean
 clean:
 	rm -f all_*_ncdump all_*_err all_*_log all_*_ncdump_orig all_*_err_orig all_*_log_orig cleanups.sed
-	rm -f *.plt* *.gif* *.ps* *.eps* *.png* *.pdf* ferret.jnl*
+	rm -f *.ps* *.eps* *.png* *.pdf* *.diff* ferret.jnl*
 	rm -f `cat TRASH_FILES`
 	rm -f all_ncdump.out fort.41 make_stream_file
 	rm -fr subdir tmp

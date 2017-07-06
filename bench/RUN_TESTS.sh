@@ -219,6 +219,9 @@ timeregex=`date +%-d.%h.%y`
 echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]/DD-MON-YY HH:MM/g" >> $cleanups
 echo "s/$timeregex/DD-MON-YY/g" >> $cleanups
 
+timeregex=`date +%m.%d.%y`
+echo "s/$timeregex/MM-DD-YY/g" >> $cleanups
+
 timeregex=`date | sed -e 's/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/'`
 echo "s/$timeregex/WKD MON DD HH:MM:SS ZZZ YYYY/g" >> $cleanups
 

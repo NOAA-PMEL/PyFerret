@@ -34092,11 +34092,11 @@ SAMPLEN(TO_BE_SAMPLED,F_INDICES)
     F_INDICES: list of F indices at which to sample
 SAMPLE_FAST_I(V,Indices)
     Fast 1D sample variable using set of indices
-    V: Variable to sample
+    V: 1-D variable in X direction
     Indices: List of indices at which to sample
 SAMPLE_FAST_I_STR(S,Indices)
     Fast 1D sample string variable using set of indices
-    S: String Variable to sample (STRING)
+    S: 1-D string variable in X direction (STRING)
     Indices: List of indices at which to sample
 SAMPLEF_DATE(DAT_TO_SAMPLE,YR,MO,DAY,HR,MIN,SEC)
     Returns data sampled by interpolating to a set of times in F direction
@@ -62819,7 +62819,7 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v7.13 (beta/debug)"                                               
- 3    /  3:" ! Linux 3.10.0-514.26.2.el7.x86_64 64-bit - 07/05/17"                      
+ 3    /  3:" ! Linux 3.10.0-514.26.2.el7.x86_64 64-bit - 07/06/17"                      
  4    /  4:" ! DD-MON-YY HH:MM     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
@@ -99506,6 +99506,82 @@ show grid a1
 say `a*one,return=cal`
  !-> MESSAGE/CONTINUE GREGORIAN
 GREGORIAN
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err71_colorlevs
+! err71_colorlevs
+! See ticket 2250. Top data value is not among color levels used in the plot.
+! And symbols LEV* do not list the levels used.
+ 
+use co_emac.nc
+stat co_emac
+ 
+             CO EMAC
+             LONGITUDE: 0E to 120E
+             LATITUDE: 0 to 40N
+             Z:  N/A
+             T:  N/A
+             E:  N/A
+             F:  N/A
+             DATA SET: ./co_emac.nc
+ 
+ Total # of data points: 48 (12*4*1*1*1*1)
+ # flagged as bad  data: 4
+ Minimum value: 6.152674857E-08
+ Maximum value: 0.00000018643
+ Mean    value: 0.000000087383 (unweighted average)
+ Standard deviation: 2.230821645E-08
+ 
+! previously there were 25 levels chosen by the automatic
+! method, missing the top one because of roundoff error.
+! Thus one cell went unfilled.  The LEV_MIN etc symbols were
+! set to 0 because of inadequate formatting of the tiny numbers.
+ 
+set mode nlevels 30
+shade co_emac
+sh sym lev*
+LEV_MIN = "6.E-08"
+LEV_MAX = "1.9E-07"
+LEV_NUM = "26"
+LEV_DEL = "5.E-09"
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err71_repeat_paren
+! err71_repeat_paren.jnl
+! bug 2251. The second command with an extra parenthese is not reported
+! to be a syntax error but just reports wrong info.
+ 
+repeat/range=1:3:1/name=count (def sym count = `count`; say ($count); message/continue)
+ !-> repeat/range=1:3:1/name=count (def sym count = `count`; say ($count); message/continue)
+!-> REPEAT: COUNT:1
+ !-> def sym count = 1
+ !-> MESSAGE/CONTINUE 1
+1
+
+!-> REPEAT: COUNT:2
+ !-> def sym count = 2
+ !-> MESSAGE/CONTINUE 2
+2
+
+!-> REPEAT: COUNT:3
+ !-> def sym count = 3
+ !-> MESSAGE/CONTINUE 3
+3
+
+ 
+! Previously the extra paren at the end did not trigger an error
+! but caused a parsing error so the command
+!   say ($count)
+! was parsed and fixed at "say 3" before the loop started.
+ 
+set mode ignore
+repeat/range=1:3:1/name=count (def sym count = `count`; say ($count); message/continue))
+set mode/last ignore
+ 
 *** Running ferret script: bn_compressed_gather.jnl
 ! bn_compressed_gather.jnl
 ! 11/2016 (for trac #2428 enhancement)

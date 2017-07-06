@@ -95,7 +95,7 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'S')
-      CALL ef_set_arg_desc(id, arg, 'String Variable to sample')
+      CALL ef_set_arg_desc(id, arg, '1-D string variable in X direction')
       CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
       CALL ef_set_arg_type(id, arg, STRING_ARG)
 

@@ -60,3 +60,9 @@ GO err71_string_and_if
 
 GO bn_reset
 GO err71_expr_w_const
+
+GO bn_reset
+GO err71_colorlevs
+
+GO bn_reset
+GO err71_repeat_paren

@@ -45,6 +45,7 @@
 * V698 *acm*  2/16 Fix the LEV_DEL computation which was wrong for irregular levels.
 *                  Clear out-of-date symbols, for variance-based or histogram
 *                  levels on previous plots
+* V720 *acm*  7/17 Ticket 2250: precision errors when data has very small values
 
 *    LEV_MIN  - lowest level used on last CONTOUR, SHADE, or FILL call.
 *    LEV_MAX -  highest level used last
@@ -68,31 +69,44 @@
 * Internal arguments
 
       REAL zmax, zmin, dz, diff, eps
+      REAL*8 zmaxD, zminD
 
-      CHARACTER ppl_buff*2048, TM_FMT_SNGL*10, buff*10, symbuff*120
+      CHARACTER ppl_buff*2048, TM_FMT_SNGL*10, TM_FMT*10, 
+     .          buff*10, symbuff*120,buffmin*10, buffmax*10
       INTEGER TM_LENSTR1, STR_SAME, i, ier, ilen, slen, ist
       LOGICAL TM_FPEQ_EPS_SNGL, reglevs
+
+
 
 * Lowest and highest Z level
 
       zmin = zlevels(1)
-      buff = TM_FMT_SNGL(zmin, -2, 10, slen)
-      IF (neginf) buff = 'open-ended'
+      buffmin = TM_FMT_SNGL(zmin, -2, 10, slen)
+      IF (neginf) buffmin = 'open-ended'
 
-      ppl_buff = 'LEV_MIN '//buff
+      zmax = zlevels(nlevels)
+      buffmax = TM_FMT_SNGL(zmax, -2, 10, slen)
+      IF (posinf) buffmax = 'open-ended'
+
+* An epsilon for equal-sized deltas, need not be too tight a test
+      eps = 0.01* (zmax - zmin)/FLOAT(nlevels)
+
+      IF ( STR_SAME(buffmin, buffmax).EQ.0 .AND. .NOT.neginf .AND.
+     .    .NOT.TM_FPEQ_EPS_SNGL(eps, zmin, zmax) ) THEN
+	 zminD = zmin
+         zmaxD = zmax 
+	 buffmin = TM_FMT(zminD, 2, 10, slen)
+	 buffmax = TM_FMT(zmaxD, 2, 10, slen)
+      ENDIF
+
+      ppl_buff = 'LEV_MIN '//buffmin
       ilen = TM_LENSTR1(ppl_buff)
       ier = 0
       ist = 0
       CALL SETSYM (ppl_buff, ilen, ier, ist)
 
-      zmax = zlevels(nlevels)
-      buff = TM_FMT_SNGL(zmax, -2, 10, slen)
-      IF (posinf) buff = 'open-ended'
 
-* An epsilon for equal-sized deltas, need not be too tight a test
-      eps = 0.01* (zmax - zmin)/FLOAT(nlevels)
-
-      ppl_buff = 'LEV_MAX '//buff
+      ppl_buff = 'LEV_MAX '//buffmax
       ilen = TM_LENSTR1(ppl_buff)
       ier = 0
       ist = 0
@@ -119,6 +133,8 @@
 * Otherwise, check if levels are regularly spaced 
 
       ELSE
+
+
          dz = zlevels(2) - zlevels(1)
       
          IF (nlevels .EQ. 1) THEN
@@ -139,6 +155,13 @@
             ENDIF
          ENDIF
 
+      ENDIF
+
+      IF (STR_SAME(buff, '0') .EQ. 0 .AND. reglevs) THEN
+	 zminD = zlevels(1)
+         zmaxD = zlevels(2)
+	 zminD = zmaxD - zminD
+	 buff = TM_FMT(zminD, 2, 10, slen)
       ENDIF
 
       ppl_buff = 'LEV_DEL '//buff

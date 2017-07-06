@@ -122,6 +122,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 * V701 *acm*  8/16 Fix ticket 2440 when SHAKEY settings were made.
 * V71  *acm*  1/17 Fix ticket 2491: labels on colorbar when it's a ribbon/vlog, ribbon/hlog plot
 * V71  *acm*  1/17 Fix ticket 2491: Tweak to key labels, code adding .0 to numbers for consistency
+* V72  *acm*  7/17 See example, ticket 2550 small exponential labels need more precision in key labels
 
         IMPLICIT NONE
 
@@ -165,8 +166,8 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 	character*12	text, TM_FMT_SNGL, TM_FMT_SNGL_DIGITS, 
      .			txt_out, blanks
         character*20    buff
-	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, windof_hold, 
-     .                  check_0, increase_digits, nofill, cont_key_keep, 
+	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, TM_HAS_STRING,  
+     .                  windof_hold, check_0, increase_digits, nofill, cont_key_keep, 
      .                  no_lines, is_viewport, have_neg
 
 	external	TM_FMT_SNGL, TM_FMT_SNGL_DIGITS
@@ -263,6 +264,8 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 
              READ (buff,*) val_n
              IF ( TM_DFPEQ(val_last, val_n) ) increase_digits = .TRUE.
+             IF ( TM_HAS_STRING(buff, 'E-') ) increase_digits = .TRUE.
+
              val_last = val_n
              IF (max_len .lt. str_len) max_len = str_len
 	     

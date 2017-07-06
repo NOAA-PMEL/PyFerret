@@ -138,6 +138,7 @@
 * V697  3/16 Ticket 2376: parsing backslash escapes within repeat loops.
 * V697  3/16  *acm* ticket 2356 scale back change for multiple slash at end of command
 * V71  *acm* 1/17   Change to return 16 digits by default for grave-accent expressions was lost
+* V73   7/17  *acm* ticket 2551 Report an error for unmatched parentheses in a REPEAT loop.
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -942,6 +943,9 @@ cc  Allow zero-length null string in quotes
 	      ENDIF
  850	    CONTINUE
 *   ... no matching left paren ever found (probably a syntax error ...)
+*       It would be better to let the parsing of each command catch and report
+*       errors, but ticket 2551 shows a failure in that. Make it an error here.
+          GOTO 5080
 	  ENDIF
 	ENDIF
  890	CONTINUE
@@ -1097,5 +1101,8 @@ cc  Allow zero-length null string in quotes
 
  5070	CALL ERRMSG
      .			( ferr_invalid_command, status, 'REPEAT what ?', *5000 )
+ 5080	CALL ERRMSG
+     .			( ferr_invalid_command, status, 
+     .		'Mismatched parentheses within REPEAT loop ', *5000 )
 	END
 

@@ -96,7 +96,7 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'V')
-      CALL ef_set_arg_desc(id, arg, 'Variable to sample')
+      CALL ef_set_arg_desc(id, arg, '1-D variable in X direction')
       CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
 
       arg = 2

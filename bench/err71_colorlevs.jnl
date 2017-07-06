@@ -1,0 +1,15 @@
+! err71_colorlevs
+! See ticket 2250. Top data value is not among color levels used in the plot.
+! And symbols LEV* do not list the levels used.
+
+use co_emac.nc
+stat co_emac
+
+! previously there were 25 levels chosen by the automatic 
+! method, missing the top one because of roundoff error.
+! Thus one cell went unfilled.  The LEV_MIN etc symbols were 
+! set to 0 because of inadequate formatting of the tiny numbers.
+
+set mode nlevels 30
+shade co_emac
+sh sym lev*

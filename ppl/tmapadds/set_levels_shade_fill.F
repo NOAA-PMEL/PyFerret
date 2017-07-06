@@ -41,6 +41,8 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V697 *acm* 12/15 Fix ticket 2326: single level plus (inf) and/or (-inf)
 * V698 *acm*  2/16 Send info that the levels are from a histogram to setlab_syms
+* V720 *acm*  7/17 Ticket 2250: small-valued data caused an error computing number
+*                  of interval-edges NLEV2
 
         IMPLICIT NONE
 	include		'parampl5_dat.decl'
@@ -193,7 +195,12 @@ C       values and also the appropriate delta value. (ZNP, ZMP, DZ)
 	      endif
 
               IF (.NOT.openlev) THEN
-	      NLEV2=(ZMP-ZNP)/DZ+1 
+
+* nlev2 is 1 more than the # of intervals; it is the edges of the intervals, i.e. 
+* upper-limit of the uppermost interval minus the lower-limit of the low cell, 
+* and then add 1.5 for correct roundoff.
+
+	      NLEV2 = (ZMP-ZNP)/DZ + 1.5
 
 c *acm* 4/08 Set jj as in plotz
 

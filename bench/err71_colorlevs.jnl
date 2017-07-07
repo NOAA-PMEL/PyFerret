@@ -1,5 +1,5 @@
 ! err71_colorlevs
-! See ticket 2250. Top data value is not among color levels used in the plot.
+! See ticket 2550. Top data value is not among color levels used in the plot.
 ! And symbols LEV* do not list the levels used.
 
 use co_emac.nc

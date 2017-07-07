@@ -1,5 +1,5 @@
 ! err71_repeat_paren.jnl
-! bug 2251. The second command with an extra parenthese is not reported
+! Ticket 2551. The second command with an extra parenthese is not reported
 ! to be a syntax error but just reports wrong info.
 
 repeat/range=1:3:1/name=count (def sym count = `count`; say ($count); message/continue)

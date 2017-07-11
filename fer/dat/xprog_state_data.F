@@ -125,6 +125,7 @@
 * V702  3/17 *sh* new mode FRUGAL
 *                 SPAWN command returns spawn_status
 * v720 7/17 *acm* ticket 2552 Make SPAWN_STATUS return the return status, so 0=succcess
+*                 SPAWN_STATUS returns the status value, used for SPAWN_OK and SPAWN_STATUS
 * v720 7/17 *kms* remove unused its_pyferret flag
 
         IMPLICIT NONE

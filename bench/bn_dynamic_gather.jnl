@@ -20,7 +20,7 @@ spawn "mkdir -p tmp"     ! tmp directory to store files
 
 ! see if the test file already exists
 SPAWN "ls tmp/test_dyn_mem.nc"
-IF `($SPAWN_STATUS) EQ 0` THEN
+IF ($SPAWN_OK) THEN
   say test files already exist.  not re-creating them
 ELSE
   define symbol saved_memory_size = ($FERRET_MEMORY)

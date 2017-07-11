@@ -10521,6 +10521,7 @@ CURRENT_TIME = "HH:MM:SS"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 PEAK_MEMORY = "0"
+SPAWN_OK = "1"
 SPAWN_STATUS = "0"
  
 ! define some symbols ... syntax variations
@@ -10552,6 +10553,7 @@ CURRENT_TIME = "HH:MM:SS"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 PEAK_MEMORY = "0"
+SPAWN_OK = "1"
 SPAWN_STATUS = "0"
 S1 = "hello"
 S2 = ""hello""
@@ -10563,6 +10565,7 @@ show symbol s*
 SESSION_DATE = "DD-MON-YY"
 SESSION_TIME = "HH:MM"
 SESSION_PID = "#####"
+SPAWN_OK = "1"
 SPAWN_STATUS = "0"
 S1 = "hello"
 S2 = ""hello""
@@ -10576,6 +10579,7 @@ show symbol s*
 SESSION_DATE = "DD-MON-YY"
 SESSION_TIME = "HH:MM"
 SESSION_PID = "#####"
+SPAWN_OK = "1"
 SPAWN_STATUS = "0"
 S1 = "hello"
 S3 = "hello and goodbye"
@@ -10583,6 +10587,7 @@ show symbol S*
 SESSION_DATE = "DD-MON-YY"
 SESSION_TIME = "HH:MM"
 SESSION_PID = "#####"
+SPAWN_OK = "1"
 SPAWN_STATUS = "0"
 S1 = "hello"
 S3 = "hello and goodbye"
@@ -10726,6 +10731,7 @@ CURRENT_TIME = "HH:MM:SS"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 PEAK_MEMORY = "201"
+SPAWN_OK = "1"
 SPAWN_STATUS = "0"
  
 *** Running ferret script: bn_comma_delimited.jnl
@@ -100442,7 +100448,7 @@ spawn "mkdir -p tmp"     ! tmp directory to store files
  
 ! see if the test file already exists
 SPAWN "ls tmp/test_dyn_mem.nc"
-IF `($SPAWN_STATUS) EQ 0` THEN
+IF ($SPAWN_OK) THEN
  !-> IF 0 THEN
 ELSE
   define symbol saved_memory_size = ($FERRET_MEMORY)
@@ -102339,7 +102345,7 @@ define axis/x=1:1000000:1 xmillion
 SPAWN "mkdir -p tmp"     ! tmp directory to store files
 SPAWN ls tmp/test_auto_cache_($nsets).nc
  !-> SPAWN ls tmp/test_auto_cache_20.nc
-IF `($SPAWN_STATUS) EQ 0` THEN
+IF ($SPAWN_OK) THEN
  !-> IF 0 THEN
 ELSE
  say creating test files
@@ -105005,6 +105011,7 @@ CURRENT_TIME = "HH:MM:SS"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 PEAK_MEMORY = "0"
+SPAWN_OK = "1"
 SPAWN_STATUS = "0"
 GO_FILE = "./bn_startupfile.jnl"
 LAST_GO_FILE = "./bn_startupfile.jnl"

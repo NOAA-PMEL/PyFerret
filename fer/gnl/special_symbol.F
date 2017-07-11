@@ -70,6 +70,8 @@
 * V702  3/17 *sh* - Dynamic memory calculation change for FERRET_MEMORY symbol
 *                 - added PEAK_MEMORY and SPAWN_STATUS
 * v720 7/17 *acm* ticket 2552 Make SPAWN_STATUS return the return status, so 0=succcess
+*                 SPAWN_OK -> SPAWN_OK, so 1=succcess, 0=failure
+*                 SPAWN_STATUS returns the status value
 
 * calling argument declarations:
 	INTEGER	  isym, slen
@@ -77,7 +79,7 @@
 
 * internal parameter declaration
 	INTEGER nspecial
-	PARAMETER (nspecial = 19)
+	PARAMETER (nspecial = 20)
 
 * internal variable declarations:
 	INTEGER STR_UPCASE, TM_LENSTR, i, i1, ierr, wsid, 
@@ -109,7 +111,8 @@ c        REAL DTIME
      .	     special(16)/ 'N_OPEN_DSETS' /,
      .	     special(17)/ 'PROGRAM_NAME' /,
      .	     special(18)/ 'PEAK_MEMORY' /,
-     .	     special(19)/ 'SPAWN_STATUS' /
+     .	     special(19)/ 'SPAWN_OK' /,
+     .	     special(20)/ 'SPAWN_STATUS' /
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -153,7 +156,7 @@ c        REAL DTIME
 
  200	GOTO (1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 
      .        1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600,
-     .        2700, 2800, 2900 ) i
+     .        2700, 2800, 2900, 3000 ) i
 
 * PPL$XPIXEL
 * get the horizontal pixels size of the window as specified by the user
@@ -325,8 +328,17 @@ c        CALL DTIME(TArray)
  2800	value = LEFINT8(peak_mem,slen)
         RETURN
 
+* SPAWN_OK
+ 2900	IF (spawn_status .EQ. 0.) THEN
+           rstatus = 1.
+	ELSE
+	   rstatus = 0.
+	ENDIF
+	value = TM_FMT(rstatus, 10, 10, slen)
+        RETURN
+
 * SPAWN_STATUS
- 2900	rstatus = spawn_status
+ 3000	rstatus = spawn_status
 	value = TM_FMT(rstatus, 10, 10, slen)
         RETURN
 

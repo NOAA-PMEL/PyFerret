@@ -16,7 +16,7 @@ CANCEL MODE VERIFY
 
 ! see if the test file already exists
 SPAWN "ls tmp/f04_e3_t3_1v.nc"
-IF `($SPAWN_STATUS) EQ 0` THEN
+IF ($SPAWN_OK) THEN
   say *** NOT RE-CREATING bn_aggregate_tef.jnl test files. They already exist.
 ELSE
 

@@ -55,7 +55,8 @@
 *    *acm* 7/17. Test a status flag on the system call (see ticket 2453).
 *                 Results seem inconsistent, make it a warning
 * V702 3/17 Use the return status to set Ferret symbol ($SPAWN_STATUS)
-* v720 7/17 *acm* ticket 2552 Make SPAWN_STATUS return the return status, so 0=succcess
+* v720 7/17 ticket 2552 Make SPAWN_STATUS return the return status, so 0=succcess
+*           SPAWN_STATUS returns the status value, used for SPAWN_OK and SPAWN_STATUS
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -77,7 +78,7 @@
               CALL FLUSH(ttout_lun)
               CALL FLUSH(err_lun)
 	      CALL SYSTEM( cmnd_buff(arg_start(1):arg_end(1)),status )
-	      SPAWN_STATUS = status   
+	      spawn_status = status   
 
 	   end if
 	ELSE

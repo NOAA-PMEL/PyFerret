@@ -55,6 +55,8 @@
 * V697  2/16 *acm* DO NOT Increase length of cmnd buffer from 2048
 * V702 2/17 *sh* add mode FRUGAL and spawn_status
 * v720 7/17 *acm* ticket 2552 Make SPAWN_STATUS return the return status, so 0=succcess
+*           SPAWN_STATUS returns the status value, used for SPAWN_OK and SPAWN_STATUS
+
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,

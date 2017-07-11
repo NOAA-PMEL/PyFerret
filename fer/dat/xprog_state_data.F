@@ -123,6 +123,7 @@
 * V702  3/17 *sh* new mode FRUGAL
 *                 SPAWN command returns spawn_status
 * v720 7/17 *acm* ticket 2552 Make SPAWN_STATUS return the return status, so 0=succcess
+*                 SPAWN_STATUS returns the status value, used for SPAWN_OK and SPAWN_STATUS
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -395,6 +396,6 @@
         DATA    allowed_err             / .FALSE. /  ! briefly set true in SHOW VAR/TREE
         DATA    grat_on                 / .FALSE. /
         DATA    num_linecolors          / 6 /
-        DATA    spawn_status            / 0 /  ! =last cmnd was successful
+        DATA    spawn_status            / 0 /        ! last cmnd was successful
 
 	END

@@ -37,7 +37,7 @@ define axis/x=1:1000000:1 xmillion
 ! see if the test files already exist
 SPAWN "mkdir -p tmp"     ! tmp directory to store files
 SPAWN ls tmp/test_auto_cache_($nsets).nc
-IF `($SPAWN_STATUS) EQ 0` THEN
+IF ($SPAWN_OK) THEN
  say test files already exist.  not re-creating them
 ELSE
 !**************************************

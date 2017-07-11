@@ -55,6 +55,7 @@
 *    *acm* 7/17. Test a status flag on the system call (see ticket 2453).
 *                 Results seem inconsistent, make it a warning
 * V702 3/17 Use the return status to set Ferret symbol ($SPAWN_STATUS)
+* v720 7/17 *acm* ticket 2552 Make SPAWN_STATUS return the return status, so 0=succcess
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -76,13 +77,7 @@
               CALL FLUSH(ttout_lun)
               CALL FLUSH(err_lun)
 	      CALL SYSTEM( cmnd_buff(arg_start(1):arg_end(1)),status )
-	      IF (status .NE. 0) THEN
-	         spawn_status = .FALSE.  ! failure of unix command
-	      ELSE
-	         spawn_status = .TRUE.   ! successful unix command
-	      ENDIF
-* To handle a nonzero return as an ERROR, comment out the WARN just above, and do this.
-c	      IF (status .NE. 0) GOTO 5100   
+	      SPAWN_STATUS = status   
 
 	   end if
 	ELSE

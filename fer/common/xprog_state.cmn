@@ -55,6 +55,8 @@
 *		  - increased max_item_list 250 -> 1000
 * V697  2/16 *acm* DO NOT Increase length of cmnd buffer from 2048
 * V702 2/17 *sh* add mode FRUGAL and spawn_status
+* v720 7/17 *acm* ticket 2552 Make SPAWN_STATUS return the return status, so 0=succcess
+* v720 7/17 *kms* remove unused its_pyferret flag
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -176,7 +178,7 @@
      .		genl_storage(25),
      .		ifstk, ifstk_skipping,
      .		if_cs(max_ifstk), if_doing(max_ifstk),
-     .          num_linecolors
+     .          num_linecolors, spawn_status
 
 	LOGICAL
      .		list_format_given, list_unformatted, list_dsf, list_redirected,
@@ -196,8 +198,7 @@
      .          allowed_err,
      .          one_cmnd_mode,
      .		mode_auto_curvi, mode_auto_curvi_last,
-     .		mode_auto_layerz, mode_auto_layerz_last,
-     .		its_pyferret, spawn_status
+     .		mode_auto_layerz, mode_auto_layerz_last
 
 ! Note: available_char_var is unused
 	CHARACTER
@@ -234,7 +235,7 @@
      .		interactive, prompt, prompt_len, 
      .		input_source, mouse_input,
      .		if_conditional, ifstk, ifstk_skipping, if_cs, if_doing,
-     .          num_linecolors,
+     .          num_linecolors, spawn_status,
      .		cmnd_buff, last_cmnd_buff,
      .          mode_grat_buff,
      .		len_cmnd, len_last_cmnd, cmnd_num, subcmnd_num,
@@ -255,11 +256,10 @@
      .		in_get_grid_mode, 
      .		mode_auto_curvi, mode_auto_curvi_last,
      .		mode_auto_layerz, mode_auto_layerz_last,
-     .		spawn_status,
      .		frame_compress, available_char_var,
      .		journal_file, ppllist_file,
      .		xwind_node, xwind_node_len,
-     .		genl_storage, its_script, its_pyferret, grat_on,
+     .		genl_storage, its_script, grat_on,
      .          shade_trim, silent_err, allowed_err, one_cmnd_mode,
      .		ppl_wait, mode_name, 
      .          scriptfile_name, show_file, list_outtype

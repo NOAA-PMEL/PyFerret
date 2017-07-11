@@ -3,6 +3,7 @@
  ! 1/2017 - try to force Ferret into a complex juggling of dependencies
 ! and cache maintenance in order to reproduce the problem seen in trac
 ! ticket #2485 (from Ned Cokelet)
+! *acm*7/2017 0=success for SPAWN_STATUS
 
 ! Ferret's cache of memory-resident results is full when it holds 500 of them.
 ! At that point it must delete cached results to make room for new variables.
@@ -36,7 +37,7 @@ define axis/x=1:1000000:1 xmillion
 ! see if the test files already exist
 SPAWN "mkdir -p tmp"     ! tmp directory to store files
 SPAWN ls tmp/test_auto_cache_($nsets).nc
-IF ($SPAWN_STATUS) THEN
+IF `($SPAWN_STATUS) EQ 0` THEN
  say test files already exist.  not re-creating them
 ELSE
 !**************************************

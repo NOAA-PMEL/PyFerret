@@ -10521,7 +10521,7 @@ CURRENT_TIME = "HH:MM:SS"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 PEAK_MEMORY = "0"
-SPAWN_STATUS = "1"
+SPAWN_STATUS = "0"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10552,7 +10552,7 @@ CURRENT_TIME = "HH:MM:SS"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 PEAK_MEMORY = "0"
-SPAWN_STATUS = "1"
+SPAWN_STATUS = "0"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10563,7 +10563,7 @@ show symbol s*
 SESSION_DATE = "DD-MON-YY"
 SESSION_TIME = "HH:MM"
 SESSION_PID = "#####"
-SPAWN_STATUS = "1"
+SPAWN_STATUS = "0"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10576,14 +10576,14 @@ show symbol s*
 SESSION_DATE = "DD-MON-YY"
 SESSION_TIME = "HH:MM"
 SESSION_PID = "#####"
-SPAWN_STATUS = "1"
+SPAWN_STATUS = "0"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "DD-MON-YY"
 SESSION_TIME = "HH:MM"
 SESSION_PID = "#####"
-SPAWN_STATUS = "1"
+SPAWN_STATUS = "0"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10726,7 +10726,7 @@ CURRENT_TIME = "HH:MM:SS"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 PEAK_MEMORY = "201"
-SPAWN_STATUS = "1"
+SPAWN_STATUS = "0"
  
 *** Running ferret script: bn_comma_delimited.jnl
 ! bn420_comma_delimited
@@ -91299,6 +91299,7 @@ set mode/last ignore
 ! 2/2016 *sh*
 ! 3/2016 - modified to test single point axis aggregations on Z axis
 ! 1/2017 *acm* changes in output due to backing off auto-detection of truemonth axes, tkt 2497
+! *acm*7/2017 0=success for SPAWN_STATUS
  
 ! to avoid re-creating the test files include argument "0" as in
 !  yes?  GO bn_aggregate_tef 0
@@ -100421,6 +100422,7 @@ LIST/PREC=12 xyz[x=@std,y=@std,z=@std]
 *** Running ferret script: bn_dynamic_gather.jnl
 ! bn_dynamic_gather.jnl
 ! *sh* 3/2017
+! *acm*7/2017 0=success for SPAWN_STATUS
  
 ! There's not really anything "dynamic" about this benchmark, except that it
 ! excercises the split/gather improvements that were implemented together with
@@ -100440,7 +100442,7 @@ spawn "mkdir -p tmp"     ! tmp directory to store files
  
 ! see if the test file already exists
 SPAWN "ls tmp/test_dyn_mem.nc"
-IF ($SPAWN_STATUS) THEN
+IF `($SPAWN_STATUS) EQ 0` THEN
  !-> IF 0 THEN
 ELSE
   define symbol saved_memory_size = ($FERRET_MEMORY)
@@ -102301,6 +102303,7 @@ cancel list/precision
  ! 1/2017 - try to force Ferret into a complex juggling of dependencies
 ! and cache maintenance in order to reproduce the problem seen in trac
 ! ticket #2485 (from Ned Cokelet)
+! *acm*7/2017 0=success for SPAWN_STATUS
  
 ! Ferret's cache of memory-resident results is full when it holds 500 of them.
 ! At that point it must delete cached results to make room for new variables.
@@ -102336,7 +102339,7 @@ define axis/x=1:1000000:1 xmillion
 SPAWN "mkdir -p tmp"     ! tmp directory to store files
 SPAWN ls tmp/test_auto_cache_($nsets).nc
  !-> SPAWN ls tmp/test_auto_cache_20.nc
-IF ($SPAWN_STATUS) THEN
+IF `($SPAWN_STATUS) EQ 0` THEN
  !-> IF 0 THEN
 ELSE
  say creating test files
@@ -105002,7 +105005,7 @@ CURRENT_TIME = "HH:MM:SS"
 N_OPEN_DSETS = "0"
 PROGRAM_NAME = "PyFerret"
 PEAK_MEMORY = "0"
-SPAWN_STATUS = "1"
+SPAWN_STATUS = "0"
 GO_FILE = "./bn_startupfile.jnl"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"

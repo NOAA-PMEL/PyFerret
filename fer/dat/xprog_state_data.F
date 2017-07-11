@@ -124,6 +124,8 @@
 * V698  4/16 *acm* For ticket 2399: Apply MODE CALENDAR settings to F axes too
 * V702  3/17 *sh* new mode FRUGAL
 *                 SPAWN command returns spawn_status
+* v720 7/17 *acm* ticket 2552 Make SPAWN_STATUS return the return status, so 0=succcess
+* v720 7/17 *kms* remove unused its_pyferret flag
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -396,7 +398,6 @@
         DATA    allowed_err             / .FALSE. /  ! briefly set true in SHOW VAR/TREE
         DATA    grat_on                 / .FALSE. /
         DATA    num_linecolors          / 6 /
-        DATA    its_pyferret            / .TRUE. /
-        DATA    spawn_status            / .TRUE. /  ! =last cmnd was successful
+        DATA    spawn_status            / 0 /  ! zero means last cmnd was successful
 
 	END

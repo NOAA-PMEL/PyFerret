@@ -72,6 +72,7 @@
 	   if (IS_SECURE()) then
 	      call SPLIT_LIST(pttmode_help, err_lun,
      1	        'This command is not allowed.', 0)
+	      spawn_status = unspecified_int4
 	   else
 *             Flush Fortran stdout and stderr so that any output from
 *             the system command will appear in the appropriate place.

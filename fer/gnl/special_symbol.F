@@ -332,6 +332,11 @@ c        CALL DTIME(TArray)
 * SPAWN_STATUS
  3000	rstatus = spawn_status
 	value = TM_FMT(rstatus, 10, 10, slen)
+	IF (spawn_status .EQ. unspecified_int4) THEN
+	   value = 'secure: spawn not allowed'
+	   slen = 25
+	ENDIf
         RETURN
 
 	END
+

@@ -2,6 +2,7 @@
 ! 2/2016 *sh*
 ! 3/2016 - modified to test single point axis aggregations on Z axis
 ! 1/2017 *acm* changes in output due to backing off auto-detection of truemonth axes, tkt 2497
+! *acm*7/2017 0=success for SPAWN_STATUS
 
 ! to avoid re-creating the test files include argument "0" as in
 !  yes?  GO bn_aggregate_tef 0
@@ -15,7 +16,7 @@ CANCEL MODE VERIFY
 
 ! see if the test file already exists
 SPAWN "ls tmp/f04_e3_t3_1v.nc"
-IF ($SPAWN_STATUS) THEN
+IF `($SPAWN_STATUS) EQ 0` THEN
   say *** NOT RE-CREATING bn_aggregate_tef.jnl test files. They already exist.
 ELSE
 

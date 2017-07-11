@@ -69,6 +69,7 @@
 * V68   2/13 *kms*- Symbol PROGRAM_NAME = Ferret or PyFerret
 * V702  3/17 *sh* - Dynamic memory calculation change for FERRET_MEMORY symbol
 *                 - added PEAK_MEMORY and SPAWN_STATUS
+* v720 7/17 *acm* ticket 2552 Make SPAWN_STATUS return the return status, so 0=succcess
 
 * calling argument declarations:
 	INTEGER	  isym, slen
@@ -82,7 +83,7 @@
 	INTEGER STR_UPCASE, TM_LENSTR, i, i1, ierr, wsid, 
      .          nxpix, nypix, llen, icount, irate, imax, iset
 c        REAL DTIME 
-        REAL TArray(2), dtime_res, clock_secs, count, cputime_now
+        REAL TArray(2), dtime_res, clock_secs, count, cputime_now, rstatus
 	CHARACTER special(nspecial)*16, upname*16
 	CHARACTER LEFINT*16, TM_FMT*12, NF_INQ_LIBVERS*80, NF_INQ_LIBVERS_*80,
      .		  LEFINT8*16
@@ -317,12 +318,8 @@ c        CALL DTIME(TArray)
         RETURN
 
 * SPAWN_STATUS
- 2900	IF (spawn_status) THEN
-	   value = "1"
-	ELSE
-	   value = "0"
-	ENDIF
-	slen = 1
+ 2900	rstatus = spawn_status
+	value = TM_FMT(rstatus, 10, 10, slen)
         RETURN
 
 	END

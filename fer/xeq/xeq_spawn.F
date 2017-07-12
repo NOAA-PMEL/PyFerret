@@ -67,20 +67,20 @@
 	LOGICAL IS_SECURE
 	INTEGER	status, slen
 
+        IF (IS_SECURE()) THEN
+           CALL SPLIT_LIST(pttmode_help, err_lun,
+     1                     'This command is not allowed.', 0)
+           RETURN
+        ENDIF
+
 	CALL ALL_1_ARG
 	IF ( num_args .GT. 0 ) THEN
-	   if (IS_SECURE()) then
-	      call SPLIT_LIST(pttmode_help, err_lun,
-     1	        'This command is not allowed.', 0)
-	   else
-*             Flush Fortran stdout and stderr so that any output from
-*             the system command will appear in the appropriate place.
-              CALL FLUSH(ttout_lun)
-              CALL FLUSH(err_lun)
-	      CALL SYSTEM( cmnd_buff(arg_start(1):arg_end(1)),status )
-	      spawn_status = status   
-
-	   end if
+*          Flush Fortran stdout and stderr so that any output from
+*          the system command will appear in the appropriate place.
+           CALL FLUSH(ttout_lun)
+           CALL FLUSH(err_lun)
+           CALL SYSTEM( cmnd_buff(arg_start(1):arg_end(1)),status )
+           spawn_status = status   
 	ELSE
 * user can get choice of shells with "SPAWN csh", or whatever.
 	   CALL SPLIT_LIST(pttmode_help, err_lun,

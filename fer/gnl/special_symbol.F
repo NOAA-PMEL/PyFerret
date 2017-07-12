@@ -82,6 +82,7 @@
 	PARAMETER (nspecial = 20)
 
 * internal variable declarations:
+	LOGICAL	IS_SECURE
 	INTEGER STR_UPCASE, TM_LENSTR, i, i1, ierr, wsid, 
      .          nxpix, nypix, llen, icount, irate, imax, iset
 c        REAL DTIME 
@@ -329,7 +330,9 @@ c        CALL DTIME(TArray)
         RETURN
 
 * SPAWN_OK
- 2900	IF (spawn_status .EQ. 0.) THEN
+ 2900   IF (IS_SECURE()) THEN
+           rstatus = 0.
+        ELSEIF (spawn_status .EQ. 0.) THEN
            rstatus = 1.
 	ELSE
 	   rstatus = 0.
@@ -338,8 +341,14 @@ c        CALL DTIME(TArray)
         RETURN
 
 * SPAWN_STATUS
- 3000	rstatus = spawn_status
-	value = TM_FMT(rstatus, 10, 10, slen)
+ 3000   IF (IS_SECURE()) THEN
+	   value = 'secure: spawn not allowed'
+	   slen = 25
+        ELSE
+           rstatus = spawn_status
+           value = TM_FMT(rstatus, 10, 10, slen)
+	ENDIf
         RETURN
 
 	END
+

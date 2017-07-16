@@ -256,7 +256,7 @@ void pyefcn_result_limits(int id, char modname[], char errmsg[]);
  *
  * Returns an empty error message if and only if successful.
  */
-void fer_pyefcn_custom_axes(int id, char modname[], char errmsg[]);
+void pyefcn_custom_axes(int id, char modname[], char errmsg[]);
 
 
 /*

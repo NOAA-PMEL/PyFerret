@@ -278,7 +278,7 @@ int read_int2_array( int f, short *iarray, int n )
    int i;
    signed char *buffer;
    int nread;
-   buffer = (signed char *) malloc( n * 2 );
+   buffer = (signed char *) PyMem_Malloc( n * 2 );
    if (!buffer)  return 0;
    nread = read( f, buffer, n*2 );
    if (nread<=0)  return 0;
@@ -287,7 +287,7 @@ int read_int2_array( int f, short *iarray, int n )
       /* don't forget about sign extension! */
       iarray[i] = (buffer[i*2] * 256) | buffer[i*2+1];
    }
-   free( buffer );
+   PyMem_Free( buffer );
    return nread;
 #else
    int nread = read( f, iarray, n*2 );
@@ -315,7 +315,7 @@ int read_uint2_array( int f, unsigned short *iarray, int n )
    int i;
    unsigned char *buffer;
    int nread;
-   buffer = (unsigned char *) malloc( n * 2 );
+   buffer = (unsigned char *) PyMem_Malloc( n * 2 );
    if (!buffer)  return 0;
    nread = read( f, buffer, n*2 );
    if (nread<=0)  return 0;
@@ -323,7 +323,7 @@ int read_uint2_array( int f, unsigned short *iarray, int n )
    for (i=0;i<nread;i++) {
       iarray[i] = (buffer[i*2] << 8) | buffer[i*2+1];
    }
-   free( buffer );
+   PyMem_Free( buffer );
    return nread;
 #else
    int nread = read( f, iarray, n*2 );
@@ -384,7 +384,7 @@ int read_int4_array( int f, int *iarray, int n )
    int j, nread;
    int *buffer;
 
-   buffer = (int *) malloc( (n+1)*4 );
+   buffer = (int *) PyMem_Malloc( (n+1)*4 );
    if (!buffer)
       return 0;
    nread = read( f, buffer, 4*n );
@@ -401,7 +401,7 @@ int read_int4_array( int f, int *iarray, int n )
          iarray[j] = buffer[j/2] & 0xffffffff;
       }
    }
-   free( buffer );
+   PyMem_Free( buffer );
    return nread;
 #else
    int nread = read( f, iarray, 4*n );
@@ -471,13 +471,13 @@ int read_float4_array( int f, float *x, int n )
    long *buffer;
    int i, nread;
 
-   buffer = (long *) malloc( (n+1) * 4 );
+   buffer = (long *) PyMem_Malloc( (n+1) * 4 );
    if (!buffer) return 0;
    nread = read( f, buffer, n*4 );
    if (nread<=0)  return 0;
    nread /= 4;
    ieee_to_cray_array( x, buffer, nread );
-   free( buffer );
+   PyMem_Free( buffer );
    return nread;
 #else
    int nread = read( f, x, 4*n );
@@ -602,14 +602,14 @@ int write_uint2_array( int f, const unsigned short *iarray, int n )
 #ifdef _CRAY
    int i, nwritten;
    unsigned char *buffer;
-   buffer = (unsigned char *) malloc( 2*n );
+   buffer = (unsigned char *) PyMem_Malloc( 2*n );
    if (!buffer)  return 0;
    for (i=0;i<n;i++) {
       buffer[i*2] = (iarray[i] >> 8) & 0xff;
       buffer[i*2+1] = iarray[i] & 0xff;
    }
    nwritten = write( f, buffer, 2*n );
-   free( buffer );
+   PyMem_Free( buffer );
    if (nwritten<=0)
       return 0;
    else
@@ -666,7 +666,7 @@ int write_int4_array( int f, const int *i, int n )
    int j, nwritten;
    char *buf, *b, *ptr;
 
-   b = buf = (char *) malloc( n*4 + 8 );
+   b = buf = (char *) PyMem_Malloc( n*4 + 8 );
    if (!b)
       return 0;
    ptr = (char *) i;
@@ -678,7 +678,7 @@ int write_int4_array( int f, const int *i, int n )
       *b++ = *ptr++;
    }
    nwritten = write( f, buf, 4*n );
-   free( buf );
+   PyMem_Free( buf );
    if (nwritten<=0)
       return 0;
    else
@@ -743,12 +743,12 @@ int write_float4_array( int f, const float *x, int n )
    /* convert cray floats to IEEE and put into buffer */
    int nwritten;
    long *buffer;
-   buffer = (long *) malloc( n*4 + 8 );
+   buffer = (long *) PyMem_Malloc( n*4 + 8 );
    if (!buffer)
       return 0;
    cray_to_ieee_array( buffer, x, n );
    nwritten = write( f, buffer, 4*n );
-   free( buffer );
+   PyMem_Free( buffer );
    if (nwritten<=0)
       return 0;
    else

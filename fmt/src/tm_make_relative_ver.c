@@ -43,6 +43,7 @@
 #include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
 #include <string.h>
+#include "ferretmacros.h"  /* with NFERDIMS and FORTRAN */
 
 /* 
 
@@ -58,11 +59,7 @@
 /* had to add ifdef check for trailing underscore in routine name
    for aix port *kob* 10/94 */
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-char *tm_make_relative_ver(curr_ver, fname,path,real_ver)
-#else
-char *tm_make_relative_ver_(curr_ver, fname,path,real_ver)
-#endif
+char * FORTRAN(tm_make_relative_ver)(curr_ver, fname,path,real_ver)
 char *curr_ver,*fname, *path;
 int *real_ver;
 

@@ -21,7 +21,7 @@
   input  - index:  Ferret ws index at which to store the array pointer
   input  - alen:   array length
 */
-void FORTRAN(get_ws_mem)( int *index, long *alen, int *status )
+void FORTRAN(get_ws_mem)( int *index, int *alen, int *status )
 {
   double *pointer;
 

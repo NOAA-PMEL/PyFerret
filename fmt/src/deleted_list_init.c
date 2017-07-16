@@ -58,20 +58,20 @@ void deleted_list_init_(void *deleted_list_header,
    DLHead * head;
    DL_Node * p;
 
-   head = (DLHead*)malloc(sizeof(DLHead));
+   head = (DLHead*)PyMem_Malloc(sizeof(DLHead));
    *((DLHead**)deleted_list_header) = head;
    head->int_array = int_array;
    head->array_size = *int_array_size;
    head->deleted_value = *deleted_value;
    array_size = head->array_size;
 
-   head->ptr_table = (DL_Node**)malloc(array_size*sizeof(DL_Node*));
+   head->ptr_table = (DL_Node**)PyMem_Malloc(array_size*sizeof(DL_Node*));
    memset((void *)head->ptr_table, 0, array_size*sizeof(DL_Node*));
    head->deleted_list_head = NULL;
    head->undel_list_head = NULL;
 
    for(j=array_size;j>=1;j--) {
-       head->ptr_table[j-1] = (DL_Node*)malloc(sizeof(DL_Node));
+       head->ptr_table[j-1] = (DL_Node*)PyMem_Malloc(sizeof(DL_Node));
        p = head->ptr_table[j-1];
        p->index = j;
 

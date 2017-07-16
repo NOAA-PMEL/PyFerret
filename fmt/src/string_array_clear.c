@@ -51,11 +51,11 @@ void string_array_clear_(double * string_array_header)
     if(*(SA_Head**)string_array_header){
        head = *((SA_Head**)string_array_header);
        for(i=0;i<head->array_size;i++) {
-	 free(head->ptr_array[i]);
+	 PyMem_Free(head->ptr_array[i]);
        }
-       free(head->ptr_array);
-       free(head->hash_table);
-       free(head);
+       PyMem_Free(head->ptr_array);
+       PyMem_Free(head->hash_table);
+       PyMem_Free(head);
     }
     *string_array_header = 0;
 }

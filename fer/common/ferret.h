@@ -44,6 +44,7 @@ void set_batch_graphics( char *outfile, int *pngonly );
 void set_secure( void );
 void set_server( void );
 
+void FORTRAN(assign_modemeta)(void);
 void FORTRAN(create_utf8_str)(const int *codepoint, char *utf8str, int *utf8strlen);
 void FORTRAN(dynmem_free_ptr_array)( long* mr_ptrs_val );
 void FORTRAN(dynmem_make_ptr_array)( int* n, long* mr_ptrs_val, int* status );
@@ -54,6 +55,11 @@ int  FORTRAN(is_secure)( void );
 int  FORTRAN(is_server)( void );
 int  FORTRAN(run_thredds_browser)(char dataset_name[], char err_warn_msg[], 
                                   int max_len_data_set, int max_len_err_warn_msg);
+void FORTRAN(save_metafile_name)(char *outfilename, int *length);
+void FORTRAN(store_mr_ptr)(double *index, int *alen, double *pointer);
+void FORTRAN(store_ws_ptr)(int *index, int *alen, double *pointer);
+void FORTRAN(store_nul_mr_ptr)(int *mr, double *nul_ptr);
+void FORTRAN(store_nul_ws_ptr)(int *ws, double *nul_ptr);
 void FORTRAN(text_to_utf8)(const char *text, const int *textlen, char *utf8str, int *utf8strlen);
 
 /* Prototypes for Fortran functions called by C functions */

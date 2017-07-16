@@ -73,14 +73,14 @@ void tm_unblockify_ferret_strings(char **mr_blk1, char *pblock,
     pinstr += filestrlen;
 
     /* allocate memory for this string */
-    poutchar = (char *) malloc(sizeof(char) * (n+1));
+    poutchar = (char *) PyMem_Malloc(sizeof(char) * (n+1));
 
     /*
      * Free any existing string in the output array and then
      * assign this newly allocated memory to the output array.
      */
     if ( *poutstr != NULL )
-       free(*poutstr);
+       PyMem_Free(*poutstr);
     *poutstr = poutchar;
 
     /* increment poutstr to point to the next output string pointer position */

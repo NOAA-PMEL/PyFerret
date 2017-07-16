@@ -53,8 +53,8 @@ void deleted_list_clear_(void * deleted_list_header)
    array_size = head->array_size;
    if(head){
        for(j=1;j<=array_size;j++)
-         free(head->ptr_table[j-1]);
-       free(head->ptr_table);
+         PyMem_Free(head->ptr_table[j-1]);
+       PyMem_Free(head->ptr_table);
    }
    *((int*)deleted_list_header)=0;
 }

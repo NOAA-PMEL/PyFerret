@@ -64,14 +64,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "ferretmacros.h"  /* with NFERDIMS and FORTRAN */
 #include "pyferret.h"
-
-/* Easier way of handling FORTRAN calls with underscore/no underscore */
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
 
 /* Static memory to contain the line read */
 #define STATIC_LINE_LEN 2048

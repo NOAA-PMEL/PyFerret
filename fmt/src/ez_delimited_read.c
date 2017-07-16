@@ -117,10 +117,10 @@ void FORTRAN(decode_file_jacket)
 */
 {
   DFTYPE** mr_ptrs = (DFTYPE**) *mr_ptrs_val;
-  DFTYPE **numeric_fields  = (DFTYPE **) malloc(sizeof(DFTYPE*) * (*nfields));
-  DFTYPE *bad_flags        = (DFTYPE *)  malloc(sizeof(DFTYPE) * (*nfields));
+  DFTYPE **numeric_fields  = (DFTYPE **) PyMem_Malloc(sizeof(DFTYPE*) * (*nfields));
+  DFTYPE *bad_flags        = (DFTYPE *)  PyMem_Malloc(sizeof(DFTYPE) * (*nfields));
 
-  char ***text_fields     = (char ***) malloc(sizeof(char**) * (*nfields));
+  char ***text_fields     = (char ***) PyMem_Malloc(sizeof(char**) * (*nfields));
   int i, mr;
   int pinc = 8/sizeof(char*);  /* pointers spaced 8 bytes apart */
 
@@ -162,9 +162,9 @@ void FORTRAN(decode_file_jacket)
 	       field_type, nrec,
 	       numeric_fields, text_fields, bad_flags, status);
 
-  free(numeric_fields);
-  free(text_fields);
-  free(bad_flags);
+  PyMem_Free(numeric_fields);
+  PyMem_Free(text_fields);
+  PyMem_Free(bad_flags);
 
   return;
 }
@@ -402,7 +402,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
     } else if (p==NULL || *p == '\0') {
       /* missing data field */
       if ( field_type[i] == FTYP_CHARACTER ) {
-	(*(text_fields+i))[rec*pinc] = (char *) malloc(sizeof(char)*2);
+	(*(text_fields+i))[rec*pinc] = (char *) PyMem_Malloc(sizeof(char)*2);
 	strcpy( (*(text_fields+i))[rec*pinc], blankstr );
       }
       else {
@@ -745,7 +745,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	    p++;
 	  }
 	  (*(text_fields+i))[rec*pinc] =
-	    (char *) malloc(sizeof(char)*(strlen(p)+1));
+	    (char *) PyMem_Malloc(sizeof(char)*(strlen(p)+1));
 	  strcpy( (*(text_fields+i))[rec*pinc], p );
 	}
 	break;
@@ -975,10 +975,12 @@ char *nexstrtok(char *s1, char *s2)
 void FORTRAN(save_delimited_info) (int *nfields, int field_type[],
 				   char *delim, DelimFileInfo **ptr)
 {
-  DelimFileInfo *fi = (DelimFileInfo *) calloc(1, sizeof(DelimFileInfo));
-  int* _field_type  = (int *) malloc(sizeof(int) * (*nfields));
-  char* _delim      = (char *) malloc(sizeof(char) * (int)strlen(delim));
+  DelimFileInfo *fi = (DelimFileInfo *) PyMem_Malloc(sizeof(DelimFileInfo));
+  int* _field_type  = (int *) PyMem_Malloc(sizeof(int) * (*nfields));
+  char* _delim      = (char *) PyMem_Malloc(sizeof(char) * (int)strlen(delim));
   int i;
+
+  memset(fi, 0, sizeof(DelimFileInfo));
 
   for (i=0; i<*nfields; i++)
     _field_type[i] = field_type[i];
@@ -1010,9 +1012,9 @@ void FORTRAN(get_delimited_info) (int *nfields, int field_type[],
 void FORTRAN(delete_delimited_info) (DelimFileInfo **ptr)
 {
   DelimFileInfo *fi = *ptr;
-  free(fi->fieldType);
-  free(fi->delim);
-  free(fi);
+  PyMem_Free(fi->fieldType);
+  PyMem_Free(fi->delim);
+  PyMem_Free(fi);
   return;
 }
 

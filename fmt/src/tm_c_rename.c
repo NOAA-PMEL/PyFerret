@@ -36,6 +36,7 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
+#include "ferretmacros.h"  /* with NFERDIMS and FORTRAN */
 
 
 
@@ -51,13 +52,7 @@
 
 /* *kob* had to add ifdef for sake of AIX  10/94 */
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-void tm_c_rename( oldname, newname, status )
-#else
-void tm_c_rename_( oldname, newname, status )
-#endif
-
-
+void FORTRAN(tm_c_rename)( oldname, newname, status )
    char *oldname, *newname;
    int *status;
 

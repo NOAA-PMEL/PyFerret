@@ -55,12 +55,9 @@
  */
 
 #include <Python.h> /* make sure Python.h is first */
+#include "ferretmacros.h"  /* with NFERDIMS and FORTRAN */
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-void tm_set_free_event(n)
-#else
-void tm_set_free_event_(n)
-#endif
+void FORTRAN(tm_set_free_event)(n)
 int *n;
 {
     ;

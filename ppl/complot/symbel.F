@@ -146,7 +146,7 @@ C or <& to start a word,  e.g. <&deg> for the degree sign.
 	   IF (ia.GT.0 .AND. ic.GT.ia+2) THEN
 	      ic = ic - 1
 	      nstring = buff(ia+2:ic)
-	      READ (nstring, *), codepoint
+	      READ (nstring, *) codepoint
 
 	      CALL CREATE_UTF8_STR(codepoint, utf8str, utf8strlen)
 	      ic = ic+2
@@ -163,7 +163,7 @@ C Is it a word, such as <&deg> ? If so, look up its decimal code
 	   IF (ia.GT.0 .AND. ic.GT.ia+2) THEN
 	      ic = ic - 1
 	      nstring = buff(ia+2:ic)
-	      READ (nstring, *), codeword
+	      READ (nstring, *) codeword
 	      CALL SPECIAL_SYM_CODE (codeword, codepoint)
 	      IF (codepoint .GT. 0) THEN  ! -1 means not found. For now, just leave that bad spec in.
 	         CALL CREATE_UTF8_STR(codepoint, utf8str, utf8strlen)

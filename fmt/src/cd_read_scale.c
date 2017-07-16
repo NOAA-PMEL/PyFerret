@@ -152,7 +152,7 @@ void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims,
 	   in variable dat
     */
 
-      data_double = (double *) malloc(ntotal * sizeof(double));
+      data_double = (double *) PyMem_Malloc(ntotal * sizeof(double));
       if ( data_double == NULL )
           abort();
 
@@ -177,7 +177,7 @@ void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims,
          scale, bad, ntotal);
 	  *already_scaled = 1;
 
-	  free(data_double);
+	  PyMem_Free(data_double);
                   
   }
    

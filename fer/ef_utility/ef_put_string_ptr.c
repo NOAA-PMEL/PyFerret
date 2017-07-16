@@ -11,9 +11,9 @@
 void FORTRAN(ef_put_string_ptr)(char **in_ptr, char **out_ptr)
 {
   if ( *out_ptr != NULL )
-     free(*out_ptr);
+     PyMem_Free(*out_ptr);
 
-  *out_ptr = (char *) malloc(sizeof(char) * (strlen(*in_ptr)+1));
+  *out_ptr = (char *) PyMem_Malloc(sizeof(char) * (strlen(*in_ptr)+1));
   if ( *out_ptr == NULL ) {
      abort();
   }

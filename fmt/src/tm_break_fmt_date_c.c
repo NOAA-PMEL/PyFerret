@@ -50,11 +50,6 @@ hh:mm:ss are optional (defaulting to 00:00:00) or seconds, alone may be omitted
        cc -c -g tm_break_fmt_date_c.c
   on non-ANSI compilers also use:
         -D_NO_PROTO
-
- *kob* 5/22/95 - need to add an ifdef check for NO_ENTRY_NAME_UNDERSCORES for
-                 those machines (like hp) that don't need the underscore 
-		 appended at the end of a routine call....
-
 */
 /* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
  *					 definition of macro DFTYPE in ferretmacros.h.
@@ -64,19 +59,6 @@ hh:mm:ss are optional (defaulting to 00:00:00) or seconds, alone may be omitted
 #include <stdio.h>
 #include "ferretmacros.h"
 
-#ifdef _NO_PROTO
-int FORTRAN(tm_break_fmt_date_c)(date,
-			year,
-			month,
-			day,
-			hour,
-			minute,
-			second)
-char *date;
-int *year, *month, *day, *hour, *minute;
-DFTYPE *second;
-
-#else
 int FORTRAN(tm_break_fmt_date_c)(char *date,
 			int *year,
 			int *month,
@@ -84,8 +66,6 @@ int FORTRAN(tm_break_fmt_date_c)(char *date,
 			int *hour,
 			int *minute,
 			DFTYPE *second)
-
-#endif
 {
 
   int n;

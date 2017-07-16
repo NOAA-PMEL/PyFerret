@@ -66,6 +66,7 @@
 */ 
 
 #include <Python.h> /* make sure Python.h is first */
+#include "ferretmacros.h"  /* with NFERDIMS and FORTRAN */
 
 /* local macro definitions */
 #define PLINE_CLASS_BASIC   0
@@ -79,12 +80,6 @@
 
 #define MIN(x, y) (( (x) < (y)) ? (x) : (y))
 #define MAX(x, y) (( (x) < (y)) ? (y) : (x))
-
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
 
 /* prototype for FORTRAN boolean function */
 int  FORTRAN(tm_its_subspan_modulo) (int *axis);

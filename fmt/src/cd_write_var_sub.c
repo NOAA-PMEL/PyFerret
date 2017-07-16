@@ -158,7 +158,7 @@ void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
       if (indim > 0) {
          for (i=0; i<=ndim; i++) bufsiz *= count[i];
        }
-      pbuff = (char *) malloc(sizeof(char) * bufsiz);
+      pbuff = (char *) PyMem_Malloc(sizeof(char) * bufsiz);
       if ( pbuff == NULL )
          abort();
       tm_blockify_ferret_strings(dat, pbuff, (int)bufsiz, (int)maxstrlen);
@@ -169,7 +169,7 @@ void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
 
       *cdfstat = nc_put_vara_text(*cdfid, vid,
 				 start, count, pbuff);
-      free(pbuff);
+      PyMem_Free(pbuff);
 		} else
 		{
 			/* FLOAT data */

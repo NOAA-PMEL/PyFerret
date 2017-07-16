@@ -62,10 +62,10 @@ static size_t count1[D2D] = {336,896};
 
   const char *dimnames[] = {"nj", "ni"};
 
-  clat = ( double* )malloc( nvertex * sizeof( double ));
-  clon = ( double* )malloc( nvertex * sizeof( double ));
-  data = ( double* )malloc( nvertex * sizeof( double ));
-  imask = ( int* )malloc( nvertex * sizeof( int ));
+  clat = ( double* )PyMem_Malloc( nvertex * sizeof( double ));
+  clon = ( double* )PyMem_Malloc( nvertex * sizeof( double ));
+  data = ( double* )PyMem_Malloc( nvertex * sizeof( double ));
+  imask = ( int* )PyMem_Malloc( nvertex * sizeof( int ));
 
     if((status = nc_open( filename, NC_NOWRITE, &ncid )))
        ERR;
@@ -119,10 +119,10 @@ static size_t count1[D2D] = {336,896};
   if ((status = nccf_set_data_double(*dataId, data, save, 
 					    NC_FILL_DOUBLE))) ERR;
 
-  free(clat);
-  free(clon);
-  free(data);
-  free(imask);
+  PyMem_Free(clat);
+  PyMem_Free(clon);
+  PyMem_Free(data);
+  PyMem_Free(imask);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -144,9 +144,9 @@ createLonLat(const double xymin[], const double xymax[],
 
   const char *dimnames[] = {"nj", "ni"};
 
-  clat = ( double* )malloc( nvertex * sizeof( double ));
-  clon = ( double* )malloc( nvertex * sizeof( double ));
-  data = ( double* )malloc( nvertex * sizeof( double ));
+  clat = ( double* )PyMem_Malloc( nvertex * sizeof( double ));
+  clon = ( double* )PyMem_Malloc( nvertex * sizeof( double ));
+  data = ( double* )PyMem_Malloc( nvertex * sizeof( double ));
 
   for (i = 0; i < ndims; ++i) {
     dxs[i] = (xymax[i] - xymin[i]) / (dims[i] - 1);
@@ -172,9 +172,9 @@ createLonLat(const double xymin[], const double xymax[],
   if ((status = nccf_set_data_double(*dataId, data, save, 
 					    NC_FILL_DOUBLE))) ERR;
 
-  free(clat);
-  free(clon);
-  free(data);
+  PyMem_Free(clat);
+  PyMem_Free(clon);
+  PyMem_Free(data);
 }
 
 //////////////////////////////////////////////////////////////////////

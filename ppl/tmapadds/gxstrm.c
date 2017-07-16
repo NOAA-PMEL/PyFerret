@@ -5,7 +5,7 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <math.h>
 #include "gx.h"
 
@@ -36,7 +36,7 @@ float fact,rscl,xxsv,yysv,*cp,cv1,cv2,cv;
 
   iss = is*iscl; jss = js*iscl;
   siz = iss*jss;
-  it = (int *)malloc(sizeof(int) * siz);
+  it = (int *)PyMem_Malloc(sizeof(int) * siz);
   if (it==NULL) {
     printf ("Cannot allocate memory for streamline function\n");
     return;
@@ -222,7 +222,7 @@ float fact,rscl,xxsv,yysv,*cp,cv1,cv2,cv;
     i2++;
     if (i2==iss) { i2 = 0; j2++; }
   }
-  free (it);
+  PyMem_Free (it);
 }
 
 static float a150 = 150.0*3.1416/180.0;

@@ -60,5 +60,9 @@
 
 #define uc(a) ((a>='a'&&a<='z')?((a)&0xDF):(a))
 
+void string_array_get_strlen_(double *, int *, int *);
+int  string_array_hash(unsigned char *, unsigned long, unsigned long, int);
+void tm_get_strlen_(int *, int *, char *);
+
 #endif /*_STRING_ARRAY.H_*/
 

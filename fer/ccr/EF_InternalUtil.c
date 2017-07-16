@@ -226,8 +226,6 @@ int EF_Util_setsig();
 int EF_Util_ressig();
 
 
-void FORTRAN(ef_err_bail_out)(int *, char *);
-
 void EF_store_globals(int *, int *, int *, DFTYPE *);
 
 ExternalFunction *ef_ptr_from_id_ptr(int *);
@@ -3423,7 +3421,8 @@ int EF_ListTraverse_MatchTemplate( char data[], char *curr )
       if ( star_skip ) {
 	continue;
       } else {
-	if ( ++n == '\0' ) /* end of name */
+        n++;
+	if ( *n == '\0' ) /* end of name */
 	  return TRUE; /* no match */
 	else
 	  continue;

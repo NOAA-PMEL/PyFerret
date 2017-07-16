@@ -66,6 +66,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "ferretmacros.h"  /* with NFERDIMS and FORTRAN */
 
 
 
@@ -149,11 +150,7 @@ int high_ver_name(name,path)
 	    
 }
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-char *tm_c_ver_name(name, next_name,path)
-#else
-char *tm_c_ver_name_(name, next_name,path)
-#endif
+char *FORTRAN(tm_c_ver_name)(name, next_name,path)
   char name[], next_name[], path[];
 /* generate the name for the next version of a file in this directory */
 

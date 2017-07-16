@@ -13,6 +13,9 @@
 # Leave blank to omit additional Linux linker flags
 	IS_LINUX_SYSTEM = True
 
+# Extended regular expressions flag for sed (used with cleaning up run_tests results)
+	SED_EXTREGEX_FLAG = -r
+
 #
 # Directories for the libraries.  Some of the 64-bit libraries may be
 # in a .../lib64 directory instead of a .../lib directory.

@@ -13,6 +13,9 @@
 # Leave blank to omit additional Linux linker flags
 	IS_LINUX_SYSTEM = 
 
+# Extended regular expressions flag for sed (used with cleaning up run_tests results)
+	SED_EXTREGEX_FLAG = -E
+
 #
 # Directories for the libraries
 #
@@ -92,9 +95,9 @@ endif
 			  -DX_REFRESH \
 			  -DXT_CODE
 
-	CC		= $(shell which gcc-6)
-	FC		= $(shell which gfortran-6)
-	F77		= $(shell which gfortran-6)
+	CC		= $(shell which gcc-7)
+	FC		= $(shell which gfortran-7)
+	F77		= $(shell which gfortran-7)
 	AR		= $(shell which ar)
 	ARFLAGS		= -cr
 	RANLIB		= $(shell which ranlib)

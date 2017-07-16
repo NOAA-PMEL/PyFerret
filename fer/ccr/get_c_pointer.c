@@ -37,7 +37,7 @@
 #include <Python.h> /* make sure Python.h is first */
 #include "ferret.h"
 
-double FORTRAN(get_c_pointer)(char** mr_ptr, char** mr_ptr_val)
+void FORTRAN(get_c_pointer)(char** mr_ptr, char** mr_ptr_val)
 {
 
   union ptr_or_val

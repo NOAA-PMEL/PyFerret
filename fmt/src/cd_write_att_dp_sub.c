@@ -49,12 +49,7 @@
 #include <stdio.h>
 #include <netcdf.h>
 #include <assert.h>
-
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
+#include "ferretmacros.h"  /* with NFERDIMS and FORTRAN */
 
 void FORTRAN(cd_write_att_dp_sub) (int *cdfid, int *varid, char* attname, int *attype,
 				                   int *nval, void *val, int *status )

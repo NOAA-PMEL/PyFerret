@@ -12,9 +12,9 @@ void FORTRAN(ef_put_string)(char* text, int* inlen, char** out_ptr)
    int i;
 
    if ( *out_ptr != NULL )
-      free(*out_ptr);
+      PyMem_Free(*out_ptr);
 
-   *out_ptr = (char *) malloc(sizeof(char) * (*inlen+1));
+   *out_ptr = (char *) PyMem_Malloc(sizeof(char) * (*inlen+1));
    if ( *out_ptr == NULL ) {
       abort();
    }

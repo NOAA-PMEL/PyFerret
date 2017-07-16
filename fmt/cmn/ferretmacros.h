@@ -4,6 +4,9 @@
    and the ifdef for double-precision Ferret.
 /* acm 12/2012 */
 
+#ifndef FERRETMACROS_H_
+#define FERRETMACROS_H_
+
 /* Easier way of handling FORTRAN calls with underscore/no underscore */
 #ifndef FORTRAN
 #ifdef NO_ENTRY_NAME_UNDERSCORES
@@ -25,3 +28,8 @@
 
 #define NFERDIMS 6
 #define NFERDIMSP1 7
+
+/* Add this prototype just to keep from creating another .h file */
+int high_ver_name(char *, char*);
+
+#endif

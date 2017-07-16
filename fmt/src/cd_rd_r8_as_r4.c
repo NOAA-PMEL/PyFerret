@@ -58,19 +58,9 @@
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build */
 #include <stdlib.h> 
 #include <stdio.h>
-#include "ferretmacros.h"  /* with NFERDIMS */
+#include "ferretmacros.h"  /* with NFERDIMS and FORTRAN */
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-void cd_rd_r8_as_r4(cdfid,
-#else
-void cd_rd_r8_as_r4_(cdfid,
-#endif
-		    varid,
-		    start,
-		    count,
-		    ndim,
-		    values,
-		    cdfstat)
+void FORTRAN(cd_rd_r8_as_r4)(cdfid, varid, start, count, ndim, values, cdfstat)
 
 int *cdfid;
 int *varid;
@@ -95,7 +85,7 @@ int *cdfstat;/*returns one of: ncnoerr, netCDF status, or -1 (malloc failed)*/
   for (npts=1,idim=0; idim<*ndim; idim++) npts *= count[idim];
 
 /* allocate memory for the double precision hyperslab */
-  dvals = (double *) malloc(8*npts);
+  dvals = (double *) PyMem_Malloc(8*npts);
   if ( dvals == NULL ) {
     *cdfstat = -1;
     return;
@@ -104,7 +94,7 @@ int *cdfstat;/*returns one of: ncnoerr, netCDF status, or -1 (malloc failed)*/
 /* read the data */
   rcode = ncvarget(*cdfid,*varid-1,cstart,ccount,dvals);
   if ( rcode == -1 ) {
-    free(dvals);
+    PyMem_Free(dvals);
     *cdfstat = ncerr;     /* global var from netcdf.h */
     return;
   }
@@ -113,7 +103,7 @@ int *cdfstat;/*returns one of: ncnoerr, netCDF status, or -1 (malloc failed)*/
   for (i=0; i<npts; i++) values[i] = (float) dvals[i];
 
 /* successful completion */
-  free(dvals);
+  PyMem_Free(dvals);
   *cdfstat = NC_NOERR;
   return;
 }

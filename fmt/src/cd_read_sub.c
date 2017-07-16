@@ -166,7 +166,7 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
       if (*cdfstat != NC_NOERR) {
           return;
       }
-      dimids = (int *) malloc(sizeof(int) * ndimsp);
+      dimids = (int *) PyMem_Malloc(sizeof(int) * ndimsp);
       if ( dimids == NULL )
           abort();
       ndimsp--;
@@ -178,12 +178,12 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
       if (*cdfstat != NC_NOERR) {
           return;
       }
-      free(dimids);
+      PyMem_Free(dimids);
       maxstrlen = bufsiz;
       if (indim > 0) {
          for (i=0; i<=ndim; i++) bufsiz *= count[i];
 	 }
-      pbuff = (char *) malloc(sizeof(char) * bufsiz);
+      pbuff = (char *) PyMem_Malloc(sizeof(char) * bufsiz);
       if ( pbuff == NULL )
          abort();
       /* update variable dimensions to include string dimension */
@@ -210,7 +210,7 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
 	  }
 
       tm_unblockify_ferret_strings(dat, pbuff, bufsiz, (int)maxstrlen);
-      free(pbuff);
+      PyMem_Free(pbuff);
 
   /* Numeric data. Read as double or float */
   } else

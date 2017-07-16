@@ -47,11 +47,15 @@
 #endif
 #endif
 
-
 void FORTRAN(pplcmd_c)(int *, int *, int *);
-void FORTRAN(pplcmd_f)(int *, int *, int *, float * );
+void FORTRAN(pplcmd_f)(int *, int *, int *, float *);
+void FORTRAN(save_ppl_memory_size)(int *);
+void FORTRAN(get_ppl_memory_size)(int *);
+void FORTRAN(pplld_pts)(int *, float *);
+void reallo_ppl_memory(int);
 
 #ifdef double_p
+
 void FORTRAN(pplldx_envelope)(int *, double *, double *, int *, 
                        char *, char *, double *, int *);
 
@@ -72,13 +76,14 @@ void FORTRAN(pplldv_envelope)(int *, double *, int *, int *, int *,
 
 void FORTRAN(pplldv)( int *, double *, int *, int *, int *, int *, 
                        int *, int *, float *);
+
 #else
+
 void FORTRAN(pplldx_envelope)(int *, float *, float *, int *, 
                        char *, char *, float *, int *);
 
 void FORTRAN(pplldx)( int *, float *, float *, int *, 
                        char *, char *, float *, float * );
-
 
 void FORTRAN(pplldc_envelope)(int *, float *, int *, int *, int *, int *,
                        int *, int *, float *, float *, int *, int *,
@@ -93,10 +98,6 @@ void FORTRAN(pplldv_envelope)(int *, float *, int *, int *, int *,
 
 void FORTRAN(pplldv)( int *, float *, int *, int *, int *, int *, 
                        int *, int *, float *);
+
 #endif
-
-void FORTRAN(save_ppl_memory_size)(int *);
-void FORTRAN(get_ppl_memory_size)(int *);
-
-void reallo_ppl_memory( int );
 

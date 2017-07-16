@@ -352,6 +352,22 @@ C
 	YTEMP = (XSYM * SYMSIN + YSYM * SYMCOS) * SYMSC + YORG
 50	CONTINUE
 
+* for decimal points, find the average x and Y location; will
+* plot a point at this location.
+C  xxx  
+C  xxx  Dont do this: it causes trouble with encapsulated postscript.
+C  xxx  and anyway, it was to correct trouble with the postscript translation
+C  xxx  for one printer...
+C  xxx
+C  xxx        IF (ICHR .EQ. '.') THEN
+C  xxx           IF (IPT .EQ. 1) THEN
+C  xxx             XBASE = 0.
+C  xxx             YBASE = 0.
+C  xxx           ENDIF
+C  xxx           XBASE = XBASE + XTEMP
+C  xxx           YBASE = YBASE + YTEMP
+C  xxx        ENDIF
+
 C
 C	MOVE THE PEN TO THE NEW COORDINATES.
 C
@@ -370,6 +386,18 @@ C
 70	CONTINUE
 
 C  End of character
+C xxx If it was a decimal point, draw a tiny dot at its center.  
+C  xxx
+C  xxx        IF (ICHR .EQ. '.' .AND. IPT .GT. 1) THEN
+C  xxx           XBASE = XBASE/ FLOAT(IPT-1)
+C  xxx           YBASE = YBASE/ FLOAT(IPT-1)
+C  xxx           XBASE = XBASE/ XSCALE
+C  xxx           YBASE = YBASE/ YSCALE
+C  xxx           call marker (1)              ! could call with 7 for bigger dot.
+C  xxx           CALL PLOT(XBASE, YBASE, 0, 0)
+C  xxx           CALL MARK(99)
+C  xxx           call marker (1)
+C  xxx        ENDIF
 C
 C	ADJUST THE REFERENCE POSITION TO TAKE INTO ACCOUNT THE
 C	CHARACTER THAT WAS JUST DRAWN.

@@ -9,7 +9,6 @@
 # DIR_PREFIX = $(HOME)/build/trunk/FERRET
 DIR_PREFIX = $(HOME)/git/Ferret
 # DIR_PREFIX = $(HOME)/svn/ferret
-# DIR_PREFIX = /home/merlot/ksmith/svn/ferret
 
 ##
 ## Machine for which to build Ferret

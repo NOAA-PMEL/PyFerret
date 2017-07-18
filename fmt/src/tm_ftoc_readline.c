@@ -59,6 +59,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "fmtprotos.h"
+#include "ferret.h" /* for is_server */
 #include "FerMem.h"
 
 /* Read a string, and return a pointer to it.  Returns NULL on EOF. */

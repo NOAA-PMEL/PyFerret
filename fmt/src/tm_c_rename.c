@@ -49,6 +49,7 @@
 
 /* *kob* had to add ifdef for sake of AIX  10/94 */
 
+#include <stdio.h>
 #include "fmtprotos.h"
 
 void FORTRAN(tm_c_rename)(char *oldname, char *newname, int *status)

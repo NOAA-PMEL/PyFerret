@@ -46,6 +46,7 @@
  *					 which is now passed in as an argument.
  */
 
+#include <math.h>
 #include "fmtprotos.h"
 
 void FORTRAN(switch_nan)(DFTYPE *bad, DFTYPE *missing, DFTYPE *bad_val)

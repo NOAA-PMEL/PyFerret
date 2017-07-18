@@ -50,11 +50,29 @@ NETCDF4_DIR	= /usr/local/netcdf-4.4.1.1-64
 # NETCDF4_DIR	= /usr/local/netcdf-4.4.1.1-32
 
 ##
-## Java home directory - this may be predefined
-## from your shell environment.  If JAVA_HOME is defined,
-## $(JAVA_HOME)/bin/javac and $(JAVA_HOME)/bin/jar is
-## called to build threddsBrowser.jar; otherwise, 
-## threddsBrowser.jar is not built and the Ferret command
+## If the readline provided by the system is not actually GNU readline 
+## (e.g.; on Mac, where it is actually editline), it may not have the
+## ability to specify a function to repeatedly call while waiting for 
+## user input (the rl_event_hook).  Ferret uses this ability to keep 
+## plot windows refreshed and responsive, so in this case, an actual 
+## GNU readline (and history) static library must be built and installed. 
+## The installation directory (contains the subdirectories "include" 
+## and "lib") should then be specified here and these libraries will 
+## be statically linked in.
+##
+## If the readline provided by the system does provide this required 
+## functionality (i.e; is GNU readline, which is the case for most 
+## Linux systems), do not define this value (or leave it blank).
+## In this case the system readline and history libraries will be 
+## used (dynamically linked in).
+##
+# READLINE_DIR = /usr/local/Cellar/readline/7.0.3_1
+
+##
+## Java home directory - this may be already defined from your shell 
+## environment.  If JAVA_HOME is defined, $(JAVA_HOME)/bin/javac and 
+## $(JAVA_HOME)/bin/jar is called to build threddsBrowser.jar; 
+## otherwise, threddsBrowser.jar is not built and the Ferret command
 ## SET DATA /BROWSE (or the alias OPEN) will not work.
 ##
 # JAVA_HOME	= /usr/java/latest

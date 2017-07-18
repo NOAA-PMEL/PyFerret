@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "ferret.h"
 #include "EF_Util.h"
 
 void FORTRAN(ef_set_piecemeal_ok_6d)(int *id_ptr, int *xax, int *yax, int *zax,

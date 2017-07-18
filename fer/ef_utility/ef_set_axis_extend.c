@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "ferret.h"
 #include "EF_Util.h"
 
 void FORTRAN(ef_set_axis_extend)(int *id_ptr, int *arg, int *axis, int *lo, int *hi)

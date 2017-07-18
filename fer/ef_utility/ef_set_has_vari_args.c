@@ -1,10 +1,11 @@
 #include <stdlib.h>
+#include "ferret.h"
 #include "EF_Util.h"
 
 /*
  * Set the "variable arguments" flag for a function.
  */
-void ef_set_has_vari_args_(int *id_ptr, int *has_vari_args)
+void FORTRAN(ef_set_has_vari_args)(int *id_ptr, int *has_vari_args)
 {
   ExternalFunction *ef_ptr;
 

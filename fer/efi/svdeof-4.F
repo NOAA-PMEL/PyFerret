@@ -100,7 +100,8 @@ c........IF-block to work with either usual or reversed EOFs
 c........find out whether NX or NT is smaller
 	if (nt.ge.nx) then		! more times than locations = usual EOFs
 
-		call svdeof(a, nt, nx, w, v, pct, work2, work3, ier)		! do the work
+C...............do the work
+		CALL SVDEOF(a, nt, nx, w, v, pct, work2, work3, ier)	! Yes, work3 is array of REAL used in the subroutine as an array of INTEGER
 		IF (ier .NE. 0) RETURN
 
 c...........NEOF=NX nonzero EOFs 
@@ -117,8 +118,8 @@ c..........after transpose, A is used as A(NT,NX)=(time,space)
 c..........(but this can only be done in a sub call where A is just an address)
 		call MATRIXTRANS(a,nx,nt,nt*nx,move,iwrk,iok)	
 
-c............now call the SVD calculation with transposed data array A
-		call svdeof(a, nx, nt, w, v, pct, work2, work3, ier)
+c...............now call the SVD calculation with transposed data array A
+		CALL SVDEOF(a, nx, nt, w, v, pct, work2, work3, ier)	! Yes, work3 is an array of REAL used in the subroutine as an array of INTEGER
 		IF (ier .NE. 0) RETURN
 		
 c......There are NEOF=NT nonzero EOFs (note NT < NX). 

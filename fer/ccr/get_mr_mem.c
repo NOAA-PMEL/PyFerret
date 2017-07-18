@@ -15,17 +15,8 @@
 */
 
 #include <stdlib.h>
-/*  the relevant definition of "FORTRAN" pulled from
- *   #include "../common/ferret.h"
- */
-#ifndef FORTRAN
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
-#endif
-
+#include "ferret.h"
+#include "FerMem.h"
 
 void FORTRAN(get_mr_mem)( double *index, int *alen, int *status )
 
@@ -38,7 +29,7 @@ void FORTRAN(get_mr_mem)( double *index, int *alen, int *status )
 
   double *pointer;
 
-  pointer = (double *) malloc(sizeof(double) * (*alen));
+  pointer = (double *) FerMem_Malloc(sizeof(double) * (*alen));
 
   if (pointer)
     {

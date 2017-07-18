@@ -47,9 +47,7 @@
 #include <float.h>
 #include "ferret.h"
 
-void check_nan_data_sub_ ( DFTYPE *src, 
-			   int *size, DFTYPE *data_bad )
-
+void FORTRAN(check_nan_data_sub)(DFTYPE *src, int *size, DFTYPE *data_bad)
 {
   int i;
 

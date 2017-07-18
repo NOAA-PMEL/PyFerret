@@ -9,31 +9,18 @@
 
 
 #include <stdlib.h>
-/*  the relevant definition of "FORTRAN" pulled from
- *   #include "../common/ferret.h"
- */
-#ifndef FORTRAN
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
-#endif
+#include "ferret.h"
 
-
-void FORTRAN(nullify_mr)( int *mr )
-
+void FORTRAN(nullify_mr)(int *mr)
 /*
   input  - mr:  Ferret mr index at which to store the array pointer
 */
-
 {
-
   double *nul_ptr;
 
   nul_ptr = (double *) NULL;
 
-  FORTRAN(store_nul_mr_ptr) (mr, nul_ptr);
+  FORTRAN(store_nul_mr_ptr)(mr, nul_ptr);
 
   return;
 }

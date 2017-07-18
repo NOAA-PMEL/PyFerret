@@ -137,14 +137,22 @@ extern DFTYPE *GLOBAL_bad_flag_ptr;
 
 /* prototypes of external function used in ef funtions and PyFerret C functions */
 extern ExternalFunction *ef_ptr_from_id_ptr(int *id_ptr);
-extern void FORTRAN(ef_get_arg_subscripts_6d)(int *id, int steplo[][6], int stephi[][6], int incr[][6]);
-/* the coords argument in ef_get_coordinates is explicitly real*8  */
+extern void FORTRAN(ef_err_bail_out)(int *, char *);
+extern void FORTRAN(ef_get_bad_flags)(int *id_ptr, DFTYPE *resbadflag, DFTYPE *argbadflag);
+
+    /* up to nine argument arrays at this time */
+extern void FORTRAN(ef_get_arg_mem_subscripts_6d)(int *id, int memlo[9][6], int memhi[9][6]);
+extern void FORTRAN(ef_get_arg_subscripts_6d)(int *id, int steplo[9][6], int stephi[9][6], int incr[9][6]);
+    /* only one result array at this time */
+extern void FORTRAN(ef_get_res_mem_subscripts_6d)(int *id, int memlo[6], int memhi[6]);
+extern void FORTRAN(ef_get_res_subscripts_6d)(int *id, int steplo[6], int stephi[6], int incr[6]);
+
+    /* the coords argument in ef_get_coordinates is explicitly real*8  */
 extern void FORTRAN(ef_get_coordinates)(int *id, int *arg, int *axis, int *lo, int *hi, double coords[]);
 extern void FORTRAN(ef_get_box_size)(int *id, int *arg, int *axis, int *lo, int *hi, DFTYPE sizes[]);
-/* the lo_lims and hi_lims arguments in ef_get_box_limits is explicitly real*8 */
-extern void FORTRAN(ef_get_box_limits)(int *id, int *arg, int *axis, int *lo, int *hi, 
-                                       double lo_lims[], double hi_lims[]);
-/* the modlen argument in ef_get_axis_modulo_len is explicitly real*8 */
+    /* the lo_lims and hi_lims arguments in ef_get_box_limits is explicitly real*8 */
+extern void FORTRAN(ef_get_box_limits)(int *id, int *arg, int *axis, int *lo, int *hi, double lo_lims[], double hi_lims[]);
+    /* the modlen argument in ef_get_axis_modulo_len is explicitly real*8 */
 extern void FORTRAN(ef_get_axis_modulo_len)(int *id, int *arg, int *axis, double *modlen);
 
 extern void FORTRAN(ef_get_one_val_sub)(int *id_ptr, int *arg_ptr, DFTYPE *val_ptr);

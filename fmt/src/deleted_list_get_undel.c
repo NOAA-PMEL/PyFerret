@@ -40,13 +40,10 @@
  */
 
 #include <stdio.h>
+#include "fmtprotos.h"
 #include "deleted_list.h"
 
-void deleted_list_get_undel_( void *deleted_list_header,
-                             int *result_array,
-                             int *result_array_size,
-                             int *num_indices
-                           )
+void FORTRAN(deleted_list_get_undel)(void *deleted_list_header, int *result_array, int *result_array_size, int *num_indices)
 {
    int j=0;
    int array_size; 
@@ -68,5 +65,4 @@ void deleted_list_get_undel_( void *deleted_list_header,
    }
    *num_indices = j;
 }
-
 

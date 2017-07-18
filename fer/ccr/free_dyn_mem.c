@@ -7,27 +7,10 @@
  */
 
 #include <stdlib.h>
-/*  the relevant definition of "FORTRAN" pulled from
- *   #include "../common/ferret.h"
- */
-#ifndef FORTRAN
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
-#endif
+#include "ferret.h"
+#include "FerMem.h"
 
-
-void FORTRAN(free_dyn_mem) ( double *mvar )
-
-/*
-  input  - mvar: pointer to memory allocated to Ferret variable, "mvar"
-*/
-
+void FORTRAN(free_dyn_mem)(double *mvar)
 {
-
-  free(mvar);
-
-  return;
+  FerMem_Free(mvar);
 }

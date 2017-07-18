@@ -1,3 +1,4 @@
+#include "ferret.h"
 #include "EF_Util.h"
 
 void FORTRAN(ef_get_bad_flags)(int *id_ptr, DFTYPE bad_flag[EF_MAX_ARGS], DFTYPE *bad_flag_result)

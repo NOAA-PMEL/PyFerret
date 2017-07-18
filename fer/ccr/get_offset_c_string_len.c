@@ -39,10 +39,9 @@
  */
 
 #include <string.h>
+#include "ferret.h"
 
-int get_offset_c_string_len_(fer_ptr, offset)
-     char*** fer_ptr;
-     int* offset;
+int FORTRAN(get_offset_c_string_len)(char ***fer_ptr, int *offset)
 {
    char** each_str_ptr;
 

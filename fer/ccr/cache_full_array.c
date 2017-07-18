@@ -51,8 +51,9 @@
 
 #include <stdlib.h>
 #include "ferret.h"
+#include "FerMem.h"
  
-void FORTRAN(cache_full_array)( double *array, int *alen, double **pointer_val )
+void FORTRAN(cache_full_array)( double *array, int *alen, double **pointer_val)
 
 /*
   input  - array and alen (array length)
@@ -64,7 +65,7 @@ void FORTRAN(cache_full_array)( double *array, int *alen, double **pointer_val )
   double *ptr;
   int i;
 
-  ptr = (double *) malloc(sizeof(double) * (*alen));
+  ptr = (double *) FerMem_Malloc(sizeof(double) * (*alen));
 
   for (i=0; i < *alen; i++) {
     ptr[i] = array[i];

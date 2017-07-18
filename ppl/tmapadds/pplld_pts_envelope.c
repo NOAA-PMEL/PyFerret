@@ -52,18 +52,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "pplmem.h"
-/*******************/
 
-/* The global pointer to PLOT+ memory is declared as extern here
-   (Defined in fermain_c.c)
-*/
-  extern float *ppl_memory; 
-  
 /* pplld_pts_envelope: this routine, called from FORTRAN, will check the
    memory available for plotting, allocate more if needed, and call pplld_pts.
  */
 
-void FORTRAN(pplld_pts_envelope)(int *npts,int *plot_mem_used) 
+void FORTRAN(pplld_pts_envelope)(int *npts, int *plot_mem_used)
 {  
 /* local variable declaration */
   int pmemsize;
@@ -75,9 +69,8 @@ void FORTRAN(pplld_pts_envelope)(int *npts,int *plot_mem_used)
 
   FORTRAN(get_ppl_memory_size)(&pmemsize);
 
-  if (*plot_mem_used > pmemsize) reallo_ppl_memory(plot_mem_used); 
+  if (*plot_mem_used > pmemsize)
+      reallo_ppl_memory(plot_mem_used); 
 
-  FORTRAN(pplld_pts) (npts, ppl_memory);
-
-return;
+  FORTRAN(pplld_pts)(npts, ppl_memory);
 }

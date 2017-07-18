@@ -57,41 +57,34 @@
 #include <stdio.h>
 #include <strings.h>
 #include <readline/readline.h>
-
-/* Easier way of handling FORTRAN calls with underscore/no underscore */
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
-
-
-/* A static variable for holding the line. */
-static char *line_read = (char *)NULL;
+#include <readline/history.h>
+#include "fmtprotos.h"
+#include "FerMem.h"
 
 /* Read a string, and return a pointer to it.  Returns NULL on EOF. */
-char *do_gets ( prompt )
-  char *prompt;
-
+static char *do_gets(char *prompt)
 {
+  /* A static variable for holding the line. */
+  static char *line_read = (char *)NULL;
+
+  char *loc;
+
   /* If the buffer has already been allocated, return the memory
      to the free pool. */
-  if (line_read != (char *)NULL)
-    {
-      free (line_read);
+  if (line_read != (char *)NULL) {
+      FerMem_Free(line_read);
       line_read = (char *)NULL;
-    }
+  }
 
   /* Get a line from the user. */
   /* If running in server mode, don't use fancy readline stuff */
 
-  if (!FORTRAN(is_server)()){
-    line_read = readline (prompt);
+  if ( ! FORTRAN(is_server)() ) {
+    line_read = readline(prompt);
   } else {
-    char* loc;
     fputs(prompt, stdout);
     fflush(stdout);
-    line_read = (char *)malloc(2048);
+    line_read = (char *)FerMem_Malloc(2048);
     fgets(line_read, 2047, stdin);
     loc = rindex(line_read, '\n');
     if (loc != 0){
@@ -101,25 +94,19 @@ char *do_gets ( prompt )
 
   /* If the line has any text in it, save it on the history. */
   if (line_read && *line_read)
-    add_history (line_read);
+    add_history(line_read);
 
-  return (line_read);
+  return line_read;
 }
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-tm_ftoc_readline( prompt, buff )
-#else
-tm_ftoc_readline_( prompt, buff )
-#endif
-/* c jacket routine to make gnu readline callable from FORTRAN */
-  char *prompt, *buff;
+int FORTRAN(tm_ftoc_readline)(char *prompt, char *buff)
 {
   char *ptr;
 
-/* invoke gnu readline with line recall and editing */
-  ptr = do_gets ( prompt );
+  /* invoke gnu readline with line recall and editing */
+  ptr = do_gets(prompt);
 
-/* copy the line into the buffer provided from FORTRAN */
+  /* copy the line into the buffer provided from FORTRAN */
   if (ptr != (char *)NULL) {
     strcpy( buff, ptr );
   }

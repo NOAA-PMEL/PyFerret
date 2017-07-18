@@ -43,12 +43,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "ferret.h"
+#include "FerMem.h"
 
-void get_sys_cmnd_(fer_ptr, nlines, cmd, stat)
-     char*** fer_ptr; /* output: char** pointer to strings */
-     int* nlines; /* output: number of strings read */
-     char* cmd; /* input: the shell command to execute */
+void FORTRAN(get_sys_cmnd)(char ***fer_ptr, int *nlines, char *cmd, int *stat)
+/*
+     char*** fer_ptr; output: char** pointer to strings 
+     int* nlines; output: number of strings read 
+     char* cmd; input: the shell command to execute 
      int* stat;
+*/
 {
     char** sarray;
     int linebufsize =  BUFSIZ;  /* initial size of input line buffer */
@@ -71,15 +75,16 @@ void get_sys_cmnd_(fer_ptr, nlines, cmd, stat)
      * Use calloc for sarray to initialize everything to NULL pointers
      * for Ferret's string arrays.
      */
-    sarray = (char **) calloc(BUFSIZ, sizeof(char *));
+    sarray = (char **) FerMem_Malloc(BUFSIZ * sizeof(char *));
     if ( sarray == NULL ) {
        *stat = 1;
        return;
     }
+    memset(sarray, 0, BUFSIZ * sizeof(char *));
 
-    buf = (char *) malloc(sizeof(char) * linebufsize);
+    buf = (char *) FerMem_Malloc(sizeof(char) * linebufsize);
     if ( buf == NULL ) {
-       free(sarray);
+       FerMem_Free(sarray);
        *stat = 1;
        return;
     }
@@ -95,12 +100,12 @@ void get_sys_cmnd_(fer_ptr, nlines, cmd, stat)
              /* line buffer wasn't large enough --> allocate more */
              while (incomplete) {
                 linebufsize += BUFSIZ;
-                newbuf = (char *) realloc(buf, sizeof(char) * linebufsize);
+                newbuf = (char *) FerMem_Realloc(buf, sizeof(char) * linebufsize);
                 if ( newbuf == NULL ) {
-                   free(buf);
+                   FerMem_Free(buf);
                    for (i = 0; i < *nlines; i++)
-                      free(sarray[i]);
-                   free(sarray);
+                      FerMem_Free(sarray[i]);
+                   FerMem_Free(sarray);
                    *stat = 1;
                    return;
                 }
@@ -117,12 +122,12 @@ void get_sys_cmnd_(fer_ptr, nlines, cmd, stat)
 
           /* make and save a permanent copy of the input line */
           /* BUG FIX *kob* v552 - need to add one to string length for null */
-          pmnt = (char *) malloc(sizeof(char) * (int)(strlen(buf)+1));
+          pmnt = (char *) FerMem_Malloc(sizeof(char) * (int)(strlen(buf)+1));
           if ( pmnt == NULL ) {
-             free(buf);
+             FerMem_Free(buf);
              for (i = 0; i < *nlines; i++)
-                free(sarray[i]);
-             free(sarray);
+                FerMem_Free(sarray[i]);
+             FerMem_Free(sarray);
              *stat = 1;
              return;
           }
@@ -131,13 +136,13 @@ void get_sys_cmnd_(fer_ptr, nlines, cmd, stat)
              /* double the length of the string pointer array */
              last_increment = increment;
              increment *= 2;
-             newsarray = (char **) realloc(sarray, sizeof(char *) * increment);
+             newsarray = (char **) FerMem_Realloc(sarray, sizeof(char *) * increment);
              if ( newsarray == NULL ) {
-                free(buf);
+                FerMem_Free(buf);
                 for (i = 0; i < *nlines; i++)
-                   free(sarray[i]);
-                free(sarray);
-                free(pmnt);
+                   FerMem_Free(sarray[i]);
+                FerMem_Free(sarray);
+                FerMem_Free(pmnt);
                 *stat = 1;
                 return;
              }
@@ -156,14 +161,14 @@ void get_sys_cmnd_(fer_ptr, nlines, cmd, stat)
     }
 
     /* buf no longer needed */
-    free(buf);
+    FerMem_Free(buf);
 
     /* always return at least one string (avoid FORTRAN probs) */
     /* *kob* v552 - bug fix - still need to allocate space for the null string */
     if (*nlines == 0 ) {
-       pmnt = (char *) malloc(sizeof(char));
+       pmnt = (char *) FerMem_Malloc(sizeof(char));
        if ( pmnt == NULL ) {
-          free(sarray);
+          FerMem_Free(sarray);
           *stat = 1;
           return;
        }

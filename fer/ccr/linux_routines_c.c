@@ -35,6 +35,7 @@
 */
 
 #include <stdio.h>
+#include "ferret.h"
 
 /*
  * Routine needed only for linux.  nag F90 didn't have a perror routine,
@@ -43,7 +44,7 @@
  * kob 3/97
  */
          
-void linux_perror_(char *string)
+void FORTRAN(linux_perror)(char *string)
 {
   perror(string);
 }

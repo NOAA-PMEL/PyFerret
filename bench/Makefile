@@ -13,7 +13,7 @@ run_tests:
 	    echo "*** Ferret must be installed and the ferret_paths script must have sourced for these tests ***" ; \
 	    exit 1 ; \
 	fi
-	./RUN_TESTS.sh `which ferret` "$(FER_EXTERNAL_FUNCTIONS)"
+	( SED_EXTREGEX_FLAG="$(SED_EXTREGEX_FLAG)"; export SED_EXTREGEX_FLAG; ./RUN_TESTS.sh `which ferret` "$(FER_EXTERNAL_FUNCTIONS)" )
 	@echo 'Differences in the generated bench GIF files versus those in bench/test_results'
 	-@for img in *.gif ; \
 	do \

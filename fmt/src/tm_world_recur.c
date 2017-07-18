@@ -65,6 +65,8 @@
    (and use -D_NO_PROTO for non-ANSI compilers)
 */ 
 
+#include "fmtprotos.h"
+
 /* local macro definitions */
 #define PLINE_CLASS_BASIC   0
 #define PLINE_CLASS_STRIDE  1
@@ -78,25 +80,10 @@
 #define MIN(x, y) (( (x) < (y)) ? (x) : (y))
 #define MAX(x, y) (( (x) < (y)) ? (y) : (x))
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
-
-/* prototype for FORTRAN boolean function */
-int  FORTRAN(tm_its_subspan_modulo) (int *axis);
-void FORTRAN(tm_ww_axlims) (int *axis, double *lo, double *hi);
-double FORTRAN(tm_modulo_axlen) (int *axis);
-
-double FORTRAN(tm_world_recur)
-     ( int *isubscript, int *iaxis, int *where_in_box,
-       int *max_lines, double line_mem[], int line_parent[],
-       int line_class[], int line_dim[], 
-       double line_start[], double line_delta[],
-       int line_subsc1[], int line_modulo[], double line_modulo_len[],
-       int line_regular[] )
-
+double FORTRAN(tm_world_recur)(int *isubscript, int *iaxis, int *where_in_box, int *max_lines, 
+                               double line_mem[], int line_parent[], int line_class[], int line_dim[], 
+                               double line_start[], double line_delta[], int line_subsc1[], 
+                               int line_modulo[], double line_modulo_len[], int line_regular[])
 {
   double tempwld, tm_world;
   int isub, rmod;
@@ -161,7 +148,7 @@ double FORTRAN(tm_world_recur)
    data from the cells at the defined axis edges the result doesn't stray into 
    the modulo void cell. Adaphed from logic for is_subspan in axis_intervals.F*/
 
-	  is_subspan = ( FORTRAN(tm_its_subspan_modulo) (&line_parent[axis]) );
+	  is_subspan = ( FORTRAN(tm_its_subspan_modulo_int) (&line_parent[axis]) );
 	  if (line_modulo[ line_parent[axis] ] && is_subspan)
 	  {
 		  if (lo_ss == 0 || lo_ss == -1)
@@ -265,7 +252,7 @@ double FORTRAN(tm_world_recur)
    not a recursive access - return the same result that TM_WORLD would have.
    Force given subsc to data range as appropriate for modulo or non-modulo axes
 */
-  if ( FORTRAN(tm_its_subspan_modulo) (&axis) ) line_len++;  /* 2/02 mod */
+  if ( FORTRAN(tm_its_subspan_modulo_int) (&axis) ) line_len++;  /* 2/02 mod */
   if ( line_modulo[axis] ) {
     isub = ((*isubscript-1)%line_len) + 1 ;  /* inserted "+1" 5/99 */
     if (isub <= 0)
@@ -278,7 +265,7 @@ double FORTRAN(tm_world_recur)
     the given index  falls in the "void" region of a subspan modulo axis
     ... get the box_hi_lim of the Nth point in the core region
 */
-  if  ( FORTRAN(tm_its_subspan_modulo) (&axis)
+  if  ( FORTRAN(tm_its_subspan_modulo_int) (&axis)
 	&& isub == line_len ) {
     double lo, hi;
     FORTRAN(tm_ww_axlims) (&axis,&lo, &hi);

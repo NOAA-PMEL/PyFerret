@@ -43,48 +43,16 @@
    while it is waiting for input.  If the routine is called with a 1, 
    rl_event_hook is set to free_time.  readline will process free_time. */
 
-/* had to add ifdef check for trailing underscore in routine name
-   for aix port *kob* 10/94 */
-/* 11/96 *kob* - Linux port - had to have double quotes around the STOP
-                              message */
 
-#ifdef unix
+#include <stdio.h>
+#include <readline/readline.h>
+#include "fmtprotos.h"
 
-/* this routine will only work on a unix system */
-
-#define NULL 0
-
-typedef int Function ();
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-void tm_set_free_event(n)
-#else
-void tm_set_free_event_(n)
-#endif
-int *n;
+void FORTRAN(tm_set_free_event)(int *n)
 {
-  extern Function *rl_event_hook;
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-  void free_time();
-#else
-  void free_time_();
-#endif
-
-
-
-  if (*n) 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-    rl_event_hook = (Function *)free_time;
-#else
-    rl_event_hook = (Function *)free_time_;
-#endif
+  if ( *n ) 
+    rl_event_hook = FORTRAN(free_time);
   else
-    rl_event_hook = (Function *)NULL;
-  
-
+    rl_event_hook = NULL;
 }
-
-#else
-    STOP "TM_SET_FREE_EVENT isn't used by VMS"
-
-#endif
 

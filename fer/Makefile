@@ -68,12 +68,14 @@ FERLIBS = -lxeq -lgnl  -lccr -lferplt -lrpn -lstk -ldoo  \
 
 PPLLIBS = -lplt -lpll -lsym -lcmp -lour -lepi -lusr -ltmap
 
-FERMAIN = ccr/fermain_c.o ccr/gui_init.o
+FERMAIN = ccr/fermain_c.o
 
-FEROBJS_DFLT = $(LINUX_OBJS) \
+# explicitly include block data object files
+DATA_OBJS = dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
+
+FEROBJS_DFLT = $(DATA_OBJS) special/linux_routines.o \
 	special/ferret_dispatch.o special/xmake_date_data.o special/fakes3.o \
-	special/ferret_query_f.o  special/xrevision_type_data.o \
-	special/xplatform_type_data.o
+	special/xrevision_type_data.o special/xplatform_type_data.o special/FerMem_routines.o
 
 FEROBJS = ccr/save_arg_pointers.o $(FEROBJS_DFLT)
 
@@ -86,6 +88,8 @@ EFIOBJS = efi/*.o
 EXECNAME = ferret_c
 
 WHATGKS = xgks
+
+GKSLIB = ../xgks/src/lib/libxgks.a
 
 EF_CMNS = common/EF_Util.cmn common/EF_Util.parm common/EF_mem_subsc.cmn
 

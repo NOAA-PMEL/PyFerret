@@ -47,19 +47,17 @@
  */
 
 #include <stdlib.h>
+#include "ferret.h"
+#include "FerMem.h"
 
-void c_substr_(in_ptr, offset, length, out_ptr)
-     char** in_ptr;
-     int* offset;
-     int* length;
-     char** out_ptr;     
+void FORTRAN(c_substr)(char **in_ptr, int *offset, int *length, char **out_ptr)
 {
    char* tmp;
    char* tmp2;
    int i, int_length, int_offset;
 
    if ( *out_ptr != NULL )
-      free(*out_ptr);
+      FerMem_Free(*out_ptr);
    if ( *in_ptr == NULL ) {
       /* undefined string given, so return an undefined string */
       *out_ptr = NULL;
@@ -69,7 +67,7 @@ void c_substr_(in_ptr, offset, length, out_ptr)
    int_length = (int)(*length + 0.5);
    int_offset = (int)(*offset + 0.5) - 1;
 
-   *out_ptr = (char *) malloc(sizeof(char) * (int_length + 1));
+   *out_ptr = (char *) FerMem_Malloc(sizeof(char) * (int_length + 1));
    if ( *out_ptr == NULL )
       abort();
 

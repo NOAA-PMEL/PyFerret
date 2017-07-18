@@ -11,7 +11,6 @@
  * 	  if ( sBuffer->flags[FRTN_CONTROL] == FCTRL_IN_FERRET ) 
  *
  * V702 *sh* 2/2017 - eliminated global "memory" - using individual mallocs now
-
  */
 
 #ifndef _FERRET_SHARED_BUFFER_H 
@@ -21,8 +20,6 @@
 #define NUMFLAGS 10
 #define TEXTLENGTH 500
 #define NUMDOUBLES 2048
-
-#include "ferret.h"
 
 typedef struct sharedStruct {
 	int flags[NUMFLAGS];
@@ -34,23 +31,9 @@ typedef struct sharedStruct {
 
 typedef sharedMem *smPtr;
 
-/*
- * Exactly one module must define __globalDefs.
- * All others will reference sBuffer as "extern".
- */
+extern smPtr sBuffer;
 
-#ifdef __globalDefs
-#define __global
-#else
-#define __global extern
-#endif
-
-__global smPtr sBuffer;
-
-__global float *ppl_memory;
-
-
-#undef __global
+extern float *ppl_memory;
 
 
 #endif /* _FERRET_SHARED_BUFFER_H */

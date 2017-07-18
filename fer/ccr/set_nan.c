@@ -52,7 +52,7 @@
 #include <math.h>
 #include "ferret.h"
 
-void FORTRAN(set_nan) (DFTYPE *val)
+void FORTRAN(set_nan)(DFTYPE *val)
 {
   sigset_t block_fpe;
 

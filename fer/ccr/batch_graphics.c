@@ -57,12 +57,7 @@
 
 #include <assert.h>
 #include <string.h>
-
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
+#include "ferret.h"
 
 /* local static variable to contain the state */
 static int its_batch=0;

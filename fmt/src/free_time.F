@@ -1,4 +1,4 @@
-      subroutine free_time
+      INTEGER FUNCTION free_time()
 c
 c  this routine calls atc_update every fourth time to refresh a GKS graphics
 c  window.
@@ -45,7 +45,7 @@ c  kob 5/92
 * IBM PORT 14apr94 *kob* : IBM wouldn't allow c-like logical statment
 *		 	  had to use ".NEQV" instead.
 * IBM PORT 2jun94 *kob*  : Above change incorrect.  A mistake was made, the
-*			   comparison should be done with .NE.		
+*			   comparison should be done with .NE.
       integer count
 !      static count
       save count
@@ -61,6 +61,7 @@ c  call atc_update to refresh screen
          count = 0
       endif
 
+      free_time = 0
       return 
 
       end

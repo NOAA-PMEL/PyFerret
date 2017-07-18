@@ -79,9 +79,17 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "ferretmacros.h"
+#include "fmtprotos.h"
 #include "ez_delimited_read.h"
+#include "FerMem.h"
 
+static int decode_file(char* fname, char *recptr, char *delims, int *skip, int* maxrec, int* reclen, 
+                       int* nfields, int field_type[], int* nrec, DFTYPE** numeric_fields, 
+                       char*** text_fields, DFTYPE bad_flags[], int* status);
+static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[], int rec, 
+                     DFTYPE** numeric_fields, char*** text_fields, DFTYPE bad_flags[], int* status);
+static void analRec(char *recptr, char *delims, int* nfields, int field_type[], int max_fields);
+static char *nexstrtok(char *s1, char *s2);
 
 /*
  *
@@ -103,13 +111,9 @@
  *
  */
 
-
-void FORTRAN(decode_file_jacket)
-		( char* fname, char *recptr, char *delims, int *skip,
-		  int* maxrec, int* reclen, int* nfields,
-		  int field_type[], int* nrec,
-		  int mrlist[], long* mr_ptrs_val,
-		  DFTYPE mr_bad_flags[], char ***mr_c_ptr, int* status)
+void FORTRAN(decode_file_jacket)(char* fname, char *recptr, char *delims, int *skip, int* maxrec, int* reclen, 
+                                 int* nfields, int field_type[], int* nrec, int mrlist[], long* mr_ptrs_val, 
+                                 DFTYPE mr_bad_flags[], char ***mr_c_ptr, int* status)
 /* 1/17 --- pre-dynamic memory call
 void FORTRAN(decode_file_jacket)
 		( char* fname, char *recptr, char *delims, int *skip,
@@ -120,10 +124,10 @@ void FORTRAN(decode_file_jacket)
 */
 {
   DFTYPE** mr_ptrs = (DFTYPE**) *mr_ptrs_val;
-  DFTYPE **numeric_fields  = (DFTYPE **) malloc(sizeof(DFTYPE*) * (*nfields));
-  DFTYPE *bad_flags        = (DFTYPE *)  malloc(sizeof(DFTYPE) * (*nfields));
+  DFTYPE **numeric_fields  = (DFTYPE **) FerMem_Malloc(sizeof(DFTYPE*) * (*nfields));
+  DFTYPE *bad_flags        = (DFTYPE *)  FerMem_Malloc(sizeof(DFTYPE) * (*nfields));
 
-  char ***text_fields     = (char ***) malloc(sizeof(char**) * (*nfields));
+  char ***text_fields     = (char ***) FerMem_Malloc(sizeof(char**) * (*nfields));
   int i, mr;
   int pinc = 8/sizeof(char*);  /* pointers spaced 8 bytes apart */
 
@@ -160,14 +164,13 @@ void FORTRAN(decode_file_jacket)
   /*
     at last we actually read the file
   */
-  decode_file (fname, recptr, delims, skip, 
-	       maxrec, reclen, nfields,
-	       field_type, nrec,
-	       numeric_fields, text_fields, bad_flags, status);
+  decode_file(fname, recptr, delims, skip, maxrec, reclen, 
+	      nfields, field_type, nrec, numeric_fields, 
+              text_fields, bad_flags, status);
 
-  free(numeric_fields);
-  free(text_fields);
-  free(bad_flags);
+  FerMem_Free(numeric_fields);
+  FerMem_Free(text_fields);
+  FerMem_Free(bad_flags);
 
   return;
 }
@@ -196,11 +199,9 @@ void FORTRAN(decode_file_jacket)
  */
 
 
-int decode_file (char* fname, char *recptr, char *delims, int *skip, 
-			  int* maxrec, int* reclen, int* nfields,
-			  int field_type[], int* nrec, DFTYPE** numeric_fields,
-			  char*** text_fields, DFTYPE bad_flags[], int* status)
-
+static int decode_file(char* fname, char *recptr, char *delims, int *skip, int* maxrec, int* reclen, 
+                       int* nfields, int field_type[], int* nrec, DFTYPE** numeric_fields, 
+                       char*** text_fields, DFTYPE bad_flags[], int* status)
 {
 
   FILE *fp;
@@ -369,10 +370,8 @@ int FORTRAN(anal_file) (char* fname, char *recptr, char *delims, int* skip,
  *
  */
 
-int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
-	      int rec,
-	      DFTYPE** numeric_fields, char*** text_fields, DFTYPE bad_flags[],
-	      int* status)
+static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[], int rec, 
+                     DFTYPE** numeric_fields, char*** text_fields, DFTYPE bad_flags[], int* status)
 {
 
   char *p, *pnext, str1[2], errstr[2];
@@ -405,7 +404,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
     } else if (p==NULL || *p == '\0') {
       /* missing data field */
       if ( field_type[i] == FTYP_CHARACTER ) {
-	(*(text_fields+i))[rec*pinc] = (char *) malloc(sizeof(char)*2);
+	(*(text_fields+i))[rec*pinc] = (char *) FerMem_Malloc(sizeof(char)*2);
 	strcpy( (*(text_fields+i))[rec*pinc], blankstr );
       }
       else {
@@ -748,7 +747,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	    p++;
 	  }
 	  (*(text_fields+i))[rec*pinc] =
-	    (char *) malloc(sizeof(char)*(strlen(p)+1));
+	    (char *) FerMem_Malloc(sizeof(char)*(strlen(p)+1));
 	  strcpy( (*(text_fields+i))[rec*pinc], p );
 	}
 	break;
@@ -784,8 +783,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
  *
  */
 
-void analRec(char *recptr, char *delims, int* nfields, int field_type[],
-	    int max_fields)
+static void analRec(char *recptr, char *delims, int* nfields, int field_type[], int max_fields)
 {
 
   char *p, *pnext, pstart[256], str1[2], latlon1[2];
@@ -928,8 +926,7 @@ void analRec(char *recptr, char *delims, int* nfields, int field_type[],
  *
  */
 
-char *nexstrtok(char *s1, char *s2)
-
+static char *nexstrtok(char *s1, char *s2)
      /*
        like strtok but sensitive to multiple (non-white space) delimiters
        as significant. For example, 2 commas together indicate a missing field.
@@ -978,10 +975,12 @@ char *nexstrtok(char *s1, char *s2)
 void FORTRAN(save_delimited_info) (int *nfields, int field_type[],
 				   char *delim, DelimFileInfo **ptr)
 {
-  DelimFileInfo *fi = (DelimFileInfo *) calloc(1, sizeof(DelimFileInfo));
-  int* _field_type  = (int *) malloc(sizeof(int) * (*nfields));
-  char* _delim      = (char *) malloc(sizeof(char) * (int)strlen(delim));
+  DelimFileInfo *fi = (DelimFileInfo *) FerMem_Malloc(sizeof(DelimFileInfo));
+  int* _field_type  = (int *) FerMem_Malloc(sizeof(int) * (*nfields));
+  char* _delim      = (char *) FerMem_Malloc(sizeof(char) * (int)strlen(delim));
   int i;
+
+  memset(fi, 0, sizeof(DelimFileInfo));
 
   for (i=0; i<*nfields; i++)
     _field_type[i] = field_type[i];
@@ -1013,9 +1012,9 @@ void FORTRAN(get_delimited_info) (int *nfields, int field_type[],
 void FORTRAN(delete_delimited_info) (DelimFileInfo **ptr)
 {
   DelimFileInfo *fi = *ptr;
-  free(fi->fieldType);
-  free(fi->delim);
-  free(fi);
+  FerMem_Free(fi->fieldType);
+  FerMem_Free(fi->delim);
+  FerMem_Free(fi);
   return;
 }
 

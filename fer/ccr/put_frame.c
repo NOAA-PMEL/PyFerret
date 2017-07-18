@@ -57,6 +57,7 @@
  * *acm* 12/13 - Removed unused routine put_temp_frame_batch
  */
 
+#include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <stdio.h>
@@ -67,11 +68,7 @@
 #include "cgm/cgm_implem.h"
 #include "ferret.h"
 
-FORTRAN(put_frame)( ws_id, filename, errstr, format, status )
-
-   char *filename, *errstr, *format;
-   int *ws_id, *status;
-
+void FORTRAN(put_frame)(int *ws_id, char *filename, char *errstr, char *format, int *status)
 {
   WS_STATE_ENTRY *ws;
   Display *mydisplay;
@@ -96,8 +93,8 @@ FORTRAN(put_frame)( ws_id, filename, errstr, format, status )
 /*  acm create separate GIFFlush routines for transparency. Passing the argumetns transp, red, green, blue
     in direcly into GIFFlush as arguments did not work on porter.
 */
-void FORTRAN(put_frame_batch)(int *ws_id, char *filename, char *format, int *transp, DFTYPE *red, DFTYPE *green,
-                              DFTYPE *blue, char *errmsg, int *status)
+void FORTRAN(put_frame_batch)(int *ws_id, char *filename, char *format, int *transp, 
+                              DFTYPE *red, DFTYPE *green, DFTYPE *blue, char *errmsg, int *status)
 {
   char oldfilename[BUFSIZ];
   WS_STATE_ENTRY *ws = OPEN_WSID(*ws_id);

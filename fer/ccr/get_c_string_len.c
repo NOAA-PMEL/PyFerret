@@ -39,9 +39,9 @@
  */
 
 #include <string.h>
+#include "ferret.h"
 
-int get_c_string_len_(ptr_ptr)
-     char** ptr_ptr;
+int FORTRAN(get_c_string_len)(char **ptr_ptr)
 {
    /* treats an undefined string the same as an empty string */
    if ( *ptr_ptr == NULL )

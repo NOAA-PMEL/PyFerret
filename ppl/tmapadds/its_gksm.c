@@ -57,17 +57,13 @@
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 
 #include <wchar.h>
-
+#include "pplmem.h"
 #include "udposix.h"
 #include "gks_implem.h"
 
 
 /* its_gksm */
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-int its_gksm(int *wkid)
-#else
-int its_gksm_(int *wkid )
-#endif
+int FORTRAN(its_gksm)(int *wkid)
 {
   WS_STATE_PTR    ws;
   ws = OPEN_WSID((Gint) *wkid);

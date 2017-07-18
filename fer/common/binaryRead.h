@@ -67,4 +67,13 @@ typedef struct _FileInfo {
 #define FORTRAN(a) a##_
 #endif
 
+int  FORTRAN(br_add_var)(DFTYPE *data, int *doRead);
+void FORTRAN(br_close)(void);
+void FORTRAN(br_get_error)(char *buf);
+void FORTRAN(br_get_permutes)(int *permutes);
+int  FORTRAN(br_open)(char *name, int lengths[MAXDIMS], int permutes[MAXDIMS], int *iskip);
+int  FORTRAN(br_read)(void);
+void FORTRAN(br_set_atts)(int *permutes, int *swap);
+int  FORTRAN(br_set_type)(char *type);
+
 #endif

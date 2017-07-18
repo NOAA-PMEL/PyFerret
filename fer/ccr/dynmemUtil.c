@@ -59,15 +59,9 @@
 #include <stdio.h>		/* for convenience */
 #include <string.h>		/* for convenience */
 
-
 #include "ferret.h"
+#include "FerMem.h"
 #include "EF_Util.h"
-
-
-/* prototypes */
-void FORTRAN(dynmem_make_ptr_array)(int* n, long* mr_ptrs_val, int* status);
-void FORTRAN(dynmem_pass_1_ptr)(int* iarg, DFTYPE* arg_ptr, long* mr_ptrs_val);
-void FORTRAN(dynmem_free_ptr_array)(long* mr_ptrs_val);
 
 
 /*
@@ -80,7 +74,7 @@ void FORTRAN(dynmem_make_ptr_array)(int* n, long* mr_ptrs_val, int* status)
   *status = FERR_OK;  // default
 
   size = sizeof(DFTYPE*) * *n;
-  mr_ptrs = (DFTYPE**)malloc(size);
+  mr_ptrs = (DFTYPE**)FerMem_Malloc(size);
 
   if ( mr_ptrs == NULL ) { 
     fprintf(stderr, "**ERROR in dynmem_make_ptr_array");
@@ -115,7 +109,7 @@ void FORTRAN(dynmem_free_ptr_array)(long* mr_ptrs_val)
 
   mr_ptrs = (DFTYPE**) *mr_ptrs_val;
 
-  free(mr_ptrs);
+  FerMem_Free(mr_ptrs);
 }
 
 

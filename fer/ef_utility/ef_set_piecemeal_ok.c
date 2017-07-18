@@ -1,3 +1,4 @@
+#include "ferret.h"
 #include "EF_Util.h"
 
 /* Calls the 6D function with YES for the E and F axes */

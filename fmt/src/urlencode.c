@@ -35,6 +35,7 @@
 */
 
 #include <string.h>
+#include "fmtprotos.h"
 
 /* Code from http://geekhideout.com/urlcode.shtml
 Comments:
@@ -56,20 +57,15 @@ url_encode was edited to send input string and output string as
 arguments and to return the length of the encoded string.
 */
 
-/* Converts a hex character to its integer value */
-char from_hex(char ch) {
-  return isdigit(ch) ? ch - '0' : tolower(ch) - 'a' + 10;
-}
-
 /* Converts an integer value to its hex character*/
-char to_hex(char code) {
+static char to_hex(char code) {
   static char hex[] = "0123456789abcdef";
   return hex[code & 15];
 }
 
-/* Returns a url-encoded version of str */
-/* IMPORTANT: be sure to free() the returned string after use */
-void *url_encode_(char *str, char *outstr, int *outlen) {
+/* url-encodes str and returns in outstr which has length outlen */
+int FORTRAN(url_encode)(char *str, char *outstr, int *outlen)
+{
   char *pstr = str, *pbuf = outstr;
   while (*pstr) {
     if (isalnum(*pstr) || *pstr == '-' || *pstr == '_' || *pstr == '.' || *pstr == '~') 
@@ -81,27 +77,6 @@ void *url_encode_(char *str, char *outstr, int *outlen) {
     pstr++;
   }
   *outlen = strlen(outstr);
-  *pbuf = '\0';
-  return 0;
-}
-
-/* Returns a url-decoded version of str */
-/* IMPORTANT: be sure to free() the returned string after use */
-int *url_decode(char *str, char *outstr) {
-  char *pstr = str, *pbuf = outstr;
-  while (*pstr) {
-    if (*pstr == '%') {
-      if (pstr[1] && pstr[2]) {
-        *pbuf++ = from_hex(pstr[1]) << 4 | from_hex(pstr[2]);
-        pstr += 2;
-      }
-    } else if (*pstr == '+') { 
-      *pbuf++ = ' ';
-    } else {
-      *pbuf++ = *pstr;
-    }
-    pstr++;
-  }
   *pbuf = '\0';
   return 0;
 }

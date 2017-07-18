@@ -40,9 +40,11 @@
  */
 
 #include <stdlib.h>
+#include "fmtprotos.h"
 #include "string_array.h"
+#include "FerMem.h"
 
-void string_array_clear_(double * string_array_header)
+void FORTRAN(string_array_clear)(double *string_array_header)
 {
     int i;
     SA_Head * head; 
@@ -50,11 +52,11 @@ void string_array_clear_(double * string_array_header)
     if(*(SA_Head**)string_array_header){
        head = *((SA_Head**)string_array_header);
        for(i=0;i<head->array_size;i++) {
-	 free(head->ptr_array[i]);
+	 FerMem_Free(head->ptr_array[i]);
        }
-       free(head->ptr_array);
-       free(head->hash_table);
-       free(head);
+       FerMem_Free(head->ptr_array);
+       FerMem_Free(head->hash_table);
+       FerMem_Free(head);
     }
     *string_array_header = 0;
 }

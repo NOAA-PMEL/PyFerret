@@ -60,26 +60,17 @@
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 
 #include <wchar.h>
-#include "udposix.h"
-#include "gks_implem.h"
-#include "cgm/cgm.h"
-#include "cgm/cgm_implem.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <time.h> 
+#include "udposix.h"
+#include "gks_implem.h"
+#include "cgm/cgm.h"
+#include "cgm/cgm_implem.h"
+#include "pplmem.h"
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-resize_xgks_window (ws_id, x, y, ix, iy)
-#else
-resize_xgks_window_ (ws_id, x, y, ix, iy)
-#endif
-
-Gint *ws_id;
-float *x;
-float *y;
-int   *ix,*iy;
-
+void FORTRAN(resize_xgks_window)(int *ws_id, float *x, float *y, int *ix, int *iy)
 {
   WS_STATE_ENTRY *ws;
 
@@ -88,7 +79,6 @@ int   *ix,*iy;
   GC             *gc;
 
   XEvent          evnt;
-  Gint            val;
   Gpoint          size;
 
   float           xf,yf,aspect;

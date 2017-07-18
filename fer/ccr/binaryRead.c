@@ -23,6 +23,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "ferret.h"
+#include "FerMem.h"
 #include "binaryRead.h"
 
                                 /* FORTRAN interface variables */
@@ -126,17 +128,18 @@ static void freeMemory(FileInfo *file) {
   }
 }
 
-static FileInfo *createBinaryReader(char *name, int lengths[MAXDIMS],
-                             int permutes[MAXDIMS], int skip, int swap){
-  FileInfo *fi = (FileInfo *)calloc(1, sizeof(FileInfo));
+static FileInfo *createBinaryReader(char *name, int lengths[MAXDIMS], int permutes[MAXDIMS], int skip, int swap)
+{
   int i;
-                                /* Open file */
+  FileInfo *fi = (FileInfo *)FerMem_Malloc(sizeof(FileInfo));
+  memset(fi, 0, sizeof(FileInfo));
+
   if (!checkMem(fi)){
     return 0;
   }
   Errbuf[0] = '\0';
   fi->pageSize = getpagesize();
-  fi->name = (char *)malloc(strlen(name)+1);
+  fi->name = (char *)FerMem_Malloc(strlen(name)+1);
   fi->doSwap = swap;
   if (!checkMem(fi->name)){
     return 0;
@@ -180,14 +183,14 @@ static FileInfo *createBinaryReader(char *name, int lengths[MAXDIMS],
 }
 
 static void deleteVar(VarInfo *theVar) {
-  free(theVar);
+  FerMem_Free(theVar);
 }
 
 static void deleteBinaryReader(FileInfo *fi){
-  free(fi->vars);
+  FerMem_Free(fi->vars);
   tidyUp(fi);
-  free(fi->name);
-  free(fi);
+  FerMem_Free(fi->name);
+  FerMem_Free(fi);
 }
 
 static int addVar(FileInfo *fi, DFTYPE *data, int type, int doRead){
@@ -195,9 +198,9 @@ static int addVar(FileInfo *fi, DFTYPE *data, int type, int doRead){
   int i;
 
   if (fi->vars == (VarInfo *)0){
-    fi->vars = malloc(sizeof(VarInfo));
+    fi->vars = FerMem_Malloc(sizeof(VarInfo));
   } else {
-    fi->vars = (VarInfo *)realloc(fi->vars, sizeof(VarInfo)*(fi->nvars+1));
+    fi->vars = (VarInfo *)FerMem_Realloc(fi->vars, sizeof(VarInfo)*(fi->nvars+1));
   }
   if (!checkMem(fi->vars)){
     return 0;
@@ -391,15 +394,17 @@ static int readBinary(FileInfo *file){
   return okReturn(file);
 }
   
-int FORTRAN(br_open)(char *name, int lengths[MAXDIMS],
-                                  int permutes[MAXDIMS], int *iskip){
+int FORTRAN(br_open)(char *name, int lengths[MAXDIMS], int permutes[MAXDIMS], int *iskip)
+{
   int skip = (*iskip) * sizeof(DFTYPE); /* Words -> bytes */
   assert(FFileInfo == 0);
   FFileInfo = createBinaryReader(name, lengths, permutes, skip, Swap);
   return FFileInfo != 0;
 }
 
-int FORTRAN(br_add_var)(DFTYPE *data, int *doRead) {
+int FORTRAN(br_add_var)(DFTYPE *data, int *doRead) 
+{
+  char type;
   assert(FFileInfo != 0);
   assert(Types.length > 0);
   if (Types.length != 1 && FFileInfo->nvars >= Types.length){
@@ -407,23 +412,22 @@ int FORTRAN(br_add_var)(DFTYPE *data, int *doRead) {
              "Number of args in /type doesn't match number of variables");
     return 0;
   }
-  {
-    char type;
-    if (Types.length == 1){        /* All variables same type */
-      type = Types.type[0];
-    } else {
-      type = Types.type[FFileInfo->nvars];
-    }
-    return addVar(FFileInfo, data, type, *doRead);
+  if (Types.length == 1){        /* All variables same type */
+    type = Types.type[0];
+  } else {
+    type = Types.type[FFileInfo->nvars];
   }
+  return addVar(FFileInfo, data, type, *doRead);
 }
 
-int FORTRAN(br_read)() {
+int FORTRAN(br_read)(void)
+{
   assert(FFileInfo != 0);
   return readBinary(FFileInfo);
 }
 
-void FORTRAN(br_close)() {
+void FORTRAN(br_close)(void)
+{
   if (FFileInfo != 0){
     deleteBinaryReader(FFileInfo);
     FFileInfo = 0;

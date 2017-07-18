@@ -59,7 +59,6 @@
 DFTYPE *xpos_cache, *ypos_cache;
 
 void FORTRAN(save_arg_pointers)( DFTYPE *xpos_arr, DFTYPE *ypos_arr )
-
 {
   extern DFTYPE *xpos_cache, *ypos_cache;
   xpos_cache = xpos_arr;
@@ -94,7 +93,6 @@ arrays of X and Y positions available
 
 void FORTRAN(curv_coord)(DFTYPE *xi, DFTYPE *yi, int *n,
 		DFTYPE *xinv, DFTYPE *yinv, int *status)
-
 {
   extern DFTYPE *xpos_cache, *ypos_cache;
   FORTRAN(curv_coord_sub)( xi, yi, n, xpos_cache, ypos_cache, xinv, yinv, status );
@@ -109,7 +107,6 @@ arrays of X and Y positions available, with an offset in the X coords
 
 void FORTRAN(curv_coord_add)(DFTYPE *xi, DFTYPE *yi, int *n,
 		 DFTYPE *xinv, DFTYPE *yinv, DFTYPE *xadd, int *first, int*xfield_is_modulo, int *status)
-
 {
   extern DFTYPE *xpos_cache, *ypos_cache;
   FORTRAN(curv_coord_add_sub)(  xi, yi, n, xpos_cache, ypos_cache, xinv, yinv, xadd, first, xfield_is_modulo, status );
@@ -125,7 +122,6 @@ void FORTRAN(curv_coord_add)(DFTYPE *xi, DFTYPE *yi, int *n,
  */
 
 void FORTRAN(curv_coord_range)(DFTYPE *uc, int *ilo, int *ihi, int *jlo, int *jhi, int *status)
-
 {
   extern DFTYPE *xpos_cache, *ypos_cache;
   FORTRAN(curv_coord_range_sub)(uc, xpos_cache, ypos_cache, ilo, ihi, jlo, jhi, status );

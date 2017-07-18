@@ -47,12 +47,7 @@ NOTE: Needs error checking to see that the realloc actually worked.
 #include <stdio.h>
 #include <stdlib.h>
 #include "pplmem.h"
-
-/* The global pointer to PLOT+ memory is declared as extern here
-   (Defined in fermain_c.c)
-*/
-  extern float *ppl_memory; 
-  
+#include "FerMem.h"  /* for FerMem_ functions */
 
 void reallo_ppl_memory(int *this_size)
 {
@@ -66,18 +61,18 @@ void reallo_ppl_memory(int *this_size)
 
 /* free the currently allocated memory */
   if (current_size != 0)
-      free ( (void *) ppl_memory );
+      FerMem_Free ( (void *) ppl_memory );
 /* allocate new ammount of memory */
-  ppl_memory = (float *) malloc(sizeof(float) * *this_size );
+  ppl_memory = (float *) FerMem_Malloc(sizeof(float) * *this_size );
 
 /* Check that the memory was allocated OK*/
 
-  if ( ppl_memory == (float *)0 ) {
-    printf("Unable to allocate the requested %d words of PLOT memory.\n",*this_size);
-    exit(0);
-   }
+  if ( ppl_memory == NULL ) {
+      printf("Unable to allocate the requested %d words of PLOT memory.\n",*this_size);
+      exit(0);
+  }
 /* save the size of what was allocated */
-  FORTRAN(save_ppl_memory_size) (this_size);
+  FORTRAN(save_ppl_memory_size)(this_size);
 
   return;
 }

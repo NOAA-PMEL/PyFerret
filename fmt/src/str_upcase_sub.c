@@ -38,10 +38,12 @@
  */
 
 #include <stdio.h>
+#include "fmtprotos.h"
 
+/* This only works for English ANSI characters; better to use toupper */
 #define uppercase(a) ((a>='a'&&a<='z')?((a)&0xDF):(a))
 
-void str_upcase_sub_(char *out_string, int *out_len, char *in_string, int* in_len)
+void FORTRAN(str_upcase_sub)(char *out_string, int *out_len, char *in_string, int* in_len)
 {
     int min_len =(*out_len<*in_len)?(*out_len):(*in_len);
     int i;

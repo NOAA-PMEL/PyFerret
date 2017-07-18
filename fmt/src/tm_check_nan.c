@@ -34,7 +34,7 @@
 *
 */
 
-/* tm_check_nan.c :
+/* tm_check_nan.c : */
 /*  see if value is NaN */
 
 /* *acm* - 11/04/04 */
@@ -42,10 +42,9 @@
 *					 definition of macro DFTYPE in ferretmacros.h.
 */
 
-#include "ferretmacros.h"
+#include "fmtprotos.h"
 
-int FORTRAN(tm_check_nan)( DFTYPE *src )
-
+int FORTRAN(tm_check_nan)(DFTYPE *src)
 {
   int result = 0;
   

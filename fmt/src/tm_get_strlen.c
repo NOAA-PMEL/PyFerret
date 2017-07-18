@@ -37,8 +37,9 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include "fmtprotos.h"
 
-void tm_get_strlen_(int * len_str, int * whole_len, char * in_string)
+void FORTRAN(tm_get_strlen)(int *len_str, int *whole_len, char *in_string)
 {
    int i;
    assert(in_string);

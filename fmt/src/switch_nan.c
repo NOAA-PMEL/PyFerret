@@ -33,48 +33,30 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
 *
 */
-/*
-   06/04 *ywei* -Created to read command file faster
-*/
 
-#include <stdio.h>
+/* switch_nan : */
+/*  check for a missing or bad value flag of NaN.  if either flag is Nan, */
+/*  then make sure it's ds_missing_flag and if both are NaN, make sure to */
+/*  set ds_bad_flag to bad_val4     */
 
-void my_readline_(  void **lun,
-                     char *out_string,
-                     int *len_out_string,
-                     int *status
-                   )
+/* *kob* - 2/18/99 */
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+ *					 definition of macro DFTYPE in ferretmacros.h.
+ * *acm* V6931 12/14 Fix ticket 2223: need to use the Ferret missing-value flag
+ *					 which is now passed in as an argument.
+ */
+
+#include "fmtprotos.h"
+
+void FORTRAN(switch_nan)(DFTYPE *bad, DFTYPE *missing, DFTYPE *bad_val)
 {
-
-   int i, buff_size,fill;
-   FILE *fp;
-   char *pch,ch;
-
-   fp = *((FILE**)lun);
-
-   if(fp==NULL){
-     *status = -1;
-     return;
-   }
-   buff_size = *len_out_string;
-   
-   pch = fgets(out_string, buff_size, fp);
-   
-   if(pch==NULL){
-      *status = 0;
-   }
-   else{
-      *status = 1;
-      fill = 0;
-      for(i=0;i<buff_size;i++){
-	if(out_string[i]==0){
-	   fill =1;
+  if (isnan(*bad) || isnan(*missing))
+    { 
+      if (isnan(*bad)) 
+	{
+	  *missing = *bad;
+	  *bad = *bad_val;
 	}
-        if(fill||out_string[i]==10)
-	   out_string[i]=' ';
-      }
-   } 
-   
+    }
 }
-
 

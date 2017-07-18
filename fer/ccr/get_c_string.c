@@ -39,11 +39,9 @@
  */
 
 #include <string.h>
+#include "ferret.h"
 
-void get_c_string_(ptr_ptr, outstring, maxlen)
-     char** ptr_ptr;
-     char* outstring;
-     int* maxlen;
+void FORTRAN(get_c_string)(char **ptr_ptr, char *outstring, int *maxlen)
 {
     char *str1;
 

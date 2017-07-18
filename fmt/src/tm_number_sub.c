@@ -45,16 +45,9 @@
 */
 
 #include <stdio.h>
-#include "ferretmacros.h"
+#include "fmtprotos.h"
 
-#ifdef _NO_PROTO
-void FORTRAN(tm_number_sub)  (string, result) 
-
-char * string;
-int * result;
-#else /* NO_PROTO */
-void FORTRAN(tm_number_sub)  (char * string, int * result) 
-#endif  /* NO_PROTO */
+void FORTRAN(tm_number_sub)(char *string, int *result)
 {
   int num_read;
   double rval;  /* pointer to double expected by %lf in sscanf */

@@ -38,6 +38,7 @@
  */
 
 #include <stdio.h>
+#include "fmtprotos.h"
 #include "string_array.h"
 
 typedef  unsigned long  int  ub4;   /* unsigned 4-byte quantities */
@@ -115,11 +116,13 @@ acceptable.  Do NOT use for cryptographic purposes.
 --------------------------------------------------------------------
 */
 
-int string_array_hash( k, length, initval, range)
-register ub1 *k;        /* the key */
-register ub4  length;   /* the length of the key */
-register ub4  initval;  /* the previous hash, or an arbitrary value */
-register int range;
+int string_array_hash(ub1 *k, ub4 length, ub4 initval, int range)
+/*
+    k; pointer to the key
+    length;   the length of the key 
+    initval;  the previous hash, or an arbitrary value
+    range;
+ */
 {
    register ub4 a,b,c,len;
    register int result;

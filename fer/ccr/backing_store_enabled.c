@@ -42,17 +42,11 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <stdlib.h>
+#include "ferret.h"
 #include "gks_implem.h"
 #include "wslist.h"
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-backing_store_enabled(ws_id, bs)
-#else
-backing_store_enabled_(ws_id, bs)
-#endif
-     int *ws_id;
-     int *bs;
-
+void FORTRAN(backing_store_enabled)(int *ws_id, int *bs)
 {
   WS_STATE_ENTRY *ws;
   XWindowAttributes win_info;

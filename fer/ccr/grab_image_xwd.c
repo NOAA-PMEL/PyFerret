@@ -107,8 +107,10 @@
  *%  color can be supported.
 %*/
 
+#include <X11/X.h>
 #include <X11/Xos.h>
 #include <X11/Xlib.h>
+#include <X11/Intrinsic.h>
 #include <X11/Xutil.h>
 #ifndef NO_WIN_UTIL_H
 #include <X11/Xmu/WinUtil.h>
@@ -122,31 +124,29 @@
 /*add include for signal for sunOS benefit *kob*/
 #include <signal.h>
 
-
-
-typedef unsigned long Pixel;
-
 #define FEEP_VOLUME 0
 
-/* Include routines to do parsing */
-#include "dsimple.h"
+#include "FerMem.h"
 
 /* Setable Options */
 
-int format = ZPixmap;
-Bool nobdrs = False;
-Bool on_root = False;
-Bool standard_out = True;
-Bool debug = False;
-Bool use_installed = False;
-long add_pixel_value = 0;
+static int format = ZPixmap;
+static Bool nobdrs = False;
+static Bool on_root = False;
+static Bool standard_out = True;
+/* static Bool debug = False; */
+static Bool use_installed = False;
+static long add_pixel_value = 0;
 
-extern int (*_XErrorFunction)();
-extern int _XDefaultError();
+static int Image_Size(XImage *image);
+static int Get_XColors(XWindowAttributes *win_info, XImage *image, XColor **colors, Display *dpy);
 
+static int endian_type (void)
+{
+  return (*(short *) "AZ")& 255;
+}
 
-static long parse_long (s)
-    char *s;
+static long parse_long(char *s)
 {
     char *fmt = "%lu";
     long retval = 0L;
@@ -166,20 +166,10 @@ static long parse_long (s)
  *              writting.
  */
 
-/* calloc defined in stdlib.h 
-  char *calloc();
-  */
-
-/* #include "X11/XWDFile.h" */
-
-Window_Dump(window, dpy,outfile, type)
-     Window window;
-     Display *dpy;
-     char *outfile;
-     char *type;
+void Window_Dump(Window window, Display *dpy, char *outfile, char *type)
 {
     unsigned long swaptest = 1;
-    XColor *colors;
+    XColor *colors = NULL;
     unsigned buffer_size;
     int win_name_size;
     int header_size;
@@ -188,6 +178,7 @@ Window_Dump(window, dpy,outfile, type)
     Bool got_win_name;
     XWindowAttributes win_info;
     XImage *image;
+    int screen = 0;
     int absx, absy, x, y;
     unsigned width, height;
     int dwidth, dheight;
@@ -205,13 +196,6 @@ Window_Dump(window, dpy,outfile, type)
 #else
     func = signal(SIGIO, SIG_DFL);
 #endif
-
-
-
-    /*
-     * Inform the user not to alter the screen.
-     */
-/*    Beep(); */
 
     /*
      * Get the parameters of the window being dumped.
@@ -231,8 +215,8 @@ Window_Dump(window, dpy,outfile, type)
     if (!XTranslateCoordinates (dpy, window, RootWindow (dpy, screen), 0, 0,
 				&absx, &absy, &dummywin)) {
 	fprintf (stderr, 
-		 "%s:  unable to translate window coordinates (%d,%d)\n",
-		 program_name, absx, absy);
+		 "unable to translate window coordinates (%d,%d)\n",
+		 absx, absy);
 #ifdef HP_SIGNALS
 	signal(_SIGIO, func);
 #else
@@ -299,8 +283,8 @@ Window_Dump(window, dpy,outfile, type)
       image = XGetImage (dpy, window, x, y, width, height, AllPlanes, format);
 
     if (!image) {
-	fprintf (stderr, "%s:  unable to get image at %dx%d+%d+%d\n",
-		 program_name, width, height, x, y);
+	fprintf (stderr, "unable to get image at %dx%d+%d+%d\n",
+		 width, height, x, y);
 #ifdef HP_SIGNALS
 	signal(_SIGIO, func);
 #else
@@ -334,9 +318,9 @@ Window_Dump(window, dpy,outfile, type)
     XFlush(dpy);
 #endif
 
-    r = (int *)malloc(sizeof(int) * ncolors);
-    g = (int *)malloc(sizeof(int) * ncolors);
-    b = (int *)malloc(sizeof(int) * ncolors); 
+    r = (int *)FerMem_Malloc(sizeof(int) * ncolors);
+    g = (int *)FerMem_Malloc(sizeof(int) * ncolors);
+    b = (int *)FerMem_Malloc(sizeof(int) * ncolors); 
     for (i=0; i < ncolors; i++) {
       r[i] = colors[i].red;
       g[i] = colors[i].green;
@@ -357,7 +341,10 @@ Window_Dump(window, dpy,outfile, type)
 
 /*    if(debug && ncolors > 0) outl("xwd: Freeing colors.\n"); */
 /* *kob* 5/96 - also free the arrays r,g,b */
-    if(ncolors > 0) free(colors);free(r); free(g); free(b);
+    FerMem_Free(colors);
+    FerMem_Free(r); 
+    FerMem_Free(g); 
+    FerMem_Free(b);
 
     /*
      * Free window name string.
@@ -387,40 +374,10 @@ Window_Dump(window, dpy,outfile, type)
 }
 
 /*
- * Report the syntax for calling xwd.
- */
-/*usage()
-{
-    fprintf (stderr,
-"usage: %s [-display host:dpy] [-debug] [-help] %s [-nobdrs] [-out <file>]",
-	   program_name, SELECT_USAGE);
-    fprintf (stderr, " [-kludge] [-xy] [-add value] [-frame]\n");
-    exit(1);
-}
-*/
-
-/*
- * Error - Fatal xwd error.
- */
-extern int errno;
-
-Error(string)
-	char *string;	/* Error description string. */
-{
-/*	outl("\nxwd: Error => %s\n", string); */
-	if (errno != 0) {
-		perror("xwd");
-	/*outl("\n"); */
-	} exit(1);
-}
-
-
-/*
  * Determine the pixmap size.
  */
 
-int Image_Size(image)
-     XImage *image;
+static int Image_Size(XImage *image)
 {
     if (image->format != ZPixmap)
       return(image->bytes_per_line * image->height * image->depth);
@@ -434,11 +391,7 @@ int Image_Size(image)
 /*
  * Get the XColors of all pixels in image - returns # of colors
  */
-int Get_XColors(win_info, image, colors,dpy) 
-     XImage *image;  
-     XWindowAttributes *win_info;
-     XColor **colors;
-     Display *dpy;
+static int Get_XColors(XWindowAttributes *win_info, XImage *image, XColor **colors, Display *dpy) 
 {
     int i, ncolors;
     unsigned long pixel;
@@ -460,7 +413,7 @@ int Get_XColors(win_info, image, colors,dpy)
     /* ncolors = win_info->visual->map_entries;*/
     ncolors = 256;
 
-    if (!(*colors = (XColor *) malloc (sizeof(XColor) * ncolors)))
+    if (!(*colors = (XColor *) FerMem_Malloc (sizeof(XColor) * ncolors)))
       {
 	fprintf (stderr, "Fatal Error - Out of memory!");
 	exit (1);
@@ -529,7 +482,6 @@ int Get_XColors(win_info, image, colors,dpy)
 
 	/* need to test the blue mask to see which endianness machine we are on. 
 	   then grab the individual rgb values from the pixel value */
-	/*	for (i=0; i<= nunique_colors; i++) { */
 
 	if ( endian_type() == 65 ) {
 	  if (ImageByteOrder(dpy))
@@ -581,44 +533,3 @@ int Get_XColors(win_info, image, colors,dpy)
     return(ncolors);
 }
 
-_swapshort (bp, n)
-    register char *bp;
-    register unsigned n;
-{
-    register char c;
-    register char *ep = bp + n;
-
-    while (bp < ep) {
-	c = *bp;
-	*bp = *(bp + 1);
-	bp++;
-	*bp++ = c;
-    }
-}
-
-_swaplong (bp, n)
-    register char *bp;
-    register unsigned n;
-{
-    register char c;
-    register char *ep = bp + n;
-    register char *sp;
-
-    while (bp < ep) {
-	sp = bp + 3;
-	c = *sp;
-	*sp = *bp;
-	*bp++ = c;
-	sp = bp + 1;
-	c = *sp;
-	*sp = *bp;
-	*bp++ = c;
-	bp += 2;
-    }
-}
-
-
-int endian_type ()
-{
-  return (*(short *) "AZ")& 255;
-}

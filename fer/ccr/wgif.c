@@ -60,6 +60,7 @@
  *  Routine for writing out GIF files, using pd GIFEncode routine
  */
 
+#include <X11/X.h>
 #include <X11/Xlib.h>
 #include <unistd.h>
 #include <stdio.h>

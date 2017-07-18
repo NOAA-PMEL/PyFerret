@@ -40,8 +40,9 @@
  */
 
 #include <stdlib.h>
+#include "ferret.h"
 
-double get_c_pointer_(char** mr_ptr, char** mr_ptr_val)
+void FORTRAN(get_c_pointer)(char** mr_ptr, char** mr_ptr_val)
 {
 
   union ptr_or_val
@@ -53,7 +54,5 @@ double get_c_pointer_(char** mr_ptr, char** mr_ptr_val)
 
   my_conversion.ptr = mr_ptr;
   *mr_ptr_val = my_conversion.val;
-
-  return;
 
 }

@@ -51,20 +51,14 @@
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 
 #include <wchar.h>
-#include "udposix.h"
-#include "gks_implem.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "udposix.h"
+#include "gks_implem.h"
+#include "pplmem.h"
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-set_background (ws_id, ndx)
-#else
-set_background_ (ws_id, ndx)
-#endif
-Gint *ws_id; 
-int *ndx;
-
+void FORTRAN(set_background)(int *ws_id, int *ndx)
 {
   WS_STATE_ENTRY *ws;
 

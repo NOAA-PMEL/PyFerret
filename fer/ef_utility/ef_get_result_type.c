@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "ferret.h"
 #include "EF_Util.h"
 
 void FORTRAN(ef_get_result_type)(int *id_ptr, int *type)

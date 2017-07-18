@@ -69,3 +69,24 @@ C for ticket 2520: axis that is slightly too LONG, was marked as subspan!
 
 	RETURN
 	END
+
+C
+C
+C
+
+        INTEGER FUNCTION TM_ITS_SUBSPAN_MODULO_INT(axis)
+C
+C For calling from C since it is dangerous to assume 
+C what Fortran LOGICAL and their values are in C.
+C
+        INTEGER axis
+        LOGICAL TM_ITS_SUBSPAN_MODULO
+
+        IF ( TM_ITS_SUBSPAN_MODULO(axis) ) THEN
+            TM_ITS_SUBSPAN_MODULO_INT = 1
+        ELSE
+            TM_ITS_SUBSPAN_MODULO_INT = 0
+        ENDIF
+
+        RETURN
+        END

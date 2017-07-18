@@ -39,17 +39,14 @@
 *
 */
 
+#include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include "gks_implem.h"
 #include "wslist.h"
+#include "ferret.h"
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-unmap_animate_window()
-#else
-unmap_animate_window_()
-#endif
-
+FORTRAN(unmap_animate_window)(void)
 {
   WindowMapping(0);
 }

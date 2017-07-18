@@ -73,7 +73,7 @@
 #include <stdio.h>
 #include <netcdf.h>
 #include <assert.h>
-#include "ferretmacros.h"
+#include "fmtprotos.h"
 
 void FORTRAN(cd_write_att_sub) (int *cdfid, int *varid, char* attname, int *attype,
 				                int *nval, void *val, int *status )

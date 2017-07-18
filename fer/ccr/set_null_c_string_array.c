@@ -39,10 +39,10 @@
  */
  
 #include <stdlib.h>
+#include "ferret.h"
+#include "FerMem.h"
 
-void set_null_c_string_array_(fer_ptr, nstr)
-     char*** fer_ptr;
-     int* nstr;
+void FORTRAN(set_null_c_string_array)(char ***fer_ptr, int *nstr)
 {
    char** each_str_ptr;
    int i;
@@ -51,8 +51,8 @@ void set_null_c_string_array_(fer_ptr, nstr)
 
    for (i=0; i<*nstr; i++) {
       if ( *each_str_ptr != NULL )
-         free(*each_str_ptr);
-      *each_str_ptr = (char *) malloc(sizeof(char));
+         FerMem_Free(*each_str_ptr);
+      *each_str_ptr = (char *) FerMem_Malloc(sizeof(char));
       if ( *each_str_ptr == NULL )
          abort();
       **each_str_ptr = '\0';

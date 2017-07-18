@@ -41,13 +41,11 @@
  */
 
 #include <stdio.h>
+#include "fmtprotos.h"
 #include "string_array.h"
 
-void string_array_modify_upcase_(double  *string_array_header,
-                                 int  *index,
-                                 char *new_string,
-                                 int  *new_string_size){
-
+void FORTRAN(string_array_modify_upcase)(double *string_array_header, int *index, char *new_string, int *new_string_size)
+{
    int true_old_str_len, true_new_str_len,
        array_size, string_size, old_hash_value,
        new_hash_value;

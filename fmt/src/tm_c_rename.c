@@ -49,20 +49,11 @@
 
 /* *kob* had to add ifdef for sake of AIX  10/94 */
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-void tm_c_rename( oldname, newname, status )
-#else
-void tm_c_rename_( oldname, newname, status )
-#endif
+#include "fmtprotos.h"
 
-
-   char *oldname, *newname;
-   int *status;
-
-/* Unix system call to rename file */
-
+void FORTRAN(tm_c_rename)(char *oldname, char *newname, int *status)
 {
-   *status = rename ( oldname, newname );
+   *status = rename(oldname, newname);
 
    return;
 }

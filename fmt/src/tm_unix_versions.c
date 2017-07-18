@@ -65,17 +65,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "fmtprotos.h"
 
 
-
-int tilda_strcmp( rootnam, testnam )
-
-   char rootnam[], testnam[];
-
+static int tilda_strcmp(char *rootnam, char *testnam)
 /* compare root name with test to see if they match apart from ".~nnn~"
    If they do, return nnn (0 for identical match).
    Else return -1  */
-
 {
    int rlen, tlen, i, tilda;
    char tbuff[4];
@@ -115,14 +111,11 @@ int tilda_strcmp( rootnam, testnam )
 }
 
 
-int high_ver_name(name,path)
-  char name[], path[];
+int high_ver_name(char *name, char *path)
 /* find the highest numbered version of file "name" in the given directory */
 /* if no directory is given then the current directory is used.         */
 /* Also, if given path does not exist, then the procedure is exited  */
 /* modified 10/91 to do this        <kob> */
-
-
 {
   int next, tilda=(-1);
   struct dirent *dp;
@@ -145,17 +138,10 @@ int high_ver_name(name,path)
   }
 
   return tilda; 
-	    
 }
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-char *tm_c_ver_name(name, next_name,path)
-#else
-char *tm_c_ver_name_(name, next_name,path)
-#endif
-  char name[], next_name[], path[];
+char *FORTRAN(tm_c_ver_name)(char *name, char *next_name, char *path)
 /* generate the name for the next version of a file in this directory */
-
 {
   int high, len;
 
@@ -179,6 +165,4 @@ char *tm_c_ver_name_(name, next_name,path)
 
   return next_name;
 }
-
-
 

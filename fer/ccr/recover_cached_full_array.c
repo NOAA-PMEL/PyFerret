@@ -50,12 +50,10 @@
 #include <stdlib.h>
 #include "ferret.h"
  
-void FORTRAN(recover_cached_full_array)( double *array, int *alen, double **pointer_val )
-
+void FORTRAN(recover_cached_full_array)(double *array, int *alen, double **pointer_val)
 /*
   see complementary routine cache_full_array.c
 */
-
 {
   double *ptr;
   int i;

@@ -56,23 +56,9 @@
 #include <stdlib.h>
 #include "pplmem.h"
 
-/* The global pointer to PLOT+ memory is declared as extern here
-   (Defined in fermain_c.c)
-*/
-extern float *ppl_memory;
-
-#ifdef double_p
-void FORTRAN(pplldc_envelope)(int *k, double *z, int *mx, int *my,int *imn, int *imx,
-             int *jmn, int *jmx, double *pi, double *pj,int *nx1, int *ny1,
-			 double *xmin1, double *ymin1, double *dx1, double *dy1, 
-			 int *plot_mem_used)
-#else
-void FORTRAN(pplldc_envelope)(int *k, float *z, int *mx, int *my,int *imn, int *imx,
-             int *jmn, int *jmx, float *pi, float *pj,int *nx1, int *ny1,
-			 float *xmin1, float *ymin1, float *dx1, float *dy1, 
-			 int *plot_mem_used)
-#endif
-
+void FORTRAN(pplldc_envelope)(int *k, DFTYPE *z, int *mx, int *my,int *imn, int *imx,
+             int *jmn, int *jmx, DFTYPE *pi, DFTYPE *pj,int *nx1, int *ny1,
+             DFTYPE *xmin1, DFTYPE *ymin1, DFTYPE *dx1, DFTYPE *dy1, int *plot_mem_used)
 {  
 /* local variable declarations */
   int pmemsize;
@@ -85,9 +71,9 @@ void FORTRAN(pplldc_envelope)(int *k, float *z, int *mx, int *my,int *imn, int *
 
   FORTRAN(get_ppl_memory_size)(&pmemsize);
 
-  if (*plot_mem_used > pmemsize) reallo_ppl_memory(plot_mem_used); 
+  if (*plot_mem_used > pmemsize)
+      reallo_ppl_memory(plot_mem_used); 
 
-  FORTRAN(pplldc) (k, z, mx, my, imn, imx, jmn, jmx, pi, pj, nx1, ny1, 
-                   xmin1, ymin1, dx1, dy1, ppl_memory);
-return;
+  FORTRAN(pplldc)(k, z, mx, my, imn, imx, jmn, jmx, pi, pj, nx1, ny1, 
+                  xmin1, ymin1, dx1, dy1, ppl_memory);
 }

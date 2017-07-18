@@ -33,12 +33,13 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
 */
 
+#include "ferret.h"
 
 /* 
  *  return the size (in units of bytes) of a pointer to a character
  */
 
-int sizeof_pointer_()
+int FORTRAN(sizeof_pointer)(void)
 {
   return (int) sizeof(char*);
 }

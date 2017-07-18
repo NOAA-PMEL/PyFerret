@@ -40,10 +40,11 @@
  */
 
 #include <stdlib.h>
+#include "ferret.h"
+#include "FerMem.h"
 
-void free_c_pointer_(fer_ptr)
-     char*** fer_ptr;
+void FORTRAN(free_c_pointer)(char ***fer_ptr)
 {
-   free(*fer_ptr);
+   FerMem_Free(*fer_ptr);
    *fer_ptr = NULL;
 }

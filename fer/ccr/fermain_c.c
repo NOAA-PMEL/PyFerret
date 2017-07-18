@@ -145,15 +145,17 @@
 #include <string.h>
 #include <signal.h>
 #include "ferret.h"
+#include "FerMem.h"
 #include "ferret_shared_buffer.h"
 
-void gui_run(int *, char **);
-int gui_init();
+/* Instantiate the globals in ferret_shared_buffer */
+smPtr sBuffer;
+float *ppl_memory;
+
 int its_script;
 char script_args[2048];
 int arg_pos;
 
-DFTYPE **gui_get_memory();
 static void command_line_run();
 
 void help_text()
@@ -201,18 +203,14 @@ static int ttout_lun=TTOUT_LUN;
 main (int oargc, char *oargv[])
 {
   int status;
-  smPtr sBuffer;
-  DFTYPE **memory = gui_get_memory(); 
   int argc = oargc;
   char **argv = oargv;
 
   int i=1;
   int j=1;
   double rmem_size = 0;
-  int using_gui = 0;
   int pplmem_size;
 
-  int gui_enabled = gui_init();
   int journalfile = 1;
   int verify_flag = 1;
   int len_str;
@@ -367,7 +365,7 @@ main (int oargc, char *oargv[])
   //  }
   //  /* Reset mem_size to exactly the size Ferret thinks it is being handed */
   //  mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
-  //  *memory = (DFTYPE *) malloc(mem_size*sizeof(DFTYPE));
+  //  *memory = (DFTYPE *) FerMem_Malloc(mem_size*sizeof(DFTYPE));
   //
   //  if ( *memory == NULL ) {
   //    printf("Unable to allocate the requested %#.1f Mwords of memory.\n",(double)mem_size/1.E6);
@@ -379,7 +377,7 @@ main (int oargc, char *oargv[])
   /* initial allocation of PPLUS memory size pointer*/
   pplmem_size = (int)(0.5* 1.E6);  
   FORTRAN(save_ppl_memory_size)( &pplmem_size ); 
-  ppl_memory = (float *) malloc(sizeof(float) * pplmem_size );
+  ppl_memory = (float *) FerMem_Malloc(sizeof(float) * pplmem_size );
 
   if ( ppl_memory == NULL ) {
     printf("Unable to allocate the initial %d words of PLOT memory.\n",pplmem_size);
@@ -403,11 +401,7 @@ main (int oargc, char *oargv[])
   /* initialize size and shape of memory and linked lists */
   FORTRAN(init_memory)(&rmem_size);
 
-  if ( using_gui ) {
-    gui_run(&argc, argv);
-  } else {
-    command_line_run();
-  }
+  command_line_run();
   /* 
    *kob* 5/97 - need to close f90 files and flush buffers.....
    */
@@ -475,7 +469,7 @@ main (int oargc, char *oargv[])
     }
 
   /* allocate the shared buffer */
-  sBuffer = (sharedMem *)malloc(sizeof(sharedMem));
+  sBuffer = (sharedMem *)FerMem_Malloc(sizeof(sharedMem));
 
  
   /* run the initialization file
@@ -531,13 +525,13 @@ main (int oargc, char *oargv[])
 //	  printf("new mem_blk_size = %d\n",mem_blk_size);
 //        */
 //        free( (void *) *memory );
-//        *memory = (DFTYPE *) malloc(mem_size*sizeof(DFTYPE));
+//        *memory = (DFTYPE *) FerMem_Malloc(mem_size*sizeof(DFTYPE));
 //
 //        if ( *memory == NULL ) {
 //          printf("Unable to allocate %#.1f Mwords of memory.\n", (double)mem_size/1.E6);
 //          mem_blk_size = old_mem_blk_size;
 //          mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
-//          *memory = (DFTYPE *) malloc(mem_size*sizeof(DFTYPE));
+//          *memory = (DFTYPE *) FerMem_Malloc(mem_size*sizeof(DFTYPE));
 //
 //          if ( *memory == NULL ) {
 //            printf("Unable to reallocate previous memory of %#.1f Mwords.\n",(double)(mem_size)/1.E6);

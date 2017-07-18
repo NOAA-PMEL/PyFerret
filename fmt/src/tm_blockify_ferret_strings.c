@@ -45,9 +45,9 @@
     This function copies the strings from mr_blk1 to pblock.
 */
 
+#include "fmtprotos.h"
 
-void tm_blockify_ferret_strings(char **mr_blk1, char *pblock,
-				int bufsiz, int outstrlen)
+void tm_blockify_ferret_strings(char **mr_blk1, char *pblock, int bufsiz, int outstrlen)
 {
   int i;
   char *poutchar, *poutstr, *pinchar, **pinstr;

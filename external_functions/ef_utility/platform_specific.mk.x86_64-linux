@@ -29,16 +29,6 @@ CPP_FLAGS	= -P -traditional -Ddouble_p $(INCLUDES)
 CFLAGS_DEBUG	= -O0 -g -Ddebug
 FFLAGS_DEBUG	= -O0 -g  -fbounds-check -Ddebug
 
-## cancel the default rule for .f -> .o to prevent objects from being built
-## from .f files that are out-of-date with respect to their corresponding .F file
-#%.o : %.f
-#
-## use cpp to preprocess the .F files to .f files and then compile the .f files
-#%.o : %.F
-#	rm -f $*.f
-#	$(CPP) $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
-#	$(F77) $(FFLAGS) -c $*.f
-
 # Directly compile the .F source files to the .o object files
 # since gfortran can handle the C compiler directives in Fortran code
 %.o : %.F

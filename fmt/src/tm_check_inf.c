@@ -34,18 +34,17 @@
 *
 */
 
-/* tm_check_inf.c :
+/* tm_check_inf.c : */
 /*  see if value is positive or negative Inf */
 
 /* *acm* - 11/03/05 */
 /* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
-/*					 definition of macro DFTYPE in ferretmacros.h.
-*/
+ *					 definition of macro DFTYPE in ferretmacros.h.
+ */
 
-#include "ferretmacros.h"
+#include "fmtprotos.h"
 
-int FORTRAN(tm_check_inf)( DFTYPE *src )
-
+int FORTRAN(tm_check_inf)(DFTYPE *src)
 {
   int result = 0;
   

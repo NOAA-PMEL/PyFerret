@@ -40,14 +40,15 @@
  */
 
 #include <stdlib.h>
+#include "ferret.h"
+#include "FerMem.h"
 
-void set_null_c_string_(out_ptr)
-     char** out_ptr;
+void FORTRAN(set_null_c_string)(char **out_ptr)
 {
    if ( *out_ptr != NULL )
-      free(*out_ptr);
+      FerMem_Free(*out_ptr);
 
-   *out_ptr = (char *) malloc(sizeof(char));
+   *out_ptr = (char *) FerMem_Malloc(sizeof(char));
    if ( *out_ptr == NULL )
       abort();
    **out_ptr = '\0';

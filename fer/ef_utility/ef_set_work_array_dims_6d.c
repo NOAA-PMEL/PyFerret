@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "ferret.h"
 #include "EF_Util.h"
 
 /*

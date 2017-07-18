@@ -34,40 +34,35 @@
 *
 */
 /*
-   06/04 *ywei* -Created to read command file faster
+   06/04 *ywei* Created to implement hash table and store string length
  */
-/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
 
-#include <stdlib.h>
-#include <stdio.h> 
+#ifndef _STRING_ARRAY_H
+#define _STRING_ARRAY_H
 
-void my_open_(    void  **lun,
-                   char *fname,
-                   int  *len_fname,
-                   int  *is_success){
+   struct List_Node {
+      int index;
+      struct List_Node * prev;
+      struct List_Node * next;
+   };
+   typedef struct List_Node List_Node;
 
-   int true_len_fname, i;
-   char *c_fname,ch;
-   FILE * fp;
+   struct String_Array_Header {
+      int head;
+      int array_size;
+      int string_size;
+      List_Node ** ptr_array;
+      List_Node ** hash_table;
+      char * string_array;
+      int  * strlen_array;
+   };
+   typedef struct String_Array_Header SA_Head;
 
-   tm_get_strlen_(&true_len_fname, len_fname, fname);
-   if(true_len_fname<=0) return;
+/*
+ * The following is only good for English ANSI characters.
+ * Instead, toupper should be used; but leaving it for now.
+ */
+#define uc(a) ((a>='a'&&a<='z')?((a)&0xDF):(a))
 
-   c_fname =(char *)malloc(true_len_fname+1);
-   for(i=0;i<true_len_fname;i++){
-      c_fname[i] = fname[i];
-   }
-   c_fname[true_len_fname] = 0;
-
-   fp = fopen(c_fname,"r");
-
-   if(fp)
-     *is_success = 1;
-   else
-     *is_success = 0;
-
-   free(c_fname);
- 
-   *((FILE**)lun) = fp;
-}
+#endif /*_STRING_ARRAY.H_*/
 

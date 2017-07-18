@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include "ferret.h"
 #include "EF_Util.h"
 
 void FORTRAN(ef_set_arg_name_sub)(int *id_ptr, int *arg_ptr, char *text)

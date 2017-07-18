@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "ferret.h"
 #include "EF_Util.h"
 
 void FORTRAN(ef_set_axis_limits)(int *id_ptr, int *axis, int *lo, int *hi)

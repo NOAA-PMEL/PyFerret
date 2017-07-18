@@ -55,6 +55,7 @@
  * 3/12 *kms* remove unused code - always exits with an error value
  */
 
+#include <X11/X.h>
 #include <X11/Xlib.h>
 #include <stdlib.h>
 #include <stdio.h>

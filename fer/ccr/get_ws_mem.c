@@ -16,8 +16,9 @@
 
 #include <stdlib.h>
 #include "ferret.h"
+#include "FerMem.h"
 
-void FORTRAN(get_ws_mem)( int *index, long *alen, int *status )
+void FORTRAN(get_ws_mem)(int *index, int *alen, int *status)
 
 /*
   input  - index:  Ferret ws index at which to store the array pointer
@@ -28,7 +29,7 @@ void FORTRAN(get_ws_mem)( int *index, long *alen, int *status )
 
   double *pointer;
 
-  pointer = (double *) malloc(sizeof(double) * (*alen));
+  pointer = (double *) FerMem_Malloc(sizeof(double) * (*alen));
 
   if (pointer)
     {

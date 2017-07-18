@@ -39,8 +39,9 @@
 
 #include <ctype.h>
 #include <stdio.h>
+#include "fmtprotos.h"
 
-void str_dncase_sub_(char *out_string, int *out_len, char *in_string, int* in_len)
+void FORTRAN(str_dncase_sub)(char *out_string, int *out_len, char *in_string, int *in_len)
 {
     int min_len =(*out_len<*in_len)?(*out_len):(*in_len);
     int i;

@@ -60,35 +60,10 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <ferret.h>
+#include "ferret.h"
 #include "ferret_shared_buffer.h"
 
-/* function prototype for FORTRAN routine */
-/* added ifdef for necessity of trailing underscores *kob* */
-
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#   ifdef _NO_PROTO
-void ferret_dispatch_( );
-#   else
-void ferret_dispatch( char *init_command, int *rtn_flags,
-		      int *nflags, char *rtn_chars, int *nchars, int *nerrlines );
-#   endif
-#else                     /*NO_ENTRY_NAME_UNDERSCORES*/
-#   ifdef _NO_PROTO
-void ferret_dispatch_( );
-#   else
-void ferret_dispatch_( char *init_command, int *rtn_flags,
-		       int *nflags, char *rtn_chars, int *nchars, int *nerrlines );
-#   endif
-#endif                    /*NO_ENTRY_NAME_UNDERSCORES*/
-
-#ifdef _NO_PROTO
-void ferret_dispatch_c( init_command, sBuffer )
-char *init_command;
-smPtr sBuffer;
-#else
-void ferret_dispatch_c( char *init_command, smPtr sBuffer )
-#endif
+void ferret_dispatch_c(char *init_command, smPtr sBuffer)
 {
   int flag_buff_size  = NUMFLAGS;
   int TEXTLENGTH_size  = TEXTLENGTH;
@@ -100,13 +75,8 @@ void ferret_dispatch_c( char *init_command, smPtr sBuffer )
 /* 1/17 *sh* removed the "memory" argument -- replaced by dynamic allocation
    of hyperslab memory using FORTRAN90 pointers and c (or python) */
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-  ferret_dispatch
-#else
-  ferret_dispatch_
-#endif
-                  ( init_command, sBuffer->flags, &flag_buff_size,
-		    sBuffer->text, &TEXTLENGTH_size, &(sBuffer->numStrings) );
+  FORTRAN(ferret_dispatch)(init_command, sBuffer->flags, &flag_buff_size,
+		    sBuffer->text, &TEXTLENGTH_size, &(sBuffer->numStrings));
 
   return;
 }
@@ -117,24 +87,24 @@ static int ServerFlag = 0;
 /*
  * Routines for setting/getting security settings
  */
-void set_secure() {
+void set_secure(void) {
   SecureFlag = 1;
 }
 
-int FORTRAN(is_secure)() {
+int FORTRAN(is_secure)(void) {
   return SecureFlag;
 }
 /*
  * Routines for setting/getting server settings
  */
-void set_server() {
+void set_server(void) {
   ServerFlag = 1;
   /* Should always be line buffered */
   setvbuf(stdout, NULL, _IOLBF, 0);
   setvbuf(stderr, NULL, _IOLBF, 0);
 }
 
-int FORTRAN(is_server)() {
+int FORTRAN(is_server)(void) {
   return ServerFlag;
 }
 

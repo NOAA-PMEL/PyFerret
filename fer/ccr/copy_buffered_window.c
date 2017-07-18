@@ -39,20 +39,16 @@
 
 */
 
+#include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "ferret.h"
 #include "gks_implem.h"
 #include "wslist.h"
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-void copy_buffered_window(ws_id, anim_id)
-#else
-void copy_buffered_window_(ws_id, anim_id)
-#endif
-     int *ws_id, *anim_id;
-
+void FORTRAN(copy_buffered_window)(int *ws_id, int *anim_id)
 {
   WS_STATE_ENTRY *ws, *anim, *temp_win;
   unsigned width, height;

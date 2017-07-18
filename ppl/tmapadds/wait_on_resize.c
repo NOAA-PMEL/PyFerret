@@ -48,21 +48,15 @@
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 
 #include <wchar.h>
-#include "udposix.h"
-#include "gks_implem.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <time.h> 
+#include "udposix.h"
+#include "gks_implem.h"
+#include "pplmem.h"
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-wait_on_resize (ws_id)
-#else
-wait_on_resize_ (ws_id)
-#endif
-
-Gint *ws_id;
-
+void FORTRAN(wait_on_resize)(int *ws_id)
 {
   WS_STATE_ENTRY *ws;
 

@@ -36,7 +36,7 @@
 
 /*
  * replaceable_bad_flags :
- *  check for a missing or bad value flag of NaN.  if either flag is Nan,
+ *  check for a missing or bad value flag of NaN.  if either flag is NaN,
  *  or if the flags differ, return a true. otherwise, if both flags are the 
  *  same and not NaN, no need to replace them, so return a false
  *
@@ -48,9 +48,7 @@
 #include <math.h>
 #include "ferret.h"
 
-int FORTRAN(replaceable_bad_flags)(bad1, bad2)
-     DFTYPE *bad1, *bad2;
-
+int FORTRAN(replaceable_bad_flags)(DFTYPE *bad1, DFTYPE *bad2)
 {
   if (isnan(*bad1) || isnan(*bad2))
     return 1; 

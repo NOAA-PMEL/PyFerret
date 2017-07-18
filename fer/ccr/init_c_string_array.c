@@ -39,11 +39,9 @@
  */
 
 #include <stdlib.h>
+#include "ferret.h"
 
-void init_c_string_array_(length, mr_blk1, fer_ptr)
-     int* length;
-     char** mr_blk1;
-     char*** fer_ptr;
+void FORTRAN(init_c_string_array)(int *length, char **mr_blk1, char ***fer_ptr)
 {
    int i;
    char** ptr;

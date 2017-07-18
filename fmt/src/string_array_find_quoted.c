@@ -44,15 +44,11 @@
  */
 
 #include <stdio.h>
+#include "fmtprotos.h"
 #include "string_array.h"
 
-void string_array_find_quoted_(  double *string_array_header,
-			         char *test_string,
-                                 int *test_len,
-                                 int *result_array,
-                                 int *result_array_size,
-                                 int *num_indices
-                           )
+void FORTRAN(string_array_find_quoted)(double *string_array_header, char *test_string, int *test_len, 
+                                       int *result_array, int *result_array_size, int *num_indices)
 {
    int i,j=0;
    int true_test_len, true_model_len, array_size, 

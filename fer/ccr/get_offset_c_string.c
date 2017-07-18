@@ -34,17 +34,14 @@
 */
 
 #include <stdlib.h>
+#include "ferret.h"
 
 /* 
  *  Return (copy) the null-terminated string to the array provided,
  *  converting to blank-terminated strings.
  */
 
-void get_offset_c_string_(fer_ptr, offset, outstring, maxlen)
-     char*** fer_ptr;
-     int* offset;
-     char* outstring;
-     int* maxlen;
+void FORTRAN(get_offset_c_string)(char ***fer_ptr, int *offset, char *outstring, int *maxlen)
 {
    char** each_str_ptr;
    char* str_ptr;

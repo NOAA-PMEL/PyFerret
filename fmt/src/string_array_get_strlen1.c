@@ -40,11 +40,10 @@
  */
 
 #include <stdio.h>
+#include "fmtprotos.h"
 #include "string_array.h"
 
-void string_array_get_strlen1_( double * string_array_header, 
-                                int * index,
-                                int * true_strlen )
+void FORTRAN(string_array_get_strlen1)(double *string_array_header, int *index, int *true_strlen)
 {
    SA_Head * head;
   

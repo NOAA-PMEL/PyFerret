@@ -1,106 +1,78 @@
 #
 # platform_specific_includes.mk.i386-linux
 #
-# This file is included in other Makefiles and defines
-# platform specific macros
+# This file is included in other Makefiles and defines platform specific macros.  
+# Should not contain any relative directories (other than .) since these Makefiles
+# exist at various levels in the directory tree.
 
-	GKS_INCLUDES = \
-		-I../../ppl/include/xgks \
-		-I../../xgks/src/lib \
-		-Ipplinc/xgks \
-		-I../../xgks/port 
+# Extended regular expressions flag for sed (used with cleaning up run_tests results)
+	SED_EXTREGEX_FLAG = -r
 
-	INCLUDES = \
-		-I. \
-		-I../../fmt/cmn \
-		-I../common \
-		-I../../ppl/include \
-		-I../../fer/common \
-		$(GKS_INCLUDES) \
-		-I$(READLINE_DIR)/include \
-		-I$(NETCDF4_DIR)/include \
-		-I/usr/local/include
+	MYINCLUDES	= -I. \
+			  -I$(NETCDF4_DIR)/include \
+			  -I$(DIR_PREFIX)/fer/common \
+			  -I$(DIR_PREFIX)/fmt/cmn \
+			  -I$(DIR_PREFIX)/ppl/tmap_inc \
+			  -I$(DIR_PREFIX)/ppl/include \
+			  -I$(DIR_PREFIX)/ppl/include/xgks \
+			  -I$(DIR_PREFIX)/xgks/src/lib \
+			  -I$(DIR_PREFIX)/xgks/port 
 
-	FINCLUDES = \
-		-I../../ppl/tmap_inc \
-		-I../include \
-		-I../../fmt/cmn \
-		-I../common \
-		-I../../ppl/include \
-		-I../../fer/common
+	MYDEFINES	= -Dcrptd_cat_argument \
+			  -Ddouble_p \
+			  -Dgfortran \
+			  -Dlint \
+			  -Dreclen_in_bytes  \
+			  -Dunix \
+			  -Dxgks \
+			  -DG77 \
+			  -DG77_SIGNAL \
+			  -DINTERNAL_READ_FORMAT_BUG \
+			  -DMANDATORY_FORMAT_WIDTHS \
+			  -DNEED_IAND \
+			  -DNO_DOUBLE_ESCAPE_SLASH \
+			  -DNO_OPEN_CARRIAGECONTROL \
+			  -DNO_OPEN_SHARED \
+			  -DNO_OPEN_READONLY \
+			  -DNO_OPEN_RECORDTYPE \
+			  -DNO_PASSED_CONCAT \
+			  -DNO_PREPEND_STRING \
+			  -DSTAR_1_SUPPORTED \
+			  -DX_REFRESH
 
-	PLATFORM = $(shell uname -s -r) 32-bit
+	PLATFORM 	= $(shell uname -s -r) 32-bit
 
-	CC = gcc
-	FC = gfortran
-	F77 = gfortran
-
-	RANLIB = /usr/bin/ranlib
-
-	CPP = /lib/cpp
-
-	CPP_FLAGS = \
-		$(INCLUDES) \
-		-m32 \
-		-fPIC \
-		-Dunix \
-		-Dgfortran \
-		-DNO_OPEN_SHARED \
-		-DNO_OPEN_RECORDTYPE \
-		-DX_REFRESH \
-		-Dreclen_in_bytes \
-		-DNO_OPEN_READONLY \
-		-DMANDATORY_FORMAT_WIDTHS\
-		-DNO_OPEN_CARRIAGECONTROL \
-		-Dxgks \
-		-DSTAR_1_SUPPORTED \
-		-DFULL_GUI_VERSION \
-		-DX_REFRESH \
-		-DXT_CODE \
-		-DLINUX \
-		-DNO_PASSED_CONCAT \
-		-Dcrptd_cat_argument \
-		-DG77_SIGNAL \
-		-DG77 \
-		-DNEED_IAND \
-		-DNO_PREPEND_STRING \
-		-DNO_DOUBLE_ESCAPE_SLASH \
-		-Ddouble_p 
-
+	CC		= $(shell which gcc)
+	FC		= $(shell which gfortran)
+	F77		= $(shell which gfortran)
+	AR		= $(shell which ar)
+	ARFLAGS		= -cr
+	RANLIB		= $(shell which ranlib)
 
 # Flags for compiling all C code
-	CFLAGS = \
-		$(CPP_FLAGS) \
-		-Dlint \
-		-DVOID_SIGHANDLER \
-		-D_POSIX_VERSION \
-		-DLINUX \
-		-DFULL_GUI_VERSION \
-		-DX_REFRESH \
-		-DXT_CODE 
+# -DusingDODSf2cUnderscore needed if using netcdf library...
+# also consider -ffloat-store.
+	CFLAGS		= -m32 -fPIC $(MYDEFINES) $(MYINCLUDES)
 
 # Flags for compiling the PlotPlus FORTRAN code (ppl subdirectory)
-	PPLUS_FFLAGS = \
-		$(CPP_FLAGS) \
-		-fno-automatic \
-		-DFORTRAN_90 \
-		-fno-second-underscore \
-		-fdollar-ok \
-		-ffixed-line-length-132 \
-		$(FINCLUDES)
+	PPLUS_FFLAGS	= -m32 -fPIC \
+			  -fno-automatic \
+			  -fno-second-underscore \
+			  -fdollar-ok \
+			  -ffixed-line-length-132 \
+			  $(MYDEFINES) $(MYINCLUDES)
 
 # Flags for compiling non-PlotPlus FORTRAN code
-	FFLAGS = \
-		$(CPP_FLAGS) \
-		-fno-automatic \
-		-DFORTRAN_90 \
-		-fno-second-underscore \
-		-fdollar-ok \
-		-ffixed-line-length-132 \
-		-fdefault-real-8 \
-		-fdefault-double-8 \
-		-fimplicit-none \
-		$(FINCLUDES)
+	FFLAGS		= -m32 -fPIC \
+			  -fno-automatic \
+			  -fno-second-underscore \
+			  -fdollar-ok \
+			  -ffixed-line-length-132 \
+			  -ffpe-trap=overflow \
+			  -fimplicit-none \
+			  -fdefault-real-8 \
+			  -fdefault-double-8 \
+			  $(MYDEFINES) $(MYINCLUDES)
 
 	OPT_FLAGS	= -O -DNDEBUG
 	PPLUS_OPT_FLAGS	= -O0
@@ -108,58 +80,26 @@
 	PROF_FLAGS	= -O0 -g -pg
 
 	# Below this line are macro definitions used only for the final linking of the executable
-	#
 
-	LD = gcc
+	LD		= gcc
+	LDFLAGS		= -v --verbose -m32 -fPIC -export-dynamic
 
-	LDFLAGS = \
-		-v \
-		--verbose \
-		-m32 \
-		-fPIC \
-		-export-dynamic
-
-	SYSLIB = \
-		-lX11 \
-		-lcurl \
-		-ldl \
-		-lz \
-		-Wl,-Bstatic -lgfortran -Wl,-Bdynamic \
-		-lm
-
+	SYSLIB		= -lX11 \
+			  -lreadline \
+			  -lhistory \
+			  -lcurl \
+			  -ldl \
+			  -lz \
+			  -Wl,-Bstatic -lgfortran -Wl,-Bdynamic \
+			  -lm
 # -static-libgfortran can be used with gfortran 4.4 but not 4.1
-# /usr/lib/gcc/i386-redhat-linux/4.1.1/libgfortran.a
+# /usr/lib/gcc/i386-redhat-linux/4.1.2/libgfortran.a
 
-	GKSLIB = ../xgks/src/lib/libxgks.a
-
-# For netCDF4 using new hdf5 and new zlib
-
-	CDFLIB = \
-		$(NETCDF4_DIR)/lib/libnetcdff.a \
-		$(NETCDF4_DIR)/lib/libnetcdf.a \
-		$(HDF5_DIR)/lib/libhdf5_hl.a \
-		$(HDF5_DIR)/lib/libhdf5.a
-
-	LINUX_OBJS = \
-		special/linux_routines.o \
-		dat/*.o \
-		../fmt/src/x*.o \
-		../ppl/plot/ppldata.o
-
-# For statically linking in the readline and history libraries
-#	READLINELIB = -L$(READLINE_DIR)/lib -Wl,-Bstatic -lreadline -lhistory -Wl,-Bdynamic
-# For linking against the shared-object libraries (if they exist)
-	READLINELIB = -L$(READLINE_DIR)/lib -lreadline -lhistory
-
-## cancel the default rule for .f -> .o to prevent objects from being built
-## from .f files that are out-of-date with respect to their corresponding .F file
-#%.o : %.f
-#
-## use cpp to preprocess the .F files to .f files and then compile the .f files
-#%.o : %.F
-#	rm -f $*.f
-#	$(CPP) -P -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
-#	$(F77) $(FFLAGS) -c $*.f	 
+# For netCDF4 using HDF5
+	CDFLIB		= $(NETCDF4_DIR)/lib/libnetcdff.a \
+			  $(NETCDF4_DIR)/lib/libnetcdf.a \
+			  $(HDF5_DIR)/lib/libhdf5_hl.a \
+			  $(HDF5_DIR)/lib/libhdf5.a
 
 # Directly compile the .F source files to the .o object files
 # since gfortran can handle the C compiler directives in Fortran code
@@ -169,4 +109,3 @@
 #
 # End of platform_specific_includes.mk.i386-linux
 #
-

@@ -1,3 +1,4 @@
+#include "ferret.h"
 #include "EF_Util.h"
 
 void FORTRAN(ef_get_mres)(int *mres)

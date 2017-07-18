@@ -56,6 +56,7 @@
 #define _NCF_UTIL_H_
 
 #include <netcdf.h>   /* for many NC_... values */
+#include "ferret.h"   /* for NFERDIMS and NFERDIMSP1 */
 
 /* .................... Defines ..................... */
 
@@ -79,17 +80,8 @@
 #define MAX_FER_SETNAME	256	 /* max length of a path */
 #define MAX_FER_SETNAME	256	 /* max length of a path */
 
-
 /* .................... Typedefs .................... */
 
-
-/* dataset */
-/*
-typedef struct  {			
-    char fername[MAX_FER_SETNAME];
-	int fer_dsetnum;
-} ncdset;
-*/
 
 typedef struct  {			/* dimension */
     char name[NC_MAX_NAME];
@@ -171,12 +163,6 @@ typedef struct {     /* for uvars: grid/dataset pairs*/
         int auxCat[NFERDIMS];
         int auxVar[NFERDIMS];
 } uvarGrid;
-
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
 
 #endif   /* _NCF_UTIL_H_ */
 

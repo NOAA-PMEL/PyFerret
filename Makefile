@@ -43,6 +43,21 @@ debug :
 	$(MAKE) -C gksm2ps
 	$(MAKE) -C bin/build_fonts/unix
 
+# Debug but also print all memory allocations, reallocations, and frees to 
+# file "memorydebug.txt".  Initialize allocated memory with non-zero values. 
+# Expect this to be a lot slower due to all the (intentionally inefficient 
+# but safe) file operations.
+.PHONY : memorydebug
+memorydebug :
+	mkdir -p lib
+	$(MAKE) xgks/Makefile
+	$(MAKE) -C xgks
+	$(MAKE) -C fer memorydebug
+	$(MAKE) -C threddsBrowser
+	$(MAKE) -C external_functions debug
+	$(MAKE) -C gksm2ps
+	$(MAKE) -C bin/build_fonts/unix
+
 
 ## Configure xgks to create the Makefile if it does not exist
 xgks/Makefile :

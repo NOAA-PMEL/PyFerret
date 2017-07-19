@@ -133,6 +133,16 @@ debug:
 		"GUI_FAKES=special/gui_fakes.o" \
 		build
 
+.PHONY: memorydebug
+memorydebug:
+	mkdir -p ../lib
+	$(MAKE) "CFLAGS = -DMEMORYDEBUG $(CFLAGS) $(DBG_FLAGS)"  \
+		"FFLAGS = $(FFLAGS) $(DBG_FLAGS) -fbounds-check" \
+		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(DBG_FLAGS)" \
+		"DEBUG_TITLE = beta/debug" \
+		"GUI_FAKES=special/gui_fakes.o" \
+		build
+
 .PHONY: profiling
 profiling:
 	mkdir -p ../lib

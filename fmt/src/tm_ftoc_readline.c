@@ -60,56 +60,60 @@
 #include <readline/history.h>
 #include "fmtprotos.h"
 #include "ferret.h" /* for is_server */
-#include "FerMem.h"
+
+/* The string to assign and return if not using readline */
+static char linefromserver[2048];
 
 /* Read a string, and return a pointer to it.  Returns NULL on EOF. */
 static char *do_gets(char *prompt)
 {
-  /* A static variable for holding the line. */
-  static char *line_read = (char *)NULL;
-
+  char *line_read;
   char *loc;
 
-  /* If the buffer has already been allocated, return the memory
-     to the free pool. */
-  if (line_read != (char *)NULL) {
-      FerMem_Free(line_read);
-      line_read = (char *)NULL;
-  }
+  if ( FORTRAN(is_server)() ) {
+    /* server mode - don't use fancy readline stuff */
 
-  /* Get a line from the user. */
-  /* If running in server mode, don't use fancy readline stuff */
-
-  if ( ! FORTRAN(is_server)() ) {
-    line_read = readline(prompt);
-  } else {
     fputs(prompt, stdout);
     fflush(stdout);
-    line_read = (char *)FerMem_Malloc(2048);
-    fgets(line_read, 2047, stdin);
-    loc = rindex(line_read, '\n');
-    if (loc != 0){
-      *loc = '\0';
+    line_read = linefromserver;
+    if ( fgets(line_read, 2048, stdin) != NULL ) {
+      /* Success - remove the terminal newline if it exists */
+      loc = rindex(line_read, '\n');
+      if ( loc != NULL )
+        *loc = '\0';
     }
-  }
+    else {
+      /* Error - assume EOF */
+      line_read = NULL;
+    }
 
-  /* If the line has any text in it, save it on the history. */
-  if (line_read && *line_read)
-    add_history(line_read);
+  } else {
+    /* use readline and its history */
+
+    line_read = readline(prompt);
+    /* If the line has any text in it, add it to the readline history. */
+    if ( (line_read != NULL) && (*line_read != '\0') )
+      add_history(line_read);
+
+  }
 
   return line_read;
 }
 
 int FORTRAN(tm_ftoc_readline)(char *prompt, char *buff)
 {
-  char *ptr;
+  char *line_read;
 
-  /* invoke gnu readline with line recall and editing */
-  ptr = do_gets(prompt);
+  /* invoke gnu readline with line recall and editing (unless is_server) */
+  line_read = do_gets(prompt);
 
-  /* copy the line into the buffer provided from FORTRAN */
-  if (ptr != (char *)NULL) {
-    strcpy( buff, ptr );
+  /* copy the string into the buffer provided from FORTRAN */
+  if ( line_read != NULL ) {
+    strcpy( buff, line_read );
+    if ( line_read != linefromserver ) {
+      /* the string was allocated by readline (not Ferret) so free it using free (not FerMem_Free) */
+      free(line_read);
+    }
   }
   else {
     buff[0] = '\004';   /* ^D  */

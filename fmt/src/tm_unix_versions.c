@@ -61,6 +61,7 @@
    for aix port *kob* 10/94 */
 
 #include <sys/types.h>
+#include <ctype.h>
 #include <dirent.h>
 #include <stdlib.h>
 #include <stdio.h>

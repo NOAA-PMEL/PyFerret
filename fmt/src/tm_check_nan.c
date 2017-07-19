@@ -42,6 +42,7 @@
 *					 definition of macro DFTYPE in ferretmacros.h.
 */
 
+#include <math.h>
 #include "fmtprotos.h"
 
 int FORTRAN(tm_check_nan)(DFTYPE *src)

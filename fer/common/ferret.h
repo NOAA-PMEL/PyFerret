@@ -4,6 +4,8 @@
 #include <sys/types.h>
 #include <stdio.h>
 
+#include <X11/Xlib.h>
+
 #include "ferret_shared_buffer.h"
 
 /* Easier way of handling FORTRAN calls with underscore/no underscore */
@@ -61,6 +63,10 @@ int  runThreddsBrowser(char datasetName[], char errWarn[]);
 void set_secure(void);
 void set_server(void);
 
+void Window_Dump(Window window, Display *dpy, char *outfile, char *type);
+void wGIF(FILE *fp, XImage *image, int r[], int g[], int b[]);
+void wHDF(char *file, XImage *image, int r[], int g[], int b[]);
+
 void FORTRAN(c_dncase)(char **in_ptr, char **out_ptr);
 void FORTRAN(c_strcat)(char **in_ptr1, char **in_ptr2, char **out_ptr);
 void FORTRAN(c_strcmp)(char **in_ptr1, char **in_ptr2, int *out_ptr);
@@ -74,7 +80,6 @@ void FORTRAN(cache_full_array)(double *array, int *alen, double **pointer_val);
 int  FORTRAN(compare_c_strings)(char **ptr_1, char **ptr_2);
 void FORTRAN(copy_c_string)(char **in_ptr, char **out_ptr);
 void FORTRAN(create_utf8_str)(const int *codepoint, char *utf8str, int *utf8strlen);
-void FORTRAN(ctrlc_ast)(void);
 void FORTRAN(date_decode)(char *strdate, DFTYPE *rdum);
 void FORTRAN(dynmem_free_ptr_array)(long* mr_ptrs_val);
 void FORTRAN(dynmem_make_ptr_array)(int* n, long* mr_ptrs_val, int* status);
@@ -127,6 +132,20 @@ void FORTRAN(xfer_c_ptrs)(char ***src_ptr, int *src_del, int *src_offset,
 		          char ***dst_ptr, int *dst_del, int *dst_offset, int *nptr);
 
 /* Prototypes for Fortran functions called by C functions */
+void FORTRAN(ctrlc_ast)(void);
+DFTYPE FORTRAN(days_from_day0)(double *days1900, int* iyr, int* imon, int* iday, DFTYPE* rdum, int* status);
 void FORTRAN(ferret_dispatch)(char *init_command, int *rtn_flags, int *nflags, char *rtn_chars, int *nchars, int *nerrlines);
+void FORTRAN(finalize_ferret)(void);
+void FORTRAN(init_journal)(int *status);
+void FORTRAN(init_memory)(DFTYPE *vmem_size_arg);
+void FORTRAN(initialize_ferret)(void);
+void FORTRAN(no_journal)(void);
+void FORTRAN(save_frame_name)(char *outfile,  int *length);
+void FORTRAN(save_scriptfile_name)(char *name, int *clen, int *status);
+void FORTRAN(set_ctrl_c)(void (*func)(void));
+void FORTRAN(proclaim_c)(int *lun, char *leader);
+void FORTRAN(get_scriptfile_name)(char *name, int *ipath, int name_size);
+void FORTRAN(turnoff_verify)(int *status);
+void FORTRAN(version_only)(void);
 
 #endif /* _FERRET_H */

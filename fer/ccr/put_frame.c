@@ -57,15 +57,11 @@
  * *acm* 12/13 - Removed unused routine put_temp_frame_batch
  */
 
-#include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <stdio.h>
 #include <string.h>
 #include "gks_implem.h"
-#include "wslist.h"
-#include "cgm/cgm.h"
-#include "cgm/cgm_implem.h"
 #include "ferret.h"
 
 void FORTRAN(put_frame)(int *ws_id, char *filename, char *errstr, char *format, int *status)

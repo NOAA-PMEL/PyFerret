@@ -39,11 +39,9 @@
 *
 */
 
-#include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include "gks_implem.h"
-#include "wslist.h"
 #include "ferret.h"
 
 FORTRAN(unmap_animate_window)(void)

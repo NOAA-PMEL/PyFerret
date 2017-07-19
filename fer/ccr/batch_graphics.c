@@ -83,8 +83,8 @@ void FORTRAN(set_batch_graphics)(char *outfile, int *batmode)
   result = strstr(outfile,".gif"); 
   if (result)  {
       its_gif = -1;
-      if (length > 4)
-      {FORTRAN(save_frame_name)(outfile, &length);
+      if (length > 4) {
+          FORTRAN(save_frame_name)(outfile, &length);
       }
    }
   result = strstr(outfile,".ps"); 

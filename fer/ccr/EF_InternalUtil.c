@@ -102,14 +102,15 @@
 #include <sys/stat.h>
 #include <sys/errno.h>
 
-#include <unistd.h>		/* for convenience */
-#include <stdlib.h>		/* for convenience */
-#include <stdio.h>		/* for convenience */
-#include <string.h>		/* for convenience */
-#include <fcntl.h>		/* for fcntl() */
-#include <dlfcn.h>		/* for dynamic linking */
-#include <signal.h>             /* for signal() */
-#include <setjmp.h>             /* required for jmp_buf */
+#include <ctype.h>
+#include <dlfcn.h>
+#include <fcntl.h>
+#include <setjmp.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #include "ferret.h"
 #include "FerMem.h"
@@ -2026,7 +2027,7 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr, int *status )
       (*pyefcn_custom_axes_func)(*id_ptr, ef_ptr->path, errstring);
       if ( strlen(errstring) > 0 ) {
           /* (In effect) call ef_bail_out_ to process the error in a standard way */
-          ef_err_bail_out_(id_ptr, errstring);
+          FORTRAN(ef_err_bail_out)(id_ptr, errstring);
           /* Should never return - instead jumps to setjmp() returning 1 */
       }
 
@@ -2176,7 +2177,7 @@ void FORTRAN(efcn_get_result_limits)( int *id_ptr, int *mr_list_ptr, int *cx_lis
       (*pyefcn_result_limits_func)(*id_ptr, ef_ptr->path, errstring);
       if ( strlen(errstring) > 0 ) {
           /* (In effect) call ef_bail_out_ to process the error in a standard way */
-          ef_err_bail_out_(id_ptr, errstring);
+          FORTRAN(ef_err_bail_out)(id_ptr, errstring);
           /* Should never return - instead jumps to setjmp() returning 1 */
       }
 
@@ -2745,11 +2746,11 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
       }
 
       /* Assign the memory limits, step values, and bad-data-flag values - first result, then arguments */
-      ef_get_res_mem_subscripts_(id_ptr, memlo[0], memhi[0]);
-      ef_get_arg_mem_subscripts_(id_ptr, &(memlo[1]), &(memhi[1]));
-      ef_get_res_subscripts_(id_ptr, steplo[0], stephi[0], incr[0]);
-      ef_get_arg_subscripts_(id_ptr, &(steplo[1]), &(stephi[1]), &(incr[1]));
-      ef_get_bad_flags_(id_ptr, &(badflags[1]), &(badflags[0]));
+      FORTRAN(ef_get_res_mem_subscripts_6d)(id_ptr, memlo[0], memhi[0]);
+      FORTRAN(ef_get_arg_mem_subscripts_6d)(id_ptr, &(memlo[1]), &(memhi[1]));
+      FORTRAN(ef_get_res_subscripts_6d)(id_ptr, steplo[0], stephi[0], incr[0]);
+      FORTRAN(ef_get_arg_subscripts_6d)(id_ptr, &(steplo[1]), &(stephi[1]), &(incr[1]));
+      FORTRAN(ef_get_bad_flags)(id_ptr, &(badflags[1]), &(badflags[0]));
 
       /* Reset zero increments to +1 or -1 for pyefcn_compute */
       for (i = 0; i <= i_ptr->num_reqd_args; i++) {
@@ -2788,7 +2789,7 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
                              memlo, memhi, steplo, stephi, incr, badflags, errstring);
       if ( strlen(errstring) > 0 ) {
           /* (In effect) call ef_bail_out_ to process the error in a standard way */
-          ef_err_bail_out_(id_ptr, errstring);
+          FORTRAN(ef_err_bail_out)(id_ptr, errstring);
           /* Should never return - instead jumps to setjmp() returning 1 */
       }
 

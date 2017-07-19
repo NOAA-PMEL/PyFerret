@@ -44,7 +44,6 @@
 #include <stdlib.h>
 #include "ferret.h"
 #include "gks_implem.h"
-#include "wslist.h"
 
 void FORTRAN(backing_store_enabled)(int *ws_id, int *bs)
 {

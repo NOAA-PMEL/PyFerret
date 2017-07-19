@@ -55,16 +55,12 @@
  * 3/12 *kms* remove unused code - always exits with an error value
  */
 
-#include <X11/X.h>
 #include <X11/Xlib.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 
-void wHDF(file, image,r,g,b)
-     char *file;
-     XImage *image;
-     int r[],g[],b[];
+void wHDF(char *file, XImage *image, int r[], int g[], int b[])
 {
   fputs("**ERROR: wHDF not supported on this platform\n", stderr);
   exit(1);

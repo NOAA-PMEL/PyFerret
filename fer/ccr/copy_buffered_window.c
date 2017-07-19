@@ -39,14 +39,12 @@
 
 */
 
-#include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "ferret.h"
 #include "gks_implem.h"
-#include "wslist.h"
 
 void FORTRAN(copy_buffered_window)(int *ws_id, int *anim_id)
 {

@@ -147,6 +147,8 @@
 #include "ferret.h"
 #include "FerMem.h"
 #include "ferret_shared_buffer.h"
+#include "pplmem.h"
+#include "xgks.h"
 
 /* Instantiate the globals in ferret_shared_buffer */
 smPtr sBuffer;
@@ -158,7 +160,7 @@ int arg_pos;
 
 static void command_line_run();
 
-void help_text()
+static void help_text(void)
 {
   printf(
 	 "Usage:  ferret [-memsize Mflts] [-batch [outfile]] [-server] [-secure] [-gif] [-unmapped] [-help] [-nojnl] [-noverify] [-script [args]]\n"
@@ -200,7 +202,7 @@ static void fer_signal_handler(int signal_num)
 static int ttout_lun=TTOUT_LUN;
 
 
-main (int oargc, char *oargv[])
+int main(int oargc, char *oargv[])
 {
   int status;
   int argc = oargc;
@@ -381,10 +383,10 @@ main (int oargc, char *oargv[])
 
   if ( ppl_memory == NULL ) {
     printf("Unable to allocate the initial %d words of PLOT memory.\n",pplmem_size);
-    exit(0);
+    exit(1);
   }
   /* initialize stuff: keyboard, todays date, grids, GFDL terms, PPL brain */
-  FORTRAN(initialize)();
+  FORTRAN(initialize_ferret)();
 
   /*  prepare appropriate console input state and open the output journal file */
 
@@ -412,10 +414,11 @@ main (int oargc, char *oargv[])
 #ifdef __CYGWIN__
   for_rtl_finish_(&argc, argv);
 #endif
+  return 0;
 }
 
-  static void command_line_run(){
-
+static void command_line_run()
+{
   FILE *fp = 0;
   char init_command[2176], script_file[2048], *home = getenv("HOME");
   int ipath = 0;
@@ -450,6 +453,7 @@ main (int oargc, char *oargv[])
   
     if (its_script)
     {
+        /* assume Unix-style passing of Holerith strings - add size as int to end */
 	FORTRAN(get_scriptfile_name)(script_file, &ipath, 2048);
       if ( ipath ) {
 	  strcat( init_command, "; GO \"" ); 
@@ -549,7 +553,7 @@ main (int oargc, char *oargv[])
     /* ***** EXIT ***** */
     else if  (sBuffer->flags[FRTN_ACTION] == FACTN_EXIT ) {
       /*      printf("exit from FERRET requested\n"); */
-      FORTRAN(finalize)();
+      FORTRAN(finalize_ferret)();
       exit(0);
     }
 

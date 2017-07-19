@@ -81,6 +81,7 @@
 
 #include "fmtprotos.h"
 #include "ez_delimited_read.h"
+#include "ferret.h"
 #include "FerMem.h"
 
 static int decode_file(char* fname, char *recptr, char *delims, int *skip, int* maxrec, int* reclen, 
@@ -462,7 +463,7 @@ static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  /* check for yyyy/mm/dd */
 	  if (idummy1 > 1800) {
 		  (*(numeric_fields+i))[rec] =
-		  days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+		  FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 		  (*(numeric_fields+i))[rec] = rdum;
 		  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
 		  break;
@@ -477,14 +478,14 @@ static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  }
 
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy3,&idummy1,&idummy2,&rdum,status);
+	    FORTRAN(days_from_day0)(&days_1900,&idummy3,&idummy1,&idummy2,&rdum,status);
 	  (*(numeric_fields+i))[rec] = rdum;
 	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
 	/* force dates with dashes "-" to be in yyyy-mm-dd format *kob* */
 	} else if (sscanf(p,"%4d-%2d-%2d%1s",
 			  &idummy1,&idummy2,&idummy3,errstr) == 3) {
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+	    FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 	  (*(numeric_fields+i))[rec] = rdum; 
 	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
 	  }
@@ -494,7 +495,7 @@ static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	      && idummy2>=1 && idummy2<=12
 	      && idummy3>=1 && idummy3<=31 ) {
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+	    FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 	  (*(numeric_fields+i))[rec] = rdum; }
 	else
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
@@ -524,7 +525,7 @@ static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  /* check for yyyy/mm/dd */
 	  if (idummy1 > 1800) {
 		  (*(numeric_fields+i))[rec] =
-		  days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+		  FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 		  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
 	  } else {
 
@@ -537,7 +538,7 @@ static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 		  }
 		  
 		  (*(numeric_fields+i))[rec] =
-		  days_from_day0_(&days_1900,&idummy3,&idummy1,&idummy2,&rdum,status);
+		  FORTRAN(days_from_day0)(&days_1900,&idummy3,&idummy1,&idummy2,&rdum,status);
 		  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
 	  }
 
@@ -554,7 +555,7 @@ static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 		if (ndum == 5) tpart = idummy4 + idummy5/60.;
 
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+	    FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 	  (*(numeric_fields+i))[rec] = rdum + tpart/24.; 
 	  if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];
 	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
@@ -571,7 +572,7 @@ static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 		if (ndum == 5) tpart = idummy4 + idummy5/60.;	
 
 		(*(numeric_fields+i))[rec] =
-		days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+		FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 		(*(numeric_fields+i))[rec] = rdum + tpart/24.; 	
 	    if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];
 		if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
@@ -595,7 +596,7 @@ static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  /* check for yyyy/mm/dd */
 	  if (idummy1 > 1800) {
 		  (*(numeric_fields+i))[rec] =
-		  days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+		  FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 		  (*(numeric_fields+i))[rec] = rdum;
 		  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
 		  break;
@@ -610,14 +611,14 @@ static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  }
 
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy3,&idummy2,&idummy1,&rdum,status);
+	    FORTRAN(days_from_day0)(&days_1900,&idummy3,&idummy2,&idummy1,&rdum,status);
 	  (*(numeric_fields+i))[rec] = rdum;
 	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
 	  /* force dates with dashes "-" to be in yyyy-mm-dd format *kob* */
 	} else if (sscanf(p,"%4d-%2d-%2d%1s",
 			  &idummy1,&idummy2,&idummy3,errstr) == 3) {
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+	    FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 	  (*(numeric_fields+i))[rec] = rdum;
 	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i]; }
 	/* add check for yyyyddmm euro date *kob* */
@@ -626,7 +627,7 @@ static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	      && idummy3>=1 && idummy3<=12
 	      && idummy2>=1 && idummy2<=31 ) {
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy1,&idummy3,&idummy2,&rdum,status);
+	    FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy3,&idummy2,&rdum,status);
 	  (*(numeric_fields+i))[rec] = rdum;
 	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i]; }
 	else
@@ -657,7 +658,7 @@ static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  /* check for yyyy/mm/dd */
 	  if (idummy1 > 1800) {
 		  (*(numeric_fields+i))[rec] =
-		  days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+		  FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 
 	  } else {
 
@@ -670,7 +671,7 @@ static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 		  }
 		  
 		  (*(numeric_fields+i))[rec] =
-		  days_from_day0_(&days_1900,&idummy3,&idummy2,&idummy1,&rdum,status);
+		  FORTRAN(days_from_day0)(&days_1900,&idummy3,&idummy2,&idummy1,&rdum,status);
 	  }
 
 	  (*(numeric_fields+i))[rec] = rdum + tpart/24.;
@@ -687,7 +688,7 @@ static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 		if (ndum == 5) tpart = idummy4 + idummy5/60.;
 
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+	    FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 	  (*(numeric_fields+i))[rec] = rdum + tpart/24.; 
 	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
 	  if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];
@@ -704,7 +705,7 @@ static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 		if (ndum == 5) tpart = idummy4 + idummy5/60.;	
 
 		(*(numeric_fields+i))[rec] =
-		days_from_day0_(&days_1900,&idummy1,&idummy3,&idummy2,&rdum,status);
+		FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy3,&idummy2,&rdum,status);
 		(*(numeric_fields+i))[rec] = rdum + tpart/24.;
 	    if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];
 	    if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];  }

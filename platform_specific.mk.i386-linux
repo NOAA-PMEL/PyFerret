@@ -18,7 +18,6 @@ ifneq ($(strip $(READLINE_DIR)),)
 			  -I$(DIR_PREFIX)/fmt/cmn \
 			  -I$(DIR_PREFIX)/ppl/tmap_inc \
 			  -I$(DIR_PREFIX)/ppl/include \
-			  -I$(DIR_PREFIX)/ppl/include/xgks \
 			  -I$(DIR_PREFIX)/xgks/src/lib \
 			  -I$(DIR_PREFIX)/xgks/port 
 else
@@ -28,7 +27,6 @@ else
 			  -I$(DIR_PREFIX)/fmt/cmn \
 			  -I$(DIR_PREFIX)/ppl/tmap_inc \
 			  -I$(DIR_PREFIX)/ppl/include \
-			  -I$(DIR_PREFIX)/ppl/include/xgks \
 			  -I$(DIR_PREFIX)/xgks/src/lib \
 			  -I$(DIR_PREFIX)/xgks/port 
 endif
@@ -36,7 +34,6 @@ endif
 	MYDEFINES	= -Dcrptd_cat_argument \
 			  -Ddouble_p \
 			  -Dgfortran \
-			  -Dlint \
 			  -Dreclen_in_bytes  \
 			  -Dunix \
 			  -Dxgks \

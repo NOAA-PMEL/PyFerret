@@ -60,7 +60,6 @@
  *  Routine for writing out GIF files, using pd GIFEncode routine
  */
 
-#include <X11/X.h>
 #include <X11/Xlib.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -96,27 +95,24 @@ typedef        unsigned char   char_type;
 static char_type	*data;
 static int		iwidth, iheight, image_offset;
 /**************************************************************************/
-typedef int (* ifunptr)();                              /* Pointer to function returning an int */
+typedef int (* ifunptr)(int,int);                              /* Pointer to function returning an int */
  
-int GetPixel( int, int );
+static int  GIFEncode( FILE *, int, int, int, int, int, int[], int[], int[], ifunptr );
+static int  GetPixel( int, int );
+static void Putword( int, FILE * );
+static void wcompress( int, FILE *, ifunptr );
+static void cl_block( void );   
+static void cl_hash( register count_int );
+static void writeerr( void );
+static void char_init( void );
+static void char_out( int );
+static void flush_char( void );
+static void output( code_int );
 
-static Putword( int, FILE *);
-static cl_block ();   
-static cl_hash(register count_int);
-static writeerr();
-static char_init();
-static char_out( int );
-static flush_char();
-static output( code_int );
 
 
-
-void wGIF(fp, image,r,g,b)
-     FILE *fp;
-     XImage *image;
-     int r[],g[],b[];
+void wGIF(FILE *fp, XImage *image, int r[], int g[], int b[])
 {
-
      int x,y;
 
 /* Set global variables needed for GetPixel routine */
@@ -157,7 +153,7 @@ static long CountDown;
 static int Pass = 0;
 static int Interlace;
  
-static BumpPixel() /* Bump the 'curx' and 'cury' to point to the next pixel */
+static void BumpPixel() /* Bump the 'curx' and 'cury' to point to the next pixel */
 {
     curx++;         /* Bump the current X position */
  
@@ -212,7 +208,7 @@ static BumpPixel() /* Bump the 'curx' and 'cury' to point to the next pixel */
 }
  
  
-GIFGetPixel( getpixel )                        /* Return the next pixel from the image */
+static int GIFGetPixel( getpixel )                        /* Return the next pixel from the image */
 ifunptr getpixel;
 {
         int r;
@@ -232,8 +228,8 @@ ifunptr getpixel;
  
  
  
-GIFEncode( fp, GWidth, GHeight, GInterlace, Background,
-           BitsPerPixel, Red, Green, Blue, GetPixel )
+static int GIFEncode( fp, GWidth, GHeight, GInterlace, Background,
+           BitsPerPixel, Red, Green, Blue, GetPixelFunc )
  
 FILE *fp;
 int GWidth;
@@ -242,7 +238,7 @@ int GInterlace;
 int Background;
 int BitsPerPixel;
 int Red[], Green[], Blue[];
-ifunptr GetPixel;
+ifunptr GetPixelFunc;
  
 {
         int B;
@@ -312,7 +308,7 @@ ifunptr GetPixel;
         fputc( InitCodeSize, fp );                      /* Write out the initial code size */
  
  /* renamed from compress because of conflict under x86-64_linux with  /usr/lib64/libz.a(compress.o) */
-        wcompress( InitCodeSize+1, fp, GetPixel );               /* Actually compress data */
+        wcompress( InitCodeSize+1, fp, GetPixelFunc );               /* Actually compress data */
  
  
  
@@ -324,7 +320,7 @@ ifunptr GetPixel;
  
  
  
-static Putword( w, fp )                                 /* Write out a word to the GIF file */
+static void Putword( w, fp )                                 /* Write out a word to the GIF file */
 int w;
 FILE *fp;
 {
@@ -427,7 +423,7 @@ static FILE *g_outfile;
 static int ClearCode;
 static int EOFCode;
  
-wcompress( init_bits, outfile, ReadValue )
+static void wcompress( init_bits, outfile, ReadValue )
 int init_bits;
 FILE *outfile;
 ifunptr ReadValue;
@@ -556,7 +552,7 @@ unsigned long masks[] = { 0x0000, 0x0001, 0x0003, 0x0007, 0x000F,
  
  
  
-static output( code )
+static void output( code )
 code_int  code;
 {
     cur_accum &= masks[ cur_bits ];
@@ -618,7 +614,7 @@ code_int  code;
  
  
  
-static cl_block ()             /* table clear for block compress */
+static void cl_block (void)             /* table clear for block compress */
 {
  
         cl_hash ( (count_int) hsize );
@@ -630,7 +626,7 @@ static cl_block ()             /* table clear for block compress */
  
  
  
-static cl_hash(hsize)                                                                   /* reset code table */
+static void cl_hash(hsize)                                                                   /* reset code table */
 register count_int hsize;
 {
  
@@ -667,7 +663,7 @@ register count_int hsize;
  
  
  
-static writeerr()
+static void writeerr()
 {
         printf( "error writing output file\n" );
         exit(1);
@@ -683,7 +679,7 @@ static int a_count;                     /* Number of characters so far in this '
  
  
  
-static char_init()                      /* Set up the 'byte output' routine */
+static void char_init()                      /* Set up the 'byte output' routine */
 {
         a_count = 0;
 }
@@ -694,7 +690,7 @@ static char accum[ 256 ];       /* Define the storage for the packet accumulator
  
  
  
-static char_out( c )                    /* Add character to end, if 254 characters, flush */
+static void char_out( c )                    /* Add character to end, if 254 characters, flush */
 int c;
 {
         accum[ a_count++ ] = c;
@@ -704,7 +700,7 @@ int c;
  
  
  
-static flush_char() /* Flush the packet to disk, and reset the accumulator */
+static void flush_char() /* Flush the packet to disk, and reset the accumulator */
 {
         if( a_count > 0 )
                 {
@@ -715,7 +711,7 @@ static flush_char() /* Flush the packet to disk, and reset the accumulator */
 }
  
 /*************************************************************************/
-int GetPixel( x, y )
+static int GetPixel( x, y )
 int x, y;
 {
       return data[ y*iwidth + x];

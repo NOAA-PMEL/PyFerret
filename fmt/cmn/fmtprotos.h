@@ -35,7 +35,6 @@ void FORTRAN(cd_write_att_dp_sub)(int *cdfid, int *varid, char* attname, int *at
 void FORTRAN(cd_write_att_sub)(int *cdfid, int *varid, char* attname, int *attype, int *nval, void *val, int *status);
 void FORTRAN(cd_write_var_sub)(int *cdfid, int *varid, int *vartyp, int *dims, 
                                int *tmp_start, int *tmp_count, int *strdim, void *dat, int *cdfstat);
-DFTYPE FORTRAN(days_from_day0)(double *days1900, int* iyr, int* imon, int* iday, DFTYPE* rdum, int* status);
 void FORTRAN(deleted_list_clear)(void *deleted_list_header);
 void FORTRAN(deleted_list_get_del)(void *deleted_list_header, int *result_array, int *result_array_size, int *num_indices);
 void FORTRAN(deleted_list_get_undel)(void *deleted_list_header, int *result_array, int *result_array_size, int *num_indices);

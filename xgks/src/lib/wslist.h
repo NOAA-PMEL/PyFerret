@@ -396,4 +396,12 @@ extern Gint	XcColourIndex	PROTO((WS_STATE_PTR XcWs,
 				       unsigned long PixelValue));
 extern int	XcEnd		PROTO((WS_STATE_PTR XcWs));
 
+/* Added prototypes */
+int  GIFFlush(Metafile *mf, char *filename);
+void WindowMapping(int map_it);
+int  gescsetdcsize(Gint ws_id, Gpoint size);
+void GIFresize(WS_STATE_PTR ws, Gpoint size);
+void PSresize(WS_STATE_PTR ws, Gpoint size);
+void xProcessEvents(void);
+
 #endif					/* WSLIST_H not defined */

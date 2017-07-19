@@ -8,6 +8,21 @@
 # Extended regular expressions flag for sed (used with cleaning up run_tests results)
 	SED_EXTREGEX_FLAG = -E
 
+# If READLINE_DIR is given, -I$(READLINE_DIR)/include must be the first include flag 
+# (other than .) so the correct readline include files are used.
+ifneq ($(strip $(READLINE_DIR)),)
+	MYINCLUDES	= -I. \
+			  -I$(READLINE_DIR)/include \
+			  -I$(NETCDF4_DIR)/include \
+			  -I$(DIR_PREFIX)/fer/common \
+			  -I$(DIR_PREFIX)/fmt/cmn \
+			  -I$(DIR_PREFIX)/ppl/tmap_inc \
+			  -I$(DIR_PREFIX)/ppl/include \
+			  -I$(DIR_PREFIX)/ppl/include/xgks \
+			  -I/opt/X11/include \
+			  -I$(DIR_PREFIX)/xgks/src/lib \
+			  -I$(DIR_PREFIX)/xgks/port 
+else
 	MYINCLUDES	= -I. \
 			  -I$(NETCDF4_DIR)/include \
 			  -I$(DIR_PREFIX)/fer/common \
@@ -15,8 +30,10 @@
 			  -I$(DIR_PREFIX)/ppl/tmap_inc \
 			  -I$(DIR_PREFIX)/ppl/include \
 			  -I$(DIR_PREFIX)/ppl/include/xgks \
+			  -I/opt/X11/include \
 			  -I$(DIR_PREFIX)/xgks/src/lib \
 			  -I$(DIR_PREFIX)/xgks/port 
+endif
 
 	MYDEFINES	= -Dcrptd_cat_argument \
 			  -Ddouble_p \
@@ -40,7 +57,7 @@
 			  -DSTAR_1_SUPPORTED \
 			  -DX_REFRESH
 
-	PLATFORM 	= $(shell uname -s -r) 64-bit
+	PLATFORM 	= $(shell uname -s -r)
 
 	CC		= $(shell which gcc-7)
 	FC		= $(shell which gfortran-7)
@@ -84,15 +101,28 @@
 	LD		= gcc
 	LDFLAGS		= -v --verbose -fPIC -export-dynamic
 
-	SYSLIB		= -lX11 \
-			  -lreadline \
+# If $(READLINE_DIR) is given (and not blank), statically link in the readline 
+# and history libraries given under that directory; otherwise, just use the usual 
+# flags to link in the system readline and history libraries.
+ifneq ($(strip $(READLINE_DIR)),)
+	SYSLIB		= -L/opt/X11/lib -lX11 \
+			  $(READLINE_DIR)/lib/libreadline.a \
+			  $(READLINE_DIR)/lib/libhistory.a \
 			  -lcurl \
 			  -ldl \
 			  -lz \
-			  -Wl,-Bstatic -lgfortran -Wl,-Bdynamic \
+			  -lgfortran \
 			  -lm
-# -static-libgfortran can be used with gfortran 4.4 but not 4.1
-# /usr/lib/gcc/x86_64-redhat-linux/4.1.2/libgfortran.a
+else
+	SYSLIB		= -L/opt/X11/lib -lX11 \
+			  -lreadline \
+			  -lhistory \
+			  -lcurl \
+			  -ldl \
+			  -lz \
+			  -lgfortran \
+			  -lm
+endif
 
 # For netCDF4 using HDF5
 	CDFLIB		= $(NETCDF4_DIR)/lib/libnetcdff.a \

@@ -8,6 +8,20 @@
 # Extended regular expressions flag for sed (used with cleaning up run_tests results)
 	SED_EXTREGEX_FLAG = -r
 
+# If READLINE_DIR is given, -I$(READLINE_DIR)/include must be the first include flag 
+# (other than .) so the correct readline include files are used.
+ifneq ($(strip $(READLINE_DIR)),)
+	MYINCLUDES	= -I. \
+			  -I$(READLINE_DIR)/include \
+			  -I$(NETCDF4_DIR)/include \
+			  -I$(DIR_PREFIX)/fer/common \
+			  -I$(DIR_PREFIX)/fmt/cmn \
+			  -I$(DIR_PREFIX)/ppl/tmap_inc \
+			  -I$(DIR_PREFIX)/ppl/include \
+			  -I$(DIR_PREFIX)/ppl/include/xgks \
+			  -I$(DIR_PREFIX)/xgks/src/lib \
+			  -I$(DIR_PREFIX)/xgks/port 
+else
 	MYINCLUDES	= -I. \
 			  -I$(NETCDF4_DIR)/include \
 			  -I$(DIR_PREFIX)/fer/common \
@@ -17,6 +31,7 @@
 			  -I$(DIR_PREFIX)/ppl/include/xgks \
 			  -I$(DIR_PREFIX)/xgks/src/lib \
 			  -I$(DIR_PREFIX)/xgks/port 
+endif
 
 	MYDEFINES	= -Dcrptd_cat_argument \
 			  -Ddouble_p \
@@ -84,6 +99,19 @@
 	LD		= gcc
 	LDFLAGS		= -v --verbose -m64 -fPIC -export-dynamic
 
+# If $(READLINE_DIR) is given (and not blank), statically link in the readline 
+# and history libraries given under that directory; otherwise, just use the usual 
+# flags to link in the system readline and history libraries.
+ifneq ($(strip $(READLINE_DIR)),)
+	SYSLIB		= -lX11 \
+			  $(READLINE_DIR)/lib64/libreadline.a \
+			  $(READLINE_DIR)/lib64/libhistory.a \
+			  -lcurl \
+			  -ldl \
+			  -lz \
+			  -Wl,-Bstatic -lgfortran -Wl,-Bdynamic \
+			  -lm
+else
 	SYSLIB		= -lX11 \
 			  -lreadline \
 			  -lhistory \
@@ -92,8 +120,7 @@
 			  -lz \
 			  -Wl,-Bstatic -lgfortran -Wl,-Bdynamic \
 			  -lm
-# -static-libgfortran can be used with gfortran 4.4 but not 4.1
-# /usr/lib/gcc/x86_64-redhat-linux/4.1.2/libgfortran.a
+endif
 
 # For netCDF4 using HDF5
 	CDFLIB		= $(NETCDF4_DIR)/lib64/libnetcdff.a \

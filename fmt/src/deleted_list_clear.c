@@ -45,19 +45,20 @@
 #include "deleted_list.h"
 #include "FerMem.h"
 
-void FORTRAN(deleted_list_clear)(void *deleted_list_header)
+void FORTRAN(deleted_list_clear)(void **deleted_list_header)
 {
-   int i,j;
+   DLHead *head;
    int array_size;
-   DLHead * head;
+   int j;
 
-   head = *((DLHead**)deleted_list_header);
-   array_size = head->array_size;
-   if(head){
-       for(j=1;j<=array_size;j++)
-         FerMem_Free(head->ptr_table[j-1]);
+   head = *deleted_list_header;
+   if ( head != NULL ) {
+       array_size = head->array_size;
+       for (j = 0; j < array_size; j++)
+           FerMem_Free(head->ptr_table[j]);
        FerMem_Free(head->ptr_table);
+       FerMem_Free(head);
+       *deleted_list_header = NULL;
    }
-   *((int*)deleted_list_header)=0;
 }
 

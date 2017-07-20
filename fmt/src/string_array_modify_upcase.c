@@ -41,10 +41,11 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "fmtprotos.h"
 #include "string_array.h"
 
-void FORTRAN(string_array_modify_upcase)(double *string_array_header, int *index, char *new_string, int *new_string_size)
+void FORTRAN(string_array_modify_upcase)(void **string_array_header, int *index, char *new_string, int *new_string_size)
 {
    int true_old_str_len, true_new_str_len,
        array_size, string_size, old_hash_value,
@@ -55,16 +56,16 @@ void FORTRAN(string_array_modify_upcase)(double *string_array_header, int *index
    List_Node * p;
 FILE *fp;
 
-   if(*(SA_Head**)string_array_header) {
-      head = *((SA_Head**)string_array_header);
+   head = *string_array_header;
+   if( head != NULL ) {
       array_size = head->array_size;
       string_size = head->string_size;
 
       old_string = &(head->string_array[(*index-1)*string_size]);
-      string_array_get_strlen_(string_array_header,index, &true_old_str_len);
+      FORTRAN(string_array_get_strlen)(string_array_header,index, &true_old_str_len);
       old_hash_value = string_array_hash(old_string, true_old_str_len, 0, array_size);
 
-      tm_get_strlen_(&true_new_str_len, new_string_size, new_string);
+      FORTRAN(tm_get_strlen)(&true_new_str_len, new_string_size, new_string);
       if(true_new_str_len>string_size)
 	true_new_str_len = string_size;
       new_hash_value = string_array_hash(new_string, true_new_str_len, 0, array_size);
@@ -93,6 +94,12 @@ FILE *fp;
 	 old_string[i] = ' ';
       }
       head->strlen_array[*index-1]=true_new_str_len;
+   }
+   else {
+       printf("\nString array not initialized yet (string_array_modify_upcase)!\n");
+#ifndef NDEBUG
+       abort();
+#endif
    }
 }
 

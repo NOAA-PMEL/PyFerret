@@ -35,30 +35,30 @@ void FORTRAN(cd_write_att_dp_sub)(int *cdfid, int *varid, char* attname, int *at
 void FORTRAN(cd_write_att_sub)(int *cdfid, int *varid, char* attname, int *attype, int *nval, void *val, int *status);
 void FORTRAN(cd_write_var_sub)(int *cdfid, int *varid, int *vartyp, int *dims, 
                                int *tmp_start, int *tmp_count, int *strdim, void *dat, int *cdfstat);
-void FORTRAN(deleted_list_clear)(void *deleted_list_header);
-void FORTRAN(deleted_list_get_del)(void *deleted_list_header, int *result_array, int *result_array_size, int *num_indices);
-void FORTRAN(deleted_list_get_undel)(void *deleted_list_header, int *result_array, int *result_array_size, int *num_indices);
-void FORTRAN(deleted_list_init)(void *deleted_list_header, int *int_array, int *int_array_size, int *deleted_value);
-void FORTRAN(deleted_list_modify)(void *deleted_list_header, int *index, int *new_value);
+void FORTRAN(deleted_list_clear)(void **deleted_list_header);
+void FORTRAN(deleted_list_get_del)(void **deleted_list_header, int *result_array, int *result_array_size, int *num_indices);
+void FORTRAN(deleted_list_get_undel)(void **deleted_list_header, int *result_array, int *result_array_size, int *num_indices);
+void FORTRAN(deleted_list_init)(void **deleted_list_header, int *int_array, int *int_array_size, int *deleted_value);
+void FORTRAN(deleted_list_modify)(void **deleted_list_header, int *index, int *new_value);
 void FORTRAN(decode_file_jacket)(char* fname, char *recptr, char *delims, int *skip, int* maxrec, int* reclen, 
                                  int* nfields, int field_type[], int* nrec, int mrlist[], long* mr_ptrs_val, 
                                  DFTYPE mr_bad_flags[], char ***mr_c_ptr, int* status);
 void FORTRAN(str_case_blind_compare_sub)(char *test_name, int *len_test, char *model_name, int *len_model, int *result);
 void FORTRAN(str_dncase_sub)(char *out_string, int *out_len, char *in_string, int *in_len);
-void FORTRAN(string_array_clear)(double *string_array_header);
-void FORTRAN(string_array_find)(double *string_array_header, char *test_string, int *test_len, 
+void FORTRAN(string_array_clear)(void **string_array_header);
+void FORTRAN(string_array_find)(void **string_array_header, char *test_string, int *test_len, 
                                 int *result_array, int *result_array_size, int *num_indices);
-void FORTRAN(string_array_find_caseblind)(double *string_array_header, char *test_string, int *test_len, 
+void FORTRAN(string_array_find_caseblind)(void **string_array_header, char *test_string, int *test_len, 
                                           int *result_array, int *result_array_size, int *num_indices);
-void FORTRAN(string_array_find_exact)(double *string_array_header, char *test_string, int *test_len, 
+void FORTRAN(string_array_find_exact)(void **string_array_header, char *test_string, int *test_len, 
                                       int *result_array, int *result_array_size, int *num_indices);
-void FORTRAN(string_array_find_quoted)(double *string_array_header, char *test_string, int *test_len, 
+void FORTRAN(string_array_find_quoted)(void **string_array_header, char *test_string, int *test_len, 
                                        int *result_array, int *result_array_size, int *num_indices);
-void FORTRAN(string_array_get_strlen)(double *string_array_header, int *index, int *true_strlen);
-void FORTRAN(string_array_get_strlen1)(double *string_array_header, int *index, int *true_strlen);
-void FORTRAN(string_array_init)(double *string_array_header, int *array_size, int *string_size, char *string_array);
-void FORTRAN(string_array_modify)(double *string_array_header, int *index, char *new_string, int *new_string_size);
-void FORTRAN(string_array_modify_upcase)(double *string_array_header, int *index, char *new_string, int *new_string_size);
+void FORTRAN(string_array_get_strlen)(void **string_array_header, int *index, int *true_strlen);
+void FORTRAN(string_array_get_strlen1)(void **string_array_header, int *index, int *true_strlen);
+void FORTRAN(string_array_init)(void **string_array_header, int *array_size, int *string_size, char *string_array);
+void FORTRAN(string_array_modify)(void **string_array_header, int *index, char *new_string, int *new_string_size);
+void FORTRAN(string_array_modify_upcase)(void **string_array_header, int *index, char *new_string, int *new_string_size);
 void FORTRAN(str_upcase_sub)(char *out_string, int *out_len, char *in_string, int* in_len);
 void FORTRAN(switch_nan)(DFTYPE *bad, DFTYPE *missing, DFTYPE *bad_val);
 int  FORTRAN(tm_break_fmt_date_c)(char *date, int *year, int *month, int *day, int *hour, int *minute, DFTYPE *second);

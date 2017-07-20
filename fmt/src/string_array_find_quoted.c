@@ -44,10 +44,11 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "fmtprotos.h"
 #include "string_array.h"
 
-void FORTRAN(string_array_find_quoted)(double *string_array_header, char *test_string, int *test_len, 
+void FORTRAN(string_array_find_quoted)(void **string_array_header, char *test_string, int *test_len, 
                                        int *result_array, int *result_array_size, int *num_indices)
 {
    int i,j=0;
@@ -61,12 +62,12 @@ void FORTRAN(string_array_find_quoted)(double *string_array_header, char *test_s
 
 FILE *fp;
    
-   if(*(SA_Head**)string_array_header){
-      head = *((SA_Head**)string_array_header);
+   head = *string_array_header;
+   if( head != NULL ) {
       array_size = head->array_size;
       string_size = head->string_size;
  
-      tm_get_strlen_(&true_test_len, test_len, test_string);
+      FORTRAN(tm_get_strlen)(&true_test_len, test_len, test_string);
  
 /* "'" encloses the string? */
       if(test_string[0]=='\''
@@ -108,7 +109,7 @@ FILE *fp;
 
           match = 0;
 	  model_string=&(head->string_array[(p->index-1)*string_size]);
-          string_array_get_strlen_(string_array_header, &(p->index), &true_model_len);
+          FORTRAN(string_array_get_strlen)(string_array_header, &(p->index), &true_model_len);
           if(quote_offset >= 1) {
 	      if(true_model_len == true_test_len){
 		  match = 1;
@@ -145,7 +146,10 @@ FILE *fp;
 
    }
    else{
-       printf("\nString array not initialized yet!");
+       printf("\nString array not initialized yet (string_array_find_quoted)!\n");
+#ifndef NDEBUG
+       abort();
+#endif
    }
   
    *num_indices = j;

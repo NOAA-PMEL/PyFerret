@@ -40,21 +40,25 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "fmtprotos.h"
 #include "string_array.h"
 
-void FORTRAN(string_array_get_strlen1)(double *string_array_header, int *index, int *true_strlen)
+void FORTRAN(string_array_get_strlen1)(void **string_array_header, int *index, int *true_strlen)
 {
    SA_Head * head;
   
-   if(*(SA_Head**)string_array_header){
-      head = *((SA_Head**) string_array_header);
+   head = *string_array_header;
+   if( head != NULL ) {
       *true_strlen = head->strlen_array[*index-1];
       if(*true_strlen ==0)
          *true_strlen = 1;
    }
    else{
-      printf("\nString array not initialized yet!");
+      printf("\nString array not initialized yet (string_array_get_strlen1)!\n");
+#ifndef NDEBUG
+      abort();
+#endif
       *true_strlen = -1;
    }
 }

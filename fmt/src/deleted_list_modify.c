@@ -44,54 +44,51 @@
 #include "fmtprotos.h"
 #include "deleted_list.h"
 
-void FORTRAN(deleted_list_modify)(void *deleted_list_header, int *index, int *new_value)
+void FORTRAN(deleted_list_modify)(void **deleted_list_header, int *index, int *new_value)
 {
-   DLHead * head;
-   DL_Node * p;
+   DLHead *head;
+   DL_Node *p;
    int old_value;
 
-   head = *((DLHead**) deleted_list_header);
+   head = *deleted_list_header;
+   if ( head != NULL ) {
+      old_value = head->int_array[*index - 1];
+      head->int_array[*index - 1] = *new_value;
+      p = head->ptr_table[*index - 1];
 
-   if(head){
-      old_value = head->int_array[*index-1];
-      head->int_array[*index-1]=*new_value;
-      p = head->ptr_table[*index-1];
-
-      if(old_value==head->deleted_value
-         && *new_value!=head->deleted_value){
-          if(p->prev){
+      if ( (old_value == head->deleted_value) && (*new_value != head->deleted_value) ) {
+          if ( p->prev != NULL ) {
 	     p->prev->next = p->next;
           }
-          if(p->next){
+          if ( p->next != NULL ) {
 	     p->next->prev = p->prev;
           }
-          if(head->deleted_list_head == p){
+          if ( head->deleted_list_head == p ) {
 	     head->deleted_list_head = p->next;
           }
 
           p->prev = NULL;
           p->next = head->undel_list_head;
           head->undel_list_head = p;
-          if(p->next){
+          if ( p->next != NULL ) {
  	      p->next->prev = p;
           }
       } 
-      else if(old_value!=head->deleted_value
-	      && *new_value==head->deleted_value){
-          if(p->prev){
+      else if ( (old_value != head->deleted_value) && (*new_value == head->deleted_value) ) {
+          if ( p->prev != NULL ) {
 	     p->prev->next = p->next;
           }
-          if(p->next){
+          if ( p->next != NULL ) {
 	     p->next->prev = p->prev;
           }
-          if(head->undel_list_head == p){
+          if ( head->undel_list_head == p ) {
 	     head->undel_list_head = p->next;
           }
 
           p->prev = NULL;
           p->next = head->deleted_list_head;
           head->deleted_list_head = p;
-          if(p->next){
+          if ( p->next != NULL ) {
  	      p->next->prev = p;
           }
       }

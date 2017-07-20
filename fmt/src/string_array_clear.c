@@ -45,21 +45,21 @@
 #include "string_array.h"
 #include "FerMem.h"
 
-void FORTRAN(string_array_clear)(double *string_array_header)
+void FORTRAN(string_array_clear)(void **string_array_header)
 {
-    int i;
-    SA_Head * head; 
+    SA_Head *head; 
+    int j;
 
-    if(*(SA_Head**)string_array_header){
-       head = *((SA_Head**)string_array_header);
-       for(i=0;i<head->array_size;i++) {
-	 FerMem_Free(head->ptr_array[i]);
+    if ( *string_array_header != NULL ) {
+       head = *string_array_header;
+       for (j = 0; j < head->array_size; j++) {
+	  FerMem_Free(head->ptr_array[j]);
        }
        FerMem_Free(head->ptr_array);
        FerMem_Free(head->strlen_array);
        FerMem_Free(head->hash_table);
        FerMem_Free(head);
+       *string_array_header = NULL;
     }
-    *string_array_header = 0.0;
 }
 

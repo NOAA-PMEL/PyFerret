@@ -41,19 +41,23 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
+#include <stdlib.h>
 #include "fmtprotos.h"
 #include "string_array.h"
 
-void FORTRAN(string_array_get_strlen)(double *string_array_header, int *index, int *true_strlen)
+void FORTRAN(string_array_get_strlen)(void **string_array_header, int *index, int *true_strlen)
 {
    SA_Head * head;
   
-   if(*(SA_Head**)string_array_header){
-      head = *((SA_Head**) string_array_header);
+   head = *string_array_header;
+   if( head != NULL ) {
       *true_strlen = head->strlen_array[*index-1];
    }
    else{
-      printf("\nString array not initialized yet!");
+      printf("\nString array not initialized yet (string_array_get_strlen)!\n");
+#ifndef NDEBUG
+      abort();
+#endif
       *true_strlen = -1;
    }
 }

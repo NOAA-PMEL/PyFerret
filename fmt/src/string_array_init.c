@@ -49,7 +49,7 @@
 #include "string_array.h"
 #include "FerMem.h"
 
-void FORTRAN(string_array_init)(double *string_array_header, int *array_size, int *string_size, char *string_array)
+void FORTRAN(string_array_init)(void **string_array_header, int *array_size, int *string_size, char *string_array)
 {
    int i,j;
    int true_len, hash_value;
@@ -57,7 +57,7 @@ void FORTRAN(string_array_init)(double *string_array_header, int *array_size, in
    List_Node * p;
    
    head = (SA_Head*)FerMem_Malloc(sizeof(SA_Head));
-   *((SA_Head**)string_array_header) = head;
+   *string_array_header = head;
    head->array_size = *array_size;
    head->string_size = *string_size;
    head->string_array = string_array;

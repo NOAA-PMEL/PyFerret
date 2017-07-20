@@ -44,24 +44,23 @@
 #include "fmtprotos.h"
 #include "deleted_list.h"
 
-void FORTRAN(deleted_list_get_undel)(void *deleted_list_header, int *result_array, int *result_array_size, int *num_indices)
+void FORTRAN(deleted_list_get_undel)(void **deleted_list_header, int *result_array, int *result_array_size, int *num_indices)
 {
-   int j=0;
+   DLHead *head;
    int array_size; 
-   DLHead * head;
    DL_Node *p;
+   int j = 0;
 
-   head = *((DLHead**)deleted_list_header);
-   if(head){
+   head = *deleted_list_header;
+   if ( head != NULL ) {
       array_size = *result_array_size;
-
-      for(p=head->undel_list_head; p; p=p->next) {
-	if(j<array_size){
-	   result_array[j] = p->index;
-           j++;
-	}
-        else 
-	   break;
+      for (p = head->undel_list_head; p != NULL; p = p->next) {
+	 if ( j < array_size ) {
+	    result_array[j] = p->index;
+            j++;
+	 }
+         else 
+	    break;
       }
    }
    *num_indices = j;

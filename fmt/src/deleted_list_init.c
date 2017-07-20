@@ -49,43 +49,43 @@
 #include "deleted_list.h"
 #include "FerMem.h"
 
-void FORTRAN(deleted_list_init)(void *deleted_list_header, int *int_array, int *int_array_size, int *deleted_value)
+void FORTRAN(deleted_list_init)(void **deleted_list_header, int *int_array, int *int_array_size, int *deleted_value)
 {
-   int i,j;
+   DLHead *head;
    int array_size;
-   DLHead * head;
-   DL_Node * p;
+   int j;
+   DL_Node *p;
 
-   head = (DLHead*)FerMem_Malloc(sizeof(DLHead));
-   *((DLHead**)deleted_list_header) = head;
+   head = (DLHead *) FerMem_Malloc(sizeof(DLHead));
+   *deleted_list_header = head;
    head->int_array = int_array;
    head->array_size = *int_array_size;
    head->deleted_value = *deleted_value;
    array_size = head->array_size;
 
-   head->ptr_table = (DL_Node**)FerMem_Malloc(array_size*sizeof(DL_Node*));
-   memset((void *)head->ptr_table, 0, array_size*sizeof(DL_Node*));
+   head->ptr_table = (DL_Node **) FerMem_Malloc(array_size * sizeof(DL_Node *));
+   memset(head->ptr_table, 0, array_size * sizeof(DL_Node *));
    head->deleted_list_head = NULL;
    head->undel_list_head = NULL;
 
-   for(j=array_size;j>=1;j--) {
-       head->ptr_table[j-1] = (DL_Node*)FerMem_Malloc(sizeof(DL_Node));
+   for (j = array_size; j > 0; j--) {
+       head->ptr_table[j-1] = (DL_Node *) FerMem_Malloc(sizeof(DL_Node));
        p = head->ptr_table[j-1];
        p->index = j;
 
-       if(head->int_array[j-1]==head->deleted_value){
+       if ( head->int_array[j-1] == head->deleted_value ) {
           p->prev = NULL;
           p->next = head->deleted_list_head;
           head->deleted_list_head = p;
-          if(p->next){
+          if ( p->next != NULL ) {
  	     p->next->prev = p;
           }
        }
-       else{
+       else {
           p->prev = NULL;
           p->next = head->undel_list_head;
           head->undel_list_head = p;
-          if(p->next){
+          if ( p->next = NULL ) {
  	     p->next->prev = p;
           }
        }

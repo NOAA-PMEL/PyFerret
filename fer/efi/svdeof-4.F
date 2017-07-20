@@ -101,7 +101,7 @@ c........find out whether NX or NT is smaller
 	if (nt.ge.nx) then		! more times than locations = usual EOFs
 
 C...............do the work
-		CALL SVDEOF(a, nt, nx, w, v, pct, work2, work3, ier)	! Yes, work3 is array of REAL used in the subroutine as an array if INTEGER
+		CALL SVDEOF(a, nt, nx, w, v, pct, work2, work3, ier)	! Yes, work3 is an array of REAL used in the subroutine as an array if INTEGER
 		IF (ier .NE. 0) RETURN
 
 c...........NEOF=NX nonzero EOFs 

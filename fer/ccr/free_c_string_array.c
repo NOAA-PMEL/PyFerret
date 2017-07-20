@@ -45,6 +45,7 @@
 #include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 #include "ferret.h"
+#include "FerMem.h"
 
 void FORTRAN(free_c_string_array)(char ***fer_ptr, int *length)
 {
@@ -54,10 +55,9 @@ void FORTRAN(free_c_string_array)(char ***fer_ptr, int *length)
    /* free the individual strings */
    for (i=0; i<*length; i++) {
       if ( *each_str_ptr != NULL ) {
-         PyMem_Free(*each_str_ptr);
+         FerMem_Free(*each_str_ptr);
          *each_str_ptr = NULL;
       }
       each_str_ptr += 8/sizeof(char**);
    }
-   /* memory for the array itself is from Ferret's memory block */
 }

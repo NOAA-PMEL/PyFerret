@@ -33,13 +33,14 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
 */
 
+#include <Python.h> /* make sure Python.h is first */
+#include <stdlib.h>
+#include "ferret.h"
+
 /* 
  *  Return (copy) the null-terminated string to the array provided,
  *  converting to blank-terminated strings.
  */
-
-#include <Python.h> /* make sure Python.h is first */
-#include "ferret.h"
 
 void FORTRAN(get_offset_c_string)(char ***fer_ptr, int *offset, char *outstring, int *maxlen)
 {

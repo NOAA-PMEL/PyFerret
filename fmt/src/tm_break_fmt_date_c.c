@@ -57,17 +57,10 @@ hh:mm:ss are optional (defaulting to 00:00:00) or seconds, alone may be omitted
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
-#include "ferretmacros.h"
+#include "fmtprotos.h"
 
-int FORTRAN(tm_break_fmt_date_c)(char *date,
-			int *year,
-			int *month,
-			int *day,
-			int *hour,
-			int *minute,
-			DFTYPE *second)
+int FORTRAN(tm_break_fmt_date_c)(char *date, int *year, int *month, int *day, int *hour, int *minute, DFTYPE *second)
 {
-
   int n;
   double dblsec; /* pointer to double expected by %lf in sscanf */
 

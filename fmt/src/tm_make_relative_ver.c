@@ -34,8 +34,6 @@
 *
 */
 
-
-
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
 /* V63  *acm* 10/09 Changes for gfortran build */
@@ -43,72 +41,37 @@
 #include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
 #include <string.h>
-#include "ferretmacros.h"  /* with NFERDIMS and FORTRAN */
+#include "fmtprotos.h"
 
-/* 
-
-  this routine takes the relative verson number passed to it (eg, .~-3~) and
-    calls high_ver_name (passing filename and path) to get the proper
-    version number for the file. (eq, ~12~)
-    It then returns this value.
-
- version 0.0 -kob- 10/17/91
-
-*/
-
-/* had to add ifdef check for trailing underscore in routine name
-   for aix port *kob* 10/94 */
-
-char * FORTRAN(tm_make_relative_ver)(curr_ver, fname,path,real_ver)
-char *curr_ver,*fname, *path;
-int *real_ver;
-
+void FORTRAN(tm_make_relative_ver)(char *curr_ver, char *fname, char *path, int *real_ver)
 /*
-
  calling arguments :    
             curr_ver --> contains the relative version num. (eg. .~-3~)
-	    real_ver --> will contain and pass back proper version num. (eq. ~12~)
-	    fname -----> filename; needed for routine high_ver_name
-	    path ------> path to file, also needed for routine high_ver_name
-
+            fname -----> filename; needed for routine high_ver_name
+            path ------> path to file, also needed for routine high_ver_name
+            real_ver --> will contain and pass back proper version num. (eg. 12 for ~12~)
 */
-
 {
-  int i,j,int_ver, high_ver, ver_len;
-  char temp_ver[20];
+  int i, j, cvlen, high_ver;
+  char temp_ver[32];
 
-/* get just the numeric part of the string, ignoring all else */
-  for (i=0,j=0; i<=strlen(curr_ver); i++)
-    {
-      if (*(curr_ver+i) != '.' && *(curr_ver+i) != '-' && *(curr_ver+i) != '~')
-	{
-	  *(temp_ver+j) = *(curr_ver+i);
-	  ++j;
-	}
-    }
+  /* get just the numeric part of the string, ignoring all else */
+  cvlen = strlen(curr_ver);
+  for (i=0, j=0; (i < cvlen) && (j < 31); i++) {
+      if ( (curr_ver[i] != '.') && (curr_ver[i] != '-') && (curr_ver[i] != '~') ) {
+          temp_ver[j] = curr_ver[i];
+          j++;
+      }
+  }
+  temp_ver[j] = '\0';
 
-/* convert the string to an integer */ 
-  sscanf (temp_ver, "%d", real_ver);
+  /* convert the string to an integer */ 
+  sscanf(temp_ver, "%d", real_ver);
 
-/* get the new version number by subtracting the relative version number -1
+  /* get the new version number by subtracting the relative version number -1
      from the highest version number          */
   *real_ver -= 1;
-  high_ver = high_ver_name (fname,path);
+  high_ver = high_ver_name(fname, path);
   *real_ver = high_ver - *real_ver;
-
-  
-
-/* convert that from integer to character string 
-  sprintf (temp_ver, "%d", int_ver);
-
- surround the new version number with tilda's 
-  strcat (real_ver, "~");
-  strcat (real_ver, temp_ver);
-  strcat (real_ver, "~");
-  
- append a null to the string 
-  ver_len = strlen(real_ver);
-  *(real_ver+ver_len) = '\0';  */
-
 }
 

@@ -36,7 +36,7 @@
 
 /*
  * replaceable_bad_flags :
- *  check for a missing or bad value flag of NaN.  if either flag is Nan,
+ *  check for a missing or bad value flag of NaN.  if either flag is NaN,
  *  or if the flags differ, return a true. otherwise, if both flags are the 
  *  same and not NaN, no need to replace them, so return a false
  *

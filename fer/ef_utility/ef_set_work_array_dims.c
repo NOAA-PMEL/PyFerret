@@ -1,5 +1,6 @@
 /* Make sure Python.h is included first */
 #include <Python.h>
+#include "ferret.h"
 #include "EF_Util.h"
 
 /* Calls the 6D function with 1 for the low and high dimensions of the E and F axes */

@@ -110,89 +110,17 @@
 #include <sys/types.h>          /* required for some of our prototypes */
 #include <sys/stat.h>
 #include <sys/errno.h>
-#include "ferretmacros.h"
+#include <netcdf.h>
 
-#include "netcdf.h"
-#include "nc.h"
+#include "fmtprotos.h"
 #include "list.h"               /* locally added list library */
 #include "NCF_Util.h"
+#include "FerMem.h"
 
 /* List of all datasets (static, so only visible locally) */
 static LIST *GLOBAL_ncdsetList = NULL;
 
-/* .... Functions called by Ferret .... */
-int  FORTRAN(ncf_inq_ds)( int *, int *, int *, int *, int *);
-int  FORTRAN(ncf_inq_ds_dims)( int *, int *, char *, int *, int *);
-int  FORTRAN(ncf_inq_var) (int *, int *, char *, int *, int *, int *, int *, int *, int *, int * );
-
-int  FORTRAN(ncf_inq_var_att)( int *, int *, int *, char *, int *, int *, int *, int *);
-
-int  FORTRAN(ncf_get_dsnum)( char * );
-int  FORTRAN(ncf_get_dsname)( int *, char *);
-int  FORTRAN(ncf_get_dim_id)( int *, char *);
-
-int  FORTRAN(ncf_get_var_name)( int *, int *, char *, int *);
-int  FORTRAN(ncf_get_var_id)( int *, int*, char *);
-int  FORTRAN(ncf_get_var_id_case)( int *, int*, char *);
-int  FORTRAN(ncf_get_var_axflag)( int *, int *, int *, int *);
-int  FORTRAN(ncf_get_var_attr_name) (int *, int *, int *, int *, char*);
-int  FORTRAN(ncf_get_var_attr_id) (int *, int *, char* , int*);
-int  FORTRAN(ncf_get_var_attr_id_case) (int *, int *, char* , int*);
-int  FORTRAN(ncf_get_var_attr) (int *, int *, char* , char* , int *, double *);
-int  FORTRAN(ncf_get_var_attr) (int *, int *, char* , char* , int *, double *);
-int  FORTRAN(ncf_get_attr_from_id) (int *, int *, int * , int *, double* );
-
-int  FORTRAN(ncf_get_var_outflag) (int *, int *, int *);
-int  FORTRAN(ncf_get_var_outtype) (int *, int *, int *);
-int  FORTRAN(ncf_get_var_type) (int *, int *, int *);
-int  FORTRAN(ncf_get_var_uvflag) (int *, int *, int *);
-
-int  FORTRAN(ncf_init_uvar_dset)( int *);
-int  FORTRAN(ncf_init_uax_dset)( int *);
-void FORTRAN(ncf_datasets_list_clear)(void);
-int  FORTRAN(ncf_add_dset)( int *, int *, char *, char *);
-int  FORTRAN(ncf_init_other_dset)( int *, char *, char *);
-int  FORTRAN(ncf_delete_dset)( int *);
-int  FORTRAN(ncf_delete_var_att)( int *, int *, char *);
-int  FORTRAN(ncf_delete_var)( int *, char *);
-
-int  FORTRAN(ncf_add_var)( int *, int *, int *, int *, char *, char *, char *, double *);
-int  FORTRAN(ncf_add_coord_var)( int *, int *, int *, int *, char *, char *, double *);
-
-int  FORTRAN(ncf_add_var_num_att)( int *, int *, char *, int *, int *, int *, DFTYPE *);
-int  FORTRAN(ncf_add_var_num_att_dp)( int *, int *, char *, int *, int *, int *, double *);
-int  FORTRAN(ncf_add_var_str_att)( int *, int *, char *, int *, int *, int *, char *);
-
-int  FORTRAN(ncf_rename_var)( int *, int *, char *);
-int  FORTRAN(ncf_rename_dim)( int *, int *, char *);
-
-int  FORTRAN(ncf_repl_var_att)( int *, int *, char *, int *, int *, DFTYPE *, char *);
-int  FORTRAN(ncf_repl_var_att_dp)( int *, int *, char *, int *, int *, double *, char *);
-int  FORTRAN(ncf_set_att_flag)( int *, int *, char *, int *);
-int  FORTRAN(ncf_set_var_out_flag)( int *, int *, int *);
-int  FORTRAN(ncf_set_var_outtype)( int *, int *, int *);
-int  FORTRAN(ncf_set_axdir)(int *, int *, int *);
-int  FORTRAN(ncf_transfer_att)(int *, int *, int *, int *, int *);
-
-int  FORTRAN(ncf_init_agg_dset)( int *, char *);
-int  FORTRAN(ncf_add_agg_member)( int *, int *, int *);
-int  FORTRAN(ncf_get_agg_count)( int *, int *);
-int  FORTRAN(ncf_get_agg_member)( int *, int *, int *);
-int  FORTRAN(ncf_get_agg_var_info)( int *, int *, int *, int *, int *, int *, int *, int *);
-int  FORTRAN(ncf_put_agg_memb_grid)( int *, int *, int *, int *);
-
-/* uvar grid management functions */
-int  FORTRAN(ncf_free_uvar_grid_list)( int *, int *);
-int  FORTRAN(ncf_set_uvar_grid)( int *, int *, int *, int *, int *);
-int  FORTRAN(ncf_get_uvar_grid)( int *, int *, int *, int *, int *);
-int  FORTRAN(ncf_set_uvar_aux_info)( int *, int *, int *, int *, int *);
-int  FORTRAN(ncf_get_uvar_aux_info)( int *, int *, int *, int *, int *);
-int  FORTRAN(ncf_get_uvar_grid_list_len)( int *, int *, int *);
-int  FORTRAN(ncf_delete_uvar_grid)( int *, int *, int *);
-int  FORTRAN(ncf_next_uvar_grid_in_list)( int *, int *, int *, int *);
-
 /* .... Functions only called internally (thus static) .... */
-
 static ncdset *ncf_get_ds_ptr(int *);
 static LIST *ncf_get_ds_varlist(int *);
 static ncvar *ncf_get_ds_var_ptr(int *, int *);
@@ -809,7 +737,7 @@ int FORTRAN(ncf_init_uvar_dset)( int *setnum )
     att.outtype = NC_CHAR;
     att.len = 21;
     strcpy(att.name, "FerretUserVariables" );
-    att.string = (char*)PyMem_Malloc(2*sizeof(char));
+    att.string = (char*)FerMem_Malloc(2*sizeof(char));
     strcpy(att.string, " ");
 
     /* Save attribute in linked list of attributes for variable */
@@ -869,7 +797,7 @@ int FORTRAN(ncf_init_uax_dset)( int *setnum )
     att.outtype = NC_CHAR;
     att.len = 21;
     strcpy(att.name, "FerretUserCoordVariables" );
-    att.string = (char*)PyMem_Malloc(2*sizeof(char));
+    att.string = (char*)FerMem_Malloc(2*sizeof(char));
     strcpy(att.string, " ");
 
     /* Save attribute in linked list of attributes. */
@@ -994,19 +922,19 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
                         att.type = NC_CHAR;
                         att.outtype = NC_CHAR;
                         att.len = 1;
-                        att.string = (char *) PyMem_Malloc(2* sizeof(char));
+                        att.string = (char *) FerMem_Malloc(2* sizeof(char));
                         strcpy(att.string, " ");
                     }
                     else {
                         switch (att.type) {
                         case NC_CHAR:
-                            att.string = (char *) PyMem_Malloc((att.len+1)* sizeof(char));
+                            att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char));
                             nc_status = nc_get_att_text(*ncid, NC_GLOBAL, att.name, att.string);
                             if ( nc_status != NC_NOERR )
                                 return nc_status;
                             break;
                         default:
-                            att.vals = (double *) PyMem_Malloc(att.len * sizeof(double));
+                            att.vals = (double *) FerMem_Malloc(att.len * sizeof(double));
                             nc_status = nc_get_att_double(*ncid, NC_GLOBAL, att.name, att.vals);
                             if ( nc_status != NC_NOERR )
                                 return nc_status;
@@ -1124,14 +1052,14 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
                         att.type = NC_CHAR;
                         att.outtype = NC_CHAR;
                         att.len = 1;
-                        att.string = (char *) PyMem_Malloc(2*sizeof(char));
+                        att.string = (char *) FerMem_Malloc(2*sizeof(char));
                         strcpy(att.string," ");
                     }
                     else {
                         switch ( att.type ) {
                         case NC_CHAR:
                             /* Plus one for end-of-string delimiter. */
-                            att.string = (char *) PyMem_Malloc((att.len+1)*sizeof(char));
+                            att.string = (char *) FerMem_Malloc((att.len+1)*sizeof(char));
                             strcpy (att.string, " ");
                             nc_status = nc_get_att_text(*ncid, iv, att.name, att.string);
                             if ( nc_status != NC_NOERR ) {    /* on error set attr to empty string*/
@@ -1161,15 +1089,15 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
 #else
                             att.outtype = NC_FLOAT;
 #endif
-                            att.vals = (double *) PyMem_Malloc(att.len * sizeof(double));
+                            att.vals = (double *) FerMem_Malloc(att.len * sizeof(double));
                             nc_status = nc_get_att_double(*ncid, iv, att.name, att.vals);
                             if ( nc_status != NC_NOERR ) {    /* on error set attr to empty string*/
-                                PyMem_Free(att.vals);
+                                FerMem_Free(att.vals);
                                 att.vals = NULL;
                                 att.type = NC_CHAR;
                                 att.outtype = NC_CHAR;
                                 att.len = 1;
-                                att.string = (char *) PyMem_Malloc((att.len+1)* sizeof(char));
+                                att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char));
                                 strcpy (att.string, " ");
                                 return_val = bad_file_attr;
                             }
@@ -1199,7 +1127,7 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
             att.attid = ia+1;
             att.type = NC_CHAR;
             att.len = strlen(var.name);
-            att.string = (char *) PyMem_Malloc((att.len+1)*sizeof(char));
+            att.string = (char *) FerMem_Malloc((att.len+1)*sizeof(char));
             strcpy (att.string,var.name);
 
             /* Ensure end-of-string delimiter because Netcdf API doesn't store automatically; it's up to the file's author. */
@@ -1263,7 +1191,7 @@ int FORTRAN(ncf_init_other_dset)( int *setnum, char name[], char path[] )
     att.attid = 1;
     att.len = strlen(name);
     strcpy(att.name, "history");
-    att.string = (char *) PyMem_Malloc((att.len+1)* sizeof(char));
+    att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char));
     strcpy(att.string, name);
 
     /* Save attribute in linked list of attributes for variable */
@@ -1370,14 +1298,14 @@ static void ncf_free_attribute( char *attptr ) {
 
     att = (ncatt *)attptr;
     if ( att->string != NULL ) {
-        PyMem_Free(att->string);
+        FerMem_Free(att->string);
         att->string = NULL;
     }
     if ( att->vals != NULL ) {
-        PyMem_Free(att->vals);
+        FerMem_Free(att->vals);
         att->vals = NULL;
     }
-    PyMem_Free(att);
+    FerMem_Free(att);
 }
 
 /* ----
@@ -1442,7 +1370,7 @@ static void ncf_free_variable( char *varptr )
         var->uvarGridList = NULL;
     }
     /* Free thr variable itself */
-    PyMem_Free(var);
+    FerMem_Free(var);
 }
 
 /* ----
@@ -1480,7 +1408,7 @@ static void ncf_free_dataset( char *nc_ptr )
     nc->ngatts = 0;
 
     /* Free the ncdset itself */
-    PyMem_Free(nc);
+    FerMem_Free(nc);
 }
 
 /* ----
@@ -1520,7 +1448,7 @@ int FORTRAN(ncf_delete_dset)( int *dset )
     }
 
     /* Free the ncdset itself */
-    PyMem_Free(nc_ptr);
+    FerMem_Free(nc_ptr);
 
     return FERR_OK;
 }
@@ -1619,7 +1547,7 @@ int FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar,
     att.attid = var.natts;
     att.outflag = 1;
     att.len = strlen(title);
-    att.string = (char *) PyMem_Malloc((att.len+1)* sizeof(char));
+    att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char));
     strcpy(att.string, title);
     /* Save attribute in linked list of attributes for this variable */
     list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
@@ -1637,7 +1565,7 @@ int FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar,
         att.outflag = 1;
         att.type = NC_CHAR;
         att.outtype = NC_CHAR;
-        att.string = (char *) PyMem_Malloc((att.len+1)* sizeof(char));
+        att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char));
         strcpy(att.string, units);
         /* Save attribute in linked list of attributes for this variable */
         list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
@@ -1657,7 +1585,7 @@ int FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar,
     att.type = NC_FLOAT;
     att.outtype = NC_FLOAT;
 #endif
-    att.vals = (double *) PyMem_Malloc(att.len * sizeof(double));
+    att.vals = (double *) FerMem_Malloc(att.len * sizeof(double));
     att.vals[0] = *bad;
     /* Initialize output flag. Attributes written by default by Ferret
      * will be set to outflag = 1.
@@ -1770,7 +1698,7 @@ int FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar,
         att.outflag = 1;
         att.type = NC_CHAR;
         att.outtype = NC_CHAR;
-        att.string = (char *) PyMem_Malloc((att.len+1)* sizeof(char));
+        att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char));
         strcpy(att.string, units);
         list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
     }
@@ -1836,7 +1764,7 @@ int FORTRAN(ncf_add_var_num_att)( int *dset, int *varid, char attname[],
 #endif
     att.len = *attlen;
     att.outflag = *outflag;
-    att.vals = (double *) PyMem_Malloc(*attlen * sizeof(double));
+    att.vals = (double *) FerMem_Malloc(*attlen * sizeof(double));
 
     for (i = 0; i < *attlen; i++) {
         att.vals[i] = vals[i];
@@ -1898,7 +1826,7 @@ int FORTRAN(ncf_add_var_num_att_dp)( int *dset, int *varid, char attname[],
     att.outtype = NC_DOUBLE;
     att.len = *attlen;
     att.outflag = *outflag;
-    att.vals = (double *) PyMem_Malloc(*attlen * sizeof(double));
+    att.vals = (double *) FerMem_Malloc(*attlen * sizeof(double));
     for (i = 0; i < *attlen; i++) {
         att.vals[i] = vals[i];
     }
@@ -1981,7 +1909,7 @@ int FORTRAN(ncf_add_var_str_att)( int *dset, int *varid, char attname[], int *at
     att.outtype = NC_CHAR;
     att.len = *attlen;
     att.outflag = *outflag;
-    att.string = (char *) PyMem_Malloc((att.len+1)* sizeof(char));
+    att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char));
     strcpy(att.string, attstring);
 
     /*Save attribute in linked list of attributes for this variable */
@@ -2069,11 +1997,11 @@ int FORTRAN(ncf_repl_var_att)( int *dset, int *varid, char attname[], int *attyp
      * Free the memory used by the string or values
      */
     if ( att_ptr->string != NULL ) {
-        PyMem_Free(att_ptr->string);
+        FerMem_Free(att_ptr->string);
         att_ptr->string = NULL;
     }
     if ( att_ptr->vals != NULL ) {
-        PyMem_Free(att_ptr->vals);
+        FerMem_Free(att_ptr->vals);
         att_ptr->vals = NULL;
     }
 
@@ -2089,17 +2017,17 @@ int FORTRAN(ncf_repl_var_att)( int *dset, int *varid, char attname[], int *attyp
         att_ptr->type = NC_CHAR;
         att_ptr->outtype = NC_CHAR;
         att_ptr->len = 1;
-        att_ptr->string = (char *) PyMem_Malloc(2*sizeof(char));
+        att_ptr->string = (char *) FerMem_Malloc(2*sizeof(char));
         strcpy(att_ptr->string," ");
     }
     else {
         switch (*attype) {
         case NC_CHAR:
-            att_ptr->string = (char *) PyMem_Malloc((*attlen+1)* sizeof(char));
+            att_ptr->string = (char *) FerMem_Malloc((*attlen+1)* sizeof(char));
             strcpy(att_ptr->string,attstring);
             break;
         default:
-            att_ptr->vals = (double *) PyMem_Malloc(*attlen * sizeof(double));
+            att_ptr->vals = (double *) FerMem_Malloc(*attlen * sizeof(double));
             for (i = 0; i < *attlen; i++) {
                 att_ptr->vals[i] = vals[i];
             }
@@ -2151,11 +2079,11 @@ int FORTRAN(ncf_repl_var_att_dp)( int *dset, int *varid, char attname[], int *at
      * Free the memory used by the string or values
      */
     if ( att_ptr->string != NULL ) {
-        PyMem_Free(att_ptr->string);
+        FerMem_Free(att_ptr->string);
         att_ptr->string = NULL;
     }
     if ( att_ptr->vals != NULL ) {
-        PyMem_Free(att_ptr->vals);
+        FerMem_Free(att_ptr->vals);
         att_ptr->vals = NULL;
     }
 
@@ -2177,17 +2105,17 @@ int FORTRAN(ncf_repl_var_att_dp)( int *dset, int *varid, char attname[], int *at
         att_ptr->type = NC_CHAR;
         att_ptr->outtype = NC_CHAR;
         att_ptr->len = 1;
-        att_ptr->string = (char *) PyMem_Malloc(2* sizeof(char));
+        att_ptr->string = (char *) FerMem_Malloc(2* sizeof(char));
         strcpy(att_ptr->string," ");
     }
     else {
         switch (*attype) {
         case NC_CHAR:
-            att_ptr->string = (char *) PyMem_Malloc((*attlen+1)* sizeof(char));
+            att_ptr->string = (char *) FerMem_Malloc((*attlen+1)* sizeof(char));
             strcpy(att_ptr->string,attstring);
             break;
         default:
-            att_ptr->vals = (double *) PyMem_Malloc(*attlen * sizeof(double));
+            att_ptr->vals = (double *) FerMem_Malloc(*attlen * sizeof(double));
             for (i = 0; i < *attlen; i++) {
                 att_ptr->vals[i] = vals[i];
             }
@@ -2498,11 +2426,11 @@ int FORTRAN(ncf_transfer_att)( int *dset1, int *varid1, int *iatt, int *dset2, i
     att.outflag = att_ptr1->outflag;
 
     if (att_ptr1->type == NC_CHAR) {
-        att.string = (char *) PyMem_Malloc((att_ptr1->len+1)* sizeof(char));
+        att.string = (char *) FerMem_Malloc((att_ptr1->len+1)* sizeof(char));
         strcpy(att.string, att_ptr1->string);
     }
     else {
-        att.vals = (double *) PyMem_Malloc(att_ptr1->len * sizeof(double));
+        att.vals = (double *) FerMem_Malloc(att_ptr1->len * sizeof(double));
         for (i = 0; i<att_ptr1->len;i++ ) {
             att.vals[i] = att_ptr1->vals[i];
         }
@@ -2600,7 +2528,7 @@ int FORTRAN(ncf_init_agg_dset)( int *setnum, char name[] )
     att.attid = 1;
     strcpy(att.name, "aggregate name" );
     att.len = strlen(name);
-    att.string = (char *) PyMem_Malloc((att.len+1)* sizeof(char));
+    att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char));
     strcpy(att.string, name);
 
     /*Save attribute in linked list of attributes for variable .*/
@@ -2945,7 +2873,7 @@ int FORTRAN(ncf_free_uvar_grid_list)( int *LIST_dset, int *uvarid )
     if ( uvgridList != NULL ) {
         while ( ! list_empty(uvgridList) ) {
             uvgrid_ptr = (uvarGrid *)list_remove_front(uvgridList);
-            PyMem_Free(uvgrid_ptr);
+            FerMem_Free(uvgrid_ptr);
         }
     }
 
@@ -3045,7 +2973,7 @@ int FORTRAN(ncf_set_uvar_grid)( int *LIST_dset, int *varid, int *grid, int *data
     status = list_traverse(uvgridlist, (char *) context_dset, NCF_ListTraverse_FoundGridDset, (LIST_FRNT | LIST_FORW | LIST_ALTR));
     if ( status == LIST_OK ) {
         uvgrid_ptr = (uvarGrid *) list_remove_curr(uvgridlist);
-        PyMem_Free(uvgrid_ptr);
+        FerMem_Free(uvgrid_ptr);
     }
 
     /*
@@ -3310,7 +3238,7 @@ int FORTRAN(ncf_delete_uvar_grid)( int *LIST_dset, int *uvarid, int *context_dse
 
     /* Remove this grid from uvaGridList list */
     uvgrid_ptr = (uvarGrid *) list_remove_curr(uvgridlist);
-    PyMem_Free(uvgrid_ptr);
+    FerMem_Free(uvgrid_ptr);
 
     return FERR_OK;
 }

@@ -2,5 +2,6 @@
 *.a
 *.so
 *.log
+site_specific.mk
 /build/
 /install/

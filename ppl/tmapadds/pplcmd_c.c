@@ -57,21 +57,7 @@
    Get ppl_memory and pass it to pplcmd_f, which has all the original code.
  */
 
-void FORTRAN (pplcmd_c)(int*isi, int *icmdim, int *icmsze)
-
-/*******************/
-
+void FORTRAN(pplcmd_c)(int *isi, int *icmdim, int *icmsze)
 {
-/* The global pointer to PLOT+ memory is declared as extern here
-   (Defined in fermain_c.c)
-*/
-extern float *ppl_memory;
-
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-  pplcmd_f(isi, icmdim, icmsze, ppl_memory);
-#else
-  pplcmd_f_(isi, icmdim, icmsze, ppl_memory);
-#endif
-
-  return;
+  FORTRAN(pplcmd_f)(isi, icmdim, icmsze, ppl_memory);
 }

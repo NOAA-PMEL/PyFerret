@@ -49,9 +49,10 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
+#include "fmtprotos.h"
+#include "FerMem.h"
 
-void tm_unblockify_ferret_strings(char **mr_blk1, char *pblock,
-				  int bufsiz, int filestrlen)
+void tm_unblockify_ferret_strings(char **mr_blk1, char *pblock, int bufsiz, int filestrlen)
 {
   int i, n;
   char *pinchar, *pinstr, *poutchar, **poutstr;
@@ -73,14 +74,14 @@ void tm_unblockify_ferret_strings(char **mr_blk1, char *pblock,
     pinstr += filestrlen;
 
     /* allocate memory for this string */
-    poutchar = (char *) PyMem_Malloc(sizeof(char) * (n+1));
+    poutchar = (char *) FerMem_Malloc(sizeof(char) * (n+1));
 
     /*
      * Free any existing string in the output array and then
      * assign this newly allocated memory to the output array.
      */
     if ( *poutstr != NULL )
-       PyMem_Free(*poutstr);
+       FerMem_Free(*poutstr);
     *poutstr = poutchar;
 
     /* increment poutstr to point to the next output string pointer position */

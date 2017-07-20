@@ -52,19 +52,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "fmtprotos.h"
 #include "ferret.h"
 
-
-DFTYPE FORTRAN(days_from_day0) (double* days_1900, int* iyr, int* imon,
-                               int* iday, DFTYPE* rdum);
-void FORTRAN(date_decode) (char *strdate, DFTYPE *rdum);
-
-
-
-void FORTRAN(date_decode) (char *strdate, DFTYPE *res)
+void FORTRAN(date_decode)(char *strdate, DFTYPE *res)
 {
-
-  int id,im,iy, ok;
+  int id,im,iy, ok, status;
   char str3[4],str1[2];
   char months[13][4] = {"jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"};
   DFTYPE rdum, adate;
@@ -107,7 +100,7 @@ void FORTRAN(date_decode) (char *strdate, DFTYPE *res)
     }    
 
   if (ok) {
-    adate = days_from_day0_(&days_1900,&iy,&im,&id,&rdum); 
+    adate = FORTRAN(days_from_day0)(&days_1900,&iy,&im,&id,&rdum,&status); 
     *res = rdum;
   }
   else

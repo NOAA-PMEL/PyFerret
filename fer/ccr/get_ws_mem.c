@@ -16,16 +16,17 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include "ferret.h"
+#include "FerMem.h"
 
+void FORTRAN(get_ws_mem)(int *index, int *alen, int *status)
 /*
   input  - index:  Ferret ws index at which to store the array pointer
   input  - alen:   array length
 */
-void FORTRAN(get_ws_mem)( int *index, int *alen, int *status )
 {
   double *pointer;
 
-  pointer = (double *) PyMem_Malloc(sizeof(double) * (*alen));
+  pointer = (double *) FerMem_Malloc(sizeof(double) * (*alen));
 
   if (pointer)
     {

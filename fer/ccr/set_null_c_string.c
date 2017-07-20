@@ -42,13 +42,14 @@
 #include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 #include "ferret.h"
+#include "FerMem.h"
 
 void FORTRAN(set_null_c_string)(char **out_ptr)
 {
    if ( *out_ptr != NULL )
-      PyMem_Free(*out_ptr);
+      FerMem_Free(*out_ptr);
 
-   *out_ptr = (char *) PyMem_Malloc(sizeof(char));
+   *out_ptr = (char *) FerMem_Malloc(sizeof(char));
    if ( *out_ptr == NULL )
       abort();
    **out_ptr = '\0';

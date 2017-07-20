@@ -9,18 +9,19 @@
 
 
 #include <Python.h> /* make sure Python.h is first */
+#include <stdlib.h>
 #include "ferret.h"
 
+void FORTRAN(nullify_mr)(int *mr)
 /*
   input  - mr:  Ferret mr index at which to store the array pointer
 */
-void FORTRAN(nullify_mr)( int *mr )
 {
   double *nul_ptr;
 
   nul_ptr = (double *) NULL;
 
-  FORTRAN(store_nul_mr_ptr) (mr, nul_ptr);
+  FORTRAN(store_nul_mr_ptr)(mr, nul_ptr);
 
   return;
 }

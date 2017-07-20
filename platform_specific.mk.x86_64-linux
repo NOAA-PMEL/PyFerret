@@ -74,10 +74,10 @@ endif
 			  -I$(DIR_PREFIX)/ppl/tmap_inc \
 			  -I$(DIR_PREFIX)/pyfermod \
 			  -I$(DIR_PREFIX)/external_functions/ef_utility \
+			  -I$(NETCDF4_DIR)/include \
 			  $(CAIRO_INCLUDE) \
 			  $(PIXMAN_INCLUDE) \
-			  $(PANGO_INCLUDE) \
-			  -I$(NETCDF4_DIR)/include
+			  $(PANGO_INCLUDE)
 
 	MYDEFINES	= -Dcrptd_cat_argument \
 			  -Ddouble_p \
@@ -85,10 +85,9 @@ endif
 			  -Dreclen_in_bytes \
 			  -Dunix \
 			  -Dxgks \
-			  -DG77_SIGNAL \
 			  -DG77 \
+			  -DG77_SIGNAL \
 			  -DINTERNAL_READ_FORMAT_BUG \
-			  -DLINUX \
 			  -DMANDATORY_FORMAT_WIDTHS \
 			  -DNEED_IAND \
 			  -DNO_DOUBLE_ESCAPE_SLASH \
@@ -99,9 +98,7 @@ endif
 			  -DNO_PASSED_CONCAT \
 			  -DNO_PREPEND_STRING \
 			  -DSTAR_1_SUPPORTED \
-			  -DVOID_SIGHANDLER \
-			  -DX_REFRESH \
-			  -DXT_CODE
+			  -DX_REFRESH
 
 	CC		= $(shell which gcc)
 	FC		= $(shell which gfortran)
@@ -110,15 +107,30 @@ endif
 	ARFLAGS		= -cr
 	RANLIB		= $(shell which ranlib)
 
-	CFLAGS		= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC
-	FFLAGS		= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC -fno-automatic -fdollar-ok \
-			  -ffixed-line-length-132 -fno-second-underscore -fno-backslash \
-			  -fimplicit-none -fdefault-real-8 -fdefault-double-8
-	PPLUS_FFLAGS	= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC -fno-automatic -fdollar-ok \
-			  -ffixed-line-length-132 -fno-second-underscore -fno-backslash
+	CFLAGS		= -m64 -fPIC $(MYDEFINES) $(MYINCLUDES) 
+
+	FFLAGS		= -m64 -fPIC \
+			  -fno-automatic \
+			  -fno-second-underscore \
+			  -fdollar-ok \
+			  -ffixed-line-length-132 \
+			  -ffpe-trap=overflow \
+			  -fno-backslash \
+			  -fimplicit-none \
+			  -fdefault-real-8 \
+			  -fdefault-double-8\
+			  $(MYDEFINES) $(MYINCLUDES)
+
+	PPLUS_FFLAGS	= -m64 -fPIC \
+			  -fno-automatic \
+			  -fno-second-underscore \
+			  -fdollar-ok \
+			  -ffixed-line-length-132 \
+			  -fno-backslash \
+			  $(MYDEFINES) $(MYINCLUDES)
 
 	OPT_FLAGS	= -O -DNDEBUG
-	PPLUS_OPT_FLAGS	= -O -DNDEBUG
+	PPLUS_OPT_FLAGS	= -O0
 	DBG_FLAGS	= -O0 -g
 	PROF_FLAGS	= -O0 -g -pg
 

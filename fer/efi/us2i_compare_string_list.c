@@ -45,7 +45,8 @@
 #include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
 #include <string.h>
-#include "list.h"  /* locally added list library */
+#include "ferret.h"
+#include "list.h"
 
 /* max length of a path */
 #define MAX_NAME 512
@@ -55,16 +56,6 @@ typedef struct  {
     char astring[MAX_NAME];
     int seq;
 } strngs;
-
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
-
-/* .... Functions called by Fortran .... */
-void FORTRAN(us2i_compare_string_list)(char *, int *);
-void FORTRAN(us2i_str_cmp)(char *, char *, int *);
 
 /* .... Static Variables ............... */
 static LIST *GLOBAL_unique_us2i_List;

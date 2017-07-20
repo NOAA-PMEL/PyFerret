@@ -5,15 +5,11 @@
  */
 
 #include <Python.h> /* make sure Python.h is first */
+#include <stdlib.h>
 #include "ferret.h"
+#include "FerMem.h"
 
-/*
-  input  - mvar: pointer to memory allocated to Ferret variable, "mvar"
-*/
-void FORTRAN(free_dyn_mem) ( double *mvar )
+void FORTRAN(free_dyn_mem)(double *mvar)
 {
-
-  PyMem_Free(mvar);
-
-  return;
+  FerMem_Free(mvar);
 }

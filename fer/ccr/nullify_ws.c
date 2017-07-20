@@ -8,12 +8,13 @@
  */
 
 #include <Python.h> /* make sure Python.h is first */
+#include <stdlib.h>
 #include "ferret.h"
 
+void FORTRAN(nullify_ws)(int *ws)
 /*
   input  - ws:  Ferret ws index at which to store the array pointer
 */
-void FORTRAN(nullify_ws)( int *ws )
 {
   double *nul_ptr;
 

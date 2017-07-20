@@ -34,16 +34,16 @@
 *
 */
 
-
-
 /* 
  * boolean function returns 1 or 0 to tell if the given
  * GKS workstation is a GKSM metafile workstation
  */
 
 #include <Python.h> /* make sure Python.h is first */
+#include "pplmem.h"
 
-int its_gksm_(int *wkid)
+/* its_gksm */
+int FORTRAN(its_gksm)(int *wkid)
 {
     return 0;
 }

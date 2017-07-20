@@ -76,9 +76,18 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "ferretmacros.h"
+#include "fmtprotos.h"
 #include "ez_delimited_read.h"
+#include "ferret.h"
+#include "FerMem.h"
 
+static int decode_file(char* fname, char *recptr, char *delims, int *skip, int* maxrec, int* reclen, 
+                       int* nfields, int field_type[], int* nrec, DFTYPE** numeric_fields, 
+                       char*** text_fields, DFTYPE bad_flags[], int* status);
+static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[], int rec, 
+                     DFTYPE** numeric_fields, char*** text_fields, DFTYPE bad_flags[], int* status);
+static void analRec(char *recptr, char *delims, int* nfields, int field_type[], int max_fields);
+static char *nexstrtok(char *s1, char *s2);
 
 /*
  *
@@ -100,13 +109,9 @@
  *
  */
 
-
-void FORTRAN(decode_file_jacket)
-		( char* fname, char *recptr, char *delims, int *skip,
-		  int* maxrec, int* reclen, int* nfields,
-		  int field_type[], int* nrec,
-		  int mrlist[], long* mr_ptrs_val,
-		  DFTYPE mr_bad_flags[], char ***mr_c_ptr, int* status)
+void FORTRAN(decode_file_jacket)(char* fname, char *recptr, char *delims, int *skip, int* maxrec, int* reclen, 
+                                 int* nfields, int field_type[], int* nrec, int mrlist[], long* mr_ptrs_val, 
+                                 DFTYPE mr_bad_flags[], char ***mr_c_ptr, int* status)
 /* 1/17 --- pre-dynamic memory call
 void FORTRAN(decode_file_jacket)
 		( char* fname, char *recptr, char *delims, int *skip,
@@ -117,10 +122,10 @@ void FORTRAN(decode_file_jacket)
 */
 {
   DFTYPE** mr_ptrs = (DFTYPE**) *mr_ptrs_val;
-  DFTYPE **numeric_fields  = (DFTYPE **) PyMem_Malloc(sizeof(DFTYPE*) * (*nfields));
-  DFTYPE *bad_flags        = (DFTYPE *)  PyMem_Malloc(sizeof(DFTYPE) * (*nfields));
+  DFTYPE **numeric_fields  = (DFTYPE **) FerMem_Malloc(sizeof(DFTYPE*) * (*nfields));
+  DFTYPE *bad_flags        = (DFTYPE *)  FerMem_Malloc(sizeof(DFTYPE) * (*nfields));
 
-  char ***text_fields     = (char ***) PyMem_Malloc(sizeof(char**) * (*nfields));
+  char ***text_fields     = (char ***) FerMem_Malloc(sizeof(char**) * (*nfields));
   int i, mr;
   int pinc = 8/sizeof(char*);  /* pointers spaced 8 bytes apart */
 
@@ -157,14 +162,13 @@ void FORTRAN(decode_file_jacket)
   /*
     at last we actually read the file
   */
-  decode_file (fname, recptr, delims, skip, 
-	       maxrec, reclen, nfields,
-	       field_type, nrec,
-	       numeric_fields, text_fields, bad_flags, status);
+  decode_file(fname, recptr, delims, skip, maxrec, reclen, 
+	      nfields, field_type, nrec, numeric_fields, 
+              text_fields, bad_flags, status);
 
-  PyMem_Free(numeric_fields);
-  PyMem_Free(text_fields);
-  PyMem_Free(bad_flags);
+  FerMem_Free(numeric_fields);
+  FerMem_Free(text_fields);
+  FerMem_Free(bad_flags);
 
   return;
 }
@@ -193,11 +197,9 @@ void FORTRAN(decode_file_jacket)
  */
 
 
-int decode_file (char* fname, char *recptr, char *delims, int *skip, 
-			  int* maxrec, int* reclen, int* nfields,
-			  int field_type[], int* nrec, DFTYPE** numeric_fields,
-			  char*** text_fields, DFTYPE bad_flags[], int* status)
-
+static int decode_file(char* fname, char *recptr, char *delims, int *skip, int* maxrec, int* reclen, 
+                       int* nfields, int field_type[], int* nrec, DFTYPE** numeric_fields, 
+                       char*** text_fields, DFTYPE bad_flags[], int* status)
 {
 
   FILE *fp;
@@ -366,10 +368,8 @@ int FORTRAN(anal_file) (char* fname, char *recptr, char *delims, int* skip,
  *
  */
 
-int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
-	      int rec,
-	      DFTYPE** numeric_fields, char*** text_fields, DFTYPE bad_flags[],
-	      int* status)
+static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[], int rec, 
+                     DFTYPE** numeric_fields, char*** text_fields, DFTYPE bad_flags[], int* status)
 {
 
   char *p, *pnext, str1[2], errstr[2];
@@ -402,7 +402,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
     } else if (p==NULL || *p == '\0') {
       /* missing data field */
       if ( field_type[i] == FTYP_CHARACTER ) {
-	(*(text_fields+i))[rec*pinc] = (char *) PyMem_Malloc(sizeof(char)*2);
+	(*(text_fields+i))[rec*pinc] = (char *) FerMem_Malloc(sizeof(char)*2);
 	strcpy( (*(text_fields+i))[rec*pinc], blankstr );
       }
       else {
@@ -460,7 +460,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  /* check for yyyy/mm/dd */
 	  if (idummy1 > 1800) {
 		  (*(numeric_fields+i))[rec] =
-		  days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+		  FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 		  (*(numeric_fields+i))[rec] = rdum;
 		  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
 		  break;
@@ -475,14 +475,14 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  }
 
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy3,&idummy1,&idummy2,&rdum,status);
+	    FORTRAN(days_from_day0)(&days_1900,&idummy3,&idummy1,&idummy2,&rdum,status);
 	  (*(numeric_fields+i))[rec] = rdum;
 	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
 	/* force dates with dashes "-" to be in yyyy-mm-dd format *kob* */
 	} else if (sscanf(p,"%4d-%2d-%2d%1s",
 			  &idummy1,&idummy2,&idummy3,errstr) == 3) {
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+	    FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 	  (*(numeric_fields+i))[rec] = rdum; 
 	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
 	  }
@@ -492,7 +492,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	      && idummy2>=1 && idummy2<=12
 	      && idummy3>=1 && idummy3<=31 ) {
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+	    FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 	  (*(numeric_fields+i))[rec] = rdum; }
 	else
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
@@ -522,7 +522,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  /* check for yyyy/mm/dd */
 	  if (idummy1 > 1800) {
 		  (*(numeric_fields+i))[rec] =
-		  days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+		  FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 		  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
 	  } else {
 
@@ -535,7 +535,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 		  }
 		  
 		  (*(numeric_fields+i))[rec] =
-		  days_from_day0_(&days_1900,&idummy3,&idummy1,&idummy2,&rdum,status);
+		  FORTRAN(days_from_day0)(&days_1900,&idummy3,&idummy1,&idummy2,&rdum,status);
 		  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
 	  }
 
@@ -552,7 +552,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 		if (ndum == 5) tpart = idummy4 + idummy5/60.;
 
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+	    FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 	  (*(numeric_fields+i))[rec] = rdum + tpart/24.; 
 	  if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];
 	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
@@ -569,7 +569,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 		if (ndum == 5) tpart = idummy4 + idummy5/60.;	
 
 		(*(numeric_fields+i))[rec] =
-		days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+		FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 		(*(numeric_fields+i))[rec] = rdum + tpart/24.; 	
 	    if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];
 		if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
@@ -593,7 +593,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  /* check for yyyy/mm/dd */
 	  if (idummy1 > 1800) {
 		  (*(numeric_fields+i))[rec] =
-		  days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+		  FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 		  (*(numeric_fields+i))[rec] = rdum;
 		  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
 		  break;
@@ -608,14 +608,14 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  }
 
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy3,&idummy2,&idummy1,&rdum,status);
+	    FORTRAN(days_from_day0)(&days_1900,&idummy3,&idummy2,&idummy1,&rdum,status);
 	  (*(numeric_fields+i))[rec] = rdum;
 	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
 	  /* force dates with dashes "-" to be in yyyy-mm-dd format *kob* */
 	} else if (sscanf(p,"%4d-%2d-%2d%1s",
 			  &idummy1,&idummy2,&idummy3,errstr) == 3) {
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+	    FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 	  (*(numeric_fields+i))[rec] = rdum;
 	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i]; }
 	/* add check for yyyyddmm euro date *kob* */
@@ -624,7 +624,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	      && idummy3>=1 && idummy3<=12
 	      && idummy2>=1 && idummy2<=31 ) {
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy1,&idummy3,&idummy2,&rdum,status);
+	    FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy3,&idummy2,&rdum,status);
 	  (*(numeric_fields+i))[rec] = rdum;
 	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i]; }
 	else
@@ -655,7 +655,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  /* check for yyyy/mm/dd */
 	  if (idummy1 > 1800) {
 		  (*(numeric_fields+i))[rec] =
-		  days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+		  FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 
 	  } else {
 
@@ -668,7 +668,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 		  }
 		  
 		  (*(numeric_fields+i))[rec] =
-		  days_from_day0_(&days_1900,&idummy3,&idummy2,&idummy1,&rdum,status);
+		  FORTRAN(days_from_day0)(&days_1900,&idummy3,&idummy2,&idummy1,&rdum,status);
 	  }
 
 	  (*(numeric_fields+i))[rec] = rdum + tpart/24.;
@@ -685,7 +685,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 		if (ndum == 5) tpart = idummy4 + idummy5/60.;
 
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
+	    FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
 	  (*(numeric_fields+i))[rec] = rdum + tpart/24.; 
 	  if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
 	  if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];
@@ -702,7 +702,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 		if (ndum == 5) tpart = idummy4 + idummy5/60.;	
 
 		(*(numeric_fields+i))[rec] =
-		days_from_day0_(&days_1900,&idummy1,&idummy3,&idummy2,&rdum,status);
+		FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy3,&idummy2,&rdum,status);
 		(*(numeric_fields+i))[rec] = rdum + tpart/24.;
 	    if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];
 	    if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];  }
@@ -745,7 +745,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	    p++;
 	  }
 	  (*(text_fields+i))[rec*pinc] =
-	    (char *) PyMem_Malloc(sizeof(char)*(strlen(p)+1));
+	    (char *) FerMem_Malloc(sizeof(char)*(strlen(p)+1));
 	  strcpy( (*(text_fields+i))[rec*pinc], p );
 	}
 	break;
@@ -781,8 +781,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
  *
  */
 
-void analRec(char *recptr, char *delims, int* nfields, int field_type[],
-	    int max_fields)
+static void analRec(char *recptr, char *delims, int* nfields, int field_type[], int max_fields)
 {
 
   char *p, *pnext, pstart[256], str1[2], latlon1[2];
@@ -925,8 +924,7 @@ void analRec(char *recptr, char *delims, int* nfields, int field_type[],
  *
  */
 
-char *nexstrtok(char *s1, char *s2)
-
+static char *nexstrtok(char *s1, char *s2)
      /*
        like strtok but sensitive to multiple (non-white space) delimiters
        as significant. For example, 2 commas together indicate a missing field.
@@ -975,9 +973,9 @@ char *nexstrtok(char *s1, char *s2)
 void FORTRAN(save_delimited_info) (int *nfields, int field_type[],
 				   char *delim, DelimFileInfo **ptr)
 {
-  DelimFileInfo *fi = (DelimFileInfo *) PyMem_Malloc(sizeof(DelimFileInfo));
-  int* _field_type  = (int *) PyMem_Malloc(sizeof(int) * (*nfields));
-  char* _delim      = (char *) PyMem_Malloc(sizeof(char) * (int)strlen(delim));
+  DelimFileInfo *fi = (DelimFileInfo *) FerMem_Malloc(sizeof(DelimFileInfo));
+  int* _field_type  = (int *) FerMem_Malloc(sizeof(int) * (*nfields));
+  char* _delim      = (char *) FerMem_Malloc(sizeof(char) * (int)strlen(delim));
   int i;
 
   memset(fi, 0, sizeof(DelimFileInfo));
@@ -1012,9 +1010,9 @@ void FORTRAN(get_delimited_info) (int *nfields, int field_type[],
 void FORTRAN(delete_delimited_info) (DelimFileInfo **ptr)
 {
   DelimFileInfo *fi = *ptr;
-  PyMem_Free(fi->fieldType);
-  PyMem_Free(fi->delim);
-  PyMem_Free(fi);
+  FerMem_Free(fi->fieldType);
+  FerMem_Free(fi->delim);
+  FerMem_Free(fi);
   return;
 }
 

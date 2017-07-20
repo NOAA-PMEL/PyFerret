@@ -15,7 +15,9 @@
 */
 
 #include <Python.h> /* make sure Python.h is first */
+#include <stdlib.h>
 #include "ferret.h"
+#include "FerMem.h"
 
 /*
   input  - index:  Ferret mr index at which to store the array pointer
@@ -25,7 +27,7 @@ void FORTRAN(get_mr_mem)( double *index, int *alen, int *status )
 {
   double *pointer;
 
-  pointer = (double *) PyMem_Malloc(sizeof(double) * (*alen));
+  pointer = (double *) FerMem_Malloc(sizeof(double) * (*alen));
 
   if (pointer)
     {

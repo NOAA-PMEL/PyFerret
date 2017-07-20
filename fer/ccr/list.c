@@ -54,11 +54,14 @@
  *       char *data;
  */
 
+/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
+
 #include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "ferret.h"
+#include "FerMem.h"
 #include "list.h"
 
 
@@ -67,11 +70,11 @@ LIST *list_init(void)
    LIST *list;
 
    /* Allocate, initialize, and return a new list. */
-   list = (LIST *) PyMem_Malloc(sizeof(LIST));
+   list = (LIST *) FerMem_Malloc(sizeof(LIST));
    list->size = 0;
-   list->front = NULL;;
-   list->rear = NULL;;
-   list->curr = NULL;;
+   list->front = NULL;
+   list->rear = NULL;
+   list->curr = NULL;
    return(list);
 }
 
@@ -172,7 +175,7 @@ static LIST_ELEMENT *list_create_element(char *data, int bytes)
    /* Allocate storage for the new node and its data.  Return NULL if
     * unable to allocate.
     */
-   new = (LIST_ELEMENT *) PyMem_Malloc(sizeof(LIST_ELEMENT));
+   new = (LIST_ELEMENT *) FerMem_Malloc(sizeof(LIST_ELEMENT));
    if (new == NULL) {
       return(NULL);
    }
@@ -181,7 +184,7 @@ static LIST_ELEMENT *list_create_element(char *data, int bytes)
     * Then either copy the data or just the reference into the node.
     */
    if (bytes > 0) {
-      new->data = (char *) PyMem_Malloc(bytes);
+      new->data = (char *) FerMem_Malloc(bytes);
       if (new->data == NULL) {
 	 return(NULL);
       }
@@ -283,7 +286,7 @@ static char *list_remove_single(LIST *list)
 
    /* The list has one element.  Easy. */
    data = list->curr->data;
-   PyMem_Free(list->curr);
+   FerMem_Free(list->curr);
    list->front = list->rear = list->curr = NULL;
    list->size--;
    return (data);
@@ -316,7 +319,7 @@ char *list_remove_front(LIST *list)
       list->front = temp->next;
       if (list->curr == temp)
 	 list->curr = temp->next;
-      PyMem_Free(temp);
+      FerMem_Free(temp);
       list->size--;
    }
 
@@ -350,7 +353,7 @@ char *list_remove_rear(LIST *list)
       list->rear = temp->prev;
       if (list->curr == temp)
 	 list->curr = temp->prev;
-      PyMem_Free(temp);
+      FerMem_Free(temp);
       list->size--;
    }
 
@@ -391,7 +394,7 @@ char *list_remove_curr(LIST *list)
       temp->next->prev = temp->prev;
       temp->prev->next = temp->next;
       list->curr = temp->next;
-      PyMem_Free(temp);
+      FerMem_Free(temp);
       list->size--;
    }
 
@@ -472,7 +475,7 @@ void list_free(LIST *list, void (*dealloc)(char *))
        */
       if ( dealloc != LIST_NODEALLOC ) {
 	 if ( dealloc == LIST_DEALLOC ) {
-	    PyMem_Free(data);
+	    FerMem_Free(data);
 	 }
 	 else {
 	    (*dealloc)(data);
@@ -480,5 +483,5 @@ void list_free(LIST *list, void (*dealloc)(char *))
       }
    }
 
-   PyMem_Free(list);
+   FerMem_Free(list);
 }

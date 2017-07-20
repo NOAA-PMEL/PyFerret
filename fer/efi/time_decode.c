@@ -49,9 +49,8 @@
 #include <stdio.h>
 #include "ferret.h"
 
-DFTYPE FORTRAN(time_decode) (char *strtime)
+DFTYPE FORTRAN(time_decode)(char *strtime)
 {
-
   int ih,im, ok;
   double ss;  /* pointer to double expected by %lf in sscanf */
   char str1[2];
@@ -76,6 +75,5 @@ DFTYPE FORTRAN(time_decode) (char *strtime)
     return  im + 60.*ih + ss/60.;
   else
     return -1.e34;
-
 }
 

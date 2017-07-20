@@ -43,10 +43,6 @@
    while it is waiting for input.  If the routine is called with a 1, 
    rl_event_hook is set to free_time.  readline will process free_time. */
 
-/* had to add ifdef check for trailing underscore in routine name
-   for aix port *kob* 10/94 */
-/* 11/96 *kob* - Linux port - had to have double quotes around the STOP
-                              message */
 
 /*
  * 10/11 *kms* - removed the contents of this function since the readline
@@ -55,10 +51,9 @@
  */
 
 #include <Python.h> /* make sure Python.h is first */
-#include "ferretmacros.h"  /* with NFERDIMS and FORTRAN */
+#include "fmtprotos.h"
 
-void FORTRAN(tm_set_free_event)(n)
-int *n;
+void FORTRAN(tm_set_free_event)(int *n)
 {
     ;
 }

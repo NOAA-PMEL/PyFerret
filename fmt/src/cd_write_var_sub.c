@@ -76,17 +76,12 @@
 #include <stdio.h>
 #include <netcdf.h>
 #include <assert.h>
-#include "ferretmacros.h"
+#include "fmtprotos.h"
+#include "ferret.h"  /* for NFERDIMSP1 */
+#include "FerMem.h"
 
-
-/* prototype */
-void tm_blockify_ferret_strings(void *dat, char *pbuff,
-				int bufsiz, int outstrlen);
-
-void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
-				int *dims, int *tmp_start, int *tmp_count, 
-				int *strdim, void *dat, int *cdfstat )
-
+void FORTRAN(cd_write_var_sub)(int *cdfid, int *varid, int *vartyp, int *dims, 
+                               int *tmp_start, int *tmp_count, int *strdim, void *dat, int *cdfstat)
 {
   /* convert FORTRAN-index-ordered, FORTRAN-1-referenced ids, count,
      and start to C equivalent
@@ -144,8 +139,7 @@ void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
 		}
 
   /* write out the data */
-  if (*vartyp == NC_CHAR)
-		{
+  if (*vartyp == NC_CHAR) {
 
     /* Create a buffer area with the multi-dimensiona array of strings
        packed into a block.
@@ -158,7 +152,7 @@ void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
       if (indim > 0) {
          for (i=0; i<=ndim; i++) bufsiz *= count[i];
        }
-      pbuff = (char *) PyMem_Malloc(sizeof(char) * bufsiz);
+      pbuff = (char *) FerMem_Malloc(sizeof(char) * bufsiz);
       if ( pbuff == NULL )
          abort();
       tm_blockify_ferret_strings(dat, pbuff, (int)bufsiz, (int)maxstrlen);
@@ -167,20 +161,18 @@ void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
       start[*dims] = (size_t)0;
       count[*dims] = maxstrlen;
 
-      *cdfstat = nc_put_vara_text(*cdfid, vid,
-				 start, count, pbuff);
-      PyMem_Free(pbuff);
-		} else
-		{
-			/* FLOAT data */
+      *cdfstat = nc_put_vara_text(*cdfid, vid, start, count, pbuff);
+      FerMem_Free(pbuff);
+
+  } else {
+      /* FLOAT data */
 #ifdef double_p
-			*cdfstat = nc_put_vara_double(*cdfid, vid,
-				 start, count, (DFTYPE*) dat);
+      *cdfstat = nc_put_vara_double(*cdfid, vid, start, count, (double*) dat);
 #else
-			*cdfstat = nc_put_vara_float(*cdfid, vid,
-				 start, count, (float*) dat);
+      *cdfstat = nc_put_vara_float(*cdfid, vid, start, count, (float*) dat);
 #endif
-		}
+
+  }
 
   return;
 }

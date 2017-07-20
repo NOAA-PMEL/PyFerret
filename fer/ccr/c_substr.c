@@ -49,6 +49,7 @@
 #include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 #include "ferret.h"
+#include "FerMem.h"
 
 void FORTRAN(c_substr)(char **in_ptr, int *offset, int *length, char **out_ptr)
 {
@@ -57,7 +58,7 @@ void FORTRAN(c_substr)(char **in_ptr, int *offset, int *length, char **out_ptr)
    int i, int_length, int_offset;
 
    if ( *out_ptr != NULL )
-      PyMem_Free(*out_ptr);
+      FerMem_Free(*out_ptr);
    if ( *in_ptr == NULL ) {
       /* undefined string given, so return an undefined string */
       *out_ptr = NULL;
@@ -67,7 +68,7 @@ void FORTRAN(c_substr)(char **in_ptr, int *offset, int *length, char **out_ptr)
    int_length = *length;
    int_offset = *offset - 1;
 
-   *out_ptr = (char *) PyMem_Malloc(sizeof(char) * (int_length + 1));
+   *out_ptr = (char *) FerMem_Malloc(sizeof(char) * (int_length + 1));
    if ( *out_ptr == NULL )
       abort();
 

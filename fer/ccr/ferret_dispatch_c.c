@@ -62,8 +62,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ferret.h"
+#include "ferret_shared_buffer.h"
 
-void ferret_dispatch_c( char *init_command, smPtr sBuffer )
+void ferret_dispatch_c(char *init_command, smPtr sBuffer)
 {
   int flag_buff_size  = NUMFLAGS;
   int TEXTLENGTH_size  = TEXTLENGTH;
@@ -75,8 +76,8 @@ void ferret_dispatch_c( char *init_command, smPtr sBuffer )
 /* 1/17 *sh* removed the "memory" argument -- replaced by dynamic allocation
    of hyperslab memory using FORTRAN90 pointers and c (or python) */
 
-  FORTRAN(ferret_dispatch)( init_command, sBuffer->flags, &flag_buff_size,
-		    sBuffer->text, &TEXTLENGTH_size, &(sBuffer->numStrings) );
+  FORTRAN(ferret_dispatch)(init_command, sBuffer->flags, &flag_buff_size,
+		    sBuffer->text, &TEXTLENGTH_size, &(sBuffer->numStrings));
 
   return;
 }
@@ -87,25 +88,25 @@ static int ServerFlag = 0;
 /*
  * Routines for setting/getting security settings
  */
-void set_secure() {
+void set_secure(void) {
   SecureFlag = 1;
 }
 
-int FORTRAN(is_secure)() {
+int FORTRAN(is_secure)(void) {
   return SecureFlag;
 }
 
 /*
  * Routines for setting/getting server settings
  */
-void set_server() {
+void set_server(void) {
   ServerFlag = 1;
   /* Should always be line buffered */
   setvbuf(stdout, NULL, _IOLBF, 0);
   setvbuf(stderr, NULL, _IOLBF, 0);
 }
 
-int FORTRAN(is_server)() {
+int FORTRAN(is_server)(void) {
   return ServerFlag;
 }
 

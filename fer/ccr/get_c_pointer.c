@@ -35,6 +35,7 @@
 
 
 #include <Python.h> /* make sure Python.h is first */
+#include <stdlib.h>
 #include "ferret.h"
 
 void FORTRAN(get_c_pointer)(char** mr_ptr, char** mr_ptr_val)
@@ -49,7 +50,5 @@ void FORTRAN(get_c_pointer)(char** mr_ptr, char** mr_ptr_val)
 
   my_conversion.ptr = mr_ptr;
   *mr_ptr_val = my_conversion.val;
-
-  return;
 
 }

@@ -58,6 +58,19 @@ debug:
 		"VERSION_INFO = (beta/debug)" \
 		build
 
+## The definition of MEMORYDEBUG is observed by fer/special/FerMem_routines.c, 
+## which causes it to print (append) all memory allocations, reallocations, 
+## and frees to file "memorydebug.txt".  Initialize allocated memory with 
+## non-zero values.  Expect this to be a lot slower due to all the 
+## (intentionally inefficient but safe) file operations.
+.PHONY : memorydebug
+memorydebug:
+	$(MAKE) "CFLAGS = $(CFLAGS) $(DBG_FLAGS) -DMEMORYDEBUG"  \
+		"FFLAGS = $(FFLAGS) $(DBG_FLAGS) -fbounds-check" \
+		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(DBG_FLAGS)" \
+		"VERSION_INFO = (beta/debug)" \
+		build
+
 ## The definition of VERBOSEDEBUG is observed by fer/grdel, which causes it
 ## to create a pyferretdebug.log file with all the graphics commands issued
 .PHONY : verbosedebug

@@ -45,14 +45,15 @@
 #include <stdio.h>
 #include <string.h>
 #include "ferret.h"
+#include "FerMem.h"
 
-/*
-     char*** fer_ptr;  output: char** pointer to strings
-     int* nlines; output: number of strings read
-     char* cmd; input: the shell command to execute
-     int* stat;
- */
 void FORTRAN(get_sys_cmnd)(char ***fer_ptr, int *nlines, char *cmd, int *stat)
+/*
+     char*** fer_ptr; output: char** pointer to strings 
+     int* nlines; output: number of strings read 
+     char* cmd; input: the shell command to execute 
+     int* stat;
+*/
 {
     char** sarray;
     int linebufsize =  BUFSIZ;  /* initial size of input line buffer */
@@ -71,17 +72,20 @@ void FORTRAN(get_sys_cmnd)(char ***fer_ptr, int *nlines, char *cmd, int *stat)
     *nlines = 0;
     *stat = 0;
 
-    sarray = (char **) PyMem_Malloc(increment * sizeof(char *));
+    /*
+     * Use calloc for sarray to initialize everything to NULL pointers
+     * for Ferret's string arrays.
+     */
+    sarray = (char **) FerMem_Malloc(BUFSIZ * sizeof(char *));
     if ( sarray == NULL ) {
        *stat = 1;
        return;
     }
-    for (i = 0; i < increment; i++)
-       sarray[i] = NULL;
+    memset(sarray, 0, BUFSIZ * sizeof(char *));
 
-    buf = (char *) PyMem_Malloc(sizeof(char) * linebufsize);
+    buf = (char *) FerMem_Malloc(sizeof(char) * linebufsize);
     if ( buf == NULL ) {
-       PyMem_Free(sarray);
+       FerMem_Free(sarray);
        *stat = 1;
        return;
     }
@@ -97,12 +101,12 @@ void FORTRAN(get_sys_cmnd)(char ***fer_ptr, int *nlines, char *cmd, int *stat)
              /* line buffer wasn't large enough --> allocate more */
              while (incomplete) {
                 linebufsize += BUFSIZ;
-                newbuf = (char *) PyMem_Realloc(buf, sizeof(char) * linebufsize);
+                newbuf = (char *) FerMem_Realloc(buf, sizeof(char) * linebufsize);
                 if ( newbuf == NULL ) {
-                   PyMem_Free(buf);
+                   FerMem_Free(buf);
                    for (i = 0; i < *nlines; i++)
-                      PyMem_Free(sarray[i]);
-                   PyMem_Free(sarray);
+                      FerMem_Free(sarray[i]);
+                   FerMem_Free(sarray);
                    *stat = 1;
                    return;
                 }
@@ -119,12 +123,12 @@ void FORTRAN(get_sys_cmnd)(char ***fer_ptr, int *nlines, char *cmd, int *stat)
 
           /* make and save a permanent copy of the input line */
           /* BUG FIX *kob* v552 - need to add one to string length for null */
-          pmnt = (char *) PyMem_Malloc(sizeof(char) * (int)(strlen(buf)+1));
+          pmnt = (char *) FerMem_Malloc(sizeof(char) * (int)(strlen(buf)+1));
           if ( pmnt == NULL ) {
-             PyMem_Free(buf);
+             FerMem_Free(buf);
              for (i = 0; i < *nlines; i++)
-                PyMem_Free(sarray[i]);
-             PyMem_Free(sarray);
+                FerMem_Free(sarray[i]);
+             FerMem_Free(sarray);
              *stat = 1;
              return;
           }
@@ -133,13 +137,13 @@ void FORTRAN(get_sys_cmnd)(char ***fer_ptr, int *nlines, char *cmd, int *stat)
              /* double the length of the string pointer array */
              last_increment = increment;
              increment *= 2;
-             newsarray = (char **) PyMem_Realloc(sarray, sizeof(char *) * increment);
+             newsarray = (char **) FerMem_Realloc(sarray, sizeof(char *) * increment);
              if ( newsarray == NULL ) {
-                PyMem_Free(buf);
+                FerMem_Free(buf);
                 for (i = 0; i < *nlines; i++)
-                   PyMem_Free(sarray[i]);
-                PyMem_Free(sarray);
-                PyMem_Free(pmnt);
+                   FerMem_Free(sarray[i]);
+                FerMem_Free(sarray);
+                FerMem_Free(pmnt);
                 *stat = 1;
                 return;
              }
@@ -158,14 +162,14 @@ void FORTRAN(get_sys_cmnd)(char ***fer_ptr, int *nlines, char *cmd, int *stat)
     }
 
     /* buf no longer needed */
-    PyMem_Free(buf);
+    FerMem_Free(buf);
 
     /* always return at least one string (avoid FORTRAN probs) */
     /* *kob* v552 - bug fix - still need to allocate space for the null string */
     if (*nlines == 0 ) {
-       pmnt = (char *) PyMem_Malloc(sizeof(char));
+       pmnt = (char *) FerMem_Malloc(sizeof(char));
        if ( pmnt == NULL ) {
-          PyMem_Free(sarray);
+          FerMem_Free(sarray);
           *stat = 1;
           return;
        }

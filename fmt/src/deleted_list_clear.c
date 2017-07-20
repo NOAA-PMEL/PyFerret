@@ -41,9 +41,11 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
+#include "fmtprotos.h"
 #include "deleted_list.h"
+#include "FerMem.h"
 
-void deleted_list_clear_(void * deleted_list_header)
+void FORTRAN(deleted_list_clear)(void *deleted_list_header)
 {
    int i,j;
    int array_size;
@@ -53,8 +55,8 @@ void deleted_list_clear_(void * deleted_list_header)
    array_size = head->array_size;
    if(head){
        for(j=1;j<=array_size;j++)
-         PyMem_Free(head->ptr_table[j-1]);
-       PyMem_Free(head->ptr_table);
+         FerMem_Free(head->ptr_table[j-1]);
+       FerMem_Free(head->ptr_table);
    }
    *((int*)deleted_list_header)=0;
 }

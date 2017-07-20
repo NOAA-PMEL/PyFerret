@@ -236,8 +236,6 @@
 *************** COMMAND FILE AS SOURCE OF COMMAND LINE ***********************
 
  200	READ  (cmnd_lun, '(A)', END=210) cmnd_buff
-c 200	CALL my_readline(cmnd_lun,cmnd_buff,LEN(cmnd_buff),has_more)
-c        IF(has_more.NE.1) goto 210
 
 	cmnd_len_w_cmnt = TM_LENSTR1( cmnd_buff )
 	IF (cmnd_buff(cmnd_len_w_cmnt:cmnd_len_w_cmnt) .EQ. pCR ) THEN

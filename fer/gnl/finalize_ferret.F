@@ -1,4 +1,6 @@
-/*
+	SUBROUTINE FINALIZE_FERRET
+
+*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -30,35 +32,42 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*/
+*
+*  free allocated memory held in global variables/lists
+*       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
-/*
- * Init gui dependent code
- * JS 3.99
- *
- *
- *  *acm*  1/12 Ferret 6.8 ifdef double_p for double-precision ferret. Define dp_gui_get_memory
- *  *kms*  3/12 Removed XWindow GUI code which is no longer used.
- */
+        include 'tmap_errors.parm'  ! error codes
+	include 'tmap_dims.parm'
+	include 'xio.cmn_text'
+        include 'xdset_info.cmn_text'
+	external xio_data
+	include 'xtm_grid.cmn_text'
+	external xgt_grid_data
+	include	'ferret.parm'
+	include	'gfdl_vms.parm'
+	include	'errmsg.parm'
+	include	'gfdl.parm'			! from phil/sieg
+	include	'xonedim.cmn'		! from phil.sieg
+	include 'xprog_state.cmn'
+        include 'xalgebra.cmn'
+	include 'xvariables.cmn'
+	include 'xtoday.cmn'
 
-/*  *acm*  1/12     - Ferret 6.8 ifdef double_p for double-precision ferret. Define dp_gui_get_memory */
+        CALL string_array_clear(alg_pvar_head)
 
-#include <Python.h> /* make sure Python.h is first */
-#include "ferret.h"
+        CALL string_array_clear(countervar_name_head)
 
-static DFTYPE *mem;
+        CALL string_array_clear(uvar_name_code_head)
+ 
+        CALL string_array_clear(ds_var_code_head)
 
-int gui_init(void) {
-    return 0;
-}
+        CALL deleted_list_clear(uvar_num_items_head)
 
-DFTYPE **gui_get_memory(void) {
-    return &mem;
-}
+        CALL ncf_datasets_list_clear()
 
-void gui_run(int *argc, char **argv){
-    ;
-}
+	RETURN
+
+	END
 

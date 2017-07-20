@@ -42,21 +42,12 @@
 *	subroutine reallo(icode,xt,yt,npts,tstrt,tref,xdt)
 */
 
-/*******************/
-
 #include <Python.h> /* make sure Python.h is first */
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "pplmem.h"
 
-/*******************/
-
-/* The global pointer to PLOT+ memory is declared as extern here
-   (Defined in fermain_c.c)
-*/
-  extern float *ppl_memory; 
-  
 /* reallo_envelope: this routine, called from FORTRAN, will check the
    memory available for plotting and allocate more if needed.
  */
@@ -72,7 +63,6 @@ void FORTRAN(reallo_envelope)(int *plot_mem_used)
 */
 
   FORTRAN(get_ppl_memory_size)(&pmemsize);
-  if (*plot_mem_used > pmemsize) reallo_ppl_memory(*plot_mem_used); 
-
-return;
+  if (*plot_mem_used > pmemsize)
+      reallo_ppl_memory(*plot_mem_used); 
 }

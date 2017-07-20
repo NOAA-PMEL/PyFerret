@@ -1,6 +1,7 @@
 /* Make sure Python.h is included first */
 #include <Python.h>
 #include <stdlib.h>
+#include "ferret.h"
 #include "EF_Util.h"
 
 void FORTRAN(ef_set_axis_inheritance_6d)(int *id_ptr,

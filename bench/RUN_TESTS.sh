@@ -18,6 +18,15 @@ efdir="$2"
 PS1='$ '
 export PS1
 
+cleanuponerror() {
+   rm -f $HOME/.ferret
+   if [ -f keep.ferret ]; then
+      echo "****** Returning keep.ferret to $HOME/.ferret ******"
+      mv keep.ferret $HOME/.ferret
+   fi
+   exit 129 
+}
+
 # allow tests to be commented out by beginning with the line with a '!'
 # remove bn_all_ef.jnl from the list if $efdir is "."
 if [ "$efdir" = "." ]; then
@@ -119,6 +128,7 @@ if [ -f $HOME/.ferret ]; then
    mv -f $HOME/.ferret ./keep.ferret
 fi
 cp ./default.ferret $HOME/.ferret
+trap "cleanuponerror" SIGHUP SIGINT SIGQUIT SIGILL SIGABRT SIGBUS SIGFPE SIGKILL SIGSEGV SIGTERM
 
 echo "Benchmark scripts that will be run:" >> $log_file
 for script in $jnl_scripts; do
@@ -151,10 +161,17 @@ for script in $jnl_scripts; do
       $fver $feropts -script $script 1>> $log_file 2>> $err_file
    fi
    if [ $? -ne 0 ]; then
-      echo "****** FERRET error: $script failed ******" >> $log_file
-      echo "****** FERRET error: $script failed ******" >> $err_file
-      echo "****** FERRET error: $script failed ******" >> all_ncdump.out
-      echo "****** FERRET error: $script failed ******"
+      if [ "$ispyferret" -eq 0 ]; then
+         echo "****** FERRET error: $script failed ******" >> $log_file
+         echo "****** FERRET error: $script failed ******" >> $err_file
+         echo "****** FERRET error: $script failed ******" >> all_ncdump.out
+         echo "****** FERRET error: $script failed ******"
+      else
+         echo "****** PYFERRET error: $script failed ******" >> $log_file
+         echo "****** PYFERRET error: $script failed ******" >> $err_file
+         echo "****** PYFERRET error: $script failed ******" >> all_ncdump.out
+         echo "****** PYFERRET error: $script failed ******"
+      fi
    fi
 
    if [ $script = "bn_startupfile.jnl" ]; then
@@ -188,6 +205,7 @@ if [ "$ispyferret" -ne 0 ]; then
    done
 fi
 
+trap - SIGHUP SIGINT SIGQUIT SIGILL SIGABRT SIGBUS SIGFPE SIGKILL SIGSEGV SIGTERM
 # Replace $HOME/.ferret if it was removed
 rm -f $HOME/.ferret
 if [ -f keep.ferret ]; then

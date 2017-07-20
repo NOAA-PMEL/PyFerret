@@ -1,6 +1,4 @@
-	SUBROUTINE FINALIZE
-
-*
+/*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -32,47 +30,39 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
 *
-* prepare for shutdown of ferret
-*
-*     *kms* 11/10 - added cat_pystat_var string_array_clear
-*                   cleared out VMS-specific includes
-*     *acm* 3/12 cleanup ifdefs and unnecessary include files
+*/
+/*
+   06/04 *ywei* Created to implement hash table and store string length
+ */
 
-        include 'tmap_errors.parm'  ! error codes
-	include 'tmap_dims.parm'
-	include 'xio.cmn_text'
-        include 'xdset_info.cmn_text'
-	external xio_data
-	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-	include	'ferret.parm'
-	include	'gfdl_vms.parm'
-	include	'errmsg.parm'
-	include	'gfdl.parm'			! from phil/sieg
-	include	'xonedim.cmn'		! from phil.sieg
-	include 'xprog_state.cmn'
-        include 'xalgebra.cmn'
-	include 'xvariables.cmn'
-	include 'xtoday.cmn'
-        include 'xpyvar_info.cmn'
+#ifndef _STRING_ARRAY_H
+#define _STRING_ARRAY_H
 
-        CALL string_array_clear(alg_pvar_head)
+   struct List_Node {
+      int index;
+      struct List_Node * prev;
+      struct List_Node * next;
+   };
+   typedef struct List_Node List_Node;
 
-        CALL string_array_clear(countervar_name_head)
+   struct String_Array_Header {
+      int head;
+      int array_size;
+      int string_size;
+      List_Node ** ptr_array;
+      List_Node ** hash_table;
+      char * string_array;
+      int  * strlen_array;
+   };
+   typedef struct String_Array_Header SA_Head;
 
-        CALL string_array_clear(uvar_name_code_head)
- 
-        CALL string_array_clear(ds_var_code_head)
+/*
+ * The following is only good for English ANSI characters.
+ * Instead, toupper should be used; but leaving it for now.
+ */
+#define uc(a) ((a>='a'&&a<='z')?((a)&0xDF):(a))
 
-        CALL string_array_clear(pyvar_code_head)
-
-        CALL deleted_list_clear(uvar_num_items_head)
-
-        CALL ncf_datasets_list_clear()
-
-	RETURN
-
-	END
+#endif /*_STRING_ARRAY.H_*/
 

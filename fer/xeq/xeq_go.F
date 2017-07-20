@@ -151,10 +151,6 @@
      .		STATUS='OLD',
      .		ERR=5010 )
 
-*  back out of yonghua's routine call because of 64bit problems *kob**     
-*        my_cbuff = cbuff
-*        CALL my_open(temp_lun,cbuff,LEN(cbuff),file_opened)
-*        if(file_opened.EQ.0) goto 5010
 * inform the control stack that it has taken control at a new level
 	CALL STACK_PTR_UP( csp, cs_max, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000

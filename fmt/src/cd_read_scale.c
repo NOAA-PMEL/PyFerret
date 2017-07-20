@@ -55,23 +55,18 @@
 #include <stdlib.h>
 #include <netcdf.h>
 
-#include "ferretmacros.h"
+#include "fmtprotos.h"
 #include "list.h"
 #include "NCF_Util.h"
+#include "FerMem.h"
 
 
 /* prototype */
-void tm_scale_buffer(DFTYPE *dat, double *dbuff,
-			   DFTYPE *offset, DFTYPE *scale, DFTYPE *bad,
-			   int ntotal);
+static void tm_scale_buffer(DFTYPE *dat, double *dbuff, DFTYPE *offset, DFTYPE *scale, DFTYPE *bad, int ntotal);
 
-void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims, 
-			   DFTYPE *offset, DFTYPE *scale, DFTYPE* bad,
-			   int *tmp_start, int *tmp_count, 
-			   int *tmp_stride, int *tmp_imap,
-			   void *dat, int *permuted, int *strided, int *already_scaled,
-			   int *cdfstat, int *status)
-
+void FORTRAN(cd_read_scale)(int *cdfid, int *varid, int *dims, DFTYPE *offset, DFTYPE *scale, DFTYPE* bad,
+                            int *tmp_start, int *tmp_count, int *tmp_stride, int *tmp_imap,
+                            void *dat, int *permuted, int *strided, int *already_scaled, int *cdfstat, int *status)
 {
 
   /* convert FORTRAN-index-ordered, FORTRAN-1-referenced ids, count,
@@ -152,7 +147,7 @@ void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims,
 	   in variable dat
     */
 
-      data_double = (double *) PyMem_Malloc(ntotal * sizeof(double));
+      data_double = (double *) FerMem_Malloc(ntotal * sizeof(double));
       if ( data_double == NULL )
           abort();
 
@@ -177,8 +172,8 @@ void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims,
          scale, bad, ntotal);
 	  *already_scaled = 1;
 
-	  PyMem_Free(data_double);
-                  
+	  FerMem_Free(data_double);
+
   }
    
   /* read float data */
@@ -220,10 +215,7 @@ void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims,
 }
 
 /*  */
-void tm_scale_buffer(DFTYPE *dat, double *dbuff,
-                     DFTYPE *offset, DFTYPE *scale, DFTYPE *bad,
-                     int ntotal)
-
+static void tm_scale_buffer(DFTYPE *dat, double *dbuff, DFTYPE *offset, DFTYPE *scale, DFTYPE *bad, int ntotal)
 {
         int j;
         double dbad;

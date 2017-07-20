@@ -51,18 +51,19 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include "ferret.h"
+#include "FerMem.h"
  
+void FORTRAN(cache_full_array)( double *array, int *alen, double **pointer_val)
 /*
   input  - array and alen (array length)
   output - pointer to array
       note the "lie" here": FORTRAN actually passes the 
 */
-void FORTRAN(cache_full_array)( double *array, int *alen, double **pointer_val )
 {
   double *ptr;
   int i;
 
-  ptr = (double *) PyMem_Malloc(sizeof(double) * (*alen));
+  ptr = (double *) FerMem_Malloc(sizeof(double) * (*alen));
 
   for (i=0; i < *alen; i++) {
     ptr[i] = array[i];

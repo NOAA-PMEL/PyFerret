@@ -406,7 +406,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     FORTRAN(fgd_set_transparency)(&transparentFlag);
 
     /* Initialize stuff: keyboard, todays date, grids, GFDL terms, PPL brain */
-    FORTRAN(initialize)();
+    FORTRAN(initialize_ferret)();
 
     /* Open the output journal file, if appropriate */
     if ( journalFlag != 0 ) {
@@ -1620,7 +1620,7 @@ static PyObject *pyferretStop(PyObject *self)
     ferret_dispatch_c("EXIT /PROGRAM", sBuffer);
 
     /* Free memory allocated inside Ferret */
-    FORTRAN(finalize)();
+    FORTRAN(finalize_ferret)();
 
     /* Free memory allocated for Ferret */
     PyMem_Free(ferMemory);
@@ -1670,7 +1670,7 @@ static PyObject *pyferretQuit(PyObject *self)
     ferret_dispatch_c("EXIT /PROGRAM", sBuffer);
 
     /* Free memory allocated inside Ferret */
-    FORTRAN(finalize)();
+    FORTRAN(finalize_ferret)();
 
     /* Free memory allocated for Ferret */
     PyMem_Free(ferMemory);

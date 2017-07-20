@@ -3,6 +3,8 @@
 /*
  * Utility functions for reading binary data
  *
+ * $Id$
+ *
  * *acm*  5/07 v603 - fix prototype of createBinaryRead to use MAXDIMS rather 
  *                    than hardwired to 4; to match what is in .c file.
  *			  (Found by Andy Jacobson doing the MAC build.)
@@ -14,6 +16,14 @@
 
 #define MEM_INFO_BLOCKSIZE      1048576	/* Max mem chunk size */
 #define MEM_INFO_MINTHRESH      1024 /* No closer to mmap boundary than this! */
+
+/* Easier way of handling single/double floating-point declarations */
+#ifdef double_p
+#define DFTYPE double
+#else
+#define DFTYPE float
+#endif
+
 
 typedef struct _MemInfo {
   char *data;			/* Memory mapped file contents */
@@ -52,5 +62,18 @@ typedef struct _FileInfo {
   int pageSize;			/* System pagesize */
   int doSwap;			/* Swap bytes */
 } FileInfo;
+
+#ifndef FORTRAN
+#define FORTRAN(a) a##_
+#endif
+
+int  FORTRAN(br_add_var)(DFTYPE *data, int *doRead);
+void FORTRAN(br_close)(void);
+void FORTRAN(br_get_error)(char *buf);
+void FORTRAN(br_get_permutes)(int *permutes);
+int  FORTRAN(br_open)(char *name, int lengths[MAXDIMS], int permutes[MAXDIMS], int *iskip);
+int  FORTRAN(br_read)(void);
+void FORTRAN(br_set_atts)(int *permutes, int *swap);
+int  FORTRAN(br_set_type)(char *type);
 
 #endif

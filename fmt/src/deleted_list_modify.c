@@ -41,11 +41,11 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
+#include "fmtprotos.h"
 #include "deleted_list.h"
 
-void deleted_list_modify_(void *deleted_list_header,
-                           int  *index,
-                           int  *new_value){
+void FORTRAN(deleted_list_modify)(void *deleted_list_header, int *index, int *new_value)
+{
    DLHead * head;
    DL_Node * p;
    int old_value;

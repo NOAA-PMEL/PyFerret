@@ -37,11 +37,9 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
+#include "fmtprotos.h"
 
-void tm_match_captial_name_(char* test_name, 
-                            char* model_name, 
-                            int * len_str, 
-                            int * result)
+void FORTRAN(tm_match_captial_name)(char *test_name, char *model_name, int *len_str, int *result)
 {
      int i, len=*len_str;
      char c1, c2;

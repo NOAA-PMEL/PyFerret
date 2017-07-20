@@ -101,16 +101,18 @@
 /* .................... Includes .................... */
 
 #include <Python.h> /* make sure Python.h is first */
-#include <unistd.h>		/* for convenience */
-#include <stdlib.h>		/* for convenience */
-#include <stdio.h>		/* for convenience */
-#include <string.h>		/* for convenience */
-#include <fcntl.h>		/* for fcntl() */
-#include <dlfcn.h>		/* for dynamic linking */
-#include <signal.h>             /* for signal() */
-#include <setjmp.h>             /* required for jmp_buf */
+#include <ctype.h>
+#include <dlfcn.h>
+#include <fcntl.h>
+#include <setjmp.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #include "ferret.h"
+#include "FerMem.h"
 #include "EF_Util.h"
 #include "list.h"		/* locally added list library */
 #include "pyferret.h"		/* python external funtion interfaces */
@@ -1661,24 +1663,24 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
      */
     if ( EF_Util_setsig("create_pyefcn")) {
         list_remove_rear(STATIC_ExternalFunctionList);
-        PyMem_Free(ef_ptr->internals_ptr);
-        PyMem_Free(ef_ptr);
+        FerMem_Free(ef_ptr->internals_ptr);
+        FerMem_Free(ef_ptr);
         strcpy(errstring, "Unable to set signal handlers in create_pyefcn");
         *lenerrstring = strlen(errstring);
         return;
     }
     if (sigsetjmp(sigjumpbuffer, 1) != 0) {
         list_remove_rear(STATIC_ExternalFunctionList);
-        PyMem_Free(ef_ptr->internals_ptr);
-        PyMem_Free(ef_ptr);
+        FerMem_Free(ef_ptr->internals_ptr);
+        FerMem_Free(ef_ptr);
         strcpy(errstring, "Signal caught in create_pyefcn");
         *lenerrstring = strlen(errstring);
         return;
     }
     if (setjmp(jumpbuffer) != 0) {
         list_remove_rear(STATIC_ExternalFunctionList);
-        PyMem_Free(ef_ptr->internals_ptr);
-        PyMem_Free(ef_ptr);
+        FerMem_Free(ef_ptr->internals_ptr);
+        FerMem_Free(ef_ptr);
         strcpy(errstring, "ef_bail_out called in create_pyefcn");
         *lenerrstring = strlen(errstring);
         return;
@@ -1693,8 +1695,8 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
     *lenerrstring = strlen(errstring);
     if ( *lenerrstring > 0 ) {
         list_remove_rear(STATIC_ExternalFunctionList);
-        PyMem_Free(ef_ptr->internals_ptr);
-        PyMem_Free(ef_ptr);
+        FerMem_Free(ef_ptr->internals_ptr);
+        FerMem_Free(ef_ptr);
     }
     return;
 }
@@ -1927,7 +1929,7 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr, int *status )
       pyefcn_custom_axes(*id_ptr, ef_ptr->path, errstring);
       if ( strlen(errstring) > 0 ) {
           /* (In effect) call ef_bail_out_ to process the error in a standard way */
-          ef_err_bail_out_(id_ptr, errstring);
+          FORTRAN(ef_err_bail_out)(id_ptr, errstring);
           /* Should never return - instead jumps to setjmp() returning 1 */
       }
 
@@ -2060,7 +2062,7 @@ void FORTRAN(efcn_get_result_limits)( int *id_ptr, int *mr_list_ptr, int *cx_lis
       pyefcn_result_limits(*id_ptr, ef_ptr->path, errstring);
       if ( strlen(errstring) > 0 ) {
           /* (In effect) call ef_bail_out_ to process the error in a standard way */
-          ef_err_bail_out_(id_ptr, errstring);
+          FORTRAN(ef_err_bail_out)(id_ptr, errstring);
           /* Should never return - instead jumps to setjmp() returning 1 */
       }
 
@@ -2255,7 +2257,7 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
         size = sizeof(DFTYPE) * (xhi-xlo+1) * (yhi-ylo+1) * (zhi-zlo+1)
                               * (thi-tlo+1) * (ehi-elo+1) * (fhi-flo+1);
 
-        arg_ptr[i] = (DFTYPE *)PyMem_Malloc(size);
+        arg_ptr[i] = (DFTYPE *)FerMem_Malloc(size);
         if ( arg_ptr[i] == NULL ) {
           fprintf(stderr, "**ERROR in efcn_compute() allocating %d bytes of memory\n"
                           "\twork array %d:  X=%d:%d, Y=%d:%d, Z=%d:%d, T=%d:%d, E=%d:%d, F=%d:%d\n",
@@ -2607,7 +2609,7 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
      * we should begin freeing up memory at arg_ptr[num_reqd_args+1].
      */
     for (i=i_ptr->num_reqd_args+1; i<i_ptr->num_reqd_args+1+i_ptr->num_work_arrays; i++) {
-      PyMem_Free(arg_ptr[i]);
+      FerMem_Free(arg_ptr[i]);
     }
 
     /* Success for EF_F */
@@ -2627,11 +2629,11 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
       }
 
       /* Assign the memory limits, step values, and bad-data-flag values - first result, then arguments */
-      ef_get_res_mem_subscripts_6d_(id_ptr, memlo[0], memhi[0]);
-      ef_get_arg_mem_subscripts_6d_(id_ptr, &(memlo[1]), &(memhi[1]));
-      ef_get_res_subscripts_6d_(id_ptr, steplo[0], stephi[0], incr[0]);
-      ef_get_arg_subscripts_6d_(id_ptr, &(steplo[1]), &(stephi[1]), &(incr[1]));
-      ef_get_bad_flags_(id_ptr, &(badflags[1]), &(badflags[0]));
+      FORTRAN(ef_get_res_mem_subscripts_6d)(id_ptr, memlo[0], memhi[0]);
+      FORTRAN(ef_get_arg_mem_subscripts_6d)(id_ptr, &(memlo[1]), &(memhi[1]));
+      FORTRAN(ef_get_res_subscripts_6d)(id_ptr, steplo[0], stephi[0], incr[0]);
+      FORTRAN(ef_get_arg_subscripts_6d)(id_ptr, &(steplo[1]), &(stephi[1]), &(incr[1]));
+      FORTRAN(ef_get_bad_flags)(id_ptr, &(badflags[1]), &(badflags[0]));
 
       /* Reset zero increments to +1 or -1 for pyefcn_compute */
       for (i = 0; i <= i_ptr->num_reqd_args; i++) {
@@ -2669,7 +2671,7 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
       pyefcn_compute(*id_ptr, ef_ptr->path, arg_ptr, (i_ptr->num_reqd_args)+1, memlo, memhi, steplo, stephi, incr, badflags, errstring);
       if ( strlen(errstring) > 0 ) {
           /* (In effect) call ef_bail_out_ to process the error in a standard way */
-          ef_err_bail_out_(id_ptr, errstring);
+          FORTRAN(ef_err_bail_out)(id_ptr, errstring);
           /* Should never return - instead jumps to setjmp() returning 1 */
       }
 
@@ -3257,7 +3259,7 @@ int EF_New( ExternalFunction *this )
    * If the allocation failed, print a warning message and return.
    */
 
-  this->internals_ptr = PyMem_Malloc(sizeof(ExternalFunctionInternals));
+  this->internals_ptr = FerMem_Malloc(sizeof(ExternalFunctionInternals));
   i_ptr = this->internals_ptr;
 
   if ( i_ptr == NULL ) {

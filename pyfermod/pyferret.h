@@ -66,15 +66,10 @@ void FORTRAN(add_pystat_var)(void *data_ndarray_ptr_ptr, char codename[], char t
                      char errmsg[], int *lenerrmsg, int len_codename, int len_title,
                      int len_units, int len_dset, int maxlen_errmsg);
 void FORTRAN(clear_fer_last_error_info)(void);
-void FORTRAN(ctrlc_ast)(void);
 void FORTRAN(ef_get_single_axis_info)(int *id, int *argnum, int *axisnum,
                               char axisname[], char axisunit[],
                               int *backwards_axis, int *modulo_axis, int *regular_axis,
                               int maxlen_axisname, int maxlen_axisunit);
-void FORTRAN(finalize)(void);
-void FORTRAN(ef_get_arg_type)(int *id, int *argnum, int *argtype);
-void FORTRAN(ef_get_arg_string)(int *id, int *argnum, char *argtext, int maxlen_argtext);
-void FORTRAN(ef_get_one_val)(int *id, int *arg, double *val);
 void FORTRAN(get_axis_num)(int *axisnum, int *axisstart, int *axisend, char axisname[], char axisunit[],
                    double axiscoords[], int *numcoords, AXISTYPE *axistype, char *errmsg,
                    int *lenerrmsg, int maxlen_axisname, int maxlen_axisunit, int maxlen_errmsg);
@@ -100,14 +95,7 @@ void FORTRAN(get_ferret_params)(char errnames[][32], int errvals[], int *numvals
 void FORTRAN(get_time_axis_num)(int *axisnum, int *axisstart, int *axisend, char axisname[],
                         CALTYPE *calendartype, int axiscoords[][6], int *numcoords,
                         char *errmsg, int *lenerrmsg, int maxlen_axisname, int maxlen_errmsg);
-void FORTRAN(init_journal)(int *status);
-void FORTRAN(init_memory)(double *maxmegawords);
-void FORTRAN(initialize)(void);
-void FORTRAN(no_journal)(void);
-void FORTRAN(proclaim_c)(int *ttoutLun, char *leader, int *quiet);
-void FORTRAN(save_ppl_memory_size)(int *ppl_mem_size);
 void FORTRAN(set_one_cmnd_mode)(int *one_cmnd_mode_int);
-void FORTRAN(turnoff_verify)(int *status);
 
 /* Missing value for string arrays in Python - must be null-terminated string */
 #define STRING_MISSING_VALUE "\004\000"

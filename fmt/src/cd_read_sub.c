@@ -77,20 +77,14 @@
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <stdlib.h>
 #include <netcdf.h>
-#include "ferretmacros.h"
+#include "fmtprotos.h"
 #include "list.h"
 #include "NCF_Util.h"
+#include "FerMem.h"
 
-
-/* prototype */
-void tm_unblockify_ferret_strings(void *dat, char *pbuff,
-				int bufsiz, int outstrlen);
-
-void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims, 
-			   int *tmp_start, int *tmp_count, 
-			   int *tmp_stride, int *tmp_imap,
-			   double *dat, int *permuted, int *strided,
-			   int *cdfstat )
+void FORTRAN(cd_read_sub)(int *cdfid, int *varid, int *dims, 
+                          int *tmp_start, int *tmp_count, int *tmp_stride, int *tmp_imap,
+                          char **dat, int *permuted, int *strided, int *cdfstat)
 {
 
   /* convert FORTRAN-index-ordered, FORTRAN-1-referenced ids, count,
@@ -166,7 +160,7 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
       if (*cdfstat != NC_NOERR) {
           return;
       }
-      dimids = (int *) PyMem_Malloc(sizeof(int) * ndimsp);
+      dimids = (int *) FerMem_Malloc(sizeof(int) * ndimsp);
       if ( dimids == NULL )
           abort();
       ndimsp--;
@@ -178,12 +172,12 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
       if (*cdfstat != NC_NOERR) {
           return;
       }
-      PyMem_Free(dimids);
+      FerMem_Free(dimids);
       maxstrlen = bufsiz;
       if (indim > 0) {
          for (i=0; i<=ndim; i++) bufsiz *= count[i];
 	 }
-      pbuff = (char *) PyMem_Malloc(sizeof(char) * bufsiz);
+      pbuff = (char *) FerMem_Malloc(sizeof(char) * bufsiz);
       if ( pbuff == NULL )
          abort();
       /* update variable dimensions to include string dimension */
@@ -210,7 +204,7 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
 	  }
 
       tm_unblockify_ferret_strings(dat, pbuff, bufsiz, (int)maxstrlen);
-      PyMem_Free(pbuff);
+      FerMem_Free(pbuff);
 
   /* Numeric data. Read as double or float */
   } else

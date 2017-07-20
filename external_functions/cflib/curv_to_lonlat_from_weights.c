@@ -62,10 +62,10 @@ static size_t count1[D2D] = {336,896};
 
   const char *dimnames[] = {"nj", "ni"};
 
-  clat = ( double* )PyMem_Malloc( nvertex * sizeof( double ));
-  clon = ( double* )PyMem_Malloc( nvertex * sizeof( double ));
-  data = ( double* )PyMem_Malloc( nvertex * sizeof( double ));
-  imask = ( int* )PyMem_Malloc( nvertex * sizeof( int ));
+  clat = ( double* )FerMem_Malloc( nvertex * sizeof( double ));
+  clon = ( double* )FerMem_Malloc( nvertex * sizeof( double ));
+  data = ( double* )FerMem_Malloc( nvertex * sizeof( double ));
+  imask = ( int* )FerMem_Malloc( nvertex * sizeof( int ));
 
     if((status = nc_open( filename, NC_NOWRITE, &ncid )))
        ERR;
@@ -119,10 +119,10 @@ static size_t count1[D2D] = {336,896};
   if ((status = nccf_set_data_double(*dataId, data, save, 
 					    NC_FILL_DOUBLE))) ERR;
 
-  PyMem_Free(clat);
-  PyMem_Free(clon);
-  PyMem_Free(data);
-  PyMem_Free(imask);
+  FerMem_Free(clat);
+  FerMem_Free(clon);
+  FerMem_Free(data);
+  FerMem_Free(imask);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -144,9 +144,9 @@ createLonLat(const double xymin[], const double xymax[],
 
   const char *dimnames[] = {"nj", "ni"};
 
-  clat = ( double* )PyMem_Malloc( nvertex * sizeof( double ));
-  clon = ( double* )PyMem_Malloc( nvertex * sizeof( double ));
-  data = ( double* )PyMem_Malloc( nvertex * sizeof( double ));
+  clat = ( double* )FerMem_Malloc( nvertex * sizeof( double ));
+  clon = ( double* )FerMem_Malloc( nvertex * sizeof( double ));
+  data = ( double* )FerMem_Malloc( nvertex * sizeof( double ));
 
   for (i = 0; i < ndims; ++i) {
     dxs[i] = (xymax[i] - xymin[i]) / (dims[i] - 1);
@@ -172,9 +172,9 @@ createLonLat(const double xymin[], const double xymax[],
   if ((status = nccf_set_data_double(*dataId, data, save, 
 					    NC_FILL_DOUBLE))) ERR;
 
-  PyMem_Free(clat);
-  PyMem_Free(clon);
-  PyMem_Free(data);
+  FerMem_Free(clat);
+  FerMem_Free(clon);
+  FerMem_Free(data);
 }
 
 //////////////////////////////////////////////////////////////////////

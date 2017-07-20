@@ -33,36 +33,32 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
 *
 */
-/*
-   06/04 *ywei* Created to implement hash table and store string length
+
+/* switch_nan : */
+/*  check for a missing or bad value flag of NaN.  if either flag is Nan, */
+/*  then make sure it's ds_missing_flag and if both are NaN, make sure to */
+/*  set ds_bad_flag to bad_val4     */
+
+/* *kob* - 2/18/99 */
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+ *					 definition of macro DFTYPE in ferretmacros.h.
+ * *acm* V6931 12/14 Fix ticket 2223: need to use the Ferret missing-value flag
+ *					 which is now passed in as an argument.
  */
 
-#ifndef _STRING_ARRAY_H
-#define _STRING_ARRAY_H
+#include <Python.h> /* make sure Python.h is first */
+#include <math.h>
+#include "fmtprotos.h"
 
-   struct List_Node {
-      int index;
-      struct List_Node * prev;
-      struct List_Node * next;
-   };
-   typedef struct List_Node List_Node;
-
-   struct String_Array_Header {
-      int head;
-      int array_size;
-      int string_size;
-      List_Node ** ptr_array;
-      List_Node ** hash_table;
-      char * string_array;
-      int  * strlen_array;
-   };
-   typedef struct String_Array_Header SA_Head;
-
-#define uc(a) ((a>='a'&&a<='z')?((a)&0xDF):(a))
-
-void string_array_get_strlen_(double *, int *, int *);
-int  string_array_hash(unsigned char *, unsigned long, unsigned long, int);
-void tm_get_strlen_(int *, int *, char *);
-
-#endif /*_STRING_ARRAY.H_*/
+void FORTRAN(switch_nan)(DFTYPE *bad, DFTYPE *missing, DFTYPE *bad_val)
+{
+  if (isnan(*bad) || isnan(*missing))
+    { 
+      if (isnan(*bad)) 
+	{
+	  *missing = *bad;
+	  *bad = *bad_val;
+	}
+    }
+}
 

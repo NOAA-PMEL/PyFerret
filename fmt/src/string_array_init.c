@@ -45,31 +45,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "fmtprotos.h"
 #include "string_array.h"
+#include "FerMem.h"
 
-void string_array_init_( double *string_array_header,
-                         int  *array_size,
-                         int  *string_size,
-                         char *string_array
-                        )
+void FORTRAN(string_array_init)(double *string_array_header, int *array_size, int *string_size, char *string_array)
 {
    int i,j;
    int true_len, hash_value;
    SA_Head * head;
    List_Node * p;
    
-   head = (SA_Head*)PyMem_Malloc(sizeof(SA_Head));
+   head = (SA_Head*)FerMem_Malloc(sizeof(SA_Head));
    *((SA_Head**)string_array_header) = head;
    head->array_size = *array_size;
    head->string_size = *string_size;
    head->string_array = string_array;
 
-   head->ptr_array = (List_Node**)PyMem_Malloc(head->array_size*sizeof(List_Node*));
+   head->ptr_array = (List_Node**)FerMem_Malloc(head->array_size*sizeof(List_Node*));
 
-   head->hash_table = (List_Node**)PyMem_Malloc(head->array_size*sizeof(List_Node*));
+   head->hash_table = (List_Node**)FerMem_Malloc(head->array_size*sizeof(List_Node*));
    memset((void*)head->hash_table, 0, head->array_size*sizeof(List_Node*));
 
-   head->strlen_array = (int*)PyMem_Malloc(head->array_size*sizeof(int));
+   head->strlen_array = (int*)FerMem_Malloc(head->array_size*sizeof(int));
 
    for(j=head->array_size;j>=1;j--) {
        tm_get_strlen_(&true_len, &(head->string_size),
@@ -79,7 +77,7 @@ void string_array_init_( double *string_array_header,
        hash_value = string_array_hash(&(head->string_array[(j-1)*head->string_size]),
                        true_len, 0, head->array_size);
 
-       head->ptr_array[j-1] = (List_Node*)PyMem_Malloc(sizeof(List_Node));
+       head->ptr_array[j-1] = (List_Node*)FerMem_Malloc(sizeof(List_Node));
        p = head->ptr_array[j-1];
        p->index = j;
        p->prev = NULL;

@@ -34,12 +34,6 @@
 *
 */
 
-#include <Python.h> /* make sure Python.h is first */
-#include <stdio.h>
-#include "ferretmacros.h"  /* with NFERDIMS and FORTRAN */
-
-
-
 /* tm_c_rename.c */
 /* make a Unix system call to rename a file */
 
@@ -52,14 +46,13 @@
 
 /* *kob* had to add ifdef for sake of AIX  10/94 */
 
-void FORTRAN(tm_c_rename)( oldname, newname, status )
-   char *oldname, *newname;
-   int *status;
+#include <Python.h> /* make sure Python.h is first */
+#include <stdio.h>
+#include "fmtprotos.h"
 
-/* Unix system call to rename file */
-
+void FORTRAN(tm_c_rename)(char *oldname, char *newname, int *status)
 {
-   *status = rename ( oldname, newname );
+   *status = rename(oldname, newname);
 
    return;
 }

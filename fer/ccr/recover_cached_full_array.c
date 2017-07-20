@@ -50,10 +50,10 @@
 #include <Python.h> /* make sure Python.h is first */
 #include "ferret.h"
  
+void FORTRAN(recover_cached_full_array)(double *array, int *alen, double **pointer_val)
 /*
   see complementary routine cache_full_array.c
 */
-void FORTRAN(recover_cached_full_array)( double *array, int *alen, double **pointer_val )
 {
   double *ptr;
   int i;

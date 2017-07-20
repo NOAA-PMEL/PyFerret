@@ -64,7 +64,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "ferretmacros.h"  /* with NFERDIMS and FORTRAN */
+#include "fmtprotos.h"
+#include "ferret.h" /* for is_server */
 #include "pyferret.h"
 
 /* Static memory to contain the line read */
@@ -142,11 +143,7 @@ static char *do_gets(char *prompt)
     char *line_read;
 
     /* Get a line from the user. */
-    if ( ! FORTRAN(is_server)() ) {
-        /* Use pyferret._readline to get user input */
-        line_read = pyferret_readline(prompt);
-    }
-    else {
+    if ( FORTRAN(is_server)() ) {
         /* Server mode - just read the next line directly */
         int linelen;
 
@@ -170,6 +167,10 @@ static char *do_gets(char *prompt)
         /* Set the line read to the static memory line */
         line_read = static_line;
     }
+    else {
+        /* Use pyferret._readline to get user input */
+        line_read = pyferret_readline(prompt);
+    }
 
     return line_read;
 }
@@ -178,14 +179,14 @@ static char *do_gets(char *prompt)
 /* c jacket routine to make gnu readline callable from FORTRAN */
 void FORTRAN(tm_ftoc_readline)(char *prompt, char *buff)
 {
-    char *ptr;
+  char *line_read;
 
-    /* invoke either gets or readline with line recall and editing */
-    ptr = do_gets(prompt);
+    /* invoke either gets or Python readline */
+    line_read = do_gets(prompt);
 
-    /* copy the line into the buffer provided from FORTRAN */
-    if ( ptr != (char *) NULL ) {
-        strcpy(buff, ptr);
+    /* copy the string into the buffer provided from FORTRAN */
+    if ( line_read != NULL ) {
+        strcpy( buff, line_read );
     }
     else {
         buff[0] = '\004';   /* ^D  */

@@ -1,3 +1,6 @@
+#ifndef _PPLMEM_H_
+#define _PPLMEM_H_
+
 /* pplmem.h 
    Declarations for routines that allow dynamic PPLUS memory buffer 
    9/18/01 *acm*
@@ -38,7 +41,7 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 */
 
-/* Easier way of handling FORTRAN calls with underscore/no underscore */
+/* Better if these were defined in only one include file, but .... */
 #ifndef FORTRAN
 #ifdef NO_ENTRY_NAME_UNDERSCORES
 #define FORTRAN(a) a
@@ -47,57 +50,41 @@
 #endif
 #endif
 
-void FORTRAN(pplcmd_c)(int *, int *, int *);
-void FORTRAN(pplcmd_f)(int *, int *, int *, float *);
-void FORTRAN(save_ppl_memory_size)(int *);
-void FORTRAN(get_ppl_memory_size)(int *);
-void FORTRAN(pplld_pts)(int *, float *);
-void reallo_ppl_memory(int);
-
+#ifndef DFTYPE
 #ifdef double_p
-
-void FORTRAN(pplldx_envelope)(int *, double *, double *, int *, 
-                       char *, char *, double *, int *);
-
-void FORTRAN(pplldx)( int *, double *, double *, int *, 
-                       char *, char *, double *, float * );
-
-
-void FORTRAN(pplldc_envelope)(int *, double *, int *, int *, int *, int *,
-                       int *, int *, double *, double *, int *, int *,
-                       double *, double *, double *, double *, int *);
-
-void FORTRAN(pplldc)( int *, double *, int *, int *, int *, int *, 
-                       int *, int *, double *, double *, int *, int *, 
-                       double *, double *, double *, double *, float *);
-
-void FORTRAN(pplldv_envelope)(int *, double *, int *, int *, int *, 
-                       int *, int *, int *);
-
-void FORTRAN(pplldv)( int *, double *, int *, int *, int *, int *, 
-                       int *, int *, float *);
-
+#define DFTYPE double
 #else
-
-void FORTRAN(pplldx_envelope)(int *, float *, float *, int *, 
-                       char *, char *, float *, int *);
-
-void FORTRAN(pplldx)( int *, float *, float *, int *, 
-                       char *, char *, float *, float * );
-
-void FORTRAN(pplldc_envelope)(int *, float *, int *, int *, int *, int *,
-                       int *, int *, float *, float *, int *, int *,
-                       float *, float *, float *, float *, int *);
-
-void FORTRAN(pplldc)( int *, float *, int *, int *, int *, int *, 
-                       int *, int *, float *, float *, int *, int *, 
-                       float *, float *, float *, float *, float *);
-
-void FORTRAN(pplldv_envelope)(int *, float *, int *, int *, int *, 
-                       int *, int *, int *);
-
-void FORTRAN(pplldv)( int *, float *, int *, int *, int *, int *, 
-                       int *, int *, float *);
-
+#define DFTYPE float
+#endif
 #endif
 
+/* pointer to memory to be used by PPL - allocated by ferret */
+extern float *ppl_memory;
+
+/* now provided by libpyferret.c which just int instead of int* */
+void reallo_ppl_memory(int this_size);
+
+void FORTRAN(get_ppl_memory_size)(int *plot_mem_used);
+int  FORTRAN(its_gksm)(int *wkid);
+void FORTRAN(pplcmd_c)(int *isi, int *icmdim, int *icmsze);
+void FORTRAN(pplcmd_f)(int *isi, int *icmdim, int *icmsze, float *plot_memory);
+void FORTRAN(pplld_pts)(int *npts, float *plot_memory);
+void FORTRAN(pplld_pts_envelope)(int *npts, int *plot_mem_used);
+void FORTRAN(pplldc)(int *k, DFTYPE *z, int *mx, int *my,int *imn, int *imx,
+                     int *jmn, int *jmx, DFTYPE *pi, DFTYPE *pj,int *nx1, int *ny1,
+                     DFTYPE *xmin1, DFTYPE *ymin1, DFTYPE *dx1, DFTYPE *dy1, float *plot_mem_used);
+void FORTRAN(pplldc_envelope)(int *k, DFTYPE *z, int *mx, int *my,int *imn, int *imx,
+                              int *jmn, int *jmx, DFTYPE *pi, DFTYPE *pj,int *nx1, int *ny1,
+                              DFTYPE *xmin1, DFTYPE *ymin1, DFTYPE *dx1, DFTYPE *dy1, int *plot_mem_used);
+void FORTRAN(pplldv)(int *K, DFTYPE *Z, int *MX, int *MY, int *IMN,int *IMX, int *JMN, int *JMX, float *plot_memory);
+void FORTRAN(pplldv_envelope)(int *K, DFTYPE *Z, int *MX, int *MY, int *IMN,int *IMX, int *JMN, int *JMX);
+void FORTRAN(pplldx)(int *icode, DFTYPE *xt, DFTYPE *yt, int *npts, char *tstrt, char *tref, DFTYPE *xdt, float *plot_memory);
+void FORTRAN(pplldx_envelope)(int *icode, DFTYPE *xt, DFTYPE *yt, int *npts, char *tstrt, char *tref, DFTYPE *xdt, int *plot_mem_used);
+void FORTRAN(reallo_envelope)(int *plot_mem_used);
+void FORTRAN(resize_xgks_window)(int *ws_id, float *x, float *y, int *ix, int *iy);
+void FORTRAN(save_ppl_memory_size)(int *plot_mem_used);
+void FORTRAN(set_background)(int *ws_id, int *ndx);
+void FORTRAN(wait_on_resize)(int *ws_id);
+void FORTRAN(xgks_x_events)(void);
+
+#endif

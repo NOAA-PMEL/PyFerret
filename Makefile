@@ -42,6 +42,21 @@ debug :
 	$(MAKE) externals_debug
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
+## The definition of MEMORYDEBUG is observed by fer/special/FerMem_routines.c, 
+## which causes it to print (append) all memory allocations, reallocations, 
+## and frees to file "memorydebug.txt".  Initialize allocated memory with 
+## non-zero values.  Expect this to be a lot slower due to all the 
+## (intentionally inefficient but safe) file operations.
+.PHONY : memorydebug
+memorydebug :
+	mkdir -p $(DIR_PREFIX)/lib
+	$(MAKE) -C $(DIR_PREFIX)/fer memorydebug
+	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
+	$(MAKE) pymod_debug_build
+	$(MAKE) pymod_debug_install
+	$(MAKE) externals_debug
+	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
+
 ## The following defines VERBOSEDEBUG used by fer/grdel, which causes it
 ## to create a pyferretdebug.log file with all the graphics commands issued
 .PHONY : verbosedebug

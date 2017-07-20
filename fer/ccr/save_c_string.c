@@ -40,6 +40,7 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include "ferret.h"
+#include "FerMem.h"
 
 void FORTRAN(save_c_string)(char *string, int *inlen, char ***fer_ptr, int *offset, int *stat)
 {
@@ -47,7 +48,7 @@ void FORTRAN(save_c_string)(char *string, int *inlen, char ***fer_ptr, int *offs
    char* ptr;
    char** each_str_ptr;
 
-   ptr = (char *) PyMem_Malloc(sizeof(char) * (*inlen + 1));
+   ptr = (char *) FerMem_Malloc(sizeof(char) * (*inlen + 1));
    if ( ptr != NULL ) {
       for (i=0; i<*inlen; i++)
          ptr[i] = string[i];
@@ -57,7 +58,7 @@ void FORTRAN(save_c_string)(char *string, int *inlen, char ***fer_ptr, int *offs
       each_str_ptr = *fer_ptr;   /* holds pointer to the first string */
       each_str_ptr += *offset * 8/sizeof(char**); /* point to the desired string */ 
       if ( *each_str_ptr != NULL )
-         PyMem_Free( *each_str_ptr );
+         FerMem_Free( *each_str_ptr );
       *each_str_ptr = ptr;
 
       *stat = 0;

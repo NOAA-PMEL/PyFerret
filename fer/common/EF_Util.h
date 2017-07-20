@@ -156,6 +156,7 @@ extern void FORTRAN(ef_get_box_limits)(int *id, int *arg, int *axis, int *lo, in
 extern void FORTRAN(ef_get_axis_modulo_len)(int *id, int *arg, int *axis, double *modlen);
 extern void FORTRAN(ef_get_one_val_sub)(int *id_ptr, int *arg_ptr, DFTYPE *val_ptr);
 
+extern void FORTRAN(ef_get_arg_string)(int *id, int *argnum, char *argtext, int maxlen_argtext);
 
 /* these are called by the 4D function definitions */
 extern void FORTRAN(ef_set_axis_influence_6d)(int *id_ptr, int *arg,

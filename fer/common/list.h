@@ -1,3 +1,6 @@
+#ifndef _LIST_H_
+#define _LIST_H_
+
 /* list.h -- data structures and such for generic list package
  * 
  * Last edited: Tue Jul 28 15:29:56 1992 by bcs (Bradley C. Spatz) on wasp
@@ -86,5 +89,4 @@ char *list_curr(LIST *list);
 char *list_rear(LIST *list);
 int   list_size(LIST *list);
 
-
-
+#endif

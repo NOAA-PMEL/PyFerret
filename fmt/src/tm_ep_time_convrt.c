@@ -46,14 +46,11 @@
 */
 
 #include <Python.h> /* make sure Python.h is first */
-#include "ferretmacros.h"
+#include "fmtprotos.h"
 
 #define JULGREG   2299161
 
-void ep_time_to_mdyhms(time, mon, day, yr, hour, min, sec)
-     long *time;
-     int *mon, *day, *yr, *hour, *min;
-     DFTYPE *sec;
+static void ep_time_to_mdyhms(long *time, int *mon, int *day, int *yr, int *hour, int *min, DFTYPE *sec)
 {
 /*
  * convert eps time format to mdy hms
@@ -100,31 +97,19 @@ void ep_time_to_mdyhms(time, mon, day, yr, hour, min, sec)
       epjday (input) - integer
       epmsec (input) - integer
       mon, day, yr, hr, min (output) - integer
-      sec (output) - REAL*4
+      sec (output) - DFTYPE
 
    *sh* 1/94
 */
 
-void FORTRAN(tm_ep_time_convrt)(epjday,
-			epmsec,
-			mon,
-			day,
-			yr,
-			hour,
-			min,
-			sec)
-
-/* prototypes not allowed on TMAP SUN cc compiler.  Need ANSI ?? */
-int *epjday, *epmsec, *mon, *day, *yr, *hour, *min;
-DFTYPE *sec;
-
+void FORTRAN(tm_ep_time_convrt)(int *epjday, int *epmsec, int *mon, int *day, int *yr, int *hour, int *min, DFTYPE *sec)
 {
 /*  this block added by *sh* 1/94 */
   long time[2];
   time[0] = (long)*epjday;
   time[1] = (long)*epmsec;
 
-  (void) ep_time_to_mdyhms(time, mon, day, yr, hour, min, sec);
+  ep_time_to_mdyhms(time, mon, day, yr, hour, min, sec);
 }
 
 

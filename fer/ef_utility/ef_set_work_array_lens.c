@@ -1,5 +1,6 @@
 /* Make sure Python.h is included first */
 #include <Python.h>
+#include "ferret.h"
 #include "EF_Util.h"
 
 /*

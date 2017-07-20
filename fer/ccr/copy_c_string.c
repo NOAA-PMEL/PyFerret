@@ -45,17 +45,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ferret.h"
+#include "FerMem.h"
 
 void FORTRAN(copy_c_string)(char **in_ptr, char **out_ptr)
 {
    if ( *out_ptr != NULL )
-      PyMem_Free(*out_ptr);
+      FerMem_Free(*out_ptr);
    if ( *in_ptr == NULL ) {
      *out_ptr = NULL;
      return;
    }
 
-   *out_ptr = (char *) PyMem_Malloc(sizeof(char) * (strlen(*in_ptr) + 1));
+   *out_ptr = (char *) FerMem_Malloc(sizeof(char) * (strlen(*in_ptr) + 1));
    if ( *out_ptr == NULL )
       abort();
 

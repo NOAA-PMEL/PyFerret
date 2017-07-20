@@ -53,28 +53,10 @@
 #include <stdlib.h>
 #include "pplmem.h"
 
-
 /* pplldv_envelope: this routine, called from FORTRAN, calls pplldv with ppl_memory
  */
 
-#ifdef double_p
-void FORTRAN(pplldv_envelope)(int *K, double *Z, int *MX, int *MY, int *IMN,int *IMX,
-                              int *JMN,int *JMX)
-#else
-void FORTRAN(pplldv_envelope)(int *K, float *Z, int *MX, int *MY, int *IMN,int *IMX,
-                              int *JMN,int *JMX)
-
-#endif
-/*******************/
-
+void FORTRAN(pplldv_envelope)(int *K, DFTYPE *Z, int *MX, int *MY, int *IMN,int *IMX, int *JMN, int *JMX)
 {
-
-/* The global pointer to PLOT+ memory is declared as extern here
-   (Defined in fermain_c.c)
-*/
-  extern float *ppl_memory;
-
-  FORTRAN(pplldv) (K,Z,MX,MY,IMN,IMX,JMN,JMX,ppl_memory);
-
-  return;
+  FORTRAN(pplldv)(K,Z,MX,MY,IMN,IMX,JMN,JMX,ppl_memory);
 }

@@ -48,6 +48,7 @@
 
 #include <Python.h>
 #include "ferret.h"
+#include "FerMem.h"
 #include "EF_Util.h"
 
 /*
@@ -60,14 +61,13 @@ void FORTRAN(dynmem_make_ptr_array)(int* n, long* mr_ptrs_val, int* status)
   *status = FERR_OK;  // default
 
   size = sizeof(DFTYPE*) * *n;
-  mr_ptrs = (DFTYPE**)PyMem_Malloc(size);
+  mr_ptrs = (DFTYPE**)FerMem_Malloc(size);
 
   if ( mr_ptrs == NULL ) { 
     fprintf(stderr, "**ERROR in dynmem_make_ptr_array");
     *status = FERR_EF_ERROR;
     return;
   }
-
 
   *mr_ptrs_val = (long)mr_ptrs; 
 }
@@ -95,7 +95,7 @@ void FORTRAN(dynmem_free_ptr_array)(long* mr_ptrs_val)
 
   mr_ptrs = (DFTYPE**) *mr_ptrs_val;
 
-  PyMem_Free(mr_ptrs);
+  FerMem_Free(mr_ptrs);
 }
 
 

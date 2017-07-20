@@ -328,7 +328,6 @@ xsys_names_data.F\
 xunits_data.F 
 
 SRCS_C = \
-cd_rd_r8_as_r4.c\
 cd_read_scale.c\
 cd_read_sub.c\
 cd_write_att_sub.c\
@@ -355,10 +354,10 @@ string_array_hash.c\
 string_array_init.c\
 string_array_modify.c\
 string_array_modify_upcase.c\
+switch_nan.c\
 tm_blockify_ferret_strings.c\
 tm_break_fmt_date_c.c\
 tm_c_rename.c\
-tm_dfp_convert.c\
 tm_ep_time_convrt.c\
 tm_ftoc_readline.c\
 tm_get_strlen.c\
@@ -371,5 +370,4 @@ tm_unix_versions.c\
 tm_world_recur.c \
 tm_check_inf.c\
 tm_check_nan.c\
-tm_switch_nan.c\
 urlencode.c

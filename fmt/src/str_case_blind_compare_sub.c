@@ -36,13 +36,10 @@
 */
 
 #include <Python.h> /* make sure Python.h is first */
+#include "fmtprotos.h"
 #include <stdio.h>
 
-void str_case_blind_compare_sub_(char* test_name,
-                            int * len_test,
-                            char* model_name, 
-                            int * len_model, 
-                            int * result)
+void FORTRAN(str_case_blind_compare_sub)(char *test_name, int *len_test, char *model_name, int *len_model, int *result)
 {
      int i, ltest=*len_test, lmod=*len_model;
      char c1, c2;

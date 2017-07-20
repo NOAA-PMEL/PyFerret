@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "FerMem.h"
 
 /*
@@ -33,13 +34,10 @@ void *FerMem_Malloc(size_t size) {
     void *result = malloc(size);
 
 #ifdef MEMORYDEBUG
-    char *char_result = (char *)result;
-    size_t k;
     char msg[256];
 
     /* initialize to non-zero junk to catch uninitialized memory usage */
-    for (k = 0; k < size; k++)
-        char_result[k] = 0x6B;
+    memset(result, 0x6B, size);
     sprintf(msg, "%p : 1 : memory malloc allocated for %u bytes\n", result, size);
     writedebug(msg);
 #endif

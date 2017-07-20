@@ -70,8 +70,8 @@ void FORTRAN(string_array_init)(double *string_array_header, int *array_size, in
    head->strlen_array = (int*)FerMem_Malloc(head->array_size*sizeof(int));
 
    for(j=head->array_size;j>=1;j--) {
-       tm_get_strlen_(&true_len, &(head->string_size),
-		     &(head->string_array[(j-1)*head->string_size]));
+       FORTRAN(tm_get_strlen)(&true_len, &(head->string_size),
+		              &(head->string_array[(j-1)*head->string_size]));
        head->strlen_array[j-1]=true_len;
 
        hash_value = string_array_hash(&(head->string_array[(j-1)*head->string_size]),

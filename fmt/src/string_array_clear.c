@@ -56,9 +56,10 @@ void FORTRAN(string_array_clear)(double *string_array_header)
 	 FerMem_Free(head->ptr_array[i]);
        }
        FerMem_Free(head->ptr_array);
+       FerMem_Free(head->strlen_array);
        FerMem_Free(head->hash_table);
        FerMem_Free(head);
     }
-    *string_array_header = 0;
+    *string_array_header = 0.0;
 }
 

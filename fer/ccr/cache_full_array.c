@@ -63,7 +63,7 @@ void FORTRAN(cache_full_array)( double *array, int *alen, double **pointer_val)
   double *ptr;
   int i;
 
-  ptr = (double *) FerMem_Malloc(sizeof(double) * (*alen));
+  ptr = (double *) FerMem_Malloc(sizeof(double) * (*alen), __FILE__, __LINE__);
 
   for (i=0; i < *alen; i++) {
     ptr[i] = array[i];

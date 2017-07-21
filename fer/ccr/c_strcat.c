@@ -54,7 +54,7 @@ void FORTRAN(c_strcat)(char **in_ptr1, char **in_ptr2, char **out_ptr)
    int len2;
 
    if ( *out_ptr != NULL )
-      FerMem_Free(*out_ptr);
+      FerMem_Free(*out_ptr, __FILE__, __LINE__);
 
    /* this treats an undefined string the same as an empty string */
    if ( *in_ptr1 == NULL )
@@ -66,7 +66,7 @@ void FORTRAN(c_strcat)(char **in_ptr1, char **in_ptr2, char **out_ptr)
    else
       len2 = strlen(*in_ptr2);
 
-   *out_ptr = (char *) FerMem_Malloc(sizeof(char) * (len1 + len2 + 1));
+   *out_ptr = (char *) FerMem_Malloc(sizeof(char) * (len1 + len2 + 1), __FILE__, __LINE__);
    if ( *out_ptr == NULL )
       abort();
 

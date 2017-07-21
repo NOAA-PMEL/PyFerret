@@ -737,7 +737,7 @@ int FORTRAN(ncf_init_uvar_dset)( int *setnum )
     att.outtype = NC_CHAR;
     att.len = 21;
     strcpy(att.name, "FerretUserVariables" );
-    att.string = (char*)FerMem_Malloc(2*sizeof(char));
+    att.string = (char*)FerMem_Malloc(2*sizeof(char), __FILE__, __LINE__);
     strcpy(att.string, " ");
 
     /* Save attribute in linked list of attributes for variable */
@@ -797,7 +797,7 @@ int FORTRAN(ncf_init_uax_dset)( int *setnum )
     att.outtype = NC_CHAR;
     att.len = 21;
     strcpy(att.name, "FerretUserCoordVariables" );
-    att.string = (char*)FerMem_Malloc(2*sizeof(char));
+    att.string = (char*)FerMem_Malloc(2*sizeof(char), __FILE__, __LINE__);
     strcpy(att.string, " ");
 
     /* Save attribute in linked list of attributes. */
@@ -922,19 +922,19 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
                         att.type = NC_CHAR;
                         att.outtype = NC_CHAR;
                         att.len = 1;
-                        att.string = (char *) FerMem_Malloc(2* sizeof(char));
+                        att.string = (char *) FerMem_Malloc(2* sizeof(char), __FILE__, __LINE__);
                         strcpy(att.string, " ");
                     }
                     else {
                         switch (att.type) {
                         case NC_CHAR:
-                            att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char));
+                            att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char), __FILE__, __LINE__);
                             nc_status = nc_get_att_text(*ncid, NC_GLOBAL, att.name, att.string);
                             if ( nc_status != NC_NOERR )
                                 return nc_status;
                             break;
                         default:
-                            att.vals = (double *) FerMem_Malloc(att.len * sizeof(double));
+                            att.vals = (double *) FerMem_Malloc(att.len * sizeof(double), __FILE__, __LINE__);
                             nc_status = nc_get_att_double(*ncid, NC_GLOBAL, att.name, att.vals);
                             if ( nc_status != NC_NOERR )
                                 return nc_status;
@@ -1052,14 +1052,14 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
                         att.type = NC_CHAR;
                         att.outtype = NC_CHAR;
                         att.len = 1;
-                        att.string = (char *) FerMem_Malloc(2*sizeof(char));
+                        att.string = (char *) FerMem_Malloc(2*sizeof(char), __FILE__, __LINE__);
                         strcpy(att.string," ");
                     }
                     else {
                         switch ( att.type ) {
                         case NC_CHAR:
                             /* Plus one for end-of-string delimiter. */
-                            att.string = (char *) FerMem_Malloc((att.len+1)*sizeof(char));
+                            att.string = (char *) FerMem_Malloc((att.len+1)*sizeof(char), __FILE__, __LINE__);
                             strcpy (att.string, " ");
                             nc_status = nc_get_att_text(*ncid, iv, att.name, att.string);
                             if ( nc_status != NC_NOERR ) {    /* on error set attr to empty string*/
@@ -1089,15 +1089,15 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
 #else
                             att.outtype = NC_FLOAT;
 #endif
-                            att.vals = (double *) FerMem_Malloc(att.len * sizeof(double));
+                            att.vals = (double *) FerMem_Malloc(att.len * sizeof(double), __FILE__, __LINE__);
                             nc_status = nc_get_att_double(*ncid, iv, att.name, att.vals);
                             if ( nc_status != NC_NOERR ) {    /* on error set attr to empty string*/
-                                FerMem_Free(att.vals);
+                                FerMem_Free(att.vals, __FILE__, __LINE__);
                                 att.vals = NULL;
                                 att.type = NC_CHAR;
                                 att.outtype = NC_CHAR;
                                 att.len = 1;
-                                att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char));
+                                att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char), __FILE__, __LINE__);
                                 strcpy (att.string, " ");
                                 return_val = bad_file_attr;
                             }
@@ -1127,7 +1127,7 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
             att.attid = ia+1;
             att.type = NC_CHAR;
             att.len = strlen(var.name);
-            att.string = (char *) FerMem_Malloc((att.len+1)*sizeof(char));
+            att.string = (char *) FerMem_Malloc((att.len+1)*sizeof(char), __FILE__, __LINE__);
             strcpy (att.string,var.name);
 
             /* Ensure end-of-string delimiter because Netcdf API doesn't store automatically; it's up to the file's author. */
@@ -1191,7 +1191,7 @@ int FORTRAN(ncf_init_other_dset)( int *setnum, char name[], char path[] )
     att.attid = 1;
     att.len = strlen(name);
     strcpy(att.name, "history");
-    att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char));
+    att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char), __FILE__, __LINE__);
     strcpy(att.string, name);
 
     /* Save attribute in linked list of attributes for variable */
@@ -1298,14 +1298,16 @@ static void ncf_free_attribute( char *attptr ) {
 
     att = (ncatt *)attptr;
     if ( att->string != NULL ) {
-        FerMem_Free(att->string);
+        FerMem_Free(att->string, __FILE__, __LINE__);
         att->string = NULL;
     }
     if ( att->vals != NULL ) {
-        FerMem_Free(att->vals);
+        FerMem_Free(att->vals, __FILE__, __LINE__);
         att->vals = NULL;
     }
-    FerMem_Free(att);
+    /* paranoia */
+    memset(att, 0, sizeof(ncatt));
+    FerMem_Free(att, __FILE__, __LINE__);
 }
 
 /* ----
@@ -1369,8 +1371,10 @@ static void ncf_free_variable( char *varptr )
         list_free(var->uvarGridList, LIST_DEALLOC);
         var->uvarGridList = NULL;
     }
-    /* Free thr variable itself */
-    FerMem_Free(var);
+    /* paranoia */
+    memset(var, 0, sizeof(ncvar));
+    /* Free the variable itself */
+    FerMem_Free(var, __FILE__, __LINE__);
 }
 
 /* ----
@@ -1403,12 +1407,10 @@ static void ncf_free_dataset( char *nc_ptr )
     /* Free the ncvar's associated with this dataset */
     varlist = nc->dsetvarlist;
     list_free(varlist, ncf_free_variable);
-    nc->dsetvarlist = NULL;
-    nc->nvars = 0;
-    nc->ngatts = 0;
-
+    /* paranoia */
+    memset(nc, 0, sizeof(ncdset));
     /* Free the ncdset itself */
-    FerMem_Free(nc);
+    FerMem_Free(nc, __FILE__, __LINE__);
 }
 
 /* ----
@@ -1447,8 +1449,10 @@ int FORTRAN(ncf_delete_dset)( int *dset )
         return -1;
     }
 
+    /* paranoia */
+    memset(nc_ptr, 0, sizeof(ncdset));
     /* Free the ncdset itself */
-    FerMem_Free(nc_ptr);
+    FerMem_Free(nc_ptr, __FILE__, __LINE__);
 
     return FERR_OK;
 }
@@ -1547,7 +1551,7 @@ int FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar,
     att.attid = var.natts;
     att.outflag = 1;
     att.len = strlen(title);
-    att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char));
+    att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char), __FILE__, __LINE__);
     strcpy(att.string, title);
     /* Save attribute in linked list of attributes for this variable */
     list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
@@ -1565,7 +1569,7 @@ int FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar,
         att.outflag = 1;
         att.type = NC_CHAR;
         att.outtype = NC_CHAR;
-        att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char));
+        att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char), __FILE__, __LINE__);
         strcpy(att.string, units);
         /* Save attribute in linked list of attributes for this variable */
         list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
@@ -1585,7 +1589,7 @@ int FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar,
     att.type = NC_FLOAT;
     att.outtype = NC_FLOAT;
 #endif
-    att.vals = (double *) FerMem_Malloc(att.len * sizeof(double));
+    att.vals = (double *) FerMem_Malloc(att.len * sizeof(double), __FILE__, __LINE__);
     att.vals[0] = *bad;
     /* Initialize output flag. Attributes written by default by Ferret
      * will be set to outflag = 1.
@@ -1698,7 +1702,7 @@ int FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar,
         att.outflag = 1;
         att.type = NC_CHAR;
         att.outtype = NC_CHAR;
-        att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char));
+        att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char), __FILE__, __LINE__);
         strcpy(att.string, units);
         list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
     }
@@ -1764,7 +1768,7 @@ int FORTRAN(ncf_add_var_num_att)( int *dset, int *varid, char attname[],
 #endif
     att.len = *attlen;
     att.outflag = *outflag;
-    att.vals = (double *) FerMem_Malloc(*attlen * sizeof(double));
+    att.vals = (double *) FerMem_Malloc(*attlen * sizeof(double), __FILE__, __LINE__);
 
     for (i = 0; i < *attlen; i++) {
         att.vals[i] = vals[i];
@@ -1826,7 +1830,7 @@ int FORTRAN(ncf_add_var_num_att_dp)( int *dset, int *varid, char attname[],
     att.outtype = NC_DOUBLE;
     att.len = *attlen;
     att.outflag = *outflag;
-    att.vals = (double *) FerMem_Malloc(*attlen * sizeof(double));
+    att.vals = (double *) FerMem_Malloc(*attlen * sizeof(double), __FILE__, __LINE__);
     for (i = 0; i < *attlen; i++) {
         att.vals[i] = vals[i];
     }
@@ -1909,7 +1913,7 @@ int FORTRAN(ncf_add_var_str_att)( int *dset, int *varid, char attname[], int *at
     att.outtype = NC_CHAR;
     att.len = *attlen;
     att.outflag = *outflag;
-    att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char));
+    att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char), __FILE__, __LINE__);
     strcpy(att.string, attstring);
 
     /*Save attribute in linked list of attributes for this variable */
@@ -1997,11 +2001,11 @@ int FORTRAN(ncf_repl_var_att)( int *dset, int *varid, char attname[], int *attyp
      * Free the memory used by the string or values
      */
     if ( att_ptr->string != NULL ) {
-        FerMem_Free(att_ptr->string);
+        FerMem_Free(att_ptr->string, __FILE__, __LINE__);
         att_ptr->string = NULL;
     }
     if ( att_ptr->vals != NULL ) {
-        FerMem_Free(att_ptr->vals);
+        FerMem_Free(att_ptr->vals, __FILE__, __LINE__);
         att_ptr->vals = NULL;
     }
 
@@ -2017,17 +2021,17 @@ int FORTRAN(ncf_repl_var_att)( int *dset, int *varid, char attname[], int *attyp
         att_ptr->type = NC_CHAR;
         att_ptr->outtype = NC_CHAR;
         att_ptr->len = 1;
-        att_ptr->string = (char *) FerMem_Malloc(2*sizeof(char));
+        att_ptr->string = (char *) FerMem_Malloc(2*sizeof(char), __FILE__, __LINE__);
         strcpy(att_ptr->string," ");
     }
     else {
         switch (*attype) {
         case NC_CHAR:
-            att_ptr->string = (char *) FerMem_Malloc((*attlen+1)* sizeof(char));
+            att_ptr->string = (char *) FerMem_Malloc((*attlen+1)* sizeof(char), __FILE__, __LINE__);
             strcpy(att_ptr->string,attstring);
             break;
         default:
-            att_ptr->vals = (double *) FerMem_Malloc(*attlen * sizeof(double));
+            att_ptr->vals = (double *) FerMem_Malloc(*attlen * sizeof(double), __FILE__, __LINE__);
             for (i = 0; i < *attlen; i++) {
                 att_ptr->vals[i] = vals[i];
             }
@@ -2079,11 +2083,11 @@ int FORTRAN(ncf_repl_var_att_dp)( int *dset, int *varid, char attname[], int *at
      * Free the memory used by the string or values
      */
     if ( att_ptr->string != NULL ) {
-        FerMem_Free(att_ptr->string);
+        FerMem_Free(att_ptr->string, __FILE__, __LINE__);
         att_ptr->string = NULL;
     }
     if ( att_ptr->vals != NULL ) {
-        FerMem_Free(att_ptr->vals);
+        FerMem_Free(att_ptr->vals, __FILE__, __LINE__);
         att_ptr->vals = NULL;
     }
 
@@ -2105,17 +2109,17 @@ int FORTRAN(ncf_repl_var_att_dp)( int *dset, int *varid, char attname[], int *at
         att_ptr->type = NC_CHAR;
         att_ptr->outtype = NC_CHAR;
         att_ptr->len = 1;
-        att_ptr->string = (char *) FerMem_Malloc(2* sizeof(char));
+        att_ptr->string = (char *) FerMem_Malloc(2* sizeof(char), __FILE__, __LINE__);
         strcpy(att_ptr->string," ");
     }
     else {
         switch (*attype) {
         case NC_CHAR:
-            att_ptr->string = (char *) FerMem_Malloc((*attlen+1)* sizeof(char));
+            att_ptr->string = (char *) FerMem_Malloc((*attlen+1)* sizeof(char), __FILE__, __LINE__);
             strcpy(att_ptr->string,attstring);
             break;
         default:
-            att_ptr->vals = (double *) FerMem_Malloc(*attlen * sizeof(double));
+            att_ptr->vals = (double *) FerMem_Malloc(*attlen * sizeof(double), __FILE__, __LINE__);
             for (i = 0; i < *attlen; i++) {
                 att_ptr->vals[i] = vals[i];
             }
@@ -2426,11 +2430,11 @@ int FORTRAN(ncf_transfer_att)( int *dset1, int *varid1, int *iatt, int *dset2, i
     att.outflag = att_ptr1->outflag;
 
     if (att_ptr1->type == NC_CHAR) {
-        att.string = (char *) FerMem_Malloc((att_ptr1->len+1)* sizeof(char));
+        att.string = (char *) FerMem_Malloc((att_ptr1->len+1)* sizeof(char), __FILE__, __LINE__);
         strcpy(att.string, att_ptr1->string);
     }
     else {
-        att.vals = (double *) FerMem_Malloc(att_ptr1->len * sizeof(double));
+        att.vals = (double *) FerMem_Malloc(att_ptr1->len * sizeof(double), __FILE__, __LINE__);
         for (i = 0; i<att_ptr1->len;i++ ) {
             att.vals[i] = att_ptr1->vals[i];
         }
@@ -2528,7 +2532,7 @@ int FORTRAN(ncf_init_agg_dset)( int *setnum, char name[] )
     att.attid = 1;
     strcpy(att.name, "aggregate name" );
     att.len = strlen(name);
-    att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char));
+    att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char), __FILE__, __LINE__);
     strcpy(att.string, name);
 
     /*Save attribute in linked list of attributes for variable .*/
@@ -2873,7 +2877,9 @@ int FORTRAN(ncf_free_uvar_grid_list)( int *LIST_dset, int *uvarid )
     if ( uvgridList != NULL ) {
         while ( ! list_empty(uvgridList) ) {
             uvgrid_ptr = (uvarGrid *)list_remove_front(uvgridList);
-            FerMem_Free(uvgrid_ptr);
+            /* paranoia */
+            memset(uvgrid_ptr, 0, sizeof(uvarGrid));
+            FerMem_Free(uvgrid_ptr, __FILE__, __LINE__);
         }
     }
 
@@ -2973,7 +2979,10 @@ int FORTRAN(ncf_set_uvar_grid)( int *LIST_dset, int *varid, int *grid, int *data
     status = list_traverse(uvgridlist, (char *) context_dset, NCF_ListTraverse_FoundGridDset, (LIST_FRNT | LIST_FORW | LIST_ALTR));
     if ( status == LIST_OK ) {
         uvgrid_ptr = (uvarGrid *) list_remove_curr(uvgridlist);
-        FerMem_Free(uvgrid_ptr);
+        /* paranoia */
+        memset(uvgrid_ptr, 0, sizeof(uvarGrid));
+        FerMem_Free(uvgrid_ptr, __FILE__, __LINE__);
+        uvgrid_ptr = NULL;
     }
 
     /*
@@ -3238,7 +3247,9 @@ int FORTRAN(ncf_delete_uvar_grid)( int *LIST_dset, int *uvarid, int *context_dse
 
     /* Remove this grid from uvaGridList list */
     uvgrid_ptr = (uvarGrid *) list_remove_curr(uvgridlist);
-    FerMem_Free(uvgrid_ptr);
+    /* paranoia */
+    memset(uvgrid_ptr, 0, sizeof(uvarGrid));
+    FerMem_Free(uvgrid_ptr, __FILE__, __LINE__);
 
     return FERR_OK;
 }

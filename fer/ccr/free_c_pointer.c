@@ -45,6 +45,6 @@
 
 void FORTRAN(free_c_pointer)(char ***fer_ptr)
 {
-   FerMem_Free(*fer_ptr);
+   FerMem_Free(*fer_ptr, __FILE__, __LINE__);
    *fer_ptr = NULL;
 }

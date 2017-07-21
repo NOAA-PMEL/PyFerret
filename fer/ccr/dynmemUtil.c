@@ -52,50 +52,45 @@
 #include "EF_Util.h"
 
 /*
- * Create a pointer array in c.  Pass the pointer back as an long int value.
+ * Create a pointer array in c.
  */
-void FORTRAN(dynmem_make_ptr_array)(int* n, long* mr_ptrs_val, int* status)
+void FORTRAN(dynmem_make_ptr_array)(int* n, DFTYPE ***mr_ptrs_ptr, int* status)
 {
   int size;
   DFTYPE** mr_ptrs;
-  *status = FERR_OK;  // default
+  *status = FERR_EF_ERROR;
 
-  size = sizeof(DFTYPE*) * *n;
-  mr_ptrs = (DFTYPE**)FerMem_Malloc(size);
-
+  size = *n * sizeof(DFTYPE*);
+  mr_ptrs = (DFTYPE**)FerMem_Malloc(size, __FILE__, __LINE__);
   if ( mr_ptrs == NULL ) { 
     fprintf(stderr, "**ERROR in dynmem_make_ptr_array");
-    *status = FERR_EF_ERROR;
     return;
   }
 
-  *mr_ptrs_val = (long)mr_ptrs; 
+  *mr_ptrs_ptr = mr_ptrs; 
+  *status = FERR_OK;
 }
 
 /*
  * Insert one pointer (from FORTRAN) into the c pointer array
  */
-void FORTRAN(dynmem_pass_1_ptr)(int* iarg, DFTYPE* arg_ptr, long* mr_ptrs_val)
+void FORTRAN(dynmem_pass_1_ptr)(int* iarg, DFTYPE *arg_ptr, DFTYPE ***mr_ptrs_ptr)
 {
-  int iarg_c = *iarg-1;   // FORTRAN index to c index
+  int iarg_c = *iarg - 1;   // FORTRAN index to c index
   DFTYPE**  mr_ptrs;
 
-  mr_ptrs = (DFTYPE**) *mr_ptrs_val;
-
-  mr_ptrs[iarg_c]  = arg_ptr;
+  mr_ptrs = *mr_ptrs_ptr;
+  mr_ptrs[iarg_c] = arg_ptr;
 }
 
 
 /*
  * Free the pointer array
  */
-void FORTRAN(dynmem_free_ptr_array)(long* mr_ptrs_val)
+void FORTRAN(dynmem_free_ptr_array)(DFTYPE ***mr_ptrs_ptr)
 {
-  DFTYPE** mr_ptrs;
-
-  mr_ptrs = (DFTYPE**) *mr_ptrs_val;
-
-  FerMem_Free(mr_ptrs);
+  FerMem_Free(*mr_ptrs_ptr, __FILE__, __LINE__);
+  *mr_ptrs_ptr = NULL;
 }
 
 

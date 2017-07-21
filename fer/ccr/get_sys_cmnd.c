@@ -76,16 +76,16 @@ void FORTRAN(get_sys_cmnd)(char ***fer_ptr, int *nlines, char *cmd, int *stat)
      * Use calloc for sarray to initialize everything to NULL pointers
      * for Ferret's string arrays.
      */
-    sarray = (char **) FerMem_Malloc(BUFSIZ * sizeof(char *));
+    sarray = (char **) FerMem_Malloc(BUFSIZ * sizeof(char *), __FILE__, __LINE__);
     if ( sarray == NULL ) {
        *stat = 1;
        return;
     }
     memset(sarray, 0, BUFSIZ * sizeof(char *));
 
-    buf = (char *) FerMem_Malloc(sizeof(char) * linebufsize);
+    buf = (char *) FerMem_Malloc(sizeof(char) * linebufsize, __FILE__, __LINE__);
     if ( buf == NULL ) {
-       FerMem_Free(sarray);
+       FerMem_Free(sarray, __FILE__, __LINE__);
        *stat = 1;
        return;
     }
@@ -101,12 +101,12 @@ void FORTRAN(get_sys_cmnd)(char ***fer_ptr, int *nlines, char *cmd, int *stat)
              /* line buffer wasn't large enough --> allocate more */
              while (incomplete) {
                 linebufsize += BUFSIZ;
-                newbuf = (char *) FerMem_Realloc(buf, sizeof(char) * linebufsize);
+                newbuf = (char *) FerMem_Realloc(buf, sizeof(char) * linebufsize, __FILE__, __LINE__);
                 if ( newbuf == NULL ) {
-                   FerMem_Free(buf);
+                   FerMem_Free(buf, __FILE__, __LINE__);
                    for (i = 0; i < *nlines; i++)
-                      FerMem_Free(sarray[i]);
-                   FerMem_Free(sarray);
+                      FerMem_Free(sarray[i], __FILE__, __LINE__);
+                   FerMem_Free(sarray, __FILE__, __LINE__);
                    *stat = 1;
                    return;
                 }
@@ -123,12 +123,12 @@ void FORTRAN(get_sys_cmnd)(char ***fer_ptr, int *nlines, char *cmd, int *stat)
 
           /* make and save a permanent copy of the input line */
           /* BUG FIX *kob* v552 - need to add one to string length for null */
-          pmnt = (char *) FerMem_Malloc(sizeof(char) * (int)(strlen(buf)+1));
+          pmnt = (char *) FerMem_Malloc(sizeof(char) * (int)(strlen(buf)+1), __FILE__, __LINE__);
           if ( pmnt == NULL ) {
-             FerMem_Free(buf);
+             FerMem_Free(buf, __FILE__, __LINE__);
              for (i = 0; i < *nlines; i++)
-                FerMem_Free(sarray[i]);
-             FerMem_Free(sarray);
+                FerMem_Free(sarray[i], __FILE__, __LINE__);
+             FerMem_Free(sarray, __FILE__, __LINE__);
              *stat = 1;
              return;
           }
@@ -137,13 +137,13 @@ void FORTRAN(get_sys_cmnd)(char ***fer_ptr, int *nlines, char *cmd, int *stat)
              /* double the length of the string pointer array */
              last_increment = increment;
              increment *= 2;
-             newsarray = (char **) FerMem_Realloc(sarray, sizeof(char *) * increment);
+             newsarray = (char **) FerMem_Realloc(sarray, sizeof(char *) * increment, __FILE__, __LINE__);
              if ( newsarray == NULL ) {
-                FerMem_Free(buf);
+                FerMem_Free(buf, __FILE__, __LINE__);
                 for (i = 0; i < *nlines; i++)
-                   FerMem_Free(sarray[i]);
-                FerMem_Free(sarray);
-                FerMem_Free(pmnt);
+                   FerMem_Free(sarray[i], __FILE__, __LINE__);
+                FerMem_Free(sarray, __FILE__, __LINE__);
+                FerMem_Free(pmnt, __FILE__, __LINE__);
                 *stat = 1;
                 return;
              }
@@ -162,14 +162,15 @@ void FORTRAN(get_sys_cmnd)(char ***fer_ptr, int *nlines, char *cmd, int *stat)
     }
 
     /* buf no longer needed */
-    FerMem_Free(buf);
+    FerMem_Free(buf, __FILE__, __LINE__);
+    buf = NULL;
 
     /* always return at least one string (avoid FORTRAN probs) */
     /* *kob* v552 - bug fix - still need to allocate space for the null string */
     if (*nlines == 0 ) {
-       pmnt = (char *) FerMem_Malloc(sizeof(char));
+       pmnt = (char *) FerMem_Malloc(sizeof(char), __FILE__, __LINE__);
        if ( pmnt == NULL ) {
-          FerMem_Free(sarray);
+          FerMem_Free(sarray, __FILE__, __LINE__);
           *stat = 1;
           return;
        }

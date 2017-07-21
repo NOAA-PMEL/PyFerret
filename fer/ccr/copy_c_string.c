@@ -50,13 +50,13 @@
 void FORTRAN(copy_c_string)(char **in_ptr, char **out_ptr)
 {
    if ( *out_ptr != NULL )
-      FerMem_Free(*out_ptr);
+      FerMem_Free(*out_ptr, __FILE__, __LINE__);
    if ( *in_ptr == NULL ) {
      *out_ptr = NULL;
      return;
    }
 
-   *out_ptr = (char *) FerMem_Malloc(sizeof(char) * (strlen(*in_ptr) + 1));
+   *out_ptr = (char *) FerMem_Malloc(sizeof(char) * (strlen(*in_ptr) + 1), __FILE__, __LINE__);
    if ( *out_ptr == NULL )
       abort();
 

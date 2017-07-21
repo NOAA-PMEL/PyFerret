@@ -48,7 +48,7 @@ void FORTRAN(save_c_string)(char *string, int *inlen, char ***fer_ptr, int *offs
    char* ptr;
    char** each_str_ptr;
 
-   ptr = (char *) FerMem_Malloc(sizeof(char) * (*inlen + 1));
+   ptr = (char *) FerMem_Malloc(sizeof(char) * (*inlen + 1), __FILE__, __LINE__);
    if ( ptr != NULL ) {
       for (i=0; i<*inlen; i++)
          ptr[i] = string[i];
@@ -58,7 +58,7 @@ void FORTRAN(save_c_string)(char *string, int *inlen, char ***fer_ptr, int *offs
       each_str_ptr = *fer_ptr;   /* holds pointer to the first string */
       each_str_ptr += *offset * 8/sizeof(char**); /* point to the desired string */ 
       if ( *each_str_ptr != NULL )
-         FerMem_Free( *each_str_ptr );
+         FerMem_Free( *each_str_ptr, __FILE__, __LINE__ );
       *each_str_ptr = ptr;
 
       *stat = 0;

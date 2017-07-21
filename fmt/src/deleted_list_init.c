@@ -56,20 +56,20 @@ void FORTRAN(deleted_list_init)(void **deleted_list_header, int *int_array, int 
    int j;
    DL_Node *p;
 
-   head = (DLHead *) FerMem_Malloc(sizeof(DLHead));
+   head = (DLHead *) FerMem_Malloc(sizeof(DLHead), __FILE__, __LINE__);
    *deleted_list_header = head;
    head->int_array = int_array;
    head->array_size = *int_array_size;
    head->deleted_value = *deleted_value;
    array_size = head->array_size;
 
-   head->ptr_table = (DL_Node **) FerMem_Malloc(array_size * sizeof(DL_Node *));
+   head->ptr_table = (DL_Node **) FerMem_Malloc(array_size * sizeof(DL_Node *), __FILE__, __LINE__);
    memset(head->ptr_table, 0, array_size * sizeof(DL_Node *));
    head->deleted_list_head = NULL;
    head->undel_list_head = NULL;
 
    for (j = array_size; j > 0; j--) {
-       head->ptr_table[j-1] = (DL_Node *) FerMem_Malloc(sizeof(DL_Node));
+       head->ptr_table[j-1] = (DL_Node *) FerMem_Malloc(sizeof(DL_Node), __FILE__, __LINE__);
        p = head->ptr_table[j-1];
        p->index = j;
 

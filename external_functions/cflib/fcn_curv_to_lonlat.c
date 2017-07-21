@@ -67,10 +67,10 @@ readCurvi(const char *filename, const char *datavar,
   ny = dimsizes[ndims-2];
   nvertex = nx*ny;
 
-  clat = ( double* )FerMem_Malloc( nvertex * sizeof( double ));
-  clon = ( double* )FerMem_Malloc( nvertex * sizeof( double ));
-  data = ( double* )FerMem_Malloc( nvertex * sizeof( double ));
-  imask = ( int* )FerMem_Malloc( nvertex * sizeof( int ));
+  clat = ( double* )FerMem_Malloc(nvertex * sizeof(double), __FILE__, __LINE__);
+  clon = ( double* )FerMem_Malloc(nvertex * sizeof(double), __FILE__, __LINE__);
+  data = ( double* )FerMem_Malloc(nvertex * sizeof(double), __FILE__, __LINE__);
+  imask = ( int* )FerMem_Malloc(nvertex * sizeof(int), __FILE__, __LINE__);
 
   for (i = 0; i < 4; ++i) {
     start[i] = 0;
@@ -120,10 +120,10 @@ readCurvi(const char *filename, const char *datavar,
   if ((status = nccf_set_data_double(*dataId, data, save, 
 					    NC_FILL_DOUBLE))) ERR;
 
-  FerMem_Free(clat);
-  FerMem_Free(clon);
-  FerMem_Free(data);
-  FerMem_Free(imask);
+  FerMem_Free(clat, __FILE__, __LINE__);
+  FerMem_Free(clon, __FILE__, __LINE__);
+  FerMem_Free(data, __FILE__, __LINE__);
+  FerMem_Free(imask, __FILE__, __LINE__);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -145,9 +145,9 @@ createLonLat(const double xymin[], const double xymax[],
 
   const char *dimnames[] = {"nj", "ni"};
 
-  clat = ( double* )FerMem_Malloc( nvertex * sizeof( double ));
-  clon = ( double* )FerMem_Malloc( nvertex * sizeof( double ));
-  data = ( double* )FerMem_Malloc( nvertex * sizeof( double ));
+  clat = ( double* )FerMem_Malloc(nvertex * sizeof(double), __FILE__, __LINE__);
+  clon = ( double* )FerMem_Malloc(nvertex * sizeof(double), __FILE__, __LINE__);
+  data = ( double* )FerMem_Malloc(nvertex * sizeof(double), __FILE__, __LINE__);
 
   for (i = 0; i < nhoriz; ++i) {
     dxs[i] = (xymax[i] - xymin[i]) / (dims[i] - 1);
@@ -175,9 +175,9 @@ createLonLat(const double xymin[], const double xymax[],
   if ((status = nccf_set_data_double(*dataId, data, save, 
 					    NC_FILL_DOUBLE))) ERR;
 
-  FerMem_Free(clat);
-  FerMem_Free(clon);
-  FerMem_Free(data);
+  FerMem_Free(clat, __FILE__, __LINE__);
+  FerMem_Free(clon, __FILE__, __LINE__);
+  FerMem_Free(data, __FILE__, __LINE__);
 }
 
 //////////////////////////////////////////////////////////////////////

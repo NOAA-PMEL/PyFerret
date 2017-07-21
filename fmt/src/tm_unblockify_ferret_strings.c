@@ -74,14 +74,14 @@ void tm_unblockify_ferret_strings(char **mr_blk1, char *pblock, int bufsiz, int 
     pinstr += filestrlen;
 
     /* allocate memory for this string */
-    poutchar = (char *) FerMem_Malloc(sizeof(char) * (n+1));
+    poutchar = (char *) FerMem_Malloc(sizeof(char) * (n+1), __FILE__, __LINE__);
 
     /*
      * Free any existing string in the output array and then
      * assign this newly allocated memory to the output array.
      */
     if ( *poutstr != NULL )
-       FerMem_Free(*poutstr);
+       FerMem_Free(*poutstr, __FILE__, __LINE__);
     *poutstr = poutchar;
 
     /* increment poutstr to point to the next output string pointer position */

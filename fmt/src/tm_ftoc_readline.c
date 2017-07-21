@@ -187,6 +187,7 @@ void FORTRAN(tm_ftoc_readline)(char *prompt, char *buff)
     /* copy the string into the buffer provided from FORTRAN */
     if ( line_read != NULL ) {
         strcpy( buff, line_read );
+      line_read = NULL;
     }
     else {
         buff[0] = '\004';   /* ^D  */

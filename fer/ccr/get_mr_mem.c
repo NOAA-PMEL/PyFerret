@@ -8,22 +8,16 @@
  *
  */
 
-/* F90 pointers are not true pointers.  Instead they are simply names that 
- serve as aliases for normal FORTRAN variables.  The only way I could think
- of to pass the c-malloc'ed pointer into the F90 pointer was to disguise
- it as a normal FORTRAN variable by passing it as a subroutine argument.
-*/
-
 #include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 #include "ferret.h"
 #include "FerMem.h"
 
+void FORTRAN(get_mr_mem)( double *index, long *alen, int *status )
 /*
   input  - index:  Ferret mr index at which to store the array pointer
-  input  - alen:   array length
+  input  - alen:   array length  NOTE: INTEGER*8
 */
-void FORTRAN(get_mr_mem)( double *index, int *alen, int *status )
 {
   double *pointer;
 

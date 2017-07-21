@@ -8,12 +8,6 @@
  *
  */
 
-/* F90 pointers are not true pointers.  Instead they are simply names that 
- serve as aliases for normal FORTRAN variables.  The only way I could think
- of to pass the c-malloc'ed pointer into the F90 pointer was to disguise
- it as a normal FORTRAN variable by passing it as a subroutine argument.
-*/
-
 #include <Python.h> /* make sure Python.h is first */
 #include "ferret.h"
 #include "FerMem.h"

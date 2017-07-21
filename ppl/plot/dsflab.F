@@ -113,12 +113,7 @@ C
 C	LJUST left justifies a string and returns its length
 C
 	INTEGER INLEN,OUTLEN
-
-#ifdef FORTRAN_90
-	character str*(*)
-#else
-	CHARACTER STR*2048
-#endif
+	CHARACTER STR*(*)
 
 	IF(STR.EQ.' ')THEN
 	    OUTLEN=1

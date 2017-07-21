@@ -1,4 +1,4 @@
-	SUBROUTINE GET_WS_DYNMEM( rqst_size, ws, status )
+	SUBROUTINE GET_WS_DYNMEM( i8_rqst_size, ws, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -50,34 +50,34 @@
 
 * calling argument declarations:
 	INTEGER	ws, status
-	INTEGER*8 rqst_size
+	INTEGER*8 i8_rqst_size
 
 * internal variable declarations:
 	INTEGER	mr_del, num_slen
 	CHARACTER  LEFINT8*20, num_str*20
 
 * Check for unspecified limits on abstract axis
-	IF ( rqst_size .EQ. 99999999 ) GOTO 5100
+	IF ( i8_rqst_size .EQ. 99999999 ) GOTO 5100
 
 * allocate the dynamic memory
- 200	CALL GET_WS_MEM(ws, rqst_size, status)
+ 200	CALL GET_WS_MEM(ws, i8_rqst_size, status)
         IF (status .NE. ferr_ok) GOTO 5300
 
 * bookkeeping
-        ws_size(ws) = rqst_size
+        ws_size(ws) = i8_rqst_size
 	RETURN
 
 ***********************
 * error exits
  5000	RETURN
- 5100	num_str = LEFINT8(rqst_size,num_slen)
+ 5100	num_str = LEFINT8(i8_rqst_size,num_slen)
 	CALL ERRMSG( ferr_dim_underspec, status,
      .    num_str(:num_slen)//' words were requested. ', *5110)
  5110	CALL WARN('Check for unspecified limits on an ABSTRACT axis')
 	CALL WARN('Use the SHOW GRID command to see the axes')
 	GOTO 5000
 
- 5300	num_str = LEFINT8(rqst_size,num_slen)
+ 5300	num_str = LEFINT8(i8_rqst_size,num_slen)
 	CALL ERRMSG( ferr_insuff_memory,status,
      .	  num_str(:num_slen)//' words were requested. ', *5310)
  5310	CALL WARN('The system is refusing to supply this much memory')

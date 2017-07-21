@@ -1,4 +1,4 @@
-	SUBROUTINE SHOW_ABORTED_MEM_STATE(rqst_size)
+	SUBROUTINE SHOW_ABORTED_MEM_STATE(i8_rqst_size)
 
 *
 *
@@ -49,7 +49,7 @@
 	include 'xinterrupt.cmn'
 
 * calling argument declarations:
-	INTEGER*8 rqst_size
+	INTEGER*8 i8_rqst_size
 
 * local variable declarations:
 	INTEGER UVAR_NUMBER, TM_LENSTR1, uvar, slen, slen2, slen3
@@ -106,8 +106,8 @@
 
 
 * Report the size of the requested object
-	mem_int = LEFINT8(rqst_size, slen2)
-	percent = TM_FMT (rqst_size/rmax_mem*100, 2, 8, slen3)
+	mem_int = LEFINT8(i8_rqst_size, slen2)
+	percent = TM_FMT (i8_rqst_size/rmax_mem*100, 2, 8, slen3)
 	CALL SPLIT_LIST(pttmode_explct, show_lun,
      .		'    The size of the requested object was: '//
      .		': '//mem_int(:slen2)//' ('//percent(:slen3)//'%)' ,0 )

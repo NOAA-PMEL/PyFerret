@@ -1,4 +1,4 @@
-	SUBROUTINE GET_DYN_WORK_SPACE( rqst_size, status )
+	SUBROUTINE GET_DYN_WORK_SPACE( i8_rqst_size, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -51,7 +51,7 @@
 
 * calling argument declarations:
 	INTEGER status
-	INTEGER*8 rqst_size
+	INTEGER*8 i8_rqst_size
 
 
 * slot 1 of working storage is managed specially
@@ -59,7 +59,7 @@
 
 * If the work space that is currently allocated is already large enough, then
 * we will simply let it be re-used
-	IF (ws_size(plegacy_work_buffer) .GE. rqst_size) THEN
+	IF (ws_size(plegacy_work_buffer) .GE. i8_rqst_size) THEN
 	   status = ferr_ok
 	   RETURN
 	ELSEIF (ws_size(plegacy_work_buffer) .NE. 0) THEN
@@ -67,7 +67,7 @@
 	ENDIF
 
 * get the requested memory
-	CALL GET_WS_DYNMEM(rqst_size, plegacy_work_buffer, status)
+	CALL GET_WS_DYNMEM(i8_rqst_size, plegacy_work_buffer, status)
 
 	END
 

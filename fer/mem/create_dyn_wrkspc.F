@@ -1,4 +1,4 @@
-	SUBROUTINE CREATE_DYN_WRKSPC( rqst_size, ws, status )
+	SUBROUTINE CREATE_DYN_WRKSPC( i8_rqst_size, ws, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -50,7 +50,7 @@
 
 * calling argument declarations:
 	INTEGER	ws, status
-	INTEGER*8 rqst_size
+	INTEGER*8 i8_rqst_size
 
 * internal variable declarations:
 
@@ -64,7 +64,7 @@
 	CALL ERRMSG( ferr_internal, status, 'create_dyn_wrkspc', *5000)
 
 * allocate the memory
- 10	CALL GET_WS_DYNMEM( rqst_size, ws, status )
+ 10	CALL GET_WS_DYNMEM( i8_rqst_size, ws, status )
 
  5000	RETURN
 

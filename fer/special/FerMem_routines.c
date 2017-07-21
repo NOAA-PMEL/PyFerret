@@ -49,7 +49,7 @@ void *FerMem_Malloc(size_t size, char *filename, int linenumber) {
 
     /* initialize to non-zero junk to catch uninitialized memory usage */
     memset(result, 0x6B, size);
-    sprintf(msg, "%p : 1 : memory malloc allocated for %u bytes : file %s : line %d\n", result, (unsigned int) size, filename, linenumber);
+    sprintf(msg, "%p : 1 : memory malloc allocated for %ld bytes : file %s : line %d\n", result, size, filename, linenumber);
     writedebug(msg);
 #endif
 
@@ -78,7 +78,7 @@ void *FerMem_Realloc(void *ptr, size_t size, char *filename, int linenumber) {
     newptr = realloc(ptr, size);
 
 #ifdef MEMORYDEBUG
-    sprintf(msg, "%p : 3 : memory realloc allocated for %u bytes : file %s : line %d\n", newptr, (unsigned int) size, filename, linenumber);
+    sprintf(msg, "%p : 3 : memory realloc allocated for %ld bytes : file %s : line %d\n", newptr, size, filename, linenumber);
     writedebug(msg);
 #endif
 

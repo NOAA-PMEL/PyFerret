@@ -1,4 +1,4 @@
-	SUBROUTINE GET_MR_DYNMEM( rqst_size, mr, status )
+	SUBROUTINE GET_MR_DYNMEM( i8_rqst_size, mr, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -50,7 +50,7 @@
 
 * calling argument declarations:
 	INTEGER	mr, status
-	INTEGER*8 rqst_size
+	INTEGER*8 i8_rqst_size
 
 * internal variable declarations:
 	INTEGER	num_slen, mr_del
@@ -58,15 +58,15 @@
 	CHARACTER  LEFINT8*20, TM_FMT*12, num_str*20
 
 * Check for unspecified limits on abstract axis
-	IF ( rqst_size .EQ. 99999999 ) GOTO 5100
+	IF ( i8_rqst_size .EQ. 99999999 ) GOTO 5100
 
 * if we know there isn't room to accommodate this new object then
 * we can error out without compromising the current contents of the cache
 	available_mem = max_mem_allowed-(permanent_mem+essential_mem)
-	IF ( rqst_size .GT. available_mem) GOTO 5200
+	IF ( i8_rqst_size .GT. available_mem) GOTO 5200
 
 * will this new allocation push us over the specified memory size limit?
-	IF (total_mem+rqst_size .GT. max_mem_allowed) THEN
+	IF (total_mem+i8_rqst_size .GT. max_mem_allowed) THEN
 * ... delete from tail of deletion priority chain until there's room
  100	  mr_del = mr_del_blink(0)
 	    IF ( mr_del .EQ. 0 ) THEN
@@ -76,16 +76,16 @@
 	      GOTO 5200   ! abort
 	    ENDIF
 	    CALL DELETE_VARIABLE( mr_del )   ! reduces total_mem
-	  IF  (total_mem+rqst_size .GT. max_mem_allowed) GOTO 100 !delete more 
+	  IF  (total_mem+i8_rqst_size .GT. max_mem_allowed) GOTO 100 !delete more 
 	ENDIF
 
 * allocate the dynamic memory
- 200	CALL GET_MR_MEM(mr, rqst_size, status)
+ 200	CALL GET_MR_MEM(mr, i8_rqst_size, status)
         IF (status .NE. ferr_ok) GOTO 5300
 
 * bookkeeping
-        mr_size(mr) = rqst_size
-        total_mem = total_mem + rqst_size
+        mr_size(mr) = i8_rqst_size
+        total_mem = total_mem + i8_rqst_size
 	IF (total_mem .GT. peak_mem) peak_mem = total_mem
 	RETURN
 
@@ -93,7 +93,7 @@
 ***********************
 * error exits
  5000	RETURN
- 5100	num_str = LEFINT8(rqst_size,num_slen)
+ 5100	num_str = LEFINT8(i8_rqst_size,num_slen)
 	CALL ERRMSG( ferr_dim_underspec, status,
      .    num_str(:num_slen)//' words were requested. ', *5110)
  5110	CALL SPLIT_LIST(pttmode_explct, show_lun,
@@ -108,13 +108,13 @@
      .		'    To fulfill this request would exceed the current '//
      .		  'SET MEMORY/SIZE= limit of '//num_str(:num_slen)
      .	          //' megawords',0 )
-	CALL SHOW_ABORTED_MEM_STATE(rqst_size)
+	CALL SHOW_ABORTED_MEM_STATE(i8_rqst_size)
         GOTO 5000
 
  5300	CALL ERRMSG( ferr_insuff_memory,status,' ', *5310)
  5310	CALL SPLIT_LIST(pttmode_explct, show_lun,
      .		'    The OS refuses to supply this much memory',0 )
-	CALL SHOW_ABORTED_MEM_STATE(rqst_size)
+	CALL SHOW_ABORTED_MEM_STATE(i8_rqst_size)
         GOTO 5000
 
 	END

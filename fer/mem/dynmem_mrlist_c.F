@@ -51,6 +51,7 @@
 
 * calling argument declarations:
 	INTEGER	n, mrlist(n), status
+* any type that has 8 btyes will work
         INTEGER*8 c_ptr_array
 
 * internal variable declarations:

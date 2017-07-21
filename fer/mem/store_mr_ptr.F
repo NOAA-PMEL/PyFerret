@@ -1,4 +1,4 @@
-        SUBROUTINE STORE_MR_PTR(mr, size, array)
+        SUBROUTINE STORE_MR_PTR(mr, i8_size, array)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -41,8 +41,9 @@
         IMPLICIT NONE
 
 * calling argumemnts
-        INTEGER mr, size
-        REAL(8), TARGET :: array(size)
+        INTEGER*8 i8_size
+        INTEGER mr
+        REAL(8), TARGET :: array(i8_size)
 
         include 'tmap_dims.parm'
 	include	'ferret.parm'

@@ -77,6 +77,8 @@ C**
 
 	CHARACTER OUT*255
         INTEGER TM_LENSTR, numlines, i, j
+        CHARACTER labeltmpstr*2048
+        INTEGER labeltmpstrlen
 
 c        CHARACTER fontprefix*3, penprefix*3, newfont*3, newpen*3
 c        INTEGER lnbeg(500), lnend(500), 
@@ -110,9 +112,29 @@ c        line_spacing = 1.4
      .           npnew, nfnew, newfont, newpen, ncr)
 
 	   NCR = lnend(j) - lnbeg(j) + 1
-	   XMN=SYMWID(HLB,NCR+npen+nfont,
+C          Save to a temporary string to fix valgrid-reported issue with
+C          using uninitialized characters
+           IF ( (npen .GT. 0) .AND. (nfont .GT. 0) ) THEN
+              labeltmpstr = 
      .                 penprefix(1:npen)//fontprefix(1:nfont)//
-     .                 LABS(I)(lnbeg(j):lnend(j)))
+     .                 LABS(I)(lnbeg(j):lnend(j))
+              labeltmpstrlen = npen + nfont + NCR
+           ELSE IF ( npen .GT. 0 ) THEN
+              labeltmpstr = 
+     .                 penprefix(1:npen)//
+     .                 LABS(I)(lnbeg(j):lnend(j))
+              labeltmpstrlen = npen + NCR
+           ELSE IF ( nfont .GT. 0 ) THEN
+              labeltmpstr = 
+     .                 fontprefix(1:nfont)//
+     .                 LABS(I)(lnbeg(j):lnend(j))
+              labeltmpstrlen = nfont + NCR
+           ELSE
+              labeltmpstr = 
+     .                 LABS(I)(lnbeg(j):lnend(j))
+              labeltmpstrlen = NCR
+           ENDIF
+	   XMN=SYMWID(HLB, labeltmpstrlen, labeltmpstr)
 
 	   IF(USRLBS(I))THEN
 	       XFUSER=1.
@@ -186,9 +208,29 @@ c        line_spacing = 1.4
 	   YL=YL/YFUSER+YLOUSR+SHFT*SN/YF -
      .         line_spacing*(j-1)*hlb*CS/yf
 
-           CALL SYMBEL(XL,YL,RLABS(i),HLB,NCR+npen+nfont,
+C          Save to a temporary string to fix valgrid-reported issue with
+C          using uninitialized characters
+           IF ( (npen .GT. 0) .AND. (nfont .GT. 0) ) THEN
+              labeltmpstr = 
      .                 penprefix(1:npen)//fontprefix(1:nfont)//
-     .                 LABS(I)(lnbeg(j):lnend(j)))
+     .                 LABS(I)(lnbeg(j):lnend(j))
+              labeltmpstrlen = npen + nfont + NCR
+           ELSE IF ( npen .GT. 0 ) THEN
+              labeltmpstr = 
+     .                 penprefix(1:npen)//
+     .                 LABS(I)(lnbeg(j):lnend(j))
+              labeltmpstrlen = npen + NCR
+           ELSE IF ( nfont .GT. 0 ) THEN
+              labeltmpstr = 
+     .                 fontprefix(1:nfont)//
+     .                 LABS(I)(lnbeg(j):lnend(j))
+              labeltmpstrlen = nfont + NCR
+           ELSE
+              labeltmpstr = 
+     .                 LABS(I)(lnbeg(j):lnend(j))
+              labeltmpstrlen = NCR
+           ENDIF
+           CALL SYMBEL(XL,YL,RLABS(i),HLB,labeltmpstrlen,labeltmpstr)
 
 C  Set up to use any font settings from this line on subsequent lines.
 

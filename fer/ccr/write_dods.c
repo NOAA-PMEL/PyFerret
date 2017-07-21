@@ -55,7 +55,8 @@ int FORTRAN(write_dods)(char*filename, int* slen, int *clobber, int *swap, int *
 
   /* allocate memory and save the filename to null-terminated string */
 
-  if ( fileptr = (char *) FerMem_Malloc(sizeof(char) * (*slen + 1) ) ) {
+  fileptr = (char *) FerMem_Malloc(sizeof(char) * (*slen + 1), __FILE__, __LINE__);
+  if ( fileptr != NULL ) {
     strncpy (fileptr, filename, *slen);
     fileptr[*slen] = 0;    /* null-terminate the stored string */
   } else goto cleanup;
@@ -85,7 +86,7 @@ int FORTRAN(write_dods)(char*filename, int* slen, int *clobber, int *swap, int *
   }
 
 cleanup:
-  if (fileptr) FerMem_Free(fileptr);
+  if (fileptr) FerMem_Free(fileptr, __FILE__, __LINE__);
   result = errno;
   if (f) {
     if (errno) {             /* preserve original error even if close fails */
@@ -116,7 +117,8 @@ int FORTRAN(write_dods_double)(char*filename, int* slen, int *clobber, int *swap
 
   /* allocate memory and save the filename to null-terminated string */
 
-  if ( fileptr = (char *) FerMem_Malloc(sizeof(char) * (*slen + 1) ) ) {
+  fileptr = (char *) FerMem_Malloc(sizeof(char) * (*slen + 1), __FILE__, __LINE__);
+  if ( fileptr != NULL ) {
     strncpy (fileptr, filename, *slen);
     fileptr[*slen] = 0;    /* null-terminate the stored string */
   } else goto cleanup;
@@ -149,7 +151,7 @@ int FORTRAN(write_dods_double)(char*filename, int* slen, int *clobber, int *swap
   }
 
 cleanup:
-  if (fileptr) FerMem_Free(fileptr);
+  if (fileptr) FerMem_Free(fileptr, __FILE__, __LINE__);
   result = errno;
   if (f) {
     if (errno) {             /* preserve original error even if close fails */

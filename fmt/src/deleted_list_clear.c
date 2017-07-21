@@ -41,6 +41,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "fmtprotos.h"
 #include "deleted_list.h"
 #include "FerMem.h"
@@ -54,10 +55,13 @@ void FORTRAN(deleted_list_clear)(void **deleted_list_header)
    head = *deleted_list_header;
    if ( head != NULL ) {
        array_size = head->array_size;
-       for (j = 0; j < array_size; j++)
-           FerMem_Free(head->ptr_table[j]);
-       FerMem_Free(head->ptr_table);
-       FerMem_Free(head);
+       for (j = 0; j < array_size; j++) {
+           FerMem_Free(head->ptr_table[j], __FILE__, __LINE__);
+           head->ptr_table[j] = NULL;
+       }
+       FerMem_Free(head->ptr_table, __FILE__, __LINE__);
+       memset(head, 0, sizeof(DLHead));
+       FerMem_Free(head, __FILE__, __LINE__);
        *deleted_list_header = NULL;
    }
 }

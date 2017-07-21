@@ -52,14 +52,14 @@ void FORTRAN(c_dncase)(char **in_ptr, char **out_ptr)
    char* tmp2;
 
    if ( *out_ptr != NULL )
-      FerMem_Free(*out_ptr);
+      FerMem_Free(*out_ptr, __FILE__, __LINE__);
    if ( *in_ptr == NULL ) {
       /* undefined string given, so return an undefined string */
       *out_ptr = NULL;
       return;
    }
   
-   *out_ptr = (char *) FerMem_Malloc(sizeof(char) * (strlen(*in_ptr)+1));
+   *out_ptr = (char *) FerMem_Malloc(sizeof(char) * (strlen(*in_ptr)+1), __FILE__, __LINE__);
    if ( *out_ptr == NULL )
       abort();
 

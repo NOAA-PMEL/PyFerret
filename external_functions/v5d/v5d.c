@@ -1051,7 +1051,7 @@ v5dstruct *v5dNewStruct( void )
 {
    v5dstruct *v;
 
-   v = (v5dstruct *) FerMem_Malloc( sizeof(v5dstruct) );
+   v = (v5dstruct *) FerMem_Malloc( sizeof(v5dstruct), __FILE__, __LINE__ );
    if (v) {
       v5dInitStruct(v);
    }
@@ -1066,8 +1066,8 @@ v5dstruct *v5dNewStruct( void )
 void v5dFreeStruct( v5dstruct* v )
 {
    /*assert( v5dVerifyStruct( v ) );*/
-   FerMem_Free( v );
-   v = 0;
+   FerMem_Free( v, __FILE__, __LINE__ );
+   v = NULL;
 }
 
 
@@ -2221,7 +2221,7 @@ int v5dReadGrid( v5dstruct *v, int time, int var, float data[] )
    else if (v->CompressMode==4) {
       bytes = v->Nr * v->Nc * v->Nl[var] * sizeof(float);
    }
-   compdata = (void *) FerMem_Malloc( bytes );
+   compdata = FerMem_Malloc( bytes, __FILE__, __LINE__ );
    if (!compdata) {
       printf("Error in v5dReadGrid: out of memory (needed %d bytes)\n", bytes);
       return 0;
@@ -2237,7 +2237,7 @@ int v5dReadGrid( v5dstruct *v, int time, int var, float data[] )
                       compdata, ga, gb, data );
 
    /* free compdata */
-   FerMem_Free( compdata );
+   FerMem_Free( compdata, __FILE__, __LINE__ );
    return 1;
 }
 
@@ -2629,7 +2629,7 @@ int v5dWriteGrid( v5dstruct *v, int time, int var, const float data[] )
    else if (v->CompressMode==4) {
       bytes = v->Nr * v->Nc * v->Nl[var] * sizeof(float);
    }
-   compdata = (void *) FerMem_Malloc( bytes );
+   compdata = FerMem_Malloc( bytes, __FILE__, __LINE__ );
    if (!compdata) {
       printf("Error in v5dWriteGrid: out of memory (needed %d bytes)\n",
              bytes );
@@ -2650,7 +2650,7 @@ int v5dWriteGrid( v5dstruct *v, int time, int var, const float data[] )
    n = v5dWriteCompressedGrid( v, time, var, ga, gb, compdata );
 
    /* free compdata */
-   FerMem_Free( compdata );
+   FerMem_Free( compdata, __FILE__, __LINE__  );
 
    return n;
 }

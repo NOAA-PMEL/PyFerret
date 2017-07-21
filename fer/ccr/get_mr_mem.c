@@ -29,7 +29,7 @@ void FORTRAN(get_mr_mem)( double *index, int *alen, int *status )
 
   double *pointer;
 
-  pointer = (double *) FerMem_Malloc(sizeof(double) * (*alen));
+  pointer = (double *) FerMem_Malloc(sizeof(double) * (*alen), __FILE__, __LINE__);
 
   if (pointer)
     {

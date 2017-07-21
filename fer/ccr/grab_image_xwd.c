@@ -317,9 +317,9 @@ void Window_Dump(Window window, Display *dpy, char *outfile, char *type)
     XFlush(dpy);
 #endif
 
-    r = (int *)FerMem_Malloc(sizeof(int) * ncolors);
-    g = (int *)FerMem_Malloc(sizeof(int) * ncolors);
-    b = (int *)FerMem_Malloc(sizeof(int) * ncolors); 
+    r = (int *)FerMem_Malloc(sizeof(int) * ncolors, __FILE__, __LINE__);
+    g = (int *)FerMem_Malloc(sizeof(int) * ncolors, __FILE__, __LINE__);
+    b = (int *)FerMem_Malloc(sizeof(int) * ncolors, __FILE__, __LINE__); 
     for (i=0; i < ncolors; i++) {
       r[i] = colors[i].red;
       g[i] = colors[i].green;
@@ -340,10 +340,14 @@ void Window_Dump(Window window, Display *dpy, char *outfile, char *type)
 
 /*    if(debug && ncolors > 0) outl("xwd: Freeing colors.\n"); */
 /* *kob* 5/96 - also free the arrays r,g,b */
-    FerMem_Free(colors);
-    FerMem_Free(r); 
-    FerMem_Free(g); 
-    FerMem_Free(b);
+    FerMem_Free(colors, __FILE__, __LINE__);
+    colors = NULL;
+    FerMem_Free(r, __FILE__, __LINE__); 
+    r = NULL;
+    FerMem_Free(g, __FILE__, __LINE__); 
+    g = NULL;
+    FerMem_Free(b, __FILE__, __LINE__);
+    b = NULL;
 
     /*
      * Free window name string.
@@ -412,11 +416,11 @@ static int Get_XColors(XWindowAttributes *win_info, XImage *image, XColor **colo
     /* ncolors = win_info->visual->map_entries;*/
     ncolors = 256;
 
-    if (!(*colors = (XColor *) FerMem_Malloc (sizeof(XColor) * ncolors)))
-      {
+    *colors = (XColor *) FerMem_Malloc(sizeof(XColor) * ncolors, __FILE__, __LINE__);
+    if ( *colors == NULL ) {
 	fprintf (stderr, "Fatal Error - Out of memory!");
 	exit (1);
-      }
+    }
 
     if (win_info->visual->class == DirectColor ||
 	win_info->visual->class == TrueColor) {

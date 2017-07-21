@@ -34,7 +34,7 @@
 
 NOTE: Needs error checking to see that the realloc actually worked.
 
-/* reallo_ppl_memory.c
+ * reallo_ppl_memory.c
 
    Enlarge the memory allocated to the PLOT+ buffer.
    Ferret v5.52 *acm* 6/5/04 fix typo in print statement 
@@ -61,9 +61,9 @@ void reallo_ppl_memory(int *this_size)
 
 /* free the currently allocated memory */
   if (current_size != 0)
-      FerMem_Free ( (void *) ppl_memory );
+      FerMem_Free(ppl_memory, __FILE__, __LINE__);
 /* allocate new ammount of memory */
-  ppl_memory = (float *) FerMem_Malloc(sizeof(float) * *this_size );
+  ppl_memory = (float *) FerMem_Malloc(sizeof(float) * *this_size, __FILE__, __LINE__);
 
 /* Check that the memory was allocated OK*/
 

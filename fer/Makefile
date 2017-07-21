@@ -133,6 +133,10 @@ debug:
 		"GUI_FAKES=special/gui_fakes.o" \
 		build
 
+# Debug but also print all memory allocations, reallocations, and frees to 
+# file "memorydebug.txt".  Initialize allocated memory with non-zero values. 
+# Expect this to be a lot slower due to all the (intentionally inefficient 
+# but safe) file operations.
 .PHONY: memorydebug
 memorydebug:
 	mkdir -p ../lib

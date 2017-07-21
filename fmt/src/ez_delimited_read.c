@@ -113,7 +113,7 @@ static char *nexstrtok(char *s1, char *s2);
  */
 
 void FORTRAN(decode_file_jacket)(char* fname, char *recptr, char *delims, int *skip, int* maxrec, int* reclen, 
-                                 int* nfields, int field_type[], int* nrec, int mrlist[], long* mr_ptrs_val, 
+                                 int* nfields, int field_type[], int* nrec, int mrlist[], DFTYPE ***mr_ptrs_ptr, 
                                  DFTYPE mr_bad_flags[], char ***mr_c_ptr, int* status)
 /* 1/17 --- pre-dynamic memory call
 void FORTRAN(decode_file_jacket)
@@ -124,11 +124,11 @@ void FORTRAN(decode_file_jacket)
 		  DFTYPE mr_bad_flags[], char ***mr_c_ptr, int* status)
 */
 {
-  DFTYPE** mr_ptrs = (DFTYPE**) *mr_ptrs_val;
-  DFTYPE **numeric_fields  = (DFTYPE **) FerMem_Malloc(sizeof(DFTYPE*) * (*nfields));
-  DFTYPE *bad_flags        = (DFTYPE *)  FerMem_Malloc(sizeof(DFTYPE) * (*nfields));
+  DFTYPE** mr_ptrs = *mr_ptrs_ptr;
+  DFTYPE **numeric_fields  = (DFTYPE **) FerMem_Malloc(sizeof(DFTYPE*) * (*nfields), __FILE__, __LINE__);
+  DFTYPE *bad_flags        = (DFTYPE *)  FerMem_Malloc(sizeof(DFTYPE) * (*nfields), __FILE__, __LINE__);
 
-  char ***text_fields     = (char ***) FerMem_Malloc(sizeof(char**) * (*nfields));
+  char ***text_fields     = (char ***) FerMem_Malloc(sizeof(char**) * (*nfields), __FILE__, __LINE__);
   int i, mr;
   int pinc = 8/sizeof(char*);  /* pointers spaced 8 bytes apart */
 
@@ -169,9 +169,9 @@ void FORTRAN(decode_file_jacket)
 	      nfields, field_type, nrec, numeric_fields, 
               text_fields, bad_flags, status);
 
-  FerMem_Free(numeric_fields);
-  FerMem_Free(text_fields);
-  FerMem_Free(bad_flags);
+  FerMem_Free(numeric_fields, __FILE__, __LINE__);
+  FerMem_Free(text_fields, __FILE__, __LINE__);
+  FerMem_Free(bad_flags, __FILE__, __LINE__);
 
   return;
 }
@@ -405,7 +405,7 @@ static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
     } else if (p==NULL || *p == '\0') {
       /* missing data field */
       if ( field_type[i] == FTYP_CHARACTER ) {
-	(*(text_fields+i))[rec*pinc] = (char *) FerMem_Malloc(sizeof(char)*2);
+	(*(text_fields+i))[rec*pinc] = (char *) FerMem_Malloc(sizeof(char)*2, __FILE__, __LINE__);
 	strcpy( (*(text_fields+i))[rec*pinc], blankstr );
       }
       else {
@@ -748,7 +748,7 @@ static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	    p++;
 	  }
 	  (*(text_fields+i))[rec*pinc] =
-	    (char *) FerMem_Malloc(sizeof(char)*(strlen(p)+1));
+	    (char *) FerMem_Malloc(sizeof(char)*(strlen(p)+1), __FILE__, __LINE__);
 	  strcpy( (*(text_fields+i))[rec*pinc], p );
 	}
 	break;
@@ -976,9 +976,9 @@ static char *nexstrtok(char *s1, char *s2)
 void FORTRAN(save_delimited_info) (int *nfields, int field_type[],
 				   char *delim, DelimFileInfo **ptr)
 {
-  DelimFileInfo *fi = (DelimFileInfo *) FerMem_Malloc(sizeof(DelimFileInfo));
-  int* _field_type  = (int *) FerMem_Malloc(sizeof(int) * (*nfields));
-  char* _delim      = (char *) FerMem_Malloc(sizeof(char) * (int)strlen(delim));
+  DelimFileInfo *fi = (DelimFileInfo *) FerMem_Malloc(sizeof(DelimFileInfo), __FILE__, __LINE__);
+  int* _field_type  = (int *) FerMem_Malloc(sizeof(int) * (*nfields), __FILE__, __LINE__);
+  char* _delim      = (char *) FerMem_Malloc(sizeof(char) * (int)strlen(delim), __FILE__, __LINE__);
   int i;
 
   memset(fi, 0, sizeof(DelimFileInfo));
@@ -1013,9 +1013,10 @@ void FORTRAN(get_delimited_info) (int *nfields, int field_type[],
 void FORTRAN(delete_delimited_info) (DelimFileInfo **ptr)
 {
   DelimFileInfo *fi = *ptr;
-  FerMem_Free(fi->fieldType);
-  FerMem_Free(fi->delim);
-  FerMem_Free(fi);
+  FerMem_Free(fi->fieldType, __FILE__, __LINE__);
+  FerMem_Free(fi->delim, __FILE__, __LINE__);
+  memset(fi, 0, sizeof(DelimFileInfo));
+  FerMem_Free(fi, __FILE__, __LINE__);
   return;
 }
 

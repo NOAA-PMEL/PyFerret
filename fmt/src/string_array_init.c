@@ -55,18 +55,18 @@ void FORTRAN(string_array_init)(void **string_array_header, int *array_size, int
    SA_Head * head;
    List_Node * p;
    
-   head = (SA_Head*)FerMem_Malloc(sizeof(SA_Head));
+   head = (SA_Head*)FerMem_Malloc(sizeof(SA_Head), __FILE__, __LINE__);
    *string_array_header = head;
    head->array_size = *array_size;
    head->string_size = *string_size;
    head->string_array = string_array;
 
-   head->ptr_array = (List_Node**)FerMem_Malloc(head->array_size*sizeof(List_Node*));
+   head->ptr_array = (List_Node**)FerMem_Malloc(head->array_size*sizeof(List_Node*), __FILE__, __LINE__);
 
-   head->hash_table = (List_Node**)FerMem_Malloc(head->array_size*sizeof(List_Node*));
+   head->hash_table = (List_Node**)FerMem_Malloc(head->array_size*sizeof(List_Node*), __FILE__, __LINE__);
    memset((void*)head->hash_table, 0, head->array_size*sizeof(List_Node*));
 
-   head->strlen_array = (int*)FerMem_Malloc(head->array_size*sizeof(int));
+   head->strlen_array = (int*)FerMem_Malloc(head->array_size*sizeof(int), __FILE__, __LINE__);
 
    for(j=head->array_size;j>=1;j--) {
        FORTRAN(tm_get_strlen)(&true_len, &(head->string_size),
@@ -76,7 +76,7 @@ void FORTRAN(string_array_init)(void **string_array_header, int *array_size, int
        hash_value = string_array_hash(&(head->string_array[(j-1)*head->string_size]),
                        true_len, 0, head->array_size);
 
-       head->ptr_array[j-1] = (List_Node*)FerMem_Malloc(sizeof(List_Node));
+       head->ptr_array[j-1] = (List_Node*)FerMem_Malloc(sizeof(List_Node), __FILE__, __LINE__);
        p = head->ptr_array[j-1];
        p->index = j;
        p->prev = NULL;

@@ -11,9 +11,9 @@
 void FORTRAN(ef_put_string_ptr)(char **in_ptr, char **out_ptr)
 {
   if ( *out_ptr != NULL )
-     FerMem_Free(*out_ptr);
+     FerMem_Free(*out_ptr, __FILE__, __LINE__);
 
-  *out_ptr = (char *) FerMem_Malloc(sizeof(char) * (strlen(*in_ptr)+1));
+  *out_ptr = (char *) FerMem_Malloc(sizeof(char) * (strlen(*in_ptr)+1), __FILE__, __LINE__);
   if ( *out_ptr == NULL ) {
      abort();
   }

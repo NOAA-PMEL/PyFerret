@@ -131,7 +131,7 @@ static void freeMemory(FileInfo *file) {
 static FileInfo *createBinaryReader(char *name, int lengths[MAXDIMS], int permutes[MAXDIMS], int skip, int swap)
 {
   int i;
-  FileInfo *fi = (FileInfo *)FerMem_Malloc(sizeof(FileInfo));
+  FileInfo *fi = (FileInfo *)FerMem_Malloc(sizeof(FileInfo), __FILE__, __LINE__);
   memset(fi, 0, sizeof(FileInfo));
 
   if (!checkMem(fi)){
@@ -139,7 +139,7 @@ static FileInfo *createBinaryReader(char *name, int lengths[MAXDIMS], int permut
   }
   Errbuf[0] = '\0';
   fi->pageSize = getpagesize();
-  fi->name = (char *)FerMem_Malloc(strlen(name)+1);
+  fi->name = (char *)FerMem_Malloc(strlen(name)+1, __FILE__, __LINE__);
   fi->doSwap = swap;
   if (!checkMem(fi->name)){
     return 0;
@@ -183,14 +183,19 @@ static FileInfo *createBinaryReader(char *name, int lengths[MAXDIMS], int permut
 }
 
 static void deleteVar(VarInfo *theVar) {
-  FerMem_Free(theVar);
+  /* paranoia */
+  memset(theVar, 0, sizeof(VarInfo));
+  FerMem_Free(theVar, __FILE__, __LINE__);
 }
 
 static void deleteBinaryReader(FileInfo *fi){
-  FerMem_Free(fi->vars);
+  FerMem_Free(fi->vars, __FILE__, __LINE__);
+  fi->vars = NULL;
   tidyUp(fi);
-  FerMem_Free(fi->name);
-  FerMem_Free(fi);
+  FerMem_Free(fi->name, __FILE__, __LINE__);
+  /* paranoia */
+  memset(fi, 0, sizeof(FileInfo));
+  FerMem_Free(fi, __FILE__, __LINE__);
 }
 
 static int addVar(FileInfo *fi, DFTYPE *data, int type, int doRead){
@@ -198,9 +203,9 @@ static int addVar(FileInfo *fi, DFTYPE *data, int type, int doRead){
   int i;
 
   if (fi->vars == (VarInfo *)0){
-    fi->vars = FerMem_Malloc(sizeof(VarInfo));
+    fi->vars = FerMem_Malloc(sizeof(VarInfo), __FILE__, __LINE__);
   } else {
-    fi->vars = (VarInfo *)FerMem_Realloc(fi->vars, sizeof(VarInfo)*(fi->nvars+1));
+    fi->vars = (VarInfo *)FerMem_Realloc(fi->vars, sizeof(VarInfo)*(fi->nvars+1), __FILE__, __LINE__);
   }
   if (!checkMem(fi->vars)){
     return 0;

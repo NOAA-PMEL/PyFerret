@@ -113,6 +113,7 @@ int FORTRAN(tm_ftoc_readline)(char *prompt, char *buff)
     if ( line_read != linefromserver ) {
       /* the string was allocated by readline (not Ferret) so free it using free (not FerMem_Free) */
       free(line_read);
+      line_read = NULL;
     }
   }
   else {

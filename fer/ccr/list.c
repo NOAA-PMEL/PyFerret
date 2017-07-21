@@ -69,7 +69,7 @@ LIST *list_init(void)
    LIST *list;
 
    /* Allocate, initialize, and return a new list. */
-   list = (LIST *) FerMem_Malloc(sizeof(LIST));
+   list = (LIST *) FerMem_Malloc(sizeof(LIST), __FILE__, __LINE__);
    list->size = 0;
    list->front = NULL;
    list->rear = NULL;
@@ -174,7 +174,7 @@ static LIST_ELEMENT *list_create_element(char *data, int bytes)
    /* Allocate storage for the new node and its data.  Return NULL if
     * unable to allocate.
     */
-   new = (LIST_ELEMENT *) FerMem_Malloc(sizeof(LIST_ELEMENT));
+   new = (LIST_ELEMENT *) FerMem_Malloc(sizeof(LIST_ELEMENT), __FILE__, __LINE__);
    if (new == NULL) {
       return(NULL);
    }
@@ -183,7 +183,7 @@ static LIST_ELEMENT *list_create_element(char *data, int bytes)
     * Then either copy the data or just the reference into the node.
     */
    if (bytes > 0) {
-      new->data = (char *) FerMem_Malloc(bytes);
+      new->data = (char *) FerMem_Malloc(bytes, __FILE__, __LINE__);
       if (new->data == NULL) {
 	 return(NULL);
       }
@@ -285,7 +285,7 @@ static char *list_remove_single(LIST *list)
 
    /* The list has one element.  Easy. */
    data = list->curr->data;
-   FerMem_Free(list->curr);
+   FerMem_Free(list->curr, __FILE__, __LINE__);
    list->front = list->rear = list->curr = NULL;
    list->size--;
    return (data);
@@ -318,7 +318,7 @@ char *list_remove_front(LIST *list)
       list->front = temp->next;
       if (list->curr == temp)
 	 list->curr = temp->next;
-      FerMem_Free(temp);
+      FerMem_Free(temp, __FILE__, __LINE__);
       list->size--;
    }
 
@@ -352,7 +352,7 @@ char *list_remove_rear(LIST *list)
       list->rear = temp->prev;
       if (list->curr == temp)
 	 list->curr = temp->prev;
-      FerMem_Free(temp);
+      FerMem_Free(temp, __FILE__, __LINE__);
       list->size--;
    }
 
@@ -393,7 +393,7 @@ char *list_remove_curr(LIST *list)
       temp->next->prev = temp->prev;
       temp->prev->next = temp->next;
       list->curr = temp->next;
-      FerMem_Free(temp);
+      FerMem_Free(temp, __FILE__, __LINE__);
       list->size--;
    }
 
@@ -474,7 +474,7 @@ void list_free(LIST *list, void (*dealloc)(char *))
        */
       if ( dealloc != LIST_NODEALLOC ) {
 	 if ( dealloc == LIST_DEALLOC ) {
-	    FerMem_Free(data);
+	    FerMem_Free(data, __FILE__, __LINE__);
 	 }
 	 else {
 	    (*dealloc)(data);
@@ -482,5 +482,5 @@ void list_free(LIST *list, void (*dealloc)(char *))
       }
    }
 
-   FerMem_Free(list);
+   FerMem_Free(list, __FILE__, __LINE__);
 }

@@ -57,7 +57,7 @@ void FORTRAN(c_substr)(char **in_ptr, int *offset, int *length, char **out_ptr)
    int i, int_length, int_offset;
 
    if ( *out_ptr != NULL )
-      FerMem_Free(*out_ptr);
+      FerMem_Free(*out_ptr, __FILE__, __LINE__);
    if ( *in_ptr == NULL ) {
       /* undefined string given, so return an undefined string */
       *out_ptr = NULL;
@@ -67,7 +67,7 @@ void FORTRAN(c_substr)(char **in_ptr, int *offset, int *length, char **out_ptr)
    int_length = (int)(*length + 0.5);
    int_offset = (int)(*offset + 0.5) - 1;
 
-   *out_ptr = (char *) FerMem_Malloc(sizeof(char) * (int_length + 1));
+   *out_ptr = (char *) FerMem_Malloc(sizeof(char) * (int_length + 1), __FILE__, __LINE__);
    if ( *out_ptr == NULL )
       abort();
 

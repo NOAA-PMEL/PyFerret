@@ -40,6 +40,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include "fmtprotos.h"
 #include "string_array.h"
 #include "FerMem.h"
@@ -52,12 +53,14 @@ void FORTRAN(string_array_clear)(void **string_array_header)
     if ( *string_array_header != NULL ) {
        head = *string_array_header;
        for (j = 0; j < head->array_size; j++) {
-	  FerMem_Free(head->ptr_array[j]);
+	  FerMem_Free(head->ptr_array[j], __FILE__, __LINE__);
+	  head->ptr_array[j] = NULL;
        }
-       FerMem_Free(head->ptr_array);
-       FerMem_Free(head->strlen_array);
-       FerMem_Free(head->hash_table);
-       FerMem_Free(head);
+       FerMem_Free(head->ptr_array, __FILE__, __LINE__);
+       FerMem_Free(head->strlen_array, __FILE__, __LINE__);
+       FerMem_Free(head->hash_table, __FILE__, __LINE__);
+       memset(head, 0, sizeof(SA_Head));
+       FerMem_Free(head, __FILE__, __LINE__);
        *string_array_header = NULL;
     }
 }

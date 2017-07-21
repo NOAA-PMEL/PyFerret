@@ -41,7 +41,7 @@ void FORTRAN(deleted_list_get_undel)(void **deleted_list_header, int *result_arr
 void FORTRAN(deleted_list_init)(void **deleted_list_header, int *int_array, int *int_array_size, int *deleted_value);
 void FORTRAN(deleted_list_modify)(void **deleted_list_header, int *index, int *new_value);
 void FORTRAN(decode_file_jacket)(char* fname, char *recptr, char *delims, int *skip, int* maxrec, int* reclen, 
-                                 int* nfields, int field_type[], int* nrec, int mrlist[], long* mr_ptrs_val, 
+                                 int* nfields, int field_type[], int* nrec, int mrlist[], DFTYPE ***mr_ptrs_ptr, 
                                  DFTYPE mr_bad_flags[], char ***mr_c_ptr, int* status);
 void FORTRAN(str_case_blind_compare_sub)(char *test_name, int *len_test, char *model_name, int *len_model, int *result);
 void FORTRAN(str_dncase_sub)(char *out_string, int *out_len, char *in_string, int *in_len);

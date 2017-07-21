@@ -61,14 +61,8 @@ void FORTRAN(free_cached_full_array)(double **pointer_val)
 */
 
 {
-  double *ptr;
-
-  ptr = *pointer_val;
-
-  if (ptr) {
-	  FerMem_Free(ptr);
-	  *pointer_val=0;
+  if ( *pointer_val != NULL ) {
+      FerMem_Free(*pointer_val, __FILE__, __LINE__);
+      *pointer_val = NULL;
   }
-
-  return;
 }

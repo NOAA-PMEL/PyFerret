@@ -153,7 +153,7 @@ void FORTRAN(cd_write_var_sub)(int *cdfid, int *varid, int *vartyp, int *dims,
       if (indim > 0) {
          for (i=0; i<=ndim; i++) bufsiz *= count[i];
        }
-      pbuff = (char *) FerMem_Malloc(sizeof(char) * bufsiz);
+      pbuff = (char *) FerMem_Malloc(sizeof(char) * bufsiz, __FILE__, __LINE__);
       if ( pbuff == NULL )
          abort();
       tm_blockify_ferret_strings(dat, pbuff, (int)bufsiz, (int)maxstrlen);
@@ -163,7 +163,7 @@ void FORTRAN(cd_write_var_sub)(int *cdfid, int *varid, int *vartyp, int *dims,
       count[*dims] = maxstrlen;
 
       *cdfstat = nc_put_vara_text(*cdfid, vid, start, count, pbuff);
-      FerMem_Free(pbuff);
+      FerMem_Free(pbuff, __FILE__, __LINE__);
 
   } else {
       /* FLOAT data */

@@ -12,5 +12,6 @@
 
 void FORTRAN(free_dyn_mem)(double *mvar)
 {
-  FerMem_Free(mvar);
+  FerMem_Free( mvar, __FILE__, __LINE__ );
+  mvar = NULL;
 }

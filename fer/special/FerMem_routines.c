@@ -30,7 +30,18 @@ static void writedebug(char *msg) {
 }
 #endif
 
-void *FerMem_Malloc(size_t size) {
+/*
+ * Allocates memory like malloc.  If (and only if) the compile flag MEMORYDEBUG is defined, 
+ * prints a line to memorydebug.txt with the allocation information.  The value of filename 
+ * should be __FILE__ and the value of linenumber should be __LINE__ in the source file 
+ * calling this routine.
+ *
+ * So: 
+ *     myptr = malloc(mysize);
+ * should be turned into: 
+ *     myptr = FerMem_Malloc(mysize, __FILE__, __LINE__);
+ */
+void *FerMem_Malloc(size_t size, char *filename, int linenumber) {
     void *result = malloc(size);
 
 #ifdef MEMORYDEBUG
@@ -38,36 +49,58 @@ void *FerMem_Malloc(size_t size) {
 
     /* initialize to non-zero junk to catch uninitialized memory usage */
     memset(result, 0x6B, size);
-    sprintf(msg, "%p : 1 : memory malloc allocated for %u bytes\n", result, size);
+    sprintf(msg, "%p : 1 : memory malloc allocated for %u bytes : file %s : line %d\n", result, (unsigned int) size, filename, linenumber);
     writedebug(msg);
 #endif
 
     return result;
 }
 
-void *FerMem_Realloc(void *ptr, size_t size) {
+/*
+ * Reallocates memory like realloc.  If (and only if) the compile flag MEMORYDEBUG is defined, 
+ * prints a line to memorydebug.txt with the allocation information.  The value of filename 
+ * should be __FILE__ and the value of linenumber should be __LINE__ in the source file 
+ * calling this routine.
+ *
+ * So: 
+ *     newptr = realloc(myptr, newsize);
+ * should be turned into: 
+ *     newptr = FerMem_Realloc(myptr, newsize, __FILE__, __LINE__);
+ */
+void *FerMem_Realloc(void *ptr, size_t size, char *filename, int linenumber) {
     void *newptr;
 
 #ifdef MEMORYDEBUG
     char msg[256];
-    sprintf(msg, "%p : 2 : memory to be realloc freed\n", ptr);
+    sprintf(msg, "%p : 2 : memory to be realloc freed : file %s : line %d\n", ptr, filename, linenumber);
 #endif
 
     newptr = realloc(ptr, size);
 
 #ifdef MEMORYDEBUG
-    sprintf(msg, "%p : 3 : memory realloc allocated for %u bytes\n", newptr, size);
+    sprintf(msg, "%p : 3 : memory realloc allocated for %u bytes : file %s : line %d\n", newptr, (unsigned int) size, filename, linenumber);
     writedebug(msg);
 #endif
 
     return newptr;
 }
 
-void FerMem_Free(void *ptr) {
+/*
+ * Frees memory like free.  If (and only if) the compile flag MEMORYDEBUG is defined, 
+ * prints a line to memorydebug.txt with the allocation information.  The value of filename 
+ * should be __FILE__ and the value of linenumber should be __LINE__ in the source file 
+ * calling this routine.
+ *
+ * So: 
+ *     free(mymem);
+ * should be turned into: 
+ *     FerMem_Free(mymem, __FILE__, __LINE__);
+ */
+void FerMem_Free(void *ptr, char *filename, int linenumber) {
 
 #ifdef MEMORYDEBUG
     char msg[256];
-    sprintf(msg, "%p : 4 : memory to be freed\n", ptr);
+    sprintf(msg, "%p : 4 : memory to be freed : file %s : line %d\n", ptr, filename, linenumber);
     writedebug(msg);
 #endif
 

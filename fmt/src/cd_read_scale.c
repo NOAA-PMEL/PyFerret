@@ -147,7 +147,7 @@ void FORTRAN(cd_read_scale)(int *cdfid, int *varid, int *dims, DFTYPE *offset, D
 	   in variable dat
     */
 
-      data_double = (double *) FerMem_Malloc(ntotal * sizeof(double));
+      data_double = (double *) FerMem_Malloc(ntotal * sizeof(double), __FILE__, __LINE__);
       if ( data_double == NULL )
           abort();
 
@@ -172,7 +172,7 @@ void FORTRAN(cd_read_scale)(int *cdfid, int *varid, int *dims, DFTYPE *offset, D
          scale, bad, ntotal);
 	  *already_scaled = 1;
 
-	  FerMem_Free(data_double);
+	  FerMem_Free(data_double, __FILE__, __LINE__);
                   
   }
    

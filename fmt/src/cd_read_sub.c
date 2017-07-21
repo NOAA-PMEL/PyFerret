@@ -161,7 +161,7 @@ void FORTRAN(cd_read_sub)(int *cdfid, int *varid, int *dims,
       if (*cdfstat != NC_NOERR) {
           return;
       }
-      dimids = (int *) FerMem_Malloc(sizeof(int) * ndimsp);
+      dimids = (int *) FerMem_Malloc(sizeof(int) * ndimsp, __FILE__, __LINE__);
       if ( dimids == NULL )
           abort();
       ndimsp--;
@@ -173,12 +173,12 @@ void FORTRAN(cd_read_sub)(int *cdfid, int *varid, int *dims,
       if (*cdfstat != NC_NOERR) {
           return;
       }
-      FerMem_Free(dimids);
+      FerMem_Free(dimids, __FILE__, __LINE__);
       maxstrlen = bufsiz;
       if (indim > 0) {
          for (i=0; i<=ndim; i++) bufsiz *= count[i];
 	 }
-      pbuff = (char *) FerMem_Malloc(sizeof(char) * bufsiz);
+      pbuff = (char *) FerMem_Malloc(sizeof(char) * bufsiz, __FILE__, __LINE__);
       if ( pbuff == NULL )
          abort();
       /* update variable dimensions to include string dimension */
@@ -205,7 +205,7 @@ void FORTRAN(cd_read_sub)(int *cdfid, int *varid, int *dims,
 	  }
 
       tm_unblockify_ferret_strings(dat, pbuff, bufsiz, (int)maxstrlen);
-      FerMem_Free(pbuff);
+      FerMem_Free(pbuff, __FILE__, __LINE__);
 
   /* Numeric data. Read as double or float */
   } else

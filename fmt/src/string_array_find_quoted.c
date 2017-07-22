@@ -148,9 +148,6 @@ FILE *fp;
    }
    else{
        printf("\nString array not initialized yet (string_array_find_quoted)!\n");
-#ifndef NDEBUG
-       abort();
-#endif
    }
   
    *num_indices = j;

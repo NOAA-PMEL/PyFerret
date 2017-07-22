@@ -107,9 +107,6 @@ void FORTRAN(string_array_find)(void **string_array_header, char *test_string, i
    }
    else {
        printf("\nString array not initialized yet (string_array_find)!\n");
-#ifndef NDEBUG
-       abort();
-#endif
    }
    *num_indices = j;
 }

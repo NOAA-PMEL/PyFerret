@@ -106,9 +106,6 @@ void FORTRAN(string_array_find_caseblind)(void **string_array_header, char *test
    }
    else{
        printf("\nString array not initialized yet (string_array_find_caseblind)!\n");
-#ifndef NDEBUG
-       abort();
-#endif
    }
    *num_indices = j;
 }

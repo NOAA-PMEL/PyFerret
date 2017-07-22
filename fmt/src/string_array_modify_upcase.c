@@ -98,9 +98,6 @@ FILE *fp;
    }
    else {
        printf("\nString array not initialized yet (string_array_modify_upcase)!\n");
-#ifndef NDEBUG
-       abort();
-#endif
    }
 }
 

@@ -19,7 +19,11 @@
 
 #ifdef MEMORYDEBUG
 #define DEBUGFILENAME "memorydebug.txt"
-static void writedebug(char *msg) {
+/*
+ * Add the debug message to the memorydebug file.
+ * For consistency, use format "%016p" to print pointers.
+ */
+void FerMem_WriteDebugMessage(const char *msg) {
     FILE *debugfile = fopen(DEBUGFILENAME, "a");
     if ( debugfile == NULL ) {
         perror("Unable to open for appending memory debug file " DEBUGFILENAME);
@@ -49,8 +53,8 @@ void *FerMem_Malloc(size_t size, char *filename, int linenumber) {
 
     /* initialize to non-zero junk to catch uninitialized memory usage */
     memset(result, 0x6B, size);
-    sprintf(msg, "%p : 1 : memory malloc allocated for %ld bytes : file %s : line %d\n", result, size, filename, linenumber);
-    writedebug(msg);
+    sprintf(msg, "%016p : 1 : memory malloc allocated for %ld bytes : file %s : line %d\n", result, size, filename, linenumber);
+    FerMem_WriteDebugMessage(msg);
 #endif
 
     return result;
@@ -72,14 +76,14 @@ void *FerMem_Realloc(void *ptr, size_t size, char *filename, int linenumber) {
 
 #ifdef MEMORYDEBUG
     char msg[256];
-    sprintf(msg, "%p : 2 : memory to be realloc freed : file %s : line %d\n", ptr, filename, linenumber);
+    sprintf(msg, "%016p : 2 : memory to be realloc freed : file %s : line %d\n", ptr, filename, linenumber);
 #endif
 
     newptr = realloc(ptr, size);
 
 #ifdef MEMORYDEBUG
-    sprintf(msg, "%p : 3 : memory realloc allocated for %ld bytes : file %s : line %d\n", newptr, size, filename, linenumber);
-    writedebug(msg);
+    sprintf(msg, "%016p : 3 : memory realloc allocated for %ld bytes : file %s : line %d\n", newptr, size, filename, linenumber);
+    FerMem_WriteDebugMessage(msg);
 #endif
 
     return newptr;
@@ -100,8 +104,8 @@ void FerMem_Free(void *ptr, char *filename, int linenumber) {
 
 #ifdef MEMORYDEBUG
     char msg[256];
-    sprintf(msg, "%p : 4 : memory to be freed : file %s : line %d\n", ptr, filename, linenumber);
-    writedebug(msg);
+    sprintf(msg, "%016p : 4 : memory to be freed : file %s : line %d\n", ptr, filename, linenumber);
+    FerMem_WriteDebugMessage(msg);
 #endif
 
     free(ptr);

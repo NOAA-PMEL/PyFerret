@@ -40,19 +40,29 @@
 
 #include <stdlib.h>
 #include "ferret.h"
+#include "FerMem.h"
 
 void FORTRAN(init_c_string_array)(int *length, char **mr_blk1, char ***fer_ptr)
 {
    int i;
    char** ptr;
 
-   /* save the pointer */
+#ifdef MEMORYDEBUG
+   char msg[1024];
+   sprintf(msg, "init_c_string_array: pointer %#016p to be assigned "
+                "as an array of %d pointers (%d bytes) initialize to NULL\n", 
+                mr_blk1, *length, (*length)*8);
+   FerMem_WriteDebugMessage(msg);
+#endif
+
+   /* save the pointer to the array of pointers */
    *fer_ptr = mr_blk1;
 
-   /* good house-keepping */
+   /* initialize the pointers - room for 64-bit pointers, so double if 32-bit pointers */
    ptr = mr_blk1;
-   for (i=0; i<*length; i++) {
+   for (i = 0; i < (*length)*(8/sizeof(char *)); i++) {
       *ptr = NULL;
-      ptr += (8/sizeof(char**));
+      ptr++;
    }
+
 }

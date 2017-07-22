@@ -60,8 +60,12 @@
 	  ELSE
 	    delta = 1.
 	  ENDIF
-	  size = size * 
-     .        (FLOAT(cx_hi_ss(cx,idim)-cx_lo_ss(cx,idim))/delta + 1.)
+          IF ( (cx_hi_ss(cx,idim) .GE. cx_lo_ss(cx,idim)) .AND.
+     .         (cx_hi_ss(cx,idim) .NE. unspecified_int4)  .AND.
+     .         (cx_lo_ss(cx,idim) .NE. unspecified_int4)  ) THEN
+              size = size * 
+     .          (FLOAT(cx_hi_ss(cx,idim)-cx_lo_ss(cx,idim))/delta + 1.)
+          ENDIF
  10 	CONTINUE
 
 * the result

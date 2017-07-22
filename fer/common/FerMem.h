@@ -3,6 +3,10 @@
 
 #include <stdlib.h> /* for size_t */
 
+#ifdef MEMORYDEBUG
+void FerMem_WriteDebugMessage(const char *msg);
+#endif
+
 /*
  * Allocates memory like malloc.  If (and only if) the compile flag MEMORYDEBUG is defined, 
  * prints a line to memorydebug.txt with the allocation information.  The value of filename 

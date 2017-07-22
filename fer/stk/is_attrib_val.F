@@ -108,7 +108,10 @@
  100	CONTINUE
 
 * reserve and catalog space for the result
-
+C       KMS - The ammount of memory allocated is from R_CGRID_SIZE_DELTA.
+C       R_CGRID_SIZE_DELTA uses the product over idim of
+C           cx_hi_ss(cx,idim - cx_lo_ss(cx,idim) / cx_delta(idim,cx)
+C       (using 1 if cx_delta not specified; yes, the index order change is correct)
 	CALL CREATE_TEMP_MEM_VAR( cx, mr, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 

@@ -56,9 +56,6 @@ void FORTRAN(string_array_get_strlen1)(void **string_array_header, int *index, i
    }
    else{
       printf("\nString array not initialized yet (string_array_get_strlen1)!\n");
-#ifndef NDEBUG
-      abort();
-#endif
       *true_strlen = -1;
    }
 }

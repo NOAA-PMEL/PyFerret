@@ -97,9 +97,6 @@ void FORTRAN(string_array_modify)(void **string_array_header, int *index, char *
    }
    else {
        printf("\nString array not initialized yet (string_array_modify)!\n");
-#ifndef NDEBUG
-       abort();
-#endif
    }
 }
 

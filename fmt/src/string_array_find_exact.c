@@ -106,9 +106,6 @@ void FORTRAN(string_array_find_exact)(void **string_array_header, char *test_str
    }
    else{
        printf("\nString array not initialized yet (string_array_find_exact)!\n");
-#ifndef NDEBUG
-       abort();
-#endif
    }
    *num_indices = j;
 }

@@ -84,6 +84,7 @@ void FORTRAN(date_decode)(char *strdate, DFTYPE *rdum);
 void FORTRAN(dynmem_free_ptr_array)(DFTYPE ***mr_ptrs_ptr);
 void FORTRAN(dynmem_make_ptr_array)(int* n, DFTYPE ***mr_ptrs_ptr, int* status);
 void FORTRAN(dynmem_pass_1_ptr)(int* iarg, DFTYPE* arg_ptr, DFTYPE ***mr_ptrs_ptr);
+void FORTRAN(efcn_list_clear)(void);
 void FORTRAN(free_c_pointer)(char ***fer_ptr);
 void FORTRAN(free_c_string_array)(char ***fer_ptr, int *length);
 void FORTRAN(free_cached_full_array)(double **pointer_val);

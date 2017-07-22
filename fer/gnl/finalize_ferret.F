@@ -55,6 +55,8 @@
 	include 'xvariables.cmn'
 	include 'xtoday.cmn'
 
+        CALL efcn_list_clear();
+
         CALL string_array_clear(alg_pvar_head)
 
         CALL string_array_clear(countervar_name_head)

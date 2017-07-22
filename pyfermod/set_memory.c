@@ -33,6 +33,7 @@
  */
 
 #include <Python.h> /* make sure Python.h is first */
+#include "pplmem.h"
 #include "ferret.h"
 #include "ferret_shared_buffer.h"
 #include "pyferret.h"

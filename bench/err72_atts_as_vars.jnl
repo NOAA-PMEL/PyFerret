@@ -1,0 +1,26 @@
+! err72_atts_as_vars.jnl
+! See ticket 2555.  Allocation of pointers for these strings
+
+use coads_climatology
+list sst.attnames[i=1]
+
+use coads_climatology
+let allatts = sst.attnames
+let natts = sst.nattrs
+ repeat/range=1:`natts`/name=m (let attname = allatts[i=`m`]; list attname)
+
+! Bug also applied to getting dimnames
+list sst.dimnames[i=2:3]
+
+let dnames = sst.dimnames
+list dnames[i=2]
+
+! lots of global attributes
+use err491_attval
+list ..attnames[i=20:23]
+
+
+let gattnames = ..attnames
+list gattnames[i=1:10]
+
+list gattnames[i=1:24:2]

@@ -1,0 +1,7 @@
+! bn730_bug_fixes.jnl
+! test various fixes that went into version 7.3
+! 7/17 *acm*
+!
+
+GO bn_reset
+GO err72_atts_as_vars.jnl

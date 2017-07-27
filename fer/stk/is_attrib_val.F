@@ -54,6 +54,8 @@
 *                  return info about coordinate-variables in datasets
 * V710 9/16  *acm* ticket 2465: Parsing expressions including attribute references.
 * 712 2/17 *sh* fix latent bug when shifting an array of attribute values
+* 73  7/17 *acm fix ticket 2555, memory allocated for strings determined by the 
+*               context, is not generally the full nvatts, ngatts etc
 
         include 'tmap_dims.parm'
 #       include "tmap_dset.parm"
@@ -239,7 +241,8 @@ C       (using 1 if cx_delta not specified; yes, the index order change is corre
               IF (ngatts .GT. 0) THEN
                  CALL CD_GET_VAR_ID (dset, '.', varid, status)
 
-	         CALL INIT_C_STRING_ARRAY( ngatts,
+	         n = i2-i1+1
+		 CALL INIT_C_STRING_ARRAY( n,
      .				     memry(mr)%ptr,
      .				     mr_c_pointer(mr)    )
                  n = 0
@@ -347,7 +350,8 @@ C       (using 1 if cx_delta not specified; yes, the index order change is corre
               IF (STR_SAME(attname, 'attnames') .EQ. 0 ) THEN
                  IF (nvatts .GT. 0) THEN
 
-	           CALL INIT_C_STRING_ARRAY( nvatts,
+	           n = i2-i1+1
+		   CALL INIT_C_STRING_ARRAY( n,
      .				     memry(mr)%ptr,
      .				     mr_c_pointer(mr)    )
                    n = 0
@@ -366,8 +370,9 @@ C       (using 1 if cx_delta not specified; yes, the index order change is corre
 * Get the datset dimension names - not all dimensions are a coordinate variable.
 
                 IF (nvdims .GT. 0) THEN
-
-	           CALL INIT_C_STRING_ARRAY( nvdims,
+		
+	           n = i2-i1+1
+	           CALL INIT_C_STRING_ARRAY( n,
      .				     memry(mr)%ptr,
      .				     mr_c_pointer(mr)    )
                 IF (ds_type(dset).NE.'CDF' .AND. ds_type(dset).NE.'ECDF') GOTO 5200

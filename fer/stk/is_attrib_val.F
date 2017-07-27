@@ -54,6 +54,8 @@
 *                  return info about coordinate-variables in datasets
 * V710 9/16  *acm* ticket 2465: Parsing expressions including attribute references.
 * 712 2/17 *sh* fix latent bug when shifting an array of attribute values
+* 73  7/17 *acm fix ticket 2555, memory allocated for strings determined by the 
+*               context, is not generally the full nvatts, ngatts etc
 
         include 'tmap_dims.parm'
 #       include "tmap_dset.parm"

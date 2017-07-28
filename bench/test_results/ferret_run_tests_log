@@ -278,6 +278,7 @@ Benchmark scripts that will be run:
    bn_cache_management.jnl
    bn_transp_choose.jnl
    bn_iin_regrid.jnl
+   bn730_bug_fixes.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
@@ -103258,6 +103259,125 @@ list b2d[gf=aline_edges@iin]
  8    /  9:  16.00  24.00
  9    / 10:  18.00  27.00
  10   / 11:  20.00  30.00
+*** Running ferret script: bn730_bug_fixes.jnl
+! bn730_bug_fixes.jnl
+! test various fixes that went into version 7.3
+! 7/17 *acm*
+!
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err72_atts_as_vars.jnl
+! err72_atts_as_vars.jnl
+! See ticket 2555.  Allocation of pointers for these strings
+ 
+use coads_climatology
+list sst.attnames[i=1]
+             VARIABLE : SST.ATTNAMES[I=1]
+             FILENAME : coads_climatology.cdf
+             X        : 1
+        "missing_value"
+ 
+use coads_climatology
+let allatts = sst.attnames
+let natts = sst.nattrs
+ repeat/range=1:`natts`/name=m (let attname = allatts[i=`m`]; list attname)
+ !-> repeat/range=1:5/name=m (let attname = allatts[i=`m`]; list attname)
+!-> REPEAT: M:1
+ !-> DEFINE VARIABLE attname = allatts[i=1]
+             VARIABLE : ALLATTS[I=1]
+             FILENAME : coads_climatology.cdf
+             X        : 1
+        "missing_value"
+!-> REPEAT: M:2
+ !-> DEFINE VARIABLE attname = allatts[i=2]
+             VARIABLE : ALLATTS[I=2]
+             FILENAME : coads_climatology.cdf
+             X        : 2
+        "_FillValue"
+!-> REPEAT: M:3
+ !-> DEFINE VARIABLE attname = allatts[i=3]
+             VARIABLE : ALLATTS[I=3]
+             FILENAME : coads_climatology.cdf
+             X        : 3
+        "long_name"
+!-> REPEAT: M:4
+ !-> DEFINE VARIABLE attname = allatts[i=4]
+             VARIABLE : ALLATTS[I=4]
+             FILENAME : coads_climatology.cdf
+             X        : 4
+        "history"
+!-> REPEAT: M:5
+ !-> DEFINE VARIABLE attname = allatts[i=5]
+             VARIABLE : ALLATTS[I=5]
+             FILENAME : coads_climatology.cdf
+             X        : 5
+        "units"
+ 
+! Bug also applied to getting dimnames
+list sst.dimnames[i=2:3]
+             VARIABLE : SST.DIMNAMES[I=2:3]
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 2 points (X)
+ 2   / 2:"COADSY"
+ 3   / 3:"TIME"  
+ 
+let dnames = sst.dimnames
+list dnames[i=2]
+             VARIABLE : SST.DIMNAMES
+             FILENAME : coads_climatology.cdf
+             X        : 2
+        "COADSY"
+ 
+! lots of global attributes
+use err491_attval
+list ..attnames[i=20:23]
+             VARIABLE : ..ATTNAMES[I=20:23]
+             DATA SET : K-Bay OAR3d model (200m)
+             FILENAME : err491_attval.cdf
+             SUBSET   : 4 points (X)
+ 20   / 20:"ny"   
+ 21   / 21:"x_min"
+ 22   / 22:"x_max"
+ 23   / 23:"y_min"
+ 
+ 
+let gattnames = ..attnames
+list gattnames[i=1:10]
+             VARIABLE : ..ATTNAMES
+             DATA SET : K-Bay OAR3d model (200m)
+             FILENAME : err491_attval.cdf
+             SUBSET   : 10 points (X)
+ 1    /  1:"simulation" 
+ 2    /  2:"start_date" 
+ 3    /  3:"history"    
+ 4    /  4:"option"     
+ 5    /  5:"run_mode"   
+ 6    /  6:"srfc_bndry" 
+ 7    /  7:"rad_penet"  
+ 8    /  8:"dt_external"
+ 9    /  9:"dt_internal"
+ 10   / 10:"horiz_diff" 
+ 
+list gattnames[i=1:24:2]
+             VARIABLE : ..ATTNAMES
+                        regrid: 2 delta on X
+             DATA SET : K-Bay OAR3d model (200m)
+             FILENAME : err491_attval.cdf
+             SUBSET   : 12 points (X)
+ 1    /  1:"simulation" 
+ 3    /  2:"history"    
+ 5    /  3:"run_mode"   
+ 7    /  4:"rad_penet"  
+ 9    /  5:"dt_internal"
+ 11   /  6:"inv_prandtl"
+ 13   /  7:"title"      
+ 15   /  8:"remark"     
+ 17   /  9:"y_units"    
+ 19   / 10:"nx"         
+ 21   / 11:"x_min"      
+ 23   / 12:"y_min"      
 *** Running ferret script: bn_gif.jnl
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using

@@ -4,7 +4,7 @@
 #include <stdlib.h> /* for size_t */
 
 #ifdef MEMORYDEBUG
-void FerMem_WriteDebugMessage(const char *msg);
+void FerMem_WriteDebugMessage(void *startptr, void *endptr, const char *msg);
 #endif
 
 /*

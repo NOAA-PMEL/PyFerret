@@ -10,7 +10,7 @@ C**
 C***********************************************************************
 C**
 C**
-
+*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -74,7 +74,6 @@ C *acm* 10/14  Ticket 2203: on the 64-bit machines, the \\ for backspace
 C              should be \ .
 C *kms* 06-2017 - change from PLOTFONTS to FER_FONTS
 C *acm* 07-2017 - ticket 2556 Look for FER_FONTS if not defined also check PLOTFONTS 
-C
 C
 C	CALL SYMBEL(X,Y,DEGRES,HEIGHT,NCHAR,STRING)
 C
@@ -171,6 +170,8 @@ C *ACM* For backwards compatibility (LAS setup etc) also look for PLOTFONTS
        	      call getenv ('PLOTFONTS',fontdir)
        	      dirlen = lnblk (fontdir,255)
 	   ENDIF
+
+	   IF (dirlen .LE. 1) GOTO 5000
 
 C *kob* 1/02 - cygwin 1.3.x requires "\" for unix directory accesses
 #ifdef __CYGWIN__

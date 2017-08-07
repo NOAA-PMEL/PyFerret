@@ -232,6 +232,9 @@ void *FerMem_Realloc(void *ptr, size_t size, char *filename, int linenumber)
     newptr = realloc(origptr, size + sizeof(MemInfo));
 
     newptr = AddToMemInfoList(newptr, size);
+    /* initialize new memory to non-zero junk to catch uninitialized memory usage */
+    if ( size > oldsize )
+       memset(newptr + oldsize, 0x6B, size - oldsize);
     sprintf(msg, "memory realloc allocated for %ld bytes : file %s : line %d", size, filename, linenumber);
     FerMem_WriteDebugMessage(newptr, newptr + size, msg);
 
@@ -265,6 +268,8 @@ void FerMem_Free(void *ptr, char *filename, int linenumber)
     origptr = RemoveFromMemInfoList(ptr, &size);
     sprintf(msg, "memory to be free freed for %ld bytes : file %s : line %d", size, filename, linenumber);
     FerMem_WriteDebugMessage(ptr, ptr + size, msg);
+
+    free(origptr);
 
 #else
 

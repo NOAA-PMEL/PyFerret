@@ -22,13 +22,16 @@
 #define DEBUGFILENAME "memorydebug.txt"
 static int initialized = 0;
 /*
- * Add the debug message "<startptr> - <endptr> : <msg>" to the memorydebug file.
- * If <endptr> is NULL, blanks are printed instead of the NULL address.
- * For consistency, use format "%016p" to print pointers in msg.
+ * Add the debug message "<startptr> - <endptr> : <msg>" to the memorydebug 
+ * file.  If <endptr> is NULL, blanks are printed instead of the NULL 
+ * address.  For consistency, use format "%016p" to print pointers in msg.
+ * The given source filename ('__FILE__') and line number ('__LINE__') are 
+ * appended to the end of the message.
  */
-void FerMem_WriteDebugMessage(void *startptr, void *endptr, const char *msg) 
+void FerMem_WriteDebugMessage(void *startptr, void *endptr, const char *msg, const char *filename, int linenum)
 {
     FILE *debugfile;
+
     if ( ! initialized ) {
         initialized = 1;
         debugfile = fopen(DEBUGFILENAME, "w");
@@ -41,10 +44,10 @@ void FerMem_WriteDebugMessage(void *startptr, void *endptr, const char *msg)
         exit(127);
     }
     if ( endptr != NULL ) {
-        fprintf(debugfile, "%016p - %016p : %s\n", startptr, endptr, msg);
+        fprintf(debugfile, "%016p - %016p : %s : file %s : line %d\n", startptr, endptr, msg, filename, linenum);
     }
     else {
-        fprintf(debugfile, "%016p -                    : %s\n", startptr, msg);
+        fprintf(debugfile, "%016p -                    : %s : file %s : line %d\n", startptr, msg, filename, linenum);
     }
     fclose(debugfile);
 }
@@ -193,8 +196,8 @@ void *FerMem_Malloc(size_t size, char *filename, int linenumber)
     ptr = AddToMemInfoList(ptr, size);
     /* initialize to non-zero junk to catch uninitialized memory usage */
     memset(ptr, 0x6B, size);
-    sprintf(msg, "memory malloc allocated for %ld bytes : file %s : line %d", size, filename, linenumber);
-    FerMem_WriteDebugMessage(ptr, ptr + size, msg);
+    sprintf(msg, "memory malloc allocated for %ld bytes", size);
+    FerMem_WriteDebugMessage(ptr, ptr + size, msg, filename, linenumber);
 
 #else
 
@@ -226,8 +229,8 @@ void *FerMem_Realloc(void *ptr, size_t size, char *filename, int linenumber)
     char   msg[256];
 
     origptr = RemoveFromMemInfoList(ptr, &oldsize);
-    sprintf(msg, "memory to be realloc freed for %ld bytes : file %s : line %d", oldsize, filename, linenumber);
-    FerMem_WriteDebugMessage(ptr, ptr + oldsize, msg);
+    sprintf(msg, "memory to be realloc freed for %ld bytes", oldsize);
+    FerMem_WriteDebugMessage(ptr, ptr + oldsize, msg, filename, linenumber);
 
     newptr = realloc(origptr, size + sizeof(MemInfo));
 
@@ -235,8 +238,8 @@ void *FerMem_Realloc(void *ptr, size_t size, char *filename, int linenumber)
     /* initialize new memory to non-zero junk to catch uninitialized memory usage */
     if ( size > oldsize )
        memset(newptr + oldsize, 0x6B, size - oldsize);
-    sprintf(msg, "memory realloc allocated for %ld bytes : file %s : line %d", size, filename, linenumber);
-    FerMem_WriteDebugMessage(newptr, newptr + size, msg);
+    sprintf(msg, "memory realloc allocated for %ld bytes", size);
+    FerMem_WriteDebugMessage(newptr, newptr + size, msg, filename, linenumber);
 
 #else
 
@@ -266,8 +269,8 @@ void FerMem_Free(void *ptr, char *filename, int linenumber)
     char   msg[256];
 
     origptr = RemoveFromMemInfoList(ptr, &size);
-    sprintf(msg, "memory to be free freed for %ld bytes : file %s : line %d", size, filename, linenumber);
-    FerMem_WriteDebugMessage(ptr, ptr + size, msg);
+    sprintf(msg, "memory to be free freed for %ld bytes", size);
+    FerMem_WriteDebugMessage(ptr, ptr + size, msg, filename, linenumber);
 
     free(origptr);
 

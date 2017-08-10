@@ -49,9 +49,8 @@ void FORTRAN(init_c_string_array)(int *length, char **mr_blk1, char ***fer_ptr)
 
 #ifdef MEMORYDEBUG
    char msg[1024];
-   sprintf(msg, "assigned by init_c_string_array as an array of %d 64-bit pointers (%d bytes) initialize to NULL", 
-                *length, (*length)*8);
-   FerMem_WriteDebugMessage(mr_blk1, mr_blk1 + (*length), msg);
+   sprintf(msg, "assigned as an array of %d 64-bit pointers (%d bytes) initialize to NULL", *length, (*length)*8);
+   FerMem_WriteDebugMessage(mr_blk1, mr_blk1 + (*length), msg, __FILE__, __LINE__);
 #endif
 
    /* save the pointer to the array of pointers */

@@ -975,7 +975,7 @@ void FORTRAN(save_delimited_info) (int *nfields, int field_type[],
 {
   DelimFileInfo *fi = (DelimFileInfo *) FerMem_Malloc(sizeof(DelimFileInfo), __FILE__, __LINE__);
   int* _field_type  = (int *) FerMem_Malloc(sizeof(int) * (*nfields), __FILE__, __LINE__);
-  char* _delim      = (char *) FerMem_Malloc(sizeof(char) * (int)strlen(delim), __FILE__, __LINE__);
+  char* _delim      = (char *) FerMem_Malloc(sizeof(char) * (int)strlen(delim) + 1, __FILE__, __LINE__);
   int i;
 
   memset(fi, 0, sizeof(DelimFileInfo));

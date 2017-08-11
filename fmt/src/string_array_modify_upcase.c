@@ -55,7 +55,6 @@ void FORTRAN(string_array_modify_upcase)(void **string_array_header, int *index,
    char * old_string;
    int i;
    List_Node * p;
-FILE *fp;
 
    head = *string_array_header;
    if( head != NULL ) {

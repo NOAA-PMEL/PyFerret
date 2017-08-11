@@ -180,21 +180,24 @@ static void *RemoveFromMemInfoList(void *ptr, size_t *sizeptr)
 
 /*
  * Called after shutting down to report any allocated memory not freed.
- * Messages are written to stderr.  Returns the number of memory allocations
- * not freed.
+ * Messages are written to stderr.  Returns zero if all allocated memory
+ * has been freed; 127 if not.
  */
 int ReportAnyMemoryLeaks(void)
 {
     MemInfo *memptr;
-    int      k;
+
+    if ( MemInfoList == NULL ) {
+        fputs("All FerMem allocated memory has been FerMem freed\n", stderr);
+        return 0;
+    }
 
     /* Check if anything has been corrupted */
     CheckMemInfoList();
     /* Report anything still in MemInfoList */
-    for (memptr = MemInfoList, k = 0; memptr != NULL; memptr = memptr->next, k++) {
+    for (memptr = MemInfoList; memptr != NULL; memptr = memptr->next)
         fprintf(stderr, "Allocated memory %016p of %ld bytes not freed\n", memptr->memory, memptr->size);
-    }
-    return k;
+    return 127;
 }
 
 #endif

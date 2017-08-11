@@ -7,6 +7,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "pyferret.h"
+#include "FerMem.h"
 
 /*
  * Draws connected line segments.
@@ -37,7 +38,7 @@ grdelBool grdelDrawMultiline(grdelType window, const float ptsx[],
     double transval;
     int k;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelDrawMultiline called: "
             "window = %p, pen = %p, numpts = %d\n", window, pen, numpts);
     for (k = 0; k < numpts; k++)
@@ -66,7 +67,7 @@ grdelBool grdelDrawMultiline(grdelType window, const float ptsx[],
     grdelGetTransformValues(&my, &sx, &sy, &dx, &dy);
 
     if ( bindings->cferbind != NULL ) {
-        xvals = (double *) PyMem_Malloc(2 * numpts * sizeof(double));
+        xvals = (double *) FerMem_Malloc(2 * numpts * sizeof(double), __FILE__, __LINE__);
         if ( xvals == NULL ) {
             sprintf(grdelerrmsg, "grdelDrawMultiline: out of memory "
                                  "for an array of %d doubles", 2 * numpts);
@@ -79,7 +80,7 @@ grdelBool grdelDrawMultiline(grdelType window, const float ptsx[],
             yvals[k] = (my - (double) (ptsy[k])) * sy + dy;
         success = bindings->cferbind->drawMultiline(bindings->cferbind,
                                       xvals, yvals, numpts, penobj);
-        PyMem_Free(xvals);
+        FerMem_Free(xvals, __FILE__, __LINE__);
         if ( ! success ) {
             /* grdelerrmsg is already assigned */
             return 0;
@@ -185,7 +186,7 @@ grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
     double transval;
     int k;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelDrawPoints called: "
             "window = %p, symbol = %p, color = %p, ptsize = %f, numpts = %d", 
             window, symbol, color, ptsize, numpts);
@@ -221,7 +222,7 @@ grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
     grdelGetTransformValues(&my, &sx, &sy, &dx, &dy);
 
     if ( bindings->cferbind != NULL ) {
-        xvals = (double *) PyMem_Malloc(2 * numpts * sizeof(double));
+        xvals = (double *) FerMem_Malloc(2 * numpts * sizeof(double), __FILE__, __LINE__);
         if ( xvals == NULL ) {
             sprintf(grdelerrmsg, "grdelDrawPoints: out of memory "
                                  "for an array of %d doubles", 2 * numpts);
@@ -235,7 +236,7 @@ grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
         success = bindings->cferbind->drawPoints(bindings->cferbind,
                                       xvals, yvals, numpts, symbolobj,
                                       colorobj, (double) ptsize);
-        PyMem_Free(xvals);
+        FerMem_Free(xvals, __FILE__, __LINE__);
         if ( ! success ) {
             /* grdelerrmsg is already assigned */
             return 0;
@@ -343,7 +344,7 @@ grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
     double transval;
     int k;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelDrawPolygon called: "
             "window = %p, brush = %p, pen = %p, numpts = %d\n", 
             window, brush, pen, numpts);
@@ -392,7 +393,7 @@ grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
     grdelGetTransformValues(&my, &sx, &sy, &dx, &dy);
 
     if ( bindings->cferbind != NULL ) {
-        xvals = (double *) PyMem_Malloc(2 * numpts * sizeof(double));
+        xvals = (double *) FerMem_Malloc(2 * numpts * sizeof(double), __FILE__, __LINE__);
         if ( xvals == NULL ) {
             sprintf(grdelerrmsg, "grdelDrawPolygon: out of memory "
                                  "for an array of %d doubles", 2 * numpts);
@@ -405,7 +406,7 @@ grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
             yvals[k] = (my - (double) (ptsy[k])) * sy + dy;
         success = bindings->cferbind->drawPolygon(bindings->cferbind,
                                       xvals, yvals, numpts, brushobj, penobj);
-        PyMem_Free(xvals);
+        FerMem_Free(xvals, __FILE__, __LINE__);
         if ( ! success ) {
             /* grdelerrmsg is already assigned */
             return 0;
@@ -511,7 +512,7 @@ grdelBool grdelDrawRectangle(grdelType window, float left, float bottom,
     double my, sx, sy, dx, dy;
     double trlft, trbtm, trrgt, trtop;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelDrawRectangle called: "
             "window = %p, brush = %p, pen = %p\n"
             "   left = %f, bottom = %f, right = %f, top = %f\n", 
@@ -626,7 +627,7 @@ grdelBool grdelTextSize(grdelType window, const char *text, int textlen,
     PyObject *result;
     double my, sx, sy, dx, dy;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelTextSize called: "
             "window = %p, font = %p, text = '%.*s'\n", window, font, textlen, text);
     fflush(debuglogfile);
@@ -683,7 +684,7 @@ grdelBool grdelTextSize(grdelType window, const char *text, int textlen,
     *fltwidthptr = (float) (width / sx);
     *fltheightptr = (float) (height / sy);
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelTextSize reponse: width = %f, height = %f\n", 
                           *fltwidthptr, *fltheightptr);
     fflush(debuglogfile);
@@ -722,7 +723,7 @@ grdelBool grdelDrawText(grdelType window, const char *text, int textlen,
     double my, sx, sy, dx, dy;
     double trstx, trsty;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelDrawText called: "
             "window = %p, font = %p, color = %p, rotate = %f, text = '%.*s'\n", 
              window, font, color, rotate, textlen, text);

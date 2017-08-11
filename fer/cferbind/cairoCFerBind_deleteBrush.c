@@ -4,6 +4,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "FerMem.h"
 
 /*
  * Delete the given brush object.
@@ -37,7 +38,7 @@ grdelBool cairoCFerBind_deleteBrush(CFerBind *self, grdelType brush)
     brushobj->id = NULL;
 
     /* Free the memory */
-    PyMem_Free(brush);
+    FerMem_Free(brush, __FILE__, __LINE__);
 
     return 1;
 }

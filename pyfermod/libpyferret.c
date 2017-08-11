@@ -49,6 +49,7 @@
 #include "grdel.h"
 #include "pyferret.h"
 #include "pplmem.h"
+#include "FerMem.h"
 
 /* For older versions of NumPy (v1.4 with RHEL6), define this flag as the deprecated flag */
 #ifndef NPY_ARRAY_OWNDATA
@@ -76,13 +77,7 @@ PyObject *pyferret_graphbind_module_pyobject = NULL;
 /* Flag of this Ferret's start/stop state */
 static int ferretInitialized = 0;
 
-/*
- * for memory management in this module
- * double *, instead of DFTYPE *, is used for ferMemory 
- * to create a warning if DFTYPE is not double.
- */
-static size_t ferMemSize;
-static double *ferMemory = NULL;
+/* Memory for PPLUS */
 static float  *pplMemory = NULL;
 
 /* for recovering from problems in external function calls */
@@ -249,6 +244,10 @@ static int assign_ferret_signal_handlers(void)
     return 0;
 }
 
+/* Prototype local functions used before defined */
+static PyObject *pyferretStop(PyObject *self);
+static PyObject *pyferretQuit(PyObject *self);
+
 static char pyferretStartDocstring[] =
     "Initializes Ferret.  This allocates the initial amount of memory for \n"
     "Ferret (from Python-managed memory), opens the journal file, if requested, \n"
@@ -379,7 +378,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
 
     /* Initial allocation of PPLUS memory */
     pplMemSize = 0.5 * 1.0E6;
-    pplMemory = (float *) PyMem_Malloc((size_t)pplMemSize * (size_t)sizeof(float));
+    pplMemory = (float *) FerMem_Malloc((size_t)pplMemSize * (size_t)sizeof(float), __FILE__, __LINE__);
     if ( pplMemory == NULL )
         return PyErr_NoMemory();
     set_ppl_memory(pplMemory, pplMemSize);
@@ -474,8 +473,8 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
 void reallo_ppl_memory(int new_size)
 {
     if ( pplMemory != NULL )
-        PyMem_Free(pplMemory);
-    pplMemory = (float *) PyMem_Malloc((size_t)new_size * sizeof(float));
+        FerMem_Free(pplMemory, __FILE__, __LINE__);
+    pplMemory = (float *) FerMem_Malloc((size_t)new_size * sizeof(float), __FILE__, __LINE__);
     if ( pplMemory == NULL ) {
         printf("Unable to allocate the requested %d words of PLOT memory.\n", new_size);
         exit(1);
@@ -517,6 +516,7 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
     int  cmnd_stack_level;
     char errmsg[2112];
     int  errval;
+    PyObject *retval;
 
     /* If not initialized, raise a MemoryError */
     if ( ! ferretInitialized ) {
@@ -619,8 +619,9 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
 
     if ( sBuffer->flags[FRTN_ACTION] == FACTN_EXIT ) {
         /* plain "EXIT" Ferret command - instigate an orderly shutdown */
-
-        /* return Py_BuildValue("is", FERR_EXIT_PROGRAM, "EXIT"); */
+        /* retval = pyferretStop(self); */
+        retval = pyferretQuit(self);
+        Py_DECREF(retval);
 
         /*
          * python -i -c ... intercepts the Python sys.exit() call and stays in python,
@@ -1622,12 +1623,13 @@ static PyObject *pyferretStop(PyObject *self)
     /* Free memory allocated inside Ferret */
     FORTRAN(finalize_ferret)();
 
-    /* Free memory allocated for Ferret */
-    PyMem_Free(ferMemory);
-    ferMemory = NULL;
-    ferMemSize = 0;
-    PyMem_Free(pplMemory);
+    /* Free memory allocated for PPLUS */
+    FerMem_Free(pplMemory, __FILE__, __LINE__);
     pplMemory = NULL;
+
+#ifdef MEMORYDEBUG
+    (void) ReportAnyMemoryLeaks();
+#endif
 
     /* Return True */
     Py_INCREF(Py_True);
@@ -1672,12 +1674,13 @@ static PyObject *pyferretQuit(PyObject *self)
     /* Free memory allocated inside Ferret */
     FORTRAN(finalize_ferret)();
 
-    /* Free memory allocated for Ferret */
-    PyMem_Free(ferMemory);
-    ferMemory = NULL;
-    ferMemSize = 0;
-    PyMem_Free(pplMemory);
+    /* Free memory allocated for PPLUS */
+    FerMem_Free(pplMemory, __FILE__, __LINE__);
     pplMemory = NULL;
+
+#ifdef MEMORYDEBUG
+    (void) ReportAnyMemoryLeaks();
+#endif
 
     /* Return None */
     Py_INCREF(Py_None);

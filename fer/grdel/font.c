@@ -9,6 +9,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "pyferret.h"
+#include "FerMem.h"
 
 static const char *grdelfontid = "GRDEL_FONT";
 
@@ -53,7 +54,7 @@ grdelType grdelFont(grdelType window, const char *familyname,
         return NULL;
     }
 
-    font = (GDFont *) PyMem_Malloc(sizeof(GDFont));
+    font = (GDFont *) FerMem_Malloc(sizeof(GDFont), __FILE__, __LINE__);
     if ( font == NULL ) {
         strcpy(grdelerrmsg, "grdelFont: out of memory for a new Font");
         return NULL;
@@ -75,7 +76,7 @@ grdelType grdelFont(grdelType window, const char *familyname,
                                  italic, bold, underlined);
         if ( font->object == NULL ) {
             /* grdelerrmsg already assigned */
-            PyMem_Free(font);
+            FerMem_Free(font, __FILE__, __LINE__);
             return NULL;
         }
     }
@@ -98,18 +99,18 @@ grdelType grdelFont(grdelType window, const char *familyname,
         if ( font->object == NULL ) {
             sprintf(grdelerrmsg, "grdelFont: error when calling the Python "
                     "binding's createFont method: %s", pyefcn_get_error());
-            PyMem_Free(font);
+            FerMem_Free(font, __FILE__, __LINE__);
             return NULL;
         }
     }
     else {
         strcpy(grdelerrmsg, "grdelFont: unexpected error, "
                             "no bindings associated with this Window");
-        PyMem_Free(font);
+        FerMem_Free(font, __FILE__, __LINE__);
         return NULL;
     }
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelFont created: "
             "window = %p, fontsize = %f, font = %p\n",
             window, fontsize, font);
@@ -155,7 +156,7 @@ grdelBool grdelFontDelete(grdelType font)
     grdelBool success;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelFontDelete called: "
             "font = %p\n", font);
     fflush(debuglogfile);
@@ -198,7 +199,7 @@ grdelBool grdelFontDelete(grdelType font)
     myfont->id = NULL;
     myfont->window = NULL;
     myfont->object = NULL;
-    PyMem_Free(font);
+    FerMem_Free(font, __FILE__, __LINE__);
 
     return success;
 }

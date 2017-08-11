@@ -6,6 +6,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "FerMem.h"
 
 /* Instantiate the global value */
 const char *CCFBBrushId = "CCFBBrushId";
@@ -62,7 +63,7 @@ grdelType cairoCFerBind_createBrush(CFerBind *self, grdelType color,
     }
 
     /* Create the brush object */
-    brushobj = (CCFBBrush *) PyMem_Malloc(sizeof(CCFBBrush));
+    brushobj = (CCFBBrush *) FerMem_Malloc(sizeof(CCFBBrush), __FILE__, __LINE__);
     if ( brushobj == NULL ) {
         strcpy(grdelerrmsg, "cairoCFerBind_createBrush: "
                             "out of memory for a CCFBBrush structure");
@@ -81,7 +82,7 @@ grdelType cairoCFerBind_createBrush(CFerBind *self, grdelType color,
     else {
         sprintf(grdelerrmsg, "cairoCFerBind_createBrush: unexpected error, "
                              "unrecognized brushtype %d", brushtype);
-        PyMem_Free(brushobj);
+        FerMem_Free(brushobj, __FILE__, __LINE__);
         return NULL;
     }
 

@@ -7,6 +7,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "FerMem.h"
 
 /*
  * Assigns the name and format of the image file to be created.
@@ -147,7 +148,7 @@ grdelBool cairoCFerBind_setImageName(CFerBind *self, const char imagename[],
         instdata->firstpic = delpic->next;
         cairo_surface_finish(delpic->surface);
         cairo_surface_destroy(delpic->surface);
-        PyMem_Free(delpic);
+        FerMem_Free(delpic, __FILE__, __LINE__);
     }
     instdata->lastpic = NULL;
     /*

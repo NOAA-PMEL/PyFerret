@@ -5,6 +5,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "FerMem.h"
 
 /*
  * Ends a "View" for this "Window".
@@ -47,7 +48,7 @@ grdelBool cairoCFerBind_endView(CFerBind *self)
         }
 
         /* Allocate a new picture for the linked list */
-        thispic = (CCFBPicture *) PyMem_Malloc(sizeof(CCFBPicture));
+        thispic = (CCFBPicture *) FerMem_Malloc(sizeof(CCFBPicture), __FILE__, __LINE__);
         if ( thispic == NULL ) {
             strcpy(grdelerrmsg, "cairoCFerBind_endView: "
                                 "Out of memory for a CCFBPicture structure");

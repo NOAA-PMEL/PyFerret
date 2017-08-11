@@ -23,8 +23,9 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "pyferret.h"
+#include "FerMem.h"
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -40,15 +41,15 @@ static void closelogfile(void)
 
 static void openlogfile(void)
 {
-    debuglogfile = fopen("pyferretdebug.log", "w");
+    debuglogfile = fopen("grdeldebug.log", "w");
     if ( debuglogfile == NULL ) {
-        fputs("Open of pyferretdebug.log failed", stderr);
+        fputs("Open of grdeldebug.log failed", stderr);
         fflush(stderr);
         exit(1);
     }
     atexit(closelogfile);
 }
-#endif /* VERBOSEDEBUG */
+#endif /* GRDELDEBUG */
 
 
 static const char *grdelwindowid = "GRDEL_WINDOW";
@@ -104,7 +105,7 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
     PyObject *rasteronlybool;
 
     /* Allocate memory for this GDWindow */
-    window = (GDWindow *) PyMem_Malloc(sizeof(GDWindow));
+    window = (GDWindow *) FerMem_Malloc(sizeof(GDWindow), __FILE__, __LINE__);
     if ( window == NULL ) {
         strcpy(grdelerrmsg, "grdelWindowCreate: out of memory for a new Window");
         return NULL;
@@ -123,7 +124,7 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
                            title, titlelen, visible, noalpha, rasteronly);
     if ( window->bindings.cferbind != NULL ) {
         /* Success - engine found; done */
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
         /*
          * Since a window has to be created before anything else can happen
          * the initialization check of debuglogfile only needs to happen here.
@@ -166,11 +167,11 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
     if ( window->bindings.pyobject == NULL ) {
         sprintf(grdelerrmsg, "grdelWindowCreate: error when calling createWindow "
                              "in pyferret.graphbind: %s", pyefcn_get_error());
-        PyMem_Free(window);
+        FerMem_Free(window, __FILE__, __LINE__);
         return NULL;
     }
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     /*
      * Since a window has to be created before anything else can happen
      * the initialization check of debuglogfile only needs to happen here.
@@ -220,7 +221,7 @@ grdelBool grdelWindowDelete(grdelType window)
     grdelBool success;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowDelete called: "
             "window = %p\n", window);
     fflush(debuglogfile);
@@ -284,7 +285,7 @@ grdelBool grdelWindowDelete(grdelType window)
     mywindow->hasseg = 0;
     mywindow->bindings.cferbind = NULL;
     mywindow->bindings.pyobject = NULL;
-    PyMem_Free(window);
+    FerMem_Free(window, __FILE__, __LINE__);
 
     return 1;
 }
@@ -316,7 +317,7 @@ grdelBool grdelWindowSetImageName(grdelType window, const char *imagename,
     grdelBool success;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowSetImageName called: "
             "window = %p\n", window);
     fflush(debuglogfile);
@@ -376,7 +377,7 @@ grdelBool grdelWindowClear(grdelType window, grdelType bkgcolor)
     grdelBool success;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowClear called: "
             "window = %p, bkgcolor = %p\n", window, bkgcolor);
     fflush(debuglogfile);
@@ -439,7 +440,7 @@ grdelBool grdelWindowRedraw(grdelType window, grdelType bkgcolor)
     grdelBool success;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowRedraw called: "
             "window = %p, bkgcolor = %p\n", window, bkgcolor);
     fflush(debuglogfile);
@@ -500,7 +501,7 @@ grdelBool grdelWindowUpdate(grdelType window)
     grdelBool success;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowUpdate called: "
             "window = %p\n", window);
     fflush(debuglogfile);
@@ -559,7 +560,7 @@ grdelBool grdelWindowSetAntialias(grdelType window, int antialias)
     PyObject *aaobj;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowSetAntialias called: "
             "window = %p, antialias = %d\n", window, antialias);
     fflush(debuglogfile);
@@ -622,7 +623,7 @@ grdelBool grdelWindowSetSize(grdelType window, float width, float height)
     grdelBool success;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowSetSize called: "
             "window = %p, width = %f, height = %f\n", window, width, height);
     fflush(debuglogfile);
@@ -679,7 +680,7 @@ grdelBool grdelWindowSetScale(grdelType window, float scale)
     grdelBool success;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowSetScale called: "
             "window = %p, scale = %f\n", window, scale);
     fflush(debuglogfile);
@@ -738,7 +739,7 @@ grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible)
     PyObject *visiblebool;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowSetVisible called: "
             "window = %p, visible = %d\n", window, visible);
     fflush(debuglogfile);
@@ -821,7 +822,7 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
     PyObject *result;
     int k;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowSave called: "
             "window = %p\n", window);
     fflush(debuglogfile);
@@ -923,7 +924,7 @@ grdelBool grdelWindowScreenInfo(grdelType window, float *dpix, float *dpiy,
     grdelBool success;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowScreenInfo called: "
             "window = %p\n", window);
     fflush(debuglogfile);
@@ -966,7 +967,7 @@ grdelBool grdelWindowScreenInfo(grdelType window, float *dpix, float *dpiy,
         return 0;
     }
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowScreenInfo response: "
                           "dpix = %f, dpiy = %f, screenwidth = %d, screenheight = %d\n",
                           *dpix, *dpiy, *screenwidth, *screenheight);
@@ -994,7 +995,7 @@ int  grdelWindowSetDpi(grdelType window, float newdpi)
 {
     GDWindow *mywindow;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowSetDpi called: "
             "window = %p, newdpi = %f\n", window, newdpi);
     fflush(debuglogfile);
@@ -1040,7 +1041,7 @@ grdelBool grdelWindowSetWidthFactor(grdelType window, float widthfactor)
     grdelBool success;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowSetWidthFactor called: "
             "window = %p, scalingfactor = %f\n", window, widthfactor);
     fflush(debuglogfile);
@@ -1425,7 +1426,7 @@ grdelBool grdelWindowViewBegin(grdelType window,
     PyObject *clipbool;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowViewBegin called: "
             "window = %p, "
             "viewfrac  = (%f, %f, %f, %f) "
@@ -1499,7 +1500,7 @@ grdelBool grdelWindowViewClip(grdelType window, grdelBool clipit)
     PyObject *clipbool;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowViewClip called: "
             "window = %p "
             "clipit = %d\n",
@@ -1565,7 +1566,7 @@ grdelBool grdelWindowViewEnd(grdelType window)
     grdelBool success;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowViewEnd called: "
             "window = %p\n", window);
     fflush(debuglogfile);
@@ -1697,7 +1698,7 @@ grdelBool grdelWindowSegmentBegin(grdelType window, int segid)
     grdelBool success;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowSegmentBegin called: "
             "window = %p, "
             "segid = %d\n",
@@ -1760,7 +1761,7 @@ grdelBool grdelWindowSegmentEnd(grdelType window)
     grdelBool success;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowSegmentEnd called: "
             "window = %p\n", window);
     fflush(debuglogfile);
@@ -1821,7 +1822,7 @@ grdelBool grdelWindowSegmentDelete(grdelType window, int segid)
     grdelBool success;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowSegmentDelete called: "
             "window = %p, "
             "segid = %d\n",

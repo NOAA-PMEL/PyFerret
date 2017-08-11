@@ -6,6 +6,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "FerMem.h"
 
 /* Instantiate the global value */
 const char *CCFBPenId = "CCFBPenId";
@@ -120,7 +121,7 @@ grdelType cairoCFerBind_createPen(CFerBind *self, grdelType color, double width,
     }
 
     /* Create the pen object */
-    penobj = (CCFBPen *) PyMem_Malloc(sizeof(CCFBPen));
+    penobj = (CCFBPen *) FerMem_Malloc(sizeof(CCFBPen), __FILE__, __LINE__);
     if ( penobj == NULL ) {
         strcpy(grdelerrmsg, "cairoCFerBind_createPen: "
                             "out of memory for a CCFBPen structure");
@@ -163,7 +164,7 @@ grdelType cairoCFerBind_createPen(CFerBind *self, grdelType color, double width,
     default:
         sprintf(grdelerrmsg, "cairoCFerBind_createPen: unexpected error, "
                              "linetype of %d", linetype);
-        PyMem_Free(penobj);
+        FerMem_Free(penobj, __FILE__, __LINE__);
         return NULL;
     }
 

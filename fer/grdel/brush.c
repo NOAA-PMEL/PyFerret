@@ -8,6 +8,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "pyferret.h"
+#include "FerMem.h"
 
 static const char *grdelbrushid = "GRDEL_BRUSH";
 
@@ -50,7 +51,7 @@ grdelType grdelBrush(grdelType window, grdelType color,
         return NULL;
     }
 
-    brush = (GDBrush *) PyMem_Malloc(sizeof(GDBrush));
+    brush = (GDBrush *) FerMem_Malloc(sizeof(GDBrush), __FILE__, __LINE__);
     if ( brush == NULL ) {
         strcpy(grdelerrmsg, "grdelBrush: out of memory for a new Brush");
         return NULL;
@@ -63,7 +64,7 @@ grdelType grdelBrush(grdelType window, grdelType color,
                                                   colorobj, style, stylelen);
         if ( brush->object == NULL ) {
             /* grdelerrmsg already assigned */
-            PyMem_Free(brush);
+            FerMem_Free(brush, __FILE__, __LINE__);
             return NULL;
         }
     }
@@ -73,18 +74,18 @@ grdelType grdelBrush(grdelType window, grdelType color,
         if ( brush->object == NULL ) {
             sprintf(grdelerrmsg, "grdelBrush: error when calling the Python "
                     "binding's createBrush method: %s", pyefcn_get_error());
-            PyMem_Free(brush);
+            FerMem_Free(brush, __FILE__, __LINE__);
             return NULL;
         }
     }
     else {
         strcpy(grdelerrmsg, "grdelBrush: unexpected error, "
                             "no bindings associated with this Window");
-        PyMem_Free(brush);
+        FerMem_Free(brush, __FILE__, __LINE__);
         return NULL;
     }
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelBrush created: "
             "window = %p, color = %p, brush = %p\n",
             window, color, brush);
@@ -129,7 +130,7 @@ grdelBool grdelBrushReplaceColor(grdelType brush, grdelType color)
     grdelBool  success;
     PyObject  *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelBrushReplaceColor called: "
             "brush = %p, color = %p\n", brush, color);
     fflush(debuglogfile);
@@ -194,7 +195,7 @@ grdelBool grdelBrushDelete(grdelType brush)
     grdelBool success;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelBrushDelete called: "
             "brush = %p\n", brush);
     fflush(debuglogfile);
@@ -237,7 +238,7 @@ grdelBool grdelBrushDelete(grdelType brush)
     mybrush->id = NULL;
     mybrush->window = NULL;
     mybrush->object = NULL;
-    PyMem_Free(brush);
+    FerMem_Free(brush, __FILE__, __LINE__);
 
     return success;
 }

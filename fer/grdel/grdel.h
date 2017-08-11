@@ -3,7 +3,7 @@
 
 #include <Python.h>
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
 #include <stdio.h>
 extern FILE *debuglogfile;
 #endif

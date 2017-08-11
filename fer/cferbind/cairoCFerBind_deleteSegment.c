@@ -6,6 +6,7 @@
 #include "cferbind.h"
 #include "cairoCFerBind.h"
 #include "pyqtcairoCFerBind.h"
+#include "FerMem.h"
 
 /*
  * Deletes the drawing commands in the indicated Segment of a Window. 
@@ -57,7 +58,7 @@ grdelBool cairoCFerBind_deleteSegment(CFerBind *self, int segid)
         instdata->firstpic = delpic->next;
         cairo_surface_finish(delpic->surface);
         cairo_surface_destroy(delpic->surface);
-        PyMem_Free(delpic);
+        FerMem_Free(delpic, __FILE__, __LINE__);
         instdata->imagechanged = 1;
     }
     instdata->lastpic = NULL;
@@ -70,7 +71,7 @@ grdelBool cairoCFerBind_deleteSegment(CFerBind *self, int segid)
             thispic->next = delpic->next;
             cairo_surface_finish(delpic->surface);
             cairo_surface_destroy(delpic->surface);
-            PyMem_Free(delpic);
+            FerMem_Free(delpic, __FILE__, __LINE__);
             instdata->imagechanged = 1;
         }
         else {

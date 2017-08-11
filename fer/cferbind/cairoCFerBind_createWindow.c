@@ -5,6 +5,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "FerMem.h"
 
 /*
  * Creates a Cario instance of a CFerBind struct.
@@ -19,7 +20,7 @@ CFerBind *cairoCFerBind_createWindow(int noalpha, int rasteronly)
     CairoCFerBindData *instdata;
 
     /* Create the bindings structure */
-    bindings = (CFerBind *) PyMem_Malloc(sizeof(CFerBind));
+    bindings = (CFerBind *) FerMem_Malloc(sizeof(CFerBind), __FILE__, __LINE__);
     if ( bindings == NULL ) {
         strcpy(grdelerrmsg, "cairoCFerBind_createWindow: "
                             "Out of memory for a CFerBind structure");
@@ -71,11 +72,11 @@ CFerBind *cairoCFerBind_createWindow(int noalpha, int rasteronly)
     bindings->drawText = cairoCFerBind_drawText;
 
     /* Create the instance-specific data structure */
-    bindings->instancedata = (CairoCFerBindData *) PyMem_Malloc(sizeof(CairoCFerBindData));
+    bindings->instancedata = (CairoCFerBindData *) FerMem_Malloc(sizeof(CairoCFerBindData), __FILE__, __LINE__);
     if ( bindings->instancedata == NULL ) {
         strcpy(grdelerrmsg, "cairoCFerBind_createWindow: "
                             "Out of memory for a CairoCFerBindData structure");
-        PyMem_Free(bindings);
+        FerMem_Free(bindings, __FILE__, __LINE__);
         return NULL;
     }
     /* Initialize everything to zero */

@@ -8,6 +8,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "pyferret.h"
+#include "FerMem.h"
 
 static const char *grdelpenid = "GRDEL_PEN";
 
@@ -58,7 +59,7 @@ grdelType grdelPen(grdelType window, grdelType color,
         return NULL;
     }
 
-    pen = (GDPen *) PyMem_Malloc(sizeof(GDPen));
+    pen = (GDPen *) FerMem_Malloc(sizeof(GDPen), __FILE__, __LINE__);
     if ( pen == NULL ) {
         strcpy(grdelerrmsg, "grdelPen: out of memory for a new Pen");
         return NULL;
@@ -72,7 +73,7 @@ grdelType grdelPen(grdelType window, grdelType color,
                                 capstyle, capstylelen, joinstyle, joinstylelen);
         if ( pen->object == NULL ) {
             /* grdelerrmsg already assigned */
-            PyMem_Free(pen);
+            FerMem_Free(pen, __FILE__, __LINE__);
             return NULL;
         }
     }
@@ -84,18 +85,18 @@ grdelType grdelPen(grdelType window, grdelType color,
         if ( pen->object == NULL ) {
             sprintf(grdelerrmsg, "grdelPen: error when calling the Python "
                     "binding's createPen method: %s", pyefcn_get_error());
-            PyMem_Free(pen);
+            FerMem_Free(pen, __FILE__, __LINE__);
             return NULL;
         }
     }
     else {
         strcpy(grdelerrmsg, "grdelPen: unexpected error, "
                             "no bindings associated with this Window");
-        PyMem_Free(pen);
+        FerMem_Free(pen, __FILE__, __LINE__);
         return NULL;
     }
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelPen created: "
             "window = %p, color = %p, width = %f, pen = %p\n",
             window, color, width, pen);
@@ -140,7 +141,7 @@ grdelBool grdelPenReplaceColor(grdelType pen, grdelType color)
     grdelBool  success;
     PyObject  *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelPenReplaceColor called: "
             "pen = %p, color = %p\n", pen, color);
     fflush(debuglogfile);
@@ -205,7 +206,7 @@ grdelBool grdelPenDelete(grdelType pen)
     grdelBool success;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelPenDelete called: "
             "pen = %p\n", pen);
     fflush(debuglogfile);
@@ -248,7 +249,7 @@ grdelBool grdelPenDelete(grdelType pen)
     mypen->id = NULL;
     mypen->window = NULL;
     mypen->object = NULL;
-    PyMem_Free(mypen);
+    FerMem_Free(mypen, __FILE__, __LINE__);
 
     return success;
 }

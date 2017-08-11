@@ -71,11 +71,12 @@ memorydebug:
 		"VERSION_INFO = (beta/debug)" \
 		build
 
-## The definition of VERBOSEDEBUG is observed by fer/grdel, which causes it
-## to create a pyferretdebug.log file with all the graphics commands issued
-.PHONY : verbosedebug
-verbosedebug:
-	$(MAKE) "CFLAGS = $(CFLAGS) $(DBG_FLAGS) -DVERBOSEDEBUG"  \
+
+## The definition of GRDELDEBUG is observed by fer/grdel, which causes it
+## to create a grdeldebug.log file with all the graphics commands issued
+.PHONY : grdeldebug
+grdeldebug:
+	$(MAKE) "CFLAGS = $(CFLAGS) $(DBG_FLAGS) -DGRDELDEBUG"  \
 		"FFLAGS = $(FFLAGS) $(DBG_FLAGS) -fbounds-check" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(DBG_FLAGS)" \
 		"VERSION_INFO = (beta/debug)" \

@@ -41,6 +41,7 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include "ferret.h"
+#include "FerMem.h"
 
 void FORTRAN(xfer_c_ptrs)(char ***src_ptr, int *src_del, int *src_offset,
 		          char ***dst_ptr, int *dst_del, int *dst_offset, int *nptr)
@@ -53,7 +54,7 @@ void FORTRAN(xfer_c_ptrs)(char ***src_ptr, int *src_del, int *src_offset,
 
    for (i=0; i<*nptr; i++) {
       if ( *dst != NULL )
-         PyMem_Free(*dst);
+         FerMem_Free(*dst, __FILE__, __LINE__);
       *dst = *src;
       src += src_delta;
       dst += dst_delta;

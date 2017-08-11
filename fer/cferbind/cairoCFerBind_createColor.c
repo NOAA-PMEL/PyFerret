@@ -5,6 +5,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "FerMem.h"
 
 /* Instantiate the global value */
 const char *CCFBColorId = "CCFBColorId";
@@ -58,7 +59,7 @@ grdelType cairoCFerBind_createColor(CFerBind *self, double redfrac,
         return NULL;
     }
 
-    colorobj = (CCFBColor *) PyMem_Malloc(sizeof(CCFBColor));
+    colorobj = (CCFBColor *) FerMem_Malloc(sizeof(CCFBColor), __FILE__, __LINE__);
     if ( colorobj == NULL ) {
         strcpy(grdelerrmsg, "cairoCFerBind_createColor: "
                             "out of memory for a CCFBColor structure");

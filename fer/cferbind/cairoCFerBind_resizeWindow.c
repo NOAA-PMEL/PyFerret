@@ -6,6 +6,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "FerMem.h"
 
 /*
  * Resizes the "Window" to the given width and height.  These
@@ -70,7 +71,7 @@ grdelBool cairoCFerBind_resizeWindow(CFerBind *self, double width, double height
         instdata->firstpic = delpic->next;
         cairo_surface_finish(delpic->surface);
         cairo_surface_destroy(delpic->surface);
-        PyMem_Free(delpic);
+        FerMem_Free(delpic, __FILE__, __LINE__);
     }
     instdata->lastpic = NULL;
 

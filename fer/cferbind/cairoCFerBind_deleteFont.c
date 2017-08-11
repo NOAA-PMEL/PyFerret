@@ -4,6 +4,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "FerMem.h"
 
 /*
  * Delete a font object for this "Window".
@@ -46,7 +47,7 @@ grdelBool cairoCFerBind_deleteFont(CFerBind *self, grdelType font)
     fontobj->id = NULL;
 
     /* Free the memory */
-    PyMem_Free(font);
+    FerMem_Free(font, __FILE__, __LINE__);
 
     return 1;
 }

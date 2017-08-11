@@ -8,6 +8,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "pyferret.h"
+#include "FerMem.h"
 
 static const char *grdelcolorid = "GRDEL_COLOR";
 
@@ -66,7 +67,7 @@ grdelType grdelColor(grdelType window, float redfrac, float greenfrac,
         return NULL;
     }
 
-    color = (GDColor *) PyMem_Malloc(sizeof(GDColor));
+    color = (GDColor *) FerMem_Malloc(sizeof(GDColor), __FILE__, __LINE__);
     if ( color == NULL ) {
         strcpy(grdelerrmsg, "grdelColor: out of memory for a new Color");
         return NULL;
@@ -80,7 +81,7 @@ grdelType grdelColor(grdelType window, float redfrac, float greenfrac,
                                   (double) bluefrac, (double) opaquefrac);
         if ( color->object == NULL ) {
             /* grdelerrmsg already assigned */
-            PyMem_Free(color);
+            FerMem_Free(color, __FILE__, __LINE__);
             return NULL;
         }
     }
@@ -91,18 +92,18 @@ grdelType grdelColor(grdelType window, float redfrac, float greenfrac,
         if ( color->object == NULL ) {
             sprintf(grdelerrmsg, "grdelColor: error when calling the Python "
                     "binding's createColor method: %s", pyefcn_get_error());
-            PyMem_Free(color);
+            FerMem_Free(color, __FILE__, __LINE__);
             return NULL;
         }
     }
     else {
         strcpy(grdelerrmsg, "grdelColor: unexpected error, "
                             "no bindings associated with this Window");
-        PyMem_Free(color);
+        FerMem_Free(color, __FILE__, __LINE__);
         return NULL;
     }
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelColor created: "
             "window = %p, rgba = (%f,%f,%f,%f), color = %p\n",
             window, redfrac, greenfrac, bluefrac, opaquefrac, color);
@@ -148,7 +149,7 @@ grdelBool grdelColorDelete(grdelType color)
     grdelBool success;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelColorDelete called: "
             "color = %p\n", color);
     fflush(debuglogfile);
@@ -191,7 +192,7 @@ grdelBool grdelColorDelete(grdelType color)
     mycolor->id = NULL;
     mycolor->window = NULL;
     mycolor->object = NULL;
-    PyMem_Free(color);
+    FerMem_Free(color, __FILE__, __LINE__);
 
     return success;
 }

@@ -52,17 +52,17 @@ memorydebug :
 	mkdir -p $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer memorydebug
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
-	$(MAKE) pymod_debug_build
-	$(MAKE) pymod_debug_install
+	$(MAKE) "CFLAGS = $(CFLAGS) -DMEMORYDEBUG" pymod_debug_build
+	$(MAKE) "CFLAGS = $(CFLAGS) -DMEMORYDEBUG" pymod_debug_install
 	$(MAKE) externals_debug
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
-## The following defines VERBOSEDEBUG used by fer/grdel, which causes it
-## to create a pyferretdebug.log file with all the graphics commands issued
-.PHONY : verbosedebug
-verbosedebug :
+## The following defines GRDELDEBUG used by fer/grdel, which causes it
+## to create a grdeldebug.log file with all the graphics commands issued
+.PHONY : grdeldebug
+grdeldebug :
 	mkdir -p $(DIR_PREFIX)/lib
-	$(MAKE) -C $(DIR_PREFIX)/fer verbosedebug
+	$(MAKE) -C $(DIR_PREFIX)/fer grdeldebug
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) pymod_debug_build
 	$(MAKE) pymod_debug_install

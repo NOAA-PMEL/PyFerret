@@ -68,6 +68,33 @@ typedef struct _MemInfo_ {
 static MemInfo *MemInfoList = NULL;
 
 /*
+ * Checks if the buffers surrounding the user memory have been altered,
+ * indicating writing to memory not allocated.  If an alteration is
+ * detected, this function causes the abort function to end the process
+ * and produce a core dump.
+ */
+static void CheckMemInfoList(void)
+{
+    MemInfo *memptr;
+    int      k;
+
+    for (memptr = MemInfoList; memptr != NULL; memptr = memptr->next) {
+        for (k = 0; k < FERMEM_BUFSIZE; k++) {
+            if ( memptr->headbufptr[k] != FERMEM_BUFVALUE ) {
+                fprintf(stderr, "Memory underwrite detected for allocation %016p of %ld bytes\n", memptr->memory, memptr->size);
+                abort();
+            }
+        }
+        for (k = 0; k < FERMEM_BUFSIZE; k++) {
+            if ( memptr->tailbufptr[k] != FERMEM_BUFVALUE ) {
+                fprintf(stderr, "Memory overwrite detected for allocation %016p of %ld bytes\n", memptr->memory, memptr->size);
+                abort();
+            }
+        }
+    }
+}
+
+/*
  * Adds the given pointer to the linked list of memory pointers.
  * Assumes the given pointer is allocated for 
  *     'size' + sizeof(MemInfo)
@@ -80,6 +107,9 @@ static void *AddToMemInfoList(void *memplus, size_t size)
     int      k;
     void    *ptr;
 
+    /* Check if anything has been corrupted */
+    CheckMemInfoList();
+
     if ( MemInfoList == NULL ) {
         /* No list so make this memory the start of the list */
         MemInfoList = (MemInfo *) memplus;
@@ -87,19 +117,6 @@ static void *AddToMemInfoList(void *memplus, size_t size)
     else {
         /* Add this memory to the end of the list */
         for (memptr = MemInfoList; ; memptr = memptr->next) {
-            /* First check the buffers are not corrupt */
-            for (k = 0; k < FERMEM_BUFSIZE; k++) {
-                if ( memptr->headbufptr[k] != FERMEM_BUFVALUE ) {
-                    fprintf(stderr, "Memory underwrite detected for allocation %016p of %ld bytes\n", memptr->memory, memptr->size);
-                    abort();
-                }
-            }
-            for (k = 0; k < FERMEM_BUFSIZE; k++) {
-                if ( memptr->tailbufptr[k] != FERMEM_BUFVALUE ) {
-                    fprintf(stderr, "Memory overwrite detected for allocation %016p of %ld bytes\n", memptr->memory, memptr->size);
-                    abort();
-                }
-            }
             if ( memptr->next == NULL ) {
                 memptr->next = memplus;
                 break;
@@ -136,26 +153,16 @@ static void *AddToMemInfoList(void *memplus, size_t size)
  * The size of the user memory that was allocated is returned as the value 
  * pointed to by sizeptr.
  */
-void *RemoveFromMemInfoList(void *ptr, size_t *sizeptr)
+static void *RemoveFromMemInfoList(void *ptr, size_t *sizeptr)
 {
     MemInfo *prevptr;
     MemInfo *memptr;
     int      k;
 
+    /* Check if anything has been corrupted */
+    CheckMemInfoList();
+
     for (prevptr = NULL, memptr = MemInfoList; memptr != NULL; prevptr = memptr, memptr = memptr->next) {
-        /* First check the buffers are not corrupt */
-        for (k = 0; k < FERMEM_BUFSIZE; k++) {
-            if ( memptr->headbufptr[k] != FERMEM_BUFVALUE ) {
-                fprintf(stderr, "Memory underwrite detected for allocation %016p of %ld bytes\n", memptr->memory, memptr->size);
-                abort();
-            }
-        }
-        for (k = 0; k < FERMEM_BUFSIZE; k++) {
-            if ( memptr->tailbufptr[k] != FERMEM_BUFVALUE ) {
-                fprintf(stderr, "Memory overwrite detected for allocation %016p of %ld bytes\n", memptr->memory, memptr->size);
-                abort();
-            }
-        }
         if ( memptr->memory == ptr ) {
             /* remove this MemInfo from the list */
             if ( prevptr != NULL )
@@ -168,8 +175,30 @@ void *RemoveFromMemInfoList(void *ptr, size_t *sizeptr)
             return memptr;
         }
     }
-    fprintf(stderr, "Attempt to free unallocated memory %016p\n", memptr);
+    fprintf(stderr, "Attempt to free unallocated memory %016p\n", ptr);
     abort();
+}
+
+/*
+ * Called after shutting down to report any allocated memory not freed.
+ * Messages are written to stderr.  Returns zero if all allocated memory
+ * has been freed; 127 if not.
+ */
+int ReportAnyMemoryLeaks(void)
+{
+    MemInfo *memptr;
+
+    if ( MemInfoList == NULL ) {
+        fputs("All FerMem allocated memory has been FerMem freed\n", stderr);
+        return 0;
+    }
+
+    /* Check if anything has been corrupted */
+    CheckMemInfoList();
+    /* Report anything still in MemInfoList */
+    for (memptr = MemInfoList; memptr != NULL; memptr = memptr->next)
+        fprintf(stderr, "Allocated memory %016p of %ld bytes not freed\n", memptr->memory, memptr->size);
+    return 127;
 }
 
 #endif

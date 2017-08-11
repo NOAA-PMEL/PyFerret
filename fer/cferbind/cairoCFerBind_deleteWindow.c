@@ -5,6 +5,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "FerMem.h"
 
 /*
  * Deletes (frees) any allocated resources associated with this
@@ -51,13 +52,13 @@ grdelBool cairoCFerBind_deleteWindow(CFerBind *self)
         instdata->firstpic = delpic->next;
         cairo_surface_finish(delpic->surface);
         cairo_surface_destroy(delpic->surface);
-        PyMem_Free(delpic);
+        FerMem_Free(delpic, __FILE__, __LINE__);
     }
     instdata->lastpic = NULL;
 
-    PyMem_Free(self->instancedata);
+    FerMem_Free(self->instancedata, __FILE__, __LINE__);
     self->instancedata = NULL;
-    PyMem_Free(self);
+    FerMem_Free(self, __FILE__, __LINE__);
     return 1;
 }
 

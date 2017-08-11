@@ -4,6 +4,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "FerMem.h"
 
 /* Instantiate the global value */
 const char *CCFBFontId = "CCFBFontId";
@@ -57,18 +58,18 @@ grdelType cairoCFerBind_createFont(CFerBind *self, const char *familyname, int n
         return NULL;
     }
 
-    fontobj = (CCFBFont *) PyMem_Malloc(sizeof(CCFBFont));
+    fontobj = (CCFBFont *) FerMem_Malloc(sizeof(CCFBFont), __FILE__, __LINE__);
     if ( fontobj == NULL ) {
         strcpy(grdelerrmsg, "cairoCFerBind_createFont: "
                             "out of memory for a CCFBFont structure");
         return NULL;
     }
 
-    family = (char *) PyMem_Malloc(namelen+1);
+    family = (char *) FerMem_Malloc(namelen+1, __FILE__, __LINE__);
     if ( family == NULL ) {
         strcpy(grdelerrmsg, "cairoCFerBind_createFont: "
                             "out of memory for a copy of the familyname string");
-        PyMem_Free(fontobj);
+        FerMem_Free(fontobj, __FILE__, __LINE__);
         return NULL;
     }
     strncpy(family, familyname, namelen);
@@ -105,15 +106,15 @@ grdelType cairoCFerBind_createFont(CFerBind *self, const char *familyname, int n
         strcpy(grdelerrmsg, "cairoCFerBind_createFont: "
                             "unable to find a font face for the given font");
         cairo_font_face_destroy(fontobj->fontface);
-        PyMem_Free(family);
-        PyMem_Free(fontobj);
+        FerMem_Free(family, __FILE__, __LINE__);
+        FerMem_Free(fontobj, __FILE__, __LINE__);
         return NULL;
     }
     fontobj->fontsize = adjfontsize;
 
 #endif
 
-    PyMem_Free(family);
+    FerMem_Free(family, __FILE__, __LINE__);
 
     fontobj->underline = underlined;
     fontobj->id = CCFBFontId;

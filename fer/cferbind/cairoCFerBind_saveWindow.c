@@ -10,6 +10,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "FerMem.h"
 
 /*
  * Saves this "Window" to file.
@@ -208,7 +209,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         /* Allocate memory for the string with all the annotations */
         for (k = 0, j = 0; k < numannotations; k++, j++)
             j += strlen((char *) annotations[k * 8 / sizeof(void *)]);
-        allannos = (char *) PyMem_Malloc(j * sizeof(char));
+        allannos = (char *) FerMem_Malloc(j * sizeof(char), __FILE__, __LINE__);
         if ( allannos == NULL ) {
             strcpy(grdelerrmsg, "cairoCFerBind_saveWindow: "
                    "out of memory for concatenated annotations");
@@ -248,7 +249,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
             strcpy(grdelerrmsg, "cairoCFerBind_saveWindow: "
                                 "problems creating a temp surface for annotations");
             cairo_surface_destroy(annosurface);
-            PyMem_Free(allannos);
+            FerMem_Free(allannos, __FILE__, __LINE__);
             return 0;
         }
         annocontext = cairo_create(annosurface);
@@ -258,7 +259,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
             cairo_destroy(annocontext);
             cairo_surface_finish(annosurface);
             cairo_surface_destroy(annosurface);
-            PyMem_Free(allannos);
+            FerMem_Free(allannos, __FILE__, __LINE__);
             return 0;
         }
         /* Create the Pango layout for the annotations */
@@ -292,7 +293,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
             cairo_destroy(annocontext);
             cairo_surface_finish(annosurface);
             cairo_surface_destroy(annosurface);
-            PyMem_Free(allannos);
+            FerMem_Free(allannos, __FILE__, __LINE__);
             return 0;
         }
         /* Only need the surface, not the context */
@@ -307,7 +308,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
                                  cairo_status_to_string(status));
             cairo_surface_finish(annosurface);
             cairo_surface_destroy(annosurface);
-            PyMem_Free(allannos);
+            FerMem_Free(allannos, __FILE__, __LINE__);
             return 0;
         }
     }

@@ -5,6 +5,7 @@
 #include "cferbind.h"
 #include "cairoCFerBind.h"
 #include "pyqtcairoCFerBind.h"
+#include "FerMem.h"
 
 /*
  * Creates a PipedImager (previously called PyQtCairo) 
@@ -21,7 +22,7 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
     CairoCFerBindData *instdata;
 
     /* Create the bindings structure */
-    bindings = (CFerBind *) PyMem_Malloc(sizeof(CFerBind));
+    bindings = (CFerBind *) FerMem_Malloc(sizeof(CFerBind), __FILE__, __LINE__);
     if ( bindings == NULL ) {
         strcpy(grdelerrmsg, "pyqtcairoCFerBind_createWindow: "
                             "Out of memory for a CFerBind structure");
@@ -76,11 +77,11 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
 
     /* Create the instance-specific data structure */
     bindings->instancedata = 
-        (CairoCFerBindData *) PyMem_Malloc(sizeof(CairoCFerBindData));
+        (CairoCFerBindData *) FerMem_Malloc(sizeof(CairoCFerBindData), __FILE__, __LINE__);
     if ( bindings->instancedata == NULL ) {
         strcpy(grdelerrmsg, "pyqtcairoCFerBind_createWindow: "
                             "Out of memory for a CairoCFerBindData structure");
-        PyMem_Free(bindings);
+        FerMem_Free(bindings, __FILE__, __LINE__);
         return NULL;
     }
     /* Initialize everything to zero */
@@ -116,8 +117,8 @@ CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen
                                          windnamelen, visible, noalpha, 1);
     if ( instdata->viewer == NULL ) {
         /* grdelerrmsg already assigned */
-        PyMem_Free(bindings->instancedata);
-        PyMem_Free(bindings);
+        FerMem_Free(bindings->instancedata, __FILE__, __LINE__);
+        FerMem_Free(bindings, __FILE__, __LINE__);
         return NULL;
     }
 

@@ -5,6 +5,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "FerMem.h"
 
 /*
  * Return the size of the text if drawn to this "Window" using the given font.
@@ -61,7 +62,7 @@ grdelBool cairoCFerBind_textSize(CFerBind *self, const char *text, int textlen,
     }
 
     /* Convert to a null-terminated string */
-    utf8str = (char *) PyMem_Malloc((textlen + 1) * sizeof(char));
+    utf8str = (char *) FerMem_Malloc((textlen + 1) * sizeof(char), __FILE__, __LINE__);
     if ( utf8str == NULL ) {
         strcpy(grdelerrmsg, "cairoCFerBind_textSize: "
                             "out of memory for a copy of the text string");
@@ -91,7 +92,7 @@ grdelBool cairoCFerBind_textSize(CFerBind *self, const char *text, int textlen,
     result = cairo_status(instdata->context);
     cairo_restore(instdata->context);
 
-    PyMem_Free(utf8str);
+    FerMem_Free(utf8str, __FILE__, __LINE__);
 
     /* Convert returned sizes to pixels */
     if ( instdata->imageformat != CCFBIF_PNG ) {

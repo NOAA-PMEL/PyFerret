@@ -4,6 +4,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "FerMem.h"
 
 /*
  * Delete the given pen object.
@@ -33,7 +34,7 @@ grdelBool cairoCFerBind_deletePen(CFerBind *self, grdelType pen)
     penobj->id = NULL;
 
     /* Free the memory */
-    PyMem_Free(pen);
+    FerMem_Free(pen, __FILE__, __LINE__);
 
     return 1;
 }

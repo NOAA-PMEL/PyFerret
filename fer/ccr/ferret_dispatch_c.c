@@ -70,12 +70,6 @@ void ferret_dispatch_c(char *init_command, smPtr sBuffer)
   int TEXTLENGTH_size  = TEXTLENGTH;
   int NUMDOUBLES_size = NUMDOUBLES;
 
-/* call the FORTRAN program that actually does the FERRET command */
-/* all arguments must be pointers for FORTRAN */
-/*ifdef check added 5/95 *kob* */
-/* 1/17 *sh* removed the "memory" argument -- replaced by dynamic allocation
-   of hyperslab memory using FORTRAN90 pointers and c (or python) */
-
   FORTRAN(ferret_dispatch)(init_command, sBuffer->flags, &flag_buff_size,
 		    sBuffer->text, &TEXTLENGTH_size, &(sBuffer->numStrings));
 

@@ -4,6 +4,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "FerMem.h"
 
 /*
  * Delete the given color object.
@@ -33,7 +34,7 @@ grdelBool cairoCFerBind_deleteColor(CFerBind *self, grdelType color)
     colorobj->id = NULL;
 
     /* Free the memory */
-    PyMem_Free(color);
+    FerMem_Free(color, __FILE__, __LINE__);
 
     return 1;
 }

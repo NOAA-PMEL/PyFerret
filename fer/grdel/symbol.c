@@ -8,6 +8,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "pyferret.h"
+#include "FerMem.h"
 
 static const char *grdelsymbolid = "GRDEL_SYMBOL";
 
@@ -42,7 +43,7 @@ grdelType grdelSymbol(grdelType window, const char *symbolname,
         return NULL;
     }
 
-    symbol = (GDSymbol *) PyMem_Malloc(sizeof(GDSymbol));
+    symbol = (GDSymbol *) FerMem_Malloc(sizeof(GDSymbol), __FILE__, __LINE__);
     if ( symbol == NULL ) {
         strcpy(grdelerrmsg, "grdelSymbol: out of memory for a new Symbol");
         return NULL;
@@ -55,7 +56,7 @@ grdelType grdelSymbol(grdelType window, const char *symbolname,
                                              symbolname, symbolnamelen);
         if ( symbol->object == NULL ) {
             /* grdelerrmsg already assigned */
-            PyMem_Free(symbol);
+            FerMem_Free(symbol, __FILE__, __LINE__);
             return NULL;
         }
     }
@@ -65,18 +66,18 @@ grdelType grdelSymbol(grdelType window, const char *symbolname,
         if ( symbol->object == NULL ) {
             sprintf(grdelerrmsg, "grdelSymbol: error when calling the Python "
                     "binding's createSymbol method: %s", pyefcn_get_error());
-            PyMem_Free(symbol);
+            FerMem_Free(symbol, __FILE__, __LINE__);
             return NULL;
         }
     }
     else {
         strcpy(grdelerrmsg, "grdelSymbol: unexpected error, "
                             "no bindings associated with this Window");
-        PyMem_Free(symbol);
+        FerMem_Free(symbol, __FILE__, __LINE__);
         return NULL;
     }
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelSymbol created: "
             "window = %p, symbolname[0] = %c, symbol = %p\n",
             window, symbolname[0], symbol);
@@ -122,7 +123,7 @@ grdelBool grdelSymbolDelete(grdelType symbol)
     grdelBool success;
     PyObject *result;
 
-#ifdef VERBOSEDEBUG
+#ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelSymbolDelete called: "
             "symbol = %p\n", symbol);
     fflush(debuglogfile);
@@ -165,7 +166,7 @@ grdelBool grdelSymbolDelete(grdelType symbol)
     mysymbol->id = NULL;
     mysymbol->window = NULL;
     mysymbol->object = NULL;
-    PyMem_Free(mysymbol);
+    FerMem_Free(mysymbol, __FILE__, __LINE__);
 
     return success;
 }

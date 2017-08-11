@@ -60,8 +60,6 @@ void FORTRAN(string_array_find_quoted)(void **string_array_header, char *test_st
    int match=0, quote_offset=0;
    const char *_SQ_ = "_SQ_";
 
-FILE *fp;
-   
    head = *string_array_header;
    if( head != NULL ) {
       array_size = head->array_size;

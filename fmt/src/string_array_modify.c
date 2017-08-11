@@ -54,7 +54,6 @@ void FORTRAN(string_array_modify)(void **string_array_header, int *index, char *
    char * old_string;
    int i;
    List_Node * p;
- FILE *fp;
 
    head = *((SA_Head**)string_array_header);
    if( head != NULL ) {

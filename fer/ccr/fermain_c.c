@@ -554,6 +554,10 @@ static void command_line_run()
           FerMem_Free(sBuffer, __FILE__, __LINE__);
       if ( ppl_memory != NULL )
           FerMem_Free(ppl_memory, __FILE__, __LINE__);
+#ifdef MEMORYDEBUG
+      if ( ReportAnyMemoryLeaks() != 0 )
+          exit(127);
+#endif
       exit(0);
     }
 

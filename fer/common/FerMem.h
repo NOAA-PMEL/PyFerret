@@ -5,6 +5,7 @@
 
 #ifdef MEMORYDEBUG
 void FerMem_WriteDebugMessage(void *startptr, void *endptr, const char *msg, const char *filename, int linenum);
+int  ReportAnyMemoryLeaks(void);
 #endif
 
 /*

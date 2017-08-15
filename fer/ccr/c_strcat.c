@@ -52,15 +52,15 @@ void FORTRAN(c_strcat)(char **in_ptr1, char **in_ptr2, char **out_ptr)
    int len1;
    int len2;
 
-   if ( *out_ptr != NULL )
+   if ( (*out_ptr != NULL) && (*out_ptr != STRING_MISSING_VALUE) )
       FerMem_Free(*out_ptr, __FILE__, __LINE__);
 
    /* this treats an undefined string the same as an empty string */
-   if ( *in_ptr1 == NULL )
+   if ( (*in_ptr1 == NULL) || (*in_ptr1 == STRING_MISSING_VALUE) )
       len1 = 0;
    else
       len1 = strlen(*in_ptr1);
-   if ( *in_ptr2 == NULL )
+   if ( (*in_ptr2 == NULL) || (*in_ptr2 == STRING_MISSING_VALUE) )
       len2 = 0;
    else
       len2 = strlen(*in_ptr2);
@@ -70,7 +70,7 @@ void FORTRAN(c_strcat)(char **in_ptr1, char **in_ptr2, char **out_ptr)
       abort();
 
    tmp2 = *out_ptr;
-   if ( *in_ptr1 != NULL ) {
+   if ( (*in_ptr1 != NULL) && (*in_ptr1 != STRING_MISSING_VALUE) ) {
       tmp1 = *in_ptr1;
       while ( *tmp1 != '\0' ) {
          *tmp2 = *tmp1;
@@ -78,7 +78,7 @@ void FORTRAN(c_strcat)(char **in_ptr1, char **in_ptr2, char **out_ptr)
          tmp2++;
       } 
    } 
-   if ( *in_ptr2 != NULL ) {
+   if ( (*in_ptr2 != NULL) && (*in_ptr2 != STRING_MISSING_VALUE) ) {
       tmp1 = *in_ptr2;
       while ( *tmp1 != '\0' ) {
          *tmp2 = *tmp1;

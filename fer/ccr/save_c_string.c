@@ -57,7 +57,7 @@ void FORTRAN(save_c_string)(char *string, int *inlen, char ***fer_ptr, int *offs
       /* save the pointer to the string */
       each_str_ptr = *fer_ptr;   /* holds pointer to the first string */
       each_str_ptr += *offset * 8/sizeof(char**); /* point to the desired string */ 
-      if ( *each_str_ptr != NULL )
+      if ( (*each_str_ptr != NULL) && (*each_str_ptr != STRING_MISSING_VALUE) )
          FerMem_Free( *each_str_ptr, __FILE__, __LINE__ );
       *each_str_ptr = ptr;
 

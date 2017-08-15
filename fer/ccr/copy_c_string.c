@@ -48,11 +48,15 @@
 
 void FORTRAN(copy_c_string)(char **in_ptr, char **out_ptr)
 {
-   if ( *out_ptr != NULL )
+   if ( (*out_ptr != NULL) && (*out_ptr != STRING_MISSING_VALUE) )
       FerMem_Free(*out_ptr, __FILE__, __LINE__);
    if ( *in_ptr == NULL ) {
      *out_ptr = NULL;
      return;
+   }
+   if ( *in_ptr == STRING_MISSING_VALUE ) {
+      *out_ptr = STRING_MISSING_VALUE;
+      return;
    }
 
    *out_ptr = (char *) FerMem_Malloc(sizeof(char) * (strlen(*in_ptr) + 1), __FILE__, __LINE__);

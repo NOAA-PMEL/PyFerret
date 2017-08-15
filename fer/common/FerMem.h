@@ -9,6 +9,14 @@ int  ReportAnyMemoryLeaks(void);
 #endif
 
 /*
+ * Pointer to the string used for missing value for strings.
+ * Since this string is often used, eliminate allocating and 
+ * freeing memory for this string by using this one global
+ * instance.
+ */
+extern char *STRING_MISSING_VALUE;
+
+/*
  * Allocates memory like malloc.  If (and only if) the compile flag MEMORYDEBUG is defined, 
  * prints a line to memorydebug.txt with the allocation information.  The value of filename 
  * should be __FILE__ and the value of linenumber should be __LINE__ in the source file 

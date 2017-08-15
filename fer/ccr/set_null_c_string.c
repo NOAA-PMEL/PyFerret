@@ -45,11 +45,7 @@
 
 void FORTRAN(set_null_c_string)(char **out_ptr)
 {
-   if ( *out_ptr != NULL )
+   if ( (*out_ptr != NULL) && (*out_ptr != STRING_MISSING_VALUE) )
       FerMem_Free(*out_ptr, __FILE__, __LINE__);
-
-   *out_ptr = (char *) FerMem_Malloc(sizeof(char), __FILE__, __LINE__);
-   if ( *out_ptr == NULL )
-      abort();
-   **out_ptr = '\0';
+   *out_ptr = STRING_MISSING_VALUE;
 }

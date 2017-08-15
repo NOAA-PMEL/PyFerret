@@ -4,6 +4,14 @@
 #include "FerMem.h"
 
 /*
+ * Pointer to the (global) string used as the missing value for strings.
+ * Since this string is often used, eliminate allocating and freeing 
+ * memory for this string by using this one global instance.  Note that 
+ * this string is NULL ('\0') terminated.
+ */
+char *STRING_MISSING_VALUE = "";
+
+/*
  * Functions that just forward to the appropriate malloc, realloc, and free functions.
  * This is done to remove differences in code for Ferret and PyFerret in that all the
  * differences should be contained in this files.  This also allows an easy method of 
@@ -268,11 +276,22 @@ void *FerMem_Realloc(void *ptr, size_t size, char *filename, int linenumber)
     size_t oldsize;
     char   msg[256];
 
-    origptr = RemoveFromMemInfoList(ptr, &oldsize);
-    sprintf(msg, "memory to be realloc freed for %ld bytes", oldsize);
-    FerMem_WriteDebugMessage(ptr, ptr + oldsize, msg, filename, linenumber);
-
-    newptr = realloc(origptr, size + sizeof(MemInfo));
+    if ( ptr == NULL ) {
+        fprintf(stderr, "Realloc given a NULL pointer at line %d of file %s", linenumber, filename);
+        oldsize = 0;
+        newptr = malloc(size + sizeof(MemInfo));
+    }
+    else if ( ptr == STRING_MISSING_VALUE ) {
+        fprintf(stderr, "Realloc given STRING_MISSING_VALUE at line %d of file %s", linenumber, filename);
+        oldsize = 0;
+	newptr = malloc(size + sizeof(MemInfo));
+    }
+    else {
+        origptr = RemoveFromMemInfoList(ptr, &oldsize);
+        sprintf(msg, "memory to be realloc freed for %ld bytes", oldsize);
+        FerMem_WriteDebugMessage(ptr, ptr + oldsize, msg, filename, linenumber);
+        newptr = realloc(origptr, size + sizeof(MemInfo));
+    }
 
     newptr = AddToMemInfoList(newptr, size, filename, linenumber);
     /* initialize new memory to non-zero junk to catch uninitialized memory usage */
@@ -283,7 +302,12 @@ void *FerMem_Realloc(void *ptr, size_t size, char *filename, int linenumber)
 
 #else
 
-    newptr = realloc(ptr, size);
+    if ( (ptr != NULL) && (ptr != STRING_MISSING_VALUE) ) {
+        newptr = realloc(ptr, size);
+    }
+    else {
+        newptr = malloc(size);
+    }
 
 #endif
 
@@ -308,6 +332,15 @@ void FerMem_Free(void *ptr, char *filename, int linenumber)
     size_t size;
     char   msg[256];
 
+    if ( ptr == NULL ) {
+        fprintf(stderr, "Attempt to free a NULL pointer at line %d of file %s", linenumber, filename);
+        return;
+    }
+    if ( ptr == STRING_MISSING_VALUE ) {
+        fprintf(stderr, "Attempt to free STRING_MISSING_VALUE at line %d of file %s", linenumber, filename);
+        return;
+    }
+
     origptr = RemoveFromMemInfoList(ptr, &size);
     sprintf(msg, "memory to be free freed for %ld bytes", size);
     FerMem_WriteDebugMessage(ptr, ptr + size, msg, filename, linenumber);
@@ -316,7 +349,9 @@ void FerMem_Free(void *ptr, char *filename, int linenumber)
 
 #else
 
-    free(ptr);
+    if ( (ptr != NULL) && (ptr != STRING_MISSING_VALUE) ) {
+        free(ptr);
+    }
 
 #endif
 }

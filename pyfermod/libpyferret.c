@@ -244,9 +244,6 @@ static int assign_ferret_signal_handlers(void)
     return 0;
 }
 
-/* Prototype local functions used before defined */
-static PyObject *pyferretStop(PyObject *self);
-static PyObject *pyferretQuit(PyObject *self);
 
 static char pyferretStartDocstring[] =
     "Initializes Ferret.  This allocates the initial amount of memory for \n"
@@ -618,15 +615,35 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
     }
 
     if ( sBuffer->flags[FRTN_ACTION] == FACTN_EXIT ) {
-        /* plain "EXIT" Ferret command - instigate an orderly shutdown */
-        /* retval = pyferretStop(self); */
-        retval = pyferretQuit(self);
-        Py_DECREF(retval);
-
-        /*
+        /* 
+         * plain "EXIT" Ferret command - exit completely
+         *
          * python -i -c ... intercepts the Python sys.exit() call and stays in python,
-         * so just do a C exit() from python
+         * so just do a C exit() from python - 
+         * after doing some clean-up for memory leak detection.
          */
+        if ( ferretInitialized ) {
+            /* Set to uninitialized */
+            ferretInitialized = 0;
+
+            /* Release the references to the pyferret and pyferret.graphbind modules */
+            Py_DECREF(pyferret_graphbind_module_pyobject);
+            pyferret_graphbind_module_pyobject = NULL;
+            Py_DECREF(pyferret_module_pyobject);
+            pyferret_module_pyobject = NULL;
+
+            /* Free memory allocated inside Ferret */
+            FORTRAN(finalize_ferret)();
+
+            /* Free memory allocated for PPLUS */
+            FerMem_Free(pplMemory, __FILE__, __LINE__);
+            pplMemory = NULL;
+        }
+
+#ifdef MEMORYDEBUG
+        (void) ReportAnyMemoryLeaks();
+#endif
+
         exit(0);
     }
 

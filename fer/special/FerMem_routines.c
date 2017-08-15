@@ -55,8 +55,11 @@ void FerMem_WriteDebugMessage(void *startptr, void *endptr, const char *msg, con
 
 #define FERMEM_BUFSIZE 8
 #define FERMEM_BUFVALUE 0xAAAAAAAA
+#define FERMEM_MAXLEN 128
 
 typedef struct _MemInfo_ {
+    char    filename[FERMEM_MAXLEN];
+    size_t  linenum;
     size_t  size;
     struct _MemInfo_ *next;
     size_t *headbufptr;
@@ -100,8 +103,10 @@ static void CheckMemInfoList(void)
  *     'size' + sizeof(MemInfo)
  * bytes of memory; the pointer to 'size' bytes of user memory 
  * (the memory to be used as desired) is returned.
+ * The values filename and linenumber should be the compiler values 
+ * __FILE__ and __LINE__ of the original allocation memory call.
  */
-static void *AddToMemInfoList(void *memplus, size_t size)
+static void *AddToMemInfoList(void *memplus, size_t size, char *filename, int linenumber)
 {
     MemInfo *memptr;
     int      k;
@@ -126,9 +131,14 @@ static void *AddToMemInfoList(void *memplus, size_t size)
 
     /* Initialize the MemInfo block */
     memptr = (MemInfo *) memplus;
+    strncpy(memptr->filename, filename, FERMEM_MAXLEN);
+    memptr->filename[FERMEM_MAXLEN - 1] = '\0';
+    memptr->linenum = linenumber;
     memptr->next = NULL;
     memptr->size = size;
     ptr = memptr;
+    ptr += FERMEM_MAXLEN * sizeof(char);
+    ptr += sizeof(size_t);
     ptr += sizeof(size_t);
     ptr += sizeof(MemInfo *);
     ptr += sizeof(size_t *);
@@ -197,7 +207,8 @@ int ReportAnyMemoryLeaks(void)
     CheckMemInfoList();
     /* Report anything still in MemInfoList */
     for (memptr = MemInfoList; memptr != NULL; memptr = memptr->next)
-        fprintf(stderr, "Allocated memory %016p of %ld bytes not freed\n", memptr->memory, memptr->size);
+        fprintf(stderr, "Memory %016p of %ld bytes allocated at line %ld of file %s was not freed\n", 
+                memptr->memory, memptr->size, memptr->linenum, memptr->filename);
     return 127;
 }
 
@@ -223,7 +234,7 @@ void *FerMem_Malloc(size_t size, char *filename, int linenumber)
 
     /* allocate required memory as well as for the surrounding MemInfo block */
     ptr = PyMem_Malloc(size + sizeof(MemInfo));
-    ptr = AddToMemInfoList(ptr, size);
+    ptr = AddToMemInfoList(ptr, size, filename, linenumber);
     /* initialize to non-zero junk to catch uninitialized memory usage */
     memset(ptr, 0x6B, size);
     sprintf(msg, "memory malloc allocated for %ld bytes", size);
@@ -264,7 +275,7 @@ void *FerMem_Realloc(void *ptr, size_t size, char *filename, int linenumber)
 
     newptr = PyMem_Realloc(origptr, size + sizeof(MemInfo));
 
-    newptr = AddToMemInfoList(newptr, size);
+    newptr = AddToMemInfoList(newptr, size, filename, linenumber);
     /* initialize new memory to non-zero junk to catch uninitialized memory usage */
     if ( size > oldsize )
        memset(newptr + oldsize, 0x6B, size - oldsize);

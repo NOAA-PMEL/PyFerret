@@ -54,6 +54,7 @@
         include 'xalgebra.cmn'
 	include 'xvariables.cmn'
 	include 'xtoday.cmn'
+        include 'xpyvar_info.cmn'
 
         CALL efcn_list_clear();
 
@@ -64,6 +65,8 @@
         CALL string_array_clear(uvar_name_code_head)
  
         CALL string_array_clear(ds_var_code_head)
+
+        CALL string_array_clear(pyvar_code_head)
 
         CALL deleted_list_clear(uvar_num_items_head)
 

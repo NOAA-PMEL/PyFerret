@@ -1419,8 +1419,10 @@ static void ncf_free_dataset( char *nc_ptr )
  */
 void FORTRAN(ncf_datasets_list_clear)( void )
 {
-     list_free(GLOBAL_ncdsetList, ncf_free_dataset);
-     GLOBAL_ncdsetList = NULL;
+    if ( GLOBAL_ncdsetList != NULL ) {
+        list_free(GLOBAL_ncdsetList, ncf_free_dataset);
+        GLOBAL_ncdsetList = NULL;
+    }
 }
 
 /* ----

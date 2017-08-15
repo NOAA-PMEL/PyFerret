@@ -83,6 +83,8 @@
 *       3/12 *acm* cleanup ifdefs and unnecessary include files
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
+* V721  8/17 *kms* Restore call to string_array_init with pyvar_code_head
+*                  that got lost in the combined rename and update in Ferret
 
         include 'tmap_errors.parm'  ! error codes
 	include 'tmap_dims.parm'
@@ -100,6 +102,7 @@
         include 'xalgebra.cmn'
 	include 'xvariables.cmn'
 	include 'xtoday.cmn'
+        include 'xpyvar_info.cmn'
 
 * local variable declarations:
 	LOGICAL	GKS_WINDOWS, fexist
@@ -214,6 +217,11 @@ c	CALL GFDL_TERMS
      .                         maxvars,
      .                         128,
      .                         ds_var_code(1))
+
+        CALL string_array_init(pyvar_code_head,
+     .                         maxpyvars,
+     .                         128,
+     .                         pyvar_code(1))
 
         CALL deleted_list_init(uvar_num_items_head,
      .                         uvar_num_items(1),

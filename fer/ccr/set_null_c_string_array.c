@@ -51,13 +51,9 @@ void FORTRAN(set_null_c_string_array)(char ***fer_ptr, int *nstr)
    each_str_ptr = *fer_ptr;   /* holds pointer to the first string */
 
    for (i=0; i<*nstr; i++) {
-      if ( *each_str_ptr != NULL )
+      if ( (*each_str_ptr != NULL) && (*each_str_ptr != STRING_MISSING_VALUE) )
          FerMem_Free(*each_str_ptr, __FILE__, __LINE__);
-      *each_str_ptr = (char *) FerMem_Malloc(sizeof(char), __FILE__, __LINE__);
-      if ( *each_str_ptr == NULL )
-         abort();
-      **each_str_ptr = '\0';
-
+      *each_str_ptr = STRING_MISSING_VALUE;
       each_str_ptr += 8/sizeof(char**);
    }
 }

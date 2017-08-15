@@ -54,10 +54,9 @@ void FORTRAN(free_c_string_array)(char ***fer_ptr, int *length)
 
    /* free the individual strings */
    for (i=0; i<*length; i++) {
-      if ( *each_str_ptr != NULL ) {
+      if ( (*each_str_ptr != NULL) && (*each_str_ptr != STRING_MISSING_VALUE) )
          FerMem_Free(*each_str_ptr, __FILE__, __LINE__);
-         *each_str_ptr = NULL;
-      }
+      *each_str_ptr = NULL;
       each_str_ptr += 8/sizeof(char**);
    }
 }

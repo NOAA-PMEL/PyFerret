@@ -52,11 +52,16 @@ void FORTRAN(c_upcase)(char **in_ptr, char **out_ptr)
    char* tmp;
    char* tmp2;
 
-   if ( *out_ptr != NULL )
+   if ( (*out_ptr != NULL) && (*out_ptr != STRING_MISSING_VALUE) )
       FerMem_Free(*out_ptr, __FILE__, __LINE__);
    if ( *in_ptr == NULL ) {
       /* undefined string given, so return an undefined string */
       *out_ptr = NULL;
+      return;
+   }
+   if ( *in_ptr == STRING_MISSING_VALUE ) {
+      /* missing string given, so return an missing string */
+      *out_ptr = STRING_MISSING_VALUE;
       return;
    }
 

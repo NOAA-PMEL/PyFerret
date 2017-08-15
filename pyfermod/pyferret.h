@@ -97,9 +97,6 @@ void FORTRAN(get_time_axis_num)(int *axisnum, int *axisstart, int *axisend, char
                         char *errmsg, int *lenerrmsg, int maxlen_axisname, int maxlen_errmsg);
 void FORTRAN(set_one_cmnd_mode)(int *one_cmnd_mode_int);
 
-/* Missing value for string arrays in Python - must be null-terminated string */
-#define STRING_MISSING_VALUE "\004\000"
-
 /* Functions for Python-backed external functions */
 
 #define INIT_METHOD_NAME "ferret_init"

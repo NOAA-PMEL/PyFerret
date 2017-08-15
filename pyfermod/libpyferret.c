@@ -74,6 +74,12 @@ PyObject *pyferret_graphbind_module_pyobject = NULL;
 /* Length given to the abstract axis */
 #define ABSTRACT_AXIS_LEN 9999999
 
+/* 
+ * String used as the missing value for String arrays in Python.
+ * Note that this is NULL ('\0') terminated. 
+ */
+static char *PYTHON_STRING_MISSING_VALUE = "\004";
+
 /* Flag of this Ferret's start/stop state */
 static int ferretInitialized = 0;
 
@@ -1376,8 +1382,8 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
     factor = 8 / sizeof(char *);
 
     /* Get the maximum string length of all the strings in this array */
-    /* Use STRING_MISSING_VALUE for missing strings */
-    maxstrlen = (int)(strlen(STRING_MISSING_VALUE) + 1);
+    /* Use PYTHON_STRING_MISSING_VALUE for missing strings */
+    maxstrlen = (int)(strlen(PYTHON_STRING_MISSING_VALUE) + 1);
     for (n = 0; n < (int)(shape[5]); n++) {
       for (m = 0; m < (int)(shape[4]); m++) {
         for (l = 0; l < (int)(shape[3]); l++) {
@@ -1434,7 +1440,7 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
                                      m * strides[4] +
                                      n * strides[5] ) ];
                 if ( strptr == NULL ) {
-                   strptr = STRING_MISSING_VALUE;
+                   strptr = PYTHON_STRING_MISSING_VALUE;
                 }
                 /* because of +1 to strlen, these will always be null-terminated */
                 strncpy(&(npydata[q]), strptr, maxstrlen);
@@ -1457,7 +1463,7 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
     }
     /* PyArray_Empty steals the reference to strarraydescript so do not free or reuse */
     npydata = (char *)PyArray_DATA(badval_ndarray);
-    strncpy(npydata, STRING_MISSING_VALUE, maxstrlen);
+    strncpy(npydata, PYTHON_STRING_MISSING_VALUE, maxstrlen);
 
     /* Create the axis coordinates array objects */
     for (k = 0; k < MAX_FERRET_NDIM; k++) {
@@ -2337,7 +2343,7 @@ static void AddConstantsToPyFerret(PyObject *mod)
     PyModule_AddIntConstant(mod, "MAX_FERRET_NDIM", MAX_FERRET_NDIM);
 
     /* Parameter giving the String used as the missing value for String arrays */
-    PyModule_AddStringConstant(mod, "STRING_MISSING_VALUE", STRING_MISSING_VALUE);
+    PyModule_AddStringConstant(mod, "STRING_MISSING_VALUE", PYTHON_STRING_MISSING_VALUE);
 
     /* Private parameter return value from libpyferret._run indicating the program should shut down */
     PyModule_AddIntConstant(mod, "_FERR_EXIT_PROGRAM", FERR_EXIT_PROGRAM);

@@ -10063,14 +10063,14 @@ LIST X1
              VARIABLE : X1
              FILENAME : EZ.DAT
              SUBSET   : 8 points (X)
- 1   / 1:  6.000E-03
- 2   / 2:  1.760E-01
- 3   / 3:  2.820E-01
- 4   / 4:  3.550E-01
- 5   / 5:  3.790E-01
- 6   / 6:  3.930E-01
- 7   / 7:  2.817+209
- 8   / 8:  2.817+209
+ 1   / 1:  0.0060
+ 2   / 2:  0.1760
+ 3   / 3:  0.2820
+ 4   / 4:  0.3550
+ 5   / 5:  0.3790
+ 6   / 6:  0.3930
+ 7   / 7:  0.0000
+ 8   / 8:  0.0000
 SHOW DATA
      currently SET data sets:
     1> ./EZ.DAT  (default)
@@ -92374,9 +92374,9 @@ flow/DAT=2/den=3/L=3 taux,tauy
 ! bn_speedtest.jnl
 ! issue large numbers of commands, timing with clock time
 can mode verify
-10K LET commands LET a = 0 takes  64.482  seconds
-Second 10K LET commands LET a = 0 takes  129.747  seconds
-5K LOAD with transform takes  144.293  seconds
+10K LET commands LET a = 0 takes [0-3] seconds
+Second 10K LET commands LET a = 0 takes [0-5] seconds
+5K LOAD with transform takes [0-9] seconds
 *** Running ferret script: bn_show_noupcase.jnl
 ! bn_show_noupcase.jnl
 ! 1/2016 ticket 1796

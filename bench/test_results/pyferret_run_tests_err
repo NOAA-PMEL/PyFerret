@@ -5151,6 +5151,10 @@ Replacing definition of axis ALINE
 Replacing definition of axis ALINE_EDGES
 Replacing definition of axis ALINE
 Replacing definition of axis ALINE_EDGES
+*** Running ferret script: bn730_bug_fixes.jnl
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

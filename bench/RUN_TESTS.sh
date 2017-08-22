@@ -93,7 +93,11 @@ echo "Testing ncdump output in $ncdump_file"
 if ! echo "$fver" | grep -q "pyferret"; then
    ispyferret=0
 #  command-line options for ferret
-   feropts="-nojnl -gif -noverify"
+   feropts="-nojnl -gif -noverify -server"
+#  -server sets line buffering for C I/O
+#  GFORTRAN_UNBUFFERED_PRECONNECTED=1 removes buffering of Fortran I/O
+   GFORTRAN_UNBUFFERED_PRECONNECTED=1
+   export GFORTRAN_UNBUFFERED_PRECONNECTED
 #  external functions search path
    FER_EXTERNAL_FUNCTIONS="$efdir"
    export FER_EXTERNAL_FUNCTIONS
@@ -101,6 +105,10 @@ else
    ispyferret=1
 #  command-line options for pyferret
    feropts="-nojnl -quiet -nodisplay -noverify -linebuffer"
+#  -linebuffer sets line buffering for C and Python I/O
+#  GFORTRAN_UNBUFFERED_PRECONNECTED=1 removes buffering of Fortran I/O
+   GFORTRAN_UNBUFFERED_PRECONNECTED=1
+   export GFORTRAN_UNBUFFERED_PRECONNECTED
 #  external functions search path
    PYFER_EXTERNAL_FUNCTIONS="$efdir"
    export PYFER_EXTERNAL_FUNCTIONS

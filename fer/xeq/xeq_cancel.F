@@ -488,7 +488,7 @@
 		    jrnl_lun = unspecified_int4
 * ... mode ppllist - restore PPLUS listings to screen
                  ELSEIF ( mode .EQ. pmode_ppllist ) THEN
-	            IF ( jrnl_lun .NE. 6 )
+	            IF ( lttout .NE. 6 )
      .                  CLOSE( UNIT=lttout, ERR = 5830 )
 		    lttout = 6
 * ... mode graticule - turn off automatic graticules

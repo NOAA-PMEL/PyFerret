@@ -66,7 +66,7 @@
 	mr = mv_flink( 0 )
 
 * if it isn't free, then free the most vulnerable mr on the delete chain
-	IF ( mr . EQ. 0 ) THEN
+	IF ( mr .EQ. 0 ) THEN
 	   mr = mr_del_blink(0)
 	   IF ( mr .EQ. 0 ) GOTO 5010
 	   CALL DELETE_VARIABLE( mr )

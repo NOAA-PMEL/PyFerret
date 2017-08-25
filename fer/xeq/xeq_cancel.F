@@ -358,7 +358,7 @@
 
 * ... check for valid number given
 	         IF ( iset .LT. 1 .OR. iset .GT. maxdsets ) GOTO 5030
-	         IF (  ds_name( iset ) .EQ. char_init1024) THEN
+	         IF (  ds_name( iset ) .EQ. char_init2048) THEN
 	            IF ( report_error ) THEN
 	               GOTO 5030
 	            ELSE
@@ -398,7 +398,7 @@
 * ... if only one set remains then point to it
 	   iset = unspecified_int4
 	   DO 715 i = 1, maxdsets
-	     IF ( ds_name(i) .EQ. char_init1024) GOTO 715
+	     IF ( ds_name(i) .EQ. char_init2048) GOTO 715
 	     IF ( iset .EQ. unspecified_int4 ) THEN
 	         iset = i
 	     ELSE
@@ -413,8 +413,8 @@
 ! an earlier version of this code prioritized the canceling of aggregations
 ! before other datasets.  Might be learning the hard way why this was so ...
 	   DO iset = 1, maxdsets
-	      IF ( ds_name(iset) .EQ. char_init1024) CYCLE
-	      CALL CANCEL_ONE_DATA_SET( iset, status )
+             IF ( ds_name(iset) .NE. char_init2048 )
+     .         CALL CANCEL_ONE_DATA_SET( iset, status )
 	   ENDDO
 
 	ELSE
@@ -1116,10 +1116,12 @@ c	ENDIF
            IF ( redirect_stderr_flags .NE. redirect_none ) THEN
               redir_cancel_stderr = .TRUE.
            ENDIF
-           IF ( (.NOT. redir_cancel_stdout) .AND. 
-     .          (.NOT. redir_cancel_stderr) ) THEN
-              CALL WARN('No active redirects to cancel')
-           ENDIF
+*          Silently ignore cancellation of all redirects 
+*          when nothing redirected (primarily for shutdown).
+*           IF ( (.NOT. redir_cancel_stdout) .AND. 
+*     .          (.NOT. redir_cancel_stderr) ) THEN
+*              CALL WARN('No active redirects to cancel')
+*           ENDIF
         ENDIF
 *
         IF ( redir_cancel_stdout ) THEN

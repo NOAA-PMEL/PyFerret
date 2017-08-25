@@ -93,7 +93,7 @@ c    user-defined axes. See if name exists as an axis name.
          IF (dset .EQ. pdset_irrelevant) GOTO 100
 
          IF (dset .GT. 0) THEN
-            IF ( ds_name(dset) .EQ. char_init1024) GOTO 100
+            IF ( ds_name(dset) .EQ. char_init2048) GOTO 100
          ENDIF
 
          CALL CD_GET_VAR_ID (dset, name, varid, status)

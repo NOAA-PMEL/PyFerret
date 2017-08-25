@@ -221,7 +221,7 @@ C New form for attribute output, list values separately.
 
         vname = line_name_orig(line)
 	DO 300 iset = 1, maxdsets
-	   IF ( ds_name(iset) .EQ. char_init1024) GOTO 400
+	   IF ( ds_name(iset) .EQ. char_init2048) GOTO 400
            CALL CD_GET_VAR_ID (iset, vname, varid, status)
            IF (status .EQ. ferr_ok) GOTO 50
   300   CONTINUE

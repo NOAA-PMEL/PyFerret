@@ -135,7 +135,7 @@
 	   IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
 
-	   IF ( ds_name(iset) .EQ. char_init1024
+	   IF ( ds_name(iset) .EQ. char_init2048
      .	   .OR. (only_1 .AND. iset .NE. dset) ) GOTO 790
 
            IF ( ds_hide(iset) .AND. .NOT.un_hide) GOTO 790

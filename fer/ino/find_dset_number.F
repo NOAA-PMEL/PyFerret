@@ -119,7 +119,7 @@ c *kob* 4/97
 	      agg  = dset
 * ... check for valid aggregation parent dset
 	      IF ( agg .LT. 1 .OR. agg .GT. maxdsets ) GOTO 500
-	      IF ( ds_name(agg) .EQ. char_init40 ) GOTO 500
+	      IF ( ds_name(agg) .EQ. char_init2048 ) GOTO 500
               IF (ds_type(agg).NE.'ENS'
      .	    .AND. ds_type(agg).NE.'FCT' 
      .      .AND. ds_type(agg).NE.'UNI') GOTO 500
@@ -177,7 +177,7 @@ c *kob* 4/97
 * compare with filenames stored by the TMAP library
 	   DO 100 dset = 1, maxdsets
 
-	      IF ( ds_name(dset) .EQ. char_init1024) GOTO 100
+	      IF ( ds_name(dset) .EQ. char_init2048) GOTO 100
 
 * special name match checks to account for implied .cdf or .des   5/93
 ** what about aggregate datasets?
@@ -210,7 +210,7 @@ c *kob* 4/97
 
 	   DO 200 dset = 1, maxdsets
 
-	      IF ( ds_des_name(dset) .EQ. char_init1024) GOTO 200
+	      IF ( ds_des_name(dset) .EQ. char_init2048) GOTO 200
 
 * special name match checks to account for implied .cdf or .des   5/93
 	      IF ( TM_HAS_STRING(ds_type(dset),'CDF')) THEN
@@ -244,7 +244,7 @@ c *kob* 4/97
 
 	   DO 300 dset = 1, maxdsets
 
-	      IF ( ds_des_name(dset) .EQ. char_init1024) GOTO 300
+	      IF ( ds_des_name(dset) .EQ. char_init2048) GOTO 300
 	      vax_code = STR_CASE_BLIND_COMPARE( ds_des_name(dset),
      .						    buff )
 
@@ -254,7 +254,7 @@ c *kob* 4/97
 
 * check for valid number given
  400	IF ( dset .LT. 1 .OR. dset .GT. maxdsets ) GOTO 500
-	IF ( ds_name(dset) .EQ. char_init40 ) GOTO 500
+	IF ( ds_name(dset) .EQ. char_init2048 ) GOTO 500
 
 * success
 	FIND_DSET_NUMBER = dset

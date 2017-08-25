@@ -185,7 +185,7 @@
 * Assign aggregate data set number, exiting if maximum number 
 * of data sets are open
 	DO iset = 1,maxdsets
-	  IF (ds_name(iset) .EQ. char_init1024) THEN
+	  IF (ds_name(iset) .EQ. char_init2048) THEN
 	    agg_dset = iset
 	    GOTO 220
 	  ENDIF
@@ -358,7 +358,7 @@
 	   iset = member_sets(ii)
 	   IF (iset .EQ. pdset_dummy
      .    .OR. iset .EQ. unspecified_int4) CYCLE
-	   IF (ds_name(iset) .EQ. char_init1024) CYCLE ! already deleted
+	   IF (ds_name(iset) .EQ. char_init2048) CYCLE ! already deleted
 	   IF (ds_hide (iset)) CALL CANCEL_ONE_DATA_SET( iset, ignored_status )
 	ENDDO
  6000	RETURN	

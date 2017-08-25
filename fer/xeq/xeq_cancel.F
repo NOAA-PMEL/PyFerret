@@ -838,11 +838,11 @@
 	      CALL PURGE_MR_GRID(grid, status)
 	      IF ( status .NE. ferr_ok ) THEN
 	          CALL WARN( 'Not deleted: '//grid_name(grid))
-	          RETURN
+	          GOTO 1330
 	      ENDIF
 * ... grids created by data sets without associated vars may get deleted by
 *     PURGE_MR_GRID (e.g. handled as climatological_axes.cdf handles axes)
-	      IF (grid_name(grid) .EQ. char_init16) RETURN
+	      IF (grid_name(grid) .EQ. char_init16) GOTO 1330
 	   ENDIF
 * ... remove the grid if possible
 	   IF (grid_use_cnt(grid) .LE. 0) THEN

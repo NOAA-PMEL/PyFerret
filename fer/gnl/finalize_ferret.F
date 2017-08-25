@@ -121,10 +121,13 @@ C       values in xprog_state_data.F
         CALL XEQ_CANCEL
   800   CALL CLEANUP_LAST_CMND(cmnd_stack_level)
 
-        cmnd_buff = 'CANCEL DATA /ALL'
-        CALL GET_FER_COMMAND(cmnd_buff, istatus, *900)
-        CALL XEQ_CANCEL
-  900   CALL CLEANUP_LAST_CMND(cmnd_stack_level)
+C       "CANCEL DATA /ALL"
+C       Code pulled from xeq_cancel
+        DO k = 1, maxdsets
+           IF ( ds_name(k) .NE. char_init2048 ) THEN
+              CALL CANCEL_ONE_DATA_SET(k, istatus)
+           ENDIF
+        ENDDO
 
 C       "CANCEL GRID /ALL"
 C       Code pulled from xeq_cancel in order to do complete clean up silently

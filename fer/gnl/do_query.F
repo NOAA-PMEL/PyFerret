@@ -141,12 +141,12 @@
 *   ... count data sets
  	   n = 0
 	   DO 310 i = 1,  maxdsets
- 310	   IF ( ds_name(i) .NE. char_init1024) n = n + 1
+ 310	   IF ( ds_name(i) .NE. char_init2048) n = n + 1
 *   ... list 'em
 	   WRITE (risc_buff, fmt ) n, queries(query), tag
 	   CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
 	   DO 320 i = 1,  maxdsets
-	      IF (ds_name(i).NE.char_init1024) THEN
+	      IF (ds_name(i).NE.char_init2048) THEN
 	         WRITE (risc_buff,'(A)')
      .			ds_name(i)(1:TM_LENSTR1(ds_name(i)))
 	         CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
@@ -318,7 +318,7 @@
  1900	CONTINUE
 	done = .FALSE.
 	DO 1910 dset = 1, maxdsets
-           IF ( ds_name(dset) .EQ. char_init1024) GOTO 1910
+           IF ( ds_name(dset) .EQ. char_init2048) GOTO 1910
 	   IF ( dset .EQ. cx_data_set(cx_last) ) THEN
 	      WRITE (risc_buff, fmt ) 1, queries(query), tag
 	      CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)

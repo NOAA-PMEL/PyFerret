@@ -173,6 +173,9 @@
 	ds_accepts_remote(ds_num)	= 	.FALSE.
 	ds_hide(ds_num)			=	.FALSE.
 
+* Delete any delimited file info given and reset to NULL
+        CALL delete_delimited_info(ds_file_info_ptr(ds_num))
+
 * Next clear variables associated with variable in that data set.
 	DO 130 ivar = 1,maxvars
 	  IF (ds_var_setnum(ivar) .NE. ds_num) GOTO 130

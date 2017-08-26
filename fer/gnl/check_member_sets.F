@@ -136,7 +136,7 @@
 * ... check for valid number given
 	      IF   ( dset .LT. 1
      .	      .OR.   dset .GT. maxdsets )	  GOTO 5200
-	      IF (ds_name(dset).EQ.char_init1024) GOTO 5200
+	      IF (ds_name(dset).EQ.char_init2048) GOTO 5200
 	      GOTO 750
 	   ENDIF
 

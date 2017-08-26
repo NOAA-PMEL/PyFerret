@@ -180,7 +180,7 @@
 	   IF   ( dset .LT. 1
      .	   .OR.   dset .GT. maxdsets
      .	   .OR.   dset .GT. max_gfdl_dsets )		GOTO 5300
-	   IF ( ds_name( dset ) .EQ. char_init40 )	GOTO 5300
+	   IF ( ds_name( dset ) .EQ. char_init2048 )	GOTO 5300
 	ENDIF
 
 * already initialized ? - cancel it

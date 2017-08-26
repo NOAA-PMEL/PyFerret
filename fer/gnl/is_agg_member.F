@@ -77,7 +77,7 @@
 * check all of the aggregations currently open
 ! note: extremely inefficient loop.  Should use List of aggs
 	DO iset = 1, maxdsets
-	   IF ( ds_name(iset) .EQ. char_init1024) CYCLE
+	   IF ( ds_name(iset) .EQ. char_init2048) CYCLE
 	   IF (iset .EQ. dset) CYCLE
 	   IF ( ds_type(iset).NE.'ENS' .AND. ds_type(iset).NE.'FCT' 
      .		.AND. ds_type(iset).NE.'UNI') CYCLE 

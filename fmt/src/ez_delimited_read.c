@@ -1010,10 +1010,15 @@ void FORTRAN(get_delimited_info) (int *nfields, int field_type[],
 void FORTRAN(delete_delimited_info) (DelimFileInfo **ptr)
 {
   DelimFileInfo *fi = *ptr;
-  FerMem_Free(fi->fieldType, __FILE__, __LINE__);
-  FerMem_Free(fi->delim, __FILE__, __LINE__);
-  memset(fi, 0, sizeof(DelimFileInfo));
-  FerMem_Free(fi, __FILE__, __LINE__);
+  if ( fi != NULL ) {
+    if ( fi->fieldType != NULL )
+      FerMem_Free(fi->fieldType, __FILE__, __LINE__);
+    if ( fi->delim != NULL )
+      FerMem_Free(fi->delim, __FILE__, __LINE__);
+    memset(fi, 0, sizeof(DelimFileInfo));
+    FerMem_Free(fi, __FILE__, __LINE__);
+    *ptr = NULL;
+  }
   return;
 }
 

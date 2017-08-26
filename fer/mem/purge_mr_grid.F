@@ -79,7 +79,7 @@
 !	INTEGER	TM_LENSTR1, mr, ivar, cvar, dset, glen, done_dset
 
 * the lowest grids are protected
-	IF ( grid .LE. mgrid_tabstract ) GOTO 5200
+	IF ( grid .LE. mgrid_fabstract ) GOTO 5200
 
 * initialize
 	done_dset = 0

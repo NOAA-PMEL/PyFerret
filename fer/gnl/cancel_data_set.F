@@ -71,7 +71,7 @@
  
 * initialize
 	status = ferr_ok
-	IF (ds_name(dset) .EQ. char_init1024) RETURN  ! already deleted
+	IF (ds_name(dset) .EQ. char_init2048) RETURN  ! already deleted
 	more = .TRUE.
 
 * is the requested dataset part of an aggregation?
@@ -101,7 +101,7 @@
 	   DO imemb = 1, nmemb
 	      CALL CD_GET_AGG_DSET_MEMBER (dset, imemb, membset, status)
 	      IF (status .NE. ferr_ok)  CALL WARN('crptn: cancel_data_set')
-	      IF (ds_name(membset) .EQ. char_init1024) CYCLE ! already deleted?
+	      IF (ds_name(membset) .EQ. char_init2048) CYCLE ! already deleted?
 
 * ... if not a member of some other aggregation: cancel the hidden member
 	      is_member = IS_AGG_MEMBER(membset, 1, parent, more)

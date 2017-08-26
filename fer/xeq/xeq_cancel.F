@@ -362,7 +362,7 @@
 
 * ... check for valid number given
 	         IF ( iset .LT. 1 .OR. iset .GT. maxdsets ) GOTO 5030
-	         IF (  ds_name( iset ) .EQ. char_init1024) THEN
+	         IF (  ds_name( iset ) .EQ. char_init2048) THEN
 	            IF ( report_error ) THEN
 	               GOTO 5030
 	            ELSE
@@ -402,7 +402,7 @@
 * ... if only one set remains then point to it
 	   iset = unspecified_int4
 	   DO 715 i = 1, maxdsets
-	     IF ( ds_name(i) .EQ. char_init1024) GOTO 715
+	     IF ( ds_name(i) .EQ. char_init2048) GOTO 715
 	     IF ( iset .EQ. unspecified_int4 ) THEN
 	         iset = i
 	     ELSE
@@ -417,8 +417,8 @@
 ! an earlier version of this code prioritized the canceling of aggregations
 ! before other datasets.  Might be learning the hard way why this was so ...
 	   DO iset = 1, maxdsets
-	      IF ( ds_name(iset) .EQ. char_init1024) CYCLE
-	      CALL CANCEL_ONE_DATA_SET( iset, status )
+             IF ( ds_name(iset) .NE. char_init2048 )
+     .         CALL CANCEL_ONE_DATA_SET( iset, status )
 	   ENDDO
 
 	ELSE
@@ -480,7 +480,7 @@
 		    jrnl_lun = unspecified_int4
 * ... mode ppllist - restore PPLUS listings to screen
                  ELSEIF ( mode .EQ. pmode_ppllist ) THEN
-	            IF ( jrnl_lun .NE. 6 )
+	            IF ( lttout .NE. 6 )
      .                  CLOSE( UNIT=lttout, ERR = 5830 )
 		    lttout = 6
 * ... mode graticule - turn off automatic graticules
@@ -823,11 +823,11 @@
 	      CALL PURGE_MR_GRID(grid, status)
 	      IF ( status .NE. ferr_ok ) THEN
 	          CALL WARN( 'Not deleted: '//grid_name(grid))
-	          RETURN
+	          GOTO 1330
 	      ENDIF
 * ... grids created by data sets without associated vars may get deleted by
 *     PURGE_MR_GRID (e.g. handled as climatological_axes.cdf handles axes)
-	      IF (grid_name(grid) .EQ. char_init16) RETURN
+	      IF (grid_name(grid) .EQ. char_init16) GOTO 1330
 	   ENDIF
 * ... remove the grid if possible
 	   IF (grid_use_cnt(grid) .LE. 0) THEN
@@ -1101,10 +1101,12 @@ c	ENDIF
            IF ( redirect_stderr_flags .NE. redirect_none ) THEN
               redir_cancel_stderr = .TRUE.
            ENDIF
-           IF ( (.NOT. redir_cancel_stdout) .AND. 
-     .          (.NOT. redir_cancel_stderr) ) THEN
-              CALL WARN('No active redirects to cancel')
-           ENDIF
+*          Silently ignore cancellation of all redirects 
+*          when nothing redirected (primarily for shutdown).
+*           IF ( (.NOT. redir_cancel_stdout) .AND. 
+*     .          (.NOT. redir_cancel_stderr) ) THEN
+*              CALL WARN('No active redirects to cancel')
+*           ENDIF
         ENDIF
 *
         IF ( redir_cancel_stdout ) THEN

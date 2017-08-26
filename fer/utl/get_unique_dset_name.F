@@ -61,10 +61,10 @@
 * If no name, return.
 
 	 GET_UNIQUE_DSET_NAME = dset_name
-	 IF ( ds_name(dset) .EQ. char_init40 ) GOTO 120
+	 IF ( ds_name(dset) .EQ. char_init2048 ) GOTO 120
 
          DO 110 iset = 1,maxdsets
-           IF (ds_name(iset) .EQ. char_init1024) GOTO 110
+           IF (ds_name(iset) .EQ. char_init2048) GOTO 110
 	   IF (iset .EQ. dset) GOTO 110
 	   ic = STR_SAME (dset_name, ds_name(iset))
            IF (ic .EQ. 0) THEN

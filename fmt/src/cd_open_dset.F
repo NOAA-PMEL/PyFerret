@@ -121,7 +121,7 @@
      .        do_warn, file_exists
       PARAMETER (do_warn = .TRUE. )
       REAL val
-      INTEGER TM_HASH_NAME, TM_LENSTR1, STR_SAME, STR_UPCASE,
+      INTEGER TM_LENSTR1, STR_SAME, STR_UPCASE,
      .        ndims, nvars, ngatts, recdim, cdfstat, i, istep, 
      .        err_status, i1, i2
       INTEGER len, iin, iout, ilast, dlen

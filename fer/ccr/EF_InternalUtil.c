@@ -2088,6 +2088,12 @@ void FORTRAN(efcn_get_result_limits)( int *id_ptr, int *mr_list_ptr, int *cx_lis
 void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *mr_list_ptr, int *mres_ptr,
 	DFTYPE *bad_flag_ptr, int *status )
 {
+  /* 
+   * The array of work array memory pointers are used in return setjmp/longjmp 
+   * and sigsetjmp/siglongjmp blocks so cannot be an normal automatic variable.
+   */
+  static DFTYPE *(work_ptr[EF_MAX_WORK_ARRAYS]);
+
   ExternalFunction *ef_ptr=NULL;
   ExternalFunctionInternals *i_ptr=NULL;
   DFTYPE *arg_ptr[EF_MAX_COMPUTE_ARGS];
@@ -2231,8 +2237,9 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
       (*fptr)( id_ptr );
 
 
-	  /* Allocate memory for each individual work array */
-
+      /* Allocate memory for each individual work array */
+      for (j = 0; j < EF_MAX_WORK_ARRAYS; j++)
+         work_ptr[j] = NULL;
       for (j=0; j<i_ptr->num_work_arrays; i++, j++) {
 
         int iarray, xlo, ylo, zlo, tlo, elo, flo,
@@ -2262,9 +2269,15 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
           fprintf(stderr, "**ERROR in efcn_compute() allocating %d bytes of memory\n"
                           "\twork array %d:  X=%d:%d, Y=%d:%d, Z=%d:%d, T=%d:%d, E=%d:%d, F=%d:%d\n",
                           size, iarray, xlo, xhi, ylo, yhi, zlo, zhi, tlo, thi, elo, ehi, flo, fhi);
+          while ( j > 0 ) {
+             j--;
+             FerMem_Free(work_ptr[j], __FILE__, __LINE__);
+             work_ptr[j] = NULL;
+          }
 	  *status = FERR_EF_ERROR;
 	  return;
         }
+        work_ptr[j] = arg_ptr[i];
       }
 
     }
@@ -2296,6 +2309,12 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
      */
 
     if ( EF_Util_setsig("efcn_compute")) {
+      for (j = 0; j < EF_MAX_WORK_ARRAYS; j++) {
+        if ( work_ptr[j] == NULL )
+          break;
+        FerMem_Free(work_ptr[j], __FILE__, __LINE__);
+        work_ptr[j] = NULL;
+      }
       *status = FERR_EF_ERROR;
       return;
     }
@@ -2304,6 +2323,12 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
      * Set the signal return location and process jumps
      */
     if (sigsetjmp(sigjumpbuffer, 1) != 0) {
+      for (j = 0; j < EF_MAX_WORK_ARRAYS; j++) {
+        if ( work_ptr[j] == NULL )
+          break;
+        FerMem_Free(work_ptr[j], __FILE__, __LINE__);
+        work_ptr[j] = NULL;
+      }
       *status = FERR_EF_ERROR;
       return;
     }
@@ -2312,6 +2337,12 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
      * Set the bail out return location and process jumps
      */
     if (setjmp(jumpbuffer) != 0) {
+      for (j = 0; j < EF_MAX_WORK_ARRAYS; j++) {
+        if ( work_ptr[j] == NULL )
+          break;
+        FerMem_Free(work_ptr[j], __FILE__, __LINE__);
+        work_ptr[j] = NULL;
+      }
       *status = FERR_EF_ERROR;
       return;
     }
@@ -2587,6 +2618,12 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
 
 
     default:
+      for (j = 0; j < EF_MAX_WORK_ARRAYS; j++) {
+        if ( work_ptr[j] == NULL )
+          break;
+        FerMem_Free(work_ptr[j], __FILE__, __LINE__);
+        work_ptr[j] = NULL;
+      }
       fprintf(stderr, "**ERROR: External functions with more than %d arguments are not implemented.\n",
                       EF_MAX_ARGS);
       *status = FERR_EF_ERROR;
@@ -2595,22 +2632,20 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
 
     }
 
+    /* Release the work space. */
+    for (j = 0; j < EF_MAX_WORK_ARRAYS; j++) {
+      if ( work_ptr[j] == NULL )
+        break;
+      FerMem_Free(work_ptr[j], __FILE__, __LINE__);
+      work_ptr[j] = NULL;
+    }
+
     /*
      * Restore the old signal handlers.
      */
     if ( EF_Util_ressig("efcn_compute")) {
-       *status = FERR_EF_ERROR;
-       return;
-    }
-
-    /*
-     * Now it's time to release the work space.
-     * With arg_ptr[0] for argument #1, and remembering one slot for the result,
-     * we should begin freeing up memory at arg_ptr[num_reqd_args+1].
-     */
-    for (i=i_ptr->num_reqd_args+1; i<i_ptr->num_reqd_args+1+i_ptr->num_work_arrays; i++) {
-      FerMem_Free(arg_ptr[i], __FILE__, __LINE__);
-      arg_ptr[i] = NULL;
+      *status = FERR_EF_ERROR;
+      return;
     }
 
     /* Success for EF_F */

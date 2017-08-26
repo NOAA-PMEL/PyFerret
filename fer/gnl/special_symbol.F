@@ -312,7 +312,7 @@ c        CALL DTIME(TArray)
  
 	count = 0.
 	DO 2690 iset = 1, maxdsets
-	   IF ( ds_name(iset) .NE. char_init1024) count = count + 1.
+	   IF ( ds_name(iset) .NE. char_init2048) count = count + 1.
  2690	CONTINUE
 
 	value =  TM_FMT(count, 10, 10, slen)

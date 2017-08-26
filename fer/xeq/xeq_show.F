@@ -1171,7 +1171,7 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
      .			' Created by DEFINE VARIABLE:', 0)
 * ... locate the highest data set number in use
 	      DO 1035 i1 = maxdsets, 1, -1
-	         IF ( ds_name(i1) .NE. char_init1024) GOTO 1040
+	         IF ( ds_name(i1) .NE. char_init2048) GOTO 1040
  1035	      CONTINUE
  1040	      DO 1060 dset = 1, i1
 * ... loop through the currently initialized data sets

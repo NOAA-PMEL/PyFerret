@@ -46,6 +46,7 @@
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V7.21 8/17 *kms* ignore close errors - assume already closed
 
 * argument definitions:
 *       cdfid   - returned pointer to open CDF file
@@ -71,15 +72,17 @@
 #else
         cdfstat = NF_CLOSE( cdfid )
 #endif
-	IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
+C assume any errors are because the file is already closed,
+C either from an error or from improper marking when previously closed
+C       IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
 
 * successful completion
         status = merr_ok
         RETURN
 
 * error exit
- 5000   RETURN
- 5100   CALL TM_ERRMSG(pcdferr+pcdferrmax,
-     .         status, 'CD_CLOSE_SET', cdfid, -999,
-     .         no_errstring, no_errstring, *5000 )
+C 5000   RETURN
+C 5100   CALL TM_ERRMSG(pcdferr+pcdferrmax,
+C     .         status, 'CD_CLOSE_SET', cdfid, -999,
+C     .         no_errstring, no_errstring, *5000 )
 	END

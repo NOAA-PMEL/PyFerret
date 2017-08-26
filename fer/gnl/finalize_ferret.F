@@ -1,4 +1,4 @@
-	SUBROUTINE FINALIZE_FERRET
+        SUBROUTINE FINALIZE_FERRET
 
 *
 *
@@ -39,22 +39,139 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
         include 'tmap_errors.parm'  ! error codes
-	include 'tmap_dims.parm'
-	include 'xio.cmn_text'
+        include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+        include 'xio.cmn_text'
         include 'xdset_info.cmn_text'
-	external xio_data
-	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-	include	'ferret.parm'
-	include	'gfdl_vms.parm'
-	include	'errmsg.parm'
-	include	'gfdl.parm'			! from phil/sieg
-	include	'xonedim.cmn'		! from phil.sieg
-	include 'xprog_state.cmn'
+        external xio_data
+        include 'xtm_grid.cmn_text'
+        external xgt_grid_data
+        include 'ferret.parm'
+        include 'gfdl_vms.parm'
+        include 'errmsg.parm'
+        include 'gfdl.parm'   ! from phil/sieg
+        include 'xonedim.cmn'  ! from phil.sieg
+        include 'xfr_grid.cmn'
+        include 'xprog_state.cmn'
+        include 'xplot_state.cmn'
         include 'xalgebra.cmn'
-	include 'xvariables.cmn'
-	include 'xtoday.cmn'
+        include 'xvariables.cmn'
+        include 'xtoday.cmn'
         include 'xpyvar_info.cmn'
+
+C       Local variables
+        INTEGER j, k, istatus, cmnd_stack_level
+
+C       Silently process commands to clean everything up 
+C       (primarily for PyFerret, but also memory leak detection)
+
+C       Close some files that could still be open
+        IF ( jrnl_lun .NE. unspecified_int4 ) THEN
+            CLOSE(UNIT=jrnl_lun)
+            jrnl_lun = unspecified_int4
+        ENDIF
+
+C       Reset some MODE values throughout the stack.  These actually 
+C       should all be reinitialized at the end of this routine to the 
+C       values in xprog_state_data.F 
+        DO k = 1, mode_stack_size
+            mode_state(pmode_diagnostic,k) = .FALSE.
+            mode_state(pmode_verify,k) = .FALSE.
+            mode_state(pmode_journal,k) = .FALSE.
+        ENDDO
+
+        cmnd_buff = 'CANCEL REDIRECT'
+        CALL GET_FER_COMMAND(cmnd_buff, istatus, *100)
+        CALL XEQ_CANCEL
+  100   CALL CLEANUP_LAST_CMND(cmnd_stack_level)
+
+        cmnd_buff = 'SET GRID ABSTRACT'
+        CALL GET_FER_COMMAND(cmnd_buff, istatus, *200)
+        CALL XEQ_SET
+  200   CALL CLEANUP_LAST_CMND(cmnd_stack_level)
+
+        IF ( pplus_started ) THEN
+            cmnd_buff = 'CANCEL WINDOW /ALL'
+            CALL GET_FER_COMMAND(cmnd_buff, istatus, *300)
+            CALL XEQ_CANCEL
+  300       CALL CLEANUP_LAST_CMND(cmnd_stack_level)
+        ENDIF
+
+        cmnd_buff = 'CANCEL VARIABLE /ALL'
+        CALL GET_FER_COMMAND(cmnd_buff, istatus, *400)
+        CALL XEQ_CANCEL
+  400   CALL CLEANUP_LAST_CMND(cmnd_stack_level)
+
+        cmnd_buff = 'CANCEL ALIAS /ALL'
+        CALL GET_FER_COMMAND(cmnd_buff, istatus, *500)
+        CALL XEQ_CANCEL
+  500   CALL CLEANUP_LAST_CMND(cmnd_stack_level)
+
+        cmnd_buff = 'CANCEL LIST /ALL'
+        CALL GET_FER_COMMAND(cmnd_buff, istatus, *600)
+        CALL XEQ_CANCEL
+  600   CALL CLEANUP_LAST_CMND(cmnd_stack_level)
+
+        cmnd_buff = 'CANCEL REGION /ALL'
+        CALL GET_FER_COMMAND(cmnd_buff, istatus, *700)
+        CALL XEQ_CANCEL
+  700   CALL CLEANUP_LAST_CMND(cmnd_stack_level)
+
+        cmnd_buff = 'CANCEL SYMBOL /ALL'
+        CALL GET_FER_COMMAND(cmnd_buff, istatus, *800)
+        CALL XEQ_CANCEL
+  800   CALL CLEANUP_LAST_CMND(cmnd_stack_level)
+
+C       "CANCEL DATA /ALL"
+C       Code pulled from xeq_cancel
+        DO k = 1, maxdsets
+           IF ( ds_name(k) .NE. char_init2048 ) THEN
+              CALL CANCEL_ONE_DATA_SET(k, istatus)
+           ENDIF
+        ENDDO
+
+C       "CANCEL GRID /ALL"
+C       Code pulled from xeq_cancel in order to do complete clean up silently
+        DO k = 1, grid_ceiling
+           IF (grid_name(k) .NE. char_init16) THEN
+              grid_use_cnt(k) = 0
+              IF ( k .LE. max_grids ) THEN
+                 grid_name(k) = char_init16
+              ELSE
+                 CALL TM_DEALLO_DYN_GRID(k)
+              ENDIF
+           ENDIF
+        ENDDO
+
+C       "CANCEL AXIS /ALL"
+C       Code pulled from DEALLO_ALL_AXES in order to do complete clean up silently
+        DO k = 1, line_ceiling
+           IF (line_name(k) .NE. char_init16) THEN
+              line_use_cnt(k) = 0
+              line_keep_flag(k) = .FALSE.
+              IF ( k .LE. max_lines ) THEN
+                 IF ( .NOT. line_regular(k) ) 
+     .              CALL PACK_LINE_STORAGE(k)
+                 line_name(k) = char_init16
+              ELSE
+                 CALL TM_DEALLO_DYN_LINE(k)
+              ENDIF
+           ENDIF
+        ENDDO
+
+C       "CANCEL MEMORY /ALL"
+C       pulled from xeq_cancel in order to do complete clean up silently
+        DO k = 1, max_mr_avail
+            IF ( mr_protected(k) .NE. mr_deleted ) THEN
+                IF ( mr_protected(k) .EQ. mr_perm_protected ) THEN
+                    permanent_mem = permanent_mem - mr_size(k)
+                ENDIF
+                CALL DELETE_VARIABLE(k)
+            ENDIF
+        ENDDO
+        peak_mem = 0
+        peak_essential_mem = 0
+
 
         CALL efcn_list_clear();
 
@@ -72,7 +189,7 @@
 
         CALL ncf_datasets_list_clear()
 
-	RETURN
+        RETURN
 
-	END
+        END
 

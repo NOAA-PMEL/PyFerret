@@ -555,7 +555,7 @@ c *kob* 4/97
 	      IF   ( dset_num .LT. 1
      .	      .OR.   dset_num .GT. maxdsets
      .	      .OR.   dset_num .GT. max_gfdl_dsets )		GOTO 5110
-	      IF ( ds_name( dset_num ) .EQ. char_init1024)	GOTO 5110
+	      IF ( ds_name( dset_num ) .EQ. char_init2048)	GOTO 5110
 	      GOTO 745
 	   ENDIF
 
@@ -1078,7 +1078,7 @@ c *kob* 4/97
 	  IF (varid .GT. 0) CALL CD_RENAME_VAR(iset, varid, buff1, status)
 
 	   DO 1240 iset = 1, maxdsets
-	      IF ( ds_name(iset) .EQ. char_init1024) GOTO 1240
+	      IF ( ds_name(iset) .EQ. char_init2048) GOTO 1240
 	      CALL CD_GET_VAR_ID (iset, line_name(axis), varid, status )
               IF (varid .GT. 0) CALL CD_RENAME_VAR(iset, varid, buff1, status)
  1240	   CONTINUE

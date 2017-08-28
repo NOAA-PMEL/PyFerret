@@ -374,7 +374,7 @@ int FORTRAN(ncf_get_var_name)( int *dset, int* ivar, char* string, int* len_name
         return ATOM_NOT_FOUND;
 
     strcpy(string, var_ptr->name);
-	*len_name = strlen(string);
+    *len_name = strlen(string);
 
     return FERR_OK;
 }
@@ -725,7 +725,7 @@ int FORTRAN(ncf_init_uvar_dset)( int *setnum )
     var.outtype = NC_CHAR;
     var.varid = 0;
     var.natts = 1;
-    var.varattlist = list_init();
+    var.varattlist = list_init(__FILE__, __LINE__);
     if ( var.varattlist == NULL ) {
         fprintf(stderr, "ERROR: ncf_init_uvar_dset: Unable to initialize GLOBAL attributes list.\n");
         return -1;
@@ -741,27 +741,27 @@ int FORTRAN(ncf_init_uvar_dset)( int *setnum )
     strcpy(att.string, " ");
 
     /* Save attribute in linked list of attributes for variable */
-    list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
+    list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt), __FILE__, __LINE__);
 
     /* global attributes list complete */
 
     /*Save variable in linked list of variables for this dataset */
-    nc.dsetvarlist = list_init();
+    nc.dsetvarlist = list_init(__FILE__, __LINE__);
     if ( nc.dsetvarlist == NULL ) {
         fprintf(stderr, "ERROR: ncf_init_uvar_dset: Unable to initialize variable list.\n");
         return -1;
     }
-    list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar));
+    list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar), __FILE__, __LINE__);
 
     /* Add dataset to global nc dataset linked list*/
     if ( GLOBAL_ncdsetList == NULL ) {
-        GLOBAL_ncdsetList = list_init();
+        GLOBAL_ncdsetList = list_init(__FILE__, __LINE__);
         if ( GLOBAL_ncdsetList == NULL ) {
             fprintf(stderr, "ERROR: ncf_init_uvar_dset: Unable to initialize GLOBAL_ncDsetList.\n");
             return -1;
         }
     }
-    list_insert_after(GLOBAL_ncdsetList, (char *) &nc, sizeof(ncdset));
+    list_insert_after(GLOBAL_ncdsetList, (char *) &nc, sizeof(ncdset), __FILE__, __LINE__);
 
     return FERR_OK;
 }
@@ -801,32 +801,32 @@ int FORTRAN(ncf_init_uax_dset)( int *setnum )
     strcpy(att.string, " ");
 
     /* Save attribute in linked list of attributes. */
-    var.varattlist = list_init();
+    var.varattlist = list_init(__FILE__, __LINE__);
     if ( var.varattlist == NULL ) {
         fprintf(stderr, "ERROR: ncf_init_uax_dset: Unable to initialize GLOBAL attributes list.\n");
         return -1;
     }
-    list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
+    list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt), __FILE__, __LINE__);
 
     /* global attributes list complete */
 
     /* Save variable in linked list of variables for this dataset */
-    nc.dsetvarlist = list_init();
+    nc.dsetvarlist = list_init(__FILE__, __LINE__);
     if ( nc.dsetvarlist == NULL ) {
         fprintf(stderr, "ERROR: ncf_init_uax_dset: Unable to initialize variable list.\n");
         return -1;
     }
-    list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar));
+    list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar), __FILE__, __LINE__);
 
     /* Add dataset to global nc dataset linked list*/
     if ( GLOBAL_ncdsetList == NULL ) {
-        GLOBAL_ncdsetList = list_init();
+        GLOBAL_ncdsetList = list_init(__FILE__, __LINE__);
         if ( GLOBAL_ncdsetList == NULL ) {
             fprintf(stderr, "ERROR: ncf_init_uax_dset: Unable to initialize GLOBAL_ncDsetList.\n");
             return -1;
         }
     }
-    list_insert_after(GLOBAL_ncdsetList, (char *) &nc, sizeof(ncdset));
+    list_insert_after(GLOBAL_ncdsetList, (char *) &nc, sizeof(ncdset), __FILE__, __LINE__);
 
     return FERR_OK;
 }
@@ -878,7 +878,7 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
     }
 
     /* Go ahead and create the variable list - dataset with nothing not very likely */
-    nc.dsetvarlist = list_init();
+    nc.dsetvarlist = list_init(__FILE__, __LINE__);
     if ( nc.dsetvarlist == NULL ) {
         fprintf(stderr, "ERROR: ncf_add_dset: Unable to initialize variable list.\n");
         return -1;
@@ -898,7 +898,7 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
         var.ndims = 1;
         var.dims[0] = 1;
         /* Create the list of attributes since there are going to be attributes added */
-        var.varattlist = list_init();
+        var.varattlist = list_init(__FILE__, __LINE__);
         if ( var.varattlist == NULL ) {
             fprintf(stderr, "ERROR: ncf_add_dset: Unable to initialize GLOBAL attributes list.\n");
             return -1;
@@ -944,11 +944,11 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
                 }    /* end of the    if (nc_status == NC_NOERR) */
             }
             /*Save attribute in linked list of attributes for variable . (global attributes)*/
-            list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
+            list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt), __FILE__, __LINE__);
         }        /* global attributes list complete */
 
         /*Save variable in linked list of variables for this dataset */
-        list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar));
+        list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar), __FILE__, __LINE__);
     }
 
     /* get info on variables */
@@ -1028,7 +1028,7 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
         var.all_outflag = 1;
 
         /* Go ahead and create the list for variable attributes */
-        var.varattlist = list_init();
+        var.varattlist = list_init(__FILE__, __LINE__);
         if ( var.varattlist == NULL ) {
             fprintf(stderr, "ERROR: ncf_add_dset: Unable to initialize variable attributes list.\n");
             return -1;
@@ -1114,7 +1114,7 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
             }
 
             /*Save attribute in linked list of attributes for this variable */
-            list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
+            list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt), __FILE__, __LINE__);
         }        /* variable attributes from file complete */
 
         /* If this is a coordinate variable, add an attribute orig_file_axname which
@@ -1137,22 +1137,22 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
             att.outflag = -1;
 
             /*Save attribute in linked list of attributes for this variable */
-            list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
+            list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt), __FILE__, __LINE__);
         }
 
         /*Save variable in linked list of variables for this dataset */
-        list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar));
+        list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar), __FILE__, __LINE__);
     }        /* variables list complete */
 
     /* Add dataset to global nc dataset linked list*/
     if ( GLOBAL_ncdsetList == NULL ) {
-        GLOBAL_ncdsetList = list_init();
+        GLOBAL_ncdsetList = list_init(__FILE__, __LINE__);
         if ( GLOBAL_ncdsetList == NULL ) {
             fprintf(stderr, "ERROR: ncf_add_dset: Unable to initialize GLOBAL_ncDsetList.\n");
             return -1;
         }
     }
-    list_insert_after(GLOBAL_ncdsetList, (char *) &nc, sizeof(ncdset));
+    list_insert_after(GLOBAL_ncdsetList, (char *) &nc, sizeof(ncdset), __FILE__, __LINE__);
 
     return return_val;
 }
@@ -1195,32 +1195,32 @@ int FORTRAN(ncf_init_other_dset)( int *setnum, char name[], char path[] )
     strcpy(att.string, name);
 
     /* Save attribute in linked list of attributes for variable */
-    var.varattlist = list_init();
+    var.varattlist = list_init(__FILE__, __LINE__);
     if ( var.varattlist == NULL ) {
         fprintf(stderr, "ERROR: ncf_init_other_dset: Unable to initialize GLOBAL attributes list.\n");
         return -1;
     }
-    list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
+    list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt), __FILE__, __LINE__);
 
     /* global attributes list complete */
 
     /*Save variable in linked list of variables for this dataset */
-    nc.dsetvarlist = list_init();
+    nc.dsetvarlist = list_init(__FILE__, __LINE__);
     if ( nc.dsetvarlist == NULL ) {
         fprintf(stderr, "ERROR: ncf_init_uvar_dset: Unable to initialize variable list.\n");
         return -1;
     }
-    list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar));
+    list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar), __FILE__, __LINE__);
 
     /* Add dataset to global nc dataset linked list */
     if ( GLOBAL_ncdsetList == NULL ) {
-        GLOBAL_ncdsetList = list_init();
+        GLOBAL_ncdsetList = list_init(__FILE__, __LINE__);
         if ( GLOBAL_ncdsetList == NULL ) {
             fprintf(stderr, "ERROR: ncf_init_uvar_dset: Unable to initialize GLOBAL_ncDsetList.\n");
             return -1;
         }
     }
-    list_insert_after(GLOBAL_ncdsetList, (char *) &nc, sizeof(ncdset));
+    list_insert_after(GLOBAL_ncdsetList, (char *) &nc, sizeof(ncdset), __FILE__, __LINE__);
 
     return FERR_OK;
 }
@@ -1324,7 +1324,7 @@ static void ncf_free_attlist( ncvar* varptr )
      * Free the attribute list using ncf_free_attribute
      * to free each data element in the list
      */
-    list_free(varptr->varattlist, ncf_free_attribute);
+    list_free(varptr->varattlist, ncf_free_attribute, __FILE__, __LINE__);
     varptr->varattlist = NULL;
     varptr->natts = 0;
 }
@@ -1362,13 +1362,14 @@ static void ncf_free_variable( char *varptr )
     var = (ncvar *)varptr;
     /* Free the list of attributes */
     ncf_free_attlist(var);
+    /* Free the list of ncagg_var_descr */
     if ( var->varagglist != NULL ) {
-        list_free(var->varagglist, LIST_DEALLOC);
+        list_free(var->varagglist, LIST_DEALLOC, __FILE__, __LINE__);
         var->varagglist = NULL;
     }
     /* Free the list of uvarGrids */
     if ( var->uvarGridList != NULL ) {
-        list_free(var->uvarGridList, LIST_DEALLOC);
+        list_free(var->uvarGridList, LIST_DEALLOC, __FILE__, __LINE__);
         var->uvarGridList = NULL;
     }
     /* paranoia */
@@ -1398,15 +1399,23 @@ static void ncf_init_dataset( ncdset *dset_ptr )
 static void ncf_free_dataset( char *nc_ptr )
 {
     ncdset *nc;
-    LIST *varlist;
 
     if ( nc_ptr == NULL )
         return;
     nc = (ncdset *) nc_ptr;
 
     /* Free the ncvar's associated with this dataset */
-    varlist = nc->dsetvarlist;
-    list_free(varlist, ncf_free_variable);
+    if ( nc->dsetvarlist != NULL ) {
+       list_free(nc->dsetvarlist, ncf_free_variable, __FILE__, __LINE__);
+       nc->dsetvarlist = NULL;
+    }
+
+    /* Free any ncagg structs about aggregated dataset members */
+    if ( nc->agg_dsetlist != NULL ) {
+       list_free(nc->agg_dsetlist, LIST_DEALLOC, __FILE__, __LINE__);
+       nc->agg_dsetlist = NULL;
+    }
+
     /* paranoia */
     memset(nc, 0, sizeof(ncdset));
     /* Free the ncdset itself */
@@ -1420,7 +1429,7 @@ static void ncf_free_dataset( char *nc_ptr )
 void FORTRAN(ncf_datasets_list_clear)( void )
 {
     if ( GLOBAL_ncdsetList != NULL ) {
-        list_free(GLOBAL_ncdsetList, ncf_free_dataset);
+        list_free(GLOBAL_ncdsetList, ncf_free_dataset, __FILE__, __LINE__);
         GLOBAL_ncdsetList = NULL;
     }
 }
@@ -1431,7 +1440,6 @@ void FORTRAN(ncf_datasets_list_clear)( void )
 int FORTRAN(ncf_delete_dset)( int *dset )
 {
     ncdset *nc_ptr;
-    LIST *varlist;
 
     /* Find the dataset */
     nc_ptr = ncf_get_ds_ptr(dset);
@@ -1439,14 +1447,22 @@ int FORTRAN(ncf_delete_dset)( int *dset )
         return ATOM_NOT_FOUND;
 
     /* Free the list of variables for this dataset */
-    varlist = nc_ptr->dsetvarlist;
-    list_free(varlist, ncf_free_variable);
-    nc_ptr->dsetvarlist = NULL;
+    if ( nc_ptr->dsetvarlist != NULL ) {
+        list_free(nc_ptr->dsetvarlist, ncf_free_variable, __FILE__, __LINE__);
+        nc_ptr->dsetvarlist = NULL;
+    }
     nc_ptr->nvars = 0;
     nc_ptr->ngatts = 0;
 
+    /* Free any ncagg structs about aggregated dataset members */
+    if ( nc_ptr->agg_dsetlist != NULL ) {
+       list_free(nc_ptr->agg_dsetlist, LIST_DEALLOC, __FILE__, __LINE__);
+       nc_ptr->agg_dsetlist = NULL;
+    }
+    nc_ptr->num_agg_members = 0;
+
     /* Remove the dataset from dataset list */
-    if ( nc_ptr != (ncdset *) list_remove_curr(GLOBAL_ncdsetList) ) {
+    if ( nc_ptr != (ncdset *) list_remove_curr(GLOBAL_ncdsetList, __FILE__, __LINE__) ) {
         fprintf(stderr, "ERROR: ncf_delete_dset: Unexpected mismatch of current dataset in global list.\n");
         return -1;
     }
@@ -1535,7 +1551,7 @@ int FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar,
     var.is_axis = *coordvar;
 
     /* Set up initial set of attributes*/
-    var.varattlist = list_init();
+    var.varattlist = list_init(__FILE__, __LINE__);
     if ( var.varattlist == NULL ) {
         fprintf(stderr, "ERROR: ncf_add_var: Unable to initialize attributes list.\n");
         return -1;
@@ -1556,7 +1572,7 @@ int FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar,
     att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char), __FILE__, __LINE__);
     strcpy(att.string, title);
     /* Save attribute in linked list of attributes for this variable */
-    list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
+    list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt), __FILE__, __LINE__);
 
     /* Now the units, if given
      * For the units string, allocate one more than the att.len,
@@ -1574,7 +1590,7 @@ int FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar,
         att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char), __FILE__, __LINE__);
         strcpy(att.string, units);
         /* Save attribute in linked list of attributes for this variable */
-        list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
+        list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt), __FILE__, __LINE__);
     }
 
     /* Now the missing_value, for numeric variables */
@@ -1598,12 +1614,12 @@ int FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar,
      */
     att.outflag = initialize_output_flag (att.name, var.is_axis);
     /*Save attribute in linked list of attributes for this variable */
-    list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
+    list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt), __FILE__, __LINE__);
 
     /* If this is an aggregate dataset, initialize the list of member-info
      * for the variable. The values will be filled in later.
      */
-    var.varagglist = list_init();
+    var.varagglist = list_init(__FILE__, __LINE__);
     if ( var.varagglist == NULL ) {
         fprintf(stderr, "ERROR: ncf_add_var: Unable to initialize aggregate info list.\n");
         return -1;
@@ -1611,11 +1627,11 @@ int FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar,
 
     vdescr.imemb = 0;
     vdescr.gnum = 0;
-    list_insert_after(var.varagglist, (char *) &vdescr, sizeof(ncatt));
+    list_insert_after(var.varagglist, (char *) &vdescr, sizeof(ncagg_var_descr), __FILE__, __LINE__);
 
     /* if it's a uvar, then initialize a grid LIST for it */
     if ( var.uvarid != 0 ) {
-        var.uvarGridList = list_init();
+        var.uvarGridList = list_init(__FILE__, __LINE__);
         if ( var.uvarGridList == NULL ) {
             fprintf(stderr, "ERROR: ncf_add_var: Unable to initialize uvar grid list.\n");
             return -1;
@@ -1624,7 +1640,7 @@ int FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar,
 
     /* Save variable in linked list of variables for this dataset */
     list_mvrear(nc_ptr->dsetvarlist);
-    list_insert_after(nc_ptr->dsetvarlist, (char *) &var, sizeof(ncvar));
+    list_insert_after(nc_ptr->dsetvarlist, (char *) &var, sizeof(ncvar), __FILE__, __LINE__);
 
     return FERR_OK;
 }
@@ -1665,7 +1681,7 @@ int FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar,
          * If this variable is not new, remove the old definition of it.
          * Do not decrement varids or nvars !
          */
-        var_ptr = (ncvar *) list_remove_curr(vlist);
+        var_ptr = (ncvar *) list_remove_curr(vlist, __FILE__, __LINE__);
         ncf_free_variable((char *) var_ptr);
     }
 
@@ -1683,7 +1699,7 @@ int FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar,
     *varid = nc_ptr->nvars;
     var.is_axis = *coordvar;
     var.fillval = *bad;
-    var.varattlist = list_init();
+    var.varattlist = list_init(__FILE__, __LINE__);
     if ( var.varattlist == NULL ) {
         fprintf(stderr, "ERROR: ncf_add_coord_var: Unable to initialize attributes list.\n");
         return -1;
@@ -1706,12 +1722,12 @@ int FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar,
         att.outtype = NC_CHAR;
         att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char), __FILE__, __LINE__);
         strcpy(att.string, units);
-        list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
+        list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt), __FILE__, __LINE__);
     }
 
     /* Save variable in linked list of variables for this dataset */
     list_mvrear(nc_ptr->dsetvarlist);
-    list_insert_after(nc_ptr->dsetvarlist, (char *) &var, sizeof(ncvar));
+    list_insert_after(nc_ptr->dsetvarlist, (char *) &var, sizeof(ncvar), __FILE__, __LINE__);
 
     return FERR_OK;
 }
@@ -1777,7 +1793,7 @@ int FORTRAN(ncf_add_var_num_att)( int *dset, int *varid, char attname[],
     }
 
     /* Save attribute in linked list of attributes for this variable */
-    list_insert_after(varattlist, (char *) &att, sizeof(ncatt));
+    list_insert_after(varattlist, (char *) &att, sizeof(ncatt), __FILE__, __LINE__);
 
     return FERR_OK;
 }
@@ -1838,7 +1854,7 @@ int FORTRAN(ncf_add_var_num_att_dp)( int *dset, int *varid, char attname[],
     }
 
     /*Save attribute in linked list of attributes for this variable */
-    list_insert_after(varattlist, (char *) &att, sizeof(ncatt));
+    list_insert_after(varattlist, (char *) &att, sizeof(ncatt), __FILE__, __LINE__);
 
     return FERR_OK;
 }
@@ -1876,7 +1892,7 @@ int FORTRAN(ncf_add_var_str_att)( int *dset, int *varid, char attname[], int *at
 
     /* Save attribute in linked list of attributes for variable */
     if ( var_ptr->varattlist == NULL ) {
-        var_ptr->varattlist = list_init();
+        var_ptr->varattlist = list_init(__FILE__, __LINE__);
         if ( var_ptr->varattlist == NULL ) {
             fprintf(stderr, "ERROR: add_var_str_att: Unable to initialize attributes list.\n");
             return -1;
@@ -1919,7 +1935,7 @@ int FORTRAN(ncf_add_var_str_att)( int *dset, int *varid, char attname[], int *at
     strcpy(att.string, attstring);
 
     /*Save attribute in linked list of attributes for this variable */
-    list_insert_after(var_ptr->varattlist, (char *) &att, sizeof(ncatt));
+    list_insert_after(var_ptr->varattlist, (char *) &att, sizeof(ncatt), __FILE__, __LINE__);
 
     return FERR_OK;
 }
@@ -2170,7 +2186,7 @@ int FORTRAN(ncf_delete_var_att)( int *dset, int *varid, char attname[] )
         return ATOM_NOT_FOUND;
 
     /* Remove the attribute, saving its attribute number */
-    att_ptr = (ncatt *) list_remove_curr(varattlist);
+    att_ptr = (ncatt *) list_remove_curr(varattlist, __FILE__, __LINE__);
     att_to_remove = att_ptr->attid;
     ncf_free_attribute((char *) att_ptr);
 
@@ -2406,7 +2422,7 @@ int FORTRAN(ncf_transfer_att)( int *dset1, int *varid1, int *iatt, int *dset2, i
      * Get the list of attributes for the variable varid2
      */
     if ( var_ptr2->varattlist == NULL ) {
-        var_ptr2->varattlist = list_init();
+        var_ptr2->varattlist = list_init(__FILE__, __LINE__);
         if ( var_ptr2->varattlist == NULL ) {
             fprintf(stderr, "ERROR: ncf_add_dset: Unable to initialize variable attributes list.\n");
             return -1;
@@ -2443,7 +2459,7 @@ int FORTRAN(ncf_transfer_att)( int *dset1, int *varid1, int *iatt, int *dset2, i
     }
 
     /* Save attribute in linked list of attributes for this variable */
-    list_insert_after(var_ptr2->varattlist, (char *) &att, sizeof(ncatt));
+    list_insert_after(var_ptr2->varattlist, (char *) &att, sizeof(ncatt), __FILE__, __LINE__);
 
     return FERR_OK;
 }
@@ -2478,7 +2494,7 @@ int FORTRAN(ncf_delete_var)( int *dset, char *varname )
      * Remove the variable from the dataset list and free it
      * (and its lists) after getting its varid
      */
-    var_ptr = (ncvar *) list_remove_curr(varlist);
+    var_ptr = (ncvar *) list_remove_curr(varlist, __FILE__, __LINE__);
     ivar = var_ptr->varid;
     ncf_free_variable((char *) var_ptr);
 
@@ -2539,29 +2555,29 @@ int FORTRAN(ncf_init_agg_dset)( int *setnum, char name[] )
 
     /*Save attribute in linked list of attributes for variable .*/
     if ( var.varattlist == NULL ) {
-        var.varattlist = list_init();
+        var.varattlist = list_init(__FILE__, __LINE__);
         if ( var.varattlist == NULL ) {
             fprintf(stderr, "ERROR: ncf_init_agg_dset: Unable to initialize GLOBAL attributes list.\n");
             return -1;
         }
     }
-    list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
+    list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt), __FILE__, __LINE__);
 
     /* global attributes list complete */
 
     /* Initialize linked list of variables for this dataset */
     if ( nc.dsetvarlist == NULL ) {
-        nc.dsetvarlist = list_init();
+        nc.dsetvarlist = list_init(__FILE__, __LINE__);
         if ( nc.dsetvarlist == NULL ) {
             fprintf(stderr, "ERROR: ncf_init_agg_dset: Unable to initialize variable list.\n");
             return -1;
         }
     }
-    list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar));
+    list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar), __FILE__, __LINE__);
 
     /*Initialize list of aggregate members for this dataset */
     if ( nc.agg_dsetlist == NULL ) {
-        nc.agg_dsetlist = list_init();
+        nc.agg_dsetlist = list_init(__FILE__, __LINE__);
         if ( nc.agg_dsetlist == NULL ) {
             fprintf(stderr, "ERROR: ncf_init_agg_dset: Unable to initialize aggregate list.\n");
             return -1;
@@ -2570,13 +2586,13 @@ int FORTRAN(ncf_init_agg_dset)( int *setnum, char name[] )
 
     /* Add dataset to global nc dataset linked list*/
     if ( GLOBAL_ncdsetList == NULL ) {
-        GLOBAL_ncdsetList = list_init();
+        GLOBAL_ncdsetList = list_init(__FILE__, __LINE__);
         if ( GLOBAL_ncdsetList == NULL ) {
             fprintf(stderr, "ERROR: ncf_init_uvar_dset: Unable to initialize GLOBAL_ncDsetList.\n");
             return -1;
         }
     }
-    list_insert_after(GLOBAL_ncdsetList, (char *) &nc, sizeof(ncdset));
+    list_insert_after(GLOBAL_ncdsetList, (char *) &nc, sizeof(ncdset), __FILE__, __LINE__);
 
     return FERR_OK;
 }
@@ -2607,7 +2623,7 @@ int FORTRAN(ncf_add_agg_member)( int *dset, int *sequence_number, int *member_ds
     agg.dsetnum = *member_dset;
     agg.aggSeqNo = *sequence_number;
     list_mvrear(nc_ptr->agg_dsetlist);
-    list_insert_after(nc_ptr->agg_dsetlist, (char *) &agg, sizeof(agg));
+    list_insert_after(nc_ptr->agg_dsetlist, (char *) &agg, sizeof(agg), __FILE__, __LINE__);
     nc_ptr->num_agg_members = nc_ptr->num_agg_members + 1;
 
     return FERR_OK;
@@ -2704,7 +2720,7 @@ int FORTRAN(ncf_add_agg_var_info)( int *dset, int *varid, int *imemb,
     var_ptr->nmemb = var_ptr->nmemb + 1;
 
     /*Save grid number in linked list of grid for this variable */
-    list_insert_after(var_ptr->varagglist, (char *) &vdescr, sizeof(ncagg_var_descr));
+    list_insert_after(var_ptr->varagglist, (char *) &vdescr, sizeof(ncagg_var_descr), __FILE__, __LINE__);
 
     return FERR_OK;
 }
@@ -2878,7 +2894,7 @@ int FORTRAN(ncf_free_uvar_grid_list)( int *LIST_dset, int *uvarid )
     uvgridList = var_ptr->uvarGridList;
     if ( uvgridList != NULL ) {
         while ( ! list_empty(uvgridList) ) {
-            uvgrid_ptr = (uvarGrid *)list_remove_front(uvgridList);
+            uvgrid_ptr = (uvarGrid *)list_remove_front(uvgridList, __FILE__, __LINE__);
             /* paranoia */
             memset(uvgrid_ptr, 0, sizeof(uvarGrid));
             FerMem_Free(uvgrid_ptr, __FILE__, __LINE__);
@@ -2900,8 +2916,8 @@ int FORTRAN(ncf_next_uvar_grid_in_list)( int *LIST_dset, int *uvarid, int *ith, 
     ncvar *var_ptr;
     LIST *uvgridList;
     uvarGrid *uvgrid_ptr;
-	int count;
-	int i;
+    int count;
+    int i;
 
     /*
      * Get the list of variables, find pointer to variable varid.
@@ -2925,11 +2941,11 @@ int FORTRAN(ncf_next_uvar_grid_in_list)( int *LIST_dset, int *uvarid, int *ith, 
      * Return the ith grid
      */
     list_mvfront(uvgridList);
-	count = 1;
+    count = 1;
     for (i = 0; i < *ith; i++) {
-		uvgrid_ptr = (uvarGrid *) list_curr(uvgridList);
+        uvgrid_ptr = (uvarGrid *) list_curr(uvgridList);
         *grid = uvgrid_ptr->grid;
-		list_mvnext(uvgridList); 
+        list_mvnext(uvgridList); 
         } 
 
     }
@@ -2957,7 +2973,7 @@ int FORTRAN(ncf_set_uvar_grid)( int *LIST_dset, int *varid, int *grid, int *data
     LIST *uvgridlist;
     uvarGrid *uvgrid_ptr;
     uvarGrid uvgrid;
-	int uvgrid_list_len;
+    int uvgrid_list_len;
     int i;
 
     /*
@@ -2980,7 +2996,7 @@ int FORTRAN(ncf_set_uvar_grid)( int *LIST_dset, int *varid, int *grid, int *data
         return ATOM_NOT_FOUND;
     status = list_traverse(uvgridlist, (char *) context_dset, NCF_ListTraverse_FoundGridDset, (LIST_FRNT | LIST_FORW | LIST_ALTR));
     if ( status == LIST_OK ) {
-        uvgrid_ptr = (uvarGrid *) list_remove_curr(uvgridlist);
+        uvgrid_ptr = (uvarGrid *) list_remove_curr(uvgridlist, __FILE__, __LINE__);
         /* paranoia */
         memset(uvgrid_ptr, 0, sizeof(uvarGrid));
         FerMem_Free(uvgrid_ptr, __FILE__, __LINE__);
@@ -3005,12 +3021,12 @@ int FORTRAN(ncf_set_uvar_grid)( int *LIST_dset, int *varid, int *grid, int *data
     /*
      * Save it in the grid list of this uvar
      */
-    list_insert_after(uvgridlist, (char *) &uvgrid, sizeof(uvarGrid));
-	
+    list_insert_after(uvgridlist, (char *) &uvgrid, sizeof(uvarGrid), __FILE__, __LINE__);
+
     uvgrid_list_len = (int) list_size(uvgridlist);
-	if (uvgrid_list_len > 1)
-	{ i = 1;
-	}
+    if (uvgrid_list_len > 1) { 
+        i = 1;
+    }
 
     return FERR_OK;
 }
@@ -3248,7 +3264,7 @@ int FORTRAN(ncf_delete_uvar_grid)( int *LIST_dset, int *uvarid, int *context_dse
         return ATOM_NOT_FOUND;
 
     /* Remove this grid from uvaGridList list */
-    uvgrid_ptr = (uvarGrid *) list_remove_curr(uvgridlist);
+    uvgrid_ptr = (uvarGrid *) list_remove_curr(uvgridlist, __FILE__, __LINE__);
     /* paranoia */
     memset(uvgrid_ptr, 0, sizeof(uvarGrid));
     FerMem_Free(uvgrid_ptr, __FILE__, __LINE__);

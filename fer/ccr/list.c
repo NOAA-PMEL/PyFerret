@@ -64,12 +64,12 @@
 #include "list.h"
 
 
-LIST *list_init(void)
+LIST *list_init(char *filename, int linenum)
 {
    LIST *list;
 
    /* Allocate, initialize, and return a new list. */
-   list = (LIST *) FerMem_Malloc(sizeof(LIST), __FILE__, __LINE__);
+   list = (LIST *) FerMem_Malloc(sizeof(LIST), filename, linenum);
    list->size = 0;
    list->front = NULL;
    list->rear = NULL;
@@ -167,14 +167,14 @@ int list_size(LIST *list)
  * #endif
  */
 
-static LIST_ELEMENT *list_create_element(char *data, int bytes)
+static LIST_ELEMENT *list_create_element(char *data, int bytes, char *filename, int linenum)
 {
    LIST_ELEMENT *new;
 
    /* Allocate storage for the new node and its data.  Return NULL if
     * unable to allocate.
     */
-   new = (LIST_ELEMENT *) FerMem_Malloc(sizeof(LIST_ELEMENT), __FILE__, __LINE__);
+   new = (LIST_ELEMENT *) FerMem_Malloc(sizeof(LIST_ELEMENT), filename, linenum);
    if (new == NULL) {
       return(NULL);
    }
@@ -183,8 +183,9 @@ static LIST_ELEMENT *list_create_element(char *data, int bytes)
     * Then either copy the data or just the reference into the node.
     */
    if (bytes > 0) {
-      new->data = (char *) FerMem_Malloc(bytes, __FILE__, __LINE__);
+      new->data = (char *) FerMem_Malloc(bytes, filename, linenum);
       if (new->data == NULL) {
+         FerMem_Free(new, filename, linenum);
 	 return(NULL);
       }
       (void) memcpy(new->data, data, bytes);
@@ -197,12 +198,12 @@ static LIST_ELEMENT *list_create_element(char *data, int bytes)
 }
 
 
-char *list_insert_before(LIST *list, char *data, int bytes)
+char *list_insert_before(LIST *list, char *data, int bytes, char *filename, int linenum)
 {
    LIST_ELEMENT *new;
 
    /* Allocate storage for the new element and its data.*/
-   new = list_create_element(data, bytes);
+   new = list_create_element(data, bytes, filename, linenum);
    if (new == NULL)
       return(NULL);
 
@@ -238,12 +239,12 @@ char *list_insert_before(LIST *list, char *data, int bytes)
 }
 
 
-char *list_insert_after(LIST *list, char *data, int bytes)
+char *list_insert_after(LIST *list, char *data, int bytes, char *filename, int linenum)
 {
    LIST_ELEMENT *new;
 
    /* Allocate storage for the new element and its data.*/
-   new = list_create_element(data, bytes);
+   new = list_create_element(data, bytes, filename, linenum);
    if (new == NULL)
       return(NULL);
 
@@ -279,20 +280,20 @@ char *list_insert_after(LIST *list, char *data, int bytes)
 }
 
 
-static char *list_remove_single(LIST *list)
+static char *list_remove_single(LIST *list, char *filename, int linenum)
 {
    char *data;
 
    /* The list has one element.  Easy. */
    data = list->curr->data;
-   FerMem_Free(list->curr, __FILE__, __LINE__);
+   FerMem_Free(list->curr, filename, linenum);
    list->front = list->rear = list->curr = NULL;
    list->size--;
    return (data);
 }
 
 
-char *list_remove_front(LIST *list)
+char *list_remove_front(LIST *list, char *filename, int linenum)
 {
    LIST_ELEMENT *temp;
    char *data;
@@ -306,7 +307,7 @@ char *list_remove_front(LIST *list)
    }
    else if (list->front == list->rear) {
       /* List has only one element.  Easy. */
-      data = list_remove_single(list);
+      data = list_remove_single(list, filename, linenum);
    }
    else {
       /* List has more than one element.  Make sure to check if curr
@@ -318,7 +319,7 @@ char *list_remove_front(LIST *list)
       list->front = temp->next;
       if (list->curr == temp)
 	 list->curr = temp->next;
-      FerMem_Free(temp, __FILE__, __LINE__);
+      FerMem_Free(temp, filename, linenum);
       list->size--;
    }
 
@@ -326,7 +327,7 @@ char *list_remove_front(LIST *list)
 }
 
 
-char *list_remove_rear(LIST *list)
+char *list_remove_rear(LIST *list, char *filename, int linenum)
 {
    LIST_ELEMENT *temp;
    char *data;
@@ -340,7 +341,7 @@ char *list_remove_rear(LIST *list)
    }
    else if (list->front == list->rear) {
       /* List has only one element.  Easy. */
-      data = list_remove_single(list);
+      data = list_remove_single(list, filename, linenum);
    }
    else {
       /* List has more than one element.  Make sure to check if curr
@@ -352,7 +353,7 @@ char *list_remove_rear(LIST *list)
       list->rear = temp->prev;
       if (list->curr == temp)
 	 list->curr = temp->prev;
-      FerMem_Free(temp, __FILE__, __LINE__);
+      FerMem_Free(temp, filename, linenum);
       list->size--;
    }
 
@@ -360,7 +361,7 @@ char *list_remove_rear(LIST *list)
 }
 
 
-char *list_remove_curr(LIST *list)
+char *list_remove_curr(LIST *list, char *filename, int linenum)
 {
    LIST_ELEMENT *temp;
    char *data;
@@ -376,15 +377,15 @@ char *list_remove_curr(LIST *list)
    }
    else if (list->front == list->rear) {
       /* The list has one element.  Easy. */
-      data = list_remove_single(list);
+      data = list_remove_single(list, filename, linenum);
    }
    else if (list->curr == list->front) {
       /* Removing front element.  Easy. */
-      data = list_remove_front(list);
+      data = list_remove_front(list, filename, linenum);
    }
    else if (list->curr == list->rear) {
       /* Removing from the rear.  Easy.*/
-      data = list_remove_rear(list);
+      data = list_remove_rear(list, filename, linenum);
    }
    else {
       /* Otherwise.  Must be inside a 3-element or larger list. */
@@ -393,7 +394,7 @@ char *list_remove_curr(LIST *list)
       temp->next->prev = temp->prev;
       temp->prev->next = temp->next;
       list->curr = temp->next;
-      FerMem_Free(temp, __FILE__, __LINE__);
+      FerMem_Free(temp, filename, linenum);
       list->size--;
    }
 
@@ -457,7 +458,7 @@ int list_traverse(LIST *list, char *data, int (*func)(char *, char *), int opts)
 }
 
 
-void list_free(LIST *list, void (*dealloc)(char *))
+void list_free(LIST *list, void (*dealloc)(char *), char *filename, int linenum)
 {
    char *data;
 
@@ -468,13 +469,13 @@ void list_free(LIST *list, void (*dealloc)(char *))
     */
    list_mvfront(list);
    while (! list_empty(list)) {
-      data = list_remove_front(list);
+      data = list_remove_front(list, filename, linenum);
       /* Apply either no deallocation function to each node, our own, or
        * a user-supplied version.
        */
       if ( dealloc != LIST_NODEALLOC ) {
 	 if ( dealloc == LIST_DEALLOC ) {
-	    FerMem_Free(data, __FILE__, __LINE__);
+	    FerMem_Free(data, filename, linenum);
 	 }
 	 else {
 	    (*dealloc)(data);
@@ -482,5 +483,5 @@ void list_free(LIST *list, void (*dealloc)(char *))
       }
    }
 
-   FerMem_Free(list, __FILE__, __LINE__);
+   FerMem_Free(list, filename, linenum);
 }

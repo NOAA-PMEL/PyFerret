@@ -1493,7 +1493,7 @@ static int continue_efcn_scan(int gfcn_num_internal) {
   /* The number of names in the array above */
   int N_INTEF = sizeof(I_EFnames) / EF_MAX_NAME_LENGTH;
 
-  if ( (STATIC_ExternalFunctionList = list_init()) == NULL ) {
+  if ( (STATIC_ExternalFunctionList = list_init(__FILE__, __LINE__)) == NULL ) {
     fputs("**ERROR: efcn_scan: Unable to initialize STATIC_ExternalFunctionList.\n", stderr);
     return -1;
   }
@@ -1509,7 +1509,7 @@ static int continue_efcn_scan(int gfcn_num_internal) {
       ef.id = gfcn_num_internal + ++count; /* pre-increment because F arrays start at 1 */
       ef.already_have_internals = NO;
       ef.internals_ptr = NULL;
-      list_insert_after(STATIC_ExternalFunctionList, (char *) &ef, sizeof(ExternalFunction));
+      list_insert_after(STATIC_ExternalFunctionList, (char *) &ef, sizeof(ExternalFunction), __FILE__, __LINE__);
   }
 
   /*
@@ -1576,7 +1576,7 @@ static int continue_efcn_scan(int gfcn_num_internal) {
             ef.id = gfcn_num_internal + ++count; /* pre-increment because F arrays start at 1 */
             ef.already_have_internals = NO;
             ef.internals_ptr = NULL;
-            list_insert_after(STATIC_ExternalFunctionList, (char *) &ef, sizeof(ExternalFunction));
+            list_insert_after(STATIC_ExternalFunctionList, (char *) &ef, sizeof(ExternalFunction), __FILE__, __LINE__);
          }
       }
 
@@ -1609,7 +1609,7 @@ void FORTRAN(efcn_list_clear)(void)
 {
   if ( STATIC_ExternalFunctionList != NULL ) {
       /* free all the elements in the list and the list itseld */
-      list_free(STATIC_ExternalFunctionList, efcn_dealloc_ef);
+      list_free(STATIC_ExternalFunctionList, efcn_dealloc_ef, __FILE__, __LINE__);
       STATIC_ExternalFunctionList = NULL;
   }
   I_have_scanned_already = FALSE;
@@ -1727,7 +1727,7 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
 
     /* Add a copy of this ExternalFunction to the end of the global list of external functions */
     list_mvrear(STATIC_ExternalFunctionList);
-    ef_ptr = (ExternalFunction *)list_insert_after(STATIC_ExternalFunctionList, (char *) &ef, sizeof(ExternalFunction));
+    ef_ptr = (ExternalFunction *)list_insert_after(STATIC_ExternalFunctionList, (char *) &ef, sizeof(ExternalFunction), __FILE__, __LINE__);
 
     /* Allocate and initialize the internals data for this ExternalFunction in the list */
     if ( EF_New(ef_ptr) != 0 ) {
@@ -1745,7 +1745,7 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
      * (for the "bail out" utility function).
      */
     if ( EF_Util_setsig("create_pyefcn")) {
-        list_remove_rear(STATIC_ExternalFunctionList);
+        list_remove_rear(STATIC_ExternalFunctionList, __FILE__, __LINE__);
         FerMem_Free(ef_ptr->internals_ptr, __FILE__, __LINE__);
         FerMem_Free(ef_ptr, __FILE__, __LINE__);
         strcpy(errstring, "Unable to set signal handlers in create_pyefcn");
@@ -1753,7 +1753,7 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
         return;
     }
     if (sigsetjmp(sigjumpbuffer, 1) != 0) {
-        list_remove_rear(STATIC_ExternalFunctionList);
+        list_remove_rear(STATIC_ExternalFunctionList, __FILE__, __LINE__);
         FerMem_Free(ef_ptr->internals_ptr, __FILE__, __LINE__);
         FerMem_Free(ef_ptr, __FILE__, __LINE__);
         strcpy(errstring, "Signal caught in create_pyefcn");
@@ -1761,7 +1761,7 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
         return;
     }
     if (setjmp(jumpbuffer) != 0) {
-        list_remove_rear(STATIC_ExternalFunctionList);
+        list_remove_rear(STATIC_ExternalFunctionList, __FILE__, __LINE__);
         FerMem_Free(ef_ptr->internals_ptr, __FILE__, __LINE__);
         FerMem_Free(ef_ptr, __FILE__, __LINE__);
         strcpy(errstring, "ef_bail_out called in create_pyefcn");
@@ -1777,7 +1777,7 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
 
     *lenerrstring = strlen(errstring);
     if ( *lenerrstring > 0 ) {
-        list_remove_rear(STATIC_ExternalFunctionList);
+        list_remove_rear(STATIC_ExternalFunctionList, __FILE__, __LINE__);
         FerMem_Free(ef_ptr->internals_ptr, __FILE__, __LINE__);
         FerMem_Free(ef_ptr, __FILE__, __LINE__);
     }

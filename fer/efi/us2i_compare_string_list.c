@@ -57,24 +57,11 @@ typedef struct  {
 } strngs;
 
 /* .... Static Variables ............... */
-static LIST *GLOBAL_unique_us2i_List;
-static int us2i_list_initialized = 0;
+static LIST *GLOBAL_unique_us2i_List = NULL;
 
 /* .... Functions called internally .... */
 static int add_us2i_string(char *);
 static int ListTraverse_FoundString( char *, char * );
-
-
-/* ----
- * Deallocate GLOBAL_unique_us2i_List
- *
- *
- * int FORTRAN(end_us2i_list)
- * {
- *    list_free(GLOBAL_unique_us2i_List, LIST_DEALLOC);
- *    us2i_list_initialized = 0;
- * }
- */
 
 
 /* ----
@@ -99,7 +86,7 @@ void FORTRAN(us2i_compare_string_list)(char* compare_string, int *str_seq)
 
 
 
-   if ( ! us2i_list_initialized ) {
+   if ( GLOBAL_unique_us2i_List == NULL ) {
       /*
        * no list yet; initialize the list and add the string to it;
        * send back the new sequence number of this string
@@ -123,6 +110,18 @@ void FORTRAN(us2i_compare_string_list)(char* compare_string, int *str_seq)
 }
 
 
+/*
+ * Free any memory associated with GLOBAL_unique_us2i_List
+ */
+void FORTRAN(us2i_string_list_free)(void)
+{
+   if ( GLOBAL_unique_us2i_List != NULL ) {
+      list_free(GLOBAL_unique_us2i_List, LIST_DEALLOC, __FILE__, __LINE__);
+      GLOBAL_unique_us2i_List = NULL;
+   }
+}
+
+
 /* ----
  * Add a string to GLOBAL_unique_us2i_List, initializing the list if necessary.
  * Returns the sequence number of this new string, or 0 if an error occurs.
@@ -134,13 +133,12 @@ static int add_us2i_string(char addstring[])
    int iseq;
 
    /* Create the list if required */
-   if ( ! us2i_list_initialized ) {
-      GLOBAL_unique_us2i_List = list_init();
+   if ( GLOBAL_unique_us2i_List == NULL ) {
+      GLOBAL_unique_us2i_List = list_init(__FILE__, __LINE__);
       if ( GLOBAL_unique_us2i_List == NULL ) {
          fprintf(stderr, "ERROR: unique_str2int: Unable to initialize GLOBAL_unique_us2i_List.\n");
          return 0;
       }
-      us2i_list_initialized = 1;
    }
 
    /* Add to global linked list*/ 
@@ -150,7 +148,7 @@ static int add_us2i_string(char addstring[])
    this_string.seq = iseq;
    strcpy(this_string.astring, addstring);
 
-   list_insert_after(GLOBAL_unique_us2i_List, (char *) &this_string, sizeof(this_string));
+   list_insert_after(GLOBAL_unique_us2i_List, (char *) &this_string, sizeof(this_string), __FILE__, __LINE__);
 
    return iseq;
 }

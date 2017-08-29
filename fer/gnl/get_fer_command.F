@@ -156,6 +156,7 @@
 	max_context = max_noframe_context  ! 2/2014
 	len_cmnd_copy = 0
 	appending_cmnd = .FALSE.
+        do_verify = .FALSE.
 
 * if a command was given then execute it immediately
 	IF ( called_string .NE. ' ' ) THEN

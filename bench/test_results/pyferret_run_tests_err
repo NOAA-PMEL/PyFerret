@@ -2859,7 +2859,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
      e.g.   yes? GO filename
  
  Use "GO/HELP filename" to read documentation in  the file to be executed.
-           *** NOTE: No active redirects to cancel
  Use the GO command to name a file of FERRET commands to be executed.
      e.g.   yes? GO filename
  
@@ -4949,7 +4948,6 @@ stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:
 stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-           *** NOTE: No active redirects to cancel
  **ERROR: request exceeds memory setting: Requested result is larger than the available memory
 stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
  PERMANENT data cleared from memory

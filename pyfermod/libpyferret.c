@@ -519,7 +519,6 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
     int  cmnd_stack_level;
     char errmsg[2112];
     int  errval;
-    PyObject *retval;
 
     /* If not initialized, raise a MemoryError */
     if ( ! ferretInitialized ) {
@@ -1600,11 +1599,10 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
 
 
 static char pyferretStopDocstring[] =
-    "Runs a series of Ferret commands to return Ferret to \n"
-    "its default state, then shuts down and releases all \n"
-    "memory used by Ferret.  After calling this function do \n"
-    "not call any Ferret functions except start, which will \n"
-    "restart Ferret and re-enable the other functions. \n"
+    "Returns Ferret to its default state, shuts down Ferret, and \n"
+    "releases all memory used by Ferret.  After calling this \n"
+    "function do not call any Ferret functions except start, \n"
+    "which will restart Ferret and re-enable the other functions. \n"
     "\n"
     "Required arguments: \n"
     "    (none) \n"
@@ -1613,7 +1611,7 @@ static char pyferretStopDocstring[] =
     "    (none) \n"
     "\n"
     "Returns: \n"
-    "    False if Ferret has not been started or has already been stopped \n"
+    "    False if Ferret has not been started or has already been stopped; \n"
     "    True otherwise \n";
 
 static PyObject *pyferretStop(PyObject *self)
@@ -1633,17 +1631,7 @@ static PyObject *pyferretStop(PyObject *self)
     Py_DECREF(pyferret_module_pyobject);
     pyferret_module_pyobject = NULL;
 
-    /* Run commands to clear/reset Ferret's state */
-    ferret_dispatch_c("SET GRID ABSTRACT", sBuffer);
-    ferret_dispatch_c("CANCEL WINDOW /ALL", sBuffer);
-    ferret_dispatch_c("CANCEL VARIABLE /ALL", sBuffer);
-    ferret_dispatch_c("CANCEL SYMBOL /ALL", sBuffer);
-    ferret_dispatch_c("CANCEL DATA /ALL", sBuffer);
-    ferret_dispatch_c("CANCEL REGION /ALL", sBuffer);
-    ferret_dispatch_c("CANCEL MEMORY /ALL", sBuffer);
-    ferret_dispatch_c("EXIT /PROGRAM", sBuffer);
-
-    /* Free memory allocated inside Ferret */
+    /* Clear/reset Ferret's state and free memory allocated inside Ferret */
     FORTRAN(finalize_ferret)();
 
     /* Free memory allocated for PPLUS */
@@ -1661,9 +1649,15 @@ static PyObject *pyferretStop(PyObject *self)
 
 
 static char pyferretQuitDocstring[] =
-    "Shuts down and release all memory used by Ferret. \n"
-    "This function is intended to be used with the atexit module \n"
-    "to ensure an open viewer window does not hang Python shutdown. \n"
+    "Returns Ferret to its default state, shuts down Ferret, and \n"
+    "releases all memory used by Ferret.  After calling this \n"
+    "function do not call any Ferret functions except start, \n"
+    "which will restart Ferret and re-enable the other functions. \n"
+    "\n"
+    "Except for the return value, this function is now identical \n"
+    "to the _stop method.  This method is retained for backwards \n"
+    "compatibility - to be used with the atexit module to ensure \n"
+    "an open viewer window does not hang Python shutdown. \n"
     "\n"
     "Required arguments: \n"
     "    (none) \n"
@@ -1676,36 +1670,13 @@ static char pyferretQuitDocstring[] =
 
 static PyObject *pyferretQuit(PyObject *self)
 {
-    /* If not initialized, nothing to do; just return None */
-    if ( ! ferretInitialized ) {
-        Py_INCREF(Py_None);
-        return Py_None;
-    }
+    PyObject *result;
 
-    /* Set to uninitialized */
-    ferretInitialized = 0;
+    /* Just call the _stop method */
+    result = pyferretStop(self);
+    Py_DECREF(result);
 
-    /* Release the references to the pyferret and pyferret.graphbind modules */
-    Py_DECREF(pyferret_graphbind_module_pyobject);
-    pyferret_graphbind_module_pyobject = NULL;
-    Py_DECREF(pyferret_module_pyobject);
-    pyferret_module_pyobject = NULL;
-
-    /* Let Ferret do its orderly shutdown - including closing viewers */
-    ferret_dispatch_c("EXIT /PROGRAM", sBuffer);
-
-    /* Free memory allocated inside Ferret */
-    FORTRAN(finalize_ferret)();
-
-    /* Free memory allocated for PPLUS */
-    FerMem_Free(pplMemory, __FILE__, __LINE__);
-    pplMemory = NULL;
-
-#ifdef MEMORYDEBUG
-    (void) ReportAnyMemoryLeaks();
-#endif
-
-    /* Return None */
+    /* But return None */
     Py_INCREF(Py_None);
     return Py_None;
 }

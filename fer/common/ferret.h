@@ -108,6 +108,7 @@ void FORTRAN(text_to_utf8)(const char *text, const int *textlen, char *utf8str, 
 DFTYPE FORTRAN(time_decode)(char *strtime);
 void FORTRAN(us2i_str_cmp)(char *str1, char *str2, int *ival);
 void FORTRAN(us2i_compare_string_list)(char* compare_string, int *str_seq);
+void FORTRAN(us2i_string_list_free)(void);
 int  FORTRAN(write_dods)(char*filename, int* slen, int *clobber, int *swap, int *length, float *data);
 int  FORTRAN(write_dods_double)(char*filename, int* slen, int *clobber, int *swap, int *length, double *data);
 void FORTRAN(xfer_c_ptrs)(char ***src_ptr, int *src_del, int *src_offset,

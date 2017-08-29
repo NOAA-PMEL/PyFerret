@@ -172,8 +172,9 @@ C       pulled from xeq_cancel in order to do complete clean up silently
         peak_mem = 0
         peak_essential_mem = 0
 
+        CALL us2i_string_list_free()
 
-        CALL efcn_list_clear();
+        CALL efcn_list_clear()
 
         CALL string_array_clear(alg_pvar_head)
 

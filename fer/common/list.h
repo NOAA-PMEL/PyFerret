@@ -68,17 +68,21 @@ typedef struct list_element_t LIST_ELEMENT;
 #define LIST_OK         1
 #define LIST_EXTENT     2
 
-/* prototypes */
-LIST *list_init(void);
+/*
+ * list function prototypes - 
+ * filename and linenum are for debugging (MEMORYDEBUG) and 
+ * should be __FILE__ and __LINE__ where these are called 
+ */
+LIST *list_init(char *filename, int linenum);
 LIST *list_mvprev(LIST *list);
 LIST *list_mvnext(LIST *list);
-char *list_insert_before(LIST *list, char *data, int bytes);
-char *list_insert_after(LIST *list, char *data, int bytes);
-char *list_remove_front(LIST *list);
-char *list_remove_rear(LIST *list);
-char *list_remove_curr(LIST *list);
+char *list_insert_before(LIST *list, char *data, int bytes, char *filename, int linenum);
+char *list_insert_after(LIST *list, char *data, int bytes, char *filename, int linenum);
+char *list_remove_front(LIST *list, char *filename, int linenum);
+char *list_remove_rear(LIST *list, char *filename, int linenum);
+char *list_remove_curr(LIST *list, char *filename, int linenum);
 int   list_traverse(LIST *list, char *data, int (*func)(char *, char *), int opts);
-void  list_free(LIST *list, void (*dealloc)(char *));
+void  list_free(LIST *list, void (*dealloc)(char *), char *filename, int linenum);
 
 /* Yet more prototypes - previously were possibly macros */
 LIST *list_mvfront(LIST *list);

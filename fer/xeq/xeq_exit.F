@@ -151,8 +151,8 @@
 	   pop = csp
 	   GOTO 400
 	ELSE IF ( (qual_given(slash_exit_program) .GT. 0) .OR.
-     .            ( (qual_given(slash_exit_command) .GT. 0) .AND. 
-     .              .NOT. GO_FILE_INPUT() ) ) THEN
+     .            (qual_given(slash_exit_command) .GT. 0) .OR. 
+     .            .NOT. GO_FILE_INPUT() ) THEN
 * Exit program completely 
 * *kob* new call to GO_FILE_INPUT to make sure were not in command file
 * *kms* 8/2017 - finalize_ferret handles all the shutdown details, 

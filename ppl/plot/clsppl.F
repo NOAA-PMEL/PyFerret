@@ -109,11 +109,6 @@ C
 
         if (gksopn) then 
            if ( istate .GE. 2 ) then
-*
-*             *kms* Save the graphics to meta_file if appropriate
-              IF ( save_on_exit .AND. imgname_sent ) THEN
-                  CALL FGD_SAVE_WINDOW(meta_file)
-              ENDIF
 
               member = 1
               call FGD_GQACWK(member,er_status,num_active,rmember)

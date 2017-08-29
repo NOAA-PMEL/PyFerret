@@ -104206,13 +104206,6 @@ plot/vs/over/thick/siz=0.2/sym=19 xpts,ypts
 frame/file=vs_lon_over.gif
  
 exit/command
-CANCEL REDIRECT
-SET GRID ABSTRACT
-CANCEL VARIABLE /ALL
-CANCEL ALIAS /ALL
-CANCEL LIST /ALL
-CANCEL REGION /ALL
-CANCEL SYMBOL /ALL
 *** Running ferret script: bn_ps.jnl
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -105116,13 +105109,6 @@ go bn_fcn_calls.jnl
 exit
  
 exit/command
-CANCEL REDIRECT
-SET GRID ABSTRACT
-CANCEL VARIABLE /ALL
-CANCEL ALIAS /ALL
-CANCEL LIST /ALL
-CANCEL REGION /ALL
-CANCEL SYMBOL /ALL
 *** Running ferret script: bn_startupfile.jnl
     SET MEMORY/SIZE: 31 megawords
     Peak demand: 0 words

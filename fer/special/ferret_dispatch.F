@@ -316,8 +316,8 @@ c	DO 2 i = 1, 200
 	   RETURN
 	ENDIF
 	   
-* exit the dispatch loop - if from pyferret, to return control to python
-*                          if from ferret_c, just re-enter the dispatch loop
+* exit the dispatch loop - if from PyFerret, return control to python
+*                          if from Ferret, just re-enter the dispatch loop
  450    rtn_flags(frtn_control) = fctrl_in_ferret
         rtn_flags(frtn_status) = gui_status
         rtn_flags(frtn_action) = factn_no_action

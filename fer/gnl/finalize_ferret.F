@@ -95,6 +95,8 @@ C       values in xprog_state_data.F
             CALL GET_FER_COMMAND(cmnd_buff, istatus, *300)
             CALL XEQ_CANCEL
   300       CALL CLEANUP_LAST_CMND(cmnd_stack_level)
+            CALL CLSPPL
+            pplus_started = .FALSE. 
         ENDIF
 
         cmnd_buff = 'CANCEL VARIABLE /ALL'

@@ -1599,7 +1599,7 @@ grdelBool grdelWindowViewEnd(grdelType window)
                     "Python binding's endView method: %s", pyefcn_get_error());
             return 0;
         }
-	Py_DECREF(result);
+        Py_DECREF(result);
     }
     else {
         strcpy(grdelerrmsg, "grdelWindowViewEnd: unexpected error, "
@@ -1794,7 +1794,7 @@ grdelBool grdelWindowSegmentEnd(grdelType window)
                     "Python binding's endSegment method: %s", pyefcn_get_error());
             return 0;
         }
-	Py_DECREF(result);
+        Py_DECREF(result);
     }
     else {
         strcpy(grdelerrmsg, "grdelWindowSegmentEnd: unexpected error, "
@@ -1853,7 +1853,7 @@ grdelBool grdelWindowSegmentDelete(grdelType window, int segid)
                     "Python binding's deleteSegment method: %s", pyefcn_get_error());
             return 0;
         }
-	Py_DECREF(result);
+        Py_DECREF(result);
     }
     else {
         strcpy(grdelerrmsg, "grdelWindowSegmentDelete: unexpected error, "

@@ -150,20 +150,14 @@
 * Exit to Ferret prompt or out of the ferret_dispatch loop
 	   pop = csp
 	   GOTO 400
-	ELSE IF (qual_given(slash_exit_topython) .GT. 0) THEN
-* Exit to the dispatch loop
-	   pop = csp
-	   GOTO 400
-	ELSE IF (qual_given(slash_exit_program) .GT. 0    .OR.
-     .  	  (qual_given(slash_exit_command) .GT. 0) .OR. 
-     .            .NOT. GO_FILE_INPUT()) THEN
+	ELSE IF ( (qual_given(slash_exit_program) .GT. 0) .OR.
+     .            (qual_given(slash_exit_command) .GT. 0) .OR. 
+     .            .NOT. GO_FILE_INPUT() ) THEN
 * Exit program completely 
 * *kob* new call to GO_FILE_INPUT to make sure were not in command file
-	   CALL CLSPPL		! close PLOT5
-           pplus_started = .FALSE.
-	   CALL TM_EXIT		! close TMAP data sets
+* *kms* 8/2017 - finalize_ferret handles all the shutdown details, 
+*                so do nothing here except use the first alternate return.
 	   RETURN 1
-!	   IF ( frame_on ) CALL MOVIE_CLOSE( frame_lun, status )! end movie
 	ELSE
 * no qualifier supplied on a "quit" in a command file: Exit current script
 	   CALL POP_CS

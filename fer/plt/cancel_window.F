@@ -140,6 +140,7 @@
 	include	'PLTCOM.DAT'	! with sizing data, etc.
 	include	'gkscm1_inc.decl'	! with gks common
 	include	'GKSCM1.INC'	! with gks common
+        include 'gkscm2.cmn'
 
 * calling argument declarations:
         INTEGER n, lo
@@ -148,6 +149,12 @@
 
 * currently active ?
         IF ( wn_active(n) ) THEN
+*          Save the plot to meta_file, if appropriate
+           IF ( save_on_exit .AND. imgname_sent ) THEN
+              CALL FGD_SAVE_WINDOW(meta_file)
+              save_on_exit = .FALSE.
+              imgname_sent = .FALSE.
+           ENDIF
 * ... clear segments from it
            CALL SET_VIEWPORT( mvp_dflt )
 * ... deactivate it

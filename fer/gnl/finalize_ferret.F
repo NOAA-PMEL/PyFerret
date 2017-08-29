@@ -58,6 +58,8 @@
         include 'xvariables.cmn'
         include 'xtoday.cmn'
 
+        INTEGER ITS_BATCH_GRAPHICS
+
 C       Local variables
         INTEGER j, k, istatus, cmnd_stack_level
 
@@ -90,10 +92,14 @@ C       values in xprog_state_data.F
   200   CALL CLEANUP_LAST_CMND(cmnd_stack_level)
 
         IF ( pplus_started ) THEN
-            cmnd_buff = 'CANCEL WINDOW /ALL'
-            CALL GET_FER_COMMAND(cmnd_buff, istatus, *300)
-            CALL XEQ_CANCEL
-  300       CALL CLEANUP_LAST_CMND(cmnd_stack_level)
+            IF ( mode_gks .AND. (ITS_BATCH_GRAPHICS() .EQ. 0) ) THEN
+                cmnd_buff = 'CANCEL WINDOW /ALL'
+                CALL GET_FER_COMMAND(cmnd_buff, istatus, *300)
+                CALL XEQ_CANCEL
+  300           CALL CLEANUP_LAST_CMND(cmnd_stack_level)
+            ENDIF
+            CALL CLSPPL
+            pplus_started = .FALSE. 
         ENDIF
 
         cmnd_buff = 'CANCEL VARIABLE /ALL'

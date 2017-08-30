@@ -194,7 +194,6 @@ tm_dset_number.F\
 tm_dset_deallo_grids.F\
 tm_dset_use_grids.F\
 tm_errmsg.F\
-tm_exit.F\
 tm_exp_code.F\
 tm_f7721bug_inquire.F\
 tm_ferret_vartype.F\

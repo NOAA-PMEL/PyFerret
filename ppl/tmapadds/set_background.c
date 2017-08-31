@@ -61,14 +61,7 @@
 void FORTRAN(set_background)(int *ws_id, int *ndx)
 {
   WS_STATE_ENTRY *ws;
-
-  Display **dpy;
-  Window   *win;
-  GC        *gc;
-
-  Gint            val;
   int             scr;
-  int             stat;
 
 /****************************************************************************/
 
@@ -82,8 +75,4 @@ void FORTRAN(set_background)(int *ws_id, int *ndx)
       XSetWindowBackground (ws->dpy,ws->win,WhitePixel(ws->dpy,scr));
   }
 }
-
-
-
-
 

@@ -48,13 +48,9 @@
 
 void FORTRAN(copy_buffered_window)(int *ws_id, int *anim_id)
 {
-  WS_STATE_ENTRY *ws, *anim, *temp_win;
+  WS_STATE_ENTRY *ws, *anim;
   unsigned width, height;
-  XWindowAttributes win_info, anim_win_info;
-  int src_absx, src_absy, dest_absx, dest_absy;
-  int screen, tmp_id;
-  Window dummywin;
-  Pixmap pixmap;
+  XWindowAttributes win_info;
 
 /* determine the XGKS ws state entry structure from ws_id */
   ws  = OPEN_WSID (*ws_id);
@@ -68,8 +64,6 @@ void FORTRAN(copy_buffered_window)(int *ws_id, int *anim_id)
       fputs("Can't get target window attributes.", stderr);
       exit(1);
     }
-  
-  screen = DefaultScreen(ws->dpy);
   
   width = win_info.width;
   height = win_info.height;

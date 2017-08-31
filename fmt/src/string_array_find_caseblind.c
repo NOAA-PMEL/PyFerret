@@ -53,7 +53,7 @@ void FORTRAN(string_array_find_caseblind)(void **string_array_header, char *test
    SA_Head * head;
    List_Node *bucket, *p;
    char * model_string;
-   int match=0, is_quoted=0;
+   int match;
 
    head = *string_array_header;
    if( head != NULL ){

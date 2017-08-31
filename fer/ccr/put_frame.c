@@ -67,16 +67,9 @@
 void FORTRAN(put_frame)(int *ws_id, char *filename, char *errstr, char *format, int *status)
 {
   WS_STATE_ENTRY *ws;
-  Display *mydisplay;
-  Window   mywindow;
 
 /* determine the XGKS ws state entry structure from ws_id */
   ws  = OPEN_WSID (*ws_id);	
-
-/* the next 2 lines are diagnostic
-     mydisplay = ws->dpy;
-     mywindow  = ws->win;
-*/
 
 /* call up the capture routine */
 /* Errors internal to Window_Dump com out in errstr */
@@ -92,7 +85,6 @@ void FORTRAN(put_frame)(int *ws_id, char *filename, char *errstr, char *format, 
 void FORTRAN(put_frame_batch)(int *ws_id, char *filename, char *format, int *transp, 
                               DFTYPE *red, DFTYPE *green, DFTYPE *blue, char *errmsg, int *status)
 {
-  char oldfilename[BUFSIZ];
   WS_STATE_ENTRY *ws = OPEN_WSID(*ws_id);
   *status = 0;
 

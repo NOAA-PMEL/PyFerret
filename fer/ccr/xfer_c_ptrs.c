@@ -41,6 +41,7 @@
 
 #include <stdlib.h>
 #include "ferret.h"
+#include "FerMem.h"
 
 void FORTRAN(xfer_c_ptrs)(char ***src_ptr, int *src_del, int *src_offset,
 		          char ***dst_ptr, int *dst_del, int *dst_offset, int *nptr)

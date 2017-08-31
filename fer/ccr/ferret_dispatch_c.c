@@ -67,7 +67,6 @@ void ferret_dispatch_c(char *init_command, smPtr sBuffer)
 {
   int flag_buff_size  = NUMFLAGS;
   int TEXTLENGTH_size  = TEXTLENGTH;
-  int NUMDOUBLES_size = NUMDOUBLES;
 
 /* call the FORTRAN program that actually does the FERRET command */
 /* all arguments must be pointers for FORTRAN */

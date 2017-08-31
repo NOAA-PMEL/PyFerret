@@ -84,7 +84,7 @@ void FORTRAN(deleted_list_init)(void **deleted_list_header, int *int_array, int 
           p->prev = NULL;
           p->next = head->undel_list_head;
           head->undel_list_head = p;
-          if ( p->next = NULL ) {
+          if ( p->next != NULL ) {
  	     p->next->prev = p;
           }
        }

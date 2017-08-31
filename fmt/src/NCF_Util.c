@@ -1490,7 +1490,6 @@ int FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar,
     int status;
     int newvar;
     LIST *vlist;
-    LIST_ELEMENT *lp;
 
     /*
      * Get the dataset pointer.
@@ -1966,7 +1965,6 @@ int FORTRAN(ncf_rename_var)( int *dset, int *varid, char newvarname[] )
 int FORTRAN(ncf_rename_dim)( int *dset, int *dimid, char newdimname[] )
 {
     ncdset *nc_ptr;
-    int status;
 
      /*
      * Get the dataset pointer.
@@ -2158,7 +2156,6 @@ int FORTRAN(ncf_delete_var_att)( int *dset, int *varid, char attname[] )
     ncvar *var_ptr;
     int status;
     int att_to_remove;
-    LIST *varlist;
     LIST *varattlist;
 
     /*
@@ -2262,7 +2259,6 @@ int FORTRAN(ncf_set_var_out_flag)( int *dset, int *varid, int *all_outflag )
 {
     ncvar *var_ptr;
     ncatt *att_ptr;
-    int status;
     LIST *varattlist;
 
     /* Get the variable */
@@ -2392,7 +2388,6 @@ int FORTRAN(ncf_transfer_att)( int *dset1, int *varid1, int *iatt, int *dset2, i
     int status;
     int i;
     LIST *varattlist1;
-    LIST *varattlist2;
 
     /* Get the variable varid1 in dset1 */
     var_ptr1 = ncf_get_ds_var_ptr(dset1, varid1);
@@ -2428,7 +2423,6 @@ int FORTRAN(ncf_transfer_att)( int *dset1, int *varid1, int *iatt, int *dset2, i
             return -1;
         }
     }
-    varattlist2 = var_ptr2->varattlist;
 
     /* Increment number of attributes for varid2 */
     var_ptr2->natts = var_ptr2->natts + 1;
@@ -2475,7 +2469,6 @@ int FORTRAN(ncf_delete_var)( int *dset, char *varname )
     int status;
     int ivar;
     LIST *varlist;
-    LIST *uvgridList;
 
     /* Find the dataset based on its integer ID */
     nc_ptr = ncf_get_ds_ptr(dset);
@@ -2916,7 +2909,6 @@ int FORTRAN(ncf_next_uvar_grid_in_list)( int *LIST_dset, int *uvarid, int *ith, 
     ncvar *var_ptr;
     LIST *uvgridList;
     uvarGrid *uvgrid_ptr;
-    int count;
     int i;
 
     /*
@@ -2941,7 +2933,6 @@ int FORTRAN(ncf_next_uvar_grid_in_list)( int *LIST_dset, int *uvarid, int *ith, 
      * Return the ith grid
      */
     list_mvfront(uvgridList);
-    count = 1;
     for (i = 0; i < *ith; i++) {
         uvgrid_ptr = (uvarGrid *) list_curr(uvgridList);
         *grid = uvgrid_ptr->grid;
@@ -3205,7 +3196,6 @@ int FORTRAN(ncf_get_uvar_grid_list_len)( int *LIST_dset, int *uvarid, int *uvgri
     int status;
     LIST *varlist;
     LIST *uvgridlist;
-    uvarGrid *uvgrid_ptr;
 
     /*
      * Get the list of variables, find pointer to variable varid.

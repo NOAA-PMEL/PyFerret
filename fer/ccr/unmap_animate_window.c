@@ -44,7 +44,7 @@
 #include "gks_implem.h"
 #include "ferret.h"
 
-FORTRAN(unmap_animate_window)(void)
+void FORTRAN(unmap_animate_window)(void)
 {
   WindowMapping(0);
 }

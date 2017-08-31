@@ -1281,7 +1281,6 @@ static int continue_efcn_scan(int gfcn_num_internal) {
   char allpaths[8192]="";
   char cmd[EF_MAX_DESCRIPTION_LENGTH]="";
   int  count=0;
-  int  status=LIST_OK;
   int  i_intEF;
   char *extension;
 
@@ -1964,8 +1963,7 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr, int *status )
 
     canjump = 1;
 
-    sprintf(tempText, "");
-    strcat(tempText, ef_ptr->name);
+    strcpy(tempText, ef_ptr->name);
     strcat(tempText, "_custom_axes_");
 
     if (!internally_linked) {
@@ -2114,8 +2112,7 @@ void FORTRAN(efcn_get_result_limits)( int *id_ptr, int *mr_list_ptr, int *cx_lis
     canjump = 1;
 
 
-    sprintf(tempText, "");
-    strcat(tempText, ef_ptr->name);
+    strcpy(tempText, ef_ptr->name);
     strcat(tempText, "_result_limits_");
 
     if (!internally_linked) {
@@ -2214,7 +2211,7 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
   ExternalFunction *ef_ptr=NULL;
   ExternalFunctionInternals *i_ptr=NULL;
   DFTYPE *arg_ptr[EF_MAX_COMPUTE_ARGS];
-  int xyzt=0, i=0, j=0;
+  int i=0, j=0;
   int size=0;
   int nargs=0;
   char tempText[EF_MAX_NAME_LENGTH]="";
@@ -2335,8 +2332,7 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
 
     } else if (i_ptr->num_work_arrays > 0)  {
 
-      sprintf(tempText, "");
-      strcat(tempText, ef_ptr->name);
+      strcpy(tempText, ef_ptr->name);
       strcat(tempText, "_work_size_");
 
       if (!internally_linked) {
@@ -2451,8 +2447,7 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
      * Now go ahead and call the external function's "_compute_" function,
      * prototyping it for the number of arguments expected.
      */
-    sprintf(tempText, "");
-    strcat(tempText, ef_ptr->name);
+    strcpy(tempText, ef_ptr->name);
     strcat(tempText, "_compute_");
 
     switch ( i_ptr->num_reqd_args + i_ptr->num_work_arrays ) {
@@ -2937,7 +2932,6 @@ int FORTRAN(efcn_get_id)( char name[] )
 int FORTRAN(efcn_match_template)( int *id_ptr, char template[] )
 {
   ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK;
   int EF_LT_MT_return;
 
   static int return_val=0; /* static because it needs to exist after the return statement */
@@ -3405,7 +3399,7 @@ void FORTRAN(ef_err_bail_out)(int *id_ptr, char *text)
 int EF_New( ExternalFunction *this )
 {
   ExternalFunctionInternals *i_ptr=NULL;
-  int status=LIST_OK, i=0, j=0;
+  int i=0, j=0;
 
   static int return_val=0; /* static because it needs to exist after the return statement */
 
@@ -3476,13 +3470,10 @@ int EF_New( ExternalFunction *this )
 void EF_store_globals(int *mr_list_ptr, int *cx_list_ptr,
 	int *mres_ptr, DFTYPE *bad_flag_ptr)
 {
-  int i=0;
-
   GLOBAL_mr_list_ptr = mr_list_ptr;
   GLOBAL_cx_list_ptr = cx_list_ptr;
   GLOBAL_mres_ptr = mres_ptr;
   GLOBAL_bad_flag_ptr = bad_flag_ptr;
-
 }
 void FORTRAN(efcn_pass_arg_ptr)(int *iarg, DFTYPE *arg_ptr)
 {
@@ -3527,7 +3518,6 @@ ExternalFunction *ef_ptr_from_id_ptr(int *id_ptr)
 
 int EF_ListTraverse_fprintf( char *data, char *curr )
 {
-   FILE *File_ptr=(FILE *)data;
    ExternalFunction *ef_ptr=(ExternalFunction *)curr;
 
    fprintf(stderr, "path = \"%s\", name = \"%s\", id = %d, internals_ptr = %ld\n",

@@ -53,7 +53,6 @@
 void FORTRAN(replace_bad_data_sub)(DFTYPE *old_bad, DFTYPE *src, int *size, DFTYPE *new_bad)
 {
   int i;
-  double tmp;
   
   if (isnan(*old_bad)) {
     for (i=0; i<*size; i++)

@@ -44,7 +44,7 @@
   5/2007 *acm* Fixing bug 1510.  Return the result as an argument rather
                than a return from function; under 64-bit the return
 			   always yielded 0.
-/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
 *					 definition of macro DFTYPE in ferret.h.
 */
 
@@ -59,7 +59,7 @@ void FORTRAN(date_decode)(char *strdate, DFTYPE *res)
   int id,im,iy, ok, status;
   char str3[4],str1[2];
   char months[13][4] = {"jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"};
-  DFTYPE rdum, adate;
+  DFTYPE rdum;
   double days_1900 = 59958230400.0 / (60.*60.*24.);
 
   if (sscanf(strdate,"%d/%d/%d%1s",&im,&id,&iy,str1) == 3)
@@ -99,7 +99,7 @@ void FORTRAN(date_decode)(char *strdate, DFTYPE *res)
     }    
 
   if (ok) {
-    adate = FORTRAN(days_from_day0)(&days_1900,&iy,&im,&id,&rdum,&status); 
+    FORTRAN(days_from_day0)(&days_1900,&iy,&im,&id,&rdum,&status); 
     *res = rdum;
   }
   else

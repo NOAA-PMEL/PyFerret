@@ -50,7 +50,7 @@
 
 void FORTRAN(string_array_init)(void **string_array_header, int *array_size, int *string_size, char *string_array)
 {
-   int i,j;
+   int j;
    int true_len, hash_value;
    SA_Head * head;
    List_Node * p;

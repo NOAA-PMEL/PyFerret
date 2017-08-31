@@ -79,12 +79,10 @@ void FORTRAN(cd_read_scale)(int *cdfid, int *varid, int *dims, DFTYPE *offset, D
   size_t start[NFERDIMSP1], count[NFERDIMSP1];
   ptrdiff_t stride[NFERDIMSP1], imap[NFERDIMSP1];
 
-  int tmp, i, maxstrlen, ndimsp, *dimids;
-  size_t bufsiz;
+  int tmp, i;
   int ndim = *dims - 1; /* C referenced to zero */
   int vid = *varid;
   nc_type vtyp;
-  int n_sections;
   int ntotal;
   int scale_it;
   double *data_double;

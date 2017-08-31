@@ -125,39 +125,22 @@
 
 #define FEEP_VOLUME 0
 
+#include "ferret.h"
 #include "FerMem.h"
 
 /* Setable Options */
 
 static int format = ZPixmap;
-static Bool nobdrs = False;
 static Bool on_root = False;
-static Bool standard_out = True;
 /* static Bool debug = False; */
 static Bool use_installed = False;
 static long add_pixel_value = 0;
 
-static int Image_Size(XImage *image);
 static int Get_XColors(XWindowAttributes *win_info, XImage *image, XColor **colors, Display *dpy);
 
 static int endian_type (void)
 {
   return (*(short *) "AZ")& 255;
-}
-
-static long parse_long(char *s)
-{
-    char *fmt = "%lu";
-    long retval = 0L;
-    int thesign = 1;
-
-    if (s && s[0]) {
-	if (s[0] == '-') s++, thesign = -1;
-	if (s[0] == '0') s++, fmt = "%lo";
-	if (s[0] == 'x' || s[0] == 'X') s++, fmt = "%lx";
-	(void) sscanf (s, fmt, &retval);
-    }
-    return (thesign * retval);
 }
 
 /*
@@ -167,11 +150,7 @@ static long parse_long(char *s)
 
 void Window_Dump(Window window, Display *dpy, char *outfile, char *type)
 {
-    unsigned long swaptest = 1;
     XColor *colors = NULL;
-    unsigned buffer_size;
-    int win_name_size;
-    int header_size;
     int ncolors, i;
     char *win_name;
     Bool got_win_name;
@@ -181,7 +160,6 @@ void Window_Dump(Window window, Display *dpy, char *outfile, char *type)
     int absx, absy, x, y;
     unsigned width, height;
     int dwidth, dheight;
-    int bw;
     Window dummywin;
     int *r, *g, *b;
     void (*func)();
@@ -227,19 +205,7 @@ void Window_Dump(Window window, Display *dpy, char *outfile, char *type)
     win_info.y = absy;
     width = win_info.width;
     height = win_info.height;
-    bw = 0;
 
-/* If borders are taken into account with unmapped windows, things crash. 
-   this check on borders in xwd code not needed here.  
-   if (!nobdrs) {
-	absx -= win_info.border_width;
-	absy -= win_info.border_width;
-	bw = win_info.border_width;
-	width += (2 * bw);
-	height += (2 * bw);
-	}
-
-*/
     dwidth = DisplayWidth (dpy, screen);
     dheight = DisplayHeight (dpy, screen);
 
@@ -257,9 +223,6 @@ void Window_Dump(Window window, Display *dpy, char *outfile, char *type)
     } else {
 	got_win_name = True;
     }
-
-    /* sizeof(char) is included for the null string terminator. */
-    win_name_size = strlen(win_name) + sizeof(char);
 
     /*
      * Snarf the pixmap with XGetImage.
@@ -293,11 +256,6 @@ void Window_Dump(Window window, Display *dpy, char *outfile, char *type)
     }
 
     if (add_pixel_value != 0) XAddPixel (image, add_pixel_value);
-
-    /*
-     * Determine the pixmap size.
-     */
-    buffer_size = Image_Size(image);
 
 /*     if (debug) outl("xwd: Getting Colors.\n");*/
 
@@ -376,18 +334,6 @@ void Window_Dump(Window window, Display *dpy, char *outfile, char *type)
     XDestroyImage(image);
 }
 
-/*
- * Determine the pixmap size.
- */
-
-static int Image_Size(XImage *image)
-{
-    if (image->format != ZPixmap)
-      return(image->bytes_per_line * image->height * image->depth);
-
-    return(image->bytes_per_line * image->height);
-}
-
 #define lowbit(x) ((x) & (~(x) + 1))
 #define lowbyte(x) ((x) & (~(x) + 8))
 
@@ -399,8 +345,6 @@ static int Get_XColors(XWindowAttributes *win_info, XImage *image, XColor **colo
     int i, ncolors;
     unsigned long pixel;
     unsigned char *cptr,tmp_cptr;
-
-    Pixel pmask = 0xff000000;
 
     Bool reverse_bytes;
 
@@ -426,7 +370,7 @@ static int Get_XColors(XWindowAttributes *win_info, XImage *image, XColor **colo
 	win_info->visual->class == TrueColor) {
 
 	int nunique_colors;
-	char ind; 
+	int ind; 
 	char *color_indices =  (char *) image->data;
 	unsigned int *color_values = (unsigned int *) image->data;
 	/*	int npixels = image->bytes_per_line * image->height; */
@@ -462,18 +406,18 @@ static int Get_XColors(XWindowAttributes *win_info, XImage *image, XColor **colo
 	  /* see if this pixel matches a known color index */
 	  ind = 0;
 
-	  while ( (ind < (int) nunique_colors) 
+	  while ( (ind < nunique_colors) 
                && (color_values[i] != (*colors)[ind].pixel) ) ind++;
 
 	  /* store unique color just found */
-	  if (ind == (int)nunique_colors ) {
+	  if (ind == nunique_colors ) {
 	    (*colors)[ind].pixel = color_values[i]; 
 	    nunique_colors++;
 	  }  
 
 	  /* replace color with index pointer in image structure */
 	  /* (Read the image as color_values.  Write it as color_indices) */
-	  color_indices[i] = ind; 
+	  color_indices[i] = (char) ind; 
 	}	  
 	
 

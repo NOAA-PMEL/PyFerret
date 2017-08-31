@@ -93,11 +93,11 @@ typedef        unsigned char   char_type;
 /**************************************************************************/
 /* static char_type	*data; */
 static char_type	*data;
-static int		iwidth, iheight, image_offset;
+static int		iwidth, iheight;
 /**************************************************************************/
 typedef int (* ifunptr)(int,int);                              /* Pointer to function returning an int */
  
-static int  GIFEncode( FILE *, int, int, int, int, int, int[], int[], int[], ifunptr );
+static void GIFEncode( FILE *, int, int, int, int, int, int[], int[], int[], ifunptr );
 static int  GetPixel( int, int );
 static void Putword( int, FILE * );
 static void wcompress( int, FILE *, ifunptr );
@@ -113,7 +113,7 @@ static void output( code_int );
 
 void wGIF(FILE *fp, XImage *image, int r[], int g[], int b[])
 {
-     int x,y;
+     int x;
 
 /* Set global variables needed for GetPixel routine */
 /* cast image-> data to unsigned character ptr. 6/12/96 *kob* */
@@ -228,7 +228,7 @@ ifunptr getpixel;
  
  
  
-static int GIFEncode( fp, GWidth, GHeight, GInterlace, Background,
+static void GIFEncode( fp, GWidth, GHeight, GInterlace, Background,
            BitsPerPixel, Red, Green, Blue, GetPixelFunc )
  
 FILE *fp;
@@ -373,7 +373,6 @@ static unsigned short codetab [HSIZE];
 #define CodeTabOf(i)    codetab[i]
  
 static code_int hsize = HSIZE;                 /* for dynamic table sizing */
-static count_int fsize;
  
 /*
  * To save much memory, we overlay the table used by compress() with those
@@ -389,7 +388,6 @@ static count_int fsize;
 #define de_stack               ((char_type *)&tab_suffixof((code_int)1<<BITS))
  
 static code_int free_ent = 0;                  /* first unused entry */
-static int exit_stat = 0;
  
 /*
  * block compression parameters -- after all codes are used up,

@@ -59,21 +59,13 @@
 void FORTRAN(wait_on_resize)(int *ws_id)
 {
   WS_STATE_ENTRY *ws;
-
-  Display       **dpy;
-  Window         *win;
-  GC             *gc;
-
   XEvent          evnt;
-
-  int             xw_event,scr; 
+  int             xw_event; 
   time_t          t0,t_now,*tp;
 
 /*****************************************************************************/
 
   ws  = OPEN_WSID (*ws_id);
-  scr = DefaultScreen (ws->dpy);
-
   tp = &t_now;
   t0 = time(0);
   do { 

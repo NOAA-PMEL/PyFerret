@@ -73,18 +73,9 @@
 void FORTRAN(resize_xgks_window)(int *ws_id, float *x, float *y, int *ix, int *iy)
 {
   WS_STATE_ENTRY *ws;
-
-  Display       **dpy;
-  Window         *win;
-  GC             *gc;
-
-  XEvent          evnt;
   Gpoint          size;
-
   float           xf,yf,aspect;
-
-  int             xw_event,scr; 
-  time_t          t0,t_now,*tp;
+  int             scr; 
 
 /*****************************************************************************/
 
@@ -117,17 +108,6 @@ void FORTRAN(resize_xgks_window)(int *ws_id, float *x, float *y, int *ix, int *i
   if (ws){
     if (ws->ewstype == X_WIN && ws->dpy){
       XResizeWindow (ws->dpy,ws->win,*ix,*iy);
-      tp = &t_now;
-      t0 = time(0);
-  
-/*
- *    do { 
- *    xw_event = XCheckWindowEvent (ws->dpy,ws->win,StructureNotifyMask,&evnt);
- *     time (tp);
- *   } while (xw_event && (t_now - t0 < 3));
- *
- */
-
     } else if (ws->ewstype == MO){
       int type = ws->mf.cgmo->type;
       if (type == MF_GIF){

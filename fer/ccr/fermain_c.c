@@ -212,7 +212,6 @@ int main(int oargc, char *oargv[])
   int journalfile = 1;
   int verify_flag = 1;
   int len_str;
-  int uvar_dset;
   int bat_mode;
 
   its_script = 0;
@@ -418,9 +417,7 @@ static void command_line_run()
   FILE *fp = 0;
   char init_command[2176], script_file[2048], *home = getenv("HOME");
   int ipath = 0;
-  int len_str = 0;
   int script_resetmem = 0;
-  double rmem_size;
 
   /* turn on ^C interrupts  */
   /* 10/97 *kob* add check for gui now that there is only one main program */
@@ -462,7 +459,6 @@ static void command_line_run()
 	  strcat( init_command, " ");
       }
 	  if (arg_pos !=0) {
-	       len_str = strlen(init_command);
 		   strcat( init_command, script_args );
 	  }
 	  strcat( init_command, "; EXIT/PROGRAM");

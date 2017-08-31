@@ -372,7 +372,7 @@ ReadVFont(argc, argv)
 	    break;
 	case 'C':
 	    sp++;
-	    sp[strlen(sp) - 1] = NULL;		/* past the space & null */
+	    sp[strlen(sp) - 1] = '\0';		/* past the space & null */
 	    /* (void)fprintf(stdout,"Character name = %s\n",sp); */
 	    BeginChar(sp);
 	    break;

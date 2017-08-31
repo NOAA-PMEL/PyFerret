@@ -287,9 +287,9 @@ typedef struct ws_struct {
 #define	NOT_SET	(-9.99)
 
 
-extern Gwscat          XgksWsCategory		PROTO((WS_STATE_PTR ws));
-extern EWSTYPE         XgksWsTypeToEnum		PROTO((Gchar *wstype));
-extern WS_STATE_PTR    XgksValidWsId		PROTO((Gint ws_id));
+extern Gwscat          XgksWsCategory(WS_STATE_PTR ws);
+extern EWSTYPE         XgksWsTypeToEnum(Gchar *wstype);
+extern WS_STATE_PTR    XgksValidWsId(Gint ws_id);
 
 
 /*
@@ -378,30 +378,26 @@ extern WS_STATE_PTR    XgksValidWsId		PROTO((Gint ws_id));
  * The "Xc" prefix refers to "X-color".
  */
 
-#ifndef PROTO
-#   define	PROTO(x)	()
-#endif
-
 
 /*
  * Procedural interface to the GKS <-> X color-mapping abstraction:
  */
-extern int	XcNew		PROTO((WS_STATE_PTR XcWs));
-extern int	XcInit		PROTO((WS_STATE_PTR XcWs, XVisualInfo *vinfo));
-extern int	XcSetColour	PROTO((WS_STATE_PTR XcWs, Gint ColourIndex,
-				       Gcobundl *XcRep));
+extern int	XcNew(WS_STATE_PTR XcWs);
+extern int	XcInit(WS_STATE_PTR XcWs, XVisualInfo *vinfo);
+extern int	XcSetColour(WS_STATE_PTR XcWs, Gint ColourIndex,
+				       Gcobundl *XcRep);
 extern unsigned long	
-	    	XcPixelValue    PROTO((WS_STATE_PTR XcWs, Gint ColourIndex));
-extern Gint	XcColourIndex	PROTO((WS_STATE_PTR XcWs,
-				       unsigned long PixelValue));
-extern int	XcEnd		PROTO((WS_STATE_PTR XcWs));
+	    	XcPixelValue(WS_STATE_PTR XcWs, Gint ColourIndex);
+extern Gint	XcColourIndex(WS_STATE_PTR XcWs,
+				       unsigned long PixelValue);
+extern int	XcEnd(WS_STATE_PTR XcWs);
 
 /* Added prototypes */
 int  GIFFlush(Metafile *mf, char *filename);
-void WindowMapping(int map_it);
-int  gescsetdcsize(Gint ws_id, Gpoint size);
+int  GIFFlusht0(Metafile *mf, char *filename);
+int  GIFFlusht1(Metafile *mf, char *filename);
 void GIFresize(WS_STATE_PTR ws, Gpoint size);
 void PSresize(WS_STATE_PTR ws, Gpoint size);
-void xProcessEvents(void);
+void XgksDrawSegToWs(WS_STATE_PTR);
 
 #endif					/* WSLIST_H not defined */

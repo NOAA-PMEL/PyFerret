@@ -80,9 +80,9 @@
 
 /* make sure voidp is defined by including udposix.h here */
 #include "udposix.h"
-extern void	ufree		PROTO((voidp ptr));
-extern voidp	umalloc		PROTO((size_t size));
-extern voidp	urealloc	PROTO((voidp ptr, size_t size));
+extern void	ufree		(voidp ptr);
+extern voidp	umalloc		(size_t size);
+extern voidp	urealloc	(voidp ptr, size_t size);
 
 /*
  *	Manage memory safely (i.e. ignore signals while doing it).

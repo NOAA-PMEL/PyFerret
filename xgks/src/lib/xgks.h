@@ -1528,16 +1528,12 @@ typedef enum Gfuncerrmap {
 #define gxconfig(ws)	gescsetbackingstore(ws, 1)
 #define gxname(name)	gescsetprogname(name)
 
+extern void gescsetbackingstore(Gint ws, Gint i);
+extern void gescsetprogname(Gchar *name);
 
-/*
- * Declarations of non-int functions:
- */
-
-#ifndef PROTO
-#   define PROTO(x)	()
-#endif
-
-extern void gescsetbackingstore PROTO((Gint ws, Gint i));
-extern void gescsetprogname     PROTO((Gchar *name));
+/* Added prototypes */
+void WindowMapping(int map_it);
+int  gescsetdcsize(Gint ws_id, Gpoint size);
+void xProcessEvents(void);
 
 #endif

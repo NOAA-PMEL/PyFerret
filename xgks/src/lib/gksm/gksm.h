@@ -47,72 +47,72 @@
 #define XGKS_GKSM_H
 
 
-extern int GMnextItem	PROTO((
+extern int GMnextItem(
     Metafile	*mf		/* Metafile structure */
-));
-extern int GMwriteItem	PROTO((
+);
+extern int GMwriteItem(
     Metafile	*mf,		/* Metafile structures */
     int		num,	/* Number of Metafiles */
     Gint	type,	/* item type */
     Gint	length,	/* item length */
     Gchar	*data	/* item data-record */
-));
-extern int GMreadItem	PROTO((
+);
+extern int GMreadItem(
     Metafile	*mf,		/* Metafile structure  */
     char        *record	/* input data-record */
-));
-extern int GMmiOpen	PROTO((
+);
+extern int GMmiOpen(
     Metafile	*mf,		/* Metafile structure */
     char	*conn		/* Metafile identifier (filename) */
-));
-extern int GMmiClose	PROTO((
+);
+extern int GMmiClose(
     Metafile	*mf
-));
-extern int GMmoOpen	PROTO((
+);
+extern int GMmoOpen(
     WS_STATE_PTR	ws
-));
-extern int GMmoClose	PROTO((
+);
+extern int GMmoClose(
     Metafile	*mf
-));
-extern int GMclear	PROTO((
+);
+extern int GMclear(
     Metafile	*mf,
     int		num,
     Gclrflag	flag
-));
-extern int GMredrawAllSeg	PROTO((
+);
+extern int GMredrawAllSeg(
     Metafile	*mf,
     int		num
-));
-extern int GMupdate	PROTO((
+);
+extern int GMupdate(
     Metafile	*mf,
     int		num,
     Gregen	regenflag
-));
-extern int GMdefer	PROTO((
+);
+extern int GMdefer(
     Metafile	*mf,
     int		num,
     Gdefmode	defer_mode,
     Girgmode	regen_mode
-));
-extern int GMmessage	PROTO((
+);
+extern int GMmessage(
     Metafile	*mf,
     int		num,
     Gchar	*string
-));
-extern int GMoutputGraphic	PROTO((
+);
+extern int GMoutputGraphic(
     Metafile	*mf,
     int		num,
     Gint	code,
     Gint	num_pt,
     Gpoint	*pos
-));
-extern int GMtext	PROTO((
+);
+extern int GMtext(
     Metafile	*mf,
     int		num,
     Gpoint	*at,
     Gchar	*string
-));
-extern int GMcellArray	PROTO((
+);
+extern int GMcellArray(
     Metafile	*mf,
     int		num,
     Gpoint	*ll,
@@ -121,62 +121,62 @@ extern int GMcellArray	PROTO((
     Gint	row,
     Gint	*colour,
     Gipoint	*dim
-));
-extern int GMsetGraphSize	PROTO((
+);
+extern int GMsetGraphSize(
     Metafile	*mf,
     int		num,
     Gint	code,
     double	size
-));
-extern int GMcloseSeg	PROTO((
+);
+extern int GMcloseSeg(
     Metafile	*mf,
     int		num
-));
-extern int GMsetGraphAttr	PROTO((
+);
+extern int GMsetGraphAttr(
     Metafile	*mf,
     int		num,
     Gint	code,
     Gint	attr
-));
-extern int GMsetTextFP	PROTO((
+);
+extern int GMsetTextFP(
     Metafile	*mf,
     int		num,
     Gtxfp	*txfp
-));
-extern int GMsetCharUp	PROTO((
+);
+extern int GMsetCharUp(
     Metafile	*mf,
     int		num,
     Gpoint	*up,
     Gpoint	*base
-));
-extern int GMsetTextPath	PROTO((
+);
+extern int GMsetTextPath(
     Metafile	*mf,
     int		num,
     Gtxpath	path
-));
-extern int GMsetTextAlign	PROTO((
+);
+extern int GMsetTextAlign(
     Metafile	*mf,
     int		num,
     Gtxalign	*align
-));
-extern int GMsetFillStyle	PROTO((
+);
+extern int GMsetFillStyle(
     Metafile	*mf,
     int		num,
     Gflinter	style
-));
-extern int GMsetPatSize	PROTO((
+);
+extern int GMsetPatSize(
     Metafile	*mf,
     int		num
-));
-extern int GMsetPatRefpt	PROTO((
+);
+extern int GMsetPatRefpt(
     Metafile	*mf,
     int		num
-));
-extern int GMsetAsf	PROTO((
+);
+extern int GMsetAsf(
     Metafile	*mf,
     int		num
-));
-extern int GMsetLineMarkRep	PROTO((
+);
+extern int GMsetLineMarkRep(
     Metafile	*mf,
     int		num,
     Gint	code,
@@ -184,84 +184,84 @@ extern int GMsetLineMarkRep	PROTO((
     Gint	type,
     double	size,
     Gint	colour
-));
-extern int GMsetTextRep	PROTO((
+);
+extern int GMsetTextRep(
     Metafile	*mf,
     int		num,
     Gint	idx,
     Gtxbundl	*rep
-));
-extern int GMsetFillRep	PROTO((
+);
+extern int GMsetFillRep(
     Metafile	*mf,
     int		num,
     Gint	idx,
     Gflbundl	*rep
-));
-extern int GMsetPatRep	PROTO((
+);
+extern int GMsetPatRep(
     Metafile	*mf,
     int		num,
     Gint	idx,
     Gptbundl	*rep
-));
-extern int GMsetColRep	PROTO((
+);
+extern int GMsetColRep(
     Metafile	*mf,
     int		num,
     Gint	idx,
     Gcobundl	*rep
-));
-extern int GMsetClip	PROTO((
+);
+extern int GMsetClip(
     Metafile	*mf,
     int		num,
     Glimit	*rect
-));
-extern int GMsetLimit	PROTO((
+);
+extern int GMsetLimit(
     Metafile	*mf,
     int		num,
     Gint	code,
     Glimit	*rect
-));
-extern int GMrenameSeg	PROTO((
+);
+extern int GMrenameSeg(
     Metafile	*mf,
     int		num,
     Gint	old,
     Gint	new
-));
-extern int GMsetSegTran	PROTO((
+);
+extern int GMsetSegTran(
     Metafile	*mf,
     int		num,
     Gint	name,
     Gfloat	matrix[2][3]
-));
-extern int GMsetSegAttr	PROTO((
+);
+extern int GMsetSegAttr(
     Metafile	*mf,
     int		num,
     Gint	name,
     Gint	code,
     Gint	attr
-));
-extern int GMsetSegVis	PROTO((
+);
+extern int GMsetSegVis(
     Metafile	*mf,
     int		num,
     Gint	name,
     Gsegvis	vis
-));
-extern int GMsetSegHilight	PROTO((
+);
+extern int GMsetSegHilight(
     Metafile	*mf,
     int		num,
     Gint	name,
     Gseghi	hilight
-));
-extern int GMsetSegPri	PROTO((
+);
+extern int GMsetSegPri(
     Metafile	*mf,
     int		num,
     Gint	name,
     double	pri
-));
-extern int GMsetSegDetect	PROTO((
+);
+extern int GMsetSegDetect(
     Metafile	*mf,
     int		num,
     Gint	name,
     Gsegdet	det
-));
+);
 
 #endif	/* XGKS_GKSM_H not defined */

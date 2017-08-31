@@ -1229,7 +1229,6 @@ CGMredrawAllSeg(mf, num)
     int		num;
 {
     int		ii;
-    extern void	XgksDrawSegToWs PROTO((WS_STATE_PTR));
 
     for (ii = 0; ii < num; ++ii) {
 	mf_cgmo	*cgmo	= mf[ii].cgmo;

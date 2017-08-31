@@ -297,76 +297,76 @@ typedef struct {
 /*
  * Metafile API:
  */
-extern int XgksMiOpenWs		PROTO((WS_STATE_PTR ws));
-extern int XgksMoOpenWs		PROTO((WS_STATE_PTR ws));
-extern int XgksMiCloseWs	PROTO((WS_STATE_PTR ws));
-extern int XgksMoCloseWs	PROTO((WS_STATE_PTR ws, Gint batmode));
-extern int XgksMoClearWs	PROTO((WS_STATE_PTR ws, Gclrflag flag));
-extern int XgksMoReDrawAllSeg	PROTO((WS_STATE_PTR ws));
-extern int XgksMoUpdateWs	PROTO((WS_STATE_PTR ws, Gregen regenflag));
-extern int XgksMoDeferWs	PROTO((WS_STATE_PTR ws, Gdefmode defer_mode, 
-				       Girgmode regen_mode));
-extern int XgksMoMessage	PROTO((WS_STATE_PTR ws, Gchar *string));
-extern int XgksMoGraphicOutputToWs	PROTO((WS_STATE_PTR ws, Gint code, 
-					       Gint num_pt, Gpoint *pos));
-extern int XgksMoGraphicOutput	PROTO((Gint code, Gint num_pt, Gpoint *pos));
-extern int XgksMoTextToWs	PROTO((WS_STATE_PTR ws, Gpoint *at, 
-				       Gchar *string));
-extern int XgksMoText		PROTO((Gpoint *at, Gchar *string));
-extern int XgksMoCellArrayToWs	PROTO((WS_STATE_PTR ws, Gpoint *ll, Gpoint *ur,
+extern int XgksMiOpenWs		(WS_STATE_PTR ws);
+extern int XgksMoOpenWs		(WS_STATE_PTR ws);
+extern int XgksMiCloseWs	(WS_STATE_PTR ws);
+extern int XgksMoCloseWs	(WS_STATE_PTR ws, Gint batmode);
+extern int XgksMoClearWs	(WS_STATE_PTR ws, Gclrflag flag);
+extern int XgksMoReDrawAllSeg	(WS_STATE_PTR ws);
+extern int XgksMoUpdateWs	(WS_STATE_PTR ws, Gregen regenflag);
+extern int XgksMoDeferWs	(WS_STATE_PTR ws, Gdefmode defer_mode, 
+				       Girgmode regen_mode);
+extern int XgksMoMessage	(WS_STATE_PTR ws, Gchar *string);
+extern int XgksMoGraphicOutputToWs	(WS_STATE_PTR ws, Gint code, 
+					       Gint num_pt, Gpoint *pos);
+extern int XgksMoGraphicOutput	(Gint code, Gint num_pt, Gpoint *pos);
+extern int XgksMoTextToWs	(WS_STATE_PTR ws, Gpoint *at, 
+				       Gchar *string);
+extern int XgksMoText		(Gpoint *at, Gchar *string);
+extern int XgksMoCellArrayToWs	(WS_STATE_PTR ws, Gpoint *ll, Gpoint *ur,
 				       Gpoint *lr, 
-				       Gint row, Gint *colour, Gipoint *dim));
-extern int XgksMoCellArray	PROTO((Gpoint *ll, Gpoint *ur, Gpoint *lr,
-				       Gint row, Gint *colour, Gipoint *dim));
-extern int XgksMoSetGraphicSizeOnWs	PROTO((WS_STATE_PTR ws, Gint code, 
-					       double size));
-extern int XgksMoSetGraphicSize	PROTO((Gint code, double size));
-extern int XgksMoCloseSegOnWs	PROTO((WS_STATE_PTR ws));
-extern int XgksMoCloseSeg	PROTO((void));
-extern int XgksMoSetGraphicAttrOnWs	PROTO((WS_STATE_PTR ws, Gint code, 
-					      Gint attr));
-extern int XgksMoSetGraphicAttr	PROTO((Gint code, Gint attr));
-extern int XgksMoSetTextFPOnWs	PROTO((WS_STATE_PTR ws, Gtxfp *txfp));
-extern int XgksMoSetTextFP	PROTO((Gtxfp *txfp));
-extern int XgksMoSetCharUpOnWs	PROTO((WS_STATE_PTR ws, Gpoint *up,
-				       Gpoint *base));
-extern int XgksMoSetCharUp	PROTO((void));
-extern int XgksMoSetTextPathOnWs	PROTO((WS_STATE_PTR ws, Gtxpath path));
-extern int XgksMoSetTextPath	PROTO((Gtxpath path));
-extern int XgksMoSetTextAlignOnWs	PROTO((WS_STATE_PTR ws, 
-					      Gtxalign *align));
-extern int XgksMoSetTextAlign	PROTO((Gtxalign *align));
-extern int XgksMoSetFillIntStyleOnWs	PROTO((WS_STATE_PTR ws, 
-					      Gflinter style));
-extern int XgksMoSetFillIntStyle	PROTO((Gflinter style));
-extern int XgksMoSetPatSizeOnWs	PROTO((WS_STATE_PTR ws));
-extern int XgksMoSetPatSize	PROTO((void));
-extern int XgksMoSetPatRefOnWs	PROTO((WS_STATE_PTR ws));
-extern int XgksMoSetPatRef	PROTO((void));
-extern int XgksMoSetAsfOnWs	PROTO((WS_STATE_PTR ws));
-extern int XgksMoSetAsf		PROTO((void));
-extern int XgksMoSetLineMarkRep	PROTO((WS_STATE_PTR ws, Gint code, Gint idx, 
-				       Gint type, double size, Gint colour));
-extern int XgksMoSetTextRep	PROTO((WS_STATE_PTR ws, Gint idx, Gtxbundl *rep));
-extern int XgksMoSetFillRep	PROTO((WS_STATE_PTR ws, Gint idx, Gflbundl *rep));
-extern int XgksMoSetPatRep	PROTO((WS_STATE_PTR ws, Gint idx, Gptbundl *rep));
-extern int XgksMoSetColourRep	PROTO((WS_STATE_PTR ws, Gint idx, Gcobundl *rep));
-extern int XgksMoSetClipOnWs	PROTO((WS_STATE_PTR ws, Glimit *rect));
-extern int XgksMoSetClip	PROTO((Glimit *rect));
-extern int XgksMoSetLimit	PROTO((WS_STATE_PTR ws, Gint code, 
-				       Glimit *rect));
-extern int XgksMoRenameSeg	PROTO((Gint old, Gint new));
-extern int XgksMoSetSegTransOnWs	PROTO((WS_STATE_PTR ws, Gint name, 
-					       Gfloat matrix[2][3]));
-extern int XgksMoSetSegTrans	PROTO((Gint name, Gfloat matrix[2][3]));
-extern int XgksMoSetSegAttrOnWs	PROTO((WS_STATE_PTR ws, Gint name, Gint code,
-				       Gint attr));
-extern int XgksMoSetSegVis	PROTO((Gint name, Gsegvis vis));
-extern int XgksMoSetSegHiLight	PROTO((Gint name, Gseghi hilight));
-extern int XgksMoSetSegPriOnWs	PROTO((WS_STATE_PTR ws, Gint name, double pri));
-extern int XgksMoSetSegPri	PROTO((Gint name, double pri));
-extern int XgksMoSetSegDet	PROTO((Gint name, Gsegdet det));
-extern int XgksMoActivateWs	PROTO((WS_STATE_PTR ws));
-extern int XgksInitGksM		PROTO((void));
+				       Gint row, Gint *colour, Gipoint *dim);
+extern int XgksMoCellArray	(Gpoint *ll, Gpoint *ur, Gpoint *lr,
+				       Gint row, Gint *colour, Gipoint *dim);
+extern int XgksMoSetGraphicSizeOnWs	(WS_STATE_PTR ws, Gint code, 
+					       double size);
+extern int XgksMoSetGraphicSize	(Gint code, double size);
+extern int XgksMoCloseSegOnWs	(WS_STATE_PTR ws);
+extern int XgksMoCloseSeg	(void);
+extern int XgksMoSetGraphicAttrOnWs	(WS_STATE_PTR ws, Gint code, 
+					      Gint attr);
+extern int XgksMoSetGraphicAttr	(Gint code, Gint attr);
+extern int XgksMoSetTextFPOnWs	(WS_STATE_PTR ws, Gtxfp *txfp);
+extern int XgksMoSetTextFP	(Gtxfp *txfp);
+extern int XgksMoSetCharUpOnWs	(WS_STATE_PTR ws, Gpoint *up,
+				       Gpoint *base);
+extern int XgksMoSetCharUp	(void);
+extern int XgksMoSetTextPathOnWs	(WS_STATE_PTR ws, Gtxpath path);
+extern int XgksMoSetTextPath	(Gtxpath path);
+extern int XgksMoSetTextAlignOnWs	(WS_STATE_PTR ws, 
+					      Gtxalign *align);
+extern int XgksMoSetTextAlign	(Gtxalign *align);
+extern int XgksMoSetFillIntStyleOnWs	(WS_STATE_PTR ws, 
+					      Gflinter style);
+extern int XgksMoSetFillIntStyle	(Gflinter style);
+extern int XgksMoSetPatSizeOnWs	(WS_STATE_PTR ws);
+extern int XgksMoSetPatSize	(void);
+extern int XgksMoSetPatRefOnWs	(WS_STATE_PTR ws);
+extern int XgksMoSetPatRef	(void);
+extern int XgksMoSetAsfOnWs	(WS_STATE_PTR ws);
+extern int XgksMoSetAsf		(void);
+extern int XgksMoSetLineMarkRep	(WS_STATE_PTR ws, Gint code, Gint idx, 
+				       Gint type, double size, Gint colour);
+extern int XgksMoSetTextRep	(WS_STATE_PTR ws, Gint idx, Gtxbundl *rep);
+extern int XgksMoSetFillRep	(WS_STATE_PTR ws, Gint idx, Gflbundl *rep);
+extern int XgksMoSetPatRep	(WS_STATE_PTR ws, Gint idx, Gptbundl *rep);
+extern int XgksMoSetColourRep	(WS_STATE_PTR ws, Gint idx, Gcobundl *rep);
+extern int XgksMoSetClipOnWs	(WS_STATE_PTR ws, Glimit *rect);
+extern int XgksMoSetClip	(Glimit *rect);
+extern int XgksMoSetLimit	(WS_STATE_PTR ws, Gint code, 
+				       Glimit *rect);
+extern int XgksMoRenameSeg	(Gint old, Gint new);
+extern int XgksMoSetSegTransOnWs	(WS_STATE_PTR ws, Gint name, 
+					       Gfloat matrix[2][3]);
+extern int XgksMoSetSegTrans	(Gint name, Gfloat matrix[2][3]);
+extern int XgksMoSetSegAttrOnWs	(WS_STATE_PTR ws, Gint name, Gint code,
+				       Gint attr);
+extern int XgksMoSetSegVis	(Gint name, Gsegvis vis);
+extern int XgksMoSetSegHiLight	(Gint name, Gseghi hilight);
+extern int XgksMoSetSegPriOnWs	(WS_STATE_PTR ws, Gint name, double pri);
+extern int XgksMoSetSegPri	(Gint name, double pri);
+extern int XgksMoSetSegDet	(Gint name, Gsegdet det);
+extern int XgksMoActivateWs	(WS_STATE_PTR ws);
+extern int XgksInitGksM		(void);
 
 #endif	/* XGKS_METAFILE_H not defined above */

@@ -77,6 +77,8 @@ C                with "*(*)" for the linux port
 C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * v695 9/15 *acm* write values to PPL* symbols using 6 digits not 4
+* v721 8/17 *kms* always do TM_NUMBER check (not just #ifdef AIX_XLF) 
+*                 for newer gfortran (Mac)
 
 
 	CHARACTER LINE*(*),VALUE*2048,SYM*120,OPR*1,ARG(4)*120
@@ -244,17 +246,13 @@ C
 	    I=INDEX(VALUE,' ')
 	    K=I-1
 	    if(k.eq.1)then
-#ifdef AIX_XLF
 	       IF ( .NOT.TM_NUMBER(value(:k)) ) GOTO 120! ** TMAP mod 10/94 **
-#endif
 		read(value(:k),'(i1)',err=120)jk
 		x1=jk
 	    else
 	    WRITE(FRMT,999)K
 999	    FORMAT('(F',I3.3,'.0)')
-#ifdef AIX_XLF
 	    IF ( .NOT.TM_NUMBER(value(:i-1)) ) GOTO 120	! ** TMAP mod 10/94 **
-#endif
 	    READ(VALUE(:I-1),FRMT,ERR=120)X1
 	    endif
 200	    I=I+1
@@ -268,9 +266,7 @@ C
 	    IST=INDEX(VALUE(I:),' ')+I-2
 	    K=IST-I+1
 	    WRITE(FRMT,999)K
-#ifdef AIX_XLF
 	    IF ( .NOT.TM_NUMBER(value(i:ist)) ) GOTO 120	! ** TMAP mod 10/94 **
-#endif
 	    READ(VALUE(I:IST),FRMT,ERR=120)X2
 	    IF(OPR.EQ.'+')THEN
 		X=X1+X2
@@ -341,21 +337,17 @@ C                with "*(*)" for the linux port
 C
 C	DEFAULT VALUE IF NO NUMBER IS 1.0
 C
-100	    X=1.0
+   	    X=1.0
 	    RETURN
 	ENDIF
 	if(n.eq.1)then
-#ifdef AIX_XLF
-            IF ( .NOT.TM_NUMBER(str) ) GOTO 100  ! ** TMAP mod 11/94 **
-#endif
+            IF ( .NOT.TM_NUMBER(str) ) GOTO 1000  ! ** TMAP mod 11/94 **
 	    read(str,'(i1)',err=1000)jk
 	    x=jk
 	else
 	WRITE(FRMT,999)N
 999	FORMAT('(F',I2.2,'.0)')
-#ifdef AIX_XLF
-            IF ( .NOT.TM_NUMBER(str) ) GOTO 100  ! ** TMAP mod 11/94 **
-#endif
+            IF ( .NOT.TM_NUMBER(str) ) GOTO 1000  ! ** TMAP mod 11/94 **
 	READ(STR,FRMT,ERR=1000)X
 	endif
 

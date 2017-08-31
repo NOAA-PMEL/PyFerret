@@ -41,11 +41,7 @@
 	integer		length, tm_lenstr1
 	integer		result
 	
-#ifdef sun
-        byte      cstring(255)
-#else
-        integer*1 cstring(255)
-#endif
+        integer*1 cstring(2048)
 
 	character*(*)	string
 	

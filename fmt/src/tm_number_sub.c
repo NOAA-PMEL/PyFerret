@@ -51,7 +51,7 @@ void FORTRAN(tm_number_sub)(char *string, int *result)
 {
   int num_read;
   double rval;  /* pointer to double expected by %lf in sscanf */
-  char kval[255];
+  char kval[2048];
 
   num_read = sscanf(string, "%lf%s", &rval, kval);
  

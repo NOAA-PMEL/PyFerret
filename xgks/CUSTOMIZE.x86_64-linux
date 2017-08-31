@@ -22,7 +22,7 @@
 CC='gcc'
 #
 # C compiler flags (default is `-O'):
-CFLAGS='-O2 -m64 -Wall'
+CFLAGS='-O2 -m64'
 # CFLAGS='-O0 -g -m64'
 #
 # C preprocessor flags (default is `-DNDEBUG'):

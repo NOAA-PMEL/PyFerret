@@ -180,12 +180,6 @@ static FileInfo *createBinaryReader(char *name, int lengths[MAXDIMS], int permut
   return fi;
 }
 
-static void deleteVar(VarInfo *theVar) {
-  /* paranoia */
-  memset(theVar, 0, sizeof(VarInfo));
-  FerMem_Free(theVar, __FILE__, __LINE__);
-}
-
 static void deleteBinaryReader(FileInfo *fi){
   FerMem_Free(fi->vars, __FILE__, __LINE__);
   fi->vars = NULL;
@@ -198,7 +192,6 @@ static void deleteBinaryReader(FileInfo *fi){
 
 static int addVar(FileInfo *fi, DFTYPE *data, int type, int doRead){
   VarInfo *theVar = 0;
-  int i;
 
   if (fi->vars == (VarInfo *)0){
     fi->vars = FerMem_Malloc(sizeof(VarInfo), __FILE__, __LINE__);
@@ -245,7 +238,7 @@ static void SWAP(unsigned char *p1, unsigned char *p2)
 }
 
 /* switch the order of the bytes in a long integer */
-static int SWAP32(void *i_in)
+static void SWAP32(void *i_in)
 {
   unsigned char *inptr = (unsigned char *)i_in;
   SWAP(inptr, &inptr[3]);
@@ -259,7 +252,7 @@ static void SWAP16(void *i_in)
   SWAP(inptr, &inptr[1]);
 }
  
-static double SWAP64(void *i_in)
+static void SWAP64(void *i_in)
 {
   unsigned char *inptr = (unsigned char *)i_in;
   SWAP(inptr, &inptr[7]);

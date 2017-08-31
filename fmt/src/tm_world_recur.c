@@ -88,8 +88,6 @@ double FORTRAN(tm_world_recur)(int *isubscript, int *iaxis, int *where_in_box, i
 {
   double tempwld, tm_world;
   int isub, rmod;
-  double showd;
-  int showi;
   int axis = *iaxis;   /* these FORTRAN arrs start at 0 like C */
   int line_len = line_dim[axis];
   int is_subspan;
@@ -112,11 +110,6 @@ double FORTRAN(tm_world_recur)(int *isubscript, int *iaxis, int *where_in_box, i
 	new_ss = (int)line_start[axis]
 	             +(*isubscript-1)*(int)line_delta[axis];
 	
-	showi = axis;
-    showd = line_start[axis];
-	showd = line_delta[axis];
-	showi = new_ss;
-	showi = line_parent[axis];
 	if ( line_regular[axis] || *where_in_box==BOX_MIDDLE ) {
 
 	  tm_world = FORTRAN(tm_world_recur)

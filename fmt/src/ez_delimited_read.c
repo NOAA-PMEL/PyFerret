@@ -84,7 +84,7 @@
 static int decode_file(char* fname, char *recptr, char *delims, int *skip, int* maxrec, int* reclen, 
                        int* nfields, int field_type[], int* nrec, DFTYPE** numeric_fields, 
                        char*** text_fields, DFTYPE bad_flags[], int* status);
-static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[], int rec, 
+static void decodeRec(char *recptr, char *delims, int* nfields, int field_type[], int rec, 
                      DFTYPE** numeric_fields, char*** text_fields, DFTYPE bad_flags[], int* status);
 static void analRec(char *recptr, char *delims, int* nfields, int field_type[], int max_fields);
 static char *nexstrtok(char *s1, char *s2);
@@ -368,7 +368,7 @@ int FORTRAN(anal_file) (char* fname, char *recptr, char *delims, int* skip,
  *
  */
 
-static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[], int rec, 
+static void decodeRec(char *recptr, char *delims, int* nfields, int field_type[], int rec, 
                      DFTYPE** numeric_fields, char*** text_fields, DFTYPE bad_flags[], int* status)
 {
 
@@ -559,19 +559,13 @@ static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  }
 
 	/* check for yyyymmdd date */
-	else if ( (sscanf(p,"%4d%2d%2d%1s",&idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,str1) >= 4)
+	else if ( (sscanf(p,"%4d%2d%2d%1s",&idummy1,&idummy2,&idummy3,str1) == 3)
 	      && idummy1>0
 	      && idummy3>=1 && idummy3<=12
 	      && idummy2>=1 && idummy2<=31 ) {
-		ndum = sscanf(p,"%4d%2d%2d%1s",&idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,str1);
-		tpart = -999;	
-		if (ndum == 6) tpart = idummy4 + idummy5/60. + dummy/3600.;
-		if (ndum == 5) tpart = idummy4 + idummy5/60.;	
-
 		(*(numeric_fields+i))[rec] =
 		FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy2,&idummy3,&rdum,status);
-		(*(numeric_fields+i))[rec] = rdum + tpart/24.; 	
-	    if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];
+		(*(numeric_fields+i))[rec] = rdum;
 		if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];
 	  }
 	else
@@ -692,19 +686,13 @@ static int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  }
 
 	/* add check for yyyyddmm euro date *kob* */
-	else if ( (sscanf(p,"%4d%2d%2d%1s",&idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,str1) >= 4)
+	else if ( (sscanf(p,"%4d%2d%2d%1s",&idummy1,&idummy2,&idummy3,str1) == 3)
 	      && idummy1>0
 	      && idummy3>=1 && idummy3<=12
 	      && idummy2>=1 && idummy2<=31 ) {
-		ndum = sscanf(p,"%4d%2d%2d%1s",&idummy1,&idummy2,&idummy3,&idummy4,&idummy5,&dummy,str1);
-		tpart = -999;	
-		if (ndum == 6) tpart = idummy4 + idummy5/60. + dummy/3600.;
-		if (ndum == 5) tpart = idummy4 + idummy5/60.;	
-
 		(*(numeric_fields+i))[rec] =
 		FORTRAN(days_from_day0)(&days_1900,&idummy1,&idummy3,&idummy2,&rdum,status);
-		(*(numeric_fields+i))[rec] = rdum + tpart/24.;
-	    if (tpart == -999) (*(numeric_fields+i))[rec] = bad_flags[i];
+		(*(numeric_fields+i))[rec] = rdum;
 	    if (*status != 3) (*(numeric_fields+i))[rec] = bad_flags[i];  }
 	else
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
@@ -787,7 +775,7 @@ static void analRec(char *recptr, char *delims, int* nfields, int field_type[], 
   char *p, *pnext, pstart[256], str1[2], latlon1[2];
   double dummy;
 
-  int idummy1, idummy2, idummy3, i, nfields_in;
+  int idummy1, idummy2, idummy3, nfields_in;
 
   p = recptr;
   nfields_in = *nfields;
@@ -997,7 +985,7 @@ void FORTRAN(get_delimited_info) (int *nfields, int field_type[],
 				   char *delim, DelimFileInfo **ptr)
 {
 
-  int i,iout;
+  int i;
   DelimFileInfo *fi = *ptr;
 
   *nfields = fi->nfields;

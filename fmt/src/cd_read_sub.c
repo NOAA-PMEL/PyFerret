@@ -97,7 +97,7 @@ void FORTRAN(cd_read_sub)(int *cdfid, int *varid, int *dims,
   ptrdiff_t stride[7], imap[7], tmp_ptrdiff_t;
 
   int i, ndimsp, *dimids;
-  size_t bufsiz, tmp, tmpstride, maxstrlen;
+  size_t bufsiz, tmp, maxstrlen;
   char *pbuff;
   int ndim = 0;
   int indim = *dims;

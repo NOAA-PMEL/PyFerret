@@ -68,7 +68,6 @@ void ferret_dispatch_c(char *init_command, smPtr sBuffer)
 {
   int flag_buff_size  = NUMFLAGS;
   int TEXTLENGTH_size  = TEXTLENGTH;
-  int NUMDOUBLES_size = NUMDOUBLES;
 
   FORTRAN(ferret_dispatch)(init_command, sBuffer->flags, &flag_buff_size,
 		    sBuffer->text, &TEXTLENGTH_size, &(sBuffer->numStrings));

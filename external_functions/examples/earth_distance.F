@@ -113,12 +113,12 @@
 *                                                                      V
 
       INTEGER i,j,k,l
-      REAL dlo, dhi, ed_pd, ed_earth, ed_lat1, ed_lat2, ed_lon1, ed_lon2, 
+      REAL dlo, dhi, ed_pd, ed_rearth, ed_lat1, ed_lat2, ed_lon1, ed_lon2, 
      .	   ed_x1, ed_x2, ed_y1, ed_y2, ed_z1, ed_z2, ed_d1, ed_angle
 
       
-      ed_pd=4.*atan(1.)/180.
-      ed_rearth=6371.2 
+      ed_pd = 4.*atan(1.)/180.
+      ed_rearth = 6371.2 
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -174,16 +174,10 @@
               result(i,j,k,l) = ed_rearth*ed_angle
  100        CONTINUE
 
-            i1 = i1 + arg_incr(X_AXIS,ARG1)
-            i2 = i2 + arg_incr(X_AXIS,ARG2)
  200      CONTINUE
 
-          j1 = j1 + arg_incr(Y_AXIS,ARG1)
-          j2 = j2 + arg_incr(Y_AXIS,ARG2)
  300    CONTINUE
 
-        l1 = l1 + arg_incr(T_AXIS,ARG1)
-        l2 = l2 + arg_incr(T_AXIS,ARG2)
  400  CONTINUE
       
          

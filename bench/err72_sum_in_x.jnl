@@ -1,0 +1,12 @@
+! err72_sum_in_x.jnl
+! ticket 2560, sum in X direcgtion when result is 0
+! returne a missing-value
+
+! Previously this result was missing
+let var = {-1,1,0}
+list var[x=@sum]
+
+! This was correct, 0
+let yvar = ysequence(var)
+list yvar[j=@sum]
+

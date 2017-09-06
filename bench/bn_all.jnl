@@ -1141,10 +1141,10 @@ GO bn_transp_choose
 GO bn_reset bn_iin_regrid
 GO bn_iin_regrid
 
-! *********** v7.3 Additions ***********
+! *********** v7.21 Additions ***********
 
 GO bn_reset
-GO bn730_bug_fixes
+GO bn721_bug_fixes
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

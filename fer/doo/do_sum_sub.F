@@ -52,6 +52,7 @@
 *                 separately from IS_TRANS
 *                 Counts are saved for the finalization step, to distinguish
 *                 between sum of zero and result that indicates all-missing-data.
+* v7.21 *acm*  9/17 Fix ticket 2560: count is sum of "ok" not "sum" for sum in X
 
         include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -102,7 +103,7 @@
                  ok = ok + 1.
  100	      CONTINUE
 	      res(pt,j,k,l,m,n) = res(pt,j,k,l,m,n) + sum
-	      counts(pt,j,k,l,m,n) = counts(pt,j,k,l,m,n) + sum
+	      counts(pt,j,k,l,m,n) = counts(pt,j,k,l,m,n) + ok
  110	   CONTINUE
 
 * ALONG Y AXIS

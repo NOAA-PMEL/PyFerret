@@ -5149,7 +5149,10 @@ Replacing definition of axis ALINE
 Replacing definition of axis ALINE_EDGES
 Replacing definition of axis ALINE
 Replacing definition of axis ALINE_EDGES
-*** Running ferret script: bn730_bug_fixes.jnl
+*** Running ferret script: bn721_bug_fixes.jnl
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo

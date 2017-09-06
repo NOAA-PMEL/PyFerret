@@ -277,7 +277,7 @@ Benchmark scripts that will be run:
    bn_cache_management.jnl
    bn_transp_choose.jnl
    bn_iin_regrid.jnl
-   bn730_bug_fixes.jnl
+   bn721_bug_fixes.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
@@ -54768,6 +54768,7 @@ ADD_9(A,B,C,D,E,F,G,H,I)
 APPENDE(ENS,VAR)
 AVET(A)
 DATES(Offsets)
+EARTH_DISTANCE(longitude,latitude)
 EFSTRINGS(--)
 FACTORIAL(A)
 FFT_AMP(A)
@@ -103392,16 +103393,16 @@ list b2d[gf=aline_edges@iin]
  8    /  9:  16.00  24.00
  9    / 10:  18.00  27.00
  10   / 11:  20.00  30.00
-*** Running ferret script: bn730_bug_fixes.jnl
-! bn730_bug_fixes.jnl
-! test various fixes that went into version 7.3
+*** Running ferret script: bn721_bug_fixes.jnl
+! bn721_bug_fixes.jnl
+! test various fixes that went into version 7.21
 ! 7/17 *acm*
 !
  
 GO bn_reset
 cancel mode verify
 ooooooooooooooooooooooooooooooooooooooooooo
-GO err72_atts_as_vars.jnl
+GO err72_atts_as_vars
 ! err72_atts_as_vars.jnl
 ! See ticket 2555.  Allocation of pointers for these strings
  
@@ -103511,6 +103512,29 @@ list gattnames[i=1:24:2]
  19   / 10:"nx"         
  21   / 11:"x_min"      
  23   / 12:"y_min"      
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err72_sum_in_x
+! err72_sum_in_x.jnl
+! ticket 2560, sum in X direcgtion when result is 0
+! returne a missing-value
+ 
+! Previously this result was missing
+let var = {-1,1,0}
+list var[x=@sum]
+             VARIABLE : {-1,1,0}
+             X        : 0.5 to 3.5 (summed)
+          0.0000
+ 
+! This was correct, 0
+let yvar = ysequence(var)
+list yvar[j=@sum]
+             VARIABLE : YSEQUENCE(VAR)
+             Y        : 0.5 to 3.5 (summed)
+          0.0000
+ 
 *** Running ferret script: bn_gif.jnl
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using

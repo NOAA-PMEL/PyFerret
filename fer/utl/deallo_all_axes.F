@@ -76,7 +76,8 @@
               IF (line_use_cnt(islot) .LE. 0) THEN
 	         IF ( islot .LE. max_lines ) THEN
                     IF (.NOT. line_regular(islot)) 
-     .                  CALL PACK_LINE_STORAGE(islot)
+     .                  CALL FREE_LINE_DYNMEM(islot)
+		    line_regular(islot) = .TRUE.
 		    line_name(islot) = char_init16
 	         ELSE
 	            CALL TM_DEALLO_DYN_LINE(islot)
@@ -100,11 +101,6 @@
            ENDIF
 
   100	CONTINUE
-
-* If all axes were deleted sucessfully, then reset the pointer into coordinate
-* storage.
-
-        IF (all_gone) next_line_mem_pos = pline_mem_init
 
 	RETURN
 

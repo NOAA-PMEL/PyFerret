@@ -74,6 +74,7 @@
 * V698  3/16 *acm* Define monthly climatology for Julian axis.
 * V702 11/16 *sh* Commented out initialization of of grids cuz
 *                 was taking unacceptable long time to compile
+* V72 8/17 *acm*   For trac enhancement #767 -- dynamic coordinate storage
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -83,22 +84,15 @@
 	include 'xtm_grid.cmn_text'
 
 	INTEGER		ngrd_def, nlne_def, grids_left, lines_left,
-     .			grid_lines_left, i, j,
-     .			pline_mem_next, pline_mem_left, outtype
+     .			grid_lines_left, i, j, outtype
 
 	PARAMETER	(ngrd_def	= 0,
      .			 nlne_def	= 8,
      .			 grids_left	= grid_ceiling-ngrd_def,
      .			 lines_left	= line_ceiling-nlne_def,
-     .			 grid_lines_left= nferdims*grids_left,
-     .                   pline_mem_next = 127,
-     .                   pline_mem_left = maxlinestore-pline_mem_next+1)
+     .			 grid_lines_left= nferdims*grids_left)
 
 	PARAMETER	(outtype	= 6)  ! netcdf type double, output axis type.
-
-* LAST LINE_MEM POSITION + 1
-	DATA	next_line_mem_pos  /pline_mem_next/
-        DATA    pline_mem_init / pline_mem_next/
 
 * DEFINE LINES
 
@@ -275,6 +269,10 @@
 
 	DATA	(line_regular(i),i=nlne_def+1,line_ceiling)
      .			/lines_left*.FALSE./
+	DATA	(line_dim_only(i),i=nlne_def+1,line_ceiling)
+     .			/lines_left*.FALSE./
+	DATA	(line_allocated(i),i=nlne_def+1,line_ceiling)
+     .			/lines_left*0/
 
 	DATA	(line_t0(i),i=nlne_def+1,line_ceiling)
      .			/lines_left*char_init20/
@@ -298,9 +296,6 @@
 	DATA	(line_dattype(i),i=1,line_ceiling)
      .			/line_ceiling*outtype/
 
-c comment out to speed compilation and decrease mem needs *kob* 7/92
-c	DATA	(line_mem(i),i=pline_mem_next,maxlinestore)
-c     .			/pline_mem_left*real8_init/
 
 	DATA	(grid_name(i),i=ngrd_def+1,grid_ceiling)
      .			/grids_left*char_init16/
@@ -319,26 +314,32 @@ c     .			/pline_mem_left*real8_init/
 
 * MONTH_IRREG
 
+* on startup, allocate these lines dynamically and store the following coordinates
+
 *  COORDS FOR MONTH_IRREG
-	DATA	(line_mem(i),i=2,13)
+
+	DATA	(clim_line_coords( i,clmirr ), i=1,12)
      .	/     15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 
      .	     196.7425, 227.7425, 258.2425, 288.7425, 319.2425, 349.7425/
 
 *  BOX BOUNDARIES FOR MONTH_IRREG
-	DATA	(line_mem(i),i=14,26)
+	DATA	(clim_line_edges ( i,clmirr ), i=1,13)
      .	/     0.0, 31.0, 59.2425, 90.2425, 120.2425, 151.2425, 
      .	    181.2425, 212.2425, 243.2425, 273.2425, 304.2425, 
      .	    334.2425, 365.2425/
-     
+
+    
 * MONTH_GREGORIAN
      
 *  COORDS FOR MONTH_GREGORIAN
-	DATA	(line_mem(i),i=27,38)
+
+	DATA	(clim_line_coords( i,clmgrg ), i=1,12)
      .	/     15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 
      .	     196.7425, 227.7425, 258.2425, 288.7425, 319.2425, 349.7425/
 
+     
 *  BOX BOUNDARIES FOR MONTH_GREGORIAN
-	DATA	(line_mem(i),i=39,51)
+	DATA	(clim_line_edges ( i,clmgrg ), i=1,13)
      .	/     0.0, 31.0, 59.2425, 90.2425, 120.2425, 151.2425, 
      .	    181.2425, 212.2425, 243.2425, 273.2425, 304.2425, 
      .	    334.2425, 365.2425/
@@ -346,38 +347,37 @@ c     .			/pline_mem_left*real8_init/
 * MONTH_NOLEAP
      
 *  COORDS FOR MONTH_NOLEAP
-	DATA	(line_mem(i),i=52,63)
+	DATA	(clim_line_coords( i,clmnol ), i=1,12)
      .	/     15.5,  45.0,  74.5, 105.0, 135.5, 166.0, 196.5, 
      .	     227.5, 258.0, 288.5, 319.0, 349.5/
 
 *  BOX BOUNDARIES FOR MONTH_NOLEAP
-	DATA	(line_mem(i),i=64,76)
+	DATA	(clim_line_edges ( i,clmnol ), i=1,13)
      .	/     0.0, 31.0, 59.0, 90.0, 120.0, 151.0, 181.0, 
      .      212.0, 243.0, 273.0, 304.0, 334.0, 365.0/
 
+
 * MONTH_ALL_LEAP
-     
+    
 *  COORDS FOR MONTH_ALL_LEAP
-	DATA	(line_mem(i),i=77,88)
+	DATA	(clim_line_coords( i,clmall ), i=1,12)
      .	/     15.5, 45.5, 75.5, 106.0, 136.5, 167.0, 197.5, 
      .       228.5, 259.0, 289.5, 320.0, 350.5/
 
 *  BOX BOUNDARIES FOR MONTH_ALL_LEAP
-	DATA	(line_mem(i),i=89,101)
+	DATA	(clim_line_edges ( i,clmall ), i=1,13)
      .	/     0.0, 31.0, 60.0, 91.0, 121.0, 152.0, 182.0, 213.0, 
      .      244.0, 274.0, 305.0, 335.0, 366.0/
-
 
 * MONTH_JULIAN
      
 *  COORDS FOR MONTH_JULIAN
-	DATA	(line_mem(i),i=102,113)
+	DATA	(clim_line_coords( i,clmjul ), i=1,12)
      .	/         15.50,  45.25,  74.75, 105.25, 135.75, 166.25, 
      .           196.75, 227.75, 258.25, 288.75, 319.25, 349.750/
 
-
 *  BOX BOUNDARIES FOR MONTH_JULIAN
-	DATA	(line_mem(i),i=114,126)
+	DATA	(clim_line_edges ( i,clmjul ), i=1,13)
      .	/     0.0, 31.0, 59.25, 90.25, 120.25, 151.25, 181.25, 
      .      212.25, 243.25, 273.25, 304.25, 334.25, 365.25/
 

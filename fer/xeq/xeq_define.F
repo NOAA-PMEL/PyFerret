@@ -389,13 +389,13 @@
      .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, MATCH_NAME,
      .            NC_GET_ATTRIB, TM_LEGAL_NAME_OP, TM_HAS_STRING,
      .            ITSA_1LINEIF, MATCH4, GO_FILE_INPUT, IS_AGG_MEMBER, 
-     .            MATCH_TEMPLATE, TM_ITS_SUBSPAN_MODULO,
+     .            MATCH_TEMPLATE, TM_ITS_SUBSPAN_MODULO, TM_CHECK_BOX_LOC,
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
      .            new_att, new_att_modulo, got_it, orient_t, agg_quiet,
      .            letdset, its_remote, agg_hide, def_att_quiet, purge_all,
      .            user, norm, nouser, t_regular, use_strict, have_expr, 
-     .            original, true_month, line_allocated, truemonth_noted,
+     .            original, true_month, line_alloc, truemonth_noted,
      .            is_double, misordered, bnds_or_edges, okmod
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID,
@@ -407,7 +407,7 @@
      .		  status, idim, vax_code, islot, iunit, iline, cat, var,
      .		  orient, mods_cx, cx, mr, n, i1, i2, i3, i4, i5, i6, pos,
      .		  grid, iqual, ax_grid, ivp, qp, iseg, uvar, dset, slen, s1,
-     .		  old_line, old_grid, frst_pt, dim(nferdims), ndim, natom,
+     .		  old_line, old_grid, dim(nferdims), ndim, natom,
      .		  at_type  (maxatoms), at_id  (maxatoms),
      .		  at_start (maxatoms), at_end (maxatoms), cal_id, 
      .            dflt_cal_id, nmonths, ndays, d_before_mon(12), 
@@ -416,7 +416,7 @@
      .            attoutflag, attlen, coordvar, 
      .            dset_to_add, dir, type, attype, attid, ibuff, i0,  
      .            agg_dim, nagfiles, ivar, item, nlab, ierr, nlen,  
-     .            llen, line, dstart, units, npts, ipt1, ipte
+     .            llen, line, dstart, units, npts, ipt1, ipte, iline_b
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            val, dummy, val_buf, xloc, yloc, halign, angle, size,
@@ -424,10 +424,11 @@
 
 	REAL*4	  r4_unspec, scale, xlovp, ylovp,  xhivp, yhivp,
      .            xoei,  yoei,   xcei,  ycei
-	REAL*8	  SECS_FROM_BC, TM_WW_AXLEN,
+	REAL*8	  SECS_FROM_BC, TM_WW_AXLEN, GET_LINE_COORD,
      .		  bc_to_t0, start, new_ww, delta, end, secs2start,
      .            micro_adj, axwwlen, rmod_len, secsperyear, small, 
-     .            new_att_modulo_len, madj, firs_coord, last_coord, timefac
+     .            new_att_modulo_len, madj, firs_coord, last_coord, timefac, 
+     .            vlo, vhi, idel
 	CHARACTER TM_FMT*16, TM_CLEAN_FILENAME*512,SECS_TO_DATE_OUT*11,
      .            reg_name*24, buff1*128, buff2*512, buff3*512, 
      .            buffsym*120, cal_name*32, buff*512,
@@ -932,7 +933,7 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 
 * /LIKE
 
-	line_allocated = .FALSE.
+	line_alloc = .FALSE.
 
 	iqual = qual_given( slash_def_ax_like )
 	IF ( iqual .GT. 0 ) THEN
@@ -961,7 +962,7 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 * find a space to catalog it
 	   status = ALLO_MANAGED_AXIS( iline )
 	   IF ( status .NE. merr_ok ) GOTO 5000
-	   line_allocated = .TRUE.
+	   line_alloc = .TRUE.
 
 * copy the line definition
 	   CALL TM_COPY_LINE ( line, iline )
@@ -1215,7 +1216,7 @@ C /units=months  is 1/12 of the length of the year
  	ENDIF
 
 * find a space to catalog it (may already be done above with DEF AX/LIKE=)
-	IF (.NOT. line_allocated) THEN
+	IF (.NOT. line_alloc) THEN
 	   status = ALLO_MANAGED_AXIS( iline )
 	   IF ( status .NE. merr_ok ) GOTO 5000
 	ENDIF
@@ -1287,19 +1288,31 @@ C /units=months  is 1/12 of the length of the year
 	   idim = dim(1)
 	   n    = CX_DIM_LEN( idim, cx )
 
-* ... original start of free line memory
-	   frst_pt = next_line_mem_pos
-* ... allocate some storage for the coordinates
-	   IF (frst_pt+2*n+1 .GT. maxlinestore) GOTO 5590
+* Allocate line coordinate storage, put the pointer in array linemem(iline)
+* and n+1 edges storage in lineedg(iline)
+
+	   CALL GET_LINE_DYNMEM (n, iline, status) 
+	   IF (status .NE. ferr_ok) GOTO 5000
 	   
 * ... If they gave upper- and lower-bounds we need to store all that,
-*     at least temporarily.  IF its too big suggest edges.
-	   IF (has_bounds .AND. frst_pt+3*n .GT. maxlinestore) THEN 
-	      IF (num_uvars_in_cmnd .EQ. 2 .AND. n2.EQ.2*n) GOTO 5592
-	      IF (num_uvars_in_cmnd .EQ. 3) GOTO 5592
+*     temporarily. Store it in scratch line storage, line_0.
+*     IF the allocation fails with bounds suggest edges.
+
+	   IF (has_bounds) THEN
+
+* If bounds are in a single extra variable they are of size 2*n
+* If they are in two extra arrays, allocate another arrays of size n
+
+              IF (num_uvars_in_cmnd .EQ. 3) THEN
+	         CALL GET_LINE_DYNMEM (n, line_0, status) 
+	         IF (status .NE. ferr_ok) GOTO 5592
+              ELSEIF (n2 .EQ. 2*n) THEN
+	         CALL GET_LINE_DYNMEM (n2, line_0, status) 
+	         IF (status .NE. ferr_ok) GOTO 5592
+              ENDIF
 	   ENDIF
 
-* ... store coordinate positions (error status already checked)
+* ... store edge positions (error status already checked)
            IF (has_bounds) THEN
               CALL NON_ARRAY_SUBSC( is_mr, 2 )
            ELSE
@@ -1311,14 +1324,15 @@ C /units=months  is 1/12 of the length of the year
 	      n = n - 1  ! edges array is one longer than points
 	      IF (n .LE. 0) GOTO 5520
 	      CALL EXTRACT_DP_LINE( cx, memry(mr)%ptr,
-     .				 line_mem(frst_pt+n), idim, n+1 )
+     .				 lineedg(iline)%ptr, idim, n+1 )
 	      npoints = n
 
 
 * ... monotonic?
-	      DO 527 i1 = frst_pt+n+1, frst_pt+n+n
-	         IF (.NOT. TM_FPEQ( line_mem(i1-1), line_mem(i1) ).AND. 
-     .               line_mem(i1-1) .GT. line_mem(i1)) GOTO 5570
+	      DO 527 i1 = 2, n
+	         vhi  = GET_LINE_COORD (lineedg(iline)%ptr, i1)
+	         vlo = GET_LINE_COORD (lineedg(iline)%ptr, i1-1)
+	         IF (.NOT. TM_FPEQ( vlo, vhi ) .AND. vhi .LT. vlo) GOTO 5570
  527	      CONTINUE
 
 * ... are there repeated values?
@@ -1329,9 +1343,10 @@ C /units=months  is 1/12 of the length of the year
 
 	      use_strict = .FALSE.  ! unused for DEFINE AXIS
 	      micro_adj = 1E-6 *
-     .		(line_mem(frst_pt+n+n) - line_mem(frst_pt+n))
+     .		(GET_LINE_COORD (lineedg(iline)%ptr, n+1) - 
+     .		 GET_LINE_COORD (lineedg(iline)%ptr, 1))
 
-	      CALL TM_CHECK_COORDS (frst_pt+n, frst_pt+n+n, is_double, 
+	      CALL TM_CHECK_COORDS (lineedg(iline)%ptr, n+1, is_double, 
      .                              use_strict, has_repeated, misordered, 
      .                              micro_adj, epsilon, epsilon)
 	      IF (misordered) GOTO 5560
@@ -1341,8 +1356,10 @@ C /units=months  is 1/12 of the length of the year
 * ... store points: midway between box boundaries ...
 
 	      has_repeated = .FALSE.
-	      DO 528 i1 = frst_pt+1, frst_pt+n
-	         line_mem(i1-1) = (line_mem(i1+n-1)+line_mem(i1+n)) * 0.5
+	      DO 528 i1 = 2, n+1
+	         vhi = GET_LINE_COORD (lineedg(iline)%ptr,i1)
+	         vlo = GET_LINE_COORD (lineedg(iline)%ptr,i1-1)
+	         CALL PUT_LINE_COORD(linemem(iline)%ptr, i1-1, (vlo+vhi)* 0.5)
  528	      CONTINUE
 
 * Fix ticket 2400: Def of start was pointing to the lower grid cell edge not the
@@ -1350,18 +1367,11 @@ C /units=months  is 1/12 of the length of the year
 * as irregular as the last comparison took us beyond the upper edge of the axis.
 
 	      its_reg = .TRUE.	! until proven otherwise
-	      start = line_mem(frst_pt)
-              delta = line_mem(frst_pt+1) - start
-              DO 530 i1 = frst_pt+n+1,frst_pt+2*n
-#ifdef double_p
-		 IF (.NOT.TM_FPEQ( (delta),
-     .               (line_mem(i1)-line_mem(i1-1))) )
-     .						its_reg = .FALSE.
-#else
-                 IF (.NOT.TM_FPEQ( SNGL(delta),
-     .               SNGL(line_mem(i1)-line_mem(i1-1))) )
-     .						its_reg = .FALSE.
-#endif
+	      start = GET_LINE_COORD (linemem(iline)%ptr, 1)
+              delta = GET_LINE_COORD (linemem(iline)%ptr, 2) - start
+              DO 530 i1 = 2, n+1
+	         idel = GET_LINE_COORD (lineedg(iline)%ptr, i1) - GET_LINE_COORD (lineedg(iline)%ptr, i1-1)
+		 IF (.NOT.TM_FPEQ( (delta),idel) ) its_reg = .FALSE.
  530	      CONTINUE
 
 	   ELSE
@@ -1369,12 +1379,12 @@ C /units=months  is 1/12 of the length of the year
 * NOT EDGES -- POINTS
 
 	      CALL EXTRACT_DP_LINE( cx, memry(mr)%ptr,
-     .				 line_mem(frst_pt), idim, n )
+     .				 linemem(iline)%ptr, idim, n )
 	      IF ( npoints .EQ. unspecified_int4 ) npoints = n
 
 * ... a single point is always "regular" (unless definition has BOUNDS!!)
 	      IF (n .EQ. 1 .AND. .NOT.has_bounds) THEN
-	         start = line_mem(frst_pt)
+	         start = GET_LINE_COORD (linemem(iline)%ptr, 1)
 	         delta = 1
 	         its_reg = .TRUE.
 	         GOTO 560
@@ -1382,9 +1392,10 @@ C /units=months  is 1/12 of the length of the year
 	      
 * ... monotonic?	      
 
-	      DO 532 i1 = frst_pt+1, frst_pt+npoints-1
-	         IF (.NOT. TM_FPEQ( line_mem(i1-1), line_mem(i1) ).AND. 
-     .               line_mem(i1-1) .GT. line_mem(i1)) GOTO 5570
+	      DO 532 i1 = 2, npoints  
+	         vhi  = GET_LINE_COORD (linemem(iline)%ptr, i1)
+	         vlo = GET_LINE_COORD (linemem(iline)%ptr, i1-1)
+	         IF (.NOT. TM_FPEQ( vlo, vhi ) .AND. vhi .LT. vlo) GOTO 5570
  532	      CONTINUE
 
 * ... are there repeated values?
@@ -1395,9 +1406,10 @@ C /units=months  is 1/12 of the length of the year
 
 	      use_strict = .FALSE.  ! unused for DEFINE AXIS
 	      micro_adj = 1E-6 *
-     .		(line_mem(frst_pt+n-1) - line_mem(frst_pt))
+     .		(GET_LINE_COORD (linemem(iline)%ptr, n) - 
+     .		 GET_LINE_COORD (linemem(iline)%ptr, 1))
 
-	      CALL TM_CHECK_COORDS (frst_pt, frst_pt+npoints-1, is_double, 
+	      CALL TM_CHECK_COORDS (linemem(iline)%ptr, npoints, is_double, 
      .                              use_strict, has_repeated, misordered, 
      .                              micro_adj, epsilon, epsilon)
 	      IF (misordered) GOTO 5560
@@ -1411,62 +1423,96 @@ C /units=months  is 1/12 of the length of the year
                  cx = is_cx(2)
                  mr = is_mr(2)
 
-	         CALL EXTRACT_DP_LINE2( cx, memry(mr)%ptr,
-     .	  	    line_mem(next_line_mem_pos + n), idim, n2 )
+		 IF (n2 .EQ. n+1) THEN 
+
+                    IF (num_uvars_in_cmnd .EQ. 2) THEN
+                       CALL EXTRACT_DP_LINE2( cx, memry(mr)%ptr,
+     .	  	       lineedg(iline)%ptr, idim, n2 )
+		    ENDIF
 
 * If given as coords, lo_bounds, hi_bounds, then
 * 1) check that lo_bounds{i+1} = hi_bounds{i}
 * 2) If ok, add the upper high bound to the list and treat 
 *    this as the case where we give the bounds as N+1 values
 
-                 IF (num_uvars_in_cmnd .EQ. 3) THEN
+                 ELSE IF (n2 .EQ. 2*n) THEN
+                    CALL EXTRACT_DP_LINE2( cx, memry(mr)%ptr,
+     .	  	       lineedg(line_0)%ptr, idim, n2 )
+		 ENDIF
+
+		 IF (num_uvars_in_cmnd .EQ. 3) THEN
+		    
+                    CALL EXTRACT_DP_LINE2( cx, memry(mr)%ptr,
+     .	  	    lineedg(iline)%ptr, idim, n2 )
+
                     cx = is_cx(3)
                     mr = is_mr(3)
                     CALL EXTRACT_DP_LINE2( cx, memry(mr)%ptr,
-     .	 	       line_mem(next_line_mem_pos + n+n2), idim, n3 )
-                    DO i = 1, n3-1
-                       IF (line_mem(next_line_mem_pos + n+i) .NE.
-     .                      line_mem(next_line_mem_pos + 2*n+i-1) ) 
-     .                     GOTO 5750
+     .	 	       lineedg(line_0)%ptr, idim, n3 )
+                    DO i = 1, n-1
+		       vlo = GET_LINE_COORD (lineedg(iline)%ptr, i+1)
+		       vhi = GET_LINE_COORD (lineedg(line_0)%ptr, i)
+                       IF (vlo .NE. vhi  ) GOTO 5750
                     ENDDO
-                    line_mem(next_line_mem_pos + 2*n) = 
-     .                    line_mem(next_line_mem_pos + 3*n-1)
-                    n2 = n+1
+		    vhi = GET_LINE_COORD (lineedg(line_0)%ptr, n)
+                    CALL PUT_LINE_COORD (lineedg(iline)%ptr, n+1, vhi)
+		    n2 = n + 1
+
+*  deallocate the extra n storage used for bounds.
+                    CALL FREE_LINE_DYNMEM(line_0)
+
                  ENDIF
 
 * Check that bounds enclose points, and that they are contiguous
-	         line_subsc1 ( iline ) = frst_pt
-                 line_dim    ( iline ) = npoints
-                 IF (.NOT. TM_CHECK_BNDS (iline, n2, .TRUE., buff3) ) GO TO 5750
+
+		 line_dim    ( iline ) = npoints
+		 IF (n2 .EQ. n+1) THEN
+  		     IF ( .NOT. TM_CHECK_BOX_LOC (linemem(iline)%ptr, 
+     .                     lineedg(iline)%ptr, n2) ) GOTO 5750
+                 
+		 ELSE
+                    IF (.NOT. TM_CHECK_BNDS (linemem(iline)%ptr, 
+     .                     lineedg(line_0)%ptr, n, 
+     .                     iline, .TRUE., buff3) ) GO TO 5750
+		    
+* Change from N*2 storage of bounds to N+1 edges.
+                    CALL TM_CONVERT_BOUNDS_EDGES (lineedg(line_0)%ptr, 
+     .                  lineedg(iline)%ptr, n)
+
+*  deallocate the temporary 2*n  storage used for bounds.
+                    CALL FREE_LINE_DYNMEM(line_0)
+		 ENDIF
 
               ELSE
 
 *... create bounds equidistant between grid points
 
 *    ... store initial box lower bound (start of axis)
-	         line_mem(frst_pt+npoints) = line_mem(frst_pt) -
-     .			0.5 * ( line_mem(frst_pt+1) - line_mem(frst_pt) )
+
+                vlo = GET_LINE_COORD (linemem(iline)%ptr, 1)
+                vhi = GET_LINE_COORD (linemem(iline)%ptr, 2)
+                val = vlo - (vhi-vlo)/2.
+		CALL PUT_LINE_COORD (lineedg(iline)%ptr, 1, val)
 *    ... mid-axis box boundaries ...
-	         DO 539 i1 = frst_pt+1, frst_pt+npoints-1
-	            line_mem(i1+npoints) = (line_mem(i1-1)+line_mem(i1)) * 0.5
+	         DO 539 i1 = 2, npoints
+                    vlo = GET_LINE_COORD (linemem(iline)%ptr, i1-1)
+                    vhi = GET_LINE_COORD (linemem(iline)%ptr, i1)
+                    val = vlo + (vhi-vlo)/2.
+                    CALL PUT_LINE_COORD (lineedg(iline)%ptr, i1, val)
  539	         CONTINUE
+
 *    ... upper-most box bound (end of axis)
-	         i2 = frst_pt+npoints-1	! last box point
-	         line_mem(i2+npoints+1) = line_mem(i2) +
-     .			0.5 * ( line_mem(i2) - line_mem(i2-1) )
+	         val = vhi + (vhi-vlo)/2.
+		 CALL PUT_LINE_COORD (lineedg(iline)%ptr, npoints+1, val)
+
 	         its_reg = .TRUE.	! until proven otherwise
-	         start = line_mem(frst_pt)
-                 delta = line_mem(frst_pt+1) - start
-                 DO 550 i1 = frst_pt+2,frst_pt+npoints-1
-#ifdef double_p
-                    IF (.NOT.TM_FPEQ( (delta),
-     .                  (line_mem(i1)-line_mem(i1-1))) )
-     .                       its_reg = .FALSE.
-#else
-		    IF (.NOT.TM_FPEQ( SNGL(delta),
-     .                  SNGL(line_mem(i1)-line_mem(i1-1))) )
-     .                       its_reg = .FALSE.
-#endif
+
+	         its_reg = .TRUE.	! until proven otherwise
+	         start = GET_LINE_COORD (linemem(iline)%ptr, 1)
+                 delta = GET_LINE_COORD (linemem(iline)%ptr, 2) - start
+                 DO 550 i1 = 2, npoints
+	            idel = GET_LINE_COORD (lineedg(iline)%ptr, i1) - GET_LINE_COORD (lineedg(iline)%ptr, i1-1)
+		    IF (.NOT.TM_FPEQ( (delta),idel) ) its_reg = .FALSE.
  550	         CONTINUE
               ENDIF
 
@@ -1477,11 +1523,9 @@ C /units=months  is 1/12 of the length of the year
 	      line_start    ( iline ) = start
 	      line_delta    ( iline ) = delta
 	      line_regular  ( iline ) = .TRUE.
-	      line_subsc1   ( iline ) = unspecified_int4
-	   ELSE	      
 * ... save irregular line data
-	      line_subsc1 ( iline ) = frst_pt
-	      line_start  ( iline ) = line_mem(frst_pt)
+	   ELSE
+	      line_start  ( iline ) = GET_LINE_COORD (linemem(iline)%ptr, 1)
 	      line_delta  ( iline ) = unspecified_val8
               line_dim    ( iline ) = npoints   ! need this here so TM_CHECK_BNDS works.
 	      line_regular( iline ) = .FALSE.
@@ -1561,8 +1605,9 @@ C /units=months  is 1/12 of the length of the year
 	   line_start    ( iline ) = start
 	   line_delta    ( iline ) = delta
 	   line_regular  ( iline ) = .TRUE.
-	   line_subsc1   ( iline ) = unspecified_int4
 	ENDIF
+
+	IF (line_regular(iline)) CALL FREE_LINE_DYNMEM (iline)
 
 * /T0 = date (or supply default)
 	iqual = qual_given( slash_T0 )
@@ -1689,7 +1734,9 @@ C /units=months  is 1/12 of the length of the year
 	     new_att_modulo = .TRUE.
 	     new_att_modulo_len = rmod_len
 	  ELSE IF (.NOT.has_bounds .AND. .NOT.line_regular(iline)) THEN 
-	    CALL TM_ADJUST_BOUNDS(iline, 360.0, axwwlen, its_modulo)
+	    CALL TM_ADJUST_BOUNDS(iline, line_dim(iline), 
+     .       360, axwwlen, its_modulo)
+
 	     IF (its_modulo) THEN
 	        rmod_len = 360.D0
 	        new_att_modulo = .TRUE.
@@ -1727,8 +1774,9 @@ C /units=months  is 1/12 of the length of the year
 	      delta = end - start
               IF ( (secs2start .LE.  2*secsperyear)
      .	           .AND. (delta*line_tunit(iline) .LE. secsperyear) ) THEN
-	         CALL TM_ADJUST_BOUNDS(iline, 
-     .                        secsperyear/line_tunit(iline), axwwlen, okmod)
+	         CALL TM_ADJUST_BOUNDS( iline, line_dim(iline), 
+     .              secsperyear/line_tunit(iline), axwwlen, okmod)
+
 	         IF (okmod) THEN
 		    its_modulo = .TRUE.
 	            rmod_len = axwwlen
@@ -1745,8 +1793,10 @@ C /units=months  is 1/12 of the length of the year
 * make the axis too long, reset the bounds so the axis is the modulo length.
 * (may have been done for special cases above)
 
-	IF (its_modulo .AND. .NOT.bnds_or_edges .AND. rmod_len.GT.0.) THEN
-	   CALL TM_ADJUST_BOUNDS(iline, rmod_len, axwwlen, okmod)
+	IF (irreg .AND. its_modulo .AND. .NOT.bnds_or_edges .AND. rmod_len.GT.0.) THEN
+	   CALL TM_ADJUST_BOUNDS( iline, line_dim(iline),  
+     .              rmod_len, axwwlen, okmod)
+
 	   IF (.NOT.okmod) its_modulo = .FALSE.
 	ENDIF
 
@@ -1782,17 +1832,17 @@ c	CALL TM_WARN_SUBSPAN (iline)
 
 * ... Was it a true-month axis (defined in the classic way without the /MONTHLY qualifier)?
 * 1/13/2017 ticket 2497, Back off this auto-detection of monthly axes for now.
-
+*     (If this is implemented, needs to be changed from line_mem() references to dynamic
+*     coordinate methods.)
 c	IF (.NOT. true_month .AND. irreg .AND. .NOT.line_modulo( iline)) THEN
 c           units = TM_UNIT_ID( line_units(iline) )
-c	   CALL TM_CHECK_MONTHLY_AXIS (line_mem(frst_pt), line_dim(iline), 
+c	   CALL TM_CHECK_MONTHLY_AXIS (linemem(iline)%ptr,, line_dim(iline), 
 c     .              cal_id, line_t0(iline), units, line_units(iline),
 c     .              start, delta, line_tunit(iline), true_month)
 c	   IF (true_month) THEN
 c	      line_regular(iline) = .TRUE.
 c	      line_start  (iline) = start !* line_tunit(iline)/ un_convert(pun_day)
 c	      line_delta  (iline) = delta
-c	      line_subsc1 (iline) = unspecified_int4
 c	      last_coord = line_start(iline) + DBLE(npts-1)*line_delta(iline)
 c	      firs_coord = start
 c	      line_unit_code (iline) = units
@@ -1806,11 +1856,6 @@ c	ENDIF
 * ... coordinate pointer for next line to save
 * Bounds are stored as edges, so increase by N coordinates and N+1 edges
 
-* acm move this to before purge_mr_axis, which also resets next_line_mem_pos
-*     after it deletes old_line.
-
-	IF (irreg .AND. .NOT.line_regular(iline))
-     .			next_line_mem_pos = frst_pt + 2*n+1
 * check for redefinitions
 	IF ( dup_name ) THEN
 	   IF ( TM_LINE_MATCH( old_line, iline ) ) THEN
@@ -2756,7 +2801,8 @@ c ?? if nlab=0, use next avail slot?
  5510	CALL ERRMSG( ferr_invalid_command, status,
      .		'Conflicting /X,/Y,/Z/T/E or /F axis orientations given',
      .								*5000 )
- 5520	CALL ERRMSG( ferr_grid_definition, status,
+ 5520	CALL FREE_LINE_DYNMEM (iline)
+	CALL ERRMSG( ferr_grid_definition, status,
      .			'error in start,end,delta', *5000 )
  5525	CALL ERRMSG( ferr_grid_definition, status,
      .			'Axis length exceeds modulo length', *5000 )
@@ -2766,9 +2812,11 @@ c ?? if nlab=0, use next avail slot?
      .		'/T0='//buff2(:TM_LENSTR1(buff2)), *5000 )
  5550	CALL ERRMSG( ferr_grid_definition, status,
      .		'inappropriate units:'//buff1(:TM_LENSTR1(buff1)), *5000 )
- 5560	CALL ERRMSG( ferr_grid_definition, status,
+ 5560	CALL FREE_LINE_DYNMEM (iline)
+	CALL ERRMSG( ferr_grid_definition, status,
      .		'unrepairable repeated axis coords', *5000 )
- 5570	buff1 = TM_FMT(FLOAT(i1-frst_pt+1), 14, 16, slen)
+ 5570	CALL FREE_LINE_DYNMEM (iline)
+	buff1 = TM_FMT(FLOAT(i1), 14, 16, slen)
 	CALL ERRMSG( ferr_grid_definition, status,
      .		'data for DEFINE AXIS/FROM_VARIABLE is not monotonically increasing at index '
      .		//buff1(:slen), *5000 )
@@ -2776,10 +2824,8 @@ c ?? if nlab=0, use next avail slot?
      .		'data for DEFINE AXIS/FROM_VARIABLE is ambiguous', *5000 )
  5582	CALL ERRMSG( ferr_grid_definition, status,
      .		'illegal argument for DEFINE AXIS/NPOINTS', *5000 )
- 5590	CALL ERRMSG( ferr_prog_limit, status,
-     .		'axis coordinate storage exhausted - issue CANCEL AXIS/ALL', *5000  )
  5592	CALL ERRMSG( ferr_prog_limit, status,
-     .		'axis coordinate storage exhausted -  '//
+     .		'Unable to allocate system memory for coordinate storage -  '//
      .		'use /EDGES not /BOUNDS to save space', *5000 )
  5600   slen = TM_LENSTR1(buff3)
         CALL ERRMSG( ferr_syntax, status,
@@ -2827,7 +2873,9 @@ c ?? if nlab=0, use next avail slot?
      .     ') must be N, N=number of axis coordinates ('//
      .     buff1(:slen) //')', *5000 )
 
-5750	CALL ERRMSG( ferr_grid_definition, status,
+5750	CALL FREE_LINE_DYNMEM (iline)
+	CALL FREE_LINE_DYNMEM (line_0)
+	CALL ERRMSG( ferr_grid_definition, status,
      .   'BOUNDS specified do not correctly enclose coordinate points', 
      .   *5000 )
 5760	CALL ERRMSG( ferr_grid_definition, status,

@@ -52,10 +52,13 @@
 * Parameters and commons
 
 	include 'tmap_dims.parm'
+        include 'tmap_errors.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
+
+	INTEGER status
 
 *
 	line_name(dest)      = line_name(source)
@@ -74,14 +77,18 @@
 	line_cal_name(dest)  = line_cal_name(source) 
 	line_dim_only(dest)  = line_dim_only(source)
 
-	IF ( dest.LE.max_lines .AND. source.LE.max_lines) THEN
+	IF ( dest.LE.max_lines .AND. source.LE.max_lines 
+     .       .AND. .NOT.line_regular(source) ) THEN
 * non-dynamic lines, only
-	   line_subsc1(dest)    = line_subsc1(source)
+	   CALL GET_LINE_DYNMEM (line_dim(source), dest, status)
+           IF (status .NE. merr_ok) GOTO 5000
+	   CALL COPY_LINE_COORDS (linemem(source)%ptr, linemem(dest)%ptr, line_dim(source))
+	   CALL COPY_LINE_COORDS (lineedg(source)%ptr, lineedg(dest)%ptr, line_dim(source)+1)
 	ELSEIF ( dest.GT.max_lines .AND. source.GT.max_lines) THEN! ELSEIF 1/96
 * dynamic lines, only
 	   line_class (dest)	= line_class (source)
 	   line_parent(dest)	= line_parent(source)
 	ENDIF
 
-	RETURN
+ 5000	RETURN
 	END

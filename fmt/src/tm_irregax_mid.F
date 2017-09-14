@@ -1,4 +1,4 @@
-	SUBROUTINE TM_IRREGAX_MID( ipt1, npts )
+	SUBROUTINE TM_IRREGAX_MID( line, line_edges, npts )
 
 *
 *
@@ -44,12 +44,17 @@
 * revision 0.0 - 2/93 - code lifted from cd_get_1_axis
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
+* V72 6/17 *acm* For trac enhancement #767 -- dynamic coordinate storage 
+*                The argument is the coordinates for just this line
+
 * argument definitions:
-*	ipt1	- subscript of first coordinate for axis in line_memory
-*	npt	- length of axis
+*	line	 - coordinates of the line in dynamic memory
+*	line_edges - coordinates of the bounds in dynamic memory
+*	npt	 - length of axis
 
 * argument declarations
-	INTEGER	 ipt1, npts
+	REAL	line(*), line_edges(*)
+	INTEGER	npts
 
 * internal variable declarations:
         INTEGER i
@@ -62,16 +67,25 @@
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 
+* nominal treatment for one-point axis.
+
+        IF (npts .EQ. 1) THEN
+           i = 1
+	   line_edges(i) = line(i) - 1. 
+           line_edges(i+1) = line(i) + 1. 
+	   RETURN
+	ENDIF
+
 * compute midpoints lying between coordinates
-        DO 100 i = ipt1, ipt1+npts-2
- 100    line_mem(i+npts+1) = (line_mem(i)+line_mem(i+1)) / 2.0D0 
+        DO i = 1, npts-1
+           line_edges(i+1) = (line(i)+line(i+1)) / 2.0D0 
+	ENDDO
 
 * lower bound of first box
-        line_mem(ipt1+npts)   = line_mem(ipt1)
-     .                        - (line_mem(ipt1+1)-line_mem(ipt1))/2.D0
+        line_edges(1)   = line(1) - (line(2)-line(1))/2.D0
+
 * upper bound of last box
-        line_mem(ipt1+npts+npts) = line_mem(ipt1+npts-1)
-     .            + (line_mem(ipt1+npts-1)-line_mem(ipt1+npts-2))/2.D0
+        line_edges(npts+1) = line(npts) + (line(npts)-line(npts-1))/2.D0
 
         RETURN
 	END

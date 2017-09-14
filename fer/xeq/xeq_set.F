@@ -259,7 +259,7 @@
      .                  cache_preemption, numpts, redir_file_lun, 
      .                  iline, iset, n
 	INTEGER*8	i8_val
-        REAL*8          TM_WW_AXLEN, axwwlen, new_att_modulo_len
+        REAL*8          TM_WW_AXLEN, GET_LINE_COORD, axwwlen, new_att_modulo_len
         REAL*8          delta, dlo, dhi, firstval, lastval
 	REAL		val_buf, cache_size_mb
 	CHARACTER	TM_FMT*12, title*1024, subtitle*64, arg*24,
@@ -1030,12 +1030,11 @@ c *kob* 4/97
 *             ** Get first and last axis values (assumed to be valid)
 *                and number of points **
               numpts = line_dim(axis)
-              i = line_subsc1(axis)
-              firstval = line_mem(i)
-              i = i + numpts - 1
-              lastval = line_mem(i)
+              firstval = GET_LINE_COORD (linemem(axis)%ptr, 1)
+              lastval = GET_LINE_COORD (linemem(axis)%ptr, numpts)
 *             ** Free up memory used by the array of axis values **
-              CALL PACK_LINE_STORAGE(axis)
+              CALL FREE_DYN_MEM(linemem(axis)%ptr)
+              CALL FREE_DYN_MEM(lineedg(axis)%ptr)
 *             ** Assign values for a regular axis **
               line_start(axis) = firstval
               line_delta(axis) = (lastval - firstval) / (numpts - 1.0)

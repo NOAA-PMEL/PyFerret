@@ -115,12 +115,11 @@
  300	CONTINUE
 
 * delete the old axis
-	IF ( .NOT.line_regular(old_axis) ) THEN
-           CALL PACK_LINE_STORAGE(old_axis)
-c	   WRITE ( I6,'(I6)' ) line_dim(old_axis)
-c	   CALL WARN( I6//' words of axis coordinate storage lost' )
-c	   line_subsc1( old_axis ) = unspecified_int4
+	IF ( .NOT.line_regular(old_axis) ) THEN 
+	   CALL FREE_LINE_DYNMEM (old_axis)
+	   line_regular(old_axis) = .TRUE.
 	ENDIF
+
 	line_use_cnt(old_axis) = 0
 	line_name( old_axis ) = char_init16
 

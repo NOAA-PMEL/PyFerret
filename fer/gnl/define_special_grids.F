@@ -83,7 +83,6 @@
 	line_unit_code( iline ) = 0	! unknown units
 	line_t0       ( iline ) = ' '
 	line_shift_origin( iline ) = .FALSE.
-	line_subsc1   ( iline ) = unspecified_int4	! since regular
 	line_direction( iline ) = 'NA'
 	iline_abstract = iline
 
@@ -121,7 +120,6 @@
 	line_unit_code( iline ) = 0	! unknown units
 	line_t0       ( iline ) = ' '
 	line_shift_origin( iline ) = .FALSE.
-	line_subsc1   ( iline ) = unspecified_int4	! since regular
 	line_direction( iline ) = 'NA'
 
 * "EZ" grid

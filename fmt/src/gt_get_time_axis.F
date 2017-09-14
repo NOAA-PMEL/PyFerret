@@ -104,7 +104,6 @@
 	external xunits_data
 	include 'xio.cmn_text'
 	external xio_data
-
 *
 * LOCAL DEFINITIONS
 	CHARACTER*1080	string
@@ -120,6 +119,8 @@
 	REAL *8		dp_epsilon			!*kob* 5/97
 	PARAMETER 	( dp_epsilon = 1.D-10)
 	PARAMETER	( scr = 0 )
+
+
 
 * Determine the length and delta of the time axis, check regularity, and find
 * first timestep
@@ -160,17 +161,15 @@
 	IF (line_regular(scr)) THEN
 * ... regular
 	  line_delta(scr) = delta
-	  line_subsc1(scr) = unspecified_int4
 	ELSE
 * ... irregular
-* *kob* 8/96 removed all bpos and bpos0 stuff
+
+          CALL GET_LINE_DYNMEM (nsteps, scr, status) 
+          IF (status .NE. merr_ok) GOTO 9999
+
 	  line_start(scr)   = unspecified_val8
 	  line_delta(scr)   = unspecified_val8
-	  line_subsc1(scr) = next_line_mem_pos
-	  cpos = line_subsc1(scr)
-	  cpos1 = cpos
-	  IF ((line_subsc1(scr)+2*line_dim(scr)) .GT. maxlinestore)
-     .	     GOTO 9000
+	  cpos = 1
 * Create the time axis and grid box list
 * kob - 8/96 - modify so loop not based on itt (now a real) but instead on
 *		nsteps_in_file
@@ -184,19 +183,21 @@
      .                  sf_1step(istp))/delta) + 1
 	      itt = sf_1step(istp)
 	      DO 110 i = 1,nsteps_in_file
-	        line_mem(cpos) = itt
-	        cpos = cpos+1
-		itt = itt + delta
+	         CALL PUT_LINE_COORD ( linemem(scr)%ptr, cpos, itt )
+	         cpos = cpos+1
+		 itt = itt + delta
   110	      CONTINUE
 	    ENDIF
+
   120	  CONTINUE
-	  CALL TM_IRREGAX_MID(line_subsc1(scr),line_dim(scr))
+          CALL TM_IRREGAX_MID( linemem(scr)%ptr, lineedg(scr)%ptr, nsteps )
+
 	ENDIF
 
 * Time axis created, fill in the missing pieces
 * ... name?
-        line_fixname(scr) = .FALSE.
-        IF (line_name(scr) .EQ. 'TIME') line_fixname(scr) = .TRUE.
+        line_fixname(scr) = line_name(scr) .EQ. 'TIME'
+
 	CALL TM_NEW_LINE_NAME('TIME',line_name(scr))
 	IF (line_fixname(scr)) line_name_orig(scr) = 'TIME'
 
@@ -252,34 +253,30 @@
 * ...Warn about possible gaps in axis
 * Bug fix - change next statment from compound if to if then ---kob 10/8/91
 	IF (.NOT. line_regular(nline)) THEN
-           IF (.NOT. TM_CHECK_BOX_LOC(nline) ) GOTO 9100
+           IF (.NOT. TM_CHECK_BOX_LOC(linemem(scr)%ptr,
+     .                   lineedg(scr)%ptr, nsteps ) ) GOTO 9100
+	   CALL TM_COPY_LINE ( scr, nline )
+	   line_name(nline) = line_name(scr)
+
+*  deallocate the temporary line storage used to compile the axis.
+	   CALL FREE_LINE_DYNMEM(scr)
         ENDIF
-!	IF (.NOT. line_regular(nline) .AND.  
-!  .	 .NOT. TM_CHECK_BOX_LOC(nline) ) GOTO 9100
 
 * Time axis complete
 	GT_GET_TIME_AXIS = nline
-	line_cal_name(scr) = 'GREGORIAN'  ! Restore to the default
+	line_cal_name(nline) = 'GREGORIAN'  ! Restore to the default
 
-* If necessary - find next free line memory storage position
-	IF (.NOT. line_regular(nline))
-     .	 next_line_mem_pos = next_line_mem_pos + 2*line_dim(nline) + 1
 	status = merr_ok
 	GOTO 9999
-
- 9000	CALL TM_ERRMSG (merr_linstorlim, status,'GT_GET_TIME_AXIS',
-     .			no_descfile, no_stepfile,
-     .			'MAX='//TM_STRING(DBLE(maxlinestore)),
-     .			no_errstring, *9999)
 
  9100	CALL TM_ERRMSG (merr_badlinedef, status, 'GT_GET_TIME_AXIS',
      .			no_descfile, no_stepfile,
      .			'A gap or overlap exists in time axis',
      .			no_errstring, *9999)
 
- 9200	CALL TM_ERRMSG (merr_linelim, status, 'GT_GET_TIME_AXIS',
+ 9200	CALL TM_ERRMSG (merr_badlinedef, status, 'GT_GET_TIME_AXIS',
      .			no_descfile, no_stepfile,
-     .			'MAX='//TM_STRING(DBLE(max_lines)), no_errstring,
+     .			'error defining axis for descriptor file', no_errstring,
      .			*9999)
 
 * Exit subroutine

@@ -2,10 +2,9 @@
 
 ! Modulo attribute can take numerical values to indicate 
 ! the modulo length of axis (subspan modulo changes)
-! This script tests various string values of the attribute             
-
+! This script tests various string values of the attribute 
+! *acm* list the axis names, otherwise get random TIME* axes defined right now
 use modulo_lon_time
 
-sh ax lon*
-sh ax tim*
-
+sh ax lon_true, lon_moderr, lon_false, lon_mod_nounits, lon_usual
+sh ax time_true, time_moderr, time_false, time_mod_nounits, time_usual

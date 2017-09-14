@@ -839,7 +839,7 @@
      .			grid,
      .			row_dec,
      .			line_buff(w0+first:w0+width) )
-	      w0 = w0 + width
+	      w0 = w0 + width 
  420	   CONTINUE
 	   CALL SPLIT_LIST(pttmode_explct, list_lun,
      .				' '//line_buff(:w0), w0+1 )

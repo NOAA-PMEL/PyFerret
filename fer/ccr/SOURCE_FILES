@@ -28,6 +28,8 @@ free_dyn_mem.c\
 get_c_pointer.c\
 get_c_string.c\
 get_c_string_len.c\
+get_edgmem.c\
+get_linemem.c\
 get_max_c_string_len.c\
 get_mr_mem.c\
 get_ws_mem.c\
@@ -40,6 +42,7 @@ linux_routines_c.c\
 list.c\
 nullify_mr.c\
 nullify_ws.c\
+nullify_linemem.c\
 put_frame.c\
 recover_cached_2d_array_point.c\
 recover_cached_full_array.c\

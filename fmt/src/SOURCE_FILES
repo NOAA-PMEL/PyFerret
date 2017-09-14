@@ -114,6 +114,7 @@ cd_write_defer_coord.F\
 cd_write_grid.F\
 cd_write_strdim.F\
 cd_write_var.F\
+copy_line_coords.F\
 encode_strings_data.F\
 ez_count_dset.F\
 ez_init_dset.F\
@@ -124,11 +125,13 @@ ez_permuted_index.F\
 ez_read.F\
 ez_update_var.F\
 free_time.F\
+get_line_coord.F\
 gt_get_time_axis.F\
 lib_free_lun.F\
 lib_get_lun.F\
 mc_init_dset.F\
 mc_read.F\
+put_line_coord.F\
 remote_read.F\
 str_case_blind_compare.F\
 str_dncase.F\
@@ -164,6 +167,9 @@ tm_check_coords.F\
 tm_check_fmrc_bnds_attrib.F\
 tm_check_bnds_centered.F\
 tm_check_edges_attrib.F\
+tm_check_line.F\
+tm_check_line_bounds.F\
+tm_check_line_edges.F\
 tm_check_monthly_axis.F\
 tm_choose_read.F\
 tm_clean_filename.F\
@@ -171,6 +177,7 @@ tm_close_set.F\
 tm_close_set_cond_deallo.F\
 tm_close_step.F\
 tm_cmprss.F\
+tm_convert_bounds_edges.F\
 tm_conv_to_r4.F\
 tm_conv_to_r8.F\
 tm_copy_grid.F\
@@ -255,6 +262,7 @@ tm_lenstr1.F\
 tm_line_match.F\
 tm_loc_string.F\
 tm_lonw2lone.F\
+tm_lonw2e_line.F\
 tm_load_calendar.F\
 tm_make_4d_grids.F\
 tm_make_basic_axis.F\
@@ -296,6 +304,7 @@ tm_scale_nobad.F\
 tm_secs_from_bc.F\
 tm_secs_to_date.F\
 tm_secs_to_ymdhms.F\
+tm_set_clim_axes.F\
 tm_set_current_calendar.F\
 tm_split_message.F\
 tm_step_to_date.F\

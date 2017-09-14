@@ -43,6 +43,7 @@
 * V695+ *acm* and *sh*
 * V698  *sh* 3/16 -- modify the native taxis (axlagt) to become a lag time
 *                 -- look for and read time_bounds 2d array if it exists
+* V72 6/17 *acm* For trac enhancement #767 -- dynamic coordinate storage 
 
 * include files
         include 'netcdf.inc'
@@ -67,7 +68,7 @@
      .		start(nferdims),count(nferdims), zero(nferdims),
      .		npts, nT, nF, npts_cdf, vdims(8), nvdim,
      .		vlen, blen, bndid, attid, attype, attlen, attoutflag
-	REAL*8  TM_WORLD_AX, avg_lag
+	REAL*8  TM_WORLD_AX, avg_lag, uppermost
 	CHARACTER  TM_STRING*13, buff*256
 	CHARACTER bname*48, attname*48
 
@@ -77,6 +78,7 @@
 * initialize
 	do_warn = .FALSE.
 	vlen = TM_LENSTR1(vname)
+
 
 * start out by getting an overview of the 2D time variable
 	CALL CD_GET_VAR_INFO (dset, varid, vname, vartype, 
@@ -96,9 +98,16 @@
 	nT = count(1)   ! number of time steps per forecast
 	nF = count(2)   ! number of forecasts in collection
 
-	IF ((next_line_mem_pos+ npts+1).GT.maxlinestore) GOTO 5300
+* grab a temporary dynamic axis slot for it. Store it in the axis axcalt 
+* as that axis will be set up with the coordinates
+
+	CALL TM_ALLO_TMP_LINE(axcalt, status)
+	IF (status .NE. merr_ok) GOTO 5000
+
+	CALL GET_LINE_DYNMEM (npts+1, axcalt, status)
+	IF (status .NE. merr_ok) GOTO 5000 
 	CALL CD_READ_SUB(cdfid, varid, nvdim, start, count, zero, zero, 
-     .			 line_mem(next_line_mem_pos), 0, 0, cdfstat)
+     .			 linemem(axcalt)%ptr, 0, 0, cdfstat)
 	IF ( cdfstat .NE. NF_NOERR ) GOTO 5000
 
 ************* start bounds reading
@@ -136,9 +145,8 @@
 	zero (3) = 0
 
 * ... read the lower bounds into line memory above the 2d time coordinates
-	IF ((next_line_mem_pos+2*npts+1).GT.maxlinestore) GOTO 5300
 	CALL CD_READ_SUB(cdfid, bndid, nvdim, start, count, zero, zero, 
-     .			 line_mem(next_line_mem_pos+npts), 0, 0, cdfstat)
+     .			 lineedg(axcalt)%ptr, 0, 0, cdfstat)
 	IF ( cdfstat .NE. NF_NOERR ) GOTO 999
 
 * ... alter limits for reading the single upper bound of the top point
@@ -154,8 +162,9 @@
 
 * ... read the upper-upper bound into line memory above the 2d lower bounds
 	CALL CD_READ_SUB(cdfid, bndid, nvdim, start, count, zero, zero, 
-     .			 line_mem(next_line_mem_pos+2*npts), 0, 0, cdfstat)
+     .			 uppermost, 0, 0, cdfstat)
 	IF ( cdfstat .NE. NF_NOERR ) GOTO 999
+	CALL PUT_LINE_COORD ( lineedg(axcalt)%ptr, 2*npts+1, uppermost )
 
 * ... success!
 	has_edges = .TRUE.
@@ -189,9 +198,5 @@
 
 * error exit
  5000	RETURN
- 5300	CALL TM_ERRMSG (merr_linstorlim, status, 'CD_1D_LINE_FROM_2D',
-     .                  no_descfile, no_stepfile,
-     .                  'MAX='//TM_STRING(DBLE(maxlinestore)),
-     .                  no_errstring, *5000)
 
 	END

@@ -49,8 +49,8 @@
 
 * internal variable declarations
 	LOGICAL ITSA_TRUEMONTH_AXIS
-	INTEGER	isub1, llen, iiaxis
-	REAL	TM_WORLD
+	INTEGER	llen, iiaxis
+	REAL	TM_WORLD, GET_LINE_COORD
 
 	IF ( axis .LT. 0 .OR. axis .GT. line_ceiling ) THEN
 	  lo = unspecified_val8
@@ -64,10 +64,9 @@
 	ELSE
 	  iiaxis = axis
 	  IF (line_parent(axis) .NE. 0) iiaxis = line_parent(axis)
-	  isub1 = line_subsc1(iiaxis)
 	  llen = line_dim(iiaxis)
-	  lo = line_mem(isub1)
-	  hi = line_mem(isub1 + llen - 1)
+	  lo = GET_LINE_COORD (linemem(axis)%ptr, 1)
+	  hi = GET_LINE_COORD (linemem(axis)%ptr, llen)
 	ENDIF
 
 	RETURN

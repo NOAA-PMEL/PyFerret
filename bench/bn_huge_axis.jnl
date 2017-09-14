@@ -1,0 +1,26 @@
+! bn_huge_axis
+! 9/14/17  Dynamic coordinate storage
+! Defining extra-long coordinate axes, and save to a file
+! Use a dataset with extra-long coordinate axis.
+
+! Previously this would have given a program-limit-reached error
+let yy = if y[j=1:900000] eq 10 then 10.1 else  y[j=1:900000]
+define axis/y longyax = yy
+
+let/bad=0 var = y[gy=longyax]
+
+list/j=5:15 var
+save/clobber/file=a.nc/outtype=int var
+
+! Previously issued a limit-on-storage-for-coordinates error
+can var/all
+can axis longyax
+
+use a
+show dat
+list/j=5:15 var
+list/j=899995:9000000 var
+
+! clean up. Remove our huge file
+cancel data/all
+sp rm a.nc

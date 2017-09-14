@@ -21,7 +21,9 @@ FRAME /FILE=forecast_actual.gif
 ! using actual should show single color on horizontal
 !
 LET /TITLE="actual (diag view)" diagview = actual[gt(tf_times)=tf_cal_t]
+
 SHOW GRID diagview
+
 LIST /WIDTH=600 /X=120W/Y=50N/Z=50 diagview
 SHADE /X=120W/Y=50N/Z=50 diagview
 FRAME /FILE=forecast_diagview.gif

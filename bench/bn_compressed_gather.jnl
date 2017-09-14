@@ -215,3 +215,6 @@ LIST/PREC=12 xyz[x=@std,y=@std,z=@std]
 ! ... test irregular axes (unequal weighting) and see how significant are
 !     the changes in results from old Ferret (particularly on @var)
 
+
+! clean up
+set mem/siz=25.6  ! return to the default setting

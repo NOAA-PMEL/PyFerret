@@ -65,6 +65,7 @@
 * Local definitions
 	INTEGER*4	j, lc1, lc2
 	LOGICAL		TM_FPEQ
+	REAL		GET_LINE_COORD, v1, v2
 
 * Same regularity/irregularity?
 	IF (line_regular(line1) .NEQV. line_regular(line2)) GOTO 110
@@ -111,16 +112,21 @@
 	ELSE
 	  lc1 = line_subsc1(line1)
 	  lc2 = line_subsc1(line2)
-	  DO 100 j = 0,2*line_dim(line1)
-! added ".NOT." 5/93 *sh*
-#ifdef double_p
-	    IF (.NOT.TM_FPEQ( (line_mem(lc1+j)),
-     .			      (line_mem(lc2+j)) )) GOTO 110
-#else
-	    IF (.NOT.TM_FPEQ( SNGL(line_mem(lc1+j)),
-     .			      SNGL(line_mem(lc2+j)) )) GOTO 110
-#endif
+	  DO 100 j = 1,line_dim(line1)
+	    v1 = GET_LINE_COORD (linemem(line1)%ptr, j)
+	    v2 = GET_LINE_COORD (linemem(line2)%ptr, j)
+	    IF (.NOT.TM_FPEQ(v1, v2)) GOTO 110
+
+	    v1 = GET_LINE_COORD (lineedg(line1)%ptr, j)
+	    v2 = GET_LINE_COORD (lineedg(line2)%ptr, j)
+	    IF (.NOT.TM_FPEQ(v1, v2)) GOTO 110
   100	  CONTINUE
+
+* Upper box edges
+	    v1 = GET_LINE_COORD (lineedg(line1)%ptr, line_dim(line1)+1)
+	    v2 = GET_LINE_COORD (lineedg(line2)%ptr, line_dim(line1)+1)
+	    IF (.NOT.TM_FPEQ(v1, v2)) GOTO 110
+
 	ENDIF
 
 * Yes, lines match

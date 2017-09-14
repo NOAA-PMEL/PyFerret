@@ -58,10 +58,7 @@
 	INTEGER status
 
 * remove temporary in-progress grids and all associated use counts
-	CALL TM_PURGE_TMP_GRIDS( status )	! ststus ignored!!
-
-* return line memory to unused state
-	next_line_mem_pos = orig_line_mem
+	CALL TM_PURGE_TMP_GRIDS( status )	! status ignored!!
 
         RETURN
 	END

@@ -1,4 +1,4 @@
-	LOGICAL FUNCTION TM_Check_box_loc (nline)
+	LOGICAL FUNCTION TM_CHECK_BOX_LOC (line, line_edges, npts)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -39,27 +39,26 @@
 *
 * revision 0.00 - 05/26/88 - by M. Verschell for PMEL/TMAP
 * V63  *acm* 10/09 Changes for gfortran build
+* V72 6/17 *acm* for trac enhancement #767 -- dynamic coordinate storage 
+*                line and line_edges are the coordinates and edges for this line
 *
-* Argument
-	INTEGER*4	nline
+* Arguments
+	REAL	line(*), line_edges(*)
+	INTEGER	npts
 *
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-*
-	INTEGER*4	ipt1, npts, ibx1, i, nothing
-	LOGICAL		TM_DFPEQ
-	REAL*8 a,b1,b2
-*
-	ipt1 = line_subsc1(nline)
-	npts = line_dim(nline)
-	ibx1 = ipt1 + npts
 
-	DO 100 i=0,npts-1
-	  a = line_mem(ipt1+i)
-	  b1 = line_mem(ibx1+i)
-	  b2 = line_mem(ibx1+i+1)
+	INTEGER	i, nothing
+	LOGICAL	TM_DFPEQ
+	REAL*8 a,b1,b2
+
+	DO 100 i = 1,npts-1
+	  a = line(i)
+	  b1 = line_edges(i)
+	  b2 = line_edges(i+1)
 	  IF (a .LT. b1 .OR. a .GT. b2) THEN
             IF (TM_DFPEQ(a,b1) .OR. TM_DFPEQ(a,b2) ) THEN
                nothing = 0
@@ -70,6 +69,6 @@
 	  ENDIF
   100	CONTINUE
 
-	TM_Check_box_loc = .TRUE.
+	TM_CHECK_BOX_LOC = .TRUE.
 	RETURN
 	END

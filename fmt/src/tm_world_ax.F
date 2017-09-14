@@ -72,7 +72,7 @@
      .		ITSA_TRUEMONTH_AXIS, recursive, true_month
 	INTEGER	TM_MODULO_LINE_DIM, isub, line_len, rmod, new_ss, 
      .		lo_ss, hi_ss, parent_len, new_where
-	REAL*8	TM_WORLD_RECUR, TM_MODULO_AXLEN, 
+	REAL*8	TM_WORLD_RECUR, TM_MODULO_AXLEN, GET_LINE_COORD,
      .		midpoint, box_size, tempwld, lo, hi
 
 * initialize
@@ -219,16 +219,16 @@
 
 	ELSE
 * irregularly spaced points
-* ... keep subscript within bounds ( between 1 and dimension of axis )
-	  isub  = isub + line_subsc1(iaxis) - 1
+
 * ... now where within the grid box ?
 	  IF ( where_in_box .EQ. box_lo_lim ) THEN
-	    tempwld = line_mem(isub+line_dim(iaxis))
+	    tempwld = GET_LINE_COORD (lineedg(iaxis)%ptr, isub)
 	  ELSEIF ( where_in_box .EQ. box_middle ) THEN
-	    tempwld = line_mem(isub)
+	    tempwld =  GET_LINE_COORD (linemem(iaxis)%ptr, isub)
 	  ELSE
-	    tempwld = line_mem(isub+line_dim(iaxis)+1)
+	    tempwld = GET_LINE_COORD (lineedg(iaxis)%ptr, isub+1)
 	  ENDIF
+
 	  IF ( line_modulo( iaxis ) ) THEN
 	    IF (isubscript .LE. 0) THEN
 	      rmod = isubscript/line_len - 1

@@ -315,7 +315,8 @@
 	   grid = ds_grid_number(ref_fvar)
 	   CALL DEFINE_EF_AGGREGATE_GRID (agg_dset, tcoordname, nv, vname,
      .					  ref_fvar, iline, tf_lag_t, grid,
-     .					  agg_dim, member_sets, nsets_wgaps)
+     .					  agg_dim, member_sets, nsets_wgaps, 
+     .					  status)
 	   IF (status .NE. ferr_ok) GOTO 5000
 
 * transfer to the aggregated variable whatever special attributes it inherits

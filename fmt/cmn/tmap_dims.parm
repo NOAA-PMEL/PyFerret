@@ -32,17 +32,18 @@
 *                  Increase size of max_gfdl_dsets and max_grids
 *                  Also clean up long-unused lines that were commented out.
 * V710 *acm*  3/16  add dgrid_buff, for a fake grid to use in computing coordinates
+* V72 8/17 *acm*   For trac enhancement #767 -- dynamic coordinate storage, no maxlinestore
 
 * for TMAP formatted files:
 	INTEGER	nrec_codes,ngrid_prenamed,nvari_prenamed,maxdsets,
      .		maxstepfiles,maxvars,maxaux,max_grids,max_lines,
-     .		maxlinestore, maxgridfiles, max_axis_orients,
+     .		maxgridfiles, max_axis_orients,
      .		num_aux, num_parm, num_gridfiles, maxvarfiles,
      .		num_dyn_grids, max_dyn_grids, num_dyn_lines,
      .		max_dyn_lines, line_ceiling, grid_ceiling,
      .		tmp_line_hook, tmp_grid_hook, nferdims, maxvar2,
      .		pdsetalloc, pdsets_addl, pdset_dummy, pdset_global, 
-     .		dgrid_buff
+     .		dgrid_buff, num_clim, line_0
 
 * parameters used for dimensioning arrays
 	PARAMETER (dgrid_buff = 0)	! scratch buffer for grids (as in ferret.parm)
@@ -70,10 +71,11 @@
 	PARAMETER (max_dyn_lines = max_lines + num_dyn_lines)
 	PARAMETER (tmp_line_hook = max_dyn_lines + 1)
 	PARAMETER (line_ceiling  = tmp_line_hook )
-	PARAMETER (maxlinestore = 750000)! max # of coords 
+	PARAMETER (line_0 = 0)		! temporary scratch line coords 
 	PARAMETER (maxgridfiles = 10)	! maximum number of grids
 	PARAMETER (max_axis_orients = 9)! maximum number of axis orients
 	PARAMETER (num_aux = 6)		! number of aux_modnum's in descriptor
 	PARAMETER (num_parm = 15)	! number of add_parm's in descriptor
 	PARAMETER (num_gridfiles = 6)	! number of grid_filenames in descript.
 	PARAMETER (nferdims = 6)	! number of dimensions in Ferret grids.
+	PARAMETER (num_clim = 8)	! number of pre-defined climatological axes.

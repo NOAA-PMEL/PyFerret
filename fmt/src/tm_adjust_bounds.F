@@ -1,4 +1,4 @@
-	SUBROUTINE TM_ADJUST_BOUNDS(iaxis, modlen, axwwlen, ok)
+	SUBROUTINE TM_ADJUST_BOUNDS(iaxis, npts, modlen, axwwlen, ok)
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -40,25 +40,29 @@
 * bounds on a DEFINE AXIS given without cell edges or from a netCDF file
 * where bounds were not included in the file.
 *
+* V72 6/17 *acm* for trac enhancement #767 -- dynamic coordinate storage
+*
 * return axwwlen
 
 #	include	"tmap_dset.parm"
 	include	'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 
+* Argument declarations
 	LOGICAL ok
-	INTEGER iaxis
+	INTEGER iaxis, npts
 	REAL	modlen, axwwlen
 
+* Local declarations
 	LOGICAL TM_FPEQ
 	INTEGER TM_LENSTR1, ipt1, ipte
-	REAL	TM_WW_AXLEN, delta
+	REAL	GET_LINE_COORD, TM_WW_AXLEN, 
+     .		delta, pt1, ptn
 	REAL*4	r4delta
 
 * 
 	ok = .TRUE.
 	axwwlen = TM_WW_AXLEN(iaxis)
-
 
 * Exit if the modulo length is 0. which indicates modulo length is axis length.
 	IF (modlen .EQ. 0.) GOTO 5000
@@ -69,12 +73,12 @@
 * Exit if the line is regularly spaced
 	IF ( line_regular(iaxis) ) GOTO 5000
 
-	ipt1 = line_subsc1(iaxis)
-	ipte = ipt1 + line_dim(iaxis) - 1
-		 
-	delta = modlen - (line_mem(ipte) - line_mem(ipt1))
-	line_mem(ipte+1) = line_mem(ipt1) - delta/2.
-	line_mem(ipte+line_dim(iaxis)+1) = line_mem(ipte) + delta/2.
+	pt1 = GET_LINE_COORD (linemem(iaxis)%ptr,1)
+	ptn = GET_LINE_COORD (linemem(iaxis)%ptr, npts)
+	delta = modlen - (ptn  - pt1)
+	
+	CALL PUT_LINE_COORD ( lineedg(iaxis)%ptr, 1, pt1 - delta/2. )
+	CALL PUT_LINE_COORD ( lineedg(iaxis)%ptr, npts+1, ptn + delta/2. )
 
 * did the adjustment keep the length within the defined moudulo length?
 * (probably always the case if we've got this far.)

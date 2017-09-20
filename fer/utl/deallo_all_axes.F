@@ -57,7 +57,6 @@
 
 * Local declarations
 
-        LOGICAL all_gone
 	INTEGER TM_GET_LINENUM, TM_GET_GRID_OF_LINE,
      .          islot, grid, status, num_protected_axes
 
@@ -68,7 +67,6 @@
         IF (num_protected_axes .EQ. unspecified_int4 .OR.
      .      num_protected_axes .LE. 0) num_protected_axes = 1
 
-        all_gone = .TRUE.
         DO 100 islot = num_protected_axes+1, line_ceiling
            IF (line_name(islot) .NE. char_init16) THEN
 
@@ -95,7 +93,6 @@
 	            CALL ERRMSG(ferr_internal, status,
      .				'axis use count err', *5000)
 	         ENDIF
-                 all_gone = .FALSE.
 	      ENDIF
 
            ENDIF

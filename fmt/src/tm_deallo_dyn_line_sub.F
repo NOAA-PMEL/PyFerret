@@ -90,7 +90,7 @@
 	   next_used_line   = line_flink(line)
 	   line_flink(line) = line_free_ptr  
 	   line_free_ptr    = line
-	   
+
 * ... unhook from used list
 	   line_flink(line_blink(line)) = next_used_line
 	   line_blink(next_used_line)   = line_blink(line)

@@ -157,6 +157,7 @@ C       Code pulled from DEALLO_ALL_AXES in order to do complete clean up silent
               IF ( k .LE. max_lines ) THEN
                  IF ( .NOT. line_regular(k) ) 
      .              CALL FREE_LINE_DYNMEM(k)
+                 line_regular(k) = .TRUE.
                  line_name(k) = char_init16
               ELSE
                  CALL TM_DEALLO_DYN_LINE(k)

@@ -64,9 +64,6 @@
 	CHARACTER LEFINT8*20, TM_FMT*12, num_str*20
 	REAL	GET_LINE_COORD
 
-* What other sanity checks should there be?
-c	IF ( rqst_size .GT. some_max) GOTO 5200
-
 	i8_rqst_size = rqst_size
 
 	IF (line_allocated (iaxis) .GT. 0) THEN
@@ -96,11 +93,6 @@ c	IF ( rqst_size .GT. some_max) GOTO 5200
 ***********************
 * error exits
  5000	RETURN
-
- 5200	CALL ERRMSG( ferr_internal,status,' ', *5210)
- 5210	CALL SPLIT_LIST(pttmode_explct, show_lun,
-     .		'    error with axis allocations',0 )
-        GOTO 5000
 
  5300	CALL ERRMSG( ferr_insuff_memory,status,' ', *5310)
  5310	CALL SPLIT_LIST(pttmode_explct, show_lun,

@@ -9,16 +9,7 @@
 
 
 #include <stdlib.h>
-/*  the relevant definition of "FORTRAN" pulled from
- *   #include "../common/ferret.h"
- */
-#ifndef FORTRAN
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
-#endif
+#include "ferret.h"
 
 
 void FORTRAN(nullify_linemem)( int *iaxis, int *line_or_edge )

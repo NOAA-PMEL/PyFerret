@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "ferret.h"
 #include "binaryRead.h"
 
 int FORTRAN(pl_read_var)(float *mem, int *lengths){

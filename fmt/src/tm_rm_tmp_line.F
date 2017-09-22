@@ -65,10 +65,14 @@
 	next_used_line   = line_flink(line)
 	line_flink(line) = line_free_ptr  
 	line_free_ptr    = line
-	   
+
 * ... unhook from tmp list
 	line_flink(line_blink(line)) = next_used_line
 	line_blink(next_used_line)   = line_blink(line)
+
+* Recover the coordinate storage used for an irregularly-spaced line.
+        IF ( .NOT. line_regular(line) ) CALL FREE_LINE_DYNMEM (line)
+        line_regular(line) = .TRUE.
 
 * successful completion
 	RETURN

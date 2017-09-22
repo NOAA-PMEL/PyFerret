@@ -69,7 +69,7 @@
 *     Local arguments
       CHARACTER*(64) capaxname, uniqaxname
       INTEGER        axucode, k, sts, first_pt, j
-      REAL*8         delta, eps, value, modulen
+      REAL*8         delta, eps, val, modulen
       LOGICAL        reg, modu
 
 *     Sanity check
@@ -107,8 +107,8 @@
 *     Check for regular coordinates
       reg = .TRUE.
       DO 10 k = 2, numcoords-1
-         value = axiscoords(1) + (k-1) * delta
-         IF ( abs(value - axiscoords(k)) .GT. eps ) THEN
+         val = axiscoords(1) + (k-1) * delta
+         IF ( abs(val - axiscoords(k)) .GT. eps ) THEN
              reg = .FALSE.
              GOTO 20
          ENDIF
@@ -199,33 +199,20 @@
       line_dim(k)           = numcoords
       line_regular(k)       = reg
       IF ( reg ) THEN
-          line_subsc1(k)    = unspecified_int4
           line_start(k)     = axiscoords(1)
           line_delta(k)     = delta
       ELSE
-          first_pt          = next_line_mem_pos
-          next_line_mem_pos = first_pt + 2 * numcoords + 1
-          IF ( next_line_mem_pos .GT. maxlinestore ) THEN
-              CALL TM_DEALLO_DYN_LINE(k)
-              errmsg = 'No space left for a new irregular line'
+          CALL GET_LINE_DYNMEM(numcoords, k, sts)
+          IF ( sts .NE. merr_ok ) THEN
+              errmsg = 'No memory left for a new irregular line'
               lenerrmsg = TM_LENSTR(errmsg)
+*             No memory allocated so set to regular for cleanup
+              line_regular(k) = .TRUE.
+              CALL TM_RM_TMP_LINE(k, sts)
               RETURN
           ENDIF
-*         Store the coordinates
-          DO 170 j = 1, numcoords
-              line_mem(first_pt + j - 1) = axiscoords(j)
-  170     CONTINUE
-*         Compute and store the box boundries
-          line_mem(first_pt + numcoords) =
-     .         axiscoords(1) - 0.5 * (axiscoords(2) - axiscoords(1))
-          DO 180 j = 2, numcoords
-              line_mem(first_pt + numcoords + j - 1) =
-     .            0.5 * (axiscoords(j) + axiscoords(j-1))
-  180     CONTINUE
-          line_mem(first_pt + 2 * numcoords) = axiscoords(numcoords) +
-     .         0.5 * (axiscoords(numcoords) - axiscoords(numcoords-1))
-*         Assign the line info
-          line_subsc1(k)    = first_pt
+          CALL COPY_LINE_COORDS(axiscoords, linemem(k)%ptr, numcoords)
+          CALL TM_IRREGAX_MID(axiscoords, lineedg(k)%ptr, numcoords)
           line_start(k)     = axiscoords(1)
           line_delta(k)     = unspecified_val8
       ENDIF

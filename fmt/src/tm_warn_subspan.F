@@ -52,7 +52,7 @@
 * local variable declarations:
 	LOGICAL	TM_ITS_SUBSPAN_MODULO
 	INTEGER TM_LENSTR1, alen, blen, vlen
-	REAL	TM_WW_AXLEN, axwwlen, delta
+	REAL	TM_WW_AXLEN, GET_LINE_COORD, axwwlen, delta
 	CHARACTER*16 TM_FMT, buff1, buff2
 
 	INTEGER tt  ! nice short name
@@ -66,7 +66,7 @@
 	IF (line_delta(iaxis) .NE. unspecified_val8) THEN
 	   delta = line_delta(iaxis)
 	ELSE
-	   delta = line_mem(line_subsc1(iaxis)+1) - line_mem(line_subsc1(iaxis))
+	   delta = GET_LINE_COORD(linemem(iaxis)%ptr, 2) - GET_LINE_COORD(linemem(iaxis)%ptr, 1)
 	ENDIF
 
         IF (line_modulo(iaxis) .AND. TM_ITS_SUBSPAN_MODULO(iaxis) .AND.

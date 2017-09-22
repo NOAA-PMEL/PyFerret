@@ -17,6 +17,7 @@
 
 #define NFERDIMS 6
 #define NFERDIMSP1 7
+#define FERR_OK 3          /* This should match the ferr_ok parameter in errmsg.parm. */
 
 #define TTOUT_LUN 6
 

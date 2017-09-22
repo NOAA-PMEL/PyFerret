@@ -1,0 +1,46 @@
+! bn_tseries_modulo.jnl
+!  9/2017 TSERIES aggregations
+!
+! If a time axis lies within year 0 or year 1 they are seen by ferret
+! as modulo. For a tseries aggregation, if the entire aggregated axis
+! is still modulo, then mark it as such, but otherwise it is not modulo.
+!
+! The time axes for these files both lie within year 0.
+! The aggregation has a modulo time axis.
+
+tseries heat_0a.nc, heat_0b.nc
+show grid total_ocean_sens_heat
+
+! The file heat_01 lies in year 1 so the total TSERIES length is longer than a year.
+
+can dat/all
+tseries heat_0a.nc, heat_0b.nc, heat_01.nc
+show grid total_ocean_sens_heat
+
+! Here is the example reported by Russ Fiedler, 9/5/17, on the Ferret list. 
+! A file in year 1 and a file in year 2 were previously made into a 24-month
+! axis which was marked as modulo.
+
+can dat/all
+tseries heat_00.nc, heat_01.nc
+show grid total_ocean_sens_heat
+
+
+! What happens with files that are members of our descriptor examples?
+! (coads_clim.003 needed changing to have the same time-axis name)
+
+tseries coads_clim_irreg = coads_clim.001, coads_clim.003
+show grid sst
+list/x=180/y=0 sst
+
+! This descriptor file lists the same datasets, which each contain two
+! timesteps, but it lists S_START = S_END on the second set so it reads
+! just one timestep from coads_clim.003
+
+! The descriptor-file code does not mark the axis as modulo.
+! (Not changing this at this time.)
+
+can data/all
+use coads_clim_irreg.des
+show grid sst
+list/x=180/y=0 sst

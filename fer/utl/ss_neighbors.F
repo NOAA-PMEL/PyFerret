@@ -109,9 +109,9 @@
 
 * initialize pointers for axes with irregularly spaced points
 	IF ( .NOT.regular ) THEN
-	   isub0 = line_subsc1( axis ) - 1
-	   ibot  = isub0 + 1
-	   itop  = isub0 + line_len
+	   isub0 = 0
+	   ibot  = 1
+	   itop  = line_len
 	ENDIF
 
 * ***** SOLUTIONS WHEN GIVEN POINT BEYOND AXIS ENDS

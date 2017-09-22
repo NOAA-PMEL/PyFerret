@@ -278,6 +278,8 @@ bn_cache_management.jnl
 bn_transp_choose.jnl
 bn_iin_regrid.jnl
 bn721_bug_fixes.jnl
+bn_tseries_modulo.jnl
+bn_huge_axis.jnl
 !
 ! bn_gif, bn_all_ef, and bn_startupfile at end
 !

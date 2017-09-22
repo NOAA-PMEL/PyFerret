@@ -38,7 +38,6 @@
 #define HI    1
 
 #define ATOM_NOT_FOUND 0   /* This should match the atom_not_found parameter in ferret.parm. */
-#define FERR_OK 3          /* This should match the ferr_ok parameter in errmsg.parm. */
 #define FERR_EF_ERROR 437  /* This should match the ferr_ef_error parameter in errmsg.parm. */
 
 #define EF_VERSION 1.4

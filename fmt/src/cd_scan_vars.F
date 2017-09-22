@@ -182,8 +182,6 @@
       EQUIVALENCE ( ds_precision, cd_data_type )
 
 * initialize: save the state of grid memory prior to any new definitions
-* ... save original start of free line memory
-	orig_line_mem = next_line_mem_pos
 
 * ... flag all axes as non-reversed as the default
 	DO 10 i = max_lines, line_ceiling

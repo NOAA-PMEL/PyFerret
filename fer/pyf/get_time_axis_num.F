@@ -68,13 +68,13 @@
 *     Function declarations
       INTEGER TM_LENSTR, TM_UNIT_ID, STR_UPCASE
       LOGICAL TM_LEGAL_NAME, CHECK_TIME_LINE_SUBSET
-      REAL*8  TM_SECS_FROM_BC
+      REAL*8  TM_SECS_FROM_BC, GET_LINE_COORD
 
 *     Local arguments
       CHARACTER*(64) capaxname, uniqaxname, axisunit
       CHARACTER*(16) calname
-      INTEGER        sts, calid, k, axucode, first_pt, j
-      REAL*8         modulen, delta, eps, value, base
+      INTEGER        sts, calid, k, axucode, first_pt, j, q
+      REAL*8         modulen, delta, eps, val, base, firstval
       LOGICAL        modu, reg
 
 *     Sanity check
@@ -119,36 +119,36 @@
       ENDIF
 
 *     Figure out the unit for this time series
-      DO 10 k = 2, numcoords
-         IF ( axiscoords(TIMEARRAY_SECONDINDEX,k) .NE.
+      DO 10 j = 2, numcoords
+         IF ( axiscoords(TIMEARRAY_SECONDINDEX,j) .NE.
      .        axiscoords(TIMEARRAY_SECONDINDEX,1) ) THEN
              axisunit = 'sec'
              GOTO 100
          ENDIF
    10 CONTINUE
-      DO 20 k = 2, numcoords
-         IF ( axiscoords(TIMEARRAY_MINUTEINDEX,k) .NE.
+      DO 20 j = 2, numcoords
+         IF ( axiscoords(TIMEARRAY_MINUTEINDEX,j) .NE.
      .        axiscoords(TIMEARRAY_MINUTEINDEX,1) ) THEN
              axisunit = 'min'
              GOTO 100
          ENDIF
    20 CONTINUE
-      DO 30 k = 2, numcoords
-         IF ( axiscoords(TIMEARRAY_HOURINDEX,k) .NE.
+      DO 30 j = 2, numcoords
+         IF ( axiscoords(TIMEARRAY_HOURINDEX,j) .NE.
      .        axiscoords(TIMEARRAY_HOURINDEX,1) ) THEN
              axisunit = 'hour'
              GOTO 100
          ENDIF
    30 CONTINUE
-      DO 40 k = 2, numcoords
-         IF ( axiscoords(TIMEARRAY_DAYINDEX,k) .NE.
+      DO 40 j = 2, numcoords
+         IF ( axiscoords(TIMEARRAY_DAYINDEX,j) .NE.
      .        axiscoords(TIMEARRAY_DAYINDEX,1) ) THEN
              axisunit = 'day'
              GOTO 100
          ENDIF
    40 CONTINUE
-      DO 50 k = 2, numcoords
-         IF ( axiscoords(TIMEARRAY_MONTHINDEX,k) .NE.
+      DO 50 j = 2, numcoords
+         IF ( axiscoords(TIMEARRAY_MONTHINDEX,j) .NE.
      .        axiscoords(TIMEARRAY_MONTHINDEX,1) ) THEN
 *            A "month" unit is ill-defined so Ferret uses days
              axisunit = 'day'
@@ -165,8 +165,8 @@
       ENDIF
 
 *     If all years are zero, assume annual modulo axis
-      DO 110 k = 1, numcoords
-          IF ( axiscoords(TIMEARRAY_YEARINDEX,k) .NE. 0 ) THEN
+      DO 110 j = 1, numcoords
+          IF ( axiscoords(TIMEARRAY_YEARINDEX,j) .NE. 0 ) THEN
               modu = .FALSE.
               modulen = 0
               GOTO 150
@@ -175,27 +175,78 @@
       modu = .TRUE.
       modulen = cals_yeardays(calid) * (24.0 * 60.0 * 60.0) /
      .                  un_convert(axucode)
+  150 CONTINUE
 
-*     Temporarily grab memory for floating-point time coordinates
-  150 first_pt = next_line_mem_pos
-      IF ( first_pt + numcoords .GT. maxlinestore ) THEN
-          errmsg = 'No memory for floating-point time coordinates'
+*     Create a complete irregular axis to store computed coordinates.
+*     It might be kept or it might be thrown away.
+      IF ( capaxname .NE. '' ) THEN
+*         If a name is given, make sure it is unique, or make it unique.
+*         Do this first so the newly created dynamic line will not interfere.
+          CALL TM_NEW_LINE_NAME(capaxname, uniqaxname)
+      ENDIF
+*     Now create the dynamic line
+      CALL TM_ALLO_DYN_LINE(q, sts)
+      IF ( sts .NE. merr_ok ) THEN
+          errmsg = 'No space left for a new dynamic time line'
           lenerrmsg = TM_LENSTR(errmsg)
           RETURN
       ENDIF
-      DO 160 k = 1, numcoords
-          line_mem(first_pt + k - 1) = TM_SECS_FROM_BC(calid,
-     .                        axiscoords(TIMEARRAY_YEARINDEX,k),
-     .                        axiscoords(TIMEARRAY_MONTHINDEX,k),
-     .                        axiscoords(TIMEARRAY_DAYINDEX,k),
-     .                        axiscoords(TIMEARRAY_HOURINDEX,k),
-     .                        axiscoords(TIMEARRAY_MINUTEINDEX,k),
-     .                        axiscoords(TIMEARRAY_SECONDINDEX,k),
-     .                        sts) / un_convert(axucode)
+*     Assign it a unique name.
+      IF ( capaxname .EQ. '' ) THEN
+          WRITE(line_name(q), 360) (q - max_lines)
+  360     FORMAT('(AX',I3.3,')')
+          line_name_orig(q) = line_name(q)
+      ELSE
+          line_name(q)      = uniqaxname
+          line_name_orig(q) = axisname
+      ENDIF
+*     Assign the rest of the line info
+      line_units(q)         = axisunit
+      line_unit_code(q)     = axucode
+      IF ( modu ) THEN
+          line_t0(q)        = '01-JAN-0000 00:00:00'
+          base = 0.0
+      ELSE
+          line_t0(q)        = '01-JAN-1900 00:00:00'
+          base = TM_SECS_FROM_BC(calid, 1900, 1, 1, 0, 0, 0, sts)
+      ENDIF
+      line_cal_name(q)      = allowed_calendars(calid)
+      line_shift_origin(q)  = .FALSE.
+      line_tunit(q)         = un_convert(axucode)
+      line_parent(q)        = 0
+      line_class(q)         = pline_class_basic
+      line_modulo(q)        = modu
+      line_modulo_len(q)    = modulen
+      line_direction(q)     = 'TI'
+      line_dim(q)           = numcoords
+      line_regular(q)       = .FALSE.
+      CALL GET_LINE_DYNMEM(numcoords, q, sts)
+      IF ( sts .NE. merr_ok ) THEN
+          errmsg = 'No memory left for a temporary irregular line'
+          lenerrmsg = TM_LENSTR(errmsg)
+*         No memory was allocated so set to regular for cleanup
+          line_regular(q) = .TRUE.
+          CALL TM_RM_TMP_LINE(q, sts)
+          RETURN
+      ENDIF
+      DO 160 j = 1, numcoords
+          val = TM_SECS_FROM_BC(calid,
+     .                          axiscoords(TIMEARRAY_YEARINDEX,j),
+     .                          axiscoords(TIMEARRAY_MONTHINDEX,j),
+     .                          axiscoords(TIMEARRAY_DAYINDEX,j),
+     .                          axiscoords(TIMEARRAY_HOURINDEX,j),
+     .                          axiscoords(TIMEARRAY_MINUTEINDEX,j),
+     .                          axiscoords(TIMEARRAY_SECONDINDEX,j),
+     .                          sts) / un_convert(axucode)
+          CALL PUT_LINE_COORD(linemem(q)%ptr, j, val - base)
   160 CONTINUE
+      firstval = GET_LINE_COORD(linemem(q)%ptr, 1)
+      line_start(q)     = firstval
+      line_delta(q)     = unspecified_val8
+
       IF ( numcoords .GT. 1 ) THEN
-          delta = (line_mem(first_pt + numcoords - 1) -
-     .             line_mem(first_pt)) / (numcoords - 1)
+          delta = (GET_LINE_COORD(linemem(q)%ptr, numcoords) -
+     .             firstval) / (numcoords-1)
       ELSE
           delta = 0.0
       ENDIF
@@ -205,26 +256,32 @@
       ENDIF
 *     Check for regular coordinates
       reg = .TRUE.
-      DO 170 k = 2, numcoords-1
-         value = line_mem(first_pt) + (k-1) * delta
-         IF ( abs(value - line_mem(first_pt + k - 1)) .GT. eps ) THEN
+      DO 170 j = 2, numcoords-1
+         val = firstval + (j-1) * delta
+         IF ( abs(GET_LINE_COORD(linemem(q)%ptr, j) - val) .GT. eps ) THEN
              reg = .FALSE.
              GOTO 200
          ENDIF
   170 CONTINUE
 
-*     See if a dynamic line already exists containing the provided info
+*     See if a dynamic line (other than the one created above) 
+*     already exists containing the provided info
   200 k = max_lines
   210 k = line_flink(k)
       IF ( k .LE. max_lines ) THEN
           GOTO 300
       ENDIF
+      IF ( k .EQ. q ) THEN
+          GOTO 210
+      ENDIF
       IF ( (line_class(k) .EQ. pline_class_basic) .AND.
      .     (line_t0(k) .NE. char_init20) ) THEN
-          IF ( CHECK_TIME_LINE_SUBSET(k, axisstart, axisend, capaxname,
-     .                    calid, line_mem(first_pt), numcoords, delta,
-     .                    eps, reg, modu, modulen, axucode) ) THEN
+          IF ( CHECK_TIME_LINE_SUBSET(k, axisstart, axisend, 
+     .           capaxname, calid, linemem(q)%ptr, numcoords, 
+     .           delta, eps, reg, modu, modulen, axucode, base) ) THEN
               axisnum = k
+*             Do not need the line created above
+              CALL TM_RM_TMP_LINE(q)
               GOTO 500
           ENDIF
       ENDIF
@@ -237,92 +294,31 @@
      .         (line_name(k) .NE. char_init16) .AND.
      .         (line_t0(k) .NE. char_init20) ) THEN
               IF ( CHECK_TIME_LINE_SUBSET(k, axisstart, axisend,
-     .                   capaxname, calid, line_mem(first_pt),
-     .                   numcoords, delta, eps, reg, modu, modulen,
-     .                   axucode) ) THEN
+     .           capaxname, calid, linemem(q)%ptr, numcoords, 
+     .           delta, eps, reg, modu, modulen, axucode, base) ) THEN
                   axisnum = k
+*                 Do not need the line created above
+                  CALL TM_RM_TMP_LINE(q)
                   GOTO 500
               ENDIF
           ENDIF
   310 CONTINUE
 
-*     If we got here, there is no line containing the provided info.
-      IF ( capaxname .NE. '' ) THEN
-*         If a name is given, make sure it is unique, or make it unique.
-*         Do this first so the newly created dynamic line will not interfere.
-          CALL TM_NEW_LINE_NAME(capaxname, uniqaxname)
-      ENDIF
-*     Now create the dynamic line
-      CALL TM_ALLO_DYN_LINE(k, sts)
-      IF ( sts .NE. merr_ok ) THEN
-          errmsg = 'No space left for a new dynamic time line'
-          lenerrmsg = TM_LENSTR(errmsg)
-          RETURN
-      ENDIF
-*     Assign it a unique name.
-      IF ( capaxname .EQ. '' ) THEN
-          WRITE(line_name(k), 360) (k - max_lines)
-  360     FORMAT('(AX',I3.3,')')
-          line_name_orig(k) = line_name(k)
-      ELSE
-          line_name(k)      = uniqaxname
-          line_name_orig(k) = axisname
-      ENDIF
-*     Assign the rest of the line info
-      line_units(k)         = axisunit
-      line_unit_code(k)     = axucode
-      IF ( modu ) THEN
-          line_t0(k)        = '01-JAN-0000 00:00:00'
-          base = 0.0
-      ELSE
-          line_t0(k)        = '01-JAN-1900 00:00:00'
-          base = TM_SECS_FROM_BC(calid, 1900, 1, 1, 0, 0, 0, sts)
-      ENDIF
-      line_cal_name(k)      = allowed_calendars(calid)
-      line_shift_origin(k)  = .FALSE.
-      line_tunit(k)         = un_convert(axucode)
-      line_parent(k)        = 0
-      line_class(k)         = pline_class_basic
-      line_modulo(k)        = modu
-      line_modulo_len(k)    = modulen
-      line_direction(k)     = 'TI'
-      line_dim(k)           = numcoords
-      line_regular(k)       = reg
+*     If we got here, there was no line containing the provided info
+*     other than the one created above, so use the line created above.
       IF ( reg ) THEN
-          line_subsc1(k)    = unspecified_int4
-          line_start(k)     = line_mem(first_pt) - base
-          line_delta(k)     = delta
+*         Change to a regular line, freeing memory for stored coordinates
+          CALL FREE_LINE_DYNMEM(q)
+          line_regular(q)   = .TRUE.
+          line_start(q)     = firstval
+          line_delta(q)     = delta
       ELSE
-*         first_pt already assigned
-          next_line_mem_pos = first_pt + 2 * numcoords + 1
-          IF ( next_line_mem_pos .GT. maxlinestore ) THEN
-              CALL TM_DEALLO_DYN_LINE(k)
-              errmsg = 'No space left for a new irregular time line'
-              lenerrmsg = TM_LENSTR(errmsg)
-              RETURN
-          ENDIF
-*         Modify the coordinates to the new t0 baseline
-          DO 370 j = 1, numcoords
-  370         line_mem(first_pt+j-1) = line_mem(first_pt+j-1) - base
-*         Compute and store the box boundries
-          line_mem(first_pt + numcoords) = line_mem(first_pt) - 0.5 *
-     .                   (line_mem(first_pt + 1) - line_mem(first_pt))
-          DO 380 j = 2, numcoords
-              line_mem(first_pt + numcoords + j - 1) = 0.5 *
-     .        (line_mem(first_pt + j - 1) + line_mem(first_pt + j- 2))
-  380     CONTINUE
-          line_mem(first_pt + 2 * numcoords) =
-     .         line_mem(first_pt + numcoords - 1) +
-     .         0.5 * (line_mem(first_pt + numcoords - 1) -
-     .                line_mem(first_pt + numcoords - 2))
-*         Assign the line info
-          line_subsc1(k)    = first_pt
-          line_start(k)     = line_mem(first_pt)
-          line_delta(k)     = unspecified_val8
+*         Already correctly assigned irregular line; just assign the edges
+          CALL TM_IRREGAX_MID(linemem(q)%ptr, lineedg(q)%ptr, numcoords)
       ENDIF
-      line_use_cnt(k)       = 0
+      line_use_cnt(q)       = 0
 
-      axisnum = k
+      axisnum = q
       axisstart = 1
       axisend = numcoords
 

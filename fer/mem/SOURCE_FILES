@@ -26,10 +26,12 @@ find_mem_var.F\
 find_mem_var_incl_c_cache.F\
 find_mr_slot.F\
 find_var_name.F\
+free_line_dynmem.F\
 free_mr_dynmem.F\
 free_ws_dynmem.F\
 fvar_number.F\
 get_dyn_work_space.F\
+get_line_dynmem.F\
 get_mr_dynmem.F\
 get_ws_dynmem.F\
 get_work_mr.F\
@@ -64,6 +66,10 @@ r_cgrid_size_delta.F\
 re_assign_variable.F\
 release_dyn_work_space.F\
 show_aborted_mem_state.F\
+store_edge_ptr.F\
+store_line_ptr.F\
+store_nul_edge_ptr.F\
+store_nul_line_ptr.F\
 store_nul_mr_ptr.F\
 store_nul_ws_ptr.F\
 store_mr_ptr.F\

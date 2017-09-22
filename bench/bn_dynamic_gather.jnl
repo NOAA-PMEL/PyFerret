@@ -97,3 +97,6 @@ SET MODE IGNORE
 SET MODE FRUGAL:95
 SET MODE/LAST IGNORE
 
+
+! clean up
+set mem/siz=25.6  ! return to the default setting

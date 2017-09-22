@@ -40,14 +40,11 @@
 *     Note: superline is assumed to be a valid line.
 *     Note: If superline is exactly the line described, axisstart will
 *           be assigned one and axisend will be assigned numcoords.
-*     Note: axiscoords are assumed to be in units of time since
-*           01-JAN-0000 00:00:00, and adjustments to a different start
-*           for superline are made by this function.
 
       LOGICAL FUNCTION CHECK_TIME_LINE_SUBSET(superline, axisstart,
      .                            axisend, axisname, calid,
      .                            axiscoords, numcoords, delta, eps,
-     .                            reg, modu, modulen, axucode)
+     .                            reg, modu, modulen, axucode, base)
       IMPLICIT NONE
 
       INCLUDE 'calendar.decl'
@@ -63,17 +60,17 @@
       INTEGER       superline, axisstart, axisend,
      .              calid, numcoords, axucode
       CHARACTER*(*) axisname
-      REAL*8        axiscoords, delta, eps, modulen
+      REAL*8        axiscoords, delta, eps, modulen, base
       LOGICAL       reg, modu
       DIMENSION     axiscoords(numcoords)
 
 *     Function declarations
-      REAL*8        TM_SECS_FROM_BC
+      REAL*8        TM_SECS_FROM_BC, GET_LINE_COORD
 
 *     Local arguments
       INTEGER       i, j, k, sts,
      .              t0yr, t0mon, t0day, t0hr, t0min, t0sec
-      REAL*8        base, value, factor
+      REAL*8        t0base, val, factor
 
 *     First check the quick and easy, then go to the strings and coordinates
       k = superline
@@ -95,8 +92,8 @@
       factor = un_convert(line_unit_code(k)) / un_convert(axucode)
 *     line_modulo_len not always set for time axes - ignore
 *     IF ( modu ) THEN
-*         value = line_modulo_len(k) * factor
-*         IF ( abs(modulen - value) .GT. eps ) THEN
+*         val = line_modulo_len(k) * factor
+*         IF ( abs(modulen - val) .GT. eps ) THEN
 *             CHECK_LINE_SUBSET = .FALSE.
 *             RETURN
 *         ENDIF
@@ -116,23 +113,23 @@
           CHECK_TIME_LINE_SUBSET = .FALSE.
           RETURN
       ENDIF
-      base = TM_SECS_FROM_BC(calid, t0yr, t0mon, t0day, t0hr, t0min,
+      t0base = TM_SECS_FROM_BC(calid, t0yr, t0mon, t0day, t0hr, t0min,
      .                    t0sec, sts) / un_convert(line_unit_code(k))
 *     Check the coordinates - may be a subset
       IF ( reg ) THEN
 *         First check the spacing between coordinates
           IF ( numcoords .GT. 1 ) THEN
-              value = line_delta(k) * factor
-              IF ( abs(delta - value) .GT. eps ) THEN
+              val = line_delta(k) * factor
+              IF ( abs(delta - val) .GT. eps ) THEN
                   CHECK_TIME_LINE_SUBSET = .FALSE.
                   RETURN
               ENDIF
           ENDIF
 *         Look for the first coordinate
           DO 130 j = 1, line_dim(k)
-              value = line_start(k) + (j-1) * line_delta(k) + base
-              value = value * factor
-              IF ( abs(value - axiscoords(1)) .LT. eps ) THEN
+              val = line_start(k) + (j-1) * line_delta(k) + t0base
+              val = val * factor - base
+              IF ( abs(val - axiscoords(1)) .LT. eps ) THEN
 *                 Verify the last coordinate is in there
                   i = j + numcoords - 1
                   IF ( i .GT. line_dim(k) ) THEN
@@ -149,9 +146,9 @@
       ELSE
 *         Find the first coordinate
           DO 140 j = 1, line_dim(k)
-              value = line_mem(line_subsc1(k) + j - 1) + base
-              value = value * factor
-              IF ( abs(value - axiscoords(1)) .LT. eps ) THEN
+              val = GET_LINE_COORD(linemem(k)%ptr, j) + t0base
+              val = val * factor - base
+              IF ( abs(val - axiscoords(1)) .LT. eps ) THEN
                   GOTO 150
               ENDIF
   140     CONTINUE
@@ -164,9 +161,9 @@
               RETURN
           ENDIF
           DO 160 i = 2, numcoords
-              value = line_mem(line_subsc1(k) + j + i - 2) + base
-              value = value * factor
-              IF ( abs(value - axiscoords(i)) .GE. eps ) THEN
+              val = GET_LINE_COORD(linemem(k)%ptr, j + i - 1) + t0base
+              val = val * factor - base
+              IF ( abs(val - axiscoords(i)) .GE. eps ) THEN
                   CHECK_TIME_LINE_SUBSET = .FALSE.
                   RETURN
               ENDIF

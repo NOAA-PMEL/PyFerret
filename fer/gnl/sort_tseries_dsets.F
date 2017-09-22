@@ -1,6 +1,5 @@
 	SUBROUTINE SORT_TSERIES_DSETS (nmembers, nsteps, skip_edges,
-     .				       memb_nsteps, memb_order,
-     .				       tsteps, edges)
+     .				       memb_nsteps, memb_order, memb_sort)
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -46,8 +45,7 @@
 *   skip_edges	- flag to turn off cell edge processing (input)
 *   memb_nsteps	- number of time steps from each member file (input)
 *   memb_order	- ordering index of member files (input empty/output filled)
-*   tsteps      - time step array as currently ordered (in/out)
-*   edges       - edges array as currently ordered (in/out)
+*   memb_sort   - starting time steps as currently ordered, to be sorted (in/out)
 
         include 'tmap_errors.parm'
 #include "tmap_dset.parm"
@@ -67,80 +65,32 @@
 * calling argument declarations:
 	LOGICAL skip_edges
 	INTEGER nmembers, nsteps, memb_nsteps(nmembers), memb_order(nmembers)
-	REAL	tsteps(nsteps), edges(nsteps+nmembers)
+	REAL    memb_sort(nmembers)
 
 * local variable declarations:
 	LOGICAL sorted
-	INTEGER lstart(nmembers), i, lin, lout, ifile
-	REAL    tstart(nmembers), buff(nsteps+nmembers), rorder(nmembers)
+	INTEGER i
+	REAL    rorder(nmembers)
 
 * initialize
 	sorted = .FALSE.
-* ... starting index of each member file
-	lstart(1) = 1
-	DO i = 2, nmembers
-	   lstart(i) = lstart(i-1) + memb_nsteps(i-1) 
-	ENDDO
-* ... starting time step of each member file
-	DO i = 1, nmembers
-	   tstart(i) = tsteps(lstart(i))
-	ENDDO
+
 * ... pre-sorted indices in a REAL array
 	DO i = 1, nmembers
 	   rorder(i) = i
 	ENDDO
 
 * sort the datasets by start date
-	CALL HEAP2(tstart, rorder, unspecified_val8, nmembers)
-* ... copy the sorted list back into the input array
+	CALL HEAP2(memb_sort, rorder, unspecified_val8, nmembers)
+
+* Return the sort order and the total number of steps
+
+	nsteps = 0.
 	DO i = 1, nmembers
 	   memb_order(i) = INT(rorder(i))
 	   IF (memb_order(i) .NE. i) sorted = .TRUE.
+	   nsteps = nsteps + memb_nsteps(i)
 	ENDDO
 
-* did any re-ordering occur?
-	IF (.NOT.sorted) RETURN
-
-* sort the aggregated time axis coordinates
-* ... copy into the buffer area in the correct order
-	lout = 1
-	DO i = 1, nmembers
-	   ifile = memb_order(i)
-	   lin = lstart(ifile)
-	   DO WHILE (lin .LT. lstart(ifile)+memb_nsteps(ifile) )
-	      buff(lout) = tsteps(lin)
-	      lout = lout + 1
-	      lin  = lin  + 1
-	   ENDDO
-	ENDDO
-* ... copy the sorted time axis back
-	DO lin = 1, nsteps
-	   tsteps(lin) = buff(lin)
-	ENDDO
-
-
-* sort the aggregated time axis cell edges
-	IF (skip_edges) RETURN
-
-* ... starting index of edges based on N+1 points per member
-	lstart(1) = 1
-	DO i = 2, nmembers
-	   lstart(i) = lstart(i-1) + memb_nsteps(i-1) + 1
-	ENDDO
-* ... copy into the buffer area in the correct order
-	lout = 1
-	DO i = 1, nmembers
-	   ifile = memb_order(i)
-	   lin = lstart(ifile)
-	   DO WHILE (lin .LT. lstart(ifile)+memb_nsteps(ifile)+1 )
-	      buff(lout) = edges(lin)
-	      lout = lout + 1
-	      lin  = lin  + 1
-	   ENDDO
-	ENDDO
-* ... copy the sorted axis edges back
-	DO lin = 1, nsteps+nmembers
-	   edges(lin) = buff(lin)
-	ENDDO
-
+	RETURN
 	END

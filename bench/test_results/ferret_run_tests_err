@@ -623,8 +623,10 @@ Replacing definition of axis XAX
 Replacing definition of axis XAX
            *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
-Replacing definition of axis XAX
-Replacing definition of axis XAX
+ **ERROR: improper grid or axis definition: unrepairable repeated axis coords
+define axis/from/x/name=xax {6,6}
+ **ERROR: improper grid or axis definition: unrepairable repeated axis coords
+define axis/from/x/name=xax/edges {6,6}
  **ERROR: improper grid or axis definition: unrepairable repeated axis coords
 define axis/from/x/name=xax/edges {6,6,6}
            *** NOTE: Axis has repeated values -- micro-adjusting ...
@@ -1218,9 +1220,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: Coordinates missing on axis LONGITUDE at subscript -1423
+           *** NOTE: Coordinates missing on axis LONGITUDE at subscript 2
            *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: Coordinates missing on axis LATITUDE at subscript -1423
+           *** NOTE: Coordinates missing on axis LATITUDE at subscript 2
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
  **ERROR: illegal limits: "DUMMY" does not exist at T=01-JAN-1990 00:00
@@ -2072,7 +2074,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
-Replacing definition of axis TIME4
+Replacing definition of axis TIME5
            *** NOTE: grid GSQ1 used by data set coads_climatology
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
@@ -2135,9 +2137,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_modnbd.jnl
 *** Running ferret script: bn_fifty_files.jnl
-           *** NOTE: Coordinates missing on axis LONGITUDE at subscript -169
+           *** NOTE: Coordinates missing on axis LONGITUDE at subscript 2
            *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: Coordinates missing on axis LATITUDE at subscript -169
+           *** NOTE: Coordinates missing on axis LATITUDE at subscript 2
            *** NOTE: A dummy axis of subscripts will be used
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
            *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
@@ -2943,20 +2945,12 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
  LISTing to file a.nc
 *** Running ferret script: bn_NaN_note.jnl
-           *** NOTE: unrepairable repeated axis coords on axis j at subscript -126
-           *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: unrepairable repeated axis coords on axis l at subscript -126
-           *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: broiled
-           *** NOTE: unrepairable repeated axis coords on axis j at subscript -126
-           *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: j
-           *** NOTE: unrepairable repeated axis coords on axis l at subscript -126
-           *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: l
+           *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
 *** Running ferret script: bn671_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3202,12 +3196,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_descr_4digit.jnl
 *** Running ferret script: bn_axis_outtype.jnl
  LISTing to file mytype.nc
-           *** NOTE: unrepairable repeated axis coords on axis TIME at subscript -126
-           *** NOTE: A dummy axis of subscripts will be used
  LISTing to file mytype.nc
            *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
-           *** NOTE: unrepairable repeated axis coords on axis TIME at subscript -126
-           *** NOTE: A dummy axis of subscripts will be used
  LISTing to file mytype.nc
  LISTing to file mytype.nc
  LISTing to file mytype.nc
@@ -4495,9 +4485,9 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: unrepairable repeated axis coords on axis xax at subscript 1
+           *** NOTE: unrepairable repeated axis coords on axis xax at subscript 2
            *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: unrepairable repeated axis coords on axis yax at subscript 1
+           *** NOTE: unrepairable repeated axis coords on axis yax at subscript 2
            *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -5142,6 +5132,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+*** Running ferret script: bn_tseries_modulo.jnl
+*** Running ferret script: bn_huge_axis.jnl
+ LISTing to file a.nc
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

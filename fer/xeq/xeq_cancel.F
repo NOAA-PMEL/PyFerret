@@ -778,9 +778,8 @@
 	      line_keep_flag(axis) = .FALSE.  ! see tm_garb_col_grids.F
 	      IF (line_use_cnt(axis) .LE. 0) THEN
 	         IF ( axis .LE. max_lines ) THEN
-                    IF (.NOT. line_regular(axis))
-     .                  CALL PACK_LINE_STORAGE(axis)
-		    line_name(axis) = char_init16
+                    CALL FREE_LINE_DYNMEM ( axis )  ! checks that irreg coords are stored
+	            line_name(axis) = char_init16
 	         ELSE
 	            CALL TM_DEALLO_DYN_LINE(axis)
 	         ENDIF

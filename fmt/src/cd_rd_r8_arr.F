@@ -64,7 +64,7 @@
 
 * argument declarations
       INTEGER cdfid, varid, start, n, dtype, status
-      REAL*8  dvals(n)
+      REAL*8  dvals(*)
       CHARACTER*(*) errstr
 
       include 'netcdf.inc'

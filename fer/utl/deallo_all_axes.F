@@ -57,7 +57,6 @@
 
 * Local declarations
 
-        LOGICAL all_gone
 	INTEGER TM_GET_LINENUM, TM_GET_GRID_OF_LINE,
      .          islot, grid, status, num_protected_axes
 
@@ -68,7 +67,6 @@
         IF (num_protected_axes .EQ. unspecified_int4 .OR.
      .      num_protected_axes .LE. 0) num_protected_axes = 1
 
-        all_gone = .TRUE.
         DO 100 islot = num_protected_axes+1, line_ceiling
            IF (line_name(islot) .NE. char_init16) THEN
 
@@ -76,7 +74,8 @@
               IF (line_use_cnt(islot) .LE. 0) THEN
 	         IF ( islot .LE. max_lines ) THEN
                     IF (.NOT. line_regular(islot)) 
-     .                  CALL PACK_LINE_STORAGE(islot)
+     .                  CALL FREE_LINE_DYNMEM(islot)
+		    line_regular(islot) = .TRUE.
 		    line_name(islot) = char_init16
 	         ELSE
 	            CALL TM_DEALLO_DYN_LINE(islot)
@@ -94,17 +93,11 @@
 	            CALL ERRMSG(ferr_internal, status,
      .				'axis use count err', *5000)
 	         ENDIF
-                 all_gone = .FALSE.
 	      ENDIF
 
            ENDIF
 
   100	CONTINUE
-
-* If all axes were deleted sucessfully, then reset the pointer into coordinate
-* storage.
-
-        IF (all_gone) next_line_mem_pos = pline_mem_init
 
 	RETURN
 

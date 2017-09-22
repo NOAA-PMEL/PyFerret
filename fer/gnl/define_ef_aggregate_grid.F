@@ -1,6 +1,7 @@
 	SUBROUTINE DEFINE_EF_AGGREGATE_GRID (agg_dset,
      .		tcoordname, nvars, vname, fvar, iline,
-     .		tf_lag_t, ref_grid, agg_dim, member_sets, nsets)
+     .		tf_lag_t, ref_grid, agg_dim, member_sets, 
+     .		nsets, status)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -69,7 +70,7 @@
 
 * calling argument declarations:
 	INTEGER agg_dset, nvars, fvar, iline, tf_lag_t, ref_grid,
-     .		agg_dim, member_sets(*), nsets
+     .		agg_dim, member_sets(*), nsets, status
 	CHARACTER*(*) vname, tcoordname
 
 * local variable declarations:
@@ -77,13 +78,15 @@
      .		has_edges, has_gaps, found_fvar, ef_ordered_time2d, true_month
 	INTEGER STR_SAME, TM_LENSTR1,
      .		big_cx, igrid, idim, agg_grid, nv, type, ii, iset, slen, 
-     .		ndim, vtype, i2, i, status,
+     .		ndim, vtype, i2, i,
      .		npts, nT, nF, lagF, ipt, iline2, memb_grid, it2d,
      .		gap_size, max_gap_size, l,
      .		axcalt, axlagf, gg, ipt1, ipte, fax,
      .		nv_dummy, igrid_dummy, vtype_dummy, num_indices,
-     .		ef_time2d_dset, ef_time2d_grid, iaxis, fvartype
-	REAL*8  TDEST_WORLD, TM_WORLD_AX, fdelta
+     .		ef_time2d_dset, ef_time2d_grid, iaxis, fvartype,
+     .		time2dline
+	REAL*8  TDEST_WORLD, TM_WORLD_AX, GET_LINE_COORD, 
+     .		fdelta, f1, f2, tcoord, tedge
 
 * Getting info back from the attribute-handling structure
         INTEGER maxlen
@@ -98,6 +101,7 @@
 	has_gaps = .FALSE.
 	ef_ordered_time2d = .FALSE.
 	ef_time2d_dset = ds_var_setnum(fvar)
+	time2dline = unspecified_int4
 
 * Get the file-variable type
         slen = TM_LENSTR1(vname)
@@ -310,6 +314,7 @@
 * (cleaner code might be possible by removing the code below to a separate
 * subroutine that is called just once before processing the individual vars
 * of the aggregations)
+
 	IF (agg_dim.EQ.f_dim .AND. tline.NE.unspecified_int4) THEN
 
 	   CALL CD_GET_VAR_ID (agg_dset, tcoordname, t2did, status)
@@ -425,19 +430,27 @@
 	   nT = line_dim(grid_line(t_dim,agg_grid))
 	   nF = line_dim(grid_line(f_dim,agg_grid))
 
+* DYN linemem: allocate coordinate memory linemem for 2d_times and lineedg is the upper
+* 
+
 	   npts = nT * nF
-	   ipt1 = next_line_mem_pos
-	   ipt  = ipt1
-	   IF ((ipt+2*npts+1).GT.maxlinestore) GOTO 5100
+
+	   
+* grab a temporary dynamic axis slot for it
+	   CALL TM_ALLO_TMP_LINE(time2dline, status)
+	   IF (status .NE. ferr_ok) GOTO 5200
+	   CALL GET_LINE_DYNMEM (npts, time2dline, status) 
+	   IF (status .NE. ferr_ok) GOTO 5100
 
 * ... loop over the member data sets, copying their time steps
+           ipt = 1
 	   DO ii = 1, nsets
 	      IF (member_sets(ii) .EQ. pdset_dummy) THEN
 * ... insert a series of missing time values in the 2d time array
 	         has_gaps = .TRUE.
 	         DO i2 = 1, nT
-	            line_mem(ipt)      = unspecified_val8
-	            line_mem(ipt+npts) = unspecified_val8
+		    CALL PUT_LINE_COORD ( linemem(time2dline)%ptr, ipt, unspecified_val8)
+		    CALL PUT_LINE_COORD ( lineedg(time2dline)%ptr, ipt, unspecified_val8)
 	            ipt = ipt + 1
 	         ENDDO
 	      ELSE
@@ -452,47 +465,47 @@
 	         CALL TDEST_WORLD_INIT (memb_grid, ref_grid, t_dim, status)
 	         IF (status .NE. ferr_ok) GOTO 5000 
 	         DO i2 = 1, nT
-	            line_mem(ipt) = TDEST_WORLD(i2, memb_grid, t_dim, box_middle)
-	            line_mem(ipt+npts) =
-     .				 TDEST_WORLD(i2, memb_grid, t_dim, box_lo_lim)
+		    tcoord = TDEST_WORLD(i2, memb_grid, t_dim, box_middle)
+		    tedge  = TDEST_WORLD(i2, memb_grid, t_dim, box_lo_lim)
+		    CALL PUT_LINE_COORD ( linemem(time2dline)%ptr, ipt, tcoord)
+		    CALL PUT_LINE_COORD ( lineedg(time2dline)%ptr, ipt, tedge)
 	            ipt = ipt + 1
 	         ENDDO
 	      ENDIF
 	   ENDDO
-	   line_mem(ipt1+2*npts) = TDEST_WORLD(nT, memb_grid, t_dim, box_hi_lim)
+	   tedge  = TDEST_WORLD(nT, memb_grid, t_dim, box_hi_lim)
+	   CALL PUT_LINE_COORD ( lineedg(time2dline)%ptr, npts+1, tedge)
+
 
 * ... if there were gaps in the forecast time array, fill 'em
 *     always compute lagF - the number of time steps between forecasts
 	   CALL FILL_FMRC_TIME_GAPS(has_gaps,
-     .				    line_mem(ipt1),
-     .				    line_mem(ipt1+npts),
+     .				    linemem(time2dline)%ptr,
+     .				    lineedg(time2dline)%ptr,
      .				    nT,nF, lagF, status)
 	   IF (status .NE. ferr_ok) GOTO 5000
 
 * save the 2D time step array in c memory cache
 * to be recovered as needed by FIND_MEM_VAR
-	   CALL CACHE_FULL_ARRAY(line_mem(ipt1), npts,
+* ?? should this be done differently for dynamic line coords?
+	   CALL CACHE_FULL_ARRAY(linemem(time2dline)%ptr, npts,
      .						ds_var_c_cache_ptr(it2d))
-
-!***** TEST ****
-!	   CALL RECOVER_CACHED_ARRAY(line_mem(ipt1+72), npts,
-!     .						ds_var_c_cache_ptr(it2d))
-
 
 * make the FMRC regrid target axes: T-calendar and F-lag 
 * (t2did still holds the id of the tccordname 2d time array)
 	   has_edges = .TRUE.
 	   CALL CD_MAKE_FMRC_AXES (agg_dset, has_edges, t2did, tcoordname,
      .			ds_var_type(nv), npts, nT, nF,
-     .			axcalt, axlagf, status)
+     .			time2dline, axcalt, axlagf, status)
 	   IF (status .NE. merr_ok) GOTO 5000
 
-*****
+*
 * define the F calendar axis
-	   ipt1 = next_line_mem_pos
-	   IF ((ipt1+2*nF+1).GT.maxlinestore) GOTO 5100
 
-! per Andrew W., this axis has been shifted 1/2 cell to the left
+	   CALL GET_LINE_DYNMEM (nF, iline, status) 
+	   IF (status .NE. ferr_ok) GOTO 5100
+
+! per Andrew W., this axis has been shifted 1/2. cell to the left
 ! so that the F coordinate lies on the low limit (initialization time) of
 ! the 1st time coordinate from each forecast
 ! Only the coordinates need be got from the FMRC members. The bounds are
@@ -500,98 +513,38 @@
 
 * Get the F-step values -- lower bounds of the L=1 cells
 *   ... copying them from the axcalt axis
+
 	   l = 1
+	   ipt1 = 1
 	   DO ipt = ipt1, ipt1+nsets-1
-	      line_mem(ipt) = TM_WORLD_AX(l, axcalt, box_lo_lim )
+	      CALL PUT_LINE_COORD ( linemem(iline)%ptr, ipt, TM_WORLD_AX(l, axcalt, box_lo_lim ) )
 	      l = l + lagF
 	   ENDDO
 
-* Fill in the F-cell bounds just after the F-step values
+* Fill in the F-cell bounds
 * ... we will base the axis extreme edges on the average cell width --
 *     only an approximate anwser for unequally spaced monthly time units
-	   Fdelta = ( line_mem(ipt1+nsets-1) - line_mem(ipt1)) / (nsets-1) 
+	   Fdelta = ( GET_LINE_COORD (linemem(iline)%ptr, ipt1+nsets-1) - 
+     .                GET_LINE_COORD (linemem(iline)%ptr, ipt1) ) / DBLE(nsets-1) 
 *   ... the lower limit of the first point
-	   line_mem(ipt1+nsets) = line_mem(ipt1) - Fdelta/2
+	   
+	   CALL PUT_LINE_COORD ( lineedg(iline)%ptr, ipt1, GET_LINE_COORD (linemem(iline)%ptr, ipt1) - Fdelta/2. )
+
 *   ... the midpoints between the F-steps
 	   DO ipt = ipt1+1, ipt1+nsets-1
-	      line_mem(ipt+nsets) = (line_mem(ipt) + line_mem(ipt-1))/2
+	   
+	      CALL PUT_LINE_COORD ( lineedg(iline)%ptr, ipt, 
+     .                ( GET_LINE_COORD (linemem(iline)%ptr, ipt) + 
+     .                  GET_LINE_COORD (linemem(iline)%ptr, ipt-1) )/2. )
 	   ENDDO
 *   ... the upper limit of the last point
-	   line_mem(ipt1+2*nsets) = line_mem(ipt1+nsets-1) + Fdelta/2
-
-! THIS GIANT BLOCK OF COMMENTED CODE used to populate the F axis coords
-! It would get the timestep values of the L=1
-! output of each model run, and the corresponding cell bounds
-! It has been replaced with the much simpler block of code above
-
-!* ... similar drill to above but need to do again, because cell bounds
-!*     are needed in axis definition
-!* ... loop over the member data sets, inserting the 1st time step of each
-!*     Both the time point and one of the cell bounds needs to be inserted
-!	   max_gap_size = 0
-!	   DO ii = 1, nsets
-!	      IF (member_sets(ii) .NE. pdset_dummy) THEN
-!	         CALL CD_GET_AGG_VAR_INFO (agg_dset, vname, ii, 
-!     .                vtype, iset, memb_grid, iline2, nv, status)
-!	         IF (status .NE. ferr_ok) GOTO 5200
-!	         CALL TDEST_WORLD_INIT (memb_grid, ref_grid, t_dim, status)
-!	         IF (status .NE. ferr_ok) GOTO 5000 
-!	         line_mem(ipt)    = TDEST_WORLD(1, memb_grid, t_dim,
-!     .								box_middle )
-!	         line_mem(ipt+nF) = TDEST_WORLD(1, memb_grid, t_dim,
-!     .								box_lo_lim )
-!	         gap_size = 0
-!	      ELSE
-!	         gap_size = gap_size + 1
-!	         IF (gap_size .GT. max_gap_size) max_gap_size = gap_size
-!	         CALL RECOVER_CACHED_2D_ARRAY_POINT(line_mem(ipt), 
-!     .			nT, nF, 1, ii, ds_var_c_cache_ptr(it2d))
-!	         IF (gap_size .EQ. 1) THEN
-!*      ... the previous forecast is still active in the loop
-!	            line_mem(ipt+nF) = TDEST_WORLD(1, memb_grid, t_dim,
-!     .								 box_hi_lim )
-!	         ELSE
-!*      ... leave a gap in the time cell bounds -- fill in right after this
-!	            line_mem(ipt+nF) = unspecified_val8
-!	         ENDIF
-!	      ENDIF
-!	      ipt = ipt + 1
-!	   ENDDO
-!	   line_mem(ipt+nF) = TDEST_WORLD(1, memb_grid, t_dim, box_hi_lim )
-!
-!* ... if there were gaps wider than 1 missing forecast, we need to fill in
-!*     some missing time cell bounds
-!	   IF (max_gap_size .GT. 1) THEN
-!	      ii = 1
-!	      ipt  = ipt1 + nF
-!	      DO WHILE (ii .LT. nsets)
-!	         ii  = ii  + 1
-!	         ipt = ipt + 1
-!	         IF (line_mem(ipt) .EQ. unspecified_val8) THEN
-!*       ... fill in a gap by linear interpolation
-!*           note that this is exactly right for equally spaced coordinates
-!*           but only approximate for monthly.  After improved support for 
-!*           monthly
-!	            gap_size = 0
-!	            i2 = ii+1
-!	            DO WHILE (i2 .LE. nsets+1)
-!	               gap_size = gap_size + 1
-!	               IF (line_mem(ipt+gap_size) .NE. unspecified_val8) EXIT
-!	            ENDDO
-!*       ... fill the gap
-!	            DO i = ipt, ipt+gap_size-1
-!	               line_mem(ipt) = line_mem(ipt-1)
-!     .				+ (i-ipt+1)
-!     .				* (line_mem(ipt+gap_size)-line_mem(ipt-1))
-!     .				/ (gap_size+1)
-!	            ENDDO
-!	         ENDIF
-!	      ENDDO
-!	   ENDIF
+	   CALL PUT_LINE_COORD ( lineedg(iline)%ptr, ipt1+nsets, 
+     .                           GET_LINE_COORD (linemem(iline)%ptr, ipt1+nsets-1) + Fdelta/2. )
 
 * ... make the native F-calendar axis from the pointstime steps  in line_mem
 	   CALL CD_MAKE_FMRC_FCAL_AXIS (agg_dset, iline, 
      .					nF, axcalt, status)
+
 	   IF (status .NE. merr_ok) GOTO 5000
 
 * ... put attribute _CoordinateAxistype = 'RunTime' onto the F-calendar axis
@@ -638,9 +591,14 @@
      .             slen, attoutflag, line_name(axlagf), 0., status )
 	ENDIF
 
+* Done with the 2D array which has been stored
+	
+	IF (time2dline .NE. unspecified_int4) THEN
+	   IF (line_allocated(time2dline) .GT. 0) CALL FREE_LINE_DYNMEM(time2dline)
+	ENDIF
 
  5000	RETURN
- 5100	CALL ERRMSG(ferr_insuff_memory,status,
+ 5100	CALL ERRMSG(ferr_aggregate_error,status,
      .	        'unable to define forecast aggregation', *5000)
  5200	CALL ERRMSG(ferr_internal, status, 'define_ef_aggregate_grid!',
      .		 *5000)

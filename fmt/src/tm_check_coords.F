@@ -1,4 +1,4 @@
-	SUBROUTINE TM_CHECK_COORDS (ipt1, ipte, is_double, use_strict, 
+	SUBROUTINE TM_CHECK_COORDS (line, npts, is_double, use_strict, 
      .                              has_repeated, misordered, micro, 
      .                              epsilon, depsilon)
 
@@ -36,6 +36,8 @@
 *
 *
 * Ferret v7.1 *acm* 1/13/2017
+* V72 6/17 *acm* for trac enhancement #767 -- dynamic coordinate storage
+
 * This routine replaces identical logic in cd_get_1_axis and xeq_define, 
 * checking for repeated coordinates and doing micro-adjusting if possible.
 *
@@ -43,7 +45,7 @@
 * or xeq_define.Apply micro-adjusging to correct this, unless flag use_strict is set.
 
 * Arguments
-* ipt1, ipte  range of values in line_mem
+* line  coordinates for the line
 * is_double, for netCDF files, flag is true if the coordinates in the file are double precision.
 * use_strict, for netCDF files, flag is true if the user requested /STRICT; do not do micro-adjusting
 * micro      If positive, use this value for the micro-adjustment, otherwise compute it.
@@ -64,8 +66,8 @@
 * argument declarations
 
 	LOGICAL is_double, has_repeated, misordered, use_strict
-	INTEGER ipt1, ipte
-	REAL	micro, epsilon, depsilon
+	INTEGER	npts
+	REAL	line(*), micro, epsilon, depsilon
 
 * Local variable declarations
 	LOGICAL TM_DFPEQ_TOL, TM_FPEQ_EPS
@@ -80,20 +82,19 @@
 	has_repeated = .FALSE.
 	misordered = .FALSE.
 
-
-	IF (ipte-ipt1 .LE. 1) RETURN
-
 * Set epsilon value for comparing coordinates
 
 	epsilon = 0.
 	depsilon = 0.
 
+	IF (npts .LT. 2) RETURN
+
         IF (is_double) THEN
 
-           dfirst_delta = line_mem(ipt1+1) - line_mem(ipt1)
+           dfirst_delta = line(2) - line(1)
 	   IF (dfirst_delta .LT. depsilon_46) THEN
-	      DO i = ipt1+2, ipte
-                dfirst_delta = line_mem(i) - line_mem(i-1) 
+	      DO i = 2, npts
+                dfirst_delta = line(i) - line(i-1) 
 		IF (dfirst_delta .GE. depsilon_46) EXIT  ! from loop
 	      ENDDO
 	      IF (dfirst_delta .LT. depsilon_46) THEN
@@ -101,18 +102,18 @@
 		 GOTO 1000
 	      ENDIF
 	   ENDIF
-           depsilon = depsilon_46 * 2.*(ABS(line_mem(ipte)) / dfirst_delta )
-           depsilon = depsilon_46 * 2.*(ABS(line_mem(ipt1)) / dfirst_delta )
+           depsilon = depsilon_46 * 2.*(ABS(line(npts)) / dfirst_delta )
+           depsilon = depsilon_46 * 2.*(ABS(line(1)) / dfirst_delta )
 
         ELSE
 
-           dfirst_delta = line_mem(ipt1+1) - line_mem(ipt1)
-           epsilon = epsilon_23 * 2.*(ABS(line_mem(ipte)) / first_delta )
-           epsilon = epsilon_23 * 2.*(ABS(line_mem(ipt1)) / first_delta )
+           dfirst_delta = line(2) - line(1)
+           epsilon = epsilon_23 * 2.*(ABS(line(npts)) / first_delta )
+           epsilon = epsilon_23 * 2.*(ABS(line(1)) / first_delta )
 	   
 	   IF (first_delta .LT. epsilon_23) THEN
-	      DO i = ipt1+2, ipte
-                first_delta = line_mem(i+1) - line_mem(i) 
+	      DO i = 1, npts
+                first_delta = line(i+1) - line(i) 
 		IF (first_delta .GE. epsilon_23) EXIT  ! from loop
 	      ENDDO
 	      IF (first_delta .LT. epsilon_23) THEN
@@ -129,15 +130,15 @@
 	IF (micro .GT. 0.) THEN
 	   micro_adj = micro
 	ELSE
-	   micro_adj = 1E-7 * (line_mem(ipte) - line_mem(ipt1))
+	   micro_adj = 1E-7 * (line(npts) - line(1))
 	ENDIF
 
 * ... are there repeated values?
 	 
 	IF (is_double) THEN
 	   zero = 0.
-	   DO 110 i1 = ipt1+1, ipte
-              delta = line_mem(i1) - line_mem(i1-1)
+	   DO 110 i1 = 2, npts
+              delta = line(i1) - line(i1-1)
               IF (TM_DFPEQ_TOL(delta, zero, depsilon) ) THEN
 	          has_repeated = .TRUE.
 		  GOTO 130
@@ -146,8 +147,8 @@
 
 	ELSE
            zero = 0.0
-	   DO 120 i1 = ipt1+1, ipte
-	      delta = line_mem(i1) - line_mem(i1-1)
+	   DO 120 i1 = 2, npts
+	      delta = line(i1) - line(i1-1)
 	      IF (TM_FPEQ_EPS(epsilon, delta, zero) ) THEN
 	          has_repeated = .TRUE.
 		  GOTO 130
@@ -165,35 +166,35 @@
 * ... make micro-adjustments if axis has repeated values (4/99)
 
         IF (micro_adj .EQ. 0.) THEN
-           i1 = ipt1+1
+           i1 = 1
            misordered = .TRUE.
            GOTO 1000
         ENDIF
 
-        i0 = ipt1
+        i0 = 1
 
 * --- adjust coordinates coming in as double-precision
 
         IF (is_double) THEN
 
-           DO 170  i1 = ipt1+1, ipte
+           DO 170  i1 = 2, npts
 	    
-               delta = line_mem(i1) - line_mem(i1-1)
+               delta = line(i1) - line(i1-1)
                IF (TM_DFPEQ_TOL(delta, zero, depsilon) ) THEN
 *    ... locate end of repeating block
-                  DO 140 i2 = i1, ipte
-                        delta = line_mem(i2) - line_mem(i1)
+                  DO 140 i2 = i1, npts
+                        delta = line(i2) - line(i1)
                         IF ( delta .GT. depsilon ) GOTO 150
  140              CONTINUE
-                  i2 = ipte + 1    ! one beyond last value
+                  i2 = npts + 1    ! one beyond last value
                   i0 = i1 - 2
                   i3 = i2 - 1
 *    ... micro-adjust repeating values from i1 to i2-1
  150              CONTINUE
 
-                  delta = line_mem(i2)-line_mem(i1)
+                  delta = line(i2)-line(i1)
                   IF (.NOT.TM_DFPEQ_TOL(delta, zero, depsilon) .AND. 
-     .                 line_mem(i2).GT.line_mem(i1)) THEN
+     .                 line(i2).GT.line(i1)) THEN
                      i0 = i1-1
                      i3 = i2
                   ENDIF
@@ -201,8 +202,8 @@
 * Check and readjust the size of micro_adj if too small
                   madj = micro_adj
                   IF (micro_adj*(i2-i1+1) .GT. 
-     .                line_mem(i3) - line_mem(i0) ) THEN
-                     madj = (line_mem(i3)-line_mem(i0))/(i2-i1+1)
+     .                line(i3) - line(i0) ) THEN
+                     madj = (line(i3)-line(i0))/(i2-i1+1)
                      IF (madj .EQ. 0.)  THEN
 	                misordered = .TRUE.
 	                GOTO 1000
@@ -210,12 +211,12 @@
 	          ENDIF
 
                   DO 160 i3 = i1, i2-1
-                     line_mem(i3) = line_mem(i3) + (i3-i1+1)* madj
+                     line(i3) = line(i3) + (i3-i1+1)* madj
  160              CONTINUE
                   
-                  delta = line_mem(i2)-line_mem(i2-1)
-                  IF ( i2 .LT. ipte .AND. .NOT.TM_DFPEQ_TOL(delta, zero, depsilon) .AND.
-     .		      (line_mem(i2-1) .GE. line_mem(i2)))  THEN
+                  delta = line(i2)-line(i2-1)
+                  IF ( i2 .LT. npts .AND. .NOT.TM_DFPEQ_TOL(delta, zero, depsilon) .AND.
+     .		      (line(i2-1) .GE. line(i2)))  THEN
 	             misordered = .TRUE.
 	             GOTO 1000
                   ENDIF
@@ -226,24 +227,24 @@
 * --- adjust coordinates coming in as single-precision
 	ELSE ! single
 
-           DO 270  i1 = ipt1+1, ipte
+           DO 270  i1 = 2, npts
 	    
-              delta = line_mem(i1) - line_mem(i1-1)
+              delta = line(i1) - line(i1-1)
               IF (TM_FPEQ_EPS(epsilon, delta, zero) ) THEN
 *    ... locate end of repeating block
-                 DO 240 i2 = i1, ipte
-                    delta = line_mem(i2) - line_mem(i1)
+                 DO 240 i2 = i1, npts
+                    delta = line(i2) - line(i1)
                     IF (delta .GT. epsilon) GOTO 250
  240             CONTINUE
-                 i2 = ipte + 1    ! one beyond last value
+                 i2 = npts + 1    ! one beyond last value
                  i0 = i1 - 2
                  i3 = i2 - 1
 *    ... micro-adjust repeating values from i1 to i2-1
  250             CONTINUE
 
-                 delta = line_mem(i2)-line_mem(i1)
+                 delta = line(i2)-line(i1)
                  IF (.NOT.TM_FPEQ_EPS(epsilon, delta, zero) .AND. 
-     .               line_mem(i2).GT.line_mem(i1)) THEN
+     .               line(i2).GT.line(i1)) THEN
                     i0 = i1-1
                     i3 = i2
                  ENDIF
@@ -251,21 +252,21 @@
 * Check and readjust the size of micro_adj if too small
                  madj = micro_adj
                  IF (micro_adj*(i2-i1+1) .GT. 
-     .               line_mem(i3) - line_mem(i0) ) THEN
-                    madj = (line_mem(i3)-line_mem(i0))/(i2-i1+1)
+     .               line(i3) - line(i0) ) THEN
+                    madj = (line(i3)-line(i0))/(i2-i1+1)
                     IF (madj .EQ. 0.)  THEN
 	                   misordered = .TRUE.
 	                   GOTO 1000
                     ENDIF
                   ENDIF
                   DO 260 i3 = i1, i2-1
-                     line_mem(i3) = line_mem(i3) + (i3-i1+1)* madj
+                     line(i3) = line(i3) + (i3-i1+1)* madj
  260              CONTINUE
                   
 		  
-                  delta = line_mem(i2)-line_mem(i2-1)
-                  IF ( i2 .LT. ipte .AND. .NOT.TM_FPEQ_EPS(epsilon, delta, zero) .AND.
-     .		      (line_mem(i2-1) .GE. line_mem(i2)))  THEN
+                  delta = line(i2)-line(i2-1)
+                  IF ( i2 .LT. npts .AND. .NOT.TM_FPEQ_EPS(epsilon, delta, zero) .AND.
+     .		      (line(i2-1) .GE. line(i2)))  THEN
                      misordered = .TRUE.
 	             GOTO 1000
                  ENDIF

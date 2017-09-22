@@ -101,6 +101,7 @@
 
 	include 'tmap_errors.parm'	! error code parameter defs
 #include "tmap_dset.parm"
+#include "gt_lib.parm"
 	include 'tmap_dims.parm'
 	include 'xstep_files.cmn_text'
 	external xstep_files_data
@@ -113,7 +114,7 @@
 
 * internal variable declarations
         LOGICAL   its_cdf
-	INTEGER   NCF_DELETE_DSET, 
+	INTEGER   NCF_DELETE_DSET, STR_SAME,
      .            f_num, ivar, iparm, iaux, idim
 
 * initialize: do we have an open set?
@@ -124,6 +125,12 @@
      .     .OR.   ds_type(ds_num) .EQ. 'FCT'
      .     .OR.   ds_type(ds_num) .EQ. 'CDF'
      .     .OR.   ds_type(ds_num) .EQ. 'ECDF' 
+
+* free the coordinate memory for the time axis of an aggregation
+	IF (ds_type(ds_num) .EQ. 'FCT' .OR. STR_SAME(ds_type(ds_num), ' MC') .EQ. 0) THEN
+	   IF (ds_time_axis(ds_num).NE.int4_init .AND. ds_time_axis(ds_num).NE.unspecified_int4)
+     .         CALL FREE_LINE_DYNMEM (ds_time_axis(ds_num))
+        ENDIF
 
 * First clear variables associated only with data set number
 	ds_type(ds_num)			=	char_init04

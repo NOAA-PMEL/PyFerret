@@ -127,6 +127,9 @@
       mode_state( pmode_xwindows, 1 ) = .FALSE.
 #endif
         CONTINUE
+	
+*********************** Climatological axes ************************************
+	CALL TM_SET_CLIM_AXES
 
 * set up special grids
 	CALL DEFINE_SPECIAL_GRIDS   ! label 1000 moved here 9/91 *sh*
@@ -184,6 +187,8 @@ c	CALL GFDL_TERMS
 
 	RADIAN=57.29578							! 1027
 	cm2deg = radian / radius
+
+
 
 *************** MISCELLANEOUS **************************************************
 * TMAP librabry routine errors to same output unit as other errors

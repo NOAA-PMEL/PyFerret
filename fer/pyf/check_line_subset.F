@@ -59,9 +59,12 @@
       LOGICAL       reg, modu
       DIMENSION     axiscoords(numcoords)
 
+*     Functions
+      REAL*8        GET_LINE_COORD
+
 *     Local arguments
       INTEGER       i, j, k
-      REAL*8        value
+      REAL*8        val
 
 *     First check the quick and easy, then go to the strings and coordinates
       k = superline
@@ -100,8 +103,8 @@
           ENDIF
 *         Look for the first coordinate
           DO 30 j = 1, line_dim(k)
-              value = line_start(k) + (j-1) * line_delta(k)
-              IF ( abs(value - axiscoords(1)) .LT. eps ) THEN
+              val = line_start(k) + (j-1) * line_delta(k)
+              IF ( abs(val - axiscoords(1)) .LT. eps ) THEN
 *                 Verify the last coordinate is in there
                   i = j + numcoords - 1
                   IF ( i .GT. line_dim(k) ) THEN
@@ -118,8 +121,8 @@
       ELSE
 *         Find the first coordinate
           DO 40 j = 1, line_dim(k)
-              value = line_mem(line_subsc1(k) + j - 1)
-              IF ( abs(value - axiscoords(1)) .LT. eps ) THEN
+              val = GET_LINE_COORD(linemem(k)%ptr, j)
+              IF ( abs(val - axiscoords(1)) .LT. eps ) THEN
                   GOTO 50
               ENDIF
    40     CONTINUE
@@ -132,8 +135,8 @@
               RETURN
           ENDIF
           DO 60 i = 2, numcoords
-              value = line_mem(line_subsc1(k) + j + i - 2)
-              IF ( abs(value - axiscoords(i)) .GE. eps ) THEN
+              val = GET_LINE_COORD(linemem(k)%ptr, j + i - 1)
+              IF ( abs(val - axiscoords(i)) .GE. eps ) THEN
                   CHECK_LINE_SUBSET = .FALSE.
                   RETURN
               ENDIF

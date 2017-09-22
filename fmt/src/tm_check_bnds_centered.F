@@ -1,4 +1,5 @@
-	LOGICAL FUNCTION TM_CHECK_BNDS_CENTERED (nline, doubletype)
+	LOGICAL FUNCTION TM_CHECK_BNDS_CENTERED (line, line_edges, npts, 
+     .		iaxis, doubletype)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -42,41 +43,45 @@
 *                  whether the boxes are equal sized.
 * V601 *acm* 9/19  Fix bug 1434; check bounds for regularly-spaced axes 
 * V694  5/15 *acm* Match precision for bounds checks (as is done for coords).
+* V72 6/17 *acm* for trac enhancement #767 -- dynamic coordinate storage 
+*                line and line_edges are the coordinates and edges for this line
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 
-* Argument declaration
-	LOGICAL doubletype
-	INTEGER nline
+* Argument declarations
+	REAL	line(*), line_edges(*)
+	LOGICAL doubletype, regular
+	INTEGER npts, iaxis
 
 * Local variable declarations
         LOGICAL TM_FPEQ_EPS, TM_DFPEQ_TOL, equal
-	INTEGER ipt1, npts, ibx1, i
+	INTEGER i
         REAL diff_hi, diff_lo, diff_last
-        REAL pt, del
+        REAL pt, del, blo, bhi
 	REAL epsilon_23, epsilon
 	REAL*8 depsilon_46, depsilon, first_delta
 
-      epsilon_23 =  2.**(-23) 
-      depsilon_46 =  2.**(-46) 
+	epsilon_23 =  2.**(-23) 
+	depsilon_46 =  2.**(-46) 
 
-	ipt1 = line_subsc1(nline)
-	npts = line_dim(nline)
-	ibx1 = ipt1 + npts
+	first_delta = line(2) - line(1)
 
-	first_delta = line_mem(ipt1+1) - line_mem(ipt1)
-	depsilon = depsilon_46 * 2.*(ABS(line_mem(ipt1)) / first_delta )
-	epsilon = epsilon_23 * 2.*(ABS(line_mem(ipt1)) / first_delta )
+	depsilon = depsilon_46 * 2.*(ABS(line(1)) / first_delta )
+	epsilon = epsilon_23 * 2.*(ABS(line(1)) / first_delta )
 
-        IF (line_regular(nline)) THEN
-           pt = line_start(nline)
-           del = line_delta(nline) 
+        IF (line_regular(iaxis)) THEN
+           pt = line_start(iaxis)
+           del = line_delta(iaxis) 
 
-	   DO 100 i = 0, npts-1
-             diff_hi = line_mem(ibx1+i+1) - pt
-             diff_lo = pt - line_mem(ibx1+i)
+	   DO 100 i = 1, npts
+
+             blo = line_edges(2*(i-1)+1)
+             bhi = line_edges(2*(i-1)+2)
+
+	     diff_hi = bhi - pt
+             diff_lo = pt - blo
 
 	     IF (doubletype) THEN
 	       equal = TM_DFPEQ_TOL(diff_lo, diff_hi, depsilon)
@@ -89,22 +94,25 @@
 	        RETURN
 	     ENDIF
 
-             IF (i .GT. 0) THEN
+             IF (i .GT. 1) THEN
                 IF (diff_hi .NE. diff_last) THEN
 	           TM_CHECK_BNDS_CENTERED = .FALSE.
 	           RETURN
                 ENDIF
 	     ENDIF
              diff_last = diff_hi
-             pt = float(i+1) * del + line_start(nline)
+             pt = float(i) * del + line_start(iaxis)
 
   100	   CONTINUE
 
         ELSE  ! not line_regular
    
-	   DO 200 i = 0, npts-1
-             diff_hi = line_mem(ibx1+i+1) - line_mem(ipt1+i)
-             diff_lo = line_mem(ipt1+i)- line_mem(ibx1+i)
+	   DO 200 i = 1, npts
+             blo = line_edges(2*(i-1)+1)
+             bhi = line_edges(2*(i-1)+2)
+
+             diff_hi = bhi - line(i)
+             diff_lo = line(i)- blo
 
 	     IF (doubletype) THEN
 	       equal = TM_DFPEQ_TOL(diff_lo, diff_hi, depsilon)
@@ -116,7 +124,7 @@
 	        RETURN
 	     ENDIF
 
-             IF (i .GT. 0) THEN
+             IF (i .GT. 1) THEN
                 IF (diff_hi .NE. diff_last) THEN
 	           TM_CHECK_BNDS_CENTERED = .FALSE.
 	           RETURN

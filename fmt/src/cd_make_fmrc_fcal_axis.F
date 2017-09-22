@@ -1,4 +1,5 @@
-	SUBROUTINE CD_MAKE_FMRC_FCAL_AXIS (dset, ens_ax, nF, axcalt, status)
+	SUBROUTINE CD_MAKE_FMRC_FCAL_AXIS (dset, ens_ax, nF, axcalt, 
+     .           status)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -73,22 +74,20 @@
      .		coordvar, got_it, do_warn, ok_cal, yyyymmdd_time, got_torg
 	INTEGER STR_UPCASE, TM_LENSTR1, TM_FIND_LIKE_DYN_LINE,
      .          i, l, n,  nvdim, vdims(8), nvatts, 
-     .		npts_cdf, ipt1, ipte, iptn, iptnp1,
+     .		ipt1, ipte, iptn, iptnp1,
      .		outflag, next_line_storage, pre_exist,
      .		start(nferdims),count(nferdims), zero(nferdims),
      .          maxlen, attlen, attoutflag, cal_id, since_T0, slen, vlen, 
      .          units, istat, nlag, noverlap, nleadtimes
-	REAL val, t0NextForecast
-	REAL*8 depsilon_46, depsilon, dlast_coord, dfirs_coord,
-     .       dfirst_delta, ddelta, avg_lag
+	REAL GET_LINE_COORD, val, t0NextForecast,
+     .       depsilon_46, depsilon, dlast_coord, dfirs_coord,
+     .       dfirst_delta, ddelta, avg_lag, t1, t2
 
         INTEGER tt  ! nice short name
         EQUIVALENCE (tt,lunit_errors)
 
-
 * initialize things
-	ipt1 = next_line_mem_pos
-	ipte = ipt1 + nF - 1
+
       depsilon_46 =  2.**(-46) 
 
 * from cd_get_1_axis.
@@ -96,30 +95,30 @@
 * the variables (depsilon, etc) are in double precision. The tolerance
 * chec, in TM_FPEQ_EPS is done to an equivalent single precision tol.
 
-	dlast_coord = line_mem(ipte)
-        dfirs_coord = line_mem(ipt1)
-        dfirst_delta = line_mem(ipt1+1) - line_mem(ipt1)
-        depsilon = depsilon_46 * 2.*(ABS(line_mem(ipt1)) / dfirst_delta )
+	dlast_coord = GET_LINE_COORD (linemem(ens_ax)%ptr, nf)
+	dfirs_coord = GET_LINE_COORD (linemem(ens_ax)%ptr, 1)
+        dfirst_delta = GET_LINE_COORD (linemem(ens_ax)%ptr, 2) - dfirs_coord
+        depsilon = depsilon_46 * 2.*(ABS(dfirs_coord) / dfirst_delta )
 
-	DO i = ipt1+2, ipte	
-	   ddelta = line_mem(i) - line_mem(i-1)
+	t1 = dfirs_coord
+	DO i = 2, nf	
+	   t2 = GET_LINE_COORD (linemem(ens_ax)%ptr, i)
+	   ddelta = t2 - t1
 	   IF (.NOT. TM_DFPEQ_TOL(dfirst_delta, ddelta, depsilon) ) GOTO 100
+	   t1 = t2
 	ENDDO
 
 * It's regular - save it as such
 !	line_regular(ens_ax) = .TRUE.		! already set
-	line_start  (ens_ax) = line_mem(ipt1)
-	line_delta  (ens_ax) = 
-     .              (line_mem(ipte)-line_mem(ipt1))/DBLE(nF-1)
-!	line_subsc1 (ens_ax) = unspecified_int4  ! already set
+	line_start  (ens_ax) = dfirs_coord
+	line_delta  (ens_ax) = (dlast_coord-dfirs_coord)/DBLE(nF-1)
+	
+	IF (line_allocated(ens_ax) .GT. 0) CALL FREE_LINE_DYNMEM(ens_ax) 
 	GOTO 200
 
 *  Irregular
  100	line_regular(ens_ax) = .FALSE.
-	line_subsc1(ens_ax)  = next_line_mem_pos
-	IF ((next_line_mem_pos+2*nF+1).GT.maxlinestore) GOTO 5300
 !	CALL TM_IRREGAX_MID( ipt1, nF )  -- not needed.  have real edges
-        next_line_mem_pos =  next_line_mem_pos + 2*nF + 1
 	
  200	CONTINUE
  
@@ -142,12 +141,6 @@
         status = merr_ok
 
  5000	RETURN
-
-
- 5300	CALL TM_ERRMSG (merr_linstorlim, status, 'CD_MAKE_FMRC_FCAL_AXIS',
-     .                  no_descfile, no_stepfile,
-     .                  'MAX='//TM_STRING(DBLE(maxlinestore)),
-     .                  no_errstring, *5000)
 
 	RETURN
 	END

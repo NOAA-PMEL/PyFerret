@@ -1146,8 +1146,10 @@ GO bn_iin_regrid
 GO bn_reset bn721_bug_fixes
 GO bn721_bug_fixes
 
-
 ! *********** v7.22 Additions ***********
+
+GO bn_reset bn722_bug_fixes
+GO bn722_bug_fixes
 
 GO bn_reset bn_tseries_modulo
 GO bn_tseries_modulo

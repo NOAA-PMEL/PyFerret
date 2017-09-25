@@ -1,0 +1,32 @@
+! err72_dynamic_gather.jnl
+! 9/25/2017 Ticket 2561
+! Combination of two transforms, and 
+
+cancel data/all
+cancel memory
+
+! dataset from bn_dynamic_gather.jnl
+use tmp/test_dyn_mem.nc  
+
+! w/ default amount of memory this doesn't need a split-gather
+! This result is correct
+list/nohead v1000[x=@ave,y=@ave,k=@sum,L=@sum]
+show memory/diag
+
+! Now use smaller memory, so it'll split/gather in the T
+! direction. The answer in v7.2 was wrong.
+cancel memory
+set mem/siz=10
+list/nohead v1000[x=@ave,y=@ave,k=@sum,L=@sum]
+show memory/diag
+
+! With an even smaller amount of memory, a different
+! incorrect result was listed with v7.2.
+cancel memory
+set mem/siz=1
+list/nohead v1000[x=@ave,y=@ave,k=@sum,L=@SUM]
+sh mem/diag
+
+set mem/siz=25.6  ! return to the default setting
+
+

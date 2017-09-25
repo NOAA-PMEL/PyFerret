@@ -11,11 +11,11 @@ export FER_DIR="/usr/local/ferret"
 ## the directory you created for the FERRET demonstration data files (30+ Mbytes).
 export FER_DSETS="${FER_DIR}/fer_dsets"
 
-## set python_exe to the (optionally full-path) python executable to use
+## Set python_exe to the (optionally full-path) python executable to use
 python_exe=PYTHON_EXECUTABLE
 
-## set python_subdir to 'python2.6' or 'python2.7' 
-## whichever is appropriate for the above python executable
+## Set python_subdir to whatever is appropriate for the above python executable;
+## e.g., 'python2.6','python2.7', 'python3.4', or 'python3.6'
 python_subdir=PYTHON_SUBDIRECTORY
 
 ## Web browser for your system used in some "go" scripts
@@ -31,6 +31,10 @@ if [ -z "$JAVA_HOME" ]; then
     ## try some common locations; 
     if [ -x "/usr/java/latest/bin/java" ]; then
         export JAVA_HOME="/usr/java/latest"
+    elif [ -x "/usr/lib/jvm/java-1.8.0/bin/java" ]; then
+        export JAVA_HOME="/usr/lib/jvm/java-1.8.0"
+    elif [ -x "/usr/lib/jvm/java-8/bin/java" ]; then
+        export JAVA_HOME="/usr/lib/jvm/java-8"
     elif [ -x "/usr/lib/jvm/java-1.7.0/bin/java" ]; then
         export JAVA_HOME="/usr/lib/jvm/java-1.7.0"
     elif [ -x "/usr/lib/jvm/java-7/bin/java" ]; then
@@ -80,41 +84,23 @@ export PYFER_EXTERNAL_FUNCTIONS="${FER_DIR}/ext_func/pylibs"
 
 ## Space-separated list of directories for Ferret color palettes
 export FER_PALETTE=". ${FER_DIR}/ppl"
-## Ferret's color palettes directory (old)
-export SPECTRA="${FER_DIR}/ppl"
 
 ## Directory for Ferret fonts
 export FER_FONTS="${FER_DIR}/ppl/fonts"
-## Directory for Ferret fonts (old)
-export PLOTFONTS="${FER_DIR}/ppl/fonts"
 
 ## Directory containing threddsBrowser.jar and toolsUI.jar for ThreddsBrowser
-## as well as the python2.x/site-packages directory for PyFerret Python packages
 export FER_LIBS="${FER_DIR}/lib"
-
-## Ferret directory (old)
-export FER_DAT="${FER_DIR}"
 
 ## Assign the directory containing the pyferret Python package (directory)
 pysite="${FER_LIBS}/${python_subdir}/site-packages"
 
-## Add pysite to the Python search path given by PYTHONPATH
+## Add $pysite to the Python search path given by PYTHONPATH 
 ## so the pyferret package will be found.
 if [ -z "${PYTHONPATH}" ]; then
     export PYTHONPATH="${pysite}"
 else
     if ! echo "${PYTHONPATH}" | grep -q "^${pysite}"; then
         export PYTHONPATH="${pysite}:${PYTHONPATH}"
-    fi
-fi
-
-## Add $pysite/pyferret to the shared-object library search path given 
-## by LD_LIBRARY_PATH so libpyferret.so will be found.
-if [ -z "${LD_LIBRARY_PATH}" ]; then
-    export LD_LIBRARY_PATH="${pysite}/pyferret"
-else
-    if ! echo "${LD_LIBRARY_PATH}" | grep -q "^${pysite}/pyferret"; then
-        export LD_LIBRARY_PATH="${pysite}/pyferret:${LD_LIBRARY_PATH}"
     fi
 fi
 

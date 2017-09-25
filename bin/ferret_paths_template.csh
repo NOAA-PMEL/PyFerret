@@ -11,11 +11,11 @@ setenv FER_DIR "/usr/local/ferret"
 ## the directory you created for the FERRET demonstration data files (30+ Mbytes).
 setenv FER_DSETS "${FER_DIR}/fer_dsets"
 
-## set python_exe to the (optionally full-path) python executable to use
+## Set python_exe to the (optionally full-path) python executable to use
 set python_exe = PYTHON_EXECUTABLE
 
-## set python_subdir to 'python2.6' or 'python2.7' 
-## whichever is appropriate for the above python executable
+## Set python_subdir to whatever is appropriate for the above python executable;
+## e.g., 'python2.6','python2.7', 'python3.4', or 'python3.6'
 set python_subdir = PYTHON_SUBDIRECTORY
 
 ## Web browser for your system used in some "go" scripts
@@ -31,6 +31,10 @@ if ( ! $?JAVA_HOME ) then
     ## try some common locations
     if ( -x "/usr/java/latest/bin/java" ) then
         setenv JAVA_HOME "/usr/java/latest"
+    else if ( -x "/usr/lib/jvm/java-1.8.0/bin/java" ) then
+        setenv JAVA_HOME "/usr/lib/jvm/java-1.8.0"
+    else if ( -x "/usr/lib/jvm/java-8/bin/java" ) then
+        setenv JAVA_HOME "/usr/lib/jvm/java-8"
     else if ( -x "/usr/lib/jvm/java-1.7.0/bin/java" ) then
         setenv JAVA_HOME "/usr/lib/jvm/java-1.7.0"
     else if ( -x "/usr/lib/jvm/java-7/bin/java" ) then
@@ -80,18 +84,12 @@ setenv PYFER_EXTERNAL_FUNCTIONS "${FER_DIR}/ext_func/pylibs"
 
 ## Space-separated list of directories for Ferret color palettes
 setenv FER_PALETTE ". ${FER_DIR}/ppl"
-## Ferret's color palettes directory (old)
-setenv SPECTRA "${FER_DIR}/ppl"
 
 ## Directory for Ferret fonts
 setenv FER_FONTS "${FER_DIR}/ppl/fonts"
-## Directory for Ferret fonts (old)
-setenv PLOTFONTS "${FER_DIR}/ppl/fonts"
 
 ## Directory containing threddsBrowser.jar and toolsUI.jar for ThreddsBrowser
 setenv FER_LIBS "${FER_DIR}/lib"
-
-setenv FER_DAT "${FER_DIR}"
 
 ## Assign the directory containing the pyferret Python package (directory)
 set pysite = "${FER_LIBS}/${python_subdir}/site-packages"
@@ -103,16 +101,6 @@ if ( ! $?PYTHONPATH ) then
 else
     if ( "${PYTHONPATH}" !~ "${pysite}*" ) then
         setenv PYTHONPATH "${pysite}:${PYTHONPATH}"
-    endif
-endif
-
-## Add $pysite/pyferret to the shared-object library search path given 
-## by LD_LIBRARY_PATH so libpyferret.so will be found.
-if ( ! $?LD_LIBRARY_PATH ) then
-    setenv LD_LIBRARY_PATH "${pysite}/pyferret"
-else
-    if ( "${LD_LIBRARY_PATH}" !~ "${pysite}/pyferret*" ) then
-        setenv LD_LIBRARY_PATH "${pysite}/pyferret:${LD_LIBRARY_PATH}"
     endif
 endif
 

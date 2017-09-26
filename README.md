@@ -55,20 +55,26 @@ up all the variables that `pyferret` needs.
 
 ## Installation from prebuilt tar.gz file
 
-The following packages are needed to run PyFerret on Ubuntu:
- * `python-numpy`
- * `python-scipy` (optional but highly recommended)
- * `python-pyshp` (or use `pip install pyshp`; for shapefile functions; optional)
- * `libgfortran` (should be installed with python-scipy installation)
- * `default-jre` (or `default-jdk`; for ThreddsBrowser; optional)
+You will need to have the following packages installed using your software manager 
+application, or using a command-line package installation program such as `yum` or 
+`apt-get` (which needs to be run as the root user or using the `sudo` privilege 
+escalation program.)
 
-The following packages are also needed but should already be installed:
- * `python-qt4` (Python bindings for Qt4)
- * `libcurl3` or `libcurl4-openssl-dev` (for the libcurl.so.4 library)
- * `libpangocairo` (for the pango and pango-cairo text processing libraries)
+Required packages that may not already be installed:  
+- `numpy` or `python-numpy` (NumPy)
+- `libgfortran` (Fortran library; if you install SciPy, it will be installed)
+- `PyQt4` or `python-qt4` (Python binding for Qt4; may already be installed)
 
-If you do not already have them, the Ferret standard datasets can be obtained 
-from the [FerretDatasets github site](https://github.com/NOAA-PMEL/FerretDatasets)
+Highly recommended but optional packages:  
+- `scipy` or `python-scipy` (SciPy)
+- `pyshp` or `python-pyshp` (PyShp for shapefile functions)
+
+You may also wish to install the `netcdf` and `nco` packages to provide some useful 
+programs for working with NetCDF files (such as `ncdump` and `ncattted` which are used 
+in the benchmark tests).
+
+If you do not have the Ferret standard datasets, they can be obtained from the 
+[NOAA-PMEL/FerretDatasets](https://github.com/NOAA-PMEL/FerretDatasets) GitHub repo.
 The contents can be put extracted/cloned to whatever location desired.
 
 Extract the PyFerret tar.gz file in the desired location.
@@ -93,7 +99,7 @@ github site mentioned above).
 To run PyFerret, you first need to set the Ferret environment variables.
 This can be done by executing either `. ferret_paths.sh` (for Bourne-type shells; 
 e.g., bash) or `source ferret_paths.csh` (for C-type shells; e.g. tcsh).
-* Note: the pyferret script has recently been updated to automatically set 
+- Note: the pyferret script has recently been updated to automatically set 
   the Ferret environment variables, if not already defined, using the appropriate 
   `ferret_paths` script.
 

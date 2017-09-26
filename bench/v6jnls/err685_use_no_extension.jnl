@@ -2,7 +2,7 @@
 !  but .des was not being tried.
 
 ! The directory contains files with all three extensions
-sp ls duplicate.*
+sp ls data/duplicate.*
 
 ! The one that's used is .nc
 use duplicate

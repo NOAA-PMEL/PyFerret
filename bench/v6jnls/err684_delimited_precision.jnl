@@ -4,7 +4,7 @@
 
 ! Data has numeric, longitude, and latitude values needing double precision.
 ! The seconds portion of time is also now read with double precision
-sp cat delim_prec.dat
+sp cat data/delim_prec.dat
 
 ! Delimited read, automatically detect data types
 set data/ez/format=delim/del=" " delim_prec.dat

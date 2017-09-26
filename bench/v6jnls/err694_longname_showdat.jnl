@@ -3,7 +3,7 @@
 !
 ! Make a file whose name starts the same as file with long name.
 sp rm WestCoastCarbon_9d9c_f562_77b5_5.nc
-sp ln -s WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc WestCoastCarbon_9d9c_f562_77b5_5.nc
+sp ln -s data/WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc WestCoastCarbon_9d9c_f562_77b5_5.nc
 
 use WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc
 

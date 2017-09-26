@@ -14,7 +14,7 @@
 ! NOTE With the fix for ticket 2241, we need to add CANCEL MODE UPCASE.
 
 sp rm test_save_dsg.nc 
-sp cp test_save_dsg_in.nc test_save_dsg.nc 
+sp cp data/test_save_dsg_in.nc test_save_dsg.nc 
 
 use test_save_dsg.nc
 

@@ -3,7 +3,7 @@
 
 
 use err67_axis_order.nc
-sp cp err67_axis_order.nc err67_axis_order_copy.nc
+sp cp data/err67_axis_order.nc err67_axis_order_copy.nc
 use err67_axis_order_copy.nc
 sh dat
 

@@ -4,7 +4,7 @@
 ! test delimiited (spreadsheet) reads in Ferret
 
 ! look at the file
-spawn cat bn_delimited_read_1.dat
+spawn cat data/bn_delimited_read_1.dat
 
 ! try the file as-is:  record 1 contains 5 column headings (text)
 ! so V1 through V5 analyze to be text
@@ -39,7 +39,7 @@ file/format=delim/skip=1/type=latitude bn_delimited_read_1.dat
 list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
 
 ! read only the first line of the file
-spawn head -1 bn_delimited_read_1.dat
+spawn head -1 data/bn_delimited_read_1.dat
 define axis/x=1:1:1 x1
 define grid/x=x1 g1
 columns/grid=g1 bn_delimited_read_1.dat
@@ -63,7 +63,7 @@ list v1,v2
 
 ! ==========
 ! look at the date/time file
-spawn cat bn_delimited_read_date_time.dat
+spawn cat data/bn_delimited_read_date_time.dat
 
 ! try the file as-is
 ! Note that record 3 has syntax errors in the first 4 fields
@@ -97,7 +97,7 @@ show data 2
 file/form=delim/delim="/" bn_delimited_read_date_time.dat
 list V1,V2,V3,V4
 ! ---
-sp cat bn_delimited_read_date_time.dat
+sp cat data/bn_delimited_read_date_time.dat
 ! ---
 file/form=delim/delim="/,\," bn_delimited_read_date_time.dat
 list V1,V2,V3,V4,v5,v6,v7,v8

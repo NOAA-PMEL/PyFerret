@@ -46,7 +46,7 @@ show data 5.3
 cancel data/all
 
 ! Tests for Ensembles
-let files = SPAWN("ls -1 ens*.nc")
+let files = SPAWN("ls -1 data/ens*.nc")
 ensemble my_ens = files
 sh data/members my_ens
 

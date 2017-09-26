@@ -279,6 +279,7 @@ Benchmark scripts that will be run:
    bn_transp_choose.jnl
    bn_iin_regrid.jnl
    bn721_bug_fixes.jnl
+   bn722_bug_fixes.jnl
    bn_tseries_modulo.jnl
    bn_huge_axis.jnl
    bn_gif.jnl
@@ -306,10 +307,10 @@ Benchmark scripts that will be run:
 USE gtbc011
 SHOW DATA/BRIEF
      currently SET data sets:
-    1> ./gtbc011.cdf  (default)
+    1> ./data/gtbc011.cdf  (default)
 SHOW DATA
      currently SET data sets:
-    1> ./gtbc011.cdf  (default)
+    1> ./data/gtbc011.cdf  (default)
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     70:72      1:100     1:27      1:3
  SALT     (SALINITY(ppt) - 35) /1000      70:71      1:100     1:27      1:3
@@ -322,7 +323,7 @@ SHOW DATA
  
 SHOW DATA/VARIABLES
      currently SET data sets:
-    1> ./gtbc011.cdf  (default)
+    1> ./data/gtbc011.cdf  (default)
  
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     70:72      1:100     1:27      1:3
@@ -352,9 +353,9 @@ SHOW DATA/VARIABLES
  
   time range: 15-MAR-1983 10:00 to 15-MAR-1983 12:00
  
-SHOW DATA/FILES
+SHOW DATA/MEMBERS
      currently SET data sets:
-    1> ./gtbc011.cdf  (default)
+    1> ./data/gtbc011.cdf  (default)
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     70:72      1:100     1:27      1:3
  SALT     (SALINITY(ppt) - 35) /1000      70:71      1:100     1:27      1:3
@@ -367,7 +368,7 @@ SHOW DATA/FILES
  
 SHOW DATA/FULL
      currently SET data sets:
-    1> ./gtbc011.cdf  (default)
+    1> ./data/gtbc011.cdf  (default)
  
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     70:72      1:100     1:27      1:3
@@ -404,23 +405,23 @@ USE gtbc011
 USE gt4d011
 SHOW DATA/BRIEF
      currently SET data sets:
-    1> ./gtbc011.cdf
-    2> ./gt4d011.cdf  (default)
+    1> ./data/gtbc011.cdf
+    2> ./data/gt4d011.cdf  (default)
 SHOW DATA/BRIEF gtbc011
      currently SET data sets:
-    1> ./gtbc011.cdf
+    1> ./data/gtbc011.cdf
 ! ... save and restore data set
 SET DATA 1
 SET DATA/SAVE
 SHOW DATA/BRIEF
      currently SET data sets:
-    1> ./gtbc011.cdf  (default)
-    2> ./gt4d011.cdf
+    1> ./data/gtbc011.cdf  (default)
+    2> ./data/gt4d011.cdf
 SET DATA 2
 SHOW DATA/BRIEF
      currently SET data sets:
-    1> ./gtbc011.cdf
-    2> ./gt4d011.cdf  (default)
+    1> ./data/gtbc011.cdf
+    2> ./data/gt4d011.cdf  (default)
 SET DATA/RESTORE
 CANCEL DATA/ALL
 ! ... EZ data sets
@@ -1071,7 +1072,7 @@ stat/k=1/l=1/j=40/i=70/d=2 temp[d=1]
              TIME: 15-MAR-1983 10:00
              E:  N/A
              F:  N/A
-             DATA SET: ./gtbc011.cdf
+             DATA SET: ./data/gtbc011.cdf
  
  Total # of data points: 1 (1*1*1*1*1*1)
  # flagged as bad  data: 0
@@ -1088,7 +1089,7 @@ stat/k=1/l=1/j=40/i=70/d=2 temp[d=1,g=u]
              TIME: 15-MAR-1983 10:00
              E:  N/A
              F:  N/A
-             DATA SET: ./gtbc011.cdf
+             DATA SET: ./data/gtbc011.cdf
  
  Total # of data points: 1 (1*1*1*1*1*1)
  # flagged as bad  data: 0
@@ -1107,7 +1108,7 @@ stat/k=1/l=1/j=40/i=70/d=2 temp[d=1,g=u[d=2]]
              TIME: 17-AUG-1982 12:00
              E:  N/A
              F:  N/A
-             DATA SET: ./gtbc011.cdf
+             DATA SET: ./data/gtbc011.cdf
  
  Total # of data points: 1 (1*1*1*1*1*1)
  # flagged as bad  data: 1
@@ -1121,7 +1122,7 @@ stat/k=1/l=1/j=40/i=70/d=2 temp[d=gtbc011,g=u[d=gt4d011]]
              TIME: 17-AUG-1982 12:00
              E:  N/A
              F:  N/A
-             DATA SET: ./gtbc011.cdf
+             DATA SET: ./data/gtbc011.cdf
  
  Total # of data points: 1 (1*1*1*1*1*1)
  # flagged as bad  data: 1
@@ -1763,7 +1764,7 @@ show var/d=clim_airt_lev
      A[D=clim_airt_lev] = CLIM_AIRT_LEV-SPECIFIC
 show data clim_airt_lev
      currently SET data sets:
-    1> ./clim_airt_lev.cdf  (default)
+    1> ./data/clim_airt_lev.cdf  (default)
  name     title                             I         J         K         L
  AIRT     CLIMATOLOGICAL AIR TEMPERATURE   1:160     1:100     ...       1:12
  ------------------------------
@@ -1844,7 +1845,7 @@ set var/titl=test4 t4[d=snoopy.dat]
 set var/titl=test3 t3[d=snoopy.dat]
 show data
      currently SET data sets:
-    1> ./clim_airt_lev.cdf
+    1> ./data/clim_airt_lev.cdf
  name     title                             I         J         K         L
  AIRT     CLIMATOLOGICAL AIR TEMPERATURE   1:160     1:100     ...       1:12
  ------------------------------
@@ -1857,7 +1858,7 @@ show data
  
 show data/full 1
      currently SET data sets:
-    1> ./clim_airt_lev.cdf
+    1> ./data/clim_airt_lev.cdf
  
  name     title                             I         J         K         L
  AIRT     CLIMATOLOGICAL AIR TEMPERATURE   1:160     1:100     ...       1:12
@@ -9696,7 +9697,7 @@ list a24[g=g48]-a48
 FILE EZ.DAT
 SHOW DATA/FULL
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  
  name     title                             I         J         K         L
  V1       V1                               1:5       ...       ...       ...
@@ -9717,7 +9718,7 @@ LIST V1
  5   / 5:  0.4780
 SHOW DATA
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  name     title                             I         J         K         L
  V1       V1                               1:5       ...       ...       ...
  
@@ -9726,7 +9727,7 @@ SHOW DATA
 FILE/VAR="X1,X2" EZ.DAT
 SHOW DATA/FULL
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  
  name     title                             I         J         K         L
  X1       X1                               1:5       ...       ...       ...
@@ -9740,7 +9741,7 @@ SHOW DATA/FULL
  /SKIP = 0
  /COLUMNS = 2
 LIST X1,X2
-             DATA SET: ./EZ.DAT
+             DATA SET: ./data/EZ.DAT
              X: 0.5 to 5.5
  Column  1: X1
  Column  2: X2
@@ -9752,7 +9753,7 @@ LIST X1,X2
 5   / 5:  0.4780  0.5337
 SHOW DATA
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  name     title                             I         J         K         L
  X1       X1                               1:5       ...       ...       ...
  X2       X2                               1:5       ...       ...       ...
@@ -9762,7 +9763,7 @@ SHOW DATA
 FILE/VAR="X1,X2"/COLUMNS=6 EZ.DAT
 SHOW DATA/FULL
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  
  name     title                             I         J         K         L
  X1       X1                               1:15      ...       ...       ...
@@ -9796,7 +9797,7 @@ LIST X1
  15   / 15:  0.4690
 SHOW DATA
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  name     title                             I         J         K         L
  X1       X1                               1:15      ...       ...       ...
  X2       X2                               1:15      ...       ...       ...
@@ -9806,7 +9807,7 @@ SHOW DATA
 FILE/VAR="X1,X2"/COLUMNS=6/SKIP=2 EZ.DAT
 SHOW DATA/FULL
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  
  name     title                             I         J         K         L
  X1       X1                               1:15      ...       ...       ...
@@ -9834,7 +9835,7 @@ LIST X1
  9   / 9:  0.4690
 SHOW DATA
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  name     title                             I         J         K         L
  X1       X1                               1:9       ...       ...       ...
  X2       X2                               1:9       ...       ...       ...
@@ -9844,7 +9845,7 @@ SHOW DATA
 FILE/VAR="X1,-,X2"/COLUMNS=6/SKIP=2 EZ.DAT
 SHOW DATA/FULL
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  
  name     title                             I         J         K         L
  X1       X1                               1:15      ...       ...       ...
@@ -9869,7 +9870,7 @@ LIST X1
  6   / 6:  0.5147
 SHOW DATA
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  name     title                             I         J         K         L
  X1       X1                               1:6       ...       ...       ...
  X2       X2                               1:6       ...       ...       ...
@@ -9879,7 +9880,7 @@ SHOW DATA
 FILE/VAR="X1,X2"/COLUMNS=6/SKIP=2/FORMAT=(3(F14.0,F7.0)) EZ.DAT
 SHOW DATA/FULL
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  
  name     title                             I         J         K         L
  X1       X1                               1:15      ...       ...       ...
@@ -9907,7 +9908,7 @@ LIST X1
  9   / 9:  0.4690
 SHOW DATA
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  name     title                             I         J         K         L
  X1       X1                               1:9       ...       ...       ...
  X2       X2                               1:9       ...       ...       ...
@@ -9917,7 +9918,7 @@ SHOW DATA
 FILE/VAR="X1,X2"/COLUMNS=6/SKIP=1/FORMAT="(3(F14.0,F7.0)/)" EZ.DAT
 SHOW DATA/FULL
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  
  name     title                             I         J         K         L
  X1       X1                               1:15      ...       ...       ...
@@ -9942,7 +9943,7 @@ LIST X1
  6   / 6:  0.4700
 SHOW DATA
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  name     title                             I         J         K         L
  X1       X1                               1:6       ...       ...       ...
  X2       X2                               1:6       ...       ...       ...
@@ -9952,7 +9953,7 @@ SHOW DATA
 SET VARIABLE/TITLE="first variable" X1
 SHOW DATA
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  name     title                             I         J         K         L
  X1       first variable                   1:6       ...       ...       ...
  X2       X2                               1:6       ...       ...       ...
@@ -9964,7 +9965,7 @@ DEFINE GRID/X=XEZ1/Y=EZ GEZ1
 FILE/VAR="X1,X2"/COLUMNS=6/GRID=GEZ1 EZ.DAT
 SHOW DATA/FULL
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  
  name     title                             I         J         K         L
  X1       X1                               1:3       1:20480   ...       ...
@@ -9990,7 +9991,7 @@ LIST X1
  5   / 5:  0.4780  0.5150  0.4690
 SHOW DATA
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  name     title                             I         J         K         L
  X1       X1                               1:3       1:5       ...       ...
  X2       X2                               1:3       1:5       ...       ...
@@ -10004,7 +10005,7 @@ DEFINE GRID/X=XEZ2/Y=YEZ/Z=ZEZ/T=EZ GEZ2
 FILE/VAR="X1,X2"/COLUMNS=6/GRID=GEZ2 EZ.DAT
 SHOW DATA/FULL
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  
  name     title                             I         J         K         L
  X1       X1                               1:1       1:3       1:2       1:20480
@@ -10032,7 +10033,7 @@ LIST X1
  2   / 2:  0.4350  0.4440  0.4700
 SHOW DATA
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  name     title                             I         J         K         L
  X1       X1                               1:1       1:3       1:2       1:2
  X2       X2                               1:1       1:3       1:2       1:2
@@ -10048,7 +10049,7 @@ DEFINE GRID/X=XEZ3 GEZ3
 FILE/VAR="X1,X2"/COLUMNS=6/GRID=GEZ3 EZ.DAT
 SHOW DATA/FULL
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  
  name     title                             I         J         K         L
  X1       X1                               1:8       ...       ...       ...
@@ -10075,7 +10076,7 @@ LIST X1
  8   / 8:  0.0000
 SHOW DATA
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  name     title                             I         J         K         L
  X1       X1                               1:8       ...       ...       ...
  X2       X2                               1:8       ...       ...       ...
@@ -12366,7 +12367,7 @@ LIST/FORMAT=comma/precision=9 randu(i)*temp*1e-7
 ! multiple variable test
 set region/i=95:96/j=41:42/k=2/l=5
 LIST/FORMAT=comma/precision=5 u,v
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
              LONGITUDE: 135.5W to 133.5W
              LATITUDE: 1.5S to 0.8S
              DEPTH (m): 15
@@ -14581,7 +14582,7 @@ list/format=cdf/append/file=test_fil0.cdf/heading="enh" ijklave
 set data/format=cdf test_fil0
 show data/full
      currently SET data sets:
-    1> ./gtbc011.cdf
+    1> ./data/gtbc011.cdf
  
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     70:72      1:100     1:27      1:3
@@ -14769,7 +14770,7 @@ list/format=cdf/append/file=test_fil.cdf ijklave
 set data/format=cdf test_fil
 show data/full
      currently SET data sets:
-    1> ./gtbc011.cdf
+    1> ./data/gtbc011.cdf
  
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     70:72      1:100     1:27      1:3
@@ -14890,7 +14891,7 @@ set data reverse_axes
  
 show data/var
      currently SET data sets:
-    1> ./reverse_axes.cdf  (default)
+    1> ./data/reverse_axes.cdf  (default)
  
  name     title                             I         J         K         L
  FCN_NORM COS(X/10)*SIN(Y/2)               1:51      1:21      ...       ...
@@ -14907,7 +14908,7 @@ show data/var
  
 list/x=180 fcn_norm,fcn_rev
  WARNING: Listed variables have ambiguous coordinates on axes: Y
-             DATA SET: ./reverse_axes.cdf
+             DATA SET: ./data/reverse_axes.cdf
              LONGITUDE: 180E
  Column  1: FCN_NORM is COS(X/10)*SIN(Y/2)
  Column  2: FCN_REV is COS(X/10)*SIN(Y/2)
@@ -15097,7 +15098,7 @@ stat temp[g=u] - temp[g=u@ave,gx=u@lin,gy=u@lin,gz=u@lin,gt=u@lin]  ! == 0
              TIME: 21-JAN-1982 00:00 to 24-JAN-1982 00:00
              E:  N/A
              F:  N/A
-             DATA SET: ./gtsa056_1.cdf
+             DATA SET: ./data/gtsa056_1.cdf
  
  Total # of data points: 120 (6*5*2*2*1*1)
  # flagged as bad  data: 0
@@ -15126,7 +15127,7 @@ stat temp[g=u,gx=@ave] - temp[gx=@ave,g=u]    ! == 0
              TIME: 21-JAN-1982 00:00 to 24-JAN-1982 00:00
              E:  N/A
              F:  N/A
-             DATA SET: ./gtsa056_1.cdf
+             DATA SET: ./data/gtsa056_1.cdf
  
  Total # of data points: 120 (6*5*2*2*1*1)
  # flagged as bad  data: 0
@@ -19250,7 +19251,7 @@ cancel data stream_data_link.unf
 !     - 11/06/97 - added a set mode/last verify
 CAN MODE VERIFY
      currently SET data sets:
-    1> ./coads_clim.des  (default)
+    1> ./data/coads_clim.des  (default)
      COAD
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:6
@@ -19308,7 +19309,7 @@ CAN MODE VERIFY
              TIME: 01-JAN-1900 00:45 to 02-JUL-1900 15:40
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_clim.des
+             DATA SET: ./data/coads_clim.des
  
  Total # of data points: 97200 (180*90*1*6*1*1)
  # flagged as bad  data: 44263
@@ -19317,7 +19318,7 @@ CAN MODE VERIFY
  Mean    value: 17.806 (unweighted average)
  Standard deviation: 9.6933
      currently SET data sets:
-    1> ./coads_clim.des
+    1> ./data/coads_clim.des
      COAD
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:6
@@ -19326,7 +19327,7 @@ CAN MODE VERIFY
  
   time range: 16-JAN-1900 06:00 to 17-JUN-1900 10:25
  
-    2> ./coads_clim_irreg.des  (default)
+    2> ./data/coads_clim_irreg.des  (default)
      COAD
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
@@ -19375,7 +19376,7 @@ CAN MODE VERIFY
              TIME: 01-JAN-1900 00:45 to 02-JUL-1900 15:40
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_clim_irreg.des
+             DATA SET: ./data/coads_clim_irreg.des
  
  Total # of data points: 48600 (180*90*1*3*1*1)
  # flagged as bad  data: 21459
@@ -19384,7 +19385,7 @@ CAN MODE VERIFY
  Mean    value: 17.359 (unweighted average)
  Standard deviation: 9.8799
      currently SET data sets:
-    1> ./coads_clim_missing_step1.des  (default)
+    1> ./data/coads_clim_missing_step1.des  (default)
      COAD
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
@@ -19394,7 +19395,7 @@ CAN MODE VERIFY
   time range: 16-JAN-1900 06:00 to 17-MAY-1900 23:56
  
      currently SET data sets:
-    1> ./coads_clim_missing_stepN.des  (default)
+    1> ./data/coads_clim_missing_stepN.des  (default)
      COAD
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
@@ -23387,7 +23388,7 @@ set mem /size=10
 use weird_name1.cdf
 sh data
      currently SET data sets:
-    1> ./weird_name1.cdf  (default)
+    1> ./data/weird_name1.cdf  (default)
  name     title                             I         J         K         L
  v1       lower case v1                    1:20      ...       ...       ...
  v2-and-minus
@@ -26518,7 +26519,7 @@ cancel memory/all
  
 SHOW DATA
      currently SET data sets:
-    1> ./bn_strides.cdf  (default)
+    1> ./data/bn_strides.cdf  (default)
  name     title                             I         J         K         L
  VAR      L*1000 + K*100 + J*10 + I        1:4       1:3       1:2       1:1
  MIDVAR   VAR                              1:9       1:8       1:7       1:6
@@ -27339,7 +27340,7 @@ canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   TAX1_10
  -DELETE BIGVAR   M:  5 dset:   1 I:      1      4  J:    1    3  K:    1    2  L:      1      1
  dealloc  dynamic grid (G###)          (AX###)   YUNEVEN   ZAX1_6    TAX1_4
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  -DELETE UNE-NVAR M:  3 dset:   1 I:      1     10  J:    1    1  K:    1    1  L:      1      1
  -DELETE UNE-NVAR M:  6 dset:   1 I:      1      9  J:    1    1  K:    1    1  L:      1      1
  
@@ -27432,7 +27433,7 @@ list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   TAX1_10
  -DELETE BIGVAR   M:  3 dset:   1 I:      1      4  J:    1    3  K:    1    2  L:      1      1
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 use/order=zxy bn_strides
 list bigvar[i=3:9:2]
@@ -27523,7 +27524,7 @@ list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   TAX1_10
  -DELETE BIGVAR   M:  6 dset:   1 I:      1      4  J:    1    3  K:    1    2  L:      1      1
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 ! now with xytvar
 cancel region
@@ -27624,7 +27625,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   NORMAL    (AX###)
  -DELETE XYTVAR   M:  3 dset:   1 I:      1      4  J:    1    3  K: -999 -999  L:      1      2
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 use/order=yx bn_strides
 show grid xytvar
@@ -27722,7 +27723,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   NORMAL    (AX###)
  -DELETE XYTVAR   M:  6 dset:   1 I:      1      4  J:    1    3  K: -999 -999  L:      1      2
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 use/order=tyx bn_strides
 show grid xytvar
@@ -27820,7 +27821,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   NORMAL    (AX###)
  -DELETE XYTVAR   M:  3 dset:   1 I:      1      4  J:    1    3  K: -999 -999  L:      1      2
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 use/order=txy bn_strides
 show grid xytvar
@@ -27918,7 +27919,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   NORMAL    (AX###)
  -DELETE XYTVAR   M:  6 dset:   1 I:      1      4  J:    1    3  K: -999 -999  L:      1      2
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 ! map into Z instead of T
 use/order=zxy bn_strides
@@ -28019,7 +28020,7 @@ list xytvar[i=1:7:2,j=2:6:2,k=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   NORMAL
  -DELETE XYTVAR   M:  3 dset:   1 I:      1      4  J:    1    3  K:    1    2  L:   -999   -999
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
  
 ! * * * * * MIXED STRIDES, PERMUTATIONS and REVERSALS * * * * *
@@ -28068,7 +28069,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   TAX1_6
  -DELETE MIDVAR   M:  6 dset:   1 I:      1      2  J:    1    2  K:    1    2  L:      1      1
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 use/order=-yx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
@@ -28102,7 +28103,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   TAX1_6
  -DELETE MIDVAR   M:  6 dset:   1 I:      1      2  J:    1    2  K:    1    2  L:      1      1
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 use/order=y-x bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
@@ -28136,7 +28137,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   TAX1_6
  -DELETE MIDVAR   M:  6 dset:   1 I:      1      2  J:    1    2  K:    1    2  L:      1      1
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 ! reference output
 use/order=tyx bn_strides
@@ -28168,7 +28169,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   ZAX1_7
  -DELETE MIDVAR   M:  3 dset:   1 I:      1      2  J:    1    2  K:    1    2  L:      1      1
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 ! note the reversal on axes 1,2 and 3 (X,Y,Z in memory -- NOT T)
 use/order=-t-y-x bn_strides
@@ -28203,7 +28204,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   ZAX1_7
  -DELETE MIDVAR   M:  3 dset:   1 I:      1      2  J:    1    2  K:    1    2  L:      1      1
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 ! reference output
 use/order=txy bn_strides
@@ -28235,7 +28236,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   ZAX1_7
  -DELETE MIDVAR   M:  6 dset:   1 I:      1      2  J:    1    2  K:    1    2  L:      1      1
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 use/order=-t-x-y bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
@@ -28269,7 +28270,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   ZAX1_7
  -DELETE MIDVAR   M:  6 dset:   1 I:      1      2  J:    1    2  K:    1    2  L:      1      1
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
 *** Running ferret script: bn_non_COARDS_netCDF.jnl
 ! bn_non_COARDS_netCDF.jnl
 ! *sh* 3/99
@@ -28281,7 +28282,7 @@ use non_COARDS
  
 show data
      currently SET data sets:
-    1> ./non_COARDS.cdf  (default)
+    1> ./data/non_COARDS.cdf  (default)
  name     title                             I         J         K         L
  UNORDERED_AXIS
           disordered axis                  1:5       ...       ...       ...
@@ -28407,7 +28408,7 @@ show grid COADSY
  
 show data
      currently SET data sets:
-    1> ./non_COARDS.cdf  (default)
+    1> ./data/non_COARDS.cdf  (default)
  name     title                             I         J         K         L
  UNORDERED_AXIS
           disordered axis                  1:5       ...       ...       ...
@@ -28511,7 +28512,7 @@ stat $1
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 16200 (180*90*1*1*1*1)
  # flagged as bad  data: 6694
@@ -28543,7 +28544,7 @@ stat $1
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 16200 (180*90*1*1*1*1)
  # flagged as bad  data: 6694
@@ -28575,7 +28576,7 @@ stat $1[gx=xtrop]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 13590 (151*90*1*1*1*1)
  # flagged as bad  data: 4962
@@ -28615,7 +28616,7 @@ stat $1[gx=xtrop]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 13590 (151*90*1*1*1*1)
  # flagged as bad  data: 4962
@@ -28651,7 +28652,7 @@ stat $1x
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 13590 (151*90*1*1*1*1)
  # flagged as bad  data: 4962
@@ -28683,7 +28684,7 @@ stat $1x
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 13590 (151*90*1*1*1*1)
  # flagged as bad  data: 4962
@@ -28713,7 +28714,7 @@ stat $1[g=gx]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 13590 (151*90*1*1*1*1)
  # flagged as bad  data: 4962
@@ -28750,7 +28751,7 @@ stat $1[g=gx]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 13590 (151*90*1*1*1*1)
  # flagged as bad  data: 4962
@@ -28783,7 +28784,7 @@ stat $1[gx=xtrop,gy=ytrop]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 6191 (151*41*1*1*1*1)
  # flagged as bad  data: 151
@@ -28824,7 +28825,7 @@ stat $1[gx=xtrop,gy=ytrop]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 6191 (151*41*1*1*1*1)
  # flagged as bad  data: 151
@@ -28857,7 +28858,7 @@ stat $1[g=gxyt]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 6191 (151*41*1*1*1*1)
  # flagged as bad  data: 151
@@ -28893,7 +28894,7 @@ stat $1[g=gxyt]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 6191 (151*41*1*1*1*1)
  # flagged as bad  data: 151
@@ -28924,7 +28925,7 @@ stat $1xyt
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 6191 (151*41*1*1*1*1)
  # flagged as bad  data: 151
@@ -28955,7 +28956,7 @@ stat $1xyt
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 6191 (151*41*1*1*1*1)
  # flagged as bad  data: 151
@@ -28991,7 +28992,7 @@ stat $1xyt
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 6191 (151*41*1*1*1*1)
  # flagged as bad  data: 151
@@ -29022,7 +29023,7 @@ stat $1xyt
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 6191 (151*41*1*1*1*1)
  # flagged as bad  data: 151
@@ -29049,7 +29050,7 @@ stat $1[x=@ave]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 90 (1*90*1*1*1*1)
  # flagged as bad  data: 12
@@ -29081,7 +29082,7 @@ stat $1[x=@ave]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 90 (1*90*1*1*1*1)
  # flagged as bad  data: 12
@@ -29110,7 +29111,7 @@ stat $1xave
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 90 (1*90*1*1*1*1)
  # flagged as bad  data: 12
@@ -29142,7 +29143,7 @@ stat $1xave
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 90 (1*90*1*1*1*1)
  # flagged as bad  data: 12
@@ -29171,7 +29172,7 @@ stat $1[x=@sbx]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 16200 (180*90*1*1*1*1)
  # flagged as bad  data: 7173
@@ -29204,7 +29205,7 @@ stat $1[x=@sbx]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 16200 (180*90*1*1*1*1)
  # flagged as bad  data: 7173
@@ -29233,7 +29234,7 @@ stat $1sbx
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 16200 (180*90*1*1*1*1)
  # flagged as bad  data: 7173
@@ -29265,7 +29266,7 @@ stat $1sbx
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 16200 (180*90*1*1*1*1)
  # flagged as bad  data: 7173
@@ -29302,7 +29303,7 @@ stat $1
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 16200 (180*90*1*1*1*1)
  # flagged as bad  data: 6694
@@ -29334,7 +29335,7 @@ stat $1
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 16200 (180*90*1*1*1*1)
  # flagged as bad  data: 6694
@@ -29366,7 +29367,7 @@ stat $1[gx=xtrop]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 13590 (151*90*1*1*1*1)
  # flagged as bad  data: 4962
@@ -29406,7 +29407,7 @@ stat $1[gx=xtrop]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 13590 (151*90*1*1*1*1)
  # flagged as bad  data: 4962
@@ -29442,7 +29443,7 @@ stat $1x
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 13590 (151*90*1*1*1*1)
  # flagged as bad  data: 4962
@@ -29474,7 +29475,7 @@ stat $1x
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 13590 (151*90*1*1*1*1)
  # flagged as bad  data: 4962
@@ -29504,7 +29505,7 @@ stat $1[g=gx]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 13590 (151*90*1*1*1*1)
  # flagged as bad  data: 4962
@@ -29541,7 +29542,7 @@ stat $1[g=gx]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 13590 (151*90*1*1*1*1)
  # flagged as bad  data: 4962
@@ -29569,7 +29570,7 @@ stat $1[gx=xtrop,gy=ytrop]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 6191 (151*41*1*1*1*1)
  # flagged as bad  data: 151
@@ -29601,7 +29602,7 @@ stat $1[gx=xtrop,gy=ytrop]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 6191 (151*41*1*1*1*1)
  # flagged as bad  data: 151
@@ -29630,7 +29631,7 @@ stat $1[g=gxyt]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 6191 (151*41*1*1*1*1)
  # flagged as bad  data: 151
@@ -29662,7 +29663,7 @@ stat $1[g=gxyt]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 6191 (151*41*1*1*1*1)
  # flagged as bad  data: 151
@@ -29689,7 +29690,7 @@ stat $1xyt
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 6191 (151*41*1*1*1*1)
  # flagged as bad  data: 151
@@ -29720,7 +29721,7 @@ stat $1xyt
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 6191 (151*41*1*1*1*1)
  # flagged as bad  data: 151
@@ -29769,7 +29770,7 @@ stat $1xyt
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 6191 (151*41*1*1*1*1)
  # flagged as bad  data: 151
@@ -29800,7 +29801,7 @@ stat $1xyt
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 6191 (151*41*1*1*1*1)
  # flagged as bad  data: 151
@@ -29830,7 +29831,7 @@ stat $1[x=@ave]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 90 (1*90*1*1*1*1)
  # flagged as bad  data: 12
@@ -29862,7 +29863,7 @@ stat $1[x=@ave]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 90 (1*90*1*1*1*1)
  # flagged as bad  data: 12
@@ -29891,7 +29892,7 @@ stat $1xave
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 90 (1*90*1*1*1*1)
  # flagged as bad  data: 12
@@ -29923,7 +29924,7 @@ stat $1xave
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 90 (1*90*1*1*1*1)
  # flagged as bad  data: 12
@@ -29952,7 +29953,7 @@ stat $1[x=@sbx]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 16200 (180*90*1*1*1*1)
  # flagged as bad  data: 7173
@@ -29985,7 +29986,7 @@ stat $1[x=@sbx]
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 16200 (180*90*1*1*1*1)
  # flagged as bad  data: 7173
@@ -30014,7 +30015,7 @@ stat $1sbx
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 16200 (180*90*1*1*1*1)
  # flagged as bad  data: 7173
@@ -30046,7 +30047,7 @@ stat $1sbx
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 16200 (180*90*1*1*1*1)
  # flagged as bad  data: 7173
@@ -30950,7 +30951,7 @@ list/l=1:4 sst
  17-MAR      / 3:  28.35
  16-AUG      / 4:   ....
 list/l=1:4 jsst, nsst
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              TIME: 01-JAN 00:00 to 16-APR 12:45 JULIAN
              LONGITUDE: 179E
              LATITUDE: 1S
@@ -34251,7 +34252,7 @@ let tsorted_indices = sorti( sst[i=61:66,y=39,z=0,l=2])
 let tsorted_sst = samplei(sst, tsorted_indices)
  
 list tsorted_indices, tsorted_sst
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              X: 0.5 to 6.5
              TIME: 15-FEB 16:29
  Column  1: TSORTED_INDICES[Y=39N] is SORTI( SST[I=61:66,Y=39,Z=0,L=2])
@@ -34343,7 +34344,7 @@ let tsorted_indices = sortj( sst[j=65:70,x=141,z=0,l=2])
 let tsorted_sst = samplej(sst, tsorted_indices)
  
 list tsorted_indices, tsorted_sst
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              Y: 0.5 to 6.5
              TIME: 15-FEB 16:29
  Column  1: TSORTED_INDICES[X=141E] is SORTJ( SST[J=65:70,X=141,Z=0,L=2])
@@ -34518,7 +34519,7 @@ let tsorted_indices = sortl(sst)
 let tsorted_sst = samplel(sst, tsorted_indices[x=141,y=39,z=0])
  
 list tsorted_indices, tsorted_sst
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              T: 0.5 to 3.5
              LONGITUDE: 141E
              LATITUDE: 39N
@@ -34607,7 +34608,7 @@ list vwnd
 let tsorted_indices = sortl(vwnd)
 let tsorted_wnd = samplel(vwnd, tsorted_indices[i=90,j=65])
 list tsorted_indices, tsorted_wnd
-             DATA SET: ./coads_vwnd.cdf
+             DATA SET: ./data/coads_vwnd.cdf
              T: 0.5 to 60.5
              LONGITUDE: 161W
              LATITUDE: 39N
@@ -34706,7 +34707,7 @@ stat tsorted_wnd
              T: 0.5 to 60.5
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_vwnd.cdf
+             DATA SET: ./data/coads_vwnd.cdf
  
  Total # of data points: 60 (1*1*1*60*1*1)
  # flagged as bad  data: 60
@@ -35368,7 +35369,7 @@ stat mapped
              T:  N/A
              E:  N/A
              F:  N/A
-             DATA SET: ./tripolar_subset.nc
+             DATA SET: ./data/tripolar_subset.nc
  
  Total # of data points: 451 (41*11*1*1*1*1)
  # flagged as bad  data: 79
@@ -35402,7 +35403,7 @@ list/L=15:20 tax_datestring(t[gt=temp],temp,"day")
  05-DEC-1982 00 / 19:"05-DEC-1982"
  11-DEC-1982 02 / 20:"11-DEC-1982"
 list/L=15:20 tax_dayfrac(t[gt=temp],temp), tax_dayfrac(t[gt=temp],temp)*24.
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
              TIME: 07-NOV-1982 15:00 to 14-DEC-1982 03:00
  Column  1: TAX_DAYFRAC(T[GT=TEMP],TEMP)
  Column  2: EX#2 is TAX_DAYFRAC(T[GT=TEMP],TEMP)*24.
@@ -35414,7 +35415,7 @@ list/L=15:20 tax_dayfrac(t[gt=temp],temp), tax_dayfrac(t[gt=temp],temp)*24.
 05-DEC-1982 00 / 19:  0.0000   0.00
 11-DEC-1982 02 / 20:  0.0833   2.00
 list/L=15:20 tax_day(t[gt=temp],temp), tax_jday(t[gt=temp],temp)
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
              TIME: 07-NOV-1982 15:00 to 14-DEC-1982 03:00
  Column  1: TAX_DAY(T[GT=TEMP],TEMP)
  Column  2: TAX_JDAY(T[GT=TEMP],TEMP)
@@ -35426,7 +35427,7 @@ list/L=15:20 tax_day(t[gt=temp],temp), tax_jday(t[gt=temp],temp)
 05-DEC-1982 00 / 19:    5.00   339.0
 11-DEC-1982 02 / 20:   11.00   345.0
 list/L=15:20 tax_month(t[gt=temp],temp), tax_yearfrac(t[gt=temp],temp)
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
              TIME: 07-NOV-1982 15:00 to 14-DEC-1982 03:00
  Column  1: TAX_MONTH(T[GT=TEMP],TEMP)
  Column  2: TAX_YEARFRAC(T[GT=TEMP],TEMP)
@@ -35487,7 +35488,7 @@ use coads_climatology
 ! SAMPLEXY will interpolate to geth the result,
 ! SAMPLEIJ requires an exact match.
 list/l=1 samplexy(sst,{321,323.5,325}, {1,1,1}), sampleij(sst,{321,323,324.5}, {1,1,1})
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              X: 0.5 to 3.5
              TIME: 16-JAN 06:00
  Column  1: EX#1 is SAMPLEXY(SST,{321,323.5,325}, {1,1,1})
@@ -36888,7 +36889,7 @@ set mode logo
 ! test delimiited (spreadsheet) reads in Ferret
  
 ! look at the file
-spawn cat bn_delimited_read_1.dat
+spawn cat data/bn_delimited_read_1.dat
 col1,col2,col3,col4,col5
 one,,1.1,24S,130E,,1e1,"word 1"
     two,,2.2,24N,130W,2S,,"word 2"
@@ -36902,7 +36903,7 @@ extra line
 file/format=delim bn_delimited_read_1.dat
 show data/var
      currently SET data sets:
-    1> ./bn_delimited_read_1.dat  (default)
+    1> ./data/bn_delimited_read_1.dat  (default)
  
  name     title                             I         J         K         L
  V1       V1                               1:7       ...       ...       ...
@@ -36958,7 +36959,7 @@ show data/var
  
  /DELIMITERS="\t,\,"
 list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
-             DATA SET: ./bn_delimited_read_1.dat
+             DATA SET: ./data/bn_delimited_read_1.dat
              X: 0.5 to 7.5
  Column  1: V1
  Column  2: V2
@@ -36982,7 +36983,7 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
 ! manually name the variables while still automatically analyzing data types
 file/format=delim/var=a1,a2,a3,a4,a5,a6,a7 bn_delimited_read_1.dat
 list a1,a2,a3,a4,a5,a6,a7
-             DATA SET: ./bn_delimited_read_1.dat
+             DATA SET: ./data/bn_delimited_read_1.dat
              X: 0.5 to 7.5
  Column  1: A1 is a1
  Column  2: A2 is a2
@@ -37004,7 +37005,7 @@ list a1,a2,a3,a4,a5,a6,a7
 ! note that v3 is correctly analyzed as numeric
 file/format=delim/skip=1 bn_delimited_read_1.dat
 list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
-             DATA SET: ./bn_delimited_read_1.dat
+             DATA SET: ./data/bn_delimited_read_1.dat
              X: 0.5 to 6.5
  Column  1: V1
  Column  2: V2 is V2 (all values missing)
@@ -37027,7 +37028,7 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
 ! insist that all columns be treated as string
 file/format=delim/skip=1/type=text bn_delimited_read_1.dat
 list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
-             DATA SET: ./bn_delimited_read_1.dat
+             DATA SET: ./data/bn_delimited_read_1.dat
              X: 0.5 to 6.5
  Column  1: V1
  Column  2: V2
@@ -37051,7 +37052,7 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
 file/format=delim/skip=1/type=text/var=a1,a2,a3,a4,a5 bn_delimited_read_1.dat
 show data
      currently SET data sets:
-    1> ./bn_delimited_read_1.dat  (default)
+    1> ./data/bn_delimited_read_1.dat  (default)
  name     title                             I         J         K         L
  A1       a1                               1:7       ...       ...       ...
  A2       a2                               1:7       ...       ...       ...
@@ -37060,7 +37061,7 @@ show data
  A5       a5                               1:7       ...       ...       ...
  
 list a1,a2,a3,a4,a5
-             DATA SET: ./bn_delimited_read_1.dat
+             DATA SET: ./data/bn_delimited_read_1.dat
              X: 0.5 to 6.5
  Column  1: A1 is a1
  Column  2: A2 is a2
@@ -37078,7 +37079,7 @@ list a1,a2,a3,a4,a5
 ! insist that all columns be treated as numeric
 file/format=delim/skip=1/type=numeric bn_delimited_read_1.dat
 list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
-             DATA SET: ./bn_delimited_read_1.dat
+             DATA SET: ./data/bn_delimited_read_1.dat
              X: 0.5 to 6.5
  Column  1: V1
  Column  2: V2
@@ -37101,7 +37102,7 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
 ! insist that all columns be treated as latitude
 file/format=delim/skip=1/type=latitude bn_delimited_read_1.dat
 list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
-             DATA SET: ./bn_delimited_read_1.dat
+             DATA SET: ./data/bn_delimited_read_1.dat
              X: 0.5 to 6.5
  Column  1: V1 is V1 (degrees_north)(Latitude)
  Column  2: V2 is V2 (degrees_north)(Latitude)
@@ -37122,14 +37123,14 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
 6   / 6: .... ....   ....   ....   ....   ....   .... .... ....   ....
  
 ! read only the first line of the file
-spawn head -1 bn_delimited_read_1.dat
+spawn head -1 data/bn_delimited_read_1.dat
 col1,col2,col3,col4,col5
 define axis/x=1:1:1 x1
 define grid/x=x1 g1
 columns/grid=g1 bn_delimited_read_1.dat
  ! note 10 columns because auto-analysis of file doesnt stop at 1st record
 list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
-             DATA SET: ./bn_delimited_read_1.dat
+             DATA SET: ./data/bn_delimited_read_1.dat
              X: 1
  Column  1: V1
  Column  2: V2
@@ -37145,7 +37146,7 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
 I / *:    "col1" "col2" "col3" "col4" "col5" " " .... " " " " ....
 columns/grid=g1/var=c1,c2,c3,c4,c5 bn_delimited_read_1.dat
 list c1,c2,c3,c4,c5
-             DATA SET: ./bn_delimited_read_1.dat
+             DATA SET: ./data/bn_delimited_read_1.dat
              X: 1
  Column  1: C1 is c1
  Column  2: C2 is c2
@@ -37165,14 +37166,14 @@ cancel data/all
 file/form=delimited bn_delimited_read_2.dat
 show data
      currently SET data sets:
-    1> ./bn_delimited_read_2.dat  (default)
+    1> ./data/bn_delimited_read_2.dat  (default)
  name     title                             I         J         K         L
  V1       V1                               1:3       ...       ...       ...
  
 file/form=delimited/delimiter=" " bn_delimited_read_2.dat
 show data
      currently SET data sets:
-    1> ./bn_delimited_read_2.dat  (default)
+    1> ./data/bn_delimited_read_2.dat  (default)
  name     title                             I         J         K         L
  V1       V1                               1:3       ...       ...       ...
        (Julian days since 1-Jan-1900)
@@ -37182,7 +37183,7 @@ show data
        (all values missing)
  
 list v1,v2
-             DATA SET: ./bn_delimited_read_2.dat
+             DATA SET: ./data/bn_delimited_read_2.dat
              X: 0.5 to 3.5
  Column  1: V1 is V1 (days)(Julian days since 1-Jan-1900)
  Column  2: V2 is V2 (hours)(Time of day)
@@ -37193,7 +37194,7 @@ list v1,v2
  
 ! ==========
 ! look at the date/time file
-spawn cat bn_delimited_read_date_time.dat
+spawn cat data/bn_delimited_read_date_time.dat
 12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
 12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
 12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
@@ -37203,7 +37204,7 @@ spawn cat bn_delimited_read_date_time.dat
 ! Note that record 3 has syntax errors in the first 4 fields
 columns bn_delimited_read_date_time.dat
 list v1,v2,v3,v4,v5,v6,v7,v8
-             DATA SET: ./bn_delimited_read_date_time.dat
+             DATA SET: ./data/bn_delimited_read_date_time.dat
              X: 0.5 to 4.5
  Column  1: V1
  Column  2: V2
@@ -37220,7 +37221,7 @@ list v1,v2,v3,v4,v5,v6,v7,v8
 4   / 4: "12/4/99"  "1999-03-04"  "03:00"      "16:45:36.5"  36496.  36221.   3.00  16.76
 show data 2
      currently SET data sets:
-    2> ./bn_delimited_read_date_time.dat  (default)
+    2> ./data/bn_delimited_read_date_time.dat  (default)
  name     title                             I         J         K         L
  V1       V1                               1:4       ...       ...       ...
  V2       V2                               1:4       ...       ...       ...
@@ -37252,7 +37253,7 @@ T0 = 1-JAN-1900
  
 columns/type=date bn_delimited_read_date_time.dat
 list v1,v2,v3,v4,v5,v6,v7,v8
-             DATA SET: ./bn_delimited_read_date_time.dat
+             DATA SET: ./data/bn_delimited_read_date_time.dat
              X: 0.5 to 4.5
  Column  1: V1 is V1 (days)(Julian days since 1-Jan-1900)
  Column  2: V2 is V2 (days)(Julian days since 1-Jan-1900)
@@ -37269,7 +37270,7 @@ list v1,v2,v3,v4,v5,v6,v7,v8
 4   / 4:  36496.  36221. .... ....  36496.  36221. .... ....
 show data 2
      currently SET data sets:
-    2> ./bn_delimited_read_date_time.dat  (default)
+    2> ./data/bn_delimited_read_date_time.dat  (default)
  name     title                             I         J         K         L
  V1       V1                               1:4       ...       ...       ...
        (Julian days since 1-Jan-1900)
@@ -37291,7 +37292,7 @@ show data 2
  
 columns/type=time bn_delimited_read_date_time.dat
 list v1,v2,v3,v4,v5,v6,v7,v8
-             DATA SET: ./bn_delimited_read_date_time.dat
+             DATA SET: ./data/bn_delimited_read_date_time.dat
              X: 0.5 to 4.5
  Column  1: V1 is V1 (hours)(Time of day)
  Column  2: V2 is V2 (hours)(Time of day)
@@ -37308,7 +37309,7 @@ list v1,v2,v3,v4,v5,v6,v7,v8
 4   / 4: .... ....   3.00  16.76 .... ....   3.00  16.76
 show data 2
      currently SET data sets:
-    2> ./bn_delimited_read_date_time.dat  (default)
+    2> ./data/bn_delimited_read_date_time.dat  (default)
  name     title                             I         J         K         L
  V1       V1                               1:4       ...       ...       ...
        (Time of day)
@@ -37330,7 +37331,7 @@ show data 2
  
 columns/type="da,dat,ti,tim,date, date, time, time"  bn_delimited_read_date_time.dat
 list v1,v2,v3,v4,v5,v6,v7,v8
-             DATA SET: ./bn_delimited_read_date_time.dat
+             DATA SET: ./data/bn_delimited_read_date_time.dat
              X: 0.5 to 4.5
  Column  1: V1 is V1 (days)(Julian days since 1-Jan-1900)
  Column  2: V2 is V2 (days)(Julian days since 1-Jan-1900)
@@ -37347,7 +37348,7 @@ list v1,v2,v3,v4,v5,v6,v7,v8
 4   / 4:  36496.  36221.   3.00  16.76  36496.  36221.   3.00  16.76
 show data 2
      currently SET data sets:
-    2> ./bn_delimited_read_date_time.dat  (default)
+    2> ./data/bn_delimited_read_date_time.dat  (default)
  name     title                             I         J         K         L
  V1       V1                               1:4       ...       ...       ...
        (Julian days since 1-Jan-1900)
@@ -37369,7 +37370,7 @@ show data 2
  
 columns/type="da,-,ti,-,date,-,time,-"  bn_delimited_read_date_time.dat
 list v1,v3,v5,v7
-             DATA SET: ./bn_delimited_read_date_time.dat
+             DATA SET: ./data/bn_delimited_read_date_time.dat
              X: 0.5 to 4.5
  Column  1: V1 is V1 (days)(Julian days since 1-Jan-1900)
  Column  2: V3 is V3 (hours)(Time of day)
@@ -37382,7 +37383,7 @@ list v1,v3,v5,v7
 4   / 4:  36496.   3.00  36496.   3.00
 show data 2
      currently SET data sets:
-    2> ./bn_delimited_read_date_time.dat  (default)
+    2> ./data/bn_delimited_read_date_time.dat  (default)
  name     title                             I         J         K         L
  V1       V1                               1:4       ...       ...       ...
        (Julian days since 1-Jan-1900)
@@ -37397,7 +37398,7 @@ show data 2
 ! delimiters can be used to break up individual fields
 file/form=delim/delim="/" bn_delimited_read_date_time.dat
 list V1,V2,V3,V4
-             DATA SET: ./bn_delimited_read_date_time.dat
+             DATA SET: ./data/bn_delimited_read_date_time.dat
              X: 0.5 to 4.5
  Column  1: V1
  Column  2: V2
@@ -37409,7 +37410,7 @@ list V1,V2,V3,V4
 3   / 3:  12.00  3.000 "99x,1999-03-03x,2:00x, 15:45x,12"         3.000
 4   / 4:  12.00  4.000 "99,1999-03-04,03:00, 16:45:36.5, 12"      4.000
 ! ---
-sp cat bn_delimited_read_date_time.dat
+sp cat data/bn_delimited_read_date_time.dat
 12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
 12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
 12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
@@ -37417,7 +37418,7 @@ sp cat bn_delimited_read_date_time.dat
 ! ---
 file/form=delim/delim="/,\," bn_delimited_read_date_time.dat
 list V1,V2,V3,V4,v5,v6,v7,v8
-             DATA SET: ./bn_delimited_read_date_time.dat
+             DATA SET: ./data/bn_delimited_read_date_time.dat
              X: 0.5 to 4.5
  Column  1: V1
  Column  2: V2
@@ -37434,7 +37435,7 @@ list V1,V2,V3,V4,v5,v6,v7,v8
 4   / 4:  12.00  4.000 "99"  "1999-03-04"  "03:00"      "16:45:36.5"  12.00  4.000
  file/form=delim/delim="/,\,,-" bn_delimited_read_date_time.dat
 list V1,V2,V3,V4,v5,v6,v7,v8,v9,v10
-             DATA SET: ./bn_delimited_read_date_time.dat
+             DATA SET: ./data/bn_delimited_read_date_time.dat
              X: 0.5 to 4.5
  Column  1: V1
  Column  2: V2
@@ -37453,7 +37454,7 @@ list V1,V2,V3,V4,v5,v6,v7,v8,v9,v10
 4   / 4:  12.00  4.000 "99"   1999.  3.000 "04"  "03:00"      "16:45:36.5"  12.00  4.000
  file/form=delim/delim="/,\,,-,:" bn_delimited_read_date_time.dat
 list V1,V2,V3,V4,v5,v6,v7,v8,v9,v10
-             DATA SET: ./bn_delimited_read_date_time.dat
+             DATA SET: ./data/bn_delimited_read_date_time.dat
              X: 0.5 to 4.5
  Column  1: V1
  Column  2: V2
@@ -37476,7 +37477,7 @@ cancel data/all
 columns/skip=1 bn_delimited_read_CO2.dat
 show data/full
      currently SET data sets:
-    1> ./bn_delimited_read_CO2.dat  (default)
+    1> ./data/bn_delimited_read_CO2.dat  (default)
  
  name     title                             I         J         K         L
  V1       V1                               1:20      ...       ...       ...
@@ -37846,7 +37847,7 @@ show data/full
  /SKIP = 1
  /COLUMNS = 72
 list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24,v25,v26
-             DATA SET: ./bn_delimited_read_CO2.dat
+             DATA SET: ./data/bn_delimited_read_CO2.dat
              X: 0.5 to 19.5
  Column  1: V1
  Column  2: V2
@@ -37895,7 +37896,7 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,
 18   / 18: "I8SI9S"  4.000 "B"  34671.  94.99 -30.30  1945.   999.   4.96  34.41  0.000  19.00  0.0000  1.000  1008.  186.9  0.0000  30.28  0.000  0.0000  0.000  36.39  0.000  2.153  0.000  0.429
 19   / 19: "I8SI9S"  4.000 "B"  34671.  94.99 -30.30  1945.  1098.   4.31  34.44  0.000  18.00  0.0000  1.000  1109.  171.8  0.0000  32.20  0.000  0.0000  0.000  50.45  0.000  2.297  0.000  0.198
 list/i=8:14 v11,v19,v21,v23,v25
-             DATA SET: ./bn_delimited_read_CO2.dat
+             DATA SET: ./data/bn_delimited_read_CO2.dat
              X: 7.5 to 14.5
  Column  1: V11
  Column  2: V19
@@ -37912,7 +37913,7 @@ list/i=8:14 v11,v19,v21,v23,v25
 14   / 14:  0.000  0.000  0.000  0.000  0.000
 (set variable/bad=9 v11; set variable/bad=9 v19;set variable/bad=9 v21;set variable/bad=9 v23;set variable/bad=9 v25)
 list/i=8:14 v11,v19,v21,v23,v25
-             DATA SET: ./bn_delimited_read_CO2.dat
+             DATA SET: ./data/bn_delimited_read_CO2.dat
              X: 7.5 to 14.5
  Column  1: V11
  Column  2: V19
@@ -41117,7 +41118,7 @@ GO err550_nc_seconds.jnl
 use time_axis_seconds.nc
  
 sp echo "err550_nc_seconds.jnl --- seconds of time axis" >> all_ncdump.out
-sp ncdump time_axis_seconds.nc | grep origin >> all_ncdump.out
+sp ncdump data/time_axis_seconds.nc | grep origin >> all_ncdump.out
 list t[gt=height]    ! Seconds should be 36, 37, 38...
              VARIABLE : T
                         axis TIME
@@ -41333,7 +41334,7 @@ GO err551_invalid_calendar.jnl
 set data err_calendar.nc
 sh data
      currently SET data sets:
-    1> ./err_calendar.nc  (default)
+    1> ./data/err_calendar.nc  (default)
  name     title                             I         J         K         L
  TIME     observation time                 ...       ...       ...       1:12
        (invalid coordinate axis)
@@ -42491,7 +42492,7 @@ USE levitus_climatology.cdf
  
 SHO DATA/XML
 <datasets>
-<dataset name="./levitus_climatology.cdf" default="true">
+<dataset name="./data/levitus_climatology.cdf" default="true">
 <title> </title>
 <var name="TEMP" />
 </dataset>
@@ -44144,7 +44145,7 @@ can mem/all
 can data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   NORMAL    (AX###)
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   NORMAL    (AX###)
- canceling dset ./gtsa056_2.cdf
+ canceling dset ./data/gtsa056_2.cdf
  
 ! Some tests taken from  bn_strides_revs_perms.jnl but with
 ! DEFINE GRID/LIKE= testing permuting and reversing axes
@@ -44173,7 +44174,7 @@ define grid/like=xytvar egrid
  allocate dynamic grid GPC5            XLON      YLAT      NORMAL    TTIME
 canc data/all
  dealloc  dynamic grid GPC5            XLON      YLAT      NORMAL    TTIME
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
  
 ! cache hit from full region cache -- bypass use of strides
@@ -44466,7 +44467,7 @@ canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   TAX1_10
  -DELETE BIGVAR   M: 24 dset:   1 I:      1      4  J:    1    3  K:    1    2  L:      1      1
  dealloc  dynamic grid (G###)          (AX###)   YAX1_30   ZAX1_20   TAX1_10
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 use/order=zyx bn_strides
 list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
@@ -44499,7 +44500,7 @@ list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   TAX1_10
  -DELETE BIGVAR   M: 23 dset:   1 I:      1      4  J:    1    3  K:    1    2  L:      1      1
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 ! now with xytvar
 cancel region
@@ -44575,7 +44576,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   NORMAL    (AX###)
  -DELETE XYTVAR   M: 23 dset:   1 I:      1      4  J:    1    3  K: -999 -999  L:      1      2
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 ! map into Z instead of T
 use/order=zxy bn_strides
@@ -44619,7 +44620,7 @@ list xytvar[i=1:7:2,j=2:6:2,k=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   NORMAL
  -DELETE XYTVAR   M: 24 dset:   1 I:      1      4  J:    1    3  K:    1    2  L:   -999   -999
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
  
 cancel region; set region/l=1
@@ -44654,7 +44655,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   TAX1_6
  -DELETE MIDVAR   M: 23 dset:   1 I:      1      2  J:    1    2  K:    1    2  L:      1      1
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 use/order=-yx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
@@ -44688,7 +44689,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   TAX1_6
  -DELETE MIDVAR   M: 23 dset:   1 I:      1      2  J:    1    2  K:    1    2  L:      1      1
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 ! reference output
 use/order=tyx bn_strides
@@ -44720,7 +44721,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   ZAX1_7
  -DELETE MIDVAR   M: 24 dset:   1 I:      1      2  J:    1    2  K:    1    2  L:      1      1
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 ! note the reversal on axes 1,2 and 3 (X,Y,Z in memory -- NOT T)
 use/order=-t-y-x bn_strides
@@ -44755,7 +44756,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   ZAX1_7
  -DELETE MIDVAR   M: 24 dset:   1 I:      1      2  J:    1    2  K:    1    2  L:      1      1
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 ! reference output
 use/order=txy bn_strides
@@ -44787,7 +44788,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   ZAX1_7
  -DELETE MIDVAR   M: 23 dset:   1 I:      1      2  J:    1    2  K:    1    2  L:      1      1
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 use/order=-t-x-y bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
@@ -44821,7 +44822,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
  dealloc  dynamic grid (G###)          (AX###)   (AX###)   (AX###)   ZAX1_7
  -DELETE MIDVAR   M: 23 dset:   1 I:      1      2  J:    1    2  K:    1    2  L:      1      1
- canceling dset ./bn_strides.cdf
+ canceling dset ./data/bn_strides.cdf
  
 ! DEFINE AXIS can get the axis too long (bug 673)
 GO bn_reset
@@ -45384,7 +45385,7 @@ can mode ignore
  
 use coads_climatology
 list/x=181/y=1/form=(f6.2, 3f10.4) sst, t[gt=sst], tboxlo[gt=sst], tboxhi[gt=sst]
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              TIME: 01-JAN 00:45 to 01-APR 08:12
              LONGITUDE: 179W
              LATITUDE: 1N
@@ -45520,7 +45521,7 @@ can data/all
  
 use gappy_bounds.nc
 list/prec=7 a, t[gt=a], tboxlo[gt=a], tboxhi[gt=a]
-             DATA SET: ./gappy_bounds.nc
+             DATA SET: ./data/gappy_bounds.nc
              TIME: 01-JAN-1990 12:00 to 10-JAN-1990 12:00
  Column  1: A is SST[X=150:180@AVE,Y=-10:0@AVE]
  Column  2: T is T (axis TGAP)
@@ -46945,7 +46946,7 @@ GO err570_sh_dat_nan.jnl
 use nan_missing.nc
 show data/full
      currently SET data sets:
-    1> ./nan_missing.nc  (default)
+    1> ./data/nan_missing.nc  (default)
      NCEP Ocean Analysis
  name     title                             I         J         K         L
  TEMP     temperature                      1:1       1:1       1:19      1:1
@@ -47549,7 +47550,7 @@ list/x=180/y=0 sst
 use illeg_axname.nc
 sh data
      currently SET data sets:
-    1> ./illeg_axname.nc  (default)
+    1> ./data/illeg_axname.nc  (default)
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:21      1:16      ...       ...
  NEW.LONGITUDES
@@ -47913,7 +47914,7 @@ GO err580_use_des.jnl
 use vary_scale.des
 sh data
      currently SET data sets:
-    1> ./vary_scale.des  (default)
+    1> ./data/vary_scale.des  (default)
  name     title                             I         J         K         L
  TT       1 + 0*T[GT=DAYT]                 ...       ...       ...       1:20
  
@@ -47930,7 +47931,7 @@ GO err580_use_des.jnl
 use vary_scale.des
 sh data
      currently SET data sets:
-    1> ./vary_scale.des  (default)
+    1> ./data/vary_scale.des  (default)
  name     title                             I         J         K         L
  TT       1 + 0*T[GT=DAYT]                 ...       ...       ...       1:20
  
@@ -48975,7 +48976,7 @@ let zh2 = boxhi[k=2:`n`:2]
  
 list  zl2,(zl2+zh2)/2,zh2
  WARNING: Listed variables have ambiguous coordinates on axes: Z
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
  Column  1: ZL2[Z=0:3174] is BOXLO[K=1:26:2]
  Column  2: EX#2 is (ZL2+ZH2)/2
  Column  3: ZH2[Z=0:4149] is BOXHI[K=2:27:2]
@@ -48997,7 +48998,7 @@ def axis/z/bounds zax2 = (zl2+zh2)/2, zl2, zh2
  
 ! original axis
 list zboxlo[gz=temp], z[gz=temp], zboxhi[gz=temp]
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
              DEPTH (m): 0 to 4149
  Column  1: ZBOXLO is ZBOXLO (axis PSZT)
  Column  2: Z is Z (axis PSZT)
@@ -49071,7 +49072,7 @@ can var/all
  
 use ocean_atlas_temp
 sho att/all temp
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  TEMP.missing_value = -1.E+34
  TEMP._FillValue = -1.E+34
  TEMP.long_name = Temperature 
@@ -49079,10 +49080,10 @@ sho att/all temp
  TEMP.units = Deg C 
  
 show attribute temp.units
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  TEMP.units = Deg C 
 show attribute temp.missing_value
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  TEMP.missing_value = -1.E+34
  
 !  specifying data set
@@ -49091,7 +49092,7 @@ use gt4d011
 use levitus_climatology
  
 sh att/all temp[d=2]
-     attributes for dataset: ./gt4d011.cdf
+     attributes for dataset: ./data/gt4d011.cdf
  TEMP.parent_grid = PS3DT2 
  TEMP.slab_min_index = 91, 35, 1, 0
  TEMP.slab_max_index = 108, 56, 10, 0
@@ -49101,17 +49102,17 @@ sh att/all temp[d=2]
  TEMP.history = From gt4d011 
  TEMP.units = deg. C 
 sh att temp.units[d=1]
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  TEMP.units = Deg C 
  
 !  global attributes
 use err491_attval
  
 show att ..remark
-     attributes for dataset: ./err491_attval.cdf
+     attributes for dataset: ./data/err491_attval.cdf
   .remark = Generated by oar3d                                                                                                                                               
 show att/all .
-     attributes for dataset: ./err491_attval.cdf
+     attributes for dataset: ./data/err491_attval.cdf
  ..simulation = K-Bay OAR3d model (200m) 
  ..start_date = 980105000000 
  ..history = a
@@ -49146,7 +49147,7 @@ show att/all .
  ..node_offset = 0
  
 sho att/all .[d=1]
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  ..history = FERRET V4.90 (GUI) 04-Feb-98 
  
 !  Now SHOW DATA/ATT
@@ -49155,7 +49156,7 @@ can data/all
 use ocean_atlas_temp
 sho data/att
      currently SET data sets:
-    1> ./ocean_atlas_temp.cdf  (default)
+    1> ./data/ocean_atlas_temp.cdf  (default)
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
@@ -49195,7 +49196,7 @@ use levitus_climatology
  
 sh data/att gt4d011
      currently SET data sets:
-    2> ./gt4d011.cdf
+    2> ./data/gt4d011.cdf
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
@@ -49444,7 +49445,7 @@ use gt4d011
 ! string length for string attributes
  
 show att/all temp
-     attributes for dataset: ./gt4d011.cdf
+     attributes for dataset: ./data/gt4d011.cdf
  TEMP.parent_grid = PS3DT2 
  TEMP.slab_min_index = 91, 35, 1, 0
  TEMP.slab_max_index = 108, 56, 10, 0
@@ -49564,7 +49565,7 @@ let nv = ..nvars
 let nd = ..ndims
 let vnames = ..varnames
 list/d=1 nv, nd
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
              X: 1
  Column  1: NV is ..NVARS
  Column  2: ND is ..NDIMS
@@ -49795,7 +49796,7 @@ can var/all
 use test0.nc
 sh data/att
      currently SET data sets:
-    1> ./test0.nc  (default)
+    1> ./data/test0.nc  (default)
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
@@ -49930,7 +49931,7 @@ list/d=2 ..nvars
  
 sh data
      currently SET data sets:
-    1> ./gt4d011.cdf
+    1> ./data/gt4d011.cdf
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     91:108    35:56      1:10      1:25
  SALT     (SALINITY(ppt) - 35) /1000      91:108    35:55      1:10      1:25
@@ -49941,7 +49942,7 @@ sh data
  TAUY     MERIDIONAL WIND STRESS          91:108    35:55      ...       1:25
  PSI      STREAM FUNCTION                 91:108    35:56      ...       1:25
  
-    2> ./coads_climatology.cdf  (default)
+    2> ./data/coads_climatology.cdf  (default)
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
  
@@ -50050,7 +50051,7 @@ def att/type=float temp.floatval = 22
 def att temp.pp = {1.5, 1.9}
 def att temp.some_text = "some text about the TEMP variable"
 sh att/all temp
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  TEMP.missing_value = -1.E+34
  TEMP._FillValue = -1.E+34
  TEMP.long_name = Temperature 
@@ -50067,7 +50068,7 @@ sh att/all temp
 def att temp.pp = {1.5, 1.9, 3.45, 7}
 def att temp.some_text = "some different text"
 sh att temp.pp
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  TEMP.pp = 1.5, 1.9, 3.45, 7
 let var = temp.some_text
 list/nohead var
@@ -50078,7 +50079,7 @@ list/nohead var
 use gt4d011
 def att/D=1 temp.morenew = 2
 sh att/all temp[d=1]
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  TEMP.missing_value = -1.E+34
  TEMP._FillValue = -1.E+34
  TEMP.long_name = Temperature 
@@ -50099,7 +50100,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  
 use ocean_atlas_temp
 sh att/all temp
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  TEMP.missing_value = -1.E+34
  TEMP._FillValue = -1.E+34
  TEMP.long_name = Temperature 
@@ -50132,7 +50133,7 @@ list (coadsx).modulo
              FILENAME : coads_climatology.cdf
         " "
 sho att/all (coadsx)
-     attributes for dataset: ./coads_climatology.cdf
+     attributes for dataset: ./data/coads_climatology.cdf
  (COADSX).units = degrees_east 
  (COADSX).modulo =   
  (COADSX).point_spacing = even 
@@ -50174,7 +50175,7 @@ can data gt4d011
  
 set data coads_climatology
 sho att (coadsx).modulo
-     attributes for dataset: ./coads_climatology.cdf
+     attributes for dataset: ./data/coads_climatology.cdf
  (COADSX).modulo =   
 set att (coadsx).modulo=360
  
@@ -50266,7 +50267,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  
 use gt4d011
 sh att/all salt
-     attributes for dataset: ./gt4d011.cdf
+     attributes for dataset: ./data/gt4d011.cdf
  SALT.parent_grid = PS3DT2 
  SALT.slab_min_index = 91, 35, 1, 0
  SALT.slab_max_index = 108, 55, 10, 0
@@ -50278,7 +50279,7 @@ sh att/all salt
  
 set att/like=temp salt
 sh att/all salt
-     attributes for dataset: ./gt4d011.cdf
+     attributes for dataset: ./data/gt4d011.cdf
  SALT.missing_value = 0.01
  SALT._FillValue = 0.01
  SALT.parent_grid = PS3DT2 
@@ -50346,7 +50347,7 @@ def att/type=float temp.floatval = 22
 def att temp.pp = {1.5, 1.9}
 def att temp.some_text = "some text about the TEMP variable"
 sh att/all temp
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  TEMP.missing_value = -1.E+34
  TEMP._FillValue = -1.E+34
  TEMP.long_name = Temperature 
@@ -50362,7 +50363,7 @@ sh att/all temp
 set att temp.pp = {1.5, 1.9, 3.45, 7}
 set att temp.some_text = "some different text"
 sh att temp.pp
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  TEMP.pp = 1.5, 1.9, 3.45, 7
 let var = temp.some_text
 list/nohead var
@@ -50390,7 +50391,7 @@ list pq
 use gt4d011
 def att/d=1 temp.morenew = 33
 sho att/all temp[d=1]
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  TEMP.missing_value = -1.E+34
  TEMP._FillValue = -1.E+34
  TEMP.long_name = Temperature 
@@ -50432,7 +50433,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  
 use err491_attval.cdf
 sp echo "bn_attributes.jnl --- 4 CANCEL MODE upcase_output; original file:" >> all_ncdump.out
-sp ncdump -h err491_attval.cdf >> all_ncdump.out
+sp ncdump -h data/err491_attval.cdf >> all_ncdump.out
 save/clobber/file=a.nc elev[i=3,j=2:4]
 sp echo "bn_attributes.jnl --- 5 before CANCEL MODE upcase_output" >> all_ncdump.out
 sp ncdump -h a.nc >> all_ncdump.out
@@ -50503,7 +50504,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 use ocean_atlas_temp
 sh att/all  (`temp,return=xaxis`)
  !-> sh att/all  (XAX_LEV9421_380)
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  (XAX_LEV9421_380).units = degrees_east 
  (XAX_LEV9421_380).modulo =   
  (XAX_LEV9421_380).point_spacing = even 
@@ -50527,7 +50528,7 @@ sp ncdump -h a.nc >> all_ncdump.out
 set reg/x=300:360/y=30:45
 sh att/all  (`temp,return=xaxis`)
  !-> sh att/all  (XAX_LEV9421_380)
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  (XAX_LEV9421_380).units = degrees_east 
  (XAX_LEV9421_380).modulo =   
  (XAX_LEV9421_380).point_spacing = even 
@@ -50544,7 +50545,7 @@ sp ncdump -h a.nc >> all_ncdump.out
 ! cancel output of attributes of the variable itself
 can region
 sh att/all  temp
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  TEMP.missing_value = -1.E+34
  TEMP._FillValue = -1.E+34
  TEMP.long_name = Temperature 
@@ -50569,13 +50570,13 @@ ooooooooooooooooooooooooooooooooooooooooooo
 file/var="a1,a2,a3" EZ.DAT
 def att a1.three={1,2,3}
 sh att/all a1
-     attributes for dataset: ./EZ.DAT
+     attributes for dataset: ./data/EZ.DAT
  a1.long_name = a1 
  a1.missing_value = -1.E+34
  a1.three = 1, 2, 3
 sh dat/att
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
@@ -50603,7 +50604,7 @@ columns/delim=" " EZ.DAT
 def att/type=string v1.strval = 2
 set att/output v1.strval
 sh att/all v1
-     attributes for dataset: ./EZ.DAT
+     attributes for dataset: ./data/EZ.DAT
  V1.long_name = V1 
  V1.missing_value = -1.E+34
  V1.strval = 2 
@@ -50853,7 +50854,7 @@ DEFINE ATT/OUTPUT  (`t2,return=yaxis`).new_att = "somthing"
  
 SHOW ATT/ALL (`t2,return=yaxis`)
  !-> SHOW ATT/ALL (COADSY)
-     attributes for dataset: ./coads_vwnd.cdf
+     attributes for dataset: ./data/coads_vwnd.cdf
  (COADSY).units = degrees_north 
  (COADSY).point_spacing = uneven 
  (COADSY).orig_file_axname = COADSY 
@@ -50905,7 +50906,7 @@ set att (`t2,return=xaxis`).units = "degrees"
  !-> set att (PSXT).units = "degrees"
 sh att/all (`t2,return=xaxis`)
  !-> sh att/all (PSXT)
-     attributes for dataset: ./gt4d011.cdf
+     attributes for dataset: ./data/gt4d011.cdf
  (PSXT).units = degrees 
  (PSXT).point_spacing = even 
  (PSXT).orig_file_axname = PSXT 
@@ -50929,7 +50930,7 @@ set att (`temp,return=yaxis`).units="meters"
  !-> set att (PSYT).units="meters"
 sho att/all (`temp,return=yaxis`)
  !-> sho att/all (PSYT)
-     attributes for dataset: ./gt4d011.cdf
+     attributes for dataset: ./data/gt4d011.cdf
  (PSYT).units = meters 
  (PSYT).point_spacing = uneven 
  (PSYT).edges = PSYTedges 
@@ -50977,7 +50978,7 @@ define att/out (`temp,return=xaxis`).new_att = "something"
  !-> define att/out (XAXLEVITR1_160).new_att = "something"
 sh dat/att
      currently SET data sets:
-    1> ./levitus_climatology.cdf  (default)
+    1> ./data/levitus_climatology.cdf  (default)
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
@@ -51056,7 +51057,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 use coads_climatology
 show att/all (`sst,return=taxis`)
  !-> show att/all (TIME)
-     attributes for dataset: ./coads_climatology.cdf
+     attributes for dataset: ./data/coads_climatology.cdf
  (TIME).units = hour since 0000-01-01 00:00:00 
  (TIME).time_origin = 1-JAN-0000 00:00:00 
  (TIME).modulo =   
@@ -51067,7 +51068,7 @@ set att (`sst,return=taxis`).units="days"
  !-> set att (TIME).units="days"
 show att/all (`sst,return=taxis`)
  !-> show att/all (TIME)
-     attributes for dataset: ./coads_climatology.cdf
+     attributes for dataset: ./data/coads_climatology.cdf
  (TIME).units = days since 1-JAN-0000 00:00:00 
  (TIME).time_origin = 1-JAN-0000 00:00:00 
  (TIME).modulo =   
@@ -51077,7 +51078,7 @@ define attribute (`sst,return=taxis`).units = "months"
  !-> define attribute (TIME).units = "months"
 show att/all (`sst,return=taxis`)
  !-> show att/all (TIME)
-     attributes for dataset: ./coads_climatology.cdf
+     attributes for dataset: ./data/coads_climatology.cdf
  (TIME).units = months since 1-JAN-0000 00:00:00 
  (TIME).time_origin = 1-JAN-0000 00:00:00 
  (TIME).modulo =   
@@ -51088,7 +51089,7 @@ set att (`sst,return=taxis`).time_origin = "1-mar-1955"
  !-> set att (TIME).time_origin = "1-mar-1955"
 show att/all (`sst,return=taxis`)
  !-> show att/all (TIME)
-     attributes for dataset: ./coads_climatology.cdf
+     attributes for dataset: ./data/coads_climatology.cdf
  (TIME).units = months since 1-mar-1955 
  (TIME).time_origin = 1-mar-1955 
  (TIME).modulo =   
@@ -51098,7 +51099,7 @@ define attribute (`sst,return=taxis`).time_origin = "15-jan-2002"
  !-> define attribute (TIME).time_origin = "15-jan-2002"
 show att/all (`sst,return=taxis`)
  !-> show att/all (TIME)
-     attributes for dataset: ./coads_climatology.cdf
+     attributes for dataset: ./data/coads_climatology.cdf
  (TIME).units = months since 15-jan-2002 
  (TIME).time_origin = 15-jan-2002 
  (TIME).modulo =   
@@ -51110,7 +51111,7 @@ show att/all (`sst,return=taxis`)
 use coads_climatology
 show att/all (`sst,return=taxis`)
  !-> show att/all (TIME)
-     attributes for dataset: ./coads_climatology.cdf
+     attributes for dataset: ./data/coads_climatology.cdf
  (TIME).units = months since 15-jan-2002 
  (TIME).time_origin = 15-jan-2002 
  (TIME).modulo =   
@@ -51118,7 +51119,7 @@ show att/all (`sst,return=taxis`)
 def axis/t=1:12:1/unit=months/t0="1-jan-0001" time
 show att/all (`sst,return=taxis`)
  !-> show att/all (TIME)
-     attributes for dataset: ./coads_climatology.cdf
+     attributes for dataset: ./data/coads_climatology.cdf
  (TIME).units = MONTHS since 1-JAN-0001 
  (TIME).time_origin = 1-JAN-0001 
  (TIME).orig_file_axname = TIME 
@@ -51126,7 +51127,7 @@ show att/all (`sst,return=taxis`)
 set axis/t0="15-jan-0000" time
 show att/all (`sst,return=taxis`)
  !-> show att/all (TIME)
-     attributes for dataset: ./coads_climatology.cdf
+     attributes for dataset: ./data/coads_climatology.cdf
  (TIME).units = MONTHS since 15-JAN-0000 
  (TIME).time_origin = 15-JAN-0000 
  (TIME).orig_file_axname = TIME 
@@ -51134,7 +51135,7 @@ show att/all (`sst,return=taxis`)
 set axis/units=days time
 show att/all (`sst,return=taxis`)
  !-> show att/all (TIME)
-     attributes for dataset: ./coads_climatology.cdf
+     attributes for dataset: ./data/coads_climatology.cdf
  (TIME).units = days since 15-JAN-0000 
  (TIME).time_origin = 15-JAN-0000 
  (TIME).orig_file_axname = TIME 
@@ -51194,7 +51195,7 @@ sp ncdump -h a.nc  >> all_ncdump.out
 can data/all
 use ocean_atlas_temp
 sho att temp
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  TEMP.missing_value = -1.E+34
  TEMP._FillValue = -1.E+34
  TEMP.long_name = Temperature 
@@ -51202,7 +51203,7 @@ sho att temp
  TEMP.units = Deg C 
 sho att ocean_atlas_temp
      currently SET data sets:
-    1> ./ocean_atlas_temp.cdf  (default)
+    1> ./data/ocean_atlas_temp.cdf  (default)
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
@@ -51238,7 +51239,7 @@ sho att ocean_atlas_temp
   
 sho att (`temp,return=xaxis`)
  !-> sho att (XAX_LEV9421_380)
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  (XAX_LEV9421_380).units = degrees_east 
  (XAX_LEV9421_380).modulo =   
  (XAX_LEV9421_380).point_spacing = even 
@@ -51247,7 +51248,7 @@ sho att (`temp,return=xaxis`)
 use levitus_climatology
 sho att 1
      currently SET data sets:
-    1> ./ocean_atlas_temp.cdf
+    1> ./data/ocean_atlas_temp.cdf
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
@@ -51283,7 +51284,7 @@ sho att 1
   
 sho att 2
      currently SET data sets:
-    2> ./levitus_climatology.cdf  (default)
+    2> ./data/levitus_climatology.cdf  (default)
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
@@ -51313,14 +51314,14 @@ sho att 2
   
  
 sho att temp[d=1]
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  TEMP.missing_value = -1.E+34
  TEMP._FillValue = -1.E+34
  TEMP.long_name = Temperature 
  TEMP.history = From ocean_atlas_monthly 
  TEMP.units = Deg C 
 sho att temp[d=2]
-     attributes for dataset: ./levitus_climatology.cdf
+     attributes for dataset: ./data/levitus_climatology.cdf
  TEMP.missing_value = -1.E+10
  TEMP._FillValue = -1.E+10
  TEMP.long_name = TEMPERATURE 
@@ -51329,14 +51330,14 @@ sho att temp[d=2]
  
 sho att (`temp[d=1],return=taxis`[d=1])
  !-> sho att (TIME1[d=1])
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  (TIME1).units = hour since 0000-01-01 00:00:00 
  (TIME1).time_origin = 01-JAN-0000 00:00:00 
  (TIME1).modulo =   
  (TIME1).orig_file_axname = TIME 
  
 sho att .
-     attributes for dataset: ./levitus_climatology.cdf
+     attributes for dataset: ./data/levitus_climatology.cdf
  ..history = FERRET V5.22    5-Apr-01 
  
 ! 1/17 *sh*
@@ -51371,7 +51372,7 @@ list/L=1/prec=7 sst[x=100:120@din,y=10:30@din]
           6.009285E+13
  
 list/L=1/y=0/x=83w:49w sst,sst[x=@cda], sst[x=@cdb], sst[x=@cia], sst[x=@cib]
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              LONGITUDE: 83W to 49W
              LATITUDE: 1S
              TIME: 16-JAN 06:00
@@ -51401,7 +51402,7 @@ list/L=1/y=0/x=83w:49w sst,sst[x=@cda], sst[x=@cdb], sst[x=@cia], sst[x=@cib]
 49W   / 146:  27.38   0.00   0.00   0.00   0.00
  
 list/L=1/y=10:33/x=93w sst, sst[y=@ddb], sst[y=@ddc], sst[y=@ddf]
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              LATITUDE: 10N to 33N
              LONGITUDE: 93W
              TIME: 16-JAN 06:00
@@ -51424,7 +51425,7 @@ list/L=1/y=10:33/x=93w sst, sst[y=@ddb], sst[y=@ddc], sst[y=@ddf]
 33N   / 62:   ....       ....       ....       ....
  
 list/L=1/y=10:33/x=93w sst, sst[y=@evnt:23.84]
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              LATITUDE: 10N to 33N
              LONGITUDE: 93W
              TIME: 16-JAN 06:00
@@ -51445,7 +51446,7 @@ list/L=1/y=10:33/x=93w sst, sst[y=@evnt:23.84]
 33N   / 62:   ....  1.000
  
 list/L=1/y=23:51/x=93w sst, sst[y=@fav], sst[y=@fln], sst[y=@fnr]
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              LATITUDE: 23N to 51N
              LONGITUDE: 93W
              TIME: 16-JAN 06:00
@@ -51471,7 +51472,7 @@ list/L=1/y=23:51/x=93w sst, sst[y=@fav], sst[y=@fln], sst[y=@fnr]
 51N   / 71:   ....   ....   ....   2.47
  
 list/L=1/y=23:51/x=93w sst[y=23:51@min], sst[y=23:51@max]
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              LONGITUDE: 93W
              LATITUDE: 23N to 51N
              TIME: 16-JAN 06:00
@@ -51481,7 +51482,7 @@ list/L=1/y=23:51/x=93w sst[y=23:51@min], sst[y=23:51@max]
 I / *:     2.466  23.84
  
 list/L=1/y=23:51/x=93w sst[y=23:51@nbd], sst[y=23:51@ngd]
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              LONGITUDE: 93W
              LATITUDE: 23N to 51N
              TIME: 16-JAN 06:00
@@ -51491,7 +51492,7 @@ list/L=1/y=23:51/x=93w sst[y=23:51@nbd], sst[y=23:51@ngd]
 I / *:     9.000  6.000
  
 list/L=1/y=1:11/x=93w sst, sst[y=@iin]
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              LATITUDE: 1N to 11N
              LONGITUDE: 93W
              TIME: 16-JAN 06:00
@@ -51506,7 +51507,7 @@ list/L=1/y=1:11/x=93w sst, sst[y=@iin]
 11N   / 51:  26.99  2.956E+07
  
 list/L=1/y=23:25/x=93w sst, sst[y=24@itp]
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              LONGITUDE: 93W
              TIME: 16-JAN 06:00
  Column  1: SST[Y=23N:25N] is SEA SURFACE TEMPERATURE (Deg C)
@@ -51516,7 +51517,7 @@ list/L=1/y=23:25/x=93w sst, sst[y=24@itp]
 25N   / 58:  23.11  23.47
  
 list/L=1/y=11:23/x=93w sst, sst[y=@rsum], sst[y=@sbn], sst[y=@sbx], sst[y=@shf:-1]
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              LATITUDE: 11N to 23N
              LONGITUDE: 93W
              TIME: 16-JAN 06:00
@@ -51535,7 +51536,7 @@ list/L=1/y=11:23/x=93w sst, sst[y=@rsum], sst[y=@sbn], sst[y=@sbx], sst[y=@shf:-
 23N   / 57:  23.84  181.6  23.69  23.63  23.95
  
 list/L=1/y=11:23/x=93w sst, sst[y=@shn] , sst[y=@spz], sst[y=@sum], sst[y=@swl], sst[y=@weq:26]
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              LATITUDE: 11N to 23N
              LONGITUDE: 93W
              TIME: 16-JAN 06:00
@@ -52875,7 +52876,7 @@ stat rose[d=2]
              T:  N/A
              E:  N/A
              F:  N/A
-             DATA SET: ./ss_small.nc
+             DATA SET: ./data/ss_small.nc
  
  Total # of data points: 2576 (46*56*1*1*1*1)
  # flagged as bad  data: 0
@@ -52899,7 +52900,7 @@ stat rose[j=12,d=1]
              T:  N/A
              E:  N/A
              F:  N/A
-             DATA SET: ./ss_small.nc
+             DATA SET: ./data/ss_small.nc
  
  Total # of data points: 46 (46*1*1*1*1*1)
  # flagged as bad  data: 0
@@ -52926,7 +52927,7 @@ def sym timeax = `sst,return=taxis`
  
 show att/all (($timeax))
  !-> show att/all (TIME5)
-     attributes for dataset: ./coads_climatology.cdf
+     attributes for dataset: ./data/coads_climatology.cdf
  (TIME5).units = hour since 0000-01-01 00:00:00 
  (TIME5).time_origin = 1-JAN-0000 00:00:00 
  (TIME5).modulo =   
@@ -52941,7 +52942,7 @@ define axis/t0=1-jan-0001/t=1:3:1/unit=months ($timeax)
  !-> define axis/t0=1-jan-0001/t=1:3:1/unit=months TIME5
 show att/all (($timeax))
  !-> show att/all (TIME5)
-     attributes for dataset: ./coads_climatology.cdf
+     attributes for dataset: ./data/coads_climatology.cdf
  (TIME5).units = MONTHS since 1-JAN-0001 
  (TIME5).time_origin = 1-JAN-0001 
  (TIME5).orig_file_axname = TIME 
@@ -52960,7 +52961,7 @@ def sym timeax = `temp,return=taxis`
  !-> def sym timeax = TIME11
 show att/all (($timeax))
  !-> show att/all (TIME11)
-     attributes for dataset: ./gt4d011.cdf
+     attributes for dataset: ./data/gt4d011.cdf
  (TIME11).units = hour since 1980-01-14 14:00:00 
  (TIME11).time_origin = 14-JAN-1980 14:00:00 
  (TIME11).orig_file_axname = TIME1 
@@ -52975,7 +52976,7 @@ set ax/modulo/calendar=noleap/t0=1-jan-1900/units=days ($timeax)
  !-> set ax/modulo/calendar=noleap/t0=1-jan-1900/units=days TIME11
 show att/all (($timeax))
  !-> show att/all (TIME11)
-     attributes for dataset: ./gt4d011.cdf
+     attributes for dataset: ./data/gt4d011.cdf
  (TIME11).units = days since 1-JAN-1900 
  (TIME11).time_origin = 1-JAN-1900 
  (TIME11).orig_file_axname = TIME1 
@@ -53000,7 +53001,7 @@ def sym zax = `temp,return=zaxis`
  !-> def sym zax = PSZT
 show att/all (($timeax))
  !-> show att/all (TIME11)
-     attributes for dataset: ./gt4d011.cdf
+     attributes for dataset: ./data/gt4d011.cdf
  (TIME11).units = hour since 1980-01-14 14:00:00 
  (TIME11).time_origin = 14-JAN-1980 14:00:00 
  (TIME11).orig_file_axname = TIME1 
@@ -53014,7 +53015,7 @@ cancel axis/modulo ($timeax)
  !-> cancel axis/modulo TIME11
 show att/all (($timeax))
  !-> show att/all (TIME11)
-     attributes for dataset: ./gt4d011.cdf
+     attributes for dataset: ./data/gt4d011.cdf
  (TIME11).units = hour since 1980-01-14 14:00:00 
  (TIME11).time_origin = 14-JAN-1980 14:00:00 
  (TIME11).orig_file_axname = TIME1 
@@ -53028,7 +53029,7 @@ cancel axis/depth ($zax)
  !-> cancel axis/depth PSZT
 show att/all (($zax))
  !-> show att/all (PSZT)
-     attributes for dataset: ./gt4d011.cdf
+     attributes for dataset: ./data/gt4d011.cdf
  (PSZT).units = METERS 
  (PSZT).positive = up 
  (PSZT).point_spacing = uneven 
@@ -53060,7 +53061,7 @@ use coads_climatology
 ! Note TIME1 with attribute orig_file_axname
 sh dat/att
      currently SET data sets:
-    1> ./coads_climatology.cdf  (default)
+    1> ./data/coads_climatology.cdf  (default)
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
@@ -53344,7 +53345,7 @@ stat rose[d=2]
              T:  N/A
              E:  N/A
              F:  N/A
-             DATA SET: ./ss_small.nc
+             DATA SET: ./data/ss_small.nc
  
  Total # of data points: 2576 (46*56*1*1*1*1)
  # flagged as bad  data: 0
@@ -53368,7 +53369,7 @@ stat rose[j=12,d=1]
              T:  N/A
              E:  N/A
              F:  N/A
-             DATA SET: ./ss_small.nc
+             DATA SET: ./data/ss_small.nc
  
  Total # of data points: 46 (46*1*1*1*1*1)
  # flagged as bad  data: 0
@@ -53662,7 +53663,7 @@ can data/all
 use/order=yzt coads_climatology
 show data/all
      currently SET data sets:
-    1> ./coads_climatology.cdf  (default)
+    1> ./data/coads_climatology.cdf  (default)
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          ...       1:180     1:90      1:3
  
@@ -53826,7 +53827,7 @@ let f_filtered = lsl_lowpass(my_temp, 40,10)
 ! List the output so its not just a graphical test;
 ! Compute based on the whole T region, but just list a portion.
 LIST/L=10:20 MY_TEMP[L=1:110], F_FILTERED[L=1:110]
-             DATA SET: ./gtsa056_2.cdf
+             DATA SET: ./data/gtsa056_2.cdf
              TIME: 10-FEB-1982 10:30 to 15-MAR-1982 21:30
              LONGITUDE: 179.5E
              LATITUDE: 0.2S
@@ -54217,7 +54218,7 @@ list nomiss[gt=month_reg@MODNGD]
  
 let var = if temp gt 29.5 then temp
 list var[gt=month_reg@MODNGD], var[gt=month_reg@MODNBD], var[gt=month_reg@MODNGD]+var[gt=month_reg@MODNBD], nomiss[gt=month_reg@MODNGD]
-             DATA SET: ./gtsa056_2.cdf
+             DATA SET: ./data/gtsa056_2.cdf
              TIME: 01-JAN 00:45 to 31-DEC 06:34
              LONGITUDE: 139.5E
              LATITUDE: 0.8N
@@ -54426,7 +54427,7 @@ USE coads_climatology
 SET VAR/NAME=my_sst sst
 SHOW DATA
      currently SET data sets:
-    1> ./coads_climatology.cdf  (default)
+    1> ./data/coads_climatology.cdf  (default)
  name     title                             I         J         K         L
  MY_SST   SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
  
@@ -55397,7 +55398,7 @@ GO err61_new_attr_on_axis
 use ocean_atlas_temp
 sh dat
      currently SET data sets:
-    1> ./ocean_atlas_temp.cdf  (default)
+    1> ./data/ocean_atlas_temp.cdf  (default)
  name     title                             I         J         K         L
  TEMP     Temperature                      1:360     1:180     1:1       1:2
  
@@ -55438,7 +55439,7 @@ use gt4d011
 use levitus_climatology
  
 sh att temp[d=1].units
-     attributes for dataset: ./ocean_atlas_temp.cdf
+     attributes for dataset: ./data/ocean_atlas_temp.cdf
  TEMP.units = Deg C 
  
  
@@ -55945,7 +55946,7 @@ use gtsa056_2.cdf
 let var = u[x=180,y=0,k=1,t=1-jan-1982:1-jan-1983]
 plot var, var[t=@med],  var[t=@med:3], var[t=@med:7]
 list/t=1-dec-1982:1-jan-1983 var, var[t=@med],  var[t=@med:3], var[t=@med:7]
-             DATA SET: ./gtsa056_2.cdf
+             DATA SET: ./data/gtsa056_2.cdf
              TIME: 29-NOV-1982 10:30 to 01-JAN-1983 21:30
              LONGITUDE: 180E
              LATITUDE: 0
@@ -55971,7 +55972,7 @@ use coads_climatology
 let var= sst[y=0,L=10]
 plot var,var[x=@med:3], var[x=@med:7]
 list/x=80w:50w var,var[x=@med:3], var[x=@med:7]
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              LONGITUDE: 80W to 50W
              LATITUDE: 1S
              TIME: 15-FEB-0002 04:07
@@ -55998,7 +55999,7 @@ list/x=80w:50w var,var[x=@med:3], var[x=@med:7]
 let var= sst[x=180,L=10]
 plot var,var[y=@med:3], var[y=@med:7]
 list/y=-20:0 var,var[y=@med:3], var[y=@med:7]
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              LATITUDE: 20S to 0
              LONGITUDE: 179E
              TIME: 15-FEB-0002 04:07
@@ -56375,11 +56376,11 @@ USE bug1421_b
  
 SHOW DATA
      currently SET data sets:
-    1> ./bug1421_a.nc
+    1> ./data/bug1421_a.nc
  name     title                             I         J         K         L
  A        zonal wind stress                1:1       1:1       ...       1:20
  
-    2> ./bug1421_b.nc  (default)
+    2> ./data/bug1421_b.nc  (default)
  name     title                             I         J         K         L
  B        T[GT=MON_IRREG_NLP]              ...       ...       ...       1:12
  
@@ -56947,7 +56948,7 @@ set mode/last nodata_lab
 set data proleptic_gregorian.nc
 show data
      currently SET data sets:
-    1> ./proleptic_gregorian.nc  (default)
+    1> ./data/proleptic_gregorian.nc  (default)
  name     title                             I         J         K         L
  MY_DATA  SIN(L[GT=TDAYS])                 ...       ...       ...       1:32
  
@@ -57589,7 +57590,7 @@ set mode calendar
 ! test the automatically-defined symbol LAST_GO_FILE
  
 show sym last_go_file
-LAST_GO_FILE = "./bn_last_go_file.jnl"
+LAST_GO_FILE = "./v6jnls/bn_last_go_file.jnl"
  
 *** Running ferret script: bn_cancel_upcase_uservar.jnl
 ! bn_cancel_upcase_uservar.jnl
@@ -58136,7 +58137,7 @@ list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh" ijklave
 set data/format=cdf test_fil0
 show data/full
      currently SET data sets:
-    1> ./gtbc011.cdf
+    1> ./data/gtbc011.cdf
  
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     70:72      1:100     1:27      1:3
@@ -58328,7 +58329,7 @@ list/format=cdf/keep_axnames/append/file=test_fil.cdf ijklave
 set data/format=cdf test_fil
 show data/full
      currently SET data sets:
-    1> ./gtbc011.cdf
+    1> ./data/gtbc011.cdf
  
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     70:72      1:100     1:27      1:3
@@ -58411,7 +58412,7 @@ set data reverse_axes
  
 show data/var
      currently SET data sets:
-    1> ./reverse_axes.cdf  (default)
+    1> ./data/reverse_axes.cdf  (default)
  
  name     title                             I         J         K         L
  FCN_NORM COS(X/10)*SIN(Y/2)               1:51      1:21      ...       ...
@@ -58428,7 +58429,7 @@ show data/var
  
 list/x=180 fcn_norm,fcn_rev
  WARNING: Listed variables have ambiguous coordinates on axes: Y
-             DATA SET: ./reverse_axes.cdf
+             DATA SET: ./data/reverse_axes.cdf
              LONGITUDE: 180E
  Column  1: FCN_NORM is COS(X/10)*SIN(Y/2)
  Column  2: FCN_REV is COS(X/10)*SIN(Y/2)
@@ -58911,7 +58912,7 @@ USE grads_bug_file.nc
 ! A4 has z axis with long name layer
 SHOW DATA
      currently SET data sets:
-    1> ./grads_bug_file.nc  (default)
+    1> ./data/grads_bug_file.nc  (default)
  name     title                             I         J         K         L
  AM       Z[GZ=CAXIS] + Y[GY=BAXIS] + X[G  1:10      1:5       1:5       ...
  AR       Z[GZ=DAXIS]+ Y[GY=BAXIS] + X[GX  1:10      1:5       1:6       ...
@@ -59221,7 +59222,7 @@ use lev_rev_up.nc
  
 use lev_rev_up.nc
 list z[gz=temp], zboxlo[gz=temp], zboxhi[gz=temp]
-             DATA SET: ./lev_rev_up.nc
+             DATA SET: ./data/lev_rev_up.nc
              Z (METERS): -5000 to 0
  Column  1: Z is Z (axis ZAXLEVITR)
  Column  2: ZBOXLO is ZBOXLO (axis ZAXLEVITR)
@@ -60034,7 +60035,7 @@ DEFINE GRID/X=XEZ1/Y=EZ ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
 FILE/VAR="X1,X2"/COLUMNS=6/GRID=ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 EZ.DAT
 SHOW DATA/FULL
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  
  name     title                             I         J         K         L
  X1       X1                               1:3       1:20480   ...       ...
@@ -60060,7 +60061,7 @@ LIST X1
  5   / 5:  0.4780  0.5150  0.4690
 SHOW DATA
      currently SET data sets:
-    1> ./EZ.DAT  (default)
+    1> ./data/EZ.DAT  (default)
  name     title                             I         J         K         L
  X1       X1                               1:3       1:5       ...       ...
  X2       X2                               1:3       1:5       ...       ...
@@ -60853,7 +60854,7 @@ GO err64_packed_data
 ! sp ncpdq fine_x_axis.nc err64_packed_data.nc
 use err64_packed_data.nc
 sh att/all sst
-     attributes for dataset: ./err64_packed_data.nc
+     attributes for dataset: ./data/err64_packed_data.nc
  SST.missing_value = 1.E+20
  SST._FillValue = 1.E+20
  SST.long_name = sea surface temperature [degc] 
@@ -61517,7 +61518,7 @@ stat temp[x=@ave,t=@ave]
              TIME: 14-AUG-1982 11:00 to 13-JAN-1983 13:00 (XT ave)
              E:  N/A
              F:  N/A
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
  
  Total # of data points: 198 (1*22*9*1*1*1)
  # flagged as bad  data: 0
@@ -61535,7 +61536,7 @@ stat temp[x=@ave,z=@ave]
              TIME: 14-AUG-1982 11:00 to 13-JAN-1983 13:00
              E:  N/A
              F:  N/A
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
  
  Total # of data points: 550 (1*22*1*25*1*1)
  # flagged as bad  data: 0
@@ -61583,7 +61584,7 @@ stat temp[z=@ave,t=@ave,y=-2:2]
              TIME: 14-AUG-1982 11:00 to 13-JAN-1983 13:00 (ZT ave)
              E:  N/A
              F:  N/A
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
  
  Total # of data points: 234 (18*13*1*1*1*1)
  # flagged as bad  data: 0
@@ -62329,7 +62330,7 @@ cancel grid mygrid
 use bn_set_axis_regular
 show data
      currently SET data sets:
-    1> ./bn_set_axis_regular.nc  (default)
+    1> ./data/bn_set_axis_regular.nc  (default)
  name     title                             I         J         K         L
  MYDATA   2 * X + Y                        1:10      1:10      ...       ...
  
@@ -62936,7 +62937,7 @@ plot/l=1/x=123.5w/y=2.5/z=0:100 temp, temp[k=@med], temp[k=@smx], temp[k=@smn]
  
 ! Numeric results
 list/x=123.5w/y=2.5/k=1 temp, temp[L=@med], temp[L=@smx], temp[L=@smn]
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
              TIME: 14-AUG-1982 11:00 to 13-JAN-1983 13:00
              LONGITUDE: 123.5W
              LATITUDE: 2.5N
@@ -62973,7 +62974,7 @@ list/x=123.5w/y=2.5/k=1 temp, temp[L=@med], temp[L=@smx], temp[L=@smn]
 10-JAN-1983 12 / 25:  32.59  32.81  32.81  32.59
  
 list/x=123.5w/y=2.5/k=1 temp, temp[L=@med:3], temp[L=@smx:3], temp[L=@smn:3]
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
              TIME: 14-AUG-1982 11:00 to 13-JAN-1983 13:00
              LONGITUDE: 123.5W
              LATITUDE: 2.5N
@@ -63009,7 +63010,7 @@ list/x=123.5w/y=2.5/k=1 temp, temp[L=@med:3], temp[L=@smx:3], temp[L=@smn:3]
 04-JAN-1983 10 / 24:  32.81  32.81  32.94  32.59
 10-JAN-1983 12 / 25:  32.59  32.81  32.81  32.59
 list/x=123.5w/y=2.5/k=1 temp, temp[L=@med:5], temp[L=@smx:5], temp[L=@smn:5]
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
              TIME: 14-AUG-1982 11:00 to 13-JAN-1983 13:00
              LONGITUDE: 123.5W
              LATITUDE: 2.5N
@@ -63045,7 +63046,7 @@ list/x=123.5w/y=2.5/k=1 temp, temp[L=@med:5], temp[L=@smx:5], temp[L=@smn:5]
 04-JAN-1983 10 / 24:  32.81  32.94  32.97  32.59
 10-JAN-1983 12 / 25:  32.59  32.81  32.94  32.59
 list/x=123.5w/y=2.5/k=1 temp, temp[L=@med:5], temp[L=@smx:6], temp[L=@smn:6]
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
              TIME: 14-AUG-1982 11:00 to 13-JAN-1983 13:00
              LONGITUDE: 123.5W
              LATITUDE: 2.5N
@@ -63082,7 +63083,7 @@ list/x=123.5w/y=2.5/k=1 temp, temp[L=@med:5], temp[L=@smx:6], temp[L=@smn:6]
 10-JAN-1983 12 / 25:  32.59  32.81  32.97  32.59
  
 list/y=2.5/k=1/l=1/x=139.5W:122.5W temp, temp[i=@med], temp[i=@smx], temp[i=@smn]
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
              LONGITUDE: 139.5W to 122.5W
              LATITUDE: 2.5N
              DEPTH (m): 5
@@ -63111,7 +63112,7 @@ list/y=2.5/k=1/l=1/x=139.5W:122.5W temp, temp[i=@med], temp[i=@smx], temp[i=@smn
 123.5W / 107:  27.15  27.15  27.17  27.13
 122.5W / 108:  27.17  27.17  27.17  27.15
 list/k=1/l=1/x=123.5w temp, temp[j=35:56@med], temp[j=35:56@smx], temp[j=35:56@smn]
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
              LATITUDE: 3.7S to 3.7N
              LONGITUDE: 123.5W
              DEPTH (m): 5
@@ -63145,7 +63146,7 @@ list/k=1/l=1/x=123.5w temp, temp[j=35:56@med], temp[j=35:56@smx], temp[j=35:56@s
 3.5N  / 56:  28.06  28.06  28.06  27.70
  
 list/l=1/x=123.5w/y=2.5/z=0:100 temp, temp[k=@med], temp[k=@smx], temp[k=@smn]
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
              DEPTH (m): 0 to 100
              LONGITUDE: 123.5W
              LATITUDE: 2.5N
@@ -63226,7 +63227,7 @@ STAT/L=1 huge
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 16200 (180*90*1*1*1*1)
  # flagged as bad  data: 6694
@@ -63246,7 +63247,7 @@ STAT/L=1 huge
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 16200 (180*90*1*1*1*1)
  # flagged as bad  data: 6694
@@ -63490,7 +63491,7 @@ GO err664_xml_one_point_axis
 USE a_cartesian_bug1179.nc
 SH DAT
      currently SET data sets:
-    1> ./a_cartesian_bug1179.nc  (default)
+    1> ./data/a_cartesian_bug1179.nc  (default)
  name     title                             I         J         K         L
  TEMP     THETA_FO(SALT_EXTRAP,TEMP_EXTRA  1:1       1:1       1:10      1:1
  
@@ -63500,7 +63501,7 @@ LET/D=1 a = temp
 ! and also the Z axis which has 10 points.
 SH VAR/XML
 <global>
-<var name="A[D=./a_cartesian_bug1179.nc]">
+<var name="A[D=./data/a_cartesian_bug1179.nc]">
 <attribute name="definition" type="char">
    <value><![CDATA[TEMP]]></value>
 </attribute>
@@ -63528,7 +63529,7 @@ LET/D=1 temp_ave_t = temp[Z=37.5:112.5@AVE]
 ! but not the Z axis, which has been averaged away.
 SH VAR/XML
 <global>
-<var name="TEMP_AVE_T[D=./a_cartesian_bug1179.nc]">
+<var name="TEMP_AVE_T[D=./data/a_cartesian_bug1179.nc]">
 <attribute name="definition" type="char">
    <value><![CDATA[TEMP[Z=37.5:112.5@AVE]]]></value>
 </attribute>
@@ -63944,7 +63945,7 @@ GO err667_att_too_long
 use toolong.nc
 sh dat/att
      currently SET data sets:
-    1> ./toolong.nc  (default)
+    1> ./data/toolong.nc  (default)
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
@@ -64087,9 +64088,9 @@ GO err667_show_var_twice
  
 use coads_climatology
 sh var sst[d=1]
- SST[D=1]: SEA SURFACE TEMPERATURE, in dataset ./coads_climatology.cdf
+ SST[D=1]: SEA SURFACE TEMPERATURE, in dataset ./data/coads_climatology.cdf
 sh var sst[d=1]
- SST[D=1]: SEA SURFACE TEMPERATURE, in dataset ./coads_climatology.cdf
+ SST[D=1]: SEA SURFACE TEMPERATURE, in dataset ./data/coads_climatology.cdf
  
 !should return nothing
 sh var airt
@@ -64402,7 +64403,7 @@ GO err67_reverse_bounds
  
 use reverse_z_bnds.nc
 list lev_var, zboxlo[gz=lev_var], zboxhi[gz=lev_var]
-             DATA SET: ./reverse_z_bnds.nc
+             DATA SET: ./data/reverse_z_bnds.nc
              Z: 0 to 1
  Column  1: LEV_VAR is a variable on the depth axis (none)
  Column  2: ZBOXLO is ZBOXLO (axis LEV)
@@ -64901,11 +64902,11 @@ GO err672_axis_order
  
  
 use err67_axis_order.nc
-sp cp err67_axis_order.nc err67_axis_order_copy.nc
+sp cp data/err67_axis_order.nc err67_axis_order_copy.nc
 use err67_axis_order_copy.nc
 sh dat
      currently SET data sets:
-    1> ./err67_axis_order.nc
+    1> ./data/err67_axis_order.nc
  name     title                             I         J         K         L
  UCOV     UCOV                             1:6       1:9       1:3       1:1
  CONTROLE CONTROLE                         1:6       ...       ...       ...
@@ -65243,7 +65244,7 @@ STAT IF intvar THEN 1
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 16200 (180*90*1*1*1*1)
  # flagged as bad  data: 8780
@@ -65263,7 +65264,7 @@ STAT IFV intvar THEN 1
              TIME: 16-JAN 06:00
              E:  N/A
              F:  N/A
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
  
  Total # of data points: 16200 (180*90*1*1*1*1)
  # flagged as bad  data: 6694
@@ -65481,7 +65482,7 @@ sp ncdump -h a.nc >> all_ncdump.out
 use degrees
 sh att/all (`var,return=xaxis`)
  !-> sh att/all (XAXIS)
-     attributes for dataset: ./degrees.nc
+     attributes for dataset: ./data/degrees.nc
  (XAXIS).units = degrees_east 
  (XAXIS).point_spacing = even 
  (XAXIS).axis = X 
@@ -65500,7 +65501,7 @@ sp ncdump -h a.nc >> all_ncdump.out
  
 use bn_strides
 sh att/all (TTIME)
-     attributes for dataset: ./bn_strides.cdf
+     attributes for dataset: ./data/bn_strides.cdf
  (TTIME).units = DAYS since 1901-01-15 00:00:00 
  (TTIME).time_origin = 15-JAN-1901 
  (TTIME).point_spacing = even 
@@ -65617,7 +65618,7 @@ sp cat xml_out.xml
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <data>
 <datasets>
-<dataset name="./coads_climatology.cdf" default="true">
+<dataset name="./data/coads_climatology.cdf" default="true">
 <title> </title>
 <var name="SST">
 <attribute name="units" type="char">
@@ -68638,7 +68639,7 @@ stat/k=1/l=1/j=40/i=3/M=3/N=4/d=2 temp[d=1]
              TIME: 15-MAR-1983 10:00
              E: 3
              F: 7
-             DATA SET: ./6dfile.nc
+             DATA SET: ./data/6dfile.nc
  
  Total # of data points: 1 (1*1*1*1*1*1)
  # flagged as bad  data: 0
@@ -68655,7 +68656,7 @@ stat/k=1/l=1/j=40/i=3/M=3/N=4/d=2 temp[d=1,g=u]
              TIME: 15-MAR-1983 10:00
              E: 3
              F: 7
-             DATA SET: ./6dfile.nc
+             DATA SET: ./data/6dfile.nc
  
  Total # of data points: 1 (1*1*1*1*1*1)
  # flagged as bad  data: 0
@@ -69224,7 +69225,7 @@ use 6dfile
  
 list/i=1/j=15/k=1/l=1/n=1 temp, ereverse(temp)
  WARNING: Listed variables have ambiguous coordinates on axes: E
-             DATA SET: ./6dfile.nc
+             DATA SET: ./data/6dfile.nc
              LONGITUDE: 160.5W
              LATITUDE: 5.5S
              DEPTH (m): 5
@@ -69240,7 +69241,7 @@ M / 4:  33.75  31.75
 M / 5:  34.75  30.75
 list/i=1/j=15/k=1/l=1/m=1 temp, freverse(temp)
  WARNING: Listed variables have ambiguous coordinates on axes: F
-             DATA SET: ./6dfile.nc
+             DATA SET: ./data/6dfile.nc
              LONGITUDE: 160.5W
              LATITUDE: 5.5S
              DEPTH (m): 5
@@ -69414,7 +69415,7 @@ stat temp[g=g5day] - temp[g=g5day@ave]
              TIME: 1982
              E: 1 to 2
              FORECAST: 1982 to 1982
-             DATA SET: ./gtsa056_1_ef.nc
+             DATA SET: ./data/gtsa056_1_ef.nc
  
  Total # of data points: 120 (5*6*1*1*2*2)
  # flagged as bad  data: 0
@@ -70225,17 +70226,17 @@ all data in memory:
  
 ! 12/15 now do again adding COADS to de-align toe dset #s from the sequence #s
 cancel data/all
- canceling dset ./ens1.nc
- canceling dset ./ens2.nc
- canceling dset ./ens3.nc
- canceling dset ./ens4.nc
+ canceling dset ./data/ens1.nc
+ canceling dset ./data/ens2.nc
+ canceling dset ./data/ens3.nc
+ canceling dset ./data/ens4.nc
 use coads_climatology
 use ens1, ens2, ens3, ens4
 define data/agg/E/hide fourfiles = ens1, ens3, ens2, ens4
 ! confirm that it isn't COADS that got hidden
 show data
      currently SET data sets:
-    1> ./coads_climatology.cdf
+    1> ./data/coads_climatology.cdf
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
  
@@ -70244,14 +70245,14 @@ show data
  SST      SST_IN                           1:10      1:9       ...       1:12      1:4       ...
  
 cancel data fourfiles
- canceling dset ./ens1.nc
- canceling dset ./ens3.nc
- canceling dset ./ens2.nc
- canceling dset ./ens4.nc
+ canceling dset ./data/ens1.nc
+ canceling dset ./data/ens3.nc
+ canceling dset ./data/ens2.nc
+ canceling dset ./data/ens4.nc
  canceling dset fourfiles
 show data/brief/all/hidden
      currently SET data sets:
-    1> ./coads_climatology.cdf  (default)
+    1> ./data/coads_climatology.cdf  (default)
  
 ! Create airt in the other datasets by LET/D definitions.
 use ens1, ens2, ens3, ens4
@@ -70331,10 +70332,10 @@ show data/files fourfiles_gap
  AIRT     AIR TEMPERATURE                  1:10      1:9       ...       1:12      1:4       ...
  
           Member datasets:
-      7.1: ./ens1.nc
+      7.1: ./data/ens1.nc
       7.2: (dummy)
-      7.3: ./ens3.nc
-      7.4: ./ens4.nc
+      7.3: ./data/ens3.nc
+      7.4: ./data/ens4.nc
 list/i=3 airt[T=@ave]
  getgrid EX#1     C:  5 dset:   7 I:      1      1  J:    1    1  K:    1    1  L:      1      1  M:    1    1  N:    1    1
  allocate dynamic grid (G###)          COADSX116_COADSY52_6NORMAL    TIME1     ENSEMBLE  NORMAL
@@ -70416,13 +70417,13 @@ let/d=2/units="`vin,return=units`"/title="`vin,return=title`" \
  
 show data
      currently SET data sets:
-    1> ./coads_uw.nc
+    1> ./data/coads_uw.nc
  name     title                             I         J         K         L
  UWND     ZONAL WIND                       1:30      1:30      ...       1:12
  VWND     MERIDIONAL WIND                  1:30      1:30      ...       1:12
  SPEH     SPECIFIC HUMIDITY                1:30      1:30      ...       1:12
  
-    2> ./navy_uw.nc  (default)
+    2> ./data/navy_uw.nc  (default)
  name     title                             I         J         K         L
  UIN      ZONAL WIND                       1:30      1:30      ...       1:30
  VIN      MERIDIONAL WIND                  1:30      1:30      ...       1:30
@@ -70463,14 +70464,14 @@ list/l=3/y=30/x=-59:-51 uwnd[d=1], uwnd[d=2], uwnd[d=3,e=1], uwnd[d=3,e=2], uwnd
 ! Use the other order. As long as we have a file variable, we're ok
 show data/brief    ! see what is *not* hidden
      currently SET data sets:
-    1> ./coads_uw.nc
-    2> ./navy_uw.nc
+    1> ./data/coads_uw.nc
+    2> ./data/navy_uw.nc
     3> windy  (default)  Ensemble aggregation
 cancel data 3
 show data/brief    ! see what is *not* hidden
      currently SET data sets:
-    1> ./coads_uw.nc
-    2> ./navy_uw.nc
+    1> ./data/coads_uw.nc
+    2> ./data/navy_uw.nc
  
 ! Define the ensemble dataset
 ensemble windy = 2,1
@@ -70560,32 +70561,32 @@ ensemble/HIDE/title="ensemble with hidden members" fourfiles = ens1, ens2, ens3,
 ! should just show the ensemble set.  Members are hidden.
 show data/brief
      currently SET data sets:
-    1> ./coads_climatology.cdf
+    1> ./data/coads_climatology.cdf
     6> fourfiles  (default)  Ensemble aggregation
  
 ! If ask for a member set by name or number, do show it
 show data/brief 2
      currently SET data sets:
-    2> ./ens1.nc
+    2> ./data/ens1.nc
 show data/brief ens3
      currently SET data sets:
-    4> ./ens3.nc
+    4> ./data/ens3.nc
  
 ! should show all members plus ensemble
 show data/brief/hidden
      currently SET data sets:
-    1> ./coads_climatology.cdf
-    2> ./ens1.nc
-    3> ./ens2.nc
-    4> ./ens3.nc
-    5> ./ens4.nc
+    1> ./data/coads_climatology.cdf
+    2> ./data/ens1.nc
+    3> ./data/ens2.nc
+    4> ./data/ens3.nc
+    5> ./data/ens4.nc
     6> fourfiles  (default)  Ensemble aggregation
  
 ! Since the members were hidden, they get deleted with the aggregation
 cancel data fourfiles
 show data/brief
      currently SET data sets:
-    1> ./coads_climatology.cdf  (default)
+    1> ./data/coads_climatology.cdf  (default)
 cancel data/all
  
 ! Cancel a member, then the ensemble gets canceled.
@@ -70595,16 +70596,16 @@ use ens1, ens2, ens3, ens4
 ensemble/HIDE/title="uvars in dset 2"  my_ens = 2,3
 show data/brief
      currently SET data sets:
-    1> ./coads_climatology.cdf
-    4> ./ens3.nc
-    5> ./ens4.nc
+    1> ./data/coads_climatology.cdf
+    4> ./data/ens3.nc
+    5> ./data/ens4.nc
     6> my_ens  (default)  Ensemble aggregation
 cancel data  ens2
 show data/brief
      currently SET data sets:
-    1> ./coads_climatology.cdf
-    4> ./ens3.nc
-    5> ./ens4.nc
+    1> ./data/coads_climatology.cdf
+    4> ./data/ens3.nc
+    5> ./data/ens4.nc
  
 ! Cancel the ensemble, then hidden members get canceled too
  
@@ -70614,14 +70615,14 @@ ensemble/HIDE/title="uvars in dset 2"  my_ens = 2,3,4,5
 ! members hidden, showing only ensemble.
 show data/brief
      currently SET data sets:
-    1> ./coads_climatology.cdf
+    1> ./data/coads_climatology.cdf
     6> my_ens  (default)  Ensemble aggregation
 cancel data my_ens
  
 ! Cancel ensemble dataset: hidden members deleted
 show data/brief
      currently SET data sets:
-    1> ./coads_climatology.cdf  (default)
+    1> ./data/coads_climatology.cdf  (default)
  
 ! Define several ensembles with /HIDE
 ensemble/HIDE/title="ensemble with hidden members" fourfiles = ens1, ens2, ens3, ens4
@@ -70631,28 +70632,28 @@ ensemble/HIDE/title="ensemble with hidden members" more = ens2, ens3, ens4
 ! Shows all the ensembles
 show data/brief/files
      currently SET data sets:
-    1> ./coads_climatology.cdf
+    1> ./data/coads_climatology.cdf
     6> fourfiles     Ensemble aggregation
           Member datasets:
-      6.1: ./ens1.nc
-      6.2: ./ens2.nc
-      6.3: ./ens3.nc
-      6.4: ./ens4.nc
+      6.1: ./data/ens1.nc
+      6.2: ./data/ens2.nc
+      6.3: ./data/ens3.nc
+      6.4: ./data/ens4.nc
     7> some     Ensemble aggregation
           Member datasets:
-      7.1: ./ens1.nc
-      7.2: ./ens2.nc
+      7.1: ./data/ens1.nc
+      7.2: ./data/ens2.nc
     8> more  (default)  Ensemble aggregation
           Member datasets:
-      8.1: ./ens2.nc
-      8.2: ./ens3.nc
-      8.3: ./ens4.nc
+      8.1: ./data/ens2.nc
+      8.2: ./data/ens3.nc
+      8.3: ./data/ens4.nc
  
 ! Cancel a member of all the ensembles.  All the ensembles get deleted.
 cancel data ens2
 show data/brief
      currently SET data sets:
-    1> ./coads_climatology.cdf  (default)
+    1> ./data/coads_climatology.cdf  (default)
  
 *** Running ferret script: bn_6d_lab_mode.jnl
 ! bn_6d_lab_mode.jnl
@@ -70666,7 +70667,7 @@ use gt4d011
 set mode 6d_lab  ! this is the default setting
 show data
      currently SET data sets:
-    1> ./gt4d011.cdf  (default)
+    1> ./data/gt4d011.cdf  (default)
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     91:108    35:56      1:10      1:25
  SALT     (SALINITY(ppt) - 35) /1000      91:108    35:55      1:10      1:25
@@ -70680,7 +70681,7 @@ show data
 cancel mode 6d_lab
 show data
      currently SET data sets:
-    1> ./gt4d011.cdf  (default)
+    1> ./data/gt4d011.cdf  (default)
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     91:108    35:56      1:10      1:25
  SALT     (SALINITY(ppt) - 35) /1000      91:108    35:55      1:10      1:25
@@ -70723,7 +70724,7 @@ stat temp
              TIME: 14-AUG-1982 11:00 to 13-JAN-1983 13:00
              E:  N/A
              F:  N/A
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
  
  Total # of data points: 99000 (18*22*10*25*1*1)
  # flagged as bad  data: 0
@@ -70739,7 +70740,7 @@ stat temp
              LATITUDE: 3.7S to 3.7N
              DEPTH (m): 0 to 100
              TIME: 14-AUG-1982 11:00 to 13-JAN-1983 13:00
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
  
  Total # of data points: 99000 (18*22*10*25)
  # flagged as bad  data: 0
@@ -70836,7 +70837,7 @@ GO err681_dims_direction
 use dims_not_coord
 sh dat
      currently SET data sets:
-    1> ./dims_not_coord.nc  (default)
+    1> ./data/dims_not_coord.nc  (default)
  name     title                             I         J         K         L
  U        zonal current                    1:4       1:7       1:1       ...
  LON_C    uv longitude                     1:4       1:7       ...       ...
@@ -71018,7 +71019,7 @@ GO err682_axis_no_clue
 use xsz.nc
 sh dat
      currently SET data sets:
-    1> ./xsz.nc  (default)
+    1> ./data/xsz.nc  (default)
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                      1:5       1:7       1:3       ...
  
@@ -71966,7 +71967,7 @@ ppl ribbon/over
 use coads_clim_4digit.des
 sh dat
      currently SET data sets:
-    1> ./coads_clim_4digit.des  (default)
+    1> ./data/coads_clim_4digit.des  (default)
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:4       1:4       ...       1:6
  
@@ -72475,7 +72476,7 @@ GO err684_delimited_precision
  
 ! Data has numeric, longitude, and latitude values needing double precision.
 ! The seconds portion of time is also now read with double precision
-sp cat delim_prec.dat
+sp cat data/delim_prec.dat
   734654.0000  330.1234500E  42.00001000N  00:00:1.00000001
   734654.0104  330.1234600E  42.00004000N  00:00:1.00000003
   734654.0208  330.1234700E  42.00006000N  00:00:1.00000007
@@ -72484,7 +72485,7 @@ sp cat delim_prec.dat
 ! Delimited read, automatically detect data types
 set data/ez/format=delim/del=" " delim_prec.dat
 list/i=1:5/prec=10 v1,v2,v3,v4
-             DATA SET: ./delim_prec.dat
+             DATA SET: ./data/delim_prec.dat
              X: 0.5 to 4.5
  Column  1: V1
  Column  2: V2 is V2 (degrees_east)(Longitude)
@@ -72500,7 +72501,7 @@ list/i=1:5/prec=10 v1,v2,v3,v4
 can dat/all
 set data/ez/format=delim/del=" "/var="day,lon,lat,tim"/type="numeric,longitude,latitude,time" delim_prec.dat
 list/prec=10 day, lon, lat, tim
-             DATA SET: ./delim_prec.dat
+             DATA SET: ./data/delim_prec.dat
              X: 0.5 to 4.5
  Column  1: DAY is day
  Column  2: LON is lon (degrees_east)(Longitude)
@@ -72813,7 +72814,7 @@ GO err684_FillValue_xml
 use fill_value_int.nc
 sh dat/var/xml
 <datasets>
-<dataset name="./fill_value_int.nc" default="true">
+<dataset name="./data/fill_value_int.nc" default="true">
 <title>INT variable with _FillValue -2147483647</title>
 <var name="A_dd">
 <attribute name="units" type="char">
@@ -73165,7 +73166,7 @@ define grid/x=lon_ax/y=lat_ax/z=zax three_d_grd
 use dsg.nc
 sh dat
      currently SET data sets:
-    1> ./dsg.nc  (default)
+    1> ./data/dsg.nc  (default)
  name     title                             I         J         K         L
  ROWSIZE  number of obs for this profile   ...       ...       ...       ...       1:3       ...
  PROFILE  profile ID: Cruise and Station   ...       ...       ...       ...       1:3       ...
@@ -73178,7 +73179,7 @@ sh dat
  SAL      sal                              1:34      ...       ...       ...
  
 sh att profile
-     attributes for dataset: ./dsg.nc
+     attributes for dataset: ./data/dsg.nc
  profile.missing_value = -1.E+34
  profile._FillValue = -1.E+34
  profile.long_name = profile ID: Cruise and Station 
@@ -73210,7 +73211,7 @@ use WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc
  
 sh dat 2
      currently SET data sets:
-    2> ./WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc  (default)
+    2> ./data/WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc  (default)
  name     title                             I         J         K         L
  PROF     Prof                             ...       ...       ...       ...       1:21      ...
  TIME     Time                             ...       ...       ...       ...       1:21      ...
@@ -73222,7 +73223,7 @@ sh dat 2
  PCO2     PCO2                             1:373     ...       ...       ...
  
 sh att (profile)
-     attributes for dataset: ./WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc
+     attributes for dataset: ./data/WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc
  (profile)._FillValue = -1.E+34
  (profile).actual_range = 70, 90
  (profile).cf_role = profile_id 
@@ -73372,7 +73373,7 @@ data:
 use gappy_bounds.nc
 sh dat
      currently SET data sets:
-    1> ./gappy_bounds.nc  (default)
+    1> ./data/gappy_bounds.nc  (default)
  name     title                             I         J         K         L
  A        SST[X=150:180@AVE,Y=-10:0@AVE]   ...       ...       ...       1:6
  
@@ -73380,7 +73381,7 @@ sh dat
 ! See the bounds attribute on the t axis
 sh dat/att
      currently SET data sets:
-    1> ./gappy_bounds.nc  (default)
+    1> ./data/gappy_bounds.nc  (default)
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
@@ -73465,7 +73466,7 @@ variables:
  
 use write_int_att.nc
 sh att mhchla
-     attributes for dataset: ./write_int_att.nc
+     attributes for dataset: ./data/write_int_att.nc
  MHCHLA.missing_value = -9999999
  MHCHLA._FillValue = -9999999
  MHCHLA.actual_range = 0.00049, 91.76669
@@ -74888,7 +74889,7 @@ GO err685_lowercaseAxis
 use lowercaseTime.nc
 sh dat
      currently SET data sets:
-    1> ./lowercaseTime.nc  (default)
+    1> ./data/lowercaseTime.nc  (default)
  name     title                             I         J         K         L
  AA                                        ...       ...       ...       1:15
  BB                                        ...       ...       ...       1:8
@@ -74963,16 +74964,16 @@ GO err685_use_no_extension
 !  but .des was not being tried.
  
 ! The directory contains files with all three extensions
-sp ls duplicate.*
-duplicate.cdf
-duplicate.des
-duplicate.nc
+sp ls data/duplicate.*
+data/duplicate.cdf
+data/duplicate.des
+data/duplicate.nc
  
 ! The one that's used is .nc
 use duplicate
 sh dat
      currently SET data sets:
-    1> ./duplicate.nc  (default)
+    1> ./data/duplicate.nc  (default)
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:1       1:10      ...       1:3
  
@@ -75538,14 +75539,14 @@ GO err686_redef_ascii_att
  
 columns/delim=" " EZ.DAT
 sh att v1
-     attributes for dataset: ./EZ.DAT
+     attributes for dataset: ./data/EZ.DAT
  V1.long_name = V1 
  V1.missing_value = -1.E+34
  
 ! A new attribuge causes no problems
 define att/output v1.comment = "First var from EZ.DAT"
 sh att v1
-     attributes for dataset: ./EZ.DAT
+     attributes for dataset: ./data/EZ.DAT
  V1.long_name = V1 
  V1.missing_value = -1.E+34
  V1.comment = First var from EZ.DAT 
@@ -75560,7 +75561,7 @@ define att/output v1.units="km"
 define att/output v1.units="meters"
  
 sh att v1
-     attributes for dataset: ./EZ.DAT
+     attributes for dataset: ./data/EZ.DAT
  V1.long_name = vee one 
  V1.missing_value = -1.E+34
  V1.comment = First var from EZ.DAT 
@@ -75619,7 +75620,7 @@ set var/name=b a
 set var/name=temp salt
 show dat
      currently SET data sets:
-    1> ./gt4d011.cdf  (default)
+    1> ./data/gt4d011.cdf  (default)
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     91:108    35:56      1:10      1:25
  SALT     (SALINITY(ppt) - 35) /1000      91:108    35:55      1:10      1:25
@@ -75634,7 +75635,7 @@ show dat
 set var/name=salinity salt
 show dat
      currently SET data sets:
-    1> ./gt4d011.cdf  (default)
+    1> ./data/gt4d011.cdf  (default)
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     91:108    35:56      1:10      1:25
  SALINITY (SALINITY(ppt) - 35) /1000      91:108    35:55      1:10      1:25
@@ -75654,7 +75655,7 @@ set var/name=psi myvar
 set var/name=diff myvar
 show dat
      currently SET data sets:
-    1> ./gt4d011.cdf  (default)
+    1> ./data/gt4d011.cdf  (default)
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     91:108    35:56      1:10      1:25
  SALINITY (SALINITY(ppt) - 35) /1000      91:108    35:55      1:10      1:25
@@ -75680,7 +75681,7 @@ SET MODE/LAST ignore
 use badbounds.nc
 show data
      currently SET data sets:
-    1> ./badbounds.nc  (default)
+    1> ./data/badbounds.nc  (default)
  name     title                             I         J         K         L
  MONTH_IRREG_BNDS
                                            1:2       ...       ...       1:12
@@ -75724,8 +75725,8 @@ LIST/nohead/norow $1[t=-5:9@$2]	! neg/pos t endpoints
  !-> LIST/nohead/norow tvar[t=-5:9@ave]
    2.000
  
-! Exit_GO             
-! Exit_GO        
+! Exit_GO                    
+! Exit_GO               
  
 ! Inside a REPEAT
 define symbol ok = 0
@@ -75741,7 +75742,7 @@ repeat/L=1:3 (if ($ok) then go bn_shortgo; def sym ok = `($ok)+1`)
 ! short script for bn_enter_exit_GO
  
 plot/i=1:15/color=red/thick i
-! Exit_GO             
+! Exit_GO                    
  !-> def sym ok = 2
 !-> REPEAT: L=3
  !-> if 2 then go bn_shortgo
@@ -75750,7 +75751,7 @@ plot/i=1:15/color=red/thick i
 ! short script for bn_enter_exit_GO
  
 plot/i=1:15/color=red/thick i
-! Exit_GO             
+! Exit_GO                    
  !-> def sym ok = 3
  
 cancel redirect
@@ -76248,7 +76249,7 @@ set mode ignore
 ! caused Ferret to mis-read the time axis
 use badbounds_even.nc
 list var, tbox[gt=var]
-             DATA SET: ./badbounds_even.nc
+             DATA SET: ./data/badbounds_even.nc
              TIME: 03-JAN-2000 12:00 to 02-FEB-2000 12:00
  Column  1: VAR is T (My Variable)
  Column  2: TBOX is TBOX (axis TAX_BB_PTSPAC)
@@ -76265,7 +76266,7 @@ list var, tbox[gt=var]
 ! caused Ferret to mis-read the time axis
 use badbounds_non_enclose
 list var, tbox[gt=var]
-             DATA SET: ./badbounds_non_enclose.nc
+             DATA SET: ./data/badbounds_non_enclose.nc
              TIME: 03-JAN-2000 12:00 to 02-FEB-2000 12:00
  Column  1: VAR is T (My Variable)
  Column  2: TBOX is TBOX (axis TAX_BB_EVEN_NOENC)
@@ -76281,7 +76282,7 @@ list var, tbox[gt=var]
 ! spaced, no point-spacing attribute.
 use badbounds_uneven
 list var, tbox[gt=var]
-             DATA SET: ./badbounds_uneven.nc
+             DATA SET: ./data/badbounds_uneven.nc
              TIME: 02-JAN-2000 12:00 to 02-FEB-2000 12:00
  Column  1: VAR is T (My Variable)
  Column  2: TBOX is TBOX (axis TAX_BB_IRR)
@@ -76391,7 +76392,7 @@ use maize_1.nc, maize_2.nc, maize_3.nc
  
 ! Note the _FillValue,  flag
 sho att maize_yield
-     attributes for dataset: ./maize_3.nc
+     attributes for dataset: ./data/maize_3.nc
  MAIZE_YIELD._FillValue = 9.96921E+36
  MAIZE_YIELD.long_name =  Maize harvest 
  MAIZE_YIELD.units = kgC.m-2.yr-1 
@@ -76587,7 +76588,7 @@ let/d=`sst,r=dsetnum` a = 1
  !-> DEFINE VARIABLE/d=1 a = 1
 sh dat
      currently SET data sets:
-    1> ./coads_climatology.cdf  (default)
+    1> ./data/coads_climatology.cdf  (default)
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
  ------------------------------
@@ -77119,7 +77120,7 @@ set mode/last ignore
 ! NOTE With the fix for ticket 2241, we need to add CANCEL MODE UPCASE.
  
 sp rm test_save_dsg.nc
-sp cp test_save_dsg_in.nc test_save_dsg.nc
+sp cp data/test_save_dsg_in.nc test_save_dsg.nc
  
 use test_save_dsg.nc
  
@@ -77191,7 +77192,7 @@ set mode/last upcase
  
 cancel mode upcase
  
-sp cp global.nc  global_copy.nc
+sp cp data/global.nc  global_copy.nc
 use global_copy.nc
 ! Lon in 0-360
 let/title="longitude"/units="degrees_east" lon360 = IF longitude LT 0 THEN longitude+360 else longitude
@@ -77199,7 +77200,7 @@ define attribute/output lon360.ioos_category = "Location"
 define attribute/output lon360.standard_name = "Longitude"
 define attribute/output lon360.history = "added to test_save_dsg.nc"
 save/quiet/append/file=global_copy.nc lon360
-sp ncdump -h global.nc
+sp ncdump -h data/global.nc
 netcdf global {
 dimensions:
 	trajectory = 1 ;
@@ -77287,7 +77288,7 @@ variables:
 ! This dataset has global attributes history and Conventions that include
 ! a Ferret version and CF version that Ferret will replace.
  
-sp ncgen -o anew_global.nc anew_global.cdl
+sp ncgen -o anew_global.nc data/anew_global.cdl
 use anew_global.nc
 sh att .
      attributes for dataset: ./anew_global.nc
@@ -77313,7 +77314,7 @@ set mode/last upcase
 ! When appending to the Conventions and history
 ! attribute, add the new stuff with a comma and newline.
  
-sp cp conventions_history_in.nc conventions_history.nc
+sp cp data/conventions_history_in.nc conventions_history.nc
 use conventions_history
 !
 !  The existing global attributes
@@ -77562,7 +77563,7 @@ sp cat a.txt
  MYVAR = SST*2
  TWO = 2
      currently SET data sets:
-    1> ./coads_climatology.cdf  (default)
+    1> ./data/coads_climatology.cdf  (default)
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
  
@@ -77576,7 +77577,7 @@ SAY ---------------- Just show data, two show data/clobber commands in a row
 ---------------- Just show data, two show data/clobber commands in a row
 sp cat a.txt
      currently SET data sets:
-    1> ./coads_climatology.cdf  (default)
+    1> ./data/coads_climatology.cdf  (default)
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
  
@@ -77602,7 +77603,7 @@ SAY ---------------- Just dataset 1
 ---------------- Just dataset 1
 sp cat a.txt
      currently SET data sets:
-    1> ./coads_climatology.cdf
+    1> ./data/coads_climatology.cdf
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
  
@@ -77613,12 +77614,12 @@ SAY ---------------- appending datset 2 by name
 ---------------- appending datset 2 by name
 sp cat a.txt
      currently SET data sets:
-    1> ./coads_climatology.cdf
+    1> ./data/coads_climatology.cdf
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
  
      currently SET data sets:
-    2> ./levitus_climatology.cdf  (default)
+    2> ./data/levitus_climatology.cdf  (default)
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                      1:160     1:90      1:1       ...
  
@@ -79488,7 +79489,7 @@ def grid/x=x4ax/t=t12 txgrid
  FILE/SKIP=4/VAR="Tm"/COL=12/order=tx/GRID=txgrid fxdata.dat
 sh dat
      currently SET data sets:
-    1> ./fxdata.dat  (default)
+    1> ./data/fxdata.dat  (default)
  name     title                             I         J         K         L
  TM       Tm                               1:4       ...       ...       1:12
  
@@ -79518,7 +79519,7 @@ def grid/x=x4ax/t=t12 txgrid
 FILE/SKIP=4/VAR="Tm"/COL=12/order=tx/GRID=txgrid fxdata.dat
 sh dat
      currently SET data sets:
-    1> ./fxdata.dat  (default)
+    1> ./data/fxdata.dat  (default)
  name     title                             I         J         K         L
  TM       Tm                               1:4       ...       ...       1:12
  
@@ -79550,7 +79551,7 @@ def grid/x=x4ax/f=f12 fxgrid
  FILE/SKIP=4/VAR="Tm"/COL=12/order=fx/GRID=fxgrid fxdata.dat
 sh dat
      currently SET data sets:
-    1> ./fxdata.dat  (default)
+    1> ./data/fxdata.dat  (default)
  name     title                             I         J         K         L         M         N
  TM       Tm                               1:4       ...       ...       ...       ...       1:12
  
@@ -79583,7 +79584,7 @@ def grid/y=y2ax/z=z4ax/t=t6ax grid3d
 FILE/SKIP=4/VAR="Tm"/COL=12/GRID=grid3d fxdata.dat
 sh dat
      currently SET data sets:
-    1> ./fxdata.dat  (default)
+    1> ./data/fxdata.dat  (default)
  name     title                             I         J         K         L
  TM       Tm                               ...       1:2       1:4       1:6
  
@@ -79635,7 +79636,7 @@ def grid/y=y2ax/z=z4ax/t=t6ax grid3d
 FILE/SKIP=4/VAR="Tm"/COL=12/order=tyz/GRID=grid3d fxdata.dat
 sh dat
      currently SET data sets:
-    1> ./fxdata.dat  (default)
+    1> ./data/fxdata.dat  (default)
  name     title                             I         J         K         L
  TM       Tm                               ...       1:2       1:4       1:6
  
@@ -79687,7 +79688,7 @@ def grid/y=y2ax/z=z4ax/e=e6ax grid3d
 FILE/SKIP=4/VAR="Tm"/COL=12/GRID=grid3d fxdata.dat
 sh dat
      currently SET data sets:
-    1> ./fxdata.dat  (default)
+    1> ./data/fxdata.dat  (default)
  name     title                             I         J         K         L         M         N
  TM       Tm                               ...       1:2       1:4       ...       1:6       ...
  
@@ -79737,7 +79738,7 @@ def grid/y=y2ax/z=z4ax/e=e6ax grid3d
 FILE/SKIP=4/VAR="Tm"/COL=12/order=eyz/GRID=grid3d fxdata.dat
 sh dat
      currently SET data sets:
-    1> ./fxdata.dat  (default)
+    1> ./data/fxdata.dat  (default)
  name     title                             I         J         K         L         M         N
  TM       Tm                               ...       1:2       1:4       ...       1:6       ...
  
@@ -79822,7 +79823,7 @@ list lon_lat_time_string(lon, lat, time, tt, "my_string")
 use twodtime.nc
 sh dat
      currently SET data sets:
-    1> ./twodtime.nc  (default)
+    1> ./data/twodtime.nc  (default)
  name     title                             I         J         K         L         M         N
  TIME     GRIB forecast or observation ti  ...       ...       ...       1:8       ...       1:3
  
@@ -79850,12 +79851,12 @@ SET MODE/LAST upcase_output
 use twodtime.nc
 sh dat
      currently SET data sets:
-    1> ./twodtime.nc  (default)
+    1> ./data/twodtime.nc  (default)
  name     title                             I         J         K         L         M         N
  TIME     GRIB forecast or observation ti  ...       ...       ...       1:8       ...       1:3
  
 sh att time
-     attributes for dataset: ./twodtime.nc
+     attributes for dataset: ./data/twodtime.nc
  time.units = calendar Month since 2014-11-01T00:00:00Z 
  time.long_name = GRIB forecast or observation time 
  time.calendar = proleptic_gregorian 
@@ -80056,41 +80057,41 @@ list a
  2   / 2:""foobar""
  
 ! ======
-list    {SPAWN:"ls weird_name1.cdf","foobar"}
-             VARIABLE : {SPAWN:"ls weird_name1.cdf","foobar"}
+list    {SPAWN:"ls data/weird_name1.cdf","foobar"}
+             VARIABLE : {SPAWN:"ls data/weird_name1.cdf","foobar"}
              SUBSET   : 2 points (X)
- 1   / 1:"weird_name1.cdf"
- 2   / 2:"foobar"         
-let a = {SPAWN:"ls weird_name1.cdf","foobar"}
+ 1   / 1:"data/weird_name1.cdf"
+ 2   / 2:"foobar"              
+let a = {SPAWN:"ls data/weird_name1.cdf","foobar"}
 list a
-             VARIABLE : {SPAWN:"ls weird_name1.cdf","foobar"}
+             VARIABLE : {SPAWN:"ls data/weird_name1.cdf","foobar"}
              SUBSET   : 2 points (X)
- 1   / 1:"weird_name1.cdf"
- 2   / 2:"foobar"         
+ 1   / 1:"data/weird_name1.cdf"
+ 2   / 2:"foobar"              
  
-list    {SPAWN:_DQ_ls weird_name1.cdf_DQ_,_DQ_foobar_DQ_}
-             VARIABLE : {SPAWN:_DQ_ls weird_name1.cdf_DQ_,_DQ_foobar_DQ_}
+list    {SPAWN:_DQ_ls data/weird_name1.cdf_DQ_,_DQ_foobar_DQ_}
+             VARIABLE : {SPAWN:_DQ_ls data/weird_name1.cdf_DQ_,_DQ_foobar_DQ_}
              SUBSET   : 2 points (X)
- 1   / 1:"weird_name1.cdf"
- 2   / 2:"foobar"         
-let a = {SPAWN:_DQ_ls weird_name1.cdf_DQ_,_DQ_foobar_DQ_}
+ 1   / 1:"data/weird_name1.cdf"
+ 2   / 2:"foobar"              
+let a = {SPAWN:_DQ_ls data/weird_name1.cdf_DQ_,_DQ_foobar_DQ_}
 list a
-             VARIABLE : {SPAWN:_DQ_ls weird_name1.cdf_DQ_,_DQ_foobar_DQ_}
+             VARIABLE : {SPAWN:_DQ_ls data/weird_name1.cdf_DQ_,_DQ_foobar_DQ_}
              SUBSET   : 2 points (X)
- 1   / 1:"weird_name1.cdf"
- 2   / 2:"foobar"         
+ 1   / 1:"data/weird_name1.cdf"
+ 2   / 2:"foobar"              
  
-list    {SPAWN:_DQ_ls "weird_name1.cdf"_DQ_,_DQ_foobar_DQ_} ! DQ protects '"'
-             VARIABLE : {SPAWN:_DQ_ls "weird_name1.cdf"_DQ_,_DQ_foobar_DQ_}
+list    {SPAWN:_DQ_ls "data/weird_name1.cdf"_DQ_,_DQ_foobar_DQ_} ! DQ protects '"'
+             VARIABLE : {SPAWN:_DQ_ls "data/weird_name1.cdf"_DQ_,_DQ_foobar_DQ_}
              SUBSET   : 2 points (X)
- 1   / 1:"weird_name1.cdf"
- 2   / 2:"foobar"         
-let a = {SPAWN:_DQ_ls "weird_name1.cdf"_DQ_,_DQ_foobar_DQ_}
+ 1   / 1:"data/weird_name1.cdf"
+ 2   / 2:"foobar"              
+let a = {SPAWN:_DQ_ls "data/weird_name1.cdf"_DQ_,_DQ_foobar_DQ_}
 list a
-             VARIABLE : {SPAWN:_DQ_ls "weird_name1.cdf"_DQ_,_DQ_foobar_DQ_}
+             VARIABLE : {SPAWN:_DQ_ls "data/weird_name1.cdf"_DQ_,_DQ_foobar_DQ_}
              SUBSET   : 2 points (X)
- 1   / 1:"weird_name1.cdf"
- 2   / 2:"foobar"         
+ 1   / 1:"data/weird_name1.cdf"
+ 2   / 2:"foobar"              
  
 ! ======
 ! in repl_exprns:
@@ -80276,33 +80277,33 @@ SHOW ATTRIBUTE/ALL foobar
  foobar.some_text = "quoted attribute" 
  
 ! ======
-SPAWN    "ls weird_name1.*"
-weird_name1.cdf
-SPAWN _DQ_ls weird_name1.*_DQ_
-weird_name1.cdf
+SPAWN    "ls data/weird_name1.*"
+data/weird_name1.cdf
+SPAWN _DQ_ls data/weird_name1.*_DQ_
+data/weird_name1.cdf
  
 ! ======
-LET a = {"first.nc", SPAWN:   "ls weird_name1.*"   ,"last.nc"}
+LET a = {"first.nc", SPAWN:   "ls data/weird_name1.*"   ,"last.nc"}
 LIST a
-             VARIABLE : {"first.nc", SPAWN:   "ls weird_name1.*"   ,"last.nc"}
+             VARIABLE : {"first.nc", SPAWN:   "ls data/weird_name1.*"   ,"last.nc"}
              SUBSET   : 3 points (X)
- 1   / 1:"first.nc"       
- 2   / 2:"weird_name1.cdf"
- 3   / 3:"last.nc"        
-LET a = {"first.nc", SPAWN:_DQ_ls weird_name1.*_DQ_,"last.nc"}
+ 1   / 1:"first.nc"            
+ 2   / 2:"data/weird_name1.cdf"
+ 3   / 3:"last.nc"             
+LET a = {"first.nc", SPAWN:_DQ_ls data/weird_name1.*_DQ_,"last.nc"}
 LIST a
-             VARIABLE : {"first.nc", SPAWN:_DQ_ls weird_name1.*_DQ_,"last.nc"}
+             VARIABLE : {"first.nc", SPAWN:_DQ_ls data/weird_name1.*_DQ_,"last.nc"}
              SUBSET   : 3 points (X)
- 1   / 1:"first.nc"       
- 2   / 2:"weird_name1.cdf"
- 3   / 3:"last.nc"        
+ 1   / 1:"first.nc"            
+ 2   / 2:"data/weird_name1.cdf"
+ 3   / 3:"last.nc"             
  
 ! =========================
 ! !!!!!!  TEMPORARY LINE
 ! !!!!!!  see bug report err693_xeq_show.jnl
 show data   ! to side step dset=-1 left behind by SHOW ATTRIBUTE previously
      currently SET data sets:
-    1> ./weird_name1.cdf  (default)
+    1> ./data/weird_name1.cdf  (default)
  name     title                             I         J         K         L
  v1       lower case v1                    1:20      ...       ...       ...
  v2-and-minus
@@ -80462,7 +80463,7 @@ GO err694_longname_showdat
 !
 ! Make a file whose name starts the same as file with long name.
 sp rm WestCoastCarbon_9d9c_f562_77b5_5.nc
-sp ln -s WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc WestCoastCarbon_9d9c_f562_77b5_5.nc
+sp ln -s data/WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc WestCoastCarbon_9d9c_f562_77b5_5.nc
  
 use WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc
  
@@ -80470,7 +80471,7 @@ use WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc
 ! this previously returned an unknown dataset error
 sh dat WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d
      currently SET data sets:
-    1> ./WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc  (default)
+    1> ./data/WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc  (default)
  name     title                             I         J         K         L
  PROF     Prof                             ...       ...       ...       ...       1:21      ...
  TIME     Time                             ...       ...       ...       ...       1:21      ...
@@ -80488,7 +80489,7 @@ sh dat WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d
 use WestCoastCarbon_9d9c_f562_77b5_5
 sh dat WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d
      currently SET data sets:
-    1> ./WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc
+    1> ./data/WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc
  name     title                             I         J         K         L
  PROF     Prof                             ...       ...       ...       ...       1:21      ...
  TIME     Time                             ...       ...       ...       ...       1:21      ...
@@ -81308,20 +81309,20 @@ SET VAR/layerz=depth temp[d=levitus_3d_subset]
 SHOW VAR/LAYERZ/d=levitus_3d_subset temp
   DEPTH holds the designated vertical (layerz) coordinates of TEMP
 SHOW ATT temp.__LayerzRef_[d=levitus_3d_subset]
-     attributes for dataset: ./levitus_3d_subset.nc
+     attributes for dataset: ./data/levitus_3d_subset.nc
  TEMP.__LayerzRef_ = DEPTH 
 ! modify the layerz link
 SET VAR/layerz=newdepth temp[d=levitus_3d_subset]
 SHOW VAR/LAYERZ/d=levitus_3d_subset temp
   NEWDEPTH holds the designated vertical (layerz) coordinates of TEMP
 SHOW ATT temp.__LayerzRef_[d=levitus_3d_subset]
-     attributes for dataset: ./levitus_3d_subset.nc
+     attributes for dataset: ./data/levitus_3d_subset.nc
  TEMP.__LayerzRef_ = NEWDEPTH 
 cancel var/layerz temp[d=levitus_3d_subset]
 SHOW VAR/LAYERZ/d=levitus_3d_subset temp
   No variable holds vertical (layerz) coordinates of TEMP
 SHOW ATT temp[d=levitus_3d_subset]   ! __LayerzRef_ has been deleted
-     attributes for dataset: ./levitus_3d_subset.nc
+     attributes for dataset: ./data/levitus_3d_subset.nc
  TEMP.missing_value = -1.E+10
  TEMP._FillValue = -1.E+10
  TEMP.long_name = TEMPERATURE 
@@ -81714,7 +81715,7 @@ stat/z=100 temp6d-tempz6d
              T: 0.5 to 2.5
              E: 0.5 to 2.5
              F: 0.5 to 2.5
-             DATA SET: ./levitus_3d_subset.nc
+             DATA SET: ./data/levitus_3d_subset.nc
  
  Total # of data points: 32 (2*2*1*2*2*2)
  # flagged as bad  data: 0
@@ -81731,7 +81732,7 @@ stat/z=400 temp6d-tempz6d
              T: 0.5 to 2.5
              E: 0.5 to 2.5
              F: 0.5 to 2.5
-             DATA SET: ./levitus_3d_subset.nc
+             DATA SET: ./data/levitus_3d_subset.nc
  
  Total # of data points: 32 (2*2*1*2*2*2)
  # flagged as bad  data: 0
@@ -81887,7 +81888,7 @@ LIST/PREC=7 tempz6d_tDep
  48.5S / 2:  6.347000  6.533000
  49.5S / 1:  5.341800  5.563000
 LIST/PREC=7/k=7:8 temp6d_const, depth6d  ! reference values at Z=100, 200, 300 for visual comparison
-             DATA SET: ./levitus_3d_subset.nc
+             DATA SET: ./data/levitus_3d_subset.nc
              LONGITUDE: 120E to 122E
              LATITUDE: 50S to 48S
              DEPTH (m): 87.5 to 175
@@ -85173,7 +85174,7 @@ LET var1 =  FLOATSTR(sst-10,"(i5.5)")
 LET var2 =  FLOATSTR(sst-10,"(i05)")
  
 LIST/X=165W/L=1 var1[j=1:40:2], var2[j=1:40:2]
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              LATITUDE: 91S to 11S
              LONGITUDE: 165W
              TIME: 16-JAN 06:00
@@ -85229,7 +85230,7 @@ list  floatstr(a, "(f04.1)")
 LET var1 =  FLOATSTR(sst-20,"(f5.1)")
 LET var2 =  FLOATSTR(sst-20,"(f05.1)")
 LIST/X=165W/L=1 var1[j=1:40:2], var2[j=1:40:2]
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              LATITUDE: 91S to 11S
              LONGITUDE: 165W
              TIME: 16-JAN 06:00
@@ -85265,7 +85266,7 @@ LIST/X=165W/L=1 var1[j=1:40:2], var2[j=1:40:2]
 LET var1 =  FLOATSTR(sst-20,"(f0.0)")
 LET var2 =  FLOATSTR(sst-20,"(I0)")
 LIST/X=165W/L=1 var1[j=1:40:2], var2[j=1:40:2]
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              LATITUDE: 91S to 11S
              LONGITUDE: 165W
              TIME: 16-JAN 06:00
@@ -85339,13 +85340,13 @@ USE coads_climatology
  
 SHOW DATA 1
      currently SET data sets:
-    1> ./coads_climatology.cdf  (default)
+    1> ./data/coads_climatology.cdf  (default)
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
  
 SHOW DATA coads_climatology
      currently SET data sets:
-    1> ./coads_climatology.cdf  (default)
+    1> ./data/coads_climatology.cdf  (default)
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
  
@@ -85899,7 +85900,7 @@ GO err696_ft_calendars
 use ft_cal_one.nc
 sh dat
      currently SET data sets:
-    1> ./ft_cal_one.nc  (default)
+    1> ./data/ft_cal_one.nc  (default)
  name     title                             I         J         K         L         M         N
  TIMEVAR  GRIB forecast or observation ti  ...       ...       ...       1:2       ...       1:3
  
@@ -86142,10 +86143,10 @@ define data/agg/E fourfiles = ens1, ens3, ens2, ens4
  
 show data/brief
      currently SET data sets:
-    1> ./ens1.nc
-    2> ./ens2.nc
-    3> ./ens3.nc
-    4> ./ens4.nc
+    1> ./data/ens1.nc
+    2> ./data/ens2.nc
+    3> ./data/ens3.nc
+    4> ./data/ens4.nc
     5> fourfiles  (default)  Ensemble aggregation
  
 list/i=3 sst[T=@ave]
@@ -86297,7 +86298,7 @@ IF `test_opendap("http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS
    let//d=coads_sst myvar = 1
    sh dat
      currently SET data sets:
-    1> ./coads_climatology.cdf
+    1> ./data/coads_climatology.cdf
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
  
@@ -86919,7 +86920,7 @@ go err696_write_no_dim
 use nodim
 sh dat
      currently SET data sets:
-    1> ./nodim.nc  (default)
+    1> ./data/nodim.nc  (default)
  name     title                             I         J         K         L
  EXPOCODE expocode                         ...       ...       ...       ...       1:1       ...
  NUM_OBS  Number of observations           ...       ...       ...       ...       1:1       ...
@@ -88057,7 +88058,7 @@ let/d=1 w2 = w[d=2]
 let/d=1 salt2 = salt[d=2]
 sh dat 1
      currently SET data sets:
-    1> ./coads_climatology.cdf
+    1> ./data/coads_climatology.cdf
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
  ------------------------------
@@ -88348,7 +88349,7 @@ show data/brief
     2> myagg1
     3> myagg2
     4> myAgg2
-    5> ./bn_aggregate_t.jnl  (default)
+    5> ./v6jnls/bn_aggregate_t.jnl  (default)
  
 ! define a long aggregation
 define data/agg/t myagg8 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc,tmp/tagg_reg_3.nc, tmp/tagg_reg_4.nc,tmp/tagg_reg_5.nc, tmp/tagg_reg_6.nc,tmp/tagg_reg_7.nc, tmp/tagg_reg_8.nc
@@ -88416,7 +88417,7 @@ show data/full  ! all 4 datasets
 01-JAN-1980 00:00 -> 10-JAN-1980 00:00    tmp/tagg_reg_1.nc
 11-JAN-1980 00:00 -> 20-JAN-1980 00:00    tmp/tagg_reg_2.nc
  
-    5> ./bn_aggregate_t.jnl
+    5> ./v6jnls/bn_aggregate_t.jnl
  
      T-aggregation of 2 netCDF files
  name     title                             I         J         K         L
@@ -90928,13 +90929,13 @@ cancel data my_fmrc
 fmrc/hide tmp/fcst_7.nc, tmp/fcst_4.nc, tmp/fcst_5.nc, tmp/one_var_fcst_6.nc, tmp/fcst_3.nc
 show data/brief
      currently SET data sets:
-    6> ./bn_aggregate_f.jnl  (default)  Forecast aggregation
+    6> ./v6jnls/bn_aggregate_f.jnl  (default)  Forecast aggregation
  
 ! the same agg using the very same files under a different name
 fmrc/hide my_fmrc = tmp/fcst_7.nc, tmp/fcst_4.nc, tmp/fcst_5.nc, tmp/one_var_fcst_6.nc, tmp/fcst_3.nc
 show data/full
      currently SET data sets:
-    6> ./bn_aggregate_f.jnl     Forecast aggregation
+    6> ./v6jnls/bn_aggregate_f.jnl     Forecast aggregation
      Forecast series of 5 datasets patterned on fcst_3.nc
  name     title                             I         J         K         L         M         N
  FCST     FIELD + FCST_ERROR               1:21      1:21      ...       1:24      ...       1:5
@@ -90990,7 +90991,7 @@ show data/br/hidden
     3> tmp/fcst_5.nc
     4> tmp/one_var_fcst_6.nc
     5> tmp/fcst_3.nc
-    6> ./bn_aggregate_f.jnl     Forecast aggregation
+    6> ./v6jnls/bn_aggregate_f.jnl     Forecast aggregation
 cancel data bn_aggregate_f.jnl   ! 3/16 bug fix (was "...sub")
 show data
      currently SET data sets:
@@ -92184,7 +92185,7 @@ let nv = ..nvars
 let nd = ..ndims
 let vnames = ..varnames
 list/DAT=1 nv, nd
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
              X: 1
  Column  1: NV is ..NVARS
  Column  2: ND is ..NDIMS
@@ -92208,14 +92209,14 @@ list/DAT=1 vnames
  12   / 12:"PSI"   
  
 list/DAT=coads_climatology nv,nd
-             DATA SET: ./coads_climatology.cdf
+             DATA SET: ./data/coads_climatology.cdf
              X: 1
  Column  1: NV is ..NVARS
  Column  2: ND is ..NDIMS
              NV    ND
 I / *:     1.000  3.000
 list/DAT=gt4d011 nv,nd
-             DATA SET: ./gt4d011.cdf
+             DATA SET: ./data/gt4d011.cdf
              X: 1
  Column  1: NV is ..NVARS
  Column  2: ND is ..NDIMS
@@ -92308,7 +92309,7 @@ list/DAT=3 temp.history
 let/DAT=2 temp = sst + 0*z[z=1:5:1]
 sh dat 2
      currently SET data sets:
-    2> ./coads_climatology.cdf
+    2> ./data/coads_climatology.cdf
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
  ------------------------------
@@ -92330,7 +92331,7 @@ stat/DATASET=1 elev
              T (day): 1.7837
              E:  N/A
              F:  N/A
-             DATA SET: ./err491_attval.cdf
+             DATA SET: ./data/err491_attval.cdf
  
  Total # of data points: 4445 (35*127*1*1*1*1)
  # flagged as bad  data: 3065
@@ -92414,13 +92415,13 @@ USE a1478.nc
 USE a_cartesian_bug1179.nc
 show data
      currently SET data sets:
-    1> ./a1478.nc
+    1> ./data/a1478.nc
  name     title                             I         J         K         L
  lat1_5_bnds
                                            1:2       1:5       ...       ...
  olr      outgoing longwave radiation      1:5       1:5       ...       1:3
  
-    2> ./a_cartesian_bug1179.nc  (default)
+    2> ./data/a_cartesian_bug1179.nc  (default)
  name     title                             I         J         K         L
  temp     THETA_FO(SALT_EXTRAP,TEMP_EXTRA  1:1       1:1       1:10      1:1
  
@@ -92455,7 +92456,7 @@ LET/D=2 newvar =  0*zvar[d=2] + olr[d=1]
  
 show data
      currently SET data sets:
-    1> ./a1478.nc
+    1> ./data/a1478.nc
  name     title                             I         J         K         L
  lat1_5_bnds
                                            1:2       1:5       ...       ...
@@ -92463,7 +92464,7 @@ show data
  ------------------------------
  zvar[D=a1478] = 2*TEMP[D=2]
  
-    2> ./a_cartesian_bug1179.nc  (default)
+    2> ./data/a_cartesian_bug1179.nc  (default)
  name     title                             I         J         K         L
  temp     THETA_FO(SALT_EXTRAP,TEMP_EXTRA  1:1       1:1       1:10      1:1
  ------------------------------
@@ -92486,7 +92487,7 @@ say/quiet <data>
 show var/xml
 show data/var/xml
 <datasets>
-<dataset name="./a_cartesian_bug1179.nc" default="true">
+<dataset name="./data/a_cartesian_bug1179.nc" default="true">
 <title> </title>
 <var name="temp">
 <attribute name="units" type="char">
@@ -92670,7 +92671,7 @@ USE a_cartesian_bug1179.nc
  
 SHO DATA/XML
 <datasets>
-<dataset name="./a_cartesian_bug1179.nc" default="true">
+<dataset name="./data/a_cartesian_bug1179.nc" default="true">
 <title> </title>
 <var name="temp" />
 </dataset>
@@ -92678,7 +92679,7 @@ SHO DATA/XML
  
 SHO DATA/VAR/XML
 <datasets>
-<dataset name="./a_cartesian_bug1179.nc" default="true">
+<dataset name="./data/a_cartesian_bug1179.nc" default="true">
 <title> </title>
 <var name="temp">
 <attribute name="units" type="char">
@@ -93035,7 +93036,7 @@ LET/D=a_cartesian_bug1179 temp_180 = temp[X=79E:79E@AVE]
  
 SHOW DATA/XML
 <datasets>
-<dataset name="./a_cartesian_bug1179.nc" default="true">
+<dataset name="./data/a_cartesian_bug1179.nc" default="true">
 <title> </title>
 <var name="temp" />
 <var name="temp_180" />
@@ -93045,12 +93046,12 @@ SHOW DATA/XML
 USE a1478.nc
 SHOW DATA/XML
 <datasets>
-<dataset name="./a_cartesian_bug1179.nc" default="false">
+<dataset name="./data/a_cartesian_bug1179.nc" default="false">
 <title> </title>
 <var name="temp" />
 <var name="temp_180" />
 </dataset>
-<dataset name="./a1478.nc" default="true">
+<dataset name="./data/a1478.nc" default="true">
 <title> </title>
 <var name="lat1_5_bnds" />
 <var name="olr" />
@@ -93058,7 +93059,7 @@ SHOW DATA/XML
 </datasets>
 SHO DATA/VAR/XML
 <datasets>
-<dataset name="./a_cartesian_bug1179.nc" default="false">
+<dataset name="./data/a_cartesian_bug1179.nc" default="false">
 <title> </title>
 <var name="temp">
 <attribute name="units" type="char">
@@ -93259,7 +93260,7 @@ SHO DATA/VAR/XML
 </attribute>
 </axis>
 </axes>
-<dataset name="./a1478.nc" default="true">
+<dataset name="./data/a1478.nc" default="true">
 <title> </title>
 <var name="lat1_5_bnds">
 <attribute name="ferret_datatype" type="char">
@@ -93471,7 +93472,7 @@ let/d=1/title="coads myvar" myvar = 1
 ! Now SHOW DATA/ATT lists the LET/D variables, as SHOW DATA does
 show dat 1
      currently SET data sets:
-    1> ./coads_climatology.cdf  (default)
+    1> ./data/coads_climatology.cdf  (default)
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
  ------------------------------
@@ -93480,7 +93481,7 @@ show dat 1
  
 show dat/att 1
      currently SET data sets:
-    1> ./coads_climatology.cdf  (default)
+    1> ./data/coads_climatology.cdf  (default)
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
@@ -93515,7 +93516,7 @@ show dat/att 1
   
  
 show att myvar
-     attributes for dataset: ./coads_climatology.cdf
+     attributes for dataset: ./data/coads_climatology.cdf
  myvar.long_name = coads myvar 
  myvar.missing_value = -1.E+34
  
@@ -93535,7 +93536,7 @@ use levitus_climatology
 let/d=2/title="Levitus myvar" myvar = 2
 show dat 2
      currently SET data sets:
-    2> ./levitus_climatology.cdf  (default)
+    2> ./data/levitus_climatology.cdf  (default)
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                      1:160     1:90      1:1       ...
  ------------------------------
@@ -93543,7 +93544,7 @@ show dat 2
  
 show dat/att 2
      currently SET data sets:
-    2> ./levitus_climatology.cdf  (default)
+    2> ./data/levitus_climatology.cdf  (default)
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
@@ -93581,7 +93582,7 @@ show att myvar
  myvar.missing_value = -1.E+34
  
 show att/d=1 myvar
-     attributes for dataset: ./coads_climatology.cdf
+     attributes for dataset: ./data/coads_climatology.cdf
  myvar.long_name = coads myvar 
  myvar.missing_value = -1.E+34
  
@@ -93609,18 +93610,18 @@ list vnames
 cancel var/all
 show dat
      currently SET data sets:
-    1> ./coads_climatology.cdf  (default)
+    1> ./data/coads_climatology.cdf  (default)
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
  
-    2> ./levitus_climatology.cdf
+    2> ./data/levitus_climatology.cdf
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                      1:160     1:90      1:1       ...
  
  
 show dat/att 2
      currently SET data sets:
-    2> ./levitus_climatology.cdf
+    2> ./data/levitus_climatology.cdf
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
@@ -93663,7 +93664,7 @@ let/d=2/title="Levitus myvar" myvar = 2
 define att/output temp.my_new_att="temperature attrib"
 define att/output myvar.units="meters"
 show att temp
-     attributes for dataset: ./levitus_climatology.cdf
+     attributes for dataset: ./data/levitus_climatology.cdf
  TEMP.missing_value = -1.E+10
  TEMP._FillValue = -1.E+10
  TEMP.long_name = TEMPERATURE 
@@ -93671,7 +93672,7 @@ show att temp
  TEMP.units = DEG C 
  TEMP.my_new_att = temperature attrib 
 show att myvar
-     attributes for dataset: ./levitus_climatology.cdf
+     attributes for dataset: ./data/levitus_climatology.cdf
  myvar.long_name = Levitus myvar 
  myvar.missing_value = -1.E+34
  myvar.units = meters 
@@ -93681,7 +93682,7 @@ define att/output/d=2 myvar.standard_name = "None"
  
 define att/output/d=1 myvar.units="feet"
 show att/d=1 myvar
-     attributes for dataset: ./coads_climatology.cdf
+     attributes for dataset: ./data/coads_climatology.cdf
  myvar.long_name = coads myvar 
  myvar.missing_value = -1.E+34
  myvar.units = feet 
@@ -93689,7 +93690,7 @@ save/clobber/file=a.nc myvar[d=1]
 sp ncdump -h a.nc >> all_ncdump.out
  
 show att/d=2 myvar
-     attributes for dataset: ./levitus_climatology.cdf
+     attributes for dataset: ./data/levitus_climatology.cdf
  myvar.long_name = Levitus myvar 
  myvar.missing_value = -1.E+34
  myvar.units = meters 
@@ -94803,7 +94804,7 @@ go err700_reg_axis_check
 use bug2445.nc
 show data
      currently SET data sets:
-    1> ./bug2445.nc  (default)
+    1> ./data/bug2445.nc  (default)
  name     title                             I         J         K         L
  XAX                                       1:5       ...       ...       ...
        (invalid coordinate axis)
@@ -94884,7 +94885,7 @@ go err700_inherit_all
 ! This non-standardfile has no missing-value attributes.
 use no_miss_att.nc
 sh att a
-     attributes for dataset: ./no_miss_att.nc
+     attributes for dataset: ./data/no_miss_att.nc
  A.min_value = 1
  A.max_value = 3
  A.long_name = {1,2,3} 
@@ -95777,7 +95778,7 @@ go err700_coords
  
 use err700_coords.nc
 list/i=10:20/prec=16 du_coords, du_coords[i=@ddf]
-             DATA SET: ./err700_coords.nc
+             DATA SET: ./data/err700_coords.nc
              X: 9.5 to 20.5
  Column  1: DU_COORDS is DU_VU[I=1:20]
  Column  2: DU_COORDS[X=@DDF] is DU_VU[I=1:20] (forward derivative on X)
@@ -96203,7 +96204,7 @@ sh axis `var,return=xaxis`
 use coads_climatology
 sh att (`sst,return=xaxis`)
  !-> sh att (COADSX)
-     attributes for dataset: ./coads_climatology.cdf
+     attributes for dataset: ./data/coads_climatology.cdf
  (COADSX).units = degrees_east 
  (COADSX).modulo =   
  (COADSX).point_spacing = even 
@@ -96528,7 +96529,7 @@ sh dat
 columns/skip=3/var="index,edtim,udtim,udate,edate"/type="num,edatime,datime,date,eurodate" delim_datetime.csv
 sh dat
      currently SET data sets:
-    1> ./delim_datetime.csv  (default)
+    1> ./data/delim_datetime.csv  (default)
  name     title                             I         J         K         L
  INDEX    index                            1:8       ...       ...       ...
  EDTIM    edtim                            1:8       ...       ...       ...
@@ -96541,7 +96542,7 @@ sh dat
        (Julian days since 1-Jan-1900)
  
 list index,edtim,udtim,udate,edate
-             DATA SET: ./delim_datetime.csv
+             DATA SET: ./data/delim_datetime.csv
              X: 0.5 to 5.5
  Column  1: INDEX is index
  Column  2: EDTIM is edtim (days)(Julian days since 1-Jan-1900)
@@ -96621,7 +96622,7 @@ T0 = 1-JAN-1900
 columns/skip=2/var="index,udate,udtim"/type="num,date,datime" delim_yyyy.csv
 sh dat
      currently SET data sets:
-    1> ./delim_datetime.csv
+    1> ./data/delim_datetime.csv
  name     title                             I         J         K         L
  INDEX    index                            1:5       ...       ...       ...
  EDTIM    edtim                            1:5       ...       ...       ...
@@ -96633,7 +96634,7 @@ sh dat
  EDATE    edate                            1:5       ...       ...       ...
        (Julian days since 1-Jan-1900)
  
-    2> ./delim_yyyy.csv  (default)
+    2> ./data/delim_yyyy.csv  (default)
  name     title                             I         J         K         L
  INDEX    index                            1:8       ...       ...       ...
  UDATE    udate                            1:8       ...       ...       ...
@@ -96642,7 +96643,7 @@ sh dat
        (Julian days since 1-Jan-1900)
  
 list/prec=10 index,udate,udtim
-             DATA SET: ./delim_yyyy.csv
+             DATA SET: ./data/delim_yyyy.csv
              X: 0.5 to 6.5
  Column  1: INDEX is index
  Column  2: UDATE is udate (days)(Julian days since 1-Jan-1900)
@@ -96733,7 +96734,7 @@ can dat/all
 union tmp/uagg_1.nc,tmp/uagg_2.nc,tmp/uagg_3.nc,tmp/uagg_4.nc
 sh dat
      currently SET data sets:
-    5> ./bn_aggregate_u.jnl  (default)  Union aggregation
+    5> ./v7jnls/bn_aggregate_u.jnl  (default)  Union aggregation
  name     title                             I         J         K         L
  SST      sst                              1:5       1:4       ...       1:10
  TEMP     temp                             1:5       1:4       ...       1:10
@@ -97348,7 +97349,7 @@ sh dat
  name     title                             I         J         K         L
  abc      abc                              1:5       ...       ...       ...
  
-    2> ./bn_delimited_read_1.dat  (default)
+    2> ./data/bn_delimited_read_1.dat  (default)
  name     title                             I         J         K         L
  lab      lab                              1:7       ...       ...       ...
  nothing  nothing                          1:7       ...       ...       ...
@@ -97370,7 +97371,7 @@ sh dat/att
  abc                   DOUBLE    long_name       CHAR        3    T       abc
                                  missing_value   DOUBLE      1    T       -1.E+34
   
-    2> ./bn_delimited_read_1.dat  (default)
+    2> ./data/bn_delimited_read_1.dat  (default)
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
@@ -97438,7 +97439,7 @@ set mode/last upcase
 sp ls notafile.nowhere
 sp grep "this text is not in the file" bn_all.jnl
 sp rm nothing.dat
-sp grep modulus non_COARDS.cdl
+sp grep modulus data/non_COARDS.cdl
 sp cp nofile.dat not_either.dat
 *** Running ferret script: bn_ave_of_ave.jnl
 ! bn_ave_of_ave.jnl
@@ -97659,7 +97660,7 @@ cancel var/all
 union tmp/uagg_1.nc,tmp/uagg_2.nc,tmp/uagg_3.nc,tmp/uagg_4.nc
 show data/members
      currently SET data sets:
-    5> ./bn_agg_member_syntax.jnl  (default)  Union aggregation
+    5> ./v7jnls/bn_agg_member_syntax.jnl  (default)  Union aggregation
  name     title                             I         J         K         L
  SST      sst                              1:5       1:4       ...       1:10
  TEMP     temp                             1:5       1:4       ...       1:10
@@ -97687,7 +97688,7 @@ show data 5.3
 cancel data/all
  
 ! Tests for Ensembles
-let files = SPAWN("ls -1 ens*.nc")
+let files = SPAWN("ls -1 data/ens*.nc")
 ensemble my_ens = files
 sh data/members my_ens
      currently SET data sets:
@@ -97696,14 +97697,14 @@ sh data/members my_ens
  SST      SST_IN                           1:10      1:9       ...       1:12      1:4       ...
  
           Member datasets:
-      5.1: ./ens1.nc
-      5.2: ./ens2.nc
-      5.3: ./ens3.nc
-      5.4: ./ens4.nc
+      5.1: data/ens1.nc
+      5.2: data/ens2.nc
+      5.3: data/ens3.nc
+      5.4: data/ens4.nc
  
 show data 5.3
      currently SET data sets:
-    3> ./ens3.nc
+    3> data/ens3.nc
  name     title                             I         J         K         L
  SST      SST_IN                           1:10      1:9       ...       1:12
  
@@ -97733,7 +97734,7 @@ stat sst[d=5.2]
              TIME: 01-JAN 00:45 to 31-DEC 06:34
              E:  N/A
              F:  N/A
-             DATA SET: ./ens2.nc
+             DATA SET: data/ens2.nc
  
  Total # of data points: 1080 (10*9*1*12*1*1)
  # flagged as bad  data: 289
@@ -97750,7 +97751,7 @@ ENSEMBLE fourfiles = ens1, ens3, ens2, ens4
 ! not this is dataset 2
 show data 5.3
      currently SET data sets:
-    3> ./ens2.nc
+    3> ./data/ens2.nc
  name     title                             I         J         K         L
  SST      SST_IN                           1:10      1:9       ...       1:12
  
@@ -98799,10 +98800,10 @@ use coads_climatology
 let lnames = ..dimnames[d=2]
  
 CANCEL DATA/ALL
- canceling dset ./ocean_atlas_temp.cdf
- canceling dset ./gt4d011.cdf
- canceling dset ./levitus_climatology.cdf
- canceling dset ./coads_climatology.cdf
+ canceling dset ./data/ocean_atlas_temp.cdf
+ canceling dset ./data/gt4d011.cdf
+ canceling dset ./data/levitus_climatology.cdf
+ canceling dset ./data/coads_climatology.cdf
  
 ! this line seems to be essential making the crash happen
 PPL TICS .125,.25,.125,.25 !reset tics to default
@@ -98838,7 +98839,7 @@ cancel mode verify
  -DELETE A        M:  2 dset:   1 I:      2      2  J: -999 -999  K: -999 -999  L:   -999   -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  -DELETE attr     M:  3 dset:   1 I:      2      2  J: -999 -999  K: -999 -999  L:   -999   -999
- canceling dset ./coads_climatology.cdf
+ canceling dset ./data/coads_climatology.cdf
 ooooooooooooooooooooooooooooooooooooooooooo
 GO err71_user_var_attrib
 ! err71_user_var_attrib.jnl
@@ -99537,7 +99538,7 @@ stat co_emac
              T:  N/A
              E:  N/A
              F:  N/A
-             DATA SET: ./co_emac.nc
+             DATA SET: ./data/co_emac.nc
  
  Total # of data points: 48 (12*4*1*1*1*1)
  # flagged as bad  data: 4
@@ -100617,16 +100618,13 @@ show memory/diagnostic        !  split on Z-(T-Y,T-Y)
     Last gather
         Variable    Axis   Xform     Chunk    Repeated
         V              Z     SUM         1           1
-        V              T     SUM         1           1
-        V              Y     AV4       989          10
-        V              T     SUM         1           1
-        V              Y     AV4       989          10
+        V              Y     AV4        98           2
     Total table slots: 500
     Free table slots: 496
     Un-cached variables: 0
     SET MEMORY/SIZE: 990000 words
-    Peak demand: 989006 words
-    Current cache: 11006 words
+    Peak demand: 980022 words
+    Current cache: 200024 words
 cancel memory/all
  
 ! **************************************************
@@ -100643,14 +100641,13 @@ stat/brief v[x=@ave,y=@ave,z=@ave,L=@SUM]
 show memory/diagnostic       ! split on T-Y
     Last gather
         Variable    Axis   Xform     Chunk    Repeated
-        V              T     SUM         1           1
-        V              Y     AV4       494          10
+        V              Y     AV4        49           1
     Total table slots: 500
     Free table slots: 497
     Un-cached variables: 0
     SET MEMORY/SIZE: 990000 words
-    Peak demand: 988004 words
-    Current cache: 24004 words
+    Peak demand: 980020 words
+    Current cache: 400022 words
 cancel memory/all
  
 ! **************************************************
@@ -101056,119 +101053,119 @@ SPAWN diff bn_dynamic_gather_0.out bn_dynamic_gather_30.out
 ---
 >     Peak demand: 692002 words
 >     Current cache: 616002 words
-263c276
-<         V              Y     AV4       989          10
+262c275
+<         V              Y     AV4        98           2
 ---
->         V              Y     AV4       692          10
-265c278
-<         V              Y     AV4       989          10
+>         V              Y     AV4        69           2
+267,268c280,281
+<     Peak demand: 980022 words
+<     Current cache: 200024 words
 ---
->         V              Y     AV4       692          10
-270,271c283,284
-<     Peak demand: 989006 words
-<     Current cache: 11006 words
+>     Peak demand: 690022 words
+>     Current cache: 340024 words
+285c298
+<         V              Y     AV4        49           1
 ---
->     Peak demand: 692006 words
->     Current cache: 308006 words
-289c302
-<         V              Y     AV4       494          10
+>         V              Y     AV4        34           1
+287c300
+<     Free table slots: 497
 ---
->         V              Y     AV4       346          10
-294,295c307,308
-<     Peak demand: 988004 words
-<     Current cache: 24004 words
+>     Free table slots: 496
+290,291c303,304
+<     Peak demand: 980020 words
+<     Current cache: 400022 words
 ---
->     Peak demand: 692004 words
->     Current cache: 616004 words
-312c325
+>     Peak demand: 680020 words
+>     Current cache: 960022 words
+308c321
 <         V              Y     AV4        24           1
 ---
 >         V              Y     AV4        17           1
-314c327
+310c323
 <     Free table slots: 494
 ---
 >     Free table slots: 492
-317,318c330,331
+313,314c326,327
 <     Peak demand: 480962 words
 <     Current cache: 802562 words
 ---
 >     Peak demand: 340682 words
 >     Current cache: 962602 words
-360c373
+356c369
 <         V1000          Z                 3           1
 ---
 >         V1000          Z                 2           1
-365,366c378,379
+361,362c374,375
 <     Peak demand: 3.108 megawords
 <     Current cache: 1.096 megawords
 ---
 >     Peak demand: 2.12 megawords
 >     Current cache: 2.096 megawords
-381c394
+377c390
 <         V1000          Y                22           1
 ---
 >         V1000          Y                15           1
-386,387c399,400
+382,383c395,396
 <     Peak demand: 959680 words
 <     Current cache: 544320 words
 ---
 >     Peak demand: 669600 words
 >     Current cache: 460000 words
-406a420
+402a416
 >         V1000          Z                 2          99
-408c422
+404c418
 <     Free table slots: 496
 ---
 >     Free table slots: 493
-411,412c425,426
+407,408c421,422
 <     Peak demand: 89440 words
 <     Current cache: 88960 words
 ---
 >     Peak demand: 69200 words
 >     Current cache: 89440 words
-434c448
+430c444
 <         V              T     AVE         1           1
 ---
 >         V              Y     AVE        91           1
-436c450
+432c446
 <     Free table slots: 498
 ---
 >     Free table slots: 496
-439,440c453,454
+435,436c449,450
 <     Peak demand: 3 megawords
 <     Current cache: 3 megawords
 ---
 >     Peak demand: 2.092 megawords
 >     Current cache: 2.262 megawords
-457c471
+453c467
 <         A              Y     AVE        47           1
 ---
 >         A              Y     AVE        26           1
-459c473
+455c469
 <     Free table slots: 491
 ---
 >     Free table slots: 487
-462,463c476,477
+458,459c472,473
 <     Peak demand: 1.94 megawords
 <     Current cache: 2.884 megawords
 ---
 >     Peak demand: 1.52 megawords
 >     Current cache: 2.98 megawords
-476c490
+472c486
 <         D              Y     AVE        47           1
 ---
 >         D              Y     AVE        26           1
-478c492
+474c488
 <     Free table slots: 489
 ---
 >     Free table slots: 487
-481,482c495,496
+477,478c491,492
 <     Peak demand: 2.41 megawords
 <     Current cache: 2.84 megawords
 ---
 >     Peak demand: 1.78 megawords
 >     Current cache: 2.836 megawords
-514,517c528,531
+510,513c524,527
 <         A              T     AVE         1           1
 <         B              Y     AVE        71           1
 <         C              Y     AVE        47           1
@@ -101178,33 +101175,33 @@ SPAWN diff bn_dynamic_gather_0.out bn_dynamic_gather_30.out
 >         B              Y     AVE        59           1
 >         C              Y     AVE        42           1
 >         D              Y     AVE        26           1
-519c533
+515c529
 <     Free table slots: 487
 ---
 >     Free table slots: 484
-522,523c536,537
+518,519c532,533
 <     Peak demand: 2.845 megawords
 <     Current cache: 2.979 megawords
 ---
 >     Peak demand: 2.39 megawords
 >     Current cache: 2.918 megawords
-538,539c552,553
+534,535c548,549
 <         A              Y     AVE        47           1
 <         B              Y     AVE        23           1
 ---
 >         A              Y     AVE        26           1
 >         B              Y     AVE         9           1
-541c555
+537c551
 <     Free table slots: 491
 ---
 >     Free table slots: 481
-544,545c558,559
+540,541c554,555
 <     Peak demand: 2.46 megawords
 <     Current cache: 2.794 megawords
 ---
 >     Peak demand: 2.18 megawords
 >     Current cache: 2.922 megawords
-551c565
+547c561
 < ! excercise under the default memory management
 ---
 > ! excercise under pretty strict memory management
@@ -101448,151 +101445,147 @@ SPAWN diff bn_dynamic_gather_0.out bn_dynamic_gather_60.out
 ---
 >     Peak demand: 394002 words
 >     Current cache: 818002 words
-263c360
-<         V              Y     AV4       989          10
+262c359
+<         V              Y     AV4        98           2
 ---
->         V              Y     AV4       395          10
-265c362
-<         V              Y     AV4       989          10
----
->         V              Y     AV4       395          10
-267c364
+>         V              Y     AV4        39           2
+264c361
 <     Free table slots: 496
 ---
 >     Free table slots: 495
-270,271c367,368
-<     Peak demand: 989006 words
-<     Current cache: 11006 words
+267,268c364,365
+<     Peak demand: 980022 words
+<     Current cache: 200024 words
 ---
->     Peak demand: 395006 words
->     Current cache: 605006 words
-289c386
-<         V              Y     AV4       494          10
+>     Peak demand: 390022 words
+>     Current cache: 640024 words
+285c382
+<         V              Y     AV4        49           1
 ---
->         V              Y     AV4       197          10
-291c388
+>         V              Y     AV4        19           1
+287c384
 <     Free table slots: 497
 ---
->     Free table slots: 495
-294,295c391,392
-<     Peak demand: 988004 words
-<     Current cache: 24004 words
+>     Free table slots: 496
+290,291c387,388
+<     Peak demand: 980020 words
+<     Current cache: 400022 words
 ---
->     Peak demand: 394004 words
->     Current cache: 818004 words
-312c409
+>     Peak demand: 380020 words
+>     Current cache: 620022 words
+308c405
 <         V              Y     AV4        24           1
 ---
 >         V              Y     AV4         9           1
-314c411
+310c407
 <     Free table slots: 494
 ---
 >     Free table slots: 486
-317,318c414,415
+313,314c410,411
 <     Peak demand: 480962 words
 <     Current cache: 802562 words
 ---
 >     Peak demand: 180362 words
 >     Current cache: 922202 words
-339c436,438
+335c432,434
 <     No split/gather occurred in the last evaluation
 ---
 >     Last gather
 >         Variable    Axis   Xform     Chunk    Repeated
 >         V1000          Z                 3           1
-341c440
+337c436
 <     Free table slots: 498
 ---
 >     Free table slots: 495
-344,345c443,444
+340,341c439,440
 <     Peak demand: 4.144 megawords
 <     Current cache: 4.048 megawords
 ---
 >     Peak demand: 3.108 megawords
 >     Current cache: 4.096 megawords
-360c459
+356c455
 <         V1000          Z                 3           1
 ---
 >         V1000          Z                 1           1
-362c461
+358c457
 <     Free table slots: 496
 ---
 >     Free table slots: 492
-365,366c464,465
+361,362c460,461
 <     Peak demand: 3.108 megawords
 <     Current cache: 1.096 megawords
 ---
 >     Peak demand: 1.084 megawords
 >     Current cache: 3.096 megawords
-381c480
+377c476
 <         V1000          Y                22           1
 ---
 >         V1000          Y                 8           1
-383c482
+379c478
 <     Free table slots: 496
 ---
 >     Free table slots: 492
-386,387c485,486
+382,383c481,482
 <     Peak demand: 959680 words
 <     Current cache: 544320 words
 ---
 >     Peak demand: 379520 words
 >     Current cache: 861440 words
-406a506
+402a502
 >         V1000          Z                 3         100
-408c508
+404c504
 <     Free table slots: 496
 ---
 >     Free table slots: 488
-411,412c511,512
+407,408c507,508
 <     Peak demand: 89440 words
 <     Current cache: 88960 words
 ---
 >     Peak demand: 58840 words
 >     Current cache: 89560 words
-434c534
+430c530
 <         V              T     AVE         1           1
 ---
 >         V              Y     AVE        16           1
-436c536
+432c532
 <     Free table slots: 498
 ---
 >     Free table slots: 478
-439,440c539,540
+435,436c535,536
 <     Peak demand: 3 megawords
 <     Current cache: 3 megawords
 ---
 >     Peak demand: 1.192 megawords
 >     Current cache: 2.856 megawords
-457c557
+453c553
 <         A              Y     AVE        47           1
 ---
 >         A              Y     AVE         4           1
-459c559
+455c555
 <     Free table slots: 491
 ---
 >     Free table slots: 431
-462,463c562,563
+458,459c558,559
 <     Peak demand: 1.94 megawords
 <     Current cache: 2.884 megawords
 ---
 >     Peak demand: 1.08 megawords
 >     Current cache: 2.984 megawords
-476c576
+472c572
 <         D              Y     AVE        47           1
 ---
 >         D              Y     AVE         4           1
-478c578
+474c574
 <     Free table slots: 489
 ---
 >     Free table slots: 442
-481,482c581,582
+477,478c577,578
 <     Peak demand: 2.41 megawords
 <     Current cache: 2.84 megawords
 ---
 >     Peak demand: 1.12 megawords
 >     Current cache: 2.992 megawords
-514,517c614,617
+510,513c610,613
 <         A              T     AVE         1           1
 <         B              Y     AVE        71           1
 <         C              Y     AVE        47           1
@@ -101602,33 +101595,33 @@ SPAWN diff bn_dynamic_gather_0.out bn_dynamic_gather_60.out
 >         B              Y     AVE        23           1
 >         C              Y     AVE        14           1
 >         D              Y     AVE         4           1
-519c619
+515c615
 <     Free table slots: 487
 ---
 >     Free table slots: 439
-522,523c622,623
+518,519c618,619
 <     Peak demand: 2.845 megawords
 <     Current cache: 2.979 megawords
 ---
 >     Peak demand: 2.06 megawords
 >     Current cache: 2.996 megawords
-538,539c638,639
+534,535c634,635
 <         A              Y     AVE        47           1
 <         B              Y     AVE        23           1
 ---
 >         A              Y     AVE         4           1
 >         B              Y     AVE         9           1
-541c641
+537c637
 <     Free table slots: 491
 ---
 >     Free table slots: 481
-544,545c644,645
+540,541c640,641
 <     Peak demand: 2.46 megawords
 <     Current cache: 2.794 megawords
 ---
 >     Peak demand: 2.18 megawords
 >     Current cache: 2.922 megawords
-551d650
+547d646
 < ! excercise under the default memory management
  
  
@@ -103410,6 +103403,75 @@ list yvar[j=@sum]
              VARIABLE : YSEQUENCE(VAR)
              Y        : 0.5 to 3.5 (summed)
           0.0000
+ 
+*** Running ferret script: bn722_bug_fixes.jnl
+! bn721_bug_fixes.jnl
+! test various fixes that went into version 7.22
+! 9/17 *acm*
+!
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err721_dynamic_gather
+! err72_dynamic_gather.jnl
+! 9/25/2017 Ticket 2561
+! Combination of two transforms, and
+ 
+cancel data/all
+cancel memory
+ 
+! dataset from bn_dynamic_gather.jnl
+use tmp/test_dyn_mem.nc
+ 
+! w/ default amount of memory this doesn't need a split-gather
+! This result is correct
+list/nohead v1000[x=@ave,y=@ave,k=@sum,L=@sum]
+          2236000.
+show memory/diag
+    No split/gather occurred in the last evaluation
+    Total table slots: 500
+    Free table slots: 497
+    Un-cached variables: 0
+    SET MEMORY/SIZE: 25.6 megawords
+    Peak demand: 4.008 megawords
+    Current cache: 4.008002 megawords
+ 
+! Now use smaller memory, so it'll split/gather in the T
+! direction. The answer in v7.2 was wrong.
+cancel memory
+set mem/siz=10
+list/nohead v1000[x=@ave,y=@ave,k=@sum,L=@sum]
+          2236000.
+show memory/diag
+    No split/gather occurred in the last evaluation
+    Total table slots: 500
+    Free table slots: 497
+    Un-cached variables: 0
+    SET MEMORY/SIZE: 10 megawords
+    Peak demand: 4.008 megawords
+    Current cache: 4.008002 megawords
+ 
+! With an even smaller amount of memory, a different
+! incorrect result was listed with v7.2.
+cancel memory
+set mem/siz=1
+list/nohead v1000[x=@ave,y=@ave,k=@sum,L=@SUM]
+          2236000.
+sh mem/diag
+    Last gather
+        Variable    Axis   Xform     Chunk    Repeated
+        V1000          T     AV4       173           1
+    Total table slots: 500
+    Free table slots: 495
+    Un-cached variables: 0
+    SET MEMORY/SIZE: 1000000 words
+    Peak demand: 697384 words
+    Current cache: 546466 words
+ 
+set mem/siz=25.6  ! return to the default setting
+ 
+ 
  
 *** Running ferret script: bn_tseries_modulo.jnl
 ! bn_tseries_modulo.jnl
@@ -105257,7 +105319,7 @@ VP_YHI = "1"
       6D_LAB           SET
       FRUGAL           SET              30
      currently SET data sets:
-    1> ./gtbc011.cdf  (default)
+    1> ./data/gtbc011.cdf  (default)
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     70:72      1:100     1:27      1:3
  SALT     (SALINITY(ppt) - 35) /1000      70:71      1:100     1:27      1:3

@@ -4,7 +4,7 @@
 ! When appending to the Conventions and history 
 ! attribute, add the new stuff with a comma and newline.
 
-sp cp conventions_history_in.nc conventions_history.nc
+sp cp data/conventions_history_in.nc conventions_history.nc
 use conventions_history
 !
 !  The existing global attributes

@@ -129,7 +129,7 @@ echo " " > $ncdump_file
 setenv FER_EXTERNAL_FUNCTIONS $efdir
 
 # set up the binary unformatted stream test file as a machine-specific link
-set machine_stream = "stream10by5_{$machine}.unf"
+set machine_stream = "data/stream10by5_{$machine}.unf"
 if ( ! -e  $machine_stream ) then
    echo File $machine_stream does not exist.
    echo Benchmark bn420_stream will fail.
@@ -158,9 +158,9 @@ ln -s $machine_stream stream_data_link.unf
 rm -f bn_test_stream.jnl
 # most everything little-endian now
 # if ($machine == "linux" || $machine == "alp" || $machine == "x86_64-linux" || $machine == "ia64-linux") then
-    ln -s bn_test_stream_little.jnl bn_test_stream.jnl
+    ln -s v5jnls/bn_test_stream_little.jnl bn_test_stream.jnl
 # else
-#     ln -s bn_test_stream_big.jnl bn_test_stream.jnl
+#     ln -s v5jnls/bn_test_stream_big.jnl bn_test_stream.jnl
 # endif
 
 #Set up for metafile/gif testing
@@ -187,7 +187,7 @@ echo "ncdump output will be in $ncdump_file, and appended to this log file " >>&
 
 #set up a generic data environment
 echo "***** Restricting Ferret paths to bench directory *****" >>&$log_file
-source bench_environment >>&$log_file
+source bench_environment.csh >>&$log_file
 Fenv >>&$log_file
 
 # put a record of this benchmark run into the benchmark log file

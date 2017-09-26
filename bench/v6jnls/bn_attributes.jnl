@@ -523,7 +523,7 @@ go bn_reset
 
 use err491_attval.cdf
 sp echo "bn_attributes.jnl --- 4 CANCEL MODE upcase_output; original file:" >> all_ncdump.out
-sp ncdump -h err491_attval.cdf >> all_ncdump.out
+sp ncdump -h data/err491_attval.cdf >> all_ncdump.out
 save/clobber/file=a.nc elev[i=3,j=2:4]
 sp echo "bn_attributes.jnl --- 5 before CANCEL MODE upcase_output" >> all_ncdump.out
 sp ncdump -h a.nc >> all_ncdump.out

@@ -1,7 +1,7 @@
 CAN MODE VERIFY
 
 ! This file will be copied to .ferret as part
-! pf the benchmark testing
+! of the benchmark testing
 
 SET MEMORY/SIZE=31
 SET MODE journal startup_tests.jnl

@@ -64,7 +64,7 @@ touch $log_file $ncdump_file
 touch F.cdf snoopy.dat
 
 # set up the binary unformatted stream test file as a machine-specific link
-machine_stream="stream10by5_${machine}.unf"
+machine_stream="data/stream10by5_${machine}.unf"
 if [ -r  $machine_stream ]; then
    rm -f stream_data_link.unf
    ln -s $machine_stream stream_data_link.unf
@@ -83,8 +83,8 @@ fi
 # set up proper stream testing jnl file - depends on endianness
 # pretty much everything is little endian now
 rm -f bn_test_stream.jnl
-ln -s bn_test_stream_little.jnl bn_test_stream.jnl
-# ln -s bn_test_stream_big.jnl bn_test_stream.jnl
+ln -s v5jnls/bn_test_stream_little.jnl bn_test_stream.jnl
+# ln -s v5jnls/bn_test_stream_big.jnl bn_test_stream.jnl
 
 echo "Testing log output in $log_file"
 echo "Testing errors in $err_file" 
@@ -116,18 +116,7 @@ fi
 
 # set up a generic data environment
 echo "****** Restricting Ferret paths to bench directory ******" >> $log_file
-FER_DATA="."
-export FER_DATA
-FER_DESCR="."
-export FER_DESCR
-FER_DSETS="."
-export FER_DSETS
-FER_DAT="."
-export FER_DAT
-FER_GRIDS="."
-export FER_GRIDS
-FER_DIR="."
-export FER_DIR
+. ./bench_environment.sh
 
 # always replace $HOME/.ferret with default.ferret so results are consistent
 rm -f keep.ferret

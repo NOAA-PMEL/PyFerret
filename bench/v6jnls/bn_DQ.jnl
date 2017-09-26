@@ -81,16 +81,16 @@ let a = {_DQ_"foobar"_DQ_,_DQ_"foobar"_DQ_}
 list a
 
 ! ======
-list    {SPAWN:"ls weird_name1.cdf","foobar"}
-let a = {SPAWN:"ls weird_name1.cdf","foobar"}
+list    {SPAWN:"ls data/weird_name1.cdf","foobar"}
+let a = {SPAWN:"ls data/weird_name1.cdf","foobar"}
 list a
 
-list    {SPAWN:_DQ_ls weird_name1.cdf_DQ_,_DQ_foobar_DQ_}
-let a = {SPAWN:_DQ_ls weird_name1.cdf_DQ_,_DQ_foobar_DQ_}
+list    {SPAWN:_DQ_ls data/weird_name1.cdf_DQ_,_DQ_foobar_DQ_}
+let a = {SPAWN:_DQ_ls data/weird_name1.cdf_DQ_,_DQ_foobar_DQ_}
 list a
 
-list    {SPAWN:_DQ_ls "weird_name1.cdf"_DQ_,_DQ_foobar_DQ_} ! DQ protects '"'
-let a = {SPAWN:_DQ_ls "weird_name1.cdf"_DQ_,_DQ_foobar_DQ_}
+list    {SPAWN:_DQ_ls "data/weird_name1.cdf"_DQ_,_DQ_foobar_DQ_} ! DQ protects '"'
+let a = {SPAWN:_DQ_ls "data/weird_name1.cdf"_DQ_,_DQ_foobar_DQ_}
 list a
 
 ! ======
@@ -163,13 +163,13 @@ DEFINE ATTR foobar.some_text = _DQ_"quoted attribute"_DQ_ ! DQ protects '"'
 SHOW ATTRIBUTE/ALL foobar
 
 ! ======
-SPAWN    "ls weird_name1.*"
-SPAWN _DQ_ls weird_name1.*_DQ_
+SPAWN    "ls data/weird_name1.*"
+SPAWN _DQ_ls data/weird_name1.*_DQ_
 
 ! ======
-LET a = {"first.nc", SPAWN:   "ls weird_name1.*"   ,"last.nc"}
+LET a = {"first.nc", SPAWN:   "ls data/weird_name1.*"   ,"last.nc"}
 LIST a
-LET a = {"first.nc", SPAWN:_DQ_ls weird_name1.*_DQ_,"last.nc"}
+LET a = {"first.nc", SPAWN:_DQ_ls data/weird_name1.*_DQ_,"last.nc"}
 LIST a
 
 ! =========================

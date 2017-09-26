@@ -1,4 +1,4 @@
-## FERRET benchmarks README file
+## PyFerret benchmarks README file
 
 Running the benchmarks and interpreting results. There are two methods 
 for running the benchmarks.
@@ -8,9 +8,8 @@ each test, and does not display any plots. Expected results are given under
 the `bench/test_results` directory.
 
 The manual testing uses a script to run all the tests in a single instance of 
-pyferret. Plots are displayed as the tests are run. Expected results are given 
-by the `bench/ansley_official*` files as well as under the `metafile_masters*` 
-subdirectories.
+pyferret. Plots are displayed as the tests are run. Expected results from 
+**ferret** are given by the `bench/ansley_official*` files.
 
 Note that these tests expect the nco utility programs `ncdump` and `ncatted` 
 to be found on the system path. If there programs do not exist the tests will 
@@ -83,7 +82,7 @@ where the name contains the date and time of the benchmark run, and the extensio
 refers to the machine type or operating system. In addition a number of plot 
 output files are created and compared to reference output by the benchmark script.
 
-In the benchmark directory are "official" **Ferret** output files from supported 
+In the benchmark directory are "official" output files from **ferret** from supported 
 operating systems. To compare your output logs, choose one to compare with your 
 output. There are lines in the benchmark output which may differ from one run of 
 the benchmarks to another and which do not indicate problems with the benchmark 

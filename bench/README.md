@@ -84,8 +84,9 @@ In the benchmark directory are "official" output files from supported operating
 systems. To compare your output logs, choose one to compare with your output. 
 There are lines in the benchmark output which may differ from one run of the 
 benchmarks to another and which do not indicate problems with the benchmark run. 
-We may remove them by running the script `clean_ultra` and piping the output to 
-a new file, for the official benchmark log file and the one just created:
+We may remove them by running the script `clean_ultra` (or `clean_draconian`) 
+and piping the output to a new file, for the official benchmark log file and 
+the one just created:
 
 > $ clean_ultra ansley_official.x86_64-linux_log \> cleaned_ansley_official.x86_64-linux_log  
 > $ clean_ultra all_01nov16at0959.x86_64-linux_log \> cleaned_all_01nov16at0959.x86_64-linux_log  

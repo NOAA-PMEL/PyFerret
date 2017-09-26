@@ -58,6 +58,8 @@
 * should be discouraged.
 
 * V702  3/17 *sh* Code extracted from IS_STRIP and several refinements added
+* V7.21 9/17 *acm Fix ticket 2561. Multiple transformations and multiple-axis 
+*                 transformations on the split axis.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -271,6 +273,12 @@
 	   split_on_compressed_ax = ax_trans .GT. trans_compress_code
 	   IF (split_on_compressed_ax
      .    .AND. .NOT.multiax_trans(split_ax)  )   CYCLE
+
+* When there are multiple transformations in the expression and 
+* multiple-axis transformations on the split axis, the gather 
+* was returning only the last chunk of the split.
+
+	   IF (split_on_compressed_ax .AND. n_dfrnt_xforms .GT. 1) CYCLE
 
 * By how much does the source data exceed the available space?
 * For a compressing calculation like @AVE

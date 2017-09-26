@@ -104,6 +104,16 @@ else
     fi
 fi
 
+## Add $pysite/pyferret to the shared-object library search path given 
+## by LD_LIBRARY_PATH so libpyferret.so will be found by the Fortran EFs.
+if [ -z "${LD_LIBRARY_PATH}" ]; then
+    export LD_LIBRARY_PATH="${pysite}/pyferret"
+else
+    if ! echo "${LD_LIBRARY_PATH}" | grep -q "^${pysite}/pyferret"; then
+        export LD_LIBRARY_PATH="${pysite}/pyferret:${LD_LIBRARY_PATH}"
+    fi
+fi
+
 ## Faddpath: a tool to quickly add paths to the search lists
 Faddpath() { if [ -n "$*" ]
              then

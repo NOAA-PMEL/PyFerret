@@ -104,6 +104,16 @@ else
     endif
 endif
 
+## Add $pysite/pyferret to the shared-object library search path given 
+## by LD_LIBRARY_PATH so libpyferret.so will be found by the Fortran EFs.
+if ( ! $?LD_LIBRARY_PATH ) then
+    setenv LD_LIBRARY_PATH "${pysite}/pyferret"
+else
+    if ( "${LD_LIBRARY_PATH}" !~ "${pysite}/pyferret*" ) then
+        setenv LD_LIBRARY_PATH "${pysite}/pyferret:${LD_LIBRARY_PATH}"
+    endif
+endif
+
 ## Faddpath: a tool to quickly add paths to the search lists
 alias Faddpath 'if ( "\!*" != "" ) then \
                    setenv FER_GO "$FER_GO \!*" \

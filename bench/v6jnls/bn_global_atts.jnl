@@ -1,0 +1,30 @@
+! bn_global_atts
+! NOTE With the fix for ticket 2241, we need to add CANCEL MODE UPCASE.
+
+cancel mode upcase
+
+sp cp data/global.nc  global_copy.nc
+use global_copy.nc
+! Lon in 0-360
+let/title="longitude"/units="degrees_east" lon360 = IF longitude LT 0 THEN longitude+360 else longitude
+define attribute/output lon360.ioos_category = "Location"
+define attribute/output lon360.standard_name = "Longitude"
+define attribute/output lon360.history = "added to test_save_dsg.nc"
+save/quiet/append/file=global_copy.nc lon360
+sp ncdump -h data/global.nc
+sp ncdump -h global_copy.nc
+
+! This dataset has global attributes history and Conventions that include
+! a Ferret version and CF version that Ferret will replace.
+
+sp ncgen -o anew_global.nc data/anew_global.cdl
+use anew_global.nc
+sh att .
+let var = 8
+save/append/file=anew_global.nc  var
+can dat/all; use anew_global.nc
+sh att .
+
+
+set mode/last upcase
+

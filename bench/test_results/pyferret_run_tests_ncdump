@@ -3092,6 +3092,7 @@ variables:
 *** Running ferret script: bn_transp_choose.jnl
 *** Running ferret script: bn_iin_regrid.jnl
 *** Running ferret script: bn721_bug_fixes.jnl
+*** Running ferret script: bn722_bug_fixes.jnl
 *** Running ferret script: bn_tseries_modulo.jnl
 *** Running ferret script: bn_huge_axis.jnl
 *** Running ferret script: bn_gif.jnl

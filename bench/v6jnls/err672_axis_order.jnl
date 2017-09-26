@@ -1,0 +1,13 @@
+! err672_axis_order   
+! See comment 5 under ticket 1774.
+
+
+use err67_axis_order.nc
+sp cp data/err67_axis_order.nc err67_axis_order_copy.nc
+use err67_axis_order_copy.nc
+sh dat
+
+! Listings should be identical with the bug they are reversed.
+list/k=3/i=1 ucov[d=1]
+list/k=3/i=1 ucov[d=2]
+

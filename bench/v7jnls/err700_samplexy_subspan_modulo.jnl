@@ -1,0 +1,64 @@
+! err700_samplexy_subspan_modulo.jnl
+! 7/29/2016 ACM
+! Ticket 2458. The result of SAMPLEXY wrong when it needs
+! to do a modulo operation on a subspan modulo axis
+
+! Define a grid with a subspan longitude axis
+
+define axis/x=-100:-60:5/units=degrees_east xaxis
+define axis/y=18:30:2/units=degrees_north yaxis
+let var = x[gx=xaxis]+100 + 0.3*y[gy=yaxis]
+
+save/clobber/file=a.nc var
+can var/all; use a
+
+list/y=22 var
+list samplexy(var, {-80,80}, {22,22}) 
+
+list samplexy(var, -80, 22)       ! this is ok, in the native range of the axis
+list samplexy(var, `360-80`, 22)  ! this was wrong
+list samplexy_closest(var, `360-80`, 22)  ! is ok
+
+! Looking for a point that is not, even in a modulo sense, in the subpsan axis
+
+list samplexy(var, {-80,80}, {22,22})
+list samplexy(var, {`360-80`,80}, {22,22})
+list samplexy_closest(var, {`360-80`,80}, {22,22})
+
+! interpolation between grid points
+
+cancel mode interpolate
+list/y=21.2/x=277.7 var
+set mode interpolate; list/y=21.2/x=277.7 var; cancel mode interpolate
+
+! These should match the MODE INTERPOLATE result (the second was wrong).
+
+list samplexy(var, {-82.3,82.3}, {21.2,21.2})
+list samplexy(var, {`360-82.3`,82.3}, {21.2,21.2})
+
+! this should match the non-MODE INTERPOLATE result
+list samplexy_closest(var, {`360-82.3`,82.3}, {21.2,21.2})
+
+can dat/all
+
+! Test samplexyt functions
+
+define axis/t=1:5:1 tax
+let vart = x[gx=xaxis]+100 + 0.3*y[gy=yaxis] + 0*t[gt=tax]
+save/clobber/file=a.nc vart
+can var/all; use a
+
+list vart[x=-80,y=21,t=2]
+list samplexyt(vart, {-82.3,82.3}, {21.2,21.2}, {2,2})
+list samplexyt(vart, {`360-82.3`,82.3}, {21.2,21.2}, {2,2})
+list samplexyt_nrst(vart, {`360-82.3`,82.3}, {21.2,21.2}, {2,2})
+
+! Full-span modulo grid is ok
+
+use coads_climatology
+list/l=1/x=-80/y=22 sst
+list samplexy(sst[l=1], -80, 22)
+list samplexy(sst[l=1], `360-80`, 22)
+list samplexy_closest(sst[l=1], `360-80`, 22)
+
+list samplexyt(sst, -80, 22, `t[gt=sst,l=1]`)

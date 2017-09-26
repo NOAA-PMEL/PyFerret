@@ -1,0 +1,24 @@
+! Ticket 2128: if no extension, we should try .cdf, .nc, .des
+!  but .des was not being tried.
+
+! The directory contains files with all three extensions
+sp ls data/duplicate.*
+
+! The one that's used is .nc
+use duplicate
+sh dat
+
+set mode ignore
+! Specify a nonexistent file with an extension
+use nosuchfile.nc
+
+! Specify a nonexistent file, no extension
+use nosuchfile
+
+! There is a file called snoopy.dat but not .cdf, .nc, or .des
+! Check for correct error messages.
+use snoopy
+
+use snoopy.dat
+
+set mode/last ignore

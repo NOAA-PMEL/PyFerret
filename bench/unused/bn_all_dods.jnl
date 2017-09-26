@@ -1,0 +1,7 @@
+! take delta strides into account when determining the size
+! over which to apply bad data replacement
+GO bn_reset
+GO err540_dods_bad_strides.jnl
+! test dods access on bad/unknown dataset.  old bug behaviour
+GO bn_reset
+GO err540_dods_bad_dataset.jnl

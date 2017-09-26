@@ -1,5 +1,4 @@
 *** Running ferret script: bn_syntax.jnl
-           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
@@ -137,14 +136,14 @@ IF 0 THEN say ERROR ELIF 1 THEN say "CORRECT if you see this"
  **ERROR: command syntax: Trash after ENDIF
           IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
 IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
-           *** NOTE: Unclosed IF statement ... assuming ENDIF, in script ./bn_if.sub
+           *** NOTE: Unclosed IF statement ... assuming ENDIF, in script ./v4jnls/bn_if.sub
  **ERROR: invalid command: ELSE can only be used between IF and ENDIF
 else
  **ERROR: invalid command: ENDIF can only be used in an IF clause
 endif
  **ERROR: invalid command: ELIF can only be used between IF and ENDIF
 elif
-           *** NOTE: Unclosed IF statement ... assuming ENDIF, in script ./bn_if.jnl
+           *** NOTE: Unclosed IF statement ... assuming ENDIF, in script ./v4jnls/bn_if.jnl
 *** Running ferret script: bn_expressions.jnl
  **ERROR: command syntax: IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
           Cannot use multiple IFs in an expression
@@ -513,7 +512,7 @@ plot/xlimits=5:5 i
 *** Running ferret script: bn_mc.jnl
  **TMAP ERR: Attempt to access unsupported feature
              Descriptor requests delta of 0, please use 1
-             Data set: ./coads_clim_bad_delta.des
+             Data set: ./data/coads_clim_bad_delta.des
 set data coads_clim_bad_delta.des
  **TMAP ERR: error in line definition
              A gap or overlap exists in time axis
@@ -995,12 +994,12 @@ Replacing definition of axis TAX
 Replacing definition of grid G1
  **TMAP ERR: syntax error in string
              Unrecognized field type: DA2
-             Data set: ./bn_delimited_read_date_time.dat
+             Data set: ./data/bn_delimited_read_date_time.dat
            *** NOTE: Valid types are: -,NUMERIC,TEXT,LATITUDE,LONGITUDE,DATE,EURODATE,TIME,DATIME,EDATIME
 SET DATA/FORM=delimited/type="d, da2,date2"  bn_delimited_read_date_time.dat
  **TMAP ERR: syntax error in string
              Unrecognized field type: DATE2
-             Data set: ./bn_delimited_read_date_time.dat
+             Data set: ./data/bn_delimited_read_date_time.dat
            *** NOTE: Valid types are: -,NUMERIC,TEXT,LATITUDE,LONGITUDE,DATE,EURODATE,TIME,DATIME,EDATIME
 SET DATA/FORM=delimited/type="da,da, date2"  bn_delimited_read_date_time.dat
  **ERROR: command syntax: ,,:
@@ -1083,7 +1082,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: regarding ./test_axes.nc ...
+           *** NOTE: regarding ./data/test_axes.nc ...
            *** NOTE: Climatological axes test_irreg, test_seas defined
  LISTing to file longaxspace.dat
 *** Running ferret script: bn542_bug_fixes.jnl
@@ -1103,7 +1102,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: regarding ./test_axes.nc ...
+           *** NOTE: regarding ./data/test_axes.nc ...
            *** NOTE: Climatological axes test_irreg, test_seas defined
            *** NOTE: Not deleted: TEST_IRREG
            *** NOTE: Axis is in use by grid (G###)
@@ -2175,7 +2174,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
            *** NOTE: Units on axis "ALTITUDE" are not recognized: Pa
            *** NOTE: They will not be convertible:
-           *** NOTE: regarding ./climatological_axes.cdf ...
+           *** NOTE: regarding ./data/climatological_axes.cdf ...
            *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
            *** NOTE: Coordinates out of order or missing on axis UNORDERED_AXIS at subscript 4
            *** NOTE: A dummy axis of subscripts will be used
@@ -3013,7 +3012,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
-           *** NOTE: ./err672_vert_axislabel.jnl
+           *** NOTE: ./v6jnls/err672_vert_axislabel.jnl
            *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
            *** NOTE: Adjusting Y-axis label size from 0.100 to 0.030, to avoid running off page.
  PERMANENT data cleared from memory
@@ -3423,7 +3422,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: regarding ./climatological_axes.cdf ...
+           *** NOTE: regarding ./data/climatological_axes.cdf ...
            *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3975,7 +3974,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **TMAP ERR: error in axis attributes
              Calendar definitions on T and F axes must match
-             Data file: ./ft_cal_one.nc
+             Data file: ./data/ft_cal_one.nc
 SET DAT/FORM=CDF ft_cal_mixed.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4506,7 +4505,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: Unclosed IF statement ... assuming ENDIF, in script ./unclosed_if.sub
+           *** NOTE: Unclosed IF statement ... assuming ENDIF, in script ./v7jnls/unclosed_if.sub
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5146,6 +5145,13 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+*** Running ferret script: bn722_bug_fixes.jnl
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ TEMPORARY data cleared from memory
+ TEMPORARY data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running ferret script: bn_tseries_modulo.jnl
 *** Running ferret script: bn_huge_axis.jnl
  LISTing to file a.nc

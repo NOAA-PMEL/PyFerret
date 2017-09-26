@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 111680344 Sep 14 14:57 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 111686240 Sep 25 11:05 /home/users/ansley/build/working/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Merging dynamic-coordinates changes
+Note: fix for ticket 2561 in setup_gather, new benchmark test
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,21 +13,20 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
-PWD=/home/users/ansley/build/trunk/FERRET/bench
+PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Thu Sep 14 15:23:13 PDT 2017
+Beginning at Mon Sep 25 11:41:29 PDT 2017
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_syntax
-           *** NOTE: /FILES is deprecated.  Use /MEMBERS
         SET EXPRESSION has not been given or implied
  **ERROR: unknown command qualifier: notaqualifier
 MESSAGE/CONTINUE/notaqualifier
@@ -4755,9 +4754,9 @@ Starting test: bn_spawn_size
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_polygon_log
- **ERROR: value out of legal range: X coordinates on log axis negative or too small : -0.850
+ **ERROR: value out of legal range: Limits for log axis negative or too small: -1.35 : 1.01
 poly/i=1:100/vlog xbad+xsqr,ybad+ysqr,x*x/10
- **ERROR: value out of legal range: X coordinates on log axis negative or too small : -0.689E-02
+ **ERROR: value out of legal range: Limits for log axis negative or too small: -2.73 : 0.278
 poly/i=1:100/hlog xbad+xsqr,ybad+ysqr,x*x/10
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -5336,9 +5335,9 @@ go/garbage tmp/testMe
  **ERROR: unknown command qualifier: garbage
 go/garbage "tmp/testMe"
  **ERROR: unknown command qualifier: garbage
-go/garbage /home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl
+go/garbage /home/users/ansley/build/working/FERRET/bench/tmp/testMe.jnl
  **ERROR: unknown command qualifier: garbage
-go/garbage "/home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl"
+go/garbage "/home/users/ansley/build/working/FERRET/bench/tmp/testMe.jnl"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6206,6 +6205,7 @@ Replacing definition of axis aline_edges
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn721_bug_fixes
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6215,9 +6215,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_tseries_modulo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_huge_axis
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -6343,4 +6345,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Sep 14 15:30:06 PDT 2017
+Ended at Mon Sep 25 11:47:54 PDT 2017

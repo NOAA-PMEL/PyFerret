@@ -1,0 +1,19 @@
+! bn_conventions_history.jnl
+! ticket 2169: 
+! Write conventions CF-1.6
+! When appending to the Conventions and history 
+! attribute, add the new stuff with a comma and newline.
+
+sp cp data/conventions_history_in.nc conventions_history.nc
+use conventions_history
+!
+!  The existing global attributes
+sh att .
+!
+! Write to the file
+let v3 = v1+v2
+save/append/file=conventions_history.nc v3
+can dat/all; use conventions_history
+!
+! The new attibutes
+sh att .

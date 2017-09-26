@@ -1,0 +1,5 @@
+! bn_all_ef_shell.jnl
+! 5/05 *acm*
+! run bn_all_ef tests
+
+GO bn_all_ef

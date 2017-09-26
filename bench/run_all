@@ -220,14 +220,7 @@ echo "Beginning at $now" >>&$log_file
 cp $log_file $err_file
 echo "Beginning at $now"
 
-# $fver <bn230_all.jnl >>&$log_file        ! problem with missing lines in log
-# $fver <bn230_all_shell.jnl >>&$log_file  ! mixes error lines erratically
-#($fver <bn230_all_shell.jnl >>$log_file) >>&$err_file
-#($fver <bn300_all_shell.jnl >>$log_file) >>&$err_file
-#($fver <bn301_all_shell.jnl >>$log_file) >>&$err_file
-#($fver <bn311_all_shell.jnl >>$log_file) >>&$err_file
-#($fver <{$bver}_all_shell.jnl >>$log_file) >>&$err_file
-(($fver -script bn_all_shell.jnl) >>$log_file) >>&$err_file
+($fver -script genjnls/bn_all_shell.jnl >>$log_file) >>&$err_file
 
 # check status before continuing *kob* 4/98
 if ($status) then
@@ -237,7 +230,7 @@ endif
 
 # 5/05 *acm* run tests of externally-linked external functions
 if ( $do_shared_obj == "y" ) then
-  ($fver <bn_all_ef_shell.jnl >>$log_file) >>&$err_file
+  ($fver < genjnls/bn_all_ef_shell.jnl >>$log_file) >>&$err_file
 endif
 
 # Append the ncdump output file to the log file
@@ -250,18 +243,6 @@ echo  "end of ncdump output" >>&$log_file
 echo  " " >>&$log_file
 mv $ncdump_file $ncdump_log
 
-# Now, lets restart ferret and run the bug fix journal file
-# 3.4.98 - moved this to bn491_all *kob*
-#($fver <{$bver}_bug_fixes.jnl >>$log_file) >>&$err_file
-
-# *kob* 11/96 - test out batch ability of ferret
-#set hold_display = $DISPLAY
-#setenv DISPLAY ralf
-#echo "Display now set to "$DISPLAY >>&$log_file
-#($fver < bn430_batch.jnl >> $log_file) >>&$err_file
-#setenv DISPLAY $hold_display
-#echo "Display now set to "$DISPLAY >>&$log_file
-
 echo "about to run test of .ferret script"
 if (-e $HOME/.ferret) then 
   rm -f ./keep.ferret
@@ -270,7 +251,7 @@ if (-e $HOME/.ferret) then
 endif
 
 cp -f ferret_startup $HOME/.ferret
-($fver  <bn_startupfile_shell.jnl >> $log_file) >>& $err_file
+($fver  < genjnls/bn_startupfile_shell.jnl >> $log_file) >>& $err_file
 rm -f $HOME/.ferret
 
 if (-e keep.ferret) then 
@@ -280,11 +261,11 @@ endif
 set hold_display = $DISPLAY
 unsetenv DISPLAY
 echo "Display no longer set, about to run batch gif test"
-($fver -gif <bn_gif_shell.jnl >> $log_file) >>& $err_file
+($fver -gif < genjnls/bn_gif_shell.jnl >> $log_file) >>& $err_file
 echo "Display still not set, about to run batch ps test"
-($fver -batch bnplot.ps <bn_ps_shell.jnl >> $log_file) >>& $err_file
+($fver -batch bnplot.ps < genjnls/bn_ps_shell.jnl >> $log_file) >>& $err_file
 echo "Display still not set, about to run batch metafile test"
-($fver -batch bat.plt <bn_batch_metafile_shell.jnl >> $log_file) >>& $err_file
+($fver -batch bat.plt < genjnls/bn_batch_metafile_shell.jnl >> $log_file) >>& $err_file
 setenv DISPLAY $hold_display
 #echo "Display now set to "$DISPLAY >>&$log_file
 

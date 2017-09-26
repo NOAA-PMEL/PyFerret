@@ -23,7 +23,7 @@ Build and install ferret, including setting the ferret environment variables
 using the appropriate `ferret_paths` script. You may wish to check that ferret
 is running properly, for example:
 
-> \> ferret  
+> $ ferret  
 > yes? use coads_climatology  
 > yes? shade /l=5 sst  
 > yes? quit  
@@ -42,7 +42,7 @@ output saved to `*.diff` files.
 After building Ferret, make a few simple tests for command-line reading,
 script reading, file reading, for example:
 
-> \> ferret  
+> $ ferret  
 > yes? list/L=1:5 L  
 > yes? go ptest  
 >  
@@ -87,9 +87,9 @@ benchmarks to another and which do not indicate problems with the benchmark run.
 We may remove them by running the script `clean_ultra` and piping the output to 
 a new file, for the official benchmark log file and the one just created:
 
-> \> clean_ultra ansley_official.x86_64-linux_log \> cleaned_ansley_official.x86_64-linux_log  
-> \> clean_ultra all_01nov16at0959.x86_64-linux_log \> cleaned_all_01nov16at0959.x86_64-linux_log  
-> \> xdiff cleaned_ansley_official.x86_64-linux_log cleaned_all_01nov16at0959.x86_64-linux_log  
+> $ clean_ultra ansley_official.x86_64-linux_log \> cleaned_ansley_official.x86_64-linux_log  
+> $ clean_ultra all_01nov16at0959.x86_64-linux_log \> cleaned_all_01nov16at0959.x86_64-linux_log  
+> $ diff cleaned_ansley_official.x86_64-linux_log cleaned_all_01nov16at0959.x86_64-linux_log  
 
 Some differences will still always exist: 
 

@@ -5,7 +5,7 @@
 !  8/2016 *acm*
 
 sp ls notafile.nowhere
-sp grep "this text is not in the file" bn_all.jnl
+sp grep "this text is not in the file" genjnls/bn_all.jnl
 sp rm nothing.dat
 sp grep modulus data/non_COARDS.cdl
 sp cp nofile.dat not_either.dat

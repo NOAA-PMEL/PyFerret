@@ -97437,7 +97437,7 @@ set mode/last upcase
 !  8/2016 *acm*
  
 sp ls notafile.nowhere
-sp grep "this text is not in the file" bn_all.jnl
+sp grep "this text is not in the file" genjnls/bn_all.jnl
 sp rm nothing.dat
 sp grep modulus data/non_COARDS.cdl
 sp cp nofile.dat not_either.dat
@@ -105255,8 +105255,8 @@ PROGRAM_NAME = "Ferret"
 PEAK_MEMORY = "0"
 SPAWN_OK = "1"
 SPAWN_STATUS = "0"
-GO_FILE = "./bn_startupfile.jnl"
-LAST_GO_FILE = "./bn_startupfile.jnl"
+GO_FILE = "./genjnls/bn_startupfile.jnl"
+LAST_GO_FILE = "./genjnls/bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
 PPL$PLTNME = ".gif"
 PPL$TEKNME = "/dev/tt"

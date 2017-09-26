@@ -119,10 +119,8 @@ set bcomment = "$<"
 set date_stamp = `date +'%d%h%yAT%H%M'|tr '[A-Z]' '[a-z]'`
 set log_file = "all_${date_stamp}.${machine}_log"
 set err_file = "all_${date_stamp}.${machine}_err"
-set plt_file = "all_${date_stamp}.${machine}_plt"
-set ncdump_log = "all_${date_stamp}.${machine}_ncdump"
 set ncdump_file = "all_ncdump.out"
-rm -f ncdump_file $ncdump_file
+rm -f $ncdump_file
 echo " " > $ncdump_file
 
 #set up external functions search path
@@ -204,16 +202,14 @@ echo "Note: $bcomment" >>&$bench_hist
 touch F.cdf snoopy.dat
 set temp_files = "test.dat test.gt test.unf WV.J34K56L7 F*.cdf test*.cdf newjournal.jnl fort.41 bench.mgm"
 foreach file ($temp_files)
-      /bin/rm -f $file
+      rm -f $file
 end
 
 # 10/97 *kob* mv last created bnplot files to the last_plot directory
-#  4/11 *acm* mv last created bat.plt* files to the last_plot directory
-mv bn*.plt* last_plot
-mv bat*.plt* last_plot
-mv p*.plt* last_plot
-mv bn*.gif* last_plot
-mv bn*.ps* last_plot
+mv -f *.png* last_plot
+mv -f *.pdf* last_plot
+mv -f *.ps* last_plot
+mv -f *.eps* last_plot
 
 set now = `date`
 echo "Beginning at $now" >>&$log_file
@@ -241,7 +237,6 @@ cat  $ncdump_file >>& $log_file
 echo  "-----" >>&$log_file
 echo  "end of ncdump output" >>&$log_file
 echo  " " >>&$log_file
-mv $ncdump_file $ncdump_log
 
 echo "about to run test of .ferret script"
 if (-e $HOME/.ferret) then 
@@ -273,45 +268,6 @@ set now = `date`
 echo  "Ended at $now" >>&$err_file
 echo  "Ended at $now" >>&$log_file
 echo  "Ended at $now"
-
-# *kob* 8/96
-if ( $HOSTTYPE =~ *hp* ) then
-  sed 's/@ASFERRET .*Ver.*$/@ASFERRET ... whatever version number .../' <ftn41 >$plt_file
-else
-  sed 's/@ASFERRET .*Ver.*$/@ASFERRET ... whatever version number .../' <fort.41 >$plt_file
-endif
-
-#clean_bench_log $log_file
-#echo "Remember to remove metafiles, if any"
-
-#rename plt and gif files - necessary for saving them under cvs
-set count = 1
-while ($count < 5)
-    mv bnplot.plt.~$count~ bnplot-$count.plt
-    @ count++
-end
-
-
-mv new.plt bat.plt_9
-mv bat.plt bat.plt_8
-set count = 1
-while ($count < 8)
-    mv bat.plt.~$count~ bat.plt_$count
-    @ count++
-end
-
-# AIX systems don't put leading zeros on numbers like 0.5
-if ( $HOSTTYPE =~ *aix* ) then
-  mv $plt_file temp.tmp
-  sed -e 's/ \.\([0-9]\)/0.\1/g' -e 's/ -\.\([0-9]\)/-0.\1/g' temp.tmp > $plt_file
-  rm temp.tmp
-  mv $log_file temp.tmp
-  sed -e 's/ \.\([0-9]\)/0.\1/g' -e 's/ -\.\([0-9]\)/-0.\1/g' temp.tmp > $log_file
-endif
-
-#let's check the plt and gif and ps files to make sure they look okay
-echo "Checking PLT, GIF and PS files......."
-./$check_met
 
 #Note about checking transparency
 echo "open test_trans.html in a browser to test transparency option in gif mode. The continents should be gray"

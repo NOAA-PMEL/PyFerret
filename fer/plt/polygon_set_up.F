@@ -142,6 +142,7 @@
 *                   all-missing it returns arbitrary_large_val4.
 * V71  *acm* 2/17  More on ticket 2231. New argument to FULL_VAR_TITLE to control units labels
 * V72  *acm* 3/17  For ticket 2517, changes to arguments in calls to AXIS_ENDS
+* v722 *acm* 9/17  Fixes for 2562, polymark and other polygons over log axis.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -204,14 +205,14 @@
      .			phlim, pvlim, pxdenig, pydenig,
      .                  cal_id, tax, x_axtyp, y_axtyp, n,
      .			ss_x_save, ss_y_save, mvh_temp, ier, nc, skipsym,
-     .			nsiz, ngood
+     .			nsiz, ngood, count
 
 	REAL		x_len, y_len, lo, hi, lox, hix, loy, hiy,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
      .			dt_min, epsilon, small, scale,
      .			xptsmin, xptsmax, xptsmean, xdif, xmeanlog,
      .			yptsmin, yptsmax, yptsmean, ydif, ymeanlog,
-     .                  first, last
+     .                  first, last, val
 
 	REAL*8		vmin, vmax, delta, ind_min, ind_max, dep_min,
      .			dep_max
@@ -569,11 +570,12 @@ c	ind_dim = plot_axis(1)
 
 	      xptsmin = ABS(mr_bad_data(mr_x))
 	      xptsmax = -1.* xptsmin
-
+	      count = 0
 	      DO 400 i = 1, npts
 		 IF (x_dat(i) .NE. mr_bad_data(mr_x)) THEN 
 		    xptsmin = MIN(xptsmin, x_dat(i))
 		    xptsmax = MAX(xptsmax, x_dat(i))
+		    count = count+1
 		 ENDIF
   400         CONTINUE
 
@@ -582,15 +584,18 @@ c	ind_dim = plot_axis(1)
 *  Convert the x midpoint to log units, and put the other x points
 *  on the page scaled by the axis ends xlo and xhi
 
+	      scale = 0.5* ABS(xhi-xlo)	! log axis units
+	      scale = 1.
+
 	      IF (xptsmean .GT. epsilon) THEN
 		 xmeanlog = LOG10(xptsmean)
-		 scale = 0.1* (xhi-xlo)	! log axis units
 
 		 DO 410 i = 1, npts
+		    val = x_dat(i)
 		    xdif = scale*(x_dat(i) - xptsmean)
 		    x_dat(i) = xmeanlog + xdif
   410		 CONTINUE
-	      ELSE
+	      ELSEIF (count.GT.0) THEN
 		 small = xptsmean
 		 GO TO 5600
 	      ENDIF
@@ -606,11 +611,12 @@ c	ind_dim = plot_axis(1)
 
 	      yptsmin = ABS(mr_bad_data(mr_y))
 	      yptsmax = -1.* yptsmin
-
+	      count = 0
 	      DO 500 i = 1, npts
 		 IF (y_dat(i) .NE. mr_bad_data(mr_y)) THEN 
 		    yptsmin = MIN(yptsmin, y_dat(i))
 		    yptsmax = MAX(yptsmax, y_dat(i))
+		    count = count+1
 		 ENDIF
   500         CONTINUE
 
@@ -619,15 +625,17 @@ c	ind_dim = plot_axis(1)
 *  Convert the y midpoint to log units, and put the other Y points
 *  on the page scaled by the axis ends ylo and yhi
 
+	      scale = 0.5* ABS(yhi-ylo)	! log axis units
+	      scale = 1.
 	      IF (yptsmean .GT. epsilon) THEN
 		 ymeanlog = LOG10(yptsmean)
-		 scale = 0.1* (yhi-ylo)	! log axis units
 
 		 DO 510 i = 1, npts
+		  val = y_dat(i)
 		    ydif = scale*(y_dat(i) - yptsmean)
 		    y_dat(i) = ymeanlog + ydif
   510		 CONTINUE
-	      ELSE
+	      ELSEIF (count.GT.0) THEN
 		 small = yptsmean
 		 GO TO 5600
 	      ENDIF
@@ -701,7 +709,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 *  If the axis is 7 (abstract) then dont do the check either.
                  tax = grid_line(f_dim,cx_grid(cx_x ))
                  IF (tax.EQ.mnormal) tax = grid_line(t_dim,cx_grid(cx_x ))
-		 IF (STR_SAME(line_name(tax),'ABSTRACT') .NE. 0) THEN 
+                 IF (STR_SAME(line_name(tax),'ABSTRACT') .NE. 0) THEN 
                     cal_name = line_cal_name(tax)
                     cal_id = TM_GET_CALENDAR_ID ( cal_name )
                     IF (cal_id .NE. saved_calendar_id) GO TO 5360
@@ -1017,7 +1025,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 *  Check for valid log axis before proceeding if log and limits are given
 	      IF (is_logx) THEN
-	          CALL AXIS_ENDS(x_ax, coord_dim, cx_grid(cx_x), vmin, 
+	         IF (vmin .NE. vmax) CALL AXIS_ENDS(x_ax, coord_dim, cx_grid(cx_x), vmin, 
      .			     vmax, delta, x_is_log, x_axtyp, vflag, status )
 	         IF ( status .NE. ferr_ok ) THEN
                     first = vmin
@@ -1052,8 +1060,13 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 		 GOTO 5400
 	      ENDIF
 	   ELSE
+* ...  lox and hix  are log values, AXIS_ENDS expects not-log
+	      IF (x_is_log) THEN
+	         lox = 10.** lox
+		 hix = 10.** hix
+              ENDIF
               CALL AXIS_ENDS(x_ax,coord_dim,cx_grid(cx_x),
-     .	       DBLE(lox),DBLE(hix), delta, x_is_log, x_axtyp, vflag, status )
+     .	       lox, hix, delta, x_is_log, x_axtyp, vflag, status )
 	      IF ( status .NE. ferr_ok ) THEN
 		 first = lox
 		 last = hix
@@ -1093,7 +1106,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 *  Check for valid log axis before proceeding if log and limits are given
 	      IF (y_is_log) THEN 
-                 CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
+                 IF (vmin.NE.vmax) CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
      .			     vmin,vmax,delta, y_is_log, y_axtyp, vflag, status )
 	         IF ( status .NE. ferr_ok ) THEN
 		    first = vmin
@@ -1126,8 +1139,13 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 		 GOTO 5400
 	      ENDIF
 	   ELSE
+* ...  loy and hiy are log values, AXIS_ENDS expects not-log	   
+              IF (y_is_log) THEN
+	         loy = 10.** loy
+		 hiy = 10.** hiy
+              ENDIF
               CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
-     .		DBLE(loy),DBLE(hiy), delta, y_is_log, y_axtyp, vflag, status )
+     .		loy, hiy, delta, y_is_log, y_axtyp, vflag, status )
 	      IF ( status .NE. ferr_ok ) THEN
 		 first = loy
 		 last = hiy
@@ -1302,6 +1320,6 @@ C	   slen = TM_LENSTR1( plot_title )
 
  5600	buff3 = LEFT_REAL (small, '(G15.3)', slen)
 	CALL ERRMSG( ferr_out_of_range, status,
-     . 'X coordinates on log axis negative or too small : '//
+     . 'coordinates on log axis negative or too small : '//
      .  buff3(:slen), *5000 )
 	END

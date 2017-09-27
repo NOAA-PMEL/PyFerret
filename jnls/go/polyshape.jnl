@@ -7,6 +7,9 @@
 !  2/09 *acm* add bslash and hslash, and variations on some previous shapes
 !             trianglec and deltac are centered vertically
 !             exc is smaller, as are rectanglec and tallboxc.
+!  9/17 *acm* In order to plot correctly on a log axis, the shapes
+!             need to be symmetric vertically and left to right, fix the
+!             definitions for triangle, delta and star
 
 ! Description: define xpolyshape, ypolyshape variables for polygon fills
 
@@ -39,11 +42,15 @@ query/ignore $1"|triangle|delta|square|diamond|pentagon|hexagon|circle\
 IF $1"|triangle>1|*>0|" THEN
   LET/QUIET xpolyshape = COS(3.14159/180 * X[X=90:`2*120+90`:120])
   LET/QUIET ypolyshape = SIN(3.14159/180 * X[X=90:`2*120+90`:120])
+  LET/QUIET xpolyshape = COS(3.14159/180 * X[X=90:`2*120+90`:120])
+  LET/QUIET ypolyshape = {0.75,-0.75,-0.75}
 ENDIF
 
 IF $1"|delta>1|*>0|" THEN
   LET/QUIET xpolyshape = COS(3.14159/180 * X[X=30:`2*120+30`:120])
   LET/QUIET ypolyshape = SIN(3.14159/180 * X[X=30:`2*120+30`:120])
+  LET/QUIET ypolyshape = {0.75,0.75,-.75}
+
 ENDIF
 
 IF $1"|square>1|*>0|" THEN
@@ -81,7 +88,8 @@ IF $1"|star>1|*>0|" THEN
   !LET/QUIET ypeni = 0.3*SIN(3.14159/180 * X[X=`90-36`:`4*72+90-36`:72])
   !poly/over/line/hlimits=-1:1/vlimits=-1:1 xpeni,ypeni,0
   LET/QUIET xpolyshape = { 0.17634 , 0.00000 , -0.17634, -0.95106,  -0.28532,   -0.58779,    0.00000 ,    0.58778 ,    0.28532 ,    0.95106 }
-  LET/QUIET ypolyshape =  { 0.24270,  1.00000,  0.24271,  0.30902,  -0.09270,   -0.80902,  -0.30000,   -0.80902,   -0.09271,   0.30901 }
+  LET/QUIET ypolyshape =  { 0.1472,  0.9045,  0.1472,  0.2135, -0.1882, -0.9045, -0.3955, -0.9045, -0.1882,  0.2135}
+
 ENDIF
 
 IF $1"|plus>1|*>0|" THEN

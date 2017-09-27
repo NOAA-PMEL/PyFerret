@@ -569,9 +569,11 @@ c	ind_dim = plot_axis(1)
 	      xptsmax = -1.* xptsmin
 	      count = 0
 	      DO 400 i = 1, npts
-		 IF (x_dat(i) .NE. mr_bad_data(mr_x)) THEN 
-		    xptsmin = MIN(xptsmin, x_dat(i))
-		    xptsmax = MAX(xptsmax, x_dat(i))
+		    val = x_dat(i)
+		    IF (val .NE. mr_bad_data(mr_x)) THEN 
+		    IF (val .LE. 0.) GOTO 5500
+		    xptsmin = MIN(xptsmin, val)
+		    xptsmax = MAX(xptsmax, val)
 		    count = count+1
 		 ENDIF
   400         CONTINUE
@@ -610,7 +612,9 @@ c	ind_dim = plot_axis(1)
 	      yptsmax = -1.* yptsmin
 	      count = 0
 	      DO 500 i = 1, npts
+		 val = y_dat(i)
 		 IF (y_dat(i) .NE. mr_bad_data(mr_y)) THEN 
+		    IF (val .LE. 0) GOTO 5500
 		    yptsmin = MIN(yptsmin, y_dat(i))
 		    yptsmax = MAX(yptsmax, y_dat(i))
 		    count = count+1
@@ -1296,8 +1300,10 @@ C	   slen = TM_LENSTR1( plot_title )
      . 'Limits for log axis negative or too small: '//
      .  buff3(:slen)// ' : '//  buff4(:slen2), *5000 )
 
+ 5500	small = val
+
  5600	buff3 = LEFT_REAL (small, '(G15.3)', slen)
 	CALL ERRMSG( ferr_out_of_range, status,
-     . 'X coordinates on log axis negative or too small : '//
+     . 'coordinates on log axis negative or too small : '//
      .  buff3(:slen), *5000 )
 	END

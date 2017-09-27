@@ -569,11 +569,9 @@ c	ind_dim = plot_axis(1)
 	      xptsmax = -1.* xptsmin
 	      count = 0
 	      DO 400 i = 1, npts
-		    val = x_dat(i)
-		    IF (val .NE. mr_bad_data(mr_x)) THEN 
-		    IF (val .LE. 0.) GOTO 5500
-		    xptsmin = MIN(xptsmin, val)
-		    xptsmax = MAX(xptsmax, val)
+		 IF (x_dat(i) .NE. mr_bad_data(mr_x)) THEN 
+		    xptsmin = MIN(xptsmin, x_dat(i))
+		    xptsmax = MAX(xptsmax, x_dat(i))
 		    count = count+1
 		 ENDIF
   400         CONTINUE
@@ -586,7 +584,7 @@ c	ind_dim = plot_axis(1)
 	      scale = 0.5* ABS(xhi-xlo)	! log axis units
 	      scale = 1.
 
-	      IF (ABS(xptsmean) .GT. epsilon) THEN
+	      IF (xptsmean .GT. epsilon) THEN
 		 xmeanlog = LOG10(xptsmean)
 
 		 DO 410 i = 1, npts
@@ -612,9 +610,7 @@ c	ind_dim = plot_axis(1)
 	      yptsmax = -1.* yptsmin
 	      count = 0
 	      DO 500 i = 1, npts
-		 val = y_dat(i)
 		 IF (y_dat(i) .NE. mr_bad_data(mr_y)) THEN 
-		    IF (val .LE. 0) GOTO 5500
 		    yptsmin = MIN(yptsmin, y_dat(i))
 		    yptsmax = MAX(yptsmax, y_dat(i))
 		    count = count+1
@@ -628,7 +624,7 @@ c	ind_dim = plot_axis(1)
 
 	      scale = 0.5* ABS(yhi-ylo)	! log axis units
 	      scale = 1.
-	      IF (ABS(yptsmean) .GT. epsilon) THEN
+	      IF (yptsmean .GT. epsilon) THEN
 		 ymeanlog = LOG10(yptsmean)
 
 		 DO 510 i = 1, npts
@@ -1012,8 +1008,6 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 	IF ( .NOT.overlay ) THEN
 	   delta = unspecified_val8
-	   x_is_log = .FAlSE.  ! already handled /hlog  above
-	   y_is_log = .FAlSE.  ! already handled /vlog 
 * ... X axis
 	   IF ( pxdenig .GT. 0 ) THEN   ! explicit /XLIMITS 10/93
 	      IF (pxlim.GT.0 .AND. .NOT.denig_xylim_msg_done) THEN
@@ -1063,8 +1057,13 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 		 GOTO 5400
 	      ENDIF
 	   ELSE
+* ...  lox and hix  are log values, AXIS_ENDS expects not-log
+	      IF (x_is_log) THEN
+	         lox = 10.** lox
+		 hix = 10.** hix
+              ENDIF
               CALL AXIS_ENDS(x_ax,coord_dim,cx_grid(cx_x),
-     .	       DBLE(lox),DBLE(hix), delta, x_is_log, x_axtyp, vflag, status )
+     .	       lox, hix, delta, x_is_log, x_axtyp, vflag, status )
 	      IF ( status .NE. ferr_ok ) THEN
 		 first = lox
 		 last = hix
@@ -1137,8 +1136,13 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 		 GOTO 5400
 	      ENDIF
 	   ELSE
+* ...  loy and hiy are log values, AXIS_ENDS expects not-log	   
+              IF (y_is_log) THEN
+	         loy = 10.** loy
+		 hiy = 10.** hiy
+              ENDIF
               CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
-     .		DBLE(loy),DBLE(hiy), delta, y_is_log, y_axtyp, vflag, status )
+     .		loy, hiy, delta, y_is_log, y_axtyp, vflag, status )
 	      IF ( status .NE. ferr_ok ) THEN
 		 first = loy
 		 last = hiy
@@ -1299,8 +1303,6 @@ C	   slen = TM_LENSTR1( plot_title )
 	CALL ERRMSG( ferr_out_of_range, status,
      . 'Limits for log axis negative or too small: '//
      .  buff3(:slen)// ' : '//  buff4(:slen2), *5000 )
-
- 5500	small = val
 
  5600	buff3 = LEFT_REAL (small, '(G15.3)', slen)
 	CALL ERRMSG( ferr_out_of_range, status,

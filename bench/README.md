@@ -37,6 +37,17 @@ expected results, with messages output to the console, differences in plots
 (using the `compare` program) saved to `*_diff.gif` files, and differences in 
 output saved to `*.diff` files.
 
+Ideally there would be no `*_diff.gif` files because all the GIF plots are 
+completely identical to the expected results.  However, there are usually some 
+of these plots due to inconsequential differences in the binary output. 
+These `*_diff.gif` plots should be examined to see if there are any real 
+differences in the plots, which are shown in bright solid red against a faded 
+image of the original plot.  Also, ideally the `*.diff` files are empty; if 
+not, the differences should be examined for anything of real significance.
+
+To remove all the files generated from the testing, enter `make clean` when
+in the bench subdirectory.
+
 ### Manual/Displayed testing
 
 After building Ferret, make a few simple tests for command-line reading,

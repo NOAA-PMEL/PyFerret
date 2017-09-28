@@ -62829,7 +62829,7 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v7.22 (beta/debug)"                                               
- 3    /  3:" ! Linux 3.10.0-693.2.2.el7.x86_64 64-bit - MM-DD-YY"                       
+ 3    /  3:" ! Linux 3.10.0-693.2.2.el7.x86_64 64-bit - 09/27/17"                       
  4    /  4:" ! DD-MON-YY HH:MM     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
@@ -103472,6 +103472,54 @@ sh mem/diag
 set mem/siz=25.6  ! return to the default setting
  
  
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err721_polymark_log
+ 
+! err721_polymark_log.jnl
+! Ticket 2562, polymark and other polygons over log axis.
+! 9/26/17 ACM
+ 
+let frqs = {0.01,0.011,0.012,0.013,0.014,0.015,0.025,0.026,0.027,0.028,\
+0.029,0.03,0.031,0.032,0.033,0.08,0.108,0.135,0.193,0.194,0.195,0.196,\
+0.197,0.227,0.228,0.229,0.255,0.256,0.31,0.311,0.312,0.362,0.363,0.364}
+ 
+let phas = {61.099,68.796,79.686,80.292, 104.212, 121.192,93.757,\
+102.549,115.240,112.831,103.433,102.032,105.109,104.216,93.173,-7.041,\
+-133.985,-162.018,161.157,154.128,146.717,140.252,132.944,-29.014,\
+-34.848,-38.376,-109.836,-119.620,12.858,17.047,22.327,-167.776,-169.991,-165.467}
+ 
+! Plots with /HLOG
+set v ul
+plot/hlog/vs/vlim=-180:180:45/nolabs/hlim=0.001:0.1 frqs,phas
+go polymark poly/hlog/over/nolabs/nokey/line/pal=red frqs, phas 1 square 0.6
+ 
+ 
+! more dynamic range
+set v ur
+let frq2 = XCAT(frqs, 10*frqs)
+let phas2 = XCAT(phas,phas)
+plot/hlog/vs/vlim=-180:180:45/nolabs frq2, phas2
+go polymark poly/hlog/over/nolabs/nokey/line/pal=green frq2, phas2 1 delta 0.8
+ 
+ 
+! more still
+set v ll
+let var3 = XCAT(0.1*frqs, frq2)
+let phas3 = XCAT(phas,phas2)
+plot/hlog/vs/vlim=-180:180:45/nolabs var3, phas3
+go polymark poly/hlog/over/nolabs/nokey/line/pal=purple_light var3, phas3 1 star 1.1
+ 
+ 
+! /VLOG
+set v lr
+plot/vlog/vs/hlim=-180:180:45/nolabs phas3, var3
+go polymark poly/vlog/over/nolabs/nokey/line/pal=blue_light phas3, var3 1 circle 0.7
+ 
+ 
+! Note /VLOG/HLOG together make a blank plot. Not worrying about that now.
  
 *** Running ferret script: bn_tseries_modulo.jnl
 ! bn_tseries_modulo.jnl

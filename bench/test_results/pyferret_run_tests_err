@@ -3723,9 +3723,9 @@ list f
  LISTing to file bn_spawn_size12.dat
  LISTing to file bn_spawn_size14.dat
 *** Running ferret script: bn_polygon_log.jnl
- **ERROR: value out of legal range: X coordinates on log axis negative or too small : -0.850
+ **ERROR: value out of legal range: coordinates on log axis negative or too small : -0.850
 poly/i=1:100/vlog xbad+xsqr,ybad+ysqr,x*x/10
- **ERROR: value out of legal range: X coordinates on log axis negative or too small : -0.689E-02
+ **ERROR: value out of legal range: coordinates on log axis negative or too small : -0.689E-02
 poly/i=1:100/hlog xbad+xsqr,ybad+ysqr,x*x/10
 *** Running ferret script: bn694_bug_fixes.jnl
  PERMANENT data cleared from memory
@@ -5152,6 +5152,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_tseries_modulo.jnl
 *** Running ferret script: bn_huge_axis.jnl
  LISTing to file a.nc

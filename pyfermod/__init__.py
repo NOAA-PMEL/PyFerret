@@ -90,6 +90,177 @@ from pyferret import filenamecompleter
 from pyferret import graphbind
 from pyferret import regrid
 
+
+def _addtoenvdirlist(envname, dirname):
+    """
+    Adds the directory path given by dirname to the list of directory
+    paths given in the environment variable envname.  The directory 
+    path is added to the beginning of the environment value, but 
+    immediately after '.'  if that is the first directory in the list.
+    If the environment variable given in envname does not exist, it 
+    is initialized to '.' before adding the given directory path. 
+    No checking or modification of the directory path is performed.
+    """
+    currval = os.getenv(envname, '.')
+    # Spaces in directory names are a problem for ferret 
+    # so do not worry about it here. 
+    dirlist = currval.split()
+    if dirlist[0] == '.':
+        dirlist.insert(1, dirname)
+    else:
+        dirlist.insert(0, dirname);
+    os.environ[envname] = ' '.join(dirlist)
+
+
+def addenv(FER_DIR=None, FER_DAT=None, FER_DATA=None, FER_DESCR=None, 
+           FER_GRIDS=None, FER_GO=None, FER_FONTS=None, FER_PALETTE=None):
+    """
+    A convenience method that adds the specified directory paths to the 
+    current Ferret environment variables in the current Python session. 
+    Each value should be a single directory path.  More directories can 
+    be added to an environment variable, if appropriate, by calling this 
+    method again.  
+
+    Except for FER_DIR, FER_DAT, and FER_FONTS (see below), the directory 
+    specified will be added to the beginning of the list of directory paths 
+    given by the environment variable, but immediately after '.' (which 
+    represents the current working directory) if that is the first directory 
+    in the list.  If an enviroment variable is not defined, it will be 
+    initialized to '.' before adding the given directory path.
+
+    The value for FER_DIR, FER_DAT or FER_FONTS, if specified, replaces 
+    the current value (if any) for these environment variables. (These 
+    values are each suppose to be a single directory path).  
+
+    The value for FER_DIR (which actually is not used directly in PyFerret)
+    is also used to construct directory paths to be added, if the subdirectory 
+    exists, to the enviroment variables: 
+        FER_GO ("$FER_DIR/go"), 
+        FER_PALETTE ("$FER_DIR/ppl"), 
+        FER_FONTS ("$FER_DIR/ppl/fonts"), and 
+        LD_LIBRARY_PATH ("$FER_DIR/lib/pythonX.x/site-packages/pyferret", 
+                         where X and x are the major and minor version 
+                         numbers of this python). 
+    These directory paths will be added prior to any directories specified 
+    by other arguments.
+
+    The value for FER_DAT (which actually is not used directly in PyFerret) 
+    is also used to construct directory paths to be added, if the subdirectory 
+    exists, to the environment variables:
+        FER_DATA ("$FER_DAT/data"),
+        FER_DESCR ("$FER_DAT/descr"), and
+        FER_GRIDS ("$FER_DAT/grids")
+    These directory paths will be added prior to any directories specified 
+    by other arguments.
+
+    Directory paths can use '~/' and '~user/' constructs, as well as shell 
+    variables of the form '$var' and '${var}'.  Relative paths can also be 
+    specified and will be used as-is (they are not converted to absolute 
+    paths).
+
+    Use os.environ to reset a Ferret environment variable to some specific
+    value; for example, 
+        os.environ['FER_DATA'] = '. /path/to/my/datasets'
+
+    To replicate setting most of the environment variables assigned by the 
+    ferret_paths scripts, call this method with the FER_DIR and FER_DAT
+    arguments assigned the values used in generating the ferret_paths
+    scripts.  So a python session using pyferret without using the 
+    ferret_paths scripts will first require adding the 
+        pyferret/lib/pythonX.x/site-packages 
+    directory path, if not in a standard python location, to either the 
+    shell environment variable PYTHONPATH or the Python list of paths given 
+    in sys.path so the pyferret module can be found.  The rest of the
+    session will look something like:
+        import pyferret
+        pyferret.addenv(FER_DIR='/path/to/pyferret/dir', 
+                        FER_DAT='/path/to/ferret/datasets/dir')
+        pyferret.start()
+    """
+    if FER_DIR:
+        myferdir = os.path.expandvars(os.path.expanduser(FER_DIR))
+        if not os.path.isdir(myferdir):
+            raise ValueError('FER_DIR is given but is not a directory: %s' % myferdir)
+        os.environ['FER_DIR'] = myferdir
+        # Set FER_FONTS to ppl/fonts subdir
+        myferfonts = os.path.join(myferdir, 'ppl', 'fonts')
+        if os.path.isdir(myferfonts):
+            os.environ['FER_FONTS'] = myferfonts
+        # Add go subdir to FER_GO
+        dirtoadd = os.path.join(myferdir, 'go')
+        if os.path.isdir(dirtoadd):
+            _addtoenvdirlist('FER_GO', dirtoadd)
+        # Add ppl subdir to FER_PALETTE
+        dirtoadd = os.path.join(myferdir, 'ppl')
+        if os.path.isdir(dirtoadd):
+            _addtoenvdirlist('FER_PALETTE', dirtoadd)
+        # Add lib/pythonX.x/site-packages/pyferret subdir to LD_LIBRARY_PATH
+        # but separate with appropriate separator (':') and do not worry about '.'
+        dirtoadd = os.path.join(myferdir, 'lib', 'python%d.%d' % sys.version_info[:2], 
+                                'site-packages', 'pyferret')
+        currlist = os.getenv('LD_LIBRARY_PATH')
+        if not currlist:
+            os.environ['LD_LIBRARY_PATH'] = dirtoadd
+        else:
+            os.environ['LD_LIBRARY_PATH'] = dirtoadd + os.pathsep + currlist
+    if FER_DAT:
+        myferdat = os.path.expandvars(os.path.expanduser(FER_DAT))
+        if not os.path.isdir(myferdat):
+            raise ValueError('FER_DAT is given but is not a directory: %s' % myferdat)
+        os.environ['FER_DAT'] = myferdat
+        # Add data subdir to FER_DATA
+        dirtoadd = os.path.join(myferdat, 'data')
+        if os.path.isdir(dirtoadd):
+            _addtoenvdirlist('FER_DATA', dirtoadd)
+        # Add descr subdir to FER_DESCR
+        dirtoadd = os.path.join(myferdat, 'descr')
+        if os.path.isdir(dirtoadd):
+            _addtoenvdirlist('FER_DESCR', dirtoadd)
+        # Add grids subdir to FER_GRIDS
+        dirtoadd = os.path.join(myferdat, 'grids')
+        if os.path.isdir(dirtoadd):
+            _addtoenvdirlist('FER_GRIDS', dirtoadd)
+    if FER_FONTS:
+        myferfonts = os.path.expandvars(os.path.expanduser(FER_FONTS))
+        if not os.path.isdir(myferfonts):
+            raise ValueError('FER_FONTS is given but is not a directory: %s' % myferfonts)
+        os.environ['FER_FONTS'] = myferfonts
+    if FER_GO:
+        dirtoadd = os.path.expandvars(os.path.expanduser(FER_GO))
+        if not os.path.isdir(dirtoadd):
+            raise ValueError('FER_GO is given but is not a directory: %s' % dirtoadd)
+        _addtoenvdirlist('FER_GO', dirtoadd)
+    if FER_PALETTE:
+        dirtoadd = os.path.expandvars(os.path.expanduser(FER_PALETTE))
+        if not os.path.isdir(dirtoadd):
+            raise ValueError('FER_PALETTE is given but is not a directory: %s' % dirtoadd)
+        _addtoenvdirlist('FER_PALETTE', dirtoadd)
+    if FER_DATA:
+        dirtoadd = os.path.expandvars(os.path.expanduser(FER_DATA))
+        if not os.path.isdir(dirtoadd):
+            raise ValueError('FER_DATA is given but is not a directory: %s' % dirtoadd)
+        _addtoenvdirlist('FER_DATA', dirtoadd)
+    if FER_DESCR:
+        dirtoadd = os.path.expandvars(os.path.expanduser(FER_DESCR))
+        if not os.path.isdir(dirtoadd):
+            raise ValueError('FER_DESCR is given but is not a directory: %s' % dirtoadd)
+        _addtoenvdirlist('FER_DESCR', dirtoadd)
+    if FER_GRIDS:
+        dirtoadd = os.path.expandvars(os.path.expanduser(FER_GRIDS))
+        if not os.path.isdir(dirtoadd):
+            raise ValueError('FER_GRIDS is given but is not a directory: %s' % dirtoadd)
+        _addtoenvdirlist('FER_GRIDS', dirtoadd)
+
+
+def addpath(newdir):
+    """
+    A convenience method that replicates the Ferret Faddpath script by 
+    adding the given directory to the environment variables FER_GO, 
+    FER_DATA, FER_DESCR, and FER_GRIDS in the current Python session. 
+    """
+    addenv(FER_GO=newdir, FER_DATA=newdir, FER_DESCR=newdir, FER_GRIDS=newdir)
+
+
 def init(arglist=None, enterferret=True):
     """
     Interprets the traditional Ferret options given in arglist and

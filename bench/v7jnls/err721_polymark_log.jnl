@@ -24,7 +24,7 @@ let phas2 = XCAT(phas,phas)
 plot/hlog/vs/vlim=-180:180:45/nolabs frq2, phas2
 go polymark poly/hlog/over/nolabs/nokey/line/pal=green frq2, phas2 1 delta 0.8
 
-! more still
+! more decades still
 set v ll
 let var3 = XCAT(0.1*frqs, frq2)
 let phas3 = XCAT(phas,phas2)

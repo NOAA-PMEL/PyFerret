@@ -62829,7 +62829,7 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v7.22 (beta/debug)"                                               
- 3    /  3:" ! Linux 3.10.0-693.2.2.el7.x86_64 64-bit - 09/27/17"                       
+ 3    /  3:" ! Linux 3.10.0-693.2.2.el7.x86_64 64-bit - MM-DD-YY"                       
  4    /  4:" ! DD-MON-YY HH:MM     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
@@ -103505,7 +103505,7 @@ plot/hlog/vs/vlim=-180:180:45/nolabs frq2, phas2
 go polymark poly/hlog/over/nolabs/nokey/line/pal=green frq2, phas2 1 delta 0.8
  
  
-! more still
+! more decades still
 set v ll
 let var3 = XCAT(0.1*frqs, frq2)
 let phas3 = XCAT(phas,phas2)

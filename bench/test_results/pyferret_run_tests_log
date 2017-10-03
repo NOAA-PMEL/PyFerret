@@ -10078,14 +10078,14 @@ LIST X1
              VARIABLE : X1
              FILENAME : EZ.DAT
              SUBSET   : 8 points (X)
- 1   / 1:  0.0060
- 2   / 2:  0.1760
- 3   / 3:  0.2820
- 4   / 4:  0.3550
- 5   / 5:  0.3790
- 6   / 6:  0.3930
- 7   / 7:  0.0000
- 8   / 8:  0.0000
+ 1   / 1:  6.000E-03
+ 2   / 2:  1.760E-01
+ 3   / 3:  2.820E-01
+ 4   / 4:  3.550E-01
+ 5   / 5:  3.790E-01
+ 6   / 6:  3.930E-01
+ 7   / 7:  0.000E+00
+ 8   / 8:  3.752+199
 SHOW DATA
      currently SET data sets:
     1> ./data/EZ.DAT  (default)
@@ -62952,7 +62952,7 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! PyFerret v7.22 (beta/debug)"                                             
- 3    /  3:" ! Linux 3.10.0-693.2.2.el7.x86_64 - 09/27/17"                              
+ 3    /  3:" ! Linux 3.10.0-693.2.2.el7.x86_64 - MM-DD-YY"                              
  4    /  4:" ! DD-MON-YY HH:MM     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
@@ -103633,7 +103633,7 @@ plot/hlog/vs/vlim=-180:180:45/nolabs frq2, phas2
 go polymark poly/hlog/over/nolabs/nokey/line/pal=green frq2, phas2 1 delta 0.8
  
  
-! more still
+! more decades still
 set v ll
 let var3 = XCAT(0.1*frqs, frq2)
 let phas3 = XCAT(phas,phas2)

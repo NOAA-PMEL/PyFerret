@@ -40,6 +40,7 @@
 *  V692 ACM 7/2014 A cf_role attribute indicates the E direction.
 *  V694 ACM 2/2015 Ensemble axis may have a standard-name attribute "realization"
 *  V694 ACM 4/2015 Fix ticket 2260: set X axis when standard_name is "longitude"
+*  V72+ ACM 10/2015 If using axis names, compare the right # of characters
 *
 *      include files: 
       
@@ -536,14 +537,14 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
       IF (line_direction(iaxis).EQ.'NA') THEN
          IF (vupcase(1:3).EQ.'LON') line_direction(iaxis) = 'WE'
          IF (vupcase(1:3).EQ.'LAT') line_direction(iaxis) = 'SN'
-         IF (vupcase(1:3).EQ.'TIME') line_direction(iaxis) = 'TI'
-         IF (vupcase(1:3).EQ.'DATE') line_direction(iaxis) = 'TI'
+         IF (vupcase(1:4).EQ.'TIME') line_direction(iaxis) = 'TI'
+         IF (vupcase(1:4).EQ.'DATE') line_direction(iaxis) = 'TI'
          IF (vupcase(1:3).EQ.'DEP') line_direction(iaxis) = 'UD'
          IF (vupcase(1:3).EQ.'ALT') line_direction(iaxis) = 'DU'
-         IF (vupcase(1:3).EQ.'ELEV') line_direction(iaxis) = 'DU'
+         IF (vupcase(1:4).EQ.'ELEV') line_direction(iaxis) = 'DU'
          IF (vupcase(1:3).EQ.'HEI') line_direction(iaxis) = 'DU'
-         IF (vupcase(1:3).EQ.'LAYER') line_direction(iaxis) = 'DU'
-         IF (vupcase(1:3).EQ.'LEVEL') line_direction(iaxis) = 'DU'
+         IF (vupcase(1:5).EQ.'LAYER') line_direction(iaxis) = 'DU'
+         IF (vupcase(1:5).EQ.'LEVEL') line_direction(iaxis) = 'DU'
       ENDIF
 
       RETURN

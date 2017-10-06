@@ -1,0 +1,13 @@
+! err721_letd_with_grave
+! 10/6/17 ACM
+! See ticket 2563. Error parsing the grave-accent expr 
+! because of the quotes around datset path and name.
+
+use "data/proleptic_gregorian.nc"
+
+! This is fine
+let/d="data/proleptic_gregorian.nc" var1 = my_data + 1
+
+! This resulted in an error
+let/d="data/proleptic_gregorian.nc" var2 = my_data - `my_data[L=@ave]`
+show data

@@ -126,6 +126,10 @@
 *                  as irregularly spaced daily axes.
 * 1/26/2017 *acm* Ticket 1480. Do not write a modulo attribute if the requested 
 *                 region is largerthan the length of the modulo axis.
+* 10/6/2017 *acm* See fix in cd_get_line_direction.F, where axis or dim named 
+*                 TIME but with no attributes was not marked in the T direction.
+*                 An axis made from a dimension-only is not written out as the 
+*                 record axis.
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -424,8 +428,8 @@
       CALL CD_SET_MODE(cdfid, pcd_mode_define, status)
       IF ( status .NE. merr_ok ) RETURN
 
-* define the dimension
-      IF ( recdim ) THEN
+* define the dimension (if its just a dimension, will not write as a record axis)
+      IF ( recdim .AND. .NOT.line_dim_only(iaxis)) THEN
 #ifdef usingDODSf2cUnderscore
          cdfstat = NF_DEF_DIM_( cdfid, name(:nlen), NF_UNLIMITED, dimid )
       ELSE

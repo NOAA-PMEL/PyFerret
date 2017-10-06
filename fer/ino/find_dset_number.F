@@ -67,7 +67,8 @@
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
-* V702  *sh* 11/16 support new syntax D=aggregation.member
+* V702  *sh*  11/16 support new syntax D=aggregation.member
+* V722 *acm*  Ticket 2563: Handle the dname coming in quoted, as from repl_exprns
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -85,10 +86,11 @@
      .		        cdf_name, des_name, full_name_used, nc_name
 	INTEGER		STR_CASE_BLIND_COMPARE, TM_LENSTR1,
      .			vax_code, dset, full_len, short_len, status,
-     .			agg, memb, idot, nmemb
+     .			agg, memb, idot, nmemb, iq
 	CHARACTER	TM_INQ_PATH*2048, buff*2048
 	CHARACTER*13	TM_STRING, buff13, vbuff
         REAL*8          val
+	character*1 whatc
 
 	IF ( TM_DIGIT_TEST( dname ) ) THEN
 
@@ -207,6 +209,12 @@ c *kob* 4/97
  100	   CONTINUE
 
 * Is the name a full path name?
+* Ticket 2563: Did the dname come in quoted, as from repl_exprns? 
+* If so remove those the quotes before searching
+
+	   buff = dname
+	   IF (dname(1:1) .EQ. '"' .AND. dname(full_len:full_len) .EQ. '"') 
+     .		buff = dname(2:full_len-1)
 
 	   DO 200 dset = 1, maxdsets
 
@@ -215,19 +223,19 @@ c *kob* 4/97
 * special name match checks to account for implied .cdf or .des   5/93
 	      IF ( TM_HAS_STRING(ds_type(dset),'CDF')) THEN
 	         vax_code = STR_CASE_BLIND_COMPARE( ds_des_name(dset),
-     .						    dname )
+     .						    buff )
 	         IF (  vax_code .EQ. vms_str_success
      .	        .AND. (cdf_name .OR. full_name_used) ) GOTO 400
 
 	      ELSEIF ( TM_HAS_STRING(ds_type(dset),'GT')) THEN	
 	         vax_code = STR_CASE_BLIND_COMPARE( ds_des_name(dset),
-     .						    dname )
+     .						    buff )
 	         IF (  vax_code .EQ. vms_str_success
      .	        .AND. (des_name .OR. full_name_used) ) GOTO 400
 
 	      ELSE     ! EZ data set - any filename extension allowed
 	         vax_code = STR_CASE_BLIND_COMPARE( ds_des_name(dset),
-     .						    dname(1:full_len) )
+     .						    buff(1:full_len) )
 	         IF (  vax_code .EQ. vms_str_success ) GOTO 400
 
 	      ENDIF
@@ -238,7 +246,7 @@ c *kob* 4/97
 
 * Try TM_INQ_PATH and compare with full path names
 
-           buff = TM_INQ_PATH (dname, 'FER_DATA', '    ', .FALSE.,
+           buff = TM_INQ_PATH (buff, 'FER_DATA', '    ', .FALSE.,
      .                              status)
            IF (status .NE. ferr_ok) GOTO 500
 

@@ -103521,6 +103521,33 @@ go polymark poly/vlog/over/nolabs/nokey/line/pal=blue_light phas3, var3 1 circle
  
 ! Note /VLOG/HLOG together make a blank plot. Not worrying about that now.
  
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err721_letd_with_grave
+! err721_letd_with_grave
+! 10/6/17 ACM
+! See ticket 2563. Error parsing the grave-accent expr
+! because of the quotes around datset path and name.
+ 
+use "data/proleptic_gregorian.nc"
+ 
+! This is fine
+let/d="data/proleptic_gregorian.nc" var1 = my_data + 1
+ 
+! This resulted in an error
+let/d="data/proleptic_gregorian.nc" var2 = my_data - `my_data[L=@ave]`
+ !-> DEFINE VARIABLE/d="data/proleptic_gregorian.nc" var2 = my_data - 0.0133574854990002
+show data
+     currently SET data sets:
+    1> data/proleptic_gregorian.nc  (default)
+ name     title                             I         J         K         L
+ MY_DATA  SIN(L[GT=TDAYS])                 ...       ...       ...       1:32
+ ------------------------------
+ VAR2[D=proleptic_gregorian] = MY_DATA - 0.0133574854990002
+ VAR1[D=proleptic_gregorian] = MY_DATA + 1
+ 
+ 
 *** Running ferret script: bn_tseries_modulo.jnl
 ! bn_tseries_modulo.jnl
 !  9/2017 TSERIES aggregations

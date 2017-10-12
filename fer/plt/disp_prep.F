@@ -454,6 +454,14 @@
 	      iautoc = 0
 	      nlev = nlev2 ! reuse # of levels from last plot
 	   ENDIF
+
+* ... For ticket 2564. Calls to load the palette and colors, PPL SHASET, use
+*     the stored setting shd_levels in the call to setup_color_table. In some
+*     instances that previous setting causes colors to be computed for non-existent
+*     levels and rgb colors outside the range [0:1]. Set shd_levels to correspond to 
+*     the nlev for this plot.
+
+	   CALL SET_NSHD_LEVELS (nlev)
 	ELSE
 * ... set up for automatic levels
 	   CALL PPLCMD ( from, line, 0, 'LEV,()', 1, 1 )

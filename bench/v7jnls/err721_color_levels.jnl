@@ -1,0 +1,11 @@
+! err721_color_levels
+! 10/11/2017 ACM
+! Ticket 2564, setting up color palette and levels for the second
+! plot caused a STOP in PyFerret or in Ferret the gks error message
+!    gsetcolourrep()   96 Colour is outside range [0,1]
+
+
+let fcn = 0.5*COS(J[j=1:100]/30)+SIN(K[k=1:100]/20)
+fill/pal=land_sea_values/lev=vc 7000*fcn
+
+fill/pal=ocean_temp_bounds/lev=(-2,35,2) 18.5*fcn

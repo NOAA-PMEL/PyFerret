@@ -408,6 +408,11 @@ c	    CALL PLOTPOL(X,NXS,XF,YF)
 ***************************************************
 * TMAP addition for FILLPOL call
 	ELSE IF(MAKEP.EQ.'FILLPOL' .OR. MAKEP.EQ.'POLYGON')THEN
+* Get the time-axis scale right
+	    IF(SOVER .AND. (ITFLG.EQ.1 .OR. ITFLG.EQ.2)) THEN
+		XHI = XTI
+		XLO = XTL
+	    ENDIF
 	    CALL FILLPOL(X,NXS,XF,YF,iwind)
 	    IF ( interrupted ) GOTO 3333
 

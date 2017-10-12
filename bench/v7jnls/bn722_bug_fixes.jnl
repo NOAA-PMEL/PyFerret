@@ -12,3 +12,5 @@ GO err721_polymark_log
 GO bn_reset
 GO err721_letd_with_grave
 
+GO bn_reset
+GO err721_color_levels

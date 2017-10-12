@@ -68,10 +68,10 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V685+ 12/13    - *acm*  bounds checking; dont refer to parts of the string outside its bounds.
+* V6.86 *acm* 1/14 In above fix, let there be spaces before the file spec.
 * V694   5/15    - *acm*  Ticket 2285: need to initialize iautoc to = 1 so overlay with /LEV=20V works.
 * V695  *acm* 9/15 ticket 2311: variance-based levels on constant variables
 * V695  *acm* 9/15 (not fully implemented) INT option for levels
-* V6.86 *acm* 1/14 In above fix, let there be spaces before the file spec.
 * v697 *acm* 12/15 Ticket 2331, add flag changed_key to common, and restore the color key
 *                  style after a SHADE/SET; SHADE.
 * v698 *acm*  2/16 Initialize the use_hist flag to false
@@ -454,6 +454,14 @@
 	      iautoc = 0
 	      nlev = nlev2 ! reuse # of levels from last plot
 	   ENDIF
+
+* ... For ticket 2564. Calls to load the palette and colors, PPL SHASET, use
+*     the stored setting shd_levels in the call to setup_color_table. In some
+*     instances that previous setting causes colors to be computed for non-existent
+*     levels and rgb colors outside the range [0:1]. Set shd_levels to correspond to 
+*     the nlev for this plot.
+
+	   CALL SET_NSHD_LEVELS (nlev)
 	ELSE
 * ... set up for automatic levels
 	   CALL PPLCMD ( from, line, 0, 'LEV,()', 1, 1 )

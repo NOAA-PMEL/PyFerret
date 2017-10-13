@@ -14,3 +14,6 @@ GO err721_letd_with_grave
 
 GO bn_reset
 GO err721_color_levels
+
+GO bn_reset
+GO err721_dup_labels

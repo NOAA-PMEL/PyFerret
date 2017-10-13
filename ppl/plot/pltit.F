@@ -331,6 +331,13 @@ C  Call WINDOW to restore values of XMIN, XMAX, YMIN, YMAX.
 	ELSE IF(MAKEP.EQ.'PLOT') THEN
 	   IPV = 0
 	   CALL PLOTXY(X,NXS,XF,YF,IPV)
+	   
+* See ticket 2565, shifted lbels on time overlay plots
+	   IF(SOVER .AND. (ITFLG.EQ.1 .OR. ITFLG.EQ.2)) THEN
+	      XHI = XTI
+	      XLO = XTL
+	   ENDIF
+
 	   if (interrupted) go to 3333
 
 ****    JD * ALINE CALL 

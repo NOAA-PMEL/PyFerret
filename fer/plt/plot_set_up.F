@@ -192,6 +192,7 @@
 * V7.2 *acm* 4/2017 In fix for 2212, make sure ind_min,ind_max are defined before using them 
 *                   to check log limits on log axis.  Make sure the limits are actually applied.
 * V7.2 *acm* 5/2017 restore correct longitude moduloing for PLOT/VS overlay plots
+* V7.22 *acm* 10/2017 Fix ticket 2565, duplicate and sometimes shifted labels on PLOT/over time plots
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -415,7 +416,15 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   ELSE
 	      pdeplim = pvlim
 	   ENDIF 
+	ENDIF	   
+
+* do not re-draw the main label, logo, other labels from the underlay plot
+	IF (overlay) THEN
+	   nlabs_on = 0  
+	   CALL PPLCMD ( from, line, 0, 'LABS ', 1, 1 )	
 	ENDIF
+
+	IF ( no_labels ) CALL PPLCMD ( from, line, 0, 'LABS ', 1, 1 )
 
 * * * * * * *    - - - INDEPENDENT AXIS DATA - - - * * * * * * * * *
 	IF ( versus ) THEN

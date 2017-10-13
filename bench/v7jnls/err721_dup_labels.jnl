@@ -1,0 +1,26 @@
+! err721_dup_labels.jnl
+! ticket 2565
+! 10/13/17 ACM
+
+set mode logo
+use err721_dup_labels.nc
+
+! Draw time plot
+plot new_val
+ppl list labels
+
+! Overlay plots should add only the new labels needed. Ferret has 
+! always redrawn them all, which was harmless. Now, only draw the
+! ones needed for each new /overlay
+
+plot/over/vs/line/color=green/title="deployment mean"  {284.375, 285.5}, {3472.8, 3472.8}
+ppl list labels
+plot/over/vs/line/color=red/title="HC mean"  {284.375, 285.5}, {3472.9, 3472.9}
+ppl list labels
+plot/over/vs/line/color=purple/nolab {284.42, 284.42}, {3472.6, 3473.1}
+
+! This caused labels below the plot way over to the right by the line
+plot/over/vs/line/color=purple/title="purple" {285.4, 285.4}, {3472.6, 3473.1}
+ppl list labels
+
+set mode/last logo

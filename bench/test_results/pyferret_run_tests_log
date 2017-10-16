@@ -103676,6 +103676,86 @@ show data
  VAR1[D=proleptic_gregorian] = MY_DATA + 1
  
  
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err721_color_levels
+! err721_color_levels
+! 10/11/2017 ACM
+! Ticket 2564, setting up color palette and levels for the second
+! plot caused a STOP in PyFerret or in Ferret the gks error message
+!    gsetcolourrep()   96 Colour is outside range [0,1]
+ 
+ 
+let fcn = 0.5*COS(J[j=1:100]/30)+SIN(K[k=1:100]/20)
+fill/pal=land_sea_values/lev=vc 7000*fcn
+ 
+fill/pal=ocean_temp_bounds/lev=(-2,35,2) 18.5*fcn
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err721_dup_labels
+! err721_dup_labels.jnl
+! ticket 2565
+! 10/13/17 ACM
+ 
+set mode logo
+use err721_dup_labels.nc
+ 
+! Draw time plot
+plot new_val
+ppl list labels
+ @ACRESHAPE(V,XTMS)                                                             
+                                                                                
+                                                                                
+
+          XPOS       YPOS     HGT   ROT   UNITS
+ LAB 1  8.000E+00  7.220E+00 0.060    0  SYSTEM  @ASPyFerret (beta/debug) Ver.7.22
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
+ LAB 2  8.000E+00  7.110E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS16-OCT-2017 11:59:13
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
+ LAB 4  8.000E+00  6.630E+00 0.120    0  SYSTEM  @ASDATA SET: err721_dup_labels
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
+ 
+! Overlay plots should add only the new labels needed. Ferret has
+! always redrawn them all, which was harmless. Now, only draw the
+! ones needed for each new /overlay
+ 
+plot/over/vs/line/color=green/title="deployment mean"  {284.375, 285.5}, {3472.8, 3472.8}
+ppl list labels
+                                                                                
+ @AS{284.375, 285.5}                                                            
+                                                                                
+
+          XPOS       YPOS     HGT   ROT   UNITS
+ LAB 1 -4.200E-01 -5.500E-01 0.080    0  SYSTEM  @ASdeployment mean
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+plot/over/vs/line/color=red/title="HC mean"  {284.375, 285.5}, {3472.9, 3472.9}
+ppl list labels
+                                                                                
+ @AS{284.375, 285.5}                                                            
+                                                                                
+
+          XPOS       YPOS     HGT   ROT   UNITS
+ LAB 1 -4.200E-01 -7.300E-01 0.080    0  SYSTEM  @ASHC mean
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+plot/over/vs/line/color=purple/nolab {284.42, 284.42}, {3472.6, 3473.1}
+ 
+! This caused labels below the plot way over to the right by the line
+plot/over/vs/line/color=purple/title="purple" {285.4, 285.4}, {3472.6, 3473.1}
+ppl list labels
+                                                                                
+ @AS{285.4, 285.4}                                                              
+                                                                                
+
+          XPOS       YPOS     HGT   ROT   UNITS
+ LAB 1 -4.200E-01 -9.100E-01 0.080    0  SYSTEM  @ASpurple
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+ 
+set mode/last logo
 *** Running ferret script: bn_tseries_modulo.jnl
 ! bn_tseries_modulo.jnl
 !  9/2017 TSERIES aggregations

@@ -1,0 +1,59 @@
+
+! greatcircle : definitions for great circle calculations between
+!               two locations lon1,lat1 and lon2,lat2 (in degrees)
+! Contributed by Mick Spillane, September 2011
+!
+let d2r=atan(1.)/45
+let rlon1=d2r*lon1 ; let rlat1=d2r*lat1
+let rlon2=d2r*lon2 ; let rlat2=d2r*lat2
+
+! define great circle distances from lon1,lat1 to lon2,lat2 in radians ...
+let/title="Great Circle Distance (radians)" \
+   gcrad=acos(sin(rlat1)*sin(rlat2)+cos(rlat1)*cos(rlat2)*cos(rlon2-rlon1))
+! ... and kilometers
+let/title="Great Circle Distance (km)" gckm=111.11*gcrad/d2r
+let/title="Great Circle Distance (nm)" gcnm=60*gcrad/d2r
+
+! define initial heading from lon1,lat1 to lon2,lat2 (clockwise from north)
+let gcharg=acos((sin(rlat2)-sin(rlat1)*cos(gcrad))/(sin(gcrad)*cos(rlat1)))
+! correct for near north-south pairings
+let gchfix=gcharg[x=@fln]/d2r
+let/title="Initial Heading (degrees)" \
+   gchead=if(sin(rlon2-rlon1) gt 0)then gchfix else 360-gchfix
+
+let lat=atan((tan(d2r*lat2)*sin(d2r*(lon-lon1))-tan(d2r*lat1)*sin(d2r*(lon-lon2)))/ \
+   sin(d2r*(lon2-lon1)))/d2r
+
+! Usage: the results "gcrad", "gckm", and "gchead" are computed based on
+!        existing variables lon1,lat1 representing the start point and
+!        lon2,lat2 representing the destination.
+!
+! NOTE : To plot a greatcircle from lon1,lat1 to lon2,lat2 define a variable "lon"
+!        that spans the interval between them with sufficient resolution, for example
+!               def axis/x=`lon1`:`lon2`:0.1 xax ; let lon=x[gx=xax]
+!               plot/o/vs/nolab/line=2 lon,lat
+!        If a gridded file such as a topography is available it may be convenient to 
+!        use that x-axis for "lon":
+!                       let lon=x[g=...]
+!               plot/o/vs/nolab/line=2/x=`lon1`:`lon2` lon,lat
+!
+
+! rhumbline : definitions for rhumb line calculations between
+!             two locations lon1,lat1 and lon2,lat2 (in degrees)
+!
+let d2r=atan(1.)/45 
+let rlon1=d2r*lon1 ; let rlat1=d2r*lat1 ; let mlat1=d2r*(45+lat1/2)
+let rlon2=d2r*lon2 ; let rlat2=d2r*lat2 ; let mlat2=d2r*(45+lat2/2)
+
+! define rhumbline course from lon1,lat1 to lon2,lat2
+let/title="Rhumb Line Heading (deg)" \
+   rlhead=mod(360-atan2(rlon1-rlon2,ln(tan(mlat2))-ln(tan(mlat1)))/d2r,360)
+let/title="Rhumb Line Distance (km)"\
+   rlkm=111.32*(if(lat1 eq lat2)then abs(lon2-lon1)*cos(rlat1) else (lat2-lat1)/cos(d2r*rlhead))
+let/title="Rhumb Line Distance (radians)"\
+   rlrad=rlkm/(111.32*d2r)
+!
+! to compute points on a rhumbline from (lon1,lat1) with distance "dist" at heading "dirn"
+!
+ let rllat=LAT1+DIST*COS(D2R*DIRN)/111.32
+ let rllon=if(cos(d2r*dirn) eq 0)then dist/(111.32*cos(d2r*lat1)) else LON1-TAN(D2R*DIRN)*(LN(TAN(D2R*(45+LAT1/2)))-LN(TAN(D2R*(45+rllat/2))))/d2r

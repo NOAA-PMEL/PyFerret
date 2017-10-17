@@ -9,16 +9,11 @@ Administration's (NOAA) Pacific Marine Environmental Lab (PMEL).
 
 import sys
 
-if sys.version_info[0] > 2:
-    # First try to import PyQt5, then try PyQt4 if that fails
-    try:
-        import PyQt5
-        QT_VERSION = 5
-    except ImportError:
-        import PyQt4
-        QT_VERSION = 4
-else:
-    # PyQt5 requires Python3.x, so only try PyQt4
+# First try to import PyQt5, then try PyQt4 if that fails
+try:
+    import PyQt5
+    QT_VERSION = 5
+except ImportError:
     import PyQt4
     QT_VERSION = 4
 

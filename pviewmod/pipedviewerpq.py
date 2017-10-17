@@ -1,5 +1,5 @@
 '''
-PipedViewerPQ is a graphics viewer application written in PyQt4
+PipedViewerPQ is a graphics viewer application written in PyQt
 that receives its drawing and other commands primarily from another
 application through a pipe.  A limited number of commands are
 provided by the viewer itself to allow saving and some manipulation
@@ -27,16 +27,11 @@ try:
 except AttributeError:
     pass
 
-if sys.version_info[0] > 2:
-    # First try to import PyQt5, then try PyQt4 if that fails
-    try:
-        import PyQt5
-        QT_VERSION = 5
-    except ImportError:
-        import PyQt4
-        QT_VERSION = 4
-else:
-    # PyQt5 requires Python3.x, so only try PyQt4
+# First try to import PyQt5, then try PyQt4 if that fails
+try:
+    import PyQt5
+    QT_VERSION = 5
+except ImportError:
     import PyQt4
     QT_VERSION = 4
 
@@ -630,8 +625,8 @@ class PipedViewerPQ(QMainWindow):
                         ( "xbm",
                           self.tr("XBM - X11 Bitmap (*.xbm)") ), ]
         if QT_VERSION == 5:
-            # tr returns Python strings in PyQt5/Python3
-            filters = ";;".join( [ t[1] for t in formattypes ] )
+            # tr returns Python unicode strings in PyQt5/Python3
+            filters = self.tr(";;").join( [ t[1] for t in formattypes ] )
             for (fmt, fmtQName) in formattypes:
                 if self.__lastformat == fmt:
                     dfltfilter = fmtQName

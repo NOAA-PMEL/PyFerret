@@ -1,0 +1,19 @@
+! err721_plotuv.jnl
+! Ticket 2566: text size of zero causes graphics library errors
+!
+
+if ($program_name"0|PyFerret>1|*>0") then set text/font=arial
+
+! In PyFerret with -nodisplay a Cairo error on the zero-length
+! text size caused an ERROR and exit. Without -nodisplay it
+! issued errors and used some nominal size 
+
+use coads_climatology
+let uwnd = sst
+let vwnd = -1*sst
+
+plot/set/x=180/y=0 uwnd,vwnd
+ppl axlsze,0,0
+ ppl plotuv 0,1
+
+if ($program_name"0|PyFerret>1|*>0") then cancel text

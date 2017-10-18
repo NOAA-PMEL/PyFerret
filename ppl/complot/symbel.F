@@ -4,6 +4,8 @@ C A simple forward to SYMBEL_HERSHEY.
 C This was done to match PyFerret where the original 
 C subroutine here was renamed SYMBEL_HERSHEY.
 C**
+C V7.22 *acm* 10/17 Fix ticket 2566: if zero or negative character size, exit.
+
 C
 C       CALL SYMBEL(X,Y,DEGRES,HEIGHT,NCHAR,STRING)
 C
@@ -20,7 +22,8 @@ C        NCHAR  - NUMBER OF CHARACTERS TO BE DRAWN.
 C        STRING - ARRAY CONTAINING THE DISPLAY CODES OF THE
 C                 CHARACTERS TO BE DRAWN.
 C
-        CALL SYMBEL_HERSHEY(X,Y,DEGRES,HEIGHT,NCHAR,STRING)
+        IF (height .LE. 0. ) RETURN
+	CALL SYMBEL_HERSHEY(X,Y,DEGRES,HEIGHT,NCHAR,STRING)
         RETURN
         END
 

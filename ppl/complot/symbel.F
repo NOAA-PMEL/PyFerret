@@ -35,6 +35,10 @@
 *
 * V6.95 *acm* 3/15 Changes for PyFerret fonts. 
 *                  SYMBEL_HERSHEY does Hershey fonts.
+* V7.22 *acm* 10/17 Fix ticket 2566: if zero or negative character size, exit.
+
+C V7.22 *acm* 10/17 Fix ticket 2566: if zero or negative character size, exit.
+
 C
 C	CALL SYMBEL(X,Y,DEGRES,HEIGHT,NCHAR,STRING)
 C
@@ -78,6 +82,9 @@ C
 	INCLUDE 'PLTCOM.DAT'
 	INCLUDE 'pyfonts.cmn'
         INCLUDE 'errmsg.parm'
+
+
+	IF (HEIGHT .LE. 0.) RETURN
 
 * If font is "Hershey", continue with old-school PPLUS Hershey fonts.
 

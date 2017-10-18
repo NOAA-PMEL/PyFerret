@@ -37,13 +37,15 @@
 
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+C V7.22 *acm* 10/17 Fix ticket 2566: if zero or negative character size, exit.
+
 	CHARACTER STRING*(*)
 	NC=-IABS(NCHAR)
 C
 C	THIS FUNCTION RETURNS THE WIDTH OF THE STRING WITHOUT DRAWING IT
 C
 	SS=0.
-	IF (NC .NE. 0) CALL SYMBEL(SS,0.,0.,HEIGHT,NC,STRING)
+	IF (NC.NE.0 .AND. height.GT.0.) CALL SYMBEL(SS,0.,0.,HEIGHT,NC,STRING)
 	SYMWID=SS
 	RETURN
 	END

@@ -190,7 +190,7 @@ if [ "$ispyferret" -ne 0 ]; then
       echo "*** Running python script: $script" >> $err_file
       echo "*** Running python script: $script" > all_ncdump.out
       echo "Running python script: $script"
-      $fver $feropts -python < $script 1>> $log_file 2>> $err_file
+      $fver $feropts -python < pyscripts/$script 1>> $log_file 2>> $err_file
       if [ $? -ne 0 ]; then
          echo "****** PYFERRET error: $script failed ******" >> $log_file
          echo "****** PYFERRET error: $script failed ******" >> $err_file
@@ -221,26 +221,59 @@ exeferdir=`dirname $exebindir | sed -e 's/\\//\\\\\\//g'`
 echo "s/$exeferdir/....../g" >> $cleanups
 
 timeregex=`date +%_d.%h.%Y`
+echo "s/$timeregex.[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/DD-MON-YYYY HH:MM:SS/g" >> $cleanups
+echo "s/$timeregex.[0-9][0-9]:[0-9][0-9]/DD-MON-YYYY HH:MM/g" >> $cleanups
+echo "s/$timeregex/DD-MON-YYYY/g" >> $cleanups
+timeregex=`date +%_d.%h.%Y | tr [a-z] [A-Z]`
+echo "s/$timeregex.[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/DD-MON-YYYY HH:MM:SS/g" >> $cleanups
+echo "s/$timeregex.[0-9][0-9]:[0-9][0-9]/DD-MON-YYYY HH:MM/g" >> $cleanups
 echo "s/$timeregex/DD-MON-YYYY/g" >> $cleanups
 # If date assigned to symbol and then symbol used elsewhere, any beginning space is dropped
 timeregex=`date +%-d.%h.%Y`
+echo "s/$timeregex.[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/DD-MON-YYYY HH:MM:SS/g" >> $cleanups
+echo "s/$timeregex.[0-9][0-9]:[0-9][0-9]/DD-MON-YYYY HH:MM/g" >> $cleanups
+echo "s/$timeregex/DD-MON-YYYY/g" >> $cleanups
+timeregex=`date +%-d.%h.%Y | tr [a-z] [A-Z]`
+echo "s/$timeregex.[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/DD-MON-YYYY HH:MM:SS/g" >> $cleanups
+echo "s/$timeregex.[0-9][0-9]:[0-9][0-9]/DD-MON-YYYY HH:MM/g" >> $cleanups
 echo "s/$timeregex/DD-MON-YYYY/g" >> $cleanups
 
 timeregex=`date +%_d.%h.%y`
+echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/DD-MON-YY HH:MM:SS/g" >> $cleanups
+echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]/DD-MON-YY HH:MM/g" >> $cleanups
+echo "s/$timeregex/DD-MON-YY/g" >> $cleanups
+timeregex=`date +%_d.%h.%y | tr [a-z] [A-Z]`
+echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/DD-MON-YY HH:MM:SS/g" >> $cleanups
 echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]/DD-MON-YY HH:MM/g" >> $cleanups
 echo "s/$timeregex/DD-MON-YY/g" >> $cleanups
 # If date assigned to symbol and then symbol used elsewhere, any beginning space is dropped
 timeregex=`date +%-d.%h.%y`
+echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/DD-MON-YY HH:MM:SS/g" >> $cleanups
+echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]/DD-MON-YY HH:MM/g" >> $cleanups
+echo "s/$timeregex/DD-MON-YY/g" >> $cleanups
+timeregex=`date +%-d.%h.%y | tr [a-z] [A-Z]`
+echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/DD-MON-YY HH:MM:SS/g" >> $cleanups
 echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]/DD-MON-YY HH:MM/g" >> $cleanups
 echo "s/$timeregex/DD-MON-YY/g" >> $cleanups
 
+timeregex=`date +%m.%d.%Y`
+echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/MM-DD-YYYY HH:MM:SS/g" >> $cleanups
+echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]/MM-DD-YYYY HH:MM/g" >> $cleanups
+echo "s/$timeregex/MM-DD-YYYY/g" >> $cleanups
+
 timeregex=`date +%m.%d.%y`
+echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/MM-DD-YY HH:MM:SS/g" >> $cleanups
+echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]/MM-DD-YY HH:MM/g" >> $cleanups
 echo "s/$timeregex/MM-DD-YY/g" >> $cleanups
 
 timeregex=`date | sed -e 's/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/'`
 echo "s/$timeregex/WKD MON DD HH:MM:SS ZZZ YYYY/g" >> $cleanups
+timeregex=`date | tr [a-z] [A-Z] | sed -e 's/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/'`
+echo "s/$timeregex/WKD MON DD HH:MM:SS ZZZ YYYY/g" >> $cleanups
 
 timeregex=`date +%a.%h.%_d.%T.%Y | sed -e 's/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/'`
+echo "s/$timeregex/WKD MON DD HH:MM:SS YYYY/g" >> $cleanups
+timeregex=`date +%a.%h.%_d.%T.%Y | tr [a-z] [A-Z] | sed -e 's/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/'`
 echo "s/$timeregex/WKD MON DD HH:MM:SS YYYY/g" >> $cleanups
 
 echo 's/^randu2_randn2 [0-9 .-]+$/randu2_randn2      ....../' >> $cleanups

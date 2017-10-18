@@ -384,12 +384,22 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError('not implemented')
 
-    def createSymbol(self, symbolname):
+    def createSymbol(self, ptsx, ptsy, numpts, symbolname):
         '''
         Returns a Symbol object.
 
         Arguments:
-            symbolname: name of the symbol (e.g., ".", "+")
+            ptsx: vertices X-coordinates describing the symbol 
+                  as a multiline drawing on a [0,100] square; 
+                  only used if numpts is greater than zero
+            ptsy: vertices Y-coordinates describing the symbol 
+                  as a multiline drawing on a [0,100] square; 
+                  only used if numpts is greater than zero
+            numpts: number of vertices describing the symbol; 
+                  can be zero if giving a well-known symbol name
+            symbolname: name of the symbol, either a well-known
+                  symbol name (e.g., '.') or a custom name for a 
+                  symbol created from the given vertices (e.g., 'FER001')
 
         Raises an error if unable to create the Symbol object.
         '''

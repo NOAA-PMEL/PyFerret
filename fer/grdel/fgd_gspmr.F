@@ -23,6 +23,10 @@
         INTEGER colornum, snlen, success, errmsglen
         CHARACTER*8 symname
         CHARACTER*2048 errmsg
+*       For custom symbols: ptsx, ptsy, and numpts describes 
+*       the symbol as a multiline drawing on a [0,100] square grid
+        REAL*4 ptsx(32), ptsy(32)
+        INTEGER numpts
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR.
@@ -49,30 +53,37 @@
 *       symbol types
         IF ( symtype .EQ. 1 ) THEN
 *           small filled circle
+            numpts = 0
             symname = '.'
             snlen = 1
         ELSE IF ( symtype .EQ. 2 ) THEN
 *           plus
+            numpts = 0
             symname = '+'
             snlen = 1
         ELSE IF ( symtype .EQ. 3 ) THEN
 *           asterisk
+            numpts = 0
             symname = '*'
             snlen = 1
         ELSE IF ( symtype .EQ. 4 ) THEN
 *           open circle
+            numpts = 0
             symname = 'o'
             snlen = 1
         ELSE IF ( symtype .EQ. 5 ) THEN
 *           ex
+            numpts = 0
             symname = 'x'
             snlen = 1
         ELSE IF ( symtype .EQ. 6 ) THEN
 *           triangle
+            numpts = 0
             symname = '^'
             snlen = 1
         ELSE IF ( symtype .EQ. 7 ) THEN
 *           square
+            numpts = 0
             symname = '#'
             snlen = 1
         ELSE
@@ -92,8 +103,9 @@
         ENDIF
 
 *       Create the symbol object
-        CALL FGDSYMBOL(symbolobjs(symnum, windowid),
-     .                 windowobjs(windowid), symname, snlen)
+        CALL FGDSYMBOL(symbolobjs(symnum, windowid), 
+     .                 windowobjs(windowid), 
+     .                 ptsx, ptsy, numpts, symname, snlen)
         IF ( symbolobjs(symnum, windowid) .EQ. nullobj ) THEN
             errmsg = ' '
             CALL FGDERRMSG(errmsg, errmsglen)

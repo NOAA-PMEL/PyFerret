@@ -103715,7 +103715,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.110E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS16-OCT-2017 11:59:13
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASDD-MON-YYYY HH:MM:SS
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  8.000E+00  6.630E+00 0.120    0  SYSTEM  @ASDATA SET: err721_dup_labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
@@ -103756,6 +103756,32 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
  
 set mode/last logo
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err721_plotuv
+! err721_plotuv.jnl
+! Ticket 2566: text size of zero causes graphics library errors
+!
+ 
+if ($program_name"0|PyFerret>1|*>0") then set text/font=arial
+ !-> if 1 then set text/font=arial
+ 
+! In PyFerret with -nodisplay a Cairo error on the zero-length
+! text size caused an ERROR and exit. Without -nodisplay it
+! issued errors and used some nominal size
+ 
+use coads_climatology
+let uwnd = sst
+let vwnd = -1*sst
+ 
+plot/set/x=180/y=0 uwnd,vwnd
+ppl axlsze,0,0
+ ppl plotuv 0,1
+ 
+if ($program_name"0|PyFerret>1|*>0") then cancel text
+ !-> if 1 then cancel text
 *** Running ferret script: bn_tseries_modulo.jnl
 ! bn_tseries_modulo.jnl
 !  9/2017 TSERIES aggregations

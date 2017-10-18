@@ -166,7 +166,8 @@ grdelType cairoCFerBind_createBrush(CFerBind *self, grdelType color,
 grdelBool cairoCFerBind_replaceBrushColor(CFerBind *self,
                                           grdelType brush, grdelType color);
 grdelBool cairoCFerBind_deleteBrush(CFerBind *self, grdelType brush);
-grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int namelen);
+grdelType cairoCFerBind_createSymbol(CFerBind *self, const float ptsx[], const float ptsy[], 
+                                     int numpts, const char *symbolname, int namelen);
 grdelBool cairoCFerBind_deleteSymbol(CFerBind *self, grdelType symbol);
 grdelBool cairoCFerBind_setWidthFactor(CFerBind *self, double widthfactor);
 grdelBool cairoCFerBind_drawMultiline(CFerBind *self, double ptsx[], double ptsy[],

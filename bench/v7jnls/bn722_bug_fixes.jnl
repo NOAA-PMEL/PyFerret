@@ -20,3 +20,6 @@ GO err721_dup_labels
 
 GO bn_reset
 GO err721_plotuv
+
+GO bn_reset
+GO err721_ascii_size

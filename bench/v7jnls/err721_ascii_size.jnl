@@ -1,0 +1,9 @@
+! err721_ascii_size.jnl
+! ACM 10/25/2017  Ticket 2567
+! Initializing an EZ dataset mis-counts the size until data is loaded
+
+file/var="t1,t2"/skip=1 err721_ascii_size.dat
+show data
+say `t1,return=iend`
+load t1
+say `t1,return=iend`

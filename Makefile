@@ -16,7 +16,6 @@ optimized :
 	$(MAKE) xgks/Makefile
 	$(MAKE) -C xgks
 	$(MAKE) -C fer
-	$(MAKE) -C threddsBrowser
 	$(MAKE) -C external_functions
 	$(MAKE) -C gksm2ps
 	$(MAKE) -C bin/build_fonts/unix
@@ -27,7 +26,6 @@ beta :
 	$(MAKE) xgks/Makefile
 	$(MAKE) -C xgks
 	$(MAKE) -C fer beta
-	$(MAKE) -C threddsBrowser
 	$(MAKE) -C external_functions
 	$(MAKE) -C gksm2ps
 	$(MAKE) -C bin/build_fonts/unix
@@ -38,7 +36,6 @@ debug :
 	$(MAKE) xgks/Makefile
 	$(MAKE) -C xgks
 	$(MAKE) -C fer debug
-	$(MAKE) -C threddsBrowser
 	$(MAKE) -C external_functions debug
 	$(MAKE) -C gksm2ps
 	$(MAKE) -C bin/build_fonts/unix
@@ -53,7 +50,6 @@ memorydebug :
 	$(MAKE) xgks/Makefile
 	$(MAKE) -C xgks
 	$(MAKE) -C fer memorydebug
-	$(MAKE) -C threddsBrowser
 	$(MAKE) -C external_functions debug
 	$(MAKE) -C gksm2ps
 	$(MAKE) -C bin/build_fonts/unix
@@ -73,7 +69,6 @@ clean :
 	$(MAKE) -C bin/build_fonts/unix clean
 	$(MAKE) -C gksm2ps clean
 	$(MAKE) -C external_functions clean
-	$(MAKE) -C threddsBrowser clean
 	$(MAKE) -C fer clean
 	rm -fr lib
 	$(MAKE) xgksclean

@@ -14,25 +14,6 @@ setenv FER_DSETS "${FER_DIR}/fer_dsets"
 ## Web browser for your system used in some "go" scripts
 setenv FER_WEB_BROWSER "firefox"
 
-## If "java -version" does not run from the command prompt,
-## or does not report a java 1.6.x version, the environment 
-## variable JAVA_HOME needs to be defined in order to run 
-## the ThreddsBrowser GUI.  The directory defined by this 
-## environment variable contains the java executable (version
-## 1.6.x) in the bin subdirectory (ie, bin/java).
-if ( ! $?JAVA_HOME ) then
-    ## try some common locations; 
-    if ( -x "/usr/java/latest/bin/java" ) then
-        setenv JAVA_HOME "/usr/java/latest"
-    else if ( -x "/usr/lib/jvm/java-1.6.0-sun/bin/java" ) then
-        setenv JAVA_HOME "/usr/lib/jvm/java-1.6.0-sun"
-    else if ( -x "/usr/lib/jvm/java-6-sun/bin/java" ) then
-        setenv JAVA_HOME "/usr/lib/jvm/java-6-sun"
-    endif
-    ## or comment the above out and just set your own location
-    # setenv JAVA_HOME "/my/java-1.6/home"
-endif
-
 ## =========== The remainder of this file should not need modification ===========
 ## =========== unless you want to add custom directories or sites to   ===========
 ## =========== the Ferret's defaults.                                  ===========
@@ -46,13 +27,6 @@ if ( "${PATH}" !~ "*${FER_DIR}/bin*" ) then
     setenv PATH "${FER_DIR}/bin:${PATH}"
     rehash
 endif
-
-## Space-separated list of default sites for ThreddsBrowser
-## (SET /DATA /BROWSE or its alias OPEN)
-## Assigned in this unusual way to make it easy to add/delete/rearrange sites.
-setenv FER_DATA_THREDDS ""
-setenv FER_DATA_THREDDS "${FER_DATA_THREDDS} http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml"
-setenv FER_DATA_THREDDS "${FER_DATA_THREDDS} ${FER_DSETS}"
 
 ## Space-separated lists of directories examined when searching
 ## for (data, descriptor, grid, go-script) files without path components
@@ -74,11 +48,6 @@ setenv SPECTRA "${FER_DIR}/ppl"
 setenv FER_FONTS "${FER_DIR}/ppl/fonts"
 ## Directory for Ferret fonts (old)
 setenv PLOTFONTS "${FER_DIR}/ppl/fonts"
-
-## Directory containing threddsBrowser.jar and toolsUI.jar for ThreddsBrowser
-setenv FER_LIBS "${FER_DIR}/lib"
-
-setenv FER_DAT "${FER_DIR}"
 
 ## Faddpath: a tool to quickly add paths to the search lists
 alias Faddpath 'if ( "\!*" != "" ) then \

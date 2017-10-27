@@ -9810,12 +9810,12 @@ SHOW DATA/FULL
     1> ./data/EZ.DAT  (default)
  
  name     title                             I         J         K         L
- X1       X1                               1:15      ...       ...       ...
+ X1       X1                               1:9       ...       ...       ...
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:15.5  
- X2       X2                               1:15      ...       ...       ...
+             X=0.5:9.5  
+ X2       X2                               1:9       ...       ...       ...
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:15.5  
+             X=0.5:9.5  
  
  /FORMAT = FREE
  /SKIP = 2
@@ -9848,12 +9848,12 @@ SHOW DATA/FULL
     1> ./data/EZ.DAT  (default)
  
  name     title                             I         J         K         L
- X1       X1                               1:15      ...       ...       ...
+ X1       X1                               1:9       ...       ...       ...
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:15.5  
- X2       X2                               1:15      ...       ...       ...
+             X=0.5:9.5  
+ X2       X2                               1:9       ...       ...       ...
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:15.5  
+             X=0.5:9.5  
  
  /FORMAT = FREE
  /SKIP = 2
@@ -9883,12 +9883,12 @@ SHOW DATA/FULL
     1> ./data/EZ.DAT  (default)
  
  name     title                             I         J         K         L
- X1       X1                               1:15      ...       ...       ...
+ X1       X1                               1:9       ...       ...       ...
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:15.5  
- X2       X2                               1:15      ...       ...       ...
+             X=0.5:9.5  
+ X2       X2                               1:9       ...       ...       ...
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:15.5  
+             X=0.5:9.5  
  
  /FORMAT = (3(F14.0,F7.0))
  /SKIP = 2
@@ -9921,12 +9921,12 @@ SHOW DATA/FULL
     1> ./data/EZ.DAT  (default)
  
  name     title                             I         J         K         L
- X1       X1                               1:15      ...       ...       ...
+ X1       X1                               1:12      ...       ...       ...
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:15.5  
- X2       X2                               1:15      ...       ...       ...
+             X=0.5:12.5  
+ X2       X2                               1:12      ...       ...       ...
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:15.5  
+             X=0.5:12.5  
  
  /FORMAT = (3(F14.0,F7.0)/)
  /SKIP = 1
@@ -37054,11 +37054,11 @@ show data
      currently SET data sets:
     1> ./data/bn_delimited_read_1.dat  (default)
  name     title                             I         J         K         L
- A1       a1                               1:7       ...       ...       ...
- A2       a2                               1:7       ...       ...       ...
- A3       a3                               1:7       ...       ...       ...
- A4       a4                               1:7       ...       ...       ...
- A5       a5                               1:7       ...       ...       ...
+ A1       a1                               1:6       ...       ...       ...
+ A2       a2                               1:6       ...       ...       ...
+ A3       a3                               1:6       ...       ...       ...
+ A4       a4                               1:6       ...       ...       ...
+ A5       a5                               1:6       ...       ...       ...
  
 list a1,a2,a3,a4,a5
              DATA SET: ./data/bn_delimited_read_1.dat
@@ -37480,367 +37480,367 @@ show data/full
     1> ./data/bn_delimited_read_CO2.dat  (default)
  
  name     title                             I         J         K         L
- V1       V1                               1:20      ...       ...       ...
+ V1       V1                               1:19      ...       ...       ...
             Data type = TEXT
             Conversion /TYPE=TEXT
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V2       V2                               1:20      ...       ...       ...
+             X=0.5:19.5  
+ V2       V2                               1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V3       V3                               1:20      ...       ...       ...
+             X=0.5:19.5  
+ V3       V3                               1:19      ...       ...       ...
             Data type = TEXT
             Conversion /TYPE=TEXT
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V4       V4                               1:20      ...       ...       ...
+             X=0.5:19.5  
+ V4       V4                               1:19      ...       ...       ...
        (Julian days since 1-Jan-1900)
             Data type = NUMERIC
             Conversion /TYPE=DATE
              days on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V5       V5                               1:20      ...       ...       ...
+             X=0.5:19.5  
+ V5       V5                               1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V6       V6                               1:20      ...       ...       ...
+             X=0.5:19.5  
+ V6       V6                               1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V7       V7                               1:20      ...       ...       ...
+             X=0.5:19.5  
+ V7       V7                               1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V8       V8                               1:20      ...       ...       ...
+             X=0.5:19.5  
+ V8       V8                               1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V9       V9                               1:20      ...       ...       ...
+             X=0.5:19.5  
+ V9       V9                               1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V10      V10                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V10      V10                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V11      V11                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V11      V11                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V12      V12                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V12      V12                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V13      V13                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V13      V13                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V14      V14                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V14      V14                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V15      V15                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V15      V15                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V16      V16                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V16      V16                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V17      V17                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V17      V17                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V18      V18                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V18      V18                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V19      V19                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V19      V19                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V20      V20                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V20      V20                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V21      V21                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V21      V21                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V22      V22                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V22      V22                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V23      V23                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V23      V23                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V24      V24                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V24      V24                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V25      V25                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V25      V25                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V26      V26                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V26      V26                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V27      V27                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V27      V27                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V28      V28                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V28      V28                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V29      V29                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V29      V29                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V30      V30                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V30      V30                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V31      V31                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V31      V31                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V32      V32                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V32      V32                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V33      V33                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V33      V33                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V34      V34                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V34      V34                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V35      V35                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V35      V35                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V36      V36                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V36      V36                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V37      V37                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V37      V37                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V38      V38                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V38      V38                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V39      V39                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V39      V39                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V40      V40                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V40      V40                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V41      V41                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V41      V41                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V42      V42                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V42      V42                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V43      V43                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V43      V43                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V44      V44                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V44      V44                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V45      V45                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V45      V45                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V46      V46                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V46      V46                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V47      V47                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V47      V47                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V48      V48                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V48      V48                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V49      V49                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V49      V49                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V50      V50                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V50      V50                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V51      V51                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V51      V51                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V52      V52                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V52      V52                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V53      V53                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V53      V53                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V54      V54                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V54      V54                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V55      V55                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V55      V55                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V56      V56                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V56      V56                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V57      V57                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V57      V57                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V58      V58                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V58      V58                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V59      V59                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V59      V59                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V60      V60                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V60      V60                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V61      V61                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V61      V61                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V62      V62                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V62      V62                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V63      V63                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V63      V63                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V64      V64                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V64      V64                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V65      V65                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V65      V65                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V66      V66                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V66      V66                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V67      V67                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V67      V67                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V68      V68                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V68      V68                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V69      V69                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V69      V69                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V70      V70                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V70      V70                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V71      V71                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V71      V71                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
- V72      V72                              1:20      ...       ...       ...
+             X=0.5:19.5  
+ V72      V72                              1:19      ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
                on grid (G###) with -1.E+34 for missing data
-             X=0.5:20.5  
+             X=0.5:19.5  
  
  /DELIMITERS="\t,\,"
  /FORMAT = DELIMITED
@@ -48509,7 +48509,7 @@ sho command
  SET LIST/PRECISIO/FILE/FORMAT/APPEND/HEADING/NCFORMAT/ENDIAN/DEFLATE/SHUFFLE
       /XCHUNK/YCHUNK/ZCHUNK/TCHUNK/ECHUNK/FCHUNK/OUTTYPE
  SET DATA/EZ/VARIABLE/TITLE/FORMAT/GRID/SKIP/COLUMNS/SAVE/RESTORE/ORDER
-      /TYPE/SWAP/REGULART/DELIMITE/BROWSE/STRICT
+      /TYPE/SWAP/REGULART/DELIMITE/STRICT
  SET MODE/LAST
  SET MOVI/FILE/COMPRESS/LASER/START
  SET VARIABLE/TITLE/UNITS/GRID/BAD/DATASET/NAME/SCALEFAC/OFFSET/OUTTYPE
@@ -94003,7 +94003,7 @@ sho command set
  SET LIST/PRECISIO/FILE/FORMAT/APPEND/HEADING/NCFORMAT/ENDIAN/DEFLATE/SHUFFLE
       /XCHUNK/YCHUNK/ZCHUNK/TCHUNK/ECHUNK/FCHUNK/OUTTYPE
  SET DATA/EZ/VARIABLE/TITLE/FORMAT/GRID/SKIP/COLUMNS/SAVE/RESTORE/ORDER
-      /TYPE/SWAP/REGULART/DELIMITE/BROWSE/STRICT
+      /TYPE/SWAP/REGULART/DELIMITE/STRICT
  SET MODE/LAST
  SET MOVI/FILE/COMPRESS/LASER/START
  SET VARIABLE/TITLE/UNITS/GRID/BAD/DATASET/NAME/SCALEFAC/OFFSET/OUTTYPE
@@ -94028,7 +94028,7 @@ sho command set l  ! SET LIST
       /XCHUNK/YCHUNK/ZCHUNK/TCHUNK/ECHUNK/FCHUNK/OUTTYPE
 sho command set d  ! SET DATA
  SET DATA/EZ/VARIABLE/TITLE/FORMAT/GRID/SKIP/COLUMNS/SAVE/RESTORE/ORDER
-      /TYPE/SWAP/REGULART/DELIMITE/BROWSE/STRICT
+      /TYPE/SWAP/REGULART/DELIMITE/STRICT
 sho command set m  ! SET MODE
  SET MODE/LAST
 sho command set mov! SET MOVIE
@@ -96521,14 +96521,14 @@ sh dat
      currently SET data sets:
     1> ./data/delim_datetime.csv  (default)
  name     title                             I         J         K         L
- INDEX    index                            1:8       ...       ...       ...
- EDTIM    edtim                            1:8       ...       ...       ...
+ INDEX    index                            1:5       ...       ...       ...
+ EDTIM    edtim                            1:5       ...       ...       ...
        (Julian days since 1-Jan-1900)
- UDTIM    udtim                            1:8       ...       ...       ...
+ UDTIM    udtim                            1:5       ...       ...       ...
        (Julian days since 1-Jan-1900)
- UDATE    udate                            1:8       ...       ...       ...
+ UDATE    udate                            1:5       ...       ...       ...
        (Julian days since 1-Jan-1900)
- EDATE    edate                            1:8       ...       ...       ...
+ EDATE    edate                            1:5       ...       ...       ...
        (Julian days since 1-Jan-1900)
  
 list index,edtim,udtim,udate,edate
@@ -96626,10 +96626,10 @@ sh dat
  
     2> ./data/delim_yyyy.csv  (default)
  name     title                             I         J         K         L
- INDEX    index                            1:8       ...       ...       ...
- UDATE    udate                            1:8       ...       ...       ...
+ INDEX    index                            1:6       ...       ...       ...
+ UDATE    udate                            1:6       ...       ...       ...
        (Julian days since 1-Jan-1900)
- UDTIM    udtim                            1:8       ...       ...       ...
+ UDTIM    udtim                            1:6       ...       ...       ...
        (Julian days since 1-Jan-1900)
  
 list/prec=10 index,udate,udtim
@@ -97341,13 +97341,13 @@ sh dat
  
     2> ./data/bn_delimited_read_1.dat  (default)
  name     title                             I         J         K         L
- lab      lab                              1:7       ...       ...       ...
- nothing  nothing                          1:7       ...       ...       ...
- var      var                              1:7       ...       ...       ...
- latitude latitude                         1:7       ...       ...       ...
+ lab      lab                              1:6       ...       ...       ...
+ nothing  nothing                          1:6       ...       ...       ...
+ var      var                              1:6       ...       ...       ...
+ latitude latitude                         1:6       ...       ...       ...
        (Latitude)
  longitude
-          longitude                        1:7       ...       ...       ...
+          longitude                        1:6       ...       ...       ...
        (Longitude)
  
 sh dat/att
@@ -103646,6 +103646,30 @@ ppl axlsze,0,0
  
 if ($program_name"0|PyFerret>1|*>0") then cancel text
  !-> if 0 then cancel text
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err721_ascii_size
+! err721_ascii_size.jnl
+! ACM 10/25/2017  Ticket 2567
+! Initializing an EZ dataset mis-counts the size until data is loaded
+ 
+file/var="t1,t2"/skip=1 err721_ascii_size.dat
+show data
+     currently SET data sets:
+    1> ./data/err721_ascii_size.dat  (default)
+ name     title                             I         J         K         L
+ T1       t1                               1:3       ...       ...       ...
+ T2       t2                               1:3       ...       ...       ...
+ 
+say `t1,return=iend`
+ !-> MESSAGE/CONTINUE 3
+3
+load t1
+say `t1,return=iend`
+ !-> MESSAGE/CONTINUE 3
+3
 *** Running ferret script: bn_tseries_modulo.jnl
 ! bn_tseries_modulo.jnl
 !  9/2017 TSERIES aggregations

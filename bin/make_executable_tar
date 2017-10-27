@@ -112,28 +112,6 @@ mkdir ${temp_dir}/ppl
 mkdir ${temp_dir}/ppl/fonts
 ${mycp} ${fer_files} ${temp_dir}/ppl/fonts
 
-# Copy threddsBrowser/threddsBrowser.jar
-set tb_jar = ${ferret_dir}/threddsBrowser/threddsBrowser.jar
-if ( ! -r ${tb_jar} ) then
-   echo "No threddsBrowser.jar file found ${ferret_dir}/threddsBrowser"
-   echo "Installation of threddsBrowser.jar skipped"
-   echo ""
-else
-   mkdir ${temp_dir}/lib
-   ${mycp} ${tb_jar} ${temp_dir}/lib
-#  Copy threddsBrowser/toolsUI/toolsUI-4.1.jar
-   set toolsui_jar = ${ferret_dir}/threddsBrowser/toolsUI/toolsUI-4.1.jar
-      if ( ! -r ${toolsui_jar} ) then
-      echo "No toolsUI-4.1.jar file found ${ferret_dir}/threddsBrowser/toolsUI"
-      echo ""
-      exit 1
-   endif
-   ${mycp} ${toolsui_jar} ${temp_dir}/lib
-#   Create a symbolic link to the toolsUI-4.1.jar file
-   cd ${temp_dir}/lib
-   ${mylns} toolsUI-4.1.jar toolsUI.jar
-endif
-
 # Copy pyferret files
 if ( "${pyferret_dir}" != "" ) then
    set python_dirs = ${pyferret_dir}/lib/python*

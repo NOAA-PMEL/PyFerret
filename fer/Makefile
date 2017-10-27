@@ -36,6 +36,7 @@
 #  V702 1/17 *sh* dynamic mem mgmt for trac #2369 calls mem from ccr so had to
 #        stick another mem at tthe end of the FERLIBS list.  Ugly solution.
 #        Also shifted fmt after mem so that the new LIFINT8 gets picked up
+#  V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
 # 
 # include platform specific macro definitions
 #

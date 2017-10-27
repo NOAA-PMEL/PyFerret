@@ -71,6 +71,7 @@
 *                  to simplify future merges of Ferret into PyFerret
 * V720 *acm*  3/17 Ticket 2512: Add STAT/PRECICISION=
 * V720 *acm*  5/17 Ticket 2530 add WIRE/COLOR= and draw the color with pen 1
+* V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
 
 
 * command qualifier states
@@ -193,7 +194,6 @@
      .			slash_set_data_swap,
      .			slash_set_data_tregular,
      .			slash_set_data_delimiters,
-     .                  slash_set_data_browse,
      .                  slash_set_data_strict,
      .
      .			slash_set_var_title,
@@ -492,7 +492,6 @@
      .			slash_set_data_swap     = 12,
      .			slash_set_data_tregular = 13,
      .			slash_set_data_delimiters = 14,
-     .                  slash_set_data_browse   = 15,
      .                  slash_set_data_strict   = 16,
      .
      .			slash_set_var_title	= 1,

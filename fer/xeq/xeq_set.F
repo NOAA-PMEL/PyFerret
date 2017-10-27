@@ -198,6 +198,7 @@
 *		  Fixed bug in error message for invalid SET LIST/OUT
 * V720 3/17 *acm* Fix ticket 2521; do not call TM_LEGAL_UNIX_NAME for path and 
 *                file name on SET REDIRECT.
+* V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
  
 
 	include 'tmap_dims.parm'
@@ -435,12 +436,6 @@ c *kob* 4/97
      .					cx_data_set(cx_last) = saved_dset
 	   RETURN
 	ENDIF
-
-* check for /BROWSE - dataset name comes from the browser
-        IF ( qual_given(slash_set_data_browse) .GT. 0 ) THEN
-           CALL GET_DATASET_NAME_FROM_BROWSER(status)
-           IF ( status .NE. ferr_ok ) RETURN
-        ENDIF
 
 * (hack) if the argument has a ".agg" extension, then pass it to the GO
 * command, allowing "USE myAgg.agg" to initialize an aggregation

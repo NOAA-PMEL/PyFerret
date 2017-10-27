@@ -20,9 +20,7 @@ for Ferret v6.6 at http://porter.pmel.noaa.gov/Ferret/home/documentation/v6-6-re
 To build Ferret:
 
   * Under the FERRET directory you will find a file called site_specific.mk. Edit this file
-  and insert the locations of the HDF5, NetCDF, and readline directories, and java. Java is
-  used only for the ThreddsBrowser facility of Ferret and is not required. If you use Java, 
-  you need version 1.6 "version 6".
+  and insert the locations of the HDF5, NetCDF, and readline directories.
 
   * Still in the top-level FERRET directory, run "make". This will compile and link Ferret, 
   gksm2ps, external functions, and the fonts files. The Ferret executable is the file

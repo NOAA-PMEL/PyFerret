@@ -1,5 +1,5 @@
 ##
-## Environment settings for Ferret for csh users.
+## Environment settings for Ferret for C-shell users.
 ## Source this file before running ferret ('source ferret_paths.csh')
 ##
 
@@ -11,26 +11,21 @@ setenv FER_DIR "/usr/local/ferret"
 ## the directory you created for the FERRET demonstration data files (30+ Mbytes).
 setenv FER_DSETS "${FER_DIR}/fer_dsets"
 
-## Web browser for your system used in some "go" scripts
-setenv FER_WEB_BROWSER "firefox"
 
 ## =========== The remainder of this file should not need modification ===========
 ## =========== unless you want to add custom directories or sites to   ===========
 ## =========== the Ferret's defaults.                                  ===========
 
 
-## Prepend ${FER_DIR}/bin to ${PATH}
-## System Manager: If you prefer not to modify PATH here, you may comment
-## out these lines and execute the file $FER_DIR/bin/install_ferret_links
-## which will create ferret links in /usr/local/bin.
+## Add ${FER_DIR}/bin to the beginning of ${PATH}
 if ( "${PATH}" !~ "*${FER_DIR}/bin*" ) then
     setenv PATH "${FER_DIR}/bin:${PATH}"
     rehash
 endif
 
 ## Space-separated lists of directories examined when searching
-## for (data, descriptor, grid, go-script) files without path components
-setenv FER_DATA ". ${FER_DSETS}/data ${FER_DIR}/go ${FER_DIR}/examples"
+## for data, descriptor, grid, go-script files without path components
+setenv FER_DATA ". ${FER_DSETS}/data ${FER_DIR}/contrib"
 setenv FER_DESCR ". ${FER_DSETS}/descr"
 setenv FER_GRIDS ". ${FER_DSETS}/grids"
 setenv FER_GO ". ${FER_DIR}/go ${FER_DIR}/examples ${FER_DIR}/contrib"

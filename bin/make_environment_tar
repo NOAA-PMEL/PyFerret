@@ -93,7 +93,7 @@ else
     svn checkout -q ${repository}/palettes
 endif
 
-# Move files into thier proper position
+# Move files into their proper position
 echo "Doing a bit of rearranging"
 mv jnls/* .
 rm -rf jnls

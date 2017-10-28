@@ -1,18 +1,18 @@
 #! /bin/sh
 ## This Bourne-shell script is used to initialize and run Ferret using 
 ## the pyferret Python module.  The intent of this script is to provide 
-## a traditional Ferret interface through the pyferret module.
+## a traditional Ferret interface through the pyferret Python module.
 
 ## set python_exe to the (optionally full-path) python executable to use
-python_exe=PYTHON_EXECUTABLE
+python_exe="##PYTHON_EXECUTABLE##"
 
 ## Make sure the FER_* environment variables are assigned
-if [ -z "${FER_LIBS}" ]; then
+if [ -z "${FER_DIR}" ]; then
 ## Either source the ferret_paths script to assign the environment variables
-. FERRET_PATHS_SH_SCRIPT
+    . "##FERRET_PATHS_SH_SCRIPT##"
 ## or just throw an error if they should have already been defined
-#    echo "**ERROR: Ferret environment variables are not defined"
-#    exit 1
+#   echo "**ERROR: Ferret environment variables are not defined"
+#   exit 1
 ##
 fi
 
@@ -21,12 +21,13 @@ fi
 ## ==== The following should not need any modifications ====
 ##
 
+
 ## The pyferret assignment to PYTHONPATH and LD_LIBRARY_PATH 
 ## is now done in the ferret_paths script.
 
-## Finally, execute an in-line Python script to run Ferret using the pyferret 
-## module.  The init method explicity processes the $PYTHONSTARTUP file, if it
-## exists and if '-secure' was not given as a command-line argument.
+## Execute an in-line Python script to run Ferret using the pyferret 
+## module.  The init method explicity processes the $PYTHONSTARTUP file, 
+## if it exists and if '-secure' was not given as a command-line argument.
 if echo "$@" | grep -q -- "-linebuffer"; then
     GFORTRAN_UNBUFFERED_PRECONNECTED=1
     export GFORTRAN_UNBUFFERED_PRECONNECTED

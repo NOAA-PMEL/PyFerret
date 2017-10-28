@@ -257,6 +257,7 @@
 * V720 *acm*  3/17 Ticket 2512: Add STAT/PRECISION=
 * V720 *acm*  5/17 Ticket 2530 add WIRE/COLOR= 
 * PyFr *kms*  5/17 Ticket 2530 add WIRE/COLOR= /OPACITY= /THICKNESS=
+* V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
 
 *
 * !!!!!!!!!!
@@ -380,7 +381,7 @@
 	   DATA subcommands      (nsub_at1 + 6)	/ 'DATA'	/
 	   DATA num_qualifs      (nsub_at1 + 6)	/ nqual1g	/
 	   DATA qualifier_pointer(nsub_at1 + 6)	/ nqual_at1g	/
-* SET DATA/FORM/GRID/TITL/SIZE/TYPE/BROWSE
+* SET DATA/FORM/GRID/TITL/SIZE/TYPE
 		DATA qualifiers  (nqual_at1g+0)	/ 'EZ'  	/
 		DATA qualifiers  (nqual_at1g+1)	/ 'VARIABLE'	/
 		DATA qualifiers  (nqual_at1g+2)	/ 'TITLE'	/
@@ -394,8 +395,8 @@
 		DATA qualifiers  (nqual_at1g+10) / 'TYPE'       / 
 		DATA qualifiers  (nqual_at1g+11) / 'SWAP'       / 
 		DATA qualifiers  (nqual_at1g+12) / 'REGULART'   /
-		DATA qualifiers  (nqual_at1g+13) / 'DELIMITE'  /
-		DATA qualifiers  (nqual_at1g+14) / 'BROWSE'     /
+		DATA qualifiers  (nqual_at1g+13) / 'DELIMITE'   /
+		DATA qualifiers  (nqual_at1g+14) / '****'       /
 		DATA qualifiers  (nqual_at1g+15) / 'STRICT'     /
 		DATA qualifiers  (nqual_at1g+16) / '****'       /
 		DATA qualifiers  (nqual_at1g+17) / '****'       /
@@ -1868,34 +1869,31 @@
      .		alias_name(19)	/ 'KEYMARK' /,
      .		alias_len(19)	/ 23 /,
      .		alias(19)	/ 'PPL SHAKEY 1,,,,,,,,,,' /
-     .		alias_name(20)	/ 'OPEN' /,
-     .		alias_len(20)	/ 16 /,
-     .		alias(20)	/ 'SET DATA /BROWSE' /
-     .		alias_name(21)	/ 'RIBBON' /,
-     .		alias_len(21)	/ 11 /,
-     .		alias(21)	/ 'PLOT/RIBBON' /
-     .		alias_name(22)	/ 'ENSEMBLE' /,
+     .		alias_name(20)	/ 'RIBBON' /,
+     .		alias_len(20)	/ 11 /,
+     .		alias(20)	/ 'PLOT/RIBBON' /
+     .		alias_name(21)	/ 'ENSEMBLE' /,
+     .		alias_len(21)	/ 22 /,
+     .		alias(21)	/ 'DEFINE DATA/AGGREGAT/E' /
+     .		alias_name(22)	/ 'FMRC' /,
      .		alias_len(22)	/ 22 /,
-     .		alias(22)	/ 'DEFINE DATA/AGGREGAT/E' /
-     .		alias_name(23)	/ 'FMRC' /,
-     .		alias_len(23)	/ 22 /,
-     .		alias(23)	/ 'DEFINE DATA/AGGREGAT/F' /
-     .		alias_name(24)	/ 'VTREE' /,
-     .		alias_len(24)	/ 13 /,
-     .		alias(24)	/ 'SHOW VAR/TREE' /,
-     .		alias_name(25)	/ 'TSERIES' /,
+     .		alias(22)	/ 'DEFINE DATA/AGGREGAT/F' /
+     .		alias_name(23)	/ 'VTREE' /,
+     .		alias_len(23)	/ 13 /,
+     .		alias(23)	/ 'SHOW VAR/TREE' /,
+     .		alias_name(24)	/ 'TSERIES' /,
+     .		alias_len(24)	/ 22 /,
+     .		alias(24)	/ 'DEFINE DATA/AGGREGAT/T' /
+     .		alias_name(25)	/ 'UNION' /,
      .		alias_len(25)	/ 22 /,
-     .		alias(25)	/ 'DEFINE DATA/AGGREGAT/T' /
-     .		alias_name(26)	/ 'UNION' /,
-     .		alias_len(26)	/ 22 /,
-     .		alias(26)	/ 'DEFINE DATA/AGGREGAT/U' /
+     .		alias(25)	/ 'DEFINE DATA/AGGREGAT/U' /
 
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)
-     .                   / 124*unspecified_name4 /,
-     .		(alias_len(i),i=num_predefined_alias+1,150) / 124*4 /,
+     .                   / 125*unspecified_name4 /,
+     .		(alias_len(i),i=num_predefined_alias+1,150) / 125*4 /,
      .		(alias(i),i=num_predefined_alias+1,150)
-     .                   / 124*unspecified_name4 /
+     .                   / 125*unspecified_name4 /
 
 
 	DATA queries(1) / 'STATUS' /,

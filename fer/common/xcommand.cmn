@@ -60,6 +60,7 @@
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U
+* V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
 
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
@@ -445,7 +446,7 @@
      .			total_num_commands	= 30,
      .			total_num_subcommands	= nsub_at31 - 1,
      .			total_num_qualifiers	= nqual_at31a - 1,
-     .	                num_predefined_alias    = 26,
+     .	                num_predefined_alias    = 25,
      .			max_queries		= 50 )
 
 * declarations

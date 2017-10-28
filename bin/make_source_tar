@@ -49,14 +49,10 @@ mkdir ${temp_dir}
 cd ${temp_dir}
 
 # Checkout the required files
-echo "Extracting FERRET source code "
+echo "Extracting Ferret source code "
 echo "from ${repository} "
 echo "to ${temp_dir}/${fer_name} "
 svn checkout -q ${repository} ${fer_name}
-
-# toolsUI-4.1.jar is no longer available from ucar; 
-# have to keep it until threddsBrowser gets updated
-# rm ${fer_name}/threddsBrowser/toolsUI/toolsUI-4.1.jar
 
 # Create the tar file
 ctar_file="${target_dir}/fer_source.tar.gz"

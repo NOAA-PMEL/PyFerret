@@ -16,7 +16,6 @@ all : optimized
 optimized :
 	mkdir -p $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
-	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) pymod_optimized_build
 	$(MAKE) pymod_optimized_install
 	$(MAKE) externals_optimized
@@ -26,7 +25,6 @@ optimized :
 beta :
 	mkdir -p $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer beta
-	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) pymod_optimized_build
 	$(MAKE) pymod_optimized_install
 	$(MAKE) externals_optimized
@@ -36,7 +34,6 @@ beta :
 debug :
 	mkdir -p $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer debug
-	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) pymod_debug_build
 	$(MAKE) pymod_debug_install
 	$(MAKE) externals_debug
@@ -51,7 +48,6 @@ debug :
 memorydebug :
 	mkdir -p $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer memorydebug
-	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) "CFLAGS = $(CFLAGS) -DMEMORYDEBUG" pymod_debug_build
 	$(MAKE) "CFLAGS = $(CFLAGS) -DMEMORYDEBUG" pymod_debug_install
 	$(MAKE) externals_debug
@@ -63,7 +59,6 @@ memorydebug :
 grdeldebug :
 	mkdir -p $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer grdeldebug
-	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) pymod_debug_build
 	$(MAKE) pymod_debug_install
 	$(MAKE) externals_debug
@@ -156,7 +151,6 @@ clean :
 	rm -fr $(DIR_PREFIX)/install $(DIR_PREFIX)/build ferret.jnl*
 	find $(DIR_PREFIX)/pviewmod -name '*.py[co]' -delete
 	find $(DIR_PREFIX)/pyfermod -name '*.py[co]' -delete
-	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser clean
 	$(MAKE) -C $(DIR_PREFIX)/fer clean
 	rm -fr $(DIR_PREFIX)/lib
 
@@ -169,14 +163,13 @@ install :
 	mv -f pyferret-latest-local.tar.gz $(INSTALL_FER_DIR)
 	( cd $(INSTALL_FER_DIR) ; tar xz --strip-components=1 -f pyferret-latest-local.tar.gz )
 
-## The following is for installing the updated threddsBrowser.jar, ferret_ef_meme_subsc.so,
-## libpyferret.so, and PyFerret python scripts into $(INSTALL_FER_DIR)/lib without having 
-## to use the distribution tar file.  Also copies all the PyFerret Fortran external function 
-## to the $(INSTALL_FER_DIR)/ext_func/pylibs directory.
+## The following is for installing the updated ferret_ef_meme_subsc.so, libpyferret.so, 
+## and PyFerret python scripts into $(INSTALL_FER_DIR)/lib without having to use the 
+## distribution tar file.  Also copies all the PyFerret Fortran external function to 
+## the $(INSTALL_FER_DIR)/ext_func/pylibs directory.
 .PHONY : update
 update :
 	mkdir -p $(INSTALL_FER_DIR)/lib
-	cp -f $(DIR_PREFIX)/threddsBrowser/threddsBrowser.jar $(INSTALL_FER_DIR)/lib
 	find $(DIR_PREFIX)/external_functions -type f -perm -100 -name \*.so -exec cp {} $(INSTALL_FER_DIR)/ext_func/pylibs \;
 	( cd $(DIR_PREFIX) ; \
 	  export CC=$(CC) ; \

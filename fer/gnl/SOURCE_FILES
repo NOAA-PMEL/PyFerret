@@ -42,7 +42,6 @@ escape_for_xml.F\
 fill_fmrc_time_gaps.F\
 finalize_ferret.F\
 float2string_for_xml.F\
-get_dataset_name.F\
 get_fer_command.F\
 get_fvars_list_by_attname_and_val.F\
 get_context_mods.F\

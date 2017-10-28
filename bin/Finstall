@@ -1,11 +1,9 @@
 #! /bin/sh
 ## NOAA PMEL TMAP
 ## Finstall
-## modifies ferret_paths_template and pyferret_template files to 
-## specify locations of ferret software and demo data sets to create 
-## the ferret_paths and pyferret files.  Create the pyferret script.
-## All changes are recorded, with a timestamp, in the log file
-## $FER_DIR/bin/Finstall.log
+## Modifies ferret_paths_template.{sh,csh} and pyferret_template scripts 
+## to specify locations of ferret software and demo data sets to create 
+## the ferret_paths and pyferret scripts. 
 
 
 ### Assign $fer_dir, the desired FER_DIR value
@@ -15,7 +13,9 @@ get_fer_dir() {
             fer_dir="${FER_DIR}"
             echo " "
             echo " The environment variable FER_DIR is currently defined as "
+            echo " "
             echo "     '${FER_DIR}' "
+            echo " "
             echo " This should be the directory created from extracting the PyFerret "
             echo " tar.gz file.  It contains subdirectories bin, contrib, examples, "
             echo " ext_func, go, lib, and ppl. "
@@ -60,7 +60,9 @@ get_fer_dsets() {
             fer_dsets="${FER_DSETS}"
             echo " "
             echo " The environment variable FER_DSETS is currently defined as "
+            echo " "
             echo "     '${FER_DSETS}' "
+            echo " "
             echo " This is the directory containing the default Ferret datasets. "
             echo " It contains subdirectories data, descr, and grids, including "
             echo " the data file data/coads_climatology.cdf "
@@ -245,6 +247,8 @@ write_log_message() {
 ### Edit the ferret_paths_template.{csh,sh} files to create the ferret_paths.{csh,sh} files 
 ### and edit the pyferret_template file to create the pyferret file.
 create_ferret_paths_and_pyferret() {
+#   Define the pyferret site relative to ${FER_DIR}
+    pyferret_site="\${FER_DIR}/lib/${python_subdirectory}/site-packages"
 #   Check for existing ferret_paths.csh
     if [ -f "${ferpaths_dir}/ferret_paths.csh" ]; then
         if mv -f "${ferpaths_dir}/ferret_paths.csh" "${ferpaths_dir}/ferret_paths.csh.old"; then
@@ -256,14 +260,10 @@ create_ferret_paths_and_pyferret() {
         fi
     fi
 #   Create new ferret_paths.csh
-    if sed -e "/setenv FER_DIR/c\\
-setenv FER_DIR \"${fer_dir}\"" \
-           -e "/setenv FER_DSETS/c\\
-setenv FER_DSETS \"${fer_dsets}\"" \
-           -e "/set python_exe = /c\\
-set python_exe = \"${python_executable}\"" \
-           -e "/set python_subdir = /c\\
-set python_subdir = \"${python_subdirectory}\"" \
+    if sed -e "s%##FER_DIR##%${fer_dir}%" \
+           -e "s%##FER_DSETS##%${fer_dsets}%" \
+           -e "s%##PYTHON_EXECUTABLE##%${python_executable}%" \
+           -e "s%##PYFERRET_SITE##%${pyferret_site}%" \
            "${fer_dir}/bin/ferret_paths_template.csh" \
            > "${ferpaths_dir}/ferret_paths.csh" ; then
         write_log_message "Created ${ferpaths_dir}/ferret_paths.csh"
@@ -285,14 +285,10 @@ set python_subdir = \"${python_subdirectory}\"" \
         fi
     fi
 #   Create new ferret_paths.sh
-    if sed -e "/export FER_DIR=/c\\
-export FER_DIR=\"${fer_dir}\"" \
-           -e "/export FER_DSETS=/c\\
-export FER_DSETS=\"${fer_dsets}\"" \
-           -e "/python_exe=/c\\
-python_exe=\"${python_executable}\"" \
-           -e "/python_subdir=/c\\
-python_subdir=\"${python_subdirectory}\"" \
+    if sed -e "s%##FER_DIR##%${fer_dir}%" \
+           -e "s%##FER_DSETS##%${fer_dsets}%" \
+           -e "s%##PYTHON_EXECUTABLE##%${python_executable}%" \
+           -e "s%##PYFERRET_SITE##%${pyferret_site}%" \
            "${fer_dir}/bin/ferret_paths_template.sh" \
            > "${ferpaths_dir}/ferret_paths.sh" ; then
         write_log_message "Created ${ferpaths_dir}/ferret_paths.sh"
@@ -358,12 +354,8 @@ python_subdir=\"${python_subdirectory}\"" \
         fi
     fi
 #   Create new pyferret
-    if sed -e "/python_exe=/c\\
-python_exe=\"${python_executable}\"" \
-           -e "/python_subdir=/c\\
-python_subdir=\"${python_subdirectory}\"" \
-           -e "/. FERRET_PATHS_SH_SCRIPT/c\\
-. \"${ferpaths_dir}/ferret_paths.sh\"" \
+    if sed -e "s%##PYTHON_EXECUTABLE##%${python_executable}%" \
+           -e "s%##FERRET_PATHS_SH_SCRIPT##%${ferpaths_dir}/ferret_paths.sh%" \
            "${fer_dir}/bin/pyferret_template" \
            > "${fer_dir}/bin/pyferret" ; then
         chmod +x "${fer_dir}/bin/pyferret"

@@ -43,7 +43,6 @@
 FILE *executableOutput(char *exeArgv[], pid_t *childPidPtr, char errMsg[]);
 void ferret_dispatch_c(char *init_command, smPtr sBuffer);
 int  getJavaVersion(char javaExeName[], char errMsg[]);
-int  runThreddsBrowser(char datasetName[], char errWarn[]);
 void set_batch_graphics( char *outfile, int *pngonly );
 void set_secure(void);
 void set_server(void);
@@ -93,7 +92,6 @@ void FORTRAN(recover_cached_2d_array_point)(double *array, int *dim1, int *dim2,
 void FORTRAN(recover_cached_full_array)(double *array, int *alen, double **pointer_val);
 int  FORTRAN(replaceable_bad_flags)(DFTYPE *bad1, DFTYPE *bad2);
 void FORTRAN(replace_bad_data_sub)(DFTYPE *old_bad, DFTYPE *src, int *size, DFTYPE *new_bad);
-int  FORTRAN(run_thredds_browser)(char dataset_name[], char err_warn_msg[], int max_len_data_set, int max_len_err_warn_msg);
 void FORTRAN(save_c_string)(char *string, int *inlen, char ***fer_ptr, int *offset, int *stat);
 void FORTRAN(save_metafile_name)(char *outfile, int *length);
 void FORTRAN(set_batch_graphics)(char *outfile, int *batmode);

@@ -321,6 +321,7 @@
 *     basic x axis, not the ez abstract axis
 	      CALL EZ_COUNT_DSET ( dset, ezform, nread, status )
               IF ( status .NE. ferr_ok ) RETURN
+	      nread = nread - skip
 
 	      IF (columns .GT. 1) THEN
 	         CALL CD_GET_DS_INFO (dset, ndims, nvars, ngatts,

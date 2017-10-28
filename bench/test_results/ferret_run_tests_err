@@ -5153,6 +5153,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_tseries_modulo.jnl
 *** Running ferret script: bn_huge_axis.jnl
  LISTing to file a.nc

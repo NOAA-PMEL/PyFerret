@@ -184,9 +184,9 @@ update :
 	  export IS_LINUX_SYSTEM=$(IS_LINUX_SYSTEM) ; \
 	  $(PYTHON_EXE) setup.py --quiet install -O2 --prefix=$(INSTALL_FER_DIR) )
 
-## Execute the RUN_TESTS.sh tests
-.PHONY : run_tests
-run_tests :
-	$(MAKE) -C $(DIR_PREFIX)/bench run_tests
+## Execute the benchmark tests
+.PHONY : check
+check : 
+	$(MAKE) -C $(DIR_PREFIX)/bench check
 
 ##

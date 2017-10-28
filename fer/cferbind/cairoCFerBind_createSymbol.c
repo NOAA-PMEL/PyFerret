@@ -9,18 +9,18 @@
 /*
  * Create a symbol object for this "Window".
  *
- *     ptsx: vertices X-coordinates describing the symbol 
- *           as a multiline drawing on a [0,100] square; 
- *           only used if numpts is greater than zero
- *     ptsy: vertices Y-coordinates describing the symbol 
- *           as a multiline drawing on a [0,100] square; 
- *           only used if numpts is greater than zero
- *     numpts: number of vertices describing the symbol; 
- *           can be zero if giving a well-known symbol name
  *     symbolname: name of the symbol, either a well-known
  *           symbol name (e.g., ".") or a custom name for a 
  *           symbol created from the given vertices (e.g., "FER001")
  *     symbolnamelen: actual length of the symbol name
+ *     ptsx: vertices X-coordinates describing the symbol 
+ *           as a multiline drawing on a [0,100] square; 
+ *           not used if giving a well-known symbol name
+ *     ptsy: vertices Y-coordinates describing the symbol 
+ *           as a multiline drawing on a [0,100] square; 
+ *           not used if giving a well-known symbol name
+ *     numpts: number of vertices describing the symbol; 
+ *           not used if giving a well-known symbol name
  *
  * Currently well-known symbol names (all single-character):
  *     '.' (period) - small filled circle
@@ -35,9 +35,8 @@
  * grdelerrmsg is assigned an appropriate error message and NULL
  * is returned.
  */
-grdelType cairoCFerBind_createSymbol(CFerBind *self, const float ptsx[], 
-                                     const float ptsy[], int numpts, 
-                                     const char *symbolname, int namelen)
+grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int namelen,
+                                     const float ptsx[], const float ptsy[], int numpts)
 {
     char symname[8];
     int  k;

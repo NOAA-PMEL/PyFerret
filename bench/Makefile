@@ -6,6 +6,10 @@
 include ../site_specific.mk
 include ../platform_specific.mk.$(BUILDTYPE)
 
+## For PyFerret, use run_tests as the standard check
+.PHONY: check
+check: run_tests
+
 ## Execute the RUN_TESTS.sh test suite
 .PHONY: run_tests
 run_tests:

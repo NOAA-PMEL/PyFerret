@@ -104,8 +104,8 @@
 
 *       Create the symbol object
         CALL FGDSYMBOL(symbolobjs(symnum, windowid), 
-     .                 windowobjs(windowid), 
-     .                 ptsx, ptsy, numpts, symname, snlen)
+     .                 windowobjs(windowid), symname, snlen,
+     .                 ptsx, ptsy, numpts)
         IF ( symbolobjs(symnum, windowid) .EQ. nullobj ) THEN
             errmsg = ' '
             CALL FGDERRMSG(errmsg, errmsglen)

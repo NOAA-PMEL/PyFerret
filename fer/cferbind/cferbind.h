@@ -69,9 +69,9 @@ typedef struct CFerBind_struct {
      grdelBool (*replaceBrushColor)(struct CFerBind_struct *self,
                                     grdelType brush, grdelType color);
      grdelBool (*deleteBrush)(struct CFerBind_struct *self, grdelType brush);
-     grdelType (*createSymbol)(struct CFerBind_struct *self, const float ptsx[], 
-                               const float ptsy[], int numpts, 
-                               const char *symbolname, int namelen);
+     grdelType (*createSymbol)(struct CFerBind_struct *self, 
+                               const char *symbolname, int namelen, 
+                               const float ptsx[], const float ptsy[], int numpts);
      grdelBool (*deleteSymbol)(struct CFerBind_struct *self, grdelType symbol);
      grdelBool (*setWidthFactor)(struct CFerBind_struct *self, double widthfactor);
      grdelBool (*drawMultiline)(struct CFerBind_struct *self, double ptsx[],

@@ -24,24 +24,24 @@ typedef struct GDsymbol_ {
  *
  * Arguments:
  *     window: Window in which this symbol is to be used
- *     ptsx: vertices X-coordinates describing the symbol 
- *           as a multiline drawing on a [0,100] square; 
- *           only used if numpts is greater than zero
- *     ptsy: vertices Y-coordinates describing the symbol 
- *           as a multiline drawing on a [0,100] square; 
- *           only used if numpts is greater than zero
- *     numpts: number of vertices describing the symbol; 
- *           can be zero if giving a well-known symbol name
  *     symbolname: name of the symbol, either a well-known
  *           symbol name (e.g., ".") or a custom name for a 
  *           symbol created from the given vertices (e.g., "FER001")
  *     symbolnamelen: actual length of the symbol name
+ *     ptsx: vertices X-coordinates describing the symbol 
+ *           as a multiline drawing on a [0,100] square; 
+ *           not used if a well-known symbol name is given
+ *     ptsy: vertices Y-coordinates describing the symbol 
+ *           as a multiline drawing on a [0,100] square; 
+ *           not used if a well-known symbol name is given
+ *     numpts: number of vertices describing the symbol; 
+ *           not used if a well-known symbol name is given
  *
  * Returns a pointer to the symbol object created.  If an error occurs,
  * NULL is returned and grdelerrmsg contains an explanatory message.
  */
-grdelType grdelSymbol(grdelType window, const float ptsx[], const float ptsy[], 
-                      int numpts, const char *symbolname, int symbolnamelen)
+grdelType grdelSymbol(grdelType window, const char *symbolname, int symbolnamelen,
+                      const float ptsx[], const float ptsy[], int numpts)
 {
     const BindObj *bindings;
     GDSymbol *symbol;
@@ -66,8 +66,8 @@ grdelType grdelSymbol(grdelType window, const float ptsx[], const float ptsy[],
     symbol->id = grdelsymbolid;
     symbol->window = window;
     if ( bindings->cferbind != NULL ) {
-        symbol->object = bindings->cferbind->createSymbol(bindings->cferbind,
-                                 ptsx, ptsy, numpts, symbolname, symbolnamelen);
+        symbol->object = bindings->cferbind->createSymbol(bindings->cferbind, 
+                                   symbolname, symbolnamelen, ptsx, ptsy, numpts);
         if ( symbol->object == NULL ) {
             /* grdelerrmsg already assigned */
             FerMem_Free(symbol, __FILE__, __LINE__);
@@ -133,7 +133,7 @@ grdelType grdelSymbol(grdelType window, const float ptsx[], const float ptsy[],
          * Using 'N' to steal the reference to xtuple and to ytuple.
          */
         symbol->object = PyObject_CallMethod(bindings->pyobject, "createSymbol",
-                                  "NNs#", xtuple, ytuple, symbolname, symbolnamelen);
+                                  "s#NN", symbolname, symbolnamelen, xtuple, ytuple);
         if ( symbol->object == NULL ) {
             sprintf(grdelerrmsg, "grdelSymbol: error when calling the Python "
                     "binding's createSymbol method: %s", pyefcn_get_error());
@@ -269,12 +269,12 @@ grdelBool grdelSymbolDelete(grdelType symbol)
  *     symbol: the created symbol object, or zero if failure.
  *             Use fgderrmsg_ to retrieve the error message.
  */
-void fgdsymbol_(void **symbol, void **window, float ptsx[], float ptsy[], 
-                int *numpts, char *symbolname, int *namelen)
+void fgdsymbol_(void **symbol, void **window, char *symbolname, int *namelen, 
+                float ptsx[], float ptsy[], int *numpts)
 {
     grdelType mysymbol;
 
-    mysymbol = grdelSymbol(*window, ptsx, ptsy, *numpts, symbolname, *namelen);
+    mysymbol = grdelSymbol(*window, symbolname, *namelen, ptsx, ptsy, *numpts);
     *symbol = mysymbol;
 }
 

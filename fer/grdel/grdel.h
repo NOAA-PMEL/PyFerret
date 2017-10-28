@@ -209,8 +209,8 @@ grdelType grdelBrushVerify(grdelType brush, grdelType window);
 grdelBool grdelBrushReplaceColor(grdelType brush, grdelType color);
 grdelBool grdelBrushDelete(grdelType brush);
 
-grdelType grdelSymbol(grdelType window, const float ptsx[], const float ptsy[], 
-                      int numpts, const char *symbolname, int symbolnamelen);
+grdelType grdelSymbol(grdelType window, const char *symbolname, int symbolnamelen,
+                      const float ptsx[], const float ptsy[], int numpts);
 grdelType grdelSymbolVerify(grdelType symbol, grdelType window);
 grdelBool grdelSymbolDelete(grdelType symbol);
 
@@ -236,8 +236,8 @@ void fgdbrush_(void **brush, void **window, void **color,
 void fgdbrushreplacecolor_(int *success, void **brush, void **color);
 void fgdbrushdel_(int *success, void **brush);
 
-void fgdsymbol_(void **symbol, void **window, float ptsx[], float ptsy[], 
-                int *numpts, char *symbolname, int *namelen);
+void fgdsymbol_(void **symbol, void **window, char *symbolname, int *namelen,
+                float ptsx[], float ptsy[], int *numpts);
 void fgdsymboldel_(int *success, void **symbol);
 
 /*

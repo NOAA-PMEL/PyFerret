@@ -14,6 +14,10 @@ import sys
 
 from multiprocessing import Pipe
 
+WINDOW_CLOSED_MESSAGE = 'Window was closed'
+'''
+Message sent back from a viewer its window is closed.
+'''
 
 class PipedViewer(object):
     '''
@@ -77,11 +81,14 @@ class PipedViewer(object):
         Wait for all the submitted commands to be consumed and the
         viewer  to return.  The command { "action":"exit" } should
         have been the last command submitted to the command pipe
-        before calling this method.
+        before calling this method.  Returns any responses from the 
+        viewer, or None if there was no response with 0.1 sec.
         '''
         self.__cmndsendpipe.close()
+        closingremarks = self.checkForResponse(0.1)
         self.__rspdrecvpipe.close()
         self.__vprocess.join()
+        return closingremarks
 
     def getViewerExitCode(self):
         return self.__vprocess.exitcode
@@ -97,7 +104,7 @@ def _testviewers():
     drawcmnds.append( { "action":"setTitle", "title":"Tester" } )
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"clear", "color":"black"} )
-    drawcmnds.append( { "action":"dpi"} )
+    drawcmnds.append( { "action":"screenInfo"} )
     drawcmnds.append( { "action":"antialias", "antialias":True } )
     drawcmnds.append( { "action":"resize",
                         "width":500,
@@ -223,12 +230,12 @@ def _testviewers():
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
     testannotations = ( "The 1<sup>st</sup> CO<sub>2</sub> annotations line",
-                        "Another line with <i>lengthy</i> details that should " + \
-                        "wrap to a 2<sup>nd</sup> annotation line",
+                        "Another line with <i>lengthy</i> details that go on and on " + \
+                        "and on and should wrap to a 2<sup>nd</sup> annotation line",
                         "<b>Final</b> annotation line" )
 
     # Test each known viewer.
-    for viewername in ( "PipedViewerPQ", "PipedImagerPQ" ):
+    for viewername in ( "PipedViewerPQ", ):
         print("Testing Viewer %s" % viewername)
         # create the viewer
         pviewer = PipedViewer(viewername)
@@ -249,9 +256,11 @@ def _testviewers():
         for cmd in mydrawcmnds:
             print("Command: %s" % str(cmd))
             pviewer.submitCommand(cmd)
-            response = pviewer.checkForResponse()
+            response = pviewer.checkForResponse(0.1)
             while response:
                 print("Response: %s" % str(response))
+                if response == WINDOW_CLOSED_MESSAGE:
+                    return
                 response = pviewer.checkForResponse()
             if cmd["action"] == "show":
                 if sys.version_info[0] > 2:
@@ -259,10 +268,12 @@ def _testviewers():
                 else:
                     raw_input("Press Enter to continue")
         # end of the commands - shut down and check return value
-        pviewer.waitForViewerExit()
+        response = pviewer.waitForViewerExit()
+        if response:
+            print("Closing remarks: %s" % str(response))
         result = pviewer.getViewerExitCode()
         if result != 0:
-            sys.exit(result)
+            print("Exit code %i from %s" % (result, viewername))
         else:
             print("Done with %s" % viewername)
 

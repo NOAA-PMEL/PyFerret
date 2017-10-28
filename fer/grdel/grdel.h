@@ -91,6 +91,7 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
                             grdelBool rasteronly);
 const BindObj *grdelWindowVerify(grdelType window);
 grdelBool grdelWindowDelete(grdelType window);
+void grdelWindowFree(grdelType window);
 grdelBool grdelWindowClear(grdelType window, grdelType fillcolor);
 grdelBool grdelWindowRedraw(grdelType window, grdelType fillcolor);
 grdelBool grdelWindowSetImageName(grdelType window, const char *imagename,

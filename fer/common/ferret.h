@@ -111,7 +111,7 @@ void FORTRAN(us2i_string_list_free)(void);
 int  FORTRAN(write_dods)(char*filename, int* slen, int *clobber, int *swap, int *length, float *data);
 int  FORTRAN(write_dods_double)(char*filename, int* slen, int *clobber, int *swap, int *length, double *data);
 void FORTRAN(xfer_c_ptrs)(char ***src_ptr, int *src_del, int *src_offset,
-		          char ***dst_ptr, int *dst_del, int *dst_offset, int *nptr);
+                          char ***dst_ptr, int *dst_del, int *dst_offset, int *nptr);
 
 /* Prototypes for Fortran functions called by C functions */
 void FORTRAN(ctrlc_ast)(void);

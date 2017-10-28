@@ -52,6 +52,7 @@ else:
 
 from multiprocessing import Pipe, Process
 
+from pipedviewer import WINDOW_CLOSED_MESSAGE
 from pipedviewer.cmndhelperpq import CmndHelperPQ
 from pipedviewer.scaledialogpq import ScaleDialogPQ
 
@@ -116,8 +117,6 @@ class PipedImagerPQ(QMainWindow):
         # default file name and format for saving the image
         self.__lastfilename = "ferret.png"
         self.__lastformat = "png"
-        # control whether the window will be destroyed or hidden
-        self.__shuttingdown = False
         # command helper object
         self.__helper = CmndHelperPQ(self)
         # create the menubar
@@ -184,42 +183,28 @@ class PipedImagerPQ(QMainWindow):
 
     def closeEvent(self, event):
         '''
-        Override so will just minimize if not shutting down
+        Clean up and send the WINDOW_CLOSED_MESSAGE on the response pipe 
+        before closing the window.
         '''
-        # If shutting down or minimized (escape hatch), 
-        # go ahead and close/exit
-        if self.__shuttingdown or self.isMinimized():
-            self.__timer.stop()
-            event.accept()
-            return
-        # Otherwise just minimize the window
-        event.ignore()
-        self.showMinimized()
+        self.__timer.stop()
+        self.__rspdpipe.send(WINDOW_CLOSED_MESSAGE)
+        event.accept()
 
     def exitViewer(self):
         '''
         Close and exit the viewer.
         '''
-        self.__shuttingdown = True
         self.close()
 
     def aboutMsg(self):
         QMessageBox.about(self, self.tr("About PipedImagerPQ"),
             self.tr("\n" \
-            "PipedImagerPQ is a graphics viewer application that " \
-            "receives its displayed image and commands primarily from " \
-            "another application through a pipe.  A limited number " \
-            "of commands are provided by the viewer itself to allow " \
-            "saving and some manipulation of the displayed image.  " \
-            "The controlling application, however, may be unaware " \
-            "of these modifications made to the image. " \
-            "\n\n" \
-            "'Closing' this window (the window frame 'X' button) " \
-            "actually only minimizes this viewer as PyFerret expects " \
-            "it to exist until PyFerret closes it.  Selecting the " \
-            "close menu option from the *minimized* window (using " \
-            "a right mouse click) will actually close (exit) the " \
-            "viewer if PyFerret exited and left it up.  " \
+            "PipedImagerPQ is a graphics viewer application that receives its " \
+            "displayed image and commands primarily from another application " \
+            "through a pipe.  A limited number of commands are provided by the " \
+            "viewer itself to allow saving and some manipulation of the " \
+            "displayed image.  The controlling application, however, may be " \
+            "unaware of these modifications made to the image. " \
             "\n\n" \
             "PipedImagerPQ was developed by the Thermal Modeling and Analysis " \
             "Project (TMAP) of the National Oceanographic and Atmospheric " \
@@ -830,7 +815,7 @@ class _CommandSubmitterPQ(QDialog):
             print("Command: %s" % cmndstr)
             self.__cmndpipe.send(self.__cmndlist[self.__nextcmnd])
             self.__nextcmnd += 1
-            while self.__rspdpipe.poll():
+            while self.__rspdpipe.poll(0.1):
                 print("Response: %s" % str(self.__rspdpipe.recv()))
         except IndexError:
             self.__rspdpipe.close()
@@ -899,7 +884,7 @@ def _test_pipedimagerpq():
             k += 1
             testimgdata[k] = aval
             k += 1
-    testblocksize = 2000
+    testblocksize = 4000
     testnumblocks = (testimgheight * testimgstride + testblocksize - 1) // testblocksize
     drawcmnds.append( { "action":"newImage",
                         "width":testimgwidth,

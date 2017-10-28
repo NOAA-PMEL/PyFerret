@@ -291,6 +291,61 @@ grdelBool grdelWindowDelete(grdelType window)
 }
 
 /*
+ * Frees objects and memory associated with a Window created by 
+ * grdelWindowCreate.  Assumes the actual window has already been
+ * closed; e.g., using the window frame 'X' button.  Assigns
+ * grdelerrmsg, normally with the 'window was closed' message.
+ *
+ * Arguments:
+ *     window: Window to be freed
+ */
+void grdelWindowFree(grdelType window)
+{
+    GDWindow *mywindow;
+
+#ifdef GRDELDEBUG
+    fprintf(debuglogfile, "grdelWindowFree called: "
+            "window = %p\n", window);
+    fflush(debuglogfile);
+#endif
+
+    if ( grdelWindowVerify(window) == NULL ) {
+        strcpy(grdelerrmsg, "grdelWindowFree: window argument is not "
+                            "a grdel Window");
+        return;
+    }
+    mywindow = (GDWindow *) window;
+
+    /* Free objects associated with this window and remove this window from Ferret's list. */
+    FORTRAN(window_killed)(window);
+
+    /* Free the bindings instance */
+    if ( mywindow->bindings.cferbind != NULL ) {
+        /* Just call the deleteWindow method to delete the bindings instance. */
+        mywindow->bindings.cferbind->deleteWindow(mywindow->bindings.cferbind);
+    }
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        /* Just decrement the reference to the Python bindings instance. */
+        Py_DECREF(mywindow->bindings.pyobject);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelWindowFree: unexpected error, "
+                            "no bindings associated with this Window");
+        return;
+    }
+
+    /* Free the memory for the GDWindow */
+    mywindow->id = NULL;
+    mywindow->hasview = 0;
+    mywindow->hasseg = 0;
+    mywindow->bindings.cferbind = NULL;
+    mywindow->bindings.pyobject = NULL;
+    FerMem_Free(window, __FILE__, __LINE__);
+    strcpy(grdelerrmsg, "window was closed");
+}
+
+
+/*
  * Assigns the image filename and format.  This may just be a default
  * filename when saving a window (for interactive graphics window), or
  * it may be the filename which is written as the drawing proceeds (for

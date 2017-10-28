@@ -96,6 +96,7 @@ void FORTRAN(get_time_axis_num)(int *axisnum, int *axisstart, int *axisend, char
                         CALTYPE *calendartype, int axiscoords[][6], int *numcoords,
                         char *errmsg, int *lenerrmsg, int maxlen_axisname, int maxlen_errmsg);
 void FORTRAN(set_one_cmnd_mode)(int *one_cmnd_mode_int);
+void FORTRAN(window_killed)(void **deadwinobj);
 
 /* Functions for Python-backed external functions */
 

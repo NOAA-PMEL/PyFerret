@@ -20,7 +20,7 @@ from __future__ import print_function
 import sys
 
 from pyferret.graphbind.abstractpyferretbindings import AbstractPyFerretBindings
-from pipedviewer import PipedViewer
+from pipedviewer import PipedViewer, WINDOW_CLOSED_MESSAGE
 
 
 class PyFerretBindings(AbstractPyFerretBindings):
@@ -77,13 +77,8 @@ class PyFerretBindings(AbstractPyFerretBindings):
 
     def submitCommand(self, cmnd):
         '''
-        Submits the given command to PipedViewer.
-
-        Provided for use by functions defined in subclasses.
+        Submits the given command to the command pipe for the viewer process.
         '''
-        # Check for an error from any previous command
-        self.__checkForErrorResponse()
-        # If all okay, submit the command
         self.__window.submitCommand(cmnd)
 
     def checkForResponse(self, timeout=0.0):
@@ -100,8 +95,10 @@ class PyFerretBindings(AbstractPyFerretBindings):
 
     def checkForErrorResponse(self, timeout=0.0):
         '''
-        Checks the response pipe for a message.  If anything is found,
-        a RuntimeError is raised with the string of the full response.
+        Checks the response pipe for a message that will be interpreted
+        as an error message.  If a response is found, a RuntimeError will
+        be raised with the string of the full response.
+
         If timeout is zero (the default) the method does not wait if there
         is no response waiting; otherwise the method waits the given number
         of seconds for a response to arrive.  An IllegalArgumentException
@@ -134,9 +131,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         '''
         try:
             self.__window.submitCommand( { "action":"exit" } )
-            # wait briefly for any error messages
-            self.checkForErrorResponse(self.__shortwait)
-            self.__window.waitForViewerExit()
+            closingremarks = self.__window.waitForViewerExit()
         finally:
             self.__window = None
         return True

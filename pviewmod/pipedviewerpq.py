@@ -57,6 +57,7 @@ else:
 
 from multiprocessing import Pipe, Process
 
+from pipedviewer import WINDOW_CLOSED_MESSAGE
 from pipedviewer.cmndhelperpq import CmndHelperPQ
 from pipedviewer.scaledialogpq import ScaleDialogPQ
 
@@ -144,8 +145,6 @@ class PipedViewerPQ(QMainWindow):
         self.__lastfilename = "ferret.png"
         self.__lastformat = "png"
         self.__addedannomargin = 12
-        # Control whether the window will be destroyed or hidden
-        self.__shuttingdown = False
         # command helper object
         self.__helper = CmndHelperPQ(self)
         # Create the menubar
@@ -221,42 +220,28 @@ class PipedViewerPQ(QMainWindow):
 
     def closeEvent(self, event):
         '''
-        Override so will just minimize if not shutting down
+        Clean up and send the WINDOW_CLOSED_MESSAGE on the response pipe 
+        before closing the window.
         '''
-        # If shutting down or minimized (escape hatch), 
-        # go ahead and close/exit
-        if self.__shuttingdown or self.isMinimized():
-            self.__timer.stop()
-            event.accept()
-            return
-        # Otherwise just minimize the window
-        event.ignore()
-        self.showMinimized()
+        self.__timer.stop()
+        self.__rspdpipe.send(WINDOW_CLOSED_MESSAGE)
+        event.accept()
 
     def exitViewer(self):
         '''
         Close and exit the viewer.
         '''
-        self.__shuttingdown = True
         self.close()
 
     def aboutMsg(self):
         QMessageBox.about(self, self.tr("About PipedViewerPQ"),
             self.tr("\n" \
-            "PipedViewerPQ is a graphics viewer application that " \
-            "receives its drawing and other commands primarily from " \
-            "another application through a pipe.  A limited number " \
-            "of commands are provided by the viewer itself to allow " \
-            "saving and some manipulation of the displayed image.  " \
-            "The controlling application, however, may be unaware " \
-            "of these modifications made to the image. " \
-            "\n\n" \
-            "'Closing' this window (the window frame 'X' button) " \
-            "actually only minimizes this viewer as PyFerret expects " \
-            "it to exist until PyFerret closes it.  Selecting the " \
-            "close menu option from the *minimized* window (using " \
-            "a right mouse click) will actually close (exit) the " \
-            "viewer if PyFerret exited and left it up.  " \
+            "PipedViewerPQ is a graphics viewer application that receives its " \
+            "drawing and other commands primarily from another application " \
+            "through a pipe.  A limited number of commands are provided by " \
+            "the viewer itself to allow saving and some manipulation of the " \
+            "displayed image.  The controlling application, however, may be " \
+            "unaware of these modifications made to the image. " \
             "\n\n" \
             "PipedViewerPQ was developed by the Thermal Modeling and Analysis " \
             "Project (TMAP) of the National Oceanographic and Atmospheric " \
@@ -1599,7 +1584,7 @@ class _CommandSubmitterPQ(QDialog):
             print("Command: %s" % str(self.__cmndlist[self.__nextcmnd]))
             self.__cmndpipe.send(self.__cmndlist[self.__nextcmnd])
             self.__nextcmnd += 1
-            while self.__rspdpipe.poll():
+            while self.__rspdpipe.poll(0.1):
                 print("Response: %s" % str(self.__rspdpipe.recv()))
         except IndexError:
             self.__rspdpipe.close()
@@ -1754,8 +1739,8 @@ def _test_pipedviewerpq():
     drawcmnds.append( { "action":"update" } )
     drawcmnds.append( { "action":"show" } )
     annotations = ( "The 1<sup>st</sup> CO<sub>2</sub> annotations line",
-                    "Another line with <i>lengthy</i> details that should " + \
-                    "wrap to a 2<sup>nd</sup> annotation line",
+                    "Another line with <i>lengthy</i> details that go on and on " + \
+                    "and on and should wrap to a 2<sup>nd</sup> annotation line",
                     "<b>Final</b> annotation line" )
     drawcmnds.append( { "action":"save",
                         "filename":"test.pdf",

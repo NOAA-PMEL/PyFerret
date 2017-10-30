@@ -1,0 +1,10 @@
+RGB_Mapping By_level
+! Ferret line-colors (not in order used by Ferret)
+ 
+! Level    Red  Green   Blue
+ 1  100    0    0  ! red
+ 2    0    0  100  ! blue
+ 3    0  100    0  ! green
+ 4    0  100  100  ! cyan
+ 5  100    0  100  ! purple
+ 6    0    0    0  ! black

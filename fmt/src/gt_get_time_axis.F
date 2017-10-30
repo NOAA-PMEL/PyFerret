@@ -257,9 +257,12 @@
      .                   lineedg(scr)%ptr, nsteps ) ) GOTO 9100
 	   CALL TM_COPY_LINE ( scr, nline )
 	   line_name(nline) = line_name(scr)
+        ENDIF
 
 *  deallocate the temporary line storage used to compile the axis.
-	   CALL FREE_LINE_DYNMEM(scr)
+        IF ( .NOT. line_regular(scr) ) THEN
+           CALL FREE_LINE_DYNMEM(scr)
+           line_regular(scr) = .TRUE.
         ENDIF
 
 * Time axis complete
@@ -269,12 +272,22 @@
 	status = merr_ok
 	GOTO 9999
 
- 9100	CALL TM_ERRMSG (merr_badlinedef, status, 'GT_GET_TIME_AXIS',
+ 9100   CONTINUE
+        IF ( .NOT. line_regular(scr) ) THEN
+           CALL FREE_LINE_DYNMEM(scr)
+           line_regular(scr) = .TRUE.
+        ENDIF
+        CALL TM_ERRMSG (merr_badlinedef, status, 'GT_GET_TIME_AXIS',
      .			no_descfile, no_stepfile,
      .			'A gap or overlap exists in time axis',
      .			no_errstring, *9999)
 
- 9200	CALL TM_ERRMSG (merr_badlinedef, status, 'GT_GET_TIME_AXIS',
+ 9200   CONTINUE
+        IF ( .NOT. line_regular(scr) ) THEN
+           CALL FREE_LINE_DYNMEM(scr)
+           line_regular(scr) = .TRUE.
+        ENDIF
+        CALL TM_ERRMSG (merr_badlinedef, status, 'GT_GET_TIME_AXIS',
      .			no_descfile, no_stepfile,
      .			'error defining axis for descriptor file', no_errstring,
      .			*9999)

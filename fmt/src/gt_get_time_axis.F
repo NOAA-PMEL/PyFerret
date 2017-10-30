@@ -121,6 +121,8 @@
 	PARAMETER	( scr = 0 )
 
 
+* Initialize to "no line" for error return
+        GT_GET_TIME_AXIS = int4_init
 
 * Determine the length and delta of the time axis, check regularity, and find
 * first timestep

@@ -20,7 +20,7 @@ in any manner to imply endorsement of any commercial product or activity
 by DOC or the United States Government.*
 
 
-**If you build Ferret from these source files, please note:**  
+**If you build PyFerret from these source files, please note:**  
 The `site_specific.mk` and `external_functions/ef_utilites/site_specific.mk` 
 files in the repository have been renamed with a `.in` appended to the name. 
 You must copy these files with the `.in` extensions to create files with the 
@@ -89,7 +89,7 @@ You may also wish to install the `netcdf` and `nco` packages to provide some use
 programs for working with NetCDF files (such as `ncdump` and `ncattted` which are used 
 in the benchmark tests).
 
-If you do not have the Ferret standard datasets, they can be obtained from the 
+If you do not have the Ferret/PyFerret standard datasets, they can be obtained from the 
 [NOAA-PMEL/FerretDatasets](https://github.com/NOAA-PMEL/FerretDatasets) GitHub repo.
 The contents can be put extracted/cloned to whatever location desired.
 
@@ -108,11 +108,11 @@ should be this installation directory, which can be specified as `.` (a period)
 which means the current directory.
 (If `FER_DIR` is already defined for another Ferret/PyFerret installation,
 you will need to tell the script to use a new value.)
-For `FER_DSETS`, the Ferret standard datasets, specify the directory 
+For `FER_DSETS`, the Ferret/PyFerret standard datasets, specify the directory 
 containing these datasets (which you may have created from the FerretDatasets
 github site mentioned above).
 
-To run PyFerret, you first need to set the Ferret environment variables.
+To run PyFerret, you first need to set the PyFerret environment variables.
 This can be done by executing either `. ferret_paths.sh` (for Bourne-type shells; 
 e.g., bash) or `source ferret_paths.csh` (for C-type shells; e.g. tcsh).
 - Note: the pyferret script has recently been updated to automatically set 

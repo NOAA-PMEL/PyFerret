@@ -19,8 +19,10 @@ be used in any manner to imply endorsement of any commercial product
 or activity by the DOC or the United States Government.*
 
 ## Ferret/PyFerret Documentation
+
 For more information on using PyFerret, see the Ferret and PyFerret documentation under 
 [http://ferret.pmel.noaa.gov/Ferret/](http://ferret.pmel.noaa.gov/Ferret/)
+
 Information about the Ferret email users group, and archives of past discussions
 from the group (which should be searched prior to sending a question to the email 
 users group) can be found at 

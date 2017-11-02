@@ -798,8 +798,13 @@ def start(memsize=25, journal=True, verify=False, restrict=False,
         # open viewer windows do not hang a Python shutdown
         atexit.register(libpyferret._quit)
 
-        # Use tab completion for readline (for Ferret) by default
-        readline.parse_and_bind('tab: complete');
+        # Use tab completion for readline
+        if 'libedit' in readline.__doc__:
+            # Mac OS X actually uses libedit for system readline
+            readline.parse_and_bind('bind ^I rl_complete');
+        else:
+            # GNU readline
+            readline.parse_and_bind('tab: complete');
 
         # Execute the $PYTHONSTARTUP file, if it exists and -secure not given
         if not restrict:

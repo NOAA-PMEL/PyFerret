@@ -1,0 +1,46 @@
+
+\CAN MODE verify
+
+! compress_str.jnl
+! Compresses a 1D string variable along its axis
+
+! Programmed by Ansley Manke & E.D. Cokelet, NOAA/PMEL, 2 Nov 2017
+! Last modified 3 Nov 2017
+
+! Usage: 
+! go compressi_str my_str_var my_str_var_compressed
+!                        $1            $2
+! Where
+! $1 = name of the string variable to be compressed
+! $2 = name of the compressed string variable
+
+! Get the direction of the variable
+
+DEFINE SYMBOL cstr_sh = `$1,RETURN=shape`
+
+! Is the variable 1-D?
+IF `STRLEN("($cstr_sh)") GT 1` THEN 
+   SAY Exiting: compress_str.jnl works on a 1D variable.  ($1) is ($cstr_sh)
+   EXIT/SCRIPT
+ENDIF
+
+! Is the variable a character variable?
+DEFINE SYMBOL cstr_typ = `$1,RETURN=dtype`
+IF `($cstr_typ"0|CHAR>1|*>0") NE 1` THEN 
+   SAY Exiting: compress_str.jnl works on a string variable.  ($1) is numeric
+   EXIT/SCRIPT
+ENDIF
+
+! Index name for the direction
+DEFINE SYMBOL cstr_shi = ($cstr_sh"|X>i|Y>j|Z>k|T>l|E>m|F>n")
+
+! Define the compressed string variable
+LET $1_str_length = STRLEN( $1 )
+
+LET $1_valid = IF STRLEN( $1 ) GT 0 THEN 1
+LET $1_sample_indices = \
+ COMPRESS($cstr_shi)( $1_valid*_($cstr_shi)[G($cstr_sh)=$1,($cstr_shi)=1:`$1,RETURN=($cstr_shi)size`] )
+LET $2 = SAMPLE($cstr_shi)( $1, $1_sample_indices )
+
+CANCEL SYMBOL cstr_*
+SET MODE/LAST verify

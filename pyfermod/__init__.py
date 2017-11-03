@@ -86,7 +86,6 @@ from pyferret.fermethods import *
 # bindings for the PyQt-based graphics engines
 import pipedviewer.pyferretbindings
 
-from pyferret import filenamecompleter
 from pyferret import graphbind
 from pyferret import regrid
 
@@ -338,7 +337,7 @@ def init(arglist=None, enterferret=True):
 
            -gif:         this option is now an alias for -png
 
-	   -unmapped:    this option is now an alias for -nodisplay
+           -unmapped:    this option is now an alias for -nodisplay
 
            -batch:       draw to <filename> (default "ferret.png") instead of
                          displaying to the console.  The file format will be
@@ -846,6 +845,7 @@ def resize(memsize):
     return libpyferret._run("SET MEMORY /SIZE=%d" % flt_memsize)
 
 
+FERRET_READLINE_DELIMS = ' \t\n\'"\\`@$><=;|&{('
 def run(command=None):
     """
     Runs a Ferret command just as if entering a command at the Ferret prompt.
@@ -853,7 +853,12 @@ def run(command=None):
     If the command is not given, is None, or is a blank string, Ferret will
     prompt you for commands until "EXIT /TOPYTHON" is given.  In this case,
     the return tuple will be for the last error, if any, that occurred in
-    the sequence of commands given to Ferret.
+    the sequence of commands given to Ferret.  Also, when at the Ferret 
+    prompt, the readline library's default filename completion will be used 
+    but with word delimiters given in pyferret.FERRET_READLINE_DELIMS. 
+    At startup the word delimiters are the readline default delimiters: 
+        ' \\t\\n\\'"\\\\`@$><=;|&{('
+    This string can be modified if desired.
 
     Arguments:
         command: the Ferret command to be executed.
@@ -879,15 +884,18 @@ def run(command=None):
     # if going into Ferret-command mode,
     # use the filename completer for readline name completion
     if str_command == "":
+        old_delims = readline.get_completer_delims()
         old_completer = readline.get_completer()
-        filename_completer_obj = filenamecompleter.FilenameCompleter()
-        readline.set_completer(filename_completer_obj.complete)
+        # set to the readline default completer (filename completion)
+        readline.set_completer(None)
+        # set the word delimitors appropriate for Ferret
+        readline.set_completer_delims(FERRET_READLINE_DELIMS)
     # the actual Ferret function call
     retval = libpyferret._run(str_command)
     # return to the original readline completer
     if str_command == "":
+        readline.set_completer_delims(old_delims)
         readline.set_completer(old_completer)
-        del filename_completer_obj
     return retval
 
 

@@ -113,6 +113,8 @@ class FilenameCompleter(object):
 #
 
 if __name__ == '__main__':
+    import random
+
     completer = FilenameCompleter()
 
     # Test an empty string
@@ -132,7 +134,7 @@ if __name__ == '__main__':
                          (str(actdirlist), str(cmpdirlist)))
 
     # Test with a tilde string
-    tildedir = '~' + os.sep
+    tildedir = '~' + os.path.sep
     print('')
     print('Contents of %s' % tildedir)
     tildenames = []
@@ -145,7 +147,7 @@ if __name__ == '__main__':
         fnam = completer.complete(tildedir, k)
     
     # Test with an environment variable
-    homedir = '$HOME' + os.sep
+    homedir = '$HOME' + os.path.sep
     print('')
     print('Contents of %s' % homedir)
     homenames = []
@@ -161,8 +163,26 @@ if __name__ == '__main__':
     if tildenames != homenames:
         raise ValueError('%s and %s lists do not match' % (tildedir, homedir))
 
+    # Test using a partial filename
+    testfilenum = random.randint(1, len(homenames)) - 1
+    testfilename = homenames[testfilenum]
+    testlen = random.randint(testfilename.rindex(os.path.sep)+2,len(testfilename)-1)
+    testname = testfilename[:testlen]
+    print('')
+    print('Matches of %s' % testname)
+    partnames = []
+    k = 0
+    fnam = completer.complete(testname, 0)
+    while fnam != None:
+        print('    %s' % fnam)
+        partnames.append(fnam)
+        k += 1
+        fnam = completer.complete(testname, k)
+    if not testfilename in partnames:
+        raise ValueError('%s not found in the matches' % testfilename)
+
     # Try with $HOME/bin/
-    bindir = '$HOME' + os.sep + 'bin' + os.sep
+    bindir = '$HOME' + os.path.sep + 'bin' + os.path.sep
     print('')
     print('Contents of %s' % bindir)
     binnames = []
@@ -177,8 +197,8 @@ if __name__ == '__main__':
         raise ValueError('%s and %s lists match' % (bindir, homedir))
 
     # Try with an invalid directory
-    invalid_name = 'hopefully' + os.sep + 'a' + os.sep + 'non' + os.sep \
-                 + 'existant' + os.sep + 'directory' + os.sep + 'name'
+    invalid_name = 'hopefully' + os.path.sep + 'a' + os.path.sep + 'non' + os.path.sep \
+                 + 'existant' + os.path.sep + 'directory' + os.path.sep + 'name'
     fnam = completer.complete(invalid_name, 0)
     if fnam != None:
         raise ValueError('complete "%s" failure; expected: None, found: %s' % \

@@ -18,6 +18,7 @@
 
 DEFINE SYMBOL cstr_sh = `$1,RETURN=shape`
 
+! Is the variable 1-D?
 IF `STRLEN("($cstr_sh)") GT 1` THEN 
    SAY compress_str.jnl works on a 1D variable. 
    SAY ($1) IS `($cstr_sh)`. Exiting.
@@ -27,6 +28,7 @@ ENDIF
 ! Index name for the direction
 DEFINE SYMBOL cstr_shi = ($cstr_sh"|X>i|Y>j|Z>k|T>l|E>m|F>n")
 
+! Define the compressed string variable
 LET $1_str_length = STRLEN( $1 )
 
 LET $1_valid = IF STRLEN( $1 ) GT 0 THEN 1

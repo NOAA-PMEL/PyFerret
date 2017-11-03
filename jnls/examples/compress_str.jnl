@@ -20,8 +20,14 @@ DEFINE SYMBOL cstr_sh = `$1,RETURN=shape`
 
 ! Is the variable 1-D?
 IF `STRLEN("($cstr_sh)") GT 1` THEN 
-   SAY compress_str.jnl works on a 1D variable. 
-   SAY ($1) IS `($cstr_sh)`. Exiting.
+   SAY Exiting: compress_str.jnl works on a 1D variable.  ($1) is ($cstr_sh)
+   EXIT/SCRIPT
+ENDIF
+
+! Is the variable a character variable?
+DEFINE SYMBOL cstr_typ = `$1,RETURN=dtype`
+IF `($cstr_typ"0|CHAR>1|*>0") NE 1` THEN 
+   SAY Exiting: compress_str.jnl works on a string variable.  ($1) is numeric
    EXIT/SCRIPT
 ENDIF
 
@@ -36,5 +42,5 @@ LET $1_sample_indices = \
  COMPRESS($cstr_shi)( $1_valid*_($cstr_shi)[G($cstr_sh)=$1,($cstr_shi)=1:`$1,RETURN=($cstr_shi)size`] )
 LET $2 = SAMPLE($cstr_shi)( $1, $1_sample_indices )
 
-CANCEL SYMBOL cstr_sh*
+CANCEL SYMBOL cstr_*
 SET MODE/LAST verify

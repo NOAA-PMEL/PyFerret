@@ -5,7 +5,7 @@
 ! Compresses a 1D string variable along its axis
 
 ! Programmed by Ansley Manke & E.D. Cokelet, NOAA/PMEL, 2 Nov 2017
-! Last modified 3 Nov 2017
+! Last modified 2 Nov 2017
 
 ! Usage: 
 ! go compressi_str my_str_var my_str_var_compressed

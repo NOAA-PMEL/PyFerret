@@ -51,8 +51,8 @@ else:
     from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, QDialog, \
                              QFileDialog, QFontMetricsF, QImage, QLabel, \
                              QMainWindow, QMessageBox, QPainter, QPalette, \
-			     QPen, QPicture, QPixmap, QPolygonF, QPrinter, \
-			     QPushButton, QScrollArea, QTextDocument
+                             QPen, QPicture, QPixmap, QPolygonF, QPrinter, \
+                             QPushButton, QScrollArea, QTextDocument
     from PyQt4.QtSvg  import QSvgGenerator
 
 from multiprocessing import Pipe, Process

@@ -88,7 +88,7 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      CALL ef_set_desc(id, 'Return SVD EOF spacial fields from XYT field')
+      CALL ef_set_desc(id, 'Return SVD EOF spatial fields from XYT field')
 
       CALL ef_set_num_args(id, 1)
 

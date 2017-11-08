@@ -242,6 +242,7 @@
 * V720 *acm*  3/17 Ticket 2512: Add STAT/PRECISION=
 * V720 *acm*  5/17 Ticket 2530 add WIRE/COLOR= 
 * V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
+* V723 *acm* 11/17 New SAVE/ASGLOBAL option to write global attribute to netCDF file
 
 *
 * !!!!!!!!!!
@@ -1026,7 +1027,7 @@
 		DATA qualifiers  (nqual_at5a+53)/ 'OUTTYPE'/
 		DATA qualifiers  (nqual_at5a+54)/ 'CURVILIN'/
 		DATA qualifiers  (nqual_at5a+55)/ 'LAYERZ'/
-		DATA qualifiers  (nqual_at5a+56)/ '****'/
+		DATA qualifiers  (nqual_at5a+56)/ 'ASGLOBAL'/
 		DATA qualifiers  (nqual_at5a+57)/ '****'/
 		DATA qualifiers  (nqual_at5a+58)/ '****'/
 		DATA qualifiers  (nqual_at5a+59)/ '****'/

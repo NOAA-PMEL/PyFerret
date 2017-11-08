@@ -181,7 +181,7 @@
      .			do_comma_del, do_tab_del, do_dods, do_xml,
      .			permute, all_at_once, list_at_eof, head_enh,
      .			clobber, quiet, have_outtype, curvi_axes(nferdims), 
-     .			do_shrink
+     .			do_shrink, as_global
 
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, STR_CASE_BLIND_COMPARE,
      .                  STR_UPCASE, GET_MAX_STRING_LEN,
@@ -292,12 +292,21 @@
         ENDIF
 
 * /KEEP_AXISNAMES for netCDF ?
-        i = slash_list_keepax
+
         i = qual_given( slash_list_keepax )
 	keepax_flag = 0
         IF ( i .GT. 0 ) THEN
            keepax_flag = 1
         ENDIF
+
+* /ASGLOBAL to write a netCDF Global Attribute? 
+* Write the variable as a global attribute; conditions on this 
+* variable are checked in cdf_list: 1-D, single value string or
+* up to 100 values numeric.
+
+        as_global = qual_given( slash_list_asglobal ) .GT. 0
+        IF (.NOT. do_cdf .AND. as_global) CALL WARN(
+     .          '/ASGLOBAL is valid only for NetCDF output. Ignored')
 
 * /EDGES for netCDF ?
         edges_flag = 0
@@ -674,7 +683,7 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
      .                    list_at_eof, cdf_recax, nvars2list,
      .			  mr_perm, my_cx, buff, head_enh,
      .			  pcdf_mode_normal, clobber, edges_flag, do_bounds,
-     .                    keepax_flag, out_type, quiet, status )
+     .                    keepax_flag, out_type, quiet, as_global, status )
 
 	ELSEIF( all_at_once ) THEN
 	   CALL LIST_MULTI(  mr_perm, my_cx, heading, perm,

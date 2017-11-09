@@ -5270,6 +5270,29 @@ ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_tseries_modulo.jnl
 *** Running ferret script: bn_huge_axis.jnl
  LISTing to file a.nc
+*** Running ferret script: bn_save_as_global.jnl
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ **ERROR: invalid command: Multi-valued Global string attributes not implemented
+          Variable: multistring
+LIST/FORMAT=CDF/asglobal/append/file=a.nc multistring
+LIST/FORMAT=CDF/asglobal/append/file=a.nc multistring
+ LISTing to file a.nc
+ **ERROR: invalid command: Global attribute must be a 1D variable length < 100
+          Variable: SST
+LIST/FORMAT=CDF/append/asglobal/x=150/outtype=float/file=a.nc sst
+LIST/FORMAT=CDF/append/asglobal/x=150/outtype=float/file=a.nc sst
+LIST/FORMAT=CDF/append/asglobal/x=150/outtype=float/file=a.nc sst
+ LISTing to file a.nc
+ **ERROR: invalid command: Global attribute must be a 1D variable length < 100
+          Variable: SST
+LIST/FORMAT=CDF/append/asglobal/y=10/L=2/outtype=float/file=a.nc sst
+LIST/FORMAT=CDF/append/asglobal/y=10/L=2/outtype=float/file=a.nc sst
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

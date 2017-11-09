@@ -282,6 +282,7 @@ Benchmark scripts that will be run:
    bn722_bug_fixes.jnl
    bn_tseries_modulo.jnl
    bn_huge_axis.jnl
+   bn_save_as_global.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
@@ -103479,6 +103480,212 @@ list/j=899995:9000000 var
 ! clean up. Remove our huge file
 cancel data/all
 sp rm a.nc
+*** Running ferret script: bn_save_as_global.jnl
+! bn_save_asglobal
+! 11/2017
+! Simple command to save a variable as a global attribute.
+! Works on an existing or a new file.
+ 
+! Write to a new file.  Gets the default global attributes.
+ 
+can mode upcase
+let my_extra_attribute = "Extra attribute: This file is just attributes to start with"
+save/asglobal/clobber/file=a.nc my_extra_attribute
+sp ncdump -h a.nc
+netcdf a {
+
+// global attributes:
+		:history = "FERRET V7.22  DD-MON-YY" ;
+		:Conventions = "CF-1.6" ;
+		:my_extra_attribute = "Extra attribute: This file is just attributes to start with" ;
+}
+ 
+! Or write new attributes to a file that has data
+ 
+use coads_climatology
+save/clobber/file=a.nc sst[x=150:170,y=0:10]
+let my_extra_attribute = "Extra attribute: Adding to a file with existing data and attributes"
+save/asglobal/append/file=a.nc my_extra_attribute
+sp ncdump -h a.nc
+netcdf a {
+dimensions:
+	COADSX = 10 ;
+	COADSY = 5 ;
+	TIME = UNLIMITED ; // (3 currently)
+variables:
+	double COADSX(COADSX) ;
+		COADSX:units = "degrees_east" ;
+		COADSX:modulo = " " ;
+		COADSX:point_spacing = "even" ;
+		COADSX:axis = "X" ;
+		COADSX:standard_name = "longitude" ;
+	double COADSY(COADSY) ;
+		COADSY:units = "degrees_north" ;
+		COADSY:point_spacing = "even" ;
+		COADSY:axis = "Y" ;
+		COADSY:standard_name = "latitude" ;
+	double TIME(TIME) ;
+		TIME:units = "hour since 0000-01-01 00:00:00" ;
+		TIME:time_origin = "01-JAN-0000 00:00:00" ;
+		TIME:modulo = " " ;
+		TIME:axis = "T" ;
+		TIME:standard_name = "time" ;
+	float SST(TIME, COADSY, COADSX) ;
+		SST:missing_value = -1.e+34f ;
+		SST:_FillValue = -1.e+34f ;
+		SST:long_name = "SEA SURFACE TEMPERATURE" ;
+		SST:history = "From coads_climatology" ;
+		SST:units = "Deg C" ;
+
+// global attributes:
+		:history = "FERRET V7.22  DD-MON-YY" ;
+		:Conventions = "CF-1.6" ;
+		:my_extra_attribute = "Extra attribute: Adding to a file with existing data and attributes" ;
+}
+ 
+! Create an attribute from a file variable
+ 
+use maize_1
+save/append/file=a.nc/j=4/outtype=float/asglobal maize_yield
+sp ncdump -h a.nc
+netcdf a {
+dimensions:
+	COADSX = 10 ;
+	COADSY = 5 ;
+	TIME = UNLIMITED ; // (3 currently)
+variables:
+	double COADSX(COADSX) ;
+		COADSX:units = "degrees_east" ;
+		COADSX:modulo = " " ;
+		COADSX:point_spacing = "even" ;
+		COADSX:axis = "X" ;
+		COADSX:standard_name = "longitude" ;
+	double COADSY(COADSY) ;
+		COADSY:units = "degrees_north" ;
+		COADSY:point_spacing = "even" ;
+		COADSY:axis = "Y" ;
+		COADSY:standard_name = "latitude" ;
+	double TIME(TIME) ;
+		TIME:units = "hour since 0000-01-01 00:00:00" ;
+		TIME:time_origin = "01-JAN-0000 00:00:00" ;
+		TIME:modulo = " " ;
+		TIME:axis = "T" ;
+		TIME:standard_name = "time" ;
+	float SST(TIME, COADSY, COADSX) ;
+		SST:missing_value = -1.e+34f ;
+		SST:_FillValue = -1.e+34f ;
+		SST:long_name = "SEA SURFACE TEMPERATURE" ;
+		SST:history = "From coads_climatology" ;
+		SST:units = "Deg C" ;
+
+// global attributes:
+		:history = "FERRET V7.22  DD-MON-YY" ;
+		:Conventions = "CF-1.6" ;
+		:my_extra_attribute = "Extra attribute: Adding to a file with existing data and attributes" ;
+		:MAIZE_YIELD = 0.05408529f, 0.1875f, -0.04314715f, 9.96921e+36f ;
+}
+ 
+! A second write of the same attribute overwrites the attribute values
+! (append here is saying dont start a new file)
+ 
+save/append/file=a.nc/j=5/outtype=float/asglobal maize_yield
+sp ncdump -h a.nc
+netcdf a {
+dimensions:
+	COADSX = 10 ;
+	COADSY = 5 ;
+	TIME = UNLIMITED ; // (3 currently)
+variables:
+	double COADSX(COADSX) ;
+		COADSX:units = "degrees_east" ;
+		COADSX:modulo = " " ;
+		COADSX:point_spacing = "even" ;
+		COADSX:axis = "X" ;
+		COADSX:standard_name = "longitude" ;
+	double COADSY(COADSY) ;
+		COADSY:units = "degrees_north" ;
+		COADSY:point_spacing = "even" ;
+		COADSY:axis = "Y" ;
+		COADSY:standard_name = "latitude" ;
+	double TIME(TIME) ;
+		TIME:units = "hour since 0000-01-01 00:00:00" ;
+		TIME:time_origin = "01-JAN-0000 00:00:00" ;
+		TIME:modulo = " " ;
+		TIME:axis = "T" ;
+		TIME:standard_name = "time" ;
+	float SST(TIME, COADSY, COADSX) ;
+		SST:missing_value = -1.e+34f ;
+		SST:_FillValue = -1.e+34f ;
+		SST:long_name = "SEA SURFACE TEMPERATURE" ;
+		SST:history = "From coads_climatology" ;
+		SST:units = "Deg C" ;
+
+// global attributes:
+		:history = "FERRET V7.22  DD-MON-YY" ;
+		:Conventions = "CF-1.6" ;
+		:my_extra_attribute = "Extra attribute: Adding to a file with existing data and attributes" ;
+		:MAIZE_YIELD = 0.02854787f, 0.02296161f, 0.02589183f, 0.01891576f ;
+}
+ 
+! Allow for various /OUTTYPE as in any SAVE command
+let another = {1, 2, 3.1}
+save/append/file=a.nc/outtype=INT/asglobal another
+sp ncdump -h a.nc
+netcdf a {
+dimensions:
+	COADSX = 10 ;
+	COADSY = 5 ;
+	TIME = UNLIMITED ; // (3 currently)
+variables:
+	double COADSX(COADSX) ;
+		COADSX:units = "degrees_east" ;
+		COADSX:modulo = " " ;
+		COADSX:point_spacing = "even" ;
+		COADSX:axis = "X" ;
+		COADSX:standard_name = "longitude" ;
+	double COADSY(COADSY) ;
+		COADSY:units = "degrees_north" ;
+		COADSY:point_spacing = "even" ;
+		COADSY:axis = "Y" ;
+		COADSY:standard_name = "latitude" ;
+	double TIME(TIME) ;
+		TIME:units = "hour since 0000-01-01 00:00:00" ;
+		TIME:time_origin = "01-JAN-0000 00:00:00" ;
+		TIME:modulo = " " ;
+		TIME:axis = "T" ;
+		TIME:standard_name = "time" ;
+	float SST(TIME, COADSY, COADSX) ;
+		SST:missing_value = -1.e+34f ;
+		SST:_FillValue = -1.e+34f ;
+		SST:long_name = "SEA SURFACE TEMPERATURE" ;
+		SST:history = "From coads_climatology" ;
+		SST:units = "Deg C" ;
+
+// global attributes:
+		:history = "FERRET V7.22  DD-MON-YY" ;
+		:Conventions = "CF-1.6" ;
+		:my_extra_attribute = "Extra attribute: Adding to a file with existing data and attributes" ;
+		:MAIZE_YIELD = 0.02854787f, 0.02296161f, 0.02589183f, 0.01891576f ;
+		:another = 1, 2, 3 ;
+}
+ 
+ 
+! Intentional errors
+set mode ignore
+set data 1
+ 
+! String attributes may only be single-valued
+let multistring = {"a", "b", "c", "", "e"}
+save/asglobal/append/file=a.nc multistring
+ 
+! Refuse to write multi-dimensioned attributes y-t
+save/append/asglobal/x=150/outtype=float/file=a.nc sst
+ 
+! Also arbitrarily refuse to write more than a list of 100 values.
+set mode ignore
+save/append/asglobal/y=10/L=2/outtype=float/file=a.nc sst
+ 
+set mode /last upcase
 *** Running ferret script: bn_gif.jnl
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using

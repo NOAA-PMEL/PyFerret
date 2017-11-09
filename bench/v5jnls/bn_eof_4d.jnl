@@ -79,8 +79,8 @@ list/nohead/i=1:5/j=3/k=1 eofst  ! eigenvalues
 list/nohead/i=1:5/j=3/k=5 eofst
 list/nohead/i=1:5/j=3/k=9 eofst
 
-
-!!exit/script
+! The functions need updating for double precision Ferret
+exit/script
 ! -----------------------------------------------
 ! previous commands that called eof_space, eof_stat, eof_tfunc
 

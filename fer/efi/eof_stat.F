@@ -113,14 +113,17 @@
 *                                                                      |
 *                                                                      V
 
-      CHARACTER*100 fcn_desc
+* These funtions aren't quite right under double precision. Tolerances
+* and epsilons need to be set correctly for double precision computation.
 
-   10 FORMAT ('EOF statistics from XYT field, gappy in T. j=1:#EOFs, ',
-     .        'j=2:%variation, j=3:eigenvalues' )
-      WRITE (fcn_desc, 10) 
-      CALL ef_set_desc(id, fcn_desc)
+c      CHARACTER*100 fcn_desc
+c
+c   10 FORMAT ('EOF statistics from XYT field, gappy in T. j=1:#EOFs, ',
+c     .        'j=2:%variation, j=3:eigenvalues' )
+c      WRITE (fcn_desc, 10) 
+c      CALL ef_set_desc(id, fcn_desc)
 
-c      CALL ef_set_desc(id, 'Function NOT AVAILABLE in this Ferret version')
+      CALL ef_set_desc(id, 'Function NOT AVAILABLE in this Ferret version')
 
       CALL ef_set_num_args(id, 2)
 
@@ -414,9 +417,9 @@ c      CALL ef_set_desc(id, 'Function NOT AVAILABLE in this Ferret version')
      .        iw, jw, kw, lw, mw, nw
       REAL frac_timeser
       
-c      WRITE (err_msg,*)
-c     .  'Function EOF_STAT not available in this version of Ferret. Use EOFSVD_STAT'
-c      CALL ef_bail_out (id, err_msg)
+      WRITE (err_msg,*)
+     .  'Function EOF_STAT not available in this version of Ferret. Use EOFSVD_STAT'
+      CALL ef_bail_out (id, err_msg)
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)

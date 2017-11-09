@@ -104,9 +104,13 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      CALL ef_set_desc(id,
-     .   'Compute EOF time functions from XYT field. gappy in T.')
-c      CALL ef_set_desc(id, 'Function NOT AVAILABLE in this Ferret version')
+
+* These funtions aren't quite right under double precision. Tolerances
+* and epsilons need to be set correctly for double precision computation.
+
+c      CALL ef_set_desc(id,
+c     .   'Compute EOF time functions from XYT field. gappy in T.')
+      CALL ef_set_desc(id, 'Function NOT AVAILABLE in this Ferret version')
 
       CALL ef_set_num_args(id, 2)
 
@@ -394,9 +398,9 @@ c      CALL ef_set_desc(id, 'Function NOT AVAILABLE in this Ferret version')
      .        iw, jw, kw, lw, mw, nw
       REAL frac_timeser
 
-c      WRITE (err_msg,*)
-c     .  'Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC'
-c      CALL ef_bail_out (id, err_msg)
+      WRITE (err_msg,*)
+     .  'Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC'
+      CALL ef_bail_out (id, err_msg)
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)

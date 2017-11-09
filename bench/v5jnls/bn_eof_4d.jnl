@@ -3,6 +3,7 @@
 
 ! In version 6.8 (double precision), the old eof functions are not available
 ! Run the script calling eofsvd functions and exit, leaving old eof function calls.
+! 11/2017 Restore the original eof functions and their tests
 
 
 ! dataset with 4 dimensions; compute EOF at each vertical level.
@@ -78,7 +79,7 @@ list/nohead/i=1:5/j=3/k=1 eofst  ! eigenvalues
 list/nohead/i=1:5/j=3/k=5 eofst
 list/nohead/i=1:5/j=3/k=9 eofst
 
-
+! The functions need updating for double precision Ferret
 exit/script
 ! -----------------------------------------------
 ! previous commands that called eof_space, eof_stat, eof_tfunc

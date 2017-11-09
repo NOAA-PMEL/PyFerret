@@ -4,7 +4,7 @@
 
 ! In version 6.8 (double precision), the old eof functions are not available
 ! Run the script calling eofsvd functions and exit, leaving old eof function calls.
-
+! 11/2017 Restore the original eof functions and their tests
 
 ! Test the bail-out from eof_space, eof_stat, eof_tfunc
 set mode ignore
@@ -33,7 +33,7 @@ list/i=1:3/j=1:3 eofstat
 LET eoftime = eofsvd_tfunc(SST[X=27W:23W,Y=1S:3N])
 list/i=1:2 eoftime
 
-
+! The functions need updating for double precision Ferret
 exit/script
 ! -----------------------------------------------
 ! previous commands that called eof_space, eof_stat, eof_tfunc

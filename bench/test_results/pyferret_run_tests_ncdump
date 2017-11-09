@@ -3095,6 +3095,7 @@ variables:
 *** Running ferret script: bn722_bug_fixes.jnl
 *** Running ferret script: bn_tseries_modulo.jnl
 *** Running ferret script: bn_huge_axis.jnl
+*** Running ferret script: bn_save_as_global.jnl
 *** Running ferret script: bn_gif.jnl
 *** Running ferret script: bn_ps.jnl
 *** Running ferret script: bn_all_ef.jnl

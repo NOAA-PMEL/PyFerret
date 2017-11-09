@@ -1,7 +1,8 @@
 	SUBROUTINE CDF_LIST ( fname, append, crecdim, nvars,
      .			      mr_list, cx_list, title, enhead, mode,
      .			      clobber, edges_flag, do_bounds, 
-     .			      keepax_flag, out_type, quiet, status )
+     .			      keepax_flag, out_type, quiet, as_global,
+     .			      status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -160,10 +161,14 @@
         CHARACTER*1     crecdim
 
 * internal variable declarations:
+
+	INTEGER	   max_len
+	PARAMETER (max_len = 2048)
+
         LOGICAL         TM_LEGAL_NAME, MATCH_NAME, TM_HAS_STRING,
      .			itsa_uvar, need_doc, new, formatted, flushed,
      .			itsa_string, output_units, output_title,
-     .                  output_history, get_ds, its_nc
+     .                  output_history, get_ds, its_nc, as_global
 	INTEGER		TM_LENSTR1, ISUBSCR_CX, GET_MAX_C_STRING_LEN,
      .			MGRID_SIZE, STR_SAME, 
      .			cx, mr, dset, grid, cdfid, ivar, nready,
@@ -172,7 +177,7 @@
      .			final_status, type, maxstrlen, 
      .			write_lo(nferdims), write_hi(nferdims), 
      .			make_lo(nferdims), make_hi(nferdims),
-     .                  dset_last, dset_num, attid, len
+     .                  dset_last, dset_num, attid, len, ndims_size, wlen
 
 * *kob* 3/99- up SANITARY_VAR_CODE and local variable varcode to 64 chars
 *             and VAR_UNITS to 64
@@ -180,7 +185,7 @@
 
 	CHARACTER	SANITARY_VAR_CODE*128, VAR_TITLE*140,
      .                  VAR_TITLE_MOD*140, VAR_UNITS*64, CX_DIM_STR*48,
-     .                  TM_FMT*12,
+     .                  TM_FMT*12, GET_STRING_ELEMENT*(max_len),
      .                  varcode*128, varname*128, buff*2048, revnum*12, 
      .                  c1*1, aname*128, short*128
 
@@ -217,7 +222,7 @@
 
 	REAL*4		rbuff4
 	REAL		vals(100), bad
-        REAL*8          dvals(100), scalefac, addoff
+        REAL*8          dvals(100), avals(0:99), scalefac, addoff
 	INTEGER*4	ibuff4
 	EQUIVALENCE (rbuff4, ibuff4), (rbuff4, ibuff1)
 
@@ -280,6 +285,7 @@
            IF ( status .NE. merr_ok ) GOTO 5800
 	ENDIF
 
+
 * DODS URL saved as a global attribute (11/96)
 	IF ( DODS_cache ) THEN
 ! note that routine CDF_PREP_CACHE is assumore med to have checked the validity
@@ -303,6 +309,7 @@
      .        .OR. ds_type(dset).EQ.'FCT' .OR. ds_type(dset).EQ.'UNI')
      .       CALL CDF_LIST_GLOBAL_ATTS (dset, cdfid, status)
         ENDIF
+
         dset_last = dset
         scalefac = 1.
         addoff = 0.
@@ -453,10 +460,20 @@
 	   ENDIF
 
 * get slab limits to use for writing the values of this variable
+
+           ndims_size = 0
+	   wlen = 0
+
            DO 50 idim = 1, nferdims
 * ... limits within which to write variable data
               write_lo(idim) = cx_lo_ss(cx,idim)
               write_hi(idim) = cx_hi_ss(cx,idim)
+
+	      IF (write_hi(idim) - write_lo(idim) .GT. 1) THEN
+	         ndims_size = ndims_size + 1
+	         wlen = write_hi(idim) - write_lo(idim) + 1
+	      ENDIF
+
 * get slab limits to use for creating this NetCDF variable
 * (elaborate checking if user manually specifies creation limits)
 * ... limits within which to create NetCDF variable
@@ -518,6 +535,9 @@
 	      ENDIF
 
  50        CONTINUE
+ 
+* If writing variable as a global variable, only write 1-D variables.
+           IF (as_global .AND. ndims_size .GT. 1) GOTO 5320
 
 * determine the netCDF "record dimension" to use
            IF ( write_lo(t_dim) .EQ. unspecified_int4 ) THEN
@@ -572,6 +592,7 @@
              ENDIF
            ENDIF
 
+           IF (.NOT. as_global) THEN
            CALL CD_MAKE_VAR( cdfid, dset_num, varcode, type, maxstrlen,
      .               grid, make_lo, make_hi, recdim, enhead, new, 
      .               edges_flag, do_bounds, mode_upcase_output, 
@@ -637,9 +658,10 @@
 
            ENDIF  ! setting scalefac and addoff
 
+           ENDIF  ! as_global
 
 * if its a newly-created variable write attributes
-           IF ( new  .AND. all_outflag .GT. 0) THEN
+           IF (( new  .AND. all_outflag .GT. 0) .AND. .NOT. as_global) THEN
 
 * Write missing value and fill flag here; if writing the scale and
 * offset attributes, then un-scale the missing and fill flags, using
@@ -1092,10 +1114,10 @@
                  IF ( status .NE. merr_ok ) GOTO 5800
 	      ENDIF
 
-           ENDIF
+           ENDIF  ! writing attributes of file or user variables
 
 * Write attributes for psuedo-variables
-           IF (cat .EQ. cat_pseudo_var) THEN  
+           IF (cat .EQ. cat_pseudo_var .AND. .NOT.as_global) THEN  
 
               IF (.NOT.got_missing) THEN
  	         CALL CD_WRITE_ATTVAL_DP(cdfid, varcode,
@@ -1133,7 +1155,8 @@
               ENDIF
            ENDIF  ! pseudo-variables
 
- 100    CONTINUE
+ 100    CONTINUE  ! loop over nvars
+
 	nready = nvars
 
 *****
@@ -1144,7 +1167,7 @@
 *
 * write the deferred coordinates
 *
-	CALL CD_WRITE_DEFER_COORD( cdfid, status )
+	IF (.NOT.as_global) CALL CD_WRITE_DEFER_COORD( cdfid, status )
 	IF ( status .NE. merr_OK ) GOTO 5800
 *
 * write the variables
@@ -1181,20 +1204,63 @@
 	      IF (varcode(1:1) .EQ. "_") varcode = varcode(2:TM_LENSTR1(varcode))
 	   ENDIF
 
-* get slab limits to use for writing the values of this variable
-           DO 450 idim = 1, nferdims
-              write_lo(idim) = cx_lo_ss(cx,idim)
-              write_hi(idim) = cx_hi_ss(cx,idim)
- 450        CONTINUE
-
 * check for interrupts - dont check again until entire variable is written
            IF (interrupted) CALL ERRMSG(ferr_interrupt,status,' ',*5800)
 
+	   IF (as_global) THEN
+	      CALL CD_GET_VAR_TYPE (dset, varid, varname, vartype, status)
+
+	      IF (outtype .NE. 0) vartype = outtype
+	      IF (itsa_uvar .AND. vartype.EQ.0) THEN  ! for user vars type not known in attrib structure
+                  vartype = 6      ! netcdf nf_double
+                  IF (itsa_string) vartype = 2
+               ENDIF
+
+	      IF (vartype .EQ. NF_CHAR) THEN 
+
+	         IF (wlen .GT. 1) GOTO 5325
+		 buff = GET_STRING_ELEMENT(
+     .				mr_lo_s1(mr), mr_hi_s1(mr),
+     .				mr_lo_s2(mr), mr_hi_s2(mr),
+     .				mr_lo_s3(mr), mr_hi_s3(mr),
+     .				mr_lo_s4(mr), mr_hi_s4(mr),
+     .				mr_lo_s5(mr), mr_hi_s5(mr),
+     .				mr_lo_s6(mr), mr_hi_s6(mr),
+     .				memry(mr)%ptr,
+     .				cx_lo_s1(cx), cx_lo_s2(cx),
+     .				cx_lo_s3(cx), cx_lo_s4(cx),
+     .				cx_lo_s5(cx), cx_lo_s6(cx),
+     .				max_len, len)
+
+	         CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, varcode,
+     .			buff(:len), .FALSE., status )
+                 IF ( status .NE. merr_ok ) GOTO 5800
+
+	      ELSE
+
+	         IF (wlen .GT. 100) GOTO 5320
+	         avals(:wlen-1) = memry(mr)%ptr
+		 CALL CD_WRITE_ATTVAL_DP(
+     .                    cdfid, pcdf_global, varcode, avals(0), wlen, 
+     .                    vartype, status )
+	      ENDIF
+
+	   ELSE  ! not as-global,write regular variable
+
+* get slab limits to use for writing the values of this variable
+
+	      DO 450 idim = 1, nferdims
+                 write_lo(idim) = cx_lo_ss(cx,idim)
+                 write_hi(idim) = cx_hi_ss(cx,idim)
+ 450          CONTINUE
+
 * write the data for this variable
-           CALL CD_WRITE_VAR (cdfid, dset_num, varcode, grid, 
+              CALL CD_WRITE_VAR (cdfid, dset_num, varcode, grid, 
      .                        write_lo, write_hi, memry(mr)%ptr, 
      .                        edges_flag, do_bounds, mode_upcase_output, 
      .                        keepax_flag, status )
+	   ENDIF
+
            IF ( status .NE. merr_ok ) GOTO 5800
  500	CONTINUE
 
@@ -1239,6 +1305,14 @@
  5310    CALL ERRMSG ( ferr_invalid_command, status,
      .                 'Does not encompass data to be written: '//
      .			cmnd_buff(qual_start(errloc):qual_end(errloc))
+     .			//pCR//'Variable: '//varcode, *5800 )
+
+ 5320    CALL ERRMSG ( ferr_invalid_command, status,
+     .                'Global attribute must be a 1D variable length < 100'
+     .			//pCR//'Variable: '//varcode, *5800 )
+
+ 5325    CALL ERRMSG ( ferr_invalid_command, status,
+     .                'Multi-valued Global string attributes not implemented'
      .			//pCR//'Variable: '//varcode, *5800 )
 
  5400    CALL ERRMSG ( ferr_TMAP_error, status, ' ', *5990 )

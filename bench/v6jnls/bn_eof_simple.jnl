@@ -4,7 +4,7 @@
 ! 7/2012 
 ! In version 6.8 (double precision), the old eof functions are not available
 ! Run the script calling eofsvd functions and exit, leaving old eof function calls.
-
+! 11/2017 - still try to test old eof functions, if they are re-implemented
 
 ! Define two locations.
 def axis /X=1:2:1 xaxis
@@ -39,12 +39,30 @@ show func eofsvd_space
 ! This is if the EOF functions are in units of the original data,
 ! thus the eigenvectors times the square-root of the eigenvalue.
 ! EOF vectors are always orthogonal to each other.
-list eofsvd_space(spacetime)
-
+let eofs = eofsvd_space(spacetime[I=1:2])
+load eofs
+let v1 = eofs[I=1]
+show grid v1
+let v2 = eofs[I=2]
+show grid v2
+list dot_t(v1, v1)
+list dot_t(v1, v2)
+list dot_t(v2, v1)
+list dot_t(v2, v2)
+ 
 show func eofsvd_tfunc
 ! Ideally sqrt(2.0) * (cosT, sinT), but may be mixed by rotation.  
 ! TAF vectors are always orthogonal to each other.
-list eofsvd_tfunc(spacetime)
+let tafs = eofsvd_tfunc(spacetime[I=1:2])
+load tafs
+let v1 = tafs[I=1]
+show grid v1
+let v2 = tafs[I=2]
+show grid v2
+list dot_t(v1, v1)
+list dot_t(v1, v2)
+list dot_t(v2, v1)
+list dot_t(v2, v2)
 
 ! The sum over all significant EOFs of the outer product of 
 ! EOF(i) and TAF(i) should return the zero-time-meaned data 
@@ -63,51 +81,49 @@ let spacetime = if (i eq 1) then cosT else sinT + 1
 let space12 = if i ne 3 then spacetime
 
 list eofsvd_stat(space12)
-list eofsvd_space(space12)
-list eofsvd_tfunc(space12)
 
+let eofs = eofsvd_space(space12[I=1:3])
+load eofs
+let v1 = eofs[I=1]
+show grid v1
+let v2 = eofs[I=2]
+show grid v2
+list dot_t(v1, v1)
+list dot_t(v1, v2)
+list dot_t(v2, v1)
+list dot_t(v2, v2)
+
+let tafs = eofsvd_tfunc(space12[I=1:3])
+load tafs
+let v1 = tafs[I=1]
+show grid v1
+let v2 = tafs[I=2]
+show grid v2
+list dot_t(v1, v1)
+list dot_t(v1, v2)
+list dot_t(v2, v1)
+list dot_t(v2, v2)
 
 ! If there are no complete time series, the functions should bail with an error
 
 let spacegap = if L ne 2 then spacetime
 
 set mode ignore
+
 list eofsvd_stat(spacegap)
 list eofsvd_space(spacegap)
 list eofsvd_tfunc(spacegap)
 
-! clean-up
 set mode/last ignore
-can var spacetime
-set grid abstract
-can grid xytgrid
-can axis taxis
-can axis yaxis
-can axis xaxis
 
-
-exit/script
 ! -----------------------------------------------
 ! previous commands that called eof_space, eof_stat, eof_tfunc
+! these functions all now bail out - do not work properly in double precision
 
+set mode ignore
 
-! Define two locations.
 def axis /X=1:2:1 xaxis
-def axis /Y=1:1:1 yaxis
-
-! Thinking of the time axis as number of months.
-def axis /T=0.0:59.75:0.25 taxis
-def grid /X=xaxis /Y=yaxis /T=taxis xytgrid
-set grid xytgrid
-
-! Make standing waves with a period of 12 months.
-let cosT = cos(T * 3.141592653589793 / 6.0)
-let sinT = sin(T * 3.141592653589793 / 6.0)
-
-! Put a standing wave at each location.
-! The two waves are orthonormal and zero-mean over time. 
 let spacetime = if (i eq 1) then cosT else sinT + 1
-show grid spacetime
 
 show func eof_stat
 ! Run each of the eof functions and show the results.
@@ -124,12 +140,32 @@ show func eof_space
 ! This is if the EOF functions are in units of the original data,
 ! thus the eigenvectors times the square-root of the eigenvalue.
 ! EOF vectors are always orthogonal to each other.
-list eof_space(spacetime, 1.0)
+let eofs = eof_space(spacetime[I=1:2], 1.0)
+load eofs
+let v1 = eofs[I=1]
+show grid v1
+let v2 = eofs[I=2]
+show grid v2
+list dot_t(v1, v1)
+list dot_t(v1, v2)
+list dot_t(v2, v1)
+list dot_t(v2, v2)
 
 show func eof_tfunc
 ! Ideally sqrt(2.0) * (cosT, sinT), but may be mixed by rotation.  
 ! TAF vectors are always orthogonal to each other.
-list eof_tfunc(spacetime, 1.0)
+let tafs = eof_tfunc(spacetime[I=1:2], 1.0)
+load tafs
+let v1 = tafs[I=1]
+show grid v1
+let v2 = tafs[I=2]
+show grid v2
+list dot_t(v1, v1)
+list dot_t(v1, v2)
+list dot_t(v2, v1)
+list dot_t(v2, v2)
+
+set mode/last ignore
 
 ! The sum over all significant EOFs of the outer product of 
 ! EOF(i) and TAF(i) should return the zero-time-meaned data 
@@ -138,10 +174,8 @@ list eof_tfunc(spacetime, 1.0)
 ! In this case, EOF(1) o TAF(1) + EOF(2) o TAF(2) = (cosT, sinT)
 
 ! clean-up
-can var spacetime
 set grid abstract
+can var /all
 can grid xytgrid
-can axis taxis
-can axis yaxis
-can axis xaxis
+can axis /all
 

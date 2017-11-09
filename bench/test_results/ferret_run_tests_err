@@ -3090,7 +3090,118 @@ Bailing out of external function "eofsvd_tfunc":
 	There are no spatial locations having complete time series.
  **ERROR: error in external function
 list eofsvd_tfunc(spacegap)
+Replacing definition of axis XAXIS
+
+Bailing out of external function "eof_stat":
+	 Function EOF_STAT not available in this version of Ferret. Use EOFSVD_STAT
+ **ERROR: error in external function
+list eof_stat(spacetime, 1.0)
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+ **ERROR: error in external function
+load eofs
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+ **ERROR: error in external function
+list dot_t(v1, v1)
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+ **ERROR: error in external function
+list dot_t(v1, v2)
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+ **ERROR: error in external function
+list dot_t(v2, v1)
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+ **ERROR: error in external function
+list dot_t(v2, v2)
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+ **ERROR: error in external function
+load tafs
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+ **ERROR: error in external function
+list dot_t(v1, v1)
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+ **ERROR: error in external function
+list dot_t(v1, v2)
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+ **ERROR: error in external function
+list dot_t(v2, v1)
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+ **ERROR: error in external function
+list dot_t(v2, v2)
 *** Running ferret script: bn_eof_simple2.jnl
+
+Bailing out of external function "eof_stat":
+	 Function EOF_STAT not available in this version of Ferret. Use EOFSVD_STAT
+ **ERROR: error in external function
+list eof_stat(spacetime, 1.0)
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+ **ERROR: error in external function
+load eofs
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+ **ERROR: error in external function
+list dot_t(v1, v1)
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+ **ERROR: error in external function
+list dot_t(v1, v2)
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+ **ERROR: error in external function
+list dot_t(v2, v1)
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+ **ERROR: error in external function
+list dot_t(v2, v2)
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+ **ERROR: error in external function
+load tafs
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+ **ERROR: error in external function
+list dot_t(v1, v1)
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+ **ERROR: error in external function
+list dot_t(v1, v2)
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+ **ERROR: error in external function
+list dot_t(v2, v1)
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+ **ERROR: error in external function
+list dot_t(v2, v2)
 *** Running ferret script: bn_interpolate_6d.jnl
 *** Running ferret script: bn_regrid_6d.jnl
  PERMANENT data cleared from memory

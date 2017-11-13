@@ -75,24 +75,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
         self.checkForErrorResponse(self.__shortwait)
         return True
 
-    def submitCommand(self, cmnd):
-        '''
-        Submits the given command to the command pipe for the viewer process.
-        '''
-        self.__window.submitCommand(cmnd)
-
-    def checkForResponse(self, timeout=0.0):
-        '''
-        Checks the response pipe for an object within the given timeout 
-        number of in seconds.  If timeout is None, this method will wait 
-        indefinitely for something to be given on the responds pipe.  If 
-        timeout is zero (the default) the method does not wait if there 
-        is no response waiting.  If nothing is obtained within the given 
-        timeout, None is returned.
-        '''
-        result = self.__window.checkForResponse(timeout)
-        return result
-
     def checkForErrorResponse(self, timeout=0.0):
         '''
         Checks the response pipe for a message that will be interpreted
@@ -130,8 +112,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         Returns True.
         '''
         try:
-            self.__window.submitCommand( { "action":"exit" } )
-            closingremarks = self.__window.waitForViewerExit()
+            closingremarks = self.__window.exitViewer()
         finally:
             self.__window = None
         return True
@@ -886,7 +867,7 @@ class PImagerPQPyFerretBindings(PyFerretBindings):
                  "width":width,
                  "height":height,
                  "stride":stride }
-        self.submitCommand(cmnd)
+        self.__window.submitCommand(cmnd)
         blocksize = 8192
         numblocks = (lenimgdata + blocksize - 1) // blocksize
         for k in range(numblocks):
@@ -899,7 +880,7 @@ class PImagerPQPyFerretBindings(PyFerretBindings):
                      "numblocks":numblocks,
                      "startindex":k*blocksize,
                      "blockdata":blkdata }
-            self.submitCommand(cmnd)
+            self.__window.submitCommand(cmnd)
         # wait briefly at the end for any error messages
         self.checkForErrorResponse(self.__shortwait)
 
@@ -940,12 +921,12 @@ def _test_pyferretbindings():
                 )
 
     # Initiate pyferret, but stay in python
-    pyferret.init(None, False)
+    pyferret.init(enterferret=False)
     for viewertype in ( "PipedViewerPQ", ):
         print("Testing bindings for %s" % viewertype)
         # Create a viewer window
-        title = viewertype + "Tester"
-        bindinst = pyferret.graphbind.createWindow(viewertype, title, True, False, False)
+        wintitle = viewertype + "Tester"
+        bindinst = pyferret.graphbind.createWindow(engine_name=viewertype, title=wintitle, visible=True, noalpha=False, rasteronly=False)
         # Resize the window to 500 x 500 pixels
         bindinst.resizeWindow(500, 500)
         # Turn on anti-aliasing
@@ -957,6 +938,11 @@ def _test_pyferretbindings():
                      for (r, g, b, a) in colorvals ]
         # Clear the window in black
         bindinst.clearWindow(mycolors[0])
+        bindinst.showWindow(True)
+        if sys.version_info[0] > 2:
+            input("Press Enter to continue")
+        else:
+            raw_input("Press Enter to continue")
         # Create a view in the bottom left corner
         bindinst.beginView(0.0, 1.0, 0.5, 0.0, True)
         # Draw a translucent green rectangle over most of the view

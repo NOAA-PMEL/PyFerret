@@ -28,8 +28,7 @@ class PipedViewer(object):
         '''
         Create and start a PipedViewer of one of the supported viewer 
         types.  The viewer will probably not be displayed until the 
-        { "action":"show" } command is submitted to the viewer cmndpipe 
-        using submitCommand.
+        {"action":"show"} command is submitted to the viewer.
 
         Currently supported viewer types are:
             "PipedViewerPQ": PipedViewerPQ using PyQt5 or PyQt4
@@ -64,11 +63,18 @@ class PipedViewer(object):
 
     def checkForResponse(self, timeout = 0.0):
         '''
-        Check for a response from the viewer.  The argument timeout
-        (a number) is the maximum time in seconds to block (default:
-        0.0; returns immediately).  If timeout is None, it will block
-        until something is read.  Returns the response from the viewer,
-        or None if there was no response in the allotted time.
+        Check for a response from the viewer.  
+
+        Arguments: 
+            timeout: (number) maximum time in seconds to wait for a 
+                     response to appear.  Zero (default) does not wait;
+                     None waits indefinitely.
+        Returns: 
+            the response from the viewer, or None if there was no 
+            response in the allotted time.
+        Raises: 
+            IOError: if the response pipe is closed while waiting 
+                     for a response to appear.
         '''
         if self.__rspdrecvpipe.poll(timeout):
             myresponse = self.__rspdrecvpipe.recv()
@@ -76,21 +82,35 @@ class PipedViewer(object):
             myresponse = None
         return myresponse
 
-    def waitForViewerExit(self):
+    def exitViewer(self):
         '''
-        Wait for all the submitted commands to be consumed and the
-        viewer  to return.  The command { "action":"exit" } should
-        have been the last command submitted to the command pipe
-        before calling this method.  Returns any responses from the 
-        viewer, or None if there was no response with 0.1 sec.
+        Submit the command {"action":"exit"}, read any responses,
+        and waits for the viewer to exit.
+
+        Returns: 
+            any responses from the viewer, or 
+            an empty string if there was no response.
         '''
+        self.__cmndsendpipe.send({'action':'exit'})
         self.__cmndsendpipe.close()
-        closingremarks = self.checkForResponse(0.1)
+        closingremarks = ''
+        try:
+            # Read everything from the response pipe until it is closed
+            while self.__rspdrecvpipe.poll(0.1):
+                if closingremarks:
+                    closingremarks += '\n'
+                closingremarks += self.__rspdrecvpipe.recv()
+        except Exception:
+            pass
         self.__rspdrecvpipe.close()
         self.__vprocess.join()
         return closingremarks
 
     def getViewerExitCode(self):
+        '''
+        Returns: 
+            the viewer process exit code.
+        '''
         return self.__vprocess.exitcode
 
 
@@ -250,8 +270,7 @@ def _testviewers():
                               "vectsize":{"width":7.0, "height":7.0},
                               "rastsize":{"width":750, "height":750},
                               "annotations":testannotations } )
-        mydrawcmnds.append( { "action":"exit" } )
-        
+
         # submit the commands, pausing after each "show" command
         for cmd in mydrawcmnds:
             print("Command: %s" % str(cmd))
@@ -268,7 +287,7 @@ def _testviewers():
                 else:
                     raw_input("Press Enter to continue")
         # end of the commands - shut down and check return value
-        response = pviewer.waitForViewerExit()
+        response = pviewer.exitViewer()
         if response:
             print("Closing remarks: %s" % str(response))
         result = pviewer.getViewerExitCode()

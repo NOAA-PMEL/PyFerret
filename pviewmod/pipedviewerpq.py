@@ -224,7 +224,9 @@ class PipedViewerPQ(QMainWindow):
         before closing the window.
         '''
         self.__timer.stop()
+        self.__cmndpipe.close()
         self.__rspdpipe.send(WINDOW_CLOSED_MESSAGE)
+        self.__rspdpipe.close()
         event.accept()
 
     def exitViewer(self):
@@ -1547,9 +1549,7 @@ class PipedViewerPQProcess(Process):
         self.__app = QApplication(["PipedViewerPQ"])
         self.__viewer = PipedViewerPQ(self.__cmndpipe, self.__rspdpipe)
         myresult = self.__app.exec_()
-        self.__cmndpipe.close()
-        self.__rspdpipe.close()
-        SystemExit(myresult)
+        sys.exit(myresult)
 
 
 #

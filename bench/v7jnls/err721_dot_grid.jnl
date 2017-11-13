@@ -1,0 +1,43 @@
+! err721_dot_grid
+
+!!!! using dot_t(v1,v2) works fine
+
+def axis /X=1.0:3.0:1.0 xaxis
+def axis /T=0.0:59.75:0.25 taxis_dc
+def grid /X=xaxis /T=taxis_dc xtgrid
+set grid xtgrid
+let v1 = X * sin(T)
+let v2 = X * cos(T)
+let dp = dot_t(v1,v2)
+
+show grid dp
+
+list dp
+
+can var /all
+set grid abstract
+can grid xtgrid
+can axis xaxis
+can axis taxis_dc
+
+!!!! using dot(v1,v2,4) gives the correct results
+
+def axis /X=1.0:3.0:1.0 xaxis
+def axis /T=0.0:59.75:0.25 taxis_dc
+def grid /X=xaxis /T=taxis_dc xtgrid
+set grid xtgrid
+let v1 = X * sin(T)
+let v2 = X * cos(T)
+let dp = dot(v1,v2,4)
+
+! It would be nice if this showed the right grid with NO t axis.
+show grid dp
+list dp
+
+! but, at least cancel axis taxis_dc is ok
+! Previously the "can axis taxis_dc" failed.
+can var /all
+set grid abstract
+can grid xtgrid
+can axis xaxis
+can axis taxis_dc

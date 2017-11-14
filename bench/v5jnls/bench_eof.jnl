@@ -4,7 +4,6 @@
 
 ! In version 6.8 (double precision), the old eof functions are not available
 ! Run the script calling eofsvd functions and exit, leaving old eof function calls.
-! 11/2017 Restore the original eof functions and their tests
 
 ! Test the bail-out from eof_space, eof_stat, eof_tfunc
 set mode ignore

@@ -38,6 +38,8 @@
 
 * 
 * V720 3/16 *acm* 
+* V722:11/17 *acm* Fix ticket 2569: decrement line-use count when setting
+*                  the grid dimension to normal. 
 
 	include 'ferret.parm'
 	include 'tmap_dims.parm'
@@ -47,8 +49,11 @@
 * calling argument declarations
 	INTEGER		grid, idim
 
+*  local declarations
+	INTEGER		line
+
+	CALL TM_DEALLO_DYN_LINE(grid_line(idim, grid))
 	grid_line(idim, grid) = mnormal
-! anything else?
 
 	RETURN
 	END

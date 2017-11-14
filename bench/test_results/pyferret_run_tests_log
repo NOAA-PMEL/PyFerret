@@ -34747,7 +34747,6 @@ go bench_eof
  
 ! In version 6.8 (double precision), the old eof functions are not available
 ! Run the script calling eofsvd functions and exit, leaving old eof function calls.
-! 11/2017 Restore the original eof functions and their tests
  
 ! Test the bail-out from eof_space, eof_stat, eof_tfunc
 set mode ignore
@@ -41998,8 +41997,6 @@ ppl list shakey
  
 ! In version 6.8 (double precision), the old eof functions are not available
 ! Run the script calling eofsvd functions and exit, leaving old eof function calls.
-! 11/2017 Restore the original eof functions and their tests
- 
  
 ! dataset with 4 dimensions; compute EOF at each vertical level.
  
@@ -103358,7 +103355,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.110E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS0DD-MON-YYYY HH:MM:SS
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASDD-MON-YYYY HH:MM:SS
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  8.000E+00  6.630E+00 0.120    0  SYSTEM  @ASDATA SET: err721_dup_labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
@@ -103449,6 +103446,76 @@ load t1
 say `t1,return=iend`
  !-> MESSAGE/CONTINUE 3
 3
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err721_dot_grid
+! err721_dot_grid
+ 
+!!!! using dot_t(v1,v2) works fine
+ 
+def axis /X=1.0:3.0:1.0 xaxis
+def axis /T=0.0:59.75:0.25 taxis_dc
+def grid /X=xaxis /T=taxis_dc xtgrid
+set grid xtgrid
+let v1 = X * sin(T)
+let v2 = X * cos(T)
+let dp = dot_t(v1,v2)
+ 
+show grid dp
+    GRID (G###)
+ name       axis              # pts   start                end                 subset
+ XAXIS     X                    3 r   1                    3                   full
+ normal    Y
+ normal    Z
+ normal    T
+ 
+list dp
+             VARIABLE : DOT_T(V1,V2)
+             SUBSET   : 3 points (X)
+ 1   / 1:  0.0368
+ 2   / 2:  0.1471
+ 3   / 3:  0.3310
+ 
+can var /all
+set grid abstract
+can grid xtgrid
+can axis xaxis
+can axis taxis_dc
+ 
+!!!! using dot(v1,v2,4) gives the correct results
+ 
+def axis /X=1.0:3.0:1.0 xaxis
+def axis /T=0.0:59.75:0.25 taxis_dc
+def grid /X=xaxis /T=taxis_dc xtgrid
+set grid xtgrid
+let v1 = X * sin(T)
+let v2 = X * cos(T)
+let dp = dot(v1,v2,4)
+ 
+! It would be nice if this showed the right grid with NO t axis.
+show grid dp
+    GRID XTGRID
+ name       axis              # pts   start                end                 subset
+ XAXIS     X                    3 r   1                    3                   full
+ normal    Y
+ normal    Z
+ TAXIS_DC  T                  240 r   0                    59.75               full
+list dp
+             VARIABLE : DOT(V1,V2,4)
+             SUBSET   : 3 points (X)
+ 1   / 1:  0.0368
+ 2   / 2:  0.1471
+ 3   / 3:  0.3310
+ 
+! but, at least cancel axis taxis_dc is ok
+! Previously the "can axis taxis_dc" failed.
+can var /all
+set grid abstract
+can grid xtgrid
+can axis xaxis
+can axis taxis_dc
 *** Running ferret script: bn_tseries_modulo.jnl
 ! bn_tseries_modulo.jnl
 !  9/2017 TSERIES aggregations

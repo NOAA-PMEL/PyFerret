@@ -124,5 +124,11 @@
 
  100	CONTINUE
 
+
+* Can we get enough info out of a direction-calling variable definition to set up 
+* the axis sources for a direction-changing function?  See is_do_gc_fcn. 
+* (Probably not for just a show grid operation? Would it be possible to put 
+* something in to issue a NOTE that the grid will depend on the args?)
+
 	RETURN
 	END

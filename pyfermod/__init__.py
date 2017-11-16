@@ -2,10 +2,11 @@
 A Python module for running Ferret.
 For running the Ferret engine that is part of this module:
     init or start must first be called to initialize Ferret
-    resize can be used to resize Ferret's allocated memory block
+    resize can be used to reset the maximum amount of memory
+            that can be allocated for Ferret data
     run is used to submit individual Ferret commands or enter
             into Ferret's command prompting mode
-    stop can be used to shutdown Ferret and free the allocated
+    stop can be used to shutdown Ferret and free any allocated
             memory.
 
 The FERR_* values are the possible values of err_int in the return
@@ -260,54 +261,32 @@ def addpath(newdir):
     addenv(FER_GO=newdir, FER_DATA=newdir, FER_DESCR=newdir, FER_GRIDS=newdir)
 
 
-def init(arglist=None, enterferret=True):
-    """
-    Interprets the traditional Ferret options given in arglist and
-    starts pyferret appropriately.  Defines all the standard Ferret
-    Python external functions.  If ${HOME}/.ferret exists, that
-    script is then executed.
-
-    If '-script' is given with a script filename, this method calls
-    the run method with the ferret go command, the script filename,
-    and any arguments, and then exits completely (exits python).
-
-    Otherwise, if enterferret is False, this method just returns the
-    success return value of the run method: (FERR_OK, '')
-
-    If enterferret is True (unless '-python' is given in arglist)
-    this routine calls the run method with no arguments in order to
-    enter into Ferret command-line processing.  The value returned
-    from call to the run method is then returned.
-    """
-
-    ferret_help_message = \
-    """
+pyferret_help_message = \
+"""
 
     Usage:  pyferret  [-memsize <N>]  [-nodisplay]  [-png]  [-nojnl]  [-noverify]
                       [-secure]  [-server]  [-python]  [-version]  [-help]
                       [-quiet]  [-linebuffer]  [-script <scriptname> [ <scriptarg> ... ]]
 
-       -memsize:     initialize the memory cache size to <N> (default 25)
-                     mega (10^6) floats (where 1 float = 8 bytes)
+       -memsize:     maximum amount of memory that can be  allocates for Ferret data 
+                     in mega (10^6) floats (where 1 float = 8 bytes); default is 25
 
-       -nodisplay    do not display to the console; a drawing can be saved
-                     using the FRAME command in any of the supported file
-                     formats.  The /QUALITY option of SET WINDOW will be
-                     ignored when this is specified.
+       -nodisplay    do not display to the console; a drawing can be saved using the 
+                     FRAME command in any of the supported file formats.  The /QUALITY 
+                     option of SET WINDOW will be ignored when this is specified.
 
-       -png          do not display to the console and only raster (PNG)
-                     images can be saved.  Implies -nodisplay and removes
-                     support for deletion of parts (segments) of a plot;
-                     however, plots will be generated faster.
+       -png          do not display to the console and only raster (PNG) images can be 
+                     saved.  Implies -nodisplay and removes support for deletion of 
+                     parts (segments) of a plot; however, plots will be generated faster.
 
-       -nojnl:       on startup do not open a journal file (can be turned
-                     on later with SET MODE JOURNAL)
+       -nojnl:       on startup do not open a journal file (can be turned on later with 
+                     SET MODE JOURNAL)
 
-       -noverify:    on startup turn off verify mode (can be turned on
-                     later with SET MODE VERIFY)
+       -noverify:    on startup turn off verify mode (can be turned on later with 
+                     SET MODE VERIFY)
 
-       -secure:      restrict Ferret's capabilities (e.g., SPAWN and
-                     EXIT /TOPYTHON are not permitted)
+       -secure:      restrict Ferret's capabilities (e.g., SPAWN and EXIT /TOPYTHON 
+                     are not permitted)
 
        -server:      run in server mode (don't stop on message commands)
 
@@ -320,18 +299,17 @@ def init(arglist=None, enterferret=True):
 
        -quiet        do not display the startup header
 
-       -linebuffer   print each line of output or error messages as soon as
-                     a full line is written.  Useful when redirecting both
-                     types of messages to a single file.
+       -linebuffer   print each line of output or error messages as soon as a full 
+                     line is written.  Useful when redirecting both types of messages 
+                     to a single file.
                      Note:
                        the environment variable GFORTRAN_UNBUFFERED_PRECONNECTED
                        needs to be set to 1 in order to unbuffer the Fortran
                        units for output and error messages
 
-       -script:      execute the script <scriptname> with any arguments
-                     specified and exit. (THIS MUST BE SPECIFIED LAST.)
-                     The -script option also implies the -nojnl, -noverify,
-                     -server, and -quiet options.
+       -script:      execute the script with any arguments specified and exit. 
+                     (THIS MUST BE SPECIFIED LAST.)  The -script option also implies 
+                     the -nojnl, -noverify, -server, and -quiet options.
 
        Deprecated command-line options:
 
@@ -339,18 +317,39 @@ def init(arglist=None, enterferret=True):
 
            -unmapped:    this option is now an alias for -nodisplay
 
-           -batch:       draw to <filename> (default "ferret.png") instead of
-                         displaying to the console.  The file format will be
-                         guessed from the filename extension.  When using this
-                         option, new windows should not be created and the
-                         FRAME command should not be used.
+           -batch:       name of file to draw to (default "ferret.png") instead of 
+                         displaying to the console.  The file format will be guessed 
+                         from the filename extension.  When using this option, new 
+                         windows should not be created and the FRAME command should 
+                         not be used.
 
-           -transparent: use a transparent background instead of opaque white
-                         when saving to the file given by -batch
+           -transparent: use a transparent background instead of opaque white when 
+                         saving to the file given by -batch
 
         Use of -batch and -transparent options is strongly discouraged.  Instead,
         use the -nodisplay option and the FRAME /FILE=<filename> [ /TRANSPARENT ]
         Ferret command.
+
+"""
+
+def init(arglist=None, enterferret=True):
+    """
+    Interprets the traditional Ferret options given in arglist and calls 
+    pyferret.start appropriately.  Detailed information about the strings 
+    that can be given in arglist can be obtained by printing the 
+    pyferret.pyferret_help_message string. 
+
+    If '-script' is given with a script filename, this method calls the 
+    pyferret.run method with the Ferret go command, the script filename, 
+    and any arguments, then exits completely (exits python).
+
+    Otherwise, if enterferret is False, this method just returns the success 
+    return value of the run method: (FERR_OK, '')
+
+    If enterferret is True (unless '-python' is given in arglist) this routine 
+    calls the run method with no arguments in order to enter into Ferret 
+    command-line processing.  The value returned from call to the run method 
+    is then returned when the Ferret command EXIT /TOPY is made.
     """
 
     my_metaname = None
@@ -448,16 +447,156 @@ def init(arglist=None, enterferret=True):
             print_help = True
         if print_help:
             # print the help message, then mark for exiting
-            print(ferret_help_message, file=sys.stderr)
+            print(pyferret_help_message, file=sys.stderr)
             just_exit = True
         if just_exit:
             # print the ferret header then exit completely
-            start(journal=False, verify=False, unmapped=True)
+            if not start(journal=False, verify=False, unmapped=True):
+                raise ValueError('pyferret has already been started')
             result = run("exit /program")
             # should not get here
             raise SystemExit
 
-    # Create the list of standard ferret PyEFs to create
+    # start ferret
+    if not start(memsize=my_memsize, journal=my_journal, verify=my_verify,
+                 restrict=my_restrict, server=my_server, unmapped=my_unmapped,
+                 pngonly=my_pngonly, quiet=my_quiet, linebuffer=my_linebuffer,
+                 metaname=my_metaname, transparent=my_transparent):
+        raise ValueError("pyferret has already been started")
+
+    # if a command-line script is given, run the script and exit completely
+    if script != None:
+        # put double quotes around every script argument
+        script_line = '"' + '" "'.join(script) + '"'
+        try:
+            result = run('go ' + script_line)
+        except:
+            print(" **Error: exception raised in running script %s" % script_line, file=sys.stderr)
+        # force shutdown
+        result = run('exit /program')
+        # should not get here
+        raise SystemExit
+
+    if my_restrict or my_enterferret:
+        # go into Ferret command-line processing until "exit /topy" (if not restricted) or "exit /program"
+        result = run()
+    else:
+        # if they don't want to enter ferret, just return the success value from run
+        result = (libpyferret.FERR_OK, '')
+    return result
+
+
+def start(memsize=25, journal=True, verify=False, restrict=False,
+          server=False, unmapped=False, pngonly=False, quiet=False, 
+          linebuffer=False, metaname=None, transparent=False):
+    """
+    Initializes Ferret from the arguments given.  
+    Executes any Ferret commands given in $HOME/.ferret
+
+    Arguments:
+        memsize: (number)     the maximum amount on memory, in mega (10^6) floats 
+                              (where 1 float = 8 bytes) that can be allocated for 
+                              data in Ferret.
+
+        journal: (boolean)    turn on Ferret's journal mode? (can be changed later 
+                              using SET or CANCEL MODE JOURNAL)
+
+        verify: (boolean)     turn on Ferret's verify mode? (can be changed later 
+                              using SET or CANCEL MODE VERIFY)
+
+        restrict: (boolean)   restrict Ferret's capabilities? (e.g., SPAWN and
+                              EXIT /TOPYTHON are not permitted)
+
+        server: (boolean)     run in server mode? (don't stop on message commands,
+                              don't enable command-line completion and history)
+
+        unmapped: (boolean)   if True, do not display to the console; the /QUALITY 
+                              option of SET WINDOW will be ignored.  A drawing can 
+                              be saved using the FRAME command in any of the supported 
+                              file formats. 
+
+        pngonly: (boolean)    if True, do not display to the console and only raster (PNG) 
+                              images can be saved; plots will be generated faster but 
+                              removes support for deletion of parts (segments) of a plot.
+
+        quiet: (boolean)      do not display the Ferret start-up header?
+
+        linebuffer: (boolean) if True, prints each line of an output or error message 
+                              as soon as a full line is written; useful when redirecting 
+                              these messages to a file.
+                              Note:
+                                the enviroment variable GFORTRAN_UNBUFFERED_PRECONNECTED
+                                needs to be set to 1 in order to unbuffer the Fortran
+                                units for output and error messages
+
+       Deprecated:
+           metaname: (string) name of file to draw to (default "ferret.png") instead of 
+                              displaying to the console.  The file format will be guessed 
+                              from the filename extension.  When using this option, new 
+                              windows should not be created and the FRAME command should 
+                              not be used.
+
+           transparent: (boolean) use a transparent background instead of opaque white 
+                                  when saving to the file given by metaname
+
+       Use of metaname and transparent is strongly discouraged.  Instead, set unmapped 
+       to True and use the FRAME /FILE=<filename> [ /TRANSPARENT ] Ferret command.
+
+    Returns:
+        True is successful
+        False if Ferret has already been started
+    Raises:
+        ValueError if memsize if not a positive number
+        IOError if unable to open the journal file
+    """
+    # check memsize
+    try:
+        flt_memsize = float(memsize)
+        if flt_memsize <= 0.0:
+            raise ValueError
+    except:
+        raise ValueError("memsize must be a positive number")
+    # check metaname
+    if metaname == None:
+        str_metaname = ""
+    elif not isinstance(metaname, str):
+        raise ValueError("metaname must either be None or a string")
+    elif metaname.isspace():
+        str_metaname = ""
+    else:
+        str_metaname = metaname
+
+    # Get the known viewer bindings
+    knownengines = graphbind.knownPyFerretEngines()
+    # Add PViewerPQPyFerretBindings, as "PipedViewerPQ" to the known bindings
+    if not ("PipedViewerPQ" in knownengines):
+        graphbind.addPyFerretBindings("PipedViewerPQ",
+                  pipedviewer.pyferretbindings.PViewerPQPyFerretBindings)
+    # Add PImagerPQPyFerretBindings, as "PipedImagerPQ" to the known bindings
+    if not ("PipedImagerPQ" in knownengines):
+        graphbind.addPyFerretBindings("PipedImagerPQ",
+                  pipedviewer.pyferretbindings.PImagerPQPyFerretBindings)
+
+    # the actual call to ferret's start - do not turn on journaling or verify at this time
+    if not libpyferret._start(flt_memsize, False, False,
+                              bool(restrict), bool(server), str_metaname,
+                              bool(transparent), bool(unmapped),
+                              bool(pngonly), bool(quiet), bool(linebuffer)):
+        return False
+
+    # register the libpyferret._quit function with atexit to ensure
+    # open viewer windows do not hang a Python shutdown
+    atexit.register(libpyferret._quit)
+
+    # Use tab completion for readline
+    if 'libedit' in readline.__doc__:
+        # Mac OS X actually uses libedit for system readline
+        readline.parse_and_bind('bind ^I rl_complete');
+    else:
+        # GNU readline
+        readline.parse_and_bind('tab: complete');
+
+    # Create the list of standard PyEFs to create
     std_pyefs = [ ]
     # stats_* functions that do not need scipy
     std_pyefs.append("stats.stats_histogram")
@@ -622,11 +761,7 @@ def init(arglist=None, enterferret=True):
                   "stats.stats_helper",
                   ))
     except ImportError:
-        # if not my_quiet:
-        #     print >>sys.stderr, "    WARNING: Unable to import scipy;\n" \
-        #                         "             most stats_* Ferret functions will not be added."
         pass
-
     # shapefile_* functions
     try:
         import shapefile
@@ -640,11 +775,7 @@ def init(arglist=None, enterferret=True):
                   "fershp.shapefile_writexyzval",
                   ))
     except ImportError:
-        # if not my_quiet:
-        #     print >>sys.stderr, "    WARNING: Unable to import shapefile;\n" \
-        #                         "             shapefile_* Ferret functions will not be added."
         pass
-
     # regrid functions
     try:
         import ESMP
@@ -653,24 +784,14 @@ def init(arglist=None, enterferret=True):
                   "regrid.curv3srect",
                   ))
     except ImportError:
-        # if not my_quiet:
-        #     print >>sys.stderr, "    WARNING: Unable to import ESMP;\n" \
-        #                         "             curv2rect* Ferret functions will not be added.\n" \
-        #                         "             Use curv_to_rect* functions instead"
         pass
-
-    # start ferret without journaling
-    start(memsize=my_memsize, journal=False, verify=my_verify,
-          restrict=my_restrict, server=my_server, metaname=my_metaname,
-          transparent=my_transparent, unmapped=my_unmapped,
-          pngonly=my_pngonly, quiet=my_quiet, linebuffer=my_linebuffer)
 
     # define all the Ferret standard Python external functions
     for fname in std_pyefs:
         result = run("define pyfunc pyferret.%s" % fname)
 
-    # run the ${HOME}/.ferret script if it exists and not restricted environment
-    if not my_restrict:
+    # run the ${HOME}/.ferret script if it exists and not in a restricted environment
+    if not restrict:
         home_val = os.getenv('HOME')
         if home_val:
             init_script = os.path.join(home_val, '.ferret')
@@ -683,156 +804,29 @@ def init(arglist=None, enterferret=True):
                     # should not get here
                     raise SystemExit
 
-    # if a command-line script is given, run the script and exit completely
-    if script != None:
-        # put double quotes around every script argument
-        script_line = '"' + '" "'.join(script) + '"'
-        try:
-            result = run('go %s; exit /program' % script_line)
-        except:
-            print(" **Error: exception raised in running script %s" % script_line, file=sys.stderr)
-        # If exception or if returned early, force shutdown
-        result = run('exit /program')
-        # should not get here
-        raise SystemExit
-
-    # if journaling desired, now turn on journaling
-    if my_journal:
+    # if journaling desired, turn it on now
+    if journal:
         result = run("set mode journal")
 
-    # if they don't want to enter ferret, return the success value from run
-    if not my_enterferret:
-        return (libpyferret.FERR_OK, '')
+    # if verify desired, turn it on now
+    if verify:
+        result = run("set mode verify")
 
-    # otherwise, go into Ferret command-line processing until "exit /topy" or "exit /program"
-    result = run()
-    return result
-
-
-def start(memsize=25, journal=True, verify=False, restrict=False,
-          server=False, metaname=None, transparent=False,
-          unmapped=False, pngonly=False, quiet=False, linebuffer=False):
-    """
-    Initializes Ferret.  This allocates the initial amount of memory
-    for Ferret (from Python-managed memory), opens the journal file,
-    if requested, and sets Ferret's verify mode.
-    If restrict is True, some Ferret commands will not be available
-    (to provide a secured session).  Once restrict is set, it cannot
-    be unset.
-    If metaname is not empty this value is used as the initial filename
-    for automatic output of graphics, and the graphics viewer will not
-    be displayed.
-    If server is True, Ferret will be run in server mode.
-    If unmapped is True, the graphics viewer will not be displayed.
-    If pngonly is True, only raster images can be saved and the
-    graphics viewer will not be displayed.
-    If quiet is True, the Ferret start-up header is not displayed.
-    If linebuffer is True, stdout and stderr are set user line
-    buffering.  This cannot be reset once set.
-    This routine does NOT run any user initialization scripts.
-
-    Arguments:
-        memsize:     the size, in mega (10^6) floats (where 1 float
-                     = 8 bytes) to allocate for Ferret's memory block
-        journal:     turn on Ferret's journal mode?
-        verify:      turn on Ferret's verify mode?
-        restrict:    restrict Ferret's capabilities?
-        server:      put Ferret in server mode?
-        metaname:    filename for Ferret graphics; can be None or empty
-        transparent: autosave (e.g., on exit) image files with a
-                     transparent background?
-        unmapped:    hide the graphics viewer?
-        pngonly:     only create raster (PNG) images?
-        quiet:       do not display the Ferret start-up header?
-        linebuffer:  print each line of output or error messages as soon as
-                     a full line is written?  Useful when redirecting these
-                     messages to a file.
-                     Note:
-                       the enviroment variable GFORTRAN_UNBUFFERED_PRECONNECTED
-                       needs to be set to 1 in order to unbuffer the Fortran
-                       units for output and error messages
-    Returns:
-        True is successful
-        False if Ferret has already been started
-    Raises:
-        ValueError if memsize if not a positive number
-        MemoryError if unable to allocate the needed memory
-        IOError if unable to open the journal file
-    """
-    # check memsize
-    try:
-        flt_memsize = float(memsize)
-        if flt_memsize <= 0.0:
-            raise ValueError
-    except:
-        raise ValueError("memsize must be a positive number")
-    # check metaname
-    if metaname == None:
-        str_metaname = ""
-    elif not isinstance(metaname, str):
-        raise ValueError("metaname must either be None or a string")
-    elif metaname.isspace():
-        str_metaname = ""
-    else:
-        str_metaname = metaname
-
-    # Get the known viewer bindings
-    knownengines = graphbind.knownPyFerretEngines()
-    # Add PViewerPQPyFerretBindings, as "PipedViewerPQ" to the known bindings
-    if not ("PipedViewerPQ" in knownengines):
-        graphbind.addPyFerretBindings("PipedViewerPQ",
-                  pipedviewer.pyferretbindings.PViewerPQPyFerretBindings)
-    # Add PImagerPQPyFerretBindings, as "PipedImagerPQ" to the known bindings
-    if not ("PipedImagerPQ" in knownengines):
-        graphbind.addPyFerretBindings("PipedImagerPQ",
-                  pipedviewer.pyferretbindings.PImagerPQPyFerretBindings)
-
-    # the actual call to ferret's start
-    success = libpyferret._start(flt_memsize, bool(journal), bool(verify),
-                                 bool(restrict), bool(server), str_metaname,
-                                 bool(transparent), bool(unmapped),
-                                 bool(pngonly), bool(quiet), bool(linebuffer))
-    if success:
-        # register the libpyferret._quit function with atexit to ensure
-        # open viewer windows do not hang a Python shutdown
-        atexit.register(libpyferret._quit)
-
-        # Use tab completion for readline
-        if 'libedit' in readline.__doc__:
-            # Mac OS X actually uses libedit for system readline
-            readline.parse_and_bind('bind ^I rl_complete');
-        else:
-            # GNU readline
-            readline.parse_and_bind('tab: complete');
-
-        # Execute the $PYTHONSTARTUP file, if it exists and -secure not given
-        if not restrict:
-            try:
-                startfilename = os.getenv('PYTHONSTARTUP', '')
-                if startfilename:
-                    if sys.version_info[0] > 2:
-                        exec(compile(open(startfilename).read(), startfilename, 'exec'));
-                    else:
-                        execfile(startfilename)
-            except Exception:
-                pass
-
-    return success
+    return True
 
 
 def resize(memsize):
     """
-    Resets the the amount of memory allocated for Ferret from Python-managed memory.
+    Resets the the maximum amount of memory that can be allocated for Ferret data.
 
     Arguments:
         memsize: the new size, in mega (10^) floats (where a "float" is 8 bytes),
-                 for Ferret's memory block
+                 for Ferret data.
     Returns:
-        True if successful - Ferret has the new amount of memory
-        False if unsuccessful - Ferret has the previous amount of memory
+        True if successful - Ferret has the new memory limit
+        False if unsuccessful - Ferret has the previous memory limit
     Raises:
         ValueError if memsize if not a positive number
-        MemoryError if Ferret has not been started or has been stopped
     """
     # check memsize
     try:
@@ -870,7 +864,6 @@ def run(command=None):
         Warning messages normally start with "*** NOTE:"
     Raises:
         ValueError if command is neither None nor a String
-        MemoryError if Ferret has not been started or has been stopped
     """
     # check command
     if command == None:

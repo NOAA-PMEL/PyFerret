@@ -145,9 +145,7 @@ list dot_t(v2, v2)
 
 set mode/last ignore
 
-! clean-up
+! clean-up 
 set grid abstract
 can var /all
 can grid xytgrid
-can axis /all
-

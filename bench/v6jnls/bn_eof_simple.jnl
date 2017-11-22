@@ -177,5 +177,3 @@ set mode/last ignore
 set grid abstract
 can var /all
 can grid xytgrid
-can axis /all
-

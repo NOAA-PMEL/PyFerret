@@ -66264,8 +66264,6 @@ set mode/last ignore
 set grid abstract
 can var /all
 can grid xytgrid
-can axis /all
- 
 *** Running ferret script: bn_eof_simple2.jnl
 ! bn_eof_simple2
 ! Define a simple function with four known functions, two of which are degenerate.
@@ -66540,8 +66538,6 @@ set mode/last ignore
 set grid abstract
 can var /all
 can grid xytgrid
-can axis /all
- 
 *** Running ferret script: bn_interpolate_6d.jnl
 ! bn_interpolate_6d.JNL
 ! benchmark interpolation along various axes

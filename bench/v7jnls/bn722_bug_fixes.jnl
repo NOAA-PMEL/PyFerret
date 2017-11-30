@@ -26,3 +26,6 @@ GO err721_ascii_size
 
 GO bn_reset
 GO err721_dot_grid
+
+GO bn_reset
+GO err721_stride_size

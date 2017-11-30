@@ -64,8 +64,8 @@
 	INTEGER idim, cx, lo_ss, hi_ss
 
 * internal variable declarations
-	LOGICAL ACTS_LIKE_FVAR
-	INTEGER dset, cat, var, grid, line, status
+	LOGICAL ACTS_LIKE_FVAR, has_strides
+	INTEGER dset, cat, var, grid, line, pline, offset, stride, status
 	INTEGER TM_GET_GRIDNUM		! 10/93
 
 * initialize
@@ -98,7 +98,38 @@
 	ENDIF
 
 * return subscript limits
- 110	lo_ss = ds_grid_start(idim, var)
-	hi_ss = ds_grid_end  (idim, var)
+* Compute the right limits for strided axis, see issue 1843
+
+ 110	CONTINUE
+	
+	stride = 1
+	offset = 0
+	has_strides = .FALSE.
+        IF(line_parent(line) .NE. 0) THEN
+	   pline = line_parent(line)
+           has_strides  =  line_delta(line) .NE. unspecified_val8
+     .                    .AND.  line_delta(line) .NE. 1 
+        ENDIF
+
+        IF (has_strides) THEN
+	   offset = line_offset(line)
+
+	   IF (line_regular(line)) THEN 
+	      stride = NINT(line_delta(line)/line_delta(pline))
+	      lo_ss = offset + (ds_grid_start(idim, var)-1)
+	      lo_ss = 1
+	      hi_ss = line_dim(line)
+	   ELSE
+	      stride = line_delta(line)
+	      lo_ss = offset + (ds_grid_start(idim, var)-1)/ stride
+	      lo_ss = 1
+	      hi_ss = offset + line_dim(line) - 1
+	   ENDIF
+
+        ELSE 
+	   lo_ss = ds_grid_start(idim, var)
+	   hi_ss = ds_grid_end  (idim, var)
+        ENDIF
+
  1000	RETURN
 	END

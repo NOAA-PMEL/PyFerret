@@ -178,8 +178,6 @@
                     stride(idim) =1 
                  ENDIF
 
-!                get size of the native axis
-                 CALL VAR_SS_LIMS(idim, cx,lo_ss_ds,hi_ss_ds)
 
                  lo_ss(idim) = (cx_lo_ss( cx, idim )-1)*stride(idim) + 
      .                         line_offset(line)
@@ -189,6 +187,13 @@
 
 !                for a reversed axis
                  IF( line_reversed(line)) THEN
+
+! get size of the native axis 
+! w/ fix to issue 1843, var_ss_lims returns strided index values
+		 
+                    CALL VAR_SS_LIMS(idim, cx,lo_ss_ds,hi_ss_ds)
+                    hi_ss_ds = hi_ss_ds* stride(idim)
+
 !                   must compute hi_ss first and then lo_ss
                     hi_ss(idim) = hi_ss_ds - 
      .                         (line_dim(line)-cx_hi_ss( cx, idim ))*stride(idim) -

@@ -7,7 +7,7 @@
 !            unrelated axes already defined, which get in the way of 
 !            seeing the desired output.
 
-set mode ignore_error
+!set mode ignore_error
 
 !..............1. ignore STRIDE = 1                             
 use coads_climatology
@@ -23,8 +23,10 @@ use coads_climatology
 set axis/stride=2/offset=1 `sst, return=xaxis`
 show axis `sst,return=xaxis`
 !can't stride it again
+set mode ignore_error
 set axis/stride=2/offset=1 `sst, return=xaxis`
 show axis `sst,return=xaxis`
+set mode/last ignore
 cancel data/all
 
 !..............3. only set STRIDE                                 
@@ -51,13 +53,18 @@ cancel data/all
 use coads_climatology
 set axis/offset=1 `sst, return=xaxis`
 show axis `sst,return=xaxis`
+
+set mode ignore  
 cancel axis/stride `sst,return=xaxis`
+set mode/last ignore
 cancel data/all
 
 
 !.............5. OFFSET .LE. STRIDE
 use coads_climatology
+set mode ignore  
 set axis/stride=2/offset=4 `sst, return=xaxis`
+set mode/last ignore
 cancel data/all
 
 !.............6. SHOW GRID/DYNAMIC          
@@ -68,7 +75,10 @@ cancel data/all
 
 !.............7. cancel stride on a non-strided axis
 use coads_climatology
+set mode ignore  
 cancel axis/stride `sst,return=xaxis`
+set mode/last ignore
+
 cancel data/all
 
 !.............8. striding on a modulo axis
@@ -133,6 +143,7 @@ can data/all
 ! --- 10.2 stride on a reversed axis -- YAXIS
 use/order=x-yt coads_climatology
 list/x=180/l=5 sst[j=1:30]
+
 set axis/stride=5/offset=3 `sst,return=yaxis`
 list/x=180/l=5  sst
 list/x=180/l=5 sst[j=3:14:2]

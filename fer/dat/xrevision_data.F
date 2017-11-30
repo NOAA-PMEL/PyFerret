@@ -140,13 +140,14 @@
 * v7.20    7/11/2017 7.20 release
 * v7.21    9 /2017 7.21 release
 * v7.22    9/14/2017 7.22 dnamic coordinate storage
+* v7.3     11/30/2017 Release 
 
         IMPLICIT NONE
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  7.22   /
+	DATA revision_level	/  7.3   /
 
 ! Note we can put a debug title in the Ferret startup header lines
 ! by putting a title into the Makefile: $(MAKE) "DEBUG_TITLE=beta" update

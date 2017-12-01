@@ -1,0 +1,32 @@
+! err721_stride_size.jnl
+! SHOW DATA and RETURN=isize were
+! not updated with new size on a SET AXIS/STRIDE
+! *ACM* 11/29/2017 github issue 1843
+
+use coads_climatology
+set axis/stride=5 `sst,return=xaxis`
+
+! Should show new size for x axis
+show grid sst
+say `sst,return=isize`
+
+! Restore axis, back to size 180
+cancel axis/stride `sst,return=xaxis`
+show grid sst
+say `sst,return=isize`
+
+! Irregular axis
+
+USE truemonth.nc
+say `var,return=lsize`
+SET AXIS/STRIDE=12/OFFSET=0 `var,return=taxis`  ! every January
+LIST var
+say `var,return=lsize`
+
+can axis/stride `var,return=taxis`
+sh grid var
+SET AXIS/STRIDE=12/OFFSET=2 `var,return=taxis`  ! every March
+say `var,return=lsize`
+list var
+say `var,return=lsize`
+

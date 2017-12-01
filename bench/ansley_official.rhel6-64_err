@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 111678271 Nov 13 13:44 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 111678682 Nov 29 16:49 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ticket 2569: direction-changing functions
+Note: github issue 1843, size of strided axis
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -15,14 +15,14 @@ FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=. ./data
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Mon Nov 13 13:50:48 PST 2017
+Beginning at Wed Nov 29 17:31:49 PST 2017
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3971,6 +3971,72 @@ Bailing out of external function "eofsvd_space":
 
 Bailing out of external function "eofsvd_tfunc":
 	There are no spatial locations having complete time series.
+
+Bailing out of external function "eof_stat":
+	 Function EOF_STAT not available in this version of Ferret. Use EOFSVD_STAT
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+
+Bailing out of external function "eof_stat":
+	 Function EOF_STAT not available in this version of Ferret. Use EOFSVD_STAT
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+
+Bailing out of external function "eof_space":
+	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
+
+Bailing out of external function "eof_tfunc":
+	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3984,10 +4050,57 @@ list eofsvd_stat(spacegap)
 list eofsvd_space(spacegap)
  **ERROR: error in external function
 list eofsvd_tfunc(spacegap)
+Replacing definition of axis XAXIS
+ **ERROR: error in external function
+list eof_stat(spacetime, 1.0)
+ **ERROR: error in external function
+load eofs
+ **ERROR: error in external function
+list dot_t(v1, v1)
+ **ERROR: error in external function
+list dot_t(v1, v2)
+ **ERROR: error in external function
+list dot_t(v2, v1)
+ **ERROR: error in external function
+list dot_t(v2, v2)
+ **ERROR: error in external function
+load tafs
+ **ERROR: error in external function
+list dot_t(v1, v1)
+ **ERROR: error in external function
+list dot_t(v1, v2)
+ **ERROR: error in external function
+list dot_t(v2, v1)
+ **ERROR: error in external function
+list dot_t(v2, v2)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_eof_simple2
+Replacing definition of axis YAXIS
+Replacing definition of axis TAXIS
+ **ERROR: error in external function
+list eof_stat(spacetime, 1.0)
+ **ERROR: error in external function
+load eofs
+ **ERROR: error in external function
+list dot_t(v1, v1)
+ **ERROR: error in external function
+list dot_t(v1, v2)
+ **ERROR: error in external function
+list dot_t(v2, v1)
+ **ERROR: error in external function
+list dot_t(v2, v2)
+ **ERROR: error in external function
+load tafs
+ **ERROR: error in external function
+list dot_t(v1, v1)
+ **ERROR: error in external function
+list dot_t(v1, v2)
+ **ERROR: error in external function
+list dot_t(v2, v1)
+ **ERROR: error in external function
+list dot_t(v2, v2)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4620,10 +4733,12 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis XAXIS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Replacing definition of axis XAXIS
+Replacing definition of axis YAXIS
  **ERROR: request exceeds memory setting
 load bigvar
 Replacing definition of axis LONGTIME
@@ -4734,6 +4849,7 @@ list f
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_date1900_array
+Replacing definition of axis TAXIS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6247,6 +6363,9 @@ Replacing definition of axis xaxis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_tseries_modulo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -6403,4 +6522,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Nov 13 13:57:45 PST 2017
+Ended at Wed Nov 29 17:38:06 PST 2017

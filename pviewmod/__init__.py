@@ -15,9 +15,6 @@ import sys
 from multiprocessing import Pipe
 
 WINDOW_CLOSED_MESSAGE = 'Window was closed'
-'''
-Message sent back from a viewer its window is closed.
-'''
 
 class PipedViewer(object):
     '''

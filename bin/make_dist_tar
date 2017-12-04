@@ -164,7 +164,7 @@ while [ "${ans}" != "y" -a "${ans}" != "n" ]; do
 done
 if [ "${ans}" = "y" ]; then
    rm -f "${ctar_file}"
-   ( cd ${parent_temp_dir} ; tar czf "${ctar_file}" "${ctar_name}" )
+   ( cd ${parent_temp_dir} ; tar czf "${ctar_file}" --exclude .svn "${ctar_name}" )
    echo ""
    ls -l "${ctar_file}"
 else

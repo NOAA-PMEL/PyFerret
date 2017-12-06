@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 111678682 Nov 29 16:49 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 111686607 Dec  6 11:57 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: github issue 1843, size of strided axis
+Note: issue 1846, packed data
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -15,14 +15,14 @@ FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=. ./data
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Wed Nov 29 17:31:49 PST 2017
+Beginning at Wed Dec 6 11:58:43 PST 2017
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2545,10 +2545,10 @@ Replacing definition of axis X2AX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: Changing the value of attribute (TIME12).units
-           *** NOTE: Changing the value of attribute (TIME12).units
-           *** NOTE: Changing the value of attribute (TIME12).time_origin
-           *** NOTE: Changing the value of attribute (TIME12).time_origin
+           *** NOTE: Changing the value of attribute (TIME11).units
+           *** NOTE: Changing the value of attribute (TIME11).units
+           *** NOTE: Changing the value of attribute (TIME11).time_origin
+           *** NOTE: Changing the value of attribute (TIME11).time_origin
            *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
 Replacing definition of axis TIME
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
@@ -2730,7 +2730,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
-Replacing definition of axis TIME16
+Replacing definition of axis TIME15
            *** NOTE: grid GSQ1 used by data set coads_climatology
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
@@ -3519,7 +3519,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: LON1_15: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: LAT1800_1800: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: ENS: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
-           *** NOTE: TIME22: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
+           *** NOTE: TIME21: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: Units on axis "ENS" are not recognized: count
            *** NOTE: They will not be convertible:
  PERMANENT data cleared from memory
@@ -6401,6 +6401,16 @@ LIST/FORMAT=CDF/append/asglobal/y=10/L=2/outtype=float/file=a.nc sst
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn74_bug_fixes
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ **ERROR: command syntax: Defining scale_factor or add_offset attributes not allowed on file variables: sst.scale_factor
+define attribute/output sst.scale_factor = 0.001
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6522,4 +6532,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Nov 29 17:38:06 PST 2017
+Ended at Wed Dec 6 12:05:43 PST 2017

@@ -157,6 +157,7 @@
 *                  data so the axis can still be a valid modulo axis.
 * v720 2/2017 *acm* Ticket 2513. If /RIGID write edges but do not write bounds or 
 *                  bounds attribute.
+* v730 11/2017 *acm* new SAVE/ASGLOBAL to write a global attribute, see ticket 2060, issue 1332
 
 	include 'tmap_dims.parm'
         include 'tmap_errors.parm'

@@ -1,7 +1,7 @@
 	SUBROUTINE CD_WRITE_VAR ( cdfid, dset, vname, grid, lo,
      .                            hi, dat, edges_flag, do_bounds, 
      .                            mode_upcase_output, 
-     .                            keepax_flag, status )
+     .                            keepax_flag, user_var, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -85,6 +85,7 @@
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 *	         including bug fix in computation of npts, work mem size
 *                also: bug fix of unitialized "count" variable
+* v73+ *acm* 12/2017 Issue # 1846, writing user-variables with scale_factor, add_offset
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -135,8 +136,8 @@
       INTEGER*8 rqst_size
       LOGICAL CD_GET_BOUNDS, TM_ABSTRACT_AXIS, TM_DFPEQ, CD_GET_ATTVAL, 
      .        MATCH_NAME, ITSA_TRUEMONTH_AXIS,
-     .        got_it, scaled, writebounds, do_warn, true_month
-	      CHARACTER*13 TM_STRING
+     .        got_it, scaled, writebounds, do_warn, true_month, user_var
+      CHARACTER*13 TM_STRING
       CHARACTER*1  dimnam(nferdims)
       DATA  	   dimnam/'I','J','K','L','M','N'/
       CHARACTER*128 vbuff     ! needed because of fussy f772.1 DEC compiler
@@ -531,14 +532,21 @@ c      EQUIVALENCE (r100_8, r100_4)
       IF ( .NOT. TM_DFPEQ(scalefac, 1.D0) .OR. 
      .     .NOT. TM_DFPEQ(addoff, 0.D0) ) THEN
 
-         IF (.NOT. TM_DFPEQ(scalefac, 0.D0) ) r_scale = 1. /scalefac
-         r_offset = -1.D0* addoff* r_scale
+         IF (.NOT. TM_DFPEQ(scalefac, 0.D0) ) THEN
+	    r_scale = 1. /scalefac
+            r_offset = -1.D0* addoff* r_scale
+         ENDIF
 
          npts = 1
          DO 250  idim = 1, nferdims
             IF ( count(idim) .GT. 0 ) npts = npts* count(idim)
  250     CONTINUE
-         CALL TM_SCALE_ALL ( r_scale, r_offset, dat, vartyp, npts )
+
+	 IF (user_var) THEN
+	    CALL TM_SCALE_NOBAD( r_scale, r_offset, dat, npts, bad, vartyp )
+	 ELSE
+            CALL TM_SCALE_ALL ( r_scale, r_offset, dat, vartyp, npts )
+	 ENDIF
 
          scaled = .TRUE.
       ENDIF
@@ -548,13 +556,18 @@ c      EQUIVALENCE (r100_8, r100_4)
       CALL CD_WRITE_VAR_SUB( cdfid, varid, vartyp, dims, start, count, 
      .	vdims(1), dat, cdfstat )
 
-* If rescaled above, restore it to previous values
+* If rescaled above, restore it to previous values so it can be reused 
 
       IF ( scaled ) THEN
          r_scale = scalefac
          r_offset = addoff
          scaled_bad = bad* r_scale + r_offset
-         CALL TM_SCALE( r_scale, r_offset, scaled_bad, dat, npts )
+	 
+	 IF (user_var) THEN
+	    CALL TM_SCALE_NOBAD( r_scale, r_offset, dat, npts, bad, vartyp )
+	 ELSE
+            CALL TM_SCALE( r_scale, r_offset, scaled_bad, dat, npts )
+	 ENDIF
       ENDIF
 
       IF ( cdfstat .EQ. -60) GOTO 5260

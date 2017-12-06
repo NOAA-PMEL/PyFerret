@@ -77,6 +77,8 @@
 *                  vars if strides but no perm, var if no strides or perm.
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* v73+ *acm* 12/2017 Issue # 1846, writing user-variables with scale_factor, add_offset
+*                    changes to tm_scale_nobad call.
 
 * include files
         include 'netcdf.inc'
@@ -373,7 +375,7 @@
         IF ( ds_var_scaleit(ivar) .AND. (.NOT. already_scaled) )
      .    CALL TM_SCALE_NOBAD(
      .       ds_var_scale(ivar), ds_var_off(ivar), var, totsize,
-     .       ds_bad_flag(ivar), ds_missing_flag(ivar) )
+     .       ds_bad_flag(ivar), vtype )
 
 * If its an Epic file, the missing-flag is not in the file, and
 * precision conversion means they won't match. Fill the missing data

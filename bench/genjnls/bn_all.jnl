@@ -1160,6 +1160,12 @@ GO bn_huge_axis
 GO bn_reset bn_save_as_global
 GO bn_save_as_global
 
+
+! *********** v7.31 Additions ***********
+go bn_reset bn74_bug_fixes
+GO bn74_bug_fixes
+
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

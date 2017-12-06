@@ -141,12 +141,13 @@
 * v7.21    9 /2017 7.21 release
 * v7.22    9/14/2017 7.22 dnamic coordinate storage
 * v7.3     11/30/2017 Release 
+* v7.31    12/06/2017 next working version
 
         IMPLICIT NONE
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'PyFerret' /
 	DATA len_program_name	/  8       /
-	DATA revision_level	/  7.3   /
+	DATA revision_level	/  7.31   /
 
 	END

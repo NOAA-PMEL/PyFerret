@@ -133,6 +133,7 @@
 *                  added to that dataset in the attribute structure
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
+* v73+ *acm* 12/2017 Issue # 1846, writing user-variables with scale_factor, add_offset
 
         include 'netcdf.inc'
 #include "netcdf_declareUnderscore.inc"
@@ -238,7 +239,7 @@
         LOGICAL         NC_GET_ATTRIB, NC_GET_ATTRIB_DP, 
      .                  full_precision, DODS_cache, range_not_rqd,
      .                  got_it, got_title, got_units, got_history,
-     .                  got_missing, got_fill, do_warn, coordvar
+     .                  got_missing, got_fill, do_warn, coordvar, user_var
 
         PARAMETER     ( buff_size = 2048,
      .			sslimits0 = 1+23-1,
@@ -694,12 +695,7 @@
 		    IF (attoutflag .NE. 0) got_it = NC_GET_ATTRIB_DP 
      .                (dset, varid, attname, do_warn, varcode, attlen, 
      .                attoutflag, miss_in)
-     
-		    IF (dset .EQ. pdset_uvars) THEN
-		       r_scale = 1./scalefac
-		       r_off = -1.*addoff* r_scale
-		       miss_in = miss_in* r_scale + r_off
-		    ENDIF
+
                  ELSE
                    attname = '_FillValue'
                    CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
@@ -774,9 +770,11 @@
 		       IF (attoutflag .NE. 0) got_it = NC_GET_ATTRIB_DP 
      .                     (dset, varid, attname, do_warn, varcode, attlen, 
      .                     attoutflag, fill_in)
-                          dvals(1) = fill_in
-                          vals(1) = dvals(1)
-                          attype = outtype
+                          IF (got_it) THEN
+			     dvals(1) = fill_in
+                             vals(1) = dvals(1)
+                             attype = outtype
+			  ENDIF
 		       ENDIF
                        IF (no_fill_flag.EQ.0) THEN
 		          CALL CD_WRITE_ATTVAL_DP(
@@ -1255,10 +1253,11 @@
  450          CONTINUE
 
 * write the data for this variable
-              CALL CD_WRITE_VAR (cdfid, dset_num, varcode, grid, 
+              user_var = cat .EQ. cat_user_var
+	      CALL CD_WRITE_VAR (cdfid, dset_num, varcode, grid, 
      .                        write_lo, write_hi, memry(mr)%ptr, 
      .                        edges_flag, do_bounds, mode_upcase_output, 
-     .                        keepax_flag, status )
+     .                        keepax_flag, user_var, status )
 	   ENDIF
 
            IF ( status .NE. merr_ok ) GOTO 5800

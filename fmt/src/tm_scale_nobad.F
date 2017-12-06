@@ -1,4 +1,4 @@
-	SUBROUTINE TM_SCALE_NOBAD( factor, offset, array, n, bad, miss )
+	SUBROUTINE TM_SCALE_NOBAD( factor, offset, array, n, bad, vartyp )
 
 *
 *
@@ -42,18 +42,33 @@
 * written for VAX computer under VMS operating system
 
 * from tm_scale.F  4/21/03
+* v73+ *acm* 12/2017 Issue # 1846, writing user-variables with scale_factor, add_offset
+*                    changes to check for data range when scaling as in tm_scale_all.
 
+* include files
+      INCLUDE 'netcdf.inc'
 
 * calling argument declarations:
-      INTEGER n
-      REAL factor, offset, array(n), bad, miss
+      INTEGER n, vartyp
+      REAL factor, offset, array(n), bad
 
 * internal variable declarations:
+      LOGICAL TM_FPEQ_SNGL
+      REAL*4 aa, sbad, sbadn
       INTEGER i
 
+      sbad = 32767
+      sbadn = -32768
+
       DO 100 i = 1, n
-         IF (array(i) .NE. bad .AND. array(i) .NE. miss) 
-     .      array(i) = array(i)*factor + offset
+         IF (array(i) .NE. bad) THEN
+            array(i) = array(i)*factor + offset
+            IF (vartyp .EQ. NF_SHORT) THEN
+               aa =  array(i) 
+	       IF (TM_FPEQ_SNGL(aa,sbad) ) array(i) = sbad
+	       IF (TM_FPEQ_SNGL(aa,sbadn) ) array(i) = sbadn
+            ENDIF
+         ENDIF
   100 CONTINUE
 
       RETURN

@@ -43,7 +43,8 @@
 * 9/2005
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V698  5/16 *acm* Ticket 2416 allow all output types for DEFINE ATT.
-
+* v73+ *acm* 12/2017 Issue # 1846, disallow defining new scale_factor, add_offset
+*                    on file variables
 
       include 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
@@ -70,7 +71,7 @@
 * local variable declarations: 
       
       LOGICAL valid, do_err
-      INTEGER MR_DIM_LEN, TM_LENSTR1, varid, idim, ndims, attlen,
+      INTEGER MR_DIM_LEN, TM_LENSTR1, STR_SAME, varid, idim, ndims, attlen,
      .        attype, span, lo(nferdims), hi(nferdims), del(nferdims), slen, vlen
       REAL dummy
       CHARACTER GET_STRING_ELEMENT*2048, TM_FMT*2048, attbuff*2048, 
@@ -119,6 +120,15 @@
       do_err = .FALSE.
       CALL BREAK_VARATTNAME ( varattname, dset, varname, 
      .              attname, varid, do_err, status )
+
+* Attributes for packing data may be defined or redfined on user-variables only.
+* Otherwise, if on a file variable, it's ambiguous: should they be applied on reading? 
+* or only on writing?
+
+      IF (dset .NE. pdset_uvars) THEN
+        IF ( STR_SAME(attname, 'scale_factor').EQ.0  .OR. 
+     .       STR_SAME(attname, 'add_offset').EQ.0) GOTO 5500
+      ENDIF
 
       IF (status .NE. ferr_ok) THEN
          IF (attype .EQ. NCCHAR ) THEN
@@ -185,5 +195,10 @@ c         GOTO 5400
       CALL ERRMSG( ferr_syntax, status,
      .  'Attribute already exists: '//attbuff(:vlen)//
      .  ' Use SET ATTRIBUTE to change an attribute',*5000)
+
+ 5500 attbuff = varattname(:vlen)
+      CALL ERRMSG( ferr_syntax, status,
+     .  'Defining scale_factor or add_offset attributes not allowed on file variables: '//attbuff(:vlen)
+     .  ,*5000)
 
       END

@@ -262,6 +262,7 @@
 *                 handle almost-equal coordinates, differing by machine precision.
 * 1/24/2017 *acm* Ticket 2504: If Ferret is computuing axis bounds, set them such 
 *                 that the axis lies within the given modulo length.
+* 12/2017   *acm* Small tweak to error handling; any errors already noted in add-attribute
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -2411,7 +2412,7 @@ c	ENDIF
 
         CALL ADD_ATTRIBUTE(  memry(mr)%ptr, mr, 
      .         buff1, dset, attype_spec, attoutflag, new_att, status )
-        IF (status .NE. ferr_ok) GOTO 6500
+        IF (status .NE. ferr_ok) GOTO 5000
 
 * Change attribute value
         IF (.NOT. new_att) THEN

@@ -5313,6 +5313,13 @@ LIST/FORMAT=CDF/append/asglobal/x=150/outtype=float/file=a.nc sst
           Variable: SST
 LIST/FORMAT=CDF/append/asglobal/y=10/L=2/outtype=float/file=a.nc sst
 LIST/FORMAT=CDF/append/asglobal/y=10/L=2/outtype=float/file=a.nc sst
+*** Running ferret script: bn74_bug_fixes.jnl
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ **ERROR: command syntax: Defining scale_factor or add_offset attributes not allowed on file variables: sst.scale_factor
+define attribute/output sst.scale_factor = 0.001
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

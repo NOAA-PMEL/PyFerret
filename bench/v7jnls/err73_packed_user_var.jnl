@@ -1,0 +1,39 @@
+! err73_packed_user_var.jnl
+! 12/4/2017 acm
+! Issue # 1846
+! Writing packed user-variable data correctly to netCDF
+
+
+use coads_climatology
+
+! Define a user variable
+let myvar = sst*1.12
+list/l=1/y=0/x=37:51 myvar
+
+! Want to pack it and write as short
+set var/outtype=short/bad=-30000 myvar
+define attribute/output myvar.scale_factor = 0.001
+define attribute/output myvar.offset = -50
+
+! previously caused an error, Numeric conversion not representable
+save/clobber/file=a.nc/l=1/y=0/x=37:51 myvar
+
+! Check the values in the file
+sp ncdump a.nc
+
+! Does Ferret reread the data correctly?
+can dat/all; can var/all; use a.nc
+list myvar
+
+
+! Disallow adding scale_factor and add_offset to file variables,
+! or editing existing ones. Else it's ambiguous. Should scaling
+! be applied on reading? Only on writing? both?
+
+set mode ignore
+
+use coads_climatology
+! Intentional error
+define attribute/output sst.scale_factor = 0.001
+
+set mode/last ignore

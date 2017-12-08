@@ -282,6 +282,7 @@ bn722_bug_fixes.jnl
 bn_tseries_modulo.jnl
 bn_huge_axis.jnl
 bn_save_as_global.jnl
+bn74_bug_fixes.jnl
 !
 ! bn_gif, bn_all_ef, and bn_startupfile at end
 !

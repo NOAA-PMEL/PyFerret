@@ -103225,7 +103225,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS0DD-MON-YYYY HH:MM:SS
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASDD-MON-YYYY HH:MM:SS
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  8.000E+00  6.630E+00 0.120    0  SYSTEM  @ASDATA SET: err721_dup_labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
@@ -104003,6 +104003,29 @@ use coads_climatology
 define attribute/output sst.scale_factor = 0.001
  
 set mode/last ignore
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err73_rsize_negative
+! err73_rsize_negative.jnl
+! Issue #1847 , large grid size overwhelms internal integer!
+ 
+ 
+define axis/t=1-jan-2017:1-apr-2017:.03/unit=days tbig
+define axis/y=20s:20n:.01 ybig
+define axis/x=0:359:.01/unit=degrees/modulo xbig
+define axis/z=0:2:.05/unit=meters zbig
+define grid/x=xbig/y=ybig/z=zbig/t=tbig gbig
+let/title=Temperature big_temp = y[g=gbig] + 0*(x[g=gbig]+z[g=gbig]+t[g=gbig])
+ 
+! This was returning a negative value
+!   !-> MESSAGE/CONTINUE -193364099
+ 
+say `big_temp,r=size`
+ !-> MESSAGE/CONTINUE 17673597058941.
+17673597058941.
+ 
 *** Running ferret script: bn_gif.jnl
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using

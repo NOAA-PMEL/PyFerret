@@ -1,0 +1,16 @@
+! err73_rsize_negative.jnl
+! Issue #1847 , large grid size overwhelms internal integer!
+
+
+define axis/t=1-jan-2017:1-apr-2017:.03/unit=days tbig
+define axis/y=20s:20n:.01 ybig
+define axis/x=0:359:.01/unit=degrees/modulo xbig
+define axis/z=0:2:.05/unit=meters zbig
+define grid/x=xbig/y=ybig/z=zbig/t=tbig gbig
+let/title=Temperature big_temp = y[g=gbig] + 0*(x[g=gbig]+z[g=gbig]+t[g=gbig])
+
+! This was returning a negative value
+!   !-> MESSAGE/CONTINUE -193364099
+
+say `big_temp,r=size`
+

@@ -5,3 +5,6 @@
 
 GO bn_reset
 GO err73_packed_user_var
+
+GO bn_reset
+GO err73_rsize_negative

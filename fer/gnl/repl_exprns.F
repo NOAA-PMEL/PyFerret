@@ -123,6 +123,7 @@
 *                 for determining when a grid dimension is compressed by a transformation.
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
+* V73+ *acm* 12/17 Fix issue #1847 - value overflows integer on RETURN=size
 
 #include "netcdf.inc"
 	include 'tmap_dims.parm'
@@ -858,6 +859,17 @@
      .              INDEX(cmnd(istart:iend),'.') .EQ. 0) THEN
 	      i2 = CGRID_SIZE ( cx )
 	      repl = LEFINT(i2, str_len)
+
+* The above overflows integer storage? Compute as a real.
+	      IF (i2 .LT. 0) THEN  
+	         result = 1.
+	         DO idim = 1, nferdims
+	            i2 = CX_DIM_LEN(idim, cx)
+		    result = result * i2
+	         ENDDO
+		 repl = TM_FMT( result, use_digits, max_len, str_len )
+
+	      ENDIF
 
 * ... RETURN=BAD
 	   ELSEIF ( repl .EQ. "BAD" ) THEN

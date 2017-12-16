@@ -957,9 +957,11 @@ class PipedViewerPQ(QMainWindow):
                 # of commands waiting in the queue.
                 if (time.clock() - starttime) > 0.050:
                     break
+        except EOFError:
+            # Assume PyFerret has shut down
+            self.exitViewer()
         except Exception:
-            # EOFError should never arise from recv since
-            # the call is after poll returns True
+            # Some problem, but presumably still functional
             (exctype, excval) = sys.exc_info()[:2]
             try:
                 if excval:
@@ -968,12 +970,11 @@ class PipedViewerPQ(QMainWindow):
                     self.__rspdpipe.send("**ERROR %s" % str(exctype))
             except Exception:
                 pass
-            self.exitViewer()
 
     def processCommand(self, cmnd):
         '''
         Examine the action of cmnd and call the appropriate
-        method to deal with this command.  Raises a KeyError
+        method to deal with this command.  Raises a ValueError
         if the "action" key is missing.
         '''
         try:
@@ -1540,7 +1541,7 @@ class PipedViewerPQProcess(Process):
         Create a Process that will produce a PipedViewerPQ
         attached to the given Pipes when run.
         '''
-        Process.__init__(self)
+        super(PipedViewerPQProcess,self).__init__(group=None, target=None, name='PipedViewerPQ')
         self.__cmndpipe = cmndpipe
         self.__rspdpipe = rspdpipe
         self.__app = None
@@ -1571,7 +1572,7 @@ class _CommandSubmitterPQ(QDialog):
         Create a QDialog with a single QPushButton for controlling
         the submission of commands from cmndlist to cmndpipe.
         '''
-        QDialog.__init__(self, parent)
+        super(_CommandSubmitterPQ,self).__init__(parent)
         self.__cmndlist = cmndlist
         self.__cmndpipe = cmndpipe
         self.__rspdpipe = rspdpipe

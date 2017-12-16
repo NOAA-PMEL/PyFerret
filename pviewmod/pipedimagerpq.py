@@ -50,7 +50,7 @@ else:
                              QMessageBox, QPainter, QPalette, QPen, QPixmap, \
                              QPolygonF, QPushButton, QScrollArea
 
-from multiprocessing import Pipe, Process
+import multiprocessing
 
 from pipedviewer import WINDOW_CLOSED_MESSAGE
 from pipedviewer.cmndhelperpq import CmndHelperPQ
@@ -679,9 +679,11 @@ class PipedImagerPQ(QMainWindow):
                 # of commands waiting in the queue.
                 if (time.clock() - starttime) > 0.050:
                     break
+        except EOFError:
+            # Assume PyFerret has shut down
+            self.exitViewer()
         except Exception:
-            # EOFError should never arise from recv since
-            # the call is after poll returns True
+            # Some problem, but presumably still functional
             (exctype, excval) = sys.exc_info()[:2]
             try:
                 if excval:
@@ -690,7 +692,6 @@ class PipedImagerPQ(QMainWindow):
                     self.__rspdpipe.send("**ERROR %s" % str(exctype))
             except Exception:
                 pass
-            self.exitViewer()
 
     def processCommand(self, cmnd):
         '''
@@ -759,7 +760,7 @@ class PipedImagerPQ(QMainWindow):
             raise ValueError("Unknown command action %s" % str(cmndact))
 
 
-class PipedImagerPQProcess(Process):
+class PipedImagerPQProcess(multiprocessing.Process):
     '''
     A Process specifically tailored for creating a PipedImagerPQ.
     '''
@@ -768,7 +769,7 @@ class PipedImagerPQProcess(Process):
         Create a Process that will produce a PipedImagerPQ
         attached to the given Pipes when run.
         '''
-        Process.__init__(self)
+        super(PipedImagerPQProcess,self).__init__(group=None, target=None, name='PipedImagerPQ')
         self.__cmndpipe = cmndpipe
         self.__rspdpipe = rspdpipe
         self.__app = None
@@ -799,7 +800,7 @@ class _CommandSubmitterPQ(QDialog):
         Create a QDialog with a single QPushButton for controlling
         the submission of commands from cmndlist to cmndpipe.
         '''
-        QDialog.__init__(self, parent)
+        super(_CommandSubmitterPQ,self).__init__(parent)
         self.__cmndlist = cmndlist
         self.__cmndpipe = cmndpipe
         self.__rspdpipe = rspdpipe
@@ -909,8 +910,8 @@ def _test_pipedimagerpq():
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"exit" } )
     # create a PipedImagerPQ in this process
-    cmndrecvpipe, cmndsendpipe = Pipe(False)
-    rspdrecvpipe, rspdsendpipe = Pipe(False)
+    (cmndrecvpipe, cmndsendpipe) = multiprocessing.Pipe(False)
+    (rspdrecvpipe, rspdsendpipe) = multiprocessing.Pipe(False)
     testviewer = PipedImagerPQ(cmndrecvpipe, rspdsendpipe)
     # create a command submitter dialog
     tester = _CommandSubmitterPQ(testviewer, cmndsendpipe,

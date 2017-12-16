@@ -12,9 +12,80 @@ from __future__ import print_function
 
 import sys
 
-from multiprocessing import Pipe
+import multiprocessing
+import threading
 
 WINDOW_CLOSED_MESSAGE = 'Window was closed'
+
+class ErrorMonitor(threading.Thread):
+    '''
+    Thread to monitor unexpected responses (error messages) sent by 
+    a PipedViewer process.  When a response from the PipedViewer is 
+    detected, a lock paired with this response pipe is acquired, the 
+    response (if still present) is read, and the lock is released. 
+    Any error message read is appropriately dealt with and monitoring 
+    of the response pipe resumes.
+    '''
+
+    def __init__(self, responsepipe, readlock, vprocess):
+        '''
+        Monitor unexpected responses (error message) from the given 
+        response pipe for the PipedViewer.  Prior to reading a response 
+        message, the given lock is acquired.  After reading the message, 
+        if any was still present, the lock is released, and any error 
+        message is handled appropriately.  Exits when the PipedViewer
+        process is no longer alive.
+
+        Arguments:
+            responsepipe: (multiprocessing.Pipe) provides responses sent by the PipedViewer
+            readlock: (threading.RLock) lock associated with the above response pipe
+            vprocess: (multiprocessing.Process) PipedViewer process
+        '''
+        super(ErrorMonitor, self).__init__(group=None, target=None, name='ErrorMonitor')
+        self.__responsepipe = responsepipe
+        self.__readlock = readlock
+        self.__vprocess = vprocess
+
+    def run(self):
+        '''
+        Monitor unexpected responses (error message) from the PipedViewer 
+        response pipe and read lock associated with this instance.  Prior 
+        to reading a response message, the lock is acquired.  After reading 
+        the message, if any was still present, the lock is released, and 
+        any error message is handled appropriately.  Exits when the reponse 
+        pipe is closed (when multiprocessing.Pipe.poll raises an Exception).
+        '''
+        while True:
+            try:
+                # wait for something to appear or the PipedViewer to exit
+                while not self.__responsepipe.poll(0.1):
+                    if not self.__vprocess.is_alive():
+                        sys.exit(0)
+            except Exception:
+                # response pipe was closed - quit
+                break
+            # read the message, if still there, only after acquiring the read lock
+            fullerrmsg = ''
+            self.__readlock.acquire()
+            try:
+                while self.__responsepipe.poll():
+                    errmsg = self.__responsepipe.recv()
+                    if fullerrmsg:
+                        fullerrmsg += '\n'
+                    fullerrmsg += str(errmsg)
+            finally:
+                self.__readlock.release()
+            # deal with the error message, if any
+            if fullerrmsg == WINDOW_CLOSED_MESSAGE:
+                # TODO: tell the ferret engine that the window was closed 
+                #       and don't print anything
+                print('\n', file=sys.stderr)
+                print(fullerrmsg, file=sys.stderr)
+            elif fullerrmsg:
+                print('\n', file=sys.stderr)
+                print(fullerrmsg, file=sys.stderr)
+        sys.exit(0)
+
 
 class PipedViewer(object):
     '''
@@ -32,8 +103,8 @@ class PipedViewer(object):
             "PipedImagerPQ": PipedImagerPQ using PyQt5 or PyQt4
         '''
         super(PipedViewer, self).__init__()
-        (self.__cmndrecvpipe, self.__cmndsendpipe) = Pipe(False)
-        (self.__rspdrecvpipe, self.__rspdsendpipe) = Pipe(False)
+        (self.__cmndrecvpipe, self.__cmndsendpipe) = multiprocessing.Pipe(False)
+        (self.__rspdrecvpipe, self.__rspdsendpipe) = multiprocessing.Pipe(False)
         if viewertype == "PipedViewerPQ":
             try:
                 from pipedviewer.pipedviewerpq import PipedViewerPQProcess
@@ -51,10 +122,40 @@ class PipedViewer(object):
         else:
             raise TypeError("Unknown viewer type %s" % str(viewertype))
         self.__vprocess.start()
+        self.__rspdrecvlock = threading.RLock()
+        self.__errmonitor = ErrorMonitor(self.__rspdrecvpipe, self.__rspdrecvlock, self.__vprocess)
+        self.__errmonitor.start()
+
+    def blockErrMonitor(self):
+        '''
+        Block monitoring of error messages sent from the PipedViewer. 
+
+        Call this method prior to submitting a command which is expected 
+        to respond with desired information so this response will not be 
+        mistaken as an error message.  After reading the response, call 
+        the "resumeErrMonitor" method. 
+        '''
+        self.__rspdrecvlock.acquire()
+
+    def resumeErrMonitor(self):
+        '''
+        Resume monitoring of error messages sent from the PipedViewer. 
+
+        Only call this method after calling "blockErrMonitor", which 
+        presumably was called prior to submitting a command expected 
+        to respond with desired information and reading the response.
+        '''
+        self.__rspdrecvlock.release()
 
     def submitCommand(self, cmnd):
         '''
         Submit the command cmnd to the command pipe for the viewer.
+
+        If a response is expected from the command, the "blockErrMonitor" 
+        method should be called prior to submitting the command, and 
+        the "resumeErrMonitor" method should be called after reading 
+        the response.  This prevent the response from being mistaken 
+        as an error message.
         '''
         self.__cmndsendpipe.send(cmnd)
 
@@ -79,28 +180,32 @@ class PipedViewer(object):
             myresponse = None
         return myresponse
 
-    def exitViewer(self):
+    def shutdownViewer(self):
         '''
-        Submit the command {"action":"exit"}, read any responses,
-        and waits for the viewer to exit.
+        If the PipedViewer is still alive, submits the command {"action":"exit"}
+        and reads any responses.  Waits for the viewer and the error montior to exit.  
 
         Returns: 
             any responses from the viewer, or 
-            an empty string if there was no response.
+            an empty string if there was no response (viewer was not alive).
         '''
-        self.__cmndsendpipe.send({'action':'exit'})
-        self.__cmndsendpipe.close()
         closingremarks = ''
-        try:
-            # Read everything from the response pipe until it is closed
-            while self.__rspdrecvpipe.poll(0.1):
+        if self.__vprocess.is_alive():
+            # block the error monitor
+            self.__rspdrecvlock.acquire()
+            self.__cmndsendpipe.send({'action':'exit'})
+            self.__cmndsendpipe.close()
+            try:
+                # Read everything from the response pipe until it is closed on the viewer side
                 if closingremarks:
                     closingremarks += '\n'
                 closingremarks += self.__rspdrecvpipe.recv()
-        except Exception:
-            pass
-        self.__rspdrecvpipe.close()
+            except Exception:
+                pass
+            self.__rspdrecvpipe.close()
+            self.__rspdrecvlock.release()
         self.__vprocess.join()
+        self.__errmonitor.join()
         return closingremarks
 
     def getViewerExitCode(self):
@@ -272,19 +377,13 @@ def _testviewers():
         for cmd in mydrawcmnds:
             print("Command: %s" % str(cmd))
             pviewer.submitCommand(cmd)
-            response = pviewer.checkForResponse(0.1)
-            while response:
-                print("Response: %s" % str(response))
-                if response == WINDOW_CLOSED_MESSAGE:
-                    return
-                response = pviewer.checkForResponse()
             if cmd["action"] == "show":
                 if sys.version_info[0] > 2:
                     input("Press Enter to continue")
                 else:
                     raw_input("Press Enter to continue")
         # end of the commands - shut down and check return value
-        response = pviewer.exitViewer()
+        response = pviewer.shutdownViewer()
         if response:
             print("Closing remarks: %s" % str(response))
         result = pviewer.getViewerExitCode()

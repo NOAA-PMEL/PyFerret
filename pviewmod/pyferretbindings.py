@@ -38,13 +38,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         '''
         super(PyFerretBindings, self).__init__()
         self.__window = None
-        # short wait time in seconds for error responses 
-        # to high level (not drawing) commands
-        self.__shortwait = 0.01
-        # long wait time in seconds for error responses
-        # to major operations; eg, save
-        self.__longwait = 1.0
-
+ 
     def createPipedViewerWindow(self, viewertype, title, visible, noalpha):
         '''
         Creates a PipedViewer of viewertype as the window of this
@@ -72,36 +66,8 @@ class PyFerretBindings(AbstractPyFerretBindings):
             self.__window.submitCommand( {"action":"show"} )
         if noalpha:
             self.__window.submitCommand( {"action":"noalpha"} )
-        self.checkForErrorResponse(self.__shortwait)
         return True
 
-    def checkForErrorResponse(self, timeout=0.0):
-        '''
-        Checks the response pipe for a message that will be interpreted
-        as an error message.  If a response is found, a RuntimeError will
-        be raised with the string of the full response.
-
-        If timeout is zero (the default) the method does not wait if there
-        is no response waiting; otherwise the method waits the given number
-        of seconds for a response to arrive.  An IllegalArgumentException
-        if raised if timeout is None, as error responses should not be an
-        expected result (thus an indefinite wait makes no sense).
-        '''
-        if timeout is None:
-            raise IllegalArgumentException("timeout to checkForErrorResponse is None")
-        fullresponse = None
-        # Only wait (if timeout not zero) on the first check for a response
-        response = self.__window.checkForResponse(timeout)
-        while response:
-            if fullresponse:
-                fullresponse += '\n'
-                fullresponse += str(response)
-            else:
-                fullresponse = str(response)
-            # Any further messages associated with this error should be immediate
-            response = self.__window.checkForResponse()
-        if fullresponse:
-            raise RuntimeError(fullresponse)
 
     # The remaining methods are common implementations of the required binding methods
 
@@ -112,7 +78,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         Returns True.
         '''
         try:
-            closingremarks = self.__window.exitViewer()
+            closingremarks = self.__window.shutdownViewer()
         finally:
             self.__window = None
         return True
@@ -308,33 +274,37 @@ class PyFerretBindings(AbstractPyFerretBindings):
            screenwidth: width of the screen (display) in pixels (dots)
            screenheight: height of the screen (display) in pixels (dots)
         '''
-        cmnd = { "action":"screenInfo" }
-        self.__window.submitCommand(cmnd)
-        response = None
+        self.__window.blockErrMonitor()
         try:
-            # Wait indefinitely for a response
-            # Make sure it is a valid response
-            response = self.__window.checkForResponse(None)
-            if (type(response) != tuple) or (len(response) != 4):
-                raise ValueError
-            dpix = float(response[0])
-            dpiy = float(response[1])
-            screenwidth = int(response[2])
-            screenheight = int(response[3])
-            if (dpix <= 0.0) or (dpiy <= 0.0) or \
-               (screenwidth <= 0) or (screenheight <= 0):
-                raise ValueError
-        except Exception:
-            if not response:
-                # error raised before a response obtained
-                raise
-            fullresponse = str(response)
-            response = self.__window.checkForResponse()
-            while response:
-                fullresponse += '\n'
-                fullresponse += response
+            cmnd = { "action":"screenInfo" }
+            self.__window.submitCommand(cmnd)
+            response = None
+            try:
+                # Wait indefinitely for a response
+                # Make sure it is a valid response
+                response = self.__window.checkForResponse(None)
+                if (type(response) != tuple) or (len(response) != 4):
+                    raise ValueError
+                dpix = float(response[0])
+                dpiy = float(response[1])
+                screenwidth = int(response[2])
+                screenheight = int(response[3])
+                if (dpix <= 0.0) or (dpiy <= 0.0) or \
+                   (screenwidth <= 0) or (screenheight <= 0):
+                    raise ValueError
+            except Exception:
+                if not response:
+                    # error raised before a response obtained
+                    raise
+                fullresponse = str(response)
                 response = self.__window.checkForResponse()
-            raise RuntimeError(fullresponse)
+                while response:
+                    fullresponse += '\n'
+                    fullresponse += response
+                    response = self.__window.checkForResponse()
+                raise RuntimeError(fullresponse)
+        finally:
+            self.__window.resumeErrMonitor()
         return (dpix, dpiy, screenwidth, screenheight)
 
     def showWindow(self, visible):
@@ -390,8 +360,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
         cmnd["rastsize"] = { "width":xpixels, "height":ypixels }
         cmnd["annotations"] = annotations
         self.__window.submitCommand(cmnd)
-        # Wait awhile to see if there was any problems
-        self.checkForErrorResponse(self.__longwait)
 
     def createColor(self, redfrac, greenfrac, bluefrac, opaquefrac):
         '''
@@ -728,32 +696,36 @@ class PyFerretBindings(AbstractPyFerretBindings):
         Returns: (width, height) of the text in "device units" 
               (pixels at the current window DPI) 
         '''
-        cmnd = { "action":"textSize", "text":text }
-        if font:
-            cmnd["font"] = font
-        self.__window.submitCommand(cmnd)
-        response = None
+        self.__window.blockErrMonitor()
         try:
-            # Wait indefinitely for a response
-            # Make sure it is a valid response
-            response = self.__window.checkForResponse(None)
-            if (type(response) != tuple) or (len(response) != 2):
-                raise ValueError
-            width = float(response[0])
-            height = float(response[1])
-            if (width <= 0.0) or (height <= 0.0):
-                raise ValueError
-        except Exception:
-            if not response:
-                # error raised before a response obtained
-                raise
-            fullresponse = str(response)
-            response = self.__window.checkForResponse()
-            while response:
-                fullresponse += '\n'
-                fullresponse += response
+            cmnd = { "action":"textSize", "text":text }
+            if font:
+                cmnd["font"] = font
+            self.__window.submitCommand(cmnd)
+            response = None
+            try:
+                # Wait indefinitely for a response
+                # Make sure it is a valid response
+                response = self.__window.checkForResponse(None)
+                if (type(response) != tuple) or (len(response) != 2):
+                    raise ValueError
+                width = float(response[0])
+                height = float(response[1])
+                if (width <= 0.0) or (height <= 0.0):
+                    raise ValueError
+            except Exception:
+                if not response:
+                    # error raised before a response obtained
+                    raise
+                fullresponse = str(response)
                 response = self.__window.checkForResponse()
-            raise RuntimeError(fullresponse)
+                while response:
+                    fullresponse += '\n'
+                    fullresponse += response
+                    response = self.__window.checkForResponse()
+                raise RuntimeError(fullresponse)
+        finally:
+            self.__window.resumeErrMonitor()
         return (width, height)
 
     def drawText(self, text, startx, starty, font, color, rotate):
@@ -881,8 +853,6 @@ class PImagerPQPyFerretBindings(PyFerretBindings):
                      "startindex":k*blocksize,
                      "blockdata":blkdata }
             self.__window.submitCommand(cmnd)
-        # wait briefly at the end for any error messages
-        self.checkForErrorResponse(self.__shortwait)
 
 
 #
@@ -921,7 +891,7 @@ def _test_pyferretbindings():
                 )
 
     # Initiate pyferret, but stay in python
-    pyferret.init(enterferret=False)
+    pyferret.init(arglist=['-nojnl'], enterferret=False)
     for viewertype in ( "PipedViewerPQ", ):
         print("Testing bindings for %s" % viewertype)
         # Create a viewer window

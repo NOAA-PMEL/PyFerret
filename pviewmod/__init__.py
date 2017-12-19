@@ -68,17 +68,22 @@ class ErrorMonitor(threading.Thread):
             fullerrmsg = ''
             self.__readlock.acquire()
             try:
-                while self.__responsepipe.poll():
-                    errmsg = self.__responsepipe.recv()
-                    if fullerrmsg:
-                        fullerrmsg += '\n'
-                    fullerrmsg += str(errmsg)
+                try:
+                    while self.__responsepipe.poll():
+                        errmsg = self.__responsepipe.recv()
+                        if fullerrmsg:
+                            fullerrmsg += '\n'
+                        fullerrmsg += str(errmsg)
+                except Exception:
+                    # response pipe was closed - deal with anything already read;
+                    # next loop through will break and quit
+                    pass
             finally:
                 self.__readlock.release()
             # deal with the error message, if any
             if fullerrmsg == WINDOW_CLOSED_MESSAGE:
                 # TODO: tell the ferret engine that the window was closed 
-                #       and don't print anything
+                #       and maybe don't print anything
                 print('\n', file=sys.stderr)
                 print(fullerrmsg, file=sys.stderr)
             elif fullerrmsg:

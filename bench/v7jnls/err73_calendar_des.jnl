@@ -1,0 +1,23 @@
+! err73_calendar_des.jnl
+! See issue # 
+! Calendar definitions in a descriptor file
+!
+! 12/20/2017
+
+! This descriptor file defines a time axis with 360-day calendar 
+! for a dataset that has no time axis. The time listed for the 
+! variable's grid was wrong, should be 01-JAN-1901
+
+use add_timeax.des
+show grid var
+list var
+
+
+! This defines a dataset with the dataset containing
+! a Julian time axis
+! Should list JULIAN for the calendar
+
+use t_julian.des
+show grid sst
+show axis/t `sst,return=taxis`
+

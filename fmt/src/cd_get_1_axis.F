@@ -207,6 +207,7 @@
 *                 attribute is found, before trying to use it.
 * v720 3/2017 *acm* Ticket 2246. Call CD_GET_TIME_UNITS routine to get t0 date and time units 
 * V72 6/17 *acm* For trac enhancement #767 -- dynamic coordinate storage 
+* V73+ 12/17 *acm* Issue #1848: apply set_regular flag once the coordinates have been set up
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -1078,7 +1079,8 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * All the checks for regular have been made. If regular, 
 * deallocate the line storage....
 
-      IF (line_regular(iaxis) .OR. set_regular) CALL FREE_LINE_DYNMEM(iaxis)
+      IF (set_regular) line_regular(iaxis) = .TRUE.
+      IF (line_regular(iaxis)) CALL FREE_LINE_DYNMEM(iaxis)
  
 * Check if axis is a monthly axis for this calendar.  If so store as a 'true-month' 
 * axis, stored internally as if regular, but coordinates returned on true axis.

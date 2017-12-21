@@ -1165,7 +1165,7 @@ GO bn_save_as_global
 go bn_reset bn74_bug_fixes
 GO bn74_bug_fixes
 
-GO bn_reset
+GO bn_reset bn_clim_special
 GO bn_clim_special
 
 !  *********** Always do a bn_reset  *********** 

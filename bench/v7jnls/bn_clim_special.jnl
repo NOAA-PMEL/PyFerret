@@ -1,0 +1,51 @@
+! bn_clim_special.jnl
+! Test the climatological axes from Andrew's monthly
+! and seasonal axis definition files.
+! 12/20/2017 (see issue #1848)
+
+! Open the datsets containing the axis definitions and
+! use SHOW AXIS/T to list the axis properties and coordinates
+
+use clim_axes_gregorian
+sh axis/t *_GRG
+
+cancel data/all
+
+cancel axis MON_IRREG_GRG
+cancel axis JFM_IRREG_GRG
+cancel axis DJF_IRREG_GRG
+cancel axis NDJ_IRREG_GRG
+cancel axis MON_REG_GRG
+cancel axis JFM_REG_GRG
+cancel axis DJF_REG_GRG
+cancel axis NDJ_REG_GRG
+ 
+
+use clim_axes_julian
+sh axis/t *_JUL
+
+cancel data/all
+cancel axis MON_IRREG_JUL
+cancel axis JFM_IRREG_JUL
+cancel axis DJF_IRREG_JUL
+cancel axis NDJ_IRREG_JUL
+cancel axis MON_REG_JUL
+cancel axis JFM_REG_JUL
+cancel axis DJF_REG_JUL
+cancel axis NDJ_REG_JUL
+
+
+use clim_axes_noleap
+sh axis/t *_NLP
+
+cancel data/all
+cancel axis MON_IRREG_NLP
+cancel axis JFM_IRREG_NLP
+cancel axis DJF_IRREG_NLP
+cancel axis NDJ_IRREG_NLP
+cancel axis MON_REG_NLP
+cancel axis JFM_REG_NLP
+cancel axis DJF_REG_NLP
+cancel axis NDJ_REG_NLP
+
+

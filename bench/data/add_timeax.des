@@ -1,0 +1,29 @@
+ &FORMAT_RECORD
+    D_TYPE               = 'MC' ,
+    D_FORMAT             = '1A',
+ /
+ &BACKGROUND_RECORD
+     D_TITLE              = 'test mc file add 360-day time axis to xy set',
+     D_T0TIME             = '01-JAN-1900 00:00:00',
+     D_TIME_UNIT          = 86400.0,
+     D_CALTYPE            = '360_DAY',
+ /
+ &MESSAGE_RECORD
+     D_MESSAGE = ' ',
+     D_ALERT_ON_OPEN = F,
+     D_ALERT_ON_OUTPUT = F,
+ /
+ &EXTRA_RECORD
+ /
+ &STEPFILE_RECORD
+     S_FILENAME = 'xyfile.nc'
+     S_AUX_SET_NUM = 0,
+     S_START = 360,
+     S_END = 360,
+     S_DELTA = 1,
+     S_NUM_OF_FILES = 1,
+     S_REGVARFLAG = ' ',
+ /
+ &STEPFILE_RECORD
+     s_filename = '**END OF STEPFILES**'
+ /

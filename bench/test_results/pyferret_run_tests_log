@@ -283,6 +283,7 @@ Benchmark scripts that will be run:
    bn_huge_axis.jnl
    bn_save_as_global.jnl
    bn74_bug_fixes.jnl
+   bn_clim_special.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
@@ -104161,6 +104162,402 @@ let/title=Temperature big_temp = y[g=gbig] + 0*(x[g=gbig]+z[g=gbig]+t[g=gbig])
 say `big_temp,r=size`
  !-> MESSAGE/CONTINUE 17673597058941.
 17673597058941.
+ 
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err73_calendar_des
+! err73_calendar_des.jnl
+! See issue #
+! Calendar definitions in a descriptor file
+!
+! 12/20/2017
+ 
+! This descriptor file defines a time axis with 360-day calendar
+! for a dataset that has no time axis. The time listed for the
+! variable's grid was wrong, should be 01-JAN-1901
+ 
+use add_timeax.des
+show grid var
+    GRID GJR1
+ name       axis              # pts   start                end                 subset
+ XLON      LONGITUDE            5mr   1E                   5E                  full
+ YLAT      LATITUDE             5 r   2S                   2N                  full
+ normal    Z
+ TIME      TIME                 1 r   01-JAN-1901 00:00    01-JAN-1901 00:00   full
+list var
+             VARIABLE : X[GX=XLON] + Y[GY=YLAT]
+             DATA SET : test mc file add 360-day time axis to xy set
+             FILENAME : add_timeax.des
+             SUBSET   : 5 by 5 points (LONGITUDE-LATITUDE)
+             TIME     : 01-JAN-1901 00:00 360_DAY
+             1E     2E     3E     4E     5E    
+              1      2      3      4      5
+ 2N   / 5:  3.000  4.000  5.000  6.000  7.000
+ 1N   / 4:  2.000  3.000  4.000  5.000  6.000
+ 0    / 3:  1.000  2.000  3.000  4.000  5.000
+ 1S   / 2:  0.000  1.000  2.000  3.000  4.000
+ 2S   / 1: -1.000  0.000  1.000  2.000  3.000
+ 
+ 
+! This defines a dataset with the dataset containing
+! a Julian time axis
+! Should list JULIAN for the calendar
+ 
+use t_julian.des
+show grid sst
+    GRID GTJ1
+ name       axis              # pts   start                end                 subset
+ LON1_15   LONGITUDE           15mi   148.95E(148.95)      149.54E(149.54)     full
+ LAT1_1    LATITUDE             1 r   45.144S              45.144S             full
+ normal    Z
+ TIME2     TIME                 1 r   01-JAN-2004 00:00    01-JAN-2004 00:00   full
+show axis/t `sst,return=taxis`
+ !-> show axis/t TIME2
+ name       axis              # pts   start                end
+ TIME2     TIME                 1 r   01-JAN-2004 00:00    01-JAN-2004 00:00
+T0 = 01-jan-1970 00:00:00
+CALENDAR = JULIAN
+   Axis span (to cell edges) = 2
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (day)
+       1>  01-JAN-2004 00:00:00  2          31-DEC-2003 00:00:00     12418
+ 
+*** Running ferret script: bn_clim_special.jnl
+! bn_clim_special.jnl
+! Test the climatological axes from Andrew's monthly
+! and seasonal axis definition files.
+! 12/20/2017 (see issue #1848)
+ 
+! Open the datsets containing the axis definitions and
+! use SHOW AXIS/T to list the axis properties and coordinates
+ 
+use clim_axes_gregorian
+sh axis/t *_GRG
+ name       axis              # pts   start                end
+ MON_IRREG_GRG TIME            12mi   16-JAN 12:00         16-DEC 17:49
+T0 = 01-JAN-0001 00:00:00
+   Axis span (to cell edges) = 365.2425 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  16-JAN 12:00:00       31         01-JAN 00:00:00         15.5
+       2>  15-FEB 02:54:36       28.2425    01-FEB 00:00:00         45.12125
+       3>  16-MAR 17:49:12       31         01-MAR 05:49:12         74.7425
+       4>  16-APR 05:49:12       30         01-APR 05:49:12         105.2425
+       5>  16-MAY 17:49:12       31         01-MAY 05:49:12         135.7425
+       6>  16-JUN 05:49:12       30         01-JUN 05:49:12         166.2425
+       7>  16-JUL 17:49:12       31         01-JUL 05:49:12         196.7425
+       8>  16-AUG 17:49:12       31         01-AUG 05:49:12         227.7425
+       9>  16-SEP 05:49:12       30         01-SEP 05:49:12         258.2425
+      10>  16-OCT 17:49:12       31         01-OCT 05:49:12         288.7425
+      11>  16-NOV 05:49:12       30         01-NOV 05:49:12         319.2425
+      12>  16-DEC 17:49:12       31         01-DEC 05:49:12         349.7425
+ JFM_IRREG_GRG TIME             4mi   15-FEB 02:54         16-NOV 05:49
+T0 = 01-JAN-0001 00:00:00
+   Axis span (to cell edges) = 365.2425 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  15-FEB 02:54:36       90.2425    01-JAN 00:00:00         45.12125
+       2>  16-MAY 17:49:12       91         01-APR 05:49:12         135.7425
+       3>  16-AUG 05:49:12       92         01-JUL 05:49:12         227.2425
+       4>  16-NOV 05:49:12       92         01-OCT 05:49:12         319.2425
+ DJF_IRREG_GRG TIME             4mi   15-JAN-0002 08:43    16-OCT-0002 23:38
+T0 = 01-JAN-0001 00:00:00
+   Axis span (to cell edges) = 365.2425 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  15-JAN-0002 08:43:48  90.2425    01-DEC 05:49:12         379.3637
+       2>  16-APR-0002 11:38:24  92         01-MAR-0002 11:38:24    470.485
+       3>  17-JUL-0002 11:38:24  92         01-JUN-0002 11:38:24    562.485
+       4>  16-OCT-0002 23:38:24  91         01-SEP-0002 11:38:24    653.985
+ NDJ_IRREG_GRG TIME             4mi   17-DEC 05:49         16-SEP-0002 11:38
+T0 = 01-JAN-0001 00:00:00
+   Axis span (to cell edges) = 365.2425 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  17-DEC 05:49:12       92         01-NOV 05:49:12         350.2425
+       2>  17-MAR-0002 20:43:48  89.2425    01-FEB-0002 05:49:12    440.8637
+       3>  16-JUN-0002 11:38:24  92         01-MAY-0002 11:38:24    531.485
+       4>  16-SEP-0002 11:38:24  92         01-AUG-0002 11:38:24    623.485
+ MON_REG_GRG TIME              12mr   16-JAN 05:14         17-DEC 00:34
+T0 = 01-JAN-0001 00:00:00
+   Axis span (to cell edges) = 365.2425 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  16-JAN 05:14:33       30.43688   01-JAN 00:00:00         15.21844
+       2>  15-FEB 15:43:39       30.43688   31-JAN 10:29:06         45.65531
+       3>  18-MAR 02:12:45       30.43688   02-MAR 20:58:12         76.09219
+       4>  17-APR 12:41:51       30.43688   02-APR 07:27:18         106.5291
+       5>  17-MAY 23:10:57       30.43688   02-MAY 17:56:24         136.9659
+       6>  17-JUN 09:40:03       30.43688   02-JUN 04:25:30         167.4028
+       7>  17-JUL 20:09:09       30.43688   02-JUL 14:54:36         197.8397
+       8>  17-AUG 06:38:15       30.43688   02-AUG 01:23:42         228.2766
+       9>  16-SEP 17:07:21       30.43688   01-SEP 11:52:48         258.7134
+      10>  17-OCT 03:36:27       30.43688   01-OCT 22:21:54         289.1503
+      11>  16-NOV 14:05:33       30.43688   01-NOV 08:51:00         319.5872
+      12>  17-DEC 00:34:39       30.43688   01-DEC 19:20:06         350.0241
+ JFM_REG_GRG TIME               4mr   15-FEB 15:43         16-NOV 14:05
+T0 = 01-JAN-0001 00:00:00
+   Axis span (to cell edges) = 365.2425 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  15-FEB 15:43:39       91.31063   01-JAN 00:00:00         45.65531
+       2>  17-MAY 23:10:57       91.31063   02-APR 07:27:18         136.9659
+       3>  17-AUG 06:38:15       91.31063   02-JUL 14:54:36         228.2766
+       4>  16-NOV 14:05:33       91.31063   01-OCT 22:21:54         319.5872
+ DJF_REG_GRG TIME               4mr   16-JAN-0002 11:03    17-OCT-0002 09:25
+T0 = 01-JAN-0001 00:00:00
+   Axis span (to cell edges) = 365.2425 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  16-JAN-0002 11:03:45  91.31063   01-DEC 19:20:06         380.4609
+       2>  17-APR-0002 18:31:03  91.31063   03-MAR-0002 02:47:24    471.7716
+       3>  18-JUL-0002 01:58:21  91.31063   02-JUN-0002 10:14:42    563.0822
+       4>  17-OCT-0002 09:25:39  91.31063   01-SEP-0002 17:42:00    654.3928
+ NDJ_REG_GRG TIME               4mr   17-DEC 00:34         16-SEP-0002 22:56
+T0 = 01-JAN-0001 00:00:00
+   Axis span (to cell edges) = 365.2425 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  17-DEC 00:34:39       91.31063   01-NOV 08:51:00         350.0241
+       2>  18-MAR-0002 08:01:57  91.31063   31-JAN-0002 16:18:18    441.3347
+       3>  17-JUN-0002 15:29:15  91.31063   02-MAY-0002 23:45:36    532.6453
+       4>  16-SEP-0002 22:56:33  91.31063   02-AUG-0002 07:12:54    623.9559
+ 
+cancel data/all
+ 
+cancel axis MON_IRREG_GRG
+cancel axis JFM_IRREG_GRG
+cancel axis DJF_IRREG_GRG
+cancel axis NDJ_IRREG_GRG
+cancel axis MON_REG_GRG
+cancel axis JFM_REG_GRG
+cancel axis DJF_REG_GRG
+cancel axis NDJ_REG_GRG
+ 
+ 
+use clim_axes_julian
+sh axis/t *_JUL
+ name       axis              # pts   start                end
+ MON_IRREG_JUL TIME            12mi   16-JAN 12:00         16-DEC 18:00
+T0 = 01-JAN-0001 00:00:00
+CALENDAR = JULIAN
+   Axis span (to cell edges) = 365.25 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  16-JAN 12:00:00       31         01-JAN 00:00:00         15.5
+       2>  15-FEB 03:00:00       28.25      01-FEB 00:00:00         45.125
+       3>  16-MAR 18:00:00       31         01-MAR 06:00:00         74.75
+       4>  16-APR 06:00:00       30         01-APR 06:00:00         105.25
+       5>  16-MAY 18:00:00       31         01-MAY 06:00:00         135.75
+       6>  16-JUN 06:00:00       30         01-JUN 06:00:00         166.25
+       7>  16-JUL 18:00:00       31         01-JUL 06:00:00         196.75
+       8>  16-AUG 18:00:00       31         01-AUG 06:00:00         227.75
+       9>  16-SEP 06:00:00       30         01-SEP 06:00:00         258.25
+      10>  16-OCT 18:00:00       31         01-OCT 06:00:00         288.75
+      11>  16-NOV 06:00:00       30         01-NOV 06:00:00         319.25
+      12>  16-DEC 18:00:00       31         01-DEC 06:00:00         349.75
+ JFM_IRREG_JUL TIME             4mi   15-FEB 03:00         16-NOV 06:00
+T0 = 01-JAN-0001 00:00:00
+CALENDAR = JULIAN
+   Axis span (to cell edges) = 365.25 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  15-FEB 03:00:00       90.25      01-JAN 00:00:00         45.125
+       2>  16-MAY 18:00:00       91         01-APR 06:00:00         135.75
+       3>  16-AUG 06:00:00       92         01-JUL 06:00:00         227.25
+       4>  16-NOV 06:00:00       92         01-OCT 06:00:00         319.25
+ DJF_IRREG_JUL TIME             4mi   15-JAN-0002 09:00    17-OCT-0002 00:00
+T0 = 01-JAN-0001 00:00:00
+CALENDAR = JULIAN
+   Axis span (to cell edges) = 365.25 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  15-JAN-0002 09:00:00  90.25      01-DEC 06:00:00         379.375
+       2>  16-APR-0002 12:00:00  92         01-MAR-0002 12:00:00    470.5
+       3>  17-JUL-0002 12:00:00  92         01-JUN-0002 12:00:00    562.5
+       4>  17-OCT-0002 00:00:00  91         01-SEP-0002 12:00:00    654
+ NDJ_IRREG_JUL TIME             4mi   17-DEC 06:00         16-SEP-0002 12:00
+T0 = 01-JAN-0001 00:00:00
+CALENDAR = JULIAN
+   Axis span (to cell edges) = 365.25 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  17-DEC 06:00:00       92         01-NOV 06:00:00         350.25
+       2>  17-MAR-0002 21:00:00  89.25      01-FEB-0002 06:00:00    440.875
+       3>  16-JUN-0002 12:00:00  92         01-MAY-0002 12:00:00    531.5
+       4>  16-SEP-0002 12:00:00  92         01-AUG-0002 12:00:00    623.5
+ MON_REG_JUL TIME              12mr   16-JAN 05:15         17-DEC 00:45
+T0 = 01-JAN-0001 00:00:00
+CALENDAR = JULIAN
+   Axis span (to cell edges) = 365.25 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  16-JAN 05:15:00       30.4375    01-JAN 00:00:00         15.21875
+       2>  15-FEB 15:45:00       30.4375    31-JAN 10:30:00         45.65625
+       3>  18-MAR 02:15:00       30.4375    02-MAR 21:00:00         76.09375
+       4>  17-APR 12:45:00       30.4375    02-APR 07:30:00         106.5312
+       5>  17-MAY 23:15:00       30.4375    02-MAY 18:00:00         136.9688
+       6>  17-JUN 09:45:00       30.4375    02-JUN 04:30:00         167.4062
+       7>  17-JUL 20:15:00       30.4375    02-JUL 15:00:00         197.8438
+       8>  17-AUG 06:45:00       30.4375    02-AUG 01:30:00         228.2812
+       9>  16-SEP 17:15:00       30.4375    01-SEP 12:00:00         258.7188
+      10>  17-OCT 03:45:00       30.4375    01-OCT 22:30:00         289.1562
+      11>  16-NOV 14:15:00       30.4375    01-NOV 09:00:00         319.5938
+      12>  17-DEC 00:45:00       30.4375    01-DEC 19:30:00         350.0312
+ JFM_REG_JUL TIME               4mr   15-FEB 15:45         16-NOV 14:15
+T0 = 01-JAN-0001 00:00:00
+CALENDAR = JULIAN
+   Axis span (to cell edges) = 365.25 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  15-FEB 15:45:00       91.3125    01-JAN 00:00:00         45.65625
+       2>  17-MAY 23:15:00       91.3125    02-APR 07:30:00         136.9688
+       3>  17-AUG 06:45:00       91.3125    02-JUL 15:00:00         228.2812
+       4>  16-NOV 14:15:00       91.3125    01-OCT 22:30:00         319.5938
+ DJF_REG_JUL TIME               4mr   16-JAN-0002 11:15    17-OCT-0002 09:45
+T0 = 01-JAN-0001 00:00:00
+CALENDAR = JULIAN
+   Axis span (to cell edges) = 365.25 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  16-JAN-0002 11:15:00  91.3125    01-DEC 19:30:00         380.4688
+       2>  17-APR-0002 18:45:00  91.3125    03-MAR-0002 03:00:00    471.7812
+       3>  18-JUL-0002 02:15:00  91.3125    02-JUN-0002 10:30:00    563.0938
+       4>  17-OCT-0002 09:45:00  91.3125    01-SEP-0002 18:00:00    654.4062
+ NDJ_REG_JUL TIME               4mr   17-DEC 00:45         16-SEP-0002 23:15
+T0 = 01-JAN-0001 00:00:00
+CALENDAR = JULIAN
+   Axis span (to cell edges) = 365.25 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  17-DEC 00:45:00       91.3125    01-NOV 09:00:00         350.0312
+       2>  18-MAR-0002 08:15:00  91.3125    31-JAN-0002 16:30:00    441.3438
+       3>  17-JUN-0002 15:45:00  91.3125    03-MAY-0002 00:00:00    532.6562
+       4>  16-SEP-0002 23:15:00  91.3125    02-AUG-0002 07:30:00    623.9688
+ 
+cancel data/all
+cancel axis MON_IRREG_JUL
+cancel axis JFM_IRREG_JUL
+cancel axis DJF_IRREG_JUL
+cancel axis NDJ_IRREG_JUL
+cancel axis MON_REG_JUL
+cancel axis JFM_REG_JUL
+cancel axis DJF_REG_JUL
+cancel axis NDJ_REG_JUL
+ 
+ 
+use clim_axes_noleap
+sh axis/t *_NLP
+ name       axis              # pts   start                end
+ MON_IRREG_NLP TIME            12mi   16-JAN 12:00         16-DEC 12:00
+T0 = 01-JAN-0001 00:00:00
+CALENDAR = NOLEAP
+   Axis span (to cell edges) = 365 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  16-JAN 12:00:00       31         01-JAN 00:00:00         15.5
+       2>  15-FEB 00:00:00       28         01-FEB 00:00:00         45
+       3>  16-MAR 12:00:00       31         01-MAR 00:00:00         74.5
+       4>  16-APR 00:00:00       30         01-APR 00:00:00         105
+       5>  16-MAY 12:00:00       31         01-MAY 00:00:00         135.5
+       6>  16-JUN 00:00:00       30         01-JUN 00:00:00         166
+       7>  16-JUL 12:00:00       31         01-JUL 00:00:00         196.5
+       8>  16-AUG 12:00:00       31         01-AUG 00:00:00         227.5
+       9>  16-SEP 00:00:00       30         01-SEP 00:00:00         258
+      10>  16-OCT 12:00:00       31         01-OCT 00:00:00         288.5
+      11>  16-NOV 00:00:00       30         01-NOV 00:00:00         319
+      12>  16-DEC 12:00:00       31         01-DEC 00:00:00         349.5
+ JFM_IRREG_NLP TIME             4mi   15-FEB 00:00         16-NOV 00:00
+T0 = 01-JAN-0001 00:00:00
+CALENDAR = NOLEAP
+   Axis span (to cell edges) = 365 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  15-FEB 00:00:00       90         01-JAN 00:00:00         45
+       2>  16-MAY 12:00:00       91         01-APR 00:00:00         135.5
+       3>  16-AUG 00:00:00       92         01-JUL 00:00:00         227
+       4>  16-NOV 00:00:00       92         01-OCT 00:00:00         319
+ DJF_IRREG_NLP TIME             4mi   15-JAN-0002 00:00    16-OCT-0002 12:00
+T0 = 01-JAN-0001 00:00:00
+CALENDAR = NOLEAP
+   Axis span (to cell edges) = 365 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  15-JAN-0002 00:00:00  90         01-DEC 00:00:00         379
+       2>  16-APR-0002 00:00:00  92         01-MAR-0002 00:00:00    470
+       3>  17-JUL-0002 00:00:00  92         01-JUN-0002 00:00:00    562
+       4>  16-OCT-0002 12:00:00  91         01-SEP-0002 00:00:00    653.5
+ NDJ_IRREG_NLP TIME             4mi   17-DEC 00:00         16-SEP-0002 00:00
+T0 = 01-JAN-0001 00:00:00
+CALENDAR = NOLEAP
+   Axis span (to cell edges) = 365 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  17-DEC 00:00:00       92         01-NOV 00:00:00         350
+       2>  17-MAR-0002 12:00:00  89         01-FEB-0002 00:00:00    440.5
+       3>  16-JUN-0002 00:00:00  92         01-MAY-0002 00:00:00    531
+       4>  16-SEP-0002 00:00:00  92         01-AUG-0002 00:00:00    623
+ MON_REG_NLP TIME              12mr   16-JAN 05:00         16-DEC 19:00
+T0 = 01-JAN-0001 00:00:00
+CALENDAR = NOLEAP
+   Axis span (to cell edges) = 365 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  16-JAN 05:00:00       30.41667   01-JAN 00:00:00         15.20833
+       2>  15-FEB 15:00:00       30.41667   31-JAN 10:00:00         45.625
+       3>  18-MAR 01:00:00       30.41667   02-MAR 20:00:00         76.04167
+       4>  17-APR 11:00:00       30.41667   02-APR 06:00:00         106.4583
+       5>  17-MAY 21:00:00       30.41667   02-MAY 16:00:00         136.875
+       6>  17-JUN 07:00:00       30.41667   02-JUN 02:00:00         167.2917
+       7>  17-JUL 17:00:00       30.41667   02-JUL 12:00:00         197.7083
+       8>  17-AUG 03:00:00       30.41667   01-AUG 22:00:00         228.125
+       9>  16-SEP 13:00:00       30.41667   01-SEP 08:00:00         258.5417
+      10>  16-OCT 23:00:00       30.41667   01-OCT 18:00:00         288.9583
+      11>  16-NOV 09:00:00       30.41667   01-NOV 04:00:00         319.375
+      12>  16-DEC 19:00:00       30.41667   01-DEC 14:00:00         349.7917
+ JFM_REG_NLP TIME               4mr   15-FEB 15:00         16-NOV 09:00
+T0 = 01-JAN-0001 00:00:00
+CALENDAR = NOLEAP
+   Axis span (to cell edges) = 365 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  15-FEB 15:00:00       91.25      01-JAN 00:00:00         45.625
+       2>  17-MAY 21:00:00       91.25      02-APR 06:00:00         136.875
+       3>  17-AUG 03:00:00       91.25      02-JUL 12:00:00         228.125
+       4>  16-NOV 09:00:00       91.25      01-OCT 18:00:00         319.375
+ DJF_REG_NLP TIME               4mr   16-JAN-0002 05:00    16-OCT-0002 23:00
+T0 = 01-JAN-0001 00:00:00
+CALENDAR = NOLEAP
+   Axis span (to cell edges) = 365 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  16-JAN-0002 05:00:00  91.25      01-DEC 14:00:00         380.2083
+       2>  17-APR-0002 11:00:00  91.25      02-MAR-0002 20:00:00    471.4583
+       3>  17-JUL-0002 17:00:00  91.25      02-JUN-0002 02:00:00    562.7083
+       4>  16-OCT-0002 23:00:00  91.25      01-SEP-0002 08:00:00    653.9583
+ NDJ_REG_NLP TIME               4mr   16-DEC 19:00         16-SEP-0002 13:00
+T0 = 01-JAN-0001 00:00:00
+CALENDAR = NOLEAP
+   Axis span (to cell edges) = 365 (modulo length = axis span)
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (days)
+       1>  16-DEC 19:00:00       91.25      01-NOV 04:00:00         349.7917
+       2>  18-MAR-0002 01:00:00  91.25      31-JAN-0002 10:00:00    441.0417
+       3>  17-JUN-0002 07:00:00  91.25      02-MAY-0002 16:00:00    532.2917
+       4>  16-SEP-0002 13:00:00  91.25      01-AUG-0002 22:00:00    623.5417
+ 
+cancel data/all
+cancel axis MON_IRREG_NLP
+cancel axis JFM_IRREG_NLP
+cancel axis DJF_IRREG_NLP
+cancel axis NDJ_IRREG_NLP
+cancel axis MON_REG_NLP
+cancel axis JFM_REG_NLP
+cancel axis DJF_REG_NLP
+cancel axis NDJ_REG_NLP
+ 
  
 *** Running ferret script: bn_gif.jnl
 ! bn450_gif.JNL - copied from bn450_plot.jnl

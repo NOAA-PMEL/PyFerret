@@ -83,6 +83,7 @@
 *                 overflows its text buffer
 * v67  *ACM* 5/11 lengthen string for error messages: long filenames overran string
 *      *acm* 3/12 not reading GT files any more but this routine is called for MC files.
+*v73+  *acm*12/17 Fixes for non-gregorian time axis in descriptor files, issue #1850.
 
 * CALLING ARGUMENTS
 *	dset_num - the data set fow which a time axis is desired
@@ -257,9 +258,9 @@
 	IF (.NOT. line_regular(nline)) THEN
            IF (.NOT. TM_CHECK_BOX_LOC(linemem(scr)%ptr,
      .                   lineedg(scr)%ptr, nsteps ) ) GOTO 9100
-	   CALL TM_COPY_LINE ( scr, nline )
-	   line_name(nline) = line_name(scr)
         ENDIF
+        CALL TM_COPY_LINE ( scr, nline )
+        line_name(nline) = line_name(scr)
 
 *  deallocate the temporary line storage used to compile the axis.
         IF ( .NOT. line_regular(scr) ) THEN
@@ -269,7 +270,6 @@
 
 * Time axis complete
 	GT_GET_TIME_AXIS = nline
-	line_cal_name(nline) = 'GREGORIAN'  ! Restore to the default
 
 	status = merr_ok
 	GOTO 9999

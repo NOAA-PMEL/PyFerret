@@ -87,6 +87,8 @@
 *
 * v687  3/14  *acm* Option to return standard deviation
 * v702 *sh* 11/16 -  mods for trac #2428 - calculation in gathered fragments
+* v73+ *acm*12/17 -  issue #1849, if box size 0 skip it - resulted in missing
+*                    result where result should be computed
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -156,9 +158,10 @@
 	      mean_chunk = res (pt,j,k,l,m,n)
 	      s_chunk    = s   (pt,j,k,l,m,n)
 	      DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	         w = box(i)
+	         IF ( w .EQ. 0. ) CYCLE
 	         v = com(i,j,k,l,m,n)
 	         IF ( v .EQ. bad_com ) CYCLE
-	         w = box(i)
 	         wsum_chunk = wsum_chunk + w
 	         mean_old = mean_chunk
 	         mean_chunk = mean_old + (w/wsum_chunk)*(v-mean_old)
@@ -181,9 +184,10 @@
 	      mean_chunk = res (i,pt,k,l,m,n)
 	      s_chunk    = s   (i,pt,k,l,m,n)
 	      DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	         w = box(j)
+	         IF ( w .EQ. 0. ) CYCLE
 	         v = com(i,j,k,l,m,n)
 	         IF ( v .EQ. bad_com ) CYCLE
-	         w = box(2)
 	         wsum_chunk = wsum_chunk + w
 	         mean_old = mean_chunk
 	         mean_chunk = mean_old + (w/wsum_chunk)*(v-mean_old)
@@ -206,9 +210,10 @@
 	      mean_chunk = res (i,j,pt,l,m,n)
 	      s_chunk    = s   (i,j,pt,l,m,n)
 	      DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	         w = box(k)
+	         IF ( w .EQ. 0. ) CYCLE
 	         v = com(i,j,k,l,m,n)
 	         IF ( v .EQ. bad_com ) CYCLE
-	         w = box(k)
 	         wsum_chunk = wsum_chunk + w
 	         mean_old = mean_chunk
 	         mean_chunk = mean_old + (w/wsum_chunk)*(v-mean_old)
@@ -231,9 +236,10 @@
 	      mean_chunk = res (i,j,k,pt,m,n)
 	      s_chunk    = s   (i,j,k,pt,m,n)
 	      DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	         w = box(l)
+	         IF ( w .EQ. 0. ) CYCLE
 	         v = com(i,j,k,l,m,n)
 	         IF ( v .EQ. bad_com ) CYCLE
-	         w = box(l)
 	         wsum_chunk = wsum_chunk + w
 	         mean_old = mean_chunk
 	         mean_chunk = mean_old + (w/wsum_chunk)*(v-mean_old)
@@ -255,9 +261,10 @@
 	      mean_chunk = res (i,j,k,l,pt,n)
 	      s_chunk    = s   (i,j,k,l,pt,n)
 	      DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	         w = box(m)
+	         IF ( w .EQ. 0. ) CYCLE
 	         v = com(i,j,k,l,m,n)
 	         IF ( v .EQ. bad_com ) CYCLE
-	         w = box(m)
 	         wsum_chunk = wsum_chunk + w
 	         mean_old = mean_chunk
 	         mean_chunk = mean_old + (w/wsum_chunk)*(v-mean_old)
@@ -279,9 +286,10 @@
 	      mean_chunk = res (i,j,k,l,m,pt)
 	      s_chunk    = s   (i,j,k,l,m,pt)
 	      DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	         w = box(n)
+	         IF ( w .EQ. 0. ) CYCLE
 	         v = com(i,j,k,l,m,n)
 	         IF ( v .EQ. bad_com ) CYCLE
-	         w = box(n)
 	         wsum_chunk = wsum_chunk + w
 	         mean_old = mean_chunk
 	         mean_chunk = mean_old + (w/wsum_chunk)*(v-mean_old)

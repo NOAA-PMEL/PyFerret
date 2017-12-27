@@ -1,0 +1,24 @@
+! err73_wtd_var
+! see github issue #1849. 
+! When weights - partial box size - is zero, the computation 
+! returned missing. 
+
+
+def ax/t/edge/unit=day/mod=365.2425/t0=1-jan-0001 tax_c = {0,31,59.2425,90.2425,120.2425,151.2425,181.2425,212.2425,243.2425,273.2425,304.2425,334.2425,365.2425}
+def ax/t/edge/unit=day/t0=1-jan-0001 tax = {146097,146128,146156,146187,146217,146248,146278,146309,146340,146370,146401,146431,146462,146493,146521,146552,146582,146613,146643,146674,146705,146735,146766,146796,146827}
+let a = sin(t[gt=tax])
+let a_c = a[gt=tax_c@mod]
+
+
+list a_c[t=1-jan-0301:1-jan-0302@std]
+list a_c[t=1-jan-0401:1-jan-0402@std]
+
+def ax/t/edge/unit=day/mod=360/t0=1-jan-0001/calendar=d360 tax360_c = {0,30, 60, 90,120,150,180,210,240,270,300,330,360}
+def ax/t/edge/unit=day/t0=1-jan-0001/calendar=d360 tax360 = \
+144000 + {0,30,60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570,600,630,660,690,720}
+
+let b = a[gt=tax360@asn]
+let b_c = b[gt=tax360_c@mod]
+
+list b_c[t=1-jan-0301:1-jan-0302@std]
+list b_c[t=1-jan-0401:1-jan-0402@std]

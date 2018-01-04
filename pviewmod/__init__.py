@@ -275,6 +275,13 @@ def _testviewers():
                         "location":(50,330) } )
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
+    drawcmnds.append( { "action":"createSymbol",
+                        "name": "bararrow",
+                        "pts": ( (-50,50), (-10,10),
+                                 (-999, -999),
+                                 (50,0), (50,50), (0,50),
+                                 (-999, -999),
+                                 (0,-10), (20,-30), (10,-30), (10,-50), (-10,-50), (-10,-30), (-20,-30), (0,-10), ) } )
     drawcmnds.append( { "action":"beginView",
                         "viewfracs":{"left":0.0, "right":1.0,
                                      "top":0.0, "bottom":1.0},
@@ -330,7 +337,7 @@ def _testviewers():
                                    (350, 250),
                                    (350, 350),
                                    (350, 450) ),
-                        "symbol":"^",
+                        "symbol":"bararrow",
                         "size":20,
                         "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
@@ -339,6 +346,15 @@ def _testviewers():
                                    (400, 250),
                                    (400, 350),
                                    (400, 450) ),
+                        "symbol":"^",
+                        "size":20,
+                        "color":"magenta" })
+    drawcmnds.append( { "action":"drawPoints",
+                        "points":( (450,  50),
+                                   (450, 150),
+                                   (450, 250),
+                                   (450, 350),
+                                   (450, 450) ),
                         "symbol":"#",
                         "size":20,
                         "color":"magenta" })

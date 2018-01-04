@@ -573,14 +573,15 @@ class PyFerretBindings(AbstractPyFerretBindings):
         self.__window.blockErrMonitor()
         try:
             cmnd = { 'action': 'createSymbol', 
-                     'symbol': { 'name': name, 'pts': pts } }
+                     'name': name, 
+                     'pts': pts }
             self.__window.submitCommand(cmnd)
             response = None
             try:
                 # Wait indefinitely for a response.
                 # The valid response is the name of the symbol.
                 response = self.__window.checkForResponse(None)
-                if ( response != name )
+                if response != name:
                     raise ValueError
             except Exception:
                 if not response:
@@ -1004,10 +1005,19 @@ def _test_pyferretbindings():
         bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (350, 350, 350, 350, 350)
-        mysymbol = bindinst.createSymbol("^")
+        mysymbol = bindinst.createSymbol("bararrow", 
+                            ( (-50,50), (-10,10),
+                              (-999, -999),
+                              (50,0), (50,50), (0,50),
+                              (-999, -999),
+                              (0,-10), (20,-30), (10,-30), (10,-50), (-10,-50), (-10,-30), (-20,-30), (0,-10), ) )
         bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (400, 400, 400, 400, 400)
+        mysymbol = bindinst.createSymbol("^")
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
+        bindinst.deleteSymbol(mysymbol)
+        ptsx = (450, 450, 450, 450, 450)
         mysymbol = bindinst.createSymbol("#")
         bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)

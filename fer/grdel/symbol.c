@@ -21,21 +21,27 @@ typedef struct GDsymbol_ {
 
 /*
  * Returns a Symbol object.
+ * 
+ * If numpts is less than one, or if ptsx or ptsy is NULL, the symbol name 
+ * must already be known, either as a pre-defined symbol or from a previous 
+ * call to this function.
+ *
+ * If numpts is greater than zero and ptsx and ptsy are not NULL, the 
+ * arguments ptsx and ptsy are X- and Y-coordinates that define the symbol 
+ * as multiline subpaths in a [-50,50] square.  The location of the point 
+ * this symbol represents will be at the center of the square.  An invalid 
+ * coordinate (outside [-50,50]) will terminate the current subpath, and 
+ * the next valid coordinate will start a new subpath.  If the start and 
+ * end of a subpath coincide, the path will be closed.  This definition 
+ * will replace an existing symbol with the given name.
  *
  * Arguments:
  *     window: Window in which this symbol is to be used
- *     symbolname: name of the symbol, either a well-known
- *           symbol name (e.g., ".") or a custom name for a 
- *           symbol created from the given vertices (e.g., "FER001")
+ *     symbolname: name of the symbol
  *     symbolnamelen: actual length of the symbol name
- *     ptsx: vertices X-coordinates describing the symbol 
- *           as a multiline drawing on a [0,100] square; 
- *           not used if a well-known symbol name is given
- *     ptsy: vertices Y-coordinates describing the symbol 
- *           as a multiline drawing on a [0,100] square; 
- *           not used if a well-known symbol name is given
- *     numpts: number of vertices describing the symbol; 
- *           not used if a well-known symbol name is given
+ *     ptsx: vertex X-coordinates 
+ *     ptsy: vertex Y-coordinates 
+ *     numpts: number of vertices
  *
  * Returns a pointer to the symbol object created.  If an error occurs,
  * NULL is returned and grdelerrmsg contains an explanatory message.
@@ -45,8 +51,8 @@ grdelType grdelSymbol(grdelType window, const char *symbolname, int symbolnamele
 {
     const BindObj *bindings;
     GDSymbol *symbol;
-    PyObject *xtuple;
-    PyObject *ytuple;
+    PyObject *ptstuple;
+    PyObject *pairtuple;
     PyObject *fltobj;
     int       k;
 
@@ -76,8 +82,8 @@ grdelType grdelSymbol(grdelType window, const char *symbolname, int symbolnamele
     }
     else if ( bindings->pyobject != NULL ) {
         if ( (numpts > 0) && (ptsx != NULL) && (ptsy != NULL) ) {
-            xtuple = PyTuple_New( (Py_ssize_t) numpts );
-            if ( xtuple == NULL ) {
+            ptstuple = PyTuple_New( (Py_ssize_t) numpts );
+            if ( ptstuple == NULL ) {
                 PyErr_Clear();
                 strcpy(grdelerrmsg, "grdelSymbol: problems creating "
                                     "a Python tuple");
@@ -85,47 +91,48 @@ grdelType grdelSymbol(grdelType window, const char *symbolname, int symbolnamele
                 return 0;
             }
             for (k = 0; k < numpts; k++) {
+                /* pair of floats per point */
+                pairtuple = PyTuple_New( (Py_ssize_t) 2 );
+                if ( pairtuple == NULL ) {
+                    PyErr_Clear();
+                    strcpy(grdelerrmsg, "grdelSymbol: problems creating "
+                                        "a Python tuple");
+                    Py_DECREF(ptstuple);
+                    FerMem_Free(symbol, __FILE__, __LINE__);
+                    return 0;
+                }
+                /* X coordinate of this point */
                 fltobj = PyFloat_FromDouble((double) ptsx[k]);
                 if ( fltobj == NULL ) {
                     PyErr_Clear();
                     strcpy(grdelerrmsg, "grdelSymbol: problems creating "
                                         "a Python float");
-                    Py_DECREF(xtuple);
+                    Py_DECREF(pairtuple);
+                    Py_DECREF(ptstuple);
                     FerMem_Free(symbol, __FILE__, __LINE__);
                     return 0;
                 }
                 /* PyTuple_SET_ITEM steals the reference to fltobj */
-                PyTuple_SET_ITEM(xtuple, (Py_ssize_t) k, fltobj);
-            }
-
-            ytuple = PyTuple_New( (Py_ssize_t) numpts );
-            if ( ytuple == NULL ) {
-                PyErr_Clear();
-                strcpy(grdelerrmsg, "grdelSymbol: problems creating "
-                                    "a Python tuple");
-                Py_DECREF(xtuple);
-                FerMem_Free(symbol, __FILE__, __LINE__);
-                return 0;
-            }
-            for (k = 0; k < numpts; k++) {
+                PyTuple_SET_ITEM(pairtuple, (Py_ssize_t) 0, fltobj);
+                /* Y coordinate of this point */
                 fltobj = PyFloat_FromDouble((double) ptsy[k]);
                 if ( fltobj == NULL ) {
                     PyErr_Clear();
                     strcpy(grdelerrmsg, "grdelSymbol: problems creating "
                                         "a Python float");
-                    Py_DECREF(ytuple);
-                    Py_DECREF(xtuple);
+                    Py_DECREF(pairtuple);
+                    Py_DECREF(ptstuple);
                     FerMem_Free(symbol, __FILE__, __LINE__);
                     return 0;
                 }
                 /* PyTuple_SET_ITEM steals the reference to fltobj */
-                PyTuple_SET_ITEM(ytuple, (Py_ssize_t) k, fltobj);
+                PyTuple_SET_ITEM(pairtuple, (Py_ssize_t) 1, fltobj);
+                /* Add this pair to the tuple of points */
+                PyTuple_SET_ITEM(ptstuple, (Py_ssize_t) k, pairtuple);
             }
         }
         else {
-            xtuple = Py_None;
-            Py_INCREF(Py_None);
-            ytuple = Py_None;
+            ptstuple = Py_None;
             Py_INCREF(Py_None);
         }
         /*
@@ -133,7 +140,7 @@ grdelType grdelSymbol(grdelType window, const char *symbolname, int symbolnamele
          * Using 'N' to steal the reference to xtuple and to ytuple.
          */
         symbol->object = PyObject_CallMethod(bindings->pyobject, "createSymbol",
-                                  "s#NN", symbolname, symbolnamelen, xtuple, ytuple);
+                                  "s#N", symbolname, symbolnamelen, ptstuple);
         if ( symbol->object == NULL ) {
             sprintf(grdelerrmsg, "grdelSymbol: error when calling the Python "
                     "binding's createSymbol method: %s", pyefcn_get_error());
@@ -149,9 +156,15 @@ grdelType grdelSymbol(grdelType window, const char *symbolname, int symbolnamele
     }
 
 #ifdef GRDELDEBUG
-    fprintf(debuglogfile, "grdelSymbol created: "
-            "window = %p, symbolname[0] = %c, symbol = %p\n",
-            window, symbolname[0], symbol);
+    {
+        char *name = (char *) FerMem_Malloc(symbolnamelen+1, __FILE__, __LINE__);
+        strncpy(name, symbolname, symbolnamelen);
+        name[symbolnamelen] = '\0';
+        fprintf(debuglogfile, "grdelSymbol created: "
+                "window = %p, symbolname = %s, symbol = %p\n",
+                window, name, symbol);
+        FerMem_Free(name, __FILE__, __LINE__);
+    }
     if ( (numpts > 0) && (ptsx != NULL) && (ptsy != NULL) ) {
         fprintf(debuglogfile, "    from points: (%#6.2f,%#6.2f)", ptsx[0], ptsy[0]);
         for (k = 1; k < numpts; k++)

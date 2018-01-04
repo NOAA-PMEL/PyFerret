@@ -305,11 +305,17 @@ class CmndHelperPQ(object):
             pass
         return mypen
 
-    def getSymbolFromCmnd(self, symbol):
+    def getSymbolFromCmnd(self, symbolinfo):
         '''
-        Returns a SymbolPath of the specified symbol.
-        Recognized symbols are:
-            '.' (period): filled circle
+        Returns the SymbolPath for the symbol described in symbolinfo, 
+        which can either be a string or a dictionary.  
+
+        If symbolinfo is a string, it should be the name of a symbol that 
+        has already been defined, either as a pre-defined symbol or from 
+        a previous symbol definition.
+
+        Current pre-defined symbol names are:
+            '.' (period): small filled circle
             'o' (lowercase oh): unfilled circle
             '+': plus mark
             'x' (lowercase ex): x mark
@@ -317,56 +323,134 @@ class CmndHelperPQ(object):
             '^': triangle
             "#": square
 
-        The path is drawn for a 100 x 100 unit square where
-        the origin is in the center of the square.
+        If symbolinfo is a dictionary, the following key/value pairs are 
+        recognized:
+            'name' : (string) symbol name (required)
+            'pts'  : (sequence of pairs of floats) vertex coordinates
+
+        If 'pts' is given, the value is coordinates that define the symbol 
+        as multiline subpaths in a [-50,50] square.  The location of the 
+        point this symbol represents will be at the center of the square. 
+        An invalid coordinate (outside [-50,50]) will terminate the current 
+        subpath, and the next valid coordinate will start a new subpath. 
+        This definition will replace an existing symbol with the given name.
+
+        If 'pts' is not given, the symbol must already be defined, either as 
+        a pre-defined symbol (see above) or from a previous symbol definition.
+
+        Raises:
+             TypeError  - if symbolinfo is neither a string nor a dictionary
+             KeyError   - if symbolinfo is a dictionary and 
+                          the key 'name' is not given 
+             ValueError - if there are problems generating the symbol
         '''
-        # check if this symbol has already been created
-        try:
-            sympath = self.__symbolpaths[symbol]
-            return sympath
-        except KeyError:
-            pass
-        # new symbol - create a SymbolPath for it
-        if symbol == '.':
-            path = QPainterPath()
-            path.addEllipse(-10.0, -10.0, 20.0, 20.0)
-            sympath = SymbolPath(path, True)
-        elif symbol == 'o':
-            path = QPainterPath()
-            path.addEllipse(-40.0, -40.0, 80.0, 80.0)
-            sympath = SymbolPath(path, False)
-        elif symbol == 'x':
-            path = QPainterPath( QPointF(-30.0, -30.0) )
-            path.lineTo( 30.0,  30.0)
-            path.moveTo(-30.0,  30.0)
-            path.lineTo( 30.0, -30.0)
-            sympath = SymbolPath(path, False)
-        elif symbol == '+':
-            path = QPainterPath( QPointF(0.0, -40.0) )
-            path.lineTo(  0.0, 40.0)
-            path.moveTo(-40.0,  0.0)
-            path.lineTo( 40.0,  0.0)
-            sympath = SymbolPath(path, False)
-        elif symbol == '*':
-            path = QPainterPath( QPointF(0.0, -40.0) )
-            path.lineTo(  0.0,    40.0)
-            path.moveTo(-34.641, -20.0)
-            path.lineTo( 34.641,  20.0)
-            path.moveTo(-34.641,  20.0)
-            path.lineTo( 34.641, -20.0)
-            sympath = SymbolPath(path, False)
-        elif symbol == '^':
-            path = QPainterPath( QPointF(-40.0, 30.0) )
-            path.lineTo( 0.0, -39.282)
-            path.lineTo(40.0,  30.0)
-            path.closeSubpath()
-            sympath = SymbolPath(path, False)
-        elif symbol == '#':
-            path = QPainterPath()
-            path.addRect(-35.0, -35.0, 70.0, 70.0)
-            sympath = SymbolPath(path, False)
+        # get the information about the symbol
+        if isinstance(symbolinfo, str):
+            symbol = symbolinfo
+            pts = None
+        elif isinstance(symbolinfo, dict):
+            symbol = symbolinfo['name']
+            pts = symbolinfo.get('pts', None)
         else:
-            raise ValueError("Unrecognized symbol '%s'" % str(symbol))
+            raise TypeError('symbolinfo must either be a dictionary or a string')
+
+        if pts is None:
+            # no path given; check if already defined
+            sympath = self.__symbolpaths.get(symbol)
+            if sympath is not None:
+                return sympath
+            # symbol not defined - if well known, create a SymbolPath for it
+            if symbol == '.':
+                path = QPainterPath()
+                path.addEllipse(-10.0, -10.0, 20.0, 20.0)
+                sympath = SymbolPath(path, True)
+            elif symbol == 'o':
+                path = QPainterPath()
+                path.addEllipse(-40.0, -40.0, 80.0, 80.0)
+                sympath = SymbolPath(path, False)
+            elif symbol == 'x':
+                path = QPainterPath( QPointF(-30.0, -30.0) )
+                path.lineTo( 30.0,  30.0)
+                path.moveTo(-30.0,  30.0)
+                path.lineTo( 30.0, -30.0)
+                sympath = SymbolPath(path, False)
+            elif symbol == '+':
+                path = QPainterPath( QPointF(0.0, -40.0) )
+                path.lineTo(  0.0, 40.0)
+                path.moveTo(-40.0,  0.0)
+                path.lineTo( 40.0,  0.0)
+                sympath = SymbolPath(path, False)
+            elif symbol == '*':
+                path = QPainterPath( QPointF(0.0, -40.0) )
+                path.lineTo(  0.0,    40.0)
+                path.moveTo(-34.641, -20.0)
+                path.lineTo( 34.641,  20.0)
+                path.moveTo(-34.641,  20.0)
+                path.lineTo( 34.641, -20.0)
+                sympath = SymbolPath(path, False)
+            elif symbol == '^':
+                path = QPainterPath( QPointF(-40.0, 30.0) )
+                path.lineTo( 0.0, -39.282)
+                path.lineTo(40.0,  30.0)
+                path.closeSubpath()
+                sympath = SymbolPath(path, False)
+            elif symbol == '#':
+                path = QPainterPath()
+                path.addRect(-35.0, -35.0, 70.0, 70.0)
+                sympath = SymbolPath(path, False)
+            else:
+                raise ValueError("Unknown symbol '%s'" % str(symbol))
+        else:
+            # define (or redefine) a symbol from the given path
+            try:
+                coords = [ [ float(val) for val in coord ] for coord in pts ]
+                if not coords:
+                    raise ValueError
+                for crd in coords:
+                    if len(crd) != 2:
+                        raise ValueError
+            except Exception:
+                raise ValueError('pts, if given, must be a sequence of pairs of numbers')
+            # flip so positive y is up
+            for k in range(len(coords)):
+                coords[k][1] *= -1.0
+            path = QPainterPath()
+            somethingdrawn = False
+            newstart = True
+            laststart = -1
+            lastend = -1
+            for k in range(len(coords)):
+                xval = coords[k][0]
+                yval = coords[k][1]
+                if (xval < -50.001) or (xval > 50.001) or (yval < -50.001) or (yval > 50.001):
+                    # end the current subpath; check if it should be closed
+                    if (laststart >= 0) and (lastend > laststart+2) and \
+                       (abs(coords[lastend][0] - coords[laststart][0]) < 0.001) and \
+                       (abs(coords[lastend][1] - coords[laststart][1]) < 0.001):
+                        path.closeSubpath()
+                    newstart = True
+                    laststart = -1
+                    lastend = -1
+                elif newstart:
+                    # start a new subpath
+                    path.moveTo(xval, yval)
+                    newstart = False
+                    laststart = k
+                    lastend = k
+                else:
+                    # continue the current subpath
+                    path.lineTo(xval, yval)
+                    somethingdrawn = True
+                    lastend = k
+            if not somethingdrawn:
+                del path
+                raise ValueError('symbol definition does not contain any drawn lines')
+            # check if final subpath needs to be closed
+            if (laststart >= 0) and (lastend > laststart+2) and \
+               (abs(coords[lastend][0] - coords[laststart][0]) < 0.001) and \
+               (abs(coords[lastend][1] - coords[laststart][1]) < 0.001):
+                path.closeSubpath()
+            sympath = SymbolPath(path, False)
         # save and return the SymbolPath
         self.__symbolpaths[symbol] = sympath
         return sympath

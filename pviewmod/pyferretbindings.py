@@ -529,35 +529,75 @@ class PyFerretBindings(AbstractPyFerretBindings):
         '''
         del brush
 
-    def createSymbol(self, symbolname, ptsx=None, ptsy=None):
+    def createSymbol(self, name, pts=None):
         '''
-        Returns a Symbol object.
+        Returns a Symbol object associated with the given name.
 
-        Arguments:
-            symbolname: name of the symbol, either a well-known
-                  symbol name (e.g., '.') or a custom name for a 
-                  symbol created from the given vertices (e.g., 'FER001')
-            ptsx: vertices X-coordinates describing the symbol 
-                  as a multiline drawing on a [0,100] square; 
-                  not used if a well-known symbol name is given
-            ptsy: vertices Y-coordinates describing the symbol 
-                  as a multiline drawing on a [0,100] square; 
-                  not used if a well-known symbol name is given
-        Currently supported well-known symbol names are:
-            '.' (period): filled circle
+        If pts is not given, the symbol name must already be known, 
+        either as a pre-defined symbol or from a previous call to 
+        this method.
+
+        Current pre-defined symbol names are:
+            '.' (period): small filled circle
             'o' (lowercase oh): unfilled circle
             '+': plus mark
             'x' (lowercase ex): x mark
             '*': asterisk
-            '^': unfilled triangle
-            "#": unfilled square
+            '^': triangle
+            "#": square
 
-        Raises an error if ptsx and ptsy are needed but are not
-        sequence types of the same size or if unable to create 
-        the Symbol object for any other reason.
+        If pts is given, the value is coordinates that define the symbol 
+        as multiline subpaths in a [-50,50] square.  The location of the 
+        point this symbol represents will be at the center of the square. 
+        An invalid coordinate (outside [-50,50]) will terminate the current 
+        subpath, and the next valid coordinate will start a new subpath. 
+        If the start and end of a subpath coincide, the path will be closed. 
+        This definition will replace an existing symbol with the given name.
+
+        Arguments:
+            name: (string) name of the symbol
+            pts:  (sequence of pairs of floats) vertex coordinates
+
+        Raises an error 
+            if name is not a string, 
+            if pts, if not None, is not a sequence of pairs of numbers, or 
+            if unable to create the Symbol object for any other reason.
         '''
-        # TODO: support custom symbols
-        return symbolname
+        # If no points, assume the symbol is already defined but do not waste 
+        # time validating this.  The symbol object is just the symbol name.
+        if not isinstance(name, str):
+            raise RuntimeException('symbol name is not a string')
+        if pts is None:
+            return name
+        # Send the symbol definition to the viewer engine
+        self.__window.blockErrMonitor()
+        try:
+            cmnd = { 'action': 'createSymbol', 
+                     'symbol': { 'name': name, 'pts': pts } }
+            self.__window.submitCommand(cmnd)
+            response = None
+            try:
+                # Wait indefinitely for a response.
+                # The valid response is the name of the symbol.
+                response = self.__window.checkForResponse(None)
+                if ( response != name )
+                    raise ValueError
+            except Exception:
+                if not response:
+                    # error raised before a response obtained
+                    raise
+                fullresponse = str(response)
+                response = self.__window.checkForResponse()
+                while response:
+                    fullresponse += '\n'
+                    fullresponse += response
+                    response = self.__window.checkForResponse()
+                raise RuntimeError(fullresponse)
+        finally:
+            self.__window.resumeErrMonitor()
+        # Since this symbol is now defined in the viewer engine,
+        # all we need is the name of this new symbol.
+        return name
 
     def deleteSymbol(self, symbol):
         '''
@@ -566,6 +606,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         Arguments:
             symbol: Symbol to be deleted
         '''
+        # TODO: delete the definition in the viewer engine
         del symbol
 
     def setWidthFactor(self, widthfactor):

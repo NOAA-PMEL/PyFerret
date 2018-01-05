@@ -141,6 +141,8 @@
 * V71  *acm* 2/17  More on ticket 2231. New argument to FULL_VAR_TITLE to control units labels
 * V72  *acm* 3/17  For ticket 2517, changes to arguments in calls to AXIS_ENDS
 * v722 *acm* 9/17  Fixes for 2562, polymark and other polygons over log axis.
+* V73+ 1/18 *acm* Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
+*                 scaling for axis coords and box edges
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -167,6 +169,7 @@
         include 'PLTL.INC'
 	include 'vector_inc.decl' ! with TRANSPZ
         include 'VECTOR.INC'
+	include 'xbox_bounds.cmn'
 
 
 * calling argument declarations:
@@ -712,6 +715,22 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
                     IF (cal_id .NE. saved_calendar_id) GO TO 5360
                  ENDIF
               ENDIF
+
+* Is the time rescaled for high resolution time precision?
+              IF (bb_x_off .NE. 0.0 .OR. bb_x_fac .NE. 1.0) THEN
+		 DO i = 1, npts
+		    x_dat(i) = (x_dat(i) + bb_x_off) * bb_x_fac
+		 ENDDO	 
+ 	         t1_date = saved_bb_date
+              ENDIF
+              IF (bb_y_off .NE. 0.0 .OR. bb_y_fac .NE. 1.0) THEN
+		 DO i = 1, npts
+		    y_dat(i) = (y_dat(i) + bb_y_off) * bb_y_fac
+		 ENDDO
+ 	         t1_date = saved_bb_date
+              ENDIF
+
+
 	   ELSE
               dt_min  = 1.0
               t1_date = ' '

@@ -126,6 +126,7 @@ c
 *                 (SNGL must have a double-precision or complex argument)
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
 * V697  *acm*  1/16 Ticket 2344: if there was a time-plot underlay, use its time scaling
+* V73+ 1/18 *acm* Changes for Issue 1009. For debugging need to declare length of strings
 
 * FERRET 9-21-88: replaced include files to make all declarations explicit
 ! original:
@@ -177,7 +178,7 @@ c
 #else
 	REAL xt(*),yt(*), xdt
 #endif
-	CHARACTER BC2WHOI*14, tstrt*(*), tref*(*)
+	CHARACTER BC2WHOI*14, tstrt*14, tref*14
 	REAL*8	WHOI2BC, DIFF, tstart, tstop, time, tmin, off, rate, 
      .		dxmin, dxmax, dymin, dymax, xymin, xymax, dtd
 	INTEGER	icode, npts, i, ix, iy

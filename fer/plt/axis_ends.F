@@ -79,7 +79,7 @@
 
 * internal variable declarations:
 	LOGICAL		BKWD_AXIS, GEOG_LABEL
-	CHARACTER	val_buff*45, tstyle*3, xtra_lab*24
+	CHARACTER	val_buff*95, tstyle*3, xtra_lab*24
 	INTEGER		TM_GET_CALENDAR_ID, axtp, taxis, cal_id, status
 	REAL*4		x1, x2, uminr, umaxr, dint
 	REAL*8		TSTEP_TO_SECS, SECS_TO_TSTEP, firstl, lastl, epsilon, eps2, span
@@ -181,7 +181,7 @@
 	ENDIF
 
 * and send the actual limits requested together with this tic interval to PPLUS
-	WRITE ( val_buff, '(3(E14.7,1X))' ) x1, x2, dint
+	WRITE ( val_buff, '(3(G20.12,1X))' ) x1, x2, dint
 	CALL PPLCMD ( from, line, 0, 
      .				plot_ax//'AXIS '//val_buff , 1, 1 )
 

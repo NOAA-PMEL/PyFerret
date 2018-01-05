@@ -65,6 +65,7 @@ C     for compatibility with Ferret use of symbols.
 * v696 *acm*	gap_var to define seperate line segments on PLOT/VS plots
 *                  (LAS ticket 1597 and others)
 * V697 *acm*   Fix CONSET for setting # of digits on contour plots. When did this ever work?
+* V73+ 1/18 *acm* For Issue 1009; precsision in time info sent to pplus for 2D plots, new iautot_save
 
 	INCLUDE 'PARAMPL5.DAT'
 	include 'axis_inc.decl'
@@ -222,7 +223,7 @@ C
 C
 	DATA TLO,DT,TCSIZE,ITYPET/1.,1440.,.10,3/
 	DATA NMTCT,LABELT,IFDB,ISDB,ITFLG/0,-1,1,1,0/
-	DATA VANG,IVFLG,IAUTOT/0.,0,1/ 
+	DATA VANG,IVFLG,IAUTOT,IAUTOT_save/0.,0,1,1/ 
 	DATA TLOb,DTb,TCSIZEb,ITYPETb/1.,1440.,.10,3/
 	DATA NMTCTb,LABELTb,IFDBb,ISDBb,ITFLGb/0,-1,1,1,0/
 	DATA VANGb,IVFLGb,IAUTOTb/0.,0,1/ 

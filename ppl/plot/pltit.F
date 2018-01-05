@@ -104,6 +104,7 @@
 * V697 *acm*  12/15 Ticket 2334: For time roundoff on overlays, changing 
 *                  things only for the short-time-axis case.
 * V 7 *acm*   6/16 Ticket 2435: moveable labels in PyFerret when using PyFerret fonts
+* V73+ 1/18 *acm*  Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
 
 
 *****************************************************
@@ -288,11 +289,13 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 		XTL=XLO
 		XHI=THI
 		XLO=TLO
+		IF (contr) CALL CHECK_T_SCALE ('X', xlo, xhi)
 	    ELSE IF(ITFLG.EQ.-1 .OR. ITFLG.EQ.2)THEN
 		XTI=YHI
 		XTL=YLO
 		YHI=THI
 		YLO=TLO
+		IF (contr) CALL CHECK_T_SCALE ('Y', ylo, yhi)
 	    ENDIF
 	    IF(CONTR)THEN
 		call trans (0,xmin,ymin,xtm,ytm)

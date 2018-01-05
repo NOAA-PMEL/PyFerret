@@ -33,6 +33,8 @@ let xtvar1970 = L[gt=tsec1970] *x[gx=xaxis]
 set view lr
 shade xtvar1970
 
+frame /file=time_plot_precision_shade.gif
+
 ! Now fill plots
 
 cancel view
@@ -48,6 +50,7 @@ fill ytvar1970
 set view lr
 fill xtvar1970
 
+frame /file=time_plot_precision_fill.gif
 
 ! Now vector plots
 
@@ -63,6 +66,7 @@ set v ll
 let yvec2 = L[gt=tsec1970] *RANDU(y[gy=yaxis])
 vector cos(ytvar1970), sin(yvec2)
 
+frame /file=time_plot_precision_vector.gif
 
 ! Hovmuller plot with overlays
 ! Previously line plots were correct, shade and fill plots were not
@@ -84,6 +88,7 @@ let tt = t[gt=tax2]
 let var_1d = 60+5*randu(tt)
 plot/over/thick/color=black var_1d
 
+frame /file=time_plot_precision_hovmuller.gif
 
 ! 2D overlay
 
@@ -91,6 +96,6 @@ fill ztvar1970
 let var2 = L[gt=tax2] + z[gz=zaxis]
 shade/over/t="1-feb-2010:12:00":"2-feb-2010:06:00"/lev=40/pal=grayscale  var2
 
-
+frame /file=time_plot_precision_2doverlay.gif
 
 

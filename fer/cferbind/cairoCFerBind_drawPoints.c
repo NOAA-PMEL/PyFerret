@@ -19,8 +19,8 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
                                    double symsize)
 {
     CairoCFerBindData *instdata;
-    CCFBColor *colorobj;
-    char   symchar;
+    CCFBSymbol *symbolobj;
+    CCFBColor  *colorobj;
     int    k;
     double unitfactor;
     double scalefactor;
@@ -39,6 +39,12 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
             /* grdelerrmsg already assigned */
             return 0;
         }
+    }
+    symbolobj = (CCFBSymbol *) symbol;
+    if ( symbolobj->id != CCFBSymbolId ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_drawPoints: unexpected error, "
+                            "symbol is not CCFBSymbol struct");
+        return 0;
     }
     colorobj = (CCFBColor *) color;
     if ( colorobj->id != CCFBColorId ) {
@@ -74,10 +80,7 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
     cairo_set_line_cap(instdata->context, CAIRO_LINE_CAP_SQUARE);
     cairo_set_line_join(instdata->context, CAIRO_LINE_JOIN_BEVEL);
 
-    /* A symbol object is just a character cast as a pointer */
-    symchar = (char) symbol;
-    switch( symchar ) {
-    case '.':
+    if ( strcmp(".", symbolobj->name) == 0 ) {
         cairo_new_path(instdata->context);
         for (k = 0; k < numpts; k++) {
             cairo_new_sub_path(instdata->context);
@@ -89,8 +92,8 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
             cairo_close_path(instdata->context);
         }
         cairo_fill(instdata->context);
-        break;
-    case 'o':
+    }
+    else if ( strcmp("o", symbolobj->name) == 0 ) {
         cairo_new_path(instdata->context);
         for (k = 0; k < numpts; k++) {
             cairo_new_sub_path(instdata->context);
@@ -102,8 +105,8 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
             cairo_close_path(instdata->context);
         }
         cairo_stroke(instdata->context);
-        break;
-    case '+':
+    }
+    else if ( strcmp("+", symbolobj->name) == 0 ) {
         cairo_new_path(instdata->context);
         for (k = 0; k < numpts; k++) {
             cairo_move_to(instdata->context,
@@ -120,8 +123,8 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
                           ptsy[k] * unitfactor);
         }
         cairo_stroke(instdata->context);
-        break;
-    case 'x':
+    }
+    else if ( strcmp("x", symbolobj->name) == 0 ) {
         cairo_new_path(instdata->context);
         for (k = 0; k < numpts; k++) {
             cairo_move_to(instdata->context,
@@ -138,8 +141,8 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
                           ptsy[k] * unitfactor - 30.0 * scalefactor);
         }
         cairo_stroke(instdata->context);
-        break;
-    case '*':
+    }
+    else if ( strcmp("*", symbolobj->name) == 0 ) {
         cairo_new_path(instdata->context);
         for (k = 0; k < numpts; k++) {
             cairo_move_to(instdata->context,
@@ -162,8 +165,8 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
                           ptsy[k] * unitfactor - 20.0   * scalefactor);
         }
         cairo_stroke(instdata->context);
-        break;
-    case '^':
+    }
+    else if ( strcmp("^", symbolobj->name) == 0 ) {
         cairo_new_path(instdata->context);
         for (k = 0; k < numpts; k++) {
             cairo_move_to(instdata->context,
@@ -178,8 +181,8 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
             cairo_close_path(instdata->context);
         }
         cairo_stroke(instdata->context);
-        break;
-    case '#':
+    }
+    else if ( strcmp("#", symbolobj->name) == 0 ) {
         cairo_new_path(instdata->context);
         for (k = 0; k < numpts; k++) {
             cairo_rectangle(instdata->context,
@@ -189,10 +192,10 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
                             70.0 * scalefactor);
         }
         cairo_stroke(instdata->context);
-        break;
-    default:
+    }
+    else {
         sprintf(grdelerrmsg, "cairoCFerBind_drawPoints: unexpected error, "
-                             "unknown symbol '%c'", symchar);
+                             "unknown symbol '%s'", symbolobj->name);
         return 0;
     }
 

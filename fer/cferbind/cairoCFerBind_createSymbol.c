@@ -5,42 +5,51 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "FerMem.h"
+
+/* Instantiate the global value */
+const char *CCFBSymbolId = "CCFBSymbolId";
 
 /*
- * Create a symbol object for this "Window".
+ * Create a Symbol object for this "Window".
+ * 
+ * If numpts is less than one, or if ptsx or ptsy is NULL, the symbol name 
+ * must already be known, either as a pre-defined symbol or from a previous 
+ * call to this function.
  *
- *     symbolname: name of the symbol, either a well-known
- *           symbol name (e.g., ".") or a custom name for a 
- *           symbol created from the given vertices (e.g., "FER001")
+ * Currently pre-defined symbols are:
+ *     "." (period) - small filled circle
+ *     "o" (lowercase oh) - unfilled circle
+ *     "+" (plus) - plus
+ *     "x" (lowercase ex) - ex
+ *     "*" (asterisk) - asterisk
+ *     "^" (caret) - unfilled triangle
+ *     "#" (pound sign) - unfilled square
+ *
+ * If numpts is greater than zero and ptsx and ptsy are not NULL, the 
+ * arguments ptsx and ptsy are X- and Y-coordinates that define the symbol 
+ * as multiline subpaths in a [-50,50] square.  The location of the point 
+ * this symbol represents will be at the center of the square.  An invalid 
+ * coordinate (outside [-50,50]) will terminate the current subpath, and 
+ * the next valid coordinate will start a new subpath.  If the start and 
+ * end of a subpath coincide, the path will be closed.  This definition 
+ * will replace an existing symbol with the given name.
+ *
+ * Arguments:
+ *     window: Window in which this symbol is to be used
+ *     symbolname: name of the symbol
  *     symbolnamelen: actual length of the symbol name
- *     ptsx: vertices X-coordinates describing the symbol 
- *           as a multiline drawing on a [0,100] square; 
- *           not used if giving a well-known symbol name
- *     ptsy: vertices Y-coordinates describing the symbol 
- *           as a multiline drawing on a [0,100] square; 
- *           not used if giving a well-known symbol name
- *     numpts: number of vertices describing the symbol; 
- *           not used if giving a well-known symbol name
+ *     ptsx: vertex X-coordinates 
+ *     ptsy: vertex Y-coordinates 
+ *     numpts: number of vertices
  *
- * Currently well-known symbol names (all single-character):
- *     '.' (period) - small filled circle
- *     'o' (lowercase oh) - unfilled circle
- *     '+' (plus) - plus
- *     'x' (lowercase ex) - ex
- *     '*' (asterisk) - asterisk
- *     '^' (caret) - unfilled triangle
- *     '#' (pound sign) - unfilled square
- *
- * Returns a sybmol object if successful.   If an error occurs,
- * grdelerrmsg is assigned an appropriate error message and NULL
- * is returned.
+ * Returns a pointer to the symbol object created.  If an error occurs,
+ * NULL is returned and grdelerrmsg contains an explanatory message.
  */
 grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int namelen,
                                      const float ptsx[], const float ptsy[], int numpts)
 {
-    char symname[8];
-    int  k;
-    grdelType symbol;
+    CCFBSymbol *symbolobj;
 
     /* Sanity check */
     if ( (self->enginename != CairoCFerBindName) &&
@@ -50,34 +59,26 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
         return 0;
     }
 
-    /* null-terminate the symbol name, which should be short */
-    for (k = 0; (k < 7) && (k < namelen); k++)
-        symname[k] = symbolname[k];
-    symname[k] = '\0';
-
-    /* TODO: custom symbols */
-
-    /* The symbol object is just a cast of a character value to a pointer type */
-    if ( strcmp(symname, ".") == 0 )
-        symbol = (grdelType) '.';
-    else if ( strcmp(symname, "o") == 0 )
-        symbol = (grdelType) 'o';
-    else if ( strcmp(symname, "+") == 0 )
-        symbol = (grdelType) '+';
-    else if ( strcmp(symname, "x") == 0 )
-        symbol = (grdelType) 'x';
-    else if ( strcmp(symname, "*") == 0 )
-        symbol = (grdelType) '*';
-    else if ( strcmp(symname, "^") == 0 )
-        symbol = (grdelType) '^';
-    else if ( strcmp(symname, "#") == 0 )
-        symbol = (grdelType) '#';
-    else {
-        sprintf(grdelerrmsg, "cairoCFerBind_createSymbol: "
-                             "unknown symbol '%s'", symname);
+    /* Create the symbol object */
+    symbolobj = (CCFBSymbol *) FerMem_Malloc(sizeof(CCFBSymbol), __FILE__, __LINE__);
+    if ( symbolobj == NULL ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_createSymbol: "
+                            "out of memory for a CCFBSymbol structure");
         return NULL;
     }
+    symbolobj->id = CCFBSymbolId;
 
-    return symbol;
+    /* Copy the symbol name */
+    if ( namelen >= sizeof(symbolobj->name) ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_createSymbol: symbol name too long");
+        FerMem_Free(symbolobj, __FILE__, __LINE__);
+        return NULL;
+    }
+    strncpy(symbolobj->name, symbolname, namelen);
+    symbolobj->name[namelen] = '\0';
+
+    /* TODO: deal with generation of custom symbols */
+
+    return symbolobj;
 }
 

@@ -55,6 +55,12 @@ typedef struct CCFBBrush_Struct {
     cairo_pattern_t *pattern;
 } CCFBBrush;
 
+extern const char *CCFBSymbolId;
+typedef struct CCFBSymbol_Struct {
+    const char *id;
+    char name[64];
+} CCFBSymbol;
+
 extern const char *CCFBFontId;
 typedef struct CCFBFont_Struct {
     const char *id;

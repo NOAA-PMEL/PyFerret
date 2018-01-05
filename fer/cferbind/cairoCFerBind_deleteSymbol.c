@@ -4,6 +4,7 @@
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
+#include "FerMem.h"
 
 /*
  * Delete a symbol object for this "Window".
@@ -13,6 +14,8 @@
  */
 grdelBool cairoCFerBind_deleteSymbol(CFerBind *self, grdelType symbol)
 {
+    CCFBSymbol *symbolobj;
+
     /* Sanity check */
     if ( (self->enginename != CairoCFerBindName) &&
          (self->enginename != PyQtCairoCFerBindName) ) {
@@ -20,11 +23,20 @@ grdelBool cairoCFerBind_deleteSymbol(CFerBind *self, grdelType symbol)
                             "self is not a valid CFerBind struct");
         return 0;
     }
+    symbolobj = (CCFBSymbol *) symbol;
+    if ( symbolobj->id != CCFBSymbolId ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_deleteSymbol: unexpected error, "
+                            "symbol is not CCFBSymbol struct");
+        return 0;
+    }
 
-    /*
-     * A symbol "object" is just a character value cast as a pointer type;
-     * thus nothing needs to be done to delete it.
-     */
+    /* Wipe the name and the id to detect errors */
+    memset(symbolobj->name, 0, sizeof(symbolobj->name));
+    symbolobj->id = NULL;
+
+    /* Free the memory */
+    FerMem_Free(symbol, __FILE__, __LINE__);
+
     return 1;
 }
 

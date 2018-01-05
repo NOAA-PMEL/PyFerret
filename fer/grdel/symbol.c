@@ -20,11 +20,20 @@ typedef struct GDsymbol_ {
 
 
 /*
- * Returns a Symbol object.
+ * Create a Symbol object for this "Window".
  * 
  * If numpts is less than one, or if ptsx or ptsy is NULL, the symbol name 
  * must already be known, either as a pre-defined symbol or from a previous 
  * call to this function.
+ *
+ * Currently pre-defined symbols are:
+ *     "." (period) - small filled circle
+ *     "o" (lowercase oh) - unfilled circle
+ *     "+" (plus) - plus
+ *     "x" (lowercase ex) - ex
+ *     "*" (asterisk) - asterisk
+ *     "^" (caret) - unfilled triangle
+ *     "#" (pound sign) - unfilled square
  *
  * If numpts is greater than zero and ptsx and ptsy are not NULL, the 
  * arguments ptsx and ptsy are X- and Y-coordinates that define the symbol 

@@ -194,6 +194,8 @@
 * V7.2 *acm* 4/2017 In fix for 2212, make sure ind_min,ind_max are defined before using them 
 *                   to check log limits on log axis.  Make sure the limits are actually applied.
 * V7.2 *acm* 5/2017 restore correct longitude moduloing for PLOT/VS overlay plots
+* V73+ 1/18 *acm* Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
+*                 handle line plots over scaled 2D plot
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -264,7 +266,7 @@
 
 	REAL		val1, dt_min, lo, hi, dep_len, 
      .			ind_len, first, last, hlen, hrs, 
-     .			bc_min, bc_max, step_lo, step_hi
+     .			bc_min, bc_max, step_lo, step_hi, ascale, aoff
 	REAL		TSTEP_TO_SECS, SECS_TO_TSTEP, DATE_TO_TSTEP, 
      .			WHOI2BC,ind_min, ind_max, dep_min, dep_max, 
      .			delta, tmp, dum, ww_save, cen, yr
@@ -318,6 +320,9 @@
 	y_is_time = .FALSE.
 	tstyle = ' '
 	icode = 0
+	t1_date = ' '
+	tref = ' '
+c	 CALL PPLCMD ( from, line, 0, 'TIME', 1, 1 )
 
 * set limit on the number of plot keys
         IF (.NOT.nokey  .AND.  nmv.GT.max_key_entries) THEN
@@ -352,6 +357,13 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   npts = CGRID_SIZE( cx )	! (redundantly calc'd below) 5/90
 	ELSE
 	   npts = CX_DIM_LEN ( indep_dim, cx )
+	ENDIF
+
+* Overlay plots, keep the setting of IAUTOT that was set on the underlay plot.
+
+	IF (overlay) THEN
+	   iautot_save = iautot
+	   iautot = 0
 	ENDIF
 
 * Mark the gap-variable, for PLOT/VS only
@@ -487,7 +499,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * axis length in hours from time since BC in seconds
 		    IF (.NOT.overlay) THEN
                        hrs = ( ind_max - ind_min ) / 3600.
-                       IF (hrs.LT.24)tref = 
+                       IF (hrs.LT.24) tref = 
      .                  MERGED_WHOI_DATE( cx_list(var1), t_dim, nmv, .TRUE. )
 
                        all_1_ind = ind_min .EQ. ind_max
@@ -526,6 +538,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      .                     ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 	   ENDIF
+
 * ... force axis scaling if the data has no range
 	   all_1_ind = NO_LINE_RANGE( indep_dat,npts,mr_bad_data(mv),val1 )
 	   delta = unspecified_val8
@@ -1089,12 +1102,12 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      ENDIF
 	   ENDIF
 
-
 * If a /vs plot has a variable with units of time, put the itmp line into 
 * the scratch grid mgrid_buff, so the WHOI_DATE functions can get at the 
 * line_* information stored above after calls to CD_GET_TIME_UNITS. 
 
 	   IF (versus) THEN
+
 	      IF (x_is_time) THEN
 		 dt_min = line_tunit(itmp)/ 60.
 		 
@@ -1259,7 +1272,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      .				   ind_min, ind_max, delta,
      .				   pnot_curv, 0,
      .				   time_axis, timeax_both, tstyle,
-     .                             no_labels, xtra_lab )
+     .                             no_labels, xtra_lab, ascale, aoff )
 	      ENDIF
 	   ENDIF
 
@@ -1374,7 +1387,9 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      .		ind_min, dep_len, hlen)
 
 * successful completion
- 1000	status = ferr_ok
+ 1000	CONTINUE
+	status = ferr_ok
+	IF (overlay) iautot = iautot_save
 	RETURN
 
 * error exit

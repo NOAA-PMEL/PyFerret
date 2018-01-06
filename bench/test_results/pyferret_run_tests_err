@@ -5329,6 +5329,12 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+ Using every   2th vector in the X direction
 *** Running ferret script: bn_clim_special.jnl
            *** NOTE: regarding ./data/clim_axes_gregorian.nc ...
            *** NOTE: GREGORIAN climatological axes defined

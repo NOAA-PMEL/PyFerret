@@ -14,3 +14,6 @@ GO err73_calendar_des
 
 GO bn_reset
 GO err73_wtd_var
+
+GO bn_reset
+GO err73_time_plot_precision

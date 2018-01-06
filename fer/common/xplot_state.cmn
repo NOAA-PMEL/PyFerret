@@ -18,6 +18,8 @@
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* V73+ 1/18 *acm* Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
+*                 scaling for axis coords and box edges, saved_bb_date needed for polygons
 
 	INTEGER		max_windows,
      .			max_viewport,
@@ -82,7 +84,7 @@
      .			ylowlef,
      .			saved_dt_min
 
-	CHARACTER	vp_name*16, saved_t1_date*14, transparent_color*10
+	CHARACTER	vp_name*16, saved_t1_date*14, saved_bb_date*14, transparent_color*10
 
 	COMMON / XPLOT_STATE /
      .			pplus_started,
@@ -141,4 +143,5 @@
      .                  changed_key,
      .			saved_dt_min,
      .			saved_t1_date,
+     .			saved_bb_date,
      .			transparent_color

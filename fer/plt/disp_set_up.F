@@ -175,6 +175,8 @@
 * V71  1/17 *acm* For ticket 2494: Single-cell SHADE plots allowed. 
 *                 Handle degenerate region info.
 * V72  3/17 *acm* Changes for ticket 2517, call to AXIS_ENDS changed.
+* V73+ 1/18 *acm* Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
+*                 scaling for axis coords and box edges
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -234,13 +236,14 @@ C plus those starting w/ xbox_bounds:
 
 	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, TM_FPEQ, ITS_FMRC, 
      .			ITSA_TRUEMONTH_AXIS,
-     .			user_title, time_axis, time_axis_dim1, timeax_both, 
+     .			user_title, time_axis, time_axis_dim1, time_axis_dim2, 
+     .			timeax_both, 
      .			regrid_1, regrid_2, no_y_rng, edges_ok,
      .			REGULARLY_SPACED,
      .                  irregular, use_cell, valid, vflag
 
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
-     .			dim1, dim2, mvx, mvx_temp, mvy, mvy_temp,
+     .			i, dim1, dim2, mvx, mvx_temp, mvy, mvy_temp,
      .			ctx, cty, plot_mem_used, nvars,
      .			lo1, lo2, hi1, hi2, size1, size2, size,
      .			n1_regrid, n2_regrid, grid, slen, pxlim, pylim,
@@ -249,11 +252,11 @@ C plus those starting w/ xbox_bounds:
      .			phlim, pvlim, slen2, cal_id, tax,
      .			x_axtyp, y_axtyp, iscl, siz, nsiz, 
      .			TM_GET_CALENDAR_ID, mode_num, axis1, axis2,
-     .                  mvh_temp
+     .                  mvh_temp, n_res, ndec, places
 	REAL		s, w1_lo, w1_hi, w2_lo, w2_hi, valy1,
      .			d1_regrid, d2_regrid, bad_x, bad_y, rlo, rhi,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
-     .                  first, last, labelht
+     .                  first, last, labelht, res_del
 	REAL*8		xaxlo, xaxhi, yaxlo, yaxhi, delta
 	REAL*4		rw1lo, rw2lo, rbad, dt_min, bounds(2)
 
@@ -275,6 +278,10 @@ C plus those starting w/ xbox_bounds:
 	mvx_temp  = 0
 	adjust_time = .FALSE.
 	vflag     = .FALSE.
+	bb_x_fac  = 1.
+	bb_x_off  = 0.
+	bb_y_fac  = 1.
+	bb_y_off  = 0.
 
 	IF ( vector ) THEN
 	   mvy	  = mr_list( 2 )
@@ -541,11 +548,7 @@ C   set up memory for the flag grid
 	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 
 * assign a color for the data plotting
-!	IF ( vector ) THEN
-!	   ipen = nvect_on+1
-!	ELSE
-!	   ipen = ncont_on+1
-!	ENDIF
+
 	IF ( pen .LT. 0 ) THEN    ! 2/94
 	   ipen = nvect_on + ncont_on + 1
 	ELSE
@@ -666,7 +669,7 @@ C   set up memory for the flag grid
 	   CALL AXIS_FORMAT( 'X', dim1, grid, xaxlo, xaxhi, delta,
      .                       curvilinear, cx_xpos,
      .                       time_axis,timeax_both,xstyle,
-     .			     no_labels, xtra_xlab)
+     .			     no_labels, xtra_xlab, bb_x_fac, bb_x_off)
 
            time_axis_dim1 = time_axis
 
@@ -674,6 +677,8 @@ C   set up memory for the flag grid
 
 	   time_axis = GEOG_LABEL( dim2, grid )  .AND. 
      .                  (dim2.EQ.t_dim .OR. dim2.EQ.f_dim)
+     
+           time_axis_dim2 = time_axis
 
 	   has_time_axis = has_time_axis .OR. time_axis ! 6/99
 
@@ -747,7 +752,7 @@ C ACM added 8/2001 save cal id if vertical time axis
 	   CALL AXIS_FORMAT( 'Y', dim2, grid, yaxlo, yaxhi, delta,
      .                       curvilinear, cx_ypos,
      .                       time_axis,timeax_both,ystyle,
-     .			     no_labels, xtra_ylab)
+     .			     no_labels, xtra_ylab, bb_y_fac, bb_y_off)
 
 *   When not an overlay, set the axis type to log or reverse log
 	   IF (is_logx .OR. is_logy) THEN
@@ -757,7 +762,33 @@ C ACM added 8/2001 save cal id if vertical time axis
 	      CALL PPLCMD ( from, line, 0, buff2, 1, 1)
 	   ENDIF
 
-        ENDIF   ! .NOT.overlay
+        ELSE   ! .NOT.overlay
+
+* On an overlay, does a short high res time axis need rescaling?
+
+	   n_res = 15
+	   IF (time_axis_dim1) THEN 
+	      res_del = ABS( w1_hi - w1_lo ) / n_res
+	      CALL GET_PREC_DIGITS( w1_lo, w1_hi, res_del, places, ndec )
+
+	      IF (places .GT. 7) THEN
+	         dt_min = line_tunit( grid_line(dim1,grid) ) / 60.
+	         IF (line_tunit( grid_line(dim1,grid) ) .EQ. 1) bb_x_fac = dt_min
+	         bb_x_off = -1.*w1_lo
+	      ENDIF
+	   ENDIF
+	
+	   IF (time_axis_dim2) THEN 
+	      res_del = ABS( w2_hi - w2_lo ) / n_res
+	      CALL GET_PREC_DIGITS( w2_lo, w2_hi, res_del, places, ndec )
+	   
+	      IF (places .GT. 7) THEN
+	         IF (line_tunit( grid_line(dim2,grid) ) .EQ. 1) bb_y_fac = 1/60.
+	         bb_y_off = -1.*w2_lo
+	      ENDIF
+	   ENDIF
+	   
+        ENDIF
 
 * rotate vectors to make axis scale ratio correction ?
 	IF ( vector .AND. aspect.GT.0. ) CALL RE_ORIENT(
@@ -774,8 +805,26 @@ C ACM added 8/2001 save cal id if vertical time axis
 	IF (status .NE. ferr_ok) GOTO 5720
 
 * load contour data into PPLUS and (possibly) regrid to regular grid
+
 	rw1lo = w1_lo
 	rw2lo = w2_lo
+
+* scale and offset to rescale time?
+
+	IF (bb_x_off .NE. 0.0 .OR. bb_x_fac .NE. 1.0) THEN
+	   rw1lo = (w1_lo + bb_x_off) * bb_x_fac
+	   DO i = 1, size1
+	      s1_axis(i) = (s1_axis(i) + bb_x_off) * bb_x_fac 
+	   ENDDO
+	   d1_regrid = s1_axis(2) - s1_axis(1)
+	ENDIF
+	IF (bb_y_off .NE. 0.0 .OR. bb_y_fac .NE. 1.0) THEN
+	   rw2lo = (w2_lo + bb_y_off) * bb_y_fac
+	   DO i = 1, size2
+	      s2_axis(i) = (s2_axis(i) + bb_y_off) * bb_y_fac 
+	   ENDDO
+	   d2_regrid = s2_axis(2) - s2_axis(1)
+	ENDIF
 
 	CALL PPLLDC_envelope ( icode, memry(mvx_temp)%ptr, size1, size2,
      .		      1, size1, 1, size2, s1_axis, s2_axis, 

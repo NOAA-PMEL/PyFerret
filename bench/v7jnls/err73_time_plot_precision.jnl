@@ -1,0 +1,101 @@
+! err72_time_plot_precision
+! ACM 1/4/2018
+! issue 1009, from ticket   1737
+! high resolution, short-duration time intervals with time 
+! axis in seconds with lots of precision plotted wrongly
+
+! Define an axis with timesteps of 1 minute, units of seconds, with origin in 1970.
+! Define a 2D variable using this axis.
+
+define axis/z=1:100:5/depth zaxis 
+define axis/t=1-feb-2010:3-feb-2010:3600/units=seconds/t0=1-jan-1970 tsec1970
+
+let ztvar1970 = L[gt=tsec1970] *z[gz=zaxis]
+set view ul
+
+! This plot previously puts the shade color boxes at the wrong place
+shade ztvar1970
+
+! Test SHADE/TRANS
+set view ur
+shade/trans ztvar1970
+
+! test xt and xt plots
+define axis/y=1:30:1/units=degrees_north yaxis
+let ytvar1970 = L[gt=tsec1970] *y[gy=yaxis]
+
+set view ll
+shade ytvar1970
+
+define axis/x=1:30:1/units=degrees_east xaxis
+let xtvar1970 = L[gt=tsec1970] *x[gx=xaxis]
+
+set view lr
+shade xtvar1970
+
+frame /file=time_plot_precision_shade.gif
+
+! Now fill plots
+
+cancel view
+set view ul
+fill ztvar1970
+
+set view ur
+fill/trans ztvar1970
+
+set view ll
+fill ytvar1970
+
+set view lr
+fill xtvar1970
+
+frame /file=time_plot_precision_fill.gif
+
+! Now vector plots
+
+cancel view
+set v ul
+let zvec2 = L[gt=tsec1970] *RANDU(z[gz=zaxis])
+vector cos(ztvar1970), sin(zvec2)
+set v ur
+let xvec2 = L[gt=tsec1970] *RANDU(x[gx=xaxis])
+vector cos(xtvar1970), sin(xvec2)
+
+set v ll
+let yvec2 = L[gt=tsec1970] *RANDU(y[gy=yaxis])
+vector cos(ytvar1970), sin(yvec2)
+
+frame /file=time_plot_precision_vector.gif
+
+! Hovmuller plot with overlays
+! Previously line plots were correct, shade and fill plots were not
+! or line plot not drawn
+
+cancel view
+fill ztvar1970
+plot/over/thick/color=red ztvar1970[z=@loc:1200]
+
+! PLOT/VS overlays - give the first arg some time units.
+let/units="seconds since `ztvar1970,return=t0`" tt = t[gt=ztvar1970]
+let ll = L[gt=ztvar1970]
+plot/vs/over/color=green/sym=19 tt,LL
+
+! some other variable on a different but overlapping time axis
+
+define axis/t="21-jan-2010:00:10:00":"5-feb-2010:00:10:00":3/units=hours/t0=1-jan-1980 tax2
+let tt = t[gt=tax2]
+let var_1d = 60+5*randu(tt)
+plot/over/thick/color=black var_1d
+
+frame /file=time_plot_precision_hovmuller.gif
+
+! 2D overlay
+
+fill ztvar1970
+let var2 = L[gt=tax2] + z[gz=zaxis]
+shade/over/t="1-feb-2010:12:00":"2-feb-2010:06:00"/lev=40/pal=grayscale  var2
+
+frame /file=time_plot_precision_2doverlay.gif
+
+

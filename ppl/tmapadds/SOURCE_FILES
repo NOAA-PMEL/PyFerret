@@ -7,6 +7,7 @@ bad_xy_coord.F\
 buffer_fillpoly.F\
 bc2whoi.F\
 calendar_blkdat.F\
+check_t_scale.F\
 cmdini.F\
 compute_histo_bins.F\
 compute_mnstd.F\

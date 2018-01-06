@@ -1,7 +1,7 @@
 	SUBROUTINE AXIS_FORMAT( x_or_y, idim, grid, lo_val, hi_val,
      .				del_val, curvilinear, cx_curv,
      .				its_calendar, calendar_both, 
-     .				tstyle, no_labels, imposed_lab )
+     .				tstyle, no_labels, imposed_lab, tscale, toff )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -89,7 +89,8 @@
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
-
+* V73+ 1/18 *acm*  Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
+*                  Set scaling for axis coords and box edges
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -116,7 +117,7 @@
 	INTEGER		idim, grid, cx_curv
 	CHARACTER	x_or_y*1, tstyle*3
 	CHARACTER*(*)	imposed_lab
-	REAL*8		lo_val, hi_val, del_val
+	REAL*8		lo_val, hi_val, del_val, tscale, toff
 
 * parameter definitions:
 	INTEGER		pyear_only
@@ -124,7 +125,7 @@
 
 * internal variable declarations:
 	LOGICAL		GEOG_LABEL, GEOG_VAR,ITSA_TRUEMONTH_AXIS,
-     .			use_nice, special
+     .			use_nice, special, rescale_time
 	INTEGER		TM_LENSTR1, TM_LENSTR, dlen, places, ndec, dummy
 	CHARACTER	AX_TITLE*32, WHOI_DATE*14, VAR_TITLE*128,
      .			INTERNAL_WHOI_DATE*14,
@@ -132,11 +133,15 @@
 	REAL		res_del, dt_min, time_unit, labelht
 	REAL*8		TSTEP_TO_SECS
 	INTEGER		n_res
+	REAL*4		x1, x2, uminr, umaxr, dint  ! for call to RANGE
 
 	PARAMETER 	(n_res = 15)
 
 * initiailize
 	tstyle = ' '
+	rescale_time = .FALSE.
+	tscale = 1.0
+	toff = 0.0
 
 * decimal places needed for axis:
 * ... sufficient digits to resolve the tic interval differences and
@@ -148,6 +153,7 @@
 
 * format to use
 	use_nice = places .LE. 7
+	rescale_time = places .GT. 7
 
 	IF ( use_nice ) THEN
 	   IF ( ndec .EQ. 0 ) THEN
@@ -159,8 +165,11 @@
 	ENDIF
 
 * default format to use has no special formatting
-	IF ( use_nice ) THEN
-	      CALL PPLCMD ( from, line, 0,
+	IF ( use_nice )  CALL PPLCMD ( from, line, 0,
+     .				x_or_y//'FOR,('//fmt//')', 1, 1 )
+	IF ( rescale_time ) THEN
+	   fmt = 'I7'
+	   CALL PPLCMD ( from, line, 0,
      .				x_or_y//'FOR,('//fmt//')', 1, 1 )
 	ENDIF
 
@@ -190,6 +199,16 @@
 	      IF (ITSA_TRUEMONTH_AXIS(grid_line(idim,grid))) time_unit = un_convert(pun_day)  
 	      dt_min = time_unit / 60.
 
+* scale and off if time requires a lot of precision
+
+	      IF (rescale_time) THEN
+	         IF (time_unit .EQ. 1) THEN 
+	            dt_min = 1
+	            tscale = 1/60.
+	         ENDIF
+	         toff = -1.*lo_val
+	      ENDIF
+
 * ... TAXIS command
 	      tsetting = 'ON'
 	      IF (calendar_both) tsetting = 'BO'
@@ -206,20 +225,40 @@
               rbuff(1) = WHOI_DATE(grid, idim, lo_val )      ! f77 bug
               rbuff(2) = WHOI_DATE(grid, idim, hi_val )
               rbuff(3) = WHOI_DATE(grid, idim, 1.0D0  )
+
+	      IF (rescale_time) THEN 
+	         rbuff(3) = rbuff(1)
+
+	         x1 = (lo_val + toff) * tscale
+	         x2 = (hi_val + toff) * tscale
+	         CALL RANGE( x1, x2, 10, uminr, umaxr, dint )
+	         WRITE ( ppl_buff, '(3(E14.7,1X))' ) x1, x2, dint
+	         CALL PPLCMD ( from, line, 0, 
+     .                          x_or_y//'AXIS '//ppl_buff , 1, 1 )
+	      ENDIF
+
 	      WRITE ( ppl_buff, 3020 )	'W'//rbuff(1),
      .					'W'//rbuff(2),
      .					'W'//rbuff(3)
  3020	      FORMAT ('TIME ',A15,',',A15,',',A15)
 	      CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-* ... save infor for PLOLT/VS/OVER
+* ... save info for PLOT/VS/OVER
 	      saved_dt_min = dt_min
 	      saved_t1_date =  INTERNAL_WHOI_DATE(grid, idim, 1.0D0 )
+
+* ... This will be used in polygon overlays on a time axis
+	      IF (rescale_time) saved_bb_date =  INTERNAL_WHOI_DATE(grid, idim, lo_val ) 
+
+* ... The XAXIS_MIN, XAXIS_MAx symbols already set in axis_ends are not changed; used in LAS,
+*     they are translated by LAS using the time axis info from the original dataset
+*     and they have enough precision.
+
 * ... TXTYPE and TXLINT commands (time axis style)
 	      IF (no_labels) THEN
 	         buff = ' '
 	      ELSE
 	         buff = imposed_lab
-	      ENDIF	
+	      ENDIF
 	      CALL TAXIS_STYLE(	x_or_y, TSTEP_TO_SECS( grid, idim, lo_val ),
      .				TSTEP_TO_SECS( grid, idim, hi_val ),
      .				tstyle, buff )

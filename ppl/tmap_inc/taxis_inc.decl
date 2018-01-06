@@ -5,6 +5,7 @@
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
 * V697  *acm*  1/16 Ticket 2344: if there was a time-plot underlay, use 
 *                   its delta-t for time overlay plots, and clear in disp_init
+* V73+ 1/18 *acm* For Issue 1009; precsision in time info sent to pplus for 2D plots, new iautot_save
 
 *                  
 	REAL*4	TLO
@@ -20,6 +21,7 @@
 	REAL*4	VANG
 	INTEGER	IVFLG
 	INTEGER	IAUTOT
+	INTEGER	IAUTOT_save
 	INTEGER	ITXTPE
 	INTEGER	ITXLBP
 

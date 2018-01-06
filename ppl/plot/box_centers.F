@@ -45,6 +45,8 @@
 *
 * for FERRET V62.00: 5/2009
 * V62  Fixing bug 1659, plotting with subspan modulo axis.
+* V73+ 1/18 *acm*  Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
+*             scaling for axis coords and box edges
 
 	include 'ferret.parm'
 	include 'xbox_bounds.cmn'
@@ -52,7 +54,7 @@
 * calling argument declarations:
 	LOGICAL		valid
 	INTEGER		n
-	REAL		val1, centers(n)
+	REAL		val1, centers(n), factr, offst
 	CHARACTER	x_or_y*1
 
 * internal variable declarations:
@@ -62,8 +64,12 @@
 * initialize
 	IF ( x_or_y .EQ. 'X' ) THEN
 	   idim = bb_xaxis
+	   factr = bb_x_fac
+	   offst = bb_x_off
 	ELSEIF ( x_or_y .EQ. 'Y' ) THEN
 	   idim = bb_yaxis
+	   factr = bb_y_fac
+	   offst = bb_y_off
 	ENDIF
 
 * determine starting subscript
@@ -71,8 +77,10 @@
 	isub0 = isub1 - 1
 
 * pass back box centers
-	DO 100 i = 1, n
- 100	centers(i) = SNGL( TM_WORLD (isub0+i,bb_grid,idim,box_middle) )
+	DO i = 1, n
+	   val1 = SNGL( TM_WORLD (isub0+i,bb_grid,idim,box_middle) )
+	   centers(i) = (val1 + offst) * factr 
+	ENDDO
 
 * always (the appearance of) success
 	valid = .TRUE.

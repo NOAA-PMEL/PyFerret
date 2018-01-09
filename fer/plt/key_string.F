@@ -90,7 +90,8 @@
 	slen = TM_LENSTR1( KEY_STRING )
 
 * document the data set
-	IF ( flags(pdoc_dset) .AND. cx_data_set(cx).NE.pdset_irrelevant ) THEN
+	IF ( flags(pdoc_dset) .AND. cx_data_set(cx).NE.pdset_irrelevant 
+     .       .AND. cx_data_set(cx).NE.unspecified_int4) THEN
 	   name = ds_name( cx_data_set(cx) )
 	   plen = TM_LENSTR1(name)
 	   KEY_STRING = KEY_STRING(:slen)//prefix//'D='//name(:plen)

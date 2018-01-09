@@ -50,6 +50,7 @@
 * V67  *acm* 3/11- fix ticket 1821
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V685+ *acm* 12/13 For 6D Ferret, the array coming in as flags is longer for extra dimensions
+*       *acm*  1/18 check for dataset is not set before using it
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'

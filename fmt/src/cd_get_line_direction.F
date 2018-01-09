@@ -41,6 +41,8 @@
 *  V694 ACM 2/2015 Ensemble axis may have a standard-name attribute "realization"
 *  V694 ACM 4/2015 Fix ticket 2260: set X axis when standard_name is "longitude"
 *  V72+ ACM 10/2015 If using axis names, compare the right # of characters
+*  V73+ ACM  1/2018 issue 1851: If direction is reduced down to using axis names, 
+*                   see if there were unrelated units that should trump the name
 *
 *      include files: 
       
@@ -74,8 +76,8 @@
       INTEGER bufflen
       PARAMETER (bufflen = 256)
       CHARACTER*256 buff, upbuff
-      INTEGER     str_eq
-      PARAMETER ( str_eq = 0 )
+      INTEGER     str_eq, no_units
+      PARAMETER ( str_eq = 0, no_units = 0 )
 
 * (could check for the record axis and if so, set it to T)
 
@@ -534,7 +536,10 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
          IF (vupcase(1:3).EQ.'TAX') line_direction(iaxis) = 'TI'
       ENDIF
 
-      IF (line_direction(iaxis).EQ.'NA') THEN
+* If the name indicates a direction in obvious ways, use it.  But if there
+* was a units string that did NOT dictate a direction, leave undefined.
+
+      IF (line_direction(iaxis).EQ.'NA' .AND. units.EQ.no_units) THEN
          IF (vupcase(1:3).EQ.'LON') line_direction(iaxis) = 'WE'
          IF (vupcase(1:3).EQ.'LAT') line_direction(iaxis) = 'SN'
          IF (vupcase(1:4).EQ.'TIME') line_direction(iaxis) = 'TI'

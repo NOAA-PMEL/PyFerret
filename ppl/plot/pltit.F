@@ -170,6 +170,7 @@
 	INTEGER ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS
         LOGICAL its_meta, batch, meta_batch
 	INTEGER ipv
+	REAL	fp_xfac, fp_yfac
 
 *	*jd* linux port 12.96 Add external stmt below
 	external size, scale
@@ -254,6 +255,7 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	IF ( PPL_in_FERRET ) CALL SEG_ON( )                              
 ***********************************************
 	CALL COLOR(IPEN(0))
+
 	IF(.NOT.SOVER)THEN
 	    is_ribbon = MAKEP.EQ.'RIBPLOT'
 	    CALL SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,XTI,XTL,is_ribbon)
@@ -276,6 +278,14 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 		YHPLOT=DBLE(YLEN)+(DBLE(ytx)-DBLE(YHI) )*DBLE(YF)
 
 	    IF ( interrupted ) GOTO 3333		! 1/89 - *sh*
+	    IF (ITFLG.EQ.1) THEN
+	       TLOX_save = XLO
+	       THIX_save = XHI
+	    ENDIF
+	    IF(ITFLG.EQ.-1 .OR. ITFLG.EQ.2) THEN
+	       TLOY_save = YLO
+	       THIY_save = YHI
+	    ENDIF
 	ELSE
 	    IF(ITFLG.NE.0)THEN
 	        ! Handle time as in setax for short-time axes
@@ -334,13 +344,6 @@ C  Call WINDOW to restore values of XMIN, XMAX, YMIN, YMAX.
 	ELSE IF(MAKEP.EQ.'PLOT') THEN
 	   IPV = 0
 	   CALL PLOTXY(X,NXS,XF,YF,IPV)
-	   
-* See ticket 2565, shifted lbels on time overlay plots
-	   IF(SOVER .AND. (ITFLG.EQ.1 .OR. ITFLG.EQ.2)) THEN
-	      XHI = XTI
-	      XLO = XTL
-	   ENDIF
-
 	   if (interrupted) go to 3333
 
 ****    JD * ALINE CALL 
@@ -368,6 +371,20 @@ C		call aline_sub (x,nxs,a_line,minx,miny,maxx,maxy)
 		call line_key (x,nxs,a_line,minx,miny,maxx,maxy)
 		IF ( interrupted ) GOTO 3333 !*jd* 8.3.92
 100	    continue
+
+	   
+* See ticket 2565, shifted lbels on time overlay plots
+	   IF(SOVER) THEN 
+	     IF (ITFLG.EQ.1 .OR. ITFLG.EQ.2) THEN
+	      XHI = XTI
+	      XLO = XTL
+	     ELSEIF (ITFLG.EQ.-1 .OR. ITFLG.EQ.-2) THEN
+	      YHI = YTI
+	      YLO = YTL
+	     ENDIF
+	   ENDIF
+
+
 ****
 
 	ELSE IF(MAKEP.EQ.'RIBPLOT') THEN
@@ -453,12 +470,23 @@ c	    CALL PLOTPOL(X,NXS,XF,YF)
 ***************************************************
 * TMAP addition for FILLPOL call
 	ELSE IF(MAKEP.EQ.'FILLPOL' .OR. MAKEP.EQ.'POLYGON')THEN
-* Get the time-axis scale right
-	    IF(SOVER .AND. (ITFLG.EQ.1 .OR. ITFLG.EQ.2)) THEN
-		XHI = XTI
-		XLO = XTL
+* Get the time-axis scale right. These factors account for the fact
+* that the scaling is set for the range of thde polygon data but we are
+* rescaling the overlay to be on the entire underlying time axis
+	    fp_xfac = 1.
+	    fp_yfac = 1.
+	    IF (SOVER .AND. ITFLG.NE.0) THEN
+	       IF  (ITFLG.EQ.1 .OR. ITFLG.EQ.2) THEN
+	          fp_xfac = (THIX_save-TLOX_save)/(xhi-xlo)  ! expand range by this factor
+		  XHI = THIX_save 
+		  XLO = TLOX_save
+	       ELSE IF (ITFLG.EQ.11 .OR. ITFLG.EQ.2) THEN
+	          fp_yfac = (THIY_save-TLOY_save)/(yhi-ylo)
+		  YHI = THIY_save 
+		  YLO = TLOY_save
+	       ENDIF
 	    ENDIF
-	    CALL FILLPOL(X,NXS,XF,YF,iwind)
+	    CALL FILLPOL(X,NXS,XF,YF,fp_xfac,fp_yfac)
 	    IF ( interrupted ) GOTO 3333
 
 	    if (sline) then
@@ -518,6 +546,7 @@ C Put movable labels on
 	       YLO=XTL
 	   ENDIF
 	ENDIF
+
 *************************************
 * TMAP addition: close segment and possibly write "** INTERRUPTED **" on plot
 	IF ( PPL_in_FERRET ) CALL SEG_OFF

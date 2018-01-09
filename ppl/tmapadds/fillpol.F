@@ -1,4 +1,4 @@
-	SUBROUTINE FILLPOL(X,NXS,XF,YF)
+	SUBROUTINE FILLPOL(X,NXS,XF,YF,fp_xfac,fp_yfac)
 C** 
 C**    @(#)fillpol.F	1.0    11/30/97
 C**
@@ -79,12 +79,14 @@ C
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V72  *acm* 6/17  PyFerret ticket 2542, check for zero-extent on polygons before
 *                  calling graphics routines
+* V74  *acm* 1/18  Fixing issue 1009: scaling of polygons overlaid on time plot
+*                  when rescaling time for precision.
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
 
         INTEGER NXS
-	REAL X(*), XF, YF
+	REAL X(*), XF, YF, fp_xfac, fp_yfac
 
         include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
@@ -142,7 +144,7 @@ C
 *jd*
 	real            zzmin, zzmax
 	integer         status, nlm1
-	real		dz,znp,zmp, x1val, y1val, xdel, ydel
+	real		dz,znp,zmp, x1val, y1val, xdel, ydel, vlo, vhi
 	integer		i,j,uprdn, llen, ptsbase
 	logical         line_it, fill_it
         integer         slen1, slen2
@@ -328,16 +330,32 @@ C      set already.
 *             Draw the filled polygon
 	      CALL SET_FILL_NDX (fill_ndx)
 
+* Rescale the polygons if time-data has been scaled for precision.
+* the scaling accounts for the range of the polygon data, needs
+* to be widened if overlaying on a longer time axis.
+
 	      IF ( XEQ ) THEN 
 	         do 155 j = xvertexbase, xvertexbase+nvertex-1
-		    IF (X(J).EQ.CMXEQ) GOTO 157
+	            IF (X(J).EQ.CMXEQ) GOTO 157
  155	         continue
+	         IF (fp_xfac .NE. 1.) THEN 
+	            CALL MINMAX_SNGL( X(xvertexbase), nvertex, CMXEQ, vlo, vhi)
+	            do j = xvertexbase, xvertexbase+nvertex-1
+	               x(j) = x(j) + (x(j)-vlo)*fp_xfac
+	            enddo
+	         ENDIF
 	      ENDIF
 
 	      IF ( YEQ ) THEN 
 	         do 156 j = ypolybase, ypolybase+nvertex-1
-		    IF (X(J).EQ.CMYEQ) GOTO 157
+	            IF (X(J).EQ.CMYEQ) GOTO 157
  156	         continue
+	         IF (fp_yfac .NE. 1.) THEN 
+	            CALL MINMAX_SNGL( X(ypolybase), nvertex, CMYEQ, vlo, vhi)
+	            do j = xvertexbase, xvertexbase+nvertex-1
+	               x(j) = x(j) + (x(j)-vlo)*fp_yfac
+	            enddo
+	         ENDIF
 	      ENDIF
 
 	      if (nvertex .gt. 2) then

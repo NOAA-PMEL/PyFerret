@@ -195,6 +195,8 @@
 * V7.22 *acm* 10/2017 Fix ticket 2565, duplicate and sometimes shifted labels on PLOT/over time plots
 * V73+ 1/18 *acm* Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
 *                 handle line plots over scaled 2D plot
+*                 On time plots overlaid on a 2D plot, set up time-axis information even when
+*                 not labeling the plot.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -457,7 +459,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   plot_title = FULL_VAR_TITLE( cx_list(1), .TRUE., slen )
 
 * ... label the independent axis as the first var given
-	   IF ( .NOT.no_labels) THEN
+c	   IF ( .NOT.no_labels) THEN
 	      buff1 = VAR_UNITS(cx_x)
 	      iunits = TM_UNIT_ID(buff1)
 	      
@@ -506,7 +508,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * 11/16 Get the min and max as used by PPLUS.  That function uses WHOI formatted time
                       CALL TPLOT_AXIS_ENDS (ind_min, ind_max, cal_id_1, tstyle)
  
-                      CALL AXIS_END_SYMS( indep_ax,
+                      IF (.NOT.overlay) CALL AXIS_END_SYMS( indep_ax,
      .                          SECS_TO_TSTEP( mgrid_buff, t_dim, ind_min ),
      .                          SECS_TO_TSTEP( mgrid_buff, t_dim, ind_max ) )
 
@@ -523,13 +525,13 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 
 	      slen = TM_LENSTR1(plot_title)
 
-	      IF (iunits .NE. 4) 
+	      IF (.NOT.no_labels .AND. iunits .NE. 4) 
      .           CALL BOX_LABEL( indep_lab,
      .			   plot_title(:slen),
      .			   0.0, 0.0, 0.6*ind_len, letsize_label,
      .			   letsize_label, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
-	   ENDIF
+c	   ENDIF
 
 * ... force axis scaling if the data has no range
 	   all_1_ind = NO_LINE_RANGE( indep_dat,npts,mr_bad_data(mv),val1 )

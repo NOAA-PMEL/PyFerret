@@ -150,7 +150,10 @@
 
 * format to use
 	use_nice = places .LE. 7
-	rescale_time = places .GT. 7
+	IF (idim.EQ.t_dim .OR.  idim.EQ.f_dim) THEN
+  	   time_unit = line_tunit( grid_line(idim,grid) )
+	   rescale_time = (time_unit.EQ.1 .AND. places.GT.7)
+	ENDIF
 
 	IF ( use_nice ) THEN
 	   IF ( ndec .EQ. 0 ) THEN

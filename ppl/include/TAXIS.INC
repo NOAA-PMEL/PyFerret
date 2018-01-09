@@ -15,11 +15,12 @@ C**
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
 * V697  *acm*  1/16 Ticket 2344: if there was a time-plot underlay, use 
 *                   its delta-t for time overlay plots, and clear in disp_init
-* V73+ 1/18 *acm* For Issue 1009; precsision in time info sent to pplus for 2D plots, new iautot_save
+* V73+ 1/18 *acm* For Issue 1009; precision in time info sent to pplus for 2D plots, new iautot_save
+*                 and axis range parameters TLOX_save etc
 
-	COMMON/TXSCOM/ TLO,DT,DT_SAVE,TCSIZE,ITYPET, 
-     *	NMTCT,LABELT,IFDB,ISDB,ITFLG,VANG,IVFLG,IAUTOT,iautot_save,
-     *	ITXTPE,ITXLBP,TLOb,DTb,TCSIZEb,ITYPETb, 
+	COMMON/TXSCOM/ TLO,DT,DT_SAVE,TCSIZE,TLOb,DTb,TCSIZEb,ITYPETb,ITYPET, 
+     *	TLOX_save,THIX_save,TLOY_save,THIY_save,NMTCT,LABELT,IFDB,ISDB,ITFLG,
+     *	VANG,IVFLG,IAUTOT,iautot_save,ITXTPE,ITXLBP, 
      *	NMTCTb,LABELTb,IFDBb,ISDBb,ITFLGb,VANGb,IVFLGb,IAUTOTb,
      *	ITXTPEb,ITXLBPb,is_hours_axis
 c
@@ -45,7 +46,11 @@ c		=2 PLOTUV command used
 c		=3 VELVCT command used
 c	iautot	=0 manual entry of time axis specifications
 c		=1 automatic selection of time axis specs (EPIC and BIBO only)
-c	iautot_save for overlay time plots
+c	iautot_save for overlay time plots, also:
+c	TLOX_save
+c	THIX_save
+c	TLOY_save
+c	THIY_save
 c
 c	itxtpe  the type of label
 c

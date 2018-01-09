@@ -171,9 +171,8 @@
         include 'PLTL.INC'
 	include 'vector_inc.decl' ! with TRANSPZ
         include 'VECTOR.INC'
-	include 'xbox_bounds.cmn'
         include 'pyfonts.cmn'
-
+	include 'xbox_bounds.cmn'
 
 * calling argument declarations:
 	LOGICAL		overlay, transpz, no_labels, no_range, use_line,
@@ -725,12 +724,16 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 		    x_dat(i) = (x_dat(i) + bb_x_off) * bb_x_fac
 		 ENDDO	 
  	         t1_date = saved_bb_date
+ 	         lox = (lox + bb_x_off) * bb_x_fac
+ 	         hix = (hix + bb_x_off) * bb_x_fac
               ENDIF
               IF (bb_y_off .NE. 0.0 .OR. bb_y_fac .NE. 1.0) THEN
 		 DO i = 1, npts
 		    y_dat(i) = (y_dat(i) + bb_y_off) * bb_y_fac
 		 ENDDO
  	         t1_date = saved_bb_date
+ 	         loy = (loy + bb_y_off) * bb_y_fac
+ 	         hiy = (hiy + bb_y_off) * bb_y_fac
               ENDIF
 
 

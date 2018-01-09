@@ -172,6 +172,7 @@
 
 
 	LOGICAL CLEAR,CONTR,no_vpt_flag, is_ribbon
+	REAL	fp_xfac, fp_yfac
 
 *	*jd* linux port 12.96 Add external stmt below
 	external size, scale
@@ -337,7 +338,7 @@ C		call aline_sub (x,nxs,a_line,minx,miny,maxx,maxy)
 		call line_key (x,nxs,a_line,minx,miny,maxx,maxy)
 		IF ( interrupted ) GOTO 3333 !*jd* 8.3.92
 100	    continue
-	   
+
 * See ticket 2565, shifted lbels on time overlay plots
 	   IF(SOVER) THEN 
 	     IF (ITFLG.EQ.1 .OR. ITFLG.EQ.2) THEN
@@ -348,7 +349,6 @@ C		call aline_sub (x,nxs,a_line,minx,miny,maxx,maxy)
 	      YLO = YTL
 	     ENDIF
 	   ENDIF
-****
 
 	ELSE IF(MAKEP.EQ.'RIBPLOT') THEN
 	   CALL PLOTXY_RIBBON(X,NXS,XF,YF)

@@ -350,7 +350,7 @@ C      set already.
 	            IF (X(J).EQ.CMYEQ) GOTO 157
  156	         continue
 	         IF (fp_yfac .NE. 1.) THEN 
-		    CALL MINMAX_SNGL( X(ypolybase), nvertex, CMYEQ, vlo, vhi)
+	            CALL MINMAX_SNGL( X(ypolybase), nvertex, CMYEQ, vlo, vhi)
 	            do j = xvertexbase, xvertexbase+nvertex-1
 	               x(j) = x(j) + (x(j)-vlo)*fp_yfac
 	            enddo

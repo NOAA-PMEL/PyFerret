@@ -301,8 +301,8 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 		XLO=TLO
 		IF (contr) CALL CHECK_T_SCALE ('X', xlo, xhi)
 	    ELSE IF(ITFLG.EQ.-1 .OR. ITFLG.EQ.2)THEN
-		XTI=YHI
-		XTL=YLO
+		YTI=YHI
+		YTL=YLO
 		YHI=THI
 		YLO=TLO
 		IF (contr) CALL CHECK_T_SCALE ('Y', ylo, yhi)
@@ -542,8 +542,8 @@ C Put movable labels on
 	       XHI=XTI
 	       XLO=XTL
 	   ELSE IF(ITFLG.EQ.-1 .OR. ITFLG.EQ.2)THEN
-	       YHI=XTI
-	       YLO=XTL
+	       YHI=YTI
+	       YLO=YTL
 	   ENDIF
 	ENDIF
 

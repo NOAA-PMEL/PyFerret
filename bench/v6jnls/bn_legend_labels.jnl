@@ -6,6 +6,11 @@
 ! title.
 ! *acm* 2/4/2015 Ticket 2231
 
+! just to be sure
+cancel mode logo 
+cancel sym lab*
+
+
 use coads_climatology
 let/title=January sst1 = sst[l=1]
 let/title=February sst2 = sst[l=2]
@@ -13,8 +18,12 @@ let/title=March sst3 = sst[l=3]
 
 ! Draw a plot and show the labels on the legend.
 plot/x=300/y=20:65 sst1,sst2,sst3
-sh sym lab7,lab8,lab9
+sh sym lab*
+
+cancel sym lab*
 
 ! Draw a plot with legend labeled with the variable titles.
 plot/x=300/y=20:65/key=title  sst1,sst2,sst3
-sh sym lab7,lab8,lab9
+sh sym lab*
+
+set mode/last logo

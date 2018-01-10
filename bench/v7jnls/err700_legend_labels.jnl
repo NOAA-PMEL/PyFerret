@@ -3,6 +3,7 @@
 !   - consistent labeling of units
 !   - PLOT/KEY=title applies to PLOT/VS
 
+cancel mode logo
 cancel symbol lab*
 use gt4d011.cdf
 
@@ -66,3 +67,4 @@ PLOT/OVER/KEY=TITLE my_var2[Y=@loc:-1]
 
 PLOT/OVER/KEY=TITLE 10+cos(T[gt=tdays]/200)
 
+set mode/last logo

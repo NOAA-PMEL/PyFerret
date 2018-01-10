@@ -8,6 +8,10 @@
 
 ! These are the windows that have always been set after bn_user.jn
 set window/size=.5/aspect=.75:ax 1
-set window/size=.5/aspect=.75 2
+
+! Get rid of this empty-window definition. pyFerret running all
+! the scripts under bn_all.jnl winds up crashing later in a bn_reset
+! due to invalid settings in FGD_GET_VIEW_LIMITS
+!set window/size=.5/aspect=.75 2
 
 exit/script

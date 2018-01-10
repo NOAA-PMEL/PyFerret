@@ -1,11 +1,15 @@
 ! pattern_bench.jnl
 ! Quick demo of Ferret pattern feature *jd* 12.18.98
 
+
 set view full
 
 use coads_climatology
 set reg/l=3/y=50s:60n/x=100e:60w
 set mode cal months
+
+! Patterns not available in PyFerret
+IF ($program_name"1|PyFerret>1|Ferret>0") THEN EXIT/SCRIPT
 
 ! The /pattern qualifier sets patterns to be used, like /palette sets colors.
 ! Files in $FER_PALETTE with extension .pat are read in to set patterns.

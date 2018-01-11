@@ -80,6 +80,7 @@
 *                  style after a color plot and also after SHADE/SET; SHADE.
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * PyFr *kms*  4/17 Remove SAVE_FRAME for HDF format since no longer supported
+* PyFr *acm*  1/18 Issue an error on use of /PATTERN
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -174,6 +175,7 @@ CC       => Set values here instead.
         spectrum  = sp .GT. 0 
         patt      = qual_given( slash_shad_pattern   )
         pattern   = patt .GT. 0
+	IF (pattern) GOTO 5600  ! pattern not available in PyFerret
 	add_lon	  = 0.
 
         ncolors = mode_arg(pmode_linecolors,1)
@@ -566,4 +568,6 @@ C Reset pplus lines
  5500   CALL ERRMSG( ferr_out_of_range, status,
      .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .          'Value from 0 to 100 must be given', *1000 )
+ 5600	CALL ERRMSG( ferr_invalid_command, status, 
+     .		'PATTERN style is not available in PyFerret', *1000 )
 	END

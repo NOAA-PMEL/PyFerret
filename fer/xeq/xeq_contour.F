@@ -131,6 +131,7 @@
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * PyFr *kms*  4/17 Remove SAVE_FRAME for HDF format since no longer supported
+* PyFr *acm*  1/18 Issue an error on use of /PATTERN
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -209,6 +210,7 @@
 
         patt     = qual_given( slash_cont_pattern  )
         pattern  = patt .GT. 0 .AND. fill
+	IF (pattern) GOTO 5600  ! pattern not available in PyFerret
 
 	usa_line  = .NOT.fill
      .          .OR. qual_given( slash_cont_line      ).GT.0
@@ -670,5 +672,7 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
  5500   CALL ERRMSG( ferr_out_of_range, status,
      .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .          'Value from 0 to 100 must be given', *1000 )
+ 5600	CALL ERRMSG( ferr_invalid_command, status, 
+     .		'PATTERN style is not available in PyFerret', *1000 )
 
 	END

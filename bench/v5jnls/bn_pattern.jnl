@@ -9,7 +9,9 @@ set reg/l=3/y=50s:60n/x=100e:60w
 set mode cal months
 
 ! Patterns not available in PyFerret
-IF ($program_name"1|PyFerret>1|Ferret>0") THEN EXIT/SCRIPT
+! IF ($program_name"1|PyFerret>1|Ferret>0") THEN EXIT/SCRIPT
+set mode ignore
+
 
 ! The /pattern qualifier sets patterns to be used, like /palette sets colors.
 ! Files in $FER_PALETTE with extension .pat are read in to set patterns.
@@ -45,3 +47,4 @@ go land thick
 can win 2
 set win 1
 can mode meta
+set mode/last ignore

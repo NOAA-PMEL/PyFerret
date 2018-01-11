@@ -65,6 +65,8 @@
 *                  using original upper/lowercase spelling
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 * V72  3/17 *acm* Fix ticket 2518: The number of points reported in a subset was incorrect
+* v74  *acm*  1/18 Fixing issue 1575, setting uvar_given for result of grid-changing functions
+*                  that return results on abstract axes.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -83,7 +85,7 @@
 
 * local variable declarations:
 	LOGICAL	BKWD_AXIS, GEOG_LABEL, ITSA_TRUEMONTH_AXIS, 
-     .          calendar, original, true_month
+     .          calendar, original, true_month, ss_ok
 	INTEGER TM_LENSTR1, TM_SUBSC, TM_GET_CALENDAR_ID, 
      .          lo, hi, i, line, dlen, ndec, status,nlen, naxlen, 
      .          int1, slen, i1ss, inss,cal_id 
@@ -216,20 +218,28 @@
 	   IF ( uvar_given(idim,uvar) .EQ. uvlim_gvn_gnl  .OR. 
      .          uvar_given(idim,uvar) .EQ. uvlim_gvn_lo   .OR. 
      .          uvar_given(idim,uvar) .EQ. uvlim_gvn_lohi )  THEN
+	      ss_ok = .TRUE.
 	      IF (uvar_lo_ss(uvar, idim) .NE. unspecified_int4) THEN
 	         i1ss = uvar_lo_ss(uvar, idim)
 	         inss = uvar_hi_ss(uvar, idim)
 	      ELSE
-	         i1ss =  TM_SUBSC ( uvar_lo_ww(idim, uvar), grid, idim, -1 )
-	         inss =  TM_SUBSC ( uvar_hi_ww(idim, uvar), grid, idim, -1 )
+		 ss_ok = (uvar_lo_ww(idim, uvar).NE.unspecified_val8 .AND.  
+     .                    uvar_hi_ww(idim, uvar).NE.unspecified_val8)
+	         IF (ss_ok) THEN
+		    i1ss =  TM_SUBSC ( uvar_lo_ww(idim, uvar), grid, idim, -1 )
+	            inss =  TM_SUBSC ( uvar_hi_ww(idim, uvar), grid, idim, -1 )
+	         ENDIF
 	      ENDIF
 
-	      IF (i1ss .EQ. inss) THEN
-	         uvar_desc = '1 pt'
-	      ELSE
-	         countstr = TM_FMT(FLOAT(inss-i1ss+1), 15, 20, slen)
-	         uvar_desc = countstr(:slen)//' pts'
-	      ENDIF
+! bit of a hack; see the fix for issue 1575 in abstract-axis in is_do_gc_fcn.F
+	      IF (ss_ok) THEN  
+	       IF (i1ss .EQ. inss) THEN
+	          uvar_desc = '1 pt'
+	       ELSE
+	          countstr = TM_FMT(FLOAT(inss-i1ss+1), 15, 20, slen)
+	          uvar_desc = countstr(:slen)//' pts'
+	       ENDIF
+	      ENDIF  ! ss_ok
 	   ENDIF
 
 * Compressing

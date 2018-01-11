@@ -486,7 +486,6 @@ plot/xlimits=5:5 i
  LISTing to file test_stream.unf
  LISTing to file test_stream.unf
 *** Running ferret script: bn_user.jnl
-           *** NOTE: Only one window can be open in batch mode
 *** Running ferret script: bn_stream.jnl
 *** Running ferret script: bn_mc.jnl
  **TMAP ERR: Attempt to access unsupported feature

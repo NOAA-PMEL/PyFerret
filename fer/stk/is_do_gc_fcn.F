@@ -65,7 +65,8 @@
 *                  arguments that indicate the coordinate directions to operate on,
 *                  e.g. DOT(VAR1,VAR2,2) to compute the inner product of the 
 *                  variables in the Y direction by running dot_y
-
+* v74  *acm*  1/18 Fixing issue 1575, setting uvar_given for result of grid-changing functions
+*                  that return results on abstract axes.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -77,9 +78,10 @@
 	include	'xcontext.cmn'
 	include	'xalgebra.cmn'
 	include	'xtext_info.cmn'
-	include	'xfr_grid.cmn'	! w/ mgrid_abstract
+c	include	'xfr_grid.cmn'	! w/ mgrid_abstract
 	include 'xgrid_chg_fcns.cmn'
 	include 'xrisc_buff.cmn' 
+	include 'xtm_grid.cmn_text'  ! with line_name
 
 * calling arguments
 	INTEGER		uvar, lo_isp, status
@@ -88,7 +90,7 @@
 * local variables
 	LOGICAL	ITS_UN_CACHED, not_reusable, check_alt_fcn
 	INTEGER	GCF_FIND_FCN, GCF_find_dir_fcn, GCF_NUM_ARGS, GCF_ARG_TYPE,
-     .		MGRID_SIZE_DELTA, GCF_ARG_EVAL_ORDER, EFCN_GET_RTN_TYPE,
+     .		MGRID_SIZE_DELTA, GCF_ARG_EVAL_ORDER, EFCN_GET_RTN_TYPE, CGRID_AXIS,
      .		ifcn, icom, iarg, num_com, mr, res_cx,
      .		mr1, mr2, mr3, mr4, mr5, mr6, mr7, mr8, mr9, impl_grid,
      .          typ1, typ2, typ3, typ4, typ5, typ6, typ7, typ8, typ9,
@@ -348,6 +350,14 @@
      .		memry(res_mr)%ptr, res_mr, pdimr, typr,
      .		res_cx, status )
 
+c  Fixing issue 1575. If the result grid has an abstract axis in the aa direction, 
+c  then set uvar_given(aa_dim,uvar) = uvlim_gvn_gnl
+
+	  DO idim = 1, nferdims 
+	     IF (line_name(CGRID_AXIS(idim,res_cx)) .EQ. 'ABSTRACT') 
+     .		uvar_given(idim,uvar) = uvlim_gvn_gnl
+	  ENDDO
+  
 	ELSE 
 
 	  CALL DO_EXTERNAL_GC_FCN( 
@@ -363,6 +373,14 @@
      .			memry(mr9)%ptr, mr9,
      .			memry(res_mr)%ptr, res_mr,
      .			status )
+
+c  If the result grid has an abstract axis in the aa direction, 
+c  then set uvar_given
+
+	  DO idim = 1, nferdims 
+	     IF (line_name(CGRID_AXIS(idim,res_cx)) .EQ. 'ABSTRACT') 
+     .		uvar_given(idim,uvar) = uvlim_gvn_gnl
+	  ENDDO
 
 	ENDIF
 	IF ( status .NE. ferr_ok ) GOTO 5100

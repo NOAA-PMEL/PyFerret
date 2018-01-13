@@ -50,14 +50,14 @@ grdelBool pyqtcairoCFerBind_resizeWindow(CFerBind *self, double width, double he
     /* Set the new size for the cairo image */
     success = cairoCFerBind_resizeWindow(self, (double) newwidth, (double) newheight);
     if ( ! success ) {
-        /* grdleerrmsg is already assigned */
+        /* grdelerrmsg is already assigned */
         return 0;
     }
 
     /* Tell the viewer of the new size */
     success = grdelWindowSetSize(instdata->viewer, (double) newwidth, (double) newheight);
     if ( ! success ) {
-        /* grdleerrmsg is already assigned */
+        /* grdelerrmsg is already assigned */
         return 0;
     }
     /*

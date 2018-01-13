@@ -40,8 +40,7 @@ typedef struct GDsymbol_ {
  * as multiline subpaths in a [-50,50] square.  The location of the point 
  * this symbol represents will be at the center of the square.  An invalid 
  * coordinate (outside [-50,50]) will terminate the current subpath, and 
- * the next valid coordinate will start a new subpath.  If the start and 
- * end of a subpath coincide, the path will be closed.  This definition 
+ * the next valid coordinate will start a new subpath.  This definition 
  * will replace an existing symbol with the given name.
  *
  * Arguments:
@@ -51,18 +50,20 @@ typedef struct GDsymbol_ {
  *     ptsx: vertex X-coordinates 
  *     ptsy: vertex Y-coordinates 
  *     numpts: number of vertices
+ *     fill: color-fill the symbol?
  *
  * Returns a pointer to the symbol object created.  If an error occurs,
  * NULL is returned and grdelerrmsg contains an explanatory message.
  */
 grdelType grdelSymbol(grdelType window, const char *symbolname, int symbolnamelen,
-                      const float ptsx[], const float ptsy[], int numpts)
+                      const float ptsx[], const float ptsy[], int numpts, grdelBool fill)
 {
     const BindObj *bindings;
     GDSymbol *symbol;
     PyObject *ptstuple;
     PyObject *pairtuple;
     PyObject *fltobj;
+    PyObject *fillobj;
     int       k;
 
     bindings = grdelWindowVerify(window);
@@ -82,7 +83,7 @@ grdelType grdelSymbol(grdelType window, const char *symbolname, int symbolnamele
     symbol->window = window;
     if ( bindings->cferbind != NULL ) {
         symbol->object = bindings->cferbind->createSymbol(bindings->cferbind, 
-                                   symbolname, symbolnamelen, ptsx, ptsy, numpts);
+                             symbolname, symbolnamelen, ptsx, ptsy, numpts, fill);
         if ( symbol->object == NULL ) {
             /* grdelerrmsg already assigned */
             FerMem_Free(symbol, __FILE__, __LINE__);
@@ -144,12 +145,20 @@ grdelType grdelSymbol(grdelType window, const char *symbolname, int symbolnamele
             ptstuple = Py_None;
             Py_INCREF(Py_None);
         }
+        if ( fill ) {
+            fillobj = Py_True;
+            Py_INCREF(Py_True);
+        }
+        else {
+            fillobj = Py_False;
+            Py_INCREF(Py_False);
+        }
         /*
          * Call the createSymbol method of the bindings instance.
-         * Using 'N' to steal the reference to xtuple and to ytuple.
+         * Using 'N' to steal the references to ptstuple and fillobj
          */
         symbol->object = PyObject_CallMethod(bindings->pyobject, "createSymbol",
-                                  "s#N", symbolname, symbolnamelen, ptstuple);
+                                  "s#NN", symbolname, symbolnamelen, ptstuple, fillobj);
         if ( symbol->object == NULL ) {
             sprintf(grdelerrmsg, "grdelSymbol: error when calling the Python "
                     "binding's createSymbol method: %s", pyefcn_get_error());
@@ -275,6 +284,10 @@ grdelBool grdelSymbolDelete(grdelType symbol)
  *
  * Input Arguments:
  *     window: Window in which this symbol is to be used
+ *     symbolname: name of the symbol, either a well-known
+ *           symbol name (e.g., ".") or a custom name for a 
+ *           symbol created from the given vertices (e.g., "FER001")
+ *     namelen: actual length of the symbol name
  *     ptsx: vertices X-coordinates describing the symbol 
  *           as a multiline drawing on a [0,100] square; 
  *           only used if numpts is greater than zero
@@ -283,20 +296,17 @@ grdelBool grdelSymbolDelete(grdelType symbol)
  *           only used if numpts is greater than zero
  *     numpts: number of vertices describing the symbol; 
  *           can be zero if giving a well-known symbol name
- *     symbolname: name of the symbol, either a well-known
- *           symbol name (e.g., ".") or a custom name for a 
- *           symbol created from the given vertices (e.g., "FER001")
- *     symbolnamelen: actual length of the symbol name
+ *     fill: color-fill symbol? (zero == False, non-zero == True)
  * Output Arguments:
  *     symbol: the created symbol object, or zero if failure.
  *             Use fgderrmsg_ to retrieve the error message.
  */
 void fgdsymbol_(void **symbol, void **window, char *symbolname, int *namelen, 
-                float ptsx[], float ptsy[], int *numpts)
+                float ptsx[], float ptsy[], int *numpts, int *fill)
 {
     grdelType mysymbol;
 
-    mysymbol = grdelSymbol(*window, symbolname, *namelen, ptsx, ptsy, *numpts);
+    mysymbol = grdelSymbol(*window, symbolname, *namelen, ptsx, ptsy, *numpts, *fill);
     *symbol = mysymbol;
 }
 

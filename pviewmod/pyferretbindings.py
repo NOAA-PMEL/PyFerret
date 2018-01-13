@@ -529,7 +529,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         '''
         del brush
 
-    def createSymbol(self, name, pts=None):
+    def createSymbol(self, name, pts=None, fill=False):
         '''
         Returns a Symbol object associated with the given name.
 
@@ -551,12 +551,12 @@ class PyFerretBindings(AbstractPyFerretBindings):
         point this symbol represents will be at the center of the square. 
         An invalid coordinate (outside [-50,50]) will terminate the current 
         subpath, and the next valid coordinate will start a new subpath. 
-        If the start and end of a subpath coincide, the path will be closed. 
         This definition will replace an existing symbol with the given name.
 
         Arguments:
             name: (string) name of the symbol
             pts:  (sequence of pairs of floats) vertex coordinates
+            fill: (bool) color-fill symbol?
 
         Raises an error 
             if name is not a string, 
@@ -574,7 +574,8 @@ class PyFerretBindings(AbstractPyFerretBindings):
         try:
             cmnd = { 'action': 'createSymbol', 
                      'name': name, 
-                     'pts': pts }
+                     'pts': pts,
+                     'fill': fill }
             self.__window.submitCommand(cmnd)
             response = None
             try:
@@ -1010,11 +1011,14 @@ def _test_pyferretbindings():
                               (-999, -999),
                               (50,0), (50,50), (0,50),
                               (-999, -999),
-                              (0,-10), (20,-30), (10,-30), (10,-50), (-10,-50), (-10,-30), (-20,-30), (0,-10), ) )
+                              (0,-10), (20,-30), (10,-30), (10,-50), (-10,-50), (-10,-30), (-20,-30), (0,-10), ),
+                            False)
         bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (400, 400, 400, 400, 400)
-        mysymbol = bindinst.createSymbol("^")
+        mysymbol = bindinst.createSymbol(name="^",
+                            pts=( (-40.0, -30.0), (0.0, 39.282), (40.0, -30.0), (-40.0, -30.0), ),
+                            fill=True)
         bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (450, 450, 450, 450, 450)

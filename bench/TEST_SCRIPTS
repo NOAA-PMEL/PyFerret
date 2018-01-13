@@ -32,7 +32,7 @@ bn491_bug_fixes.jnl
 bn_odd_variable_name.jnl
 bn_test_stream.jnl
 bn_define_axes.jnl
-! bn_pattern.jnl - KMS - patterns not supported in PyFerret
+bn_pattern.jnl
 bn_polygon.jnl
 bn500_bug_fixes.jnl
 bn_sample.jnl

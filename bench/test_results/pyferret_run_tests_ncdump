@@ -31,6 +31,7 @@
 *** Running ferret script: bn_odd_variable_name.jnl
 *** Running ferret script: bn_test_stream.jnl
 *** Running ferret script: bn_define_axes.jnl
+*** Running ferret script: bn_pattern.jnl
 *** Running ferret script: bn_polygon.jnl
 *** Running ferret script: bn500_bug_fixes.jnl
 err491_dp_time_write.jnl --- 1 original file

@@ -31,8 +31,7 @@ const char *CCFBSymbolId = "CCFBSymbolId";
  * as multiline subpaths in a [-50,50] square.  The location of the point 
  * this symbol represents will be at the center of the square.  An invalid 
  * coordinate (outside [-50,50]) will terminate the current subpath, and 
- * the next valid coordinate will start a new subpath.  If the start and 
- * end of a subpath coincide, the path will be closed.  This definition 
+ * the next valid coordinate will start a new subpath.  This definition 
  * will replace an existing symbol with the given name.
  *
  * Arguments:
@@ -47,7 +46,7 @@ const char *CCFBSymbolId = "CCFBSymbolId";
  * NULL is returned and grdelerrmsg contains an explanatory message.
  */
 grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int namelen,
-                                     const float ptsx[], const float ptsy[], int numpts)
+                        const float ptsx[], const float ptsy[], int numpts, grdelBool fill)
 {
     CCFBSymbol *symbolobj;
 

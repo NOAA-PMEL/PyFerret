@@ -327,6 +327,7 @@ class CmndHelperPQ(object):
         recognized:
             'name' : (string) symbol name (required)
             'pts'  : (sequence of pairs of floats) vertex coordinates
+            'fill' : (bool) color-fill symbol?
 
         If 'pts' is given, the value is coordinates that define the symbol 
         as multiline subpaths in a [-50,50] square.  The location of the 
@@ -348,9 +349,11 @@ class CmndHelperPQ(object):
         if isinstance(symbolinfo, str):
             symbol = symbolinfo
             pts = None
+            fill = False
         elif isinstance(symbolinfo, dict):
             symbol = symbolinfo['name']
             pts = symbolinfo.get('pts', None)
+            fill = symbolinfo.get('fill', False)
         else:
             raise TypeError('symbolinfo must either be a dictionary or a string')
 
@@ -411,46 +414,27 @@ class CmndHelperPQ(object):
                         raise ValueError
             except Exception:
                 raise ValueError('pts, if given, must be a sequence of pairs of numbers')
-            # flip so positive y is up
-            for k in range(len(coords)):
-                coords[k][1] *= -1.0
             path = QPainterPath()
             somethingdrawn = False
             newstart = True
-            laststart = -1
-            lastend = -1
-            for k in range(len(coords)):
-                xval = coords[k][0]
-                yval = coords[k][1]
-                if (xval < -50.001) or (xval > 50.001) or (yval < -50.001) or (yval > 50.001):
-                    # end the current subpath; check if it should be closed
-                    if (laststart >= 0) and (lastend > laststart+2) and \
-                       (abs(coords[lastend][0] - coords[laststart][0]) < 0.001) and \
-                       (abs(coords[lastend][1] - coords[laststart][1]) < 0.001):
-                        path.closeSubpath()
+            for (xval, yval) in coords:
+                # flip so positive y is up
+                yval *= -1.0
+                if (xval < -50.0) or (xval > 50.0) or (yval < -50.0) or (yval > 50.0):
+                    # end the current subpath
                     newstart = True
-                    laststart = -1
-                    lastend = -1
                 elif newstart:
-                    # start a new subpath
+                    # start a new subpath; Qt closes the previous subpath
                     path.moveTo(xval, yval)
                     newstart = False
-                    laststart = k
-                    lastend = k
                 else:
                     # continue the current subpath
                     path.lineTo(xval, yval)
                     somethingdrawn = True
-                    lastend = k
             if not somethingdrawn:
                 del path
                 raise ValueError('symbol definition does not contain any drawn lines')
-            # check if final subpath needs to be closed
-            if (laststart >= 0) and (lastend > laststart+2) and \
-               (abs(coords[lastend][0] - coords[laststart][0]) < 0.001) and \
-               (abs(coords[lastend][1] - coords[laststart][1]) < 0.001):
-                path.closeSubpath()
-            sympath = SymbolPath(path, False)
+            sympath = SymbolPath(path, fill)
         # save and return the SymbolPath
         self.__symbolpaths[symbol] = sympath
         return sympath

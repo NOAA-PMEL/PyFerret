@@ -384,24 +384,31 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError('not implemented')
 
-    def createSymbol(self, symbolname, ptsx=None, ptsy=None):
+    def createSymbol(self, name, pts=None, fill=False):
         '''
-        Returns a Symbol object.
+        Returns a Symbol object associated with the given name.
+
+        If pts is not given, the symbol name must already be known, 
+        either as a pre-defined symbol or from a previous call to 
+        this method.
+
+        If pts is given, the value is coordinates that define the symbol 
+        as multiline subpaths in a [-50,50] square.  The location of the 
+        point this symbol represents will be at the center of the square. 
+        An invalid coordinate (outside [-50,50]) will terminate the current 
+        subpath, and the next valid coordinate will start a new subpath. 
+        This definition will replace an existing symbol with the given name.
 
         Arguments:
-            symbolname: name of the symbol, either a well-known
-                  symbol name (e.g., '.') or a custom name for a 
-                  symbol created from the given vertices (e.g., 'FER001')
-            ptsx: vertices X-coordinates describing the symbol 
-                  as a multiline drawing on a [0,100] square; 
-                  not used if a well-known symbol name is given
-            ptsy: vertices Y-coordinates describing the symbol 
-                  as a multiline drawing on a [0,100] square; 
-                  not used if a well-known symbol name is given
+            name: (string) name of the symbol
+            pts:  (sequence of pairs of floats) vertex coordinates
+            fill: (bool) color-fill symbol?
 
-        Raises an error if ptsx and ptsy are needed but are not
-        sequence types of the same size or if unable to create 
-        the Symbol object for any other reason.
+        Raises an error 
+            if name is not a string, 
+            if pts, if not None, is not a sequence of pairs of numbers, or 
+            if unable to create the Symbol object for any other reason.
+        Returns a Symbol object.
         '''
         raise AttributeError('not implemented')
 

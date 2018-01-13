@@ -655,6 +655,19 @@ Replacing definition of axis XAX
 Replacing definition of axis XAX2
            *** NOTE: (fyi) units are not subject to auto-conversion: BLAHS
 Replacing definition of axis XAX2
+*** Running ferret script: bn_pattern.jnl
+           *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+           *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+ **ERROR: invalid command: PATTERN style is not available in PyFerret
+shade/pal=black/lev=(10,30,5,-3)/line/key/pattern=4patterns/nolabel sst
+ **ERROR: command syntax: LANDI_MAPXMIN = ???
+DEFINE VARIABLE landi_mapxmin =
+ **ERROR: command syntax: LANDI_MAPXMAX = ???
+DEFINE VARIABLE landi_mapxmax =
+           *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+           *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
+ **ERROR: invalid command: PATTERN style is not available in PyFerret
+CONTOUR/FILL/lev=(25,27,1)/over/nolab/pal=black/pat=angled_grid/nolabel airt[l=@ave]
 *** Running ferret script: bn_polygon.jnl
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."

@@ -98,7 +98,7 @@
      .   CALL CD_GET_VAR_ID (dset, varname, varid, status)  
      
       got_it = .FALSE.
-      IF (status .EQ. merr_ok) THEN
+      IF (status.EQ.merr_ok .AND. varid.GT.0) THEN
          attname = 'orig_file_axname' 
          alen = 18
 

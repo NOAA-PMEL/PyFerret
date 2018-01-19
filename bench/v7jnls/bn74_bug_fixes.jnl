@@ -20,3 +20,6 @@ GO err73_time_plot_precision
 
 GO bn_reset
 GO err73_agg_1_time
+
+GO bn_reset
+GO err73_shade_curvi

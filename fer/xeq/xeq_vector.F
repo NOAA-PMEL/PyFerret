@@ -106,6 +106,7 @@
 *                  A time axis may be a T axis or F axis
 * V697 *acm* 12/15 Fixes for bug 2327 move call of PPL_AXES_RESTORE back to end of plot routines
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
+* V74  1/18 *am* for issue #1854, extra argument to DISP_SET_UP
 
 
 	include 'tmap_dims.parm'
@@ -310,6 +311,7 @@
      .				workmem(ax2_work)%ptr,
      .				ipen,
      .				inc_grid,
+     .				set_up,
      .				status )
 
 	IF ( status .NE. ferr_ok ) GOTO 5000

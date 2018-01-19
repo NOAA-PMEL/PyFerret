@@ -59,6 +59,7 @@
 *                  A time axis may be a T axis or F axis
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * V72  5/17 acm* Ticket 2530 add WIRE/COLOR= 
+* V74  1/18 *am* for issue #1854, extra argument to DISP_SET_UP
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -179,6 +180,7 @@
      .				workmem(ax1_work)%ptr,
      .				workmem(ax2_work)%ptr,
      .				ipen,
+     .				set_up,
      .				set_up,
      .				status )
 	IF ( status .NE. ferr_ok ) GOTO 5000

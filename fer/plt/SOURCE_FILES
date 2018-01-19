@@ -11,9 +11,12 @@ choose_cx_ww.F\
 ck_gks_active.F\
 clear_window.F\
 compound_key.F\
+curv_coord_add.F\
 curv_coord_add_sub.F\
+curv_coord.F\
 curv_coord_sub.F\
 curv_coord_range_sub.F\
+curv_coord_range.F\
 disp_data_set_up.F\
 disp_init.F\
 disp_labels.F\
@@ -60,6 +63,7 @@ put_cmnd_key.F\
 put_key.F\
 put_label.F\
 re_orient.F\
+restore_curvi.F\
 save_frame.F\
 save_frame_name.F\
 seg_off.F\

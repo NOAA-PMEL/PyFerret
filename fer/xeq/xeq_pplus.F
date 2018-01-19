@@ -51,7 +51,9 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V6.85 *acm* 3/13 Fix ticket 2049; check we can open palette file
 * V6.86 *acm* 1/14 In above fix, let there be spaces before the file spec.
-
+* V7.4 *acm* 1/18 for issue 1854 if mem pointers for curvi coord data have 
+*                 been temporarily reset, restore to prev values
+* 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -62,6 +64,7 @@
         include 'axis_inc.decl'  ! added 10/9/91 for ylen,yorg
         include 'AXIS.INC'            ! added 10/9/91 for ylen,yorg
 	include 'xgrinpt.cmn'	! 6/99 w/ mouse input
+	include 'xvariables.cmn'
 	
 * local variable declarations:
 	LOGICAL	ver_out, jnl_out
@@ -142,7 +145,7 @@
            IF (jnl_out) WRITE (jrnl_lun,'(A)') ppl_buff(:slen)
 	   IF (ver_out) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
      .					ppl_buff, slen )
-     
+ 
 
 	   vbuff = ' '
 	   WRITE ( vbuff, '(I3)' ) wmouse
@@ -187,6 +190,15 @@
 	      iaxset = 0
 	   ENDIF
 	ENDIF
+
+	IF (( INDEX(vbuff,'SHADE')   .GT. 0 ) .OR.
+     .      ( INDEX(vbuff,'CONTOUR') .GT. 0 ) .OR.
+     .      ( INDEX(vbuff,'FILL')    .GT. 0 ) .OR.
+     .      ( INDEX(vbuff,'VECTOR')  .GT. 0 ) .OR.
+     .      ( INDEX(vbuff,'POLY')    .GT. 0 ) .OR.
+     .      ( INDEX(vbuff,'WIRE')    .GT. 0 )    ) THEN 
+	   CALL RESTORE_CURVI   
+	ENDIF     
 
 * check to see if ylen or yorg has been changed
 * if so, parameters saved prior to distorting yaxis are invalidated

@@ -37,6 +37,7 @@
 #        stick another mem at tthe end of the FERLIBS list.  Ugly solution.
 #        Also shifted fmt after mem so that the new LIFINT8 gets picked up
 #  V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
+#  V74  *acm*  1/18 Remove save_arg_pointers.o, diffs because of dynamic-memory updates
 # 
 # include platform specific macro definitions
 #
@@ -78,7 +79,7 @@ FEROBJS_DFLT = $(DATA_OBJS) special/linux_routines.o \
 	special/ferret_dispatch.o special/xmake_date_data.o special/fakes3.o \
 	special/xrevision_type_data.o special/xplatform_type_data.o special/FerMem_routines.o
 
-FEROBJS = ccr/save_arg_pointers.o $(FEROBJS_DFLT)
+FEROBJS = $(FEROBJS_DFLT)
 
 PPLOBJS =  ../ppl/tmapadds/*.o 
 

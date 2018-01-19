@@ -110,6 +110,7 @@
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
+* V74  1/18 *am* for issue #1854, extra argument to DISP_SET_UP
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -248,6 +249,7 @@
      .				workmem(ax2_work)%ptr,
      .				-1, 			! auto pen select,
      .				inc_grid,
+     .				set_up,
      .				status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 

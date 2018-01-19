@@ -42,6 +42,8 @@
 
 * V230: 7/27/92 - removed code from GET_CMND_DATA
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V740: 1/18 *acm* for issue 1854, protection status temporarily reset 
+*             for curvi-coord plot with /SET
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -64,7 +66,8 @@
  	IF ( mr_protected( mr ) .NE. mr_perm_protected
      . .AND. mr_protected( mr ) .NE. mr_not_protected
      . .AND. mr_protected( mr ) .NE. mr_temporary
-     . .AND. mr_protected( mr ) .NE. mr_deleted )
+     . .AND. mr_protected( mr ) .NE. mr_deleted
+     . .AND. mr_protected( mr ) .GT. mr_keep_flag )
      .			WRITE (6,*) 'get_cmnd_prot_err'
 
  	RETURN

@@ -1,0 +1,22 @@
+! err73_agg_1_time
+! see github issue #1853 
+! Grid cell edges when aggregation is just one point in time
+
+
+def ax/edge/t=1-jan-0001:1-jan-0011/np=1/unit=day/t0=1-jan-0001/cal=julian tax
+let a = t[gt=tax]
+save/clob/file="a.nc"/bounds a
+
+can var/all
+can ax tax
+
+! simple use command, lists correct edges
+use a.nc
+list/nohead tboxlo[gt=a], tboxhi[gt=a]
+
+can data/all
+can dat/all
+
+! tseries aggregation, previously assigned a box size of 1
+tseries agg = {"a.nc"}
+list/nohead tboxlo[gt=a], tboxhi[gt=a]

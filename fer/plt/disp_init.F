@@ -94,6 +94,8 @@
 *                   delta-t for time overlay plots. TAXUND restores the default.
 * V697  *acm*  1/16 Ticket 2344: if there was a time-plot underlay, use the underlay's 
 *                   time scaling for time overlay plots. TAXUND restores the default.
+* V73+ 1/18 *acm*  Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
+*                  Initialize the information stored for this scaling
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -104,6 +106,7 @@
 	include 'xrevision.cmn'
         include 'axis_inc.decl'    ! with iaxset
         include 'AXIS.INC'
+	include 'xbox_bounds.cmn'
         include 'pyfonts.cmn'
 
 * calling argument declarations:
@@ -214,6 +217,12 @@
 
 * free the color table on a full window
         IF ( vp_num .EQ. mvp_dflt ) CALL PPL_SHASET( 'RESET' )
+
+        saved_bb_date = ' '
+        bb_x_fac  = 1.
+        bb_x_off  = 0.
+        bb_y_fac  = 1.
+        bb_y_off  = 0.
 
 * initialize labels and keys
 	nvect_on   = 0

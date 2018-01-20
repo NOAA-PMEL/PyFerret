@@ -1,6 +1,6 @@
 	 SUBROUTINE LOAD_CURVILINEAR( xpos, ypos, dim1, dim2, argx_pos,
      .				     edges_ok, mr_xpos, mr_ypos,
-     .				     cx_xpos, cx_ypos, cx_val, status )
+     .				     cx_xpos, cx_ypos, cx_val, set_up, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -51,6 +51,8 @@
 *                  longitude and latitude.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V687 *acm* 3/14  Ticket 2147: Need double-precision bad-values for coordinate variables 
+* V740: 1/18 *acm* for issue 1854, protection status temporarily reset 
+*             for curvi-coord plot with /SET
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -71,7 +73,8 @@
      .		xspan_n_dim1, xspan_n_dim2,
      .		yspan_n_dim1, yspan_n_dim2,
      .		xspan_np1_dim1, xspan_np1_dim2,
-     .		yspan_np1_dim1, yspan_np1_dim2
+     .		yspan_np1_dim1, yspan_np1_dim2, 
+     .		set_up
 
 	INTEGER	CAXIS_MODLEN, STR_SAME,
      .		dim, x1span, x2span, y1span, y2span,
@@ -215,8 +218,17 @@
      .       TM_HAS_STRING(xcoord_units,'deg') ) 
      .       units_degrees = .TRUE.
 
-* save the memory pointers to the arrays, themselves
-	CALL SAVE_ARG_POINTERS( xpos, ypos )
+* Mark the protection status so that curvi coord data is not lost. if LET
+* commands are made within the SHADE/SET; PPL SHADE block, that triggers a 
+* freeing of mem pointers. These will be restored after the plot is done.
+
+	xmem_ptr = mr_xpos
+	ymem_ptr = mr_ypos
+
+	IF (set_up) THEN
+	   mr_protected(xmem_ptr) = mr_protected(xmem_ptr) + mr_keep_now
+	   mr_protected(ymem_ptr) = mr_protected(ymem_ptr) + mr_keep_now
+	ENDIF
 
 * successful completion
 	status = ferr_ok

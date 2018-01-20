@@ -43,7 +43,6 @@ recover_cached_2d_array_point.c\
 recover_cached_full_array.c\
 replaceable_bad_flags.c \
 replace_bad_data_sub.c \
-save_arg_pointers.c\
 save_c_string.c\
 set_nan.c\
 set_null_c_string.c\

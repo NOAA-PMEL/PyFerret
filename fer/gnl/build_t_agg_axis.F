@@ -58,6 +58,7 @@
 *                  of axis into grids - the swap axis may be in multiple grids.
 * V71   2/17 *acm* ticket 2507, further fix for when several variables have the same grid.
 * V72 8/17 *acm*   For trac enhancement #767 -- dynamic coordinate storage
+* V74 1/18 *acm*   Issue 1853 correctly handle aggregations of one timestep
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -187,8 +188,16 @@
 	      CALL PUT_LINE_COORD ( linemem(iline)%ptr, istep, line_start(taxis)
      .		+ (istep-1)* line_delta(taxis) )
 	   ENDDO
-	   line_delta(iline) = unspecified_val8
-	   need_midpoints = .TRUE.
+
+	   IF (nsteps .EQ. 1) THEN
+	      CALL PUT_LINE_COORD ( lineedg(iline)%ptr, 1, 
+     .		       line_start(taxis) - line_delta(taxis)/2. )
+	      CALL PUT_LINE_COORD ( lineedg(iline)%ptr, 2, 
+     .		       line_start(taxis) + line_delta(taxis)/2. )
+	   ELSE
+	      line_delta(iline) = unspecified_val8
+	      need_midpoints = .TRUE.
+	   ENDIF
 	
 	ELSEIF (.NOT.t_regular .AND. .NOT.line_regular(taxis)) THEN
 	    CALL COPY_LINE_COORDS (linemem(taxis)%ptr, linemem(iline)%ptr, nsteps)
@@ -482,7 +491,8 @@ C check for overlap???
 * if the coordinates have been saved as irregular we must now
 *  check to see if the coords may be regular after all
 
-	   dfirst_delta = GET_LINE_COORD (linemem(taxis)%ptr, 2) - GET_LINE_COORD (linemem(taxis)%ptr, 1)
+	   IF (nsteps .GT. 1) dfirst_delta = GET_LINE_COORD (linemem(taxis)%ptr, 2) -
+     .           GET_LINE_COORD (linemem(taxis)%ptr, 1)
 
 *  ... first sanity check monotonicity and bounds bracketing
 	   IF (nsteps.EQ.1) GOTO 100
@@ -531,11 +541,7 @@ C check for overlap???
  100	   CONTINUE
 	   line_regular(taxis) = .TRUE.
 	   line_start  (taxis) = GET_LINE_COORD (linemem(taxis)%ptr, 1) 
-	   IF (nsteps .GT. 1) THEN   
-	      line_delta(taxis) = dfirst_delta
-	   ELSE
-	      line_delta(taxis) = 1.0   ! arbitrary
-	   ENDIF
+	   IF (nsteps .GT. 1) line_delta(taxis) = dfirst_delta
 	   CALL FREE_LINE_DYNMEM (taxis)
 
 	ENDIF

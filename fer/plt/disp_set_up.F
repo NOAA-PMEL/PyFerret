@@ -3,7 +3,7 @@
      .				transpz, no_labels, no_x_rng, valx1, 
      .				density, is_logx, is_logy, mr_list, nmv, 
      .				cx_list, uvar, s1_axis, s2_axis, pen, inc_grid,
-     .				status )
+     .				set_up, status )
 
 *
 *
@@ -177,6 +177,8 @@
 * V72  3/17 *acm* Changes for ticket 2517, call to AXIS_ENDS changed.
 * V73+ 1/18 *acm* Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
 *                 scaling for axis coords and box edges
+* V740: 1/18 *acm* for issue 1854, protection status temporarily reset 
+*                 for curvi-coord plot with /SET
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -218,7 +220,7 @@ C plus those starting w/ xbox_bounds:
 
 * calling argument declarations:
 	LOGICAL		vector, overlay, transpz, no_labels, no_x_rng,
-     .			is_logx, is_logy, flows, shade, inc_grid
+     .			is_logx, is_logy, flows, shade, inc_grid, set_up
 	INTEGER		nmv, mr_list( nmv ), cx_list( nmv ), uvar,
      .			density, pen, status
 	REAL 		aspect, valx1, s1_axis(*), s2_axis(*)
@@ -841,7 +843,8 @@ C ACM added 8/2001 save cal id if vertical time axis
      .				  memry(mr_ypos)%ptr,
      .				  dim1, dim2, arg_xpos,
      .				  edges_ok, mr_xpos, mr_ypos,
-     .				  cx_xpos, cx_ypos, ctx, status)
+     .				  cx_xpos, cx_ypos, ctx, set_up,
+     .				  status)
 	   IF ( status .NE. ferr_ok) GOTO 5100
 	ENDIF
 

@@ -59,6 +59,8 @@
 *                  Increase size of max_gfdl_dsets and max_grids
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 * V720: 6/17 *acm* Ticket 2346: new @IIN regridding transform
+* V740: 1/18 *acm* for issue 1854, protection status temporarily reset 
+*             for curvi-coord plot with /SET
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -123,9 +125,10 @@
 
 * quantities relevant to management of memory and memory variables
 	INTEGER		mr_deleted,		mr_nonexist,
-     .			mr_out_of_bounds,	
+     .			mr_out_of_bounds,
      .			mr_not_protected,	mr_perm_protected,
      .			mr_in_progress,		mr_temporary,
+     .			mr_keep_now,		mr_keep_flag,
      .			var_name_nonexist,	mr_table_entry_only,
      .			munknown_var_name,	mr_not_contiguous
 	PARAMETER     ( mr_deleted		= -777,
@@ -133,6 +136,8 @@
      .			mr_in_progress		= -666,
      .			mr_perm_protected	= -555,
      .			mr_table_entry_only	= -444,
+     .			mr_keep_now		= -2000,
+     .			mr_keep_flag		= -1000,
      .			mr_nonexist		= 0 ,
      .			mr_not_contiguous	= mr_nonexist - 1,
      .			mr_out_of_bounds	= -1,

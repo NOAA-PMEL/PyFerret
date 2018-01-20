@@ -1,7 +1,6 @@
-	SUBROUTINE UNPROTECT_CMND_DATA
+      SUBROUTINE CURV_COORD_ADD ( xi, yi, n, xinv, yinv, xadd,
+     .     first, xfield_is_modulo, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -32,43 +31,34 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
 *
+* Cache pointers passed from FORTRAN.
+* Later these pointers can be used to access the arrays in SUBROUTINES
+* which did not get these args passed.
 *
-* unprotect (flag as not in use) the data from the most recent command
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* programmer - Ansley Manke
+* NOAA/PMEL, Seattle, WA
+*
+* From save_arg_pointers, access to curvilinear coordinate data
+* Change to dynamic-memory pointers for the curvilinear coordinate data
 
-* V230: 7/27/92 - removed code from GET_CMND_DATA
-*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
-* V740: 1/18 *acm* for issue 1854, protection status temporarily reset 
-*             for curvi-coord plot with /SET
 
 	include 'tmap_dims.parm'
-	include	'ferret.parm'
-	include 'xvariables.cmn'
+	include 'ferret.parm'
+        include 'xvariables.cmn'
+	include 'xcurvilinear.cmn'  ! with xmem_prt, ymem_ptr
 
-* calling argument declarations
-* ...
+* calling argument declarations:
+        LOGICAL first, xfield_is_modulo
+	INTEGER n, status
+	REAL*4  xinv, yinv, xadd
+	REAL*8	xi(*), yi(*)
 
-* local variable declarations
-	INTEGER		nu, mr
+	CALL CURV_COORD_ADD_SUB ( xi, yi, n, 
+     .                      memry(xmem_ptr)%ptr, memry(ymem_ptr)%ptr, 
+     .                      xinv, yinv, xadd, first, xfield_is_modulo, status )
 
-* remove protections from the data grids
-	DO 400 nu = 1, num_uvars_in_cmnd
-	   mr = is_mr( nu )
-	   IF ( mr_protected(mr) .NE. mr_deleted ) 
-     .                                CALL MR_NOT_IN_USE( mr )
- 400	CONTINUE
-
-! temp diagnostic - last mem var fetched should never be in-use by this stage
- 	IF ( mr_protected( mr ) .NE. mr_perm_protected
-     . .AND. mr_protected( mr ) .NE. mr_not_protected
-     . .AND. mr_protected( mr ) .NE. mr_temporary
-     . .AND. mr_protected( mr ) .NE. mr_deleted
-     . .AND. mr_protected( mr ) .GT. mr_keep_flag )
-     .			WRITE (6,*) 'get_cmnd_prot_err'
-
- 	RETURN
+	RETURN
 	END

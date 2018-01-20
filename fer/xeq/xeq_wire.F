@@ -61,6 +61,7 @@
 * PyFr *kms*  4/17 Remove SAVE_FRAME for HDF format since no longer supported
 * V72  5/17 acm* Ticket 2530 add WIRE/COLOR= 
 * PyFr *kms*  5/17 Ticket 2530 add WIRE/COLOR= /OPACITY= /THICKNESS= 
+* V74  1/18 *am* for issue #1854, extra argument to DISP_SET_UP
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -223,6 +224,7 @@
      .				workmem(ax1_work)%ptr,
      .				workmem(ax2_work)%ptr,
      .				ipen,
+     .				set_up,
      .				set_up,
      .				status )
 	IF ( status .NE. ferr_ok ) GOTO 5000

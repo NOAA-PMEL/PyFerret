@@ -63,6 +63,9 @@
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V702 1/16 *sh*: dynamic memory management
 *                 (commented out) sanity checking of memory when debugging
+* V740: 1/18 *acm* for issue 1854, protection status temporarily reset 
+*             for curvi-coord plot with /SET
+
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -75,6 +78,11 @@
 
 * internal variable declarations:
 	INTEGER MGRID_SIZE_DELTA, size, idim, prev, next
+
+* Special case of curvilinear plot command with /SET where curvi-coord 
+* data may have been temporarily protected.
+
+	IF ( mr_protected( mr ) .LT. mr_keep_flag ) GOTO 5000
 
 * diagnostic "delete" message
 	IF (mode_diagnostic) THEN
@@ -149,5 +157,5 @@
 !#endif
 
 
-	RETURN
+ 5000	RETURN
 	END

@@ -52,7 +52,9 @@
 * V6.85 *acm* 3/13 Fix ticket 2049; check we can open palette file
 * PyFr  *kms*  7/13 Reset scaling with PPL /RESET
 * V6.86 *acm* 1/14 In above fix, let there be spaces before the file spec.
-
+* V7.4 *acm* 1/18 for issue 1854 if mem pointers for curvi coord data have
+*                 been temporarily reset, restore to prev values
+ 
         IMPLICIT NONE
 
 	include 'tmap_dims.parm'
@@ -63,6 +65,7 @@
 	include 'xplot_state.cmn'
 	include 'xplot_setup.cmn'
 	include 'xgrinpt.cmn'	 ! mouse input
+	include 'xvariables.cmn'
         include 'axis_inc.decl'
         include 'AXIS.INC'       ! ylen,yorg
         include 'plt_inc.decl'
@@ -70,6 +73,7 @@
 	include 'gkscm1_inc.decl'
 	include 'GKSCM1.INC'	 ! wsid
         INCLUDE 'fgrdel.cmn'     ! windowdpix, windowdpiy
+
 
 * local variable declarations:
 	LOGICAL	ver_out, jnl_out
@@ -201,6 +205,15 @@
 	      iaxset = 0
 	   ENDIF
 	ENDIF
+
+	IF (( INDEX(vbuff,'SHADE')   .GT. 0 ) .OR.
+     .      ( INDEX(vbuff,'CONTOUR') .GT. 0 ) .OR.
+     .      ( INDEX(vbuff,'FILL')    .GT. 0 ) .OR.
+     .      ( INDEX(vbuff,'VECTOR')  .GT. 0 ) .OR.
+     .      ( INDEX(vbuff,'POLY')    .GT. 0 ) .OR.
+     .      ( INDEX(vbuff,'WIRE')    .GT. 0 )    ) THEN 
+	   CALL RESTORE_CURVI   
+	ENDIF     
 
 * check to see if ylen or yorg has been changed
 * if so, parameters saved prior to distorting yaxis are invalidated

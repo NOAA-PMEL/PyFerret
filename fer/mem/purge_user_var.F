@@ -45,6 +45,8 @@
 * revision 0.1 - 9/30/87 - added mr_perm_prot
 * V200:  6/9/89 - deleted variables flagged in mr_protected
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V740: 1/18 *acm* for issue 1854, protection status temporarily reset 
+*             for curvi-coord plot with /SET
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -59,6 +61,8 @@
 
 	DO 100 mr = 1, max_mrs
 	   IF ( mr_protected( mr ) .EQ. mr_deleted ) GOTO 100
+	   IF ( mr_protected( mr ) .LT. mr_keep_flag ) GOTO 100
+
 	   IF ( mr_variable ( mr ) .NE. uvar
      .	   .OR. mr_category ( mr ) .NE. cat_user_var ) GOTO 100
 

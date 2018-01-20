@@ -6,6 +6,9 @@
 * V68  *acm* 1/12  explicit REAL*4 declarations for double-precision ferret with
 *		    single-precision pplus
 * V687 *acm* 3/14  Ticket 2147: Need double-precision bad-values for coordinate variables 
+* V740: 1/18 *acm* for issue 1854, protection status temporarily reset 
+*             for curvi-coord plot with /SET
+
 
 	COMMON/ XCURVILINEAR/
      .		wwxmax, wwxmin,
@@ -24,6 +27,8 @@
      .		xpos_off0_dim2,
      .		ypos_off0_dim1,
      .		ypos_off0_dim2,
+     .		xmem_ptr,
+     .		ymem_ptr,
      .		xspan_1_dim1,
      .		xspan_1_dim2,
      .		yspan_1_dim1,
@@ -52,7 +57,9 @@
      .		xpos_off0_dim1,
      .		xpos_off0_dim2,
      .		ypos_off0_dim1,
-     .		ypos_off0_dim2
+     .		ypos_off0_dim2,
+     .		xmem_ptr,
+     .		ymem_ptr
 	REAL*4	badx, bady,
      .		wwxmax, wwxmin,
      .		wwymax, wwymin

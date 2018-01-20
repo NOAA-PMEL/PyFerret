@@ -1,6 +1,4 @@
-	SUBROUTINE UNPROTECT_CMND_DATA
-
-*
+	SUBROUTINE RESTORE_CURVI 
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -32,43 +30,38 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
 *
+* Restore settings for dynamic-memory pointers for the curvilinear coordinate data
 *
-* unprotect (flag as not in use) the data from the most recent command
-
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-
-* V230: 7/27/92 - removed code from GET_CMND_DATA
-*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
-* V740: 1/18 *acm* for issue 1854, protection status temporarily reset 
-*             for curvi-coord plot with /SET
+* programmer - Ansley Manke
+* PMEL SDIG, 1/19/2018
+*
+* The curvilinear 2-D coordinate data is passed to PPLUS using the pointers to  
+* memory. If the command is e.g. a SHADE/SET, then the data for the curvilinear 
+* coordinates has been loaded but may be lost if the commands that come after 
+* /SET and before PPL SHADE include redefining any variable, which triggers a 
+* freeing of memory. The mr_protected flag has been set to prevent these 
+* variables from being freed.  Now that the plot is done, restore the settings 
+* for mr_protected.
 
 	include 'tmap_dims.parm'
-	include	'ferret.parm'
-	include 'xvariables.cmn'
+	include 'ferret.parm'
+        include 'xvariables.cmn'
+	include 'xcurvilinear.cmn'
 
-* calling argument declarations
-* ...
+	IF (xmem_ptr .NE. mr_nonexist) THEN
+	   IF (mr_protected(xmem_ptr) .LT. mr_keep_flag) THEN
+	      mr_protected(xmem_ptr) = mr_protected(xmem_ptr) - mr_keep_now
+	      CALL DELETE_VARIABLE(xmem_ptr)
+	   ENDIF
+	ENDIF
+	   IF (ymem_ptr .NE. mr_nonexist) THEN
+	   IF (mr_protected(ymem_ptr) .LT. mr_keep_flag) THEN
+	      mr_protected(ymem_ptr) = mr_protected(ymem_ptr) - mr_keep_now
+	      CALL DELETE_VARIABLE(ymem_ptr)
+	   ENDIF
+	ENDIF
 
-* local variable declarations
-	INTEGER		nu, mr
-
-* remove protections from the data grids
-	DO 400 nu = 1, num_uvars_in_cmnd
-	   mr = is_mr( nu )
-	   IF ( mr_protected(mr) .NE. mr_deleted ) 
-     .                                CALL MR_NOT_IN_USE( mr )
- 400	CONTINUE
-
-! temp diagnostic - last mem var fetched should never be in-use by this stage
- 	IF ( mr_protected( mr ) .NE. mr_perm_protected
-     . .AND. mr_protected( mr ) .NE. mr_not_protected
-     . .AND. mr_protected( mr ) .NE. mr_temporary
-     . .AND. mr_protected( mr ) .NE. mr_deleted
-     . .AND. mr_protected( mr ) .GT. mr_keep_flag )
-     .			WRITE (6,*) 'get_cmnd_prot_err'
-
- 	RETURN
+	RETURN
 	END

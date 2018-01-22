@@ -10509,7 +10509,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.31"
-FERRET_PLATFORM = "Linux 3.10.0-693.11.1.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-693.11.6.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
@@ -10541,7 +10541,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.31"
-FERRET_PLATFORM = "Linux 3.10.0-693.11.1.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-693.11.6.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
@@ -10719,7 +10719,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.31"
-FERRET_PLATFORM = "Linux 3.10.0-693.11.1.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-693.11.6.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
@@ -24822,8 +24822,9 @@ set reg/l=3/y=50s:60n/x=100e:60w
 set mode cal months
  
 ! Patterns not available in PyFerret
-IF ($program_name"1|PyFerret>1|Ferret>0") THEN EXIT/SCRIPT
- !-> IF 0 THEN EXIT/SCRIPT
+! IF ($program_name"1|PyFerret>1|Ferret>0") THEN EXIT/SCRIPT
+set mode ignore
+ 
  
 ! The /pattern qualifier sets patterns to be used, like /palette sets colors.
 ! Files in $FER_PALETTE with extension .pat are read in to set patterns.
@@ -24859,6 +24860,7 @@ go land thick
 can win 2
 set win 1
 can mode meta
+set mode/last ignore
 *** Running ferret script: bn_polygon.jnl
 ! Demo of new POLYGON command
 ! *jd * 3.99
@@ -62814,7 +62816,7 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v7.31 (beta/debug)"                                               
- 3    /  3:" ! Linux 3.10.0-693.11.1.el7.x86_64 64-bit - MM-DD-YY"                      
+ 3    /  3:" ! Linux 3.10.0-693.11.6.el7.x86_64 64-bit - MM-DD-YY"                      
  4    /  4:" ! DD-MON-YY HH:MM     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
@@ -104252,6 +104254,86 @@ shade/over/t="1-feb-2010:12:00":"2-feb-2010:06:00"/lev=40/pal=grayscale  var2
 frame /file=time_plot_precision_2doverlay.gif
  
  
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err73_agg_1_time
+! err73_agg_1_time
+! see github issue #1853
+! Grid cell edges when aggregation is just one point in time
+ 
+ 
+def ax/edge/t=1-jan-0001:1-jan-0011/np=1/unit=day/t0=1-jan-0001/cal=julian tax
+let a = t[gt=tax]
+save/clob/file="a.nc"/bounds a
+ 
+can var/all
+can ax tax
+ 
+! simple use command, lists correct edges
+use a.nc
+list/nohead tboxlo[gt=a], tboxhi[gt=a]
+I / *:     0.0000  3652.
+ 
+can data/all
+can dat/all
+ 
+! tseries aggregation, previously assigned a box size of 1
+tseries agg = {"a.nc"}
+list/nohead tboxlo[gt=a], tboxhi[gt=a]
+I / *:     0.0000  3652.
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err73_shade_curvi
+! err73_shade_curvi
+!  1/17/2018 See issue 1854 corruption of coordinate data on curvi
+!           graphics commands using /set
+ 
+use tripolar_subset.nc
+let/d=1 plot_var =     u
+let xcoord = geolon_c
+let ycoord = geolat_c
+ 
+! The plot is fine when the commands after /SET are not LET commands
+ 
+set v ul
+shade/set plot_var , xcoord, ycoord
+ppl ylab "my y label"
+ppl shade
+ 
+! The coordinate data loaded by SHADE/SET becomes corrupted when LET
+! commands are issued after the /SET. Previously there were corrupted
+! plots in the next 3 frames
+ 
+LET add_urls = 0
+set v ur
+shade/set plot_var, xcoord, ycoord
+LET add_urls = 1
+ppl shade
+ 
+set v ll
+fill/set plot_var, xcoord, ycoord
+LET add_urls = 3
+ppl fill
+ 
+set v lr
+let v2 = 10*plot_var
+vector/set  plot_var, v2, xcoord, ycoord
+ 
+LET add_urls = 4
+ppl vector
+ 
+! /OVER/SET
+contour/over/set/color=red  plot_var, xcoord, ycoord
+ppl conset,0.07,4,,,,,,1
+ 
+ppl contour/over
+ 
+ 
+frame/file=curvi_set.gif
 *** Running ferret script: bn_clim_special.jnl
 ! bn_clim_special.jnl
 ! Test the climatological axes from Andrew's monthly
@@ -106186,7 +106268,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.31"
-FERRET_PLATFORM = "Linux 3.10.0-693.11.1.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-693.11.6.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "31"

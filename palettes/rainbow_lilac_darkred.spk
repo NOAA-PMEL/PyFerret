@@ -1,7 +1,7 @@
-! contributed by Marco Van Hulten. 
-! 1/2018: This palette was an earlier version of rainbow_lilac_darkred.spk.  
-! It now contains the same colors as that palette.
-    
+! rainbow_lilac_darkred.spk
+! Contributed by Marco van Hulten, originally in http://www.nongnu.org/complot/.
+! It is a variant of rainbow.spk but from very light (lilac) to very dark (red).
+
     0.0   90.0   80.0  100.0
    10.0   70.0   50.0  100.0
    35.0    0.0   40.0   30.0

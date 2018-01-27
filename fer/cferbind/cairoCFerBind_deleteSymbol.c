@@ -1,5 +1,6 @@
 /* Python.h should always be first */
 #include <Python.h>
+#include <cairo/cairo.h>
 #include <string.h>
 #include "grdel.h"
 #include "cferbind.h"
@@ -30,8 +31,12 @@ grdelBool cairoCFerBind_deleteSymbol(CFerBind *self, grdelType symbol)
         return 0;
     }
 
-    /* Wipe the name and the id to detect errors */
+    /* Free memory for the path */
+    cairo_path_destroy(symbolobj->path);
+
+    /* Wipe the path, name, and id - to detect errors */
     memset(symbolobj->name, 0, sizeof(symbolobj->name));
+    symbolobj->path = NULL;
     symbolobj->id = NULL;
 
     /* Free the memory */

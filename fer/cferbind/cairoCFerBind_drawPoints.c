@@ -74,129 +74,24 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
     scalefactor  = symsize * instdata->widthfactor;
     scalefactor *= unitfactor / 100.0;
 
-    /* Assign the line style for drawing the symbols */
-    cairo_set_line_width(instdata->context, 15.0 * scalefactor);
-    cairo_set_dash(instdata->context, NULL, 0, 0.0);
-    cairo_set_line_cap(instdata->context, CAIRO_LINE_CAP_SQUARE);
-    cairo_set_line_join(instdata->context, CAIRO_LINE_JOIN_BEVEL);
-
-    if ( strcmp(".", symbolobj->name) == 0 ) {
-        cairo_new_path(instdata->context);
-        for (k = 0; k < numpts; k++) {
-            cairo_new_sub_path(instdata->context);
-            cairo_arc(instdata->context,
-                      ptsx[k] * unitfactor,
-                      ptsy[k] * unitfactor,
-                      10.0 * scalefactor,
-                      0.0, 2.0 * M_PI);
-            cairo_close_path(instdata->context);
-        }
+    /* Draw the scaled symbol at each point */
+    cairo_new_path(instdata->context);
+    for (k = 0; k < numpts; k++) {
+        cairo_new_sub_path(instdata->context);
+        cairo_save(instdata->context);
+        /* Move origin to the location for the point */
+        cairo_translate(instdata->context, ptsx[k] * unitfactor, ptsy[k] * unitfactor);
+        /* Scale so the symbol is drawn the correct size */
+        cairo_scale(instdata->context, scalefactor, scalefactor);
+        /* Draw the symbol */
+        cairo_append_path(instdata->context, symbolobj->path);
+        cairo_restore(instdata->context);
+    }
+    if ( symbolobj->filled ) {
         cairo_fill(instdata->context);
     }
-    else if ( strcmp("o", symbolobj->name) == 0 ) {
-        cairo_new_path(instdata->context);
-        for (k = 0; k < numpts; k++) {
-            cairo_new_sub_path(instdata->context);
-            cairo_arc(instdata->context,
-                      ptsx[k] * unitfactor,
-                      ptsy[k] * unitfactor,
-                      40.0 * scalefactor,
-                      0.0, 2.0 * M_PI);
-            cairo_close_path(instdata->context);
-        }
-        cairo_stroke(instdata->context);
-    }
-    else if ( strcmp("+", symbolobj->name) == 0 ) {
-        cairo_new_path(instdata->context);
-        for (k = 0; k < numpts; k++) {
-            cairo_move_to(instdata->context,
-                          ptsx[k] * unitfactor,
-                          ptsy[k] * unitfactor - 40.0 * scalefactor);
-            cairo_line_to(instdata->context,
-                          ptsx[k] * unitfactor,
-                          ptsy[k] * unitfactor + 40.0 * scalefactor);
-            cairo_move_to(instdata->context,
-                          ptsx[k] * unitfactor - 40.0 * scalefactor,
-                          ptsy[k] * unitfactor);
-            cairo_line_to(instdata->context,
-                          ptsx[k] * unitfactor + 40.0 * scalefactor,
-                          ptsy[k] * unitfactor);
-        }
-        cairo_stroke(instdata->context);
-    }
-    else if ( strcmp("x", symbolobj->name) == 0 ) {
-        cairo_new_path(instdata->context);
-        for (k = 0; k < numpts; k++) {
-            cairo_move_to(instdata->context,
-                          ptsx[k] * unitfactor - 30.0 * scalefactor,
-                          ptsy[k] * unitfactor - 30.0 * scalefactor);
-            cairo_line_to(instdata->context,
-                          ptsx[k] * unitfactor + 30.0 * scalefactor,
-                          ptsy[k] * unitfactor + 30.0 * scalefactor);
-            cairo_move_to(instdata->context,
-                          ptsx[k] * unitfactor - 30.0 * scalefactor,
-                          ptsy[k] * unitfactor + 30.0 * scalefactor);
-            cairo_line_to(instdata->context,
-                          ptsx[k] * unitfactor + 30.0 * scalefactor,
-                          ptsy[k] * unitfactor - 30.0 * scalefactor);
-        }
-        cairo_stroke(instdata->context);
-    }
-    else if ( strcmp("*", symbolobj->name) == 0 ) {
-        cairo_new_path(instdata->context);
-        for (k = 0; k < numpts; k++) {
-            cairo_move_to(instdata->context,
-                          ptsx[k] * unitfactor,
-                          ptsy[k] * unitfactor - 40.0 * scalefactor);
-            cairo_line_to(instdata->context,
-                          ptsx[k] * unitfactor,
-                          ptsy[k] * unitfactor + 40.0 * scalefactor);
-            cairo_move_to(instdata->context,
-                          ptsx[k] * unitfactor - 34.641 * scalefactor,
-                          ptsy[k] * unitfactor - 20.0   * scalefactor);
-            cairo_line_to(instdata->context,
-                          ptsx[k] * unitfactor + 34.641 * scalefactor,
-                          ptsy[k] * unitfactor + 20.0   * scalefactor);
-            cairo_move_to(instdata->context,
-                          ptsx[k] * unitfactor - 34.641 * scalefactor,
-                          ptsy[k] * unitfactor + 20.0   * scalefactor);
-            cairo_line_to(instdata->context,
-                          ptsx[k] * unitfactor + 34.641 * scalefactor,
-                          ptsy[k] * unitfactor - 20.0   * scalefactor);
-        }
-        cairo_stroke(instdata->context);
-    }
-    else if ( strcmp("^", symbolobj->name) == 0 ) {
-        cairo_new_path(instdata->context);
-        for (k = 0; k < numpts; k++) {
-            cairo_move_to(instdata->context,
-                          ptsx[k] * unitfactor - 40.0 * scalefactor,
-                          ptsy[k] * unitfactor + 30.0 * scalefactor);
-            cairo_line_to(instdata->context,
-                          ptsx[k] * unitfactor,
-                          ptsy[k] * unitfactor - 39.282 * scalefactor);
-            cairo_line_to(instdata->context,
-                          ptsx[k] * unitfactor + 40.0 * scalefactor,
-                          ptsy[k] * unitfactor + 30.0 * scalefactor);
-            cairo_close_path(instdata->context);
-        }
-        cairo_stroke(instdata->context);
-    }
-    else if ( strcmp("#", symbolobj->name) == 0 ) {
-        cairo_new_path(instdata->context);
-        for (k = 0; k < numpts; k++) {
-            cairo_rectangle(instdata->context,
-                            ptsx[k] * unitfactor - 35.0 * scalefactor,
-                            ptsy[k] * unitfactor - 35.0 * scalefactor,
-                            70.0 * scalefactor,
-                            70.0 * scalefactor);
-        }
-        cairo_stroke(instdata->context);
-    }
     else {
-        sprintf(grdelerrmsg, "cairoCFerBind_drawPoints: unexpected error, "
-                             "unknown symbol '%s'", symbolobj->name);
-        return 0;
+        cairo_stroke(instdata->context);
     }
 
     instdata->somethingdrawn = 1;

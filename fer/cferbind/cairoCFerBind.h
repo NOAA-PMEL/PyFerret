@@ -59,6 +59,8 @@ extern const char *CCFBSymbolId;
 typedef struct CCFBSymbol_Struct {
     const char *id;
     char name[64];
+    cairo_path_t *path;
+    grdelBool filled;
 } CCFBSymbol;
 
 extern const char *CCFBFontId;

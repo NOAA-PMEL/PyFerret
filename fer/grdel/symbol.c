@@ -285,28 +285,44 @@ grdelBool grdelSymbolDelete(grdelType symbol)
  * Input Arguments:
  *     window: Window in which this symbol is to be used
  *     symbolname: name of the symbol, either a well-known
- *           symbol name (e.g., ".") or a custom name for a 
- *           symbol created from the given vertices (e.g., "FER001")
+ *           symbol name (e.g., ".") or the name of the
+ *           symbol definition file.
  *     namelen: actual length of the symbol name
- *     ptsx: vertices X-coordinates describing the symbol 
- *           as a multiline drawing on a [0,100] square; 
- *           only used if numpts is greater than zero
- *     ptsy: vertices Y-coordinates describing the symbol 
- *           as a multiline drawing on a [0,100] square; 
- *           only used if numpts is greater than zero
- *     numpts: number of vertices describing the symbol; 
- *           can be zero if giving a well-known symbol name
- *     fill: color-fill symbol? (zero == False, non-zero == True)
  * Output Arguments:
  *     symbol: the created symbol object, or zero if failure.
  *             Use fgderrmsg_ to retrieve the error message.
  */
-void fgdsymbol_(void **symbol, void **window, char *symbolname, int *namelen, 
-                float ptsx[], float ptsy[], int *numpts, int *fill)
+void fgdsymbol_(void **symbol, void **window, char *symbolname, int *namelen)
 {
     grdelType mysymbol;
+    float     ptsx[64], ptsy[64];
+    int       numpts;
+    grdelBool fill;
 
-    mysymbol = grdelSymbol(*window, symbolname, *namelen, ptsx, ptsy, *numpts, *fill);
+    if ( (*namelen == 3) && (strncasecmp(symbolname, "dot", 3) == 0) ) {
+        /* The symbol "dot" is the same as the pre-defined symbol "." */
+        mysymbol = grdelSymbol(*window, ".", 1, NULL, NULL, 0, 0);
+    }
+    else if ( (*namelen == 1) && ( (symbolname[0] == '.') ||
+                                   (symbolname[0] == 'o') ||
+                                   (symbolname[0] == '+') ||
+                                   (symbolname[0] == 'x') ||
+                                   (symbolname[0] == '*') ||
+                                   (symbolname[0] == '^') ||
+                                   (symbolname[0] == 'v') ||
+                                   (symbolname[0] == '<') ||
+                                   (symbolname[0] == '>') ||
+                                   (symbolname[0] == '#')    ) ) {
+        /* Pre-defined symbols (no points given; fill is ignored) */
+        mysymbol = grdelSymbol(*window, symbolname, 1, NULL, NULL, 0, 0);
+    }
+    else {
+        /* Symbols defined in a file */
+        numpts = 0;
+        fill = 0;
+        mysymbol = grdelSymbol(*window, symbolname, *namelen, ptsx, ptsy, numpts, fill);
+    }
+
     *symbol = mysymbol;
 }
 

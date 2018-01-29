@@ -237,8 +237,7 @@ void fgdbrush_(void **brush, void **window, void **color,
 void fgdbrushreplacecolor_(int *success, void **brush, void **color);
 void fgdbrushdel_(int *success, void **brush);
 
-void fgdsymbol_(void **symbol, void **window, char *symbolname, int *namelen, 
-                float ptsx[], float ptsy[], int *numpts, int *fill);
+void fgdsymbol_(void **symbol, void **window, char *symbolname, int *namelen);
 void fgdsymboldel_(int *success, void **symbol);
 
 /*

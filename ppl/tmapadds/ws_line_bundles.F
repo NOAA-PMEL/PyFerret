@@ -68,12 +68,14 @@
         INCLUDE 'save_colors.cmn'
 
         integer zwsid, zwstype
-        integer j, fktr, marktype, index
+        integer j, fktr, index
         real    thickness, dotsize, grey, frac
+        CHARACTER*3 marktype
 
 *******************************************************************************
 
-        marktype = 1    ! polymarker type 1=dot
+*        marktype = 1    ! polymarker type 1=dot
+        marktype = 'dot'
 
 *       COLOR WORKSTATIONS:
 *       pre-defined colors

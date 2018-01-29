@@ -73,11 +73,12 @@
 
 	integer		max_pline, max_pmark, max_text, max_fill_area
 	integer		max_pattern, max_color, error, ncolors
-	integer		fktr, marktype, index, line_color_reserve,
+	integer		fktr, index, line_color_reserve,
      .			icolr, ndx, n1, n2, n3, slen,
      .			nthick, status, usable_colors
 	real		thickness, dotsize, frac, r_val, g_val, b_val, a_val
 
+        CHARACTER*3     marktype
 	CHARACTER*100   err_msg
 	CHARACTER*12	TM_FMT_SNGL, note
 
@@ -90,7 +91,8 @@
      .	            max_text,max_fill_area,max_pattern,max_color)
 	if (error .ne. 0) goto 1000
 
-        marktype = 1    ! polymarker type 1=dot
+*        marktype = 1    ! polymarker type 1=dot
+         marktype = 'dot'
 
 *	COLOR OR MONOCHROME?
 	if (max_color .le. 2) goto 100

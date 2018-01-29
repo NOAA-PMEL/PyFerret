@@ -11,6 +11,7 @@
         INTEGER windowid, ipen, icolor
         REAL*4 thickness
         REAL*4 dotsize
+        CHARACTER*3 dotmark
 
         INCLUDE 'fgrdel.cmn'
 
@@ -35,8 +36,9 @@
         CALL FGD_GSPLR(windowid, ipen, 1, thickness, icolor)
 *       also make a temporary symbol object (dot) at the same array index;
 *       code in ferret expects this
+        dotmark = 'dot'
         dotsize = 6.0 + thickness
-        CALL FGD_GSPMR(windowid, ipen, 1, dotsize, icolor)
+        CALL FGD_GSPMR(windowid, ipen, dotmark, dotsize, icolor)
 
         RETURN
         END

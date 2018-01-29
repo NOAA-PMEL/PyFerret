@@ -7,27 +7,27 @@
 * are in units of points (1/72 inches); possibly further 
 * scaled by the line width scaling factor.
 *
+* The symbol type character changed from a integer value 
+* to a string (name for the symbol) to allow custom types.
+*
 
         SUBROUTINE FGD_GSPMR(windowid, symnum, 
-     .                 symtype, symsize, colorindex)
+     .                       symname, symsize, colorindex)
 
         IMPLICIT NONE
-        INTEGER windowid, symnum, symtype, colorindex
+        INTEGER windowid, symnum, colorindex
         REAL*4 symsize
+        CHARACTER*(*) symname
 
         INCLUDE 'ferret.parm'
         INCLUDE 'tmap_dims.parm'
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
+        INTEGER TM_LENSTR
+
         INTEGER colornum, snlen, success, errmsglen
-        CHARACTER*8 symname
         CHARACTER*2048 errmsg
-*       For custom symbols: ptsx, ptsy, and numpts describes 
-*       the symbol as a multiline drawing on a [0,100] square grid
-        REAL*4 ptsx(32), ptsy(32)
-        INTEGER numpts
-        INTEGER fill
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR.
@@ -51,53 +51,6 @@
             STOP 'FGD_GSPMR: null colorobj'
         ENDIF
 
-*       symbol types
-        IF ( symtype .EQ. 1 ) THEN
-*           small filled circle
-            numpts = 0
-            fill = 1
-            symname = '.'
-            snlen = 1
-        ELSE IF ( symtype .EQ. 2 ) THEN
-*           plus
-            numpts = 0
-            fill = 0
-            symname = '+'
-            snlen = 1
-        ELSE IF ( symtype .EQ. 3 ) THEN
-*           asterisk
-            numpts = 0
-            fill = 0
-            symname = '*'
-            snlen = 1
-        ELSE IF ( symtype .EQ. 4 ) THEN
-*           open circle
-            numpts = 0
-            fill = 0
-            symname = 'o'
-            snlen = 1
-        ELSE IF ( symtype .EQ. 5 ) THEN
-*           ex
-            numpts = 0
-            fill = 0
-            symname = 'x'
-            snlen = 1
-        ELSE IF ( symtype .EQ. 6 ) THEN
-*           open triangle
-            numpts = 0
-            fill = 0
-            symname = '^'
-            snlen = 1
-        ELSE IF ( symtype .EQ. 7 ) THEN
-*           open square
-            numpts = 0
-            fill = 0
-            symname = '#'
-            snlen = 1
-        ELSE
-            STOP 'FGD_GSPMR: invalid symtype'
-        ENDIF
-
 *       If a symbol object already exists, delete it
         IF ( symbolobjs(symnum, windowid) .NE. nullobj ) THEN
             CALL FGDSYMBOLDEL(success, symbolobjs(symnum, windowid))
@@ -110,10 +63,17 @@
             symbolobjs(symnum, windowid) = nullobj
         ENDIF
 
+        snlen = TM_LENSTR(symname)
+        IF ( snlen .LE. 0 ) THEN
+            errmsg = 'No symbol name given'
+            errmsglen = 20
+            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            RETURN
+        ENDIF
+
 *       Create the symbol object
         CALL FGDSYMBOL(symbolobjs(symnum, windowid), 
-     .                 windowobjs(windowid), symname, snlen,
-     .                 ptsx, ptsy, numpts, fill)
+     .                 windowobjs(windowid), symname, snlen)
         IF ( symbolobjs(symnum, windowid) .EQ. nullobj ) THEN
             errmsg = ' '
             CALL FGDERRMSG(errmsg, errmsglen)

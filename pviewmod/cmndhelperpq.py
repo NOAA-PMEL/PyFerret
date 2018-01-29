@@ -320,7 +320,10 @@ class CmndHelperPQ(object):
             '+': plus mark
             'x' (lowercase ex): x mark
             '*': asterisk
-            '^': triangle
+            '^': triangle pointing up
+            'v': triangle pointing down
+            '<': triangle pointing left
+            '>': triangle pointing right
             "#": square
 
         If symbolinfo is a dictionary, the following key/value pairs are 
@@ -395,6 +398,24 @@ class CmndHelperPQ(object):
                 path = QPainterPath( QPointF(-40.0, 30.0) )
                 path.lineTo( 0.0, -39.282)
                 path.lineTo(40.0,  30.0)
+                path.closeSubpath()
+                sympath = SymbolPath(path, False)
+            elif symbol == 'v':
+                path = QPainterPath( QPointF(-40.0, -30.0) )
+                path.lineTo( 0.0,  39.282)
+                path.lineTo(40.0, -30.0)
+                path.closeSubpath()
+                sympath = SymbolPath(path, False)
+            elif symbol == '<':
+                path = QPainterPath( QPointF(30.0, -40.0) )
+                path.lineTo(-39.282, 0.0)
+                path.lineTo( 30.0,  40.0)
+                path.closeSubpath()
+                sympath = SymbolPath(path, False)
+            elif symbol == '>':
+                path = QPainterPath( QPointF(-30.0, -40.0) )
+                path.lineTo( 39.282, 0.0)
+                path.lineTo(-30.0,  40.0)
                 path.closeSubpath()
                 sympath = SymbolPath(path, False)
             elif symbol == '#':

@@ -24,7 +24,10 @@ const char *CCFBSymbolId = "CCFBSymbolId";
  *     "+" (plus) - plus
  *     "x" (lowercase ex) - ex
  *     "*" (asterisk) - asterisk
- *     "^" (caret) - unfilled triangle
+ *     "^" (caret) - unfilled triangle pointing up
+ *     "v" (lowercase vee) - unfilled triangle pointing down
+ *     "<" (less sign) - unfilled triangle pointing left
+ *     ">" (greater sign) - unfilled triangle pointing right
  *     "#" (pound sign) - unfilled square
  *
  * If numpts is greater than zero and ptsx and ptsy are not NULL, the 
@@ -135,7 +138,7 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
                 if ( (laststart >= 0) && (lastend > laststart) && 
                      (fabs(ptsx[lastend] - ptsx[laststart]) < 0.001) &&
                      (fabs(ptsy[lastend] - ptsy[laststart]) < 0.001) ) {
-	            cairo_close_path(pathcontext);
+                    cairo_close_path(pathcontext);
                 }
                 /* and end the current subpath */
                 newstart = 1;
@@ -167,7 +170,7 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
     else if ( strcmp(".", symbolobj->name) == 0 ) {
         cairo_new_path(pathcontext);
         cairo_arc(pathcontext, 0.0, 0.0, 10.0, 0.0, 2.0 * M_PI);
-	cairo_close_path(pathcontext);
+        cairo_close_path(pathcontext);
         symbolobj->filled = 1;
     }
     else if ( strcmp("o", symbolobj->name) == 0 ) {
@@ -207,6 +210,30 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
         cairo_move_to(pathcontext, -40.0,  30.0);
         cairo_line_to(pathcontext,   0.0, -39.282);
         cairo_line_to(pathcontext,  40.0,  30.0);
+        cairo_close_path(pathcontext);
+        symbolobj->filled = 0;
+    }
+    else if ( strcmp("v", symbolobj->name) == 0 ) {
+        cairo_new_path(pathcontext);
+        cairo_move_to(pathcontext, -40.0, -30.0);
+        cairo_line_to(pathcontext,   0.0,  39.282);
+        cairo_line_to(pathcontext,  40.0, -30.0);
+        cairo_close_path(pathcontext);
+        symbolobj->filled = 0;
+    }
+    else if ( strcmp("<", symbolobj->name) == 0 ) {
+        cairo_new_path(pathcontext);
+        cairo_move_to(pathcontext,  30.0, -40.0);
+        cairo_line_to(pathcontext, -39.282, 0.0);
+        cairo_line_to(pathcontext,  30.0,  40.0);
+        cairo_close_path(pathcontext);
+        symbolobj->filled = 0;
+    }
+    else if ( strcmp(">", symbolobj->name) == 0 ) {
+        cairo_new_path(pathcontext);
+        cairo_move_to(pathcontext, -30.0, -40.0);
+        cairo_line_to(pathcontext,  39.282, 0.0);
+        cairo_line_to(pathcontext, -30.0,  40.0);
         cairo_close_path(pathcontext);
         symbolobj->filled = 0;
     }

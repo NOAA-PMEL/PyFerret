@@ -79,6 +79,10 @@ void fgd_set_unmapped_default_(int *pngonly);
 void fgd_set_transparency_(int *transparent);
 void fgd_getanimate_(int *inanimation);
 
+/* Utility function for reading symbol definitions */
+grdelBool getSymbolDef(float **ptsxptr, float **ptsyptr, int *numptsptr, 
+                       grdelBool *fillptr, char symbolname[], int namelen);
+
 /*
  * "Window" refers to the full canvas; however, no drawing, except possibly
  * clearing the window, is done on the full window.  Instead, a "View" of

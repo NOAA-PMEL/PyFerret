@@ -32,7 +32,10 @@ typedef struct GDsymbol_ {
  *     "+" (plus) - plus
  *     "x" (lowercase ex) - ex
  *     "*" (asterisk) - asterisk
- *     "^" (caret) - unfilled triangle
+ *     "^" (caret) - unfilled triangle pointing up
+ *     "v" (lowercase vee) - unfilled triangle pointing down
+ *     "<" (less sign) - unfilled triangle pointing left
+ *     ">" (greater sign) - unfilled triangle pointing right
  *     "#" (pound sign) - unfilled square
  *
  * If numpts is greater than zero and ptsx and ptsy are not NULL, the 
@@ -295,7 +298,7 @@ grdelBool grdelSymbolDelete(grdelType symbol)
 void fgdsymbol_(void **symbol, void **window, char *symbolname, int *namelen)
 {
     grdelType mysymbol;
-    float     ptsx[64], ptsy[64];
+    float    *ptsx, *ptsy;
     int       numpts;
     grdelBool fill;
 
@@ -318,9 +321,15 @@ void fgdsymbol_(void **symbol, void **window, char *symbolname, int *namelen)
     }
     else {
         /* Symbols defined in a file */
-        numpts = 0;
-        fill = 0;
-        mysymbol = grdelSymbol(*window, symbolname, *namelen, ptsx, ptsy, numpts, fill);
+        if ( getSymbolDef(&ptsx, &ptsy, &numpts, &fill, symbolname, *namelen) ) {
+            mysymbol = grdelSymbol(*window, symbolname, *namelen, ptsx, ptsy, numpts, fill);
+            FerMem_Free(ptsx, __FILE__, __LINE__);
+            FerMem_Free(ptsy, __FILE__, __LINE__);
+        }
+        else {
+            /* Failure - grdelerrmsg already assigned */
+            mysymbol = NULL;
+        }
     }
 
     *symbol = mysymbol;

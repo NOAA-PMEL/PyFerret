@@ -268,7 +268,7 @@ pyferret_help_message = \
                       [-secure]  [-server]  [-python]  [-version]  [-help]
                       [-quiet]  [-linebuffer]  [-script <scriptname> [ <scriptarg> ... ]]
 
-       -memsize:     maximum amount of memory that can be  allocates for Ferret data 
+       -memsize:     maximum amount of memory that can be allocated for Ferret data 
                      in mega (10^6) floats (where 1 float = 8 bytes); default is 25
 
        -nodisplay    do not display to the console; a drawing can be saved using the 

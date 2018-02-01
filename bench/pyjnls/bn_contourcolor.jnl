@@ -14,3 +14,18 @@ use gt4d011.cdf
 set text/color=blue contour
 contour/j=40/l=1/color=(30,60,30)/title="CONTOUR depth var with blue labels"  temp
 frame /file=contourcolor_depth.pdf
+
+
+cancel text
+! Test correct label color after a temporary change of color
+! Labels on the right should be black
+
+use coads_climatology
+set text/font=arial
+set view left
+contour/x=230:290/y=20s:20n/l=1/lev=1d sst
+cont/ov/x=230:290/y=20s:20n/l=1/lev=(24) sst
+set view right
+contour/x=230:290/y=20s:20n/l=1/lev=1d sst
+frame /file=contourcolor_restore.pdf
+

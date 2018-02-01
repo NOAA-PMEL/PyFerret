@@ -98,6 +98,8 @@ C
 * V698 *acm* 3/16  Ticket 2375: outline color key in black even on an overlay.
 * V720 *acm* 5/17 Ticket 2528: If contour text group not set, apply general SET TEXT settings 
 *                 except get the contour-line color 
+* V74  *acm* 1/18 Issue 1857: restore color of contour label text correctly after a temporary 
+*                 change e.g. for a CONTOUR/OVER or CONTOUR/COLOR=
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -387,13 +389,19 @@ C
 C	END VAX/VMS
 C
 	CALL COLOR(IPEN(0))
-	
+
+*  Restore settings in pyfont common
+
         IF (pyfont) THEN 
-*          Restore settings in pyfont common
-           igroup = 0
+*          Restore settings made above
+           igroup = icont
            IF ( tmpsetcolor ) THEN
-              CALL CANCEL_PYTEXT_GROUP (icont)
+              buff1 = TM_FMT_SNGL (REAL(IPEN(0)), 20, 20, slen1)
+              CALL PARSE_PYFONT_COLOR (buff1, pyf_red(igroup), pyf_grn(igroup), 
+     .           pyf_blu(igroup), status)
+              pyf_set(icont) = .FALSE.
            ENDIF
+
         ENDIF
 
 	CALL SCALE(XF,YF,XORG,YORG,XLO,YLO)
@@ -413,11 +421,15 @@ C  Arrays LWGT, LDIG, and ZLEV are length ICNLEV=500
 
  5002   IF (pyfont) THEN 
 *          Restore settings in pyfont common
-           igroup = 0
+           igroup = icont
            IF ( tmpsetcolor ) THEN
+              buff1 = TM_FMT_SNGL (REAL(IPEN(0)), 20, 20, slen1)
+              CALL PARSE_PYFONT_COLOR (buff1, pyf_red(igroup), pyf_grn(igroup), 
+     .           pyf_blu(igroup), status)
               pyf_set(icont) = .FALSE.
            ENDIF
         ENDIF
+
         RETURN
 
 	END

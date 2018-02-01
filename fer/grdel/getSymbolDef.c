@@ -129,7 +129,7 @@ grdelBool getSymbolDef(float **ptsxptr, float **ptsyptr, int *numptsptr,
         if ( sscanf(strptr, "%f %f", &(ptsx[numpts]), &(ptsy[numpts])) != 2 ) {
             /* trim off end blank spaces (completely blank lines were already skipped) */
             strptr = &(dataline[strlen(dataline)-1]);
-            while ( isspace(strptr) )
+            while ( isspace(*strptr) )
                 strptr--;
             *strptr = '\0';
             /* truncate long data lines */

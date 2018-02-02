@@ -26,17 +26,13 @@ typedef struct GDsymbol_ {
  * must already be known, either as a pre-defined symbol or from a previous 
  * call to this function.
  *
- * Currently pre-defined symbols are:
- *     "." (period) - small filled circle
- *     "o" (lowercase oh) - unfilled circle
- *     "+" (plus) - plus
- *     "x" (lowercase ex) - ex
- *     "*" (asterisk) - asterisk
- *     "^" (caret) - unfilled triangle pointing up
- *     "v" (lowercase vee) - unfilled triangle pointing down
- *     "<" (less sign) - unfilled triangle pointing left
- *     ">" (greater sign) - unfilled triangle pointing right
- *     "#" (pound sign) - unfilled square
+ * Current pre-defined symbol names are ones involving circles: 
+ *     'dot': very small filled circle 
+ *     'dotplus': very small filled circle and outer lines of a plus mark 
+ *     'dotx': very small filled circle and outer lines of an ex mark 
+ *     'circle': unfilled circle 
+ *     'circleplus': small unfilled circle and outer lines of a plus mark 
+ *     'circlex': small unfilled circle and outer lines of an ex mark
  *
  * If numpts is greater than zero and ptsx and ptsy are not NULL, the 
  * arguments ptsx and ptsy are X- and Y-coordinates that define the symbol 
@@ -288,7 +284,7 @@ grdelBool grdelSymbolDelete(grdelType symbol)
  * Input Arguments:
  *     window: Window in which this symbol is to be used
  *     symbolname: name of the symbol, either a well-known
- *           symbol name (e.g., ".") or the name of the
+ *           symbol name (e.g., "dot") or the name of the
  *           symbol definition file.
  *     namelen: actual length of the symbol name
  * Output Arguments:
@@ -298,28 +294,27 @@ grdelBool grdelSymbolDelete(grdelType symbol)
 void fgdsymbol_(void **symbol, void **window, char *symbolname, int *namelen)
 {
     grdelType mysymbol;
-    float    *ptsx, *ptsy;
+    float    *ptsx;
+    float    *ptsy;
     int       numpts;
     grdelBool fill;
 
-    if ( (*namelen == 3) && (strncasecmp(symbolname, "dot", 3) == 0) ) {
-        /* The symbol "dot" is the same as the pre-defined symbol "." */
-        mysymbol = grdelSymbol(*window, ".", 1, NULL, NULL, 0, 0);
-    }
-    else if ( (*namelen == 1) && ( (symbolname[0] == '.') ||
-                                   (symbolname[0] == 'o') ||
-                                   (symbolname[0] == '+') ||
-                                   (symbolname[0] == 'x') ||
-                                   (symbolname[0] == '*') ||
-                                   (symbolname[0] == '^') ||
-                                   (symbolname[0] == 'v') ||
-                                   (symbolname[0] == '<') ||
-                                   (symbolname[0] == '>') ||
-                                   (symbolname[0] == '#')    ) ) {
-        /* Pre-defined symbols (no points given; fill is ignored) */
-        mysymbol = grdelSymbol(*window, symbolname, 1, NULL, NULL, 0, 0);
+    if ( ( (*namelen == 3)  && (strncasecmp(symbolname, "dot", 3) == 0) ) ||
+         ( (*namelen == 4)  && (strncasecmp(symbolname, "dotx", 4) == 0) ) ||
+         ( (*namelen == 7)  && (strncasecmp(symbolname, "dotplus", 7) == 0) ) ||
+         ( (*namelen == 6)  && (strncasecmp(symbolname, "circle", 6) == 0) ) ||
+         ( (*namelen == 7)  && (strncasecmp(symbolname, "circlex", 7) == 0) ) ||
+         ( (*namelen == 10) && (strncasecmp(symbolname, "circleplus", 10) == 0) ) ) {
+        /* Pre-defined symbols (no points are given and fill is ignored) */
+        mysymbol = grdelSymbol(*window, symbolname, *namelen, NULL, NULL, 0, 0);
     }
     else {
+        /* 
+         * TODO: save symbol definitions so they are only read from file once.
+         * Probably read everything available at start-up time so no perceived
+         * slowness in first plot of a symbol.
+         */
+
         /* Symbols defined in a file */
         if ( getSymbolDef(&ptsx, &ptsy, &numpts, &fill, symbolname, *namelen) ) {
             mysymbol = grdelSymbol(*window, symbolname, *namelen, ptsx, ptsy, numpts, fill);

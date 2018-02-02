@@ -537,14 +537,13 @@ class PyFerretBindings(AbstractPyFerretBindings):
         either as a pre-defined symbol or from a previous call to 
         this method.
 
-        Current pre-defined symbol names are:
-            '.' (period): small filled circle
-            'o' (lowercase oh): unfilled circle
-            '+': plus mark
-            'x' (lowercase ex): x mark
-            '*': asterisk
-            '^': triangle
-            "#": square
+        Current pre-defined symbol names are ones involving circles:
+            'dot': very small filled circle
+            'dotplus': very small filled circle and outer lines of a plus mark
+            'dotx': very small filled circle and outer lines of an ex mark
+            'circle': unfilled circle
+            'circleplus': small unfilled circle and outer lines of a plus mark
+            'circlex': small unfilled circle and outer lines of an ex mark
 
         If pts is given, the value is coordinates that define the symbol 
         as multiline subpaths in a [-50,50] square.  The location of the 
@@ -986,26 +985,36 @@ def _test_pyferretbindings():
         # Draw magenta points using various symbols
         ptsy = (50, 150, 250, 350, 450)
         ptsx = (100, 100, 100, 100, 100)
-        mysymbol = bindinst.createSymbol(".")
+        mysymbol = bindinst.createSymbol("dot")
         bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (150, 150, 150, 150, 150)
-        mysymbol = bindinst.createSymbol("o")
+        mysymbol = bindinst.createSymbol("circle")
         bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (200, 200, 200, 200, 200)
-        mysymbol = bindinst.createSymbol("+")
+        mysymbol = bindinst.createSymbol("dotplus")
         bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (250, 250, 250, 250, 250)
-        mysymbol = bindinst.createSymbol("x")
+        mysymbol = bindinst.createSymbol("circleplus")
         bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (300, 300, 300, 300, 300)
-        mysymbol = bindinst.createSymbol("*")
+        mysymbol = bindinst.createSymbol("dotx")
         bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (350, 350, 350, 350, 350)
+        mysymbol = bindinst.createSymbol("circlex")
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
+        bindinst.deleteSymbol(mysymbol)
+        ptsx = (400, 400, 400, 400, 400)
+        mysymbol = bindinst.createSymbol(name="filledtriangle",
+                            pts=( (-40.0, -30.0), (0.0, 39.282), (40.0, -30.0), (-40.0, -30.0), ),
+                            fill=True)
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
+        bindinst.deleteSymbol(mysymbol)
+        ptsx = (450, 450, 450, 450, 450)
         mysymbol = bindinst.createSymbol("bararrow", 
                             ( (-50,50), (-10,10),
                               (-999, -999),
@@ -1013,16 +1022,6 @@ def _test_pyferretbindings():
                               (-999, -999),
                               (0,-10), (20,-30), (10,-30), (10,-50), (-10,-50), (-10,-30), (-20,-30), (0,-10), ),
                             False)
-        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
-        bindinst.deleteSymbol(mysymbol)
-        ptsx = (400, 400, 400, 400, 400)
-        mysymbol = bindinst.createSymbol(name="^",
-                            pts=( (-40.0, -30.0), (0.0, 39.282), (40.0, -30.0), (-40.0, -30.0), ),
-                            fill=True)
-        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
-        bindinst.deleteSymbol(mysymbol)
-        ptsx = (450, 450, 450, 450, 450)
-        mysymbol = bindinst.createSymbol("#")
         bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         # Draw a white dash line between some of the points

@@ -18,17 +18,13 @@ const char *CCFBSymbolId = "CCFBSymbolId";
  * must already be known, either as a pre-defined symbol or from a previous 
  * call to this function.
  *
- * Currently pre-defined symbols are:
- *     "." (period) - small filled circle
- *     "o" (lowercase oh) - unfilled circle
- *     "+" (plus) - plus
- *     "x" (lowercase ex) - ex
- *     "*" (asterisk) - asterisk
- *     "^" (caret) - unfilled triangle pointing up
- *     "v" (lowercase vee) - unfilled triangle pointing down
- *     "<" (less sign) - unfilled triangle pointing left
- *     ">" (greater sign) - unfilled triangle pointing right
- *     "#" (pound sign) - unfilled square
+ * Current pre-defined symbol names are ones involving circles: 
+ *    'dot': very small filled circle 
+ *    'dotplus': very small filled circle and outer lines of a plus mark 
+ *    'dotx': very small filled circle and outer lines of an ex mark 
+ *    'circle': unfilled circle 
+ *    'circleplus': small unfilled circle and outer lines of a plus mark 
+ *    'circlex': small unfilled circle and outer lines of an ex mark
  *
  * If numpts is greater than zero and ptsx and ptsy are not NULL, the 
  * arguments ptsx and ptsy are X- and Y-coordinates that define the symbol 
@@ -117,7 +113,7 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
         FerMem_Free(symbolobj, __FILE__, __LINE__);
         return NULL;
     }
-    cairo_set_line_width(pathcontext, 15.0);
+    cairo_set_line_width(pathcontext, 10.0);
     cairo_set_dash(pathcontext, NULL, 0, 0.0);
     cairo_set_line_cap(pathcontext, CAIRO_LINE_CAP_SQUARE);
     cairo_set_line_join(pathcontext, CAIRO_LINE_JOIN_BEVEL);
@@ -167,79 +163,84 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
         }
         symbolobj->filled = fill;
     }
-    else if ( strcmp(".", symbolobj->name) == 0 ) {
+    else if ( strcmp("dot", symbolobj->name) == 0 ) {
         cairo_new_path(pathcontext);
         cairo_arc(pathcontext, 0.0, 0.0, 10.0, 0.0, 2.0 * M_PI);
         cairo_close_path(pathcontext);
         symbolobj->filled = 1;
     }
-    else if ( strcmp("o", symbolobj->name) == 0 ) {
+    else if ( strcmp("dotplus", symbolobj->name) == 0 ) {
+        cairo_new_path(pathcontext);
+        cairo_arc(pathcontext, 0.0, 0.0, 10.0, 0.0, 2.0 * M_PI);
+        cairo_close_path(pathcontext);
+        /* filled path, so need to draw "lines" as rectangles */
+        cairo_rectangle(pathcontext,  -5.0, -50.0, 10.0, 20.0);
+        cairo_rectangle(pathcontext,  -5.0,  30.0, 10.0, 20.0);
+        cairo_rectangle(pathcontext, -50.0,  -5.0, 20.0, 10.0);
+        cairo_rectangle(pathcontext,  30.0,  -5.0, 20.0, 10.0);
+        symbolobj->filled = 1;
+    }
+    else if ( strcmp("dotx", symbolobj->name) == 0 ) {
+        cairo_new_path(pathcontext);
+        cairo_arc(pathcontext, 0.0, 0.0, 10.0, 0.0, 2.0 * M_PI);
+        cairo_close_path(pathcontext);
+        /* filled path, so need to draw "lines" as rectangles */
+        cairo_move_to(pathcontext, -38.5, -31.5);
+        cairo_line_to(pathcontext, -31.5, -38.5);
+        cairo_line_to(pathcontext, -17.5, -24.5);
+        cairo_line_to(pathcontext, -24.5, -17.5);
+        cairo_close_path(pathcontext);
+        cairo_move_to(pathcontext, -38.5,  31.5);
+        cairo_line_to(pathcontext, -31.5,  38.5);
+        cairo_line_to(pathcontext, -17.5,  24.5);
+        cairo_line_to(pathcontext, -24.5,  17.5);
+        cairo_close_path(pathcontext);
+        cairo_move_to(pathcontext,  38.5, -31.5);
+        cairo_line_to(pathcontext,  31.5, -38.5);
+        cairo_line_to(pathcontext,  17.5, -24.5);
+        cairo_line_to(pathcontext,  24.5, -17.5);
+        cairo_close_path(pathcontext);
+        cairo_move_to(pathcontext,  38.5,  31.5);
+        cairo_line_to(pathcontext,  31.5,  38.5);
+        cairo_line_to(pathcontext,  17.5,  24.5);
+        cairo_line_to(pathcontext,  24.5,  17.5);
+        cairo_close_path(pathcontext);
+        symbolobj->filled = 1;
+    }
+    else if ( strcmp("circle", symbolobj->name) == 0 ) {
         cairo_new_path(pathcontext);
         cairo_arc(pathcontext, 0.0, 0.0, 40.0, 0.0, 2.0 * M_PI);
         cairo_close_path(pathcontext);
         symbolobj->filled = 0;
     }
-    else if ( strcmp("+", symbolobj->name) == 0 ) {
+    else if ( strcmp("circleplus", symbolobj->name) == 0 ) {
         cairo_new_path(pathcontext);
-        cairo_move_to(pathcontext,   0.0, -40.0);
-        cairo_line_to(pathcontext,   0.0,  40.0);
-        cairo_move_to(pathcontext, -40.0,   0.0);
-        cairo_line_to(pathcontext,  40.0,   0.0);
-        symbolobj->filled = 0;
-    }
-    else if ( strcmp("x", symbolobj->name) == 0 ) {
-        cairo_new_path(pathcontext);
-        cairo_move_to(pathcontext, -30.0, -30.0);
-        cairo_line_to(pathcontext,  30.0,  30.0);
-        cairo_move_to(pathcontext, -30.0,  30.0);
-        cairo_line_to(pathcontext,  30.0, -30.0);
-        symbolobj->filled = 0;
-    }
-    else if ( strcmp("*", symbolobj->name) == 0 ) {
-        cairo_new_path(pathcontext);
-        cairo_move_to(pathcontext,     0.0, -40.0);
-        cairo_line_to(pathcontext,     0.0,  40.0);
-        cairo_move_to(pathcontext, -34.641, -20.0);
-        cairo_line_to(pathcontext,  34.641,  20.0);
-        cairo_move_to(pathcontext, -34.641,  20.0);
-        cairo_line_to(pathcontext,  34.641, -20.0);
-        symbolobj->filled = 0;
-    }
-    else if ( strcmp("^", symbolobj->name) == 0 ) {
-        cairo_new_path(pathcontext);
-        cairo_move_to(pathcontext, -40.0,  30.0);
-        cairo_line_to(pathcontext,   0.0, -39.282);
-        cairo_line_to(pathcontext,  40.0,  30.0);
+        cairo_arc(pathcontext, 0.0, 0.0, 20.0, 0.0, 2.0 * M_PI);
         cairo_close_path(pathcontext);
+        /* not a filled path, so just draw the lines */
+        cairo_move_to(pathcontext,   0.0, -47.5);
+        cairo_line_to(pathcontext,   0.0, -21.0);
+        cairo_move_to(pathcontext,   0.0,  47.5);
+        cairo_line_to(pathcontext,   0.0,  21.0);
+        cairo_move_to(pathcontext, -47.5,   0.0);
+        cairo_line_to(pathcontext, -21.0,   0.0);
+        cairo_move_to(pathcontext,  47.5,   0.0);
+        cairo_line_to(pathcontext,  21.0,   0.0);
         symbolobj->filled = 0;
     }
-    else if ( strcmp("v", symbolobj->name) == 0 ) {
+    else if ( strcmp("circlex", symbolobj->name) == 0 ) {
         cairo_new_path(pathcontext);
-        cairo_move_to(pathcontext, -40.0, -30.0);
-        cairo_line_to(pathcontext,   0.0,  39.282);
-        cairo_line_to(pathcontext,  40.0, -30.0);
+        cairo_arc(pathcontext, 0.0, 0.0, 20.0, 0.0, 2.0 * M_PI);
         cairo_close_path(pathcontext);
-        symbolobj->filled = 0;
-    }
-    else if ( strcmp("<", symbolobj->name) == 0 ) {
-        cairo_new_path(pathcontext);
-        cairo_move_to(pathcontext,  30.0, -40.0);
-        cairo_line_to(pathcontext, -39.282, 0.0);
-        cairo_line_to(pathcontext,  30.0,  40.0);
-        cairo_close_path(pathcontext);
-        symbolobj->filled = 0;
-    }
-    else if ( strcmp(">", symbolobj->name) == 0 ) {
-        cairo_new_path(pathcontext);
-        cairo_move_to(pathcontext, -30.0, -40.0);
-        cairo_line_to(pathcontext,  39.282, 0.0);
-        cairo_line_to(pathcontext, -30.0,  40.0);
-        cairo_close_path(pathcontext);
-        symbolobj->filled = 0;
-    }
-    else if ( strcmp("#", symbolobj->name) == 0 ) {
-        cairo_new_path(pathcontext);
-        cairo_rectangle(pathcontext, -35.0, -35.0, 70.0, 70.0);
+        /* not a filled path, so just draw the lines */
+        cairo_move_to(pathcontext, -35.0, -35.0);
+        cairo_line_to(pathcontext, -21.0, -21.0);
+        cairo_move_to(pathcontext, -35.0,  35.0);
+        cairo_line_to(pathcontext, -21.0,  21.0);
+        cairo_move_to(pathcontext,  35.0, -35.0);
+        cairo_line_to(pathcontext,  21.0, -21.0);
+        cairo_move_to(pathcontext,  35.0,  35.0);
+        cairo_line_to(pathcontext,  21.0,  21.0);
         symbolobj->filled = 0;
     }
     else {

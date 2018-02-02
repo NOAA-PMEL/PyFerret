@@ -109,6 +109,11 @@ class SymbolPath(object):
         super(SymbolPath, self).__init__()
         self.__painterpath = painterpath
         self.__isfilled = isfilled
+        if isfilled:
+            try:
+                self.__painterpath = painterpath.simplified()
+            except:
+                pass
 
     def painterPath(self):
         '''
@@ -314,17 +319,13 @@ class CmndHelperPQ(object):
         has already been defined, either as a pre-defined symbol or from 
         a previous symbol definition.
 
-        Current pre-defined symbol names are:
-            '.' (period): small filled circle
-            'o' (lowercase oh): unfilled circle
-            '+': plus mark
-            'x' (lowercase ex): x mark
-            '*': asterisk
-            '^': triangle pointing up
-            'v': triangle pointing down
-            '<': triangle pointing left
-            '>': triangle pointing right
-            "#": square
+        Current pre-defined symbol names are ones involving circles:
+            'dot': very small filled circle
+            'dotplus': very small filled circle and outer lines of a plus mark
+            'dotx': very small filled circle and outer lines of an ex mark
+            'circle': unfilled circle
+            'circleplus': small unfilled circle and outer lines of a plus mark
+            'circlex': small unfilled circle and outer lines of an ex mark
 
         If symbolinfo is a dictionary, the following key/value pairs are 
         recognized:
@@ -366,61 +367,73 @@ class CmndHelperPQ(object):
             if sympath is not None:
                 return sympath
             # symbol not defined - if well known, create a SymbolPath for it
-            if symbol == '.':
+            if symbol == 'dot':
                 path = QPainterPath()
                 path.addEllipse(-10.0, -10.0, 20.0, 20.0)
                 sympath = SymbolPath(path, True)
-            elif symbol == 'o':
+            elif symbol == 'dotplus':
+                path = QPainterPath()
+                path.addEllipse(-10.0, -10.0, 20.0, 20.0)
+                # filled path, so need to draw "lines" as rectangles
+                path.addRect( -5.0, -50.0, 10.0, 20.0)
+                path.addRect( -5.0,  30.0, 10.0, 20.0)
+                path.addRect(-50.0,  -5.0, 20.0, 10.0)
+                path.addRect( 30.0,  -5.0, 20.0, 10.0)
+                sympath = SymbolPath(path, True)
+            elif symbol == 'dotx':
+                path = QPainterPath()
+                path.addEllipse(-10.0, -10.0, 20.0, 20.0)
+                # filled path, so need to draw "lines" as rectangles
+                path.moveTo(-38.5, -31.5)
+                path.lineTo(-31.5, -38.5)
+                path.lineTo(-17.5, -24.5)
+                path.lineTo(-24.5, -17.5)
+                path.closeSubpath()
+                path.moveTo(-38.5,  31.5)
+                path.lineTo(-31.5,  38.5)
+                path.lineTo(-17.5,  24.5)
+                path.lineTo(-24.5,  17.5)
+                path.closeSubpath()
+                path.moveTo( 38.5, -31.5)
+                path.lineTo( 31.5, -38.5)
+                path.lineTo( 17.5, -24.5)
+                path.lineTo( 24.5, -17.5)
+                path.closeSubpath()
+                path.moveTo( 38.5,  31.5)
+                path.lineTo( 31.5,  38.5)
+                path.lineTo( 17.5,  24.5)
+                path.lineTo( 24.5,  17.5)
+                path.closeSubpath()
+                sympath = SymbolPath(path, True)
+            elif symbol == 'circle':
                 path = QPainterPath()
                 path.addEllipse(-40.0, -40.0, 80.0, 80.0)
                 sympath = SymbolPath(path, False)
-            elif symbol == 'x':
-                path = QPainterPath( QPointF(-30.0, -30.0) )
-                path.lineTo( 30.0,  30.0)
-                path.moveTo(-30.0,  30.0)
-                path.lineTo( 30.0, -30.0)
-                sympath = SymbolPath(path, False)
-            elif symbol == '+':
-                path = QPainterPath( QPointF(0.0, -40.0) )
-                path.lineTo(  0.0, 40.0)
-                path.moveTo(-40.0,  0.0)
-                path.lineTo( 40.0,  0.0)
-                sympath = SymbolPath(path, False)
-            elif symbol == '*':
-                path = QPainterPath( QPointF(0.0, -40.0) )
-                path.lineTo(  0.0,    40.0)
-                path.moveTo(-34.641, -20.0)
-                path.lineTo( 34.641,  20.0)
-                path.moveTo(-34.641,  20.0)
-                path.lineTo( 34.641, -20.0)
-                sympath = SymbolPath(path, False)
-            elif symbol == '^':
-                path = QPainterPath( QPointF(-40.0, 30.0) )
-                path.lineTo( 0.0, -39.282)
-                path.lineTo(40.0,  30.0)
-                path.closeSubpath()
-                sympath = SymbolPath(path, False)
-            elif symbol == 'v':
-                path = QPainterPath( QPointF(-40.0, -30.0) )
-                path.lineTo( 0.0,  39.282)
-                path.lineTo(40.0, -30.0)
-                path.closeSubpath()
-                sympath = SymbolPath(path, False)
-            elif symbol == '<':
-                path = QPainterPath( QPointF(30.0, -40.0) )
-                path.lineTo(-39.282, 0.0)
-                path.lineTo( 30.0,  40.0)
-                path.closeSubpath()
-                sympath = SymbolPath(path, False)
-            elif symbol == '>':
-                path = QPainterPath( QPointF(-30.0, -40.0) )
-                path.lineTo( 39.282, 0.0)
-                path.lineTo(-30.0,  40.0)
-                path.closeSubpath()
-                sympath = SymbolPath(path, False)
-            elif symbol == '#':
+            elif symbol == 'circleplus':
                 path = QPainterPath()
-                path.addRect(-35.0, -35.0, 70.0, 70.0)
+                path.addEllipse(-20.0, -20.0, 40.0, 40.0)
+                # not a filled path, so just draw the lines
+                path.moveTo(  0.0, -47.5)
+                path.lineTo(  0.0, -21.0)
+                path.moveTo(  0.0,  47.5)
+                path.lineTo(  0.0,  21.0)
+                path.moveTo(-47.5,   0.0)
+                path.lineTo(-21.0,   0.0)
+                path.moveTo( 47.5,   0.0)
+                path.lineTo( 21.0,   0.0)
+                sympath = SymbolPath(path, False)
+            elif symbol == 'circlex':
+                path = QPainterPath()
+                path.addEllipse(-20.0, -20.0, 40.0, 40.0)
+                # not a filled path, so just draw the lines
+                path.moveTo(-35.0, -35.0)
+                path.lineTo(-21.0, -21.0)
+                path.moveTo(-35.0,  35.0)
+                path.lineTo(-21.0,  21.0)
+                path.moveTo( 35.0, -35.0)
+                path.lineTo( 21.0, -21.0)
+                path.moveTo( 35.0,  35.0)
+                path.lineTo( 21.0,  21.0)
                 sympath = SymbolPath(path, False)
             else:
                 raise ValueError("Unknown symbol '%s'" % str(symbol))

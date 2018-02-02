@@ -1280,8 +1280,7 @@ class PipedViewerPQ(QMainWindow):
 
         Recognized keys from cmnd:
             "points": point centers as a list of (x,y) coordinates
-            "symbol": name of the symbol to use
-                    (see CmndHelperPQ.getSymbolFromCmnd)
+            "symbol": symbol to use (see CmndHelperPQ.getSymbolFromCmnd)
             "size": size of the symbol in points (1/72 inches); possibly
                     further scaled by the width scaling factor
             "color": color name or 24-bit RGB integer value (eg, 0xFF0088)
@@ -1307,8 +1306,8 @@ class PipedViewerPQ(QMainWindow):
             self.__activepainter.setPen(Qt.NoPen)
         else:
             self.__activepainter.setBrush(Qt.NoBrush)
-            # pen width is 15% of the width of the symbol
-            mypen = QPen(mybrush, 15.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin)
+            # pen width is 10% of the width of the symbol
+            mypen = QPen(mybrush, 10.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin)
             self.__activepainter.setPen(mypen)
         # Unmodified symbols are 100x100 pixels 
         scalefactor = ptsize * self.widthScalingFactor() / 100.0
@@ -1664,6 +1663,10 @@ def _test_pipedviewerpq():
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"createSymbol",
+                        "name": "uptrifill",
+                        "pts": ( (-40.0, -30.0), (0.0, 40.0), (40.0, -30.0), (-40.0, -30.0), ),
+                        "fill": True } )
+    drawcmnds.append( { "action":"createSymbol",
                         "name": "bararrow",
                         "pts": ( (-50,50), (-10,10),
                                  (-999, -999),
@@ -1681,7 +1684,7 @@ def _test_pipedviewerpq():
                                    (100, 250),
                                    (100, 350),
                                    (100, 450) ),
-                        "symbol":".",
+                        "symbol":"dot",
                         "size":20,
                         "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
@@ -1690,7 +1693,7 @@ def _test_pipedviewerpq():
                                    (150, 250),
                                    (150, 350),
                                    (150, 450) ),
-                        "symbol":"o",
+                        "symbol":"circle",
                         "size":20,
                         "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
@@ -1699,7 +1702,7 @@ def _test_pipedviewerpq():
                                    (200, 250),
                                    (200, 350),
                                    (200, 450) ),
-                        "symbol":"+",
+                        "symbol":"dotplus",
                         "size":20,
                         "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
@@ -1708,7 +1711,7 @@ def _test_pipedviewerpq():
                                    (250, 250),
                                    (250, 350),
                                    (250, 450) ),
-                        "symbol":"x",
+                        "symbol":"circleplus",
                         "size":20,
                         "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
@@ -1717,7 +1720,7 @@ def _test_pipedviewerpq():
                                    (300, 250),
                                    (300, 350),
                                    (300, 450) ),
-                        "symbol":"*",
+                        "symbol":"dotx",
                         "size":20,
                         "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
@@ -1726,7 +1729,7 @@ def _test_pipedviewerpq():
                                    (350, 250),
                                    (350, 350),
                                    (350, 450) ),
-                        "symbol":"bararrow",
+                        "symbol":"circlex",
                         "size":20,
                         "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
@@ -1735,7 +1738,7 @@ def _test_pipedviewerpq():
                                    (400, 250),
                                    (400, 350),
                                    (400, 450) ),
-                        "symbol":"^",
+                        "symbol":"uptrifill",
                         "size":20,
                         "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
@@ -1744,7 +1747,7 @@ def _test_pipedviewerpq():
                                    (450, 250),
                                    (450, 350),
                                    (450, 450) ),
-                        "symbol":"#",
+                        "symbol":"bararrow",
                         "size":20,
                         "color":"magenta" })
     drawcmnds.append( { "action":"drawMultiline",

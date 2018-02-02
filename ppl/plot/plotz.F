@@ -100,6 +100,7 @@ C
 *                 except get the contour-line color 
 * V74  *acm* 1/18 Issue 1857: restore color of contour label text correctly after a temporary 
 *                 change e.g. for a CONTOUR/OVER or CONTOUR/COLOR=
+* V74  *acm* 2/18 Issue 1857: Also restore text color correctly if the default text color was set.
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -125,7 +126,7 @@ C
         REAL*8    XLPLOT,YLPLOT,XHPLOT,YHPLOT
 
 * Local declarations
-        INTEGER   status, slen1, slen2, nlev1
+        INTEGER   status, slen1, slen2, nlev1, ired, igrn, iblu, cgroup
         CHARACTER TM_FMT_SNGL*20, buff1*20, buff2*20, err_msg*40
         REAL*8    DXFF, DXOF, DYFF, DYOF
         REAL      XFF, XOF, YFF, YOF, DMIN, DMAX, DZMAX
@@ -276,10 +277,13 @@ C
 *  Apply any overall SET TEXT settings (other than color). 
 
        IF (pyfont) THEN
-          igroup = icont
+          cgroup = icont
           IF (.NOT. pyf_set(icont)) THEN
-             CALL FGD_GQPEN(IWIND, IPEN(1), ier, pyf_red(igroup), 
-     .                pyf_grn(igroup), pyf_blu(igroup), opaqfrac)
+	     ired = pyf_red(cgroup)
+	     igrn = pyf_grn(cgroup)
+	     iblu = pyf_blu(cgroup)
+             CALL FGD_GQPEN(IWIND, IPEN(1), ier, pyf_red(cgroup), 
+     .                pyf_grn(cgroup), pyf_blu(cgroup), opaqfrac)
              pyf_set(icont) = .TRUE.
              pyf_fontname(icont) = pyfnt_fontname
              pyf_italic(icont) = pyfnt_italic
@@ -394,12 +398,16 @@ C
 
         IF (pyfont) THEN 
 *          Restore settings made above
-           igroup = icont
+           cgroup = icont
            IF ( tmpsetcolor ) THEN
-              buff1 = TM_FMT_SNGL (REAL(IPEN(0)), 20, 20, slen1)
-              CALL PARSE_PYFONT_COLOR (buff1, pyf_red(igroup), pyf_grn(igroup), 
-     .           pyf_blu(igroup), status)
+c              buff1 = TM_FMT_SNGL (REAL(IPEN(0)), 20, 20, slen1)
+c              CALL PARSE_PYFONT_COLOR (buff1, pyf_red(cgroup), pyf_grn(cgroup), 
+c     .           pyf_blu(cgroup), status)
+              pyf_red(cgroup) = ired
+              pyf_grn(cgroup) = iblu
+              pyf_blu(cgroup) = igrn
               pyf_set(icont) = .FALSE.
+	      igroup = 0
            ENDIF
 
         ENDIF
@@ -421,12 +429,16 @@ C  Arrays LWGT, LDIG, and ZLEV are length ICNLEV=500
 
  5002   IF (pyfont) THEN 
 *          Restore settings in pyfont common
-           igroup = icont
+           cgroup = icont
            IF ( tmpsetcolor ) THEN
-              buff1 = TM_FMT_SNGL (REAL(IPEN(0)), 20, 20, slen1)
-              CALL PARSE_PYFONT_COLOR (buff1, pyf_red(igroup), pyf_grn(igroup), 
-     .           pyf_blu(igroup), status)
+c              buff1 = TM_FMT_SNGL (REAL(IPEN(0)), 20, 20, slen1)
+c              CALL PARSE_PYFONT_COLOR (buff1, pyf_red(cgroup), pyf_grn(cgroup), 
+c     .           pyf_blu(cgroup), status)
+              pyf_red(cgroup) = ired
+              pyf_grn(cgroup) = iblu
+              pyf_blu(cgroup) = igrn
               pyf_set(icont) = .FALSE.
+	      igroup = 0
            ENDIF
         ENDIF
 

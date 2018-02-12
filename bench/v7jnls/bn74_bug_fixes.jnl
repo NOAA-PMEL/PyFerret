@@ -23,3 +23,6 @@ GO err73_agg_1_time
 
 GO bn_reset
 GO err73_shade_curvi
+
+GO bn_reset
+GO err73_go_box

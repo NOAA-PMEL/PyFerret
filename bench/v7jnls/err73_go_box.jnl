@@ -1,0 +1,32 @@
+! err73_go_box.jnl
+! 2/12/2018
+! The box.jnl script had bugs
+
+cancel mode logo
+use coads_climatology
+
+!set mode ignore
+
+! This command works ok
+
+set view ul; shade/l=1 sst
+go box  300 320 45 20 9
+
+! Negative longitudes were not translated so this box was not drawn
+
+set view ur; shade/l=1 sst
+go box (-220) (-205)  30 42 7
+
+! Negative arguments were not consistently handled
+! Needed to be put into parentheses - now the script does this.
+
+set view ll; shade/l=1 sst
+go box  -200 -180 -45 20 11
+
+! Script now modernized to take arguments other than
+! simple color name or pen number
+
+set view lr; shade/l=1 sst
+go box  -90 -10 -10 10 black/thick/dash
+
+frame/file=go_box.gif

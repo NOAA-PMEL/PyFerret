@@ -26,8 +26,9 @@ query/ignore $2%<Usage: GO box xlo xhi ylo yhi [pen_number]%
 query/ignore $3%<Usage: GO box xlo xhi ylo yhi [pen_number]%
 query/ignore $4%<Usage: GO box xlo xhi ylo yhi [pen_number]%
 
-! Define coordinates of the box.
-! Give units to the x coordinates, so modulo longitude 
+! Define coordinates of the box.  Allow for any of these to be negative.
+! Give units to the x coordinates, so moduloing will be done, (This is
+! harmless if the x axis of the underlying plot is not longitude)
 
 LET/QUIET/UNITS=degrees_east XBOX_CORNERS = IF I LE 2 THEN (($1)) ELSE (XBOX_CORNER2)
 LET/QUIET/UNITS=degrees_east XBOX_CORNER2 = IF I LE 4 THEN (($2)) ELSE (($1))

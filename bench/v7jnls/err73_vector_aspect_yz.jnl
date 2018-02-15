@@ -1,0 +1,46 @@
+! err73_vector_aspect_yz.jnl
+! issue #1860
+! This question:
+! https://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2017/msg00755.html
+
+define view/axes/x=0.1:0.4/y=0.1:0.7 myleft
+define view/axes/x=0.6:0.9/y=0.1:0.7 myright
+set view myleft
+
+let depdata = {0, 10, 20, 40, 80, 120, 180, 300, 450, 650, 900, 1200}
+let totaldepth = 1200
+let halfdepth = 600
+define axis/x=-1:50:1/units=degrees_east xax
+define axis/y=-40:40:2/units=degrees_north yax
+define axis/depth/z/units=meters/from_data zax = depdata
+let/title=u u = 1 + 0*(x[gx=xax] + y[gy=yax] + z[gz=zax])
+let/title=w w = 1 + 0*(x[gx=xax] + y[gy=yax] + z[gz=zax])
+
+! if lat1 = 0, the vectors are 45 degrees
+let lat1 = 0
+
+let rad_earth = 6371.e3  ! [m]
+let pi = 4*atan(1)
+let x_of_deg = rad_earth * cos(pi * lat1 / 180) * pi / 180
+let deg_of_x = 1 / x_of_deg
+let dellon = deg_of_x * halfdepth ! m -> degE
+vector/aspect/xskip=1/vlimits=0:`totaldepth`\
+/hlimits=`(-1)*dellon`:`dellon`\
+/length=0.1/y=`lat1` u,w
+
+
+! but if not, they were a bit off
+set view myright
+
+let lat1 = 24
+let rad_earth = 6371.e3  ! [m]
+let pi = 4*atan(1)
+let x_of_deg = rad_earth * cos(pi * lat1 / 180) * pi / 180
+let deg_of_x = 1 / x_of_deg
+let dellon = deg_of_x * halfdepth ! m -> degE
+vector/aspect/xskip=1/vlimits=0:`totaldepth`\
+/hlimits=`(-1)*dellon`:`dellon`\
+/length=0.1/y=`lat1` u,w
+
+frame/file=vector_lats.gif
+

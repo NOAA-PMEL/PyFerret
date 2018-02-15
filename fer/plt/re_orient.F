@@ -1,6 +1,6 @@
       SUBROUTINE RE_ORIENT( xlo, xhi, ylo, yhi,
      .			    dim1, dim2, md1, md2, transpz, aspect,
-     .			    xgrid, mx, ygrid, my, sout )
+     .			    ctx, xgrid, mx, ygrid, my, sout )
 
 *
 *
@@ -58,6 +58,8 @@
 *        to see the error.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V740: 2/18 *acm* for issue 1860, apply a cos(lat) correction
+*                  in vector planes such as XZ
 
 * procedure:	at each point
 *	   x --> xprime = A * x
@@ -86,21 +88,21 @@
 
 * calling argument declarations:
 	LOGICAL	transpz
-	INTEGER	dim1, dim2, md1, md2, mx, my
+	INTEGER	dim1, dim2, md1, md2, mx, my, ctx
 	REAL	aspect, sout
 	REAL	xgrid( md1, md2 ), ygrid( md1, md2 )
 	REAL*8	xlo, xhi, ylo, yhi
 
 * internal variable declarations:
-        LOGICAL need_cos, GEOG_COS_FACTOR, TM_FPEQ
+        LOGICAL GEOG_COS_FACTOR, TM_FPEQ, need_cos, fixed_cos
 	INTEGER	grid, i, j, j0
-	REAL	AXIS_DISTANCE, s0, s, a, b, tan, tansq, ssq, dx, dy,
-     .          bad_x, bad_y, cos_factor, bx, box_size, yh_2, yc, 
-     .          ybxlo, ybxhi
-	REAL*8	TM_WORLD
+	REAL	AXIS_DISTANCE, BOX_SIZE, TM_WORLD, 
+     .          s0, s, a, b, tan, tansq, ssq, dx, dy,bad_x, bad_y, 
+     .          cos_factor, bx, yh_2, yc, ybxlo, ybxhi, yloc, ybx
 
 * initialize
 	grid  = mr_grid( mx )
+
 	bad_x = mr_bad_data( mx )
 	bad_y = mr_bad_data( my )
         j0 = mr_lo_ss( mx, y_dim ) - 1  ! may need for latitude cuz j=1,md2
@@ -111,12 +113,33 @@
 	s0   = (dy/dx) / aspect   ! axis scale ratio before COS(lat) correction
 
 * will we need COS(latitude) corrections ? ( the true dx may be dx*COS(lat) )
-        IF ( dim1.EQ.x_dim .AND. dim2.EQ.y_dim ) THEN
+* Check whether there is an x axis on the plot and a latitude axis orthogonal to 
+* the plane being plotted - fixed cosine correction.
+
+	need_cos =  .FALSE.
+	fixed_cos = .FALSE.
+
+* For vectors in a plane involving X but not Y, there may need to be
+* a cos(lat) correction
+
+	yloc =  unspecified_val8
+	IF ( (dim1.EQ.x_dim .OR. dim2.EQ.x_dim) .AND. 
+     .       (dim1.NE.y_dim .AND. dim2.NE.y_dim) ) THEN
+	   yloc = cx_lo_ww(y_dim,ctx)
+	   IF (yloc .EQ. unspecified_val8 ) yloc = 
+     .         TM_WORLD( cx_lo_ss(ctx,y_dim), grid, y_dim, box_middle )
+	   ybx = BOX_SIZE(cx_lo_ss(ctx,y_dim), grid, y_dim )
+	   fixed_cos = GEOG_COS_FACTOR(x_dim, grid)
+     .              .AND. GEOG_COS_FACTOR(y_dim, grid)
+	   yc = deg2rad * yloc
+	   yh_2 = 0.5*deg2rad * ybx
+	   cos_factor =  COS( yc ) * ABS( SIN(yh_2) )/yh_2
+	ENDIF
+
+	IF ( dim1.EQ.x_dim .AND. dim2.EQ.y_dim ) THEN
            need_cos =     GEOG_COS_FACTOR(x_dim, grid)
      .              .AND. GEOG_COS_FACTOR(y_dim, grid)
-        ELSE
-           need_cos = .FALSE.
-        ENDIF
+       ENDIF
 
 * re-orient each point
 	DO 110 j = 1, md2
@@ -162,7 +185,7 @@ C And also ticket 1348.
 
               IF ( cos_factor .LT. 1.E-6 ) cos_factor = 1.E-6 !arbitrary fix /0
            ELSE
-              cos_factor = 1.0
+              IF (.NOT.fixed_cos) cos_factor = 1.0
            ENDIF
            s = s0 / cos_factor
            IF ( transpz ) s = 1. / s

@@ -179,6 +179,8 @@
 *                 scaling for axis coords and box edges
 * V740: 1/18 *acm* for issue 1854, protection status temporarily reset 
 *                 for curvi-coord plot with /SET
+* V740: 2/18 *acm* for issue 1860, change to call to Re-Orient; cos(lat) correction
+*                  in vector planes such as XZ
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -795,7 +797,7 @@ C ACM added 8/2001 save cal id if vertical time axis
 * rotate vectors to make axis scale ratio correction ?
 	IF ( vector .AND. aspect.GT.0. ) CALL RE_ORIENT(
      .			haxlo, haxhi, vaxlo, vaxhi, dim1, dim2,
-     .			size1, size2, transpz, aspect,
+     .			size1, size2, transpz, aspect, ctx,
      .			memry(mvx_temp)%ptr, mvx_temp,
      .			memry(mvy_temp)%ptr, mvy_temp, s )
 	if (overlay) SOVER = .true.

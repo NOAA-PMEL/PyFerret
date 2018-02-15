@@ -26,3 +26,6 @@ GO err73_shade_curvi
 
 GO bn_reset
 GO err73_go_box
+
+GO bn_reset
+GO err73_vector_aspect_yz

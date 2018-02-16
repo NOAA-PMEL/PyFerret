@@ -6,7 +6,7 @@ set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt \
 linecolors.plt multi_line_labels.plt pattern*.plt polygon*.plt \
 vec_curv*.plt timetics*.plt degC_axlab.plt axticlabel.plt)
 
-set gif_files = ( bn*.gif time_plot*.gif )
+set gif_files = ( *.gif )
 set ps_files = (bn*.ps)
 set mb_files = (bat.plt_*)
 set num_plt_files = `ls -l *.plt | wc -l `

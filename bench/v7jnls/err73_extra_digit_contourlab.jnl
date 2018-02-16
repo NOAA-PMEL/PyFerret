@@ -1,0 +1,11 @@
+! err73_extra_digit_contourlab.jnl
+! 2/15/2918
+! Issue 1858: The plot on the right, with a smaller number of
+! color levels specified, had the contour line labels drawn with
+! an unneeded digit after the decimal point 20.0, 22.0, etc 
+
+use coads_climatology
+set view left;  contour/l=1/lev=2d sst
+set view right; contour/l=1/x=120e:80w/y=20s:20n/lev=2d sst
+
+frame/file=extra_digit_contourlab.gif

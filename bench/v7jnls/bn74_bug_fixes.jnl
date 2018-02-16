@@ -29,3 +29,6 @@ GO err73_go_box
 
 GO bn_reset
 GO err73_vector_aspect_yz
+
+GO bn_reset
+GO err73_extra_digit_contourlab

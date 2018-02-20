@@ -2,6 +2,7 @@
 ! ACM March 12, 2004
 ! ACM 4/2005 set mode meta to save one of the plots for the metafile checks.
 !            and cancel mode logo, so that .plt files are comparable.
+!  2/18 *acm* keep mode logo turned off 
 
 ppl axnmtc,2,2
 
@@ -35,7 +36,6 @@ plot/hg=small(color=red,dash,thick=1),large(color=blue,line,thick=3)/vg=large(li
 ! Log axes: VLOG and HLOG with large and small tics
 
 set mode meta graticules.plt
-can mode logo 
 
 set view left
 def axis/z zlog=exp(k[k=1:10])

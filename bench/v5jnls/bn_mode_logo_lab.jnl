@@ -53,5 +53,4 @@ polygon/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
 
 ! restore state of modes
 cancel view
-cancel mode logo
 set mode labels

@@ -6,9 +6,9 @@
 !       9/12/02  vary the lengths of the vectors in 1st two plots.
 ! ACM 4/2005 set mode meta to save one of the plots for the metafile checks.
 !            and cancel mode logo, so that .plt files are comparable.
+!  2/18 *acm* keep mode logo turned off 
 
 set mode meta vec_curv.plt
-can mode logo
 use coads_climatology
 set reg/l=1
 go mp_orthographic 230 60
@@ -67,4 +67,3 @@ let mypage = my + 0*mx
 vec/title="Stretched grid" a,b,mxpage,mypage
 
 can mode meta
-

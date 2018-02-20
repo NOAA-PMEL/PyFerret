@@ -115,8 +115,8 @@ c     oceanography emr   dec/69
 	dimension x(6000),y(6000)
 	dimension zmaxb(10,10),zminb(10,10),kab(40,40)
 
-	dimension  zlev(2),  ndecl(2),lwgtl(2),xc(11),yc(11),ixpon(10)
-	dimension lclr(2)
+	dimension  zlev(*),  ndecl(*),lwgtl(*),xc(11),yc(11),ixpon(10)
+	dimension lclr(*)
 
 	dimension isin(4),ind(4),xx(4),yy(4),zz(4),lused(4),kabov(4)
 	common/rotcon/xk,yk,snthta,csthta

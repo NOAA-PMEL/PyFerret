@@ -90,7 +90,7 @@ C V617 *acm* 1/09 Initialize the status flag (fixes bug 1622)
         include 'errmsg.parm'
 
 	dimension z(nxs,nys),px(nx),py(ny)
-	dimension zlev(2),ndecl(2),lwgtl(2),lclr(2)
+	dimension zlev(*),ndecl(*),lwgtl(*),lclr(*)
 
         real xadd, lmin, lmax, big
 	integer error,trans_no, ilo, ihi, jlo, jhi, status

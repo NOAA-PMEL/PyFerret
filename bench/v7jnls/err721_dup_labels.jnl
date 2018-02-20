@@ -1,6 +1,7 @@
 ! err721_dup_labels.jnl
 ! ticket 2565
 ! 10/13/17 ACM
+!  2/18 *acm* keep mode logo turned off 
 
 set mode logo
 use err721_dup_labels.nc

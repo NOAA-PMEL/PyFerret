@@ -79,6 +79,7 @@
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * v73+ *acm* 12/2017 Issue # 1846, writing user-variables with scale_factor, add_offset
 *                    changes to tm_scale_nobad call.
+* V74  *acm*  2/2018 Issue # 1861, handling missing- and _FillValue with scale and offset
 
 * include files
         include 'netcdf.inc'
@@ -134,7 +135,7 @@
      .		     grid_dims(nferdims), fildim, memdim, filstride(nferdims),
      .               maxlen, attlen, attoutflag, vtype, nvdims, nvatts, 
      .               outflag, dlen, err_status, i, permuted, strided
-        REAL vdims(10), val
+        REAL vdims(10), val, bad_in
 	CHARACTER*1	dimnam(nferdims)
 	CHARACTER*13	TM_STRING
         CHARACTER*128   buff, vname
@@ -365,9 +366,20 @@
            cd_scaled(ivar) = got_it .OR. tf2
         ENDIF
 
-        IF ( cd_scaled( ivar ) ) CALL TM_SCALE(
-     .       cd_scale_factor(ivar), cd_add_offset(ivar),
-     .       ds_bad_flag(ivar), var, totsize )
+* Scaled data - read, and switch Ferret's default missing flag for the file missing flag.
+* If the file variable has a missing-flag use it, else the _FillValue
+
+        IF ( cd_scaled( ivar ) ) THEN
+           tf2 = NC_GET_ATTRIB( dset, varid, '_FillValue',
+     .                     do_warn, vname, maxlen, attlen, 
+     .                     attoutflag, buff, bad_in)
+           tf2 = NC_GET_ATTRIB( dset, varid, 'missing_value',
+     .                     do_warn, vname, maxlen, attlen, 
+     .                     attoutflag, buff, bad_in)
+
+           CALL TM_SCALE_SWITCH_BAD ( cd_scale_factor(ivar), cd_add_offset(ivar), 
+     .                     bad_in, ds_bad_flag(ivar), var, totsize )
+        ENDIF
 
 * if user has asked for new offset and/or scale, apply those, but
 * not to any missing data.

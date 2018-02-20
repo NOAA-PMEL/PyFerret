@@ -301,6 +301,7 @@ tm_same_line_def.F\
 tm_scale.F\
 tm_scale_all.F\
 tm_scale_nobad.F\
+tm_scale_switch_bad.F\
 tm_secs_from_bc.F\
 tm_secs_to_date.F\
 tm_secs_to_ymdhms.F\

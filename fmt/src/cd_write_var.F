@@ -1,7 +1,7 @@
 	SUBROUTINE CD_WRITE_VAR ( cdfid, dset, vname, grid, lo,
      .                            hi, dat, edges_flag, do_bounds, 
      .                            mode_upcase_output, 
-     .                            keepax_flag, user_var, status )
+     .                            keepax_flag, user_var, fer_bad, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -86,6 +86,7 @@
 *	         including bug fix in computation of npts, work mem size
 *                also: bug fix of unitialized "count" variable
 * v73+ *acm* 12/2017 Issue # 1846, writing user-variables with scale_factor, add_offset
+* V74  *acm*  2/2018 Issue # 1861, handling missing- and _FillValue with scale and offset
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -121,7 +122,7 @@
       INTEGER cdfid, dset, grid, lo(nferdims), hi(nferdims), 
      .        edges_flag, do_bounds, keepax_flag, status
       CHARACTER*(*) vname
-      REAL dat(*)
+      REAL dat(*), fer_bad
 
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
@@ -141,8 +142,7 @@
       CHARACTER*1  dimnam(nferdims)
       DATA  	   dimnam/'I','J','K','L','M','N'/
       CHARACTER*128 vbuff     ! needed because of fussy f772.1 DEC compiler
-      REAL   bad, r_scale, r_offset, scaled_bad, secspmon, secs_p_unit, 
-     .       unit_p_mon
+      REAL   bad, r_scale, r_offset, secspmon, secs_p_unit, unit_p_mon
       REAL*8 scalefac, addoff
       REAL*8 r100_8(200)
       REAL*8 TM_WORLD
@@ -195,7 +195,11 @@ c      EQUIVALENCE (r100_8, r100_4)
       got_it = CD_GET_ATTVAL ( cdfid, varid, "add_offset",
      .                        do_warn, vname,
      .                        addoff, numvals, nv )
-      got_it = CD_GET_ATTVAL ( cdfid, varid, "_FillValue",
+      got_it = CD_GET_ATTVAL ( cdfid, varid, "missing_value",
+     .                        do_warn, vname,
+     .                        bad, numvals, nv )
+      IF (.NOT.got_it) got_it = 
+     .         CD_GET_ATTVAL ( cdfid, varid, "_FillValue",
      .                        do_warn, vname,
      .                        bad, numvals, nv )
 
@@ -515,15 +519,18 @@ c      EQUIVALENCE (r100_8, r100_4)
 
       ENDIF
 
-* if data was scaled on input, rescale it. This also rescales data containing
-* the missing value flag, as on input.
-
+*xxxx   Never scale the missing flag: instead we read data, insert the default missing-flag
+*xxxx   for internal use in computing etc, and then on output restore the
+*xxxx   packing, and the incoming missing-data flag.
+*XXXXXXXXXXXXXXXX OLD BEHAVIOR*XXXXXXXXXXXXXXXX
 * Scale the bad data too... on input to netCDF we scale all the data,
 * compute the missing flag for internal use as indat*inscale + inoff
 * and insert that internal missing flag.
 *
 * To write scaled data, scale all of it by ferretdat(1./inscale) - (inoff/inscale)
 * the scaling to be used is sent into this routine.
+
+*XXXXXXXXXXXXXXXX OLD BEHAVIOR*XXXXXXXXXXXXXXXX
 
       scaled = .FALSE.
       r_offset = 0.
@@ -545,7 +552,9 @@ c      EQUIVALENCE (r100_8, r100_4)
 	 IF (user_var) THEN
 	    CALL TM_SCALE_NOBAD( r_scale, r_offset, dat, npts, bad, vartyp )
 	 ELSE
-            CALL TM_SCALE_ALL ( r_scale, r_offset, dat, vartyp, npts )
+
+c file var: rescale, skipping missing and restoring the _FillValue from the input file.
+            CALL TM_SCALE_SWITCH_BAD ( r_scale, r_offset, fer_bad, bad, dat, npts )
 	 ENDIF
 
          scaled = .TRUE.
@@ -561,12 +570,14 @@ c      EQUIVALENCE (r100_8, r100_4)
       IF ( scaled ) THEN
          r_scale = scalefac
          r_offset = addoff
-         scaled_bad = bad* r_scale + r_offset
 	 
 	 IF (user_var) THEN
 	    CALL TM_SCALE_NOBAD( r_scale, r_offset, dat, npts, bad, vartyp )
 	 ELSE
-            CALL TM_SCALE( r_scale, r_offset, scaled_bad, dat, npts )
+
+c unpack again, skipping missing and going back to Ferret internal bad-flag.
+            CALL TM_SCALE_SWITCH_BAD ( r_scale, r_offset, bad, fer_bad, dat, npts )
+
 	 ENDIF
       ENDIF
 

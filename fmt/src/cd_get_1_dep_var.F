@@ -67,6 +67,8 @@
 * V6931 12/14 *acm* Fix ticket 2223: switch_nan needs to use the Ferret
 *		    missing-value flag.
 * V695 4/15 *sh* added support for CF auxiliary coordinate variables
+* V74  *acm*  2/2018 Issue # 1861, handling missing- and _FillValue with scale and offset
+
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -283,8 +285,15 @@ c        ENDIF
 * offset) and missing values should first check that a data value is 
 * valid, and then apply the transformation. Note that values that are 
 * identified as missing should not be transformed. 
+
+*xxxx   Never scale the missing flag: instead we read data, insert the default missing-flag
+*xxxx   for internal use in computing etc, and then on output restore the
+*xxxx   packing, and the incoming missing-data flag.  Previously we did unpack bad flags.
+
 * This means that the missing_value and _FillValue are in packed-type,
 * and to test unpacked data against the bad value, they need to be unpacked.
+*xxxx
+*xxxx
 *
 *     (note that the netCDF library insists on _FillValue's data type)
              IF ( vartyp.LE.NF_INT .AND. cd_scaled(ivtm) ) THEN
@@ -294,9 +303,6 @@ c        ENDIF
                    IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
      .                 ivcd, attid, aname, attype, attlen, attoutflag, 
      .                 istat)
-	           IF ( attype .EQ. vartyp ) ds_bad_flag(ivtm) =
-     .			ds_bad_flag(ivtm)*cd_scale_factor(ivtm)
-     .			+ cd_add_offset(ivtm)
 	        ENDIF
 
 * ... *kob* Also need to see about unpacking _FillValue
@@ -306,16 +312,24 @@ c        ENDIF
                    IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
      .                  ivcd, attid, aname, attype, attlen, attoutflag, 
      .                  istat )
-	           IF ( attype .EQ. vartyp ) ds_missing_flag(ivtm) =
-     .	   		ds_missing_flag(ivtm)*cd_scale_factor(ivtm)
-     .			+ cd_add_offset(ivtm)
 	        ENDIF
              ENDIF
+
+* ... If packed, will set the missing flag internally to the default, bad_r8
+*     and on reading data, will stick that into the data. On writing will
+*     restore the flag from the file.
+
+	     IF ( cd_scaled(ivtm) ) THEN
+                ds_bad_flag(ivtm) =  bad_r8
+                ds_missing_flag(ivtm) =  bad_r8
+	     ENDIF
+	     	     
              IF ( got_bad .AND. .NOT.got_missing )
      .           ds_missing_flag(ivtm) =  ds_bad_flag(ivtm)
              IF ( got_missing .AND. .NOT.got_bad )
      .           ds_bad_flag(ivtm) =  ds_missing_flag(ivtm)
-	        
+
+
 * if neither missing flag nor _FillValue was defined, use NaN.
              IF ( .NOT.got_missing .AND. .NOT.got_bad .AND. .NOT.its_epic) THEN
                 CALL SET_NAN (ds_missing_flag(ivtm))
@@ -327,7 +341,7 @@ c        ENDIF
              ENDIF
 
 *  *kob* call SWITCH_NAN to make sure if NaN exisits, its in ds_missing_flag
-	     CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm), bad_r4)
+	     CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm), bad_r8)
 
 * see what special FERRET attributes can be read: axis ordering and
 * sub-hyperslab bounds

@@ -124,6 +124,8 @@
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 * V73+ *acm* 12/17 Fix issue #1847 - value overflows integer on RETURN=size
+* V74  *acm* 2/18 Issue # 1861, handling missing- and _FillValue with scale and offset
+*                 change to `var,RETURN=bad`
 
 #include "netcdf.inc"
 	include 'tmap_dims.parm'
@@ -448,6 +450,12 @@
 * ... RETURN=BAD
 	      ELSEIF ( repl .EQ. "BAD" ) THEN
 	         result = cx_bad_data ( cx )
+
+c if its a netcdf-type dset with packed data, may have swapped out the bad flag
+
+	         i2 = cx_data_set(cx)
+		 CALL GET_DSET_BAD( i2,  cmnd(istart:iend), result )
+
 	         repl = TM_FMT( result, use_digits, max_len, str_len )
 	         str_len = TM_LENSTR1(repl)
 	         GOTO 500

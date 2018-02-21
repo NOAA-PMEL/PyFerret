@@ -1160,7 +1160,6 @@ variables:
 		TI:standard_name = "time" ;
 	short ELEV(TI, YC2_4, XC3_3) ;
 		ELEV:missing_value = -32767s ;
-		ELEV:_FillValue = -32768s ;
 		ELEV:long_name = "Surface elevation" ;
 		ELEV:units = "meter" ;
 		ELEV:scale_factor = 0.000274674967954587 ;
@@ -1201,7 +1200,6 @@ variables:
 		Ti:standard_name = "time" ;
 	short Elev(Ti, Yc, Xc) ;
 		Elev:missing_value = -32767s ;
-		Elev:_FillValue = -32768s ;
 		Elev:long_name = "Surface elevation" ;
 		Elev:units = "meter" ;
 		Elev:scale_factor = 0.000274674967954587 ;
@@ -1546,7 +1544,6 @@ variables:
 		TI:standard_name = "time" ;
 	short ELEV(TI, YC, XC) ;
 		ELEV:missing_value = -32767s ;
-		ELEV:_FillValue = -32768s ;
 		ELEV:long_name = "Surface elevation" ;
 		ELEV:units = "meter" ;
 		ELEV:scale_factor = 0.000274674967954587 ;
@@ -1620,7 +1617,6 @@ variables:
 		TI:standard_name = "time" ;
 	short ELEV(TI, YC, XC) ;
 		ELEV:missing_value = -32767s ;
-		ELEV:_FillValue = -32768s ;
 		ELEV:long_name = "Surface elevation" ;
 		ELEV:units = "meter" ;
 		ELEV:scale_factor = 0.000274674967954587 ;
@@ -1695,7 +1691,6 @@ variables:
 		TI:standard_name = "time" ;
 	short ELEV(TI, YC1_1, XC) ;
 		ELEV:missing_value = -32767s ;
-		ELEV:_FillValue = -32768s ;
 		ELEV:long_name = "Surface elevation" ;
 		ELEV:units = "meter" ;
 		ELEV:scale_factor = 0.000274674967954587 ;
@@ -1727,10 +1722,9 @@ data:
  TI = 1.78368055555556 ;
 
  ELEV =
-  -32767, -32767, -32767, -32767, -32767, -32767, -32767, -32767, -32767, 
-    -32767, -32767, 10702, 10702, 10702, 10702, 10702, 10702, 10702, 10702, 
-    10702, 10702, 10702, 10702, 10702, 10702, -32767, -32767, -32767, -32767, 
-    -32767, -32767, -32767, -32767, -32767, -32767 ;
+  _, _, _, _, _, _, _, _, _, _, _, 10702, 10702, 10702, 10702, 10702, 10702, 
+    10702, 10702, 10702, 10702, 10702, 10702, 10702, 10702, _, _, _, _, _, _, 
+    _, _, _, _ ;
 }
 bn_attributes.jnl --- 20 set data type on output int4
 	int TEMP(TIME1, PSZT1_1, PSYT48_48, PSXT91_108) ;

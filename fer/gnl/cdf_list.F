@@ -134,6 +134,8 @@
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * v73+ *acm* 12/2017 Issue # 1846, writing user-variables with scale_factor, add_offset
+* V74  *acm* 2/18 Issue # 1861, handling missing- and _FillValue with scale and offset
+*                 write correct attributes to netCDF output
 
         include 'netcdf.inc'
 #include "netcdf_declareUnderscore.inc"
@@ -238,7 +240,7 @@
      .                  varoutflag
         LOGICAL         NC_GET_ATTRIB, NC_GET_ATTRIB_DP, 
      .                  full_precision, DODS_cache, range_not_rqd,
-     .                  got_it, got_title, got_units, got_history,
+     .                  got_it, got_title, got_units, got_history, its_cdf,
      .                  got_missing, got_fill, do_warn, coordvar, user_var
 
         PARAMETER     ( buff_size = 2048,
@@ -305,11 +307,11 @@
         dset = cx_data_set( cx )
 
         IF (dset .GT. pdset_irrelevant) THEN
-          IF (ds_type(dset).EQ.'CDF' .OR. ds_type(dset).EQ.'ECDF' 
+           its_cdf = (ds_type(dset).EQ.'CDF' .OR. ds_type(dset).EQ.'ECDF' 
      .        .OR. ds_type(dset).EQ.' MC' .OR. ds_type(dset).EQ.'ENS' 
-     .        .OR. ds_type(dset).EQ.'FCT' .OR. ds_type(dset).EQ.'UNI')
-     .       CALL CDF_LIST_GLOBAL_ATTS (dset, cdfid, status)
-        ENDIF
+     .        .OR. ds_type(dset).EQ.'FCT' .OR. ds_type(dset).EQ.'UNI') 
+           IF (its_cdf) CALL CDF_LIST_GLOBAL_ATTS (dset, cdfid, status)
+	ENDIF
 
         dset_last = dset
         scalefac = 1.
@@ -325,15 +327,16 @@
            dset = cx_data_set( cx )
            IF (dset_last .NE. dset) THEN
               IF (dset .GE. 1) THEN
-                 IF (ds_type(dset) .EQ. 'CDF' .OR. 
+                 its_cdf = (ds_type(dset) .EQ. 'CDF' .OR. 
      .               ds_type(dset) .EQ. ' MC' .OR. 
      .               ds_type(dset) .EQ. 'ENS' .OR. 
      .               ds_type(dset) .EQ. 'FCT' .OR. 
-     .               ds_type(dset) .EQ. 'UNI')
-     .          CALL CDF_LIST_GLOBAL_ATTS (dset, cdfid, status)
+     .               ds_type(dset) .EQ. 'UNI') 
+                 IF (its_cdf) CALL CDF_LIST_GLOBAL_ATTS (dset, cdfid, status)
               ENDIF
               dset_last = dset
            ENDIF
+
            cat = cx_category(cx)
            var = cx_variable(cx)
            varcode = SANITARY_VAR_CODE( cat, var )
@@ -664,10 +667,7 @@
 * if its a newly-created variable write attributes
            IF (( new  .AND. all_outflag .GT. 0) .AND. .NOT. as_global) THEN
 
-* Write missing value and fill flag here; if writing the scale and
-* offset attributes, then un-scale the missing and fill flags, using
-* potentially double precision scale and offset from the linked-list
-* structure.
+* Write missing value and fill flag here
 
               IF (varid .GT. 0) THEN
 
@@ -707,8 +707,8 @@
                       IF (attoutflag .EQ. 0) no_fill_flag = 1
                    ENDIF
                  ENDIF
-		 IF (no_missing_flag .EQ. 1) THEN
-		   attname = '_FillValue'
+                 IF (no_missing_flag .EQ. 1) THEN
+                   attname = '_FillValue'
                    CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
      .                  istat)
                    IF (attid .GT. 0) 
@@ -717,12 +717,12 @@
                     IF (attoutflag .EQ. 0) no_fill_flag = 1
                  ENDIF
 
-* If the data is numeric, see if the missing flag needs to be rescaled, 
-* or converted to the output type
+* If the data is numeric, check the missing flag, getting the original one, 
+* and write with the output type
 
                  IF (istat .EQ. ferr_ok .AND. outtype .NE. nf_char) THEN
 
-* If un-scaling on output, will also un-scale the missing flag.
+* If un-scaling on output, write the original missing flag.
                     IF (scalefac .NE. 1.D0  .OR. addoff .NE. 0.D0) THEN
                        dvals(1) = miss_in
                        vals(1) = dvals(1)
@@ -759,7 +759,10 @@
 			  ENDIF
                        ENDIF
 
-		       IF (.NOT.got_fill .AND. (scalefac.NE.1.D0  .OR. addoff.NE.0.D0) )THEN
+* Ferret doesn't keep the values corresponding to two flags in the data that it stores.
+* If there was a _FillValue in the input file, and it hasn't been changed, write it.
+
+		       IF (.NOT.got_fill ) THEN 
 		       attname = '_FillValue'
 		       CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
      .                     istat)
@@ -767,16 +770,19 @@
      .                    CALL CD_GET_VAR_ATT_INFO (dset, varid, 
      .                   attid, aname, attype, attlen, attoutflag, istat )
                           IF (attoutflag .EQ. 0) no_fill_flag = 1
-		       IF (attoutflag .NE. 0) got_it = NC_GET_ATTRIB_DP 
+		       got_it = .FALSE.
+		       IF (attoutflag .NE. 0) got_it = NC_GET_ATTRIB_DP  !.AND. .NOT.got_missin
      .                     (dset, varid, attname, do_warn, varcode, attlen, 
      .                     attoutflag, fill_in)
-                          IF (got_it) THEN
+                          IF (got_it .AND. (fill_in.EQ.bad .OR. fill_in.EQ.miss_in) ) THEN
 			     dvals(1) = fill_in
                              vals(1) = dvals(1)
                              attype = outtype
+			  ELSE
+			     IF (its_cdf .AND. .NOT.itsa_uvar) no_fill_flag = 1
 			  ENDIF
 		       ENDIF
-                       IF (no_fill_flag.EQ.0) THEN
+                       IF (no_fill_flag .EQ. 0) THEN
 		          CALL CD_WRITE_ATTVAL_DP(
      .                     cdfid, varcode, '_FillValue', dvals, attlen, 
      .                     attype, status )
@@ -1257,7 +1263,7 @@
 	      CALL CD_WRITE_VAR (cdfid, dset_num, varcode, grid, 
      .                        write_lo, write_hi, memry(mr)%ptr, 
      .                        edges_flag, do_bounds, mode_upcase_output, 
-     .                        keepax_flag, user_var, status )
+     .                        keepax_flag, user_var, ds_missing_flag(ivar), status )
 	   ENDIF
 
            IF ( status .NE. merr_ok ) GOTO 5800

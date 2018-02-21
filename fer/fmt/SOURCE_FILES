@@ -16,6 +16,7 @@ full_var_title.F\
 var_title_only.F\
 geog_label.F\
 geog_label_vs.F\
+get_dset_bad.F\
 get_dset_name.F\
 get_dset_title.F\
 get_prec_digits.F\

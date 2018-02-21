@@ -43,6 +43,8 @@
 * V698 *acm*  2/16 Send info that the levels are from a histogram to setlab_syms
 * V720 *acm*  7/17 Ticket 2250: small-valued data caused an error computing number
 *                  of interval-edges NLEV2
+* V740 *acm*  2/18 Tweak for issue 1858: labels on contour lines for auto-generated 
+*                  integer levels got unneeded digit after decimal point
 
         IMPLICIT NONE
 	include		'parampl5_dat.decl'
@@ -213,6 +215,8 @@ c *acm* 4/08 Set jj as in plotz
               ELSE
                  JJ=NSIGC-IFIX(ALOG10(ABS(ZMP-ZNP))+.5)
               ENDIF
+c  Auto-generated integer levels? No need for digits after decimal pt
+	      IF (DZ - IFIX(DZ) .EQ. 0.) JJ = 0 
               IF (JJ.LE.0) JJ=-1
 
 c *acm* 3/04 under g77 on linux this incorrectly uses

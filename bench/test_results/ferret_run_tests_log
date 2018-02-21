@@ -10509,7 +10509,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.31"
-FERRET_PLATFORM = "Linux 3.10.0-693.11.6.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-693.17.1.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
@@ -10541,7 +10541,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.31"
-FERRET_PLATFORM = "Linux 3.10.0-693.11.6.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-693.17.1.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
@@ -10719,7 +10719,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.31"
-FERRET_PLATFORM = "Linux 3.10.0-693.11.6.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-693.17.1.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
@@ -30992,6 +30992,7 @@ plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
 ! ACM 4/2005 set mode meta to save one of the plots for the metafile checks.
 !            and cancel mode logo, so that .plt files are comparable.
 ! ACM 4/2006 new qualifier /LENGTH sets the length of the arrow heads
+!  2/18 *acm* keep mode logo turned off
  
 set window/asp=1/siz=0.5
 use gtbc011
@@ -31007,7 +31008,6 @@ GO bn_reset
 cancel mode verify
 ooooooooooooooooooooooooooooooooooooooooooo
 set mode meta flowlines.plt
-can mode logo
  
 can region
 vector/i=1:50/j=1:50/length=50/aspect/nolabel sin(i/20)*10+j-20,-1*cos(j/10)*10+i-20
@@ -31031,8 +31031,6 @@ let yy =  if abs(y[gt=sst]) le 20 then 10 else  (100-abs(y[gt=sst]+1))/ 10.
 set reg/l=1
 vec/noax/xskip=16/yskip=8/len=15/title="Sinusoidal Projection" fsst*0,fsst*0+yy*mp_mask, x_page,y_page
 vec/over/flow/noax/xskip=16/yskip=8/len=5/title="Sinusoidal Projection" fsst*0,fsst*0+yy*mp_mask, x_page,y_page
- 
-set mode logo
 *** Running ferret script: bn_logaxes.jnl
 !  Test the qualifiers /HLOG and /VLOG for setting
 !  log axes.  On a depth axis, inverse log plot.
@@ -36805,9 +36803,9 @@ polygon/thick/color=red/palette=blue/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
 !       9/12/02  vary the lengths of the vectors in 1st two plots.
 ! ACM 4/2005 set mode meta to save one of the plots for the metafile checks.
 !            and cancel mode logo, so that .plt files are comparable.
+!  2/18 *acm* keep mode logo turned off
  
 set mode meta vec_curv.plt
-can mode logo
 use coads_climatology
 set reg/l=1
 go mp_orthographic 230 60
@@ -36866,7 +36864,6 @@ let mypage = my + 0*mx
 vec/title="Stretched grid" a,b,mxpage,mypage
  
 can mode meta
-set mode logo
 *** Running ferret script: bn_delimited_read.jnl
 ! bn_delimited_read.jnl
 ! 10/01 *sh*
@@ -40638,9 +40635,9 @@ list $1_strings[i=1013:1024] 	! via IS_MODULO
 ! *acm* 12/02
 ! ACM 4/2005 set mode meta to save this plot for the metafile checks.
 !            and cancel mode logo, so that .plt files are comparable.
+!  2/18 *acm* keep mode logo turned off
  
 set mode meta dots.plt
-can mode logo
 plot/symbol=dot/i=1:1000 sin(62.8*i)
 plot/symbol=dot/color=red/over/i=1:1000 sin(62.8*(i+20))
 can mode meta
@@ -40652,7 +40649,6 @@ plot/symbol=dot/size=0.5/over/i=1:1000 -0.5*sin(62.8*(i+10) )
 ! Vector plots with null-size vectors
  
 vector/i=1:5/j=1:5 0.*(i+j),0*(i+j)
-set mode logo
 *** Running ferret script: bn_lev_symbols.jnl
 ! Test symbols which capture the latest LEVELS settings
 ! LEV_TEXT  The argument, if any, to the LEV qualifier
@@ -40822,7 +40818,6 @@ polygon/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
  
 ! restore state of modes
 cancel view
-set mode logo
 set mode labels
 *** Running ferret script: bn_modulo_attribute.jnl
 ! Ferret V5.50 m
@@ -41133,6 +41128,7 @@ plot/sym=dot/color=8/i=1:10 i
 !            and ! cancel mode logo, so that .plt files are comparable.
 ! ACM 1/2007 Change from a bunch of plot items in a viewport, to separate
 !            plots; for better checking of batch mode
+!  2/18 *acm* keep mode logo turned off
  
  
 plot/i=1:100/title="multi line title<nl>with the second line pretty long: \
@@ -41142,7 +41138,6 @@ ppl plot
 plot/over/i=1:100 i*sin(i/8)
  
 set mode meta multi_line_labels.plt
-cancel mode logo
 plot/i=1:100/title="@p2two-line<NL>RED title"/set i*cos(i/8)
 ppl ylab "A four-line y label.<nl>second line<nl>third line<NL>fourth line"
 ppl xlab "a two-line X label. <nl>Not good together with a multi-line title"
@@ -43114,6 +43109,7 @@ ppl shade
 ! ACM March 12, 2004
 ! ACM 4/2005 set mode meta to save one of the plots for the metafile checks.
 !            and cancel mode logo, so that .plt files are comparable.
+!  2/18 *acm* keep mode logo turned off
  
 ppl axnmtc,2,2
  
@@ -43145,7 +43141,6 @@ plot/hg=small(color=red,dash,thick=1),large(color=blue,line,thick=3)/vg=large(li
 ! Log axes: VLOG and HLOG with large and small tics
  
 set mode meta graticules.plt
-can mode logo
  
 set view left
 def axis/z zlog=exp(k[k=1:10])
@@ -43158,7 +43153,6 @@ let fcn = k[gz=dlog]
 plot/vlog/vlimits=1:100000/hg="large(color=red),small(color=lightblue)" fcn
  
 can mode meta
-set mode logo
  
 can view
  
@@ -62816,7 +62810,7 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v7.31 (beta/debug)"                                               
- 3    /  3:" ! Linux 3.10.0-693.11.6.el7.x86_64 64-bit - MM-DD-YY"                      
+ 3    /  3:" ! Linux 3.10.0-693.17.1.el7.x86_64 64-bit - MM-DD-YY"                      
  4    /  4:" ! DD-MON-YY HH:MM     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
@@ -91898,7 +91892,6 @@ sh att .
 sh att elev
      attributes for dataset: ./a.nc
  ELEV.missing_value = -32767
- ELEV._FillValue = -32768
  ELEV.long_name = Surface elevation 
  ELEV.units = meter 
  ELEV.scale_factor = 0.000274675
@@ -91918,7 +91911,6 @@ sh att .
 sh att elev
      attributes for dataset: ./a.nc
  ELEV.missing_value = -32767
- ELEV._FillValue = -32768
  ELEV.long_name = Surface elevation 
  ELEV.units = meter 
  ELEV.scale_factor = 0.000274675
@@ -103228,6 +103220,7 @@ GO err721_dup_labels
 ! err721_dup_labels.jnl
 ! ticket 2565
 ! 10/13/17 ACM
+!  2/18 *acm* keep mode logo turned off
  
 set mode logo
 use err721_dup_labels.nc
@@ -104334,6 +104327,112 @@ ppl contour/over
  
  
 frame/file=curvi_set.gif
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err73_go_box
+! err73_go_box.jnl
+! 2/12/2018
+! The box.jnl script had bugs
+ 
+cancel mode logo
+use coads_climatology
+ 
+!set mode ignore
+ 
+! This command works ok
+ 
+set view ul; shade/l=1 sst
+go box  300 320 45 20 9
+ 
+! Negative longitudes were not translated so this box was not drawn
+ 
+set view ur; shade/l=1 sst
+go box (-220) (-205)  30 42 7
+ 
+! Negative arguments were not consistently handled
+! Needed to be put into parentheses - now the script does this.
+ 
+set view ll; shade/l=1 sst
+go box  -200 -180 -45 20 11
+ 
+! Script now modernized to take arguments other than
+! simple color name or pen number
+ 
+set view lr; shade/l=1 sst
+go box  -90 -10 -10 10 black/thick/dash
+ 
+frame/file=go_box.gif
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err73_vector_aspect_yz
+! err73_vector_aspect_yz.jnl
+! issue #1860
+! This question:
+! https://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2017/msg00755.html
+ 
+define view/axes/x=0.1:0.4/y=0.1:0.7 myleft
+define view/axes/x=0.6:0.9/y=0.1:0.7 myright
+set view myleft
+ 
+let depdata = {0, 10, 20, 40, 80, 120, 180, 300, 450, 650, 900, 1200}
+let totaldepth = 1200
+let halfdepth = 600
+define axis/x=-1:50:1/units=degrees_east xax
+define axis/y=-40:40:2/units=degrees_north yax
+define axis/depth/z/units=meters/from_data zax = depdata
+let/title=u u = 1 + 0*(x[gx=xax] + y[gy=yax] + z[gz=zax])
+let/title=w w = 1 + 0*(x[gx=xax] + y[gy=yax] + z[gz=zax])
+ 
+! if lat1 = 0, the vectors are 45 degrees
+let lat1 = 0
+ 
+let rad_earth = 6371.e3  ! [m]
+let pi = 4*atan(1)
+let x_of_deg = rad_earth * cos(pi * lat1 / 180) * pi / 180
+let deg_of_x = 1 / x_of_deg
+let dellon = deg_of_x * halfdepth ! m -> degE
+vector/aspect/xskip=1/vlimits=0:`totaldepth`\
+/hlimits=`(-1)*dellon`:`dellon`\
+/length=0.1/y=`lat1` u,w
+ !-> vector/aspect/xskip=1/vlimits=0:1200/hlimits=-0.005395929635512:0.0053959296355124/length=0.1/y=0 u,w
+ 
+ 
+! but if not, they were a bit off
+set view myright
+ 
+let lat1 = 24
+let rad_earth = 6371.e3  ! [m]
+let pi = 4*atan(1)
+let x_of_deg = rad_earth * cos(pi * lat1 / 180) * pi / 180
+let deg_of_x = 1 / x_of_deg
+let dellon = deg_of_x * halfdepth ! m -> degE
+vector/aspect/xskip=1/vlimits=0:`totaldepth`\
+/hlimits=`(-1)*dellon`:`dellon`\
+/length=0.1/y=`lat1` u,w
+ !-> vector/aspect/xskip=1/vlimits=0:1200/hlimits=-0.005906580335298:0.0059065803352978/length=0.1/y=24 u,w
+ 
+frame/file=vector_lats.gif
+ 
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err73_extra_digit_contourlab
+! err73_extra_digit_contourlab.jnl
+! 2/15/2918
+! Issue 1858: The plot on the right, with a smaller number of
+! color levels specified, had the contour line labels drawn with
+! an unneeded digit after the decimal point 20.0, 22.0, etc
+ 
+use coads_climatology
+set view left;  contour/l=1/lev=2d sst
+set view right; contour/l=1/x=120e:80w/y=20s:20n/lev=2d sst
+ 
+frame/file=extra_digit_contourlab.gif
 *** Running ferret script: bn_clim_special.jnl
 ! bn_clim_special.jnl
 ! Test the climatological axes from Andrew's monthly
@@ -106268,7 +106367,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.31"
-FERRET_PLATFORM = "Linux 3.10.0-693.11.6.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-693.17.1.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "31"

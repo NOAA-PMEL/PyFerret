@@ -309,17 +309,9 @@ void fgdsymbol_(void **symbol, void **window, char *symbolname, int *namelen)
         mysymbol = grdelSymbol(*window, symbolname, *namelen, NULL, NULL, 0, 0);
     }
     else {
-        /* 
-         * TODO: save symbol definitions so they are only read from file once.
-         * Probably read everything available at start-up time so no perceived
-         * slowness in first plot of a symbol.
-         */
-
-        /* Symbols defined in a file */
+        /* Symbols that were defined in a file */
         if ( getSymbolDef(&ptsx, &ptsy, &numpts, &fill, symbolname, *namelen) ) {
             mysymbol = grdelSymbol(*window, symbolname, *namelen, ptsx, ptsy, numpts, fill);
-            FerMem_Free(ptsx, __FILE__, __LINE__);
-            FerMem_Free(ptsy, __FILE__, __LINE__);
         }
         else {
             /* Failure - grdelerrmsg already assigned */

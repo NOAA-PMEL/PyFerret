@@ -79,7 +79,9 @@ void fgd_set_unmapped_default_(int *pngonly);
 void fgd_set_transparency_(int *transparent);
 void fgd_getanimate_(int *inanimation);
 
-/* Utility function for reading symbol definitions */
+/* Utility functions for dealing with symbol definitions */
+grdelBool readAllSymbolDefs(void);
+void freeAllSymbolDefs(void);
 grdelBool getSymbolDef(float **ptsxptr, float **ptsyptr, int *numptsptr, 
                        grdelBool *fillptr, char symbolname[], int namelen);
 

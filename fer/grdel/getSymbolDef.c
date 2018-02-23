@@ -1,4 +1,5 @@
 #include <Python.h> /* make sure Python.h is first */
+#include <dirent.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,7 +10,275 @@
 /* Environment variable giving the directories containing symbol definitions */
 #define SYMDIRS_ENVVAR "FER_PALETTE"
 
+#define SYMFILEEXT ".sym"
+#define SYMFILEEXTLEN 4
+
 #define MAXLINELEN 2048
+
+typedef struct SymbolInfo_ {
+    struct SymbolInfo_ *next;
+    char     *name;
+    float    *ptsx;
+    float    *ptsy;
+    int       namelen;
+    int       numpts;
+    grdelBool fill;
+} SymbolInfo;
+
+/* Could use a LIST if needed, but current code keeps alphabetically ordered */
+static SymbolInfo *SymbolInfoList = NULL;
+
+/* Static function prototypes */
+static SymbolInfo *readSymbolDefFile(char *filename, char symname[], int symnamelen);
+static int         symbolNameFilter(const struct dirent *direntry);
+static SymbolInfo *readSymbolDef(char symname[], int symnamelen);
+
+/* 
+ * Reads and returns the symbol definition from the specified file. 
+ * Memory allocated in and for the returned symbol definition 
+ * structure should be freed when no longer needed.
+ */
+static SymbolInfo *readSymbolDefFile(char *filename, char symname[], int symnamelen) {
+    SymbolInfo *infoptr;
+    FILE  *symfile;
+    char   dataline[MAXLINELEN];
+    int    numpts;
+    char  *strptr;
+
+    symfile = fopen(filename, "r");
+    if ( symfile == NULL ) {
+        return NULL;
+    }
+
+    /* read through just to get the maximum number of points for allocating memory */
+    numpts = 0;
+    while ( fgets(dataline, MAXLINELEN, symfile) != NULL ) {
+        /* skip comments and blank lines */
+        strptr = dataline;
+        while ( isspace(*strptr) )
+            strptr++;
+        if ( (*strptr == '!') || (*strptr == '\0') )
+            continue;
+        if ( strncasecmp(strptr, "fill", 4) == 0 ) {
+            continue;
+        }
+        numpts++;
+    }
+    rewind(symfile);
+
+    /* allocate memory for the symbol information */
+    infoptr = (SymbolInfo *) FerMem_Malloc(sizeof(SymbolInfo), __FILE__, __LINE__);
+    if ( infoptr == NULL ) {
+        fclose(symfile);
+        return NULL;
+    }
+    infoptr->name = (char *) FerMem_Malloc((symnamelen+1) * sizeof(char), __FILE__, __LINE__);
+    if ( infoptr->name == NULL ) {
+        FerMem_Free(infoptr, __FILE__, __LINE__);
+        fclose(symfile);
+        return NULL;
+    }
+    infoptr->ptsx = (float *) FerMem_Malloc(2 * numpts * sizeof(float), __FILE__, __LINE__);
+    if ( infoptr->ptsx == NULL ) {
+        FerMem_Free(infoptr->name, __FILE__, __LINE__);
+        FerMem_Free(infoptr, __FILE__, __LINE__);
+        fclose(symfile);
+        return NULL;
+    }
+    infoptr->ptsy = &(infoptr->ptsx[numpts]);
+
+    strncpy(infoptr->name, symname, symnamelen);
+    infoptr->name[symnamelen] = '\0';
+    infoptr->namelen = symnamelen;
+
+    /* now carefully read the coordinates */
+    infoptr->numpts = 0;
+    infoptr->fill = 0;
+    while ( fgets(dataline, MAXLINELEN, symfile) != NULL ) {
+        /* skip comments and blank lines */
+        strptr = dataline;
+        while ( isspace(*strptr) )
+            strptr++;
+        if ( (*strptr == '!') || (*strptr == '\0') )
+            continue;
+        if ( strncasecmp(strptr, "fill", 4) == 0 ) {
+            infoptr->fill = 1;
+            continue;
+        }
+        if ( sscanf(strptr, "%f %f", &(infoptr->ptsx[infoptr->numpts]), &(infoptr->ptsy[infoptr->numpts])) != 2 ) {
+            FerMem_Free(infoptr->ptsx, __FILE__, __LINE__);
+            FerMem_Free(infoptr->name, __FILE__, __LINE__);
+            FerMem_Free(infoptr, __FILE__, __LINE__);
+            fclose(symfile);
+            return NULL;
+        }
+        (infoptr->numpts)++;
+    }
+    fclose(symfile);
+
+    return infoptr;
+}
+
+/* Filter function for getting only symbol files from a directory */
+static int symbolNameFilter(const struct dirent *direntry) {
+     int namelen = strlen(direntry->d_name);
+     /* Need a name before the filename extension */
+     if ( namelen <= SYMFILEEXTLEN )
+         return 0;
+     if ( strcmp(&(direntry->d_name[namelen-SYMFILEEXTLEN]), SYMFILEEXT) != 0 )
+         return 0;
+     return 1;
+}
+
+/*
+ * Free all memory in SymbolInfoList, the static list of all symbol 
+ * information read from symbol definition files.
+ */
+void freeAllSymbolDefs(void) {
+    SymbolInfo *nextptr;
+    SymbolInfo *infoptr;
+
+    nextptr = SymbolInfoList;
+    while ( nextptr != NULL ) {
+        infoptr = nextptr;
+        nextptr = infoptr->next;
+        FerMem_Free(infoptr->ptsx, __FILE__, __LINE__);
+        FerMem_Free(infoptr->name, __FILE__, __LINE__);
+        FerMem_Free(infoptr, __FILE__, __LINE__);
+    }
+    SymbolInfoList = NULL;
+}
+
+/*
+ * Reads all symbols in the directories given by the environment variables 
+ * SYMDIRS_ENVVAR.  The symbols definitions are stored SymbolInfoList.
+ */
+grdelBool readAllSymbolDefs(void) {
+    const char     *envval;
+    char            symdirs[MAXLINELEN];
+    char           *currdir;
+    struct dirent **namelist;
+    int             numfiles;
+    char            filename[MAXLINELEN];
+    SymbolInfo     *infoptr;
+    SymbolInfo     *nextptr;
+
+    /* Free any previous list */
+    freeAllSymbolDefs();
+
+    /* get the directories to search from the environment variable */
+    envval = getenv(SYMDIRS_ENVVAR);
+    if ( envval == NULL ) {
+        sprintf(grdelerrmsg, "Environment variable %s is not defined", SYMDIRS_ENVVAR);
+        return 0;
+    }
+
+    /* make a copy that can be messed with */
+    if ( strlen(envval) >= MAXLINELEN ) {
+        sprintf(grdelerrmsg, "Value of environment variable %s exceeds %d characters", SYMDIRS_ENVVAR, MAXLINELEN);
+        return 0;
+    }
+    strcpy(symdirs, envval);
+
+    /* read the symbol files in each (space-separated) directory specified */
+    currdir = strtok(symdirs, " \t\v\r\n");
+    while ( currdir != NULL ) {
+        namelist = NULL;
+        numfiles = scandir(currdir, &namelist, symbolNameFilter, alphasort);
+        /* ignore any errors; eg, directory named does not exist */
+        while ( numfiles > 0 ) {
+            numfiles--;
+            if ( snprintf(filename, MAXLINELEN, "%s/%s", currdir, namelist[numfiles]->d_name) >= MAXLINELEN ) {
+                /* filename too long - skip */
+                free(namelist[numfiles]);
+                continue;
+            }
+            infoptr = readSymbolDefFile(filename, namelist[numfiles]->d_name, strlen(namelist[numfiles]->d_name) - SYMFILEEXTLEN);
+            if ( infoptr == NULL ) {
+                /* problems reading the definition - skip */
+                free(namelist[numfiles]);
+                continue;
+            }
+            /* put into the list in alphabetical order */
+            if ( (SymbolInfoList == NULL) || (strcmp(infoptr->name, SymbolInfoList->name) < 0) ) {
+                /* first entry */
+                infoptr->next = SymbolInfoList;
+                SymbolInfoList = infoptr;
+            }
+            else {
+                nextptr = SymbolInfoList;
+                while ( (nextptr->next != NULL) && (strcmp(infoptr->name, nextptr->next->name) >= 0) )
+                    nextptr = nextptr->next;
+                infoptr->next = nextptr->next;
+                nextptr->next = infoptr;
+            }
+            free(namelist[numfiles]);
+        }
+        if ( namelist != NULL )
+            free(namelist);
+        currdir = strtok(NULL, " \t\v\r\n");
+    }
+
+    return 1;
+}
+
+/*
+ * Search the directories given by the environment variables SYMDIRS_ENVVAR 
+ * for the definition of the given symbol name.  If found, the symbol 
+ * information is added to SymbolInfoList and returned.
+ */
+static SymbolInfo *readSymbolDef(char symname[], int symnamelen) {
+    const char     *envval;
+    char            symdirs[MAXLINELEN];
+    char           *currdir;
+    SymbolInfo     *infoptr;
+    char            filename[MAXLINELEN];
+    SymbolInfo     *nextptr;
+
+    /* get the directories to search from the environment variable */
+    envval = getenv(SYMDIRS_ENVVAR);
+    if ( envval == NULL ) {
+        return NULL;
+    }
+
+    /* make a copy that can be messed with */
+    if ( strlen(envval) >= MAXLINELEN ) {
+        return NULL;
+    }
+    strcpy(symdirs, envval);
+
+    /* search for the symbol file in each (space-separated) directory specified */
+    currdir = strtok(symdirs, " \t\v\r\n");
+    infoptr = NULL;
+    while ( currdir != NULL ) {
+        if ( snprintf(filename, MAXLINELEN, "%s/%.*s%s", currdir, symnamelen, symname, SYMFILEEXT) < MAXLINELEN ) {
+            infoptr = readSymbolDefFile(filename, symname, symnamelen);
+            if ( infoptr != NULL ) {
+                break;
+            }
+        }
+        currdir = strtok(NULL, " \t\v\r\n");
+    }
+    if ( infoptr == NULL ) {
+        return NULL;
+    }
+
+    /* add to the list in alphabetical order */
+    if ( (SymbolInfoList == NULL) || (strcmp(infoptr->name, SymbolInfoList->name) < 0) ) {
+        /* first entry */
+        infoptr->next = SymbolInfoList;
+        SymbolInfoList = infoptr;
+    }
+    else {
+        nextptr = SymbolInfoList;
+        while ( (nextptr->next != NULL) && (strcmp(infoptr->name, nextptr->next->name) >= 0) )
+            nextptr = nextptr->next;
+        infoptr->next = nextptr->next;
+        nextptr->next = infoptr;
+    }
+
+    return infoptr;
+}
 
 /* 
  * Utility function for reading symbol definitions 
@@ -31,125 +300,40 @@
 grdelBool getSymbolDef(float **ptsxptr, float **ptsyptr, int *numptsptr, 
                        grdelBool *fillptr, char symbolname[], int namelen)
 {
-    const char *envval;
-    char   symdirs[MAXLINELEN];
-    char  *currdir;
-    char   filename[MAXLINELEN];
-    FILE  *symfile;
-    char   dataline[MAXLINELEN];
-    int    numpts;
-    float *ptsx;
-    float *ptsy;
-    int    fill;
-    char  *strptr;
+    SymbolInfo *infoptr;
+    int minlen;
 
-    /* initialize for error returns */
-    *ptsxptr = NULL;
-    *ptsyptr = NULL;
-    *numptsptr = 0;
-    *fillptr = 0;
-
-    /* get the directories from the environment variable */
-    envval = getenv(SYMDIRS_ENVVAR);
-    if ( envval == NULL ) {
-        sprintf(grdelerrmsg, "Environment variable %s is not defined", SYMDIRS_ENVVAR);
-        return 0;
-    }
-
-    /* make a copy can be messed with */
-    if ( strlen(envval) >= MAXLINELEN ) {
-        sprintf(grdelerrmsg, "Value of environment variable %s exceeds %d characters", SYMDIRS_ENVVAR, MAXLINELEN);
-        return 0;
-    }
-    strcpy(symdirs, symdirs);
-
-    /* search for the file in each (space-separated) directory specified */
-    symfile = NULL;
-    currdir = strtok(symdirs, " \t\v\r\n");
-    while ( currdir != NULL ) {
-        if ( snprintf(filename, MAXLINELEN, "%s/%.*s.sym", currdir, namelen, symbolname) >= MAXLINELEN ) {
-            sprintf(grdelerrmsg, "A full path filename exceeds %d characters", MAXLINELEN);
-            return 0;
-        }
-        symfile = fopen(filename, "r");
-        if ( symfile != NULL )
+    /* Check if the symbol definition has already been read */
+    infoptr = SymbolInfoList;
+    while ( infoptr != NULL ) {
+        if ( (infoptr->namelen == namelen) && (strncmp(infoptr->name, symbolname, namelen) == 0) )
             break;
-        currdir = strtok(NULL, " \t\v\r\n");
-    }
-    if ( symfile == NULL ) {
-        sprintf(grdelerrmsg, "Definition file not found for symbol %.*s", namelen, symbolname);
-        return 0;
-    }
-
-    /* quickly get the maximum number of points for allocating memory */
-    numpts = 0;
-    while ( fgets(dataline, MAXLINELEN, symfile) != NULL ) {
-        /* skip comments and blank lines */
-        strptr = dataline;
-        while ( isspace(*strptr) )
-            strptr++;
-        if ( (*strptr == '!') || (*strptr == '\0') )
-            continue;
-        if ( strncasecmp(strptr, "fill", 4) == 0 ) {
-            continue;
-        }
-        numpts++;
-    }
-    rewind(symfile);
-
-    /* allocate memory for the coordinates */
-    ptsx = (float *) FerMem_Malloc(numpts * sizeof(float), __FILE__, __LINE__);
-    if ( ptsx == NULL ) {
-        sprintf(grdelerrmsg, "Out of memory for array of %d X-coordinates", numpts);
-        fclose(symfile);
-        return 0;
-    }
-    ptsy = (float *) FerMem_Malloc(numpts * sizeof(float), __FILE__, __LINE__);
-    if ( ptsy == NULL ) {
-        sprintf(grdelerrmsg, "Out of memory for array of %d X-coordinates", numpts);
-        FerMem_Free(ptsx, __FILE__, __LINE__);
-        fclose(symfile);
-        return 0;
+        /* list is in alphabetical order - check if already passed any possible match */
+        minlen = (infoptr->namelen < namelen) ? infoptr->namelen : namelen;
+        if ( strncmp(infoptr->name, symbolname, minlen) > 0 )
+            infoptr = NULL;
+        else
+            infoptr = infoptr->next;
     }
 
-    /* now carefully read the coordinates */
-    numpts = 0;
-    fill = 0;
-    while ( fgets(dataline, MAXLINELEN, symfile) != NULL ) {
-        /* skip comments and blank lines */
-        strptr = dataline;
-        while ( isspace(*strptr) )
-            strptr++;
-        if ( (*strptr == '!') || (*strptr == '\0') )
-            continue;
-        if ( strncasecmp(strptr, "fill", 4) == 0 ) {
-            fill = 1;
-            continue;
-        }
-        if ( sscanf(strptr, "%f %f", &(ptsx[numpts]), &(ptsy[numpts])) != 2 ) {
-            /* trim off end blank spaces (completely blank lines were already skipped) */
-            strptr = &(dataline[strlen(dataline)-1]);
-            while ( isspace(*strptr) )
-                strptr--;
-            *strptr = '\0';
-            /* truncate long data lines */
-            if ( strlen(dataline) > 65 )
-                strcpy(&(dataline[62]), "...");
-            /* and assign the error message */
-            sprintf(grdelerrmsg, "Invalid coordinates data in %s: %s", filename, dataline);
-            FerMem_Free(ptsy, __FILE__, __LINE__);
-            FerMem_Free(ptsx, __FILE__, __LINE__);
-            fclose(symfile);
-            return 0;
-        }
-        numpts++;
+    /* If not found, check is there is a new definition file */
+    if ( infoptr == NULL )
+        infoptr = readSymbolDef(symbolname, namelen);
+
+    if ( infoptr == NULL ) {
+        sprintf(grdelerrmsg, "unknown symbol %.*s", namelen, symbolname);
+        *ptsxptr = NULL;
+        *ptsyptr = NULL;
+        *numptsptr = 0;
+        *fillptr = 0;
+        return 0;
     }
-    fclose(symfile);
 
     /* successful return */
-    *ptsxptr = ptsx;
-    *ptsyptr = ptsy;
-    *numptsptr = numpts;
-    *fillptr = fill;
+    *ptsxptr = infoptr->ptsx;
+    *ptsyptr = infoptr->ptsy;
+    *numptsptr = infoptr->numpts;
+    *fillptr = infoptr->fill;
     return 1;
 }
+

@@ -263,6 +263,8 @@
 * 1/24/2017 *acm* Ticket 2504: If Ferret is computuing axis bounds, set them such 
 *                 that the axis lies within the given modulo length.
 * 12/2017   *acm* Small tweak to error handling; any errors already noted in add-attribute
+* V740 *acm* 2/18 Issue 966: LET/LIKE= Get attributes from an existing variable
+* V740 *acm* 2/18 Issue 966: DEFINE AXIS/LIKE= Get attributes from an existing axis
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -317,6 +319,7 @@
      .		    slash_let_dset,
      .		    slash_let_bad,
      .		    slash_let_remote,
+     .		    slash_let_like,
      .		    slash_define_vp_by_ax,
      .              slash_bounds,
      .              slash_def_att_type,
@@ -365,6 +368,7 @@
      .		    slash_let_dset   = 1 + 3,
      .		    slash_let_bad    = 1 + 4,
      .		    slash_let_remote = 1 + 5,
+     .		    slash_let_like   = 1 + 6,
      .		    slash_define_vp_by_ax = 1 + 6,
      .              slash_def_att_type    = 1 + 1,
      .              slash_def_att_dset    = 1 + 0,
@@ -397,7 +401,7 @@
      .            letdset, its_remote, agg_hide, def_att_quiet, purge_all,
      .            user, norm, nouser, t_regular, use_strict, have_expr, 
      .            original, true_month, line_alloc, truemonth_noted,
-     .            is_double, misordered, bnds_or_edges, okmod
+     .            is_double, misordered, bnds_or_edges, okmod, is_like
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID,
      .		  TM_GET_LINENUM, TM_LENSTR1, 
@@ -689,6 +693,8 @@
 	   dset = unspecified_int4
 	ENDIF
 
+
+
 * title given ?  (preserves lower case via EQUAL_STR_LC 3/91)
 	buff3 = ' '
 	iqual = qual_given( slash_let_title )
@@ -830,6 +836,22 @@
      .			 its_remote, status )
 	IF ( status .NE. ferr_ok ) RETURN
 
+
+
+*     Inherit all attributes from another variable. If /TITLE, /UNITS etc were
+*     given on the LET command use them. INHERIT_ATTRS does not inherit the
+*     missing flags or scale and offset attributes.
+
+* ... LET/LIKE=var1 var
+
+	iqual = qual_given( slash_let_like )
+
+      IF ( iqual .GT. 0 ) THEN
+	 CALL EQUAL_STR_LC ( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .			      buff1, status )
+         CALL INHERIT_ATTRS (buff1, varname, buff3, buff2, status)
+      ENDIF
+
 * is there at least one slot blank ?
 	DO 430 i1 = 1, max_uvar
  430	IF ( uvar_num_items(i1) .EQ. uvar_deleted ) RETURN
@@ -884,6 +906,7 @@
         new_att_modulo = .FALSE.
         new_att_modulo_len = -1.
 	its_modulo = iqual .GT. 0 
+
 	IF ( its_modulo ) THEN
            new_att_modulo = .TRUE.
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(iqual):qual_end(iqual)),
@@ -898,12 +921,13 @@
 	ELSE
 	   rmod_len = 0.0D0
 	ENDIF
-
+	
 
 * is this to be a regular or irregular definition?
 	irreg = qual_given(slash_name) .GT. 0
      .	  .OR. (qual_given(slash_name) .EQ. 0
      .		.AND. pos .GT. 0)	! /NAME=XXX or "NAME= expression"
+
 
 * must be a unique name
 c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
@@ -932,14 +956,18 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
      .				status	)
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
-* /LIKE
+* /LIKE Get the units and other attributes from an existing axis.
 
 	line_alloc = .FALSE.
+	is_like = .FALSE.  
 
 	iqual = qual_given( slash_def_ax_like )
 	IF ( iqual .GT. 0 ) THEN
-	  
-	   i1 = STR_UPCASE(likename,cmnd_buff(item_start(i):item_end(i)))
+
+* Find the axis to mimic
+
+	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .			      likename, status )
 *  ... first look in the static lines
 	   DO line = 1, max_lines
 	      IF ( interrupted ) CALL ERRMSG
@@ -968,6 +996,14 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 * copy the line definition
 	   CALL TM_COPY_LINE ( line, iline )
 
+* Below, if /units, /depth, /calendar, /t0, /modulo  are given,
+* will override what we have got from TM_COPY_LINE
+
+	   is_like = .TRUE.  
+
+	   rmod_len = line_modulo_len( line )
+	   new_att_modulo_len = rmod_len
+
 	ENDIF
 
 * orientation must be uniquely defined
@@ -990,10 +1026,11 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
      . .AND. orient .NE. z_dim            ) GOTO 5505
 
 * if orientation is unclear then assume it is X
-	IF ( orient .EQ. unspecified_int4 ) THEN
+
+	IF ( orient .EQ. unspecified_int4) THEN 
 	   CALL WARN (
-     .	     "Orientation not specified via /X,/Y,/Z,.... X assumed.")
-	   orient = x_dim
+     .	        "Orientation not specified via /X,/Y,/Z,.... X assumed.")
+             orient = x_dim
 	ENDIF
 	orient_t = orient.EQ.t_dim .OR. orient.EQ.f_dim
 
@@ -1020,7 +1057,9 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 
 * /UNITS = DEGREES,METERS, ... SECONDS (or supply defaults)
         buff1 = ' '
-        new_att_units = ' ' 
+        new_att_units = ' ' 	  
+
+
 	iqual = qual_given( slash_units )
 	IF ( iqual .GT. 0 ) THEN
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
@@ -1037,8 +1076,12 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
      .		.OR. cx_calendar(orient,mods_cx))) THEN
 	    IF ( .NOT. true_month ) buff1 = 'HOURS'
 	ELSE
-	   buff1 = 'NONE'
+	   IF (.NOT. is_like) buff1 = 'NONE'
 	ENDIF
+
+* Initialize with units if inherited from another line
+	IF (is_like .AND. iqual.EQ.0) buff1 = line_units( iline )
+
 
 * /MONTHLY
 
@@ -1104,6 +1147,9 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
         new_att_calendar = " "
         dflt_cal_id = TM_GET_CALENDAR_ID (cal_name)
 	iqual = qual_given( slash_calendar )
+
+	IF (is_like) cal_name = line_cal_name ( iline )
+
 	IF ( iqual .GT. 0 ) THEN
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      cal_name, status )
@@ -1150,15 +1196,15 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 	ENDIF 
 
 * interpret the line units
-	IF ( buff1 .EQ. 'NONE' .OR. buff1 .EQ. ' ' ) THEN
+	IF ( .NOT.is_like .AND. (buff1 .EQ. 'NONE' .OR. buff1 .EQ. ' ') ) THEN
 	   buff1 = ' '
 	   iunit = 0
 	   
 	ELSE
 	   iunit = TM_UNIT_ID( buff1 )
 	   IF ( iunit .EQ. 0 ) THEN
-	       CALL WARN('(fyi) units are not subject to auto-conversion: '
-     .			//buff1)
+	      IF (.NOT.is_like) CALL WARN
+     .		 ('(fyi) units are not subject to auto-conversion: '//buff1)
 
 C /calendar=/unit=year gets length of year in that calendar 
 C                      (true_month flag unused for yr axis)
@@ -1474,7 +1520,7 @@ C /units=months  is 1/12 of the length of the year
 		 ELSE
                     IF (.NOT. TM_CHECK_BNDS (linemem(iline)%ptr, 
      .                     lineedg(line_0)%ptr, n, 
-     .                     iline, .TRUE., buff3) ) GO TO 5750
+     .                     iline, .TRUE., buff3) )2/27/2018GO TO 5750
 		    
 * Change from N*2 storage of bounds to N+1 edges.
                     CALL TM_CONVERT_BOUNDS_EDGES (lineedg(line_0)%ptr, 
@@ -1608,12 +1654,15 @@ C /units=months  is 1/12 of the length of the year
 	   line_regular  ( iline ) = .TRUE.
 	ENDIF
 
-	IF (line_regular(iline)) CALL FREE_LINE_DYNMEM (iline)
+	IF (irreg .AND. line_regular(iline)) CALL FREE_LINE_DYNMEM (iline)
 
 * /T0 = date (or supply default)
 	iqual = qual_given( slash_T0 )
         new_att_t0 = ' '
+	
 	IF (true_month .AND. buff2 .NE. ' ') iqual = 1
+	IF (is_like) buff2 = line_t0 ( iline )
+
 	IF ( iqual .GT. 0 ) THEN
 	   IF (buff2 .EQ. ' ') 
      .       CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
@@ -1660,10 +1709,34 @@ C /units=months  is 1/12 of the length of the year
 	line_t0       ( iline ) = buff2
 	line_cal_name ( iline ) = cal_name
 	line_unit_code( iline ) = iunit
-	line_direction( iline ) = 'NA'
 	IF ( orient_t ) line_tunit(iline) = un_convert( iunit )
 
+* for /LIKE=, Direction must match that of the original axis
 
+	IF (is_like) THEN
+	   IF (orient .EQ. x_dim) THEN
+	      IF (line_direction(iline).NE.'XX' .AND. line_direction(iline).NE.'WE') GOTO 5765
+	   ENDIF
+	   IF (orient .EQ. y_dim) THEN
+	      IF (line_direction(iline).NE.'YY' .AND. line_direction(iline).NE.'SN') GOTO 5765
+	   ENDIF
+	   IF (orient .EQ. z_dim) THEN
+	      IF (line_direction(iline).NE.'ZZ' .AND. line_direction(iline).NE.'DU' 
+     .             .AND. line_direction(iline).NE.'UD'   ) GOTO 5765
+	   ENDIF
+	   IF (orient .EQ. t_dim) THEN
+	      IF (line_direction(iline).NE.'TT' .AND. line_direction(iline).NE.'TI') GOTO 5765
+	   ENDIF
+	   IF (orient .EQ. e_dim) THEN
+	      IF (line_direction(iline).NE.'EE') GOTO 5765
+	   ENDIF
+	   IF (orient .EQ. f_dim) THEN
+	      IF (line_direction(iline).NE.'FF' .AND. line_direction(iline).NE.'FI') GOTO 5765
+	   ENDIF
+
+	ELSE
+	   line_direction( iline ) = 'NA'
+	ENDIF
 
 * is it a formattable axis ?
 	IF ( orient .EQ. x_dim ) THEN
@@ -1684,7 +1757,7 @@ C /units=months  is 1/12 of the length of the year
            IF ( qual_given( slash_depth ) .GT. 0 ) THEN
 	      line_direction( iline ) = 'UD'    ! GEOG_LABEL requires "meters"
            ELSE
-	      line_direction( iline ) = 'DU'
+	      IF (.NOT.is_like) line_direction( iline ) = 'DU'
            ENDIF
 
 	ELSEIF ( orient .EQ. e_dim ) THEN
@@ -1859,7 +1932,7 @@ c	ENDIF
 
 * check for redefinitions
 	IF ( dup_name ) THEN
-	   IF ( TM_LINE_MATCH( old_line, iline ) ) THEN
+	   IF ( .NOT.is_like .AND. TM_LINE_MATCH( old_line, iline ) ) THEN
 	      RETURN					! dup name/dup def
 	   ELSE
 * ... redefinition makes all past assumptions incorrect
@@ -2881,6 +2954,9 @@ c ?? if nlab=0, use next avail slot?
      .   *5000 )
 5760	CALL ERRMSG( ferr_grid_definition, status,
      .   'DEFINE AXIS/LIKE= Axis not found '//likename(:TM_LENSTR1(likename)),
+     .   *5000 )
+5765	CALL ERRMSG( ferr_grid_definition, status,
+     .   'DEFINE AXIS/LIKE= Direction must match original axis ',
      .   *5000 )
 5770	CALL ERRMSG( ferr_grid_definition, status,
      .   'DEFINE AXIS/MONTHLY specify /UNITS=month or omit /UNITS (MONTH is default)', 

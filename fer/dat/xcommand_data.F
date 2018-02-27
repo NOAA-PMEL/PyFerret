@@ -243,7 +243,8 @@
 * V720 *acm*  5/17 Ticket 2530 add WIRE/COLOR= 
 * V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
 * V723 *acm* 11/17 New SAVE/ASGLOBAL option to write global attribute to netCDF file
-
+* V74  *acm*  2/17 New DEFINE AXIS/LIKE and DEFINE VARIABLE/LIKE
+*
 *
 * !!!!!!!!!!
 * Use caution when defining new commands, qualifiers, or changing these data structures:
@@ -1212,13 +1213,17 @@
 	   DATA subcommands      (nsub_at10 + 3)/ 'VARIABLE'	/
 	   DATA num_qualifs      (nsub_at10 + 3)/ nqual10d	/
 	   DATA qualifier_pointer(nsub_at10 + 3)/ nqual_at10d	/
-* DEFINE VARIABLE /TITLE /UNITS /QUIET /DATASET /BAD /REMOTE
+* DEFINE VARIABLE /TITLE /UNITS /QUIET /DATASET /BAD /REMOTE /LIKE
 		DATA qualifiers  (nqual_at10d+ 0)/ 'TITLE' /
 		DATA qualifiers  (nqual_at10d+ 1)/ 'UNITS' /
 		DATA qualifiers  (nqual_at10d+ 2)/ 'QUIET' /
 		DATA qualifiers  (nqual_at10d+ 3)/ 'DATASET' /
 		DATA qualifiers  (nqual_at10d+ 4)/ 'BAD' /
 		DATA qualifiers  (nqual_at10d+ 5)/ 'REMOTE' /
+		DATA qualifiers  (nqual_at10d+ 6)/ 'LIKE' /
+		DATA qualifiers  (nqual_at10d+ 7)/ '****' /
+		DATA qualifiers  (nqual_at10d+ 8)/ '****' /
+		DATA qualifiers  (nqual_at10d+ 9)/ '****' /
 * DEFINE AXIS
 	   DATA subcommands      (nsub_at10 + 4)/ 'AXIS'	/
 	   DATA num_qualifs      (nsub_at10 + 4)/ nqual10e	/

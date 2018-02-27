@@ -1,0 +1,48 @@
+! bn_def_axis_like
+! testing DEFINE AXIS/LIKE=existing_axis  new_axis
+!
+! Gets the attributes from the specified variable
+! and assigns them to the new variable.  Skips
+! missing_flag and _FillVar as does the existing
+! command "set att/like=oldvar newvar"
+! 2/22/2018  ACM
+
+use ocean_atlas_temp.cdf
+
+! get the attributes, define a new axis with z coordinates
+
+define axis/like=`temp,return=zaxis`/z=1:15:1 myz
+sh axis `temp,return=zaxis`
+sh axis myz
+
+
+! ! Get the attributes, but change one of them with /UNITS=
+define axis/like=`temp,return=xaxis`/x=20:90:.25/units="Deg E" myx
+sh axis `temp,return=xaxis`
+sh axis myx
+
+! On the second axis inherit time origin, units, but change the calendar
+
+define axis/t=1-jan-2001:9-dec-2001:`24*60`/t0=1-jan-1970/units=seconds timesec
+define axis/like=timesec/t=1-jan-2015:31-dec-2015:`24*3600`/calendar=Julian timeday
+
+sh axis timesec
+sh axis timeday
+
+! intentional errors
+set mode ignore
+
+! Unknown axis
+
+show axis axis_undefined
+define axis/like=axis_undefined/x=1:8:1 myx
+
+! axis must be in the same direction as the one we're inheriting from
+
+define axis/like=`temp,return=xaxis`/y=-10:10:10 myy
+
+!  Still need to specify the direction and coordinates
+define axis/like=timesec/units=minutes timemin
+define axis/like=timesec/units=minutes/t timemin
+
+set mode/last ignore

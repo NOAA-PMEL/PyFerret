@@ -199,7 +199,8 @@
 * V720 3/17 *acm* Fix ticket 2521; do not call TM_LEGAL_UNIX_NAME for path and 
 *                file name on SET REDIRECT.
 * V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
- 
+* V740 *acm* 2/18 Issue 966: LET/LIKE= requires changes to the call to INHERIT_ATTRS
+
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -1450,13 +1451,18 @@ c *kob* 4/97
 
       loc = qual_given( slash_set_attr_like ) 
 
-*     Inherit all attributes from another variable.
+*     Inherit all attributes from another variable (except missing flags and
+*     scale and offset attributes).
+*     Send dummy blank strings to inherit_attrs (needed for LET/LIKE= but not here).
 * ... SET ATT/LIKE=var1 var2
+
       loc = qual_given( slash_set_attr_like ) 
       IF ( loc .GT. 0 ) THEN
 	 CALL EQUAL_STR_LC ( cmnd_buff(qual_start(loc):qual_end(loc)),
      .			      buff2, status )
-         CALL INHERIT_ATTRS (buff2, buff1, status)
+         new_att_units = ' '
+         new_att_units = ' '
+         CALL INHERIT_ATTRS (buff2, buff1, new_att_units, new_att_units, status)
 
          RETURN
       ENDIF

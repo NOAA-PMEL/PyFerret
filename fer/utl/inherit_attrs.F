@@ -1,4 +1,4 @@
-      SUBROUTINE INHERIT_ATTRS (varname1, varname2, status)
+      SUBROUTINE INHERIT_ATTRS (varname1, varname2, title, units, status)
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -44,6 +44,9 @@
 * v71   7/16 *acm* Fix ticket 2447: special handling of missing-value flags
 *                  when inheriting all attributes from one variable to another.
 * V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
+* V740 *acm* 2/18 Issue 966: LET/LIKE= For inheriting attributes, want to
+*                 apply the user's title and units if given. Also do not 
+*                 inherit scale_factor or add_offset attributes. 
 
       INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
@@ -53,15 +56,15 @@
       INCLUDE 'xcontext.cmn'
 
 * Argument declarations
-      CHARACTER varname1*(*), varname2*(*)
+      CHARACTER varname1*(*), varname2*(*), title*(*), units*(*)
       INTEGER status
 
 * Local variable declarations
-      LOGICAL CD_ISIT_COORDVAR
+      LOGICAL CD_ISIT_COORDVAR, iskip
       INTEGER TM_LENSTR, STR_SAME, slen, tlen, dset1, dset2, 
      .  varid1, varid2, nvatts1, nvatts2,
      .  iatt, first_quote, next_quote, dot, mr, cx, 
-     .  cat, iflag, attnum
+     .  cat, iflag, attnum, ltitle, lunits
       CHARACTER*128 attname, buff1, buff2
 
 * Check that neither buffer contains varname.attname (If it is in 
@@ -70,6 +73,9 @@
       tlen = TM_LENSTR(varname1) 
       first_quote = INDEX(varname1(1:tlen), "'" )
       next_quote = INDEX(varname1(2:tlen), "'" )
+
+      ltitle = TM_LENSTR(title)
+      lunits = TM_LENSTR(units)
 
       IF (INDEX(varname1,'.') .NE. 0 ) THEN
          dot = INDEX(varname1,'.')
@@ -140,17 +146,29 @@
 * Remove attributes from variable 2
 * When an attribute is deleted, the following attributes move forward
 * so need to keep asking for the first attribute not skipped
+* Do not change missing_value or _FillValue. Also do not inherit add_offset
+* or scale_factor attributes. If title or units are sent in, we'll use those
+* rather than inheriting them.
 
       attnum = 1
       DO 100 iatt = 1, nvatts2
+         iskip = .FALSE.
          CALL CD_GET_VAR_ATT_NAME (dset2, varid2, attnum, attname, status)
-         IF ( STR_SAME(attname, 'missing_value')  .NE. 0 .AND.
-     .        STR_SAME(attname, '_FillValue') .NE. 0 ) THEN
+
+         IF ( STR_SAME(attname, 'missing_value')  .EQ. 0) iskip = .TRUE.
+         IF ( STR_SAME(attname, '_FillValue') .EQ. 0 ) iskip = .TRUE.
+         IF ( STR_SAME(attname, 'scale_factor') .EQ. 0 ) iskip = .TRUE.
+         IF ( STR_SAME(attname, 'add_offset') .EQ. 0 ) iskip = .TRUE.
+         IF ( STR_SAME(attname, 'long_name') .EQ. 0 .AND. ltitle.GT.0) iskip = .TRUE.
+         IF ( STR_SAME(attname, 'units') .EQ. 0 .AND. lunits.GT.0) iskip = .TRUE.
+
+	 IF (iskip) THEN
+            attnum = attnum + 1
+         ELSE
             CALL CD_DELETE_ATTRIBUTE (dset2, varid2, attname, status)
             IF (status .NE. ferr_ok) GOTO 5030
-         ELSE
-            attnum = attnum + 1
          ENDIF
+
  100  CONTINUE
 
 * Get attribute information from variable 1 and put onto variable 2.
@@ -160,15 +178,21 @@
       iflag = 1
       DO 200 iatt = 1, nvatts1
          CALL CD_GET_VAR_ATT_NAME (dset1, varid1, iatt, attname, status)
-	 IF (STR_SAME(attname, 'missing_value')  .NE. 0 .AND.
-     .       STR_SAME(attname, '_FillValue') .NE. 0) THEN
 
-            CALL CD_TRANSFER_ATTRIBUTE (dset1, varid1, iatt, 
+         iskip = .FALSE.
+         IF ( STR_SAME(attname, 'missing_value')  .EQ. 0) cycle
+         IF ( STR_SAME(attname, '_FillValue') .EQ. 0 ) cycle
+         IF ( STR_SAME(attname, 'scale_factor') .EQ. 0 ) cycle
+         IF ( STR_SAME(attname, 'add_offset') .EQ. 0 ) cycle
+         IF ( STR_SAME(attname, 'long_name') .EQ. 0 .AND. ltitle.GT.0) cycle
+         IF ( STR_SAME(attname, 'units') .EQ. 0 .AND. lunits.GT.0) cycle
+	 IF (iskip) cycle
+	 CALL CD_TRANSFER_ATTRIBUTE (dset1, varid1, iatt, 
      .        dset2, varid2, status)
-            IF (status .NE. ferr_ok) GOTO 5040
-	    CALL CD_SET_ATT_FLAG (dset2, varid2, attname, iflag, status)
-            IF (status .NE. ferr_ok) GOTO 5040
-	 ENDIF
+	 IF (status .NE. ferr_ok) GOTO 5040
+	 CALL CD_SET_ATT_FLAG (dset2, varid2, attname, iflag, status)
+	 IF (status .NE. ferr_ok) GOTO 5040
+
  200  CONTINUE
 
 * Update attribute information used by plotting etc (ds_units, ...)

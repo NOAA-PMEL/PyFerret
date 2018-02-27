@@ -4,13 +4,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "ferret.h"
 #include "FerMem.h"
 #include "grdel.h"
 
 /* Environment variable giving the directories containing symbol definitions */
 #define SYMDIRS_ENVVAR "FER_PALETTE"
 
-#define SYMFILEEXT ".sym"
+/* 
+ * Ferret refers to these as markers - thus .mrk for the extension - 
+ * although these are also be used in PyFerret for patterns.
+ */
+#define SYMFILEEXT ".mrk"
 #define SYMFILEEXTLEN 4
 
 #define MAXLINELEN 2048
@@ -38,7 +43,8 @@ static SymbolInfo *readSymbolDef(char symname[], int symnamelen);
  * Memory allocated in and for the returned symbol definition 
  * structure should be freed when no longer needed.
  */
-static SymbolInfo *readSymbolDefFile(char *filename, char symname[], int symnamelen) {
+static SymbolInfo *readSymbolDefFile(char *filename, char symname[], int symnamelen) 
+{
     SymbolInfo *infoptr;
     FILE  *symfile;
     char   dataline[MAXLINELEN];
@@ -120,7 +126,8 @@ static SymbolInfo *readSymbolDefFile(char *filename, char symname[], int symname
 }
 
 /* Filter function for getting only symbol files from a directory */
-static int symbolNameFilter(const struct dirent *direntry) {
+static int symbolNameFilter(const struct dirent *direntry) 
+{
      int namelen = strlen(direntry->d_name);
      /* Need a name before the filename extension */
      if ( namelen <= SYMFILEEXTLEN )
@@ -132,9 +139,10 @@ static int symbolNameFilter(const struct dirent *direntry) {
 
 /*
  * Free all memory in SymbolInfoList, the static list of all symbol 
- * information read from symbol definition files.
+ * (marker) information read from symbol definition files.
  */
-void freeAllSymbolDefs(void) {
+void FORTRAN(fgd_delete_all_marker_defs)(void) 
+{
     SymbolInfo *nextptr;
     SymbolInfo *infoptr;
 
@@ -150,10 +158,13 @@ void freeAllSymbolDefs(void) {
 }
 
 /*
- * Reads all symbols in the directories given by the environment variables 
- * SYMDIRS_ENVVAR.  The symbols definitions are stored SymbolInfoList.
+ * Reads all symbols (markers) in the directories given by the environment 
+ * variables SYMDIRS_ENVVAR.  The symbols definitions are stored SymbolInfoList.
+ * If an error occurs, grdelerrmsg is assigned and zero is returned in status.
+ * If successful, non-zero (FERR_OK) is returned in status.
  */
-grdelBool readAllSymbolDefs(void) {
+void FORTRAN(fgd_read_all_marker_defs)(int *status)
+{
     const char     *envval;
     char            symdirs[MAXLINELEN];
     char           *currdir;
@@ -164,19 +175,21 @@ grdelBool readAllSymbolDefs(void) {
     SymbolInfo     *nextptr;
 
     /* Free any previous list */
-    freeAllSymbolDefs();
+    FORTRAN(fgd_delete_all_marker_defs)();
 
     /* get the directories to search from the environment variable */
     envval = getenv(SYMDIRS_ENVVAR);
     if ( envval == NULL ) {
-        sprintf(grdelerrmsg, "Environment variable %s is not defined", SYMDIRS_ENVVAR);
-        return 0;
+        sprintf(grdelerrmsg, "Environment variable for markers %s is not defined", SYMDIRS_ENVVAR);
+        *status = 0;
+        return;
     }
 
     /* make a copy that can be messed with */
     if ( strlen(envval) >= MAXLINELEN ) {
-        sprintf(grdelerrmsg, "Value of environment variable %s exceeds %d characters", SYMDIRS_ENVVAR, MAXLINELEN);
-        return 0;
+        sprintf(grdelerrmsg, "Value of environment variable for markers %s exceeds %d characters", SYMDIRS_ENVVAR, MAXLINELEN);
+        *status = 0;
+        return;
     }
     strcpy(symdirs, envval);
 
@@ -219,7 +232,8 @@ grdelBool readAllSymbolDefs(void) {
         currdir = strtok(NULL, " \t\v\r\n");
     }
 
-    return 1;
+    *status = FERR_OK;
+    return;
 }
 
 /*
@@ -227,7 +241,8 @@ grdelBool readAllSymbolDefs(void) {
  * for the definition of the given symbol name.  If found, the symbol 
  * information is added to SymbolInfoList and returned.
  */
-static SymbolInfo *readSymbolDef(char symname[], int symnamelen) {
+static SymbolInfo *readSymbolDef(char symname[], int symnamelen) 
+{
     const char     *envval;
     char            symdirs[MAXLINELEN];
     char           *currdir;

@@ -215,7 +215,7 @@ grdelBool grdelColorDelete(grdelType color)
  *     color: the created color object, or zero if failure.
  *             Use fgderrmsg_ to retrieve the error message.
  */
-void fgdcolor_(void **color, void **window, float *redfrac,
+void FORTRAN(fgdcolor)(void **color, void **window, float *redfrac,
                float *greenfrac, float *bluefrac, float *opaquefrac)
 {
     grdelType mycolor;
@@ -234,7 +234,7 @@ void fgdcolor_(void **color, void **window, float *redfrac,
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdcolordel_(int *success, void **color)
+void FORTRAN(fgdcolordel)(int *success, void **color)
 {
     grdelBool result;
 

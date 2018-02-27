@@ -272,7 +272,7 @@ grdelBool grdelPenDelete(grdelType pen)
  *     pen: the created pen object, or zero if failure.
  *             Use fgderrmsg_ to retrieve the error message.
  */
-void fgdpen_(void **pen, void **window, void **color, float *width,
+void FORTRAN(fgdpen)(void **pen, void **window, void **color, float *width,
              char *style, int *stylelen, char *capstyle, int *capstylelen,
              char *joinstyle, int *joinstylelen)
 {
@@ -293,7 +293,7 @@ void fgdpen_(void **pen, void **window, void **color, float *width,
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdpenreplacecolor_(int *success, void **pen, void **color)
+void FORTRAN(fgdpenreplacecolor)(int *success, void **pen, void **color)
 {
     grdelBool result;
 
@@ -310,7 +310,7 @@ void fgdpenreplacecolor_(int *success, void **pen, void **color)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdpendel_(int *success, void **pen)
+void FORTRAN(fgdpendel)(int *success, void **pen)
 {
     grdelBool result;
 

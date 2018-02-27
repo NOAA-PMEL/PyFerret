@@ -71,7 +71,7 @@ typedef struct GDWindow_ {
  * return of a proper Fortran string.  The argument errmsglen is assigned
  * the actual length of the message returned in errmsg.
  */
-void fgderrmsg_(char *errmsg, int *errmsglen)
+void FORTRAN(fgderrmsg)(char *errmsg, int *errmsglen)
 {
     *errmsglen = strlen(grdelerrmsg);
     strncpy(errmsg, grdelerrmsg, *errmsglen);
@@ -1152,7 +1152,7 @@ grdelBool grdelWindowSetWidthFactor(grdelType window, float widthfactor)
  *     window: the window object created, or zero if failure.
  *             Use fgderrmsg_ to retreive the error message.
  */
-void fgdwincreate_(void **window, char *engine, int *enginelen,
+void FORTRAN(fgdwincreate)(void **window, char *engine, int *enginelen,
                    char *title, int *titlelen, int *visible, 
                    int *noalpha, int *rasteronly)
 {
@@ -1172,7 +1172,7 @@ void fgdwincreate_(void **window, char *engine, int *enginelen,
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdwindelete_(int *success, void **window)
+void FORTRAN(fgdwindelete)(int *success, void **window)
 {
     grdelBool result;
 
@@ -1200,7 +1200,7 @@ void fgdwindelete_(int *success, void **window)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdwinimgname_(int *success, void **window, char *imagename,
+void FORTRAN(fgdwinimgname)(int *success, void **window, char *imagename,
                     int *imgnamelen, char *formatname, int *fmtnamelen)
 {
     grdelBool result;
@@ -1221,7 +1221,7 @@ void fgdwinimgname_(int *success, void **window, char *imagename,
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdwinclear_(int *success, void **window, void **bkgcolor)
+void FORTRAN(fgdwinclear)(int *success, void **window, void **bkgcolor)
 {
     grdelBool result;
 
@@ -1240,7 +1240,7 @@ void fgdwinclear_(int *success, void **window, void **bkgcolor)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdwinredraw_(int *success, void **window, void **bkgcolor)
+void FORTRAN(fgdwinredraw)(int *success, void **window, void **bkgcolor)
 {
     grdelBool result;
 
@@ -1257,7 +1257,7 @@ void fgdwinredraw_(int *success, void **window, void **bkgcolor)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdwinupdate_(int *success, void **window)
+void FORTRAN(fgdwinupdate)(int *success, void **window)
 {
     grdelBool result;
 
@@ -1276,7 +1276,7 @@ void fgdwinupdate_(int *success, void **window)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdwinsetantialias_(int *success, void **window, int *antialias)
+void FORTRAN(fgdwinsetantialias)(int *success, void **window, int *antialias)
 {
     grdelBool result;
 
@@ -1296,7 +1296,7 @@ void fgdwinsetantialias_(int *success, void **window, int *antialias)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdwinsetsize_(int *success, void **window, float *width, float *height)
+void FORTRAN(fgdwinsetsize)(int *success, void **window, float *width, float *height)
 {
     grdelBool result;
 
@@ -1314,7 +1314,7 @@ void fgdwinsetsize_(int *success, void **window, float *width, float *height)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdwinsetscale_(int *success, void **window, float *scale)
+void FORTRAN(fgdwinsetscale)(int *success, void **window, float *scale)
 {
     grdelBool result;
 
@@ -1333,7 +1333,7 @@ void fgdwinsetscale_(int *success, void **window, float *scale)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdwinsetvis_(int *success, void **window, int *visible)
+void FORTRAN(fgdwinsetvis)(int *success, void **window, int *visible)
 {
     grdelBool result;
 
@@ -1366,7 +1366,7 @@ void fgdwinsetvis_(int *success, void **window, int *visible)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdwinsave_(int *success, void **window, char *filename, int *namelen,
+void FORTRAN(fgdwinsave)(int *success, void **window, char *filename, int *namelen,
                  char *fileformat, int *formatlen, int *transparentbkg,
                  float *xinches, float *yinches, int *xpixels, int *ypixels,
                  void **firststr, int *numstr)
@@ -1395,7 +1395,7 @@ void fgdwinsave_(int *success, void **window, char *filename, int *namelen,
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdwinscreeninfo_(int *success, void **window, float *dpix, float *dpiy,
+void FORTRAN(fgdwinscreeninfo)(int *success, void **window, float *dpix, float *dpiy,
                                      int *screenwidth, int*screenheight)
 {
     grdelBool result;
@@ -1419,7 +1419,7 @@ void fgdwinscreeninfo_(int *success, void **window, float *dpix, float *dpiy,
  *              zero if an error occurred (use fgderrmsg_ to retrieve the error message),
  *              negative one if the window is associated with a display
  */
-void fgdwinsetdpi_(int *success, void **window, float *newdpi)
+void FORTRAN(fgdwinsetdpi)(int *success, void **window, float *newdpi)
 {
     int result;
 
@@ -1439,7 +1439,7 @@ void fgdwinsetdpi_(int *success, void **window, float *newdpi)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdwinsetwidthfactor_(int *success, void **window, float *widthfactor)
+void FORTRAN(fgdwinsetwidthfactor)(int *success, void **window, float *widthfactor)
 {
     grdelBool result;
 
@@ -1690,7 +1690,7 @@ grdelBool grdelWindowViewEnd(grdelType window)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdviewbegin_(int *success, void **window,
+void FORTRAN(fgdviewbegin)(int *success, void **window,
                    float *leftfrac, float *bottomfrac,
                    float *rightfrac, float *topfrac,
                    int *clipit)
@@ -1711,7 +1711,7 @@ void fgdviewbegin_(int *success, void **window,
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdviewclip_(int *success, void **window, int *clipit)
+void FORTRAN(fgdviewclip)(int *success, void **window, int *clipit)
 {
     grdelBool result;
 
@@ -1728,7 +1728,7 @@ void fgdviewclip_(int *success, void **window, int *clipit)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdviewend_(int *success, void **window)
+void FORTRAN(fgdviewend)(int *success, void **window)
 {
     grdelBool result;
 
@@ -1931,7 +1931,7 @@ grdelBool grdelWindowSegmentDelete(grdelType window, int segid)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdsegbegin_(int *success, void **window, int *segid)
+void FORTRAN(fgdsegbegin)(int *success, void **window, int *segid)
 {
     grdelBool result;
 
@@ -1948,7 +1948,7 @@ void fgdsegbegin_(int *success, void **window, int *segid)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdsegend_(int *success, void **window)
+void FORTRAN(fgdsegend)(int *success, void **window)
 {
     grdelBool result;
 
@@ -1966,7 +1966,7 @@ void fgdsegend_(int *success, void **window)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdsegdelete_(int *success, void **window, int *segid)
+void FORTRAN(fgdsegdelete)(int *success, void **window, int *segid)
 {
     grdelBool result;
 

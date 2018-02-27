@@ -21,9 +21,9 @@ void grdelGetTransformValues(double *my, double *sx, double *sy,
    double devlft, devtop, devwidth, devheight;
    double usrlft, usrtop, usrwidth, usrheight;
 
-   fgd_get_view_limits_(&lftfrc, &rgtfrc, &btmfrc, &topfrc,
+   FORTRAN(fgd_get_view_limits)(&lftfrc, &rgtfrc, &btmfrc, &topfrc,
                         &lftcrd, &rgtcrd, &btmcrd, &topcrd);
-   fgd_get_window_size_(&winwidth, &winheight);
+   FORTRAN(fgd_get_window_size)(&winwidth, &winheight);
 
    devlft     = (double) lftfrc * (double) winwidth;
    devwidth   = (double) rgtfrc * (double) winwidth;

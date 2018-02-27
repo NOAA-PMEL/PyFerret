@@ -110,6 +110,8 @@
       integer icount, irate, imax
 	REAL	DTIME, radian, cm2deg
 	REAL*4  TArray(2), dtime_res
+        CHARACTER*2048 errmsg
+        INTEGER errmsglen
 
 
 *************** I/O ************************************************************
@@ -232,6 +234,13 @@ c	CALL GFDL_TERMS
      .                         uvar_num_items(1),
      .                         max_uvar,
      .                         uvar_deleted)
+
+        CALL FGD_READ_ALL_MARKER_DEFS(status)
+        IF ( status .NE. FERR_OK ) THEN
+            errmsg = ' '
+            CALL FGDERRMSG(errmsg, errmsglen)
+            CALL WARN(errmsg(1:errmsglen))
+        ENDIF
 
 	RETURN
 

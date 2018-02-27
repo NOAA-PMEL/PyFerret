@@ -8,6 +8,8 @@
 extern FILE *debuglogfile;
 #endif
 
+#include "ferret.h"
+
 /*
  * Code for a delegate "object" for graphics calls used by Ferret/PlotPlus.
  * Coordinates are (usually) from the bottom left corner increasing to the
@@ -61,27 +63,25 @@ extern char grdelerrmsg[2048];
 /*
  * Fortran interface for retrieving the error message.
  */
-void fgderrmsg_(char *errmsg, int *errmsglen);
+void FORTRAN(fgderrmsg)(char *errmsg, int *errmsglen);
 
 /*
  * Prototypes of some Fortran functions called by C functions.
  */
-void fgd_bkgcolor_(int *windowid, int *colorindex);
-void fgd_get_window_size_(float *width, float *height);
-void fgd_get_view_limits_(float *lftfrc, float *rgtfrc,
+void FORTRAN(fgd_bkgcolor)(int *windowid, int *colorindex);
+void FORTRAN(fgd_get_window_size)(float *width, float *height);
+void FORTRAN(fgd_get_view_limits)(float *lftfrc, float *rgtfrc,
                           float *btmfrc, float *topfrc,
                           float *lftcrd, float *rgtcrd,
                           float *btmcrd, float *topcrd);
-void fgd_getdpi_(int *windowid, float *dpix, float *dpiy);
-void fgd_gswkvp_(int *windowid, float *xmin, float *xmax,
+void FORTRAN(fgd_getdpi)(int *windowid, float *dpix, float *dpiy);
+void FORTRAN(fgd_gswkvp)(int *windowid, float *xmin, float *xmax,
                                 float *ymin, float *ymax);
-void fgd_set_unmapped_default_(int *pngonly);
-void fgd_set_transparency_(int *transparent);
-void fgd_getanimate_(int *inanimation);
+void FORTRAN(fgd_set_unmapped_default)(int *pngonly);
+void FORTRAN(fgd_set_transparency)(int *transparent);
+void FORTRAN(fgd_getanimate)(int *inanimation);
 
-/* Utility functions for dealing with symbol definitions */
-grdelBool readAllSymbolDefs(void);
-void freeAllSymbolDefs(void);
+/* Utility function for dealing with symbol definitions */
 grdelBool getSymbolDef(float **ptsxptr, float **ptsyptr, int *numptsptr, 
                        grdelBool *fillptr, char symbolname[], int namelen);
 
@@ -120,24 +120,24 @@ grdelBool grdelWindowSetWidthFactor(grdelType window, float widthfactor);
 /*
  * Fortran interfaces for the Window functions.
  */
-void fgdwincreate_(void **window, char *engine, int *enginelen,
+void FORTRAN(fgdwincreate)(void **window, char *engine, int *enginelen,
                    char *title, int *titlelen, int *visible, 
                    int *noalpha, int *rasteronly);
-void fgdwindelete_(int *success, void **window);
-void fgdwinclear_(int *success, void **window, void **fillcolor);
-void fgdwinredraw_(int *success, void **window, void **fillcolor);
-void fgdwinupdate_(int *success, void **window);
-void fgdwinsetantialias_(int *success, void **window, int *antialias);
-void fgdwinsetsize_(int *success, void **window, float *width, float *height);
-void fgdwinsetscale_(int *success, void **window, float *scale);
-void fgdwinsetvis_(int *success, void **window, int *visible);
-void fgdwinsave_(int *success, void **window, char *filename, int *namelen,
+void FORTRAN(fgdwindelete)(int *success, void **window);
+void FORTRAN(fgdwinclear)(int *success, void **window, void **fillcolor);
+void FORTRAN(fgdwinredraw)(int *success, void **window, void **fillcolor);
+void FORTRAN(fgdwinupdate)(int *success, void **window);
+void FORTRAN(fgdwinsetantialias)(int *success, void **window, int *antialias);
+void FORTRAN(fgdwinsetsize)(int *success, void **window, float *width, float *height);
+void FORTRAN(fgdwinsetscale)(int *success, void **window, float *scale);
+void FORTRAN(fgdwinsetvis)(int *success, void **window, int *visible);
+void FORTRAN(fgdwinsave)(int *success, void **window, char *filename, int *namelen,
                  char *fileformat, int *formatlen, int *tranparentbkg,
                  float *xinches, float *yinches, int *xpixels, int *ypixels,
                  void **firststr, int *numstr);
-void fgdwinscreeninfo_(int *success, void **window, float *dpix, float *dpiy,
+void FORTRAN(fgdwinscreeninfo)(int *success, void **window, float *dpix, float *dpiy,
                        int *screenwidth, int* screenheight);
-void fgdwinsetwidthfactor_(int *success, void **window, float *widthfactor);
+void FORTRAN(fgdwinsetwidthfactor)(int *success, void **window, float *widthfactor);
 
 /*
  * A "View" refers to a rectangular subsection of the Window, possibly
@@ -160,12 +160,12 @@ grdelBool grdelWindowViewEnd(grdelType window);
 /*
  * Fortran interfaces for the Window View functions.
  */
-void fgdviewbegin_(int *success, void **window,
+void FORTRAN(fgdviewbegin)(int *success, void **window,
                    float *leftfrac, float *bottomfrac,
                    float *rightfrac, float *topfrac,
                    int *clipit);
-void fgdviewclip_(int *success, void **window, int *clipit);
-void fgdviewend_(int *success, void **window);
+void FORTRAN(fgdviewclip)(int *success, void **window, int *clipit);
+void FORTRAN(fgdviewend)(int *success, void **window);
 
 /*
  * A segment is an collection of drawing commands with an ID.  Drawing
@@ -179,9 +179,9 @@ grdelBool grdelWindowSegmentDelete(grdelType window, int segid);
 /*
  * Fortran interfaces for the Window Segment functions.
  */
-void fgdsegbegin_(int *success, void **window, int *segid);
-void fgdsegend_(int *success, void **window);
-void fgdsegdelete_(int *success, void **window, int *segid);
+void FORTRAN(fgdsegbegin)(int *success, void **window, int *segid);
+void FORTRAN(fgdsegend)(int *success, void **window);
+void FORTRAN(fgdsegdelete)(int *success, void **window, int *segid);
 
 void grdelGetTransformValues(double *my, double *sx, double *sy,
                                          double *dx, double *dy);
@@ -224,27 +224,27 @@ grdelBool grdelSymbolDelete(grdelType symbol);
 /*
  * Fortran interfaces for the Color, Font, Pen, Brush, and Symbol functions.
  */
-void fgdcolor_(void **color, void **window, float *redfrac,
+void FORTRAN(fgdcolor)(void **color, void **window, float *redfrac,
                float *greenfrac, float *bluefrac, float *opaquefrac);
-void fgdcolordel_(int *success, void **color);
+void FORTRAN(fgdcolordel)(int *success, void **color);
 
-void fgdfont_(void **font, void **window, char *familyname, int *namelen,
+void FORTRAN(fgdfont)(void **font, void **window, char *familyname, int *namelen,
                float *fontsize, int *italic, int *bold, int *underlined);
-void fgdfontdel_(int *success, void **font);
+void FORTRAN(fgdfontdel)(int *success, void **font);
 
-void fgdpen_(void **pen, void **window, void **color, float *width,
+void FORTRAN(fgdpen)(void **pen, void **window, void **color, float *width,
                char *style, int *stylelen, char *capstyle, int *capstylelen,
                char *joinstyle, int *joinstylelen);
-void fgdpenreplacecolor_(int *success, void **pen, void **color);
-void fgdpendel_(int *success, void **pen);
+void FORTRAN(fgdpenreplacecolor)(int *success, void **pen, void **color);
+void FORTRAN(fgdpendel)(int *success, void **pen);
 
-void fgdbrush_(void **brush, void **window, void **color,
+void FORTRAN(fgdbrush)(void **brush, void **window, void **color,
                char *style, int *stylelen);
-void fgdbrushreplacecolor_(int *success, void **brush, void **color);
-void fgdbrushdel_(int *success, void **brush);
+void FORTRAN(fgdbrushreplacecolor)(int *success, void **brush, void **color);
+void FORTRAN(fgdbrushdel)(int *success, void **brush);
 
-void fgdsymbol_(void **symbol, void **window, char *symbolname, int *namelen);
-void fgdsymboldel_(int *success, void **symbol);
+void FORTRAN(fgdsymbol)(void **symbol, void **window, char *symbolname, int *namelen);
+void FORTRAN(fgdsymboldel)(int *success, void **symbol);
 
 /*
  * Drawing commands
@@ -267,16 +267,16 @@ grdelBool grdelDrawText(grdelType window, const char *text, int textlen,
 /*
  * Fortran interfaces for the drawing commands.
  */
-void fgddrawmultiline_(int *success, void **window, float ptsx[],
+void FORTRAN(fgddrawmultiline)(int *success, void **window, float ptsx[],
                float ptsy[], int *numpts, void **pen);
-void fgddrawpoints_(int *success, void **window, float ptsx[],
+void FORTRAN(fgddrawpoints)(int *success, void **window, float ptsx[],
                float ptsy[], int *numpts, void **symbol,
                void **color, float *ptsize);
-void fgddrawpolygon_(int *success, void **window, float ptsx[],
+void FORTRAN(fgddrawpolygon)(int *success, void **window, float ptsx[],
                float ptsy[], int *numpts, void **brush, void **pen);
-void fgddrawrect_(int *success, void **window, float *left, float *bottom,
+void FORTRAN(fgddrawrect)(int *success, void **window, float *left, float *bottom,
                float *right, float *top, void **brush, void **pen);
-void fgddrawtext_(int *success, void **window, char *text, int *textlen,
+void FORTRAN(fgddrawtext)(int *success, void **window, char *text, int *textlen,
                float *startx, float *starty, void **font, void **color,
                float *rotate);
 

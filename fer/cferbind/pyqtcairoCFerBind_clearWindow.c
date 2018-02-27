@@ -1,6 +1,7 @@
 /* Python.h should always be first */
 #include <Python.h>
 #include <string.h>
+#include "ferret.h"
 #include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
@@ -55,7 +56,7 @@ grdelBool pyqtcairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor)
     }
 
     /* Only clear the displayed image if this is not in an animation */
-    fgd_getanimate_(&inanimation);
+    FORTRAN(fgd_getanimate)(&inanimation);
     if ( ! inanimation ) {
         /* Tell the viewer to clear the displayed scene */
         success = grdelWindowClear(instdata->viewer, viewercolor);

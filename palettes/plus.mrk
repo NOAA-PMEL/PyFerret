@@ -1,0 +1,6 @@
+! plus (+) mark; origin at center intersection
+ 45.00   0.00
+-45.00   0.00
+-999.9 -999.9
+  0.00  45.00
+  0.00 -45.00

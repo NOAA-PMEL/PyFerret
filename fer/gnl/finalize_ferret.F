@@ -191,6 +191,8 @@ C       pulled from xeq_cancel in order to do complete clean up silently
 
         CALL deleted_list_clear(uvar_num_items_head)
 
+        CALL FGD_DELETE_ALL_MARKER_DEFS()
+
         CALL ncf_datasets_list_clear()
 
         RETURN

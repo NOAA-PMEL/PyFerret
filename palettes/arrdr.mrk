@@ -1,0 +1,10 @@
+! arrow pointing down and right (45 deg); origin at the tip of the head
+  0.00   0.00
+-21.25   5.70
+-17.01   9.94
+-38.89  31.82
+-31.82  38.89
+ -9.94  17.01
+ -5.70  21.25
+  0.00   0.00
+FILL

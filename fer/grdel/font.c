@@ -220,7 +220,7 @@ grdelBool grdelFontDelete(grdelType font)
  *     font: the created font object, or zero if failure.
  *           Use fgderrmsg_ to retrieve the error message.
  */
-void fgdfont_(void **font, void **window, char *familyname, int *namelen,
+void FORTRAN(fgdfont)(void **font, void **window, char *familyname, int *namelen,
                float *fontsize, int *italic, int *bold, int *underlined)
 {
     grdelType myfont;
@@ -239,7 +239,7 @@ void fgdfont_(void **font, void **window, char *familyname, int *namelen,
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdfontdel_(int *success, void **font)
+void FORTRAN(fgdfontdel)(int *success, void **font)
 {
     grdelBool result;
 

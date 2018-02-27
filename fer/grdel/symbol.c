@@ -291,7 +291,7 @@ grdelBool grdelSymbolDelete(grdelType symbol)
  *     symbol: the created symbol object, or zero if failure.
  *             Use fgderrmsg_ to retrieve the error message.
  */
-void fgdsymbol_(void **symbol, void **window, char *symbolname, int *namelen)
+void FORTRAN(fgdsymbol)(void **symbol, void **window, char *symbolname, int *namelen)
 {
     grdelType mysymbol;
     float    *ptsx;
@@ -331,7 +331,7 @@ void fgdsymbol_(void **symbol, void **window, char *symbolname, int *namelen)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdsymboldel_(int *success, void **symbol)
+void FORTRAN(fgdsymboldel)(int *success, void **symbol)
 {
     grdelBool result;
 

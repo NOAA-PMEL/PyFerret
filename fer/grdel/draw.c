@@ -4,6 +4,7 @@
 #include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
 #include <string.h>
+#include "ferret.h"
 #include "grdel.h"
 #include "cferbind.h"
 #include "pyferret.h"
@@ -798,7 +799,7 @@ grdelBool grdelDrawText(grdelType window, const char *text, int textlen,
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgddrawmultiline_(int *success, void **window, float ptsx[],
+void FORTRAN(fgddrawmultiline)(int *success, void **window, float ptsx[],
                float ptsy[], int *numpts, void **pen)
 {
     grdelBool result;
@@ -822,7 +823,7 @@ void fgddrawmultiline_(int *success, void **window, float ptsx[],
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgddrawpoints_(int *success, void **window, float ptsx[],
+void FORTRAN(fgddrawpoints)(int *success, void **window, float ptsx[],
                     float ptsy[], int *numpts, void **symbol,
                     void **color, float *ptsize)
 {
@@ -849,7 +850,7 @@ void fgddrawpoints_(int *success, void **window, float ptsx[],
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgddrawpolygon_(int *success, void **window, float ptsx[],
+void FORTRAN(fgddrawpolygon)(int *success, void **window, float ptsx[],
                      float ptsy[], int *numpts, void **brush, void **pen)
 {
     grdelBool result;
@@ -875,7 +876,7 @@ void fgddrawpolygon_(int *success, void **window, float ptsx[],
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgddrawrect_(int *success, void **window, float *left, float *bottom,
+void FORTRAN(fgddrawrect)(int *success, void **window, float *left, float *bottom,
                   float *right, float *top, void **brush, void **pen)
 {
     grdelBool result;
@@ -906,7 +907,7 @@ void fgddrawrect_(int *success, void **window, float *left, float *bottom,
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdtextsize_(int *success, void **window, char *text, int *textlen,
+void FORTRAN(fgdtextsize)(int *success, void **window, char *text, int *textlen,
                      void **font, float *width, float *height)
 {
     grdelBool result;
@@ -934,7 +935,7 @@ void fgdtextsize_(int *success, void **window, char *text, int *textlen,
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgddrawtext_(int *success, void **window, char *text, int *textlen,
+void FORTRAN(fgddrawtext)(int *success, void **window, char *text, int *textlen,
                   float *startx, float *starty, void **font, void **color,
                   float *rotate)
 {

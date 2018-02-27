@@ -255,7 +255,7 @@ grdelBool grdelBrushDelete(grdelType brush)
  *     brush: the created brush object, or zero if failure.
  *             Use fgderrmsg_ to retrieve the error message.
  */
-void fgdbrush_(void **brush, void **window, void **color,
+void FORTRAN(fgdbrush)(void **brush, void **window, void **color,
                char *style, int *stylelen)
 {
     grdelType mybrush;
@@ -274,7 +274,7 @@ void fgdbrush_(void **brush, void **window, void **color,
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdbrushreplacecolor_(int *success, void **brush, void **color)
+void FORTRAN(fgdbrushreplacecolor)(int *success, void **brush, void **color)
 {
     grdelBool result;
 
@@ -291,7 +291,7 @@ void fgdbrushreplacecolor_(int *success, void **brush, void **color)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdbrushdel_(int *success, void **brush)
+void FORTRAN(fgdbrushdel)(int *success, void **brush)
 {
     grdelBool result;
 

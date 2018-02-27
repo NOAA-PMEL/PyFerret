@@ -1,0 +1,39 @@
+! bn_box_edges_fcn.jnl
+! Returns the cell edges of a 1-D variable
+! 2/23/2018 *acm*  for part of issue 1618
+
+sh func/details box_edges
+use levitus_3d_subset
+
+! coordinate edges from z axis
+list box_edges(temp[x=120,y=-48])
+list box_edges(temp[x=120,y=-48,z=600:2000])
+
+! from y axis
+list box_edges(temp[x=120,z=10])
+
+! 1-point grid in all directions, returns result for first encountered
+list box_edges(temp[x=120,y=-48,z=2000])
+
+! Get cell edges for one point on another axis
+list box_edges(z[gz=temp,z=2000])
+
+! intentional errors - multi-dimensioned argument
+
+set mode ignore_errors
+
+! multi-dimensioned argument
+list box_edges(temp[z=100])
+
+! degenerate grid arguments
+
+list box_edges (12)
+let a = 9
+list box_edges (a)
+
+! constant array has a nominal grid
+let a = {1,3,5}
+list box_edges (a)
+
+
+set mode/last ignore_errors

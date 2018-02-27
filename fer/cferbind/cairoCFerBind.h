@@ -58,9 +58,9 @@ typedef struct CCFBBrush_Struct {
 extern const char *CCFBSymbolId;
 typedef struct CCFBSymbol_Struct {
     const char *id;
-    char name[64];
     cairo_path_t *path;
     grdelBool filled;
+    char name[256];
 } CCFBSymbol;
 
 extern const char *CCFBFontId;

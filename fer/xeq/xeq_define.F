@@ -1520,7 +1520,7 @@ C /units=months  is 1/12 of the length of the year
 		 ELSE
                     IF (.NOT. TM_CHECK_BNDS (linemem(iline)%ptr, 
      .                     lineedg(line_0)%ptr, n, 
-     .                     iline, .TRUE., buff3) )2/27/2018GO TO 5750
+     .                     iline, .TRUE., buff3) ) GO TO 5750
 		    
 * Change from N*2 storage of bounds to N+1 edges.
                     CALL TM_CONVERT_BOUNDS_EDGES (lineedg(line_0)%ptr, 

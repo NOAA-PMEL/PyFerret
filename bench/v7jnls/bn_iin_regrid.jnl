@@ -1,11 +1,12 @@
 ! bn_iin_regrid.jnl
 ! @IIN as a regridding transform See Ticket 2346
 
-def ax/edge/x=0:10:1 aline
+define axis/edge/x=0:10:1 aline
 let a = mod(.5+x[gx=aline],2)
 
-let xlo = xboxlo[gx=a]
-def ax/x aline_edges = xcat(xlo[i=1], xboxhi[gx=a])
+! new DEFINE AXIS/LIKE=  qualifier
+! new box_edges function
+define axis/x/like=`a,return=xaxis` aline_edges = box_edges(a)
 
 ! new @IIN regridding
 show axis/x aline_edges
@@ -14,19 +15,14 @@ let c = a[gx=aline_edges@iin]
 list a
 list c
 
-
-def ax/edge/x=0:10:1 aline
+define axis/edge/x=0:10:1 aline
 let a = mod(.5+x[gx=aline],2)
 
-! Intentional error
 
-set mode ignore
-! Different delta
+! ? Different delta
 
 define axis/x=0.5:10.5:0.5 alinenew
 list a[gx=alinenew@iin]
-
-set mode/last ignore
 
 
 ! result out of range, returns missing
@@ -34,12 +30,9 @@ define axis/x=100:111:1 alinenew
 list a[gx=alinenew@iin]
 
 ! partially out of range 
-define axis/x=2.5:15.5:1 alinenew
+define axis/x=2:12:1 alinenew
 list a[gx=alinenew@iin]
 
-! same range, outer boxes 
-define axis/x=-0.5:10.5:1 alinenew
-list a[gx=alinenew@iin]
 can mem
 ! plots in different directions
 
@@ -48,13 +41,14 @@ can view; can var/all
 
 set win/asp=0.5
 set v left
-def ax/edge/x=0:10:1 aline
+define axis/edge/x=0:10:1 aline
 let a = mod(.5+x[gx=aline],2)
 plot/step=con/vl=-1:6:1/hl=-1:11:1/grat=dash/col=green/thic=3 a
 let a_iin = a[x=@iin]
 plot/ov/line/sym=2/si=.1/col=2/thic=2 a_iin
-let xlo = xboxlo[gx=a]
-def ax/x aline_edges = xcat(xlo[i=1], xboxhi[gx=a])
+
+define axis/x/like=`a,return=xaxis` aline_edges = box_edges(a)
+
 let a_iin_edges = a_iin[gx=aline_edges@asn]
 let a_int = IF i[gx=aline_edges] EQ 1 THEN 0 ELSE a_iin_edges[x=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 a_int
@@ -90,13 +84,15 @@ can view; can var/all
 
 set win/asp=0.5
 set v left
-def ax/edge/y=0:10:1 aline
+define axis/edge/y=0:10:1 aline
+
+
 let a = mod(.5+y[gy=aline],2)
 plot/step=con/vl=-1:6:1/hl=-1:11:1/grat=dash/col=green/thic=3 a
 let a_iin = a[y=@iin]
 plot/ov/line/sym=2/si=.1/col=2/thic=2 a_iin
-let ylo = yboxlo[gy=a]
-def ax/y aline_edges = ycat(ylo[j=1], yboxhi[gy=a])
+
+define axis/y/like=`a,return=yaxis` aline_edges = box_edges(a)
 
 let a_iin_edges = a_iin[gy=aline_edges@asn]
 let a_int = IF j[gy=aline_edges] EQ 1 THEN 0 ELSE a_iin_edges[y=@shf:-1]
@@ -132,13 +128,13 @@ can view; can var/all
 
 set win/asp=0.5
 set v left
-def ax/edge/z=0:10:1 aline
+define axis/edge/z=0:10:1 aline
 let a = mod(.5+z[gz=aline],2)
 plot/step=con/hl=-1:6:1/vl=-1:11:1/grat=dash/col=green/thic=3 a
 let a_iin = a[z=@iin]
 plot/ov/line/sym=2/si=.1/col=2/thic=2 a_iin
 let zlo = zboxlo[gz=a]
-def ax/z aline_edges = zcat(zlo[k=1], zboxhi[gz=a])
+define axis/z aline_edges = zcat(zlo[k=1], zboxhi[gz=a])
 
 let a_iin_edges = a_iin[gz=aline_edges@asn]
 let a_int = IF k[gz=aline_edges] EQ 1 THEN 0 ELSE a_iin_edges[z=@shf:-1]
@@ -173,13 +169,13 @@ can view; can var/all
 
 set win/asp=0.5
 set v left
-def ax/edge/t=0:10:1 aline
+define axis/edge/t=0:10:1 aline
 let a = mod(.5+t[gt=aline],2)
 plot/step=con/vl=-1:6:1/hl=-1:11:1/grat=dash/col=green/thic=3 a
 let a_iin = a[t=@iin]
 plot/ov/line/sym=2/si=.1/col=2/thic=2 a_iin
 let tlo = tboxlo[gt=a]
-def ax/t aline_edges = tcat(tlo[l=1], tboxhi[gt=a])
+define axis/t aline_edges = tcat(tlo[l=1], tboxhi[gt=a])
 
 let a_iin_edges = a_iin[gt=aline_edges@asn]
 let a_int = IF l[gt=aline_edges] EQ 1 THEN 0 ELSE a_iin_edges[t=@shf:-1]
@@ -214,13 +210,13 @@ can view; can var/all
 
 set win/asp=0.5
 set v left
-def ax/edge/e=0:10:1 aline
+define axis/edge/e=0:10:1 aline
 let a = mod(.5+_e[ge=aline],2)
 plot/step=con/vl=-1:6:1/hl=-1:11:1/grat=dash/col=green/thic=3 a
 let a_iin = a[e=@iin]
 plot/ov/line/sym=2/si=.1/col=2/thic=2 a_iin
 let elo = eboxlo[ge=a]
-def ax/e aline_edges = ecat(elo[m=1], eboxhi[ge=a])
+define axis/e aline_edges = ecat(elo[m=1], eboxhi[ge=a])
 
 let a_iin_edges = a_iin[ge=aline_edges@asn]
 let a_int = IF _m[ge=aline_edges] EQ 1 THEN 0 ELSE a_iin_edges[e=@shf:-1]
@@ -255,13 +251,13 @@ can view; can var/all
 
 set win/asp=0.5
 set v left
-def ax/edge/f=0:10:1 aline
+define axis/edge/f=0:10:1 aline
 let a = mod(.5+_f[gf=aline],2)
 plot/step=con/vl=-1:6:1/hl=-1:11:1/grat=dash/col=green/thic=3 a
 let a_iin = a[f=@iin]
 plot/ov/line/sym=2/si=.1/col=2/thic=2 a_iin
 let flo = fboxlo[gf=a]
-def ax/f aline_edges = fcat(flo[n=1], fboxhi[gf=a])
+define axis/f aline_edges = fcat(flo[n=1], fboxhi[gf=a])
 
 let a_iin_edges = a_iin[gf=aline_edges@asn]
 let a_int = IF _n[gf=aline_edges] EQ 1 THEN 0 ELSE a_iin_edges[f=@shf:-1]

@@ -94,7 +94,7 @@ finalize_variance.F\
 geog_cos_factor.F\
 get_linear_coef.F\
 hanng_wt.F\
-iin_regrid.F\
+iin_regrid_1_axis.F\
 lin_regrid_1_axis.F\
 maxsmoother.F\
 median.F\

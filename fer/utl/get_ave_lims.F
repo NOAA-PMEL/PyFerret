@@ -50,6 +50,7 @@
 *		destination cells also get processed
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
+* V74:  *acm* 2/18 Handling of cells with partial overlap was inadequate
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -60,7 +61,7 @@
 
 * internal variable declarations:
 	INTEGER	ISUBSCRIPT, ii, status
-	REAL*8	TM_WORLD, TDEST_WORLD, xdst, xmin, xmax
+	REAL*8	TM_WORLD, TDEST_WORLD, xdst, xdstlo, xmin, xmax
 
 * initialize
 	IF ( idim .EQ. t_dim .OR. idim .EQ. f_dim ) THEN
@@ -93,8 +94,9 @@
 
 * correct first destination point if has a partial fill
 	IF ( subsc(dst_lo) .EQ. unspecified_int4 ) THEN
+	   xdstlo = TDEST_WORLD( dst_lo, dst_grid, idim, box_lo_lim )
 	   xdst = TDEST_WORLD( dst_lo, dst_grid, idim, box_hi_lim )
-	   IF ( xmin .LT. xdst )  THEN
+	   IF ( xmin .GT. xdstlo .AND. xmin .LT. xdst)  THEN
 	      subsc( dst_lo ) = src_lo
 	   ENDIF
 	ENDIF

@@ -244,6 +244,7 @@ void FORTRAN(fgdbrushreplacecolor)(int *success, void **brush, void **color);
 void FORTRAN(fgdbrushdel)(int *success, void **brush);
 
 void FORTRAN(fgdsymbol)(void **symbol, void **window, char *symbolname, int *namelen);
+int  FORTRAN(fgdsymbolmatches)(void **symbol, char *symbolname, int *namelen);
 void FORTRAN(fgdsymboldel)(int *success, void **symbol);
 
 /*

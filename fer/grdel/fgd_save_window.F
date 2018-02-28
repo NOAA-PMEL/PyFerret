@@ -4,7 +4,8 @@
 * of writing a GKS metafile by PlotPlus.
 *
 * Input Arguments:
-*     windowid: ID number of the Window to be closed
+*     filename: save the image under this filename;
+*               image format guessed from the filename extension
 *
         SUBROUTINE FGD_SAVE_WINDOW(filename)
 

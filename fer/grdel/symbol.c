@@ -16,6 +16,9 @@ typedef struct GDsymbol_ {
     const char *id;
     grdelType window;
     grdelType object;
+    /* a copy of the symbol name, for convenience */
+    char name[256];
+    int  namelen;
 } GDSymbol;
 
 
@@ -78,6 +81,17 @@ grdelType grdelSymbol(grdelType window, const char *symbolname, int symbolnamele
         return NULL;
     }
 
+    /* make a copy of the symbol name, for convenience */
+    if ( symbolnamelen >= sizeof(symbol->name) ) {
+        strcpy(grdelerrmsg, "grdelSymbol: symbol name too long");
+        FerMem_Free(symbol, __FILE__, __LINE__);
+        return NULL;
+    }
+    strncpy(symbol->name, symbolname, symbolnamelen);
+    symbol->name[symbolnamelen] = '\0';
+    symbol->namelen = symbolnamelen;
+
+    /* create the actual symbol object */
     symbol->id = grdelsymbolid;
     symbol->window = window;
     if ( bindings->cferbind != NULL ) {
@@ -320,6 +334,34 @@ void FORTRAN(fgdsymbol)(void **symbol, void **window, char *symbolname, int *nam
     }
 
     *symbol = mysymbol;
+}
+
+/*
+ * Determines if the symbol matches the given symbol name.
+ * Names comparisons are case-insensitive, and comparisons
+ * are made only up to the length of the given symbol name
+ * (so "dot" will match "dot", "dotex", and "dotplus").
+ *
+ * Input Arguments:
+ *     symbol: the symbol object to check
+ *     symbolname: name of the symbol
+ *     namelen: actual length of the symbol name
+ * Returns: non-zero if the name of the given symbol matches 
+ *          the given symbol name; otherwise zero
+ */
+int FORTRAN(fgdsymbolmatches)(void **symbol, char *symbolname, int *namelen)
+{
+    GDSymbol *mysymbol;
+
+    if ( grdelSymbolVerify(*symbol, NULL) == NULL )
+        return 0;
+    mysymbol = (GDSymbol *) (*symbol);
+
+    if ( *namelen > mysymbol->namelen )
+        return 0;
+    if ( strncasecmp(mysymbol->name, symbolname, *namelen) != 0 )
+        return 0;
+    return 1;
 }
 
 /*

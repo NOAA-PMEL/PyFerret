@@ -95,6 +95,7 @@
 *      *acm*  2/15 new Functions TIME_REFORMAT, FT_TO_ORTHOGONAL
 * V702 *sh*   1/17 added support for FORTRAN90 dynamic memory management
 *                  removing "memory" pointer in favor of individual arg ptrs
+* V74  *acm*  2/18 New box_edges function
 */
 
 
@@ -629,6 +630,10 @@ void FORTRAN(compressm_by_compute)(int *, DFTYPE *, DFTYPE *);
 void FORTRAN(compressn_by_init)(int *);
 void FORTRAN(compressn_by_result_limits)(int *);
 void FORTRAN(compressn_by_compute)(int *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(box_edges_init)(int *);
+void FORTRAN(box_edges_result_limits)(int *);
+void FORTRAN(box_edges_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(labwid_init)(int *);
 void FORTRAN(labwid_result_limits)(int *);
@@ -1246,6 +1251,7 @@ static int continue_efcn_scan(int gfcn_num_internal) {
   const char I_EFnames[][EF_MAX_NAME_LENGTH] = {
      "ave_scat2grid_t",
      "bin_index_wt",
+     "box_edges",
      "compressi",
      "compressi_by",
      "compressj",
@@ -4024,6 +4030,12 @@ else if ( !strcmp(name,"compressm_by_compute_") ) return (void *)FORTRAN(compres
 else if ( !strcmp(name,"compressn_by_init_") ) return (void *)FORTRAN(compressn_by_init);
 else if ( !strcmp(name,"compressn_by_result_limits_") ) return (void *)FORTRAN(compressn_by_result_limits);
 else if ( !strcmp(name,"compressn_by_compute_") ) return (void *)FORTRAN(compressn_by_compute);
+
+/* box_edges.F */
+else if ( !strcmp(name,"box_edges_init_") ) return (void *)FORTRAN(box_edges_init);
+else if ( !strcmp(name,"box_edges_result_limits_") ) return (void *)FORTRAN(box_edges_result_limits);
+else if ( !strcmp(name,"box_edges_compute_") ) return (void *)FORTRAN(box_edges_compute);
+
 
 /* labwid.F */
 else if ( !strcmp(name,"labwid_init_") ) return (void *)FORTRAN(labwid_init);

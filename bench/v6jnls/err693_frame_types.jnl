@@ -17,4 +17,6 @@ frame/file=a.png
 frame/file=a.gif
 frame/format=gif file=a.plot
 
+sp rm a.gif
+
 set mode/last ignore

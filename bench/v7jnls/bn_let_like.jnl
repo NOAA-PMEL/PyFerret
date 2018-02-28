@@ -1,0 +1,91 @@
+! bn_let_like.jnl
+! DEFINE VARIABLE/LIKE=oldvar my_new_var
+!
+! Gets the attributes from the specified variable
+! and assigns them to the new variable.  Skips
+! missing_flag and _FillVlue as does the existing
+! command "set att/like=oldvar newvar".
+! also skip add_offset and scale_factor attribs.
+!
+! 2/22/2018  ACM
+
+
+use coads_climatology
+let/like=sst sst2 = 2*sst
+show att sst2
+
+! Can still set /TITLE, /UNITS on the command line
+
+let/like=sst/Title="Sea Surface Temperature" sst2 = 2*sst
+show att sst2
+
+! bad-flags are not inherited.  Set a new flag
+let/like=sst/bad=999 int_sst = if sst then int(sst) else 999
+list/y=0 int_sst
+
+save/clobber/file=a.nc/outtype=int/x=105:125/y=0/L=1 int_sst
+sp ncdump a.nc
+list/x=105:125/y=0/L=1 int_sst
+
+! Now use the file with bad=999
+cancel data/all
+cancel var/all
+use a.nc
+sh dat/att
+
+! Define a variable with /LIKE=.  Its bad-flag is the Ferret default.
+let/like=int_sst newvar = 0.325*int_sst
+show att newvar
+list newvar
+
+! The operation of renaming a variable and then redefining the var
+! in a LET command is streamlined
+
+use WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc
+set var/name=pco2_in pco2
+
+! Some expression changing the definition
+
+let/like=PCO2_IN pco2 = tsequence(pco2_in)
+sh att pco2
+say `pco2,return=shape`
+
+
+cancel data/all
+cancel var/all
+
+! Another one replacing SET ATT/LIKE with LET/LIKE, from the
+! script bn_cancel_upcase_uservar.  Note the use of dset number
+! LET/LIKE=olr[d=1] 
+
+CANCEL MODE upcase
+
+! User variable with lowercase letters in the name
+
+DEFINE AXIS/t=1-jan-1999:31-jan-1999:1/units=days/t0=31-dec-1998 tday
+LET MyUpperLowerCaseVar = x[x=1:10] + t[gt=tday]
+SAVE/file=a.nc/clobber MyUpperLowerCaseVar
+
+! Open two datafiles. These have variable and axis
+! names in lowercase.
+
+USE a1478.nc
+show att olr
+
+USE a_cartesian_bug1179.nc
+
+! Define an output variable with some axes from each dataset.
+LET/D=2 zvar = z[gz=temp[d=2]]
+LET/LIKE=olr[d=1] newvar =  0*zvar[d=2] + olr[d=1]
+SHOW ATT newvar
+
+SET MODE/LAST upcase_output
+
+! intentional errors
+set mode ignore
+
+! Unknown variable 
+IF `var_undefined, return=defined` THEN CANCEL VAR var_undefined
+let/like=var_undefined myvar = 7
+
+set mode/last ignore

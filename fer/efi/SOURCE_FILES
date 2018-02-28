@@ -1,6 +1,7 @@
 SRCS_F = \
 ave_scat2grid_t.F\
 bin_index_wt.F\
+box_edges.F\
 compressi.F\
 compressj.F\
 compressk.F\

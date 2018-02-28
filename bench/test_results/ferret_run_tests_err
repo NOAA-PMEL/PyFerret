@@ -5216,12 +5216,10 @@ ls: cannot access tmp/test_auto_cache_20.nc: No such file or directory
 *** Running ferret script: bn_transp_choose.jnl
  TEMPORARY data cleared from memory
 *** Running ferret script: bn_iin_regrid.jnl
- **ERROR: regridding: @IIN regridding must be to axis with same grid-cell sizes
-list a[gx=alinenew@iin]
-Replacing definition of axis ALINENEW
 Replacing definition of axis ALINENEW
 Replacing definition of axis ALINENEW
  TEMPORARY data cleared from memory
+Replacing definition of axis ALINE_EDGES
 Replacing definition of axis ALINE
 Replacing definition of axis ALINE_EDGES
 Replacing definition of axis ALINE
@@ -5344,6 +5342,39 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: JULIAN climatological axes defined
            *** NOTE: regarding ./data/clim_axes_noleap.nc ...
            *** NOTE: NOLEAP climatological axes defined
+*** Running ferret script: bn_let_like.jnl
+ LISTing to file a.nc
+ LISTing to file a.nc
+ **ERROR: variable unknown or not in data set: VAR_UNDEFINED
+DEFINE VARIABLE/like=var_undefined myvar = 7
+*** Running ferret script: bn_def_axis_like.jnl
+ **ERROR: improper grid or axis definition: DEFINE AXIS/LIKE= Axis not found AXIS_UNDEFINED
+define axis/like=axis_undefined/x=1:8:1 myx
+ **ERROR: improper grid or axis definition: DEFINE AXIS/LIKE= Direction must match original axis
+define axis/like=XAX_LEV9421_380/y=-10:10:10 myy
+           *** NOTE: Orientation not specified via /X,/Y,/Z,.... X assumed.
+           *** NOTE: Units appear to conflict with orientation: no conversions possible
+ **ERROR: improper grid or axis definition: error in start,end,delta
+define axis/like=timesec/units=minutes timemin
+ **ERROR: improper grid or axis definition: error in start,end,delta
+define axis/like=timesec/units=minutes/t timemin
+*** Running ferret script: bn_box_edges_fcn.jnl
+           *** NOTE: Ambiguous argument, grid has only 1-point axes. Returning edges from X axis
+
+Bailing out of external function "box_edges":
+	Argument must be 1-dimensional
+ **ERROR:
+list box_edges(temp[z=100])
+
+Bailing out of external function "box_edges":
+	Argument has no axes
+ **ERROR:
+list box_edges (12)
+
+Bailing out of external function "box_edges":
+	Argument has no axes
+ **ERROR:
+list box_edges (a)
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

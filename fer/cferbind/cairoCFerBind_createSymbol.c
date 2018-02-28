@@ -21,10 +21,10 @@ const char *CCFBSymbolId = "CCFBSymbolId";
  * Current pre-defined symbol names are ones involving circles: 
  *    'dot': very small filled circle 
  *    'dotplus': very small filled circle and outer lines of a plus mark 
- *    'dotx': very small filled circle and outer lines of an ex mark 
+ *    'dotex': very small filled circle and outer lines of an ex mark 
  *    'circle': unfilled circle 
- *    'circleplus': small unfilled circle and outer lines of a plus mark 
- *    'circlex': small unfilled circle and outer lines of an ex mark
+ *    'circplus': small unfilled circle and outer lines of a plus mark 
+ *    'circex': small unfilled circle and outer lines of an ex mark
  *
  * If numpts is greater than zero and ptsx and ptsy are not NULL, the 
  * arguments ptsx and ptsy are X- and Y-coordinates that define the symbol 
@@ -180,7 +180,7 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
         cairo_rectangle(pathcontext,  30.0,  -5.0, 20.0, 10.0);
         symbolobj->filled = 1;
     }
-    else if ( strcmp("dotx", symbolobj->name) == 0 ) {
+    else if ( strcmp("dotex", symbolobj->name) == 0 ) {
         cairo_new_path(pathcontext);
         cairo_arc(pathcontext, 0.0, 0.0, 10.0, 0.0, 2.0 * M_PI);
         cairo_close_path(pathcontext);
@@ -213,7 +213,7 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
         cairo_close_path(pathcontext);
         symbolobj->filled = 0;
     }
-    else if ( strcmp("circleplus", symbolobj->name) == 0 ) {
+    else if ( strcmp("circplus", symbolobj->name) == 0 ) {
         cairo_new_path(pathcontext);
         cairo_arc(pathcontext, 0.0, 0.0, 20.0, 0.0, 2.0 * M_PI);
         cairo_close_path(pathcontext);
@@ -228,7 +228,7 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
         cairo_line_to(pathcontext,  21.0,   0.0);
         symbolobj->filled = 0;
     }
-    else if ( strcmp("circlex", symbolobj->name) == 0 ) {
+    else if ( strcmp("circex", symbolobj->name) == 0 ) {
         cairo_new_path(pathcontext);
         cairo_arc(pathcontext, 0.0, 0.0, 20.0, 0.0, 2.0 * M_PI);
         cairo_close_path(pathcontext);

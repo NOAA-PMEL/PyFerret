@@ -1711,7 +1711,7 @@ def _test_pipedviewerpq():
                                    (250, 250),
                                    (250, 350),
                                    (250, 450) ),
-                        "symbol":"circleplus",
+                        "symbol":"circplus",
                         "size":20,
                         "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
@@ -1720,7 +1720,7 @@ def _test_pipedviewerpq():
                                    (300, 250),
                                    (300, 350),
                                    (300, 450) ),
-                        "symbol":"dotx",
+                        "symbol":"dotex",
                         "size":20,
                         "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
@@ -1729,7 +1729,7 @@ def _test_pipedviewerpq():
                                    (350, 250),
                                    (350, 350),
                                    (350, 450) ),
-                        "symbol":"circlex",
+                        "symbol":"circex",
                         "size":20,
                         "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",

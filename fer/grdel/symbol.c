@@ -32,7 +32,7 @@ typedef struct GDsymbol_ {
  * Current pre-defined symbol names are ones involving circles: 
  *     'dot': very small filled circle 
  *     'dotplus': very small filled circle and outer lines of a plus mark 
- *     'dotx': very small filled circle and outer lines of an ex mark 
+ *     'dotex': very small filled circle and outer lines of an ex mark 
  *     'circle': unfilled circle 
  *     'circleplus': small unfilled circle and outer lines of a plus mark 
  *     'circlex': small unfilled circle and outer lines of an ex mark
@@ -313,12 +313,12 @@ void FORTRAN(fgdsymbol)(void **symbol, void **window, char *symbolname, int *nam
     int       numpts;
     grdelBool fill;
 
-    if ( ( (*namelen == 3)  && (strncasecmp(symbolname, "dot", 3) == 0) ) ||
-         ( (*namelen == 4)  && (strncasecmp(symbolname, "dotx", 4) == 0) ) ||
-         ( (*namelen == 7)  && (strncasecmp(symbolname, "dotplus", 7) == 0) ) ||
-         ( (*namelen == 6)  && (strncasecmp(symbolname, "circle", 6) == 0) ) ||
-         ( (*namelen == 7)  && (strncasecmp(symbolname, "circlex", 7) == 0) ) ||
-         ( (*namelen == 10) && (strncasecmp(symbolname, "circleplus", 10) == 0) ) ) {
+    if ( ( (*namelen == 3) && (strncasecmp(symbolname, "dot", 3) == 0) ) ||
+         ( (*namelen == 5) && (strncasecmp(symbolname, "dotex", 5) == 0) ) ||
+         ( (*namelen == 7) && (strncasecmp(symbolname, "dotplus", 7) == 0) ) ||
+         ( (*namelen == 6) && (strncasecmp(symbolname, "circle", 6) == 0) ) ||
+         ( (*namelen == 6) && (strncasecmp(symbolname, "circex", 6) == 0) ) ||
+         ( (*namelen == 8) && (strncasecmp(symbolname, "circplus", 8) == 0) ) ) {
         /* Pre-defined symbols (no points are given and fill is ignored) */
         mysymbol = grdelSymbol(*window, symbolname, *namelen, NULL, NULL, 0, 0);
     }

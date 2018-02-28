@@ -11,11 +11,7 @@
 /* Environment variable giving the directories containing symbol definitions */
 #define SYMDIRS_ENVVAR "FER_PALETTE"
 
-/* 
- * Ferret refers to these as markers - thus .mrk for the extension - 
- * although these are also be used in PyFerret for patterns.
- */
-#define SYMFILEEXT ".mrk"
+#define SYMFILEEXT ".sym"
 #define SYMFILEEXTLEN 4
 
 #define MAXLINELEN 2048
@@ -138,10 +134,10 @@ static int symbolNameFilter(const struct dirent *direntry)
 }
 
 /*
- * Free all memory in SymbolInfoList, the static list of all symbol 
- * (marker) information read from symbol definition files.
+ * Free all memory in SymbolInfoList, the static list of information 
+ * for all PyFerret named symbols.
  */
-void FORTRAN(fgd_delete_all_marker_defs)(void) 
+void FORTRAN(fgd_delete_all_symboldefs)(void) 
 {
     SymbolInfo *nextptr;
     SymbolInfo *infoptr;
@@ -150,7 +146,8 @@ void FORTRAN(fgd_delete_all_marker_defs)(void)
     while ( nextptr != NULL ) {
         infoptr = nextptr;
         nextptr = infoptr->next;
-        FerMem_Free(infoptr->ptsx, __FILE__, __LINE__);
+        if ( infoptr->ptsx != NULL )
+            FerMem_Free(infoptr->ptsx, __FILE__, __LINE__);
         FerMem_Free(infoptr->name, __FILE__, __LINE__);
         FerMem_Free(infoptr, __FILE__, __LINE__);
     }
@@ -158,12 +155,12 @@ void FORTRAN(fgd_delete_all_marker_defs)(void)
 }
 
 /*
- * Reads all symbols (markers) in the directories given by the environment 
+ * Reads all PyFerret named symbols in the directories given by the environment 
  * variables SYMDIRS_ENVVAR.  The symbols definitions are stored SymbolInfoList.
  * If an error occurs, grdelerrmsg is assigned and zero is returned in status.
  * If successful, non-zero (FERR_OK) is returned in status.
  */
-void FORTRAN(fgd_read_all_marker_defs)(int *status)
+void FORTRAN(fgd_read_all_symboldefs)(int *status)
 {
     const char     *envval;
     char            symdirs[MAXLINELEN];
@@ -175,7 +172,7 @@ void FORTRAN(fgd_read_all_marker_defs)(int *status)
     SymbolInfo     *nextptr;
 
     /* Free any previous list */
-    FORTRAN(fgd_delete_all_marker_defs)();
+    FORTRAN(fgd_delete_all_symboldefs)();
 
     /* get the directories to search from the environment variable */
     envval = getenv(SYMDIRS_ENVVAR);

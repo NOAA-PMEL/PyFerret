@@ -235,7 +235,7 @@ c	CALL GFDL_TERMS
      .                         max_uvar,
      .                         uvar_deleted)
 
-        CALL FGD_READ_ALL_MARKER_DEFS(status)
+        CALL FGD_READ_ALL_SYMBOLDEFS(status)
         IF ( status .NE. FERR_OK ) THEN
             errmsg = ' '
             CALL FGDERRMSG(errmsg, errmsglen)

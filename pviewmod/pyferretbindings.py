@@ -539,11 +539,11 @@ class PyFerretBindings(AbstractPyFerretBindings):
 
         Current pre-defined symbol names are ones involving circles:
             'dot': very small filled circle
+            'dotex': very small filled circle and outer lines of an ex mark
             'dotplus': very small filled circle and outer lines of a plus mark
-            'dotx': very small filled circle and outer lines of an ex mark
             'circle': unfilled circle
-            'circleplus': small unfilled circle and outer lines of a plus mark
-            'circlex': small unfilled circle and outer lines of an ex mark
+            'circex': small unfilled circle and outer lines of an ex mark
+            'circplus': small unfilled circle and outer lines of a plus mark
 
         If pts is given, the value is coordinates that define the symbol 
         as multiline subpaths in a [-50,50] square.  The location of the 
@@ -997,15 +997,15 @@ def _test_pyferretbindings():
         bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (250, 250, 250, 250, 250)
-        mysymbol = bindinst.createSymbol("circleplus")
+        mysymbol = bindinst.createSymbol("circplus")
         bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (300, 300, 300, 300, 300)
-        mysymbol = bindinst.createSymbol("dotx")
+        mysymbol = bindinst.createSymbol("dotex")
         bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (350, 350, 350, 350, 350)
-        mysymbol = bindinst.createSymbol("circlex")
+        mysymbol = bindinst.createSymbol("circex")
         bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (400, 400, 400, 400, 400)

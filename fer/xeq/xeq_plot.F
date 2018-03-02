@@ -116,6 +116,7 @@
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * V71  *acm* 2/17  More on ticket 2231. Initialize flag use_keys.
+* V73  3/18 *kms*  make dot_sym (99) a makedot.cmn parameter DOTSYMIM
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -138,6 +139,7 @@
         include 'LINES.INC'
 	include 'cont_inc.decl' ! with iautoc and nlev
         include 'CONT.INC'
+        include 'makedot.cmn'
 
 	
 * calling argument declarations:
@@ -153,16 +155,13 @@
      .			loc, limit, slen, thick, step_inc,
      .			ax1_work, ax2_work,
      .			do_dash, s1, s2, it_start(4), it_end(4),
-     .			nparm, dot_sym, num_it, i, iax(4), i1,
+     .			nparm, num_it, i, iax(4), i1,
      .                  loch, locv, nvs, skipsym
 	REAL		val, sym_size, dashstyle(4), only_val
 	CHARACTER	LEFINT*4, buff*128
 	
 	CHARACTER	TM_FMT*12, TM_INQ_PATH*2048, sfile*2048
 	INTEGER ncolors
-
-* internal parameter declarations
-	PARAMETER (dot_sym=99)
 
 * set up the graphics environment and get the data
 	CALL START_PPLUS
@@ -236,7 +235,7 @@ CC       => Set values here instead.
      .                        buff, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   IF (buff .EQ. 'DOT') THEN
-              symbol = dot_sym
+              symbol = DOTSYMIM
            ELSE
 
 	      CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
@@ -268,7 +267,7 @@ CC       => Set values here instead.
 	   IF ( val .NE. unspecified_val4 ) THEN
 	      IF ( val.LE. 0.0 ) GOTO 5210
 	      sym_size = val		! user-specified symbol
-              IF ( symbol .EQ. dot_sym) THEN
+              IF ( symbol .GE. DOTSYMIM) THEN
                  CALL WARN ('/SIZE= ignored  on /SYMBOL=DOT ')
                  sym_size = 0.08
               ENDIF
@@ -310,7 +309,7 @@ CC       => Set values here instead.
 
 	   IF ( color .EQ. qual_on ) THEN
 	   
-              IF ( symbol .EQ. dot_sym) THEN
+              IF ( symbol .GE. DOTSYMIM) THEN
                  CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')
 	         IF (color .GT. ncolors) color = MOD(color-1,ncolors)+1  ! eliminate thickness
               ELSE
@@ -319,7 +318,7 @@ CC       => Set values here instead.
            ELSE
 	      IF (color .GT. ncolors) color = MOD(color-1,ncolors)+1  ! eliminate thickness
 	      color = ncolors*(thick-1) + color
-              IF ( symbol .EQ. dot_sym) THEN
+              IF ( symbol .GE. DOTSYMIM) THEN
                  CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')
 	         color = MOD(color-1,ncolors)+1  ! eliminate thickness
               ENDIF

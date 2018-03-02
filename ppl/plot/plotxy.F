@@ -66,6 +66,8 @@ C
 *                   PLOT/VS plots (LAS ticket 1597 and others)
 * v696 *acm*   6/15 Reverting. Implement /GAPLOC only for ribbon plots.	
 * V698  4/16 *acm* New PLOT/SKIP=
+* V73  3/18 *kms*  For clarity, append MD to makedot.cmn values IPT, XDOT, 
+*                  and YDOT; make MDOT (99) a makedot.cmn parameter DOTSYMIM
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -105,7 +107,7 @@ C
 	INTEGER xpolybase, ypolybase, zpolybase, polysizemax, nl,
      .		nvertex, fill_ndx, nskp, idec
 
-	INTEGER klast, mdot
+	INTEGER klast
 	REAL	xtlast, ytlast
 
 	INTEGER GET_NDX
@@ -125,7 +127,6 @@ C
 
 	xadd = 0.
 	xadlast = 0.	
-	MDOT = 99
 C
 C  JTYPE IS DATA TYPE (0 FOR 2D, 1 FOR 1D)
 C
@@ -233,7 +234,7 @@ C     DRAW VECTORS
 	    END IF
 	    IF(ITYPE(I).EQ.3)THEN 
                CALL POINTS
-               IF (imark(i) .GT. 100) ipt = 0
+               IF (imark(i) .GE. DOTSYMIM) IPTMD = 0
             ENDIF
 	    IF(.NOT.(XLE.OR.XEQ.OR.XGE.OR.YLE.OR.YEQ.OR.YGE))THEN
 C     DO NOT CHECK POINTS FOR MISSING DATA
@@ -288,7 +289,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 
 		  IF (IDN .EQ. 1 .AND. klast.EQ.k-1) THEN ! prev pt was a singleton
                       CALL PLOT(XTLAST,YTLAST,0,0)
-                      CALL MARK(MDOT)
+                      CALL MARK(DOTSYMIM)
 		  ENDIF
 
 	          IDN=0
@@ -348,9 +349,9 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 
 	  END IF
 
-          IF (imark(i) .GT. 100) THEN
-             CALL doit_makedot(IPT,XDOT,YDOT)
-             IPT = 0
+          IF (imark(i) .GE. DOTSYMIM) THEN
+             CALL doit_makedot(IPTMD,XDOTMD,YDOTMD)
+             IPTMD = 0
           ENDIF
 	if (interrupted) go to 51 !*jd* 8.3.92
 50	IBASE=IBASE+LLENG(I)
@@ -359,9 +360,9 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 
 *** FINALIZE
  51	CONTINUE
-        IF (imark(i) .GT. 100) THEN
-          CALL doit_makedot(IPT,XDOT,YDOT)
-          IPT = 0
+        IF (imark(i) .GE. DOTSYMIM) THEN
+          CALL doit_makedot(IPTMD,XDOTMD,YDOTMD)
+          IPTMD = 0
         ENDIF
 
         CALL COLOR(IPEN(0))

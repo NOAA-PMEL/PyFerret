@@ -122,6 +122,7 @@
 * PyFr *kms*  4/17 Remove SAVE_FRAME for HDF format since no longer supported
 * PyFr *kms*  2/18 Add /SYMBOL=<name> for PyFerret named markers; 
 *                  remove dot_sym restrictions as this is now just another named marker
+* V73  3/18 *kms*  make dot_sym (99) a makedot.cmn parameter DOTSYMIM
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -146,6 +147,7 @@
         include 'GKSCM1.INC'    ! wsid
         include 'cont_inc.decl' ! with iautoc and nlev
         include 'CONT.INC'
+        include 'makedot.cmn'
 
 * calling argument declarations:
 
@@ -260,11 +262,13 @@ CC       => Set values here instead.
      .                      (symbol .GT. max_sym) ) GOTO 5200
                     ELSE
 *                      Get the pyferret symbol number for this named symbol. 
-*                      Add 100 to that value to distinguish it from PlotPlus 
-*                      symbol numbers (max_sym is 88; qual_on is negative).
+*                      Add DOTSYMIM-1 (100) to that value to distinguish it 
+*                      from PlotPlus symbol numbers (max_sym is 88; qual_on 
+*                      is negative).  The named symbol "dot" is always 1, 
+*                      so its value becomes DOTSYMIM.
                        symbol = FGD_GET_SYMBOLNUM(buff, slen)
                        IF ( symbol .EQ. 0 ) GOTO 5000
-                       symbol = symbol + 100
+                       symbol = symbol + DOTSYMIM - 1
                     ENDIF
                     GOTO 10
                  ENDIF

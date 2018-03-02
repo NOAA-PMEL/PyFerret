@@ -35,6 +35,8 @@
 
 *  8/2001  acm  for PLOT/SYMBOL=DOT, call makedot
 *      *acm* 10/01  remove VMS includes
+* V73  3/18 *kms*  For clarity, append MD to makedot.cmn values IPT, XDOT, 
+*                  and YDOT; make MDOT (99) a makedot.cmn parameter DOTSYMIM
 
 *
 C**    @(#)mark.F	1.1    3/10/88
@@ -48,6 +50,9 @@ C***********************************************************************
 C**
 C**
 C
+
+      INCLUDE 'makedot.cmn'
+
       CHARACTER IMODE*1
       LOGICAL LARGE
 C
@@ -84,9 +89,9 @@ C
 C     CHECK THE DATA MARK CODE.  
 C     For PLOT/SYMBOL=<name>, call makedot to call POLYMARK
 C
-      IF (IMARK .GT. 100) THEN
-C         IMARK 100 plus the named symbol number
-          CALL makedot(IMARK - 100)
+      IF (IMARK .GE. DOTSYMIM) THEN
+C         IMARK is a named symbol number
+          CALL makedot(IMARK)
       ENDIF
 
       IF(IMARK .LT. 1 .OR. IMARK .GT. 88)RETURN

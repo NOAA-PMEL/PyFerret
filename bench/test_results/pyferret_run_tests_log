@@ -30979,6 +30979,7 @@ T0 = 1-JAN-1980
 ! new PLOT/DASH and PLOT/SYMBOL=DOT  qualifiers
 ! *acm* 5/01
 ! *acm* 8/02 Remove calls to SYMBOL=DOT until postscript issues are resolved.
+! *kms* 3/18 - size qualifiers for /symbol=dot not an error in pyferret
  
 plot/dash/i=1:1000 sin(62.8*i)
 plot/over/dash=(0.4,0.1,0.4,0.1)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
@@ -40648,6 +40649,7 @@ list $1_strings[i=1013:1024] 	! via IS_MODULO
 ! ACM 4/2005 set mode meta to save this plot for the metafile checks.
 !            and cancel mode logo, so that .plt files are comparable.
 !  2/18 *acm* keep mode logo turned off
+! *kms* 3/18 - size qualifiers for /symbol=dot not an error in pyferret
  
 set mode meta dots.plt
 plot/symbol=dot/i=1:1000 sin(62.8*i)
@@ -40655,8 +40657,8 @@ plot/symbol=dot/color=red/over/i=1:1000 sin(62.8*(i+20))
 can mode meta
  
 ! test warnings
-plot/symbol=dot/thick/i=1:1000 sin(62.8*(i+10) )
-plot/symbol=dot/size=0.5/over/i=1:1000 -0.5*sin(62.8*(i+10) )
+! plot/symbol=dot/thick/i=1:1000 sin(62.8*(i+10) )
+! plot/symbol=dot/size=0.5/over/i=1:1000 -0.5*sin(62.8*(i+10) )
  
 ! Vector plots with null-size vectors
  

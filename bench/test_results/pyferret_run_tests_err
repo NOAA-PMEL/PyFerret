@@ -1151,8 +1151,6 @@ define axis/x=130e:500:10/modulo=360 xsub
 *** Running ferret script: bn_dots.jnl
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-           *** NOTE: /THICKNESS ignored  on /SYMBOL=DOT
-           *** NOTE: /SIZE= ignored  on /SYMBOL=DOT
 *** Running ferret script: bn_lev_symbols.jnl
 *** Running ferret script: bn_mode_logo_lab.jnl
 *** Running ferret script: bn_modulo_attribute.jnl

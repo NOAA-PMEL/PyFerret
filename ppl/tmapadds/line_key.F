@@ -42,6 +42,8 @@
 *  v5.5 *acm* 12/02 For dot plots -- plot a symbol in the middle as well.
 *                   Taken from aline_sub, but put a third symbol in
 *                   the middle of the line the key of a line-plot  
+* V73  3/18 *kms*  For clarity, append MD to makedot.cmn values IPT, XDOT, 
+*                  and YDOT; make MDOT (99) a makedot.cmn parameter DOTSYMIM
 
         IMPLICIT NONE
 
@@ -173,9 +175,9 @@ C
 !	    YLO=XTL
 !	ENDIF
 
-        IF (imark(a_line) .GT. 100) THEN
-           CALL doit_makedot(IPT,XDOT,YDOT)
-           IPT = 0
+        IF (imark(a_line) .GE. DOTSYMIM) THEN
+           CALL doit_makedot(IPTMD,XDOTMD,YDOTMD)
+           IPTMD = 0
         ENDIF
 
  	CALL COLOR(IPEN(0))

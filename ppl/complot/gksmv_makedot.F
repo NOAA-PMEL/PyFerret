@@ -44,6 +44,9 @@
 *  rather than GPL (polyline) 
 *
 *  10/2001 Buffer calls to GPM.  Rename X and Y to xdot, ydot for clarity.
+* V73  3/18 *kms*  For clarity, append MD to makedot.cmn values IPT, XDOT, 
+*                  and YDOT; make MDOT (99) a makedot.cmn parameter DOTSYMIM
+
 C
 C	This routine creates a binary file that can be used to
 c	construct device dependent plotting code
@@ -77,34 +80,34 @@ c
         INCLUDE         'makedot.cmn'    ! 10/01 *acm*
 
 	IF(IP.EQ.0)THEN
-	    CALL DOIT_makedot(ipt,xdot,ydot)
-	    IPT=1
+	    CALL DOIT_makedot(IPTMD,XDOTMD,YDOTMD)
+	    IPTMD=1
 	ELSE
-	    IPT=IPT+1
-	    IF(ipt.GE.maxdot)THEN
-		CALL DOIT_makedot(ipt,xdot,ydot)
-		IPT=2
-		xdot(1)=xdot(maxdot)
-		ydot(1)=ydot(maxdot)
+	    IPTMD=IPTMD+1
+	    IF(IPTMD.GE.MAXDOT)THEN
+		CALL DOIT_makedot(IPTMD,XDOTMD,YDOMDT)
+		IPTMD=2
+		XDOTMD(1)=XDOTMD(MAXDOT)
+		YDOTMD(1)=YDOTMD(MAXDOT)
 	    ENDIF
 	ENDIF
-	xdot(IPT)=XN
-	ydot(IPT)=YN
+	XDOTMD(IPTMD)=XN
+	YDOTMD(IPTMD)=YN
 #endif
 	RETURN
         END
 
-	SUBROUTINE DOIT_makedot(IPT,xdot,ydot)
+	SUBROUTINE DOIT_makedot(ipt,xdot,ydot)
 	DIMENSION xdot(*),ydot(*)
-	IF(IPT.LE.0)RETURN
-        CALL FGD_GPM(IPT,xdot,ydot)
+	IF(ipt.LE.0)RETURN
+        CALL FGD_GPM(ipt,xdot,ydot)
 * Not sure of the reason for the following.  (I suspect, move pen then "draw" 
 * without actually moving to create a dot, as in the "#ifdef core" above.)
 * But do not double-plot the symbol, so do this after drawing the symbol.
-	IF(IPT.EQ.1)THEN
+	IF(ipt.EQ.1)THEN
 	    xdot(2)=xdot(1)
 	    ydot(2)=ydot(1)
-	    IPT=2
+	    ipt=2
 	ENDIF
 	RETURN
 	END

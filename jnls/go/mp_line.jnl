@@ -67,8 +67,10 @@ $1 x_page*mp_mask, y_page*mp_mask
 
 set region save
 
-let/quiet mp_x = x[g=($mp_grid_variable)]
-let/quiet mp_y = y[g=($mp_grid_variable)]
+IF ($mp_grid_variable"0|*>1") THEN
+   let/quiet mp_x = x[g=($mp_grid_variable)]
+   let/quiet mp_y = y[g=($mp_grid_variable)]
+ENDIF
 
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
 set mode/last verify

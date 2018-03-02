@@ -197,7 +197,7 @@ C
 !*sh*	DY=(ytx-ytm)/(NY-1)
 	DX=(xtx-xtm)/MAX(NX-1,1)
 	DY=(ytx-ytm)/MAX(NY-1,1)
-        IPT = 0
+        IPTMD = 0
 
 	big = ABS(CMZGE)
 	lmin = -1*big
@@ -215,9 +215,9 @@ C
 	   slen = 1
 	ENDIF
 
-        IF (IPT .GT. maxdot) THEN
-           CALL doit_makedot(IPT,XDOT,YDOT)
-           IPT = 0
+        IF (IPTMD .GT. MAXDOT) THEN
+           CALL doit_makedot(IPTMD,XDOTMD,YDOTMD)
+           IPTMD = 0
         ENDIF
 
 	XX2=U(I,J)
@@ -378,7 +378,7 @@ C
            IF(VCLEN .LT. VMINLN)THEN
 	      CALL PLOT(XX1,YY1,0,0)
 	      CALL PLOT(XX1,YY1,1,0)
-              CALL MARK(99)
+              CALL MARK(DOTSYMIM)
 	      GOTO 100
            ENDIF
 C
@@ -410,7 +410,7 @@ C
 100	CONTINUE
 	IF (interrupted) goto 3333 ! *jd* 8.3.92
 
-        CALL doit_makedot(IPT,XDOT,YDOT)
+        CALL doit_makedot(IPTMD,XDOTMD,YDOTMD)
 
 
 C Go back to do modulo replications if curvilinear and /MODULO
@@ -437,7 +437,7 @@ c           IF (.NOT. units_degrees) xrange = wwxmax - wwxmin
 	ENDIF
 
 
-        IPT = 0
+        IPTMD = 0
 
 C put the vector-length scale into a PPL symbol
 	

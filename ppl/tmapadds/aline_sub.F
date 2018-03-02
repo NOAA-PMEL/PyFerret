@@ -41,6 +41,8 @@
 
 *  v5.4 *acm* 10/18/01  When plotting SYM=DOT clear buffer at end: doit_makedot
 *                       Remove VMS include statements
+* V73  3/18 *kms*  For clarity, append MD to makedot.cmn values IPT, XDOT, 
+*                  and YDOT; make MDOT (99) a makedot.cmn parameter DOTSYMIM
 
 *****************************************************
 * local variable declarations for PLTIT (for TMAP)
@@ -165,9 +167,9 @@ C
 !	ENDIF
 
 
-c          IF (imark(a_line) .eq. 99) THEN
-c             CALL doit_makedot(IPT,XDOT,YDOT)
-c             IPT = 0
+c          IF (imark(a_line) .GE. DOTSYMIM) THEN
+c             CALL doit_makedot(IPTMD,XDOTMD,YDOTMD)
+c             IPTMD = 0
 c          ENDIF
 
 	RETURN

@@ -3,6 +3,7 @@
 ! ACM 4/2005 set mode meta to save this plot for the metafile checks.
 !            and cancel mode logo, so that .plt files are comparable.
 !  2/18 *acm* keep mode logo turned off 
+! *kms* 3/18 - size qualifiers for /symbol=dot not an error in pyferret
 
 set mode meta dots.plt
 plot/symbol=dot/i=1:1000 sin(62.8*i)
@@ -10,8 +11,8 @@ plot/symbol=dot/color=red/over/i=1:1000 sin(62.8*(i+20))
 can mode meta
 
 ! test warnings
-plot/symbol=dot/thick/i=1:1000 sin(62.8*(i+10) )
-plot/symbol=dot/size=0.5/over/i=1:1000 -0.5*sin(62.8*(i+10) )
+! plot/symbol=dot/thick/i=1:1000 sin(62.8*(i+10) )
+! plot/symbol=dot/size=0.5/over/i=1:1000 -0.5*sin(62.8*(i+10) )
 
 ! Vector plots with null-size vectors
 

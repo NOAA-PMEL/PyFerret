@@ -19,19 +19,32 @@
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
-        INTEGER colornum
+        INTEGER colornum, errstrlen, TM_LENSTR
+        CHARACTER*256 errstr
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR. 
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_GQPEN: Invalid windowid'
+            errstr = 'FGD_GQPEN: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            istat = 1
+            RETURN
         ENDIF
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
-            STOP 'FGD_GQPEN: null windowobj'
+            errstr = 'FGD_GQPEN: null windowobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            istat = 1
+            RETURN
         ENDIF
         IF ( (pennum .LE. 0) .OR.
      .       (pennum .GT. maxpenobjs) ) THEN
-            STOP 'FGD_GQPEN: Invalid pennum'
+            errstr = 'FGD_GQPEN: invalid pennum'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            istat = 1
+            RETURN
         ENDIF
         IF ( penobjs(pennum, windowid) .EQ. nullobj ) THEN
             istat = 1

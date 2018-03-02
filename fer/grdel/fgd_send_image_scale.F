@@ -15,23 +15,29 @@
         INTEGER windowid, istat
         REAL*4 scl
 
-        INTEGER success, errmsglen
-        CHARACTER*2048 errmsg
+        INTEGER success, errstrlen, TM_LENSTR
+        CHARACTER*2048 errstr
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR. 
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_SEND_IMAGE_SCALE: Invalid windowid value'
+            errstr = 'FGD_SEND_IMAGE_SCALE: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
-            STOP 'FGD_SEND_IMAGE_SCALE: null windowobj'
+            errstr = 'FGD_SEND_IMAGE_SCALE: null windowobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
         CALL FGDWINSETSCALE(success, windowobjs(windowid), scl)
         IF ( success .EQ. 0 ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
 
         RETURN

@@ -7,15 +7,29 @@
         IMPLICIT NONE
         INTEGER stat, clipit
 
+        INCLUDE 'ferret.parm'
+        INCLUDE 'tmap_dims.parm'
+        INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
+
+        INTEGER errstrlen, TM_LENSTR
+        CHARACTER*256 errstr
 
 *       Sanity checks
         IF ( (activewindow .LT. 1) .OR. 
      .       (activewindow .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_GQCLIP: Invalid activewindow value'
+            errstr = 'FGD_GQCLIP: no active window'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            stat = 1
+            RETURN
         ENDIF
         IF ( windowobjs(activewindow) .EQ. nullobj ) THEN
-            STOP 'FGD_GQCLIP: null activewindow'
+            errstr = 'FGD_GQCLIP: invalid active window'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            stat = 1
+            RETURN
         ENDIF
 *       Inquire the clipping state
         IF ( cliptoview(activewindow) ) THEN

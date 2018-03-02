@@ -6,15 +6,27 @@
 
         IMPLICIT NONE
         INTEGER windowid
+        INCLUDE 'ferret.parm'
+        INCLUDE 'tmap_dims.parm'
+        INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
+
+        INTEGER errstrlen, TM_LENSTR
+        CHARACTER*256 errstr
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR. 
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_GACWK: Invalid windowid value'
+            errstr = 'FGD_GACWK: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
-            STOP 'FGD_GACWK: null windowobj'
+            errstr = 'FGD_GACWK: null windowobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
         activewindow = windowid

@@ -16,17 +16,31 @@
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
-        INTEGER k, success, errmsglen
-        CHARACTER*2048 errmsg
+        INTEGER k, success, errstrlen, TM_LENSTR
+        CHARACTER*2048 errstr
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR. 
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_GCLWK: Invalid windowid value'
+            errstr = 'FGD_GCLWK: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
-            STOP 'FGD_GCLWK: null windowobj'
+            errstr = 'FGD_GCLWK: null windowobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
+
+*       markers reference symbol and color objects defined in symbolobjs 
+*       and colorobjs, so just reset everything to invalid values
+        DO k = 1, maxmarkers
+            markersymbol(k, windowid) = 0
+            markercolor(k, windowid) = 0
+            markersize(k, windowid) = 0.0
+        ENDDO
 
 *       Delete any remaining objects associated with this window
 *       Error messages are printed just as warnings that something
@@ -35,10 +49,10 @@
             IF ( symbolobjs(k, windowid) .NE. nullobj ) THEN
                 CALL FGDSYMBOLDEL(success, symbolobjs(k, windowid))
                 IF ( success .EQ. 0 ) THEN
-                    errmsg = ' '
-                    CALL FGDERRMSG(errmsg, errmsglen)
+                    errstr = ' '
+                    CALL FGDERRMSG(errstr, errstrlen)
                     CALL SPLIT_LIST(pttmode_help, err_lun, 
-     .                              errmsg, errmsglen)
+     .                              errstr, errstrlen)
                 ENDIF
                 symbolobjs(k, windowid) = nullobj
             ENDIF
@@ -47,10 +61,10 @@
             IF ( penobjs(k, windowid) .NE. nullobj ) THEN
                 CALL FGDPENDEL(success, penobjs(k, windowid))
                 IF ( success .EQ. 0 ) THEN
-                    errmsg = ' '
-                    CALL FGDERRMSG(errmsg, errmsglen)
+                    errstr = ' '
+                    CALL FGDERRMSG(errstr, errstrlen)
                     CALL SPLIT_LIST(pttmode_help, err_lun, 
-     .                              errmsg, errmsglen)
+     .                              errstr, errstrlen)
                 ENDIF
                 penobjs(k, windowid) = nullobj
             ENDIF
@@ -59,10 +73,10 @@
             IF ( fontobjs(k, windowid) .NE. nullobj ) THEN
                 CALL FGDFONTDEL(success, fontobjs(k, windowid))
                 IF ( success .EQ. 0 ) THEN
-                    errmsg = ' '
-                    CALL FGDERRMSG(errmsg, errmsglen)
+                    errstr = ' '
+                    CALL FGDERRMSG(errstr, errstrlen)
                     CALL SPLIT_LIST(pttmode_help, err_lun, 
-     .                              errmsg, errmsglen)
+     .                              errstr, errstrlen)
                 ENDIF
                 fontobjs(k, windowid) = nullobj
             ENDIF
@@ -71,10 +85,10 @@
             IF ( brushobjs(k, windowid) .NE. nullobj ) THEN
                 CALL FGDBRUSHDEL(success, brushobjs(k, windowid))
                 IF ( success .EQ. 0 ) THEN
-                    errmsg = ' '
-                    CALL FGDERRMSG(errmsg, errmsglen)
+                    errstr = ' '
+                    CALL FGDERRMSG(errstr, errstrlen)
                     CALL SPLIT_LIST(pttmode_help, err_lun, 
-     .                              errmsg, errmsglen)
+     .                              errstr, errstrlen)
                 ENDIF
                 brushobjs(k, windowid) = nullobj
             ENDIF
@@ -83,10 +97,10 @@
             IF ( colorobjs(k, windowid) .NE. nullobj ) THEN
                 CALL FGDCOLORDEL(success, colorobjs(k, windowid))
                 IF ( success .EQ. 0 ) THEN
-                    errmsg = ' '
-                    CALL FGDERRMSG(errmsg, errmsglen)
+                    errstr = ' '
+                    CALL FGDERRMSG(errstr, errstrlen)
                     CALL SPLIT_LIST(pttmode_help, err_lun, 
-     .                              errmsg, errmsglen)
+     .                              errstr, errstrlen)
                 ENDIF
                 colorobjs(k, windowid) = nullobj
             ENDIF
@@ -99,9 +113,9 @@
 *       Delete the window
         CALL FGDWINDELETE(success, windowobjs(windowid))
         IF ( success .EQ. 0 ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
         windowobjs(windowid) = nullobj
 

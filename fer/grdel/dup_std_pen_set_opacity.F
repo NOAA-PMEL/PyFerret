@@ -35,9 +35,11 @@
 
 *  For the active window, uses the RGB and thickness part of the given 
 *  standard pen and the given opacity fraction to create a new temporary 
-*  pen.  The ID of this new pen is returned in ipen.  Calls STOP if any 
-*  problems arise.
+*  pen.  The ID of this new pen is returned in ipen.  Prints an error
+*  message if any problems arise.
 
+        IMPLICIT NONE
+        INCLUDE 'ferret.parm'
         INCLUDE 'tmap_dims.parm'
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
@@ -47,22 +49,37 @@
         REAL*4 opacity_frac
 
 * local argument declarations:
-        INTEGER ncolors, icolor, ier
+        INTEGER ncolors, icolor, ier, errstrlen, TM_LENSTR
         REAL*4 dfltthick, redfrac, grnfrac, bluefrac, opaqfrac
+        CHARACTER*256 errstr
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR. 
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'DUP_STD_PEN_SET_OPACITY: Invalid windowid value'
+            errstr = 'DUP_STD_PEN_SET_OPACITY: Invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
-            STOP 'DUP_STD_PEN_SET_OPACITY: null windowobj'
+            errstr = 'DUP_STD_PEN_SET_OPACITY: null windowobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         ncolors = mode_arg(pmode_linecolors,1)
-        IF ( (ipen .LT. 1) .OR. (ipen .GT. 3*ncolors) )
-     .     STOP 'Invalid ipen passed to DUP_STD_PEN_SET_OPACITY'
-        IF ( (opacity_frac .LT. 0.0) .OR. (opacity_frac .GT. 1.0) )
-     .     STOP 'Invalid opacity_frac passed to DUP_STD_PEN_SET_OPACITY'
+        IF ( (ipen .LT. 1) .OR. (ipen .GT. 3*ncolors) ) THEN
+            errstr = 'DUP_STD_PEN_SET_OPACITY: invalid ipen'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
+        ENDIF
+        IF ( (opacity_frac .LT. 0.0) .OR. (opacity_frac .GT. 1.0) ) THEN
+            errstr = 'DUP_STD_PEN_SET_OPACITY: Invalid opacity_frac'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
+        ENDIF
 
 *       Get the color and thickness of the given standard pen
         IF ( ipen .LE. ncolors ) THEN
@@ -79,8 +96,12 @@
 *       Get the RGB for the color of the pen
         CALL FGD_GQCR(windowid, icolor, ier, 
      .                redfrac, grnfrac, bluefrac, opaqfrac)
-        IF ( ier .NE. 0 )
-     .     STOP 'Invalid icolor from ipen in DUP_STD_PEN_SET_OPACITY'
+        IF ( ier .NE. 0 ) THEN
+            errstr = 'DUP_STD_PEN_SET_OPACITY: invalid icolor from ipen'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
+        ENDIF
 
 *       Create a new temporary color with the new opacity
         opaqfrac = opacity_frac

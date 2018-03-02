@@ -12,14 +12,27 @@
         INTEGER windowid
         REAL*4 linewidth
 
+        INCLUDE 'ferret.parm'
+        INCLUDE 'tmap_dims.parm'
+        INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
+
+
+        INTEGER errstrlen, TM_LENSTR
+        CHARACTER*256 errstr
 
         IF ( (windowid .LT. 1) .OR.
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_SET_OUTLINE_WIDTH: Invalid windowid value'
+            errstr = 'FGD_SET_OUTLINE_WIDTH: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( linewidth .LT. 0.0 ) THEN
-            STOP 'FGD_SET_OUTLINE_WIDTH: Invalid linewidth value'
+            errstr = 'FGD_SET_OUTLINE_WIDTH: invalid linewidth'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
 *       Record the outline width for this window

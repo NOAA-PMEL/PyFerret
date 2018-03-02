@@ -15,6 +15,8 @@
         PARAMETER (totmaxpenobjs = maxwindowobjs * maxpenobjs)
         INTEGER totmaxsymbolobjs
         PARAMETER (totmaxsymbolobjs = maxwindowobjs * maxsymbolobjs)
+        INTEGER totmaxmarkers
+        PARAMETER (totmaxmarkers = maxwindowobjs * maxmarkers)
 
 * Window objects (bindings to a window)
         DATA windowobjs / maxwindowobjs * nullobj /
@@ -34,16 +36,21 @@
 * Symbol objects for each window
         DATA symbolobjs / totmaxsymbolobjs * nullobj /
 
+* Marker information for each window
+        DATA markersymbol / totmaxmarkers * 0 /
+        DATA markercolor / totmaxmarkers * 0 /
+        DATA markersize / totmaxmarkers * 0.0 /
+
 * Initially no active window
         DATA activewindow / 0 /
 
 * Initially the implicit identity transform is active
         DATA activetransform / 0 /
 
-* Initially no active brush, pen, symbol
+* Initially no active brush, pen, marker
         DATA activebrush / 0 /
         DATA activepen / 0 /
-        DATA activesymbol / 0 /
+        DATA activemarker / 0 /
 
 * The brush used if no brush is active - initialize to solid black
         DATA lastbrushcolor / 2 /
@@ -64,7 +71,7 @@
         DATA windowdpix / maxwindowobjs * 0.0 /
         DATA windowdpiy / maxwindowobjs * 0.0 /
 
-* Scaling factor for line widths and symbol sizes
+* Scaling factor for line widths and marker sizes
         DATA thickfactor / maxwindowobjs * dflt_thicken /
 
 * Width of outlines for rectangles and other polygons

@@ -1,6 +1,7 @@
 ! new PLOT/DASH and PLOT/SYMBOL=DOT  qualifiers
 ! *acm* 5/01
 ! *acm* 8/02 Remove calls to SYMBOL=DOT until postscript issues are resolved.
+! *kms* 3/18 - size qualifiers for /symbol=dot not an error in pyferret
 
 plot/dash/i=1:1000 sin(62.8*i)
 plot/over/dash=(0.4,0.1,0.4,0.1)/color=red/thick/i=1:1000 sin(62.8*(i+10) )

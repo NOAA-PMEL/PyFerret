@@ -18,15 +18,21 @@
         INCLUDE 'fgrdel.cmn'
 
 *       Local variables
-        INTEGER success, errmsglen
-        CHARACTER*2048 errmsg
+        INTEGER success, errstrlen, TM_LENSTR
+        CHARACTER*2048 errstr
 
         IF ( (windowid .LT. 1) .OR.
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_SET_THICK_FACTOR: Invalid windowid value'
+            errstr = 'FGD_SET_THICK_FACTOR: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( widthfactor .LE. 0.0 ) THEN
-            STOP 'FGD_SET_THICK_FACTOR: Invalid widthfactor value'
+            errstr = 'FGD_SET_THICK_FACTOR: Invalid widthfactor value'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
 *       This may be called to prior to window creation
@@ -36,10 +42,11 @@
      .                    windowobjs(windowid), widthfactor)
             IF ( success .EQ. 0 ) THEN
 *               Error - output error message
-                errmsg = ' '
-                CALL FGDERRMSG(errmsg, errmsglen)
+                errstr = ' '
+                CALL FGDERRMSG(errstr, errstrlen)
                 CALL SPLIT_LIST(pttmode_help, 
-     .                          err_lun, errmsg, errmsglen)
+     .                          err_lun, errstr, errstrlen)
+                RETURN
             ENDIF
         ENDIF
 

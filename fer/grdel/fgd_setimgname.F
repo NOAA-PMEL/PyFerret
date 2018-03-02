@@ -22,9 +22,9 @@
 
         INTEGER TM_LENSTR
 
-        INTEGER imgnamelen, fmtnamelen, success, errmsglen
+        INTEGER imgnamelen, fmtnamelen, success, errstrlen
         CHARACTER*8 fmtname
-        CHARACTER*2048 errmsg
+        CHARACTER*2048 errstr
 
 *       This could be called before creating a window
         namesent = .FALSE.
@@ -42,9 +42,9 @@
         CALL FGDWINIMGNAME(success, windowobjs(activewindow),
      .                     imgname, imgnamelen, fmtname, fmtnamelen)
         IF ( success .EQ. 0 ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
         namesent = .TRUE.
 

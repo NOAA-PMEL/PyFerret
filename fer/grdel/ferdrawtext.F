@@ -34,8 +34,8 @@ C  under
 
         INTEGER TM_LENSTR
 
-        CHARACTER*256 errmsg
-        INTEGER errmsglen
+        CHARACTER*2048 errstr
+        INTEGER errstrlen
         INTEGER mywindowid
         REAL*8 mywindow
         INTEGER fontnamelen
@@ -48,11 +48,19 @@ C       Draw to the currently active window -
 C       Some sanity checks on the window ID and window
         IF ( (mywindowid .LT. 1) .OR. 
      .       (mywindowid .GT. MAXWINDOWOBJS) ) THEN
-            STOP 'FERDRAWTEXT: not an valid window ID'
+            errstr = 'FERDRAWTEXT: no active window'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            success = 0
+            RETURN
         ENDIF
         mywindow = WINDOWOBJS(mywindowid)
         IF ( mywindow .EQ. NULLOBJ ) THEN
-            STOP 'FERDRAWTEXT: not a valid window'
+            errstr = 'FERDRAWTEXT: invalid active window'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            success = 0
+            RETURN
         ENDIF
 
 C       Create the font to use for the string -
@@ -60,9 +68,9 @@ C       Create the font to use for the string -
         CALL FGDFONT(myfont, mywindow, fontname, fontnamelen, 
      .               fontsize, italic, bold, under)
         IF ( myfont .EQ. NULLOBJ ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
             success = 0
             RETURN
         ENDIF
@@ -74,9 +82,9 @@ C       e.g., colorobjs(2,activewindow)
         CALL FGDCOLOR(mycolor, mywindow, 
      .                redfrac, greenfrac, bluefrac, opaqfrac)
         IF ( mycolor .EQ. NULLOBJ ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
             CALL FGDFONTDEL(success, myfont)
             success = 0
             RETURN
@@ -87,9 +95,9 @@ C       Draw the text
         CALL FGDDRAWTEXT(success, mywindow, text, textlen, 
      .                   startx, starty, myfont, mycolor, rotate)
         IF ( success .EQ. 0 ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
             CALL FGDCOLORDEL(success, myfont)
             CALL FGDFONTDEL(success, myfont)
             success = 0

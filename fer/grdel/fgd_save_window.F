@@ -22,26 +22,35 @@
         INTEGER TM_LENSTR
 
 *       Local variables
-        INTEGER fnamelen, fmtlen, transpbkg, success, errmsglen
+        INTEGER fnamelen, fmtlen, transpbkg, success, errstrlen
         REAL*4 xinches, yinches
         INTEGER xpixels, ypixels
         CHARACTER*8 fformat
-        CHARACTER*2048 errmsg
+        CHARACTER*2048 errstr
         REAL*8 memory(2)
         INTEGER firststr, numstrs
 
 *       Sanity checks
         IF ( (activewindow .LT. 1) .OR. 
      .       (activewindow .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_SAVE_WINDOW: Invalid activewindow value'
+            errstr = 'FGD_SAVE_WINDOW: no active window'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( windowobjs(activewindow) .EQ. nullobj ) THEN
-            STOP 'FGD_SAVE_WINDOW: null windowobj'
+            errstr = 'FGD_SAVE_WINDOW: invalid active window'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 *       Get the length of the filename
         fnamelen = TM_LENSTR(filename)
         IF ( fnamelen .LE. 0 ) THEN
-            STOP 'FGD_SAVE_WINDOW: empty filename'
+            errstr = 'FGD_SAVE_WINDOW: blank filename'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 *       Let it guess the format from the filename extension
         fformat = ' '
@@ -67,9 +76,9 @@
      .                  xinches, yinches, xpixels, ypixels,
      .                  memory, firststr, numstrs)
         IF ( success .EQ. 0 ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
 
         RETURN

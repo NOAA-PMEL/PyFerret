@@ -18,27 +18,39 @@
         INCLUDE 'fgrdel.cmn'
 
         REAL*4 newwidth, newheight
-        INTEGER success, errmsglen
-        CHARACTER*2048 errmsg
+        INTEGER success, errstrlen, TM_LENSTR
+        CHARACTER*2048 errstr
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR. 
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_GSWKVP: Invalid windowid value'
+            errstr = 'FGD_GSWKVP: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
-            STOP 'FGD_GSWKVP: null windowobj'
+            errstr = 'FGD_GSWKVP: null windowobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
 *       Compute the window width and height in inches
 *       Assume a half inch minimum for the width and height
         newwidth = (xmax - xmin) * (1000.0 / 25.4)
         IF ( newwidth .LE. 0.5 ) THEN
-            STOP 'FGD_GSWKVP: invalid width'
+            errstr = 'FGD_GSWKVP: invalid width'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         newheight = (ymax - ymin) * (1000.0 / 25.4)
         IF ( newheight .LE. 0.5 ) THEN
-            STOP 'FGD_GSWKVP: invalid height'
+            errstr = 'FGD_GSWKVP: invalid height'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         windowwidth(windowid) = newwidth
         windowheight(windowid) = newheight
@@ -49,9 +61,9 @@
         CALL FGDWINSETSIZE(success, windowobjs(windowid),
      .                     newwidth, newheight)
         IF ( success .EQ. 0 ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
 
         RETURN

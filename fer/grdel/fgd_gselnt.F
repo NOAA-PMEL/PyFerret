@@ -14,20 +14,29 @@
 
         REAL*4 lftfrac, rgtfrac, btmfrac, topfrac,
      .         lftcoord, rgtcoord, btmcoord, topcoord
-        INTEGER clipit, success, errmsglen
-        CHARACTER*2048 errmsg
+        INTEGER clipit, success, errstrlen, TM_LENSTR
+        CHARACTER*2048 errstr
 
 *       Sanity checks - transform 0 is an implicit identity transform
         IF ( (transnum .LT. 0) .OR.
      .       (transnum .GT. maxtransforms) ) THEN
-            STOP 'FGD_GSELNT: Invalid transnum value'
+            errstr = 'FGD_GSELNT: invalid transnum value'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( (activewindow .LT. 1) .OR.
      .       (activewindow .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_GSELNT: No active window'
+            errstr = 'FGD_GSELNT: no active window'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( windowobjs(activewindow) .EQ. nullobj ) THEN
-            STOP 'FGD_GSELNT: null active windowobj'
+            errstr = 'FGD_GSELNT: invalid active window'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
 *       Set this transform number to be the active one
@@ -51,9 +60,9 @@
      .                    lftfrac, btmfrac, rgtfrac, topfrac,
      .                    clipit)
         IF ( success .EQ. 0 ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
         somethingdrawn = .FALSE.
 

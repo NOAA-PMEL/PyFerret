@@ -72,6 +72,7 @@
         INCLUDE 'errmsg.parm'
         INCLUDE 'xcontext.cmn'
         INCLUDE 'xplot_state.cmn'
+        INCLUDE 'xprog_state.cmn'
         INCLUDE 'xvariables.cmn'
         INCLUDE 'fgrdel.cmn'
 
@@ -92,10 +93,18 @@
 *       Sanity checks
   110   IF ( (windowid .LT. 1) .OR. 
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'SAVE_FRAME: Invalid windowid value'
+            errstr = 'SAVE_FRAME: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            sts = FERR_INVALID_COMMAND
+            RETURN
         ENDIF
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
-            STOP 'SAVE_FRAME: null windowobj'
+            errstr = 'SAVE_FRAME: null windowobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            sts = FERR_INVALID_COMMAND
+            RETURN
         ENDIF
 
 *       Get the annotation strings to add at the top

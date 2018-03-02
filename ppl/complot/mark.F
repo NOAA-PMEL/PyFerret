@@ -81,9 +81,13 @@ C
      *20,21,13,12,0,9,45,0,33,41,42,34,33,14,44,10,0,9,41,0,
      *42,12,46,0,0,0,0,0,0,0/
 C
-C     CHECK THE DATA MARK CODE.  For PLOT/DOT, call makedot to call POLYMARK
+C     CHECK THE DATA MARK CODE.  
+C     For PLOT/SYMBOL=<name>, call makedot to call POLYMARK
 C
-      IF (IMARK .EQ. 99) CALL makedot
+      IF (IMARK .GT. 100) THEN
+C         IMARK 100 plus the named symbol number
+          CALL makedot(IMARK - 100)
+      ENDIF
 
       IF(IMARK .LT. 1 .OR. IMARK .GT. 88)RETURN
 C

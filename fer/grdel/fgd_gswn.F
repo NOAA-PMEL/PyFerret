@@ -8,20 +8,39 @@
         INTEGER transnum
         REAL*4 xmin, xmax, ymin, ymax
 
+        INCLUDE 'ferret.parm'
+        INCLUDE 'tmap_dims.parm'
+        INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
+
+        INTEGER errstrlen, TM_LENSTR
+        CHARACTER*256 errstr
 
 *       Sanity checks - transform 0 is implicit identity
         IF ( (transnum .LT. 1) .OR.
      .       (transnum .GT. maxtransforms) ) THEN
-            STOP 'FGD_GSWN: Invalid transnum value'
+            errstr = 'FGD_GSWN: invalid transnum'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( (xmax - xmin) .LE. 0.0 ) THEN
-            WRITE(*,*) 'FGD_GSWN: xmin = ', xmin, ', xmax = ', xmax
-            STOP 'FGD_GSWN: invalid xmin, xmax values'
+            errstr = 'FGD_GSWN: invalid xmin, xmax values'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            WRITE(errstr,*) 'FGD_GSWN: xmin = ', xmin, ', xmax = ', xmax
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( (ymax - ymin) .LE. 0.0 ) THEN
-            WRITE(*,*) 'FGD_GSWN: ymin = ', ymin, ', ymax = ', ymax
-            STOP 'FGD_GSWN: invalid ymin, ymax values'
+            errstr = 'FGD_GSWN: invalid ymin, ymax values'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            WRITE(errstr,*) 'FGD_GSWN: ymin = ', ymin, ', ymax = ', ymax
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
         viewleftcoord(transnum) = xmin

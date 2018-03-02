@@ -15,9 +15,11 @@
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
-        INTEGER k, success, errmsglen, stylen, cstylen, jstylen
+        INTEGER TM_LENSTR
+
+        INTEGER k, success, errstrlen, stylen, cstylen, jstylen
         CHARACTER*64 style, capstyle, joinstyle
-        CHARACTER*2048 errmsg
+        CHARACTER*2048 errstr
         REAL*8 brushcolorobj, tempbrush, fillbrush, outlinepen
         REAL*4 left, bottom, right, top, linewidth
         LOGICAL rectdrawn;
@@ -25,10 +27,16 @@
 *       Sanity checks
         IF ( (activewindow .LT. 1) .OR.
      .       (activewindow .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_GFA: No active window'
+            errstr = 'FGD_GFA: no active window'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( windowobjs(activewindow) .EQ. nullobj ) THEN
-            STOP 'FGD_GFA: null active windowobj'
+            errstr = 'FGD_GFA: invalid active window'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
         IF ( (activebrush .GE. 1) .AND.
@@ -36,36 +44,51 @@
 *           Use the predefined brush
             fillbrush = brushobjs(activebrush, activewindow)
             IF ( fillbrush .EQ. nullobj ) THEN
-                STOP 'FGD_GFA: null activebrush'
+                errstr = 'FGD_GFA: invalid active brush'
+                errstrlen = TM_LENSTR(errstr)
+                CALL SPLIT_LIST(pttmode_help,err_lun,errstr,errstrlen)
+                RETURN
             ENDIF
 *           Get the color object used by this brush in case we need it
             k = brushcolor(activebrush, activewindow)
             IF ( (k .LT. 1) .OR. (k .GT. maxcolorobjs) ) THEN
-                STOP 'FGD_GFA: invalid brushcolor for active brush'
+                errstr = 'FGD_GFA: invalid brushcolor for active brush'
+                errstrlen = TM_LENSTR(errstr)
+                CALL SPLIT_LIST(pttmode_help,err_lun,errstr,errstrlen)
+                RETURN
             ENDIF
             brushcolorobj = colorobjs(k,activewindow)
             IF ( brushcolorobj .EQ. nullobj ) THEN
-                STOP 'FGD_GFA: null brushcolor for active brush'
+                errstr = 'FGD_GFA: null brushcolor for active brush'
+                errstrlen = TM_LENSTR(errstr)
+                CALL SPLIT_LIST(pttmode_help,err_lun,errstr,errstrlen)
+                RETURN
             ENDIF
             tempbrush = nullobj
         ELSE
 *           Create a temporary brush to use
             IF ( (lastbrushcolor .LT. 1) .OR.
      .           (lastbrushcolor .GT. maxcolorobjs) ) THEN
-                STOP 'FGD_GFA: invalid lastbrushcolor'
+                errstr = 'FGD_GFA: invalid lastbrushcolor'
+                errstrlen = TM_LENSTR(errstr)
+                CALL SPLIT_LIST(pttmode_help,err_lun,errstr,errstrlen)
+                RETURN
             ENDIF
             brushcolorobj = colorobjs(lastbrushcolor, activewindow)
             IF ( brushcolorobj .EQ. nullobj ) THEN
-                STOP 'FGD_GFA: null lastbrushcolor'
+                errstr = 'FGD_GFA: null lastbrushcolor'
+                errstrlen = TM_LENSTR(errstr)
+                CALL SPLIT_LIST(pttmode_help,err_lun,errstr,errstrlen)
+                RETURN
             ENDIF
             CALL FGDBRUSH(tempbrush, windowobjs(activewindow),
      .                    brushcolorobj, lastbrushstyle, lastbstylen)
             IF ( tempbrush .EQ. nullobj ) THEN
-                errmsg = ' '
-                CALL FGDERRMSG(errmsg, errmsglen)
+                errstr = ' '
+                CALL FGDERRMSG(errstr, errstrlen)
                 CALL SPLIT_LIST(pttmode_help, err_lun,
-     .                          errmsg, errmsglen)
-                STOP 'FGD_GFA: null tempbrush'
+     .                          errstr, errstrlen)
+                RETURN
             ENDIF
             fillbrush = tempbrush
         ENDIF
@@ -121,9 +144,9 @@
      .                          ptsx, ptsy, npts, fillbrush, outlinepen)
         ENDIF
         IF ( success .EQ. 0 ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
         somethingdrawn = .TRUE.
 
@@ -131,10 +154,10 @@
         IF ( outlinepen .NE. nullobj ) THEN
             CALL FGDPENDEL(success, outlinepen)
             IF ( success .EQ. 0 ) THEN
-                errmsg = ' '
-                CALL FGDERRMSG(errmsg, errmsglen)
+                errstr = ' '
+                CALL FGDERRMSG(errstr, errstrlen)
                 CALL SPLIT_LIST(pttmode_help, err_lun,
-     .                          errmsg, errmsglen)
+     .                          errstr, errstrlen)
             ENDIF
         ENDIF
 
@@ -142,10 +165,10 @@
         IF ( tempbrush .NE. nullobj ) THEN
             CALL FGDBRUSHDEL(success, tempbrush)
             IF ( success .EQ. 0 ) THEN
-                errmsg = ' '
-                CALL FGDERRMSG(errmsg, errmsglen)
+                errstr = ' '
+                CALL FGDERRMSG(errstr, errstrlen)
                 CALL SPLIT_LIST(pttmode_help, err_lun,
-     .                          errmsg, errmsglen)
+     .                          errstr, errstrlen)
             ENDIF
         ENDIF
 

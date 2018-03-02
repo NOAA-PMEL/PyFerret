@@ -9,7 +9,13 @@
         IMPLICIT NONE
         INTEGER style
 
+        INCLUDE 'ferret.parm'
+        INCLUDE 'tmap_dims.parm'
+        INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
+
+        INTEGER errstrlen, TM_LENSTR
+        CHARACTER*256 errstr
 
         IF ( style .EQ. 1 ) THEN
 *           Solid brush
@@ -20,7 +26,9 @@
             lastbrushstyle = 'diagcross'
             lastbstylen = 9
         ELSE
-            STOP 'FGD_GSFAIS: Invalid style'
+            errstr = 'FGD_GSFAIS: invalid style'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
         activebrush = 0
 

@@ -7,17 +7,13 @@
 * are in units of points (1/72 inches); possibly further 
 * scaled by the line width scaling factor.
 *
-* The symbol type character changed from a integer value 
-* to a string (name for the symbol) to allow custom types.
-*
 
-        SUBROUTINE FGD_GSPMR(windowid, symnum, 
-     .                       symname, symsize, colorindex)
+        SUBROUTINE FGD_GSPMR(windowid, marknum,
+     .                       symnum, symsize, colorindex)
 
         IMPLICIT NONE
-        INTEGER windowid, symnum, colorindex
+        INTEGER windowid, marknum, symnum, colorindex
         REAL*4 symsize
-        CHARACTER*(*) symname
 
         INCLUDE 'ferret.parm'
         INCLUDE 'tmap_dims.parm'
@@ -26,62 +22,67 @@
 
         INTEGER TM_LENSTR
 
-        INTEGER colornum, snlen, success, errmsglen
-        CHARACTER*2048 errmsg
+        INTEGER colornum, success, errstrlen
+        CHARACTER*2048 errstr
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR.
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_GSPMR: Invalid windowid'
+            errstr = 'FGD_GSPMR: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
-            STOP 'FGD_GSPMR: null windowobj'
+            errstr = 'FGD_GSPMR: null windowobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
+        ENDIF
+        IF ( (marknum .LT. 1) .OR.
+     .       (marknum .GT. maxmarkers) ) THEN
+            errstr = 'FGD_GSPMR: invalid marknum'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( (symnum .LT. 1) .OR.
      .       (symnum .GT. maxsymbolobjs) ) THEN
-            STOP 'FGD_GSPMR: Invalid symnum'
+            errstr = 'FGD_GSPMR: invalid symnum'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
-        IF ( (colorindex .LT. 0) .OR.
-     .       (colorindex .GE. maxcolorobjs) ) THEN
-            STOP 'FGD_GSPMR: Invalid colorindex'
+        IF ( symbolobjs(symnum, windowid) .EQ. nullobj ) THEN
+            errstr = 'FGD_GSPMR: null symbolobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
-
         colornum = colorindex + 1
+        IF ( (colornum .LT. 1) .OR.
+     .       (colornum .GT. maxcolorobjs) ) THEN
+            errstr = 'FGD_GSPMR: invalid colorindex'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
+        ENDIF
         IF ( colorobjs(colornum, windowid) .EQ. nullobj ) THEN
-            STOP 'FGD_GSPMR: null colorobj'
+            errstr = 'FGD_GSPMR: null colorobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
-
-*       If a symbol object already exists, delete it
-        IF ( symbolobjs(symnum, windowid) .NE. nullobj ) THEN
-            CALL FGDSYMBOLDEL(success, symbolobjs(symnum, windowid))
-            IF ( success .EQ. 0 ) THEN
-                errmsg = ' '
-                CALL FGDERRMSG(errmsg, errmsglen)
-                CALL SPLIT_LIST(pttmode_help, err_lun,
-     .                          errmsg, errmsglen)
-            ENDIF
-            symbolobjs(symnum, windowid) = nullobj
-        ENDIF
-
-        snlen = TM_LENSTR(symname)
-        IF ( snlen .LE. 0 ) THEN
-            errmsg = 'No symbol name given'
-            errmsglen = 20
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+        IF ( symsize .LE. 0.0 ) THEN
+            errstr = 'FGD_GSPMR: invalid symsize'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
             RETURN
         ENDIF
 
-*       Create the symbol object
-        CALL FGDSYMBOL(symbolobjs(symnum, windowid), 
-     .                 windowobjs(windowid), symname, snlen)
-        IF ( symbolobjs(symnum, windowid) .EQ. nullobj ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
-        ENDIF
-
-        symbolcolor(symnum, windowid) = colornum
-        symbolsize(symnum, windowid) = symsize
+        markersymbol(marknum, windowid) = symnum
+        markercolor(marknum, windowid) = colornum
+        markersize(marknum, windowid) = symsize
 
         RETURN
         END

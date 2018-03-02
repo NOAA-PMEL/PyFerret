@@ -14,29 +14,44 @@
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
-        INTEGER colornum, success, errmsglen, bstylen
-        CHARACTER*2048 errmsg
+        INTEGER colornum, success, errstrlen, bstylen, TM_LENSTR
+        CHARACTER*2048 errstr
         CHARACTER*64 brushstyle
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR. 
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_GSFAR: Invalid windowid'
+            errstr = 'FGD_GSFAR: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
-            STOP 'FGD_GSFAR: null windowobj'
+            errstr = 'FGD_GSFAR: null windowobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( (brushnum .LT. 1) .OR.
      .       (brushnum .GT. maxbrushobjs) ) THEN
-            STOP 'FGD_GSFAR: Invalid brushnum'
+            errstr = 'FGD_GSFAR: invalid brushnum'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( (colorndx .LT. 0) .OR.
      .       (colorndx .GE. maxcolorobjs) ) THEN
-            STOP 'FGD_GSFAR: Invalid colorndx'
+            errstr = 'FGD_GSFAR: invalid colorndx'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         colornum = colorndx + 1
         IF ( colorobjs(colornum, windowid) .EQ. nullobj ) THEN
-            STOP 'FGD_GSFAR: null colorobj'
+            errstr = 'FGD_GSFAR: null colorobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
         IF ( style .EQ. 1 ) THEN
@@ -64,21 +79,21 @@
                 brushstyle = "diagcross"
                 bstylen = 9
             ELSE
-                STOP 'FGD_GSFAR: Invalid hstyle'
+                errstr = 'FGD_GSFAR: invalid hstyle'
+                errstrlen = TM_LENSTR(errstr)
+                CALL SPLIT_LIST(pttmode_help,err_lun,errstr,errstrlen)
+                RETURN
             ENDIF
         ELSE
-            STOP 'FGD_GSFAR: Invalid style'
+            errstr = 'FGD_GSFAR: invalid style'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
 *       If a brush object already exists, delete it
         IF ( brushobjs(brushnum, windowid) .NE. nullobj ) THEN
             CALL FGDBRUSHDEL(success, brushobjs(brushnum, windowid))
-            IF ( success .EQ. 0 ) THEN
-                errmsg = ' '
-                CALL FGDERRMSG(errmsg, errmsglen)
-                CALL SPLIT_LIST(pttmode_help, err_lun,
-     .                          errmsg, errmsglen)
-            ENDIF
             brushobjs(brushnum, windowid) = nullobj
         ENDIF
 
@@ -89,9 +104,9 @@
      .                brushstyle, bstylen)
 
         IF ( brushobjs(brushnum, windowid) .EQ. nullobj ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
         brushcolor(brushnum, windowid) = colornum
 

@@ -78,7 +78,6 @@
      .			nthick, status, usable_colors
 	real		thickness, dotsize, frac, r_val, g_val, b_val, a_val
 
-        CHARACTER*3     marktype
 	CHARACTER*100   err_msg
 	CHARACTER*12	TM_FMT_SNGL, note
 
@@ -90,9 +89,6 @@
 	call FGD_GQLWK (zwstype,error,max_pline,max_pmark,
      .	            max_text,max_fill_area,max_pattern,max_color)
 	if (error .ne. 0) goto 1000
-
-*        marktype = 1    ! polymarker type 1=dot
-         marktype = 'dot'
 
 *	COLOR OR MONOCHROME?
 	if (max_color .le. 2) goto 100
@@ -188,7 +184,8 @@
               icolr = j + lo_color_ndx(zwsid) - 1
               index = low_index + (fktr-1) * (ncolors+1) + j
               dotsize = 6.0 + thickness
-              CALL FGD_GSPMR(zwsid, index, marktype, dotsize, icolr)
+* Named symbol 1 is always "dot"
+              CALL FGD_GSPMR(zwsid, index, 1, dotsize, icolr)
               CALL FGD_GSPLR(zwsid, index, 1, thickness, icolr)
 10	   continue
 20	continue
@@ -218,7 +215,8 @@
               icolr = j + lo_color_ndx(zwsid) - 1
               index = low_index + (fktr-1) * (ncolors+1) + j
               dotsize = 6.0 + thickness
-              CALL FGD_GSPMR(zwsid, index, marktype, dotsize, icolr)
+* Named symbol 1 is always "dot"
+              CALL FGD_GSPMR(zwsid, index, 1, dotsize, icolr)
               CALL FGD_GSPLR(zwsid, index, 1, thickness, icolr)
 30	   continue
 40	continue

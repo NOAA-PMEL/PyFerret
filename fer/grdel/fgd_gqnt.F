@@ -8,12 +8,22 @@
         INTEGER transnum, istat
         REAL*4 usercoords(4), viewfracs(4)
 
+        INCLUDE 'ferret.parm'
+        INCLUDE 'tmap_dims.parm'
+        INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
+
+        INTEGER errstrlen, TM_LENSTR
+        CHARACTER*256 errstr
 
 *       Sanity checks
         IF ( (transnum .LT. 0) .OR.
      .       (transnum .GT. maxtransforms) ) THEN
-            STOP 'FGD_GQNT: invalid transnum'
+            errstr = 'FGD_GQNT: invalid transnum'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            istat = 1
+            RETURN
         ENDIF
 
         IF ( transnum .EQ. 0 ) THEN

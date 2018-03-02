@@ -35,8 +35,13 @@
 
 *  For the active window, uses the RGB part of the given color ID and 
 *  the opacity fraction to create a new temporary color.  The ID of 
-*  this new color is returned in icolor.  Calls STOP if any problems.
+*  this new color is returned in icolor.  Prints an error message if
+*  any problems arise.
 
+        IMPLICIT NONE
+        INCLUDE 'ferret.parm'
+        INCLUDE 'tmap_dims.parm'
+        INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
 * calling argument declarations:
@@ -44,25 +49,40 @@
         REAL*4 opacity_frac
 
 * local argument declarations:
-        INTEGER ier
+        INTEGER ier, errstrlen, TM_LENSTR
         REAL*4 redfrac, grnfrac, bluefrac, opaqfrac
+        CHARACTER*256 errstr
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR. 
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'DUP_COLOR_SET_OPACITY: Invalid windowid value'
+            errstr = 'DUP_COLOR_SET_OPACITY: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
-            STOP 'DUP_COLOR_SET_OPACITY: null windowobj'
+            errstr = 'DUP_COLOR_SET_OPACITY: null windowobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
-        IF ( (opacity_frac .LT. 0.0) .OR. (opacity_frac .GT. 1.0) )
-     .     STOP 'Invalid opacity_frac passed to DUP_COLOR_SET_OPACITY'
+        IF ( (opacity_frac .LT. 0.0) .OR. (opacity_frac .GT. 1.0) ) THEN
+            errstr = 'DUP_COLOR_SET_OPACITY: invalid opacity_frac'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
+        ENDIF
 
 *       Get the color fractions for the given color
         CALL FGD_GQCR(windowid, icolor, ier, 
      .                redfrac, grnfrac, bluefrac, opaqfrac)
-        IF ( ier .NE. 0 )
-     .     STOP 'Invalid icolor passed to DUP_COLOR_SET_OPACITY'
+        IF ( ier .NE. 0 ) THEN
+            errstr = 'DUP_COLOR_SET_OPACITY: invalid icolor'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
+        ENDIF
 
 *       Create a new temporary color with the new opacity
         opaqfrac = opacity_frac

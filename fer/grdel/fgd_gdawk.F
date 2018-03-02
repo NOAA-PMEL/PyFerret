@@ -14,18 +14,18 @@
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
-        INTEGER success, errmsglen
-        CHARACTER*2048 errmsg
+        INTEGER success, errstrlen
+        CHARACTER*2048 errstr
 
 *       End the view of a valid active window
         IF ( (activewindow .GE. 1) .AND.
      .       (activewindow .LE. maxwindowobjs) ) THEN
             CALL FGDVIEWEND(success, windowobjs(activewindow))
             IF ( success .EQ. 0 ) THEN
-                errmsg = ' '
-                CALL FGDERRMSG(errmsg, errmsglen)
+                errstr = ' '
+                CALL FGDERRMSG(errstr, errstrlen)
                 CALL SPLIT_LIST(pttmode_help, err_lun,
-     .                          errmsg, errmsglen)
+     .                          errstr, errstrlen)
             ENDIF
         ENDIF
 

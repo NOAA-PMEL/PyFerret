@@ -173,7 +173,7 @@ C
 !	    YLO=XTL
 !	ENDIF
 
-        IF (imark(a_line) .eq. 99) THEN
+        IF (imark(a_line) .GT. 100) THEN
            CALL doit_makedot(IPT,XDOT,YDOT)
            IPT = 0
         ENDIF

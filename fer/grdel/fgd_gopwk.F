@@ -28,17 +28,24 @@
         INTEGER TM_LENSTR
 
         INTEGER engnamelen, wintitlelen, showit, noalpha, 
-     .          success, errmsglen, aaint, roint
-        CHARACTER*2048 errmsg
+     .          success, errstrlen, aaint, roint, namelen
+        CHARACTER*2048 errstr
+        CHARACTER*16 symname
         REAL*4 redf, greenf, bluef, opaquef
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR.
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_GOPWK: Invalid windowid value'
+            errstr = 'FGD_GOPWK: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( windowobjs(windowid) .NE. nullobj ) THEN
-            STOP 'FGD_GOPWK: non-null windowobj'
+            errstr = 'FGD_GOPWK: non-null windowobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
 *       Create the window
@@ -58,9 +65,9 @@
      .                    windowtitle, wintitlelen, showit, 
      .                    noalpha, roint)
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
             RETURN
         ENDIF
 
@@ -72,9 +79,9 @@
         CALL FGDCOLOR(colorobjs(1, windowid), windowobjs(windowid),
      .                redf, greenf, bluef, opaquef)
         IF ( colorobjs(1, windowid) .EQ. nullobj ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
 
 *       Create opaque black as the second color for this window
@@ -85,9 +92,9 @@
         CALL FGDCOLOR(colorobjs(2, windowid), windowobjs(windowid),
      .                redf, greenf, bluef, opaquef)
         IF ( colorobjs(2, windowid) .EQ. nullobj ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
 
 *       Set the antialias state
@@ -98,27 +105,65 @@
         ENDIF
         CALL FGDWINSETANTIALIAS(success, windowobjs(windowid), aaint)
         IF ( success .EQ. 0 ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
 
 *       Set the scaling factor for line widths and symbol sizes
         CALL FGDWINSETWIDTHFACTOR(success, windowobjs(windowid), 
      .                            thickfactor(windowid))
         IF ( success .EQ. 0 ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
+
+*       Create named symbol objects for this window.  The named symbol 
+*       "dot" must be defined and must be the first symbol for each 
+*       window, so give an error message there was a problem creating it.
+        symname = "dot"
+        namelen = 3
+        CALL FGDSYMBOL(symbolobjs(1, windowid), 
+     .                 windowobjs(windowid), symname, namelen)
+        IF ( symbolobjs(1, windowid) .EQ. nullobj ) THEN
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+        ENDIF
+*       All other symbols are optional, so do not give error messages
+*       if there was a problem creating them at this point.  The symbols 
+*       "dotex", "dotplus", "circle", "circex", and "circplus" are
+*       pre-defined in the engines currently used.
+        symname = "dotex"
+        namelen = 5
+        CALL FGDSYMBOL(symbolobjs(2, windowid), 
+     .                 windowobjs(windowid), symname, namelen)
+        symname = "dotplus"
+        namelen = 7
+        CALL FGDSYMBOL(symbolobjs(3, windowid), 
+     .                 windowobjs(windowid), symname, namelen)
+        symname = "circle"
+        namelen = 6
+        CALL FGDSYMBOL(symbolobjs(4, windowid), 
+     .                 windowobjs(windowid), symname, namelen)
+        symname = "circex"
+        namelen = 6
+        CALL FGDSYMBOL(symbolobjs(5, windowid), 
+     .                 windowobjs(windowid), symname, namelen)
+        symname = "circplus"
+        namelen = 8
+        CALL FGDSYMBOL(symbolobjs(6, windowid), 
+     .                 windowobjs(windowid), symname, namelen)
+*       Symbols from definition files will be added when first used.
 
 *       Set the background color
         CALL FGDWINCLEAR(success, windowobjs(windowid), 
      .                   colorobjs(1,windowid))
         IF ( success .EQ. 0 ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
 
         RETURN

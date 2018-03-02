@@ -16,24 +16,45 @@
         INTEGER windowid
         REAL*4 xmin, xmax, ymin, ymax
 
+        INCLUDE 'ferret.parm'
+        INCLUDE 'tmap_dims.parm'
+        INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
+
+        INTEGER errstrlen, TM_LENSTR
+        CHARACTER*256 errstr
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR. 
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_GSWKWN: Invalid windowid value'
+            errstr = 'FGD_GSWKWN: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( xmin .NE. 0.0 ) THEN
-            STOP 'FGD_GSWKWN: Unexpected non-zero xmin'
+            errstr = 'FGD_GSWKWN: unexpected non-zero xmin'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( ymin .NE. 0.0 ) THEN
-            STOP 'FGD_GSWKWN: Unexpected non-zero ymin'
+            errstr = 'FGD_GSWKWN: unexpected non-zero ymin'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( xmax .GT. 1.0 ) THEN
-            STOP 'FGD_GSWKWN: Unexpected xmax greater than one'
+            errstr = 'FGD_GSWKWN: unexpected xmax greater than one'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( ymax .GT. 1.0 ) THEN
-            STOP 'FGD_GSWKWN: Unexpected ymax greater than one'
+            errstr = 'FGD_GSWKWN: unexpected ymax greater than one'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
         ndcxmax(windowid) = xmax

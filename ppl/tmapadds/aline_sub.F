@@ -167,7 +167,7 @@ C
 !	ENDIF
 
 
-c          IF (imark(a_line) .eq. 99) THEN
+c          IF (imark(a_line) .GT. 100) THEN
 c             CALL doit_makedot(IPT,XDOT,YDOT)
 c             IPT = 0
 c          ENDIF

@@ -14,33 +14,54 @@
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
-        INTEGER colornum, success, errmsglen
-        CHARACTER*2048 errmsg
+        INTEGER colornum, success, errstrlen, TM_LENSTR
+        CHARACTER*2048 errstr
         INTEGER brushnum, pennum
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR. 
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_GSCR: Invalid windowid'
+            errstr = 'FGD_GSCR: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
-            STOP 'FGD_GSCR: null windowobj'
+            errstr = 'FGD_GSCR: null windowobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( (colorindex .LT. 0) .OR.
      .       (colorindex .GE. maxcolorobjs) ) THEN
-            STOP 'FGD_GSCR: Invalid colorindex'
+            errstr = 'FGD_GSCR: invalid colorindex'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( (redfrac .LT. 0.0) .OR.  (redfrac .GT. 1.0) ) THEN
-            STOP 'FGD_GSCR: Invalid redfrac'
+            errstr = 'FGD_GSCR: invalid redfrac'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( (greenfrac .LT. 0.0) .OR.  (greenfrac .GT. 1.0) ) THEN
-            STOP 'FGD_GSCR: Invalid greenfrac'
+            errstr = 'FGD_GSCR: invalid greenfrac'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( (bluefrac .LT. 0.0) .OR.  (bluefrac .GT. 1.0) ) THEN
-            STOP 'FGD_GSCR: Invalid bluefrac'
+            errstr = 'FGD_GSCR: invalid bluefrac'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( (opaquefrac .LT. 0.0) .OR.  (opaquefrac .GT. 1.0) ) THEN
-            STOP 'FGD_GSCR: Invalid opaquefrac'
+            errstr = 'FGD_GSCR: invalid opaquefrac'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
         colornum = colorindex + 1
@@ -50,10 +71,11 @@
         IF ( colorobjs(colornum, windowid) .NE. nullobj ) THEN
             CALL FGDCOLORDEL(success, colorobjs(colornum, windowid))
             IF ( success .EQ. 0 ) THEN
-                errmsg = ' '
-                CALL FGDERRMSG(errmsg, errmsglen)
+                errstr = ' '
+                CALL FGDERRMSG(errstr, errstrlen)
                 CALL SPLIT_LIST(pttmode_help, err_lun,
-     .                          errmsg, errmsglen)
+     .                          errstr, errstrlen)
+                RETURN
             ENDIF
             colorobjs(colornum, windowid) = nullobj
         ENDIF
@@ -63,9 +85,10 @@
      .                windowobjs(windowid),
      .                redfrac, greenfrac, bluefrac, opaquefrac)
         IF ( colorobjs(colornum, windowid) .EQ. nullobj ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
 *       Simplest approach for retrieving color RGBA values was 
@@ -83,10 +106,11 @@
      .                       brushobjs(brushnum, windowid),
      .                       colorobjs(colornum, windowid))
                 IF ( success .EQ. 0 ) THEN
-                    errmsg = ' '
-                    CALL FGDERRMSG(errmsg, errmsglen)
+                    errstr = ' '
+                    CALL FGDERRMSG(errstr, errstrlen)
                     CALL SPLIT_LIST(pttmode_help, err_lun,
-     .                              errmsg, errmsglen)
+     .                              errstr, errstrlen)
+                    RETURN
                 ENDIF
             ENDIF
    10   CONTINUE
@@ -99,10 +123,11 @@
      .                     penobjs(pennum, windowid),
      .                     colorobjs(colornum, windowid))
                 IF ( success .EQ. 0 ) THEN
-                    errmsg = ' '
-                    CALL FGDERRMSG(errmsg, errmsglen)
+                    errstr = ' '
+                    CALL FGDERRMSG(errstr, errstrlen)
                     CALL SPLIT_LIST(pttmode_help, err_lun,
-     .                              errmsg, errmsglen)
+     .                              errstr, errstrlen)
+                    RETURN
                 ENDIF
             ENDIF
    20   CONTINUE

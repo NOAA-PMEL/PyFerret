@@ -1,4 +1,4 @@
-      SUBROUTINE makedot
+      SUBROUTINE makedot(SYMNUM)
 
 *
 *
@@ -56,6 +56,9 @@ C      DIMENSION XMXMN(2),YMXMN(2)
 #else
       INCLUDE 'tmap_pplv11inc:tmap_PLTCOM.DAT'
 #endif
+
+      INTEGER SYMNUM
+
 C end of FERRET mod
 ******************************************************************
 C     Check the plotting mode.

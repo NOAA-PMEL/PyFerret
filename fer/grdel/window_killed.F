@@ -87,6 +87,14 @@
 *       close the specified window, ignoring errors
  20     CONTINUE
 
+*       markers reference symbol and color objects defined in symbolobjs 
+*       and colorobjs, so just reset everything to invalid values
+        DO k = 1, maxmarkers
+            markersymbol(k, windowid) = 0
+            markercolor(k, windowid) = 0
+            markersize(k, windowid) = 0.0
+        ENDDO
+
 *       Delete any remaining objects associated with this window
         DO k = 1, maxsymbolobjs
             IF ( symbolobjs(k, windowid) .NE. nullobj ) THEN

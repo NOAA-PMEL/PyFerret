@@ -20,29 +20,44 @@
         INCLUDE 'fgrdel.cmn'
 
         INTEGER colornum, stylen, cstylen, jstylen,
-     .          success, errmsglen
+     .          success, errstrlen, TM_LENSTR
         CHARACTER*64 stylename, capstyle, joinstyle
-        CHARACTER*2048 errmsg
+        CHARACTER*2048 errstr
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR.
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_GSPLR: Invalid windowid'
+            errstr = 'FGD_GSPLR: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
-            STOP 'FGD_GSPLR: null windowobj'
+            errstr = 'FGD_GSPLR: null windowobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( (pennum .LT. 1) .OR. (pennum .GT. maxpenobjs) ) THEN
-            STOP 'FGD_GSPLR: Invalid pennum'
+            errstr = 'FGD_GSPLR: invalid pennum'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( (colorindex .LT. 0) .OR.
      .       (colorindex .GE. maxcolorobjs) ) THEN
-            STOP 'FGD_GSPLR: Invalid colorindex'
+            errstr = 'FGD_GSPLR: invalid colorindex'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
         colornum = colorindex + 1
         IF ( colorobjs(colornum, windowid) .EQ. nullobj ) THEN
-            STOP 'FGD_GSPLR: null colorobj'
+            errstr = 'FGD_GSPLR: null colorobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
 *       Line type
@@ -59,7 +74,10 @@
             stylename = 'dashdot'
             stylen = 7
         ELSE
-            STOP 'FGD_GSPLR: invalid linestyle'
+            errstr = 'FGD_GSPLR: invalid linestyle'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         capstyle = 'square'
         cstylen = 6
@@ -69,12 +87,6 @@
 *       If a pen object already exists, delete it
         IF ( penobjs(pennum, windowid) .NE. nullobj ) THEN
             CALL FGDPENDEL(success, penobjs(pennum, windowid))
-            IF ( success .EQ. 0 ) THEN
-                errmsg = ' '
-                CALL FGDERRMSG(errmsg, errmsglen)
-                CALL SPLIT_LIST(pttmode_help, err_lun,
-     .                          errmsg, errmsglen)
-            ENDIF
             penobjs(pennum, windowid) = nullobj
         ENDIF
 
@@ -83,9 +95,9 @@
      .          colorobjs(colornum, windowid), linewidth, stylename,
      .          stylen, capstyle, cstylen, joinstyle, jstylen)
         IF ( penobjs(pennum, windowid) .EQ. nullobj ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
         pencolor(pennum, windowid) = colornum
 

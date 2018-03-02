@@ -97,11 +97,14 @@ c
 	SUBROUTINE DOIT_makedot(IPT,xdot,ydot)
 	DIMENSION xdot(*),ydot(*)
 	IF(IPT.LE.0)RETURN
+        CALL FGD_GPM(IPT,xdot,ydot)
+* Not sure of the reason for the following.  (I suspect, move pen then "draw" 
+* without actually moving to create a dot, as in the "#ifdef core" above.)
+* But do not double-plot the symbol, so do this after drawing the symbol.
 	IF(IPT.EQ.1)THEN
 	    xdot(2)=xdot(1)
 	    ydot(2)=ydot(1)
 	    IPT=2
 	ENDIF
-	CALL FGD_GPM(IPT,xdot,ydot)
 	RETURN
 	END

@@ -4,19 +4,19 @@
 * set value to the maximum number of each type of object for a window
 *
 
-        SUBROUTINE FGD_GQLWK(wintype, stat, maxpens, maxsyms,
+        SUBROUTINE FGD_GQLWK(wintype, stat, maxpens, maxmarks,
      .                 maxfonts, maxbrushes, maxpatterns, maxcolors)
 
         IMPLICIT NONE
-        INTEGER wintype, stat, maxpens, maxsyms, maxfonts,
+        INTEGER wintype, stat, maxpens, maxmarks, maxfonts,
      .          maxbrushes, maxpatterns, maxcolors
 
         INCLUDE 'fgrdel.cmn'
 
 *       Last pen reserved for the temporary pen
         maxpens = maxpenobjs - 1
-*       Last symbol reserved for the temporary symbol
-        maxsyms = maxsymbolobjs - 1
+*       Last marker reserved for the temporary marker
+        maxmarks = maxmarkers - 1
 *       Fonts not used at this time
         maxfonts = maxfontobjs
 *       Brushes

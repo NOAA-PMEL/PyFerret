@@ -23,8 +23,8 @@ C
 
         INTEGER TM_LENSTR
 
-        CHARACTER*256 errmsg
-        INTEGER errmsglen
+        CHARACTER*2048 errstr
+        INTEGER errstrlen
         INTEGER mywindowid
         REAL*8 mywindow
         INTEGER fontnamelen
@@ -37,11 +37,19 @@ C       probably just leave this as-is
 C       Some sanity checks on the window ID and window
         IF ( (mywindowid .LT. 1) .OR. 
      .       (mywindowid .GT. MAXWINDOWOBJS) ) THEN
-            STOP 'FERTEXTSIZE: not an valid window ID'
+            errstr = 'FERTEXTSIZE: no active window'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            success = 0
+            RETURN
         ENDIF
         mywindow = WINDOWOBJS(mywindowid)
         IF ( mywindow .EQ. NULLOBJ ) THEN
-            STOP 'FERTEXTSIZE: not a valid window'
+            errstr = 'FERTEXTSIZE: invalid active window'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            success = 0
+            RETURN
         ENDIF
 
 C       Create a font to use for the string -
@@ -51,9 +59,9 @@ C       so under is ignored at this time
         CALL FGDFONT(myfont, mywindow, fontname, fontnamelen, 
      .               fontsize, italic, bold, under)
         IF ( myfont .EQ. NULLOBJ ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
             success = 0
             RETURN
         ENDIF
@@ -64,9 +72,9 @@ C       Measure the text
         CALL FGDTEXTSIZE(success, mywindow, text, textlen, 
      .                   myfont, retwidth, retheight)
         IF ( success .EQ. 0 ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
             CALL FGDFONTDEL(success, myfont)
             success = 0
             RETURN

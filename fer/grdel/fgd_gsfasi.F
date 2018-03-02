@@ -9,7 +9,13 @@
         IMPLICIT NONE
         INTEGER hstyle
 
+        INCLUDE 'ferret.parm'
+        INCLUDE 'tmap_dims.parm'
+        INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
+
+        INTEGER errstrlen, TM_LENSTR
+        CHARACTER*256 errstr
 
         IF ( hstyle .EQ. 1 ) THEN
             lastbrushstyle = "hor"
@@ -30,7 +36,9 @@
             lastbrushstyle = "diagcross"
             lastbstylen = 9
         ELSE
-            STOP 'FGD_GSFASI: Invalid hstyle'
+            errstr = 'FGD_GSFASI: invalid hstyle'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
         activebrush = 0
 

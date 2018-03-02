@@ -24,20 +24,26 @@
         LOGICAL forceit
 
         INCLUDE 'ferret.parm'
+        INCLUDE 'tmap_dims.parm'
         INCLUDE 'errmsg.parm'
         INCLUDE 'plot_setup.parm'
+        INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
 *       Function declarations
         INTEGER TM_LENSTR
 
 *       Local variables
-        INTEGER slen, idx
-        CHARACTER*256 warnmsg
+        INTEGER slen, idx, errstrlen
+        CHARACTER*256 errstr
 
         IF ( (windowid .LT. 1) .OR.
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_SET_ENGINE: Invalid windowid value'
+            errstr = 'FGD_SET_ENGINE: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            sts = FERR_INVALID_COMMAND
+            RETURN
         ENDIF
 
 * The window will not exist at the time this is called.
@@ -71,9 +77,9 @@
 * defaultenginename .EQ. 'Cairo'), do not allow other 
 * engines to be used unless forceit is .TRUE.
         IF ( (defaultenginename .EQ. 'Cairo') .AND. .NOT. forceit ) THEN
-            warnmsg = '/QUALITY was ignored in SET WINDOW ' //
+            errstr = '/QUALITY was ignored in SET WINDOW ' //
      .          'since a no-display command-line option was given'
-            CALL WARN(warnmsg)
+            CALL WARN(errstr)
             enginename(windowid) = defaultenginename
             antialias(windowid) = .TRUE.
             sts = FERR_OK
@@ -114,9 +120,9 @@
         ENDIF
 
         IF ( slen .LE. 64 ) THEN
-            warnmsg = 'Non-standard graphics engine "'
+            errstr = 'Non-standard graphics engine "'
      .                // newname(1:slen) // '"'
-            CALL WARN(warnmsg)
+            CALL WARN(errstr)
             enginename(windowid) = newname
             antialias(windowid) = .TRUE.
             sts = FERR_OK

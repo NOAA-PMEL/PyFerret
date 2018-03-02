@@ -201,7 +201,7 @@ C     SET PLOT MODE
 	    END IF
 	    IF(ITYPE(I).EQ.3)THEN 
                CALL POINTS
-               IF (imark(i) .eq. 99) ipt = 0
+               IF (imark(i) .GT. 100) ipt = 0
             ENDIF
 	    IF(.NOT.(XLE.OR.XEQ.OR.XGE.OR.YLE.OR.YEQ.OR.YGE))THEN
 C     DO NOT CHECK POINTS FOR MISSING DATA
@@ -443,7 +443,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	    END IF
 	    IF(ITYPE(I).EQ.2.OR.ITYPE(I).EQ.5)CALL MARK(IMARK(I))
 
-          IF (imark(i) .eq. 99) THEN
+          IF (imark(i) .GT. 100) THEN
              CALL doit_makedot(IPT,XDOT,YDOT)
              IPT = 0
           ENDIF
@@ -452,7 +452,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 
 *** FINALIZE
  51	CONTINUE
-        IF (imark(i) .eq. 99) THEN
+        IF (imark(i) .GT. 100) THEN
           CALL doit_makedot(IPT,XDOT,YDOT)
           IPT = 0
         ENDIF

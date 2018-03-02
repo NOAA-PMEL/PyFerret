@@ -18,18 +18,24 @@
         INTEGER windowid
 
         INCLUDE 'ferret.parm'
-        INCLUDE 'errmsg.parm'
+        INCLUDE 'tmap_dims.parm'
+        INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
 *       Function declarations
         INTEGER TM_LENSTR
 
 *       Local variables
-        INTEGER slen, idx
+        INTEGER slen, idx, errstrlen
+        CHARACTER*256 errstr
 
         IF ( (windowid .LT. 1) .OR.
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_ENGINE_MATCH: Invalid windowid value'
+            errstr = 'FGD_ENGINE_MATCH: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            FGD_ENGINE_MATCH = .FALSE.
+            RETURN
         ENDIF
 
 * Get the actual string length of given engine name

@@ -18,8 +18,8 @@
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
-        INTEGER colornum, success, errmsglen
-        CHARACTER*2048 errmsg
+        INTEGER colornum, success, errstrlen, TM_LENSTR
+        CHARACTER*2048 errstr
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR. 
@@ -32,15 +32,18 @@
 *       Background color is always color zero which is colornum one
         colornum = 1
         IF ( colorobjs(colornum, windowid) .EQ. nullobj ) THEN
-            STOP 'FGD_GCLRWK: null color for background'
+            errstr = 'FGD_GCLRWK: invalid color for background'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
         CALL FGDWINCLEAR(success, windowobjs(windowid),
      .                   colorobjs(colornum, windowid))
         IF ( success .EQ. 0 ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
 
         RETURN

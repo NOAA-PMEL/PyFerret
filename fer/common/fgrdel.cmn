@@ -13,7 +13,8 @@
      .          maxfontobjs,
      .          maxpenobjs,
      .          maxsymbolobjs,
-     .          maxtransforms
+     .          maxtransforms,
+     .          maxmarkers
 
 * maxwindowobjs should match (or exceed)
 * max_windows in xplot_state.cmn
@@ -23,8 +24,9 @@
      .            maxbrushobjs = 320,
      .            maxfontobjs = 60,
      .            maxpenobjs = 320,
-     .            maxsymbolobjs = 320,
-     .            maxtransforms = 60)
+     .            maxsymbolobjs = 60,
+     .            maxtransforms = 60,
+     .            maxmarkers = 320)
 
 * A NULL object (zero) as a parameter.
 * Undefined objects are set to nullobj
@@ -50,7 +52,7 @@
         REAL*4 windowdpix(maxwindowobjs),
      .         windowdpiy(maxwindowobjs)
 
-* Scaling factor for line widths and symbol sizes
+* Scaling factor for line widths and marker sizes
         REAL*4 thickfactor(maxwindowobjs)
 
 * Width of outlines for rectangles and other polygons
@@ -94,13 +96,13 @@
         CHARACTER*64 lastbrushstyle
         INTEGER lastbstylen
 
-* The ID number of the "active" pen of the activewindowid window
+* The ID number of the "active" pen of the activewindow window
 * used for drawing lines.
         INTEGER activepen
 
-* The ID number of the "active" symbol of the activewindowid window
+* The ID number of the "active" marker of the activewindow window
 * used for drawing markers.
-        INTEGER activesymbol
+        INTEGER activemarker
 
 * Whether something has been drawn in the current view of the
 * active window.  Reset to .FALSE. when the view changes.
@@ -119,9 +121,10 @@
 * Color ID number used in pens (for color inquiries and updates)
         INTEGER pencolor(maxpenobjs, maxwindowobjs)
 
-* Color ID number and sizes to use to draw the symbol object
-        INTEGER symbolcolor(maxsymbolobjs, maxwindowobjs)
-        REAL*4 symbolsize(maxsymbolobjs, maxwindowobjs)
+* symbol ID, color ID, and sizes to use to draw markers
+        INTEGER markersymbol(maxmarkers, maxwindowobjs)
+        INTEGER markercolor(maxmarkers, maxwindowobjs)
+        REAL*4 markersize(maxmarkers, maxwindowobjs)
 
 * Default engine for a new window.
 * Should not change after start-up.
@@ -153,15 +156,16 @@
      .         windowobjs, colorobjs, brushobjs, fontobjs, 
      .         penobjs, symbolobjs, 
      .
-     .         colorrgba, symbolsize, windowdpix, windowdpiy, 
+     .         colorrgba, markersize, windowdpix, windowdpiy, 
      .         thickfactor, outlinewidth, windowwidth, windowheight, 
      .         ndcxmax, ndcymax, viewleftfrac, viewbottomfrac, 
      .         viewrightfrac, viewtopfrac, viewleftcoord, 
      .         viewbottomcoord, viewrightcoord, viewtopcoord, 
      .
      .         activewindow, activetransform, activebrush, 
-     .         activepen, activesymbol, lastbrushcolor,
-     .         lastbstylen, brushcolor, pencolor, symbolcolor, 
+     .         activepen, activemarker, lastbrushcolor,
+     .         lastbstylen, brushcolor, pencolor, 
+     .         markersymbol, markercolor, 
      .
      .         cliptoview, somethingdrawn, savetransparent, 
      .         antialias, rasteronly, 

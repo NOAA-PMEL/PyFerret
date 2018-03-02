@@ -20,25 +20,37 @@
         INTEGER windowid, istat, dspunit, imaxx, imaxy
         REAL*4 dmaxx, dmaxy
 
+        INTEGER TM_LENSTR
+
         REAL*4 dpix, dpiy
-        INTEGER screenwidth, screenheight, success, errmsglen
-        CHARACTER*2048 errmsg
+        INTEGER screenwidth, screenheight, success, errstrlen
+        CHARACTER*2048 errstr
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR. 
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_GQDSP: Invalid windowid value'
+            errstr = 'FGD_GQDSP: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            istat = 1
+            RETURN
         ENDIF
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
-            STOP 'FGD_GQDSP: null windowobj'
+            errstr = 'FGD_GQDSP: null windowobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            istat = 1
+            RETURN
         ENDIF
 
         CALL FGDWINSCREENINFO(success, windowobjs(windowid), 
      .                        dpix, dpiy, screenwidth, screenheight)
         IF ( success .EQ. 0 ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+            errstr = ' '
+            CALL FGDERRMSG(errstr, errstrlen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            istat = 1
+            RETURN
         ENDIF
 
 *       Save the dpix and dpiy for use elsewhere 

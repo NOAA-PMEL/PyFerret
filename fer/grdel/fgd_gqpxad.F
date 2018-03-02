@@ -15,16 +15,24 @@
         INCLUDE 'fgrdel.cmn'
 
         REAL*4 mywidth, myheight
-        INTEGER success, errmsglen
-        CHARACTER*2048 errmsg
+        INTEGER success, errstrlen, TM_LENSTR
+        CHARACTER*2048 errstr
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR.
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_GQPXAD: Invalid windowid value'
+            errstr = 'FGD_GQPXAD: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            istat = 1
+            RETURN
         ENDIF
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
-            STOP 'FGD_GQPXAD: null windowobj'
+            errstr = 'FGD_GQPXAD: null windowobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            istat = 1
+            RETURN
         ENDIF
 
         mywidth = right - left

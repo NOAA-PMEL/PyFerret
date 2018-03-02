@@ -19,19 +19,32 @@
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
-        INTEGER colornum
+        INTEGER colornum, errstrlen, TM_LENSTR
+        CHARACTER*256 errstr
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR. 
      .       (windowid .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_GQCR: Invalid windowid'
+            errstr = 'FGD_GQCR: invalid windowid'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            istat = 1
+            RETURN
         ENDIF
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
-            STOP 'FGD_GQCR: null windowobj'
+            errstr = 'FGD_GQCR: null windowobj'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            istat = 1
+            RETURN
         ENDIF
         IF ( (colorindex .LT. 0) .OR.
      .       (colorindex .GE. maxcolorobjs) ) THEN
-            STOP 'FGD_GQCR: Invalid colorindex'
+            errstr = 'FGD_GQCR: invalid colorindex'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            istat = 1
+            RETURN
         ENDIF
 
         colornum = colorindex + 1

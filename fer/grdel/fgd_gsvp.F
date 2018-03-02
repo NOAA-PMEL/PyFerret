@@ -9,15 +9,23 @@
         INTEGER transnum
         REAL*4 xmin, xmax, ymin, ymax
 
+        INCLUDE 'ferret.parm'
+        INCLUDE 'tmap_dims.parm'
+        INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
         REAL*4 EPSIL, modxmin, modxmax, modymin, modymax
         PARAMETER (EPSIL = 1.0E-4)
+        INTEGER errstrlen, TM_LENSTR
+        CHARACTER*256 errstr
 
 *       Sanity checks - transform 0 is implicit identity
         IF ( (transnum .LT. 1) .OR.
      .       (transnum .GT. maxtransforms) ) THEN
-            STOP 'FGD_GSVP: Invalid transnum value'
+            errstr = 'FGD_GSVP: invalid transnum'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
 *       Allow some tolerance for floating point error
@@ -45,14 +53,24 @@
         IF ( (0.0 .GT. modxmin) .OR.
      .       (modxmin .GE. modxmax) .OR.
      .       (modxmax .GT. 1.0) ) THEN
-            WRITE(*,*) 'FGD_GSVP: xmin = ', xmin, ', xmax = ', xmax
-            STOP 'FGD_GSVP: invalid xmin, xmax values'
+            errstr = 'FGD_GSVP: invalid xmin, xmax values'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            WRITE(errstr,*) 'FGD_GSVP: xmin = ', xmin, ', xmax = ', xmax
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
         IF ( (0.0 .GT. modymin) .OR.
      .       (modymin .GE. modymax) .OR.
      .       (modymax .GT. 1.0) ) THEN
-            WRITE(*,*) 'FGD_GSVP: ymin = ', ymin, ', ymax = ', ymax
-            STOP 'FGD_GSVP: invalid ymin, ymax values'
+            errstr = 'FGD_GSVP: invalid ymin, ymax values'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            WRITE(errstr,*) 'FGD_GSVP: ymin = ', ymin, ', ymax = ', ymax
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
         ENDIF
 
         viewleftfrac(transnum) = modxmin

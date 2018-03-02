@@ -70,12 +70,8 @@
         integer zwsid, zwstype
         integer j, fktr, index
         real    thickness, dotsize, grey, frac
-        CHARACTER*3 marktype
 
 *******************************************************************************
-
-*        marktype = 1    ! polymarker type 1=dot
-        marktype = 'dot'
 
 *       COLOR WORKSTATIONS:
 *       pre-defined colors
@@ -108,7 +104,8 @@
            do 10 fktr = 1,3     ! thickness
               index = (fktr-1)*num_line_colors+j
               dotsize = 6.0 + fktr
-              CALL FGD_GSPMR(zwsid, index, marktype, dotsize, j)
+* Named symbol 1 is always "dot"
+              CALL FGD_GSPMR(zwsid, index, 1, dotsize, j)
               thickness = fktr
               CALL FGD_GSPLR(zwsid, index, 1, thickness, j)
 10         continue

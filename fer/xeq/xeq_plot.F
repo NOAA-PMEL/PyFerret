@@ -120,6 +120,8 @@
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * V71  *acm* 2/17  More on ticket 2231. Initialize flag use_keys.
 * PyFr *kms*  4/17 Remove SAVE_FRAME for HDF format since no longer supported
+* PyFr *kms*  2/18 Add /SYMBOL=<name> for PyFerret named markers; 
+*                  remove dot_sym restrictions as this is now just another named marker
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -154,11 +156,12 @@
      .			is_logh, is_logv, nokey, no_data, no_range,
      .			do_key, spectrum, addgaps, along
 	INTEGER		TM_LENSTR1, TM_LENSTR, STR_UPCASE, STR_SAME,
+     .                  FGD_GET_SYMBOLNUM,
      .                  symbol, icolor, ipen, icolor1, ipen1, status,
      .			loc, limit, slen, thick, step_inc,
      .			ax1_work, ax2_work,
      .			do_dash, s1, s2, it_start(4), it_end(4),
-     .			nparm, dot_sym, num_it, i, iax(4), i1,
+     .			nparm, num_it, i, iax(4), i1,
      .                  loch, locv, nvs, skipsym
 	REAL		val, sym_size, dashstyle(4), only_val
         REAL*4          thickness, opacity
@@ -166,9 +169,6 @@
 	
 	CHARACTER	TM_FMT*12, TM_INQ_PATH*2048, sfile*2048
 	INTEGER ncolors
-
-* internal parameter declarations
-	PARAMETER (dot_sym=99)
 
 * set up the graphics environment and get the data
 	CALL START_PPLUS(.FALSE.)
@@ -237,26 +237,39 @@ CC       => Set values here instead.
 * ... PLOT/SYMBOL=n
 	loc = qual_given( slash_plot_symb )
 	IF ( loc .GT. 0  ) THEN
-
-*  Is it SYMBOL=DOT?
-	   CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                        buff, status )
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   IF (buff .EQ. 'DOT') THEN
-              symbol = dot_sym
+*          /SYMBOL and /SYMBOL=<int> are PlotPlus markers as in traditional Ferret
+*          /SYMBOL=<name> are PyFerret markers (including /SYMBOL=DOT)
+           CALL EQUAL_STRING(cmnd_buff(qual_start(loc):qual_end(loc)), 
+     .                       buff, status)
+           IF ( status .NE. ferr_ok ) GOTO 5540
+           slen = TM_LENSTR(buff)
+           IF ( slen .LE. 0 ) THEN
+*             Only /SYMBOL without an equals; auto selection of symbols
+              symbol = qual_on      
            ELSE
-
-	      CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .			      val, status )	! syntax check
-	      IF ( status .NE. ferr_ok ) GOTO 5000
-
-	      IF ( val .NE. unspecified_val4 ) THEN
-	         limit = max_sym 
-	         IF ( val.LE. 0.0 .OR. val.GT.limit ) GOTO 5200
-	         symbol = NINT( val )	! user-specified symbol
-	      ELSE
-	         symbol = qual_on		! auto selection of symbols
-	      ENDIF
+*             Examine the first non-space character.  If it is a digit 
+*             then the value is a PlotPlus symbol number; otherwise it 
+*             is a pyferret named symbol.
+              DO i = 1, slen
+                 IF ( buff(i:i) .NE. ' ' ) THEN
+                    IF ( (buff(i:i) .GE. '0') .AND. 
+     .                   (buff(i:i) .LE. '9') ) THEN
+*                      PlotPlus symbol number.  Make sure it is in range.
+                       READ(buff, *, ERR=5540) symbol
+                       IF ( (symbol .LE. 0) .OR. 
+     .                      (symbol .GT. max_sym) ) GOTO 5200
+                    ELSE
+*                      Get the pyferret symbol number for this named symbol. 
+*                      Add 100 to that value to distinguish it from PlotPlus 
+*                      symbol numbers (max_sym is 88; qual_on is negative).
+                       symbol = FGD_GET_SYMBOLNUM(buff, slen)
+                       IF ( symbol .EQ. 0 ) GOTO 5000
+                       symbol = symbol + 100
+                    ENDIF
+                    GOTO 10
+                 ENDIF
+              ENDDO
+  10          CONTINUE
            ENDIF
 	   use_line = .FALSE.		! default to no line w/ symbol
 	ENDIF
@@ -274,10 +287,6 @@ CC       => Set values here instead.
 	   IF ( val .NE. unspecified_val4 ) THEN
 	      IF ( val.LE. 0.0 ) GOTO 5210
 	      sym_size = val		! user-specified symbol
-              IF ( symbol .EQ. dot_sym) THEN
-                 CALL WARN ('/SIZE= ignored  on /SYMBOL=DOT ')
-                 sym_size = 0.08
-              ENDIF
 	   ENDIF
 	ENDIF
 * ... PLOT/COLOR[=n]
@@ -315,18 +324,9 @@ CC       => Set values here instead.
 * ... PLOT/THICKNESS=n
  	loc = qual_given( slash_plot_thick )
 	IF ( loc .GT. 0  ) THEN
-           IF ( symbol .EQ. dot_sym) THEN
-              CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')
-*             convert the color ID into a (thin) pen ID
-*             note that thickness is explicitly REAL*4 (not REAL)
-              thickness = 1.0
-              CALL EQUAL_THICK(' ', thickness, icolor, ipen, status)
-              IF ( status .NE. ferr_ok ) GOTO 5000
-           ELSE
-              CALL EQUAL_THICK(cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                         thickness, icolor, ipen, status)
-              IF ( status .NE. ferr_ok ) GOTO 5000
-           ENDIF
+           CALL EQUAL_THICK(cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                      thickness, icolor, ipen, status)
+           IF ( status .NE. ferr_ok ) GOTO 5000
         ELSE
 *          /THICK not given; convert color ID to pen ID using default thickness
            CALL EQUAL_THICK(' ', thickness, icolor, ipen, status)
@@ -874,5 +874,9 @@ c done in plot_set_up.
  5530	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'Argument to DegMinSec qualifier must be 1 or 2', *1000 )
+
+ 5540   CALL ERRMSG( ferr_syntax, status, 
+     .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .          '/SYMBOL= must be followed by a number or name', *1000 )
 
 	END

@@ -210,14 +210,14 @@ void FORTRAN(fgd_read_all_symboldefs)(int *status)
                 continue;
             }
             /* put into the list in alphabetical order */
-            if ( (SymbolInfoList == NULL) || (strcmp(infoptr->name, SymbolInfoList->name) < 0) ) {
+            if ( (SymbolInfoList == NULL) || (strcasecmp(infoptr->name, SymbolInfoList->name) < 0) ) {
                 /* first entry */
                 infoptr->next = SymbolInfoList;
                 SymbolInfoList = infoptr;
             }
             else {
                 nextptr = SymbolInfoList;
-                while ( (nextptr->next != NULL) && (strcmp(infoptr->name, nextptr->next->name) >= 0) )
+                while ( (nextptr->next != NULL) && (strcasecmp(infoptr->name, nextptr->next->name) >= 0) )
                     nextptr = nextptr->next;
                 infoptr->next = nextptr->next;
                 nextptr->next = infoptr;
@@ -244,6 +244,8 @@ static SymbolInfo *readSymbolDef(char symname[], int symnamelen)
     char            symdirs[MAXLINELEN];
     char           *currdir;
     SymbolInfo     *infoptr;
+    int             k;
+    char            lcname[MAXLINELEN];
     char            filename[MAXLINELEN];
     SymbolInfo     *nextptr;
 
@@ -263,10 +265,16 @@ static SymbolInfo *readSymbolDef(char symname[], int symnamelen)
     currdir = strtok(symdirs, " \t\v\r\n");
     infoptr = NULL;
     while ( currdir != NULL ) {
-        if ( snprintf(filename, MAXLINELEN, "%s/%.*s%s", currdir, symnamelen, symname, SYMFILEEXT) < MAXLINELEN ) {
-            infoptr = readSymbolDefFile(filename, symname, symnamelen);
-            if ( infoptr != NULL ) {
-                break;
+        if ( symnamelen < MAXLINELEN ) {
+            /* Ferret uppercases the name; convert to all-lowercase */
+            for (k = 0; k < symnamelen; k++)
+                lcname[k] = tolower((int) (symname[k]));
+            lcname[symnamelen] = '\0';
+            if ( snprintf(filename, MAXLINELEN, "%s/%.*s%s", currdir, symnamelen, lcname, SYMFILEEXT) < MAXLINELEN ) {
+                infoptr = readSymbolDefFile(filename, lcname, symnamelen);
+                if ( infoptr != NULL ) {
+                    break;
+                }
             }
         }
         currdir = strtok(NULL, " \t\v\r\n");
@@ -276,14 +284,14 @@ static SymbolInfo *readSymbolDef(char symname[], int symnamelen)
     }
 
     /* add to the list in alphabetical order */
-    if ( (SymbolInfoList == NULL) || (strcmp(infoptr->name, SymbolInfoList->name) < 0) ) {
+    if ( (SymbolInfoList == NULL) || (strcasecmp(infoptr->name, SymbolInfoList->name) < 0) ) {
         /* first entry */
         infoptr->next = SymbolInfoList;
         SymbolInfoList = infoptr;
     }
     else {
         nextptr = SymbolInfoList;
-        while ( (nextptr->next != NULL) && (strcmp(infoptr->name, nextptr->next->name) >= 0) )
+        while ( (nextptr->next != NULL) && (strcasecmp(infoptr->name, nextptr->next->name) >= 0) )
             nextptr = nextptr->next;
         infoptr->next = nextptr->next;
         nextptr->next = infoptr;
@@ -313,24 +321,37 @@ grdelBool getSymbolDef(float **ptsxptr, float **ptsyptr, int *numptsptr,
                        grdelBool *fillptr, char symbolname[], int namelen)
 {
     SymbolInfo *infoptr;
-    int minlen;
+    int result;
+
+    if ( namelen <= 0 ) {
+        /* Should have already been caught, but just in case */
+        strcpy(grdelerrmsg, "no symbol name given to getSymbolDef");
+        *ptsxptr = NULL;
+        *ptsyptr = NULL;
+        *numptsptr = 0;
+        *fillptr = 0;
+        return 0;
+    }
 
     /* Check if the symbol definition has already been read */
     infoptr = SymbolInfoList;
     while ( infoptr != NULL ) {
-        if ( (infoptr->namelen == namelen) && (strncmp(infoptr->name, symbolname, namelen) == 0) )
+        /* Ferret upper-cases the name */
+        result = strncasecmp(infoptr->name, symbolname, namelen);
+        if ( result == 0 )
             break;
         /* list is in alphabetical order - check if already passed any possible match */
-        minlen = (infoptr->namelen < namelen) ? infoptr->namelen : namelen;
-        if ( strncmp(infoptr->name, symbolname, minlen) > 0 )
+        if ( result > 0 ) {
             infoptr = NULL;
-        else
-            infoptr = infoptr->next;
+            break;
+        }
+        infoptr = infoptr->next;
     }
 
     /* If not found, check is there is a new definition file */
-    if ( infoptr == NULL )
+    if ( infoptr == NULL ) {
         infoptr = readSymbolDef(symbolname, namelen);
+    }
 
     if ( infoptr == NULL ) {
         sprintf(grdelerrmsg, "unknown symbol %.*s", namelen, symbolname);

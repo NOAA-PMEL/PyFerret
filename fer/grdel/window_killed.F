@@ -87,15 +87,8 @@
 *       close the specified window, ignoring errors
  20     CONTINUE
 
-*       markers reference symbol and color objects defined in symbolobjs 
-*       and colorobjs, so just reset everything to invalid values
-        DO k = 1, maxmarkers
-            markersymbol(k, windowid) = 0
-            markercolor(k, windowid) = 0
-            markersize(k, windowid) = 0.0
-        ENDDO
-
-*       Delete any remaining objects associated with this window
+*       Delete any remaining objects associated with this window.
+*       Clear values associated with those objects just to be safe.
         DO k = 1, maxsymbolobjs
             IF ( symbolobjs(k, windowid) .NE. nullobj ) THEN
                 CALL FGDSYMBOLDEL(success, symbolobjs(k, windowid))
@@ -107,6 +100,8 @@
                 CALL FGDPENDEL(success, penobjs(k, windowid))
                 penobjs(k, windowid) = nullobj
             ENDIF
+            pencolor(k, windowid) = 0
+            penwidth(k, windowid) = -1.0
         ENDDO
         DO k = 1, maxfontobjs
             IF ( fontobjs(k, windowid) .NE. nullobj ) THEN
@@ -119,12 +114,17 @@
                 CALL FGDBRUSHDEL(success, brushobjs(k, windowid))
                 brushobjs(k, windowid) = nullobj
             ENDIF
+            brushcolor(k, windowid) = 0
         ENDDO
         DO k = 1, maxcolorobjs
             IF ( colorobjs(k, windowid) .NE. nullobj ) THEN
                 CALL FGDCOLORDEL(success, colorobjs(k, windowid))
                 colorobjs(k, windowid) = nullobj
             ENDIF
+            colorrgba(1, k, windowid) = -1.0
+            colorrgba(2, k, windowid) = -1.0
+            colorrgba(3, k, windowid) = -1.0
+            colorrgba(4, k, windowid) = -1.0
         ENDDO
 
 *       Clear the DPI values just to be safe

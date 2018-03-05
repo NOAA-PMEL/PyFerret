@@ -100,6 +100,7 @@
             CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
         pencolor(pennum, windowid) = colornum
+        penwidth(pennum, windowid) = linewidth
 
         RETURN
         END

@@ -90,8 +90,8 @@ C     CHECK THE DATA MARK CODE.
 C     For PLOT/SYMBOL=<name>, call makedot to call POLYMARK
 C
       IF (IMARK .GE. DOTSYMIM) THEN
-C         IMARK is a named symbol number
-          CALL makedot(IMARK)
+C         IMARK refers to a named symbol
+          CALL makedot(IMARK - DOTSYMIM + 1)
       ENDIF
 
       IF(IMARK .LT. 1 .OR. IMARK .GT. 88)RETURN

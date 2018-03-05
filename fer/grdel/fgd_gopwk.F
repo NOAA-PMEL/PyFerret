@@ -83,6 +83,10 @@
             CALL FGDERRMSG(errstr, errstrlen)
             CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
+        colorrgba(1, 1, windowid) = redf
+        colorrgba(2, 1, windowid) = greenf
+        colorrgba(3, 1, windowid) = bluef
+        colorrgba(4, 1, windowid) = opaquef
 
 *       Create opaque black as the second color for this window
         redf = 0.0
@@ -96,6 +100,10 @@
             CALL FGDERRMSG(errstr, errstrlen)
             CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
+        colorrgba(1, 2, windowid) = redf
+        colorrgba(2, 2, windowid) = greenf
+        colorrgba(3, 2, windowid) = bluef
+        colorrgba(4, 2, windowid) = opaquef
 
 *       Set the antialias state
         IF ( antialias(windowid) ) THEN

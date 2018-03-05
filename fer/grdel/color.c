@@ -51,19 +51,19 @@ grdelType grdelColor(grdelType window, float redfrac, float greenfrac,
     }
 
     if ( (0.0 > redfrac) || (redfrac > 1.0) ) {
-        strcpy(grdelerrmsg, "grdelColor: redfrac must be in [0.0, 1.0]");
+        sprintf(grdelerrmsg, "grdelColor: redfrac (%.2f) must be in [0.0, 1.0]", redfrac);
         return NULL;
     }
     if ( (0.0 > greenfrac) || (greenfrac > 1.0) ) {
-        strcpy(grdelerrmsg, "grdelColor: greenfrac must be in [0.0, 1.0]");
+        sprintf(grdelerrmsg, "grdelColor: greenfrac (%.2f) must be in [0.0, 1.0]", greenfrac);
         return NULL;
     }
     if ( (0.0 > bluefrac) || (bluefrac > 1.0) ) {
-        strcpy(grdelerrmsg, "grdelColor: bluefrac must be in [0.0, 1.0]");
+        sprintf(grdelerrmsg, "grdelColor: bluefrac (%.2f) must be in [0.0, 1.0]", bluefrac);
         return NULL;
     }
     if ( (0.0 > opaquefrac) || (opaquefrac > 1.0) ) {
-        strcpy(grdelerrmsg, "grdelColor: opaquefrac must be in [0.0, 1.0]");
+        sprintf(grdelerrmsg, "grdelColor: opaquefrac (%.2f) must be in [0.0, 1.0]", opaquefrac);
         return NULL;
     }
 

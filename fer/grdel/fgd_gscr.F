@@ -78,6 +78,10 @@
                 RETURN
             ENDIF
             colorobjs(colornum, windowid) = nullobj
+            colorrgba(1, colornum, windowid) = -1.0
+            colorrgba(2, colornum, windowid) = -1.0
+            colorrgba(3, colornum, windowid) = -1.0
+            colorrgba(4, colornum, windowid) = -1.0
         ENDIF
 
 *       Create the new color object.

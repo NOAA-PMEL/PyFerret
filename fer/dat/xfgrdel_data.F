@@ -7,6 +7,8 @@
 
         INTEGER totmaxcolorobjs
         PARAMETER (totmaxcolorobjs = maxwindowobjs * maxcolorobjs)
+        INTEGER totmaxcolorrgba
+        PARAMETER (totmaxcolorrgba = 4 * totmaxcolorobjs)
         INTEGER totmaxbrushobjs
         PARAMETER (totmaxbrushobjs = maxwindowobjs * maxbrushobjs)
         INTEGER totmaxfontobjs
@@ -15,31 +17,34 @@
         PARAMETER (totmaxpenobjs = maxwindowobjs * maxpenobjs)
         INTEGER totmaxsymbolobjs
         PARAMETER (totmaxsymbolobjs = maxwindowobjs * maxsymbolobjs)
-        INTEGER totmaxmarkers
-        PARAMETER (totmaxmarkers = maxwindowobjs * maxmarkers)
+        REAL*4 negoneflt
+        PARAMETER (negoneflt = -1.0)
+        REAL*4 zeroflt
+        PARAMETER (zeroflt = 0.0)
+        REAL*4 posoneflt
+        PARAMETER (posoneflt = 1.0)
 
 * Window objects (bindings to a window)
         DATA windowobjs / maxwindowobjs * nullobj /
 
 * Color objects for each window
         DATA colorobjs / totmaxcolorobjs * nullobj /
+        DATA colorrgba / totmaxcolorrgba * negoneflt /
 
 * Brush objects for each window
         DATA brushobjs / totmaxbrushobjs * nullobj /
+        DATA brushcolor /totmaxbrushobjs * 0 /
 
 * Font objects for each window
         DATA fontobjs / totmaxfontobjs * nullobj /
 
 * Pen objects for each window
         DATA penobjs / totmaxpenobjs * nullobj /
+        DATA pencolor /totmaxpenobjs * 0 /
+        DATA penwidth /totmaxpenobjs * negoneflt /
 
 * Symbol objects for each window
         DATA symbolobjs / totmaxsymbolobjs * nullobj /
-
-* Marker information for each window
-        DATA markersymbol / totmaxmarkers * 0 /
-        DATA markercolor / totmaxmarkers * 0 /
-        DATA markersize / totmaxmarkers * 0.0 /
 
 * Initially no active window
         DATA activewindow / 0 /
@@ -47,10 +52,10 @@
 * Initially the implicit identity transform is active
         DATA activetransform / 0 /
 
-* Initially no active brush, pen, marker
+* Initially no active brush, pen, symbol
         DATA activebrush / 0 /
         DATA activepen / 0 /
-        DATA activemarker / 0 /
+        DATA activesymbol / 0 /
 
 * The brush used if no brush is active - initialize to solid black
         DATA lastbrushcolor / 2 /
@@ -64,28 +69,28 @@
         DATA cliptoview / maxwindowobjs * .TRUE. /
 
 * Default factors for normalized device coordinates.
-        DATA ndcxmax / maxwindowobjs * 1.0 /
-        DATA ndcymax / maxwindowobjs * 1.0 /
+        DATA ndcxmax / maxwindowobjs * posoneflt /
+        DATA ndcymax / maxwindowobjs * posoneflt /
 
 * "Uninitialized" DPI values
-        DATA windowdpix / maxwindowobjs * 0.0 /
-        DATA windowdpiy / maxwindowobjs * 0.0 /
+        DATA windowdpix / maxwindowobjs * zeroflt /
+        DATA windowdpiy / maxwindowobjs * zeroflt /
 
 * Scaling factor for line widths and marker sizes
         DATA thickfactor / maxwindowobjs * dflt_thicken /
 
 * Width of outlines for rectangles and other polygons
-        DATA outlinewidth / maxwindowobjs * 0.0 /
+        DATA outlinewidth / maxwindowobjs * zeroflt /
 
 * Coordinate transformation data independent of windows
-        DATA viewleftfrac / maxtransforms * 0.0 /
-        DATA viewbottomfrac / maxtransforms * 0.0 /
-        DATA viewrightfrac / maxtransforms * 1.0 /
-        DATA viewtopfrac / maxtransforms * 1.0 /
-        DATA viewleftcoord / maxtransforms * 0.0 /
-        DATA viewbottomcoord / maxtransforms * 0.0 /
-        DATA viewrightcoord / maxtransforms * 1.0 /
-        DATA viewtopcoord / maxtransforms * 1.0 /
+        DATA viewleftfrac / maxtransforms * zeroflt /
+        DATA viewbottomfrac / maxtransforms * zeroflt /
+        DATA viewrightfrac / maxtransforms * posoneflt /
+        DATA viewtopfrac / maxtransforms * posoneflt /
+        DATA viewleftcoord / maxtransforms * zeroflt /
+        DATA viewbottomcoord / maxtransforms * zeroflt /
+        DATA viewrightcoord / maxtransforms * posoneflt /
+        DATA viewtopcoord / maxtransforms * posoneflt /
 
 * Default window sizes.
         DATA windowwidth / maxwindowobjs * dflt_xinches /

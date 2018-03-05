@@ -76,7 +76,7 @@
 	integer		fktr, index, line_color_reserve,
      .			icolr, ndx, n1, n2, n3, slen,
      .			nthick, status, usable_colors
-	real		thickness, dotsize, frac, r_val, g_val, b_val, a_val
+	real		thickness, frac, r_val, g_val, b_val, a_val
 
 	CHARACTER*100   err_msg
 	CHARACTER*12	TM_FMT_SNGL, note
@@ -183,9 +183,6 @@
               thickness = REAL(fktr)
               icolr = j + lo_color_ndx(zwsid) - 1
               index = low_index + (fktr-1) * (ncolors+1) + j
-              dotsize = 6.0 + thickness
-* Named symbol 1 is always "dot"
-              CALL FGD_GSPMR(zwsid, index, 1, dotsize, icolr)
               CALL FGD_GSPLR(zwsid, index, 1, thickness, icolr)
 10	   continue
 20	continue
@@ -214,9 +211,6 @@
               thickness = REAL(fktr)
               icolr = j + lo_color_ndx(zwsid) - 1
               index = low_index + (fktr-1) * (ncolors+1) + j
-              dotsize = 6.0 + thickness
-* Named symbol 1 is always "dot"
-              CALL FGD_GSPMR(zwsid, index, 1, dotsize, icolr)
               CALL FGD_GSPLR(zwsid, index, 1, thickness, icolr)
 30	   continue
 40	continue

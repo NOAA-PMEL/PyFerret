@@ -69,7 +69,7 @@
 
         integer zwsid, zwstype
         integer j, fktr, index
-        real    thickness, dotsize, grey, frac
+        real    thickness, grey, frac
 
 *******************************************************************************
 
@@ -103,9 +103,6 @@
         do 20 j = 1, num_line_colors
            do 10 fktr = 1,3     ! thickness
               index = (fktr-1)*num_line_colors+j
-              dotsize = 6.0 + fktr
-* Named symbol 1 is always "dot"
-              CALL FGD_GSPMR(zwsid, index, 1, dotsize, j)
               thickness = fktr
               CALL FGD_GSPLR(zwsid, index, 1, thickness, j)
 10         continue

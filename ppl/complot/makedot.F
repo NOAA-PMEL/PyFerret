@@ -59,6 +59,9 @@ C      DIMENSION XMXMN(2),YMXMN(2)
 
       INTEGER SYMNUM
 
+C     Set the symbol used to make these marks
+      CALL FGD_GSPMI(SYMNUM)
+
 C end of FERRET mod
 ******************************************************************
 C     Check the plotting mode.

@@ -170,6 +170,7 @@ C
 
 
 c          IF (imark(a_line) .GE. DOTSYMIM) THEN
+c             CALL FGD_GSPMI(imark(a_line) - DOTSYMIM + 1)
 c             CALL doit_makedot(IPTMD,XDOTMD,YDOTMD)
 c             IPTMD = 0
 c          ENDIF

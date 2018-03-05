@@ -34,15 +34,8 @@
             RETURN
         ENDIF
 
-*       markers reference symbol and color objects defined in symbolobjs 
-*       and colorobjs, so just reset everything to invalid values
-        DO k = 1, maxmarkers
-            markersymbol(k, windowid) = 0
-            markercolor(k, windowid) = 0
-            markersize(k, windowid) = 0.0
-        ENDDO
-
-*       Delete any remaining objects associated with this window
+*       Delete any remaining objects associated with this window.
+*       Clear values associated with those objects just to be safe.
 *       Error messages are printed just as warnings that something
 *       is not right, but errors are otherwise ignored.
         DO 10 k = 1, maxsymbolobjs
@@ -68,6 +61,8 @@
                 ENDIF
                 penobjs(k, windowid) = nullobj
             ENDIF
+            pencolor(k, windowid) = 0
+            penwidth(k, windowid) = -1.0
    20   CONTINUE
         DO 30 k = 1, maxfontobjs
             IF ( fontobjs(k, windowid) .NE. nullobj ) THEN
@@ -92,6 +87,7 @@
                 ENDIF
                 brushobjs(k, windowid) = nullobj
             ENDIF
+            brushcolor(k, windowid) = 0
    40   CONTINUE
         DO 50 k = 1, maxcolorobjs
             IF ( colorobjs(k, windowid) .NE. nullobj ) THEN
@@ -104,6 +100,10 @@
                 ENDIF
                 colorobjs(k, windowid) = nullobj
             ENDIF
+            colorrgba(1, k, windowid) = -1.0
+            colorrgba(2, k, windowid) = -1.0
+            colorrgba(3, k, windowid) = -1.0
+            colorrgba(4, k, windowid) = -1.0
    50   CONTINUE
 
 *       Clear the DPI values just to be safe

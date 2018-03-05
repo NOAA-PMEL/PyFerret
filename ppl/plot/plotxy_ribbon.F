@@ -445,6 +445,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	    IF(ITYPE(I).EQ.2.OR.ITYPE(I).EQ.5)CALL MARK(IMARK(I))
 
           IF (imark(i) .GE. DOTSYMIM) THEN
+             CALL FGD_GSPMI(imark(i) - DOTSYMIM + 1)
              CALL doit_makedot(IPTMD,XDOTMD,YDOTMD)
              IPTMD = 0
           ENDIF
@@ -454,6 +455,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 *** FINALIZE
  51	CONTINUE
         IF (imark(i) .GE. DOTSYMIM) THEN
+          CALL FGD_GSPMI(imark(i) - DOTSYMIM + 1)
           CALL doit_makedot(IPTMD,XDOTMD,YDOTMD)
           IPTMD = 0
         ENDIF

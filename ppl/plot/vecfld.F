@@ -216,6 +216,8 @@ C
 	ENDIF
 
         IF (IPTMD .GT. MAXDOT) THEN
+C          Symbol 1 is always "dot"
+           CALL FGD_GSPMI(1)
            CALL doit_makedot(IPTMD,XDOTMD,YDOTMD)
            IPTMD = 0
         ENDIF
@@ -410,6 +412,8 @@ C
 100	CONTINUE
 	IF (interrupted) goto 3333 ! *jd* 8.3.92
 
+C       Symbol 1 is always "dot"
+        CALL FGD_GSPMI(1)
         CALL doit_makedot(IPTMD,XDOTMD,YDOTMD)
 
 

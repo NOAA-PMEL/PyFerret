@@ -89,9 +89,12 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
+      CHARACTER*120 fcn_desc
 
-      CALL ef_set_desc (id,
-     .   'Convert date strings into Julian days since 1-Jan-1900' )
+      WRITE (fcn_desc, 10)
+   10 FORMAT ('Convert date strings into Julian days since 1-Jan-1900 ',
+     .        '(integer days using Gregorian calendar)')
+      CALL ef_set_desc(id, fcn_desc)  
 
       CALL ef_set_num_args(id, 1)
 
@@ -107,7 +110,6 @@
       arg = 1
       CALL ef_set_arg_type(id, arg, STRING_ARG)
       CALL ef_set_arg_name (id, arg, 'formatted date')
-      CALL ef_set_arg_unit(id, arg, 'none')
       CALL ef_set_arg_desc(id, arg,
      .         'dd-MMM-yy or dd-MMM-yyyy  (e.g. "20-Dec-00")')
       CALL ef_set_axis_influence_6d(id, arg,

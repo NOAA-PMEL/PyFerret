@@ -1,0 +1,127 @@
+! bn_pointplots.jnl
+! test of named symbols
+
+def axis /X=1.0:8.0:1.0 xax
+def axis /Y=1.0:6.0:1.0 yax
+def grid /X=xax /Y=yax xygrid
+set grid xygrid
+
+set text /font=helvetica
+set window /aspect=0.75:axis /thick=0.75 1
+
+plot /hlim=0.75:8.75 /vlim=0.5:6.5 /symbol=dot /nokey /nolab /color=(0,0,0,0) /vs X + 0.0 * Y, 0.0 * X + Y
+
+anno /xpos=1.2 /ypos=6.0 /valign=0 /size=0.08 "dot"
+anno /xpos=2.2 /ypos=6.0 /valign=0 /size=0.08 "dotex"
+anno /xpos=3.2 /ypos=6.0 /valign=0 /size=0.08 "dotplus"
+
+anno /xpos=5.2 /ypos=6.0 /valign=0 /size=0.08 "circle"
+anno /xpos=6.2 /ypos=6.0 /valign=0 /size=0.08 "circex"
+anno /xpos=7.2 /ypos=6.0 /valign=0 /size=0.08 "circplus"
+
+anno /xpos=1.2 /ypos=5.0 /valign=0 /size=0.08 "asterisk"
+anno /xpos=3.2 /ypos=5.0 /valign=0 /size=0.08 "ex"
+anno /xpos=5.2 /ypos=5.0 /valign=0 /size=0.08 "plus"
+
+anno /xpos=1.2 /ypos=4.0 /valign=0 /size=0.08 "arrdown"
+anno /xpos=2.2 /ypos=4.0 /valign=0 /size=0.08 "arrup"
+anno /xpos=3.2 /ypos=4.0 /valign=0 /size=0.08 "arrleft"
+anno /xpos=4.2 /ypos=4.0 /valign=0 /size=0.08 "arrright"
+
+anno /xpos=5.2 /ypos=4.0 /valign=0 /size=0.08 "arrdl"
+anno /xpos=6.2 /ypos=4.0 /valign=0 /size=0.08 "arrdr"
+anno /xpos=7.2 /ypos=4.0 /valign=0 /size=0.08 "arrul"
+anno /xpos=8.2 /ypos=4.0 /valign=0 /size=0.08 "arrur"
+
+anno /xpos=1.2 /ypos=3.0 /valign=0 /size=0.08 "boxempty"
+anno /xpos=2.2 /ypos=3.0 /valign=0 /size=0.08 "boxex"
+anno /xpos=3.2 /ypos=3.0 /valign=0 /size=0.08 "boxfill"
+
+anno /xpos=4.2 /ypos=3.0 /valign=0 /size=0.08 "diamempty"
+anno /xpos=5.2 /ypos=3.0 /valign=0 /size=0.08 "diamplus"
+anno /xpos=6.2 /ypos=3.0 /valign=0 /size=0.08 "diamfill"
+
+anno /xpos=7.2 /ypos=3.0 /valign=0 /size=0.08 "starempty"
+anno /xpos=8.2 /ypos=3.0 /valign=0 /size=0.08 "starfill"
+
+anno /xpos=1.2 /ypos=2.0 /valign=0 /size=0.08 "tridempty"
+anno /xpos=2.2 /ypos=2.0 /valign=0 /size=0.08 "tridfill"
+anno /xpos=3.2 /ypos=2.0 /valign=0 /size=0.08 "triuempty"
+anno /xpos=4.2 /ypos=2.0 /valign=0 /size=0.08 "triufill"
+anno /xpos=5.2 /ypos=2.0 /valign=0 /size=0.08 "trilempty"
+anno /xpos=6.2 /ypos=2.0 /valign=0 /size=0.08 "trilfill"
+anno /xpos=7.2 /ypos=2.0 /valign=0 /size=0.08 "trirempty"
+anno /xpos=8.2 /ypos=2.0 /valign=0 /size=0.08 "trirfill"
+
+anno /xpos=1.2 /ypos=1.0 /valign=0 /size=0.08 "wedgdown"
+anno /xpos=2.2 /ypos=1.0 /valign=0 /size=0.08 "wedgup"
+anno /xpos=3.2 /ypos=1.0 /valign=0 /size=0.08 "wedgleft"
+anno /xpos=4.2 /ypos=1.0 /valign=0 /size=0.08 "wedgright"
+
+anno /xpos=5.2 /ypos=1.0 /valign=0 /size=0.08 "wyedown"
+anno /xpos=6.2 /ypos=1.0 /valign=0 /size=0.08 "wyeup"
+anno /xpos=7.2 /ypos=1.0 /valign=0 /size=0.08 "wyeleft"
+anno /xpos=8.2 /ypos=1.0 /valign=0 /size=0.08 "wyeright"
+
+
+set window /thicken=2.5
+
+plot /over /nokey /symbol=dot       /vs {1.0},{6.0}
+plot /over /nokey /symbol=dotex     /vs {2.0},{6.0}
+plot /over /nokey /symbol=dotplus   /vs {3.0},{6.0}
+
+plot /over /nokey /symbol=circle    /vs {5.0},{6.0}
+plot /over /nokey /symbol=circex    /vs {6.0},{6.0}
+plot /over /nokey /symbol=circplus  /vs {7.0},{6.0}
+
+plot /over /nokey /symbol=asterisk  /vs {1.0},{5.0}
+plot /over /nokey /symbol=ex        /vs {3.0},{5.0}
+plot /over /nokey /symbol=plus      /vs {5.0},{5.0}
+
+plot /over /nokey /symbol=arrdown   /vs {1.0},{4.0}
+plot /over /nokey /symbol=arrup     /vs {2.0},{4.0}
+plot /over /nokey /symbol=arrleft   /vs {3.0},{4.0}
+plot /over /nokey /symbol=arrright  /vs {4.0},{4.0}
+
+plot /over /nokey /symbol=arrdl     /vs {5.0},{4.0}
+plot /over /nokey /symbol=arrdr     /vs {6.0},{4.0}
+plot /over /nokey /symbol=arrul     /vs {7.0},{4.0}
+plot /over /nokey /symbol=arrur     /vs {8.0},{4.0}
+
+plot /over /nokey /symbol=boxempty  /vs {1.0},{3.0}
+plot /over /nokey /symbol=boxex     /vs {2.0},{3.0}
+plot /over /nokey /symbol=boxfill   /vs {3.0},{3.0}
+
+plot /over /nokey /symbol=diamempty /vs {4.0},{3.0}
+plot /over /nokey /symbol=diamplus  /vs {5.0},{3.0}
+plot /over /nokey /symbol=diamfill  /vs {6.0},{3.0}
+
+plot /over /nokey /symbol=starempty /vs {7.0},{3.0}
+plot /over /nokey /symbol=starfill  /vs {8.0},{3.0}
+
+plot /over /nokey /symbol=tridempty /vs {1.0},{2.0}
+plot /over /nokey /symbol=tridfill  /vs {2.0},{2.0}
+plot /over /nokey /symbol=triuempty /vs {3.0},{2.0}
+plot /over /nokey /symbol=triufill  /vs {4.0},{2.0}
+plot /over /nokey /symbol=trilempty /vs {5.0},{2.0}
+plot /over /nokey /symbol=trilfill  /vs {6.0},{2.0}
+plot /over /nokey /symbol=trirempty /vs {7.0},{2.0}
+plot /over /nokey /symbol=trirfill  /vs {8.0},{2.0}
+
+plot /over /nokey /symbol=wedgdown  /vs {1.0},{1.0}
+plot /over /nokey /symbol=wedgup    /vs {2.0},{1.0}
+plot /over /nokey /symbol=wedgleft  /vs {3.0},{1.0}
+plot /over /nokey /symbol=wedgright /vs {4.0},{1.0}
+
+plot /over /nokey /symbol=wyedown   /vs {5.0},{1.0}
+plot /over /nokey /symbol=wyeup     /vs {6.0},{1.0}
+plot /over /nokey /symbol=wyeleft   /vs {7.0},{1.0}
+plot /over /nokey /symbol=wyeright  /vs {8.0},{1.0}
+
+frame /file=pointplots.pdf
+
+set grid abstract
+can grid xygrid
+can axis yax
+can axis xax
+

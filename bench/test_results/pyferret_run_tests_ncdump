@@ -3763,6 +3763,7 @@ variables:
 *** Running ferret script: bn_outline_poly.jnl
 *** Running ferret script: bn_contourcolor.jnl
 *** Running ferret script: bn_inf2missing.jnl
+*** Running ferret script: bn_pointplots.jnl
 *** Running python script: testgetstrdata.py
 *** Running python script: testferregion.py
 *** Running python script: testferdset.py

@@ -414,26 +414,26 @@ class CmndHelperPQ(object):
                 path.addEllipse(-20.0, -20.0, 40.0, 40.0)
                 # not a filled path, so just draw the lines
                 path.moveTo(  0.0, -47.5)
-                path.lineTo(  0.0, -22.5)
+                path.lineTo(  0.0, -21.0)
                 path.moveTo(  0.0,  47.5)
-                path.lineTo(  0.0,  22.5)
+                path.lineTo(  0.0,  21.0)
                 path.moveTo(-47.5,   0.0)
-                path.lineTo(-22.5,   0.0)
+                path.lineTo(-21.0,   0.0)
                 path.moveTo( 47.5,   0.0)
-                path.lineTo( 22.5,   0.0)
+                path.lineTo( 21.0,   0.0)
                 sympath = SymbolPath(path, False)
             elif symbol == 'circex':
                 path = QPainterPath()
                 path.addEllipse(-20.0, -20.0, 40.0, 40.0)
                 # not a filled path, so just draw the lines
                 path.moveTo(-35.0, -35.0)
-                path.lineTo(-20.5, -20.5)
+                path.lineTo(-20.0, -20.0)
                 path.moveTo(-35.0,  35.0)
-                path.lineTo(-20.5,  20.5)
+                path.lineTo(-20.0,  20.0)
                 path.moveTo( 35.0, -35.0)
-                path.lineTo( 20.5, -20.5)
+                path.lineTo( 20.0, -20.0)
                 path.moveTo( 35.0,  35.0)
-                path.lineTo( 20.5,  20.5)
+                path.lineTo( 20.0,  20.0)
                 sympath = SymbolPath(path, False)
             else:
                 raise ValueError("Unknown symbol '%s'" % str(symbol))
@@ -458,7 +458,7 @@ class CmndHelperPQ(object):
                     # end the current subpath
                     newstart = True
                 elif newstart:
-                    # start a new subpath; Qt closes the previous subpath
+                    # start a new subpath; Qt closes the previous subpath automatically
                     path.moveTo(xval, yval)
                     newstart = False
                 else:
@@ -468,6 +468,7 @@ class CmndHelperPQ(object):
             if not somethingdrawn:
                 del path
                 raise ValueError('symbol definition does not contain any drawn lines')
+            # Qt closes the (sub)path automatically
             sympath = SymbolPath(path, fill)
         # save and return the SymbolPath
         self.__symbolpaths[symbol] = sympath

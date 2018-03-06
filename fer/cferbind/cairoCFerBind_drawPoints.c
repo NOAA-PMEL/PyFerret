@@ -74,6 +74,13 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
     scalefactor  = symsize * instdata->widthfactor;
     scalefactor *= unitfactor / 100.0;
 
+    /* Assign the pen and join style */
+    cairo_save(instdata->context);
+    cairo_set_line_width(instdata->context, 10.0*scalefactor);
+    cairo_set_dash(instdata->context, NULL, 0, 0.0);
+    cairo_set_line_cap(instdata->context, CAIRO_LINE_CAP_BUTT);
+    cairo_set_line_join(instdata->context, CAIRO_LINE_JOIN_MITER);
+
     /* Draw the scaled symbol at each point */
     cairo_new_path(instdata->context);
     for (k = 0; k < numpts; k++) {
@@ -93,6 +100,9 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
     else {
         cairo_stroke(instdata->context);
     }
+
+    /* Restore the pen and join styles */
+    cairo_restore(instdata->context);
 
     instdata->somethingdrawn = 1;
     instdata->imagechanged = 1;

@@ -113,10 +113,8 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
         FerMem_Free(symbolobj, __FILE__, __LINE__);
         return NULL;
     }
-    cairo_set_line_width(pathcontext, 10.0);
-    cairo_set_dash(pathcontext, NULL, 0, 0.0);
-    cairo_set_line_cap(pathcontext, CAIRO_LINE_CAP_SQUARE);
-    cairo_set_line_join(pathcontext, CAIRO_LINE_JOIN_BEVEL);
+
+    /* Line and join details do not matter to cairo_copy_path_flat; only path instructions */
     cairo_translate(pathcontext, 50.0, 50.0);
 
     /* If points are given, always create the symbol from these points */
@@ -160,6 +158,12 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
             cairo_surface_destroy(pathsurface);
             FerMem_Free(symbolobj, __FILE__, __LINE__);
             return NULL;
+        }
+        /* final check if the (sub)path should be closed */
+        if ( (laststart >= 0) && (lastend > laststart) && 
+             (fabs(ptsx[lastend] - ptsx[laststart]) < 0.001) &&
+             (fabs(ptsy[lastend] - ptsy[laststart]) < 0.001) ) {
+            cairo_close_path(pathcontext);
         }
         symbolobj->filled = fill;
     }
@@ -234,13 +238,13 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
         cairo_close_path(pathcontext);
         /* not a filled path, so just draw the lines */
         cairo_move_to(pathcontext, -35.0, -35.0);
-        cairo_line_to(pathcontext, -21.0, -21.0);
+        cairo_line_to(pathcontext, -20.0, -20.0);
         cairo_move_to(pathcontext, -35.0,  35.0);
-        cairo_line_to(pathcontext, -21.0,  21.0);
+        cairo_line_to(pathcontext, -20.0,  20.0);
         cairo_move_to(pathcontext,  35.0, -35.0);
-        cairo_line_to(pathcontext,  21.0, -21.0);
+        cairo_line_to(pathcontext,  20.0, -20.0);
         cairo_move_to(pathcontext,  35.0,  35.0);
-        cairo_line_to(pathcontext,  21.0,  21.0);
+        cairo_line_to(pathcontext,  20.0,  20.0);
         symbolobj->filled = 0;
     }
     else {

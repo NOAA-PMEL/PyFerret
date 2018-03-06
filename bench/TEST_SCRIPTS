@@ -1,4 +1,6 @@
+!
 ! Ferret scripts must have the .jnl extension
+!
 bn_syntax.jnl
 bn_dollar.jnl
 bn_grave.jnl
@@ -300,11 +302,16 @@ bn_startupfile.jnl
 !
 err700_decimate.jnl
 bn_color_wire.jnl
+!
 ! PyFerret-only Ferret scripts
+!
 bn_outline_poly.jnl
 bn_contourcolor.jnl
 bn_inf2missing.jnl
+bn_pointplots.jnl
+!
 ! PyFerret-only Python scripts
+!
 testgetstrdata.py
 testferregion.py
 testferdset.py

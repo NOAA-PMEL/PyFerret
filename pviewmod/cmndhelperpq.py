@@ -334,10 +334,10 @@ class CmndHelperPQ(object):
             'fill' : (bool) color-fill symbol?
 
         If 'pts' is given, the value is coordinates that define the symbol 
-        as multiline subpaths in a [-50,50] square.  The location of the 
-        point this symbol represents will be at the center of the square. 
-        An invalid coordinate (outside [-50,50]) will terminate the current 
-        subpath, and the next valid coordinate will start a new subpath. 
+        as multiline subpaths in a [-50,50] square for typical size.  The 
+        location of the point this symbol represents will be at the center 
+        of the square.  A coordinate outside [-100,100] will terminate the 
+        current subpath, and the next valid coordinate will start a new subpath. 
         This definition will replace an existing symbol with the given name.
 
         If 'pts' is not given, the symbol must already be defined, either as 
@@ -375,65 +375,65 @@ class CmndHelperPQ(object):
                 path = QPainterPath()
                 path.addEllipse(-10.0, -10.0, 20.0, 20.0)
                 # filled path, so need to draw "lines" as rectangles
-                path.addRect( -5.0, -50.0, 10.0, 20.0)
-                path.addRect( -5.0,  30.0, 10.0, 20.0)
-                path.addRect(-50.0,  -5.0, 20.0, 10.0)
-                path.addRect( 30.0,  -5.0, 20.0, 10.0)
+                path.addRect( -4.0, -50.0,  8.0, 24.0)
+                path.addRect( -4.0,  26.0,  8.0, 24.0)
+                path.addRect(-50.0,  -4.0, 24.0,  8.0)
+                path.addRect( 26.0,  -4.0, 24.0,  8.0)
                 sympath = SymbolPath(path, True)
             elif symbol == 'dotex':
                 path = QPainterPath()
                 path.addEllipse(-10.0, -10.0, 20.0, 20.0)
                 # filled path, so need to draw "lines" as rectangles
-                path.moveTo(-38.5, -31.5)
-                path.lineTo(-31.5, -38.5)
-                path.lineTo(-17.5, -24.5)
-                path.lineTo(-24.5, -17.5)
+                path.moveTo(-38.18, -32.53)
+                path.lineTo(-32.53, -38.18)
+                path.lineTo(-15.56, -21.21)
+                path.lineTo(-21.21, -15.56)
                 path.closeSubpath()
-                path.moveTo(-38.5,  31.5)
-                path.lineTo(-31.5,  38.5)
-                path.lineTo(-17.5,  24.5)
-                path.lineTo(-24.5,  17.5)
+                path.moveTo(-38.18,  32.53)
+                path.lineTo(-32.53,  38.18)
+                path.lineTo(-15.56,  21.21)
+                path.lineTo(-21.21,  15.56)
                 path.closeSubpath()
-                path.moveTo( 38.5, -31.5)
-                path.lineTo( 31.5, -38.5)
-                path.lineTo( 17.5, -24.5)
-                path.lineTo( 24.5, -17.5)
+                path.moveTo( 38.18, -32.53)
+                path.lineTo( 32.53, -38.18)
+                path.lineTo( 15.56, -21.21)
+                path.lineTo( 21.21, -15.56)
                 path.closeSubpath()
-                path.moveTo( 38.5,  31.5)
-                path.lineTo( 31.5,  38.5)
-                path.lineTo( 17.5,  24.5)
-                path.lineTo( 24.5,  17.5)
+                path.moveTo( 38.18,  32.53)
+                path.lineTo( 32.53,  38.18)
+                path.lineTo( 15.56,  21.21)
+                path.lineTo( 21.21,  15.56)
                 path.closeSubpath()
                 sympath = SymbolPath(path, True)
             elif symbol == 'circle':
                 path = QPainterPath()
-                path.addEllipse(-40.0, -40.0, 80.0, 80.0)
+                path.addEllipse(-35.0, -35.0, 70.0, 70.0)
                 sympath = SymbolPath(path, False)
             elif symbol == 'circplus':
                 path = QPainterPath()
                 path.addEllipse(-20.0, -20.0, 40.0, 40.0)
                 # not a filled path, so just draw the lines
-                path.moveTo(  0.0, -47.5)
-                path.lineTo(  0.0, -21.0)
-                path.moveTo(  0.0,  47.5)
-                path.lineTo(  0.0,  21.0)
-                path.moveTo(-47.5,   0.0)
-                path.lineTo(-21.0,   0.0)
-                path.moveTo( 47.5,   0.0)
-                path.lineTo( 21.0,   0.0)
+                path.moveTo(  0.0, -50.0)
+                path.lineTo(  0.0, -20.0)
+                path.moveTo(  0.0,  50.0)
+                path.lineTo(  0.0,  20.0)
+                path.moveTo(-50.0,   0.0)
+                path.lineTo(-20.0,   0.0)
+                path.moveTo( 50.0,   0.0)
+                path.lineTo( 20.0,   0.0)
                 sympath = SymbolPath(path, False)
             elif symbol == 'circex':
                 path = QPainterPath()
                 path.addEllipse(-20.0, -20.0, 40.0, 40.0)
                 # not a filled path, so just draw the lines
-                path.moveTo(-35.0, -35.0)
-                path.lineTo(-20.0, -20.0)
-                path.moveTo(-35.0,  35.0)
-                path.lineTo(-20.0,  20.0)
-                path.moveTo( 35.0, -35.0)
-                path.lineTo( 20.0, -20.0)
-                path.moveTo( 35.0,  35.0)
-                path.lineTo( 20.0,  20.0)
+                path.moveTo(-35.35, -35.35)
+                path.lineTo(-14.15, -14.15)
+                path.moveTo(-35.35,  35.35)
+                path.lineTo(-14.15,  14.15)
+                path.moveTo( 35.35, -35.35)
+                path.lineTo( 14.15, -14.15)
+                path.moveTo( 35.35,  35.35)
+                path.lineTo( 14.15,  14.15)
                 sympath = SymbolPath(path, False)
             else:
                 raise ValueError("Unknown symbol '%s'" % str(symbol))
@@ -454,7 +454,7 @@ class CmndHelperPQ(object):
             for (xval, yval) in coords:
                 # flip so positive y is up
                 yval *= -1.0
-                if (xval < -50.0) or (xval > 50.0) or (yval < -50.0) or (yval > 50.0):
+                if (xval < -100.0) or (xval > 100.0) or (yval < -100.0) or (yval > 100.0):
                     # end the current subpath
                     newstart = True
                 elif newstart:

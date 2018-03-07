@@ -1,7 +1,12 @@
-! flipped wye (Y) mark; origin at center intersection
--38.97 -22.50
-  0.00   0.00
- 38.97 -22.50
--999.9 -999.9
-  0.00   2.00
-  0.00  45.00
+! wye (Y) mark with vertical stem down; origin at center intersection
+  0.00   4.62
+ 41.30  28.46
+ 45.30  21.54
+  4.00  -2.31
+  4.00 -50.00
+ -4.00 -50.00
+ -4.00  -2.31
+-45.30  21.54
+-41.30  28.46
+  0.00   4.62
+FILL

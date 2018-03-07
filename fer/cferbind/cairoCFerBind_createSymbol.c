@@ -94,9 +94,9 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
     strncpy(symbolobj->name, symbolname, namelen);
     symbolobj->name[namelen] = '\0';
 
-    /* Create a 100x100 (pixel or point) surface matching that of the actual drawing surface */
+    /* Create a 200x200 (pixel or point) surface matching that of the actual drawing surface */
     pathsurface = cairo_surface_create_similar(instdata->surface, 
-                        cairo_surface_get_content(instdata->surface), 100, 100);
+                        cairo_surface_get_content(instdata->surface), 200, 200);
     if ( cairo_surface_status(pathsurface) != CAIRO_STATUS_SUCCESS ) {
         strcpy(grdelerrmsg, "cairoCFerBind_createSymbol: unable to create surface for symbol");
         cairo_surface_destroy(pathsurface);
@@ -115,7 +115,9 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
     }
 
     /* Line and join details do not matter to cairo_copy_path_flat; only path instructions */
-    cairo_translate(pathcontext, 50.0, 50.0);
+
+    /* Move the origin to the center of the square */
+    cairo_translate(pathcontext, 100.0, 100.0);
 
     /* If points are given, always create the symbol from these points */
     if ( (numpts > 0) && (ptsx != NULL) && (ptsy != NULL) ) {
@@ -127,7 +129,7 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
             xval = (double) (ptsx[k]);
             /* flip so positive y is up */
             yval = -1.0 * (double) (ptsy[k]);
-            if ( (xval < -50.0) || (xval > 50.0) || (yval < -50.0) || (yval > 50.0) ) {
+            if ( (xval < -100.0) || (xval > 100.0) || (yval < -100.0) || (yval > 100.0) ) {
                 /* check if the current subpath should be closed */
                 if ( (laststart >= 0) && (lastend > laststart) && 
                      (fabs(ptsx[lastend] - ptsx[laststart]) < 0.001) &&
@@ -178,10 +180,10 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
         cairo_arc(pathcontext, 0.0, 0.0, 10.0, 0.0, 2.0 * M_PI);
         cairo_close_path(pathcontext);
         /* filled path, so need to draw "lines" as rectangles */
-        cairo_rectangle(pathcontext,  -5.0, -50.0, 10.0, 20.0);
-        cairo_rectangle(pathcontext,  -5.0,  30.0, 10.0, 20.0);
-        cairo_rectangle(pathcontext, -50.0,  -5.0, 20.0, 10.0);
-        cairo_rectangle(pathcontext,  30.0,  -5.0, 20.0, 10.0);
+        cairo_rectangle(pathcontext,  -4.0, -50.0,  8.0, 24.0);
+        cairo_rectangle(pathcontext,  -4.0,  26.0,  8.0, 24.0);
+        cairo_rectangle(pathcontext, -50.0,  -4.0, 24.0,  8.0);
+        cairo_rectangle(pathcontext,  26.0,  -4.0, 24.0,  8.0);
         symbolobj->filled = 1;
     }
     else if ( strcmp("dotex", symbolobj->name) == 0 ) {
@@ -189,31 +191,31 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
         cairo_arc(pathcontext, 0.0, 0.0, 10.0, 0.0, 2.0 * M_PI);
         cairo_close_path(pathcontext);
         /* filled path, so need to draw "lines" as rectangles */
-        cairo_move_to(pathcontext, -38.5, -31.5);
-        cairo_line_to(pathcontext, -31.5, -38.5);
-        cairo_line_to(pathcontext, -17.5, -24.5);
-        cairo_line_to(pathcontext, -24.5, -17.5);
+        cairo_move_to(pathcontext, -38.18, -32.53);
+        cairo_line_to(pathcontext, -32.53, -38.18);
+        cairo_line_to(pathcontext, -15.56, -21.21);
+        cairo_line_to(pathcontext, -21.21, -15.56);
         cairo_close_path(pathcontext);
-        cairo_move_to(pathcontext, -38.5,  31.5);
-        cairo_line_to(pathcontext, -31.5,  38.5);
-        cairo_line_to(pathcontext, -17.5,  24.5);
-        cairo_line_to(pathcontext, -24.5,  17.5);
+        cairo_move_to(pathcontext, -38.18,  32.53);
+        cairo_line_to(pathcontext, -32.53,  38.18);
+        cairo_line_to(pathcontext, -15.56,  21.21);
+        cairo_line_to(pathcontext, -21.21,  15.56);
         cairo_close_path(pathcontext);
-        cairo_move_to(pathcontext,  38.5, -31.5);
-        cairo_line_to(pathcontext,  31.5, -38.5);
-        cairo_line_to(pathcontext,  17.5, -24.5);
-        cairo_line_to(pathcontext,  24.5, -17.5);
+        cairo_move_to(pathcontext,  38.18, -32.53);
+        cairo_line_to(pathcontext,  32.53, -38.18);
+        cairo_line_to(pathcontext,  15.56, -21.21);
+        cairo_line_to(pathcontext,  21.21, -15.56);
         cairo_close_path(pathcontext);
-        cairo_move_to(pathcontext,  38.5,  31.5);
-        cairo_line_to(pathcontext,  31.5,  38.5);
-        cairo_line_to(pathcontext,  17.5,  24.5);
-        cairo_line_to(pathcontext,  24.5,  17.5);
+        cairo_move_to(pathcontext,  38.18,  32.53);
+        cairo_line_to(pathcontext,  32.53,  38.18);
+        cairo_line_to(pathcontext,  15.56,  21.21);
+        cairo_line_to(pathcontext,  21.21,  15.56);
         cairo_close_path(pathcontext);
         symbolobj->filled = 1;
     }
     else if ( strcmp("circle", symbolobj->name) == 0 ) {
         cairo_new_path(pathcontext);
-        cairo_arc(pathcontext, 0.0, 0.0, 40.0, 0.0, 2.0 * M_PI);
+        cairo_arc(pathcontext, 0.0, 0.0, 35.0, 0.0, 2.0 * M_PI);
         cairo_close_path(pathcontext);
         symbolobj->filled = 0;
     }
@@ -222,14 +224,14 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
         cairo_arc(pathcontext, 0.0, 0.0, 20.0, 0.0, 2.0 * M_PI);
         cairo_close_path(pathcontext);
         /* not a filled path, so just draw the lines */
-        cairo_move_to(pathcontext,   0.0, -47.5);
-        cairo_line_to(pathcontext,   0.0, -21.0);
-        cairo_move_to(pathcontext,   0.0,  47.5);
-        cairo_line_to(pathcontext,   0.0,  21.0);
-        cairo_move_to(pathcontext, -47.5,   0.0);
-        cairo_line_to(pathcontext, -21.0,   0.0);
-        cairo_move_to(pathcontext,  47.5,   0.0);
-        cairo_line_to(pathcontext,  21.0,   0.0);
+        cairo_move_to(pathcontext,   0.0, -50.0);
+        cairo_line_to(pathcontext,   0.0, -20.0);
+        cairo_move_to(pathcontext,   0.0,  50.0);
+        cairo_line_to(pathcontext,   0.0,  20.0);
+        cairo_move_to(pathcontext, -50.0,   0.0);
+        cairo_line_to(pathcontext, -20.0,   0.0);
+        cairo_move_to(pathcontext,  50.0,   0.0);
+        cairo_line_to(pathcontext,  20.0,   0.0);
         symbolobj->filled = 0;
     }
     else if ( strcmp("circex", symbolobj->name) == 0 ) {
@@ -237,14 +239,14 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
         cairo_arc(pathcontext, 0.0, 0.0, 20.0, 0.0, 2.0 * M_PI);
         cairo_close_path(pathcontext);
         /* not a filled path, so just draw the lines */
-        cairo_move_to(pathcontext, -35.0, -35.0);
-        cairo_line_to(pathcontext, -20.0, -20.0);
-        cairo_move_to(pathcontext, -35.0,  35.0);
-        cairo_line_to(pathcontext, -20.0,  20.0);
-        cairo_move_to(pathcontext,  35.0, -35.0);
-        cairo_line_to(pathcontext,  20.0, -20.0);
-        cairo_move_to(pathcontext,  35.0,  35.0);
-        cairo_line_to(pathcontext,  20.0,  20.0);
+        cairo_move_to(pathcontext, -35.35, -35.35);
+        cairo_line_to(pathcontext, -14.14, -14.15);
+        cairo_move_to(pathcontext, -35.35,  35.35);
+        cairo_line_to(pathcontext, -14.15,  14.15);
+        cairo_move_to(pathcontext,  35.35, -35.35);
+        cairo_line_to(pathcontext,  14.15, -14.15);
+        cairo_move_to(pathcontext,  35.35,  35.35);
+        cairo_line_to(pathcontext,  14.15,  14.15);
         symbolobj->filled = 0;
     }
     else {

@@ -1306,8 +1306,8 @@ class PipedViewerPQ(QMainWindow):
             self.__activepainter.setPen(Qt.NoPen)
         else:
             self.__activepainter.setBrush(Qt.NoBrush)
-            # pen width is 10% of the width of the symbol
-            mypen = QPen(mybrush, 10.0, Qt.SolidLine, Qt.FlatCap, Qt.MiterJoin)
+            # pen width is 8% of the width of the symbol
+            mypen = QPen(mybrush, 8.0, Qt.SolidLine, Qt.FlatCap, Qt.MiterJoin)
             self.__activepainter.setPen(mypen)
         # Unmodified symbols are 100x100 pixels 
         scalefactor = ptsize * self.widthScalingFactor() / 100.0

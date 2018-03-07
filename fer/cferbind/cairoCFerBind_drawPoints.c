@@ -70,13 +70,13 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
         unitfactor = 72.0 / instdata->pixelsperinch;
     }
 
-    /* Scaling factor to use for these symbols "drawn" as 100x100 pixel paths */
+    /* Scaling factor to use for these symbols typically "drawn" as 100x100 pixel paths */
     scalefactor  = symsize * instdata->widthfactor;
     scalefactor *= unitfactor / 100.0;
 
-    /* Assign the pen and join style */
+    /* Assign the pen and join style - pen width is 8% of the symbol width */
     cairo_save(instdata->context);
-    cairo_set_line_width(instdata->context, 10.0*scalefactor);
+    cairo_set_line_width(instdata->context, 8.0 * scalefactor);
     cairo_set_dash(instdata->context, NULL, 0, 0.0);
     cairo_set_line_cap(instdata->context, CAIRO_LINE_CAP_BUTT);
     cairo_set_line_join(instdata->context, CAIRO_LINE_JOIN_MITER);

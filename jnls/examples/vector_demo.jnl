@@ -180,25 +180,6 @@ set region/x=100w:10w/y=0:60     		! North Atlantic
 set data etopo60		 		! 60 minute bathymetry data set
 FILL/PALETTE=land_sea/TITLE="Coastal Winds"/level=(-10000,0,1000)(0,3000,300) rose
 
-! create a data file of scattered X,Y,U,V quadruples to be plotted
-let coastmask = if rose[d=etopo60] ge 0 and rose[d=etopo60] le 20 then 1
-user/command=sample/opt2=c/file=vdtmp_u.raw uwnd[d=monthly_navy_winds], x*coastmask, y*coastmask, 1/0, 1/0
-user/command=sample/opt2=c/file=vdtmp_v.raw vwnd[d=monthly_navy_winds], x*coastmask, y*coastmask, 1/0, 1/0
-sp grep -v "99.9" vdtmp_u.raw > vdtmp_u.dat
-sp grep -v "99.9" vdtmp_v.raw > vdtmp_v.dat
-file/var=uwnd,xp,yp vdtmp_u.dat
-file/var=vwnd,xp,yp vdtmp_v.dat
-list/nohead/file=vdtmp_uv.dat/format=(4f10.4)/i=1:999 xp,yp,uwnd[d=vdtmp_u.dat],vwnd[d=vdtmp_v.dat]
-sp echo "0 0 0 0" >> vdtmp_uv.dat
-
-say .    yes? ! now overlay the vectors
-say .    yes? go scattered_vectors  vdtmp_uv.dat 15 clock
-say .    yes? PLOT/VS/D=vdtmp_uv.dat/@aros/OVERLAY/LINE/COLOR=lack/THICK=2/nolab arrow_x,arrow_y
-
-! now overlay the vectors 
-go scattered_vectors  vdtmp_uv.dat 15 clock
-PLOT/VS/D=vdtmp_uv.dat/@aros/OVERLAY/LINE/COLOR=black/THICKNESS=2/nolabels arrow_x,arrow_y
-GO land blue
 
 say ...
 say Finally, please also run the demo script poly_vec_demo.jnl for

@@ -10091,8 +10091,8 @@ LIST X1
  4   / 4:  0.3550
  5   / 5:  0.3790
  6   / 6:  0.3930
- 7   / 7:  0.4780
- 8   / 8:  0.5150
+ 7   / 7:  0.0000
+ 8   / 8:  0.0000
 SHOW DATA
      currently SET data sets:
     1> ./data/EZ.DAT  (default)
@@ -77946,7 +77946,7 @@ f is ready and AVAILABLE
  
 sh func/details date1900
 DATE1900(formatted date)
-    Convert date strings into Julian days since 1-Jan-1900
+    Convert date strings into Julian days since 1-Jan-1900 (integer days using Gregorian calendar)
         Axes of result:
           X: inherited from argument(s)
           Y: NORMAL (no axis)
@@ -77954,7 +77954,7 @@ DATE1900(formatted date)
           T: NORMAL (no axis)
           E: NORMAL (no axis)
           F: NORMAL (no axis)
-    formatted date: dd-MMM-yy or dd-MMM-yyyy  (e.g. "20-Dec-00") (none) (STRING)
+    formatted date: dd-MMM-yy or dd-MMM-yyyy  (e.g. "20-Dec-00") (STRING)
         Influence on output axes:
           X: passed to result grid
           Y: no influence (indicate argument limits with "[]")
@@ -109288,10 +109288,10 @@ anno /xpos=6.2 /ypos=2.0 /valign=0 /size=0.08 "trilfill"
 anno /xpos=7.2 /ypos=2.0 /valign=0 /size=0.08 "trirempty"
 anno /xpos=8.2 /ypos=2.0 /valign=0 /size=0.08 "trirfill"
  
-anno /xpos=1.2 /ypos=1.0 /valign=0 /size=0.08 "wedgdown"
-anno /xpos=2.2 /ypos=1.0 /valign=0 /size=0.08 "wedgup"
-anno /xpos=3.2 /ypos=1.0 /valign=0 /size=0.08 "wedgleft"
-anno /xpos=4.2 /ypos=1.0 /valign=0 /size=0.08 "wedgright"
+anno /xpos=1.2 /ypos=1.0 /valign=0 /size=0.08 "chevdown"
+anno /xpos=2.2 /ypos=1.0 /valign=0 /size=0.08 "chevup"
+anno /xpos=3.2 /ypos=1.0 /valign=0 /size=0.08 "chevleft"
+anno /xpos=4.2 /ypos=1.0 /valign=0 /size=0.08 "chevright"
  
 anno /xpos=5.2 /ypos=1.0 /valign=0 /size=0.08 "wyedown"
 anno /xpos=6.2 /ypos=1.0 /valign=0 /size=0.08 "wyeup"
@@ -109343,10 +109343,10 @@ plot /over /nokey /symbol=trilfill  /vs {6.0},{2.0}
 plot /over /nokey /symbol=trirempty /vs {7.0},{2.0}
 plot /over /nokey /symbol=trirfill  /vs {8.0},{2.0}
  
-plot /over /nokey /symbol=wedgdown  /vs {1.0},{1.0}
-plot /over /nokey /symbol=wedgup    /vs {2.0},{1.0}
-plot /over /nokey /symbol=wedgleft  /vs {3.0},{1.0}
-plot /over /nokey /symbol=wedgright /vs {4.0},{1.0}
+plot /over /nokey /symbol=chevdown  /vs {1.0},{1.0}
+plot /over /nokey /symbol=chevup    /vs {2.0},{1.0}
+plot /over /nokey /symbol=chevleft  /vs {3.0},{1.0}
+plot /over /nokey /symbol=chevright /vs {4.0},{1.0}
  
 plot /over /nokey /symbol=wyedown   /vs {5.0},{1.0}
 plot /over /nokey /symbol=wyeup     /vs {6.0},{1.0}

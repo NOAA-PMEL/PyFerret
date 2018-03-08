@@ -92,7 +92,6 @@ C
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
 	COMMON/AXLWID/XWID,YWID
 
-
 	REAL*8  DIFF, difft
 	REAL*8  td, ytemp1, tfact_d, yfact_d
 	REAL    delt, rem, angl, t_max
@@ -177,7 +176,6 @@ C     SET PARAMETERS.
 
         tic = delt/dt
         ticd = delt/dt
-
 
 C set up for plotting graticules across at tic marks
         
@@ -408,7 +406,6 @@ C THE LABELS
 
       IF (IABS(LABEL).EQ.1) THEN
 
-
          IF (MOD(imin,labint) .EQ. 0 .AND. hrint.LE.1 .AND. labsecs) THEN
             WRITE(SYM,86) ihr, imin, isec
             CALL scinot_d(Td+TICd,YTEMP1,angl,CSIZE,8,SYM,0,wid,tfact_d, yfact_d)
@@ -440,7 +437,7 @@ C             ELSE:
 65       FORMAT(A6,1X,A4)
          WRITE (BUFF, 65) DATE, YEAR
          TSYM=TDAY+(T+TIC-TDAY-SYMWID(CSIZE,14,BUFF)/TFACT)*.5
-         CALL SYMBEL(TSYM,YTEMP2,angl,CSIZE,14,BUFF)
+         CALL SYMBEL(TSYM,YTEMP2,angl,CSIZE,14,BUFF) 
          datelabel = .TRUE.
       ENDIF
    60 TDAY=T+TIC
@@ -454,18 +451,6 @@ C             ELSE:
       IF(ITIME(13:14)//ITIME(1:12) .LE.
      .   ITIME2(13:14)//ITIME2(1:12)) GO TO 10
 
-c      IF(IDDB.EQ.0) RETURN
-c
-c      IF(IABS(LABEL).EQ.1.AND.IDAY.EQ.IDDB*(IDAY/IDDB) ) THEN
-c         IF (IHR3 .GE. 4) THEN
-c           CALL TIME2(ITIME,SYM)
-c	   READ(SYM,55) DATE, YEAR
-c	   WRITE (BUFF, 65) DATE, YEAR
-c           TSYM=TDAY+(T-TDAY-SYMWID(CSIZE,14,BUFF)/TFACT)*.5
-c           CALL SYMBEL(TSYM,YTEMP2,angl,CSIZE,14,BUFF)
-c         ENDIF
-c      ENDIF
-
 c Finish out the line
       CALL PLOT (tlo,y,0,0)
       t = TLO + DIFF(ITIME1, ITIME2)/dt
@@ -473,7 +458,7 @@ c Finish out the line
 
 * Label with day/year for axes shorter than an hour
 
-      IF (IDDB.NE.0 .AND. .NOT.datelabel) THEN
+      IF (IABS(LABEL).EQ.1 .AND. IDDB.NE.0 .AND. .NOT.datelabel) THEN
          CALL TIME2(ITIME,SYM)
 	 READ(SYM,55) DATE, YEAR
          WRITE (BUFF, 65) DATE, YEAR

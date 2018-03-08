@@ -67,6 +67,7 @@
 * V581 *acm*  3/05  axis-independent time coordinates are calculated with default 
 *                   calendar, so do not get cal_id when converting to date string
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
+* v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'

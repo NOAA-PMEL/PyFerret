@@ -93,6 +93,7 @@
 * V71   *acm* 01/17 Ticket 2492. For single-variable LIST/FORMAT=comma or /FORMAT=tab listings, 
 *                   /NOROW had no effect; and there is an extra longitude location label below 
 *                   the header even when the longitude has been averaged away.
+* v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"

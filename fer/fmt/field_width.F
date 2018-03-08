@@ -49,6 +49,7 @@
 * V600  1/06 *acm*  prevent values of LOG10(0.0) 
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
+* v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'

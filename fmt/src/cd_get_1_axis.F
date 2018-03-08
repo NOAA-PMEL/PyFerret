@@ -208,6 +208,8 @@
 * v720 3/2017 *acm* Ticket 2246. Call CD_GET_TIME_UNITS routine to get t0 date and time units 
 * V72 6/17 *acm* For trac enhancement #767 -- dynamic coordinate storage 
 * V73+ 12/17 *acm* Issue #1848: apply set_regular flag once the coordinates have been set up
+*  V75  ACM  2/2018 As in the DSG branch, pass line_direction(iaxis) to 
+*                 cd_get_line_direction as an argument
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -650,9 +652,8 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * Use attributes to try to determine the orientation and 
 * direction of the axis
 
-      buff = line_units(iaxis)
-      CALL CD_GET_LINE_DIRECTION (dset, ivar, iaxis, vname, 
-     .   line_units(iaxis), do_warn)
+      CALL CD_GET_LINE_DIRECTION (dset, ivar, vname, line_units(iaxis), 
+     .   do_warn, line_direction(iaxis))
 
 * longitude axes may be encoded "west" (discontinuous at 180, East negative,
 * West positive) or "east" (standard - 0->360 east from Greenwhich)

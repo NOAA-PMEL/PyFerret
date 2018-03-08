@@ -1,5 +1,5 @@
-      SUBROUTINE CD_GET_LINE_DIRECTION (dset, ivar, iaxis,
-     .     vname, linunits, do_warn)
+      SUBROUTINE CD_GET_LINE_DIRECTION (dset, ivar,
+     .     vname, linunits, do_warn, dir_code)
      
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -43,6 +43,7 @@
 *  V72+ ACM 10/2015 If using axis names, compare the right # of characters
 *  V73+ ACM  1/2018 issue 1851: If direction is reduced down to using axis names, 
 *                   see if there were unrelated units that should trump the name
+*  V75  ACM  2/2018 As in the DSG branch, work on DIR_CODE which is line_direction(iaxis)
 *
 *      include files: 
       
@@ -61,7 +62,7 @@
 * calling arguments
       LOGICAL do_warn
       INTEGER dset, ivar, iaxis, idir
-      CHARACTER*(*) vname, linunits
+      CHARACTER*(*) vname, linunits, dir_code
 
 * local declarations
       LOGICAL TM_HAS_STRING, NC_GET_ATTRIB, got_it, yyyymmdd_time
@@ -84,7 +85,7 @@
 * Use attributes to try to determine the orientation and 
 * direction of the axis
 
-      line_direction(iaxis) = 'NA'
+      dir_code = 'NA'
 
       vlen = TM_LENSTR1(vname)
 
@@ -105,22 +106,22 @@
          istat = STR_UPCASE( axis_dir, axis_dir )
          IF (axis_dir.EQ.'T' .OR. axis_dir.EQ.'L' .OR.
      .             axis_dir.EQ.'t' .or. axis_dir.eq.'l') THEN 
-            line_direction(iaxis) = 'TI'  ! time
+            dir_code = 'TI'  ! time
           ELSE IF (axis_dir.EQ.'X' .OR. axis_dir.EQ.'I' .OR.
      .             axis_dir.eq.'x' .or. axis_dir.eq.'i') THEN
-            line_direction(iaxis) = 'XX'
+            dir_code = 'XX'
          ELSE IF (axis_dir.EQ.'Y' .OR. axis_dir.EQ.'J' .OR.
      .            axis_dir.eq.'y' .or. axis_dir.eq.'j') THEN
-            line_direction(iaxis) = 'YY'
+            dir_code = 'YY'
          ELSE IF (axis_dir.EQ.'Z' .OR. axis_dir.EQ.'K' .OR.
      .            axis_dir.eq.'z' .or. axis_dir.eq.'k') THEN
-            line_direction(iaxis) = 'DU'
+            dir_code = 'DU'
          ELSE IF (axis_dir.EQ.'E' .OR. axis_dir.EQ.'M' .OR.
      .            axis_dir.eq.'e' .or. axis_dir.eq.'m') THEN
-            line_direction(iaxis) = 'EE'
+            dir_code = 'EE'
          ELSE IF (axis_dir.EQ.'F' .OR. axis_dir.EQ.'N' .OR.
      .            axis_dir.eq.'f' .or. axis_dir.eq.'n') THEN
-            line_direction(iaxis) = 'FF'
+            dir_code = 'FF'
          ENDIF
       ELSE
          axis_dir = char_init01
@@ -129,7 +130,7 @@
 
 * ... check for a CARTESIAN_AXIS attribute, if still undetermined
 
-      IF (line_direction(iaxis) .EQ. 'NA') THEN
+      IF (dir_code .EQ. 'NA') THEN
 
          maxlen = 1
          got_it = NC_GET_ATTRIB(dset, ivar, 'cartesian_axis',
@@ -145,22 +146,22 @@
          IF (got_it) THEN
             IF (axis_dir.EQ.'T' .OR. axis_dir.EQ.'L' .OR.
      .          axis_dir.EQ.'t' .or. axis_dir.eq.'l') THEN 
-               line_direction(iaxis) = 'TI'  ! time
+               dir_code = 'TI'  ! time
             ELSE IF (axis_dir.EQ.'X' .OR. axis_dir.EQ.'I' .OR.
      .               axis_dir.eq.'x' .or. axis_dir.eq.'i') THEN
-            line_direction(iaxis) = 'WE'
+            dir_code = 'WE'
             ELSE IF (axis_dir.EQ.'Y' .OR. axis_dir.EQ.'J' .OR.
      .               axis_dir.eq.'y' .or. axis_dir.eq.'j') THEN
-             line_direction(iaxis) = 'SN'
+             dir_code = 'SN'
             ELSE IF (axis_dir.EQ.'Z' .OR. axis_dir.EQ.'K' .OR.
      .               axis_dir.eq.'z' .or. axis_dir.eq.'k') THEN
-               line_direction(iaxis) = 'DU'
+               dir_code = 'DU'
             ELSE IF (axis_dir.EQ.'E' .OR. axis_dir.EQ.'M' .OR.
      .            axis_dir.eq.'e' .or. axis_dir.eq.'m') THEN
-               line_direction(iaxis) = 'EE'
+               dir_code = 'EE'
             ELSE IF (axis_dir.EQ.'F' .OR. axis_dir.EQ.'N' .OR.
      .            axis_dir.eq.'f' .or. axis_dir.eq.'n') THEN
-               line_direction(iaxis) = 'FF'
+               dir_code = 'FF'
             ENDIF
          ELSE
             axis_dir = char_init01
@@ -172,18 +173,18 @@
 *     be on a non-coordinate varable. Those are found in 
 *     cd_get_generic_grids.
 
-      IF (line_direction(iaxis) .EQ. 'NA') THEN
+      IF (dir_code .EQ. 'NA') THEN
 
          maxlen = 20
          got_it = NC_GET_ATTRIB(dset, ivar, 'cf_role',
      .              do_warn, vname(:vlen), maxlen, attlen, 
      .              attoutflag, buff, val)
-         IF (got_it) line_direction(iaxis) = 'EE'
+         IF (got_it) dir_code = 'EE'
       ENDIF
 
 * ... check for a _CoordinateAxisType attribute, if still undetermined
 
-      IF (line_direction(iaxis) .EQ. 'NA') THEN
+      IF (dir_code .EQ. 'NA') THEN
 
          maxlen = 20
          got_it = NC_GET_ATTRIB(dset, ivar, '_CoordinateAxisType',
@@ -200,19 +201,19 @@
          IF (got_it) THEN
 	    i = STR_UPCASE(upbuff, buff)
             IF (upbuff.EQ.'TIME') THEN 
-               line_direction(iaxis) = 'TI'  ! time
+               dir_code = 'TI'  ! time
             ELSE IF (upbuff.EQ.'LON' .OR. upbuff.EQ.'GEOX') THEN
-            line_direction(iaxis) = 'WE'
+            dir_code = 'WE'
             ELSE IF (upbuff.EQ.'LAT' .OR. upbuff.EQ.'GEOY') THEN
-             line_direction(iaxis) = 'SN'
+             dir_code = 'SN'
             ELSE IF (upbuff.EQ.'HEIGHT') THEN
-               line_direction(iaxis) = 'UD'
+               dir_code = 'UD'
             ELSE IF (upbuff.EQ.'PRESSURE') THEN
-               line_direction(iaxis) = 'DU'
+               dir_code = 'DU'
             ELSE IF (upbuff.EQ.'ENSEMBLE') THEN
-               line_direction(iaxis) = 'EE'
+               dir_code = 'EE'
             ELSE IF (upbuff.EQ.'RUNTIME') THEN
-               line_direction(iaxis) = 'FF'
+               dir_code = 'FF'
             ENDIF
 	 
 	    IF (upbuff.EQ.'HEIGHT' .OR. 
@@ -225,9 +226,9 @@
                IF (got_it) THEN
 	          i = STR_UPCASE(upbuff, buff)
 	          IF (upbuff.EQ.'UP')
-     .             line_direction(iaxis) = 'DU'
+     .             dir_code = 'DU'
 	          IF (upbuff.EQ.'DOWN')
-     .             line_direction(iaxis) = 'UD'
+     .             dir_code = 'UD'
                ENDIF
             ENDIF
          ENDIF
@@ -272,16 +273,16 @@
       istat = STR_UPCASE( vupcase, vname )
 
 
-      IF (line_direction(iaxis) .EQ. 'NA' .OR. 
-     .    line_direction(iaxis) .EQ. 'XX' .OR.
-     .    line_direction(iaxis) .EQ. 'YY' .OR.
-     .    line_direction(iaxis) .EQ. 'FF') THEN
+      IF (dir_code .EQ. 'NA' .OR. 
+     .    dir_code .EQ. 'XX' .OR.
+     .    dir_code .EQ. 'YY' .OR.
+     .    dir_code .EQ. 'FF') THEN
 
       IF ( units .LT. 0 ) THEN
-	 IF (line_direction(iaxis) .EQ. 'FF') THEN
-	    line_direction(iaxis) = 'FI'  ! forecast time
+	 IF (dir_code .EQ. 'FF') THEN
+	    dir_code = 'FI'  ! forecast time
 	 ELSE
-            line_direction(iaxis) = 'TI'  ! time
+            dir_code = 'TI'  ! time
 	 ENDIF
 
       ELSEIF ( units .EQ. 4 ) THEN     ! degrees
@@ -295,7 +296,7 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
      .   .OR. TM_HAS_STRING(linunits, 'degree_S')
      .   .OR. TM_HAS_STRING(linunits, 'degrees_S')
      .   .OR. TM_HAS_STRING(linunits, 'LAT') ) THEN 
-            line_direction(iaxis) = 'SN'
+            dir_code = 'SN'
         ELSEIF ( TM_HAS_STRING(linunits, 'EAST')
      .   .OR. TM_HAS_STRING(linunits, 'WEST')
      .   .OR. TM_HAS_STRING(linunits, 'degreeE')
@@ -307,50 +308,50 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
      .   .OR. TM_HAS_STRING(linunits, 'degree_W')
      .   .OR. TM_HAS_STRING(linunits, 'degrees_W')
      .   .OR. TM_HAS_STRING(linunits, 'LON') ) THEN 
-            line_direction(iaxis) = 'WE'
-        ELSEIF ( line_direction(iaxis) .EQ. 'XX') THEN
-                        line_direction(iaxis) = 'WE'
-        ELSEIF ( line_direction(iaxis) .EQ. 'YY') THEN
-                        line_direction(iaxis) = 'SN'
+            dir_code = 'WE'
+        ELSEIF ( dir_code .EQ. 'XX') THEN
+                        dir_code = 'WE'
+        ELSEIF ( dir_code .EQ. 'YY') THEN
+                        dir_code = 'SN'
         ENDIF
 
       ELSEIF ( units .EQ. pun_millibars
      .   .OR.  units .EQ. pun_decibars ) THEN 
-         line_direction(iaxis) = 'UD'
+         dir_code = 'UD'
       ELSEIF ( units .EQ. 14
      .   .OR.  units .EQ. 15   ) THEN         ! layer or level
-         line_direction(iaxis) = 'UD'
+         dir_code = 'UD'
 * ... then check stray clues
          ELSEIF ( TM_HAS_STRING(linunits, 'LAT') ) THEN
-         line_direction(iaxis) = 'SN'
+         dir_code = 'SN'
       ELSEIF ( TM_HAS_STRING(linunits, 'LON') ) THEN
-         line_direction(iaxis) = 'WE'
+         dir_code = 'WE'
       ENDIF
       ENDIF
 
       IF (units .EQ. 4) THEN    ! degrees
-         IF (line_direction(iaxis) .EQ. 'NA' ) THEN
+         IF (dir_code .EQ. 'NA' ) THEN
             IF ( vupcase(1:1) .EQ. 'Y'
      .      .OR. INDEX(vupcase, 'LAT') .GT. 0 ) THEN
-               line_direction(iaxis) = 'SN'
+               dir_code = 'SN'
             ELSEIF ( vupcase(1:1) .EQ. 'X'
      .      .OR. INDEX(vupcase, 'LON') .GT. 0 ) THEN
-               line_direction(iaxis) = 'WE'
+               dir_code = 'WE'
 ! 8/97: "Y" anywhere in name as a last ditch attempt to id it
             ELSEIF ( INDEX(vupcase, 'Y')   .GT. 0 ) THEN
-               line_direction(iaxis) = 'SN'
+               dir_code = 'SN'
             ELSE
-               line_direction(iaxis) = 'WE'
+               dir_code = 'WE'
             ENDIF
          ENDIF
-	 IF (line_direction(iaxis) .EQ. 'WE') THEN
+	 IF (dir_code .EQ. 'WE') THEN
 	    linunits = 'degrees_east'
 	    slen = TM_LENSTR1(linunits)
 	    dummy = 1.
 	    CALL CD_REPLACE_ATTR (dset, ivar, 'units', NF_CHAR, slen,
      .            linunits, dummy, status)
 	 ENDIF
-	 IF (line_direction(iaxis) .EQ. 'SN') THEN
+	 IF (dir_code .EQ. 'SN') THEN
 	    linunits = 'degrees_north'
 	    slen = TM_LENSTR1(linunits)
 	    dummy = 1.
@@ -364,17 +365,17 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
       got_it = NC_GET_ATTRIB( dset,ivar,'long_name',
      .           do_warn, vname(:vlen), maxlen, attlen, attoutflag, 
      .           buff, val)
-      IF ( got_it .AND. line_direction(iaxis) .EQ. 'NA' ) THEN
+      IF ( got_it .AND. dir_code .EQ. 'NA' ) THEN
          IF (STR_CASE_BLIND_COMPARE('elev',buff(:4)) .EQ. str_eq) 
-     .           line_direction(iaxis) = 'DU'
+     .           dir_code = 'DU'
          IF (STR_CASE_BLIND_COMPARE('height',buff(:6)) .EQ. str_eq) 
-     .           line_direction(iaxis) = 'DU'
+     .           dir_code = 'DU'
          IF (STR_CASE_BLIND_COMPARE('level',buff(:5)) .EQ. str_eq) 
-     .           line_direction(iaxis) = 'DU'
+     .           dir_code = 'DU'
          IF (STR_CASE_BLIND_COMPARE('layer',buff(:5)) .EQ. str_eq) 
-     .           line_direction(iaxis) = 'DU'
+     .           dir_code = 'DU'
          IF (STR_CASE_BLIND_COMPARE('depth',buff(:5)) .EQ. str_eq) 
-     .           line_direction(iaxis) = 'UD'
+     .           dir_code = 'UD'
       ENDIF
 
 * the attribute "positive=down", etc. may help
@@ -385,16 +386,16 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
       IF ( got_it ) THEN
          IF (STR_CASE_BLIND_COMPARE('west',buff(:4))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'WE'
+            dir_code = 'WE'
          ELSEIF( STR_CASE_BLIND_COMPARE('east',buff(:4))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'WE'
+            dir_code = 'WE'
          ELSEIF( STR_CASE_BLIND_COMPARE('up',buff(:2))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'DU'
+            dir_code = 'DU'
          ELSEIF( STR_CASE_BLIND_COMPARE('down',buff(:4))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'UD'
+            dir_code = 'UD'
          ENDIF
       ENDIF
 
@@ -412,41 +413,41 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
          IF (STR_CASE_BLIND_COMPARE(
      .      'time',buff(:4))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'TI'
+            dir_code = 'TI'
          ENDIF 
          IF (STR_CASE_BLIND_COMPARE(
      .      'longitude',buff(:9))          .EQ.str_eq .OR. 
      .      STR_CASE_BLIND_COMPARE(
      .      'grid_longitude',buff(:19))    .EQ.str_eq) THEN
-            line_direction(iaxis) = 'WE'
+            dir_code = 'WE'
          ENDIF 
          IF (STR_CASE_BLIND_COMPARE(
      .      'latitude',buff(:8))           .EQ.str_eq .OR.
      .      STR_CASE_BLIND_COMPARE(
      .      'grid_latitude',buff(:18))     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'SN'
+            dir_code = 'SN'
          ENDIF 
 	 
          IF (STR_CASE_BLIND_COMPARE(
      .      'depth',buff(:5))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'UD'
+            dir_code = 'UD'
          ENDIF 
 	 
          IF (STR_CASE_BLIND_COMPARE(
      .      'altitude',buff(:8))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'DU'
+            dir_code = 'DU'
          ENDIF 
          IF (STR_CASE_BLIND_COMPARE(
      .      'forecast_reference_time',buff(:24))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'FI'
+            dir_code = 'FI'
          ENDIF 
          IF (STR_CASE_BLIND_COMPARE(
      .      'realization',buff(:24))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'EE'
+            dir_code = 'EE'
          ENDIF 
       ENDIF
 
@@ -465,57 +466,57 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
          IF (STR_CASE_BLIND_COMPARE(
      .      'atmosphere_hybrid_height_coordinate',buff(:35))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'DU'
+            dir_code = 'DU'
          ENDIF 
          IF (STR_CASE_BLIND_COMPARE(
      .      'atmosphere_hybrid_sigma_pressure_coordinate',buff(:43))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'DU'
+            dir_code = 'DU'
          ENDIF
          IF (STR_CASE_BLIND_COMPARE(
      .      'atmosphere_hybrid_height_coordinate',buff(:35))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'DU'
+            dir_code = 'DU'
          ENDIF
          IF (STR_CASE_BLIND_COMPARE(
      .      'atmosphere_ln_pressure_coordinate',buff(:33))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'DU'
+            dir_code = 'DU'
          ENDIF
          IF (STR_CASE_BLIND_COMPARE(
      .      'atmosphere_sigma_coordinate',buff(:27))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'DU'
+            dir_code = 'DU'
          ENDIF
          IF (STR_CASE_BLIND_COMPARE(
      .      'atmosphere_sleve_coordinate',buff(:27))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'DU'
+            dir_code = 'DU'
          ENDIF
          IF (STR_CASE_BLIND_COMPARE(
      .      'land_ice_sigma_coordinate',buff(:25))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'DU'
+            dir_code = 'DU'
          ENDIF
          IF (STR_CASE_BLIND_COMPARE(
      .      'ocean_s_coordinate',buff(:19))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'UD'
+            dir_code = 'UD'
          ENDIF
          IF (STR_CASE_BLIND_COMPARE(
      .      'ocean_sigma_coordinate',buff(:22))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'UD'
+            dir_code = 'UD'
          ENDIF
          IF (STR_CASE_BLIND_COMPARE(
      .      'ocean_sigma_z_coordinate',buff(:24))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'UD'
+            dir_code = 'UD'
          ENDIF
          IF (STR_CASE_BLIND_COMPARE(
      .      'ocean_double_sigma_coordinate',buff(:29))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'UD'
+            dir_code = 'UD'
          ENDIF
 
       ENDIF  ! end of std names
@@ -523,33 +524,33 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
 * Still punting on axis names. If it's single-letter X, Y, Z, T,
 * or starts with XAX, YAX, etc. then give it that direction.
 
-      IF (line_direction(iaxis) .EQ. 'NA' .AND. vlen .EQ. 1) THEN
-         IF ( vupcase(1:1) .EQ. 'X') line_direction(iaxis) = 'XX'
-         IF ( vupcase(1:1) .EQ. 'Y') line_direction(iaxis) = 'YY'
-         IF ( vupcase(1:1) .EQ. 'Z') line_direction(iaxis) = 'DU'
-         IF ( vupcase(1:1) .EQ. 'T') line_direction(iaxis) = 'TI'
+      IF (dir_code .EQ. 'NA' .AND. vlen .EQ. 1) THEN
+         IF ( vupcase(1:1) .EQ. 'X') dir_code = 'XX'
+         IF ( vupcase(1:1) .EQ. 'Y') dir_code = 'YY'
+         IF ( vupcase(1:1) .EQ. 'Z') dir_code = 'DU'
+         IF ( vupcase(1:1) .EQ. 'T') dir_code = 'TI'
       ENDIF
-      IF (line_direction(iaxis).EQ.'NA') THEN
-         IF (vupcase(1:3).EQ.'XAX') line_direction(iaxis) = 'XX'
-         IF (vupcase(1:3).EQ.'YAX') line_direction(iaxis) = 'YY'
-         IF (vupcase(1:3).EQ.'ZAX') line_direction(iaxis) = 'DU'
-         IF (vupcase(1:3).EQ.'TAX') line_direction(iaxis) = 'TI'
+      IF (dir_code.EQ.'NA') THEN
+         IF (vupcase(1:3).EQ.'XAX') dir_code = 'XX'
+         IF (vupcase(1:3).EQ.'YAX') dir_code = 'YY'
+         IF (vupcase(1:3).EQ.'ZAX') dir_code = 'DU'
+         IF (vupcase(1:3).EQ.'TAX') dir_code = 'TI'
       ENDIF
 
 * If the name indicates a direction in obvious ways, use it.  But if there
 * was a units string that did NOT dictate a direction, leave undefined.
 
-      IF (line_direction(iaxis).EQ.'NA' .AND. units.EQ.no_units) THEN
-         IF (vupcase(1:3).EQ.'LON') line_direction(iaxis) = 'WE'
-         IF (vupcase(1:3).EQ.'LAT') line_direction(iaxis) = 'SN'
-         IF (vupcase(1:4).EQ.'TIME') line_direction(iaxis) = 'TI'
-         IF (vupcase(1:4).EQ.'DATE') line_direction(iaxis) = 'TI'
-         IF (vupcase(1:3).EQ.'DEP') line_direction(iaxis) = 'UD'
-         IF (vupcase(1:3).EQ.'ALT') line_direction(iaxis) = 'DU'
-         IF (vupcase(1:4).EQ.'ELEV') line_direction(iaxis) = 'DU'
-         IF (vupcase(1:3).EQ.'HEI') line_direction(iaxis) = 'DU'
-         IF (vupcase(1:5).EQ.'LAYER') line_direction(iaxis) = 'DU'
-         IF (vupcase(1:5).EQ.'LEVEL') line_direction(iaxis) = 'DU'
+      IF (dir_code.EQ.'NA' .AND. units.EQ.no_units) THEN
+         IF (vupcase(1:3).EQ.'LON') dir_code = 'WE'
+         IF (vupcase(1:3).EQ.'LAT') dir_code = 'SN'
+         IF (vupcase(1:4).EQ.'TIME') dir_code = 'TI'
+         IF (vupcase(1:4).EQ.'DATE') dir_code = 'TI'
+         IF (vupcase(1:3).EQ.'DEP') dir_code = 'UD'
+         IF (vupcase(1:3).EQ.'ALT') dir_code = 'DU'
+         IF (vupcase(1:4).EQ.'ELEV') dir_code = 'DU'
+         IF (vupcase(1:3).EQ.'HEI') dir_code = 'DU'
+         IF (vupcase(1:5).EQ.'LAYER') dir_code = 'DU'
+         IF (vupcase(1:5).EQ.'LEVEL') dir_code = 'DU'
       ENDIF
 
       RETURN

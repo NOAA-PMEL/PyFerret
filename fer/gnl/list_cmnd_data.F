@@ -648,10 +648,6 @@
 
 * As for non-comma or -tab listings, turn off these labels if /norow was given
 
-
-	 print *, ' row_ax, ndig',row_ax, ndig(row_ax)
-	 print *, ' col_ax, ndig',col_ax, ndig(col_ax)
-
 	   DO 350 n = lo6, hi6, del6
 * ... label the block of blocks (6th dimension)
 	      IF ( ndim .GE. 6 .AND. valid(6) .AND. 

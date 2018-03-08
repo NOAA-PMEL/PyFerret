@@ -1215,7 +1215,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-rm: cannot remove `input.txt': No such file or directory
+rm: cannot remove ‘input.txt’: No such file or directory
 ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3437,6 +3437,8 @@ list a.units
 list ..history
  **ERROR: variable unknown or not in data set: ..HISTORY
 list ..history
+ **ERROR: command syntax: .
+list .
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3806,7 +3808,7 @@ list substring("hello",1,-2)
  **ERROR: value out of legal range: Negative argument to function. Argument 3 : SUBSTRING
 list substring("hello",1,-3)
 *** Running ferret script: bn_append_dsg.jnl
-rm: cannot remove `test_save_dsg.nc': No such file or directory
+rm: cannot remove ‘test_save_dsg.nc’: No such file or directory
 *** Running ferret script: bn_global_atts.jnl
  LISTing to file anew_global.nc
 *** Running ferret script: bn_conventions_history.jnl
@@ -3930,7 +3932,7 @@ Replacing definition of axis TREDEF
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: invalid command: cairoCFerBind_saveWindow: unrecognized format 'HDF'
 frame/format=hdf/file=a.hdf
-rm: cannot remove `a.gif': No such file or directory
+rm: cannot remove ‘a.gif’: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3989,7 +3991,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-rm: cannot remove `WestCoastCarbon_9d9c_f562_77b5_5.nc': No such file or directory
+rm: cannot remove ‘WestCoastCarbon_9d9c_f562_77b5_5.nc’: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4037,7 +4039,7 @@ def anno/nou/xpos=0/hal=1/val=0 "My Lab"
  **ERROR: invalid command: Specify only one of /USER /NOUSER /NORM
 def anno/nou/user/xpos=0/ypos=0 "My Lab"
 *** Running ferret script: bn_auxiliary.jnl
-rm: cannot remove `layerz_test_data.txt': No such file or directory
+rm: cannot remove ‘layerz_test_data.txt’: No such file or directory
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
 SET VAR/layerz=depth noexist
@@ -4804,8 +4806,8 @@ list index,edtim,udtim,udate,edate
  LISTing to file a.nc
 *** Running ferret script: bn_spawn_fail.jnl
 ls: cannot access notafile.nowhere: No such file or directory
-rm: cannot remove `nothing.dat': No such file or directory
-cp: cannot stat `nofile.dat': No such file or directory
+rm: cannot remove ‘nothing.dat’: No such file or directory
+cp: cannot stat ‘nofile.dat’: No such file or directory
 *** Running ferret script: bn_ave_of_ave.jnl
 *** Running ferret script: bn_agg_member_syntax.jnl
  **ERROR: unknown data set: D=5.3
@@ -5541,11 +5543,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
 *** Running python script: testfervar.py
 >>> ... ... >>> >>> >>> Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
-  File "....../lib/python2.6/site-packages/pyferret/ferdset.py", line 230, in __delattr__
+  File "....../lib/python2.7/site-packages/pyferret/ferdset.py", line 230, in __delattr__
     self.__delitem__(name)
-  File "....../lib/python2.6/site-packages/pyferret/ferdset.py", line 165, in __delitem__
+  File "....../lib/python2.7/site-packages/pyferret/ferdset.py", line 165, in __delitem__
     value._removefromferret()
-  File "....../lib/python2.6/site-packages/pyferret/fervar.py", line 882, in _removefromferret
+  File "....../lib/python2.7/site-packages/pyferret/fervar.py", line 882, in _removefromferret
     raise NotImplementedError('%s is a file variable; close the dataset to remove' % fername)
 NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the dataset to remove
 

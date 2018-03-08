@@ -81,11 +81,11 @@
 
 * internal variable declarations:
 	CHARACTER	SECS_TO_DATE*20, TM_FMT*24, code*1, xtra*16
-	INTEGER		FIELD_WIDTH, TM_GET_CALENDAR_ID, min_width, width, 
-     .                  decim, numbers, n2, cal_id, iv
+	INTEGER		FIELD_WIDTH, TM_GET_CALENDAR_ID, TM_LENSTR1, 
+     .                  min_width, width, decim, numbers, n2, cal_id, iv
 	LOGICAL		GEOG_LABEL, fancy, use_sig_fig,
-     .                  modulo
-	REAL		val4, val4_orig, v2
+     .                  modulo, truncate
+	REAL		val4, val4_orig, fval
 
 * valid inputs ?  (bug fix 11/91)
         IF ( val .EQ. unspecified_val8 ) THEN
@@ -95,13 +95,14 @@
 
 * initialize
         modulo     = .FALSE.
-	width	   = MIN( 24, LEN(string) )
+	width	   = MIN( 30, LEN(string) )
 	use_sig_fig = ndec .LT. 0			! use TM_FMT
 	decim	   = ABS(ndec)
 	val4	   = val
         val4_orig  = val4
 	code	   = ' '
-	fancy	   = GEOG_LABEL( idim, grid )
+        fancy      = GEOG_LABEL( idim, grid )
+	truncate   = .FALSE.
 
 ! Note (2/3/93): GEOG_LABEL contains the removed logic
 
@@ -111,6 +112,10 @@
 	   IF ( decim .EQ. 0 ) THEN
 	      string = '*'		! too narrow to format
               RETURN                    ! bug fix 11/91
+	   ELSEIF ( decim .GT. ABS(ndec)) THEN
+	      truncate = .TRUE.
+	      decim = ABS(ndec)
+	      min_width = width
 	   ELSE
 	      decim = decim - 1
 	      GOTO 100
@@ -168,6 +173,22 @@ c	      IF (ndec .LE. 3) val4 = INT(val4 * 1000.D0)/1000.D0
                  string = SECS_TO_DATE( -val, cal_id )
               ELSE
                  CALL TSTEP_TO_DATE( grid, idim, val, decim, string )
+                 numbers = TM_LENSTR1(string)
+                 IF (decim.GT.7) THEN
+                    fval = INT(val)
+                    IF (fval .NE. val) THEN
+                       fval = val-fval
+                       xtra = TM_FMT(fval, 4, 16, n2)  
+                       IF (width-numbers .GE. n2-1) 
+     .                    string = string(:numbers)//xtra(2:n2)
+                    ELSE 
+		       string = string(:numbers)//'.0'
+		    ENDIF
+                 ENDIF
+                 IF (truncate) THEN
+		    string(numbers-3:numbers) = '***'
+		 ENDIF
+
               ENDIF
 	      RETURN
 	   ENDIF
@@ -191,6 +212,7 @@ c	      IF (ndec .LE. 3) val4 = INT(val4 * 1000.D0)/1000.D0
            IF ( LEN(string) .GE. numbers+n2+3 ) 
      .                string = string(:numbers+1)//'('//xtra(:n2)//')'
         ENDIF
+
 
 	RETURN
 	END

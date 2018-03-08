@@ -1177,6 +1177,9 @@ GO bn_def_axis_like
 GO bn_reset bn_box_edges_fcn
 GO bn_box_edges_fcn
 
+GO bn_reset bn_hi_res_time
+GO bn_hi_res_time
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

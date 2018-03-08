@@ -41,6 +41,7 @@
 * output formatting in Ferret v6.0.  This version gives a fixed unchanging
 * format.
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
+* v75  *acm* 3/18  Changes to allow for timesteps in fractional seconds
 *
 * Arguments:
 *	grid	 - grid containing a time axis
@@ -66,11 +67,12 @@
 *
 * Local definitions
         LOGICAL         ITSA_TRUEMONTH_AXIS, modulo
-	CHARACTER*20	SECS_TO_DATE, SECS_TO_DATE_OUT, buff
+	CHARACTER*30	SECS_TO_DATE, SECS_TO_DATE_OUT, buff
+	CHARACTER*12	TM_FMT, buff2
 	CHARACTER*2     linedir
-	INTEGER		axis, status, prec,
-     .                  TM_GET_CALENDAR_ID, cal_id
-	REAL*8		start_secs, offset_secs, this_secs
+	INTEGER		TM_GET_CALENDAR_ID, TM_LENSTR1,  
+     .                  axis, status, prec,cal_id, nfrac
+	REAL*8		start_secs, offset_secs, this_secs, val
 	REAL*8		SECS_FROM_BC
 
 !	REAL*8		start_secs, offset_secs, this_secs, prec_fact(6)
@@ -126,8 +128,20 @@
 	buff = SECS_TO_DATE_OUT(this_secs, cal_id, modulo, prec)
 
 * Select the requested precision
-	IF ( prec .GT. 6 ) THEN		! full precision
+	IF ( prec .GE. 6 ) THEN		! full precision
 	   date = buff
+	   IF (line_tunit(axis) .EQ. 1) THEN  ! Deal with fractional seconds
+	      val = INT(tstep)
+	      IF (val .NE. tstep) THEN
+	         val = tstep - val
+	         buff2 = TM_FMT(val, 4, 16, nfrac)
+		 date = buff(:TM_LENSTR1(buff))//buff2(2:nfrac)
+		 precision = 7
+	      ELSE 
+	         IF ( prec .EQ. 7) date = buff(:TM_LENSTR1(buff))//'.0'
+	      ENDIF
+	   ENDIF
+
 	ELSEIF ( prec .GE. 3 ) THEN	! dd-mmm-$_...
 	   date = buff( :date_str_len(prec) )
 	ELSEIF ( prec .EQ. 2 ) THEN	! mmm-$_

@@ -44,6 +44,8 @@ C V7.1 *acm* 8/2016 Ticket 2466: Graticule lines too dense
 * *acm* - 9/16   ticket 2466: graticule lines on major tics by default
 *                Rewrite this routine to make it echo taxis4.F
 * *acm* - 1/17   Fix too-many labels on tic marks. Add year to Month-Day labels
+* *acm* - 3/18   Issue #1856 Additions for high-res time axes; e.g. plot a minute of data
+* *acm* - 3/18   Issue #1856 Additions for high-res time axes; e.g. plot a minute of data
 C
 C**
 C**    @(#)tayis4.f	1.1   12/09/15
@@ -94,12 +96,11 @@ C
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
 	COMMON/AXLWID/XWID,YWID
 
-
 	REAL*8  DIFF, difft
 	REAL*8  td, xtemp1, tfact_d, xfact_d
-	REAL    delt, rem, angl
+	REAL    delt, rem, angl, t_max
 	INTEGER is_hours_axis, labint, ticint, hrint
-	LOGICAL hvytic
+	LOGICAL hvytic, labsecs, datelabel
 
 * Parameters for drawing tics across plot
 
@@ -123,6 +124,7 @@ C
   80	FORMAT(I2.2)
   82	FORMAT(I2.2,':00')
   84	FORMAT(I2.2,':',I2.2)
+  86    FORMAT(I2.2,':',I2.2,':',I2.2)
 
 	difft = DIFF(ITIME1,ITIME2)
 	angl = 0.
@@ -140,6 +142,11 @@ C     SET PARAMETERS.
         labint = 120
 	ticint = labint
 	hrint = 1
+
+	labsecs = .FALSE.
+	datelabel = .FALSE.
+	
+	t_max = TLO + DIFF(ITIME1, ITIME2)/dt
       
 ! On short-time interval axes, tic and label interval
 ! for hours axis (is_hours_axis eq 1) if difft > 60,
@@ -251,7 +258,7 @@ C
 
 c Check whether to make an hour label at the start of the axis
 c ihdb is hour-label frequency
-      IF (IABS(LABEL).EQ.1 .AND. ihdb.EQ.1) THEN
+      IF (IABS(LABEL).EQ.1 .AND. (ihdb.EQ.1 .OR. delt.LE.1.)) THEN
 	 IF (IMIN .EQ. 0) THEN
 	    WRITE(SYM,82) IHR
 	    CALL scinot_d(XTEMP1,td,angl,CSIZE,5,SYM,0,wid,xfact_d, tfact_d)
@@ -268,7 +275,7 @@ c Set itime1, itime3 as above
       CALL TIME1(1,ITIME,2,' ',I3,ITIME3,delt) 
       ITIME = ITIME3
 
-C      LOOP:
+C      LOOP: counting large tics.
        ltic = 0
   110  CONTINUE
 
@@ -285,7 +292,22 @@ C      LOOP:
 	   ENDIF
            GO TO 110
         ENDIF
-     
+
+c Interval is a minute or less. Set controls for this case
+
+	IF (ltic.EQ.0 .AND. delt.LE.1) THEN
+
+           labsecs = .TRUE.
+
+	   ltic = delt*60./ 15.
+	   delt = 0.25
+
+	   ticd = (DIFF(ITIME1, ITIME2)/dt)/ FLOAT(ltic)
+	   tic = ticd
+	   
+	   XTEMP1 = XTEMP1 - 1.1*CSIZE/XFACT
+	   XTEMP2 = XTEMP2 - 2.1*CSIZE/XFACT
+	ENDIF
 ! IF no large tics, and if graticules at just the large tics were
 ! requested, then plot graticules at the small tics
 
@@ -317,9 +339,12 @@ C      LOOP:
 
 c ----
 
-C   LOOP:
+C     LOOP:  Draw the axis line, tics, and labels
+
    10 CALL PLOT(X,T,0,0)
       IF ( interrupted ) RETURN		! TMAP interrupt
+
+c        Any small tics?
       DO 20 I=1,NSMTIC
               CALL PLOTT7(X,T+FLOAT(I)*TDIST,XFACT,TFACT,1,INML)
 
@@ -341,8 +366,9 @@ C   LOOP:
 	  
       hvytic = (MOD(imin,labint) .EQ. 0)
       IF (heavy_at_labels) THEN
-             hvytic = ( (imin .EQ. 0 .AND. MOD(ihr,hrint).EQ.0) .OR. 
-     .                  (MOD(imin,labint) .EQ. 0 .AND. hrint.LE.1) )
+         hvytic = ( (imin .EQ. 0 .AND. MOD(ihr,hrint).EQ.0) .OR. 
+     .              (MOD(imin,labint) .EQ. 0 .AND. hrint.LE.1) .OR. 
+     .               ltic.EQ.0 )
       ENDIF
 
       IF(hvytic)THEN
@@ -388,16 +414,24 @@ c           graticule line at tic
 C THE LABELS
 
       IF (IABS(LABEL).EQ.1) THEN
-         IF (imin .EQ. 0 .AND. MOD(ihr,hrint).EQ.0) THEN
-            WRITE(SYM,82) IHR
-            CALL scinot_d(XTEMP1,Td+TICd,0.,CSIZE,5,SYM,0,wid,xfact_d, tfact_d)
+         IF (MOD(imin,labint) .EQ. 0 .AND. hrint.LE.1 .AND. labsecs) THEN
+            WRITE(SYM,86) ihr, imin, isec
+            CALL scinot_d(XTEMP1,Td+TICd,0.,CSIZE,8,SYM,0,wid,xfact_d, tfact_d)
+
          ELSE
-            IF (MOD(imin,labint) .EQ. 0 .AND. hrint.LE.1) THEN
-               WRITE(SYM,84) ihr, imin
+            IF (imin .EQ. 0 .AND. MOD(ihr,hrint).EQ.0) THEN
+               WRITE(SYM,82) IHR
                CALL scinot_d(XTEMP1,Td+TICd,0.,CSIZE,5,SYM,0,wid,xfact_d, tfact_d)
+            ELSE
+               IF (MOD(imin,labint) .EQ. 0 .AND. hrint.LE.1) THEN
+                  WRITE(SYM,84) ihr, imin
+                  CALL scinot_d(XTEMP1,Td+TICd,0.,CSIZE,5,SYM,0,wid,xfact_d, tfact_d)
+               ENDIF
             ENDIF
          ENDIF
       ENDIF
+
+c Label with day/year below the axis
 
       CALL TIME1(1,ITIME,2,' ',I3,ITIME3,delt)
       IF(IDDB.EQ.0.OR.IABS(LABEL).NE.1) GO TO 70
@@ -413,6 +447,7 @@ C   ELSE:
 	 WRITE (BUFF, 65) DATE, YEAR
 	 TSYM=TDAY+(T+TIC-TDAY-SYMWID(CSIZE,14,BUFF)/TFACT)*.5
 	 CALL SYMBEL(XTEMP2,TSYM,90.,CSIZE,14,BUFF)
+         datelabel = .TRUE.
       ENDIF
    60 TDAY=T+TIC
    70 CONTINUE
@@ -424,28 +459,21 @@ C   ELSE:
       IF(ITIME(13:14)//ITIME(1:12) .LE.
      .   ITIME2(13:14)//ITIME2(1:12)) GO TO 10
 
-      IF(IDDB.EQ.0) RETURN
-
-      IF(IABS(LABEL).EQ.1.AND.IDAY.EQ.IDDB*(IDAY/IDDB) ) THEN
-         IF (IHR3.GE.4) THEN
-           CALL TIME2(ITIME,SYM)
-	   READ(SYM,55) DATE, YEAR
-	   IF (MONYRLAB) THEN
-	      WRITE (BUFF, 65) DATE, YEAR
-              TSYM=TDAY+(T-TDAY-SYMWID(CSIZE,14,BUFF)/TFACT)*.5
-              CALL SYMBEL(XTEMP2,TSYM,90.,CSIZE,14,BUFF)
-           ELSE
-              TSYM=TDAY+(T-TDAY-SYMWID(1.5*CSIZE,6,DATE)/TFACT)*.5
-	      CALL SYMBEL(XTEMP2,TSYM,90.,1.5*CSIZE,6,DATE)
-           ENDIF
-
-         ENDIF
-      ENDIF
-
 c Finish out the line
       CALL PLOT (X,TLO,0,0)
       t = TLO + DIFF(ITIME1, ITIME2)/dt
       CALL PLOT (X,T,1,0)
+
+* Label with day/year for axes shorter than an hour
+
+      IF (IABS(LABEL).EQ.1 .AND. IDDB.NE.0 .AND. .NOT.datelabel) THEN
+         CALL TIME2(ITIME,SYM)
+	 READ(SYM,55) DATE, YEAR
+         WRITE (BUFF, 65) DATE, YEAR
+         TSYM=TLO + 0.5*DIFF(ITIME1, ITIME2)/dt - 0.5*SYMWID(CSIZE,14,BUFF)/TFACT
+         CALL SYMBEL(XTEMP2,TSYM,90.,CSIZE,14,BUFF)
+      ENDIF
+
       CALL COLOR(color0)
 
       RETURN

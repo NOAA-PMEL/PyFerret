@@ -38,6 +38,7 @@
 * Finished March 24, 2009, ACM
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * v695  *acm 2/15  Time axis may be an F axis or a T axis.
+* v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 *
 * This function returns time step values
 *
@@ -236,7 +237,7 @@
       INTEGER STR_SAME
       CHARACTER*20 datebuf
       CHARACTER*20 instring, t0string
-      INTEGER slen, dir
+      INTEGER slen, dir, get_prec, dlen
       REAL*8 ddate
       CHARACTER*16 axname(6), axunits(6)
       LOGICAL bkw1(6), mod1(6), reg1(6)
@@ -249,6 +250,8 @@
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
       
+* return date string to precision of seconds
+      get_prec = 6
 
 *     Get the new time origin (t0) string
       i = arg_lo_ss(X_AXIS, ARG2)
@@ -296,7 +299,7 @@
 *      Get the time axis value for this step
             ddate = taxdat(l1)
 *      Get the date string corresponding to time ddate
-            CALL ef_get_axis_dates(id, ARG1, ddate, dir, 1, datebuf)
+            CALL ef_get_axis_dates(id, ARG1, ddate, dir, 1, get_prec, dlen, datebuf)
 *      Convert to time from the new origin
             CALL time_since_t0(t0string, datebuf, tunit, timesincet0)
 
@@ -325,7 +328,7 @@
 *      Get the F axis value for this step
             ddate = taxdat(n1)
 *      Get the date string corresponding to time ddate
-            CALL ef_get_axis_dates(id, ARG1, ddate, dir, 1, datebuf)
+            CALL ef_get_axis_dates(id, ARG1, ddate, dir, 1, get_prec, dlen, datebuf)
 *      Convert to time from the new origin
             CALL time_since_t0(t0string, datebuf, tunit, timesincet0)
 

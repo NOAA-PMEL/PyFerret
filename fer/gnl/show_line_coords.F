@@ -83,7 +83,7 @@
      .		lo, hi, i, line, loest, hiest, dlen,
      .		ndec, status, delta, exlen, cal_id,
      .          prev_cal_id, less_figs
-	CHARACTER TM_FMT*14, buff*14, pt_str*20, lo_str*20, extra*24
+	CHARACTER TM_FMT*14, buff*14, pt_str*28, lo_str*28, extra*24
 	REAL	BOX_SIZE
 	REAL*8	TM_WORLD, SECS_TO_TSTEP,
      .          pt_val8, lo_val8, start, end, new_ww, new_lo, new_hi, timefac
@@ -246,17 +246,16 @@ c	          cx_hi_ww(idim,cx) = INT(cx_lo_ww(idim,cx)+1)
      .            BOX_SIZE(i,grid,idim), less_figs, 9, dlen )
            ENDIF
 	   risc_buff = ' '
-	   WRITE ( risc_buff, 3040 ) 
+	   WRITE ( risc_buff, 3040 ) ! 3040
      .			i, pt_str,
      .			buff, lo_str,
      .			extra(:exlen)
+
 	   CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
  120	CONTINUE
 
- 3030	FORMAT ( T8,A1,T14,A1,T34,A1,'BOX  ',T44,A1,'BOXLO',T62,A28 )
-c 3040   FORMAT ( T3,I6,'> ',T12,A20,T34,A9,T44,A20,T66,A14 )
- 3040   FORMAT ( T3,I6,'> ',T12,A20,T34,A10,T45,A20,T67,A14 )
-c 3040	FORMAT ( T3,I6,'> ',T12,A20,T34,A12,T48,A20,T70,A14 )
+ 3030	FORMAT ( T8,A1,T14,A1,T38,A1,'BOX  ',T52,A1,'BOXLO',T70,A28 )
+ 3040   FORMAT ( T3,I6,'> ',T12,A28,T38,A10,T49,A28,T75,A14 )
 
 * successful completion
  1000	RETURN

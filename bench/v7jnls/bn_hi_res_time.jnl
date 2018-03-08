@@ -1,0 +1,79 @@
+! bn_hi_res_time.jnl
+! see issue 1856: delta-time less than a second
+! listings and plots
+
+show mode calendar
+set mode calendar:seconds
+
+! use /home/data/saildrone/examples/sub_hz_a.nc
+! define axis/t/t0=1-jan-1970/units=seconds tax = time
+! let temp_on_time = reshape(temp_ctd_mean, t[gt=tax])
+! set view upper
+! plot temp_on_time
+
+
+define axis/t=1"02-SEP-2017:00:00:01":"02-SEP-2017:05:57":0.63/t0=1-jan-1970/units=seconds taxreg
+let temp_on_time = cos(l[gt=taxreg]/1000)
+
+! This plot is fine, showing 6 hours data
+set v lower
+plot/axes=0,1,1,1 temp_on_time
+
+
+let temp_on_time = cos(l[gt=taxreg]/30)
+
+! This plot is fine, showing 5 minutes' data
+set view upper
+plot/axes=0,1,1,1/t="2-sep-2017:01:00":"2-sep-2017:01:05" temp_on_time
+
+! Time ranges under a minute needed improved labels including seconds 
+set view lower
+plot/axes=0,1,1,1/t="2-sep-2017:01:00":"2-sep-2017:01:01" temp_on_time
+ 
+! Labels on plots where T is orthogonal
+!
+define axis/x=10:330:10/units=degrees_east lonax
+define axis/y=-80:80:10/units=degrees_north latax
+let var = temp_on_time + x[gx=lonax]/10 - y[gy=latax]/10.
+
+can view
+
+! The time label should have fractional seconds, 
+shade/l=6 var
+sh sym lab($labnum_t)
+
+shade/l=1296 var
+sh sym lab($labnum_t)
+
+! Listings with fractional seconds
+list/t="2-sep-2017:01:00:00":"2-sep-2017:01:00:03"/prec=5 temp_on_time
+
+list tax_datestring(t[gt=taxreg,L=1:5], t[gt=taxreg], "seconds")
+
+! comma and tab delimited, one var.
+
+
+list/t="2-sep-2017:01:00:00":"2-sep-2017:01:00:03"/form=comma temp_on_time
+list/t="2-sep-2017:01:00:00":"2-sep-2017:01:00:03"/form=tab temp_on_time
+
+! Multiple vars and time coords list the row header with time and index value.
+! so that would be done with /NOROW
+
+let var2_on_time = sin(l[gt=taxreg]/1400)
+list/norow/t="2-sep-2017:01:00:00":"2-sep-2017:01:00:03"/form=comma tax_datestring(t[gt=taxreg], t[gt=taxreg], "seconds"), temp_on_time,var2_on_time
+
+!
+! Note with these changes, and time resolution of minutes (mode calendar:minutes)
+! the output for list/form=tab or list/form=comma is now correct. It changes
+! from 17-AUG-1982 12,...  to   17-AUG-1982 12:00,...
+
+set mode/last calendar
+use gt4d011
+list/L=1:3/K=1/form=comma taux[i=100,j=40]
+
+! This is what these listings previously looked like
+set mode calendar:hours
+list/L=1:3/K=1/form=comma taux[i=100,j=40]
+
+
+set mode/last calendar

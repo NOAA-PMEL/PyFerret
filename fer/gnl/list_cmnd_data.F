@@ -600,6 +600,7 @@
            CALL NDIG_COORDS (grid, col_ax, lo2, hi2, del2, 
      .        bad_data, ndig(col_ax), ax_dec_pt(col_ax) )
 
+
 * Get number of decimal places for formatting coordinate labels
 
            ndig(perm(3)) = ax_dec_pt(perm(3))
@@ -690,8 +691,8 @@
      .               (.NOT.norow) ) THEN
 	            CALL TRANSLATE_TO_WORLD
      .		      ( TM_WORLD( j, grid, col_ax, box_middle ),
-     .			col_ax, grid, ndig(col_ax), line_buff(:16) )
-	            alen = TM_LENSTR1(line_buff(:16))
+     .			col_ax, grid, ndig(col_ax), line_buff(:25) )
+		    alen = TM_LENSTR1(line_buff(:25))
 	         ELSE	! 1D row-only 
 	            line_buff(1:5) = ''	
 	            alen = 0

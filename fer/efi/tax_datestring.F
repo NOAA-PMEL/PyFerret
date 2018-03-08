@@ -41,6 +41,7 @@
 * 27-Feb-2013 ACM  Fix ticket 2043: remove old code for handling single-
 *                  precision values coming in from argument 1
 * v695  *acm 2/15  Return dates on an F axis or a T axis.
+* v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 *
 * Returns string of dates 
 *
@@ -166,15 +167,10 @@
 *                                                                      |
 *                                                                      V
 
-      INTEGER i, j, k, l, m, n
-      INTEGER i1, j1, k1, l1, m1, n1
       INTEGER i3, j3, k3, l3, m3, n3
-      INTEGER slen
-      CHARACTER*20 datestring
+      INTEGER dir, slen, get_prec, status
       CHARACTER*3 precistring
-      INTEGER L2, LL, dir
       CHARACTER*255 err_msg
-      REAL*8 ddate
 
 *  variables for checking axis characteristics (modulo axes)
       CHARACTER ax_name(6)*16, ax_units(6)*16
@@ -208,6 +204,77 @@
      .                       i3, j3, k3, l3, m3, n3, slen, precistring)
       CALL LOWER_CASE(precistring)
 
+      get_prec = 6  ! dates to seconds, output precision will be set by precistring.
+
+      CALL TAX_DATESTRING_DATES (arg_1, result, arg_lo_ss, arg_incr, 
+     .                res_lo_ss, res_hi_ss, get_prec, dir, precistring, 
+     .                tmodulo, bad_flag, status)
+
+
+! Routine has reset get_prec.  Start over for consistent time-string format.
+      IF (status .NE. 0) THEN  
+         CALL TAX_DATESTRING_DATES (arg_1, result, arg_lo_ss, arg_incr, 
+     .                res_lo_ss, res_hi_ss, get_prec, dir, precistring, 
+     .                tmodulo, bad_flag, status)
+      ENDIF
+
+         
+      RETURN
+
+ 999  CALL ef_bail_out (id, err_msg)
+
+      END
+
+
+* Convert time coordinates to dates.  If fractional seconds are needed
+* for the formatting, this may be run a second time for consistent formatting
+* when some times fall on an even second.
+
+      SUBROUTINE TAX_DATESTRING_DATES (arg_1, result, arg_lo_ss, arg_incr, 
+     .                res_lo_ss, res_hi_ss, get_prec, dir, precistring, 
+     .                tmodulo, bad_flag, status)
+
+
+      IMPLICIT NONE
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
+
+      INTEGER strdf
+#ifdef double_p
+      PARAMETER (strdf = 1)
+#else
+      PARAMETER (strdf = 2)
+#endif
+
+      INTEGER id
+
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL result(strdf, memreslox:memreshix, memresloy:memreshiy, 
+     .                   memresloz:memreshiz, memreslot:memreshit,
+     .                   memresloe:memreshie, memreslof:memreshif)
+
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+
+      REAL bad_flag(EF_MAX_ARGS)
+      INTEGER get_prec, dir, status
+
+      LOGICAL tmodulo
+
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, j1, k1, l1, m1, n1
+      INTEGER i3, j3, k3, l3, m3, n3
+      INTEGER slen, dlen, prec_in
+      CHARACTER*30 datestring
+      CHARACTER*(*) precistring
+      REAL*8 ddate
+
+      status = 0
+      prec_in = get_prec
+
       n1 = arg_lo_ss(F_AXIS,ARG1)
       DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
 
@@ -231,13 +298,19 @@
          IF ( ddate .NE. bad_flag(ARG1) ) THEN
 
 *     Get the date string corresponding to time ddate for the variable ARG2
-            CALL EF_GET_AXIS_DATES 
-     .                   (id, ARG2, ddate, dir, 1, datestring)
+            CALL EF_GET_AXIS_DATES (id, ARG2, ddate, dir, 1, 
+     .                   get_prec, dlen, datestring)
+
+*     Output precision is fractions of seconds.  Redo this using that precision throughout.
+	    IF (prec_in.EQ.6 .AND. get_prec.GT.6) THEN
+	       status = -1
+	       RETURN
+	    ENDIF
 
 *     Assign the appropriate substring to the result.
             IF ( .NOT. tmodulo ) THEN
                IF ( precistring .EQ. 'sec' ) THEN
-                  slen = 20
+                  slen = MAX(dlen, 20)
                   CALL EF_PUT_STRING(datestring, slen,
      .                               result(1,i,j,k,l,m,n))
                ELSE IF ( precistring .EQ. 'min' ) THEN
@@ -328,13 +401,9 @@
          n1 = n1 + arg_incr(F_AXIS,ARG1)
  600  CONTINUE
 
-      RETURN
+	status = 0
+	
+	RETURN
 
- 999  CALL ef_bail_out (id, err_msg)
+	END
 
-*                                                                      ^
-*                                                                      |
-*                                            USER CONFIGURABLE PORTION |
-* **********************************************************************
-
-      END

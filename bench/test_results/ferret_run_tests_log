@@ -10744,6 +10744,10 @@ SPAWN_STATUS = "0"
 ! bn420_comma_delimited
  
 ! 10/2/95 - test comma and tab-delimited outputs
+! 3/2018: Note with changes for high-resolution time
+! axes,the output of LIST/FORM=COMMA var on a time
+! axis will format the time as 10-SEP-1982 20:00,
+! where previously the :mm minutes were left off.
  
 use gt4d011
  
@@ -10771,8 +10775,6 @@ LIST/ORDER=XYZT $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LONGITUDE-LATITUDE-DEPTH (m)-TIME)
    135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           2           1
  ---- L:5 T:   10-SEP-1982 20:00
  ---- K:2 Z:   15
 1.5S,27.33,27.22
@@ -10794,8 +10796,6 @@ LIST/ORDER=XYTZ $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LONGITUDE-LATITUDE-TIME-DEPTH (m))
    135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           2           1
  ---- K:2 Z:   15
  ---- L:5 T:   10-SEP-1982 20:00
 1.5S,27.33,27.22
@@ -10817,8 +10817,6 @@ LIST/ORDER=XZYT $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LONGITUDE-DEPTH (m)-LATITUDE-TIME)
    135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           3          -4
  ---- L:5 T:   10-SEP-1982 20:00
  ---- J:41 Y:   1.5S
 15,27.33,27.22
@@ -10840,8 +10838,6 @@ LIST/ORDER=XZTY $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LONGITUDE-DEPTH (m)-TIME-LATITUDE)
    135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           3          -4
  ---- J:41 Y:   1.5S
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.33,27.22
@@ -10863,8 +10859,6 @@ LIST/ORDER=XTYZ $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LONGITUDE-TIME-LATITUDE-DEPTH (m))
           135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
  ---- K:2 Z:   15
  ---- J:41 Y:   1.5S
 10-SEP-1982 20:00,27.33,27.22
@@ -10886,8 +10880,6 @@ LIST/ORDER=XTZY $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LONGITUDE-TIME-DEPTH (m)-LATITUDE)
           135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
  ---- J:41 Y:   1.5S
  ---- K:2 Z:   15
 10-SEP-1982 20:00,27.33,27.22
@@ -10909,8 +10901,6 @@ LIST/ORDER=YXZT $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-LONGITUDE-DEPTH (m)-TIME)
    1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           1           1
  ---- L:5 T:   10-SEP-1982 20:00
  ---- K:2 Z:   15
 135.5W,27.33,27.24
@@ -10932,8 +10922,6 @@ LIST/ORDER=YXTZ $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-LONGITUDE-TIME-DEPTH (m))
    1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           1           1
  ---- K:2 Z:   15
  ---- L:5 T:   10-SEP-1982 20:00
 135.5W,27.33,27.24
@@ -10955,8 +10943,6 @@ LIST/ORDER=YZXT $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE-TIME)
    1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           3          -4
  ---- L:5 T:   10-SEP-1982 20:00
  ---- I:95 X:   135.5W
 15,27.33,27.24
@@ -10978,8 +10964,6 @@ LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-DEPTH (m)-TIME-LONGITUDE)
    1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           3          -4
  ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.33,27.24
@@ -11001,8 +10985,6 @@ LIST/ORDER=YTXZ $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-TIME-LONGITUDE-DEPTH (m))
           1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           4          -5
  ---- K:2 Z:   15
  ---- I:95 X:   135.5W
 10-SEP-1982 20:00,27.33,27.24
@@ -11024,8 +11006,6 @@ LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-TIME-DEPTH (m)-LONGITUDE)
           1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           4          -5
  ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 10-SEP-1982 20:00,27.33,27.24
@@ -11047,8 +11027,6 @@ LIST/ORDER=ZXYT $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-LONGITUDE-LATITUDE-TIME)
    15      ,25      
-  row_ax, ndig           3          -4
-  col_ax, ndig           1           1
  ---- L:5 T:   10-SEP-1982 20:00
  ---- J:41 Y:   1.5S
 135.5W,27.33,27.25
@@ -11070,8 +11048,6 @@ LIST/ORDER=ZXTY $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-LONGITUDE-TIME-LATITUDE)
    15      ,25      
-  row_ax, ndig           3          -4
-  col_ax, ndig           1           1
  ---- J:41 Y:   1.5S
  ---- L:5 T:   10-SEP-1982 20:00
 135.5W,27.33,27.25
@@ -11093,8 +11069,6 @@ LIST/ORDER=ZYXT $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE-TIME)
    15      ,25      
-  row_ax, ndig           3          -4
-  col_ax, ndig           2           1
  ---- L:5 T:   10-SEP-1982 20:00
  ---- I:95 X:   135.5W
 1.5S,27.33,27.25
@@ -11116,8 +11090,6 @@ LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-LATITUDE-TIME-LONGITUDE)
    15      ,25      
-  row_ax, ndig           3          -4
-  col_ax, ndig           2           1
  ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 1.5S,27.33,27.25
@@ -11139,8 +11111,6 @@ LIST/ORDER=ZTXY $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-TIME-LONGITUDE-LATITUDE)
           15      ,25      
-  row_ax, ndig           3          -4
-  col_ax, ndig           4          -5
  ---- J:41 Y:   1.5S
  ---- I:95 X:   135.5W
 10-SEP-1982 20:00,27.33,27.25
@@ -11162,8 +11132,6 @@ LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-TIME-LATITUDE-LONGITUDE)
           15      ,25      
-  row_ax, ndig           3          -4
-  col_ax, ndig           4          -5
  ---- I:95 X:   135.5W
  ---- J:41 Y:   1.5S
 10-SEP-1982 20:00,27.33,27.25
@@ -11185,8 +11153,6 @@ LIST/ORDER=TXYZ $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-LONGITUDE-LATITUDE-DEPTH (m))
    10-SEP-1982 20:00,16-SEP-1982 22:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           1           1
  ---- K:2 Z:   15
  ---- J:41 Y:   1.5S
 135.5W,27.33,27.78
@@ -11208,8 +11174,6 @@ LIST/ORDER=TXZY $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-LONGITUDE-DEPTH (m)-LATITUDE)
    10-SEP-1982 20:00,16-SEP-1982 22:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           1           1
  ---- J:41 Y:   1.5S
  ---- K:2 Z:   15
 135.5W,27.33,27.78
@@ -11231,8 +11195,6 @@ LIST/ORDER=TYXZ $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-LATITUDE-LONGITUDE-DEPTH (m))
    10-SEP-1982 20:00,16-SEP-1982 22:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           2           1
  ---- K:2 Z:   15
  ---- I:95 X:   135.5W
 1.5S,27.33,27.78
@@ -11254,8 +11216,6 @@ LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-LATITUDE-DEPTH (m)-LONGITUDE)
    10-SEP-1982 20:00,16-SEP-1982 22:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           2           1
  ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 1.5S,27.33,27.78
@@ -11277,8 +11237,6 @@ LIST/ORDER=TZXY $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-DEPTH (m)-LONGITUDE-LATITUDE)
    10-SEP-1982 20:00,16-SEP-1982 22:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           3          -4
  ---- J:41 Y:   1.5S
  ---- I:95 X:   135.5W
 15,27.33,27.78
@@ -11300,8 +11258,6 @@ LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-DEPTH (m)-LATITUDE-LONGITUDE)
    10-SEP-1982 20:00,16-SEP-1982 22:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           3          -4
  ---- I:95 X:   135.5W
  ---- J:41 Y:   1.5S
 15,27.33,27.78
@@ -11341,8 +11297,6 @@ LIST/ORDER=XYZT $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LONGITUDE-LATITUDE-DEPTH (m))
              TIME     : 10-SEP-1982 20:00
    135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           2           1
  ---- K:2 Z:   15
 1.5S,27.33,27.22
 1.2S,27.24,27.12
@@ -11357,8 +11311,6 @@ LIST/ORDER=XYTZ $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LONGITUDE-LATITUDE-DEPTH (m))
              TIME     : 10-SEP-1982 20:00
    135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           2           1
  ---- K:2 Z:   15
  ---- L:5 T:   10-SEP-1982 20:00
 1.5S,27.33,27.22
@@ -11375,8 +11327,6 @@ LIST/ORDER=XZYT $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LONGITUDE-DEPTH (m)-LATITUDE)
              TIME     : 10-SEP-1982 20:00
    135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           3          -4
  ---- J:41 Y:   1.5S
 15,27.33,27.22
 25,27.25,27.12
@@ -11391,8 +11341,6 @@ LIST/ORDER=XZTY $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LONGITUDE-DEPTH (m)-LATITUDE)
              TIME     : 10-SEP-1982 20:00
    135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           3          -4
  ---- J:41 Y:   1.5S
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.33,27.22
@@ -11409,8 +11357,6 @@ LIST/ORDER=XTYZ $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LONGITUDE-LATITUDE-DEPTH (m))
              TIME     : 10-SEP-1982 20:00
           135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
  ---- K:2 Z:   15
  ---- J:41 Y:   1.5S
 10-SEP-1982 20:00,27.33,27.22
@@ -11429,8 +11375,6 @@ LIST/ORDER=XTZY $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LONGITUDE-DEPTH (m)-LATITUDE)
              TIME     : 10-SEP-1982 20:00
           135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
  ---- J:41 Y:   1.5S
  ---- K:2 Z:   15
 10-SEP-1982 20:00,27.33,27.22
@@ -11449,8 +11393,6 @@ LIST/ORDER=YXZT $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LATITUDE-LONGITUDE-DEPTH (m))
              TIME     : 10-SEP-1982 20:00
    1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           1           1
  ---- K:2 Z:   15
 135.5W,27.33,27.24
 134.5W,27.22,27.12
@@ -11465,8 +11407,6 @@ LIST/ORDER=YXTZ $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LATITUDE-LONGITUDE-DEPTH (m))
              TIME     : 10-SEP-1982 20:00
    1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           1           1
  ---- K:2 Z:   15
  ---- L:5 T:   10-SEP-1982 20:00
 135.5W,27.33,27.24
@@ -11483,8 +11423,6 @@ LIST/ORDER=YZXT $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
    1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           3          -4
  ---- I:95 X:   135.5W
 15,27.33,27.24
 25,27.25,27.13
@@ -11499,8 +11437,6 @@ LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
    1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           3          -4
  ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.33,27.24
@@ -11517,8 +11453,6 @@ LIST/ORDER=YTXZ $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LATITUDE-LONGITUDE-DEPTH (m))
              TIME     : 10-SEP-1982 20:00
           1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           4          -5
  ---- K:2 Z:   15
  ---- I:95 X:   135.5W
 10-SEP-1982 20:00,27.33,27.24
@@ -11537,8 +11471,6 @@ LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
           1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           4          -5
  ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 10-SEP-1982 20:00,27.33,27.24
@@ -11557,8 +11489,6 @@ LIST/ORDER=ZXYT $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LONGITUDE-LATITUDE)
              TIME     : 10-SEP-1982 20:00
    15      ,25      
-  row_ax, ndig           3          -4
-  col_ax, ndig           1           1
  ---- J:41 Y:   1.5S
 135.5W,27.33,27.25
 134.5W,27.22,27.12
@@ -11573,8 +11503,6 @@ LIST/ORDER=ZXTY $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LONGITUDE-LATITUDE)
              TIME     : 10-SEP-1982 20:00
    15      ,25      
-  row_ax, ndig           3          -4
-  col_ax, ndig           1           1
  ---- J:41 Y:   1.5S
  ---- L:5 T:   10-SEP-1982 20:00
 135.5W,27.33,27.25
@@ -11591,8 +11519,6 @@ LIST/ORDER=ZYXT $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
    15      ,25      
-  row_ax, ndig           3          -4
-  col_ax, ndig           2           1
  ---- I:95 X:   135.5W
 1.5S,27.33,27.25
 1.2S,27.24,27.13
@@ -11607,8 +11533,6 @@ LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
    15      ,25      
-  row_ax, ndig           3          -4
-  col_ax, ndig           2           1
  ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 1.5S,27.33,27.25
@@ -11625,8 +11549,6 @@ LIST/ORDER=ZTXY $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LONGITUDE-LATITUDE)
              TIME     : 10-SEP-1982 20:00
           15      ,25      
-  row_ax, ndig           3          -4
-  col_ax, ndig           4          -5
  ---- J:41 Y:   1.5S
  ---- I:95 X:   135.5W
 10-SEP-1982 20:00,27.33,27.25
@@ -11645,8 +11567,6 @@ LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
           15      ,25      
-  row_ax, ndig           3          -4
-  col_ax, ndig           4          -5
  ---- I:95 X:   135.5W
  ---- J:41 Y:   1.5S
 10-SEP-1982 20:00,27.33,27.25
@@ -11665,8 +11585,6 @@ LIST/ORDER=TXYZ $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LONGITUDE-LATITUDE-DEPTH (m))
              TIME     : 10-SEP-1982 20:00
    10-SEP-1982 20:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           1           1
  ---- K:2 Z:   15
  ---- J:41 Y:   1.5S
 135.5W,27.33
@@ -11689,8 +11607,6 @@ LIST/ORDER=TXZY $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LONGITUDE-DEPTH (m)-LATITUDE)
              TIME     : 10-SEP-1982 20:00
    10-SEP-1982 20:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           1           1
  ---- J:41 Y:   1.5S
  ---- K:2 Z:   15
 135.5W,27.33
@@ -11713,8 +11629,6 @@ LIST/ORDER=TYXZ $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LATITUDE-LONGITUDE-DEPTH (m))
              TIME     : 10-SEP-1982 20:00
    10-SEP-1982 20:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           2           1
  ---- K:2 Z:   15
  ---- I:95 X:   135.5W
 1.5S,27.33
@@ -11737,8 +11651,6 @@ LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
    10-SEP-1982 20:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           2           1
  ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 1.5S,27.33
@@ -11761,8 +11673,6 @@ LIST/ORDER=TZXY $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LONGITUDE-LATITUDE)
              TIME     : 10-SEP-1982 20:00
    10-SEP-1982 20:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           3          -4
  ---- J:41 Y:   1.5S
  ---- I:95 X:   135.5W
 15,27.33
@@ -11785,8 +11695,6 @@ LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
    10-SEP-1982 20:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           3          -4
  ---- I:95 X:   135.5W
  ---- J:41 Y:   1.5S
 15,27.33
@@ -11836,8 +11744,6 @@ LIST/ORDER=XYZT $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           2           1
 1.5S,27.33,27.22
 1.2S,27.24,27.12
 LIST/ORDER=XYTZ $1" |*>/FORMAT=*" $2
@@ -11849,8 +11755,6 @@ LIST/ORDER=XYTZ $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
    135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           2           1
 1.5S,27.33,27.22
 1.2S,27.24,27.12
 LIST/ORDER=XZYT $1" |*>/FORMAT=*" $2
@@ -11862,8 +11766,6 @@ LIST/ORDER=XZYT $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           3          -4
  ---- J:41 Y:   1.5S
 15,27.33,27.22
  ---- J:42 Y:   1.2S
@@ -11877,8 +11779,6 @@ LIST/ORDER=XZTY $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           3          -4
  ---- J:41 Y:   1.5S
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.33,27.22
@@ -11894,8 +11794,6 @@ LIST/ORDER=XTYZ $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
           135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
  ---- J:41 Y:   1.5S
 10-SEP-1982 20:00,27.33,27.22
  ---- J:42 Y:   1.2S
@@ -11909,8 +11807,6 @@ LIST/ORDER=XTZY $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
           135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
  ---- J:41 Y:   1.5S
  ---- K:2 Z:   15
 10-SEP-1982 20:00,27.33,27.22
@@ -11926,8 +11822,6 @@ LIST/ORDER=YXZT $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           1           1
 135.5W,27.33,27.24
 134.5W,27.22,27.12
 LIST/ORDER=YXTZ $1" |*>/FORMAT=*" $2
@@ -11939,8 +11833,6 @@ LIST/ORDER=YXTZ $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
    1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           1           1
 135.5W,27.33,27.24
 134.5W,27.22,27.12
 LIST/ORDER=YZXT $1" |*>/FORMAT=*" $2
@@ -11952,8 +11844,6 @@ LIST/ORDER=YZXT $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           3          -4
  ---- I:95 X:   135.5W
 15,27.33,27.24
  ---- I:96 X:   134.5W
@@ -11967,8 +11857,6 @@ LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           3          -4
  ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.33,27.24
@@ -11984,8 +11872,6 @@ LIST/ORDER=YTXZ $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
           1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           4          -5
  ---- I:95 X:   135.5W
 10-SEP-1982 20:00,27.33,27.24
  ---- I:96 X:   134.5W
@@ -11999,8 +11885,6 @@ LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
           1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           4          -5
  ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 10-SEP-1982 20:00,27.33,27.24
@@ -12016,8 +11900,6 @@ LIST/ORDER=ZXYT $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    15      
-  row_ax, ndig           3          -4
-  col_ax, ndig           1           1
  ---- J:41 Y:   1.5S
 135.5W,27.33
 134.5W,27.22
@@ -12033,8 +11915,6 @@ LIST/ORDER=ZXTY $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    15      
-  row_ax, ndig           3          -4
-  col_ax, ndig           1           1
  ---- J:41 Y:   1.5S
  ---- L:5 T:   10-SEP-1982 20:00
 135.5W,27.33
@@ -12052,8 +11932,6 @@ LIST/ORDER=ZYXT $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    15      
-  row_ax, ndig           3          -4
-  col_ax, ndig           2           1
  ---- I:95 X:   135.5W
 1.5S,27.33
 1.2S,27.24
@@ -12069,8 +11947,6 @@ LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    15      
-  row_ax, ndig           3          -4
-  col_ax, ndig           2           1
  ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 1.5S,27.33
@@ -12088,8 +11964,6 @@ LIST/ORDER=ZTXY $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
           15      
-  row_ax, ndig           3          -4
-  col_ax, ndig           4          -5
  ---- J:41 Y:   1.5S
  ---- I:95 X:   135.5W
 10-SEP-1982 20:00,27.33
@@ -12109,8 +11983,6 @@ LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
           15      
-  row_ax, ndig           3          -4
-  col_ax, ndig           4          -5
  ---- I:95 X:   135.5W
  ---- J:41 Y:   1.5S
 10-SEP-1982 20:00,27.33
@@ -12130,8 +12002,6 @@ LIST/ORDER=TXYZ $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
    10-SEP-1982 20:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           1           1
  ---- J:41 Y:   1.5S
 135.5W,27.33
 134.5W,27.22
@@ -12147,8 +12017,6 @@ LIST/ORDER=TXZY $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
    10-SEP-1982 20:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           1           1
  ---- J:41 Y:   1.5S
  ---- K:2 Z:   15
 135.5W,27.33
@@ -12166,8 +12034,6 @@ LIST/ORDER=TYXZ $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
    10-SEP-1982 20:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           2           1
  ---- I:95 X:   135.5W
 1.5S,27.33
 1.2S,27.24
@@ -12183,8 +12049,6 @@ LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
    10-SEP-1982 20:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           2           1
  ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 1.5S,27.33
@@ -12202,8 +12066,6 @@ LIST/ORDER=TZXY $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
    10-SEP-1982 20:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           3          -4
  ---- J:41 Y:   1.5S
  ---- I:95 X:   135.5W
 15,27.33
@@ -12223,8 +12085,6 @@ LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
    10-SEP-1982 20:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           3          -4
  ---- I:95 X:   135.5W
  ---- J:41 Y:   1.5S
 15,27.33
@@ -12246,8 +12106,6 @@ LIST/FORMAT=comma/precision=5/order=xz temp
              LATITUDE : 1.5S
              TIME     : 10-SEP-1982 20:00
    135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           3          -4
 15,27.335,27.222
 25,27.248,27.125
 LIST/FORMAT=comma/precision=5/order=zx temp
@@ -12258,8 +12116,6 @@ LIST/FORMAT=comma/precision=5/order=zx temp
              LATITUDE : 1.5S
              TIME     : 10-SEP-1982 20:00
    15      ,25      
-  row_ax, ndig           3          -4
-  col_ax, ndig           1           1
 135.5W,27.335,27.248
 134.5W,27.222,27.125
 !XT
@@ -12272,8 +12128,6 @@ LIST/FORMAT=comma/precision=5/order=xt temp
              LATITUDE : 1.5S
              DEPTH (m): 15
           135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
 10-SEP-1982 20:00,27.335,27.222
 16-SEP-1982 22:00,27.775,27.622
 LIST/FORMAT=comma/precision=5/order=tx temp
@@ -12284,8 +12138,6 @@ LIST/FORMAT=comma/precision=5/order=tx temp
              LATITUDE : 1.5S
              DEPTH (m): 15
    10-SEP-1982 20:00,16-SEP-1982 22:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           1           1
 135.5W,27.335,27.775
 134.5W,27.222,27.622
 !YZ
@@ -12298,8 +12150,6 @@ LIST/FORMAT=comma/precision=5/order=yz temp
              LONGITUDE: 135.5W
              TIME     : 10-SEP-1982 20:00
    1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           3          -4
 15,27.335,27.238
 25,27.248,27.129
 LIST/FORMAT=comma/precision=5/order=zy temp
@@ -12310,8 +12160,6 @@ LIST/FORMAT=comma/precision=5/order=zy temp
              LONGITUDE: 135.5W
              TIME     : 10-SEP-1982 20:00
    15      ,25      
-  row_ax, ndig           3          -4
-  col_ax, ndig           2           1
 1.5S,27.335,27.248
 1.2S,27.238,27.129
 !YT
@@ -12324,8 +12172,6 @@ LIST/FORMAT=comma/precision=5/order=yt temp
              LONGITUDE: 135.5W
              DEPTH (m): 15
           1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           4          -5
 10-SEP-1982 20:00,27.335,27.238
 16-SEP-1982 22:00,27.775,27.678
 LIST/FORMAT=comma/precision=5/order=ty temp
@@ -12336,8 +12182,6 @@ LIST/FORMAT=comma/precision=5/order=ty temp
              LONGITUDE: 135.5W
              DEPTH (m): 15
    10-SEP-1982 20:00,16-SEP-1982 22:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           2           1
 1.5S,27.335,27.775
 1.2S,27.238,27.678
 !ZT
@@ -12350,8 +12194,6 @@ LIST/FORMAT=comma/precision=5/order=zt temp
              LONGITUDE: 135.5W
              LATITUDE : 1.5S
           15      ,25      
-  row_ax, ndig           3          -4
-  col_ax, ndig           4          -5
 10-SEP-1982 20:00,27.335,27.248
 16-SEP-1982 22:00,27.775,27.652
 LIST/FORMAT=comma/precision=5/order=tz temp
@@ -12362,8 +12204,6 @@ LIST/FORMAT=comma/precision=5/order=tz temp
              LONGITUDE: 135.5W
              LATITUDE : 1.5S
    10-SEP-1982 20:00,16-SEP-1982 22:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           3          -4
 15,27.335,27.775
 25,27.248,27.652
 !X
@@ -12377,8 +12217,6 @@ LIST/FORMAT=comma/precision=5/order=x temp
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           2           1
 27.335 ,27.222
 LIST/FORMAT=comma/precision=5/order=y temp
              VARIABLE : TEMPERATURE (deg. C)
@@ -12389,8 +12227,6 @@ LIST/FORMAT=comma/precision=5/order=y temp
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    1.5S
-  row_ax, ndig           2           1
-  col_ax, ndig           1           1
 135.5W,27.335
 134.5W,27.222
 !Y
@@ -12404,8 +12240,6 @@ LIST/FORMAT=comma/precision=5/order=y temp
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    1.5S,1.2S
-  row_ax, ndig           2           1
-  col_ax, ndig           1           1
 27.335 ,27.238
 LIST/FORMAT=comma/precision=5/order=x temp
              VARIABLE : TEMPERATURE (deg. C)
@@ -12416,8 +12250,6 @@ LIST/FORMAT=comma/precision=5/order=x temp
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    135.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           2           1
 1.5S,27.335
 1.2S,27.238
 !Z
@@ -12431,8 +12263,6 @@ LIST/FORMAT=comma/precision=5/order=z temp
              LATITUDE : 1.5S
              TIME     : 10-SEP-1982 20:00
    15      ,25      
-  row_ax, ndig           3          -4
-  col_ax, ndig           1           1
 27.335 ,27.248
 LIST/FORMAT=comma/precision=5/order=x temp
              VARIABLE : TEMPERATURE (deg. C)
@@ -12443,8 +12273,6 @@ LIST/FORMAT=comma/precision=5/order=x temp
              LATITUDE : 1.5S
              TIME     : 10-SEP-1982 20:00
    135.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           2           1
  ---- K:2 Z:   15
 1.5S,27.335
  ---- K:3 Z:   25
@@ -12460,8 +12288,6 @@ LIST/FORMAT=comma/precision=5/order=t temp
              LATITUDE : 1.5S
              DEPTH (m): 15
    10-SEP-1982 20:00,16-SEP-1982 22:00
-  row_ax, ndig           4          -5
-  col_ax, ndig           1           1
 27.335 ,27.775
 LIST/FORMAT=comma/precision=5/order=x temp
              VARIABLE : TEMPERATURE (deg. C)
@@ -12472,8 +12298,6 @@ LIST/FORMAT=comma/precision=5/order=x temp
              LATITUDE : 1.5S
              DEPTH (m): 15
    135.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           2           1
  ---- L:5 T:   10-SEP-1982 20:00
  ---- K:2 Z:   15
 1.5S,27.335
@@ -12489,8 +12313,6 @@ LIST/FORMAT=tab temp
              BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LONGITUDE-LATITUDE-DEPTH (m)-TIME)
   	135.5W	134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           2           1
  ---- L:5 T:   10-SEP-1982 20:00
  ---- K:2 Z:   15
 1.5S	27.33	27.22
@@ -12516,8 +12338,6 @@ LIST/FORMAT=comma/precision=1 randu(i)*temp*1e7
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           2           1
 1.5S,2.E+08,2.E+08
 1.2S,2.E+08,2.E+08
 LIST/FORMAT=comma/precision=9 randu(i)*temp*1e7
@@ -12528,8 +12348,6 @@ LIST/FORMAT=comma/precision=9 randu(i)*temp*1e7
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           2           1
 1.5S,166750845.,202088412.
 1.2S,166162833.,201366579.
  
@@ -12543,8 +12361,6 @@ LIST/FORMAT=comma/precision=1 randu(i)*temp*1e-7
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           2           1
 1.5S,0.000002,0.000002
 1.2S,0.000002,0.000002
 LIST/FORMAT=comma/precision=9 randu(i)*temp*1e-7
@@ -12555,8 +12371,6 @@ LIST/FORMAT=comma/precision=9 randu(i)*temp*1e-7
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
    135.5W,134.5W
-  row_ax, ndig           1           1
-  col_ax, ndig           2           1
 1.5S,0.00000166750845,0.00000202088412
 1.2S,0.00000166162833,0.00000201366579
  
@@ -12585,8 +12399,6 @@ LIST/FORMAT=comma/precision=5 10*j+i
              BAD FLAG : -1.E+34       
              SUBSET   : 5 by 3 points (X-Y)
    1  ,2  ,3  ,4  ,5  
-  row_ax, ndig           1           1
-  col_ax, ndig           2           1
 1,11,12,13,14,15
 2,21,22,23,24,25
 3,31,32,33,34,35
@@ -39111,8 +38923,6 @@ let tim1 = 20500*randu(ind1[i=1:20500])
 let ind2 = sorti(tim1)
 let tim2 = samplei(tim1, ind2)
 list/format=comma/file=longax.dat/clobber tim2
-  row_ax, ndig           2           1
-  col_ax, ndig           1           1
 set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
  
 go bn_reset
@@ -46628,8 +46438,6 @@ list/form=tab aa
              BAD FLAG : -1.E+34       
              SUBSET   : 6 by 9 points (LONGITUDE-LATITUDE)
   	100E   	100.05E	100.1E 	100.15E	100.2E 	100.25E
-  row_ax, ndig           1           2
-  col_ax, ndig           2           2
 0.11N	1.001	1.002	1.002	1.003	1.003	1.004
 0.13N	1.001	1.002	1.002	1.003	1.003	1.004
 0.15N	1.001	1.002	1.002	1.003	1.003	1.004
@@ -46645,8 +46453,6 @@ list/form=comma aa
              BAD FLAG : -1.E+34       
              SUBSET   : 4 by 9 points (LONGITUDE-LATITUDE)
    100E   ,100.03E,100.07E,100.1E 
-  row_ax, ndig           1           2
-  col_ax, ndig           2           2
 0.11N,1.001,1.001,1.002,1.002
 0.13N,1.001,1.002,1.002,1.002
 0.15N,1.001,1.002,1.002,1.002
@@ -46963,8 +46769,6 @@ list/form=tab myvar
              BAD FLAG : -1.E+34       
              SUBSET   : 5 by 6 points (LONGITUDE-LATITUDE)
   	155.1008W	155.1002W	155.0998W	155.0992W	155.0987W
-  row_ax, ndig           1           4
-  col_ax, ndig           2           4
 19.7002N	224.59943	224.59995	224.60045	224.60096	224.60146
 19.7007N	224.59994	224.60046	224.60096	224.60147	224.60197
 19.7012N	224.60045	224.60097	224.60147	224.60198	224.60248
@@ -46978,8 +46782,6 @@ list/form=comma myvar
              BAD FLAG : -1.E+34       
              SUBSET   : 5 by 6 points (LONGITUDE-LATITUDE)
    155.1008W,155.1002W,155.0998W,155.0992W,155.0987W
-  row_ax, ndig           1           4
-  col_ax, ndig           2           4
 19.7002N,224.59943,224.59995,224.60045,224.60096,224.60146
 19.7007N,224.59994,224.60046,224.60096,224.60147,224.60197
 19.7012N,224.60045,224.60097,224.60147,224.60198,224.60248
@@ -95373,22 +95175,16 @@ list/L=1:3/K=1/form=comma taux[i=@ave,j=@ave]
              SUBSET   : 3 points (TIME)
              LONGITUDE: 139.5W to 121.5W (XY ave)
              LATITUDE : 3.5S to 3.5N (XY ave)
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
 17-AUG-1982 12:00,-0.2742
 23-AUG-1982 14:00,-0.2363
 29-AUG-1982 16:00,-0.1984
  
 list/nohead/L=1:3/K=1/form=comma taux[i=95,j=@ave]
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
 17-AUG-1982 12:00,-0.2738
 23-AUG-1982 14:00,-0.2441
 29-AUG-1982 16:00,-0.2144
  
 list/nohead/L=1:3/K=1/form=comma taux[i=@ave,j=@ave]
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
 17-AUG-1982 12:00,-0.2742
 23-AUG-1982 14:00,-0.2363
 29-AUG-1982 16:00,-0.1984
@@ -95403,29 +95199,21 @@ list/norow/L=1:3/K=1/form=comma taux[i=@ave,j=@ave]
              SUBSET   : 3 points (TIME)
              LONGITUDE: 139.5W to 121.5W (XY ave)
              LATITUDE : 3.5S to 3.5N (XY ave)
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
 -0.2742 
 -0.2363 
 -0.1984 
  
 list/norow/nohead/L=1:3/K=1/form=comma taux[i=95,j=@ave]
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
 -0.2738 
 -0.2441 
 -0.2144 
  
 list/norow/nohead/L=1:3/K=1/i=95/j=40/form=comma taux
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
 -0.3336 
 -0.298 
 -0.2623 
  
 list/norow/nohead/L=1:3/K=1/i=95/j=40/form=comma taux
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
 -0.3336 
 -0.298 
 -0.2623 
@@ -95442,22 +95230,16 @@ list/L=1:3/K=1/form=tab taux[i=@ave,j=@ave]
              SUBSET   : 3 points (TIME)
              LONGITUDE: 139.5W to 121.5W (XY ave)
              LATITUDE : 3.5S to 3.5N (XY ave)
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
 17-AUG-1982 12:00	-0.2742
 23-AUG-1982 14:00	-0.2363
 29-AUG-1982 16:00	-0.1984
  
 list/nohead/L=1:3/K=1/form=tab taux[i=95,j=@ave]
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
 17-AUG-1982 12:00	-0.2738
 23-AUG-1982 14:00	-0.2441
 29-AUG-1982 16:00	-0.2144
  
 list/nohead/L=1:3/K=1/form=tab taux[i=@ave,j=@ave]
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
 17-AUG-1982 12:00	-0.2742
 23-AUG-1982 14:00	-0.2363
 29-AUG-1982 16:00	-0.1984
@@ -95472,29 +95254,21 @@ list/norow/L=1:3/K=1/form=tab taux[i=@ave,j=@ave]
              SUBSET   : 3 points (TIME)
              LONGITUDE: 139.5W to 121.5W (XY ave)
              LATITUDE : 3.5S to 3.5N (XY ave)
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
 -0.2742 
 -0.2363 
 -0.1984 
  
 list/norow/nohead/L=1:3/K=1/form=tab taux[i=95,j=@ave]
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
 -0.2738 
 -0.2441 
 -0.2144 
  
 list/norow/nohead/L=1:3/K=1/i=95/j=40/form=tab taux
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
 -0.3336 
 -0.298 
 -0.2623 
  
 list/norow/nohead/L=1:3/K=1/i=95/j=40/form=tab taux
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
 -0.3336 
 -0.298 
 -0.2623 
@@ -105535,8 +105309,6 @@ list/t="2-sep-2017:01:00:00":"2-sep-2017:01:00:03"/form=comma temp_on_time
              VARIABLE : COS(L[GT=TAXREG]/30)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (TIME)
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -6
 02-SEP-2017 01:00:00.19,-0.3897
 02-SEP-2017 01:00:00.82,-0.4202
 02-SEP-2017 01:00:01.45,-0.4502
@@ -105546,8 +105318,6 @@ list/t="2-sep-2017:01:00:00":"2-sep-2017:01:00:03"/form=tab temp_on_time
              VARIABLE : COS(L[GT=TAXREG]/30)
              BAD FLAG : -1.E+34       
              SUBSET   : 5 points (TIME)
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -6
 02-SEP-2017 01:00:00.19	-0.3897
 02-SEP-2017 01:00:00.82	-0.4202
 02-SEP-2017 01:00:01.45	-0.4502
@@ -105585,8 +105355,6 @@ list/L=1:3/K=1/form=comma taux[i=100,j=40]
              LONGITUDE: 130W
              LATITUDE : 1.7S
           130W  
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -5
 17-AUG-1982 12:00,-0.3303
 23-AUG-1982 14:00,-0.2849
 29-AUG-1982 16:00,-0.2395
@@ -105601,8 +105369,6 @@ list/L=1:3/K=1/form=comma taux[i=100,j=40]
              LONGITUDE: 130W
              LATITUDE : 1.7S
           130W  
-  row_ax, ndig           1           1
-  col_ax, ndig           4          -4
 17-AUG-1982 12,-0.3303
 23-AUG-1982 14,-0.2849
 29-AUG-1982 16,-0.2395

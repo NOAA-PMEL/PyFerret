@@ -37,6 +37,7 @@
 * Ansley Manke
 * Jan 2015
 * 6-D function
+* v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 *
 *  In this subroutine we provide information about
 *  the function.  The user configurable information
@@ -189,7 +190,7 @@
       INTEGER TM_LENSTR
       INTEGER i,  j,  k,  l,  m,  n
       INTEGER i1, j1, k1, l1, m1, n1
-      INTEGER slen, len1, len2, outlen, llen
+      INTEGER slen, len1, len2, outlen, llen, get_prec, dlen
       
       CHARACTER*2   ns
       CHARACTER*20  TM_FMT, datestring, lonstr, latstr, ilab
@@ -203,6 +204,9 @@
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
+
+* return date string to precision of seconds
+      get_prec = 6
 
       CALL ef_get_arg_string(id, ARG5, lab)
       slen = TM_LENSTR(lab)
@@ -247,7 +251,7 @@ C     Get the string value of dates and put them in the result.
 	       latstr = TM_FMT(alat, 4, 5, len2)
 	          
                ddate = arg_3(i1,j1,k1,l1,m1,n1)
-               CALL EF_GET_AXIS_DATES (id, ARG4, ddate, T_AXIS, 1, datestring)
+               CALL EF_GET_AXIS_DATES (id, ARG4, ddate, T_AXIS, 1, get_prec, dlen, datestring)
                outstring = lab(:slen)//'_'//lonstr(:len1)//
      .           'E_'//latstr(:len2) //ns//datestring(1:11)
 

@@ -89,7 +89,7 @@
 	INTEGER TM_LENSTR1, TM_SUBSC, TM_GET_CALENDAR_ID, 
      .          lo, hi, i, line, dlen, ndec, status,nlen, naxlen, 
      .          int1, slen, i1ss, inss,cal_id 
-	CHARACTER AX_TITLE*32, TM_FMT*20, lo_str*20, hi_str*20, direction*1,
+	CHARACTER AX_TITLE*32, TM_FMT*20, lo_str*28, hi_str*28, direction*1,
      .		  title*32, reg*1, modflag*1, truncated*1, frmt*80,
      .		  lo_uvar*20, hi_uvar*20, uvar_desc*40, cstr*3, countstr*20,
      .		  axname*64

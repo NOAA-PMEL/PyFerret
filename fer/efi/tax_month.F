@@ -38,6 +38,7 @@
 * 27-Feb-2013 ACM  Fix ticket 2043: remove old code for handling single-
 *                  precision values coming in from argument 1
 * v695  *acm 2/15  Time axis may be an F axis or a T axis.
+* v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 *
 * This function returns month specified by the first argument (variable 
 * containing time values) from the second argument (variable from which time 
@@ -216,7 +217,7 @@
       CHARACTER*20 datebuf
       INTEGER iyear, imon, day_of_mon, mm
       CHARACTER*3 cmon
-      INTEGER L2, LL, dir
+      INTEGER L2, LL, dir, get_prec, dlen
       CHARACTER*255 err_msg
       REAL*8 ddate
       INTEGER i, j, k, l, m, n
@@ -238,6 +239,9 @@
       CALL ef_get_axis_info_6d(id, ARG2, ax_name, ax_units,
      .                         backward, modulo, regular)
       
+* return date string to precision of seconds
+      get_prec = 6
+
 * Get the direction of arg 2
       IF (arg_lo_ss(T_AXIS, ARG2) .NE. ef_unspecified_int4) THEN
          dir = T_AXIS
@@ -271,7 +275,7 @@
          IF ( ddate .NE. bad_flag(ARG1) ) THEN
 
 *     Get the date string corresponding to time ddate for the variable ARG2
-            CALL EF_GET_AXIS_DATES(id, ARG2, ddate, dir, 1, datebuf)
+            CALL EF_GET_AXIS_DATES(id, ARG2, ddate, dir, 1, get_prec, dlen, datebuf)
 
             IF ( .NOT. tmodulo ) THEN
 *     datebuf is in form "DD-MON-YEAR HH:MM:SS". Read day.

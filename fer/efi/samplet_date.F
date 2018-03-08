@@ -44,6 +44,7 @@
 * 3/1/00  ACM fixed bug in definition of the work array datebuf
 * 7/2000  ACM inherit axes only from the data variable, not dates!
 * 4/2001  *ACM* add error message
+* v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 
 *
 * In this subroutine we provide information about
@@ -345,7 +346,7 @@
       INTEGER i5, j5, k5, l5, m5, n5
       INTEGER i6, j6, k6, l6, m6, n6
       INTEGER i7, j7, k7, l7, m7, n7
-      INTEGER mnth, numtimes
+      INTEGER mnth, numtimes, get_prec, dlen
       INTEGER lbot, ltop, status
       REAL ayr, amo, ada, ahr, amn, asc
       REAL byr, bmo, bda, bhr, bmn, bsc
@@ -363,12 +364,15 @@
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
+* return date string to precision of seconds
+      get_prec = 6
+
       iarg = 1
       CALL ef_get_coordinates (id, ARG1, T_AXIS, 
      .       arg_lo_ss(T_AXIS, ARG1), arg_hi_ss(T_AXIS, ARG1), taxdat)
 
       numtimes = arg_hi_ss(T_AXIS, ARG1) - arg_lo_ss(T_AXIS, ARG1) + 1
-      CALL ef_get_axis_dates (id, ARG1, taxdat, T_AXIS, numtimes, datebuf)
+      CALL ef_get_axis_dates (id, ARG1, taxdat, T_AXIS, numtimes, get_prec, dlen, datebuf)
 
       l1 = arg_lo_ss(T_AXIS,ARG1)
       DO 60 l = 1, numtimes

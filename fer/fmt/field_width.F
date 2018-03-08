@@ -54,6 +54,8 @@
 	include	'ferret.parm'
 	include 'xprog_state.cmn'
 	include 'xtext_info.cmn'
+	include 'xtm_grid.cmn_text'
+
 
 * calling argument declarations
 	INTEGER	grid, idim, ndec, numbers
@@ -61,8 +63,9 @@
 
 * internal variable declarations:
 	LOGICAL	GEOG_LABEL, fancy
-	INTEGER	decim, left
-	REAL	fval
+	INTEGER	decim, left, nfrac
+	REAL	fval, val2
+	CHARACTER*16 TM_FMT, buff
 
 * initialize
 	fancy = GEOG_LABEL( idim, grid )	! special axis formatting
@@ -74,7 +77,20 @@
 	IF ( fancy ) THEN
 	   IF (idim.EQ.t_dim .OR. idim.EQ.f_dim) THEN
 	      FIELD_WIDTH = date_str_len( MAX( 1, MIN(6,ABS(ndec)) ) )	! 10/95
+
+*	Deal with fractional seconds
+	      IF (line_tunit( grid_line(idim, grid) ) .EQ. 1) THEN
+	         val2 = INT(fval)
+	         IF (val2 .NE. fval) THEN
+	            val2 = fval-val2
+	            buff = TM_FMT(val2,4,16,nfrac)
+	            FIELD_WIDTH = FIELD_WIDTH + nfrac-1
+		    IF (decim.GE.7) ndec = 8
+	         ENDIF
+	      ENDIF
+
 	      RETURN
+
 	   ELSEIF ( idim .EQ. x_dim .AND. fval .GT. 180.0 ) THEN
 	      fval = 360. - val
 	   ELSEIF ( idim .EQ. y_dim .AND. fval .LT. 0.0   ) THEN	

@@ -41,14 +41,16 @@ c*
 c*
 c* This returns the date buffer associated with the 
 c* time axis of an argument.
+c* datebuf is the date string. slen is the maximum length of the date strings
 c*
 *  V665 *acm*/11/09 Fix ticket 1766, as in #762, if the axis is modulo
 *                   the year 0000 or 0001 returns as blank.  If not modulo
 *		    then we want to return the year correctly.
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * v695 *acm* 2/15  Get axis dates from an F or T axis
+* v75  *acm* 3/18  Changes to allow for timesteps in fractional seconds
 
-      SUBROUTINE EF_GET_AXIS_DATES(id, iarg, tax, dim, numtimes, datebuf )
+      SUBROUTINE EF_GET_AXIS_DATES(id, iarg, tax, dim, numtimes, precision, slen, datebuf )
 
       IMPLICIT NONE
       INCLUDE 'tmap_dims.parm'
@@ -57,12 +59,11 @@ c*
       INCLUDE 'EF_Util.parm'
       INCLUDE 'xtm_grid.cmn_text'
 
-      INTEGER id, iarg, dim, numtimes
+      INTEGER id, iarg, dim, numtimes, precision, slen
       REAL*8 tax(*)
       CHARACTER*(*) datebuf(*)
 
-      INTEGER l, grid, seconds
-      PARAMETER (seconds=6)
+      INTEGER TM_LENSTR1, l, grid, seconds
       REAL*8  tstep_r8, test(5)
       INTEGER cx_list(EF_MAX_ARGS)
 
@@ -72,9 +73,12 @@ c* to be accessible to the external function.
       CALL EF_GET_CX_LIST(cx_list)
       grid = CX_GRID(cx_list(iarg))
 
+      slen = 0
+      IF (precision .EQ. 0) precision = 6
       DO 100 L = 1, numtimes
          tstep_r8 = tax(L)
-         CALL EF_GET_DATE_TSTEP ( grid, dim, tstep_r8, seconds, datebuf(l) )
+         CALL EF_GET_DATE_TSTEP ( grid, dim, tstep_r8, precision, datebuf(l) )
+	 IF ( TM_LENSTR1(datebuf(l)) .GT. slen ) slen = TM_LENSTR1(datebuf(l))
 100   CONTINUE
 
 

@@ -13,7 +13,8 @@ set window /aspect=1.0:axis /thick=1.0 /xinch=10.0 /xpix=2000 1
 ! Plot in transparent just to plot the axes
 plot /hlim=0.75:8.75 /vlim=0.5:8.5 /symbol=dot /nokey /nolab /color=(0,0,0,0) /vs X + 0.0 * Y, 0.0 * X + Y
 
-! Generate the labels
+!--------
+
 plot /over /nokey /size=0.15 /symbol=dot       /vs {1.0},{8.0}
 anno /xpos=1.15 /ypos=8.0 /valign=0 /size=0.08 "dot"
 plot /over /nokey /size=0.15 /symbol=dotex     /vs {2.0},{8.0}
@@ -21,12 +22,19 @@ anno /xpos=2.15 /ypos=8.0 /valign=0 /size=0.08 "dotex"
 plot /over /nokey /size=0.15 /symbol=dotplus   /vs {3.0},{8.0}
 anno /xpos=3.15 /ypos=8.0 /valign=0 /size=0.08 "dotplus"
 
-plot /over /nokey /size=0.15 /symbol=circle    /vs {5.0},{8.0}
-anno /xpos=5.15 /ypos=8.0 /valign=0 /size=0.08 "circle"
-plot /over /nokey /size=0.15 /symbol=circex    /vs {6.0},{8.0}
-anno /xpos=6.15 /ypos=8.0 /valign=0 /size=0.08 "circex"
-plot /over /nokey /size=0.15 /symbol=circplus  /vs {7.0},{8.0}
-anno /xpos=7.15 /ypos=8.0 /valign=0 /size=0.08 "circplus"
+plot /over /nokey /size=0.15 /symbol=circle    /vs {4.0},{8.0}
+anno /xpos=4.15 /ypos=8.0 /valign=0 /size=0.08 "circle"
+plot /over /nokey /size=0.15 /symbol=circex    /vs {5.0},{8.0}
+anno /xpos=5.15 /ypos=8.0 /valign=0 /size=0.08 "circex"
+plot /over /nokey /size=0.15 /symbol=circplus  /vs {6.0},{8.0}
+anno /xpos=6.15 /ypos=8.0 /valign=0 /size=0.08 "circplus"
+
+plot /over /nokey /size=0.15 /symbol=ex        /vs {7.0},{8.0}
+anno /xpos=7.15 /ypos=8.0 /valign=0 /size=0.08 "ex"
+plot /over /nokey /size=0.15 /symbol=plus      /vs {8.0},{8.0}
+anno /xpos=8.15 /ypos=8.0 /valign=0 /size=0.08 "plus"
+
+!--------
 
 plot /over /nokey /size=0.15 /symbol=arrdown   /vs {1.0},{7.0}
 anno /xpos=1.15 /ypos=7.0 /valign=0 /size=0.08 "arrdown"
@@ -46,6 +54,8 @@ anno /xpos=7.15 /ypos=7.0 /valign=0 /size=0.08 "arrul"
 plot /over /nokey /size=0.15 /symbol=arrur     /vs {8.0},{7.0}
 anno /xpos=8.15 /ypos=7.0 /valign=0 /size=0.08 "arrur"
 
+!--------
+
 plot /over /nokey /size=0.15 /symbol=chevdown  /vs {1.0},{6.0}
 anno /xpos=1.15 /ypos=6.0 /valign=0 /size=0.08 "chevdown"
 plot /over /nokey /size=0.15 /symbol=chevup    /vs {2.0},{6.0}
@@ -64,58 +74,60 @@ anno /xpos=7.15 /ypos=6.0 /valign=0 /size=0.08 "wyeleft"
 plot /over /nokey /size=0.15 /symbol=wyeright  /vs {8.0},{6.0}
 anno /xpos=8.15 /ypos=6.0 /valign=0 /size=0.08 "wyeright"
 
-plot /over /nokey /size=0.15 /symbol=asterisk  /vs {1.0},{5.0}
-anno /xpos=1.15 /ypos=5.0 /valign=0 /size=0.08 "asterisk"
-plot /over /nokey /size=0.15 /symbol=ex        /vs {2.0},{5.0}
-anno /xpos=2.15 /ypos=5.0 /valign=0 /size=0.08 "ex"
-plot /over /nokey /size=0.15 /symbol=plus      /vs {3.0},{5.0}
-anno /xpos=3.15 /ypos=5.0 /valign=0 /size=0.08 "plus"
+!--------
 
-plot /over /nokey /size=0.15 /symbol=starempty /vs {4.0},{5.0}
-anno /xpos=4.15 /ypos=5.0 /valign=0 /size=0.08 "starempty"
-plot /over /nokey /size=0.15 /symbol=starfill  /vs {5.0},{5.0}
-anno /xpos=5.15 /ypos=5.0 /valign=0 /size=0.08 "starfill"
+plot /over /nokey /size=0.15 /symbol=tridempty /vs {1.0},{5.0}
+anno /xpos=1.15 /ypos=5.0 /valign=0 /size=0.08 "tridempty"
+plot /over /nokey /size=0.15 /symbol=tridfill  /vs {2.0},{5.0}
+anno /xpos=2.15 /ypos=5.0 /valign=0 /size=0.08 "tridfill"
+plot /over /nokey /size=0.15 /symbol=triuempty /vs {3.0},{5.0}
+anno /xpos=3.15 /ypos=5.0 /valign=0 /size=0.08 "triuempty"
+plot /over /nokey /size=0.15 /symbol=triufill  /vs {4.0},{5.0}
+anno /xpos=4.15 /ypos=5.0 /valign=0 /size=0.08 "triufill"
+plot /over /nokey /size=0.15 /symbol=trilempty /vs {5.0},{5.0}
+anno /xpos=5.15 /ypos=5.0 /valign=0 /size=0.08 "trilempty"
+plot /over /nokey /size=0.15 /symbol=trilfill  /vs {6.0},{5.0}
+anno /xpos=6.15 /ypos=5.0 /valign=0 /size=0.08 "trilfill"
+plot /over /nokey /size=0.15 /symbol=trirempty /vs {7.0},{5.0}
+anno /xpos=7.15 /ypos=5.0 /valign=0 /size=0.08 "trirempty"
+plot /over /nokey /size=0.15 /symbol=trirfill  /vs {8.0},{5.0}
+anno /xpos=8.15 /ypos=5.0 /valign=0 /size=0.08 "trirfill"
 
-plot /over /nokey /size=0.15 /symbol=boxempty  /vs {6.0},{5.0}
-anno /xpos=6.15 /ypos=5.0 /valign=0 /size=0.08 "boxempty"
-plot /over /nokey /size=0.15 /symbol=boxex     /vs {7.0},{5.0}
-anno /xpos=7.15 /ypos=5.0 /valign=0 /size=0.08 "boxex"
-plot /over /nokey /size=0.15 /symbol=boxfill   /vs {8.0},{5.0}
-anno /xpos=8.15 /ypos=5.0 /valign=0 /size=0.08 "boxfill"
+!--------
 
-plot /over /nokey /size=0.15 /symbol=diamempty /vs {1.0},{4.0}
-anno /xpos=1.15 /ypos=4.0 /valign=0 /size=0.08 "diamempty"
-plot /over /nokey /size=0.15 /symbol=diamplus  /vs {2.0},{4.0}
-anno /xpos=2.15 /ypos=4.0 /valign=0 /size=0.08 "diamplus"
-plot /over /nokey /size=0.15 /symbol=diamfill  /vs {3.0},{4.0}
-anno /xpos=3.15 /ypos=4.0 /valign=0 /size=0.08 "diamfill"
+plot /over /nokey /size=0.15 /symbol=boxempty  /vs {1.0},{4.0}
+anno /xpos=1.15 /ypos=4.0 /valign=0 /size=0.08 "boxempty"
+plot /over /nokey /size=0.15 /symbol=boxex     /vs {2.0},{4.0}
+anno /xpos=2.15 /ypos=4.0 /valign=0 /size=0.08 "boxex"
+plot /over /nokey /size=0.15 /symbol=boxfill   /vs {3.0},{4.0}
+anno /xpos=3.15 /ypos=4.0 /valign=0 /size=0.08 "boxfill"
 
-plot /over /nokey /size=0.15 /symbol=hexempty  /vs {5.0},{4.0}
-anno /xpos=5.15 /ypos=4.0 /valign=0 /size=0.08 "hexempty"
-plot /over /nokey /size=0.15 /symbol=hexfill   /vs {6.0},{4.0}
-anno /xpos=6.15 /ypos=4.0 /valign=0 /size=0.08 "hexfill"
+plot /over /nokey /size=0.15 /symbol=diamempty /vs {4.0},{4.0}
+anno /xpos=4.15 /ypos=4.0 /valign=0 /size=0.08 "diamempty"
+plot /over /nokey /size=0.15 /symbol=diamplus  /vs {5.0},{4.0}
+anno /xpos=5.15 /ypos=4.0 /valign=0 /size=0.08 "diamplus"
+plot /over /nokey /size=0.15 /symbol=diamfill  /vs {6.0},{4.0}
+anno /xpos=6.15 /ypos=4.0 /valign=0 /size=0.08 "diamfill"
 
-plot /over /nokey /size=0.15 /symbol=pentempty /vs {7.0},{4.0}
-anno /xpos=7.15 /ypos=4.0 /valign=0 /size=0.08 "pentempty"
-plot /over /nokey /size=0.15 /symbol=pentfill  /vs {8.0},{4.0}
-anno /xpos=8.15 /ypos=4.0 /valign=0 /size=0.08 "pentfill"
+plot /over /nokey /size=0.15 /symbol=starempty /vs {7.0},{4.0}
+anno /xpos=7.15 /ypos=4.0 /valign=0 /size=0.08 "starempty"
+plot /over /nokey /size=0.15 /symbol=starfill  /vs {8.0},{4.0}
+anno /xpos=8.15 /ypos=4.0 /valign=0 /size=0.08 "starfill"
 
-plot /over /nokey /size=0.15 /symbol=tridempty /vs {1.0},{3.0}
-anno /xpos=1.15 /ypos=3.0 /valign=0 /size=0.08 "tridempty"
-plot /over /nokey /size=0.15 /symbol=tridfill  /vs {2.0},{3.0}
-anno /xpos=2.15 /ypos=3.0 /valign=0 /size=0.08 "tridfill"
-plot /over /nokey /size=0.15 /symbol=triuempty /vs {3.0},{3.0}
-anno /xpos=3.15 /ypos=3.0 /valign=0 /size=0.08 "triuempty"
-plot /over /nokey /size=0.15 /symbol=triufill  /vs {4.0},{3.0}
-anno /xpos=4.15 /ypos=3.0 /valign=0 /size=0.08 "triufill"
-plot /over /nokey /size=0.15 /symbol=trilempty /vs {5.0},{3.0}
-anno /xpos=5.15 /ypos=3.0 /valign=0 /size=0.08 "trilempty"
-plot /over /nokey /size=0.15 /symbol=trilfill  /vs {6.0},{3.0}
-anno /xpos=6.15 /ypos=3.0 /valign=0 /size=0.08 "trilfill"
-plot /over /nokey /size=0.15 /symbol=trirempty /vs {7.0},{3.0}
-anno /xpos=7.15 /ypos=3.0 /valign=0 /size=0.08 "trirempty"
-plot /over /nokey /size=0.15 /symbol=trirfill  /vs {8.0},{3.0}
-anno /xpos=8.15 /ypos=3.0 /valign=0 /size=0.08 "trirfill"
+!--------
+
+plot /over /nokey /size=0.15 /symbol=pentempty /vs {1.0},{3.0}
+anno /xpos=1.15 /ypos=3.0 /valign=0 /size=0.08 "pentempty"
+plot /over /nokey /size=0.15 /symbol=pentfill  /vs {2.0},{3.0}
+anno /xpos=2.15 /ypos=3.0 /valign=0 /size=0.08 "pentfill"
+
+plot /over /nokey /size=0.15 /symbol=hexempty  /vs {3.0},{3.0}
+anno /xpos=3.15 /ypos=3.0 /valign=0 /size=0.08 "hexempty"
+plot /over /nokey /size=0.15 /symbol=hexfill   /vs {4.0},{3.0}
+anno /xpos=4.15 /ypos=3.0 /valign=0 /size=0.08 "hexfill"
+
+plot /over /nokey /size=0.15 /symbol=asterisk  /vs {5.0},{3.0}
+anno /xpos=5.15 /ypos=3.0 /valign=0 /size=0.08 "asterisk"
 
 frame /file=pointplots.png
 frame /file=pointplots.pdf

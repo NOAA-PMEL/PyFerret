@@ -1,6 +1,10 @@
 ! bn420_comma_delimited
 
 ! 10/2/95 - test comma and tab-delimited outputs
+! 3/2018: Note with changes for high-resolution time 
+! axes,the output of LIST/FORM=COMMA var on a time 
+! axis will format the time as 10-SEP-1982 20:00, 
+! where previously the :mm minutes were left off.
 
 use gt4d011
 

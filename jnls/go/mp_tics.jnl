@@ -1,0 +1,110 @@
+! mp_tics.jnl
+! 3/2018
+! draw outer border at min/max longitude and latitude given
+! draw tic marks at intervals given.  Arguments 1-6 are identical
+! to those for mp_graticule. 
+! THIS SCRIPT IS EXPERIMENTAL. It works ok with stereographic north projection,
+!   but has not been tested with other proujections
+
+! arg 1 - minimum longitude
+! arg 2 - maximum longitude
+! arg 3 - spacing for the longitude tic marks
+! arg 4 - minimum latitude
+! arg 5 - maximum latitude
+! arg 6 - spacing for the latitude tic marks
+! arg 7 - Pen number /color=n. Default is thin, black line, pen 1
+! arg 8 - window flag: 1 to window lines at the axes, 0 not to, default 0
+!
+
+
+!   Turn windowing of plot lines off, so the  
+!   lines are complete around the edge of the plot.
+
+ppl window off
+IF `$8"0" eq 1` THEN ppl window on
+
+! set tic style, default is thin black line
+
+define symbol ticline = ($7"1")
+
+! create reasonable defaults for tic location and spacing
+!
+
+say entering mp_tics
+sh var
+
+
+
+let/quiet tic_x = x
+let/quiet tic_y = y
+
+let/quiet tic_xmin = $1"`tic_x[i=@min]`"
+let/quiet tic_xmax = $2"`tic_x[i=@max]`"
+
+if `tic_xmax - tic_xmin ge 180` then
+  let/quiet tic_xdel = $3"30"
+elif `tic_xmax - tic_xmin ge 60` then
+  let/quiet tic_xdel = $3"10"
+elif `tic_xmax - tic_xmin ge 10` then
+  let/quiet tic_xdel = $3"5"
+else
+  let/quiet tic_xdel = $3"1"
+endif
+
+let/quiet tic_ymin = $4"`tic_y[j=@min]`"
+let/quiet tic_ymax = $5"`tic_y[j=@max]`"
+
+if `tic_ymax - tic_ymin ge 180` then
+  let/quiet tic_ydel = $6"30"
+elif `tic_ymax - tic_ymin ge 60` then
+  let/quiet tic_ydel = $6"10"
+elif `tic_ymax - tic_ymin ge 10` then
+  let/quiet tic_ydel = $6"5"
+else
+  let/quiet tic_ydel = $6"1"
+endif
+
+! draw the axis lines at the edges of the region given
+go mp_graticule `tic_xmin` `tic_xmax` `tic_xmax-tic_xmin`  `tic_ymin` `tic_ymax` `tic_ymax-tic_ymin` ($ticline) 0
+
+ppl window off
+let lons= _e[e=`tic_xmin`:`tic_xmax`:`tic_xdel`]
+let z3 = reshape({1,1,}, z[z=1:3:1])
+let lon_plot =  xsequence( lons* z3)
+
+let lats =  1+0* lons
+let tic = 0.1*tic_ydel
+let ztic =  reshape({`tic_ymin-tic`,`tic_ymin+tic`,}, z[z=1:3:1])
+
+let lat_plot =  xsequence(ztic* lats)
+list lon_plot, lat_plot
+say `lon_plot,return=isize`
+ go mp_line plot/vs/over/line/color=($ticline)/nolab/i=1:`lon_plot,return=isize` lon_plot, lat_plot
+
+
+let ztic =  reshape({`tic_ymax-tic`,`tic_ymax+tic`,}, z[z=1:3:1])
+ go mp_line plot/vs/over/line/color=($ticline)/nolab/i=1:`lon_plot,return=isize` lon_plot, lat_plot
+
+
+let lats = _e[e=`tic_ymin`:`tic_ymax`:`tic_ydel`]
+let lat_plot =  xsequence( lats* z3)
+
+
+let lons =  1+0* lats
+let tic = 0.1*tic_xdel
+let ztic =  reshape({`tic_xmin-tic`,`tic_xmin+tic`,}, z[z=1:3:1])
+
+let lon_plot =  xsequence(ztic* lons)
+
+go mp_line plot/vs/over/line/color=($ticline)/nolab/i=1:`lon_plot,return=isize` lon_plot, lat_plot
+
+let ztic =  reshape({`tic_xmax-tic`,`tic_xmax+tic`,}, z[z=1:3:1])
+go mp_line plot/vs/over/line/color=($ticline)/nolab/i=1:`lon_plot,return=isize` lon_plot, lat_plot
+
+
+ppl window on
+
+
+
+say leaving mp_tics
+sh var

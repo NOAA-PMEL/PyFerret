@@ -5375,6 +5375,7 @@ Bailing out of external function "box_edges":
 	Argument has no axes
  **ERROR:
 list box_edges (a)
+*** Running ferret script: bn_hi_res_time.jnl
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

@@ -3,10 +3,11 @@
 * (set polymarker index)
 *
 
-        SUBROUTINE FGD_GSPMI(symnum)
+        SUBROUTINE FGD_GSPMI(symnum, symsiz)
 
         IMPLICIT NONE
         INTEGER symnum
+        REAL*4  symsiz
 
         INCLUDE 'ferret.parm'
         INCLUDE 'tmap_dims.parm'
@@ -37,8 +38,15 @@
             CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
             RETURN
         ENDIF
+        IF ( symsiz .LE. 0.0 ) THEN
+            errstr = 'FGD_GSPMI: invalid symbol size'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
+        ENDIF
 
         activesymbol = symnum
+        activesymsiz = symsiz
 
         RETURN
         END

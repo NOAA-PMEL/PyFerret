@@ -60,7 +60,9 @@ C      DIMENSION XMXMN(2),YMXMN(2)
       INTEGER SYMNUM
 
 C     Set the symbol used to make these marks
-      CALL FGD_GSPMI(SYMNUM)
+C     HMARK in LINES.INC is an array
+C     HMARK in PLTCOM.DAT is a value
+      CALL FGD_GSPMI(SYMNUM, HMARK)
 
 C end of FERRET mod
 ******************************************************************

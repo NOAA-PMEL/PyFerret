@@ -164,7 +164,7 @@ grdelBool grdelDrawMultiline(grdelType window, const float ptsx[],
  *     numpts: number of coordinates in ptsx and ptsy to use
  *     symbol: Symbol to use to draw a point
  *     color: color of the Symbol
- *     ptsize: size of the symbol (scales with view size)
+ *     ptsize: size of the symbol in points
  *
  * Returns success or failure.  If failure, grdelerrmsg contains
  * an explanatory message.
@@ -818,7 +818,7 @@ void FORTRAN(fgddrawmultiline)(int *success, void **window, float ptsx[],
  *     numpts: number of coordinates in ptsx and ptsy to use
  *     symbol: Symbol to use to draw a point
  *     color: color of the Symbol
- *     ptsize: size of the symbol (scales with view size)
+ *     ptsize: size of the symbol in points
  * Output Arguments:
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.

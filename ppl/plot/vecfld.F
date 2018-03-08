@@ -217,7 +217,10 @@ C
 
         IF (IPTMD .GT. MAXDOT) THEN
 C          Symbol 1 is always "dot"
-           CALL FGD_GSPMI(1)
+C          HMARK in PLTCOM.DAT is a value
+C          HMARK in LINES.INC is an array
+C          Need to check if (1) is the correct one to use
+           CALL FGD_GSPMI(1, HMARK(1))
            CALL doit_makedot(IPTMD,XDOTMD,YDOTMD)
            IPTMD = 0
         ENDIF
@@ -413,7 +416,10 @@ C
 	IF (interrupted) goto 3333 ! *jd* 8.3.92
 
 C       Symbol 1 is always "dot"
-        CALL FGD_GSPMI(1)
+C       HMARK in PLTCOM.DAT is a value
+C       HMARK in LINES.INC is an array
+C       Need to check if (1) is the correct one to use
+        CALL FGD_GSPMI(1, HMARK(1))
         CALL doit_makedot(IPTMD,XDOTMD,YDOTMD)
 
 

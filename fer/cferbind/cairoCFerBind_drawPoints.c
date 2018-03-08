@@ -62,17 +62,20 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
                               colorobj->greenfrac, colorobj->bluefrac,
                               colorobj->opaquefrac);
 
-    /* Conversion factor for those surfaces that expect points instead of pixels */
     if ( instdata->imageformat == CCFBIF_PNG ) {
+        /* surface expects pixels */
         unitfactor = 1.0;
     }
     else {
+        /* surfaces expects points instead of pixels */
         unitfactor = 72.0 / instdata->pixelsperinch;
     }
 
-    /* Scaling factor to use for these symbols typically "drawn" as 100x100 pixel paths */
-    scalefactor  = symsize * instdata->widthfactor;
-    scalefactor *= unitfactor / 100.0;
+    /* 
+     * symsize in points - widthfactor converts to pixels and applies line width scaling,
+     * but convert back to what the surface wants; symbols typically 100x100 unitless paths.
+     */
+    scalefactor = symsize * instdata->widthfactor * unitfactor / 100.0;
 
     /* Assign the pen and join style - pen width is 8% of the symbol width */
     cairo_save(instdata->context);

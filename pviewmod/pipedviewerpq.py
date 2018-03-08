@@ -1281,8 +1281,8 @@ class PipedViewerPQ(QMainWindow):
         Recognized keys from cmnd:
             "points": point centers as a list of (x,y) coordinates
             "symbol": symbol to use (see CmndHelperPQ.getSymbolFromCmnd)
-            "size": size of the symbol in points (1/72 inches); possibly
-                    further scaled by the width scaling factor
+            "size": size of the symbol in points (1/72 inches) before
+                    scaling by the width scaling factor
             "color": color name or 24-bit RGB integer value (eg, 0xFF0088)
             "alpha": alpha value from 0 (transparent) to 255 (opaque)
 

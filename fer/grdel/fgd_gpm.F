@@ -77,8 +77,8 @@
             CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
             RETURN
         ENDIF
-*       Mark size determined from line width
-        marksize = marksize * 6.0
+*       Mark size is in points
+        marksize = 72.0 * activesymsiz
 
 *       Draw the markers
         CALL FGDDRAWPOINTS(success, windowobjs(activewindow),

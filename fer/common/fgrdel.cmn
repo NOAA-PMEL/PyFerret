@@ -98,10 +98,11 @@
 * used for drawing lines.
         INTEGER activepen
 
-* The ID number of the "active" symbol of the activewindow window
-* used for drawing markers.  It is drawn using the color and size
-* of the "active" pen.
+* The ID number of the "active" symbol as well as the size to draw
+* that symbol used for drawing markers for the active window.  The
+* color used is that of the "active" pen.
         INTEGER activesymbol
+        REAL*4  activesymsiz
 
 * Whether something has been drawn in the current view of the
 * active window.  Reset to .FALSE. when the view changes.
@@ -156,6 +157,7 @@
      .         ndcxmax, ndcymax, viewleftfrac, viewbottomfrac, 
      .         viewrightfrac, viewtopfrac, viewleftcoord, 
      .         viewbottomcoord, viewrightcoord, viewtopcoord, 
+     .         activesymsiz, 
      .
      .         activewindow, activetransform, activebrush, 
      .         activepen, activesymbol, lastbrushcolor,

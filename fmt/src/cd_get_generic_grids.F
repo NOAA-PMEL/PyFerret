@@ -75,6 +75,9 @@
 *                 grid has both T and F axes
 * V710 12/16 *am* If the dimension is not a coordinate variable don't try to 
 *                 check its calendar attribute
+*  V75  ACM  2/2018 As in the DSG branch, pass line_direction(iaxis) to 
+*                 cd_get_line_direction as an argument
+
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -263,8 +266,8 @@
 		 cfrole_dim = 0  ! reset. Just one axis will have this role.
 		 eax = 0
 	      ELSE
-	         CALL CD_GET_LINE_DIRECTION (dset, axid, iaxis, 
-     .                name, linunits, do_warn)
+	         CALL CD_GET_LINE_DIRECTION (dset, axid, name, linunits, 
+     .                do_warn, line_direction(iaxis) )
 	      ENDIF
 
 * save a pointer to the axis just found

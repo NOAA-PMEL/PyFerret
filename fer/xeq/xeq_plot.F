@@ -166,7 +166,7 @@
      .			nparm, num_it, i, iax(4), i1,
      .                  loch, locv, nvs, skipsym
 	REAL		val, sym_size, dashstyle(4), only_val
-        REAL*4          thickness, opacity
+        REAL*4          thickness, opacity, thick1
 	CHARACTER	LEFINT*4, buff*128
 	
 	CHARACTER	TM_FMT*12, TM_INQ_PATH*2048, sfile*2048
@@ -356,6 +356,20 @@ CC       => Set values here instead.
      .	   .OR. (versus.AND.qual_given(slash_plot_symb).EQ.0) ) 
      .							symbol = qual_off
 	ENDIF
+
+* ... PLOT/HIGHLIGHT=<color>
+        loc = qual_given( slash_plot_highlight )
+        IF ( loc .GT. 0 ) THEN
+*          /HIGHLIGHT is only valid for named symbols
+           IF ( symbol .LT. DOTSYMIM ) GOTO 5550
+           CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                       icolor1, thick1, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+           s1 = INDEX( cmnd_buff(qual_start(loc):qual_end(loc)), '=' )
+*          /HIGHLIGHT alone uses color 1 (black)
+           IF ( s1 .EQ. 0 ) icolor1 = 1
+           CALL FGD_SET_SYMBOL_HIGHLIGHT(icolor1)
+        ENDIF
 
 * ... PLOT/SKIP=n
 
@@ -771,6 +785,9 @@ c done in plot_set_up.
         opacity = -1.0
         CALL SET_OVERRIDE_OPACITY(opacity)
 
+* clear the symbol highlight color
+        CALL FGD_SET_SYMBOL_HIGHLIGHT(-1)
+
 * restore axes? (5/29/97  revised 3/2002
         IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
@@ -882,5 +899,9 @@ c done in plot_set_up.
  5540   CALL ERRMSG( ferr_syntax, status, 
      .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .          '/SYMBOL= must be followed by a number or name', *1000 )
+
+ 5550   CALL ERRMSG( ferr_syntax, status, 
+     .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .          '/HIGHLIGHT= only valid with named symbols', *1000 )
 
 	END

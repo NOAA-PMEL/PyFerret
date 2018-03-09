@@ -255,7 +255,7 @@ grdelBool grdelDrawMultiline(grdelType window, const float ptsx[],
                const float ptsy[], int numpts, grdelType pen);
 grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
                const float ptsy[], int numpts, grdelType symbol,
-               grdelType color, float ptsize);
+               grdelType color, float ptsize, grdelType highlight);
 grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
                const float ptsy[], int numpts, grdelType brush,
                grdelType pen);
@@ -272,7 +272,7 @@ void FORTRAN(fgddrawmultiline)(int *success, void **window, float ptsx[],
                float ptsy[], int *numpts, void **pen);
 void FORTRAN(fgddrawpoints)(int *success, void **window, float ptsx[],
                float ptsy[], int *numpts, void **symbol,
-               void **color, float *ptsize);
+               void **color, float *ptsize, void **highlight);
 void FORTRAN(fgddrawpolygon)(int *success, void **window, float ptsx[],
                float ptsy[], int *numpts, void **brush, void **pen);
 void FORTRAN(fgddrawrect)(int *success, void **window, float *left, float *bottom,

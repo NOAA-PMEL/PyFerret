@@ -103,6 +103,7 @@
 * color used is that of the "active" pen.
         INTEGER activesymbol
         REAL*4  activesymsiz
+        INTEGER activesymhighlight
 
 * Whether something has been drawn in the current view of the
 * active window.  Reset to .FALSE. when the view changes.
@@ -161,7 +162,8 @@
      .
      .         activewindow, activetransform, activebrush, 
      .         activepen, activesymbol, lastbrushcolor,
-     .         lastbstylen, brushcolor, pencolor,
+     .         lastbstylen, brushcolor, pencolor, 
+     .         activesymhighlight,
      .
      .         cliptoview, somethingdrawn, savetransparent, 
      .         antialias, rasteronly, 

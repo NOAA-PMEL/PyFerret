@@ -645,7 +645,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
                  "pen":pen }
         self.__window.submitCommand(cmnd)
 
-    def drawPoints(self, ptsx, ptsy, symbol, color, ptsize):
+    def drawPoints(self, ptsx, ptsy, symbol, color, ptsize, highlight):
         '''
         Draws discrete points.
 
@@ -653,8 +653,9 @@ class PyFerretBindings(AbstractPyFerretBindings):
             ptsx: X-coordinates of the points
             ptsy: Y-coordinates of the points
             symbol: the Symbol to use to draw a point
-            color: color of the Symbol (default color if None or empty)
+            color: color of the Symbol (default color if None)
             ptsize: size of the symbol (scales with view size)
+            highlight: color to outline the symbol; not outlined if None
 
         Coordinates are measured from the upper left corner
         in "device units" (pixels at the current window DPI).
@@ -671,6 +672,8 @@ class PyFerretBindings(AbstractPyFerretBindings):
         cmnd["points"] = points
         cmnd["symbol"] = symbol
         cmnd["size"] = ptsize
+        if highlight:
+            cmnd["highlight"] = highlight
         self.__window.submitCommand(cmnd)
 
     def drawPolygon(self, ptsx, ptsy, brush, pen):

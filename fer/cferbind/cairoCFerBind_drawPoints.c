@@ -16,11 +16,12 @@
  */
 grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
                                    int numpts, grdelType symbol, grdelType color,
-                                   double symsize)
+                                   double symsize, grdelType highlight)
 {
     CairoCFerBindData *instdata;
     CCFBSymbol *symbolobj;
     CCFBColor  *colorobj;
+    CCFBColor  *highlightobj;
     int    k;
     double unitfactor;
     double scalefactor;
@@ -52,15 +53,12 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
                             "color is not CCFBColor struct");
         return 0;
     }
-
-    /* Assign the (solid) color to use for the symbols */
-    if ( instdata->noalpha )
-        cairo_set_source_rgb(instdata->context, colorobj->redfrac,
-                             colorobj->greenfrac, colorobj->bluefrac);
-    else
-        cairo_set_source_rgba(instdata->context, colorobj->redfrac,
-                              colorobj->greenfrac, colorobj->bluefrac,
-                              colorobj->opaquefrac);
+    highlightobj = (CCFBColor *) highlight;
+    if ( (highlightobj != NULL) && (highlightobj->id != CCFBColorId) ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_drawPoints: unexpected error, "
+                            "highlight is not CCFBColor struct");
+        return 0;
+    }
 
     if ( instdata->imageformat == CCFBIF_PNG ) {
         /* surface expects pixels */
@@ -77,9 +75,18 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
      */
     scalefactor = symsize * instdata->widthfactor * unitfactor / 100.0;
 
-    /* Assign the pen and join style - pen width is 8% of the symbol width */
     cairo_save(instdata->context);
-    cairo_set_line_width(instdata->context, 8.0 * scalefactor);
+
+    /* Assign the (solid) primary color to use for the symbols */
+    if ( instdata->noalpha )
+        cairo_set_source_rgb(instdata->context, colorobj->redfrac,
+                             colorobj->greenfrac, colorobj->bluefrac);
+    else
+        cairo_set_source_rgba(instdata->context, colorobj->redfrac,
+                              colorobj->greenfrac, colorobj->bluefrac,
+                              colorobj->opaquefrac);
+
+    /* Assign the line and join style */
     cairo_set_dash(instdata->context, NULL, 0, 0.0);
     cairo_set_line_cap(instdata->context, CAIRO_LINE_CAP_BUTT);
     cairo_set_line_join(instdata->context, CAIRO_LINE_JOIN_MITER);
@@ -97,10 +104,33 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
         cairo_append_path(instdata->context, symbolobj->path);
         cairo_restore(instdata->context);
     }
+
     if ( symbolobj->filled ) {
-        cairo_fill(instdata->context);
+        if ( highlightobj != NULL ) {
+            /* Fill but preserve the path for stroking */
+            cairo_fill_preserve(instdata->context);
+            /* Assign the highlight color */
+            if ( instdata->noalpha )
+                cairo_set_source_rgb(instdata->context, highlightobj->redfrac,
+                                     highlightobj->greenfrac, highlightobj->bluefrac);
+            else
+                cairo_set_source_rgba(instdata->context, highlightobj->redfrac,
+                                      highlightobj->greenfrac, highlightobj->bluefrac,
+                                      highlightobj->opaquefrac);
+            /* Pen width is 2% of the symbol width for highlighting */
+            cairo_set_line_width(instdata->context, 2.0 * scalefactor);
+            /* Stroke the highlight and remove the path */
+            cairo_stroke(instdata->context);
+        }
+        else {
+            /* Just fill and remove the path */
+            cairo_fill(instdata->context);
+        }
     }
     else {
+        /* Pen width is 8% of the symbol width for stroked symbols */
+        cairo_set_line_width(instdata->context, 8.0 * scalefactor);
+        /* Just stroke and remove the path - ignore highlight */
         cairo_stroke(instdata->context);
     }
 

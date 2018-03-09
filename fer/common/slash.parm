@@ -79,6 +79,7 @@
 * PyFr *kms*  5/17 Ticket 2530 add WIRE/COLOR= /OPACITY= /THICKNESS= 
 * V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
 * V723 *acm* 11/17 New SAVE/ASGLOBAL option to write global attribute to netCDF file
+* V740 *kms*  3/18 Add PyFerret PLOT/HIGHLIGHT=
 
 
 * command qualifier states
@@ -365,7 +366,8 @@
      .			slash_plot_gap,
      .			slash_plot_skip,
      .			slash_plot_dms,
-     .			slash_plot_halfsp
+     .			slash_plot_halfsp,
+     .			slash_plot_highlight
 
 	INTEGER		slash_wire_over,
      .			slash_wire_set_up,
@@ -691,7 +693,8 @@
      .			slash_plot_gap	 	= 1+48,
      .			slash_plot_skip	 	= 1+49,
      .			slash_plot_dms	 	= 1+50,
-     .			slash_plot_halfsp	= 1+51)
+     .			slash_plot_halfsp	= 1+51,
+     .			slash_plot_highlight	= 1+52)
 
 	PARAMETER     ( slash_wire_over		= 1+12,
      .			slash_wire_set_up	= 1+13,

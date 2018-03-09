@@ -1285,6 +1285,8 @@ class PipedViewerPQ(QMainWindow):
                     scaling by the width scaling factor
             "color": color name or 24-bit RGB integer value (eg, 0xFF0088)
             "alpha": alpha value from 0 (transparent) to 255 (opaque)
+            "highlight": dictionary of "color" and "alpha" (as above)
+                     for filled symbol outline color; not outlined if omitted
 
         The coordinates are device coordinates from the upper left corner.
 
@@ -1293,6 +1295,11 @@ class PipedViewerPQ(QMainWindow):
         '''
         ptcoords = cmnd["points"]
         ptsize = cmnd["size"]
+        ptsize = cmnd["size"]
+        try:
+            highlight = self.__helper.getColorFromCmnd(cmnd["highlight"])
+        except KeyError:
+            highlight = None
         sympath = self.__helper.getSymbolFromCmnd(cmnd["symbol"])
         self.__activepainter.setRenderHint(QPainter.Antialiasing,
                                            self.__antialias)
@@ -1303,13 +1310,19 @@ class PipedViewerPQ(QMainWindow):
             mybrush = QBrush(Qt.SolidPattern)
         if sympath.isFilled():
             self.__activepainter.setBrush(mybrush)
-            self.__activepainter.setPen(Qt.NoPen)
+            if highlight:
+                # highlight pen width is 2% of the width of the symbol
+                mybrush = QBrush(highlight, Qt.SolidPattern)
+                mypen = QPen(mybrush, 2.0, Qt.SolidLine, Qt.FlatCap, Qt.MiterJoin)
+                self.__activepainter.setPen(mypen)
+            else:
+                self.__activepainter.setPen(Qt.NoPen)
         else:
             self.__activepainter.setBrush(Qt.NoBrush)
-            # pen width is 8% of the width of the symbol
+            # pen width is 8% of the width of the symbol for stroked symbols - highlight is ignored
             mypen = QPen(mybrush, 8.0, Qt.SolidLine, Qt.FlatCap, Qt.MiterJoin)
             self.__activepainter.setPen(mypen)
-        # Unmodified symbols are 100x100 pixels 
+        # typical symbols are 100x100 pixels 
         scalefactor = ptsize * self.widthScalingFactor() / 100.0
         if self.__maxsymbolwidth < 100.0 * scalefactor:
             self.__maxsymbolwidth = 100.0 * scalefactor

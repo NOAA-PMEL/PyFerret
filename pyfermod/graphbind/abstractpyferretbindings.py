@@ -444,7 +444,7 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError('not implemented')
 
-    def drawPoints(self, ptsx, ptsy, symbol, color, ptsize):
+    def drawPoints(self, ptsx, ptsy, symbol, color, ptsize, highlight):
         '''
         Draws discrete points.
 
@@ -452,8 +452,9 @@ class AbstractPyFerretBindings(object):
             ptsx: X-coordinates of the points
             ptsy: Y-coordinates of the points
             symbol: the Symbol to use to draw a point
-            color: color of the Symbol (default color if None or empty)
+            color: color of the symbol (default color if None or empty)
             ptsize: size of the symbol (scales with view size)
+            highlight: outline color of the symbol (do not outline if None or empty)
 
         Coordinates are measured from the upper left corner
         in "device units" (pixels at the current window DPI).

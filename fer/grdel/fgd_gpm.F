@@ -15,7 +15,7 @@
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
-        REAL*8  symbolobj, colorobj
+        REAL*8  symbolobj, colorobj, highlightobj
         REAL*4  marksize
         INTEGER colornum, success, errstrlen, TM_LENSTR
         CHARACTER*2048 errstr
@@ -79,11 +79,29 @@
         ENDIF
 *       Mark size is in points
         marksize = 72.0 * activesymsiz
+*       Highlight color, if given
+        IF ( activesymhighlight .GT. 0 ) THEN
+            IF ( activesymhighlight .GT. maxcolorobjs ) THEN
+                errstr = 'FGD_GPM: invalid activesymhighlight'
+                errstrlen = TM_LENSTR(errstr)
+                CALL SPLIT_LIST(pttmode_help,err_lun,errstr,errstrlen)
+                RETURN
+            ENDIF
+            highlightobj = colorobjs(activesymhighlight, activewindow)
+            IF ( highlightobj .EQ. nullobj ) THEN
+                errstr = 'FGD_GPM: invalid marker highlight color'
+                errstrlen = TM_LENSTR(errstr)
+                CALL SPLIT_LIST(pttmode_help,err_lun,errstr,errstrlen)
+                RETURN
+            ENDIF
+        ELSE
+            highlightobj = nullobj
+        ENDIF
 
 *       Draw the markers
         CALL FGDDRAWPOINTS(success, windowobjs(activewindow),
      .                     ptsx, ptsy, npts,
-     .                     symbolobj, colorobj, marksize)
+     .                     symbolobj, colorobj, marksize, highlightobj)
         IF ( success .EQ. 0 ) THEN
             errstr = ' '
             CALL FGDERRMSG(errstr, errstrlen)

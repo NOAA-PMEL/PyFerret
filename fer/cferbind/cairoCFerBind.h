@@ -182,7 +182,7 @@ grdelBool cairoCFerBind_drawMultiline(CFerBind *self, double ptsx[], double ptsy
                                       int numpts, grdelType pen);
 grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
                                    int numpts, grdelType symbol, grdelType color,
-                                   double symsize);
+                                   double symsize, grdelType highlight);
 grdelBool cairoCFerBind_drawPolygon(CFerBind *self, double ptsx[], double ptsy[],
                                     int numpts, grdelType brush, grdelType pen);
 grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom,

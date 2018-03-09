@@ -77,7 +77,7 @@ typedef struct CFerBind_struct {
                                 double ptsy[], int numpts, grdelType pen);
      grdelBool (*drawPoints)(struct CFerBind_struct *self, double ptsx[],
                              double ptsy[], int numpts, grdelType symbol,
-                             grdelType color, double symsize);
+                             grdelType color, double symsize, grdelType highlight);
      grdelBool (*drawPolygon)(struct CFerBind_struct *self, double ptsx[],
                               double ptsy[], int numpts, grdelType brush,
                               grdelType pen);

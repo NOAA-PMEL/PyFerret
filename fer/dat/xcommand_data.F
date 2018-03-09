@@ -1112,7 +1112,7 @@
 		DATA qualifiers  (nqual_at6a+49)/ 'SKIPSYM'/	! Control for symbol decimation
 		DATA qualifiers  (nqual_at6a+50)/ 'DEGMINSEC'/	! Request deg/min or deg/min/sec axis labels
 		DATA qualifiers  (nqual_at6a+51)/ 'HALFSPAC'/	! Request a space before the E/W or N/S on axis labels
-		DATA qualifiers  (nqual_at6a+52)/ '****'/	! HIGHLIGHT in PyFerret
+		DATA qualifiers  (nqual_at6a+52)/ 'HIGHLIGH'/	! HIGHLIGHT in PyFerret
 		DATA qualifiers  (nqual_at6a+53)/ '****'/	! unused
 		DATA qualifiers  (nqual_at6a+54)/ '****'/	! unused
 		DATA qualifiers  (nqual_at6a+55)/ '****'/	! unused

@@ -163,19 +163,21 @@ grdelBool grdelDrawMultiline(grdelType window, const float ptsx[],
  *     ptsy: user Y-coordinates of the points
  *     numpts: number of coordinates in ptsx and ptsy to use
  *     symbol: Symbol to use to draw a point
- *     color: color of the Symbol
+ *     color: color of the symbol
  *     ptsize: size of the symbol in points
+ *     highlight: color for symbol outline; can be null for no outline
  *
  * Returns success or failure.  If failure, grdelerrmsg contains
  * an explanatory message.
  */
 grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
                const float ptsy[], int numpts, grdelType symbol,
-               grdelType color, float ptsize)
+               grdelType color, float ptsize, grdelType highlight)
 {
     const BindObj *bindings;
     grdelType symbolobj;
     grdelType colorobj;
+    grdelType highlightobj;
     double   *xvals;
     double   *yvals;
     grdelBool success;
@@ -214,6 +216,17 @@ grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
                             "a valid grdel Color for the window");
         return 0;
     }
+    if ( highlight != NULL ) {
+        highlightobj = grdelColorVerify(highlight, window);
+        if ( highlightobj == NULL ) {
+            strcpy(grdelerrmsg, "grdelDrawPoints: highlight argument is not "
+                                "a valid grdel Color for the window");
+            return 0;
+        }
+    }
+    else {
+        highlightobj = NULL;
+    }
     if ( numpts <= 0 ) {
         strcpy(grdelerrmsg, "grdelDrawPoints: invalid number of points");
         return 0;
@@ -236,7 +249,7 @@ grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
             yvals[k] = (my - (double) (ptsy[k])) * sy + dy;
         success = bindings->cferbind->drawPoints(bindings->cferbind,
                                       xvals, yvals, numpts, symbolobj,
-                                      colorobj, (double) ptsize);
+                                      colorobj, (double) ptsize, highlightobj);
         FerMem_Free(xvals, __FILE__, __LINE__);
         if ( ! success ) {
             /* grdelerrmsg is already assigned */
@@ -292,9 +305,11 @@ grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
          * Call the drawPoints method of the bindings instance.
          * Using 'N' to steal the reference to xtuple and to ytuple.
          */
+        if ( highlightobj == NULL )
+            highlightobj = Py_None;
         result = PyObject_CallMethod(bindings->pyobject, "drawPoints",
-                          "NNOOd", xtuple, ytuple, (PyObject *) symbolobj,
-                          (PyObject *) colorobj, (double) ptsize);
+                          "NNOOdO", xtuple, ytuple, (PyObject *) symbolobj,
+                          (PyObject *) colorobj, (double) ptsize, highlightobj);
         if ( result == NULL ) {
             sprintf(grdelerrmsg, "grdelDrawPoints: error when calling the Python "
                     "binding's drawPoints method: %s", pyefcn_get_error());
@@ -817,20 +832,21 @@ void FORTRAN(fgddrawmultiline)(int *success, void **window, float ptsx[],
  *     ptsy: user Y-coordinates of the points
  *     numpts: number of coordinates in ptsx and ptsy to use
  *     symbol: Symbol to use to draw a point
- *     color: color of the Symbol
+ *     color: color of the symbol
  *     ptsize: size of the symbol in points
+ *     highlight: color for symbol outline; can be null for no outline
  * Output Arguments:
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
 void FORTRAN(fgddrawpoints)(int *success, void **window, float ptsx[],
                     float ptsy[], int *numpts, void **symbol,
-                    void **color, float *ptsize)
+                    void **color, float *ptsize, void **highlight)
 {
     grdelBool result;
 
     result = grdelDrawPoints(*window, ptsx, ptsy, *numpts, *symbol,
-                             *color, *ptsize);
+                             *color, *ptsize, *highlight);
     *success = result;
 }
 

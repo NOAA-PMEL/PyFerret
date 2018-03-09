@@ -105490,6 +105490,9 @@ plot/axes=0,1,1,1/t="2-sep-2017:01:00":"2-sep-2017:01:05" temp_on_time
 set view lower
 plot/axes=0,1,1,1/t="2-sep-2017:01:00":"2-sep-2017:01:01" temp_on_time
  
+! /T= translates fractional seconds
+plot/t="02-SEP-2017 00:00:06.04":"02-SEP-2017 00:00:37.54" temp_on_time
+ 
 ! Labels on plots where T is orthogonal
 !
 define axis/x=10:330:10/units=degrees_east lonax
@@ -105518,6 +105521,13 @@ list/t="2-sep-2017:01:00:00":"2-sep-2017:01:00:03"/prec=5 temp_on_time
  02-SEP-2017 01:00:01.45 / 5716: -0.45019
  02-SEP-2017 01:00:02.08 / 5717: -0.47970
  02-SEP-2017 01:00:02.71 / 5718: -0.50867
+ 
+! /T= translates fractional seconds
+list/t=" 02-SEP-2017 01:00:01.45":"02-SEP-2017 01:00:02.08" /prec=5 temp_on_time
+             VARIABLE : COS(L[GT=TAXREG]/30)
+             SUBSET   : 2 points (TIME)
+ 02-SEP-2017 01:00:01.45 / 5716: -0.45019
+ 02-SEP-2017 01:00:02.08 / 5717: -0.47970
  
 list tax_datestring(t[gt=taxreg,L=1:5], t[gt=taxreg], "seconds")
              VARIABLE : TAX_DATESTRING(T[GT=TAXREG,L=1:5], T[GT=TAXREG], "seconds")

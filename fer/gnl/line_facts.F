@@ -67,6 +67,7 @@
 * V72  3/17 *acm* Fix ticket 2518: The number of points reported in a subset was incorrect
 * v74  *acm*  1/18 Fixing issue 1575, setting uvar_given for result of grid-changing functions
 *                  that return results on abstract axes.
+* v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'

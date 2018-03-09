@@ -69,6 +69,7 @@
 * V693+ *sh* 2/15 - added support for _DQ_ quotations
 * V72   *acm* 11/16 - improve error message for invalid date strings
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
+* v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 
 * possible formats:
 * for subscript values ( subscript .EQ. .TRUE. ) :
@@ -95,8 +96,8 @@
 * internal variable declarations:
 	LOGICAL		TM_DIGIT, TM_DATE
 	INTEGER		TM_LENSTR1, end_pos, start_pos, pbad, i, 
-     .                  slen, j, cal_id
-	REAL*8		SECS_FROM_BC, given_answer
+     .                  slen, j, cal_id, dot
+	REAL*8		SECS_FROM_BC, given_answer, frac
 	CHARACTER	buff*60				! for AIX port 10/95
 
 * internal parameter declarations:
@@ -198,8 +199,14 @@
 * ... time step cannot be evaluated until we know what axis this is on
 * ... save number of seconds from B.C. as a negative to flag later translation
 
-	      answer = -1.D0 * SECS_FROM_BC( buff(:slen), cal_id, 
-     .                                       status )
+	      dot = INDEX( buff(:slen), '.' )
+	      frac = 0.
+	      IF (dot .GT. 0) THEN 
+		 READ (buff(dot:slen), *) frac
+	         slen = dot-1
+	      ENDIF
+	      answer = -1.D0 * (SECS_FROM_BC( buff(:slen), cal_id, 
+     .                                       status ) + frac)
 	      formatted = .TRUE.
 	      IF ( status .NE. ferr_ok ) THEN 
 	         buff = buff(:slen)//' is not valid in this calendar'

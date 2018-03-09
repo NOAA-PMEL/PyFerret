@@ -29,7 +29,10 @@ plot/axes=0,1,1,1/t="2-sep-2017:01:00":"2-sep-2017:01:05" temp_on_time
 ! Time ranges under a minute needed improved labels including seconds 
 set view lower
 plot/axes=0,1,1,1/t="2-sep-2017:01:00":"2-sep-2017:01:01" temp_on_time
- 
+
+! /T= translates fractional seconds
+plot/t="02-SEP-2017 00:00:06.04":"02-SEP-2017 00:00:37.54" temp_on_time
+
 ! Labels on plots where T is orthogonal
 !
 define axis/x=10:330:10/units=degrees_east lonax
@@ -47,6 +50,9 @@ sh sym lab($labnum_t)
 
 ! Listings with fractional seconds
 list/t="2-sep-2017:01:00:00":"2-sep-2017:01:00:03"/prec=5 temp_on_time
+
+! /T= translates fractional seconds
+list/t=" 02-SEP-2017 01:00:01.45":"02-SEP-2017 01:00:02.08" /prec=5 temp_on_time
 
 list tax_datestring(t[gt=taxreg,L=1:5], t[gt=taxreg], "seconds")
 

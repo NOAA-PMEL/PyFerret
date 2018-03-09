@@ -244,6 +244,7 @@
 * V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
 * V723 *acm* 11/17 New SAVE/ASGLOBAL option to write global attribute to netCDF file
 * V74  *acm*  2/17 New DEFINE AXIS/LIKE and DEFINE VARIABLE/LIKE
+* V740 *kms*  3/18 Add space for PyFerret PLOT/HIGHLIGHT=
 *
 *
 * !!!!!!!!!!
@@ -1095,6 +1096,10 @@
 		DATA qualifiers  (nqual_at6a+49)/ 'SKIPSYM'/	! Control for symbol decimation
 		DATA qualifiers  (nqual_at6a+50)/ 'DEGMINSEC'/	! Request deg/min or deg/min/sec axis labels
 		DATA qualifiers  (nqual_at6a+51)/ 'HALFSPAC'/	! Request a space before the E/W or N/S on axis labels
+		DATA qualifiers  (nqual_at6a+52)/ '****'/	! HIGHLIGHT in PyFerret
+		DATA qualifiers  (nqual_at6a+53)/ '****'/	! unused
+		DATA qualifiers  (nqual_at6a+54)/ '****'/	! unused
+		DATA qualifiers  (nqual_at6a+55)/ '****'/	! unused
 
 * GO	 - command # 7
 	DATA commands(7)			/ 'GO  '	/

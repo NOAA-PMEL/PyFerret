@@ -56,6 +56,7 @@
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U
 * V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
 * V740 *acm*  2/18 Issue 966: LET/LIKE= Get attributes from another variable
+* V740 *kms*  3/18 Add space for PyFerret PLOT/HIGHLIGHT=
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -261,7 +262,7 @@
 	INTEGER		nsub6      , nsub_at7  ,
      .			nqual6a    , nqual_at7a
 	PARAMETER    (	nsub6   = 1, nsub_at7   = nsub_at6   + nsub6,
-     .			nqual6a =52, nqual_at7a = nqual_at6a + nqual6a  )
+     .			nqual6a =56, nqual_at7a = nqual_at6a + nqual6a  )
 
 * GO		 - commmand # 7
 	INTEGER		nsub7      , nsub_at8   ,

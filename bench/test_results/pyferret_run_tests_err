@@ -5535,6 +5535,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_contourcolor.jnl
 *** Running ferret script: bn_inf2missing.jnl
 *** Running ferret script: bn_pointplots.jnl
+ **ERROR: command syntax: highlight
+          /HIGHLIGHT= only valid with named symbols
+plot /over /nokey /size=0.45 /symbol=12 /color=green /highlight /vs {8.0},{1.0}
 *** Running python script: testgetstrdata.py
 >>> ... ... >>> >>> >>> 
 *** Running python script: testferregion.py

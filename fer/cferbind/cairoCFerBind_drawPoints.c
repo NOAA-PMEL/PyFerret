@@ -107,9 +107,9 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
 
     if ( symbolobj->filled ) {
         if ( highlightobj != NULL ) {
-            /* Fill but preserve the path for stroking */
+            /* highlighted filled plot - fill but preserve the path for stroking */
             cairo_fill_preserve(instdata->context);
-            /* Assign the highlight color */
+            /* assign the highlight color */
             if ( instdata->noalpha )
                 cairo_set_source_rgb(instdata->context, highlightobj->redfrac,
                                      highlightobj->greenfrac, highlightobj->bluefrac);
@@ -117,20 +117,20 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
                 cairo_set_source_rgba(instdata->context, highlightobj->redfrac,
                                       highlightobj->greenfrac, highlightobj->bluefrac,
                                       highlightobj->opaquefrac);
-            /* Pen width is 2% of the symbol width for highlighting */
-            cairo_set_line_width(instdata->context, 2.0 * scalefactor);
-            /* Stroke the highlight and remove the path */
+            /* highlight - pen width is 4% of the symbol width */
+            cairo_set_line_width(instdata->context, 4.0 * scalefactor);
+            /* stroke the highlight and remove the path */
             cairo_stroke(instdata->context);
         }
         else {
-            /* Just fill and remove the path */
+            /* filled plot without highlight - just fill and remove the path */
             cairo_fill(instdata->context);
         }
     }
     else {
-        /* Pen width is 8% of the symbol width for stroked symbols */
+        /* stroked path - pen width is 8% of the symbol width */
         cairo_set_line_width(instdata->context, 8.0 * scalefactor);
-        /* Just stroke and remove the path - ignore highlight */
+        /* just stroke and remove the path - ignore highlight */
         cairo_stroke(instdata->context);
     }
 

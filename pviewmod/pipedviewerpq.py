@@ -1311,15 +1311,16 @@ class PipedViewerPQ(QMainWindow):
         if sympath.isFilled():
             self.__activepainter.setBrush(mybrush)
             if highlight:
-                # highlight pen width is 2% of the width of the symbol
+                # highlighted filled plot - pen width is 4% of the width of the symbol
                 mybrush = QBrush(highlight, Qt.SolidPattern)
-                mypen = QPen(mybrush, 2.0, Qt.SolidLine, Qt.FlatCap, Qt.MiterJoin)
+                mypen = QPen(mybrush, 4.0, Qt.SolidLine, Qt.FlatCap, Qt.MiterJoin)
                 self.__activepainter.setPen(mypen)
             else:
+                # filled plot without highlight - no pen, only brush
                 self.__activepainter.setPen(Qt.NoPen)
         else:
+            # stroked path - no brush, pen width is 8% of the width of the symbol, highlight is ignored
             self.__activepainter.setBrush(Qt.NoBrush)
-            # pen width is 8% of the width of the symbol for stroked symbols - highlight is ignored
             mypen = QPen(mybrush, 8.0, Qt.SolidLine, Qt.FlatCap, Qt.MiterJoin)
             self.__activepainter.setPen(mypen)
         # typical symbols are 100x100 pixels 

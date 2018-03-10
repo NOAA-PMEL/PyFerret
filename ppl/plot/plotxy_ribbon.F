@@ -279,9 +279,13 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
      *		 (YEQ.AND.X(IY+K).EQ.CMYEQ).OR.
      *		 (YGE.AND.X(IY+K).GE.CMYGE))THEN
 
-		  IF (IDN .EQ. 1 .AND. klast.EQ.k-1) THEN ! prev pt was a singleton
-                      CALL PLOT(XTLAST,YTLAST,0,0)
-                      CALL MARK(DOTSYMIM)
+		  IF (IDN .EQ. 1 .AND. klast.EQ.k-1) THEN
+*                     prev pt was a singleton
+*                     plot a dot for line plots without symbols
+                      IF(ITYPE(I).EQ.0.OR.ITYPE(I).EQ.4) THEN
+                          CALL PLOT(XTLAST,YTLAST,0,0)
+                          CALL MARK(DOTSYMIM)
+                      ENDIF
 		  ENDIF
 
 	          IDN=0

@@ -299,6 +299,7 @@ Benchmark scripts that will be run:
    bn_contourcolor.jnl
    bn_inf2missing.jnl
    bn_pointplots.jnl
+   bn_symbolpattern.jnl
    testgetstrdata.py
    testferregion.py
    testferdset.py
@@ -109561,6 +109562,19 @@ can grid xygrid
 can axis yax
 can axis xax
  
+*** Running ferret script: bn_symbolpattern.jnl
+!
+! bn_symbolpattern.jnl
+!
+set text /font=helvetica
+use coads_climatology
+let sstteensx = if ( SST[L=1] ge 13.0 and SST[L=1] le 19.0 ) then X
+let sstteensy = if ( SST[L=1] ge 13.0 and SST[L=1] le 19.0 ) then Y
+let ptsx = xsequence(sstteensx)
+let ptsy = xsequence(sstteensy)
+shade /L=1 sst
+plot /over /vs /sym=circle /size=0.07 ptsx, ptsy
+frame /file=symbolpattern.pdf
 *** Running python script: testgetstrdata.py
 
 >>> pyferret.run('let strarr = {"one", "two", "three", "four", "five", "six"}')

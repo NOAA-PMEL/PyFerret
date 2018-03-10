@@ -58,11 +58,14 @@ C      DIMENSION XMXMN(2),YMXMN(2)
 #endif
 
       INTEGER SYMNUM
+      REAL*4 SYMSIZ
 
 C     Set the symbol used to make these marks
-C     HMARK in LINES.INC is an array
-C     HMARK in PLTCOM.DAT is a value
-      CALL FGD_GSPMI(SYMNUM, HMARK)
+C     HMARK in LINES.INC is an array with the actual heights
+C     HMARK in PLTCOM.DAT, set by MARKH, is the height scaled by FACTOR/8.0
+C     so undo this scaling for the call to FGD_GSPMI
+      SYMSIZ = HMARK * 8.0 / FACTOR
+      CALL FGD_GSPMI(SYMNUM, SYMSIZ)
 
 C end of FERRET mod
 ******************************************************************

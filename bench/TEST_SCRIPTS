@@ -310,6 +310,7 @@ bn_outline_poly.jnl
 bn_contourcolor.jnl
 bn_inf2missing.jnl
 bn_pointplots.jnl
+bn_symbolpattern.jnl
 !
 ! PyFerret-only Python scripts
 !

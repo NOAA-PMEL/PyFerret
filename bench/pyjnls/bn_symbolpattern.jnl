@@ -1,0 +1,12 @@
+!
+! bn_symbolpattern.jnl
+!
+set text /font=helvetica
+use coads_climatology
+let sstteensx = if ( SST[L=1] ge 13.0 and SST[L=1] le 19.0 ) then X
+let sstteensy = if ( SST[L=1] ge 13.0 and SST[L=1] le 19.0 ) then Y
+let ptsx = xsequence(sstteensx)
+let ptsy = xsequence(sstteensy)
+shade /L=1 sst
+plot /over /vs /sym=circle /size=0.07 ptsx, ptsy
+frame /file=symbolpattern.pdf

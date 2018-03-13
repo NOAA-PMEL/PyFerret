@@ -78,45 +78,57 @@ C                   Increase the maximum back up to 10000.
         else
             call moveabs2(xn,yn)
         endif
+        RETURN
+        END
 #else
-       INCLUDE 'gkplot.cmn'
-       DATA ipline/0/
+        INCLUDE 'gkplot.cmn'
+        DATA ipline/0/
 
-       IF ( IP .EQ. 0 ) THEN
-           CALL DOIT(ipline,xpline,ypline)
-           ipline=1
-       ELSE
-           ipline=ipline+1
-           IF ( ipline .GT. maxpline ) THEN
-              CALL DOIT(maxpline,xpline,ypline)
-              ipline=2
-              xpline(1) = xpline(maxpline)
-              ypline(1) = ypline(maxpline)
-           ENDIF
-       ENDIF
-       xpline(ipline) = XN
-       ypline(ipline) = YN
-#endif
-	RETURN
-	ENTRY PPLGFLUSH
-#ifdef core
-        return
-        end
-#else
-	CALL DOIT(ipline,xpline,ypline)
-	ipline=0
+        IF ( IP .EQ. 0 ) THEN
+*           Draw the accumulated connected lines
+*           and start a new accumulation of lines
+            IF ( ipline .GT. 0 ) THEN
+                CALL DOIT_gksmv(ipline,xpline,ypline)
+            ENDIF
+            ipline=1
+        ELSE
+*           Add to the accumulated connected lines
+            IF ( ipline .GE. maxpline ) THEN
+*              No space left - draw the lines and 
+*              start a new accumulation, continuing
+*              from the last point of the last line
+               CALL DOIT_gksmv(ipline,xpline,ypline)
+               xpline(1) = xpline(ipline)
+               ypline(1) = ypline(ipline)
+               ipline=2
+            ELSE
+               ipline=ipline+1
+            ENDIF
+        ENDIF
+        xpline(ipline) = XN
+        ypline(ipline) = YN
 	RETURN
 	END
-	SUBROUTINE DOIT(IPT,X,Y)
+
+        SUBROUTINE PPLGFLUSH
+        INCLUDE 'gkplot.cmn'
+        CALL DOIT_gksmv(ipline,xpline,ypline)
+        ipline=0
+        RETURN
+        END
+
+	SUBROUTINE DOIT_gksmv(IPT,X,Y)
 	DIMENSION X(*),Y(*)
 	IF(IPT.LE.0)RETURN
 	IF(IPT.EQ.1)THEN
+*           Singleton - draw as a zero length line
 	    X(2)=X(1)
 	    Y(2)=Y(1)
 	    IPT=2
-	ELSE
-	    CALL FGD_GPL(IPT,X,Y)
 	ENDIF
+	CALL FGD_GPL(IPT,X,Y)
 	RETURN
 	END
+
 #endif
+

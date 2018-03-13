@@ -300,6 +300,7 @@ Benchmark scripts that will be run:
    bn_inf2missing.jnl
    bn_pointplots.jnl
    bn_symbolpattern.jnl
+   bn_symbolcolors.jnl
    testgetstrdata.py
    testferregion.py
    testferdset.py
@@ -103438,7 +103439,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.110E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS0DD-MON-YYYY HH:MM:SS
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASDD-MON-YYYY HH:MM:SS
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  8.000E+00  6.630E+00 0.120    0  SYSTEM  @ASDATA SET: err721_dup_labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
@@ -109332,6 +109333,10 @@ can axis/all
 ! Dump the contents of the decimated-data DSG file
 sp ncdump -h 492C19881104_dec.nc >> all_ncdump.out
 *** Running ferret script: bn_color_wire.jnl
+!
+! bn_color_wire.jnl
+!
+ 
 set text /font=helvetica
 set region /i=1:80 /j=1:80
 let bump = exp(-1.0*(((I-40)/20)^2 + ((J-40)/20)^2))
@@ -109346,11 +109351,19 @@ frame /file=red25wire.png
 wire /color=(100,0,0) /opacity=10 /thick=3.5 /viewpoint=-4,-10,2 bump
 frame /file=red10wire.png
 *** Running ferret script: bn_outline_poly.jnl
+!
+! bn_outline_poly.jnl
+!
+ 
 set win /xinch=8 /thick=1 /asp=1 /outline=5 1
 let v = 2*3.14159*x[gx=0:1:.01]
 poly/hl=-1:1/vl=-1:1/key/pal=red/thick=1/opac=50 sin(v), cos(v)
 frame /file=outline_poly.pdf
 *** Running ferret script: bn_contourcolor.jnl
+!
+! bn_contourcolor.jnl
+!
+ 
 set text /font=hershey
 contour/i=1:20/j=1:20/lev=(0)(-10,10,2.125)/color=blue/title="Contour Hershey Blue"  10*sin(i/3)*cos(j/4)
 frame /file=contourcolor_blue.pdf
@@ -109395,8 +109408,10 @@ plot stats_ppf(x[gx=0:1.0:0.01], "norm", {0,1})
 frame /file=bn_inf2missing.pdf
  
 *** Running ferret script: bn_pointplots.jnl
+!
 ! bn_pointplots.jnl
 ! test of named symbols
+!
  
 def axis /X=1.0:8.0:1.0 xax
 def axis /Y=1.0:8.0:1.0 yax
@@ -109425,11 +109440,6 @@ plot /over /nokey /size=0.15 /symbol=circex    /vs {5.0},{8.0}
 anno /xpos=5.15 /ypos=8.0 /valign=0 /size=0.08 "circex"
 plot /over /nokey /size=0.15 /symbol=circplus  /vs {6.0},{8.0}
 anno /xpos=6.15 /ypos=8.0 /valign=0 /size=0.08 "circplus"
- 
-plot /over /nokey /size=0.15 /symbol=ex        /vs {7.0},{8.0}
-anno /xpos=7.15 /ypos=8.0 /valign=0 /size=0.08 "ex"
-plot /over /nokey /size=0.15 /symbol=plus      /vs {8.0},{8.0}
-anno /xpos=8.15 /ypos=8.0 /valign=0 /size=0.08 "plus"
  
 !--------
  
@@ -109528,21 +109538,24 @@ anno /xpos=5.15 /ypos=3.0 /valign=0 /size=0.08 "asterisk"
  
 !--------
  
-! check color name
-plot /over /nokey /size=0.45 /symbol=hexf /color=green                         /vs {1.0},{1.0}
-! check highlight with color specified
-plot /over /nokey /size=0.45 /symbol=hexf /color=red   /highlight=(0,0,100,50) /vs {2.0},{1.0}
-! check highlight with no color specified (black)
-plot /over /nokey /size=0.45 /symbol=hexf /color=green /highlight              /vs {3.0},{1.0}
-! check color tuple and verify highlight was cleared
-plot /over /nokey /size=0.45 /symbol=hexf /color=(0,75,100)                    /vs {4.0},{1.0}
-plot /over /nokey /size=0.45 /symbol=plus /color=(100,0,0,50)                  /vs {4.0},{1.0}
-! check using pen numbers
-plot /over /nokey /size=0.45 /symbol=hexf /color=3 /highlight=4                /vs {5.0},{1.0}
-! check highlight on stroked path
-plot /over /nokey /size=0.45 /symbol=pentempty /color=lightblue /highlight     /vs {6.0},{1.0}
-! check highlight on a filled path mimicing a stoked path
-plot /over /nokey /size=0.45 /symbol=asterisk /color=lightblue /highlight      /vs {7.0},{1.0}
+plot /over /nokey /size=0.15 /symbol=exnormal  /vs {1.0},{2.0}
+anno /xpos=1.15 /ypos=2.0 /valign=0 /size=0.08 "exnormal"
+plot /over /nokey /size=0.15 /symbol=exshort   /vs {2.0},{2.0}
+anno /xpos=2.15 /ypos=2.0 /valign=0 /size=0.08 "exshort"
+plot /over /nokey /size=0.15 /symbol=extall    /vs {3.0},{2.0}
+anno /xpos=3.15 /ypos=2.0 /valign=0 /size=0.08 "extall"
+ 
+plot /over /nokey /size=0.15 /symbol=plusnorm  /vs {4.0},{2.0}
+anno /xpos=4.15 /ypos=2.0 /valign=0 /size=0.08 "plusnormal"
+plot /over /nokey /size=0.15 /symbol=plusshort /vs {5.0},{2.0}
+anno /xpos=5.15 /ypos=2.0 /valign=0 /size=0.08 "plusshort"
+plot /over /nokey /size=0.15 /symbol=plustall  /vs {6.0},{2.0}
+anno /xpos=6.15 /ypos=2.0 /valign=0 /size=0.08 "plustall"
+ 
+plot /over /nokey /size=0.15 /symbol=hline     /vs {7.0},{2.0}
+anno /xpos=7.15 /ypos=2.0 /valign=0 /size=0.08 "hline"
+plot /over /nokey /size=0.15 /symbol=vline     /vs {8.0},{2.0}
+anno /xpos=8.15 /ypos=2.0 /valign=0 /size=0.08 "vline"
  
 !--------
  
@@ -109565,7 +109578,9 @@ can axis xax
 *** Running ferret script: bn_symbolpattern.jnl
 !
 ! bn_symbolpattern.jnl
+! test of using a symbol for creating a pattern
 !
+ 
 set text /font=helvetica
 use coads_climatology
 let sstteensx = if ( SST[L=1] ge 13.0 and SST[L=1] le 19.0 ) then X
@@ -109573,8 +109588,72 @@ let sstteensy = if ( SST[L=1] ge 13.0 and SST[L=1] le 19.0 ) then Y
 let ptsx = xsequence(sstteensx)
 let ptsy = xsequence(sstteensy)
 shade /L=1 sst
-plot /over /vs /sym=circle /size=0.07 ptsx, ptsy
+plot /over /vs /sym=plustall /size=0.07 ptsx, ptsy
 frame /file=symbolpattern.pdf
+*** Running ferret script: bn_symbolcolors.jnl
+!
+! bn_symcolors.jnl
+! test of coloring named symbols
+!
+ 
+set text /font=helvetica
+ 
+! create a virtual window with a high DPI for testing
+set window /thick=1.0 /xinch=8 /yinch=10.5 /xpix=1600 1
+ 
+!--------
+ 
+set view upper
+ 
+def axis /X=1.0:8.0:1.0 xax
+def axis /Y=1.0:4.0:1.0 yax
+def grid /X=xax /Y=yax xygrid
+set grid xygrid
+ 
+! Plot in transparent just to plot the axes
+plot /hlim=0:9 /vlim=0:5 /symbol=dot /nokey /nolab /color=(0,0,0,0) /vs X + 0.0 * Y, 0.0 * X + Y
+ 
+! check color name
+plot /over /nokey /size=0.50 /symbol=hexf /color=green                         /vs {1.0},{3.0}
+ 
+! check highlight with color specified
+plot /over /nokey /size=0.50 /symbol=hexf /color=red   /highlight=(0,0,100,50) /vs {3.0},{3.0}
+ 
+! check highlight with no color specified (black)
+plot /over /nokey /size=0.50 /symbol=hexf /color=green /highlight              /vs {5.0},{3.0}
+ 
+! check color tuple and verify highlight was cleared
+plot /over /nokey /size=0.50 /symbol=hexf /color=(0,75,100)                    /vs {7.0},{3.0}
+plot /over /nokey /size=0.50 /symbol=plusn /color=(100,0,0,50)                 /vs {7.0},{3.0}
+ 
+! check using pen numbers
+plot /over /nokey /size=0.50 /symbol=hexf /color=3 /highlight=4                /vs {2.0},{1.0}
+ 
+! check highlight on stroked path
+plot /over /nokey /size=0.50 /symbol=pentempty /color=lightblue /highlight     /vs {4.0},{1.0}
+ 
+! check highlight on a filled path mimicing a stoked path
+plot /over /nokey /size=0.50 /symbol=asterisk /color=lightblue /highlight      /vs {6.0},{1.0}
+ 
+set grid abstract
+can grid xygrid
+can axis yax
+can axis xax
+ 
+!--------
+ 
+set view ll
+plot /vs /nolab /nokey /sym=boxfill /high /siz=0.2 /line /ribbon /thick=3 /lev=(1,6,1) /hlim=0:9 /vlim=0:6 {1,2,3,4,5,6,7,8}, {3,2,5,1,4,2,5,1}, {1,2,3,3,3,3,4,5}
+ 
+set view lr
+plot /vs /nolab /nokey /hlim=0:9 /vlim=0:6 /line /color=red /thick=3 {1,2,3,4,5,6,7,8}, {3,2,5,1,4,2,5,1}
+plot /vs /nolab /nokey /over /color=blue /sym=boxfill /high /siz=0.2 {1,2,3,4,5,6,7,8}, {3,2,5,1,4,2,5,1}
+ 
+!--------
+ 
+frame /file=symbolcolors.png
+frame /file=symbolcolors.pdf
+ 
 *** Running python script: testgetstrdata.py
 
 >>> pyferret.run('let strarr = {"one", "two", "three", "four", "five", "six"}')

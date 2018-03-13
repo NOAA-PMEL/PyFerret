@@ -1,4 +1,4 @@
-	SUBROUTINE GKSMV_makedot
+        SUBROUTINE GKSMV_makedot
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -33,81 +33,68 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-*
-*	Mod 1.9.90 J Davison to reduce the maximum #pts in any one call to 
-*	polyline to 100 as GKS 4.0 under VMS 5.2, i.e., DECWindows, blows up
-*	with too many points
 
 *  8/2001  acm  for PLOT/SYMBOL=DOT
 *  Version of GKSMV to be called by make_dot.  Call GPM for polymarker
 *  rather than GPL (polyline) 
 *
 *  10/2001 Buffer calls to GPM.  Rename X and Y to xdot, ydot for clarity.
+*
 * V73  3/18 *kms*  For clarity, append MD to makedot.cmn values IPT, XDOT, 
 *                  and YDOT; make MDOT (99) a makedot.cmn parameter DOTSYMIM
+* V73  3/18 *kms*  Clean up code for dots, which only need their coordinates
+*                  and is where the marker is plotted. (Lines need pairs of 
+*                  coordinates and are drawn between each pair of coordinates.)
 
-C
-C	This routine creates a binary file that can be used to
-c	construct device dependent plotting code
-c
-c
-	include 'pltcom_dat.decl'
-	include 'PLTCOM.DAT'
-	include 'gkscm1_inc.decl'
-	include 'GKSCM1.INC'
+        include 'pltcom_dat.decl'
+        include 'PLTCOM.DAT'
+        include 'gkscm1_inc.decl'
+        include 'GKSCM1.INC'
 
         IF ( .NOT. GKSOPN )
      .      STOP 'GKSMV_makedot called when GKSOPN is .FALSE.'
-
-	IF(PEN)THEN
-	  CALL GKPLOT_makedot(A,B,1)
-	ELSE
-	  CALL GKPLOT_makedot(A,B,0)
-	ENDIF
-
-	RETURN
-	END
-
-	SUBROUTINE GKPLOT_makedot(XN,YN,IP)
-#ifdef core
-        if(ip.ne.0)then
-            call lineabs2(xn,yn)
-        else
-            call moveabs2(xn,yn)
-        endif
-#else
-        INCLUDE         'makedot.cmn'    ! 10/01 *acm*
-
-	IF(IP.EQ.0)THEN
-	    CALL DOIT_makedot(IPTMD,XDOTMD,YDOTMD)
-	    IPTMD=1
-	ELSE
-	    IPTMD=IPTMD+1
-	    IF(IPTMD.GE.MAXDOT)THEN
-		CALL DOIT_makedot(IPTMD,XDOTMD,YDOTMD)
-		IPTMD=2
-		XDOTMD(1)=XDOTMD(MAXDOT)
-		YDOTMD(1)=YDOTMD(MAXDOT)
-	    ENDIF
-	ENDIF
-	XDOTMD(IPTMD)=XN
-	YDOTMD(IPTMD)=YN
-#endif
-	RETURN
+        IF ( PEN ) THEN
+*           Continue accumulating the coordinates for this marker
+            CALL GKPLOT_makedot(A, B, 1)
+        ELSE
+*           Force plotting of the accumulated marker coordinates
+*           and start a new accumulation of marker coordiantes
+            CALL GKPLOT_makedot(A, B, 0)
+        ENDIF
+        RETURN
         END
 
-	SUBROUTINE DOIT_makedot(ipt,xdot,ydot)
-	DIMENSION xdot(*),ydot(*)
-	IF(ipt.LE.0)RETURN
-        CALL FGD_GPM(ipt,xdot,ydot)
-* Not sure of the reason for the following.  (I suspect, move pen then "draw" 
-* without actually moving to create a dot, as in the "#ifdef core" above.)
-* But do not double-plot the symbol, so do this after drawing the symbol.
-	IF(ipt.EQ.1)THEN
-	    xdot(2)=xdot(1)
-	    ydot(2)=ydot(1)
-	    ipt=2
-	ENDIF
-	RETURN
-	END
+
+        SUBROUTINE GKPLOT_makedot(XN, YN, IP)
+        INCLUDE 'makedot.cmn'    ! 10/01 *acm*
+
+        IF ( IP .EQ. 0 ) THEN
+*           Force plotting of the accumulated marker coordinates
+*           and start a new accumulation of marker coordiantes
+            CALL MAKEDOTFLUSH
+        ELSE
+*           Add another coordinate for this marker 
+            IF ( IPTMD .GE. MAXDOT ) THEN
+*               Out of space - plot the accumulated marker coordinates
+*               and start a new accumulation of marker coordiantes
+                CALL MAKEDOTFLUSH
+            ENDIF
+        ENDIF
+*       Add this marker coordinate
+        IPTMD = IPTMD + 1
+        XDOTMD(IPTMD) = XN
+        YDOTMD(IPTMD) = YN
+        RETURN
+        END
+
+
+        SUBROUTINE MAKEDOTFLUSH
+        INCLUDE 'makedot.cmn'
+
+        IF ( IPTMD .GT. 0 ) THEN
+            CALL FGD_GPM(IPTMD, XDOTMD, YDOTMD)
+            IPTMD = 0
+        ENDIF
+        RETURN
+        END
+

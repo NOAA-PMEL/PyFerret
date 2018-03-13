@@ -107,7 +107,7 @@ C
         include 'vector_inc.decl'
         include 'VECTOR.INC'
         include 'xcurvilinear.cmn'
-        include 'makedot.cmn'
+        include 'makedot.cmn' ! for DOTSYMIM
 
 	real xfuser,yfuser,xlousr,ylousr,zave,xt,yt
 	real xx2,yy2,zz,vfact,xtm,ytm,xtx,ytx,xx1,yy1,vx,vy,vclen
@@ -197,7 +197,6 @@ C
 !*sh*	DY=(ytx-ytm)/(NY-1)
 	DX=(xtx-xtm)/MAX(NX-1,1)
 	DY=(ytx-ytm)/MAX(NY-1,1)
-        IPTMD = 0
 
 	big = ABS(CMZGE)
 	lmin = -1*big
@@ -214,15 +213,6 @@ C
 	IF (i.eq.52 .AND. j.eq.76) THEN
 	   slen = 1
 	ENDIF
-
-        IF (IPTMD .GT. MAXDOT) THEN
-C          Symbol 1 is always "dot"
-C          HMARK in LINES.INC is an array
-C          Need to check if HMARK(1) is the correct one to use here
-           CALL FGD_GSPMI(1, HMARK(1))
-           CALL doit_makedot(IPTMD,XDOTMD,YDOTMD)
-           IPTMD = 0
-        ENDIF
 
 	XX2=U(I,J)
 	YY2=V(I,J)
@@ -414,13 +404,6 @@ C
 100	CONTINUE
 	IF (interrupted) goto 3333 ! *jd* 8.3.92
 
-C       Symbol 1 is always "dot"
-C       HMARK in LINES.INC is an array
-C       Need to check if HMARK(1) is the correct one to use here
-        CALL FGD_GSPMI(1, HMARK(1))
-        CALL doit_makedot(IPTMD,XDOTMD,YDOTMD)
-
-
 C Go back to do modulo replications if curvilinear and /MODULO
 
 	IF (xmodulo .AND. curvilinear) THEN
@@ -444,8 +427,6 @@ c           IF (.NOT. units_degrees) xrange = wwxmax - wwxmin
 	   ENDIF
 	ENDIF
 
-
-        IPTMD = 0
 
 C put the vector-length scale into a PPL symbol
 	
@@ -505,6 +486,10 @@ C
 	YL = YY2 - HLABS*0.5/YF
 	CALL SYMBEL(XL,YL,0.,HLABS,ILN,VECLAB)
 3333	IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
+
+C       Plot any lines and dots (that are not already plotted)
+        CALL PPLGFLUSH
+        CALL MAKEDOTFLUSH
 
 	RETURN
 	END

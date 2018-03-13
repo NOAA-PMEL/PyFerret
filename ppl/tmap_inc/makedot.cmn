@@ -3,10 +3,12 @@ C   (lines of code from gkplt_makedot; keep in common so X and Y are buffers)
 C   ACM 10/17/01
 * V73  3/18 *kms*  For clarity, append MD to makedot.cmn values IPT, XDOT, 
 *                  and YDOT; make MDOT (99) a makedot.cmn parameter DOTSYMIM
+* V73  3/18 *kms*  Added OLDSYMSIZ, OLDSYMNUM, and OLDCOLORID
 
-        INTEGER MAXDOT, DOTSYMIM, IPTMD
+        INTEGER MAXDOT, DOTSYMIM, IPTMD, OLDSYMNUM, OLDCOLORID
         PARAMETER (MAXDOT=10000)
         PARAMETER (DOTSYMIM=101)
-        REAL*4 XDOTMD(MAXDOT),YDOTMD(MAXDOT)
-        COMMON/MAKEDOT_CMN/IPTMD, XDOTMD, YDOTMD
+        REAL*4  XDOTMD(MAXDOT), YDOTMD(MAXDOT), OLDSYMSIZ
+        COMMON/MAKEDOT_CMN/IPTMD, OLDSYMNUM, OLDCOLORID, 
+     .                     XDOTMD, YDOTMD, OLDSYMSIZ
 

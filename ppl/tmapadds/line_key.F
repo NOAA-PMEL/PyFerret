@@ -175,11 +175,8 @@ C
 !	    YLO=XTL
 !	ENDIF
 
-        IF (imark(a_line) .GE. DOTSYMIM) THEN
-           CALL FGD_GSPMI(imark(a_line) - DOTSYMIM + 1, hmark(a_line))
-           CALL doit_makedot(IPTMD,XDOTMD,YDOTMD)
-           IPTMD = 0
-        ENDIF
+        CALL PPLGFLUSH
+        CALL MAKEDOTFLUSH
 
  	CALL COLOR(IPEN(0))
 	RETURN

@@ -50,12 +50,13 @@ C      DIMENSION XMXMN(2),YMXMN(2)
       EQUIVALENCE (XMXMN(1),XMAX),(YMXMN(1),YMAX)
       REAL xinter, yinter, zinter, dx, dy, dz, cosx, cosy, cosz, dist
 
-#ifdef unix
       include 'pltcom_dat.decl'
       include 'PLTCOM.DAT'
-#else
-      INCLUDE 'tmap_pplv11inc:tmap_PLTCOM.DAT'
-#endif
+      include 'makedot.cmn'
+
+C     Initial values for OLDSYMNUM and OLDSYMSIZ
+C     OLDCOLORID is used in color.F
+      DATA OLDSYMNUM,OLDCOLORID,OLDSYMSIZ/-1,-1,-1.0/
 
       INTEGER SYMNUM
       REAL*4 SYMSIZ
@@ -65,6 +66,16 @@ C     HMARK in LINES.INC is an array with the actual heights
 C     HMARK in PLTCOM.DAT, set by MARKH, is the height scaled by FACTOR/8.0
 C     so undo this scaling for the call to FGD_GSPMI
       SYMSIZ = HMARK * 8.0 / FACTOR
+      IF ( (SYMNUM .NE. OLDSYMNUM) .OR. 
+     .     (ABS(SYMSIZ - OLDSYMSIZ) .GT. 1.0E-5) ) THEN
+C         Marker symbol or size is changing - 
+C         plot any accumulated lines (first) and points (second)
+C         using the old marker for the points
+          CALL PPLGFLUSH
+          CALL MAKEDOTFLUSH
+          OLDSYMNUM = SYMNUM
+          OLDSYMSIZE = SYMSIZ
+      ENDIF
       CALL FGD_GSPMI(SYMNUM, SYMSIZ)
 
 C end of FERRET mod

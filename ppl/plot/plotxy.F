@@ -234,7 +234,6 @@ C     DRAW VECTORS
 	    END IF
 	    IF(ITYPE(I).EQ.3)THEN 
                CALL POINTS
-               IF (imark(i) .GE. DOTSYMIM) IPTMD = 0
             ENDIF
 	    IF(.NOT.(XLE.OR.XEQ.OR.XGE.OR.YLE.OR.YEQ.OR.YGE))THEN
 C     DO NOT CHECK POINTS FOR MISSING DATA
@@ -353,11 +352,6 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 
 	  END IF
 
-          IF (imark(i) .GE. DOTSYMIM) THEN
-             CALL FGD_GSPMI(imark(i) - DOTSYMIM + 1, hmark(i))
-             CALL doit_makedot(IPTMD,XDOTMD,YDOTMD)
-             IPTMD = 0
-          ENDIF
 	if (interrupted) go to 51 !*jd* 8.3.92
 50	IBASE=IBASE+LLENG(I)
 
@@ -365,11 +359,8 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 
 *** FINALIZE
  51	CONTINUE
-        IF (imark(i) .GE. DOTSYMIM) THEN
-          CALL FGD_GSPMI(imark(i) - DOTSYMIM + 1, hmark(i))
-          CALL doit_makedot(IPTMD,XDOTMD,YDOTMD)
-          IPTMD = 0
-        ENDIF
+        CALL PPLGFLUSH
+        CALL MAKEDOTFLUSH
 
         CALL COLOR(IPEN(0))
 	RETURN

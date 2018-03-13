@@ -78,6 +78,7 @@ C
 	include 'GKSCM1.INC'
 	include 'pltl_inc.decl'
 	include 'PLTL.INC'
+        include 'makedot.cmn' ! for OLDCOLORID
 
 C
 	data cnum/'0','1','2','3','4','5','6','7','8'/
@@ -159,12 +160,23 @@ C
 C
 C	GKS COLOR AND SETUP
 C
-20	COLOUR=ICODE
+ 20     COLOUR=MAX(ICODE,1)
 
         IF ( .NOT. GKSOPN )
      .      STOP 'COLOR called when GKSOPN is .FALSE.'
 
-	CALL PPLGFLUSH
+        IF ( OLDCOLORID .EQ. COLOUR ) THEN
+*           pen is not actually changing, so nothing to do
+            RETURN
+        ELSE
+            OLDCOLORID = COLOUR
+        ENDIF
+
+*       Force the plotting of accumulated lines (first) 
+*       and markers (second) using the old color
+        CALL PPLGFLUSH
+        CALL MAKEDOTFLUSH
+
 #ifdef core
         istat=setlineindex(icode)
 #else
@@ -172,7 +184,8 @@ C
 *	CALL GSPMCI(ICODE) ! acm 8/7/01 for reference,not called
 #endif
 
-1000	call FGD_GSPLI(max(icode,1)) ! JD 3.23.89 & 3.13.90
+*       Set the new color for lines and markers
+        CALL FGD_GSPLI(COLOUR)
 
 100	GOTO(50,30,30,30,40,30,40),PTYPE + 3
    40  COLOUR = ICODE

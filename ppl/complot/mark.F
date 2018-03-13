@@ -92,6 +92,7 @@ C
       IF (IMARK .GE. DOTSYMIM) THEN
 C         IMARK refers to a named symbol
           CALL makedot(IMARK - DOTSYMIM + 1)
+          RETURN
       ENDIF
 
       IF(IMARK .LT. 1 .OR. IMARK .GT. 88)RETURN

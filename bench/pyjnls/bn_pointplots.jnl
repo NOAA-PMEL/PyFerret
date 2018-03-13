@@ -1,5 +1,7 @@
+!
 ! bn_pointplots.jnl
 ! test of named symbols
+!
 
 def axis /X=1.0:8.0:1.0 xax
 def axis /Y=1.0:8.0:1.0 yax
@@ -28,11 +30,6 @@ plot /over /nokey /size=0.15 /symbol=circex    /vs {5.0},{8.0}
 anno /xpos=5.15 /ypos=8.0 /valign=0 /size=0.08 "circex"
 plot /over /nokey /size=0.15 /symbol=circplus  /vs {6.0},{8.0}
 anno /xpos=6.15 /ypos=8.0 /valign=0 /size=0.08 "circplus"
-
-plot /over /nokey /size=0.15 /symbol=ex        /vs {7.0},{8.0}
-anno /xpos=7.15 /ypos=8.0 /valign=0 /size=0.08 "ex"
-plot /over /nokey /size=0.15 /symbol=plus      /vs {8.0},{8.0}
-anno /xpos=8.15 /ypos=8.0 /valign=0 /size=0.08 "plus"
 
 !--------
 
@@ -131,21 +128,24 @@ anno /xpos=5.15 /ypos=3.0 /valign=0 /size=0.08 "asterisk"
 
 !--------
 
-! check color name
-plot /over /nokey /size=0.45 /symbol=hexf /color=green                         /vs {1.0},{1.0}
-! check highlight with color specified
-plot /over /nokey /size=0.45 /symbol=hexf /color=red   /highlight=(0,0,100,50) /vs {2.0},{1.0}
-! check highlight with no color specified (black)
-plot /over /nokey /size=0.45 /symbol=hexf /color=green /highlight              /vs {3.0},{1.0}
-! check color tuple and verify highlight was cleared
-plot /over /nokey /size=0.45 /symbol=hexf /color=(0,75,100)                    /vs {4.0},{1.0}
-plot /over /nokey /size=0.45 /symbol=plus /color=(100,0,0,50)                  /vs {4.0},{1.0}
-! check using pen numbers
-plot /over /nokey /size=0.45 /symbol=hexf /color=3 /highlight=4                /vs {5.0},{1.0}
-! check highlight on stroked path
-plot /over /nokey /size=0.45 /symbol=pentempty /color=lightblue /highlight     /vs {6.0},{1.0}
-! check highlight on a filled path mimicing a stoked path
-plot /over /nokey /size=0.45 /symbol=asterisk /color=lightblue /highlight      /vs {7.0},{1.0}
+plot /over /nokey /size=0.15 /symbol=exnormal  /vs {1.0},{2.0}
+anno /xpos=1.15 /ypos=2.0 /valign=0 /size=0.08 "exnormal"
+plot /over /nokey /size=0.15 /symbol=exshort   /vs {2.0},{2.0}
+anno /xpos=2.15 /ypos=2.0 /valign=0 /size=0.08 "exshort"
+plot /over /nokey /size=0.15 /symbol=extall    /vs {3.0},{2.0}
+anno /xpos=3.15 /ypos=2.0 /valign=0 /size=0.08 "extall"
+
+plot /over /nokey /size=0.15 /symbol=plusnorm  /vs {4.0},{2.0}
+anno /xpos=4.15 /ypos=2.0 /valign=0 /size=0.08 "plusnormal"
+plot /over /nokey /size=0.15 /symbol=plusshort /vs {5.0},{2.0}
+anno /xpos=5.15 /ypos=2.0 /valign=0 /size=0.08 "plusshort"
+plot /over /nokey /size=0.15 /symbol=plustall  /vs {6.0},{2.0}
+anno /xpos=6.15 /ypos=2.0 /valign=0 /size=0.08 "plustall"
+
+plot /over /nokey /size=0.15 /symbol=hline     /vs {7.0},{2.0}
+anno /xpos=7.15 /ypos=2.0 /valign=0 /size=0.08 "hline"
+plot /over /nokey /size=0.15 /symbol=vline     /vs {8.0},{2.0}
+anno /xpos=8.15 /ypos=2.0 /valign=0 /size=0.08 "vline"
 
 !--------
 

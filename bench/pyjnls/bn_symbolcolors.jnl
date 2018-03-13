@@ -1,0 +1,63 @@
+!
+! bn_symcolors.jnl
+! test of coloring named symbols
+!
+
+set text /font=helvetica
+
+! create a virtual window with a high DPI for testing
+set window /thick=1.0 /xinch=8 /yinch=10.5 /xpix=1600 1
+
+!--------
+
+set view upper
+
+def axis /X=1.0:8.0:1.0 xax
+def axis /Y=1.0:4.0:1.0 yax
+def grid /X=xax /Y=yax xygrid
+set grid xygrid
+
+! Plot in transparent just to plot the axes
+plot /hlim=0:9 /vlim=0:5 /symbol=dot /nokey /nolab /color=(0,0,0,0) /vs X + 0.0 * Y, 0.0 * X + Y
+
+! check color name
+plot /over /nokey /size=0.50 /symbol=hexf /color=green                         /vs {1.0},{3.0}
+
+! check highlight with color specified
+plot /over /nokey /size=0.50 /symbol=hexf /color=red   /highlight=(0,0,100,50) /vs {3.0},{3.0}
+
+! check highlight with no color specified (black)
+plot /over /nokey /size=0.50 /symbol=hexf /color=green /highlight              /vs {5.0},{3.0}
+
+! check color tuple and verify highlight was cleared
+plot /over /nokey /size=0.50 /symbol=hexf /color=(0,75,100)                    /vs {7.0},{3.0}
+plot /over /nokey /size=0.50 /symbol=plusn /color=(100,0,0,50)                 /vs {7.0},{3.0}
+
+! check using pen numbers
+plot /over /nokey /size=0.50 /symbol=hexf /color=3 /highlight=4                /vs {2.0},{1.0}
+
+! check highlight on stroked path
+plot /over /nokey /size=0.50 /symbol=pentempty /color=lightblue /highlight     /vs {4.0},{1.0}
+
+! check highlight on a filled path mimicing a stoked path
+plot /over /nokey /size=0.50 /symbol=asterisk /color=lightblue /highlight      /vs {6.0},{1.0}
+
+set grid abstract
+can grid xygrid
+can axis yax
+can axis xax
+
+!--------
+
+set view ll
+plot /vs /nolab /nokey /sym=boxfill /high /siz=0.2 /line /ribbon /thick=3 /lev=(1,6,1) /hlim=0:9 /vlim=0:6 {1,2,3,4,5,6,7,8}, {3,2,5,1,4,2,5,1}, {1,2,3,3,3,3,4,5}
+
+set view lr
+plot /vs /nolab /nokey /hlim=0:9 /vlim=0:6 /line /color=red /thick=3 {1,2,3,4,5,6,7,8}, {3,2,5,1,4,2,5,1}
+plot /vs /nolab /nokey /over /color=blue /sym=boxfill /high /siz=0.2 {1,2,3,4,5,6,7,8}, {3,2,5,1,4,2,5,1}
+
+!--------
+
+frame /file=symbolcolors.png
+frame /file=symbolcolors.pdf
+

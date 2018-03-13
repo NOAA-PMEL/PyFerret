@@ -1,12 +1,12 @@
 #! /bin/sh
-# Fpalette file_template    
-# determine if FERRET palette files matching template are currently on-line
+# Fsymbol file_template    
+# determine if FERRET Symbol definition files matching template are currently on-line
 # by searching the paths in FER_PALETTE
 
 print_usage() {
    echo " "
    echo "Usage:"
-   echo "    Fpalette [ -help | -d | -l | -more ]  palette_file_template"
+   echo "    Fsymbol [ -help | -d | -l | -more ]  palette_file_template"
    echo  " "
    echo "where options include: "
    echo "    -help    print this help message and exit"
@@ -17,8 +17,8 @@ print_usage() {
    echo "These options precede the file template.  Files matching the"
    echo "given template are then listed, or displayed using more if"
    echo "the -more option is used.  All options are mutually exclusive."
-   echo "To see all of the Palette files available, enter:"
-   echo "    Fpalette '*'"
+   echo "To see all of the Symbol definition files available, enter:"
+   echo "    Fsymbol '*'"
    echo "It is important to have the quotes around any asterisks"
    echo "in the file template."
    echo " " 
@@ -39,16 +39,14 @@ fi
 if [ $# -eq 1 ]; then
    option=""
    template="$1"
-   tname="$1"
 else
    option="$1"
    template="$2"
-   tname="$2"
 fi
 
-# check to see if file contains .spk
-if ! echo "${template}" | grep -q '\.spk' ; then
-   template="${template}*.spk"
+# check to see if file contains .sym
+if ! echo "${template}" | grep -q '\.sym' ; then
+   template="${template}*.sym"
 fi
 
 found=0
@@ -76,7 +74,6 @@ for subdir in ${FER_PALETTE}; do
 done
 
 if [ $found -eq 0 ]; then
-   echo "No Palette files matching ${template} were found"
+   echo "No files matching ${template} were found"
 fi
 
-Fsymbol ${tname}

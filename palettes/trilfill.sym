@@ -1,0 +1,6 @@
+! filled triangle pointing left; origin at center
+-50.00   0.00
+ 25.00  43.30
+ 25.00 -43.30
+-50.00   0.00
+FILL

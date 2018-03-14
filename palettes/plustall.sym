@@ -1,0 +1,15 @@
+! tall plus (+) mark - vertical sqrt(2) longer than horizontal; origin at center intersection
+  4.00  50.00
+  4.00   4.00
+ 35.35   4.00
+ 35.35  -4.00
+  4.00  -4.00
+  4.00 -50.00
+ -4.00 -50.00
+ -4.00  -4.00
+-35.35  -4.00
+-35.35   4.00
+ -4.00   4.00
+ -4.00  50.00
+  4.00  50.00
+FILL

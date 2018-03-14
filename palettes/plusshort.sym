@@ -1,0 +1,15 @@
+! short plus (+) mark - horizontal sqrt(2) longer than vertical; origin at center intersection
+  4.00  35.35
+  4.00   4.00
+ 50.00   4.00
+ 50.00  -4.00
+  4.00  -4.00
+  4.00 -35.35
+ -4.00 -35.35
+ -4.00  -4.00
+-50.00  -4.00
+-50.00   4.00
+ -4.00   4.00
+ -4.00  35.35
+  4.00  35.35
+FILL

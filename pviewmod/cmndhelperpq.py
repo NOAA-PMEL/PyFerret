@@ -324,6 +324,7 @@ class CmndHelperPQ(object):
             'dotex': very small filled circle and outer lines of an ex mark
             'dotplus': very small filled circle and outer lines of a plus mark
             'circle': unfilled circle
+            'circfill': normal-sized filled circle
             'circex': small unfilled circle and outer lines of an ex mark
             'circplus': small unfilled circle and outer lines of a plus mark
 
@@ -388,27 +389,31 @@ class CmndHelperPQ(object):
                 path.lineTo(-32.53, -38.18)
                 path.lineTo(-15.56, -21.21)
                 path.lineTo(-21.21, -15.56)
-                path.closeSubpath()
+                # moveTo adds an implicit closeSubpath in QPainterPath
                 path.moveTo(-38.18,  32.53)
                 path.lineTo(-32.53,  38.18)
                 path.lineTo(-15.56,  21.21)
                 path.lineTo(-21.21,  15.56)
-                path.closeSubpath()
+                # moveTo adds an implicit closeSubpath in QPainterPath
                 path.moveTo( 38.18, -32.53)
                 path.lineTo( 32.53, -38.18)
                 path.lineTo( 15.56, -21.21)
                 path.lineTo( 21.21, -15.56)
-                path.closeSubpath()
+                # moveTo adds an implicit closeSubpath in QPainterPath
                 path.moveTo( 38.18,  32.53)
                 path.lineTo( 32.53,  38.18)
                 path.lineTo( 15.56,  21.21)
                 path.lineTo( 21.21,  15.56)
-                path.closeSubpath()
+                # Qt closes the subpath automatically
                 sympath = SymbolPath(path, True)
             elif symbol == 'circle':
                 path = QPainterPath()
                 path.addEllipse(-35.0, -35.0, 70.0, 70.0)
                 sympath = SymbolPath(path, False)
+            elif symbol == 'circfill':
+                path = QPainterPath()
+                path.addEllipse(-39.0, -39.0, 78.0, 78.0)
+                sympath = SymbolPath(path, True)
             elif symbol == 'circplus':
                 path = QPainterPath()
                 path.addEllipse(-20.0, -20.0, 40.0, 40.0)
@@ -458,7 +463,7 @@ class CmndHelperPQ(object):
                     # end the current subpath
                     newstart = True
                 elif newstart:
-                    # start a new subpath; Qt closes the previous subpath automatically
+                    # start a new subpath; moveTo adds an implicit closeSubpath in QPainterPath
                     path.moveTo(xval, yval)
                     newstart = False
                 else:

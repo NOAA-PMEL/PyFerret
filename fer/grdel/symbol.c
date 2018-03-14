@@ -34,6 +34,7 @@ typedef struct GDsymbol_ {
  *     'dotplus': very small filled circle and outer lines of a plus mark 
  *     'dotex': very small filled circle and outer lines of an ex mark 
  *     'circle': unfilled circle 
+ *     'circfill': normal-sized filled circle 
  *     'circleplus': small unfilled circle and outer lines of a plus mark 
  *     'circlex': small unfilled circle and outer lines of an ex mark
  *
@@ -317,9 +318,10 @@ void FORTRAN(fgdsymbol)(void **symbol, void **window, char *symbolname, int *nam
          ( (*namelen == 5) && (strncasecmp(symbolname, "dotex", 5) == 0) ) ||
          ( (*namelen == 7) && (strncasecmp(symbolname, "dotplus", 7) == 0) ) ||
          ( (*namelen == 6) && (strncasecmp(symbolname, "circle", 6) == 0) ) ||
+         ( (*namelen == 8) && (strncasecmp(symbolname, "circfill", 8) == 0) ) ||
          ( (*namelen == 6) && (strncasecmp(symbolname, "circex", 6) == 0) ) ||
          ( (*namelen == 8) && (strncasecmp(symbolname, "circplus", 8) == 0) ) ) {
-        /* Pre-defined symbols (no points are given and fill is ignored) */
+        /* Pre-defined symbols (no points given and the value of fill is ignored) */
         mysymbol = grdelSymbol(*window, symbolname, *namelen, NULL, NULL, 0, 0);
     }
     else {

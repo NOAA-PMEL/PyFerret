@@ -23,6 +23,7 @@ const char *CCFBSymbolId = "CCFBSymbolId";
  *    'dotplus': very small filled circle and outer lines of a plus mark 
  *    'dotex': very small filled circle and outer lines of an ex mark 
  *    'circle': unfilled circle 
+ *    'circfill': normal-sized filled circle 
  *    'circplus': small unfilled circle and outer lines of a plus mark 
  *    'circex': small unfilled circle and outer lines of an ex mark
  *
@@ -218,6 +219,12 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
         cairo_arc(pathcontext, 0.0, 0.0, 35.0, 0.0, 2.0 * M_PI);
         cairo_close_path(pathcontext);
         symbolobj->filled = 0;
+    }
+    else if ( strcmp("circfill", symbolobj->name) == 0 ) {
+        cairo_new_path(pathcontext);
+        cairo_arc(pathcontext, 0.0, 0.0, 39.0, 0.0, 2.0 * M_PI);
+        cairo_close_path(pathcontext);
+        symbolobj->filled = 1;
     }
     else if ( strcmp("circplus", symbolobj->name) == 0 ) {
         cairo_new_path(pathcontext);

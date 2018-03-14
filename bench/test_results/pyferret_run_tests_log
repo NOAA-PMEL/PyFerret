@@ -92214,7 +92214,7 @@ flow/DAT=2/den=3/L=3 taux,tauy
 ! issue large numbers of commands, timing with clock time
 can mode verify
 10K LET commands LET a = 0 takes [0-3] seconds
-Second 10K LET commands LET a = 0 takes [0-5] seconds
+Second 10K LET commands LET a = 0 takes [0-7] seconds
 5K LOAD with transform takes [0-9] seconds
 *** Running ferret script: bn_show_noupcase.jnl
 ! bn_show_noupcase.jnl
@@ -109436,10 +109436,15 @@ anno /xpos=3.15 /ypos=8.0 /valign=0 /size=0.08 "dotplus"
  
 plot /over /nokey /size=0.15 /symbol=circle    /vs {4.0},{8.0}
 anno /xpos=4.15 /ypos=8.0 /valign=0 /size=0.08 "circle"
-plot /over /nokey /size=0.15 /symbol=circex    /vs {5.0},{8.0}
-anno /xpos=5.15 /ypos=8.0 /valign=0 /size=0.08 "circex"
-plot /over /nokey /size=0.15 /symbol=circplus  /vs {6.0},{8.0}
-anno /xpos=6.15 /ypos=8.0 /valign=0 /size=0.08 "circplus"
+plot /over /nokey /size=0.15 /symbol=circfill  /vs {5.0},{8.0}
+anno /xpos=5.15 /ypos=8.0 /valign=0 /size=0.08 "circfill"
+plot /over /nokey /size=0.15 /symbol=circex    /vs {6.0},{8.0}
+anno /xpos=6.15 /ypos=8.0 /valign=0 /size=0.08 "circex"
+plot /over /nokey /size=0.15 /symbol=circplus  /vs {7.0},{8.0}
+anno /xpos=7.15 /ypos=8.0 /valign=0 /size=0.08 "circplus"
+ 
+plot /over /nokey /size=0.15 /symbol=asterisk  /vs {8.0},{8.0}
+anno /xpos=8.15 /ypos=8.0 /valign=0 /size=0.08 "asterisk"
  
 !--------
  
@@ -109530,11 +109535,10 @@ anno /xpos=2.15 /ypos=3.0 /valign=0 /size=0.08 "pentfill"
  
 plot /over /nokey /size=0.15 /symbol=hexempty  /vs {3.0},{3.0}
 anno /xpos=3.15 /ypos=3.0 /valign=0 /size=0.08 "hexempty"
-plot /over /nokey /size=0.15 /symbol=hexfill   /vs {4.0},{3.0}
-anno /xpos=4.15 /ypos=3.0 /valign=0 /size=0.08 "hexfill"
- 
-plot /over /nokey /size=0.15 /symbol=asterisk  /vs {5.0},{3.0}
-anno /xpos=5.15 /ypos=3.0 /valign=0 /size=0.08 "asterisk"
+plot /over /nokey /size=0.15 /symbol=hexwye    /vs {4.0},{3.0}
+anno /xpos=4.15 /ypos=3.0 /valign=0 /size=0.08 "hexwye"
+plot /over /nokey /size=0.15 /symbol=hexfill   /vs {5.0},{3.0}
+anno /xpos=5.15 /ypos=3.0 /valign=0 /size=0.08 "hexfill"
  
 !--------
  

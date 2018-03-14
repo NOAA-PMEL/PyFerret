@@ -140,9 +140,9 @@
             CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
         ENDIF
 *       All other symbols are optional, so do not give error messages
-*       if there was a problem creating them at this point.  The symbols 
-*       "dotex", "dotplus", "circle", "circex", and "circplus" are
-*       pre-defined in the engines currently used.
+*       if there was a problem creating them at this point.  The 
+*       symbols "dotex", "dotplus", "circle", "circfill", "circex", 
+*       and "circplus" are pre-defined in the engines currently used.
         symname = "dotex"
         namelen = 5
         CALL FGDSYMBOL(symbolobjs(2, windowid), 
@@ -155,13 +155,17 @@
         namelen = 6
         CALL FGDSYMBOL(symbolobjs(4, windowid), 
      .                 windowobjs(windowid), symname, namelen)
+        symname = "circfill"
+        namelen = 8
+        CALL FGDSYMBOL(symbolobjs(5, windowid), 
+     .                 windowobjs(windowid), symname, namelen)
         symname = "circex"
         namelen = 6
-        CALL FGDSYMBOL(symbolobjs(5, windowid), 
+        CALL FGDSYMBOL(symbolobjs(6, windowid), 
      .                 windowobjs(windowid), symname, namelen)
         symname = "circplus"
         namelen = 8
-        CALL FGDSYMBOL(symbolobjs(6, windowid), 
+        CALL FGDSYMBOL(symbolobjs(7, windowid), 
      .                 windowobjs(windowid), symname, namelen)
 *       Symbols from definition files will be added when first used.
 

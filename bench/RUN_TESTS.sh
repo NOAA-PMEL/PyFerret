@@ -220,6 +220,14 @@ exebindir=`dirname $fver`
 exeferdir=`dirname $exebindir | sed -e 's/\\//\\\\\\//g'`
 echo "s/$exeferdir/....../g" >> $cleanups
 
+timeregex=`date +%0d.%h.%Y`
+echo "s/$timeregex.[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/DD-MON-YYYY HH:MM:SS/g" >> $cleanups
+echo "s/$timeregex.[0-9][0-9]:[0-9][0-9]/DD-MON-YYYY HH:MM/g" >> $cleanups
+echo "s/$timeregex/DD-MON-YYYY/g" >> $cleanups
+timeregex=`date +%0d.%h.%Y | tr [a-z] [A-Z]`
+echo "s/$timeregex.[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/DD-MON-YYYY HH:MM:SS/g" >> $cleanups
+echo "s/$timeregex.[0-9][0-9]:[0-9][0-9]/DD-MON-YYYY HH:MM/g" >> $cleanups
+echo "s/$timeregex/DD-MON-YYYY/g" >> $cleanups
 timeregex=`date +%_d.%h.%Y`
 echo "s/$timeregex.[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/DD-MON-YYYY HH:MM:SS/g" >> $cleanups
 echo "s/$timeregex.[0-9][0-9]:[0-9][0-9]/DD-MON-YYYY HH:MM/g" >> $cleanups
@@ -238,6 +246,14 @@ echo "s/$timeregex.[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/DD-MON-YYYY HH:MM:SS/g" >> $
 echo "s/$timeregex.[0-9][0-9]:[0-9][0-9]/DD-MON-YYYY HH:MM/g" >> $cleanups
 echo "s/$timeregex/DD-MON-YYYY/g" >> $cleanups
 
+timeregex=`date +%0d.%h.%y`
+echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/DD-MON-YY HH:MM:SS/g" >> $cleanups
+echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]/DD-MON-YY HH:MM/g" >> $cleanups
+echo "s/$timeregex/DD-MON-YY/g" >> $cleanups
+timeregex=`date +%0d.%h.%y | tr [a-z] [A-Z]`
+echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/DD-MON-YY HH:MM:SS/g" >> $cleanups
+echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]/DD-MON-YY HH:MM/g" >> $cleanups
+echo "s/$timeregex/DD-MON-YY/g" >> $cleanups
 timeregex=`date +%_d.%h.%y`
 echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/DD-MON-YY HH:MM:SS/g" >> $cleanups
 echo "s/${timeregex}.[0-9][0-9]:[0-9][0-9]/DD-MON-YY HH:MM/g" >> $cleanups
@@ -286,7 +302,7 @@ echo 's/SESSION_PID = "[0-9]+"/SESSION_PID = "#####"/g' >> $cleanups
 echo 's/DELTA_CPU = "[0-9]\.[0-9E-]+"/DELTA_CPU = "######"/g' >> $cleanups
 echo 's/CLOCK_SECS = "[0-9]\.[0-9E-]+"/CLOCK_SECS = "######"/g' >> $cleanups
 echo 's/^\[\?1034h//' >> $cleanups
-echo 's/Second 10K LET commands LET a = 0 takes  [0-4]\.[0-9]+  seconds/Second 10K LET commands LET a = 0 takes [0-5] seconds/' >> $cleanups
+echo 's/Second 10K LET commands LET a = 0 takes  [0-6]\.[0-9]+  seconds/Second 10K LET commands LET a = 0 takes [0-7] seconds/' >> $cleanups
 echo 's/10K LET commands LET a = 0 takes  [0-2]\.[0-9]+  seconds/10K LET commands LET a = 0 takes [0-3] seconds/' >> $cleanups
 echo 's/5K LOAD with transform takes  [0-8]\.[0-9]+  seconds/5K LOAD with transform takes [0-9] seconds/' >> $cleanups
 echo 's/DEFINE VARIABLE ten_plots = 0\.[0-9]+/DEFINE VARIABLE ten_plots = 0.######/' >> $cleanups
@@ -297,8 +313,6 @@ echo '/say `sumcpu`/,/sh sym CLOCK_SECS/ s/0\.[0-9]+/0.######/' >> $cleanups
 sed $SED_EXTREGEX_FLAG -i_orig -f $cleanups $log_file
 sed $SED_EXTREGEX_FLAG -i_orig -f $cleanups $err_file
 sed $SED_EXTREGEX_FLAG -i_orig -f $cleanups $ncdump_file
-
-rm -f $cleanups
 
 # Clean-up
 rm -f `cat TRASH_FILES`

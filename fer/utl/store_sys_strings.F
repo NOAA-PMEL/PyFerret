@@ -41,6 +41,7 @@
 
 * V530:  9/00 *sh*
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V74  3/18 *acm For issue #1199 disallow SPAWN in secure mode
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -54,10 +55,14 @@
 	CHARACTER*(*) cmnd_text
 
 * internal variable declarations:
+	LOGICAL IS_SECURE
 	INTEGER	TM_LENSTR1,clen, old_len, istat, new_mr
 	REAL*8	 sysout_ptr
 
 * --- end of introductory code ---
+
+*spawn operations are disallowed in secure mode.
+        IF (IS_SECURE()) GOTO 5200
 
 * length of string to be stored
 	clen = TM_LENSTR1(cmnd_text)
@@ -118,4 +123,7 @@
 	status = ferr_ok
 
  5000	RETURN
+
+ 5200	CALL ERRMSG(ferr_invalid_command, status,
+     .   'SPAWN not allowed in secure mode', *5000 )
 	END	

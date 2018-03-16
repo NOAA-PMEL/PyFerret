@@ -32,3 +32,6 @@ GO err73_vector_aspect_yz
 
 GO bn_reset
 GO err73_extra_digit_contourlab
+
+GO bn_reset
+GO err73_append_cdf

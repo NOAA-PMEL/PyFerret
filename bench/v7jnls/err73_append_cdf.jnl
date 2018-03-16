@@ -1,0 +1,35 @@
+! err73_append_cdf
+! Issue 1863: invisible error on appending to netCDF
+! when forgetting to use SAVE or LIST/FORMAT=CDF
+
+define axis/x=1:5:1 xax
+define axis/t=1:4:1 tax
+
+let xyvar = 1./0 + 0*x[gx=xax]*t[gt=tax]
+
+! create a file with all-missing data, then
+! use append to add timesteps.  The same behavior
+! happens with just simple appending in time
+
+save/clobber/file=a.nc xyvar
+
+
+! Use SAVE/APPEND/L= to write one timestep at a time
+
+let lstep = l[gt=tax]
+repeat/name=ll/range=1:2 ( \
+	let xyvar = if ( lstep eq `ll` ) then x[gx=xax] +  `ll` + 0*lstep ;\
+	save/append/file=a.nc/l=`ll` xyvar ;\
+	)
+sp ncdump a.nc
+
+! This had LIST not SAVE or LIST/FORMAT=CDF
+! It just seemed to run but did nothing, and issued no error
+! Now return an error
+
+set mode ignore
+
+repeat/name=ll/range=3:4 ( \
+	let xyvar = if ( lstep eq `ll` ) then x[gx=xax] + `ll` + 0*lstep ;\
+	list/append/file=a.nc/l=`ll` xyvar ;\
+	)

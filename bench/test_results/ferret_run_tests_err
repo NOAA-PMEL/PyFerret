@@ -5335,6 +5335,17 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis XAX
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ **ERROR: invalid command: /LIST/APPEND to netCDF file requires /FORMAT=cdf
+list/append/file=a.nc/l=3 xyvar
+ **ERROR: invalid command: /LIST/APPEND to netCDF file requires /FORMAT=cdf
+list/append/file=a.nc/l=4 xyvar
 *** Running ferret script: bn_clim_special.jnl
            *** NOTE: regarding ./data/clim_axes_gregorian.nc ...
            *** NOTE: GREGORIAN climatological axes defined

@@ -158,6 +158,7 @@
 * v720 2/2017 *acm* Ticket 2513. If /RIGID write edges but do not write bounds or 
 *                  bounds attribute.
 * v730 11/2017 *acm* new SAVE/ASGLOBAL to write a global attribute, see ticket 2060, issue 1332
+* V740  3/2018 *acm* issue 1863: LIST/APPEND w/o /FORM=cdf to a netCDF file is an error
 
 	include 'tmap_dims.parm'
         include 'tmap_errors.parm'
@@ -185,14 +186,14 @@
      .			do_shrink, as_global
 
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, STR_CASE_BLIND_COMPARE,
-     .                  STR_UPCASE, GET_MAX_STRING_LEN,
+     .                  STR_UPCASE, GET_MAX_STRING_LEN, NF_CLOSE, 
      .			status, mr, cx, inext, ilist, wsize, vax_code,
      .			rlen, flen, reclen, i, cx1, qfile, idim,
      .			ndim, perm(7), mr_perm(max_intrp),
      .                  npermuted, recsofar, do_stream_phase, nvars,
      .                  edges_flag, keepax_flag, nn, slen, do_bounds,
      .			my_mr(max_intrp), my_cx(max_intrp), frame_bottom,
-     .			nvars2list
+     .			nvars2list, nctype, cdfid
 	INTEGER*8	i8_size
 
 	CHARACTER	AUTO_FILENAME*2048, filename*2048, raw_name*2048, 
@@ -511,6 +512,25 @@ c     .		 .AND. .NOT.do_comma_del
 	   IF ( fexist ) THEN    ! 10/93 logic change
 	      IF ( list_at_eof ) THEN
 
+* (Issue 1863 a nod to Ned who ran into this.)
+* Did they ask to append to a netCDF file but without LIST/FORMAT=CDF?
+* Check that a .nc or .cdf file name is in fact netcdf file. If so, its
+* an error - they needed to have said SAVE or LIST/FORM=cdf.
+* If its not a netCDF file type, just continue; not illegal to write
+* an ascii file with extension .nc.
+
+	         IF (.NOT. do_cdf .AND. (
+     .               filename(flen-3:flen).EQ.'.cdf' .OR. 
+     .               filename(flen-3:flen).EQ.'.CDF' .OR. 
+     .               filename(flen-2:flen).EQ.'.nc' .OR. 
+     .               filename(flen-2:flen).EQ.'.NC') ) THEN
+                    
+	            CALL CD_OPEN_OUT( filename, list_at_eof, cdfid, .FALSE., 
+     .                     nctype, status )
+	            IF (status .EQ. ferr_ok) GOTO 5110
+		    status = NF_CLOSE(cdfid)
+	         ENDIF
+
 #ifdef NO_ACCESS_APPEND
 	         faccess = 'SEQUENTIAL'
 #else
@@ -755,6 +775,8 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
      .		'Unrecognized option/'//
      .          cmnd_buff(qual_start(i):qual_end(i)) //pCR//
      .		' Valid options are /OUTTYPE=DOUBLE,FLOAT,INT,SHORT,or BYTE', *1000 )
+ 5110	CALL ERRMSG( ferr_invalid_command, status,
+     .			'/LIST/APPEND to netCDF file requires /FORMAT=cdf', *1000 )
 	END
 
 

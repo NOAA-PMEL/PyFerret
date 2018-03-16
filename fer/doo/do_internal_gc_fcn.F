@@ -97,10 +97,10 @@
 *                   array parameter (pointer size to one in double-precision Ferret).
 * V68   5/12 *acm* Add ESEQUENCE, FSEQUENCE, SAMPLEM, SAMPLEN
 * V693 10/14 *acm* ticket 2210: check for negative arguments to SUBSTRING
-
 * keep max_cmnd_len for SPAWN at 2048 while Ferret command buffer
 *      increases to 20480
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
+* V74  3/18 *acm For issue #1199 disallow SPAWN in secure mode
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -140,6 +140,8 @@
      .            m10lot:m10hit,m10loe:m10hie,m10lof:m10hif )
 
 * internal variable declarations:
+
+	LOGICAL IS_SECURE
 	INTEGER CX_DIM_LEN,  CGRID_SIZE,
      .		count, size, icom, idim, ii,
      .		cx1, cx2, cx3,
@@ -679,8 +681,13 @@
 
 * SPAWN function - perform a Unix system command
  2600	CONTINUE
+
+*spawn is disallowed in secure mode.
+        IF (IS_SECURE()) GOTO 5200
+
 * ... get the command string to be executed
-        IF (CGRID_SIZE(cx1) .NE. 1) CALL ERRMSG(ferr_invalid_command,
+
+	IF (CGRID_SIZE(cx1) .NE. 1) CALL ERRMSG(ferr_invalid_command,
      .      status, 'SPAWN can only execute a single command', *5000)
         buff = GET_STRING_ELEMENT(m1lox, m1hix, m1loy, m1hiy,
      .              m1loz, m1hiz, m1lot, m1hit, m1loe, m1hie,
@@ -1026,5 +1033,8 @@
 	CALL ERRMSG(ferr_out_of_range, status,
      .   'Negative argument to function. Argument '//
      .    argval(:slen)//' : SUBSTRING', *5000 )
+
+ 5200	CALL ERRMSG(ferr_invalid_command, status,
+     .   'SPAWN not allowed in secure mode', *5000 )
 
 	END

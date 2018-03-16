@@ -103479,7 +103479,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS0DD-MON-YYYY HH:MM:SS
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASDD-MON-YYYY HH:MM:SS
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  8.000E+00  6.630E+00 0.120    0  SYSTEM  @ASDATA SET: err721_dup_labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
@@ -104675,6 +104675,88 @@ set view left;  contour/l=1/lev=2d sst
 set view right; contour/l=1/x=120e:80w/y=20s:20n/lev=2d sst
  
 frame/file=extra_digit_contourlab.gif
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err73_append_cdf
+! err73_append_cdf
+! Issue 1863: invisible error on appending to netCDF
+! when forgetting to use SAVE or LIST/FORMAT=CDF
+ 
+define axis/x=1:5:1 xax
+define axis/t=1:4:1 tax
+ 
+let xyvar = 1./0 + 0*x[gx=xax]*t[gt=tax]
+ 
+! create a file with all-missing data, then
+! use append to add timesteps.  The same behavior
+! happens with just simple appending in time
+ 
+save/clobber/file=a.nc xyvar
+ 
+ 
+! Use SAVE/APPEND/L= to write one timestep at a time
+ 
+let lstep = l[gt=tax]
+repeat/name=ll/range=1:2 ( \
+	let xyvar = if ( lstep eq `ll` ) then x[gx=xax] +  `ll` + 0*lstep ;\
+	save/append/file=a.nc/l=`ll` xyvar ;\
+	)
+!-> REPEAT: LL:1
+ !-> DEFINE VARIABLE xyvar = if ( lstep eq 1 ) then x[gx=xax] +  1 + 0*lstep
+ !-> LIST/FORMAT=CDF/append/file=a.nc/l=1 xyvar
+!-> REPEAT: LL:2
+ !-> DEFINE VARIABLE xyvar = if ( lstep eq 2 ) then x[gx=xax] +  2 + 0*lstep
+ !-> LIST/FORMAT=CDF/append/file=a.nc/l=2 xyvar
+sp ncdump a.nc
+netcdf a {
+dimensions:
+	XAX = 5 ;
+	TAX = UNLIMITED ; // (4 currently)
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "even" ;
+		XAX:axis = "X" ;
+	double TAX(TAX) ;
+		TAX:axis = "T" ;
+	double XYVAR(TAX, XAX) ;
+		XYVAR:missing_value = -1.e+34 ;
+		XYVAR:_FillValue = -1.e+34 ;
+		XYVAR:long_name = "1./0 + 0*X[GX=XAX]*T[GT=TAX]" ;
+
+// global attributes:
+		:history = "FERRET V7.32  DD-MON-YY" ;
+		:Conventions = "CF-1.6" ;
+data:
+
+ XAX = 1, 2, 3, 4, 5 ;
+
+ TAX = 1, 2, 3, 4 ;
+
+ XYVAR =
+  2, 3, 4, 5, 6,
+  3, 4, 5, 6, 7,
+  _, _, _, _, _,
+  _, _, _, _, _ ;
+}
+ 
+! This had LIST not SAVE or LIST/FORMAT=CDF
+! It just seemed to run but did nothing, and issued no error
+! Now return an error
+ 
+set mode ignore
+ 
+repeat/name=ll/range=3:4 ( \
+	let xyvar = if ( lstep eq `ll` ) then x[gx=xax] + `ll` + 0*lstep ;\
+	list/append/file=a.nc/l=`ll` xyvar ;\
+	)
+!-> REPEAT: LL:3
+ !-> DEFINE VARIABLE xyvar = if ( lstep eq 3 ) then x[gx=xax] + 3 + 0*lstep
+ !-> list/append/file=a.nc/l=3 xyvar
+!-> REPEAT: LL:4
+ !-> DEFINE VARIABLE xyvar = if ( lstep eq 4 ) then x[gx=xax] + 4 + 0*lstep
+ !-> list/append/file=a.nc/l=4 xyvar
 *** Running ferret script: bn_clim_special.jnl
 ! bn_clim_special.jnl
 ! Test the climatological axes from Andrew's monthly

@@ -37,6 +37,7 @@
  * execute the passed command string and append the lines of input to the
  * array of strings supplied
  * V530  9/00 *sh*
+ * V740  3/18 *acm* issue #1862, results may not end with a newline
  *
  */
 
@@ -92,13 +93,21 @@ void FORTRAN(get_sys_cmnd)(char ***fer_ptr, int *nlines, char *cmd, int *stat)
     fpipe = popen(cmd, "r");
     if ( fpipe != NULL ) {
 
-       /* read one newline-terminated input line */
+       /* read one input line
+	      previously assumed if there was no newline the line was incomplete
+		  Now check to see if we overran the buffer, else return the line as is*/
        while ( fgets(buf, linebufsize, fpipe) != NULL ) {
           slen = strlen(buf);
           incomplete = buf[slen-1] != '\n';
+		  if (incomplete && slen <= linebufsize-2)
+		  {
+			 buf[slen+1] = '\n';
+			 incomplete = 0;
+			 slen++;
+		  }
           if (incomplete) {
-             /* line buffer wasn't large enough --> allocate more */
-             while (incomplete) {
+             /* line buffer wasn't large enough --> allocate more */ 
+			 while (incomplete) {
                 linebufsize += BUFSIZ;
                 newbuf = (char *) FerMem_Realloc(buf, sizeof(char) * linebufsize, __FILE__, __LINE__);
                 if ( newbuf == NULL ) {

@@ -68,6 +68,7 @@
 * v74  *acm*  1/18 Fixing issue 1575, setting uvar_given for result of grid-changing functions
 *                  that return results on abstract axes.
 * v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
+* v74  *acm* 3/18  Backing off the fix for 1575, see comments 3/16/2018
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -219,28 +220,28 @@
 	   IF ( uvar_given(idim,uvar) .EQ. uvlim_gvn_gnl  .OR. 
      .          uvar_given(idim,uvar) .EQ. uvlim_gvn_lo   .OR. 
      .          uvar_given(idim,uvar) .EQ. uvlim_gvn_lohi )  THEN
-	      ss_ok = .TRUE.
+cc	      ss_ok = .TRUE.
 	      IF (uvar_lo_ss(uvar, idim) .NE. unspecified_int4) THEN
 	         i1ss = uvar_lo_ss(uvar, idim)
 	         inss = uvar_hi_ss(uvar, idim)
 	      ELSE
-		 ss_ok = (uvar_lo_ww(idim, uvar).NE.unspecified_val8 .AND.  
-     .                    uvar_hi_ww(idim, uvar).NE.unspecified_val8)
-	         IF (ss_ok) THEN
+cc		 ss_ok = (uvar_lo_ww(idim, uvar).NE.unspecified_val8 .AND.  
+cc     .                    uvar_hi_ww(idim, uvar).NE.unspecified_val8)
+cc	         IF (ss_ok) THEN
 		    i1ss =  TM_SUBSC ( uvar_lo_ww(idim, uvar), grid, idim, -1 )
 	            inss =  TM_SUBSC ( uvar_hi_ww(idim, uvar), grid, idim, -1 )
-	         ENDIF
+cc	         ENDIF
 	      ENDIF
 
 ! bit of a hack; see the fix for issue 1575 in abstract-axis in is_do_gc_fcn.F
-	      IF (ss_ok) THEN  
+cc	      IF (ss_ok) THEN  
 	       IF (i1ss .EQ. inss) THEN
 	          uvar_desc = '1 pt'
 	       ELSE
 	          countstr = TM_FMT(FLOAT(inss-i1ss+1), 15, 20, slen)
 	          uvar_desc = countstr(:slen)//' pts'
 	       ENDIF
-	      ENDIF  ! ss_ok
+cc	      ENDIF  ! ss_ok
 	   ENDIF
 
 * Compressing

@@ -67,6 +67,7 @@
 *                  variables in the Y direction by running dot_y
 * v74  *acm*  1/18 Fixing issue 1575, setting uvar_given for result of grid-changing functions
 *                  that return results on abstract axes.
+* v74  *acm*  3/18 Backing off the fix for 1575, see comments 3/16/2018
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -78,10 +79,10 @@
 	include	'xcontext.cmn'
 	include	'xalgebra.cmn'
 	include	'xtext_info.cmn'
-c	include	'xfr_grid.cmn'	! w/ mgrid_abstract
+	include	'xfr_grid.cmn'	! w/ mgrid_abstract
 	include 'xgrid_chg_fcns.cmn'
 	include 'xrisc_buff.cmn' 
-	include 'xtm_grid.cmn_text'  ! with line_name
+c	include 'xtm_grid.cmn_text'  ! with line_name
 
 * calling arguments
 	INTEGER		uvar, lo_isp, status
@@ -353,10 +354,10 @@ c	include	'xfr_grid.cmn'	! w/ mgrid_abstract
 c  Fixing issue 1575. If the result grid has an abstract axis in the aa direction, 
 c  then set uvar_given(aa_dim,uvar) = uvlim_gvn_gnl
 
-	  DO idim = 1, nferdims 
-	     IF (line_name(CGRID_AXIS(idim,res_cx)) .EQ. 'ABSTRACT') 
-     .		uvar_given(idim,uvar) = uvlim_gvn_gnl
-	  ENDDO
+cc	  DO idim = 1, nferdims 
+cc	     IF (line_name(CGRID_AXIS(idim,res_cx)) .EQ. 'ABSTRACT') 
+cc     .		uvar_given(idim,uvar) = uvlim_gvn_gnl
+cc	  ENDDO
   
 	ELSE 
 
@@ -377,10 +378,10 @@ c  then set uvar_given(aa_dim,uvar) = uvlim_gvn_gnl
 c  If the result grid has an abstract axis in the aa direction, 
 c  then set uvar_given
 
-	  DO idim = 1, nferdims 
-	     IF (line_name(CGRID_AXIS(idim,res_cx)) .EQ. 'ABSTRACT') 
-     .		uvar_given(idim,uvar) = uvlim_gvn_gnl
-	  ENDDO
+cc	  DO idim = 1, nferdims 
+cc	     IF (line_name(CGRID_AXIS(idim,res_cx)) .EQ. 'ABSTRACT') 
+cc     .		uvar_given(idim,uvar) = uvlim_gvn_gnl
+cc	  ENDDO
 
 	ENDIF
 	IF ( status .NE. ferr_ok ) GOTO 5100

@@ -190,6 +190,49 @@
            prec_digits = list_digits
 	ENDIF
 
+
+
+* Check format specifiers if given.  When there are strings or integers we
+* require simple format specs only.
+
+	IF ( list_format_given ) THEN
+
+	   risc_buff = ' '  ! this will store the value of any string outputs
+	   line_buff = ' '  ! this will store a list of the internal variables to write, using format
+
+* If there are strings, the list must be simplified with each variable given its own format.
+
+	   has_string = .FALSE.
+	   DO  ivar = 1, num_uvars_in_cmnd
+	      IF ( mr_type(mr_list(ivar)) .EQ. ptype_string ) has_string = .TRUE.
+	   ENDDO
+* 
+	   slen1 = TM_LENSTR1(list_format)
+	   CALL PARSE_COMMA_LIST (list_format, 2, slen1-1, max_item_list,
+     .	          num_it, item_start, item_end, status)
+
+	   IF (num_it.NE.num_uvars_in_cmnd .AND. has_string) GOTO 5050
+
+	   has_int = TM_HAS_STRING (list_format, 'I')
+
+	   IF (has_string .OR. has_int) THEN
+           
+
+* For some combinations of specifiers, say (A12, 1X, 2F8.1)  it may seem there's
+*  the right number of specifiers, but more complex than we are going to parse.
+
+	      DO i1 = 1, num_it
+	         IF ( TM_HAS_STRING(list_format(item_start(i1):item_end(i1)), 'X') )  
+     .                GOTO 5050
+	         IF ( TM_DIGIT (list_format(item_start(i1):item_end(i1)) ) )  GOTO 5050
+	      ENDDO
+
+	   ENDIF
+	ENDIF      
+
+
+
+
 * determine list limits checking for conformable shapes of data to list
 * ... for each axis each var must be same size or length 1
 	DO 10 i = 1, nferdims
@@ -429,35 +472,6 @@
 
 	   risc_buff = ' '  ! this will store the value of any string outputs
 	   line_buff = ' '  ! this will store a list of the internal variables to write, using format
-
-* If there are strings, the list must be simplified with each variable given its own format.
-
-	   has_string = .FALSE.
-	   DO  ivar = 1, num_uvars_in_cmnd
-	      IF ( mr_type(mr_list(ivar)) .EQ. ptype_string ) has_string = .TRUE.
-	   ENDDO
-* 
-	   slen1 = TM_LENSTR1(list_format)
-	   CALL PARSE_COMMA_LIST (list_format, 2, slen1-1, num_uvars_in_cmnd,
-     .	          num_it, item_start, item_end, status)
-
-	   IF (num_it.NE.num_uvars_in_cmnd .AND. has_string) GOTO 5050
-
-	   has_int = TM_HAS_STRING (list_format, 'I')
-
-	   IF (has_string .OR. has_int) THEN
-           
-
-* For some combinations of specifiers, say (A12, 1X, 2F8.1)  it may seem there's
-*  the right number of specifiers, but more complex than we are going to parse.
-
-	      DO i1 = 1, num_it
-	         IF ( TM_HAS_STRING(list_format(item_start(i1):item_end(i1)), 'X') )  
-     .                GOTO 5050
-	         IF ( TM_DIGIT (list_format(item_start(i1):item_end(i1)) ) )  GOTO 5050
-	      ENDDO
-
-	   ENDIF
 	      
 	   point = -1
 
@@ -870,7 +884,7 @@
      .		'unformatted output is for numeric data only',
      .		*5000 )
  5050	CALL ERRMSG( ferr_invalid_command, status,
-     .		'Fortran format for list with strings must be one item per variable',
-     .		*5000 )
+     . 'Fortran format for list with strings must have one specifier per variable',
+     . *5000 )
 
 	END

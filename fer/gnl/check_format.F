@@ -43,13 +43,14 @@
 * V301 1/94 - extracted from EQUAL_FORMAT
 * V320 8/94 *kob* -IBM port - had to use risc buff for string concats
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V750 3/18 *acm* issue 554, explain what formasts are allowed.
+* V750 *acm*  3/18 Issue 950: Allowing simplified I formats 
 
 * calling argument declarations
 	INTEGER		status
 	CHARACTER*(*)	string
 
 * internal variable declarations
-        LOGICAL TM_DIGIT
 	INTEGER	left_paren, right_paren, integer_form
 
 	include 'ferret.parm'
@@ -64,11 +65,6 @@
 	right_paren = INDEX( string, ')' )
 	IF ( left_paren .EQ. 0 
      .	.OR. left_paren .GE. right_paren ) GOTO 5040
-	integer_form = MAX( INDEX( string, 'I' ),
-     .		            INDEX( string, 'i' ) )
-	IF ( integer_form .NE. 0 ) THEN
-           IF ( TM_DIGIT(string(integer_form:)) )GOTO 5050
-        ENDIF
 
 * success
 	status = ferr_ok
@@ -79,16 +75,13 @@
 #ifdef NO_PASSED_CONCAT	
  5040   risc_buff = string
 	CALL ERRMSG( ferr_syntax, status,
-     .			'unknown format or format need parenthesis: '//pCR//
+     .  'Unknown format or format need parentheses'//pCR//
+     .  'Valid formats are CDF, UNFORMATTED, STREAM, COMMA, TAB or limited Fortran formats'//pCR//
      .			risc_buff, *5000 )
- 5050   risc_buff = string
-	CALL ERRMSG( ferr_syntax, status,
-     .			'floating pt. formats only:'//risc_buff, *5000 )
 #else
  5040	CALL ERRMSG( ferr_syntax, status,
-     .			'unknown format or format need parenthesis: '//pCR//
+     .  'Unknown format or format need parentheses'//pCR//
+     .  'Valid formats are CDF, UNFORMATTED, STREAM, COMMA, TAB or limited Fortran formats'//pCR//
      .			string, *5000 )
- 5050	CALL ERRMSG( ferr_syntax, status,
-     .			'floating pt. formats only:'//string, *5000 )
 #endif
 	END

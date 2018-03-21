@@ -86,6 +86,8 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V691+ *acm* 9/14 Ticket 2199: for string variables don't list a BAD FLAG in the header.
 * V702: *sh*  2/17 Dynamic memory management (pt_blk no longer used)
+* V750 *acm*  3/18 Issue 950: Allow (some) A formats for listing strings and numeric data together
+*                  Also simplified I formats in the same way.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -121,23 +123,23 @@
 *                  to 128 and VAR_UNITS to 64
 * V552 *acm* 4/03- up VAR_CODE and vcode decl's from 64 to 128 chars
 * local variable declarations:
-	LOGICAL		all_bad, do_unform, ss_save, do_tab_del,
-     .                  do_comma_del, norow
+	LOGICAL		TM_HAS_STRING, TM_DIGIT, all_bad, do_unform, ss_save, 
+     .                  do_tab_del, do_comma_del, norow, has_string, has_int
 	INTEGER		TM_LENSTR1, CGRID_AXIS, GET_MAX_STRING_LEN,
-     .			GET_OFFSET_C_STRING_LEN, 
+     .			GET_OFFSET_C_STRING_LEN, STR_SAME,
      .			w0, w, data_len, nleft, nright, alen, blen,
      .			idim, vlen, cleft, col_ax, col_dec,
      .			cx, slen1, slen2, slen3, i, 
      .			ivar, point, iwd, dset, ax, new_ax,
      .			min_width, row_ww_wid, lp, prec_digits, ww,
      .			lo(nferdims), hi(nferdims), del(nferdims), 
-     .			pt(nferdims), valid_ax(nferdims)
+     .			pt(nferdims), valid_ax(nferdims), lloc, num_it, ival
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 	CHARACTER	KEY_STRING*128, AX_TITLE*32, VAR_UNITS*64, LEFINT*8,
      .			CX_DIM_STR*16, VAR_CODE*128, TM_FMT*16,
-     .			buff1*16, buff2*16, buff3*16, line_buff*2048,
+     .			buff1*16, buff2*1024, buff3*16, line_buff*2048,
      .			row_ss_fmt*14, bad_ax*5, bad_buff*32,
-     .			col_head_format*32, sep*1
+     .			col_head_format*32, sep*1, fmtstring*30
 	REAL		big, small, biggest, value
 	REAL*8		TM_WORLD
 	CHARACTER	good_fmt(max_intrp)*10, bad_fmt(max_intrp)*10,
@@ -373,48 +375,186 @@
 	   ENDIF
  60	CONTINUE
 
-* * * * * LIST DATA UNFORMATTED OR WITH USER FORMAT (no frills)
-* Note: cannot direct user format to GUI because records may be
-* arbitrarily long
- 200	IF ( do_unform .OR. list_format_given ) THEN
-	   point = 0
-	   DO 300 i6 = lo6, hi6, del6
-	   DO 300 i5 = lo5, hi5, del5
-	   DO 300 i4 = lo4, hi4, del4
-	   DO 300 i3 = lo3, hi3, del3
-	   DO 300 i2 = lo2, hi2, del2
-	   DO 300 i1 = lo1, hi1, del1
+
+ 
+* * * * * LIST DATA UNFORMATTED
+ 200    IF ( do_unform ) THEN
+           point = 0
+           DO 300 i6 = lo6, hi6, del6
+           DO 300 i5 = lo5, hi5, del5
+           DO 300 i4 = lo4, hi4, del4
+           DO 300 i3 = lo3, hi3, del3
+           DO 300 i2 = lo2, hi2, del2
+           DO 300 i1 = lo1, hi1, del1
+              IF ( interrupted ) RETURN
+* default memory pointer for full-region variables
+              point = point + 1
+
+* loop through all variables for each record
+              DO 250 ivar = 1, num_uvars_in_cmnd
+                 IF (mr_type(mr_list(ivar)) .EQ. ptype_string) GOTO 5040
+* ... optimized calculation for full-region variables
+                 IF ( xact_range(ivar) ) THEN
+                    out(ivar) = memry(mr_list(ivar))%ptr(point)
+                 ELSE
+* ... separate pointer calcs for non-full region variables
+* ... e.g. a 2D field listed with a 3D will replicate at each 3rd-D location
+                    iwd = 0
+                    IF ( has_size(nferdims,ivar) ) iwd = (pt(nferdims)-lo(nferdims))
+                    DO 240 i = nferdims-1, 1, -1
+                    iwd = iwd*size(i,ivar)
+                    IF ( has_size(i,ivar) ) iwd = iwd + (pt(i)-lo(i))
+ 240                CONTINUE
+                    out(ivar) = memry(mr_list(ivar))%ptr(iwd+1)
+                 ENDIF
+ 250          CONTINUE
+              IF ( do_unform ) THEN
+                 WRITE (list_lun, ERR=5010)
+     .                  ( out(ivar),ivar = 1, num_uvars_in_cmnd )
+              ELSE
+
+                 WRITE (list_lun, list_format, ERR=5010)
+     .                  ( out(ivar),ivar = 1, num_uvars_in_cmnd )
+              ENDIF
+ 300       CONTINUE
+* done - go home
+           RETURN
+        ENDIF
+
+
+* * * * * LIST DATA WITH USER FORMAT (no frills)
+ 201	CONTINUE
+
+	IF ( list_format_given ) THEN
+
+	   risc_buff = ' '  ! this will store the value of any string outputs
+	   line_buff = ' '  ! this will store a list of the internal variables to write, using format
+
+* If there are strings, the list must be simplified with each variable given its own format.
+
+	   has_string = .FALSE.
+	   DO  ivar = 1, num_uvars_in_cmnd
+	      IF ( mr_type(mr_list(ivar)) .EQ. ptype_string ) has_string = .TRUE.
+	   ENDDO
+* 
+	   slen1 = TM_LENSTR1(list_format)
+	   CALL PARSE_COMMA_LIST (list_format, 2, slen1-1, num_uvars_in_cmnd,
+     .	          num_it, item_start, item_end, status)
+
+	   IF (num_it.NE.num_uvars_in_cmnd .AND. has_string) GOTO 5050
+
+	   has_int = TM_HAS_STRING (list_format, 'I')
+
+	   IF (has_string .OR. has_int) THEN
+           
+
+* For some combinations of specifiers, say (A12, 1X, 2F8.1)  it may seem there's
+*  the right number of specifiers, but more complex than we are going to parse.
+
+	      DO i1 = 1, num_it
+	         IF ( TM_HAS_STRING(list_format(item_start(i1):item_end(i1)), 'X') )  
+     .                GOTO 5050
+	         IF ( TM_DIGIT (list_format(item_start(i1):item_end(i1)) ) )  GOTO 5050
+	      ENDDO
+
+	   ENDIF
+	      
+	   point = -1
+
+	   DO 301 i6 = lo6, hi6, del6
+	   DO 301 i5 = lo5, hi5, del5
+	   DO 301 i4 = lo4, hi4, del4
+	   DO 301 i3 = lo3, hi3, del3
+	   DO 301 i2 = lo2, hi2, del2
+	   DO 301 i1 = lo1, hi1, del1
 	      IF ( interrupted ) RETURN
 * default memory pointer for full-region variables
 	      point = point + 1
+	      lloc = 1
 
 * loop through all variables for each record
-	      DO 250 ivar = 1, num_uvars_in_cmnd
-	         IF (mr_type(mr_list(ivar)) .EQ. ptype_string) GOTO 5040
-* ... optimized calculation for full-region variables
-	         IF ( xact_range(ivar) ) THEN
-	            out(ivar) = memry(mr_list(ivar))%ptr(point)
-	         ELSE
-* ... separate pointer calcs for non-full region variables
-* ... e.g. a 2D field listed with a 3D will replicate at each 3rd-D location
+	      DO 251 ivar = 1, num_uvars_in_cmnd
+
+	      IF ( mr_type(mr_list(ivar)) .EQ. ptype_string ) THEN
+* ... string variable
+	 
+		 IF ( xact_range(ivar) ) THEN
+	            iwd = point
+                 ELSE	
 	            iwd = 0
 	            IF ( has_size(nferdims,ivar) ) iwd = (pt(nferdims)-lo(nferdims))
-	            DO 240 i = nferdims-1, 1, -1
-	            iwd = iwd*size(i,ivar)
-		    IF ( has_size(i,ivar) ) iwd = iwd + (pt(i)-lo(i))
- 240	            CONTINUE
-	            out(ivar) = memry(mr_list(ivar))%ptr(iwd+1)
+	            DO i = nferdims-1, 1, -1
+                       iwd = iwd*size(i,ivar)
+                       IF ( has_size(i,ivar) ) iwd = iwd + (pt(i)-lo(i))
+	            ENDDO
 	         ENDIF
- 250	      CONTINUE
-	      IF ( do_unform ) THEN
-	         WRITE (list_lun, ERR=5010)
-     .			( out(ivar),ivar = 1, num_uvars_in_cmnd )
+
+	         slen1 = GET_OFFSET_C_STRING_LEN(mr_c_pointer(mr_list(ivar)),
+     .		  			 iwd )
+	         risc_buff = ' '
+		 CALL GET_OFFSET_C_STRING(mr_c_pointer(mr_list(ivar)),
+     .				   iwd,
+     .				   risc_buff(:slen1),
+     .				   slen1     )
+
+		 fmtstring = 
+     .            '( ' // list_format(item_start(ivar):item_end(ivar)) //  ')'
+
+* The format may cut the string off shorter than its full length. Use the format length.
+		 WRITE (buff2, fmtstring) risc_buff(:slen1)
+		 slen1 = TM_LENSTR1(buff2) 
+		 WRITE (line_buff(lloc:), fmtstring) buff2(:slen1)
+		 lloc = lloc+slen1
+
 	      ELSE
 
-	         WRITE (list_lun, list_format, ERR=5010)
-     .			( out(ivar),ivar = 1, num_uvars_in_cmnd )
+* ... numerical variable
+* ... optimized calculation for full-region variables
+	        IF ( xact_range(ivar) ) THEN
+	           out(ivar) = memry(mr_list(ivar))%ptr(point+1)
+	        ELSE
+* ... separate pointer calcs for non-full region variables
+* ... e.g. a 2D field listed with a 3D will replicate at each 3rd-D location
+	           iwd = 0
+	           IF ( has_size(nferdims,ivar) ) iwd = (pt(nferdims)-lo(nferdims))
+	           DO i = nferdims-1, 1, -1
+	              iwd = iwd*size(i,ivar)
+	              IF ( has_size(i,ivar) ) iwd = iwd + (pt(i)-lo(i))
+	           ENDDO
+	           out(ivar) = memry(mr_list(ivar))%ptr(iwd+1)
+	        ENDIF
+		
+		fmtstring = 
+     .               '( ' // list_format(item_start(ivar):item_end(ivar)) //  ')'
+
+		IF (has_string .OR. has_int) THEN
+		    IF ( TM_HAS_STRING (fmtstring, 'I') ) THEN
+		       ival = INT(out(ivar)) 
+		       WRITE (risc_buff, fmtstring) ival
+		    ELSE
+		       WRITE (risc_buff, fmtstring) out(ivar)
+		    ENDIF
+		    slen1 = TM_LENSTR1(risc_buff) 
+		    line_buff(lloc:) = risc_buff(:slen1)
+		    lloc = lloc + slen1
+	         ENDIF
+
+	      ENDIF  ! string or numeric
+
+ 251	      CONTINUE
+
+	      IF (.NOT. (has_string.OR.has_int)) THEN
+                 WRITE (list_lun, list_format, ERR=5010)
+     .                  ( out(ivar),ivar = 1, num_uvars_in_cmnd )
+	      ELSE
+	         lloc = TM_LENSTR1(line_buff)
+                 buff2 = TM_FMT(FLOAT(lloc),12,16,vlen)
+	         fmtstring = '(A'//buff2(:vlen)//')'
+	         WRITE (list_lun, fmtstring, ERR=5010) line_buff
 	      ENDIF
- 300	   CONTINUE
+
+
+ 301	   CONTINUE
 * done - go home
 	   RETURN
 	ENDIF
@@ -647,7 +787,6 @@
      .				   iwd,
      .				   line_buff(w0+3:),
      .				   width(ivar)-2     )
-
 	            IF (slen1 .GT. width(ivar)-2) THEN
 	               line_buff(w-3:w) = '..."'
 	            ELSE
@@ -728,6 +867,10 @@
      .		'list of variables too long for output lines'//pCR//
      .		'Reduce SET LIST/PRECISION or specify /FORMAT', *5000 )
  5040	CALL ERRMSG( ferr_invalid_command, status,
-     .		'format disallowed for multiple variables w/ strings',
+     .		'unformatted output is for numeric data only',
      .		*5000 )
+ 5050	CALL ERRMSG( ferr_invalid_command, status,
+     .		'Fortran format for list with strings must be one item per variable',
+     .		*5000 )
+
 	END

@@ -40,7 +40,7 @@ list/nohead/l=1:10/format=(a,i6) \
 TAX_DATESTRING(t[g=airt],t[g=airt],"month"), airt[x=-135,y=-20]
 
 
-list/nohead/l=1:10/j=20:23/format=(i6) 10*airt[x=180]
+list/nohead/l=1:4/j=20:23/format=(i6) 10*airt[x=180]
 
 
 list/nohead/l=1:10/format=(i4, f8.2, a14) airt[x=-135,y=-20], airt[x=-135,y=30], TAX_DATESTRING(t[g=airt],t[g=airt],"day")

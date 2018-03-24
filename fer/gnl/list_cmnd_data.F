@@ -94,6 +94,7 @@
 *                   /NOROW had no effect; and there is an extra longitude location label below 
 *                   the header even when the longitude has been averaged away.
 * v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
+* V750 *acm*  3/18 Issue 950: Allow simplified I formats
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -126,13 +127,13 @@
         CHARACTER*(*) dods_file
 	
 * local variable declarations:
-	LOGICAL		GEOG_LABEL, TM_DFPEQ, ITS_FMRC,
+	LOGICAL		GEOG_LABEL, TM_DFPEQ, ITS_FMRC, TM_DIGIT,
      .			line_too_long, del_col_changed, all_bad,
      .			valid(nferdims), need_doc(nferdims), span(nferdims), do_unform,
      .			do_stream, do_comma_del, do_tab_del, itsa_string,
-     .			fortran_selfdoc, do_auto_fmt, do_dods, norow
+     .			fortran_selfdoc, do_auto_fmt, do_dods, norow, has_int
 	INTEGER		TM_LENSTR, TM_LENSTR1, CX_DIM_LEN,
-     .			FIELD_WIDTH, MGRID_SIZE,
+     .			FIELD_WIDTH, MGRID_SIZE, TM_LOC_STRING, 
      .			GET_MAX_C_STRING_LEN, TM_GET_CALENDAR_ID,
      .			width, w0, grid, dlen, prec_digits,
      .			ndim, lo(nferdims), hi(nferdims), del(nferdims),
@@ -142,7 +143,7 @@
      .			cleft, usable_line_len, max_fields, row_ax,
      .			col_ax, places, col_dec, row_dec, row_wld, 
      .			numbers, first, slen, llen, axis, lp, cal_id,
-     .                  wkblk, ndig(nferdims)
+     .                  wkblk, ndig(nferdims), ival
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 * V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
 	CHARACTER	AX_TITLE*32, VAR_UNITS*64, LEFINT*8, TM_FMT*16,
@@ -441,6 +442,7 @@
      .		'             FORTRAN FORMAT: '//list_format, 0)
 	   ENDIF
 
+
 * ... MISSING VALUE FLAG: xxx
 	   line_buff = ' '
 	   WRITE ( line_buff, 3062 ) cx_bad_data(cx)
@@ -474,7 +476,7 @@
 !	single WRITE may imply many records of output
 	         WRITE ( list_lun, list_format ) (ax_buff(j),j=1,npts)
 	      ENDIF
- 250	   CONTINUE
+ 250	   CONTINUE 
 
 
 * ... DATA:
@@ -496,6 +498,13 @@
 	IF ( do_unform
      .	.OR. do_stream
      .	.OR. list_format_given ) THEN
+
+* Limited handling of integer formats -- write single number per record
+	   has_int = (TM_LOC_STRING (list_format, 'I', 1) .GT. 0)
+	   IF (has_int) THEN
+	      ival = TM_LOC_STRING (list_format, 'I', 1) - 1
+	      IF (TM_DIGIT( list_format(ival:ival)) ) GOTO 5020
+	   ENDIF
 
 	   DO 300 n = lo6, hi6, del6
 	   DO 300 m = lo5, hi5, del5
@@ -549,17 +558,16 @@
      .						grid_data(i,j,k,l,m,n)
  298		 CONTINUE
 	      ELSE
-! Note: FORMATTED output cannot be passed through SPLIT_AXIS because a
-!	single WRITE may imply many records of output
-#ifdef DEC_FORTRAN
-* on DEC compilers a field too small for the value generates an ERR= branch
-	         WRITE (list_lun,list_format, IOSTAT=ios)
+	         IF (has_int) THEN
+		    DO i = lo1, hi1, del1
+		       ival = INT(grid_data(i,j,k,l,m,n)) 
+		       WRITE (list_lun, list_format) ival
+		    ENDDO
+		 ELSE
+	            WRITE (list_lun,list_format, ERR=5010)
      .			( grid_data(i,j,k,l,m,n),i = lo1, hi1, del1 )
-	         IF ( ios.NE.0 .AND. ios.NE.63 ) GOTO 5010  ! 63 = fmt conv err
-#else
-	         WRITE (list_lun,list_format, ERR=5010)
-     .			( grid_data(i,j,k,l,m,n),i = lo1, hi1, del1 )
-#endif
+     		 ENDIF
+
 	      ENDIF
  300	   CONTINUE
 
@@ -957,4 +965,10 @@
 * error exits
  5000	RETURN
  5010	CALL ERRMSG( ferr_erreq, status, list_format, *5000 )
+
+ 5020	CALL ERRMSG( ferr_invalid_command, status,
+     .		'Integer format allows one value per line on output '//
+     .		list_format(:TM_LENSTR1(list_format)) ,
+     .		*5000 )
+
 	END

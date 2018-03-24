@@ -1,0 +1,65 @@
+!bn_A_I_format.jnl
+! 3/2018  ACM  Issue 950
+!
+! Tests of LIST/FORMAT with Fortran formats that include the A specifier.
+
+use clim_airt_lev
+
+! Redefine time so the tax_datestring function returns year...
+define axis/t=15-dec-2010:15-jan-2011/npoints=12 `airt,return=taxis`
+
+
+list/nohead/l=1:10/format=(a,f6.2) \ 
+TAX_DATESTRING(t[g=airt],t[g=airt],"month"), airt[x=-135,y=0]
+
+list/nohead/l=1:10/format=(a,e12.4,a5, F7.0) \
+TAX_DATESTRING(t[g=airt],t[g=airt],"month"), airt[x=-135,y=0], TAX_DATESTRING(t[g=airt],t[g=airt],"year"), INT(airt[x=-135,y=0]*100)
+
+! make sure we haven't broken existing numeric-only formatting
+list/nohead/l=1:10/format=(F7.1, f8.3) airt[x=-135,y=0], airt[x=-135,y=-20]
+
+list/nohead/l=1:10/format=(a,e12.4,a5, F7.0) \
+TAX_DATESTRING(t[g=airt],t[g=airt],"month"), airt[x=-135,y=0], TAX_DATESTRING(t[g=airt],t[g=airt],"year"), INT(airt[x=-135,y=0]*100)
+
+! using format to list parts of strings
+let var =  {"Abcdefghijk"}
+list/nohead/format=(a5, a7, a1, a4) var,var,var,var
+
+
+list/nohead/format=(a5, a7, a1, a4) {"Abcde"}, {"Abcdefg"}, {"A"}, {"Abcd"}
+
+! or to list a string with A formats longer than its length to make a gap
+list/nohead/l=1:10/format=(a,e12.4,a9, F7.0) \
+TAX_DATESTRING(t[g=airt],t[g=airt],"month"), airt[x=-135,y=0], TAX_DATESTRING(t[g=airt],t[g=airt],"year"), INT(airt[x=-135,y=0]*100)
+
+! Integer formats
+
+list/nohead/l=1:10/format=(i4, i6) airt[x=-135,y=-20], airt[x=-135,y=30]
+
+list/nohead/l=1:10/format=(a,i6) \ 
+TAX_DATESTRING(t[g=airt],t[g=airt],"month"), airt[x=-135,y=-20]
+
+
+list/nohead/l=1:4/j=20:23/format=(i6) 10*airt[x=180]
+
+
+list/nohead/l=1:10/format=(i4, f8.2, a14) airt[x=-135,y=-20], airt[x=-135,y=30], TAX_DATESTRING(t[g=airt],t[g=airt],"day")
+
+
+! Intentional errors
+set mode ignore
+
+! Format too complex: one specifier per variable
+list/nohead/l=1:0/format=(a,2x,f6.2,a5) \
+TAX_DATESTRING(t[g=airt],t[g=airt],"month"), airt[x=-135,y=0], TAX_DATESTRING(t[g=airt],t[g=airt],"year")
+
+! Old issue 554: On invalid format, report the allowed formats in msg
+LIST/nohead/l=1:0/format=xxx airt[x=-135,y=0]
+
+! need parentheses
+list/nohead/format=a7 {"Abcde"}
+
+! disallow multiples in I format
+list/nohead/l=1:10/j=20:23/format=(4i6) 10*airt[x=180]
+
+set mode/last ignore

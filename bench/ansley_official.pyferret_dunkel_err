@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/ferret_distributions/rhel6_64/bin/pyferret
 -rwxr-xr-x. 1 ansley tmap 1416 Oct 12 17:05 /home/users/ansley/ferret_distributions/rhel6_64/bin/pyferret
-Using external functions from /home/users/ansley/build/pyferret_dev/external_functions/ext_func
-Running the tests of external functions y
+Using external functions from n
+Running the tests of external functions n
 Benchmark run by ansley
-Note: high-res time changs merged
+Note: merged from trunk: Formats using A and I
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -13,15 +13,15 @@ FER_DAT=/home/users/ansley/ferret_distributions/rhel6_64
 FER_DESCR=. ./data
 FER_DIR=.
 FER_DSETS=. ./data
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/pyferret_dev/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=n
 FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib
 FER_GRIDS=. ./data
 FER_LIBS=/home/users/ansley/ferret_distributions/rhel6_64/lib
 FER_PALETTE=. /home/users/ansley/ferret_distributions/rhel6_64/ppl
 FER_WEB_BROWSER=firefox
 PYFER_EXTERNAL_FUNCTIONS=/home/users/ansley/ferret_distributions/rhel6_64/ext_func/pylibs
-Beginning at Thu Mar 8 14:24:55 PST 2018
+Beginning at Fri Mar 23 17:09:46 PDT 2018
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1709,7 +1709,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-rm: cannot remove `input.txt': No such file or directory
 ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4882,7 +4881,6 @@ list substring("hello",1,-3)
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_append_dsg
-rm: cannot remove `test_save_dsg.nc': No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5196,7 +5194,6 @@ def anno/nou/user/xpos=0/ypos=0 "My Lab"
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_auxiliary
-rm: cannot remove `layerz_test_data.txt': No such file or directory
 Replacing definition of axis ZAX
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
@@ -5599,178 +5596,6 @@ DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/irregular_start_time_fcst.nc")
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_aggregate_tef
-ls: cannot access tmp/f04_e3_t3_1v.nc: No such file or directory
-Replacing definition of axis YAX
-Replacing definition of axis ZAX
-Replacing definition of axis TRUEMONTH
- LISTing to file tmp/f01_e1_t1.nc
- LISTing to file tmp/f01_e1_t2.nc
- LISTing to file tmp/f01_e1_t3.nc
- LISTing to file tmp/f01_e2_t1.nc
- LISTing to file tmp/f01_e2_t2.nc
- LISTing to file tmp/f01_e2_t3.nc
- LISTing to file tmp/f01_e3_t1.nc
- LISTing to file tmp/f01_e3_t2.nc
- LISTing to file tmp/f01_e3_t3.nc
- LISTing to file tmp/f01_e4_t1.nc
- LISTing to file tmp/f01_e4_t2.nc
- LISTing to file tmp/f01_e4_t3.nc
- LISTing to file tmp/f01_e5_t1.nc
- LISTing to file tmp/f01_e5_t2.nc
- LISTing to file tmp/f01_e5_t3.nc
- LISTing to file tmp/f02_e1_t1.nc
- LISTing to file tmp/f02_e1_t2.nc
- LISTing to file tmp/f02_e1_t3.nc
- LISTing to file tmp/f02_e2_t1.nc
- LISTing to file tmp/f02_e2_t2.nc
- LISTing to file tmp/f02_e2_t3.nc
- LISTing to file tmp/f02_e3_t1.nc
- LISTing to file tmp/f02_e3_t2.nc
- LISTing to file tmp/f02_e3_t3.nc
- LISTing to file tmp/f02_e4_t1.nc
- LISTing to file tmp/f02_e4_t2.nc
- LISTing to file tmp/f02_e4_t3.nc
- LISTing to file tmp/f02_e5_t1.nc
- LISTing to file tmp/f02_e5_t2.nc
- LISTing to file tmp/f02_e5_t3.nc
- LISTing to file tmp/f03_e1_t1.nc
- LISTing to file tmp/f03_e1_t2.nc
- LISTing to file tmp/f03_e1_t3.nc
- LISTing to file tmp/f03_e2_t1.nc
- LISTing to file tmp/f03_e2_t2.nc
- LISTing to file tmp/f03_e2_t3.nc
- LISTing to file tmp/f03_e3_t1.nc
- LISTing to file tmp/f03_e3_t2.nc
- LISTing to file tmp/f03_e3_t3.nc
- LISTing to file tmp/f03_e4_t1.nc
- LISTing to file tmp/f03_e4_t2.nc
- LISTing to file tmp/f03_e4_t3.nc
- LISTing to file tmp/f03_e5_t1.nc
- LISTing to file tmp/f03_e5_t2.nc
- LISTing to file tmp/f03_e5_t3.nc
- LISTing to file tmp/f04_e1_t1.nc
- LISTing to file tmp/f04_e1_t2.nc
- LISTing to file tmp/f04_e1_t3.nc
- LISTing to file tmp/f04_e2_t1.nc
- LISTing to file tmp/f04_e2_t2.nc
- LISTing to file tmp/f04_e2_t3.nc
- LISTing to file tmp/f04_e3_t1.nc
- LISTing to file tmp/f04_e3_t2.nc
- LISTing to file tmp/f04_e3_t3.nc
- LISTing to file tmp/f04_e4_t1.nc
- LISTing to file tmp/f04_e4_t2.nc
- LISTing to file tmp/f04_e4_t3.nc
- LISTing to file tmp/f04_e5_t1.nc
- LISTing to file tmp/f04_e5_t2.nc
- LISTing to file tmp/f04_e5_t3.nc
- LISTing to file tmp/f05_e1_t1.nc
- LISTing to file tmp/f05_e1_t2.nc
- LISTing to file tmp/f05_e1_t3.nc
- LISTing to file tmp/f05_e2_t1.nc
- LISTing to file tmp/f05_e2_t2.nc
- LISTing to file tmp/f05_e2_t3.nc
- LISTing to file tmp/f05_e3_t1.nc
- LISTing to file tmp/f05_e3_t2.nc
- LISTing to file tmp/f05_e3_t3.nc
- LISTing to file tmp/f05_e4_t1.nc
- LISTing to file tmp/f05_e4_t2.nc
- LISTing to file tmp/f05_e4_t3.nc
- LISTing to file tmp/f05_e5_t1.nc
- LISTing to file tmp/f05_e5_t2.nc
- LISTing to file tmp/f05_e5_t3.nc
- LISTing to file tmp/f06_e1_t1.nc
- LISTing to file tmp/f06_e1_t2.nc
- LISTing to file tmp/f06_e1_t3.nc
- LISTing to file tmp/f06_e2_t1.nc
- LISTing to file tmp/f06_e2_t2.nc
- LISTing to file tmp/f06_e2_t3.nc
- LISTing to file tmp/f06_e3_t1.nc
- LISTing to file tmp/f06_e3_t2.nc
- LISTing to file tmp/f06_e3_t3.nc
- LISTing to file tmp/f06_e4_t1.nc
- LISTing to file tmp/f06_e4_t2.nc
- LISTing to file tmp/f06_e4_t3.nc
- LISTing to file tmp/f06_e5_t1.nc
- LISTing to file tmp/f06_e5_t2.nc
- LISTing to file tmp/f06_e5_t3.nc
- LISTing to file tmp/f07_e1_t1.nc
- LISTing to file tmp/f07_e1_t2.nc
- LISTing to file tmp/f07_e1_t3.nc
- LISTing to file tmp/f07_e2_t1.nc
- LISTing to file tmp/f07_e2_t2.nc
- LISTing to file tmp/f07_e2_t3.nc
- LISTing to file tmp/f07_e3_t1.nc
- LISTing to file tmp/f07_e3_t2.nc
- LISTing to file tmp/f07_e3_t3.nc
- LISTing to file tmp/f07_e4_t1.nc
- LISTing to file tmp/f07_e4_t2.nc
- LISTing to file tmp/f07_e4_t3.nc
- LISTing to file tmp/f07_e5_t1.nc
- LISTing to file tmp/f07_e5_t2.nc
- LISTing to file tmp/f07_e5_t3.nc
- LISTing to file tmp/f08_e1_t1.nc
- LISTing to file tmp/f08_e1_t2.nc
- LISTing to file tmp/f08_e1_t3.nc
- LISTing to file tmp/f08_e2_t1.nc
- LISTing to file tmp/f08_e2_t2.nc
- LISTing to file tmp/f08_e2_t3.nc
- LISTing to file tmp/f08_e3_t1.nc
- LISTing to file tmp/f08_e3_t2.nc
- LISTing to file tmp/f08_e3_t3.nc
- LISTing to file tmp/f08_e4_t1.nc
- LISTing to file tmp/f08_e4_t2.nc
- LISTing to file tmp/f08_e4_t3.nc
- LISTing to file tmp/f08_e5_t1.nc
- LISTing to file tmp/f08_e5_t2.nc
- LISTing to file tmp/f08_e5_t3.nc
- LISTing to file tmp/f09_e1_t1.nc
- LISTing to file tmp/f09_e1_t2.nc
- LISTing to file tmp/f09_e1_t3.nc
- LISTing to file tmp/f09_e2_t1.nc
- LISTing to file tmp/f09_e2_t2.nc
- LISTing to file tmp/f09_e2_t3.nc
- LISTing to file tmp/f09_e3_t1.nc
- LISTing to file tmp/f09_e3_t2.nc
- LISTing to file tmp/f09_e3_t3.nc
- LISTing to file tmp/f09_e4_t1.nc
- LISTing to file tmp/f09_e4_t2.nc
- LISTing to file tmp/f09_e4_t3.nc
- LISTing to file tmp/f09_e5_t1.nc
- LISTing to file tmp/f09_e5_t2.nc
- LISTing to file tmp/f09_e5_t3.nc
- LISTing to file tmp/f10_e1_t1.nc
- LISTing to file tmp/f10_e1_t2.nc
- LISTing to file tmp/f10_e1_t3.nc
- LISTing to file tmp/f10_e2_t1.nc
- LISTing to file tmp/f10_e2_t2.nc
- LISTing to file tmp/f10_e2_t3.nc
- LISTing to file tmp/f10_e3_t1.nc
- LISTing to file tmp/f10_e3_t2.nc
- LISTing to file tmp/f10_e3_t3.nc
- LISTing to file tmp/f10_e4_t1.nc
- LISTing to file tmp/f10_e4_t2.nc
- LISTing to file tmp/f10_e4_t3.nc
- LISTing to file tmp/f10_e5_t1.nc
- LISTing to file tmp/f10_e5_t2.nc
- LISTing to file tmp/f10_e5_t3.nc
- LISTing to file tmp/f11_e1_t1.nc
- LISTing to file tmp/f11_e1_t2.nc
- LISTing to file tmp/f11_e1_t3.nc
- LISTing to file tmp/f11_e2_t1.nc
- LISTing to file tmp/f11_e2_t2.nc
- LISTing to file tmp/f11_e2_t3.nc
- LISTing to file tmp/f11_e3_t1.nc
- LISTing to file tmp/f11_e3_t2.nc
- LISTing to file tmp/f11_e3_t3.nc
- LISTing to file tmp/f11_e4_t1.nc
- LISTing to file tmp/f11_e4_t2.nc
- LISTing to file tmp/f11_e4_t3.nc
- LISTing to file tmp/f11_e5_t1.nc
- LISTing to file tmp/f11_e5_t2.nc
- LISTing to file tmp/f11_e5_t3.nc
- LISTing to file tmp/f04_e3_t1_1v.nc
- LISTing to file tmp/f04_e3_t2_1v.nc
- LISTing to file tmp/f04_e3_t3_1v.nc
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
  **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis X of agg member 3
 list/x=150E/y=15n/L=10 fcst_2
@@ -6057,6 +5882,7 @@ Replacing definition of axis TAX
 Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
+Replacing definition of axis TRUEMONTH
  LISTing to file tmp/f01_e1_tu1.nc
  LISTing to file tmp/f01_e1_tu2.nc
  LISTing to file tmp/f01_e1_tu3.nc
@@ -6322,15 +6148,6 @@ Replacing definition of axis tax
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_dynamic_gather
-ls: cannot access tmp/test_dyn_mem.nc: No such file or directory
-Replacing definition of axis z2
-Replacing definition of grid GG
- LISTing to file tmp/test_dyn_mem.nc
-Replacing definition of axis x10
-Replacing definition of axis z4
- LISTing to file tmp/test_dyn_mem.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
  **ERROR: request exceeds memory setting: Requested result is larger than the available memory
 stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
  PERMANENT data cleared from memory
@@ -6527,28 +6344,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_cache_management
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-ls: cannot access tmp/test_auto_cache_20.nc: No such file or directory
-Replacing definition of axis x10
- LISTing to file tmp/test_auto_cache_1.nc
- LISTing to file tmp/test_auto_cache_2.nc
- LISTing to file tmp/test_auto_cache_3.nc
- LISTing to file tmp/test_auto_cache_4.nc
- LISTing to file tmp/test_auto_cache_5.nc
- LISTing to file tmp/test_auto_cache_6.nc
- LISTing to file tmp/test_auto_cache_7.nc
- LISTing to file tmp/test_auto_cache_8.nc
- LISTing to file tmp/test_auto_cache_9.nc
- LISTing to file tmp/test_auto_cache_10.nc
- LISTing to file tmp/test_auto_cache_11.nc
- LISTing to file tmp/test_auto_cache_12.nc
- LISTing to file tmp/test_auto_cache_13.nc
- LISTing to file tmp/test_auto_cache_14.nc
- LISTing to file tmp/test_auto_cache_15.nc
- LISTing to file tmp/test_auto_cache_16.nc
- LISTing to file tmp/test_auto_cache_17.nc
- LISTing to file tmp/test_auto_cache_18.nc
- LISTing to file tmp/test_auto_cache_19.nc
- LISTing to file tmp/test_auto_cache_20.nc
  LISTing to file test_auto_cache.out
  LISTing to file test_auto_cache.out
  LISTing to file test_auto_cache.out
@@ -6729,6 +6524,18 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis xax
+Replacing definition of axis tax
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ **ERROR: invalid command: /LIST/APPEND to netCDF file requires /FORMAT=cdf
+list/append/file=a.nc/l=3 xyvar
+ **ERROR: invalid command: /LIST/APPEND to netCDF file requires /FORMAT=cdf
+list/append/file=a.nc/l=4 xyvar
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_clim_special
            *** NOTE: regarding ./data/clim_axes_gregorian.nc ...
            *** NOTE: GREGORIAN climatological axes defined
@@ -6787,11 +6594,22 @@ Replacing definition of axis lonax
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR: command syntax: unknown region name: @w
-set region/@w
+Starting test: bn_A_I_format
+Replacing definition of axis TIME1
+           *** NOTE: grid GGT1 used by data set clim_airt_lev
+           *** NOTE: Redefinition may alter apparent contents of data set
+ **ERROR: invalid command: Fortran format for list with strings must have one specifier per variable
+list/nohead/l=1:0/format=(a,2x,f6.2,a5) TAX_DATESTRING(t[g=airt],t[g=airt],"month"), airt[x=-135,y=0], TAX_DATESTRING(t[g=airt],t[g=airt],"year")
+ **ERROR: command syntax: Unknown format or format need parentheses
+          Valid formats are CDF, UNFORMATTED, STREAM, COMMA, TAB or limited Fortran formats
+          xxx
+LIST/nohead/l=1:0/format=xxx airt[x=-135,y=0]
+ **ERROR: command syntax: Unknown format or format need parentheses
+          Valid formats are CDF, UNFORMATTED, STREAM, COMMA, TAB or limited Fortran formats
+          a7
+list/nohead/format=a7 {"Abcde"}
+ **ERROR: invalid command: Integer format allows one value per line on output (4i6)
+list/nohead/l=1:10/j=20:23/format=(4i6) 10*airt[x=180]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6917,4 +6735,4 @@ Unable to delete drawing segments when writing directly to an image file
            *** NOTE: instead use the "FRAME /FILE=... /FORMAT=..." Ferret command
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Thu Mar 8 14:34:00 PST 2018
+Ended at Fri Mar 23 17:16:49 PDT 2018

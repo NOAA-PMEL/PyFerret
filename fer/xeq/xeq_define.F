@@ -265,6 +265,7 @@
 * 12/2017   *acm* Small tweak to error handling; any errors already noted in add-attribute
 * V740 *acm* 2/18 Issue 966: LET/LIKE= Get attributes from an existing variable
 * V740 *acm* 2/18 Issue 966: DEFINE AXIS/LIKE= Get attributes from an existing axis
+* V740 *acm* 3/18 More on DEF AX/LIKE, getting T0, modulo axis characteristics set correctly.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -999,6 +1000,9 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 * copy the line definition
 	   CALL TM_COPY_LINE ( line, iline )
 
+* But don't claim the line until everything has been worked through.
+	   line_name(iline) = char_init16
+
 * Below, if /units, /depth, /calendar, /t0, /modulo  are given,
 * will override what we have got from TM_COPY_LINE
 
@@ -1006,6 +1010,8 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 
 	   rmod_len = line_modulo_len( line )
 	   new_att_modulo_len = rmod_len
+
+	   IF ( line_modulo(iline) ) its_modulo = .TRUE.
 
 	ENDIF
 
@@ -1675,8 +1681,10 @@ C /units=months  is 1/12 of the length of the year
      .                         status )
 	   IF ( buff2 .EQ. ' ' .OR. status .NE. ferr_ok ) GOTO 5540
            new_att_t0 = buff2
+	ELSEIF (is_like .AND. line_t0 ( iline ).NE.char_init20) THEN
+	   i1 = 1  ! line-t0 is all set
 	ELSE
-	   
+
 	   WRITE (buff2,3550) mon_names(1)
  3550      FORMAT ('15-', A3, '-1901')		! default
 	   IF (its_calendar ) THEN

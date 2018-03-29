@@ -46,3 +46,49 @@ define axis/like=timesec/units=minutes timemin
 define axis/like=timesec/units=minutes/t timemin
 
 set mode/last ignore
+
+! Tests for details on time axes
+
+cancel data/all
+
+use coads_climatology
+def ax/t/like=`sst,r=taxis` tax = t[gt=sst]
+say `sst,r=t0`, `sst,r=tmod`
+say `t[gt=tax],r=t0`, `t[gt=tax],r=tmod` 
+
+
+use clim_airt_lev.cdf
+def ax/t/like=`airt,r=taxis` tax = t[gt=airt]
+
+! These should be the same
+
+say `airt,return=t0`, `airt,return=tmod`, `airt,return=tunits`
+say `t[gt=tax],r=t0`, `t[gt=tax],r=tmod`, `t[gt=tax],r=tunits`
+
+! calendar is inherited
+show axis month_julian
+
+define axis/t/like=month_julian tax = t[gt=month_julian]
+sh axis tax
+
+! Note how the modulo length is shorter than month_julian's.
+! But it's ok if we use the edges.
+
+define axis/t/like=month_julian/edges tax = box_edges(t[gt=month_julian])
+sh axis tax
+
+
+! Intentional errors. 
+! The second command here is an error - tax is an axis not a var.
+! Make sure we can recover from that error.
+
+set mode ignore
+def ax/edge/t=1-jan-0001:1-jan-0004:1/unit=year/cal=noleap tax
+def ax/t/like=tax tax3 = tax
+
+! the axis should be undisturbed
+sh axis tax
+
+set mode/last ignore
+
+

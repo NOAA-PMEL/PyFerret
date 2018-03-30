@@ -115,6 +115,11 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 * V71  *acm*  1/17 Fix ticket 2491: labels on colorbar when it's a ribbon/vlog, ribbon/hlog plot
 * V71  *acm*  1/17 Fix ticket 2491: Tweak to key labels, code adding .0 to numbers for consistency
 * V72  *acm*  7/17 See example, ticket 2550 small exponential labels need more precision in key labels
+* V74+  *acm* 3/18 Issue 1607.  /KEY=centerlab
+*         For centered labels draw the plot so that the levels are describing 
+*         the middle of the colors not the contour lines between colors.
+*         Interpolate /LEVELS values to obtain new edge-values for the contours
+*         and patch-edges
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -230,6 +235,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
         DO WHILE (increase_digits .AND. ABS(lab_digits) .LE. klab_len .AND.kount.LT.10)
            buff = ' '
            val = zlev(lev1)
+	   IF (center_key_labels) val = zlevsave(lev1)
            IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
  	   buff = 
      .        TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+5,str_len)
@@ -242,7 +248,11 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
            max_len = 0
 	   DO 30 ndx = lev1+incr, shd_levels, incr
              val = zlev(ndx)
-             IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+             IF (center_key_labels) THEN
+	        IF (ndx.GE.shd_levels) EXIT ! from loop
+		val = zlevsave(ndx)
+             ENDIF
+	     IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	     buff = 
      .          TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+5,str_len)
 
@@ -418,6 +428,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
 	val = zlev(lev1)
+	IF (center_key_labels) val = zlevsave(lev1)
 	IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)  
         if (max_len .lt. str_len) max_len = str_len
@@ -483,6 +494,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
            IF (ndx .GE. lev1 .AND. ndx .LE. levn) THEN
               val = zlev(ndx)
+              IF (center_key_labels) val = zlevsave(ndx)
               IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	      text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 	      if (max_len .lt. str_len) max_len = str_len
@@ -492,14 +504,17 @@ c	IF ( no_lines ) cont_key = .TRUE.
         IF (incr .GT. 0) THEN
 
 	shd_lev_hi = shd_levels+1
-	IF (center_key_labels) shd_lev_hi = shd_levels
-	IF (center_key_labels .AND. posinf) shd_lev_hi = shd_lev_hi-1
+	IF (center_key_labels .AND. posinf) shd_lev_hi = shd_levels
 
 	do 20 ndx = lev1,shd_lev_hi,incr
 
 *	   WRITE OUT CORRESPONDING VALUE
 
 	   val = zlev(ndx)
+	   IF (center_key_labels) THEN
+	      IF (ndx .EQ. shd_lev_hi) EXIT ! from loop
+	      val = zlevsave(ndx)
+	   ENDIF
 	   IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	   text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 
@@ -749,8 +764,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
         IF (incr .GT. 0) THEN
 
 	shd_lev_hi = shd_levels+1
-	IF (center_key_labels) shd_lev_hi = shd_levels
-	IF (center_key_labels .AND. posinf) shd_lev_hi = shd_lev_hi-1
+	IF (center_key_labels .AND. posinf) shd_lev_hi = shd_levels
 
 * Recompute max_len as formatted for these labels.
 
@@ -759,6 +773,11 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	max_len = 0
 	DO ndx = lev1+incr, shd_levels, incr
            val = zlev(ndx)
+           IF (center_key_labels) THEN
+              IF (ndx.GE.shd_levels) EXIT ! from loop
+	      val = zlevsave(ndx)
+           ENDIF
+
            IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	   buff = 
      .          TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
@@ -823,6 +842,10 @@ c	IF ( no_lines ) cont_key = .TRUE.
         do 1020 ndx = lev1,shd_lev_hi,incr
 *	   WRITE OUT CORRESPONDING VALUE
 	   val = zlev(ndx)
+	   IF (center_key_labels) THEN
+	      IF (ndx .EQ. shd_lev_hi) EXIT ! from loop
+	      val = zlevsave(ndx)
+	   ENDIF
 	   IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	   text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 	   IF (ndx .EQ. 1 .AND. neginf) text = " "
@@ -885,6 +908,10 @@ c	IF ( no_lines ) cont_key = .TRUE.
 * Restore axis-type settings
 	itypex = itypex_save
 	itypey = itypey_save
+
+* Undo the shift for centered-key-levels, so overlays are done right
+
+	IF (center_key_labels) CALL SET_LEVELS_CENTERKEY (.FALSE.)
 
 	return
 	end

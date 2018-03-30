@@ -46,6 +46,7 @@
 *                  Clear out-of-date symbols, for variance-based or histogram
 *                  levels on previous plots
 * V720 *acm*  7/17 Ticket 2250: precision errors when data has very small values
+* V74+  *acm* 3/18 Issue 1607.  /KEY=centerlab
 
 *    LEV_MIN  - lowest level used on last CONTOUR, SHADE, or FILL call.
 *    LEV_MAX -  highest level used last
@@ -59,6 +60,7 @@
 	include 	'PARAMPL5.DAT'
 	include		'cont_inc.decl'
 	include		'CONT.INC'
+        include         'shade_vars.cmn'
 
 * Calling argument declarations
 
@@ -71,11 +73,13 @@
       REAL*8 zmaxD, zminD
 
       CHARACTER ppl_buff*2048, TM_FMT_SNGL*10, TM_FMT*10, 
-     .          buff*10, symbuff*120,buffmin*10, buffmax*10
+     .          buff*10, symbuff*30,buffmin*10, buffmax*10
+
+     
+	CHARACTER symbuff30*30, title*32
+
       INTEGER TM_LENSTR1, STR_SAME, i, ier, ilen, slen 
       LOGICAL TM_FPEQ_EPS_SNGL, reglevs
-
-
 
 * Lowest and highest Z level
 
@@ -190,6 +194,18 @@
          ist = 0
          CALL SETSYM (ppl_buff, ilen, ier, ist)
       ENDIF
+
+* Were the levels specified as /KEY=CENTERLAB?
+
+      IF (center_key_labels) THEN 
+         ppl_buff = 'LEV_CENTERED_LABELS on'
+      ELSE
+         ppl_buff = 'LEV_CENTERED_LABELS off'
+      ENDIF 
+      ilen = TM_LENSTR1(ppl_buff)
+      ier = 0
+      ist = 0
+      CALL SETSYM (ppl_buff, ilen, ier, ist)
 
 * Delete any LEV_HISTO_LEVELS symbol that may be left over from a previous plot
 

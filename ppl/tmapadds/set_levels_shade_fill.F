@@ -45,6 +45,11 @@
 *                  of interval-edges NLEV2
 * V740 *acm*  2/18 Tweak for issue 1858: labels on contour lines for auto-generated 
 *                  integer levels got unneeded digit after decimal point
+* V74+  *acm* 3/18 Issue 1607.  /KEY=centerlab
+*         For centered labels draw the plot so that the levels are describing 
+*         the middle of the colors not the contour lines between colors.
+*         Interpolate /LEVELS values to obtain new edge-values for the contours
+*         and patch-edges
 
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
@@ -174,7 +179,17 @@ c       Set THE MINIMUM AND MAXIMUM VALUE OF THE RANGE
 		  znp = zlev(1)
 		  zmp = zlev(nlev2)
 
-              else if (openlev) then
+c       Shift the color levels for centered-label key.
+
+		  IF (center_key_labels) THEN
+		     
+		     
+* DETERMINE COLORS TO SET BUNDLED LINE REPRESENTATIONS
+		     CALL WS_LINE_SPECTRUM (wsid,wstype, low_index)
+		     CALL SET_LEVELS_CENTERKEY (.TRUE.)
+		  ENDIF
+
+	      else if (openlev) then
 	         CALL set_open_levels
 
 C       Else we should allow RANGE to determine the max and min range
@@ -255,6 +270,10 @@ C acm 12/01  Set LWGT for future contour line overlays.
 
 	   ENDIF
 
+	   
+	   IF (center_key_labels) CALL SET_LEVELS_CENTERKEY (.TRUE.)
+
+
 C       
 C       Else IAUTOC != 1 means: use supplied levels
 C       
@@ -290,23 +309,14 @@ c	      NLEV2=0
 	      NLEV2=NLEV
               IF (neginf) zlev(1) = MIN( zlev(1), zmin-1. )
 
-* For centered labels add a level to corresp to the upper bound of 
-* the top color on thecolorbar, excluding the inf triangle.
+c       Shift the color levels for centered-label key.
 
               IF (center_key_labels) THEN
-	         IF (posinf) THEN
-	            del = zlev(nlev-1) - zlev(nlev-2)
-	            nlev = nlev + 1
-	            zlev(nlev-1) = zlev(nlev-1) + del
-		 ELSE
-	            del = zlev(nlev) - zlev(nlev-1)
-	            nlev = nlev + 1
-	            zlev(nlev) = zlev(nlev-1) + del
-                 ENDIF
-	         nlev2 = nlev
-              ENDIF
+	         CALL SET_LEVELS_CENTERKEY (.TRUE.)
+		 nlev = nlev2
+	      ENDIF
 
-              IF (posinf) zlev(nlev) = MAX (zlev(nlev), zmax+1. )
+              IF (posinf .AND. .NOT.center_key_labels) zlev(nlev) = MAX (zlev(nlev), zmax+1. )
 
 	      IF (posinf .AND. neginf .AND. NLEV.EQ.3) THEN
 	         nlev = 2

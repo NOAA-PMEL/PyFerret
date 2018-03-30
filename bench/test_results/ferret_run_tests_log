@@ -289,6 +289,7 @@ Benchmark scripts that will be run:
    bn_def_axis_like.jnl
    bn_box_edges_fcn.jnl
    bn_hi_res_time.jnl
+   bn_A_I_format.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
@@ -102955,6 +102956,79 @@ list b2d[gf=aline_edges@iin]
  8    /  9:  16.00  24.00
  9    / 10:  18.00  27.00
  10   / 11:  20.00  30.00
+ 
+! More examples: scale for world coordinates
+ 
+! longitudes
+ 
+define axis/edge/x=0:10:1/units=degrees_east aline
+let a = mod(.5+x[gx=aline],2)
+define axis/x/like=`a,return=xaxis` aline_edges = box_edges(a)
+ !-> define axis/x/like=ALINE aline_edges = box_edges(a)
+let a_iin_regrid =  a[gx=aline_edges@iin]
+let a_iin = a[x=@iin]
+ 
+list a_iin
+             VARIABLE : A[X=@IIN]
+             SUBSET   : 10 points (LONGITUDE)
+ 0.5E /  1:  111195.
+ 1.5E /  2:  111195.
+ 2.5E /  3:  222390.
+ 3.5E /  4:  222390.
+ 4.5E /  5:  333585.
+ 5.5E /  6:  333585.
+ 6.5E /  7:  444780.
+ 7.5E /  8:  444780.
+ 8.5E /  9:  555975.
+ 9.5E / 10:  555975.
+list a_iin_regrid
+             VARIABLE : A[GX=ALINE_EDGES@IIN]
+             SUBSET   : 11 points (LONGITUDE)
+ 0E    /  1:  0.000
+ 1E    /  2:  1.000
+ 2E    /  3:  1.000
+ 3E    /  4:  2.000
+ 4E    /  5:  2.000
+ 5E    /  6:  3.000
+ 6E    /  7:  3.000
+ 7E    /  8:  4.000
+ 8E    /  9:  4.000
+ 9E    / 10:  5.000
+ 10E   / 11:  5.000
+ 
+ 
+! latitudes
+ 
+define axis/edge/y=10:80:10/units=degrees_north aline
+let a = y[gy=aline]/10
+define axis/y/like=`a,return=yaxis` aline_edges = box_edges(a)
+ !-> define axis/y/like=ALINE aline_edges = box_edges(a)
+let a_iin_regrid = a[gy=aline_edges@iin]
+let a_iin = a[y=@iin]
+ 
+list a_iin
+             VARIABLE : A[Y=@IIN]
+             SUBSET   : 7 points (LATITUDE)
+ 75N   / 7:  3.503E+07
+ 65N   / 6:  2.669E+07
+ 55N   / 5:  1.946E+07
+ 45N   / 4:  1.334E+07
+ 35N   / 3:  8.340E+06
+ 25N   / 2:  4.448E+06
+ 15N   / 1:  1.668E+06
+list a_iin_regrid
+             VARIABLE : A[GY=ALINE_EDGES@IIN]
+             SUBSET   : 8 points (LATITUDE)
+ 80N   / 8:  315.0
+ 70N   / 7:  240.0
+ 60N   / 6:  175.0
+ 50N   / 5:  120.0
+ 40N   / 4:   75.0
+ 30N   / 3:   40.0
+ 20N   / 2:   15.0
+ 10N   / 1:    0.0
+ 
+ 
 *** Running ferret script: bn721_bug_fixes.jnl
 ! bn721_bug_fixes.jnl
 ! test various fixes that went into version 7.21
@@ -105160,7 +105234,7 @@ set mode/last ignore
  
 use ocean_atlas_temp.cdf
  
-! get the attributes, define a new axis with z coordinates
+! get the attributes, define a new depth axis
  
 define axis/like=`temp,return=zaxis`/z=1:15:1 myz
  !-> define axis/like=ZAXLEVIT191_1/z=1:15:1 myz
@@ -105174,7 +105248,6 @@ sh axis myz
  MYZ       DEPTH (m)           15 r-  1                    15
    Axis span (to cell edges) = 15
  
- 
 ! ! Get the attributes, but change one of them with /UNITS=
 define axis/like=`temp,return=xaxis`/x=20:90:.25/units="Deg E" myx
  !-> define axis/like=XAX_LEV9421_380/x=20:90:.25/units="Deg E" myx
@@ -105185,8 +105258,8 @@ sh axis `temp,return=xaxis`
    Axis span (to cell edges) = 360 (modulo length = axis span)
 sh axis myx
  name       axis              # pts   start                end
- MYX       X (DEG E)          281 r   20                   90
-   Axis span (to cell edges) = 70.25
+ MYX       X (DEG E)          281mr   20                   90
+   Axis span (to cell edges) = 70.25 (modulo length = 360)
  
 ! On the second axis inherit time origin, units, but change the calendar
  
@@ -105203,7 +105276,7 @@ T0 = 1-JAN-1970
 sh axis timeday
  name       axis              # pts   start                end
  TIMEDAY   TIME               365 r   01-JAN-2015 00:00    31-DEC-2015 00:00
-T0 = 15-JAN-1901
+T0 = 1-JAN-1970
 CALENDAR = JULIAN
    Axis span (to cell edges) = 31536000
  
@@ -105224,6 +105297,99 @@ define axis/like=`temp,return=xaxis`/y=-10:10:10 myy
 !  Still need to specify the direction and coordinates
 define axis/like=timesec/units=minutes timemin
 define axis/like=timesec/units=minutes/t timemin
+ 
+set mode/last ignore
+ 
+! Tests for details on time axes
+ 
+cancel data/all
+ 
+use coads_climatology
+define axis/t/like=`sst,r=taxis` tax = t[gt=sst]
+ !-> define axis/t/like=TIME tax = t[gt=sst]
+say `sst,r=t0`, `sst,r=tmod`
+ !-> MESSAGE/CONTINUE 01-JAN-0000 00:00:00, 8765.81982421875
+01-JAN-0000 00:00:00, 8765.81982421875
+say `t[gt=tax],r=t0`, `t[gt=tax],r=tmod`
+ !-> MESSAGE/CONTINUE 01-JAN-0000 00:00:00, 8765.81982421875
+01-JAN-0000 00:00:00, 8765.81982421875
+ 
+use clim_airt_lev.cdf
+define axis/t/like=`airt,r=taxis` tax = t[gt=airt]
+ !-> define axis/t/like=TIME1 tax = t[gt=airt]
+ 
+! These should be the same
+ 
+say `airt,return=t0`, `airt,return=tmod`, `airt,return=tunits`
+ !-> MESSAGE/CONTINUE 10-JAN-1980 12:00:00, 8760, hour
+10-JAN-1980 12:00:00, 8760, hour
+say `t[gt=tax],r=t0`, `t[gt=tax],r=tmod`, `t[gt=tax],r=tunits`
+ !-> MESSAGE/CONTINUE 10-JAN-1980 12:00:00, 8760, hour
+10-JAN-1980 12:00:00, 8760, hour
+ 
+! calendar is inherited
+show axis month_julian
+ name       axis              # pts   start                end
+ MONTH_JULIAN TIME             12mi   16-JAN 12:00         15-DEC 18:00
+T0 = 01-JAN-0000 00:00:00
+CALENDAR = JULIAN
+   Axis span (to cell edges) = 365.25 (modulo length = axis span)
+ 
+define axis/t/like=month_julian tax = t[gt=month_julian]
+sh axis tax
+ name       axis              # pts   start                end
+ TAX       TIME                12mi   16-JAN 12:00         15-DEC 18:00
+T0 = 01-JAN-0000 00:00:00
+CALENDAR = JULIAN
+   Axis span (to cell edges) = 364.375 (modulo length = axis span)
+ 
+! Note how the modulo length is shorter than month_julian's.
+! But it's ok if we use the edges.
+ 
+define axis/t/like=month_julian/edges tax = box_edges(t[gt=month_julian])
+sh axis tax
+ name       axis              # pts   start                end
+ TAX       TIME                12mi   16-JAN 12:00         15-DEC 18:00
+T0 = 01-JAN-0000 00:00:00
+CALENDAR = JULIAN
+   Axis span (to cell edges) = 365.25 (modulo length = axis span)
+ 
+! Define and redefine an axis with /LIKE.  Make sure the last definition
+! is what's stored
+ 
+define axis/edge/t=1-jan-0001:1-jan-0004:1/unit=year/cal=noleap tax
+define axis/t/like=tax tax2 = t[gt=tax]
+show axis tax2
+ name       axis              # pts   start                end
+ TAX2      TIME                 3 r   02-JUL-0001 12:00    02-JUL-0003 12:00
+T0 = 01-JAN-0000
+CALENDAR = NOLEAP
+   Axis span (to cell edges) = 3
+ 
+! Keep the calendar from axis tax, change the time origin
+define axis/t/like=tax/t0=01-JAN-1970 tax2 = {1,4,5,6,7}
+show axis tax2
+ name       axis              # pts   start                end
+ TAX2      TIME                 5 i   01-JAN-1971 00:00    01-JAN-1977 00:00
+T0 = 01-JAN-1970
+CALENDAR = NOLEAP
+   Axis span (to cell edges) = 8
+ 
+! Intentional errors.
+! The second command here is an error - tax is an axis not a var.
+! Make sure we can recover from that error.
+ 
+set mode ignore
+define axis/edge/t=1-jan-0001:1-jan-0004:1/unit=year/cal=noleap tax
+define axis/t/like=tax tax3 = tax
+ 
+! the axis should be undisturbed
+sh axis tax
+ name       axis              # pts   start                end
+ TAX       TIME                 3 r   02-JUL-0001 12:00    02-JUL-0003 12:00
+T0 = 01-JAN-0000
+CALENDAR = NOLEAP
+   Axis span (to cell edges) = 3
  
 set mode/last ignore
 *** Running ferret script: bn_box_edges_fcn.jnl
@@ -105495,6 +105661,171 @@ list/L=1:3/K=1/form=comma taux[i=100,j=40]
  
  
 set mode/last calendar
+*** Running ferret script: bn_A_I_format.jnl
+!bn_A_I_format.jnl
+! 3/2018  ACM  Issue 950
+!
+! Tests of LIST/FORMAT with Fortran formats that include the A specifier.
+ 
+use clim_airt_lev
+ 
+! Redefine time so the tax_datestring function returns year...
+define axis/t=15-dec-2010:15-jan-2011/npoints=12 `airt,return=taxis`
+ !-> define axis/t=15-dec-2010:15-jan-2011/npoints=12 TIME1
+ 
+ 
+list/nohead/l=1:10/format=(a,f6.2) \
+TAX_DATESTRING(t[g=airt],t[g=airt],"month"), airt[x=-135,y=0]
+DEC-2010 25.38
+DEC-2010 25.37
+DEC-2010 26.83
+DEC-2010 26.51
+DEC-2010 26.52
+DEC-2010 26.62
+DEC-2010 25.69
+JAN-2011 25.92
+JAN-2011 25.41
+JAN-2011 26.17
+ 
+list/nohead/l=1:10/format=(a,e12.4,a5, F7.0) \
+TAX_DATESTRING(t[g=airt],t[g=airt],"month"), airt[x=-135,y=0], TAX_DATESTRING(t[g=airt],t[g=airt],"year"), INT(airt[x=-135,y=0]*100)
+DEC-2010  0.2538E+02 2010  2538.
+DEC-2010  0.2537E+02 2010  2537.
+DEC-2010  0.2683E+02 2010  2683.
+DEC-2010  0.2651E+02 2010  2650.
+DEC-2010  0.2652E+02 2010  2651.
+DEC-2010  0.2662E+02 2010  2661.
+DEC-2010  0.2569E+02 2010  2568.
+JAN-2011  0.2592E+02 2011  2591.
+JAN-2011  0.2541E+02 2011  2540.
+JAN-2011  0.2617E+02 2011  2616.
+ 
+! make sure we haven't broken existing numeric-only formatting
+list/nohead/l=1:10/format=(F7.1, f8.3) airt[x=-135,y=0], airt[x=-135,y=-20]
+   25.4  26.533
+   25.4  26.861
+   26.8  26.871
+   26.5  26.425
+   26.5  25.587
+   26.6  24.309
+   25.7  23.823
+   25.9  23.615
+   25.4  23.771
+   26.2  24.199
+ 
+list/nohead/l=1:10/format=(a,e12.4,a5, F7.0) \
+TAX_DATESTRING(t[g=airt],t[g=airt],"month"), airt[x=-135,y=0], TAX_DATESTRING(t[g=airt],t[g=airt],"year"), INT(airt[x=-135,y=0]*100)
+DEC-2010  0.2538E+02 2010  2538.
+DEC-2010  0.2537E+02 2010  2537.
+DEC-2010  0.2683E+02 2010  2683.
+DEC-2010  0.2651E+02 2010  2650.
+DEC-2010  0.2652E+02 2010  2651.
+DEC-2010  0.2662E+02 2010  2661.
+DEC-2010  0.2569E+02 2010  2568.
+JAN-2011  0.2592E+02 2011  2591.
+JAN-2011  0.2541E+02 2011  2540.
+JAN-2011  0.2617E+02 2011  2616.
+ 
+! using format to list parts of strings
+let var =  {"Abcdefghijk"}
+list/nohead/format=(a5, a7, a1, a4) var,var,var,var
+AbcdeAbcdefgAAbcd
+ 
+ 
+list/nohead/format=(a5, a7, a1, a4) {"Abcde"}, {"Abcdefg"}, {"A"}, {"Abcd"}
+AbcdeAbcdefgAAbcd
+ 
+! or to list a string with A formats longer than its length to make a gap
+list/nohead/l=1:10/format=(a,e12.4,a9, F7.0) \
+TAX_DATESTRING(t[g=airt],t[g=airt],"month"), airt[x=-135,y=0], TAX_DATESTRING(t[g=airt],t[g=airt],"year"), INT(airt[x=-135,y=0]*100)
+DEC-2010  0.2538E+02     2010  2538.
+DEC-2010  0.2537E+02     2010  2537.
+DEC-2010  0.2683E+02     2010  2683.
+DEC-2010  0.2651E+02     2010  2650.
+DEC-2010  0.2652E+02     2010  2651.
+DEC-2010  0.2662E+02     2010  2661.
+DEC-2010  0.2569E+02     2010  2568.
+JAN-2011  0.2592E+02     2011  2591.
+JAN-2011  0.2541E+02     2011  2540.
+JAN-2011  0.2617E+02     2011  2616.
+ 
+! Integer formats
+ 
+list/nohead/l=1:10/format=(i4, i6) airt[x=-135,y=-20], airt[x=-135,y=30]
+  26    17
+  26    16
+  26    16
+  26    16
+  25    17
+  24    19
+  23    20
+  23    21
+  23    21
+  24    20
+ 
+list/nohead/l=1:10/format=(a,i6) \
+TAX_DATESTRING(t[g=airt],t[g=airt],"month"), airt[x=-135,y=-20]
+DEC-2010    26
+DEC-2010    26
+DEC-2010    26
+DEC-2010    26
+DEC-2010    25
+DEC-2010    24
+DEC-2010    23
+JAN-2011    23
+JAN-2011    23
+JAN-2011    24
+ 
+ 
+list/nohead/l=1:4/j=20:23/format=(i6) 10*airt[x=180]
+   283
+   283
+   283
+   283
+   280
+   281
+   281
+   281
+   281
+   281
+   281
+   281
+   286
+   286
+   286
+   286
+ 
+ 
+list/nohead/l=1:10/format=(i4, f8.2, a14) airt[x=-135,y=-20], airt[x=-135,y=30], TAX_DATESTRING(t[g=airt],t[g=airt],"day")
+  26   17.34   15-DEC-2010
+  26   16.86   17-DEC-2010
+  26   16.73   20-DEC-2010
+  26   16.72   23-DEC-2010
+  25   17.55   26-DEC-2010
+  24   19.15   29-DEC-2010
+  23   20.07   31-DEC-2010
+  23   21.19   03-JAN-2011
+  23   21.42   06-JAN-2011
+  24   20.73   09-JAN-2011
+ 
+ 
+! Intentional errors
+set mode ignore
+ 
+! Format too complex: one specifier per variable
+list/nohead/l=1:0/format=(a,2x,f6.2,a5) \
+TAX_DATESTRING(t[g=airt],t[g=airt],"month"), airt[x=-135,y=0], TAX_DATESTRING(t[g=airt],t[g=airt],"year")
+ 
+! Old issue 554: On invalid format, report the allowed formats in msg
+LIST/nohead/l=1:0/format=xxx airt[x=-135,y=0]
+ 
+! need parentheses
+list/nohead/format=a7 {"Abcde"}
+ 
+! disallow multiples in I format
+list/nohead/l=1:10/j=20:23/format=(4i6) 10*airt[x=180]
+ 
+set mode/last ignore
 *** Running ferret script: bn_gif.jnl
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using

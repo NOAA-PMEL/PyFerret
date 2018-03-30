@@ -9,12 +9,11 @@
 
 use ocean_atlas_temp.cdf
 
-! get the attributes, define a new axis with z coordinates
+! get the attributes, define a new depth axis 
 
 define axis/like=`temp,return=zaxis`/z=1:15:1 myz
 sh axis `temp,return=zaxis`
 sh axis myz
-
 
 ! ! Get the attributes, but change one of them with /UNITS=
 define axis/like=`temp,return=xaxis`/x=20:90:.25/units="Deg E" myx
@@ -52,13 +51,12 @@ set mode/last ignore
 cancel data/all
 
 use coads_climatology
-def ax/t/like=`sst,r=taxis` tax = t[gt=sst]
+define axis/t/like=`sst,r=taxis` tax = t[gt=sst]
 say `sst,r=t0`, `sst,r=tmod`
 say `t[gt=tax],r=t0`, `t[gt=tax],r=tmod` 
 
-
 use clim_airt_lev.cdf
-def ax/t/like=`airt,r=taxis` tax = t[gt=airt]
+define axis/t/like=`airt,r=taxis` tax = t[gt=airt]
 
 ! These should be the same
 
@@ -77,18 +75,26 @@ sh axis tax
 define axis/t/like=month_julian/edges tax = box_edges(t[gt=month_julian])
 sh axis tax
 
+! Define and redefine an axis with /LIKE.  Make sure the last definition
+! is what's stored
+
+define axis/edge/t=1-jan-0001:1-jan-0004:1/unit=year/cal=noleap tax
+define axis/t/like=tax tax2 = t[gt=tax]
+show axis tax2
+
+! Keep the calendar from axis tax, change the time origin
+define axis/t/like=tax/t0=01-JAN-1970 tax2 = {1,4,5,6,7}
+show axis tax2
 
 ! Intentional errors. 
 ! The second command here is an error - tax is an axis not a var.
 ! Make sure we can recover from that error.
 
 set mode ignore
-def ax/edge/t=1-jan-0001:1-jan-0004:1/unit=year/cal=noleap tax
-def ax/t/like=tax tax3 = tax
+define axis/edge/t=1-jan-0001:1-jan-0004:1/unit=year/cal=noleap tax
+define axis/t/like=tax tax3 = tax
 
 ! the axis should be undisturbed
 sh axis tax
 
 set mode/last ignore
-
-

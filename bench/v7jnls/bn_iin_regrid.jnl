@@ -285,3 +285,30 @@ list d
 define axis/z=1:2:1 otheraxis
 let b2d = b + z[gz=otheraxis]
 list b2d[gf=aline_edges@iin]
+
+! More examples: scale for world coordinates
+
+! longitudes
+
+define axis/edge/x=0:10:1/units=degrees_east aline
+let a = mod(.5+x[gx=aline],2)
+define axis/x/like=`a,return=xaxis` aline_edges = box_edges(a)
+let a_iin_regrid =  a[gx=aline_edges@iin]
+let a_iin = a[x=@iin]
+
+list a_iin
+list a_iin_regrid
+
+
+! latitudes
+
+define axis/edge/y=10:80:10/units=degrees_north aline
+let a = y[gy=aline]/10
+define axis/y/like=`a,return=yaxis` aline_edges = box_edges(a)
+let a_iin_regrid = a[gy=aline_edges@iin]
+let a_iin = a[y=@iin]
+
+list a_iin
+list a_iin_regrid
+
+

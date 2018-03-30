@@ -3097,6 +3097,7 @@ variables:
 *** Running ferret script: bn_def_axis_like.jnl
 *** Running ferret script: bn_box_edges_fcn.jnl
 *** Running ferret script: bn_hi_res_time.jnl
+*** Running ferret script: bn_A_I_format.jnl
 *** Running ferret script: bn_gif.jnl
 *** Running ferret script: bn_ps.jnl
 *** Running ferret script: bn_all_ef.jnl

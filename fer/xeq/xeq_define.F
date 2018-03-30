@@ -1154,18 +1154,19 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
         dflt_cal_id = TM_GET_CALENDAR_ID (cal_name)
 	iqual = qual_given( slash_calendar )
 
-	IF (is_like) cal_name = line_cal_name ( iline )
-
 	IF ( iqual .GT. 0 ) THEN
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      cal_name, status )
 	   IF ( status .NE. ferr_ok ) RETURN
            new_att_calendar = cal_name
+	   IF (is_like) line_cal_name ( iline ) = cal_name
 	ELSEIF ( orient_t  .AND.  
      .         ( qual_given(slash_T0) .GT. 0  .OR. 
      .           cx_calendar(orient,mods_cx)) ) THEN
 	   cal_name = 'GREGORIAN'
 	ENDIF
+
+	IF (is_like) cal_name = line_cal_name ( iline )
 
 * 9/01 CF conventions have adopted the name 360_day for a 360-day year.
 
@@ -1670,6 +1671,9 @@ C /units=months  is 1/12 of the length of the year
 	IF (is_like) buff2 = line_t0 ( iline )
 
 	IF ( iqual .GT. 0 ) THEN
+	   IF (is_like) 
+     .       CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .			      buff2, status )
 	   IF (buff2 .EQ. ' ') 
      .       CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      buff2, status )
@@ -1956,7 +1960,8 @@ c	ENDIF
 * ... Check the attribute structure for this axis name and change 
 *     attribute values as needed.  
 
-	      CALL REDEFINE_AX_ATT (line_name(old_line), new_att_units, 
+	      IF (.NOT. is_like) 
+     .           CALL REDEFINE_AX_ATT (line_name(old_line), new_att_units, 
      .           new_att_t0, new_att_calendar, new_att_modulo,
      .           new_att_modulo_len, line_direction(iline), 
      .           line_regular(iline) )

@@ -181,13 +181,7 @@ c       Set THE MINIMUM AND MAXIMUM VALUE OF THE RANGE
 
 c       Shift the color levels for centered-label key.
 
-		  IF (center_key_labels) THEN
-		     
-		     
-* DETERMINE COLORS TO SET BUNDLED LINE REPRESENTATIONS
-		     CALL WS_LINE_SPECTRUM (wsid,wstype, low_index)
-		     CALL SET_LEVELS_CENTERKEY (.TRUE.)
-		  ENDIF
+		  IF (center_key_labels) CALL SET_LEVELS_CENTERKEY (.TRUE.)
 
 	      else if (openlev) then
 	         CALL set_open_levels

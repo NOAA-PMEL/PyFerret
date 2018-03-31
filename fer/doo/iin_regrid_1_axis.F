@@ -1,4 +1,4 @@
-	SUBROUTINE IIN_REGRID_1_AXIS( cx_lims, axis,
+	SUBROUTINE IIN_REGRID_1_AXIS( cx_lims, idim,
      .				 dst_lox, dst_hix, dst_loy, dst_hiy,
      .				 src, msrc, dst, mdst, ss21, wksize )
 
@@ -61,6 +61,9 @@
 * Assumes the destination grid is be the cell edges of the source grid.
 * TODO: Is this really required? To check this, require that 
 *       xdst_lo=xsrc_min, xdst_hi=xsrc_max 
+*
+* 3/30/18 *acm* Return results in world-coordinate units
+
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -68,9 +71,13 @@
 	include 'xcontext.cmn'
 	include 'xmem_subsc.cmn'
 	include 'xvariables.cmn'
+	include 'xunits.cmn_text'
+	external xunits_data
+	include 'xtm_grid.cmn_text'
+	external xgt_grid_data
 
 * calling argument declarations:
-	INTEGER cx_lims, axis, trans, msrc, mdst,
+	INTEGER cx_lims, idim, trans, msrc, mdst,
      .          dst_lox, dst_hix, dst_loy, dst_hiy , wksize
 	INTEGER ss21(wksize)
 
@@ -81,11 +88,11 @@
 
 * local variable declarations:
 
-        LOGICAL         ok_neg111
+        LOGICAL         ITSA_TRUEMONTH_AXIS, ok_neg111
         INTEGER		dstss,srcss,src_grid,dst_grid,i,j,k,l,m,n
 	INTEGER	     	srcss_lo,srcss_hi, dstss_lo,dstss_hi
 
-	REAL		ddist, bad_src, bad_dst
+	REAL		ddist, bad_src, bad_dst, unit
 	REAL*8		TM_WORLD, TDEST_WORLD, sum,
      .			xsrc_min, xsrc_max, xsrc_lo, xsrc_hi,
      .			xdst_lo, xdst_hi
@@ -96,8 +103,8 @@
 	dst_grid = mr_grid( mdst )
 
 * limits for calculation
-        srcss_lo = mr_lo_ss(msrc,axis)
-        srcss_hi = mr_hi_ss(msrc,axis)
+        srcss_lo = mr_lo_ss(msrc,idim)
+        srcss_hi = mr_hi_ss(msrc,idim)
 
 * Range of subscripts might be negative, and contain the value of unspecified_int4 
 * among them.  ok_neg111 distinguishes between this and the flag unspecified_int4.
@@ -105,20 +112,25 @@
         ok_neg111 = srcss_lo .LT. unspecified_int4 .AND.
      .              srcss_hi .GT. unspecified_int4
 
-        dstss_lo = cx_lo_ss(cx_lims,axis)
-        dstss_hi = cx_hi_ss(cx_lims,axis)
+        dstss_lo = cx_lo_ss(cx_lims,idim)
+        dstss_hi = cx_hi_ss(cx_lims,idim)
 
 * flag for bad/missing data
         bad_src = mr_bad_data(msrc)
         bad_dst = mr_bad_data(mdst)
 
+
+* perform integrations on standard units if possible
+	unit = un_convert( line_unit_code(grid_line(idim,src_grid)) )
+	IF (ITSA_TRUEMONTH_AXIS(idim)) unit = un_convert(pun_day)
+
 * determine the source grid boxes containing the destination box edges
 	CALL GET_AVE_LIMS( srcss_lo, srcss_hi, src_grid,
      .			   dstss_lo, dstss_hi, dst_grid,
-     .			   axis, ss21 )
+     .			   idim, ss21 )
 
 * along X axis
-        IF ( axis .EQ. x_dim ) THEN
+        IF ( idim .EQ. x_dim ) THEN
            DO 190 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
            DO 190 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
            DO 190 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
@@ -143,8 +155,8 @@
 	         goto 160
 	      ENDIF
 
-	      xdst_lo = TM_WORLD(dstss-1, dst_grid, axis, box_middle )
-	      xdst_hi = TM_WORLD(dstss, dst_grid, axis, box_middle )
+	      xdst_lo = unit* TM_WORLD(dstss-1, dst_grid, idim, box_middle )
+	      xdst_hi = unit* TM_WORLD(dstss, dst_grid, idim, box_middle )
 
 * add all partial or complete boxes of data from the source grid
 
@@ -155,10 +167,11 @@
 * ... ignore missing source data
 	         IF ( src(srcss, j, k, l, m, n) .EQ. bad_src ) GOTO 110
 
-	         xsrc_min = TM_WORLD(srcss,src_grid,axis,box_lo_lim)
-	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
+	         xsrc_min = unit* TM_WORLD(srcss,src_grid,idim,box_lo_lim)
+	         xsrc_max = unit* TM_WORLD(srcss,src_grid,idim,box_hi_lim)
 
 	         IF (xsrc_max.LT.xdst_lo .OR. xsrc_min.GT.xdst_hi) CYCLE
+
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
 	         xsrc_hi = MIN(xsrc_max,xdst_hi )
 
@@ -176,7 +189,7 @@
  190	   CONTINUE
 
 * along Y axis
-        ELSEIF ( axis .EQ. Y_dim ) THEN
+        ELSEIF ( idim .EQ. Y_dim ) THEN
 
 	   DO 290 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
            DO 290 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
@@ -202,8 +215,8 @@
 	         goto 260
 	      ENDIF
 
-	      xdst_lo = TM_WORLD(dstss-1, dst_grid, axis, box_middle )
-	      xdst_hi = TM_WORLD(dstss, dst_grid, axis, box_middle )
+	      xdst_lo = unit* TM_WORLD(dstss-1, dst_grid, idim, box_middle )
+	      xdst_hi = unit* TM_WORLD(dstss, dst_grid, idim, box_middle )
 
 * add all partial or complete boxes of data from the source grid
 
@@ -214,8 +227,10 @@
 * ... ignore missing source data
 	         IF ( src(i, srcss, k, l, m, n) .EQ. bad_src ) GOTO 210
 
-	         xsrc_min = TM_WORLD(srcss,src_grid,axis,box_lo_lim)
-	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
+	         xsrc_min = unit* TM_WORLD(srcss,src_grid,idim,box_lo_lim)
+	         xsrc_max = unit* TM_WORLD(srcss,src_grid,idim,box_hi_lim)
+
+	         IF (xsrc_max.LT.xdst_lo .OR. xsrc_min.GT.xdst_hi) CYCLE
 
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
 	         xsrc_hi = MIN(xsrc_max,xdst_hi)
@@ -233,7 +248,7 @@
  290	   CONTINUE
 
 * along Z axis
-        ELSEIF ( axis .EQ. z_dim ) THEN
+        ELSEIF ( idim .EQ. z_dim ) THEN
 
            DO 390 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
            DO 390 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
@@ -259,8 +274,8 @@
 	         goto 360
 	      ENDIF
 
-	      xdst_lo = TM_WORLD(dstss-1, dst_grid, axis, box_middle )
-	      xdst_hi = TM_WORLD(dstss, dst_grid, axis, box_middle )
+	      xdst_lo = unit* TM_WORLD(dstss-1, dst_grid, idim, box_middle )
+	      xdst_hi = unit* TM_WORLD(dstss, dst_grid, idim, box_middle )
 
 * add all partial or complete boxes of data from the source grid
 
@@ -271,8 +286,10 @@
 * ... ignore missing source data
 	         IF ( src(i, j, srcss, l, m, n) .EQ. bad_src ) GOTO 310
 
-	         xsrc_min = TM_WORLD(srcss,src_grid,axis,box_lo_lim)
-	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
+	         xsrc_min = unit* TM_WORLD(srcss,src_grid,idim,box_lo_lim)
+	         xsrc_max = unit* TM_WORLD(srcss,src_grid,idim,box_hi_lim)
+
+	         IF (xsrc_max.LT.xdst_lo .OR. xsrc_min.GT.xdst_hi) CYCLE
 
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
 	         xsrc_hi = MIN(xsrc_max,xdst_hi )
@@ -290,7 +307,7 @@
  390	   CONTINUE
 
 * along T axis
-        ELSEIF ( axis .EQ. T_dim ) THEN
+        ELSEIF ( idim .EQ. T_dim ) THEN
 
            DO 490 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
            DO 490 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
@@ -319,8 +336,8 @@
 * USE SOURCE GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS 6/94
 * initialization of TDEST_WORLD is done from GET_AVE_LIMS
 
-	      xdst_lo = TM_WORLD(dstss-1, dst_grid, axis, box_middle )
-	      xdst_hi = TM_WORLD(dstss, dst_grid, axis, box_middle )
+	      xdst_lo = unit* TM_WORLD(dstss-1, dst_grid, idim, box_middle )
+	      xdst_hi = unit* TM_WORLD(dstss, dst_grid, idim, box_middle )
 
 * add all partial or complete boxes of data from the source grid
 
@@ -331,16 +348,19 @@
 * ... ignore missing source data
 	         IF ( src(i, j, k, srcss, m, n) .EQ. bad_src ) GOTO 410
 
-	         xsrc_min = TM_WORLD(srcss,src_grid,axis,box_lo_lim)
-	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
+	         xsrc_min = unit* TM_WORLD(srcss,src_grid,idim,box_lo_lim)
+	         xsrc_max = unit* TM_WORLD(srcss,src_grid,idim,box_hi_lim)
+
+	         IF (xsrc_max.LT.xdst_lo .OR. xsrc_min.GT.xdst_hi) CYCLE
 
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
 	         xsrc_hi = MIN(xsrc_max,xdst_hi)
 
-	         ddist   = xsrc_hi - xsrc_lo
+	         ddist   = xsrc_hi-xsrc_lo
 
 * ... contribution from this source box
                  sum   = sum  + ddist * src(i, j, k, srcss, m, n)
+		
  410	      CONTINUE
 
 	      dst(i, j, k, dstss, m, n) = sum
@@ -349,7 +369,7 @@
  490	   CONTINUE
 
 * along E axis
-        ELSEIF ( axis .EQ. e_dim ) THEN
+        ELSEIF ( idim .EQ. e_dim ) THEN
 
            DO 590 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
            DO 590 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
@@ -378,8 +398,8 @@
 * USE SOURCE GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS 6/94
 * initialization of TDEST_WORLD is done from GET_AVE_LIMS
 
-	      xdst_lo = TM_WORLD(dstss-1, dst_grid, axis, box_middle )
-	      xdst_hi = TM_WORLD(dstss, dst_grid, axis, box_middle )
+	      xdst_lo = unit* TM_WORLD(dstss-1, dst_grid, idim, box_middle )
+	      xdst_hi = unit* TM_WORLD(dstss, dst_grid, idim, box_middle )
 
 * add all partial or complete boxes of data from the source grid
 
@@ -390,13 +410,15 @@
 * ... ignore missing source data
 	         IF ( src(i, j, k, l, srcss, n) .EQ. bad_src ) GOTO 510
 
-	         xsrc_min = TM_WORLD(srcss,src_grid,axis,box_lo_lim)
-	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
+	         xsrc_min = unit* TM_WORLD(srcss,src_grid,idim,box_lo_lim)
+	         xsrc_max = unit* TM_WORLD(srcss,src_grid,idim,box_hi_lim)
+
+	         IF (xsrc_max.LT.xdst_lo .OR. xsrc_min.GT.xdst_hi) CYCLE
 
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
 	         xsrc_hi = MIN(xsrc_max,xdst_hi)
 
-	         ddist   = xsrc_hi - xsrc_lo
+	         ddist   = xsrc_hi-xsrc_lo
 
 * ... contribution from this source box
                  sum   = sum  + ddist * src(i, j, k, l, srcss, n)
@@ -408,7 +430,7 @@
  590	   CONTINUE
 
 * along F axis
-        ELSEIF ( axis .EQ. f_dim ) THEN
+        ELSEIF ( idim .EQ. f_dim ) THEN
 
            DO 690 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
            DO 690 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
@@ -437,8 +459,8 @@
 * USE SOURCE GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS 6/94
 * initialization of TDEST_WORLD is done from GET_AVE_LIMS
 
-	      xdst_lo = TM_WORLD(dstss-1, dst_grid, axis, box_middle )
-	      xdst_hi = TM_WORLD(dstss, dst_grid, axis, box_middle )
+	      xdst_lo = unit* TM_WORLD(dstss-1, dst_grid, idim, box_middle )
+	      xdst_hi = unit* TM_WORLD(dstss, dst_grid, idim, box_middle )
 
 * add all partial or complete boxes of data from the source grid
 
@@ -449,13 +471,15 @@
 * ... ignore missing source data
 	         IF ( src(i, j, k, l, m, srcss) .EQ. bad_src ) GOTO 610
 
-	         xsrc_min = TM_WORLD(srcss,src_grid,axis,box_lo_lim)
-	         xsrc_max = TM_WORLD(srcss,src_grid,axis,box_hi_lim)
+	         xsrc_min = unit* TM_WORLD(srcss,src_grid,idim,box_lo_lim)
+	         xsrc_max = unit* TM_WORLD(srcss,src_grid,idim,box_hi_lim)
+
+	         IF (xsrc_max.LT.xdst_lo .OR. xsrc_min.GT.xdst_hi) CYCLE
 
 	         xsrc_lo = MAX(xsrc_min,xdst_lo)
 	         xsrc_hi = MIN(xsrc_max,xdst_hi)
 
-	         ddist   = xsrc_hi - xsrc_lo
+	         ddist   = xsrc_hi-xsrc_lo
 
 * ... contribution from this source box
                  sum   = sum  + ddist * src(i, j, k, l, m, srcss)

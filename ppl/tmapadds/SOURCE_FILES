@@ -54,6 +54,7 @@ set_default_nlevels.F\
 set_fill_area_rep.F\
 set_fill_ndx.F\
 set_gks_metafile.F\
+set_levels_centerkey.F\
 set_levels_shade_fill.F\
 set_nshd_levels.F\
 set_num_linecolors.F\

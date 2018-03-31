@@ -1,0 +1,52 @@
+! bn_center_keylab.jnl
+! See issue 1607.  
+
+def ax/edge/x=0:10:1 xax
+let a = x[gx=xax] + 0.01*randu(y[gy=1:9:1]) + y[gy=1:9:1]
+
+cancel view
+set view ul
+shade/lev=(0,16,2)/key/title="/LEV=(0,16,2)/KEY" a 
+sh sym lev*
+set view ur
+shade/lev=(1,15,2)/key=centerlab/title="/LEV=(1,15,2)/KEY=CENTERLAB" a
+sh sym lev*
+
+! centered-levels setting is restored to 'off' with the next plot that doesnt use it.
+
+set v ll
+shade/lev=(-inf)(4,14,2)(inf)/key/title="/LEV=(-inf)(4,14,2)(inf)/KEY" a
+sh sym lev*
+set v lr
+shade/lev=(-inf)(5,13,2)(inf)/key=centerlab/title="/LEV=(-inf)(5,13,2)(inf)/KEY=CENTERLAB" a
+
+frame/file=center_key_lab.gif
+
+cancel view
+
+! Ribbon plots
+LET xpts = 180 + 50*COS(2*3.14*I[I=1:50]/60)
+LET ypts = 15  + 20*SIN(2*3.14*I[I=1:50]/60)
+LET varpts = 25 - ypts + RANDN(ypts)
+
+plot/vs/ribbon/thick/sym=18/siz=0.15/lev=10/key=centerlab/hlim=120:250/vlim=-25:65 xpts, ypts, varpts
+
+! Set of discrete values in the levels
+
+LET/title=xpts xpts =   {1,2,3,4,5,6,7,8,9,10}
+LET/title=ypts ypts = {1,1.5,1,1.5,1,1.5,1,1.5,1,1.5}
+let/title=var varpts = {1,2,5,2,8,5,6,8,2,1}
+
+set v ul
+
+plot/vs/ribbon/thick/sym=18/siz=0.15/key=centerlab/lev=(1)(2)(5)(6)(8)/hlim=0:11/vlim=0:2 xpts, ypts, varpts
+show sym lev*
+set v ur
+plot/vs/ribbon/thick/sym=18/siz=0.15/key=centerlab/lev=(1)(2)(5)(6)(8)/hlim=0:11/vlim=0:2/palette=ten_by_levels xpts, ypts, varpts
+
+! Internally, by-value palettes are handled differently: don't interpolate the levels
+set v ul
+plot/vs/ribbon/thick=3/sym=18/siz=0.15/key=centerlab/lev=(1)(2)(5)(6)(8)/hlim=0:11/vlim=0:2/palette=koppen xpts, ypts, varpts
+set v ur
+plot/vs/ribbon/thick=3/sym=18/siz=0.15/key=centerlab/lev=(1,14,1)/hlim=0:11/vlim=0:2/palette=koppen xpts, ypts, xpts+2
+show sym lev*

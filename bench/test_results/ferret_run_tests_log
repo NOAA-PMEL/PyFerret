@@ -290,6 +290,7 @@ Benchmark scripts that will be run:
    bn_box_edges_fcn.jnl
    bn_hi_res_time.jnl
    bn_A_I_format.jnl
+   bn_center_keylab.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
@@ -10515,7 +10516,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.32"
-FERRET_PLATFORM = "Linux 3.10.0-693.17.1.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-693.21.1.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
@@ -10547,7 +10548,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.32"
-FERRET_PLATFORM = "Linux 3.10.0-693.17.1.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-693.21.1.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
@@ -10725,7 +10726,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.32"
-FERRET_PLATFORM = "Linux 3.10.0-693.17.1.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-693.21.1.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
@@ -40704,6 +40705,7 @@ LEV_MIN = "0"
 LEV_MAX = "76"
 LEV_NUM = "38"
 LEV_DEL = "2"
+LEV_CENTERED_LABELS = "off"
  
 contour/over/i=1:15/j=1:5 i*j
 sho sym lev*
@@ -40712,6 +40714,7 @@ LEV_MIN = "0"
 LEV_MAX = "80"
 LEV_NUM = "8"
 LEV_DEL = "10"
+LEV_CENTERED_LABELS = "off"
  
 contour/over/i=1:15/j=1:5/lev=(0,50,3) i*j
 sho sym lev*
@@ -40720,6 +40723,7 @@ LEV_MIN = "0"
 LEV_MAX = "51"
 LEV_NUM = "17"
 LEV_DEL = "3"
+LEV_CENTERED_LABELS = "off"
  
 fill/i=1:15/j=1:5/lev=(0,50,5) i*j
 sho sym lev*
@@ -40728,6 +40732,7 @@ LEV_MIN = "0"
 LEV_MAX = "50"
 LEV_NUM = "10"
 LEV_DEL = "5"
+LEV_CENTERED_LABELS = "off"
  
 contour/over/i=1:15/j=1:5/lev=(0,80,3),(56),DARK(56) i*j
 sho sym lev*
@@ -40736,6 +40741,7 @@ LEV_MIN = "0"
 LEV_MAX = "81"
 LEV_NUM = "28"
 LEV_DEL = "irregular"
+LEV_CENTERED_LABELS = "off"
  
 contour/over/i=1:15/j=1:5/lev=50 i*j
 sho sym lev*
@@ -40744,6 +40750,7 @@ LEV_MIN = "0"
 LEV_MAX = "76"
 LEV_NUM = "38"
 LEV_DEL = "2"
+LEV_CENTERED_LABELS = "off"
  
  
 shade/i=1:15/j=1:5/lev=(0,80,1) i*j
@@ -40753,6 +40760,7 @@ LEV_MIN = "0"
 LEV_MAX = "80"
 LEV_NUM = "80"
 LEV_DEL = "1"
+LEV_CENTERED_LABELS = "off"
  
 contour/over/i=1:15/j=1:5/lev=(33) i*j
 sh sym lev*
@@ -40761,6 +40769,7 @@ LEV_MIN = "33"
 LEV_MAX = "33"
 LEV_NUM = "1"
 LEV_DEL = "none"
+LEV_CENTERED_LABELS = "off"
 *** Running ferret script: bn_mode_logo_lab.jnl
  
 ! bn_mode_logo_lab.jnl
@@ -45055,6 +45064,7 @@ LEV_MIN = "1"
 LEV_MAX = "10.2"
 LEV_NUM = "46"
 LEV_DEL = "0.2"
+LEV_CENTERED_LABELS = "off"
  
 can sym lev*
 ! Now with /LEV=(min,max,del)
@@ -45070,6 +45080,7 @@ LEV_MIN = "0"
 LEV_MAX = "1120"
 LEV_NUM = "28"
 LEV_DEL = "40"
+LEV_CENTERED_LABELS = "off"
  
 can sym lev*
 ! Now with /LEV=nl
@@ -45086,6 +45097,7 @@ LEV_MIN = "-12"
 LEV_MAX = "32"
 LEV_NUM = "22"
 LEV_DEL = "2"
+LEV_CENTERED_LABELS = "off"
 can sym lev*
  
 ! Fixes for modulo striding bugs
@@ -47333,6 +47345,7 @@ LEV_MIN = "open-ended"
 LEV_MAX = "open-ended"
 LEV_NUM = "50"
 LEV_DEL = "irregular"
+LEV_CENTERED_LABELS = "off"
  
 set view right
 shade/lev=(-inf),(4,28,0.5)(inf)/key=cont sst[l=1]
@@ -47342,6 +47355,7 @@ LEV_MIN = "open-ended"
 LEV_MAX = "open-ended"
 LEV_NUM = "50"
 LEV_DEL = "irregular"
+LEV_CENTERED_LABELS = "off"
  
  
 can view
@@ -48127,6 +48141,7 @@ LEV_MIN = "0.8"
 LEV_MAX = "9.2"
 LEV_NUM = "21"
 LEV_DEL = "0.4"
+LEV_CENTERED_LABELS = "off"
  
 use coads_climatology
 shade/l=1/lev=1.2d sst; sho sym lev_del
@@ -48138,6 +48153,7 @@ LEV_MIN = "-2.4"
 LEV_MAX = "31.2"
 LEV_NUM = "28"
 LEV_DEL = "1.2"
+LEV_CENTERED_LABELS = "off"
  
 ! Fix for bug 1174: strfloat_c("nonsense") gave result of 0 rather than missing.
 GO bn_reset
@@ -54352,24 +54368,28 @@ LEV_MIN = "-0.3"
 LEV_MAX = "1.1"
 LEV_NUM = "28"
 LEV_DEL = "0.05"
+LEV_CENTERED_LABELS = "off"
 set view ur; shade/lev a; sh sym lev*
 LEV_TEXT = ""
 LEV_MIN = "-0.3"
 LEV_MAX = "1.1"
 LEV_NUM = "28"
 LEV_DEL = "0.05"
+LEV_CENTERED_LABELS = "off"
 set view ll; shade/line/key a; sh sym lev*
 LEV_TEXT = ""
 LEV_MIN = "-0.3"
 LEV_MAX = "1.1"
 LEV_NUM = "28"
 LEV_DEL = "0.05"
+LEV_CENTERED_LABELS = "off"
 set view lr; shade/lev a; sh sym lev*
 LEV_TEXT = ""
 LEV_MIN = "-0.3"
 LEV_MAX = "1.1"
 LEV_NUM = "28"
 LEV_DEL = "0.05"
+LEV_CENTERED_LABELS = "off"
  
 ! Fix for bug 1302
 ! Draw correct SHADE and FILL plots across the modulo branch cut.
@@ -55067,6 +55087,7 @@ LEV_MIN = "-2"
 LEV_MAX = "30"
 LEV_NUM = "32"
 LEV_DEL = "1"
+LEV_CENTERED_LABELS = "off"
  
 ! Old default value was 10
 set mode nlevels 10
@@ -55076,6 +55097,7 @@ LEV_MIN = "-2"
 LEV_MAX = "30"
 LEV_NUM = "16"
 LEV_DEL = "2"
+LEV_CENTERED_LABELS = "off"
  
 ! set even higher
 set mode nlevels 80
@@ -55085,6 +55107,7 @@ LEV_MIN = "-2"
 LEV_MAX = "30"
 LEV_NUM = "64"
 LEV_DEL = "0.5"
+LEV_CENTERED_LABELS = "off"
  
 ! restore (new) default
 set mode nlevels 40
@@ -56732,11 +56755,13 @@ LEV_MIN = "0"
 LEV_MAX = "1.05"
 LEV_NUM = "21"
 LEV_DEL = "0.05"
+LEV_CENTERED_LABELS = "off"
 fill  x[gx=0:1:.1]*y[gy=0:1:.1]; sh sym lev*
 LEV_MIN = "0"
 LEV_MAX = "1.05"
 LEV_NUM = "21"
 LEV_DEL = "0.05"
+LEV_CENTERED_LABELS = "off"
  
  
  
@@ -59913,6 +59938,7 @@ LEV_MAX = "open-ended"
 LEV_NUM = "56"
 LEV_DEL = "irregular"
 LEV_OPNLEVS = "(-2,3.05,0.505)(3.5,25.5,0.5)(25.5,25.5,0.505)(inf)"
+LEV_CENTERED_LABELS = "off"
  
 shade/line/lev=50v,5min/title="/LEV=50v,5min" temp[K=1]
 shade/line/lev=50v,5mean/title="/LEV=50v,5mean" temp[K=1]
@@ -62848,7 +62874,7 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v7.32 (beta/debug)"                                               
- 3    /  3:" ! Linux 3.10.0-693.17.1.el7.x86_64 64-bit - MM-DD-YY"                      
+ 3    /  3:" ! Linux 3.10.0-693.21.1.el7.x86_64 64-bit - MM-DD-YY"                      
  4    /  4:" ! DD-MON-YY HH:MM     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
@@ -63909,6 +63935,7 @@ LEV_MIN = "-32"
 LEV_MAX = "32"
 LEV_NUM = "32"
 LEV_DEL = "2"
+LEV_CENTERED_LABELS = "off"
  
 SHADE/L=1/LINE/KEY/LEV=10c sst
 SHO SYM lev*
@@ -63917,6 +63944,7 @@ LEV_MIN = "-35"
 LEV_MAX = "35"
 LEV_NUM = "14"
 LEV_DEL = "5"
+LEV_CENTERED_LABELS = "off"
  
 FILL/L=3/LINE/KEY/LEV=c sst
 SHO SYM lev*
@@ -63925,6 +63953,7 @@ LEV_MIN = "-34"
 LEV_MAX = "34"
 LEV_NUM = "34"
 LEV_DEL = "2"
+LEV_CENTERED_LABELS = "off"
  
 FILL/L=3/LINE/KEY/LEV=10c sst
 SHO SYM lev*
@@ -63933,6 +63962,7 @@ LEV_MIN = "-35"
 LEV_MAX = "35"
 LEV_NUM = "14"
 LEV_DEL = "5"
+LEV_CENTERED_LABELS = "off"
  
 GO bn_reset
 cancel mode verify
@@ -74740,6 +74770,7 @@ LEV_MIN = "10"
 LEV_MAX = "40"
 LEV_NUM = "3"
 LEV_DEL = "10"
+LEV_CENTERED_LABELS = "off"
  
 cancel symbol lev*
 contour/l=1/lev=(10)(15)(20)(25)(30) sst
@@ -74749,6 +74780,7 @@ LEV_MIN = "10"
 LEV_MAX = "30"
 LEV_NUM = "4"
 LEV_DEL = "5"
+LEV_CENTERED_LABELS = "off"
  
 *** Running ferret script: bn_long_symnames.jnl
 ! bn_long_symnames.jnl
@@ -76228,6 +76260,7 @@ LEV_MIN = "290"
 LEV_MAX = "open-ended"
 LEV_NUM = "45"
 LEV_DEL = "irregular"
+LEV_CENTERED_LABELS = "off"
 LEV_OPNLEVS = "(290,330,10)(332,402,2)(400,450,10)(inf)"
  
  
@@ -92067,7 +92100,7 @@ flow/DAT=2/den=3/L=3 taux,tauy
 ! issue large numbers of commands, timing with clock time
 can mode verify
 10K LET commands LET a = 0 takes [0-3] seconds
-Second 10K LET commands LET a = 0 takes [0-5] seconds
+Second 10K LET commands LET a = 0 takes [0-7] seconds
 5K LOAD with transform takes [0-9] seconds
 *** Running ferret script: bn_show_noupcase.jnl
 ! bn_show_noupcase.jnl
@@ -94908,6 +94941,7 @@ LEV_MIN = "16.4"
 LEV_MAX = "24.4"
 LEV_NUM = "20"
 LEV_DEL = "0.4"
+LEV_CENTERED_LABELS = "off"
  
 shade/lev=(16)(16.4)(16.8)(17.2)(17.6) sst[L=1,x=290:330,y=10:40]
 show sym lev*
@@ -94916,6 +94950,7 @@ LEV_MIN = "16"
 LEV_MAX = "17.6"
 LEV_NUM = "4"
 LEV_DEL = "0.4"
+LEV_CENTERED_LABELS = "off"
  
 shade/lev=(22) sst[L=1,x=290:330,y=10:40]
 show sym lev*
@@ -94924,6 +94959,7 @@ LEV_MIN = "22"
 LEV_MAX = "22"
 LEV_NUM = "1"
 LEV_DEL = "none"
+LEV_CENTERED_LABELS = "off"
  
 ! LEV_DEL should be irregular
  
@@ -94934,6 +94970,7 @@ LEV_MIN = "16.4"
 LEV_MAX = "open-ended"
 LEV_NUM = "21"
 LEV_DEL = "irregular"
+LEV_CENTERED_LABELS = "off"
  
 shade/lev=20v sst[L=1,x=290:330,y=10:40]
 show sym lev*
@@ -94942,6 +94979,7 @@ LEV_MIN = "open-ended"
 LEV_MAX = "open-ended"
 LEV_NUM = "19"
 LEV_DEL = "irregular"
+LEV_CENTERED_LABELS = "off"
 LEV_OPNLEVS = "(-inf)(16,19.1,1.05)(19.5,26,0.5)(25.7,25.7,1.05)(inf)"
  
 shade/lev=(16.4,24.4,0.4)(24.4,28.1,0.1) sst[L=1,x=290:330,y=10:40]
@@ -94951,6 +94989,7 @@ LEV_MIN = "16.4"
 LEV_MAX = "28.1"
 LEV_NUM = "57"
 LEV_DEL = "irregular"
+LEV_CENTERED_LABELS = "off"
  
 shade/lev=(5)(16.4,24.4,0.4) sst[L=1,x=290:330,y=10:40]
 show sym lev*
@@ -94959,6 +94998,7 @@ LEV_MIN = "5"
 LEV_MAX = "24.4"
 LEV_NUM = "21"
 LEV_DEL = "irregular"
+LEV_CENTERED_LABELS = "off"
  
 ! Bug 2466 Graticule lines too dense on time plots
 go bn_reset
@@ -99248,6 +99288,7 @@ LEV_MIN = "6.E-08"
 LEV_MAX = "1.9E-07"
 LEV_NUM = "26"
 LEV_DEL = "5.E-09"
+LEV_CENTERED_LABELS = "off"
  
 GO bn_reset
 cancel mode verify
@@ -102984,17 +103025,17 @@ list a_iin
 list a_iin_regrid
              VARIABLE : A[GX=ALINE_EDGES@IIN]
              SUBSET   : 11 points (LONGITUDE)
- 0E    /  1:  0.000
- 1E    /  2:  1.000
- 2E    /  3:  1.000
- 3E    /  4:  2.000
- 4E    /  5:  2.000
- 5E    /  6:  3.000
- 6E    /  7:  3.000
- 7E    /  8:  4.000
- 8E    /  9:  4.000
- 9E    / 10:  5.000
- 10E   / 11:  5.000
+ 0E    /  1:       0.
+ 1E    /  2:  111195.
+ 2E    /  3:  111195.
+ 3E    /  4:  222390.
+ 4E    /  5:  222390.
+ 5E    /  6:  333585.
+ 6E    /  7:  333585.
+ 7E    /  8:  444780.
+ 8E    /  9:  444780.
+ 9E    / 10:  555975.
+ 10E   / 11:  555975.
  
  
 ! latitudes
@@ -103019,14 +103060,14 @@ list a_iin
 list a_iin_regrid
              VARIABLE : A[GY=ALINE_EDGES@IIN]
              SUBSET   : 8 points (LATITUDE)
- 80N   / 8:  315.0
- 70N   / 7:  240.0
- 60N   / 6:  175.0
- 50N   / 5:  120.0
- 40N   / 4:   75.0
- 30N   / 3:   40.0
- 20N   / 2:   15.0
- 10N   / 1:    0.0
+ 80N   / 8:  3.503E+07
+ 70N   / 7:  2.669E+07
+ 60N   / 6:  1.946E+07
+ 50N   / 5:  1.334E+07
+ 40N   / 4:  8.340E+06
+ 30N   / 3:  4.448E+06
+ 20N   / 2:  1.668E+06
+ 10N   / 1:  0.000E+00
  
  
 *** Running ferret script: bn721_bug_fixes.jnl
@@ -105826,6 +105867,89 @@ list/nohead/format=a7 {"Abcde"}
 list/nohead/l=1:10/j=20:23/format=(4i6) 10*airt[x=180]
  
 set mode/last ignore
+*** Running ferret script: bn_center_keylab.jnl
+! bn_center_keylab.jnl
+! See issue 1607.
+ 
+def ax/edge/x=0:10:1 xax
+let a = x[gx=xax] + 0.01*randu(y[gy=1:9:1]) + y[gy=1:9:1]
+ 
+cancel view
+set view ul
+shade/lev=(0,16,2)/key/title="/LEV=(0,16,2)/KEY" a
+sh sym lev*
+LEV_TEXT = "(0,16,2)"
+LEV_MIN = "0"
+LEV_MAX = "16"
+LEV_NUM = "8"
+LEV_DEL = "2"
+LEV_CENTERED_LABELS = "off"
+set view ur
+shade/lev=(1,15,2)/key=centerlab/title="/LEV=(1,15,2)/KEY=CENTERLAB" a
+sh sym lev*
+LEV_TEXT = "(1,15,2)"
+LEV_MIN = "0"
+LEV_MAX = "16"
+LEV_NUM = "8"
+LEV_DEL = "2"
+LEV_CENTERED_LABELS = "on"
+ 
+! centered-levels setting is restored to 'off' with the next plot that doesnt use it.
+ 
+set v ll
+shade/lev=(-inf)(4,14,2)(inf)/key/title="/LEV=(-inf)(4,14,2)(inf)/KEY" a
+sh sym lev*
+LEV_TEXT = "(-INF)(4,14,2)(INF)"
+LEV_MIN = "open-ended"
+LEV_MAX = "open-ended"
+LEV_NUM = "7"
+LEV_DEL = "irregular"
+LEV_CENTERED_LABELS = "off"
+set v lr
+shade/lev=(-inf)(5,13,2)(inf)/key=centerlab/title="/LEV=(-inf)(5,13,2)(inf)/KEY=CENTERLAB" a
+ 
+frame/file=center_key_lab.gif
+ 
+cancel view
+ 
+! Ribbon plots
+LET xpts = 180 + 50*COS(2*3.14*I[I=1:50]/60)
+LET ypts = 15  + 20*SIN(2*3.14*I[I=1:50]/60)
+LET varpts = 25 - ypts + RANDN(ypts)
+ 
+plot/vs/ribbon/thick/sym=18/siz=0.15/lev=10/key=centerlab/hlim=120:250/vlim=-25:65 xpts, ypts, varpts
+ 
+! Set of discrete values in the levels
+ 
+LET/title=xpts xpts =   {1,2,3,4,5,6,7,8,9,10}
+LET/title=ypts ypts = {1,1.5,1,1.5,1,1.5,1,1.5,1,1.5}
+let/title=var varpts = {1,2,5,2,8,5,6,8,2,1}
+ 
+set v ul
+ 
+plot/vs/ribbon/thick/sym=18/siz=0.15/key=centerlab/lev=(1)(2)(5)(6)(8)/hlim=0:11/vlim=0:2 xpts, ypts, varpts
+show sym lev*
+LEV_TEXT = "(1)(2)(5)(6)(8)"
+LEV_MIN = "0.5"
+LEV_MAX = "9"
+LEV_NUM = "5"
+LEV_DEL = "irregular"
+LEV_CENTERED_LABELS = "on"
+set v ur
+plot/vs/ribbon/thick/sym=18/siz=0.15/key=centerlab/lev=(1)(2)(5)(6)(8)/hlim=0:11/vlim=0:2/palette=ten_by_levels xpts, ypts, varpts
+ 
+! Internally, by-value palettes are handled differently: don't interpolate the levels
+set v ul
+plot/vs/ribbon/thick=3/sym=18/siz=0.15/key=centerlab/lev=(1)(2)(5)(6)(8)/hlim=0:11/vlim=0:2/palette=koppen xpts, ypts, varpts
+set v ur
+plot/vs/ribbon/thick=3/sym=18/siz=0.15/key=centerlab/lev=(1,14,1)/hlim=0:11/vlim=0:2/palette=koppen xpts, ypts, xpts+2
+show sym lev*
+LEV_TEXT = "(1,14,1)"
+LEV_MIN = "1"
+LEV_MAX = "15"
+LEV_NUM = "14"
+LEV_DEL = "1"
+LEV_CENTERED_LABELS = "on"
 *** Running ferret script: bn_gif.jnl
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -107425,7 +107549,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.32"
-FERRET_PLATFORM = "Linux 3.10.0-693.17.1.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-693.21.1.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "31"

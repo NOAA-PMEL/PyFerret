@@ -29,3 +29,5 @@ LET v_vec = vwnd[X=131:181,Y=21:61,L=1]
 GO mp_poly_vectors x_vec y_vec u_vec v_vec 3 "arrow"
 
 POLYGON/OVER/NOLABEL/KEY/NOAXES MP_X_ARROW, MP_Y_ARROW, ysequence(vwnd[X=131:181,Y=21:61,L=5])
+
+frame/file=mp_poly_vec.gif

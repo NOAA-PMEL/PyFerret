@@ -62,6 +62,8 @@
 * V720: 6/17 *acm* Ticket 2346: new @IIN regridding transform
 * V740: 1/18 *acm* for issue 1854, protection status temporarily reset 
 *             for curvi-coord plot with /SET
+* V740: 3/18 *acm* Introduce parameter abstractax_len for abstract axis length 99999999
+
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -90,7 +92,8 @@
      .				arbitrary_small_int4,
      .				ambiguous_val8
 	INTEGER			unspecified_int4,
-     .				ambiguous_int4
+     .				ambiguous_int4,
+     .				abstractax_len
 	REAL			bad_val4,
      .				arbitrary_large_val4,
      .				arbitrary_small_val4,
@@ -112,6 +115,7 @@
      .			ambiguous_val8		= -2.1E33,
      .			unspecified_int4	= -999 ,
      .			ambiguous_int4		= -8888 ,
+     .			abstractax_len		= 99999999 ,
      .			bad_val4		= -1.E34,
      .			unspecified_name4	= '&&&&',
      .			unspecified_val4	= -2.5E34 )

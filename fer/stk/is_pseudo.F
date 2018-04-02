@@ -49,6 +49,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
 *       *sh*  2/17 pre-check for 99999999 in order to issue nicer error message
+* v74   *acm* 3/18 Introduce parameter abstractax_len replacing 99999999
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -79,7 +80,7 @@
 
 * pre-check to make sure limits were given
 	pvlen = CX_DIM_LEN(idim, cx)
-	IF (pvlen .EQ. 99999999) GOTO 5100
+	IF (pvlen .EQ. abstractax_len) GOTO 5100
 
 * reserve and catalog space for the result
 	CALL CREATE_TEMP_MEM_VAR( cx, mr, status )

@@ -111,6 +111,7 @@
 * V7    5/12 *acm* Union aggregations: DEFINE DATA/AGG/U
 * V702 11/16 *sh*  split/gather on compressed axes -- see IS_TRANS calls
 * V702  1/17 *sh*  for trac enhancement #2369 -- dynamic memory management
+* v74   *acm* 3/18 Introduce parameter abstractax_len replacing 99999999
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -353,7 +354,7 @@
 !	IF (.NOT.mode_state(pmode_greedy,1)) THEN
 !	   cxsize = CGRID_SIZE8( cx )
 !	   IF (cxsize .GT. max_mem_allowed) THEN
-!	      IF (cxsize .EQ. 99999999 ) THEN
+!	      IF (cxsize .EQ. abstractax_len ) THEN
 !	         CALL ERRMSG(ferr_limits,status,
 !     .		"Did you use an ABSTRACT axis without specifying limits?",
 !     .			*5000)

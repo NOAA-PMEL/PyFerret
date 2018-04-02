@@ -40,6 +40,7 @@
 
 * programmer - steve hankin
 * V702 *sh*  1/17 trac enhancement ticket #2369 - dynamic memory
+* v74   *acm* 3/18 Introduce parameter abstractax_len replacing 99999999
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -58,7 +59,7 @@
 	CHARACTER  LEFINT8*20, TM_FMT*12, num_str*20
 
 * Check for unspecified limits on abstract axis
-	IF ( i8_rqst_size .EQ. 99999999 ) GOTO 5100
+	IF ( i8_rqst_size .EQ. abstractax_len ) GOTO 5100
 
 * if we know there isn't room to accommodate this new object then
 * we can error out without compromising the current contents of the cache

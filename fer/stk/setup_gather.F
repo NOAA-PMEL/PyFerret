@@ -59,7 +59,10 @@
 
 * V702  3/17 *sh* Code extracted from IS_STRIP and several refinements added
 * V7.21 9/17 *acm Fix ticket 2561. Multiple transformations and multiple-axis 
-*                 transformations on the split axis.
+*                 transformations on the split axis.stk/setup_gath
+* V740  3/18 *acm* Introduce parameter abstractax_len for abstract axis length 99999999
+* V740  3/18 *acm* Fix issue 1864: unending loop on scatter/gather when grid length
+*                  returned as abstract-axis length
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -143,6 +146,13 @@
 	   src_size = CGRID_SIZE_MAX( src_cx )	! unknown lims get len=line_dim
 	   trans = trans_no_transform
 	ENDIF
+
+* If it has an abstract axis, just nominally set a size.  The actual limits
+* will be evaluated as the computation proceeds.
+
+	IF (src_size .EQ. FLOAT(abstractax_len)) THEN
+	   src_size = 1000
+	ENDIF 
 
 * locate other axes of a multi-axis transform (e.g. xy average)
 * and determine how many *different* compressing transforms there are

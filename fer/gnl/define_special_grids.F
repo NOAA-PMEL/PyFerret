@@ -51,6 +51,7 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V685 *acm*  6/13 Increase nominal length of abstract axis
 * V698 *sh* 12/15 set up dummy (missing placeholder) dataset 
+* v74   *acm* 3/18 Introduce parameter abstractax_len replacing 99999999
 
 	include	'tmap_dims.parm'
 	include	'tmap_errors.parm'
@@ -76,7 +77,7 @@
 	line_name_orig( iline ) = 'ABSTRACT'
 	line_start    ( iline ) = 1.0D0
 	line_delta    ( iline ) = 1.0D0
-	line_dim      ( iline ) = 99999999
+	line_dim      ( iline ) = abstractax_len
 	line_regular  ( iline ) = .TRUE.
 	line_modulo   ( iline ) = .FALSE.
 	line_units    ( iline ) = ' '

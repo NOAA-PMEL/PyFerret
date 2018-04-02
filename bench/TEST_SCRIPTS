@@ -289,6 +289,7 @@ bn_def_axis_like.jnl
 bn_box_edges_fcn.jnl
 bn_hi_res_time.jnl
 bn_A_I_format.jnl
+bn_center_keylab.jnl
 !
 ! bn_gif, bn_all_ef, and bn_startupfile at end
 !

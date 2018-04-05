@@ -104674,6 +104674,50 @@ repeat/name=ll/range=3:4 ( \
 !-> REPEAT: LL:4
  !-> DEFINE VARIABLE xyvar = if ( lstep eq 4 ) then x[gx=xax] + 4 + 0*lstep
  !-> list/append/file=a.nc/l=4 xyvar
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err73_poly_vec_script
+! err73_poly_vec_script.jnl
+! Issue 1864: combination of expressions and contexts
+! have scatter/gather operations going into infinite loop
+ 
+! Simplified exapmle from poly_vectors_demo.jnl
+ 
+use coads_climatology
+ 
+! fake vector components
+let uwnd = sst
+let vwnd = sst
+ 
+SET REGION/X=131:181/Y=21:61/L=1
+LET mp_central_meridian = (131+181)/2
+LET mp_standard_parallel = (60+20)/2
+GO mp_stereographic_north  `mp_central_meridian` `mp_standard_parallel`
+ !-> GO mp_stereographic_north  156 40
+ 
+set grid uwnd
+ 
+GO mp_aspect
+FILL/NOAXIS/NOKEY/PAL=inverse_grayscale/TITLE="Poly Vectors" sst, x_page,y_page
+LET x_vec = X[GX=uwnd,X=131:181] + 0*Y[GY=uwnd,Y=21:61]
+LET y_vec = 0*X[GX=uwnd,X=131:181] + Y[GY=uwnd,Y=21:61]
+LET u_vec = uwnd[X=131:181,Y=21:61,L=1]
+LET v_vec = vwnd[X=131:181,Y=21:61,L=1]
+ 
+! In v7.1-v7.3, Ferret just hangs, doing endless repetitions of "doing gather/compress"
+ 
+GO mp_poly_vectors x_vec y_vec u_vec v_vec 3 "arrow"
+
+*** MP_POLY_VECTORS:  Issue commands such as follow to plot the vectors ***
+*** POLYGON/OVER/NOLABEL/KEY/NOAXES MP_X_ARROW, MP_Y_ARROW, MY_VALUES[J=1:546] ***
+*** SET REGION SAVE ***
+
+ 
+POLYGON/OVER/NOLABEL/KEY/NOAXES MP_X_ARROW, MP_Y_ARROW, ysequence(vwnd[X=131:181,Y=21:61,L=5])
+ 
+frame/file=mp_poly_vec.gif
 *** Running ferret script: bn_clim_special.jnl
 ! bn_clim_special.jnl
 ! Test the climatological axes from Andrew's monthly

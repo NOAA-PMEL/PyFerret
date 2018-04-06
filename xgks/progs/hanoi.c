@@ -205,7 +205,7 @@ f(n, a, b, c)
     int             c;
 {
     if (n == 0)
-	return;
+	return 0;
 
     f(n - 1, a, c, b);
     movedisk(a, b);

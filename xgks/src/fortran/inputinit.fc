@@ -88,6 +88,7 @@ extern Gpoint  *fortpoints;
  *
  * See also: ANSI standard p.74
  */
+    void
 /*FORTRAN*/
 ginlc(
     int            *wkid,
@@ -227,6 +228,7 @@ ginlc(
  *
  * See also: ANSI standard p.74
  */
+    void
 /*FORTRAN*/
 ginsk(
     int            *wkid,
@@ -418,6 +420,7 @@ ginsk(
  *
  * See also: ANSI standard p.74
  */
+    void
 /*FORTRAN*/
 ginvl(
     int            *wkid,
@@ -490,6 +493,7 @@ ginvl(
  *
  * See also: ANSI standard p.74
  */
+    void
 /*FORTRAN*/
 ginch(
     int            *wkid,
@@ -604,6 +608,7 @@ ginch(
  *
  * See also: ANSI standard p.74
  */
+    void
 /*FORTRAN*/
 ginpk(
     int            *wkid,
@@ -675,6 +680,7 @@ ginpk(
  *
  * See also: ANSI standard
  */
+    void
 /*FORTRAN*/
 ginst(
     int            *wkid,
@@ -743,6 +749,7 @@ ginst(
  *
  * See also: ANSI standard
  */
+    void
 /*FORTRAN*/
 ginsts(
     int            *wkid,

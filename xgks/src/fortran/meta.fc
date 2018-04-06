@@ -62,6 +62,7 @@
  *
  * See also: ANSI standard p.142
  */
+    void
 /*FORTRAN*/
 gwitm(
     int            *wkid,		/* workstation identifier  */
@@ -86,6 +87,7 @@ gwitm(
  *
  * See also: ANSI standard p.142
  */
+    void
 /*FORTRAN*/
 ggtitm(
     int            *wkid,		/* workstation identifier */
@@ -114,6 +116,7 @@ ggtitm(
  *
  * See also: ANSI standard p.143
  */
+    void
 /*FORTRAN*/
 grditm(
     int            *wkid,		/* workstation identifier */
@@ -137,6 +140,7 @@ grditm(
  *
  * See also: ANSI standard p.143
  */
+    void
 /*FORTRAN*/
 giitm(
     int            *type,

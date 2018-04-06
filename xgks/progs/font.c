@@ -341,6 +341,4 @@ SetColor(hash)
     gsetcolourrep(1, color_index, &rep);
     gsetcolourrep(200, color_index, &rep);
     gsettextcolorind(color_index);
-
-    return;
 }

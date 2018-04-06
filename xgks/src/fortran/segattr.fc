@@ -60,6 +60,7 @@
  *
  * See also: ANSI standard p.115
  */
+    void
 /*FORTRAN*/
 gssgt(
     int            *sgna,
@@ -88,6 +89,7 @@ gssgt(
  * Returns: 2000, in addition to ANSI standard errors for this function.
  * See also: ANSI standard p.116
  */
+    void
 /*FORTRAN*/
 gsvis(
     int            *sgna,
@@ -119,6 +121,7 @@ gsvis(
  * Returns: 2000, in addition to ANSI standard errors for this function.
  * See also: ANSI standard
  */
+    void
 /*FORTRAN*/
 gshlit(
     int            *sgna,		/* segment name   */
@@ -147,6 +150,7 @@ gshlit(
  *
  * See also: ANSI standard
  */
+    void
 /*FORTRAN*/
 gssgp(
     int            *sgna,		/* segment name   */
@@ -175,6 +179,7 @@ gssgp(
  * Returns: 2000, in addition to ANSI standard errors for this function.
  * See also: ANSI standard p.79
  */
+    void
 /*FORTRAN*/
 gsdtec(
     int            *sgna,

@@ -150,6 +150,7 @@ XgksSetWsViewport(ws, viewport)
 /*
  * XgksInitGksTrans -- initialise gks state list transformation stuff
  */
+   void
 XgksInitGksTrans()
 {
     Gint            i;			/* Loop counter */
@@ -199,6 +200,7 @@ XgksInitGksTrans()
  * XgksInitWssTrans(ws) -- initialize workstation transformation stuff
  *  WS_STATE_PTR ws;
  */
+   void
 XgksInitWssTrans(ws)
     WS_STATE_PTR    ws;
 {
@@ -578,7 +580,7 @@ XgksUnpendPendingTrans(ws)
 {
     /* step 1: check for nothing to do, return if so */
     if (ws->wsti.wstus == GNOTPENDING)
-	return;
+	return 0;
 
     /* step 2: move the pending transformation to the current transformation. */
     ws->wsti.current.w = ws->wsti.request.w;
@@ -593,8 +595,6 @@ XgksUnpendPendingTrans(ws)
      */
     xXgksUpdateTrans(ws);
     XgksUpdateWsClip(ws, &(xgks_state.cliprec.rec));
-
-    return;
 }
 
 
@@ -656,6 +656,7 @@ XgksFindNTrans(ndcpt, gloc)
  *	and world coordinates associated with the viewport that ALL ndcpts
  *	appears in, taking account for the veiwport priority.
  */
+   int
 XgksFindNTransNpts(num, ndcpts, ntrans, wcpts)
     int             num;		/* Number of points */
     Gpoint         *ndcpts;		/* those points in NDC space */
@@ -722,31 +723,12 @@ XgksFindNTransNpts(num, ndcpts, ntrans, wcpts)
 
 
 /*
- * XgksUpdateWsClip () 	- according to gks clip.ind
- *			  set all ws->clip rectangle to
- *
- *		GCLIP --> intersection of NDC-viewport and ws-window
- *	      GNOCLIP --> ws-window bounds
- *
- *			  this is done on ALL openedws[]
- */
-XgksUpdateWsClip(ws, bound)
-    WS_STATE_PTR    ws;
-    Glimit         *bound;
-{
-    if (ws->ewstype != X_WIN)
-	return;
-    XgksWsWinInterset(ws, bound, &(ws->clip));
-    xXgksUpdateClip(ws);
-}
-
-
-/*
  * XgksWsWinInterset (ws, v, clip)	find the intersection between
  *	NDC-viewport and ws-window
  * WS_STATE_PTR ws;
  * Glimit *v, *clip
  */
+    void
 XgksWsWinInterset(ws, v, clip)
     WS_STATE_PTR    ws;
     Glimit         *v, *clip;
@@ -786,8 +768,27 @@ XgksWsWinInterset(ws, v, clip)
 
     /* Smaller of the two */
     clip->ymax = (w->ymax < v->ymax) ? w->ymax : v->ymax;
+}
 
-    return;
+
+/*
+ * XgksUpdateWsClip () 	- according to gks clip.ind
+ *			  set all ws->clip rectangle to
+ *
+ *		GCLIP --> intersection of NDC-viewport and ws-window
+ *	      GNOCLIP --> ws-window bounds
+ *
+ *			  this is done on ALL openedws[]
+ */
+XgksUpdateWsClip(ws, bound)
+    WS_STATE_PTR    ws;
+    Glimit         *bound;
+{
+    if (ws->ewstype != X_WIN)
+	return 0;
+    XgksWsWinInterset(ws, bound, &(ws->clip));
+    xXgksUpdateClip(ws);
+    return 0;
 }
 
 

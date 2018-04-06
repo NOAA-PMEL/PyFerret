@@ -79,6 +79,7 @@ extern int      currfortpoints;
  *
  * See also: ANSI standard p.135
  */
+    void
 /*FORTRAN*/
 gsmlc(
     int            *wkid,
@@ -114,6 +115,7 @@ gsmlc(
  *
  * See also: ANSI standard p.137
  */
+    void
 /*FORTRAN*/
 gsmsk(
     int            *wkid,
@@ -174,6 +176,7 @@ gsmsk(
  *
  * See also: ANSI standard  p.133
  */
+    void
 /*FORTRAN*/
 gsmvl(
     int            *wkid,
@@ -202,6 +205,7 @@ gsmvl(
  *
  * See also: ANSI standard  p.136
  */
+    void
 /*FORTRAN*/
 gsmch(
     int            *wkid,
@@ -243,6 +247,7 @@ gsmch(
  *
  * See also: ANSI standard  p.137
  */
+    void
 /*FORTRAN*/
 gsmpk(
     int            *wkid,
@@ -286,6 +291,7 @@ gsmpk(
  *
  * See also: ANSI standard p.134
  */
+    void
 /*FORTRAN*/
 gsmst(
     int            *wkid,
@@ -318,6 +324,7 @@ gsmst(
  *
  * See also: ANSI standard p.134
  */
+    void
 /*FORTRAN*/
 gsmsts(
     int            *wkid,

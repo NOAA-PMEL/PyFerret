@@ -89,6 +89,7 @@ extern int      currfortpoints;
  *
  * See also: ANSI standard p.74
  */
+    void
 /*FORTRAN*/
 gqwkc(
     int            *wkid,
@@ -129,6 +130,7 @@ gqwkc(
  * int  *state;       workstation state
  *
  */
+    void
 /*FORTRAN*/
 gqwks(
     int            *wkid,
@@ -148,6 +150,7 @@ gqwks(
  * int *dempty;		display surface empty
  * int *nframe;		new frame action necessary at update
  */
+    void
 /*FORTRAN*/
 gqwkdu(
     int            *wkid,
@@ -178,6 +181,7 @@ gqwkdu(
  * int *ol;           number of polyline bundle
  * int *pli;          Nth element of list
  */
+    void
 /*FORTRAN*/
 gqepli(
     int            *wkid,
@@ -215,6 +219,7 @@ gqepli(
  *
  * Returns: Error 2004, in addition to ANSI standard errors for this function.
  */
+    void
 /*FORTRAN*/
 gqplr(
     int            *wkid,
@@ -246,6 +251,7 @@ gqplr(
  * int *ol;           number of polymarker
  * int *pmi;          Nth element of list
  */
+    void
 /*FORTRAN*/
 gqepmi(
     int            *wkid,
@@ -282,6 +288,7 @@ gqepmi(
  *
  * Returns: Error 2000, in addition to ANSI standard errors for this function.
  */
+    void
 /*FORTRAN*/
 gqpmr(
     int            *wkid,
@@ -314,6 +321,7 @@ gqpmr(
  * int *ol;           number of text bundles
  * int *txi;          Nth element of list
  */
+    void
 /*FORTRAN*/
 gqetxi(
     int            *wkid,
@@ -355,6 +363,7 @@ gqetxi(
  *
  * See also: ANSI standard p.74
  */
+    void
 /*FORTRAN*/
 gqtxr(
     int            *wkid,
@@ -402,6 +411,7 @@ gqtxr(
  *
  * See also: ANSI standard p.158
  */
+    void
 /*FORTRAN*/
 gqtxx(
     int            *wkid,
@@ -486,6 +496,7 @@ gqtxx(
  *
  * See also: ANSI standard p.158
  */
+    void
 /*FORTRAN*/
 gqtxxs(
     int            *wkid,
@@ -552,6 +563,7 @@ gqtxxs(
  *
  * See also: ANSI standard p.74
  */
+    void
 /*FORTRAN*/
 gqefai(
     int            *wkid,
@@ -591,6 +603,7 @@ gqefai(
  *
  * See also: ANSI standard p.74
  */
+    void
 /*FORTRAN*/
 gqfar(
     int            *wkid,
@@ -627,6 +640,7 @@ gqfar(
  *
  * See also: ANSI standard p.74
  */
+    void
 /*FORTRAN*/
 gqepai(
     int            *wkid,
@@ -666,6 +680,7 @@ gqepai(
  *
  * See also: ANSI standard p.74
  */
+    void
 /*FORTRAN*/
 gqpar(
     int            *wkid,
@@ -721,6 +736,7 @@ gqpar(
  *
  * Returns: ANSI standard errors for this function.
  */
+    void
 /*FORTRAN*/
 gqeci(
     int            *wkid,
@@ -760,6 +776,7 @@ gqeci(
  *
  * See also: ANSI standard p.74
  */
+    void
 /*FORTRAN*/
 gqcr(
     int            *wkid,
@@ -799,6 +816,7 @@ gqcr(
  *
  * See also: ANSI standard p.74
  */
+    void
 /*FORTRAN*/
 gqwkt(
     int            *wkid,
@@ -852,6 +870,7 @@ gqwkt(
  *
  * See also: ANSI standard p.166
  */
+    void
 /*FORTRAN*/
 gqsgwk(
     int            *wkid,
@@ -902,6 +921,7 @@ gqsgwk(
  *
  * See also: ANSI standard p.166
  */
+    void
 /*FORTRAN*/
 gqlcs(
     int            *wkid,
@@ -1084,6 +1104,7 @@ gqlcs(
  *
  * See also: ANSI standard p.167
  */
+    void
 /*FORTRAN*/
 gqsks(
     int            *wkid,
@@ -1255,6 +1276,7 @@ gqsks(
  *
  * See also: ANSI standard p.168
  */
+    void
 /*FORTRAN*/
 gqchs(
     int            *wkid,
@@ -1400,6 +1422,7 @@ gqchs(
  *
  * See also: ANSI standard p.169
  */
+    void
 /*FORTRAN*/
 gqpks(
     int            *wkid,
@@ -1503,6 +1526,7 @@ gqpks(
  *
  * See also: ANSI standard p.170
  */
+    void
 /*FORTRAN*/
 gqsts(
     int            *wkid,
@@ -1582,6 +1606,7 @@ gqsts(
  *
  * See also: ANSI standard p.168
  */
+    void
 /*FORTRAN*/
 gqvls(
     int            *wkid,
@@ -1692,6 +1717,7 @@ gqvls(
  *
  * See also: ANSI standard p.170
  */
+    void
 /*FORTRAN*/
 gqstss(
     int            *wkid,

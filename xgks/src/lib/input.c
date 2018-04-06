@@ -62,6 +62,7 @@
 /*
  * Initialise the input device list
  */
+    void
 XgksInitIDev(ws)
     WS_STATE_ENTRY *ws;
 {
@@ -95,6 +96,7 @@ XgksIDevAdd(ws, idev)
  * This routine will free up all memory assoicated with input device structure
  *
  */
+    void
 XgksIDevDelete(ws)
     WS_STATE_ENTRY *ws;
 {
@@ -183,6 +185,7 @@ XgksIDevLookup(ws, dev, class)
  *
  * XEvent can be one of: MotionNotify
  */
+    void
 XgksIProcessXEvent(xev, ws)
     XEvent         *xev;
     WS_STATE_ENTRY *ws;
@@ -363,6 +366,7 @@ XgksIProcessXEvent(xev, ws)
  */
 static          DisCount = 0;
 
+    void
 XgksIDevDisable(ws)
     WS_STATE_ENTRY *ws;
 {
@@ -459,6 +463,7 @@ XgksIDevDisable(ws)
 /*
  * Enable all input devices for a given workstation.
  */
+    void
 XgksIDevEnable(ws)
     WS_STATE_ENTRY *ws;
 {

@@ -66,6 +66,7 @@
  *
  * See also: ANSI standard p.128
  */
+    void
 /*FORTRAN*/
 gslcm(
     int            *wkid,
@@ -97,6 +98,7 @@ gslcm(
  *
  * See also: ANSI standard p.129
  */
+    void
 /*FORTRAN*/
 gsskm(
     int            *wkid,
@@ -130,6 +132,7 @@ gsskm(
  *
  * See also: ANSI standard p.128
  */
+    void
 /*FORTRAN*/
 gsvlm(
     int            *wkid,
@@ -162,6 +165,7 @@ gsvlm(
  *
  * See also: ANSI standard p.130
  */
+    void
 /*FORTRAN*/
 gschm(
     int            *wkid,
@@ -195,6 +199,7 @@ gschm(
  *
  * See also: ANSI standard p.128
  */
+    void
 /*FORTRAN*/
 gspkm(
     int            *wkid,
@@ -227,6 +232,7 @@ gspkm(
  *
  * See also: ANSI standard p.128
  */
+    void
 /*FORTRAN*/
 gsstm(
     int            *wkid,

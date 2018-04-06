@@ -58,6 +58,7 @@
  *
  * See also: ANSI standard p.144
  */
+    void
 /*FORTRAN*/
 gqops(
     int            *opsta)

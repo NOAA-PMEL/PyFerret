@@ -19,7 +19,7 @@
 #############################################################################
 #
 # Type of C compiler (default is `cc'):
-CC='gcc-7'
+CC='clang'
 #
 # C compiler flags (default is `-O'):
 CFLAGS='-O -I/usr/X11/include'
@@ -32,7 +32,7 @@ CPPFLAGS='-DNDEBUG'
 # Installation prefix (default is `../..'):
 prefix=..
 
-FC='gfortran-7'
+FC='gfortran'
 FFLAGS='-O2 -fno-second-underscore -fno-backslash -fdollar-ok -ffixed-line-length-132 -ffast-math'
 # FFLAGS='-O0 -g -fno-second-underscore -fno-backslash -fdollar-ok -ffixed-line-length-132 -ffast-math'
 

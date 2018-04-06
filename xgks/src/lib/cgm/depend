@@ -1,16 +1,3 @@
-cgm.o: cgm.c
-cgm.o: ../gks_implem.h
-cgm.o: ../xgks.h
-cgm.o: ../gks_defines.h
-cgm.o: ../primitive.h
-cgm.o: ../input.h
-cgm.o: ../wdt.h
-cgm.o: ../wslist.h
-cgm.o: ../gkslist.h
-cgm.o: ../gks_errors.h
-cgm.o: ../event.h
-cgm.o: ../metafile.h
-cgm.o: ./cgm.h
 cgmi.o: cgmi.c
 cgmi.o: ../gks_implem.h
 cgmi.o: ../xgks.h
@@ -23,8 +10,8 @@ cgmi.o: ../gkslist.h
 cgmi.o: ../gks_errors.h
 cgmi.o: ../event.h
 cgmi.o: ../metafile.h
-cgmi.o: ./cgm.h
-cgmi.o: ./cgm_implem.h
+cgmi.o: cgm.h
+cgmi.o: cgm_implem.h
 cgmo.o: cgmo.c
 cgmo.o: ../gks_implem.h
 cgmo.o: ../xgks.h
@@ -37,5 +24,5 @@ cgmo.o: ../gkslist.h
 cgmo.o: ../gks_errors.h
 cgmo.o: ../event.h
 cgmo.o: ../metafile.h
-cgmo.o: ./cgm.h
-cgmo.o: ./cgm_implem.h
+cgmo.o: cgm.h
+cgmo.o: cgm_implem.h

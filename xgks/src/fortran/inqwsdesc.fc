@@ -102,6 +102,7 @@ extern int      NUMWTYPES;
  *
  * See also: ANSI standard p.170
  */
+    void
 /*FORTRAN*/
 gqwkca(
     int            *wtype,
@@ -136,6 +137,7 @@ gqwkca(
  *
  * See also: ANSI standard p. 171
  */
+    void
 /*FORTRAN*/
 gqwkcl(
     int            *wtype,
@@ -170,6 +172,7 @@ gqwkcl(
  *
  * See also: ANSI standard p.171
  */
+    void
 /*FORTRAN*/
 gqdsp(
     int            *wtype,
@@ -215,6 +218,7 @@ gqdsp(
  *
  * See also: ANSI standard p.171
  */
+    void
 /*FORTRAN*/
 gqdwka(
     int            *wtype,
@@ -265,6 +269,7 @@ gqdwka(
  *
  * See also: ANSI standard p.173
  */
+    void
 /*FORTRAN*/
 gqplf(
     int            *wtype,
@@ -320,6 +325,7 @@ gqplf(
  *
  * See also: ANSI standard p.171
  */
+    void
 /*FORTRAN*/
 gqpmf(
     int            *wtype,
@@ -376,6 +382,7 @@ gqpmf(
  *
  * See also: ANSI standard p.177
  */
+    void
 /*FORTRAN*/
 gqfaf(
     int            *wtype,
@@ -425,6 +432,7 @@ gqfaf(
  *
  * See also: ANSI standard p.179
  */
+    void
 /*FORTRAN*/
 gqpaf(
     int            *wtype,
@@ -451,6 +459,7 @@ gqpaf(
  *
  * See also: ANSI standard p.180
  */
+    void
 /*FORTRAN*/
 gqcf(
     int            *wtype,
@@ -503,6 +512,7 @@ gqcf(
  *
  * See also: ANSI standard p.175
  */
+    void
 /*FORTRAN*/
 gqppmr(
     int            *wtype,
@@ -541,6 +551,7 @@ gqppmr(
  *
  * See also: ANSI standard p.175
  */
+    void
 /*FORTRAN*/
 gqpplr(
     int            *wtype,
@@ -589,6 +600,7 @@ gqpplr(
  *
  * See also: ANSI standard p.176
  */
+    void
 /*FORTRAN*/
 gqtxf(
     int            *wtype,
@@ -645,6 +657,7 @@ gqtxf(
  *
  * See also: ANSI standard p.180
  */
+    void
 /*FORTRAN*/
 gqpcr(
     int            *wtype,
@@ -685,6 +698,7 @@ gqpcr(
  *
  * See also: ANSI standard p.182
  */
+    void
 /*FORTRAN*/
 gqlwk(
     int            *wtype,
@@ -725,6 +739,7 @@ gqlwk(
  *
  * See also: ANSI standard p.183
  */
+    void
 /*FORTRAN*/
 gqsgp(
     int            *wtype,
@@ -757,6 +772,7 @@ gqsgp(
  *
  * See also: ANSI standard p.184
  */
+    void
 /*FORTRAN*/
 gqdsga(
     int            *wtype,
@@ -803,6 +819,7 @@ gqdsga(
  *
  * See also: ANSI standard p.184
  */
+    void
 /*FORTRAN*/
 gqli(
     int            *wtype,
@@ -847,6 +864,7 @@ gqli(
  *
  * See also: ANSI standard p.177
  */
+    void
 /*FORTRAN*/
 gqptxr(
     int            *wtype,
@@ -900,6 +918,7 @@ gqptxr(
  *
  * See also: ANSI standard p.178
  */
+    void
 /*FORTRAN*/
 gqpfar(
     int            *wtype,
@@ -938,6 +957,7 @@ gqpfar(
  *
  * See also: ANSI standard p.179
  */
+    void
 /*FORTRAN*/
 gqppar(
     int            *wtype,
@@ -1009,6 +1029,7 @@ gqppar(
  *
  * See also: ANSI standard p.185
  */
+    void
 /*FORTRAN*/
 gqdlc(
     int            *wtype,
@@ -1137,6 +1158,7 @@ gqdlc(
  *
  * See also: ANSI standard p.186
  */
+    void
 /*FORTRAN*/
 gqdsk(
     int            *wtype,
@@ -1258,6 +1280,7 @@ gqdsk(
  *
  * See also: ANSI standard p.186
  */
+    void
 /*FORTRAN*/
 gqdvl(
     int            *wtype,
@@ -1368,6 +1391,7 @@ gqdvl(
  *
  * See also: ANSI standard p.187
  */
+    void
 /*FORTRAN*/
 gqdch(
     int            *wtype,
@@ -1490,6 +1514,7 @@ gqdch(
  *
  * See also: ANSI standard p.188
  */
+    void
 /*FORTRAN*/
 gqdpk(
     int            *wtype,
@@ -1584,6 +1609,7 @@ gqdpk(
  *
  * See also: ANSI standard p.188
  */
+    void
 /*FORTRAN*/
 gqdst(
     int            *wtype,
@@ -1657,6 +1683,7 @@ gqdst(
  *
  * See also: ANSI standard p.173
  */
+    void
 /*FORTRAN*/
 gqdds(
     int            *wtype,
@@ -1696,6 +1723,7 @@ gqdds(
  *
  * See also: ANSI standard p.181
  */
+    void
 /*FORTRAN*/
 gqegdp(
     int            *wtype,
@@ -1744,6 +1772,7 @@ gqegdp(
  *
  * See also: ANSI standard p.182
  */
+    void
 /*FORTRAN*/
 gqgdp(
     /* ARGSUSED */

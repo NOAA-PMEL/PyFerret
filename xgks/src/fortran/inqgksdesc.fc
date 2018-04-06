@@ -59,6 +59,7 @@
  *
  * See also: ANSI standard p.145
  */
+    void
 /*FORTRAN*/
 gqlvks(
     int            *errind,
@@ -82,6 +83,7 @@ gqlvks(
  *
  * See also: ANSI standard p.146
  */
+    void
 /*FORTRAN*/
 gqewk(
     int            *n,
@@ -119,6 +121,7 @@ gqewk(
  *
  * See also: ANSI standard p.146
  */
+    void
 /*FORTRAN*/
 gqwkm(
     int            *errind,
@@ -146,6 +149,7 @@ gqwkm(
  *
  * See also: ANSI standard p.146
  */
+    void
 /*FORTRAN*/
 gqmntn(
     int            *errind,

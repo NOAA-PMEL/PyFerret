@@ -90,6 +90,27 @@ XgksNewPrimi()
 
 
 /*
+ *   XgksInsertPrimi(head, insert_pt, elm) -
+ *       OUT_PRIMI *head, *elm  insert elm-> into the the list pointed to by
+ *				head, this is done by allocating new memory
+ *				for the list and copy content of elm over.
+ *       OUT_PRIMI *insert_pt	insertion point on the primitive list
+ */
+    void
+XgksInsertPrimi(insert_pt, elm)
+    OUT_PRIMI     **insert_pt, *elm;
+{
+    /*
+     * local function declares
+     */
+    OUT_PRIMI      *XgksDuplicatePrimi();
+
+    (*insert_pt)->next = XgksDuplicatePrimi(elm);
+    (*insert_pt) = (*insert_pt)->next;
+}
+
+
+/*
  *   XgksInsertMesgPrimi (ws, primi)
  *       WS_STATE_PTR  ws     points to the active workstation record
  *                            we need the message_pt pointer and if it's NULL, 
@@ -103,6 +124,7 @@ XgksNewPrimi()
  *			      primitive with the text for the new one, because
  *			      there should only be one message in the list.
  */
+    int
 XgksInsertMesgPrimi(ws, primi)
     WS_STATE_PTR    ws;
     OUT_PRIMI      *primi;
@@ -151,31 +173,12 @@ XgksInsertMesgPrimi(ws, primi)
 
 
 /*
- *   XgksInsertPrimi(head, insert_pt, elm) -
- *       OUT_PRIMI *head, *elm  insert elm-> into the the list pointed to by
- *				head, this is done by allocating new memory
- *				for the list and copy content of elm over.
- *       OUT_PRIMI *insert_pt	insertion point on the primitive list
- */
-XgksInsertPrimi(insert_pt, elm)
-    OUT_PRIMI     **insert_pt, *elm;
-{
-    /*
-     * local function declares
-     */
-    OUT_PRIMI      *XgksDuplicatePrimi();
-
-    (*insert_pt)->next = XgksDuplicatePrimi(elm);
-    (*insert_pt) = (*insert_pt)->next;
-}
-
-
-/*
  *   XgksDeletePrimi (head) -
  *	OUT_PRIMI **head   delete ALL entries in the list pointed to by head,
  *			   and will "FREE" all memory associated with them.
  *			   Set head to NULL
  */
+    void
 XgksDeletePrimi(head, insert_pt)
     OUT_PRIMI      *head, **insert_pt;
 {
@@ -205,6 +208,7 @@ XgksDeletePrimi(head, insert_pt)
  *			  to to open segment or should it be append to ws non
  *			  segment primitive list
  */
+    void
 XgksProcessPrimi(primi)
     OUT_PRIMI      *primi;
 {
@@ -233,6 +237,7 @@ XgksProcessPrimi(primi)
  *			      corresponding x-calls, they are merely there for
  *			      redraw purpose
  */
+    void
 XgksProcessClip(rec)
     Glimit         *rec;
 {
@@ -248,6 +253,7 @@ XgksProcessClip(rec)
  * XgksPrimiDump (head)
  *
  */
+    void
 XgksPrimiDump(head)
     OUT_PRIMI      *head;
 {
@@ -263,11 +269,35 @@ XgksPrimiDump(head)
 
 
 /*
+ * XgksMiniMax (bound, pt)	setting values in
+ *					bound.xmax if pt.x > bound->xmamx
+ *					bound.xmin if pt.x < bound->xmin
+ *					bound.ymax if pt.y > bound->ymax
+ *					bound.ymin if pt.y < bound->ymin
+ */
+    void
+XgksMiniMax(bound, pt)
+    Glimit         *bound;
+    Gpoint         *pt;
+{
+    if (pt->x > bound->xmax)
+	bound->xmax = pt->x;
+    if (pt->x < bound->xmin)
+	bound->xmin = pt->x;
+    if (pt->y > bound->ymax)
+	bound->ymax = pt->y;
+    if (pt->y < bound->ymin)
+	bound->ymin = pt->y;
+}
+
+
+/*
  * XgksUpdatePrimiBound (primi, bound)	locate a bounding box for the
  *					primitive
  *
  * NOTE : everything is in NDC space
  */
+    void
 XgksUpdatePrimiBound(primi, bound)
     OUT_PRIMI      *primi;
     Glimit         *bound;
@@ -310,28 +340,6 @@ XgksUpdatePrimiBound(primi, bound)
     case GDP:
 	break;
     }
-}
-
-
-/*
- * XgksMiniMax (bound, pt)	setting values in
- *					bound.xmax if pt.x > bound->xmamx
- *					bound.xmin if pt.x < bound->xmin
- *					bound.ymax if pt.y > bound->ymax
- *					bound.ymin if pt.y < bound->ymin
- */
-XgksMiniMax(bound, pt)
-    Glimit         *bound;
-    Gpoint         *pt;
-{
-    if (pt->x > bound->xmax)
-	bound->xmax = pt->x;
-    if (pt->x < bound->xmin)
-	bound->xmin = pt->x;
-    if (pt->y > bound->ymax)
-	bound->ymax = pt->y;
-    if (pt->y < bound->ymin)
-	bound->ymin = pt->y;
 }
 
 

@@ -57,10 +57,5 @@
 	
 	line_allocated (iaxis) = 0
 
-
-* set the pointer to a zero length object (just for bookkeeping)
-c	CALL NULLIFY_LINEMEM(iaxis, 0)
-c	CALL NULLIFY_LINEMEM(iaxis, 1)
-
 	RETURN
 	END

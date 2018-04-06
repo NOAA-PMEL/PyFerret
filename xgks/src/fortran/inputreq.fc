@@ -82,6 +82,7 @@ extern int      currfortpoints;
  * Returns:  ANSI standard errors for this function.
  * See also: ANSI standard p.131
  */
+    void
 /*FORTRAN*/
 grqlc(
     int            *wkid,
@@ -123,6 +124,7 @@ grqlc(
  * Returns: ANSI standard errors for this function.
  * See also: ANSI standard p.132
  */
+    void
 /*FORTRAN*/
 grqsk(
     int            *wkid,
@@ -189,6 +191,7 @@ grqsk(
  * Returns: ANSI standard errors for this function.
  * See also: ANSI standard p.133
  */
+    void
 /*FORTRAN*/
 grqvl(
     int            *wkid,
@@ -222,6 +225,7 @@ grqvl(
  * Returns: ANSI standard errors for this function.
  * See also: ANSI standard p.133
  */
+    void
 /*FORTRAN*/
 grqch(
     int            *wkid,
@@ -268,6 +272,7 @@ grqch(
  * Returns: ANSI standard errors for this function.
  * See also: ANSI standard p.134
  */
+    void
 /*FORTRAN*/
 grqpk(
     int            *wkid,
@@ -313,6 +318,7 @@ grqpk(
  * Returns: ANSI standard errors for this function.
  * See also: ANSI standard p.134
  */
+    void
 /*FORTRAN*/
 grqst(
     int            *wkid,
@@ -369,6 +375,7 @@ grqst(
  * Returns: ANSI standard errors for this function.
  * See also: ANSI standard p.134
  */
+    void
 /*FORTRAN*/
 grqsts(
     int            *wkid,

@@ -63,6 +63,7 @@
  * Returns: ANSI standard errors for this function
  * See also: ANSI standard p111.
  */
+    void
 /*FORTRAN*/
 gcrsg(
     int            *sgna)
@@ -81,6 +82,7 @@ gcrsg(
  * Returns: ANSI standard errors for this function
  * See also: ANSI standard p111.
  */
+    void
 /*FORTRAN*/
 gclsg()
 {
@@ -101,6 +103,7 @@ gclsg()
  *
  * See also: ANSI standard p.111
  */
+    void
 /*FORTRAN*/
 grensg(
     int            *old,
@@ -122,6 +125,7 @@ grensg(
  *
  * See also: ANSI standard p.112
  */
+    void
 /*FORTRAN*/
 gdsg(
     int            *sgna)
@@ -143,6 +147,7 @@ gdsg(
  *
  * See also: ANSI standard p.112
  */
+    void
 /*FORTRAN*/
 gdsgwk(
     int            *wkid,
@@ -165,6 +170,7 @@ gdsgwk(
  *
  * See also: ANSI standard p.113
  */
+    void
 /*FORTRAN*/
 gasgwk(
     int            *wkid,
@@ -187,6 +193,7 @@ gasgwk(
  *
  * See also: ANSI standard p.113
  */
+    void
 /*FORTRAN*/
 gcsgwk(
     int            *wkid,
@@ -209,6 +216,7 @@ gcsgwk(
  *
  * See also: ANSI standard p.114
  */
+    void
 /*FORTRAN*/
 ginsg(
     int            *sgna,

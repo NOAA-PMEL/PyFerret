@@ -75,6 +75,7 @@ extern int      currfortpoints;
  *
  * See also: ANSI standard p.100
  */
+    void
 /*FORTRAN*/
 gsplr(
     int            *wkid,
@@ -108,6 +109,7 @@ gsplr(
  *
  * See also: ANSI standard p.101
  */
+    void
 /*FORTRAN*/
 gspmr(
     int            *wkid,
@@ -143,6 +145,7 @@ gspmr(
  *
  * See also: ANSI standard p.102
  */
+    void
 /*FORTRAN*/
 gstxr(
     int            *wkid,
@@ -181,6 +184,7 @@ gstxr(
  *
  * See also: ANSI standard p.102
  */
+    void
 /*FORTRAN*/
 gsfar(
     int            *wkid,
@@ -210,6 +214,7 @@ gsfar(
  *
  * See also: ANSI standard p.104
  */
+    void
 /*FORTRAN*/
 gspar(
     int            *wkid,
@@ -280,6 +285,7 @@ gspar(
  *
  * See also: ANSI standard p.105
  */
+    void
 /*FORTRAN*/
 gscr(
     int            *wkid,

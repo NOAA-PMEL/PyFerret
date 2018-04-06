@@ -76,6 +76,7 @@
  *
  * See also: ANSI standard p.190
  */
+    int
 /*FORTRAN*/
 gqpxad(
     int            *wkid,
@@ -117,12 +118,12 @@ gqpxad(
     GKSERROR(((ws = OPEN_WSID(*wkid)) == NULL), 25, errginqpixelarraydim);
 
     if (ws->ewstype != X_WIN)
-    return;
+        return 0;
 
 /* end of extra code from inqpixel.c: */
 
     if (*errind = ginqpixelarraydim((Gint) *wkid, &rect, &dim))
-	return;
+	return 0;
 
     *n = (int) dim.x;
     *m = (int) dim.y;
@@ -172,13 +173,13 @@ gqpxa(
     if (*dx > *dimx || *dy > *dimy) {
 	*errind = 2001;
 	(void) gerrorhand(2001, errginqpixelarray, (errfp));
-	return;
+	return 0;
     }
     point.x = *px;
     point.y = *py;
 
     if (*errind = ginqpixelarray((Gint) *wkid, &point, &dimen, &pxarr))
-	return;
+	return 0;
 
 
     *invval = (int) pxarr.covalid;

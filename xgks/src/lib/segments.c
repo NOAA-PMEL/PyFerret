@@ -1061,7 +1061,7 @@ XgksDeleteSeg(name)
  *
  *  Will redraw the workstation if necessary
  */
-    static
+    static int
 XgksDelAssocWs(seg, ws_id)
     SEG_STATE_PTR   seg;
     Gint            ws_id;
@@ -1183,7 +1183,7 @@ XgksClearWs(ws)
  * XgksSetHighLight(ws, seg)	setting/unsetting segment highlight on
  *				specified workstations.
  */
-    static 
+    static  void
 XgksSetHighLight(ws, seg)
     WS_STATE_PTR    ws;
     SEG_STATE_PTR   seg;
@@ -1226,7 +1226,7 @@ XgksSetHighLight(ws, seg)
  * XgksOutputSeg (ws, seg)	Output all primitive in the seg->primi_list to 
  *				ws.
  */
-    static 
+    static void
 XgksOutputSeg(ws, seg)
     WS_STATE_PTR    ws;
     SEG_STATE_PTR   seg;
@@ -1255,7 +1255,7 @@ XgksOutputSeg(ws, seg)
  *
  * NOTE: This  function will not redraw on WISS (that is if WISS, skip )
  */
-    static 
+    static void
 XgksReDrawAssocWs(seg)
     SEG_STATE_PTR   seg;
 {
@@ -1279,7 +1279,7 @@ XgksReDrawAssocWs(seg)
  *    ->vis: if old != new     return TRUE
  *    ->pri: if different      return TRUE
  */
-    static 
+    static int
 XgksIrgNec(old, new)
     Gsegattr       *old, *new;
 {
@@ -1339,7 +1339,7 @@ XgksNewSeg()
  *   XgksInstallSeg(seg) -
  *       SEG_STATE_PTR  seg  install seg-> into the segment state hash table
  */
-    static 
+    static void
 XgksInstallSeg(seg)
     SEG_STATE_PTR   seg;
 {
@@ -1371,7 +1371,7 @@ XgksNewWsSeg()
  * The lowest possible priority is 0. The highest priority is 1.	c1032
  *
  */
-    static 
+    static void
 XgksInsertWsSeg(ws, seg_id)
     WS_STATE_PTR    ws;
     Gint            seg_id;
@@ -1397,7 +1397,7 @@ XgksInsertWsSeg(ws, seg_id)
  *		INVALID if undefined
  *		else return the name of the deleted segment
  */
-    static
+    static int
 XgksDeleteWsSeg(ws, seg_id)
     WS_STATE_PTR    ws;
     Gint            seg_id;
@@ -1420,7 +1420,7 @@ XgksDeleteWsSeg(ws, seg_id)
  * XgksRenameWsSeg (ws, old, new) - rename the segment name in ws->seglist
  *
  */
-    static 
+    static void
 XgksRenameWsSeg(ws, old, new)
     WS_STATE_PTR    ws;
     Gint            old, new;
@@ -1468,6 +1468,7 @@ XgksFindSeg(name)
 /*
  * XgksInitGksSegments() - utility function to initialize GKS segment data.
  */
+    void
 XgksInitGksSegments()
 {
     Gint            i;
@@ -2223,6 +2224,7 @@ XgksAppendSegPrimi(primi)
  * XgksDeleteAllSeg (ws)	delete all segments from the workstation
  *
  */
+    void
 XgksDeleteAllSeg(ws)
     WS_STATE_PTR    ws;
 {
@@ -2304,6 +2306,7 @@ XgksDrawSegToWs(ws)
  *			clip->rec; else build one with value = clip->rec
  *			append to list.
  */
+    void
 XgksAppendSegClip()
 {
     SEG_STATE_PTR   seg;
@@ -2327,6 +2330,7 @@ XgksAppendSegClip()
  * XgksSegdump() - ....
  */
 #ifdef SEGMENTDEBUG
+    void
 XgksSegDump(seg)
     SEG_STATE_PTR   seg;
 {
@@ -2428,7 +2432,7 @@ XgksReDrawSeg(ws, seg_id)
 
 	seg = XgksFindSeg(seg_id);
 	if (seg->segattr.vis == GINVISIBLE)
-	    return;
+	    return 0;
 	primi = &(seg->primi_list);
 	tmp_clip = ws->clip;			/* save the current clip
 						 * region */
@@ -2448,6 +2452,7 @@ XgksReDrawSeg(ws, seg_id)
 /*
  * XgksShowPick -- bound or unbound the picked segment for 1 second
  */
+    void
 XgksShowPick(ws, seg)
     WS_STATE_PTR    ws;
     SEG_STATE_PTR   seg;

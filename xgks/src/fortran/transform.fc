@@ -65,6 +65,7 @@
  *
  * See also: ANSI standard p.107
  */
+    void
 /*FORTRAN*/
 gswn(
     int            *tnr,
@@ -100,6 +101,7 @@ gswn(
  *
  * See also: ANSI standard p.107
  */
+    void
 /*FORTRAN*/
 gsvp(
     int            *tnr,
@@ -133,6 +135,7 @@ gsvp(
  *
  * See also: ANSI standard p.107
  */
+    void
 /*FORTRAN*/
 gsvpip(
     int            *tnr,
@@ -156,6 +159,7 @@ gsvpip(
  *
  * See also: ANSI standard p.108
  */
+    void
 /*FORTRAN*/
 gselnt(
     int            *tnr)
@@ -175,6 +179,7 @@ gselnt(
  *
  * See also: ANSI standard p.108
  */
+    void
 /*FORTRAN*/
 gsclip(
     int            *clsw)
@@ -201,6 +206,7 @@ gsclip(
  *
  * See also: ANSI standard p.109
  */
+    void
 /*FORTRAN*/
 gswkwn(
     int            *wkid,
@@ -236,6 +242,7 @@ gswkwn(
  *
  * See also: ANSI standard p.109
  */
+    void
 /*FORTRAN*/
 gswkvp(
     int            *wkid,

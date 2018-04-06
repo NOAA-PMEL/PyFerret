@@ -77,6 +77,7 @@ extern FILE    *errfp;
  *
  * See also: ANSI standard p.80
  */
+    void
 /*FORTRAN*/
 gesscm(int *wsid, int *mask)
 {
@@ -93,6 +94,7 @@ gesscm(int *wsid, int *mask)
  *
  * See also: ANSI standard p.80
  */
+    void
 /*FORTRAN*/
 gessdc(int *wsid, float *xsize, float *ysize)
 {
@@ -115,6 +117,7 @@ gessdc(int *wsid, float *xsize, float *ysize)
  *
  * See also: ANSI standard p.80
  */
+    void
 /*FORTRAN*/
 gessrp(int *wsid, int *store)
 {
@@ -132,6 +135,7 @@ gessrp(int *wsid, int *store)
  * See also: ANSI standard p.80
  *
  */
+    void
 /*FORTRAN*/
 gessrn(int *wsid, int (*func)())
 {
@@ -144,6 +148,7 @@ gessrn(int *wsid, int (*func)())
  *
  * char *conid		- server connection identifier
  */
+    void
 /*FORTRAN*/
 gescid(
     char     *conid

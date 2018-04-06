@@ -10,5 +10,5 @@ gksm.o: ../gkslist.h
 gksm.o: ../gks_errors.h
 gksm.o: ../event.h
 gksm.o: ../metafile.h
-gksm.o: ./gksm.h
-gksm.o: ./gksm_implem.h
+gksm.o: gksm.h
+gksm.o: gksm_implem.h

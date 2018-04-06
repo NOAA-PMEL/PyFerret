@@ -62,6 +62,7 @@
  *
  * See also: ANSI standard p.74
  */
+    void
 /*FORTRAN*/
 gqsga(
     int            *sgna,
@@ -105,6 +106,7 @@ gqsga(
  *
  * See also: ANSI standard p.189
  */
+    void
 /*FORTRAN*/
 gqaswk(
     int            *sgna,

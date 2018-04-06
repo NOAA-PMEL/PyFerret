@@ -61,6 +61,7 @@ static char     rcsid[] = "$Id$";
  *
  * See also: ANSI standard p.89
  */
+    void
 /*FORTRAN*/
 gspli(
     int            *pli)
@@ -80,6 +81,7 @@ gspli(
  *
  * See also: ANSI standard p.89
  */
+    void
 /*FORTRAN*/
 gsln(
     int            *ltype)
@@ -99,6 +101,7 @@ gsln(
  *
  * See also: ANSI standard p.90
  */
+    void
 /*FORTRAN*/
 gslwsc(
     float          *lwidth)
@@ -118,6 +121,7 @@ gslwsc(
  *
  * See also: ANSI standard p.90
  */
+    void
 /*FORTRAN*/
 gsplci(
     int            *coli)
@@ -137,6 +141,7 @@ gsplci(
  *
  * See also: ANSI standard p.91
  */
+    void
 /*FORTRAN*/
 gspmi(
     int            *pmi)
@@ -156,6 +161,7 @@ gspmi(
  *
  * See also: ANSI standard p.91
  */
+    void
 /*FORTRAN*/
 gsmk(
     int            *mtype)
@@ -175,6 +181,7 @@ gsmk(
  *
  * See also: ANSI standard p.92
  */
+    void
 /*FORTRAN*/
 gsmksc(
     float          *mszsf)
@@ -194,6 +201,7 @@ gsmksc(
  *
  * See also: ANSI standard p.92
  */
+    void
 /*FORTRAN*/
 gspmci(
     int            *coli)
@@ -213,6 +221,7 @@ gspmci(
  *
  * See also: ANSI standard p.92
  */
+    void
 /*FORTRAN*/
 gstxi(
     int            *txi)
@@ -233,6 +242,7 @@ gstxi(
  *
  * See also: ANSI standard p.93
  */
+    void
 /*FORTRAN*/
 gstxfp(
     int            *font,
@@ -259,6 +269,7 @@ gstxfp(
  *
  * See also: ANSI standard p.93
  */
+    void
 /*FORTRAN*/
 gschxp(
     float          *chxp)
@@ -278,6 +289,7 @@ gschxp(
  *
  * See also: ANSI standard p.94
  */
+    void
 /*FORTRAN*/
 gschsp(
     float          *chsp)
@@ -297,6 +309,7 @@ gschsp(
  *
  * See also: ANSI standard p.94
  */
+    void
 /*FORTRAN*/
 gstxci(
     int            *coli)
@@ -316,6 +329,7 @@ gstxci(
  *
  * See also: ANSI standard p.95
  */
+    void
 /*FORTRAN*/
 gschh(
     float          *chh)
@@ -336,6 +350,7 @@ gschh(
  *
  * See also: ANSI standard p.95
  */
+    void
 /*FORTRAN*/
 gschup(
     float          *chux,
@@ -361,6 +376,7 @@ gschup(
  *
  * See also: ANSI standard p.95
  */
+    void
 /*FORTRAN*/
 gstxp(
     int            *txp)
@@ -382,6 +398,7 @@ gstxp(
  *
  * See also: ANSI standard p.96
  */
+    void
 /*FORTRAN*/
 gstxal(
     int            *txalh,
@@ -409,6 +426,7 @@ gstxal(
  *
  * See also: ANSI standard p.98
  */
+    void
 /*FORTRAN*/
 gsfai(
     int            *fai)
@@ -428,6 +446,7 @@ gsfai(
  *
  * See also: ANSI standard p.96
  */
+    void
 /*FORTRAN*/
 gsfais(
     int            *ints)
@@ -448,6 +467,7 @@ gsfais(
  *
  * See also: ANSI standard p.97
  */
+    void
 /*FORTRAN*/
 gsfasi(
     int            *styli)
@@ -467,6 +487,7 @@ gsfasi(
  *
  * See also: ANSI standard p.98
  */
+    void
 /*FORTRAN*/
 gsfaci(
     int            *coli)
@@ -486,6 +507,7 @@ gsfaci(
  *
  * See also: ANSI standard p.99
  */
+    void
 /*FORTRAN*/
 gsasf(
     int             *lasf)
@@ -533,6 +555,7 @@ gsasf(
  *
  * See also: ANSI standard p.99
  */
+    void
 /*FORTRAN*/
 gspkid(
     int            *pkid)
@@ -551,6 +574,7 @@ gspkid(
  *
  * See also: ANSI standard p.105
  */
+    void
 /*FORTRAN*/
 gspa(
     float          *szx,
@@ -580,6 +604,7 @@ gspa(
  *
  * See also: ANSI standard p.105
  */
+    void
 /*FORTRAN*/
 gsparf(
     float          *rfx,

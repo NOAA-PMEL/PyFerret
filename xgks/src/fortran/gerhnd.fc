@@ -52,6 +52,7 @@
  *
  * See also: ANSI standard p. 195
  */
+    void
 /*FORTRAN*/
 gerhnd(int *errnr, int *fctid, int *errfil)
 {

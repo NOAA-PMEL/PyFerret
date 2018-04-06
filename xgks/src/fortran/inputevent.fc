@@ -84,6 +84,7 @@ extern Gpoint  *fortpoints;
  *
  * See also: ANSI standard p.138
  */
+    void
 /*FORTRAN*/
 gwait(
     float          *tout,
@@ -118,6 +119,7 @@ gwait(
  *
  * See also: ANSI standard p.139
  */
+    void
 /*FORTRAN*/
 gflush(
     int *wkid,
@@ -147,6 +149,7 @@ gflush(
  *
  * See also: ANSI standard
  */
+    void
 /*FORTRAN*/
 ggtlc(
     int            *tnr,
@@ -178,6 +181,7 @@ ggtlc(
 
  * See also: ANSI standard
  */
+    void
 /*FORTRAN*/
 ggtsk(
     int            *n,
@@ -236,6 +240,7 @@ ggtsk(
  *
  * See also: ANSI standard
  */
+    void
 /*FORTRAN*/
 ggtvl(
     float *val
@@ -262,6 +267,7 @@ ggtvl(
  *
  * See also: ANSI standard
  */
+    void
 /*FORTRAN*/
 ggtch(
     int            *stat,
@@ -303,6 +309,7 @@ ggtch(
  *
  * See also: ANSI standard p.140
  */
+    void
 /*FORTRAN*/
 ggtpk(
     int            *stat,
@@ -344,6 +351,7 @@ ggtpk(
  *
  * See also: ANSI standard
  */
+    void
 /*FORTRAN*/
 ggtst(
     int            *lostr,
@@ -392,6 +400,7 @@ ggtst(
  *
  * See also: ANSI standard
  */
+    void
 /*FORTRAN*/
 ggtsts(
     int            *lostr,

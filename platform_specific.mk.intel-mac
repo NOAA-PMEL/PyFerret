@@ -56,9 +56,9 @@ endif
 
 	PLATFORM 	= $(shell uname -s -r)
 
-	CC		= $(shell which gcc-7)
-	FC		= $(shell which gfortran-7)
-	F77		= $(shell which gfortran-7)
+	CC		= $(shell which clang)
+	FC		= $(shell which gfortran)
+	F77		= $(shell which gfortran)
 	AR		= $(shell which ar)
 	ARFLAGS		= -cr
 	RANLIB		= $(shell which ranlib)
@@ -95,8 +95,8 @@ endif
 
 	# Below this line are macro definitions used only for the final linking of the executable
 
-	LD		= $(shell which gcc-7)
-	LDFLAGS		= -v --verbose -fPIC -rdynamic
+	LD		= $(shell which gfortran)
+	LDFLAGS		= -v --verbose -fPIC -rdynamic -static-libgfortran
 
 # If $(READLINE_DIR) is given (and not blank), statically link in the readline 
 # and history libraries given under that directory; otherwise, just use the usual 
@@ -109,7 +109,6 @@ ifneq ($(strip $(READLINE_DIR)),)
 			  -lcurl \
 			  -ldl \
 			  -lz \
-			  -lgfortran \
 			  -lm
 else
 	SYSLIB		= -L/opt/X11/lib -lX11 \
@@ -118,7 +117,6 @@ else
 			  -lcurl \
 			  -ldl \
 			  -lz \
-			  -lgfortran \
 			  -lm
 endif
 

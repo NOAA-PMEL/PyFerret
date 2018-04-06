@@ -66,6 +66,7 @@
  *   int     *ldr       -  number of array elements used in datarec
  *   char    *datarec   -  data record
  */
+    void
 /*FORTRAN*/
 gprec(
     int            *il,
@@ -156,7 +157,7 @@ gprecc(il, ia, rl, ra, sl, lstr, str, mldr, errind, ldr, datarec)
     if (space > (mldr) * DATARECWIDTH) {
 	*errind = 2001;
 	(void) gerrorhand(2001, errgprec, (errfp));
-	return;
+	return 0;
     }
 
     /*
@@ -264,6 +265,7 @@ gprecc(il, ia, rl, ra, sl, lstr, str, mldr, errind, ldr, datarec)
  * int   *lstr		length of each character string entry
  * char  *str		char string entries
  */
+    void
 /*FORTRAN*/
 gurec(
     int            *ldr,
@@ -333,6 +335,7 @@ gurec(
  *
  * See also: ANSI standard p.193
  */
+    void
 /*FORTRAN*/
 gevtm(
     float          *x0,
@@ -385,6 +388,7 @@ gevtm(
  *
  * See also: ANSI standard p.193
  */
+    void
 /*FORTRAN*/
 gactm(
     float          *minp,

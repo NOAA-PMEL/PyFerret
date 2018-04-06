@@ -94,6 +94,7 @@
  *
  * See also: ANSI standard p. 147
  */
+    void
 /*FORTRAN*/
 gqopwk(
     int            *n,
@@ -129,6 +130,7 @@ gqopwk(
  *
  * See also: ANSI standard p. 147
  */
+    void
 /*FORTRAN*/
 gqacwk(
     int            *n,
@@ -163,6 +165,7 @@ gqacwk(
  *
  * See also: ANSI standard p. 148
  */
+    void
 /*FORTRAN*/
 gqpli(
     int            *errind,
@@ -188,6 +191,7 @@ gqpli(
  *
  * See also: ANSI standard p. 148
  */
+    void
 /*FORTRAN*/
 gqpmi(
     int            *errind,
@@ -213,6 +217,7 @@ gqpmi(
  *
  * See also: ANSI standard p. 148
  */
+    void
 /*FORTRAN*/
 gqtxi(
     int            *errind,
@@ -238,6 +243,7 @@ gqtxi(
  *
  * See also: ANSI standard p. 148
  */
+    void
 /*FORTRAN*/
 gqchh(
     int            *errind,
@@ -264,6 +270,7 @@ gqchh(
  *
  * See also: ANSI standard p. 148
  */
+    void
 /*FORTRAN*/
 gqchup(
     int            *errind,
@@ -291,6 +298,7 @@ gqchup(
  *
  * See also: ANSI standard p. 148
  */
+    void
 /*FORTRAN*/
 gqchw(
     int            *errind,
@@ -317,6 +325,7 @@ gqchw(
  *
  * See also: ANSI standard p. 148
  */
+    void
 /*FORTRAN*/
 gqchb(
     int            *errind,
@@ -344,6 +353,7 @@ gqchb(
  *
  * See also: ANSI standard p. 148
  */
+    void
 /*FORTRAN*/
 gqtxp(
     int            *errind,
@@ -370,6 +380,7 @@ gqtxp(
  *
  * See also: ANSI standard p. 148
  */
+    void
 /*FORTRAN*/
 gqtxal(
     int            *errind,
@@ -397,6 +408,7 @@ gqtxal(
  *
  * See also: ANSI standard p. 148
  */
+    void
 /*FORTRAN*/
 gqfai(
     int            *errind,
@@ -423,6 +435,7 @@ gqfai(
  *
  * See also: ANSI standard p. 148
  */
+    void
 /*FORTRAN*/
 gqpa(
     int            *errind,
@@ -455,6 +468,7 @@ gqpa(
  * See also: ANSI standard p. 148
  *
  */
+    void
 /*FORTRAN*/
 gqparf(
     int            *errind,
@@ -482,6 +496,7 @@ gqparf(
  *
  * See also: ANSI standard p. 148
  */
+    void
 /*FORTRAN*/
 gqpkid(
     int            *errind,
@@ -503,6 +518,7 @@ gqpkid(
  *
  * See also: ANSI standard p. 149
  */
+    void
 /*FORTRAN*/
 gqln(
     int            *errind,
@@ -528,6 +544,7 @@ gqln(
  *
  * See also: ANSI standard p. 149
  */
+    void
 /*FORTRAN*/
 gqlwsc(
     int            *errind,
@@ -553,6 +570,7 @@ gqlwsc(
  *
  * See also: ANSI standard p. 149
  */
+    void
 /*FORTRAN*/
 gqplci(
     int            *errind,		/* error indicator   */
@@ -578,6 +596,7 @@ gqplci(
  *
  * See also: ANSI standard p. 149
  */
+    void
 /*FORTRAN*/
 gqmk(
     int            *errind,		/* error indicator   */
@@ -603,6 +622,7 @@ gqmk(
  *
  * See also: ANSI standard p. 149
  */
+    void
 /*FORTRAN*/
 gqmksc(
     int            *errind,
@@ -628,6 +648,7 @@ gqmksc(
  *
  * See also: ANSI standard p. 149
  */
+    void
 /*FORTRAN*/
 gqpmci(
     int            *errind,		/* error indicator   */
@@ -654,6 +675,7 @@ gqpmci(
  *
  * See also: ANSI standard p. 149
  */
+    void
 /*FORTRAN*/
 gqtxfp(
     int            *errind,
@@ -681,6 +703,7 @@ gqtxfp(
  *
  * See also: ANSI standard p. 149
  */
+    void
 /*FORTRAN*/
 gqchxp(
     int            *errind,		/* error indicator   */
@@ -706,6 +729,7 @@ gqchxp(
  *
  * See also: ANSI standard p. 149
  */
+    void
 /*FORTRAN*/
 gqchsp(
     int            *errind,		/* error indicator   */
@@ -730,6 +754,7 @@ gqchsp(
  *
  * See also: ANSI standard p. 149
  */
+    void
 /*FORTRAN*/
 gqtxci(
     int            *errind,		/* error indicator   */
@@ -755,6 +780,7 @@ gqtxci(
  *
  * See also: ANSI standard p. 149
  */
+    void
 /*FORTRAN*/
 gqfais(
     int            *errind,		/* error indicator          */
@@ -779,6 +805,7 @@ gqfais(
  *
  * See also: ANSI standard p. 149
  */
+    void
 /*FORTRAN*/
 gqfasi(
     int            *errind,		/* error indicator   */
@@ -803,6 +830,7 @@ gqfasi(
  *
  * See also: ANSI standard p. 149
  */
+    void
 /*FORTRAN*/
 gqfaci(
     int            *errind,		/* error indicator   */
@@ -827,6 +855,7 @@ gqfaci(
  *
  * See also: ANSI standard p. 149
  */
+    void
 /*FORTRAN*/
 gqasf(
     int            *errind,
@@ -864,6 +893,7 @@ gqasf(
  *
  * See also: ANSI standard p. 149
  */
+    void
 /*FORTRAN*/
 gqcntn(
     int            *errind,
@@ -886,6 +916,7 @@ gqcntn(
  *
  * See also: ANSI standard p. 150
  */
+    void
 /*FORTRAN*/
 gqentn(
     int            *n,
@@ -921,6 +952,7 @@ gqentn(
  *
  * See also: ANSI standard p. 150
  */
+    void
 /*FORTRAN*/
 gqnt(
     int            *ntnr,
@@ -957,6 +989,7 @@ gqnt(
  *
  * See also: ANSI standard p. 151
  */
+    void
 /*FORTRAN*/
 gqclip(
     int            *errind,
@@ -997,6 +1030,7 @@ gqclip(
  *
  * See also: ANSI standard p. 151
  */
+    void
 /*FORTRAN*/
 gqopsg(
     int            *errind,
@@ -1019,6 +1053,7 @@ gqopsg(
  *
  * See also: ANSI standard p. 152
  */
+    void
 /*FORTRAN*/
 gqsgus(
     int            *n,
@@ -1052,6 +1087,7 @@ gqsgus(
  *
  * See also: ANSI standard p. 152
  */
+    void
 /*FORTRAN*/
 gqsim(
     int            *errind,

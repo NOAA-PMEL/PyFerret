@@ -59,6 +59,7 @@ extern FILE    *errfp;
  *
  * See also: ANSI standard p. 195
  */
+    void
 /*FORTRAN*/
 geclks()
 {
@@ -117,6 +118,7 @@ gerrorhand(errnr, fctid, efp)
  *
  * See also: ANSI standard p. 196
  */
+    void
 /*FORTRAN*/
 gerlog(
     int            *errnr,

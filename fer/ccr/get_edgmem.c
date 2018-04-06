@@ -14,7 +14,7 @@
 #include "ferret.h"
 #include "FerMem.h"
 
-void FORTRAN(get_edgmem)( double *index, long *alen, int *status )
+void FORTRAN(get_edgmem)( int *index, long *alen, int *status )
 
 /*
   input  - index:  Ferret line number in which to store the array pointer

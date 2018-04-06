@@ -68,8 +68,6 @@ release_dyn_work_space.F\
 show_aborted_mem_state.F\
 store_edge_ptr.F\
 store_line_ptr.F\
-store_nul_edge_ptr.F\
-store_nul_line_ptr.F\
 store_nul_mr_ptr.F\
 store_nul_ws_ptr.F\
 store_mr_ptr.F\

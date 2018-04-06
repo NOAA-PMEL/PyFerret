@@ -101,6 +101,8 @@ void FORTRAN(set_nan)(DFTYPE *val);
 void FORTRAN(set_null_c_string)(char **out_ptr);
 void FORTRAN(set_null_c_string_array)(char ***fer_ptr, int *nstr);
 int  FORTRAN(sizeof_pointer)(void);
+void FORTRAN(store_edge_ptr)(int *iaxis, long *alen, double *pointer);
+void FORTRAN(store_line_ptr)(int *iaxis, long *alen, double *pointer);
 void FORTRAN(store_mr_ptr)(double *index, long *alen, double *pointer);
 void FORTRAN(store_nul_mr_ptr)(int *mr, double *nul_ptr);
 void FORTRAN(store_nul_ws_ptr)(int *ws, double *nul_ptr);

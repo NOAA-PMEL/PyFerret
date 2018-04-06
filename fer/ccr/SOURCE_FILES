@@ -38,7 +38,6 @@ linux_routines_c.c\
 list.c\
 nullify_mr.c\
 nullify_ws.c\
-nullify_linemem.c\
 recover_cached_2d_array_point.c\
 recover_cached_full_array.c\
 replaceable_bad_flags.c \

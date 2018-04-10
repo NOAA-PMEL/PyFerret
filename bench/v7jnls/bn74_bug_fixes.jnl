@@ -38,3 +38,6 @@ GO err73_append_cdf
 
 GO bn_reset
 GO err73_poly_vec_script
+
+GO bn_reset
+GO err73_reshape

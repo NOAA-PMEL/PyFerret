@@ -1,0 +1,27 @@
+! err73_reshape.jnl
+! Issue 1867, context and RESHAPE function
+!  See also err491_reshape_ctx and bn_true_monthly
+!  whose outputs had changed 3/17
+! 4/10/18 ACM
+!
+! Create a dataset with data along just one axis
+
+use levitus_3d_subset
+save/x=121/y=-49/file=a.nc/clobber temp
+cancel data/all
+use a.nc
+
+define axis/x=4:4:1/units=count xax
+let dummy = x[gx=xax] + z[gz=temp]
+show grid dummy
+
+! Now try to use RESHAPE to stick the data onto this new grid. It should list 20 points in Z
+! The bug was it listed just 1 point.
+list reshape(temp, dummy)
+
+! If the regrid is to a different Z axis, w/ same or different coordinates, it works correctly.
+use a.nc
+define axis/z/depth/units="`temp,return=zunits`" znew = z[gz=temp]
+let dummy =  x[gx=xax] + z[gz=znew]
+list reshape(temp, dummy)
+

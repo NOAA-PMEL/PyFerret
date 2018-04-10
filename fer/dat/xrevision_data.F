@@ -143,12 +143,13 @@
 * v7.3     11/30/2017 Release 
 * v7.31    12/06/2017 next working version
 * v7.32     2/27/2018 next working version
+* v7.4      4/10/2018 Release
 
         IMPLICIT NONE
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'PyFerret' /
 	DATA len_program_name	/  8       /
-	DATA revision_level	/  7.32   /
+	DATA revision_level	/  7.4   /
 
 	END

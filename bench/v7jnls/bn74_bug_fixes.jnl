@@ -41,3 +41,6 @@ GO err73_poly_vec_script
 
 GO bn_reset
 GO err73_reshape
+
+GO bn_reset
+GO err73_scale_miss_fill

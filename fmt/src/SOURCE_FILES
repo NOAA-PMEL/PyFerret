@@ -310,6 +310,7 @@ tm_split_message.F\
 tm_step_to_date.F\
 tm_string.F\
 tm_subsc.F\
+tm_switch_bad.F\
 tm_tcoord_trumonth.F\
 tm_translate_axis.F\
 tm_translate_lat_long.F\

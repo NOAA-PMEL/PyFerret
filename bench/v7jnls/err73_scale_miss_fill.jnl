@@ -1,0 +1,10 @@
+! err73_scale_miss_fill.jnl
+! Tests for the fix to issue 1861
+! scaled data with different missing_value and _FillValue
+! attributes.
+!
+! index numbers 9 and 10 have the _FillValue, 
+! 1 and 4 are marked with missing_value.
+
+use fill_and_miss.nc
+list sea_level

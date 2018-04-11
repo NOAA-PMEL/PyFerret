@@ -14,6 +14,9 @@ system-provided python (2.7).
 You will need to install the Homebrew package for PyQt5 (`pyqt` or 
 `pyqt5`, which require Python from Homebrew). 
 
+    brew install python
+    brew install pyqt
+
 Then, using `pip` (part of the Homebrew Python packages), install 
 the `numpy`, `scipy`, and `pyshp` packages. 
 NumPy http://www.numpy.org/ is required to use PyFerret; 
@@ -21,9 +24,6 @@ SciPy https://www.scipy.org/ and
 PyShp https://github.com/GeospatialPython/pyshp/ 
 are optional but are highly recommended as they enable 
 statistical and shapefile functions in PyFerret.
-
-    brew install python
-    brew install pyqt
 
     pip install numpy
     pip install scipy
@@ -88,7 +88,7 @@ packages are optional but highly recommended.)
 
 #### PyFerret
 
-Obtain the PyFerret source code from GitHub.  
+Obtain the PyFerret source code from GitHub. 
 You could just download the source code zip or tar.gz file for a PyFerret 
 release from https://github.com/NOAA-PMEL/PyFerret/releases/ and extract 
 it to the desired parent directory for building PyFerret. 

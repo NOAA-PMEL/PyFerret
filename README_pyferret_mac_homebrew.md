@@ -1,7 +1,6 @@
-# Using or Building PyFerret on Mac OS X with Homebrew Packages 
+# PyFerret on Mac OS X with Homebrew Packages 
 Information about using or building PyFerret on Mac OS X using 
 the Homebrew package manager to install required packages. 
-
 If you do not have Homebrew installed, see https://brew.sh/
 for information on installing and using Homebrew. 
 
@@ -14,6 +13,7 @@ Python 2.7 (`python@2`) packages and have not attempted to use the
 system-provided python (2.7). 
 You will need to install the Homebrew package for PyQt5 (`pyqt` or 
 `pyqt5`, which require Python from Homebrew). 
+
 Then, using `pip` (part of the Homebrew Python packages), install 
 the `numpy`, `scipy`, and `pyshp` packages. 
 NumPy http://www.numpy.org/ is required to use PyFerret; 
@@ -44,17 +44,15 @@ Run the `Finstall` script that is found under the `bin` subdirectory
 of the extracted PyFerret installation directory. 
 This script will ask for the PyFerret installation directory name, 
 the default Ferret datasets directory name, the directory in which 
-to create the ferret_paths scripts, and the python to use.  
+to create the ferret_paths scripts, and the python to use. 
 These directories can all be specified as relative path names to the 
 current directory when you run the Finstall script.
 
 The ferret_paths scripts are used to assign environment variables 
 required to run PyFerret.
-Thus, you must "source" the appropriate ferret_paths script: 
-    source ferret_paths.csh 
-for C-shell users, or: 
-    . ferret_paths.sh 
-for Bourne-shell users, prior to running PyFerret for the first 
+Thus, you must "source" the appropriate ferret_paths script 
+(`source ferret_paths.csh` for C-shell users, or `. ferret_paths.sh` 
+for Bourne-shell users) prior to running PyFerret for the first 
 time in a command window.
 If desired, this can be done in a shell startup script such as 
 `$HOME/.cshrc` or `$HOME/.bashrc`
@@ -150,19 +148,19 @@ packages are needed.
 
 Make sure the environment variables need by PyFerret are assigned 
 appropriately using the appropriate ferret_paths script, and that 
-the command `which pyferret` return the path to the version of 
+the command `which pyferret` returns the path to the version of 
 PyFerret that you wish to test.
 
 Change to the `bench` subdirectory of the PyFerret source directory, 
 and run `make run_tests`.
-These tests will generate image files as well as all_..._log 
-(normal output), all_..._err (error output), and all_..._ncdump 
+These tests will generate image files as well as `all_..._log` 
+(normal output), `all_..._err` (error output), and `all_..._ncdump` 
 (human-readable versions of the created NetCDF files) output files.
-These files are then compared to similar files under the test_results 
+These files are then compared to similar files under the `test_results` 
 subdirectory to create differences files.
 
 Any actual differences in the PNG and PDF images are show in dark red 
-(overlaid on a faded original image) in any *_diff.png images created.  
+(overlaid on a faded original image) in any *_diff.png images created. 
 There might not be any difference image files, but if there are, the 
 differences are usually from differnces in system-provided fonts and 
 so are not significant.

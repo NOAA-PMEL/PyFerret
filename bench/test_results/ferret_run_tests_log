@@ -104855,6 +104855,43 @@ list reshape(temp, dummy)
  4000    / 19:   ....
  5000    / 20:   ....
  
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+GO err73_scale_miss_fill
+! err73_scale_miss_fill.jnl
+! Tests for the fix to issue 1861
+! scaled data with different missing_value and _FillValue
+! attributes.
+!
+! index numbers 9 and 10 have the _FillValue,
+! 1 and 4 are marked with missing_value.
+ 
+use fill_and_miss.nc
+list sea_level
+             VARIABLE : sea level (meters)
+             DATA SET : TOPEX/POSEIDON SEA LEVEL
+             FILENAME : fill_and_miss.nc
+             SUBSET   : 15 points (LONGITUDE)
+             LATITUDE : 45.5N
+                 45.5N  
+                  1
+ 10.5W  /  1:     ....
+ 9.5W   /  2: -0.01500
+ 8.5W   /  3: -0.00400
+ 7.5W   /  4:     ....
+ 6.5W   /  5:  0.05000
+ 5.5W   /  6:  0.05900
+ 4.5W   /  7:  0.06500
+ 3.5W   /  8:  0.06900
+ 2.5W   /  9:     ....
+ 1.5W   / 10:     ....
+ 0.5W   / 11:  0.00400
+ 0.5E   / 12:  0.04800
+ 1.5E   / 13:  0.04600
+ 2.5E   / 14:  0.07300
+ 3.5E   / 15:  0.07700
 *** Running ferret script: bn_clim_special.jnl
 ! bn_clim_special.jnl
 ! Test the climatological axes from Andrew's monthly

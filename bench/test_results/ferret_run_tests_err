@@ -5359,6 +5359,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
            *** NOTE: (fyi) units are not subject to auto-conversion: COUNT
 Replacing definition of axis XAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_clim_special.jnl
            *** NOTE: regarding ./data/clim_axes_gregorian.nc ...
            *** NOTE: GREGORIAN climatological axes defined

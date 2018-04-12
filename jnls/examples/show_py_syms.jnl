@@ -1,0 +1,161 @@
+cancel mode verify
+!
+! pointplots_demo.jnl
+! Demo of named symbols in PyFerret
+!
+
+
+IF ($program_name"0|Ferret>1|*>0") THEN
+   say These symbols are available only in PyFerret. Exiting.
+   exit/script
+ENDIF
+message/cont ...
+message/cont Now displaying all pre-defined PyFerret plotting symbols ...
+message/cont ...
+
+
+set text /font=helvetica
+define view/x=.02:0.99/y=0.1:0.98/axes vfull
+set v vfull
+
+! Plot underlay plot
+plot/set /hlim=0.75:8.75 /vlim=1.5:8.5 /symbol=dot /nokey /nolab /color=(0,0,0,0) /vs {0,0}, {1,1}
+ppl axlabp,0,0
+ppl tics,0,0,0,0
+ppl plot
+annotate /xpos=4 /ypos=1 /valign=0 /size=0.14 "PyFerret named symbols"
+
+plot /over /nokey /size=0.2 /symbol=dot       /vs {1.0},{8.0}
+anno /xpos=1.15 /ypos=8.0 /valign=0 /size=0.1 "dot"
+plot /over /nokey /size=0.2 /symbol=dotex     /vs {2.0},{8.0}
+anno /xpos=2.15 /ypos=8.0 /valign=0 /size=0.1 "dotex"
+plot /over /nokey /size=0.2 /symbol=dotplus   /vs {3.0},{8.0}
+anno /xpos=3.15 /ypos=8.0 /valign=0 /size=0.1 "dotplus"
+
+plot /over /nokey /size=0.2 /symbol=circle    /vs {4.0},{8.0}
+anno /xpos=4.15 /ypos=8.0 /valign=0 /size=0.1 "circle"
+plot /over /nokey /size=0.2 /symbol=circfill  /vs {5.0},{8.0}
+anno /xpos=5.15 /ypos=8.0 /valign=0 /size=0.1 "circfill"
+plot /over /nokey /size=0.2 /symbol=circex    /vs {6.0},{8.0}
+anno /xpos=6.15 /ypos=8.0 /valign=0 /size=0.1 "circex"
+plot /over /nokey /size=0.2 /symbol=circplus  /vs {7.0},{8.0}
+anno /xpos=7.15 /ypos=8.0 /valign=0 /size=0.1 "circplus"
+
+plot /over /nokey /size=0.2 /symbol=asterisk  /vs {8.0},{8.0}
+anno /xpos=8.15 /ypos=8.0 /valign=0 /size=0.1 "asterisk"
+
+!--------
+
+plot /over /nokey /size=0.2 /symbol=arrdown   /vs {1.0},{7.0}
+anno /xpos=1.15 /ypos=7.0 /valign=0 /size=0.1 "arrdown"
+plot /over /nokey /size=0.2 /symbol=arrup     /vs {2.0},{7.0}
+anno /xpos=2.15 /ypos=7.0 /valign=0 /size=0.1 "arrup"
+plot /over /nokey /size=0.2 /symbol=arrleft   /vs {3.0},{7.0}
+anno /xpos=3.15 /ypos=7.0 /valign=0 /size=0.1 "arrleft"
+plot /over /nokey /size=0.2 /symbol=arrright  /vs {4.0},{7.0}
+anno /xpos=4.15 /ypos=7.0 /valign=0 /size=0.1 "arrright"
+
+plot /over /nokey /size=0.2 /symbol=arrdl     /vs {5.0},{7.0}
+anno /xpos=5.15 /ypos=7.0 /valign=0 /size=0.1 "arrdl"
+plot /over /nokey /size=0.2 /symbol=arrdr     /vs {6.0},{7.0}
+anno /xpos=6.15 /ypos=7.0 /valign=0 /size=0.1 "arrdr"
+plot /over /nokey /size=0.2 /symbol=arrul     /vs {7.0},{7.0}
+anno /xpos=7.15 /ypos=7.0 /valign=0 /size=0.1 "arrul"
+plot /over /nokey /size=0.2 /symbol=arrur     /vs {8.0},{7.0}
+anno /xpos=8.15 /ypos=7.0 /valign=0 /size=0.1 "arrur"
+
+!--------
+
+plot /over /nokey /size=0.2 /symbol=chevdown  /vs {1.0},{6.0}
+anno /xpos=1.15 /ypos=6.0 /valign=0 /size=0.1 "chevdown"
+plot /over /nokey /size=0.2 /symbol=chevup    /vs {2.0},{6.0}
+anno /xpos=2.15 /ypos=6.0 /valign=0 /size=0.1 "chevup"
+plot /over /nokey /size=0.2 /symbol=chevleft  /vs {3.0},{6.0}
+anno /xpos=3.15 /ypos=6.0 /valign=0 /size=0.1 "chevleft"
+plot /over /nokey /size=0.2 /symbol=chevright /vs {4.0},{6.0}
+anno /xpos=4.15 /ypos=6.0 /valign=0 /size=0.1 "chevright"
+
+plot /over /nokey /size=0.2 /symbol=wyedown   /vs {5.0},{6.0}
+anno /xpos=5.15 /ypos=6.0 /valign=0 /size=0.1 "wyedown"
+plot /over /nokey /size=0.2 /symbol=wyeup     /vs {6.0},{6.0}
+anno /xpos=6.15 /ypos=6.0 /valign=0 /size=0.1 "wyeup"
+plot /over /nokey /size=0.2 /symbol=wyeleft   /vs {7.0},{6.0}
+anno /xpos=7.15 /ypos=6.0 /valign=0 /size=0.1 "wyeleft"
+plot /over /nokey /size=0.2 /symbol=wyeright  /vs {8.0},{6.0}
+anno /xpos=8.15 /ypos=6.0 /valign=0 /size=0.1 "wyeright"
+
+!--------
+
+plot /over /nokey /size=0.2 /symbol=tridempty /vs {1.0},{5.0}
+anno /xpos=1.15 /ypos=5.0 /valign=0 /size=0.1 "tridempty"
+plot /over /nokey /size=0.2 /symbol=tridfill  /vs {2.0},{5.0}
+anno /xpos=2.15 /ypos=5.0 /valign=0 /size=0.1 "tridfill"
+plot /over /nokey /size=0.2 /symbol=triuempty /vs {3.0},{5.0}
+anno /xpos=3.15 /ypos=5.0 /valign=0 /size=0.1 "triuempty"
+plot /over /nokey /size=0.2 /symbol=triufill  /vs {4.0},{5.0}
+anno /xpos=4.15 /ypos=5.0 /valign=0 /size=0.1 "triufill"
+plot /over /nokey /size=0.2 /symbol=trilempty /vs {5.0},{5.0}
+anno /xpos=5.15 /ypos=5.0 /valign=0 /size=0.1 "trilempty"
+plot /over /nokey /size=0.2 /symbol=trilfill  /vs {6.0},{5.0}
+anno /xpos=6.15 /ypos=5.0 /valign=0 /size=0.1 "trilfill"
+plot /over /nokey /size=0.2 /symbol=trirempty /vs {7.0},{5.0}
+anno /xpos=7.15 /ypos=5.0 /valign=0 /size=0.1 "trirempty"
+plot /over /nokey /size=0.2 /symbol=trirfill  /vs {8.0},{5.0}
+anno /xpos=8.15 /ypos=5.0 /valign=0 /size=0.1 "trirfill"
+
+!--------
+
+plot /over /nokey /size=0.2 /symbol=boxempty  /vs {1.0},{4.0}
+anno /xpos=1.15 /ypos=4.0 /valign=0 /size=0.1 "boxempty"
+plot /over /nokey /size=0.2 /symbol=boxex     /vs {2.0},{4.0}
+anno /xpos=2.15 /ypos=4.0 /valign=0 /size=0.1 "boxex"
+plot /over /nokey /size=0.2 /symbol=boxfill   /vs {3.0},{4.0}
+anno /xpos=3.15 /ypos=4.0 /valign=0 /size=0.1 "boxfill"
+
+plot /over /nokey /size=0.2 /symbol=diamempty /vs {4.0},{4.0}
+anno /xpos=4.15 /ypos=4.0 /valign=0 /size=0.1 "diamempty"
+plot /over /nokey /size=0.2 /symbol=diamplus  /vs {5.0},{4.0}
+anno /xpos=5.15 /ypos=4.0 /valign=0 /size=0.1 "diamplus"
+plot /over /nokey /size=0.2 /symbol=diamfill  /vs {6.0},{4.0}
+anno /xpos=6.15 /ypos=4.0 /valign=0 /size=0.1 "diamfill"
+
+plot /over /nokey /size=0.2 /symbol=starempty /vs {7.0},{4.0}
+anno /xpos=7.15 /ypos=4.0 /valign=0 /size=0.1 "starempty"
+plot /over /nokey /size=0.2 /symbol=starfill  /vs {8.0},{4.0}
+anno /xpos=8.15 /ypos=4.0 /valign=0 /size=0.1 "starfill"
+
+!--------
+
+plot /over /nokey /size=0.2 /symbol=pentempty /vs {1.0},{3.0}
+anno /xpos=1.15 /ypos=3.0 /valign=0 /size=0.1 "pentempty"
+plot /over /nokey /size=0.2 /symbol=pentfill  /vs {2.0},{3.0}
+anno /xpos=2.15 /ypos=3.0 /valign=0 /size=0.1 "pentfill"
+
+plot /over /nokey /size=0.2 /symbol=hexempty  /vs {3.0},{3.0}
+anno /xpos=3.15 /ypos=3.0 /valign=0 /size=0.1 "hexempty"
+plot /over /nokey /size=0.2 /symbol=hexwye    /vs {4.0},{3.0}
+anno /xpos=4.15 /ypos=3.0 /valign=0 /size=0.1 "hexwye"
+plot /over /nokey /size=0.2 /symbol=hexfill   /vs {5.0},{3.0}
+anno /xpos=5.15 /ypos=3.0 /valign=0 /size=0.1 "hexfill"
+
+!--------
+
+plot /over /nokey /size=0.2 /symbol=exnormal  /vs {1.0},{2.0}
+anno /xpos=1.15 /ypos=2.0 /valign=0 /size=0.1 "exnormal"
+plot /over /nokey /size=0.2 /symbol=exshort   /vs {2.0},{2.0}
+anno /xpos=2.15 /ypos=2.0 /valign=0 /size=0.1 "exshort"
+plot /over /nokey /size=0.2 /symbol=extall    /vs {3.0},{2.0}
+anno /xpos=3.15 /ypos=2.0 /valign=0 /size=0.1 "extall"
+
+plot /over /nokey /size=0.2 /symbol=plusnorm  /vs {4.0},{2.0}
+anno /xpos=4.15 /ypos=2.0 /valign=0 /size=0.1 "plusnormal"
+plot /over /nokey /size=0.2 /symbol=plusshort /vs {5.0},{2.0}
+anno /xpos=5.15 /ypos=2.0 /valign=0 /size=0.1 "plusshort"
+plot /over /nokey /size=0.2 /symbol=plustall  /vs {6.0},{2.0}
+anno /xpos=6.15 /ypos=2.0 /valign=0 /size=0.1 "plustall"
+
+plot /over /nokey /size=0.2 /symbol=hline     /vs {7.0},{2.0}
+anno /xpos=7.15 /ypos=2.0 /valign=0 /size=0.1 "hline"
+plot /over /nokey /size=0.2 /symbol=vline     /vs {8.0},{2.0}
+anno /xpos=8.15 /ypos=2.0 /valign=0 /size=0.1 "vline"
+

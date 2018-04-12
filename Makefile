@@ -39,10 +39,10 @@ debug :
 	$(MAKE) externals_debug
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
-## The definition of MEMORYDEBUG is observed by fer/special/FerMem_routines.c, 
-## which causes it to print (append) all memory allocations, reallocations, 
-## and frees to file "memorydebug.txt".  Initialize allocated memory with 
-## non-zero values.  Expect this to be a lot slower due to all the 
+## The definition of MEMORYDEBUG is observed by fer/special/FerMem_routines.c,
+## which causes it to print (append) all memory allocations, reallocations,
+## and frees to file "memorydebug.txt".  Initialize allocated memory with
+## non-zero values.  Expect this to be a lot slower due to all the
 ## (intentionally inefficient but safe) file operations.
 .PHONY : memorydebug
 memorydebug :
@@ -79,9 +79,10 @@ pymod_optimized_build :
 	  export COMPRESS_LIB=$(COMPRESS_LIB) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export IS_LINUX_SYSTEM=$(IS_LINUX_SYSTEM) ; \
+	  export GFORTRAN_LIB=$(GFORTRAN_LIB) ; \
 	  $(PYTHON_EXE) setup.py --quiet build )
 
-## The following installs libpyferret.so and optimized 
+## The following installs libpyferret.so and optimized
 ## versions of all the python scripts into $(DIR_PREFIX)/install.
 .PHONY : pymod_optimized_install
 pymod_optimized_install :
@@ -97,6 +98,7 @@ pymod_optimized_install :
 	  export COMPRESS_LIB=$(COMPRESS_LIB) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export IS_LINUX_SYSTEM=$(IS_LINUX_SYSTEM) ; \
+	  export GFORTRAN_LIB=$(GFORTRAN_LIB) ; \
 	  $(PYTHON_EXE) setup.py --quiet install -O2 --prefix=$(DIR_PREFIX)/install )
 
 .PHONY : externals_optimized
@@ -118,6 +120,7 @@ pymod_debug_build :
 	  export COMPRESS_LIB=$(COMPRESS_LIB) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export IS_LINUX_SYSTEM=$(IS_LINUX_SYSTEM) ; \
+	  export GFORTRAN_LIB=$(GFORTRAN_LIB) ; \
 	  $(PYTHON_EXE) setup.py build -g )
 
 ## The following installs libpyferret.so and unoptimized
@@ -136,6 +139,7 @@ pymod_debug_install :
 	  export COMPRESS_LIB=$(COMPRESS_LIB) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export IS_LINUX_SYSTEM=$(IS_LINUX_SYSTEM) ; \
+	  export GFORTRAN_LIB=$(GFORTRAN_LIB) ; \
 	  $(PYTHON_EXE) setup.py --quiet install -O0 --prefix=$(DIR_PREFIX)/install )
 
 .PHONY : externals_debug
@@ -163,9 +167,9 @@ install :
 	mv -f pyferret-latest-local.tar.gz $(INSTALL_FER_DIR)
 	( cd $(INSTALL_FER_DIR) ; tar xz --strip-components=1 -f pyferret-latest-local.tar.gz )
 
-## The following is for installing the updated ferret_ef_meme_subsc.so, libpyferret.so, 
-## and PyFerret python scripts into $(INSTALL_FER_DIR)/lib without having to use the 
-## distribution tar file.  Also copies all the PyFerret Fortran external function to 
+## The following is for installing the updated ferret_ef_meme_subsc.so, libpyferret.so,
+## and PyFerret python scripts into $(INSTALL_FER_DIR)/lib without having to use the
+## distribution tar file.  Also copies all the PyFerret Fortran external function to
 ## the $(INSTALL_FER_DIR)/ext_func/pylibs directory.
 .PHONY : update
 update :
@@ -182,11 +186,12 @@ update :
 	  export COMPRESS_LIB=$(COMPRESS_LIB) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export IS_LINUX_SYSTEM=$(IS_LINUX_SYSTEM) ; \
+	  export GFORTRAN_LIB=$(GFORTRAN_LIB) ; \
 	  $(PYTHON_EXE) setup.py --quiet install -O2 --prefix=$(INSTALL_FER_DIR) )
 
 ## Execute the benchmark tests
 .PHONY : check
-check : 
+check :
 	$(MAKE) -C $(DIR_PREFIX)/bench check
 
 ##

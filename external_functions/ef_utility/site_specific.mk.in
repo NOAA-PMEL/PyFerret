@@ -1,5 +1,5 @@
-## Site-dependent definitions included in external function 
-## Makefiles in an installed PyFerret directory.
+## Site-dependent definitions included in external function Makefiles
+## of an installed PyFerret directory.
 
 ## =========================
 ## Machine type for which to build Ferret/PyFerret

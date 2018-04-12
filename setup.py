@@ -58,6 +58,14 @@ pango_libdir = os.getenv("PANGO_LIBDIR")
 if pango_libdir:
     pango_libdir = pango_libdir.strip()
 
+# GFORTRAN_LIB gives a non-standard full-path location of the gfortran static
+# library libgfortran.a to be used in the linking step.  If not given or empty,
+# the -lgfortran flag is used in the linking step.
+#
+gfortran_lib = os.getenv("GFORTRAN_LIB")
+if gfortran_lib:
+    gfortran_lib = gfortran_lib.strip()
+
 # The location of libpythonx.x.so, in case it is not in a standard location
 python_libdir = os.path.split( distutils.sysconfig.get_python_lib(standard_lib=True) )[0]
 
@@ -120,8 +128,7 @@ if cairo_libdir:
         pixman_lib = os.path.join(pixman_libdir, "libpixman-1.a")
     else:
         pixman_lib = "-lpixman-1"
-    addn_link_args.append(pixman_lib);
-    addn_link_args.extend([ "-lfreetype", "-lfontconfig", "-lpng" ])
+    addn_link_args.extend([ pixman_lib, "-lfreetype", "-lfontconfig", "-lpng" ])
     if is_linux_system:
         # Bind symbols and function symbols to any internal definitions
         # and do not make any of the symbols or function symbols defined
@@ -129,7 +136,7 @@ if cairo_libdir:
         # Those in the object files (including those from pyfermod and
         # fer/ef_utility) will still be visible.
         addn_link_args.extend([ "-lXrender", "-lX11",
-                                "-Wl,-Bsymbolic", "-Wl,--exclude-libs -Wl,ALL"])
+                                "-Wl,-Bsymbolic", "-Wl,--exclude-libs,ALL"])
 else:
     addn_link_args.append("-lcairo")
 
@@ -139,7 +146,11 @@ addn_link_args.extend([ "-lpangocairo-1.0", "-lpango-1.0", "-lgobject-2.0" ])
 # Link in the appropriate system libraries
 if hdf5_libdir:
     addn_link_args.extend(["-lcurl", compress_lib])
-addn_link_args.extend([ "-lgfortran", "-ldl", "-lm", "-fPIC", ])
+if gfortran_lib:
+    addn_link_args.append(gfortran_lib)
+else:
+    addn_link_args.append("-lgfortran")
+addn_link_args.extend([ "-ldl", "-lm", "-fPIC", ])
 
 # Get the list of C source files in pyfermod
 src_list = [ ]
@@ -160,7 +171,7 @@ for srcname in os.listdir(dirname):
     if (srcname[0] == 'x') and (srcname[-7:] == "_data.o"):
         addnobjs_list.append(os.path.join(dirname, srcname))
 
-if cairo_libdir:
+if cairo_libdir and is_linux_system:
     # Duplicate objects in libraries to make them externally visible (e.g., for las
     # external functions) if the '--exclude-libs ALL' flag was passed to the linker.
     dirname = os.path.join("fmt", "src")

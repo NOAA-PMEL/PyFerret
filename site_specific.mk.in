@@ -11,9 +11,9 @@ DIR_PREFIX = $(HOME)/git/PyFerret
 # DIR_PREFIX = $(HOME)/svn/pyferret
 
 ## =========================
-## Installation directory for built PyFerret.  Using the "install"
-## Makefile target automatically creates a generic pyferret-*.tar.gz
-## file and then extracts it to create a PyFerret installation.
+## Installation directory for built PyFerret.  Using the "install" Makefile
+## target automatically creates a generic pyferret-*.tar.gz file and then
+## extracts it to create a PyFerret installation at this location.
 ## =========================
 # INSTALL_FER_DIR = $(HOME)/ferret_distributions/rhel6_64
 INSTALL_FER_DIR = $(HOME)/PyFerret
@@ -43,16 +43,26 @@ PYTHON_EXE = python2.7
 # PYTHON_EXE = python3.6
 
 ## =========================
-## The assignment of PYTHONINCDIR should not need any modifications
+## Full path to the python include files directory.
+## Should not need any modifications.
 ## =========================
 PYTHONINCDIR := $(shell $(PYTHON_EXE) -c "from __future__ import print_function ; import distutils.sysconfig; print(distutils.sysconfig.get_python_inc())")
 
 ## =========================
-## Installation directory for cairo v1.12 or later static library
-## (contains include and lib or lib64 subdirectories).  If blank,
-## the system's cairo shared library will be used.  Older versions
-## of cairo (v1.8 or later) can be used, but raster images from
-## -nodisplay may look a little fuzzy unless -gif is specified.
+## If given and not empty, the full path name to the gfortran library to link in.
+## This is primarily used for the intel-mac build.  The given script (commented
+## out) should provide the correct value for the static gfortran library.
+## If empty or not given, the gfortran library (the shared library, if present)
+## is linked in using the "-lgfortran" flag.
+## =========================
+# GFORTRAN_LIB = $(shell $(FC) --print-file-name=libgfortran.a)
+GFORTRAN_LIB =
+
+## =========================
+## Installation directory for the cairo static library (v1.12 or later;
+## contains include and lib or lib64 subdirectories).  If given and not
+## empty, the static library found under this directory will be used.
+## If empty or not given, the system's shared library will be used.
 ## =========================
 # CAIRO_DIR = /usr/local/cairo-1.14.10
 CAIRO_DIR = /usr/local/cairo-1.14.10-64
@@ -62,10 +72,12 @@ CAIRO_DIR = /usr/local/cairo-1.14.10-64
 # CAIRO_DIR =
 
 ## =========================
-## Installation directory for pixman-1 static library (contains
-## include and lib or lib64 subdirectories) used by the above
-## cairo library.  If blank, or if CAIRO_DIR is blank, the system's
-## pixman-1 shared library will be used.
+## Installation directory for the pixman-1 static library (contains include
+## and lib or lib64 subdirectories) used by the above cairo installation.
+## If given and not empty, and if CAIRO_DIR is given and not empty, the
+## static library found under this directory will be used.  If empty or not
+## given, or if CAIRO_DIR is empty or not given, the system's pixman-1
+## shared library will be used.
 ## =========================
 # PIXMAN_DIR = /usr/local/pixman-0.34.0
 PIXMAN_DIR = /usr/local/pixman-0.34.0-64
@@ -75,19 +87,22 @@ PIXMAN_DIR = /usr/local/pixman-0.34.0-64
 # PIXMAN_DIR =
 
 ## =========================
-## Directory containing the pango-1.0, glib-2.0, freetype, fontconfig,
-## png libraries (contains include and lib or lib64 subdirectory).
-## If blank, or if CAIRO_DIR is blank, the system standard libraries
-## will be used.
+## Installation directory for the pango-1.0, glib-2.0, freetype, fontconfig,
+## and png shared libraries (contains include and lib or lib64 subdirectories).
+## If given and not empty, and if CAIRO_DIR is given and not empty, the shared
+## libraries under this directory will be used.  If empty or not given, or if
+## CAIRO_DIR is empty or not given, the system's shared libraries will be used.
 ## =========================
 # PANGO_DIR = $(HOME)/.local
 # PANGO_DIR = /usr/local
 PANGO_DIR =
 
 ## =========================
-## Installation directory for HDF5 static libraries (contains include
-## and lib or lib64 subdirectories).  To link to NetCDF shared-object 
-## libraries, do not give a location for HDF5_DIR.
+## Installation directory for the HDF5 static library (contains include and
+## lib or lib64 subdirectories) used by the NetCDF library specified below.
+## If given and not empty, the static library found under this directory will
+## be used along with the NetCDF static library.  If empty or not given, the
+## NetCDF shared libraries will be used.
 ## =========================
 # HDF5_DIR = /usr/local/hdf5-1.8.18
 HDF5_DIR = /usr/local/hdf5-1.8.18-64
@@ -97,17 +112,18 @@ HDF5_DIR = /usr/local/hdf5-1.8.18-64
 # HDF5_DIR =
 
 ## =========================
-## Compression library used in the above HDF5 library, either 'z'
-## or 'sz'.  If HDF5_DIR is not given, this value is not used.
+## Compression library used in the above HDF5 library, either 'z' or 'sz'.
+## If HDF5_DIR is empty or not given, this value is not used.
 ## =========================
 COMPRESS_LIB = z
 # COMPRESS_LIB = sz
 
 ## =========================
-## Installation directory for NetCDF static or shared object libraries
-## (contains include and lib or lib64 subdirectories).  If HDF5_DIR
-## (above) is blank, the netcdf shared-object (.so) libraries will be
-## used;  otherwise the netcdf static (.a) libraries will be used.
+## Installation directory for NetCDF static or shared libraries (contains
+## include and lib or lib64 subdirectories).  If HDF5_DIR (above) is given
+## and not empty, the netcdf and netcdff static libraries under this
+## directory will be used.  If HDF5_DIR is empty or not given, the netcdf
+## and netcdff shared libraries found under this directory will be used.
 ## =========================
 # NETCDF4_DIR = /usr/local/netcdf-4.4.1.1
 NETCDF4_DIR = /usr/local/netcdf-4.4.1.1-64

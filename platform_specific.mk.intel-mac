@@ -96,7 +96,7 @@ endif
 	# Below this line are macro definitions used only for the final linking of the executable
 
 	LD		= $(shell which gfortran)
-	LDFLAGS		= -v --verbose -fPIC -rdynamic -static-libgfortran
+	LDFLAGS		= -static-libgfortran -Wl,-export_dynamic
 
 # If $(READLINE_DIR) is given (and not blank), statically link in the readline 
 # and history libraries given under that directory; otherwise, just use the usual 

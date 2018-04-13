@@ -93,8 +93,8 @@ endif
 
 	# Below this line are macro definitions used only for the final linking of the executable
 
-	LD		= gcc
-	LDFLAGS		= -v --verbose -m32 -fPIC -export-dynamic
+	LD		= $(shell which gfortran)
+	LDFLAGS		= -m32 -export-dynamic -static-libgfortran
 
 # If $(READLINE_DIR) is given (and not blank), statically link in the readline 
 # and history libraries given under that directory; otherwise, just use the usual 
@@ -106,7 +106,6 @@ ifneq ($(strip $(READLINE_DIR)),)
 			  -lcurl \
 			  -ldl \
 			  -lz \
-			  -Wl,-Bstatic -lgfortran -Wl,-Bdynamic \
 			  -lm
 else
 	SYSLIB		= -lX11 \
@@ -115,7 +114,6 @@ else
 			  -lcurl \
 			  -ldl \
 			  -lz \
-			  -Wl,-Bstatic -lgfortran -Wl,-Bdynamic \
 			  -lm
 endif
 

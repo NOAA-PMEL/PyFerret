@@ -16,7 +16,9 @@ optimized :
 	$(MAKE) xgks/Makefile
 	$(MAKE) -C xgks
 	$(MAKE) -C fer
-	$(MAKE) -C external_functions
+	cp -f fer/ferret_c bin/ferret
+	$(MAKE) "FER_DIR = $(DIR_PREFIX)" -C external_functions all
+	rm -f bin/ferret
 	$(MAKE) -C gksm2ps
 	$(MAKE) -C bin/build_fonts/unix
 
@@ -26,7 +28,9 @@ beta :
 	$(MAKE) xgks/Makefile
 	$(MAKE) -C xgks
 	$(MAKE) -C fer beta
-	$(MAKE) -C external_functions
+	cp -f fer/ferret_c bin/ferret
+	$(MAKE) "FER_DIR = $(DIR_PREFIX)" -C external_functions all
+	rm -f bin/ferret
 	$(MAKE) -C gksm2ps
 	$(MAKE) -C bin/build_fonts/unix
 
@@ -36,7 +40,9 @@ debug :
 	$(MAKE) xgks/Makefile
 	$(MAKE) -C xgks
 	$(MAKE) -C fer debug
-	$(MAKE) -C external_functions debug
+	cp -f fer/ferret_c bin/ferret
+	$(MAKE) "FER_DIR = $(DIR_PREFIX)" -C external_functions debug
+	rm -f bin/ferret
 	$(MAKE) -C gksm2ps
 	$(MAKE) -C bin/build_fonts/unix
 
@@ -50,7 +56,9 @@ memorydebug :
 	$(MAKE) xgks/Makefile
 	$(MAKE) -C xgks
 	$(MAKE) -C fer memorydebug
-	$(MAKE) -C external_functions debug
+	cp -f fer/ferret_c bin/ferret
+	$(MAKE) "FER_DIR = $(DIR_PREFIX)" -C external_functions debug
+	rm -f bin/ferret
 	$(MAKE) -C gksm2ps
 	$(MAKE) -C bin/build_fonts/unix
 

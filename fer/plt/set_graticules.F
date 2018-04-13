@@ -1,4 +1,4 @@
-	SUBROUTINE SET_GRATICULES(loch, locv, status )
+        SUBROUTINE SET_GRATICULES(loch, locv, status )
 
 *
 *
@@ -54,28 +54,28 @@
 *                  returns a pen ID from a color ID and a thickness.
 *                  Only standard lines accepted for graticules at this time.
 
-	include 'tmap_dims.parm'
-	include 'ferret.parm'
-	include 'errmsg.parm'
-	include 'command.parm'
-	include 'plot_setup.parm'
-	include 'xprog_state.cmn'
+        include 'tmap_dims.parm'
+        include 'ferret.parm'
+        include 'errmsg.parm'
+        include 'command.parm'
+        include 'plot_setup.parm'
+        include 'xprog_state.cmn'
         include 'axis_inc.decl'
         include 'AXIS.INC'
 
 * calling argument declarations:
-	INTEGER	loch, locv, status
+        INTEGER loch, locv, status
 
 * internal variable declarations:
-	LOGICAL linetype, dashtype, thick, colr, small
+        LOGICAL linetype, dashtype, thick, colr, small
 
-	INTEGER	TM_LENSTR1, STR_UPCASE, str_len, ii, i1, i2, i3, i4, 
-     .      i5, i6, index1, index2, s1, s2, 
+        INTEGER TM_LENSTR1, STR_UPCASE, str_len, ii, i1, i2, i3, i4, 
+     .      i5, i6, index1, index2, s1, s2, s3,
      .      colorcode, tic1, ntic, itic, iflag, ncolors, pencode
 
         REAL*4 thickness
 
-	CHARACTER buff*1058
+        CHARACTER buff*1058
         CHARACTER msg*60
 
 
@@ -112,8 +112,8 @@
 * HGRAT
         IF (.NOT. grat_on) buff = ' ' 
         IF (loch .GT. 0) THEN
-           CALL EQUAL_STRING( cmnd_buff(qual_start(loch):qual_end(loch)),
-     .                     buff, status )
+           CALL EQUAL_STRING(cmnd_buff(qual_start(loch):qual_end(loch)),
+     .                       buff, status )
 
 * /HGRAT with no argument defaults to lines at large tic marks.
 
@@ -139,7 +139,7 @@
         IF ( INDEX(buff(i1:i2), 'LAR') .GT. 0) THEN
            tic1 = 1   ! LARGE tics
            i3 = INDEX(buff(i1:i2), 'LAR' )
-           i4 = MIN(INDEX(buff(i3:i2), 'SMA'), INDEX(buff(i3:i2), ')' ) )
+           i4 = MIN(INDEX(buff(i3:i2), 'SMA'), INDEX(buff(i3:i2), ')' ))
            IF (i4 .GT. 0) THEN
               i4 = i4 + i3 - 2
            ELSE
@@ -154,7 +154,7 @@
         IF ( INDEX(buff(i1:i2), 'SMA') .GT. 0) small = .TRUE.
         IF (small) THEN
            i5 = INDEX(buff(i1:i2), 'SMA')
-           i6 = MIN(INDEX(buff(i5:i2), 'LAR'), INDEX(buff(i5:i2), ')' ) )
+           i6 = MIN(INDEX(buff(i5:i2), 'LAR'), INDEX(buff(i5:i2), ')' ))
            IF (i6 .GT. 0) THEN
               i6 = i6 + i5 - 2
            ELSE
@@ -217,19 +217,33 @@
 
            IF (colr) THEN
               s1 = INDEX(buff(index1:index2), 'COL') + index1 - 1
+*             First assume a comma ends the color specification
               s2 = INDEX(buff(s1:index2), ',')
               IF (s2 .EQ. 0) THEN
                  s2 = index2
               ELSE
+*                Do not include the comma
                  s2 = s2 + s1 - 2
               ENDIF 
+*             But if there is a open parenthesis before the comma, 
+*             a closed parenthesis ends the color specification
+              s3 = INDEX(buff(s1:s2),'(')
+              IF ( s3 .GT. 0 ) THEN
+                 s2 = INDEX(buff(s1:index2), ')')
+                 IF (s2 .EQ. 0) THEN
+                    GOTO 5100
+                 ELSE
+*                   Include the closing parenthesis
+                    s2 = s2 + s1 - 1
+                 ENDIF
+              ENDIF
               IF (INDEX(buff(s1:s2), '=') .GT. 0) THEN
                  CALL EQUAL_COLOR(buff(s1:s2), colorcode, thickness, status)
                  IF ( status .NE. ferr_ok ) GOTO 5000
                  hcolor(itic) = colorcode
               ELSE
                  WRITE (msg, 40) buff(s1:s2)
-  40             FORMAT ( 'No color code given for /HGRAT=',A , 
+  40             FORMAT ( 'No color code given for /HGRAT=', A , 
      .                    '. Using black')
                  CALL WARN (msg)
               ENDIF
@@ -256,7 +270,11 @@
  
 *          At this time, only standard lines are accepted
            ncolors = mode_arg(pmode_linecolors,1)
-           IF ( (pencode .LT. 1) .OR. (pencode .GT. 3*ncolors) ) GOTO 5150
+           IF ( (pencode .LT. 1) .OR. (pencode .GT. 3*ncolors) ) THEN
+              CALL WARN('Only standard line colors and thicknesses ' //
+     .                  'are accepted at this time.  Using black.')
+              pencode = 1
+           ENDIF
 
 *          Assign the pen to use
            hcolor(itic) = pencode
@@ -273,7 +291,7 @@
 
         IF (.NOT. grat_on) buff = ' ' 
         IF (locv .GT. 0) THEN
-           CALL EQUAL_STRING( cmnd_buff(qual_start(locv):qual_end(locv)),
+           CALL EQUAL_STRING(cmnd_buff(qual_start(locv):qual_end(locv)),
      .                     buff, status )
 
 * /VGRAT with no argument defaults to lines at large tic marks.
@@ -283,7 +301,7 @@
 115        CONTINUE
 
         ENDIF
-	IF ( buff .EQ. ' ' ) GOTO 5000  ! done
+        IF ( buff .EQ. ' ' ) GOTO 5000  ! done
 
         str_len = TM_LENSTR1(buff)
         i1 = 1
@@ -300,7 +318,7 @@
            tic1 = 1   ! LARGE tics
            i3 = INDEX(buff(i1:i2), 'LAR' )
 
-           i4 = MIN(INDEX(buff(i3:i2), 'SMA'), INDEX(buff(i3:i2), ')' ) )
+           i4 = MIN(INDEX(buff(i3:i2), 'SMA'), INDEX(buff(i3:i2), ')' ))
            IF (i4 .GT. 0) THEN
               i4 = i4 + i3 - 2
            ELSE
@@ -316,7 +334,7 @@
         IF (small) THEN
            i5 = INDEX(buff(i1:i2), 'SMA')
 
-           i6 = MIN(INDEX(buff(i5:i2), 'LAR'), INDEX(buff(i5:i2), ')' ) )
+           i6 = MIN(INDEX(buff(i5:i2), 'LAR'), INDEX(buff(i5:i2), ')' ))
            IF (i6 .GT. 0) THEN
               i6 = i6 + i5 - 2
            ELSE
@@ -379,19 +397,33 @@
 
            IF (colr) THEN
               s1 = INDEX(buff(index1:index2), 'COL') + index1 - 1
+*             First assume a comma ends the color specification
               s2 = INDEX(buff(s1:index2), ',')
               IF (s2 .EQ. 0) THEN
                  s2 = index2
               ELSE
+*                Do not include the comma
                  s2 = s2 + s1 - 2
               ENDIF 
+*             But if there is a open parenthesis before the comma, 
+*             a closed parenthesis ends the color specification
+              s3 = INDEX(buff(s1:s2),'(')
+              IF ( s3 .GT. 0 ) THEN
+                 s2 = INDEX(buff(s1:index2), ')')
+                 IF (s2 .EQ. 0) THEN
+                    GOTO 5100
+                 ELSE
+*                   Include the closing parenthesis
+                    s2 = s2 + s1 - 1
+                 ENDIF
+              ENDIF
               IF (INDEX(buff(s1:s2), '=') .GT. 0) THEN
                  CALL EQUAL_COLOR(buff(s1:s2), colorcode, thickness, status)
                  IF ( status .NE. ferr_ok ) GOTO 5000
                  vcolor(itic) = colorcode
               ELSE
                  WRITE (msg, 60) buff(s1:s2)
-  60             FORMAT ( 'No color code given for /VGRAT=',A , 
+  60             FORMAT ( 'No color code given for /VGRAT=', A , 
      .                    '. Using black')
                  CALL WARN (msg)
               ENDIF
@@ -418,7 +450,11 @@
  
 *          At this time, only standard lines are accepted
            ncolors = mode_arg(pmode_linecolors,1)
-           IF ( (pencode .LT. 1) .OR. (pencode .GT. 3*ncolors) ) GOTO 5150
+           IF ( (pencode .LT. 1) .OR. (pencode .GT. 3*ncolors) ) THEN
+              CALL WARN('Only standard line colors and thicknesses ' //
+     .                  'are accepted at this time.  Using black.')
+              pencode = 1
+           ENDIF
 
 *          Assign the pen to use
            vcolor(itic) = pencode
@@ -432,14 +468,7 @@
         RETURN
 
 * error exit
- 5000	RETURN
- 5100	CALL ERRMSG( ferr_syntax, status,
-     .		buff(:str_len)//' mismatched parentheses', *5000 )
- 5050	CALL ERRMSG( ferr_syntax, status,
-     .		buff(:str_len), *5000 )
- 5150   CALL ERRMSG( ferr_invalid_command, status,
-     .          'Only standard line colors and thicknesses '//
-     .          'are accepted at this time', *5000 )
- 5200	CALL ERRMSG( ferr_invalid_command, status,
-     .		'zero vector length on /LENGTH=', *5000 )
-	END
+ 5000        RETURN
+ 5100        CALL ERRMSG( ferr_syntax, status,
+     .                buff(:str_len)//' mismatched parentheses', *5000 )
+        END

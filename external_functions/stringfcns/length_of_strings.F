@@ -48,6 +48,8 @@
 
       arg = 1
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+      CALL ef_set_arg_name(id, arg, 'A')
+      CALL ef_set_arg_desc(id, arg, 'Array of strings')
       CALL ef_set_arg_type (id, arg, STRING_ARG)
 
 

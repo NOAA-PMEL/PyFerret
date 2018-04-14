@@ -59,7 +59,7 @@
 
       CALL ef_set_desc(id, 
      . 'Returns a variable expanded by the lengths given in arg 2' )
-      CALL ef_set_num_args(id, 3)
+      CALL ef_set_num_args(id, 2)
       CALL ef_set_axis_inheritance_6d(id, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, 
      .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
       CALL ef_set_result_type(id, STRING_RETURN)

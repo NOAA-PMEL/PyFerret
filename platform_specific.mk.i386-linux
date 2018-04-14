@@ -117,15 +117,22 @@ else
 			  -lm
 endif
 
-# NetCDF4: either static libraries (and so needs to specify HDF5 libraries)
-# or shared-object libraries (HDF5 requirements recorded in NetCDF libraries)
-ifneq ($(strip $(HDF5_DIR)),)
+# NetCDF4: either shared-object libraries (HDF5 requirements recorded 
+# in NetCDF libraries) or static libraries (and so needs to specify 
+# HDF5 libraries).  If static HDF5 libraries, include libsz.a it was used.
+ifeq ($(strip $(HDF5_DIR)),)
+	CDFLIB		= -L$(NETCDF4_DIR)/lib -lnetcdff -lnetcdf
+else ifeq ($(strip $(SZ_LIBDIR)),)
 	CDFLIB		= $(NETCDF4_DIR)/lib/libnetcdff.a \
 			  $(NETCDF4_DIR)/lib/libnetcdf.a \
 			  $(HDF5_DIR)/lib/libhdf5_hl.a \
 			  $(HDF5_DIR)/lib/libhdf5.a
 else
-	CDFLIB		= -L$(NETCDF4_DIR)/lib -lnetcdff -lnetcdf
+	CDFLIB		= $(NETCDF4_DIR)/lib/libnetcdff.a \
+			  $(NETCDF4_DIR)/lib/libnetcdf.a \
+			  $(HDF5_DIR)/lib/libhdf5_hl.a \
+			  $(HDF5_DIR)/lib/libhdf5.a \
+			  $(SZ_LIBDIR)/libsz.a
 endif
 
 # Directly compile the .F source files to the .o object files

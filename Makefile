@@ -7,12 +7,19 @@
 #
 include site_specific.mk
 
+ifeq ("$(BUILDTYPE)", "intel-mac")
+	COPY_DYLIBS = - ./copy_dylibs.sh
+else
+	COPY_DYLIBS =
+endif
+
 .PHONY : all
 all : optimized
 
 .PHONY : optimized
 optimized :
 	mkdir -p lib
+	$(COPY_DYLIBS)
 	$(MAKE) xgks/Makefile
 	$(MAKE) -C xgks
 	$(MAKE) -C fer
@@ -25,6 +32,7 @@ optimized :
 .PHONY : beta
 beta :
 	mkdir -p lib
+	$(COPY_DYLIBS)
 	$(MAKE) xgks/Makefile
 	$(MAKE) -C xgks
 	$(MAKE) -C fer beta
@@ -37,6 +45,7 @@ beta :
 .PHONY : debug
 debug :
 	mkdir -p lib
+	$(COPY_DYLIBS)
 	$(MAKE) xgks/Makefile
 	$(MAKE) -C xgks
 	$(MAKE) -C fer debug
@@ -53,6 +62,7 @@ debug :
 .PHONY : memorydebug
 memorydebug :
 	mkdir -p lib
+	$(COPY_DYLIBS)
 	$(MAKE) xgks/Makefile
 	$(MAKE) -C xgks
 	$(MAKE) -C fer memorydebug
@@ -71,14 +81,14 @@ xgks/Makefile :
 ## Clean all the directories
 .PHONY : clean
 clean :
-	rm -fr fer_executables.tar.gz
-	rm -fr fer_environment.tar.gz
+	rm -f fer_executables.tar.gz
+	rm -f fer_environment.tar.gz
 	$(MAKE) -C bench clean
 	$(MAKE) -C bin/build_fonts/unix clean
 	$(MAKE) -C gksm2ps clean
 	$(MAKE) -C external_functions clean
 	$(MAKE) -C fer clean
-	rm -fr lib
+	rm -f -R lib dylibs
 	$(MAKE) xgksclean
 
 

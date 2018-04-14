@@ -22,6 +22,15 @@ if ! echo "${PATH}" | grep -q "${FER_DIR}/bin"; then
     export PATH="${FER_DIR}/bin:${PATH}"
 fi
 
+## For Mac OS X, add ${FER_DIR}/dylibs to DYLD_FALLBACK_LIBRARY_PATH
+if [ ! -z "$DYLD_FALLBACK_LIBRARY_PATH" ]; then
+    if ! echo "${DYLD_FALLBACK_LIBRARY_PATH}" | grep -q "${FER_DIR}/dylibs"; then
+        export DYLD_FALLBACK_LIBRARY_PATH="${FER_DIR}/dylibs:${DYLD_FALLBACK_LIBRARY_PATH}"
+    fi
+else
+    export DYLD_FALLBACK_LIBRARY_PATH="${FER_DIR}/dylibs"
+fi
+
 ## Space-separated lists of directories examined when searching
 ## for data, descriptor, grid, go-script files without path components
 export FER_DATA=". ${FER_DSETS}/data ${FER_DIR}/contrib"

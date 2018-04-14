@@ -70,15 +70,15 @@ if ( "${repository}" == "." ) then
     echo "from ${source_dir} "
     echo "to ${temp_dir} "
     echo "   shell scripts"
-    cp -f -r ${source_dir}/bin .
+    cp -f -R ${source_dir}/bin .
     echo "   journal files"
-    cp -f -r ${source_dir}/jnls .
+    cp -f -R ${source_dir}/jnls .
     echo "   external function source files"
-    cp -f -r ${source_dir}/external_functions .
+    cp -f -R ${source_dir}/external_functions .
 #   Environment tar file - make sure no compiled code
     make -C ${temp_dir}/external_functions clean
     echo "   palettes"
-    cp -f -r ${source_dir}/palettes .
+    cp -f -R ${source_dir}/palettes .
 else
     echo "Extracting FERRET environment files "
     echo "from ${repository} "
@@ -96,7 +96,7 @@ endif
 # Move files into their proper position
 echo "Doing a bit of rearranging"
 mv jnls/* .
-rm -rf jnls
+rm -R -f jnls
 mv palettes ppl
 mkdir ext_func
 mv external_functions ext_func/src

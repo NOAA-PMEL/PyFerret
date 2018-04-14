@@ -1,7 +1,7 @@
 #! /bin/csh
 
 # mycp needs to recursively copy subdirectories for the lib/python* directories
-set mycp = "/bin/cp -r -p"
+set mycp = "/bin/cp -R -p"
 set mylns = "/bin/ln -s"
 
 echo ""
@@ -84,6 +84,11 @@ else
       echo "   ferret_v<n> and ferret symbolic link not created"
       echo ""
    endif
+endif
+
+# Copy dylibs, if present
+if ( -d ${ferret_dir}/dylibs ) then
+   ${mycp} ${ferret_dir}/dylibs ${temp_dir}
 endif
 
 # Copy the external function shared-object library files

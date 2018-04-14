@@ -117,11 +117,17 @@ else
 			  -lm
 endif
 
-# For netCDF4 using HDF5
+# NetCDF4: either static libraries (and so needs to specify HDF5 libraries)
+# or shared-object libraries (HDF5 requirements recorded in NetCDF libraries)
+ifneq ($(strip $(HDF5_DIR)),)
 	CDFLIB		= $(NETCDF4_DIR)/lib64/libnetcdff.a \
 			  $(NETCDF4_DIR)/lib64/libnetcdf.a \
 			  $(HDF5_DIR)/lib64/libhdf5_hl.a \
 			  $(HDF5_DIR)/lib64/libhdf5.a
+else
+	CDFLIB		= -L$(NETCDF4_DIR)/lib64 -lnetcdff -lnetcdf
+endif
+
 
 # Directly compile the .F source files to the .o object files
 # since gfortran can handle the C compiler directives in Fortran code

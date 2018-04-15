@@ -28,7 +28,7 @@ from the group (which should be searched prior to sending a question to the emai
 users group) can be found at 
 [http://ferret.pmel.noaa.gov/Ferret/email-users-group](http://ferret.pmel.noaa.gov/Ferret/email-users-group)
 
-### If you build Ferret from these source files, please note:
+## If you build Ferret from these source files, please note:
 
 The `site_specific.mk` and `external_functions/ef_utilites/site_specific.mk` 
 files in the repository have been renamed with a `.in` appended to the name. 
@@ -38,10 +38,13 @@ system.  The `site_specific.mk` files will be ignored by git (the name was
 added to `.gitignore`) so your customized configuration files will not be 
 added to your repository if you have cloned this repository. 
 
-** The `site_specific.mk.in` configuration template file changed April, 2018. **
+#### The `site_specific.mk.in` configuration template file changed April, 2018.
+
 Library directories are now specified instead of installation directories
 for NetCDF, HDF5, ReadLine, and SZ, with the makefile environment names
 changing from `..._DIR` to `..._LIBDIR`.
 The `include` directories, if needed, are assumed to be sibling directories
 to these library directories.
+You may wish to create a new `site_specific.mk` configuration file 
+from this updated configuration template file.
 

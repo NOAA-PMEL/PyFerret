@@ -1,36 +1,36 @@
 #
-# platform_specific_includes.mk.intel-mac
+# platform_specific.mk.intel-mac
 #
-# This file is included in other Makefiles and defines platform specific macros.  
+# This file is included in other Makefiles and defines platform specific macros.
 # Should not contain any relative directories (other than .) since these Makefiles
 # exist at various levels in the directory tree.
 
 # Extended regular expressions flag for sed (used with cleaning up run_tests results)
 	SED_EXTREGEX_FLAG = -E
 
-# If READLINE_DIR is given, -I$(READLINE_DIR)/include must be the first include flag 
-# (other than .) so the correct readline include files are used.
-ifneq ($(strip $(READLINE_DIR)),)
+# If READLINE_LIBDIR is given, -I$(READLINE_LIBDIR)/../include must be the first
+# include flag (other than .) so the correct readline include files are used.
+ifneq ($(strip $(READLINE_LIBDIR)),)
 	MYINCLUDES	= -I. \
-			  -I$(READLINE_DIR)/include \
-			  -I$(NETCDF4_DIR)/include \
+			  -I$(READLINE_LIBDIR)/../include \
+			  -I$(NETCDF_LIBDIR)/../include \
 			  -I$(DIR_PREFIX)/fer/common \
 			  -I$(DIR_PREFIX)/fmt/cmn \
 			  -I$(DIR_PREFIX)/ppl/tmap_inc \
 			  -I$(DIR_PREFIX)/ppl/include \
 			  -I/opt/X11/include \
 			  -I$(DIR_PREFIX)/xgks/src/lib \
-			  -I$(DIR_PREFIX)/xgks/port 
+			  -I$(DIR_PREFIX)/xgks/port
 else
 	MYINCLUDES	= -I. \
-			  -I$(NETCDF4_DIR)/include \
+			  -I$(NETCDF_LIBDIR)/../include \
 			  -I$(DIR_PREFIX)/fer/common \
 			  -I$(DIR_PREFIX)/fmt/cmn \
 			  -I$(DIR_PREFIX)/ppl/tmap_inc \
 			  -I$(DIR_PREFIX)/ppl/include \
 			  -I/opt/X11/include \
 			  -I$(DIR_PREFIX)/xgks/src/lib \
-			  -I$(DIR_PREFIX)/xgks/port 
+			  -I$(DIR_PREFIX)/xgks/port
 endif
 
 	MYDEFINES	= -Dcrptd_cat_argument \
@@ -60,12 +60,11 @@ endif
 	FC		= $(shell which gfortran)
 	F77		= $(shell which gfortran)
 	AR		= $(shell which ar)
-	ARFLAGS		= -cr
 	RANLIB		= $(shell which ranlib)
 
+	ARFLAGS		= -cr
+
 # Flags for compiling all C code
-# -DusingDODSf2cUnderscore needed if using netcdf library...
-# also consider -ffloat-store.
 	CFLAGS		= -fPIC $(MYDEFINES) $(MYINCLUDES)
 
 # Flags for compiling the PlotPlus FORTRAN code (ppl subdirectory)
@@ -98,13 +97,13 @@ endif
 	LD		= $(shell which gfortran)
 	LDFLAGS		= -static-libgfortran -Wl,-export_dynamic
 
-# If $(READLINE_DIR) is given (and not blank), statically link in the readline 
-# and history libraries given under that directory; otherwise, just use the usual 
+# If $(READLINE_LIBDIR) is given (and not blank), statically link in the readline
+# and history libraries given under that directory; otherwise, just use the usual
 # flags to link in the system readline and history libraries.
-ifneq ($(strip $(READLINE_DIR)),)
+ifneq ($(strip $(READLINE_LIBDIR)),)
 	SYSLIB		= -L/opt/X11/lib -lX11 \
-			  $(READLINE_DIR)/lib/libreadline.a \
-			  $(READLINE_DIR)/lib/libhistory.a \
+			  $(READLINE_LIBDIR)/libreadline.a \
+			  $(READLINE_LIBDIR)/libhistory.a \
 			  -lncurses \
 			  -lcurl \
 			  -ldl \
@@ -120,21 +119,23 @@ else
 			  -lm
 endif
 
-# NetCDF4: either shared-object libraries (HDF5 requirements recorded 
-# in NetCDF libraries) or static libraries (and so needs to specify 
-# HDF5 libraries).  If static HDF5 libraries, include libsz.a it was used.
-ifeq ($(strip $(HDF5_DIR)),)
-	CDFLIB		= -L$(NETCDF4_DIR)/lib -lnetcdff -lnetcdf
+# NetCDF4: either shared-object libraries (HDF5 and compression library
+# requirements recorded in NetCDF libraries) or static libraries (HDF5
+# and compression library requirements need to be specified).
+ifeq ($(strip $(HDF5_LIBDIR)),)
+	CDFLIB		= -L$(NETCDF_LIBDIR) \
+			  -lnetcdff \
+			  -lnetcdf
 else ifeq ($(strip $(SZ_LIBDIR)),)
-	CDFLIB		= $(NETCDF4_DIR)/lib/libnetcdff.a \
-			  $(NETCDF4_DIR)/lib/libnetcdf.a \
-			  $(HDF5_DIR)/lib/libhdf5_hl.a \
-			  $(HDF5_DIR)/lib/libhdf5.a
+	CDFLIB		= $(NETCDF_LIBDIR)/libnetcdff.a \
+			  $(NETCDF_LIBDIR)/libnetcdf.a \
+			  $(HDF5_LIBDIR)/libhdf5_hl.a \
+			  $(HDF5_LIBDIR)/libhdf5.a
 else
-	CDFLIB		= $(NETCDF4_DIR)/lib/libnetcdff.a \
-			  $(NETCDF4_DIR)/lib/libnetcdf.a \
-			  $(HDF5_DIR)/lib/libhdf5_hl.a \
-			  $(HDF5_DIR)/lib/libhdf5.a \
+	CDFLIB		= $(NETCDF_LIBDIR)/libnetcdff.a \
+			  $(NETCDF_LIBDIR)/libnetcdf.a \
+			  $(HDF5_LIBDIR)/libhdf5_hl.a \
+			  $(HDF5_LIBDIR)/libhdf5.a \
 			  $(SZ_LIBDIR)/libsz.a
 endif
 
@@ -144,5 +145,5 @@ endif
 	$(FC) $(FFLAGS) -c $*.F -o $*.o
 
 #
-# End of platform_specific_includes.mk.intel-mac
+# End of platform_specific.mk.intel-mac
 #

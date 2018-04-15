@@ -2,97 +2,99 @@
 
 ## !!! Also check external_functions/ef_utility/site_specific.mk !!!
 
-##
+## =========================
 ## Full path name of the directory containing this file (the ferret root directory).
 ## Do not use $(shell pwd) since this is included in Makefiles in other directories.
-##
-# DIR_PREFIX	= $(HOME)/build/trunk/FERRET
-DIR_PREFIX	= $(HOME)/git/Ferret
-# DIR_PREFIX	= $(HOME)/svn/ferret
+## =========================
+# DIR_PREFIX = $(HOME)/build/trunk/FERRET
+DIR_PREFIX = $(HOME)/git/Ferret
+# DIR_PREFIX = $(HOME)/svn/ferret
 
-##
-## Machine for which to build Ferret
-## Use $(HOSTTYPE) to build natively for the machine you are using
-##
-# BUILDTYPE	= $(HOSTTYPE)
-BUILDTYPE	= x86_64-linux
-# BUILDTYPE	= i386-linux
-# BUILDTYPE	= intel-mac
+## =========================
+## Machine for which to build Ferret.
+## Use $(HOSTTYPE) to build natively for the machine you are using.
+## =========================
+# BUILDTYPE = $(HOSTTYPE)
+BUILDTYPE = x86_64-linux
+# BUILDTYPE = i386-linux
+# BUILDTYPE = intel-mac
 
-##
-## Installation directory for built Ferret.  Using the "install"
-## Makefile target circumvents the need to create the fer_*.tar.gz
-## files just for creating a Ferret installation.
-##
+## =========================
+## Installation directory for built Ferret using the "install" Makefile target.
+## This Makefile target circumvents the need to create the fer_*.tar.gz files
+## just for creating a Ferret installation.
+## =========================
 # INSTALL_FER_DIR = $(HOME)/ferret_distributions/rhel6_64
 # INSTALL_FER_DIR = $(HOME)/Ferret32
 INSTALL_FER_DIR = $(HOME)/Ferret64
 # INSTALL_FER_DIR = $(FER_DIR)
 
-##
-## Installation directory for HDF5 static libraries
-## (contains include and lib or lib64 subdirectories)
-## If empty or not given, NetCDF shared-object
-## libraries will be used.
-##
-# HDF5_DIR	= /usr
-# HDF5_DIR	= /usr/local
-# HDF5_DIR	= /usr/local/hdf5-1.8.18
-HDF5_DIR	= /usr/local/hdf5-1.8.18-64
-# HDF5_DIR	= /usr/local/hdf5-1.8.18-32
-# HDF5_DIR	= $(HOME)/.local
-# HDF5_DIR	=
+## =========================
+## Directory containing the HDF5 static libraries.
+## If given and not empty, HDF5 and NetCDF static libraries will be used.
+## If empty or not given, NetCDF shared-object libraries (which specify the
+## HDF5, SZ, and Z compression libraries required) will be used.
+## =========================
+HDF5_LIBDIR = /usr/local/hdf5-1.8.18-64/lib
+# HDF5_LIBDIR = /usr/local/hdf5-1.8.18-32/lib
+# HDF5_LIBDIR = /usr/local/hdf5-1.8.18/lib
+# HDF5_LIBDIR = $(HOME)/.local/lib
+# HDF5_LIBDIR = /usr/local/lib
+# HDF5_LIBDIR = /usr/lib64
+# HDF5_LIBDIR = /usr/lib
+# HDF5_LIBDIR =
 
+## =========================
+## Location of the SZ compression static library.
+## This value should be given only if the SZ compression library was used in
+## building the HDF5 library, and the NetCDF and HDF5 static libraries are
+## being used (HDF5_LIBDIR is specified).
 ##
-## Location of the sz compression static library
-## ** IF AND ONLY IF **
-##     HDF5_DIR is given, and the sz compression library
-##     was used to this in the above HDF5 library.
+## If given and not empty, and if HDF5_LIBDIR is given and not empty, the SZ
+## compression static library is used.
 ##
-## If HDF5_DIR is empty or not given, this value is not used.
-##
-## If empty or not given, the libsz compression static library
-## will not be linked in (which is what you want if you used
-## the libz compression library in HDF5).
-##
-# SZ_LIBDIR	= /usr/lib
-# SZ_LIBDIR	= /usr/lib64
-# SZ_LIBDIR	= /usr/local/lib
-# SZ_LIBDIR	= $(HOME)/.local/lib
-SZ_LIBDIR	=
+## If empty or not given, and if HDF5_LIBDIR is given and not empty, the SZ
+## compression library will not be used, which is what you want if the HDF5
+## libraries were built using the Z compression library.
+## =========================
+# SZ_LIBDIR = $(HOME)/.local/lib
+# SZ_LIBDIR = /usr/local/lib
+# SZ_LIBDIR = /usr/lib64
+# SZ_LIBDIR = /usr/lib
+SZ_LIBDIR =
 
+## =========================
+## Location of the NetCDF libraries.
+## Include files are assumed to be located in an "include" sibling directory.
+## If HDF5_LIBDIR is given and not empty, the static libraries will be used.
+## If HDF5_LIBDIR is empty or not given, NetCDF shared-object libraries will be used.
+## =========================
+NETCDF_LIBDIR = /usr/local/netcdf-4.4.1.1-64/lib
+# NETCDF_LIBDIR = /usr/local/netcdf-4.4.1.1-32/lib
+# NETCDF_LIBDIR = /usr/local/netcdf-4.4.1.1/lib
+# NETCDF_LIBDIR = $(HOME)/.local/lib
+# NETCDF_LIBDIR = /usr/local/lib
+# NETCDF_LIBDIR = /usr/lib64
+# NETCDF_LIBDIR = /usr/lib
+
+## =========================
+## Directory containing the (GNU) readline static libraries.
+## Include files are assumed to be located in an "include" sibling directory.
 ##
-## Installation directory for NetCDF static libraries
-## (contains include and lib or lib64 subdirectories)
-## If HDF5_DIR is empty or not given, NetCDF
+## If the readline provided by the system is not actually (GNU) readline (e.g.;
+## on Mac, where it is actually editline), it may not have the ability to specify
+## a function to repeatedly call while waiting for user input (the rl_event_hook).
+## Ferret uses this ability to keep plot windows refreshed and responsive, so in
+## this case, an actual GNU readline (and history) static library must be built
+## and installed.
+##
+## If the readline provided by the system does provide this required functionality
+## (i.e; is GNU readline, which is the case for most Linux systems), do not define
+## this value (or leave it blank).  In this case the system's readline and history
 ## shared-object libraries will be used.
-##
-# NETCDF4_DIR	= /usr
-# NETCDF4_DIR	= /usr/local
-# NETCDF4_DIR	= /usr/local/netcdf-4.4.1.1
-NETCDF4_DIR	= /usr/local/netcdf-4.4.1.1-64
-# NETCDF4_DIR	= /usr/local/netcdf-4.4.1.1-32
-# NETCDF4_DIR	= $(HOME)/.local
-
-##
-## If the readline provided by the system is not actually GNU readline
-## (e.g.; on Mac, where it is actually editline), it may not have the
-## ability to specify a function to repeatedly call while waiting for
-## user input (the rl_event_hook).  Ferret uses this ability to keep
-## plot windows refreshed and responsive, so in this case, an actual
-## GNU readline (and history) static library must be built and installed.
-## The installation directory (contains the subdirectories "include"
-## and "lib") should then be specified here and these libraries will
-## be statically linked in.
-##
-## If the readline provided by the system does provide this required
-## functionality (i.e; is GNU readline, which is the case for most
-## Linux systems), do not define this value (or leave it blank).
-## In this case the system readline and history libraries will be
-## used (dynamically linked in).
-##
-# READLINE_DIR	= /usr/local/Cellar/readline/7.0.3_1
-# READLINE_DIR	= $(HOME)/.local/Cellar/readline/7.0.3_1
-READLINE_DIR	=
+## =========================
+# READLINE_LIBDIR = $(HOME)/.local/Cellar/readline/7.0.3_1/lib
+# READLINE_LIBDIR = /usr/local/Cellar/readline/7.0.3_1/lib
+READLINE_LIBDIR =
 
 ##

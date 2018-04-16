@@ -9,12 +9,19 @@ include site_specific.mk
 # Platform-specific defines
 include platform_specific.mk.$(BUILDTYPE)
 
+ifeq ("$(BUILDTYPE)", "intel-mac")
+	COPY_DYLIBS = - ( cd $(DIR_PREFIX); ./copy_dylibs.sh )
+else
+	COPY_DYLIBS =
+endif
+
 .PHONY : all
 all : optimized
 
 .PHONY : optimized
 optimized :
 	mkdir -p $(DIR_PREFIX)/lib
+	$(COPY_DYLIBS)
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
 	$(MAKE) pymod_optimized_build
 	$(MAKE) pymod_optimized_install
@@ -24,6 +31,7 @@ optimized :
 .PHONY : beta
 beta :
 	mkdir -p $(DIR_PREFIX)/lib
+	$(COPY_DYLIBS)
 	$(MAKE) -C $(DIR_PREFIX)/fer beta
 	$(MAKE) pymod_optimized_build
 	$(MAKE) pymod_optimized_install
@@ -33,6 +41,7 @@ beta :
 .PHONY : debug
 debug :
 	mkdir -p $(DIR_PREFIX)/lib
+	$(COPY_DYLIBS)
 	$(MAKE) -C $(DIR_PREFIX)/fer debug
 	$(MAKE) pymod_debug_build
 	$(MAKE) pymod_debug_install
@@ -47,6 +56,7 @@ debug :
 .PHONY : memorydebug
 memorydebug :
 	mkdir -p $(DIR_PREFIX)/lib
+	$(COPY_DYLIBS)
 	$(MAKE) -C $(DIR_PREFIX)/fer memorydebug
 	$(MAKE) "CFLAGS = $(CFLAGS) -DMEMORYDEBUG" pymod_debug_build
 	$(MAKE) "CFLAGS = $(CFLAGS) -DMEMORYDEBUG" pymod_debug_install
@@ -58,6 +68,7 @@ memorydebug :
 .PHONY : grdeldebug
 grdeldebug :
 	mkdir -p $(DIR_PREFIX)/lib
+	$(COPY_DYLIBS)
 	$(MAKE) -C $(DIR_PREFIX)/fer grdeldebug
 	$(MAKE) pymod_debug_build
 	$(MAKE) pymod_debug_install
@@ -72,14 +83,15 @@ pymod_optimized_build :
 	  export CC=$(CC) ; \
 	  export CFLAGS="$(CFLAGS) -DNDEBUG -O" ; \
 	  export BUILDTYPE=$(BUILDTYPE) ; \
+	  export NETCDF_LIBDIR=$(NETCDF_LIBDIR) ; \
+	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
+	  export SZ_LIBDIR=$(SZ_LIBDIR) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export PANGO_LIBDIR=$(PANGO_LIBDIR) ; \
-	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
-	  export COMPRESS_LIB=$(COMPRESS_LIB) ; \
-	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
-	  export IS_LINUX_SYSTEM=$(IS_LINUX_SYSTEM) ; \
+	  export GLIB2_LIBDIR=$(GLIB2_LIBDIR) ; \
 	  export GFORTRAN_LIB=$(GFORTRAN_LIB) ; \
+	  export BIND_AND_HIDE_INTERNAL=$(BIND_AND_HIDE_INTERNAL) ; \
 	  $(PYTHON_EXE) setup.py --quiet build )
 
 ## The following installs libpyferret.so and optimized
@@ -91,14 +103,15 @@ pymod_optimized_install :
 	  export CC=$(CC) ; \
 	  export CFLAGS="$(CFLAGS) -DNDEBUG -O" ; \
 	  export BUILDTYPE=$(BUILDTYPE) ; \
+	  export NETCDF_LIBDIR=$(NETCDF_LIBDIR) ; \
+	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
+	  export SZ_LIBDIR=$(SZ_LIBDIR) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export PANGO_LIBDIR=$(PANGO_LIBDIR) ; \
-	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
-	  export COMPRESS_LIB=$(COMPRESS_LIB) ; \
-	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
-	  export IS_LINUX_SYSTEM=$(IS_LINUX_SYSTEM) ; \
+	  export GLIB2_LIBDIR=$(GLIB2_LIBDIR) ; \
 	  export GFORTRAN_LIB=$(GFORTRAN_LIB) ; \
+	  export BIND_AND_HIDE_INTERNAL=$(BIND_AND_HIDE_INTERNAL) ; \
 	  $(PYTHON_EXE) setup.py --quiet install -O2 --prefix=$(DIR_PREFIX)/install )
 
 .PHONY : externals_optimized
@@ -113,14 +126,15 @@ pymod_debug_build :
 	  export CC=$(CC) ; \
 	  export CFLAGS="$(CFLAGS) -UNDEBUG -O0 -g" ; \
 	  export BUILDTYPE=$(BUILDTYPE) ; \
+	  export NETCDF_LIBDIR=$(NETCDF_LIBDIR) ; \
+	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
+	  export SZ_LIBDIR=$(SZ_LIBDIR) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export PANGO_LIBDIR=$(PANGO_LIBDIR) ; \
-	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
-	  export COMPRESS_LIB=$(COMPRESS_LIB) ; \
-	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
-	  export IS_LINUX_SYSTEM=$(IS_LINUX_SYSTEM) ; \
+	  export GLIB2_LIBDIR=$(GLIB2_LIBDIR) ; \
 	  export GFORTRAN_LIB=$(GFORTRAN_LIB) ; \
+	  export BIND_AND_HIDE_INTERNAL=$(BIND_AND_HIDE_INTERNAL) ; \
 	  $(PYTHON_EXE) setup.py build -g )
 
 ## The following installs libpyferret.so and unoptimized
@@ -132,14 +146,15 @@ pymod_debug_install :
 	  export CC=$(CC) ; \
 	  export CFLAGS="$(CFLAGS) -UNDEBUG -O0 -g" ; \
 	  export BUILDTYPE=$(BUILDTYPE) ; \
+	  export NETCDF_LIBDIR=$(NETCDF_LIBDIR) ; \
+	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
+	  export SZ_LIBDIR=$(SZ_LIBDIR) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export PANGO_LIBDIR=$(PANGO_LIBDIR) ; \
-	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
-	  export COMPRESS_LIB=$(COMPRESS_LIB) ; \
-	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
-	  export IS_LINUX_SYSTEM=$(IS_LINUX_SYSTEM) ; \
+	  export GLIB2_LIBDIR=$(GLIB2_LIBDIR) ; \
 	  export GFORTRAN_LIB=$(GFORTRAN_LIB) ; \
+	  export BIND_AND_HIDE_INTERNAL=$(BIND_AND_HIDE_INTERNAL) ; \
 	  $(PYTHON_EXE) setup.py --quiet install -O0 --prefix=$(DIR_PREFIX)/install )
 
 .PHONY : externals_debug
@@ -156,7 +171,7 @@ clean :
 	find $(DIR_PREFIX)/pviewmod -name '*.py[co]' -delete
 	find $(DIR_PREFIX)/pyfermod -name '*.py[co]' -delete
 	$(MAKE) -C $(DIR_PREFIX)/fer clean
-	rm -fr $(DIR_PREFIX)/lib
+	rm -fr $(DIR_PREFIX)/lib $(DIR_PREFIX)/dylibs
 
 ## Install Ferret binaries, scripts, and other files into $(INSTALL_FER_DIR)
 .PHONY : install
@@ -179,14 +194,15 @@ update :
 	  export CC=$(CC) ; \
 	  export CFLAGS="$(CFLAGS) -O" ; \
 	  export BUILDTYPE=$(BUILDTYPE) ; \
+	  export NETCDF_LIBDIR=$(NETCDF_LIBDIR) ; \
+	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
+	  export SZ_LIBDIR=$(SZ_LIBDIR) ; \
 	  export CAIRO_LIBDIR=$(CAIRO_LIBDIR) ; \
 	  export PIXMAN_LIBDIR=$(PIXMAN_LIBDIR) ; \
 	  export PANGO_LIBDIR=$(PANGO_LIBDIR) ; \
-	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
-	  export COMPRESS_LIB=$(COMPRESS_LIB) ; \
-	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
-	  export IS_LINUX_SYSTEM=$(IS_LINUX_SYSTEM) ; \
+	  export GLIB2_LIBDIR=$(GLIB2_LIBDIR) ; \
 	  export GFORTRAN_LIB=$(GFORTRAN_LIB) ; \
+	  export BIND_AND_HIDE_INTERNAL=$(BIND_AND_HIDE_INTERNAL) ; \
 	  $(PYTHON_EXE) setup.py --quiet install -O2 --prefix=$(INSTALL_FER_DIR) )
 
 ## Execute the benchmark tests

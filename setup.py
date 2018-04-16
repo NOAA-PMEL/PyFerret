@@ -19,28 +19,26 @@ incdir_list = [ "pyfermod",
                 os.path.join("fer", "ef_utility"),
                 os.path.join("fer", "grdel"), ]
 
-is_linux_system = os.getenv("IS_LINUX_SYSTEM")
-if is_linux_system:
-    is_linux_system = is_linux_system.strip()
+bind_and_hide_internal = os.getenv("BIND_AND_HIDE_INTERNAL")
+if bind_and_hide_internal:
+    bind_and_hide_internal = bind_and_hide_internal.strip()
 
-# NETCDF4_LIBDIR must be given, either for the static library or the shared-object library
-netcdf4_libdir = os.getenv("NETCDF4_LIBDIR")
-if netcdf4_libdir:
-    netcdf4_libdir = netcdf4_libdir.strip()
-if not netcdf4_libdir:
-    raise ValueError("Environment variable NETCDF4_LIBDIR is not defined")
+# NETCDF_LIBDIR must be given, either for the static library or the shared-object library
+netcdf_libdir = os.getenv("NETCDF_LIBDIR")
+if netcdf_libdir:
+    netcdf_libdir = netcdf_libdir.strip()
+if not netcdf_libdir:
+    raise ValueError("Environment variable NETCDF_LIBDIR is not defined")
 
-# HDF5_LIBDIR is only given if the HDF5 and NetCDF libraries are to be statically linked in
-# COMPRESS_LIB is the compression library used by this HDF5, if it is given
+# HDF5_LIBDIR is only given if the HDF5 and NetCDF libraries are to be statically linked
 hdf5_libdir = os.getenv("HDF5_LIBDIR")
 if hdf5_libdir:
     hdf5_libdir = hdf5_libdir.strip()
-    compress_lib = os.getenv("COMPRESS_LIB")
-    if compress_lib:
-        compress_lib = compress_lib.strip()
-    if not compress_lib in ('z', 'sz'):
-        raise ValueError("Environment variable COMPRESS_LIB must be either 'z' or 'sz'")
-    compress_lib = '-l' + compress_lib
+
+# SZ_LIBDIR is the location of the SZ library to be linked in
+sz_libdir = os.getenv("SZ_LIBDIR")
+if sz_libdir:
+    sz_libdir = sz_libdir.strip()
 
 # CAIRO_LIBDIR is only given if the cairo library is to be statically linked in
 cairo_libdir = os.getenv("CAIRO_LIBDIR")
@@ -52,16 +50,13 @@ pixman_libdir = os.getenv("PIXMAN_LIBDIR")
 if pixman_libdir:
     pixman_libdir = pixman_libdir.strip()
 
-# PANGO_LIBDIR gives a non-standard location of the pango libraries and
-# the libraries it uses (ie, pangocairo, pango, freetype, fontconfig, png)
+# PANGO_LIBDIR gives a non-standard location of the pango libraries
 pango_libdir = os.getenv("PANGO_LIBDIR")
 if pango_libdir:
     pango_libdir = pango_libdir.strip()
 
-# GFORTRAN_LIB gives a non-standard full-path location of the gfortran static
-# library libgfortran.a to be used in the linking step.  If not given or empty,
-# the -lgfortran flag is used in the linking step.
-#
+# GFORTRAN_LIB gives a non-standard full-path location of the gfortran library to be used
+# in the linking step.  If not given or empty, the -lgfortran flag is used in the linking step.
 gfortran_lib = os.getenv("GFORTRAN_LIB")
 if gfortran_lib:
     gfortran_lib = gfortran_lib.strip()
@@ -70,15 +65,17 @@ if gfortran_lib:
 python_libdir = os.path.split( distutils.sysconfig.get_python_lib(standard_lib=True) )[0]
 
 # The list of additional directories to examine for libraries
-libdir_list = [ "lib", netcdf4_libdir, ]
+libdir_list = [ "lib", netcdf_libdir, ]
 if hdf5_libdir:
     libdir_list.append(hdf5_libdir)
+if sz_libdir:
+    libdir_list.append(sz_libdir)
 if cairo_libdir:
     libdir_list.append(cairo_libdir)
-    if pixman_libdir:
-        libdir_list.append(pixman_libdir)
-    if pango_libdir:
-        libdir_list.append(pango_libdir)
+if pixman_libdir:
+    libdir_list.append(pixman_libdir)
+if pango_libdir:
+    libdir_list.append(pango_libdir)
 libdir_list.append(python_libdir)
 
 # Get the list of ferret static libraries
@@ -100,18 +97,15 @@ if buildtype != "intel-mac":
 # Linking in the rest of the system libraries were moved to addn_link_flags
 # in order to make sure the appropriate netcdff, netcdf, hdf5_hl, hdf5, and
 # cairo libraries are used.
-#
-# lib_list.extend( ( "netcdff", "netcdf", "hdf5_hl", "hdf5",
-#                    "cairo", "gfortran", "curl", "z", "dl", "m", ) )
 
 addn_link_args = [ ]
 # Link to the appropriate netcdf libraries.
 # The hdf5 libraries are only used to resolve netcdf library function
 # calls when statically linking in the netcdf libraries.
 if hdf5_libdir:
-    netcdff_lib = os.path.join(netcdf4_libdir, "libnetcdff.a")
+    netcdff_lib = os.path.join(netcdf_libdir, "libnetcdff.a")
     addn_link_args.append(netcdff_lib)
-    netcdf_lib = os.path.join(netcdf4_libdir, "libnetcdf.a")
+    netcdf_lib = os.path.join(netcdf_libdir, "libnetcdf.a")
     addn_link_args.append(netcdf_lib)
     hdf5_hl_lib = os.path.join(hdf5_libdir, "libhdf5_hl.a")
     addn_link_args.append(hdf5_hl_lib)
@@ -129,28 +123,30 @@ if cairo_libdir:
     else:
         pixman_lib = "-lpixman-1"
     addn_link_args.extend([ pixman_lib, "-lfreetype", "-lfontconfig", "-lpng" ])
-    if is_linux_system:
-        # Bind symbols and function symbols to any internal definitions
-        # and do not make any of the symbols or function symbols defined
-        # in any libraries externally visible (mainly for cairo and pixman).
-        # Those in the object files (including those from pyfermod and
-        # fer/ef_utility) will still be visible.
-        addn_link_args.extend([ "-lXrender", "-lX11",
-                                "-Wl,-Bsymbolic", "-Wl,--exclude-libs,ALL"])
 else:
     addn_link_args.append("-lcairo")
 
-# The Pango text-rendering libraries
-addn_link_args.extend([ "-lpangocairo-1.0", "-lpango-1.0", "-lgobject-2.0" ])
+# The Pango-Cairo text-rendering libraries
+addn_link_args.append("-lpangocairo-1.0")
 
 # Link in the appropriate system libraries
 if hdf5_libdir:
-    addn_link_args.extend(["-lcurl", compress_lib])
+    addn_link_args.append("-lcurl")
+if sz_libdir:
+    addn_link_args.append("-lsz")
 if gfortran_lib:
     addn_link_args.append(gfortran_lib)
 else:
     addn_link_args.append("-lgfortran")
-addn_link_args.extend([ "-ldl", "-lm", "-fPIC", ])
+addn_link_args.extend([ "-lz", "-ldl", "-lm", "-fPIC", ])
+
+if bind_and_hide_internal:
+    # Bind symbols and function symbols to any internal definitions
+    # and do not make any of the symbols or function symbols defined
+    # in any libraries externally visible (mainly for cairo and pixman).
+    # Those in the object files (including those from pyfermod and
+    # fer/ef_utility) will still be visible.
+    addn_link_args.extend([ "-Wl,-Bsymbolic", "-Wl,--exclude-libs,ALL"])
 
 # Get the list of C source files in pyfermod
 src_list = [ ]
@@ -171,7 +167,7 @@ for srcname in os.listdir(dirname):
     if (srcname[0] == 'x') and (srcname[-7:] == "_data.o"):
         addnobjs_list.append(os.path.join(dirname, srcname))
 
-if cairo_libdir and is_linux_system:
+if bind_and_hide_internal:
     # Duplicate objects in libraries to make them externally visible (e.g., for las
     # external functions) if the '--exclude-libs ALL' flag was passed to the linker.
     dirname = os.path.join("fmt", "src")

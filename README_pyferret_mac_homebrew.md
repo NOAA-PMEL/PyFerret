@@ -14,18 +14,10 @@ the system-provided python (2.7).
 The Homebrew PyQt5 package will require the Homebrew Python packages,
 so trying to use the system-provided python will probably be problematic.
 
-Install the `cairo`, `pango`, `python`, `pyqt`, `hdf5`, and `netcdf`
-Homebrew packages.
-The PyFerret prebuilt release for Mac OS X (with Homebrew packages)
-does not statically link in the hdf5 and netcdf libraries, but instead
-uses the shared libraries from the last two of these Homebrew packages.
+Install the `python` and `pyqt` Homebrew packages.
 
-    brew install cairo
-    brew install pango
     brew install python3
     brew install pyqt5
-    brew install hdf5
-    brew install netcdf
 
 Then, using `pip` (part of the Homebrew Python packages), install
 the `numpy`, `scipy`, and `pyshp` packages.
@@ -153,11 +145,12 @@ environment variables needed by PyFerret.
 
 #### Testing
 
-To run the benchmark tests, the `nco` and `imagemagick` Homebrew
-packages are needed.
+To run the benchmark tests, the `nco`, `imagemagick`, and `gs`
+Homebrew packages are needed.
 
     brew install nco
     brew install imagemagick
+    brew install gs
 
 Make sure the environment variables need by PyFerret are assigned
 appropriately using the appropriate ferret_paths script, and that

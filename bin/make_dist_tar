@@ -4,19 +4,19 @@
 mycp="/bin/cp -R -p"
 
 print_usage_and_exit() {
-   echo "" 
-   echo "Usage:  $0  <pyferret_dir>  <version>  <platform>  <target_dir>  [ -y ] " 
-   echo "" 
-   echo "    Creates the PyFerret distribution file pyferret-<version>-<platform>.tar.gz " 
-   echo "    from the pyferret source directory <pyferret_dir>, in which pyferret and " 
-   echo "    the font files have been built.  All the files required will be copied to a " 
-   echo "    temporary directory which this script will create.  Any missing executables " 
-   echo "    will be noted.  The gzipped tar file pyferret-<version>-<platform>.tar.gz " 
-   echo "    will be written in <target_dir>, which must already exist.  If the optional " 
-   echo "    fifth argument '-y' is given, any questions normally asked by the script " 
-   echo "    will be automatically answered with 'y'. " 
-   echo "" 
-   exit 1 
+   echo ""
+   echo "Usage:  $0  <pyferret_dir>  <version>  <platform>  <target_dir>  [ -y ] "
+   echo ""
+   echo "    Creates the PyFerret distribution file pyferret-<version>-<platform>.tar.gz "
+   echo "    from the pyferret source directory <pyferret_dir>, in which pyferret and "
+   echo "    the font files have been built.  All the files required will be copied to a "
+   echo "    temporary directory which this script will create.  Any missing executables "
+   echo "    will be noted.  The gzipped tar file pyferret-<version>-<platform>.tar.gz "
+   echo "    will be written in <target_dir>, which must already exist.  If the optional "
+   echo "    fifth argument '-y' is given, any questions normally asked by the script "
+   echo "    will be automatically answered with 'y'. "
+   echo ""
+   exit 1
 }
 
 if [ $# -lt 4 ]; then
@@ -75,7 +75,7 @@ else
    parent_temp_dir="/tmp/pyferret_$$"
 fi
 echo "Creating temporary directory ${parent_temp_dir}"
-rm -fr ${parent_temp_dir}
+rm -f -R ${parent_temp_dir}
 temp_dir="${parent_temp_dir}/${ctar_name}"
 mkdir -p ${temp_dir}
 
@@ -100,17 +100,17 @@ ${mycp} ${ferret_dir}/palettes ${temp_dir}/ppl
 
 # Remove files that should not be distributed
 echo "Removing clutter"
-rm -f ${temp_dir}/bin/Fapropos* 1>>/dev/null 2>&1 
-rm -f ${temp_dir}/bin/Fhelp* 1>>/dev/null 2>&1 
-rm -f ${temp_dir}/bin/Findex* 1>>/dev/null 2>&1 
-rm -f ${temp_dir}/bin/Finstall.[^c]* 1>>/dev/null 2>&1 
-rm -f ${temp_dir}/bin/Ftoc* 1>>/dev/null 2>&1 
-rm -f ${temp_dir}/bin/ferret_paths*_template 1>>/dev/null 2>&1 
-rm -f ${temp_dir}/bin/make_*_tar 1>>/dev/null 2>&1 
-rm -fr ${temp_dir}/bin/fonts_* 1>>/dev/null 2>&1 
-rm -fr ${temp_dir}/bin/build_fonts/original 1>>/dev/null 2>&1 
-rm -f ${temp_dir}/bin/build_fonts/unix/fnt* 1>>/dev/null 2>&1 
-rm -f ${temp_dir}/bin/build_fonts/unix/binary 1>>/dev/null 2>&1 
+rm -f ${temp_dir}/bin/Fapropos* 1>>/dev/null 2>&1
+rm -f ${temp_dir}/bin/Fhelp* 1>>/dev/null 2>&1
+rm -f ${temp_dir}/bin/Findex* 1>>/dev/null 2>&1
+rm -f ${temp_dir}/bin/Finstall.[^c]* 1>>/dev/null 2>&1
+rm -f ${temp_dir}/bin/Ftoc* 1>>/dev/null 2>&1
+rm -f ${temp_dir}/bin/ferret_paths*_template 1>>/dev/null 2>&1
+rm -f ${temp_dir}/bin/make_*_tar 1>>/dev/null 2>&1
+rm -f -R ${temp_dir}/bin/fonts_* 1>>/dev/null 2>&1
+rm -f -R ${temp_dir}/bin/build_fonts/original 1>>/dev/null 2>&1
+rm -f ${temp_dir}/bin/build_fonts/unix/fnt* 1>>/dev/null 2>&1
+rm -f ${temp_dir}/bin/build_fonts/unix/binary 1>>/dev/null 2>&1
 
 # Now set up the proper symbolic links
 echo "Setting up symbolic links"
@@ -125,7 +125,7 @@ fnt_files=${ferret_dir}/bin/build_fonts/unix/f*
 if [ $? -ne 0 -o "${fnt_files}" = "" ]; then
    echo "No font files found in ${ferret_dir}/bin/build_fonts/unix"
    echo "Cleaning up - removing ${parent_temp_dir}"
-   rm -fr "${parent_temp_dir}"
+   rm -f -R "${parent_temp_dir}"
    echo ""
    exit 1
 fi
@@ -139,11 +139,16 @@ python_dirs=${pyferret_dir}/lib*/python*
 if [ $? -ne 0 -o "${python_dirs}" = "" ]; then
    echo "No python* directories found in ${pyferret_dir}/lib"
    echo "Cleaning up - removing ${parent_temp_dir}"
-   rm -fr "${parent_temp_dir}"
+   rm -f -R "${parent_temp_dir}"
    echo ""
    exit 1
 fi
 ${mycp} ${python_dirs} ${temp_dir}/lib/
+
+if [ -d ${ferret_dir}/dylibs ]; then
+   echo "Copying dylibs"
+   ${mycp} ${ferret_dir}/dylibs ${temp_dir}/
+fi
 
 # Create the tar file
 echo ""
@@ -178,6 +183,6 @@ fi
 # Clean up
 echo ""
 echo "Cleaning up - removing ${parent_temp_dir}"
-rm -fr "${parent_temp_dir}"
+rm -f -R "${parent_temp_dir}"
 echo ""
 

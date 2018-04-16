@@ -5,57 +5,50 @@
 # fer, fmt, and ppl directories and defines platform specific macros
 #
 
-#
-# DIR_PREFIX, HDF5_DIR, and NETCDF4_DIR are from site_specific.mk
-# which should have been included prior to this include.
-#
-
-# Leave blank to omit additional Linux linker flags
-	IS_LINUX_SYSTEM = 
+# Leave blank to omit additional Linux linker flags that bind and hide internal
+# functions.  Including these linker flags is mainly to hide statically-linked
+# libcairo functions from systems that use an older version of libcairo (e.g., RHEL6).
+	BIND_AND_HIDE_INTERNAL =
 
 # Extended regular expressions flag for sed (used with cleaning up run_tests results)
 	SED_EXTREGEX_FLAG = -E
 
 #
-# Directories for the libraries
+# Include directories
 #
-ifeq ($(strip $(CAIRO_DIR)),)
-	CAIRO_LIBDIR	=
-#	This include is only for code in Pango that did use the proper cairo include
+	NETCDF_INCLUDE	= -I$(NETCDF_LIBDIR)/../include
+
+ifeq ($(strip $(HDF5_LIBDIR)),)
+	HDF5_INCLUDE	=
+else
+	HDF5_INCLUDE	= -I$(HDF5_LIBDIR)/../include
+endif
+
+ifeq ($(strip $(CAIRO_LIBDIR)),)
 	CAIRO_INCLUDE	= -I/usr/include/cairo
 else
-	CAIRO_LIBDIR	= $(CAIRO_DIR)/lib
-#	The second include is only for code in Pango that did use the proper cairo include
-	CAIRO_INCLUDE	= -I$(CAIRO_DIR)/include -I$(CAIRO_DIR)/include/cairo
+	CAIRO_INCLUDE	= -I$(CAIRO_LIBDIR)/../include -I$(CAIRO_LIBDIR)/../include/cairo
 endif
 
-ifeq ($(strip $(PIXMAN_DIR)),)
-	PIXMAN_LIBDIR	=
-	PIXMAN_INCLUDE	= 
+ifeq ($(strip $(PIXMAN_LIBDIR)),)
+	PIXMAN_INCLUDE	=
 else
-	PIXMAN_LIBDIR	= $(PIXMAN_DIR)/lib
-	PIXMAN_INCLUDE	= -I$(PIXMAN_DIR)/include
+	PIXMAN_INCLUDE	= -I$(PIXMAN_LIBDIR)/../include
 endif
 
-ifeq ($(strip $(PANGO_DIR)),)
-	PANGO_LIBDIR	=
-	PANGO_INCLUDE	= -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include
+ifeq ($(strip $(PANGO_LIBDIR)),)
+	PANGO_INCLUDE	= -I/usr/include/pango-1.0
 else
-	PANGO_LIBDIR	= $(PANGO_DIR)/lib
-	PANGO_INCLUDE	= -I$(PANGO_DIR)/include/pango-1.0 -I$(PANGO_DIR)/include/glib-2.0 -I$(PANGO_DIR)/lib/glib-2.0/include
+	PANGO_INCLUDE	= -I$(PANGO_LIBDIR)/../include/pango-1.0
 endif
 
-ifeq ($(strip $(HDF5_DIR)),)
-	HDF5_LIBDIR	=
+ifeq ($(strip $(GLIB2_LIBDIR)),)
+	GLIB2_INCLUDE	= -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include
 else
-	HDF5_LIBDIR	= $(HDF5_DIR)/lib
+	GLIB2_INCLUDE	= -I$(GLIB2_LIBDIR)/../include/glib-2.0 -I$(GLIB2_LIBDIR)/glib-2.0/include
 endif
 
-	NETCDF4_LIBDIR	= $(NETCDF4_DIR)/lib
 
-#
-# Local defines
-#
 	MYINCLUDES	= -I$(PYTHONINCDIR) \
 			  -I$(DIR_PREFIX)/fer/common \
 			  -I$(DIR_PREFIX)/fer/grdel \
@@ -66,10 +59,12 @@ endif
 			  -I$(DIR_PREFIX)/ppl/tmap_inc \
 			  -I$(DIR_PREFIX)/pyfermod \
 			  -I$(DIR_PREFIX)/external_functions/ef_utility \
+			  $(NETCDF_INCLUDE) \
+			  $(HDF5_INCLUDE) \
 			  $(CAIRO_INCLUDE) \
 			  $(PIXMAN_INCLUDE) \
 			  $(PANGO_INCLUDE) \
-			  -I$(NETCDF4_DIR)/include
+			  $(GLIB2_INCLUDE)
 
 	MYDEFINES	= -Dcrptd_cat_argument \
 			  -Ddouble_p \
@@ -77,10 +72,9 @@ endif
 			  -Dreclen_in_bytes \
 			  -Dunix \
 			  -Dxgks \
-			  -DG77_SIGNAL \
 			  -DG77 \
+			  -DG77_SIGNAL \
 			  -DINTERNAL_READ_FORMAT_BUG \
-			  -DLINUX \
 			  -DMANDATORY_FORMAT_WIDTHS \
 			  -DNEED_IAND \
 			  -DNO_DOUBLE_ESCAPE_SLASH \
@@ -90,27 +84,40 @@ endif
 			  -DNO_OPEN_SHARED \
 			  -DNO_PASSED_CONCAT \
 			  -DNO_PREPEND_STRING \
-			  -DSTAR_1_SUPPORTED \
-			  -DVOID_SIGHANDLER \
-			  -DX_REFRESH \
-			  -DXT_CODE
+			  -DSTAR_1_SUPPORTED
 
 	CC		= $(shell which clang)
 	FC		= $(shell which gfortran)
 	F77		= $(shell which gfortran)
 	AR		= $(shell which ar)
-	ARFLAGS		= -cr
 	RANLIB		= $(shell which ranlib)
 
-	CFLAGS		= $(MYINCLUDES) $(MYDEFINES) -fPIC
-	FFLAGS		= $(MYINCLUDES) $(MYDEFINES) -fPIC -fno-automatic -fdollar-ok \
-			  -ffixed-line-length-132 -fno-second-underscore -fno-backslash \
-			  -fimplicit-none -fdefault-real-8 -fdefault-double-8
-	PPLUS_FFLAGS	= $(MYINCLUDES) $(MYDEFINES) -fPIC -fno-automatic -fdollar-ok \
-			  -ffixed-line-length-132 -fno-second-underscore -fno-backslash
+	ARFLAGS		= -cr
+
+	CFLAGS		= -fPIC $(MYDEFINES) $(MYINCLUDES)
+
+	FFLAGS		= -fPIC \
+			  -fno-automatic \
+			  -fno-second-underscore \
+			  -fdollar-ok \
+			  -ffixed-line-length-132 \
+			  -ffpe-trap=overflow \
+			  -fno-backslash \
+			  -fimplicit-none \
+			  -fdefault-real-8 \
+			  -fdefault-double-8 \
+			  $(MYDEFINES) $(MYINCLUDES)
+
+	PPLUS_FFLAGS	= -fPIC \
+			  -fno-automatic \
+			  -fno-second-underscore \
+			  -fdollar-ok \
+			  -ffixed-line-length-132 \
+			  -fno-backslash \
+			  $(MYDEFINES) $(MYINCLUDES)
 
 	OPT_FLAGS	= -O -DNDEBUG
-	PPLUS_OPT_FLAGS	= -O -DNDEBUG
+	PPLUS_OPT_FLAGS	= -O0
 	DBG_FLAGS	= -O0 -g
 	PROF_FLAGS	= -O0 -g
 

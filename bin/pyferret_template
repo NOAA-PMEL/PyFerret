@@ -25,6 +25,16 @@ fi
 ## The pyferret assignment to PYTHONPATH and LD_LIBRARY_PATH 
 ## is now done in the ferret_paths script.
 
+## Add ${FER_DIR}/dylibs to DYLD_FALLBACK_LIBRARY_PATH (for Mac OS X)
+## This must be done in this script; it is not seen if done in the ferret_paths scripts.
+if [ ! -z "$DYLD_FALLBACK_LIBRARY_PATH" ]; then
+    if ! echo "${DYLD_FALLBACK_LIBRARY_PATH}" | grep -q "${FER_DIR}/dylibs"; then
+        export DYLD_FALLBACK_LIBRARY_PATH="${FER_DIR}/dylibs:${DYLD_FALLBACK_LIBRARY_PATH}"
+    fi
+else
+    export DYLD_FALLBACK_LIBRARY_PATH="${FER_DIR}/dylibs"
+fi
+
 ## Execute an in-line Python script to run Ferret using the pyferret 
 ## module.  The init method explicity processes the $PYTHONSTARTUP file, 
 ## if it exists and if '-secure' was not given as a command-line argument.

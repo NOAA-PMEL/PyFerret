@@ -31,15 +31,6 @@ if ( "${PATH}" !~ "${FER_DIR}/bin:*" ) then
     rehash
 endif
 
-## For Mac OS X, add ${FER_DIR}/dylibs to DYLD_FALLBACK_LIBRARY_PATH
-if ( $?DYLD_FALLBACK_LIBRARY_PATH ) then
-    if ( "${DYLD_FALLBACK_LIBRARY_PATH}" !~ "*${FER_DIR}/dylibs*" ) then
-        setenv DYLD_FALLBACK_LIBRARY_PATH "${FER_DIR}/dylibs:${DYLD_FALLBACK_LIBRARY_PATH}"
-    endif
-else
-    setenv DYLD_FALLBACK_LIBRARY_PATH "${FER_DIR}/dylibs"
-endif
-
 ## Space-separated lists of directories examined when searching for 
 ## data, descriptor, grid, and go-script files without path components.
 setenv FER_DATA ". ${FER_DSETS}/data ${FER_DIR}/contrib"

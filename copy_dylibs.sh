@@ -16,8 +16,8 @@ brewprefix=`brew config | awk '/HOMEBREW_PREFIX/ {print $2}'`
 libdir="${brewprefix}/lib"
 echo "Copying dylib libraries from ${libdir}"
 for name in cairo fontconfig freetype fribidi glib-2.0 gobject-2.0 graphite2 \
-            gthread-2.0 harfbuzz hdf5 netcdf netcdff pango-1.0 pangocairo-1.0 \
-            pangoft2-1.0 pcre pixman-1 png16 sz ; do
+            gthread-2.0 harfbuzz hdf5 hdf5_hl netcdf netcdff pango-1.0 \
+            pangocairo-1.0 pangoft2-1.0 pcre pixman-1 png16 sz ; do
     echo "    ${name}"
     cp -f ${libdir}/lib${name}.*.dylib .
 done

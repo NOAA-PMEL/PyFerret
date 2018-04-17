@@ -327,7 +327,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     }
 
     /* Import the function-pointer table for the PyArray_* functions */
-    import_array();
+    import_array1(NULL);
 
     /* Parse the arguments, checking if an Exception was raised */
     if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|dO!O!O!O!sO!O!O!O!O!",

@@ -10,9 +10,12 @@ for information on installing and using Homebrew.
 
 I have always installed the Homebrew Python 3.6 (`python` or `python3`)
 and/or Python 2.7 (`python@2`) packages and have not attempted to use
-the system-provided python (2.7).
-The Homebrew PyQt5 package will require the Homebrew Python packages,
-so trying to use the system-provided python will probably be problematic.
+the system-provided Python 2.7.
+The Homebrew PyQt5 package requires the Homebrew Python package(s),
+so installing PyQt from Homebrew will also install Homebrew Python.
+However, if you already have Python 2.7 or 3.6 with either PyQt5 or
+PyQt4 and with numpy, then the prebuilt package *should* work,
+althought this has not been tested at this time.
 
 Install the `python` and `pyqt` Homebrew packages.
 
@@ -113,15 +116,17 @@ template file to `site_specific.mk` and edit this `site_specific.mk`
 configuration file appropriately for your system; for example:
 
     DIR_PREFIX = $(HOME)/git/PyFerret
-    INSTALL_FER_DIR = /usr/local/PyFerret
+    INSTALL_FER_DIR = /usr/local/PyFerret-7.4-Python-3.6
     BUILDTYPE = intel-mac
     PYTHON_EXE = python3.6
-    GFORTRAN_LIB = $(shell $(FC) --print-file-name=libgfortran.a)
-    CAIRO_DIR = /usr/local
-    PIXMAN_DIR = /usr/local
-    PANGO_DIR = /usr/local
-    HDF5_DIR =
-    NETCDF4_DIR = /usr/local
+    GFORTRAN_LIB = $(shell $(FC) --print-file-name=libgfortran.dylib)
+    CAIRO_LIBDIR = /usr/local/lib
+    PIXMAN_LIBDIR = /usr/local/lib
+    PANGO_DIR = /usr/local/lib
+    GLIB2_LIBDIR = /usr/local/lib
+    HDF5_LIBDIR =
+    SZ_LIBDIR =
+    NETCDF_LIBDIR = /usr/local/lib
 
 Similarly, copy `external_functions/ef_utility/site_specific.mk.in` to
 `external_functions/ef_utility/site_specific.mk` and edit
@@ -168,7 +173,7 @@ subdirectory to create differences files.
 Any actual differences in the PNG and PDF images are show in dark red
 (overlaid on a faded original image) in any *_diff.png images created.
 There might not be any difference image files, but if there are, the
-differences are usually from differnces in system-provided fonts and
+differences are usually from differences in system-provided fonts, and
 so are not significant.
 Differences in the log, err, and ncdump output files are shown in the
 *.diff files, which might be empty, or might show negligable numerical

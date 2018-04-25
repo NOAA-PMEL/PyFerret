@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 112938159 Apr 10 10:39 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 111909706 Apr 25 11:01 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: issue 1867
+Note: issue 1870: allowing I in list formats
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -15,14 +15,14 @@ FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=. ./data
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Tue Apr 10 10:47:44 PDT 2018
+Beginning at Wed Apr 25 11:37:44 PDT 2018
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1337,9 +1337,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G10X5
            *** NOTE: Not deleted: TIME1
            *** NOTE: Axis is in use by grid GHB1
+           *** NOTE: Not deleted: TIME2
+           *** NOTE: Axis is in use by grid GJR1
            *** NOTE: Not deleted: TIME5
            *** NOTE: Axis is in use by grid GQO1
-           *** NOTE: Not deleted: TIME2
+           *** NOTE: Not deleted: TIME6
            *** NOTE: Axis is in use by grid GCQ1
            *** NOTE: Not deleted: TAX
            *** NOTE: Axis is in use by grid GFORMAT
@@ -1401,7 +1403,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G5DAY
            *** NOTE: Not deleted: PSYU
            *** NOTE: Axis is in use by grid G5DAY
-           *** NOTE: Not deleted: TIME6
+           *** NOTE: Not deleted: TIME7
            *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: TEST_IRREG
            *** NOTE: Axis is in use by grid (G015)
@@ -1469,9 +1471,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G10X5
            *** NOTE: Not deleted: TIME1
            *** NOTE: Axis is in use by grid GHB1
+           *** NOTE: Not deleted: TIME2
+           *** NOTE: Axis is in use by grid GJR1
            *** NOTE: Not deleted: TIME5
            *** NOTE: Axis is in use by grid GQO1
-           *** NOTE: Not deleted: TIME2
+           *** NOTE: Not deleted: TIME6
            *** NOTE: Axis is in use by grid GCQ1
            *** NOTE: Not deleted: TAX
            *** NOTE: Axis is in use by grid GFORMAT
@@ -1533,7 +1537,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G5DAY
            *** NOTE: Not deleted: PSYU
            *** NOTE: Axis is in use by grid G5DAY
-           *** NOTE: Not deleted: TIME6
+           *** NOTE: Not deleted: TIME7
            *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: PSZW
            *** NOTE: Axis is in use by grid G5_10
@@ -2422,7 +2426,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Changing the value of attribute (PSZT1).positive
            *** NOTE: Changing the type of attribute (coadsx).modulo
            *** NOTE: Changing the value of attribute (coadsx).modulo
-           *** NOTE: Changing the value of attribute (TIME6).time_origin
+           *** NOTE: Changing the value of attribute (TIME7).time_origin
  **ERROR: command syntax: enclose coordinate variable name in parentheses
 list coadsx.units
  **ERROR: variable unknown or not in data set: COADSX.UNITS
@@ -2551,6 +2555,7 @@ Replacing definition of axis TIME
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
+CURL Error: Couldn't resolve host name
 curl error details: 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2795,6 +2800,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file tripolar_missing_lon.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+CURL Error: Couldn't resolve host name
 curl error details: 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -6470,6 +6476,9 @@ Replacing definition of axis xax
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_clim_special
            *** NOTE: regarding ./data/clim_axes_gregorian.nc ...
            *** NOTE: GREGORIAN climatological axes defined
@@ -6491,6 +6500,8 @@ Bailing out of external function "box_edges":
 
 Bailing out of external function "box_edges":
 	Argument has no axes
+**ERROR: (4i6): Success
+**ERROR: ("This header ", I5, F8.2): Success
  LISTing to file a.nc
  **ERROR: variable unknown or not in data set: VAR_UNDEFINED
 DEFINE VARIABLE/like=var_undefined myvar = 7
@@ -6551,13 +6562,22 @@ LIST/nohead/l=1:0/format=xxx airt[x=-135,y=0]
           Valid formats are CDF, UNFORMATTED, STREAM, COMMA, TAB or limited Fortran formats
           a7
 list/nohead/format=a7 {"Abcde"}
- **ERROR: invalid command: Integer format allows one value per line on output (4i6)
 list/nohead/l=1:10/j=20:23/format=(4i6) 10*airt[x=180]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_center_keylab
 Replacing definition of axis xax
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn741_bug_fixes
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+list/nohead/format=("This header ", I5, F8.2) size, var
+ **ERROR: invalid command: Fortran format for list with strings must have one specifier per variable
+list/nohead/format=("This header ", F8.2, A) avar, var
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6682,4 +6702,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Apr 10 10:55:11 PDT 2018
+Ended at Wed Apr 25 11:45:55 PDT 2018

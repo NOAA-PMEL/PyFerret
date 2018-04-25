@@ -86,8 +86,9 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V691+ *acm* 9/14 Ticket 2199: for string variables don't list a BAD FLAG in the header.
 * V702: *sh*  2/17 Dynamic memory management (pt_blk no longer used)
-* V750 *acm*  3/18 Issue 950: Allow (some) A formats for listing strings and numeric data together
+* V740 *acm*  3/18 Issue 950: Allow (some) A formats for listing strings and numeric data together
 *                  Also simplified I formats in the same way.
+* V741 *acm*  4/18 Issue 1870: Check Format more closely when finding an I Format
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -143,7 +144,7 @@
 	REAL		big, small, biggest, value
 	REAL*8		TM_WORLD
 	CHARACTER	good_fmt(max_intrp)*10, bad_fmt(max_intrp)*10,
-     .			vcode(max_intrp)*128, tab_or_comma*1
+     .			vcode(max_intrp)*128, tab_or_comma*1, b1*1
 #ifdef DEC_FORTRAN
 	INTEGER		ios
 #endif
@@ -215,6 +216,25 @@
 
 	   has_int = TM_HAS_STRING (list_format, 'I')
 
+* Make sure the I is a format spec, not within a string in the format  
+
+	   IF (has_int) THEN
+	      has_int = .FALSE.
+	      DO i = 1, num_it
+	         buff2 = list_format(item_start(i):item_end(i))
+		 
+		 ! Is this item from the fmt statement a quoted string?
+		 i1 = item_start(i) - 1
+		 IF (i1.GE.1) THEN         
+		    b1 = list_format(i1:i1)
+		    IF ( b1 .EQ. '"' .OR.  b1 .EQ. "'") CYCLE
+		 ENDIF
+
+* Not within a string, is the first letter an I? 
+		 has_int = (STR_SAME(buff2(1:1), 'i') .EQ. 0)
+	      ENDDO
+	   ENDIF
+
 	   IF (has_string .OR. has_int) THEN
            
 
@@ -229,9 +249,6 @@
 
 	   ENDIF
 	ENDIF      
-
-
-
 
 * determine list limits checking for conformable shapes of data to list
 * ... for each axis each var must be same size or length 1

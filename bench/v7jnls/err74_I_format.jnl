@@ -1,0 +1,37 @@
+! err74_I_format.jnl
+! Issue 1870
+! 4/25/18 *acm*
+
+let var = 55.12
+list/nohead/format=("This header ", I5) var
+
+! This failed in v7.4 -- the code detected a case of Integer format, so 
+! converted internally to an integer before writing using the fmt statment.
+
+list/nohead/format=("This header ", F5.2) var
+
+
+! Do some more testing. 
+! Intentional errors: Cannot specify text within the format 
+! if using I or A format and multiple vars
+
+set mode ignore
+let size = 12345
+list/nohead/format=("This header ", I5, F8.2) size, var
+
+let avar = "My Text"
+list/nohead/format=("This header ", F8.2, A) avar, var
+
+set mode/last ignore
+
+! But can use multiple vars with I or A, one item in the format
+! specifier per variable.
+
+let mytext = "This header"
+list/nohead/format=(A, F8.2) mytext, var
+
+list/nohead/format=(A, I5, F8.2) mytext, size, var
+
+! We do have flexibility if using floating-point formats
+list/nohead/format=("This header ", 2F8.2) size, var
+list/nohead/format=("This header ", F8.0, e12.2) size, var

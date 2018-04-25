@@ -93,8 +93,9 @@
 * V71   *acm* 01/17 Ticket 2492. For single-variable LIST/FORMAT=comma or /FORMAT=tab listings, 
 *                   /NOROW had no effect; and there is an extra longitude location label below 
 *                   the header even when the longitude has been averaged away.
-* v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
-* V750 *acm*  3/18 Issue 950: Allow simplified I formats
+* v74  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
+* V740 *acm*  3/18 Issue 950: Allow simplified I formats
+* V741 *acm*  4/18 Issue 1870: Check Format more closely when finding an I Format
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -134,7 +135,7 @@
      .			fortran_selfdoc, do_auto_fmt, do_dods, norow, has_int
 	INTEGER		TM_LENSTR, TM_LENSTR1, CX_DIM_LEN,
      .			FIELD_WIDTH, MGRID_SIZE, TM_LOC_STRING, 
-     .			GET_MAX_C_STRING_LEN, TM_GET_CALENDAR_ID,
+     .			GET_MAX_C_STRING_LEN, TM_GET_CALENDAR_ID, STR_SAME,
      .			width, w0, grid, dlen, prec_digits,
      .			ndim, lo(nferdims), hi(nferdims), del(nferdims),
      .			i, j, k, l, m, n, npts, line_length, dset,
@@ -143,12 +144,12 @@
      .			cleft, usable_line_len, max_fields, row_ax,
      .			col_ax, places, col_dec, row_dec, row_wld, 
      .			numbers, first, slen, llen, axis, lp, cal_id,
-     .                  wkblk, ndig(nferdims), ival
+     .                  wkblk, ndig(nferdims), ival, num_it, slen1, i1
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 * V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
 	CHARACTER	AX_TITLE*32, VAR_UNITS*64, LEFINT*8, TM_FMT*16,
      .			GET_STRING_ELEMENT*512,
-     .			line_buff*10000, 
+     .			line_buff*10000, buff*128, b1*1,
      .			good_data_form*10, row_ss_fmt*14, tab_or_comma*1,
      .			bad_data_form*10, col_head_format*32, cal_name*32
 	REAL		BOX_SIZE, big, small, biggest, bad_data, value
@@ -501,6 +502,28 @@
 
 * Limited handling of integer formats -- write single number per record
 	   has_int = (TM_LOC_STRING (list_format, 'I', 1) .GT. 0)
+	   IF (has_int) THEN
+
+* Make sure the I is a format spec, not within a string in the format  
+	      slen1 = TM_LENSTR1(list_format)
+	      CALL PARSE_COMMA_LIST (list_format, 2, slen1-1, max_item_list,
+     .	          num_it, item_start, item_end, status)
+	      has_int = .FALSE.
+	      DO i = 1, num_it
+	         buff = list_format(item_start(i):item_end(i))
+		 
+		 ! Is this item from the fmt statement a quoted string?
+		 i1 = item_start(i) - 1
+		 IF (i1.GE.1) THEN         
+		    b1 = list_format(i1:i1)
+		    IF ( b1 .EQ. '"' .OR.  b1 .EQ. "'") CYCLE
+		 ENDIF
+
+* Not a string, is the first letter an I? 
+		 has_int = (STR_SAME(buff(1:1), 'i') .EQ. 0)
+	      ENDDO
+	   ENDIF
+
 	   IF (has_int) THEN
 	      ival = TM_LOC_STRING (list_format, 'I', 1) - 1
 	      IF (TM_DIGIT( list_format(ival:ival)) ) GOTO 5020

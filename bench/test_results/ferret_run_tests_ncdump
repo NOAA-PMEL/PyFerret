@@ -3099,6 +3099,7 @@ variables:
 *** Running ferret script: bn_hi_res_time.jnl
 *** Running ferret script: bn_A_I_format.jnl
 *** Running ferret script: bn_center_keylab.jnl
+*** Running ferret script: bn741_bug_fixes.jnl
 *** Running ferret script: bn_gif.jnl
 *** Running ferret script: bn_ps.jnl
 *** Running ferret script: bn_all_ef.jnl

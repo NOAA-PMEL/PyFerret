@@ -5424,9 +5424,17 @@ LIST/nohead/l=1:0/format=xxx airt[x=-135,y=0]
           Valid formats are CDF, UNFORMATTED, STREAM, COMMA, TAB or limited Fortran formats
           a7
 list/nohead/format=a7 {"Abcde"}
- **ERROR: invalid command: Integer format allows one value per line on output (4i6)
+**ERROR: (4i6): Success
 list/nohead/l=1:10/j=20:23/format=(4i6) 10*airt[x=180]
 *** Running ferret script: bn_center_keylab.jnl
+*** Running ferret script: bn741_bug_fixes.jnl
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+**ERROR: ("This header ", I5, F8.2): No such file or directory
+list/nohead/format=("This header ", I5, F8.2) size, var
+ **ERROR: invalid command: Fortran format for list with strings must have one specifier per variable
+list/nohead/format=("This header ", F8.2, A) avar, var
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

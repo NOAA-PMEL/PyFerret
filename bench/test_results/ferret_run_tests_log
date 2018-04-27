@@ -291,6 +291,7 @@ Benchmark scripts that will be run:
    bn_hi_res_time.jnl
    bn_A_I_format.jnl
    bn_center_keylab.jnl
+   bn741_bug_fixes.jnl
    bn_gif.jnl
    bn_ps.jnl
    bn_all_ef.jnl
@@ -106167,6 +106168,59 @@ LEV_MAX = "15"
 LEV_NUM = "14"
 LEV_DEL = "1"
 LEV_CENTERED_LABELS = "on"
+*** Running ferret script: bn741_bug_fixes.jnl
+! bn741_bug_fixes.jnl
+! test various fixes that went into version 7.41
+! 4/18 *acm*
+!
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+go err74_I_format
+! err74_I_format.jnl
+! Issue 1870
+! 4/25/18 *acm*
+ 
+let var = 55.12
+list/nohead/format=("This header ", I5) var
+This header    55
+ 
+! This failed in v7.4 -- the code detected a case of Integer format, so
+! converted internally to an integer before writing using the fmt statment.
+ 
+list/nohead/format=("This header ", F5.2) var
+This header 55.12
+ 
+ 
+! Do some more testing.
+! Intentional errors: Cannot specify text within the format
+! if using I or A format and multiple vars
+ 
+set mode ignore
+let size = 12345
+list/nohead/format=("This header ", I5, F8.2) size, var
+This header  
+let avar = "My Text"
+list/nohead/format=("This header ", F8.2, A) avar, var
+ 
+set mode/last ignore
+ 
+! But can use multiple vars with I or A, one item in the format
+! specifier per variable.
+ 
+let mytext = "This header"
+list/nohead/format=(A, F8.2) mytext, var
+This header   55.12
+ 
+list/nohead/format=(A, I5, F8.2) mytext, size, var
+This header12345   55.12
+ 
+! We do have flexibility if using floating-point formats
+list/nohead/format=("This header ", 2F8.2) size, var
+This header 12345.00   55.12
+list/nohead/format=("This header ", F8.0, e12.2) size, var
+This header   12345.    0.55E+02
 *** Running ferret script: bn_gif.jnl
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using

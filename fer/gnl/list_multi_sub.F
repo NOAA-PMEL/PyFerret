@@ -232,8 +232,11 @@
 
 * Not within a string, is the first letter an I? 
 		 has_int = (STR_SAME(buff2(1:1), 'i') .EQ. 0)
+		 IF (has_int) EXIT ! from loop
 	      ENDDO
 	   ENDIF
+
+	   IF (num_it.NE.num_uvars_in_cmnd .AND. (has_string .OR. has_int)) GOTO 5050
 
 	   IF (has_string .OR. has_int) THEN
            
@@ -901,7 +904,8 @@
      .		'unformatted output is for numeric data only',
      .		*5000 )
  5050	CALL ERRMSG( ferr_invalid_command, status,
-     . 'Fortran format for list with strings must have one specifier per variable',
+     . 'Fortran format for list as Integer or with strings'//pCR//
+     .		'must have one specifier per variable',
      . *5000 )
 
 	END

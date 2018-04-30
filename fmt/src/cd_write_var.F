@@ -222,6 +222,9 @@ c      EQUIVALENCE (r100_8, r100_4)
 * if i=5:15 overwrites i=1:10 it will be detected but
 * if i=6:15 overwrite i=1:10 it still will not be detected resulting in an
 * unhelpful error message, below
+
+* issue 1871: Dont reset the slab range on an abstract axis. 
+* Can't make an example of what was trying to be handled previously.
 	 
          DO 10 idim = 1, nferdims
             IF ( idim .EQ. tmrecax ) GOTO 10
@@ -230,8 +233,8 @@ c      EQUIVALENCE (r100_8, r100_4)
      .     .AND. lo(idim).NE.unspecified_int4) THEN
                IF ( hi(idim)-lo(idim)
      .         .GT. slab_max(idim)-slab_min(idim) ) GOTO 5250
-               slab_min(idim) = lo(idim)
-               slab_max(idim) = hi(idim)
+c               slab_min(idim) = lo(idim)
+c               slab_max(idim) = hi(idim)
             ENDIF
  10      CONTINUE
 * ... possible unnecessary record axis check

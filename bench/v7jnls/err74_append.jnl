@@ -1,0 +1,108 @@
+! err74_append.jnl
+! Issue 1871: append slabs along a non-time axis
+! when the grid has an abstract axis in its append direction
+
+! The same behavior occurs with X, Y, Z, E, F appending
+
+use levitus_3d_subset
+save/clobber/file=tmp0.nc temp[x=@MAX,y=@MAX]
+save/clobber/file=tmp1.nc temp[x=@MIN,y=@MIN]
+cancel data/all
+
+! Define data on abstract E axis
+let evals = esequence({1,2,3})
+
+!!! This fixes it... So the issue is with Abstract E axis
+! define axis/e=1:3:1 e3ax
+! let evals = _e[ge=e5ax]
+
+set data tmp0.nc
+let etemp = temp + 0*evals
+save/clobber/file=a.nc/mlimits=1:3/m=1 etemp
+cancel data tmp0.nc
+
+set data tmp1.nc
+let etemp = temp + 0*evals
+save/append/file=a.nc/m=2 etemp
+
+let etemp = temp + 2*evals
+save/append/file=a.nc/m=3 etemp
+
+! Check the contents of the file. The previous behavior had data only at E=1
+cancel var etemp
+use a
+list etemp
+cancel data a.nc
+
+! intentional error, writing from abstract axis indices
+! that are outside initial range
+set mode ignore
+
+! Define data on abstract E axis
+let evals = esequence({1,2,3,4,5})
+
+set data tmp0.nc
+let etemp = temp + 0*evals
+save/clobber/file=a.nc/mlimits=1:3/m=1 etemp
+cancel data tmp0.nc
+
+set data tmp1.nc
+let etemp = temp + 0*evals
+save/append/file=a.nc/m=4 etemp
+
+! Appending two e-steps. The previous behavior wrote the new 
+! data to steps 1:2 instead of 2:3.
+cancel data/all
+
+set data tmp0.nc
+let etemp = temp + 0*evals
+save/clobber/file=a.nc/mlimits=1:3/m=1 etemp
+cancel data tmp0.nc
+
+cancel var etemp
+use a
+list etemp
+cancel data a.nc
+
+set data tmp1.nc
+let etemp = temp + 2*evals
+save/append/file=a.nc/m=2:3 etemp
+
+cancel var etemp
+use a
+list etemp
+cancel data a.nc
+
+! Other tests of writing and appending data on abstract axes
+cancel mode ignore
+
+! Overwrite with /APPEND, overwrites the new data at the start of 
+! what was written before
+
+let avar = x
+save/file=a.nc/clobber/i=21:29 avar
+
+save/append/file=a.nc/i=41:46 avar
+
+cancel var avar
+use a
+list avar
+cancel data a.nc
+
+set mode ignore
+
+! Overwrite with too many values is an error
+
+let avar = x
+save/append/file=a.nc/i=41:51 avar
+
+! Inconsistent limits is a warning
+
+save/file=a.nc/clobber/i=21:35 avar[i=1:7]
+
+cancel var avar
+use a
+list avar
+
+cancel mode ignore
+

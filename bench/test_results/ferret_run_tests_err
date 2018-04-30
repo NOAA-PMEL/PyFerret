@@ -5414,7 +5414,8 @@ list box_edges (a)
 Replacing definition of axis TIME1
            *** NOTE: grid GGT1 used by data set clim_airt_lev
            *** NOTE: Redefinition may alter apparent contents of data set
- **ERROR: invalid command: Fortran format for list with strings must have one specifier per variable
+ **ERROR: invalid command: Fortran format for list as Integer or with strings
+          must have one specifier per variable
 list/nohead/l=1:0/format=(a,2x,f6.2,a5) TAX_DATESTRING(t[g=airt],t[g=airt],"month"), airt[x=-135,y=0], TAX_DATESTRING(t[g=airt],t[g=airt],"year")
  **ERROR: command syntax: Unknown format or format need parentheses
           Valid formats are CDF, UNFORMATTED, STREAM, COMMA, TAB or limited Fortran formats
@@ -5431,9 +5432,11 @@ list/nohead/l=1:10/j=20:23/format=(4i6) 10*airt[x=180]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-**ERROR: ("This header ", I5, F8.2): No such file or directory
+ **ERROR: invalid command: Fortran format for list as Integer or with strings
+          must have one specifier per variable
 list/nohead/format=("This header ", I5, F8.2) size, var
- **ERROR: invalid command: Fortran format for list with strings must have one specifier per variable
+ **ERROR: invalid command: Fortran format for list as Integer or with strings
+          must have one specifier per variable
 list/nohead/format=("This header ", F8.2, A) avar, var
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line

@@ -106200,7 +106200,7 @@ This header 55.12
 set mode ignore
 let size = 12345
 list/nohead/format=("This header ", I5, F8.2) size, var
-This header  
+ 
 let avar = "My Text"
 list/nohead/format=("This header ", F8.2, A) avar, var
  

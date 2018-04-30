@@ -1,7 +1,9 @@
 ! bn741_bug_fixes.jnl
 ! test various fixes that went into version 7.41
 ! 4/18 *acm*
-!
 
 GO bn_reset
 go err74_I_format
+
+GO bn_reset
+go err74_append

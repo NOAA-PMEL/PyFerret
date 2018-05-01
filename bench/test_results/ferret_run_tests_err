@@ -397,6 +397,9 @@ list/format=cdf/l=1:10/file=test_abs.cdf l
              inconsistent I axis length for IL
 list/format=cdf/i=5:15/l=5:10/append/file=test_abs.cdf il
  LISTing to file test_abs.cdf
+ **TMAP ERR: Requested data range is outside of data set limits
+             Expected: IJ[J=          20 :          25 ] Found: IJ[J=           1 :          20 ]
+list/format=cdf/i=1:10/j=20:25/append/file=test_abs.cdf ij
  LISTing to file test_abs.cdf
  **TMAP ERR: attempt to redefine line
              # of dims in variable IJL2 is inconsist. w/ CDF file
@@ -2449,6 +2452,9 @@ list/format=cdf/keep_axnames/l=1:10/file=test_abs.cdf l
              inconsistent I axis length for IL
 list/format=cdf/keep_axnames/i=5:15/l=5:10/append/file=test_abs.cdf il
  LISTing to file test_abs.cdf
+ **TMAP ERR: Requested data range is outside of data set limits
+             Expected: IJ[J=          20 :          25 ] Found: IJ[J=           1 :          20 ]
+list/format=cdf/keep_axnames/i=1:10/j=20:25/append/file=test_abs.cdf ij
  LISTing to file test_abs.cdf
  **TMAP ERR: attempt to redefine line
              # of dims in variable IJL2 is inconsist. w/ CDF file
@@ -5438,6 +5444,29 @@ list/nohead/format=("This header ", I5, F8.2) size, var
  **ERROR: invalid command: Fortran format for list as Integer or with strings
           must have one specifier per variable
 list/nohead/format=("This header ", F8.2, A) avar, var
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file tmp0.nc
+ LISTing to file tmp1.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ **TMAP ERR: Requested data range is outside of data set limits
+             Expected: ETEMP[M=           4 :           4 ] Found: ETEMP[M=           1 :           3 ]
+LIST/FORMAT=CDF/append/file=a.nc/m=4 etemp
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ **TMAP ERR: Requested data range is outside of data set limits
+             Expected: AVAR[I=          41 :          46 ] Found: AVAR[I=          21 :          29 ]
+LIST/FORMAT=CDF/append/file=a.nc/i=41:46 avar
+Command file, command group, or REPEAT execution aborted
+ERROR RUNNING SCRIPT
+****** FERRET error: bn741_bug_fixes.jnl failed ******
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

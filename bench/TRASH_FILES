@@ -165,6 +165,8 @@ test_string.cdf
 test_subspan_modulo.nc
 test.unf
 the_xml_file.xml
+tmp0.nc
+tmp1.nc
 tval.nc
 unf.dat
 v12file.nc

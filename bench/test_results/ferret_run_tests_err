@@ -5464,9 +5464,12 @@ LIST/FORMAT=CDF/append/file=a.nc/m=4 etemp
  **TMAP ERR: Requested data range is outside of data set limits
              Expected: AVAR[I=          41 :          46 ] Found: AVAR[I=          21 :          29 ]
 LIST/FORMAT=CDF/append/file=a.nc/i=41:46 avar
-Command file, command group, or REPEAT execution aborted
-ERROR RUNNING SCRIPT
-****** FERRET error: bn741_bug_fixes.jnl failed ******
+ LISTing to file a.nc
+ **TMAP ERR: Requested data range is outside of data set limits
+             inconsistent I axis length for AVAR
+LIST/FORMAT=CDF/append/file=a.nc/i=41:51 avar
+           *** NOTE: Invalid I axis limits ignored: AVAR
+ LISTing to file a.nc
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

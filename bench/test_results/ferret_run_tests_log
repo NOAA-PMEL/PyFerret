@@ -106330,14 +106330,42 @@ cancel data a.nc
 ! Other tests of writing and appending data on abstract axes
 cancel mode ignore
  
-! Overwrite with /APPEND, overwrites the new data at the start of
-! what was written before
+! Overwrite with /APPEND and previously would overwrite the new data at
+! the start of what was written before. Only paid attention to the size of
+! the region written. Now this is an error, coordinates outside file range.
  
+set mode ignore
 let avar = x
 save/file=a.nc/clobber/i=21:29 avar
- 
 save/append/file=a.nc/i=41:46 avar
-****** FERRET error: bn741_bug_fixes.jnl failed ******
+ 
+set mode ignore
+ 
+! Overwrite with too many values is an error
+ 
+let avar = x
+save/append/file=a.nc/i=41:51 avar
+ 
+! Inconsistent limits is a warning
+ 
+cancel mode ignore
+save/file=a.nc/clobber/i=21:35 avar[i=1:7]
+ 
+cancel var avar
+use a
+list avar
+             VARIABLE : X
+             FILENAME : a.nc
+             SUBSET   : 7 points (X)
+ 1   / 1:  1.000
+ 2   / 2:  2.000
+ 3   / 3:  3.000
+ 4   / 4:  4.000
+ 5   / 5:  5.000
+ 6   / 6:  6.000
+ 7   / 7:  7.000
+ 
+ 
 *** Running ferret script: bn_gif.jnl
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using

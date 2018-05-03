@@ -5497,6 +5497,9 @@ LIST/FORMAT=CDF/append/file=a.nc/i=41:46 avar
 LIST/FORMAT=CDF/append/file=a.nc/i=41:51 avar
            *** NOTE: Invalid I axis limits ignored: AVAR
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

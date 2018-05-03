@@ -47299,9 +47299,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
  LAB 3  8.000E+00  6.540E+00 0.090    0  SYSTEM  @ASDATA SET: coads_climatology
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
- LAB 4  4.000E+00  6.330E+00 0.120    0  SYSTEM  @A
- LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 5  8.000E+00  6.790E+00 0.058    0  SYSTEM  @ASOPeNDAP <NL>URL: http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/
+ LAB 4  8.000E+00  6.790E+00 0.058    0  SYSTEM  @ASOPeNDAP <NL>URL: http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
  
  
@@ -55960,8 +55958,6 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
  LAB 3  8.000E+00  6.630E+00 0.120    0  SYSTEM  @ASDATA SET: coads_climatology
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
- LAB 4  4.000E+00  6.330E+00 0.120    0  SYSTEM  @A
- LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  
 ! and now valid data overlaid with all-missing data
  
@@ -55988,13 +55984,11 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
  LAB 2  8.000E+00  6.630E+00 0.120    0  SYSTEM  @ASDATA SET: coads_climatology
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
- LAB 3  4.000E+00  6.330E+00 0.120    0  SYSTEM  @A
- LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 4  1.750E+00 -8.100E-01 0.120    0  SYSTEM  @ASSST[Y=9N]
+ LAB 3  1.750E+00 -8.100E-01 0.120    0  SYSTEM  @ASSST[Y=9N]
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 5  5.370E+00 -8.100E-01 0.120    0  SYSTEM  @ASSST[Y=49N] No Valid Data
+ LAB 4  5.370E+00 -8.100E-01 0.120    0  SYSTEM  @ASSST[Y=49N] No Valid Data
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 6  1.750E+00 -1.060E+00 0.120    0  SYSTEM  @ASSST[Y=19N]
+ LAB 5  1.750E+00 -1.060E+00 0.120    0  SYSTEM  @ASSST[Y=19N]
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
  
 ! For 2D plots create a new MODE NODATA_LAB which if on, puts
@@ -76285,12 +76279,12 @@ shade/lev=v var2d
 ! previously the computed levels spanned -8000 to 16000.
 sh sym *lev*
 LEV_TEXT = "V"
+LEV_OPNLEVS = "(290,330,10)(332,402,2)(400,450,10)(inf)"
 LEV_MIN = "290"
 LEV_MAX = "open-ended"
 LEV_NUM = "45"
 LEV_DEL = "irregular"
 LEV_CENTERED_LABELS = "off"
-LEV_OPNLEVS = "(290,330,10)(332,402,2)(400,450,10)(inf)"
  
  
 GO bn_reset
@@ -79619,13 +79613,11 @@ LAB1 = "LONGITUDE : 61W"
 LABNUM_X = "1"
 LAB2 = "DATA SET: coads_climatology"
 LABNUM_DSET = "2"
-LAB3 = ""
-LABNUM_DATITL = "3"
 LABY = ""
-LAB4 = "SST1[T=16-JAN 06:00]"
+LAB3 = "SST1[T=16-JAN 06:00]"
 LABKEY = "SST3[T=17-MAR 02:58]"
-LAB5 = "SST2[T=15-FEB 16:29]"
-LAB6 = "SST3[T=17-MAR 02:58]"
+LAB4 = "SST2[T=15-FEB 16:29]"
+LAB5 = "SST3[T=17-MAR 02:58]"
  
 cancel sym lab*
  
@@ -79637,13 +79629,11 @@ LAB1 = "LONGITUDE : 61W"
 LABNUM_X = "1"
 LAB2 = "DATA SET: coads_climatology"
 LABNUM_DSET = "2"
-LAB3 = ""
-LABNUM_DATITL = "3"
 LABY = ""
-LAB4 = "January"
+LAB3 = "January"
 LABKEY = "March"
-LAB5 = "February"
-LAB6 = "March"
+LAB4 = "February"
+LAB5 = "March"
  
 set mode/last logo
 *** Running ferret script: bn_DQ.jnl
@@ -96141,12 +96131,10 @@ LAB2 = "TIME : 17-AUG-1982 12:00"
 LABNUM_T = "2"
 LAB3 = "DATA SET: gt4d011"
 LABNUM_DSET = "3"
-LAB4 = ""
-LABNUM_DATITL = "4"
-LAB5 = "TEMPERATURE (deg. C)"
+LAB4 = "TEMPERATURE (deg. C)"
 LABKEY = "MERIDIONAL WIND STRESS (dynes/cm**2)"
-LAB6 = "ZONAL WIND STRESS (dynes/cm**2)"
-LAB7 = "MERIDIONAL WIND STRESS (dynes/cm**2)"
+LAB5 = "ZONAL WIND STRESS (dynes/cm**2)"
+LAB6 = "MERIDIONAL WIND STRESS (dynes/cm**2)"
 can sym lab*
  
 ! Previously vertical label and legend labels had units.
@@ -96163,12 +96151,10 @@ LAB2 = "TIME : 17-AUG-1982 12:00"
 LABNUM_T = "2"
 LAB3 = "DATA SET: gt4d011"
 LABNUM_DSET = "3"
-LAB4 = ""
-LABNUM_DATITL = "4"
 LABY = "dynes/cm**2"
-LAB5 = "ZONAL WIND STRESS"
+LAB4 = "ZONAL WIND STRESS"
 LABKEY = "MERIDIONAL WIND STRESS"
-LAB6 = "MERIDIONAL WIND STRESS"
+LAB5 = "MERIDIONAL WIND STRESS"
 can sym lab*
  
 ! Define some variables with titles
@@ -96197,8 +96183,6 @@ LAB1 = "January Taux"
 LABNUM_Z = "1"
 LAB2 = "DATA SET: gt4d011"
 LABNUM_DSET = "2"
-LAB3 = ""
-LABNUM_DATITL = "3"
 LABY = "dynes/cm**2"
 LABKEY = "January Taux"
  
@@ -103446,8 +103430,6 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  8.000E+00  6.630E+00 0.120    0  SYSTEM  @ASDATA SET: err721_dup_labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
- LAB 5  4.000E+00  6.330E+00 0.120    0  SYSTEM  @A
- LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  
 ! Overlay plots should add only the new labels needed. Ferret has
 ! always redrawn them all, which was harmless. Now, only draw the
@@ -106365,6 +106347,45 @@ list avar
  6   / 6:  6.000
  7   / 7:  7.000
  
+ 
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+go err74_labnum_datitl
+! err74_labnum_datitl.jnl
+! See issue 1873
+! 5/3/18 ACM
+ 
+! coads_climatology does not have a title attribute, but the
+! dataset-title label and symbol was set, with blank value,
+! and labnum_datitl was defined.
+ 
+use coads_climatology
+shade/l=1/x=180:200/y=-5:5 sst
+sh sym lab*
+LABX = "LONGITUDE"
+LABY = "LATITUDE"
+LABTIT = "SEA SURFACE TEMPERATURE (Deg C)"
+LAB1 = "TIME : 16-JAN 06:00"
+LABNUM_T = "1"
+LAB2 = "DATA SET: coads_climatology"
+LABNUM_DSET = "2"
+ 
+! If there is a dataset title, then those symbols are
+! set up correctly.
+can data/all; use/title="Classic dataset" coads_climatology
+shade/l=1/x=180:200/y=-5:5 sst
+sh sym lab*
+LABX = "LONGITUDE"
+LABY = "LATITUDE"
+LABTIT = "SEA SURFACE TEMPERATURE (Deg C)"
+LAB1 = "TIME : 16-JAN 06:00"
+LABNUM_T = "1"
+LAB2 = "DATA SET: coads_climatology"
+LABNUM_DSET = "2"
+LAB3 = "Classic dataset"
+LABNUM_DATITL = "3"
  
 *** Running ferret script: bn_gif.jnl
 ! bn450_gif.JNL - copied from bn450_plot.jnl

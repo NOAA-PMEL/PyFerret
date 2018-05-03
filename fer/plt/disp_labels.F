@@ -67,6 +67,8 @@
 * V68  *acm*  4/11 - more on bug 1098. Call the url the OPeNDAP label, break it up.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V7   *acm* 6/16 see ticket 2435. Tweak to split dataset labels after DATA SET:
+* v74+ *acm* 5/18 See PyFerret issue #53: if the title is blank don't set up 
+*                 the label or the symbol labnum_datitl
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -182,7 +184,8 @@
 
 * ... title of data set
 	   CALL GET_DSET_TITLE( dset_num, line_buff, lablen )
-	   CALL BOX_LABEL( ppl_movlab-ppl_datitl, line_buff(:lablen),
+	   IF (TM_LENSTR(line_buff) .GT. 0) 
+     .	   CALL BOX_LABEL( ppl_movlab-ppl_datitl, line_buff(:lablen),
      .			   0.5, 0.3, 0.8*xlen, 1.5*letsize_dset_title,
      .			   letsize_dset_title, ppl_centered,
      .			   lab_loc_axlen_times, lab_loc_axlen_plus )

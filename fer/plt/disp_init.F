@@ -94,6 +94,8 @@
 *                   time scaling for time overlay plots. TAXUND restores the default.
 * V73+ 1/18 *acm*  Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
 *                  Initialize the information stored for this scaling
+* V74+ 54/18 *acm*  Noticed that symbols LAB1, LAB6 etc labels persisted from 
+*                   prev. plots, also LABKEY. Delete them
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -204,6 +206,38 @@
         buffsym = 'LABNUM_CALEND '
 	CALL GETSYM( buffsym, buffer, nc, ier )
 	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LABKEY '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+
+        buffsym = 'LAB1 '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LAB2 '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LAB3 '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LAB4 '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LAB5 '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LAB6 '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LAB7 '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LAB8 '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+        buffsym = 'LAB9 '
+	CALL GETSYM( buffsym, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buffsym,nc)
+
 
 * free the color table on a full window
         IF ( vp_num .EQ. mvp_dflt ) CALL PPL_SHASET( 'RESET' )

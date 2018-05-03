@@ -204,7 +204,7 @@
 *                file name on SET REDIRECT.
 * V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
 * V740 *acm* 2/18 Issue 966: LET/LIKE= requires changes to the call to INHERIT_ATTRS
-
+* V74+ *acm* 5/18 Don't upcase the title given on a SET DATA/TITLE
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -593,9 +593,10 @@ c *kob* 4/97
  745	   cx_data_set( cx_last )	=  dset_num
 
 * 10/01 allow /TITLE for NetCDF or DODS datasets.
+*  5/18 Don't upcase the title given.
            IF (qual_given(slash_set_data_title) .GT. 0) THEN
               loc = qual_given(slash_set_data_title )
-              CALL EQUAL_STRING(
+              CALL EQUAL_STR_LC(
      .                   cmnd_buff(qual_start(loc):qual_end(loc)),
      .                   title, status )
               IF ( status .NE. ferr_ok ) GOTO 5000

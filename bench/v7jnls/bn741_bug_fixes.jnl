@@ -7,3 +7,6 @@ go err74_I_format
 
 GO bn_reset
 go err74_append
+
+GO bn_reset
+go err74_labnum_datitl

@@ -1,0 +1,18 @@
+! err74_labnum_datitl.jnl
+! See issue 1873
+! 5/3/18 ACM
+
+! coads_climatology does not have a title attribute, but the
+! dataset-title label and symbol was set, with blank value,
+! and labnum_datitl was defined.
+
+use coads_climatology
+shade/l=1/x=180:200/y=-5:5 sst
+sh sym lab*
+
+! If there is a dataset title, then those symbols are 
+! set up correctly.
+can data/all; use/title="Classic dataset" coads_climatology
+shade/l=1/x=180:200/y=-5:5 sst
+sh sym lab*
+

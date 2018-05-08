@@ -98,6 +98,7 @@
 /* *acm* 6/16         Make sure var.nmemb is initialized when adding a new variable. */
 /* *kms* 8/16         Rework the entire file to remove memory leaks and improve consistent initialization */
 /* *acm* 10/16        ncf_get_uvar_grid now returns the datatype as well as the grid  */
+/* *acm*  5/18        Write a note if error with attribute type that results in bad_file_attr return   */
 
 #include <stddef.h>             /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <wchar.h>
@@ -990,6 +991,7 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
                 nc_status = nc_get_att_text(*ncid, iv, "_FillValue", &fillc);
                 if ( nc_status != NC_NOERR ) {
                     return_val = bad_file_attr;
+					fprintf(stderr, "*** NOTE: Variable %s, error with string _FillValue\n", var.name);
                 }
                 else {
                     var.fillval = (double) fillc;
@@ -1069,6 +1071,7 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
                                 /* att.string already allocated to at least 2 */
                                 strcpy(att.string, " ");
                                 return_val = bad_file_attr;
+                                fprintf(stderr, "*** NOTE: Variable %s, error on attribute %s\n", var.name, att.name);
                             }
                             else {
                                 /* Ensure end-of-string delimiter because Netcdf API doesn't store automatically; it's up to the file's author. */
@@ -1100,6 +1103,7 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
                                 att.string = (char *) FerMem_Malloc((att.len+1)* sizeof(char), __FILE__, __LINE__);
                                 strcpy (att.string, " ");
                                 return_val = bad_file_attr;
+                                fprintf(stderr, "*** NOTE: Variable %s, error on attribute %s\n", var.name, att.name);
                             }
                             break;
                         }

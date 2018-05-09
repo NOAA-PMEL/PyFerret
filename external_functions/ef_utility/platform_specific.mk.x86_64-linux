@@ -26,7 +26,7 @@ LD_DYN_FLAGS	= -fPIC -m64 -shared -Wl,--no-undefined
 # This also takes care of whether to use lib or lib64
 LIBPYFERRET	= $(wildcard $(INSTALL_FER_DIR)/lib*/$(PYTHON_EXE)/site-packages/pyferret/libpyferret*.so)
 LIBPYFERRET_DIR	= $(shell dirname $(LIBPYFERRET))
-LIBPYFERRET_NAM	= $(shell basename -s .so $(LIBPYFERRET) | sed -e 's/libpyferret/pyferret/' )
+LIBPYFERRET_NAM	= $(shell basename $(LIBPYFERRET) .so | sed -e 's/libpyferret/pyferret/' )
 SYSLIBS		= ../ef_utility/copy_ferret_ef_mem_subsc.o -L$(LIBPYFERRET_DIR) -l$(LIBPYFERRET_NAM)
 
 # Directly compile the .F source files to the .o object files

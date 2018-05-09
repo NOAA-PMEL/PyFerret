@@ -22,10 +22,12 @@ FFLAGS_DEBUG	= -O0 -g -fbounds-check
 
 LD		= gfortran
 LD_DYN_FLAGS	= -fPIC -m64 -shared -Wl,--no-undefined
-SYSLIBS		= ../ef_utility/copy_ferret_ef_mem_subsc.o \
-		  -L$(INSTALL_FER_DIR)/lib64/$(PYTHON_EXE)/site-packages/pyferret \
-		  -L$(INSTALL_FER_DIR)/lib/$(PYTHON_EXE)/site-packages/pyferret \
-		  -lpyferret
+# Some compilers add an OS spec between libpyferret and .so
+# This also takes care of whether to use lib or lib64
+LIBPYFERRET	= $(wildcard $(INSTALL_FER_DIR)/lib*/$(PYTHON_EXE)/site-packages/pyferret/libpyferret*.so)
+LIBPYFERRET_DIR	= $(shell dirname $(LIBPYFERRET))
+LIBPYFERRET_NAM	= $(shell basename -s .so $(LIBPYFERRET) | sed -e 's/libpyferret/pyferret/' )
+SYSLIBS		= ../ef_utility/copy_ferret_ef_mem_subsc.o -L$(LIBPYFERRET_DIR) -l$(LIBPYFERRET_NAM)
 
 # Directly compile the .F source files to the .o object files
 # since gfortran can handle the C compiler directives in Fortran code

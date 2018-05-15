@@ -152,6 +152,7 @@
 *                  variables, pre-defined axes and grids, cat_calc_var.
 * V698  3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
 *                 more sophisticated logic to determine an implied "@FMRC"
+* V74+  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
 
 	include 'errmsg.parm'
 	include 'ferret.parm'
@@ -175,13 +176,13 @@
 
 * internal variable declarations:
         LOGICAL   GEOG_COS_FACTOR, GEOG_LABEL, ACTS_LIKE_FVAR,
-     .		  ITS_FMRC_2DTIME,
+     .		  ITS_FMRC_2DTIME, REGRID_TO_SELF,
      .		  its_dyn, has_impl_axis, explicit_unstd, use_std_grid,
      .		  made_aux_line_dummy, at_fmrc
 	INTEGER	  KNOWN_GRID, TM_UNIT_ID,
      .		  use_grid, ilo, ihi,
      .		  cat, var, dset, std_grid, std_axis, use_axis, idim,
-     .		  base_grid, impl_grid, src_line
+     .		  base_grid, impl_grid, src_line, i
 	REAL*8	  SECS_TO_TSTEP, dlo, dhi, delta
 	CHARACTER VAR_CODE*128, AUX_VAR_UNITS*64
 
@@ -435,8 +436,14 @@
 	   at_fmrc = (idim.EQ.t_dim .OR. idim.EQ.f_dim)
      .             .AND. cx_aux_var(idim,cx) .NE. unspecified_int4
 
+* The 'regrid-to-self' transformations will operate even on the same axis
+* Otherwise mark as prgrd_exact
 	   IF ( use_axis .EQ. std_axis ) THEN
-	      cx_regrid_trans( idim, cx ) = prgrd_exact
+	      IF (REGRID_TO_SELF (cx_regrid_trans(idim, cx) ))   THEN
+c	         
+	      ELSE
+	         cx_regrid_trans( idim, cx ) = prgrd_exact
+	      ENDIF
 	   ELSEIF ( cx_regrid_trans(idim,cx) .EQ. unspecified_int4 ) THEN
 	      IF (cx_naux(cx) .EQ. 0) THEN
 	         cx_regrid_trans( idim, cx ) = prgrd_linear_interp

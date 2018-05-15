@@ -1,0 +1,76 @@
+! err74__regrid_to_sameax.jnl
+! 5/10/18
+! Issue 1868: some regridding transformations
+! should return something, not always a no-op.
+
+def axis/x=1:4:1 xax
+let two = 2+0*x[gx=xax]
+save/clobber/file=two.nc two
+cancel var two
+
+
+use two.nc
+!NGD
+
+! should be all 1's where valid
+list two, two[gx=xax@ngd]
+
+!NBIN
+! should be all 1's where valid
+list two, two[gx=xax@nbin]
+
+
+! MODNGD, MODNBD
+! MODNGD Should be 1 where good, 0 for bad
+! vice versa for MODNBD
+
+use coads_climatology
+
+let sstg =  sst[gx=COADSX@modngd]
+let sstb =  sst[gx=COADSX@modnbd]
+stat/l=1/y=50 sstg
+stat/l=1/y=50 sstb
+
+list/l=1/y=40/x=210:250 sst, sst[gx=COADSX@modngd], sst[gx=COADSX@modnbd]
+
+! MODVAR
+! should be 0 where valid, missing otherwise
+
+list/l=1/y=40/x=210:250 sst, sst[gx=COADSX@modvar]
+
+! @var regridding should be 0 where valid, missing otherwise
+define axis/y=0:21:3/units=degrees_north yax
+
+list/x=300/l=1 sst[gy=yax], sst[gy=yax@var]
+list/x=300/l=1/y=0:20 sst, sst[gy=`sst,return=yaxis`@var]
+
+! IIN
+! @iin regridding to the source axis
+! Result is the same as the @IIN transformation but 0 at
+! the start and results pushed up a cell.
+
+define axis/edge/x=0:10:1 aline
+let a = i[gx=aline]
+
+! edges axis
+define axis/x/like=`a,return=xaxis` aline_edges = box_edges(a)
+
+let c = a[gx=aline_edges@iin]
+let d = a[gx=aline@iin]
+
+! Regrid to edges axis
+list c
+
+! Regrid to source axis.
+list a, d, a[x=@iin]
+
+! Time units
+def ax/edge/t=1-jan-0001:1-jan-0004:365/unit=day/cal=noleap tax
+let one = 1 + 0*t[gt=tax]
+list one, one[t=@iin], one[gt=tax@iin]
+
+! Gridding to an identical second axis, columns 3 and 4 match:
+def ax/edge/t=1-jan-0001:1-jan-0004:365/unit=day/cal=noleap tax2
+list one, one[t=@iin], one[gt=tax@iin],  one[gt=tax2@iin]
+
+

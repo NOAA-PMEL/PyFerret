@@ -41,6 +41,7 @@
 * programmer - Ansley Manke
 * 4/2017
 * 2/2018 @iin regridding, see issue 1618. Use routine based on ave_regrid_1_axis
+* V741  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -52,9 +53,7 @@
 	REAL	src(*), dst(*), work(*)
 
 	CALL IIN_REGRID_1_AXIS(   cx_lims, axis,
-     .			   cx_lo_ss(cx_lims,x_dim), cx_hi_ss(cx_lims,x_dim),
-     .			   cx_lo_ss(cx_lims,y_dim), cx_hi_ss(cx_lims,y_dim),
      .			   src, msrc, dst, mdst,
-     .			   work(1), itot )
+     .			   work(1), itot, status )
 	RETURN
 	END

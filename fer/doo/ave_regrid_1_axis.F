@@ -81,6 +81,7 @@
 *                  dest cell.
 * v685 *acm*  7/13 Fix bug in F axis loop, and fix nonX directions in the
 *                  code for source cell enclosing dest cell.
+* V741  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -101,7 +102,7 @@
 
 * local variable declarations:
 
-        LOGICAL         ok_neg111, src_encloses
+        LOGICAL         IS_SELF_REGRID, ok_neg111, src_encloses, self_vari
         INTEGER		dstss,srcss,src_grid,dst_grid,i,j,k,l,m,n
 	INTEGER	     	srcss_lo,srcss_hi, dstss_lo,dstss_hi, ncontrib,
      .                  src_cx, dst_cx
@@ -132,6 +133,11 @@
 * flag for bad/missing data
         bad_src = mr_bad_data(msrc)
         bad_dst = mr_bad_data(mdst)
+
+* Is this a regridding to the same line: Compute a result if @VAR on same axis,
+* 0 for valid data, missing otherwise.
+
+	self_vari = IS_SELF_REGRID (axis, src_grid, dst_grid, trans )
 
 * determine the source grid boxes containing the destination box edges
 	CALL GET_AVE_LIMS( srcss_lo, srcss_hi, src_grid,
@@ -640,6 +646,11 @@
 
 	      IF ( dst(dstss, j, k, l, m, n) .EQ. bad_dst ) GOTO 1160
 
+	      IF (self_vari) THEN
+	         dst(dstss, j, k, l, m, n) = 0.0
+		 GOTO 1160
+	      ENDIF
+
 	      srcss_lo = ss21(dstss-dstss_lo+1)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
 
@@ -695,6 +706,11 @@
 	   DO 1260 dstss = dstss_lo,dstss_hi
 
 	      IF ( dst(i, dstss, k, l, m, n) .EQ. bad_dst ) GOTO 1260
+
+	      IF (self_vari) THEN
+	         dst(i, dstss, k, l, m, n) = 0.0
+		 GOTO 1260
+	      ENDIF
 
 	      srcss_lo = ss21(dstss-dstss_lo+1)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
@@ -752,6 +768,11 @@
 
 	      IF ( dst(i, j, dstss, l, m, n) .EQ. bad_dst ) GOTO 1360
 
+	      IF (self_vari) THEN
+	         dst(i, j, dstss, l, m, n) = 0.0
+		 GOTO 1360
+	      ENDIF
+
 	      srcss_lo = ss21(dstss-dstss_lo+1)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
 
@@ -807,6 +828,11 @@
 	   DO 1460 dstss = dstss_lo,dstss_hi
 
 	      IF ( dst(i, j, k, dstss, m, n) .EQ. bad_dst ) GOTO 1460
+
+	      IF (self_vari) THEN
+	         dst(i, j, k, dstss, m, n) = 0.0
+		 GOTO 1460
+	      ENDIF
 
 	      srcss_lo = ss21(dstss-dstss_lo+1)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
@@ -868,6 +894,11 @@
 
 	      IF ( dst(i, j, k, l, dstss, n) .EQ. bad_dst ) GOTO 1560
 
+	      IF (self_vari) THEN
+	         dst(i, j, k, l, dstss, n) = 0.0
+		 GOTO 1560
+	      ENDIF
+
 	      srcss_lo = ss21(dstss-dstss_lo+1)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
 
@@ -928,6 +959,11 @@
 	   DO 1660 dstss = dstss_lo,dstss_hi
 
 	      IF ( dst(i, j, k, l, m, dstss) .EQ. bad_dst ) GOTO 1660
+
+	      IF (self_vari) THEN
+	         dst(i, j, k, l, m, dstss) = 0.0
+		 GOTO 1660
+	      ENDIF
 
 	      srcss_lo = ss21(dstss-dstss_lo+1)
 	      srcss_hi = ss21(dstss-dstss_lo+2)

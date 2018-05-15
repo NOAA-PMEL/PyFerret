@@ -62,6 +62,7 @@
 * V603 5/07  *acm* - added MODNBD modulo regridding statistic
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
+* V741  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -87,6 +88,7 @@
      .               m5lot:m5hit,m5loe:m5hie,m5lof:m5hif )
 
 * local variable declarations:
+	LOGICAL	IS_SELF_REGRID, self_vari
 	INTEGER	ISUBSCR_CX, TM_MODULO_LINE_DIM,
      .		dstss, srcss, src_grid, dst_grid,
      .		i, j, k, l, m, n, nmod, nfold, dst_start,
@@ -110,6 +112,12 @@
 * flag for bad/missing data
         bad_src = mr_bad_data(msrc)
         bad_dst = mr_bad_data(mdst)
+
+* Is this a regridding to the same line: Compute a result if @MODVAR on same axis,
+* 0 for valid data, missing otherwise.
+
+	self_vari = IS_SELF_REGRID(axis, src_grid, dst_grid, trans) .AND. 
+     .           trans.EQ.prgrd_modvar
 
 * initialize outputs to zero (ngd serves as flag for a valid calculation, too)
         DO 10 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
@@ -523,11 +531,19 @@
 	      dst(i,j,k,l,m,n) = dst(i,j,k,l,m,n) / ngd(i,j,k,l,m,n)
 	   ELSEIF ( trans .EQ. prgrd_modvar ) THEN
 	      ave(i,j,k,l,m,n) = ave(i,j,k,l,m,n) / ngd(i,j,k,l,m,n)
+	      IF (self_vari) THEN
+	         IF (ngd(i,j,k,l,m,n) .EQ. 1.) THEN 
+		    dst(i,j,k,l,m,n) = 0.
+		 ELSE
+		    dst(i,j,k,l,m,n) = bad_dst
+		 ENDIF
+	      ENDIF
 	   ENDIF
 
  1000	CONTINUE
 
 	IF ( trans .NE. prgrd_modvar ) RETURN
+	IF ( self_vari ) RETURN
 
 **********************
 

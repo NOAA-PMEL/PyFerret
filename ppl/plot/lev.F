@@ -77,6 +77,8 @@ C**
 * v692 *acm* 7/14 For centered key labels add a level to corresp to the upper bound
 *                 of the top color on thecolorbar, excluding the inf triangle.
 * V697 *acm* 12/15 Fix ticket 2326: single level plus (inf) and/or (-inf)
+* V741 *acm*  5/18 issue 1874: If they sent in a single level to contour, 
+*                 label contour lines with that value, without rounding off
 
 	parameter	(epsilon = 1e-6)
 
@@ -276,6 +278,25 @@ C
 	ENDIF
 	GOTO 200
 10	CONTINUE
+
+
+C issue 1874:
+C If they sent in a single level to contour, label with the 
+C value without rounding off.  If /SIGDIG was set, apply that setting
+
+	IF (nlev .EQ. 1) THEN
+	   
+	   vv = INT(ZLEV(1))
+	   IF (ZLEV(1) .NE. vv) ldig(1) = 1
+	   znum = zlev(1)
+	   DO i = 1, 5
+	      znum = (10.**FLOAT(i))* ZLEV(1)
+	      vv = INT(znum)
+	      IF (znum .EQ. vv) EXIT
+	      ldig(1) = ldig(1) + 1
+	   ENDDO
+	   IF (newsig .GT. 0) ldig(1) = nsigc
+	ENDIF
 
 	RETURN
 	END

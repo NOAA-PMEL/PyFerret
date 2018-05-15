@@ -76,6 +76,12 @@
 * V685 4/13-3/14 *sh* support for auxiliary variables used in regridding
 * V692 7/14 *acm* ticket 2183: handle @WGT transform as for integrals
 * V695+ 5/15 *sh* added valid_search argument, to support c cache hits
+* V701:  7/16 *acm* Ticket 2452. Instances where the cx_*ww and mr*ww values 
+*	          should be exactly the same but the cx coordinates are ever 
+*	          so slightly too wide to match the request. Use TM_DFPEQ
+*	          to test for approx. equal values before rejecting the match  
+*	          with what is in memory.
+* V74+  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
 
 * (V510) How on cache hits on external functions (EFs) work:
 * uvar_given is used to encapsulate information about cache reuse for EF
@@ -100,11 +106,6 @@
 * Some of the internal grid-changing functions (e.g. RESHAPE) require
 * slightly different rules for setting uvar_given -- see gcf_impose_axes.F
 *
-* V701:  7/16 *acm* Ticket 2452. Instances where the cx_*ww and mr*ww values 
-*	          should be exactly the same but the cx coordinates are ever 
-*	          so slightly too wide to match the request. Use TM_DFPEQ
-*	          to test for approx. equal values before rejecting the match  
-*	          with what is in memory.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -121,10 +122,12 @@
 	LOGICAL by_value, valid_search
 
 * internal variable declarations:
-	LOGICAL TM_DFPEQ, has_trans, itsa_uvar,
-     .          normal(nferdims), non_modulo(nferdims)
+	LOGICAL TM_DFPEQ, REGRID_TO_SELF,
+     .          has_trans, itsa_uvar,
+     .          normal(nferdims), non_modulo(nferdims),
+     .          self(nferdims)
 	INTEGER HASH_CX, line,
-     .		mv, defining_grid, idim, var
+     .		mv, defining_grid, idim, var, mline
         REAL*8  TM_WORLD, ww_hi_bound, c_cache_ptr
 
 * initialize
@@ -159,9 +162,10 @@
 
 * do we need special checks for transforms ?
 	has_trans = .FALSE.
-	DO 200 idim = 1, nferdims
- 200    has_trans = has_trans
+	DO idim = 1, nferdims
+	   has_trans = has_trans
      .        .OR. (cx_trans(idim,cx).NE.trans_no_transform)
+	ENDDO
 
 * flag the normal axes so we can bypass checks on them quickly
 	DO 210 idim = 1, nferdims
@@ -179,7 +183,7 @@
 
 * locate next table slot in linked list
  100	mv = mv_flink( mv )
-	IF ( mv .LT. 0 ) THEN
+	IF ( mv .LE. 0 ) THEN
 	   mr = mr_nonexist
 	   RETURN     ! not found in normal Ferret cache
 	ENDIF
@@ -192,6 +196,16 @@
 
 * check variable type
 	IF ( mr_type(mv) .NE. cx_type(cx) ) GOTO 100
+
+* flag for transforms that allow regrid-to-same axis
+
+ 	DO idim = 1, nferdims
+	   line = grid_line(idim,defining_grid)
+	   mline = grid_line(idim,mr_grid(mv))
+	   self(idim) = line .EQ. mline .AND. 
+     .       REGRID_TO_SELF (mr_regrid_trans(idim, mv) )
+           IF (self(idim)) GOTO 100
+	ENDDO
 
 * right instance (coordinate ranges and transformations) ?
 	IF ( itsa_uvar ) THEN
@@ -341,11 +355,13 @@
 
 * ... if regridded then regridding transforms must be right
 	IF ( cx_unstand_grid( cx ) ) THEN
-	   DO 90 idim = 1, nferdims
-	      IF ( normal(idim) ) GOTO 90
+	   DO idim = 1, nferdims
+	      IF ( normal(idim) ) CYCLE
+	      IF ( self(idim) ) CYCLE
 	      IF ( cx_regrid_trans( idim, cx ) .NE.
      .		   mr_regrid_trans( idim, mv   ) ) GOTO 100
- 90	   CONTINUE
+	   ENDDO
+
 * ... check for auxiliary regridding match
 	   IF ( mr_naux( mv ) .NE. cx_naux( cx ) ) GOTO 100
 	   IF ( cx_naux( cx ) .GT. 0 ) THEN

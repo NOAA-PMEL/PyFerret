@@ -90,6 +90,7 @@
 *                  saving a modulo-regridded variable to netCDF
 * V702 3/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * V720: 6/17 *acm* Ticket 2346: new @IIN regridding transform
+* V741  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -337,7 +338,7 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
      .			memry(dst_mr)%ptr, dst_mr,
      .			workmem(plegacy_work_buffer)%ptr, wk_size+1, status )
      
-	   IF ( status .NE. ferr_ok ) GOTO 5100
+	   IF ( status .NE. ferr_ok ) GOTO 5020
 
 * modulo regridding
 	ELSE
@@ -412,6 +413,10 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
  5010	CALL ERRMSG( ferr_invalid_command, status,
      .		'cant use this regrid transform on strings: @'
      .		//alg_regrid_code(rgrd_trans), *5000)
+ 5020	CALL ERRMSG( ferr_invalid_command, status,
+     .   'Destination axis coords must be the box edges '
+     .   //'of the source axis, or regrid to source axis: @'
+     .   //alg_regrid_code(rgrd_trans), *5000)
  5100	CALL DELETE_MRS_IN_PROGRESS
 	GOTO 5000
 	END	

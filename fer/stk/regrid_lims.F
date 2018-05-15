@@ -76,6 +76,7 @@
 *                   for may_have_strides.
 * V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V74+  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -93,6 +94,7 @@
 
 * internal variable declarations:
 	LOGICAL	ITSA_MODULO_REGRID, ITSA_MODULO_AXIS,  TM_ITS_CDF,
+     .		REGRID_TO_SELF,
      .		xy_regrid, last_axis, may_have_strides, has_strides,
      .		unacceptable_modulo
 	INTEGER	KNOWN_GRID, CAXIS_MODLEN, TM_AXIS_STRIDE, CX_DIM_LEN,
@@ -115,8 +117,11 @@
      .			  cx_variable(src_cx)	)
 
 * initially select a single axis for regridding
-	DO 10 axis = 1, nferdims
- 10	IF (grid_line(axis,dst_grid).NE.grid_line(axis,var_grid)) GOTO 20
+* The listed transformations will operate even on the same axis
+	DO axis = 1, nferdims
+ 	   IF (grid_line(axis,dst_grid) .NE. grid_line(axis,var_grid)) GOTO 20
+	   IF (REGRID_TO_SELF (cx_regrid_trans(axis,src_cx) )) GOTO 20
+	ENDDO
 * ... signal calling routine that there's nothing to regrid
 	cx_unstand_grid( dst_cx ) = .FALSE.
 	status = ferr_ok
@@ -168,6 +173,10 @@
 	  DO 100 idim = axis, nferdims
 	    dst_axis = grid_line(idim,dst_grid)
 	    var_axis = grid_line(idim,var_grid)
+	    
+	   IF (dst_axis.EQ.var_axis .AND. 
+     .      REGRID_TO_SELF (cx_regrid_trans(axis,src_cx) )) GOTO 110
+
 	    IF (dst_axis.EQ.var_axis) GOTO 100
 	    IF (cx_regrid_trans(idim,dst_cx).EQ.prgrd_xact_pts
      .     .OR. cx_regrid_trans(idim,dst_cx).EQ.prgrd_exact) THEN

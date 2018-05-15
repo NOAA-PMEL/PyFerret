@@ -10,3 +10,9 @@ go err74_append
 
 GO bn_reset
 go err74_labnum_datitl
+
+GO bn_reset
+go err74_regrid_to_sameax
+
+GO bn_reset
+go err74_single_level_contour

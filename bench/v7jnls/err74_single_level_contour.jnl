@@ -1,0 +1,33 @@
+! err74_single_level_contour.jnl
+! Issue 1874: precision of single levels on contour lines
+
+! These levels are labeled fine:
+use coads_climatology
+
+set view ul; go margins 0.5 0.5 0.8 1
+
+fill/nolab/l=1/x=300:380/y=-40:10/pal=grayscale/lev=(-inf)(15.3,27.3,0.4)(inf) sst
+cont/l=1/lev=(17.7)/ov/nolab/color=lightblue  sst
+cont/l=1/lev=(24.9)/ov/nolab/color=blue sst
+contour/l=1/lev=(26.15)/ov/nolab/color=red  sst
+
+! magnitude of the numbers given affects it
+set view ur; go margins 0.5 0.5 0.8 1
+let sst2 = 2*sst
+fill/nolab/l=1/x=300:380/y=-40:10/pal=grayscale/lev=(-inf)(30.6,54.6,0.8)(inf) sst2
+cont/l=1/lev=(35.4)/ov/nolab/color=lightblue  sst2
+cont/l=1/lev=(49.8)/ov/nolab/color=blue sst2
+contour/l=1/lev=(52.34)/ov/nolab/color=red  sst2
+
+! small values
+set view ll; go margins 0.5 0.5 0.8 1
+let sst2 = sst/50
+fill/nolab/l=1/x=300:380/y=-40:10/pal=grayscale/lev=(-inf)(.306,.546,0.008)(inf) sst2
+cont/l=1/lev=(.354)/ov/nolab/color=lightblue  sst2
+! What about /SIGDIG? It should override what is done automatically
+cont/l=1/lev=(.468)/sigdig=2/ov/nolab/color=blue sst2
+contour/l=1/lev=(.5234)/sigdig=3/ov/nolab/color=red  sst2
+
+frame /file=single_contour_levels.gif
+
+

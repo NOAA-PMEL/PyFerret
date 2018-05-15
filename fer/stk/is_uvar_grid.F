@@ -122,6 +122,7 @@
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 * V720: 6/17 *acm* Fix ticket 2547: the grid and type of uvars are stored, but the
 *                  information may be collected on different passes through this routine.
+* V74+  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
 
 * calling argument declarations:
 	INTEGER	status
@@ -143,10 +144,10 @@
 	include	'xfr_grid.cmn'
 
 * internal variable declarations:
-	LOGICAL	ITSA_GCVAR, ITSA_CONST_VAR, ITSA_DCVAR,
+	LOGICAL	ITSA_GCVAR, ITSA_CONST_VAR, ITSA_DCVAR, REGRID_TO_SELF,
      .		its_dynamic, its_gc, need_another_pass,
      .		saved_ifthen_type, do_err, ok_remote,
-     .		getting_aux_var, its_const_var, its_dc
+     .		getting_aux_var, its_const_var, its_dc, self_gridding
 	INTEGER KNOWN_GRID, STR_SAME,
      .		TM_LENSTR1, GCF_PARENT_UVAR, GCF_PARENT_CHAR, 
      .		NCF_GET_AGG_COUNT, iaux,
@@ -157,7 +158,8 @@
      .          attoutflag, attid, bracket, dot, dsloc, endbracket,
      .          status_deallo, agg_grid, agg_line, agg_len, agg_dset,
      .		imemb, memb_cat, memb_dset, memb_grid, iline, nv,
-     .		hi_cat, hi_var, vlen, slen, dummy_aux(nferdims)
+     .		hi_cat, hi_var, vlen, slen, dummy_aux(nferdims),
+     .		use_axis, std_axis
 	INTEGER igrid_test
 
 	CHARACTER VAR_CODE*128, LEFINT*6,
@@ -727,7 +729,7 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 * For dimension-changing function, make a new grid and copy gnum to it
 * The function will change the grid so we do not want to use existing one.
 
-	IF (its_dc) THEN
+	IF (its_dc .OR. self_gridding) THEN
 	   CALL TM_MAKE_NEW_DYN_GRID(grid, gnum, status )
  	ELSE     
 	   CALL TM_GET_LIKE_DYN_GRID(grid, its_dynamic, gnum, 

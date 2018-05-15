@@ -1,11 +1,8 @@
-	SUBROUTINE DO_IIN_REGRID( cx_lims, axis, src, msrc, dst, mdst,
-     .				  work, itot, status)
+	LOGICAL FUNCTION REGRID_TO_SELF (rgrd_trans) 
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -35,25 +32,30 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-* call the regridding routine with appropriate work arrays
-
-* programmer - Ansley Manke
-* 4/2017
-* 2/2018 @iin regridding, see issue 1618. Use routine based on ave_regrid_1_axis
+* 5/15/2018 
+* Ansley Manke 5/2018
 * V741  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
 
-        IMPLICIT NONE
-        include 'tmap_dims.parm'
+* check to see if the regridding transformation is one that is
+* to be computed even if it's to the source axis.
+
+
 	include	'ferret.parm'
-	include	'xcontext.cmn'
 
-* calling argument declarations:
-	INTEGER	cx_lims, axis, msrc, mdst, itot, status
-	REAL	src(*), dst(*), work(*)
+* Calling argument
+	INTEGER rgrd_trans
 
-	CALL IIN_REGRID_1_AXIS(   cx_lims, axis,
-     .			   src, msrc, dst, mdst,
-     .			   work(1), itot, status )
+
+	REGRID_TO_SELF = .FALSE.
+
+	IF (rgrd_trans .EQ. prgrd_good_pt  .OR.
+     .      rgrd_trans .EQ. prgrd_variance .OR.
+     .      rgrd_trans .EQ. prgrd_modngd   .OR.
+     .      rgrd_trans .EQ. prgrd_modnbd   .OR.
+     .      rgrd_trans .EQ. prgrd_modvar   .OR.
+     .      rgrd_trans .EQ. prgrd_nbin     .OR.
+     .      rgrd_trans .EQ. prgrd_iin )  REGRID_TO_SELF = .TRUE.
+
 	RETURN
 	END
+ 

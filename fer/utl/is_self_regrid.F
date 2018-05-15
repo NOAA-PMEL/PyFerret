@@ -1,11 +1,9 @@
-	SUBROUTINE DO_IIN_REGRID( cx_lims, axis, src, msrc, dst, mdst,
-     .				  work, itot, status)
+	LOGICAL FUNCTION IS_SELF_REGRID (idim, src_grid, dst_grid, trans)
 
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -35,25 +33,30 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-* call the regridding routine with appropriate work arrays
-
-* programmer - Ansley Manke
-* 4/2017
-* 2/2018 @iin regridding, see issue 1618. Use routine based on ave_regrid_1_axis
+* 5/15/2018 
+* Ansley Manke 5/2018
 * V741  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
+*
+*  Return a flag, true if the current operation is a regridding-to
+*  the source axis. See regrid_to_self.F 
 
-        IMPLICIT NONE
-        include 'tmap_dims.parm'
+	include 'tmap_dims.parm'
+	include	'xtm_grid.cmn_text'
+	external xgt_grid_data
 	include	'ferret.parm'
-	include	'xcontext.cmn'
 
-* calling argument declarations:
-	INTEGER	cx_lims, axis, msrc, mdst, itot, status
-	REAL	src(*), dst(*), work(*)
+* calling argument declaratinos
+	INTEGER idim, src_grid, dst_grid, trans
 
-	CALL IIN_REGRID_1_AXIS(   cx_lims, axis,
-     .			   src, msrc, dst, mdst,
-     .			   work(1), itot, status )
+* Local declarations
+	LOGICAL REGRID_TO_SELF
+	INTEGER src_line, dst_line
+
+	src_line = grid_line (idim, src_grid)
+	dst_line = grid_line (idim, dst_grid)
+	IS_SELF_REGRID = (src_line .EQ. dst_line .AND. 
+     .              REGRID_TO_SELF (trans) )
+
+
 	RETURN
 	END

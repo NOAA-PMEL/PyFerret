@@ -133,6 +133,7 @@
 * PyFr *kms*  4/17 Remove SAVE_FRAME for HDF format since no longer supported
 * PyFr *acm*  1/18 Issue an error on use of /PATTERN
 * V74  1/18 *am* for issue #1854, extra argument to DISP_SET_UP
+* V741 *acm*  5/18 issue 1874: consistently apply /CONSET number of digits setting
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -258,7 +259,7 @@
 	      sigdig = NINT(vbuf)
 	   ENDIF
 	ELSE
-	   sigdig = 2
+	   sigdig = 0
 	ENDIF
 * ... CONTOUR/COLOR=color name or pen number
         dfltthick = 1.0
@@ -358,9 +359,15 @@
 
 * set contour label details (3/00)
 * fix bug 
-	WRITE ( ppl_buff, 3100 ) lab_size, sigdig, lab_spacing
+	IF (sigdig .NE. 0) THEN
+	   WRITE ( ppl_buff, 3100 ) lab_size, sigdig, lab_spacing
+	ELSE
+	   WRITE ( ppl_buff, 3200 ) lab_size, lab_spacing
+	ENDIF
+	   
 	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
  3100	FORMAT('CONSET ',F8.3,',',I4,', , , , , ,',F7.2)
+ 3200	FORMAT('CONSET ',F8.3,', , , , , , ,',F7.2)
 
 	CALL DISP_PREP( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000

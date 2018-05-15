@@ -114,6 +114,7 @@ hunt_r4.F\
 igrid.F\
 inherit_attrs.F\
 invalid_r8_to_i4.F\
+is_self_regrid.F\
 is_template.F\
 isubscr_cx.F\
 isubscript.F\
@@ -151,6 +152,7 @@ permute_ptr_sub.F\
 permute_sub.F\
 put_arg5_line.F\
 region_number.F\
+regrid_to_self.F\
 regularly_spaced.F\
 report_aux_dependency.F\
 report_dependency.F\

@@ -142,6 +142,7 @@ C              do not make small tics by default.
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* V741 *acm*  5/18 issue 1874: consistently apply /CONSET number of digits setting
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -652,9 +653,9 @@ C     CLINE
 	GOTO 10
 C     CONSET
 2800	IF(IFLG1)HGT=P(1)
-	NEWSIG = 0  ! set this flag only if a PPL CONSET is changing the nsig value
+	NEWSIG = 0  ! set this flag if a PPL CONSET is specificially setting the nsig value
 	IF(IFLG2)THEN
-	   IF (IFIX(P(2)) .NE. INISIG) NEWSIG = 1
+	   IF (IFIX(P(2)) .GT. 0) NEWSIG = 1
 	   NSIGC=IFIX(P(2))
 	ENDIF
 	IF(M.GE.3.AND.IFLG(3).NE.0)NARC=IFIX(P(3))

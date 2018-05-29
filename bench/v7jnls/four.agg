@@ -1,0 +1,4 @@
+! Example .agg file, used to initialize an aggregation
+
+ensemble fourfiles =  ens1, ens3, ens2, ens4
+

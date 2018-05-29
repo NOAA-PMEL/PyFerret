@@ -23,6 +23,9 @@
 *                 e.g. calendars (For ticket 2332)
 * V698 1/16 *sh* added pcd_ferr_ok in order to put status warnings into cd_*
 *                LIST processing routines that are not status checked
+* v741 5/18 *acm* Issue 1651 - new flag merr_use_agg: "use my" will look for 
+*                 my.agg and run it as a script to initialize an aggregation. 
+*                 If given w/o  extension.agg, merr_use_agg is set.
 
 * internally used PARAMETERS:
 	INTEGER		num_special,num_regular,pspecial,pregular,
@@ -68,7 +71,7 @@
      .			merr_dsetnf, merr_stepnf, merr_badcolmn,
      .                  merr_attalready, merr_badfileatt, merr_nc_open,
      .                  merr_remote_open, merr_chunk_spec, merr_read_interrupt,
-     .                  merr_time_string, merr_axis_att
+     .                  merr_time_string, merr_axis_att, merr_use_agg
 	PARAMETER      (merr_notsupport	= 1 + pregular,
      .			merr_filpos	= 1 + merr_notsupport,
      .			merr_tstep	= 1 + merr_filpos,
@@ -118,4 +121,5 @@
      .                  merr_chunk_spec  = 1 + merr_remote_open,
      .                  merr_read_interrupt = 1 + merr_chunk_spec,
      .                  merr_time_string = 1 + merr_read_interrupt,
-     .                  merr_axis_att = 1 + merr_time_string)
+     .                  merr_axis_att = 1 + merr_time_string,
+     .                  merr_use_agg = 1 + merr_axis_att)

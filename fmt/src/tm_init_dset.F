@@ -114,6 +114,8 @@
 *	           and check for existence of dataset from the get-go
 * V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
 * V702 11/16 *acm* Ticket 2490, add coaching to error on tseries aggregations
+* v741 5/18 *acm* Issue 1651 - "use my" will look for my.agg and run it as a script to
+*                 initialize an aggregation. If given w/o .agg, a hack will look for it.
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -313,7 +315,19 @@
            ENDIF
 	   des_name = TM_INQ_PATH(dset_name,path,ext,.FALSE.,status)
 
+* try .agg, for the "use myscript.agg" to initialize an aggregation using 
+*  commands in a script. Look in scripts directories
 
+	   IF ( status .NE. merr_ok ) THEN
+	      ext  = '.agg'
+	      path = 'FER_GO'
+	      ds_dset_type = 'CDF'
+	      des_name = TM_INQ_PATH(dset_name,path,ext,.FALSE.,status)
+	      IF (status .EQ. merr_ok) THEN
+	         status = merr_use_agg
+	         GOTO 9990  ! success, return to actually run the script from xeq_set.
+	      ENDIF
+           ENDIF
 
 * 7/97 *kob* check to see which error message should be output - don't
 *            want to output same error message twice.

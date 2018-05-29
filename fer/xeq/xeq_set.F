@@ -205,6 +205,8 @@
 * V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
 * V740 *acm* 2/18 Issue 966: LET/LIKE= requires changes to the call to INHERIT_ATTRS
 * V74+ *acm* 5/18 Don't upcase the title given on a SET DATA/TITLE
+* v741 5/18 *acm* Issue 1651 - "use my" will look for my.agg and run it as a script to
+*                 initialize an aggregation. If given w/o .agg, a hack will look for it.
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -446,6 +448,7 @@ c *kob* 4/97
 
 * (hack) if the argument has a ".agg" extension, then pass it to the GO
 * command, allowing "USE myAgg.agg" to initialize an aggregation
+
 	IF (num_items .GT. 0 ) THEN
 *   ... make sure that only a single .agg file is specified
            n = 0  ! number of arguments with .agg extension
@@ -577,6 +580,21 @@ c *kob* 4/97
  	   CALL TM_INIT_DSET( cmnd_buff( item_start(item):item_end(item) ),
      .			      ok_re_use_existing,
      .			      perm, dset_num, tregular, use_strict, tmap_status )
+
+* (hack, continued) If the argument is a file which has a ".agg" extension,
+* merr_use_agg indicates we have found it even though they gave the 
+* "use my_agg_script" without the .agg.
+
+	   IF (tmap_status .EQ. merr_use_agg) THEN  ! .agg file
+	      IF (num_items.GT.1) GOTO 5130
+
+	      cmnd_buff(item_end(item)+1:) = '.agg'
+	      item_end(item) = item_end(item) + 4
+	      arg_end(item) = arg_end(item) + 4
+	      CALL XEQ_GO
+	      RETURN
+	   ENDIF
+
 	   IF ( tmap_status .EQ. merr_no_action ) THEN
 	      GOTO 745					! already init'ed
 	   ELSEIF ( tmap_status .NE. merr_ok )	  THEN

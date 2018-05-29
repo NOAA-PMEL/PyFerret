@@ -5514,6 +5514,32 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+*** Running ferret script: bn_dot_agg.jnl
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+ LISTing to file tmp/f01_e1_tu1.nc
+ LISTing to file tmp/f01_e1_tu2.nc
+ LISTing to file tmp/f01_e1_tu3.nc
+ LISTing to file tmp/f01_e2_tu1.nc
+ LISTing to file tmp/f01_e2_tu2.nc
+ LISTing to file tmp/f01_e2_tu3.nc
+ LISTing to file tmp/f02_e1_tu1.nc
+ LISTing to file tmp/f02_e1_tu2.nc
+ LISTing to file tmp/f02_e1_tu3.nc
+ LISTing to file tmp/f02_e2_tu1.nc
+ LISTing to file tmp/f02_e2_tu2.nc
+ LISTing to file tmp/f02_e2_tu3.nc
+ LISTing to file tmp/f03_e1_tu1.nc
+ LISTing to file tmp/f03_e1_tu2.nc
+ LISTing to file tmp/f03_e1_tu3.nc
+ LISTing to file tmp/f03_e2_tu1.nc
+ LISTing to file tmp/f03_e2_tu2.nc
+ LISTing to file tmp/f03_e2_tu3.nc
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
+           *** NOTE: Skipping variable REALIZATION from set 1, already in the Union dataset.
+           *** NOTE: Skipping variable REALIZATION from set 8, already in the Union dataset.
+           *** NOTE: /FILES is deprecated.  Use /MEMBERS
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

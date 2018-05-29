@@ -1,4 +1,4 @@
-! bn_dot_agg.jnl
+! bn_use_agg.jnl
 ! 5/20/2018  ACM
 ! The syntax "use myagg.agg" runs Ferret commands in the journal file myagg.agg
 ! which initialize an aggregation dataset, treating .agg file as a dataset.
@@ -30,7 +30,7 @@ can data/all
 
 ! check for those files.
 IF `test_opendap("tmp/f03_e2_t3.nc") NE 0` THEN
-   Say Exiting in bn_dot_agg.jnl. The script needs files written by bn_aggregate_tef.jnl which are not found
+   Say Exiting in bn_use_agg.jnl. The script needs files written by bn_aggregate_tef.jnl which are not found
    exit/program
 ENDIF
 

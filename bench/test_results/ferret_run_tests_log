@@ -60338,7 +60338,7 @@ LIST temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
  regrid  TEMP     M:  2 dset:   1 I:     12     12  J:   45   49  K:    1    1  L:      2      3
  -DELETE TEMP     M:  1 dset:   1 I:     95    106  J:   45   50  K:    1    1  L:      2      3  M: -999 -999  N: -999 -999
              VARIABLE : TEMPERATURE (deg. C)
-                        regrid: G5_10G00ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 on X@AAV, on Y@AAV*
+                        regrid: G5_10G00ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 on X@AAV, on Y@AAV,
              FILENAME : gtsa056_1.cdf
              SUBSET   : 5 by 2 points (LATITUDE-TIME)
              LONGITUDE: 130W
@@ -60365,7 +60365,7 @@ LIST temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890,gx=g5_10g00abcdefghijkl
  regrid  TEMP     M:  1 dset:   1 I:     12     12  J:   45   49  K:    1    1  L:      2      3
  -DELETE TEMP     M:  2 dset:   1 I:     95    106  J:   45   49  K:    1    1  L:      2      3  M: -999 -999  N: -999 -999
              VARIABLE : TEMPERATURE (deg. C)
-                        regrid: G5_10G00ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 on X@AVE, on Y@LIN*
+                        regrid: G5_10G00ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 on X@AVE, on Y@LIN,
              FILENAME : gtsa056_1.cdf
              SUBSET   : 5 by 2 points (LATITUDE-TIME)
              LONGITUDE: 130W
@@ -60390,7 +60390,7 @@ LIST temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890,gt=g5_10g00abcdefghijkl
  regrid  TEMP     M:  2 dset:   1 I:     12     12  J:   45   49  K:    1    1  L:      2      3
  -DELETE TEMP     M:  5 dset:   1 I:    100    101  J:   45   50  K:    1    1  L:      2      3  M: -999 -999  N: -999 -999
              VARIABLE : TEMPERATURE (deg. C)
-                        regrid: G5_10G00ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 on X@LIN, on Y@LIN*
+                        regrid: G5_10G00ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 on X@LIN, on Y@LIN,
              FILENAME : gtsa056_1.cdf
              SUBSET   : 5 by 2 points (LATITUDE-TIME)
              LONGITUDE: 130W
@@ -102482,6 +102482,8 @@ list/l=1 var
 *** Running ferret script: bn_iin_regrid.jnl
 ! bn_iin_regrid.jnl
 ! @IIN as a regridding transform See Ticket 2346
+! 5/10/18 changes to tests, regridding to axis w/ different
+!         box size
  
 define axis/edge/x=0:10:1 aline
 let a = mod(.5+x[gx=aline],2)
@@ -102542,55 +102544,20 @@ list c
 define axis/edge/x=0:10:1 aline
 let a = mod(.5+x[gx=aline],2)
  
+! With changes of 5/10/18 these are errors:
+! the axis must be of the same delta, same units
+! and either offset a half cell or the same axis
  
+set mode ignore
 ! ? Different delta
  
 define axis/x=0.5:10.5:0.5 alinenew
 list a[gx=alinenew@iin]
-             VARIABLE : MOD(.5+X[GX=ALINE],2)
-                        regrid: 0.5 delta on X@IIN
-             SUBSET   : 21 points (X)
- 0.5   /  1:  0.000
- 1     /  2:  0.500
- 1.5   /  3:  0.500
- 2     /  4:  0.500
- 2.5   /  5:  1.000
- 3     /  6:  1.500
- 3.5   /  7:  1.500
- 4     /  8:  1.500
- 4.5   /  9:  2.000
- 5     / 10:  2.500
- 5.5   / 11:  2.500
- 6     / 12:  2.500
- 6.5   / 13:  3.000
- 7     / 14:  3.500
- 7.5   / 15:  3.500
- 8     / 16:  3.500
- 8.5   / 17:  4.000
- 9     / 18:  4.500
- 9.5   / 19:  4.500
- 10    / 20:  4.500
- 10.5  / 21:   ....
  
  
 ! result out of range, returns missing
 define axis/x=100:111:1 alinenew
 list a[gx=alinenew@iin]
-             VARIABLE : MOD(.5+X[GX=ALINE],2)
-                        regrid: 1 delta on X@IIN
-             SUBSET   : 12 points (X)
- 100   /  1:....
- 101   /  2:....
- 102   /  3:....
- 103   /  4:....
- 104   /  5:....
- 105   /  6:....
- 106   /  7:....
- 107   /  8:....
- 108   /  9:....
- 109   / 10:....
- 110   / 11:....
- 111   / 12:....
  
 ! partially out of range
 define axis/x=2:12:1 alinenew
@@ -102609,6 +102576,8 @@ list a[gx=alinenew@iin]
  10   /  9:  4.000
  11   / 10:   ....
  12   / 11:   ....
+ 
+can mode ignore
  
 can mem
 ! plots in different directions
@@ -102691,7 +102660,6 @@ list b2d[gx=aline_edges@iin]
              1      2      3      4      5      6      7      8      9     10     11
  1   / 1:   0.00   2.00   4.00   6.00   8.00  10.00  12.00  14.00  16.00  18.00  20.00
  2   / 2:   0.00   3.00   6.00   9.00  12.00  15.00  18.00  21.00  24.00  27.00  30.00
- 
  
 can view; can var/all
 ! In Y
@@ -103032,6 +103000,7 @@ list b2d[gf=aline_edges@iin]
  
 ! longitudes
  
+ 
 define axis/edge/x=0:10:1/units=degrees_east aline
 let a = mod(.5+x[gx=aline],2)
 define axis/x/like=`a,return=xaxis` aline_edges = box_edges(a)
@@ -103067,6 +103036,62 @@ list a_iin_regrid
  9E    / 10:  555975.
  10E   / 11:  555975.
  
+use coads_climatology
+ 
+define axis/x/like=`sst,return=xaxis` aline_edges = box_edges(sst[y=0,l=1,x=151:181])
+ !-> define axis/x/like=COADSX aline_edges = box_edges(sst[y=0,l=1,x=151:181])
+ 
+ 
+let sst_iin_regrid = sst[gx=aline_edges@iin]
+ 
+! With cosine(lat) correction
+list/l=1 sst[x=151:181@iin,y=0], sst[x=151:181@iin,y=50]
+             DATA SET: ./data/coads_climatology.cdf
+             LONGITUDE: 151E to 179W (indef. integ.)
+             TIME: 16-JAN 06:00
+ Column  1: SST[Y=1S] is SEA SURFACE TEMPERATURE (Deg C)(indef. integ. on X)
+ Column  2: SST[Y=49N] is SEA SURFACE TEMPERATURE (Deg C)(indef. integ. on X)
+                   SST     SST
+151E   / 66:  3.270E+06   134587.
+153E   / 67:  9.814E+06   416978.
+155E   / 68:  1.634E+07   649622.
+157E   / 69:  2.283E+07   904310.
+159E   / 70:  2.932E+07  1187673.
+161E   / 71:  3.580E+07  1558414.
+163E   / 72:  4.233E+07  1939608.
+165E   / 73:  4.882E+07  2363222.
+167E   / 74:  5.528E+07  2835953.
+169E   / 75:  6.171E+07  3348395.
+171E   / 76:  6.816E+07  3886457.
+173E   / 77:  7.452E+07  4436197.
+175E   / 78:  8.081E+07  5000771.
+177E   / 79:  8.719E+07  5566464.
+179E   / 80:  9.346E+07  6161540.
+179W   / 81:  9.667E+07  6465711.
+list/l=1 sst_iin_regrid[y=0], sst_iin_regrid[y=50]
+             DATA SET: ./data/coads_climatology.cdf
+             LONGITUDE: 149E to 177W
+             TIME: 16-JAN 06:00
+ Column  1: SST_IIN_REGRID[Y=1S] is SST[GX=ALINE_EDGES@IIN]
+ Column  2: SST_IIN_REGRID[Y=49N] is SST[GX=ALINE_EDGES@IIN]
+          SST_IIN_REGR  SST_IIN_REGRID
+150E   /  1:  0.000E+00        0.
+152E   /  2:  6.540E+06   269173.
+154E   /  3:  1.308E+07   551565.
+156E   /  4:  1.961E+07   784209.
+158E   /  5:  2.610E+07  1038897.
+160E   /  6:  3.259E+07  1322260.
+162E   /  7:  3.907E+07  1693001.
+164E   /  8:  4.560E+07  2074194.
+166E   /  9:  5.209E+07  2497809.
+168E   / 10:  5.855E+07  2970539.
+170E   / 11:  6.498E+07  3482981.
+172E   / 12:  7.143E+07  4021043.
+174E   / 13:  7.779E+07  4570784.
+176E   / 14:  8.408E+07  5135358.
+178E   / 15:  9.046E+07  5701051.
+180E   / 16:  9.673E+07  6296127.
+178W   / 17:  1.031E+08  6904468.
  
 ! latitudes
  
@@ -103098,6 +103123,82 @@ list a_iin_regrid
  30N   / 3:  4.448E+06
  20N   / 2:  1.668E+06
  10N   / 1:  0.000E+00
+ 
+ 
+! Tests of regrid-to-self regridding
+! @iin regridding to the source axis
+ 
+define axis/edge/x=0:10:1 aline
+let a = i[gx=aline]
+ 
+! edges axis
+define axis/x/like=`a,return=xaxis` aline_edges = box_edges(a)
+ !-> define axis/x/like=ALINE aline_edges = box_edges(a)
+ 
+let c = a[gx=aline_edges@iin]
+let d = a[gx=aline@iin]
+ 
+! to edges axis
+list c
+             VARIABLE : A[GX=ALINE_EDGES@IIN]
+             SUBSET   : 11 points (X)
+ 0    /  1:   0.00
+ 1    /  2:   1.00
+ 2    /  3:   3.00
+ 3    /  4:   6.00
+ 4    /  5:  10.00
+ 5    /  6:  15.00
+ 6    /  7:  21.00
+ 7    /  8:  28.00
+ 8    /  9:  36.00
+ 9    / 10:  45.00
+ 10   / 11:  55.00
+ 
+! to source axis. Pushes result of a @IIN transform up,
+! so result starts at 0.
+list a, d, a[x=@iin]
+             X: 0 to 10
+ Column  1: A is I[GX=ALINE]
+ Column  2: D is A[GX=ALINE@IIN]
+ Column  3: A[X=@IIN] is I[GX=ALINE] (indef. integ. on X)
+              A     D      A
+0.5 /  1:   1.00   0.00   1.00
+1.5 /  2:   2.00   1.00   3.00
+2.5 /  3:   3.00   3.00   6.00
+3.5 /  4:   4.00   6.00  10.00
+4.5 /  5:   5.00  10.00  15.00
+5.5 /  6:   6.00  15.00  21.00
+6.5 /  7:   7.00  21.00  28.00
+7.5 /  8:   8.00  28.00  36.00
+8.5 /  9:   9.00  36.00  45.00
+9.5 / 10:  10.00  45.00  55.00
+ 
+ 
+def ax/edge/t=1-jan-0001:1-jan-0004:365/unit=day/cal=noleap tax
+let one = 1 + 0*t[gt=tax]
+list one, one[t=@iin], one[gt=tax@iin]
+             TIME: 01-JAN-0001 00:00 to 01-JAN-0004 00:00 NOLEAP
+ Column  1: ONE is 1 + 0*T[GT=TAX]
+ Column  2: ONE[T=@IIN] is 1 + 0*T[GT=TAX] (indef. integ. on T)
+ Column  3: ONE[G=365 day on T@IIN] is 1 + 0*T[GT=TAX] (regrid: 365 day on T@IIN)
+                ONE      ONE        ONE
+JUL-0001 / 1:  1.000  3.154E+07  0.000E+00
+JUL-0002 / 2:  1.000  6.307E+07  3.154E+07
+JUL-0003 / 3:  1.000  9.461E+07  6.307E+07
+ 
+! Gridding to an identical second axis, columns 3 and 4 match:
+def ax/edge/t=1-jan-0001:1-jan-0004:365/unit=day/cal=noleap tax2
+list one, one[t=@iin], one[gt=tax@iin],  one[gt=tax2@iin]
+ WARNING: Listed variables have ambiguous coordinates on axes: T
+ Column  1: ONE is 1 + 0*T[GT=TAX]
+ Column  2: ONE[T=@IIN] is 1 + 0*T[GT=TAX] (indef. integ. on T)
+ Column  3: ONE[G=365 day on T@IIN] is 1 + 0*T[GT=TAX] (regrid: 365 day on T@IIN)
+ Column  4: ONE[G=365 day on T@IIN] is 1 + 0*T[GT=TAX] (regrid: 365 day on T@IIN)
+         ONE      ONE        ONE        ONE
+L / 1:  1.000  3.154E+07  0.000E+00  0.000E+00
+L / 2:  1.000  6.307E+07  3.154E+07  3.154E+07
+L / 3:  1.000  9.461E+07  6.307E+07  6.307E+07
+ 
  
  
 *** Running ferret script: bn721_bug_fixes.jnl
@@ -106386,6 +106487,309 @@ LAB2 = "DATA SET: coads_climatology"
 LABNUM_DSET = "2"
 LAB3 = "Classic dataset"
 LABNUM_DATITL = "3"
+ 
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+go err74_regrid_to_sameax
+! err74__regrid_to_sameax.jnl
+! 5/10/18
+! Issue 1868: some regridding transformations
+! should return something, not always a no-op.
+ 
+def axis/x=1:4:1 xax
+let two = 2+0*x[gx=xax]
+save/clobber/file=two.nc two
+cancel var two
+ 
+ 
+use two.nc
+!NGD
+ 
+! should be all 1's where valid
+list two, two[gx=xax@ngd]
+             DATA SET: ./two.nc
+             X: 0.5 to 4.5
+ Column  1: TWO is 2+0*X[GX=XAX]
+ Column  2: TWO[G=TWO on X@NG] is 2+0*X[GX=XAX] (# of points)(regrid: TWO on X@NGD)
+           TWO    TWO
+1   / 1:  2.000  1.000
+2   / 2:  2.000  1.000
+3   / 3:  2.000  1.000
+4   / 4:  2.000  1.000
+ 
+!NBIN
+! should be all 1's where valid
+list two, two[gx=xax@nbin]
+             DATA SET: ./two.nc
+             X: 0.5 to 4.5
+ Column  1: TWO is 2+0*X[GX=XAX]
+ Column  2: TWO[G=TWO on X@NBI] is 2+0*X[GX=XAX] (regrid: TWO on X@NBIN)
+           TWO    TWO
+1   / 1:  2.000  1.000
+2   / 2:  2.000  1.000
+3   / 3:  2.000  1.000
+4   / 4:  2.000  1.000
+ 
+ 
+! MODNGD, MODNBD
+! MODNGD Should be 1 where good, 0 for bad
+! vice versa for MODNBD
+ 
+use coads_climatology
+ 
+let sstg =  sst[gx=COADSX@modngd]
+let sstb =  sst[gx=COADSX@modnbd]
+stat/l=1/y=50 sstg
+ 
+             SST[GX=COADSX@MODNGD]
+             LONGITUDE: 20E to 20E(380)
+             LATITUDE: 49N
+             Z:  N/A
+             TIME: 16-JAN 06:00
+             E:  N/A
+             F:  N/A
+             DATA SET: ./data/coads_climatology.cdf
+ 
+ Total # of data points: 180 (180*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0
+ Maximum value: 1
+ Mean    value: 0.49444 (unweighted average)
+ Standard deviation: 0.50136
+stat/l=1/y=50 sstb
+ 
+             SST[GX=COADSX@MODNBD]
+             LONGITUDE: 20E to 20E(380)
+             LATITUDE: 49N
+             Z:  N/A
+             TIME: 16-JAN 06:00
+             E:  N/A
+             F:  N/A
+             DATA SET: ./data/coads_climatology.cdf
+ 
+ Total # of data points: 180 (180*1*1*1*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 0
+ Maximum value: 1
+ Mean    value: 0.50556 (unweighted average)
+ Standard deviation: 0.50136
+ 
+list/l=1/y=40/x=210:250 sst, sst[gx=COADSX@modngd], sst[gx=COADSX@modnbd]
+             DATA SET: ./data/coads_climatology.cdf
+             LONGITUDE: 150W to 110W
+             LATITUDE: 39N
+             TIME: 16-JAN 06:00
+ Column  1: SST is SEA SURFACE TEMPERATURE (Deg C)
+ Column  2: SST[G=SST on X@MODNG] is SEA SURFACE TEMPERATURE (# of points)(regrid: SST on X@MODNGD)
+ Column  3: SST[G=SST on X@MODNB] is SEA SURFACE TEMPERATURE (# of points)(regrid: SST on X@MODNBD)
+                SST    SST    SST
+149W   /  96:  12.91  1.000  0.000
+147W   /  97:  13.13  1.000  0.000
+145W   /  98:  13.38  1.000  0.000
+143W   /  99:  13.41  1.000  0.000
+141W   / 100:  13.51  1.000  0.000
+139W   / 101:  13.60  1.000  0.000
+137W   / 102:  13.77  1.000  0.000
+135W   / 103:  13.79  1.000  0.000
+133W   / 104:  13.80  1.000  0.000
+131W   / 105:  13.49  1.000  0.000
+129W   / 106:  13.16  1.000  0.000
+127W   / 107:  12.65  1.000  0.000
+125W   / 108:  11.83  1.000  0.000
+123W   / 109:  11.72  1.000  0.000
+121W   / 110:   ....  0.000  1.000
+119W   / 111:   ....  0.000  1.000
+117W   / 112:   ....  0.000  1.000
+115W   / 113:   ....  0.000  1.000
+113W   / 114:   ....  0.000  1.000
+111W   / 115:   ....  0.000  1.000
+ 
+! MODVAR
+! should be 0 where valid, missing otherwise
+ 
+list/l=1/y=40/x=210:250 sst, sst[gx=COADSX@modvar]
+             DATA SET: ./data/coads_climatology.cdf
+             LONGITUDE: 150W to 110W
+             LATITUDE: 39N
+             TIME: 16-JAN 06:00
+ Column  1: SST is SEA SURFACE TEMPERATURE (Deg C)
+ Column  2: SST[G=SST on X@MODVA] is Variance of SEA SURFACE TEMPERATURE ((Deg C)^2)(regrid: SST on X@MODVAR)
+                SST    SST
+149W   /  96:  12.91  0.0000
+147W   /  97:  13.13  0.0000
+145W   /  98:  13.38  0.0000
+143W   /  99:  13.41  0.0000
+141W   / 100:  13.51  0.0000
+139W   / 101:  13.60  0.0000
+137W   / 102:  13.77  0.0000
+135W   / 103:  13.79  0.0000
+133W   / 104:  13.80  0.0000
+131W   / 105:  13.49  0.0000
+129W   / 106:  13.16  0.0000
+127W   / 107:  12.65  0.0000
+125W   / 108:  11.83  0.0000
+123W   / 109:  11.72  0.0000
+121W   / 110:   ....    ....
+119W   / 111:   ....    ....
+117W   / 112:   ....    ....
+115W   / 113:   ....    ....
+113W   / 114:   ....    ....
+111W   / 115:   ....    ....
+ 
+! @var regridding should be 0 where valid, missing otherwise
+define axis/y=0:21:3/units=degrees_north yax
+ 
+list/x=300/l=1 sst[gy=yax], sst[gy=yax@var]
+             DATA SET: ./data/coads_climatology.cdf
+             LATITUDE: 1.5S to 22.5N
+             LONGITUDE: 61W
+             TIME: 16-JAN 06:00
+ Column  1: SST[G=3 deg on Y] is SEA SURFACE TEMPERATURE (Deg C)(regrid: 3 deg on Y)
+ Column  2: SST[G=3 deg on Y@VAR] is Variance of SEA SURFACE TEMPERATURE ((Deg C)^2)(regrid: 3 deg on Y@VAR)
+             SST     SST
+0     / 1:   ....     ....
+3N    / 2:   ....     ....
+6N    / 3:   ....     ....
+9N    / 4:  27.12  0.01891
+12N   / 5:  26.75  0.00081
+15N   / 6:  26.75  0.02797
+18N   / 7:  26.12  0.03315
+21N   / 8:  25.44  0.09389
+list/x=300/l=1/y=0:20 sst, sst[gy=`sst,return=yaxis`@var]
+ !-> list/x=300/l=1/y=0:20 sst, sst[gy=COADSY@var]
+             DATA SET: ./data/coads_climatology.cdf
+             LATITUDE: 0 to 20N
+             LONGITUDE: 61W
+             TIME: 16-JAN 06:00
+ Column  1: SST is SEA SURFACE TEMPERATURE (Deg C)
+ Column  2: SST[G=SST on Y@VA] is Variance of SEA SURFACE TEMPERATURE ((Deg C)^2)(regrid: SST on Y@VAR)
+              SST    SST
+1N    / 46:   ....    ....
+3N    / 47:   ....    ....
+5N    / 48:   ....    ....
+7N    / 49:   ....    ....
+9N    / 50:  27.12  0.0000
+11N   / 51:  26.78  0.0000
+13N   / 52:  26.72  0.0000
+15N   / 53:  26.75  0.0000
+17N   / 54:  26.30  0.0000
+19N   / 55:  25.94  0.0000
+ 
+! IIN
+! @iin regridding to the source axis
+! Result is the same as the @IIN transformation but 0 at
+! the start and results pushed up a cell.
+ 
+define axis/edge/x=0:10:1 aline
+let a = i[gx=aline]
+ 
+! edges axis
+define axis/x/like=`a,return=xaxis` aline_edges = box_edges(a)
+ !-> define axis/x/like=ALINE aline_edges = box_edges(a)
+ 
+let c = a[gx=aline_edges@iin]
+let d = a[gx=aline@iin]
+ 
+! Regrid to edges axis
+list c
+             VARIABLE : A[GX=ALINE_EDGES@IIN]
+             SUBSET   : 11 points (X)
+ 0    /  1:   0.00
+ 1    /  2:   1.00
+ 2    /  3:   3.00
+ 3    /  4:   6.00
+ 4    /  5:  10.00
+ 5    /  6:  15.00
+ 6    /  7:  21.00
+ 7    /  8:  28.00
+ 8    /  9:  36.00
+ 9    / 10:  45.00
+ 10   / 11:  55.00
+ 
+! Regrid to source axis.
+list a, d, a[x=@iin]
+             X: 0 to 10
+ Column  1: A is I[GX=ALINE]
+ Column  2: D is A[GX=ALINE@IIN]
+ Column  3: A[X=@IIN] is I[GX=ALINE] (indef. integ. on X)
+              A     D      A
+0.5 /  1:   1.00   0.00   1.00
+1.5 /  2:   2.00   1.00   3.00
+2.5 /  3:   3.00   3.00   6.00
+3.5 /  4:   4.00   6.00  10.00
+4.5 /  5:   5.00  10.00  15.00
+5.5 /  6:   6.00  15.00  21.00
+6.5 /  7:   7.00  21.00  28.00
+7.5 /  8:   8.00  28.00  36.00
+8.5 /  9:   9.00  36.00  45.00
+9.5 / 10:  10.00  45.00  55.00
+ 
+! Time units
+def ax/edge/t=1-jan-0001:1-jan-0004:365/unit=day/cal=noleap tax
+let one = 1 + 0*t[gt=tax]
+list one, one[t=@iin], one[gt=tax@iin]
+             TIME: 01-JAN-0001 00:00 to 01-JAN-0004 00:00 NOLEAP
+ Column  1: ONE is 1 + 0*T[GT=TAX]
+ Column  2: ONE[T=@IIN] is 1 + 0*T[GT=TAX] (indef. integ. on T)
+ Column  3: ONE[G=365 day on T@IIN] is 1 + 0*T[GT=TAX] (regrid: 365 day on T@IIN)
+                ONE      ONE        ONE
+JUL-0001 / 1:  1.000  3.154E+07  0.000E+00
+JUL-0002 / 2:  1.000  6.307E+07  3.154E+07
+JUL-0003 / 3:  1.000  9.461E+07  6.307E+07
+ 
+! Gridding to an identical second axis, columns 3 and 4 match:
+def ax/edge/t=1-jan-0001:1-jan-0004:365/unit=day/cal=noleap tax2
+list one, one[t=@iin], one[gt=tax@iin],  one[gt=tax2@iin]
+ WARNING: Listed variables have ambiguous coordinates on axes: T
+ Column  1: ONE is 1 + 0*T[GT=TAX]
+ Column  2: ONE[T=@IIN] is 1 + 0*T[GT=TAX] (indef. integ. on T)
+ Column  3: ONE[G=365 day on T@IIN] is 1 + 0*T[GT=TAX] (regrid: 365 day on T@IIN)
+ Column  4: ONE[G=365 day on T@IIN] is 1 + 0*T[GT=TAX] (regrid: 365 day on T@IIN)
+         ONE      ONE        ONE        ONE
+L / 1:  1.000  3.154E+07  0.000E+00  0.000E+00
+L / 2:  1.000  6.307E+07  3.154E+07  3.154E+07
+L / 3:  1.000  9.461E+07  6.307E+07  6.307E+07
+ 
+ 
+ 
+GO bn_reset
+cancel mode verify
+ooooooooooooooooooooooooooooooooooooooooooo
+go err74_single_level_contour
+! err74_single_level_contour.jnl
+! Issue 1874: precision of single levels on contour lines
+ 
+! These levels are labeled fine:
+use coads_climatology
+ 
+set view ul; go margins 0.5 0.5 0.8 1
+ 
+fill/nolab/l=1/x=300:380/y=-40:10/pal=grayscale/lev=(-inf)(15.3,27.3,0.4)(inf) sst
+cont/l=1/lev=(17.7)/ov/nolab/color=lightblue  sst
+cont/l=1/lev=(24.9)/ov/nolab/color=blue sst
+contour/l=1/lev=(26.15)/ov/nolab/color=red  sst
+ 
+! magnitude of the numbers given affects it
+set view ur; go margins 0.5 0.5 0.8 1
+let sst2 = 2*sst
+fill/nolab/l=1/x=300:380/y=-40:10/pal=grayscale/lev=(-inf)(30.6,54.6,0.8)(inf) sst2
+cont/l=1/lev=(35.4)/ov/nolab/color=lightblue  sst2
+cont/l=1/lev=(49.8)/ov/nolab/color=blue sst2
+contour/l=1/lev=(52.34)/ov/nolab/color=red  sst2
+ 
+! small values
+set view ll; go margins 0.5 0.5 0.8 1
+let sst2 = sst/50
+fill/nolab/l=1/x=300:380/y=-40:10/pal=grayscale/lev=(-inf)(.306,.546,0.008)(inf) sst2
+cont/l=1/lev=(.354)/ov/nolab/color=lightblue  sst2
+! What about /SIGDIG? It should override what is done automatically
+cont/l=1/lev=(.468)/sigdig=2/ov/nolab/color=blue sst2
+contour/l=1/lev=(.5234)/sigdig=3/ov/nolab/color=red  sst2
+ 
+frame /file=single_contour_levels.gif
+ 
  
 *** Running ferret script: bn_gif.jnl
 ! bn450_gif.JNL - copied from bn450_plot.jnl

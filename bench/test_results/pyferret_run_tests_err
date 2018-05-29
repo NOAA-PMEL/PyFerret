@@ -5249,7 +5249,11 @@ ls: cannot access tmp/test_auto_cache_20.nc: No such file or directory
 *** Running ferret script: bn_transp_choose.jnl
  TEMPORARY data cleared from memory
 *** Running ferret script: bn_iin_regrid.jnl
+ **ERROR: invalid command: Destination axis coords must be the box edges of the source axis, or regrid to source axis: @IIN
+list a[gx=alinenew@iin]
 Replacing definition of axis ALINENEW
+ **ERROR: invalid command: Destination axis coords must be the box edges of the source axis, or regrid to source axis: @IIN
+list a[gx=alinenew@iin]
 Replacing definition of axis ALINENEW
  TEMPORARY data cleared from memory
 Replacing definition of axis ALINE_EDGES
@@ -5264,6 +5268,9 @@ Replacing definition of axis OTHERAXIS
 Replacing definition of axis ALINE
 Replacing definition of axis ALINE_EDGES
 Replacing definition of axis ALINE
+Replacing definition of axis ALINE_EDGES
+Replacing definition of axis ALINE
+Replacing definition of axis ALINE_EDGES
 Replacing definition of axis ALINE_EDGES
 Replacing definition of axis ALINE
 Replacing definition of axis ALINE_EDGES
@@ -5497,6 +5504,13 @@ LIST/FORMAT=CDF/append/file=a.nc/i=41:46 avar
 LIST/FORMAT=CDF/append/file=a.nc/i=41:51 avar
            *** NOTE: Invalid I axis limits ignored: AVAR
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file two.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo

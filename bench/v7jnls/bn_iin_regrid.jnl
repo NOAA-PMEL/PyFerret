@@ -1,5 +1,7 @@
 ! bn_iin_regrid.jnl
 ! @IIN as a regridding transform See Ticket 2346
+! 5/10/18 changes to tests, regridding to axis w/ different
+!         box size 
 
 define axis/edge/x=0:10:1 aline
 let a = mod(.5+x[gx=aline],2)
@@ -18,7 +20,11 @@ list c
 define axis/edge/x=0:10:1 aline
 let a = mod(.5+x[gx=aline],2)
 
+! With changes of 5/10/18 these are errors: 
+! the axis must be of the same delta, same units
+! and either offset a half cell or the same axis
 
+set mode ignore
 ! ? Different delta
 
 define axis/x=0.5:10.5:0.5 alinenew
@@ -32,6 +38,8 @@ list a[gx=alinenew@iin]
 ! partially out of range 
 define axis/x=2:12:1 alinenew
 list a[gx=alinenew@iin]
+
+can mode ignore
 
 can mem
 ! plots in different directions
@@ -77,7 +85,6 @@ list d
 define axis/z=1:2:1 otheraxis
 let b2d = b + z[gz=otheraxis]
 list b2d[gx=aline_edges@iin]
-
 
 can view; can var/all
 ! In Y
@@ -290,15 +297,26 @@ list b2d[gf=aline_edges@iin]
 
 ! longitudes
 
+ 
 define axis/edge/x=0:10:1/units=degrees_east aline
 let a = mod(.5+x[gx=aline],2)
 define axis/x/like=`a,return=xaxis` aline_edges = box_edges(a)
 let a_iin_regrid =  a[gx=aline_edges@iin]
 let a_iin = a[x=@iin]
-
+ 
 list a_iin
 list a_iin_regrid
 
+use coads_climatology
+
+define axis/x/like=`sst,return=xaxis` aline_edges = box_edges(sst[y=0,l=1,x=151:181])
+
+
+let sst_iin_regrid = sst[gx=aline_edges@iin]
+
+! With cosine(lat) correction
+list/l=1 sst[x=151:181@iin,y=0], sst[x=151:181@iin,y=50]
+list/l=1 sst_iin_regrid[y=0], sst_iin_regrid[y=50]
 
 ! latitudes
 
@@ -310,5 +328,35 @@ let a_iin = a[y=@iin]
 
 list a_iin
 list a_iin_regrid
+
+
+! Tests of regrid-to-self regridding  
+! @iin regridding to the source axis
+
+define axis/edge/x=0:10:1 aline
+let a = i[gx=aline]
+
+! edges axis
+define axis/x/like=`a,return=xaxis` aline_edges = box_edges(a)
+
+let c = a[gx=aline_edges@iin]
+let d = a[gx=aline@iin]
+
+! to edges axis
+list c
+
+! to source axis. Pushes result of a @IIN transform up,
+! so result starts at 0.
+list a, d, a[x=@iin]
+
+
+def ax/edge/t=1-jan-0001:1-jan-0004:365/unit=day/cal=noleap tax
+let one = 1 + 0*t[gt=tax]
+list one, one[t=@iin], one[gt=tax@iin]
+
+! Gridding to an identical second axis, columns 3 and 4 match:
+def ax/edge/t=1-jan-0001:1-jan-0004:365/unit=day/cal=noleap tax2
+list one, one[t=@iin], one[gt=tax@iin],  one[gt=tax2@iin]
+
 
 

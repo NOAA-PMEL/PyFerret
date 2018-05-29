@@ -1,0 +1,40 @@
+! bn_dot_agg.jnl
+! 5/20/2018  ACM
+! The syntax "use myagg.agg" runs Ferret commands in the journal file myagg.agg
+! which initialize an aggregation dataset, treating .agg file as a dataset.
+! as of 5/20/18, the .agg extension is not needed (issue 1651)
+
+! The .agg file in a directory with path spelled out, but w/o the .agg extension
+
+use  /home/users/ansley/build/working/FERRET/bench/v7jnls/four
+show data
+can data/all
+
+! .agg file found in directory in the FER_GO paths
+
+use four.agg
+
+show data
+can data/all
+
+! found in a directory in the FER_GO paths, w/o extension
+use four
+show data
+can data/all
+
+
+! The more complex example from bn_aggregate_u, aggregate in U, T, E, F.
+
+! assumes the aggregate_tef script has alrady run, 
+! leaving the example files it writes, in tmp/
+
+! check for those files.
+IF `test_opendap("tmp/f03_e2_t3.nc") NE 0` THEN
+   Say Exiting in bn_dot_agg.jnl. The script needs files written by bn_aggregate_tef.jnl which are not found
+   exit/program
+ENDIF
+
+use bigagg
+
+! 22 datasets are open including the final T-U-E-F forecast aggregation
+show data

@@ -1191,6 +1191,9 @@ GO bn_center_keylab
 go bn_reset bn741_bug_fixes
 GO bn741_bug_fixes
 
+go bn_reset bn741_bug_fixes
+GO bn_dot_agg
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

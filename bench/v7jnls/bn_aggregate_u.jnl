@@ -2,8 +2,11 @@
 ! Union aggregations including tests of UNION in combination
 ! with TSERIES, ENSEMBLE, and FMRC aggregations
 ! acm 7/15/2016
-\
+
 ! create some variables in separate datasets.
+
+SPAWN "mkdir -p tmp" 
+
 define axis/t=1-jan-2010:10-jan-2010:1/units=days/t0=1-jan-2010 tax
 let/title=sst  sst = x[x=1:5] + 1.3*y[y=1:4] + t[gt=tax]
 let/title=temp temp = 0.8*x[x=1:5] - y[y=1:4] + t[gt=tax]

@@ -147,6 +147,10 @@ stat/brief/x=150E/y=15n IF ABS(rel_err) LT epsilon THEN 0.0 ELSE rel_err
 ! warning message indicates fcst_2 is missing from a file
 ENSEMBLE te_f04_1v = t_f04_e1, t_f04_e2, t_f04_e3_1v, t_f04_e4, t_f04_e5
 SHOW DATA/ATT t_f04_e3_1v ! note atts im_everwhere vs im_not_everwhere
+
+say where is the axis ZAX1 coming from? does it have a positive attr?
+pause
+
 SHOW DATA/ATT te_f04_1v  ! note atts im_everwhere vs im_not_everwhere
 
 ! define fcst_2 as a LET/D variable and then do same calc

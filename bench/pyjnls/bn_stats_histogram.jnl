@@ -1,0 +1,32 @@
+! bn_stats_histogram.jnl
+! test stats_histogram - fix for https://github.com/NOAA-PMEL/PyFerret/issues/57
+
+define axis /Y=-1.0:1.0:0.2 yax
+define axis /Z=0.0:100.0:1.0 zax
+
+let pi = 4.0 * atan(1.0)
+
+let midpts = Y[gy=yax]
+list midpts
+
+let data = cos(factor * Z[gz=zax])
+
+let factor = pi / 200.0
+list stats_histogram(data, midpts)
+
+let factor = pi / 100.0
+list stats_histogram(data, midpts)
+
+let factor = pi / 50.0
+list stats_histogram(data, midpts)
+
+let factor = pi / 25.0
+list stats_histogram(data, midpts)
+
+cancel var data
+cancel var factor
+cancel var midpts
+cancel var pi
+cancel axis zax
+cancel axis yax
+

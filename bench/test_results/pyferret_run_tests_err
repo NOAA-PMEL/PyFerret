@@ -5677,6 +5677,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 plot /over /nokey /size=0.45 /symbol=12 /color=green /highlight /vs {8.0},{1.0}
 *** Running ferret script: bn_symbolpattern.jnl
 *** Running ferret script: bn_symbolcolors.jnl
+*** Running ferret script: bn_stats_histogram.jnl
 *** Running python script: testgetstrdata.py
 >>> ... ... >>> >>> >>> 
 *** Running python script: testferregion.py

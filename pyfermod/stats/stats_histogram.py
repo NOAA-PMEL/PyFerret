@@ -24,7 +24,7 @@ def ferret_init(id):
                 "argdescripts": ("Values to put into bins and then count",
                                  "Template argument whose one defined axis gives midpoints of bins"),
                 "argtypes": (pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY),
-                "influences": (true_influences, false_influences),
+                "influences": (false_influences, true_influences),
               }
     return retdict
 

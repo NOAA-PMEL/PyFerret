@@ -3771,6 +3771,7 @@ variables:
 *** Running ferret script: bn_pointplots.jnl
 *** Running ferret script: bn_symbolpattern.jnl
 *** Running ferret script: bn_symbolcolors.jnl
+*** Running ferret script: bn_stats_histogram.jnl
 *** Running python script: testgetstrdata.py
 *** Running python script: testferregion.py
 *** Running python script: testferdset.py

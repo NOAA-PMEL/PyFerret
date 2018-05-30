@@ -205,7 +205,7 @@ update :
 	  export BIND_AND_HIDE_INTERNAL=$(BIND_AND_HIDE_INTERNAL) ; \
 	  $(PYTHON_EXE) setup.py --quiet install -O2 --prefix=$(INSTALL_FER_DIR) )
 
-## Execute the benchmark tests
+## Compare results from executing the RUN_TESTS.sh test suite with those saved under bench/test_results
 .PHONY : check
 check :
 	$(MAKE) -C $(DIR_PREFIX)/bench check

@@ -6,18 +6,9 @@
 include ../site_specific.mk
 include ../platform_specific.mk.$(BUILDTYPE)
 
-## For PyFerret, use run_tests as the standard check
+## Compare results from executing the RUN_TESTS.sh test suite with those saved under bench/test_results
 .PHONY: check
 check: run_tests
-
-## Execute the RUN_TESTS.sh test suite
-.PHONY: run_tests
-run_tests:
-	@if [ `which pyferret` = "" -o "$(FER_DIR)" = "" ]; then \
-	    echo "*** PyFerret must be installed and the ferret_paths script must have sourced for these tests ***" ; \
-	    exit 1 ; \
-	fi
-	( SED_EXTREGEX_FLAG="$(SED_EXTREGEX_FLAG)"; export SED_EXTREGEX_FLAG; ./RUN_TESTS.sh `which pyferret` "$(PYFER_EXTERNAL_FUNCTIONS)" )
 	@echo 'Differences in the generated bench PDF and PNG files versus those in bench/test_results'
 	-@for img in *.pdf *.png ; \
 	do \
@@ -35,6 +26,15 @@ run_tests:
 	@echo ''
 	@echo 'Inspect the *_diff.png files for actual differences in the images'
 	@echo 'Inspect the pyferret_run_tests_*.diff files for actual differences in the output'
+
+## Execute the RUN_TESTS.sh test suite
+.PHONY: run_tests
+run_tests:
+	@if [ `which pyferret` = "" -o "$(FER_DIR)" = "" ]; then \
+	    echo "*** PyFerret must be installed and the ferret_paths script must have sourced for these tests ***" ; \
+	    exit 1 ; \
+	fi
+	( SED_EXTREGEX_FLAG="$(SED_EXTREGEX_FLAG)"; export SED_EXTREGEX_FLAG; ./RUN_TESTS.sh `which pyferret` "$(PYFER_EXTERNAL_FUNCTIONS)" )
 
 .PHONY: clean
 clean:

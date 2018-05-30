@@ -82,7 +82,7 @@ are needed.
     brew install gs
 
 Make sure the environment variables need by Ferret are assigned appropriately 
-using the appropriate ferret_paths script, and that the command `which pyferret` 
+using the appropriate ferret_paths script, and that the command `which ferret` 
 returns the path to the version of Ferret that you wish to test.
 
 Change to the `bench` subdirectory of the Ferret source directory, and run 

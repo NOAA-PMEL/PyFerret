@@ -291,7 +291,7 @@ bn_hi_res_time.jnl
 bn_A_I_format.jnl
 bn_center_keylab.jnl
 bn741_bug_fixes.jnl
-bn_dot_agg.jnl
+bn_use_agg.jnl
 !
 ! bn_gif, bn_all_ef, and bn_startupfile at end
 !

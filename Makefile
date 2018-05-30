@@ -124,9 +124,9 @@ install_exes :
 	mv -f fer_executables.tar.gz $(INSTALL_FER_DIR)
 	( cd $(INSTALL_FER_DIR) ; tar xzf fer_executables.tar.gz )
 
-## Execute the RUN_TESTS.sh tests
-.PHONY : run_tests
-run_tests :
-	$(MAKE) -C bench run_tests
+## Compare results from executing the RUN_TESTS.sh test suite with those saved under bench/test_results
+.PHONY : check
+check :
+	$(MAKE) -C bench check
 
 ##

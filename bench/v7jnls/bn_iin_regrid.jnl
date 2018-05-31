@@ -1,16 +1,16 @@
 ! bn_iin_regrid.jnl
 ! @IIN as a regridding transform See Ticket 2346
 ! 5/10/18 changes to tests, regridding to axis w/ different
-!         box size 
+!         box size
 
 define axis/edge/x=0:10:1 aline
 let a = mod(.5+x[gx=aline],2)
 
-! new DEFINE AXIS/LIKE=  qualifier
-! new box_edges function
+! DEFINE AXIS/LIKE=  qualifier
+! box_edges function
 define axis/x/like=`a,return=xaxis` aline_edges = box_edges(a)
 
-! new @IIN regridding
+! @IIN regridding
 show axis/x aline_edges
 
 let c = a[gx=aline_edges@iin]
@@ -20,12 +20,7 @@ list c
 define axis/edge/x=0:10:1 aline
 let a = mod(.5+x[gx=aline],2)
 
-! With changes of 5/10/18 these are errors: 
-! the axis must be of the same delta, same units
-! and either offset a half cell or the same axis
-
-set mode ignore
-! ? Different delta
+! Different delta
 
 define axis/x=0.5:10.5:0.5 alinenew
 list a[gx=alinenew@iin]
@@ -39,12 +34,69 @@ list a[gx=alinenew@iin]
 define axis/x=2:12:1 alinenew
 list a[gx=alinenew@iin]
 
+
+
+! The axes must have convertible units
+! Calendar time axes
+define axis/edge/t=0:10:1/units=days/t0=1-jan-1990 taxis
+let a = mod(.5+L[gt=taxis],2)
+
+define axis/t/like=taxis taxis_edges = box_edges(a)
+
+let c = a[gt=taxis_edges@iin]
+list c
+
+!
+define axis/edge/t=0:240:12/units=hours/t0=1-jan-1990 thour
+let c = a[gt=thour@iin]
+list c
+
+
+! Intentional errors
+set mode ignore
+define axis/edge/z=0:10:1/units=km aline
+let a = mod(.5+z[gz=aline],2)
+
+define axis/z/units=mile aline_edges = box_edges(a)
+
+let c = a[gz=aline_edges@iin]
+list c
+
+! Ferret general regridding handling detects this incompatibility
+! between calendar and non-caleandar axis
+define axis/t=1:20:1/units=days/t0=1-jan-1990 calendar_t
+let a = t[gt=calendar_t]
+
+define axis/t=1:17:2 new_t
+
+let c = a[gt=new_t@iin]
+list c
+
+! longitude and undefined units
+
+set mode ignore
+define axis/edge/x=0:10:1/units=degrees_east aline
+let a = mod(.5+x[gx=aline],2)
+
+define axis/x aline_edges = box_edges(a)
+
+let c = a[gx=aline_edges@iin]
+list c
+
+
+define axis/edge/z=0:10:1/units=km aline
+let a = mod(.5+z[gz=aline],2)
+
+define axis/z/units=nothing aline_edges = box_edges(a)
+
+let c = a[gz=aline_edges@iin]
+list c
 can mode ignore
 
 can mem
+can var/all
 ! plots in different directions
 
-can view; can var/all
 ! In X
 
 set win/asp=0.5
@@ -62,7 +114,7 @@ let a_int = IF i[gx=aline_edges] EQ 1 THEN 0 ELSE a_iin_edges[x=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 a_int
 
 
-! new @IIN regridding
+! @IIN regridding
 
 show axis/x aline_edges
 let c = a[gx=aline_edges@iin]
@@ -77,7 +129,7 @@ let b_iin_edges = b_iin[gx=aline_edges@asn]
 let b_int = IF i[gx=aline_edges] EQ 1 THEN 0 ELSE b_iin_edges[x=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 b_int
 
-! new @IIN regridding
+! @IIN regridding
 let d = b[gx=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 d
 
@@ -106,7 +158,7 @@ let a_int = IF j[gy=aline_edges] EQ 1 THEN 0 ELSE a_iin_edges[y=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 a_int
 
 
-! new @IIN regridding
+! @IIN regridding
 let c = a[gy=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 c
 
@@ -120,7 +172,7 @@ let b_iin_edges = b_iin[gy=aline_edges@asn]
 let b_int = IF j[gy=aline_edges] EQ 1 THEN 0 ELSE b_iin_edges[y=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 b_int
 
-! new @IIN regridding
+! @IIN regridding
 let d = b[gy=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 d
 
@@ -148,7 +200,7 @@ let a_int = IF k[gz=aline_edges] EQ 1 THEN 0 ELSE a_iin_edges[z=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 a_int
 
 
-! new @IIN regridding
+! @IIN regridding
 let c = a[gz=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 c
 
@@ -161,7 +213,7 @@ let b_iin_edges = b_iin[gz=aline_edges@asn]
 let b_int = IF k[gz=aline_edges] EQ 1 THEN 0 ELSE b_iin_edges[z=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 b_int
 
-! new @IIN regridding
+! @IIN regridding
 let d = b[gz=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 d
 
@@ -189,7 +241,7 @@ let a_int = IF l[gt=aline_edges] EQ 1 THEN 0 ELSE a_iin_edges[t=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 a_int
 
 
-! new @IIN regridding
+! @IIN regridding
 let c = a[gt=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 c
 
@@ -202,7 +254,7 @@ let b_iin_edges = b_iin[gt=aline_edges@asn]
 let b_int = IF l[gt=aline_edges] EQ 1 THEN 0 ELSE b_iin_edges[t=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 b_int
 
-! new @IIN regridding
+! @IIN regridding
 let d = b[gt=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 d
 
@@ -230,7 +282,7 @@ let a_int = IF _m[ge=aline_edges] EQ 1 THEN 0 ELSE a_iin_edges[e=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 a_int
 
 
-! new @IIN regridding
+! @IIN regridding
 let c = a[ge=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 c
 
@@ -243,7 +295,7 @@ let b_iin_edges = b_iin[ge=aline_edges@asn]
 let b_int = IF _m[ge=aline_edges] EQ 1 THEN 0 ELSE b_iin_edges[e=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 b_int
 
-! new @IIN regridding
+! @IIN regridding
 let d = b[ge=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 d
 
@@ -271,7 +323,7 @@ let a_int = IF _n[gf=aline_edges] EQ 1 THEN 0 ELSE a_iin_edges[f=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 a_int
 
 
-! new @IIN regridding
+! @IIN regridding
 let c = a[gf=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 c
 
@@ -284,7 +336,7 @@ let b_iin_edges = b_iin[gf=aline_edges@asn]
 let b_int = IF _n[gf=aline_edges] EQ 1 THEN 0 ELSE b_iin_edges[f=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 b_int
 
-! new @IIN regridding
+! @IIN regridding
 let d = b[gf=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 d
 
@@ -329,7 +381,6 @@ let a_iin = a[y=@iin]
 list a_iin
 list a_iin_regrid
 
-
 ! Tests of regrid-to-self regridding  
 ! @iin regridding to the source axis
 
@@ -345,8 +396,7 @@ let d = a[gx=aline@iin]
 ! to edges axis
 list c
 
-! to source axis. Pushes result of a @IIN transform up,
-! so result starts at 0.
+! to source axis. Pushes result of a @IIN transform up half a cell
 list a, d, a[x=@iin]
 
 
@@ -357,6 +407,3 @@ list one, one[t=@iin], one[gt=tax@iin]
 ! Gridding to an identical second axis, columns 3 and 4 match:
 def ax/edge/t=1-jan-0001:1-jan-0004:365/unit=day/cal=noleap tax2
 list one, one[t=@iin], one[gt=tax@iin],  one[gt=tax2@iin]
-
-
-

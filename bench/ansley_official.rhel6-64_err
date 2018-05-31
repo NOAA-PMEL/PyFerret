@@ -1,28 +1,28 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 111948861 May 29 10:18 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 113236070 May 30 17:40 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: tests off .agg files and fix for issue 1651
+Note: @IIN regridding to arbitrary destination axis and with units handling
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
 FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/tmap/ferret/linux/fer_dsets
-FER_DAT=/home/users/ansley/ferret_distributions/merlot
+FER_DAT=/home/users/tmap/ferret/rhel6-x86_64-linux
 FER_DESCR=. ./data
 FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
-FER_FONTS=/home/users/ansley/ferret_distributions/merlot/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/ansley/ferret_distributions/merlot/go /home/users/ansley/ferret_distributions/merlot/examples /home/users/ansley/ferret_distributions/merlot/contrib
+FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=. ./data
-FER_LIBS=/home/users/ansley/ferret_distributions/merlot/lib
-FER_PALETTE=. /home/users/ansley/ferret_distributions/merlot/ppl
+FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
+FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
-PYFER_EXTERNAL_FUNCTIONS=/home/users/ansley/ferret_distributions/merlot/ext_func/pylibs
-Beginning at Tue May 29 10:21:50 PDT 2018
+PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
+Beginning at Wed May 30 17:41:58 PDT 2018
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1663,7 +1663,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-rm: cannot remove ‘input.txt’: No such file or directory
 ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4813,7 +4812,6 @@ list substring("hello",1,-3)
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_append_dsg
-rm: cannot remove ‘test_save_dsg.nc’: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5063,7 +5061,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-rm: cannot remove ‘WestCoastCarbon_9d9c_f562_77b5_5.nc’: No such file or directory
+rm: cannot remove `WestCoastCarbon_9d9c_f562_77b5_5.nc': No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5129,7 +5127,6 @@ def anno/nou/user/xpos=0/ypos=0 "My Lab"
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_auxiliary
-rm: cannot remove ‘layerz_test_data.txt’: No such file or directory
 Replacing definition of axis ZAX
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
@@ -5853,8 +5850,8 @@ Starting test: bn_ez_noupcase
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_spawn_fail
 ls: cannot access notafile.nowhere: No such file or directory
-rm: cannot remove ‘nothing.dat’: No such file or directory
-cp: cannot stat ‘nofile.dat’: No such file or directory
+rm: cannot remove `nothing.dat': No such file or directory
+cp: cannot stat `nofile.dat': No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6084,15 +6081,6 @@ Replacing definition of axis tax
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_dynamic_gather
-ls: cannot access tmp/test_dyn_mem.nc: No such file or directory
-Replacing definition of axis z2
-Replacing definition of grid GG
- LISTing to file tmp/test_dyn_mem.nc
-Replacing definition of axis x10
-Replacing definition of axis z4
- LISTing to file tmp/test_dyn_mem.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
  **ERROR: request exceeds memory setting: Requested result is larger than the available memory
 stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
  PERMANENT data cleared from memory
@@ -6289,28 +6277,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_cache_management
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-ls: cannot access tmp/test_auto_cache_20.nc: No such file or directory
-Replacing definition of axis x10
- LISTing to file tmp/test_auto_cache_1.nc
- LISTing to file tmp/test_auto_cache_2.nc
- LISTing to file tmp/test_auto_cache_3.nc
- LISTing to file tmp/test_auto_cache_4.nc
- LISTing to file tmp/test_auto_cache_5.nc
- LISTing to file tmp/test_auto_cache_6.nc
- LISTing to file tmp/test_auto_cache_7.nc
- LISTing to file tmp/test_auto_cache_8.nc
- LISTing to file tmp/test_auto_cache_9.nc
- LISTing to file tmp/test_auto_cache_10.nc
- LISTing to file tmp/test_auto_cache_11.nc
- LISTing to file tmp/test_auto_cache_12.nc
- LISTing to file tmp/test_auto_cache_13.nc
- LISTing to file tmp/test_auto_cache_14.nc
- LISTing to file tmp/test_auto_cache_15.nc
- LISTing to file tmp/test_auto_cache_16.nc
- LISTing to file tmp/test_auto_cache_17.nc
- LISTing to file tmp/test_auto_cache_18.nc
- LISTing to file tmp/test_auto_cache_19.nc
- LISTing to file tmp/test_auto_cache_20.nc
  LISTing to file test_auto_cache.out
  LISTing to file test_auto_cache.out
  LISTing to file test_auto_cache.out
@@ -6340,13 +6306,27 @@ Starting test: bn_transp_choose
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_iin_regrid
- **ERROR: invalid command: Destination axis coords must be the box edges of the source axis, or regrid to source axis: @IIN
-list a[gx=alinenew@iin]
 Replacing definition of axis alinenew
- **ERROR: invalid command: Destination axis coords must be the box edges of the source axis, or regrid to source axis: @IIN
-list a[gx=alinenew@iin]
 Replacing definition of axis alinenew
+Replacing definition of axis taxis
+Replacing definition of axis aline
+Replacing definition of axis aline_edges
+ **ERROR: invalid command: Units of source and destination axis must match: @IIN
+list c
+ **ERROR: regridding: only @ASN regridding between calendar and
+          non-calendar axes: A
+list c
+Replacing definition of axis aline
+Replacing definition of axis aline_edges
+ **ERROR: invalid command: Units of source and destination axis must match: @IIN
+list c
+Replacing definition of axis aline
+           *** NOTE: (fyi) units are not subject to auto-conversion: NOTHING
+Replacing definition of axis aline_edges
+ **ERROR: invalid command: Units of source and destination axis must match: @IIN
+list c
  TEMPORARY data cleared from memory
+Replacing definition of axis aline
 Replacing definition of axis aline_edges
 Replacing definition of axis aline
 Replacing definition of axis aline_edges
@@ -6674,7 +6654,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-Starting test: bn741_bug_fixes
+Starting test: bn_use_agg
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
@@ -6827,4 +6807,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue May 29 10:37:29 PDT 2018
+Ended at Wed May 30 17:49:45 PDT 2018

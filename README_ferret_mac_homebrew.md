@@ -6,10 +6,20 @@ on installing and using Homebrew.
 
 ## Building Ferret on Mac OS X with Homebrew Packages.
 
+#### XQuartz
+
+Ferret on Mac OS X requires X-Windows X11 support for displayed plots.
+We have found that XQuartz (free software) works well.
+See https://support.apple.com/en-us/HT201341 and https://www.xquartz.org/ 
+for more information.
+The `platform_specific.mk.intel-mac` configuration file assumes the required 
+X11 include files and libraries are located where XQuartz installs them 
+(under `/opt/X11/`).
+
 #### Homebrew Packages
 
-Make sure you have the `Xcode` application installed (available for free from 
-the Apple `App Store` application), and have run `xcode-select --install` to 
+Make sure you have the Xcode application installed (available for free from 
+the Apple App Store application), and have run `xcode-select --install` to 
 add the command-line developer tools.
 
 Also make sure the bin subdirectory of the Homebrew package installation 
@@ -86,7 +96,7 @@ using the appropriate ferret_paths script, and that the command `which ferret`
 returns the path to the version of Ferret that you wish to test.
 
 Change to the `bench` subdirectory of the Ferret source directory, and run 
-`make run_tests`.
+`make check`.
 These tests will generate image files as well as `all_..._log` (normal output), 
 `all_..._err` (error output), and `all_..._ncdump` (human-readable versions of 
 the created NetCDF files) output files.

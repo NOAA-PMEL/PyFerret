@@ -1,0 +1,12 @@
+RGB_Mapping By_level
+ 
+! Level    Red  Green   Blue
+      1   80    0  100  ! violet
+      2  100   50    0  ! orange
+      3   50   90   30  ! light green
+      4   30   40  100  ! med blue
+      5  100    8   58  ! magenta
+      6    0   80   85  ! turq
+      7  100   75    0  ! gold
+      8   60    0    0  ! dark red
+      9   80   73   59  ! tan

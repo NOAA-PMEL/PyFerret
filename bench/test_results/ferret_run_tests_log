@@ -10518,7 +10518,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.41"
-FERRET_PLATFORM = "Linux 3.10.0-862.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-862.3.2.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
@@ -10550,7 +10550,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.41"
-FERRET_PLATFORM = "Linux 3.10.0-862.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-862.3.2.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
@@ -10728,7 +10728,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.41"
-FERRET_PLATFORM = "Linux 3.10.0-862.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-862.3.2.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "25.6"
@@ -62898,7 +62898,7 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v7.41 (beta/debug)"                                               
- 3    /  3:" ! Linux 3.10.0-862.el7.x86_64 64-bit - MM-DD-YY"                           
+ 3    /  3:" ! Linux 3.10.0-862.3.2.el7.x86_64 64-bit - MM-DD-YY"                       
  4    /  4:" ! DD-MON-YY HH:MM     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
@@ -91548,11 +91548,6 @@ SHOW DATA/ATT t_f04_e3_1v ! note atts im_everwhere vs im_not_everwhere
                                  _FillValue      DOUBLE      1    T       -1.E+34
                                  long_name       CHAR        1    T       3
   
- 
-say where is the axis ZAX1 coming from? does it have a positive attr?
-where is the axis ZAX1 coming from? does it have a positive attr?
-pause
- 
 SHOW DATA/ATT te_f04_1v  ! note atts im_everwhere vs im_not_everwhere
      currently SET data sets:
    69> te_f04_1v  (default)  Ensemble aggregation
@@ -102498,12 +102493,12 @@ list/l=1 var
 define axis/edge/x=0:10:1 aline
 let a = mod(.5+x[gx=aline],2)
  
-! new DEFINE AXIS/LIKE=  qualifier
-! new box_edges function
+! DEFINE AXIS/LIKE=  qualifier
+! box_edges function
 define axis/x/like=`a,return=xaxis` aline_edges = box_edges(a)
  !-> define axis/x/like=ALINE aline_edges = box_edges(a)
  
-! new @IIN regridding
+! @IIN regridding
 show axis/x aline_edges
  name       axis              # pts   start                end
  ALINE_EDGES X                 11 r   0                    10
@@ -102554,20 +102549,54 @@ list c
 define axis/edge/x=0:10:1 aline
 let a = mod(.5+x[gx=aline],2)
  
-! With changes of 5/10/18 these are errors:
-! the axis must be of the same delta, same units
-! and either offset a half cell or the same axis
- 
-set mode ignore
-! ? Different delta
+! Different delta
  
 define axis/x=0.5:10.5:0.5 alinenew
 list a[gx=alinenew@iin]
+             VARIABLE : MOD(.5+X[GX=ALINE],2)
+                        regrid: 0.5 delta on X@IIN
+             SUBSET   : 21 points (X)
+ 0.5   /  1:  0.250
+ 1     /  2:  0.750
+ 1.5   /  3:  0.750
+ 2     /  4:  0.750
+ 2.5   /  5:  1.250
+ 3     /  6:  1.750
+ 3.5   /  7:  1.750
+ 4     /  8:  1.750
+ 4.5   /  9:  2.250
+ 5     / 10:  2.750
+ 5.5   / 11:  2.750
+ 6     / 12:  2.750
+ 6.5   / 13:  3.250
+ 7     / 14:  3.750
+ 7.5   / 15:  3.750
+ 8     / 16:  3.750
+ 8.5   / 17:  4.250
+ 9     / 18:  4.750
+ 9.5   / 19:  4.750
+ 10    / 20:  4.750
+ 10.5  / 21:   ....
  
  
 ! result out of range, returns missing
 define axis/x=100:111:1 alinenew
 list a[gx=alinenew@iin]
+             VARIABLE : MOD(.5+X[GX=ALINE],2)
+                        regrid: 1 delta on X@IIN
+             SUBSET   : 12 points (X)
+ 100   /  1:....
+ 101   /  2:....
+ 102   /  3:....
+ 103   /  4:....
+ 104   /  5:....
+ 105   /  6:....
+ 106   /  7:....
+ 107   /  8:....
+ 108   /  9:....
+ 109   / 10:....
+ 110   / 11:....
+ 111   / 12:....
  
 ! partially out of range
 define axis/x=2:12:1 alinenew
@@ -102587,12 +102616,104 @@ list a[gx=alinenew@iin]
  11   / 10:   ....
  12   / 11:   ....
  
+ 
+ 
+! The axes must have convertible units
+! Calendar time axes
+define axis/edge/t=0:10:1/units=days/t0=1-jan-1990 taxis
+let a = mod(.5+L[gt=taxis],2)
+ 
+define axis/t/like=taxis taxis_edges = box_edges(a)
+ 
+let c = a[gt=taxis_edges@iin]
+list c
+             VARIABLE : A[GT=TAXIS_EDGES@IIN]
+             SUBSET   : 11 points (TIME)
+ 01-JAN-1990 00 /  1:       0.
+ 02-JAN-1990 00 /  2:  129600.
+ 03-JAN-1990 00 /  3:  172800.
+ 04-JAN-1990 00 /  4:  302400.
+ 05-JAN-1990 00 /  5:  345600.
+ 06-JAN-1990 00 /  6:  475200.
+ 07-JAN-1990 00 /  7:  518400.
+ 08-JAN-1990 00 /  8:  648000.
+ 09-JAN-1990 00 /  9:  691200.
+ 10-JAN-1990 00 / 10:  820800.
+ 11-JAN-1990 00 / 11:  864000.
+ 
+!
+define axis/edge/t=0:240:12/units=hours/t0=1-jan-1990 thour
+let c = a[gt=thour@iin]
+list c
+             VARIABLE : A[GT=THOUR@IIN]
+             SUBSET   : 20 points (TIME)
+ 01-JAN-1990 06:00 /  1:   32400.
+ 01-JAN-1990 18:00 /  2:   97200.
+ 02-JAN-1990 06:00 /  3:  140400.
+ 02-JAN-1990 18:00 /  4:  162000.
+ 03-JAN-1990 06:00 /  5:  205200.
+ 03-JAN-1990 18:00 /  6:  270000.
+ 04-JAN-1990 06:00 /  7:  313200.
+ 04-JAN-1990 18:00 /  8:  334800.
+ 05-JAN-1990 06:00 /  9:  378000.
+ 05-JAN-1990 18:00 / 10:  442800.
+ 06-JAN-1990 06:00 / 11:  486000.
+ 06-JAN-1990 18:00 / 12:  507600.
+ 07-JAN-1990 06:00 / 13:  550800.
+ 07-JAN-1990 18:00 / 14:  615600.
+ 08-JAN-1990 06:00 / 15:  658800.
+ 08-JAN-1990 18:00 / 16:  680400.
+ 09-JAN-1990 06:00 / 17:  723600.
+ 09-JAN-1990 18:00 / 18:  788400.
+ 10-JAN-1990 06:00 / 19:  831600.
+ 10-JAN-1990 18:00 / 20:  853200.
+ 
+ 
+! Intentional errors
+set mode ignore
+define axis/edge/z=0:10:1/units=km aline
+let a = mod(.5+z[gz=aline],2)
+ 
+define axis/z/units=mile aline_edges = box_edges(a)
+ 
+let c = a[gz=aline_edges@iin]
+list c
+ 
+! Ferret general regridding handling detects this incompatibility
+! between calendar and non-caleandar axis
+define axis/t=1:20:1/units=days/t0=1-jan-1990 calendar_t
+let a = t[gt=calendar_t]
+ 
+define axis/t=1:17:2 new_t
+ 
+let c = a[gt=new_t@iin]
+list c
+ 
+! longitude and undefined units
+ 
+set mode ignore
+define axis/edge/x=0:10:1/units=degrees_east aline
+let a = mod(.5+x[gx=aline],2)
+ 
+define axis/x aline_edges = box_edges(a)
+ 
+let c = a[gx=aline_edges@iin]
+list c
+ 
+ 
+define axis/edge/z=0:10:1/units=km aline
+let a = mod(.5+z[gz=aline],2)
+ 
+define axis/z/units=nothing aline_edges = box_edges(a)
+ 
+let c = a[gz=aline_edges@iin]
+list c
 can mode ignore
  
 can mem
+can var/all
 ! plots in different directions
  
-can view; can var/all
 ! In X
  
 set win/asp=0.5
@@ -102611,7 +102732,7 @@ let a_int = IF i[gx=aline_edges] EQ 1 THEN 0 ELSE a_iin_edges[x=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 a_int
  
  
-! new @IIN regridding
+! @IIN regridding
  
 show axis/x aline_edges
  name       axis              # pts   start                end
@@ -102642,7 +102763,7 @@ let b_iin_edges = b_iin[gx=aline_edges@asn]
 let b_int = IF i[gx=aline_edges] EQ 1 THEN 0 ELSE b_iin_edges[x=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 b_int
  
-! new @IIN regridding
+! @IIN regridding
 let d = b[gx=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 d
  
@@ -102692,7 +102813,7 @@ let a_int = IF j[gy=aline_edges] EQ 1 THEN 0 ELSE a_iin_edges[y=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 a_int
  
  
-! new @IIN regridding
+! @IIN regridding
 let c = a[gy=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 c
  
@@ -102706,7 +102827,7 @@ let b_iin_edges = b_iin[gy=aline_edges@asn]
 let b_int = IF j[gy=aline_edges] EQ 1 THEN 0 ELSE b_iin_edges[y=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 b_int
  
-! new @IIN regridding
+! @IIN regridding
 let d = b[gy=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 d
  
@@ -102754,7 +102875,7 @@ let a_int = IF k[gz=aline_edges] EQ 1 THEN 0 ELSE a_iin_edges[z=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 a_int
  
  
-! new @IIN regridding
+! @IIN regridding
 let c = a[gz=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 c
  
@@ -102767,7 +102888,7 @@ let b_iin_edges = b_iin[gz=aline_edges@asn]
 let b_int = IF k[gz=aline_edges] EQ 1 THEN 0 ELSE b_iin_edges[z=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 b_int
  
-! new @IIN regridding
+! @IIN regridding
 let d = b[gz=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 d
  
@@ -102815,7 +102936,7 @@ let a_int = IF l[gt=aline_edges] EQ 1 THEN 0 ELSE a_iin_edges[t=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 a_int
  
  
-! new @IIN regridding
+! @IIN regridding
 let c = a[gt=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 c
  
@@ -102828,7 +102949,7 @@ let b_iin_edges = b_iin[gt=aline_edges@asn]
 let b_int = IF l[gt=aline_edges] EQ 1 THEN 0 ELSE b_iin_edges[t=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 b_int
  
-! new @IIN regridding
+! @IIN regridding
 let d = b[gt=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 d
  
@@ -102885,7 +103006,7 @@ let a_int = IF _m[ge=aline_edges] EQ 1 THEN 0 ELSE a_iin_edges[e=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 a_int
  
  
-! new @IIN regridding
+! @IIN regridding
 let c = a[ge=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 c
  
@@ -102898,7 +103019,7 @@ let b_iin_edges = b_iin[ge=aline_edges@asn]
 let b_int = IF _m[ge=aline_edges] EQ 1 THEN 0 ELSE b_iin_edges[e=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 b_int
  
-! new @IIN regridding
+! @IIN regridding
 let d = b[ge=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 d
  
@@ -102955,7 +103076,7 @@ let a_int = IF _n[gf=aline_edges] EQ 1 THEN 0 ELSE a_iin_edges[f=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 a_int
  
  
-! new @IIN regridding
+! @IIN regridding
 let c = a[gf=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 c
  
@@ -102968,7 +103089,7 @@ let b_iin_edges = b_iin[gf=aline_edges@asn]
 let b_int = IF _n[gf=aline_edges] EQ 1 THEN 0 ELSE b_iin_edges[f=@shf:-1]
 plot/ov/line/sym=28/si=.1/col=purple/thic=2 b_int
  
-! new @IIN regridding
+! @IIN regridding
 let d = b[gf=aline_edges@iin]
 plot/ov/line/sym=19/si=.1/col=light/thic=1 d
  
@@ -103134,7 +103255,6 @@ list a_iin_regrid
  20N   / 2:  1.668E+06
  10N   / 1:  0.000E+00
  
- 
 ! Tests of regrid-to-self regridding
 ! @iin regridding to the source axis
  
@@ -103164,24 +103284,23 @@ list c
  9    / 10:  45.00
  10   / 11:  55.00
  
-! to source axis. Pushes result of a @IIN transform up,
-! so result starts at 0.
+! to source axis. Pushes result of a @IIN transform up half a cell
 list a, d, a[x=@iin]
              X: 0 to 10
  Column  1: A is I[GX=ALINE]
  Column  2: D is A[GX=ALINE@IIN]
  Column  3: A[X=@IIN] is I[GX=ALINE] (indef. integ. on X)
               A     D      A
-0.5 /  1:   1.00   0.00   1.00
-1.5 /  2:   2.00   1.00   3.00
-2.5 /  3:   3.00   3.00   6.00
-3.5 /  4:   4.00   6.00  10.00
-4.5 /  5:   5.00  10.00  15.00
-5.5 /  6:   6.00  15.00  21.00
-6.5 /  7:   7.00  21.00  28.00
-7.5 /  8:   8.00  28.00  36.00
-8.5 /  9:   9.00  36.00  45.00
-9.5 / 10:  10.00  45.00  55.00
+0.5 /  1:   1.00   0.50   1.00
+1.5 /  2:   2.00   2.00   3.00
+2.5 /  3:   3.00   4.50   6.00
+3.5 /  4:   4.00   8.00  10.00
+4.5 /  5:   5.00  12.50  15.00
+5.5 /  6:   6.00  18.00  21.00
+6.5 /  7:   7.00  24.50  28.00
+7.5 /  8:   8.00  32.00  36.00
+8.5 /  9:   9.00  40.50  45.00
+9.5 / 10:  10.00  50.00  55.00
  
  
 def ax/edge/t=1-jan-0001:1-jan-0004:365/unit=day/cal=noleap tax
@@ -103192,9 +103311,9 @@ list one, one[t=@iin], one[gt=tax@iin]
  Column  2: ONE[T=@IIN] is 1 + 0*T[GT=TAX] (indef. integ. on T)
  Column  3: ONE[G=365 day on T@IIN] is 1 + 0*T[GT=TAX] (regrid: 365 day on T@IIN)
                 ONE      ONE        ONE
-JUL-0001 / 1:  1.000  3.154E+07  0.000E+00
-JUL-0002 / 2:  1.000  6.307E+07  3.154E+07
-JUL-0003 / 3:  1.000  9.461E+07  6.307E+07
+JUL-0001 / 1:  1.000  3.154E+07  1.577E+07
+JUL-0002 / 2:  1.000  6.307E+07  4.730E+07
+JUL-0003 / 3:  1.000  9.461E+07  7.884E+07
  
 ! Gridding to an identical second axis, columns 3 and 4 match:
 def ax/edge/t=1-jan-0001:1-jan-0004:365/unit=day/cal=noleap tax2
@@ -103205,12 +103324,9 @@ list one, one[t=@iin], one[gt=tax@iin],  one[gt=tax2@iin]
  Column  3: ONE[G=365 day on T@IIN] is 1 + 0*T[GT=TAX] (regrid: 365 day on T@IIN)
  Column  4: ONE[G=365 day on T@IIN] is 1 + 0*T[GT=TAX] (regrid: 365 day on T@IIN)
          ONE      ONE        ONE        ONE
-L / 1:  1.000  3.154E+07  0.000E+00  0.000E+00
-L / 2:  1.000  6.307E+07  3.154E+07  3.154E+07
-L / 3:  1.000  9.461E+07  6.307E+07  6.307E+07
- 
- 
- 
+L / 1:  1.000  3.154E+07  1.577E+07  1.577E+07
+L / 2:  1.000  6.307E+07  4.730E+07  4.730E+07
+L / 3:  1.000  9.461E+07  7.884E+07  7.884E+07
 *** Running ferret script: bn721_bug_fixes.jnl
 ! bn721_bug_fixes.jnl
 ! test various fixes that went into version 7.21
@@ -106725,16 +106841,16 @@ list a, d, a[x=@iin]
  Column  2: D is A[GX=ALINE@IIN]
  Column  3: A[X=@IIN] is I[GX=ALINE] (indef. integ. on X)
               A     D      A
-0.5 /  1:   1.00   0.00   1.00
-1.5 /  2:   2.00   1.00   3.00
-2.5 /  3:   3.00   3.00   6.00
-3.5 /  4:   4.00   6.00  10.00
-4.5 /  5:   5.00  10.00  15.00
-5.5 /  6:   6.00  15.00  21.00
-6.5 /  7:   7.00  21.00  28.00
-7.5 /  8:   8.00  28.00  36.00
-8.5 /  9:   9.00  36.00  45.00
-9.5 / 10:  10.00  45.00  55.00
+0.5 /  1:   1.00   0.50   1.00
+1.5 /  2:   2.00   2.00   3.00
+2.5 /  3:   3.00   4.50   6.00
+3.5 /  4:   4.00   8.00  10.00
+4.5 /  5:   5.00  12.50  15.00
+5.5 /  6:   6.00  18.00  21.00
+6.5 /  7:   7.00  24.50  28.00
+7.5 /  8:   8.00  32.00  36.00
+8.5 /  9:   9.00  40.50  45.00
+9.5 / 10:  10.00  50.00  55.00
  
 ! Time units
 def ax/edge/t=1-jan-0001:1-jan-0004:365/unit=day/cal=noleap tax
@@ -106745,9 +106861,9 @@ list one, one[t=@iin], one[gt=tax@iin]
  Column  2: ONE[T=@IIN] is 1 + 0*T[GT=TAX] (indef. integ. on T)
  Column  3: ONE[G=365 day on T@IIN] is 1 + 0*T[GT=TAX] (regrid: 365 day on T@IIN)
                 ONE      ONE        ONE
-JUL-0001 / 1:  1.000  3.154E+07  0.000E+00
-JUL-0002 / 2:  1.000  6.307E+07  3.154E+07
-JUL-0003 / 3:  1.000  9.461E+07  6.307E+07
+JUL-0001 / 1:  1.000  3.154E+07  1.577E+07
+JUL-0002 / 2:  1.000  6.307E+07  4.730E+07
+JUL-0003 / 3:  1.000  9.461E+07  7.884E+07
  
 ! Gridding to an identical second axis, columns 3 and 4 match:
 def ax/edge/t=1-jan-0001:1-jan-0004:365/unit=day/cal=noleap tax2
@@ -106758,9 +106874,9 @@ list one, one[t=@iin], one[gt=tax@iin],  one[gt=tax2@iin]
  Column  3: ONE[G=365 day on T@IIN] is 1 + 0*T[GT=TAX] (regrid: 365 day on T@IIN)
  Column  4: ONE[G=365 day on T@IIN] is 1 + 0*T[GT=TAX] (regrid: 365 day on T@IIN)
          ONE      ONE        ONE        ONE
-L / 1:  1.000  3.154E+07  0.000E+00  0.000E+00
-L / 2:  1.000  6.307E+07  3.154E+07  3.154E+07
-L / 3:  1.000  9.461E+07  6.307E+07  6.307E+07
+L / 1:  1.000  3.154E+07  1.577E+07  1.577E+07
+L / 2:  1.000  6.307E+07  4.730E+07  4.730E+07
+L / 3:  1.000  9.461E+07  7.884E+07  7.884E+07
  
  
  
@@ -109170,7 +109286,7 @@ PPL$XPIXEL = "0"
 PPL$YPIXEL = "0"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "7.41"
-FERRET_PLATFORM = "Linux 3.10.0-862.el7.x86_64 64-bit"
+FERRET_PLATFORM = "Linux 3.10.0-862.3.2.el7.x86_64 64-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.4.1.1 of Jun 27 2017 09:17:01 $"
 FERRET_MEMORY = "31"

@@ -75,6 +75,7 @@
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 * V696 *acm* 11/15 Added @BIN and @NBIN regridding transforms
 * V720: 6/17 *acm* Ticket 2346: new @IIN regridding transform
+* V741: 8/18 *acm* More on index limits for @IIN regridding transform
 
 
 	include 'tmap_dims.parm'
@@ -154,11 +155,12 @@
 * modulo regridding always requests the entire source region
 	IF ( ITSA_MODULO_REGRID(dst_cx,axis) ) GOTO 1000
 
-* for interpolation we need source points surrounding the destination points
+* for interpolation or indefinite integration we need source points surrounding the destination points
 * for averaging     we need source area   surrounding the destination area
 * for exact match   we need source points aligning w/ the destination points
 	IF ( rgrd_trans .EQ. prgrd_linear_interp
-     .	   .OR.  rgrd_trans.EQ.prgrd_xy_lin ) THEN
+     .	   .OR.  rgrd_trans.EQ.prgrd_xy_lin
+     .      .OR. rgrd_trans .EQ. prgrd_iin  ) THEN
 	   where_loest = box_middle
 	   where_hiest = box_middle
 	ELSEIF ( rgrd_trans.EQ.prgrd_min
@@ -171,8 +173,7 @@
      .      .OR. rgrd_trans .EQ. prgrd_good_pt
      .      .OR. rgrd_trans .EQ. prgrd_average
      .      .OR. rgrd_trans .EQ. prgrd_bin
-     .      .OR. rgrd_trans .EQ. prgrd_nbin
-     .      .OR. rgrd_trans .EQ. prgrd_iin ) THEN  ! I think @iin is whole box
+     .      .OR. rgrd_trans .EQ. prgrd_nbin ) THEN  
 	   where_loest = box_lo_lim
 	   where_hiest = box_hi_lim
 	ELSEIF ( rgrd_trans .EQ. prgrd_associate ) THEN
@@ -214,7 +215,7 @@
 	      IF ( dst_hi_ss .LT. src_hi_ss ) src_hi_ss = dst_hi_ss
            ENDIF
            GOTO 500
-        ELSE
+	ELSE
 * NOTE:  times expressed as seconds since BC
            dst_lo_ww = TWORLD( dst_lo_ss,dst_grid,axis,where_loest ) 
 	   dst_hi_ww = TWORLD( dst_hi_ss,dst_grid,axis,where_hiest )
@@ -279,8 +280,13 @@
 	   src_lo_ss = ISUBSCRIPT( tmp_lo_ww,src_grid,axis,round_dn )
 	   src_hi_ss = ISUBSCRIPT( tmp_hi_ww,src_grid,axis,round_up )
 	ELSE
-	   src_lo_ss = ISUBSCRIPT( dst_lo_ww,src_grid,axis,round_dn )
-	   src_hi_ss = ISUBSCRIPT( dst_hi_ww,src_grid,axis,round_up )
+	   IF (rgrd_trans .EQ. prgrd_iin ) THEN
+	      src_lo_ss = ISUBSCRIPT( dst_lo_ww,src_grid,axis,round_up )
+	      src_hi_ss = ISUBSCRIPT( dst_hi_ww,src_grid,axis,round_dn )
+	   ELSE
+	      src_lo_ss = ISUBSCRIPT( dst_lo_ww,src_grid,axis,round_dn )
+	      src_hi_ss = ISUBSCRIPT( dst_hi_ww,src_grid,axis,round_up )
+	   ENDIF
 	ENDIF
 * 9/97 *kob* now convert to ss values
 
@@ -304,10 +310,13 @@
 	   tmp_hi_ww = dst_hi_ww
 	ENDIF
 
-	IF ( tmp_lo_ww .LT. src_lo_ww
-     . .AND. src_lo_ss .GT. src_min_ss ) src_lo_ss = src_lo_ss - 1
-	IF ( tmp_hi_ww .GT. src_hi_ww
-     . .AND. src_hi_ss .LT. src_max_ss ) src_hi_ss = src_hi_ss + 1
+* For @IIN regrid, do not expand the source range for the destination range
+	IF (rgrd_trans .NE. prgrd_iin ) THEN
+	   IF ( tmp_lo_ww .LT. src_lo_ww
+     .    .AND. src_lo_ss .GT. src_min_ss ) src_lo_ss = src_lo_ss - 1
+	   IF ( tmp_hi_ww .GT. src_hi_ww
+     .    .AND. src_hi_ss .LT. src_max_ss ) src_hi_ss = src_hi_ss + 1
+	ENDIF
 
 * flesh out the resulting axis
  500    cx_by_ss( axis, src_cx ) = .TRUE.

@@ -1,5 +1,5 @@
 	SUBROUTINE DO_IIN_REGRID( cx_lims, axis, src, msrc, dst, mdst,
-     .				  work, itot, status)
+     .				  work, src_cx, dst_cx, itot, status)
 
 *
 *
@@ -49,11 +49,12 @@
 	include	'xcontext.cmn'
 
 * calling argument declarations:
-	INTEGER	cx_lims, axis, msrc, mdst, itot, status
+	INTEGER	cx_lims, axis, msrc, mdst, itot, src_cx, dst_cx, status
+
 	REAL	src(*), dst(*), work(*)
 
-	CALL IIN_REGRID_1_AXIS(   cx_lims, axis,
-     .			   src, msrc, dst, mdst,
-     .			   work(1), itot, status )
+	CALL IIN_REGRID_1_AXIS( cx_lims, axis, src, msrc, dst, mdst, 
+     .				work(1), src_cx, dst_cx, itot, status )
+
 	RETURN
 	END

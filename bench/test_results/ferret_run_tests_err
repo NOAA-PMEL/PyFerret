@@ -5222,13 +5222,26 @@ ls: cannot access tmp/test_auto_cache_20.nc: No such file or directory
 *** Running ferret script: bn_transp_choose.jnl
  TEMPORARY data cleared from memory
 *** Running ferret script: bn_iin_regrid.jnl
- **ERROR: invalid command: Destination axis coords must be the box edges of the source axis, or regrid to source axis: @IIN
-list a[gx=alinenew@iin]
 Replacing definition of axis ALINENEW
- **ERROR: invalid command: Destination axis coords must be the box edges of the source axis, or regrid to source axis: @IIN
-list a[gx=alinenew@iin]
 Replacing definition of axis ALINENEW
+Replacing definition of axis ALINE
+Replacing definition of axis ALINE_EDGES
+ **ERROR: invalid command: Units of source and destination axis must match: @IIN
+list c
+ **ERROR: regridding: only @ASN regridding between calendar and
+          non-calendar axes: A
+list c
+Replacing definition of axis ALINE
+Replacing definition of axis ALINE_EDGES
+ **ERROR: invalid command: Units of source and destination axis must match: @IIN
+list c
+Replacing definition of axis ALINE
+           *** NOTE: (fyi) units are not subject to auto-conversion: NOTHING
+Replacing definition of axis ALINE_EDGES
+ **ERROR: invalid command: Units of source and destination axis must match: @IIN
+list c
  TEMPORARY data cleared from memory
+Replacing definition of axis ALINE
 Replacing definition of axis ALINE_EDGES
 Replacing definition of axis ALINE
 Replacing definition of axis ALINE_EDGES

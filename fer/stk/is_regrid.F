@@ -336,7 +336,8 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
 	   CALL DO_IIN_REGRID( cx_valid, axis,
      .			memry(src_mr)%ptr, src_mr,
      .			memry(dst_mr)%ptr, dst_mr,
-     .			workmem(plegacy_work_buffer)%ptr, wk_size+1, status )
+     .			workmem(plegacy_work_buffer)%ptr, src_cx, dst_cx,
+     .                  wk_size+1, status )
      
 	   IF ( status .NE. ferr_ok ) GOTO 5020
 
@@ -414,8 +415,7 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
      .		'cant use this regrid transform on strings: @'
      .		//alg_regrid_code(rgrd_trans), *5000)
  5020	CALL ERRMSG( ferr_invalid_command, status,
-     .   'Destination axis coords must be the box edges '
-     .   //'of the source axis, or regrid to source axis: @'
+     .   'Units of source and destination axis must match: @'
      .   //alg_regrid_code(rgrd_trans), *5000)
  5100	CALL DELETE_MRS_IN_PROGRESS
 	GOTO 5000

@@ -4,6 +4,7 @@
 ! *acm* 7/01 update /xlimits and /ylimits to /hlimits and /vlimits
 ! *acm* 3/04 Add a section with FFT_RE, FFT_IM, and FFT_INVERSE
 
+cancel mode logo
 set mode verify
 ! Description: Demonstration of external functions for FFT:  
 ! FFTA computes amplitude spectrum

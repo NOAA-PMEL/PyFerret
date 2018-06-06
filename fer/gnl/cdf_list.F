@@ -136,6 +136,8 @@
 * v73+ *acm* 12/2017 Issue # 1846, writing user-variables with scale_factor, add_offset
 * V74  *acm* 2/18 Issue # 1861, handling missing- and _FillValue with scale and offset
 *                 write correct attributes to netCDF output
+* V741 *acm* 6/18 V7.40, Issue 1332: write global attributes, and a fix for scalar numeric
+*                 attributes 6/6/18.
 
         include 'netcdf.inc'
 #include "netcdf_declareUnderscore.inc"
@@ -193,7 +195,7 @@
      .                  c1*1, aname*128, short*128
 
 	REAL*8		user_lo, user_hi, delta, loest_ww, hiest_ww,
-     .                  miss_in, fill_in, r_scale, r_off
+     .                  miss_in, fill_in, r_scale, r_off, oneval
 
 * local parameter declarations:
         LOGICAL    already_warned
@@ -1243,7 +1245,8 @@
 	      ELSE
 
 	         IF (wlen .GT. 100) GOTO 5320
-	         avals(:wlen-1) = memry(mr)%ptr
+		 IF (wlen .EQ. 0) wlen = 1
+		 avals(:wlen-1) = memry(mr)%ptr
 		 CALL CD_WRITE_ATTVAL_DP(
      .                    cdfid, pcdf_global, varcode, avals(0), wlen, 
      .                    vartype, status )

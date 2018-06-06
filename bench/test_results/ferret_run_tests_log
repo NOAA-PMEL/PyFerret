@@ -104102,6 +104102,7 @@ sp rm a.nc
 *** Running ferret script: bn_save_as_global.jnl
 ! bn_save_asglobal
 ! 11/2017
+!  6/18 add tests for writing scalar numeric variables
 ! Simple command to save a variable as a global attribute.
 ! Works on an existing or a new file.
  
@@ -104125,6 +104126,9 @@ use coads_climatology
 save/clobber/file=a.nc sst[x=150:170,y=0:10]
 let my_extra_attribute = "Extra attribute: Adding to a file with existing data and attributes"
 save/asglobal/append/file=a.nc my_extra_attribute
+ 
+let my_num_att = 12.56
+save/asglobal/append/file=a.nc my_num_att
 sp ncdump -h a.nc
 netcdf a {
 dimensions:
@@ -104160,6 +104164,7 @@ variables:
 		:history = "FERRET V7.41  DD-MON-YY" ;
 		:Conventions = "CF-1.6" ;
 		:my_extra_attribute = "Extra attribute: Adding to a file with existing data and attributes" ;
+		:my_num_att = 12.56 ;
 }
  
 ! Create an attribute from a file variable
@@ -104201,6 +104206,7 @@ variables:
 		:history = "FERRET V7.41  DD-MON-YY" ;
 		:Conventions = "CF-1.6" ;
 		:my_extra_attribute = "Extra attribute: Adding to a file with existing data and attributes" ;
+		:my_num_att = 12.56 ;
 		:MAIZE_YIELD = 0.05408529f, 0.1875f, -0.04314715f, 9.96921e+36f ;
 }
  
@@ -104243,12 +104249,16 @@ variables:
 		:history = "FERRET V7.41  DD-MON-YY" ;
 		:Conventions = "CF-1.6" ;
 		:my_extra_attribute = "Extra attribute: Adding to a file with existing data and attributes" ;
+		:my_num_att = 12.56 ;
 		:MAIZE_YIELD = 0.02854787f, 0.02296161f, 0.02589183f, 0.01891576f ;
 }
  
 ! Allow for various /OUTTYPE as in any SAVE command
 let another = {1, 2, 3.1}
 save/append/file=a.nc/outtype=INT/asglobal another
+ 
+let negnum = -123.4
+save/append/file=a.nc/outtype=INT/asglobal negnum
 sp ncdump -h a.nc
 netcdf a {
 dimensions:
@@ -104284,8 +104294,10 @@ variables:
 		:history = "FERRET V7.41  DD-MON-YY" ;
 		:Conventions = "CF-1.6" ;
 		:my_extra_attribute = "Extra attribute: Adding to a file with existing data and attributes" ;
+		:my_num_att = 12.56 ;
 		:MAIZE_YIELD = 0.02854787f, 0.02296161f, 0.02589183f, 0.01891576f ;
 		:another = 1, 2, 3 ;
+		:negnum = -123 ;
 }
  
  

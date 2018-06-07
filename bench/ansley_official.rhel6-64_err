@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 113235422 Jun  6 12:56 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 113237562 Jun  7 15:23 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: final bit on #1332, save/asglobal scalar numeric attributes
+Note: issue 1877: color levels, and new LEV_ALL symbols
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -15,14 +15,14 @@ FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=. ./data
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Wed Jun 6 13:38:43 PDT 2018
+Beginning at Thu Jun 7 15:26:53 PDT 2018
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1340,10 +1340,12 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G10X5
            *** NOTE: Not deleted: TIME1
            *** NOTE: Axis is in use by grid GHB1
-           *** NOTE: Not deleted: TIME6
-           *** NOTE: Axis is in use by grid GCQ1
+           *** NOTE: Not deleted: TIME2
+           *** NOTE: Axis is in use by grid GJR1
            *** NOTE: Not deleted: TIME5
            *** NOTE: Axis is in use by grid GQO1
+           *** NOTE: Not deleted: TIME6
+           *** NOTE: Axis is in use by grid GCQ1
            *** NOTE: Not deleted: TAX
            *** NOTE: Axis is in use by grid GFORMAT
            *** NOTE: Not deleted: X4
@@ -1404,7 +1406,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G5DAY
            *** NOTE: Not deleted: PSYU
            *** NOTE: Axis is in use by grid G5DAY
-           *** NOTE: Not deleted: TIME2
+           *** NOTE: Not deleted: TIME7
            *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: TEST_IRREG
            *** NOTE: Axis is in use by grid (G015)
@@ -1472,10 +1474,12 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G10X5
            *** NOTE: Not deleted: TIME1
            *** NOTE: Axis is in use by grid GHB1
-           *** NOTE: Not deleted: TIME6
-           *** NOTE: Axis is in use by grid GCQ1
+           *** NOTE: Not deleted: TIME2
+           *** NOTE: Axis is in use by grid GJR1
            *** NOTE: Not deleted: TIME5
            *** NOTE: Axis is in use by grid GQO1
+           *** NOTE: Not deleted: TIME6
+           *** NOTE: Axis is in use by grid GCQ1
            *** NOTE: Not deleted: TAX
            *** NOTE: Axis is in use by grid GFORMAT
            *** NOTE: Not deleted: X4
@@ -1536,7 +1540,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G5DAY
            *** NOTE: Not deleted: PSYU
            *** NOTE: Axis is in use by grid G5DAY
-           *** NOTE: Not deleted: TIME2
+           *** NOTE: Not deleted: TIME7
            *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: PSZW
            *** NOTE: Axis is in use by grid G5_10
@@ -1659,7 +1663,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-rm: cannot remove `input.txt': No such file or directory
 ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2426,7 +2429,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Changing the value of attribute (PSZT1).positive
            *** NOTE: Changing the type of attribute (coadsx).modulo
            *** NOTE: Changing the value of attribute (coadsx).modulo
-           *** NOTE: Changing the value of attribute (TIME2).time_origin
+           *** NOTE: Changing the value of attribute (TIME7).time_origin
  **ERROR: command syntax: enclose coordinate variable name in parentheses
 list coadsx.units
  **ERROR: variable unknown or not in data set: COADSX.UNITS
@@ -4809,7 +4812,6 @@ list substring("hello",1,-3)
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_append_dsg
-rm: cannot remove `test_save_dsg.nc': No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5125,7 +5127,6 @@ def anno/nou/user/xpos=0/ypos=0 "My Lab"
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_auxiliary
-rm: cannot remove `layerz_test_data.txt': No such file or directory
 Replacing definition of axis ZAX
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
@@ -6808,4 +6809,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jun 6 13:47:27 PDT 2018
+Ended at Thu Jun 7 15:34:57 PDT 2018

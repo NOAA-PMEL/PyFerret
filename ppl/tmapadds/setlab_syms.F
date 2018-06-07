@@ -47,12 +47,13 @@
 *                  levels on previous plots
 * V720 *acm*  7/17 Ticket 2250: precision errors when data has very small values
 * V74+  *acm* 3/18 Issue 1607.  /KEY=centerlab
+* V74+  *acm* 6/18 Add the symbol LEV_ALL for a list of all levels used
 
 *    LEV_MIN  - lowest level used on last CONTOUR, SHADE, or FILL call.
 *    LEV_MAX -  highest level used last
 *    LEV_DEL - either the value or 'irregular'
 *    LEV_NUM - Number of levels used
-*    LEV_ALL - ?? list of all the levels used
+*    LEV_ALL - list of all the levels used
 
 *    (LEV_TEXT - full text string of last levels used, set in routine LEV.F)
 
@@ -73,12 +74,13 @@
       REAL*8 zmaxD, zminD
 
       CHARACTER ppl_buff*2048, TM_FMT_SNGL*10, TM_FMT*10, 
-     .          buff*10, symbuff*30,buffmin*10, buffmax*10
+     .          buff*10, symbuff*30, buffmin*10, buffmax*10, 
+     .         comma*2
 
      
 	CHARACTER symbuff30*30, title*32
 
-      INTEGER TM_LENSTR1, STR_SAME, i, ier, ilen, slen 
+      INTEGER TM_LENSTR1, STR_SAME, i, ier, ilen, slen, nc, nl
       LOGICAL TM_FPEQ_EPS_SNGL, reglevs
 
 * Lowest and highest Z level
@@ -195,6 +197,7 @@
          CALL SETSYM (ppl_buff, ilen, ier, ist)
       ENDIF
 
+
 * Were the levels specified as /KEY=CENTERLAB?
 
       IF (center_key_labels) THEN 
@@ -206,6 +209,32 @@
       ier = 0
       ist = 0
       CALL SETSYM (ppl_buff, ilen, ier, ist)
+
+* A list of all the levels
+     
+      symbuff = 'LEV_ALL'
+      CALL GETSYM( symbuff, ppl_buff, ist, ier )
+      IF ( ier .EQ. 0 ) CALL DELSYM(symbuff,ier)
+
+      ppl_buff = 'LEV_ALL '
+      ilen = 13
+      comma = ','
+      nc = 1
+      DO i=1, nlevels
+         IF (i .EQ. nlevels) THEN
+	    comma = ' '
+	    nc = 1
+	 ENDIF
+         zminD = zlevels(i)
+	 buff = TM_FMT(zminD, 2, 10, slen)
+	 ppl_buff = ppl_buff(:ilen+1)//buff(:slen)//comma
+
+	 ilen = ilen + slen + nc
+      ENDDO
+      ier = 0
+      ist = 0
+      CALL SETSYM (ppl_buff, ilen, ier, ist)
+
 
 * Delete any LEV_HISTO_LEVELS symbol that may be left over from a previous plot
 

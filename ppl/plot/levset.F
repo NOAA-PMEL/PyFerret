@@ -52,12 +52,13 @@ C**
 * V631 *acm* 10/09 For the fix to bug 1672(present only in 32-bit linux), the
 *                  comparison must be done with TM_FPEQ. This was the cause of bug 1707.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* V741 *acm* 6/18  issue 1877, extra unwanted level was added
 
 	INCLUDE 'CMRDL.INC'
 
 	DIMENSION VAL(4),INTIF(4)
-	LOGICAL TM_FPEQ_SNGL
-	REAL top
+	LOGICAL TM_FPEQ_EPS_SNGL
+	REAL top, eps
 
 	LWGH=0
 	IF(INDEX(LABEL(:IST),'DEL').NE.0)LWGH=5
@@ -76,8 +77,13 @@ C**
 	      IF(VAL(3).NE.0.)THEN
 		 NL = INT((VAL(2)-VAL(1))/VAL(3))+1
 		 top = VAL(1)+(NL-1)*VAL(3)
+
+*  If the top level given and computed top level differ by
+* 1% or less don't add another level
+
+		 eps = 0.01* (val(2) - val(1))  
 		 IF ( (top .LT. VAL(2)) .AND. 
-     .                (.NOT.TM_FPEQ_SNGL(val(2),top)) ) NL = NL + 1 
+     .                (.NOT.TM_FPEQ_EPS_SNGL(0.01, val(2), top)) ) NL = NL + 1 
 	      ELSE
 		 NL=2
 	      ENDIF

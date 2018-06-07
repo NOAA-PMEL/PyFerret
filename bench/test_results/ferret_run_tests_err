@@ -5311,6 +5311,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
  **ERROR: invalid command: Multi-valued Global string attributes not implemented
           Variable: multistring
 LIST/FORMAT=CDF/asglobal/append/file=a.nc multistring

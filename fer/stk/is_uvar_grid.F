@@ -312,6 +312,15 @@
 * ... ignore dummy datasets and synthetic 2D coordinate variable, tf_times
 	      IF (memb_dset .EQ. pagg_promotion_indicator_dset
      .	      .OR.memb_dset .EQ. pdset_dummy                   ) CYCLE
+
+	      IF (memb_cat .EQ. cat_agg_gpromote) THEN
+		 var = 0
+		 hi_cat = cat_attrib_val  
+	         cx_data_set(hi_cx) = memb_dset
+		 uv_grd = KNOWN_GRID( cx_data_set(hi_cx), cat_attrib_val, var )
+		 GOTO 500
+	      ENDIF
+
 * ... now get info of the variable currently associated with this name
 	      varname = VAR_CODE( memb_cat, nv )
 	      vlen = TM_LENSTR1(varname)

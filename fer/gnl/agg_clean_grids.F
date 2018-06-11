@@ -41,6 +41,7 @@
 
 * V698 1/16 *sh* based upon code from CD_CLEAN_GRIDS
 *      2/16 *sh* if identical pre-existing agg axes exists, re-use them
+* V741 5/18*acm* Changes for promoting global attributes to a variable in ensembles
 
 * argument definitions:
 *       dset    - pointer to aggregated data set (input)
@@ -99,14 +100,13 @@
 	   ENDDO varloop
 
 * delete the redundant axes
+* Do the deallo here; depending on tm_garb_col eventually corrupted line lists
 	   IF ( have_prev_ens ) THEN 
-	      line_name(ens_ax) = char_init16 ! deallo'd in tm_garb_col
-!	      CALL TM_DEALLO_DYN_LINE(ens_ax)
+	      CALL TM_DEALLO_DYN_LINE(ens_ax)
 	      ens_ax = prev_ens_ax
 	   ENDIF
 	   IF ( have_prev_tlag ) THEN
-	      line_name(tlag_ax) = char_init16 ! deallo'd in tm_garb_col
-!	      CALL TM_DEALLO_DYN_LINE(tlag_ax)
+	      CALL TM_DEALLO_DYN_LINE(tlag_ax)
 	      tlag_ax = prev_tlag_ax
 	   ENDIF
 	ENDIF
@@ -141,7 +141,12 @@
  100	GOTO 20
 
 * outer loop -- Go back for another accepted_grid
- 200	GOTO 10
+ 200	CONTINUE
+*  ... no -- make sure accepted_grid has a unique name
+	   CALL TM_NEW_GRID_NAME( grid_name(accepted_grid), buff )
+	   grid_name(accepted_grid) = buff
+	
+	GOTO 10
 
 * we've tested the uniqueness of all temporary grids.  We're done.
  500	RETURN

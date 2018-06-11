@@ -45,6 +45,7 @@
 * success or failure is indicated by the return status
 
 * V698 3/16 *sh*
+* V741 *acm* 5/18 Promoting global attributes to a variable in ensembles
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -55,6 +56,7 @@
 	include	'xprog_state.cmn'
 	include	'xtext_info.cmn'
 	include 'xtm_grid.cmn_text'   ! for grid_line
+	include 'xfr_grid.cmn'
 
 * calling argument declarations:
 	INTEGER res_grid, res_cat, res_var, agg_dim,
@@ -65,6 +67,8 @@
 	LOGICAL SCALAR_GRID_LINE
 	INTEGER	TM_LENSTR1, idim, slen, vlen
 	CHARACTER LEFINT*6
+
+	IF (com_grid .EQ. mgrid_abstract) GOTO 4000
 
 	DO idim = 1, nferdims
 	   IF (idim .EQ. agg_dim) THEN
@@ -89,7 +93,7 @@
 	ENDDO
 
 * success
-	status = ferr_ok
+ 4000	status = ferr_ok
 	RETURN
 
 * error exit

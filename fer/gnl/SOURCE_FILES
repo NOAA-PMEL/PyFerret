@@ -83,6 +83,7 @@ pop_cs.F\
 process_if.F\
 proclaim.F\
 proclaim_c.F\
+promote_agg_global_atts.F\
 redefine_ax_att.F\
 repl_exprns.F\
 reset_axis.F\

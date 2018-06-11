@@ -78,6 +78,7 @@
 * V7   5/12 *acm* Union aggregations: DEFINE DATA/AGG/U
 * V702 11/16 *sh* Allow split/gather logic to be used on axis of a compressing
 *                 transform.
+* V741 *acm* 5/18 Promoting global attributes to a variable in ensembles
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -89,6 +90,7 @@
 	include	'xalgebra.cmn'
 	include	'xax_speed.cmn'
         include 'xtm_grid.cmn_text'
+        include 'xfr_grid.cmn'
 
 * calling argument declarations:
 	INTEGER	act_class, idim, status
@@ -175,6 +177,11 @@
 	      hi_cat = cat_file_var
 	      hi_var = orig_var
 	      hi_grid = orig_grid
+
+	   ELSEIF (orig_cat .EQ. cat_agg_gpromote) THEN
+	      hi_cat = cat_agg_gpromote
+	      hi_var = orig_var 
+	      hi_grid = mgrid_abstract
 	   ELSE
 
 * a couple of 'delayed mode' use cases to beware -- actions the user may have

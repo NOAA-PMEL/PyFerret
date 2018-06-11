@@ -1,0 +1,59 @@
+! bn_ens_promote_global.jnl
+! *acm* 6/4/2018
+
+! When making ensembles, promote global attributes of member
+! sets to variables, so can examine, e.g. model_run description.
+
+ensemble fourfiles =  memb2, memb3, memb1, memb4
+show data
+
+sh dat/att
+sh att .
+
+! List a numeric file variable
+list/i=1/j=2/l=1 sst
+
+! and a string file variable
+list mystring
+
+! Dataset names collected as a variable on the Ens axis
+
+say `mystring[d=2],return=dset`
+list member_dset
+
+! Global attributes promoted to variables on Ens axis
+
+
+! strings
+list model_run
+
+list/e=2:3 model_run
+
+
+! Global attributes common to all become global attributes of the ensemble
+
+set data fourfiles
+show att .
+
+! Title is a global att in only some sets
+list title
+
+
+! investigator is a global att in only some sets, is not in 1st set.
+list investigator
+
+! Multiple ensembles defined
+cancel data/all
+
+ensemble f1 = memb2, memb3
+ensemble f2 = memb1, memb4
+
+set data f1
+show data
+list model_run, title
+
+set data f2
+show data
+list model_run, title, investigator
+
+

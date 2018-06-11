@@ -112,6 +112,7 @@
 * V702 11/16 *sh*  split/gather on compressed axes -- see IS_TRANS calls
 * V702  1/17 *sh*  for trac enhancement #2369 -- dynamic memory management
 * v74   *acm* 3/18 Introduce parameter abstractax_len replacing 99999999
+* V741 *acm* 5/18 Promoting global attributes to a variable in ensembles
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -554,6 +555,8 @@ c	ELSEIF ( cat .EQ. cat_counter_var ) THEN
 c	   CALL IS_COUNTER_VAR   ( var,  *10, *2000, status )
 c	   GOTO 5000
 
+	ELSEIF ( cat .EQ. cat_agg_gpromote ) THEN
+	   CALL IS_PROMOTE_GLOBAL   ( *10, *2000, status )
 	ELSE
 	   STOP 'is_unkn_object'
 	ENDIF

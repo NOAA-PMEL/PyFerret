@@ -40737,6 +40737,7 @@ LEV_MAX = "76"
 LEV_NUM = "38"
 LEV_DEL = "2"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76"
  
 contour/over/i=1:15/j=1:5 i*j
 sho sym lev*
@@ -40746,6 +40747,7 @@ LEV_MAX = "80"
 LEV_NUM = "8"
 LEV_DEL = "10"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "0,10,20,30,40,50,60,70,80"
  
 contour/over/i=1:15/j=1:5/lev=(0,50,3) i*j
 sho sym lev*
@@ -40755,6 +40757,7 @@ LEV_MAX = "51"
 LEV_NUM = "17"
 LEV_DEL = "3"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "0,3,6,9,12,15,18,21,24,27,30,33,36,39,42,45,48,51"
  
 fill/i=1:15/j=1:5/lev=(0,50,5) i*j
 sho sym lev*
@@ -40764,6 +40767,7 @@ LEV_MAX = "50"
 LEV_NUM = "10"
 LEV_DEL = "5"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "0,5,10,15,20,25,30,35,40,45,50"
  
 contour/over/i=1:15/j=1:5/lev=(0,80,3),(56),DARK(56) i*j
 sho sym lev*
@@ -40773,6 +40777,7 @@ LEV_MAX = "81"
 LEV_NUM = "28"
 LEV_DEL = "irregular"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "0,3,6,9,12,15,18,21,24,27,30,33,36,39,42,45,48,51,54,56,57,60,63,66,69,72,75,78,81"
  
 contour/over/i=1:15/j=1:5/lev=50 i*j
 sho sym lev*
@@ -40782,10 +40787,12 @@ LEV_MAX = "76"
 LEV_NUM = "38"
 LEV_DEL = "2"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76"
  
  
 shade/i=1:15/j=1:5/lev=(0,80,1) i*j
 sho sym lev*
+LEV_ALL = "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80"
 LEV_TEXT = "(0,80,1)"
 LEV_MIN = "0"
 LEV_MAX = "80"
@@ -40801,6 +40808,7 @@ LEV_MAX = "33"
 LEV_NUM = "1"
 LEV_DEL = "none"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "33"
 *** Running ferret script: bn_mode_logo_lab.jnl
  
 ! bn_mode_logo_lab.jnl
@@ -45090,6 +45098,7 @@ POLYGON XTRIANGLE+XPTS, YTRIANGLE+YPTS, I[I=1:10]
 ! List symbols LEV_MIN, LEV_MAX, LEV_DEL
  
 show symb lev*
+LEV_ALL = "1,1.2,1.4,1.6,1.8,2,2.2,2.4,2.6,2.8,3,3.2,3.4,3.6,3.8,4,4.2,4.4,4.6,4.8,5,5.2,5.4,5.6,5.8,6,6.2,6.4,6.6,6.8,7,7.2,7.4,7.6,7.8,8,8.2,8.4,8.6,8.8,9,9.2,9.4,9.6,9.8,10,10"
 LEV_TEXT = "C"
 LEV_MIN = "1"
 LEV_MAX = "10.2"
@@ -45112,6 +45121,7 @@ LEV_MAX = "1120"
 LEV_NUM = "28"
 LEV_DEL = "40"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "0,40,80,120,160,200,240,280,320,360,400,440,480,520,560,600,640,680,720,760,800,840,880,920,960,1000,1040,1080,1120"
  
 can sym lev*
 ! Now with /LEV=nl
@@ -45129,6 +45139,7 @@ LEV_MAX = "32"
 LEV_NUM = "22"
 LEV_DEL = "2"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "-12,-10,-8,-6,-4,-2,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32"
 can sym lev*
  
 ! Fixes for modulo striding bugs
@@ -47369,6 +47380,7 @@ can view
 set view left
 fill/x=20e:150e/lev=(-inf),(4,28,0.5)(inf) sst[l=1]
 sh sym lev*
+LEV_ALL = "-2.8,4,4.5,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10,11,11,12,12,13,13,14,14,15,15,16,16,17,17,18,18,19,19,20,20,21,21,22,22,23,23,24,24,25,25,26,26,27,27,28,28,32"
 LEV_TEXT = "(-INF),(4,28,0.5)(INF)"
 LEV_MIN = "open-ended"
 LEV_MAX = "open-ended"
@@ -47379,6 +47391,7 @@ LEV_CENTERED_LABELS = "off"
 set view right
 shade/lev=(-inf),(4,28,0.5)(inf)/key=cont sst[l=1]
 sh sym lev*
+LEV_ALL = "-2.8,4,4.5,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10,11,11,12,12,13,13,14,14,15,15,16,16,17,17,18,18,19,19,20,20,21,21,22,22,23,23,24,24,25,25,26,26,27,27,28,28,32"
 LEV_TEXT = "(-INF),(4,28,0.5)(INF)"
 LEV_MIN = "open-ended"
 LEV_MAX = "open-ended"
@@ -48171,6 +48184,7 @@ LEV_MAX = "9.2"
 LEV_NUM = "21"
 LEV_DEL = "0.4"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "0.8,1.2,1.6,2,2.4,2.8,3.2,3.6,4,4.4,4.8,5.2,5.6,6,6.4,6.8,7.2,7.6,8,8.4,8.8,9.2"
  
 use coads_climatology
 shade/l=1/lev=1.2d sst; sho sym lev_del
@@ -48183,6 +48197,7 @@ LEV_MAX = "31.2"
 LEV_NUM = "28"
 LEV_DEL = "1.2"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "-2.4,-1.2,0,1.2,2.4,3.6,4.8,6,7.2,8.4,9.6,11,12,13,14,16,17,18,19,20,22,23,24,25,26,28,29,30,31"
  
 ! Fix for bug 1174: strfloat_c("nonsense") gave result of 0 rather than missing.
 GO bn_reset
@@ -54398,6 +54413,7 @@ LEV_MAX = "1.1"
 LEV_NUM = "28"
 LEV_DEL = "0.05"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "-0.3,-0.25,-0.2,-0.15,-0.1,-0.05,0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1,1.1"
 set view ur; shade/lev a; sh sym lev*
 LEV_TEXT = ""
 LEV_MIN = "-0.3"
@@ -54405,6 +54421,7 @@ LEV_MAX = "1.1"
 LEV_NUM = "28"
 LEV_DEL = "0.05"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "-0.3,-0.25,-0.2,-0.15,-0.1,-0.05,0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1,1.1"
 set view ll; shade/line/key a; sh sym lev*
 LEV_TEXT = ""
 LEV_MIN = "-0.3"
@@ -54412,6 +54429,7 @@ LEV_MAX = "1.1"
 LEV_NUM = "28"
 LEV_DEL = "0.05"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "-0.3,-0.25,-0.2,-0.15,-0.1,-0.05,0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1,1.1"
 set view lr; shade/lev a; sh sym lev*
 LEV_TEXT = ""
 LEV_MIN = "-0.3"
@@ -54419,6 +54437,7 @@ LEV_MAX = "1.1"
 LEV_NUM = "28"
 LEV_DEL = "0.05"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "-0.3,-0.25,-0.2,-0.15,-0.1,-0.05,0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1,1.1"
  
 ! Fix for bug 1302
 ! Draw correct SHADE and FILL plots across the modulo branch cut.
@@ -55116,6 +55135,7 @@ LEV_MAX = "30"
 LEV_NUM = "32"
 LEV_DEL = "1"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "-2,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30"
  
 ! Old default value was 10
 set mode nlevels 10
@@ -55126,11 +55146,13 @@ LEV_MAX = "30"
 LEV_NUM = "16"
 LEV_DEL = "2"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "-2,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30"
  
 ! set even higher
 set mode nlevels 80
 shade temp
 show sym lev*
+LEV_ALL = "-2,-1.5,-1,-0.5,0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10,11,11,12,12,13,13,14,14,15,15,16,16,17,17,18,18,19,19,20,20,21,21,22,22,23,23,24,24,25,25,26,26,27,27,28,28,29,29,30,30"
 LEV_MIN = "-2"
 LEV_MAX = "30"
 LEV_NUM = "64"
@@ -56780,12 +56802,14 @@ LEV_MAX = "1.05"
 LEV_NUM = "21"
 LEV_DEL = "0.05"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1"
 fill  x[gx=0:1:.1]*y[gy=0:1:.1]; sh sym lev*
 LEV_MIN = "0"
 LEV_MAX = "1.05"
 LEV_NUM = "21"
 LEV_DEL = "0.05"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1"
  
  
  
@@ -59956,6 +59980,7 @@ shade/line/lev=50v/title="/LEV=50v" temp[K=1]
  
 ! New symbol LEV_OPNLEVS captures the levels set with /V or VC
 sh sym lev*
+LEV_ALL = "-2,-1.5,-0.99,-0.49,0.02,0.53,1,1.5,2,2.5,3.1,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10,11,11,12,12,13,13,14,14,15,15,16,16,17,17,18,18,19,19,20,20,21,21,22,22,23,23,24,24,25,25,25,31"
 LEV_TEXT = "50V"
 LEV_MIN = "-2"
 LEV_MAX = "open-ended"
@@ -63960,6 +63985,7 @@ LEV_MAX = "32"
 LEV_NUM = "32"
 LEV_DEL = "2"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "-32,-30,-28,-26,-24,-22,-20,-18,-16,-14,-12,-10,-8,-6,-4,-2,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32"
  
 SHADE/L=1/LINE/KEY/LEV=10c sst
 SHO SYM lev*
@@ -63969,6 +63995,7 @@ LEV_MAX = "35"
 LEV_NUM = "14"
 LEV_DEL = "5"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "-35,-30,-25,-20,-15,-10,-5,0,5,10,15,20,25,30,35"
  
 FILL/L=3/LINE/KEY/LEV=c sst
 SHO SYM lev*
@@ -63978,6 +64005,7 @@ LEV_MAX = "34"
 LEV_NUM = "34"
 LEV_DEL = "2"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "-34,-32,-30,-28,-26,-24,-22,-20,-18,-16,-14,-12,-10,-8,-6,-4,-2,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34"
  
 FILL/L=3/LINE/KEY/LEV=10c sst
 SHO SYM lev*
@@ -63987,6 +64015,7 @@ LEV_MAX = "35"
 LEV_NUM = "14"
 LEV_DEL = "5"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "-35,-30,-25,-20,-15,-10,-5,0,5,10,15,20,25,30,35"
  
 GO bn_reset
 cancel mode verify
@@ -74795,6 +74824,7 @@ LEV_MAX = "40"
 LEV_NUM = "3"
 LEV_DEL = "10"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "10,20,30,40"
  
 cancel symbol lev*
 contour/l=1/lev=(10)(15)(20)(25)(30) sst
@@ -74805,6 +74835,7 @@ LEV_MAX = "30"
 LEV_NUM = "4"
 LEV_DEL = "5"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "10,15,20,25,30"
  
 *** Running ferret script: bn_long_symnames.jnl
 ! bn_long_symnames.jnl
@@ -76279,6 +76310,7 @@ shade/lev=v var2d
  
 ! previously the computed levels spanned -8000 to 16000.
 sh sym *lev*
+LEV_ALL = "290,300,310,320,330,332,334,336,338,340,342,344,346,348,350,352,354,356,358,360,362,364,366,368,370,372,374,376,378,380,382,384,386,388,390,392,394,396,398,400,410,420,430,440,450,114931"
 LEV_TEXT = "V"
 LEV_OPNLEVS = "(290,330,10)(332,402,2)(400,450,10)(inf)"
 LEV_MIN = "290"
@@ -94968,6 +95000,7 @@ LEV_MAX = "24.4"
 LEV_NUM = "20"
 LEV_DEL = "0.4"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "16,17,17,18,18,18,19,19,20,20,20,21,21,22,22,22,23,23,24,24,24"
  
 shade/lev=(16)(16.4)(16.8)(17.2)(17.6) sst[L=1,x=290:330,y=10:40]
 show sym lev*
@@ -94977,6 +95010,7 @@ LEV_MAX = "17.6"
 LEV_NUM = "4"
 LEV_DEL = "0.4"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "16,16,17,17,18"
  
 shade/lev=(22) sst[L=1,x=290:330,y=10:40]
 show sym lev*
@@ -94986,6 +95020,7 @@ LEV_MAX = "22"
 LEV_NUM = "1"
 LEV_DEL = "none"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "22"
  
 ! LEV_DEL should be irregular
  
@@ -94997,6 +95032,7 @@ LEV_MAX = "open-ended"
 LEV_NUM = "21"
 LEV_DEL = "irregular"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "16,17,17,18,18,18,19,19,20,20,20,21,21,22,22,22,23,23,24,24,24,28"
  
 shade/lev=20v sst[L=1,x=290:330,y=10:40]
 show sym lev*
@@ -95006,10 +95042,12 @@ LEV_MAX = "open-ended"
 LEV_NUM = "19"
 LEV_DEL = "irregular"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "13,16,17,18,19,20,20,21,21,22,22,23,23,24,24,25,25,26,26,28"
 LEV_OPNLEVS = "(-inf)(16,19.1,1.05)(19.5,26,0.5)(25.7,25.7,1.05)(inf)"
  
 shade/lev=(16.4,24.4,0.4)(24.4,28.1,0.1) sst[L=1,x=290:330,y=10:40]
 show sym lev*
+LEV_ALL = "16,17,17,18,18,18,19,19,20,20,20,21,21,22,22,22,23,23,24,24,24,25,25,25,25,25,25,25,25,25,25,26,26,26,26,26,26,26,26,26,26,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28"
 LEV_TEXT = "(16.4,24.4,0.4)(24.4,28.1,0.1)"
 LEV_MIN = "16.4"
 LEV_MAX = "28.1"
@@ -95025,6 +95063,7 @@ LEV_MAX = "24.4"
 LEV_NUM = "21"
 LEV_DEL = "irregular"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "5,16,17,17,18,18,18,19,19,20,20,20,21,21,22,22,22,23,23,24,24,24"
  
 ! Bug 2466 Graticule lines too dense on time plots
 go bn_reset
@@ -99319,6 +99358,7 @@ stat co_emac
 set mode nlevels 30
 shade co_emac
 sh sym lev*
+LEV_ALL = "6.E-08,6.5E-08,7.E-08,7.5E-08,8.E-08,8.5E-08,9.E-08,9.5E-08,1.E-07,1.05E-07,1.1E-07,1.15E-07,1.2E-07,1.25E-07,1.3E-07,1.35E-07,1.4E-07,1.45E-07,1.5E-07,1.55E-07,1.6E-07,1.65E-07,1.7E-07,1.75E-07,1.8E-07,1.85E-07,1.9E-07"
 LEV_MIN = "6.E-08"
 LEV_MAX = "1.9E-07"
 LEV_NUM = "26"
@@ -106323,6 +106363,7 @@ LEV_MAX = "16"
 LEV_NUM = "8"
 LEV_DEL = "2"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "0,2,4,6,8,10,12,14,16"
 set view ur
 shade/lev=(1,15,2)/key=centerlab/title="/LEV=(1,15,2)/KEY=CENTERLAB" a
 sh sym lev*
@@ -106332,6 +106373,7 @@ LEV_MAX = "16"
 LEV_NUM = "8"
 LEV_DEL = "2"
 LEV_CENTERED_LABELS = "on"
+LEV_ALL = "0,2,4,6,8,10,12,14,16"
  
 ! centered-levels setting is restored to 'off' with the next plot that doesnt use it.
  
@@ -106344,6 +106386,7 @@ LEV_MAX = "open-ended"
 LEV_NUM = "7"
 LEV_DEL = "irregular"
 LEV_CENTERED_LABELS = "off"
+LEV_ALL = "0.5,4,6,8,10,12,14,20"
 set v lr
 shade/lev=(-inf)(5,13,2)(inf)/key=centerlab/title="/LEV=(-inf)(5,13,2)(inf)/KEY=CENTERLAB" a
  
@@ -106374,6 +106417,7 @@ LEV_MAX = "9"
 LEV_NUM = "5"
 LEV_DEL = "irregular"
 LEV_CENTERED_LABELS = "on"
+LEV_ALL = "0.5,1.5,3.5,5.5,7,9"
 set v ur
 plot/vs/ribbon/thick/sym=18/siz=0.15/key=centerlab/lev=(1)(2)(5)(6)(8)/hlim=0:11/vlim=0:2/palette=ten_by_levels xpts, ypts, varpts
  
@@ -106389,6 +106433,7 @@ LEV_MAX = "15"
 LEV_NUM = "14"
 LEV_DEL = "1"
 LEV_CENTERED_LABELS = "on"
+LEV_ALL = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15"
 *** Running ferret script: bn741_bug_fixes.jnl
 ! bn741_bug_fixes.jnl
 ! test various fixes that went into version 7.41

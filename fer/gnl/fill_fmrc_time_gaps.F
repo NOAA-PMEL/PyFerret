@@ -46,7 +46,7 @@
 *   has_gaps - (in) flag if gap-filling is needed
 *   time2d - (in) 2d forecast time step array (with missing time series)
 *   edge2d - (in) 2d forecast time lower bound array (also with missing points)
-*   nT	   - (in) number of time pointss in each forecast
+*   nT	   - (in) number of time points in each forecast
 *   nF	   - (in) number of forecasts
 *   lagF   - (in) number of model time steps of lag between forecasts (output)
 

@@ -62,7 +62,7 @@
 * V740: 1/18 *acm* for issue 1854, protection status temporarily reset 
 *             for curvi-coord plot with /SET
 * V740: 3/18 *acm* Introduce parameter abstractax_len for abstract axis length 99999999
-
+* V741 *acm* 5/18 Promoting global attributes to a variable in ensembles, new cat_agg_gpromote
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -172,7 +172,8 @@
      .			cat_counter_var, cat_attrib_val,
      .			cat_pystat_var,
      .			cat_agg_e_var, cat_agg_f_var,
-     .			cat_ef_time2d, cat_agg_u_var
+     .			cat_ef_time2d, cat_agg_u_var,
+     .			cat_agg_gpromote
 	PARAMETER     ( cat_work_mr  = -9,
      .			cat_file_var = 1,
      .			cat_user_var = 3,
@@ -191,7 +192,8 @@
      .			cat_agg_e_var  = 16,
      .			cat_agg_f_var  = 17,
      .			cat_ef_time2d  = 18,
-     .			cat_agg_u_var  = 19 )
+     .			cat_agg_u_var  = 19,
+     .			cat_agg_gpromote  = 20 )
 
 * codes referring to the user-defined variables
 	INTEGER		uvar_deleted,

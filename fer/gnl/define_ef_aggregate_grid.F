@@ -433,6 +433,13 @@
 * DYN linemem: allocate coordinate memory linemem for 2d_times and lineedg is the upper
 * 
 
+* KMS - The time axis for the FMRC then needs to be on a time axis that is a superset of both
+* the forecasted (verification) times and the initialization times.  To define this axis, need
+* to find the "earliest" pair of times where a forecasted time equals an initialization time
+* (stepsF * deltaF = stepsT * deltaT); ie, the third forecasted time is the same time as the second
+* initialization time.  Then the delta for the superset time axis is delta of one divided by
+* number steps to the common time in the other (deltaF / stepsT == deltaT / stepsF).
+
 	   npts = nT * nF
 
 	   
@@ -479,6 +486,12 @@
 
 * ... if there were gaps in the forecast time array, fill 'em
 *     always compute lagF - the number of time steps between forecasts
+*
+* KMS - this assumes lagF is an integer !!!
+* What if forecast made every three months and forecast is every two months for the next two years?
+* Need to change to using a superset time axis where this is the case (see above), 
+* and leave gaps where not defined.
+*
 	   CALL FILL_FMRC_TIME_GAPS(has_gaps,
      .				    linemem(time2dline)%ptr,
      .				    lineedg(time2dline)%ptr,
@@ -492,7 +505,7 @@
      .						ds_var_c_cache_ptr(it2d))
 
 * make the FMRC regrid target axes: T-calendar and F-lag 
-* (t2did still holds the id of the tccordname 2d time array)
+* (t2did still holds the id of the tcoordname 2d time array)
 	   has_edges = .TRUE.
 	   CALL CD_MAKE_FMRC_AXES (agg_dset, has_edges, t2did, tcoordname,
      .			ds_var_type(nv), npts, nT, nF,

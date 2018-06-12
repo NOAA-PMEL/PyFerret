@@ -3101,6 +3101,7 @@ variables:
 *** Running ferret script: bn_center_keylab.jnl
 *** Running ferret script: bn741_bug_fixes.jnl
 *** Running ferret script: bn_use_agg.jnl
+*** Running ferret script: bn_ens_promote_global.jnl
 *** Running ferret script: bn_gif.jnl
 *** Running ferret script: bn_ps.jnl
 *** Running ferret script: bn_all_ef.jnl

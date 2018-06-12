@@ -25,13 +25,12 @@ can data/all
 
 ! The more complex example from bn_aggregate_u, aggregate in U, T, E, F.
 
-! assumes the aggregate_tef script has alrady run, 
-! leaving the example files it writes, in tmp/
+! If aggregate_tef script has alrady run, leaving the example files 
+! it writes in tmp/, reuse those, otherwise create them.
 
 ! check for those files.
 IF `test_opendap("tmp/f03_e2_t3.nc") NE 0` THEN
-   Say Exiting in bn_use_agg.jnl. The script needs files written by bn_aggregate_tef.jnl which are not found
-   exit/program
+   GO bn_aggregate_tef.sub
 ENDIF
 
 use bigagg

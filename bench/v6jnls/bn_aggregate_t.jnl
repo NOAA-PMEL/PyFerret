@@ -27,6 +27,14 @@ save/clobber/file="tmp/tagg_reg_8.nc" myvar[l=71:80]
 save/clobber/file="tmp/tagg_reg_9.nc" myvar[l=81:90]
 save/clobber/file="tmp/tagg_reg_10.nc" myvar[l=91:100]
 
+! Add some global attributes which will propagate through aggregations: 
+!  TSERIES inherits global atts from the 1st member
+!  ENSEMBLE aggregations promote global attrs to a variable on the E axis
+
+let investigator = "Ferret developers"
+let description = "Example for time-aggregation working with global attributes"
+save/asglobal/append/file="tmp/tagg_reg_1.nc" investigator, description
+
 ! save a duplicate of the first file
 save/clobber/file="tmp/tagg_reg_1_duplicate.nc" myvar[l=1:10], mymap
 
@@ -56,6 +64,12 @@ save/clobber/file="tmp/tagg_irreg_7.nc" myvar[l=61:70]
 save/clobber/file="tmp/tagg_irreg_8.nc" myvar[l=71:80]
 save/clobber/file="tmp/tagg_irreg_9.nc" myvar[l=81:90]
 save/clobber/file="tmp/tagg_irreg_10.nc" myvar[l=91:100]
+
+let investigator = "Ferret developers"
+let description = "Example for time-aggregation working with global attributes"
+
+save/asglobal/append/file="tmp/tagg_irreg_1.nc" investigator
+save/asglobal/append/file="tmp/tagg_irreg_1.nc" description
 
 ! create a regular time axis (lacking cell bounds) in the midst of the sequence
 define axis/T0=1-jan-1980/unit=days tday_ir = L[l=11:20]

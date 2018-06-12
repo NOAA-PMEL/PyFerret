@@ -49,6 +49,7 @@
 *      3/16 *acm*always mark aggregation components unused after using them,
 *      3/16 *sh* delete agg component after using if nothig else has a claim
 *      4/16 *sh* Allow that SET VAR/NAME= has altered the agg varname
+* V741 *acm* 5/18 Fixes so string-variables are returned in aggregations
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -75,6 +76,7 @@
      .		SCALAR_GRID_LINE,
      .		attoutflag, got_it, itsa_dummy
 	INTEGER NCF_GET_ATTR_FROM_ID, TM_LENSTR1, STR_SAME, KNOWN_GRID,
+     .		MGRID_SIZE_DELTA,
      .		com_mr, res_mr, com_cx, res_cx, com_isp, res_isp,
      .		res_grid, res_cat, res_var,
      .		agg_dim, top, imemb, memb_dset, iline, idim,
@@ -116,6 +118,16 @@
 	IF ( res_mr .EQ. unspecified_int4 ) THEN
 	   CALL CREATE_MEM_VAR( res_cx, res_mr, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
+
+
+	   IF ( mr_type(res_mr) .EQ. ptype_string ) THEN
+	      CALL INIT_C_STRING_ARRAY( MGRID_SIZE_DELTA(res_mr),
+     .                               memry(res_mr)%ptr,
+     .                               mr_c_pointer(res_mr)      )
+	      CALL SET_NULL_C_STRING_ARRAY(mr_c_pointer(res_mr),
+     .                                     MGRID_SIZE_DELTA(res_mr) )
+	   ENDIF
+
 	   is_mr( res_isp ) = res_mr
 	ENDIF
 
@@ -185,13 +197,18 @@
 * If 1, then agg_vname will differ from memb_vname 
 * If 2, then cat# and var# associated with member name may have changed
 * Do a fresh "find" for the original member variable name
-	memb_vname = VAR_CODE(orig_cat, orig_var)
-	memb_vlen = TM_LENSTR1(memb_vname)
-	CALL FIND_VAR_NAME (memb_dset,memb_vname, com_cat, com_var )
-	IF (com_var .EQ. munknown_var_name) CALL ERRMSG(
+	IF (orig_cat .NE. cat_agg_gpromote) THEN
+	   memb_vname = VAR_CODE(orig_cat, orig_var)
+	   memb_vlen = TM_LENSTR1(memb_vname)
+	   CALL FIND_VAR_NAME (memb_dset,memb_vname, com_cat, com_var )
+	   IF (com_var .EQ. munknown_var_name) CALL ERRMSG(
      .		ferr_aggregate_error, status, 'variable '//
      .		memb_vname(:MEMB_vlen)//' no longer found in agg member '//
      .		LEFINT(imemb,slen), *5000)
+	ELSE
+	   com_cat = orig_cat
+	   com_var = orig_var
+	ENDIF
 
 * grid must not have changed since DEFINE DATA/AGG
 	com_grid = KNOWN_GRID(memb_dset, com_cat, com_var)

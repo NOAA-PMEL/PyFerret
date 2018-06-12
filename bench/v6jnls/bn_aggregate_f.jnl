@@ -1,6 +1,9 @@
 ! bn_aggregate_f.F
 ! 12/2015 *sh*
 ! 1/2016 *sh* added implicit naming of aggregation from script filename
+! 6/2018 *acm*Note SHOW DATA output changes slightly
+!              Forecast series of... patterned on fcst_1 (not fcst_1.nc)
+!              also auto-generated grid names change
 
 ! exercise FMRC aggregations
 

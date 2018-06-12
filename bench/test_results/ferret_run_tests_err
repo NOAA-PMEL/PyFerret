@@ -3239,7 +3239,7 @@ DEFINE DATA/AGGREGAT/E windy = 1,2,3
            *** NOTE: Variable "UWND" excluded from aggregate: T axis differs among members
            *** NOTE: Variable "VWND" excluded from aggregate: T axis differs among members
            *** NOTE: Variable "SPEH" excluded from aggregate: Not found in all member datasets
- **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
+ **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables that can be aggregated.
 DEFINE DATA/AGGREGAT/E windy = 1,2
            *** NOTE: Variable "SPEH" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "UIN" excluded from aggregate: Not found in all member datasets
@@ -4199,6 +4199,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file tmp/tagg_reg_8.nc
  LISTing to file tmp/tagg_reg_9.nc
  LISTing to file tmp/tagg_reg_10.nc
+ LISTing to file tmp/tagg_reg_1.nc
  LISTing to file tmp/tagg_reg_1_duplicate.nc
  LISTing to file tmp/tagg_reg_no_T.nc
  LISTing to file tmp/tagg_reg_2_overlarge.nc
@@ -4214,6 +4215,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file tmp/tagg_irreg_8.nc
  LISTing to file tmp/tagg_irreg_9.nc
  LISTing to file tmp/tagg_irreg_10.nc
+ LISTing to file tmp/tagg_irreg_1.nc
+ LISTing to file tmp/tagg_irreg_1.nc
 Replacing definition of axis TDAY_IR
  LISTing to file tmp/tagg_irreg_2_reg.nc
            *** NOTE: Not deleted: TDAY_IR
@@ -4366,167 +4369,277 @@ DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/irregular_start_time_fcst.nc")
 *** Running ferret script: bn_aggregate_tef.jnl
 ls: cannot access tmp/f04_e3_t3_1v.nc: No such file or directory
  LISTing to file tmp/f01_e1_t1.nc
+ LISTing to file tmp/f01_e1_t1.nc
+ LISTing to file tmp/f01_e1_t1.nc
  LISTing to file tmp/f01_e1_t2.nc
  LISTing to file tmp/f01_e1_t3.nc
+ LISTing to file tmp/f01_e2_t1.nc
+ LISTing to file tmp/f01_e2_t1.nc
  LISTing to file tmp/f01_e2_t1.nc
  LISTing to file tmp/f01_e2_t2.nc
  LISTing to file tmp/f01_e2_t3.nc
  LISTing to file tmp/f01_e3_t1.nc
+ LISTing to file tmp/f01_e3_t1.nc
+ LISTing to file tmp/f01_e3_t1.nc
  LISTing to file tmp/f01_e3_t2.nc
  LISTing to file tmp/f01_e3_t3.nc
+ LISTing to file tmp/f01_e4_t1.nc
+ LISTing to file tmp/f01_e4_t1.nc
  LISTing to file tmp/f01_e4_t1.nc
  LISTing to file tmp/f01_e4_t2.nc
  LISTing to file tmp/f01_e4_t3.nc
  LISTing to file tmp/f01_e5_t1.nc
+ LISTing to file tmp/f01_e5_t1.nc
+ LISTing to file tmp/f01_e5_t1.nc
  LISTing to file tmp/f01_e5_t2.nc
  LISTing to file tmp/f01_e5_t3.nc
+ LISTing to file tmp/f02_e1_t1.nc
+ LISTing to file tmp/f02_e1_t1.nc
  LISTing to file tmp/f02_e1_t1.nc
  LISTing to file tmp/f02_e1_t2.nc
  LISTing to file tmp/f02_e1_t3.nc
  LISTing to file tmp/f02_e2_t1.nc
+ LISTing to file tmp/f02_e2_t1.nc
+ LISTing to file tmp/f02_e2_t1.nc
  LISTing to file tmp/f02_e2_t2.nc
  LISTing to file tmp/f02_e2_t3.nc
+ LISTing to file tmp/f02_e3_t1.nc
+ LISTing to file tmp/f02_e3_t1.nc
  LISTing to file tmp/f02_e3_t1.nc
  LISTing to file tmp/f02_e3_t2.nc
  LISTing to file tmp/f02_e3_t3.nc
  LISTing to file tmp/f02_e4_t1.nc
+ LISTing to file tmp/f02_e4_t1.nc
+ LISTing to file tmp/f02_e4_t1.nc
  LISTing to file tmp/f02_e4_t2.nc
  LISTing to file tmp/f02_e4_t3.nc
+ LISTing to file tmp/f02_e5_t1.nc
+ LISTing to file tmp/f02_e5_t1.nc
  LISTing to file tmp/f02_e5_t1.nc
  LISTing to file tmp/f02_e5_t2.nc
  LISTing to file tmp/f02_e5_t3.nc
  LISTing to file tmp/f03_e1_t1.nc
+ LISTing to file tmp/f03_e1_t1.nc
+ LISTing to file tmp/f03_e1_t1.nc
  LISTing to file tmp/f03_e1_t2.nc
  LISTing to file tmp/f03_e1_t3.nc
+ LISTing to file tmp/f03_e2_t1.nc
+ LISTing to file tmp/f03_e2_t1.nc
  LISTing to file tmp/f03_e2_t1.nc
  LISTing to file tmp/f03_e2_t2.nc
  LISTing to file tmp/f03_e2_t3.nc
  LISTing to file tmp/f03_e3_t1.nc
+ LISTing to file tmp/f03_e3_t1.nc
+ LISTing to file tmp/f03_e3_t1.nc
  LISTing to file tmp/f03_e3_t2.nc
  LISTing to file tmp/f03_e3_t3.nc
+ LISTing to file tmp/f03_e4_t1.nc
+ LISTing to file tmp/f03_e4_t1.nc
  LISTing to file tmp/f03_e4_t1.nc
  LISTing to file tmp/f03_e4_t2.nc
  LISTing to file tmp/f03_e4_t3.nc
  LISTing to file tmp/f03_e5_t1.nc
+ LISTing to file tmp/f03_e5_t1.nc
+ LISTing to file tmp/f03_e5_t1.nc
  LISTing to file tmp/f03_e5_t2.nc
  LISTing to file tmp/f03_e5_t3.nc
+ LISTing to file tmp/f04_e1_t1.nc
+ LISTing to file tmp/f04_e1_t1.nc
  LISTing to file tmp/f04_e1_t1.nc
  LISTing to file tmp/f04_e1_t2.nc
  LISTing to file tmp/f04_e1_t3.nc
  LISTing to file tmp/f04_e2_t1.nc
+ LISTing to file tmp/f04_e2_t1.nc
+ LISTing to file tmp/f04_e2_t1.nc
  LISTing to file tmp/f04_e2_t2.nc
  LISTing to file tmp/f04_e2_t3.nc
+ LISTing to file tmp/f04_e3_t1.nc
+ LISTing to file tmp/f04_e3_t1.nc
  LISTing to file tmp/f04_e3_t1.nc
  LISTing to file tmp/f04_e3_t2.nc
  LISTing to file tmp/f04_e3_t3.nc
  LISTing to file tmp/f04_e4_t1.nc
+ LISTing to file tmp/f04_e4_t1.nc
+ LISTing to file tmp/f04_e4_t1.nc
  LISTing to file tmp/f04_e4_t2.nc
  LISTing to file tmp/f04_e4_t3.nc
+ LISTing to file tmp/f04_e5_t1.nc
+ LISTing to file tmp/f04_e5_t1.nc
  LISTing to file tmp/f04_e5_t1.nc
  LISTing to file tmp/f04_e5_t2.nc
  LISTing to file tmp/f04_e5_t3.nc
  LISTing to file tmp/f05_e1_t1.nc
+ LISTing to file tmp/f05_e1_t1.nc
+ LISTing to file tmp/f05_e1_t1.nc
  LISTing to file tmp/f05_e1_t2.nc
  LISTing to file tmp/f05_e1_t3.nc
+ LISTing to file tmp/f05_e2_t1.nc
+ LISTing to file tmp/f05_e2_t1.nc
  LISTing to file tmp/f05_e2_t1.nc
  LISTing to file tmp/f05_e2_t2.nc
  LISTing to file tmp/f05_e2_t3.nc
  LISTing to file tmp/f05_e3_t1.nc
+ LISTing to file tmp/f05_e3_t1.nc
+ LISTing to file tmp/f05_e3_t1.nc
  LISTing to file tmp/f05_e3_t2.nc
  LISTing to file tmp/f05_e3_t3.nc
+ LISTing to file tmp/f05_e4_t1.nc
+ LISTing to file tmp/f05_e4_t1.nc
  LISTing to file tmp/f05_e4_t1.nc
  LISTing to file tmp/f05_e4_t2.nc
  LISTing to file tmp/f05_e4_t3.nc
  LISTing to file tmp/f05_e5_t1.nc
+ LISTing to file tmp/f05_e5_t1.nc
+ LISTing to file tmp/f05_e5_t1.nc
  LISTing to file tmp/f05_e5_t2.nc
  LISTing to file tmp/f05_e5_t3.nc
+ LISTing to file tmp/f06_e1_t1.nc
+ LISTing to file tmp/f06_e1_t1.nc
  LISTing to file tmp/f06_e1_t1.nc
  LISTing to file tmp/f06_e1_t2.nc
  LISTing to file tmp/f06_e1_t3.nc
  LISTing to file tmp/f06_e2_t1.nc
+ LISTing to file tmp/f06_e2_t1.nc
+ LISTing to file tmp/f06_e2_t1.nc
  LISTing to file tmp/f06_e2_t2.nc
  LISTing to file tmp/f06_e2_t3.nc
+ LISTing to file tmp/f06_e3_t1.nc
+ LISTing to file tmp/f06_e3_t1.nc
  LISTing to file tmp/f06_e3_t1.nc
  LISTing to file tmp/f06_e3_t2.nc
  LISTing to file tmp/f06_e3_t3.nc
  LISTing to file tmp/f06_e4_t1.nc
+ LISTing to file tmp/f06_e4_t1.nc
+ LISTing to file tmp/f06_e4_t1.nc
  LISTing to file tmp/f06_e4_t2.nc
  LISTing to file tmp/f06_e4_t3.nc
+ LISTing to file tmp/f06_e5_t1.nc
+ LISTing to file tmp/f06_e5_t1.nc
  LISTing to file tmp/f06_e5_t1.nc
  LISTing to file tmp/f06_e5_t2.nc
  LISTing to file tmp/f06_e5_t3.nc
  LISTing to file tmp/f07_e1_t1.nc
+ LISTing to file tmp/f07_e1_t1.nc
+ LISTing to file tmp/f07_e1_t1.nc
  LISTing to file tmp/f07_e1_t2.nc
  LISTing to file tmp/f07_e1_t3.nc
+ LISTing to file tmp/f07_e2_t1.nc
+ LISTing to file tmp/f07_e2_t1.nc
  LISTing to file tmp/f07_e2_t1.nc
  LISTing to file tmp/f07_e2_t2.nc
  LISTing to file tmp/f07_e2_t3.nc
  LISTing to file tmp/f07_e3_t1.nc
+ LISTing to file tmp/f07_e3_t1.nc
+ LISTing to file tmp/f07_e3_t1.nc
  LISTing to file tmp/f07_e3_t2.nc
  LISTing to file tmp/f07_e3_t3.nc
+ LISTing to file tmp/f07_e4_t1.nc
+ LISTing to file tmp/f07_e4_t1.nc
  LISTing to file tmp/f07_e4_t1.nc
  LISTing to file tmp/f07_e4_t2.nc
  LISTing to file tmp/f07_e4_t3.nc
  LISTing to file tmp/f07_e5_t1.nc
+ LISTing to file tmp/f07_e5_t1.nc
+ LISTing to file tmp/f07_e5_t1.nc
  LISTing to file tmp/f07_e5_t2.nc
  LISTing to file tmp/f07_e5_t3.nc
+ LISTing to file tmp/f08_e1_t1.nc
+ LISTing to file tmp/f08_e1_t1.nc
  LISTing to file tmp/f08_e1_t1.nc
  LISTing to file tmp/f08_e1_t2.nc
  LISTing to file tmp/f08_e1_t3.nc
  LISTing to file tmp/f08_e2_t1.nc
+ LISTing to file tmp/f08_e2_t1.nc
+ LISTing to file tmp/f08_e2_t1.nc
  LISTing to file tmp/f08_e2_t2.nc
  LISTing to file tmp/f08_e2_t3.nc
+ LISTing to file tmp/f08_e3_t1.nc
+ LISTing to file tmp/f08_e3_t1.nc
  LISTing to file tmp/f08_e3_t1.nc
  LISTing to file tmp/f08_e3_t2.nc
  LISTing to file tmp/f08_e3_t3.nc
  LISTing to file tmp/f08_e4_t1.nc
+ LISTing to file tmp/f08_e4_t1.nc
+ LISTing to file tmp/f08_e4_t1.nc
  LISTing to file tmp/f08_e4_t2.nc
  LISTing to file tmp/f08_e4_t3.nc
+ LISTing to file tmp/f08_e5_t1.nc
+ LISTing to file tmp/f08_e5_t1.nc
  LISTing to file tmp/f08_e5_t1.nc
  LISTing to file tmp/f08_e5_t2.nc
  LISTing to file tmp/f08_e5_t3.nc
  LISTing to file tmp/f09_e1_t1.nc
+ LISTing to file tmp/f09_e1_t1.nc
+ LISTing to file tmp/f09_e1_t1.nc
  LISTing to file tmp/f09_e1_t2.nc
  LISTing to file tmp/f09_e1_t3.nc
+ LISTing to file tmp/f09_e2_t1.nc
+ LISTing to file tmp/f09_e2_t1.nc
  LISTing to file tmp/f09_e2_t1.nc
  LISTing to file tmp/f09_e2_t2.nc
  LISTing to file tmp/f09_e2_t3.nc
  LISTing to file tmp/f09_e3_t1.nc
+ LISTing to file tmp/f09_e3_t1.nc
+ LISTing to file tmp/f09_e3_t1.nc
  LISTing to file tmp/f09_e3_t2.nc
  LISTing to file tmp/f09_e3_t3.nc
+ LISTing to file tmp/f09_e4_t1.nc
+ LISTing to file tmp/f09_e4_t1.nc
  LISTing to file tmp/f09_e4_t1.nc
  LISTing to file tmp/f09_e4_t2.nc
  LISTing to file tmp/f09_e4_t3.nc
  LISTing to file tmp/f09_e5_t1.nc
+ LISTing to file tmp/f09_e5_t1.nc
+ LISTing to file tmp/f09_e5_t1.nc
  LISTing to file tmp/f09_e5_t2.nc
  LISTing to file tmp/f09_e5_t3.nc
+ LISTing to file tmp/f10_e1_t1.nc
+ LISTing to file tmp/f10_e1_t1.nc
  LISTing to file tmp/f10_e1_t1.nc
  LISTing to file tmp/f10_e1_t2.nc
  LISTing to file tmp/f10_e1_t3.nc
  LISTing to file tmp/f10_e2_t1.nc
+ LISTing to file tmp/f10_e2_t1.nc
+ LISTing to file tmp/f10_e2_t1.nc
  LISTing to file tmp/f10_e2_t2.nc
  LISTing to file tmp/f10_e2_t3.nc
+ LISTing to file tmp/f10_e3_t1.nc
+ LISTing to file tmp/f10_e3_t1.nc
  LISTing to file tmp/f10_e3_t1.nc
  LISTing to file tmp/f10_e3_t2.nc
  LISTing to file tmp/f10_e3_t3.nc
  LISTing to file tmp/f10_e4_t1.nc
+ LISTing to file tmp/f10_e4_t1.nc
+ LISTing to file tmp/f10_e4_t1.nc
  LISTing to file tmp/f10_e4_t2.nc
  LISTing to file tmp/f10_e4_t3.nc
+ LISTing to file tmp/f10_e5_t1.nc
+ LISTing to file tmp/f10_e5_t1.nc
  LISTing to file tmp/f10_e5_t1.nc
  LISTing to file tmp/f10_e5_t2.nc
  LISTing to file tmp/f10_e5_t3.nc
  LISTing to file tmp/f11_e1_t1.nc
+ LISTing to file tmp/f11_e1_t1.nc
+ LISTing to file tmp/f11_e1_t1.nc
  LISTing to file tmp/f11_e1_t2.nc
  LISTing to file tmp/f11_e1_t3.nc
+ LISTing to file tmp/f11_e2_t1.nc
+ LISTing to file tmp/f11_e2_t1.nc
  LISTing to file tmp/f11_e2_t1.nc
  LISTing to file tmp/f11_e2_t2.nc
  LISTing to file tmp/f11_e2_t3.nc
  LISTing to file tmp/f11_e3_t1.nc
+ LISTing to file tmp/f11_e3_t1.nc
+ LISTing to file tmp/f11_e3_t1.nc
  LISTing to file tmp/f11_e3_t2.nc
  LISTing to file tmp/f11_e3_t3.nc
  LISTing to file tmp/f11_e4_t1.nc
+ LISTing to file tmp/f11_e4_t1.nc
+ LISTing to file tmp/f11_e4_t1.nc
  LISTing to file tmp/f11_e4_t2.nc
  LISTing to file tmp/f11_e4_t3.nc
+ LISTing to file tmp/f11_e5_t1.nc
+ LISTing to file tmp/f11_e5_t1.nc
  LISTing to file tmp/f11_e5_t1.nc
  LISTing to file tmp/f11_e5_t2.nc
  LISTing to file tmp/f11_e5_t3.nc
@@ -4542,17 +4655,22 @@ list/x=150E/y=15n/L=10 fcst_2
 list/x=150E/y=15n/L=10 fcst_2
            *** NOTE: Variable "FCST" excluded from aggregate: E axis differs among members
            *** NOTE: Variable "FCST_2" excluded from aggregate: E axis differs among members
- **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
+ **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables that can be aggregated.
 DEFINE DATA/AGGREGAT/F tef_short = te_f01, te_f02_short, te_f03, te_f04, te_f05, te_f06, te_f07, te_f08, te_f09, te_f10, te_f11
            *** NOTE: Variable "FCST" excluded from aggregate: F axis differs among members
            *** NOTE: Variable "TF_TIMES" excluded from aggregate: F axis differs among members
            *** NOTE: Variable "FCST_2" excluded from aggregate: F axis differs among members
- **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
+ **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables that can be aggregated.
 DEFINE DATA/AGGREGAT/E tfe_short = tf_e1, tf_e2_short, tf_e3, tf_e4, tf_e5
            *** NOTE: Variable "FCST" excluded from aggregate: Already has E axis
            *** NOTE: Variable "FCST_2" excluded from aggregate: Already has E axis
            *** NOTE: Variable "REALIZATION" excluded from aggregate: Already has E axis
- **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables.
+           *** NOTE: Variable "MEMBER_DSET" excluded from aggregate: Already has E axis
+           *** NOTE: Variable "HISTORY" excluded from aggregate: Already has E axis
+           *** NOTE: Variable "CONVENTIONS" excluded from aggregate: Already has E axis
+           *** NOTE: Variable "INVESTIGATOR" excluded from aggregate: Already has E axis
+           *** NOTE: Variable "DESCRIPTION" excluded from aggregate: Already has E axis
+ **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables that can be aggregated.
 DEFINE DATA/AGGREGAT/E bad_ens = te_f01, te_f03, te_f04
  **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
 DEFINE DATA/AGGREGAT/F bad_fmrc = tf_e1, tf_e3, tf_e4
@@ -5528,6 +5646,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Skipping variable REALIZATION from set 1, already in the Union dataset.
            *** NOTE: Skipping variable REALIZATION from set 8, already in the Union dataset.
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
+*** Running ferret script: bn_ens_promote_global.jnl
+           *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

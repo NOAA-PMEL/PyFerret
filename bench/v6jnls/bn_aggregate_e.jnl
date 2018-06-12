@@ -7,12 +7,18 @@
 !   dataset in the aggregation is not also its Ferret dataset number
 !   Allowing them to be the same was hiding bugs
 
+! V741 6/18 Global attributes of member files are promoted to variables 
+!           on the E axis. Note auto-generated grid names changedfrom 
+!           previous benchmark runs
+
 set mode diag
 
 use ens1, ens2, ens3, ens4
 define data/agg/E fourfiles = ens1, ens3, ens2, ens4
 
 ! The grid of SST is known.
+! global attributes are promoted to varibles on e-axis
+
 show data fourfiles
 
 list/i=3 sst[T=@ave]
@@ -97,6 +103,8 @@ list/l=3/y=30/x=-59:-51 uwnd[d=1], uwnd[d=2], uwnd[d=3,e=1], uwnd[d=3,e=2], uwnd
 
 ! Use the other order. As long as we have a file variable, we're ok
 show data/brief    ! see what is *not* hidden
+
+
 cancel data 3
 show data/brief    ! see what is *not* hidden
 

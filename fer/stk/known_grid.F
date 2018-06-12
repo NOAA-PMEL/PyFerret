@@ -49,6 +49,7 @@
 * V698  3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
 * V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
 *                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
+* V741 *acm* 5/18 Promoting global attributes to a variable in ensembles
 
 	include	'tmap_dims.parm'
 #       include "tmap_dset.parm"
@@ -97,9 +98,13 @@
 
 	   KNOWN_GRID = mgrid_xabstract
 
-	ELSEIF ( category .EQ. cat_attrib_val ) THEN  
+	ELSEIF ( category .EQ. cat_attrib_val) THEN  
 
 	   KNOWN_GRID = mgrid_xabstract
+
+	ELSEIF ( category .EQ. cat_agg_gpromote) THEN  
+
+	   KNOWN_GRID = mgrid_abstract
 
 	ELSE
 

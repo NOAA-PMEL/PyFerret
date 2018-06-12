@@ -1194,6 +1194,9 @@ GO bn741_bug_fixes
 go bn_reset bn_use_agg
 GO bn_use_agg
 
+go bn_reset bn_ens_promote_global
+GO bn_ens_promote_global
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

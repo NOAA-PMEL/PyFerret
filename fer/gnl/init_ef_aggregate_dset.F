@@ -75,6 +75,8 @@
 *      3/16  *sh* trap simple invalid commands
 *                 start TBOXLO[L=1], not TBOX[L=1], of tf_lag_t axis at 0.0 
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
+* V741 *acm* 5/18 Promoting global attributes to a variable in ensembles
+*                 Clarify the error message at label 5500.
 
 * arguments:
 *	memb_dsetname_var - if have_expr, the variable of names (input)
@@ -125,10 +127,11 @@
      .		perm(nferdims), member_sets(nsets+pmaxgaps),
      .		imatch, nv, grid, igrid, idim, ivar, nvars, nuvars, iline, 
      .		slen, memb_var, memb_dset, memb_grid, ugrid, nsets_wgaps,
-     .		type, fvar, ndims, ngatts, recdim, varid, attoutflag,
+     .		type, fvar, ndims, recdim, varid, attoutflag,
      .          tf_lag_t, memb_tax,
      .		ref_grid, ref_fvar, ref_fvars(pmaxvarsperset),
      .		num_indices, j, jj, ignored_status
+
 	CHARACTER buff*64, tcoordname*16
 	CHARACTER TM_STRING*13
 	CHARACTER*512 GET_STRING_ELEMENT_1D_X, memb_dsetname(nsets)
@@ -325,6 +328,12 @@
 	   IF (status .NE. ferr_ok) GOTO 9960
 	ENDDO
 
+* Promote global attributes to variables in the aggregated dataset. 
+
+	CALL PROMOTE_AGG_GLOBAL_ATTS (agg_dset, nsets_wgaps, member_sets, 
+     .				  agg_dim, iline, nvars, status)
+	IF (status .NE. ferr_ok) GOTO 5600
+
 * register member datasets to aggregate dataset
 	DO iset = 1, nsets_wgaps
 	   status = NCF_ADD_AGG_MEMBER (agg_dset, iset, member_sets(iset)) 
@@ -392,7 +401,12 @@
      .		'No time axis for aggregation',          *9960 )
 
  5500	CALL ERRMSG( ferr_aggregate_error, status,
-     .		'No valid datasets or datasets share no variables. ', 
+     .		'No valid datasets or datasets share no variables '
+     .		//'that can be aggregated. ', 
+     .		*9960 )
+
+ 5600	CALL ERRMSG( ferr_aggregate_error, status,
+     .		'Error setting global attributes. ', 
      .		*9960 )
 
 	END

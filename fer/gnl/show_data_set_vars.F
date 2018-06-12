@@ -85,6 +85,8 @@
 *		  Adjust output to 6-D or 4-D grids
 * V720  3/17 *acm*  clean up long commented-out code referring to aggregations 
 * V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
+* V741 *acm* 5/18 Promoting global attributes to a variable in ensembles: list 
+*                 the variables synthesized by aggregations with a separator ---
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -111,7 +113,7 @@
 	
 * local variable declarations:
 	LOGICAL		FOUR_D_GRID,
-     .			first_time, its_delimited, is_undetermined
+     .			first_time, its_delimited, is_undetermined, first_note
 	INTEGER 	TM_LENSTR1, TM_LENSTR, TM_GET_CALENDAR_ID, GRID_FROM_NAME,
      .			ivar, i, dlen, len, grid, taxis, slen(nferdims), tlen, 
      .			nfields, kvar, field_types(maxezvars), 
@@ -140,6 +142,8 @@
 	   CALL GET_DELIMITED_INFO(nfields, field_types, delims, 
      .				   ds_file_info_ptr(dset) )
 	ENDIF
+
+	first_note = .TRUE.
 
 * If mode 6d_lab has been canceled, we will list only the first 4 dimensions.
 
@@ -271,6 +275,16 @@
  100          CONTINUE
            ENDIF
 
+* List synthesized variable in aggregations after a separator
+
+	   IF ( (ds_var_title(ivar)(1:12) .EQ. 'Global Att *' .OR.
+     .	         ds_var_title(ivar)(1:20) .EQ. 'Member dataset names')
+     .	         .AND. first_note) THEN
+	      line = ' ------------------------------'
+	      CALL SPLIT_LIST(pttmode_explct, lun, line, 0) 
+	      first_note = .FALSE.
+           ENDIF
+
 	   line = ds_var_code(ivar)
 	   IF (.NOT.mode_upcase_output) THEN  ! get original variable name
 	      CALL CD_GET_VAR_ID (dset, ds_var_code(ivar), varid, status)
@@ -315,7 +329,16 @@
  160	   CONTINUE
 
 	   IF (iok .EQ. 0) THEN  ! re-format the line for this variable
-	   
+
+* List synthesized variable in aggregations after a separator
+
+           IF ( (ds_var_title(ivar)(1:12) .EQ. 'Global Att *'.OR.
+     .	         ds_var_title(ivar)(1:20) .EQ. 'Member dataset names')
+     .	       .AND. first_note) THEN
+	      line = ' ------------------------------'
+	      CALL SPLIT_LIST(pttmode_explct, lun, line, 0) 
+	      first_note = .FALSE.
+           ENDIF
 
 	   line = ds_var_code(ivar)
 	   IF (.NOT.mode_upcase_output) THEN  ! get original variable name
@@ -329,6 +352,7 @@
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
               line = ' '
            ENDIF
+
 	   WRITE ( risc_buff, 4010 )	line,
      .				        ds_var_title(ivar)
            tlen = MAX(40, TM_LENSTR1(risc_buff))

@@ -47,6 +47,8 @@
 *	      2/16 allow "-" as an indicator of a dummy dataset
 *	      3/16 check for illegal Unix filenames
 *	      4/16 defer checking aggs build of aggs to OK_AS_AGG_VAR
+* V741 *acm* 5/18 Promoting global attributes to a variable in ensembles:
+*                 File extensions for member sets were not being stripped off 
 
 * calling arguments
 *   agg_dim             - axis of the aggregation being created
@@ -144,7 +146,7 @@
  740       ds_dset_type = 'CDF'   ! used and cleared in tm_init_dset
 
 * initialize a TMAP-supported data set
- 	   CALL TM_INIT_DSET( buff1, ok_re_use_existing,
+ 	   CALL TM_INIT_DSET( buff1(:buff_len), ok_re_use_existing,
      .			      perm, dset, tregular, use_strict, status )
 	   
            IF ( status .NE. merr_no_action ) THEN  ! merr_no_action = already init'ed

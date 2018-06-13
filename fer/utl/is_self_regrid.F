@@ -36,6 +36,8 @@
 * 5/15/2018 
 * Ansley Manke 5/2018
 * V741  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
+* V741  6/18 *acm* Also check if the axis has the same definition, though its name 
+*                  may be different, e.g. TIME axis is one of the climatology axes.
 *
 *  Return a flag, true if the current operation is a regridding-to
 *  the source axis. See regrid_to_self.F 
@@ -49,13 +51,14 @@
 	INTEGER idim, src_grid, dst_grid, trans
 
 * Local declarations
-	LOGICAL REGRID_TO_SELF
+	LOGICAL REGRID_TO_SELF, TM_SAME_LINE_DEF, same
+
 	INTEGER src_line, dst_line
 
 	src_line = grid_line (idim, src_grid)
 	dst_line = grid_line (idim, dst_grid)
-	IS_SELF_REGRID = (src_line .EQ. dst_line .AND. 
-     .              REGRID_TO_SELF (trans) )
+	same = src_line.EQ.dst_line .OR. TM_SAME_LINE_DEF(src_line, dst_line)
+	IS_SELF_REGRID = (same .AND. REGRID_TO_SELF (trans) )
 
 
 	RETURN

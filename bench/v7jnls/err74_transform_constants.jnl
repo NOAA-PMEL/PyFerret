@@ -1,0 +1,37 @@
+! err74_transform_constants.jnl
+! 6/13/2018 acm
+! See issue 1868 
+!
+! Non-regridding transformations of scalars
+let a = 2
+
+list a[x=@nbd]
+list a[x=@ngd]
+list a[x=@ave]
+list a[x=@sum]
+
+! All of these should return an error.  
+
+set mode ignore
+list a[x=@var]
+list a[x=@shf]
+list a[x=@ddc]
+list a[x=@ddf]
+list a[x=@ddb]
+list a[x=@din]
+list a[x=@iin]
+list a[x=@loc:3]
+list a[x=@weq]
+list a[x=@cda]
+list a[x=@cdb]
+list a[x=@cia]
+list a[x=@cib]
+list a[x=@evn:3]
+list a[x=@std]
+list a[x=@wgt]
+
+! smoothers can return the constant's value
+list a[x=@sbx]
+list a[x=@fav]
+
+set mode /last ignore

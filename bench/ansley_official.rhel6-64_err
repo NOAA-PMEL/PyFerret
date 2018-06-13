@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 113353296 Jun 11 16:22 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 113359746 Jun 13 14:56 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  Finalize promoting global atts in ensembles
+Note: issue 1868: transforms of scalar constants
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -15,14 +15,14 @@ FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=. ./data
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Mon Jun 11 16:36:25 PDT 2018
+Beginning at Wed Jun 13 14:58:20 PDT 2018
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6664,6 +6664,41 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ **ERROR: illegal use of transformation: A[X=???@VAR,D=0] applied to point
+list a[x=@var]
+ **ERROR: illegal use of transformation: A[X=???@SHF:1,D=0] applied to point
+list a[x=@shf]
+ **ERROR: illegal use of transformation: A[X=???@DDC,D=0] applied to point
+list a[x=@ddc]
+ **ERROR: illegal use of transformation: A[X=???@DDF,D=0] applied to point
+list a[x=@ddf]
+ **ERROR: illegal use of transformation: A[X=???@DDB,D=0] applied to point
+list a[x=@ddb]
+ **ERROR: illegal use of transformation: A[X=???@DIN,D=0] applied to point
+list a[x=@din]
+ **ERROR: illegal use of transformation: A[X=???@IIN,D=0] applied to point
+list a[x=@iin]
+ **ERROR: illegal use of transformation: A[X=???@LOC:3,D=0] applied to point
+list a[x=@loc:3]
+ **ERROR: illegal use of transformation: A[X=???@WEQ:0,D=0] applied to point
+list a[x=@weq]
+ **ERROR: illegal use of transformation: A[X=???@CDA:1,D=0] applied to point
+list a[x=@cda]
+ **ERROR: illegal use of transformation: A[X=???@CDB:1,D=0] applied to point
+list a[x=@cdb]
+ **ERROR: illegal use of transformation: A[X=???@CIA:1,D=0] applied to point
+list a[x=@cia]
+ **ERROR: illegal use of transformation: A[X=???@CIB:1,D=0] applied to point
+list a[x=@cib]
+ **ERROR: illegal use of transformation: A[X=???@EVN:3,D=0] applied to point
+list a[x=@evn:3]
+ **ERROR: illegal use of transformation: A[X=???@STD,D=0] applied to point
+list a[x=@std]
+ **ERROR: illegal use of transformation: A[X=???@WGT,D=0] applied to point
+list a[x=@wgt]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_use_agg
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
@@ -6822,4 +6857,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Jun 11 16:44:13 PDT 2018
+Ended at Wed Jun 13 15:06:18 PDT 2018

@@ -169,12 +169,16 @@
 	DO 200 i = 1, ndim
 	  idim = axes(i)
 	  IF ( cx_lo_ss(com_cx,idim) .EQ. unspecified_int4 ) THEN
+
              IF ( trans .NE. trans_interpolate .AND.
      .            trans .NE. trans_average .AND.
      .            trans .NE. trans_max .AND.
      .            trans .NE. trans_min .AND.
-     .            trans .NE. trans_sum) GOTO 5100
+     .            trans .NE. trans_sum .AND.
+     .            trans .NE. trans_good_pt .AND.
+     .            trans .NE. trans_bad_pt) GOTO 5100
 	  ENDIF
+
  200	CONTINUE
 
 * *sh* 10/92 MODE INTERPOLATE has lead to @ITP applied to inappropriate limits

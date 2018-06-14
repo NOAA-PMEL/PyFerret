@@ -39,7 +39,6 @@ equal_val.F\
 equal_val_int.F\
 errmsg.F\
 escape_for_xml.F\
-fill_fmrc_time_gaps.F\
 finalize_ferret.F\
 float2string_for_xml.F\
 get_fer_command.F\

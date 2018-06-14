@@ -73,7 +73,7 @@
 * V698 1/16  *sh* pass explicit path name (for "USE file.agg" compatibility)
 *      2/16  *sh* automatically xfer attributes from member vars to agg vars
 *      3/16  *sh* trap simple invalid commands
-*                 start TBOXLO[L=1], not TBOX[L=1], of tf_lag_t axis at 0.0 
+*                 start TBOXLO[L=1], not TBOX[L=1], of agg_lag_t axis at 0.0 
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 * V741 *acm* 5/18 Promoting global attributes to a variable in ensembles
 *                 Clarify the error message at label 5500.
@@ -128,7 +128,7 @@
      .		imatch, nv, grid, igrid, idim, ivar, nvars, nuvars, iline, 
      .		slen, memb_var, memb_dset, memb_grid, ugrid, nsets_wgaps,
      .		type, fvar, ndims, recdim, varid, attoutflag,
-     .          tf_lag_t, memb_tax,
+     .          agg_lag_t, memb_tax,
      .		ref_grid, ref_fvar, ref_fvars(pmaxvarsperset),
      .		num_indices, j, jj, ignored_status
 
@@ -139,7 +139,7 @@
 	REAL*8  TM_WORLD, avg_lag
 
 * initialize
-	tf_lag_t = unspecified_int4  ! lag time axis if FMRC
+	agg_lag_t = unspecified_int4  ! lag time axis if FMRC
 	max_str_len = 512
 	nsets_wgaps = nsets
 	DO iset = 1, nsets+pmaxgaps
@@ -290,20 +290,20 @@
 	   avg_lag = ( TM_WORLD(nT, ref_grid, t_dim, box_middle )
      .	             - TM_WORLD(1,  ref_grid, t_dim, box_middle ) )
      .			/(nT-1)
-	   CALL TM_NEW_LINE_NAME ( 'TF_LAG_T', buff )
+	   CALL TM_NEW_LINE_NAME ( 'AGG_LAG_T', buff )
 ! pre 3/16	   CALL TM_MAKE_BASIC_AXIS( buff, 0.0D0, avg_lag, nT,
 * note that if the FMRC gets aggregated by the THREDDS Data Server this
 * code never gets called.  See CD_SCAN_AUX_COORDS for that case.
 * If the member axes are true-month axes, make the time axis of the 
 * aggregation a daily axis, not true-month.
 	   CALL TM_MAKE_BASIC_AXIS( buff, avg_lag/2., avg_lag, nT,
-     .				    tf_lag_t, status )
-	   line_unit_code(tf_lag_t) = line_unit_code(memb_tax)
-	   IF (ITSA_TRUEMONTH_AXIS(memb_tax)) line_unit_code(tf_lag_t) = pun_day
-	   line_units(tf_lag_t) = un_name(line_unit_code(tf_lag_t))
-	   line_direction(tf_lag_t) = 'TT'
-	   line_dattype  (tf_lag_t) = nf_double
-	   line_dim_only (tf_lag_t) = .FALSE.  ! indicates netCDF dim w/out var
+     .				    agg_lag_t, status )
+	   line_unit_code(agg_lag_t) = line_unit_code(memb_tax)
+	   IF (ITSA_TRUEMONTH_AXIS(memb_tax)) line_unit_code(agg_lag_t) = pun_day
+	   line_units(agg_lag_t) = un_name(line_unit_code(agg_lag_t))
+	   line_direction(agg_lag_t) = 'TT'
+	   line_dattype  (agg_lag_t) = nf_double
+	   line_dim_only (agg_lag_t) = .FALSE.  ! indicates netCDF dim w/out var
 	ENDIF
 
 
@@ -317,7 +317,7 @@
 	   vname = ds_var_code(ref_fvar)
 	   grid = ds_grid_number(ref_fvar)
 	   CALL DEFINE_EF_AGGREGATE_GRID (agg_dset, tcoordname, nv, vname,
-     .					  ref_fvar, iline, tf_lag_t, grid,
+     .					  ref_fvar, iline, agg_lag_t, grid,
      .					  agg_dim, member_sets, nsets_wgaps, 
      .					  status)
 	   IF (status .NE. ferr_ok) GOTO 5000
@@ -340,7 +340,7 @@
 	ENDDO
  
 * remove duplicate temp grid definitions amd makegrid names unique
-	CALL AGG_CLEAN_GRIDS(agg_dset, agg_dim, iline, tf_lag_t)
+	CALL AGG_CLEAN_GRIDS(agg_dset, agg_dim, iline, agg_lag_t)
 
 * set use counts and remove temp status of agg grids and axes
 	CALL TM_GARB_COL_GRIDS(agg_dset)

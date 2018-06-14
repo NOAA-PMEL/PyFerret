@@ -1,34 +1,43 @@
 ! bn_aggregate_f.sub
 
-! get names of regridding axes
-DEFINE SYMBOL tf_cal_t = `fcst._cal_t_ax`
-DEFINE SYMBOL tf_lag_f = `fcst._lag_f_ax`
+DEFINE SYMBOL TF_CAL_T = `fcst._cal_t_ax`
+DEFINE SYMBOL TF_LAG_F = `fcst._lag_f_ax`
+DEFINE SYMBOL TF_LAG_T = `fcst._lag_t_ax`
+DEFINE SYMBOL TF_CAL_F = `fcst._cal_f_ax`
 
 ! native compact form
-shade/i=10/j=10 fcst
-list/i=10/j=10/order=ft/l=1:20/width=200 fcst
+SHADE/I=10/J=10 fcst
+LIST/I=10/J=10/ORDER=FT/L=1:20/WIDTH=300 fcst
+
+! compact form with spaces
+LET fcstfine = fcst[GT=($TF_LAG_T)@BIN,GF=($TF_CAL_F)@BIN]
+SHADE/I=10/J=10 fcstfine
+LIST/I=10/J=10/ORDER=FT/L=1:20/WIDTH=300 fcstfine
 
 ! diagonal form
-shade/i=10/j=10 fcst[gt(tf_times)=($TF_CAL_T)@FMRC]
-list/i=10/j=10/order=ft/width=200 fcst[gt(tf_times)=($TF_CAL_T)@FMRC]
+LET diagform = fcstfine[GT(TF_TIMES)=($TF_CAL_T)]
+SHADE/I=10/J=10 diagform
+LIST/I=10/J=10/ORDER=FT/L=1:20/WIDTH=300 diagform
 
 ! forecast evaluation form
-!shade/i=10/j=10 fcst[gt(tf_times)=($TF_CAL_T)@FMRC,gf(tf_times)=($TF_LAG_F)]
-
+LET leadform = fcstfine[GT(TF_TIMES)=($TF_CAL_T),GF(TF_TIMES)=($TF_LAG_F)]
+SHADE/I=10/J=10 leadform
+LIST/I=10/J=10/ORDER=FT/L=1:20/WIDTH=300 leadform
 
 ! forecast error visualizatio
-let eval_form = fcst[gt(tf_times)=($TF_CAL_T)@FMRC,gf(tf_times)=($TF_LAG_F)]
-let err_viz_form = eval_form - eval_form[n=1]
-shade/i=10/j=10 err_viz_form
-list/i=10/j=10/order=ft/l=1:20/width=200 err_viz_form
+LET errform = leadform - leadform[N=1]
+SHADE/I=10/J=10 errform
+LIST/I=10/J=10/ORDER=FT/L=1:20/WIDTH=300 errform
 
 ! confirm the second variable works, too
-let eval_form_2 = fcst_2[gt(tf_times)=($TF_CAL_T)@FMRC,gf(tf_times)=($TF_LAG_F)]
-let err_viz_form_2 = eval_form_2 - eval_form_2[n=1]
-list/i=10/j=10/order=ft/l=1:20/width=200 err_viz_form_2
+LET fcst2fine = fcst_2[GT=($TF_LAG_T)@BIN,GF=($TF_CAL_F)@BIN]
+LET lead2form = fcst2fine[GT(TF_TIMES)=($TF_CAL_T),GF(TF_TIMES)=($TF_LAG_F)]
+LET err2form = lead2form - lead2form[N=1]
+LIST/I=10/J=10/ORDER=FT/L=1:20/WIDTH=300 err2form
 
 ! since the N=1 values are subtracted off, the +2 offset is removed from fcst_2
 ! so this should give identically zero ... except that all of the subtractions
 ! lead to errors Order(e-16).  To avoid benchmark results that differ from
 ! one machine to another, this is commented out
-!stat/i=10/j=10/l=1:20/brief err_viz_form_2 - err_viz_form
+! STAT/I=10/J=10/L=1:20/BRIEF err2form - errform
+

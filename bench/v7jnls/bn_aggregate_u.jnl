@@ -76,26 +76,21 @@ define axis/x=140e:160e:1 xax
 define axis/y=10n:20n:1 yax
 define axis/Z=0:500:500/EDGES/units=m zax   ! a single point axis
 
-! a 20 year monthly axis starting in Jan 1950
-LET start_year = 1950
-LET nyears = 20
-LET indices = L[L=1:`nyears*12`]
-LET month = MOD(indices-1,12)+1
-LET year = start_year + INT((indices-1)/12)
-DEFINE AXIS/UNITS=days/T0=1-jan-1900/EDGES truemonth = DAYS1900(year,month,1)
+! a 20 year regular monthly axis starting in Jan 1950
+DEFINE AXIS/UNITS=DAYS/T0=01-JAN-1900/EDGES/T=01-JAN-1950:31-DEC-1970:`365.2425/12` monthly
 
 ! define a moving field with errors increasing from a given forecast date
 let vy = 1/500      ! speed that forecast structure deviates from truth
-let vx = (1+(T[gt=truemonth]-tstart)/2000)* 1/300
-let xt = x[gx=xax]-vx*T[gt=truemonth]
-let yt = y[gy=yax]-vy*T[gt=truemonth]
+let vx = (1+(T[gt=monthly]-tstart)/2000)* 1/300
+let xt = x[gx=xax]-vx*T[gt=monthly]
+let yt = y[gy=yax]-vy*T[gt=monthly]
 let field = COS((xt-150)/5)*COS((yt-30)/5) + Z[gz=zax]
 let fcst = ensemble_variation * (field + fcst_error)
 define attribute fcst.im_everywhere = "so promote me"
 set variable/title="some variable" fcst
 let static_error = SIN((x[gx=xax]-140)/5)*SIN((y[gy=yax]-20)/5) + RANDU(x[gx=xax]+y[gy=yax])
-let structure_drift = (t[gt=truemonth]-tstart)/5000 * static_error
-let random_error = (t[gt=truemonth]-tstart)/2000 * RANDU(t[gt=truemonth]+x[gx=xax]+y[gy=yax])
+let structure_drift = (t[gt=monthly]-tstart)/5000 * static_error
+let random_error = (t[gt=monthly]-tstart)/2000 * RANDU(t[gt=monthly]+x[gx=xax]+y[gy=yax])
 let fcst_error = structure_drift + random_error
 
 ! Define another variable fcst_3
@@ -103,7 +98,7 @@ let/title="another variable" fcst_3 = fcst + 3 + 0.1*fcst_error
 
 
 repeat/name=fdate/range=1:7:3 (\
-  let tstart = t[gt=truemonth,l=`fdate`];\
+  let tstart = t[gt=monthly,l=`fdate`];\
   repeat/name=ens/range=1:2:1 (\
     let ensemble_variation = 1 + (ens-3)/20;\  
     let realization = `ens`;\
@@ -120,14 +115,14 @@ SET MODE VERIFY
 
 ! timeseries of files with variable fcst_1
 repeat/name=fdate/range=1:7:3 (\
-  let tstart = t[gt=truemonth,l=`fdate`];\
+  let tstart = t[gt=monthly,l=`fdate`];\
   repeat/name=ens/range=1:2:1 (\
     let realization = `ens`;\
     TSERIES  t_f`(fdate-1)/3+1,zw=2`_e`ens` = SPAWN("ls -1 tmp/f`(fdate-1)/3+1,zw=2`_e`ens`_t?.nc")  ))
 
 ! timeseries of files with variable fcst_3
 repeat/name=fdate/range=1:7:3 (\
-  let tstart = t[gt=truemonth,l=`fdate`];\
+  let tstart = t[gt=monthly,l=`fdate`];\
   repeat/name=ens/range=1:2:1 (\
     let realization = `ens`;\
     TSERIES  t_f`(fdate-1)/3+1,zw=2`_e`ens`_3 = SPAWN("ls -1 tmp/f`(fdate-1)/3+1,zw=2`_e`ens`_tu?.nc")  ))
@@ -147,7 +142,7 @@ can data u1 u2
 ! Make a batch of files, timeseries aggregations union-ed.
 ! the /QUIET supresses the note about skipping duplicate variables.
 repeat/name=fdate/range=1:7:3 (\
-  let tstart = t[gt=truemonth,l=`fdate`];\
+  let tstart = t[gt=monthly,l=`fdate`];\
   repeat/name=ens/range=1:2:1 (\
     let realization = `ens`;\
     UNION/quiet  t_f_u`(fdate-1)/3+1,zw=2`_e`ens` = t_f`(fdate-1)/3+1,zw=2`_e`ens`, t_f`(fdate-1)/3+1,zw=2`_e`ens`_3;\
@@ -187,15 +182,22 @@ sh grid fcst_3
 stat/brief fcst[i=11:12, j=5:6, l=31:32, m=1:2, n=2:3]
 stat/brief fcst_3[i=11:12, j=5:6, l=31:32, m=1:2, n=2:3]
 
-! diagonal forecast view of ensemble mean
-let diag_fcst = fcst[gt(tf_times)=TF_CAL_T,gf(tf_times)=TF_LAG_F]
-shade/x=150E/y=15n diag_fcst[m=1:2@ave]
+DEFINE SYMBOL TF_CAL_T = `fcst._cal_t_ax`
+DEFINE SYMBOL TF_LAG_F = `fcst._lag_f_ax`
+DEFINE SYMBOL TF_LAG_T = `fcst._lag_t_ax`
+DEFINE SYMBOL TF_CAL_F = `fcst._cal_f_ax`
 
-let diag_fcst_3 = fcst_3[gt(tf_times)=TF_CAL_T,gf(tf_times)=TF_LAG_F]
-shade/x=150E/y=15n diag_fcst[m=1:2@ave]
+! lead view of ensemble mean
+let fcstfine = fcst[gt=($TF_LAG_T)@BIN,gf=($TF_CAL_F)@BIN]
+let lead_fcst = fcstfine[gt(TF_TIMES)=($TF_CAL_T),gf(TF_TIMES)=($TF_LAG_F)]
+shade/x=150E/y=15n lead_fcst[m=1:2@ave]
+
+let fcst3fine = fcst_3[gt=($TF_LAG_T)@BIN,gf=($TF_CAL_F)@BIN]
+let lead_fcst_3 = fcst3fine[gt(TF_TIMES)=($TF_CAL_T),gf(TF_TIMES)=($TF_LAG_F)]
+shade/x=150E/y=15n lead_fcst[m=1:2@ave]
 
 ! the difference will be just a small variation from the value 3
-let diff_of_union = diag_fcst - diag_fcst_3
+let diff_of_union = lead_fcst - lead_fcst_3
 
 shade/x=150E/y=15n  diff_of_union[m=1:2@ave]
 CANCEL DATA/ALL

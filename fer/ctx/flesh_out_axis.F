@@ -84,6 +84,10 @@
 * V690  *sh* 4/14  For curvilinear axes keep ww limits as-is (may exceed axis limits)  
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
+* V741  *acm* 6/18 Fix issue 1868: Let the transform remain in the context when 
+*                  variable is a constant. So let a = 2; list a[x=@trans] will no 
+*                  longer return 2, but will be either computed (for NGD and NBD),
+*                  or will be caught as an error instead of returning 2.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -104,7 +108,7 @@
 
 * internal variable declarations:
 	LOGICAL TM_DATE_OK, TM_FPEQ, INHERITED_LIMITS, 
-     .		point, lim_redundant, is_time
+     .		point, lim_redundant, is_time, abst_nolim
 	INTEGER	TM_LENSTR1, ISUBSCR_CX,
      .		ss, lo_ss, hi_ss, axis, grid, cat, var, ispread
 	INTEGER TM_GET_CALENDAR_ID, cal_id
@@ -137,6 +141,30 @@
 
 * axis for this dimension
 	axis = grid_line( idim, grid )
+
+	abst_nolim = .FALSE.
+	IF ( line_name(axis) .EQ. 'ABSTRACT' .AND. var.LE.max_uvar) THEN
+	   abst_nolim = ( cx_trans(idim,cx) .NE. trans_no_transform
+     .    .AND. uvar_given(idim,var) .EQ. uvlim_irrelevant ) 
+             IF ( cx_trans(idim,cx) .NE.  trans_variance .AND.
+     .            cx_trans(idim,cx) .NE.  trans_shift .AND.
+     .            cx_trans(idim,cx) .NE.  trans_deriv_cntr .AND.
+     .            cx_trans(idim,cx) .NE.  trans_deriv_fwrd .AND.
+     .            cx_trans(idim,cx) .NE.  trans_deriv_bkwd .AND.
+     .            cx_trans(idim,cx) .NE.  trans_integ_def .AND.
+     .            cx_trans(idim,cx) .NE.  trans_integ_indef .AND.
+     .            cx_trans(idim,cx) .NE.  trans_locate .AND.
+     .            cx_trans(idim,cx) .NE.  trans_wgted_eq .AND.
+     .            cx_trans(idim,cx) .NE.  trans_nrst_dist_abv .AND.
+     .            cx_trans(idim,cx) .NE.  trans_nrst_dist_blw .AND.
+     .            cx_trans(idim,cx) .NE.  trans_nrst_indx_abv .AND.
+     .            cx_trans(idim,cx) .NE.  trans_nrst_indx_blw .AND. 
+     .            cx_trans(idim,cx) .NE.  trans_event_mask .AND.
+     .            cx_trans(idim,cx) .NE.  trans_std_dev .AND.
+     .            cx_trans(idim,cx) .NE.  trans_avg_wgt) abst_nolim = .FALSE.
+
+	ENDIF
+
 
 	IF ( axis .EQ. mnormal ) THEN
 * THIS AXIS IS NORMAL TO THE DEFINING GRID
@@ -177,22 +205,23 @@
 * 1/97 - might this kludge have been rendered unnecessary by the 1/97 change to
 *        the determination of lim_redundant??
 ****
-	   IF ( cx_trans(idim,cx)    .NE. trans_no_transform
+          IF ( cx_trans(idim,cx)    .NE. trans_no_transform
      .    .AND. uvar_given(idim,var) .NE. uvlim_irrelevant ) GOTO 5000
+
 ****
 	   cx_lo_ss( cx, idim ) = unspecified_int4
 	   cx_hi_ss( cx, idim ) = unspecified_int4
 	   cx_lo_ww( idim, cx ) = unspecified_val8
 	   cx_hi_ww( idim, cx ) = unspecified_val8
 	   cx_delta( idim, cx ) = unspecified_val8
-	   cx_trans( idim, cx ) = trans_no_transform
+	   IF (.NOT.abst_nolim) cx_trans( idim, cx ) = trans_no_transform
 * kob 9/97 - need to reset cx_calendar as well
 	   IF (is_time) THEN
               cx_calendar(idim,cx) = .FALSE.
               cx_cal_id(cx) = unspecified_int4
            ENDIF
 
-	ELSEIF ( cx_by_ss( idim, cx ) ) THEN
+	ELSEIF ( cx_by_ss( idim, cx )) THEN!   .AND. .NOT.abst_nolim
 * POSITIONS WERE SPECIFIED BY SUBSCRIPT
 * is there valid position data for this axis ?
 	   IF ( cx_lo_ss( cx, idim ) .EQ. unspecified_int4 ) THEN

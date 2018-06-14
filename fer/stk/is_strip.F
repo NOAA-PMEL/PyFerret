@@ -79,6 +79,8 @@
 * V702 11/16 *sh* Allow split/gather logic to be used on axis of a compressing
 *                 transform.
 * V741 *acm* 5/18 Promoting global attributes to a variable in ensembles
+* V741 *acm* 6/18  Last bit of 1868: multi-D trans, if requested w/ some 
+*                  directions orthogonal to grid, those should be ignored
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -113,7 +115,8 @@
      .		nmod, nmodhi, npts, xlate, dup_cx, i4d,
      .          line, imemb, imemb_dset, grids_dset, len, ncomp,
      .		orig_grid, iline, attlen, maxlen, orig_cat, orig_var,
-     .		memb_dset, hi_cat, hi_var, hi_grid, agg_vlen, memb_vlen, slen
+     .		memb_dset, hi_cat, hi_var, hi_grid, agg_vlen, memb_vlen, 
+     .		slen, itrns, ndim
 	INTEGER*8 available_mem, biggest_allowed
 	REAL*8	TM_WORLD, ww_given, ww_nrst
 	CHARACTER*128 VAR_CODE, agg_vname, memb_vname
@@ -321,6 +324,30 @@ c	   CALL TRANSFER_CONTEXT( hi_cx, lo_cx )
 	   is_phase( lo_isp ) = isphase_allatonce
 	   cx_trans    ( axis, hi_cx ) = trans_no_transform
 	   cx_trans_arg( axis, hi_cx ) = bad_val4
+
+* 6/98: If  the transform was marked as a 4D transform, but the grid 
+*       doesn't have more than one of the requested axes, reset to 
+*       the 1D transform.
+
+	   transloop: DO itrns = 1, num_4d_trans
+	     IF (trans .EQ. alg_4d_trans(itrns)) THEN 
+	        ndim = 0
+	        DO i = 1, nferdims
+	           IF (cx_trans(i,lo_cx) .NE. trans_no_transform) ndim = ndim + 1
+	        ENDDO
+	
+	        IF (ndim .EQ. 1) THEN
+                    DO i = 1, nferdims       
+                       IF ( cx_trans(i,lo_cx) .EQ. trans ) 
+     .	                     cx_trans( i,lo_cx) = alg_1d_to_4d(itrns)
+                    ENDDO
+		   trans = alg_1d_to_4d(itrns)
+		   is_act  ( lo_isp ) = isact_trans_code + trans
+	        ENDIF
+	        EXIT transloop
+	     ENDIF
+	   ENDDO transloop
+
 
 * pass unspecified regions on through
 	   IF ( cx_lo_ss(hi_cx,idim) .EQ. unspecified_int4

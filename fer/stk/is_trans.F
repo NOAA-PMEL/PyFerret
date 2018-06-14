@@ -84,6 +84,8 @@
 *		   ii) accumulate, and iii) finalize so that compressed axes
 *		   may be split/gathered (in IS_STRIP and IS_GATHER)
 * V702 *sh*  1/17 for trac enhancement #2369 -- dynamic memory management 
+* V741 *acm* 6/18  Last bit of 1868: multi-D trans, if requested w/ some 
+*                  directions orthogonal to grid those should be ignored
 	
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -155,7 +157,7 @@
 	       IF (cx_trans(idim,com_cx).NE.trans_no_transform) GOTO 5200
 	     ENDIF
  120	   CONTINUE
-	   IF (ndim.LE.1) GOTO 5400     !!  STOP 'is_trans:ndim = 0'
+	   IF (ndim.LE.0) GOTO 5400     !! (shouldn't happen)
 	ELSE
 	   ndim = 1
 	   axes(1) = idim1
@@ -527,7 +529,7 @@
      .		     buff(:slen)//' exceeds interpolation range',
      .		     *5000 )
  5400	CALL ERRMSG( ferr_trans_nest, status,
-     .		     ' not all dimensions present on grid',
+     .		     ' no dimensions found on grid',
      .		     *5000 )
 
 	END	

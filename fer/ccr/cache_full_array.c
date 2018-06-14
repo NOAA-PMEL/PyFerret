@@ -58,7 +58,6 @@ void FORTRAN(cache_full_array)( double *array, int *alen, double **pointer_val)
 /*
   input  - array and alen (array length)
   output - pointer to array
-      note the "lie" here": FORTRAN actually passes the 
 */
 
 {

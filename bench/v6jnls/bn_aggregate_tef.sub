@@ -14,27 +14,22 @@ define axis/x=140e:160e:1 xax
 define axis/y=10n:20n:1 yax
 define axis/Z=0:500:500/EDGES/units=m zax   ! a single point axis
 
-! a 20 year monthly axis starting in Jan 1950
-LET start_year = 1950
-LET nyears = 20
-LET indices = L[L=1:`nyears*12`]
-LET month = MOD(indices-1,12)+1
-LET year = start_year + INT((indices-1)/12)
-DEFINE AXIS/UNITS=days/T0=1-jan-1900/EDGES truemonth = DAYS1900(year,month,1)
+! a 20 year regular monthly axis starting in Jan 1950
+DEFINE AXIS/UNITS=DAYS/T0=01-JAN-1900/EDGES/T=01-JAN-1950:31-DEC-1970:`365.2425/12` monthly
 
 ! define a moving field with errors increasing from a given forecast date
 let vy = 1/500      ! speed that forecast structure deviates from truth
 !let vx = 1/300
-let vx = (1+(T[gt=truemonth]-tstart)/2000)* 1/300
-let xt = x[gx=xax]-vx*T[gt=truemonth]
-let yt = y[gy=yax]-vy*T[gt=truemonth]
+let vx = (1+(T[gt=monthly]-tstart)/2000)* 1/300
+let xt = x[gx=xax]-vx*T[gt=monthly]
+let yt = y[gy=yax]-vy*T[gt=monthly]
 let field = COS((xt-150)/5)*COS((yt-30)/5) + Z[gz=zax]
 let fcst = ensemble_variation * (field + fcst_error)
 define attribute fcst.im_everywhere = "so promote me"
 set variable/title="some variable" fcst
 let static_error = SIN((x[gx=xax]-140)/5)*SIN((y[gy=yax]-20)/5) + RANDU(x[gx=xax]+y[gy=yax])
-let structure_drift = (t[gt=truemonth]-tstart)/5000 * static_error
-let random_error = (t[gt=truemonth]-tstart)/2000 * RANDU(t[gt=truemonth]+x[gx=xax]+y[gy=yax])
+let structure_drift = (t[gt=monthly]-tstart)/5000 * static_error
+let random_error = (t[gt=monthly]-tstart)/2000 * RANDU(t[gt=monthly]+x[gx=xax]+y[gy=yax])
 let fcst_error = structure_drift + random_error
 let/title="another variable" fcst_2 = fcst + 2
 
@@ -46,7 +41,7 @@ let investigator = "Ferret developers"
 ! every 3 months another 3-year 5-ensemble forecast, saved as 3 1-year files
 ! the average of the ensembles is equal to the middel ensemble member (3)
 repeat/name=fdate/range=1:31:3 (\
-  let tstart = t[gt=truemonth,l=`fdate`];\
+  let tstart = t[gt=monthly,l=`fdate`];\
   repeat/name=ens/range=1:5:1 (\
     let ensemble_variation = 1 + (ens-3)/20;\  
     let realization = `ens`;\
@@ -60,7 +55,7 @@ repeat/name=fdate/range=1:31:3 (\
 ! the middle ensemble time series of the 4th forecast, but lacking fcst_2
 define attribute fcst.im_not_everywhere = "so don't promote me"
 repeat/name=fdate/range=10:10:3 (\
-  let tstart = t[gt=truemonth,l=`fdate`];\
+  let tstart = t[gt=monthly,l=`fdate`];\
   repeat/name=ens/range=3:3:1 (\
     let ensemble_variation = 1 + (ens-3)/20;\  
     let realization = `ens`;\

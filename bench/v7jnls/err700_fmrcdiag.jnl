@@ -12,26 +12,32 @@ DEFINE DATA/AGGREGATE/F testdata = 1,2,3,4
 ! using the values of actual gives perfect forecasts; 
 ! using the values of quirks has a sinusoidal error that get worse with greater lead time
 !
+
+DEFINE SYMBOL TF_CAL_T = `actual._cal_t_ax`
+DEFINE SYMBOL TF_LAG_F = `actual._lag_f_ax`
+DEFINE SYMBOL TF_LAG_T = `actual._lag_t_ax`
+DEFINE SYMBOL TF_CAL_F = `actual._cal_f_ax`
+
 SHOW GRID actual
 LIST /WIDTH=600 /X=120W/Y=50N/Z=50 actual
 SHADE /X=120W/Y=50N/Z=50 actual
 FRAME /FILE=forecast_actual.gif
-!
-! the diagonal should be a regular 3:1 stairstep on lower and upper
-! using actual should show single color on horizontal
-!
-LET /TITLE="actual (diag view)" diagview = actual[gt(tf_times)=tf_cal_t]
 
+LET actualfine = actual[GT=($TF_LAG_T)@BIN,GF=($TF_CAL_F)@BIN]
+SHOW GRID actualfine
+LIST /WIDTH=600 /X=120W/Y=50N/Z=50 actualfine
+SHADE /X=120W/Y=50N/Z=50 actualfine
+FRAME /FILE=forecast_actualfine.gif
+
+LET diagview = actualfine[gt(TF_TIMES)=($TF_CAL_T)]
 SHOW GRID diagview
-
 LIST /WIDTH=600 /X=120W/Y=50N/Z=50 diagview
 SHADE /X=120W/Y=50N/Z=50 diagview
 FRAME /FILE=forecast_diagview.gif
-!
-! using actual should show single color on horizontal
-!
-LET /TITLE="actual (lead view)" leadview = actual[gt(tf_times)=tf_cal_t,gf(tf_times)=tf_lag_f]
+
+LET leadview = actualfine[gt(TF_TIMES)=($TF_CAL_T),gf(TF_TIMES)=($TF_LAG_F)]
 SHOW GRID leadview
 LIST /WIDTH=600 /X=120W/Y=50N/Z=50 leadview
 SHADE /X=120W/Y=50N/Z=50 leadview
 FRAME /FILE=forecast_leadview.gif
+

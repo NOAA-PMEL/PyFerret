@@ -1,6 +1,6 @@
-	SUBROUTINE DEFINE_EF_AGGREGATE_GRID (agg_dset,
+	SUBROUTINE DEFINE_EF_AGGREGATE_GRID(agg_dset,
      .		tcoordname, nvars, vname, fvar, iline,
-     .		tf_lag_t, ref_grid, agg_dim, member_sets, 
+     .		agg_lag_t, ref_grid, agg_dim, member_sets, 
      .		nsets, status)
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -69,24 +69,25 @@
 	include 'netcdf.inc'
 
 * calling argument declarations:
-	INTEGER agg_dset, nvars, fvar, iline, tf_lag_t, ref_grid,
+	INTEGER agg_dset, nvars, fvar, iline, agg_lag_t, ref_grid,
      .		agg_dim, member_sets(*), nsets, status
 	CHARACTER*(*) vname, tcoordname
 
 * local variable declarations:
-	LOGICAL	NC_GET_ATTRIB, ITS_FMRC_2DTIME, its_dynamic, itsa_uvar,
-     .		has_edges, has_gaps, found_fvar, ef_ordered_time2d, true_month
+        LOGICAL NC_GET_ATTRIB, ITS_FMRC_2DTIME, TM_DFPEQ, 
+     .          its_dynamic, itsa_uvar, has_edges, has_gaps,
+     .          found_fvar, ef_ordered_time2d, true_month
 	INTEGER STR_SAME, TM_LENSTR1,
      .		big_cx, igrid, idim, agg_grid, nv, type, ii, iset, slen, 
      .		ndim, vtype, i2, i,
      .		npts, nT, nF, lagF, ipt, iline2, memb_grid, it2d,
      .		gap_size, max_gap_size, l,
-     .		axcalt, axlagf, gg, ipt1, ipte, fax,
+     .		axlagt, axcalt, axlagf, axcalf, gg, ipt1, ipte, fax,
      .		nv_dummy, igrid_dummy, vtype_dummy, num_indices,
      .		ef_time2d_dset, ef_time2d_grid, iaxis, fvartype,
-     .		time2dline
+     .		time2dline, superline, tevery, fevery
 	REAL*8  TDEST_WORLD, TM_WORLD_AX, GET_LINE_COORD, 
-     .		fdelta, f1, f2, tcoord, tedge
+     .		tcoord, tedge, tstart, fcoord, delta, tend
 
 * Getting info back from the attribute-handling structure
         INTEGER maxlen
@@ -132,8 +133,8 @@
 	    grid_line(agg_dim, igrid) = iline
 	 ENDIF
 * for FMRC agg the shared T axis is a time lag 
-	 IF (tf_lag_t .NE. unspecified_int4) THEN
-	    grid_line(t_dim, igrid) = tf_lag_t 
+	 IF (agg_lag_t .NE. unspecified_int4) THEN
+	    grid_line(t_dim, igrid) = agg_lag_t 
 	 ENDIF
 * Make up a unique grid name for aggregate grid
          IF (agg_dim .EQ. e_dim) grid_name(igrid) = 'GEN'
@@ -178,8 +179,8 @@
 	   ds_grid_end(agg_dim,nv)  = nsets
 	   ds_ordering(ndim,nv)     = agg_dim  ! last dimension of the grid
 * ... limit T axis length to the T length of the F aggregation
-           IF (agg_dim.EQ.f_dim .AND. tf_lag_t.NE.unspecified_int4)
-     .		ds_grid_end(t_dim,nv) = line_dim(tf_lag_t)
+           IF (agg_dim.EQ.f_dim .AND. agg_lag_t.NE.unspecified_int4)
+     .		ds_grid_end(t_dim,nv) = line_dim(agg_lag_t)
 
 	   ds_grid_number(nv) = agg_grid
 	ENDIF
@@ -321,7 +322,6 @@
 	   IF (status .EQ. ferr_ok) GOTO 4000  ! BAIL OUT -- already defined
 
 	   igrid = 0
-!	   CALL TM_NEXT_TMP_GRID (igrid, 760)   ! not needed
   760	   CALL TM_ALLO_TMP_GRID (igrid, status)
 	   IF (status .NE. ferr_ok) GOTO 5000
 	   CALL TM_NEW_GRID_NAME ( 'FTI', buff )
@@ -357,11 +357,13 @@
 	         ds_ordering(idim,nv) = 0
  780	      CONTINUE
 
+* grid for TIME2D actually uses the superset axis defined later
+* reassign once that has been figured out
 	      grid_line(t_dim, g2d) = grid_line(t_dim,agg_grid)
 	      grid_line(f_dim, g2d) = iline
 
 	      ds_grid_start(t_dim,nv) = 1
-	      ds_grid_end(t_dim,nv) = line_dim(tf_lag_t)  ! limit to agg dim
+	      ds_grid_end(t_dim,nv) = line_dim(agg_lag_t)  ! limit to agg dim
 	      ds_ordering(1,nv) = t_dim
 
 	      ds_grid_start(f_dim,nv) = 1
@@ -400,14 +402,13 @@
      .             iset, igrid, iline, nv, status)
  790	   CONTINUE
 
-* Give the time2D variable _CoordinateAxisType, _ftime2d and calendar atts
+* Give the time2D variable _CoordinateAxisType and calendar atts
 
 	   CALL CD_GET_VAR_ID (agg_dset, tcoordname, t2did, status)
+	   attoutflag = 1
 	   attype = NCCHAR
 	   CALL CD_PUT_NEW_ATTR (agg_dset, t2did, '_CoordinateAxisType', 
      .       attype, 4, attoutflag, 'Time', 0., status )
-!	   CALL CD_PUT_NEW_ATTR (agg_dset, t2did, '_ftime2d', 
-!     .       attype, 4, attoutflag, 'self', 0., status )
 	   slen = TM_LENSTR1(line_cal_name(tline))
 	   attoutflag = 1
 	   attype = NCCHAR
@@ -433,188 +434,216 @@
 * DYN linemem: allocate coordinate memory linemem for 2d_times and lineedg is the upper
 * 
 
-* KMS - The time axis for the FMRC then needs to be on a time axis that is a superset of both
-* the forecasted (verification) times and the initialization times.  To define this axis, need
-* to find the "earliest" pair of times where a forecasted time equals an initialization time
-* (stepsF * deltaF = stepsT * deltaT); ie, the third forecasted time is the same time as the second
-* initialization time.  Then the delta for the superset time axis is delta of one divided by
-* number steps to the common time in the other (deltaF / stepsT == deltaT / stepsF).
+* KMS - The time axis for the FMRC then needs to be on a time axis that is a superset
+* of both the forecasted (verification) times and the initialization times.
+*
+* Assume the forecasted and initialization time axes are regular.  I think a reasonable 
+* assumption.  Also assume that an initialization time after the first forecast matches 
+* a forecasted time for the first forecast.  This might be a less reasonable assumption.
+* (If this becomes a problem, may have have the user provide the axis to use.)
+*
+* To define this superaxis, need to find the a pair of times where a forecasted time equals
+* an initialization time (stepsF * deltaF == stepsT * deltaT); eg, the third forecasted 
+* time is the same time as the second initialization time.  Then the delta of the superset 
+* time axis is the delta of one divided by number steps for the other to the common time 
+* (deltaF / stepsT == deltaT / stepsF).
 
-	   npts = nT * nF
-
-	   
-* grab a temporary dynamic axis slot for it
-	   CALL TM_ALLO_TMP_LINE(time2dline, status)
-	   IF (status .NE. ferr_ok) GOTO 5200
-	   CALL GET_LINE_DYNMEM (npts, time2dline, status) 
-	   IF (status .NE. ferr_ok) GOTO 5100
-
-* ... loop over the member data sets, copying their time steps
-           ipt = 1
-	   DO ii = 1, nsets
-	      IF (member_sets(ii) .EQ. pdset_dummy) THEN
-* ... insert a series of missing time values in the 2d time array
-	         has_gaps = .TRUE.
-	         DO i2 = 1, nT
-		    CALL PUT_LINE_COORD ( linemem(time2dline)%ptr, ipt, unspecified_val8)
-		    CALL PUT_LINE_COORD ( lineedg(time2dline)%ptr, ipt, unspecified_val8)
-	            ipt = ipt + 1
-	         ENDDO
-	      ELSE
-* ... insert the series of time step values from this forecast
-	         CALL CD_GET_AGG_VAR_INFO (agg_dset, vname, ii, 
-     .                vtype, iset, memb_grid, iline2, nv, status)
-	         IF (status .NE. ferr_ok) GOTO 5200
-* ... iline2 should be equal to iline -- no importance; not used
+* get the forecasted times for the first forecast - must exist
+           CALL TM_ALLO_TMP_LINE(superline, status)
+           IF ( status .NE. ferr_ok) GOTO 5200
+           CALL GET_LINE_DYNMEM(nT, superline, status)
+           IF ( status .NE.ferr_ok) GOTO 5100
+           IF ( member_sets(1) .EQ. pdset_dummy ) 
+     .        GOTO 5300
+           CALL CD_GET_AGG_VAR_INFO (agg_dset, vname, 1, 
+     .        vtype, iset, memb_grid, iline2, nv, status)
+           IF (status .NE. ferr_ok) GOTO 5200
 * ... if the first member has a LET/D var, use time axis info from another var
-	         IF (memb_grid .EQ. unspecified_int4) memb_grid = igrid_dummy
+           IF ( memb_grid .EQ. unspecified_int4 )
+     .          memb_grid = igrid_dummy
 * set up to translate all times to the T0 of the first member
-	         CALL TDEST_WORLD_INIT (memb_grid, ref_grid, t_dim, status)
-	         IF (status .NE. ferr_ok) GOTO 5000 
-	         DO i2 = 1, nT
-		    tcoord = TDEST_WORLD(i2, memb_grid, t_dim, box_middle)
-		    tedge  = TDEST_WORLD(i2, memb_grid, t_dim, box_lo_lim)
-		    CALL PUT_LINE_COORD ( linemem(time2dline)%ptr, ipt, tcoord)
-		    CALL PUT_LINE_COORD ( lineedg(time2dline)%ptr, ipt, tedge)
-	            ipt = ipt + 1
-	         ENDDO
-	      ENDIF
-	   ENDDO
-	   tedge  = TDEST_WORLD(nT, memb_grid, t_dim, box_hi_lim)
-	   CALL PUT_LINE_COORD ( lineedg(time2dline)%ptr, npts+1, tedge)
+           CALL TDEST_WORLD_INIT (memb_grid, ref_grid, t_dim, status)
+           IF (status .NE. ferr_ok) GOTO 5000 
+           DO i2 = 1, nT
+              tcoord = TDEST_WORLD(i2, memb_grid, t_dim, box_middle)
+              CALL PUT_LINE_COORD(linemem(superline)%ptr, i2, tcoord)
+           ENDDO
+           tstart = GET_LINE_COORD(linemem(superline)%ptr, 1)
 
+* Loop over the initialization times for forecasts after the first, looking for one 
+* that matches a forecasted time for the first forecast.  Since start with closest 
+* forecasts, hopefully this will give the smallest superset axis, which presumably 
+* is the superset axis to use.  (If not, then user needs to specify the axis.)
+           DO ii = 2, nsets
+              IF (member_sets(ii) .NE. pdset_dummy) THEN
+                 CALL CD_GET_AGG_VAR_INFO(agg_dset, vname, ii, 
+     .              vtype, iset, memb_grid, iline2, nv, status)
+                 IF (status .NE. ferr_ok) GOTO 5200
+* ... if the first member has a LET/D var, use time axis info from another var
+                 IF (memb_grid .EQ. unspecified_int4) 
+     .               memb_grid = igrid_dummy
+* set up to translate all times to the T0 of the first member
+                 CALL TDEST_WORLD_INIT(memb_grid, ref_grid, t_dim, status)
+                 IF (status .NE. ferr_ok) GOTO 5000 
+                 fcoord = TDEST_WORLD(1, memb_grid, t_dim, box_middle)
+                 DO i2 = 2, nT
+                    tcoord = GET_LINE_COORD(linemem(superline)%ptr, i2)
+                    IF ( TM_DFPEQ(tcoord, fcoord) ) THEN
+* deltaT = (tcoord-tstart)/(i2-1), stepsF = (ii-1), delta = deltaT/stepsF
+*    or looking at it the other way (fstart == tstart):
+* deltaF = (fcoord-fstart)/(ii-1), stepsT = (i2-1), delta = deltaF/stepsT
+                       delta = (tcoord-tstart) / ((i2-1)*(ii-1))
+                       fevery = i2 - 1 
+                       tevery = ii - 1
+                       GOTO 800
+                    ENDIF
+                 ENDDO
+              ENDIF
+           ENDDO
+* If got here, no initialization time matched a forecasted time in the first forecast
+           GOTO 5400
 
-* ... if there were gaps in the forecast time array, fill 'em
-*     always compute lagF - the number of time steps between forecasts
-*
-* KMS - this assumes lagF is an integer !!!
-* What if forecast made every three months and forecast is every two months for the next two years?
-* Need to change to using a superset time axis where this is the case (see above), 
-* and leave gaps where not defined.
-*
-	   CALL FILL_FMRC_TIME_GAPS(has_gaps,
-     .				    linemem(time2dline)%ptr,
-     .				    lineedg(time2dline)%ptr,
-     .				    nT,nF, lagF, status)
-	   IF (status .NE. ferr_ok) GOTO 5000
+ 800       CONTINUE
+* get the last forecasted time for the last forecast - must exist
+           IF ( member_sets(nsets) .EQ. pdset_dummy ) 
+     .        GOTO 5500
+           CALL CD_GET_AGG_VAR_INFO (agg_dset, vname, nsets, 
+     .        vtype, iset, memb_grid, iline2, nv, status)
+           IF (status .NE. ferr_ok) GOTO 5200
+* ... if the first member has a LET/D var, use time axis info from another var
+           IF ( memb_grid .EQ. unspecified_int4 )
+     .          memb_grid = igrid_dummy
+* set up to translate all times to the T0 of the first member
+           CALL TDEST_WORLD_INIT (memb_grid, ref_grid, t_dim, status)
+           IF (status .NE. ferr_ok) GOTO 5000 
+           tend = TDEST_WORLD(nT, memb_grid, t_dim, box_middle)
+
+* Remove any common denominators in fevery and tevery and factor them into delta;
+* e.g., fevery=8, tevery=12, delta=0.5 ==> fevery=2, tevery=3, delta=2.0
+           ii = 2
+           DO WHILE ( (ii .LE. tevery) .AND. (ii .LE. fevery) )
+              IF ( (MOD(fevery,ii) .EQ. 0) .AND. 
+     .             (MOD(tevery,ii) .EQ. 0) ) THEN
+                 fevery = fevery / ii
+                 tevery = tevery / ii
+                 delta = delta * ii
+              ELSE IF ( ii .EQ. 2 ) THEN
+*                2 -> 3
+                 ii = ii + 1
+              ELSE
+*                3 -> 5 -> 7 -> ...
+                 ii = ii + 2
+              ENDIF
+           ENDDO
+
+* So want FMRC transforms put onto this superset time axis defined by tstart, tend, and delta
+* A new forecast series starts every fevery steps on this axis.
+* A forecast gives predictions every tevery steps on this axis.
+* Undefined should remain in locations not assigned in the 2D superset time axis
+
+* make the FMRC regrid target axes: T-calendar and F-lag
+* as well as the source superset source T-lag and F-calendar axes.
+* Also iline which is the actual F-calendar source axis
+* (t2did still holds the id of the tcoordname 2d time array)
+           CALL CD_MAKE_FMRC_AXES(agg_dset, t2did, tcoordname,
+     .        ds_var_type(nv), tstart, tend, delta, fevery, tevery,
+     .        nT, nF, axlagt, axcalt, axlagf, axcalf, iline, status)
+           IF (status .NE. merr_ok) GOTO 5000
+
+* Since a regular axes was assumed, can fill the 2D time array from the above information.
+* This 2D array, saved in linear memory, are the times of each forecasted value (inner loop) 
+* for each forecast (outer loop) - on the superset axis
+           npts = nT * tevery * nF * fevery
+           CALL TM_ALLO_TMP_LINE(time2dline, status)
+           IF (status .NE. ferr_ok) GOTO 5200
+           CALL GET_LINE_DYNMEM (npts, time2dline, status) 
+           IF (status .NE. ferr_ok) GOTO 5100
+           ipt = 1
+           DO ii = 1, nF * fevery
+              fcoord = tstart + (ii-1) * delta
+              DO i2 = 1, nT * tevery
+                 tcoord = fcoord + (i2-1) * delta
+                 CALL PUT_LINE_COORD(linemem(time2dline)%ptr, ipt, tcoord)
+                 tedge  = tcoord - 0.5 * delta
+                 CALL PUT_LINE_COORD(lineedg(time2dline)%ptr, ipt, tedge)
+                 ipt = ipt + 1
+              ENDDO
+           ENDDO
+* add the final upper edge value
+           tedge = tstart + (nF * fevery - 1) * delta 
+     .                    + (nT * tevery - 1) * delta + 0.5 * delta
+           CALL PUT_LINE_COORD(lineedg(time2dline)%ptr, npts+1, tedge)
+
+* reset the grid for the 2D time array to use the superset axis
+           grid_line(t_dim, g2d) = axlagt
+           grid_line(f_dim, g2d) = axcalf
+           ds_grid_end(t_dim,it2d) = nT * tevery
+           ds_grid_end(f_dim,it2d) = nF * fevery
 
 * save the 2D time step array in c memory cache
 * to be recovered as needed by FIND_MEM_VAR
-* ?? should this be done differently for dynamic line coords?
-	   CALL CACHE_FULL_ARRAY(linemem(time2dline)%ptr, npts,
-     .						ds_var_c_cache_ptr(it2d))
-
-* make the FMRC regrid target axes: T-calendar and F-lag 
-* (t2did still holds the id of the tcoordname 2d time array)
-	   has_edges = .TRUE.
-	   CALL CD_MAKE_FMRC_AXES (agg_dset, has_edges, t2did, tcoordname,
-     .			ds_var_type(nv), npts, nT, nF,
-     .			time2dline, axcalt, axlagf, status)
-	   IF (status .NE. merr_ok) GOTO 5000
-
-*
-* define the F calendar axis
-
-	   CALL GET_LINE_DYNMEM (nF, iline, status) 
-	   IF (status .NE. ferr_ok) GOTO 5100
-
-! per Andrew W., this axis has been shifted 1/2. cell to the left
-! so that the F coordinate lies on the low limit (initialization time) of
-! the 1st time coordinate from each forecast
-! Only the coordinates need be got from the FMRC members. The bounds are
-! simply midpoints between them.
-
-* Get the F-step values -- lower bounds of the L=1 cells
-*   ... copying them from the axcalt axis
-
-	   l = 1
-	   ipt1 = 1
-	   DO ipt = ipt1, ipt1+nsets-1
-	      CALL PUT_LINE_COORD ( linemem(iline)%ptr, ipt, TM_WORLD_AX(l, axcalt, box_lo_lim ) )
-	      l = l + lagF
-	   ENDDO
-
-* Fill in the F-cell bounds
-* ... we will base the axis extreme edges on the average cell width --
-*     only an approximate anwser for unequally spaced monthly time units
-	   Fdelta = ( GET_LINE_COORD (linemem(iline)%ptr, ipt1+nsets-1) - 
-     .                GET_LINE_COORD (linemem(iline)%ptr, ipt1) ) / DBLE(nsets-1) 
-*   ... the lower limit of the first point
-	   
-	   CALL PUT_LINE_COORD ( lineedg(iline)%ptr, ipt1, GET_LINE_COORD (linemem(iline)%ptr, ipt1) - Fdelta/2. )
-
-*   ... the midpoints between the F-steps
-	   DO ipt = ipt1+1, ipt1+nsets-1
-	   
-	      CALL PUT_LINE_COORD ( lineedg(iline)%ptr, ipt, 
-     .                ( GET_LINE_COORD (linemem(iline)%ptr, ipt) + 
-     .                  GET_LINE_COORD (linemem(iline)%ptr, ipt-1) )/2. )
-	   ENDDO
-*   ... the upper limit of the last point
-	   CALL PUT_LINE_COORD ( lineedg(iline)%ptr, ipt1+nsets, 
-     .                           GET_LINE_COORD (linemem(iline)%ptr, ipt1+nsets-1) + Fdelta/2. )
-
-* ... make the native F-calendar axis from the pointstime steps  in line_mem
-	   CALL CD_MAKE_FMRC_FCAL_AXIS (agg_dset, iline, 
-     .					nF, axcalt, status)
-
-	   IF (status .NE. merr_ok) GOTO 5000
-
-* ... put attribute _CoordinateAxistype = 'RunTime' onto the F-calendar axis
-! cannot put attribute onto axis, because axis isn't in dataset List structure
-! this is part of a larger problem that the newly created axes of aggregations
-! have not yet been inserted into any List structures ... so their attributes
-! cannot be manipulated
-!          CALL CD_ADD_COORD_VAR( pdset_coord_vars, stuff (add new axis) ...
-!          IF ( status .NE. ferr_ok ) GOTO 5600
-!	   slen = TM_LENSTR1(line_name(iline))
-!	   CALL CD_GET_VAR_ID (pdset_coord_vars,
-!     .		'('//line_name(iline)(:slen)//')', varid, status)
-!	   attoutflag = 1
-!	   attype = NCCHAR
-!	   CALL CD_PUT_NEW_ATTR (pdset_coord_vars, varid, '_CoordinateAxistype',
-!     .		   attype, 7, attoutflag, 'RunTime', 0., status )
+           CALL CACHE_FULL_ARRAY(linemem(time2dline)%ptr, npts, 
+     .                           ds_var_c_cache_ptr(it2d))
 
 * ... assign global attributes pointing to the target regrid axes
 *    (CF requires variable attributes, but they are helpful as globals, too)
-	   CALL CD_GET_VAR_ID (agg_dset, '.', globalid, status)
-	   slen = TM_LENSTR1(line_name(axcalt))
-	   CALL CD_PUT_NEW_ATTR (agg_dset, globalid, '_cal_t_ax', attype, 
+           CALL CD_GET_VAR_ID (agg_dset, '.', globalid, status)
+           attoutflag = 1
+           attype = NCCHAR
+           slen = TM_LENSTR1(line_name(axcalt))
+           CALL CD_PUT_NEW_ATTR (agg_dset, globalid, '_cal_t_ax', attype, 
      .             slen, attoutflag, line_name(axcalt), 0., status )
-	   CALL CD_PUT_NEW_ATTR (agg_dset, globalid, '_lag_f_ax', attype, 
+           slen = TM_LENSTR1(line_name(axlagf))
+           CALL CD_PUT_NEW_ATTR (agg_dset, globalid, '_lag_f_ax', attype, 
      .             slen, attoutflag, line_name(axlagf), 0., status )
+           slen = TM_LENSTR1(line_name(axcalf))
+           CALL CD_PUT_NEW_ATTR (agg_dset, globalid, '_cal_f_ax', attype, 
+     .             slen, attoutflag, line_name(axcalf), 0., status )
+           slen = TM_LENSTR1(line_name(axlagt))
+           CALL CD_PUT_NEW_ATTR (agg_dset, globalid, '_lag_t_ax', attype, 
+     .             slen, attoutflag, line_name(axlagt), 0., status )
 
 * make the regrid target axes non-temporary and set use counts to 1
-	   CALL TM_RE_ALLO_TMP_LINE(axcalt)
-	   CALL TM_USE_LINE(axcalt)
-	   CALL TM_RE_ALLO_TMP_LINE(axlagf)
-	   CALL TM_USE_LINE(axlagf)
+           CALL TM_RE_ALLO_TMP_LINE(axcalt)
+           CALL TM_USE_LINE(axcalt)
+           CALL TM_RE_ALLO_TMP_LINE(axlagf)
+           CALL TM_USE_LINE(axlagf)
+           CALL TM_RE_ALLO_TMP_LINE(axcalf)
+           CALL TM_USE_LINE(axcalf)
+           CALL TM_RE_ALLO_TMP_LINE(axlagt)
+           CALL TM_USE_LINE(axlagt)
 
 	ENDIF  ! end of forecast aggregation special coordinate creation
-
-
 * F-agg atts _cal_t_ax and _lag_f_a_x point to the special regridding axes
- 4000	IF (agg_dim.EQ.f_dim) THEN
-	   slen = TM_LENSTR1(line_name(axcalt))
-	   attoutflag = 1
-	   attype = NCCHAR
-	   CALL CD_PUT_NEW_ATTR (agg_dset, varid, '_cal_t_ax', attype, 
+ 4000  IF (agg_dim.EQ.f_dim) THEN
+          slen = TM_LENSTR1(line_name(axcalt))
+          attoutflag = 1
+          attype = NCCHAR
+          CALL CD_PUT_NEW_ATTR (agg_dset, varid, '_cal_t_ax', attype, 
      .             slen, attoutflag, line_name(axcalt), 0., status )
-	   CALL CD_PUT_NEW_ATTR (agg_dset, varid, '_lag_f_ax', attype, 
+          CALL CD_PUT_NEW_ATTR (agg_dset, varid, '_lag_f_ax', attype, 
      .             slen, attoutflag, line_name(axlagf), 0., status )
-	ENDIF
+          CALL CD_PUT_NEW_ATTR (agg_dset, varid, '_cal_f_ax', attype, 
+     .             slen, attoutflag, line_name(axcalf), 0., status )
+          CALL CD_PUT_NEW_ATTR (agg_dset, varid, '_lag_t_ax', attype, 
+     .             slen, attoutflag, line_name(axlagt), 0., status )
+       ENDIF
 
-* Done with the 2D array which has been stored
-	
-	IF (time2dline .NE. unspecified_int4) THEN
-	   IF (line_allocated(time2dline) .GT. 0) CALL FREE_LINE_DYNMEM(time2dline)
-	ENDIF
+* Done with the 2D array which has been stored (or not if an error)
+ 5000   IF (time2dline .NE. unspecified_int4) THEN
+           IF (line_allocated(time2dline) .GT. 0) 
+     .        CALL FREE_LINE_DYNMEM(time2dline)
+        ENDIF
+        RETURN
 
- 5000	RETURN
  5100	CALL ERRMSG(ferr_aggregate_error,status,
      .	        'unable to define forecast aggregation', *5000)
  5200	CALL ERRMSG(ferr_internal, status, 'define_ef_aggregate_grid!',
      .		 *5000)
  5300	CALL ERRMSG(ferr_aggregate_error, status,
      .		'no suitable file vars in 1st aggregation member', *5000)
+ 5400   CALL ERRMSG(ferr_aggregate_error, status,
+     .          'no common forecasted and initialization time', *5000)
+ 5500	CALL ERRMSG(ferr_aggregate_error, status,
+     .		'no suitable file vars in last aggregation member', *5000)
 	END

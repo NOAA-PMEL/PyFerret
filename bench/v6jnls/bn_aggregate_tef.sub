@@ -47,7 +47,7 @@ repeat/name=fdate/range=1:31:3 (\
     let realization = `ens`;\
     let description = "Data in tseries aggregations T=1, Fdate=`fdate`, Ens=`ens`";\
     save/clobber/file="tmp/f`(fdate-1)/3+1,zw=2`_e`ens`_t1.nc"/l=`fdate`:`fdate+11` fcst,  fcst_2, realization;\
-    save/append/file="tmp/f`(fdate-1)/3+1,zw=2`_e`ens`_t1.nc"/asglobal investigator;pause;\
+    save/append/file="tmp/f`(fdate-1)/3+1,zw=2`_e`ens`_t1.nc"/asglobal investigator;\
     save/append/file="tmp/f`(fdate-1)/3+1,zw=2`_e`ens`_t1.nc"/asglobal description;\
     save/clobber/file="tmp/f`(fdate-1)/3+1,zw=2`_e`ens`_t2.nc"/l=`fdate+12`:`fdate+23` fcst,  fcst_2, realization;\
     save/clobber/file="tmp/f`(fdate-1)/3+1,zw=2`_e`ens`_t3.nc"/l=`fdate+24`:`fdate+35` fcst,  fcst_2, realization))

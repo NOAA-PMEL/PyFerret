@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 113361181 Jun 14 12:29 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 113312127 Jun 18 17:23 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: changes so multi-D transform request reverst to 1-D transform if dimension not on grid (1868)
+Note: issue 1878, writing value thats seen as Inf
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -22,7 +22,7 @@ FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Thu Jun 14 12:31:20 PDT 2018
+Beginning at Mon Jun 18 17:28:52 PDT 2018
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1663,7 +1663,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-rm: cannot remove `input.txt': No such file or directory
 ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4809,7 +4808,6 @@ list substring("hello",1,-3)
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_append_dsg
-rm: cannot remove `test_save_dsg.nc': No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5125,7 +5123,6 @@ def anno/nou/user/xpos=0/ypos=0 "My Lab"
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_auxiliary
-rm: cannot remove `layerz_test_data.txt': No such file or directory
 Replacing definition of axis ZAX
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
@@ -5502,22 +5499,15 @@ Replacing definition of axis YAX
  LISTing to file tmp/one_var_fcst_1.nc
  LISTing to file tmp/one_var_fcst_6.nc
  LISTing to file tmp/consecutive_month_fcst.nc
-Replacing definition of axis TRUEMONTH
+Replacing definition of axis MONTHLY
  LISTing to file tmp/irregular_start_time_fcst.nc
-           *** NOTE: /FILES is deprecated.  Use /MEMBERS
-           *** NOTE: /FILES is deprecated.  Use /MEMBERS
-           *** NOTE: /FILES is deprecated.  Use /MEMBERS
-           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
-           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, bn_aggregate_f.jnl
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, my_fmrc
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
-           *** NOTE: /FILES is deprecated.  Use /MEMBERS
-           *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
  **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
 DEFINE DATA/AGGREGAT/F my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc,tmp/fcst_2.nc,tmp/fcst_3.nc
  **TMAP ERR: non-existent or not on line
@@ -5822,7 +5812,7 @@ Replacing definition of axis TAX
 Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
-Replacing definition of axis TRUEMONTH
+Replacing definition of axis MONTHLY
  LISTing to file tmp/f01_e1_tu1.nc
  LISTing to file tmp/f01_e1_tu2.nc
  LISTing to file tmp/f01_e1_tu3.nc
@@ -6088,15 +6078,6 @@ Replacing definition of axis tax
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_dynamic_gather
-ls: cannot access tmp/test_dyn_mem.nc: No such file or directory
-Replacing definition of axis z2
-Replacing definition of grid GG
- LISTing to file tmp/test_dyn_mem.nc
-Replacing definition of axis x10
-Replacing definition of axis z4
- LISTing to file tmp/test_dyn_mem.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
  **ERROR: request exceeds memory setting: Requested result is larger than the available memory
 stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
  PERMANENT data cleared from memory
@@ -6293,28 +6274,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_cache_management
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-ls: cannot access tmp/test_auto_cache_20.nc: No such file or directory
-Replacing definition of axis x10
- LISTing to file tmp/test_auto_cache_1.nc
- LISTing to file tmp/test_auto_cache_2.nc
- LISTing to file tmp/test_auto_cache_3.nc
- LISTing to file tmp/test_auto_cache_4.nc
- LISTing to file tmp/test_auto_cache_5.nc
- LISTing to file tmp/test_auto_cache_6.nc
- LISTing to file tmp/test_auto_cache_7.nc
- LISTing to file tmp/test_auto_cache_8.nc
- LISTing to file tmp/test_auto_cache_9.nc
- LISTing to file tmp/test_auto_cache_10.nc
- LISTing to file tmp/test_auto_cache_11.nc
- LISTing to file tmp/test_auto_cache_12.nc
- LISTing to file tmp/test_auto_cache_13.nc
- LISTing to file tmp/test_auto_cache_14.nc
- LISTing to file tmp/test_auto_cache_15.nc
- LISTing to file tmp/test_auto_cache_16.nc
- LISTing to file tmp/test_auto_cache_17.nc
- LISTing to file tmp/test_auto_cache_18.nc
- LISTing to file tmp/test_auto_cache_19.nc
- LISTing to file tmp/test_auto_cache_20.nc
  LISTing to file test_auto_cache.out
  LISTing to file test_auto_cache.out
  LISTing to file test_auto_cache.out
@@ -6729,6 +6688,13 @@ list a[x=@wgt]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Coordinates out of order or missing on axis TIME at subscript 15
+           *** NOTE: A dummy axis of subscripts will be used
+ **ERROR: Unknown error writing data                  +Infinity
+list/l=14 time
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_use_agg
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
@@ -6887,4 +6853,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Jun 14 12:40:04 PDT 2018
+Ended at Mon Jun 18 17:36:51 PDT 2018

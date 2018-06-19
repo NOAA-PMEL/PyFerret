@@ -32,7 +32,7 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-
+* Issue 1667
 * create a string or float abstract array containing an attribute value
 * from a global attribute of the dataset
 
@@ -51,15 +51,18 @@
 	INTEGER status
 
 * internal variable declarations:
-        LOGICAL	att_done
-	CHARACTER*128 VAR_CODE, varname, rqst_name, attname
-	CHARACTER*1   blank
-	INTEGER	CGRID_SIZE, STR_SAME,
-     .		mr, cx, size, n, dset, vtype, varid, attype, attlen, 
-     .          ndims, nvars, ngatts, recdim, iatt, nvatts, idim, nd, 
-     .          attoutflag, i, cat, attid, npts, nddims
+        LOGICAL	NC_GET_ATTRIB, att_done, got_it, gedit
+	CHARACTER*128 VAR_CODE, varname, rqst_name, attname, buff
+	CHARACTER*14  TM_FMT, numstr
+	CHARACTER*1   null, comma
+	INTEGER	CGRID_SIZE, STR_SAME, TM_LENSTR1,
+     .		mr, cx, size, n, dset, vtype, varid, rqst_type, attype, 
+     .          attlen, ndims, nvars, ngatts, recdim, iatt, nvatts, idim, 
+     .          nd, attoutflag, i, cat, attid, npts, nddims, blen, nlen
 	INTEGER*8 n8
 	REAL	bad
+
+        REAL*8, DIMENSION(:), ALLOCATABLE :: attvals
 
 * --- end of introductory code ---
 * initialize
@@ -69,7 +72,7 @@
 	dset = cx_data_set( cx )
 	vtype = cx_type( cx )
 	bad  = cx_bad_data(cx)
-	blank = ' '
+	null = ''
 	attype = ptype_unknown
         
         IF (dset .LE. pdset_irrelevant) dset = cx_data_set( is_cx(isp-1) )
@@ -89,6 +92,9 @@
 	
 	rqst_name = VAR_CODE(cx_category(is_cx(isp-1)), cx_variable(is_cx(isp-1)))
 
+* Destination type is string or numeric
+	rqst_type = cx_type(is_cx(isp-1))
+
 * Is the user asking for the member dataset names?  Use attname to store the dset name
 
         attname =  'member_dset'
@@ -105,6 +111,21 @@
 
         varname = '.'
         CALL CD_GET_VAR_ID (dset, varname, varid, status)
+
+	nlen = TM_LENSTR1(rqst_name)
+	nd = INDEX(rqst_name, '_G_')
+	IF (nd .GT. 0) THEN
+	   gedit = .TRUE.
+	   DO iatt = 1, ngatts
+              CALL CD_GET_VAR_ATT_NAME (dset, varid, iatt, attname, status)
+              IF (STR_SAME(attname, rqst_name) .EQ. 0) THEN
+	         gedit = .FALSE.   ! original att was renamed, adding _g_
+		 EXIT
+               ENDIF
+	    ENDDO
+	    
+	    IF (gedit) rqst_name = rqst_name(:nd-1)
+	ENDIF
 
 	att_done = .FALSE.
         attloop: DO iatt = 1, ngatts
@@ -124,10 +145,46 @@
      .			         varname, rqst_name, status)
 	      ELSE
 
-* ... array of numbers
-		 IF (attlen .GT. 1) attlen = 1
-		 CALL ATTRIB_VALS (memry(mr)%ptr, 
-     .               size, n, dset, varid, varname, rqst_name, status)
+* ... numeric
+	         IF (attlen.EQ.1 .AND. rqst_type.NE.ptype_string)  THEN 
+                    CALL ATTRIB_VALS (memry(mr)%ptr, 
+     .                  size, n, dset, varid, varname, rqst_name, status)
+	         ELSE
+
+* For multi-valued numeric, turn it into a string listing the values.
+
+* ... set up FORTRAN-independent pointer
+                    CALL INIT_C_STRING_ARRAY( 1, memry(mr)%ptr,
+     .				     mr_c_pointer(mr)    )
+
+		    ALLOCATE (attvals(attlen))
+
+		    got_it = NC_GET_ATTRIB ( dset, varid, attname,
+     .                           .FALSE., varname, attlen,
+     .                           attlen, attoutflag, buff, attvals )
+		    IF (.NOT. got_it) GOTO 5000
+
+		    blen = 1
+		    comma = ','
+		    DO i = 1, attlen
+		       numstr = TM_FMT(attvals(i), 7, 14, nlen)
+		       buff(blen:) = numstr(:nlen)
+		       blen = blen + nlen
+		       IF (i .EQ. attlen) comma = ''
+		       buff(blen:) = comma
+		       blen = blen+1
+		    ENDDO
+
+c store in string variable
+
+		    n = 1
+		    blen = TM_LENSTR1(buff)
+		    CALL STORE_STRING(buff(1:blen), mr, n-1, status)
+
+		    DEALLOCATE(attvals)
+
+	         ENDIF
+
 	      ENDIF
               IF ( status .NE. ferr_ok ) GOTO 5000
 
@@ -138,7 +195,7 @@
         ENDDO attloop
 
 * ... The attribute is not present in this member set.
-*     Fill in with a blank or missing value
+*     Fill in with a null or missing value
 
         IF (.NOT. att_done) THEN
 
@@ -153,7 +210,7 @@
            IF ( attype .EQ. NCCHAR ) THEN
               CALL INIT_C_STRING_ARRAY( 1, memry(mr)%ptr,
      .				     mr_c_pointer(mr)    )
-              CALL STORE_STRING(blank, mr, 0, status)
+              CALL STORE_STRING(null(:0), mr, 0, status)
            ELSE
               CALL FILL_MEMORY ( mr, bad )
            ENDIF

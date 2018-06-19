@@ -43,7 +43,7 @@
 * V741 *acm* 5/18 
 * Notes
 * 1. Global atts that match a file-variable name from the ensemble are
-*    promoted as "name_g_". 
+*    promoted as "name_g_".  
 * 2. Does it make sense to do the same for forecast sets? If so then what 
 *    about ensembles of Forecasts and FMRC's of ensembles?  Any issues?
 
@@ -125,7 +125,6 @@ c	   label = 'FMRC'
 	vlen = 1
 	varid = 0
 	first_memb = .TRUE.
-	
 
 	nv1 = 0  ! mark the 1st variable added
 	DO nv = 1, maxvars
@@ -308,13 +307,20 @@ c	   label = 'FMRC'
                        IF (ds_var_setnum(i1) .EQ. agg_dset) THEN
 			  IF (ds_var_title(i1)(:12) .NE. 'Global Att *') THEN
 
-* ... Matches a file var. Rename the attribute we are promoting.
+* ... Matches a file var. Rename the attribute we are promoting. 
+*    
 *     Note its possible to construct files that fail with this. If there's a
 *     varaible and global att named sst, we promte the global one as "sst_g_".
 *     If there are also global atts named "sst_g_" then that's a conflict.
+*     Try a couple of combinations, otherwise just issue a note and skip this one.
 				
 			     add_name = attname(:TM_LENSTR1(attname))//"_g_"
-
+			     CALL TEST_PROMOTE_NAME (add_name, agg_dset, nsets, member_sets, status)
+			     IF (status .NE. ferr_ok) THEN
+				CALL WARN ( "Not promoting global attribute "//
+     .                                   attname(:TM_LENSTR1(attname))//" due to name collisions")
+			        CYCLE attloop
+			     ENDIF
 
 			  ELSE
 
@@ -400,4 +406,44 @@ c	   label = 'FMRC'
 
  5200   CALL ERRMSG (ferr_internal, status,
      .               'attListCrptn: '//attname(:vlen),*5000)
+	END
+
+
+	SUBROUTINE TEST_PROMOTE_NAME (testname, agg_dset, nsets, member_sets, status)
+        INCLUDE 'errmsg.parm'      
+
+
+	CHARACTER*(*) testname
+	INTEGER	agg_dset, nsets, member_sets(*), status
+
+
+	INTEGER STR_SAME, ngatts, iset, imemb, iatt, varid
+	CHARACTER attname*128, vname*1
+
+	
+* varid for global attributes is 0
+        vname = '.'
+	varid = 0
+
+	DO iset = 1, nsets
+
+* Get number of global attributes from the member set
+           imemb = member_sets(iset)
+	   CALL CD_GET_VAR_NATTS (imemb, varid, vname(:1),
+     .                         ngatts, status)
+
+           DO iatt = 1, ngatts
+	      CALL CD_GET_VAR_ATT_NAME (imemb, varid, iatt, attname, status)
+	      IF ( STR_SAME(testname, attname) .EQ. 0 ) THEN
+	         status = ferr_aggregate_error
+	         GOTO 5000
+	      ENDIF
+	   ENDDO
+
+
+	ENDDO
+
+	status = ferr_ok
+
+ 5000	RETURN
 	END

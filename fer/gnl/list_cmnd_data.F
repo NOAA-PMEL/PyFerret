@@ -96,7 +96,7 @@
 * v74  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 * V740 *acm*  3/18 Issue 950: Allow simplified I formats
 * V741 *acm*  4/18 Issue 1870: Check Format more closely when finding an I Format
-* V741 *acm*  4/18 I
+* V741 *acm*  4/18 Issue 1878: Ferret error if the WRITE results in an error
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"

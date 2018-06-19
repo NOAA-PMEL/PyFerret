@@ -96,6 +96,7 @@
 * v74  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 * V740 *acm*  3/18 Issue 950: Allow simplified I formats
 * V741 *acm*  4/18 Issue 1870: Check Format more closely when finding an I Format
+* V741 *acm*  4/18 I
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -184,6 +185,8 @@
 	fortran_selfdoc = head_enh .AND. list_format_given
 	itsa_string     = mr_type(mr) .EQ. ptype_string
         norow = qual_given(slash_list_norow) .GT. 0
+	good_data_form = ''
+	good_data_form = ''
 
 * determine precision for outputting values
 	lp = qual_given( slash_list_precision ) 
@@ -966,9 +969,9 @@
 	         ELSE
 	           value = grid_data(i,j,k,l,m,n)
 	           IF ( value .NE. bad_data ) THEN
-	              WRITE ( line_buff(istart:iend), good_data_form ) value
+	              WRITE ( line_buff(istart:iend), good_data_form, err=5030 ) value
 	           ELSE
-	              WRITE ( line_buff(istart:iend),  bad_data_form ) '....'
+	              WRITE ( line_buff(istart:iend),  bad_data_form, err=5040 ) '....'
 	           ENDIF
 	         ENDIF
  500	         CONTINUE
@@ -992,6 +995,14 @@
  5020	CALL ERRMSG( ferr_invalid_command, status,
      .		'Integer format allows one value per line on output '//
      .		list_format(:TM_LENSTR1(list_format)) ,
+     .		*5000 )
+ 5030	write (buff, *) value
+	CALL ERRMSG( ferr_nomessge, status,
+     .		'Unknown error writing data ' //
+     .		buff(:TM_LENSTR1(buff)) ,
+     .		*5000 )
+ 5040	CALL ERRMSG( ferr_nomessge, status,
+     .		'Unknown error writing missing-data line ' ,
      .		*5000 )
 
 	END

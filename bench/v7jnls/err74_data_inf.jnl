@@ -1,0 +1,12 @@
+! err74_data_inf.jnl
+! Issue 1878: Listing data containing only value of "infinity"
+! crashed Ferret.
+
+! value at L=14 is Infinity
+
+set mode ignore
+
+use inf.nc
+list/l=14 time
+
+set mode /last ignore

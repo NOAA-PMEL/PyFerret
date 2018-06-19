@@ -19,3 +19,6 @@ go err74_single_level_contour
 
 GO bn_reset
 go err74_transform_constants
+
+GO bn_reset
+go err74_data_inf

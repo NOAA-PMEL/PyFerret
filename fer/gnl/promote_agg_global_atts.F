@@ -38,14 +38,14 @@
 * Promote the attribute to a variable on the aggregate-axis. 
 * programmer -Ansley Manke from set_agg_var_atts
 * NOAA/PMEL, Seattle, WA - Science Data Integration Group
-
+*
+* Issue 1667
 * V741 *acm* 5/18 
 * Notes
-* 1. For now, promoting only string valued attributes.  For numeric
-* ones this follows easily, but for multi-valued would need to get
-* the max length and make another axis?  Or turn them into strings?
-* 2. Do the same for forecast sets?  What about ensembles of Forecasts
-* and FMRC's of ensembles?  Any issues?
+* 1. Global atts that match a file-variable name from the ensemble are
+*    promoted as "name_g_".  
+* 2. Does it make sense to do the same for forecast sets? If so then what 
+*    about ensembles of Forecasts and FMRC's of ensembles?  Any issues?
 
         INCLUDE 'tmap_dims.parm'
 #include "tmap_dset.parm"
@@ -80,12 +80,12 @@
      .          vlen, iref, rmemb, varid, ngatts, 
      .          imemb, attype, attlen, attoutflag, m_attid, m_attype, 
      .          m_attlen, m_attoutflag, i, ii, i1, ia, j, iatt, idim, 
-     .          iset, igrid, ngrid, nv, ivar, igrid_dummy, vtype, 
-     .          vtype_dummy, num_indices, slen, itype
+     .          iset, igrid, ngrid, nv, nv1, ivar, vtype, num_indices, 
+     .          slen, itype, max_attlen
 
         REAL    attvals(100)
 	CHARACTER TM_FMT*32, 
-     .          attname*128, vname*1, buff*128, label*8, bigstring*2048
+     .          attname*128, vname*1, buff*128, label*8, add_name*128
         CHARACTER*(maxlen) attstr
 
 * initialize
@@ -102,6 +102,7 @@ c	   label = 'FMRC'
         ELSE
 	   RETURN
 	ENDIF
+
 
 * Define the grid for the promoted variables
 
@@ -124,6 +125,12 @@ c	   label = 'FMRC'
 	vlen = 1
 	varid = 0
 	first_memb = .TRUE.
+
+	nv1 = 0  ! mark the 1st variable added
+	DO nv = 1, maxvars
+	   IF ( STR_SAME(ds_var_code(nv),char_init) .EQ. 0 ) EXIT
+	ENDDO
+	nv1 = nv - 1
 
 * Loop over member sets. Make a variable which is the member-set names
 * and variables with all global attributes in the collection, including
@@ -158,7 +165,8 @@ c	   label = 'FMRC'
 
 * All global attributes
 
-              CALL CD_GET_VAR_ATT_NAME (rmemb, varid, iatt, attname, status)
+              max_attlen = 0
+	      CALL CD_GET_VAR_ATT_NAME (rmemb, varid, iatt, attname, status)
 
 * get the reference attribute info
               CALL CD_GET_VAR_ATT_INFO (rmemb, varid, iatt, attname, 
@@ -169,9 +177,11 @@ c	   label = 'FMRC'
 
               IF (.NOT.TM_LEGAL_NAME(attname) ) CYCLE attloop 
 
-* Not doing numeric attributes, at least for now.
+* numeric attributes?
 
-              IF ( attype .NE. NCCHAR ) CYCLE attloop 
+              IF ( attype .NE. NCCHAR ) THEN
+	         max_attlen = MAX(attlen, max_attlen)
+              ENDIF
 
 * get the reference attribute value and info
               got_it = NC_GET_ATTRIB ( rmemb, varid, attname,
@@ -225,7 +235,11 @@ c	   label = 'FMRC'
                        DO j = 1, num_indices
                           i1 = string_array_result(j)
 * ... We already have promoted this attr. Move to next attr in set # iref 
-                          IF (ds_var_setnum(i1) .EQ. agg_dset) CYCLE attloop
+*     (check later whether this name is a variable name in member sets)
+                          IF (ds_var_setnum(i1) .EQ. agg_dset) THEN
+			     IF (ds_var_title(i1)(:12) .EQ. 'Global Att *')
+     .                          CYCLE attloop
+                          ENDIF
                        ENDDO
 	            ENDIF
 	         ENDIF
@@ -238,7 +252,7 @@ c	   label = 'FMRC'
 
                  IF (attype.EQ.NCCHAR .AND. m_attype.NE.NCCHAR ) CYCLE attloop
                  IF (attype.NE.NCCHAR .AND. m_attype.EQ.NCCHAR ) CYCLE attloop
-
+		 
 * check that we can get the attribute value for the member
                  got_it = NC_GET_ATTRIB (iset, varid,
      .                              attname,
@@ -247,6 +261,10 @@ c	   label = 'FMRC'
      .                              attstr, attvals )
 
                  IF (.NOT. got_it) CYCLE 
+		 
+                 IF ( m_attype .NE. NCCHAR ) THEN
+	            max_attlen = MAX(m_attlen, max_attlen)
+                 ENDIF
 
               ENDIF ! iatt.EQ.0 getting dataset names
 
@@ -256,11 +274,10 @@ c	   label = 'FMRC'
 * Create a variable in the aggregate dataset 
 * ds_var slot, fill with aggregate variable in aggregate dataset.
 
-           DO nv = 1, maxvars
-	      IF ( STR_SAME(ds_var_code(nv),char_init) .EQ. 0 ) EXIT
-           ENDDO
+	   nv = nv + 1
 
-           IF (iatt.EQ.0) THEN
+           add_name = attname
+	   IF (iatt.EQ.0) THEN
 	      buff = "Member dataset names in "//label(:TM_LENSTR1(label))
 
            ELSE
@@ -273,13 +290,49 @@ c	   label = 'FMRC'
                  iset = member_sets(ii)
 
                  IF (iset .EQ. pdset_dummy) CYCLE dsetcheck
-* ... check whether there are file variables with the same name as the global attr
-                 varcheck: DO ivar = 1, maxvars
-                    IF ( (ds_var_setnum(ivar) .EQ. iset) .AND. 
-     .                   (STR_SAME(ds_var_code(ivar), attname) .EQ. 0) ) THEN
-                       CYCLE attloop
-	            ENDIF
-                 ENDDO varcheck
+
+* ... check whether there is a ensemble file variable with the same name as the global attr
+
+* Is there already an ensemble variable with this name?
+                 CALL string_array_find_caseblind(ds_var_code_head,
+     .                                   add_name,
+     .                                   LEN(add_name),
+     .                                   string_array_result(1),
+     .                                   max_uvar,
+     .                                   num_indices)
+
+                 IF (num_indices .GE. 1) THEN
+                    DO j = 1, num_indices
+                       i1 = string_array_result(j)
+                       IF (ds_var_setnum(i1) .EQ. agg_dset) THEN
+			  IF (ds_var_title(i1)(:12) .NE. 'Global Att *') THEN
+
+* ... Matches a file var. Rename the attribute we are promoting. 
+*    
+*     Note its possible to construct files that fail with this. If there's a
+*     varaible and global att named sst, we promte the global one as "sst_g_".
+*     If there are also global atts named "sst_g_" then that's a conflict.
+*     Try a couple of combinations, otherwise just issue a note and skip this one.
+				
+			     add_name = attname(:TM_LENSTR1(attname))//"_g_"
+			     CALL TEST_PROMOTE_NAME (add_name, agg_dset, nsets, member_sets, status)
+			     IF (status .NE. ferr_ok) THEN
+				CALL WARN ( "Not promoting global attribute "//
+     .                                   attname(:TM_LENSTR1(attname))//" due to name collisions")
+			        CYCLE attloop
+			     ENDIF
+
+			  ELSE
+
+* ... We have already promoted this attr. Move to next attr in set # iref 
+			     CYCLE attloop
+
+			  ENDIF
+                       ENDIF
+
+                    ENDDO
+                 ENDIF
+
               ENDDO dsetcheck
 
 	   ENDIF
@@ -290,16 +343,23 @@ c	   label = 'FMRC'
 
            ds_var_setnum(nv)   = agg_dset
            CALL string_array_modify_upcase(ds_var_code_head, nv, 
-     .           attname, LEN(attname))
+     .           add_name, LEN(add_name))
 
            ds_var_titl_mod(nv) = " "
            ds_var_units(nv)    = " "
            ds_missing_flag(nv) = bad_val4
-           ds_bad_flag(nv)     =bad_val4
+           ds_bad_flag(nv)     = bad_val4
+
+* Will turn a multi-valued numeric global attribute into a set
+* of lists of numbers written to strings
+	   IF (m_attype .NE. NCCHAR) THEN
+	      IF (max_attlen .GT. 1) attype = NCCHAR
+	   ENDIF
+
            IF (attype .EQ. NCCHAR) THEN 
               ds_var_type(nv)  = ptype_string
            ELSE
-              ds_var_type(nv)  = ptype_float
+	      ds_var_type(nv)  = ptype_float
 	   ENDIF
 	   cd_scale_factor(nv) = 1.
 	   cd_add_offset(nv)   = 0.
@@ -319,7 +379,7 @@ c	   label = 'FMRC'
 * Hook the aggregated variable into the linked list structures
 	      
 	   nvars = nvars + 1
-	   CALL CD_ADD_VAR( agg_dset, attname, nvars, 
+	   CALL CD_ADD_VAR( agg_dset, add_name, nvars, 
      .            ds_var_title(nv), ds_var_units(nv), attype, 
      .            .FALSE., ds_bad_flag(nv), status)
 
@@ -327,7 +387,7 @@ c	   label = 'FMRC'
               iset = member_sets(imemb)
               IF (iset .EQ. pdset_dummy) CYCLE
               itype = cat_agg_gpromote
-              CALL CD_ADD_AGG_VAR_INFO (agg_dset, attname, imemb, itype, 
+              CALL CD_ADD_AGG_VAR_INFO (agg_dset, add_name, imemb, itype, 
      .             iset, igrid, iline, nv, status)
 	   ENDDO
 
@@ -341,9 +401,49 @@ c	   label = 'FMRC'
 
 	status = ferr_ok
  5000	CONTINUE
-c        DEALLOCATE(inote)
+
 	RETURN
 
  5200   CALL ERRMSG (ferr_internal, status,
      .               'attListCrptn: '//attname(:vlen),*5000)
+	END
+
+
+	SUBROUTINE TEST_PROMOTE_NAME (testname, agg_dset, nsets, member_sets, status)
+        INCLUDE 'errmsg.parm'      
+
+
+	CHARACTER*(*) testname
+	INTEGER	agg_dset, nsets, member_sets(*), status
+
+
+	INTEGER STR_SAME, ngatts, iset, imemb, iatt, varid
+	CHARACTER attname*128, vname*1
+
+	
+* varid for global attributes is 0
+        vname = '.'
+	varid = 0
+
+	DO iset = 1, nsets
+
+* Get number of global attributes from the member set
+           imemb = member_sets(iset)
+	   CALL CD_GET_VAR_NATTS (imemb, varid, vname(:1),
+     .                         ngatts, status)
+
+           DO iatt = 1, ngatts
+	      CALL CD_GET_VAR_ATT_NAME (imemb, varid, iatt, attname, status)
+	      IF ( STR_SAME(testname, attname) .EQ. 0 ) THEN
+	         status = ferr_aggregate_error
+	         GOTO 5000
+	      ENDIF
+	   ENDDO
+
+
+	ENDDO
+
+	status = ferr_ok
+
+ 5000	RETURN
 	END

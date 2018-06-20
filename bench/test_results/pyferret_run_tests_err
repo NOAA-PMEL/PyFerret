@@ -2013,10 +2013,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR: illegal use of transformation:  not all dimensions present on grid
-shade sst[x=@var,k=@var]
- **ERROR: illegal use of transformation:  not all dimensions present on grid
-shade sst[t=@AVE,Z=@ave]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5675,6 +5671,13 @@ list a[x=@evn:3]
 list a[x=@std]
  **ERROR: illegal use of transformation: A[X=???@WGT,D=0] applied to point
 list a[x=@wgt]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Coordinates out of order or missing on axis TIME at subscript 15
+           *** NOTE: A dummy axis of subscripts will be used
+ **ERROR: Unknown error writing data                   Infinity
+list/l=14 time
 *** Running ferret script: bn_use_agg.jnl
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets

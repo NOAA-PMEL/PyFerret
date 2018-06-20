@@ -1,7 +1,11 @@
 ! err581_illegal_trans.jnl 
 ! Ungraceful STOP if we do @VAR on an axis where there is no data
 
-set mode ignore_error
+! 6/2018 *acm* This syntax is no longer illegal. This was reporting cases 
+! where a multi-axis transformation had been set up but the grid doesn't 
+! have the axes. Now, we detect the fact that the grid doesn't have a Z axis, 
+! and do the transformation as a 1-D transformation.
+
 use coads_climatology
 shade sst[x=@var,k=@var]
 

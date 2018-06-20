@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 113359746 Jun 13 14:56 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 113322347 Jun 19 11:33 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: issue 1868: transforms of scalar constants
+Note: issue 1667, promote numeric atts, name collisions
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -22,7 +22,7 @@ FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Wed Jun 13 14:58:20 PDT 2018
+Beginning at Tue Jun 19 11:36:58 PDT 2018
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2633,10 +2633,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR: illegal use of transformation:  not all dimensions present on grid
-shade sst[x=@var,k=@var]
- **ERROR: illegal use of transformation:  not all dimensions present on grid
-shade sst[t=@AVE,Z=@ave]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5503,22 +5499,15 @@ Replacing definition of axis YAX
  LISTing to file tmp/one_var_fcst_1.nc
  LISTing to file tmp/one_var_fcst_6.nc
  LISTing to file tmp/consecutive_month_fcst.nc
-Replacing definition of axis TRUEMONTH
+Replacing definition of axis MONTHLY
  LISTing to file tmp/irregular_start_time_fcst.nc
-           *** NOTE: /FILES is deprecated.  Use /MEMBERS
-           *** NOTE: /FILES is deprecated.  Use /MEMBERS
-           *** NOTE: /FILES is deprecated.  Use /MEMBERS
-           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
-           *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, bn_aggregate_f.jnl
            *** NOTE: Dataset used in aggregation.  Canceling aggregation, my_fmrc
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
-           *** NOTE: /FILES is deprecated.  Use /MEMBERS
-           *** NOTE: Ambiguous coordinates on T axis: FCST_2[D=MY_FMRC_LETD_6] - FCST_2[D=MY_FMRC_LETD_1]
  **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
 DEFINE DATA/AGGREGAT/F my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc,tmp/fcst_2.nc,tmp/fcst_3.nc
  **TMAP ERR: non-existent or not on line
@@ -5823,7 +5812,7 @@ Replacing definition of axis TAX
 Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
-Replacing definition of axis TRUEMONTH
+Replacing definition of axis MONTHLY
  LISTing to file tmp/f01_e1_tu1.nc
  LISTing to file tmp/f01_e1_tu2.nc
  LISTing to file tmp/f01_e1_tu3.nc
@@ -6699,6 +6688,13 @@ list a[x=@wgt]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Coordinates out of order or missing on axis TIME at subscript 15
+           *** NOTE: A dummy axis of subscripts will be used
+ **ERROR: Unknown error writing data                  +Infinity
+list/l=14 time
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_use_agg
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
@@ -6857,4 +6853,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jun 13 15:06:18 PDT 2018
+Ended at Tue Jun 19 11:45:48 PDT 2018

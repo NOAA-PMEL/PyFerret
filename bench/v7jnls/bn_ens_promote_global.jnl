@@ -1,5 +1,5 @@
 ! bn_ens_promote_global.jnl
-! *acm* 6/4/2018
+! *acm* 6/4/2018   Issue 1667
 
 ! When making ensembles, promote global attributes of member
 ! sets to variables, so can examine, e.g. model_run description.
@@ -29,9 +29,6 @@ list model_run
 
 list/e=2:3 model_run
 
-
-! Global attributes common to all become global attributes of the ensemble
-
 set data fourfiles
 show att .
 
@@ -41,6 +38,18 @@ list title
 
 ! investigator is a global att in only some sets, is not in 1st set.
 list investigator
+
+! Numeric single-valued attributes become numeric variables.
+! any sets that don't have the attribute are represented by missing-value
+list number
+
+! Numeric multi-valued attributes become strings listing the values.
+! any sets that don't have the attribute are represented by null string
+list numlist
+
+! A global attribute matching a file variable is promoted using a changed name
+! Global attribute sst becomes promoted variable sst_g_
+list sst_g_
 
 ! Multiple ensembles defined
 cancel data/all

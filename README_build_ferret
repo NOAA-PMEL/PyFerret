@@ -1,51 +1,54 @@
-As of August 2011 we now have a single make procedure for compiling, linking, and 
-installing Ferret. 
+As of August 2011 we now have a single make procedure for compiling, linking, and
+installing Ferret.
 
 
 NetCDF4.1 or higher is required for building Ferret. The library NetCDF4.2 or higher
 is recommended. We recommend building NetCDF and HDF libraries yourself, so that these
 libraries and Ferret are all built with the same compiler. This takes a little time, but
-is not difficult. For building the libraries and Ferret, we have used gfortran. The 
-NetCDF downloads can be found here: http://www.unidata.ucar.edu/software/NetCDF/. Build 
+is not difficult. For building the libraries and Ferret, we have used gfortran. The
+NetCDF downloads can be found here: http://www.unidata.ucar.edu/software/NetCDF/. Build
 NetCDF4.+ with the appropriate version of hdf5 given in the NetCDF instructions; and make
 sure to build it with fortran (Starting with NetCDF4.1.3 there is a separate NetCDF fortran
-library). Specify the hdf5 libraries, --enable-NetCDF-4 --enable-dap for NetCDF-4 features 
+library). Specify the hdf5 libraries, --enable-NetCDF-4 --enable-dap for NetCDF-4 features
 and OPeNDAP dataset access.
 
-The current official release of Ferret is linked with NetCDF4.2 and has syntax for 
-writing NetCDF4 datasets (hdf5 chunking and compression.)  See the release notes 
-for Ferret v6.6 at http://porter.pmel.noaa.gov/Ferret/home/documentation/v6-6-release-notes
+The current official release of Ferret is linked with NetCDF4.4.1 and has syntax for
+writing NetCDF4 datasets (hdf5 chunking and compression.)
 
 
 To build Ferret:
 
-  * Under the FERRET directory you will find a file called site_specific.mk. Edit this file
-  and insert the locations of the HDF5, NetCDF, and readline directories.
+  * Under the FERRET directory you will find a file called "site_specific.mk.in".
+  Copy this file to "site_specific.mk" and edit this copy of the file,
+  inserting the locations of the HDF5, NetCDF, and readline directories.
+  Similarily, in the "external_functions/ef_utility/" subdirectory of the FERRET directory
+  is another "site_specific.mk.in" file that should be copied to "site_specific.mk"
+  in that directory and edited to provide appropriate values.
 
-  * Still in the top-level FERRET directory, run "make". This will compile and link Ferret, 
+  * Still in the top-level FERRET directory, run "make". This will compile and link Ferret,
   gksm2ps, external functions, and the fonts files. The Ferret executable is the file
   FERRET/fer/ferret_c
 
   * The build process creates the fonts files that will be needed for Ferret.
 
   * In the site_specific.mk file, you will see a section about the variable INSTALL_FER_DIR.
-  It is defined there as INSTALL_FER_DIR = $(FER_DIR). If you leave it set that way, then run 
+  It is defined there as INSTALL_FER_DIR = $(FER_DIR). If you leave it set that way, then run
   "make install" to install Ferret and the environment under that directory. It will also
   create the tar files fer_environment.tar.gz and fer_executables.tar.gz in directory $(FER_DIR).
-  
-  Alternatively you may want to set INSTALL_FER_DIR to some local directory. Now run "make 
-  install". This will install Ferret under the directory you defined and also create 
-  fer_environment.tar.gz and fer_executables.tar.gz as if they came from the Ferret 
-  distribution. Now you can get the Datasets tar file from 
-  ftp://ftp.pmel.noaa.gov/ferret/pub/data/fer_dsets.tar.gz 
-  and follow the installation instructions
-  http://ferret.pmel.noaa.gov/static/Downloads/ferret_installation_and_update_guide_v600.html
 
-  * Once you have installed Ferret, you'll want to test it. Running some simple scripts, 
-  such as "yes? go ptest" is a good place to start. If you wish, go into the FERRET/bench 
-  directory to run the suite of benchmark tests. There is a simple README file which will 
-  get you started with running the Ferret benchmark scripts. You will run a shell script 
-  called "run_all" which starts the benchmark job. It tests a wide variety of Ferret's 
+  Alternatively you may want to set INSTALL_FER_DIR to some other directory.  Now run
+  "make install".  This will install Ferret under the directory you defined and also
+  create fer_environment.tar.gz and fer_executables.tar.gz as if they came from the
+  Ferret distribution.  Now you can get the Datasets tar file from
+  https://github.com/NOAA-PMEL/FerretDatasets
+  which is needed to complete the installation by running the "bin/Finstall" script
+  in the FERRET directory and selecting option 2 (generate the ferret_paths scripts).
+
+  * Once you have installed Ferret, you'll want to test it. Running some simple scripts,
+  such as "yes? go ptest" is a good place to start. If you wish, go into the FERRET/bench
+  directory to run the suite of benchmark tests. There is a simple README file which will
+  get you started with running the Ferret benchmark scripts. You will run a shell script
+  called "run_all" which starts the benchmark job. It tests a wide variety of Ferret's
   capabilities and makes a number of plots. If it runs successfully you will see these lines:
 
 about to run test of .ferret script
@@ -60,5 +63,5 @@ Checking PLT, GIF and PS files.......
   will differ a bit from one system to another.
 
   Running all the way through the benchmark suite is a good test of Ferret and the Ferret
-  installation. If you have questions about the results you are welcome to write us at the 
+  installation. If you have questions about the results you are welcome to write us at the
   contact-Ferret email address, see http://ferret.pmel.noaa.gov/Ferret/support.

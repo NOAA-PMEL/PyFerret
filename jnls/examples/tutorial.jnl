@@ -6,6 +6,7 @@ SAY   ... setting up demo environment ...
 ! updated with V3.01 features 11/93 *sh*
 ! don't shrink the 4-panel anomaly window - too slow under XGKS 5/94 *sh*
 ! *acm* 7/01 update /xlimits and /ylimits to /hlimits and /vlimits
+! *acm* 6/18 cancel mode logo, use etopo60 not etopo120
 
 ! eliminate the program state left by previous activities
 CANCEL REGION

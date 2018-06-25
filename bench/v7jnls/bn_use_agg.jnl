@@ -6,7 +6,9 @@
 
 ! The .agg file in a directory with path spelled out, but w/o the .agg extension
 
-use  /home/users/ansley/build/working/FERRET/bench/v7jnls/four
+! Assumes the current working directory is the bench subdirectory
+define symbol pwd `SPAWN("pwd")`
+use  ($pwd)/v7jnls/four
 show data
 can data/all
 

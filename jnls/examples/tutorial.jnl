@@ -6,6 +6,7 @@ SAY   ... setting up demo environment ...
 ! updated with V3.01 features 11/93 *sh*
 ! don't shrink the 4-panel anomaly window - too slow under XGKS 5/94 *sh*
 ! *acm* 7/01 update /xlimits and /ylimits to /hlimits and /vlimits
+! *acm* 6/18 cancel mode logo, use etopo60 not etopo120
 
 ! eliminate the program state left by previous activities
 CANCEL REGION
@@ -15,6 +16,7 @@ CANCEL VIEWPORTS
 SET WINDOW/SIZE=0.7/ASPECT=.75:axis   ! default
 SET GRID ABSTRACT
 SET MODE CALENDAR:DAYS
+CANCEL MODE LOGO
 GO black
 SET MODE VERIFY      ! show command file lines at the screen
 
@@ -142,9 +144,9 @@ MESSAGE
 
 ! To begin we inform FERRET of the "data set" of interest using the
 ! SET DATA command.  The ETOPO60 data set contains the relief of the
-! surface of the earth at 120 minute resolution
+! surface of the earth 
 
-SET DATA etopo120
+SET DATA etopo60
 
 ! ******************************************************************** 
 MESSAGE 

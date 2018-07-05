@@ -90,17 +90,15 @@ if ( $status == 0 ) then
 	set machine = "x$machine"
 endif
 
-# *acm* 4/5/05 optionally do externally-linked external function tests 
-# 
-echo "Run tests of externally-linked external functions? Enter y or n"
-set do_shared_obj = $<
-
-
-# which external function libraries to use
+#acm remove extra question about running external-functions tests
+# if running ef tests, which external function libraries to use
 set efdir = n
-if ( $do_shared_obj == "y" ) then
-  echo "Enter the directory containing the external function libraries"
-  set efdir = $<
+echo "Enter the directory containing the external function libraries or . to skip those tests"
+set efdir = $<
+if  ( $efdir == "." ) then
+  set do_shared_obj = "n"
+else 
+  set do_shared_obj = "y"
   echo "Contents of "$efdir "fcns a* :"
   echo " "
   ls -1 $efdir/a*
@@ -179,8 +177,12 @@ echo "Procedure run_all to run all FERRET benchmarks" >&$log_file
 
 echo "Running FERRET version $fver" >>&$log_file
 ls -l $fver >>&$log_file
-echo "Using external functions from $efdir" >>&$log_file
-echo "Running the tests of external functions $do_shared_obj" >>&$log_file
+if ( $do_shared_obj == "y" ) then
+   echo "Using external functions from $efdir" >>&$log_file
+   echo "Running the tests of external functions $do_shared_obj" >>&$log_file
+else
+   echo "Not running the tests of external functions " >>&$log_file
+endif
 echo "Benchmark run by $bmarker" >>&$log_file
 echo "Note: $bcomment" >>&$log_file
 echo "ncdump output will be in $ncdump_file, and appended to this log file " >>&$log_file

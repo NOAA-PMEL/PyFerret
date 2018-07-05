@@ -81,6 +81,9 @@
 * V702 *sh* 11/16 mods for trac #2428 - calculation in gathered fragments
 * V72  *acm* 6/17 Ticket 2539: Do not set res to bad-value for ave, din.
 *                 Weights of zero or non-zero mark whether data is found.
+* V741 *acm* 7/18 Issue 1880: bug in the box sizes changes with the v7.02 
+*                 checkin. Test for the region not aligned with first or 
+*                 last grid cell was incorrect.
 
 	IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -217,12 +220,15 @@
 	   DO i = ind_lo, ind_hi
 	      boxes(i+offset)  = BOX_SIZE( i, grid, idim )
 	   ENDDO
+* Low and high edges of end cells
+	   lo_box_lo = TM_WORLD(ind_lo, grid, idim, box_lo_lim)
+	   hi_box_hi = TM_WORLD(ind_hi, grid, idim, box_hi_lim)
 * 11/16 re-engineered the 8/92 fix - that axis region may lie in a single box
-	   lo_box_lo = cx_lo_ww(idim,com_cx)
-	   hi_box_hi = cx_hi_ww(idim,com_cx)
-! ... the preceding is a more efficient way to obtain
-!	   lo_box_lo = TM_WORLD(ind_lo, grid, idim, box_lo_lim)
-!	   hi_box_hi = TM_WORLD(ind_hi, grid, idim, box_hi_lim)
+*       in which case use the requested region limits
+	   IF (ind_lo .EQ. ind_hi) THEN
+	      lo_box_lo = cx_lo_ww(idim,com_cx)
+	      hi_box_hi = cx_hi_ww(idim,com_cx)
+	   ENDIF
 * ... trim if partial box at lower end
 	   IF ( lo_box_lo .LT. cx_lo_ww(idim,res_cx) ) boxes(ind_lo+offset) =
      .         boxes(ind_lo+offset) - 

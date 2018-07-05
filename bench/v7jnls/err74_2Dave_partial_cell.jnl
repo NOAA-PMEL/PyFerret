@@ -1,0 +1,59 @@
+! err74_2Dave_partial_cell.jnl
+! 7/5/2019 ACM
+!
+! Issue 1880: 2D average, with a partial cell at the start or end
+! has been incorrect since v7.2, when there were updates to memory 
+! managementand scatter/gather transformations.
+
+! Define a simple variable
+def ax/edge/x=0:2:1 xax; def ax/edge/y=0:2:1 yax; let a = x[gx=xax] + y[gy=yax]
+
+list/nohead a
+list/nohead a[x=@ave,y=@ave]
+
+! compare 2D, XY ave with separate averages X then Y and Y then X
+let b = a[x=@ave]
+let c = a[y=@ave]
+
+list/nohead a[x=@ave,y=@ave], b[y=@ave], c[x=@ave]
+
+! partial cell at the top
+list/nohead/x=0:1.5 a[x=@ave,y=@ave], b[y=@ave], c[x=@ave]
+
+! Partial cell at the bottom
+list/nohead/x=0.5:2 a[x=@ave,y=@ave], b[y=@ave], c[x=@ave]
+
+!@DIN
+
+list/nohead a[x=@din,y=@din]
+
+! compare 2D, XY din with separate def integral X then Y and Y then X
+let b = a[x=@din]
+let c = a[y=@din]
+
+list/nohead a[x=@din,y=@din], b[y=@din], c[x=@din]
+
+! partial cell at the top
+list/nohead/x=0:1.5 a[x=@din,y=@din], b[y=@din], c[x=@din]
+
+! Partial cell at the bottom
+list/nohead/x=0.5:2 a[x=@din,y=@din], b[y=@din], c[x=@din]
+
+
+
+! STD multi dimension
+! set list/prec=5  (matches results of Ferret v7.0)
+
+def ax/edge/x=0:22:1 xax
+def ax/edge/y=0:22:1 yax
+let a = x[gx=xax] + y[gy=yax]
+
+list/nohead a[x=@std,y=@std]
+
+! partial cell at the top
+list/nohead/x=0:1.5 a[x=@std,y=@std]
+
+! Partial cell at the bottom
+list/nohead/x=0.5:2 a[x=@std,y=@std]
+
+set list/prec=4

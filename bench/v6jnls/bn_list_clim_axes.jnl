@@ -1,12 +1,18 @@
 ! bn_list_clim_axes.jnl
 ! *acm* 3/16
+! *acm* 7/18 specific list of clim axes to show, and include month_julian
+
 ! Show and list coordinates for climatological axes 
 ! that are pre-defined in Ferret
+! 
 
 show axis seasonal_reg
-show axis month*
+show axis month_irreg, month_reg, month_gregorian, month_noleap, month_360_day, \
+ month_all_leap, month_julian
+
 show axis/t month_irreg
 show axis/t month_gregorian
 show axis/t month_noleap
 show axis/t month_360_day
 show axis/t month_all_leap
+show axis/t month_julian

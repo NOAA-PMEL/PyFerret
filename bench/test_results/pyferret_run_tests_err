@@ -5678,6 +5678,13 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: A dummy axis of subscripts will be used
  **ERROR: Unknown error writing data                   Infinity
 list/l=14 time
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+Replacing definition of axis XAX
+Replacing definition of axis YAX
 *** Running ferret script: bn_use_agg.jnl
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets

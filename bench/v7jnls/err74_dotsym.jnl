@@ -1,0 +1,11 @@
+! err74_dotsym.jnl
+! 7/9/18 ACM
+! Issue 1881 Large number of points in PLOT/OVER/VS/SYM=dot hangs Ferret
+
+define axis/x=1:359:2/units=degrees_east xaxis
+define axis/y=-90:90:1/units=degrees_north yaxis
+let xpts = x[gx=xaxis]  + 0*y[gy=yaxis]
+let ypts = 0* x[gx=xaxis]  + y[gy=yaxis]
+shade xpts
+plot/vs/over/sym=dot xpts, ypts
+

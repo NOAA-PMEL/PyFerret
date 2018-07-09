@@ -46,6 +46,8 @@
 *  10/2001 Buffer calls to GPM.  Rename X and Y to xdot, ydot for clarity.
 * V73  3/18 *kms*  For clarity, append MD to makedot.cmn values IPT, XDOT, 
 *                  and YDOT; make MDOT (99) a makedot.cmn parameter DOTSYMIM
+* V741 7/18 *acm*  Issue #1881
+*                  Reset IPTMD after the call to plot a buffer's worth pf points
 
 C
 C	This routine creates a binary file that can be used to
@@ -95,7 +97,7 @@ C
 	    IPTMD=IPTMD+1
 	    IF(IPTMD.GE.MAXDOT)THEN
 		CALL DOIT_makedot(IPTMD,XDOTMD,YDOTMD)
-		IPT=2
+		IPTMD=2
 		XDOTMD(1)=XDOTMD(MAXDOT)
 		YDOTMD(1)=YDOTMD(MAXDOT)
 	    ENDIF

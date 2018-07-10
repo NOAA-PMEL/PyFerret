@@ -25,3 +25,6 @@ go err74_data_inf
 
 GO bn_reset
 go err74_2Dave_partial_cell
+
+GO bn_reset
+go err74_dotsym

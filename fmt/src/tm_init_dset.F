@@ -116,6 +116,7 @@
 * V702 11/16 *acm* Ticket 2490, add coaching to error on tseries aggregations
 * v741 5/18 *acm* Issue 1651 - "use my" will look for my.agg and run it as a script to
 *                 initialize an aggregation. If given w/o .agg, a hack will look for it.
+* v742 7/18 *acm* add .agg to the error message when file not found.
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -159,8 +160,8 @@
 	CHARACTER*4	known_type(num_known)
 	CHARACTER*4	format_rev(num_revs,num_known)
 	CHARACTER*13	TM_STRING
-	CHARACTER	def_ext*4, def_cdf*4, def_nc*3, def_des*4, ext*4, 
-     .                  cdf_path*12, path*12
+	CHARACTER	def_ext*4, def_cdf*4, def_nc*3, def_des*4, 
+     .                  def_agg*4, ext*4, cdf_path*12, path*12
         CHARACTER*2048   TM_CLEAN_FILENAME
 	CHARACTER*42	reading_nml
 	CHARACTER*512   TM_INQ_PATH
@@ -178,7 +179,7 @@
      .				   '    ',
      .				   '    '/
 	DATA		def_ext  /'.nc'/, def_cdf/'.cdf'/
-        DATA            def_nc/'.nc'/, def_des/'.des'/
+        DATA            def_nc/'.nc'/, def_des/'.des'/, def_agg/'.agg'/
 
         DATA            cdf_path/'FER_DATA'/
 
@@ -319,7 +320,7 @@
 *  commands in a script. Look in scripts directories
 
 	   IF ( status .NE. merr_ok ) THEN
-	      ext  = '.agg'
+	      ext  = def_agg
 	      path = 'FER_GO'
 	      ds_dset_type = 'CDF'
 	      des_name = TM_INQ_PATH(dset_name,path,ext,.FALSE.,status)
@@ -593,7 +594,8 @@
      .			unspecified_int4, no_stepfile,
      .			'Searched $FER_DESCR and $FER_DATA for '
      .                  //risc_buff(:TM_LENSTR1(risc_buff))//
-     .                  '('//def_ext//','//def_cdf//','//def_des//')',
+     .                  '('//def_ext//','//def_cdf//','//def_des//
+     .                  ','//def_agg//')',
      .			no_errstring, *9950)
         ELSE
  	   CALL TM_ERRMSG (merr_notmounted, status, 'TM_INIT_DSET',

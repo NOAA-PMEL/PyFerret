@@ -94,6 +94,8 @@ longtitle.nc
 longvname.nc
 lonlat.dat
 lonlat.nc
+monthA.nc
+monthB.nc
 myfile.nc
 my_file_vars.nc
 mypack.nc

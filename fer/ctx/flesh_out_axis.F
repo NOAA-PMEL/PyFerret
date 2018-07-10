@@ -88,6 +88,7 @@
 *                  variable is a constant. So let a = 2; list a[x=@trans] will no 
 *                  longer return 2, but will be either computed (for NGD and NBD),
 *                  or will be caught as an error instead of returning 2.
+* V741  *acm* 7/18 Issue 1868, do not wipe out the trans setting in the case of a constant
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -214,7 +215,6 @@
 	   cx_lo_ww( idim, cx ) = unspecified_val8
 	   cx_hi_ww( idim, cx ) = unspecified_val8
 	   cx_delta( idim, cx ) = unspecified_val8
-	   IF (.NOT.abst_nolim) cx_trans( idim, cx ) = trans_no_transform
 * kob 9/97 - need to reset cx_calendar as well
 	   IF (is_time) THEN
               cx_calendar(idim,cx) = .FALSE.

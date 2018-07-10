@@ -1,0 +1,55 @@
+! err74_save_bounds.jnl
+! Appending irregular time to a file without time bounds.
+! Caused an error: Ferret wanted to write bounds anyway.  If the file
+! being appended does not have bounds, and they didn't specify /BOUNDS, 
+! then just append w/o bounds.
+!
+! v7.4 and previous had a bug also with /NOBOUNDS when the axis is 
+! defined as /MONTHLY. It wrote the bounds anyway.
+
+define axis/monthly/t=1-jan-2000:31-dec-2020:1/t0=1-jan-2000 monthax
+let tvar = l[gt=monthax]
+save/clobber/nobounds/file=a.nc tvar
+
+cancel var tvar
+cancel axis monthax
+
+! Note there is no MONTHAX:bounds = "MONTHAX_bnds" attribute
+sp ncdump -h a.nc 
+
+! Write a couple of subsets. 
+
+! First, with save/nobounds
+use a
+save/nobounds/clobber/t=1-mar-2014:15-feb-2016/file=monthA.nc tvar
+sp ncdump -h monthA.nc
+
+! If we don't specify anything for bounds, this file is saved with bounds
+save/clobber/file=monthB.nc/t=1-mar-2016:31-dec-2018 tvar
+sp ncdump -h monthB.nc
+
+can var/all; can axis monthax; can data/all
+
+! Now we want to append the data in monthB.nc to monthA.nc
+use monthB
+
+! Previously this was an error: complained about not finding MONTHAX_bnds variable.
+! Now the save detects that the original file doesn't have bounds, and just doesn't
+! write them.
+
+save/append/file=monthA.nc/t=1-mar-2016:31-dec-2017  tvar
+
+! File monthA is written without error and does not havet time bouunds
+! The appended axis, now of length without time bounds
+sp ncdump -h monthA.nc
+
+! File monthA is written without error and does not havet time bouunds
+! The appended axis, now of length without time bounds
+sp ncdump -h monthA.nc
+
+
+! Its still an error to try to append with /bounds
+set mode ignore
+save/append/file=monthA.nc/t=1-dec-2018:31-dec-2018/bounds  tvar
+
+set mode/last ignore

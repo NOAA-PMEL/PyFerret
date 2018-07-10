@@ -130,6 +130,7 @@
 *                 TIME but with no attributes was not marked in the T direction.
 *                 An axis made from a dimension-only is not written out as the 
 *                 record axis.
+* V74  *acm*  7/2018 Issue # 1882, save/nobounds on monthly axis
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -220,7 +221,7 @@
          cal_id = TM_GET_CALENDAR_ID ( line_cal_name(iaxis) )
          IF (cal_id .NE. d360) THEN
             is_regular = .FALSE.
-            do_bounds = 1
+            IF (do_bounds .GE. 0) do_bounds = 1
          ENDIF
       ENDIF
 

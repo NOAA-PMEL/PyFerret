@@ -87,6 +87,7 @@
 *                also: bug fix of unitialized "count" variable
 * v73+ *acm* 12/2017 Issue # 1846, writing user-variables with scale_factor, add_offset
 * V74  *acm*  2/2018 Issue # 1861, handling missing- and _FillValue with scale and offset
+* V74  *acm*  7/2018 Issue # 1882, save/append with bounds and irreg data
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -485,7 +486,19 @@ c               slab_max(idim) = hi(idim)
 #else
 	    cdfstat = NF_INQ_VARID(cdfid, name(:elen),  bndid)
 #endif
-	    IF (cdfstat .NE. NF_NOERR ) GOTO 5400
+	    IF (cdfstat .NE. NF_NOERR ) THEN
+
+* If bounds variable not found in file we're appending to, and the user 
+* didn't specificially ask for /BOUNDS, just don't write bounds here either
+	       IF (do_bounds .EQ. 0) THEN
+	          writebounds = .FALSE.
+	          GOTO 340
+	       ELSE
+	          GOTO 5400
+	       ENDIF
+	       
+	    ENDIF
+	       
 
             DO 330 i100 = lorec, hirec, 100
                hilim = MIN(i100+99, hirec)
@@ -519,8 +532,9 @@ c               slab_max(idim) = hi(idim)
  330        CONTINUE
          ENDIF
          ENDIF
+ 340	 CONTINUE
 
-      ENDIF
+      ENDIF ! IF ( lorec
 
 *xxxx   Never scale the missing flag: instead we read data, insert the default missing-flag
 *xxxx   for internal use in computing etc, and then on output restore the
@@ -631,9 +645,8 @@ c unpack again, skipping missing and going back to Ferret internal bad-flag.
  5400  CALL TM_ERRMSG
      . ( cdfstat+pcdferr, status, 'CD_WRITE_VAR', 
      .   no_descfile, no_stepfile, name(:elen)//' not found. '//
-     . 'Attempt to append irregular coordinates to NetCDF '//
-     . 'axis which has no bounds attribute. Write data originally with '//
-     . 'the /BOUNDS qualifier.',
+     . 'Attempt to append to NetCDF axis having no bounds attribute. '//
+     . 'Use /NOBOUNDS or rewrite original data with bounds.',
      . no_errstring, *5900 )
 
 * error exit

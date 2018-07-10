@@ -28,3 +28,7 @@ go err74_2Dave_partial_cell
 
 GO bn_reset
 go err74_dotsym
+
+
+GO bn_reset
+go err74_save_bounds

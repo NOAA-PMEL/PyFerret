@@ -2698,9 +2698,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file t_bug.nc
 Replacing definition of axis T_AXIS
  LISTing to file t_bug.nc
-NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
- T_AXIS_bnds not found. Attempt to append irregular coordinates to NetCDF axis which has no bounds attribute. Write data originally with the /BOUNDS qualifier.
-LIST/FORMAT=CDF/FILE=t_bug.nc/APPEND var
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3531,10 +3528,10 @@ ooooooooooooooooooooooooooooooooooooooooooo
              nosuchfile.nc
 SET DAT/FORM=CDF nosuchfile.nc
  **TMAP ERR: non-existent or not on line
-             Searched $FER_DESCR and $FER_DATA for nosuchfile(.nc ,.cdf,.des)
+             Searched $FER_DESCR and $FER_DATA for nosuchfile(.nc ,.cdf,.des,.agg)
 SET DAT/FORM=CDF nosuchfile
  **TMAP ERR: non-existent or not on line
-             Searched $FER_DESCR and $FER_DATA for snoopy(.nc ,.cdf,.des)
+             Searched $FER_DESCR and $FER_DATA for snoopy(.nc ,.cdf,.des,.agg)
 SET DAT/FORM=CDF snoopy
  **netCDF error
              NetCDF: Unknown file format (OPeNDAP/netCDF Error code -51)
@@ -5671,6 +5668,10 @@ list a[x=@evn:3]
 list a[x=@std]
  **ERROR: illegal use of transformation: A[X=???@WGT,D=0] applied to point
 list a[x=@wgt]
+ **ERROR: illegal use of transformation: A[X=???@SBX:3,D=0] applied to point
+list a[x=@sbx]
+ **ERROR: illegal use of transformation: A[X=???@FAV:3,D=0] applied to point
+list a[x=@fav]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5688,6 +5689,23 @@ Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+ LISTing to file a.nc
+ LISTing to file monthA.nc
+ LISTing to file monthB.nc
+           *** NOTE: Not deleted: MONTHAX
+           *** NOTE: Axis is in use by grid GSI1
+ LISTing to file monthA.nc
+ LISTing to file monthA.nc
+           *** NOTE: Appending to NetCDF record axis which has no bounds attribute.
+           *** NOTE: This will result in incorrect box sizes on record axis: MONTHAX
+           *** NOTE: Write the data initially with the /BOUNDS qualifier
+NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
+ MONTHAX_bnds not found. Attempt to append to NetCDF axis having no bounds attribute. Use /NOBOUNDS or rewrite original data with bounds.
+LIST/FORMAT=CDF/append/file=monthA.nc/t=1-dec-2018:31-dec-2018/bounds  tvar
 *** Running ferret script: bn_use_agg.jnl
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets

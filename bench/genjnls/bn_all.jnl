@@ -1186,7 +1186,7 @@ GO bn_A_I_format
 GO bn_reset bn_center_keylab
 GO bn_center_keylab
 
-! *********** v7.4+ Additions ***********
+! *********** v7.42 Additions ***********
 
 go bn_reset bn741_bug_fixes
 GO bn741_bug_fixes
@@ -1196,6 +1196,12 @@ GO bn_use_agg
 
 go bn_reset bn_ens_promote_global
 GO bn_ens_promote_global
+
+! *********** v7.43 Additions ***********
+
+go bn_reset bn743_bug_fixes
+Go bn743_bug_fixes
+
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

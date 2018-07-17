@@ -1,0 +1,14 @@
+! err742_fillvalue_nan.jnl
+! issue 1883.  _FillValue = nan, no missing_value
+
+use fill_is_nan
+
+show att TEMP_IR_UNCOR_MEAN
+show att O2_RBR_SAT_MEAN
+
+! previously TEMP_IR_UNCOR_MEAN with only a _FillValue of NaN 
+! and no missing_vlue had no fill or missing attribute written
+
+save/clobber/file=a.nc TEMP_IR_UNCOR_MEAN,O2_RBR_SAT_MEAN
+sp ncdump -h a.nc
+

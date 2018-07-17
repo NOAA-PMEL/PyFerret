@@ -138,6 +138,8 @@
 *                 write correct attributes to netCDF output
 * V741 *acm* 6/18 V7.40, Issue 1332: write global attributes, and a fix for scalar numeric
 *                 attributes 6/6/18.
+* V743 *acm* 7/18 Issue 1883: var with only a _FillValue which is NaN got no
+*                 _FillValue or missing_value attribute written
 
         include 'netcdf.inc'
 #include "netcdf_declareUnderscore.inc"
@@ -233,7 +235,7 @@
 
 * local parameter declarations
 
-        INTEGER         TM_GET_CALENDAR_ID, 
+        INTEGER         TM_GET_CALENDAR_ID, TM_CHECK_NAN,
      .                  buff_size, sslimits0, 
      .			wwlimits0, cal_id, tax, varid, vartype, nvdims, 
      .                  nvatts, vdims(8), iatt, slen, alen, istat, 
@@ -762,7 +764,9 @@
                        ENDIF
 
 * Ferret doesn't keep the values corresponding to two flags in the data that it stores.
-* If there was a _FillValue in the input file, and it hasn't been changed, write it.
+* If there was a _FillValue in the input file, and its the bad-flag, write it.
+* Issue #1883: If there is a _FillValue and it's NaN, it will be different from the
+* bad-flag. We do want to write it.
 
 		       IF (.NOT.got_fill ) THEN 
 		       attname = '_FillValue'
@@ -776,7 +780,8 @@
 		       IF (attoutflag .NE. 0) got_it = NC_GET_ATTRIB_DP  !.AND. .NOT.got_missin
      .                     (dset, varid, attname, do_warn, varcode, attlen, 
      .                     attoutflag, fill_in)
-                          IF (got_it .AND. (fill_in.EQ.bad .OR. fill_in.EQ.miss_in) ) THEN
+                          IF ( TM_CHECK_NAN(fill_in) .EQ. 1   ) fill_in = bad
+			  IF (got_it .AND. (fill_in.EQ.bad .OR. fill_in.EQ.miss_in) ) THEN
 			     dvals(1) = fill_in
                              vals(1) = dvals(1)
                              attype = outtype

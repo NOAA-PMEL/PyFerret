@@ -1,4 +1,4 @@
-! err742_fillvalue_nan.jnl
+! err741_fillvalue_nan.jnl
 ! issue 1883.  _FillValue = nan, no missing_value
 
 use fill_is_nan

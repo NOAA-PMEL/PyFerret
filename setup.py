@@ -148,6 +148,10 @@ if bind_and_hide_internal:
     # fer/ef_utility) will still be visible.
     addn_link_args.extend([ "-Wl,-Bsymbolic", "-Wl,--exclude-libs,ALL"])
 
+if os.uname()[0] == 'Darwin':
+    # For Mac OSX, leave room for library path renames
+    addn_link_args.append("-Wl,-headerpad_max_install_names")
+
 # Get the list of C source files in pyfermod
 src_list = [ ]
 for srcname in os.listdir("pyfermod"):

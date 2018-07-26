@@ -203,6 +203,8 @@
 * V74+ *acm* 5/18 Don't upcase the title given on a SET DATA/TITLE
 * v741 5/18 *acm* Issue 1651 - "use my" will look for my.agg and run it as a script to
 *                 initialize an aggregation. If given w/o .agg, a hack will look for it.
+* v743  7/18 *acm Issue 1887, numeric dataset names w/o extension, better test 
+*                 for whether it's just a digit, "use n".
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -534,9 +536,17 @@ c *kob* 4/97
 *            a character and signal an error when doing an internal read into an
 *            integer variable - e.g. 11111112_3.nc was being read as an integer so Ferret
 *            was trying to find dataset 11111112 and reporting an error
+* *acm* 7/18 Previous test using TM_DIGIT on each individual char, which decided
+*            that 1979-2010 is a number, causing a crash just below on the READ. 
+
 	      buff_len = TM_LENSTR(buff1)
               DO 730 ich = 1, buff_len
-		IF ( .NOT. TM_DIGIT(buff1(ich:ich))) GOTO 740
+		c1 = buff1(ich:ich)
+		IF ( ( c1.GE.'0' .AND. c1.LE.'9' )) THEN
+		   CONTINUE
+		ELSE
+		   GOTO 740
+		ENDIF
  730	      CONTINUE
 	      READ (buff1,*) dset_num
 #elif MANDATORY_FORMAT_WIDTHS
@@ -544,11 +554,12 @@ c *kob* 4/97
 #else
 	      READ (buff1,'(I)',ERR=740) dset_num
 #endif
-* ... check for valid number given
+* ... check for valid number given 
+
 	      IF   ( dset_num .LT. 1
      .	      .OR.   dset_num .GT. maxdsets
-     .	      .OR.   dset_num .GT. max_gfdl_dsets )		GOTO 5110
-	      IF ( ds_name( dset_num ) .EQ. char_init2048)	GOTO 5110
+     .	      .OR.   dset_num .GT. max_gfdl_dsets )	        GOTO 5110
+	      IF ( ds_name( dset_num ) .EQ. char_init2048) 	GOTO 5110
 	      GOTO 745
 	   ENDIF
 

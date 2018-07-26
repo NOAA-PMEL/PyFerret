@@ -55,6 +55,8 @@ C             1545. In this case at label 70, XINTER is set to zero, and that
 C             value is used in computing YINTR and ZINTR. Once XYINTR is
 C             set to the xmin or xmax, then need to call TRANS again and
 C             define values before ABPLT is called.
+C *acm*  7/18 Fix ticket 1884. Use a computed tolerance relative to the size of
+C             the numbers when deciding whether the intercept is "on" the boundary.
 ****************************************************************
 C     CALL XYZPLT
 
@@ -68,13 +70,16 @@ C FERRET mod - for explicit declarations - 9-19-88
 C      DIMENSION XMXMN(2),YMXMN(2)
       REAL XMXMN(2),YMXMN(2)
       EQUIVALENCE (XMXMN(1),XMAX),(YMXMN(1),YMAX)
-      REAL xinter, yinter, zinter, dx, dy, dz, cosx, cosy, cosz, dist
+      REAL xinter, yinter, zinter, dx, dy, dz, cosx, cosy, cosz, 
+     .     dist, tol
 
       include 'pltcom_dat.decl'
       include 'PLTCOM.DAT'
 
 C end of FERRET mod
 ******************************************************************
+      tol = 1.e-3
+
 C     CHECK THE PLOTTING MODE.
 
       IF(PMODE .EQ. ALPHA)GO TO 30
@@ -198,8 +203,8 @@ C     CALCULATE THE INTERCEPT.
 C     CHECK THE INTERCEPT TO INSURE THAT IT IS ON THE BOUNDARY
 C     OF THE WINDOW
 
-      IF(XINTER + 0.001 .GE. XMIN .AND. XINTER - 0.001 .LE. XMAX)
-     * GOTO 80
+      tol = 0.01* (ABS(xmin)+ABS(xmax))/2.
+      IF(XINTER + tol .GE. XMIN .AND. XINTER - tol .LE. XMAX) GOTO 80
 
 C     THE POINT IS OUTSIDE THE VERTICAL LIMITS OF THE WINDOW.
 C     CALCULATE THE INTERCEPT.
@@ -221,8 +226,8 @@ C     CALCULATE THE INTERCEPT.
 C     CHECK THE INTERCEPT TO INSURE THAT IT IS ON THE BOUNDARY
 C     OF THE WINDOW.
 
-      IF(YINTER + 0.001 .LT. YMIN .OR. YINTER - 0.001 .GT. YMAX)
-     * GO TO 190
+      tol = 0.01* (ABS(ymin)+ABS(ymax))/2.
+      IF(YINTER + tol .LT. YMIN .OR. YINTER - tol .GT. YMAX) GOTO 190
 
 C     TRANSFORM THE INTERCEPT TO THE SCREEN COORDINATE SYSTEM.
 
@@ -239,10 +244,11 @@ C     LOSFLG = 0
 ******************************************************************
 C FERRET mod - bypass GKS clipping - 9-19-88
       IF ( ptype .LT. 3 ) THEN
-          IF(AOLD - 0.001 .GT. AMAX)LOSFLG = 1
-          IF(AOLD + 0.001 .LT. AMIN)LOSFLG = 2
-          IF(BOLD - 0.001 .GT. BMAX)LOSFLG = LOSFLG + 4
-          IF(BOLD + 0.001 .LT. BMIN)LOSFLG = LOSFLG + 8
+          tol = 0.001
+          IF(AOLD - tol .GT. AMAX)LOSFLG = 1
+          IF(AOLD + tol .LT. AMIN)LOSFLG = 2
+          IF(BOLD - tol .GT. BMAX)LOSFLG = LOSFLG + 4
+          IF(BOLD + tol .LT. BMIN)LOSFLG = LOSFLG + 8
        ENDIF
 C end of FERRET mod
 ******************************************************************
@@ -277,8 +283,8 @@ C     CALCULATE THE INTERCEPT.
 C     CHECK THE INTERCEPT TO INSURE THAT IT IS ON THE BOUNDARY
 C     OF THE WINDOW.
 
-      IF(XINTER + 0.001 .GE. XMIN .AND. XINTER - 0.001 .LE. XMAX)
-     * GO TO 110
+      tol = 0.01* (ABS(xmin)+ABS(xmax))/2.
+      IF(XINTER + tol .GE. XMIN .AND. XINTER - tol .LE. XMAX) GO TO 110
 
 C     THE POINT IS OUTSIDE THE VERTICAL LIMITS OF THE WINDOW.
 C     CALCULATE THE INTERCEPT.
@@ -288,7 +294,7 @@ C     CALCULATE THE INTERCEPT.
 # else
  100  XINTER = XMXMN(AND(OWFLG,3))
 # endif
-
+      
       YINTER = (YNEW - YOLD) * (XINTER - XOLD) / (XNEW - XOLD) +
      * YOLD
       ZINTER = (ZNEW - ZOLD) * (XINTER - XOLD) / (XNEW - XOLD) +
@@ -369,7 +375,6 @@ C     THE WINDOW.  IF NOT, PLOT TO THE INTERCEPT.
       IF(OWFLG .EQ. 0)GO TO 170
 
 C     TRANSFORM THE INTERCEPT TO THE SCREEN COORDINATE SYSTEM.
-
  160  CALL TFORM(XINTER,YINTER,ZINTER)
       GO TO 180
 

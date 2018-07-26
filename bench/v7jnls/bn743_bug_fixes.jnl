@@ -2,3 +2,8 @@
 ! test various fixes that went into version 7.43
 ! 7/18 *acm*
 
+GO bn_reset
+go err742_plot_vs_windowing
+
+GO bn_reset
+go err742_use_numeric_name

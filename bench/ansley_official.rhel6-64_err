@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 113322503 Jul 17 11:28 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 113323808 Jul 26 13:59 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: issue 1883
+Note: issue 1887: USE with various numeric filenames.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -22,7 +22,7 @@ FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Tue Jul 17 11:59:37 PDT 2018
+Beginning at Thu Jul 26 14:32:15 PDT 2018
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5574,6 +5574,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_letd_attributes
  LISTing to file a.nc
  LISTing to file a.nc
+syntax error, unexpected WORD_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
+context: <html^><head><title>Apache Tomcat/7.0.26 - Error report</title><style><!--H1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} H2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} H3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} BODY {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} B {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} P {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;}A {color : black;}A.name {color : black;}HR {color : #525D76;}--></style> </head><body><h1>HTTP Status 404 - /thredds/dodsC/hioos/roms_forec/hiig/runs/ROMS_Hawaii_Regional_Ocean_Model_RUN_2017-01-01T00:00:00Z.dds</h1><HR size="1" noshade="noshade"><p><b>type</b> Status report</p><p><b>message</b> <u>/thredds/dodsC/hioos/roms_forec/hiig/runs/ROMS_Hawaii_Regional_Ocean_Model_RUN_2017-01-01T00:00:00Z.dds</u></p><p><b>description</b> <u>The requested resource (/thredds/dodsC/hioos/roms_forec/hiig/runs/ROMS_Hawaii_Regional_Ocean_Model_RUN_2017-01-01T00:00:00Z.dds) is not available.</u></p><HR size="1" noshade="noshade"><h3>Apache Tomcat/7.0.26</h3></body></html>
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5717,21 +5719,6 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **TMAP ERR: attribute already defined
-             coordinates for variable ZETA
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable U
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable V
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable TEMP
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable SALT
-             Data set: testdata
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6725,6 +6712,10 @@ LIST/FORMAT=CDF/append/file=monthA.nc/t=1-dec-2018:31-dec-2018/bounds  tvar
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_use_agg
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
@@ -6766,7 +6757,26 @@ Starting test: bn743_bug_fixes
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- LISTing to file a.nc
+Re-defining viewport V1
+           *** NOTE: Adjusting Y-axis label size from 0.000 to 0.000, to avoid running off page.
+Re-defining viewport V2
+           *** NOTE: Adjusting Y-axis label size from 0.000 to 0.000, to avoid running off page.
+Re-defining viewport V3
+           *** NOTE: Adjusting Y-axis label size from 0.000 to 0.000, to avoid running off page.
+Re-defining viewport V4
+           *** NOTE: Adjusting Y-axis label size from 0.000 to 0.000, to avoid running off page.
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file 1990-2010.nc
+ LISTing to file 2001.07.nc
+ LISTing to file 1990.nc
+ LISTing to file 2001+07.nc
+ **ERROR: unknown data set: 1990
+SET DAT/FORM=CDF 1990
+ LISTing to file data/1990-2010.nc
+ LISTing to file data/2001.07.nc
+ LISTing to file data/2001+07.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6891,4 +6901,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Jul 17 12:08:24 PDT 2018
+Ended at Thu Jul 26 14:39:57 PDT 2018

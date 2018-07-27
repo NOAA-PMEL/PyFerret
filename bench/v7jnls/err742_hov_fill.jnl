@@ -1,0 +1,16 @@
+! err742_hov_fill.jnl
+! Issue 1888, location of FILL plot
+! 7/27/2018 ACM
+
+! A variable on a 5-month axis of 3-hour intervals defined with units
+! of seconds.
+define axis/t=1-mar-2012:1-aug-2012:10800/units=seconds/t0=1-mar-2012 t3hour
+define axis/y=1:30:1/units=degrees_north yaxis
+let ytvar = y[gy=yaxis] * cos(L[gt=t3hour]/200) +0.1*L[gt=t3hour]
+
+! The upper plot is fine. The lower one has the right data but is located
+! wrong so its shifted and the first part of it is chopped off.
+set v upper; fill/pal=pale_green_blue_rev ytvar
+set v lower; fill/pal=pale_green_blue_rev/lev/l=400:1224 ytvar
+
+frame/file=hov_fill.gif

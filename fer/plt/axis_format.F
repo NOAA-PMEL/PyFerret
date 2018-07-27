@@ -90,6 +90,8 @@
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 * V73+ 1/18 *acm*  Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
 *                  Set scaling for axis coords and box edges
+* V743 7/18 *acm* Issue 1888: The resetting of time for 1009 need not happen unless the 
+*                 time coordinates really need all that precision.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -127,7 +129,7 @@
 	CHARACTER	AX_TITLE*32, WHOI_DATE*14, VAR_TITLE*128,
      .			INTERNAL_WHOI_DATE*14,
      .			fmt*4, buff*200, tsetting*2
-	REAL		res_del, dt_min, time_unit
+	REAL		res_del, dt_min, time_unit, frac
 	REAL*8		TSTEP_TO_SECS
 	INTEGER		n_res
 	REAL*4		x1, x2, uminr, umaxr, dint  ! for call to RANGE
@@ -143,16 +145,18 @@
 * decimal places needed for axis:
 * ... sufficient digits to resolve the tic interval differences and
 *     still display the largest axis labels
-*  res_del	- labels will be accurate enough to resolve this delta value
+*  res_del - labels will be accurate enough to resolve this delta value
 
 	res_del = ABS( hi_val - lo_val ) / n_res
 	CALL GET_PREC_DIGITS( hi_val, lo_val, res_del, places, ndec )
 
 * format to use
+* frac - Will time precision be accurate enough to resolve this delta value?
 	use_nice = places .LE. 7
 	IF (idim.EQ.t_dim .OR.  idim.EQ.f_dim) THEN
   	   time_unit = line_tunit( grid_line(idim,grid) )
-	   rescale_time = (time_unit.EQ.1 .AND. places.GT.7)
+	   frac = res_del/ ABS( (hi_val+lo_val)/2 )
+	   rescale_time = (time_unit.EQ.1 .AND. places.GT.7 .AND. frac.LT. 1.e-5)
 	ENDIF
 
 	IF ( use_nice ) THEN

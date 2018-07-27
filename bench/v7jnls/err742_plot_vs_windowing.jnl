@@ -3,6 +3,8 @@
 ! they should look the same as the upper ones.
 
 set mode verify
+
+! Want a specific aspect ratio, so open a new window
 set win/asp=.77 2
 
 def view/x=0.1:0.33330/y=0.55:0.9 v1; set view v1; go magnify

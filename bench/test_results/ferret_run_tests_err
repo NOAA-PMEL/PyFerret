@@ -5679,6 +5679,10 @@ ooooooooooooooooooooooooooooooooooooooooooo
 NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
  MONTHAX_bnds not found. Attempt to append to NetCDF axis having no bounds attribute. Use /NOBOUNDS or rewrite original data with bounds.
 LIST/FORMAT=CDF/append/file=monthA.nc/t=1-dec-2018:31-dec-2018/bounds  tvar
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
 *** Running ferret script: bn_use_agg.jnl
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
@@ -5711,7 +5715,23 @@ LIST/FORMAT=CDF/append/file=monthA.nc/t=1-dec-2018:31-dec-2018/bounds  tvar
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- LISTing to file a.nc
+           *** NOTE: Only one window can be open in batch mode
+           *** NOTE: Cannot cancel window when in batch mode
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file 1990-2010.nc
+ LISTing to file 2001.07.nc
+ LISTing to file 1990.nc
+ LISTing to file 2001+07.nc
+ **ERROR: unknown data set: 1990
+SET DAT/FORM=CDF 1990
+ LISTing to file data/1990-2010.nc
+ LISTing to file data/2001.07.nc
+ LISTing to file data/2001+07.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

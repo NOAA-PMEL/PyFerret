@@ -1,57 +1,78 @@
 # PyFerret on Mac OS X with Homebrew Packages
+
 Information about using or building PyFerret on Mac OS X using
 the Homebrew package manager to install required packages.
 If you do not have Homebrew installed, see https://brew.sh/
 for information on installing and using Homebrew.
 
-## Using PyFerret on Mac OS X with Homebrew Packages
+Because using the pre-built PyFerret package on Mac OS X typically
+requires Homebrew for Python and PyQt, many users have found it
+almost as easy and cleaner to just build PyFerret from source using
+the Homebrew packages.
+
+
+## Using pre-built PyFerret on Mac OS X with Homebrew Packages
 
 #### Homebrew Packages
 
-I have always installed the Homebrew Python 3.6 (`python` or `python3`)
-and/or Python 2.7 (`python@2`) packages and have not attempted to use
-the system-provided Python 2.7.
+I have always installed the Homebrew Python 3 (`python` or `python3`)
+and/or Python 2 (`python@2`) packages and have not attempted to use
+the system-provided Python 2.
 The Homebrew PyQt5 package requires the Homebrew Python package(s),
 so installing PyQt from Homebrew will also install Homebrew Python.
-However, if you already have Python 2.7 or 3.6 with either PyQt5 or
-PyQt4 and with numpy, then the prebuilt package *should* work,
+However, if you already have Python 2 or 3 with either PyQt5 or
+PyQt4 and with NumPy, then the prebuilt package *should* work,
 althought this has not been tested at this time.
 
-Install the `python` and `pyqt` Homebrew packages.
+Install the `python`, `pyqt`, and `numpy` Homebrew packages.
 
     brew install python3
     brew install pyqt5
+    brew install numpy
 
-Then, using `pip` (part of the Homebrew Python packages), install
-the `numpy`, `scipy`, and `pyshp` packages.
-NumPy http://www.numpy.org/ is required to use PyFerret;
-SciPy https://www.scipy.org/ and
-PyShp https://github.com/GeospatialPython/pyshp/
-are optional but are highly recommended as they enable
-statistical and shapefile functions in PyFerret.
+While not required, SciPy is highly recommended for its wealth
+of scientific modules and for using the statistical functions
+provided in PyFerret.
 
-    pip install numpy
-    pip install scipy
-    pip install pyshp
+    brew install scipy
+
+If you wish to use the shapefile functions provided in PyFerret,
+install the `pyshp` module PyShp https://github.com/GeospatialPython/pyshp/
+using `pip2` or `pip3` (part of the Homebrew python@2 and python3 packages,
+respectively).
+
+    pip3 install pyshp
 
 #### PyFerret
 
 Download the PyFerret prebuilt Mac OS X tar.gz file from
-https://github.com/NOAA-PMEL/PyFerret/releases/ and extract its
-contents to the desired parent directory for PyFerret programs.
+https://github.com/NOAA-PMEL/PyFerret/releases/
+and extract its contents to the desired parent directory/folder
+for PyFerret programs.
+(Double-clicking on the icon of a tar.gz file will extract
+the contents in the same location as the tar.gz file.
+Alternatively, the command `tar xzf` followed by the tar.gz filename
+will extra the contents to the current working directory.)
+Feel free at this time to rename or move this extracted
+subdirectory/folder; this is your PyFerret installation directory.
 
-If you do not already have the default Ferret datasets, also download
-that "source code" zip or tar.gz file from
+If you do not already have the default Ferret datasets,
+also download that "source code" zip or tar.gz file from
 https://github.com/NOAA-PMEL/FerretDatasets/releases/
-and extract its contents to the desired parent directory for datasets.
+and extract its contents to the desired parent directory/folder
+for datasets.
+Again, feel free at this time to rename or move this extracted
+subdirectory/folder; this is your Ferret datasets directory.
 
 Run the `Finstall` script that is found under the `bin` subdirectory
-of the extracted PyFerret installation directory.
-This script will ask for the PyFerret installation directory name,
-the default Ferret datasets directory name, the directory in which
-to create the ferret_paths scripts, and the python to use.
-These directories can all be specified as relative path names to the
-current directory when you run the Finstall script.
+of the extracted PyFerret installation directory to create the
+ferret_paths scripts as well as the pyferret script.
+The Finstall script will ask for the PyFerret installation directory
+name, the default Ferret datasets directory name, the directory
+in which to create the ferret_paths scripts, and the python to use.
+These directories can all be specified as relative path names
+to the current directory (such as `.` for the current directory)
+when you run the Finstall script.
 
 The ferret_paths scripts are used to assign environment variables
 required to run PyFerret.
@@ -74,24 +95,30 @@ variable:
 
     export PATH="/usr/local/bin:$PATH"
 
-Install the `gcc`, `cairo`, `pango`, `python`, `pyqt`, `hdf5`, and
-`netcdf` Homebrew packages.
+Install the `gcc`, `cairo`, `pango`, `python`, `pyqt`, `numpy`, `hdf5`,
+and `netcdf` Homebrew packages.
 
     brew install gcc
     brew install cairo
     brew install pango
     brew install python
     brew install pyqt
+    brew install numpy
     brew install hdf5
     brew install netcdf
 
-Then, using `pip` (part of the Homebrew Python packages), install the
-`numpy`, `scipy`, and `pyshp` packages.  (The `scipy` and `pyshp`
-packages are optional but highly recommended.)
+While not required, SciPy is highly recommended for its wealth
+of scientific modules and for using the statistical functions
+provided in PyFerret.
 
-    pip install numpy
-    pip install scipy
-    pip install pyshp
+    brew install scipy
+
+If you wish to use the shapefile functions provided in PyFerret,
+install the `pyshp` module PyShp https://github.com/GeospatialPython/pyshp/
+using `pip2` or `pip3` (part of the Homebrew python@2 and python3 packages,
+respectively).
+
+    pip3 install pyshp
 
 #### PyFerret
 
@@ -116,9 +143,9 @@ template file to `site_specific.mk` and edit this `site_specific.mk`
 configuration file appropriately for your system; for example:
 
     DIR_PREFIX = $(HOME)/git/PyFerret
-    INSTALL_FER_DIR = /usr/local/PyFerret-7.4-Python-3.6
+    INSTALL_FER_DIR = /usr/local/PyFerret
     BUILDTYPE = intel-mac
-    PYTHON_EXE = python3.6
+    PYTHON_EXE = python3.7
     GFORTRAN_LIB = $(shell $(FC) --print-file-name=libgfortran.dylib)
     CAIRO_LIBDIR = /usr/local/lib
     PIXMAN_LIBDIR = /usr/local/lib
@@ -133,10 +160,10 @@ Similarly, copy `external_functions/ef_utility/site_specific.mk.in` to
 `external_functions/ef_utility/site_specific.mk`:
 
     BUILDTYPE = intel-mac
-    PYTHON_EXE = python3.6
+    PYTHON_EXE = python3.7
 
-Build PyFerret and install it in the location given by `INSTALL_FER_DIR`
-in build root directory site_specific.mk file:
+Build PyFerret and install it in the location given by the value of
+`INSTALL_FER_DIR` in the site_specific.mk file:
 
     make
     make install
@@ -144,9 +171,11 @@ in build root directory site_specific.mk file:
 At this point you are now where one would be if you had downloaded and
 extracted a prebuilt PyFerret tar file to the PyFerret installation
 directory.
-Run the `Finstall` script under the bin subdirectory of the PyFerret
-installation directory to create the ferret_paths scripts for setting
-environment variables needed by PyFerret.
+As described above, run the `Finstall` script under the bin subdirectory
+of this PyFerret installation directory to create the pyferret script as
+well as the ferret_paths scripts for setting environment variables needed
+by PyFerret; then be sure to "source" the appropriate ferret_paths script
+as needed.
 
 #### Testing
 

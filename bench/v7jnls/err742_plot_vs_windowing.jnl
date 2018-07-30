@@ -1,0 +1,26 @@
+! err742_plot_vs_windowing
+! bug 1884 The lower two windows showed nothing.
+! they should look the same as the upper ones.
+
+set mode verify
+
+! Want a specific aspect ratio, so open a new window
+set win/asp=.77 2
+
+def view/x=0.1:0.33330/y=0.55:0.9 v1; set view v1; go magnify
+plot/thick/nolab/hl=-70:70/vl=-70:70/vs/line 1e6*{-1,1}, 1e6*{-1,1}
+
+def view/x=0.1:0.33331/y=0.1:0.45 v2; set view v2; go magnify
+plot/thick/nolab/hl=-70:70/vl=-70:70/vs/line 1e6*{-1,1}, 1e6*{-1,1}
+
+
+
+def view/x=0.6:0.83330/y=0.55:0.9 v3; set view v3; go magnify
+plot/thick/nolab/hl=-70:70/vl=-70:70/vs/line 1e6*{-1,1}, 1e6*{1,-1}
+
+def view/x=0.6:0.83331/y=0.1:0.45 v4; set view v4; go magnify
+plot/thick/nolab/hl=-70:70/vl=-70:70/vs/line 1e6*{-1,1}, 1e6*{1,-1}
+
+frame/file=plot_vs_windowing.gif
+
+cancel window 2

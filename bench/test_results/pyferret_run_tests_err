@@ -5739,6 +5739,24 @@ ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_ens_promote_global.jnl
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
 *** Running ferret script: bn743_bug_fixes.jnl
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file 1990-2010.nc
+ LISTing to file 2001.07.nc
+ LISTing to file 1990.nc
+ LISTing to file 2001+07.nc
+ **ERROR: unknown data set: 1990
+SET DAT/FORM=CDF 1990
+ LISTing to file data/1990-2010.nc
+ LISTing to file data/2001.07.nc
+ LISTing to file data/2001+07.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

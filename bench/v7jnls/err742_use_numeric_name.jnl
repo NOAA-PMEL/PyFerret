@@ -1,0 +1,46 @@
+! err742_use_numeric_name
+! Issue 1887 
+! 26-July 2018 ACm
+!
+! write some example files
+
+let var = {1,2,3,4,5}
+save/clobber/file=1990-2010.nc var
+save/clobber/file=2001.07.nc cos(var)
+save/clobber/file=1990.nc var[i=1]
+save/clobber/file=2001+07.nc sin(var)
+can var/all
+
+! These USE commands previously caused fortran run-time errors
+use 1990-2010
+use 2001.07
+use 2001+07
+
+sh dat
+
+! Intentional error
+!The syntax "USE n" where n is any integr, always means just see if 
+!that dataset number is in use, and make it the default.
+
+set mode ignore
+use 1990
+set mode/last ignore
+
+! Looking for files somewhere in the dataset paths.
+
+let var = {1,2,3,4,5}
+save/clobber/file="data/1990-2010.nc" var
+save/clobber/file="data/2001.07.nc" cos(var)
+save/clobber/file="data/2001+07.nc" sin(var)
+can var/all
+
+! These USE commands previously caused fortran run-time errors
+use 1990-2010
+use 2001.07
+use 2001+07
+
+sh dat
+
+sp rm data/1990-2010.nc
+sp rm data/2001.07.nc
+sp rm data/2001+07.nc

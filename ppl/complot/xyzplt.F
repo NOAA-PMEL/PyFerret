@@ -55,8 +55,9 @@ C             1545. In this case at label 70, XINTER is set to zero, and that
 C             value is used in computing YINTR and ZINTR. Once XYINTR is
 C             set to the xmin or xmax, then need to call TRANS again and
 C             define values before ABPLT is called.
-C *acm*  7/18 Fix ticket 1884. Use a computed tolerance relative to the size of
-C             the numbers when deciding whether the intercept is "on" the boundary.
+C *acm*  7/18 Fix ticket 1884. Do the intercept calculations and comparisons
+C             in double precision.
+C
 ****************************************************************
 C     CALL XYZPLT
 
@@ -70,15 +71,17 @@ C FERRET mod - for explicit declarations - 9-19-88
 C      DIMENSION XMXMN(2),YMXMN(2)
       REAL XMXMN(2),YMXMN(2)
       EQUIVALENCE (XMXMN(1),XMAX),(YMXMN(1),YMAX)
-      REAL xinter, yinter, zinter, dx, dy, dz, cosx, cosy, cosz, 
-     .     dist, tol
+      REAL*8 dxinter, dyinter, dzinter, tol
+      REAL xinter, yinter, zinter, dx, dy, dz, cosx, cosy, cosz, dist
 
       include 'pltcom_dat.decl'
       include 'PLTCOM.DAT'
 
 C end of FERRET mod
 ******************************************************************
-      tol = 1.e-3
+
+C tolerance for checking intercepts with the axes
+	tol = 1.e-5
 
 C     CHECK THE PLOTTING MODE.
 
@@ -190,48 +193,51 @@ C     THE POINT IS OUTSIDE THE HORIZONTAL LIMITS OF THE WINDOW.
 C     CALCULATE THE INTERCEPT.
 
 # ifdef NEED_IAND
-      YINTER = YMXMN(ISHFT(LOWFLG,-2))
+      DYINTER = DBLE(YMXMN(ISHFT(LOWFLG,-2)))
 # else
-      YINTER = YMXMN(rSHIFT(LOWFLG,2))
+      DYINTER = DBLE(YMXMN(rSHIFT(LOWFLG,2)))
 # endif
 
-      ZINTER = (ZNEW - ZOLD) * (YINTER - YOLD) / (YNEW - YOLD) +
-     * ZOLD
-      XINTER = (XNEW - XOLD) * (YINTER - YOLD) / (YNEW - YOLD) +
-     * XOLD
+      DZINTER = (DBLE(ZNEW) - DBLE(ZOLD)) * (DYINTER - DBLE(YOLD)) / 
+     *    (DBLE(YNEW) - DBLE(YOLD)) + DBLE(ZOLD)
+      DXINTER = (DBLE(XNEW) - DBLE(XOLD)) * (DYINTER - DBLE(YOLD)) / 
+     *    (DBLE(YNEW) - DBLE(YOLD)) + DBLE(XOLD)
 
-C     CHECK THE INTERCEPT TO INSURE THAT IT IS ON THE BOUNDARY
+C     CHECK THE INTERCEPT TO INSURE THAT IT IS ON  (just inside) THE BOUNDARY
 C     OF THE WINDOW
 
-      tol = 0.01* (ABS(xmin)+ABS(xmax))/2.
-      IF(XINTER + tol .GE. XMIN .AND. XINTER - tol .LE. XMAX) GOTO 80
+      IF(DXINTER + tol .GE. DBLE(XMIN) .AND. DXINTER - tol .LE. DBLE(XMAX)) GOTO 80
 
 C     THE POINT IS OUTSIDE THE VERTICAL LIMITS OF THE WINDOW.
 C     CALCULATE THE INTERCEPT.
 
       irecompute = 0
 # ifdef NEED_IAND
- 70   XINTER = XMXMN(IAND(LOWFLG,3))
+ 70   DXINTER = DBLE(XMXMN(IAND(LOWFLG,3)))
       IF (IAND(LOWFLG,3) .LT.1 .OR. IAND(LOWFLG,3).GT.2) irecompute = 1
 # else
- 70   XINTER = XMXMN(AND(LOWFLG,3))
+ 70   DXINTER = DBLE(MXMN(AND(LOWFLG,3)))
       IF (AND(LOWFLG,3) .LT.1 .OR. AND(LOWFLG,3).GT.2) irecompute = 1
 # endif
 
-      YINTER = (YNEW - YOLD) * (XINTER - XOLD) / (XNEW - XOLD) +
-     * YOLD
-      ZINTER = (ZNEW - ZOLD) * (XINTER - XOLD) / (XNEW - XOLD) +
-     * ZOLD
+      DYINTER = (DBLE(YNEW) - DBLE(YOLD)) * (DXINTER - DBLE(XOLD)) / 
+     *    (DBLE(XNEW) - DBLE(XOLD)) + DBLE(YOLD)
+      DZINTER = (DBLE(ZNEW) - DBLE(ZOLD)) * (DXINTER - DBLE(XOLD)) / 
+     *    (DBLE(XNEW) - DBLE(XOLD)) + DBLE(ZOLD)
 
-C     CHECK THE INTERCEPT TO INSURE THAT IT IS ON THE BOUNDARY
+C     CHECK THE INTERCEPT TO INSURE THAT IT IS ON  (just inside) THE BOUNDARY
 C     OF THE WINDOW.
 
-      tol = 0.01* (ABS(ymin)+ABS(ymax))/2.
-      IF(YINTER + tol .LT. YMIN .OR. YINTER - tol .GT. YMAX) GOTO 190
+      IF(DYINTER + tol .LT. DBLE(YMIN) .OR. DYINTER - tol .GT. DBLE(YMAX)) GOTO 190
 
 C     TRANSFORM THE INTERCEPT TO THE SCREEN COORDINATE SYSTEM.
+C     Put intercept back in single precision.
 
-  80  CALL TFORM(XINTER,YINTER,ZINTER)
+  80  CONTINUE
+      xinter = dxinter
+      yinter = dyinter
+      zinter = dzinter
+      CALL TFORM(XINTER,YINTER,ZINTER)
       XOLD = XINTER
       YOLD = YINTER
       ZOLD = ZINTER
@@ -244,11 +250,10 @@ C     LOSFLG = 0
 ******************************************************************
 C FERRET mod - bypass GKS clipping - 9-19-88
       IF ( ptype .LT. 3 ) THEN
-          tol = 0.001
-          IF(AOLD - tol .GT. AMAX)LOSFLG = 1
-          IF(AOLD + tol .LT. AMIN)LOSFLG = 2
-          IF(BOLD - tol .GT. BMAX)LOSFLG = LOSFLG + 4
-          IF(BOLD + tol .LT. BMIN)LOSFLG = LOSFLG + 8
+          IF(AOLD - 0.001 .GT. AMAX)LOSFLG = 1
+          IF(AOLD + 0.001 .LT. AMIN)LOSFLG = 2
+          IF(BOLD - 0.001 .GT. BMAX)LOSFLG = LOSFLG + 4
+          IF(BOLD + 0.001 .LT. BMIN)LOSFLG = LOSFLG + 8
        ENDIF
 C end of FERRET mod
 ******************************************************************
@@ -270,41 +275,43 @@ C     THE POINT IS OUTSIDE THE HORIZONTAL LIMITS OF THE WINDOW.
 C     CALCULATE THE INTERCEPT.
 
 # ifdef NEED_IAND
-      YINTER = YMXMN(ISHFT(OWFLG,-2))
+      DYINTER = DBLE(YMXMN(ISHFT(OWFLG,-2)))
 # else
-      YINTER = YMXMN(rSHIFT(OWFLG,2))
+      DYINTER = DBLE(YMXMN(rSHIFT(OWFLG,2)))
 # endif
 
-      ZINTER = (ZNEW - ZOLD) * (YINTER - YOLD) / (YNEW - YOLD) +
-     * ZOLD
-      XINTER = (XNEW - XOLD) * (YINTER - YOLD) / (YNEW - YOLD) +
-     * XOLD
+      DZINTER = (DBLE(ZNEW) - DBLE(ZOLD)) * (DYINTER - DBLE(YOLD)) / 
+     *    (DBLE(YNEW) - DBLE(YOLD)) +ZOLD
+      DXINTER = (DBLE(XNEW) - DBLE(XOLD)) * (DYINTER - DBLE(YOLD)) / 
+     *    (DBLE(YNEW) - DBLE(YOLD)) +DBLE(XOLD)
 
-C     CHECK THE INTERCEPT TO INSURE THAT IT IS ON THE BOUNDARY
+C     CHECK THE INTERCEPT TO INSURE THAT IT IS ON (just inside) THE BOUNDARY
 C     OF THE WINDOW.
 
-      tol = 0.01* (ABS(xmin)+ABS(xmax))/2.
-      IF(XINTER + tol .GE. XMIN .AND. XINTER - tol .LE. XMAX) GO TO 110
+      IF(DXINTER + tol .GE. DBLE(XMIN) .AND. DXINTER - tol .LE. DBLE(XMAX)) GOTO 110
 
 C     THE POINT IS OUTSIDE THE VERTICAL LIMITS OF THE WINDOW.
 C     CALCULATE THE INTERCEPT.
 
 # ifdef NEED_IAND
- 100  XINTER = XMXMN(IAND(OWFLG,3))
+ 100  DXINTER = DBLE(XMXMN(IAND(OWFLG,3)))
 # else
- 100  XINTER = XMXMN(AND(OWFLG,3))
+ 100  DXINTER = DBLE(XMXMN(AND(OWFLG,3)))
 # endif
       
-      YINTER = (YNEW - YOLD) * (XINTER - XOLD) / (XNEW - XOLD) +
-     * YOLD
-      ZINTER = (ZNEW - ZOLD) * (XINTER - XOLD) / (XNEW - XOLD) +
-     * ZOLD
+      DYINTER = (DBLE(YNEW) - DBLE(YOLD)) * (DXINTER - DBLE(XOLD)) /
+     *    (DBLE(XNEW) - DBLE(XOLD)) + DBLE(YOLD)
+      DZINTER = (DBLE(ZNEW) - DBLE(ZOLD)) * (DXINTER - DBLE(XOLD)) / 
+     *    (DBLE(XNEW) - DBLE(XOLD)) + DBLE(ZOLD)
 
 C recompute these now that we have a correct xinter and corrected yintr, zintr
-C and before calling abplt.
+C and before calling abplt. Put intercept back in single precision.
 
       IF (irecompute .EQ. 1) THEN
-         CALL TFORM(XINTER,YINTER,ZINTER)
+         xinter = dxinter
+         yinter = dyinter
+         zinter = dzinter
+	 CALL TFORM(XINTER,YINTER,ZINTER)
          XOLD = XINTER
          YOLD = YINTER
          ZOLD = ZINTER
@@ -375,7 +382,12 @@ C     THE WINDOW.  IF NOT, PLOT TO THE INTERCEPT.
       IF(OWFLG .EQ. 0)GO TO 170
 
 C     TRANSFORM THE INTERCEPT TO THE SCREEN COORDINATE SYSTEM.
- 160  CALL TFORM(XINTER,YINTER,ZINTER)
+C     Put intercept back in single precision.
+ 160  CONTINUE
+      xinter = dxinter
+      yinter = dyinter
+      zinter = dzinter
+      CALL TFORM(XINTER,YINTER,ZINTER)
       GO TO 180
 
 C     TRANSFORM THE POINT TO THE SCREEN COORDINATE SYSTEM.

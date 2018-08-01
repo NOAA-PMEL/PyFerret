@@ -98,6 +98,7 @@ longtitle.nc
 longvname.nc
 lonlat.dat
 lonlat.nc
+manyvars.tsv
 monthA.nc
 monthB.nc
 myfile.nc

@@ -1,6 +1,6 @@
 ! Examples for external function ZAXREPLACE_AVG
 ! ACM 8/99
-
+cancel mode upcase
 
 define axis/depth/z=0:33:1 zax
 define grid/z=zax gg
@@ -23,9 +23,9 @@ use levitus_climatology
 sh data
 show/i=120/j=120/k=1:20 grid temp
 
-
+define symbol lcgrid = `temp,return=grid`
 define axis/z=0:500:100/depth dep100
-define grid/like=GLEVITR1/z=dep100 gl100
+define grid/like=($lcgrid)/z=dep100 gl100
 show/k=1:40 grid gl100
 
 
@@ -66,7 +66,7 @@ can region
 use levitus_climatology
 
 define axis/z=0:5000:1000/depth dep1000
-define grid/like=GLEVITR1/z=dep1000 gl1000
+define grid/like=($lcgrid)/z=dep1000 gl1000
 show/k=1:40 grid gl1000
 
 

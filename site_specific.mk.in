@@ -25,8 +25,7 @@ BUILDTYPE = x86_64-linux
 ## just for creating a Ferret installation.
 ## =========================
 # INSTALL_FER_DIR = $(HOME)/ferret_distributions/rhel6_64
-# INSTALL_FER_DIR = $(HOME)/Ferret32
-INSTALL_FER_DIR = $(HOME)/Ferret64
+INSTALL_FER_DIR = $(HOME)/Ferret
 # INSTALL_FER_DIR = $(FER_DIR)
 
 ## =========================
@@ -35,9 +34,7 @@ INSTALL_FER_DIR = $(HOME)/Ferret64
 ## If empty or not given, NetCDF shared-object libraries (which specify the
 ## HDF5, SZ, and Z compression libraries required) will be used.
 ## =========================
-HDF5_LIBDIR = /usr/local/hdf5-1.8.18-64/lib
-# HDF5_LIBDIR = /usr/local/hdf5-1.8.18-32/lib
-# HDF5_LIBDIR = /usr/local/hdf5-1.8.18/lib
+HDF5_LIBDIR = /usr/local/hdf5-1.10.2/lib
 # HDF5_LIBDIR = $(HOME)/.local/lib
 # HDF5_LIBDIR = /usr/local/lib
 # HDF5_LIBDIR = /usr/lib64
@@ -69,9 +66,7 @@ SZ_LIBDIR =
 ## If HDF5_LIBDIR is given and not empty, the static libraries will be used.
 ## If HDF5_LIBDIR is empty or not given, NetCDF shared-object libraries will be used.
 ## =========================
-NETCDF_LIBDIR = /usr/local/netcdf-4.4.1.1-64/lib
-# NETCDF_LIBDIR = /usr/local/netcdf-4.4.1.1-32/lib
-# NETCDF_LIBDIR = /usr/local/netcdf-4.4.1.1/lib
+NETCDF_LIBDIR = /usr/local/netcdf-4.6.1/lib
 # NETCDF_LIBDIR = $(HOME)/.local/lib
 # NETCDF_LIBDIR = /usr/local/lib
 # NETCDF_LIBDIR = /usr/lib64
@@ -93,8 +88,8 @@ NETCDF_LIBDIR = /usr/local/netcdf-4.4.1.1-64/lib
 ## this value (or leave it blank).  In this case the system's readline and history
 ## shared-object libraries will be used.
 ## =========================
-# READLINE_LIBDIR = $(HOME)/.local/Cellar/readline/7.0.3_1/lib
-# READLINE_LIBDIR = /usr/local/Cellar/readline/7.0.3_1/lib
+# READLINE_LIBDIR = $(HOME)/.local/Cellar/readline/7.0.5/lib
+# READLINE_LIBDIR = /usr/local/Cellar/readline/7.0.5/lib
 READLINE_LIBDIR =
 
 ##

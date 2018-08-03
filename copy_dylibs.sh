@@ -12,10 +12,11 @@ fi
 cd dylibs
 
 brewprefix=`brew config | awk '/HOMEBREW_PREFIX/ {print $2}'`
-
-libdir=`echo ${brewprefix}/opt/gcc/lib/gcc/*`
-echo "Copying dylib libraries from ${libdir}"
-for name in quadmath gcc_s ; do
-    echo "    ${name}"
-    cp -f ${libdir}/lib${name}.*.dylib .
-done
+if [ -n "$brewprefix" ]; then
+    libdir=`echo ${brewprefix}/opt/gcc/lib/gcc/*`
+    echo "Copying dylib libraries from ${libdir}"
+    for name in quadmath gcc_s ; do
+        echo "    ${name}"
+        cp -f ${libdir}/lib${name}.*.dylib .
+    done
+fi

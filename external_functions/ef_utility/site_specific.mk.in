@@ -27,6 +27,8 @@ BUILDTYPE = x86_64-linux
 ## $(INSTALL_FER_DIR)/lib64/$(PYTHON_EXE)/site-package/pyferret/libpyferret.so
 ##
 ## PyFerret installation directory, usually just $(FER_DIR)
+## Must be $(FER_DIR) when building pyferret from source.
+## (This file is also found in PyFerret installations, thus the option.)
 ## =========================
 # INSTALL_FER_DIR = $(HOME)/PyFerret
 INSTALL_FER_DIR = $(FER_DIR)
@@ -37,6 +39,7 @@ INSTALL_FER_DIR = $(FER_DIR)
 # PYTHON_EXE = python2.6
 PYTHON_EXE = python2.7
 # PYTHON_EXE = python3.4
+# PYTHON_EXE = python3.5
 # PYTHON_EXE = python3.6
 # PYTHON_EXE = python3.7
 

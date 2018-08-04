@@ -1939,7 +1939,6 @@ SET DAT/FORM=CDF this_is_not_a_file.nc
              NetCDF: file not found (OPeNDAP/netCDF Error code -90)
              Data set: http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf
 SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf"
-CURL Error: Couldn't resolve host name
 curl error details: 
  **Internet Data error
              NetCDF: I/O failure (OPeNDAP/netCDF Error code -68)
@@ -2210,7 +2209,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_test_opendap.jnl
-CURL Error: Couldn't resolve host name
 curl error details: 
 *** Running ferret script: bn611_bug_fixes.jnl
  PERMANENT data cleared from memory

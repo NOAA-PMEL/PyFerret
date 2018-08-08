@@ -166,7 +166,7 @@
      .            i1ss, inss, grid, ucode
 	REAL	  result, val
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
-	CHARACTER TM_FMT*28, TM_FMT_USER*28, LEFINT*16, VAR_TITLE*(max_len),
+	CHARACTER TM_FMT*(max_len), TM_FMT_USER*(max_len), LEFINT*16, VAR_TITLE*(max_len),
      .		  VAR_UNITS*(max_len), GET_STRING_ELEMENT*(max_len),
      .		  repl*(max_len), bad_str*(max_len), return_errmsg*256,
      .            buff*128, varname*512, attname*128, aname*128
@@ -457,7 +457,6 @@ c if its a netcdf-type dset with packed data, may have swapped out the bad flag
 		 CALL GET_DSET_BAD( i2,  cmnd(istart:iend), result )
 
 	         repl = TM_FMT( result, use_digits, max_len, str_len )
-	         str_len = TM_LENSTR1(repl)
 	         GOTO 500
 		 
 * ... RETURN=T0
@@ -541,7 +540,6 @@ c if its a netcdf-type dset with packed data, may have swapped out the bad flag
 	               GOTO 4000
 	            ENDIF
 	            repl = TM_FMT( result, use_digits, max_len, str_len )
-	            str_len = TM_LENSTR1(repl)
 	            GOTO 500
 
 * ... RETURN=user_scale, user_offset
@@ -554,7 +552,6 @@ c if its a netcdf-type dset with packed data, may have swapped out the bad flag
 	               GOTO 4000
 	            ENDIF
 	            repl = TM_FMT( result, use_digits, max_len, str_len )
-	            str_len = TM_LENSTR1(repl)
 	            GOTO 500
 
 * ... RETURN=dtype if it is available in the context at this point. For user-

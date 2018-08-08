@@ -64,7 +64,7 @@
      .			chk10, chk10_save, waste, i, need_adjust, ind,
      .			iloop, width, prec_digits, slenh, right, int_len, is
 	REAL		aval, l10
-	CHARACTER*10	fmt, dummy_fmt, outstring*25, str2*25
+	CHARACTER	fmt*10, dummy_fmt*10, outstring*64, str2*64
 
 * local parameters:
 	INTEGER		TM_CHECK_NAN, TM_CHECK_INF, TM_LENSTR1, 
@@ -88,9 +88,9 @@
 	added_pow10 = 0
 	need_adjust = 0
 
-* maximum length of output string (at least 1 character long)
-	slen = MIN( LEN(TM_FMT_USER), max_len )
-	slen = MIN( 18, max_len )
+* maximum length of output string
+* (at least 1 character long but not longer than outstring or user-specified max)
+	slen = MIN( LEN(TM_FMT_USER), 64, max_len )
 	slen = MAX( 1, slen )
 
 * If the value is NaN, set the string here

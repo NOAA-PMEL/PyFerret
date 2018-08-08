@@ -73,7 +73,7 @@
      .            varid, nvatts, blen, len_attbuff, attoutflag, attid, 
      .            attlen, attype, iatt, dset, alen, itype
 	CHARACTER FULL_UVAR_NAME_XML*150, FULL_UVAR_NAME*150, 
-     .            TM_FMT*12,
+     .            TM_FMT*16,
      .            buff*150, buff2*170, c*1, atype*10, aname*128, 
      .            attname*128, attbuff*2048, outstring*2048
 	REAL      vals(100)

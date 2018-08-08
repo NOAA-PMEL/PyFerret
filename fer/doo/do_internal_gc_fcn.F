@@ -165,7 +165,7 @@
         INTEGER max_cmnd_len
         PARAMETER ( max_cmnd_len = 2048 )
         CHARACTER GET_STRING_ELEMENT*(max_cmnd_len), buff*(max_cmnd_len)
-	CHARACTER*10 TM_FMT, argval
+	CHARACTER*40 TM_FMT, argval
         INTEGER nnew, slen, narg
 
 * equivalence conveniences

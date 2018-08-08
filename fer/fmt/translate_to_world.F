@@ -81,7 +81,7 @@
 	REAL*8		val
 
 * internal variable declarations:
-	CHARACTER	SECS_TO_DATE*20, TM_FMT*24, code*1, xtra*16
+	CHARACTER	SECS_TO_DATE*20, TM_FMT*30, code*1, xtra*16
 	INTEGER		FIELD_WIDTH, TM_GET_CALENDAR_ID, TM_LENSTR1, 
      .                  min_width, width, decim, numbers, n2, cal_id, iv
 	LOGICAL		GEOG_LABEL, fancy, use_sig_fig,

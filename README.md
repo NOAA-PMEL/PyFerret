@@ -58,8 +58,7 @@ it does not install PyFerret.
 
 Download and install [miniconda](http://conda.pydata.org/miniconda.html) for your system.
 Note that Windows 10 bash must use the Linux version!
-The Python version in miniconda does not matter;
-`pyferret` only uses `Python 2.7` and will install it in the `pyferret` environment.
+Either python version of miniconda is fine; `pyferret` works with ether python 2.x or python 3.x
 
 Execute the following command on the terminal to install `pyferret` as well as
 `ferret_datasets` (the default Ferret/PyFerret datasets) into conda:

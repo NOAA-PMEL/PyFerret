@@ -7,4 +7,6 @@ use err742_stride_irreg_modulo.nc
 sh axis `lonvar,return=xaxis`
 
 set axis/stride=2 `lonvar,return=xaxis`
+
+! Previously this command crashes Ferret
 stat lonvar

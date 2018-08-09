@@ -13,3 +13,6 @@ go err742_hov_fill
 
 GO bn_reset
 go err742_list_many_vars
+
+GO bn_reset
+go err742_stride_irreg_modulo

@@ -42,6 +42,8 @@
 *                 several digits have random stuff, so got a return of TRUE  
 *                 from this fcn when it wasnt.  Do single-precision comparison.
 * V720 *acm* 3/17 Fix ticket 2520. Axis longer than modulo lenght was marked subspan.
+*      *acm* 8/18 Call TM_FPEQ_SNGL to make the comparison of axis lengths in 
+*                 single precision.
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -51,8 +53,9 @@
 
 * internal variable declarations
 	REAL*8 TM_WW_AXLEN, TM_MODULO_AXLEN
-        LOGICAL TM_FPEQ
+        LOGICAL TM_FPEQ_SNGL
         REAL wwlen, modlen
+	REAL*4 rwwlen, rmodlen
 
 	IF ( axis .LT. 0 .OR. axis .GT. line_ceiling ) THEN
 	   TM_ITS_SUBSPAN_MODULO = .FALSE.
@@ -61,7 +64,11 @@
 C for ticket 2520: axis that is slightly too LONG, was marked as subspan!
            wwlen = TM_WW_AXLEN(axis)
            modlen = TM_MODULO_AXLEN(axis) 
-	   TM_ITS_SUBSPAN_MODULO = (.NOT. TM_FPEQ(wwlen, modlen) ).AND. (wwlen.LT.modlen)
+
+	   rwwlen = wwlen
+	   rmodlen = modlen
+	   TM_ITS_SUBSPAN_MODULO = (.NOT. TM_FPEQ_SNGL(rwwlen, rmodlen) )
+     .                              .AND. (wwlen.LT.modlen)
 
 	ELSE 
 	   TM_ITS_SUBSPAN_MODULO = .FALSE.

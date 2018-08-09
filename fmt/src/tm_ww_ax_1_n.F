@@ -38,6 +38,7 @@
 
 * V541 *sh* 2/02
 * V71  3/16 *acm* Ticket 2158: working with true monthly time axes.
+* V743 8/18 *acm* Ticket 1890: child axis with dynamic coordinate storage
 
 	include 'tmap_dims.parm'
 #include "gt_lib.parm"
@@ -65,8 +66,10 @@
 	  iiaxis = axis
 	  IF (line_parent(axis) .NE. 0) iiaxis = line_parent(axis)
 	  llen = line_dim(iiaxis)
-	  lo = GET_LINE_COORD (linemem(axis)%ptr, 1)
-	  hi = GET_LINE_COORD (linemem(axis)%ptr, llen)
+	  
+	  lo = GET_LINE_COORD (lineedg(iiaxis)%ptr, 1)
+	  hi = GET_LINE_COORD (lineedg(iiaxis)%ptr, llen+1)
+
 	ENDIF
 
 	RETURN

@@ -67,8 +67,8 @@
 	  IF (line_parent(axis) .NE. 0) iiaxis = line_parent(axis)
 	  llen = line_dim(iiaxis)
 	  
-	  lo = GET_LINE_COORD (lineedg(iiaxis)%ptr, 1)
-	  hi = GET_LINE_COORD (lineedg(iiaxis)%ptr, llen+1)
+	  lo = GET_LINE_COORD (linemem(iiaxis)%ptr, 1)
+	  hi = GET_LINE_COORD (linemem(iiaxis)%ptr, llen+1)
 
 	ENDIF
 

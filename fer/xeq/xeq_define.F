@@ -1425,7 +1425,10 @@ C /units=months  is 1/12 of the length of the year
               delta = GET_LINE_COORD (linemem(iline)%ptr, 2) - start
               DO 530 i1 = 2, n+1
 	         idel = GET_LINE_COORD (lineedg(iline)%ptr, i1) - GET_LINE_COORD (lineedg(iline)%ptr, i1-1)
-		 IF (.NOT.TM_FPEQ( (delta),idel) ) its_reg = .FALSE.
+		 IF (.NOT.TM_FPEQ( (delta),idel) ) THEN
+		    its_reg = .FALSE.
+		    EXIT ! loop
+		 ENDIF
  530	      CONTINUE
 
 	   ELSE
@@ -1566,7 +1569,10 @@ C /units=months  is 1/12 of the length of the year
                  delta = GET_LINE_COORD (linemem(iline)%ptr, 2) - start
                  DO 550 i1 = 2, npoints
 	            idel = GET_LINE_COORD (lineedg(iline)%ptr, i1) - GET_LINE_COORD (lineedg(iline)%ptr, i1-1)
-		    IF (.NOT.TM_FPEQ( (delta),idel) ) its_reg = .FALSE.
+		    IF (.NOT.TM_FPEQ( (delta),idel) ) THEN
+		       its_reg = .FALSE.
+		       EXIT ! from loop
+		    ENDIF
  550	         CONTINUE
               ENDIF
 

@@ -407,3 +407,6 @@ list one, one[t=@iin], one[gt=tax@iin]
 ! Gridding to an identical second axis, columns 3 and 4 match:
 def ax/edge/t=1-jan-0001:1-jan-0004:365/unit=day/cal=noleap tax2
 list one, one[t=@iin], one[gt=tax@iin],  one[gt=tax2@iin]
+
+! Restore default aspect ratio
+set window/aspect=0.75

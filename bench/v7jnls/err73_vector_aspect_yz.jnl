@@ -3,6 +3,8 @@
 ! This question:
 ! https://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2017/msg00755.html
 
+set window/aspect=0.5
+
 define view/axes/x=0.1:0.4/y=0.1:0.7 myleft
 define view/axes/x=0.6:0.9/y=0.1:0.7 myright
 set view myleft
@@ -43,4 +45,7 @@ vector/aspect/xskip=1/vlimits=0:`totaldepth`\
 /length=0.1/y=`lat1` u,w
 
 frame/file=vector_lats.gif
+
+! Restore default aspect ratio
+set window/aspect=0.75
 

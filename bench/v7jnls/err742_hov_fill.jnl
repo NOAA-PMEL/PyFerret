@@ -2,6 +2,9 @@
 ! Issue 1888, location of FILL plot
 ! 7/27/2018 ACM
 
+set window/aspect=1
+
+
 ! A variable on a 5-month axis of 3-hour intervals defined with units
 ! of seconds.
 define axis/t=1-mar-2012:1-aug-2012:10800/units=seconds/t0=1-mar-2012 t3hour
@@ -14,3 +17,7 @@ set v upper; fill/pal=pale_green_blue_rev ytvar
 set v lower; fill/pal=pale_green_blue_rev/lev/l=400:1224 ytvar
 
 frame/file=hov_fill.gif
+
+! Restore default aspect ratio
+set window/aspect=0.75
+

@@ -151,7 +151,7 @@
 	PARAMETER (max_len = 2048)
 
 * internal variable declarations:
-	LOGICAL   need_formatting, zero_fill, coordvar,
+	LOGICAL   TM_HAS_STRING, TM_DFPEQ, need_formatting, zero_fill, coordvar,
      .            do_err, do_eval, get_ready, was_dep, const_arr_var,
      .		  dqote, DQ, orig_name, user_prec, uvgrid, compressed
 	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
@@ -164,7 +164,7 @@
      .            attype, attlen, inxt, attoutflag, fertype, 
      .            attid, ieq, base_isp, base_cx, cat, var, uvar,  
      .            i1ss, inss, grid, ucode
-	REAL	  result, val
+	REAL	  result, val, aval
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
 	CHARACTER TM_FMT*(max_len), TM_FMT_USER*(max_len), LEFINT*16, VAR_TITLE*(max_len),
      .		  VAR_UNITS*(max_len), GET_STRING_ELEMENT*(max_len),
@@ -1188,8 +1188,19 @@ c		    ENDIF
 	     ELSE
 	        IF (user_prec .AND. use_digits.GT.0) THEN
 	           repl = TM_FMT_USER( result, use_digits, max_len, str_len )
-		ELSE
+	        ELSE
 	           repl = TM_FMT ( result, use_digits, max_len, str_len )
+
+* Did the large default number of digits result in a string like 0.000001?  
+* If so see if we can return a nicer string with exponent. TM_FMT_USER has 
+* logic for this. Less robust than TM_FMT, so only use in limited instances.
+
+		   IF (TM_HAS_STRING (repl, '000')) THEN 
+		      buff  = TM_FMT_USER( result, use_digits, max_len, str_len )
+		      READ ( buff,*) aval
+		      IF (TM_DFPEQ(result, aval) ) repl = buff
+		   ENDIF
+		      
 		ENDIF
 	     ENDIF
 	   ENDIF

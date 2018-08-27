@@ -1,0 +1,14 @@
+! err743_dash_vs.jnl
+! 8/24/18  Another example of issue 1884: correctly doing critical 
+!          portion of finding intercepts with axes in double precision
+
+! The dashed line plots had extra solid lines drawn, report of 8/23/18
+
+def sym com "hl=-1:1/vs/line/dash x[gx=-2:2:.1], 0-1.3*cos(2*x[gx=-2:2:.1])"
+can view; 
+set view ul; plot/nolab/vl=-4:4/($com)
+set view ur; plot/nolab/vl=-2:2/($com)
+set view ll; plot/nolab/vl=-1:1/($com)
+set view lr; plot/nolab/vl=-.5:.5/($com)
+
+frame/file=dash_vs.gif

@@ -57,6 +57,8 @@ C             set to the xmin or xmax, then need to call TRANS again and
 C             define values before ABPLT is called.
 C *acm*  7/18 Fix ticket 1884. Do the intercept calculations and comparisons
 C             in double precision.
+C *acm*  8/18 For ticket 1884, consistently translate the double-precision 
+C             intercepts dxinter etc, back to single precition.
 C
 ****************************************************************
 C     CALL XYZPLT
@@ -202,6 +204,9 @@ C     CALCULATE THE INTERCEPT.
      *    (DBLE(YNEW) - DBLE(YOLD)) + DBLE(ZOLD)
       DXINTER = (DBLE(XNEW) - DBLE(XOLD)) * (DYINTER - DBLE(YOLD)) / 
      *    (DBLE(YNEW) - DBLE(YOLD)) + DBLE(XOLD)
+      xinter = dxinter
+      yinter = dyinter
+      zinter = dzinter
 
 C     CHECK THE INTERCEPT TO INSURE THAT IT IS ON  (just inside) THE BOUNDARY
 C     OF THE WINDOW
@@ -224,6 +229,9 @@ C     CALCULATE THE INTERCEPT.
      *    (DBLE(XNEW) - DBLE(XOLD)) + DBLE(YOLD)
       DZINTER = (DBLE(ZNEW) - DBLE(ZOLD)) * (DXINTER - DBLE(XOLD)) / 
      *    (DBLE(XNEW) - DBLE(XOLD)) + DBLE(ZOLD)
+      xinter = dxinter
+      yinter = dyinter
+      zinter = dzinter
 
 C     CHECK THE INTERCEPT TO INSURE THAT IT IS ON  (just inside) THE BOUNDARY
 C     OF THE WINDOW.
@@ -233,11 +241,7 @@ C     OF THE WINDOW.
 C     TRANSFORM THE INTERCEPT TO THE SCREEN COORDINATE SYSTEM.
 C     Put intercept back in single precision.
 
-  80  CONTINUE
-      xinter = dxinter
-      yinter = dyinter
-      zinter = dzinter
-      CALL TFORM(XINTER,YINTER,ZINTER)
+  80  CALL TFORM(XINTER,YINTER,ZINTER)
       XOLD = XINTER
       YOLD = YINTER
       ZOLD = ZINTER
@@ -284,6 +288,9 @@ C     CALCULATE THE INTERCEPT.
      *    (DBLE(YNEW) - DBLE(YOLD)) +ZOLD
       DXINTER = (DBLE(XNEW) - DBLE(XOLD)) * (DYINTER - DBLE(YOLD)) / 
      *    (DBLE(YNEW) - DBLE(YOLD)) +DBLE(XOLD)
+      xinter = dxinter
+      yinter = dyinter
+      zinter = dzinter
 
 C     CHECK THE INTERCEPT TO INSURE THAT IT IS ON (just inside) THE BOUNDARY
 C     OF THE WINDOW.
@@ -303,14 +310,14 @@ C     CALCULATE THE INTERCEPT.
      *    (DBLE(XNEW) - DBLE(XOLD)) + DBLE(YOLD)
       DZINTER = (DBLE(ZNEW) - DBLE(ZOLD)) * (DXINTER - DBLE(XOLD)) / 
      *    (DBLE(XNEW) - DBLE(XOLD)) + DBLE(ZOLD)
+      xinter = dxinter
+      yinter = dyinter
+      zinter = dzinter
 
 C recompute these now that we have a correct xinter and corrected yintr, zintr
 C and before calling abplt. Put intercept back in single precision.
 
       IF (irecompute .EQ. 1) THEN
-         xinter = dxinter
-         yinter = dyinter
-         zinter = dzinter
 	 CALL TFORM(XINTER,YINTER,ZINTER)
          XOLD = XINTER
          YOLD = YINTER
@@ -383,11 +390,7 @@ C     THE WINDOW.  IF NOT, PLOT TO THE INTERCEPT.
 
 C     TRANSFORM THE INTERCEPT TO THE SCREEN COORDINATE SYSTEM.
 C     Put intercept back in single precision.
- 160  CONTINUE
-      xinter = dxinter
-      yinter = dyinter
-      zinter = dzinter
-      CALL TFORM(XINTER,YINTER,ZINTER)
+ 160  CALL TFORM(XINTER,YINTER,ZINTER)
       GO TO 180
 
 C     TRANSFORM THE POINT TO THE SCREEN COORDINATE SYSTEM.

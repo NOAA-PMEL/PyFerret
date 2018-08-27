@@ -1,28 +1,28 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 114027274 Aug 10 15:59 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 114027226 Aug 24 11:22 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: tweak to repl_exprns returning scalar values with shorter exponential formating where possible
+Note: more on 1884
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
 FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/tmap/ferret/linux/fer_dsets
-FER_DAT=/home/users/ansley/ferret_distributions/rhel6_64
+FER_DAT=/home/users/tmap/ferret/rhel6-x86_64-linux
 FER_DESCR=. ./data
 FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
-FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib
+FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=. ./data
-FER_LIBS=/home/users/ansley/ferret_distributions/rhel6_64/lib
-FER_PALETTE=. /home/users/ansley/ferret_distributions/rhel6_64/ppl
+FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
+FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
-PYFER_EXTERNAL_FUNCTIONS=/home/users/ansley/ferret_distributions/rhel6_64/ext_func/pylibs
-Beginning at Fri Aug 10 16:00:25 PDT 2018
+PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
+Beginning at Mon Aug 27 09:34:54 PDT 2018
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4543,6 +4543,7 @@ Replacing definition of axis XAXIS_TEST
  LISTing to file c.nc
  LISTing to file c.nc
  LISTing to file c.nc
+curl error details: 
  LISTing to file nc
  **TMAP ERR: error in line definition
              file coords dont match variable coords on axis XAXIS_TEST
@@ -4610,59 +4611,6 @@ set axis/name=.fr x_in_meters
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_let_remote
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "time_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "time_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "time_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
- **ERROR: command syntax: /REMOTE variable expression may not contain [d=
-DEFINE VARIABLE/D=1/remote rvar = t00an1[d=1,z=1:100@ave]
- **ERROR: command syntax: /REMOTE variable definition must also specify /D=
-DEFINE VARIABLE/remote rvar = t00an1[d=1,z=1:100@ave]
- **netCDF error
-             Unable to open URL with REMOTE variable definitions:
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
- **TMAP ERR: attribute reading error
-             Unable to get varid for LET/REMOTE variable: NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
- **TMAP ERR: attribute reading error
-             Unable to get bad-value for LET/REMOTE variable: NetCDF: Attribute not found (OPeNDAP/netCDF Error code -43)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
- **netCDF error
-             NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
-list/x=300/y=15 avar
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6807,6 +6755,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -6925,4 +6876,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Aug 10 16:08:19 PDT 2018
+Ended at Mon Aug 27 09:43:34 PDT 2018

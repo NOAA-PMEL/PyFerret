@@ -82,6 +82,7 @@
 * V6.8 for double-precision Ferret do the RANDU calculation
 *      with a real*4 argument. Gives consistent results with single-p.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V7.43 Issue 1891 Compute v^2 as v*v for efficiency
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -100,7 +101,7 @@
      .		 res( m5lox:m5hix,m5loy:m5hiy,m5loz:m5hiz,m5lot:m5hit,m5loe:m5hie,m5lof:m5hif )
 
 * internal variable declarations:
-	LOGICAL	first
+	LOGICAL	TM_FPEQ, first
 	INTEGER CX_DIM_LEN, op, i, j, k, l, m, n, icom, idim,
      .		i1, j1, k1, l1, m1, n1, i2, j2, k2, l2, m2, n2, 
      .		i3, j3, k3, l3, m3, n3, i4, j4, k4, l4, m4, n4, 
@@ -391,6 +392,9 @@
      .	     .OR.    ( com1(i1,j1,k1,l1,m1,n1) .EQ. 0.0
      .	         .AND. com2(i2,j2,k2,l2,m2,n2) .LT. 0.0 ) ) THEN
 	        res(i,j,k,l,m,n) = bad_res
+* v*2 compute as v*v, or if integer do as integer version of exponentiation	
+	     ELSEIF ( TM_FPEQ(com2(i2,j2,k2,l2,m2,n2), 2.0)  ) THEN
+	        res(i,j,k,l,m,n) = com1(i1,j1,k1,l1,m1,n1) * com1(i1,j1,k1,l1,m1,n1)
 	     ELSEIF ( com2(i2,j2,k2,l2,m2,n2).EQ.FLOAT(INT(com2(i2,j2,k2,l2,m2,n2))) ) THEN
 	        res(i,j,k,l,m,n) = com1(i1,j1,k1,l1,m1,n1) ** INT(com2(i2,j2,k2,l2,m2,n2))
 	     ELSEIF ( com1(i1,j1,k1,l1,m1,n1) .LT. 0.0 )	THEN

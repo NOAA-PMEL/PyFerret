@@ -1202,7 +1202,7 @@ GO bn_ens_promote_global
 go bn_reset bn743_bug_fixes
 GO bn743_bug_fixes
 
-go bn_reset bn743_bug_fixes
+go bn_reset bn_data_squared
 GO bn_data_squared
 
 !  *********** Always do a bn_reset  *********** 

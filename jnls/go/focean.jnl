@@ -22,6 +22,8 @@
 ! arg 4 - detailed - may be "detailed", "all" or "solid"  default=solid
 !	  Use "detailed" together with a spectrum like dark_terrestrial
 !	  Use "all" to plot oceans as well as land.
+! arg 5 - longitude limits - specify as for any FERRET longitude range
+! arg 6 - latitude  limits - specify as for any FERRET latitude  range
  
 ! examples:
 !	  GO focean 		! default - 60 minute resolution, color gray
@@ -32,13 +34,14 @@
 !	  GO focean 40 ocean_blue basemap detailed
 !	  GO focean 40 gray transparent
 !	  GO focean " " red	! default (60) minute resolution in red
+!	  GO focean 20 cmocean_deep  overlay detailed x=90:300 y=50s:50n 
 ! or for a good time try
 !	SET DATA monthly_navy_winds; VECTOR/l=1 uwnd,vwnd
-!	GO focean  60 dark_terrestrial transparent detailed
+!	GO focean  60 cmocean_deep transparent detailed
 
 ! Note 1: To use resolution "nnn" the file etoponnn must exist.
 ! Note 2: If "basemap" is given then the current default region will determine
-!	  the region to be plotted
+!	  the region to be plotted, or use arguments 5 and 6
 ! Note 3: The transparent option creates a see-through overlay land mask
 
 ! check the overlay/basemap/transparent option
@@ -54,7 +57,10 @@ def sym map_reg = [$5%x=($xlo_hack):($xhi_hack)%]
 
 set data etopo$1"20"
 
-shade/nolab/nokey/lev=$4"(-10000,0,10000)|detailed>(-200,0,50)(-1000,-200,100)(-10000,0,1000)|solid>(-10000,0,10000)|all>(-200,200,50)(-1000,1000,200)(-8000,8000,1000)"/pal=$2"gray"$3"/overlay|basemap> |*>/overlay" $3"rose($map_reg)|transparent>if mod(i+j,3) eq 0 then rose($map_reg)|*>rose($map_reg)"
+shade/nolab/nokey/lev=$4"(-10000,0,10000)|detailed>(-200,0,50)(-1000,-200,100)(-10000,0,1000)|solid>(-10000,0,10000)|all>(-200,200,50)(-1000,1000,200)(-8000,8000,1000)"\
+/pal=$2"gray"$3"\/overlay|basemap> |*>/overlay"$5" |*>/*"$6" |*>/*"$3" |\
+transparent>if mod(i+j,3) eq 0 then rose($map_reg)|base>rose($map_reg)|*> rose($map_reg)"
+
 
 cancel data etopo$1"20"
 set data/restore

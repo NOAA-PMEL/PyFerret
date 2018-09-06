@@ -41,7 +41,7 @@
 
 ! Note 1: To use resolution "nnn" the file etoponnn must exist.
 ! Note 2: If "basemap" is given then the current default region will determine
-!	  the region to be plotted
+!	  the region to be plotted, or use arguments 5 and 6
 ! Note 3: The transparent option creates a see-through overlay land mask
 
 ! check the overlay/basemap/transparent option
@@ -56,7 +56,9 @@ def sym map_reg = [$5%x=($xlo_hack):($xhi_hack)%]
 
 
 set data etopo$1"20"
-shade/nolab/nokey/lev=$4"(0,10000,10000)|detailed>(0,200,50)(200,1000,100)(1000,10000,1000)|solid>(0,10000,10000)|all>(-200,200,50)(-1000,1000,200)(-8000,8000,1000)"/pal=$2"gray"$3"/overlay|basemap> |*>/overlay"$5" |*>/*"$6" |*>/*"$3" |transparent>if mod(i+j,3) eq 0 then rose($map_reg)|*>rose($map_reg)"
+shade/nolab/nokey/lev=$4"(0,10000,10000)|detailed>(0,200,50)(200,1000,100)(1000,10000,1000)|solid>(0,10000,10000)|all>(-200,200,50)(-1000,1000,200)(-8000,8000,1000)"\
+/pal=$2"gray"$3"\/overlay|basemap> |*>/overlay"$5" |*>/*"$6" |*>/*"$3" |\
+transparent>if mod(i+j,3) eq 0 then rose($map_reg)|base>rose($map_reg)|*> rose($map_reg)"
 
 cancel data etopo$1"20"
 set data/restore

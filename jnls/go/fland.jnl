@@ -1,6 +1,7 @@
 \cancel mode verify
 ! fland.jnl - a land mask (overlay or "basemap")
 ! (default 20 minute resolution)
+! See also focean.jnl for an ocean mask
 ! 4/93
 ! 	 10/93 - updated for Ferret V3.01
 ! 	 2/94  - added [basemap]
@@ -8,7 +9,9 @@
 !	  3/95 - added region arguments -- mostly to help point-and-click
 !	 11/96 - use patterns for transparent fills
 !        11/96 - use plot region (xaxis_min, xaxis_max) if available
-!         9/18 - Use a checkerboard fill rather than pattern for transparent
+!         9/18 - Ferret plots: Use a checkerboard fill for transparent;
+!                PyFerret plots use opacity. Break up the setting of
+!                qualifiers to make the script readable.
 
 ! Description: Plot or overlay an area-filled map of the continents
 
@@ -28,17 +31,21 @@
  
 ! examples:
 !	  GO fland 		! default - 20 minute resolution, color gray
-!	  GO fland 120		!  120 minute resolution
+!	  GO fland 120		! 120 minute resolution
 !	  GO fland 5		! 5 minute resolution - caution! it's LARGE
 !	  GO fland 40 red	! 40 minute resolution with palette red.spk
 !	  GO fland 40 red basemap
 !	  GO fland 40 dark_terrestrial overlay detailed
 !	  GO fland 20 gray transparent
 !	  GO fland " " red	! default (20) minute resolution in red
-!	  GO fland 20 dark_terrestrial overlay detailed x=160e:140w y=20s:20n
-! or for a good time try
+!	  GO fland 20 dark_terrestrial overlay detailed x=80e:180e y=20s:90n
+! or for a good time try these combinations
 !	SET DATA monthly_navy_winds; VECTOR/l=1 uwnd,vwnd
 !	GO fland  60 dark_terrestrial transparent detailed
+!
+!       GO focean 40 white basemap
+!       GO focean 40 blue_light transparent
+!       GO fland 40 black transparent
 
 ! Note 1: To use resolution "nnn" the file etoponnn must exist.
 ! Note 2: If "basemap" is given then the current default region will determine
@@ -55,17 +62,54 @@ def sym xlo_hack ($xaxis_min%0%)
 def sym xhi_hack ($xaxis_max%360%)
 def sym map_reg = [$5%x=($xlo_hack):($xhi_hack)%]
 
+! Open the requested dataset
 set data etopo$1"20"
 
-shade/nolab/nokey\
-/lev=$4"(0,10000,10000)|detailed>(0,200,50)(200,1000,100)(1000,10000,1000)|solid>(0,10000,10000)|all>(-200,200,50)(-1000,1000,200)(-8000,8000,1000)"\
-/pal=$2"gray"\
-$3"/overlay|basemap> |transparent>/overlay/opacity=50|*>/overlay"\
-$5" |*>/*"\
-$6" |*>/*" rose($map_reg)
+let plot_var = rose
 
+! Define qualifiers from the arguments and defaults
+cancel symbol fland_qual
+
+! transparency: 
+! in PyFerret use an opacity setting.
+! in Ferret do a "checkerboard" plot which works in all plot modes. 
+
+if ($3"0|transparent>1|*>0") then
+  if ($program_name"0|PyFerret>1|*>0") THEN
+     define symbol fland_qual = /opacity=50
+  else
+     let ii = i[gx=rose]
+     let jj = j[gy=rose]
+     let plot_var = if mod(ii+jj,3) eq 0 then rose
+   endif
+endif
+
+! contour levels
+define symbol fland_qual = ($fland_qual)\
+/lev=$4"(0,10000,10000)|detailed>(0,200,50)(200,1000,100)(1000,10000,1000)|solid>(0,10000,10000)|all>(-200,200,50)(-1000,1000,200)(-8000,8000,1000)"
+
+
+! color palette
+define symbol fland_qual = ($fland_qual)/pal=$2"gray"
+
+! basemap or overlay, transparent setting handled above
+if ($3"1|overlay>1|basemap>0|transparent>1|*>0") then 
+  define symbol fland_qual = ($fland_qual)/($3"overlay|overlay|transparent>overlay")
+endif
+
+! longitude and latitude subset
+if ($5"0|*>1") then define symbol fland_qual = ($fland_qual)/$5"0"
+
+if ($6"0|*>1") then define symbol fland_qual = ($fland_qual)/$6"0"
+
+
+! draw the plot
+shade/nolab/nokey/($fland_qual) plot_var($map_reg)
+
+! clean up
 cancel data etopo$1"20"
 
 set data/restore
-set mode/last verify
 
+cancel symbol fland_qual
+set mode/last verify

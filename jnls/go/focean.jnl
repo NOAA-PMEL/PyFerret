@@ -56,9 +56,12 @@ def sym map_reg = [$5%x=($xlo_hack):($xhi_hack)%]
 
 set data etopo$1"20"
 
-shade/nolab/nokey/lev=$4"(-10000,0,10000)|detailed>(-200,0,50)(-1000,-200,100)(-10000,0,1000)|solid>(-10000,0,10000)|all>(-200,200,50)(-1000,1000,200)(-8000,8000,1000)"\
-/pal=$2"gray"$3"/overlay|basemap> |*>/overlay"$5" |*>/*"$6" |*>/*" \
-$3"rose($map_reg)|transparent>if mod(i+j,3) eq 0 then rose($map_reg)|*>rose($map_reg)"
+shade/nolab/nokey\
+/lev=$4"(-10000,0,10000)|detailed>(-200,0,50)(-1000,-200,100)(-10000,0,1000)|solid>(-10000,0,10000)|all>(-200,200,50)(-1000,1000,200)(-8000,8000,1000)"\
+/pal=$2"gray"\
+$3"/overlay|basemap> |transparent>/overlay/opacity=50|*>/overlay"\
+$5" |*>/*"\
+$6" |*>/*" rose($map_reg)
 
 cancel data etopo$1"20"
 

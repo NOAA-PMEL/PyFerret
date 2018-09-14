@@ -14,6 +14,9 @@ let vwnd = -1*sst
 
 plot/set/x=180/y=0 uwnd,vwnd
 ppl axlsze,0,0
- ppl plotuv 0,1
+ppl plotuv 0,1
 
 if ($program_name"0|PyFerret>1|*>0") then cancel text
+
+! Restore the default
+ppl axlsze,0.1,0.1

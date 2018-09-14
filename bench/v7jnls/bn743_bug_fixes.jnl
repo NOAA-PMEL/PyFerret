@@ -19,3 +19,6 @@ go err742_stride_irreg_modulo
 
 GO bn_reset
 go err742_dash_vs
+
+GO bn_reset
+go err742_bounds_and_even

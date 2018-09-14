@@ -2,5 +2,5 @@
 ! Simple test for var^2 output, results after change for ticket 1891
 ! 8/29/2018
 
-use data/levitus_3d_subset.nc
+use levitus_3d_subset.nc
 list/k=1:10/i=1/j=1/prec=6 temp, temp^2

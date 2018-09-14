@@ -145,12 +145,13 @@
 * v7.32     2/27/2018 next working version
 * v7.4      4/10/2018 Release
 * v7.42     7/10/2018 to gfdl
+* v7.43     9/14/2018 bug-fix release
 
         IMPLICIT NONE
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  7.421   /
+	DATA revision_level	/  7.43    /
 
 	END

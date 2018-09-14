@@ -1,5 +1,6 @@
 \cancel mode verify
-! fland.jnl - a land mask (overlay or "basemap" (default 20 minute resolution)
+! fland.jnl - a land mask (overlay or "basemap")
+! (default 20 minute resolution)
 ! See also focean.jnl for an ocean mask
 ! 4/93
 ! 	 10/93 - updated for Ferret V3.01
@@ -32,7 +33,7 @@
 !	  GO fland 		! default - 20 minute resolution, color gray
 !	  GO fland 120		! 120 minute resolution
 !	  GO fland 5		! 5 minute resolution - caution! it's LARGE
-!	  GO fland 40 red	! 20 minute resolution with palette red.spk
+!	  GO fland 40 red	! 40 minute resolution with palette red.spk
 !	  GO fland 40 red basemap
 !	  GO fland 40 dark_terrestrial overlay detailed
 !	  GO fland 20 gray transparent
@@ -53,7 +54,7 @@
 
 ! check the overlay/basemap/transparent option
 query/ignore $3%overlay|overlay|basemap|transparent<3rd argument of GO fland must be "overlay", "basemap", or "transparent"%
-query/ignore $4%not_required|detailed|solid|all> <4th argument of GO basemap may be "detailed", "solid" or "all" (ocean, too)%
+query/ignore $4%not_required|detailed|solid|all> <4th argument of GO fland may be "detailed", "solid" or "all" (ocean, too)%
 
 set data/save
 
@@ -107,6 +108,7 @@ shade/nolab/nokey/($fland_qual) plot_var($map_reg)
 
 ! clean up
 cancel data etopo$1"20"
+
 set data/restore
 
 cancel symbol fland_qual

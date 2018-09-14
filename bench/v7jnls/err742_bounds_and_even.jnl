@@ -1,0 +1,14 @@
+! err742_bounds_and_even.jnl
+! The SHOW GRID couldn't get coordinates for the lon axis
+! The first LIST command shows * for longitude range.
+! The second LIST command caused a Fortran runtime error and crash
+
+! File has both point_spacing="even" attribute and bounds on the lon 
+! axis.  The coordinates/bounds are not equally spaced. So neither 
+! the line_start/line_delta nor the line_coordinates were stored.
+
+use bug1894.nc
+show grid sealev
+list/y=0/x=-20:20 sealev
+list/i=1:4 x[gx=sealev]
+

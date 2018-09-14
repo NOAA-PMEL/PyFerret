@@ -208,8 +208,12 @@
 * v720 3/2017 *acm* Ticket 2246. Call CD_GET_TIME_UNITS routine to get t0 date and time units 
 * V72 6/17 *acm* For trac enhancement #767 -- dynamic coordinate storage 
 * V73+ 12/17 *acm* Issue #1848: apply set_regular flag once the coordinates have been set up
-*  V75  ACM  2/2018 As in the DSG branch, pass line_direction(iaxis) to 
+* V74  ACM  2/2018 As in the DSG branch, pass line_direction(iaxis) to 
 *                 cd_get_line_direction as an argument
+* 1/26/2017 *acm*  Issue 1894. Both point_spacing="even" and bounds are given. The axis
+*                  coordinates/bounds are detected as uneven. Neither the coordinates
+*                  nor line_start/ line_delta were set. In this case, treat it as irregular.
+*
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -966,6 +970,13 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
            bad_bndsid = edgid     
        ENDIF
 
+* The axis had a point_spacing = "even" attribute and also edges.  We have found 
+* the axis coordinate and/or edges themselves to be in fact irregular. So don't 
+* later on apply the set_regular, which came from the point-spacing attribute.
+
+      IF (ok .AND. set_regular .AND. .NOT.edge_reg ) set_regular = .FALSE.
+
+
 * It's actually regular - save it as such
       IF (edge_reg .AND. .NOT. line_regular(iaxis)) THEN
          line_regular(iaxis) = .TRUE.
@@ -1055,7 +1066,13 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
          CALL TM_IRREGAX_MID( linemem(iaxis)%ptr, lineedg(iaxis)%ptr, npts )
 
 	 bad_bndsid = bndid
-      ENDIF	
+      ENDIF
+
+* The axis had a point_spacing = "even" attribute and also bounds.  We have found 
+* the axis coordinate and/or bounds themselves to be in fact irregular. So don't 
+* later on apply the set_regular, which came from the point-spacing attribute.
+
+      IF (ok .AND. set_regular .AND. .NOT.line_regular(iaxis) ) set_regular = .FALSE.
 
       IF (ok .AND. .NOT.line_regular(iaxis)) THEN
 	   
@@ -1077,10 +1094,18 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 
  600  CONTINUE
 
-* All the checks for regular have been made. If regular, 
-* deallocate the line storage....
+* All the checks for regular have been made. If regular, make sure we have set 
+* line-start and line_delta, and deallocate the line storage....
 
-      IF (set_regular) line_regular(iaxis) = .TRUE.
+      IF (set_regular) THEN
+         IF (.NOT.line_regular(iaxis) .AND. npts.GT.1) THEN
+	    line_start(iaxis) = GET_LINE_COORD(linemem(iaxis)%ptr, 1)
+	    line_delta(iaxis) = GET_LINE_COORD(linemem(iaxis)%ptr, 2) - 
+     .                          GET_LINE_COORD(linemem(iaxis)%ptr, 1)
+	 ENDIF
+	 line_regular(iaxis)= .TRUE.
+      ENDIF
+
       IF (line_regular(iaxis)) CALL FREE_LINE_DYNMEM(iaxis)
  
 * Check if axis is a monthly axis for this calendar.  If so store as a 'true-month' 

@@ -210,7 +210,7 @@
 * V73+ 12/17 *acm* Issue #1848: apply set_regular flag once the coordinates have been set up
 * V74  ACM  2/2018 As in the DSG branch, pass line_direction(iaxis) to 
 *                 cd_get_line_direction as an argument
-* 1/26/2017 *acm*  Issue 1894. Both point_spacing="even" and bounds are given. The axis
+* v743 9/2018 *acm* Issue 1894. Both point_spacing="even" and bounds are given. The axis
 *                  coordinates/bounds are detected as uneven. Neither the coordinates
 *                  nor line_start/ line_delta were set. In this case, treat it as irregular.
 *

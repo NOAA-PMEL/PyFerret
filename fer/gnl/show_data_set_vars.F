@@ -86,6 +86,8 @@
 * V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 * V741 *acm* 5/18 Promoting global attributes to a variable in ensembles: list 
 *                 the variables synthesized by aggregations with a separator ---
+* V743 *acm* 10/10 Fix issue 1897: datasets with E or F axis in any grids gets 6 columns
+*
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -185,8 +187,12 @@
            ENDIF
 
            IF (.NOT.is_undetermined) THEN	
-	      IF ( FOUR_D_GRID(igrid)) listdims = 4
-		   ENDIF
+	      IF ( FOUR_D_GRID(igrid)) THEN
+	         listdims = MAX(listdims,4)
+	      ELSE
+	         listdims = 6
+	      ENDIF
+           ENDIF
  80	CONTINUE
 
 	IF (listdims .EQ. 0) listdims = nferdims
@@ -254,9 +260,6 @@
            ENDIF
 
            IF (.NOT.is_undetermined) THEN
-	      
-	      listdims = 6
-	      IF ( FOUR_D_GRID(igrid)) listdims = 4
 
               DO 100 i = 1, listdims
                  WRITE( rbuff(i+listdims),'(I8)' ) ds_grid_start(i,ivar)

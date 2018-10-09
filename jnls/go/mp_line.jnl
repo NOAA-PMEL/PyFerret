@@ -5,8 +5,8 @@
 !		    		
 ! Jonathan Callahan
 ! 5/97
-
 ! Description:  Plots data using a predefined map projection. 
+! 10/18 *additions for Ribbon plots
 !
 ! This script presumes that following are predefined a projection script
 ! run previous to this script:
@@ -15,15 +15,17 @@
 !	x_page	field describing transformation from lat/lon to Y page coordinates
 !	mp_mask  mask for orthographic map projections
 !
-! Usage:          arg1     arg2  arg3
-!  go mp_line plot_command xpos  ypos
+! Usage:          arg1     arg2  arg3  arg4
+!  go mp_line plot_command xpos  ypos [colorvar]
 !
 ! arg 1 - plot command (eg. "SHADE/VS/OVER")
 ! arg 2 - X position in user units (world longitude)
 ! arg 3 - Y position in user units (world latitude)
+! [arg 4] - If it's a ribbon plot, the color-by variable
 !
-! Example:
+! Examples:
 !	  go mp_line plot/vs/over my_x my_y
+!	  go mp_line plot/vs/ribbon/line/thick/over my_x my_y, my_colr_var
 !
 
 query/ignore $1%<Specify all arguments: plot_command xpos ypos%
@@ -37,7 +39,6 @@ define region/default save
 let/quiet mp_central_meridian = `mp_central_meridian`
 let/quiet mp_standard_parallel = `mp_standard_parallel`
 
-
 ! Cancel the region because the I index info is used to restrict
 ! the points to be plotted as a line.
 
@@ -47,21 +48,26 @@ can region/x/y
 
 let/quiet mp_xpos = $2
 let/quiet mp_ypos = $3
+
+
 define symbol mp_shape_x `mp_xpos,RESULT=SHAPE`
 define symbol mp_shape_y `mp_ypos,RESULT=SHAPE`
+
 query/ignore ($mp_shape_x%|X|Y|Z|T|<error: x position array must be 1-dimensional%)
 query/ignore ($mp_shape_y%|X|Y|Z|T|<error: y position array must be 1-dimensional%)
 can variable mp_xpos
 can variable mp_ypos
-
 
 ! Alter the map projection equations to use xpos and ypos
 
 let/quiet mp_x = $2
 let/quiet mp_y = $3
 
-$1 x_page*mp_mask, y_page*mp_mask
-
+IF ($4%0|*>1%) THEN
+  $1 x_page*mp_mask, y_page*mp_mask, $4*mp_mask
+ELSE
+   $1 x_page*mp_mask, y_page*mp_mask
+ENDIF
 
 ! Restore the region and map projection equations
 

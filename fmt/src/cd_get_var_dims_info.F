@@ -40,6 +40,7 @@
 
 * Programmer Ansley Manke
 * NOAA/PMEL, Seattle, WA - TMAP
+* V74+ 4/18 *acm* Getting DSG grids
 
 * Argument declarations
 
@@ -72,10 +73,9 @@
 * If the varid is not set, find it from the variable name
       IF (ivar.LE.0 .OR. ivar.EQ.unspecified_int4) THEN
         slen = TM_LENSTR1(vname)
-	CALL CD_GET_VAR_ID (dset, vname(:slen), ivar, status)
+        CALL CD_GET_VAR_ID (dset, vname(:slen), ivar, status)
+        IF (ivar.LT.0 .OR. status.NE.pcd_ferr_ok) RETURN
       ENDIF
-
-      IF (ivar.LT.0 .OR. status.NE.pcd_ferr_ok) RETURN
 
       IF (ivar .LT. 0) RETURN
 

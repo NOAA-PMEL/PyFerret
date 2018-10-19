@@ -198,6 +198,7 @@
 *                 handle line plots over scaled 2D plot
 *                 On time plots overlaid on a 2D plot, set up time-axis information even when
 *                 not labeling the plot.
+* V7434 10/18 *acm* minor cleanup: initialize variable the_taxis
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -321,6 +322,7 @@
 	x_is_time = .FALSE.
 	y_is_time = .FALSE.
 	tstyle = ' '
+	the_taxis = no_dim
 	icode = 0
 	t1_date = ' '
 	tref = ' '
@@ -481,6 +483,7 @@ c	   IF ( .NOT.no_labels) THEN
      .			                   line_t0(itmp), dum, status )
 		 IF (status .EQ. ferr_ok) THEN
 		    x_is_time = .TRUE.
+		    the_taxis = indep_dim
 		    iunits = TM_UNIT_ID( line_units(itmp) )
 		    line_unit_code(itmp) = TM_UNIT_ID( line_units(itmp) )
 		    line_tunit(itmp) = un_convert(line_unit_code(itmp))
@@ -859,6 +862,7 @@ c	   ENDIF  ! setting up time overlay information
 		    IF (status .EQ. ferr_ok) THEN
 		       y_is_time = .TRUE.
 		       time_axis = .TRUE.
+		       the_taxis = dep_dim
 		       has_time_axis = .TRUE.
 		       iunits = TM_UNIT_ID( line_units(itmp) )
 		       line_unit_code(itmp) = TM_UNIT_ID( line_units(itmp) )
@@ -1052,7 +1056,7 @@ c	   ENDIF  ! setting up time overlay information
               IF ( tax .EQ. mnormal .OR. tax .EQ. munknown ) THEN  ! 8/91 bug
                  dt_min = 1.0
               ELSE
-	         dt_min = line_tunit( grid_line(the_taxis,grid) ) / 60.! sec-->min
+	         dt_min = line_tunit( grid_line(t_dim,grid) ) / 60.! sec-->min
 	         IF ( ITSA_TRUEMONTH_AXIS(grid_line(the_taxis,grid)) ) 
      .                dt_min = un_convert(pun_day)/60. 
 
@@ -1066,7 +1070,7 @@ c	   ENDIF  ! setting up time overlay information
                  ENDIF
 
               ENDIF
-              t1_date = INTERNAL_WHOI_DATE( grid, the_taxis, 1.0D0 )
+              t1_date = INTERNAL_WHOI_DATE( grid, t_dim, 1.0D0 )
            ELSE
 	      IF (overlay .AND. has_time_axis) THEN
 	         dt_min  = saved_dt_min

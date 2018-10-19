@@ -50,6 +50,7 @@
 * 2/03 - *acm*  clean off .nc as well as .cdf and .des
 *               Note this may change the names of dynamic grids, which are
 *               generated from dataset names
+* 10/18 - *acm* Call TM_LENSTR1 not the LEN fucnction. Remove old cygwin stuff.
 
 #include "gt_lib.parm"
 
@@ -57,17 +58,10 @@
 	CHARACTER*(*) pathname
 
 * local variable
-        INTEGER idot, islash, plen
-* *kob* 3/01 Insert Cygwin specific variables
-#ifdef __CYGWIN__
-	CHARACTER DODSPathSeparator
-	LOGICAL DODS_file
-	PARAMETER (DODSPathSeparator='/')
-	DATA DODS_file  / .FALSE. /
-#endif
+        INTEGER TM_LENSTR1, idot, islash, plen
 
 * initialize
-        plen = LEN( pathname )
+        plen = TM_LENSTR1( pathname )
 
 * locate the last dot in the name
         DO 100 idot = plen, 1, -1
@@ -86,24 +80,12 @@
 	ENDIF
 
 * locate the last slash in the name
-* *kob* 3/01 - if under cygwin, have to check if the file is a DODS
-*              file - if so, use proper path separator
-#ifdef __CYGWIN__
-	DODS_file = INDEX(pathname,'://') .GT. 0
-        DO 200 islash = plen, 1, -1
- 	   IF (DODS_file) THEN
-	      IF ( pathname(islash:islash) .EQ. DODSPathSeparator ) GOTO 290
-	   ELSE
-	      IF ( pathname(islash:islash) .EQ. PathSeparator ) GOTO 290
- 200	   ENDIF
-	   islash = 0		! no slash
- 290	   islash = islash + 1
-#else   
+
         DO 200 islash = plen, 1, -1
  200    IF ( pathname(islash:islash) .EQ. PathSeparator ) GOTO 290
         islash = 0    ! no slash
  290    islash = islash + 1
-#endif
+
 * check for pathological name
         IF ( islash .GT. idot ) idot = plen
 	

@@ -36,7 +36,8 @@
 *
 *
 * Ferret v7.1 *acm* 1/13/2017
-* V72 6/17 *acm* for trac enhancement #767 -- dynamic coordinate storage
+* V72   6/17 *acm* for trac enhancement #767 -- dynamic coordinate storage
+* V744 10/18 *acm* Issue #1898 -- correctly define first_delta, checking non-dp coordinatse
 
 * This routine replaces identical logic in cd_get_1_axis and xeq_define, 
 * checking for repeated coordinates and doing micro-adjusting if possible.
@@ -107,7 +108,7 @@
 
         ELSE
 
-           dfirst_delta = line(2) - line(1)
+           first_delta = line(2) - line(1)
            epsilon = epsilon_23 * 2.*(ABS(line(npts)) / first_delta )
            epsilon = epsilon_23 * 2.*(ABS(line(1)) / first_delta )
 	   

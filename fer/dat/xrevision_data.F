@@ -147,12 +147,13 @@
 * v7.42     7/10/2018 to gfdl
 * v7.43     9/14/2018 bug-fix release
 * v7.44     9/27/2017 Next working version
+* v7.431   10/24/2018 Leave as 7.4.3.x until ready for public release
 
         IMPLICIT NONE
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'PyFerret' /
 	DATA len_program_name	/  8         /
-	DATA revision_level	/  7.44      /
+	DATA revision_level	/  7.431     /
 
 	END

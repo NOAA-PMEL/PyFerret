@@ -4781,21 +4781,6 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **TMAP ERR: attribute already defined
-             coordinates for variable ZETA
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable U
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable V
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable TEMP
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable SALT
-             Data set: testdata
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5739,6 +5724,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Error in bounds "longitude_bnds" or bounds do not enclose point on axis longitude
            *** NOTE: Substituting coordinate midpoints
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo

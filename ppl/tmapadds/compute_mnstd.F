@@ -65,20 +65,12 @@ C**
 * calling argument declarations:
 	LOGICAL need_std
 	INTEGER nsize, status
-#ifdef double_p
 	REAL*8 z(*), badz
-#else
-	REAL z(*), badz
-#endif
 
 * internal variable declarations:
-#ifdef double_p
 	REAL*8 sum, dev, sumsq_dev, variance, tol_lo, tol_hi, zmean2
-#else
-	REAL sum, dev, sumsq_dev, variance, tol_lo, tol_hi, zmean2
-#endif
 
-	LOGICAL TM_FPEQ_SNGL, zmax_test, zmin_test, ok
+	LOGICAL TM_FPEQ_SNGL, TM_FPEQ, zmax_test, zmin_test, ok
 	REAL  zero, rbad
 	REAL*8 x, xmean, sum2, sumc, variance_c, xdelta, 
      .         z_max_tol, z_min_tol, zlo, zhi
@@ -294,8 +286,17 @@ c Once more.
 	IF (centered) zmean = 0.
 
 * If the std came out as zero, use linear color levels
+
 	zero = 0.
-	IF (need_std .AND. TM_FPEQ_SNGL(zstd, zero)) GOTO 5010
+
+	IF (need_std) THEN
+	   IF ( .NOT. TM_FPEQ(zmean, zero) )  THEN
+	      IF (TM_FPEQ_SNGL(zstd/zmean, zero))  GOTO 5010
+	   ELSE 
+	      x = MAX(ABS(zmin), ABS(zmax))
+	      IF (TM_FPEQ(zstd/x , zero) )  GOTO 5010
+	   ENDIF 
+	ENDIF
 
  5000	RETURN
 	

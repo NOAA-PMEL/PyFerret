@@ -1,0 +1,32 @@
+! err742_v_levels.jnl
+! Issue 1899  
+! ACM 10/30/2018
+!  If the magnitudes of data are small, then /LEVELS=v failed 
+!  to use the variance.
+
+use data/smallval.nc
+
+! Previously reported data too large or not within 3 STD
+set view ul
+shade/lev=v chl
+show symbol LEV_OPNLEVS
+
+! variable minus mean
+
+set view ur
+shade/lev=vc chl - chl[x=@ave,y=@ave]
+show symbol LEV_OPNLEVS
+
+! one cell w/ a larger value
+
+set view ll
+shade/lev=v if chl gt 3.e-07 then (-3.e-6) else chl
+show symbol LEV_OPNLEVS
+
+! this is fine, plots a constant color
+
+set view lr
+shade/lev=v 0.2 + 0*chl
+show symbol LEV_OPNLEVS
+
+frame/file=lev_v_levels.gif

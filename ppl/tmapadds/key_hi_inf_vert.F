@@ -40,6 +40,7 @@
 *  v581 *acm* 3/05 open levels (-INF) (INF)
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V685 *acm* 5/13  changes for ribbon plots
+* V674+ *acm* 10/18 Do not use a so many digits for key annotations
 
       IMPLICIT NONE
       INCLUDE 	'parampl5_dat.decl'
@@ -61,7 +62,7 @@
       INTEGER maxlen, slen, ldigits
       REAL x1, x2, x3, x4, y1, y2, y3, y4
       REAL delx, xx, yy, xxx, yyy
-      CHARACTER*20 TM_FMT_SNGL_DIGITS, text
+      CHARACTER*10 TM_FMT_SNGL_DIGITS, text
 
 * save px and py values
 
@@ -91,7 +92,7 @@
        IF (.NOT. cont_key) call FGD_GPL(4,px,py)
 
       IF (annotate_key .GT. 0) THEN
-         maxlen = 20
+         maxlen = 10
          ldigits = lab_digits+1
          text = TM_FMT_SNGL_DIGITS (zmax,ldigits,maxlen,slen)
 	 xx = px(3)/1000.0 - xorg - (slen/2)* height

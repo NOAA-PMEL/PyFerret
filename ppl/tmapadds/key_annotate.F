@@ -35,8 +35,9 @@
 *
 * Label the color key with high and low values at each end
 * (only if they're valid values) 
-** V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
-* V685 *acm* 5/13  changes for ribbon plots
+** V68  *acm* 1/10  changes for double-precision ferret, single-precision pplus
+* V685 *acm* 5/13   changes for ribbon plots
+* V674+ *acm* 10/18 Do not use a ridiculous number of digits.
 
 *  kpx		corners of box of color in colorbar
 *  kpy
@@ -63,7 +64,7 @@
       INTEGER maxlen, slen, ldigits
       REAL x1, x2, x3, x4, y1, y2, y3, y4
       REAL delx, xx, yy, xxx, yyy
-      CHARACTER*20 TM_FMT_SNGL_DIGITS, text
+      CHARACTER*10 TM_FMT_SNGL_DIGITS, text
 
 * If min and max values havent been set then return.
       IF (zmin .EQ. 1e33 .OR. zmax .EQ. -1*1e33) RETURN
@@ -84,7 +85,7 @@
      .    zmin .NE. 1e33) THEN
          px(1) = px(1) +  (x3 - x1)/2.
 
-         maxlen = 20
+         maxlen = 10
          ldigits = lab_digits+1
          text = TM_FMT_SNGL_DIGITS (zmin,ldigits,maxlen,slen)
 	 xx = px(1)/1000.0 - xorg - (slen/2)* height
@@ -96,7 +97,7 @@
      .    zmax .NE. -1*1e33) THEN
          px(1) = px(1) +  (x3 - x1)/2.
 
-         maxlen = 20
+         maxlen = 10
          ldigits = lab_digits+1
          text = TM_FMT_SNGL_DIGITS (zmax,ldigits,maxlen,slen)
 	 xx = px(1)/1000.0 - xorg - (slen/2)* height
@@ -108,7 +109,7 @@
       IF (lohi .EQ. 1 .AND. vh .EQ. 2) THEN
          py(1) = py(1) +  (y3 - y1)/2.
 
-         maxlen = 20
+         maxlen = 10
          ldigits = lab_digits+1
          text = TM_FMT_SNGL_DIGITS (zmin,ldigits,maxlen,slen)
 	 xx = px(1)/1000.0 - xorg - (slen+1)* height
@@ -120,7 +121,7 @@
       IF (lohi .EQ. 2 .AND. vh .EQ. 2) THEN
          py(3) = y2 + (y1 - y2)/2.
 
-         maxlen = 20
+         maxlen = 10
          ldigits = lab_digits+1
          text = TM_FMT_SNGL_DIGITS (zmax,ldigits,maxlen,slen)
 	 xx = px(3)/1000.0 - xorg + 0.5* height

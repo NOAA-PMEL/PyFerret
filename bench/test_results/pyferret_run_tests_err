@@ -3678,9 +3678,9 @@ list/x=300/y=15 avar
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR: invalid command: string/numeric data type mix-up. Argument 3 : TAX_DATESTRING
+ **ERROR: invalid command: string/numeric data type mix-up. Argument 5.4E+08 : TAX_DATESTRING
 list tax_datestring (tt[L=3], tt, 5)
- **ERROR: invalid command: string/numeric data type mix-up. Argument 2 : TAX_DATESTRING
+ **ERROR: invalid command: string/numeric data type mix-up. Argument 5.4E+08 : TAX_DATESTRING
 list tax_datestring (tt[L=3], "my_tax", "minutes")
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -5749,6 +5749,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Error in bounds "longitude_bnds" or bounds do not enclose point on axis longitude
            *** NOTE: Substituting coordinate midpoints
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo

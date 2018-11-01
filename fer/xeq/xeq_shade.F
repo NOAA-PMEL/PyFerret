@@ -111,6 +111,7 @@
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * V74  1/18 *am* for issue #1854, extra argument to DISP_SET_UP
+* v744 *acm* 11/18 Issue 1786: graticule lines & axes drawn if PLOT/OVER/AXES given
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -163,12 +164,17 @@
 	transpz   = qual_given( slash_shad_transpz   ).GT.0
         sp        = qual_given( slash_cont_spectrum  )
 	set_up	  = qual_given( slash_shad_set_up    ).GT.0
+
+* On overlays don't draw axes unless specificially requested with /AXES
+* (e.g.so graticule lines can be overlaid on a final plot.)
+
 	noaxes    = qual_given( slash_noaxes         ).GT.0
-	axes      = qual_given( slash_shad_axes      ).GT.0
-        IF (overlay) THEN
+	IF (overlay) THEN
 	   noaxes = .FALSE.
 	   axes = .FALSE.
 	ENDIF
+	axes      = qual_given( slash_shad_axes      ).GT.0
+
 	is_logh   = .FALSE.	  ! Not valid quals
 	is_logv   = .FALSE.	  ! for shade
         spectrum  = sp .GT. 0 
@@ -416,7 +422,7 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
 	ENDIF
 
 *  Turn off or on axes, including time axes.
-        IF (axes .OR. noaxes) CALL ax_on_off (iax)
+        IF (axes .OR. noaxes) CALL ax_on_off (iax, overlay)
 
 * /set_up only requested ?
 	   IF ( set_up ) GOTO 1000

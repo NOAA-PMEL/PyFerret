@@ -106,6 +106,7 @@
 * V 7 *acm*   6/16 Ticket 2435: moveable labels in PyFerret when using PyFerret fonts
 * V73+ 1/18 *acm*  Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
 * V74  *acm* -11/18 Issue #1900 Fixes for tic marks and PLOT/OVERLAY with short-interval time
+* v744 *acm* 11/18 Issue 1786: graticule lines & axes drawn if PLOT/OVER/AXES given
 
 
 *****************************************************
@@ -535,14 +536,17 @@ c	    CALL PLOTPOL(X,NXS,XF,YF)
 	
 * Draw the plot axes 
 
-	IF (.NOT.SOVER) THEN
+	IF (axes_on_overlay) lab1 = ' '
+	IF (.NOT.SOVER .OR. axes_on_overlay) THEN
 	   DRAW = .FALSE.
 	   CALL DAXIS(XF,YF,NMX,NMY,DRAW)
 	   DRAW = .TRUE. 
 	   CALL DAXIS(XF,YF,NMX,NMY,DRAW)
 	   CALL SCALE(XF,YF,XORG,YORG,XLO,YLO)
-	ENDIF 
-	IF (SOVER) lab1 = ' '
+	   axes_on_overlay = .FALSE.
+	ELSE
+	   lab1 = ' '
+	ENDIF
 C
 	CALL WINDOW(0.,0.,0.,0.)
 C

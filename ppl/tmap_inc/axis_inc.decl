@@ -16,6 +16,8 @@
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* v744 *acm* 11/18 Issue 1786: graticule lines & axes drawn if PLOT/OVER/AXES given
+*		   new flag axes_on_overlay
 
 	REAL*4	XLO
 	REAL*4	XHI
@@ -54,6 +56,7 @@
         LOGICAL SHRINKY
 	LOGICAL MOD_VS_X
 	LOGICAL MOD_VS_Y
+	LOGICAL axes_on_overlay
         INTEGER XDMS
         INTEGER YDMS
         INTEGER XDSPAC

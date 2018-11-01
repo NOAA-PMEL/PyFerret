@@ -1,0 +1,50 @@
+! bn_overlay_graticules.jnl
+! See issue 1786, graticule lines on plots with overlays.
+! Multiple overlay of axis lines causes extra thickness inpyFerret,
+! so have been drawing axis lines only once on 1st plot. es and 
+! graticules weren't drawn on an overlay so the graticule lines 
+! show on the final plot only where the plot has missing areas
+
+use coads_climatology
+define view/axes/x=0.2:0.8/y=.1:.4 lov
+define view/axes/x=0.2:0.8/y=.6:.9 hiv
+
+
+set mode graticule:(dash,color=black)
+set view hiv
+shade/l=1/x=100:160/y=-40:-10/nolab sst
+fill/over/nolab/l=1 sst
+
+! Do the first plot with /NOAX and the overlay with /AXES
+! to draw the axes once, only on the last plot.
+
+set v lov
+shade/l=1/x=100:160/y=-40:-10/nolab/noax sst
+fill/over/nolab/l=1/AXES sst
+frame/file=graticule_on_over.gif
+
+
+cancel view
+! likewise for polygons where the overlay covered up the graticule lines 
+
+set mode graticule
+polygon/thick/color=red/palette=blue/noax {1,2,1}, {2,1,0.5}
+polygon/thick/color=red/palette=green/over/nolab/axes {2,1,2}, {2,1,0.5}
+
+! or just vertical ones
+polygon/thick/color=red/palette=blue/noax {1,2,1}, {2,1,0.5}
+polygon/thick/color=red/palette=green/over/nolab/axes=1,1,0,0 {2,1,2}, {2,1,0.5}
+
+
+! Line plots
+
+set mode graticule:(dash,thick)
+PLOT/i=1:120/color=lighblue/thick=3/nokey/noax cos(i/30), cos(i/33), cos(i/35), cos(i/36), cos(i/38)
+PLOT/i=1:120/color=red/thick=3/axes/nokey/nolab/over sin(i/30), sin(i/33), sin(i/35), sin(i/36), sin(i/38)
+
+! vectors
+
+VECTOR/I=1:10/J=1:20/LEN=2/color=red/thick=3/noax i/j,j/i
+VECTOR/over/nolab/I=1:10/J=1:20/LEN=2/color=lightblue/thick=3/axes (i/j),(j*1.2)/i
+
+cancel mode graticule

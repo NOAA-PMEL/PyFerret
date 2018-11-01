@@ -20,13 +20,15 @@ C                 to remove clash with AXIS function
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
-c
+* v744 *acm* 11/18 Issue 1786: graticule lines & axes drawn if PLOT/OVER/AXES given
+*		   new flag axes_on_overlay
+
 	COMMON/AXISCMN/ XLO,XHI,XTIC,XLEN,XCSIZE, 
      *	IAUTOX,ITYPEX,NMTCX,LINTX,LABELX,NSIGX,NTICX,XORG,XVALOFF,
      *		     YLO,YHI,YTIC,YLEN,YCSIZE, 
      *	IAUTOY,ITYPEY,NMTCY,LINTY,LABELY,NSIGY,NTICY,YORG,YVALOFF,
      *	IAXON(4),IAXSET, HGRAT(4,2), VGRAT(4,2), HLINE, VLINE, 
-     *	SHRINKY, MOD_VS_X, MOD_VS_Y, HCOLOR(2), 
+     *	SHRINKY, MOD_VS_X, MOD_VS_Y, axes_on_overlay, HCOLOR(2), 
      *  VCOLOR(2),XDMS,YDMS,XDSPAC,YDSPAC
 c
 c**	x axis variables
@@ -92,6 +94,7 @@ c       vline           flag: true if still need to draw vertical tic lines
 c       SHRINKY         flag: true to allow auto-shrinking of y-axis tic labels
 c	MOD_VS_X        For PLOT/VS plots, data are treated as modulo, if they 
 c       MOD_VS_Y        have units of longitude.
+c       axes_on_overlay /OVERLAY and /AXES given, to draw axes and graticules on an overlay
 c       XDMS           = 0 for degrees in decimal deg.frac
 c                      = 1 for Degrees and minutes 
 c       YDMS           same as xdms, for vertical axis

@@ -107,6 +107,7 @@
 * V697 *acm* 12/15 Fixes for bug 2327 move call of PPL_AXES_RESTORE back to end of plot routines
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * V74  1/18 *am* for issue #1854, extra argument to DISP_SET_UP
+* v744 *acm* 11/18 Issue 1786: graticule lines & axes drawn if PLOT/OVER/AXES given
 
 
 	include 'tmap_dims.parm'
@@ -166,12 +167,17 @@
 	no_labels = qual_given( slash_vect_nolabels  ).GT.0
 	transpz   = qual_given( slash_vect_transpz   ).GT.0
 	set_up	  = qual_given( slash_shad_set_up    ).GT.0
+
+* On overlays don't draw axes unless specificially requested with /AXES
+* (e.g.so graticule lines can be overlaid on a final plot.)
+
 	noaxes    = qual_given( slash_noaxes         ).GT.0
-	axes      = qual_given( slash_vect_axes      ).GT.0
         IF (overlay) THEN
 	   noaxes = .FALSE.
 	   axes = .FALSE.
 	ENDIF
+	axes      = qual_given( slash_vect_axes      ).GT.0
+
 	flows     = qual_given( slash_vect_flowline  ).GT.0
 	is_logh   = .FALSE.  ! Not valid quals
 	is_logv   = .FALSE.  ! for vector
@@ -407,7 +413,7 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
        	ENDIF	
 
 *  Turn off or on axes, including time axes.
-        IF (axes .OR. noaxes) CALL ax_on_off (iax)
+        IF (axes .OR. noaxes) CALL ax_on_off (iax, overlay)
 
 * done now if /set_up, only
 	IF ( set_up) GOTO 1000

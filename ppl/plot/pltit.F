@@ -105,6 +105,7 @@
 *                  things only for the short-time-axis case.
 * V 7 *acm*   6/16 Ticket 2435: moveable labels in PyFerret when using PyFerret fonts
 * V73+ 1/18 *acm*  Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
+* V74  *acm* -11/18 Issue #1900 Fixes for tic marks and PLOT/OVERLAY with short-interval time
 
 
 *****************************************************
@@ -293,6 +294,16 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	        IF (is_hours_axis .GT. 0) CALL FIXTIM (ITMIN,ITMAX,IT1,IT2,4)
 		TLO = 1. - DIFF(IT1,ITSTRT)/DT
 	        THI=TLO+DIFF(IT1,IT2)/DT
+		IF (is_hours_axis .GT. 0) THEN
+		   IF (ITFLG.EQ. 1) THEN
+		      tlo = TLOX_save
+		      thi = THIX_save
+		   ENDIF
+		   IF (ITFLG.EQ.-1 .OR. ITFLG.EQ.2) THEN
+		      tlo = TLOY_save
+		      thi = THIY_save
+		   ENDIF
+		ENDIF
 	    ENDIF
 	    IF(ITFLG.EQ.1 .OR. ITFLG.EQ.2)THEN
 		XTI=XHI

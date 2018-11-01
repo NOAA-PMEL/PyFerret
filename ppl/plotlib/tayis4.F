@@ -45,7 +45,8 @@ C V7.1 *acm* 8/2016 Ticket 2466: Graticule lines too dense
 *                Rewrite this routine to make it echo taxis4.F
 * *acm* - 1/17   Fix too-many labels on tic marks. Add year to Month-Day labels
 * *acm* - 3/18   Issue #1856 Additions for high-res time axes; e.g. plot a minute of data
-* *acm* - 3/18   Issue #1856 Additions for high-res time axes; e.g. plot a minute of data
+* V74  *acm* -11/18 Issue #1900 Fixes for tic marks and PLOT/OVERLAY with short-interval time
+
 C
 C**
 C**    @(#)tayis4.f	1.1   12/09/15
@@ -99,7 +100,7 @@ C
 	REAL*8  DIFF, difft
 	REAL*8  td, xtemp1, tfact_d, xfact_d
 	REAL    delt, rem, angl, t_max
-	INTEGER is_hours_axis, labint, ticint, hrint
+	INTEGER is_hours_axis, labint, ticint, hrint, i_ticint
 	LOGICAL hvytic, labsecs, datelabel
 
 * Parameters for drawing tics across plot
@@ -138,7 +139,7 @@ C     SET PARAMETERS.
         TIC = 60./DT  
         TICd = 60./DT  
         NTIC = NSMTIC + 1
-        delt = 60.
+        delt = 1.  ! This is in minutes
         labint = 120
 	ticint = labint
 	hrint = 1
@@ -176,6 +177,12 @@ C     SET PARAMETERS.
            IF (difft .GE. 60) ticint = 2
            IF (difft .GE. 120) ticint = 4
            IF (difft .GE. 240) ticint = 4
+
+           ! make the tic interval go evenly into the label interval 
+           IF (MOD(labint,ticint) .NE. 0) THEN
+              i_ticint = INT(labint/ticint)
+              ticint = MAX(INT(labint/i_ticint), 1)
+           ENDIF
         ENDIF
 
         tic = delt/dt
@@ -288,9 +295,13 @@ C      LOOP: counting large tics.
 	   IF (difft.LE.12 .AND. sec.EQ.0.) THEN 
 	      ltic = ltic+1
 	   ELSE
-	      IF (imin.EQ.0. .AND. ihr.NE.0) ltic = ltic+1
+              IF (imin.EQ.0. .AND. ihr.NE.0) THEN
+                 ltic = ltic+1
+              ELSEIF (MOD(imin,labint).EQ.0) THEN
+                 ltic = ltic+1
+              ENDIF
 	   ENDIF
-           GO TO 110
+	   GO TO 110
         ENDIF
 
 c Interval is a minute or less. Set controls for this case

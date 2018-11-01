@@ -25,3 +25,6 @@ go err742_bounds_and_even
 
 GO bn_reset
 go err742_v_levels
+
+GO bn_reset
+go err742_overlay_shorttime

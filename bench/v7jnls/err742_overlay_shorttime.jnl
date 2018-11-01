@@ -1,0 +1,30 @@
+
+! err742_overlay_shorttime.jnl
+! 11/1/2018  acm
+! Issue 1900
+!
+
+! Overlay wrong for short-time-span plots.  No line sample on key
+! for plot/over lines.
+! In addition for some choices of intervals, the minor tic marks 
+! are notdrawn at even sub-intervals of the labeled tics.
+
+define axis/t=30-aug-2017:1-sep-2017:1/units=minutes taxis
+let var1 = cos(L[gt=taxis]/30)
+let var2 = sin(L[gt=taxis]/10)
+
+set view upper
+plot/t="30-aug-2017:01:00":"30-aug-2017:03:00" var1, var2
+set view lower
+plot/t="30-aug-2017:01:00":"30-aug-2017:03:00" var1
+plot/over var2
+
+frame/file=shorttime_over.gif
+
+! also for vertical time axes
+cancel view
+set view left
+plot/trans/t="30-aug-2017:01:00":"30-aug-2017:03:00" var1, var2
+set view right
+plot/trans/t="30-aug-2017:01:00":"30-aug-2017:03:00" var1
+plot/trans/over var2

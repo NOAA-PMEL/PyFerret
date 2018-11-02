@@ -536,17 +536,17 @@ c	    CALL PLOTPOL(X,NXS,XF,YF)
 	
 * Draw the plot axes 
 
-	IF (axes_on_overlay) lab1 = ' '
 	IF (.NOT.SOVER .OR. axes_on_overlay) THEN
+	   IF (axes_on_overlay) lab1 = ' '
 	   DRAW = .FALSE.
 	   CALL DAXIS(XF,YF,NMX,NMY,DRAW)
 	   DRAW = .TRUE. 
 	   CALL DAXIS(XF,YF,NMX,NMY,DRAW)
 	   CALL SCALE(XF,YF,XORG,YORG,XLO,YLO)
 	   axes_on_overlay = .FALSE.
-	ELSE
-	   lab1 = ' '
 	ENDIF
+	
+	IF (SOVER) lab1 = ' '
 C
 	CALL WINDOW(0.,0.,0.,0.)
 C

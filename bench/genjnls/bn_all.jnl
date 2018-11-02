@@ -1205,6 +1205,10 @@ GO bn743_bug_fixes
 go bn_reset bn_data_squared
 GO bn_data_squared
 
+go bn_reset bn_overlay_graticules
+GO bn_overlay_graticules
+
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

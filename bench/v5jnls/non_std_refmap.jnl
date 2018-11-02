@@ -212,5 +212,5 @@ ELSE				 ! "point"
 
 ENDIF
 
-
-palette rainbow
+! Reset to the current installed default color palette
+palette default

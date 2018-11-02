@@ -123,6 +123,7 @@
 * PyFr *kms*  2/18 Add /SYMBOL=<name> for PyFerret named markers; 
 *                  remove dot_sym restrictions as this is now just another named marker
 * V73  3/18 *kms*  make dot_sym (99) a makedot.cmn parameter DOTSYMIM
+* v744 *acm* 11/18 Issue 1786: graticule lines & axes drawn if PLOT/OVER/AXES given
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -199,8 +200,6 @@ CC       => Set values here instead.
 	transpz   = qual_given( slash_plot_transpz   ).GT.0
 	versus    = qual_given( slash_plot_vs	     ).GT.0
 	set_up	  = qual_given( slash_plot_set_up    ).GT.0
-	noaxes    = qual_given( slash_noaxes         ).GT.0
-	axes      = qual_given( slash_plot_axes      ).GT.0
 	along     = qual_given( slash_plot_along     ).GT.0
 
 	IF (along .AND. versus) THEN
@@ -208,10 +207,17 @@ CC       => Set values here instead.
 	   along = .FALSE.
 	ENDIF
 
+* On overlays don't draw axes unless specificially requested with /AXES
+* (e.g.so graticule lines can be overlaid on a final plot.)
+
+	noaxes    = qual_given( slash_noaxes         ).GT.0
+
         IF (overlay) THEN
 	   noaxes = .FALSE.
 	   axes = .FALSE.
 	ENDIF
+
+	axes      = qual_given( slash_plot_axes      ).GT.0
 
 	is_logh   = qual_given( slash_is_logh        ).GT.0
 	is_logv   = qual_given( slash_is_logv        ).GT.0
@@ -759,7 +765,7 @@ c done in plot_set_up.
 	ENDIF
 
 *  Turn off or on axes, including time axes.
-        IF (axes .OR. noaxes) CALL ax_on_off (iax)
+        IF (axes .OR. noaxes) CALL ax_on_off (iax, overlay)
 
 * /set_up only requested ?
 	IF ( set_up ) GOTO 1000

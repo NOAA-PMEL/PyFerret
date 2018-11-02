@@ -1,4 +1,4 @@
-	SUBROUTINE ax_on_off (iax)
+	SUBROUTINE ax_on_off (iax, overlay)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -45,8 +45,10 @@
 
 * v540 *acm*  2/02 save the state of the axes; so can restore PPL AXSEST settings
 *             3/25  Put the common block in a separate include file.
-c v552 *acm* 3/03 new param IAXSET to restore axes after PLOT/AXES/set plot.
+* v552  *acm* 3/03 new param IAXSET to restore axes after PLOT/AXES/set plot.
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
+* v744 *acm* 11/18 Issue 1786: graticule lines & axes drawn if PLOT/OVER/AXES given
+
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -56,7 +58,10 @@ c v552 *acm* 3/03 new param IAXSET to restore axes after PLOT/AXES/set plot.
         include 'AXIS.INC'
         include 'ppl_ax_save.cmn'
 
-	INTEGER		i, iax(4), indep_dim, dep_dim, labx, laby
+	INTEGER		iax(*)
+	LOGICAL		overlay
+
+	INTEGER		i, indep_dim, dep_dim, labx, laby, sum
 	CHARACTER*25	buff
 
 * save previous axis state (top,bottom,left,right)
@@ -114,5 +119,17 @@ c v552 *acm* 3/03 new param IAXSET to restore axes after PLOT/AXES/set plot.
 
         iaxset = 1
 
+* Is this an overlay plot where they requested axes be drawn?
+* Store a flag (AXIS.INC).
+
+	IF (overlay) THEN
+	   axes_on_overlay = .FALSE.
+	   sum = 0
+	   DO i = 1, 4
+	     sum = sum + iax(i)
+	   ENDDO
+	   IF (sum .GT. 0) axes_on_overlay = .TRUE.
+	ENDIF
+	
 	RETURN
 	END

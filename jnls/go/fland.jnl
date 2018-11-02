@@ -15,8 +15,8 @@
 
 ! Description: Plot or overlay an area-filled map of the continents
 
-! usage:       arg1        arg2        arg3          arg4      arg5      arg6
-!  GO fland [resolution] [palette] [overlay_style] [detail] [x=lo:hi] [y=lo:hi]
+! usage:       arg1        arg2        arg3          arg4      arg5      arg6    arg7
+!  GO fland [resolution] [palette] [overlay_style] [detail] [x=lo:hi] [y=lo:hi] [axes]
 
 ! arg 1 - resolution - may be 120,60,40,20,10, or 5     default=20
 !	  To use resolution "nnn" the file etoponnn must exist.
@@ -28,6 +28,7 @@
 !	  Use "all" to plot oceans as well as land.
 ! arg 5 - longitude limits - specify as for any FERRET longitude range
 ! arg 6 - latitude  limits - specify as for any FERRET latitude  range
+! arg 7 - use /AXES qualifier so axes and graticules defined will be drawn. (v7.44)
  
 ! examples:
 !	  GO fland 		! default - 20 minute resolution, color gray
@@ -39,7 +40,8 @@
 !	  GO fland 20 gray transparent
 !	  GO fland " " red	! default (20) minute resolution in red
 !	  GO fland 20 dark_terrestrial overlay detailed x=80e:180e y=20s:90n
-! or for a good time try these combinations
+!	  GO fland 20 gray overlay " " " " " " axes
+! 
 !	SET DATA monthly_navy_winds; VECTOR/l=1 uwnd,vwnd
 !	GO fland  60 dark_terrestrial transparent detailed
 !
@@ -101,6 +103,9 @@ endif
 if ($5"0|*>1") then define symbol fland_qual = ($fland_qual)/$5"0"
 
 if ($6"0|*>1") then define symbol fland_qual = ($fland_qual)/$6"0"
+
+
+if ($7"0|axes>1|*>0") then define symbol fland_qual = ($fland_qual)/axes
 
 
 ! draw the plot

@@ -92,6 +92,7 @@ finalize_ave_int.F\
 finalize_sums_counts.F\
 finalize_variance.F\
 geog_cos_factor.F\
+get_coef_for_xact.F\
 get_linear_coef.F\
 hanng_wt.F\
 iin_regrid_1_axis.F\

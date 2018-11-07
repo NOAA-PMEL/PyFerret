@@ -282,6 +282,7 @@ show grid/dyn
 LET/QUIET a temp[i=90:110:2]
 ! changes on 11/29 in CONFINE_AXIS this no longer an error ... a bit mysterious
 ! changes on 4/98 in CONFINE_AXIS this is once again an error
+! Changes 11/2018 in FLESH_OUT_AXIS, this is not an error
 set mode ignore; list a; cancel mode ignore	! SET REGION mis-applied
 list a[i=1:6]
 list a[i=1:6:2]
@@ -306,6 +307,7 @@ show grid/dyn
 LET/QUIET a = temp[j=45:65:3]
 ! changes on 11/29 in CONFINE_AXIS this no longer an error ... a bit mysterious
 ! changes on 4/98 in CONFINE_AXIS this is once again an error
+! Changes 11/2018 in FLESH_OUT_AXIS, this is not an error
 set mode ignore; list a; cancel mode ignore	! SET REGION mis-applied
 list a[j=1:6]
 list a[j=1:6:2]
@@ -330,6 +332,7 @@ show grid/dyn
 LET/QUIET a temp[i=155:170:2]
 ! changes on 11/29 in CONFINE_AXIS this no longer an error ... a bit mysterious
 ! changes on 4/98 in CONFINE_AXIS this is once again an error
+! Changes 11/2018 in FLESH_OUT_AXIS, this is not an error
 set mode ignore; list a; cancel mode ignore	! SET REGION mis-applied
 list a[i=1:6]
 list a[i=1:6:2]

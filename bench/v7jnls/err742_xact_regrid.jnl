@@ -1,0 +1,72 @@
+! err742_xact_regrid.jnl
+! 11/6/2018 ACM
+!
+! More on @XACT regridding, see issue 1238
+! and see err682_xact_high_prec.jnl
+
+! Some axes where which match well enough that we we want to ignore 
+! the variation from the daily axis.
+
+Let time = {\
+   221.0000000000000,\
+   221.0416666666280,\
+   221.0833333333720,\
+   221.1250000000000,\
+   221.1666666666280,\
+   221.2083333333720,\
+   221.2916666666280,\
+   221.3333333333720,\
+   221.3750000000000,\
+   221.4166666666280}
+define axis/t/t0=1-jan-2018/units=days my_axis = time
+let var = L[gt=my_axis]
+
+define axis/t="10-aug-2018 00:00":"10-aug-2018 10:00":`1/24`/units=day/t0="1-jan-2018 00:00" hrly_ax
+
+
+! Some differ in the last few digits
+list/prec=16 t[gt=my_axis]
+list/prec=16 t[gt=hrly_ax]
+
+let var_on_reg = var[gt=hrly_ax@xact]
+
+! Previously the regridding was wrong: listed values were 1,2,2,4,5,5,...
+list var_on_reg
+
+! some axes with different units so other magnitudes of coordinates 
+let time = 109573 + {\
+   221.0000000000000,\
+   221.0416666666280,\
+   221.0833333333720,\
+   221.1250000000000,\
+   221.1666666666280,\
+   221.2083333333720,\
+   221.2916666666280,\
+   221.3333333333720,\
+   221.3750000000000,\
+   221.4166666666280}
+
+define axis/t/t0=1-jan-1718/units=days my_axis = time
+
+define axis/t="10-aug-2018 00:00":"10-aug-2018 10:00":`1/24`/units=day/t0="1-jan-1900 00:00" hrly_ax
+
+let var_on_reg = var[gt=hrly_ax@xact]
+list var_on_reg
+
+
+define axis/t/t0=1-jan-2018/units=seconds my_axis = 24*3600* {\
+   221.0000000000000,\
+   221.0416666666280,\
+   221.0833333333720,\
+   221.1250000000000,\
+   221.1666666666280,\
+   221.2083333333720,\
+   221.2916666666280,\
+   221.3333333333720,\
+   221.3750000000000,\
+   221.4166666666280}
+
+define axis/t="10-aug-2018 00:00":"10-aug-2018 10:00":3600//units=seconds/t0="1-jan-1900 00:00" hrly_ax
+
+let var_on_reg = var[gt=hrly_ax@xact]
+list var_on_reg

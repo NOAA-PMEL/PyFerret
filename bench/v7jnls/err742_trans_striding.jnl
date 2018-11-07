@@ -1,0 +1,12 @@
+! err742_trans_striding.jnl
+! 11/7/2018 *acm*
+!
+! Testing fix for issue 965. Loading adev[L=@max] where the
+! underlying variable has strides specified previuosly resulted
+! in an error:
+! inconsistent sizes of data regions: can't label T axis of A[L=@AVE]
+!
+use data/navy_uw.nc
+let a = uwnd[l=1:132:2]
+let adev = a-a[l=@ave]
+stat adev[L=@max]

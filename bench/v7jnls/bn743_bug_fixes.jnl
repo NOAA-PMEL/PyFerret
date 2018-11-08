@@ -28,3 +28,9 @@ go err742_v_levels
 
 GO bn_reset
 go err742_overlay_shorttime
+
+GO bn_reset
+go err742_xact_regrid
+
+GO bn_reset
+go err742_trans_striding

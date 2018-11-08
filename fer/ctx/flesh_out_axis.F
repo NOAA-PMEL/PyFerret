@@ -89,6 +89,7 @@
 *                  longer return 2, but will be either computed (for NGD and NBD),
 *                  or will be caught as an error instead of returning 2.
 * V741  *acm* 7/18 Issue 1868, do not wipe out the trans setting in the case of a constant
+* V744 *acm* 11/18 Issue 965, change behavior when axis is given with strides in the region
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -187,8 +188,11 @@
 * to improve the cache hit rate when netCDF strides are used. Note the peril
 * in this is the behavior of a[i=3:5] where a=b[i=10:100:10]
 * 4/00: use line_class instead of max_lines as the test
-	ELSEIF ( .NOT.cx_given(idim,cx) .AND. lim_redundant
-     .		.AND. line_class(axis) .NE. pline_class_stride ) THEN
+	ELSEIF ( .NOT.cx_given(idim,cx) .AND. lim_redundant )  THEN
+*
+* 11/2018 acm: for issue 965, remove this part of the test 
+* .		.AND. line_class(axis) .NE. pline_class_stride ) THEN
+
 !pre 4/00     .		.AND. axis .LT. max_lines ) THEN
 
 ****

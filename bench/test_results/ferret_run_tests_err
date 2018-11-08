@@ -330,15 +330,6 @@ list x[i=1:5:0]
 list x[x=1:5:-1]
  **ERROR: invalid command: non-positive delta value: X[X=1:5:0]
 list x[x=1:5:0]
- **ERROR: illegal limits: A is not in the range I=101:105
-          Axis extremes are I=1:11
-list a
- **ERROR: illegal limits: A is not in the range J=46:50
-          Axis extremes are J=1:7
-list a
- **ERROR: illegal limits: A is not in the range I=101:105
-          Axis extremes are I=1:8
-list a
 *** Running ferret script: bn_cdf.jnl
  LISTing to file test0a.cdf
  LISTing to file test0b.cdf
@@ -5733,6 +5724,16 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis MY_AXIS
+Replacing definition of axis HRLY_AX
+Replacing definition of axis MY_AXIS
+Replacing definition of axis HRLY_AX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo

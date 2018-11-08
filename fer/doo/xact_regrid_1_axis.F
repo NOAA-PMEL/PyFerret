@@ -67,6 +67,8 @@
 *                  either end of the interval we cannot distinguish
 *                  it as a valid index from its use as the bad flag.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* v744 *acm* 11/18 Issue 1238: For XACT regridding call customized routine 
+*                  to compute regridding subscripts, coefficients
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -111,7 +113,7 @@
 	single1 = 1.0  
 
 * DETERMINE src_grd INDEX OF exact matches on the dst_grd axis
-	CALL GET_LINEAR_COEF(	src_lo, src_hi, src_grd,
+	CALL GET_COEF_FOR_XACT(	src_lo, src_hi, src_grd,
      .				dst_lo, dst_hi, dst_grd,
      .				axis, ss12, coef )
 	DO 10 i = dst_lo, dst_hi

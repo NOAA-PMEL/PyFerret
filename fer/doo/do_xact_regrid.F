@@ -42,7 +42,8 @@
 * revision 0.0 - 10/97
 * V533 *sh* 6/01 - added string regridding support
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
-
+* v744 *acm* 11/18 Issue 1238: For XACT regridding call customized routine 
+*                  to compute regridding subscripts, coefficients
         IMPLICIT NONE
         include 'tmap_dims.parm'
 	include	'ferret.parm'

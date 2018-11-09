@@ -45,6 +45,7 @@
 *  ferret -script 
 * 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	INCLUDE 'xprog_state.cmn'
 #include "gt_lib.parm"

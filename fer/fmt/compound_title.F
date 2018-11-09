@@ -54,6 +54,7 @@
 * V200:   1/4/89 - from COMPOUND_PLOT_TITLE: major re-write without colors
 * V71  *acm* 2/17  More on ticket 2231. New argument to FULL_VAR_TITLE to control units labels
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	ncx, cx_list(ncx), tlen
 

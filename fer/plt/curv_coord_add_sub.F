@@ -57,6 +57,7 @@
 * V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
 *                 and 4-arg plot commands. 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

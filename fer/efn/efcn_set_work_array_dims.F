@@ -14,6 +14,7 @@ c
       SUBROUTINE EFCN_SET_WORK_ARRAY_DIMS(iarray, xlo, ylo, zlo, tlo,
      .           elo, flo, xhi, yhi, zhi, thi, ehi, fhi)
 
+      IMPLICIT NONE
       INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER iarray, xlo, ylo, zlo, tlo, elo, flo,

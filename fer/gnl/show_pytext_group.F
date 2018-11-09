@@ -32,6 +32,7 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+        IMPLICIT NONE
         include 'tmap_dims.parm'
         include 'ferret.parm'
         include 'xprog_state.cmn'

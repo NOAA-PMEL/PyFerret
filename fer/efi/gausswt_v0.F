@@ -77,6 +77,7 @@ c acm 8/2005 there is just one cutoff parameter
 c V62 *ACM* 2/2009 Keep this original version with the treatment of the
 c            cutoff parameter, for backwards compatibility.
  
+        IMPLICIT NONE
 	integer nx, nz, nm, iwflag, nax, nay, i, j, m
 	real grid(nax,nay,*), wate(nax,nay,*)
 	real xx, yy, tt, val, x1, y1, t1, xf, yf, tf, xsc, ysc, tsc

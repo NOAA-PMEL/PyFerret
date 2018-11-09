@@ -63,6 +63,7 @@
 * PyFr *kms*  5/17 Ticket 2530 add WIRE/COLOR= /OPACITY= /THICKNESS= 
 * V74  1/18 *am* for issue #1854, extra argument to DISP_SET_UP
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'

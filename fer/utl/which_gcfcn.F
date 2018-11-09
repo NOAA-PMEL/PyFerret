@@ -41,6 +41,7 @@
 * 2/12 *acm* 6D Ferret (common uses nferdims in tmap_dims.parm)
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER	uvar
 

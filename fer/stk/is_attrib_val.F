@@ -57,6 +57,7 @@
 * 73  7/17 *acm fix ticket 2555, memory allocated for strings determined by the 
 *               context, is not generally the full nvatts, ngatts etc
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 #       include "tmap_dset.parm"
         include 'xdset_info.cmn_text'

@@ -44,6 +44,7 @@
 *                         statements.  use an octal constant instead 
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER		status
 	CHARACTER*(*)	string, outstring

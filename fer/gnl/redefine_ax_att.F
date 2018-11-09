@@ -51,6 +51,7 @@
 * V698  3/16 *acm* Remove unneeded xdset_parms.cmn
 * V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'tmap_errors.parm'

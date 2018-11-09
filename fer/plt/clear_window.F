@@ -50,6 +50,7 @@
 * PyFr *kms*  7/13 No need to delete segments when clearing the whole window
 *                  in PyFerret; FGD_GCLRWK deletes them all in PyFerret
 
+        IMPLICIT NONE
 	include 'plot_setup.parm'
 	include 'xplot_state.cmn'		! viewport info
 	include	'pltcom_dat.decl'	! with gksopn

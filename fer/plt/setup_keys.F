@@ -58,6 +58,7 @@
 * V698 *sh* 3/16 Limit the maximum number of keys.
 *                /NOKEY and /TITLE suppresses yadjust
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'slash.parm'

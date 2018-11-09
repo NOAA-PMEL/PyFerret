@@ -75,6 +75,7 @@
 
       SUBROUTINE  SCAT2GRID_STD_XYT_INIT(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -158,6 +159,7 @@
 *
       SUBROUTINE SCAT2GRID_STD_XYT_WORK_SIZE(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
@@ -219,6 +221,7 @@
 *  arg_6  yaxis of new grid 
 *  arg_7  taxis of new grid
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 

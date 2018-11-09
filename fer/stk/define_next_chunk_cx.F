@@ -41,6 +41,7 @@
 *
 * V702: *sh* 11/16 - code pulled from IS_GATHER
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

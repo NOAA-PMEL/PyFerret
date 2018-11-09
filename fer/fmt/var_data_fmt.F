@@ -47,6 +47,7 @@
 * V200:   7/9/90 - extracted from LIST_CMND_DATA
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 
 * calling argument declarations:

@@ -58,6 +58,7 @@
 *  dset      -  (input) dataset number to be closed
 *  status    - (output) return status
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'tmap_errors.parm'

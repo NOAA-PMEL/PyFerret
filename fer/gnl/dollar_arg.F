@@ -50,6 +50,7 @@
 * V693+ *sh 2/15 - added support for _DQ_-enclosedquotations
 * V697 *acm 1/16 - Fix ticket 2343: preserve blanks at the end of quoted args
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	  lenarg, status
 	CHARACTER carg*2, goline*(*), arg*(*)

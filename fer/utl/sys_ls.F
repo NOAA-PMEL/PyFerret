@@ -40,6 +40,7 @@
 
 * V695+:  5/15 *sh*  - based upon store_sys_strings.F
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'xrisc.cmn'
 

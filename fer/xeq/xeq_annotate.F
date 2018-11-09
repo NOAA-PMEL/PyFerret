@@ -44,6 +44,7 @@
 * V697 12/15 *acm* Fix ticket 2350: handling annotation label text 
 *                  that's numeric
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'

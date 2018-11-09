@@ -44,6 +44,7 @@
 * revision 0.0 - 10/20/87
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER		n
 	CHARACTER*(*)	test, list(n)

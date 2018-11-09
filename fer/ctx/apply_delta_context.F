@@ -47,6 +47,7 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'errmsg.parm'	
 	include 'ferret.parm'	

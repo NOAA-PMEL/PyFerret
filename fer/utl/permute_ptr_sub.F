@@ -48,6 +48,7 @@
 * V533: 6/01 *sh*
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xcontext.cmn'

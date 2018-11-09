@@ -127,6 +127,7 @@
 * V74  *acm* 2/18 Issue # 1861, handling missing- and _FillValue with scale and offset
 *                 change to `var,RETURN=bad`
 
+        IMPLICIT NONE
 #include "netcdf.inc"
 	include 'tmap_dims.parm'
         include 'ferret.parm'

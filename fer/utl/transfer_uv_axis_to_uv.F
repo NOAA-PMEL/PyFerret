@@ -41,6 +41,7 @@
 * V510 *sh*
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'

@@ -58,6 +58,7 @@
 
 * V698 *sh* 5/15 derived from Ferret source routine HUNT_INDICES
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 
 * calling argument declarations

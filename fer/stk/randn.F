@@ -49,6 +49,7 @@
 * V6.8 for double-precision Ferret do the RANDU calculation
 *      with a real*4 argument. Gives consistent results with single-p.
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	jd
 

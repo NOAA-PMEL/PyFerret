@@ -54,6 +54,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V698 *sh* 3/2016 document a true E ensemble axis with dataset identifier
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'xcontext.cmn'

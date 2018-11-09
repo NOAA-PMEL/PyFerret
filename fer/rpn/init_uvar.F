@@ -100,6 +100,7 @@
 *                  A new grid is defined for these at grid initialization time; it
 *                  will be changed later.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'	
 	include 'errmsg.parm'	

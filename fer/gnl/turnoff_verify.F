@@ -45,6 +45,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	INCLUDE 'xprog_state.cmn'
 

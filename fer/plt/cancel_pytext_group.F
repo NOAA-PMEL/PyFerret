@@ -35,6 +35,7 @@
 
 * V695  *acm*  5/15 on canceling group settings, restore to the current global setting
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include	'slash.parm'
 	include 'xprog_state.cmn'

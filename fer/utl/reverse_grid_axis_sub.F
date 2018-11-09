@@ -44,6 +44,7 @@
 * V541:  2/02 *sh* - added support for delta strides
 * 2/12 *acm* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 

@@ -39,6 +39,7 @@
 *                is under command file control
 
 
+        IMPLICIT NONE
 	include 'command.parm'
 	include 'xcontrol.cmn'
 

@@ -54,6 +54,7 @@
 * 560: *acm* 4/04 - stride/modulo fixes: use NINT to convert REAL*8 to integer
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

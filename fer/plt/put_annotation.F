@@ -38,6 +38,7 @@
 * command. If the user has not set a label number, increment the count that is in 
 * place for other moveable labels added by Ferret.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'plot_setup.parm'
 	include 'xplot_setup.cmn'

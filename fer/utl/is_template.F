@@ -41,6 +41,7 @@
 
 * V420  4/18/96
 
+        IMPLICIT NONE
 * calling argument declarations:
 	CHARACTER*(*)	string
 

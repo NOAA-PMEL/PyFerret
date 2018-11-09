@@ -54,6 +54,7 @@
 *                  added to that dataset in the attribute structure. Extra
 *                  argument to DELETE_USER_VAR
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xvariables.cmn'

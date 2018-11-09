@@ -48,6 +48,7 @@
 *
 
 
+        IMPLICIT NONE
 	INTEGER :: inseed
 	INTEGER :: i, n, clock
 	INTEGER, DIMENSION(:), ALLOCATABLE :: seed

@@ -48,6 +48,7 @@
 *                 apply the user's title and units if given. Also do not 
 *                 inherit scale_factor or add_offset attributes. 
 
+      IMPLICIT NONE
       INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'      

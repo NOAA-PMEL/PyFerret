@@ -42,6 +42,7 @@
 *
 * V690 *sh* 1/14 - to supput auxiliary variable regridding
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	trans, cx
 

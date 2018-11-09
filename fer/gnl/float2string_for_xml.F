@@ -41,6 +41,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * 27-Jun-2013
 
+        IMPLICIT NONE
         include 'netcdf.inc'
 
 * Argument declarations	

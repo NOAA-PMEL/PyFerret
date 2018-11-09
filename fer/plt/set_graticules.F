@@ -54,6 +54,7 @@
 *                  returns a pen ID from a color ID and a thickness.
 *                  Only standard lines accepted for graticules at this time.
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
         include 'ferret.parm'
         include 'errmsg.parm'

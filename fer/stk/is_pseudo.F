@@ -51,6 +51,7 @@
 *       *sh*  2/17 pre-check for 99999999 in order to issue nicer error message
 * v74   *acm* 3/18 Introduce parameter abstractax_len replacing 99999999
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

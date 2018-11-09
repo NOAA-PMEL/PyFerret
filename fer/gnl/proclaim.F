@@ -53,6 +53,7 @@
 * V63  *acm* 10/09 Changes for gfortran build
 * PyFr *kms* 10/12 Add quiet flag
 
+        IMPLICIT NONE
 	include 'xrevision.cmn'
 	include 'xrevision_type.cmn'
 	include 'xtoday.cmn'

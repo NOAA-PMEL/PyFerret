@@ -54,6 +54,7 @@
 *           to indicate which transforms to hide during SHOW TRANSFORMS
 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'xprog_state.cmn'

@@ -43,6 +43,7 @@
 * optimized for missing value flags in input (sort to end of list)
 
 
+      IMPLICIT NONE
 
       REAL     SDAT(*),IDAT(*), BAD, tmp
       INTEGER  N, M

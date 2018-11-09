@@ -13,6 +13,7 @@
 * Flag do_shrink is returned TRUE if one or more axes are shrunk
 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'xvariables.cmn'

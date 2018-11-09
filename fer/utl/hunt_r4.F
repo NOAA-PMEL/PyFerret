@@ -45,6 +45,7 @@
 *             - also return "frac" - the interpolation factor for ndx_lo 
 * V690 *sh* 11/13 - ensure that if exact match, the frac=1.0 case is always used
 
+        IMPLICIT NONE
 	integer		lo_dim,hi_dim,ndx_lo,ndx_mid,ndx_hi,inc
 
 	real		x1(lo_dim:hi_dim),x2, frac

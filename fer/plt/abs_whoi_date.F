@@ -45,6 +45,7 @@
 * v530: 1/01  *acm*  calendar ID passed in for alternative calendar types
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data

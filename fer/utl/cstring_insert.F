@@ -46,6 +46,7 @@
 
 * If insert_pt>clen upon return that means the buffer has overflowed
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	flen, clen, insert_pt
 	CHARACTER fstring*(*)

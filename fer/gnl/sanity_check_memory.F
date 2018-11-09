@@ -46,6 +46,7 @@
 *      for use with -D debug copilations
 *            1/17 - output to stdout for easier debugging
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data

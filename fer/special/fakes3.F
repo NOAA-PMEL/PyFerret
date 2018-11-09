@@ -4,6 +4,7 @@
 
 	subroutine fakes
 
+        IMPLICIT NONE
 	include	'errmsg.parm'
 
 	INTEGER status

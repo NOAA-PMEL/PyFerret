@@ -3,6 +3,7 @@
 
 	SUBROUTINE FERRET_LIST_IN_WINDOW( fhol, ftxout_append )
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
         include 'ferret.parm'
         include 'xprog_state.cmn'
@@ -55,6 +56,7 @@
 
 	SUBROUTINE FERRET_WARN_IN_WINDOW( fhol, ftxout_append )
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
         include 'ferret.parm'
         include 'xprog_state.cmn'

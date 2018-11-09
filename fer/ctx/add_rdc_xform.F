@@ -66,6 +66,7 @@
 * interp_stack.F
 *
 
+      IMPLICIT NONE
       include 'tmap_dims.parm'
       include 'xdset_info.cmn_text'
       external xdset_info_data

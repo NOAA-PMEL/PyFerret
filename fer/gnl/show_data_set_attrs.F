@@ -55,6 +55,7 @@
 *                  name is long
 * 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'ez_lib.parm'

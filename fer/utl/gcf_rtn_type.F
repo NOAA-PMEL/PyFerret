@@ -39,6 +39,7 @@
 *             the type of string functions (see bug 1621)
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'grid_chg_fcns.parm'   ! for place-holder behavior

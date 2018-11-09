@@ -60,6 +60,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data

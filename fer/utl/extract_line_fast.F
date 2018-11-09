@@ -47,6 +47,7 @@
 
 * V690:  12/13 *sh* derived from EXTRACT_Z_LINE
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER axis,
      .		slox, shix, sloy, shiy, sloz, shiz, slot, shit,

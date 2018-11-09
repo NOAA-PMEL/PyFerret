@@ -49,6 +49,7 @@
 
 * V631 11/09 *acm* 
 
+      IMPLICIT NONE
 * calling argument declaration
       CHARACTER*(*) string, outstring 
       INTEGER slen 

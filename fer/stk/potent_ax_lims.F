@@ -44,6 +44,7 @@
 *
 * V702 *sh* 11/16 - using technique employed in POTENT_SIZE
  
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'

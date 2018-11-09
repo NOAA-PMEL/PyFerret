@@ -91,6 +91,7 @@
 * V500 *acm*  1/05 Fix the above within the ifdef NO_PASSED_CONCAT too
 * V698 *acm*  4/16 Fix ticket 2398: report the argument as given, along with the error
 
+        IMPLICIT NONE
 * calling argument declarations:
 	LOGICAL   err_subst
 	INTEGER	  len_out, status

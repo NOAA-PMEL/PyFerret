@@ -53,6 +53,7 @@
 * V698 *sh* 12/15 set up dummy (missing placeholder) dataset 
 * v74   *acm* 3/18 Introduce parameter abstractax_len replacing 99999999
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'tmap_errors.parm'
 	include 'xunits.cmn_text'

@@ -57,6 +57,7 @@
 *   member_sets		- array of open dataset numbers (output)
 *   status		- return status
 
+        IMPLICIT NONE
         include 'tmap_errors.parm'
 #include "tmap_dset.parm"
         include 'tmap_dims.parm'

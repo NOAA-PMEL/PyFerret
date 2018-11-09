@@ -48,6 +48,7 @@
 * 2/15 *sh* add support for _DQ_
 *	    now ATOM_POS cannot be used to search for "_" unless modified
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 
 * calling argument declarations:

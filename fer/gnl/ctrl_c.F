@@ -37,6 +37,7 @@
 ***********************************************************
 
         SUBROUTINE CTRLC_AST
+        IMPLICIT NONE
         INCLUDE 'xinterrupt.cmn'
         INTERRUPTED = .TRUE.
         RETURN

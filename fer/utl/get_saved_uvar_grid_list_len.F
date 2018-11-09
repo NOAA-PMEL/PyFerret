@@ -39,6 +39,7 @@
 * V699 5/16 *sh* new routine created to avoid the 2d uvar_grid array
 
 
+        IMPLICIT NONE
         include 'ferret.parm'
         include 'tmap_dims.parm'
         include 'xvariables.cmn'

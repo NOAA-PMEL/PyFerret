@@ -54,6 +54,7 @@
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
 *                  dimension is now an arg to SECS_TO_TSTEP.
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER		idim, grid, cal_id, status
 	REAL*8		lo, hi, delta

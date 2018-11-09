@@ -45,6 +45,7 @@
 * Change to dynamic-memory pointers for the curvilinear coordinate data
 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
         include 'xvariables.cmn'

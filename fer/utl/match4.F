@@ -50,7 +50,7 @@
 * V6.96 *acm* 11/18/15 Declare model_string as *(*) to fix run-time error Ubuntu: Fortran runtime error: 
 *                     Actual string length is shorter than the declared one for dummy argument 'model_string' (2/4)
 
-
+        IMPLICIT NONE
 	INTEGER		TM_LENSTR, len_model, len_test, len_to_test, i
 
 	CHARACTER*1	UPPER_CASE

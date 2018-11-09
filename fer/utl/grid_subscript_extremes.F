@@ -47,6 +47,7 @@
 * revision 0.2 - 2/6/89  - added modulo axes of arbitrary length
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data

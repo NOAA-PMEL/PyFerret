@@ -48,6 +48,7 @@
 * V685  *acm* 12/13 Fix bug in 6D Ferret decclarations, lo_off and hi_off
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xcontext.cmn'

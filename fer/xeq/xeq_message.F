@@ -63,6 +63,7 @@
 * V520 6/00 *sh* - added MESSAGE/ERROR
 * V650 3/10 *acm - added MESSAGE//OUTFILE= /APPEND /CLOBBER
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 	include 'tmap_dims.parm'
 	include 'errmsg.parm'

@@ -52,6 +52,7 @@
 
       SUBROUTINE expndi_by_z_counts_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -111,6 +112,7 @@
 
       SUBROUTINE expndi_by_z_counts_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id
@@ -153,6 +155,7 @@
       SUBROUTINE expndi_by_z_counts_compute(id, arg_1, arg_2, arg_3, 
      .                               result)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 

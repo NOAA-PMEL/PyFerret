@@ -59,6 +59,7 @@
 * PyFr *kms*  7/13 Do not call START_PPLUS; if it is not started,
 *                  there are no windows open.
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'

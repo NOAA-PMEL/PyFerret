@@ -57,6 +57,7 @@
 * V72 : 5/17 *acm* rmem_size comes in as-is; handle it as in xeq_set for a 
 *                  SET MEM/SIZ=
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data

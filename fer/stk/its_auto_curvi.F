@@ -40,6 +40,7 @@
 
 * V690: 2/2014 *sh*
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'interp_stack.parm'

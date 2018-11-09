@@ -64,6 +64,7 @@
 * V740  3/18 *acm* Fix issue 1864: unending loop on scatter/gather when grid length
 *                  returned as abstract-axis length
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

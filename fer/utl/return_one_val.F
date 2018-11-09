@@ -42,6 +42,7 @@
 
 *  6/04/ 2017
 
+        IMPLICIT NONE
 	REAL com, val
 
 	val = com

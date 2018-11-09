@@ -44,6 +44,7 @@
 *		   modified for FERRET by Steve Hankin
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'errmsg.parm'
 
 * calling argument declarations:

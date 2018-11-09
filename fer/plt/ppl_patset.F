@@ -8,6 +8,7 @@
 * V230: 11/92 - for color map protection during viewport manipulations
 * V491: 12.98 - add PPL_PATSET() for pattern support *jd*
 
+        IMPLICIT NONE
 	include 'plot_setup.parm'
 	include 'xrisc.cmn'		! to fix RISC FORTRAN bug
 

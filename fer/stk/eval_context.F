@@ -54,6 +54,7 @@
 * V532: 5/01 *sh* - move the interpretation of region limits from the command
 *		    line external to this routine
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'

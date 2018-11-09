@@ -40,6 +40,7 @@
 * (which is done at the start of the program).
 * 
 
+        IMPLICIT NONE
         INCLUDE 'ferret.parm'
         INCLUDE 'tmap_dims.parm'
         INCLUDE 'xprog_state.cmn'

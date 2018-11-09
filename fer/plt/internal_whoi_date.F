@@ -50,6 +50,7 @@
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data

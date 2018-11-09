@@ -35,6 +35,7 @@
 *   computation routines for FFT functions
 
       SUBROUTINE four_re (nd, x, a, b, wft)
+      IMPLICIT NONE
       INTEGER nd, nf, i, j
       REAL x(*), wft(*) 
       REAL a(*), b(*), xn
@@ -140,6 +141,7 @@ C     WSAVE   CONTAINS RESULTS WHICH MUST NOT BE DESTROYED BETWEEN
 C             CALLS OF RFFTF OR RFFTB.                                          
 C                                                                               
       SUBROUTINE RFFTF (N,R,WSAVE)                                              
+      IMPLICIT NONE
       INTEGER N
       REAL       R(*)       ,WSAVE(*)             
 C                                                                               
@@ -229,6 +231,7 @@ C             ARE REQUIRED FOR DIFFERENT VALUES OF N. THE CONTENTS OF
 C             WSAVE MUST NOT BE CHANGED BETWEEN CALLS OF RFFTF OR RFFTB.        
 C                                                                               
       SUBROUTINE RFFTI (N,WSAVE)      
+      IMPLICIT NONE
       INTEGER N
       REAL       WSAVE(*)                                                  
 C                                                                               
@@ -237,6 +240,7 @@ C
       RETURN                                                                    
       END                                                                       
       SUBROUTINE RFFTI1 (N,WA,IFAC)                                             
+      IMPLICIT NONE
       INTEGER N, NL, NF, J, NTRY, NR, NQ, IB, I, IS, L1, NFM1, K1
       INTEGER IP, LD, IDO, IPM, II, L2
       REAL       WA(*)      ,IFAC(*)    ,NTRYH(4)         
@@ -302,12 +306,14 @@ C
       REAL FUNCTION PIMACH (DUM)                      
 C     PI=3.1415926535897932384626433832795028841971693993751058209749446        
 C                            
+      IMPLICIT NONE
       REAL DUM
       PIMACH = 4.*ATAN(1.0)                                                     
       RETURN                                                                    
       END    
                                                                             
       SUBROUTINE RADFG (IDO,IP,L1,IDL1,CC,C1,C2,CH,CH2,WA)                      
+      IMPLICIT NONE
       INTEGER IDO, IP, L1, IDL1, IPPH, IPP2, IDP2, NBD, IK, J, K, IS
       INTEGER IDIJ, I, JC, L, LC, J2, IC
       REAL       CH(IDO,L1,IP)          ,CC(IDO,IP,L1)          ,          
@@ -481,6 +487,7 @@ C
       END                         
                                                                        
       SUBROUTINE RADF5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)                           
+      IMPLICIT NONE
       INTEGER IDO, L1, K, IDP2, I, IC
       REAL       CC(IDO,L1,5)           ,CH(IDO,5,L1)           ,          
      1                WA1(*)     ,WA2(*)     ,WA3(*)     ,WA4(*)    
@@ -546,6 +553,7 @@ C
       END                           
                                                                   
       SUBROUTINE RADF2 (IDO,L1,CC,CH,WA1)                                       
+      IMPLICIT NONE
       INTEGER IDO, L1, K, IDP2, I, IC
       REAL       CH(IDO,2,L1)           ,CC(IDO,L1,2)           ,          
      1                WA1(*)           
@@ -576,6 +584,7 @@ C
       END      
                                                                        
       SUBROUTINE RADF3 (IDO,L1,CC,CH,WA1,WA2)                                   
+      IMPLICIT NONE
       INTEGER IDO, L1, I, IC, K, IDP2
       REAL       CH(IDO,3,L1)           ,CC(IDO,L1,3)           ,          
      1                WA1(*)     ,WA2(*)     
@@ -613,6 +622,7 @@ C
       RETURN                                                                    
       END                                                                       
       SUBROUTINE RADF4 (IDO,L1,CC,CH,WA1,WA2,WA3)                               
+      IMPLICIT NONE
       INTEGER IDO, L1, K, IDP2, I, IC
       REAL       CC(IDO,L1,4)           ,CH(IDO,4,L1)           ,          
      1                WA1(*)     ,WA2(*)     ,WA3(*)  

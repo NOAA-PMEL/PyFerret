@@ -42,6 +42,7 @@
 *
 * V7   5/12 *acm* Union aggregations: DEFINE DATA/AGG/U
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

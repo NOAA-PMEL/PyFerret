@@ -43,6 +43,7 @@
 *
 * V701: *sh* 2/2017
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'

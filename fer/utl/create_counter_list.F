@@ -41,6 +41,7 @@
 * already been done in that routine.
 * V554: *acm* 1/4
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER		nmax, status
 	REAL		array(nmax)

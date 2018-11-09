@@ -36,6 +36,7 @@
 * Parse qualifiers for ANNOTATE and DEFINE ANNOTATION command, converting
 * locations to the correct ones for /USER, /NOUSER, or /NORMalized specification.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'

@@ -98,6 +98,7 @@
 
       SUBROUTINE  tracks2grid_std_xyt_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -187,6 +188,7 @@
 *
       SUBROUTINE tracks2grid_std_xyt_work_size(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
@@ -272,6 +274,7 @@
 *  arg_7  yaxis of new grid
 *  arg_8  taxis of new grid
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 

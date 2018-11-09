@@ -48,6 +48,7 @@
      .                  loz, hiz, lot, hit, loe, hie, lof, hif, arg,
      .                  i, j, k, l, m, n, max_line_len, slen, text )
 
+      IMPLICIT NONE
       INTEGER i, j, k, l, m, n,
      .        lox, hix, loy, hiy, loz, hiz, 
      .        lot, hit, loe, hie, lof, hif,

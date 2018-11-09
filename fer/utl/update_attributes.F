@@ -46,6 +46,7 @@
 * to do a plot.
 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data

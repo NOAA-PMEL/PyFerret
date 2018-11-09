@@ -49,6 +49,7 @@
 *      and is more appropriately sensitive to argument idim
 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

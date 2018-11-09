@@ -76,6 +76,7 @@
 * V6.95 *acm* 3/15 Changes for PyFerret fonts. 
 * V7   *acm* 6/16 see ticket 2435. Tweak to split dataset labels after DATA SET:
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data

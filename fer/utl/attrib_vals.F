@@ -42,6 +42,7 @@
 * V600 8/18/05
 * V670  2/11 *acm*   Fixes for inheriting attributes.
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER		nmax, n, dset, varid, status
 	REAL		array(*)

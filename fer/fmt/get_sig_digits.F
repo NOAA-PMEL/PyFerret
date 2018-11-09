@@ -44,6 +44,7 @@
 *
 * revision 0.0 - 5/2/86
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	nsig_digits, nleft, nright
 	REAL	value

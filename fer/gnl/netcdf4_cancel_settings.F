@@ -40,6 +40,7 @@
 *
 * revision 0.0 - 1/13/2010
 
+        IMPLICIT NONE
         include 'netcdf4_settings.cmn'
 
 	netcdf4_type = 3

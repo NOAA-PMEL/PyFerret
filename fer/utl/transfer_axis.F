@@ -51,6 +51,7 @@
 * V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'

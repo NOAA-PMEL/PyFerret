@@ -49,6 +49,7 @@
 * V695  *acm* 9/15 Changes for HH:MM labeling when plotting short time range.
 *                  For these axes reset the start time by only a day.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data

@@ -43,6 +43,7 @@
 *	7/96 - minor compiler bug fix -- eliminate unuser RETURN
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER		status
 	CHARACTER*(*)	string

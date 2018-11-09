@@ -41,6 +41,7 @@
 * V722:11/17 *acm* Fix ticket 2569: decrement line-use count when setting
 *                  the grid dimension to normal. 
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'

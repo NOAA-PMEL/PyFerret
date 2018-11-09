@@ -43,6 +43,7 @@
 * V56: *acm* 4/04  If data was read using strides, then the axis having
 *                  a delta is ok.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

@@ -52,6 +52,7 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 
+        IMPLICIT NONE
 * calling argument declarations:
 	LOGICAL	do_units
 	INTEGER	cx, tlen

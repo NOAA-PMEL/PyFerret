@@ -37,6 +37,7 @@
 * return the name of color of the default pen # that corresponds
 * to the given red, green, blue, only if they match the color setting.
 
+        IMPLICIT NONE
 	INTEGER TM_LENSTR, len
 	CHARACTER*(*) cname
 	REAL	rd, gr, bl

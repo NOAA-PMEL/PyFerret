@@ -99,6 +99,7 @@
 * V69x *sh* 21/1/15 clarify data type of arguments sent to QUERY_DISPLAY_SIZE
 * V7   *kms*  10/16 Add SET WINDOW /SCALE=
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
         include 'plot_setup.parm'

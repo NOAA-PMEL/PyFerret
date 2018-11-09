@@ -62,6 +62,7 @@
 * V702 *sh* 2/17  Reveal dynamic memory instead of block memory
 *		  Increase field widths for long axes
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data

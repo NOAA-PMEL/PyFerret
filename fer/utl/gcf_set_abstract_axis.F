@@ -39,6 +39,7 @@
 * 
 * V720 3/16 *acm* 
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'

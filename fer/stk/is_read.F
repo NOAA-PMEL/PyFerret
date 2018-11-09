@@ -62,6 +62,7 @@
 * V530: *sh* 11/00 - delimited file reading added
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	status
 * normal exit is for error conditions

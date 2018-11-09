@@ -44,6 +44,7 @@
 * V685+ 11/13 *sh*  
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'xdependency_tree.cmn'

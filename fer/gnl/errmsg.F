@@ -95,6 +95,7 @@
 * V697 2/16 *acm* DO NOT Increase length of cmnd buffer to 20480 but keep related
 *                   changes here
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

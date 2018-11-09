@@ -58,6 +58,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V692 7/14 *acm* ticket 2183: handle @WGT transform as for integrals
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xcontext.cmn'

@@ -48,6 +48,7 @@
 *
 * V685+ 9/13 *sh*  
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'

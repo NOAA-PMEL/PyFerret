@@ -50,6 +50,7 @@
 * V694 2/2015 *sh* - handle _DQ_ like double quote
 *      *acm*  2/15 Prevent run-time errors in string length for _DQ_ handling
 
+        IMPLICIT NONE
 * calling argument declarations:
 
 * internal variable declarations:

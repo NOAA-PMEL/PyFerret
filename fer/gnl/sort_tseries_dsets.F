@@ -47,6 +47,7 @@
 *   memb_order	- ordering index of member files (input empty/output filled)
 *   memb_sort   - starting time steps as currently ordered, to be sorted (in/out)
 
+        IMPLICIT NONE
         include 'tmap_errors.parm'
 #include "tmap_dset.parm"
         include 'tmap_dims.parm'

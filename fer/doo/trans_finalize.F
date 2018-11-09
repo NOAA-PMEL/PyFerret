@@ -43,6 +43,7 @@
 * V702 11/16 *sh* for enhancement ticket 2428: split/gather on compressed axes
 
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	idim, res_mr, res_cx
 	REAL	arg, res(*)

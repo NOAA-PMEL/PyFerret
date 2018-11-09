@@ -41,6 +41,7 @@
 * V533: 9/02 *acm* 
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'PPLDAT.INC'
 
 * calling argument declarations:

@@ -65,6 +65,7 @@
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 *                  Likewise cs_calendar_f for the F information in the command stack
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'command.parm'

@@ -46,6 +46,7 @@
 * V552 *acm* 4/03- up VAR_CODE  to 128 chars 
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

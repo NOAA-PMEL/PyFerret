@@ -47,6 +47,7 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * TODO: what changes to make for 6D Ferret?
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 

@@ -43,6 +43,7 @@
 * V230: 11/92 - for color map protection during viewport manipulations
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'plot_setup.parm'
 	include 'xrisc.cmn'		! to fix RISC FORTRAN bug
 

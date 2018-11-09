@@ -68,6 +68,7 @@
 * V6.85 *acm* 9/13 New PLOT/COLOR w/o argument for all-color line plot
 * V698  4/16 *acm* New PLOT/SKIP=
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'slash.parm'
 	include	'plot_setup.parm'

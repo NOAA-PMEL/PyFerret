@@ -51,6 +51,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
+        IMPLICIT NONE
 * internal variable declarations:
 	INTEGER	idim
 

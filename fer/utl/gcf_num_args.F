@@ -43,6 +43,7 @@
 *       97.07.16 *jc* adding code to query external functions
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER		ifcn
 	INTEGER efcn_scan, efcn_get_num_reqd_args

@@ -38,6 +38,7 @@
 * V600 6/05 *acm* Attribute control.
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 
+        IMPLICIT NONE
         INCLUDE 'xrisc.cmn'
         INCLUDE 'errmsg.parm'
 

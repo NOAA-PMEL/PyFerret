@@ -53,6 +53,7 @@
 *              len_model_chars = TM_LENSTR(model_string)
 * 2/15 *sh* added support for _SQ_
 
+        IMPLICIT NONE
 * calling argument declarations:
 	CHARACTER*(*)	model_string
 	CHARACTER*(*)	test_string

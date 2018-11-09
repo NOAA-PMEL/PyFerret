@@ -50,6 +50,7 @@
 * V491:  16/4/98 - added cx_lo/hiz to limit extraction by context limits
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER slox, shix, sloy, shiy, sloz, shiz, slot, shit,
      .		sloe, shie, slof, shif, i, j, l, m, n, 

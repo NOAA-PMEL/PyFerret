@@ -61,6 +61,7 @@
 * plot a variable with just one point in their range (if /HLIMITS or 
 * /VLIMITS are used to give PPLUS a range to draw).
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data

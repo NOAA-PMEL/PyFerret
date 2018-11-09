@@ -57,6 +57,7 @@
 * V541: 2/02 *sh* - support for modulo length
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	include 'ferret.parm'

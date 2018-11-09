@@ -47,6 +47,7 @@
 * V530: *acm* 12/00 add calendar types; cal_id
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 * Calling argument declarations:
 	INTEGER		cal_id, status
 	CHARACTER*(*)	date

@@ -210,6 +210,7 @@
 * v743  7/18 *acm Issue 1887, numeric dataset names w/o extension, better test 
 *                 for whether it's just a digit, "use n".
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
         include 'implicit.parm'

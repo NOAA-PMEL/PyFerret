@@ -48,6 +48,7 @@ c*
      .                    loz, hiz, lot, hit, loe, hie, lof, hif, 
      .                    value, status)
 
+      IMPLICIT NONE
       INTEGER status, lox, hix, loy, hiy, loz, hiz,
      .                lot, hit, loe, hie, lof, hif
       REAL data(lox:hix, loy:hiy, loz:hiz, lot:hit, loe:hie, lof:hif)

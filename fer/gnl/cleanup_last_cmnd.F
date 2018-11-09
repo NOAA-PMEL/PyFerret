@@ -46,6 +46,7 @@
 * V531:  4/01 *sh* - cleanup incomplete continuation lines
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 * calling argument declarations: (none)
 	INTEGER	control_stack_level
 

@@ -43,6 +43,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER	uvar
 

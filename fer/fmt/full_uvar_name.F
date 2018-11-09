@@ -50,6 +50,7 @@
 *                  added to that dataset in the attribute structure
 * V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	uvar
 

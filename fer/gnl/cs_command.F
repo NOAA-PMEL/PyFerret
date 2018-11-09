@@ -71,6 +71,7 @@
 * V600 5/06 *acm* - the call to new_gks_window needs window_title.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 * calling argument declarations:
         CHARACTER*(*)   cmnd_line
 * RETURN 1 - used when no command can be supplied

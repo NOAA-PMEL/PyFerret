@@ -46,6 +46,7 @@
 * V690  *sg* 5/14 - bug fix: changed declaraation type of "memory"
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

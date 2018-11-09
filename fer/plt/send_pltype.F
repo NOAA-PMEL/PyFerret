@@ -48,6 +48,7 @@
 * V310:  12/4/94 - use mode_GKS to determine what PLTYPE to send
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 * calling argument declarations:
 	LOGICAL meta
 

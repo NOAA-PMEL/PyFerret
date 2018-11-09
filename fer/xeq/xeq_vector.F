@@ -117,6 +117,7 @@
 * V74  1/18 *am* for issue #1854, extra argument to DISP_SET_UP
 * v744 *acm* 11/18 Issue 1786: graticule lines & axes drawn if PLOT/OVER/AXES given
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'

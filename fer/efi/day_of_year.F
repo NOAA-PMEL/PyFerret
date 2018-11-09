@@ -39,6 +39,8 @@ C  Return sequential day in variable ada.
 C  4/2001  *ACM* add error message
 C   3/12   *kms* remove leap day from appropriate century years
 
+      IMPLICIT NONE
+
       REAL daymo(12)           ! Number of days in each month
       DATA daymo/31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31/
       REAL amo, ada, ayr

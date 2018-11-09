@@ -58,8 +58,8 @@
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead
 * *sh* 11/2013 - allow an "=" as the end of an alias, soo "vtree=all" becomes legal
-
-
+ 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	  clen
 	CHARACTER buffer*(*)

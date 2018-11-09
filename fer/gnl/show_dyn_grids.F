@@ -80,6 +80,7 @@
 * Dynamic management of axes ("lines") is very similar.  Each grid that uses a
 *    line bumps the use count for that line.  
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'

@@ -40,6 +40,7 @@ C  with change noted below for the case where N=1
 
 C Return only the data not the indices.
 
+      IMPLICIT NONE
       INTEGER N
       REAL RA(*), BAD
 

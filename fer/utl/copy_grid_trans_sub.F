@@ -47,6 +47,7 @@
 * V200:	10/16/89 - from COPY_GRID_TRANS
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 
 * calling argument declarations:

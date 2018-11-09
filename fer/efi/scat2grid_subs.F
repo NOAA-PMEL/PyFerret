@@ -35,6 +35,7 @@
 
       SUBROUTINE pickout1 (atim, n, val)
 
+      IMPLICIT NONE
 
 *  ACM 5/2003
 *  Called from the ave_scat2grid_t function.
@@ -53,6 +54,7 @@
 
       SUBROUTINE pickout2 (alon, alat, n, xx, yy)
 
+      IMPLICIT NONE
 
 *  ACM 3/2000
 *  Called from the scatter*  gridding functins.
@@ -72,6 +74,8 @@
 
       SUBROUTINE pickout3 (alon, alat, atimes, n, xx, yy, tt)
 
+      IMPLICIT NONE
+
 *  CALLed from the scatter*  gridding functins.
 *  Pick out nth item from alon and alat, which are really 4-dimensioned arrays
 *  with normal axes on three of the four axes.
@@ -89,6 +93,8 @@
       END
 
       SUBROUTINE pickout4 (alon, alat, atimes, vals, n, xx, yy, tt, vv)
+
+      IMPLICIT NONE
 
 *  Called from the scatter*  gridding functins.
 *  Pick out nth item from alon, alat, atimes, which are really 4-dimensioned arrays
@@ -108,6 +114,8 @@
       END
 
       SUBROUTINE pickout5 (alon, alat, adepths, atimes, vals, n, xx, yy, zz, tt, vv)
+
+      IMPLICIT NONE
 
 *  Called from the scatter*  gridding functins.
 *  Pick out nth item from alon, alat, azdep, atimes, which are really 4-dimensioned arrays
@@ -144,6 +152,7 @@ c--------------------------------------------------------------------------
 	SUBROUTINE nobs (xx, yy, nx, ny, x1, y1, dx, dy, 
      .			 xf, yf, obs)
 
+      IMPLICIT NONE
 
 * Argument declarations
 
@@ -185,6 +194,7 @@ c--------------------------------------------------------------------------
 	SUBROUTINE nobsxyt (xx, yy, tt, nx, ny, nt, x1, y1, t1, 
      .                 dx, dy, dt, xf, yf, tf, obs)
 
+      IMPLICIT NONE
 
 * Argument declarations
 
@@ -215,6 +225,7 @@ c.................save the number of obs in each (x,y,t) gridbox
 
       SUBROUTINE pickout (atim, n, val)
 
+      IMPLICIT NONE
 
 *  ACM 5/2003
 *  Called from the ave_scat2grid_t function.

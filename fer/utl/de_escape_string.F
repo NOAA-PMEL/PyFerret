@@ -47,6 +47,7 @@
 
 * V510: 3/00 *sh*
 
+        IMPLICIT NONE
 * calling argument declarations
 	CHARACTER string*(*)
 

@@ -40,6 +40,7 @@
 *          by the DATA statement on re-entry to the routine.
 
       SUBROUTINE LOWER_CASE(TEXT)
+      IMPLICIT NONE
       CHARACTER*(*) TEXT
 *
 *     Converts a string to lowercase.
@@ -61,6 +62,7 @@
 ***************************************************************
 *
       INTEGER FUNCTION LENGTH_OF_TEXT(TEXT)
+      IMPLICIT NONE
       CHARACTER*(*) TEXT
 *
 *     Computes the length of a string without trailing blanks.
@@ -88,6 +90,7 @@
 
 *     Convert day of month to day of year
 
+      IMPLICIT NONE
       INTEGER i, iyear
       CHARACTER*3 cmon
       CHARACTER*3 months(12)
@@ -139,6 +142,7 @@
       SUBROUTINE JULIAN_DAY_OF_YEAR1900(cmon, day_of_mon, iyear,
      .   day_since_1900)
 
+      IMPLICIT NONE
       INTEGER i, j, iyear
       INTEGER yrstart,yrend
       LOGICAL isafter1900
@@ -225,6 +229,7 @@
       SUBROUTINE tax_format_message (L1, err_msg)
 C   Create a message saying arg1 values at index are duplicate
 
+      IMPLICIT NONE
       INTEGER L1
       CHARACTER*(*) err_msg
       
@@ -271,6 +276,7 @@ C   Create a message saying arg1 values at index are duplicate
 
 *     If there is a T between the date and time (as in GRIB files) replace with a space.
 
+        IMPLICIT NONE
 #include "gt_lib.parm"
 
 	CHARACTER*(*)   indate, outdate

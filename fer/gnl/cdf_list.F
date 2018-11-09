@@ -141,6 +141,7 @@
 * V743 *acm* 7/18 Issue 1883: var with only a _FillValue which is NaN got no
 *                 _FillValue or missing_value attribute written
 
+        IMPLICIT NONE
         include 'netcdf.inc'
 #include "netcdf_declareUnderscore.inc"
         include 'tmap_errors.parm'

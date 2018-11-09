@@ -65,6 +65,7 @@
 *            - Need to use risc_buff for arbitrary concatenations
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 * calling argument declarations:
 	LOGICAL   did_sub
 	INTEGER	  lencmnd, status

@@ -37,6 +37,7 @@
 *
 * delete all memory pystat variables associated with the given dataset
 
+      IMPLICIT NONE
       INCLUDE 'ferret.parm'
       INCLUDE 'tmap_dims.parm'
       INCLUDE 'xvariables.cmn'

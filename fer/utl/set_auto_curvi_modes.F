@@ -40,6 +40,7 @@
 * *sh* 12/13
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'command.parm'

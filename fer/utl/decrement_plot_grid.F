@@ -39,6 +39,7 @@
 *      Decrement the grid use count which was bumped up, saving the grid used
 *      in a SHADE/SET, FILL/SET, CONTOUR/SET or WIRE/SET command. See ticket 883.
 
+        IMPLICIT NONE
 	include 'xbox_bounds.cmn'
 
 	INTEGER grid

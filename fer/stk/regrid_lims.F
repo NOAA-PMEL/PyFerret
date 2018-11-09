@@ -78,6 +78,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V74+  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
 	include	'xtm_grid.cmn_text'

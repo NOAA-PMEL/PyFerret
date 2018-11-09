@@ -46,6 +46,7 @@
 *			  because it needed a preprocessor.
 *       *acm* 3/12 changes for 6D Ferret
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	dset
 

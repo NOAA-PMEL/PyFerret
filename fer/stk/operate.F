@@ -84,6 +84,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V7.43 Issue 1891 Compute v^2 as v*v for efficiency
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

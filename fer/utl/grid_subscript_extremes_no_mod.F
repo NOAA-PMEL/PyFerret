@@ -45,6 +45,7 @@
 * V510 12/99 *sh* - based on GRID_SUBSCRIPT_EXTREMES
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data

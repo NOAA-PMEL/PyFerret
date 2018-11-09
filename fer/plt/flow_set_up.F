@@ -44,6 +44,7 @@
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data

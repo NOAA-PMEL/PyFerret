@@ -48,6 +48,7 @@
 * V230: 8/18/92 - eliminated string(1:) notation for MAC compatibility
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 
 * calling argument declarations:

@@ -38,6 +38,7 @@
 
 * V6.95 *acm* 3/15 Changes for PyFerret fonts. 
 
+        IMPLICIT NONE
 
 	INTEGER icolor, status
 	REAL	v1, v2, v3

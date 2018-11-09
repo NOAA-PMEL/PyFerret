@@ -57,6 +57,7 @@
 *                  commands via SPLIT_LIST to std error rather than std out.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
         include 'ferret.parm'
         include 'xprog_state.cmn'

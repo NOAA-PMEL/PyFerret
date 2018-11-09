@@ -48,6 +48,7 @@
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V698 3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
 	external xdset_info_data

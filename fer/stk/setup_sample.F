@@ -46,6 +46,7 @@
 * V510: 8/99 *sh*
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

@@ -55,6 +55,7 @@
 * V693+ *sh* 2/15 - added support for _DQ_ quotations
 *		    mixing double quote marks and _DQ_ may lead to a bad place
 
+        IMPLICIT NONE
 * calling argument declarations
 	LOGICAL		formatted, range_rqd
 	INTEGER		idim, cal_id, status

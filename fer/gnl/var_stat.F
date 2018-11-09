@@ -75,6 +75,7 @@
 *                  a previous evaluation. STAT/BRIEF does not reset them all.
 * V720 *acm*  3/17 Ticket 2512: Add STAT/PRECICISION=
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'errmsg.parm'
 	include 'ferret.parm'

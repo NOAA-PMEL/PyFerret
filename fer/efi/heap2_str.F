@@ -3,6 +3,7 @@
 C  Ansley Manke
 C  From Numerical Recipes, Heapsort subroutine SORT2
 
+      IMPLICIT NONE
       INTEGER N
       CHARACTER*512 RA(*), RRA, RRB
 

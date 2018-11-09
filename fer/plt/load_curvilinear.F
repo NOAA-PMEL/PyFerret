@@ -54,6 +54,7 @@
 * V740: 1/18 *acm* for issue 1854, protection status temporarily reset 
 *             for curvi-coord plot with /SET
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

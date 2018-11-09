@@ -99,6 +99,7 @@
 * V74+ 54/18 *acm*  Noticed that symbols LAB1, LAB6 etc labels persisted from 
 *                   prev. plots, also LABKEY. Delete them
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'plot_setup.parm'

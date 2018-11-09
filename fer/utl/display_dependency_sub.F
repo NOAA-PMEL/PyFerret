@@ -46,6 +46,7 @@
 *            01/15 - each regrid target gets separate line
 * V698  3/16 *sh* added logic for cat_ef_time2d
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

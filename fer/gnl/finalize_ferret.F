@@ -38,6 +38,7 @@
 *  free allocated memory held in global variables/lists
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
         include 'tmap_errors.parm'  ! error codes
         include 'tmap_dims.parm'
 #include "tmap_dset.parm"

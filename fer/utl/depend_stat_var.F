@@ -43,6 +43,7 @@
 
 * V685+  *sh* 9/13 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xdependency_tree.cmn'

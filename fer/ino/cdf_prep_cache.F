@@ -52,6 +52,7 @@
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
 
 
+        IMPLICIT NONE
         include 'tmap_errors.parm'
         include 'tmap_dims.parm'
         include 'xdset_info.cmn_text'

@@ -38,6 +38,7 @@
 * is the indicated variable one which is contains a direction-changing function?
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER	uvar
 

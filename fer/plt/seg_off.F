@@ -51,6 +51,7 @@
 * local variable declarations:
 * ...
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'xprog_state.cmn'		! with mode_segment
 	include 'pltcom_dat.decl'	! with gksopn

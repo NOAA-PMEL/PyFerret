@@ -49,6 +49,7 @@
 *                  routine name LOHI_STRING internally.
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include	'ferret.parm'
 
 * calling argument declarations

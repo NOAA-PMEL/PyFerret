@@ -46,6 +46,7 @@
 * NOAA/PMEL, Seattle, WA - Science Data Integration Group
 * revision 0.0 - 5/2018  from get_ave_lims
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 	include 'errmsg.parm'
 

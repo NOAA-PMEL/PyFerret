@@ -46,6 +46,7 @@
 * revision 0.1 -11/28/88 - new TM IO library: WORLD --> TM_WORLD
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 
 * calling argument declarations:

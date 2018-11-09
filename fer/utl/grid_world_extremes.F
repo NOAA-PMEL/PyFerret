@@ -52,6 +52,7 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V72   11/16 *acm* Ticket 2158: working with true monthly time axes.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data

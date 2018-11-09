@@ -161,6 +161,7 @@
 *       quote marks are both the starting and ending characters of the "word".
 *       For surrounding quotes the word start/end will exclude the quotes.
 
+        IMPLICIT NONE
 * declare calling arguments of SUBROUTINE
 	LOGICAL		reverify, arg1_quoted
 	CHARACTER*(*)	cmnd_buff

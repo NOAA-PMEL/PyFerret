@@ -40,6 +40,7 @@
 * to be computed even if it's to the source axis.
 
 
+        IMPLICIT NONE
 	include	'ferret.parm'
 
 * Calling argument

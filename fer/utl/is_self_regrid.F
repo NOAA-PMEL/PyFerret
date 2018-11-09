@@ -42,6 +42,7 @@
 *  Return a flag, true if the current operation is a regridding-to
 *  the source axis. See regrid_to_self.F 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data

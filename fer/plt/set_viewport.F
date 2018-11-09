@@ -57,6 +57,7 @@
 *                  No need to protect colors in PyFerret.
 *                  Send an update to make sure the changes are immediately seen.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xprog_state.cmn'

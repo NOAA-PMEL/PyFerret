@@ -60,6 +60,7 @@
 * V698 *sh* 1/16 - altered method of obtaining grids of LET/D uvars used in
 *                  E and F aggregations
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER		uvar, dset, status
 

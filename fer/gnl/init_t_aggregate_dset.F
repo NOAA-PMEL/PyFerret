@@ -79,6 +79,7 @@
 *	memb_nstep	 - array of N timesteps in each file (input)
 
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include 'ferret.parm'
         include 'errmsg.parm'

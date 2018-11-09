@@ -39,6 +39,7 @@ C  Ansley Manke 1/99
 *  Get the index to sample, whichever axis of arg_1 it is on.  Collapse
 *  array arr to one dimension and return the i'th point.
 
+      IMPLICIT NONE
       real arr(*), aorder
       integer iindex
 

@@ -43,6 +43,7 @@
 
 	SUBROUTINE AIX_DATE(str)
 
+        IMPLICIT NONE
 * calling argument declarations
 	CHARACTER*(*) str
 
@@ -67,6 +68,7 @@
 
 	SUBROUTINE AIX_TIME(str)
 
+        IMPLICIT NONE
 * calling argument declarations
 	CHARACTER*(*) str
 
@@ -92,6 +94,7 @@
 *
 	SUBROUTINE FLUSH(lunit)
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER lunit
 
@@ -114,6 +117,7 @@
 
 	SUBROUTINE GETLOG(name)
 
+        IMPLICIT NONE
 * calling argument declarations
 	CHARACTER*(*) name        ! hope this is OK ??? CHAR*8 limit ?
 
@@ -132,6 +136,7 @@
 
 	SUBROUTINE FDATE(string)
 
+        IMPLICIT NONE
 * calling argument declarations
 	CHARACTER*(*) string
 
@@ -156,6 +161,7 @@
 
 	SUBROUTINE GERROR(string)
 
+        IMPLICIT NONE
 * calling argument declarations
 	CHARACTER*(*) string
 

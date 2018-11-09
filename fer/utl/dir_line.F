@@ -37,6 +37,7 @@
 * Given a 2-letter line_direction code, return the integer parameter for the direction
 * V7    acm  6/16 Ticket 2437: 
 
+        IMPLICIT NONE
 	include	'ferret.parm'
 	CHARACTER*(*)	dircode
 

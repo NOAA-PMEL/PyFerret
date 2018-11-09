@@ -47,6 +47,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *       *acm*11/16 write a shortened var name to diag output when name is super long
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	idim, cx, out_len
 

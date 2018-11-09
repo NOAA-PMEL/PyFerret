@@ -55,6 +55,7 @@
 *                  dflt_ those that need to be scaled by pplscale or textscale.
 * V695  *acm*  5/15 PyFerret, label for overlay was too close to the plot edge.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'plot_setup.parm'

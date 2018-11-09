@@ -37,6 +37,7 @@
 *
 * delete all cat_pystat_var memory variables
 
+      IMPLICIT NONE
       INCLUDE 'ferret.parm'
       INCLUDE 'tmap_dims.parm'
       INCLUDE 'xvariables.cmn'

@@ -52,6 +52,7 @@
 * V685: 1/13 *sh* ensure that sst[L=@ave] is recognized as a compressed axis
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

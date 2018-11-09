@@ -51,6 +51,7 @@
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 *                 (no actual changes, just modernizing the code a bit.)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

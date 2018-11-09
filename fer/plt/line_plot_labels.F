@@ -49,6 +49,7 @@
 * v7.2 *acm* 4/2017 ticket 2446 Drawing formatted time axes on a PLOT/VS, label
 *                  at the top with the year if needed.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'plot_setup.parm'

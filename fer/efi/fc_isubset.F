@@ -46,6 +46,7 @@
 
       SUBROUTINE fc_isubset_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -103,6 +104,7 @@
 
       SUBROUTINE fc_isubset_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id
@@ -136,6 +138,7 @@
 
       SUBROUTINE fc_isubset_custom_axes(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id
@@ -171,6 +174,7 @@
 *
       SUBROUTINE fc_isubset_compute(id, arg_1, arg_2, arg_3, arg_4, result)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 

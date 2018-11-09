@@ -68,6 +68,7 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xregrid.cmn'

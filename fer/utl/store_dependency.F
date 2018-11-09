@@ -52,6 +52,7 @@
 * V720  acm* 6/2017  Fix for ticket 2533, reporting ok for regridding to 
 *                    undefined variable
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

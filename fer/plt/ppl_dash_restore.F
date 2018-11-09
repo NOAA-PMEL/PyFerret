@@ -39,6 +39,7 @@
 
 * V541: 3/25  *acm*
 
+        IMPLICIT NONE
 	! variables DN1,DN2,UP1,UP2
         include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'

@@ -46,6 +46,7 @@
 *
 * V698+ *sh* 5/15 -- derived from EXTRACT_ARG1_LINE
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xmem_subsc.cmn'

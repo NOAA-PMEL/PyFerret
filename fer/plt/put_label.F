@@ -79,6 +79,7 @@
 * V686 *acm* 12 13 set up the label symbols LABNUM_E and LABNUM_F
 * V6.95 *acm* 3/15 Changes for PyFerret fonts. 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'plot_setup.parm'
 	include 'xprog_state.cmn'

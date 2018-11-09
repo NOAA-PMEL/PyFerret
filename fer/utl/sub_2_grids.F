@@ -46,6 +46,7 @@
 *	10/12/89 - use ..._SUB - avoid adjustable dimensioning with array
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xvariables.cmn'

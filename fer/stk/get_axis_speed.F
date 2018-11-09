@@ -56,6 +56,7 @@
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 * V698 *acm* 1/16 Allow for Epic CDF files, ds_type = 'ECDF'
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	dset
 

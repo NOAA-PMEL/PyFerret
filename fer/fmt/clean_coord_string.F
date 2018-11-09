@@ -47,6 +47,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'xvariables.cmn'

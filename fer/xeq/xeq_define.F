@@ -267,6 +267,7 @@
 * V740 *acm* 2/18 Issue 966: DEFINE AXIS/LIKE= Get attributes from an existing axis
 * V740 *acm* 3/18 More on DEF AX/LIKE, getting T0, modulo axis characteristics set correctly.
 
+        IMPLICIT NONE
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
 	include	'tmap_dims.parm'

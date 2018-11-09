@@ -49,6 +49,7 @@
 * V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
 *                  using original upper/lowercase spelling
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'ez_lib.parm'

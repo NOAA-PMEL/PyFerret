@@ -59,6 +59,7 @@
 *                REPLACE_BAD_DATA was being called on string variables
 
 
+        IMPLICIT NONE
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'

@@ -49,6 +49,7 @@
 *	ens_ax	- aggregation axis of the ensemble (input)
 *	tlag_ax	- time axis (F aggregation, only) (input)
 
+        IMPLICIT NONE
 * include files
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'

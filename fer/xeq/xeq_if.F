@@ -61,6 +61,7 @@
 *	           4- improved error message for "IF some expression THEN ..."
 * V695+ *sh* 2/15 - added support for _DQ_
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'command.parm'

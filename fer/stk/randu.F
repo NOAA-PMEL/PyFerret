@@ -37,6 +37,7 @@
 *
 * modified by steve hankin to contain explicit declarations
 * and renamed RANDU from "UNI" in its original version from CMLIB
+        IMPLICIT NONE
 	INTEGER	JD,MDIG,I1MACH,M1,M2,JSEED,K0,K1,J0,J1,I,J,K
 
 C***BEGIN PROLOGUE  UNI

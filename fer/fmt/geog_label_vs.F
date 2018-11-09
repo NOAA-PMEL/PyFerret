@@ -40,6 +40,7 @@
 * for ticket 2517, correct labeling of lon/lat axes for PLOT/VS plots, and turn off
 * lon/lat axis formatting according to MODE long_label and MODE latit_label
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xprog_state.cmn'

@@ -86,6 +86,7 @@
 * V721  8/17 *kms* Restore call to string_array_init with pyvar_code_head
 *                  that got lost in the combined rename and update in Ferret
 
+        IMPLICIT NONE
         include 'tmap_errors.parm'  ! error codes
 	include 'tmap_dims.parm'
 	include 'xio.cmn_text'

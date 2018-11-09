@@ -53,6 +53,7 @@
 * revision 0.0 - 6/30/87
 * revision 0.1 - 9/28/87 - added llen
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	ival, llen
 

@@ -1,6 +1,6 @@
 	SUBROUTINE PARSE_PYFONT_COLOR (buff, red, grn, blu, status)
 
-
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

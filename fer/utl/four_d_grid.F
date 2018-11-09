@@ -39,6 +39,7 @@
 * V7    acm  6/16 Ticket 2437
 * V7.02 acm 11/16 ticket 2487, initialize FOUR_D_GRID. 
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 #include "tmap_dset.parm"
         include 'xtm_grid.cmn_text'

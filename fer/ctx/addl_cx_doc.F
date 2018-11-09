@@ -52,6 +52,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V685+ *acm* 12/13 For 6D Ferret, the array coming in as flags is longer for extra dimensions
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'

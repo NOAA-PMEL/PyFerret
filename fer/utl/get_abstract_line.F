@@ -38,6 +38,7 @@
 * return the abstract axis in the given direction
 
 * V694 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'
 	include 'xfr_grid.cmn'	! w/ mgrid_abstract

@@ -51,6 +51,7 @@
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V695 2/15 *acm* 6D add aggregation in forecast direction
 *
+        IMPLICIT NONE
 	include 'ferret.parm'
 
 * calling argument declarations:

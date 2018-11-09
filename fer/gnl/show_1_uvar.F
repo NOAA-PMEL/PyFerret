@@ -47,6 +47,7 @@
 *                   (variables are up to 128, so FULL_UVAR_NAME needs extra 
 *                   space i.e. for a transformation specifier)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data

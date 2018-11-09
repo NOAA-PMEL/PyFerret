@@ -45,6 +45,7 @@
 * V692 10/14 *acm* Ticket 2204: initialize the new context before
 *                  putting info init
 
+        IMPLICIT NONE
         include 'tmap_errors.parm'
         include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'

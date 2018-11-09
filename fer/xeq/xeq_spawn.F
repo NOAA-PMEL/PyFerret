@@ -58,6 +58,7 @@
 * v720 7/17 ticket 2552 Make SPAWN_STATUS return the return status, so 0=succcess
 *           SPAWN_STATUS returns the status value, used for SPAWN_OK and SPAWN_STATUS
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

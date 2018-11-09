@@ -42,6 +42,7 @@
 *       3/25  Put the common block in a separate include file.
 * v552 *acm* 3/03 new param IAXSET to restore axes after PLOT/AXES/set plot.
 
+        IMPLICIT NONE
 	include 'plot_setup.parm'
 	include 'axis_inc.decl'
 	include 'AXIS.INC'		! variable iaxon

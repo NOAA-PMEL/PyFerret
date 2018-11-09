@@ -47,6 +47,7 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include	'gkscm1_inc.decl'	! with wsid

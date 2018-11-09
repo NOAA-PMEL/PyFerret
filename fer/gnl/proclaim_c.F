@@ -44,6 +44,7 @@
 * revision 0.0 - 8/94
 
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER lun, quiet_flag
 	INTEGER	slen

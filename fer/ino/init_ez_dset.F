@@ -79,6 +79,7 @@
 * V701  7/16 *acm* Ticket 2454. If the user gives lower-case names when opening
 *                  an EZ dataset, keep those names on output, etc.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'tmap_errors.parm'

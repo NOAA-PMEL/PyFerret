@@ -66,6 +66,7 @@
 *	status		- return status (output)
 *
 
+        IMPLICIT NONE
 * Argument definitions
 	LOGICAL		t_regular, use_strict
 	INTEGER		nagfiles, dset_num, status

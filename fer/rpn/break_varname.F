@@ -51,6 +51,7 @@
 * V6.94 3/15 *acm* Fix ticket 2249: attribute handling for user-defined variables
 * V698 *acm* 1/16 change remaining dset=-1 to the parameter dset=pdset_uvars
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'	

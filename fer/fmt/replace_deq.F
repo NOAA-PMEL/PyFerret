@@ -51,6 +51,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * 11/16 *sh* support for aggregation.member syntax
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'xvariables.cmn'

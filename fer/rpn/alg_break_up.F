@@ -62,6 +62,7 @@
 *	          Hoping I did so correctly ...
 * v694  6/15  *acm* fixes for 2296 -- quotes and curly braces {"{a}"}
 
+        IMPLICIT NONE
 	include	'ferret.parm'
 	include 'errmsg.parm'
 	include 'rpn.parm'

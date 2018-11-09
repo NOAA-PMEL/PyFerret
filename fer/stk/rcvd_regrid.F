@@ -79,6 +79,7 @@
 * V696 *acm* 11/15 Added @BIN and @NBIN regridding transforms
 * V720: 6/17 *acm* Ticket 2346: new @IIN regridding transform
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	src_cx, dst_cx, axis, work, ok_min, ok_max, status
 

@@ -62,6 +62,7 @@
 *        Note that this routine has been pretty trashed by repeated edits
 *        It should really be re-written, but seems risky (else I'd do it)
 
+        IMPLICIT NONE
 * calling argument declarations:
 	LOGICAL		do_verify
 	INTEGER		slen

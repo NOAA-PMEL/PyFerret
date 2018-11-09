@@ -58,8 +58,8 @@
 * PyFr  *kms*  8/13 Add /ANNOTATE to FRAME; include memory argument
 * PyFr  *kms*  4/17 Revised for new memory management
 
-* calling argument declarations:
         IMPLICIT NONE
+* calling argument declarations:
         CHARACTER*(*) filename, fformat, annovar
         REAL*4 xinches, yinches
         INTEGER xpixels, ypixels, sts

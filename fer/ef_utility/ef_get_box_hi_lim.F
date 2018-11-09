@@ -48,6 +48,7 @@ c*
       SUBROUTINE EF_GET_BOX_HI_LIM(id, iarg, idim,
      .     ss_lo_lim, ss_hi_lim, values )
 
+      IMPLICIT NONE
       INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
       INCLUDE 'xvariables.cmn'

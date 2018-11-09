@@ -47,6 +47,7 @@
 * V230:  11/5/92 - removed axis resizing to SET_AX_SIZES
 
  
+        IMPLICIT NONE
 	include 'plot_setup.parm'
 
 * calling argument declarations:

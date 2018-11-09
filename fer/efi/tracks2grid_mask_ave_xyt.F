@@ -92,6 +92,7 @@
 
       SUBROUTINE  tracks2grid_mask_ave_xyt_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -185,6 +186,7 @@
 *
       SUBROUTINE tracks2grid_mask_ave_xyt_work_size(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
@@ -258,6 +260,7 @@
 *  arg_8  taxis of new grid
 *  arg_9  xy mask for output grid
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 

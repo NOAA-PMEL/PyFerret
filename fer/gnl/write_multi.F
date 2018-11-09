@@ -48,6 +48,7 @@
 * V320: 2/28/95 - SPLIT_GUI_MESSAGE --> TM_SPLIT_MESSAGE
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 #ifdef NO_PASSED_CONCAT

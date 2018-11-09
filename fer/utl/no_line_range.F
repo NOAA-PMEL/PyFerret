@@ -46,6 +46,7 @@
 * revision 0.1 - 9/22/88 - bug fix.  start at subscript 1
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include	'ferret.parm'
 
 * calling argument declarations:

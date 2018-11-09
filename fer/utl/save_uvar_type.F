@@ -40,6 +40,7 @@
 * V720: 6/17 *acm* Fix ticket 2547: the grid and type of uvars are stored, but the
 *                  information may be collected on different calls from is_uvar_grid.
 
+        IMPLICIT NONE
         include 'ferret.parm'
         include 'tmap_dims.parm'
         include 'xvariables.cmn'

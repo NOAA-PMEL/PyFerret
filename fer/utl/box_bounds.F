@@ -50,6 +50,7 @@
 * V73+ 1/18 *acm*  Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
 *             scaling for axis coords and box edges
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 	include 'xbox_bounds.cmn'
 

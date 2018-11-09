@@ -49,6 +49,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	status
 

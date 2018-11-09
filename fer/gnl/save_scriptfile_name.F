@@ -42,6 +42,7 @@
 * Put script file name into common, for running with the comand line option
 *  ferret -script 
 
+        IMPLICIT NONE
         INCLUDE 'tmap_dims.parm'
         INCLUDE 'errmsg.parm'
         INCLUDE 'tmap_errors.parm'

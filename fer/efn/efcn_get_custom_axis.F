@@ -13,7 +13,8 @@ c
 
       SUBROUTINE EFCN_GET_CUSTOM_AXIS(id, axis, dlo, dhi, ddel,
      .     unit, modulo_logical)
-
+ 
+      IMPLICIT NONE
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'
       INCLUDE 'EF_Util.cmn'

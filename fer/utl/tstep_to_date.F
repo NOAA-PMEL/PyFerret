@@ -64,6 +64,7 @@
 *	date	 - returned string containing date in ASCII form
 *
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data

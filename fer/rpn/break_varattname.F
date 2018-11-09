@@ -56,6 +56,7 @@
 * v698 5/16  *acm* ticket 2413: New attribute keywords ncoordvars, coordnames
 *                  return info about coordinate-variables in datasets
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'	

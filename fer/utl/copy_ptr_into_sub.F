@@ -46,6 +46,7 @@
 * V533 *sh* 6/01
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER cxlo(*), cxhi(*),
      .		slox, shix, sloy, shiy, sloz, shiz, 

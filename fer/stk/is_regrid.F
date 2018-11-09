@@ -92,6 +92,7 @@
 * V720: 6/17 *acm* Ticket 2346: new @IIN regridding transform
 * V741  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

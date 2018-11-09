@@ -36,6 +36,7 @@
 * create a string or float abstract array containing an attribute value
 * from a global attribute of the dataset
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 #       include "tmap_dset.parm"
         include 'xdset_info.cmn_text'

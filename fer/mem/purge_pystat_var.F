@@ -36,6 +36,7 @@
 *
 * eliminate all stored mrs for the given cat_pystat_var variable
 
+      IMPLICIT NONE
       INCLUDE 'ferret.parm'
       INCLUDE 'tmap_dims.parm'
       INCLUDE 'xvariables.cmn'

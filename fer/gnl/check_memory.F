@@ -57,6 +57,7 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V702 *sh* Added dynamic memory checks.  Removed old block-oriented stuff
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data

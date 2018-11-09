@@ -56,6 +56,7 @@ ccc	ysize = yfrac*height                              ! reported by VP_WIDTH, VP
 
 * 11/16/2004 *acm*  from set_ax_sizes
 
+        IMPLICIT NONE
 	include 'plot_setup.parm'
 c        include 'xplot_setup.cmn'      ! 10/91 for saved_ppl_yax
 c        include 'PLT.INC'

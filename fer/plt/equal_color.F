@@ -48,17 +48,15 @@
 *
 * 1/03 *kob* g77 port - requires use of risc_buff for concats
 * V693+ *sh* 2/15 - added support for _DQ_ quotations
-
 * PyFr *kms*  6/13 - add support for (R,G,B) and (R,G,B,A)
 * 
 * PyFr *kms*  7/13 - add support for R,G,B and R,G,B,A (no parentheses);
 *                    return a color ID and the default pen thickness
 *                    instead of a pen ID; white is color ID 7
-*
-* calling argument declarations
 
         IMPLICIT NONE
 
+* calling argument declarations
 	INTEGER		icolor, status
         REAL*4          dfltthick
 	CHARACTER*(*)	string

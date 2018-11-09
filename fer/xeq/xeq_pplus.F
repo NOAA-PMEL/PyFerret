@@ -56,7 +56,6 @@
 *                 been temporarily reset, restore to prev values
  
         IMPLICIT NONE
-
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'

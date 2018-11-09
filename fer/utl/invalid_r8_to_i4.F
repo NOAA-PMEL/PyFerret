@@ -47,6 +47,7 @@
 *                  in a parameter definition
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include	'vax_machine.parm'
 
 

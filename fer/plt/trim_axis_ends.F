@@ -47,6 +47,7 @@
 *                  dimension is now an arg to SECS_TO_TSTEP.
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'command.parm'

@@ -49,6 +49,7 @@
 *              len_test = TM_LENSTR(test_string)
 *              len_model_chars = TM_LENSTR(model_string)
 
+        IMPLICIT NONE
 * calling argument declarations:
 	CHARACTER*(*)	model_string
 	CHARACTER*(*)	test_string

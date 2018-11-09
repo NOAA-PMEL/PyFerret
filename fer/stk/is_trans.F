@@ -85,6 +85,7 @@
 *		   may be split/gathered (in IS_STRIP and IS_GATHER)
 * V702 *sh*  1/17 for trac enhancement #2369 -- dynamic memory management 
 	
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	include	'ferret.parm'

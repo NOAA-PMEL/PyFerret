@@ -46,6 +46,7 @@
 * revision 1.0 - 2/22/89 - calls TM_SECS_TO_DATE
 * V530: *acm* 12/00 add calendar types; cal_id
 
+        IMPLICIT NONE
 * Calling argument declarations:
 	REAL*8		num_secs
 	INTEGER		cal_id

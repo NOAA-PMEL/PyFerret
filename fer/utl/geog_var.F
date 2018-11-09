@@ -43,6 +43,7 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
         include 'tmap_errors.parm'

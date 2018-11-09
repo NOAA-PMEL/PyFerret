@@ -48,6 +48,7 @@
 *                  Note this changes some LIST output by removing a space.
 * V600:  1/06 *acm*  prevent values of LOG10(0.0) if small_val = 0 
 
+        IMPLICIT NONE
 
 * calling argument declarations:
 	INTEGER		places, right

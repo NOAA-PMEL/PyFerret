@@ -48,6 +48,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * 2/15 *sh* added support for _DQ_ and _SQ_
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER		cx, mr, status
 	CHARACTER*(*)	string

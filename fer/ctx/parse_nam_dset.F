@@ -58,6 +58,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V687  *acm* 3/14 ticket 2133. Check for attribute name before looking for variable
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'	
 	include	'ferret.parm'
 	include	'errmsg.parm'

@@ -47,6 +47,7 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V693+ *sh* 2/15 - added support for _DQ_ quotations
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER		status
 	CHARACTER*(*)	string, val

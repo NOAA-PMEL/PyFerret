@@ -68,6 +68,7 @@
 * V698  *acm* 5/16 Ticket 2405: MODE CALENDAR:auto
 * V702  *sh*  2/17 Added mode frugal
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'

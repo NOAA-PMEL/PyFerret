@@ -79,6 +79,7 @@
 *                  return info about coordinate-variables in datasets
 * V710 9/16  *acm* ticket 2465: Parsing expressions including attribute references.
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

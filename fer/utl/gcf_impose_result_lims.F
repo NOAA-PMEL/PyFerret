@@ -69,6 +69,7 @@
 !	INTEGER	n_com1, n_grid, com1_grid
 !	REAL*8	TM_WORLD, dlo_com1, dlo_grid, dhi_com1, dhi_grid
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

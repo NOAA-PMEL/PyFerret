@@ -38,6 +38,7 @@ C  From Numerical Recipes, Heapsort subroutine SORT2
 C  with change noted below for the case where N=1
 * V6.74 3/12 *acm* cleanup, add disclaimer
 
+      IMPLICIT NONE
       INTEGER N
       REAL RA(*), IB(*), BAD
 

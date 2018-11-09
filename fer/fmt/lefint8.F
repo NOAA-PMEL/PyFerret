@@ -42,6 +42,7 @@
 
 * V702: *sh* 2/17 - needed for dynamic memory management
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	llen
 	INTEGER*8 ival

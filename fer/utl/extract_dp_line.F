@@ -48,6 +48,7 @@
 * 5/15 NOTE: the newer routine EXTRACT_ARG1_LINE can probably replace this
 *      and is more appropriately sensitive to argument idim
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

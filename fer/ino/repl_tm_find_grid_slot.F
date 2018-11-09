@@ -48,6 +48,7 @@
 *			  because it needed a preprocessor.
 *       *acm* 3/12 changes for 6D Ferret
 
+        IMPLICIT NONE
 * Arguments
 	INTEGER*4	islot
 *

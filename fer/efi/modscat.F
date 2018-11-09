@@ -48,6 +48,7 @@
 *  scatm        input: scattered points coordinate array for the modulo axis
 *               output: updated coordinates in the modulo range (if possible)
 
+      IMPLICIT NONE
 *  Input arguments
       REAL*8 axmin, axmax, axmod
       INTEGER nscat

@@ -46,6 +46,7 @@
 
       SUBROUTINE expnd_by_len_str_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -98,6 +99,7 @@
 
       SUBROUTINE expnd_by_len_str_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id
@@ -133,6 +135,7 @@
 *
       SUBROUTINE expnd_by_len_str_compute(id, arg_1, arg_2, arg_3, result)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 

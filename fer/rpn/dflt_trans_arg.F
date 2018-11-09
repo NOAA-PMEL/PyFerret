@@ -48,6 +48,7 @@
 * V400:  5/30/95 - increased arbitrary argument limit of 1000 to 32766
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 * calling arguments
 	INTEGER	idim, cx, status
 

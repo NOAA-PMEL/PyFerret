@@ -44,6 +44,7 @@
 
 * V693+  *sh* 12/14  (borrowing code from PROCESS_IF.F
 
+        IMPLICIT NONE
 * calling argument declarations
 	CHARACTER*(*) cmnd
 	INTEGER	slen

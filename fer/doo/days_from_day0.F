@@ -50,6 +50,7 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret
 * V701 *acm* 7/16  ticket 2449: report incorrect choice of date/ eurodate as an error
 
+        IMPLICIT NONE
         include 'errmsg.parm'
 
 * calling argument declarations:

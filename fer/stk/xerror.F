@@ -38,6 +38,7 @@
 * dummy error routine for CMLIB package
 * used to avoid changes to UNI.FOR
 
+        IMPLICIT NONE
 	CHARACTER*(*) messg
 	INTEGER	NMESSG,NERR,LEVEL
 

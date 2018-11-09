@@ -53,6 +53,7 @@
 * V702: *sh* 1/17 - bug fix: mr_protected must *end* at mr_not_in_use (=0)
 *		  - for trac enhancement #2369 -- dynamic memory management 
 
+        IMPLICIT NONE
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
 	include	'ez_lib.parm'

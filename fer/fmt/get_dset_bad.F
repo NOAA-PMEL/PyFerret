@@ -47,6 +47,7 @@
 * this is for evaluating `var,RETURN=bad`
 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'

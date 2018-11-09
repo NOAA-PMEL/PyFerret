@@ -47,6 +47,7 @@
 * V420:  4/96
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 * internal variable declarations:
 	INTEGER	i
 

@@ -40,6 +40,7 @@
 * This must be preceded by a call to TAXIS_STYLE to set t_axtyp.
 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xplot_setup.cmn'
 

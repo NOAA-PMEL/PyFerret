@@ -46,6 +46,7 @@
 *       *acm* 3/12   add disclaimer
 * V693+ *sh* 2/15 - add support for _DQ_ and _SQ_ quotations
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER		n
 	CHARACTER*(*)	string

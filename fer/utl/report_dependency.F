@@ -45,6 +45,7 @@
 * V685+  *sh* 9/13
 * V698  3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

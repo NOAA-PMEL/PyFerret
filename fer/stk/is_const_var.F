@@ -11,6 +11,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V693+ *sh* 2/15 - support for _DQ_ and _SQ_ as quotation indicators
  
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

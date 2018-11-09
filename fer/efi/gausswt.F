@@ -77,6 +77,7 @@ c V62 *ACM* 2/2009 Change the use of cutoff to exclude points from
 c            calculation based on weights so that the exclusing 
 c            is an ellipse not a box.
  
+        IMPLICIT NONE
 	integer nx, ny, nm, iwflag, nax, nay, i, j, m
 	real grid(nax,nay,*), wate(nax,nay,*)
 	real xx, yy, tt, val, x1, y1, t1, xf, yf, tf, xsc, ysc, tsc

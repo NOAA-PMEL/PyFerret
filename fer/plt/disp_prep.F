@@ -77,6 +77,7 @@
 * v698 *acm*  2/16 Initialize the use_hist flag to false
 * v698 *acm*  2/16 Allow for /LEV=h, histogram levels without specifying a number.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

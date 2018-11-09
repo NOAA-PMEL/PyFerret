@@ -35,6 +35,7 @@
 *  ACM 12/4/02 Determine if an array is equally spaced.
 *              For shade_sub.F, disp_set_up.F
 
+      IMPLICIT NONE
       REAL ax(*), del1, del
       INTEGER npts, i  
       LOGICAL TM_FPEQ    

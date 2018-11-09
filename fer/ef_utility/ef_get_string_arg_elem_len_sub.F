@@ -48,6 +48,7 @@
 *
 *       3/12 *kms* Added E and F dimensions
 
+      IMPLICIT NONE
       INTEGER i, j, k, l, m, n, 
      .        lox, hix, loy, hiy, loz, hiz,
      .        lot, hit, loe, hie, lof, hif,

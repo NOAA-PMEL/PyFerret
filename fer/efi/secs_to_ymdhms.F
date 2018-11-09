@@ -41,6 +41,7 @@
 * V6.31 *acm* 11/09 Simplify the logic which decides what month/day it is
 *             as is already done in tm_secs_to_date.
 
+        IMPLICIT NONE
 * Argument declarations
 	INTEGER	yr, mon, day, hr, min
 	REAL	sec

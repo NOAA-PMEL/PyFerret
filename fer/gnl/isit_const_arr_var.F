@@ -39,6 +39,7 @@
 
 * 9/2014 for ticket 981
 
+        IMPLICIT NONE
         INCLUDE	'ferret.parm'
 	INCLUDE 'errmsg.parm'
 	include 'tmap_dims.parm'

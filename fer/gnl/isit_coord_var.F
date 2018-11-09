@@ -41,6 +41,7 @@
 * V600 6/05 *acm* Attribute control.
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 
+        IMPLICIT NONE
         INCLUDE	'ferret.parm'
 	INCLUDE 'errmsg.parm'
         INCLUDE 'xrisc.cmn'

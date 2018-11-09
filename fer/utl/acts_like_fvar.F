@@ -39,6 +39,7 @@
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
 
 
+      IMPLICIT NONE
       include 'ferret.parm'
 
 * calling argument declarations

@@ -47,6 +47,7 @@
 *	to avoid XGKS memory leak in that routine
 * V602: *acm* 1/07 Changes for metafile-batch mode
 
+        IMPLICIT NONE
 	include 'plot_setup.parm'
 	include 'xplot_state.cmn'		! viewport info
 	include	'pltcom_dat.decl'	! with gksopn

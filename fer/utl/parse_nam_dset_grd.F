@@ -54,6 +54,7 @@
 *		   manage implicit grids (from GET_CONTEXT_MODS by "Z[gz=ax]")
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

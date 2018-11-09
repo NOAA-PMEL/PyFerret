@@ -75,6 +75,7 @@
 * V698  *acm* 5/16 Ticket 1845, 2404 fix; adjusting plot-axis ends for subspan 
 *		   modulo axes (as in axis_intervals.F for 2D plots).
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'

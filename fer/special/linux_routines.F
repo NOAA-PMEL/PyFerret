@@ -39,6 +39,7 @@
 
 	SUBROUTINE FDATE(date)
 
+        IMPLICIT NONE
 	CHARACTER*(*) date
 
 	CHARACTER*9 linux_date
@@ -82,6 +83,7 @@
 ************************TODAY'S TIME******************************
 
 	SUBROUTINE FTIME(time)
+        IMPLICIT NONE
 
 	CHARACTER*(*) time
 

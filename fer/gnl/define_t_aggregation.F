@@ -63,6 +63,7 @@
 *	status		- return status (output)
 *
 
+        IMPLICIT NONE
         include 'ferret.parm'
         include 'errmsg.parm'
 

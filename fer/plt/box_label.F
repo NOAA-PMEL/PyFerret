@@ -62,6 +62,7 @@
 *                - DP conversion bug fix:  "ht" was used instead of "rht" 
 * V7   *acm* 6/16 see ticket 2435. Tweak to split dataset labels after DATA SET:
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'plot_setup.parm'

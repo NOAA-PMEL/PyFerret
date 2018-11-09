@@ -48,6 +48,7 @@
 *                         statements.  use and octal initialization instead
 
 
+        IMPLICIT NONE
 * calling argument declarations:
 	CHARACTER*(*) source, dest
 	INTEGER	tlen

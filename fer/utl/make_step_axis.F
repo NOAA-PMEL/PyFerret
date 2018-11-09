@@ -46,6 +46,7 @@
 * V698  *acm* 5/16 Ticket 1845, 2404 fix; adjusting plot-axis ends for subspan 
 *		   modulo axes.
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 	include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'

@@ -44,6 +44,7 @@
 * revision 0.0 - 4/23/86
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 
 	INTEGER	length, i

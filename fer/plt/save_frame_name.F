@@ -1,6 +1,6 @@
 
 	SUBROUTINE SAVE_FRAME_NAME(fname, clen)
-	implicit none
+	IMPLICIT NONE
 
 	include 'tmap_dims.parm'
 	include 'xprog_state.cmn'

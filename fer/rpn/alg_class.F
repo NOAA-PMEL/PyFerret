@@ -55,6 +55,7 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * 12/14 *sh* "_" is a separate character class needed for _DQ_ and _SQ_
 
+        IMPLICIT NONE
 	include	'ferret.parm'
 
 * calling argument declaration:

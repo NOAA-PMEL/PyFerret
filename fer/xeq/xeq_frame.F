@@ -61,6 +61,7 @@
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 * V6.95 *acm* 4/15 Haven't used HDF images for a long time: require GIF only.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

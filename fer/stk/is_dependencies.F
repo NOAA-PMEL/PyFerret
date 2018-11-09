@@ -51,6 +51,7 @@
 * V695+ 2/15 *sh* - report target of regrid even if auxvar is involved 
 * V720  3/17 *acm*  clean up long commented-out code referring to aggregations 
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	status
 	INTEGER work(*)

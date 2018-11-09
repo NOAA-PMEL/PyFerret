@@ -51,6 +51,7 @@
 *		  - and for trac #2369 -- dynamic memory management 
 *		    (was dynamic memory ever used in this routine?)
 
+        IMPLICIT NONE
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'

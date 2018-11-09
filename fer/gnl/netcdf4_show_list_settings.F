@@ -46,6 +46,7 @@
 * Qualilifiers for SET LIST: NCFORMAT,
 * XCHUNK,YCHUNK,ZCHUNK,TCHUNK,DEFLATE,SHUFFLE,ENDIAN
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'slash.parm'

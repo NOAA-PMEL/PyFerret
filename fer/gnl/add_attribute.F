@@ -46,6 +46,7 @@
 * v73+ *acm* 12/2017 Issue # 1846, disallow defining new scale_factor, add_offset
 *                    on file variables
 
+      IMPLICIT NONE
       include 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'

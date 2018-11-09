@@ -46,6 +46,7 @@
 * V533; *sh* 7/01 - add support for sampling of string variables
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

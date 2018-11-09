@@ -37,7 +37,7 @@
 * v6.85 *acm* Ferret with LET/REMOTE
 * Reset the url for the dataset with its f-tds variable definitions.
 
-
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER		dset, uvar, status
 

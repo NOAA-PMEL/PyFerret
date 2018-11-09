@@ -56,6 +56,7 @@
 * V697  *acm*  1/16 Ticket 2344: if there was a time-plot underlay, use the underlay's 
 *                   time scaling for time overlay plots. TAXUND restores the default.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'plot_setup.parm'

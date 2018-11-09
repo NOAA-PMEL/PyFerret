@@ -63,6 +63,7 @@
 * V693 *sh* 12/14 added support for _DQ_ and _SQ_ style of quotation marks
 *                 changed unpaired [], {}, "", '', etc from error to acceptable
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

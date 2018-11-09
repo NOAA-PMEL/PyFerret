@@ -73,6 +73,7 @@
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 * V720  *acm* 2/17 ticket 2511 Dynamic grids on user-defined variables
 
+        IMPLICIT NONE
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'

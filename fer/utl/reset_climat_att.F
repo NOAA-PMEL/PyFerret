@@ -43,6 +43,7 @@
 *
 * V698: 3/16 *acm* 
 
+        IMPLICIT NONE
         include 'xtra_compute_attr.cmn'
 
 	natt_computed_var = 0

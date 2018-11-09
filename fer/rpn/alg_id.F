@@ -68,6 +68,7 @@
 * V693+ 12/14 *sh* allow _QD_ and _SQ_ for quotation alternatives 
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

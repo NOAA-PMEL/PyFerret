@@ -40,6 +40,7 @@
 
 * V695+ *sh* 4/15
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER	grid
 

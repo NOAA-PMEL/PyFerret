@@ -53,6 +53,7 @@
 * v552: 4/03 *acm*  Increase length of variable names to 128 characters
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

@@ -41,6 +41,7 @@
 * 2/2008 ACM If the lo and hi value on the axis are the same '
 * (which may happen in a PLOT/VS plot) we got a divide by zero.
 
+        IMPLICIT NONE
 * calling argument declarations:
 	CHARACTER	fmt*4
 	REAL*8		lo_val, hi_val, del_val

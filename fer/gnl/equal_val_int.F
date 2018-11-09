@@ -44,6 +44,7 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER		status, ival
 	CHARACTER*(*)	string

@@ -63,6 +63,7 @@
 * V685+ 12/13    - *acm*  bounds checking; dont refer to parts of the string outside its bounds.
 * V710 9/16  *acm* ticket 2465: Parsing expressions including attribute references.
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'	

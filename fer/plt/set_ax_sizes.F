@@ -46,6 +46,7 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'plot_setup.parm'
         include 'xplot_setup.cmn'      ! 10/91 for saved_ppl_yax

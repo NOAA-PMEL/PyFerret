@@ -46,6 +46,7 @@
 * V603   5/07    - *acm* Just return if the test string is length 0.
 * V685+ 12/13    - *acm* bounds checking; return if len(string) is 0.
 
+        IMPLICIT NONE
 * calling argument declarations:
 	CHARACTER string*(*)
 

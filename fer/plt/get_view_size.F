@@ -54,6 +54,7 @@
 * V300:  4/19/93 - old style vp's: use ABS() for negative vp_size
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 	include 'xplot_state.cmn'
 	include	'plt_inc.decl'	! with sizing data,etc.

@@ -160,6 +160,7 @@
 * v730 11/2017 *acm* new SAVE/ASGLOBAL to write a global attribute, see ticket 2060, issue 1332
 * V740  3/2018 *acm* issue 1863: LIST/APPEND w/o /FORM=cdf to a netCDF file is an error
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
         include 'tmap_errors.parm'
 	include	'ferret.parm'

@@ -83,6 +83,7 @@
 *                  inappropriate use of string arguments in numeric expressions or mixed
 *                  string/numeric expressions with logic operators. See bn_strings.jnl
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

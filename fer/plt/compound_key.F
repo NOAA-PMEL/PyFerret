@@ -46,6 +46,7 @@
 
 * V200:   1/4/89
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	ncx, cx_list(ncx), flags(0:12), tlen
 

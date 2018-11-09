@@ -49,6 +49,7 @@
 *                 to make diagnostic output more readable
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER		parent_uvar, char1
 	CHARACTER	name*(*)

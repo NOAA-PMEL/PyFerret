@@ -96,6 +96,7 @@
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

@@ -48,6 +48,7 @@
 *                  than XY, e.g. XZ or YZ for a layerz-coordinate vertical axis.
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'

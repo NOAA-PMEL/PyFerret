@@ -70,6 +70,7 @@
 * V702  *sh*  11/16 support new syntax D=aggregation.member
 * V722 *acm*  Ticket 2563: Handle the dname coming in quoted, as from repl_exprns
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'

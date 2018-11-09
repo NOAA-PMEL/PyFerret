@@ -46,6 +46,7 @@
 * V750 3/18 *acm* issue 554, explain what formasts are allowed.
 * V750 *acm*  3/18 Issue 950: Allowing simplified I formats 
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER		status
 	CHARACTER*(*)	string

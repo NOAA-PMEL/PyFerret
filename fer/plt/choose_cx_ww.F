@@ -58,6 +58,7 @@
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 * V698  *acm* 5/16 Ticket 1845 fix; adjusting plot-axis ends for subspan modulo axes.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'command.parm'

@@ -208,6 +208,7 @@
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management
 * V720 3/17 *acm* Ticket 2132, attribute of user-defined variable, do not try to show dataset info
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'

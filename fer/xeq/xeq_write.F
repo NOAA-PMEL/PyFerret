@@ -43,6 +43,7 @@
 *
 * revision 0.0 - 4/3/86
 
+        IMPLICIT NONE
 	write (6,*) 'WRITE command not implemented'
 
 	RETURN

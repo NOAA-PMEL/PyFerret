@@ -123,6 +123,7 @@
 *                 all-abstract (and the variable is a constant), do not add abstract 
 *                 axes to the merged grid.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'grid_chg_fcns.parm'
 	include	'xtm_grid.cmn_text'

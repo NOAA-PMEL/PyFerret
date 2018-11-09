@@ -41,6 +41,7 @@
 * Set up PPLUS with info on longitude formatting with Deg-Min-Sec, and/or 
 * adjusting spacing on labels with E,W,N, or S.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'plot_setup.parm'

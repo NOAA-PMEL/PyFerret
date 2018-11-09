@@ -52,6 +52,7 @@
 *       3/17 *sh* nbuffers must be 2 (or more) whenever there is an
 *                 accumulation operation implied (e.g. summing, min, max, ...)
 
+        IMPLICIT NONE
 * calling argument declarations:
 	LOGICAL need_init
 	INTEGER idim, cx, nbuffer

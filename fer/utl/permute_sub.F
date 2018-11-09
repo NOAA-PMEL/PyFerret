@@ -54,6 +54,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *	           restore code that was ifdef'd out due to a DEC compiler error
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xcontext.cmn'

@@ -114,6 +114,7 @@
 * v74   *acm* 3/18 Introduce parameter abstractax_len replacing 99999999
 * V741 *acm* 5/18 Promoting global attributes to a variable in ensembles
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

@@ -47,6 +47,7 @@
 * V446:   9/97 - bug showed up with addition of new xforms
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'xprog_state.cmn'

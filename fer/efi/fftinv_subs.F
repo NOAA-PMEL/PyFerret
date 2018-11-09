@@ -1,5 +1,6 @@
 
       SUBROUTINE FFTINV (ND, X, a, b, WFT)
+      IMPLICIT NONE
       real X(*), WFT(*)
       real a(*), b(*)
       integer nd, nf, i, j
@@ -83,6 +84,7 @@ C             CALLS OF RFFTB OR RFFTF.
 C                                                                               
 C                                                                               
       SUBROUTINE RFFTB (N,R,WSAVE)                                              
+      IMPLICIT NONE
       INTEGER N
       REAL       R(*)       ,WSAVE(*)     
 C                                                                               
@@ -91,6 +93,7 @@ C
       RETURN                                                                    
       END                                                                       
       SUBROUTINE RFFTB1 (N,C,CH,WA,IFAC)                                        
+      IMPLICIT NONE
       INTEGER N, NF, NA, L1, IW, K1, IP, L2, IDO, IDL1, I, IX2, IX3, IX4
       REAL       CH(*)      ,C(*)       ,WA(*)      ,IFAC(*)   
       NF = IFAC(2)                                                              
@@ -151,6 +154,7 @@ C
       RETURN                                                                    
       END                                                                       
       SUBROUTINE RADB2 (IDO,L1,CC,CH,WA1)                                       
+      IMPLICIT NONE
       INTEGER IDO, L1, K, IDP2, I, IC
       REAL       CC(IDO,2,L1)           ,CH(IDO,L1,2)           ,          
      1                WA1(*)          
@@ -180,6 +184,7 @@ C
   107 RETURN                                                                    
       END                                                                       
       SUBROUTINE RADB3 (IDO,L1,CC,CH,WA1,WA2)                                   
+      IMPLICIT NONE
       INTEGER IDO, L1, K, IDP2, I, IC
       REAL       CC(IDO,3,L1)           ,CH(IDO,L1,3)           ,          
      1                WA1(*)     ,WA2(*)  
@@ -221,6 +226,7 @@ C
       END    
                                                  
       SUBROUTINE RADBG (IDO,IP,L1,IDL1,CC,C1,C2,CH,CH2,WA)                      
+      IMPLICIT NONE
       INTEGER IDO, IP, L1, IDL1, J, IC, L, LC
       INTEGER IDP2, NBD, IPP2, IPPH, K, I, JC, J2, IK, IS, IDIJ
       REAL            CH(IDO,L1,IP)          ,CC(IDO,IP,L1)          ,          
@@ -390,6 +396,7 @@ C
 
                                                                
       SUBROUTINE RADB4 (IDO,L1,CC,CH,WA1,WA2,WA3)                               
+      IMPLICIT NONE
       INTEGER IDO, L1, K, I, IDP2, IC
       REAL       CC(IDO,4,L1)           ,CH(IDO,L1,4)           ,          
      1                WA1(*)     ,WA2(*)     ,WA3(*)      
@@ -452,6 +459,7 @@ C
       END                             
                                                     
       SUBROUTINE RADB5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)                           
+      IMPLICIT NONE
       INTEGER IDO, L1, K, IDP2, I, IC
       REAL       CC(IDO,5,L1)           ,CH(IDO,L1,5)           ,          
      1                WA1(*)     ,WA2(*)     ,WA3(*)     ,WA4(*)     

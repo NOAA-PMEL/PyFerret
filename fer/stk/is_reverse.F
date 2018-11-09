@@ -48,6 +48,7 @@
 * V602  8/06 *jli* chages for native strides 
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

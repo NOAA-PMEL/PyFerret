@@ -43,6 +43,7 @@
 *
 * revision 0.0 - 9/26/87
 
+        IMPLICIT NONE
 * calling argument declarations
 	CHARACTER*(*)	string
 	INTEGER		leg_len

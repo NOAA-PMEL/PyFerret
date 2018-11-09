@@ -82,6 +82,7 @@
 * V741 *acm* 6/18  Last bit of 1868: multi-D trans, if requested w/ some 
 *                  directions orthogonal to grid, those should be ignored
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

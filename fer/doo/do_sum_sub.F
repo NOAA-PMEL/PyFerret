@@ -54,6 +54,7 @@
 *                 between sum of zero and result that indicates all-missing-data.
 * v7.21 *acm*  9/17 Fix ticket 2560: count is sum of "ok" not "sum" for sum in X
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

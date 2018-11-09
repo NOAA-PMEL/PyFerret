@@ -81,6 +81,7 @@
 *	    B = { (1 + tan**2) / (s**2 + tan**2) } **.5
 *	    A = s * B
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xvariables.cmn'

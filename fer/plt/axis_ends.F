@@ -62,6 +62,7 @@
 *                   then axis-backwards is not relevant. The plot axis is drawn
 *                   from the data values not the grid.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'plot_setup.parm'

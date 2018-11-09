@@ -51,6 +51,7 @@
 * V530  1/01 *acm* cal_id for alternative calendar axis types
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	dset
 

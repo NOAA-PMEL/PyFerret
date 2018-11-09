@@ -55,6 +55,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V692 7/14 *acm* ticket 2183: handle @WGT transform as for integrals
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER idim, cx, lo_off, hi_off, status
 

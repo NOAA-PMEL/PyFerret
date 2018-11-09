@@ -47,6 +47,7 @@
 * change this comment, so that the checkin under branch FDSv1
 * will occur.
 
+        IMPLICIT NONE
 * calling argument declarations:
         LOGICAL clobber
         INTEGER status,

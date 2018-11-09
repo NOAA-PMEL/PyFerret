@@ -48,6 +48,7 @@
 
 * Parameters and commons
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 #	include	"tmap_dset.parm"
 	include	'tmap_errors.parm'

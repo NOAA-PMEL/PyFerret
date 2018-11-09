@@ -44,6 +44,7 @@
 * V500 - *sh* drawn from AXIS_ENDS
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 	include 'plot_setup.parm'
 

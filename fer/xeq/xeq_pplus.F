@@ -54,6 +54,7 @@
 * V7.4 *acm* 1/18 for issue 1854 if mem pointers for curvi coord data have 
 *                 been temporarily reset, restore to prev values
 * 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'

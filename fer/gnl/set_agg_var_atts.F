@@ -47,6 +47,7 @@
 *                 in the List structure so can get their attribute info
 * V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 
+        IMPLICIT NONE
         INCLUDE 'tmap_dims.parm'
         INCLUDE 'ferret.parm'
         INCLUDE 'errmsg.parm'      

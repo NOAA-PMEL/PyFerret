@@ -45,6 +45,7 @@
 * V533: *sh* 6/01
 * V56: *acm* 3/04 Fix bugs that occur when ss1 is negative.
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER	ss1, modlen, delta
 

@@ -52,6 +52,7 @@
 *                  A time axis may be a T axis or F axis, so idim is 
 *                  now an arg to TSTEP_TO_SECS
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data

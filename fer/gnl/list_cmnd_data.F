@@ -98,6 +98,7 @@
 * V741 *acm*  4/18 Issue 1870: Check Format more closely when finding an I Format
 * V741 *acm*  4/18 Issue 1878: Ferret error if the WRITE results in an error
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'

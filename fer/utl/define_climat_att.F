@@ -36,6 +36,7 @@
 * V698 *acm*  3/16 Ticket 2278: add an attribute with time range when
 *                  saving a modulo-regridded variable to netCDF
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
         include 'ferret.parm'
 	include 'xcontext.cmn'

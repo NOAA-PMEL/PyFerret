@@ -42,6 +42,7 @@
 * ACM 11/00 change so not exact comparison: wasnt catching all bad values.
 *
 
+      IMPLICIT NONE
       REAL xin(*), yin(*), zin(*), badz
       REAL xscat(*), yscat(*), zscat(*)
       INTEGER nscat, ngood, i

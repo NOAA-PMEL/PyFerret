@@ -47,6 +47,7 @@
 * 2. Does it make sense to do the same for forecast sets? If so then what 
 *    about ensembles of Forecasts and FMRC's of ensembles?  Any issues?
 
+        IMPLICIT NONE
         INCLUDE 'tmap_dims.parm'
 #include "tmap_dset.parm"
         INCLUDE 'ferret.parm'

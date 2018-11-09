@@ -70,6 +70,7 @@
 * v74+ *acm* 5/18 See PyFerret issue #53: if the title is blank don't set up 
 *                 the label or the symbol labnum_datitl
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data

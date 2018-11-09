@@ -55,6 +55,7 @@
 *	/q=val			specifies a single delta
 *	/q=val_1:val_2		specifies a separate delta for lowe and upper
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'errmsg.parm'	
 	include 'ferret.parm'	

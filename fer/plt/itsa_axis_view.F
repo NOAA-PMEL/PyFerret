@@ -42,6 +42,7 @@
 
 * V551: 02/03
 
+        IMPLICIT NONE
         INTEGER dum
 
 	include 'xplot_state.cmn'

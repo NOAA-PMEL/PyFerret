@@ -76,6 +76,7 @@
 * V690 1/14 *sh* removed special behavior for mode_stupid
 * V698 3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data

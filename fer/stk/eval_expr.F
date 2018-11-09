@@ -68,6 +68,7 @@
 *                  to apply command context to grave-accent expressions.
 * V702 *sh*  3/17 Dynamic memory
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'

@@ -93,6 +93,7 @@
 * V743 7/18 *acm* Issue 1888: The resetting of time for 1009 need not happen unless the 
 *                 time coordinates really need all that precision.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data

@@ -48,6 +48,7 @@
 * V66   *kms* 5/10 LIB_GET_LUN is a subroutine, not a function
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'  ! error codes
 	include	'ferret.parm'

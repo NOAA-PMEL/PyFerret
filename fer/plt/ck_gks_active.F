@@ -44,6 +44,7 @@
 * V200: 12/20/89
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'pltcom_dat.decl'   ! with gksopn

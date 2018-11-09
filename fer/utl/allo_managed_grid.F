@@ -54,6 +54,7 @@
 *			  because it needed a preprocessor.
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 * Arguments
 	INTEGER*4	islot
 *

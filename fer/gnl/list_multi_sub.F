@@ -90,6 +90,7 @@
 *                  Also simplified I formats in the same way.
 * V741 *acm*  4/18 Issue 1870: Check Format more closely when finding an I Format
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'

@@ -40,6 +40,7 @@
 *
 * revision 0.0 - 2/2012 - based on READ_TM
 
+        IMPLICIT NONE
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'

@@ -42,6 +42,7 @@
 
 * V690 12/13 *sh*
 
+        IMPLICIT NONE
 !#ifdef NO_PASSED_CONCAT
 !	include 'xrisc.cmn'
 !#endif

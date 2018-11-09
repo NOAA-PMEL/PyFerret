@@ -84,6 +84,7 @@
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
 *                  variables, pre-defined axes and grids, cat_calc_var.
 
+        IMPLICIT NONE
         include 'tmap_errors.parm'  ! error codes
 	include 'tmap_dims.parm'
 	include 'xio.cmn_text'

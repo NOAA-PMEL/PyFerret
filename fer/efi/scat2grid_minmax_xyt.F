@@ -75,6 +75,7 @@
 
       SUBROUTINE  scat2grid_minmax_xyt_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -164,6 +165,7 @@
 
       SUBROUTINE scat2grid_minmax_xyt_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
@@ -192,6 +194,7 @@
 *
       SUBROUTINE scat2grid_minmax_xyt_work_size(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
@@ -248,6 +251,7 @@
 *  arg_6  yaxis of new grid 
 *  arg_7  taxis of new grid
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 

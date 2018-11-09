@@ -44,6 +44,7 @@
 * V698 *sh* 3/16
 *      *sh* 4/16 - tweak decimation behavior
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'

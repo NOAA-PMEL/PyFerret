@@ -53,6 +53,7 @@
 *		  - for trac enhancement #2369 -- dynamic memory management 
 *                 (it appears that dynamic work space is allocated but never used)
 
+        IMPLICIT NONE
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'

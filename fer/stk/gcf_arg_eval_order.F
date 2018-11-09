@@ -46,6 +46,7 @@
 *
 * V510: 9/99 *sh*
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'grid_chg_fcns.parm'

@@ -69,6 +69,7 @@
 *       stored in xcurvilinear.cmn.  These contain the X- and Y-axis maximum and minimum
 *       page positions (in user coordinates).
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xcontext.cmn'

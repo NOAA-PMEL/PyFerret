@@ -48,6 +48,7 @@
 
       SUBROUTINE samplej_multi_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -99,6 +100,7 @@
 
       SUBROUTINE samplej_multi_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id
@@ -142,6 +144,7 @@
 *
       SUBROUTINE samplej_multi_compute(id, arg_1, arg_2, result)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 

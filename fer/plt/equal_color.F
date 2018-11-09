@@ -49,6 +49,7 @@
 * 1/03 *kob* g77 port - requires use of risc_buff for concats
 * V693+ *sh* 2/15 - added support for _DQ_ quotations
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER		icolor, status
 	CHARACTER*(*)	string

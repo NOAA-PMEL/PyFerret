@@ -154,6 +154,7 @@
 *                 more sophisticated logic to determine an implied "@FMRC"
 * V74+  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
 
+        IMPLICIT NONE
 	include 'errmsg.parm'
 	include 'ferret.parm'
 	include 'interp_stack.parm'

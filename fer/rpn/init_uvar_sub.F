@@ -88,6 +88,7 @@
 * V710 *acm* 10/16 Ticket 2422: remove unneeded call to DEALLO_UVAR_GRIDS. 
 *                  Also clean up long-unused lines that were commented out.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'	
 	include 'errmsg.parm'	

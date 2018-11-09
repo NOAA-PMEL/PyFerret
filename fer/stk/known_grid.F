@@ -51,6 +51,7 @@
 *                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 * V741 *acm* 5/18 Promoting global attributes to a variable in ensembles
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 #       include "tmap_dset.parm"
 	include	'xdset_info.cmn_text'

@@ -45,7 +45,8 @@
 
 * V3.00 - 2/1/93
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
-
+ 
+        IMPLICIT NONE
 * calling argument declarations:
 	CHARACTER*(*)	cmnd_line
 * RETURN 1 - always taken

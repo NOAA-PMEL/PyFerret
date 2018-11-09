@@ -37,6 +37,7 @@
 * *acm* V6.08 10/07 Turn off the flag echof for batch mode, so we can set metafile
 * names without writing spurious stuff to fort.23
 
+        IMPLICIT NONE
 	include	'system_inc.decl'	! with echof
 	include	'SYSTEM.INC'	        ! with echof
 

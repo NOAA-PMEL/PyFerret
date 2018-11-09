@@ -62,6 +62,7 @@
 * V698 *sh* 4/16 hack to format E axis limits as integers
 *	         Note:  this is a poor fix.  See 4/16 note below
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data

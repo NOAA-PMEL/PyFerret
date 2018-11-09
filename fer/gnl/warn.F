@@ -49,6 +49,7 @@
 * V606  8/07 ACM Send Notes to std error.
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 #ifdef NO_PASSED_CONCAT
 	include 'xrisc.cmn'
 #endif

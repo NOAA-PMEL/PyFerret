@@ -61,6 +61,7 @@
 *	use_strict	- (not impl.) flag for coord micro-adjustment (input)
 *	status		- return status (output)
 
+        IMPLICIT NONE
 * Argument definitions
 	LOGICAL		use_strict
 	INTEGER		nagfiles, dset_num, status

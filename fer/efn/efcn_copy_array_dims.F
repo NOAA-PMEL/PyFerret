@@ -13,6 +13,7 @@ c
 
       SUBROUTINE EFCN_COPY_ARRAY_DIMS
 
+      IMPLICIT NONE
       INCLUDE 'tmap_dims.parm'
       INCLUDE 'xmem_subsc.cmn'
       INCLUDE 'EF_mem_subsc.cmn'

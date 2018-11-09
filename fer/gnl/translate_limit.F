@@ -80,6 +80,7 @@
 *   z coord:  #  
 *   t coord:  #  or dd-mmm-$_@hh:mm:ss  eg 14-JAN-1986@11:15
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'errmsg.parm'
 	include 'ferret.parm'

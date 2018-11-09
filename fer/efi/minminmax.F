@@ -44,6 +44,7 @@ c	    zminlist(1,n) = i index of zmin point
 c	    zminlist(2,n) = j index of zmin point
 c	    zminlist(3,n) = z value at zmin point
 C
+      IMPLICIT NONE
       integer	L, MM, NN, m, n, nm1, mm1, jp, im, mn, ip, is, it, ii, 
      .		js, nm, jt, jk, ik, nzmin, neigh_x, neigh_y
       real	Z(L,NN), aa, an, badz, zminlist(3,*)

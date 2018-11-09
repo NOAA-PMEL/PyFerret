@@ -57,6 +57,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *                  Do not use GT format
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER		status
 	CHARACTER*(*)	string

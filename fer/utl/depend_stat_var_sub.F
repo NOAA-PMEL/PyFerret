@@ -45,6 +45,7 @@
 
 * V685+  *sh* 11/13 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xvariables.cmn'

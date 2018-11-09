@@ -52,6 +52,7 @@
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 * V74:  *acm* 2/18 Handling of cells with partial overlap was inadequate
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 	include 'errmsg.parm'
 

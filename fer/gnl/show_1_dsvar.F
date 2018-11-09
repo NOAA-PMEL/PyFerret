@@ -43,6 +43,7 @@
 * V600 6/05 *acm* Attribute control.
 * V685 5/13 *acm* Write the long_name not the variable number.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data

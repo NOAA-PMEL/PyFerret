@@ -46,6 +46,7 @@
 * V695 2/15 *acm* 6D add aggregation in forecast direction
 * V698 3/16 *sh* make any scalar axis of member conformable with result
 *
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xcontext.cmn'

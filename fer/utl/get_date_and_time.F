@@ -37,6 +37,7 @@
 * result into todays_date and todays_time that Ferret wants.
 * *kob* 2/4/99
 
+        IMPLICIT NONE
 * calling arguments
       CHARACTER*(*) tdate
       CHARACTER*(*) ttime

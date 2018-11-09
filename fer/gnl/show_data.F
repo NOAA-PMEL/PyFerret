@@ -45,6 +45,7 @@
 * V698 *sh* 1/16 Removed "Ferret-defined" annotation
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U, ds_type 'UNI'
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'ferret.parm'

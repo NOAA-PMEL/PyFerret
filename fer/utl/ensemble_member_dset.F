@@ -52,6 +52,7 @@
 
 * V690 *sh*
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'xcontext.cmn'

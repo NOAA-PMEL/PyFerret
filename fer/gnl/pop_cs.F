@@ -68,6 +68,7 @@
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 * V698  *sh* 3/16 maintain GO_FILE as the currently active GO file
 
+        IMPLICIT NONE
 * internal variable declarations:
 	INTEGER	LIB_FREE_LUN,TM_LENSTR1,stat,axis,ivar,cvar,csp_to,ll,
      .          slen, plen

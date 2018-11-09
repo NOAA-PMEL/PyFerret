@@ -43,6 +43,7 @@
 * revision 0.0 - 3/26/2010
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'xrevision.cmn'
 	include 'xrevision_type.cmn'
 	include 'xplatform_type.cmn'

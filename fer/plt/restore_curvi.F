@@ -45,6 +45,7 @@
 * variables from being freed.  Now that the plot is done, restore the settings 
 * for mr_protected.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
         include 'xvariables.cmn'

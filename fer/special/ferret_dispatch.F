@@ -121,6 +121,7 @@
 * V695 *acm*  6/16 New ANNOTATE command.
 * V702 *sh*   2/17 dynamic memory management - no return for SET MEMORY
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xalt_messages.cmn_text'
 	include 'ferret.parm'
@@ -341,6 +342,7 @@ c	DO 2 i = 1, 200
 *
         SUBROUTINE SET_ONE_CMND_MODE(new_mode_int)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
         INCLUDE 'xprog_state.cmn'
 

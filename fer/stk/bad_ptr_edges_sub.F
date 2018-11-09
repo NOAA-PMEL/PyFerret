@@ -47,6 +47,7 @@
 * V533: 6/01 - like BAD_EDGES_SUB but initialize null pointers
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include	'xcontext.cmn'

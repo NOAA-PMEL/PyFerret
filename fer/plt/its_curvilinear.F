@@ -44,6 +44,7 @@
 
 * internal variable declarations
 
+        IMPLICIT NONE
 	include 'xcurvilinear.cmn'
 	
 	ITS_CURVILINEAR = curvilinear	! from COMMON

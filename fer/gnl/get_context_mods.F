@@ -179,6 +179,7 @@
 * logical arguments:
 *	report_unknown 	  if .TRUE. then unknown specifiers are errors
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'

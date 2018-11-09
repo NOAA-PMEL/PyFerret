@@ -74,6 +74,7 @@
 * V694 *acm*  12/14   Fix ticket 2221. When in -script mode exit/prompt should just exit
 *                     all the way out of Ferret.
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include 'command.parm'
 	include 'errmsg.parm'

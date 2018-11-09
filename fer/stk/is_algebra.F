@@ -111,6 +111,7 @@
 *                CHECK_NAN_DATA_SUB was being called on string variables
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 #include "netcdf.inc"
 	include	'ferret.parm'

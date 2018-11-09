@@ -44,6 +44,7 @@
 * V69+  *acm* 5/14 ticket 2174: check that the expression is just a constant
 *                  before reading from the buffer into the array.
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER		nmax, n, status
 	REAL		array(nmax)

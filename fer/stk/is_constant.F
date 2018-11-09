@@ -49,6 +49,7 @@
 * V554  1/04 - *acm* remove VAX common statements.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
  
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

@@ -60,6 +60,7 @@
 * V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'

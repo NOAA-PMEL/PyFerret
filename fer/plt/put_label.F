@@ -78,6 +78,7 @@
 * V68  *acm* 5/12  Dont write the font to xlab, ylab if they are blank strings.
 * V686 *acm* 12 13 set up the label symbols LABNUM_E and LABNUM_F
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'plot_setup.parm'
 	include 'xprog_state.cmn'

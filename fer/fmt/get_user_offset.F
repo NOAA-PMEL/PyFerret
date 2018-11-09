@@ -40,6 +40,7 @@
 * V5.52 *ACM* 4/24/03
 
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
 	external xdset_info_data

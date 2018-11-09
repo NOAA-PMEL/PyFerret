@@ -91,6 +91,7 @@
 * V741  *acm* 7/18 Issue 1868, do not wipe out the trans setting in the case of a constant
 * V744 *acm* 11/18 Issue 965, change behavior when axis is given with strides in the region
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data

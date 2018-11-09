@@ -42,6 +42,7 @@
 *
 * revision 0.0 - 2/2013
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	status
 	REAL	baddat

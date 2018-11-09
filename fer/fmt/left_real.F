@@ -50,6 +50,7 @@
 
 * revision 0.0 - 7/13/87 modeled after LEFINT rev. 0.0
 
+        IMPLICIT NONE
 * calling argument declarations:
 	REAL	val
 	CHARACTER*(*) fmt

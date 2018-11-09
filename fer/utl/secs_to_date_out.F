@@ -50,6 +50,7 @@
 *                   year (previously never listed year 0 or year 1)
 * V698  *acm* 5/16 Ticket 2405: MODE CALENDAR:auto
 
+        IMPLICIT NONE
 * Calling argument declarations:
 	REAL*8		num_secs
 	INTEGER		cal_id, prec

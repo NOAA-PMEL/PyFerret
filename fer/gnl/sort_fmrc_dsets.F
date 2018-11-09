@@ -50,6 +50,7 @@
 *   nt_out		- time ax len (in case inconsistent) (output)
 *   status		- return staus (output)
 
+        IMPLICIT NONE
         include 'tmap_errors.parm'
 #include "tmap_dset.parm"
         include 'tmap_dims.parm'

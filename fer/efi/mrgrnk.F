@@ -33,6 +33,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 * 
 
+      IMPLICIT NONE
 !  From http://www.fortran-2000.com/rank/index.html#1.1  
 ! ACM conversion to f77
 ! __________________________________________________________

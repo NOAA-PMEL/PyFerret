@@ -70,6 +70,7 @@
 * v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 * v74  *acm* 3/18  Backing off the fix for 1575, see comments 3/16/2018
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 #	include "tmap_dset.parm"

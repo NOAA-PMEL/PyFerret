@@ -44,6 +44,7 @@
 * V690 *sh* 2/14 init auxiliary var-related context variables
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'

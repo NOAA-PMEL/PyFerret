@@ -69,6 +69,7 @@
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 * v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data

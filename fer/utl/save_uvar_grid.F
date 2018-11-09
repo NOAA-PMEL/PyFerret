@@ -41,6 +41,7 @@
 *                  expressions, but the grid and type may be determined on different 
 *                  iterations in is_uvar_grid.
 
+        IMPLICIT NONE
         include 'ferret.parm'
         include 'tmap_dims.parm'
         include 'xvariables.cmn'

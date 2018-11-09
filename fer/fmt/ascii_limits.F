@@ -60,6 +60,7 @@
 * v690 *sh* 4/14 show regridding by "false 1 pt" curvilinear regrid 
 * V698 *sh* 4/16 document a true E ensemble axis with dataset identifier
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'

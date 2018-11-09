@@ -42,6 +42,7 @@
 * written for VAX computer under VMS operating system
 *
 
+        IMPLICIT NONE
 * calling argument declarations:
 	CHARACTER*(*)	view_name
 

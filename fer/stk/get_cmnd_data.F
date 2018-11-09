@@ -65,6 +65,7 @@
 * V530 *sh* 9/00 - added initial support for multiple data types
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'errmsg.parm'
 
 * calling argument declarations

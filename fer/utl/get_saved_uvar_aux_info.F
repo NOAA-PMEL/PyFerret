@@ -45,6 +45,7 @@
 *     aux_var - array of nferdims variables for auxiliary regridding
 *     dset    - the dset in which this uvar is being evaluated (see below)
 
+        IMPLICIT NONE
         include 'ferret.parm'
         include 'errmsg.parm'
         include 'tmap_dims.parm'

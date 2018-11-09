@@ -39,6 +39,7 @@
 
 * V695 acm 6/15
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER	uvar
 

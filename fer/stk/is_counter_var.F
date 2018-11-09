@@ -44,6 +44,7 @@
 * V69+  *acm*10/14 Bug 2200: assign mr subscripts correctly
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

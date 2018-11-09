@@ -42,6 +42,7 @@
 *               declaration line.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
+        IMPLICIT NONE
         include 'errmsg.parm'
         include 'pltcom_dat.decl'
         include 'PLTCOM.DAT'

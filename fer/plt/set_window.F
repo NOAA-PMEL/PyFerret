@@ -89,6 +89,7 @@
 *                     from logical to integer, then batch = ITS_BATCH_GRAPHICS().NE.0
 * V69x *sh* 21/1/15 clarify data type of arguments sent to QUERY_DISPLAY_SIZE
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xprog_state.cmn'

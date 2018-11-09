@@ -75,6 +75,7 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 
+        IMPLICIT NONE
 * calling argument declarations:
 	LOGICAL	  did_sub
 	INTEGER	  clen, status

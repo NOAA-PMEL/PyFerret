@@ -54,6 +54,7 @@
 *		   zero as valid. 
 * V720: 4/17 *acm* add direction-changing functions as a subset of grid-changing ones
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'rpn.parm'

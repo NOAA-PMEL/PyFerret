@@ -53,6 +53,7 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'xprog_state.cmn'		! with mode_segment
 	include	'xplot_state.cmn'

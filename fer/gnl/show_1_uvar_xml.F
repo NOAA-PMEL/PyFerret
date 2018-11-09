@@ -50,6 +50,7 @@
 * V67  *acm* 2/16 Fixes for getting extra attributes that may have been assigned
 * V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data

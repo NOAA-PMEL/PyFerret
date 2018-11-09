@@ -50,6 +50,7 @@
 *                  A time axis may be a T axis or F axis, so idim is now an arg.
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'
 	external xgt_grid_data

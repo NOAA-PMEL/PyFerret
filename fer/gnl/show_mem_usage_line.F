@@ -42,6 +42,7 @@
 
 * V702  1/17 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xprog_state.cmn'

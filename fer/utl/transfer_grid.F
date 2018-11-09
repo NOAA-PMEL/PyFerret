@@ -45,6 +45,7 @@
 * revision 0.1 -  3/23/87 - eliminated grid_origin as not useful
 * 2/12 *acm* Add E and F dimensions (use nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data

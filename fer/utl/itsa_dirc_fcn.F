@@ -40,6 +40,7 @@
 
 * V720: 4/17 Ansley Manke
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER	ifcn
 

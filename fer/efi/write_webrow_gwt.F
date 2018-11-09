@@ -44,6 +44,7 @@
 
       SUBROUTINE write_webrow_gwt_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
@@ -102,6 +103,7 @@
 
       SUBROUTINE write_webrow_gwt_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id
@@ -131,6 +133,7 @@
 *
       SUBROUTINE write_webrow_gwt_compute(id, arg_1, arg_2, arg_3, arg_4, result)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 

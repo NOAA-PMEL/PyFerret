@@ -20,6 +20,7 @@ c--------------------------------------------------------------------------
 	SUBROUTINE nobsxytv (obs_only, xx, yy, tt, vv, nx, ny, nt, 
      .             xaxlo,xaxhi, yaxlo,yaxhi, taxlo,taxhi, indx, obs)
 
+      IMPLICIT NONE
 
 * Argument declarations
 
@@ -95,6 +96,7 @@ c--------------------------------------------------------------------------
 	SUBROUTINE nobsxytv_var (obs_only, xx, yy, tt, vv, nx, ny, nt, 
      .             xaxlo,xaxhi, yaxlo,yaxhi, taxlo,taxhi, indx, obs)
 
+      IMPLICIT NONE
 
 * Argument declarations
 
@@ -182,6 +184,7 @@ c***********************************************************************
 *  Pick out nth item from a set of arrays, which are really 
 *  4-dimensioned arrays with normal axes on three of the four axes.
 
+      IMPLICIT NONE
       REAL alon(*), alat(*), atimes(*), cruises(*), vars(*)
       REAL xx, yy, tt, vv
       INTEGER obs_only, n, ncc
@@ -245,6 +248,7 @@ c***********************************************************************
 *  scatm        scattered points coordinate array in the direction of the 
 *               modulo axis
 
+      IMPLICIT NONE
       REAL scatm(*)
       REAL*8 axlo, axhi
       INTEGER nscat, i

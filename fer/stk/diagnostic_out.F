@@ -60,6 +60,7 @@
 *		  Adjust output to 6-D or 4-D grids
 * V702 *sh* 1/17  7 digit integer output fields instead of 5
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER		isub, pointer_type
 	CHARACTER*(*)	action

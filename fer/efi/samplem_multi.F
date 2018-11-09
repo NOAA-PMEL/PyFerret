@@ -17,6 +17,7 @@
 
       SUBROUTINE samplem_multi_init(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
      
@@ -58,6 +59,7 @@
 
       SUBROUTINE samplem_multi_result_limits(id)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 * Declarations
       INTEGER id
@@ -124,6 +126,7 @@
 *
       SUBROUTINE samplem_multi_compute(id, arg_1, arg_2, result)
 
+      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 

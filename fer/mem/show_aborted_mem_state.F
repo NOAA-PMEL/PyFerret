@@ -41,6 +41,7 @@
 
 * V702 3/17 *sh*
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'

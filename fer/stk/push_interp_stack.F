@@ -47,6 +47,7 @@
 * v690  2/2014 *sh* stack max limited to max_usable_intrp to fit aux frames at top
 * v698+ 6/2015 *sh* is_sum changed from REAL to INTEGER
  
+        IMPLICIT NONE
         include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

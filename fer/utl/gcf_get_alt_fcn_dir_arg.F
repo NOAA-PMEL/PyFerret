@@ -4,6 +4,7 @@
 * an alternative function.
 
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'grid_chg_fcns.parm' 

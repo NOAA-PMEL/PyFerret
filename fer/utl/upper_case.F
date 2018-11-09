@@ -53,6 +53,7 @@
 * V63  *acm* 10/09 Changes for gfortran build
 
 
+        IMPLICIT NONE
 	CHARACTER*1 input_char
 
 * kob 12/96

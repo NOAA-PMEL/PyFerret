@@ -47,6 +47,7 @@
 * V698 3/16 *sh*
 * V741 *acm* 5/18 Promoting global attributes to a variable in ensembles
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

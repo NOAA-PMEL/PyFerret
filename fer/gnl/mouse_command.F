@@ -50,6 +50,7 @@
 *                         statements.  use an octal constant instead
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'errmsg.parm'
 	include 'ferret.parm'

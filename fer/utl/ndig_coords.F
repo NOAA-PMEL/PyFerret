@@ -40,6 +40,7 @@
 * Ferret v5.80 9/02/2004  ACM
 * V600:  1/06 *acm*  prevent values of LOG10(0.0)
 
+      IMPLICIT NONE
       INCLUDE 'ferret.parm'
 
 * calling argument declarations

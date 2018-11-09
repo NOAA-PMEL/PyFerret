@@ -42,6 +42,7 @@
 * revision 0.0 - 2/6/2017
 
 
+        IMPLICIT NONE
         include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
 	external xdset_info_data

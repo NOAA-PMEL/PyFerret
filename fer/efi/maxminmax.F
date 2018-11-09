@@ -46,6 +46,7 @@ c	    zmaxlist(1,n) = i index of zmax point
 c	    zmaxlist(2,n) = j index of zmax point
 c	    zmaxlist(3,n) = z value at zmax point
 C
+      IMPLICIT NONE
       integer	L, MM, NN, m, n, nm1, mm1, jp, im, mn, ip, is, it, ii,
      .		js, nm, jt, jk, ik, nzmax, neigh_x, neigh_y
 

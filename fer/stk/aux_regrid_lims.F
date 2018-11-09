@@ -53,6 +53,7 @@
 *V689+ 3/15 *sh* added T-axis F-T orthoganalization
 *      5/15 *sh* generalize to allow 1D aux vars on all axes
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
 	include	'ferret.parm'

@@ -75,6 +75,7 @@
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * v744 *acm* 11/18 Issue 1786: graticule lines & axes drawn if PLOT/OVER/AXES given
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'

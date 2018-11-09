@@ -40,6 +40,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * Dec-2013
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include	'ferret.parm'

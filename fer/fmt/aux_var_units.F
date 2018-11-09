@@ -46,6 +46,7 @@
 *                  variables, pre-defined axes and grids, cat_calc_var.
 * V698  3/16 *sh* added logic for cat_ef_time2d  (ACTS_LIKE_FVAR)
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
 	external xdset_info_data

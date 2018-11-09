@@ -50,6 +50,7 @@
 
 * calling argument declarations:
 
+        IMPLICIT NONE
 * internal variable declarations:
 	INTEGER i
 

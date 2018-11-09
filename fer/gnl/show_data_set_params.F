@@ -49,6 +49,7 @@
 *                  pre-defined axes and grids, cat_calc_var. 
 *                  All that's left here is a possible dset title.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data

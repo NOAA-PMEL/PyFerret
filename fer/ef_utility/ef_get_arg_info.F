@@ -47,6 +47,7 @@ c*
 
       SUBROUTINE EF_GET_ARG_INFO(id, iarg, name, title, units )
 
+      IMPLICIT NONE
       INCLUDE 'tmap_dims.parm'
       INCLUDE 'ferret.parm'
       INCLUDE 'xcontext.cmn'

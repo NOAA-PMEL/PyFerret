@@ -48,6 +48,7 @@
 * V541: *sh* 4/02 - need to use MGRID_SIZE_DELTA to determine the size
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xvariables.cmn'

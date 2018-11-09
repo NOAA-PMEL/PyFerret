@@ -52,6 +52,7 @@
 * V740   4/18 *acm* Issue 1867: Restore pre-3/17 behavior for RESHAPE - 
 *                   previous code change may have been an unintended checkin
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data

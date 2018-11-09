@@ -48,6 +48,7 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V685+ *acm* 12/13 For 6D Ferret, the array coming in as flags is longer for extra dimensions
 
+        IMPLICIT NONE
 	include	'ferret.parm'
 
 * calling argument declarations

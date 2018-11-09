@@ -14,6 +14,7 @@
 * V500  1/99 *sh*  based on const_context
 * V530  8/00 *sh*  adding support for arrays of strings
 	
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

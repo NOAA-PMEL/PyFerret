@@ -52,6 +52,7 @@
 * V685+ *acm* 12/13 For 6D Ferret, the array coming in as flags is longer for extra dimensions
 *       *acm*  1/18 check for dataset is not set before using it
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'xcontext.cmn'

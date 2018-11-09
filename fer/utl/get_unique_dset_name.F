@@ -40,6 +40,7 @@
 
 *  ACM 10/2013
 
+        IMPLICIT NONE
         include 'tmap_errors.parm'      ! error codes
 #include "tmap_dset.parm"
         include 'tmap_dims.parm'        ! data set dimensions

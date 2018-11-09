@@ -43,6 +43,7 @@
 
 * V570 *acm* 5/04  Add the calendar ALL_LEAP = 366_DAY.
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER cal_id
 

@@ -76,6 +76,7 @@
 *
 *	IF ( interrupt ) THEN ...
 
+        IMPLICIT NONE
 	EXTERNAL	CTRLC_AST
 	LOGICAL		first_call
         DATA	 	first_call/.TRUE./    !kob 12/96

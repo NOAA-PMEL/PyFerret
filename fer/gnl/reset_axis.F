@@ -45,6 +45,7 @@
 * Set axis attributes as in SET AXIS; called by edit_attribute.F
 * doing SET ATT axname.attribute=
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
 #	include "tmap_dset.parm"

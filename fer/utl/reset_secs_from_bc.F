@@ -49,6 +49,7 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 * Calling argument declarations:
 	INTEGER		old_cal_id, new_cal_id, status
 	REAL*8		tstep, new_tstep

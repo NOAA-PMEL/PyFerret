@@ -53,6 +53,7 @@
 * V685 *acm*  6/13 Increase nominal length of abstract axis
 * v74   *acm* 3/18 Introduce parameter abstractax_len replacing 99999999
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'

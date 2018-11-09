@@ -46,6 +46,7 @@
 * Read info from qualilifiers for LIST netCDF4: NCFORMAT,
 * XCHUNK,YCHUNK,ZCHUNK,TCHUNK,ECHUNK,FCHUNK,DEFLATE,SHUFFLE,ENDIAN
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'slash.parm'

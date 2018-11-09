@@ -48,6 +48,7 @@
 *                  using original upper/lowercase spelling
 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 #	include "tmap_dset.parm"

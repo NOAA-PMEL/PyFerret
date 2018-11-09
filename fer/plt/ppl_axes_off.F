@@ -41,6 +41,7 @@
 * V450:  
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'plot_setup.parm'
 	include 'xcontrol.cmn'
 	include 'axis_inc.decl'

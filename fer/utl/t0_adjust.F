@@ -63,6 +63,7 @@
 
 * V695+ *sh* 11/2015
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xregrid.cmn'

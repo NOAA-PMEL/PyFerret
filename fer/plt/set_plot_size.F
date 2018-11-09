@@ -48,6 +48,7 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
  
+        IMPLICIT NONE
 	include 'plot_setup.parm'
 
 * calling argument declarations:

@@ -44,6 +44,7 @@
 * 1/2017 *acm* Ticket 2498 Do not report a true-month axis when it's 
 *              actually an unitialized one.
 
+        IMPLICIT NONE
 #include "tmap_dset.parm"
         include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'

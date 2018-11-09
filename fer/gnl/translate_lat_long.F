@@ -54,6 +54,7 @@
 *   z coord:  #
 *   t coord:  #  or dd-mmm-yyyy@hh-mm-ss  eg 14-JAN-1986@11:15
 
+        IMPLICIT NONE
 	include 'errmsg.parm'
 	include 'ferret.parm'
 

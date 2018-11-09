@@ -52,6 +52,7 @@
 *       8/05 *acm* - Allow more digits in xrevision number
 * V63  *acm* 10/09 Changes for gfortran build
 
+        IMPLICIT NONE
 	include 'xrevision.cmn'
 	include 'xrevision_type.cmn'
 	include 'xtoday.cmn'

@@ -44,6 +44,7 @@
 *
 * revision 0.0 - 4/11/88
 
+        IMPLICIT NONE
 * calling argument declarations
 	INTEGER		slen
 	CHARACTER*(*)	string

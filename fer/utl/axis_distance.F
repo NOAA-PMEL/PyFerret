@@ -47,6 +47,7 @@
 * revision 0.2 - 4/18/88 - passed grid to get unit conversion factor
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data

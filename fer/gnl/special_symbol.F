@@ -73,6 +73,7 @@
 *                 SPAWN_OK -> SPAWN_OK, so 1=succcess, 0=failure
 *                 SPAWN_STATUS returns the status value
 
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	  isym, slen
 	CHARACTER name*(*), value*(*)

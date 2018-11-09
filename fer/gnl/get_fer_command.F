@@ -109,6 +109,7 @@
 * V7+  6/16 *acm* Ticket 2446: Include the script name in warnings about 
 *                 unclosed IF blocks
 
+        IMPLICIT NONE
 
 #ifdef MIXING_NAG_F90_AND_C
 	USE F90_UNIX

@@ -44,6 +44,7 @@
 * revision 0.0 - 6/25/87
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 
 * calling argument declarations:

@@ -51,6 +51,7 @@
 *      4/16 *sh* Allow that SET VAR/NAME= has altered the agg varname
 * V741 *acm* 5/18 Fixes so string-variables are returned in aggregations
 
+        IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'

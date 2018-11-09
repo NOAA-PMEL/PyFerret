@@ -61,6 +61,7 @@
 * V73  4/17 *acm* Change the text when showing members of a union aggregation,
 *                 implement dataset.member notation for unions, (e.g.) "12.3"
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'

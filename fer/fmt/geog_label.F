@@ -56,6 +56,7 @@
 *                  Allow for F to be a time axis.
 
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
         include 'tmap_errors.parm'

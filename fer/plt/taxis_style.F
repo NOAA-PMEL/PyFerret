@@ -60,6 +60,7 @@
 * V710  *acm* 11/16 Ticket 2483: Fix the axis-end symbols that are defined 
 *                   for time axis plots
 
+        IMPLICIT NONE
 	include 'ferret.parm'
 	include 'plot_setup.parm'
 	include 'tmap_dims.parm'

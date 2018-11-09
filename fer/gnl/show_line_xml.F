@@ -56,6 +56,7 @@
 *      *acm* 3/13 Dont show axes with names in parentheses e.g. (AX004)
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 
+        IMPLICIT NONE
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xtm_grid.cmn_text'

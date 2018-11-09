@@ -50,7 +50,7 @@
 * Our old RANDU function could return 1. See ticket 1886
 * Replace calls to RANDU w/ gfortran RANDOM_SEED and RANDOM_NUMBER
 
-
+        IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	jd
 

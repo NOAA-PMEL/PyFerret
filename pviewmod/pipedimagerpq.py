@@ -20,7 +20,11 @@ import os
 import time
 import signal
 
-import sip
+try:
+    import sip
+except ImportError:
+    import PyQt4.sip
+
 try:
     sip.setapi('QVariant', 2)
 except AttributeError:
@@ -537,53 +541,35 @@ class PipedImagerPQ(QMainWindow):
         The file format will be determined from the filename extension.
         '''
         formattypes = [ ( "png",
-                          self.tr("PNG - Portable Networks Graphics (*.png)") ),
+                          "PNG - Portable Networks Graphics (*.png)" ),
                         ( "jpeg",
-                          self.tr("JPEG - Joint Photographic Experts Group (*.jpeg *.jpg *.jpe)") ),
+                          "JPEG - Joint Photographic Experts Group (*.jpeg *.jpg *.jpe)" ),
                         ( "tiff",
-                          self.tr("TIFF - Tagged Image File Format (*.tiff *.tif)") ),
+                          "TIFF - Tagged Image File Format (*.tiff *.tif)" ),
                         ( "bmp",
-                          self.tr("BMP - Windows Bitmap (*.bmp)") ),
+                          "BMP - Windows Bitmap (*.bmp)" ),
                         ( "ppm",
-                          self.tr("PPM - Portable Pixmap (*.ppm)") ),
+                          "PPM - Portable Pixmap (*.ppm)" ),
                         ( "xpm",
-                          self.tr("XPM - X11 Pixmap (*.xpm)") ),
+                          "XPM - X11 Pixmap (*.xpm)" ),
                         ( "xbm",
-                          self.tr("XBM - X11 Bitmap (*.xbm)") ), ]
+                          "XBM - X11 Bitmap (*.xbm)" ), ]
+        filters = ";;".join( [ t[1] for t in formattypes ] )
         if QT_VERSION == 5:
-            # tr returns Python unicode strings in PyQt5/Python3
-            filters = self.tr(";;").join( [ t[1] for t in formattypes ] )
+            # getSaveFileName; tr returns Python unicode strings in PyQt5/Python3
+            (fileName, fileFilter) = QFileDialog.getSaveFileName(self,
+                self.tr("Save the current image as "), self.tr(self.__lastfilename), self.tr(filters))
+        else:
+            # getSaveFileNameAndFilter; tr returns QStrings in PyQt4
+            (fileName, fileFilter) = QFileDialog.getSaveFileNameAndFilter(self,
+                 self.tr("Save the current image as "), self.tr(self.__lastfilename), self.tr(filters))
+        if fileName:
             for (fmt, fmtQName) in formattypes:
-                if self.__lastformat == fmt:
-                    dfltfilter = fmtQName
+                if self.tr(fmtQName) == fileFilter:
+                    fileFormat = fmt
                     break
             else:
-                dfltfilter = formattypes[0][1]
-            (fileName, fileFilter) = QFileDialog.getSaveFileName(self,
-                self.tr("Save the current image as "), self.__lastfilename, filters, dfltfilter)
-            if fileName:
-                for (fmt, fmtQName) in formattypes:
-                    if fmtQName == fileFilter:
-                        fileFormat = fmt
-                        break
-                else:
-                    raise RuntimeError("Unexpected file format name '%s'" % fileFilter)
-        else:
-            # tr returns QStrings in PyQt4
-            filters = formattypes[0][1]
-            for typePair in formattypes[1:]:
-                filters.append(";;")
-                filters.append(typePair[1])
-            (fileName, fileFilter) = QFileDialog.getSaveFileNameAndFilter(self,
-                 self.tr("Save the current image as "), self.__lastfilename, filters)
-            if fileName:
-                for (fmt, fmtQName) in formattypes:
-                    if fmtQName.compare(fileFilter) == 0:
-                        fileFormat = fmt
-                        break
-                else:
-                    raise RuntimeError("Unexpected file format name '%s'" % fileFilter)
-        if fileName:
+                raise RuntimeError("Unexpected file format name '%s'" % fileFilter)
             self.saveSceneToFile(fileName, fileFormat, None, None)
             self.__lastfilename = fileName
             self.__lastformat = fileFormat

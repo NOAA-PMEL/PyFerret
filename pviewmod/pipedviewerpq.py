@@ -21,7 +21,11 @@ import signal
 import time
 import math
 
-import sip
+try:
+    import sip
+except ImportError:
+    import PyQt4.sip
+
 try:
     sip.setapi('QVariant', 2)
 except AttributeError:
@@ -597,59 +601,41 @@ class PipedViewerPQ(QMainWindow):
         The file format will be determined from the filename extension.
         '''
         formattypes = [ ( "png",
-                          self.tr("PNG - Portable Networks Graphics (*.png)") ),
+                          "PNG - Portable Networks Graphics (*.png)"),
                         ( "jpeg",
-                          self.tr("JPEG - Joint Photographic Experts Group (*.jpeg *.jpg *.jpe)") ),
+                          "JPEG - Joint Photographic Experts Group (*.jpeg *.jpg *.jpe)" ),
                         ( "tiff",
-                          self.tr("TIFF - Tagged Image File Format (*.tiff *.tif)") ),
+                          "TIFF - Tagged Image File Format (*.tiff *.tif)" ),
                         ( "pdf",
-                          self.tr("PDF - Portable Document Format (*.pdf)") ),
+                          "PDF - Portable Document Format (*.pdf)" ),
                         ( "ps",
-                          self.tr("PS - PostScript (*.ps)") ),
+                          "PS - PostScript (*.ps)" ),
                         ( "svg",
-                          self.tr("SVG - Scalable Vector Graphics (*.svg)") ),
+                          "SVG - Scalable Vector Graphics (*.svg)" ),
                         ( "bmp",
-                          self.tr("BMP - Windows Bitmap (*.bmp)") ),
+                          "BMP - Windows Bitmap (*.bmp)" ),
                         ( "ppm",
-                          self.tr("PPM - Portable Pixmap (*.ppm)") ),
+                          "PPM - Portable Pixmap (*.ppm)" ),
                         ( "xpm",
-                          self.tr("XPM - X11 Pixmap (*.xpm)") ),
+                          "XPM - X11 Pixmap (*.xpm)" ),
                         ( "xbm",
-                          self.tr("XBM - X11 Bitmap (*.xbm)") ), ]
+                          "XBM - X11 Bitmap (*.xbm)" ), ]
+        filters = ";;".join( [ t[1] for t in formattypes ] )
         if QT_VERSION == 5:
             # tr returns Python unicode strings in PyQt5/Python3
-            filters = self.tr(";;").join( [ t[1] for t in formattypes ] )
-            for (fmt, fmtQName) in formattypes:
-                if self.__lastformat == fmt:
-                    dfltfilter = fmtQName
-                    break
-            else:
-                dfltfilter = formattypes[0][1]
             (fileName, fileFilter) = QFileDialog.getSaveFileName(self,
-                self.tr("Save the current image as "), self.__lastfilename, filters, dfltfilter)
-            if fileName:
-                for (fmt, fmtQName) in formattypes:
-                    if fmtQName == fileFilter:
-                        fileFormat = fmt
-                        break
-                else:
-                    raise RuntimeError("Unexpected file format name '%s'" % fileFilter)
+                self.tr("Save the current image as "), self.tr(self.__lastfilename), self.tr(filters))
         else:
             # tr returns QStrings in PyQt4
-            filters = formattypes[0][1]
-            for typePair in formattypes[1:]:
-                filters.append(";;")
-                filters.append(typePair[1])
             (fileName, fileFilter) = QFileDialog.getSaveFileNameAndFilter(self,
-                 self.tr("Save the current image as "), self.__lastfilename, filters)
-            if fileName:
-                for (fmt, fmtQName) in formattypes:
-                    if fmtQName.compare(fileFilter) == 0:
-                        fileFormat = fmt
-                        break
-                else:
-                    raise RuntimeError("Unexpected file format name '%s'" % fileFilter)
+                 self.tr("Save the current image as "), self.tr(self.__lastfilename), self.tr(filters))
         if fileName:
+            for (fmt, fmtQName) in formattypes:
+                if self.tr(fmtQName) == fileFilter:
+                    fileFormat = fmt
+                    break
+            else:
+                raise RuntimeError("Unexpected file format name '%s'" % fileFilter)
             self.saveSceneToFile(fileName, fileFormat, None, None, None, None)
             self.__lastfilename = fileName
             self.__lastformat = fileFormat

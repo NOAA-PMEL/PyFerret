@@ -68,8 +68,8 @@
 *                   calendar, so do not get cal_id when converting to date string
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 * v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
+* v74+ *acm* 11/18  Issue 1902, fractional seconds only when time units are seconds
 
-        IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -176,8 +176,9 @@ c	      IF (ndec .LE. 3) val4 = INT(val4 * 1000.D0)/1000.D0
               ELSE
                  CALL TSTEP_TO_DATE( grid, idim, val, decim, string )
                  numbers = TM_LENSTR1(string)
-                 IF (decim.GT.7) THEN
-                    fval = INT(val)
+                 line    = grid_line( idim, grid )
+                 IF (decim.GT.7 .AND. line_tunit(line) .EQ. 1.) THEN  ! units of data in seconds
+                    fval = AINT(val)
                     IF (fval .NE. val) THEN
                        fval = val-fval
                        xtra = TM_FMT(fval, 4, 16, n2)  

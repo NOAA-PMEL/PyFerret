@@ -50,6 +50,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 * v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
+* v74+ *acm*11/18 Issue 1902, fractional seconds changes use AINT not INT
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -82,7 +83,7 @@
 
 *	Deal with fractional seconds
 	      IF (line_tunit( grid_line(idim, grid) ) .EQ. 1) THEN
-	         val2 = INT(fval)
+	         val2 = AINT(fval)
 	         IF (val2 .NE. fval) THEN
 	            val2 = fval-val2
 	            buff = TM_FMT(val2,4,16,nfrac)

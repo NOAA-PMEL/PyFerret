@@ -48,6 +48,9 @@ shade/set/lev=(-inf),(4,30,0.5)/key=cont/pal=rainbow sst[l=1]
 ppl shakey,1,0,-0.1,10,,,,,`($ppl$ylen)+($ppl$yorg)+0.1`
 ppl shade
 
+! Restore the default palette (bug in SHADE/SET/PAL= ?)
+palette default
+
 let filler = missing(sst[l=1],-999)
 shade/over/pal=black/nolab/lev=(-999,-999,-999) filler
 

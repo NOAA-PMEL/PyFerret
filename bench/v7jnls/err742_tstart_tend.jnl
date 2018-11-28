@@ -1,0 +1,59 @@
+! err742_tstart_tend.jnl
+! 11/27/2018 ACM
+!
+! See issue 1902: `var,return=tstart` and `var,return=tend`  report incorrect
+! fractional-seconds on their output
+
+define axis/t="01-jan-2012 12:00:00":"31-dec-2014 12:00:00":1/unit="days" tdata
+let tvar = randu(t[gt=tdata])
+
+! Results should end in 12:00:00, but ended in 12:00:00.5
+
+define symbol time1 `tvar,return=tstart`
+define symbol time2 `tvar,return=tend`
+
+! These outputs get stripped off by the cleaning script. Show the hour:min:second portion
+let ns = STRLEN("($time1)")
+let t1 = STR_REPLACE("($time1)", ":", "_")
+let t2 = STR_REPLACE("($time1)", ":", "_")
+SAY TSTART ends  `substring(t1,13,ns)`   TEND ends  `substring(t2,13,ns)`
+
+                  
+! Check if the units are minutes. These results were also incorrect
+
+define axis/t="01-jan-2012 12:00:30":"31-dec-2014 12:00:30":0.5/unit="minutes" tdata
+let tvar = randu(t[gt=tdata])
+
+define symbol time1 `tvar,return=tstart`
+define symbol time2 `tvar,return=tend`
+let t1 = STR_REPLACE("($time1)", ":", "_")
+let t2 = STR_REPLACE("($time1)", ":", "_")
+SAY TSTART ends  `substring(t1,13,ns)`   TEND ends  `substring(t2,13,ns)`
+
+
+
+! Check if the units are seconds. These results were also incorrect
+
+define axis/t="01-jan-2012 12:00:30":"31-dec-2014 12:00:30":30/unit="seconds" tdata
+
+let tvar = randu(t[gt=tdata])
+
+define symbol time1 `tvar,return=tstart`
+define symbol time2 `tvar,return=tend`
+let ns = STRLEN("($time1)")
+let t1 = STR_REPLACE("($time1)", ":", "_")
+let t2 = STR_REPLACE("($time1)", ":", "_")
+SAY TSTART ends  `substring(t1,13,ns)`   TEND ends  `substring(t2,13,ns)`
+
+
+! Correctly lists fractions if the coordinates are fractions of seconds
+
+define axis/t="01-jan-2012 12:00:01.2":"01-jan-2012 12:12:01.8":0.2/unit="seconds" tdata
+let tvar = randu(t[gt=tdata])
+
+define symbol time1 `tvar,return=tstart`
+define symbol time2 `tvar,return=tend`
+let ns = STRLEN("($time1)")
+let t1 = STR_REPLACE("($time1)", ":", "_")
+let t2 = STR_REPLACE("($time1)", ":", "_")
+SAY TSTART ends  `substring(t1,13,ns)`   TEND ends  `substring(t2,13,ns)`

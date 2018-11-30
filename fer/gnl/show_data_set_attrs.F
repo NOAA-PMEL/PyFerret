@@ -53,7 +53,9 @@
 * V698  3/16 *acm* Ticket 2371: Wrap the output of SHOW DAT/ATT to 
 *                  the next line when the variable name or attribute 
 *                  name is long
-* 
+* V7.44 11/18 *acm* Issue 1905: add int64 as a netcdf data type, recognize 
+*                   other newer types
+
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -88,7 +90,7 @@
         REAL            vals(1000)
 	CHARACTER	TM_FMT*14, GET_UNIQUE_DSET_NAME*1024, varname*512, 
      .                  attname*128, buff*14, dsname*1024, attbuff*10240, oflag*1
-        CHARACTER*6     typ(0:7)
+        CHARACTER*6     typ(0:13)
         PARAMETER       (len_attbuff = 10240, max_vals=1000)
         
 * See netcdf.h for the data types
@@ -99,7 +101,30 @@
      .           'INT',          ! signed 4 byte integer
      .           'FLOAT',        ! single precision floating point number
      .           'DOUBLE',       ! double precision floating point number
+     .           'UBYTE',        ! Newer types as of 11/18:
+     .           'USHORT',       ! 
+     .           'UINT',         !  
+     .           'INT64 ',       ! 
+     .           'UINT64',       !  
+     .           'STRING',       !  
      .           ' '/		 ! blank for the global attributes
+
+* netcdf types
+*      parameter (nf_byte = 1)
+*      parameter (nf_char = 2)
+*      parameter (nf_short = 3)
+*      parameter (nf_int = 4)
+*      parameter (nf_float = 5)
+*      parameter (nf_double = 6)
+
+*      parameter (nf_ubyte = 7)
+*      parameter (nf_ushort = 8)
+*      parameter (nf_uint = 9)
+*      parameter (nf_int64 = 10)
+*      parameter (nf_uint64 = 11)
+*      parameter (nf_string = 12)
+
+
 
 * describe the variables in the set, only for datasets originating 
 * as netcdf data.
@@ -140,7 +165,7 @@
    
 	      varname = '.'
 	      CALL CD_GET_VAR_ID (dset, varname, varid, status)
-              IF (varid .EQ. 0) vtype = 7  ! 
+              IF (varid .EQ. 0) vtype = 13  ! don't show a type for global atts
               
 	      vlen = TM_LENSTR1(varname)
 	      DO 100 iatt = 1, ngatts

@@ -1211,6 +1211,8 @@ GO bn_overlay_graticules
 go bn_reset bn_mixed_gregorian
 GO bn_mixed_gregorian
 
+go bn_reset bn_int64
+GO bn_int64
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

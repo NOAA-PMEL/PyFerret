@@ -33,13 +33,12 @@ use mixed_or_proleptic.nc
 
 ! This is on a mixed-Gregorian calendar axis so  dates are shifted and start on 30-dec-2000
 show axis `var1,return=taxis`
-show grid var1
 
 
 ! This is on a proleptic-Gregorian calendar axis so dates are not shifted
 show axis `var2,return=taxis`
-show grid var2
+
 
 ! Axes with time origins other than 1-jan-0001 are handled as proleptic-Gregorian
 show axis `var3,return=taxis`
-show grid var3
+

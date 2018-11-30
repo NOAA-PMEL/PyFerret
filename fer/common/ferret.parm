@@ -64,6 +64,7 @@
 *             for curvi-coord plot with /SET
 * V740: 3/18 *acm* Introduce parameter abstractax_len for abstract axis length 99999999
 * V741 *acm* 5/18 Promoting global attributes to a variable in ensembles, new cat_agg_gpromote
+* V7.44 11/18 *acm* Issue 1905: add int64 as a data type
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -664,6 +665,13 @@
      .			ptime_min = 5,
      .			ptime_sec = 6 )
 
+* codes for time/date formats (Match these with the same ones
+* in gt_lib.parm.)
+	INTEGER pdate_vax, pdate_numslashnum, pdate_iso_8601
+	PARAMETER (pdate_vax = 1,
+     .		   pdate_numslashnum = 2,
+     .		   pdate_iso_8601 = 3 )
+
 * various modes of output (differentiated for GUI window controls)
 	INTEGER		pttmode_explct, pttmode_ops,
      .			pttmode_help, pttmode_bull, pttmode_msg
@@ -733,7 +741,9 @@
      .			ptype_char,
      .			ptype_string,
      .			ptype_double,
+     .			ptype_int64,
      .			ptype_native
+
 	PARAMETER     ( ptype_unknown = 0,
      .			ptype_float = 1,
      .			ptype_int4 = 2,
@@ -742,6 +752,7 @@
      .			ptype_char = 5,
      .			ptype_string = 6,
      .			ptype_double = 7,
+     .			ptype_int64 = 10,
      .			ptype_native = 999 )
 
 * status flags during automated auxiliary variable (curvilinear) regridding

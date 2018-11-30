@@ -49,6 +49,8 @@
 *	match with possible final "s". It was matching "Kelvin" to "in"
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 * V6.85 6/13 *acm* fix bug#2080: the check for degrees_C etc.
+* v744 11/2011 *acm* Issue 1906: If PROLEPTIC_GREGORIAN is given then 
+*                  override mixed-gregorian calendar handling. 
 
 * Include files
 	include 'tmap_dims.parm'

@@ -5,6 +5,8 @@ C  * acm * declarations for individual calendar attributes.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * *acm* 1/13/12 For DP Ferret/ SP Pplus: explicitly declare REALs 
 *               as single-precision
+* v744 11/2011 *acm* Issue 1906: If PROLEPTIC_GREGORIAN is given then 
+*                  override mixed-gregorian calendar handling. 
 
 C	*******************************************************************
 C 	Parameters dimensioning calendar data structures
@@ -13,7 +15,7 @@ C	*******************************************************************
      .			max_months, mxmnths,
      .			max_days, mxdays,
      .			calendar_id
-	parameter      (mxcals  = 5,
+	parameter      (mxcals  = 6,
      .			mxmnths = 12,
      .			mxdays  = 366)
 
@@ -32,7 +34,7 @@ C	*******************************************************************
 C	*******************************************************************
 C	Calendar names as recognized (NetCDF standards, plus a couple local ones)
 C	*******************************************************************
-	character*16	allowed_calendars(mxcals)
+	character*19	allowed_calendars(mxcals)
 	
 C	*******************************************************************
 C	Variables with specs for all calendars.  These define each calendar
@@ -60,6 +62,7 @@ C	Integers below have calendar names, see calendar_blkdat.F
 C	for value assignments.  They are used as calendar indices.
 C	*******************************************************************
 	integer		gregorian
+	integer		proleptic
         integer		noleap
         integer		julian
         integer		d360

@@ -266,6 +266,8 @@
 * V740 *acm* 2/18 Issue 966: LET/LIKE= Get attributes from an existing variable
 * V740 *acm* 2/18 Issue 966: DEFINE AXIS/LIKE= Get attributes from an existing axis
 * V740 *acm* 3/18 More on DEF AX/LIKE, getting T0, modulo axis characteristics set correctly.
+* v744 11/2011 *acm* Issue 1906: If PROLEPTIC_GREGORIAN is given then 
+*                  override mixed-gregorian calendar handling.
 
         IMPLICIT NONE
 	include	'tmap_errors.parm'
@@ -1145,7 +1147,8 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 
 	ENDIF
 
-* *acm* other calendar names* /CALENDAR = GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP
+* *acm* other calendar names* /CALENDAR = GREGORIAN, PROLEPTIC_GREGORIAN, 
+*        NOLEAP, JULIAN, 360_DAY, ALL_LEAP
 *       Gregorian is the default, also may be called STANDARD.
 *       NOLEAP may also be called 365_DAY.
 *       ALL_LEAP may also be called 366_DAY
@@ -1174,6 +1177,7 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
         IF (cal_name .EQ. '360') cal_name = '360_DAY' 
         IF (cal_name .EQ. 'D360') cal_name = '360_DAY' 
         IF (cal_name .EQ. 'STANDARD') cal_name = 'GREGORIAN' 
+        IF (cal_name(1:6) .EQ. 'PROLEP') cal_name = 'PROLEPTIC_GREGORIAN' 
         IF (cal_name(1:6) .EQ. 'COMMON') cal_name = 'NOLEAP' 
         IF (cal_name(1:6) .EQ. '365_DA') cal_name = 'NOLEAP' 
         IF (cal_name(1:6) .EQ. '366_DA') cal_name = 'ALL_LEAP' 

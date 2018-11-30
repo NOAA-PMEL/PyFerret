@@ -77,6 +77,10 @@
 *                 check its calendar attribute
 *  V75  ACM  2/2018 As in the DSG branch, pass line_direction(iaxis) to 
 *                 cd_get_line_direction as an argument
+*  V75  ACM  2/2018 As in the DSG branch, pass line_direction(iaxis) to 
+*                 cd_get_line_direction as an argument
+*  v744 11/2011   *acm* Issue 1906: Get info for second calendar in T-F grid
+*                 
 
 
 * argument definitions:
@@ -116,7 +120,7 @@
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved them to parameter line 10/96
       LOGICAL NC_GET_ATTRIB, CD_GET_ATTRIB,
-     .        got_it, do_warn, centers, coordvar
+     .        got_it, do_warn, centers, coordvar, ok_cal
       PARAMETER (do_warn = .TRUE. )
       PARAMETER (centers = .TRUE. )
       INTEGER TM_LENSTR1, TM_FIND_GRID_SLOT, STR_CASE_BLIND_COMPARE,
@@ -280,8 +284,16 @@
 	         blen = 24
                  got_it = CD_GET_ATTRIB( cdfid, axid, 'calendar',
      .                  do_warn, name, cal_str, attlen, blen )
-	         IF (got_it .AND. line_direction(iaxis)(1:1).EQ.'T') cal_t = cal_str
-	         IF (got_it .AND. line_direction(iaxis)(1:1).EQ.'F') cal_f = cal_str
+	         IF (got_it .AND. line_direction(iaxis)(1:1).EQ.'T') THEN
+		    cal_t = cal_str
+		    CALL CD_GET_CALENDAR_NAME(cal_str, ok_cal)
+		    IF (ok_cal) line_cal_name(iaxis) = cal_str
+		 ENDIF
+	         IF (got_it .AND. line_direction(iaxis)(1:1).EQ.'F') THEN
+		    cal_f = cal_str
+		    CALL CD_GET_CALENDAR_NAME(cal_str, ok_cal)
+		    IF (ok_cal) line_cal_name(iaxis) = cal_str
+		 ENDIF
 	      ENDIF
 
  200       CONTINUE

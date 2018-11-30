@@ -36,6 +36,8 @@
 * Given a string with a calendar name, match the first 3 characters 
 * with the list of allowed names or with the words STANDARD or 
 * PROLEPTIC_GREGORIAN and return the standard name.
+* v744 11/2011 *acm* Issue 1906: If PROLEPTIC_GREGORIAN is given then 
+*                  override mixed-gregorian calendar handling. 
 
 * Include files
         include 'calendar.decl'
@@ -49,7 +51,7 @@
 
 * Internal variables
 	INTEGER STR_UPCASE, TM_LENSTR1, i, istat, ncal, slen
-	CHARACTER*50 allcals
+	CHARACTER*65 allcals
 
 	INTEGER tt  ! nice short name
 	EQUIVALENCE (tt,lunit_errors)
@@ -58,20 +60,19 @@
 
 	IF (calname(1:3) .EQ. '360') calname = '360_DAY' 
 	IF (calname .EQ. 'STANDARD') calname = 'GREGORIAN' 
-	IF (calname .EQ. 'PROLEPTIC_GREGORIAN') calname = 'GREGORIAN' 
+	IF (calname(1:6) .EQ. 'PROLEP') calname = 'PROLEPTIC_GREGORIAN' 
 	IF (calname(1:6) .EQ. 'COMMON') calname = 'NOLEAP' 
 	IF (calname(1:3) .EQ. '365') calname = 'NOLEAP' 
 	IF (calname(1:3) .EQ. '366') calname = 'ALL_LEAP' 
 
 	ok_cal = .FALSE.
 	ncal = 1
-	allcals = ' '
+	allcals = " "
 
 	DO 100 i = 1, mxcals
-  111	   FORMAT (A9,' ')
-	   slen = TM_LENSTR1( allowed_calendars(i)(1:9) )
-	   write (allcals(ncal:ncal+9), 111) allowed_calendars(i)
-	   ncal = ncal + 10
+	   slen = TM_LENSTR1( allowed_calendars(i) )
+	   allcals(ncal:) = allowed_calendars(i)(:slen)//','
+	   ncal = ncal + slen + 1
 
 	   IF (calname(1:3) .EQ. allowed_calendars(i)(1:3) ) THEN
               ok_cal = .TRUE.
@@ -79,7 +80,9 @@
 	      GOTO 120
 	   ENDIF
   100	CONTINUE
-	CALL TM_NOTE('Valid calendars are '//allcals, tt)
+	
+        slen = TM_LENSTR1( allcals)
+	CALL TM_NOTE('Valid calendars are '//allcals(:slen-1), tt)
 
   120	CONTINUE
 	RETURN

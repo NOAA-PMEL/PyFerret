@@ -213,7 +213,9 @@
 * v743 9/2018 *acm* Issue 1894. Both point_spacing="even" and bounds are given. The axis
 *                  coordinates/bounds are detected as uneven. Neither the coordinates
 *                  nor line_start/ line_delta were set. In this case, treat it as irregular.
-*
+* v744 11/2011 *acm* Issue 1906: If PROLEPTIC_GREGORIAN is given then 
+*                  override mixed-gregorian calendar handling. 
+
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -902,6 +904,8 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * definitions only.) Also note there are CDC files which decode to 
 * fall entirely within year 0001.  These files represent a climatology,
 * and Ferret deals with them correctly.
+* 11/2018: If the calendar type is PROLEPTIC_GREGORIAN, then do not apply
+*          the shift, even if it the origin is at 01-JAN-0001
 
       IF ( (since_T0.GT.2)
      .  .AND.(line_t0(iaxis).EQ.'01-JAN-0001 00:00:00') 

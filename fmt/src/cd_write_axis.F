@@ -132,7 +132,7 @@
 *                 record axis.
 * V74  *acm*  7/2018 Issue # 1882, save/nobounds on monthly axis
 * V7.44 11/18 *acm* Issue 1905: add int64 as a netcdf data type, recognize 
-*                   other newer types
+*                   other newer types 
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 

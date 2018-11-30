@@ -54,8 +54,7 @@
 *                  the next line when the variable name or attribute 
 *                  name is long
 * V7.44 11/18 *acm* Issue 1905: add int64 as a netcdf data type, recognize 
-*                   other newer types
-
+*                   other recently-added types
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'

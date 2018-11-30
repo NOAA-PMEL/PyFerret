@@ -64,7 +64,7 @@
 *             for curvi-coord plot with /SET
 * V740: 3/18 *acm* Introduce parameter abstractax_len for abstract axis length 99999999
 * V741 *acm* 5/18 Promoting global attributes to a variable in ensembles, new cat_agg_gpromote
-* V7.44 11/18 *acm* Issue 1905: add int64 as a data type
+* V7.44 11/18 *acm* Issue 1905: add int64 as a data type 
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets

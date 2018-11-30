@@ -43,7 +43,7 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V6.74  3/12 *acm* cleanup ifdefs and unnecessary include files
 * V7.44 11/18 *acm* Issue 1905: add int64 as a netcdf data type, recognize 
-*                   other newer types
+*                   other newer types 
 
 	include 'tmap_dtypes.parm'
         include 'netcdf.inc'

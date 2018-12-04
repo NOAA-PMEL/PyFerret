@@ -1214,6 +1214,9 @@ GO bn_mixed_gregorian
 go bn_reset bn_int64
 GO bn_int64 
 
+go bn_reset bn_samplexyz
+GO bn_samplexyz 
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

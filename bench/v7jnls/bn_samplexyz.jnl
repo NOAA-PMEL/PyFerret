@@ -1,0 +1,38 @@
+! bn_samplexyz.jnl
+
+! Check the SAMPLEXYZ function, should give missing results for Z sample points 
+! that lie beyond the ends of the Z axis of the grid being sampled
+
+show function samplexyz
+
+define axis/x=0:360:1/units=longitude/edges/modulo x1
+define axis/y=-90:90:45/units=latitude/edges y1
+define axis/z/depth/units=meters z1 = {0,2,4,10,20,40,80,120}
+
+let my_data = 0*x[gx=x1]+y[gy=y1]+z[gz=z1]
+
+define axis/z=5:155:10/depth zsamples
+let zpts = xsequence(z[gz=zsamples])
+let ypts = xsequence((randu(zpts)-0.5)*90)
+let xpts = 180 + 0*ypts
+let sampl_pts =  samplexyz(my_data,xpts,ypts,zpts)
+ 
+!  Note that the samplexyz should flag points beyond the ends of the grid
+
+! Check the results with a listing
+list ypts, zpts, sampl_pts
+
+let my_yz = y[gy=y1]+z[gz=z1]
+let sampl_yz = sampleyz(my_yz, ypts, zpts)
+
+! Check the results with a listing
+list ypts, zpts, reshape(sampl_yz,ypts) 
+
+plot/line/sym sampl_pts, reshape(sampl_yz,ypts) 
+
+! and here we show it graphically
+shade my_data[x=180]
+
+plot/vs/over/nolab/ribbon/lev/sym=18/thick/siz=0.2 ypts, zpts, sampl_pts
+
+

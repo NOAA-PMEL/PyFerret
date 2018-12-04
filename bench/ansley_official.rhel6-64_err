@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 114163164 Nov 30 15:35 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 114233886 Dec  3 16:25 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: issue 1905: INT64 data in input files
+Note: New samplexyz function
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -15,14 +15,14 @@ FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=. ./data
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Fri Nov 30 16:00:36 PST 2018
+Beginning at Mon Dec 3 16:28:38 PST 2018
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6834,6 +6834,13 @@ Starting test: bn_int64
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_samplexyz
+Replacing definition of axis x1
+Replacing definition of axis y1
+Replacing definition of axis z1
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6955,4 +6962,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Nov 30 16:08:25 PST 2018
+Ended at Mon Dec 3 16:37:09 PST 2018

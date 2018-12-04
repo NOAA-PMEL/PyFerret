@@ -159,6 +159,7 @@
 *                  bounds attribute.
 * v730 11/2017 *acm* new SAVE/ASGLOBAL to write a global attribute, see ticket 2060, issue 1332
 * V740  3/2018 *acm* issue 1863: LIST/APPEND w/o /FORM=cdf to a netCDF file is an error
+* V743 12/2018 *acm* issue 1907: LIST/CLOBBER/FORM=stream didn't clobber the file
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -543,7 +544,7 @@ c     .		 .AND. .NOT.do_comma_del
 	         IF ( do_stream_phase .EQ. 0 ) THEN
 
 	            IF ( clobber ) THEN
-	               fstatus = 'OLD'
+	               fstatus = 'REPLACE'  ! clobber it regardless
 	            ELSE
 	               CALL ERRMSG
      .		   ( ferr_invalid_command,  status,

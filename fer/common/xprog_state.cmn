@@ -56,18 +56,20 @@
 * V702 2/17 *sh* add mode FRUGAL and spawn_status
 * v720 7/17 *acm* ticket 2552 Make SPAWN_STATUS return the return status, so 0=succcess
 *           SPAWN_STATUS returns the status value, used for SPAWN_OK and SPAWN_STATUS
-
+* v743  12/18 *acm* Issue 1803, new parameter mode_set_always, for
+*                  New command-line switch -verify for set mode ver:always behavior
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
-     .			max_ifstk
+     .			max_ifstk, mode_set_always
 	PARAMETER     ( cmnd_buff_len = 2048,
      .			max_qual_list = 60 ,	! increased from 50 3/12
      .			max_arg_list  = 128 ,	! was 20 pre-4/96
      .			max_item_list = 1000 ,
      .			max_modes     = 40 ,
      .			mode_stack_size = 7,
-     .			max_ifstk     = 10 )
+     .			max_ifstk     = 10,
+     .			mode_set_always = 3 )
 
 	INTEGER		input_from_tty, input_from_file, input_from_cs
 	PARAMETER     ( input_from_tty		= 1,

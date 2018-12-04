@@ -137,6 +137,7 @@
 *                    if debug build, let it crash
 * *sh*  2/17       - removed global "memory" -- now 1 malloc per Ferret var
 * *acm* 5/17       - restore -memsize switch to make the initial SET MEMORY setting
+* *acm* 12/18      -  Issue 1803, new command-line switch -verify for set mode ver:always behavior
 */
 
 #include <unistd.h>
@@ -163,7 +164,7 @@ static void command_line_run();
 static void help_text(void)
 {
   printf(
-	 "Usage:  ferret [-memsize Mflts] [-batch [outfile]] [-server] [-secure] [-gif] [-unmapped] [-help] [-nojnl] [-noverify] [-script [args]]\n"
+	 "Usage:  ferret [-memsize Mflts] [-batch [outfile]] [-server] [-secure] [-gif] [-unmapped] [-help] [-nojnl] [-noverify]  [-verify] [-script [args]]\n"
          "   -memsize:  specify the memory cache size (default 25.6) in mega (10^6) flts where a flt\n"
          "              is 8 bytes in double-precision Ferret\n"
          "   -batch:  output directly to metafile \"outfile\" w/out X windows\n"
@@ -174,6 +175,7 @@ static void help_text(void)
          "   -help:  obtain this listing\n"
          "   -nojnl:  on startup don't open a journal file (can be turned on later with SET MODE JOURNAL\n"
          "   -noverify:  on startup turn off verify mode (can be turned on later with SET MODE VERIFY\n"
+         "   -verify:  on startup turn on the verify mode for all scripts in session (Cannot be changed in this session. Overrides -noverify.)\n"
          "   -script scriptname [arguments]: execute the specified script and exit: SPECIFY THIS LAST\n"
          "   -version lists the version number of Ferret and stops. \n");
   exit(0);
@@ -211,6 +213,7 @@ int main(int oargc, char *oargv[])
 
   int journalfile = 1;
   int verify_flag = 1;
+  int verify_always = 0;
   int len_str;
   int bat_mode;
 
@@ -277,11 +280,15 @@ int main(int oargc, char *oargv[])
     } else if (strcmp(argv[i],"-noverify")==0) {
       verify_flag = 0;    
 	  ++i;
+	  
+    } else if (strcmp(argv[i],"-verify")==0) {
+      verify_always = 1;    
+	  ++i;
       
-    /* -script mode implies -server and -nojnl */
+    /* -script mode implies -server and -nojnl and noverify*/
     } else if (strcmp(argv[i],"-script")==0)  {
 
-          char *script_name = "noscript";
+	  char *script_name = "noscript";
 	  set_server();
 	  journalfile = 0;
 	  verify_flag = 0;
@@ -391,8 +398,14 @@ int main(int oargc, char *oargv[])
     FORTRAN(no_journal)();
   }
 
+  if (verify_always) verify_flag = 1;
+
   if ( verify_flag ==0) {
     FORTRAN(turnoff_verify)( &status );
+  }
+
+  if ( verify_always ==1) {
+    FORTRAN(turnon_verify_always)( &status );
   }
 
   /* initialize size and shape of memory and linked lists */

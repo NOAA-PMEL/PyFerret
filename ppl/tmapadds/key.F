@@ -923,7 +923,6 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 	   yy = ( ky_lo + y_inc* (center_add+ real(ndx-1)) )/1000.0 - 
      .        yorg - 0.5*karht
-           print *, ndx, yy, yy-yylast, karht
 	   yylast = yy
 
 *	   FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93

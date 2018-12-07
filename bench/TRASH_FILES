@@ -98,6 +98,7 @@ longtitle.nc
 longvname.nc
 lonlat.dat
 lonlat.nc
+mixed_or_proleptic.nc
 manyvars.tsv
 monthA.nc
 monthB.nc

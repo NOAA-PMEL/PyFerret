@@ -41,7 +41,9 @@
 *            made it think that the variable is, indeed, of type short.
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
-* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V6.74  3/12 *acm* cleanup ifdefs and unnecessary include files
+* V7.44 11/18 *acm* Issue 1905: add int64 as a netcdf data type, recognize 
+*                   other newer types 
 
 	include 'tmap_dtypes.parm'
         include 'netcdf.inc'
@@ -55,16 +57,34 @@
 	  TM_FERRET_VARTYPE =  ptype_string
 	ELSEIF (ncvtype .EQ. NF_DOUBLE) THEN
 	  TM_FERRET_VARTYPE =  ptype_double
-	ELSEIF (ncvtype .EQ. NF_INT) THEN
+	ELSEIF (ncvtype .EQ. NF_INT .OR. ncvtype .EQ. NF_UINT) THEN
 	  TM_FERRET_VARTYPE =  ptype_int4
-	ELSEIF (ncvtype .EQ. NF_SHORT) THEN
+	ELSEIF (ncvtype .EQ. NF_SHORT .OR. ncvtype .EQ. NF_USHORT) THEN
 	  TM_FERRET_VARTYPE =  ptype_int2
-	ELSEIF (ncvtype .EQ. NF_BYTE) THEN
+	ELSEIF (ncvtype .EQ. NF_BYTE .OR. ncvtype .EQ. NF_UBYTE) THEN
 	  TM_FERRET_VARTYPE =  ptype_int1
+	ELSEIF (ncvtype .EQ. NF_INT64 .OR. ncvtype .EQ. NF_UINT64) THEN
+	  TM_FERRET_VARTYPE =  ptype_int64 
 	ELSE
-	  CALL WARN('Internal err: unknown data type')
+	  CALL WARN('Internal err: unknown data type in NetCDF dataset')
 	  TM_FERRET_VARTYPE = ptype_float
 	ENDIF
+
+* in netcdf.inc
+*      parameter (nf_byte = 1)
+*      parameter (nf_char = 2)
+*      parameter (nf_short = 3)
+*      parameter (nf_int = 4)
+*      parameter (nf_float = 5)
+*      parameter (nf_double = 6)
+*      parameter (nf_ubyte = 7)
+*      parameter (nf_ushort = 8)
+*      parameter (nf_uint = 9)
+*      parameter (nf_int64 = 10)
+*      parameter (nf_uint64 = 11)
+*      parameter (nf_string = 12)
+
+
 
 * full data type support not implemented as-of 10/01. 
 * cd_read will convert all numeric data to float

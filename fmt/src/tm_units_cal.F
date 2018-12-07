@@ -34,6 +34,9 @@
 * Reset the unit ID for a unit of month or year for non-gregorian calendars,
 * according to calendar's year length.
 
+*   v744 11/2011   *acm* If PROLEPTIC_GREGORIAN is given then override mixed-gregorian
+*                  calendar handling. 
+
 	include 'calendar.decl'
 	include 'calendar.cmn'	
 * Argument definitions
@@ -61,7 +64,7 @@ C /units=months  is 1/12 of the length of the year
 	   IF (cal_id .eq. d360  ) iun = -14
 	   IF (cal_id .eq. all_leap) iun = -16
 	   IF (true_month) THEN
-	       IF (cal_id .eq. gregorian) THEN
+	       IF (cal_id .eq. gregorian .OR. cal_id .eq. proleptic) THEN
 	          iun = -17
 	       ELSE
 	          iun = iun - 5

@@ -131,6 +131,8 @@
 *                 An axis made from a dimension-only is not written out as the 
 *                 record axis.
 * V74  *acm*  7/2018 Issue # 1882, save/nobounds on monthly axis
+* V7.44 11/18 *acm* Issue 1905: add int64 as a netcdf data type, recognize 
+*                   other newer types 
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -401,6 +403,16 @@
 	    outtype = vartype
          ENDIF
       ENDIF
+
+* For now anyway write an axis that came in as INT64 using NF_DOUBLE instead.
+* The NF_DEF_VAR below fails if the type is set to int64. 
+* The unsigned integer types are defined but also not currently allowed by 
+* NF_DEF_VAR, so switch to the signed versions.
+
+      IF (outtype .EQ. NF_INT64 .OR. 
+     .    outtype .EQ. NF_UINT64) outtype = NF_DOUBLE  
+      IF (outtype .EQ. NF_USHORT) outtype = NF_SHORT  
+      IF (outtype .EQ. NF_UINT) outtype = NF_INT  
 
 * If axis came in packed we are not going to re-pack it on output (for now).
 * write it as double and add a note.

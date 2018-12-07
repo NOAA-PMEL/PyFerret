@@ -128,6 +128,10 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 *         the middle of the colors not the contour lines between colors.
 *         Interpolate /LEVELS values to obtain new edge-values for the contours
 *         and patch-edges
+* V74+  *acm* 11/18 When drawing in a viewport w/ limited space, key labels include 
+*          negative values they run off the edges. Issue 1904
+*       *acm* 12/18 For vertical colorbars that are short, like in viewports, adjust
+*          the labeling interval so they aren't crowded.
 
         IMPLICIT NONE
 
@@ -158,7 +162,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 	integer TM_LENSTR1, TM_LENSTR, 
      .          ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
      .          lab_add, nlab, i, kount, lev1, levn, nspace, shd_lev_hi,
-     .		ITYPEX_save, ITYPEY_save, ic, num_dec, maxstr
+     .		ITYPEX_save, ITYPEY_save, ic, num_dec, maxstr, i_dec
 
 	real		SYMWID
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5),flaty(5),flatx(5)
@@ -173,7 +177,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
         character*20    buff
 	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, TM_HAS_STRING,  
      .                  windof_hold, check_0, increase_digits, nofill, cont_key_keep, 
-     .                  no_lines, is_viewport, have_neg
+     .                  no_lines, is_viewport, have_neg, have_exp
 
 	external	TM_FMT_SNGL, TM_FMT_SNGL_DIGITS
 
@@ -419,6 +423,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 	   ksiz_test = 0.06 * xcsize
 	   IF (pyfont) ksiz_test = 0.06
+	   ksiz_test = 0.06
            IF (klab_size .NE. 0) THEN
 	      IF (ABS(klab_size) .LT. ksiz_test) ksiz_test = ABS(klab_size)
 	   ENDIF
@@ -431,6 +436,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 	   ksiz_test = 0.075 * xcsize
 	   IF (pyfont) ksiz_test = 0.075
+	   ksiz_test = 0.075
            IF (klab_size .NE. 0) ksiz_test = ABS(klab_size)
 	   kount = 0
 	   DO WHILE (karht .LT. ksiz_test .AND. karht.GT.0. .AND. kount.LT.10)
@@ -778,13 +784,25 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
         IF (incr .GT. 0) THEN
 
+* Would the labels be squished vertically?  increase the increment as needed  
+* Diff yheight from one label to the next is FLOAT(incr)* y_inc/1000.0)
+
+	IF ( klab_incr .EQ. 0 )  THEN 
+	   yy = FLOAT(incr)* y_inc/1000.0
+	   DO WHILE ( FLOAT(incr)* y_inc/1000.0 .LT. 2.*karht )
+	      incr = 2*incr
+	   ENDDO
+	ENDIF
+
 	shd_lev_hi = shd_levels+1
 	IF (center_key_labels .AND. posinf) shd_lev_hi = shd_levels
 
 * Recompute max_len as formatted for these labels.
+* Recompute max_len as formatted for these labels.  incr etc may have changed,
+* so the set of numbers written could be different.
 
-	num_dec = 0
 	have_neg = .FALSE.
+	have_exp = .FALSE.
 	max_len = 0
 	DO ndx = lev1+incr, shd_levels, incr
            val = zlev(ndx)
@@ -796,13 +814,16 @@ c	IF ( no_lines ) cont_key = .TRUE.
            IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	   buff = 
      .          TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+           i = INDEX(buff, '.')
+           i_dec = -1
+           IF (i .GT. 0) i_dec = str_len-i
+           IF (i_dec.LT.num_dec) str_len = str_len + num_dec-i_dec
            IF (max_len .lt. str_len) THEN
 	      max_len = str_len
 	      txt_out = buff
 	   ENDIF
-	   i = INDEX(buff, '.')
-	   IF (i .GT. 0) num_dec = MAX(num_dec, str_len-i)
 	   have_neg = have_neg .OR. val.LT.0
+	   have_exp = have_exp .OR. INDEX(buff, 'E') .GT.0
 	ENDDO
 	buff = txt_out
 
@@ -810,12 +831,26 @@ c	IF ( no_lines ) cont_key = .TRUE.
 ! Set xpos = position of end of string, right-justify from there.
 
         xpos = kpx(2)/ 1000.0 - xorg
+	
+* Keep the labels from running off the edge
+        IF (have_neg) THEN
+           xpos = xpos - 0.2*karht
+           IF (klab_size.EQ.0) karht = 0.9*karht
+        ENDIF
 
         IF ((kuser_loc(1) .OR. kuser_loc(2))) xpos = (kx_hi + x_inc)/ 1000. - xorg
-	   
-        txt_out = buff(:max_len)//'X'   ! extra space between key and label
 
-        wid = SYMWID(karht,max_len+1,txt_out(:max_len))
+* Set up to right-justify the labels, moving xpos to the rightmost position.
+
+	ndx = max_len
+	IF (pyfont) ndx = ndx-1
+
+	buff = 'X'
+        DO i = 1, ndx
+           buff = buff(:i)//'X'   ! extra space between key and label
+        ENDDO
+
+        wid = SYMWID(karht,ndx,buff(:ndx))
         xpos = xpos + wid
 
 * If klab_size negative put the key labels on the left rather than 
@@ -831,7 +866,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 * run into the next viewport or a margin. Otherwise make labels smaller to 
 * try to fit them on the page.
 
-        IF (klab_size.EQ.0 .AND. .NOT.is_viewport .AND. xpos+xorg.GT.vwidth) THEN
+	IF (klab_size.EQ.0 .AND. .NOT.is_viewport .AND. xpos+xorg.GT.vwidth) THEN
 
            ic = 0
            DO WHILE (xpos+xorg .GT. vwidth .AND. ic.LT.5)
@@ -867,7 +902,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	   IF (ndx .EQ. levn+1 .AND. posinf) text = " "
 
 * Add a .0 with the right number of 0's if the other labels have 
-* decimal-point .xx but this one does not
+* decimal-point .xx but this one does not. Add trailing 0's for 
+* non-scientific-notation numbers so they're all the same length.
 
 	   IF (num_dec.GT.0 .AND. INDEX(text, 'E').EQ.0 .AND. TM_LENSTR(text).GT.0) THEN
 	      IF (INDEX(text, '.') .EQ. 0) THEN
@@ -877,18 +913,23 @@ c	IF ( no_lines ) cont_key = .TRUE.
 		       text = text(:TM_LENSTR1(text))//'0'
 	            ENDDO
 	         ENDIF
-	         str_len = str_len + num_dec+1
-	      ENDIF
 
-	      IF (str_len.LT.max_len .AND. INDEX(text, 'E').EQ.0) THEN
+	      ELSE IF (str_len.LT.max_len .AND. INDEX(text, 'E').EQ.0) THEN
 	         maxstr = max_len
-	         IF (have_neg .AND. val .GE. 0.) maxstr = maxstr - 1
-	         DO i = str_len+1, maxstr
+		 IF (have_neg .AND. val .GE. 0.) maxstr = maxstr - 1
+		 
+		 i = INDEX(text, '.')
+		 i_dec = 0
+		 IF (i .GT. 0) i_dec = str_len-i
+
+	         DO i = i_dec+1, num_dec
 		    text = text(:TM_LENSTR1(text))//'0'
-	         ENDDO
-	         IF (str_len+1 .LT. maxstr) str_len = max_len
+	         ENDDO 
+		 
 	      ENDIF
+   
 	   ENDIF
+	   str_len = TM_LENSTR(text)
 
 * Right-justify them.
 

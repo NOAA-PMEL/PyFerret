@@ -2,8 +2,6 @@
 ! ... now overlaying coastal outline ...
 
 ! Description: Plot outlines of continents, countries, and/or states
-! 3/2018   Fixes for regions defined using negative longitudes.
-!          Fixes for this script called with arg2 set to "basemap"
 
 !		        arg 1	      arg 2	   arg 3        arg 4
 ! Usage:   GO mp_land [continent_pen] ["basemap"] [country_pen] [state_pen]
@@ -79,17 +77,12 @@ let landi_datxmin = continent_lon[x=@min]
 let landi_datxmax = continent_lon[x=@max]
 
 let landi_basemap = $2"0|basemap>1|*>0"
-IF `landi_basemap` THEN
+IF `landi_basemap EQ 0` THEN
 
-   GO mp_fland 20 white
-   define symbol mp_land_qual = /over
+   IF `mp_xmin LT landi_datxmin` then let landi_subx = `landi_subx - 360`
+   IF `mp_xmax GT landi_datxmax` then let landi_addx = `landi_addx + 360`
 
 ENDIF
-
-! Cancel region or else X region will apply to the geo-borders data.
-
-define region/default save
-cancel region
  
 
 ! always do the continents
@@ -98,19 +91,18 @@ let/quiet mp_lambda = if (CONTINENT_LON ge mp_xmin and CONTINENT_LON le mp_xmax 
 let/quiet mp_phi = if (CONTINENT_LON ge mp_xmin and CONTINENT_LON le mp_xmax and CONTINENT_LAT ge mp_ymin and CONTINENT_LAT le mp_ymax) then (CONTINENT_LAT * deg2rad)
 let/quiet masked_x_page = mp_mask * x_page
 let/quiet masked_y_page = mp_mask * y_page
+$1"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:22585/overlay|basemap>i=4886:13712|fast>i=4886:13712/overly|*>i=1:22585/overlay" masked_x_page, masked_y_page
 
-! Continent outlines
+! select line style and plot
+ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
 
-DEFINE SYMBOL mp_land_pen1 = ($1"N")
-DEFINE SYMBOL mp_land_qual = ($mp_land_qual)/line
+! set up axis formatting in case it is a basemap  !!! incorrect for map projection plots!
+! ppl xfor (I7,''LONE'')
+! ppl yfor (I7,''LAT'')
 
-IF ($2"0|overlay>1|*>0") THEN DEFINE SYMBOL mp_land_qual = ($mp_land_qual)/overlay
+! draw it - as an overlay or as a basemap
+$1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
 
-IF ($mp_land_pen1"|N>0|*>1") THEN \
-PLOT($mp_land_qual)/vs masked_x_page, masked_y_page
-
-CANCEL VAR continent*
-CANCEL SYMBOL mp_land_qual*
 
 ! Draw any lines outside 0 to 360
 

@@ -1,0 +1,21 @@
+! bn_int64.jnl
+! issue 1905
+! 11/29/2018 ACM
+!
+! This dataset stores time coordinates as INT64
+! previously the USE gave a warning about unknown type
+
+use int64.nc
+sh dat
+sh dat/att
+
+! previously this gave an error
+save/clobber/file=a.nc/i=1:4/l=1:5 blgpco2
+
+! Write the coords using double, as netcdf fortran wont let us  
+! define an int64 var for writing.
+use a.nc
+show grid blgpco2[d=1]
+show grid blgpco2[d=2]
+list/i=1 blgpco2[d=1]
+list/i=1 blgpco2[d=2]

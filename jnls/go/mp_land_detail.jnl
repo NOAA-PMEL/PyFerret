@@ -4,8 +4,6 @@
 ! Description: Plot outlines of continents, countries, and/or states
 ! History: Simplified 6/11/2012 to remove SET GRID commands, and to
 !	   handle longitude replications differently
-! 3/2018   Fixes for regions defined using negative longitudes.
-!          Fixes for this script called with arg2 set to "basemap"
 
 ! usage:   go mp_land_detail arg1 [arg2] [arg3] [arg4] [arg5] [arg6] [arg7]
 !
@@ -92,6 +90,8 @@ if `mp_test eq 0` then
 endif
 cancel variable mp_test
 
+define region/default save
+cancel region
 
 use geo_borders_intermed
 
@@ -102,20 +102,12 @@ let landi_datxmin = continent_lon[x=@min]
 let landi_datxmax = continent_lon[x=@max]
 
 let landi_basemap = $2"0|basemap>1|*>0"
-IF `landi_basemap` THEN
+IF `landi_basemap EQ 0` THEN
 
-   GO mp_fland 20 white
-   define symbol mp_land_qual = /over
+   IF `mp_xmin LT landi_datxmin` then let landi_addx = -360
+   IF `mp_xmax GT landi_datxmax` then let landi_addx = 360
 
 ENDIF
-
-! Cancel region or else X region will apply to the geo-borders data.
-
-define region/default save
-cancel region
-
-IF `mp_xmin LT landi_datxmin` then let landi_addx = -360
-IF `mp_xmax GT landi_datxmax` then let landi_addx = 360
 
 ! always do the continents
 
@@ -135,18 +127,17 @@ LET/QUIET mp_phi = continent_lat * deg2rad
 LET/QUIET masked_x_page = mp_mask * x_page
 LET/QUIET masked_y_page = mp_mask * y_page
 
-! Continent outlines
+$1"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
 
-DEFINE SYMBOL mp_land_pen1 = ($1"N")
-DEFINE SYMBOL mp_land_qual = ($mp_land_qual)/line
+! select line style and plot
+ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
 
-IF ($2"0|overlay>1|*>0") THEN DEFINE SYMBOL mp_land_qual = ($mp_land_qual)/overlay
+! draw it - as an overlay or as a basemap
 
-IF ($mp_land_pen1"|N>0|*>1") THEN \
-PLOT($mp_land_qual)/vs masked_x_page, masked_y_page
+$1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
 
 CANCEL VAR continent*
-CANCEL SYMBOL mp_land_qual*
+
 
 ! **** now the optional country borders
 IF ($3%0|*>1%) THEN

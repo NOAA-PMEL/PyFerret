@@ -154,7 +154,7 @@
 * V7    acm  6/16 Ticket 2437: Deprecating mode_6d_lab. 
 *		  Adjust output to 6-D or 4-D grids
 * V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
-
+* v743  12/18 *acm* Issue 1803, New command-line switch -verify for set mode ver:always behavior
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -440,7 +440,7 @@
 	         IF ( mode.EQ.pmode_GKS .AND. gksopn ) GOTO 5820
 * ... ignore MODE VERIFY from a GO file if MODE VERIFY:ALWAYS is set
 	         IF ( mode.EQ.pmode_verify
-     .	        .AND. mode_arg(mode,1).EQ.3
+     .	        .AND. mode_arg(mode,1).EQ.mode_set_always
      .	        .AND. csp .GT. 0 ) GOTO 820
 * ... push the mode stack adding on a FALSE (because it's CANCEL)
 	         DO 806 i = mode_stack_size, 2, -1

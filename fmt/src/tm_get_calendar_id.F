@@ -46,6 +46,8 @@ C	"COMMON_YEAR" and 365_DAY" for "NOLEAP"
 C	"D360"  or "360" for "360DAY"
 C	"366_DAY" for "ALL_LEAP"
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files, add disclaimer
+* v744 11/2011 *acm* Issue 1906: If PROLEPTIC_GREGORIAN is given then 
+*                  override mixed-gregorian calendar handling. 
 
       include 'calendar.decl'
       include 'calendar.cmn'
@@ -62,6 +64,7 @@ C     MOVE INPUT STRING TO UPPER CASE
 
 C  Allow STANDARD same calendar as GREGORIAN
       IF (test_string(1:3) .EQ. 'STA')  test_string = 'GREGORIAN'
+      IF (test_string(1:3) .EQ. 'PRO')  test_string = 'PROLEPTIC_GREGORIAN'
       IF (test_string(1:3) .EQ. 'COM')  test_string = 'NOLEAP'
       IF (test_string(1:3) .EQ. '365')  test_string = 'NOLEAP'
       IF (test_string(1:3) .EQ. '366')  test_string = 'ALL_LEAP'
@@ -80,7 +83,6 @@ C     ERROR: CALENDAR NOT FOUND
 
 C     CALENDAR FOUND, RETURN ID
  100  tm_get_calendar_id = ndx
-
  1000 return
 
       end

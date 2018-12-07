@@ -120,6 +120,7 @@ samplexy_curv_nrst.F\
 samplexy_nrst.F\
 samplexyt.F\
 samplexyt_nrst.F\
+samplexyz.F\
 samplexz.F\
 sampleyz.F\
 scat2ddups.F\

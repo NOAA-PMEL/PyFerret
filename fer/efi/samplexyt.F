@@ -40,7 +40,7 @@
 * args 2, 3,4
 * 1/18/08  Ansley Manke 
 *         Result is abstract on the x axis, normal on the y and t axes,
-*         and keeps the z axes of the input 4-d data.
+*         and keeps the z, e, f axes of the input 6-d data.
 *
 *
 * In this subroutine we provide information about
@@ -104,7 +104,7 @@
      .                                IMPLIED_BY_ARGS, NORMAL,
      .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
       CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
-      CALL ef_set_num_work_arrays(id, 9)
+      CALL ef_set_num_work_arrays(id, 7)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'DAT_TO_SAMPLE')
@@ -247,23 +247,13 @@
      .          arg_lo_ss(X_AXIS,ARG1), 1, 1, 1, 1, 1,
      .          arg_hi_ss(X_AXIS,ARG1), 1, 1, 1, 1, 1)
 
-*  yboxlo
-      CALL ef_set_work_array_dims_6d(id, 6,
-     .          arg_lo_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1,
-     .          arg_hi_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1)
-
-*  yboxhi
-      CALL ef_set_work_array_dims_6d(id, 7,
-     .          arg_lo_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1,
-     .          arg_hi_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1)
-
 *  tboxlo
-      CALL ef_set_work_array_dims_6d(id, 8,
+      CALL ef_set_work_array_dims_6d(id, 6,
      .          arg_lo_ss(T_AXIS,ARG1), 1, 1, 1, 1, 1,
      .          arg_hi_ss(T_AXIS,ARG1), 1, 1, 1, 1, 1)
 
 *  tboxhi
-      CALL ef_set_work_array_dims_6d(id, 9,
+      CALL ef_set_work_array_dims_6d(id, 7,
      .          arg_lo_ss(T_AXIS,ARG1), 1, 1, 1, 1, 1,
      .          arg_hi_ss(T_AXIS,ARG1), 1, 1, 1, 1, 1)
 
@@ -281,7 +271,7 @@
 *
       SUBROUTINE samplexyt_compute(id, arg_1, arg_2, arg_3, arg_4,
      .         result, xaxdat, yaxdat, taxdat, xboxlo, xboxhi, 
-     .         yboxlo, yboxhi, tboxlo, tboxhi)
+     .         tboxlo, tboxhi)
 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
@@ -311,10 +301,8 @@
       REAL*8 taxdat(wrk3lox:wrk3hix)
       REAL*8 xboxlo(wrk4lox:wrk4hix)
       REAL*8 xboxhi(wrk5lox:wrk5hix)
-      REAL*8 yboxlo(wrk6lox:wrk6hix)
-      REAL*8 yboxhi(wrk7lox:wrk7hix)
-      REAL*8 tboxlo(wrk8lox:wrk8hix)
-      REAL*8 tboxhi(wrk9lox:wrk9hix)
+      REAL*8 tboxlo(wrk6lox:wrk6hix)
+      REAL*8 tboxhi(wrk7lox:wrk7hix)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -354,8 +342,8 @@
       REAL fxbot, fxtop, fbb, ftb, fbt, ftt, aa, bb
       REAL xbot, xtop, ybot, ytop, tbot, ttop
       REAL xfrac, yfrac, tfrac_lo, tfrac_hi
-      REAL dx, dy, dt, delmodx, delmodt, xpt, ypt, tpt
-      REAL dxlo, dxhi, dylo, dyhi, dtlo, dthi
+      REAL dx, dt, delmodx, delmodt, xpt, ypt, tpt
+      REAL dxlo, dxhi
       CHARACTER err_msg*255, test_str*16
 
 C  variables for checking axis characteristics (modulo axes)
@@ -424,10 +412,9 @@ C  variables for checking axis characteristics (modulo axes)
       CALL ef_get_coordinates(id, ARG1, X_AXIS, ilo, ihi, xaxdat)
       CALL ef_get_coordinates(id, ARG1, Y_AXIS, jlo, jhi, yaxdat)
       CALL ef_get_coordinates(id, ARG1, T_AXIS, llo, lhi, taxdat)
-      CALL ef_get_box_lo_lim(id, ARG1, T_AXIS, llo, lhi, tboxlo)
-      CALL ef_get_box_hi_lim(id, ARG1, T_AXIS, llo, lhi, tboxhi)
 
 *  Check to see if input x axis is modulo, and if axes are regular.
+*  box limits used for moduloing operations
 
       CALL ef_get_axis_info_6d(id, ARG1, ax_name, ax_units,
      .                         backward, modulo, regular)
@@ -442,26 +429,11 @@ C  variables for checking axis characteristics (modulo axes)
          dxhi = (xboxhi(ihi) - xboxhi(ihi-1) ) / 2.
       ENDIF
 
-      IF ( regular(2) ) THEN
-         dy = yaxdat(jlo+1) - yaxdat(jlo)
-         dylo = dy/2.
-         dyhi = dy/2.
-      ELSE
-         CALL ef_get_box_limits(id, ARG1, Y_AXIS, jlo, jhi,
-     .                          yboxlo, yboxhi)
-         dylo = (yboxlo(jlo+1) - yboxlo(jlo) )/ 2.
-         dyhi = (yboxhi(jhi) - yboxlo(jhi-1) )/ 2.
-      ENDIF
-
-      IF ( regular(3) ) THEN
-         dt = taxdat(llo+1) - yaxdat(llo)
-         dtlo = dy/2.
-         dthi = dy/2.
-      ELSE
-         CALL ef_get_box_limits(id, ARG1, T_AXIS, llo, lhi,
+*  Always get t box limits, usd for moduloing operations
+      CALL ef_get_box_limits(id, ARG1, T_AXIS, llo, lhi,
      .                          tboxlo, tboxhi)
-         dtlo = (tboxlo(llo+1) - tboxlo(llo) )/ 2.
-         dthi = (tboxhi(lhi) - tboxlo(lhi-1) )/ 2.
+      IF ( regular(3) ) THEN
+         dt = taxdat(llo+1) - taxdat(llo)
       ENDIF
       
 
@@ -826,8 +798,8 @@ C  variables for checking axis characteristics (modulo axes)
      .                                  (fxtop - fxbot)
 
                ELSE
-
-*                  some component is undefined
+ 
+* some component is undefined
                   result(i,j,k,l,m,n) = bad_flag_result
 
                ENDIF

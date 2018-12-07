@@ -128,6 +128,7 @@ symbol_command.F\
 translate_lat_long.F\
 translate_limit.F\
 turnoff_verify.F\
+turnon_verify_always.F\
 var_stat.F\
 version_only.F\
 warn.F\

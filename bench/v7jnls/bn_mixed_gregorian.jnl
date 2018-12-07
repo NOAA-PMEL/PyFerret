@@ -1,0 +1,44 @@
+! bn_mixed_gregorian
+! Issue 1906
+! 11/2018 PROLEPTIC_GREGORIAN overrides mixed-calendar handling, so no offset applied
+
+! Create a test dataset with several time axes
+!
+! This will handled as a mixed, 2-day shifted calendar axis
+
+define axis/t=1-jan-2001:5-jan-2001:1/t0=1-jan-0001/units=days timem
+let var1 = t[gt=timem]
+save/clobber/file=mixed_or_proleptic.nc var1
+
+
+! This uses PROLEPTIC_GREGORIAN, so will handled without the shift
+
+define axis/t=1-jan-2001:5-jan-2001:1/t0=1-jan-0001/units=days/calendar="PROLEPTIC_GREGORIAN" timep
+let var2 = t[gt=timep]
+save/append/file=mixed_or_proleptic.nc var2
+
+ 
+! This will handled as always, as a proleptic gregorian calendar
+
+define axis/t=1-jan-2001:5-jan-2001:1/t0=1-jan-1000/units=days tstd
+let var3 = t[gt=tstd]
+save/append/file=mixed_or_proleptic.nc var3
+
+cancel var/all
+cancel axis timem,timep,tstd
+
+! Now test how the axes are interpreted.
+
+use mixed_or_proleptic.nc
+
+! This is on a mixed-Gregorian calendar axis so  dates are shifted and start on 30-dec-2000
+show axis `var1,return=taxis`
+
+
+! This is on a proleptic-Gregorian calendar axis so dates are not shifted
+show axis `var2,return=taxis`
+
+
+! Axes with time origins other than 1-jan-0001 are handled as proleptic-Gregorian
+show axis `var3,return=taxis`
+

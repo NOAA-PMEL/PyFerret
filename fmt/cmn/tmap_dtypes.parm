@@ -1,6 +1,8 @@
 * V530 *sh* 11/00 - data types (more general than needed at time of writing)
+* V7.44 11/18 *acm* Issue 1905: add int64 as a data type 
 
 * these must identically match the declarations in ferret.parm
+* Types ubyte,ushort,uint,int64,uint64,string are beging added 2018
 
 * data types
         INTEGER         ptype_native,
@@ -10,7 +12,8 @@
      .                  ptype_int1,
      .                  ptype_char,
      .                  ptype_string,
-     .                  ptype_double
+     .                  ptype_double,
+     .                  ptype_int64
         PARAMETER     ( ptype_native = 0,
      .                  ptype_float = 1,
      .                  ptype_int4 = 2,
@@ -18,4 +21,5 @@
      .                  ptype_int1 = 4,
      .                  ptype_char = 5,
      .                  ptype_string = 6,
-     .                  ptype_double = 7 )
+     .                  ptype_double = 7,
+     .                  ptype_int64 = 10 )

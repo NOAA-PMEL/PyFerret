@@ -148,11 +148,12 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 
 	include        'gkspar.inc'
 
-	integer		TM_LENSTR1, TM_LENSTR, 
-     .                  ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
-     .                  lab_add, nlab, i, kount, shd_lev_hi, num_dec, maxstr,
-     .                  itypex_save, itypey_save, i_dec
+	integer TM_LENSTR1, TM_LENSTR, 
+     .          ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
+     .          lab_add, nlab, i, kount, lev1, levn, nspace, shd_lev_hi,
+     .		ITYPEX_save, ITYPEY_save, ic, num_dec, maxstr, i_dec
 
+	real		SYMWID
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5),flaty(5),flatx(5)
 	real		xmaxx,ymaxx,vwidth,vheight,karht, ksiz_test
 	real		xx,yy,xxx,yyy, xx1, xxn, xxlen, xpos, wid, xp
@@ -825,16 +826,14 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	
 * Set up to right-justify the labels, moving xpos to the rightmost position.
 
-        ndx = max_len+1
-        IF (have_neg) ndx = ndx+1
-        IF (have_exp) ndx = ndx+1
-        txt_out = 'X'
+	ndx = max_len
 
+        buff = 'X'
         DO i = 1, ndx
            buff = buff(:i)//'X'   ! extra space between key and label
         ENDDO
 
-        wid = SYMWID(karht,ndx,txt_out(:ndx))
+        wid = SYMWID(karht,ndx,buff(:ndx))
         xpos = xpos + wid
 
 * If klab_size negative put the key  on the left rather than 

@@ -38,6 +38,8 @@
 * V6.2 ACM 2/12/2008  Fix bug 1629 in JULIAN_DAY_OF_YEAR. Always
 *          set ndaymo(2) to either 28 or 29. It does not get reset
 *          by the DATA statement on re-entry to the routine.
+* v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
+* v745 *acm* 12/18  New TAX_DATE_STRINGS called by TAX_DATESTRING fcn
 
       SUBROUTINE LOWER_CASE(TEXT)
       IMPLICIT NONE
@@ -85,27 +87,35 @@
 ************************************************************************      
 *     This subroutine returns day number of current year and the total 
 *     number of days of current year.
-      SUBROUTINE JULIAN_DAY_OF_YEAR(cmon, day_of_mon, iyear, day_of_year, 
-     .           days_this_year)
+      SUBROUTINE JULIAN_DAY_OF_YEAR(cmon, imon, day_of_mon, iyear, 
+     .           day_of_year, days_this_year)
 
 *     Convert day of month to day of year
 
       IMPLICIT NONE
-      INTEGER i, iyear
+
+* calling arguments
+      INTEGER imon, day_of_mon, iyear, 
+     .           day_of_year, days_this_year
       CHARACTER*3 cmon
+
+* Local variables
+      INTEGER i 
       CHARACTER*3 months(12)
-      INTEGER day_of_mon, day_of_year, imon, ndaymo(12)
-      INTEGER days_this_year
+      INTEGER ndaymo(12)
 
       DATA months/'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL',
      .            'AUG', 'SEP', 'OCT', 'NOV', 'DEC'/
 
       DATA ndaymo/31,28,31,30,31,30,31,31,30,31,30,31/
 
-      imon = 0
-      DO 100 i=1,12
-          IF(cmon .EQ. months(i)) imon = i 
- 100  CONTINUE
+* If they sent in a character month, convert it to month number
+      IF (cmon .NE. 'XXX') THEN
+         imon = 0
+         DO 100 i=1,12
+             IF(cmon .EQ. months(i)) imon = i 
+ 100     CONTINUE
+      ENDIF
 
 *     Check if it is a leap year
 * (Fixing bug 1639, need ELSE ndaymo(2) = 28; the data statement 
@@ -139,26 +149,34 @@
 *     Convert day of month to day since 1900
 *     Returns -1 if the year is before 1900
 
-      SUBROUTINE JULIAN_DAY_OF_YEAR1900(cmon, day_of_mon, iyear,
+      SUBROUTINE JULIAN_DAY_OF_YEAR1900(cmon, imon, day_of_mon, iyear,
      .   day_since_1900)
 
       IMPLICIT NONE
-      INTEGER i, j, iyear
+      
+* calling arguments
+
+      INTEGER imon, day_of_mon, iyear, day_since_1900
+      CHARACTER*3 cmon
+
+      INTEGER i, j
       INTEGER yrstart,yrend
       LOGICAL isafter1900
-      CHARACTER*3 cmon
       CHARACTER*3 months(12)
-      INTEGER day_of_mon, day_of_year, imon, day_since_1900, ndaymo(12)
+      INTEGER day_of_year, ndaymo(12)
 
       DATA months/'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL',
      .            'AUG', 'SEP', 'OCT', 'NOV', 'DEC'/
 
       DATA ndaymo/31,28,31,30,31,30,31,31,30,31,30,31/
 
-      imon = 0
-      DO 100 i=1,12
-          IF(cmon .EQ. months(i)) imon = i 
- 100  CONTINUE
+* If they sent in a character month, convert it to month number
+      IF (cmon .NE. 'XXX') THEN
+         imon = 0
+         DO 100 i=1,12
+             IF(cmon .EQ. months(i)) imon = i 
+ 100     CONTINUE
+      ENDIF
 
       yrstart = 1900
       yrend = iyear-1
@@ -318,4 +336,194 @@ C   Create a message saying arg1 values at index are duplicate
  5100	outdate = 'xxx'
         dlen = 3
 	GOTO 5000
+	END
+
+
+
+* Convert time coordinates to dates.  If fractional seconds are needed
+* for the formatting, this may be run a second time for consistent formatting
+* when some times fall on an even second.
+
+      SUBROUTINE TAX_DATE_STRINGS (arg_1, result, arg_lo_ss, arg_incr, 
+     .                res_lo_ss, res_hi_ss, get_prec, dir, precistring, 
+     .                tmodulo, bad_flag, status)
+
+
+      IMPLICIT NONE
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
+
+      INTEGER id
+
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .           memresloz:memreshiz, memreslot:memreshit,
+     .           memresloe:memreshie, memreslof:memreshif)
+
+      INTEGER res_lo_ss(6),
+     .        res_hi_ss(6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
+
+      REAL bad_flag(EF_MAX_ARGS)
+      INTEGER get_prec, dir, status
+
+      LOGICAL tmodulo, default_datefmt, first
+
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, j1, k1, l1, m1, n1
+      INTEGER i3, j3, k3, l3, m3, n3
+      INTEGER slen, dlen, prec_full
+      CHARACTER*35 datestring
+      CHARACTER*(*) precistring
+      REAL*8 ddate
+
+      status = 0
+      prec_full = 7
+      first = .TRUE.
+
+      n1 = arg_lo_ss(F_AXIS,ARG1)
+      DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+
+      m1 = arg_lo_ss(E_AXIS,ARG1)
+      DO 500 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+
+      l1 = arg_lo_ss(T_AXIS,ARG1)
+      DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+
+      k1 = arg_lo_ss(Z_AXIS,ARG1)
+      DO 300 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+
+      j1 = arg_lo_ss(Y_AXIS,ARG1)
+      DO 200 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+
+      i1 = arg_lo_ss(X_AXIS,ARG1)
+      DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+
+         ddate = arg_1(i1,j1,k1,l1,m1,n1) 
+         ddate = ddate  
+         IF ( ddate .eq. bad_flag(ARG1) ) THEN
+	     datestring = '...'
+             slen = 3   
+	     CALL EF_PUT_STRING(datestring, slen,
+     .                                  result(i,j,k,l,m,n))
+	     CYCLE
+	  ENDIF
+
+*     Get the date string corresponding to time ddate for the variable ARG2
+         CALL EF_GET_AXIS_DATES (id, ARG2, ddate, dir, 1, 
+     .                   prec_full, dlen, datestring)
+
+* Are we using the default date format or ISO-8601 format? 
+
+         IF (first) THEN
+	    default_datefmt = (datestring(3:3) .EQ. '-')
+	    first = .FALSE.
+	 ENDIF
+
+*     Assign the appropriate substring to the result.
+            
+         IF (default_datefmt) THEN  ! formatting as Ferret-style date strings
+
+	    IF ( .NOT. tmodulo ) THEN
+
+	       IF ( precistring .EQ. 'sec' ) THEN
+                  slen = MAX(dlen, 20)
+                  CALL EF_PUT_STRING(datestring, slen,
+     .                               result(i,j,k,l,m,n))
+               ELSE IF ( precistring .EQ. 'min' ) THEN
+                  slen = 17
+                  CALL EF_PUT_STRING(datestring(1:17), slen,
+     .                               result(i,j,k,l,m,n))
+               ELSE IF ( precistring .EQ. 'hou' ) THEN
+                  slen = 14
+                  CALL EF_PUT_STRING(datestring(1:14), slen,
+     .                               result(i,j,k,l,m,n))
+               ELSE IF ( precistring .EQ. 'day' ) THEN
+                  slen = 11
+                  CALL EF_PUT_STRING(datestring(1:11), slen,
+     .                               result(i,j,k,l,m,n))
+               ELSE IF ( precistring .EQ. 'mon' ) THEN
+                  slen = 8
+                  CALL EF_PUT_STRING(datestring(4:11), slen,
+     .                               result(i,j,k,l,m,n))
+               ELSE IF ( precistring .EQ. 'yea' ) THEN
+                  slen = 4
+                  CALL EF_PUT_STRING(datestring(8:11), slen,
+     .                               result(i,j,k,l,m,n))
+               ELSE
+                  slen = 20
+                  CALL EF_PUT_STRING (datestring, slen,
+     .                               result(i,j,k,l,m,n))
+               ENDIF
+
+            ELSE  ! modulo time axis.  datestring looks like 15-FEB 02:54:36
+
+               IF ( precistring .EQ. 'sec' ) THEN
+                  slen = 15
+                  CALL EF_PUT_STRING(datestring(1:15), slen,
+     .                               result(i,j,k,l,m,n))
+               ELSE IF ( precistring .EQ. 'min' ) THEN
+                  slen = 12
+                  CALL EF_PUT_STRING(datestring(1:12), slen,
+     .                               result(i,j,k,l,m,n))
+               ELSE IF ( precistring .EQ. 'hou' ) THEN
+                  slen = 9
+                  CALL EF_PUT_STRING(datestring(1:9), slen,
+     .                               result(i,j,k,l,m,n))
+               ELSE IF ( precistring .EQ. 'day' ) THEN
+                  slen = 6
+                  CALL EF_PUT_STRING(datestring(1:6), slen, 
+     .                               result(i,j,k,l,m,n))
+               ELSE IF ( precistring .EQ. 'mon' ) THEN
+                  slen = 3
+                  CALL EF_PUT_STRING(datestring(4:6), slen,
+     .                               result(i,j,k,l,m,n))
+               ELSE IF ( precistring .EQ. 'yea' ) THEN
+                  datestring = '...'
+                  slen = 3
+                  CALL EF_PUT_STRING(datestring, slen,
+     .                               result(i,j,k,l,m,n))
+               ELSE
+                           slen = 15
+                           CALL EF_PUT_STRING(datestring, slen,
+     .                                        result(i,j,k,l,m,n))
+               ENDIF
+
+            ENDIF  ! Modulo time
+
+         ELSE  ! Iso8601, datestring = 'yyyy-mm-dd hh:mm:ss"
+            IF ( precistring .EQ. 'sec' ) slen = MAX(dlen, 20)
+            IF ( precistring .EQ. 'min' ) slen = 16
+            IF ( precistring .EQ. 'hou' ) slen = 13
+            IF ( precistring .EQ. 'day' ) slen = 10
+            IF ( precistring .EQ. 'mon' ) slen = 7
+            IF ( precistring .EQ. 'yea' ) slen = 4
+            CALL EF_PUT_STRING(datestring, slen, result(i,j,k,l,m,n))
+
+         ENDIF
+
+         i1 = i1 + arg_incr(X_AXIS,ARG1)
+ 100  CONTINUE
+
+         j1 = j1 + arg_incr(Y_AXIS,ARG1)
+ 200  CONTINUE
+
+         k1 = k1 + arg_incr(Z_AXIS,ARG1)
+ 300  CONTINUE
+
+         l1 = l1 + arg_incr(T_AXIS,ARG1)
+ 400  CONTINUE
+
+         m1 = m1 + arg_incr(E_AXIS,ARG1)
+ 500  CONTINUE
+
+         n1 = n1 + arg_incr(F_AXIS,ARG1)
+ 600  CONTINUE
+
+	status = 0
+	
+	RETURN
+
 	END

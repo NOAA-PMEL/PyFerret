@@ -164,6 +164,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 	character*12	text,TM_FMT_SNGL, TM_FMT_SNGL_DIGITS, 
      .			txt_out, blanks
         character*20    buff
+        character*1     ex
 	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, TM_HAS_STRING,  
      .                  windof_hold, check_0, increase_digits, nofill, cont_key_keep, 
      .                  no_lines, is_viewport, have_neg, have_exp

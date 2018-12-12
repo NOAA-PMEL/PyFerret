@@ -69,6 +69,7 @@
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 * v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 * v74+ *acm* 11/18  Issue 1902, fractional seconds only when time units are seconds
+* v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -176,6 +177,10 @@ c	      IF (ndec .LE. 3) val4 = INT(val4 * 1000.D0)/1000.D0
               ELSE
                  CALL TSTEP_TO_DATE( grid, idim, val, decim, string )
                  numbers = TM_LENSTR1(string)
+                 line       = grid_line( idim, grid )
+		 cal_id = TM_GET_CALENDAR_ID ( line_cal_name(line))
+
+		 CALL CHECK_DATE_REFORMAT (string, numbers, cal_id)
                  line    = grid_line( idim, grid )
                  IF (decim.GT.7 .AND. line_tunit(line) .EQ. 1.) THEN  ! units of data in seconds
                     fval = AINT(val)
@@ -188,7 +193,8 @@ c	      IF (ndec .LE. 3) val4 = INT(val4 * 1000.D0)/1000.D0
 		       string = string(:numbers)//'.0'
 		    ENDIF
                  ENDIF
-                 IF (truncate) THEN
+                 
+		 IF (truncate) THEN
 		    string(numbers-3:numbers) = '***'
 		 ENDIF
 

@@ -140,6 +140,7 @@
 *                 attributes 6/6/18.
 * V743 *acm* 7/18 Issue 1883: var with only a _FillValue which is NaN got no
 *                 _FillValue or missing_value attribute written
+* v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
 
         IMPLICIT NONE
         include 'netcdf.inc'
@@ -605,7 +606,8 @@
            CALL CD_MAKE_VAR( cdfid, dset_num, varcode, type, maxstrlen,
      .               grid, make_lo, make_hi, recdim, enhead, new, 
      .               edges_flag, do_bounds, mode_upcase_output, 
-     .               keepax_flag, netcdf4_type, xchunk_size, 
+     .               keepax_flag, date_fmt_out,
+     .               netcdf4_type, xchunk_size, 
      .               ychunk_size, zchunk_size, tchunk_size, 
      .               deflate_lev, shuffle_flag, endian_code, buff2,
      .               status )

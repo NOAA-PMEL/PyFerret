@@ -47,11 +47,13 @@
 * V540:  11/01 - allow for the possibility of non-positive (modulo) subscripts 
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
+* v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
+	include 'xprog_state.cmn'
 
 * calling argument declarations:
 	INTEGER idim, cx, lo_ss, hi_ss, del_ss, decimal, row_ww, cleft
@@ -86,6 +88,10 @@
      .					small, places, decimal )
 	ENDIF
 	decimal = decimal + 1		! add 1 more, arbitrarily
+
+* When writing in iso 8601 format always have at least yyyy-mm-dd
+	IF (date_fmt_out .EQ. pdate_numslashnum .AND. decimal.LT.3) decimal = 3
+
 
 * how many columns to fit the largest world coordinate ?
 	row_ww = 0

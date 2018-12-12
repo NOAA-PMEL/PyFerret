@@ -55,6 +55,8 @@
 *            2/12 *kms* Add E, F, M, N, ENSEMBLE, and FORECAST;
 *                       include tmap_dims.parm for nferdims needed by xtext_info.cmn
 * V698  *acm* 5/16 Ticket 2405: MODE CALENDAR:auto
+* v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
+*                  new mode datefmt 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -134,5 +136,8 @@
         DATA   verify_modes(1) / 'DEFAULT' /,
      .         verify_modes(2) / 'ALL' /,
      .         verify_modes(3) / 'ALWAYS' /
+
+        DATA   datefmt_modes(1) / 'DEFAULT' /,
+     .         datefmt_modes(2) / 'ISO8601' /
 
 	END

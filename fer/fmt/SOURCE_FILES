@@ -4,6 +4,7 @@ alg_trans_titl.F\
 ascii_limits.F\
 aux_var_units.F\
 ax_title.F\
+check_date_reformat.F\
 clean_coord_string.F\
 compound_title.F\
 cx_dim_str.F\

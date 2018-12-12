@@ -41,6 +41,7 @@
 * *sh* 2/13/95
 * *acm* needs cal_id to pass to tm_break_fmt_date
 * V600 *acm* 2/06 - Fix for bug 1394, send do_err flag to tm_break_date
+* v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
 *
 * Arguments:
 *	indate	 - input date string
@@ -61,7 +62,8 @@
 *
 * Local definitions
 *
-	INTEGER	year, month, day, hour, minute, second, dlen
+	INTEGER	year, month, day, hour, minute, dlen
+	REAL	second
 
 * Break up the input date string to its various components
 	CALL TM_BREAK_FMT_DATE ( inform, indate, cal_id, year, 

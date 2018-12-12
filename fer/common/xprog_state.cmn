@@ -58,6 +58,8 @@
 *           SPAWN_STATUS returns the status value, used for SPAWN_OK and SPAWN_STATUS
 * v743  12/18 *acm* Issue 1803, new parameter mode_set_always, for
 *                  New command-line switch -verify for set mode ver:always behavior
+* v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
+*                  new mode datefmt for formatted date output, setting stored in date_fmt_out
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -87,7 +89,7 @@
      .                  pmode_grat, pmode_linecolors, pmode_upcase_output,
      .                  pmode_nlevels, pmode_nodata_lab, pmode_shrink_ylab,
      .                  pmode_curvilinear, pmode_layerz, pmode_6d_lab,
-     .			pmode_frugal
+     .			pmode_frugal, pmode_datefmt
 
 	PARAMETER     ( pmode_diagnostic	= 1,
      .			pmode_verify		= 2,
@@ -124,7 +126,8 @@
      .			pmode_curvilinear	= 32,
      .			pmode_layerz		= 33,
      .			pmode_6d_lab		= 34,
-     .			pmode_frugal		= 35 )
+     .			pmode_frugal		= 35,
+     .			pmode_datefmt		= 36 )
 
 	CHARACTER	pmode_unused*10
 	PARAMETER     ( pmode_unused = '%% unused %%' )
@@ -180,7 +183,8 @@
      .		genl_storage(25),
      .		ifstk, ifstk_skipping,
      .		if_cs(max_ifstk), if_doing(max_ifstk),
-     .          num_linecolors, spawn_status
+     .          num_linecolors, spawn_status,
+     .		date_fmt_out
 
 
 	LOGICAL
@@ -239,7 +243,7 @@
      .		interactive, prompt, prompt_len, 
      .		input_source, mouse_input,
      .		if_conditional, ifstk, ifstk_skipping, if_cs, if_doing,
-     .          num_linecolors, spawn_status,
+     .          num_linecolors, spawn_status, date_fmt_out,
      .		cmnd_buff, last_cmnd_buff,
      .          mode_grat_buff,
      .		len_cmnd, len_last_cmnd, cmnd_num, subcmnd_num,

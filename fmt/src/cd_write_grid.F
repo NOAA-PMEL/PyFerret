@@ -1,7 +1,7 @@
 	SUBROUTINE CD_WRITE_GRID ( cdfid, dset, grid, lo, hi, recdim, 
      .                           itsa_slab, gname, edges_flag, 
      .                           do_bounds, mode_upcase_output, 
-     .                           keepax_flag, status )
+     .                           keepax_flag, date_fmt_out, status )
 
 *
 *
@@ -70,6 +70,7 @@
 * V69+ 4/14 *acm* After the above fix, need a tweak to be able to append to files having 
 *                 dimensions that are not coordinate variables
 * V710 9/16 *acm* Use ww_dim_name from xtext_info.cmn
+* v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -99,7 +100,7 @@
 * argument declarations
       LOGICAL itsa_slab, mode_upcase_output
       INTEGER cdfid, dset, grid, lo(nferdims), hi(nferdims), recdim, 
-     .        edges_flag, keepax_flag, do_bounds, status
+     .        edges_flag, keepax_flag, date_fmt_out, do_bounds, status
       CHARACTER*(*) gname
 
 * local variable declarations:
@@ -205,7 +206,8 @@
      .           idim.EQ.recdim,
      .           lo(idim), hi(idim), pcdf_full_span, 
      .           edges_flag, do_bounds, mode_upcase_output,
-     .           keepax_flag, name_from_grid, dim_only, status ) 
+     .           keepax_flag, name_from_grid, dim_only,
+     .           date_fmt_out, status ) 
 
             IF ( status .NE. merr_ok ) GOTO 5900
          ENDIF

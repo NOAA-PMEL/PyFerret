@@ -67,6 +67,8 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V698  *acm* 5/16 Ticket 2405: MODE CALENDAR:auto
 * V702  *sh*  2/17 Added mode frugal
+* v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
+*                  new mode date_format, for formatted date output
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -173,6 +175,23 @@
 	   IF ( iarg.LT.0 .OR. iarg.GT.90) GOTO 5040
 	   arg = iarg
 
+* ... SET MODE datefmt:argument
+*     if the argujent is ISO, then dates are written as ISO 8601 date strings
+
+	ELSEIF ( mode .EQ. pmode_datefmt ) THEN
+	   tlen = MIN( 3, TM_LENSTR1(text) )
+
+           DO iarg = 1, 2
+              vax_code = STR_CASE_BLIND_COMPARE
+     .          ( text(1:3), datefmt_modes(iarg)(1:tlen) )
+              IF ( vax_code .EQ. vms_str_success ) THEN
+		 arg = pdate_vax
+		 IF (datefmt_modes(iarg)(1:3).EQ.'ISO') arg = pdate_numslashnum
+                 GOTO 1000
+              ENDIF
+           ENDDO
+	   GOTO 5700
+
         ELSE
 	   GOTO 5010	! mode does not accept argument
 	ENDIF
@@ -211,6 +230,8 @@
      .          //text(:tlen), *5000 )
  5500   IF ( mode .EQ. pmode_verify ) CALL WARN(
      .          'Legal VERIFY arguments are DEFAULT, ALL, and ALWAYS')
+ 5700   IF ( mode .EQ. pmode_datefmt ) CALL WARN(
+     .          'Legal DATEFMT arguments are DEFAULT and ISO8601')
         GOTO 5000
 
         END

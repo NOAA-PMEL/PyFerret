@@ -40,6 +40,7 @@
 *                  precision values coming in from argument 1
 * v695  *acm 2/15  Time axis may be an F axis or a T axis.
 * v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
+* v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
 *
 * This function returns day fraction ([0,1]) specified by the first argument 
 * (variable containing time values) from the second argument (variable from 
@@ -163,15 +164,16 @@
 *                                                                      |
 *                                                                      V
 
-      CHARACTER*20 datebuf
+      LOGICAL default_datefmt, first
       INTEGER iyear, day_of_mon
       INTEGER ihour, iminute, isec
-      CHARACTER*3 cmon
       INTEGER L2, LL, dir, get_prec, dlen
-      CHARACTER*255 err_msg
-      REAL*8 ddate
       INTEGER i, j, k, l, m, n
       INTEGER i1, j1, k1, l1, m1, n1
+      REAL*8 ddate
+      CHARACTER*3 cmon
+      CHARACTER*30 datebuf
+      CHARACTER*255 err_msg
 
 *  variables for checking axis characteristics (modulo axes)
       CHARACTER ax_name(6)*16, ax_units(6)*16
@@ -198,6 +200,8 @@
          tmodulo = modulo(F_AXIS)
       ENDIF
 
+      first = .TRUE.
+
       n1 = arg_lo_ss(F_AXIS,ARG1)
       DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
 
@@ -222,16 +226,34 @@
 *     Get the date string corresponding to time ddate for the variable ARG2
             CALL EF_GET_AXIS_DATES(id, ARG2, ddate, dir, 1, get_prec, dlen, datebuf)
 
-            IF ( .NOT. tmodulo ) THEN
-*              datebuf is in form "DD-MON-YEAR HH:MM:SS". Read time.
-               READ (datebuf,420,err=900) ihour, iminute, isec
- 420           FORMAT (11x, 3(1x,i2))
-            ELSE 
-*              modulo: datebuf is in form "DD-MON HH:MM:SS". Read time.
-               READ (datebuf,430,err=900) ihour, iminute, isec
- 430           FORMAT (6x, 3(1x,i2))
+* Are we using the default date format or ISO-8601 format? 
+            IF (first) THEN
+	       default_datefmt = (datebuf(3:3) .EQ. '-')
+	       first = .FALSE.
             ENDIF
-            result(i,j,k,l,m,n) = ( (isec / 60. + iminute) / 60.
+
+            IF (default_datefmt) THEN
+	       IF ( .NOT. tmodulo ) THEN
+*                 datebuf is in form "DD-MON-YEAR HH:MM:SS". Read time.
+                  READ (datebuf,420,err=900) ihour, iminute, isec
+ 420              FORMAT (11x, 3(1x,i2))
+               ELSE 
+*                modulo: datebuf is in form "DD-MON HH:MM:SS". Read time.
+                 READ (datebuf,430,err=900) ihour, iminute, isec
+ 430              FORMAT (6x, 3(1x,i2))
+               ENDIF
+
+	    ELSE
+
+* Iso-8601 formatted dates 
+* datebuf is in form "YYYY-MM-DD HH:MM:SS". If modulo, then yyyy is 0000.
+
+               READ (datebuf,440,err=900) ihour, iminute, isec
+ 440           FORMAT (10x, 3(1x,i2))
+            
+	    ENDIF
+
+	    result(i,j,k,l,m,n) = ( (isec / 60. + iminute) / 60.
      .                                        + ihour ) / 24.
 
          ELSE

@@ -52,16 +52,18 @@
 *                   string "months since yyyy-mm-ddThh:mm:ss (as in GRIB files) 
 *                   allow that. Replace T with a space. Ticket 1806.
 * V72 *acm*  3/17   If there is a Z at the end, lop that off.
+* v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
 
 * ARGUMENT DEFINITIONS
 *  form  - code for the date string format
 *  date  - date to process
 *  cal_id  integer code for which calendar to use
-*  day, month, year, hour, minute, second - obvious
+*  day, month, year, hour, minute, second - obvious. Second may be a real number sec.fraction
 *  status - returned status
+
 	CHARACTER*(*)	date
-	INTEGER	form, day, month, year, hour, minute, second, status,
-     .          cal_id
+	INTEGER	form, day, month, year, hour, minute, status,cal_id
+	REAL	second
 *
 * INCLUDE FILES
 
@@ -73,10 +75,10 @@
 
 * internal variable declarations:
         LOGICAL do_err
-	INTEGER slen
+	INTEGER slen, isecond
+	REAL	frac
 	PARAMETER ( slen = 32)
 	INTEGER TM_LENSTR1, TM_BREAK_FMT_DATE_C, dlen
-	REAL fsecond
 #ifdef sun
 	BYTE       dhol(slen)     !c-type Hollerith string buffers
 #else
@@ -87,14 +89,20 @@
 
 	IF ( form .EQ. pdate_vax ) THEN
 	    CALL TM_BREAK_DATE( date, cal_id, year, month, day,
-     .			hour, minute, second, status)
+     .			hour, minute, isecond, status)
+	    second = FLOAT(isecond)
+	    IF (TM_LENSTR1(date) .GT. 20) THEN
+	       READ (date(22:slen), *, err=5100)  frac
+	       second = second + frac/100.
+	    ENDIF
+
 	    RETURN
 
 	ELSEIF ( form .EQ. pdate_numslashnum ) THEN
 
 * ... note:  this is a quick and dirty kludge parser.  Use the udunits package
 *	     for a more robust approach
-* ... the format looks like (e.g.) 1992-10-8 15:15:42.5 
+* ... the format looks like (e.g.) 1992-10-18 15:15:42.5 
 
 *     If there is a T between the date and time (as in GRIB files) replace with a space.
            IF (date(11:11) .EQ. 'T') date(11:11) = ' '
@@ -105,21 +113,21 @@
 
 	   CALL TM_FTOC_STRNG( date(:dlen), dhol, slen)
 	   status = TM_BREAK_FMT_DATE_C(dhol, year, month,
-     .				        day, hour, minute, fsecond)
-	   second = NINT(fsecond)	! information loss ...
+     .				        day, hour, minute, second)
 
 	   IF ( status .NE. 0 ) THEN
 * ... last attempt -- try VAX format
 	      CALL TM_BREAK_DATE( date, cal_id, year, month, day,
-     .			hour, minute, second, status)
+     .			hour, minute, isecond, status)
 	      IF ( status .NE. merr_ok ) GOTO 5100
+	      
+	      second = FLOAT(isecond)
+	      IF (TM_LENSTR1(date) .GT. 20) THEN
+	          READ (date(22:slen), *, err=5100)  frac
+	          second = second + frac/100.
+	       ENDIF
+
 	   ENDIF
-
-cc   Move this up after TM_BREAK_FMT_DATE_C -- if tm_break_fmt_date_c did 
-cc   not set fsecond, don't want to wipe out the seconds that were correctly
-cc   set by TM_BREAK_DATE
-
-cc	   second = NINT(fsecond)	! information loss ... 
 
 	ELSE
 	   STOP 'Unknown date format code'

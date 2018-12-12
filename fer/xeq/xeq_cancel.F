@@ -153,6 +153,8 @@
 *		  Adjust output to 6-D or 4-D grids
 * V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 * v743  12/18 *acm* Issue 1803, New command-line switch -verify for set mode ver:always behavior
+* v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
+*                  new mode datefmt for formatted date output
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -523,10 +525,22 @@
                  ELSEIF ( mode .EQ. pmode_shrink_ylab ) THEN
 	            CALL PPLCMD ( from, line, 0, 'SHRINKY 0', 1, 1 )
 
+* ... mode nlevels just changes the default number of levels, its always .TRUE.
+                 ELSEIF ( mode .EQ. pmode_nlevels ) THEN
+	              mode_state(mode,1) = .TRUE. 
+
 * ... Changes to mode calendar apply to F-direction as well as T.
                  ELSEIF ( mode .EQ. pmode_time_lab ) THEN
 	           ax_dec_pt(f_dim) = ax_dec_pt(t_dim) 
 	           ax_fmt(f_dim) = ax_fmt(t_dim) 
+		   
+* ... mode datefmt changes from Ferret (vax) time format to ISO-86016
+*     The mode itself is always .TRUE.
+
+                 ELSEIF ( mode .EQ. pmode_datefmt ) THEN
+		      mode_arg( mode,1 ) = pdate_vax
+	              mode_state(mode,1) = .TRUE. 
+		      date_fmt_out = mode_arg(pmode_datefmt, 1)
 
 * ... mode pplgui - close reply pipe
                  ELSEIF ( mode .EQ. pmode_gui ) THEN

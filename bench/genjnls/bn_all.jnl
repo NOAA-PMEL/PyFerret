@@ -1197,7 +1197,7 @@ GO bn_use_agg
 go bn_reset bn_ens_promote_global
 GO bn_ens_promote_global
 
-! *********** v7.43 Additions ***********
+! *********** v7.43 and 7.44 Additions ***********
 
 go bn_reset bn743_bug_fixes
 GO bn743_bug_fixes
@@ -1216,6 +1216,11 @@ GO bn_int64
 
 go bn_reset bn_samplexyz
 GO bn_samplexyz 
+
+! *********** v7.45 Additions ***********
+
+go bn_reset bn_iso8601_time
+GO bn_iso8601_time
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

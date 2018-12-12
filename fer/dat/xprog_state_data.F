@@ -124,6 +124,8 @@
 *                 SPAWN command returns spawn_status
 * v720 7/17 *acm* ticket 2552 Make SPAWN_STATUS return the return status, so 0=succcess
 *                 SPAWN_STATUS returns the status value, used for SPAWN_OK and SPAWN_STATUS
+* v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
+*                  new mode datefmt for formatted date output, setting stored in date_fmt_out
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -232,6 +234,8 @@
      .					/ mode_stack_size*.TRUE.   /
      .		(mode_state( pmode_frugal,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.TRUE.   /
+     .		(mode_state( pmode_datefmt,i), i=1,mode_stack_size)
+     .					/ mode_stack_size*.TRUE.   /
 
 	DATA	mode_name ( pmode_diagnostic  )	/ 'DIAGNOSTIC  ' /,
      .		mode_name ( pmode_verify      )	/ 'VERIFY      ' /,
@@ -268,7 +272,7 @@
      .		mode_name ( pmode_layerz      ) / 'LAYERZ'       /,
      .		mode_name ( pmode_6d_lab      ) / '6D_LAB'       /,
      .		mode_name ( pmode_frugal      ) / 'FRUGAL'	 /,
-     .		mode_name ( 36     ) / pmode_unused /,
+     .		mode_name ( pmode_datefmt     ) / 'DATE_FORMAT'	 /,
      .		mode_name ( 37     ) / pmode_unused /,
      .		mode_name ( 38     ) / pmode_unused /,
      .		mode_name ( 39     ) / pmode_unused /,
@@ -344,6 +348,8 @@
      .				/ mode_stack_size*unspecified_int4 /
      .		(mode_arg  ( pmode_frugal,i), i=1,mode_stack_size)
      .				/ mode_stack_size*30 /
+     .		(mode_arg  ( pmode_datefmt,i), i=1,mode_stack_size)
+     .				/ mode_stack_size*pdate_vax /
 
 * If the value of nlevels is changed, also change NLEV in plot/ppldata.F
 
@@ -397,5 +403,6 @@
         DATA    grat_on                 / .FALSE. /
         DATA    num_linecolors          / 6 /
         DATA    spawn_status            / 0 /        ! last cmnd was successful
+	DATA	date_fmt_out		/ pdate_vax /
 
 	END

@@ -29,11 +29,29 @@ show symbol lab($labnum_t)
 
 cancel data/all
 
-! I think the right thing to do for modulo axes is to list
-! year as 0000. ISO-8601 date formatting must include a year.
+! For modulo axes list the year as defined in the axis.
+! ISO-8601 date formatting must include a year.
 
 use coads_climatology
 list/x=301/y=-47 sst
+
+cancel data/all
+
+! The seasonal axes in clim_axes_gregorian, clim_axes_julian etc start
+! in year 0001 and extend into year 0002.  Show the acutal year.
+use clim_axes_julian; can data clim_axes_julian
+let tt = t[gt=JFM_IRREG_JUL]
+list tt
+let tt = t[gt=NDJ_REG_JUL]
+list tt
+
+! The date string shows year 0002.  Not the most intuitive thing,
+! but we are stuck with it.
+use gtsa056_2
+use clim_axes_gregorian; can data clim_axes_gregorian
+let temp_seas = temp[gt=NDJ_REG_GRG@mod]
+shade/L=2/K=2 temp_seas
+show symbol lab($labnum_t)
 
 cancel data/all
 

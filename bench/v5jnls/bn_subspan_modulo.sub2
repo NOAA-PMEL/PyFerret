@@ -96,6 +96,7 @@ define alias l200n list/width=200/nohead
 l200/i=1:13 $2
 l200n/l=1:12 $2
 l200n/l=1:12/i=1:11 $2
+! list outside the native range with /L=1:21. Date listings show years beyond 0002
 l200n/l=12:21/i=-19:-9 $2
 l200n/l=12:21/i=-19:-9 $2_void
 l200n/l=12:21/i=-19:-9 $2_void[x=@fnr,t=@fnr]

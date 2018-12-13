@@ -49,6 +49,8 @@
 * V610: *acm*  2/08 Fix bug 762: if the axis is not modulo, always list the
 *                   year (previously never listed year 0 or year 1)
 * V698  *acm* 5/16 Ticket 2405: MODE CALENDAR:auto
+* V7.45 *acm* 12/18 Issue: modulo axes start in year 0 or 1 and are < 1 year long
+*                   so if year=2 and modulo then blank year field  
 
         IMPLICIT NONE
 * Calling argument declarations:
@@ -57,6 +59,7 @@
         LOGICAL         modulo
 
 * internal variable declarations
+	LOGICAL		skp_year
 	INTEGER		year, month, day, hour, minute, second, status
 	CHARACTER	TM_SECS_TO_DATE*20, temp_str*20
         CHARACTER*3     month_names(12)
@@ -71,12 +74,13 @@
 
 * Select the requested precision and form the string. 
 * Auto-determine prec, unless the user set it explicitly. 
-* If year = 0000 or 0001 and the axis is modulo, do not write the year
+* If the axis is modulo, and the year is 0 thru 2, do not write the year
 * If monthly time axis write only month-year-day
 
+	skp_year = (year .LE. 2 .AND. modulo)
 	IF ( prec .GE. 6 ) THEN		! full precision
 
-	   IF (year .GT. 1 .OR. .NOT.modulo) THEN
+	   IF (.NOT. skp_year) THEN
               WRITE (temp_str,1000,ERR=5000) day, month_names(month), 
      .               year, hour, minute, second
            ELSE
@@ -89,7 +93,7 @@
 
 
 	ELSEIF ( prec .EQ. 5 ) THEN	! dd-mmm-yyyy hh:mm
-	   IF (year .GT. 1 .OR. .NOT.modulo) THEN
+	   IF (.NOT. skp_year) THEN
               WRITE (temp_str,1020,ERR=5000) day, month_names(month), 
      .               year, hour, minute
            ELSE
@@ -101,7 +105,7 @@
 1030	   FORMAT(I2.2,'-',A3,' ',I2.2,':',I2.2)
 
 	ELSEIF ( prec .EQ. 4 ) THEN	! dd-mmm-yyyy hh
-	   IF (year .GT. 1 .OR. .NOT.modulo) THEN
+	   IF (.NOT. skp_year) THEN
               WRITE (temp_str,1040,ERR=5000) day, month_names(month), 
      .               year, hour
            ELSE
@@ -112,7 +116,7 @@
 1050	   FORMAT(I2.2,'-',A3,' ',I2.2)
 
 	ELSEIF ( prec .EQ. 3 ) THEN	! dd-mmm-yyyy
-	   IF (year .GT. 1 .OR. .NOT.modulo) THEN
+	   IF (.NOT. skp_year) THEN
               WRITE (temp_str,1060,ERR=5000) day, month_names(month), 
      .               year
            ELSE
@@ -123,7 +127,7 @@
 1070	   FORMAT(I2.2,'-',A3)
 
 	ELSEIF ( prec .EQ. 2 ) THEN	! mmm-yyyy
-	   IF (year .GT. 1 .OR. .NOT.modulo) THEN
+	   IF (.NOT. skp_year) THEN
               WRITE (temp_str,1080,ERR=5000) month_names(month), year
            ELSE
               WRITE (temp_str,1090,ERR=5000) month_names(month)
@@ -133,7 +137,7 @@
 1090	   FORMAT(A3)
 
 	ELSE				! yyyy
-	   IF (year .GT. 1 .OR. .NOT.modulo) THEN
+	   IF (.NOT. skp_year) THEN
               WRITE (temp_str,1100,ERR=5000) year
            ELSE
               temp_str = ' '

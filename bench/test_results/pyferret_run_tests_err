@@ -3454,6 +3454,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Axis trajectory is of type char or string
+           *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5781,6 +5783,14 @@ Replacing definition of axis TDATA
 *** Running ferret script: bn_int64.jnl
  LISTing to file a.nc
 *** Running ferret script: bn_samplexyz.jnl
+*** Running ferret script: bn745_bug_fixes.jnl
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Axis time_dim_1 is of type char or string
+           *** NOTE: A dummy axis of subscripts will be used
+*** Running ferret script: bn_iso8601_time.jnl
+ LISTing to file a.nc
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

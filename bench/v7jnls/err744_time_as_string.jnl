@@ -1,0 +1,17 @@
+! err744_time_as_string.jnl
+! 12/12/2018 ACM
+! See issue 1049: time_dim_1 coordinate is not numeric
+
+! Previously didnt give a warning message about the invalid time axis
+! in the variable time_dim_1
+
+use stringtime.nc
+show data
+show grid crw
+
+! The strings are available in a variable, as in other invalid
+! coordinate axes, so one could use string functions to parse the 
+! strings and define a valid axis...
+
+list time_dim_1
+

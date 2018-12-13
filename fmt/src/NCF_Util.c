@@ -99,6 +99,8 @@
 /* *kms* 8/16         Rework the entire file to remove memory leaks and improve consistent initialization */
 /* *acm* 10/16        ncf_get_uvar_grid now returns the datatype as well as the grid  */
 /* *acm*  5/18        Write a note if error with attribute type that results in bad_file_attr return   */
+/* *acm* 12/18        Issue 1049: Issue a NOTE if a dimension-named variable is non-numeric so can't 
+                      be an axis  */
 
 #include <stddef.h>             /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <wchar.h>
@@ -952,6 +954,8 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
         list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar), __FILE__, __LINE__);
     }
 
+
+
     /* get info on variables */
     for (iv = 0; iv < nc.nvars; iv++) {
         ncf_init_variable(&var);
@@ -963,19 +967,27 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
         var.outtype = var.type;
 
         /* Is this a coordinate variable? If not a string, set the flag.
-         * A multi-dimensional variable that shares a dimension name is not a coord. var.
+         * A multi-dimensional variable that shares a dimension name is not a coord. var that
+		 * is handled as a 1-D axis
+		 * A string-typed fvariable is not a coordinate var.
          */
         if ( nc.ndims > 0 ) {
             var.is_axis = FALSE;
             var.axis_dir = 0;
             i = 0;
             while ( (i < nc.ndims) && (var.is_axis == FALSE) ) {
-                if    ( strcasecmp(var.name, nc.dims[i].name) == 0 )
+                if    ( strcasecmp(var.name, nc.dims[i].name) == 0 ) 
+					{
                     var.is_axis = TRUE;
-                if    ( var.type == NC_CHAR )
-                    var.is_axis = FALSE;
-                if    ( var.ndims > 1 )
-                    var.is_axis = FALSE;
+                    if    ( var.type == NC_CHAR )
+				    {
+                       var.is_axis = FALSE;					
+				 	   fprintf(stderr, "           *** NOTE: Axis %s is of type char or string\n", var.name);
+					   fprintf(stderr, "           *** NOTE: A dummy axis of subscripts will be used\n");
+				    }
+                   if    ( var.ndims > 1 )
+                       var.is_axis = FALSE;
+				}
                 i = i + 1;
             }
         }

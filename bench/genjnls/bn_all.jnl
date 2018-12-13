@@ -1219,6 +1219,9 @@ GO bn_samplexyz
 
 ! *********** v7.45 Additions ***********
 
+go bn_reset bn745_bug_fixes
+GO bn745_bug_fixes
+
 go bn_reset bn_iso8601_time
 GO bn_iso8601_time
 

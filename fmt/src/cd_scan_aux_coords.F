@@ -42,6 +42,8 @@
 
 * revision 0.0 - 4/15
 * V698 *sh* 3/2016 - pass native_tax to CD_1D_LINE_FROM_2D
+* V74+ *acm* 12/2018 - issue 1049: Skip over rare case of a string variable
+*                      that looks to be a coordinate
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -111,6 +113,7 @@
            CALL CD_GET_VAR_INFO (dset, ivar, vname, vartyp, nvdim, vdims,
      .                 nvatts, coordvar, all_outflag, istat)
 	   vlen = TM_LENSTR1(vname)
+	   IF (vartyp .EQ. ncchar) CYCLE
 
 * THIS BOCK OF CODE WAS STARTED ONLY QUICKLY
 * POSTPONED IT UNTIL LATER TO GET JUST THE 2D TIME FMRC FUNCTIONALITY

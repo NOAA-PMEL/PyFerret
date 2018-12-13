@@ -45,6 +45,9 @@
 * V694  5/15 *acm* Match precision for bounds checks (as is done for coords).
 * V72 6/17 *acm* for trac enhancement #767 -- dynamic coordinate storage 
 *                line and line_edges are the coordinates and edges for this line
+* V745 12/18 *acm* Noticed that regular clim axes from clim_axes_gregorian.nc were 
+*                  shown as irregular ( MON_REG_GRG TIME 12mi). Use epsilon test 
+*                  for comparing  diff_hi and diff_last (!)
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -89,16 +92,18 @@
 	       equal = TM_FPEQ_EPS(epsilon, diff_lo, diff_hi) 
 	     ENDIF
 
-	     IF ( .NOT. equal ) THEN
-	        TM_CHECK_BNDS_CENTERED = .FALSE.
-	        RETURN
-	     ENDIF
+	     IF ( .NOT. equal ) GOTO 500
+
 
              IF (i .GT. 1) THEN
-                IF (diff_hi .NE. diff_last) THEN
-	           TM_CHECK_BNDS_CENTERED = .FALSE.
-	           RETURN
-                ENDIF
+                
+		IF (doubletype) THEN
+	           equal = TM_DFPEQ_TOL(diff_hi, diff_last, depsilon) 
+		ELSE
+	           equal = TM_FPEQ_EPS(epsilon, diff_hi, diff_last) 
+		ENDIF
+		IF ( .NOT. equal ) GOTO 500
+		
 	     ENDIF
              diff_last = diff_hi
              pt = float(i) * del + line_start(iaxis)
@@ -119,16 +124,18 @@
 	     ELSE
 	       equal = TM_FPEQ_EPS(epsilon, diff_lo, diff_hi) 
 	     ENDIF
-	     IF ( .NOT. equal ) THEN
-	        TM_CHECK_BNDS_CENTERED = .FALSE.
-	        RETURN
-	     ENDIF
+	     IF ( .NOT. equal ) GOTO 500
+
 
              IF (i .GT. 1) THEN
-                IF (diff_hi .NE. diff_last) THEN
-	           TM_CHECK_BNDS_CENTERED = .FALSE.
-	           RETURN
-                ENDIF
+
+		IF (doubletype) THEN
+	           equal = TM_DFPEQ_TOL(diff_hi, diff_last, depsilon) 
+		ELSE
+	           equal = TM_FPEQ_EPS(epsilon, diff_hi, diff_last) 
+		ENDIF
+	        IF ( .NOT. equal ) GOTO 500
+
 	     ENDIF
              diff_last = diff_hi
 
@@ -138,4 +145,9 @@
 
 	TM_CHECK_BNDS_CENTERED = .TRUE.
 	RETURN
+
+ 500	CONTINUE
+	TM_CHECK_BNDS_CENTERED = .FALSE.
+	RETURN
+
 	END

@@ -39,6 +39,7 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * v695  *acm 2/15  Time axis may be an F axis or a T axis.
 * v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
+* v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
 *
 * This function returns time step values
 *
@@ -235,8 +236,8 @@
 *                                                                      V
 
       INTEGER STR_SAME
-      CHARACTER*20 datebuf
-      CHARACTER*20 instring, t0string
+      CHARACTER*30 datebuf
+      CHARACTER*30 instring, t0string
       INTEGER slen, dir, get_prec, dlen
       REAL*8 ddate
       CHARACTER*16 axname(6), axunits(6)

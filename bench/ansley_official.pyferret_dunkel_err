@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/ferret_distributions/rhel6_64/bin/pyferret
--rwxr-xr-x. 1 ansley tmap 1416 Oct 12  2017 /home/users/ansley/ferret_distributions/rhel6_64/bin/pyferret
-Using external functions from /home/users/ansley/ferret_distributions/rhel6_64/ext_func/pylibs/
+-rwxr-xr-x. 1 ansley tmap 1886 Dec 12 15:04 /home/users/ansley/ferret_distributions/rhel6_64/bin/pyferret
+Using external functions from /home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: issue 1880 fixes merged from Ferret trunk
+Note: one more merge, issue 1049 etc
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -13,15 +13,15 @@ FER_DAT=/home/users/ansley/ferret_distributions/rhel6_64
 FER_DESCR=. ./data
 FER_DIR=.
 FER_DSETS=. ./data
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/ferret_distributions/rhel6_64/ext_func/pylibs/
+FER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/libs
 FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib
 FER_GRIDS=. ./data
 FER_LIBS=/home/users/ansley/ferret_distributions/rhel6_64/lib
 FER_PALETTE=. /home/users/ansley/ferret_distributions/rhel6_64/ppl
 FER_WEB_BROWSER=firefox
 PYFER_EXTERNAL_FUNCTIONS=/home/users/ansley/ferret_distributions/rhel6_64/ext_func/pylibs
-Beginning at Fri Jul 6 09:33:09 PDT 2018
+Beginning at Wed Dec 12 16:57:33 PST 2018
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -424,15 +424,6 @@ list x[i=1:5:0]
 list x[x=1:5:-1]
  **ERROR: invalid command: non-positive delta value: X[X=1:5:0]
 list x[x=1:5:0]
- **ERROR: illegal limits: A is not in the range I=101:105
-          Axis extremes are I=1:11
-list a
- **ERROR: illegal limits: A is not in the range J=46:50
-          Axis extremes are J=1:7
-list a
- **ERROR: illegal limits: A is not in the range I=101:105
-          Axis extremes are I=1:8
-list a
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1385,12 +1376,10 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G10X5
            *** NOTE: Not deleted: TIME1
            *** NOTE: Axis is in use by grid GHB1
-           *** NOTE: Not deleted: TIME2
-           *** NOTE: Axis is in use by grid GJR1
-           *** NOTE: Not deleted: TIME5
-           *** NOTE: Axis is in use by grid GQO1
            *** NOTE: Not deleted: TIME6
            *** NOTE: Axis is in use by grid GCQ1
+           *** NOTE: Not deleted: TIME5
+           *** NOTE: Axis is in use by grid GQO1
            *** NOTE: Not deleted: TAX
            *** NOTE: Axis is in use by grid GFORMAT
            *** NOTE: Not deleted: X4
@@ -1451,7 +1440,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G5DAY
            *** NOTE: Not deleted: PSYU
            *** NOTE: Axis is in use by grid G5DAY
-           *** NOTE: Not deleted: TIME7
+           *** NOTE: Not deleted: TIME2
            *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: TEST_IRREG
            *** NOTE: Axis is in use by grid (G015)
@@ -1519,12 +1508,10 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G10X5
            *** NOTE: Not deleted: TIME1
            *** NOTE: Axis is in use by grid GHB1
-           *** NOTE: Not deleted: TIME2
-           *** NOTE: Axis is in use by grid GJR1
-           *** NOTE: Not deleted: TIME5
-           *** NOTE: Axis is in use by grid GQO1
            *** NOTE: Not deleted: TIME6
            *** NOTE: Axis is in use by grid GCQ1
+           *** NOTE: Not deleted: TIME5
+           *** NOTE: Axis is in use by grid GQO1
            *** NOTE: Not deleted: TAX
            *** NOTE: Axis is in use by grid GFORMAT
            *** NOTE: Not deleted: X4
@@ -1585,7 +1572,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G5DAY
            *** NOTE: Not deleted: PSYU
            *** NOTE: Axis is in use by grid G5DAY
-           *** NOTE: Not deleted: TIME7
+           *** NOTE: Not deleted: TIME2
            *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: PSZW
            *** NOTE: Axis is in use by grid G5_10
@@ -1706,9 +1693,10 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
+           *** NOTE: Valid calendars are GREGORIAN,NOLEAP,JULIAN,360_DAY,ALL_LEAP,PROLEPTIC_GREGORIAN
            *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
            *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: Valid calendars are GREGORIAN,NOLEAP,JULIAN,360_DAY,ALL_LEAP,PROLEPTIC_GREGORIAN
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2046,7 +2034,7 @@ Replacing definition of axis TAX
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_all_leap.jnl
 Replacing definition of grid TGRID
- **ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP
+ **ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP, PROLEPTIC_GREGORIAN
 def axis/t/cal=nogood/t=1-jan-2000:1-jan-2010:1/units=months tax
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2254,10 +2242,10 @@ Starting test: bn_labwid.jnl
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_redefine_taxis_mc.jnl
-Replacing definition of axis TIME12
+Replacing definition of axis TIME11
            *** NOTE: grid GHB2 used by data set coads_clim
            *** NOTE: Redefinition may alter apparent contents of data set
-Replacing definition of axis TIME12
+Replacing definition of axis TIME11
            *** NOTE: grid GHB2 used by data set coads_clim
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
@@ -2484,7 +2472,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Changing the value of attribute (PSZT1).positive
            *** NOTE: Changing the type of attribute (coadsx).modulo
            *** NOTE: Changing the value of attribute (coadsx).modulo
-           *** NOTE: Changing the value of attribute (TIME7).time_origin
+           *** NOTE: Changing the value of attribute (TIME2).time_origin
  **ERROR: command syntax: enclose coordinate variable name in parentheses
 list coadsx.units
  **ERROR: variable unknown or not in data set: COADSX.UNITS
@@ -2788,7 +2776,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
-Replacing definition of axis TIME16
+Replacing definition of axis TIME15
            *** NOTE: grid GSQ1 used by data set coads_climatology
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
@@ -2878,9 +2866,10 @@ Starting test: bn_fifty_files.jnl
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
            *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
            *** NOTE: Substituting coordinate midpoints
-           *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
+           *** NOTE: Valid calendars are GREGORIAN,NOLEAP,JULIAN,360_DAY,ALL_LEAP,PROLEPTIC_GREGORIAN
            *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
            *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: Valid calendars are GREGORIAN,NOLEAP,JULIAN,360_DAY,ALL_LEAP,PROLEPTIC_GREGORIAN
            *** NOTE: Axis definition error on axis: TGAP
            *** NOTE: Bounds given describe non-contiguous axis cells
            *** NOTE: Using the LOWER bound specified for each axis cell
@@ -3509,9 +3498,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file t_bug.nc
 Replacing definition of axis T_AXIS
  LISTing to file t_bug.nc
-NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
- T_AXIS_bnds not found. Attempt to append irregular coordinates to NetCDF axis which has no bounds attribute. Write data originally with the /BOUNDS qualifier.
-LIST/FORMAT=CDF/FILE=t_bug.nc/APPEND var
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3586,7 +3572,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: LON1_15: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: LAT1800_1800: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: ENS: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
-           *** NOTE: TIME21: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
+           *** NOTE: TIME20: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: Units on axis "ENS" are not recognized: count
            *** NOTE: They will not be convertible:
  PERMANENT data cleared from memory
@@ -4405,6 +4391,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file aa.nc
  LISTing to file aa.nc
  LISTing to file aa.nc
+           *** NOTE: Axis trajectory is of type char or string
+           *** NOTE: A dummy axis of subscripts will be used
  LISTing to file aa.nc
  LISTing to file aa.nc
 NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
@@ -4567,10 +4555,10 @@ ooooooooooooooooooooooooooooooooooooooooooo
              nosuchfile.nc
 SET DAT/FORM=CDF nosuchfile.nc
  **TMAP ERR: non-existent or not on line
-             Searched $FER_DESCR and $FER_DATA for nosuchfile(.nc ,.cdf,.des)
+             Searched $FER_DESCR and $FER_DATA for nosuchfile(.nc ,.cdf,.des,.agg)
 SET DAT/FORM=CDF nosuchfile
  **TMAP ERR: non-existent or not on line
-             Searched $FER_DESCR and $FER_DATA for snoopy(.nc ,.cdf,.des)
+             Searched $FER_DESCR and $FER_DATA for snoopy(.nc ,.cdf,.des,.agg)
 SET DAT/FORM=CDF snoopy
  **netCDF error
              NetCDF: Unknown file format (OPeNDAP/netCDF Error code -51)
@@ -5793,21 +5781,6 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **TMAP ERR: attribute already defined
-             coordinates for variable ZETA
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable U
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable V
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable TEMP
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable SALT
-             Data set: testdata
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6758,6 +6731,10 @@ list a[x=@evn:3]
 list a[x=@std]
  **ERROR: illegal use of transformation: A[X=???@WGT,D=0] applied to point
 list a[x=@wgt]
+ **ERROR: illegal use of transformation: A[X=???@SBX:3,D=0] applied to point
+list a[x=@sbx]
+ **ERROR: illegal use of transformation: A[X=???@FAV:3,D=0] applied to point
+list a[x=@fav]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6772,6 +6749,32 @@ Replacing definition of axis xax
 Replacing definition of axis yax
 Replacing definition of axis xax
 Replacing definition of axis yax
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis xaxis
+Replacing definition of axis yaxis
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+ LISTing to file a.nc
+ LISTing to file monthA.nc
+ LISTing to file monthB.nc
+           *** NOTE: Not deleted: MONTHAX
+           *** NOTE: Axis is in use by grid GSI1
+ LISTing to file monthA.nc
+ LISTing to file monthA.nc
+           *** NOTE: Appending to NetCDF record axis which has no bounds attribute.
+           *** NOTE: This will result in incorrect box sizes on record axis: monthax
+           *** NOTE: Write the data initially with the /BOUNDS qualifier
+NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
+ monthax_bnds not found. Attempt to append to NetCDF axis having no bounds attribute. Use /NOBOUNDS or rewrite original data with bounds.
+LIST/FORMAT=CDF/append/file=monthA.nc/t=1-dec-2018:31-dec-2018/bounds  tvar
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6812,11 +6815,122 @@ Starting test: bn_ens_promote_global
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn743_bug_fixes
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR: command syntax: unknown region name: @W
-set region/@W
+Re-defining viewport V1
+           *** NOTE: Adjusting Y-axis label size from 0.100 to 0.002, to avoid running off page.
+Re-defining viewport V2
+           *** NOTE: Adjusting Y-axis label size from 0.100 to 0.002, to avoid running off page.
+Re-defining viewport V3
+           *** NOTE: Adjusting Y-axis label size from 0.100 to 0.002, to avoid running off page.
+Re-defining viewport V4
+           *** NOTE: Adjusting Y-axis label size from 0.100 to 0.002, to avoid running off page.
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file 1990-2010.nc
+ LISTing to file 2001.07.nc
+ LISTing to file 1990.nc
+ LISTing to file 2001+07.nc
+ **ERROR: unknown data set: 1990
+SET DAT/FORM=CDF 1990
+ LISTing to file data/1990-2010.nc
+ LISTing to file data/2001.07.nc
+ LISTing to file data/2001+07.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis yaxis
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file manyvars.tsv
+           *** NOTE: Axis time_dim_1 is of type char or string
+           *** NOTE: A dummy axis of subscripts will be used
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Error in bounds "longitude_bnds" or bounds do not enclose point on axis longitude
+           *** NOTE: Substituting coordinate midpoints
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis taxis
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis my_axis
+Replacing definition of axis my_axis
+Replacing definition of axis hrly_ax
+Replacing definition of axis my_axis
+Replacing definition of axis hrly_ax
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis tdata
+Replacing definition of axis tdata
+Replacing definition of axis tdata
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_data_squared
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_overlay_graticules
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_mixed_gregorian
+ LISTing to file mixed_or_proleptic.nc
+ LISTing to file mixed_or_proleptic.nc
+ LISTing to file mixed_or_proleptic.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_int64
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_samplexyz
+Replacing definition of axis x1
+Replacing definition of axis y1
+Replacing definition of axis z1
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn745_bug_fixes
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_iso8601_time
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ **ERROR: command syntax: unknown region name: @w
+set region/@w
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6942,4 +7056,4 @@ Unable to delete drawing segments when writing directly to an image file
            *** NOTE: instead use the "FRAME /FILE=... /FORMAT=..." Ferret command
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Fri Jul 6 09:42:16 PDT 2018
+Ended at Wed Dec 12 17:06:02 PST 2018

@@ -42,6 +42,7 @@
 *                  precision values coming in from argument 1
 * v695  *acm 2/15  Return dates on an F axis or a T axis.
 * v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
+* v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
 *
 * Returns string of dates 
 *
@@ -54,7 +55,7 @@
 * num_args           Required number of arguments
 *
 * axis_inheritance   Type of axis for the result
-*                       ( CUSTOM, IMPLIED_BY_ARGS, NORMAL, tax_datestring )
+*                       ( CUSTOM, IMPLIED_BY_ARGS, NORMAL, ABSTRACT )
 *                       CUSTOM          - user defined axis
 *                       IMPLIED_BY_ARGS - same axis as the incoming argument
 *                       NORMAL          - the result is normal to this axis
@@ -106,7 +107,7 @@
       CALL ef_set_arg_type (id, arg, STRING_ARG)
       CALL ef_set_arg_name(id, arg, 'C')
       CALL ef_set_arg_unit(id, arg, ' ')
-      CALL ef_set_arg_desc(id, arg, 'output precision')
+      CALL ef_set_arg_desc(id, arg, 'output precision, e,g. "day" or "minute" ' )
       CALL ef_set_axis_influence_6d(id, arg,
      .                              NO, NO, NO, NO, NO, NO)
 
@@ -206,17 +207,18 @@
 
       get_prec = 6  ! dates to seconds, output precision will be set by precistring.
 
-      CALL TAX_DATESTRING_DATES (arg_1, result, arg_lo_ss, arg_incr, 
+      CALL TAX_DATE_STRINGS (arg_1, result, arg_lo_ss, arg_incr, 
      .                res_lo_ss, res_hi_ss, get_prec, dir, precistring, 
      .                tmodulo, bad_flag, status)
 
 
 ! Routine has reset get_prec.  Start over for consistent time-string format.
       IF (status .NE. 0) THEN  
-         CALL TAX_DATESTRING_DATES (arg_1, result, arg_lo_ss, arg_incr, 
+            CALL TAX_DATE_STRINGS (arg_1, result, arg_lo_ss, arg_incr, 
      .                res_lo_ss, res_hi_ss, get_prec, dir, precistring, 
      .                tmodulo, bad_flag, status)
       ENDIF
+      
 
          
       RETURN
@@ -224,186 +226,3 @@
  999  CALL ef_bail_out (id, err_msg)
 
       END
-
-
-* Convert time coordinates to dates.  If fractional seconds are needed
-* for the formatting, this may be run a second time for consistent formatting
-* when some times fall on an even second.
-
-      SUBROUTINE TAX_DATESTRING_DATES (arg_1, result, arg_lo_ss, arg_incr, 
-     .                res_lo_ss, res_hi_ss, get_prec, dir, precistring, 
-     .                tmodulo, bad_flag, status)
-
-
-      IMPLICIT NONE
-      INCLUDE 'EF_Util.cmn'
-      INCLUDE 'EF_mem_subsc.cmn'
-
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
-
-      INTEGER id
-
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
-     .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
-      REAL result(strdf, memreslox:memreshix, memresloy:memreshiy, 
-     .                   memresloz:memreshiz, memreslot:memreshit,
-     .                   memresloe:memreshie, memreslof:memreshif)
-
-      INTEGER res_lo_ss(6),
-     .        res_hi_ss(6)
-      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
-     .        arg_incr (6,EF_MAX_ARGS)
-
-      REAL bad_flag(EF_MAX_ARGS)
-      INTEGER get_prec, dir, status
-
-      LOGICAL tmodulo
-
-      INTEGER i, j, k, l, m, n
-      INTEGER i1, j1, k1, l1, m1, n1
-      INTEGER i3, j3, k3, l3, m3, n3
-      INTEGER slen, dlen, prec_in
-      CHARACTER*30 datestring
-      CHARACTER*(*) precistring
-      REAL*8 ddate
-
-      status = 0
-      prec_in = get_prec
-
-      n1 = arg_lo_ss(F_AXIS,ARG1)
-      DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-
-      m1 = arg_lo_ss(E_AXIS,ARG1)
-      DO 500 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-
-      l1 = arg_lo_ss(T_AXIS,ARG1)
-      DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-
-      k1 = arg_lo_ss(Z_AXIS,ARG1)
-      DO 300 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-
-      j1 = arg_lo_ss(Y_AXIS,ARG1)
-      DO 200 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-
-      i1 = arg_lo_ss(X_AXIS,ARG1)
-      DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-
-         ddate = arg_1(i1,j1,k1,l1,m1,n1) 
-         ddate = ddate  
-         IF ( ddate .NE. bad_flag(ARG1) ) THEN
-
-*     Get the date string corresponding to time ddate for the variable ARG2
-            CALL EF_GET_AXIS_DATES (id, ARG2, ddate, dir, 1, 
-     .                   get_prec, dlen, datestring)
-
-*     Output precision is fractions of seconds.  Redo this using that precision throughout.
-	    IF (prec_in.EQ.6 .AND. get_prec.GT.6) THEN
-	       status = -1
-	       RETURN
-	    ENDIF
-
-*     Assign the appropriate substring to the result.
-            IF ( .NOT. tmodulo ) THEN
-               IF ( precistring .EQ. 'sec' ) THEN
-                  slen = MAX(dlen, 20)
-                  CALL EF_PUT_STRING(datestring, slen,
-     .                               result(1,i,j,k,l,m,n))
-               ELSE IF ( precistring .EQ. 'min' ) THEN
-                  slen = 17
-                  CALL EF_PUT_STRING(datestring(1:17), slen,
-     .                               result(1,i,j,k,l,m,n))
-               ELSE IF ( precistring .EQ. 'hou' ) THEN
-                  slen = 14
-                  CALL EF_PUT_STRING(datestring(1:14), slen,
-     .                               result(1,i,j,k,l,m,n))
-               ELSE IF ( precistring .EQ. 'day' ) THEN
-                  slen = 11
-                  CALL EF_PUT_STRING(datestring(1:11), slen,
-     .                               result(1,i,j,k,l,m,n))
-               ELSE IF ( precistring .EQ. 'mon' ) THEN
-                  slen = 8
-                  CALL EF_PUT_STRING(datestring(4:11), slen,
-     .                               result(1,i,j,k,l,m,n))
-               ELSE IF ( precistring .EQ. 'yea' ) THEN
-                  slen = 4
-                  CALL EF_PUT_STRING(datestring(8:11), slen,
-     .                               result(1,i,j,k,l,m,n))
-               ELSE
-                  slen = 20
-                  CALL EF_PUT_STRING (datestring, slen,
-     .                               result(1,i,j,k,l,m,n))
-               ENDIF
-
-            ELSE  ! modulo time axis.  Datestring looks like 15-FEB 02:54:36
-
-               IF ( precistring .EQ. 'sec' ) THEN
-                  slen = 15
-                  CALL EF_PUT_STRING(datestring(1:15), slen,
-     .                               result(1,i,j,k,l,m,n))
-               ELSE IF ( precistring .EQ. 'min' ) THEN
-                  slen = 12
-                  CALL EF_PUT_STRING(datestring(1:12), slen,
-     .                               result(1,i,j,k,l,m,n))
-               ELSE IF ( precistring .EQ. 'hou' ) THEN
-                  slen = 9
-                  CALL EF_PUT_STRING(datestring(1:9), slen,
-     .                               result(1,i,j,k,l,m,n))
-               ELSE IF ( precistring .EQ. 'day' ) THEN
-                  slen = 6
-                  CALL EF_PUT_STRING(datestring(1:6), slen, 
-     .                               result(1,i,j,k,l,m,n))
-               ELSE IF ( precistring .EQ. 'mon' ) THEN
-                  slen = 3
-                  CALL EF_PUT_STRING(datestring(4:6), slen,
-     .                               result(1,i,j,k,l,m,n))
-               ELSE IF ( precistring .EQ. 'yea' ) THEN
-                  datestring = '...'
-                  slen = 3
-                  CALL EF_PUT_STRING(datestring, slen,
-     .                               result(1,i,j,k,l,m,n))
-               ELSE
-                           slen = 15
-                           CALL EF_PUT_STRING(datestring, slen,
-     .                                        result(1,i,j,k,l,m,n))
-               ENDIF
-
-            ENDIF  ! Modulo time
-
-         ELSE  ! ddate .NE. bad_flag(ARG1)
-
-            datestring = '...'
-            slen = 3
-            CALL EF_PUT_STRING(datestring, slen,
-     .                                  result(1,i,j,k,l,m,n))
-
-         ENDIF
-
-         i1 = i1 + arg_incr(X_AXIS,ARG1)
- 100  CONTINUE
-
-         j1 = j1 + arg_incr(Y_AXIS,ARG1)
- 200  CONTINUE
-
-         k1 = k1 + arg_incr(Z_AXIS,ARG1)
- 300  CONTINUE
-
-         l1 = l1 + arg_incr(T_AXIS,ARG1)
- 400  CONTINUE
-
-         m1 = m1 + arg_incr(E_AXIS,ARG1)
- 500  CONTINUE
-
-         n1 = n1 + arg_incr(F_AXIS,ARG1)
- 600  CONTINUE
-
-	status = 0
-	
-	RETURN
-
-	END
-

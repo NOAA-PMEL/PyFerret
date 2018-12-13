@@ -39,7 +39,8 @@
 * 27-Feb-2013 ACM  Fix ticket 2043: remove old code for handling single-
 *                  precision values coming in from argument 1
 * v695  *acm 2/15  Time axis may be an F axis or a T axis.
-* v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
+* v744 *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
+* v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
 *
 * This function returns fraction of year specified by the first argument 
 * (variable containing time values) from the second argument (variable from 
@@ -163,14 +164,15 @@
 *                                                                      |
 *                                                                      V
 
-      CHARACTER*20 datebuf
-      INTEGER iyear, day_of_mon, day_of_year, days_this_year
-      CHARACTER*3 cmon
+      LOGICAL default_datefmt, first
+      INTEGER iyear, day_of_mon, day_of_year, days_this_year, imon
       INTEGER L2, LL, dir, get_prec, dlen
-      CHARACTER*255 err_msg
-      REAL*8 ddate, hr, min, sec, dayfrac
       INTEGER i, j, k, l, m, n
       INTEGER i1, j1, k1, l1, m1, n1
+      REAL*8 ddate, hr, min, sec, dayfrac
+      CHARACTER*3 cmon
+      CHARACTER*30 datebuf
+      CHARACTER*255 err_msg
 
 *  variables for checking axis characteristics (modulo axes)
       CHARACTER ax_name(6)*16, ax_units(6)*16
@@ -197,6 +199,7 @@
          tmodulo = modulo(F_AXIS)
       ENDIF
 
+      first = .TRUE.
 
       n1 = arg_lo_ss(F_AXIS,ARG1)
       DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
@@ -223,20 +226,42 @@
 *     Get the date string corresponding to time ddate for the variable ARG2
             CALL EF_GET_AXIS_DATES(id, ARG2, ddate, dir, 1, get_prec, dlen, datebuf)
 
-            IF ( .NOT. tmodulo ) THEN
-*     datebuf is in form "DD-MON-YEAR HH:MM:SS". Read date.
-               READ (datebuf,420,err=900) day_of_mon, cmon, iyear,
-     .              hr, min, sec
- 420           FORMAT (i2, 1x, a3, 1x, i4, 3(1x,f2.0)) 
-            ELSE
-*     modulo: Datebuf is in form "DD-MON HH:MM:SS". Read date.
-               READ (datebuf,430,err=900) day_of_mon, cmon,
-     .              hr, min, sec
- 430           FORMAT (i2, 1x, a3, 3(1x,f2.0)) 
-               iyear = 1901  ! nominally non-leap year 
+* Are we using the default date format or ISO-8601 format? 
+            IF (first) THEN
+	       default_datefmt = (datebuf(3:3) .EQ. '-')
+	       first = .FALSE.
             ENDIF
 
-            CALL JULIAN_DAY_OF_YEAR(cmon, day_of_mon, iyear,
+            IF (default_datefmt) THEN
+               IF ( .NOT. tmodulo ) THEN
+*     datebuf is in form "DD-MON-YEAR HH:MM:SS". Read date.
+                  READ (datebuf,420,err=900) day_of_mon, cmon, iyear,
+     .                 hr, min, sec
+ 420              FORMAT (i2, 1x, a3, 1x, i4, 3(1x,f2.0)) 
+
+               ELSE
+*     modulo: Datebuf is in form "DD-MON HH:MM:SS". Read date.
+                  READ (datebuf,430,err=900) day_of_mon, cmon,
+     .                 hr, min, sec
+ 430              FORMAT (i2, 1x, a3, 3(1x,f2.0)) 
+                  iyear = 1901  ! nominally non-leap year 
+               ENDIF
+	       imon = 0
+
+            ELSE
+
+* Iso-8601 formatted dates 
+* datebuf is in form "YYYY-MM-DD HH:MM:SS". If modulo, then yyyy is 0000.
+
+               READ (datebuf,440,err=900) iyear, imon, day_of_mon,
+     .                 hr, min, sec
+ 440           FORMAT (i4, 2(1x,i2), 3(1x,f2.0))
+               cmon = 'XXX'
+
+            
+	    ENDIF
+
+            CALL JULIAN_DAY_OF_YEAR(cmon, imon, day_of_mon, iyear,
      .                              day_of_year, days_this_year)
             dayfrac = (hr + min/60 + sec/3600)/24.
             result(i,j,k,l,m,n) = (REAL(day_of_year) + dayfrac) / REAL(days_this_year) 

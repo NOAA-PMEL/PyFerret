@@ -666,10 +666,9 @@
 
 * codes for time/date formats (Match these with the same ones
 * in gt_lib.parm.)
-	INTEGER pdate_vax, pdate_numslashnum, pdate_iso_8601
+	INTEGER pdate_vax, pdate_numslashnum
 	PARAMETER (pdate_vax = 1,
-     .		   pdate_numslashnum = 2,
-     .		   pdate_iso_8601 = 3 )
+     .		   pdate_numslashnum = 2 )
 
 * various modes of output (differentiated for GUI window controls)
 	INTEGER		pttmode_explct, pttmode_ops,

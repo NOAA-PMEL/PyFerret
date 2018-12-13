@@ -82,6 +82,8 @@
 *
 *
 * 2006-05-12 add code to handle years before 1900
+* v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
+* v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
 
       SUBROUTINE tax_jday1900_init(id)
 
@@ -164,14 +166,16 @@
 *                                                                      |
 *                                                                      V
 
-      CHARACTER*20 datebuf
-      INTEGER iyear, day_of_mon, day_since_1900
-      CHARACTER*3 cmon
+
+      LOGICAL default_datefmt, first
+      INTEGER iyear, day_of_mon, day_since_1900, imon
       INTEGER L2, LL, dir, get_prec, dlen
-      CHARACTER*255 err_msg
-      REAL*8 ddate
       INTEGER i, j, k, l, m, n
       INTEGER i1, j1, k1, l1, m1, n1
+      REAL*8 ddate
+      CHARACTER*3 cmon
+      CHARACTER*30 datebuf
+      CHARACTER*255 err_msg
 
 *  variables for checking axis characteristics (modulo axes)
       CHARACTER ax_name(6)*16, ax_units(6)*16
@@ -184,6 +188,7 @@
 *  Check to see if time axis of arg 2 is modulo
       CALL ef_get_axis_info_6d(id, ARG2, ax_name, ax_units,
      .                         backward, modulo, regular)
+
 
 * return date string to precision of seconds
       get_prec = 6
@@ -203,6 +208,8 @@
             GO TO 999
          ENDIF
       ENDIF
+
+      first = .TRUE.
 
       n1 = arg_lo_ss(F_AXIS,ARG1)
       DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
@@ -228,11 +235,30 @@
 *     Get the date string corresponding to time ddate for the variable ARG2
             CALL EF_GET_AXIS_DATES(id, ARG2, ddate, dir, 1, get_prec, dlen, datebuf)
 
-*     datebuf is in form "DD-MON-YEAR HH:MM:SS". Read date.
-            READ (datebuf, 420, err=900)  day_of_mon, cmon, iyear
- 420                 FORMAT (i2, 1x, a3, 1x, i4) 
+* Are we using the default date format or ISO-8601 format? 
+            IF (first) THEN
+	       default_datefmt = (datebuf(3:3) .EQ. '-')
+	       first = .FALSE.
+            ENDIF
 
-            CALL JULIAN_DAY_OF_YEAR1900(cmon, day_of_mon, iyear, 
+            IF (default_datefmt) THEN
+*     datebuf is in form "DD-MON-YEAR HH:MM:SS". Read date.
+               READ (datebuf, 420, err=900)  day_of_mon, cmon, iyear
+ 420           FORMAT (i2, 1x, a3, 1x, i4)
+               imon = 0
+
+            ELSE
+	  
+* Iso-8601 formatted dates 
+* datebuf is in form "YYYY-MM-DD HH:MM:SS". If modulo, then yyyy is 0000.
+
+               READ (datebuf,440,err=900) iyear, imon, day_of_mon
+ 440           FORMAT (i4, 2(1x,i2))
+               cmon = 'XXX'
+
+            ENDIF
+
+	    CALL JULIAN_DAY_OF_YEAR1900(cmon, imon, day_of_mon, iyear, 
      .                                           day_since_1900)
             result(i,j,k,l,m,n) = day_since_1900 
 

@@ -1,7 +1,8 @@
 	SUBROUTINE CD_MAKE_VAR ( cdfid, dset, varname, type, maxstrlen,
      .                           grid, lo, hi, recdim, enhead, new, 
      .                           edges_flag, do_bounds, mode_upcase_output,
-     .                           keepax_flag, netcdf4_type, xchunk_size, 
+     .                           keepax_flag, date_fmt_out,
+     .                           netcdf4_type, xchunk_size, 
      .                           ychunk_size, zchunk_size, tchunk_size, 
      .                           deflate_lev, shuffle_flag, endian_code,
      .                           stringdimname, status )
@@ -95,6 +96,7 @@
 *                  the full-span in that direction.
 * V710  9/16 *acm* Ticket 2459: If axis is already in the file with a different
 *                  direction write axis with a unique name for this direction.
+* v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -139,7 +141,7 @@
       INTEGER cdfid, dset, type, maxstrlen, grid, lo(nferdims), hi(nferdims),
      .        recdim, keepax_flag, do_bounds, netcdf4_type, xchunk_size, 
      .        ychunk_size, zchunk_size, tchunk_size, 
-     .        deflate_lev, shuffle_flag, endian_code, status
+     .        deflate_lev, shuffle_flag, endian_code, date_fmt_out, status
       CHARACTER*(*) varname, stringdimname
 
 * local variable declarations:
@@ -266,7 +268,7 @@
          CALL CD_WRITE_GRID( cdfid, dset, grid, lo, hi, recdim, itsa_slab,
      .                       gname,  edges_flag, do_bounds, 
      .                       mode_upcase_output, keepax_flag, 
-     .                       status )
+     .                       date_fmt_out, status )
          IF ( status .NE. merr_ok ) RETURN
 
 * create child axes where this variable doesn't run full-span on an axis
@@ -276,7 +278,7 @@
      .                   lo(idim), hi(idim), pcdf_child_span, 
      .                   .FALSE., .FALSE., mode_upcase_output, 
      .                   keepax_flag, name_from_grid(idim), dim_only(idim), 
-     .                   status)
+     .                   date_fmt_out, status)
                IF ( status .NE. merr_ok ) GOTO 5900
             ENDIF
  250     CONTINUE
@@ -297,7 +299,8 @@
      .			       idim.EQ.recdim, lo(idim), hi(idim), 
      .			       ax_type, edges_flag, do_bounds, 
      .                         mode_upcase_output, keepax_flag, 
-     .                         name_from_grid(idim), dim_only(idim), status )
+     .                         name_from_grid(idim), dim_only(idim), 
+     .                         date_fmt_out, status )
               IF ( status .NE. merr_ok ) GOTO 5900
 	    ENDIF
  260     CONTINUE

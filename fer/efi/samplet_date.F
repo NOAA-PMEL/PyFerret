@@ -44,7 +44,8 @@
 * 3/1/00  ACM fixed bug in definition of the work array datebuf
 * 7/2000  ACM inherit axes only from the data variable, not dates!
 * 4/2001  *ACM* add error message
-* v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
+* v74+ *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
+* v74+ *acm* 12/18 Handle dates in iso-8601 format or default format
 
 *
 * In this subroutine we provide information about
@@ -336,6 +337,7 @@
 *                                                                     |
 *                                                                     V
 
+      LOGICAL default_datefmt
       INTEGER iarg
       INTEGER i, j, k, l, m, n
       INTEGER arg
@@ -359,6 +361,7 @@
      .            'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'/
 
   20  FORMAT (f2.0, 1x, a3, 1x, f4.0, 3(1x,f2.0))
+  22  FORMAT (f4.0, 5(1x,f2.0))
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -374,15 +377,26 @@
       numtimes = arg_hi_ss(T_AXIS, ARG1) - arg_lo_ss(T_AXIS, ARG1) + 1
       CALL ef_get_axis_dates (id, ARG1, taxdat, T_AXIS, numtimes, get_prec, dlen, datebuf)
 
+      default_datefmt = (datebuf(1,1,1,1,1,1)(3:3) .EQ. '-')
+
       l1 = arg_lo_ss(T_AXIS,ARG1)
       DO 60 l = 1, numtimes
-         READ (datebuf(l,1,1,1,1,1), 20, err=900) bda, cmon, byr,
+         IF (default_datefmt) THEN
+	 
+* date and time dd-MON-yyyy hh:mm:ss
+	    READ (datebuf(L,1,1,1,1,1), 20, err=900) bda, cmon, byr,
      .                                            bhr, bmn, bsc
-         bmo = 0
-         DO 40 mnth = 1, 12
-            IF ( cmon .eq. months(mnth) ) bmo = mnth
-   40    CONTINUE
-         CALL day_of_year(bmo, bda, byr, status, errtxt)
+            bmo = 0
+            DO 40 mnth = 1, 12
+               IF ( cmon .eq. months(mnth) ) bmo = mnth
+   40       CONTINUE
+         ELSE
+
+* iso-8601 time yyyy-mm-dd hh:mm:ss
+	    READ (datebuf(L,1,1,1,1,1), 22, err=900) byr, bmo, bda, 
+     .                                            bhr, bmn, bsc
+	 ENDIF
+	 CALL day_of_year(bmo, bda, byr, status, errtxt)
          IF (status .NE. 0) GO TO 1000
          bmn = bmn + bsc/ 60.
          bhr = bhr + bmn/ 60.

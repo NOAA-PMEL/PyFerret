@@ -209,6 +209,8 @@
 *                  uvar_aux_var to be replaced with calls to LIST routines in NCF_Util.c 
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management
 * V720 3/17 *acm* Ticket 2132, attribute of user-defined variable, do not try to show dataset info
+* v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
+*                  new mode datefmt for formatted date output
 
         IMPLICIT NONE
 
@@ -755,6 +757,8 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 	   ELSEIF ( mode .EQ. pmode_grat ) THEN
               dlen = TM_LENSTR1(mode_grat_buff)
 	      show_str(36:) = mode_grat_buff(:dlen)
+	   ELSEIF ( mode .EQ. pmode_datefmt ) THEN
+	      show_str(36:) = datefmt_modes(mode_arg(mode,1))
 	   ELSEIF ( mode_arg( mode,1 ) .NE. unspecified_int4 ) THEN
 	      WRITE ( show_str(36:42), '(I7)' ) mode_arg( mode,1 )
 	      IF (STR_SAME(show_str(36:42), '*******') .EQ. 0) 

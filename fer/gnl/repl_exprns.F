@@ -126,6 +126,7 @@
 * V73+ *acm* 12/17 Fix issue #1847 - value overflows integer on RETURN=size
 * V74  *acm* 2/18 Issue # 1861, handling missing- and _FillValue with scale and offset
 *                 change to `var,RETURN=bad`
+* v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
 
         IMPLICIT NONE
 #include "netcdf.inc"
@@ -157,7 +158,7 @@
      .		  dqote, DQ, orig_name, user_prec, uvgrid, compressed
 	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
      .		  FIND_DSET_NUMBER, GET_ABSTRACT_LINE, TM_LENSTR,
-     .		  TM_GET_GRIDNUM, GRID_FROM_NAME, TM_SUBSC, 
+     .		  TM_GET_GRIDNUM, GRID_FROM_NAME, TM_SUBSC, TM_GET_CALENDAR_ID,
      .		  str_len, lenbuff, iend, itmp, axis,
      .		  mr, cx, mr_temp, i, i1, i2, use_digits, true_end,
      .		  qual_end, brkt, idim, use_width, dset, varid, 
@@ -475,6 +476,8 @@ c if its a netcdf-type dset with packed data, may have swapped out the bad flag
 		    ENDIF
 	         ENDIF
 	         str_len = TM_LENSTR1(repl)
+		 CALL CHECK_DATE_REFORMAT (repl, str_len, 
+     .                       TM_GET_CALENDAR_ID ( line_cal_name(axis)))
 	         GOTO 500
 
 * ... RETURN=F0
@@ -492,6 +495,8 @@ c if its a netcdf-type dset with packed data, may have swapped out the bad flag
                     ENDIF
 	         ENDIF
 	         str_len = TM_LENSTR1(repl)
+		 CALL CHECK_DATE_REFORMAT (repl, str_len, 
+     .                       TM_GET_CALENDAR_ID ( line_cal_name(axis)))
 	         GOTO 500
               
 * ... RETURN=CALENDAR
@@ -804,6 +809,9 @@ c if its a netcdf-type dset with packed data, may have swapped out the bad flag
      .                  repl =  '01-JAN-0001 00:00:00'
                   ENDIF
 	      ENDIF
+	      str_len = TM_LENSTR1(repl)
+	      CALL CHECK_DATE_REFORMAT (repl, str_len, 
+     .                    TM_GET_CALENDAR_ID ( line_cal_name(axis)))
 
 * ... RETURN=F0
 	   ELSEIF ( repl .EQ. "F0" ) THEN
@@ -817,6 +825,9 @@ c if its a netcdf-type dset with packed data, may have swapped out the bad flag
      .                  repl =  '01-JAN-0001 00:00:00'
                   ENDIF
 	      ENDIF
+	      str_len = TM_LENSTR1(repl)
+	      CALL CHECK_DATE_REFORMAT (repl, str_len, 
+     .                    TM_GET_CALENDAR_ID ( line_cal_name(axis)))
               
 * ... RETURN=CALENDAR
 	   ELSEIF ( repl(1:3) .EQ. "CAL" ) THEN

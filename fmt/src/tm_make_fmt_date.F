@@ -41,14 +41,20 @@
 
 * *sh* 2/13/95
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V7.44  11/18 *acm* Note numslashnum  formatting is ISO 8601 yyyy-mm-dd
+* V7.44 12/18 *acm* Allow for fractional seconds 20-DEC-1982 12:52:00.24
+* v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
+*                  Also more on writing out fractional seconds
 
 * ARGUMENT DEFINITIONS
 *  form  - code for the date string format
 *  date  - date to process
 *  day, month, year, hour, minute, second - obvious
 *  status - returned status
+
 	CHARACTER*(*)	date
-	INTEGER	form, day, month, year, hour, minute, second, dlen
+	INTEGER	form, day, month, year, hour, minute, dlen
+	REAL	second
 *
 * INCLUDE FILES
 	include 'tmap_errors.parm'
@@ -56,25 +62,45 @@
 #include "gt_lib.parm"
 
 * internal variable declarations:
-	CHARACTER*20    tempstr
-	 CHARACTER*3    cmon(12)
+	INTEGER		isecond, ifrac
+	REAL		frac
+	CHARACTER*3    cmon(12)
 
 	DATA cmon /'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
      .             'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'/
 
 
 	IF ( form .EQ. pdate_vax ) THEN
-* model date: 01-DEC-1982 12:52:00
-	   WRITE (date,1000) day, cmon(month), year, hour,
-     .  			minute, second
+* model date: 20-DEC-1982 12:52:00
 1000       FORMAT(I2.2,'-',A3,'-',I4.4,' ',2(I2.2,':'),I2.2)
-	   dlen = 20
-	ELSEIF ( form .EQ. pdate_numslashnum ) THEN
-* model date: 1982-12-01 12:52:00
-	   WRITE (date,1100) year, month, day, hour,
+1010       FORMAT(I2.2,'-',A3,'-',I4.4,' ',2(I2.2,':'),F4.2)
+	   IF (AINT(second) .EQ. second) THEN
+	      isecond = AINT(second)
+	      WRITE (date,1000) day, cmon(month), year, hour,
+     .  			minute, isecond
+	      dlen = 20
+	   ELSE
+	      WRITE (date,1010) day, cmon(month), year, hour,
      .  			minute, second
+	      dlen = 23
+	   ENDIF
+	ELSEIF ( form .EQ. pdate_numslashnum ) THEN
+* model date: 1982-12-20 12:52:00
 1100       FORMAT(I4.4,'-',I2.2,'-',I2.2,' ',2(I2.2,':'),I2.2)
-	   dlen = 19
+1110       FORMAT(I4.4,'-',I2.2,'-',I2.2,' ',2(I2.2,':'),I2.2,'.',I2.2)
+	   IF (AINT(second) .EQ. second) THEN
+	      isecond = AINT(second)
+	      WRITE (date,1100) year, month, day, hour,
+     .  			minute, isecond
+	      dlen = 19
+	   ELSE
+	      isecond = AINT(second)
+	      frac = second - AINT(second)
+	      ifrac = 100*frac
+	      WRITE (date,1110) year, month, day, hour,
+     .  			minute, isecond, ifrac
+	      dlen = 22
+	   ENDIF
 	ELSE
 	   STOP 'Unknown date format code'
 	ENDIF

@@ -42,7 +42,10 @@
 * format.
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 * v75  *acm* 3/18  Changes to allow for timesteps in fractional seconds
-*
+* v74+ *acm* 12/18 Issue 1902, fractional seconds only when time units are seconds
+*                  use AINT call not INT when comparing values, large numbers of seconds
+* v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
+
 * Arguments:
 *	grid	 - grid containing a time axis
 *	dim      - dimension (t_dim or f_dim)
@@ -71,7 +74,7 @@
 	CHARACTER*16	TM_FMT, buff2
 	CHARACTER*2     linedir
 	INTEGER		TM_GET_CALENDAR_ID, TM_LENSTR1,  
-     .                  axis, status, prec,cal_id, nfrac
+     .                  axis, status, prec, cal_id, nfrac, slen
 	REAL*8		start_secs, offset_secs, this_secs, val
 	REAL*8		SECS_FROM_BC
 
@@ -131,7 +134,7 @@
 	IF ( prec .GE. 6 ) THEN		! full precision
 	   date = buff
 	   IF (line_tunit(axis) .EQ. 1) THEN  ! Deal with fractional seconds
-	      val = INT(tstep)
+	      val = AINT(tstep)
 	      IF (val .NE. tstep) THEN
 	         val = tstep - val
 	         buff2 = TM_FMT(val, 4, 16, nfrac)
@@ -150,7 +153,10 @@
 	   date = buff( 8:11 )	
 	ENDIF
 
+	slen = TM_LENSTR1(date)
+	CALL CHECK_DATE_REFORMAT (date, slen, cal_id)
+
 * Finished
 	RETURN
 	END
-
+                      

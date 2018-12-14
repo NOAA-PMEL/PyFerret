@@ -83,12 +83,13 @@
 	REAL*8		val
 
 * internal variable declarations:
-	CHARACTER	SECS_TO_DATE*20, TM_FMT*30, code*1, xtra*16
+	CHARACTER	SECS_TO_DATE*20, TM_FMT*30, TM_SECS_TO_DATE*20, 
+     .                  code*1, xtra*16, buff*20
 	INTEGER		FIELD_WIDTH, TM_GET_CALENDAR_ID, TM_LENSTR1, 
-     .                  min_width, width, decim, numbers, n2, cal_id, iv
+     .                  min_width, width, decim, slen, n2, cal_id, iv
 	LOGICAL		GEOG_LABEL, fancy, use_sig_fig,
-     .                  modulo, truncate
-	REAL		val4, val4_orig, fval
+     .                  modulo, truncate, no_year
+	REAL		TSTEP_TO_SECS, val4, val4_orig, fval
 
 * valid inputs ?  (bug fix 11/91)
         IF ( val .EQ. unspecified_val8 ) THEN
@@ -110,7 +111,7 @@
 ! Note (2/3/93): GEOG_LABEL contains the removed logic
 
 * adjust precision to fit into field if necessary
-100	min_width = FIELD_WIDTH( val, grid, idim, decim, numbers )
+100	min_width = FIELD_WIDTH( val, grid, idim, decim, slen )
 	IF ( width .LT. min_width ) THEN
 	   IF ( decim .EQ. 0 ) THEN
 	      string = '*'		! too narrow to format
@@ -175,27 +176,37 @@ c	      IF (ndec .LE. 3) val4 = INT(val4 * 1000.D0)/1000.D0
                  cal_id = 1  ! axis-independent dates were calculated with dflt calendar
                  string = SECS_TO_DATE( -val, cal_id )
               ELSE
+                 CALL TSTEP_TO_DATE( grid, idim, val, 6, string )
+		 no_year = (TM_LENSTR1(string) .LT. 19)
                  CALL TSTEP_TO_DATE( grid, idim, val, decim, string )
-                 numbers = TM_LENSTR1(string)
+                 slen = TM_LENSTR1(string)
                  line       = grid_line( idim, grid )
 		 cal_id = TM_GET_CALENDAR_ID ( line_cal_name(line))
 
-		 CALL CHECK_DATE_REFORMAT (string, numbers, cal_id)
-                 line    = grid_line( idim, grid )
+		 buff = string
+		 CALL CHECK_DATE_REFORMAT (string, slen, cal_id)
+* for ISO dates keep the 4-digit year
+		 IF (buff .NE. string .AND. no_year) THEN  
+		    fval = TSTEP_TO_SECS( grid, idim, val )
+		    string = TM_SECS_TO_DATE( fval, cal_id )
+                    CALL CHECK_DATE_REFORMAT (string, slen, cal_id)
+		 ENDIF
+
+		 line    = grid_line( idim, grid )
                  IF (decim.GT.7 .AND. line_tunit(line) .EQ. 1.) THEN  ! units of data in seconds
                     fval = AINT(val)
                     IF (fval .NE. val) THEN
                        fval = val-fval
                        xtra = TM_FMT(fval, 4, 16, n2)  
-                       IF (width-numbers .GE. n2-1) 
-     .                    string = string(:numbers)//xtra(2:n2)
+                       IF (width-slen .GE. n2-1) 
+     .                    string = string(:slen)//xtra(2:n2)
                     ELSE 
-		       string = string(:numbers)//'.0'
+		       string = string(:slen)//'.0'
 		    ENDIF
                  ENDIF
                  
 		 IF (truncate) THEN
-		    string(numbers-3:numbers) = '***'
+		    string(slen-3:slen) = '***'
 		 ENDIF
 
               ENDIF
@@ -205,11 +216,11 @@ c	      IF (ndec .LE. 3) val4 = INT(val4 * 1000.D0)/1000.D0
 
 * create all strings except date/time here
 	IF ( use_sig_fig ) THEN
-	   string = TM_FMT( val4, decim, width, numbers )
+	   string = TM_FMT( val4, decim, width, slen )
 	ELSE
-	   string = TM_FMT( val4, -decim, width, numbers )
+	   string = TM_FMT( val4, -decim, width, slen )
 	ENDIF
-	string = string(:numbers)//code
+	string = string(:slen)//code
 
 * add parenthetical remark if modulo translation has occurred
         IF ( modulo ) THEN
@@ -218,8 +229,8 @@ c	      IF (ndec .LE. 3) val4 = INT(val4 * 1000.D0)/1000.D0
 	   ELSE
               xtra =  TM_FMT( val4_orig, -decim, width, n2 )
 	   ENDIF
-           IF ( LEN(string) .GE. numbers+n2+3 ) 
-     .                string = string(:numbers+1)//'('//xtra(:n2)//')'
+           IF ( LEN(string) .GE. slen+n2+3 ) 
+     .                string = string(:slen+1)//'('//xtra(:n2)//')'
         ENDIF
 
 

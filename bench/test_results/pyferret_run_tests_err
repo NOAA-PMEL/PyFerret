@@ -5791,6 +5791,10 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: A dummy axis of subscripts will be used
 *** Running ferret script: bn_iso8601_time.jnl
  LISTing to file a.nc
+           *** NOTE: regarding ./data/clim_axes_julian.nc ...
+           *** NOTE: JULIAN climatological axes defined
+           *** NOTE: regarding ./data/clim_axes_gregorian.nc ...
+           *** NOTE: GREGORIAN climatological axes defined
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

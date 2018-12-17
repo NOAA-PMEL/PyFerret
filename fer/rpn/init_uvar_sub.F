@@ -216,7 +216,7 @@ cc     .                                  name, LEN(name))
 #else
 * VMS needs IAND
 * bug fix - forgot (uvar) in var reference
-	      uvar_text(uvar)(i2:12) = CHAR( IAND('DF'X, ICHAR(c)) )
+	      uvar_text(uvar)(i2:i2) = CHAR( IAND('DF'X, ICHAR(c)) )
 # endif
 #endif
 	   ENDIF

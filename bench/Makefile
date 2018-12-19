@@ -8,7 +8,10 @@ include ../platform_specific.mk.$(BUILDTYPE)
 
 ## Compare results from executing the RUN_TESTS.sh test suite with those saved under bench/test_results
 .PHONY: check
-check: run_tests
+check: run_tests do_diffs
+
+.PHONY: do_diffs
+do_diffs:
 	@echo 'Differences in the generated bench PDF and PNG files versus those in bench/test_results'
 	-@for img in *.pdf *.png ; \
 	do \

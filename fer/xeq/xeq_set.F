@@ -208,6 +208,7 @@
 * v743  12/18 *acm* Issue 1803, New command-line switch -verify for set mode ver:always behavior
 * v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
 *                  new mode datefmt for formatted date output
+* v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -252,11 +253,12 @@
 !	INTEGER	reconfig   ! removed for dynamic memory management 2/2017
 
 * local variable declarations:
+	LOGICAL		TM_DATE_OK, is_ok
 	INTEGER		REGION_NUMBER, VIEWPORT_NUMBER, GRID_FROM_NAME,
      .                  TM_GET_LINENUM, TM_LENSTR, TM_LENSTR1, 
      .                  TM_UNIT_ID, TM_UNITS_CAL, TM_GET_CALENDAR_ID,
      .			FIND_DSET_NUMBER, STR_UPCASE, STR_SAME, 
-     .                  ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS, ITS_BATCH_MODE,
+     .                  ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS, ITS_BATCH_MODE, 
      .                  equal_pos, colon_pos, dset_num, ich, status,
      .			tmap_status, mode, idim, iarg, item, lp, iv, 
      .			cx, i, grid, axis, loc, perm(nferdims), buff_len, 
@@ -1092,8 +1094,12 @@ c *kob* 4/97
      .                buff1, status )
               IF ( status .NE. ferr_ok ) GOTO 6410
 
-              CALL TM_BREAK_DATE (buff1, 1, year, month, day,
-     .				  hour, minute, second,status)
+              status = ferr_grid_definition       ! status setting if tm_date_ok false
+              is_ok = TM_DATE_OK ( buff1 , 1) 
+ 
+              IF ( is_ok  ) CALL TM_BREAK_DATE (buff1, 1, year, month, day,
+     .				  hour, minute, second, status)
+
               IF ( status .NE. ferr_ok ) GOTO 6420
               line_t0(axis) = buff1
               new_att_t0 = buff1
@@ -2138,8 +2144,7 @@ c           ENDIF
      .	         'SET AXIS/t0= what? ', 
      .               *5000 )
  6420	CALL ERRMSG( ferr_syntax, status,
-     .	         'invalid date string: '
-     .           //cmnd_buff(item_start(1):item_end(1)), 
+     .	         'invalid date string: '//buff1, 
      .               *5000 )
  6510	CALL ERRMSG( ferr_invalid_command, status,
      .	         'SET AXIS/UNITS= what? ', 

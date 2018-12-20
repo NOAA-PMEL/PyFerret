@@ -17,9 +17,12 @@ list/i=100/j=40/k=1/l=1:4 temp
 ! multi-var
 list/i=100/j=40/k=1/l=5:12  u,v
 
+say `u,return=t0`
+
 save/clobber/file=a.nc/k=1 temp
 use a.nc
 show att (`temp,return=taxis`)
+
 
 cancel data 2
 
@@ -81,3 +84,86 @@ list tax_units(temp)
 
 cancel mode date_format
 show mode date_format
+
+! Also, use iso-8601 dates in command syntax
+!
+! Define axis with /T= and /T0=
+define axis/t=1990-01-15:1991-01-15:5/units=days/t0=1990-01-01 tax
+show axis tax
+
+! Keep the amount of resolution used
+define axis/t=1:5:1/units=days/t0="1989-01-01 00:00" tax
+show axis tax
+
+! true-monthly axes
+define axis/t=2010-01-01:2011-07-31:1/t0=2010-01-01/monthly taxis
+show axis taxis
+show axis/t taxis
+
+! SET AXIS/T0
+
+define axis/t=1:5:1/units=days/t0="1989-01-01 00:00" tax
+show axis/t tax
+
+! reset the time origin
+set axis/t0=2010-01-01 tax
+show axis /t tax
+
+! /T= in contexts
+let var = t[gt=tax]
+list/t=2010-01-03:2010-01-05 var
+
+! ok to mix formats
+list/t=2-jan-2010:2010-01-05 var
+
+! 
+use gt4d011
+list/i=100/j=50/k=1/t=1982-10-15:1982-11-30 temp
+
+set region/t=1982-10-01:1982-12-01/x=-123:-135/z=15/y=-3
+list salt
+
+cancel region
+
+! Strictly speaking dates must be yyyy-mm-dd  with 2-digit month,day
+! parsing is forgiving even though this isn't valid iso-8601 formatting
+list/t=1982-9-6/k=6/x=-123/y=-3 temp
+
+! intentional errors
+set mode ignore
+
+! 4-digit years must be given, else year interpreted as starting with 00
+list/t=82-9-6/k=6/x=-123/y=-3 temp
+
+! Report time info in iso-8601 date as well.
+set mode date:iso
+
+! region out of dataset range
+list/t=1982-01-01/k=1/x=-123/y=-3 salt
+
+! Illegal dates
+
+list/t=1982-15-09/k=1/x=-123/y=-3 salt
+
+list/t=1982-11-31/k=1/x=-123/y=-3 salt
+
+list/t=15/k=1/x=-123/y=-3 salt
+
+
+list/t=15-09-1983/k=1/x=-123/y=-3 salt
+
+
+! Illegal date specs in DEFINE AXIS
+
+define axis/t=01-15-2010:09-01-2010:1/units=days/t0=2010-01-01 taxis
+
+define axis/t=2018-15-01:2019-01-01:1/units=days taxis
+
+define axis/t=2018--5-01:2019-01-01:1/units=days taxis
+
+
+! illegal format in a /t0
+set axis/t0=2010-15-01 `salt,return=taxis`
+
+set mode/last ignore
+

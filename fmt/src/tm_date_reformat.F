@@ -42,6 +42,7 @@
 * *acm* needs cal_id to pass to tm_break_fmt_date
 * V600 *acm* 2/06 - Fix for bug 1394, send do_err flag to tm_break_date
 * v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
+* v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
 *
 * Arguments:
 *	indate	 - input date string
@@ -53,35 +54,82 @@
 *
         LOGICAL         do_err
 	CHARACTER*(*)	indate, outdate
-	INTEGER		inform, outform, status, cal_id
+	INTEGER		inform, outform, status, cal_id 
 *
 * Inclusions
 *
 	include 'tmap_errors.parm'
+	include 'errmsg.parm'
+#include "gt_lib.parm"
+
 
 *
 * Local definitions
 *
-	INTEGER	year, month, day, hour, minute, dlen
+	LOGICAL no_hms, has_hms, has_hm, has_h
+	INTEGER	TM_LENSTR1, year, month, day, hour, minute, dlen, idot, noyear
 	REAL	second
+	CHARACTER errdate*26, endtxt*10
+	
+* Remove text representing fractional seconds, and store that info
+	dlen = TM_LENSTR1(indate)
+	idot = INDEX(indate, '.')
+	IF (idot .GT. 0) THEN
+	   idot = INDEX(indate, '.')
+	   endtxt = indate(idot:dlen)
+	   dlen = idot - 1
+	ENDIF
 
 * Break up the input date string to its various components
-	CALL TM_BREAK_FMT_DATE ( inform, indate, cal_id, year, 
+	CALL TM_BREAK_FMT_DATE ( inform, indate(:dlen), cal_id, year, 
      .                        month, day, hour, minute, second, 
      .                        do_err, status )
-	IF ( status .NE. merr_ok ) GOTO 9000
+	IF ( status .NE. merr_ok ) GOTO 5000
 
-* and reassemble it into the desired output format
+* Keep the same resolution, e.g. if they gave 00:00:00 keep that,
+* but if the input string is HH:MM don't output HH:MM:00
+
+* The lengths below need adjusting if the incoming date has no
+* year, e.g. 16-JAN "12:00:00"
+
+	noyear = 0
+	IF (inform .EQ. pdate_vax .AND. indate(7:7) .EQ. " ") noyear = 4
+
+	no_hms  = (dlen .LE. 11-noyear)
+	has_hms = (dlen .GE. 19-noyear)
+	has_hm  = (.NOT.has_hms .AND. dlen.GE.16-noyear)
+	has_h   = (.NOT.has_hm  .AND. .NOT.has_hms .AND. dlen.GE.13-noyear)
+
+
+* Do a few sanity checks. Return a message foran incorrectly written iso-8601 date
+
+	IF (month.LT.0 .OR. month.GT.12)  GOTO 5100
+	IF (day.LT.0 .OR. day.GT.31)  GOTO 5100
+
 	CALL TM_MAKE_FMT_DATE ( outform, outdate, year, month, day,
      .				   hour, minute, second, dlen )
+
+	dlen = TM_LENSTR1(outdate)
+	IF (idot .GT. 0) THEN
+	   outdate = outdate(:TM_LENSTR1(outdate))//endtxt(:TM_LENSTR1(endtxt))
+	ELSE
+
+* Trim extra :00 's 
+	   IF (no_hms) outdate = outdate(:dlen-9)
+	   IF (has_h)  outdate = outdate(:dlen-6)
+	   IF (has_hm) outdate = outdate(:dlen-3)
+	ENDIF
 
 * Finished
 	status = merr_ok
 	RETURN
 
 * Errors
- 9000	RETURN
+ 5000	RETURN
+ 5100	CONTINUE
+ 
+        IF (do_err) 
+     .       CALL ERRMSG( ferr_syntax, status, 
+     .             indate(:dlen)//' invalid date or not valid in this calendar ', *5000)
+
 	END
-
-
-

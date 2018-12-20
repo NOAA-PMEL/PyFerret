@@ -70,6 +70,7 @@
 * v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 * v74+ *acm* 11/18  Issue 1902, fractional seconds only when time units are seconds
 * v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
+* v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -86,7 +87,7 @@
 	CHARACTER	SECS_TO_DATE*20, TM_FMT*30, TM_SECS_TO_DATE*20, 
      .                  code*1, xtra*16, buff*20
 	INTEGER		FIELD_WIDTH, TM_GET_CALENDAR_ID, TM_LENSTR1, 
-     .                  min_width, width, decim, slen, n2, cal_id, iv
+     .                  min_width, width, decim, slen, n2, cal_id, iv, status
 	LOGICAL		GEOG_LABEL, fancy, use_sig_fig,
      .                  modulo, truncate, no_year
 	REAL		TSTEP_TO_SECS, val4, val4_orig, fval
@@ -184,12 +185,12 @@ c	      IF (ndec .LE. 3) val4 = INT(val4 * 1000.D0)/1000.D0
 		 cal_id = TM_GET_CALENDAR_ID ( line_cal_name(line))
 
 		 buff = string
-		 CALL CHECK_DATE_REFORMAT (string, slen, cal_id)
+		 CALL CHECK_DATE_REFORMAT (string, slen, cal_id, status)
 * for ISO dates keep the 4-digit year
 		 IF (buff .NE. string .AND. no_year) THEN  
 		    fval = TSTEP_TO_SECS( grid, idim, val )
 		    string = TM_SECS_TO_DATE( fval, cal_id )
-                    CALL CHECK_DATE_REFORMAT (string, slen, cal_id)
+		    CALL CHECK_DATE_REFORMAT (string, slen, cal_id, status)
 		 ENDIF
 
 		 line    = grid_line( idim, grid )

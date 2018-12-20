@@ -41,20 +41,17 @@ C     V 1.0
 
 C  11/29/00  Ansley Manke  revise to match just 3 characters of allowed_calendars
 * V6.74 3/12 *acm* cleanup: add disclaimer
+* V7.45 12/18 *acm* remove dependence on string length of allowed_calendars
 
 C     0.00000000000000000000000000000000000000000000000000000000000000001
 
-#ifdef unix
       include 'calendar.decl'
       include 'calendar.cmn'
       include 'tmap_errors.parm'
-#else
-      INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-#endif 
+ 
       integer         end, ndx, status
-      character*255   test_string
+      character*30    test_string
 
-      character*16    cal_name
       character*(*)   set_name
 
 *************************************************************************
@@ -75,11 +72,9 @@ C     error: calendar not found
 
 C     calendar found, set current calendar
 
-c 100  cal_name = test_string(1:end)
+ 100  CONTINUE
 
- 100  cal_name = allowed_calendars(ndx)
-
-      CALL tm_load_calendar (cal_name, status)
+      CALL tm_load_calendar (allowed_calendars(ndx), status)
 
  1000 RETURN
 

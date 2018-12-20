@@ -127,6 +127,7 @@
 * V74  *acm* 2/18 Issue # 1861, handling missing- and _FillValue with scale and offset
 *                 change to `var,RETURN=bad`
 * v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
+* v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
 
         IMPLICIT NONE
 #include "netcdf.inc"
@@ -476,8 +477,8 @@ c if its a netcdf-type dset with packed data, may have swapped out the bad flag
 		    ENDIF
 	         ENDIF
 	         str_len = TM_LENSTR1(repl)
-		 CALL CHECK_DATE_REFORMAT (repl, str_len, 
-     .                       TM_GET_CALENDAR_ID ( line_cal_name(axis)))
+	         CALL CHECK_DATE_REFORMAT (repl, str_len, 
+     .              TM_GET_CALENDAR_ID ( line_cal_name(axis)), status)
 	         GOTO 500
 
 * ... RETURN=F0
@@ -810,7 +811,7 @@ c if its a netcdf-type dset with packed data, may have swapped out the bad flag
                   ENDIF
 	      ENDIF
 	      str_len = TM_LENSTR1(repl)
-	      CALL CHECK_DATE_REFORMAT (repl, str_len, 
+	      CALL CHECK_DATE_REFORMAT (repl(:str_len*2), str_len, 
      .                    TM_GET_CALENDAR_ID ( line_cal_name(axis)))
 
 * ... RETURN=F0

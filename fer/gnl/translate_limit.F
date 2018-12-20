@@ -69,7 +69,8 @@
 * V693+ *sh* 2/15 - added support for _DQ_ quotations
 * V72   *acm* 11/16 - improve error message for invalid date strings
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
-* v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
+* v74  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
+* v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
 
 * possible formats:
 * for subscript values ( subscript .EQ. .TRUE. ) :
@@ -82,6 +83,7 @@
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
+	include 'tmap_errors.parm'
 	include 'errmsg.parm'
 	include 'ferret.parm'
 	include 'xrisc.cmn'
@@ -95,7 +97,7 @@
 	REAL*8		answer
 
 * internal variable declarations:
-	LOGICAL		TM_DIGIT, TM_DATE
+	LOGICAL		TM_DIGIT, TM_DATE_OK, TM_DATE, is_t
 	INTEGER		TM_LENSTR1, end_pos, start_pos, pbad, i, 
      .                  slen, j, cal_id, dot
 	REAL*8		SECS_FROM_BC, given_answer, frac
@@ -196,10 +198,12 @@
 	ELSE
 * /T or /F
 * date/time string ?
-           IF ( TM_DATE( buff(:slen) ) ) THEN
+           is_t = TM_DATE(buff)
+	   IF ( TM_DATE_OK ( buff , cal_id)  ) THEN
 * ... time step cannot be evaluated until we know what axis this is on
-* ... save number of seconds from B.C. as a negative to flag later translation
+* ... save number of seconds from B.C. as a negative to flag later translation 
 
+	      slen = TM_LENSTR1( buff )
 	      dot = INDEX( buff(:slen), '.' )
 	      frac = 0.
 	      IF (dot .GT. 0) THEN 
@@ -209,8 +213,9 @@
 	      answer = -1.D0 * (SECS_FROM_BC( buff(:slen), cal_id, 
      .                                       status ) + frac)
 	      formatted = .TRUE.
-	      IF ( status .NE. ferr_ok ) THEN 
-	         buff = buff(:slen)//' is not valid in this calendar'
+	      IF ( status .NE. ferr_ok ) THEN
+	         slen = TM_LENSTR1(string)
+		 buff = string(:slen)//' invalid date or not valid in this calendar'
 		 GOTO 5200
 	      ENDIF
            ELSE
@@ -224,7 +229,11 @@
 	RETURN
 
 * error exit
- 5000	CALL ERRMSG( ferr_syntax, status, string, *5900 )
+ 5000	IF ( is_t ) THEN
+	   RETURN  ! already issued a message
+	ELSE
+	   CALL ERRMSG( merr_badtimedef, status, string, *5900 )
+	ENDIF
  5100	CALL ERRMSG( ferr_syntax, status,
      .		'"'//risc_buff(pbad:pbad)//'" is illegal in '//
      .		risc_buff(:len_rbuff), *5900 )

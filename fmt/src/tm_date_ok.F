@@ -42,22 +42,71 @@
 *
 * 7/92 *sh* 
 * V530: *acm* 12/00 alternative calendar types; cal_id
+* v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
+
+
+     include 'tmap_errors.parm'
+#include "gt_lib.parm"
 
 * calling argument declarations:
       CHARACTER*(*) date
       INTEGER cal_id
 
 * internal variable declarations:
-      INTEGER	yr, mth, day, hr, min, sec, status
+      INTEGER	TM_LENSTR1, i, ib, yr, mth, day, hr, min, sec, 
+     .		slen, status
+      CHARACTER c*1, buff*26, buff2*26
 
-#ifdef unix
-        include 'tmap_errors.parm'
-#else
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-#endif
+* local parameter declarations:
+      CHARACTER*1     tab
+      PARAMETER     ( tab = CHAR(9))
 
-      CALL TM_BREAK_DATE( date, cal_id,
+	TM_DATE_OK = .FALSE.
+
+* First, is it a date at all?  At least, it must start with a digit
+* and contain a colon or a dash.  (some of the tests from TM_DATE)
+
+* skip leading blanks
+	slen = TM_LENSTR1(date)
+	ib = 0
+	DO i = 1, slen
+	   c = date(i:i)
+	   IF ( c .EQ. ' ' .OR. c .EQ. tab ) THEN
+	      ib = i
+	   ELSE
+	      GOTO 200
+	   ENDIF
+	ENDDO
+* buff is blank
+	RETURN
+
+* is first character a digit ?
+ 200    IF ( c .LT. '0' .OR. c .GT. '9' ) RETURN
+
+	buff = date
+	IF (ib.GT.0) buff = date(ib+1:slen)
+	slen = TM_LENSTR1(buff)
+
+* is there a colon or a dash?
+      IF ( INDEX( buff, ':') .EQ. 0 .AND. INDEX( buff, '-') .EQ. 0)  RETURN
+
+* Try translating the date (without any fractional seconds).
+      slen = TM_LENSTR1(buff)
+      IF (INDEX(buff, '.') .GT. 0) slen = INDEX(buff, '.') - 1
+
+      CALL TM_BREAK_DATE( buff(:slen), cal_id,
      .                   yr, mth, day, hr, min, sec, status )
+
+* If couldn't parse the date, is it an ISO8601 formatted date? Is so translate 
+* the date string to default date format.
+
+      IF (status .NE. merr_ok) THEN
+         
+	 CALL TM_DATE_REFORMAT( buff, pdate_numslashnum, cal_id,
+     .                          buff2, pdate_vax, .TRUE., status)
+	 IF ( status .EQ. merr_ok ) date = buff2
+      ENDIF
+
       TM_DATE_OK = status .EQ. merr_ok
 
       RETURN

@@ -40,6 +40,7 @@
 * v695  *acm 2/15  Time axis may be an F axis or a T axis.
 * v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 * v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
+* v745 *acm* 12/18  Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
 *
 * This function returns time step values
 *
@@ -86,10 +87,6 @@
 
       INTEGER id, arg
 
-* **********************************************************************
-*                                            USER CONFIGURABLE PORTION |
-*                                                                      |
-*                                                                      V
 
       CALL ef_set_desc(id,
      .        'Returns time step values based on the new time origin')
@@ -117,10 +114,6 @@
       CALL ef_set_axis_influence_6d(id, arg,
      .                              NO, NO, NO, NO, NO, NO)
 
-*                                                                      ^
-*                                                                      |
-*                                            USER CONFIGURABLE PORTION |
-* **********************************************************************
 
       RETURN 
       END
@@ -137,12 +130,7 @@
 
       INTEGER id
 
-* **********************************************************************
-*                                            USER CONFIGURABLE PORTION |
-*                                                                      |
-*                                                                      V
 
-*
 * Set the work arrays, X/Y/Z/T/E/F dimensions
 *
 * ef_set_work_array_dims_6d(id, array #,
@@ -176,10 +164,6 @@
      .                              mtl, 1, 1, 1, 1, 1,
      .                              mth, 1, 1, 1, 1, 1)
 
-*                                                                      ^
-*                                                                      |
-*                                            USER CONFIGURABLE PORTION |
-* **********************************************************************
 
       RETURN 
       END
@@ -230,22 +214,18 @@
 
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
-* **********************************************************************
-*                                            USER CONFIGURABLE PORTION |
-*                                                                      |
-*                                                                      V
 
-      INTEGER STR_SAME
-      CHARACTER*30 datebuf
-      CHARACTER*30 instring, t0string
-      INTEGER slen, dir, get_prec, dlen
-      REAL*8 ddate
-      CHARACTER*16 axname(6), axunits(6)
       LOGICAL bkw1(6), mod1(6), reg1(6)
-      CHARACTER*16 tunit
-      REAL timesincet0
+      INTEGER STR_SAME
+      INTEGER slen, dir, get_prec, dlen
       INTEGER i, j, k, l, m, n
-      INTEGER l1, n1
+      INTEGER l1, n1, cal, status, len
+      REAL*8 ddate, timesincet0
+      CHARACTER*16 axname(6), axunits(6)
+      CHARACTER*16 tunit
+      CHARACTER*30 datebuf, instring, t0string
+      CHARACTER*100 err_msg
+
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -267,13 +247,16 @@
 * Allow them to input the date w/o a leading 0 so that either
 * 1-jan-2000 or 01-jan-0000 is ok
 
-      IF ( STR_SAME(instring(2:2), '-') .EQ. 0 ) THEN
+      IF ( instring(2:2) .EQ. '-' ) THEN
          WRITE (t0string, 20) instring
   20     FORMAT ('0', a19)
       ELSE
          t0string = instring
       ENDIF
-
+      IF (t0string(5:5) .EQ. '-' ) THEN
+	 CALL EF_CONVERT_DATE_STRING(t0string, status)
+	 IF (status .NE. 0) GOTO 900
+      ENDIF
 
 * Get the direction of arg 1: F or T
       IF (arg_lo_ss(T_AXIS, ARG1) .NE. ef_unspecified_int4) THEN
@@ -302,7 +285,7 @@
 *      Get the date string corresponding to time ddate
             CALL ef_get_axis_dates(id, ARG1, ddate, dir, 1, get_prec, dlen, datebuf)
 *      Convert to time from the new origin
-            CALL time_since_t0(t0string, datebuf, tunit, timesincet0)
+            CALL time_since_t0(t0string, datebuf, tunit, timesincet0, err_msg)
 
 *      Assign this time from the new origin to the results
             DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
@@ -331,7 +314,7 @@
 *      Get the date string corresponding to time ddate
             CALL ef_get_axis_dates(id, ARG1, ddate, dir, 1, get_prec, dlen, datebuf)
 *      Convert to time from the new origin
-            CALL time_since_t0(t0string, datebuf, tunit, timesincet0)
+            CALL time_since_t0(t0string, datebuf, tunit, timesincet0, err_msg)
 
 *      Assign this time from the new origin to the results
             DO 550 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
@@ -351,12 +334,14 @@
             n1 = n1 + arg_incr(F_AXIS,ARG1)
  650     CONTINUE
       ENDIF
-*                                                                      ^
-*                                                                      |
-*                                            USER CONFIGURABLE PORTION |
-* **********************************************************************
 
       RETURN
+ 900  WRITE (err_msg,*) 
+     .  'Invalid time origin given in argument 2: ', t0string
+ 999  CALL ef_bail_out (id, err_msg )
+      ReTURN
+
+
       END
 
 
@@ -365,10 +350,9 @@
 *     Compute the time since desired t0
 *
 *********************************************************************
-      SUBROUTINE time_since_t0(t0string, datebuf, tunit, timesincet0)
+      SUBROUTINE time_since_t0(t0string, datebuf, tunit, timesincet0, err_msg)
       
-      CHARACTER*20 t0string, datebuf
-      CHARACTER*16 tunit
+      CHARACTER*(*) t0string, datebuf, tunit, err_msg
       REAL timesincet0
 
       INTEGER secondsincet0, minutesincet0, hoursincet0
@@ -378,22 +362,22 @@
 
 *     Compute time since t0, check time axis unit
       IF( tunit(1:3) .EQ. 'sec') THEN
-          CALL second_since_t0(t0string, datebuf, secondsincet0)
+          CALL second_since_t0(t0string, datebuf, secondsincet0, err_msg)
           timesincet0 = secondsincet0
       ELSE IF(tunit(1:3) .EQ. 'min') THEN
-          CALL minute_since_t0(t0string, datebuf, minutesincet0)
+          CALL minute_since_t0(t0string, datebuf, minutesincet0, err_msg)
           timesincet0 = minutesincet0
       ELSE IF(tunit(1:3) .EQ. 'hou') THEN
-          CALL hour_since_t0(t0string, datebuf, hoursincet0)
+          CALL hour_since_t0(t0string, datebuf, hoursincet0, err_msg)
           timesincet0 = hoursincet0
       ELSE IF(tunit(1:3) .EQ. 'day') THEN
-          CALL day_since_t0(t0string, datebuf, daysincet0)
+          CALL day_since_t0(t0string, datebuf, daysincet0, err_msg)
           timesincet0 = daysincet0
       ELSE IF(tunit(1:3) .EQ. 'mon') THEN
-          CALL month_since_t0(t0string, datebuf, monthsincet0)
+          CALL month_since_t0(t0string, datebuf, monthsincet0, err_msg)
           timesincet0 = monthsincet0
       ELSE IF(tunit(1:3) .EQ. 'yea') THEN
-          CALL year_since_t0(t0string, datebuf, yearsincet0)
+          CALL year_since_t0(t0string, datebuf, yearsincet0, err_msg)
           timesincet0 = yearsincet0
       ELSE 
           timesincet0=0.
@@ -405,17 +389,16 @@
 *******************************************************************
 *     Compute second since t0
 *******************************************************************
-      SUBROUTINE second_since_t0(t0string, datebuf, secondsincet0)
+      SUBROUTINE second_since_t0(t0string, datebuf, secondsincet0, err_msg)
 
-      CHARACTER*20 t0string, datebuf
-      CHARACTER*80 err_msg
+      CHARACTER*(*) t0string, datebuf, err_msg
       INTEGER minutesincet0, secondsincet0
 
       INTEGER isecond, t0second, t0hour
 
       t0hour = 0
 
-      CALL minute_since_t0(t0string, datebuf, minutesincet0)
+      CALL minute_since_t0(t0string, datebuf, minutesincet0, err_msg)
       secondsincet0 = 60*minutesincet0
 
 *     Get t0's minute
@@ -453,17 +436,17 @@
 *******************************************************************
 *     Compute minutes since t0
 *******************************************************************
-      SUBROUTINE minute_since_t0(t0string, datebuf, minutesincet0)
+      SUBROUTINE minute_since_t0(t0string, datebuf, minutesincet0, err_msg)
 
-      CHARACTER*20 t0string, datebuf
-      CHARACTER*80 err_msg
+      CHARACTER*(*) t0string, datebuf, err_msg
+
       INTEGER minutesincet0, hoursincet0
 
       INTEGER iminute, t0minute, t0hour
 
       t0hour = 0
 
-      CALL hour_since_t0(t0string, datebuf, hoursincet0)
+      CALL hour_since_t0(t0string, datebuf, hoursincet0, err_msg)
       minutesincet0 = 60*hoursincet0
 
 *     Get t0's minute
@@ -500,10 +483,9 @@
 *******************************************************************
 *     Compute hours since t0
 *******************************************************************
-      SUBROUTINE hour_since_t0(t0string, datebuf, hoursincet0)
+      SUBROUTINE hour_since_t0(t0string, datebuf, hoursincet0, err_msg)
 
-      CHARACTER*20 t0string, datebuf
-      CHARACTER*80 err_msg
+      CHARACTER*(*) t0string, datebuf, err_msg
 
       INTEGER hoursincet0, daysincet0
        
@@ -511,7 +493,7 @@
 
       t0hour = 0
 
-      CALL day_since_t0(t0string, datebuf, daysincet0)
+      CALL day_since_t0(t0string, datebuf, daysincet0, err_msg)
       hoursincet0 = 24*daysincet0
 
 *     Get t0's hour
@@ -547,10 +529,9 @@
 *     Compute the days since t0
 *     Assume that t0 is before the current year
 *******************************************************************
-      SUBROUTINE day_since_t0(t0string, datebuf, daysincet0)
+      SUBROUTINE day_since_t0(t0string, datebuf, daysincet0, err_msg)
 
-      CHARACTER*20 t0string, datebuf
-      CHARACTER*80 err_msg
+      CHARACTER*(*) t0string, datebuf, err_msg
 
       INTEGER daysincet0
 
@@ -669,10 +650,9 @@
 *******************************************************************
 *     Compute month since t0
 *******************************************************************
-      SUBROUTINE month_since_t0(t0string, datebuf, monthsincet0)
+      SUBROUTINE month_since_t0(t0string, datebuf, monthsincet0, err_msg)
 
-      CHARACTER*20 t0string, datebuf
-      CHARACTER*80 err_msg
+      CHARACTER*(*) t0string, datebuf, err_msg
       INTEGER monthsincet0
       CHARACTER*3 t0mon, cmon
       CHARACTER*3 months(12)
@@ -718,10 +698,9 @@
 *******************************************************************
 *     Compute year since t0
 *******************************************************************
-      SUBROUTINE year_since_t0(t0string, datebuf, yearsincet0)
+      SUBROUTINE year_since_t0(t0string, datebuf, yearsincet0, err_msg)
 
-      CHARACTER*20 t0string, datebuf
-      CHARACTER*80 err_msg
+      CHARACTER*(*) t0string, datebuf, err_msg
       INTEGER yearsincet0
       INTEGER iyear, t0year
 
@@ -748,4 +727,5 @@
       RETURN
 
       END
+
 

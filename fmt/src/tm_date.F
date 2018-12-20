@@ -90,8 +90,10 @@
         ENDIF
 
 * is there a dash ?
-        ip = INDEX( string, '-')
-        IF ( ip .EQ. 0 ) RETURN
+        IF ( INDEX( string, '-') .GT. 0 ) THEN
+           TM_DATE = .TRUE.
+           RETURN
+        ENDIF
 
 * do three letters follow the dash ?
         IF ( slen .LT. ip+3 ) RETURN

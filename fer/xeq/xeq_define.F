@@ -266,8 +266,9 @@
 * V740 *acm* 2/18 Issue 966: LET/LIKE= Get attributes from an existing variable
 * V740 *acm* 2/18 Issue 966: DEFINE AXIS/LIKE= Get attributes from an existing axis
 * V740 *acm* 3/18 More on DEF AX/LIKE, getting T0, modulo axis characteristics set correctly.
-* v744 11/2011 *acm* Issue 1906: If PROLEPTIC_GREGORIAN is given then 
+* v744 11/2018 *acm* Issue 1906: If PROLEPTIC_GREGORIAN is given then 
 *                  override mixed-gregorian calendar handling.
+* v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
 
         IMPLICIT NONE
 	include	'tmap_errors.parm'
@@ -398,7 +399,8 @@
      .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, MATCH_NAME,
      .            NC_GET_ATTRIB, TM_LEGAL_NAME_OP, TM_HAS_STRING,
      .            ITSA_1LINEIF, MATCH4, GO_FILE_INPUT, IS_AGG_MEMBER, 
-     .            MATCH_TEMPLATE, TM_ITS_SUBSPAN_MODULO, TM_CHECK_BOX_LOC,
+     .            MATCH_TEMPLATE, TM_ITS_SUBSPAN_MODULO, TM_CHECK_BOX_LOC, 
+     .            TM_DATE_OK, is_ok,
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
      .            new_att, new_att_modulo, got_it, orient_t, agg_quiet,
@@ -1689,8 +1691,12 @@ C /units=months  is 1/12 of the length of the year
      .       CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      buff2, status )
 	   IF ( status .NE. ferr_ok ) RETURN
-	   CALL TM_BREAK_DATE( buff2, cal_id, i1,i2,i3,i4,i5,i6, 
-     .                         status )
+
+	   status = ferr_grid_definition       ! status setting if tm_date_ok false
+	   is_ok = TM_DATE_OK ( buff2 , cal_id) 
+
+	   IF ( is_ok  ) CALL TM_BREAK_DATE( buff2, cal_id, 
+     .                        i1,i2,i3,i4,i5,i6,  status )
 	   IF ( buff2 .EQ. ' ' .OR. status .NE. ferr_ok ) GOTO 5540
            new_att_t0 = buff2
 	ELSEIF (is_like .AND. line_t0 ( iline ).NE.char_init20) THEN
@@ -2946,11 +2952,13 @@ c ?? if nlab=0, use next avail slot?
  5710	CALL ERRMSG( ferr_prog_limit, status,
      .		'use CANCEL ALIAS to reclaim space', *5000 )
  5720	err_string = 'Invalid calendar name. Names are'
-        DO 5721 i1=1, max_calendars
+        t2 = ' '
+	DO 5721 i1=1, max_calendars
            len_cal = TM_LENSTR1(err_string)
            slen = TM_LENSTR1(allowed_calendars(i1))
-           err_string = err_string(:len_cal)//', '//
+           err_string = err_string(:len_cal)//t2//
      .                   allowed_calendars(i1)(:slen)
+           t2 = ', '
            len_cal = len_cal + slen
  5721   CONTINUE
         CALL ERRMSG( ferr_syntax, status,err_string, *5000 )

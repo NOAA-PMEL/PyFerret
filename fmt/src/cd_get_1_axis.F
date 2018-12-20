@@ -215,6 +215,8 @@
 *                  nor line_start/ line_delta were set. In this case, treat it as irregular.
 * v744 11/2011 *acm* Issue 1906: If PROLEPTIC_GREGORIAN is given then 
 *                  override mixed-gregorian calendar handling. 
+* v7441*acm* 12/18 Issue 1909,1919: ISO 8601 formatted dates and detecting
+*                  mixed gregorian/julain calendar axes
 
 
 * argument definitions:
@@ -907,8 +909,12 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * 11/2018: If the calendar type is PROLEPTIC_GREGORIAN, then do not apply
 *          the shift, even if it the origin is at 01-JAN-0001
 
-      IF ( (since_T0.GT.2)
-     .  .AND.(line_t0(iaxis).EQ.'01-JAN-0001 00:00:00') 
+      IF (since_T0.GT.2) CALL TM_BREAK_DATE(line_t0(iaxis), cal_id, 
+     .       year, month, day, hour, minute, second, istat)
+      IF ( (since_T0.GT.2) 
+     .  .AND. (istat.EQ.merr_ok) 
+     .  .AND. (year.EQ.1) .AND. (month.EQ.1) .AND. (day.EQ.1)
+     .  .AND. (hour.EQ.0) .AND. (minute.EQ.0) .AND. (second.EQ.0) 
      .  .AND.(cal_id .EQ. GREGORIAN) ) THEN
 
 * ... get time step of L=1

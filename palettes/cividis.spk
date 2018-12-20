@@ -1,7 +1,9 @@
-Cividis palette from https://github.com/AlexHenderson/cividis/blob/master/cividis.m
-See https://www.scientificamerican.com/article/end-of-the-rainbow-new-map-scale-is-more-readable-by-people-who-are-color-blind/
+!Cividis palette from https://github.com/AlexHenderson/cividis/blob/master/cividis.m"
+!See https://www.scientificamerican.com/article/end-of-the-rainbow-new-map-scale-is-more-readable-by-people-who-are-color-blind/"
  
-Converted to Ferret color palette: 0:100 percent range, multiply r,g,b by 100.
+!Converted to Ferret color palette by-percent"
+ 
+RGB_Mapping Percent
  
     0.00    0.00  12.920  30.770
     0.79    0.00  13.500  32.050

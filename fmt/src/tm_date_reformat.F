@@ -101,7 +101,7 @@
 	has_h   = (.NOT.has_hm  .AND. .NOT.has_hms .AND. dlen.GE.13-noyear)
 
 
-* Do a few sanity checks. Return a message foran incorrectly written iso-8601 date
+* Do a few sanity checks. Return a message for an incorrectly written iso-8601 date
 
 	IF (month.LT.0 .OR. month.GT.12)  GOTO 5100
 	IF (day.LT.0 .OR. day.GT.31)  GOTO 5100
@@ -125,11 +125,11 @@
 	RETURN
 
 * Errors
- 5000	RETURN
  5100	CONTINUE
- 
         IF (do_err) 
      .       CALL ERRMSG( ferr_syntax, status, 
      .             indate(:dlen)//' invalid date or not valid in this calendar ', *5000)
+	
+ 5000	RETURN
 
 	END

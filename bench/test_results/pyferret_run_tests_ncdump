@@ -40,7 +40,7 @@ dimensions:
 	T5 = UNLIMITED ; // (1 currently)
 variables:
 	double T5(T5) ;
-		T5:units = "min since 1901-01-15 00:00:00" ;
+		T5:units = "min since 1901-01-15" ;
 		T5:axis = "T" ;
 		T5:calendar = "GREGORIAN" ;
 		T5:time_origin = "15-JAN-1901" ;
@@ -65,7 +65,7 @@ dimensions:
 	T5 = UNLIMITED ; // (2 currently)
 variables:
 	double T5(T5) ;
-		T5:units = "min since 1901-01-15 00:00:00" ;
+		T5:units = "min since 1901-01-15" ;
 		T5:axis = "T" ;
 		T5:calendar = "GREGORIAN" ;
 		T5:time_origin = "15-JAN-1901" ;
@@ -2611,7 +2611,7 @@ variables:
 		XAX:point_spacing = "even" ;
 		XAX:axis = "X" ;
 	double tday(tday) ;
-		tday:units = "days since 1998-12-31 00:00:00" ;
+		tday:units = "days since 1998-12-31" ;
 		tday:axis = "T" ;
 		tday:calendar = "GREGORIAN" ;
 		tday:time_origin = "31-DEC-1998" ;
@@ -2670,7 +2670,7 @@ variables:
 		X100:modulo = 360. ;
 		X100:standard_name = "longitude" ;
 	double T31(T31) ;
-		T31:units = "days since 1999-12-31 00:00:00" ;
+		T31:units = "days since 1999-12-31" ;
 		T31:axis = "T" ;
 		T31:calendar = "GREGORIAN" ;
 		T31:time_origin = "31-DEC-1999" ;
@@ -2697,7 +2697,7 @@ variables:
 		X10030_40:modulo = 360. ;
 		X10030_40:standard_name = "longitude" ;
 	double T31(T31) ;
-		T31:units = "days since 1999-12-31 00:00:00" ;
+		T31:units = "days since 1999-12-31" ;
 		T31:axis = "T" ;
 		T31:calendar = "GREGORIAN" ;
 		T31:time_origin = "31-DEC-1999" ;
@@ -2779,7 +2779,7 @@ variables:
 		YY:_FillValue = -1.e+34 ;
 		YY:long_name = "Y[GY=YAX]" ;
 	double TAXIS(TAXIS) ;
-		TAXIS:units = "days since 2000-01-01 00:00:00" ;
+		TAXIS:units = "days since 2000-01-01" ;
 		TAXIS:axis = "T" ;
 		TAXIS:calendar = "GREGORIAN" ;
 		TAXIS:time_origin = "1-JAN-2000" ;

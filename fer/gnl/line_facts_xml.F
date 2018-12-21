@@ -57,6 +57,7 @@
 * V698 2/16 *acm*  For ticket 1786: if mode_upcase is canceled write axis name
 *                  using original upper/lowercase spelling
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
+* v7441*acm* 12/18 Return full precision dates rather than just to prec of minutes 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -197,7 +198,7 @@
 
            lo_val8 = TM_WORLD( 1, grid, idim, box_middle )
 	   IF ( calendar ) THEN
-	      ndec = 5 		! accurate to minutes
+	      ndec = 6 		! accurate to seconds
  	      CALL TRANSLATE_TO_WORLD( lo_val8, idim, grid, ndec, lo_str )
               CALL TM_DATE_REFORMAT (lo_str, 1, cal_id, outbuff, 2,
      .                               .TRUE., status)
@@ -210,7 +211,7 @@
 
 	   hi_val8 = TM_WORLD( line_dim(line), grid, idim, box_middle )
 	   IF ( calendar ) THEN
-	      ndec = 5 
+	      ndec = 6 
 	      CALL TRANSLATE_TO_WORLD( hi_val8, idim, grid, ndec, hi_str )
               CALL TM_DATE_REFORMAT (hi_str, 1, cal_id, outbuff, 2,
      .                               .TRUE., status) 

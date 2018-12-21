@@ -30,6 +30,28 @@ do_diffs:
 	@echo 'Inspect the *_diff.png files for actual differences in the images'
 	@echo 'Inspect the pyferret_run_tests_*.diff files for actual differences in the output'
 
+## Just compare plot results.
+.PHONY: checkplots
+checkplots: 
+	@echo 'Differences in the generated bench PDF and PNG files versus those in bench/test_results'
+	-@for img in *.pdf *.png ; \
+	do \
+	    if diff -q $$img test_results/$$img ; then \
+	        echo "Files $$img and test_results/$$img are identical"; \
+	    else \
+	        compare $$img test_results/$$img "$$img"_diff.png ; \
+	    fi \
+	done
+	-@( datetag=`date +'%d%h%yAT'|tr '[A-Z]' '[a-z]'` ; \
+	    diff all_$${datetag}*_ncdump test_results/pyferret_run_tests_ncdump 1> pyferret_run_tests_ncdump.diff 2>&1 ; \
+	    diff all_$${datetag}*_err test_results/pyferret_run_tests_err 1> pyferret_run_tests_err.diff 2>&1 ; \
+	    diff all_$${datetag}*_log test_results/pyferret_run_tests_log 1> pyferret_run_tests_log.diff 2>&1 \
+	)
+	@echo ''
+	@echo 'Inspect the *_diff.png files for actual differences in the images'
+	@echo 'Inspect the pyferret_run_tests_*.diff files for actual differences in the output'
+
+
 ## Execute the RUN_TESTS.sh test suite
 .PHONY: run_tests
 run_tests:

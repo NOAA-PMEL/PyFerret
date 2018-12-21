@@ -1,5 +1,6 @@
 SRCS_F = \
 ef_bail_out.F\
+ef_convert_date_string.F\
 ef_get_arg_info.F\
 ef_get_arg_mem_subscripts.F\
 ef_get_arg_mem_subscripts_6d.F\

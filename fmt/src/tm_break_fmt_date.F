@@ -53,6 +53,7 @@
 *                   allow that. Replace T with a space. Ticket 1806.
 * V72 *acm*  3/17   If there is a Z at the end, lop that off.
 * v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
+* v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
 
 * ARGUMENT DEFINITIONS
 *  form  - code for the date string format
@@ -104,8 +105,11 @@
 *	     for a more robust approach
 * ... the format looks like (e.g.) 1992-10-18 15:15:42.5 
 
-*     If there is a T between the date and time (as in GRIB files) replace with a space.
-           IF (date(11:11) .EQ. 'T') date(11:11) = ' '
+*     If there is a T or a : between the date and time (as in GRIB files) replace with a space.
+           IF (dlen .GT. 10) THEN
+              IF (date(11:11).EQ.'T') date(11:11) = ' '
+              IF (date(11:11).EQ.':') date(11:11) = ' '
+           ENDIF
 
 * If there is a Z at the end, lop that off.
 
@@ -119,7 +123,7 @@
 * ... last attempt -- try VAX format
 	      CALL TM_BREAK_DATE( date, cal_id, year, month, day,
      .			hour, minute, isecond, status)
-	      IF ( status .NE. merr_ok ) GOTO 5100
+	      IF ( status .NE. merr_ok ) GOTO 5200
 	      
 	      second = FLOAT(isecond)
 	      IF (TM_LENSTR1(date) .GT. 20) THEN
@@ -152,7 +156,21 @@
      .        risc_buff(:dlen)//'"'//'; leaving units string')
            status = merr_badtimedef
         ENDIF
+	GOTO 5000
           
-
+ 5200	risc_buff = date(:dlen)
+        IF (do_err) THEN
+        CALL TM_ERRMSG (merr_badtimedef, status, 'TM_BREAK_FMT_DATE',
+     .			unspecified_int4, no_stepfile,
+     .			date(:dlen)//' is not valid in this calendar ',
+     .			no_errstring, *5000)
+        ELSE
+           dlen = TM_LENSTR1(risc_buff)
+           CALL WARN (
+     .       'cannot parse "units since date", date= "'//
+     .        risc_buff(:dlen)//'"'//'; leaving units string')
+           status = merr_badtimedef
+        ENDIF
+	GOTO 5000
 	END
 

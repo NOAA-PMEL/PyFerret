@@ -1225,6 +1225,36 @@ GO bn745_bug_fixes
 go bn_reset bn_iso8601_time
 GO bn_iso8601_time
 
+
+! *********** PyFerret-specific scripts ***********
+IF ($program_name"0|PyFerret>1|*>0") THEN
+
+go bn_reset bn_color_wire
+GO bn_color_wire
+
+go bn_reset bn_inf2missing
+GO bn_inf2missing
+
+go bn_reset bn_pointplots
+GO bn_pointplots
+
+go bn_reset bn_symbolcolors
+GO bn_symbolcolors
+
+go bn_reset bn_contourcolor
+GO bn_contourcolor
+
+go bn_reset bn_outline_poly
+GO bn_outline_poly
+
+go bn_reset bn_stats_histogram
+GO bn_stats_histogram
+
+go bn_reset bn_symbolpattern
+GO bn_symbolpattern
+
+ENDIF  ! pyferret
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

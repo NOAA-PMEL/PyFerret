@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 114280453 Dec 13 11:49 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 114302439 Dec 20 12:24 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  more on modulo time axis and date strings
+Note:  issue 1910: ISO-8601 dates allowed in Ferret command syntax
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -22,7 +22,7 @@ FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Thu Dec 13 15:33:50 PST 2018
+Beginning at Thu Dec 20 12:25:31 PST 2018
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1987,7 +1987,7 @@ Replacing definition of axis TAX
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_all_leap.jnl
 Replacing definition of grid TGRID
- **ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP, PROLEPTIC_GREGORIAN
+ **ERROR: command syntax: Invalid calendar name. Names are  GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP, PROLEPTIC_GREGORIAN
 def axis/t/cal=nogood/t=1-jan-2000:1-jan-2010:1/units=months tax
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3368,6 +3368,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_tax_tstep.jnl
  LISTing to file a.nc
 Replacing definition of axis TSEC
+           *** NOTE: grid GSI1 used by data set a
+           *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6858,6 +6860,39 @@ Starting test: bn_iso8601_time
            *** NOTE: JULIAN climatological axes defined
            *** NOTE: regarding ./data/clim_axes_gregorian.nc ...
            *** NOTE: GREGORIAN climatological axes defined
+Replacing definition of axis tax
+Replacing definition of axis tax
+           *** NOTE: True monthly axis has an implicit /EDGES qualifier
+Replacing definition of axis taxis
+ **ERROR: illegal limits: "TEMP" does not exist at T=06-SEP-0082 00:00
+          Axis extremes are T=14-AUG-1982 11:00:13-JAN-1983 13:00
+list/t=82-9-6/k=6/x=-123/y=-3 temp
+ **ERROR: illegal limits: "SALT" does not exist at T=1982-01-01 00:00
+          Axis extremes are T=1982-08-14 11:00:1983-01-13 13:00
+list/t=1982-01-01/k=1/x=-123/y=-3 salt
+ **ERROR: command syntax: 1982-15-09 invalid date or not valid in this calendar
+list/t=1982-15-09/k=1/x=-123/y=-3 salt
+ **ERROR: command syntax: 1982-11-31 invalid date or not valid in this calendar
+list/t=1982-11-31/k=1/x=-123/y=-3 salt
+ **ERROR: illegal limits: "SALT" does not exist at T=1980-01-15 05:00
+          Axis extremes are T=1982-08-14 11:00:1983-01-13 13:00
+list/t=15/k=1/x=-123/y=-3 salt
+ **ERROR: command syntax: 15-09-1983 invalid date or not valid in this calendar
+list/t=15-09-1983/k=1/x=-123/y=-3 salt
+ **ERROR: command syntax: 01-15-2010 invalid date or not valid in this calendar
+define axis/t=01-15-2010:09-01-2010:1/units=days/t0=2010-01-01 taxis
+ **ERROR: command syntax: 09-01-2010 invalid date or not valid in this calendar
+define axis/t=01-15-2010:09-01-2010:1/units=days/t0=2010-01-01 taxis
+Replacing definition of axis taxis
+ **ERROR: command syntax: 2018-15-01 invalid date or not valid in this calendar
+define axis/t=2018-15-01:2019-01-01:1/units=days taxis
+Replacing definition of axis taxis
+ **ERROR: command syntax: 2018--5-01 invalid date or not valid in this calendar
+define axis/t=2018--5-01:2019-01-01:1/units=days taxis
+ **ERROR: command syntax: 2010-15-01 invalid date or not valid in this calendar
+set axis/t0=2010-15-01 TIME112
+ **ERROR: command syntax: invalid date string: 2010-15-01
+set axis/t0=2010-15-01 TIME112
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6982,4 +7017,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Dec 13 15:41:52 PST 2018
+Ended at Thu Dec 20 12:33:19 PST 2018

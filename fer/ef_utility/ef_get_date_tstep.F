@@ -45,6 +45,7 @@
 * v74+ *acm* 12/18 Issue 1902, fractional seconds only when time units are seconds
 *                  use AINT call not INT when comparing values, large numbers of seconds
 * v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
+* v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
 
 * Arguments:
 *	grid	 - grid containing a time axis
@@ -154,7 +155,7 @@
 	ENDIF
 
 	slen = TM_LENSTR1(date)
-	CALL CHECK_DATE_REFORMAT (date, slen, cal_id)
+	CALL CHECK_DATE_REFORMAT (date, slen, cal_id, status)
 
 * Finished
 	RETURN

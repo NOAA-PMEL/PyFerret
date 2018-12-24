@@ -251,13 +251,11 @@
 	IF ( mlen .EQ. maxlen ) mybuff(maxlen:maxlen) = '*'
 
 * remove silly blanks from the start and end
-	IF ( buff(1:1) .EQ. ' ' )
-     .     buff = buff(2:maxlen)
-	IF ( mybuff(1:1) .EQ. ' ' )
-     .     mybuff = mybuff(2:maxlen)
-        mlen = mlen - 1
 	IF ( buff(mlen:mlen) .EQ. ' ' ) mlen = mlen - 1
-	IF ( mybuff(mlen:mlen) .EQ. ' ' ) mlen = mlen - 1
+	IF ( buff(1:1) .EQ. ' ' ) THEN
+           buff = buff(2:)
+           mlen = mlen - 1
+        ENDIF
 
 * successful completion
 	REGRID_COMMENTS = buff

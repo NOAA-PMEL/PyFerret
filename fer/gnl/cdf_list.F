@@ -443,7 +443,7 @@
 
            IF ( cat .EQ. cat_pseudo_var )THEN
 	      varcode = varcode(:TM_LENSTR1(varcode))//"_"
-	      IF (varcode(1:1) .EQ. "_") varcode = varcode(2:TM_LENSTR1(varcode))
+	      IF (varcode(1:1) .EQ. "_") varcode = varcode(2:)
 	   ENDIF
 
 	   tax = grid_line(t_dim,grid)
@@ -1215,7 +1215,7 @@
      
            IF ( cat .EQ. cat_pseudo_var )THEN
 	      varcode = varcode(:TM_LENSTR1(varcode))//"_"
-	      IF (varcode(1:1) .EQ. "_") varcode = varcode(2:TM_LENSTR1(varcode))
+	      IF (varcode(1:1) .EQ. "_") varcode = varcode(2:)
 	   ENDIF
 
 * check for interrupts - dont check again until entire variable is written

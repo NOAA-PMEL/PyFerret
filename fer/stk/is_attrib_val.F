@@ -414,8 +414,8 @@ C       (using 1 if cx_delta not specified; yes, the index order change is corre
 
              slen = TM_LENSTR1(attname)
              IF (attname(1:1) .EQ. "'" .AND. attname(slen:slen) .EQ. "'" ) THEN
-                attname = attname(2:slen-1)
-                attname(slen-1:slen) = ""
+                attname(slen:) = " "
+                attname = attname(2:)
              ENDIF
 
              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid,

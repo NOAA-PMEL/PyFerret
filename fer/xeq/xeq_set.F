@@ -671,7 +671,10 @@ c *kob* 4/97
 	CALL LEFT_JUST( buff2, buff2, loc )
 * ... remove surrounding quotation marks on argument, if any
 	IF ( buff2(1:1) .EQ. '"' .AND. buff2(loc:loc) .EQ. '"'
-     .	.AND. loc .GT.2  	) buff2 = buff2(2:loc-1)
+     .	.AND. loc .GT.2 ) THEN
+           buff2(loc:) = ' '
+           buff2 = buff2(2:)
+        ENDIF
 * ... identify the mode name
         len_test = TM_LENSTR(buff1)
 	DO 810 mode = 1, max_modes

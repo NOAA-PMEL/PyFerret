@@ -114,10 +114,7 @@
 
       slen = TM_LENSTR1( abuff )
       IF (abuff(1:1) .EQ. "'" .AND. abuff(slen:slen) .EQ. "'" ) THEN
-         abuff = abuff(2:slen-1)
-         abuff(slen-1:slen) = ""
-         slen = slen - 2
-         CALL TM_FTOC_STRNG( abuff(1:slen), fhol, flen )
+         CALL TM_FTOC_STRNG( abuff(2:slen-1), fhol, flen )
          status = NCF_GET_VAR_ATTR_ID_CASE(dset_num, varid, fhol, attid)
       ELSE 
          CALL TM_FTOC_STRNG( abuff(1:slen), fhol, flen )

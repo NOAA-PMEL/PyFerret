@@ -129,4 +129,8 @@ install_exes :
 check :
 	$(MAKE) -C bench check
 
+.PHONY : check_noremote
+check_noremote :
+	$(MAKE) -C bench check_noremote
+
 ##

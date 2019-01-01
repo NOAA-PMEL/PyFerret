@@ -6,60 +6,99 @@
 include ../site_specific.mk
 include ../platform_specific.mk.$(BUILDTYPE)
 
-## Compare results from executing the RUN_TESTS.sh test suite with those saved under bench/test_results
+## Run all the benchmark tests, including those requiring remote data
+## (environment variable SKIP_REMOTE is empty)
 .PHONY: check
-check: run_tests do_diffs
+check:
+	@$(MAKE) "SKIP_REMOTE=" run_tests
+	@$(MAKE) "SKIP_REMOTE=" compare_plots
+	@$(MAKE) "SKIP_REMOTE=" compare_logs
 
-.PHONY: do_diffs
-do_diffs:
-	@echo 'Differences in the generated bench PDF and PNG files versus those in bench/test_results'
-	-@for img in *.pdf *.png ; \
-	do \
-	    if diff -q $$img test_results/$$img ; then \
-	        echo "Files $$img and test_results/$$img are identical"; \
-	    else \
-	        compare $$img test_results/$$img "$$img"_diff.png ; \
-	    fi \
-	done
-	-@( datetag=`date +'%d%h%yAT'|tr '[A-Z]' '[a-z]'` ; \
-	    diff all_$${datetag}*_ncdump test_results/pyferret_run_tests_ncdump 1> pyferret_run_tests_ncdump.diff 2>&1 ; \
-	    diff all_$${datetag}*_err test_results/pyferret_run_tests_err 1> pyferret_run_tests_err.diff 2>&1 ; \
-	    diff all_$${datetag}*_log test_results/pyferret_run_tests_log 1> pyferret_run_tests_log.diff 2>&1 \
-	)
-	@echo ''
-	@echo 'Inspect the *_diff.png files for actual differences in the images'
-	@echo 'Inspect the pyferret_run_tests_*.diff files for actual differences in the output'
-
-## Just compare plot results.
-.PHONY: checkplots
-checkplots: 
-	@echo 'Differences in the generated bench PDF and PNG files versus those in bench/test_results'
-	-@for img in *.pdf *.png ; \
-	do \
-	    if diff -q $$img test_results/$$img ; then \
-	        echo "Files $$img and test_results/$$img are identical"; \
-	    else \
-	        compare $$img test_results/$$img "$$img"_diff.png ; \
-	    fi \
-	done
-	-@( datetag=`date +'%d%h%yAT'|tr '[A-Z]' '[a-z]'` ; \
-	    diff all_$${datetag}*_ncdump test_results/pyferret_run_tests_ncdump 1> pyferret_run_tests_ncdump.diff 2>&1 ; \
-	    diff all_$${datetag}*_err test_results/pyferret_run_tests_err 1> pyferret_run_tests_err.diff 2>&1 ; \
-	    diff all_$${datetag}*_log test_results/pyferret_run_tests_log 1> pyferret_run_tests_log.diff 2>&1 \
-	)
-	@echo ''
-	@echo 'Inspect the *_diff.png files for actual differences in the images'
-	@echo 'Inspect the pyferret_run_tests_*.diff files for actual differences in the output'
-
+## Run all the benchmark tests except those requiring remote data
+## (environment variable SKIP_REMOTE is not empty)
+.PHONY: check_noremote
+check_noremote:
+	@$(MAKE) "SKIP_REMOTE=XXXX" run_tests
+	@$(MAKE) "SKIP_REMOTE=XXXX" compare_plots
+	@$(MAKE) "SKIP_REMOTE=XXXX" compare_logs
 
 ## Execute the RUN_TESTS.sh test suite
+## If the environment variable SKIP_REMOTE is not empty, skips tests requiring remote data
 .PHONY: run_tests
 run_tests:
-	@if [ `which pyferret` = "" -o "$(FER_DIR)" = "" ]; then \
-	    echo "*** PyFerret must be installed and the ferret_paths script must have sourced for these tests ***" ; \
-	    exit 1 ; \
-	fi
-	( SED_EXTREGEX_FLAG="$(SED_EXTREGEX_FLAG)"; export SED_EXTREGEX_FLAG; ./RUN_TESTS.sh `which pyferret` "$(PYFER_EXTERNAL_FUNCTIONS)" )
+	@( \
+	    ferret_exe=`which pyferret` ;\
+	    if [ $$ferret_exe = "" -o "$(FER_DIR)" = "" ] ; then \
+	        echo "*** PyFerret must be installed and the ferret_paths script must have sourced for these tests ***" ;\
+	        exit 1 ;\
+	    fi ;\
+	    echo "Using $$ferret_exe" ;\
+	    SED_EXTREGEX_FLAG="$(SED_EXTREGEX_FLAG)" ;\
+	    export SED_EXTREGEX_FLAG ;\
+	    ./RUN_TESTS.sh $$ferret_exe "$(PYFER_EXTERNAL_FUNCTIONS)" \
+	)
+
+## Compare the plots from executing the RUN_TESTS.sh test suite with those saved.
+## If the environment variable SKIP_REMOTE is empty, compares to those under "test_result";
+## otherwise compares to those under "test_results_noremote"
+.PHONY: compare_plots
+compare_plots:
+	-@( \
+	    if [ -z "$(SKIP_REMOTE)" ] ; then \
+	        results_dir="test_results" ;\
+	    else \
+	        results_dir="test_results_noremote" ;\
+	    fi ;\
+	    echo "Comparing PNG and PDF files to those in bench/$$results_dir" ;\
+	    for img in `basename $$results_dir/*.png $$results_dir/*.pdf *.png *.pdf | sort -u` ; do \
+	        if [ ! -f $$img ] ; then \
+	            echo "*** File $$img is missing ***" ;\
+	        elif [ ! -f $$results_dir/$$img ] ; then \
+	            echo "*** File $$results_dir/$$img is missing ***" ;\
+	        elif diff -q $$img $$results_dir/$$img ; then \
+	            echo "Files $$img and $$results_dir/$$img are identical" ;\
+	        else \
+	            compare $$img $$results_dir/$$img $${img}_diff.png ; \
+	        fi ;\
+	    done \
+	)
+	@echo ''
+	@echo 'Inspect the *_diff.png files for actual differences in the images'
+	@echo ''
+
+## Compare the log, err, and ncdump results from executing the RUN_TESTS.sh test suite.
+## If the environment variable SKIP_REMOTE is empty, compares to those under "test_result";
+## otherwise compares to those under "test_results_noremote"
+.PHONY: compare_logs
+compare_logs:
+	-@( \
+	    if [ -z "$(SKIP_REMOTE)" ] ; then \
+	        results_dir="test_results" ;\
+	    else \
+	        results_dir="test_results_noremote" ;\
+	    fi ;\
+	    datetag=`date +'%d%h%yAT'|tr '[A-Z]' '[a-z]'` ;\
+	    logfile=`/bin/ls -1 all_$${datetag}*_log` ;\
+	    if [ -z "$$logfile" ] ; then \
+	        echo "*** No run_tests results log file from today found ***" ;\
+	        exit 1 ;\
+	    fi ;\
+	    if [ `echo "$${logfile[@]}" | wc -l` -ne 1 ] ; then \
+	        echo "*** Multiple run_tests results logs from today found ***" ;\
+	        exit 1 ;\
+	    fi ;\
+	    echo "Comparing $$logfile to bench/$$results_dir/pyferret_run_tests_log" ;\
+	    diff $$logfile $$results_dir/pyferret_run_tests_log 1> pyferret_run_tests_log.diff 2>&1 ;\
+	    errfile=`echo $$logfile | sed -e "s%log%err%"` ;\
+	    echo "Comparing $$errfile to bench/$$results_dir/pyferret_run_tests_err" ;\
+	    diff $$errfile $$results_dir/pyferret_run_tests_err 1> pyferret_run_tests_err.diff 2>&1 ;\
+	    ncdfile=`echo $$logfile | sed -e "s%log%ncdump%"` ;\
+	    echo "Comparing $$ncdfile to bench/$$results_dir/pyferret_run_tests_ncdump" ;\
+	    diff $$ncdfile $$results_dir/pyferret_run_tests_ncdump 1> pyferret_run_tests_ncdump.diff 2>&1 ;\
+	    echo '' ;\
+	    echo 'Inspect the pyferret_run_tests_*.diff files for actual differences in the output' \
+	)
+	@echo ''
 
 .PHONY: clean
 clean:

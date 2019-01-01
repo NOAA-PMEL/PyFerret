@@ -210,4 +210,8 @@ update :
 check :
 	$(MAKE) -C $(DIR_PREFIX)/bench check
 
+.PHONY : check_noremote
+check_noremote :
+	$(MAKE) -C $(DIR_PREFIX)/bench check_noremote
+
 ##

@@ -27,14 +27,20 @@ cleanuponerror() {
    exit 129 
 }
 
+if [ -n "$SKIP_REMOTE" ]; then
+   test_scripts_file="TEST_SCRIPTS_NOREMOTE"
+else
+   test_scripts_file="TEST_SCRIPTS"
+fi
+
 # allow tests to be commented out by beginning with the line with a '!'
 # remove bn_all_ef.jnl from the list if $efdir is "."
 if [ "$efdir" = "." ]; then
-   jnl_scripts=`grep -v '^!' TEST_SCRIPTS | grep '\.jnl$' | grep -v "bn_all_ef\.jnl"`
+   jnl_scripts=`grep -v '^!' $test_scripts_file | grep '\.jnl$' | grep -v "bn_all_ef\.jnl"`
 else
-   jnl_scripts=`grep -v '^!' TEST_SCRIPTS | grep '\.jnl$'`
+   jnl_scripts=`grep -v '^!' $test_scripts_file | grep '\.jnl$'`
 fi
-py_scripts=`grep -v '^!' TEST_SCRIPTS | grep '\.py$'`
+py_scripts=`grep -v '^!' $test_scripts_file | grep '\.py$'`
 
 umask 002
 

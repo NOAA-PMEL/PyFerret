@@ -1,0 +1,121 @@
+! bn710_bug_fixes_noremote.jnl
+! test various fixes that went into version 7.1
+! 6/16 *acm*
+!
+
+! Bug 2445 missing or repeated coords when axis marked as regular
+go bn_reset
+go err700_reg_axis_check
+
+! Bug 2446 include script name on warning about unclosed IF block
+go bn_reset
+go err700_unclosed_if
+
+! Bug 2446 inheriting attributes
+go bn_reset
+go err700_inherit_all
+
+! Bug 2458  Subspan modulo grids and SAMPLEXY
+go bn_reset
+go err700_samplexy_subspan_modulo
+
+
+! Bug 2463  SHADE/LEVELS and single-color data
+go bn_reset
+go err700_levels_one_level
+
+! Bug xxxx  Only examine key labels that are actually going to be printed
+go bn_reset
+go err700_key
+
+! Bug 2468 Symbol AX_HORIZ corrupted by an overlay
+go bn_reset
+go err700_ax_horiz
+
+! Bug 2470 Symbol LEV_DEL incorrect on a LEV=(lo,hi,delta)
+go bn_reset
+go err700_lev_del_symb
+
+! Bug 2466 Graticule lines too dense on time plots
+go bn_reset
+go err700_timegrat
+
+! Bug 2465 parsing errors on commands with expressions involving attrbutes
+go bn_reset
+go err700_attribute_parsing
+
+! Note the fix for # 2437 needs documentation: 4D output for grids in X,Y,Z,T only
+! Note the fix for # 2451 needs documentation: -gif mode plots with /HLIM or /VLIM reversing an axis.
+
+
+! Bug 2477 plot axes are not fully drawn, some /VS plots
+! move this to bn_gif.jnl 
+! go bn_reset
+! go err700_vs_plot_axes
+
+! Bug 2483. Fixing axis-ends symbols XAXIS_MIN,XAXIS_MAX, YAXIS_MIN,YAXIS_MAX
+go bn_reset
+go err700_axis_dates
+
+! Bug 2489. Attribute climatology_time_range not defined on an expression
+go bn_reset
+go err700_clim_attr_expression
+
+! Bug 2491: Location of colorbar labels wrong
+! on /HLOG or /VLOG plots
+go bn_reset
+go err700_ribbon_vlog
+
+! Bug 2492: single-variable listings with /form=comma or /form=tab
+go bn_reset
+go err700_list_comma
+
+
+! Bug 2493: T aggregation when there are E or F axes
+go bn_reset
+go err700_aggT_5d
+
+! Bug 2495: shift on overlay of time series plot on 2d time plot
+go bn_reset
+go err700_time_overlay
+
+
+! Bug 2494:  drawing a single-cell shade plot
+go bn_reset
+go err700_shade_singlecell
+
+
+! Bug 2496: errors using axis with nearly-repeating coordinates
+!           where coordinates are very near grid-cell edges.
+go bn_reset
+go err700_coords
+
+! Bug 2499: Define a single-point axis with bounds
+go bn_reset
+go err700_define_1pt_axis
+
+
+! Bug 2498: time unit error in F-aggregation of some OPENDAP datasets
+! go bn_reset
+! go err700_aggregate_from_fmrc
+
+
+! Bug 2504: modulo axes and coordinates
+go bn_reset
+go err700_modulo
+
+! Bug 1480: saving modulo axis with too big a region
+go bn_reset
+go err700_save_mod_att
+
+! Bug 2502: FMRC regridding sensitive to insignificant floating-point differences in time
+go bn_reset
+go err700_fmrcdiag
+
+! Bug 2331: Labeling the labels in line-plot legends.
+go bn_reset
+Go err700_legend_labels
+
+! Bug 2507: time aggregations with same time axis in different grids per file
+go bn_reset
+Go err700_aggt_dup_grids

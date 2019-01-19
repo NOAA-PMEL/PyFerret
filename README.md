@@ -159,16 +159,18 @@ the `sudo` privilege escalation program):
 - `numpy`, or `python-numpy` - the NumPy python package as well as include and library files  
 - `pyqt`, `python-qt5`, `python-qt4`, `PyQt5`, or `PyQt4` - for either PyQt5 or PyQt4  
 - `netcdf` - for NetCDF 4.x include and library files  
+
 The NetCDF package should add the HDF5 packages as a dependency.
 Some package manager programs (such as Homebrew) have their own version of Python separate 
 from the operating system; if so, the NumPy and PyQt packages should add the python package(s) 
 as dependencies.
 
 You may also want, if not already installed:  
-- `git` - to use "git" commands to download the source code; highly recommended
-- `scipy`, or `python-scipy` - for statisticaly functions in PyFerret; highly recommended
-- `pyshp`, or `python-pyshp` - for shapefile functions in PyFerret
-Note that `pyshp` is pure-python code and can also be installed using `pip2` 
+- `git` - to use "git" commands to download the source code; highly recommended  
+- `scipy`, or `python-scipy` - for statisticaly functions in PyFerret; highly recommended  
+- `pyshp`, or `python-pyshp` - for shapefile functions in PyFerret  
+
+Note that `pyshp` is pure-python code and can also be installed using `pip2`
 (part of python2.x) or `pip3` (part of python3.x). 
 
 #### PyFerret source code
@@ -186,8 +188,8 @@ git clone https://github.com/NOAA-PMEL/PyFerret.git $HOME/git/PyFerret
 cd $HOME/git/PyFerret  
 ```
 Working with a cloned repository allows you to quickly and easily update
-and rebuild PyFerret when updates appear that you wish to use.  
-Just executing the command:  
+and rebuild PyFerret when updates appear that you wish to use.
+Executing the command:  
 ```shell
 git pull  
 ```
@@ -240,7 +242,7 @@ so you may wish to redirect output and run this command in the background.
 When the build has successfully completed, install PyFerret in the location given 
 by the value of `INSTALL_FER_DIR` in the site_specific.mk file by running the following
 command.  (If the installation directory exists and is not empty, you should 
-move or remove any contents of that directory to ensure a clean installation.)
+move or remove any contents of that directory to ensure a clean installation.)  
 ```shell
 make install
 ```
@@ -280,7 +282,7 @@ appropriate ferret_paths script:
 ```shell
 . /my/path/to/ferret_paths.sh
 ```
-(period, a space, and the path to the ferret_paths.sh script) for Bourne-type shells (such as bash), or 
+(a period, a space, and the path to the ferret_paths.sh script) for Bourne-type shells (such as bash), or 
 ```shell
 source /my/path/to/ferret_paths.csh
 ```

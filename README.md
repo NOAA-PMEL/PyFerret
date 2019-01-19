@@ -137,13 +137,137 @@ e.g., bash) or `source ferret_paths.csh` (for C-type shells; e.g. tcsh).
 
 ## Building PyFerret from source
 
-To build PyFerret from source code, please see the `Building PyFerret` instructions at
-[http://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/build-install/](http://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/build-install/)
-Please note that the `site_specific.mk` and `external_functions/ef_utilites/site_specific.mk`
-files in the repository have been renamed with a `.in` appended to the name.
-You must copy these files with the `.in` extensions to create files with the
-`site_specific.mk` name and edit the contents to configure these for your
-system.  The `site_specific.mk` files will be ignored by git (the name was
-added to `.gitignore`) so your customized configuration files will not be
-added to your repository if you have cloned this repository.
+While the `ferret.pmel.noaa.gov` site is offline, please use the following 
+instructions for build PyFerret from the GitHub source files found at this site.
+Please note that these are general instructions that are not fully verified; names 
+of installation packages may vary slightly for you particular operating system.
+In particular, some systems have special development (`-dev`) packages that provide 
+the include files, and shared-object libraries without a numeric extension, that are 
+needed for compiling and linking the PyFerret code.
+On other systems, these include and library files are part of the standard package.
+These instructions assume your package manager provides recent versions of HDF5 and NetCDF.
+
+#### Packages from the package manager
+
+If not already installed on your system, install the following packages using the package 
+manager for your operating system, or a command-line package installation program such as 
+`yum` or `apt-get` (which needs to be run as a system administator - as "root" - or using 
+the `sudo` privilege escalation program):
+-- `gfortran`, or `gcc` (Gnu Compiler Collection) on some systems - for the gfortran compiler and library  
+-- `libcairo`, `libcairo-dev`, `cairo`, or `cairo-dev` - for the cairographics library and include files  
+-- `libpango`, `libpango-dev`, `pango`, or `pango-dev` - for the pango and pango-cairo library and include files  
+-- `numpy`, or `python-numpy` - the NumPy python package as well as include and library files  
+-- `pyqt`, `python-qt5`, `python-qt4`, `PyQt5`, or `PyQt4` - for either PyQt5 or PyQt4  
+-- `netcdf` - for NetCDF 4.x include and library files  
+The NetCDF package should add the HDF5 packages as a dependency.
+Some package manager programs (such as Homebrew) have their own version of Python separate 
+from the operating system; if so, the NumPy and PyQt packages should add the python package(s) 
+as dependencies.
+
+You may also want, if not already installed:  
+-- `git` - to use "git" commands to download the source code; highly recommended
+-- `scipy`, or `python-scipy` - for statisticaly functions in PyFerret; highly recommended
+-- `pyshp`, or `python-pyshp` - for shapefile functions in PyFerret
+Note that `pyshp` is pure-python code and can also be installed using `pip2` 
+(part of python2.x) or `pip3` (part of python3.x). 
+
+#### PyFerret source code
+
+The green `Clone or download` button at the top of the PyFerret GitHub 
+`Code` page/tab gives you options for obtaining the latest PyFerret source code.
+You can get a copy of the latest source as a zip file, but a better option, 
+if you can, is to use "git" commands to clone the repository (the source code, 
+plus history and version control of the source code) to your local system.
+
+The git comands to clone the PyFerret repository look something like the following
+(the local copy of the repository will be put into `$HOME/git/PyFerret`):  
+```
+    git clone https://github.com/NOAA-PMEL/PyFerret.git $HOME/git/PyFerret  
+    cd $HOME/git/PyFerret  
+```
+Working with a cloned repository allows you to quickly and easily update
+and rebuild PyFerret when updates appear that you wish to use.  
+Just executing the command:  
+```
+    git pull  
+```
+when in the PyFerret cloned repository will download any changes to your local copy.
+
+#### Configure and build
+
+In the PyFerret source directory, copy the `site_specific.mk.in` configuration
+template file to `site_specific.mk` and edit this `site_specific.mk`
+configuration file appropriately for your system; for example:  
+```
+    DIR_PREFIX = $(HOME)/git/PyFerret  
+    INSTALL_FER_DIR = /usr/local/PyFerret  
+    BUILDTYPE = x86_64-linux  
+    PYTHON_EXE = python2.7  
+    GFORTRAN_LIB = $(shell $(FC) --print-file-name=libgfortran.a)  
+    CAIRO_LIBDIR =   
+    PIXMAN_LIBDIR =   
+    PANGO_DIR =   
+    GLIB2_LIBDIR =   
+    HDF5_LIBDIR =  
+    SZ_LIBDIR =  
+    NETCDF_LIBDIR = /usr/lib64  
+```
+Information about each of these values, as well as suggested values to assign,
+are included as comments (lines starting with a `#`) in the `site_specific.mk` file.
+
+Similarly, copy `external_functions/ef_utility/site_specific.mk.in` to
+`external_functions/ef_utility/site_specific.mk` and edit
+`external_functions/ef_utility/site_specific.mk`:  
+```
+    BUILDTYPE = x86_64-linux  
+    PYTHON_EXE = python2.7  
+```
+
+If you have built PyFerret (successfully or not) from this source directory 
+or repository before, run the command:  
+```
+    make clean  
+```
+to make sure you remove all previously generated files.
+Then run the command:  
+```
+    make
+```
+to build PyFerret.
+This build will take a bit of time (minutes) and will generate a lot of output,
+so you may wish to redirect output and run this command in the background.
+
+When the build has successfully completed, install PyFerret in the location given 
+by the value of `INSTALL_FER_DIR` in the site_specific.mk file by running the following
+command.  (If the installation directory exists and is not empty, you should 
+move or remove any contents of that directory to ensure a clean installation.)
+```
+    make install
+```
+You may need to be logged in as a system administrator (as "root") or use the "sudo" 
+privilege escalation command (thus, `sudo make install`), to install PyFerret 
+system-wide (such as installing in `/usr/local/PyFerret` as in the example 
+`site_specific.mk` file given above.
+
+#### Standard Ferret/PyFerret datasets
+
+If you do not have the standard Ferret/PyFerret datasets, they can be downloaded from
+[https://github.com/NOAA-PMEL/FerretDatasets](the FerretDatasets GitHub repository)
+either as a zip file download or as a git cloned repository (similar to obtaining the
+PyFerret source).
+If you already have a copy of these datasets on your system, these datasets can be 
+shared between Ferret and PyFerret, including different versions of these programs.
+You can also add any of your own datasets that might be frequently used.
+These datasets will be needed as part of the following PyFerret configuration.
+
+#### (Py)Ferret configuration
+
+Change to the PyFerret installation directory (the value of `INSTALL_FER_DIR`) 
+created above and run the `bin/Finstall` script to create the `ferret_paths.sh`, 
+`ferret_paths.csh`, and `pyferret` scripts.  
+The value of `FER_DIR`, the Ferret/PyFerret installation directory, should be this 
+installation directory, which can be specified as `.` (a period) which means the 
+current directory.
+The value of FER_DSETS should be the directory containing the standard 
+Ferret/PyFerret dataset mentioned above.
 

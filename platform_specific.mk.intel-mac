@@ -56,11 +56,21 @@ endif
 
 	PLATFORM 	= $(shell uname -s -r)
 
+ifeq ($(strip $(CC)),)
 	CC		= $(shell which clang)
+endif
+ifeq ($(strip $(FC)),)
 	FC		= $(shell which gfortran)
+endif
+ifeq ($(strip $(F77)),)
 	F77		= $(shell which gfortran)
+endif
+ifeq ($(strip $(AR)),)
 	AR		= $(shell which ar)
+endif
+ifeq ($(strip $(RANLIB)),)
 	RANLIB		= $(shell which ranlib)
+endif
 
 	ARFLAGS		= -cr
 
@@ -94,7 +104,7 @@ endif
 
 	# Below this line are macro definitions used only for the final linking of the executable
 
-	LD		= $(shell which gfortran)
+	LD		= $(FC)
 	LDFLAGS		= -static-libgfortran -Wl,-export_dynamic -Wl,-headerpad_max_install_names
 
 # If $(READLINE_LIBDIR) is given (and not blank), statically link in the readline

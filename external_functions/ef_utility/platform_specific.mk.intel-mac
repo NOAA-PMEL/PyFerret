@@ -1,5 +1,5 @@
 #
-# platform_specific_includes.mk.intel-mac
+# platform_specific.mk.intel-mac
 #
 # This file is included in the External Function Makefiles and defines
 # platform specific macros
@@ -17,10 +17,9 @@ F77		= $(shell which gfortran)
 FFLAGS		= -fPIC -O -Ddouble_p -fno-second-underscore \
 		  -fno-backslash -fdollar-ok -ffixed-line-length-132 \
 		  -fdefault-real-8 -fdefault-double-8 -O $(INCLUDES)
-FFLAGS_DEBUG	= -O0 -g -fbounds-check
 
 LD		= $(shell which gfortran)
-LD_DYN_FLAGS	= -fPIC -bundle -static-libgfortran -Wl,-bundle_loader,$(FER_DIR)/bin/ferret -Wl,-commons,use_dylibs
+LD_DYN_FLAGS    = -fPIC -bundle -undefined dynamic_lookup
 SYSLIBS		= ../ef_utility/copy_ferret_ef_mem_subsc.o 
 
 CFLAGS_DEBUG	= -fPIC -O0 -g -Ddebug

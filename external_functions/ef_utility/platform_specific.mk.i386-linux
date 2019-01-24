@@ -9,22 +9,23 @@
 
 INCLUDES	= -I. -I../ef_utility -I../ef_utility/ferret_cmn
 
-CC		= gcc
-CFLAGS		= -fPIC -m32 -Ddouble_p -O $(INCLUDES)
-CFLAGS_DEBUG	= -O0 -g
+CC		= $(shell which gcc)
+CFLAGS		= -fPIC -m32 -O -Ddouble_p $(INCLUDES)
 
-FC		= gfortran
-F77		= gfortran
-FFLAGS		= -fPIC -m32 -Ddouble_p -fno-second-underscore \
-		  -fno-backslash -fdollar-ok -ffixed-line-length-132 -malign-double \
-		  -fdefault-real-8 -fdefault-double-8 -O $(INCLUDES)
-FFLAGS_DEBUG	= -O0 -g -fbounds-check
+FC		= $(shell which gfortran)
+F77		= $(shell which gfortran)
+FFLAGS		= -fPIC -m32 -O -Ddouble_p -fno-second-underscore \
+		  -fno-backslash -fdollar-ok -ffixed-line-length-132 \
+		  -fdefault-real-8 -fdefault-double-8 -malign-double $(INCLUDES)
 
-LD		= gfortran
+LD		= $(shell which gfortran)
 LD_DYN_FLAGS	= -fPIC -m32 -shared -Wl,--no-undefined
 SYSLIBS		= ../ef_utility/copy_ferret_ef_mem_subsc.o \
 		  -L$(INSTALL_FER_DIR)/lib/$(PYTHON_EXE)/site-packages/pyferret \
 		  -lpyferret
+
+CFLAGS_DEBUG	= -O0 -g -Ddebug
+FFLAGS_DEBUG	= -O0 -g -fbounds-check -Ddebug
 
 # Directly compile the .F source files to the .o object files
 # since gfortran can handle the C compiler directives in Fortran code

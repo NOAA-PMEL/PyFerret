@@ -167,6 +167,7 @@ createLonLat(const double xymin[], const double xymax[],
   FerMem_Free(clat, __FILE__, __LINE__);
   FerMem_Free(clon, __FILE__, __LINE__);
   FerMem_Free(data, __FILE__, __LINE__);
+}
 
 
 //////////////////////////////////////////////////////////////////////

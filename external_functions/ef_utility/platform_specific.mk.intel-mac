@@ -10,19 +10,21 @@
 INCLUDES	= -I. -I../ef_utility -I../ef_utility/ferret_cmn
 
 CC		= $(shell which clang)
-CFLAGS		= -fPIC -Ddouble_p -O $(INCLUDES)
-CFLAGS_DEBUG	= -O0 -g
+CFLAGS		= -fPIC -O -Ddouble_p $(INCLUDES)
 
 FC		= $(shell which gfortran)
 F77		= $(shell which gfortran)
-FFLAGS		= -fPIC -Ddouble_p -fno-second-underscore \
+FFLAGS		= -fPIC -O -Ddouble_p -fno-second-underscore \
 		  -fno-backslash -fdollar-ok -ffixed-line-length-132 \
 		  -fdefault-real-8 -fdefault-double-8 -O $(INCLUDES)
 FFLAGS_DEBUG	= -O0 -g -fbounds-check
 
 LD		= $(shell which gfortran)
-LD_DYN_FLAGS	= -fPIC -bundle -undefined dynamic_lookup
+LD_DYN_FLAGS	= -fPIC -bundle -static-libgfortran -Wl,-bundle_loader,$(FER_DIR)/bin/ferret -Wl,-commons,use_dylibs
 SYSLIBS		= ../ef_utility/copy_ferret_ef_mem_subsc.o 
+
+CFLAGS_DEBUG	= -fPIC -O0 -g -Ddebug
+FFLAGS_DEBUG	= -fPIC -O0 -g -fbounds-check -Ddebug
 
 # Directly compile the .F source files to the .o object files
 # since gfortran can handle the C compiler directives in Fortran code

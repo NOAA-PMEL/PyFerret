@@ -86,11 +86,21 @@ endif
 			  -DNO_PREPEND_STRING \
 			  -DSTAR_1_SUPPORTED
 
+ifeq ($(strip $(CC)),)
 	CC		= $(shell which gcc)
+endif
+ifeq ($(strip $(FC)),)
 	FC		= $(shell which gfortran)
+endif
+ifeq ($(strip $(F77)),)
 	F77		= $(shell which gfortran)
+endif
+ifeq ($(strip $(AR)),)
 	AR		= $(shell which ar)
+endif
+ifeq ($(strip $(RANLIB)),)
 	RANLIB		= $(shell which ranlib)
+endif
 
 	ARFLAGS		= -cr
 

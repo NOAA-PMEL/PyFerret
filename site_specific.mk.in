@@ -88,8 +88,8 @@ NETCDF_LIBDIR = /usr/local/netcdf-4.4.1.1/lib
 ## this value (or leave it blank).  In this case the system's readline and history
 ## shared-object libraries will be used.
 ## =========================
-# READLINE_LIBDIR = $(HOME)/.local/Cellar/readline/7.0.5/lib
-# READLINE_LIBDIR = /usr/local/Cellar/readline/7.0.5/lib
+# READLINE_LIBDIR = $(HOME)/.local/Cellar/readline/8.0.0/lib
+# READLINE_LIBDIR = /usr/local/Cellar/readline/8.0.0/lib
 READLINE_LIBDIR =
 
 ##

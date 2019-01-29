@@ -63,25 +63,25 @@ Either python version of miniconda is fine; `pyferret` works with ether python 2
 Execute the following command on the terminal to install `pyferret` as well as
 `ferret_datasets` (the default Ferret/PyFerret datasets) into conda:
 ```shell
-conda create -n FERRET -c conda-forge pyferret ferret_datasets --yes
+/my/path/to/miniconda/bin/conda create -n FERRET -c conda-forge pyferret ferret_datasets --yes
 ```
 
 To start using `pyferret`, execute the following command:
 ```shell
-source activate FERRET
+source /my/path/to/miniconda/bin/activate FERRET
 ```
 
 Once you are done working with `pyferret` you can leave this environment,
 if you wish, with the command:
 ```shell
-source deactivate FERRET
+source /my/path/to/miniconda/bin/deactivate FERRET
 ```
 
 In the commands above, `FERRET` is the environment name where `pyferret` is installed.
 You can change that to any name you like but we do not recommend installing `pyferret`
 in the root environment of miniconda.
-The main reason is to take advantage of the `activate/deactivate` script that will set
-up all the variables that `pyferret` needs.
+The main reason is to take advantage of the `activate` and `deactivate` scripts that
+will set up all the variables that `pyferret` needs.
 (You can test whether the `pyferret` environment is activated by issuing the command
 `echo $FER_DATA` and see if it returns a directory name.)
 

@@ -1,4 +1,4 @@
-! bn450_plot.JNL - updated 9/97 from bn320_plot.jnl
+! bn_plot.jnl
 ! upgraded from bn320 to provide method for testing batch mode.  Also remove
 ! all labels to create "master" gif and ps files to compare against
 ! *kob*

@@ -1,9 +1,5 @@
-! bn450_gif.JNL - copied from bn450_plot.jnl
-! this journal file only tests the writing of gif file in batch mode using
-! frame/file=bnplot.gif....will create three gif files
-! *kob*
-
-
+! gif.jnl
+!
 ! NOTE the plots in bnplot_2.gif are different in PyFerret and Ferret,
 ! because of different treatment of /TEXT= for viewport definitions.
 

@@ -1,14 +1,11 @@
-! bn450_ps.JNL - copied from bn450_plot.jnl
-! this journal file only tests the writing of ps files in batch mode using
-! "-batch bnplot.ps" command line option...will create on final ps file
-! *kob*
+! bn_ps.jnl
 
 ! define a 6 viewport window (modified definitions 11/92)
 def view/xlim=0,.333/ylim=0,.5    ll6
 def view/xlim=0,.333/ylim=.5,1    ul6
 def view/xlim=.333,.666/ylim=0,.5 lm6
 def view/xlim=.333,.666/ylim=.5,1 um6
-def view//xlim=.666,1/ylim=0,.5   lr6
+def view/xlim=.666,1/ylim=0,.5   lr6
 def view/xlim=.666,1/ylim=.5,1    ur6
 show view
 
@@ -78,6 +75,4 @@ plot/l=1:99000/nolabel sin(200000/(l+10000))
 frame/file=bnplot_4.pdf   ! Not an error in PyFerret
 frame/file=bnplot_4.ps    ! Not an error in PyFerret
 frame/file=bnplot_4.eps   ! Not an error in PyFerret
-
-
 

@@ -225,8 +225,8 @@ BUILDTYPE = x86_64-linux
 PYTHON_EXE = python2.7  
 ```
 
-If you have built PyFerret (successfully or not) from this source directory 
-or repository before, run the command:  
+If you have previously built PyFerret (successfully or not) from this source directory 
+or repository, run the command:  
 ```shell
 make clean  
 ```

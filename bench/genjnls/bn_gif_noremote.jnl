@@ -1,4 +1,4 @@
-! bn_gif.jnl
+! bn_gif_noremote.jnl
 
 ! NOTE the plots in bnplot_2.gif are different in PyFerret and Ferret,
 ! because of different treatment of /TEXT= for viewport definitions.
@@ -166,7 +166,7 @@ set win/siz=1/asp=1
 
 ! New benchmark gif outputs in v6.97
 go bn_reset
-GO bn_hovmuller_overlays
+GO bn_hovmuller_overlays_noremote
 
 Go bn_reset
 GO bn_labels_on_taxis

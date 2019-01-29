@@ -1,0 +1,95 @@
+! bn697_bug_fixes_noremote
+! test various fixes that went into version 6.97
+
+GO bn_reset
+GO err696_only_inf_lev
+
+GO bn_reset
+GO err696_plot_ax_ppl
+
+GO bn_reset
+GO err696_ft_calendars
+
+GO bn_reset
+GO err696_centerlab_restore
+
+GO bn_reset
+GO err696_time_overlay
+
+GO bn_reset
+GO err696_save_noupcase
+
+GO bn_reset
+GO err696_argument_blanks
+
+GO bn_reset
+GO err696_annotate_numeric
+
+GO bn_reset
+GO err696_e_component_mem_crptn
+
+GO bn_reset
+GO err696_mem_err_report
+
+GO bn_reset
+GO err696_multiple_slashes_noremote
+
+GO bn_reset
+GO err696_2d_time_overlay
+
+GO bn_reset
+GO err696_singlevec_over
+
+GO bn_reset
+GO err696_return_type
+
+GO bn_reset
+GO err696_hovmuller_mod_fill
+
+!GO bn_reset!
+!GO err696_axname_noupcase
+
+go bn_reset
+go err696_repeat_escapes.jnl
+
+go bn_reset
+go err696_red_keylab.jnl
+
+go bn_reset
+go err696_poly_over_label
+
+go bn_reset
+go err696_def_ax_f
+
+go bn_reset
+go err696_mode_cal_f
+
+go bn_reset
+go err696_def_ax_edges
+
+go bn_reset
+go err696_write_no_dim
+
+go bn_reset
+go err696_mod_sub_fln
+
+go bn_reset
+go err696_subspan_transforms
+
+go bn_reset
+go err696_subspan_mod_in_expr
+
+go bn_reset
+go err696_shade_subspan_clim
+
+go bn_reset
+! go err696_subspan_mod_strides  ! do this test in bn_gif
+
+go bn_reset
+go err696_def_att
+
+go bn_reset
+go err696_return_prec
+
+go bn_reset
+go err686_show_xml_letd

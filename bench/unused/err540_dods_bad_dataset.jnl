@@ -1,0 +1,13 @@
+! err540_dods_bad_dataset.jnl
+!
+!  test access to a bad/nonexistent DODS dataset.  Old bug would cause ferret to 
+!    essentially hang
+!  Correct behavior is to generate an error
+
+
+! DELIBERATE ERROR
+set mode ignore
+
+use "http://www.noway_pal.com/nodata.nc"
+
+set mode/last ignore

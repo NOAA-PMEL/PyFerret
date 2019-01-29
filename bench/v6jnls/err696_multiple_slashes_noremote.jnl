@@ -1,0 +1,48 @@
+! err696_multiple_slashes_noremote.jnl
+! 1/25/2016 *acm*
+!
+! For ticket 2356
+! Change parsing to allow multiple slashes in a row.
+! simplifies DEFINE SYMBOL QUALIFIERS= kinds of definitions
+
+def sym qual /x=1:2
+
+set reg/($qual)
+show region
+cancel region
+
+
+! Several qualifiers on a command
+set reg//x=1:2///y=4:7
+show region
+cancel region
+
+! Qualifiers with a command argument
+use coads_climatology
+def sym plotqual = /pal=grayscale/line//key=cont
+def sym regqual = /x=300:360///y=-20:20/L=3
+
+fill/($regqual)($plotqual) sst
+
+! Other syntax examples taken from bn_syntax but with extra slashes
+
+! Repeat loop
+cancel region
+cancel data/all
+show region;repeat//l=1:2 (show data;sh reg);can reg;show reg
+
+! continuation lines
+define axis \ ! comment on the command
+//x=1:10:1 \  ! comment on the qualifier
+xax\          ! comment on the argument
+\             ! and an extra for good measure
+              ! this line is significant -- completes the command
+show axis xax; cancel axis xax  ! clean up
+
+! Allow extra slashes at the end of the command line
+set reg/x=1:2/; sho reg
+set reg/x=1:4//; sho reg
+
+can reg
+repeat/l=1:2 (set reg/x=1:4//)
+

@@ -1,4 +1,4 @@
-! gif.jnl
+! bn_gif.jnl
 !
 ! NOTE the plots in bnplot_2.gif are different in PyFerret and Ferret,
 ! because of different treatment of /TEXT= for viewport definitions.

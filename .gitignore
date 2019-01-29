@@ -3,3 +3,4 @@
 *.so
 *.log
 site_specific.mk
+/dylibs/

@@ -1,5 +1,5 @@
 #
-# platform_specific_includes.mk.i386-linux-gnu
+# ef_utility/platform_specific.mk.i386-linux-gnu
 #
 # This file is included in the External Function Makefiles and defines
 # platform specific macros

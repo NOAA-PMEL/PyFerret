@@ -17,7 +17,6 @@ F77		= $(shell which gfortran)
 FFLAGS		= -fPIC -m64 -O -Ddouble_p -fno-second-underscore \
 		  -fno-backslash -fdollar-ok -ffixed-line-length-132 \
 		  -fdefault-real-8 -fdefault-double-8 -O $(INCLUDES)
-FFLAGS_DEBUG	= -O0 -g -fbounds-check 
 
 LD		= $(shell which gfortran)
 LD_DYN_FLAGS	= -fPIC -m64 -shared -Wl,--no-undefined

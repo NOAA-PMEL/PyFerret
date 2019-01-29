@@ -1,5 +1,5 @@
 #
-# platform_specific.mk.intel-mac
+# ef_utility/platform_specific.mk.intel-mac
 #
 # This file is included in the External Function Makefiles and defines
 # platform specific macros

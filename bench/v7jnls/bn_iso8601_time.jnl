@@ -165,5 +165,7 @@ define axis/t=2018--5-01:2019-01-01:1/units=days taxis
 ! illegal format in a /t0
 set axis/t0=2010-15-01 `salt,return=taxis`
 
+! restore modes
+cancel mode date_format
 set mode/last ignore
 

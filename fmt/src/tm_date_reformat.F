@@ -43,6 +43,8 @@
 * V600 *acm* 2/06 - Fix for bug 1394, send do_err flag to tm_break_date
 * v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
+* v744+*acm*  1/19 Handle date strings that are short, e.g. year only. (Comes up in tests
+*                  only in DSG-data listings.)
 *
 * Arguments:
 *	indate	 - input date string
@@ -66,13 +68,24 @@
 *
 * Local definitions
 *
-	LOGICAL no_hms, has_hms, has_hm, has_h
+	LOGICAL TM_DIGIT_TEST, no_hms, has_hms, has_hm, has_h
 	INTEGER	TM_LENSTR1, year, month, day, hour, minute, dlen, idot, noyear
 	REAL	second
 	CHARACTER errdate*26, endtxt*10
 	
 * Remove text representing fractional seconds, and store that info
 	dlen = TM_LENSTR1(indate)
+
+* maybe the string is just a year, "2018". If so we're done.
+	IF (dlen .LE. 4) THEN  
+	   IF (TM_DIGIT_TEST(indate)) THEN
+	      outdate = indate
+	      GOTO 4000
+	   ELSE
+	      GOTO 5100
+	   ENDIF
+	ENDIF
+
 	idot = INDEX(indate, '.')
 	IF (idot .GT. 0) THEN
 	   idot = INDEX(indate, '.')
@@ -121,7 +134,7 @@
 	ENDIF
 
 * Finished
-	status = merr_ok
+ 4000	status = merr_ok
 	RETURN
 
 * Errors

@@ -1,4 +1,6 @@
 ! bn_gif.jnl
+! do not use /text= in def view in PyFerret
+! do not use ppl size in PyFerret
 !
 ! NOTE the plots in bnplot_2.gif are different in PyFerret and Ferret,
 ! because of different treatment of /TEXT= for viewport definitions.
@@ -43,7 +45,7 @@ ppl list plot
 
 ! enlarge it to accomodate an additional 50% width
 ! ppl size 15.3,8.8
-! in PyFerret must use SET WINDOW
+! PyFerret must use SET WINDOW
 set win /xinch=15.3 /yinch=8.8
 
 ! turn on metafile (enabled 10/29/91)

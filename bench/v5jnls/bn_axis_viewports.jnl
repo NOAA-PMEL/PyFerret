@@ -1,5 +1,6 @@
 ! bn_axis_viewports
 ! *sh* 9/01
+! do not use /text= in def view in PyFerret
 
 ! demonstrate vieport layout using the /AXES qualifier
 set wind/clear/aspect=1

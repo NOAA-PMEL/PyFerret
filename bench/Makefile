@@ -50,7 +50,7 @@ compare_plots:
 	        results_dir="test_results_noremote" ;\
 	    fi ;\
 	    echo "Comparing PNG and PDF files to those in bench/$$results_dir" ;\
-	    for img in `basename $$results_dir/*.png $$results_dir/*.pdf *.png *.pdf | sort -u` ; do \
+	    for img in `basename -a $$results_dir/*.png $$results_dir/*.pdf *.png *.pdf | sort -u` ; do \
 	        if [ ! -f $$img ] ; then \
 	            echo "*** File $$img is missing ***" ;\
 	        elif [ ! -f $$results_dir/$$img ] ; then \

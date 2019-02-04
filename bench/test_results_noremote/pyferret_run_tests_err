@@ -1516,7 +1516,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
 *** Running ferret script: bn_plot_nokey.jnl
-*** Running ferret script: bn580_bug_fixes.jnl
+*** Running ferret script: bn580_bug_fixes_noremote.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1625,9 +1625,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file 10a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1953,20 +1950,10 @@ Replacing definition of axis TIME
  Using every   3th vector in the X direction
  Using every   4th vector in the Y direction
            *** NOTE: New number of line colors will take effect on next new window: SET WIN/NEW or SET WIN/CLEAR
-*** Running ferret script: bn_cdf_errmsg.jnl
+*** Running ferret script: bn_cdf_errmsg_noremote.jnl
  **TMAP ERR: non-existent or not on line
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
- **Internet Data error
-             NetCDF: file not found (OPeNDAP/netCDF Error code -90)
-             Data set: http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf
-SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf"
-CURL Error: Couldn't resolve host name
-curl error details: 
- **Internet Data error
-             NetCDF: I/O failure (OPeNDAP/netCDF Error code -68)
-             Data set: http://noserver/a/nofile.cdf
-SET DAT/FORM=CDF  "http://noserver/a/nofile.cdf"
  LISTing to file asc.dat
  **netCDF error
              NetCDF: Unknown file format (OPeNDAP/netCDF Error code -51)
@@ -2232,9 +2219,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-*** Running ferret script: bn_test_opendap.jnl
-CURL Error: Couldn't resolve host name
-curl error details: 
 *** Running ferret script: bn611_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3619,60 +3603,6 @@ set axis/name x_in_meters
 set axis/name=45 x_in_meters
  **ERROR: invalid command: illegal new name given for axis .fr
 set axis/name=.fr x_in_meters
-*** Running ferret script: bn_let_remote.jnl
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "time_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "time_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "time_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
- **ERROR: command syntax: /REMOTE variable expression may not contain [d=
-DEFINE VARIABLE/D=1/remote rvar = t00an1[d=1,z=1:100@ave]
- **ERROR: command syntax: /REMOTE variable definition must also specify /D=
-DEFINE VARIABLE/remote rvar = t00an1[d=1,z=1:100@ave]
- **netCDF error
-             Unable to open URL with REMOTE variable definitions:
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
- **TMAP ERR: attribute reading error
-             Unable to get varid for LET/REMOTE variable: NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
- **TMAP ERR: attribute reading error
-             Unable to get bad-value for LET/REMOTE variable: NetCDF: Attribute not found (OPeNDAP/netCDF Error code -43)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
- **netCDF error
-             NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
-list/x=300/y=15 avar
 *** Running ferret script: bn691_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4081,7 +4011,7 @@ Replacing definition of axis DCOARSE
 Replacing definition of axis IRR
 Replacing definition of axis DCOARSE
 Replacing definition of axis IRR
-*** Running ferret script: bn697_bug_fixes.jnl
+*** Running ferret script: bn697_bug_fixes_noremote.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4205,7 +4135,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-*** Running ferret script: bn_aggregate_t.jnl
+*** Running ferret script: bn_aggregate_t_noremote.jnl
  LISTing to file tmp/tagg_reg_1.nc
  LISTing to file tmp/tagg_reg_2.nc
  LISTing to file tmp/tagg_reg_3.nc
@@ -4312,7 +4242,7 @@ garbage command syntax
 define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc
  **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_single_5.nc
 define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc, tmp/tagg_single_5.nc
-*** Running ferret script: bn_unquoted_args.jnl
+*** Running ferret script: bn_unquoted_args_noremote.jnl
  LISTing to file tmp/test1.nc
  LISTing to file tmp/test2.nc
  LISTing to file tmp/test3.nc
@@ -4719,12 +4649,12 @@ Replacing definition of axis TAX
            *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
            *** NOTE: Decimating PLOT/ALONG lines to /KEY limit of 40
            *** NOTE: Decimating PLOT/ALONG lines to /NOKEY limit of 200
-*** Running ferret script: bn_auto_tprec.jnl
+*** Running ferret script: bn_auto_tprec_noremote.jnl
 Replacing definition of axis TAX
 Replacing definition of axis TAX
 Replacing definition of axis TAX
 *** Running ferret script: bn_coordvars_atts.jnl
-*** Running ferret script: bn710_bug_fixes.jnl
+*** Running ferret script: bn710_bug_fixes_noremote.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4804,9 +4734,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
 Replacing definition of axis TAX
  LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5828,7 +5755,7 @@ define axis/t=2018--5-01:2019-01-01:1/units=days taxis
 set axis/t0=2010-15-01 TIME1
  **ERROR: command syntax: invalid date string: 2010-15-01
 set axis/t0=2010-15-01 TIME1
-*** Running ferret script: bn_gif.jnl
+*** Running ferret script: bn_gif_noremote.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -5881,7 +5808,6 @@ Re-defining viewport UR6
 Re-defining viewport LL6
 Re-defining viewport LR6
 Replacing definition of axis TDAYS
- Using every   4th vector in the X direction
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo

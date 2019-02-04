@@ -1,4 +1,6 @@
 ! bn_ps.jnl
+! do not use /text= in def view in PyFerret
+! do not use ppl size in PyFerret
 
 ! define a 6 viewport window (modified definitions 11/92)
 def view/xlim=0,.333/ylim=0,.5    ll6
@@ -38,7 +40,7 @@ ppl list plot
 
 ! enlarge it to accomodate an additional 50% width
 ! ppl size 15.3,8.8
-! in PyFerret must use SET WINDOW
+! PyFerret must use SET WINDOW
 set win /xinch=15.3 /yinch=8.8
 
 ! turn on metafile (enabled 10/29/91)

@@ -4,6 +4,8 @@
 ! *kob*
 ! V530 - added tests of PLOT/STEP[=connected] to existing plots
 ! v581 - for the last set, cancel mode logo, so that .plt files are comparable.
+! do not use /text= in def view in PyFerret
+! do not use ppl size in PyFerret
 
 ! define a 6 viewport window (modified definitions 11/92)
 def view/xlim=0,.333/ylim=0,.5    ll6
@@ -42,7 +44,9 @@ set mode/last ignore
 ppl list plot
 
 ! enlarge it to accomodate an additional 50% width
-ppl size 15.3,8.8
+! ppl size 15.3,8.8
+! PyFerret must use SET WINDOW
+set win /xinch=15.3 /yinch=8.8
 
 ! turn on metafile (enabled 10/29/91)
 ! commented out 9/97 - instead set in bn450_all.jnl

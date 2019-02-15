@@ -340,8 +340,10 @@
      .              slash_def_agg_e,
      .              slash_def_agg_f,
      .              slash_def_agg_hide,
-     .              slash_def_annot_nlab,
-     .              slash_def_agg_u
+     .              slash_def_agg_u,
+     .              slash_def_agg_taxis,
+     .              slash_def_agg_faxis,
+     .              slash_def_annot_nlab
 
 	LOGICAL	    explct_defn
 	PARAMETER ( slash_dflt   = 1 + 12,
@@ -388,6 +390,8 @@
      .              slash_def_agg_quiet = 1 + 8,
      .              slash_def_agg_hide  = 1 + 9,
      .              slash_def_agg_u     = 1 + 10,
+     .              slash_def_agg_taxis = 1 + 11,
+     .              slash_def_agg_faxis = 1 + 12,
      .              slash_def_annot_nlab = 10,		! must be slash_annotate_siz+1
      .		    explct_defn  = .FALSE. )
 
@@ -405,7 +409,7 @@
      .            its_calendar, its_modulo, has_repeated, has_bounds,
      .            new_att, new_att_modulo, got_it, orient_t, agg_quiet,
      .            letdset, its_remote, agg_hide, def_att_quiet, purge_all,
-     .            user, norm, nouser, t_regular, use_strict, have_expr, 
+     .            user, norm, nouser, use_strict, have_expr, 
      .            original, true_month, line_alloc, truemonth_noted,
      .            is_double, misordered, bnds_or_edges, okmod, is_like
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
@@ -427,7 +431,8 @@
      .            attoutflag, attlen, coordvar, 
      .            dset_to_add, dir, type, attype, attid, ibuff, i0,  
      .            agg_dim, nagfiles, ivar, item, nlab, ierr, nlen,  
-     .            llen, line, dstart, units, npts, ipt1, ipte, iline_b
+     .            llen, line, dstart, units, npts, ipt1, ipte, iline_b,
+     .            tline, fline, idx, vaxcode
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            val, dummy, val_buf, xloc, yloc, halign, angle, size,
@@ -448,7 +453,8 @@
      .            new_att_units*128, new_att_calendar*128,
      .            new_att_t0*128, dcode*2, axdir*1, t0string*128, 
      .            ustring*128, reserved_flow_name(3)*4, is_nan*3,
-     .            buff4*16, buff5*16, datestr*11, likename*64
+     .            buff4*16, buff5*16, datestr*11, likename*64,
+     .            tmatch*32, fmatch*32
 
         CHARACTER*1 tab
 #ifdef NO_INTRINSIC_IN_PARAMETER
@@ -2673,36 +2679,134 @@ c	ENDIF
 	IF (qual_given( slash_def_agg_t ) .GT. 0) agg_dim = t_dim
 
 * Is there a /E ?
-	IF (qual_given( slash_def_agg_e ) .GT. 0) THEN
+        IF (qual_given( slash_def_agg_e ) .GT. 0) THEN
            IF (agg_dim .EQ. unspecified_int4) THEN
               agg_dim = e_dim
            ELSE
-              GOTO 5510
+              GOTO 5515
            ENDIF
         ENDIF
 
 * Is there a /F 
-	IF (qual_given( slash_def_agg_f ) .GT. 0) THEN
+        IF (qual_given( slash_def_agg_f ) .GT. 0) THEN
            IF (agg_dim .EQ. unspecified_int4) THEN
               agg_dim = f_dim
            ELSE
-              GOTO 5510
+              GOTO 5515
            ENDIF
         ENDIF
 
-* Is there a /U  (ag_dim will be set to unspecified_int4)
+* Is there a /U  (agg_dim will be reset to unspecified_int4 just before aggregating)
 
-	IF (qual_given( slash_def_agg_u ) .GT. 0) THEN
+        IF (qual_given( slash_def_agg_u ) .GT. 0) THEN
            IF (agg_dim .EQ. unspecified_int4) THEN
               agg_dim = f_dim + 1
            ELSE
-              GOTO 5510
+              GOTO 5515
            ENDIF
         ENDIF
 
+* First check for /FAXIS= (in case /F not given) 
+* as both /FAXIS= and /TAXIS= can be given for /F
+        fline = unspecified_int4
+        fmatch = ' '
+        iqual = qual_given(slash_def_agg_faxis) 
+        IF ( iqual .GT. 0 ) THEN
+           IF ( agg_dim .EQ. unspecified_int4 ) THEN
+              agg_dim = f_dim
+           ELSE IF ( agg_dim .NE. f_dim ) THEN
+              GOTO 5515
+           ENDIF
+           CALL EQUAL_STRING(cmnd_buff(qual_start(iqual):qual_end(iqual)), buff1, status)
+           IF ( status .NE. ferr_ok ) RETURN
+           IF ( buff1 .EQ. ' ' )
+     .        CALL ERRMSG(ferr_syntax, status,
+     .                    '/FAXIS must have a value', *5000)
+* ... check if a method of matching, and/or @LAG, was specified
+           idx = INDEX(buff1, '@')
+           IF ( idx .GT. 0 ) THEN
+              vaxcode = STR_UPCASE(fmatch, buff1(idx:))
+              buff1(idx:) = ' '
+           ENDIF
+* ... could have just been /FAXIS=@LAG
+           IF ( buff1 .NE. ' ' ) THEN
+              fline = TM_GET_LINENUM(buff1)
+              IF ( fline .NE. unspecified_int4 ) THEN
+* ... line given by name - don't allow inappropriate units
+                 iunit = line_unit_code(fline)
+                 IF ( (iunit .NE. 0) .AND.
+     .                ( (iunit .LT. pun_1st_time) .OR.
+     .                  (iunit .GT. pun_last_time) ) )
+     .              CALL ERRMSG(ferr_invalid_command, status,
+     .                          '/FAXIS is not a time axis', *5000)
+              ELSE
+* ... line implied through grid or variable name
+                 ax_grid = GRID_FROM_NAME(buff1, cx_last, status)
+                 IF ( status .NE. ferr_ok ) RETURN
+                 IF ( ax_grid .EQ. unspecified_int4 ) GOTO 5320
+                 fline = grid_line(f_dim, ax_grid)
+              ENDIF
+           ELSE
+* ... no axis given in /FAXIS value
+              IF ( fmatch .NE. '@LAG' )
+     .           CALL ERRMSG(ferr_syntax, status,
+     .                 'no axis specified in /FAXIS (only @LAG '//
+     .                 'can be specified without an axis)', *5000)
+           ENDIF
+        ENDIF
+
+* /TAXIS=
+        tline = unspecified_int4
+        tmatch = ' '
+        iqual = qual_given(slash_def_agg_taxis) 
+        IF ( iqual .GT. 0 ) THEN
+           IF ( agg_dim .EQ. unspecified_int4 ) THEN
+              agg_dim = t_dim
+           ELSE IF ( (agg_dim .NE. t_dim) .AND. (agg_dim .NE. f_dim) ) THEN
+              GOTO 5515
+           ENDIF
+           CALL EQUAL_STRING(cmnd_buff(qual_start(iqual):qual_end(iqual)), buff1, status)
+           IF ( status .NE. ferr_ok ) RETURN
+* ... check if a method of matching, and/or @LAG, was specified
+           idx = INDEX(buff1, '@')
+           IF ( idx .GT. 0 ) THEN
+              vaxcode = STR_UPCASE(tmatch, buff1(idx:))
+              buff1(idx:) = ' '
+           ENDIF
+* ... could have just been /FAXIS=@LAG
+           IF ( buff1 .NE. ' ' ) THEN
+              tline = TM_GET_LINENUM(buff1)
+              IF ( tline .NE. unspecified_int4 ) THEN
+* ... line given by name - don't allow inappropriate units
+                 iunit = line_unit_code(tline)
+                 IF ( (iunit .NE. 0) .AND. 
+     .                ( (iunit .LT. pun_1st_time) .OR.
+     .                  (iunit .GT. pun_last_time) ) )
+     .              CALL ERRMSG(ferr_invalid_command, status,
+     .                          '/TAXIS is not a time axis', *5000)
+              ELSE
+* ... line implied through grid or variable name
+                 ax_grid = GRID_FROM_NAME(buff1, cx_last, status)
+                 IF ( status .NE. ferr_ok ) RETURN
+                 IF ( ax_grid .EQ. unspecified_int4 ) GOTO 5320
+                 tline = grid_line(t_dim, ax_grid)
+              ENDIF
+           ELSE
+* ... no axis given in /FAXIS value
+              IF ( fmatch .NE. '@LAG' )
+     .           CALL ERRMSG(ferr_syntax, status,
+     .                 'no axis specified in /TAXIS (only @LAG '//
+     .                 'can be specified without an axis)', *5000)
+           ENDIF
+        ENDIF
+
+        IF ( (INDEX(fmatch, '@LAG') .GT. 0) .AND.
+     .       (INDEX(tmatch, '@LAG') .GT. 0) )
+     .     CALL ERRMSG(ferr_syntax, status, '@LAG cannot '//
+     .           'be specified in both /FAXIS and /TAXIS', *5000)
+
 * default aggregation orientation
 	IF (agg_dim .EQ. unspecified_int4) agg_dim = t_dim
-
 
 * define data/hide
 	agg_hide = qual_given( slash_def_agg_hide ) .GT. 0
@@ -2803,21 +2907,23 @@ c	ENDIF
 
 *   buff1=dname, buff2=dtitle, buff3=dpath
         IF (agg_dim .EQ. t_dim) THEN
-           t_regular  = .FALSE.   ! ToDo /REGULART -- not yet implemented
-           use_strict = .FALSE.   ! ToDo ?? T coordinate micro-adjustment ??
            CALL INIT_T_AGGREGATE_DSET(memry(mr)%ptr,
-     .                  nagfiles, have_expr, buff1, buff3, buff2, 
-     .                  t_regular, use_strict, dset, status)
-        ELSEIF (agg_dim .EQ. f_dim+1) THEN
+     .              nagfiles, have_expr, buff1, buff3, buff2, dset,
+     .              tline, tmatch, status)
+        ELSEIF ( agg_dim .EQ. e_dim ) THEN
+           CALL INIT_E_AGGREGATE_DSET (memry(mr)%ptr,
+     .              nagfiles, have_expr, buff1, buff3, buff2, dset,
+     .              agg_quiet, agg_hide, status)
+        ELSEIF ( agg_dim .EQ. f_dim ) THEN
+           CALL INIT_F_AGGREGATE_DSET (memry(mr)%ptr,
+     .              nagfiles, have_expr, buff1, buff3, buff2, dset,
+     .              agg_quiet, agg_hide, tline, tmatch, 
+     .              fline, fmatch, status)
+        ELSE
 	   agg_dim = unspecified_int4
 	   CALL INIT_U_AGGREGATE_DSET (memry(mr)%ptr,
-     .                  nagfiles, have_expr, buff1, buff3, buff2, dset,
-     .                  agg_quiet, agg_hide, agg_dim, status)
-        ELSE
-	   CALL INIT_EF_AGGREGATE_DSET (memry(mr)%ptr,
-     .                  nagfiles, have_expr, buff1, buff3, buff2, dset,
-     .                  agg_quiet, agg_hide, agg_dim, status)
-
+     .              nagfiles, have_expr, buff1, buff3, buff2, dset,
+     .              agg_quiet, agg_hide, agg_dim, status)
         ENDIF
 	IF (status .NE. ferr_ok) GOTO 5000
 
@@ -2890,8 +2996,8 @@ c ?? if nlab=0, use next avail slot?
      .			buff1(:TM_LENSTR1(buff1))//' = ???', *5000 )
  5410   CALL ERRMSG( ferr_syntax,status,'illegal name: '//buff1,*5000 )
  5420   CALL ERRMSG( ferr_syntax,status,'cannot define: '//buff1,*5000 )
- 5430   CALL ERRMSG( ferr_syntax,status,'illegal name, matches an operator: '
-     .			//buff1,*5000 )
+ 5430   CALL ERRMSG( ferr_syntax,status,
+     .          'illegal name, matches an operator: '//buff1,*5000 )
  5440	CALL ERRMSG( ferr_syntax, status,
      .			cmnd_buff(pos:len_cmnd)//pCR//err_string, *5000 )
  5470	CALL ERRMSG( ferr_unknown_data_set, status,
@@ -2901,10 +3007,11 @@ c ?? if nlab=0, use next avail slot?
  5490   CALL ERRMSG( ferr_syntax,status,
      .	  '/REMOTE variable expression may not contain [d= ',*5000 )
  5505	CALL ERRMSG( ferr_invalid_command, status,
-     .		'DEFINE AXIS/DEPTH needs /Z=lo:hi:del', *5000 )
+     .    'DEFINE AXIS/DEPTH needs /Z=lo:hi:del', *5000 )
  5510	CALL ERRMSG( ferr_invalid_command, status,
-     .		'Conflicting /X,/Y,/Z/T/E or /F axis orientations given',
-     .								*5000 )
+     .    'Conflicting /X/Y/Z/T/E/F axis orientations given', *5000 )
+ 5515	CALL ERRMSG( ferr_invalid_command, status,
+     .    'Conflicting /U/T/E/F/TAXIS/EAXIS/FAXIS given', *5000 )
  5520	CALL FREE_LINE_DYNMEM (iline)
 	CALL ERRMSG( ferr_grid_definition, status,
      .			'error in start,end,delta', *5000 )
@@ -3055,9 +3162,6 @@ c ?? if nlab=0, use next avail slot?
 
  6100 CALL ERRMSG(ferr_syntax, status, 
      .    'DEFINE DATA valid only with /AGGREGATE: ', *5000)
-
-! 6110 CALL ERRMSG(ferr_aggregate_error, status, 
-!     .    'Aggregate dataset not defined', *5000)
 
  6200	CALL ERRMSG( ferr_invalid_command, status,
      .		'No text given for DEFINE ANNOTATION', *5000 )

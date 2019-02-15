@@ -132,7 +132,7 @@
      .		                   / (m1hif-m1lof+1)
 
 * max insignificant time difference
-        depsilon = 1.0D-12 * ABS(f_delta)
+        depsilon = (2.0**(-42)) * ABS(f_delta)
 
 * extract the time step values of the destination
 	DO l = ldst_min, ldst_max

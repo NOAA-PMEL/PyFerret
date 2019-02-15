@@ -63,16 +63,16 @@
 	INTEGER i
         REAL diff_hi, diff_lo, diff_last
         REAL pt, del, blo, bhi
-	REAL epsilon_23, epsilon
-	REAL*8 depsilon_46, depsilon, first_delta
+	REAL epsilon_21, epsilon
+	REAL*8 depsilon_42, depsilon, first_delta
 
-	epsilon_23 =  2.**(-23) 
-	depsilon_46 =  2.**(-46) 
+	epsilon_21 =  2.**(-21) 
+	depsilon_42 =  2.**(-42) 
 
 	first_delta = line(2) - line(1)
 
-	depsilon = depsilon_46 * 2.*(ABS(line(1)) / first_delta )
-	epsilon = epsilon_23 * 2.*(ABS(line(1)) / first_delta )
+	depsilon = depsilon_42 * 2.*(ABS(line(1)) / first_delta )
+	epsilon = epsilon_21 * 2.*(ABS(line(1)) / first_delta )
 
         IF (line_regular(iaxis)) THEN
            pt = line_start(iaxis)

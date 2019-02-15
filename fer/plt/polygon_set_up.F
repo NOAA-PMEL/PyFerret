@@ -210,7 +210,7 @@
 
 	REAL		x_len, y_len, lo, hi, lox, hix, loy, hiy,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
-     .			dt_min, epsilon, small, scale,
+     .			dt_min, small, scale,
      .			xptsmin, xptsmax, xptsmean, xdif, xmeanlog,
      .			yptsmin, yptsmax, yptsmean, ydif, ymeanlog,
      .                  first, last, val
@@ -222,7 +222,6 @@
 * local parameter declarations:
 	LOGICAL		range_rqd
 	PARAMETER     ( range_rqd = .TRUE. )
-	PARAMETER     ( epsilon = 1.E-45 )
 
 	do_units = .TRUE.
 	vflag = .FALSE.  ! argument to axis_ends
@@ -588,7 +587,7 @@ c	ind_dim = plot_axis(1)
 	      scale = 0.5* ABS(xhi-xlo)	! log axis units
 	      scale = 1.
 
-	      IF (xptsmean .GT. epsilon) THEN
+	      IF (xptsmean .GT. 0.0) THEN
 		 xmeanlog = LOG10(xptsmean)
 
 		 DO 410 i = 1, npts
@@ -628,7 +627,7 @@ c	ind_dim = plot_axis(1)
 
 	      scale = 0.5* ABS(yhi-ylo)	! log axis units
 	      scale = 1.
-	      IF (yptsmean .GT. epsilon) THEN
+	      IF (yptsmean .GT. 0.0) THEN
 		 ymeanlog = LOG10(yptsmean)
 
 		 DO 510 i = 1, npts

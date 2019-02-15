@@ -67,15 +67,13 @@
 	INTEGER TM_LENSTR1, ipt1, ibx1, i, ngap, vlen, status
         REAL*8 pt, del, bhi, blo
 	
-	REAL epsilon_23, epsilon
-	REAL*8 depsilon_46, depsilon, first_delta
+	REAL epsilon_21, epsilon
+	REAL*8 depsilon_42, depsilon, first_delta
         REAL blast
         CHARACTER TM_STRING*13, vbuff*128
-	
-        epsilon_23 =  2.**(-23) 
-        depsilon_46 =  2.**(-46) 
-        epsilon_23 =  2.**(-22) 
-        depsilon_46 =  2.**(-45) 
+
+        epsilon_21 =  2.**(-21) 
+        depsilon_42 =  2.**(-42) 
 
 	blast = line_edges(2)  ! First box-hi
         TM_CHECK_BNDS = .TRUE.
@@ -83,8 +81,8 @@
         overlapping = .FALSE.
 
         first_delta = line(2) - line(1)
-        depsilon = depsilon_46 * 2.*(ABS(line(1)) / first_delta )
-        epsilon = epsilon_23 * 2.*(ABS(line(1)) / first_delta )
+        depsilon = depsilon_42 * 2.*(ABS(line(1)) / first_delta )
+        epsilon = epsilon_21 * 2.*(ABS(line(1)) / first_delta )
 
         DO i = 1, npts
            pt = line(i)

@@ -55,17 +55,17 @@ include ../platform_specific.mk.$(BUILDTYPE)
 
 GUI_FAKES = special/gui_fakes.o
 
-DIRS	= ccr ctx dat doo efi efn ef_utility gnl ino mem fmt \
+DIRS	= agg ccr ctx dat doo efi efn ef_utility gnl ino mem fmt \
 	 plt rpn special stk utl xeq
 
-LIBS	= ccr ctx dat doo efi efn ef_utility gnl ino mem fmt \
+LIBS	= agg ccr ctx dat doo efi efn ef_utility gnl ino mem fmt \
 	 plt rpn stk utl xeq
 
 CLEANDIRS = $(DIRS)
 
 DEPDIRS = ccr
 
-FERLIBS = -lxeq -lgnl  -lccr -lferplt -lrpn -lstk -ldoo  \
+FERLIBS = -lxeq -lagg -lgnl  -lccr -lferplt -lrpn -lstk -ldoo  \
 	-lctx -lino -lmem -lfmt -lutl -ldat -lccr -lmem -lefi -lefn
 
 PPLLIBS = -lplt -lpll -lsym -lcmp -lour -lepi -lusr -ltmap

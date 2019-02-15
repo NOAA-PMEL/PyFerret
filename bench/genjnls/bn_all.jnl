@@ -1225,6 +1225,9 @@ GO bn745_bug_fixes
 go bn_reset bn_iso8601_time
 GO bn_iso8601_time
 
+go bn_reset bn_agg_given_taxis
+GO bn_agg_given_taxis
+
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **
 GO bn_reset

@@ -137,9 +137,9 @@
      .            a_hi_t_offset, vartype, nvdims,vdims(8),nvatts,
      .		  varid, varpos,ndims,nvars, natts, recdim,
      .            npts, var_id,index, nsteps_in_file, vlen, end_lstep,
-     .            line, m, n
+     .            line, m, n, k, j, i
 	REAL*8	  TM_WORLD,start_tstep, end_tstep, start_read_tstep,
-     .            end_read_tstep, epsilon
+     .            end_read_tstep
 	INTEGER   TM_SUBSC, TM_LENSTR1, prev_steps
 	LOGICAL   more_to_read, TM_FPEQ, TM_DFPEQ_TOL, CD_GET_ATTVAL, 
      .            got_scale, got_off, do_warn
@@ -150,8 +150,6 @@
 	INTEGER*4 STR_CASE_BLIND_COMPARE
 	REAL*8 r8buff
 	CHARACTER*13    TM_STRING
-
-        epsilon = 4.E-15   ! for TM_DFPEQ_TOL
 
 	start_tstep = TM_WORLD(a_lo_t,ds_grid_number(ivar),4,box_middle)
 	end_tstep   = TM_WORLD(a_hi_t,ds_grid_number(ivar),4,box_middle)
@@ -232,11 +230,27 @@ c     .		   (sf_lastep(sfcnt) .LT. start_read_tstep)) GOTO 30
 	      IF ((sf_ndxs(sfcnt).LE. start_read_lstep) .AND. ! contains timestep
      .		   (sf_ndxe(sfcnt) .GE. start_read_lstep)) GOTO 40
 
-
  30	   CONTINUE
-*       found it
-	   
- 40	   grid = ds_grid_number(ivar)
+
+*          NOT FOUND - fill data for this step with missing values ...
+           DO n = a_lo_f, a_hi_f
+             DO m = a_lo_e, a_hi_e
+               DO k = a_lo_z, a_hi_z
+                 DO j = a_lo_y, a_hi_y
+                   DO i = a_lo_x, a_hi_x
+                     var(i,j,k,start_read_lstep,m,n) = ds_bad_flag(ivar)
+                   ENDDO
+                 ENDDO
+               ENDDO
+             ENDDO
+           ENDDO
+*          ... and proceed to next step
+           end_read_lstep = start_read_lstep
+           GOTO 100
+
+ 40        CONTINUE
+*          FOUND
+           grid = ds_grid_number(ivar)
 	   end_read_tstep = MIN(sf_lastep(sfcnt), end_tstep)
 	   end_read_lstep = TM_SUBSC (end_read_tstep, grid, t_dim,
      .		a_hi_t)     !kob 11/96
@@ -425,6 +439,7 @@ c!c! uncomment this...
 	   sf_lunit(sfcnt) = file_not_open
 
 * Check to see if done reading
+ 100       CONTINUE
 	   IF (end_read_lstep .LT. a_hi_t) THEN
 	      start_read_lstep = end_read_lstep + 1
 	      start_read_tstep = TM_WORLD(start_read_lstep,

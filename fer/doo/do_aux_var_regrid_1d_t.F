@@ -170,7 +170,7 @@
 	   tsrc_min = tsrc(ip,jp,kp,lsrc_min,mp,n) ! min time at this F
 	   tsrc_max = tsrc(ip,jp,kp,lsrc_max,mp,n) ! max time at this F
 * tolerance in time matching (would be better if it was consistent for all F)
-           depsilon = 1.0D-12 *
+           depsilon = (2.0**(-42)) *
      .             ABS( (tsrc_max-tsrc_min) / (lsrc_max-lsrc_min+1.0) )
         IF ( ((tdst(ldst_min) - tsrc_max) .GT. depsilon)
      .  .OR. ((tsrc_min - tdst(ldst_max)) .GT. depsilon) ) CYCLE  ! nothing to copy

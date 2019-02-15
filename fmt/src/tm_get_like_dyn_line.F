@@ -86,7 +86,7 @@
 
 *kob 5/97
 	REAL*8 		dp_epsilon
-	PARAMETER 	( dp_epsilon = 1.D-10)
+	PARAMETER 	( dp_epsilon = (2.0**(-42)) )
 
 * allocate a scratch line 
 	CALL TM_ALLO_DYN_LINE( inline, status )

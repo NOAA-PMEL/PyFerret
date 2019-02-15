@@ -81,6 +81,7 @@
 
 * string is blank
 	TM_DIGIT = .FALSE.
+        RETURN
 	
 * check first character
  200	TM_DIGIT =   c .EQ. '+'

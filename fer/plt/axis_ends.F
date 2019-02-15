@@ -83,8 +83,7 @@
 	CHARACTER	val_buff*45, tstyle*3, xtra_lab*24
 	INTEGER		TM_GET_CALENDAR_ID, axtp, taxis, cal_id, status
 	REAL*4		x1, x2, uminr, umaxr, dint
-	REAL*8		TSTEP_TO_SECS, SECS_TO_TSTEP, firstl, lastl, epsilon, eps2, span
-	PARAMETER	(epsilon=1.e-45)
+	REAL*8		TSTEP_TO_SECS, SECS_TO_TSTEP, firstl, lastl, eps2, span
 
 	STATUS = ferr_ok 
 
@@ -95,7 +94,7 @@
 	IF (is_log) THEN
  
 * Check for negative or too-tiny values of range
-	   IF (first .LT. epsilon .OR. last  .LT. epsilon) GO TO 5000
+	   IF (first .LE. 0.0 .OR. last  .LE. 0.0) GO TO 5000
 
 	   IF (.NOT.versus .AND. BKWD_AXIS(dat_ax, grid) ) THEN
 	      axtp = 4		! inverse log axis (leave type 3 as is in PPLUS)

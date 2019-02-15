@@ -94,7 +94,7 @@ c get rid of the following statements
 * Initialize
 	
 	secpday = 24*3600
-	epsilon = 1.e-12
+	epsilon = 2.0**(-42)
 
 	IF (npts .LE. 1) THEN
 	   true_month = .FALSE.

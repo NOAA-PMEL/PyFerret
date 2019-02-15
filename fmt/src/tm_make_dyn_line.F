@@ -89,9 +89,6 @@
      .			TM_LENSTR1, TM_UNIT_ID,
      .			inline, iunit, since_T0
 
-	REAL*8 		dp_epsilon
-	PARAMETER 	( dp_epsilon = 1.D-10)
-
 * allocate a scratch line 
 	CALL TM_ALLO_DYN_LINE( inline, status )
 	IF ( status .NE. merr_ok ) RETURN
@@ -167,7 +164,8 @@
 * set start, delta, and N
 	line_start(inline)     = lo
 	line_delta(inline)     = del 
-	line_dim(inline)       = INT((hi-lo)/del +dp_epsilon) + 1
+*       Use NINT instead of INT with an epsilon
+	line_dim(inline)       = NINT((hi-lo)/del) + 1
 
 * search for this line among the existing, dynamic lines
 	outline =  TM_FIND_LIKE_DYN_LINE( inline )

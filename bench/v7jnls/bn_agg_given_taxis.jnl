@@ -1,0 +1,42 @@
+! bn_agg_given_taxes.jnl
+!
+! time aggregation along a user-provided time axis
+
+! create some dataset to use, along with the time axes ffax and ftax
+GO bn_agg_given_create.sub
+CANCEL AXIS ffax
+
+! the datasets to aggregate - have gaps before, after, and between when viewed along ftax
+LET aggfiles = { "aggf/forecast_02.nc", "aggf/forecast_13.nc", "aggf/forecast_24.nc", "aggf/forecast_35.nc"  }
+
+! test using the exactly-matching-times axis (should use @XACT to match)
+DEFINE DATA /AGGREGATE /HIDE /T /TAXIS=ftax timeagg = aggfiles
+! should show gaps (missing values) before, after, and between
+LIST /PREC=6 /X=12E /Y=12S /Z=5.0 value
+CANCEL DATA timeagg
+CANCEL AXIS ftax
+
+! try a closely matching (regular) time axis (should use @BIN to match)
+DEFINE AXIS /UNITS=DAYS /T0=01-JAN-2000 /T=01-JAN-2001:01-JAN-2025:`365.2425/12.0` tax
+DEFINE DATA /AGGREGATE /HIDE /T /TAXIS=tax timeagg = aggfiles
+! should show gaps (missing values) before, after, and between
+LIST /PREC=6 /X=12E /Y=12S /Z=5.0 value
+CANCEL DATA timeagg
+CANCEL AXIS tax
+
+! try a completely different time axis (should use @ASN to match)
+DEFINE AXIS /UNITS=DAYS /T0=01-JAN-1900 /T=01-JAN-1950:01-JAN-1975:`365.2425/12.0` tax
+DEFINE DATA /AGGREGATE /HIDE /T /TAXIS=tax timeagg = aggfiles
+! should only show gaps (missing values) after
+LIST /PREC=6 /X=12E /Y=12S /Z=5.0 value
+CANCEL DATA timeagg
+CANCEL AXIS tax
+
+! try without an axis
+DEFINE DATA /AGGREGATE /HIDE /T timeagg = aggfiles
+! no gaps (missing values) but time axis JUL-2001 -> DEC 2022 with half of 2006, 2012, 2017
+LIST /PREC=6 /X=12E /Y=12S /Z=5.0 value
+CANCEL DATA timeagg
+
+CANCEL VAR aggfiles
+

@@ -99,7 +99,7 @@
 * report user variable dependencies
 * e.g.	in
 *   LET V = a + b
-*   SHOW VAR/DEP v[gz(depth)=zpts]
+*   SHOW VAR/TREE v[gz(depth)=zpts]
 * after reporting that V depends on depth, we need to report on "V=a+b"
 	delayed_by_auxvars = is_sum(isp) .NE. 0
 	IF (delayed_by_auxvars) is_phase(isp) = is_phase(isp) - 1

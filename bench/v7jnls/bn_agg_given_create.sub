@@ -1,0 +1,148 @@
+! bn_agg_given_create.sub
+!
+! Creates, if they do not already exist, a set of forecast files with T0 times 
+! set to the time of each forecast.  They have simple values with a logrhythmic 
+! 'error' with greater forecasted time lag, and a sinusoidal variation along 
+! the time of forecast.  All times are irregularly spaced, with the times of 
+! forecasts (T0 times) on 01-JAN and 01-JUL, and forecasted times on the 15th
+! of each month.
+!
+! After this completes, the following exist:
+!   files aggf/forecast_01.nc, aggf/forecast_02.nc, ..., aggf/forecast_38.nc 
+!         containing a single variable called 'value'
+!   axes ffax (time-of-forecast F axis), 
+!        ftax (superset of all forecasted-times T axes), and
+
+\CANCEL MODE VERIFY
+
+! dates on which forecasts were made
+LET dates_of_forecast = { \
+   "01-JAN-2001", "01-JUL-2001", "01-JAN-2002", "01-JUL-2002", "01-JAN-2003", "01-JUL-2003", \
+   "01-JAN-2004", "01-JUL-2004", "01-JAN-2005", "01-JUL-2005", "01-JAN-2006", "01-JUL-2006", \
+   "01-JAN-2007", "01-JUL-2007", "01-JAN-2008", "01-JUL-2008", "01-JAN-2009", "01-JUL-2009", \
+   "01-JAN-2010", "01-JUL-2010", "01-JAN-2011", "01-JUL-2011", "01-JAN-2012", "01-JUL-2012", \
+   "01-JAN-2013", "01-JUL-2013", "01-JAN-2014", "01-JUL-2014", "01-JAN-2015", "01-JUL-2015", \
+   "01-JAN-2016", "01-JUL-2016", "01-JAN-2017", "01-JUL-2017", "01-JAN-2018", "01-JUL-2018", \
+   "01-JAN-2019", "01-JUL-2019" \
+}
+LET dates1900_of_forecast = DATE1900(dates_of_forecast)
+
+LET first_forecasted_dates = { \
+   "15-JAN-2001", "14-FEB-2001", "15-MAR-2001", "15-APR-2001", "15-MAY-2001", "15-JUN-2001", \
+   "15-JUL-2001", "15-AUG-2001", "15-SEP-2001", "15-OCT-2001", "15-NOV-2001", "15-DEC-2001", \
+   "15-JAN-2002", "14-FEB-2002", "15-MAR-2002", "15-APR-2002", "15-MAY-2002", "15-JUN-2002", \
+   "15-JUL-2002", "15-AUG-2002", "15-SEP-2002", "15-OCT-2002", "15-NOV-2002", "15-DEC-2002", \
+   "15-JAN-2003", "14-FEB-2003", "15-MAR-2003", "15-APR-2003", "15-MAY-2003", "15-JUN-2003", \
+   "15-JUL-2003", "15-AUG-2003", "15-SEP-2003", "15-OCT-2003", "15-NOV-2003", "15-DEC-2003", \
+   "15-JAN-2004", "14-FEB-2004", "15-MAR-2004", "15-APR-2004", "15-MAY-2004", "15-JUN-2004", \
+   "15-JUL-2004", "15-AUG-2004", "15-SEP-2004", "15-OCT-2004", "15-NOV-2004", "15-DEC-2004", \
+   "15-JAN-2005", "14-FEB-2005", "15-MAR-2005", "15-APR-2005", "15-MAY-2005", "15-JUN-2005", \
+   "15-JUL-2005", "15-AUG-2005", "15-SEP-2005", "15-OCT-2005", "15-NOV-2005", "15-DEC-2005", \
+   "15-JAN-2006", "14-FEB-2006", "15-MAR-2006", "15-APR-2006", "15-MAY-2006", "15-JUN-2006", \
+   "15-JUL-2006", "15-AUG-2006", "15-SEP-2006", "15-OCT-2006", "15-NOV-2006", "15-DEC-2006", \
+   "15-JAN-2007", "14-FEB-2007", "15-MAR-2007", "15-APR-2007", "15-MAY-2007", "15-JUN-2007", \
+   "15-JUL-2007", "15-AUG-2007", "15-SEP-2007", "15-OCT-2007", "15-NOV-2007", "15-DEC-2007", \
+   "15-JAN-2008", "14-FEB-2008", "15-MAR-2008", "15-APR-2008", "15-MAY-2008", "15-JUN-2008", \
+   "15-JUL-2008", "15-AUG-2008", "15-SEP-2008", "15-OCT-2008", "15-NOV-2008", "15-DEC-2008" \
+}
+LET second_forecasted_dates = { \
+   "15-JAN-2009", "14-FEB-2009", "15-MAR-2009", "15-APR-2009", "15-MAY-2009", "15-JUN-2009", \
+   "15-JUL-2009", "15-AUG-2009", "15-SEP-2009", "15-OCT-2009", "15-NOV-2009", "15-DEC-2009", \
+   "15-JAN-2010", "14-FEB-2010", "15-MAR-2010", "15-APR-2010", "15-MAY-2010", "15-JUN-2010", \
+   "15-JUL-2010", "15-AUG-2010", "15-SEP-2010", "15-OCT-2010", "15-NOV-2010", "15-DEC-2010", \
+   "15-JAN-2011", "14-FEB-2011", "15-MAR-2011", "15-APR-2011", "15-MAY-2011", "15-JUN-2011", \
+   "15-JUL-2011", "15-AUG-2011", "15-SEP-2011", "15-OCT-2011", "15-NOV-2011", "15-DEC-2011", \
+   "15-JAN-2012", "14-FEB-2012", "15-MAR-2012", "15-APR-2012", "15-MAY-2012", "15-JUN-2012", \
+   "15-JUL-2012", "15-AUG-2012", "15-SEP-2012", "15-OCT-2012", "15-NOV-2012", "15-DEC-2012", \
+   "15-JAN-2013", "14-FEB-2013", "15-MAR-2013", "15-APR-2013", "15-MAY-2013", "15-JUN-2013", \
+   "15-JUL-2013", "15-AUG-2013", "15-SEP-2013", "15-OCT-2013", "15-NOV-2013", "15-DEC-2013", \
+   "15-JAN-2014", "14-FEB-2014", "15-MAR-2014", "15-APR-2014", "15-MAY-2014", "15-JUN-2014", \
+   "15-JUL-2014", "15-AUG-2014", "15-SEP-2014", "15-OCT-2014", "15-NOV-2014", "15-DEC-2014", \
+   "15-JAN-2015", "14-FEB-2015", "15-MAR-2015", "15-APR-2015", "15-MAY-2015", "15-JUN-2015", \
+   "15-JUL-2015", "15-AUG-2015", "15-SEP-2015", "15-OCT-2015", "15-NOV-2015", "15-DEC-2015", \
+   "15-JAN-2016", "14-FEB-2016", "15-MAR-2016", "15-APR-2016", "15-MAY-2016", "15-JUN-2016", \
+   "15-JUL-2016", "15-AUG-2016", "15-SEP-2016", "15-OCT-2016", "15-NOV-2016", "15-DEC-2016" \
+}
+LET third_forecasted_dates = { \
+   "15-JAN-2017", "14-FEB-2017", "15-MAR-2017", "15-APR-2017", "15-MAY-2017", "15-JUN-2017", \
+   "15-JUL-2017", "15-AUG-2017", "15-SEP-2017", "15-OCT-2017", "15-NOV-2017", "15-DEC-2017", \
+   "15-JAN-2018", "14-FEB-2018", "15-MAR-2018", "15-APR-2018", "15-MAY-2018", "15-JUN-2018", \
+   "15-JUL-2018", "15-AUG-2018", "15-SEP-2018", "15-OCT-2018", "15-NOV-2018", "15-DEC-2018", \
+   "15-JAN-2019", "14-FEB-2019", "15-MAR-2019", "15-APR-2019", "15-MAY-2019", "15-JUN-2019", \
+   "15-JUL-2019", "15-AUG-2019", "15-SEP-2019", "15-OCT-2019", "15-NOV-2019", "15-DEC-2019", \
+   "15-JAN-2020", "14-FEB-2020", "15-MAR-2020", "15-APR-2020", "15-MAY-2020", "15-JUN-2020", \
+   "15-JUL-2020", "15-AUG-2020", "15-SEP-2020", "15-OCT-2020", "15-NOV-2020", "15-DEC-2020", \
+   "15-JAN-2021", "14-FEB-2021", "15-MAR-2021", "15-APR-2021", "15-MAY-2021", "15-JUN-2021", \
+   "15-JUL-2021", "15-AUG-2021", "15-SEP-2021", "15-OCT-2021", "15-NOV-2021", "15-DEC-2021", \
+   "15-JAN-2022", "14-FEB-2022", "15-MAR-2022", "15-APR-2022", "15-MAY-2022", "15-JUN-2022", \
+   "15-JUL-2022", "15-AUG-2022", "15-SEP-2022", "15-OCT-2022", "15-NOV-2022", "15-DEC-2022", \
+   "15-JAN-2023", "14-FEB-2023", "15-MAR-2023", "15-APR-2023", "15-MAY-2023", "15-JUN-2023", \
+   "15-JUL-2023", "15-AUG-2023", "15-SEP-2023", "15-OCT-2023", "15-NOV-2023", "15-DEC-2023", \
+   "15-JAN-2024", "14-FEB-2024", "15-MAR-2024", "15-APR-2024", "15-MAY-2024", "15-JUN-2024", \
+   "15-JUL-2024", "15-AUG-2024", "15-SEP-2024", "15-OCT-2024", "15-NOV-2024", "15-DEC-2024" \
+}
+LET firstsecond_forecasted_dates = XCAT_STR(first_forecasted_dates, second_forecasted_dates)
+LET forecasted_dates = XCAT_STR(firstsecond_forecasted_dates, third_forecasted_dates)
+LET forecasted_dates1900 = DATE1900(forecasted_dates)
+
+! see if the test file already exists
+SPAWN "/bin/ls -1 aggf/forecast_??.nc > /dev/null"
+
+IF ($SPAWN_OK) THEN
+   SAY " "
+   SAY *** NOT RE-CREATING bn_agg_given_axes.jnl test files. They already exist.
+   SAY " "
+ELSE
+   SPAWN "/bin/rm -fr aggf"
+   SPAWN "mkdir aggf"
+
+   DEFINE AXIS/X=10E:15E:1 xax
+   DEFINE AXIS/Y=15S:10S:1 yax
+   DEFINE AXIS/Z=0:10:10/EDGES/UNITS=m zax
+
+   REPEAT /NAME=idx /RANGE=1:`dates_of_forecast,ret=isize`:1 ( \
+      LET tzero_str = dates_of_forecast[I=`idx`]; \
+      LET tzero = dates1900_of_forecast[I=`idx`]; \
+      LET forecasted_times = forecasted_dates1900[I=`6*idx-5`:`6*idx+54`] - `tzero`; \
+      DEFINE AXIS /UNITS=DAYS /T0=`tzero_str` /T ftax = forecasted_times; \
+      DEFINE GRID /X=xax /Y=yax /Z=zax /T=ftax fcstgrid; \
+      SET GRID fcstgrid; \
+      LET /TITLE="forecasted value" value = _X + _Y + _Z + cos(1.618 * 3.14159 * (_T + `tzero`) / 365.25) * log(12.0 * _T / 365.25); \
+      SAVE /CLOBBER /FILE="aggf/forecast_`idx,zw=2`.nc" value; \
+      CANCEL VAR value; \
+      SET GRID ABSTRACT; \
+      CANCEL GRID fcstgrid; \
+      CANCEL AXIS ftax; \
+      CANCEL VAR forecasted_times; \
+      CANCEL VAR tzero; \
+      CANCEL VAR tzero_str; \
+   )
+
+   CANCEL AXIS zax
+   CANCEL AXIS yax
+   CANCEL AXIS xax
+ENDIF
+
+! time-of-forecast and forecasted-time axes with exactly the same timestamps used above
+DEFINE SYMBOL tzero_str = "01-JAN-2000"
+LET tzero = DATE1900(($tzero_str))
+LET times_of_forecast = dates1900_of_forecast - tzero
+DEFINE AXIS /UNITS=DAYS /T0=($tzero_str) /F ffax = times_of_forecast
+LET forecasted_times = forecasted_dates1900 - tzero
+DEFINE AXIS /UNITS=DAYS /T0=($tzero_str) /T ftax = forecasted_times
+
+CANCEL VAR forecasted_times
+CANCEL VAR times_of_forecast
+CANCEL VAR tzero
+CANCEL SYMBOL tzero_str
+CANCEL VAR forecasted_dates1900
+CANCEL VAR forecasted_dates
+CANCEL VAR firstsecond_forecasted_dates
+CANCEL VAR third_forecasted_dates
+CANCEL VAR second_forecasted_dates
+CANCEL VAR first_forecasted_dates
+CANCEL VAR dates1900_of_forecast
+CANCEL VAR dates_of_forecast
+
+SET MODE /LAST VERIFY
+

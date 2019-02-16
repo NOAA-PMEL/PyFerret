@@ -1,0 +1,23 @@
+SRCS_F = \
+agg_clean_grids.F\
+assign_t_agg_axis.F\
+build_t_agg_axis.F\
+check_member_sets.F\
+create_agg_axis.F\
+create_agg_dset.F\
+define_e_aggregate_grid.F\
+define_f_aggregate_grid.F\
+define_t_agg_mc_dset.F\
+define_u_aggregate_var.F\
+init_e_aggregate_dset.F\
+init_f_aggregate_dset.F\
+init_t_aggregate_dset.F\
+init_t_agg_mc_dset.F\
+init_u_aggregate_dset.F\
+is_agg_member.F\
+its_fmrc_2dtime.F\
+ok_as_agg_var.F\
+promote_agg_global_atts.F\
+set_agg_var_atts.F\
+sort_fmrc_dsets.F\
+sort_tseries_dsets.F

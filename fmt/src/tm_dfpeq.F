@@ -50,7 +50,7 @@
 
 * local parameters
 	REAL*8	   epsilon, eps
-	PARAMETER ( epsilon = 4.D-15 )
+	PARAMETER ( epsilon = 2.0**(-42) )
 
 * set the maximum relative error
         eps = ABS(b) * epsilon

@@ -73,12 +73,12 @@
 * Local variable declarations
 	LOGICAL TM_DFPEQ_TOL, TM_FPEQ_EPS
 	REAL	dfirst_delta, first_delta, micro_adj, madj, delta, zero
-	REAL epsilon_23, depsilon_46
+	REAL epsilon_21, depsilon_42
 	INTEGER i, i0, i1, i2, i3, vlen
 
 * Initialize
-	epsilon_23 =  2.**(-23) 
-	depsilon_46 =  2.**(-46) 
+	epsilon_21 =  2.**(-21) 
+	depsilon_42 =  2.**(-42) 
 	
 	has_repeated = .FALSE.
 	misordered = .FALSE.
@@ -93,31 +93,31 @@
         IF (is_double) THEN
 
            dfirst_delta = line(2) - line(1)
-	   IF (dfirst_delta .LT. depsilon_46) THEN
+	   IF (dfirst_delta .LT. depsilon_42) THEN
 	      DO i = 2, npts
                 dfirst_delta = line(i) - line(i-1) 
-		IF (dfirst_delta .GE. depsilon_46) EXIT  ! from loop
+		IF (dfirst_delta .GE. depsilon_42) EXIT  ! from loop
 	      ENDDO
-	      IF (dfirst_delta .LT. depsilon_46) THEN
+	      IF (dfirst_delta .LT. depsilon_42) THEN
 	         misordered = .TRUE.
 		 GOTO 1000
 	      ENDIF
 	   ENDIF
-           depsilon = depsilon_46 * 2.*(ABS(line(npts)) / dfirst_delta )
-           depsilon = depsilon_46 * 2.*(ABS(line(1)) / dfirst_delta )
+           depsilon = depsilon_42 * 2.*(ABS(line(npts)) / dfirst_delta )
+           depsilon = depsilon_42 * 2.*(ABS(line(1)) / dfirst_delta )
 
         ELSE
 
            first_delta = line(2) - line(1)
-           epsilon = epsilon_23 * 2.*(ABS(line(npts)) / first_delta )
-           epsilon = epsilon_23 * 2.*(ABS(line(1)) / first_delta )
+           epsilon = epsilon_21 * 2.*(ABS(line(npts)) / first_delta )
+           epsilon = epsilon_21 * 2.*(ABS(line(1)) / first_delta )
 	   
-	   IF (first_delta .LT. epsilon_23) THEN
+	   IF (first_delta .LT. epsilon_21) THEN
 	      DO i = 1, npts
                 first_delta = line(i+1) - line(i) 
-		IF (first_delta .GE. epsilon_23) EXIT  ! from loop
+		IF (first_delta .GE. epsilon_21) EXIT  ! from loop
 	      ENDDO
-	      IF (first_delta .LT. epsilon_23) THEN
+	      IF (first_delta .LT. epsilon_21) THEN
 	         misordered = .TRUE.
 		 GOTO 1000
 	      ENDIF

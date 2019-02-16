@@ -117,8 +117,6 @@
         INTEGER         TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id
 	LOGICAL		TM_FPEQ, TM_CHECK_BOX_LOC
 	REAL*8		delta, prev_lastep, itt		!*kob* 8/96
-	REAL *8		dp_epsilon			!*kob* 5/97
-	PARAMETER 	( dp_epsilon = 1.D-10)
 	PARAMETER	( scr = 0 )
 
 
@@ -135,16 +133,9 @@
 	DO 100 istp = 1, maxstepfiles
 	  IF ( sf_setnum(istp)      .EQ. dset_num .AND.
      .	       sf_aux_set_num(istp) .EQ. 0              ) THEN
-* kob add INT and test for sf_lastep to below calculation for linux port
-	    IF (sf_lastep(istp) .GT. 0.0D0) THEN
-	      nsteps = nsteps +
-     .		     INT((sf_lastep(istp)-sf_1step(istp))/sf_delta(istp) 
-     .               + dp_epsilon) + 1
-	    ELSE 
-	      nsteps = nsteps +
-     .		     INT((sf_lastep(istp)-sf_1step(istp))/sf_delta(istp) - 
-     .               dp_epsilon) + 1
-	    ENDIF			
+*           Use NINT instead of INT with the dp_epsilon added or subtracted
+	    nsteps = nsteps +
+     .        NINT((sf_lastep(istp)-sf_1step(istp))/sf_delta(istp)) + 1
 	    IF (delta .EQ. 0) THEN
 	      delta = sf_delta(istp)
 	    ELSE IF (.NOT. TM_FPEQ(SNGL(delta),SNGL(sf_delta(istp)))) THEN

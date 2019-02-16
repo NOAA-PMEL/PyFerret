@@ -42,8 +42,6 @@ else
 fi
 py_scripts=`grep -v '^!' $test_scripts_file | grep '\.py$'`
 
-umask 002
-
 # Get the machine type for the stream file testing
 if [ `uname -s` = "Linux" -a `uname -m` = "x86_64" ]; then
     machine="x86_64-linux"

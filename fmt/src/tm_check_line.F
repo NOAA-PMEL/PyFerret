@@ -66,7 +66,7 @@
 
 * local declarations
 	LOGICAL TM_DFPEQ_TOL, TM_FPEQ_EPS
-	REAL tmp8, micro_adj, epsilon_23, depsilon_46, epsilon, depsilon,
+	REAL tmp8, micro_adj, epsilon_21, depsilon_42, epsilon, depsilon,
      .       dfirst_delta, ddelta, delta, firs_coord, last_coord, first_delta
 	INTEGER i, istat
 	CHARACTER*12 TM_LEFINT
@@ -81,8 +81,8 @@
 * or "real*8" in Fortran. This is a binary format that occupies 64 bits (8 bytes) 
 * and its significand has a precision of 53 bits (about 16 decimal digits).
 
-      epsilon_23 =  2.**(-23)
-      depsilon_46 =  2.**(-46) 
+      epsilon_21 =  2.**(-21)
+      depsilon_42 =  2.**(-42) 
 
 * if the coordinates are decreasing-ordered then reverse them
 
@@ -163,8 +163,8 @@
 
         IF (is_double) THEN
            dfirst_delta = line(2) - line(1)
-           depsilon = depsilon_46 * 2.*(ABS(line(npts)) / first_delta )
-           depsilon = depsilon_46 * 2.*(ABS(line(1)) / first_delta )
+           depsilon = depsilon_42 * 2.*(ABS(line(npts)) / first_delta )
+           depsilon = depsilon_42 * 2.*(ABS(line(1)) / first_delta )
 
            DO i = 2, npts
               ddelta = line(i) - line(i-1)
@@ -176,8 +176,8 @@
            last_coord = line(npts)
            firs_coord = line(1)
            first_delta = line(2) - line(1)
-           epsilon = epsilon_23 * 2.*(ABS(line(npts)) / first_delta )
-           epsilon = epsilon_23 * 2.*(ABS(line(1)) / first_delta )
+           epsilon = epsilon_21 * 2.*(ABS(line(npts)) / first_delta )
+           epsilon = epsilon_21 * 2.*(ABS(line(1)) / first_delta )
 
            DO  i = 3, npts
               delta = line(i) - line(i-1)

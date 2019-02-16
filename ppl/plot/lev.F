@@ -80,9 +80,6 @@ C**
 * V741 *acm*  5/18 issue 1874: If they sent in a single level to contour, 
 *                 label contour lines with that value, without rounding off
 
-	parameter	(epsilon = 1e-6)
-
-
 	DIMENSION VAL(4),INTIF(4)
         INTEGER ntop
         LOGICAL   TM_FPEQ_SNGL

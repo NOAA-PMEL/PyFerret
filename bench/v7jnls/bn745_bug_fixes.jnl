@@ -4,3 +4,6 @@
 
 GO bn_reset
 GO err744_time_as_string
+
+GO bn_reset
+GO err744_dsetnum

@@ -1,0 +1,46 @@
+! err744_dsetnum
+!   2/8/2019
+! issue 400.
+!
+! for user-defined variables, return=dset returns wrong result
+! Likewise dsetnum, dsatpath
+!
+
+! open a couple data sets
+let sst = {1,2,3,4}
+let airt = {4,5,6,7,8}
+
+save/clobber/file=a1.nc sst
+save/clobber/file=a2.nc airt
+
+can var/all
+
+use a1, a2
+
+! this is correct
+
+say `sst[d=1],return=dsetpath`
+
+let u1 = sst[d=1]
+
+! This should return dataset 1 but returns 2
+! Same bug for return=dset, dsetnum, dsetpath
+
+say `u1,return=dsetnum`
+say `u1,return=dset`
+say `u1,return=dsetpath`
+
+! What about a let/D variable?  Not sure what's the right answer here,
+! but the changes return 1.
+
+let/d=2 mydata = sst[d=1]
+say `mydata,return=dsetnum`
+
+
+! Not going any further with variable definitions. If the
+! definition itself doesn't have [d=1] don't try to figure out
+! its "dataset". As before this just returns the default dataset
+! Document this.
+
+let var = u1
+say `var,return=dsetnum`

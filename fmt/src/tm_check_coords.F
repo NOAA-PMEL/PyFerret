@@ -38,6 +38,7 @@
 * Ferret v7.1 *acm* 1/13/2017
 * V72   6/17 *acm* for trac enhancement #767 -- dynamic coordinate storage
 * V744 10/18 *acm* Issue #1898 -- correctly define first_delta, checking non-dp coordinatse
+* V745  2/19 *acm* Make sure index i0 isn't out of the index range
 
 * This routine replaces identical logic in cd_get_1_axis and xeq_define, 
 * checking for repeated coordinates and doing micro-adjusting if possible.
@@ -201,15 +202,21 @@
                   ENDIF
 
 * Check and readjust the size of micro_adj if too small
+
                   madj = micro_adj
-                  IF (micro_adj*(i2-i1+1) .GT. 
-     .                line(i3) - line(i0) ) THEN
-                     madj = (line(i3)-line(i0))/(i2-i1+1)
-                     IF (madj .EQ. 0.)  THEN
-	                misordered = .TRUE.
-	                GOTO 1000
+                  IF (i0.GT.0) THEN 
+
+                     IF (micro_adj*(i2-i1+1) .GT. 
+     .                   line(i3) - line(i0) ) THEN
+                        madj = (line(i3)-line(i0))/(i2-i1+1)
+                        IF (madj .EQ. 0.)  THEN
+	                   misordered = .TRUE.
+	                   GOTO 1000
+	                ENDIF
 	             ENDIF
-	          ENDIF
+		     
+		  ENDIF 
+
 
                   DO 160 i3 = i1, i2-1
                      line(i3) = line(i3) + (i3-i1+1)* madj

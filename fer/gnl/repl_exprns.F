@@ -128,6 +128,8 @@
 *                 change to `var,RETURN=bad`
 * v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
+* v745* acm*  2/19 Issue 400:  If a user var is LET var = filevar[d=1] then return the
+*                  correct info for `var,return=dset` and dsetnum and dsetpath.
 
         IMPLICIT NONE
 #include "netcdf.inc"

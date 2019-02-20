@@ -129,8 +129,7 @@
 * v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
 * v745* acm*  2/19 Issue 400:  If a user var is LET var = filevar[d=1] then return the
-*                  correct info for `var,return=dset` and dsetnum and dsetpath. If can't
-*                  get the datset, return bad
+*                  correct info for `var,return=dset` and dsetnum and dsetpath.
 
         IMPLICIT NONE
 #include "netcdf.inc"
@@ -889,7 +888,7 @@ c if its a netcdf-type dset with packed data, may have swapped out the bad flag
      .				hi_cx,
      .				var_status )
 
-		    i2 = cx_data_set(hi_cx)
+		    IF (cx_data_set(hi_cx) .GT. pdset_irrelevant) i2 = cx_data_set(hi_cx)
 
 	         ENDIF
 	      ENDIF  ! if cat_user_var

@@ -5693,6 +5693,11 @@ Replacing definition of axis TDATA
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis time_dim_1 is of type char or string
            *** NOTE: A dummy axis of subscripts will be used
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a1.nc
+ LISTing to file a2.nc
 *** Running ferret script: bn_iso8601_time.jnl
  LISTing to file a.nc
            *** NOTE: regarding ./data/clim_axes_julian.nc ...

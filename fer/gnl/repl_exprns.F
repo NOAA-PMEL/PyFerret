@@ -128,6 +128,8 @@
 *                 change to `var,RETURN=bad`
 * v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
+* v745* acm*  2/19 Issue 400:  If a user var is LET var = filevar[d=1] then return the
+*                  correct info for `var,return=dset` and dsetnum and dsetpath.
 
         IMPLICIT NONE
 #include "netcdf.inc"
@@ -166,13 +168,14 @@
      .            vartype, ist, ind,
      .            attype, attlen, inxt, attoutflag, fertype, 
      .            attid, ieq, base_isp, base_cx, cat, var, uvar,  
-     .            i1ss, inss, grid, ucode
+     .            i1ss, inss, grid, ucode, 
+     .            hi_cx, item, itype, start, len_name, var_status
 	REAL	  result, val, aval
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
 	CHARACTER TM_FMT*(max_len), TM_FMT_USER*(max_len), LEFINT*16, VAR_TITLE*(max_len),
      .		  VAR_UNITS*(max_len), GET_STRING_ELEMENT*(max_len),
      .		  repl*(max_len), bad_str*(max_len), return_errmsg*256,
-     .            buff*128, varname*512, attname*128, aname*128
+     .            buff*128, varname*512, attname*128, aname*128, name*128
         CHARACTER*6 typstring(0:6)
 
 * local parameter declarations
@@ -854,7 +857,46 @@ c if its a netcdf-type dset with packed data, may have swapped out the bad flag
 
 * ... RETURN=DSET, DSETNUM, DSETPATH, DSETTITLE
 	   ELSEIF ( repl(1:4) .EQ. "DSET" ) THEN
+
+******************-----------------
+* borrow from is_dependencies to get uvar definition and find its dataset
+* (is_dependencies has lifted this old-fashioned style code from elsewhere as well.)
+* This makes just one try: see if it's a uservar and uvar_text clearly points 
+* to a dataset and return that set.  More-complex expressions don't necessarily 
+* have a clear dataset.
+
 	      i2 = cx_data_set(cx)
+	      IF (cat .EQ. cat_user_var) THEN
+	         
+	         uvar = cx_variable(cx)
+	         item = 1
+
+	         itype = uvar_item_type ( item, uvar )
+	         start = uvar_item_start( item, uvar )
+	         iend   = uvar_item_end  ( item, uvar )
+	         IF ( itype .EQ. alg_variable    ) THEN
+
+* variable: parse name, get expression context
+	            name = uvar_text(uvar)(start:iend)
+	            len_name = iend-start+1
+
+	            CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
+	            IF ( status .NE. ferr_ok ) GOTO 5000
+	            hi_cx = cx_stack_ptr
+	            CALL GET_VAR_CONTEXT (  name(:len_name),
+     .				cx,
+     .				hi_cx,
+     .				var_status )
+
+		    IF (cx_data_set(hi_cx) .GT. pdset_irrelevant) i2 = cx_data_set(hi_cx)
+
+	         ENDIF
+	      ENDIF  ! if cat_user_var
+	      
+******************-----------------
+
+* i2 contains the dataset number
+
 	      IF ( i2 .EQ. pdset_irrelevant
      .	     .OR.  i2 .EQ. unspecified_int4 ) THEN
 	         repl = bad_str

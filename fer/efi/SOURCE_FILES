@@ -29,6 +29,7 @@ curv_to_rect_subs.F\
 day_of_year.F\
 date1900.F\
 days1900toymdhms.F\
+earth_distance.F\
 ecat.F\
 ecat_str.F\
 element_index.F\

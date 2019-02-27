@@ -1199,6 +1199,12 @@ void FORTRAN( scat2grid_std_xyt_compute)(int *,
   DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
   DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
   DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+
+
+void FORTRAN( earth_distance_init)(int *);
+void FORTRAN( earth_distance_compute)(int *,
+  DFTYPE *, DFTYPE *, DFTYPE *);
+
 /*
  *  End of declarations for internally linked external functions
  *  ------------------------------------ */
@@ -1290,6 +1296,7 @@ static int continue_efcn_scan(int gfcn_num_internal) {
      "dot_x",
      "dot_y",
      "dot_z",
+     "earth_distance",
      "ecat",
      "ecat_str",
      "element_index",
@@ -4582,6 +4589,10 @@ else if ( !strcmp(name,"scat2grid_minmax_xyt_compute_") ) return (void *)FORTRAN
 else if ( !strcmp(name,"scat2grid_std_xyt_init_") ) return (void *)FORTRAN( scat2grid_std_xyt_init);
 else if ( !strcmp(name,"scat2grid_std_xyt_work_size_") ) return (void *)FORTRAN( scat2grid_std_xyt_work_size);
 else if ( !strcmp(name,"scat2grid_std_xyt_compute_") ) return (void *)FORTRAN( scat2grid_std_xyt_compute);
+
+/*  earth_distance.F */
+else if ( !strcmp(name,"earth_distance_init_") ) return (void *)FORTRAN( earth_distance_init);
+else if ( !strcmp(name,"earth_distance_compute_") ) return (void *)FORTRAN( earth_distance_compute);
 
 return NULL;
  }

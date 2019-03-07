@@ -1,0 +1,51 @@
+! bn_tagg_overlaps.jnl
+! test time aggregation where there are overlaps between data files
+
+LET twopi=8.0*ATAN(1.0)
+
+DEFINE AXIS /T=1-JAN-2009:1-JAN-2010:1 /UNITS=days /T0=1-JAN-2009 time
+LET /TITLE=myvar var = COS(twopi * _T[gt=time]/365.0)
+SAVE /CLOBBER /FILE=data2009.nc var
+
+DEFINE AXIS /T=1-JAN-2010:3-JAN-2011:1 /UNITS=days /T0=1-JAN-2010 time
+LET /TITLE=myvar var = 10.0 + COS(twopi * _T[gt=time]/365.0)
+SAVE /CLOBBER /FILE=data2010.nc var
+
+DEFINE AXIS /T=1-JAN-2011:1-JAN-2012:1 /UNITS=days /T0=1-JAN-2011 time
+LET /TITLE=myvar var = 20.0 + COS(twopi * _T[gt=time]/365.0)
+SAVE /CLOBBER /FILE=data2011.nc var
+
+CANCEL VAR /ALL
+CANCEL AXIS /ALL
+
+DEFINE AXIS /T=1-JAN-2009:31-JAN-2012:1 /UNIT=days /T0=01-JAN-2000 aggtime
+
+! Unlimited number of overlaps
+DEFINE DATA /AGG /T /TOVERLAP /TAXIS=aggtime myagg = data2010.nc, data2009.nc, data2011.nc
+LIST /PREC=8 var
+CANCEL DATA /ALL
+
+! No more than three overlaps
+DEFINE DATA /AGG /T /TOVERLAP=3 /TAXIS=aggtime myagg = data2010.nc, data2009.nc, data2011.nc
+LIST /PREC=8 var[L=1:`var,ret=size`:5]
+CANCEL DATA /ALL
+
+SET MODE IGNORE
+
+! Standard time aggregation fails
+DEFINE DATA /AGG /T myagg = data2010.nc, data2009.nc, data2011.nc
+
+! Without /TOVERLAP, @XACT fails (defaults to @ASN if permitted)
+DEFINE DATA /AGG /T /TAXIS=aggtime@XACT myagg = data2010.nc, data2009.nc, data2011.nc
+
+! Without /TOVERLAP, @BIN fails (defaults to @ASN if permitted)
+DEFINE DATA /AGG /T /TAXIS=aggtime@BIN myagg = data2010.nc, data2009.nc, data2011.nc
+
+! More overlaps than allowed
+DEFINE DATA /AGG /T /TOVERLAP=2 /TAXIS=aggtime@XACT myagg = data2010.nc, data2009.nc, data2011.nc
+
+! More overlaps than allowed
+DEFINE DATA /AGG /T /TOVERLAP=2 /TAXIS=aggtime@BIN myagg = data2010.nc, data2009.nc, data2011.nc
+
+CANCEL MODE IGNORE
+

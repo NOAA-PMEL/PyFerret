@@ -345,6 +345,7 @@
      .              slash_def_agg_u,
      .              slash_def_agg_taxis,
      .              slash_def_agg_faxis,
+     .              slash_def_agg_toverlap,
      .              slash_def_annot_nlab
 
 	LOGICAL	    explct_defn
@@ -394,6 +395,7 @@
      .              slash_def_agg_u     = 1 + 10,
      .              slash_def_agg_taxis = 1 + 11,
      .              slash_def_agg_faxis = 1 + 12,
+     .              slash_def_agg_toverlap = 1 + 13,
      .              slash_def_annot_nlab = 10,		! must be slash_annotate_siz+1
      .		    explct_defn  = .FALSE. )
 
@@ -434,7 +436,7 @@
      .            dset_to_add, dir, type, attype, attid, ibuff, i0,  
      .            agg_dim, nagfiles, ivar, item, nlab, ierr, nlen,  
      .            llen, line, dstart, units, npts, ipt1, ipte, iline_b,
-     .            tline, fline, idx, vaxcode
+     .            tline, fline, idx, vaxcode, toverlap
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            val, dummy, val_buf, xloc, yloc, halign, angle, size,
@@ -2804,7 +2806,7 @@ c	ENDIF
               ENDIF
            ELSE
 * ... no axis given in /FAXIS value
-              IF ( fmatch .NE. '@LAG' )
+              IF ( tmatch .NE. '@LAG' )
      .           CALL ERRMSG(ferr_syntax, status,
      .                 'no axis specified in /TAXIS (only @LAG '//
      .                 'can be specified without an axis)', *5000)
@@ -2815,6 +2817,20 @@ c	ENDIF
      .       (INDEX(tmatch, '@LAG') .GT. 0) )
      .     CALL ERRMSG(ferr_syntax, status, '@LAG cannot '//
      .           'be specified in both /FAXIS and /TAXIS', *5000)
+
+* /TOVERLAP
+        toverlap = 0
+        iqual = qual_given(slash_def_agg_toverlap) 
+        IF ( iqual .GT. 0 ) THEN
+           IF ( agg_dim .NE. t_dim )
+     .        CALL ERRMSG(ferr_syntax, status, 
+     .               '/TOVERLAP only valid for /T aggregation', *5000 )
+           IF ( tline .EQ. unspecified_int4 )
+     .        CALL ERRMSG(ferr_syntax, status, 
+     .               '/TOVERLAP requires /TAXIS', *5000 )
+           CALL EQUAL_VAL_INT(cmnd_buff(qual_start(iqual):qual_end(iqual)), toverlap, status)
+           IF ( status .NE. ferr_ok ) RETURN
+        ENDIF
 
 * default aggregation orientation
 	IF (agg_dim .EQ. unspecified_int4) agg_dim = t_dim
@@ -2920,7 +2936,7 @@ c	ENDIF
         IF (agg_dim .EQ. t_dim) THEN
            CALL INIT_T_AGGREGATE_DSET(memry(mr)%ptr,
      .              nagfiles, have_expr, buff1, buff3, buff2, dset,
-     .              tline, tmatch, status)
+     .              tline, tmatch, toverlap, status)
         ELSEIF ( agg_dim .EQ. e_dim ) THEN
            CALL INIT_E_AGGREGATE_DSET (memry(mr)%ptr,
      .              nagfiles, have_expr, buff1, buff3, buff2, dset,
@@ -3022,7 +3038,7 @@ c ?? if nlab=0, use next avail slot?
  5510	CALL ERRMSG( ferr_invalid_command, status,
      .    'Conflicting /X/Y/Z/T/E/F axis orientations given', *5000 )
  5515	CALL ERRMSG( ferr_invalid_command, status,
-     .    'Conflicting /U/T/E/F/TAXIS/EAXIS/FAXIS given', *5000 )
+     .    'Conflicting /U/T/E/F/TAXIS/FAXIS given', *5000 )
  5520	CALL FREE_LINE_DYNMEM (iline)
 	CALL ERRMSG( ferr_grid_definition, status,
      .			'error in start,end,delta', *5000 )

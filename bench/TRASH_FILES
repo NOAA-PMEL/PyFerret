@@ -47,6 +47,9 @@ confuse_yzt.nc
 conventions_history.nc
 d2.nc
 dat.dat
+data2009.nc
+data2010.nc
+data2011.nc
 dummy1.string_tst
 dummy1.str_test
 dummy2.string_tst

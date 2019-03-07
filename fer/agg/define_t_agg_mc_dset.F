@@ -1,6 +1,6 @@
         SUBROUTINE DEFINE_T_AGG_MC_DSET(dset_name, dset_path,
      .                   dset_title, nagfiles, memb_filename,
-     .                   tline, tmatch, dset_num, status)
+     .                   tline, tmatch, toverlap, dset_num, status)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -57,13 +57,15 @@
 *       tline           - user-provided time axis to use (input, can be unspecified)
 *       tmatch          - method of matching times to tline (input, can be empty);
 *                         eg, '@ASN', '@BIN', '@XACT', '@XACT:0.001'
+*       toverlap        - allowed number of overlapping time values per datset (input);
+*                         negative (such as unspecified_int4) == unlimited
 *	dset_num	- number assigned to this data set (output)
 *	status		- return status (output)
 *
 
         IMPLICIT NONE
 * Argument definitions
-	INTEGER		nagfiles, dset_num, tline, status
+	INTEGER		nagfiles, dset_num, tline, toverlap, status
 	CHARACTER*(*)	dset_name, dset_path, dset_title, tmatch
 	CHARACTER*512	memb_filename(nagfiles)
 
@@ -122,9 +124,9 @@
 
         IF ( tline .NE. unspecified_int4 ) THEN
 * Verify and assign the given time axis for the aggregration
-           CALL ASSIGN_T_AGG_AXIS(tline, tmatch, dset_num, nagfiles,
-     .             memb_filename, memb_tstep_start, memb_tstep_end,
-     .             memb_nstep_start, memb_nsteps, memb_order, status)
+           CALL ASSIGN_T_AGG_AXIS(tline, tmatch, toverlap, dset_num,
+     .       nagfiles, memb_filename, memb_tstep_start, memb_tstep_end,
+     .       memb_nstep_start, memb_nsteps, memb_order, status)
         ELSE
 * Build the aggregated time axis by reading the coord from the netCDF files
            CALL BUILD_T_AGG_AXIS(dset_num, nagfiles, memb_filename,

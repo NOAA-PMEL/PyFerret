@@ -1,7 +1,7 @@
 	SUBROUTINE INIT_T_AGGREGATE_DSET(mem_filename_list,
      .			nagfiles, have_expr,
      .			dset_name, dset_path, dset_title,
-     .			dset_num, tline, tmatch, status)
+     .			dset_num, tline, tmatch, toverlap, status)
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -66,6 +66,8 @@
 *       tline           - user-provided time axis to use (input, can be unspecified)
 *       tmatch          - method of matching times to tline (input, can be empty);
 *                         eg, '@ASN', '@BIN', '@XACT', '@XACT:0.001'
+*       toverlap        - allowed number of overlapping time values per datset (input);
+*                         negative (such as unspecified_int4) == unlimited
 *	dset_num	- number assigned to this data set (output)
 *	status		- return status (output)
 *
@@ -79,7 +81,7 @@
 
 * Argument definitions
 	LOGICAL		have_expr
-	INTEGER		nagfiles, dset_num, tline, status
+	INTEGER		nagfiles, dset_num, tline, toverlap, status
 	CHARACTER*(*)	dset_name, dset_path, dset_title, tmatch
 	REAL		mem_filename_list(*)
 
@@ -108,7 +110,8 @@
 
 * now call the "real" routine
         CALL DEFINE_T_AGG_MC_DSET(dset_name, dset_path, dset_title,
-     .       nagfiles, memb_filename, tline, tmatch, dset_num, status)
+     .            nagfiles, memb_filename, tline, tmatch, toverlap, 
+     .            dset_num, status)
 
 * done
 	RETURN

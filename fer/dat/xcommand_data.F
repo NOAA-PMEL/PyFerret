@@ -1301,7 +1301,7 @@
 	   DATA subcommands      (nsub_at10 + 10)/ 'DATA'	/
 	   DATA num_qualifs      (nsub_at10 + 10)/ nqual10k	/
 	   DATA qualifier_pointer(nsub_at10 + 10)/ nqual_at10k	/
-* DEFINE DATA / AGGREGATE /TITLE /QUIET /HIDE /T /E /F /U /TAXIS /FAXIS
+* DEFINE DATA / AGGREGATE /TITLE /QUIET /HIDE /T /E /F /U /TAXIS /FAXIS /TOVERLAP
 		DATA qualifiers  (nqual_at10k+ 0)/ 'AGGREGATE' /
 		DATA qualifiers  (nqual_at10k+ 1)/ '****' / ! reserved for x
 		DATA qualifiers  (nqual_at10k+ 2)/ '****' / ! y
@@ -1315,7 +1315,7 @@
 		DATA qualifiers  (nqual_at10k+ 10)/ 'U' /
 		DATA qualifiers  (nqual_at10k+ 11)/ 'TAXIS' /
 		DATA qualifiers  (nqual_at10k+ 12)/ 'FAXIS' /
-		DATA qualifiers  (nqual_at10k+ 13)/ '****'/
+		DATA qualifiers  (nqual_at10k+ 13)/ 'TOVERLAP' /
 * DEFINE ANNOTATION
 	   DATA subcommands      (nsub_at10 + 11)/ 'ANNOTATION'	/
 	   DATA num_qualifs      (nsub_at10 + 11)/ nqual10l	/

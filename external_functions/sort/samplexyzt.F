@@ -474,7 +474,6 @@ C  variables for checking axis characteristics (modulo axes)
       k = res_lo_ss(Z_AXIS)
       l = res_lo_ss(T_AXIS)
 
-	print *, ' ipt, fzbot, fztop, zfrac, result'
       DO 700 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
          xpt = arg_2(i2,j2,k2,l2,m2,n2)
@@ -858,10 +857,6 @@ C  variables for checking axis characteristics (modulo axes)
 * Now Z-axis interpolation
                   result(i,j,k,l,m,n) = fzbot + zfrac *
      .                                  (fztop - fzbot)
-
-     
-	print *, i, fzbot, fztop, zfrac, result(i,j,k,l,m,n)
-
 
                ELSE
  

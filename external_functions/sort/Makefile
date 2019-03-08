@@ -44,7 +44,7 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 # all:    bin_index_wt.so 
 # all:    is_element_of.so is_element_of_str.so element_index.so element_index_str.so sampleyz.so samplexz.so samplexy_closest.so samplexy_curv.so
 # all:    is_element_of.so samplexy_curv_avg.so samplexy_curv_nrst.so
-all:     
+all:     samplexyzt.so
 #all:    compressi_str.so string_to_id.so 
 
 debug:

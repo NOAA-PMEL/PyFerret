@@ -122,6 +122,7 @@ samplexy_nrst.F\
 samplexyt.F\
 samplexyt_nrst.F\
 samplexyz.F\
+samplexyzt.F\
 samplexz.F\
 sampleyz.F\
 scat2ddups.F\

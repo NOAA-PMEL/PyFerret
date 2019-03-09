@@ -1,0 +1,21 @@
+! bn_samplexyzt
+! Ansley Manke 3/8/2019
+
+show function samplexyzt
+
+use gt4d011.cdf
+let xpts = {-131,-132.4, -126.1}
+let ypts = {0.5, -0.2, -2.1}
+let zpts = {10,30,80}
+let tpts = {23800, 24500, 25700}
+
+list/prec=7 samplexyzt(u,xpts, ypts,zpts, tpts)
+
+! Compare result at a constant z location with the SAMPLEXYT function
+
+set mode interpolate
+
+let zpts = {50, 50, 50}
+list/prec=7 samplexyzt(u,xpts, ypts, zpts, tpts)
+list/prec=7 samplexyt(u[z=50], xpts, ypts, tpts)
+set mode/last interpolate

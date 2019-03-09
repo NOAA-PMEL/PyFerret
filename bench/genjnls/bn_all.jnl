@@ -1237,6 +1237,10 @@ GO bn_agg_given_taxis
 GO bn_reset bn_tagg_overlaps
 GO bn_tagg_overlaps
 
+GO bn_reset bn_samplexyzt
+GO bn_samplexyzt
+
+
 ! *********** PyFerret-specific scripts ***********
 
 IF ($program_name"0|PyFerret>1|*>0") THEN

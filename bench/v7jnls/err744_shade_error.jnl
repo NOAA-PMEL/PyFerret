@@ -1,0 +1,17 @@
+! err744_shade/nolab/nokey_error
+! Issue 1914: with some plot areas, portions of shade/nolab/nokey plot go missing
+! Ansley Manke March 8 2019
+
+let/title="longitude"/unit="degrees_e" xedge = x[gx=0:3:1] + 0*y[gy=0:3:1]
+let/title="latitude"/unit="degrees_n" yedge = 0*x[gx=0:3:1] + y[gy=0:3:1]
+let/title="temperature"/unit="K" val = reshape({1,2,3,4,5,6,7,8,9},x[gx=1:3:1]+y[gy=1:3:1])
+
+! This plot left the bottom row of cells blank
+set win/asp=0.86
+set view full
+shade/nolab/nokey val, xedge, yedge
+
+! With another aspect ratio, it's correct
+define view/axes/x=0.5:1/y=0.5:1 square
+set view square
+shade/nolab/nokey val, xedge, yedge

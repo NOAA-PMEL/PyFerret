@@ -341,11 +341,16 @@ void FORTRAN(samplexyt_compute)(int *, DFTYPE *, DFTYPE *,
       DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
       DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
-
 void FORTRAN(samplexyz_init)(int *);
 void FORTRAN(samplexyz_result_limits)(int *);
 void FORTRAN(samplexyz_work_size)(int *);
 void FORTRAN(samplexyz_compute)(int *, DFTYPE *, DFTYPE *,
+      DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+
+void FORTRAN(samplexyzt_init)(int *);
+void FORTRAN(samplexyzt_result_limits)(int *);
+void FORTRAN(samplexyzt_work_size)(int *);
+void FORTRAN(samplexyzt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *,
       DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(samplexyt_nrst_init)(int *);
@@ -1368,6 +1373,7 @@ static int continue_efcn_scan(int gfcn_num_internal) {
      "samplexyt_nrst",
      "samplexyt",
      "samplexyz",
+     "samplexyzt",
      "samplexz",
      "sampleyz",
      "scat2ddups",
@@ -3695,6 +3701,12 @@ else if ( !strcmp(name,"samplexyz_init_") ) return (void *)FORTRAN(samplexyz_ini
 else if ( !strcmp(name,"samplexyz_result_limits_") ) return (void *)FORTRAN(samplexyz_result_limits);
 else if ( !strcmp(name,"samplexyz_work_size_") ) return (void *)FORTRAN(samplexyz_work_size);
 else if ( !strcmp(name,"samplexyz_compute_") ) return (void *)FORTRAN(samplexyz_compute);
+
+/* samplexyzt.F */
+else if ( !strcmp(name,"samplexyzt_init_") ) return (void *)FORTRAN(samplexyzt_init);
+else if ( !strcmp(name,"samplexyzt_result_limits_") ) return (void *)FORTRAN(samplexyzt_result_limits);
+else if ( !strcmp(name,"samplexyzt_work_size_") ) return (void *)FORTRAN(samplexyzt_work_size);
+else if ( !strcmp(name,"samplexyzt_compute_") ) return (void *)FORTRAN(samplexyzt_compute);
 
 /* samplexyt_nrst.F */
 else if ( !strcmp(name,"samplexyt_nrst_init_") ) return (void *)FORTRAN(samplexyt_nrst_init);

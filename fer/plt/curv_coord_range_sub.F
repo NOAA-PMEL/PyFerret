@@ -52,6 +52,9 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
 *                 and 4-arg plot commands. 
+* V745 *acm* 3/19 Issue 1914: comparison of single-precision data in uc() and the
+*                 coordinate data must be done in single precision using TM_FPEQ_SNGL
+*               * Also clean up old code.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -62,25 +65,17 @@
 
 * calling argument declarations:
 	INTEGER ilo, ihi, jlo, jhi, status
-#ifdef double_p
 	REAL*4  uc(*)
 	REAL*8	xfield(xpos_loss_dim1:xpos_hiss_dim1,
      .		       xpos_loss_dim2:xpos_hiss_dim2),
      .		yfield(ypos_loss_dim1:ypos_hiss_dim1,
      .		       ypos_loss_dim2:ypos_hiss_dim2)
-#else
-	REAL    uc(*)
-	REAL	xfield(xpos_loss_dim1:xpos_hiss_dim1,
-     .		       xpos_loss_dim2:xpos_hiss_dim2),
-     .		yfield(ypos_loss_dim1:ypos_hiss_dim1,
-     .		       ypos_loss_dim2:ypos_hiss_dim2)
-#endif
 
 * internal variable declarations:
 
-	LOGICAL TM_FPEQ 
+	LOGICAL TM_FPEQ_SNGL 
 	INTEGER i, j, i1, i2, j1, j2
-        REAL xx, yy, up, dn
+        REAL*4 xx, yy, up, dn
 
         ilo = MAX(minss_dim1, maxss_dim1)
         ihi = MIN(minss_dim1, maxss_dim1)
@@ -105,15 +100,14 @@
         DO 100 j = j1, j2
            xx = xfield(i,j)
 	   IF ( xx .EQ. badxcurv) THEN
-c              GOTO 5100 
               GOTO 100 
            ELSE
               IF ( xx .GE. dn.AND.  xx .LE. up ) THEN
                  ilo = MIN(i,ilo)
                  ihi = MAX(i,ihi)
               ENDIF
-	      IF (TM_FPEQ(xx, dn)) ilo = MIN(i,ilo)
-	      IF (TM_FPEQ(xx, up)) ihi = MAX(i,ihi)
+	      IF (TM_FPEQ_SNGL(xx, dn)) ilo = MIN(i,ilo)
+	      IF (TM_FPEQ_SNGL(xx, up)) ihi = MAX(i,ihi)
            ENDIF
   100   CONTINUE
 
@@ -140,15 +134,14 @@ c              GOTO 5100
         DO 200 j = j1, j2
            yy = yfield(i,j)
 	   IF ( yy .EQ. badycurv) THEN
-c              GOTO 5200 
               GOTO 200 
            ELSE
               IF ( yy .GE. dn .AND. yy .LE. up ) THEN
                  jlo = MIN(j, jlo)
                  jhi = MAX(j, jhi)
               ENDIF
-	      IF (TM_FPEQ(yy, dn)) jlo = MIN(j, jlo)
-	      IF (TM_FPEQ(yy, up)) jhi = MAX(j, jhi)
+	      IF (TM_FPEQ_SNGL(yy, dn)) jlo = MIN(j, jlo)
+	      IF (TM_FPEQ_SNGL(yy, up)) jhi = MAX(j, jhi)
            ENDIF
   200   CONTINUE
 
@@ -156,12 +149,4 @@ c              GOTO 5200
 	status = ferr_ok
 	RETURN
 
-* error exit
- 5000	RETURN
- 5100	CALL ERRMSG( ferr_out_of_range, status,
-     .		'X coordinates'//pCR//
-     .		'missing value where val is needed', *5000)
- 5200	CALL ERRMSG( ferr_out_of_range, status,
-     .		'Y coordinates'//pCR//
-     .		'missing value where val is needed', *5000)
 	END 

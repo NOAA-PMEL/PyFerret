@@ -16,7 +16,11 @@ LET /TITLE=myvar var = 20.0 + COS(twopi * _T[gt=time]/365.0)
 SAVE /CLOBBER /FILE=data2011.nc var
 
 CANCEL VAR /ALL
-CANCEL AXIS /ALL
+
+! Cancel axis/all is problematic when running all the bench scripts as in bn_all.jnl
+! CANCEL AXIS /ALL
+CANCEL AXIS time
+
 
 DEFINE AXIS /T=1-JAN-2009:31-JAN-2012:1 /UNIT=days /T0=01-JAN-2000 aggtime
 

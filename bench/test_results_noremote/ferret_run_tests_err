@@ -5698,6 +5698,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a1.nc
  LISTing to file a2.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_iso8601_time.jnl
  LISTing to file a.nc
            *** NOTE: regarding ./data/clim_axes_julian.nc ...
@@ -5802,6 +5805,7 @@ DEFINE DATA /AGG /T /TOVERLAP=2 /TAXIS=aggtime@XACT myagg = data2010.nc, data200
            *** NOTE: Ignored last 1 timesteps of data2009.nc due to overlap with data2010.nc
  **ERROR: error defining aggregate dataset: Excessive (3) overlaps in time axes for data2010.nc and data2011.nc
 DEFINE DATA /AGG /T /TOVERLAP=2 /TAXIS=aggtime@BIN myagg = data2010.nc, data2009.nc, data2011.nc
+*** Running ferret script: bn_samplexyzt.jnl
 *** Running ferret script: bn_gif_noremote.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

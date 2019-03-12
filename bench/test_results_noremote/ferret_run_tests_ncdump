@@ -3110,6 +3110,7 @@ variables:
 *** Running ferret script: bn_iso8601_time.jnl
 *** Running ferret script: bn_agg_given_taxis.jnl
 *** Running ferret script: bn_tagg_overlaps.jnl
+*** Running ferret script: bn_samplexyzt.jnl
 *** Running ferret script: bn_gif_noremote.jnl
 *** Running ferret script: bn_ps.jnl
 *** Running ferret script: bn_all_ef.jnl

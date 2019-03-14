@@ -78,6 +78,9 @@
 * V68  *acm* 5/12  Dont write the font to xlab, ylab if they are blank strings.
 * V686 *acm* 12 13 set up the label symbols LABNUM_E and LABNUM_F
 * V6.95 *acm* 3/15 Changes for PyFerret fonts. 
+* V7.45 *acm*  3/19 Fix issue# 1915: When pyferret fonts, send moveable label 
+*                   strings starting with @PY. Then labels starting with numeric 
+*                   characters don't lose those numbers .
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -100,6 +103,7 @@
 	CHARACTER*(*)	string
 
 * internal variable declarations:
+	LOGICAL		TM_DIGIT_TEST
 	INTEGER		flen, lsym, ii
 	CHARACTER	TM_FMT*4, font*3, buf4*4,
      .			labname(ppl_dset:ppl_calendar)*6
@@ -171,7 +175,7 @@
 	   font = '@AS'
 	ENDIF
 
-	IF (pyfont) font = ' '
+	IF (pyfont) font = '@PY'
 
 * Let user select the font if they want
 
@@ -214,11 +218,7 @@
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 	   WRITE ( ppl_buff, 3100 ) nlabs_on, labht
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-#ifdef double_p
            buf4 = TM_FMT(DBLE(nlabs_on),3,3,flen)      ! for Unix/RISC
-#else
-           buf4 = TM_FMT(REAL(nlabs_on),3,3,flen)      ! for Unix/RISC
-#endif
 	   WRITE ( ppl_buff, 3500 ) buf4(:flen),  risc_buff(:lsym)
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 * ... define a PLOT+ symbol containing the label number "SET LABNUM_X 4"

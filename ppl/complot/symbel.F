@@ -38,7 +38,9 @@
 * V7.22 *acm* 10/17 Fix ticket 2566: if zero or negative character size, exit.
 
 C V7.22 *acm* 10/17 Fix ticket 2566: if zero or negative character size, exit.
-
+C V7.45 *acm*  3/19 Fix issue# 1915: When pyferret fonts, send moveable label 
+C                   strings starting with @PY. Then labels starting with numeric 
+C                   characters don't lose those numbers .
 C
 C	CALL SYMBEL(X,Y,DEGRES,HEIGHT,NCHAR,STRING)
 C
@@ -68,7 +70,7 @@ C
 	INTEGER		STR_SAME, TM_LENSTR, STR_UPCASE
 	REAL		fontsiz, rotate, stx, sty, swid, shgt, xu, yu
      .			stx_pos, sty_pos, symcos, symsin
-	INTEGER		ia, slen, ic, sub, sup, seb, sep, ss, se, flen, glen
+	INTEGER		ia, slen, ic, ipy, sub, sup, seb, sep, ss, se, flen, glen
 	CHARACTER	buff1*512, buff2*512, buffs*512, upbuff*512
 	INTEGER		codepoint, utf8strlen
 	CHARACTER	utf8str*4, nstring*8, fontname*64, codeword*10
@@ -124,6 +126,7 @@ C Ignore any codes for Ferret-Hershey style Pen and Font changes
 	   buff = string(:ABS(slen))
 
 	   ia = INDEX (buff,'@')
+	   ipy = INDEX (buff,'@PY')
 	   inote = 0
 
 	   DO WHILE (ia .GT. 0)
@@ -138,6 +141,7 @@ C Ignore any codes for Ferret-Hershey style Pen and Font changes
 	      slen = TM_LENSTR(buff)
 	      ia = INDEX (buff,'@')
 	   ENDDO
+	   IF (inote.GT.0 .AND. ipy.GT.0) inote = 0
 	   IF (inote .GT. 0) CALL WARN 
      .		('Non-Hershey fonts: ignoring Hershey pen or font codes') 
 

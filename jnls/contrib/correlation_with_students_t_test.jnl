@@ -1,0 +1,53 @@
+\can mode verify
+
+! CORRELATION_WITH_STUDENTS_T_TEST: computes correlation, r, between 2 variables (e.g. time series) 
+!  and answers the question via a students t test:
+! Is r significantly different from 0 with 90, 95 or 99 percent confidence?  These are your only 3 input choices.  
+
+! First, run variance.jnl with its required inputs (see variance.jnl documentation).
+! Then run this script.    
+
+! Programmed by E. D. Cokelet, NOAA/PMEL, 8 Mar 2019
+! Last modified 11 Mar 2019
+
+
+! Usage:
+! Run ferret script variance.jnl in the usual way.  Its output provides input to this script.  
+! go CORRELATION_WITH_STUDENTS_T_TEST 95 significant_1_or_missing
+!                                     $1          $2
+! Inputs:  
+! $1 = user input confidence level in percent for rejecting the null hypothesis, H0: correlation r = 0, when it is in fact true.  Must be 90, 95 or 99.
+! $2 = name of variable which will be set to 1 if students t test confidence GE $1%, or missing value if not.
+! 
+! Outputs:
+! The usual outputs from variance.jnl plus ...
+! DEGREES_FREEDOM = degrees of freedom used available in calculating correlation, r.  
+! COVAR = covariance between input variables P and Q provided to variance.jnl
+! CORREL = correlation, r. 
+! CORREL_SIGNIFICANT = correlation, r, for confidence level GE $1 percent. 
+! $2 = 1 or missing to denote that the correlation, r, is signficant (1) or not (missing).  
+
+
+define symbol percent_prob_cutoff = $1"|90|95|99|<You must specify 90, 95 or 99 (percent)"
+
+
+! variance.jnl defines the variables for the following.  
+
+let/quiet/title="N" N_p_and_q = pq_dsq[l=@ngd]
+let/quiet N_over_N_minus_1 = N_p_and_q/(N_p_and_q-1)
+let/quiet/title="Degrees of Freedom" DEGREES_FREEDOM = N_p_and_q - 2
+
+let/quiet/title="Variance of P"          P_VAR = P_DSQ[l=@ave] * N_over_N_minus_1
+let/quiet/title="Variance of Q"          Q_VAR = Q_DSQ[l=@ave] * N_over_N_minus_1
+let/quiet/title="Variance of P when Q present" P_VAR_MASK = P_DSQ_MASK[l=@ave] * N_over_N_minus_1
+let/quiet/title="Variance of Q when P present" Q_VAR_MASK = Q_DSQ_MASK[l=@ave] * N_over_N_minus_1
+let/quiet/title="Covariance of P and Q"/units="`p,return=units`*`q,return=units`"  COVAR = PQ_DSQ[l=@ave] * N_over_N_minus_1
+let/quiet/title="Correlation, r, of P and Q" CORREL= COVAR / (P_VAR_MASK*Q_VAR_MASK)^.5
+let/quiet/title="t value" T_VALUE = abs(CORREL)*(DEGREES_FREEDOM/(1-CORREL^2))^0.5
+
+let/quiet STUDENT_T_CUTOFF = STUDENT_T_CUTOFF( ($percent_prob_cutoff), DEGREES_FREEDOM+1 )  ! need the +1 here to get the correct answer.  
+let/quiet/title="1 if confidence level GE $1 percent or missing if not" $2 = if (abs(T_VALUE) ge student_t_cutoff) then 1 else 1/0
+let/quiet/title="Correlation, r, for confidence level GE $1 percent" CORREL_SIGNIFICANT = $2 *CORREL
+
+set mode/last verify
+

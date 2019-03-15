@@ -53,7 +53,7 @@
 
 	IF (ncvtype .EQ. NF_FLOAT) THEN
 	  TM_FERRET_VARTYPE =  ptype_float
-	ELSEIF (ncvtype .EQ. NF_CHAR) THEN
+	ELSEIF (ncvtype .EQ. NF_CHAR .OR. ncvtype .EQ. NF_STRING) THEN
 	  TM_FERRET_VARTYPE =  ptype_string
 	ELSEIF (ncvtype .EQ. NF_DOUBLE) THEN
 	  TM_FERRET_VARTYPE =  ptype_double

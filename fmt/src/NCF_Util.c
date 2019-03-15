@@ -970,6 +970,10 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
                             nc_free_string(len, strarray);
                             /* free memory for the string array */
                             FerMem_Free(strarray, __FILE__, __LINE__);
+                            /* Say this is an NC_CHAR (instead of NC_STRING) attribute for Ferret internals */
+                            /* Inside Ferret, character array and string attributes are the same */
+                            att.type = NC_CHAR;
+                            att.outtype = NC_CHAR;
                             break;
                         default:
                             att.vals = (double *) FerMem_Malloc(att.len * sizeof(double), __FILE__, __LINE__);
@@ -1086,7 +1090,7 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
                 var.fillval = NC_FILL_DOUBLE;
                 break;
             case NC_STRING:
-                var.fillval = '\0'; /* NC_FILL_STRING is (char *)"" - pointer to a static empty string - which is NOT what we want */
+                var.fillval = NC_FILL_CHAR; /* '\0'; NC_FILL_STRING is (char *)"" - pointer to a static empty string - which is NOT what we want */
                 break;
             default:
                 break;
@@ -1180,6 +1184,10 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
                                 nc_free_string(len, strarray);
                             }
                             FerMem_Free(strarray, __FILE__, __LINE__);
+                            /* Say this is an NC_CHAR (instead of NC_STRING) attribute for Ferret internals */
+                            /* Inside Ferret, character array and string attributes are the same */
+                            att.type = NC_CHAR;
+                            att.outtype = NC_CHAR;
                         default:
 #ifdef double_p
                             att.outtype = NC_DOUBLE;

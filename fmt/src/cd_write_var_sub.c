@@ -164,14 +164,21 @@ void FORTRAN(cd_write_var_sub)(int *cdfid, int *varid, int *vartyp, int *dims,
       *cdfstat = nc_put_vara_text(*cdfid, vid, start, count, pbuff);
       FerMem_Free(pbuff, __FILE__, __LINE__);
 
-  } else {
-      /* FLOAT data */
+  } 
+  else if ( *vartyp == NC_STRING ) {
+     /* 
+      * NOTE: this assumes sizeof(char **) = 8 (i.e., 64-bit pointers)
+      * so that the pointers to the strings given in dat can be used directly
+      */
+     *cdfstat = nc_put_vara_string(*cdfid, vid, start, count, (const char **) dat);
+  }
+  else {
+      /* floating-point data */
 #ifdef double_p
       *cdfstat = nc_put_vara_double(*cdfid, vid, start, count, (double*) dat);
 #else
       *cdfstat = nc_put_vara_float(*cdfid, vid, start, count, (float*) dat);
 #endif
-
   }
 
   return;

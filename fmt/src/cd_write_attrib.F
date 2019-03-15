@@ -159,8 +159,8 @@
 #endif
          IF ( cdfstat .NE. NF_NOERR ) THEN
             buff = att
-            CALL TM_NOTE( 'Error getting CDF attribute in existing file '
-     .        , tt)
+            CALL TM_NOTE(
+     .         'Error getting CDF attribute in existing file ', tt)
             GOTO 1000
          ENDIF
             

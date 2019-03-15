@@ -97,9 +97,10 @@
 #endif 
 
 * For error message
-      CHARACTER*9 typnam(6)
+      CHARACTER*9 typnam(12)
       DATA typnam/'NC_BYTE', 'NC_CHAR', 'NC_SHORT', 'NC_INT', 
-     .            'NC_FLOAT', 'NC_DOUBLE'/
+     .            'NC_FLOAT', 'NC_DOUBLE', 'NC_UBYTE', 'NC_USHORT',
+     .            'NC_UINT', 'NC_INT64', 'NC_UINT64', 'NC_STRING'/
 
 * initialize
       vlen = TM_LENSTR1( vname )

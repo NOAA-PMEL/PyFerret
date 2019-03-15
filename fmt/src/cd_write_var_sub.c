@@ -167,6 +167,10 @@ void FORTRAN(cd_write_var_sub)(int *cdfid, int *varid, int *vartyp, int *dims,
 
   } 
   else if ( *vartyp == NC_STRING ) {
+     /* 
+      * NOTE: this assumes sizeof(char **) = 8 (i.e., 64-bit pointers)
+      * so that the pointers to the strings given in dat can be used directly
+      */
      *cdfstat = nc_put_vara_string(*cdfid, vid, start, count, (const char **) dat);
   }
   else {

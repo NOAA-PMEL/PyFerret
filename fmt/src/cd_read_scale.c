@@ -127,7 +127,7 @@ void FORTRAN(cd_read_scale)(int *cdfid, int *varid, int *dims, DFTYPE *offset, D
   *status = 3;  /* merr_ok*/
 
 
-  if (vtyp == NC_CHAR) 
+  if ( (vtyp == NC_CHAR) || (vtyp == NC_STRING) )
 	{
 	  *status = 111;
 	  return;

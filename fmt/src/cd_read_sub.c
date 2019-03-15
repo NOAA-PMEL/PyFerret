@@ -77,6 +77,7 @@
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <wchar.h>
 #include <stdlib.h>
+#include <string.h>
 #include <netcdf.h>
 #include "fmtprotos.h"
 #include "list.h"
@@ -104,6 +105,9 @@ void FORTRAN(cd_read_sub)(int *cdfid, int *varid, int *dims,
   int indim = *dims;
   int vid = *varid;
   nc_type vtyp;
+  char **strarray;
+  char **strptrptr;
+  int    numstrs;
 
 	if (*dims > 0)
 		ndim = *dims - 1; /* C referenced to zero */
@@ -150,7 +154,7 @@ void FORTRAN(cd_read_sub)(int *cdfid, int *varid, int *dims,
   if (*cdfstat != NC_NOERR) {
       return;
   }
-  /* write out the data */
+  /* read the data */
   if (vtyp == NC_CHAR) {
     /* Read into a buffer area with the multi-dimensiona array of strings
        packed into a block. Unpack it into "dat".
@@ -207,11 +211,44 @@ void FORTRAN(cd_read_sub)(int *cdfid, int *varid, int *dims,
       tm_unblockify_ferret_strings(dat, pbuff, bufsiz, (int)maxstrlen);
       FerMem_Free(pbuff, __FILE__, __LINE__);
 
-  /* Numeric data. Read as double or float */
-  } else
-#ifdef double_p	  
-      if (*permuted > 0)
-	  {
+  }
+  else if (vtyp == NC_STRING) {
+
+      numstrs = 1;
+      for (i = 0; i < indim; i++)
+         if ( count[i] > 0 )
+            numstrs *= count[i];
+      strarray = (char **) FerMem_Malloc(numstrs * sizeof(char *), __FILE__, __LINE__);
+
+      /* read the strings; NetCDF internally allocated memory for all the strings returned */
+      if (*permuted > 0) {
+          *cdfstat = nc_get_varm_string(*cdfid, vid, start, count, stride, imap, strarray);
+      }
+      else if (*strided > 0) {
+          *cdfstat = nc_get_vars_string(*cdfid, vid, start, count, stride, strarray);
+      }
+      else {
+          *cdfstat = nc_get_vara_string(*cdfid, vid, start, count, strarray);
+      }
+      
+      /* copy the strings to our string variable (using our memory allocation) */
+      strptrptr = dat;
+      for (i = 0; i < numstrs; i++) {
+         if ( *strptrptr != NULL )
+            FerMem_Free(*strptrptr, __FILE__, __LINE__);
+         *strptrptr = (char *) FerMem_Malloc((strlen(strarray[i]) + 1) * sizeof(char), __FILE__, __LINE__);
+         strcpy(*strptrptr, strarray[i]);
+         strptrptr += (8 / sizeof(char **));
+      }
+
+      /* free the NetCDF memory for the strings, then the memory for the string array */
+      nc_free_string(numstrs, strarray);
+      FerMem_Free(strarray, __FILE__, __LINE__);
+  } 
+  else {
+      /* Numeric data. Read as double or float */
+#ifdef double_p
+      if (*permuted > 0) {
     *cdfstat = nc_get_varm_double (*cdfid, vid, start,
      count, stride, imap, (double*) dat); 
 	  }
@@ -242,6 +279,7 @@ void FORTRAN(cd_read_sub)(int *cdfid, int *varid, int *dims,
      count, (float*) dat);
 	  }
 #endif
+  }
 
   return;
 }

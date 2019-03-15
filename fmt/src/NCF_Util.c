@@ -643,7 +643,7 @@ int FORTRAN(ncf_get_var_attr)( int *dset, int *varid, char* attname, char* strin
         return ATOM_NOT_FOUND;
 
     att_ptr = (ncatt *) list_curr(varattlist);
-    if ( att_ptr->type == NC_CHAR ) {
+    if ( (att_ptr->type == NC_CHAR) || (att_ptr->type == NC_STRING) ) {
         strncpy(string, att_ptr->string, *len);
         val[0] = NC_FILL_DOUBLE;
     }
@@ -691,9 +691,9 @@ int FORTRAN(ncf_get_attr_from_id)( int *dset, int *varid, int *attid, int *len, 
         return ATOM_NOT_FOUND;
     att_ptr = (ncatt *) list_curr(varattlist);
 
-    if ( att_ptr->type == NC_CHAR ) {
+    if ( (att_ptr->type == NC_CHAR) || (att_ptr->type == NC_STRING) ) {
         val[0] = NC_FILL_DOUBLE;
-        fprintf(stderr, "ERROR: ncf_get_attr_from_id: Atribute is CHAR. This function only for numeric.\n");
+        fprintf(stderr, "ERROR: ncf_get_attr_from_id: Atribute is CHAR or STRING. This function only for numeric.\n");
         return -1;
     }
 
@@ -855,6 +855,9 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
     int bad_file_attr = 243;    /* matches merr_badfileatt in tmap_errors.parm*/
     int return_val=FERR_OK;
     size_t len;
+    char **strarray;
+    char *strptr;
+    int idx;
 
     ncf_init_dataset(&nc);
     strcpy(nc.fername, name);
@@ -936,6 +939,38 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
                             if ( nc_status != NC_NOERR )
                                 return nc_status;
                             break;
+                        case NC_STRING:
+                            /* len is the number of strings in this attribute */
+                            strarray = (char **) FerMem_Malloc(len * sizeof(char *), __FILE__, __LINE__);
+                            /* NetCDF allocates memory for each string in the returned array of strings */
+                            nc_status = nc_get_att_string(*ncid, NC_GLOBAL, att.name, strarray);
+                            if ( nc_status != NC_NOERR ) {
+                                FerMem_Free(strarray, __FILE__, __LINE__);
+                                att.string = NULL;
+                                att.len = 0;
+                                return nc_status;
+                            }
+                            /* allocate memory for a concatenation of all the strings */
+                            att.len = 0;
+                            for (idx = 0; idx < len; idx++)
+                               att.len += strlen(strarray[idx]) + 1;
+                            att.string = (char *) FerMem_Malloc(att.len * sizeof(char), __FILE__, __LINE__);
+                            strptr = att.string;
+                            /* copy the first string; keeping record of the end of the string */
+                            strcpy(strptr, strarray[0]);
+                            strptr += strlen(strarray[0]);
+                            for (idx = 1; idx < len; idx++) {
+                               /* append a new-line (takes the place of the previous null character) and this string */
+                               strcpy(strptr, "\n");
+                               strptr++;
+                               strcpy(strptr, strarray[idx]);
+                               strptr += strlen(strarray[idx]);
+                            }
+                            /* free memory for the strings allocated by NetCDF */
+                            nc_free_string(len, strarray);
+                            /* free memory for the string array */
+                            FerMem_Free(strarray, __FILE__, __LINE__);
+                            break;
                         default:
                             att.vals = (double *) FerMem_Malloc(att.len * sizeof(double), __FILE__, __LINE__);
                             nc_status = nc_get_att_double(*ncid, NC_GLOBAL, att.name, att.vals);
@@ -968,26 +1003,24 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
 
         /* Is this a coordinate variable? If not a string, set the flag.
          * A multi-dimensional variable that shares a dimension name is not a coord. var that
-		 * is handled as a 1-D axis
-		 * A string-typed fvariable is not a coordinate var.
+         * is handled as a 1-D axis
+         * A string-typed fvariable is not a coordinate var.
          */
         if ( nc.ndims > 0 ) {
             var.is_axis = FALSE;
             var.axis_dir = 0;
             i = 0;
             while ( (i < nc.ndims) && (var.is_axis == FALSE) ) {
-                if    ( strcasecmp(var.name, nc.dims[i].name) == 0 ) 
-					{
+                if ( strcasecmp(var.name, nc.dims[i].name) == 0 ) {
                     var.is_axis = TRUE;
-                    if    ( var.type == NC_CHAR )
-				    {
-                       var.is_axis = FALSE;					
-				 	   fprintf(stderr, "           *** NOTE: Axis %s is of type char or string\n", var.name);
-					   fprintf(stderr, "           *** NOTE: A dummy axis of subscripts will be used\n");
-				    }
-                   if    ( var.ndims > 1 )
+                    if ( (var.type == NC_CHAR) || (var.type == NC_STRING) ) {
                        var.is_axis = FALSE;
-				}
+                       fprintf(stderr, "           *** NOTE: Axis %s is of type char or string\n", var.name);
+                       fprintf(stderr, "           *** NOTE: A dummy axis of subscripts will be used\n");
+                    }
+                    if ( var.ndims > 1 )
+                       var.is_axis = FALSE;
+                }
                 i = i + 1;
             }
         }
@@ -1003,10 +1036,25 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
                 nc_status = nc_get_att_text(*ncid, iv, "_FillValue", &fillc);
                 if ( nc_status != NC_NOERR ) {
                     return_val = bad_file_attr;
-					fprintf(stderr, "*** NOTE: Variable %s, error with string _FillValue\n", var.name);
+                    fprintf(stderr, "*** NOTE: Variable %s, error with character _FillValue\n", var.name);
                 }
                 else {
                     var.fillval = (double) fillc;
+                }
+            }
+            else if ( var.type == NC_STRING ) {
+                /* Only one string to read and return */
+                nc_status = nc_get_att_string(*ncid, iv, "_FillValue", &strptr);
+                if ( nc_status != NC_NOERR ) {
+                    return_val = bad_file_attr;
+                    fprintf(stderr, "*** NOTE: Variable %s, error with string _FillValue\n", var.name);
+                }
+                else {
+                    /* Can only handle one character */
+                    if ( strlen(strptr) > 1 )
+                       fprintf(stderr, "*** NOTE: Variable %s, _FillValue truncated to '%c'\n", var.name, strptr[0]);
+                    var.fillval = (double) (strptr[0]);
+                    nc_free_string(1, &strptr);
                 }
             }
             else {
@@ -1018,7 +1066,9 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
             switch (var.type) {
             case NC_BYTE:
                 /* don't do default fill-values for bytes, too risky */
-                var.has_fillval = 0;
+                /* var.has_fillval = 0;  - already assigned to FALSE above */
+                /* but give it some value to it is not random garbage */
+                var.fillval = NC_FILL_BYTE;
                 break;
             case NC_CHAR:
                 var.fillval = NC_FILL_CHAR;
@@ -1034,6 +1084,9 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
                 break;
             case NC_DOUBLE:
                 var.fillval = NC_FILL_DOUBLE;
+                break;
+            case NC_STRING:
+                var.fillval = '\0'; /* NC_FILL_STRING is (char *)"" - pointer to a static empty string - which is NOT what we want */
                 break;
             default:
                 break;
@@ -1072,13 +1125,12 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
                     else {
                         switch ( att.type ) {
                         case NC_CHAR:
+                            att.outtype = NC_CHAR;
                             /* Plus one for end-of-string delimiter. */
                             att.string = (char *) FerMem_Malloc((att.len+1)*sizeof(char), __FILE__, __LINE__);
                             strcpy (att.string, " ");
                             nc_status = nc_get_att_text(*ncid, iv, att.name, att.string);
                             if ( nc_status != NC_NOERR ) {    /* on error set attr to empty string*/
-                                att.type = NC_CHAR;
-                                att.outtype = NC_CHAR;
                                 att.len = 1;
                                 /* att.string already allocated to at least 2 */
                                 strcpy(att.string, " ");
@@ -1098,6 +1150,36 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
                                     att.len = ilen;
                             }
                             break;
+                        case NC_STRING:
+                            att.outtype = NC_STRING;
+                            /* len is the number of strings to read */
+                            strarray = FerMem_Malloc(len * sizeof(char *), __FILE__, __LINE__);
+                            nc_status = nc_get_att_string(*ncid, iv, att.name, strarray);
+                            if ( nc_status != NC_NOERR ) {    /* on error set attr to empty string*/
+                                att.len = 1;
+                                att.string = (char *) FerMem_Malloc(2*sizeof(char), __FILE__, __LINE__);
+                                strcpy(att.string, " ");
+                                return_val = bad_file_attr;
+                                fprintf(stderr, "*** NOTE: Variable %s, error on attribute %s\n", var.name, att.name);
+                            }
+                            else {
+                                att.len = 0;
+                                for (idx = 0; idx < len; idx++)
+                                   att.len += strlen(strarray[idx]) + 1;
+                                att.string = (char *) FerMem_Malloc(att.len*sizeof(char), __FILE__, __LINE__);
+                                strptr = att.string;
+                                strcpy(strptr, strarray[0]);
+                                strptr += strlen(strarray[0]);
+                                for (idx = 1; idx < len; idx++) {
+                                   /* append a new-line (takes the place of the previous null character) and this string */
+                                   strcpy(strptr, "\n");
+                                   strptr++;
+                                   strcat(strptr, strarray[idx]);
+                                   strptr += strlen(strarray[idx]);
+                                }
+                                nc_free_string(len, strarray);
+                            }
+                            FerMem_Free(strarray, __FILE__, __LINE__);
                         default:
 #ifdef double_p
                             att.outtype = NC_DOUBLE;
@@ -2059,6 +2141,7 @@ int FORTRAN(ncf_repl_var_att)( int *dset, int *varid, char attname[], int *attyp
     else {
         switch (*attype) {
         case NC_CHAR:
+        case NC_STRING:
             att_ptr->string = (char *) FerMem_Malloc((*attlen+1)* sizeof(char), __FILE__, __LINE__);
             strcpy(att_ptr->string,attstring);
             break;
@@ -2147,6 +2230,7 @@ int FORTRAN(ncf_repl_var_att_dp)( int *dset, int *varid, char attname[], int *at
     else {
         switch (*attype) {
         case NC_CHAR:
+        case NC_STRING:
             att_ptr->string = (char *) FerMem_Malloc((*attlen+1)* sizeof(char), __FILE__, __LINE__);
             strcpy(att_ptr->string,attstring);
             break;
@@ -2457,7 +2541,7 @@ int FORTRAN(ncf_transfer_att)( int *dset1, int *varid1, int *iatt, int *dset2, i
     att.len = att_ptr1->len;
     att.outflag = att_ptr1->outflag;
 
-    if (att_ptr1->type == NC_CHAR) {
+    if ( (att_ptr1->type == NC_CHAR) || (att_ptr1->type == NC_STRING) ) {
         att.string = (char *) FerMem_Malloc((att_ptr1->len+1)* sizeof(char), __FILE__, __LINE__);
         strcpy(att.string, att_ptr1->string);
     }

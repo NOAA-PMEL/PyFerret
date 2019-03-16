@@ -380,7 +380,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     set_shared_buffer();
 
     /* Initial allocation of PPLUS memory */
-    pplMemSize = 0.5 * 1.0E6;
+    pplMemSize = 1024 * 1024;
     pplMemory = (float *) FerMem_Malloc((size_t)pplMemSize * (size_t)sizeof(float), __FILE__, __LINE__);
     if ( pplMemory == NULL )
         return PyErr_NoMemory();

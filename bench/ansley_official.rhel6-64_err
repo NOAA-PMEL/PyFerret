@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 114487149 Feb 20 12:26 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 114636045 Mar  8 15:37 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: tweak to behavior for issue 400: return bad when cant get the dataset number for user-var
+Note: new function SAMPLEXYZT. Test of fix for issue 1914
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -15,14 +15,14 @@ FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=. ./data
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Wed Feb 20 15:03:03 PST 2019
+Beginning at Fri Mar 8 15:45:12 PST 2019
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6072,15 +6072,6 @@ Replacing definition of axis tax
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_dynamic_gather
-ls: cannot access tmp/test_dyn_mem.nc: No such file or directory
-Replacing definition of axis z2
-Replacing definition of grid GG
- LISTing to file tmp/test_dyn_mem.nc
-Replacing definition of axis x10
-Replacing definition of axis z4
- LISTing to file tmp/test_dyn_mem.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
  **ERROR: request exceeds memory setting: Requested result is larger than the available memory
 stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
  PERMANENT data cleared from memory
@@ -6277,28 +6268,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_cache_management
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-ls: cannot access tmp/test_auto_cache_20.nc: No such file or directory
-Replacing definition of axis x10
- LISTing to file tmp/test_auto_cache_1.nc
- LISTing to file tmp/test_auto_cache_2.nc
- LISTing to file tmp/test_auto_cache_3.nc
- LISTing to file tmp/test_auto_cache_4.nc
- LISTing to file tmp/test_auto_cache_5.nc
- LISTing to file tmp/test_auto_cache_6.nc
- LISTing to file tmp/test_auto_cache_7.nc
- LISTing to file tmp/test_auto_cache_8.nc
- LISTing to file tmp/test_auto_cache_9.nc
- LISTing to file tmp/test_auto_cache_10.nc
- LISTing to file tmp/test_auto_cache_11.nc
- LISTing to file tmp/test_auto_cache_12.nc
- LISTing to file tmp/test_auto_cache_13.nc
- LISTing to file tmp/test_auto_cache_14.nc
- LISTing to file tmp/test_auto_cache_15.nc
- LISTing to file tmp/test_auto_cache_16.nc
- LISTing to file tmp/test_auto_cache_17.nc
- LISTing to file tmp/test_auto_cache_18.nc
- LISTing to file tmp/test_auto_cache_19.nc
- LISTing to file tmp/test_auto_cache_20.nc
  LISTing to file test_auto_cache.out
  LISTing to file test_auto_cache.out
  LISTing to file test_auto_cache.out
@@ -6948,54 +6917,6 @@ set axis/t0=2010-15-01 TIME112
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_agg_given_taxis
-/bin/ls: cannot access aggf/forecast_??.nc: No such file or directory
-Replacing definition of axis xax
-Replacing definition of axis yax
-Replacing definition of axis zax
- LISTing to file aggf/forecast_01.nc
- LISTing to file aggf/forecast_02.nc
- LISTing to file aggf/forecast_03.nc
- LISTing to file aggf/forecast_04.nc
- LISTing to file aggf/forecast_05.nc
- LISTing to file aggf/forecast_06.nc
- LISTing to file aggf/forecast_07.nc
- LISTing to file aggf/forecast_08.nc
- LISTing to file aggf/forecast_09.nc
- LISTing to file aggf/forecast_10.nc
- LISTing to file aggf/forecast_11.nc
- LISTing to file aggf/forecast_12.nc
- LISTing to file aggf/forecast_13.nc
- LISTing to file aggf/forecast_14.nc
- LISTing to file aggf/forecast_15.nc
- LISTing to file aggf/forecast_16.nc
- LISTing to file aggf/forecast_17.nc
- LISTing to file aggf/forecast_18.nc
- LISTing to file aggf/forecast_19.nc
- LISTing to file aggf/forecast_20.nc
- LISTing to file aggf/forecast_21.nc
- LISTing to file aggf/forecast_22.nc
- LISTing to file aggf/forecast_23.nc
- LISTing to file aggf/forecast_24.nc
- LISTing to file aggf/forecast_25.nc
- LISTing to file aggf/forecast_26.nc
- LISTing to file aggf/forecast_27.nc
- LISTing to file aggf/forecast_28.nc
- LISTing to file aggf/forecast_29.nc
- LISTing to file aggf/forecast_30.nc
- LISTing to file aggf/forecast_31.nc
- LISTing to file aggf/forecast_32.nc
- LISTing to file aggf/forecast_33.nc
- LISTing to file aggf/forecast_34.nc
- LISTing to file aggf/forecast_35.nc
- LISTing to file aggf/forecast_36.nc
- LISTing to file aggf/forecast_37.nc
- LISTing to file aggf/forecast_38.nc
-           *** NOTE: Not deleted: ZAX
-           *** NOTE: Axis is in use by grid THREE_D_GRD
-           *** NOTE: Not deleted: YAX
-           *** NOTE: Axis is in use by grid GFORMAT
-           *** NOTE: Not deleted: XAX
-           *** NOTE: Axis is in use by grid GFORMAT
            *** NOTE: Time axis coordinates matched using @XACT
 Replacing definition of axis tax
            *** NOTE: Time axis coordinates matched using @BIN
@@ -7005,6 +6926,40 @@ Replacing definition of axis tax
            *** NOTE: Time axis coordinates matched using @ASN
            *** NOTE: Not deleted: TAX
            *** NOTE: Axis is in use by grid TGRID
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_tagg_overlaps
+Replacing definition of axis time
+ LISTing to file data2009.nc
+Replacing definition of axis time
+ LISTing to file data2010.nc
+Replacing definition of axis time
+ LISTing to file data2011.nc
+           *** NOTE: Not deleted: TIME
+           *** NOTE: Axis is in use by grid GSIGMA
+           *** NOTE: Ignored last 1 timesteps of data2009.nc due to overlap with data2010.nc
+           *** NOTE: Ignored last 3 timesteps of data2010.nc due to overlap with data2011.nc
+           *** NOTE: Time axis coordinates matched using @XACT
+           *** NOTE: Ignored last 1 timesteps of data2009.nc due to overlap with data2010.nc
+           *** NOTE: Ignored last 3 timesteps of data2010.nc due to overlap with data2011.nc
+           *** NOTE: Time axis coordinates matched using @XACT
+ **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file data2010.nc
+DEFINE DATA /AGG /T myagg = data2010.nc, data2009.nc, data2011.nc
+ **ERROR: error defining aggregate dataset: Time axes overlap for data2009.nc and data2010.nc
+DEFINE DATA /AGG /T /TAXIS=aggtime@XACT myagg = data2010.nc, data2009.nc, data2011.nc
+ **ERROR: error defining aggregate dataset: Time axes overlap for data2009.nc and data2010.nc
+DEFINE DATA /AGG /T /TAXIS=aggtime@BIN myagg = data2010.nc, data2009.nc, data2011.nc
+           *** NOTE: Ignored last 1 timesteps of data2009.nc due to overlap with data2010.nc
+ **ERROR: error defining aggregate dataset: Excessive (3) overlaps in time axes for data2010.nc and data2011.nc
+DEFINE DATA /AGG /T /TOVERLAP=2 /TAXIS=aggtime@XACT myagg = data2010.nc, data2009.nc, data2011.nc
+           *** NOTE: Ignored last 1 timesteps of data2009.nc due to overlap with data2010.nc
+ **ERROR: error defining aggregate dataset: Excessive (3) overlaps in time axes for data2010.nc and data2011.nc
+DEFINE DATA /AGG /T /TOVERLAP=2 /TAXIS=aggtime@BIN myagg = data2010.nc, data2009.nc, data2011.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_samplexyzt
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7129,4 +7084,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Feb 20 15:10:22 PST 2019
+Ended at Fri Mar 8 15:52:51 PST 2019

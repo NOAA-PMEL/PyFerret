@@ -122,6 +122,8 @@
 *                 do the check differently. If the the grid of the component is 
 *                 all-abstract (and the variable is a constant), do not add abstract 
 *                 axes to the merged grid.
+* v745 *acm* 3/19 Remove the fix for ticket 2051 (issue 1323). It causes the far-worse
+*                 bug 1916.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -150,7 +152,7 @@
      .			mrg_grd, mrg_ax, mrg_len, com_grd, com_ax, com_len,
      .			idim, i, icom, imrg, com_uvar, com_class, mrg_class,
      .			uv_class, ax_choice(6,5), joint_match(0:3,0:3),
-     .			lims_gvn, gcfcn, axis_source(nferdims), uvar_test,
+     .			lims_gvn, gcfcn, axis_source(nferdims),
      .			naux, blen, mabstract, iline
 	CHARACTER	VAR_CODE*128, buff*128
 
@@ -567,8 +569,7 @@ c	   IF (.NOT. (normabst) .AND. var_is_const) GOTO 400
 *  in the report for 2273 did not.  Perhaps changes for the `RETURN=isready` 
 *  have allowed cause  this to work better?
 
-cc	   IF ( uvar_given(idim,uvar) .EQ. uvlim_need_xact ) GOTO 500
-	   uvar_test =  uvar_given(idim,uvar)
+	   IF ( uvar_given(idim,uvar) .EQ. uvlim_need_xact ) GOTO 500
 
 * get limits-region class of new component
 	   IF ( nest ) THEN
@@ -583,7 +584,7 @@ cc	   IF ( uvar_given(idim,uvar) .EQ. uvlim_need_xact ) GOTO 500
 	      uv_class = com_class				   ! 1/97
 	   ELSE
 * get limits-region class of so-far-merged components
-	      mrg_class = MOD( uvar_test, 4 )
+	      mrg_class = MOD( uvar_given(idim,uvar), 4 )
 * how does the new component effect the merged class ?
 	      uv_class = joint_match( mrg_class, com_class )
 	   ENDIF

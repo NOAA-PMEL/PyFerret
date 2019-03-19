@@ -16,4 +16,4 @@ LIST 100.0 * COS(_X[X=0.0:3.2:0.2])
 
 
 ! return to default precision
-SET LIST /PREC=4
+SET LIST /PREC

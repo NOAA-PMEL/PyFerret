@@ -138,7 +138,7 @@
 	INTEGER		TM_LENSTR, TM_LENSTR1, CX_DIM_LEN,
      .			FIELD_WIDTH, MGRID_SIZE, TM_LOC_STRING, 
      .			GET_MAX_C_STRING_LEN, TM_GET_CALENDAR_ID, STR_SAME,
-     .			width, w0, grid, dlen, prec_digits,
+     .			width, w0, grid, dlen, prec_digits, ndigits,
      .			ndim, lo(nferdims), hi(nferdims), del(nferdims),
      .			i, j, k, l, m, n, npts, line_length, dset,
      .			temp, num_fld_est, nleft, nright, alen, num_fields,
@@ -195,7 +195,13 @@
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(lp):qual_end(lp)),
      .                     value, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
-	   prec_digits = MAX(1.,MIN(value, 16.))	! 1 to 16	   
+*          negative values for precision permitted (number of digits after the decimal point)
+           prec_digits = NINT(value)
+           IF ( prec_digits .LT. -16 ) THEN
+              prec_digits = -16
+           ELSE IF ( prec_digits .GT. 16 ) THEN
+              prec_digits = 16
+           ENDIF
 	ELSE
 	   prec_digits = list_digits
 	ENDIF
@@ -810,8 +816,17 @@
 
 * . . . how many digits right and left of decimal point ?
  	   biggest = MAX( ABS( small ), big )
-	   CALL GET_SIG_DIGITS( biggest, prec_digits, nleft, nright )
+	   CALL GET_SIG_DIGITS( biggest, ABS(prec_digits), nleft, nright )
 	   nleft = MAX( 1, nleft )			! at least "0" to left
+           IF ( prec_digits .GT. 0 ) THEN
+*             positive means user is giving the total number of digits
+              ndigits = prec_digits
+           ELSE
+*              zero or negative means user is giving nright; use nleft from above 
+*              (independent of prec_digits) and compute the total number of digits
+               nright = ABS(prec_digits)
+               ndigits = nleft + nright
+           ENDIF
 	ENDIF
 
 * . . . unreasonable line length ?
@@ -839,7 +854,7 @@
 	   IF ( itsa_string ) THEN
 	      width = nleft + 2
 	   ELSE
-	      CALL VAR_DATA_FMT( nleft, nright, prec_digits, min_field_width,
+	      CALL VAR_DATA_FMT( nleft, nright, ndigits, min_field_width,
      .			      width, good_data_form, bad_data_form )
 	   ENDIF
 	ENDIF

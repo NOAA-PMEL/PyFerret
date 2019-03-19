@@ -76,6 +76,7 @@
 * in	name_code	- name of uvar to be evaluated
 * out	status		- completion code
 
+	cx_only = .TRUE.  ! do merge_grid for getting the right cx sizes w/o evaluating
 
 * locate the requested variable in the uvar variables
 	uvar = UVAR_NUMBER( name_code )

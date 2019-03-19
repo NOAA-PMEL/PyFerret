@@ -236,6 +236,8 @@
      .		( ferr_internal, status, 'intp_stk', *5000 )
 	
 * initialize the default context for the quantity to evaluate
+	cx_only = .FALSE.  ! do merge_grid for evaluating full context
+
 	cx_variable( dflt_cx ) = uvar_pointer
 	cx_category( dflt_cx ) = cat_user_var
 	cx_grid    ( dflt_cx ) =

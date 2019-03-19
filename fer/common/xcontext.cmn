@@ -111,7 +111,8 @@
      .		cx_has_impl_grid( max_cx ),
      .		cx_formatted	( nferdims ),
      .		cx_valid_aux 	(nferdims, max_cx ),
-     .		cx_implicit_aux ( max_cx )
+     .		cx_implicit_aux ( max_cx ),
+     .     	cx_only
 
 	REAL	cx_bad_data	( max_cx ),
      .		cx_trans_arg	( nferdims, min_context:max_cx )
@@ -146,6 +147,7 @@
      .		max_context,
      .		cx_valid_aux,
      .		cx_implicit_aux,
+     .		cx_only,
      .		cx_grid,
      .		cx_type,
      .		cx_ovsiz,

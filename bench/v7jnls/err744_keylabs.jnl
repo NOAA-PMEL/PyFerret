@@ -1,0 +1,23 @@
+! err744_keylabs.jnl
+! ticket 1915: Numbers at the start of moveable labels weren't drawn.
+! 3/2019 ACM
+
+if ($program_name"0|PyFerret>1|*>0") then set text/font=verdana
+
+let /title="771" var1 = {7,7,1}
+let/title="893.0" var2 = {8,9,3}
+set view upper
+! both of the key labels were missing
+plot/thick/key=title var1, var2
+
+
+let /title="my label is 771" var1 = {7,7,1}
+let/title="893 and stuff" var2 = {8,9,3}
+set view lower
+
+! key label for second line said just "and stuff"
+plot/thick/key=title var1, var2
+
+frame/file=line_key_labels.gif
+
+if ($program_name"0|PyFerret>1|*>0") then cancel text

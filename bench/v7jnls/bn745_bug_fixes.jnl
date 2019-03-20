@@ -12,7 +12,13 @@ GO bn_reset
 GO err744_shade_error
 
 GO bn_reset
+GO err744_keylabs
+
+GO bn_reset
 GO err744_list_precision
 
-GO bn_reset 
-Go err744_context
+GO bn_reset
+GO err744_context
+
+GO bn_reset
+GO err744_modulo_transform

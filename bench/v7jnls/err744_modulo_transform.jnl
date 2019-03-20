@@ -1,0 +1,93 @@
+! err744_modulo_tranform.jnl
+! also testing fix for ticket 1916
+!
+
+set mode diagnos
+use "cellareas.nc"
+show grid areacella
+
+! this factor previously had a problem with modulo regridding
+! (as well as using cached values, although obscured by the modulo problem)
+let factor = 1.0E14 + areacella
+
+! this factor had the cache but not the modulo problem
+! let factor = 1.0E14 + 100.0 * _X[gx=areacella] + 100.0 * _Y[gy=areacella]
+
+! the problem arose only with implicit limits on the transformation
+let w = factor / areacella[x=@sum,y=@sum]
+
+! the error used to show up without the following, but arose from code changes
+! to support this command.  Verify using it beforehand does not cause problems.
+say `w,ret=shape`
+
+! X bounds must be assymetrical across the modulo split
+define symbol xlobnds "-5:-1.25"
+define symbol xhibnds "0:10"
+define symbol xfullbnds "-5:10"
+define symbol ybnds "-3.3:9.9"
+
+! the values in all these should be the same for all longitudes
+! but differ with different region sizes
+
+! following always was computed correctly
+list /width=500 /prec=7 /x=($xlobnds) /y=($ybnds) w
+
+! following always was computed correctly
+list /width=500 /prec=7 /x=($xhibnds) /y=($ybnds) w
+
+! following used to compute (not pulled from cache) the equivalent of
+! the above two sets concatenated (modulo on W instead of ARE-ELLA);
+! the correct value is a different altogether and constant across longitude
+list /width=500 /prec=7 /x=($xfullbnds) /y=($ybnds) w
+
+! following used to get pulled from cache ("found W") instead of being recomputed
+! (if other value of factor used the cache pull was clearer) - should be the same as previous listing
+list /width=500 /prec=7 /x=($xlobnds) /y=($ybnds) w
+
+! following used to get pulled from cache ("found W") instead of being recomputed
+! (if other value of factor used the cache pull was clearer) - should be the same as previous listing
+list /width=500 /prec=7 /x=($xhibnds) /y=($ybnds) w
+
+cancel memory
+
+! repeat with SET REGION
+
+set region /x=($xlobnds) /y=($ybnds)
+list /width=500 /prec=7 w
+
+set region /x=($xhibnds) /y=($ybnds)
+list /width=500 /prec=7 w
+
+set region /x=($xfullbnds) /y=($ybnds)
+list /width=500 /prec=7 w
+
+set region /x=($xlobnds) /y=($ybnds)
+list /width=500 /prec=7 w
+
+set region /x=($xhibnds) /y=($ybnds)
+list /width=500 /prec=7 w
+
+cancel region
+cancel memory
+
+! repeat with [X=...,/Y=...]
+
+list /width=500 /prec=7 w[x=($xlobnds),y=($ybnds)]
+
+list /width=500 /prec=7 w[x=($xhibnds),y=($ybnds)]
+
+list /width=500 /prec=7 w[x=($xfullbnds),y=($ybnds)]
+
+list /width=500 /prec=7 w[x=($xlobnds),y=($ybnds)]
+
+list /width=500 /prec=7 w[x=($xhibnds),y=($ybnds)]
+
+! cleanup
+
+cancel symbol xlobnds, xhibnds, xfullbnds, ybnds
+cancel var w, factor
+cancel data cellareas
+set mode /last diagnos
+
+!
+! end of err744_modulo_tranform.jnl

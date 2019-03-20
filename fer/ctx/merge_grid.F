@@ -122,6 +122,8 @@
 *                 do the check differently. If the the grid of the component is 
 *                 all-abstract (and the variable is a constant), do not add abstract 
 *                 axes to the merged grid.
+* v745 *acm* 3/19 Remove the fix for ticket 2051 (issue 1323). It causes the far-worse
+*                 bug 1916.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -567,7 +569,7 @@ c	   IF (.NOT. (normabst) .AND. var_is_const) GOTO 400
 *  in the report for 2273 did not.  Perhaps changes for the `RETURN=isready` 
 *  have allowed cause  this to work better?
 
-cc	   IF ( uvar_given(idim,uvar) .EQ. uvlim_need_xact ) GOTO 500
+	   IF ( .NOT.cx_only .AND. uvar_given(idim,uvar) .EQ. uvlim_need_xact ) GOTO 500
 	   uvar_test =  uvar_given(idim,uvar)
 
 * get limits-region class of new component

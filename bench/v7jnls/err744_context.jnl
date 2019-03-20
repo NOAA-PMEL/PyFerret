@@ -1,0 +1,13 @@
+ ! err744_context.jnl
+ ! testing fix for ticket 1916
+ ! there was an incorrect jump at the branch cut between x=19 and x=20
+
+use coads_climatology
+
+! jumped from 8.8 to 19.8 
+let w = sst[l=1]/sst[l=1,x=@sum]
+list /x=-10:30/y=-40 100*w
+
+! jumped from ~2.5 to ~5.5
+let w = sst[l=1]/sst[l=1,x=@sum,y=@sum]
+list/x=0:30/y=-39:-33  100*w

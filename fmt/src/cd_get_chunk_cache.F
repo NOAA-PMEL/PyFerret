@@ -58,13 +58,8 @@
 C Get the cache size for the files to be opened in this session.
 
 C Get chunk cache sizes.
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_GET_CHUNK_CACHE_(cache_size, cache_nelems, 
-     .     cache_preemption)
-#else
       cdfstat = NF_GET_CHUNK_CACHE(cache_size, cache_nelems, 
      .     cache_preemption)
-#endif
 
       IF (cdfstat .NE. NF_NOERR) GOTO 5100 
 

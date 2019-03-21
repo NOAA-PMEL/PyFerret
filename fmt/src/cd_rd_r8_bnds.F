@@ -81,14 +81,10 @@
 * read the values
 * NF_ routines convert to desired output data type.
 
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_GET_VARA_DOUBLE_(cdfid, varid, start, npts, dvals)
-#else
       cdfstat = NF_GET_VARA_DOUBLE(cdfid, varid, start, npts, dvals)
-#endif
 
-      IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG
-     .     ( cdfstat+pcdferr, status, 'CD_RD_R8_ARR', cdfid, varid,      
+      IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG(
+     .       cdfstat+pcdferr, status, 'CD_RD_R8_ARR', cdfid, varid,
      .       errstr, no_errstring, *5000 )
 
       n = (npts(1)-start(1)+1) * (npts(2)-start(2)+1)

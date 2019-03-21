@@ -87,12 +87,7 @@
      .		  p0010 = 3653.   * 24 * 60 * 60 )
 
 * read the yymmdd value
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_GET_VAR1_DOUBLE_(cdfid, t1id, index, yymmdd)
-#else
       cdfstat = NF_GET_VAR1_DOUBLE(cdfid, t1id, index, yymmdd)
-#endif
-
       IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_RD_YMD_1', cdfid, t1id,
      .       'yymmdd time', no_errstring, *5000 )

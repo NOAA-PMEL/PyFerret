@@ -66,15 +66,9 @@
 
 	cdfid = sf_lunit(dset)
 
-#ifdef usingDODSf2cUnderscore 
-	status = NF_INQ_VARID_(cdfid, vname, varid) 
-	status = NF_INQ_VARNDIMS_(cdfid, varid, ndims) 
-	status = NF_INQ_VARDIMID _(cdfid, varid, dimids) 
-#else
 	status = NF_INQ_VARID(cdfid, vname, varid)
 	status = NF_INQ_VARNDIMS(cdfid, varid, ndims)
 	status = NF_INQ_VARDIMID (cdfid, varid, dimids)
-#endif
 	
 	IF ( status .NE. NF_NOERR ) GOTO 5100
 
@@ -83,13 +77,8 @@
   100	CONTINUE
 
 	DO 300 idim = 1, ndims
-#ifdef usingDODSf2cUnderscore 
-	   status = NF_INQ_DIMNAME_(cdfid, dimids(idim), buff)
-	   status = NF_INQ_DIMLEN_ (cdfid, dimids(idim), dimlen)
-#else
 	   status = NF_INQ_DIMNAME (cdfid, dimids(idim), buff)
 	   status = NF_INQ_DIMLEN  (cdfid, dimids(idim), dimlen)
-#endif
 	   DO 200 igrid = 1, nferdims
 	      IF (STR_SAME ( buff, line_name_orig(gridlines(igrid)) ) .EQ. 0) THEN
      	        outgrid(igrid) = gridlines(igrid)

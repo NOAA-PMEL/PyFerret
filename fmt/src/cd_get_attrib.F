@@ -98,11 +98,7 @@
 * inquire about the attribute by name
 ! 11/95 note:  NCAINQ appears not to return a meaningful attlen -- always 256
       lena = TM_LENSTR1( attrib )
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_INQ_ATT_(cdfid, varid, attrib(:lena), attype, attlen )
-#else
       cdfstat = NF_INQ_ATT (cdfid, varid, attrib(:lena), attype, attlen )
-#endif
       IF ( cdfstat .NE. NF_NOERR ) THEN
          attlen = 0
          CD_GET_ATTRIB = .FALSE.
@@ -114,11 +110,7 @@
          CD_GET_ATTRIB = .FALSE.
          GOTO 5000
       ELSE
-#ifdef usingDODSf2cUnderscore
-         cdfstat = NF_GET_ATT_TEXT_(cdfid, varid, attrib, buff)
-#else
          cdfstat = NF_GET_ATT_TEXT (cdfid, varid, attrib, buff)
-#endif
 	 IF (cdfstat .NE. NF_NOERR ) THEN
             CD_GET_ATTRIB = .FALSE.
             GOTO 5000

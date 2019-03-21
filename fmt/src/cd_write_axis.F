@@ -310,11 +310,7 @@
       CALL CD_DIM_ONLY (cdfid, name, llen, dim_only)
       IF (dim_only .AND. ax_type.EQ.pcdf_full_span) GOTO 1000
 
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_INQ_DIMID_( cdfid, name(:nlen), dimid)
-#else
       cdfstat = NF_INQ_DIMID( cdfid, name(:nlen), dimid)
-#endif
 
 * ... check the axis attribute for direction. If the name has already
 *     been used writing a different dimension, write this axis with a new name.
@@ -326,12 +322,7 @@
       IF ( cdfstat .EQ. NF_NOERR ) THEN
 
 * ... is there a coordinate variable by the same name ?
-#ifdef usingDODSf2cUnderscore
-         cdfstat = NF_INQ_VARID_( cdfid, name(:nlen), axid )
-#else
          cdfstat = NF_INQ_VARID( cdfid, name(:nlen), axid )
-#endif
-
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
 	 IF (.NOT. recdim) THEN 
             slen = CD_AXLEN( cdfid, dimid, status )
@@ -444,16 +435,9 @@
 
 * define the dimension (if its just a dimension, will not write as a record axis)
       IF ( recdim .AND. .NOT.line_dim_only(iaxis)) THEN
-#ifdef usingDODSf2cUnderscore
-         cdfstat = NF_DEF_DIM_( cdfid, name(:nlen), NF_UNLIMITED, dimid )
-      ELSE
-         cdfstat = NF_DEF_DIM_( cdfid, name(:nlen), axlen, dimid )
-#else
          cdfstat = NF_DEF_DIM( cdfid, name(:nlen), NF_UNLIMITED, dimid )
       ELSE
          cdfstat = NF_DEF_DIM( cdfid, name(:nlen), axlen, dimid )
-#endif
-
       ENDIF
 
       IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
@@ -469,36 +453,19 @@
      .    ax_type.EQ.pcdf_full_span) GOTO 1000
 
 * create the coordinate variable (12/92 -> double precision)
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_DEF_VAR_(cdfid, name(:nlen), outtype, 1, dimid, axid)
-#else
       cdfstat = NF_DEF_VAR(cdfid, name(:nlen), outtype, 1, dimid, axid)
-#endif
       IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
 
 * check: can we get the coord var id back??
-#ifdef usingDODSf2cUnderscore
-         cdfstat = NF_INQ_VARID_( cdfid, name(:nlen), newid )
-#else
          cdfstat = NF_INQ_VARID( cdfid, name(:nlen), newid )
-#endif
 
 * assign its attributes
       IF (ax_type .EQ. pcdf_child_span) THEN
-#ifdef usingDODSf2cUnderscore
-         cdfstat = NF_PUT_ATT_TEXT_(cdfid, axid, 'child_axis', 1, ' ')
-#else
          cdfstat = NF_PUT_ATT_TEXT (cdfid, axid, 'child_axis', 1, ' ')
-#endif
       ENDIF
 !      IF ( condensed ) THEN
-#ifdef usingDODSf2cUnderscore
-!         cdfstat = NF_PUT_ATT_DOUBLE _(cdfid, axid, 'true_size',
-!     .         1, npts)
-#else
 !         cdfstat = NF_PUT_ATT_DOUBLE (cdfid, axid, 'true_size',
 !     .         1, npts)
-#endif
 !      ENDIF
 
       got_modulo = .FALSE.
@@ -696,13 +663,8 @@
         ENDIF
 
         IF (attoutflag .EQ. 1) 
-#ifdef usingDODSf2cUnderscore
-     .     cdfstat = NF_PUT_ATT_TEXT_( cdfid, axid, attname,
-     .        	       slen, units(:slen) )
-#else
      .     cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
      .        	       slen, units(:slen) )
-#endif
 
       ENDIF
       IF ( idim .EQ. t_dim .AND. (.NOT.got_calendar) ) THEN                  ! 4/93 update
@@ -734,13 +696,8 @@
      .                            .TRUE., status )
 
             IF (attoutflag .EQ. 1) 
-#ifdef usingDODSf2cUnderscore
-     .         cdfstat = NF_PUT_ATT_TEXT_( cdfid, axid, attname,
-     .        	       slen, datebuff(:slen) )
-#else
      .         cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
      .        	       slen, datebuff(:slen) )
-#endif
 	ENDIF
 
 !  Write the calendar name
@@ -758,13 +715,8 @@
           ENDIF
 
           IF (attoutflag .EQ. 1) 
-#ifdef usingDODSf2cUnderscore
-     .      cdfstat = NF_PUT_ATT_TEXT_( cdfid, axid, attname,
-     .        	       slen, line_cal_name(iaxis)(:slen))
-#else
      .      cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
      .        	       slen, line_cal_name(iaxis)(:slen))
-#endif
         ENDIF
       ENDIF
 
@@ -782,13 +734,8 @@
               attoutflag = 1
            ENDIF
            IF (attoutflag .EQ. 1 .AND. write_mod)
-#ifdef usingDODSf2cUnderscore 
-     .       cdfstat = NF_PUT_ATT_TEXT_( cdfid, axid, attname,
-     .        	       1, ' ' )
-#else
      .       cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
      .        	       1, ' ' )
-#endif
 	 ELSE
            attname = 'modulo' 
            IF (varid .GT. 0) THEN
@@ -799,13 +746,8 @@
               attoutflag = 1
            ENDIF
            IF (attoutflag .EQ. 1 .AND. write_mod) 
-#ifdef usingDODSf2cUnderscore
-     .      cdfstat = NF_PUT_ATT_DOUBLE_( cdfid, axid, attname,
-     .        	       outtype, 1, line_modulo_len(iaxis) )
-#else
      .      cdfstat = NF_PUT_ATT_DOUBLE( cdfid, axid, attname,
      .        	       outtype, 1, line_modulo_len(iaxis) )
-#endif
 	 ENDIF
 
 * Check if user wants to write modulo=false to the file
@@ -844,13 +786,8 @@
               attoutflag = 1
            ENDIF
            IF (attoutflag .EQ. 1) 
-#ifdef usingDODSf2cUnderscore
-     .      cdfstat = NF_PUT_ATT_TEXT_( cdfid, axid, attname,
-     .        	       4, 'down' )
-#else
      .      cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
      .        	       4, 'down' )
-#endif
       ENDIF
 
 * record axis (time, usually) doesn't get coordinate spacing or any
@@ -870,13 +807,8 @@
               attoutflag = 1
            ENDIF
            IF (attoutflag .EQ. 1) 
-#ifdef usingDODSf2cUnderscore
-     .      cdfstat = NF_PUT_ATT_TEXT_( cdfid, axid, attname,
-     .        	       4, 'even' )
-#else
      .      cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
      .        	       4, 'even' )
-#endif
         ELSE
 * sub-span axis may not have irregular spacing just cuz parent does
 * 12/00 NO. ... regular appearing coordinates are not necessarily regular --
@@ -894,13 +826,8 @@
                  attoutflag = 1
               ENDIF
               IF (attoutflag .EQ. 1)
-#ifdef usingDODSf2cUnderscore 
-     .      cdfstat = NF_PUT_ATT_TEXT_( cdfid, axid, attname,
-     .        	       6, 'uneven' )
-#else
      .      cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
      .        	       6, 'uneven' )
-#endif
            ENDIF
         ENDIF
         ENDIF  ! got_spacing
@@ -925,13 +852,8 @@
               attoutflag = 1
            ENDIF
             
-#ifdef usingDODSf2cUnderscore
-          IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT_
-     .        	     ( cdfid, axid, attname, 1, ww_dim_name(idim) )     
-#else
           IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
      .        	     ( cdfid, axid, attname, 1, ww_dim_name(idim) )
-#endif
        ENDIF
 
 * If the axis is a know geophysical direction write the standard name 
@@ -1047,13 +969,8 @@
          dim2d(1) = CD_WRITE_BNDSDIM(cdfid, status)
 
 * ... create the bounds variable, if it has not been created.
-#ifdef usingDODSf2cUnderscore
-         IF (bndid .EQ. -1) cdfstat = NF_DEF_VAR_(cdfid, 
-     .    name(:elen), outtype, 2, dim2d, bndid)
-#else
          IF (bndid .EQ. -1) cdfstat = NF_DEF_VAR(cdfid, 
      .    name(:elen), outtype, 2, dim2d, bndid)
-#endif
 
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5220
 
@@ -1073,13 +990,8 @@
          ENDIF
 
          IF (attoutflag .EQ. 1) THEN
-#ifdef usingDODSf2cUnderscore
-            cdfstat = NF_PUT_ATT_TEXT_(cdfid, axid, attname,
-     .                elen, name(:elen))
-#else
             cdfstat = NF_PUT_ATT_TEXT (cdfid, axid, attname,
      .                elen, name(:elen))
-#endif
 
 * set up for deferred writing of bounds coordinate values (12/00)
 * Record axis and bounds are written when variable written.
@@ -1103,15 +1015,9 @@
 
          name = name(:nlen)//'edges'
          elen = nlen + 5
-#ifdef usingDODSf2cUnderscore
-         cdfstat = NF_DEF_DIM_( cdfid, name(:elen), axlen+1, dimid )
-         cdfstat = NF_DEF_VAR_(cdfid, name(:elen), outtype, 1, 
-     .           dimid, edgid)
-#else
          cdfstat = NF_DEF_DIM( cdfid, name(:elen), axlen+1, dimid )
          cdfstat = NF_DEF_VAR(cdfid, name(:elen), outtype, 1, 
      .           dimid, edgid)
-#endif
          attname = 'edges' 
          IF (varid .GT. 0) THEN
             CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, status)
@@ -1126,17 +1032,10 @@
             attoutflag = 1
          ENDIF
          IF (attoutflag .EQ. 1) THEN
-#ifdef usingDODSf2cUnderscore
-            cdfstat = NF_PUT_ATT_TEXT_( cdfid, edgid, attname, 1, ' ' )
-* ... point to it from axis coordinates definition
-            cdfstat = NF_PUT_ATT_TEXT_( cdfid, axid, attname, elen,
-     .                name(:elen) )
-#else
             cdfstat = NF_PUT_ATT_TEXT( cdfid, edgid, attname, 1, ' ' )
 * ... point to it from axis coordinates definition
             cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname, elen,
      .                name(:elen) )
-#endif
 
 * set up for deferref writing of edge coordinate values (12/00)
 	    CALL CD_DEFER_COORD_WRITE(edgid, grid, idim, lo, hi,

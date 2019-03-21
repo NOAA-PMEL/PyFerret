@@ -203,11 +203,7 @@
 * ---
 
 
-#ifdef usingDODSf2cUnderscore
-           cdfstat = NF_OPEN_(ds_des_name(dset), NF_NOWRITE, remote_dods_id) 
-#else
            cdfstat = NF_OPEN(ds_des_name(dset), NF_NOWRITE, remote_dods_id) 
-#endif
 	   IF ( cdfstat .NE. NF_NOERR ) THEN
               GOTO 5150
            ENDIF
@@ -230,11 +226,7 @@
 		     cdf_file = TM_INQ_PATH(sf_name(i),tmap_tsteps,
      .                                      ' ',.FALSE., status)
 		     IF (status .EQ. merr_ok)  THEN
-#ifdef usingDODSf2cUnderscore
-			 cdfstat = NF_OPEN_(cdf_file, NF_NOWRITE, cdfid) 
-#else
 			 cdfstat = NF_OPEN(cdf_file, NF_NOWRITE, cdfid) 
-#endif
                          IF ( cdf_file(1:7) .EQ. 'http://')
      .                        err_status = merr_remote_open
 
@@ -249,11 +241,7 @@
                 
 	ELSE
                
-#ifdef usingDODSf2cUnderscore 
-           cdfstat = NF_OPEN_(ds_des_name(dset), NF_NOWRITE, cdfid) 
-#else
            cdfstat = NF_OPEN(ds_des_name(dset), NF_NOWRITE, cdfid) 
-#endif
 
 	ENDIF
 	        IF ( cdfstat .NE. NF_NOERR ) GOTO 5100

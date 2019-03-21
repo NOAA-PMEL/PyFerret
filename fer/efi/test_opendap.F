@@ -226,21 +226,10 @@
          CALL ef_get_string_arg_element_6d(id, ARG1, arg_1, 
      .                          i1, j1, k1, l1, m1, n1, slen, filename)
 
-#ifdef usingDODSf2cUnderscore 
-
-           istatus = NF_OPEN_(filename, NF_NOWRITE, cdfid) 
-           IF ( istatus .NE. 0 ) errbuff = NF_STRERROR_(istatus)
-* close the netCDF file
-           IF ( istatus .EQ. 0 ) istatus = NF_CLOSE_(cdfid)
-
-#else
-
            istatus = NF_OPEN(filename, NF_NOWRITE, cdfid) 
            IF ( istatus .NE. 0 ) errbuff = NF_STRERROR(istatus)
 * close the netCDF file
            IF ( istatus .EQ. 0 ) istatus = NF_CLOSE(cdfid)
-
-#endif 
 
            result(i,j,k,l,m,n) = istatus
 

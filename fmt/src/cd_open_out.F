@@ -87,11 +87,7 @@
 
 * open or create the file
       IF ( do_append ) THEN
-#ifdef usingDODSf2cUnderscore
-	 cdfstat = NF_OPEN_( cdfname, NF_WRITE, cdfid )
-#else
 	 cdfstat = NF_OPEN( cdfname, NF_WRITE, cdfid )
-#endif
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
 
          CALL CD_SET_MODE( cdfid, pcd_reset_data, status )
@@ -108,20 +104,12 @@
          IF (netcdf4_type .EQ. 3) THEN 
 	    cdftype = NF_CLASSIC_MODEL
 
-#ifdef usingDODSf2cUnderscore
-            cdfstat = NF_CREATE_(cdfname, clobber_mode, cdfid)
-#else
             cdfstat = NF_CREATE(cdfname, clobber_mode, cdfid)
-#endif
          ELSE
 
             IF (netcdf4_type .EQ. 4) cdftype = NF_NETCDF4
             IF (netcdf4_type .EQ. 6) cdftype = NF_64BIT_OFFSET
-#ifdef usingDODSf2cUnderscore
-            cdfstat = NF_CREATE_(cdfname, OR(clobber_mode,cdftype), cdfid)
-#else
             cdfstat = NF_CREATE(cdfname, OR(clobber_mode,cdftype), cdfid)
-#endif
 
          ENDIF
 

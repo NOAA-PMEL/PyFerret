@@ -5,12 +5,13 @@
 * V450:
 * V500: 1/99 added gfcn_arg_type in support of string arguments
 * V533: 6/01 *sh* added gfcn_rtn_type in support of string functions
-*       2/12 *ksm* added E and F dimensions
+*       2/12 *kms* added E and F dimensions
+*       3/19 *kms* increase pmax_grid_chg_fcns (400 -> 600) and pmax_gfcn_args (1000 ->1500)
 
 	INTEGER		pmax_grid_chg_fcns,
      .			pmax_gfcn_args
-	PARAMETER     (	pmax_grid_chg_fcns = 400,
-     .			pmax_gfcn_args = 1000 )
+	PARAMETER     (	pmax_grid_chg_fcns = 600,
+     .			pmax_gfcn_args = 1500 )
 
 	COMMON / XGRID_CHG_FCN /
      .				gfcn_version,

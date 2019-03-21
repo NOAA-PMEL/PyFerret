@@ -60,11 +60,7 @@
 	CHARACTER*500 errbuff
 
 
-#ifdef usingDODSf2cUnderscore 
-	status = NF_OPEN_(urlstring, NF_NOWRITE, cdfid) 
-#else
 	status = NF_OPEN(urlstring, NF_NOWRITE, cdfid) 
-#endif
 	
 	IF ( status .NE. NF_NOERR ) GOTO 5100
 	sf_lunit(dset) = cdfid

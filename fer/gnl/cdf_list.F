@@ -1281,11 +1281,7 @@
  500	CONTINUE
 
 * close the file
-#ifdef usingDODSf2cUnderscore 
-        cdfstat = NF_CLOSE_(cdfid)
-#else
         cdfstat = NF_CLOSE(cdfid)
-#endif
         IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CDF_LIST', unspecified_int4,
      .     no_varid, 'could not close CDF output file: ',
@@ -1336,11 +1332,7 @@
  5800   CALL ERRMSG ( ferr_TMAP_error, final_status, ' ', *5810 )
  5810	nready = ivar - 1
 	IF (.NOT.flushed) GOTO 400 ! yea ... a bit of spagetti code ... 
-#ifdef usingDODSf2cUnderscore 
-        cdfstat = NF_CLOSE_(cdfid)
-#else
         cdfstat = NF_CLOSE(cdfid)
-#endif
  5990   RETURN
 	END
 

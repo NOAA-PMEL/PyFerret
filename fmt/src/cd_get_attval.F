@@ -111,11 +111,7 @@
 
 * inquire about the attribute by name
       lena = TM_LENSTR1( attrib )
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_INQ_ATT_(cdfid, varid, attrib(:lena), attype, vback )
-#else
       cdfstat = NF_INQ_ATT (cdfid, varid, attrib(:lena), attype, vback )
-#endif
       IF ( cdfstat .EQ. NF_NOERR ) THEN
          IF ( vback .GT. vlen ) THEN
             buff = 'too many values in attribute "'//attrib(:lena)//
@@ -124,39 +120,19 @@
             IF ( do_warn ) CALL TM_NOTE( buff(:lena), lunit_errors )
             CD_GET_ATTVAL = .FALSE.
          ELSEIF (attype.EQ.NF_FLOAT) THEN
-#ifdef usingDODSf2cUnderscore
-	    cdfstat = NF_GET_ATT_REAL_(cdfid, varid, attrib, r4buff)
-#else
 	    cdfstat = NF_GET_ATT_REAL (cdfid, varid, attrib, r4buff)
-#endif
 	    CD_GET_ATTVAL = .TRUE.
          ELSEIF (attype.EQ.NF_DOUBLE) THEN
-#ifdef usingDODSf2cUnderscore
-	    cdfstat = NF_GET_ATT_DOUBLE_(cdfid, varid, attrib, r4buff)
-#else
 	    cdfstat = NF_GET_ATT_DOUBLE (cdfid, varid, attrib, r4buff)
-#endif
             CD_GET_ATTVAL = .TRUE.
          ELSEIF (attype.EQ.NF_INT1) THEN
-#ifdef usingDODSf2cUnderscore
-	    cdfstat = NF_GET_ATT_INT1_(cdfid, varid, attrib, r4buff)
-#else
 	    cdfstat = NF_GET_ATT_INT1 (cdfid, varid, attrib, r4buff)
-#endif
             CD_GET_ATTVAL = .TRUE.
          ELSEIF (attype.EQ.NF_INT2) THEN  ! SHORT same as INT2
-#ifdef usingDODSf2cUnderscore
-	    cdfstat = NF_GET_ATT_INT2_(cdfid, varid, attrib, r4buff)
-#else
 	    cdfstat = NF_GET_ATT_INT2 (cdfid, varid, attrib, r4buff)
-#endif
             CD_GET_ATTVAL = .TRUE.
          ELSEIF (attype.EQ.NF_INT) THEN  ! INT prev. also called LONG
-#ifdef usingDODSf2cUnderscore
-	    cdfstat = NF_GET_ATT_INT_(cdfid, varid, attrib, r4buff)
-#else
 	    cdfstat = NF_GET_ATT_INT (cdfid, varid, attrib, r4buff)
-#endif
             CD_GET_ATTVAL = .TRUE.
          ELSE
             CD_GET_ATTVAL = .FALSE.

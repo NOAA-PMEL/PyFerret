@@ -118,15 +118,9 @@
       IF ( status .NE. merr_ok ) RETURN
 
 * create "grid_definition" dimension name if not already in the file
-#ifdef usingDODSf2cUnderscore
-       	cdfstat = NF_INQ_DIMID_( cdfid, 'grid_definition', defdim)
-      IF ( cdfstat .NE. NF_NOERR ) cdfstat = NF_DEF_DIM_ 
-     .     ( cdfid, 'grid_definition', 1, defdim )
-#else
        	cdfstat = NF_INQ_DIMID( cdfid, 'grid_definition', defdim)
       IF ( cdfstat .NE. NF_NOERR ) cdfstat = NF_DEF_DIM 
      .     ( cdfid, 'grid_definition', 1, defdim )
-#endif
 
 
 * create an output grid name that reflects axes which have been averaged, etc.
@@ -173,30 +167,16 @@
  50   CONTINUE
 
 * does this grid already exist ? (no consistency check if so)
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_INQ_VARID_( cdfid, gname(:glen), defid )
-#else
       cdfstat = NF_INQ_VARID ( cdfid, gname(:glen), defid )
-#endif
       IF ( cdfstat .EQ. NF_NOERR ) GOTO 1000
 
 * create a dummy variable for this grid definition
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_DEF_VAR_( cdfid, gname(:glen), NF_CHAR, 1,
-     .                defdim, defid )
-#else
       cdfstat = NF_DEF_VAR ( cdfid, gname(:glen), NF_CHAR, 1,
      .                defdim, defid )
-#endif
 
 * write the axis list as an attribute of the grid
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_PUT_ATT_TEXT_( cdfid, defid, 'axes', nlen-2,
-     .             names(3:))
-#else
       cdfstat = NF_PUT_ATT_TEXT ( cdfid, defid, 'axes', nlen-2,
      .             names(3:))
-#endif
 
 * create the parent axes
  100  DO 200 idim = 1, nferdims

@@ -114,7 +114,7 @@ GLIB2_LIBDIR =
 ## If empty or not given, NetCDF shared libraries (which specify the HDF5 and
 ## compression libraries required) will be used.
 ## =========================
-HDF5_LIBDIR = /usr/local/hdf5-1.10.4/lib
+HDF5_LIBDIR = /usr/local/hdf5-1.10.5/lib
 # HDF5_LIBDIR = $(HOME)/.local/lib
 # HDF5_LIBDIR = /usr/local/lib
 # HDF5_LIBDIR = /usr/lib64
@@ -143,7 +143,7 @@ SZ_LIBDIR =
 ## (along with the HDF5 static libraries).
 ## If HDF5_LIBDIR is empty or not given, NetCDF shared libraries will be used.
 ## =========================
-NETCDF_LIBDIR = /usr/local/netcdf-4.4.1.1/lib
+NETCDF_LIBDIR = /usr/local/netcdf-4.6.3/lib
 # NETCDF_LIBDIR = $(HOME)/.local/lib
 # NETCDF_LIBDIR = /usr/local/lib
 # NETCDF_LIBDIR = /usr/lib64

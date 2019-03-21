@@ -13,21 +13,13 @@
 
 	dim_only = .FALSE.
 
-#ifdef usingDODSf2cUnderscore
-	cdfstat = NF_INQ_DIMID_( cdfid, name(:nlen), dimid)
-#else
 	cdfstat = NF_INQ_DIMID( cdfid, name(:nlen), dimid)
-#endif
 
 * already defined ? (limited consistency checking)
 	IF ( cdfstat .EQ. NF_NOERR ) THEN
 
 * ... is there a coordinate variable by the same name ?
-#ifdef usingDODSf2cUnderscore
-	   cdfstat = NF_INQ_VARID_( cdfid, name(:nlen), axid )
-#else
 	   cdfstat = NF_INQ_VARID( cdfid, name(:nlen), axid )
-#endif
 
 * The dimension matches but there is no coord var. 
 * This lets us append variables to a DSG file.

@@ -93,22 +93,12 @@
       IF (status .NE. merr_ok) GO TO 5000
 
 * read the 2 integer values
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_GET_VAR1_INT_(cdfid, t1id, index, jday)
-
-#else
       cdfstat = NF_GET_VAR1_INT (cdfid, t1id, index, jday)
-#endif
-
       IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_RD_EP_TIME', cdfid, t1id,
      .       'EPIC time', no_errstring, *5000 )
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_GET_VAR1_INT_(cdfid, t2id, index, msec)
-#else
-      cdfstat = NF_GET_VAR1_INT(cdfid, t2id, index, msec)
-#endif
 
+      cdfstat = NF_GET_VAR1_INT(cdfid, t2id, index, msec)
       IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_RD_EP_TIME', cdfid, t2id,
      .       'EPIC time2', no_errstring, *5000 )

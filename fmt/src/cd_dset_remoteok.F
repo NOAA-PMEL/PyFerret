@@ -93,11 +93,7 @@ C Check whether we can define a LET/REMOTE variable in this dataset.
 	vlen = TM_LENSTR1(ebuff)
 	buff = ds_des_name(dset)(:slen)//'_expr_'//ebuff(:vlen)
 
-#ifdef usingDODSf2cUnderscore 
-	cdfstat = NF_OPEN_(buff, NF_NOWRITE, cdfid) 
-#else
 	cdfstat = NF_OPEN(buff, NF_NOWRITE, cdfid) 
-#endif
 
 * If it could be opened, we can make remote-variable definitions.
 
@@ -105,11 +101,7 @@ C Check whether we can define a LET/REMOTE variable in this dataset.
 	   ds_accepts_remote(dset) = .TRUE.
 
 * close the url with f-tds var - we were just testing here.
-#ifdef usingDODSf2cUnderscore
-	   cdfstat = NF_CLOSE_( cdfid )
-#else
 	   cdfstat = NF_CLOSE( cdfid )
-#endif
 
 	ELSE
 	   ds_accepts_remote(dset) = .FALSE.

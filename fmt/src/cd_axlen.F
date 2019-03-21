@@ -78,20 +78,12 @@
 
 * get the basic information about this dimension
 
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_INQ_DIM_( cdfid, dimid, axname, npts )
-#else
       cdfstat = NF_INQ_DIM( cdfid, dimid, axname, npts )
-#endif
       IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
 
 * get the basics about the axis by the same name
       nlen = TM_LENSTR1( axname )
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_INQ_VARID_( cdfid, axname(:nlen), axid )
-#else
       cdfstat = NF_INQ_VARID( cdfid, axname(:nlen), axid )
-#endif
 
 * check "true_size" in case this is a condensed axis representation
       got_it = CD_GET_ATTVAL( cdfid, axid, 'true_size',

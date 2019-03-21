@@ -181,11 +181,7 @@
           ENDIF
 
 C Can get chunking, deflate, etc. for vars in file.
-c#ifdef usingDODSf2cUnderscore 
-c           cdfstat = NF_INQ_FORMAT_(cdfid, cdfformat)
-c#else
 c           cdfstat = NF_INQ_FORMAT (cdfid, cdfformat) 
-c#endif
 c        IF (cdfformat .EQ. NF_FORMAT_NETCDF4) THEN
 c           cdfstat = NF_INQ_VAR_DEFLATE(cdfid, ivcd, shuffle,
 c     .                 deflate, deflate_level)

@@ -63,11 +63,7 @@
 
 	cdfid = sf_lunit(dset)
 
-#ifdef usingDODSf2cUnderscore 
-	status = NF_INQ_VARID_(cdfid, vname, varid) 
-#else
 	status = NF_INQ_VARID(cdfid, vname, varid)
-#endif
 	
 	IF ( status .NE. NF_NOERR ) GOTO 5100
 

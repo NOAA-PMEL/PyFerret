@@ -63,14 +63,8 @@
 
 	cdfid = sf_lunit(dset)
 
-#ifdef usingDODSf2cUnderscore 
-	status = NF_GET_ATT_DOUBLE_ 
-     .            (cdfid, varid, '_FillValue', baddat)
-
-#else
 	status = NF_GET_ATT_DOUBLE 
      .            (cdfid, varid, '_FillValue', baddat)
-#endif
 	
 	IF ( status .NE. NF_NOERR ) GOTO 5100
 

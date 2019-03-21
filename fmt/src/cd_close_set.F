@@ -67,11 +67,7 @@
       INTEGER cdfstat
 
 * close the netCDF file
-#ifdef usingDODSf2cUnderscore
-        cdfstat = NF_CLOSE_( cdfid )
-#else
         cdfstat = NF_CLOSE( cdfid )
-#endif
 C assume any errors are because the file is already closed,
 C either from an error or from improper marking when previously closed
 C       IF ( cdfstat .NE. NF_NOERR ) GOTO 5100

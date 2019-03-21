@@ -65,37 +65,22 @@
 * does the variable pointed to really exist ?
 
         elen = TM_LENSTR1(ename)
-#ifdef usingDODSf2cUnderscore
-	cdfstat = NF_INQ_VARID_(cdfid, ename(:elen), edgid)
-#else
 	cdfstat = NF_INQ_VARID(cdfid, ename(:elen), edgid)
-#endif
-
         IF (cdfstat.NE.NF_NOERR) THEN
            soft_err = 11
            GOTO 5000
         ENDIF
 
 * get the vital statistics of the edges variable
-#ifdef usingDODSf2cUnderscore
-        cdfstat = NF_INQ_VAR_(cdfid, edgid, ename(:elen), vartype,
-     .               nvdims, vdims, nvatts)
-#else
         cdfstat = NF_INQ_VAR (cdfid, edgid, ename(:elen), vartype,
      .               nvdims, vdims, nvatts)
-#endif
         IF ( nvdims .NE. 1 ) THEN
            soft_err = 12
            GOTO 5000
         ENDIF
 
 * get axis length:
-#ifdef usingDODSf2cUnderscore
-	cdfstat = NF_INQ_DIM_(cdfid, vdims, buff, npts)
-#else
 	cdfstat = NF_INQ_DIM (cdfid, vdims, buff, npts)
-#endif
-
         IF (cdfstat.NE.NF_NOERR) GOTO 5100   ! should never happen
 
 * check for error conditions

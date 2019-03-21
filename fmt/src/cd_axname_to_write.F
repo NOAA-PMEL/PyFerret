@@ -59,19 +59,11 @@
 	CHARACTER buff*5, axis_dir*1
 
 
-#ifdef usingDODSf2cUnderscore
-	local_status = NF_INQ_VARID_( cdfid, name(:nlen), cvarid)
-#else
 	local_status = NF_INQ_VARID( cdfid, name(:nlen), cvarid)
-#endif
 
-	buff = ' '	 
+	buff = ' '
 	IF (local_status .EQ. NF_NOERR) THEN
-#ifdef usingDODSf2cUnderscore
-           local_status = NF_GET_ATT_TEXT_ (cdfid, cvarid, 'axis', buff)
-#else
            local_status = NF_GET_ATT_TEXT (cdfid, cvarid, 'axis', buff)
-#endif
 	ENDIF
 
 * If we change the axis name, mark status as 'dimension not found' in the
@@ -88,11 +80,7 @@
 
 * Is this axis already in the file?  Then we are done.
 
-#ifdef usingDODSf2cUnderscore
-	local_status = NF_INQ_VARID_( cdfid, name(:nlen), cvarid)
-#else
 	local_status = NF_INQ_VARID( cdfid, name(:nlen), cvarid)
-#endif
 
 	IF (local_status .EQ. NF_NOERR) cdfstat = NF_NOERR
 

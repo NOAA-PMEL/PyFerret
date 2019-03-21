@@ -58,12 +58,7 @@ c Local declararations
 	CHARACTER*512 upstr
 	CHARACTER*10 TM_FMT, errcode
 
-
-#ifdef usingDODSf2cUnderscore 
-        upstr =  NF_STRERROR_(cdfstat)
-#else
         upstr =  NF_STRERROR(cdfstat)
-#endif
 
         ebuff = upstr
 

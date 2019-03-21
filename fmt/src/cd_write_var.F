@@ -169,21 +169,12 @@ c      EQUIVALENCE (r100_8, r100_4)
       ENDDO
 
 * get the variable id
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_INQ_VARID_(cdfid, vname(:vlen), varid)
-#else
       cdfstat = NF_INQ_VARID(cdfid, vname(:vlen), varid)
-#endif
       IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
 
 * get the vital statistics for this variable
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_INQ_VAR_(cdfid, varid, vbuff, vartyp, nvdim,
-     .             vdims, nvatts)
-#else
       cdfstat = NF_INQ_VAR (cdfid, varid, vbuff, vartyp, nvdim,
      .             vdims, nvatts)
-#endif
 
 * Get values for scalefac, addoff and bad-flag set in cdf_list for this variable
 
@@ -319,25 +310,13 @@ c               slab_max(idim) = hi(idim)
                r100_8(1) = (old_box_hi + new_box_lo)/2.D0
 
 #ifdef FORTRAN_90
-#ifdef usingDODSf2cUnderscore
-            cdfstat = NF_PUT_VARA_DOUBLE_(cdfid, recaxvar, 
-     .                 TRANSFER(start(cdrecax),start,1),
-     .                 TRANSFER(1,count,1), 
-     .		       TRANSFER(r100_8,r100_4))
-#else
             cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar, 
      .                 TRANSFER(start(cdrecax),start,1),
      .                 TRANSFER(1,count,1), 
      .		       TRANSFER(r100_8,r100_4))
-#endif
-#else
-#ifdef usingDODSf2cUnderscore
-            cdfstat = NF_PUT_VARA_DOUBLE_(cdfid, recaxvar,
-     .                 start(cdrecax), 1, r100_8)
 #else
 	    cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar,
      .                 start(cdrecax), 1, r100_8)
-#endif
 #endif
             IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
 
@@ -352,13 +331,8 @@ c               slab_max(idim) = hi(idim)
             bndstart(2) = start(cdrecax)
             bndcount(2) = 1
 
-#ifdef usingDODSf2cUnderscore
-            cdfstat = NF_PUT_VARA_DOUBLE_(cdfid, bndid, bndstart,
-     .		           bndcount, r100_8)
-#else
             cdfstat = NF_PUT_VARA_DOUBLE(cdfid, bndid, bndstart,
      .		           bndcount, r100_8)
-#endif
             IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
 
 * Write a time-step slab containing missing data
@@ -427,27 +401,14 @@ c               slab_max(idim) = hi(idim)
  300        CONTINUE
 
 #ifdef FORTRAN_90
-#ifdef usingDODSf2cUnderscore
-            cdfstat = NF_PUT_VARA_DOUBLE_(cdfid, recaxvar, 
+	    cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar, 
      .                 TRANSFER(i100-lorec+start(cdrecax),start,1),
      .                 TRANSFER(hilim-i100+1,count,1), 
      .		       TRANSFER(r100_8,r100_4) )
 #else
 	    cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar, 
-     .                 TRANSFER(i100-lorec+start(cdrecax),start,1),
-     .                 TRANSFER(hilim-i100+1,count,1), 
-     .		       TRANSFER(r100_8,r100_4) )
-#endif
-#else
-#ifdef usingDODSf2cUnderscore
-            cdfstat = NF_PUT_VARA_DOUBLE_(cdfid, recaxvar, 
      .                 i100-lorec+start(cdrecax),
      .                 hilim-i100+1, r100_8)
-#else
-	    cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar, 
-     .                 i100-lorec+start(cdrecax),
-     .                 hilim-i100+1, r100_8)
-#endif
 #endif
             IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
  310     CONTINUE
@@ -482,11 +443,7 @@ c               slab_max(idim) = hi(idim)
 
             name = name(:nlen)//'_bnds'
             elen = nlen + 5
-#ifdef usingDODSf2cUnderscore
-            cdfstat = NF_INQ_VARID_(cdfid, name(:elen),  bndid)
-#else
 	    cdfstat = NF_INQ_VARID(cdfid, name(:elen),  bndid)
-#endif
 	    IF (cdfstat .NE. NF_NOERR ) THEN
 
 * If bounds variable not found in file we're appending to, and the user 
@@ -522,13 +479,8 @@ c               slab_max(idim) = hi(idim)
                   reset_bnd_lo = 0.D0
                ENDIF
 
-#ifdef usingDODSf2cUnderscore
-               cdfstat = NF_PUT_VARA_DOUBLE_(cdfid, bndid, bndstart,
-     .		           bndcount, r100_8)
-#else
 	       cdfstat = NF_PUT_VARA_DOUBLE(cdfid, bndid, bndstart,
      .		           bndcount, r100_8)
-#endif
                IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
  330        CONTINUE
          ENDIF

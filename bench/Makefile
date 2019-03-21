@@ -50,7 +50,7 @@ compare_plots:
 	        results_dir="test_results_noremote" ;\
 	    fi ;\
 	    echo "Comparing GIF files to those in bench/$$results_dir" ;\
-	    for img in `find . -name \*.gif -exec basename {} \; | sort -u` ; do \
+	    for img in `find . -name '*.gif' -a \! -regex './metafile_masters_.*' -exec basename {} \; | sort -u` ; do \
 	        if [ ! -f $$img ] ; then \
 	            echo "*** File $$img is missing ***" ;\
 	        elif [ ! -f $$results_dir/$$img ] ; then \

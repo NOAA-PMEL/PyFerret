@@ -34,7 +34,7 @@ INSTALL_FER_DIR = $(HOME)/Ferret
 ## If empty or not given, NetCDF shared-object libraries (which specify the
 ## HDF5, SZ, and Z compression libraries required) will be used.
 ## =========================
-HDF5_LIBDIR = /usr/local/hdf5-1.10.4/lib
+HDF5_LIBDIR = /usr/local/hdf5-1.10.5/lib
 # HDF5_LIBDIR = $(HOME)/.local/lib
 # HDF5_LIBDIR = /usr/local/lib
 # HDF5_LIBDIR = /usr/lib64
@@ -66,7 +66,7 @@ SZ_LIBDIR =
 ## If HDF5_LIBDIR is given and not empty, the static libraries will be used.
 ## If HDF5_LIBDIR is empty or not given, NetCDF shared-object libraries will be used.
 ## =========================
-NETCDF_LIBDIR = /usr/local/netcdf-4.4.1.1/lib
+NETCDF_LIBDIR = /usr/local/netcdf-4.6.3/lib
 # NETCDF_LIBDIR = $(HOME)/.local/lib
 # NETCDF_LIBDIR = /usr/local/lib
 # NETCDF_LIBDIR = /usr/lib64

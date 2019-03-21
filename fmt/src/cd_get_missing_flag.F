@@ -61,13 +61,8 @@
       cdfstat = merr_ok
 
 * get the vital statistics for this variable
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_INQ_VAR_(cdfid, varid, vname, vartyp, nvdim, vdims,
-     .                 nvatts)
-#else
       cdfstat = NF_INQ_VAR (cdfid, varid, vname, vartyp, nvdim, vdims,
      .                 nvatts)
-#endif
 
       vlen = TM_LENSTR1(vname)
 
@@ -92,13 +87,8 @@
 
       IF ( vartyp.LE.NF_INT .AND. scaled ) THEN
          IF ( got_bad ) THEN
-#ifdef usingDODSf2cUnderscore
-	     cdfstat = NF_INQ_ATT_(cdfid, varid, 'missing_value', 
-     .             attype, i )
-#else
 	     cdfstat = NF_INQ_ATT (cdfid, varid, 'missing_value', 
      .             attype, i )
-#endif
 		IF ( attype .EQ. vartyp ) bad_flag =
      .			bad_flag*scale_factor+ add_offset
 	     ENDIF
@@ -106,13 +96,8 @@
 * ... *kob* Also need to see about unpacking _FillValue
 
          IF ( got_missing ) THEN
-#ifdef usingDODSf2cUnderscore
-	        cdfstat = NF_INQ_ATT_(cdfid, varid, '_FillValue',
-     .             attype, i )
-#else
 	        cdfstat = NF_INQ_ATT(cdfid, varid, '_FillValue',
      .             attype, i )
-#endif
 	        IF ( attype .EQ. vartyp ) missing_flag =
      .			missing_flag*scale_factor+ add_offset
 	     ENDIF

@@ -131,11 +131,7 @@
 
 * close the cache file and substitute the remote file in its place
 
-#ifdef usingDODSf2cUnderscore
-	cdfstat = NF_CLOSE_( cdfid )
-#else
 	cdfstat = NF_CLOSE ( cdfid )
-#endif
 
 * insert the remote file info in place of the cache info
 	istep = cd_stepfile(dset)
@@ -154,10 +150,6 @@
      .                   no_errstring, *5900)
  5900	CALL CD_ABORT_GRIDS
 
-#ifdef usingDODSf2cUnderscore
-	cdfstat = NF_CLOSE_( remote_dods_id )
-#else
 	cdfstat = NF_CLOSE ( remote_dods_id )
-#endif
  5990	RETURN
 	END

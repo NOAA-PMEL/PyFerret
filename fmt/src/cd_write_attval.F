@@ -113,20 +113,12 @@
       IF ( vname .EQ. pcdf_global ) THEN
          varid = NF_GLOBAL
       ELSE
-#ifdef usingDODSf2cUnderscore
-	 cdfstat = NF_INQ_VARID_(cdfid, vname(:vlen), varid)
-#else
 	 cdfstat = NF_INQ_VARID(cdfid, vname(:vlen), varid)
-#endif
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
       ENDIF
 
 * does the attribute already exist ?
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_INQ_ATT_(cdfid, varid, att(:alen), attype, attlen)
-#else
       cdfstat = NF_INQ_ATT (cdfid, varid, att(:alen), attype, attlen)
-#endif
       IF ( cdfstat.EQ.NF_NOERR .AND. attype.NE.type ) GOTO 5200
 
 * put CDF into define mode so attributes can be written

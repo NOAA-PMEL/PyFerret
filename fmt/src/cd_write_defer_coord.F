@@ -103,13 +103,8 @@
                DO 100 i = i1000, hilim
  100           buff(i-i1000+1) = TM_WORLD(i, dfr_grid(iax), 
      .			              dfr_idim(iax), box_loc)
-#ifdef usingDODSf2cUnderscore
-               cdfstat = NF_PUT_VARA_DOUBLE_(cdfid, dfr_cdaxis(iax), 
-     .		       i1000-dfr_lo(iax)+1, hilim-i1000+1, buff)
-#else
                cdfstat = NF_PUT_VARA_DOUBLE (cdfid, dfr_cdaxis(iax), 
      .		       i1000-dfr_lo(iax)+1, hilim-i1000+1, buff)
-#endif
                IF (cdfstat .NE. NF_NOERR) GOTO 5010
  110         CONTINUE
 
@@ -117,13 +112,8 @@
 	     IF (dfr_axis_type(iax) .EQ. pcd_defer_edges) THEN
                 buff(1) = TM_WORLD(dfr_hi(iax), dfr_grid(iax), 
      .			       dfr_idim(iax), box_hi_lim)
-#ifdef usingDODSf2cUnderscore
-               cdfstat = NF_PUT_VAR1_DOUBLE_(cdfid, dfr_cdaxis(iax),
-     .			dfr_hi(iax)-dfr_lo(iax)+2, buff)
-#else
                cdfstat = NF_PUT_VAR1_DOUBLE (cdfid, dfr_cdaxis(iax),
      .			dfr_hi(iax)-dfr_lo(iax)+2, buff)
-#endif
                IF (cdfstat .NE. NF_NOERR) GOTO 5010
 	     ENDIF
 
@@ -146,13 +136,8 @@
                 start(2) = i1000-dfr_lo(iax)+1
                 count(2) =  hilim-i1000+1
 
-#ifdef usingDODSf2cUnderscore
-                cdfstat = NF_PUT_VARA_DOUBLE_(cdfid, dfr_cdaxis(iax), start,
-     .		          count, buff)
-#else
                 cdfstat = NF_PUT_VARA_DOUBLE (cdfid, dfr_cdaxis(iax), start,
      .		          count, buff)
-#endif
                IF (cdfstat .NE. NF_NOERR) GOTO 5010
  210           CONTINUE
            ENDIF

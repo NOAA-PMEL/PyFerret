@@ -110,21 +110,12 @@
       IF ( vname .EQ. pcdf_global ) THEN
          varid = NF_GLOBAL
       ELSE
-#ifdef usingDODSf2cUnderscore
-         cdfstat = NF_INQ_VARID_(cdfid, vname(:vlen), varid)
-#else
          cdfstat = NF_INQ_VARID(cdfid, vname(:vlen), varid)
-#endif
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
       ENDIF
 
 * does the attribute already exist ?
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_INQ_ATT_(cdfid, varid, att(:alen), attype, attlen)
-#else
       cdfstat = NF_INQ_ATT(cdfid, varid, att(:alen), attype, attlen)
-#endif
-
       IF ( cdfstat .EQ. NF_NOERR ) THEN
          IF ( attype.NE.NF_BYTE .AND. attype.NE.NF_CHAR ) GOTO 5200
          IF ( attlen+tlen .GT. bufflen .AND. append ) THEN
@@ -152,11 +143,7 @@
 
       IF ( cdfstat.EQ.NF_NOERR .AND. append ) THEN
 * append to the attribute
-#ifdef usingDODSf2cUnderscore
-	 cdfstat = NF_GET_ATT_TEXT_(cdfid, varid, att(:alen), buff)
-#else
 	 cdfstat = NF_GET_ATT_TEXT (cdfid, varid, att(:alen), buff)
-#endif
          IF ( cdfstat .NE. NF_NOERR ) THEN
             buff = att
             CALL TM_NOTE(
@@ -166,15 +153,6 @@
             
          risc_buff = string
          len_app = bufflen - attlen - 1
-#ifdef usingDODSf2cUnderscore
-         IF (len_app .GT. 0) THEN
-            cdfstat = NF_PUT_ATT_TEXT_(cdfid, varid, att(:alen),
-     .             attlen+slen, buff(:attlen)//risc_buff(1:slen))
-         ELSE
-            cdfstat = NF_PUT_ATT_TEXT_(cdfid, varid, att(:alen),
-     .             attlen+slen, buff(:attlen))
-         ENDIF
-#else
          IF (len_app .GT. 0) THEN
             cdfstat = NF_PUT_ATT_TEXT (cdfid, varid, att(:alen),
      .             attlen+slen, buff(:attlen)//risc_buff(1:slen))
@@ -182,16 +160,10 @@
             cdfstat = NF_PUT_ATT_TEXT (cdfid, varid, att(:alen),
      .             attlen+slen, buff(:attlen))
          ENDIF
-#endif
       ELSE
 * write the attribute
-#ifdef usingDODSf2cUnderscore
-         cdfstat = NF_PUT_ATT_TEXT_(cdfid, varid, att(:alen),
-     .             slen, string)
-#else
          cdfstat = NF_PUT_ATT_TEXT (cdfid, varid, att(:alen),
      .             slen, string)
-#endif
       ENDIF
       IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
 

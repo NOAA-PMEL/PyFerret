@@ -113,13 +113,8 @@
          ENDIF
 
 * get the vital statistics for this variable
-#ifdef usingDODSf2cUnderscore
-        cdfstat = NF_INQ_VAR_(cdfid, ivar, vname, vartyp, nvdim,
-     .              vdims, nvatts)
-#else
         cdfstat = NF_INQ_VAR (cdfid, ivar, vname, vartyp, nvdim,
      .              vdims, nvatts)
-#endif
 
 * if it is a character variable, then the first dimension of it is the strlen
         IF (vartyp .EQ. NF_CHAR) THEN
@@ -142,11 +137,7 @@
 * lack the cdfhi/max_limits machinery)
 
 * ... get the size and name of the dimension
-#ifdef usingDODSf2cUnderscore
-              cdfstat = NF_INQ_DIM_( cdfid, vdims(ndims), axnam, npts )
-#else
 	      cdfstat = NF_INQ_DIM ( cdfid, vdims(ndims), axnam, npts )
-#endif
 	      alen = TM_LENSTR1( axnam )
 
 * If the dimension is not also a 1-D coord var, and if we're writing the full 
@@ -167,11 +158,7 @@
 	      ENDIF
 
 * ... find the coordinate variable by this name
-#ifdef usingDODSf2cUnderscore
-              cdfstat = NF_INQ_VARID_( cdfid, axnam(:alen), axid )
-#else
               cdfstat = NF_INQ_VARID ( cdfid, axnam(:alen), axid )
-#endif
 	      no_file_coords = cdfstat .NE. NF_NOERR
 
 * ... determine the first coordinate value
@@ -179,13 +166,8 @@
 	         file_val = 1.0D0	! like abstract axis
 	      ELSE
 * ... get the vital statistics of the coordinate variable
-#ifdef usingDODSf2cUnderscore
-                 cdfstat = NF_INQ_VAR_(cdfid, axid, axnam, 
-     .			cvartyp, ncvdims,
-#else
 		 cdfstat = NF_INQ_VAR(cdfid, axid, axnam, 
      .			cvartyp, ncvdims,
-#endif
 #ifdef FORTRAN_90
      .			TRANSFER(cvdim,cvdim,1), nvatts)
 #else

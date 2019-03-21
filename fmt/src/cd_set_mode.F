@@ -76,21 +76,11 @@
          RETURN      ! no change requested
       ELSEIF ( mode .EQ. pcd_mode_define ) THEN
 * ... enter define mode
-#ifdef usingDODSf2cUnderscore
-         cdfstat = NF_REDEF_( cdfid )
-#else
          cdfstat = NF_REDEF( cdfid )
-#endif
-
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
       ELSEIF ( mode .EQ. pcd_mode_data ) THEN
 * ... enter data mode
-#ifdef usingDODSf2cUnderscore
-         cdfstat = NF_ENDDEF_( cdfid )
-#else
          cdfstat = NF_ENDDEF( cdfid )
-#endif
-
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
       ENDIF
 

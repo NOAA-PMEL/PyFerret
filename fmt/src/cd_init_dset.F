@@ -178,11 +178,7 @@
 !              here for mc datasets at all.
 
       IF (STR_SAME(ds_type(dset), '  MC') .EQ. 0) THEN
-#ifdef usingDODSf2cUnderscore
-        istat = NF_CLOSE_( cdfid )
-#else
         istat = NF_CLOSE( cdfid )
-#endif
 c        sf_lunit(dset) = file_not_open
 c        sf_lunit( cd_stepfile(dset) ) = file_not_open
       ENDIF
@@ -193,10 +189,6 @@ c        sf_lunit( cd_stepfile(dset) ) = file_not_open
 * error exit
  5900 CALL CD_ABORT_GRIDS
  5980 CONTINUE
-#ifdef usingDODSf2cUnderscore
-      IF (remote_dods_id .NE. 0) istat = NF_CLOSE_( remote_dods_id )
-#else
       IF (remote_dods_id .NE. 0) istat = NF_CLOSE( remote_dods_id )
-#endif
  5990 RETURN
       END

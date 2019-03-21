@@ -81,11 +81,7 @@
 	CD_USE_RECDIM = .FALSE. 		!in case of error exit
 
 * get vital statistics of file
-#ifdef usingDODSf2cUnderscore
-        cdfstat = NF_INQ_(cdfid, ndims, nvars, ngatts, recdim)
-#else
         cdfstat = NF_INQ (cdfid, ndims, nvars, ngatts, recdim)
-#endif
         IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
 
 * is there a record dimension
@@ -96,14 +92,8 @@
 
 * get the statistics for the given variable
 
-#ifdef usingDODSf2cUnderscore
-        cdfstat = NF_INQ_VAR_(cdfid, varid, vname, vartyp, nvdims, 
-     .              vdims, nvatts)
-#else
         cdfstat = NF_INQ_VAR(cdfid, varid, vname, vartyp, nvdims, 
      .              vdims, nvatts)
-#endif
-
         IF (cdfstat.NE.NF_NOERR) GOTO 5100
 
 * does it use the record axis?

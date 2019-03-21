@@ -211,11 +211,7 @@ c        REAL DTIME
 
 * NETCDF_VERSION
  1700	CONTINUE
-#ifdef usingDODSf2cUnderscore
-        value = NF_INQ_LIBVERS_()
-#else
 	value = NF_INQ_LIBVERS()
-#endif
 	slen = TM_LENSTR(value)
 	RETURN
 

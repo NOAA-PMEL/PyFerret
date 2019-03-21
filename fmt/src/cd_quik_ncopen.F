@@ -98,11 +98,7 @@
 	dlen = TM_LENSTR1(ds_des_name(dset))
 
 * open the file
-#ifdef usingDODSf2cUnderscore 
-	cdfstat = NF_OPEN_(ds_des_name(dset), NF_NOWRITE, cdfid) 
-#else
 	cdfstat = NF_OPEN(ds_des_name(dset), NF_NOWRITE, cdfid) 
-#endif
 	IF ( cdfstat .NE. NF_NOERR ) THEN
 	   tmap_status = merr_nc_open
 	   errmsg = 'unable to open file'
@@ -110,11 +106,7 @@
 	ENDIF
 
 * get the netCDF id of the named time axis variable
-#ifdef usingDODSf2cUnderscore
-        cdfstat = NF_INQ_VARID_(cdfid, vname(:vlen), vid)
-#else
         cdfstat = NF_INQ_VARID(cdfid, vname(:vlen), vid)
-#endif
 	IF (cdfstat.NE.NF_NOERR) THEN
 	   tmap_status = merr_unkvar
 	   errmsg = 'time axis variable is missing: '//vname
@@ -122,13 +114,8 @@
 	ENDIF
 
 * inquire after the netCDF metadata for this variable
-#ifdef usingDODSf2cUnderscore
-        cdfstat = NF_INQ_VAR_(cdfid, vid, varname, vartyp, nvdim, 
-     .              vdims, nvatts)
-#else
         cdfstat = NF_INQ_VAR(cdfid, vid, varname, vartyp, nvdim, 
      .              vdims, nvatts)
-#endif
 	IF (cdfstat.NE.NF_NOERR) THEN
 	   tmap_status = merr_badfileatt
 	   errmsg = 'unable to read attributes of '//vname
@@ -143,11 +130,7 @@
 	ENDIF
 
 * get the axis length
-#ifdef usingDODSf2cUnderscore
-	cdfstat = NF_INQ_DIM_( cdfid, vdims(1), varname, n )
-#else
 	cdfstat = NF_INQ_DIM( cdfid, vdims(1), varname, n )
-#endif
 	IF ( cdfstat .NE. NF_NOERR ) THEN
 	   tmap_status = merr_badtimedef
 	   errmsg = 'unable to read time ax dim length '//vname
@@ -166,17 +149,6 @@
 
 * If bounds attribute but no bounds variable, just continue. Otherwise check the size
 
-#ifdef usingDODSf2cUnderscore
-           cdfstat = NF_INQ_VARID_(cdfid, buff(:attlen), bounds_id)	   
-	   IF ( cdfstat .NE. NF_NOERR) THEN
-	      bounds_id = unspecified_int4    ! invalidate the bounds variable
-	   ELSE
-              cdfstat = NF_INQ_VAR_(cdfid, bounds_id, buff, vartyp, nvdim, 
-     .              vdims, nvatts)
-              cdfstat = NF_INQ_DIM_( cdfid, vdims(2), dummy, nb )
-	   ENDIF
-#else
-
            cdfstat = NF_INQ_VARID(cdfid, buff(:attlen), bounds_id)	   
 	   IF ( cdfstat .NE. NF_NOERR) THEN
 	      bounds_id = unspecified_int4    ! invalidate the bounds variable
@@ -185,7 +157,6 @@
      .              vdims, nvatts)
               cdfstat = NF_INQ_DIM( cdfid, vdims(2), dummy, nb )
 	   ENDIF
-#endif
 
 	ENDIF
 

@@ -84,12 +84,7 @@
 * see cd_open_out NF_CREATE(cdfname, NF_NETCDF4, cdfid)
 * Check this via a call to NF_INQ_FORMAT
 
-#ifdef usingDODSf2cUnderscore 
-           cdfstat = NF_INQ_FORMAT_(cdfid, cdfformat)
-#else
-           cdfstat = NF_INQ_FORMAT (cdfid, cdfformat) 
-#endif
-
+      cdfstat = NF_INQ_FORMAT (cdfid, cdfformat) 
       IF (cdfformat .NE. NF_FORMAT_NETCDF4) GOTO 5200
 
 * Has the user set chunking values?

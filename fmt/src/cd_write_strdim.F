@@ -79,29 +79,17 @@
      .    dimname = CD_CHILDAX_NAME('STRING', 1, maxstrlen, nlen )
 
 * is the dimension already defined ?
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_INQ_DIMID_( cdfid, dimname(:nlen), dimid )
-#else
       cdfstat = NF_INQ_DIMID ( cdfid, dimname(:nlen), dimid )
-#endif
       IF ( cdfstat .EQ. NF_NOERR ) THEN
 * ... yes. make sure defn is consistent
 
-#ifdef usingDODSf2cUnderscore
-	cdfstat = NF_INQ_DIMLEN_(cdfid, dimid, clen)
-#else
 	cdfstat = NF_INQ_DIMLEN(cdfid, dimid, clen)
-#endif
 	IF (clen .NE. maxstrlen) GOTO 5100
       ELSE
 * ... no. define it
         CALL CD_SET_MODE(cdfid, pcd_mode_define, status)
         IF ( status .NE. merr_ok ) RETURN
-#ifdef usingDODSf2cUnderscore
-	cdfstat = NF_DEF_DIM_(cdfid, dimname(:nlen), maxstrlen, dimid)
-#else
 	cdfstat = NF_DEF_DIM (cdfid, dimname(:nlen), maxstrlen, dimid)
-#endif
 
         IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
       ENDIF

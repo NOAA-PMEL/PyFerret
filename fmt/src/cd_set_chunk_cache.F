@@ -85,12 +85,7 @@ C Set the cache size for the files created/opened in this session.
 C Get current settings ( get cache_nelems, cache_preemption which 
 C are not currently settable by the user.)
 
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_GET_CHUNK_CACHE_(c_size_in, c_nelems_in, c_preemp_in)
-#else
       cdfstat = NF_GET_CHUNK_CACHE(c_size_in, c_nelems_in, c_preemp_in)
-#endif
-
       IF (cdfstat .NE. NF_NOERR) GOTO 5100 
 
 C If it hasnt been done yet, save the default values
@@ -116,14 +111,8 @@ C If any individual argument comes in as -1, use the current value.
 
 C Make the setting.
 
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_SET_CHUNK_CACHE_(cache_size, cache_nelems, 
-     .     cache_preemption)
-#else 
       cdfstat = NF_SET_CHUNK_CACHE(cache_size, cache_nelems, 
      .     cache_preemption)
-#endif
-
       IF (cdfstat .NE. NF_NOERR) GOTO 5100 
 
       status = merr_ok

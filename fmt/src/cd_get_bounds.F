@@ -107,11 +107,7 @@
 * changed it to .false.  2jun94
 	CD_GET_BOUNDS = .FALSE.     !in case of error exit
 * get the vital statistics for the CDF file
-#ifdef usingDODSf2cUnderscore
-        cdfstat = NF_INQ_( cdfid, ndims, nvars, ngatts, recdim)
-#else
         cdfstat = NF_INQ( cdfid, ndims, nvars, ngatts, recdim)
-#endif
 
 * if it is a character variable, then the first dimension of it is the strlen
         IF (vartyp .EQ. NF_CHAR) THEN
@@ -122,13 +118,8 @@
 	ENDIF
 
 * get the vital statistics for this variable
-#ifdef usingDODSf2cUnderscore
-        cdfstat = NF_INQ_VAR_(cdfid, ivar, vname, vartyp, nvdim,
-     .              vdims, nvatts)
-#else
         cdfstat = NF_INQ_VAR (cdfid, ivar, vname, vartyp, nvdim,
      .              vdims, nvatts)
-#endif
         vlen = TM_LENSTR1(vname)
 
 
@@ -172,11 +163,7 @@
            ENDIF
  300    CONTINUE
         IF ( tmrecdim .NE. 0 ) THEN
-#ifdef usingDODSf2cUnderscore
-	   cdfstat = NF_INQ_DIM_( cdfid, recdim, buff, npts )
-#else
 	   cdfstat = NF_INQ_DIM( cdfid, recdim, buff, npts )
-#endif
 	   lo(tmrecdim) = 1
            hi(tmrecdim) = npts
         ENDIF

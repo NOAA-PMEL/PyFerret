@@ -75,11 +75,7 @@
       nlen = 4
 
 * is the dimension already defined ?
-#ifdef usingDODSf2cUnderscore
-      cdfstat = NF_INQ_DIMID_(cdfid, dimname(:nlen), dimid )
-#else
       cdfstat = NF_INQ_DIMID (cdfid, dimname(:nlen), dimid )
-#endif
 
       IF ( cdfstat .EQ. NF_NOERR ) THEN
 * ... yes. make sure defn is consistent
@@ -92,21 +88,13 @@
 *               correctly, but the below may be necessary when linked with
 *               unidata-built dods libraries
 
-#ifdef usingDODSf2cUnderscore
-	cdfstat = NF_INQ_DIMLEN_(cdfid, dimid, clen)
-#else
 	cdfstat = NF_INQ_DIMLEN(cdfid, dimid, clen)
-#endif
 	IF (clen .NE. nbnds) GOTO 5100
       ELSE
 * ... no. define it
         CALL CD_SET_MODE(cdfid, pcd_mode_define, status)
         IF ( status .NE. merr_ok ) RETURN
-#ifdef usingDODSf2cUnderscore
-        cdfstat = NF_DEF_DIM_( cdfid, dimname(:nlen), nbnds, dimid )
-#else
         cdfstat = NF_DEF_DIM( cdfid, dimname(:nlen), nbnds, dimid )
-#endif
 
         IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
       ENDIF

@@ -20,5 +20,3 @@ GO err744_list_precision
 GO bn_reset
 GO err744_context
 
-GO bn_reset
-GO err744_modulo_transform

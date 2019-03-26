@@ -5710,9 +5710,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
 *** Running ferret script: bn_iso8601_time.jnl

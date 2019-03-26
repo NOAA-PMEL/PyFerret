@@ -21,6 +21,7 @@
 * V693+ added cx_vtree* vars for ticket #2195 - reporting regridding dependency
 * V694 cx_calendar needs to be 6-D to handle F and T calendar time
 * V6.95 *acm* 3/15 Changes for PyFerret fonts. Add SET TEXT, SHOW TEXT
+* V745  3/19 *acm* ticket 1916, special handling getting context for RETURN= outputs
 
 * the declarations below represent a stack of depth max_context for saving
 * the nested contexts.  The bottom few entries in the stack have special uses:

@@ -53,6 +53,7 @@ purge_all_memory.F\
 purge_all_pystat_vars.F\
 purge_all_uvars.F\
 purge_all_uvars_except_ex.F\
+purge_all_uvars_sub.F\
 purge_aux_var_dependents.F\
 purge_dset.F\
 purge_file_var.F\

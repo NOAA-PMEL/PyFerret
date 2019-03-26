@@ -1,13 +1,101 @@
- ! err744_context.jnl
- ! testing fix for ticket 1916
- ! there was an incorrect jump at the branch cut between x=19 and x=20
+! err744_context.jnl
+! also testing fix for ticket 1916
+! The fix for 1323 caused this, interfering with
+! correct application of the region when loading expression
+! with [x=@sum,y=@sum] for different ranges in X and Y
 
-use coads_climatology
+! test with `return= ` results in the mix.
 
-! jumped from 8.8 to 19.8 
-let w = sst[l=1]/sst[l=1,x=@sum]
-list /x=-10:30/y=-40 100*w
+set mode diagnos
+use "cellareas.nc"
+show grid areacella
 
-! jumped from ~2.5 to ~5.5
-let w = sst[l=1]/sst[l=1,x=@sum,y=@sum]
-list/x=0:30/y=-39:-33  100*w
+! this factor previously had a problem with modulo operations
+! (as well as using cached values, although obscured by the modulo problem)
+let factor = 1.0E14 + areacella
+
+! this factor had the cache but not the modulo problem
+! let factor = 1.0E14 + 100.0 * _X[gx=areacella] + 100.0 * _Y[gy=areacella]
+
+! the problem arose only with implicit limits on the transformation
+let w = factor / areacella[x=@sum,y=@sum]
+
+! the error used to show up without the following, but arose from code changes
+! to support this command.  Verify using it beforehand does not cause problems.
+say `w,return=shape`
+
+! X bounds must be assymetrical across the modulo split
+define symbol xlobnds "-5:-1.25"
+define symbol xhibnds "0:10"
+define symbol xfullbnds "-5:10"
+define symbol ybnds "-3.3:9.9"
+
+! the values in all these should be the same for all longitudes
+! but differ with different region sizes
+
+! following always was computed correctly
+list /width=500 /prec=7 /x=($xlobnds) /y=($ybnds) w
+
+! following always was computed correctly
+list /width=500 /prec=7 /x=($xhibnds) /y=($ybnds) w
+
+! following used to compute (not pulled from cache) the equivalent of
+! the above two sets concatenated (modulo on W instead of ARE-ELLA);
+! the correct value is a different altogether and constant across longitude
+list /width=500 /prec=7 /x=($xfullbnds) /y=($ybnds) w
+
+! following used to get pulled from cache ("found W") instead of being recomputed
+! (if other value of factor used the cache pull was clearer) - should be the same as previous listing
+list /width=500 /prec=7 /x=($xlobnds) /y=($ybnds) w
+
+! following used to get pulled from cache ("found W") instead of being recomputed
+! (if other value of factor used the cache pull was clearer) - should be the same as previous listing
+list /width=500 /prec=7 /x=($xhibnds) /y=($ybnds) w
+
+say `w,return=shape`
+
+cancel memory
+
+! repeat with SET REGION
+
+set region /x=($xlobnds) /y=($ybnds)
+list /width=500 /prec=7 w
+
+set region /x=($xhibnds) /y=($ybnds)
+list /width=500 /prec=7 w
+
+set region /x=($xfullbnds) /y=($ybnds)
+list /width=500 /prec=7 w
+
+set region /x=($xlobnds) /y=($ybnds)
+list /width=500 /prec=7 w
+
+set region /x=($xhibnds) /y=($ybnds)
+list /width=500 /prec=7 w
+
+cancel region
+cancel memory
+
+say `w,return=shape`
+
+! repeat with [X=...,/Y=...]
+
+list /width=500 /prec=7 w[x=($xlobnds),y=($ybnds)]
+
+list /width=500 /prec=7 w[x=($xhibnds),y=($ybnds)]
+
+list /width=500 /prec=7 w[x=($xfullbnds),y=($ybnds)]
+
+list /width=500 /prec=7 w[x=($xlobnds),y=($ybnds)]
+
+list /width=500 /prec=7 w[x=($xhibnds),y=($ybnds)]
+
+! cleanup
+
+cancel symbol xlobnds, xhibnds, xfullbnds, ybnds
+cancel var w, factor
+cancel data cellareas
+set mode /last diagnos
+
+!
+! end of err744_context.jnl

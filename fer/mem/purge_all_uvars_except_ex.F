@@ -42,6 +42,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V702 *sh* 1/17 - for dynamic memory -- based upon PURGE_ALL_UVARS
+* V745 *acm*3/19   call PURGE_ALL_UVARS_SUB
+
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -63,21 +65,9 @@
 	   IF (uvar_name_code(uvar)(1:3) .EQ. 'EX#'    ) CYCLE
 
 * eliminate all memory resident instances of this variable
-	   CALL PURGE_USER_VAR( uvar )
+* and restore initial defaults
 
-* back to initial defaults (see INIT_UVAR)
-* (eliminate all grid information that may have been rendered incorrect)
-	   CALL DEALLO_UVAR_GRIDS(uvar)
-
-*       bug fix: 11/91 *************
-* must reset ALL of the state variables as set up in INIT_UVAR
-* by default assume the definition requires an external data set specification
-           uvar_need_dset( uvar ) = .TRUE.
-
-* by default assume that all limits are irrelevant
-           DO 320 i = 1, nferdims
- 320       uvar_given(i,uvar) = uvlim_irrelevant
-* end of bug fix: 11/91 *************
+	   CALL PURGE_ALL_UVARS_SUB (uvar)
 
 	ENDDO
 

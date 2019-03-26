@@ -113,6 +113,7 @@
 * V702  1/17 *sh*  for trac enhancement #2369 -- dynamic memory management
 * v74   *acm* 3/18 Introduce parameter abstractax_len replacing 99999999
 * V741 *acm* 5/18 Promoting global attributes to a variable in ensembles
+* V745  3/19 *acm* ticket 1916, special handling getting context for RETURN= outputs
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -236,7 +237,7 @@
      .		( ferr_internal, status, 'intp_stk', *5000 )
 	
 * initialize the default context for the quantity to evaluate
-	cx_only = .FALSE.  ! do merge_grid for evaluating full context
+	cx_only = .FALSE.  ! do merge_grid in mode for evaluating full context
 
 	cx_variable( dflt_cx ) = uvar_pointer
 	cx_category( dflt_cx ) = cat_user_var

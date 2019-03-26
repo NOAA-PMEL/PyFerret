@@ -157,6 +157,8 @@
 * v743  12/18 *acm* Issue 1803, New command-line switch -verify for set mode ver:always behavior
 * v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
 *                  new mode datefmt for formatted date output
+* V745 *acm*  3/19 Issue 1916.  When doing a CANCEL MEMORY, the user-variable
+*                  information needs to be canceled particulary that saved in SAVE_UVAR_GRID
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -208,7 +210,7 @@
      .			report_error, slash_all, del_perm, del_temp,
      .                  perm_var, all_dims, coordvar, do_err, 
      .                  canout, new_att_modulo,
-     .                  redir_cancel_stdout, redir_cancel_stderr
+     .                  redir_cancel_stdout, redir_cancel_stderr, its_uvar
 
 	CHARACTER	arg*4, buff*512, argsym*120, varname*512,
      .                  attname*128, show_str*512, buff2*3, DUMMY*512
@@ -293,18 +295,23 @@
  400	del_perm = slash_all .OR. qual_given( slash_del_perm ) .GT. 0
 	del_temp = slash_all .OR. qual_given( slash_del_temp ) .GT. 0
      .			     .OR. .NOT.del_perm
-	   DO 410 mr = 1,max_mr_avail
-	      IF ( mr_protected( mr ) .EQ. mr_deleted ) GOTO 410
+	   CALL PURGE_ALL_UVARS  ! gets rid of grids stored via SAVE_UVAR_GRID 
+	   DO mr = 1,max_mr_avail
+	      IF ( mr_protected( mr ) .EQ. mr_deleted ) CYCLE
 	      perm_var = mr_protected(mr) .EQ. mr_perm_protected
+	      its_uvar = mr_category(mr) .EQ. cat_user_var
 	      IF ( del_perm .AND. perm_var ) THEN
 * ... permanent_mem could more efficiently be set after all deletions are
 *     done, but this way we are performing a sanity check as well
 	         permanent_mem = permanent_mem - mr_size(mr)
-	         CALL DELETE_VARIABLE( mr )
+
+	         IF (its_uvar) CALL PURGE_ALL_UVARS_SUB( mr_variable(mr) )
+		 CALL DELETE_VARIABLE( mr )
 	      ELSEIF ( del_temp .AND. .NOT.perm_var ) THEN  ! same as "ELSE"?
+	         IF (its_uvar) CALL PURGE_ALL_UVARS_SUB( mr_variable(mr) )
 	         CALL DELETE_VARIABLE( mr )
 	      ENDIF
- 410       CONTINUE
+ 	ENDDO  ! 410
 * ... /ALL resets to peaks indicators
 	IF (slash_all) THEN
            peak_mem = 0
